@@ -68,9 +68,15 @@
     "singleProjectMode": true,
     "hosting": {
       "port": 5000
+    },
+    "dataconnect": {
+      "dataDir": "dataconnect/.dataconnect/pgliteData"
     }
   },
   "remoteconfig": {
     "template": "remoteconfig.template.json"
+  },
+  "dataconnect": {
+    "source": "dataconnect"
   }
 }
