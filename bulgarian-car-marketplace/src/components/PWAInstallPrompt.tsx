@@ -120,7 +120,7 @@ const OfflineIndicator = styled.div`
   background: #ff6b6b;
   color: white;
   padding: 0.75rem 1rem;
-  border-radius: 10px;
+  border-radius: ${({ theme }) => theme.borderRadius.lg};
   box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
   z-index: 1000;
   display: flex;
@@ -143,7 +143,7 @@ const OnlineIndicator = styled.div`
   background: #51cf66;
   color: white;
   padding: 0.75rem 1rem;
-  border-radius: 10px;
+  border-radius: ${({ theme }) => theme.borderRadius.lg};
   box-shadow: 0 5px 15px rgba(81, 207, 102, 0.3);
   z-index: 1000;
   display: flex;

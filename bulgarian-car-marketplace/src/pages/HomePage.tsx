@@ -6,25 +6,61 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { useTranslation } from '../hooks/useTranslation';
 import { bulgarianCarService, BulgarianCar } from '../firebase';
+import heroBackground from '../assets/hero-background.jpg';
 
 // Styled Components
 const HomeContainer = styled.div`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background: #f8fafc;
 `;
 
 const HeroSection = styled.section`
-  background: linear-gradient(135deg, ${({ theme }) => theme.colors.primary.main} 0%, ${({ theme }) => theme.colors.primary.dark} 100%);
+  background:
+    linear-gradient(
+      rgba(0, 0, 0, 0.6),
+      rgba(0, 0, 0, 0.4)
+    ),
+    url(${heroBackground}) center/cover no-repeat,
+    linear-gradient(135deg, #3b82f6 0%, #2563eb 50%, #3b82f6 100%);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   color: white;
   padding: ${({ theme }) => theme.spacing['4xl']} 0;
   text-align: center;
+  position: relative;
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* إضافة طبقة إضافية لتحسين وضوح النص */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 0.3) 0%,
+      rgba(37, 99, 235, 0.2) 50%,
+      rgba(59, 130, 246, 0.3) 100%
+    );
+    pointer-events: none;
+  }
 `;
 
 const HeroContent = styled.div`
   max-width: 800px;
   margin: 0 auto;
   padding: 0 ${({ theme }) => theme.spacing.md};
+  position: relative;
+  z-index: 2;
+  text-align: center;
 `;
 
 const HeroTitle = styled.h1`
@@ -83,8 +119,8 @@ const HeroButton = styled(Link)`
 `;
 
 const StatsSection = styled.section`
+  background: #ffffff;
   padding: ${({ theme }) => theme.spacing['4xl']} 0;
-  background: ${({ theme }) => theme.colors.background.paper};
 `;
 
 const StatsContainer = styled.div`
@@ -113,8 +149,8 @@ const StatItem = styled.div`
 `;
 
 const FeaturedCarsSection = styled.section`
+  background: #f8fafc;
   padding: ${({ theme }) => theme.spacing['4xl']} 0;
-  background: ${({ theme }) => theme.colors.grey[50]};
 `;
 
 const SectionContainer = styled.div`
@@ -229,8 +265,8 @@ const ViewAllButton = styled(Link)`
 `;
 
 const FeaturesSection = styled.section`
+  background: #ffffff;
   padding: ${({ theme }) => theme.spacing['4xl']} 0;
-  background: ${({ theme }) => theme.colors.background.paper};
 `;
 
 const FeaturesGrid = styled.div`
@@ -288,7 +324,7 @@ const HomePage: React.FC = () => {
   return (
     <HomeContainer>
       {/* Hero Section */}
-      <HeroSection>
+      <HeroSection style={{ position: 'relative', zIndex: 1 }}>
         <HeroContent>
           <HeroTitle>
             {t('home.hero.title')}
@@ -308,7 +344,7 @@ const HomePage: React.FC = () => {
       </HeroSection>
 
       {/* Stats Section */}
-      <StatsSection>
+      <StatsSection style={{ position: 'relative', zIndex: 1 }}>
         <StatsContainer>
           <StatItem>
             <h3>15,000+</h3>
@@ -330,7 +366,7 @@ const HomePage: React.FC = () => {
       </StatsSection>
 
       {/* Featured Cars Section */}
-      <FeaturedCarsSection>
+      <FeaturedCarsSection style={{ position: 'relative', zIndex: 1 }}>
         <SectionContainer>
           <SectionHeader>
             <h2>{t('home.featured.title')}</h2>

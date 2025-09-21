@@ -9,14 +9,24 @@ import { useTranslation } from '../hooks/useTranslation';
 import { bulgarianAuthService } from '../firebase';
 import { BulgarianUser } from '../firebase/auth-service';
 import NotificationBell from './NotificationBell';
+import {
+  ProfessionalSettingsIcon,
+  ProfessionalUserIcon,
+  ProfessionalLogoutIcon,
+  ProfessionalLoginIcon,
+  ProfessionalUserPlusIcon,
+  ProfessionalFontIcon
+} from './CustomIcons';
 
 // Styled Components
 const HeaderContainer = styled.header`
-  background: ${({ theme }) => theme.colors.background.paper};
-  box-shadow: ${({ theme }) => theme.shadows.base};
+  background: #ffffff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 0;
   z-index: 1000;
+  border-bottom: 1px solid #e5e7eb;
+  border-radius: 0 0 ${({ theme }) => theme.borderRadius.xl} ${({ theme }) => theme.borderRadius.xl};
 `;
 
 const HeaderContent = styled.div`
@@ -26,6 +36,8 @@ const HeaderContent = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  position: relative;
+  z-index: 1;
 `;
 
 const Logo = styled(Link)`
@@ -53,7 +65,7 @@ const NavLink = styled(Link)`
   text-decoration: none;
   font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
   padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
-  border-radius: ${({ theme }) => theme.borderRadius.base};
+  border-radius: ${({ theme }) => theme.borderRadius.lg};
   transition: all 0.2s ease-in-out;
 
   &:hover {
@@ -75,7 +87,7 @@ const DropdownMenu = styled.div<{ $isOpen: boolean }>`
   right: 0;
   background: ${({ theme }) => theme.colors.background.paper};
   border: 1px solid ${({ theme }) => theme.colors.grey[200]};
-  border-radius: ${({ theme }) => theme.borderRadius.md};
+  border-radius: ${({ theme }) => theme.borderRadius.lg};
   box-shadow: ${({ theme }) => theme.shadows.lg};
   min-width: 200px;
   opacity: ${({ $isOpen }) => ($isOpen ? 1 : 0)};
@@ -95,6 +107,7 @@ const DropdownItem = styled.button`
   font-size: ${({ theme }) => theme.typography.fontSize.base};
   color: ${({ theme }) => theme.colors.text.primary};
   transition: background-color 0.2s ease-in-out;
+  border-radius: ${({ theme }) => theme.borderRadius.md};
 
   &:hover {
     background-color: ${({ theme }) => theme.colors.grey[50]};
@@ -148,7 +161,7 @@ const SettingsButton = styled.button`
   border: 1px solid ${({ theme }) => theme.colors.grey[300]};
   cursor: pointer;
   padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
-  border-radius: ${({ theme }) => theme.borderRadius.base};
+  border-radius: ${({ theme }) => theme.borderRadius.lg};
   transition: background-color 0.2s ease-in-out;
 
   &:hover {
@@ -223,7 +236,7 @@ const Header: React.FC = () => {
       <HeaderContent>
         {/* Logo */}
         <Logo to="/">
-          🚗 Globul Cars
+          <img src="/logo-new.png" alt="Globul Cars Logo" style={{ height: '75px', width: 'auto' }} />
         </Logo>
 
         {/* Navigation */}
@@ -235,7 +248,7 @@ const Header: React.FC = () => {
           {/* Settings Menu: contains language, auth/profile, and text toggle */}
           <SettingsMenu className="settings-menu">
             <SettingsButton onClick={() => setIsSettingsOpen(!isSettingsOpen)} aria-haspopup="menu" aria-expanded={isSettingsOpen}>
-              ⚙️ <span>Settings</span>
+              <ProfessionalSettingsIcon size={16} /> <span>Settings</span>
             </SettingsButton>
             <DropdownMenu $isOpen={isSettingsOpen}>
               {/* Language controls (moved, not duplicated) */}
@@ -251,26 +264,27 @@ const Header: React.FC = () => {
               {user ? (
                 <>
                   <DropdownItem onClick={() => { navigate('/dashboard'); setIsSettingsOpen(false); }}>
-                    👤 Dashboard
+                    <ProfessionalUserIcon size={16} /> Dashboard
                   </DropdownItem>
                   <DropdownItem onClick={() => { handleLogout(); setIsSettingsOpen(false); }} className="danger">
-                    ↩️ {t('nav.logout')}
+                    <ProfessionalLogoutIcon size={16} /> {t('nav.logout')}
                   </DropdownItem>
                 </>
               ) : (
                 <>
                   <DropdownItem onClick={() => { navigate('/login'); setIsSettingsOpen(false); }}>
-                    🔑 {t('nav.login')}
+                    <ProfessionalLoginIcon size={16} /> {t('nav.login')}
                   </DropdownItem>
                   <DropdownItem onClick={() => { navigate('/register'); setIsSettingsOpen(false); }}>
-                    ➕ {t('nav.register')}
+                    <ProfessionalUserPlusIcon size={16} /> {t('nav.register')}
                   </DropdownItem>
                 </>
               )}
 
               {/* Bold text toggle */}
               <DropdownItem onClick={() => setIsBoldText(!isBoldText)}>
-                {isBoldText ? '🔓 Disable bold text' : '🔒 Enable bold text'}
+                <ProfessionalFontIcon size={16} />
+                {isBoldText ? 'Disable bold text' : 'Enable bold text'}
               </DropdownItem>
             </DropdownMenu>
           </SettingsMenu>

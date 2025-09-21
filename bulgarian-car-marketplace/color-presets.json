@@ -1,0 +1,65 @@
+{
+  "colorPresets": {
+    "default": {
+      "name": "الافتراضي (أصفر)",
+      "primary": "#FFD700",
+      "secondary": "#FFA500",
+      "accent": "#FF6B35",
+      "background": "#FFFFFF",
+      "text": "#333333"
+    },
+    "blue": {
+      "name": "أزرق احترافي",
+      "primary": "#007BFF",
+      "secondary": "#6C757D",
+      "accent": "#28A745",
+      "background": "#FFFFFF",
+      "text": "#333333"
+    },
+    "green": {
+      "name": "أخضر طبيعي",
+      "primary": "#28A745",
+      "secondary": "#6C757D",
+      "accent": "#007BFF",
+      "background": "#FFFFFF",
+      "text": "#333333"
+    },
+    "red": {
+      "name": "أحمر جريء",
+      "primary": "#DC3545",
+      "secondary": "#6C757D",
+      "accent": "#FFC107",
+      "background": "#FFFFFF",
+      "text": "#333333"
+    },
+    "purple": {
+      "name": "بنفسجي أنيق",
+      "primary": "#6F42C1",
+      "secondary": "#6C757D",
+      "accent": "#E83E8C",
+      "background": "#FFFFFF",
+      "text": "#333333"
+    },
+    "dark": {
+      "name": "داكن عصري",
+      "primary": "#343A40",
+      "secondary": "#6C757D",
+      "accent": "#FFC107",
+      "background": "#212529",
+      "text": "#FFFFFF"
+    },
+    "minimal": {
+      "name": "بسيط رمادي",
+      "primary": "#6C757D",
+      "secondary": "#ADB5BD",
+      "accent": "#495057",
+      "background": "#F8F9FA",
+      "text": "#212529"
+    }
+  },
+  "instructions": {
+    "howToUse": "انسخ الألوان من هنا ولصقها في src/styles/theme.ts",
+    "example": "primary: { main: '#007BFF', light: '#4DA6FF', dark: '#0056CC', contrastText: '#FFFFFF' }",
+    "note": "تأكد من تحديث light/dark/contrastText لكل لون أساسي"
+  }
+}

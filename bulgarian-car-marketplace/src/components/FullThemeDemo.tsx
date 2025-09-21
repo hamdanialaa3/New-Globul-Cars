@@ -1,5 +1,5 @@
 // src/components/FullThemeDemo.tsx
-// Comprehensive demo of the enhanced yellow-black theme
+// Comprehensive demo of the enhanced black-grey theme
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
@@ -29,7 +29,7 @@ const ColorCard = styled.div<{ bgColor: string; textColor: string }>`
   border-radius: ${({ theme }) => theme.borderRadius.lg};
   text-align: center;
   font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
-  border: 2px solid ${({ theme }) => theme.colors.yellow.bright};
+  border: 2px solid ${({ theme }) => theme.colors.primary.main};
   transition: all 0.3s ease-in-out;
 
   &:hover {
@@ -67,7 +67,7 @@ const FullThemeDemo: React.FC = () => {
 
   return (
     <DemoContainer>
-      <h1>🎨 Enhanced Yellow-Black Theme Demo</h1>
+      <h1>🎨 Enhanced Black-Grey Theme Demo</h1>
       
       <nav style={{ marginBottom: '2rem' }}>
         <button 
@@ -103,23 +103,23 @@ const FullThemeDemo: React.FC = () => {
         <DemoSection className="card">
           <h2>🌈 Enhanced Color Palette</h2>
           <ColorGrid>
-            <ColorCard bgColor="#FFD700" textColor="#000000">
-              Bright Yellow<br/>#FFD700
+            <ColorCard bgColor="#000000" textColor="#ffffff">
+              Black<br/>#000000
             </ColorCard>
-            <ColorCard bgColor="#FFA500" textColor="#000000">
-              Orange Yellow<br/>#FFA500
+            <ColorCard bgColor="#333333" textColor="#ffffff">
+              Dark Grey<br/>#333333
             </ColorCard>
-            <ColorCard bgColor="#FFAE42" textColor="#000000">
-              Reddish Yellow<br/>#FFAE42
+            <ColorCard bgColor="#666666" textColor="#ffffff">
+              Medium Grey<br/>#666666
             </ColorCard>
-            <ColorCard bgColor="#ADFF2F" textColor="#000000">
-              Greenish Yellow<br/>#ADFF2F
+            <ColorCard bgColor="#999999" textColor="#000000">
+              Light Grey<br/>#999999
             </ColorCard>
-            <ColorCard bgColor="#F0E68C" textColor="#000000">
-              Bluish Yellow<br/>#F0E68C
+            <ColorCard bgColor="#cccccc" textColor="#000000">
+              Very Light Grey<br/>#cccccc
             </ColorCard>
-            <ColorCard bgColor="#B8860B" textColor="#FFFFFF">
-              Dark Yellow<br/>#B8860B
+            <ColorCard bgColor="#ffffff" textColor="#000000">
+              White<br/>#ffffff
             </ColorCard>
           </ColorGrid>
         </DemoSection>
@@ -185,19 +185,20 @@ const FullThemeDemo: React.FC = () => {
             <h4>🎯 Main Features:</h4>
             <ul>
               <li>Background image: carpic.jpg</li>
-              <li>Varied yellow color gradients</li>
+              <li>Varied black-grey color gradients</li>
               <li>High contrast for readability</li>
               <li>Advanced visual effects</li>
             </ul>
           </div>
           <div>
-            <h4>🌈 Yellow Shades:</h4>
+            <h4>🌈 Grey Shades:</h4>
             <ul>
-              <li>Light Yellow (#FFFF99)</li>
-              <li>Dark Yellow (#B8860B)</li>
-              <li>Reddish Yellow (#FFAE42)</li>
-              <li>Greenish Yellow (#ADFF2F)</li>
-              <li>Bluish Yellow (#F0E68C)</li>
+              <li>Black (#000000)</li>
+              <li>Dark Grey (#333333)</li>
+              <li>Medium Grey (#666666)</li>
+              <li>Light Grey (#999999)</li>
+              <li>Very Light Grey (#cccccc)</li>
+              <li>White (#ffffff)</li>
             </ul>
           </div>
         </div>

@@ -1,5 +1,5 @@
 // src/components/ThemeTest.tsx
-// Component to test the new yellow-black theme
+// Component to test the new black-grey theme
 
 import React from 'react';
 import styled from 'styled-components';
@@ -77,17 +77,18 @@ const ThemeTest: React.FC = () => {
   return (
     <ThemeTestContainer>
       <h1 style={{ textAlign: 'center', marginBottom: '2rem', textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>
-        Theme Test - Yellow-Black Theme
+        Theme Test - Black-Grey Theme
       </h1>
 
       <CardTest>
         <h2>Color Palette</h2>
         <div>
-          <ColorSwatch bgColor="#FFD700" color="#000000">Bright Yellow</ColorSwatch>
-          <ColorSwatch bgColor="#FFA500" color="#000000">Orange Yellow</ColorSwatch>
-          <ColorSwatch bgColor="#FFFF00" color="#000000">Pure Yellow</ColorSwatch>
-          <ColorSwatch bgColor="#B8860B" color="#FFFFFF">Dark Yellow</ColorSwatch>
-          <ColorSwatch bgColor="#000000" color="#FFFFFF">Black</ColorSwatch>
+          <ColorSwatch bgColor="#000000" color="#ffffff">Black</ColorSwatch>
+          <ColorSwatch bgColor="#333333" color="#ffffff">Dark Grey</ColorSwatch>
+          <ColorSwatch bgColor="#666666" color="#ffffff">Medium Grey</ColorSwatch>
+          <ColorSwatch bgColor="#999999" color="#000000">Light Grey</ColorSwatch>
+          <ColorSwatch bgColor="#cccccc" color="#000000">Very Light Grey</ColorSwatch>
+          <ColorSwatch bgColor="#ffffff" color="#000000">White</ColorSwatch>
         </div>
       </CardTest>
 

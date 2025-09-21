@@ -128,7 +128,7 @@ const Table = styled.table`
 
 const StatusBadge = styled.span<{ status: string }>`
   padding: 0.25rem 0.75rem;
-  border-radius: 20px;
+  border-radius: ${({ theme }) => theme.borderRadius.xl};
   font-size: 0.8rem;
   font-weight: bold;
   text-transform: uppercase;
@@ -142,7 +142,7 @@ const StatusBadge = styled.span<{ status: string }>`
         `;
       case 'inactive':
         return `
-          background: #ff9800;
+          background: #00ffddff;
           color: white;
         `;
       case 'suspended':
@@ -157,7 +157,7 @@ const StatusBadge = styled.span<{ status: string }>`
         `;
       case 'pending':
         return `
-          background: #ffeb3b;
+          background: #3bdbffff;
           color: black;
         `;
       default:

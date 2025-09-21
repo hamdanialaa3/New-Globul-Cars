@@ -1,5 +1,5 @@
 // src/components/EffectsTest.tsx
-// Component to test the lighting and fade effects
+// Component to test the lighting and fade effects with black-grey theme
 
 import React from 'react';
 import styled from 'styled-components';
@@ -23,7 +23,7 @@ const EffectCard = styled.div`
     rgba(255, 255, 255, 0.96) 100%
   );
   backdrop-filter: blur(15px);
-  border: 3px solid ${({ theme }) => theme.colors.yellow.bright};
+  border: 3px solid ${({ theme }) => theme.colors.primary.main};
   border-radius: ${({ theme }) => theme.borderRadius.xl};
   padding: ${({ theme }) => theme.spacing.xl};
   margin: ${({ theme }) => theme.spacing.lg};
@@ -36,7 +36,7 @@ const EffectCard = styled.div`
   &:hover {
     transform: translateY(-5px) scale(1.02);
     box-shadow: 0 12px 35px rgba(255, 215, 0, 0.3), ${({ theme }) => theme.shadows.xl};
-    border-color: ${({ theme }) => theme.colors.yellow.golden};
+    border-color: ${({ theme }) => theme.colors.primary.dark};
   }
 
   @keyframes cardFadeIn {
@@ -53,12 +53,12 @@ const EffectCard = styled.div`
 
 const GlowButton = styled.button`
   background: linear-gradient(135deg,
-    ${({ theme }) => theme.colors.yellow.bright} 0%,
-    ${({ theme }) => theme.colors.yellow.golden} 50%,
-    ${({ theme }) => theme.colors.yellow.orangeYellow} 100%
+    ${({ theme }) => theme.colors.primary.main} 0%,
+    ${({ theme }) => theme.colors.primary.dark} 50%,
+    ${({ theme }) => theme.colors.secondary.main} 100%
   );
   color: ${({ theme }) => theme.colors.text.primary};
-  border: 2px solid ${({ theme }) => theme.colors.yellow.dark};
+  border: 2px solid ${({ theme }) => theme.colors.primary.dark};
   padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.lg};
   border-radius: ${({ theme }) => theme.borderRadius.lg};
   font-size: ${({ theme }) => theme.typography.fontSize.lg};
@@ -88,13 +88,13 @@ const GlowButton = styled.button`
 
   &:hover {
     background: linear-gradient(135deg,
-      ${({ theme }) => theme.colors.yellow.golden} 0%,
-      ${({ theme }) => theme.colors.yellow.dark} 50%,
-      ${({ theme }) => theme.colors.yellow.mustard} 100%
+      ${({ theme }) => theme.colors.primary.dark} 0%,
+      ${({ theme }) => theme.colors.secondary.main} 50%,
+      ${({ theme }) => theme.colors.secondary.dark} 100%
     );
     transform: translateY(-3px) scale(1.05);
     box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
-    border-color: ${({ theme }) => theme.colors.yellow.dark};
+    border-color: ${({ theme }) => theme.colors.primary.dark};
   }
 
   &:active {

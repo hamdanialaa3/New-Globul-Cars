@@ -1,6 +1,38 @@
 # Globul Cars - Bulgarian Car Marketplace PWA
 
-## 🌟 Overview
+## � Theme Control & Customization
+
+### Quick Theme Changes
+Want to change the entire look of your app? It's super easy!
+
+1. **Open** `src/styles/theme.ts`
+2. **Change colors** in the `colors` object:
+   ```typescript
+   primary: {
+     main: '#007BFF',        // Your main color
+     light: '#4DA6FF',       // Lighter version
+     dark: '#0056CC',        // Darker version
+     contrastText: '#FFFFFF' // Text color on this background
+   }
+   ```
+3. **Save** and see changes instantly!
+
+### Available Colors to Customize
+- `primary` - Main brand color (buttons, links, highlights)
+- `secondary` - Secondary color (subtle elements)
+- `accent` - Accent color (special highlights)
+- `background` - Page and card backgrounds
+- `text` - Text colors
+- `error` - Error states
+- `warning` - Warning states
+- `success` - Success states
+
+### Complete Guide
+📖 See [`THEME_CONTROL_GUIDE.md`](THEME_CONTROL_GUIDE.md) for detailed customization instructions.
+
+---
+
+## �🌟 Overview
 Globul Cars is a modern, progressive web application for buying and selling cars in Bulgaria. Built with React, TypeScript, and Firebase, featuring real-time messaging, push notifications, and full PWA capabilities.
 
 ## ✨ Features

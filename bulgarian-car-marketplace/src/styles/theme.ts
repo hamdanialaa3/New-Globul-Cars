@@ -3,120 +3,118 @@
 
 import { createGlobalStyle, DefaultTheme } from 'styled-components';
 
-// Bulgarian Color Palette (Enhanced Yellow-Black Theme with variants)
+// Bulgarian Color Palette - نظام أزرق متدرج احترافي
 export const bulgarianColors = {
-  // Primary colors (Yellow variations)
+  // الألوان الأساسية - نظام أزرق متدرج
   primary: {
-    main: '#FFD700', // Bright yellow
-    light: '#FFFF99', // Light yellow
-    dark: '#B8860B', // Dark yellow
-    contrastText: '#000000' // Black text for readability
+    main: '#007BFF',        // أزرق أساسي احترافي
+    light: '#4DA6FF',       // أزرق فاتح
+    dark: '#0056CC',        // أزرق غامق
+    contrastText: '#FFFFFF' // نص أبيض على الأزرق
   },
   secondary: {
-    main: '#FFA500', // Orange-yellow
-    light: '#FFDAB9', // Peach yellow
-    dark: '#DAA520', // Golden yellow
-    contrastText: '#000000'
+    main: '#6C757D',        // أزرق رمادي
+    light: '#ADB5BD',       // أزرق رمادي فاتح
+    dark: '#495057',        // أزرق رمادي داكن
+    contrastText: '#FFFFFF'
   },
   accent: {
-    main: '#FFFF00', // Pure yellow
-    light: '#FFFFE0', // Very light yellow
-    dark: '#F0E68C', // Khaki yellow
-    contrastText: '#000000'
+    main: '#4169E1',        // أزرق ملكي (أزرق أحمر)
+    light: '#6495ED',       // أزرق ملكي فاتح
+    dark: '#1E3A8A',        // أزرق ملكي داكن
+    contrastText: '#FFFFFF'
   },
 
-  // Enhanced Yellow variations with color mixing
-  yellow: {
-    pure: '#FFFF00',        // Pure yellow
-    bright: '#FFD700',      // Bright yellow
-    golden: '#DAA520',      // Golden yellow
-    dark: '#B8860B',        // Dark yellow
-    light: '#FFFF99',       // Light yellow
-    pale: '#FFFFE0',        // Pale yellow
-    mustard: '#FFDB58',     // Mustard yellow
-    amber: '#FFBF00',       // Amber yellow
-    lemon: '#FFFACD',       // Lemon yellow
-    // Reddish yellows
-    orangeYellow: '#FFAE42', // Orange-yellow
-    goldenRod: '#DAA520',    // Golden rod
-    darkGoldenRod: '#B8860B', // Dark golden rod
-    // Greenish yellows
-    yellowGreen: '#ADFF2F',  // Yellow-green
-    chartreuse: '#7FFF00',   // Chartreuse
-    oliveDrab: '#6B8E23',    // Olive drab
-    // Bluish yellows (more sophisticated tones)
-    khaki: '#F0E68C',        // Khaki
-    darkKhaki: '#BDB76B',    // Dark khaki
-    palegoldenrod: '#EEE8AA' // Pale golden rod
+  // ألوان إضافية للتحكم الدقيق - نظام أزرق متدرج
+  blue: {
+    pure: '#007BFF',        // أزرق نقي
+    bright: '#00BFFF',      // أزرق لامع
+    sky: '#87CEEB',         // أزرق سماوي
+    dark: '#000080',        // أزرق بحري داكن
+    light: '#ADD8E6',       // أزرق فاتح
+    pale: '#E0F6FF',        // أزرق باهت
+    powder: '#B0E0E6',      // أزرق بودرة
+    steel: '#4682B4',       // أزرق فولاذي
+    royal: '#4169E1',       // أزرق ملكي
+    navy: '#000080',        // أزرق بحري
+    midnight: '#191970',    // أزرق منتصف الليل
+    dodger: '#1E90FF',      // أزرق دوجر
+    cornflower: '#6495ED',  // أزرق قرنفل
+    alice: '#F0F8FF',       // أزرق أليس
+    cadet: '#5F9EA0',       // أزرق كاديت
+    teal: '#008080',        // أزرق مخضر
+    cyan: '#00FFFF',        // سماوي
+    aqua: '#00FFFF',        // أكوا
+    turquoise: '#40E0D0',   // تركواز
+    aquamarine: '#7FFFD4',  // أكوامارين
+    mediumBlue: '#0000CD',  // أزرق متوسط
+    darkBlue: '#00008B',    // أزرق داكن
+    deepSky: '#00BFFF',     // سماوي عميق
+    lightSky: '#87CEFA',    // سماوي فاتح
+    lightSteel: '#B0C4DE',  // فولاذي فاتح
+    slate: '#708090',       // أزرق لوحي
+    lightSlate: '#778899',  // لوحي فاتح
+    darkSlate: '#2F4F4F'    // لوحي داكن
   },
 
-  // Black variations for contrast
-  black: {
-    pure: '#000000',    // Pure black
-    soft: '#1a1a1a',    // Soft black
-    dark: '#333333',    // Dark grey
-    charcoal: '#404040', // Charcoal
-    semiBlack: '#2c2c2c' // Semi black
-  },
-
-  // Neutral colors (yellow-black based with better contrast)
+  // ألوان محايدة - نظام أزرق رمادي
   grey: {
-    50: '#FFFFF0',  // Very light yellow
-    100: '#FFFFE0', // Light yellow
-    200: '#FFFFCC', // Pale yellow
-    300: '#FFFF99', // Light yellow
-    400: '#FFFF66', // Yellow
-    500: '#FFFF33', // Bright yellow
-    600: '#CCCC00', // Dark yellow
-    700: '#999900', // Darker yellow
-    800: '#666600', // Very dark yellow
-    900: '#333300'  // Almost black yellow
+    50: '#F8FAFC',   // أزرق رمادي فاتح جداً
+    100: '#F1F5F9',  // أزرق رمادي فاتح
+    200: '#E2E8F0',  // أزرق رمادي متوسط فاتح
+    300: '#CBD5E1',  // أزرق رمادي متوسط
+    400: '#94A3B8',  // أزرق رمادي متوسط داكن
+    500: '#64748B',  // أزرق رمادي داكن
+    600: '#475569',  // أزرق رمادي أكثر ظلاماً
+    700: '#334155',  // أزرق رمادي داكن جداً
+    800: '#1E293B',  // أزرق رمادي مظلم
+    900: '#0F172A'   // أزرق رمادي أسود تقريباً
   },
 
-  // Status colors (enhanced yellow-black theme)
+  // ألوان الحالة - نظام أزرق
   success: {
-    main: '#9ACD32',    // Yellow-green
-    light: '#ADFF2F',   // Green yellow
-    dark: '#556B2F',    // Dark olive
-    contrastText: '#000000'
+    main: '#20B2AA',    // أزرق مخضر
+    light: '#7FFFD4',   // أكوامارين
+    dark: '#008080',    // أزرق مخضر داكن
+    contrastText: '#FFFFFF'
   },
   warning: {
-    main: '#FFD700',    // Gold
-    light: '#FFFF00',   // Yellow
-    dark: '#FFA500',    // Orange
+    main: '#00CED1',    // تركواز (أزرق أصفر)
+    light: '#40E0D0',   // تركواز فاتح
+    dark: '#008B8B',    // تركواز داكن
     contrastText: '#000000'
   },
   error: {
-    main: '#DC143C',    // Crimson
-    light: '#FF6347',   // Tomato
-    dark: '#8B0000',    // Dark red
+    main: '#DC143C',    // قرمزي (أحمر مع لمسة زرقاء)
+    light: '#FF6347',   // طماطم
+    dark: '#8B0000',    // أحمر داكن
     contrastText: '#FFFFFF'
   },
   info: {
-    main: '#00CED1',    // Dark turquoise
-    light: '#40E0D0',   // Turquoise
-    dark: '#008B8B',    // Dark cyan
-    contrastText: '#000000'
+    main: '#1E90FF',    // أزرق دوجر
+    light: '#87CEFA',   // سماوي فاتح
+    dark: '#0000CD',    // أزرق متوسط
+    contrastText: '#FFFFFF'
   },
 
-  // Background colors (enhanced for better readability)
+  // ألوان الخلفية - نظام أزرق احترافي
   background: {
-    default: '#FFFEF0',     // Very light cream
-    paper: '#FFFFF8',       // Off-white with yellow tint
-    dark: '#1a1a1a',        // Dark background
-    semiDark: 'rgba(0, 0, 0, 0.85)', // Semi-dark for overlays
-    lightOverlay: 'rgba(255, 255, 255, 0.95)', // Light overlay
-    darkOverlay: 'rgba(0, 0, 0, 0.7)' // Dark overlay
+    default: '#F8FAFC',     // أزرق رمادي فاتح جداً
+    paper: '#FFFFFF',       // أبيض نقي
+    dark: '#0F172A',        // أزرق رمادي داكن
+    semiDark: 'rgba(15, 23, 42, 0.85)', // أزرق رمادي شبه داكن
+    lightOverlay: 'rgba(248, 250, 252, 0.95)', // تراكب أزرق فاتح
+    darkOverlay: 'rgba(15, 23, 42, 0.7)' // تراكب أزرق داكن
   },
 
-  // Text colors (enhanced contrast for readability)
+  // ألوان النصوص - مع تباين مثالي للقراءة
   text: {
-    primary: '#000000',     // Pure black
-    secondary: '#333333',   // Dark grey
-    onDark: '#FFFFFF',      // White on dark backgrounds
-    onLight: '#000000',     // Black on light backgrounds
-    disabled: '#666666', // Medium grey
-    hint: '#999999' // Light grey
+    primary: '#0F172A',     // أزرق رمادي داكن جداً (على خلفيات فاتحة)
+    secondary: '#475569',   // أزرق رمادي متوسط (على خلفيات فاتحة)
+    onDark: '#F8FAFC',      // أزرق رمادي فاتح (على خلفيات داكنة)
+    onLight: '#0F172A',     // أزرق رمادي داكن (على خلفيات فاتحة)
+    disabled: '#94A3B8',    // أزرق رمادي متوسط داكن
+    hint: '#CBD5E1'         // أزرق رمادي فاتح
   }
 };
 
@@ -177,29 +175,29 @@ export const bulgarianBreakpoints = {
   xl: '1920px'
 };
 
-// Bulgarian Shadows
+// Bulgarian Shadows - نظام أزرق متدرج
 export const bulgarianShadows = {
   none: 'none',
-  sm: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
-  base: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
-  md: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-  lg: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-  xl: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-  '2xl': '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-  inner: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)',
-  outline: '0 0 0 3px rgba(66, 153, 225, 0.5)'
+  sm: '0 1px 2px 0 rgba(0, 123, 255, 0.05)',
+  base: '0 1px 3px 0 rgba(0, 123, 255, 0.1), 0 1px 2px 0 rgba(0, 123, 255, 0.06)',
+  md: '0 4px 6px -1px rgba(0, 123, 255, 0.1), 0 2px 4px -1px rgba(0, 123, 255, 0.06)',
+  lg: '0 10px 15px -3px rgba(0, 123, 255, 0.1), 0 4px 6px -2px rgba(0, 123, 255, 0.05)',
+  xl: '0 20px 25px -5px rgba(0, 123, 255, 0.1), 0 10px 10px -5px rgba(0, 123, 255, 0.04)',
+  '2xl': '0 25px 50px -12px rgba(0, 123, 255, 0.25)',
+  inner: 'inset 0 2px 4px 0 rgba(0, 123, 255, 0.06)',
+  outline: '0 0 0 3px rgba(0, 123, 255, 0.5)'
 };
 
 // Bulgarian Border Radius
 export const bulgarianBorderRadius = {
   none: '0',
-  sm: '0.125rem',   // 2px
-  base: '0.25rem',  // 4px
-  md: '0.375rem',   // 6px
-  lg: '0.5rem',     // 8px
-  xl: '0.75rem',    // 12px
-  '2xl': '1rem',    // 16px
-  '3xl': '1.5rem',  // 24px
+  sm: '0.5rem',     // 8px (زيادة من 2px)
+  base: '0.75rem',  // 12px (زيادة من 4px)
+  md: '1rem',       // 16px (زيادة من 6px)
+  lg: '1.25rem',    // 20px (زيادة من 8px)
+  xl: '1.5rem',     // 24px (زيادة من 12px)
+  '2xl': '2rem',    // 32px (زيادة من 16px)
+  '3xl': '3rem',    // 48px (زيادة من 24px)
   full: '9999px'
 };
 
@@ -234,9 +232,9 @@ export const bulgarianTheme: DefaultTheme = {
       backgroundColor: bulgarianColors.background.paper,
       color: bulgarianColors.text.primary,
       transition: 'border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
-      '&:focus': {
+    '&:focus': {
         borderColor: bulgarianColors.secondary.main,
-        boxShadow: `0 0 0 3px rgba(255, 215, 0, 0.3)`
+        boxShadow: `0 0 0 3px rgba(0, 123, 255, 0.3)`
       }
     },
     card: {
@@ -249,7 +247,7 @@ export const bulgarianTheme: DefaultTheme = {
   }
 };
 
-// Global Styles
+// Global Styles - تبسيط لسهولة التحكم
 export const GlobalStyles = createGlobalStyle`
   * {
     margin: 0;
@@ -266,68 +264,26 @@ export const GlobalStyles = createGlobalStyle`
     font-family: ${bulgarianTypography.fontFamily.primary};
     color: ${bulgarianColors.text.primary};
     background-color: ${bulgarianColors.background.default};
-    background-image: 
-      linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 165, 0, 0.1) 25%, rgba(255, 255, 0, 0.1) 50%, rgba(218, 165, 32, 0.1) 75%, rgba(184, 134, 11, 0.1) 100%),
-      url('/media/images/backgrounds/carpic.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    animation: backgroundFade 3s ease-in-out;
   }
 
-  @keyframes backgroundFade {
-    0% {
-      opacity: 0;
-      filter: brightness(0.5);
-    }
-    50% {
-      opacity: 0.7;
-      filter: brightness(0.8);
-    }
-    100% {
-      opacity: 1;
-      filter: brightness(1);
-    }
-  }
+
 
   h1, h2, h3, h4, h5, h6 {
     font-family: ${bulgarianTypography.fontFamily.accent};
     font-weight: ${bulgarianTypography.fontWeight.bold};
     line-height: ${bulgarianTypography.lineHeight.tight};
     margin-bottom: ${bulgarianSpacing.md};
-    color: ${bulgarianColors.text.primary}; 
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3), 1px 1px 2px rgba(255, 255, 255, 0.5);
-    background: linear-gradient(45deg, transparent 30%, rgba(255, 215, 0, 0.1) 50%, transparent 70%);
-    padding: ${bulgarianSpacing.xs} ${bulgarianSpacing.sm};
-    border-radius: ${bulgarianBorderRadius.sm};
-    animation: textShimmer 4s ease-in-out infinite;
+    color: ${bulgarianColors.text.primary};
   }
 
-  @keyframes textShimmer {
-    0%, 100% {
-      background-position: -200% center;
-    }
-    50% {
-      background-position: 200% center;
-    }
-  }
 
-  h1 { 
-    font-size: ${bulgarianTypography.fontSize['4xl']}; 
-    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 165, 0, 0.2));
-  }
-  h2 { 
-    font-size: ${bulgarianTypography.fontSize['3xl']}; 
-    background: linear-gradient(135deg, rgba(255, 165, 0, 0.15), rgba(255, 255, 0, 0.15));
-  }
-  h3 { 
-    font-size: ${bulgarianTypography.fontSize['2xl']}; 
-    background: linear-gradient(135deg, rgba(255, 255, 0, 0.1), rgba(218, 165, 32, 0.1));
-  }
+
+  h1 { font-size: ${bulgarianTypography.fontSize['4xl']}; }
+  h2 { font-size: ${bulgarianTypography.fontSize['3xl']}; }
+  h3 { font-size: ${bulgarianTypography.fontSize['2xl']}; }
   h4 { font-size: ${bulgarianTypography.fontSize.xl}; }
   h5 { font-size: ${bulgarianTypography.fontSize.lg}; }
   h6 { font-size: ${bulgarianTypography.fontSize.base}; }
@@ -335,11 +291,7 @@ export const GlobalStyles = createGlobalStyle`
   p {
     margin-bottom: ${bulgarianSpacing.md};
     line-height: ${bulgarianTypography.lineHeight.relaxed};
-    color: ${bulgarianColors.text.primary}; 
-    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.3);
-    background: rgba(255, 255, 255, 0.05);
-    padding: ${bulgarianSpacing.xs};
-    border-radius: ${bulgarianBorderRadius.sm};
+    color: ${bulgarianColors.text.primary};
   }
 
   a {
@@ -354,343 +306,96 @@ export const GlobalStyles = createGlobalStyle`
     }
   }
 
-  /* Enhanced Button styles with yellow variations */
+  /* تبسيط الأزرار */
   button {
     font-family: inherit;
-    border: 2px solid transparent;
+    border: 2px solid ${bulgarianColors.primary.main};
     cursor: pointer;
     font-weight: ${bulgarianTypography.fontWeight.medium};
     padding: ${bulgarianSpacing.sm} ${bulgarianSpacing.md};
     border-radius: ${bulgarianBorderRadius.md};
-    transition: all 0.3s ease-in-out;
-    box-shadow: ${bulgarianShadows.sm};
-    position: relative;
-    overflow: hidden;
-    background: linear-gradient(135deg, 
-      ${bulgarianColors.yellow.bright} 0%, 
-      ${bulgarianColors.yellow.golden} 50%, 
-      ${bulgarianColors.yellow.orangeYellow} 100%
-    );
-    color: ${bulgarianColors.text.primary};
-    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
-    animation: buttonGlow 2s ease-in-out infinite alternate;
-  }
-
-  @keyframes buttonGlow {
-    0% {
-      box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
-    }
-    100% {
-      box-shadow: 0 4px 15px rgba(255, 215, 0, 0.6);
-    }
-  }
-
-  button::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-    transition: left 0.5s;
-  }
-
-  button:hover::before {
-    left: 100%;
-  }
-
-  button:hover {
-    background: linear-gradient(135deg, 
-      ${bulgarianColors.yellow.golden} 0%, 
-      ${bulgarianColors.yellow.dark} 50%, 
-      ${bulgarianColors.yellow.mustard} 100%
-    );
-    transform: translateY(-3px) scale(1.05);
-    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
-    border-color: ${bulgarianColors.yellow.dark};
-  }
-
-  button:active {
-    transform: translateY(-1px) scale(1.02);
-    box-shadow: 0 3px 10px rgba(255, 215, 0, 0.3);
-  }
-
-  button:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.5), ${bulgarianShadows.sm};
-  }
-
-  /* Primary button variant with reddish yellow */
-  .btn-primary {
-    background: linear-gradient(135deg, 
-      ${bulgarianColors.yellow.orangeYellow} 0%, 
-      ${bulgarianColors.yellow.goldenRod} 50%, 
-      ${bulgarianColors.yellow.darkGoldenRod} 100%
-    );
-    border-color: ${bulgarianColors.yellow.darkGoldenRod};
-    color: ${bulgarianColors.text.primary};
-  }
-
-  .btn-primary:hover {
-    background: linear-gradient(135deg, 
-      ${bulgarianColors.yellow.darkGoldenRod} 0%, 
-      ${bulgarianColors.yellow.dark} 50%, 
-      ${bulgarianColors.black.dark} 100%
-    );
-    color: ${bulgarianColors.text.onDark};
-  }
-
-  /* Secondary button variant with greenish yellow */
-  .btn-secondary {
-    background: linear-gradient(135deg, 
-      ${bulgarianColors.yellow.yellowGreen} 0%, 
-      ${bulgarianColors.yellow.chartreuse} 50%, 
-      ${bulgarianColors.yellow.oliveDrab} 100%
-    );
-    border-color: ${bulgarianColors.yellow.oliveDrab};
-    color: ${bulgarianColors.text.primary};
-  }
-
-  .btn-secondary:hover {
-    background: linear-gradient(135deg, 
-      ${bulgarianColors.yellow.oliveDrab} 0%, 
-      ${bulgarianColors.yellow.dark} 50%, 
-      ${bulgarianColors.black.charcoal} 100%
-    );
-    color: ${bulgarianColors.text.onDark};
-  }
-
-  /* Accent button variant with bluish yellow */
-  .btn-accent {
-    background: linear-gradient(135deg, 
-      ${bulgarianColors.yellow.khaki} 0%, 
-      ${bulgarianColors.yellow.darkKhaki} 50%, 
-      ${bulgarianColors.yellow.palegoldenrod} 100%
-    );
-    border-color: ${bulgarianColors.yellow.darkKhaki};
-    color: ${bulgarianColors.text.primary};
-  }
-
-  .btn-accent:hover {
-    background: linear-gradient(135deg, 
-      ${bulgarianColors.yellow.darkKhaki} 0%, 
-      ${bulgarianColors.yellow.dark} 50%, 
-      ${bulgarianColors.black.soft} 100%
-    );
-    color: ${bulgarianColors.text.onDark};
-  }
-
-  /* Outline button variant */
-  .btn-outline {
-    background: transparent;
-    border: 2px solid ${bulgarianColors.yellow.bright};
-    color: ${bulgarianColors.yellow.dark};
-    backdrop-filter: blur(10px);
+    transition: all 0.2s ease-in-out;
+    background: ${bulgarianColors.primary.main};
+    color: ${bulgarianColors.primary.contrastText};
 
     &:hover {
-      background: linear-gradient(135deg, 
-        ${bulgarianColors.yellow.bright} 0%, 
-        ${bulgarianColors.yellow.golden} 100%
-      );
-      color: ${bulgarianColors.text.primary};
+      background: ${bulgarianColors.primary.dark};
+      border-color: ${bulgarianColors.primary.dark};
+    }
+
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.3);
     }
   }
 
-  /* Enhanced Cards and containers with fade effects */
-  .card, .container, .paper, article, section, .panel {
-    background: linear-gradient(135deg, 
-      rgba(255, 255, 240, 0.95) 0%, 
-      rgba(255, 255, 235, 0.98) 50%, 
-      rgba(255, 255, 245, 0.96) 100%
-    ) !important;
-    backdrop-filter: blur(15px);
-    border: 2px solid ${bulgarianColors.yellow.bright};
+  /* تبسيط البطاقات */
+  .card, .container, .paper {
+    background: ${bulgarianColors.background.paper};
+    border: 1px solid ${bulgarianColors.grey[200]};
     border-radius: ${bulgarianBorderRadius.lg};
-    box-shadow: 0 8px 25px rgba(255, 215, 0, 0.2), ${bulgarianShadows.lg};
+    box-shadow: ${bulgarianShadows.sm};
     padding: ${bulgarianSpacing.lg};
     margin-bottom: ${bulgarianSpacing.lg};
     color: ${bulgarianColors.text.primary};
-    position: relative;
-    overflow: hidden;
-    transition: all 0.4s ease-in-out;
-    animation: cardFadeIn 1s ease-out;
   }
 
-  @keyframes cardFadeIn {
-    0% {
-      opacity: 0;
-      transform: translateY(20px) scale(0.95);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-  }
-
-  .card::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(45deg, 
-      transparent 30%, 
-      rgba(255, 215, 0, 0.1) 50%, 
-      transparent 70%
-    );
-    animation: cardShimmer 6s ease-in-out infinite;
-    pointer-events: none;
-  }
-
-  @keyframes cardShimmer {
-    0%, 100% {
-      transform: rotate(0deg) translate(-50%, -50%);
-      opacity: 0;
-    }
-    50% {
-      transform: rotate(180deg) translate(-50%, -50%);
-      opacity: 1;
-    }
-  }
-
-  .card:hover {
-    transform: translateY(-5px) scale(1.02);
-    box-shadow: 0 12px 35px rgba(255, 215, 0, 0.3), ${bulgarianShadows.xl};
-    border-color: ${bulgarianColors.yellow.golden};
-  }
-
-  /* Enhanced input fields */
+  /* تبسيط حقول الإدخال */
   input, textarea, select {
     font-family: inherit;
     font-size: inherit;
     padding: ${bulgarianSpacing.sm};
-    border: 2px solid ${bulgarianColors.yellow.bright};
+    border: 1px solid ${bulgarianColors.grey[300]};
     border-radius: ${bulgarianBorderRadius.md};
-    background: linear-gradient(135deg, 
-      rgba(255, 255, 255, 0.9) 0%, 
-      rgba(255, 255, 240, 0.95) 100%
-    );
+    background: ${bulgarianColors.background.paper};
     color: ${bulgarianColors.text.primary};
-    transition: all 0.3s ease-in-out;
-    backdrop-filter: blur(10px);
+    transition: border-color 0.2s ease-in-out;
+
+    &:focus {
+      outline: none;
+      border-color: ${bulgarianColors.primary.main};
+      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+    }
   }
 
-  input:focus, textarea:focus, select:focus {
-    outline: none;
-    border-color: ${bulgarianColors.yellow.golden};
-    box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.3), 
-                0 4px 15px rgba(255, 215, 0, 0.2);
-    background: linear-gradient(135deg, 
-      rgba(255, 255, 255, 0.95) 0%, 
-      rgba(255, 255, 235, 1) 100%
-    );
-    transform: scale(1.02);
-  }
-
-  /* Enhanced navigation links */
+  /* تبسيط الروابط في التنقل */
   nav a, .nav-link {
-    color: ${bulgarianColors.text.primary} !important;
+    color: ${bulgarianColors.text.primary};
     text-decoration: none;
     padding: ${bulgarianSpacing.sm} ${bulgarianSpacing.md};
     border-radius: ${bulgarianBorderRadius.md};
-    transition: all 0.3s ease-in-out;
-    position: relative;
-    overflow: hidden;
-    font-weight: ${bulgarianTypography.fontWeight.medium};
+    transition: background-color 0.2s ease-in-out;
+
+    &:hover {
+      background-color: ${bulgarianColors.grey[100]};
+    }
   }
 
-  nav a::before, .nav-link::before {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 0;
-    height: 3px;
-    background: linear-gradient(90deg, 
-      ${bulgarianColors.yellow.bright}, 
-      ${bulgarianColors.yellow.golden}
-    );
-    transition: width 0.3s ease-in-out;
-  }
-
-  nav a:hover::before, .nav-link:hover::before {
-    width: 100%;
-  }
-
-  nav a:hover, .nav-link:hover {
-    background: linear-gradient(135deg, 
-      rgba(255, 215, 0, 0.2) 0%, 
-      rgba(255, 165, 0, 0.2) 100%
-    );
-    transform: translateY(-2px);
-    text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.5);
-  }
-
-  /* Header and navigation with enhanced yellow theme */
-  header, .header, nav, .navbar {
-    background: linear-gradient(135deg, 
-      rgba(255, 215, 0, 0.95) 0%,    /* Gold */
-      rgba(255, 165, 0, 0.95) 25%,   /* Orange-yellow */
-      rgba(255, 255, 0, 0.9) 50%,    /* Pure yellow */
-      rgba(218, 165, 32, 0.95) 75%,  /* Golden rod */
-      rgba(184, 134, 11, 0.95) 100%  /* Dark yellow */
-    ) !important;
-    backdrop-filter: blur(15px);
-    border-bottom: 3px solid ${bulgarianColors.yellow.dark};
-    box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
-    color: ${bulgarianColors.text.primary} !important;
+  /* تبسيط الهيدر والفوتر */
+  header, .header {
+    background: ${bulgarianColors.background.paper};
+    border-bottom: 1px solid ${bulgarianColors.grey[200]};
+    box-shadow: ${bulgarianShadows.sm};
     padding: ${bulgarianSpacing.md} ${bulgarianSpacing.lg};
-    animation: headerGlow 2s ease-in-out infinite alternate;
+    color: ${bulgarianColors.text.primary};
   }
 
-  @keyframes headerGlow {
-    0% {
-      box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
-    }
-    100% {
-      box-shadow: 0 6px 25px rgba(255, 215, 0, 0.5);
-    }
-  }
-
-  /* Footer with enhanced yellow theme */
   footer, .footer {
-    background: linear-gradient(45deg, 
-      rgba(184, 134, 11, 0.95) 0%,   /* Dark yellow */
-      rgba(218, 165, 32, 0.95) 25%,  /* Golden rod */
-      rgba(255, 165, 0, 0.9) 50%,    /* Orange-yellow */
-      rgba(255, 215, 0, 0.95) 75%,   /* Gold */
-      rgba(255, 255, 0, 0.9) 100%    /* Pure yellow */
-    ) !important;
-    backdrop-filter: blur(15px);
-    border-top: 3px solid ${bulgarianColors.yellow.dark};
-    box-shadow: 0 -4px 20px rgba(255, 215, 0, 0.3);
-    color: ${bulgarianColors.text.primary} !important;
+    background: ${bulgarianColors.grey[50]};
+    border-top: 1px solid ${bulgarianColors.grey[200]};
     padding: ${bulgarianSpacing.lg};
-    animation: footerPulse 3s ease-in-out infinite;
-  }
-
-  @keyframes footerPulse {
-    0%, 100% {
-      opacity: 0.95;
-      transform: scale(1);
-    }
-    50% {
-      opacity: 1;
-      transform: scale(1.002);
-    }
+    color: ${bulgarianColors.text.primary};
   }
 
   /* Specific card variants */
   .card-primary {
     border-color: ${bulgarianColors.primary.main};
-    background-color: rgba(255, 255, 240, 0.98) !important;
+    background-color: rgba(240, 248, 252, 0.98) !important;
   }
 
   .card-secondary {
     border-color: ${bulgarianColors.secondary.main};
-    background-color: rgba(255, 250, 205, 0.98) !important;
+    background-color: rgba(241, 245, 249, 0.98) !important;
   }
 
   /* Modal and overlay styles */
@@ -710,7 +415,7 @@ export const GlobalStyles = createGlobalStyle`
 
   /* Header specific styles */
   header {
-    background-color: rgba(255, 215, 0, 0.95) !important;
+    background-color: rgba(9, 9, 9, 0.95) !important;
     backdrop-filter: blur(10px);
     border-bottom: 3px solid ${bulgarianColors.primary.dark};
     box-shadow: ${bulgarianShadows.md};
@@ -733,11 +438,11 @@ export const GlobalStyles = createGlobalStyle`
 
   /* Footer specific styles */
   footer {
-    background-color: rgba(184, 134, 11, 0.95) !important;
+    background-color: rgba(15, 23, 42, 0.95) !important;
     backdrop-filter: blur(10px);
     border-top: 3px solid ${bulgarianColors.primary.main};
     box-shadow: ${bulgarianShadows.md};
-    color: ${bulgarianColors.primary.contrastText} !important;
+    color: ${bulgarianColors.text.onDark} !important;
     margin-top: auto;
   }
 
@@ -752,7 +457,7 @@ export const GlobalStyles = createGlobalStyle`
 
   /* Navigation styles */
   nav, .navbar, .menu {
-    background-color: rgba(255, 255, 0, 0.95) !important;
+    background-color: rgba(6, 6, 5, 0.95) !important;
     backdrop-filter: blur(10px);
     border-bottom: 2px solid ${bulgarianColors.primary.dark};
   }
@@ -763,13 +468,13 @@ export const GlobalStyles = createGlobalStyle`
 
     &:hover {
       color: ${bulgarianColors.secondary.main} !important;
-      background-color: rgba(255, 215, 0, 0.2);
+      background-color: rgba(0, 123, 255, 0.2);
     }
   }
 
   /* Dropdown menus */
   .dropdown, .dropdown-menu {
-    background-color: rgba(255, 255, 240, 0.98) !important;
+    background-color: rgba(248, 250, 252, 0.98) !important;
     backdrop-filter: blur(10px);
     border: 2px solid ${bulgarianColors.primary.main};
     box-shadow: ${bulgarianShadows.lg};
@@ -784,9 +489,9 @@ export const GlobalStyles = createGlobalStyle`
     }
   }
 
-  /* Form elements with yellow theme */
+  /* Form elements with blue theme */
   input, textarea, select {
-    background-color: rgba(255, 255, 240, 0.9) !important;
+    background-color: rgba(248, 250, 252, 0.9) !important;
     border: 2px solid ${bulgarianColors.primary.main};
     color: ${bulgarianColors.text.primary};
     font-size: ${bulgarianTypography.fontSize.base};
@@ -796,7 +501,7 @@ export const GlobalStyles = createGlobalStyle`
 
     &:focus {
       border-color: ${bulgarianColors.secondary.main};
-      box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.3);
+      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.3);
       outline: none;
     }
 
@@ -852,7 +557,7 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   .alert-warning {
-    background-color: rgba(255, 215, 0, 0.9);
+    background-color: rgba(0, 0, 0, 0.9);
     border: 2px solid ${bulgarianColors.warning.main};
     color: ${bulgarianColors.warning.contrastText};
   }
@@ -941,7 +646,7 @@ export const GlobalStyles = createGlobalStyle`
   select:focus {
     outline: 2px solid ${bulgarianColors.secondary.main};
     outline-offset: 2px;
-    box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.3);
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.3);
   }
 
   /* Print styles */

@@ -33,7 +33,12 @@ const EffectsTest = React.lazy(() => import('./components/EffectsTest'));
 // Layout Component
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ 
+      minHeight: '100vh', 
+      display: 'flex', 
+      flexDirection: 'column',
+      background: '#f8fafc'
+    }}>
       <header role="banner">
         <Header />
       </header>

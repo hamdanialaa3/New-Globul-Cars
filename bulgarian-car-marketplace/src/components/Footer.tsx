@@ -5,18 +5,27 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { useTranslation } from '../hooks/useTranslation';
+import {
+  ProfessionalFacebookIcon,
+  ProfessionalInstagramIcon,
+  ProfessionalTwitterIcon,
+  ProfessionalLinkedInIcon,
+  ProfessionalCarIcon
+} from './CustomIcons';
 
 // Styled Components
 const FooterContainer = styled.footer`
-  background: ${({ theme }) => theme.colors.grey[900]};
-  color: ${({ theme }) => theme.colors.grey[100]};
+  background: ${({ theme }) => theme.colors.grey[800]};
+  color: ${({ theme }) => theme.colors.text.onDark};
   margin-top: auto;
+  border-radius: ${({ theme }) => theme.borderRadius.xl} ${({ theme }) => theme.borderRadius.xl} 0 0;
 `;
 
 const FooterContent = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   padding: ${({ theme }) => theme.spacing['2xl']} ${({ theme }) => theme.spacing.md};
+  border-radius: ${({ theme }) => theme.borderRadius.xl};
 `;
 
 const FooterGrid = styled.div`
@@ -79,7 +88,7 @@ const SocialLink = styled.a`
   justify-content: center;
   width: 40px;
   height: 40px;
-  background: ${({ theme }) => theme.colors.grey[800]};
+  background: ${({ theme }) => theme.colors.grey[700]};
   border-radius: 50%;
   color: ${({ theme }) => theme.colors.grey[300]};
   text-decoration: none;
@@ -94,11 +103,21 @@ const SocialLink = styled.a`
 `;
 
 const FooterBottom = styled.div`
-  border-top: 1px solid ${({ theme }) => theme.colors.grey[800]};
+  border-top: 1px solid ${({ theme }) => theme.colors.grey[600]};
   padding-top: ${({ theme }) => theme.spacing.lg};
   text-align: center;
   font-size: ${({ theme }) => theme.typography.fontSize.sm};
-  color: ${({ theme }) => theme.colors.grey[500]};
+  color: ${({ theme }) => theme.colors.grey[300]};
+  background: linear-gradient(
+    180deg,
+    ${({ theme }) => theme.colors.grey[700]} 0%,
+    ${({ theme }) => theme.colors.grey[800]} 50%,
+    ${({ theme }) => theme.colors.grey[900]} 100%
+  );
+  border-radius: 0 0 ${({ theme }) => theme.borderRadius.xl} ${({ theme }) => theme.borderRadius.xl};
+  margin: 0 -${({ theme }) => theme.spacing.md};
+  padding-left: ${({ theme }) => theme.spacing.md};
+  padding-right: ${({ theme }) => theme.spacing.md};
 `;
 
 const Copyright = styled.div`
@@ -112,13 +131,30 @@ const FooterLinks = styled.div`
   flex-wrap: wrap;
 
   a {
-    color: ${({ theme }) => theme.colors.grey[500]};
+    color: ${({ theme }) => theme.colors.grey[400]};
     text-decoration: none;
     font-size: ${({ theme }) => theme.typography.fontSize.sm};
-    transition: color 0.2s ease-in-out;
+    transition: all 0.3s ease-in-out;
+    position: relative;
 
     &:hover {
       color: ${({ theme }) => theme.colors.primary.light};
+      transform: translateY(-1px);
+    }
+    
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, ${({ theme }) => theme.colors.primary.main}, transparent);
+      transition: width 0.3s ease-in-out;
+    }
+    
+    &:hover::after {
+      width: 100%;
     }
   }
 `;
@@ -148,22 +184,22 @@ const Footer: React.FC = () => {
         <FooterGrid>
           {/* Company Info */}
           <FooterSection>
-            <h3>🚗 Globul Cars</h3>
+            <h3><ProfessionalCarIcon size={24} /> Globul Cars</h3>
             <p>
               {t('footer.description')}
             </p>
             <SocialLinks>
               <SocialLink href="https://facebook.com/globulcars" target="_blank" rel="noopener noreferrer">
-                📘
+                <ProfessionalFacebookIcon size={20} />
               </SocialLink>
               <SocialLink href="https://instagram.com/globulcars" target="_blank" rel="noopener noreferrer">
-                📷
+                <ProfessionalInstagramIcon size={20} />
               </SocialLink>
               <SocialLink href="https://twitter.com/globulcars" target="_blank" rel="noopener noreferrer">
-                🐦
+                <ProfessionalTwitterIcon size={20} />
               </SocialLink>
               <SocialLink href="https://linkedin.com/company/globulcars" target="_blank" rel="noopener noreferrer">
-                💼
+                <ProfessionalLinkedInIcon size={20} />
               </SocialLink>
             </SocialLinks>
           </FooterSection>

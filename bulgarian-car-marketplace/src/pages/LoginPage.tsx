@@ -352,7 +352,7 @@ const LoginPage: React.FC = () => {
 
           {/* Header */}
           <LoginHeader>
-            <span className="logo">🚗 Globul Cars</span>
+            <img src="/logo-new.png" alt="Globul Cars Logo" style={{ height: '90px', marginBottom: '1rem' }} />
             <h1>{t('login.title')}</h1>
             <p>{t('login.subtitle')}</p>
           </LoginHeader>
