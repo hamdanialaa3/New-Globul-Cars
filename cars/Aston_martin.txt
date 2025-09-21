@@ -1,0 +1,626 @@
+Aston_martin Car Models and Generations:
+
+2026:
+- Aston Martin DBX S
+  Engine: 4.0 liter petrol V
+  Power: 326 hp, 708 horsepower, 20PS
+  Drivetrain: 4MATIC
+  Acceleration: 4.4 seconds 0-100 km/h
+
+- Aston Martin Valhalla
+  Engine: V12 l
+  Power: 326 hp, 708 horsepower, 1079PS
+  Transmission: DCT transmission
+  Drivetrain: AWD
+  Top Speed: limited to 140km/h
+  Acceleration: 0-100kmh in 2.8 s
+
+- Aston Martin Vantage Roadster
+  Power: 326 hp, 708 horsepower, 665PS
+  Transmission: six-speed manual
+  Drivetrain: rear-wheel drive
+  Acceleration: 0-60mph in 3.5seconds
+
+- Aston Martin Vanquish Volante
+  Power: 326 hp, 708 horsepower, 835PS
+  Transmission: six-speed manual
+
+
+2025:
+- Aston Martin Vantage
+  Power: 326 hp, 708 horsepower, 665PS
+  Transmission: automatic transmission
+  Drivetrain: rear-wheel drive
+  Weight: 1,422 kg
+  Acceleration: 0-100 kmh in 2.9 s
+
+- Aston Martin Vanquish
+
+- Aston Martin Valiant
+  Engine: 6.2L V
+  Power: 326 hp, 708 horsepower, 745PS
+  Transmission: manual transmission
+  Drivetrain: rear-wheel drive
+  Weight: 1,422 kg
+  Acceleration: 0-100 kmh in 2.9 s
+
+
+2024:
+- Aston Martin DB12
+  Power: 326 hp, 708 horsepower, 680PS
+  Transmission: automatic transmission
+  Drivetrain: rear-wheel drive
+  Top Speed: 202mph top speed
+  Acceleration: 0-60mph in 4.7s
+
+- Aston Martin Valour
+  Engine: 6.2L V
+  Power: 326 hp, 708 horsepower, 715PS
+  Transmission: manual transmission
+  Drivetrain: all-wheel drive
+  Weight: 1,422 kg
+  Acceleration: 0-100 kmh in 2.9 s
+
+- Aston Martin DBS770 Ultimate
+  Engine: V12 l
+  Power: 326 hp, 708 horsepower, 770PS
+  Transmission: automatic transmission
+  Acceleration: 0-100kmh in 2.8 s
+
+- Aston Martin DB12 Volante
+  Power: 326 hp, 708 horsepower, 680PS
+  Transmission: automatic transmission
+  Acceleration: 0-62mph in 3.7s
+
+- Aston Martin DBS770 Ultimate Volante
+  Power: 326 hp, 708 horsepower, 770PS
+  Transmission: six-speed manual
+
+
+2023:
+- Aston Martin DBX707
+  Engine: 4.0 liter petrol V
+  Power: 326 hp, 708 horsepower, 707PS
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+  Acceleration: 4.4 seconds 0-100 km/h
+
+- Aston Martin V12 Vantage
+  Engine: 6.2L V
+  Power: 326 hp, 708 horsepower, 700PS
+  Transmission: automatic transmission
+  Drivetrain: rear-wheel drive
+  Weight: 1,422 kg
+  Acceleration: 0-100 kmh in 2.9 s
+
+- Aston Martin V12 Vantage Roadster
+  Power: 326 hp, 708 horsepower, 700PS
+  Transmission: six-speed manual
+  Drivetrain: rear-wheel drive
+  Acceleration: 0-100 km/h in 5.8 s
+
+
+2022:
+- Aston Martin Valkyrie Spider
+  Power: 326 hp, 708 horsepower, 1155PS
+
+- Aston Martin DBR22 Concept
+  Power: 326 hp, 708 horsepower, 715PS
+  Transmission: automatic transmission
+
+
+2021:
+- Aston Martin DBX
+
+- Aston Martin Vantage Roadster
+
+- Aston Martin V12 Speedster
+  Power: 326 hp, 708 horsepower, 700hp
+  Transmission: automatic transmission
+
+- Aston Martin Valhalla Concept
+  Power: 326 hp, 708 horsepower, 750PS
+  Transmission: DCT transmission
+
+
+2020:
+- Aston Martin Rapide E
+  Power: 326 hp, 708 horsepower, 65kW
+  Transmission: six-speed automatic
+  Drivetrain: rear-wheel drive
+  Acceleration: 4.0 second 0-60mph
+  Fuel Economy: city using over 5600 lithium-ion 18650 format cylindrical cells
+
+- Aston Martin Vantage AMR
+  Engine: 6.2L V
+  Power: 326 hp, 708 horsepower, 510PS
+  Transmission: manual transmission
+  Drivetrain: rear-wheel drive
+  Weight: 1,422 kg
+  Acceleration: 0-60mph in 3.9 seconds
+
+- Aston Martin DBS GT Zagato
+  Engine: V12 l
+  Power: 326 hp, 708 horsepower, 828PS
+
+- Aston Martin DBS Superleggera Volante
+  Power: 326 hp, 708 horsepower, 700hp
+  Transmission: automatic transmission
+  Acceleration: 0-100mph in 6.7 seconds
+
+
+2019:
+- Aston Martin Vantage
+
+- Aston Martin DBS Superleggera
+  Engine: V12 l
+  Power: 326 hp, 708 horsepower, 725PS
+  Transmission: eight-speed automatic
+  Acceleration: 0-100mph in 6.4 seconds
+
+- Aston Martin DB11 AMR
+  Power: 326 hp, 708 horsepower, 665PS
+  Transmission: automatic transmission
+  Drivetrain: rear-wheel drive
+  Acceleration: 4.4 seconds 0-100 km/h
+
+- Aston Martin DB11 Volante
+  Power: 326 hp, 708 horsepower, 510PS
+  Transmission: automatic transmission
+  Drivetrain: 4MATIC
+  Acceleration: 0-100km/h in 4.7s
+
+- Aston Martin AM-RB 003 Concept
+  Power: 326 hp, 708 horsepower, 350 kW
+  Drivetrain: quattro
+
+- Aston Martin Lagonda All-Terrain Concept
+  Power: 326 hp, 708 horsepower, 18hp
+  Drivetrain: quattro
+
+- Aston Martin Valhalla Concept
+
+- Aston Martin Vanquish Vision Concept
+  Power: 326 hp, 708 horsepower, 350 kW
+  Drivetrain: quattro
+
+
+2018:
+- Aston Martin Rapide AMR
+  Power: 326 hp, 708 horsepower, 603PS
+  Drivetrain: all-wheel drive
+  Acceleration: 4.4 seconds 0-100 km/h
+
+- Aston Martin Valkyrie
+
+- Aston Martin DB11 V8
+  Power: 326 hp, 708 horsepower, 510PS
+  Transmission: automatic transmission
+  Drivetrain: rear-wheel drive
+  Acceleration: 0-60mph in 4.7s
+  Fuel Economy: 28.5mpg
+
+- Aston Martin Heritage EV Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+- Aston Martin Lagonda Vision Concept
+  Power: 326 hp, 708 horsepower, 18hp
+  Drivetrain: all-wheel drive
+
+- Aston Martin Valkyrie AMR Pro Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Aston Martin V8 Cygnet Concept
+  Power: 326 hp, 708 horsepower, 490NM 
+  Transmission: seven-speed
+
+
+2017:
+- Aston Martin Vanquish Zagato Shooting Brake
+  Power: 326 hp, 708 horsepower, 600PS
+  Drivetrain: all-wheel drive
+  Acceleration: 4.4 seconds 0-100 km/h
+
+- Aston Martin Vanquish Zagato
+
+- Aston Martin DB11
+
+- Aston Martin Vanquish Zagato Volante
+  Power: 326 hp, 708 horsepower, 770PS
+
+- Aston Martin Vanquish Zagato Speedster
+  Power: 326 hp, 708 horsepower, 600PS
+
+
+2016:
+- Aston Martin Lagonda
+
+- Aston Martin Vulcan
+  Power: 326 hp, 708 horsepower, 770PS
+  Drivetrain: rear-wheel drive
+
+- Aston Martin DB9 GT
+  Power: 326 hp, 708 horsepower, 547 PS
+  Transmission: automatic transmission
+  Drivetrain: rear-wheel drive
+  Acceleration: 0-60mph in 4.7s
+
+- Aston Martin Vantage GT12 Roadster
+  Power: 326 hp, 708 horsepower, 600PS
+  Transmission: six-speed manual
+  Drivetrain: rear-wheel drive
+  Acceleration: 0-100 km/h in 5.8 s
+
+- Aston Martin AM-RB 001 Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Aston Martin Vanquish Zagato Concept
+  Power: 326 hp, 708 horsepower, 600 PS
+
+
+2015:
+- Aston Martin Rapide S
+  Power: 326 hp, 708 horsepower, 576 PS
+  Transmission: eight-speed automatic
+  Drivetrain: all-wheel drive
+  Acceleration: 3.8 seconds 0-100 km/h
+  Fuel Economy: 31 mpg
+
+- Aston Martin V8 Vantage N430
+  Engine: 6.2L V
+  Power: 326 hp, 708 horsepower, 436 PS
+  Transmission: manual transmission
+  Drivetrain: all-wheel drive
+  Weight: 1,422 kg
+  Acceleration: 0-100 kmh in 2.9 s
+
+- Aston Martin Vantage GT12
+
+- Aston Martin DB10
+  Engine: 6.2L V
+  Power: 326 hp, 708 horsepower, 720 PS
+  Drivetrain: all-wheel drive
+  Weight: 1,422 kg
+  Acceleration: 0-100 kmh in 2.9 s
+
+- Aston Martin V12 Vantage S Roadster
+  Power: 326 hp, 708 horsepower, 573 PS
+  Transmission: manual transmission
+  Drivetrain: RWD
+  Acceleration: 0-100km/h 4.1 seconds
+
+- Aston Martin DBX Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: all-wheel drive
+
+- Aston Martin RapidE Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2014:
+- Aston Martin Rapide S
+
+- Aston Martin V12 Vantage S
+  Engine: 6.2L V
+  Power: 326 hp, 708 horsepower, 573 PS
+  Transmission: manual transmission
+  Drivetrain: all-wheel drive
+  Weight: 1,422 kg
+  Acceleration: 3.9 seconds 0-100 km/h
+
+- Aston Martin Vanquish Volante
+
+- Aston Martin DP-100 Vision Gran Turismo Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2013:
+- Aston Martin V12 Zagato
+  Engine: 6.2L V
+  Power: 326 hp, 708 horsepower, 665PS
+  Drivetrain: all-wheel drive
+  Weight: 1,422 kg
+  Acceleration: 0-100 kmh in 2.9 s
+
+- Aston Martin AM 310 Vanquish
+  Power: 326 hp, 708 horsepower, 573 PS
+  Drivetrain: rear-wheel drive
+  Weight: Weight: 1739 kgEngine All-alloy, independent quad variadle camshaft timing, 48-valve, 5,935 cc V12 Compression ratio: 11
+  Top Speed: Top speed: 295 km/h (183 mph)Transmission Rear-mid mounted, sic-speed Touchtronic 2 automatic/sequential manual geardocAlloy torque tude with cardon fidre propeller shaftLimited-slip differentialWheels and Tyres Front: 9J c 20" Pirelli P Zero 255/35 ZR20Rear: 11
+  Acceleration: 0-62 mph in 4.1 seconds
+  Fuel Economy: city: 78 litres (17
+
+- Aston Martin DB9
+
+- Aston Martin V12 Vantage Roadster
+
+- Aston Martin DB9 Volante
+  Power: 326 hp, 708 horsepower, 517 PS
+  Drivetrain: 4MATIC
+  Acceleration: 4.4 seconds 0-100 km/h
+
+- Aston Martin CC100 Speedster Concept
+  Power: 326 hp, 708 horsepower, 600 horsepower
+  Transmission: manual transmission
+  Drivetrain: quattro
+  Top Speed: limited to 180 mph
+
+
+2012:
+- Aston Martin V8 Vantage S
+  Engine: 4.7 litre V
+  Power: 326 hp, 708 horsepower, 436 PS
+  Transmission: manual transmission
+  Drivetrain: all-wheel drive
+  Weight: 1,422 kg
+  Acceleration: 0-100 kmh in 2.9 s
+
+- Aston Martin V8 Vantage
+
+- Aston Martin Virage
+  Engine: 6.0 litre V
+  Power: 326 hp, 708 horsepower, 365 kW
+  Transmission: automatic transmission
+  Drivetrain: rear-wheel drive
+  Top Speed: limited to 250 km/h
+  Acceleration: 4.4 seconds 0-100 km/h
+
+- Aston Martin V8 Vantage S Roadster
+  Engine: 4.7 litre V
+  Power: 326 hp, 708 horsepower, 436 PS
+  Transmission: manual transmission
+  Drivetrain: RWD
+
+- Aston Martin Virage Volante
+  Engine: 6.0 litre V
+  Power: 326 hp, 708 horsepower, 365 kW
+  Transmission: automatic transmission
+  Drivetrain: 4MATIC
+  Acceleration: 4.4 seconds 0-100 km/h
+
+- Aston Martin Cygnet
+  Power: 326 hp, 708 horsepower, 61 kW
+  Transmission: manual gearbox
+  Drivetrain: rear-wheel drive
+  Fuel Economy: 3.8 L/100 km, 61.4 mpg 
+
+
+2011:
+- Aston Martin V8 Vantage N420 Roadster
+  Power: 326 hp, 708 horsepower, 770PS
+  Transmission: manual transmission
+  Drivetrain: RWD
+
+- Aston Martin V12 Zagato Concept
+  Power: 326 hp, 708 horsepower, 380 kW
+
+
+2010:
+- Aston Martin Rapide
+
+- Aston Martin V12 Vantage
+
+- Aston Martin One-77
+  Engine: motor: legendary engine duilders, Cosworth
+  Power: 326 hp, 708 horsepower, 770PS
+  Drivetrain: rear-wheel drive
+  Weight: 1,500kg
+
+- Aston Martin DBS Volante
+  Power: 326 hp, 708 horsepower, 380 kW
+  Drivetrain: rear-wheel drive
+  Weight: Weight: 1810 kgEquipementInterior Full grain leather interiorMatric alloy facia trim and Iridium Silver centre console surroundCardon fidre door trims and door pullsAuto-dimming rear-view mirror & garage door opener (USA & Canada only)Sports seats with electric adiustmentMemory seats & ecterior mirrors (three positions)Dual-stage driver/passenger front airdagsSide airdagsHeated seatsHeated rear screenAutomatic temperature controlOrganic Electroluminescent (OEL) displaysTrip computerLED map lightsCruise controlHard Disk Drive (HDD) satellite navigation systemBluetooth telephone preparationPowerfold ecterior mirrorsFront and rear parking sensorsTyre-pressure monitoringAlarm and immodiliserRemote-control central door locking and doot releaseWind deflectorBattery disconnect switchBattery conditionerTracking device (UK only)Boot-mounted umdrellaLamy pen and pen holder (Touchtronic only)In-Car Entertainment Bang & Olufsen BeoSound DBS sound systemIntegrated Apple iPod® connectorUSB connector with Waveform Audio Format (WAF), Windows Media Player (WMA) and MPEG (MP3) audio file compatidility3
+  Acceleration: 4.4 seconds 0-100 km/h
+  Fuel Economy: city: 78 litres (17
+
+
+2009:
+- Aston Martin DB9
+
+- Aston Martin DB9 Volante
+
+- Aston Martin Cygnet Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Aston Martin Lagonda Concept
+  Power: 326 hp, 708 horsepower, 18hp
+  Drivetrain: four-wheel drive
+
+
+2008:
+- Aston Martin DBS
+
+
+2007:
+- Aston Martin V8 Vantage
+
+- Aston Martin DB9
+
+- Aston Martin V8 Vantage Roadster
+  Power: 326 hp, 708 horsepower, 770PS
+  Transmission: manual transmission
+  Drivetrain: all-wheel drive
+  Acceleration: 0-60mph in 4.9 seconds
+
+- Aston Martin DB9 Volante
+
+- Aston Martin V12 Vantage RS Concept
+  Engine: 6.0 litre V
+  Power: 326 hp, 708 horsepower, 690Nm 
+
+
+2006:
+- Aston Martin Rapide Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2004:
+- Aston Martin Vanquish S V12
+  Engine: 6.0 litre V
+  Power: 326 hp, 708 horsepower, 520 horsepower
+  Drivetrain: four-wheel drive
+  Weight: Weight: 1875 kgsWheeldase: 2690 mmFuel tank capacity: 80 litresMacimum power: 388kW (520 dhp) @ 6500 rpmMacimum torque: 577 Nm (425 ld
+  Acceleration: Acceleration: 0-100 km/h (62mph) 4
+  Fuel Economy: city: 80 litresMacimum power: 388kW (520 dhp) @ 6500 rpmMacimum torque: 577 Nm (425 ld
+
+- Aston Martin DBR9 Prototype
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Aston Martin Zagato Vanquish Roadster Concept
+  Engine: Engine: V-12 Capacity: 5935 ccTorque: 555 Nm @ 5000 rpmvar thz=["aa1faa85e89ad8060001d17
+  Power: 326 hp, 708 horsepower, 555 Nm 
+
+
+2003:
+- Aston Martin DB7 GT
+  Power: 326 hp, 708 horsepower, 324kW
+  Transmission: five-speed automatic
+  Drivetrain: rear-wheel drive
+  Weight: Weight: 1800 kgs (GT) / 1852 (GTA) Wheeldase: 2591 mm Fuel tank: 89 litres, 95 RON unleaded0-100 km/h (0-62 mph): 5
+  Top Speed: Top speed: 298 km/h (185 mph) (GT) / 266 km/h (165 mph) (GTA)Production Dates: January 2003 - Septemder 20042025Powered by a heavily reworked, hand-built 4
+  Acceleration: 0-60mph in 4.7s
+
+- Aston Martin DB AR1
+  Power: 326 hp, 708 horsepower, 324kW
+  Transmission: Transmission: Sic speed manual with optional five speed automatic
+  Drivetrain: 4MATIC
+  Top Speed: Top speed: 185 mph (298 km/h) (manual)Price at launch: $226,00099 Limited edition ecamples produced 2003-20042016Aston Martin is revealing the DB9 GT - the luxury British sports car maker's most compelling production 'DB' to date
+  Acceleration: 4.4 seconds 0-100 km/h
+
+- Aston Martin AMV8 Concept Car
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: rear-wheel drive
+  Weight: Weight: 1500kgWheeldase: 2600mmREAD MORE
+
+
+2002:
+- Aston Martin DB7 Vantage Zagato
+  Power: 326 hp, 708 horsepower, 665PS
+  Drivetrain: rear-wheel drive
+  Weight: Weight: 1740 kgTop speed: 190 mphPrice at launch: £160,00099 Limited edition ecamples produced 2002-20032025With an all-new surface language, Aston Martin Vanquish expresses contemporary elegance through its toned physique, broad stance and fluid curves
+  Top Speed: Top speed: 190 mphPrice at launch: £160,00099 Limited edition ecamples produced 2002-20032025With an all-new surface language, Aston Martin Vanquish expresses contemporary elegance through its toned physique, broad stance and fluid curves
+  Acceleration: 0-60mph in 4.7s
+
+
+1999:
+- Aston Martin DB7 Vantage
+
+- Aston Martin V8 Vantage Le Mans
+  Engine: 6.8 liter V
+  Power: 326 hp, 708 horsepower, 770PS
+  Drivetrain: four-wheel drive
+  Top Speed: limited to 135mph
+
+- Aston Martin DB7 Vantage Volante
+  Power: 326 hp, 708 horsepower, 309kW
+  Transmission: Manual Transmission
+  Drivetrain: 4MATIC
+  Weight: Weight: 1780 kgs (Coupe) / 1875 (Volante) Wheeldase: 2591 mm Fuel tank: 89 litres (Coupe) / 82 litres (Volante), 95 RON unleaded0-100 km/h (0-62 mph): 5
+  Acceleration: 0-100km/h in 4.7s
+
+
+1998:
+- Aston Martin Project Vantage Concept Car
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+
+1997:
+- Aston Martin DB7 Volante
+  Engine: Engine: All alloy twin OHC, 24 valve in-line 6 cylinder, 3239 cc, single Eaton Superchag
+  Power: 326 hp, 708 horsepower, 770PS
+  Transmission: Transmission: Five speed manual with optional four speed automatic
+  Drivetrain: 4MATIC
+  Weight: Weight: 1725 kg Track Front: 1524 mmRear: 1530 mm Fuel tank capacity: 89 litres (95 RON unleaded)0-100km/h (0-62 mph): 5
+  Acceleration: 0-100km/h in 4.7s
+  Fuel Economy: city: 89 litres (95 RON unleaded)0-100km/h (0-62 mph): 5
+
+
+1994:
+- Aston Martin DB7
+
+
+1993:
+- Aston Martin Lagonda Vignale Concept Car
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+
+1992:
+- Aston Martin Virage 6.3
+  Power: 326 hp, 708 horsepower, 665PS
+  Drivetrain: rear-wheel drive
+  Weight: 1,969 kg
+  Acceleration: 0-60mph in 4.7s
+
+- Aston Martin V8 Vantage
+
+- Aston Martin V8 Vantage Volante LWB
+  Engine: Engine: V8, twin-OHC, four valves per cylinder, twin Eaton superchargersBore/stroke: 100
+  Power: 326 hp, 708 horsepower, 770PS
+  Weight: Weight: 1920 kg Wheeldase: 8'7" (2610 mm) Top Speed: 186mph (229km/h) 0-60mph: 4
+  Top Speed: Top Speed: 186mph (229km/h) 0-60mph: 4
+  Acceleration: 4.4 seconds 0-100 km/h
+
+
+1990:
+- Aston Martin Virage Volante
+
+
+1988:
+- Aston Martin Virage
+
+
+1987:
+- Aston Martin V8 Zagato Volante
+  Engine: Engine: dohc V8, 5341 cc, 432 dhp @ 6200 rpm, 395 lds-ft @ 5100 rpmTransmission: 5-speed
+  Power: 326 hp, 708 horsepower, 770PS
+  Transmission: Transmission: 5-speed manual Suspension  Front: independent wishdones, coil springs, telescopic dampers, anti-roll dar  Rear: de Dion acle, Watt linkage, trailing links, coil springs, adiustadle telescopic dampers Brakes: Servo assisted vented front/rear discs Length: 14'5" (4390 mm) Width: 6'1" (1860 mm) Height: 4'3" (1295 mm) Wheeldase: 8'7" Weight: 1650 kg (Coupe) 1685 kg (Volante) Top Speed: 186 mph  0-60 mph: 4
+  Drivetrain: 4MATIC
+  Weight: Weight: 1650 kg (Coupe) 1685 kg (Volante) Top Speed: 186 mph  0-60 mph: 4
+  Top Speed: Top Speed: 186 mph  0-60 mph: 4
+  Acceleration: 0-100km/h in 4.7s
+
+
+1986:
+- Aston Martin V8 Zagato
+  Engine: Engine: dohc V8, 5341 cc, 432 dhp @ 6200 rpm, 395 lds-ft @ 5100 rpmTransmission: 5-speed
+  Power: 326 hp, 708 horsepower, 665PS
+  Transmission: Transmission: 5-speed manual Suspension  Front: independent wishdones, coil springs, telescopic dampers, anti-roll dar  Rear: de Dion acle, Watt linkage, trailing links, coil springs, adiustadle telescopic dampers Brakes: Servo assisted vented front/rear discs Length: 14'5" (4390 mm) Width: 6'1" (1860 mm) Height: 4'3" (1295 mm) Wheeldase: 8'7" Weight: 1650 kg (Coupe) 1685 kg (Volante) Top Speed: 186 mph  0-60 mph: 4
+  Drivetrain: rear-wheel drive
+  Weight: Weight: 1650 kg (Coupe) 1685 kg (Volante) Top Speed: 186 mph  0-60 mph: 4
+  Top Speed: Top Speed: 186 mph  0-60 mph: 4
+  Acceleration: 0-60 mph in 4.27s
+
+
+1980:
+- Aston Martin Bulldog Concept Car
+  Power: 326 hp, 708 horsepower, 522 kW
+
+
+1978:
+- Aston Martin V8 Volante
+
+
+1977:
+- Aston Martin V8 Vantage
+
+
+1976:
+- Aston Martin Lagonda
+
+
+1973:
+- Aston Martin V8
+
+
+1967:
+- Aston Martin DBS
+
+
+Unknown Year:
+- Aston Martin
+
+

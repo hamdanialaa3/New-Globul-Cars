@@ -38,15 +38,5 @@ const server = http.createServer((req, res) => {
 
 const PORT = 3000;
 server.listen(PORT, () => {
-  console.log('🚀 Bulgarian Car Marketplace Server Running!');
-  console.log(`🌐 http://localhost:${PORT}`);
-  console.log(`🕒 ${new Date().toLocaleString()}`);
-  console.log('='.repeat(50));
-  console.log('🔗 Available pages:');
-  console.log('   • Home: /');
-  console.log('   • Cars: /cars');
-  console.log('   • Login: /login');
-  console.log('='.repeat(50));
-  console.log('ℹ️  Server is running...');
-  console.log('🛑 Press Ctrl+C to stop');
+  // Server started silently
 });

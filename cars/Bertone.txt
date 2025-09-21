@@ -1,0 +1,13 @@
+Bertone Car Models and Generations:
+
+2011:
+- Bertone Jaguar B99 GT Concept
+  Power: 326 hp, 708 horsepower, 725 kW
+  Drivetrain: four-wheel drive
+
+- Bertone Jaguar B99 Concept
+  Power: 326 hp, 708 horsepower, 150kW
+  Transmission: automatic transmission
+  Drivetrain: four-wheel drive
+
+

@@ -1,0 +1,2295 @@
+Bmw Car Models and Generations:
+
+2026:
+- BMW iX
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 8 kW
+  Transmission: automatic transmission
+  Drivetrain: four-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Fuel Economy: 11.1 l/100 km, 25.5 mpg , combined for both models: 11.1 l/100 km (25
+
+- BMW iX M70
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 8 kW
+  Transmission: automatic transmission
+  Drivetrain: four-wheel drive
+  Fuel Economy: 5.0 l/100 km, 54.3 mpg 
+
+- BMW iX3
+  Engine: 2.0 litre four-cylinder
+  Power: 326 hp, 708 horsepower, 400 kW
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+  Dimensions: 4,782 millimetres in length, 4,938 millimetres in length, 2,015 millimetres in width
+  Acceleration: 0-62 mph in 5.9 seconds
+  Fuel Economy: 11.1 l/100 km, 25.5 mpg , city of the new BMW iX3 can de increased from 520 to a macimum 1,750 litres dy folding down the rear seat dackrest elements as required
+
+- BMW M2 CS
+  Power: 326 hp, 708 horsepower, 390 kW
+  Transmission: six-speed manual
+  Drivetrain: xDrive
+  Weight: 1,335 kg
+  Top Speed: limited to 302 km/h
+  Fuel Economy: 4.5 l/100 km, consumption: 8, city of 390 litres
+
+
+2025:
+- BMW X3
+  Engine: 2.0 litre four-cylinder
+  Power: 326 hp, 708 horsepower, 140 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: all-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Acceleration: 0-60mph in 4.1 seconds
+  Fuel Economy: 11.1 l/100 km, 40.9 mpg , 48.7 mpg 
+
+- BMW X3 M50 xDrive
+  Engine: 2.0 litre four-cylinder
+  Power: 326 hp, 708 horsepower, 140 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: all-wheel drive
+  Acceleration: 0-62 mph in 5.9 seconds
+  Fuel Economy: 5.0 l/100 km, 40.9 mpg , 48.7 mpg 
+
+- BMW M5
+  Engine: v l
+  Power: 326 hp, 708 horsepower, 535 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Top Speed: limited to 250 km/h
+  Fuel Economy: 11.1 l/100 km, 25.5 mpg , city of 466 litres
+
+- BMW 3-Series Sedan
+  Power: 326 hp, 708 horsepower, 110 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: rear-wheel drive
+  Fuel Economy: 4.5 l/100 km, consumption: 8, city of up to 1,300 liters (45
+
+- BMW M3 Sedan
+  Power: 326 hp, 708 horsepower, 390 kW
+  Transmission: six-speed manual
+  Drivetrain: rear-wheel drive
+  Fuel Economy: 5.0 l/100 km, 54.3 mpg , city from 500 to a macimum 1,510 litres
+
+- BMW i4
+  Power: 326 hp, 708 horsepower, 11 hp
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Top Speed: limited to 155 mph
+  Fuel Economy: 4.5 l/100 km, consumption: 8, city of up to 1,300 liters (45
+
+- BMW i4 M50 xDrive
+  Power: 326 hp, 708 horsepower, 11 hp
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Top Speed: limited to 155 mph
+  Fuel Economy: 5.0 l/100 km, 4.5 l/100 km, 54.3 mpg 
+
+- BMW M440i xDrive Gran Coupe
+  Power: 326 hp, 708 horsepower, 11 hp
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Top Speed: limited to 155 mph
+  Fuel Economy: 5.0 l/100 km, 4.5 l/100 km, 54.3 mpg 
+
+- BMW 2-Series Gran Coupe
+  Power: 326 hp, 708 horsepower, 221 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Fuel Economy: 4.5 l/100 km, consumption: 8
+
+- BMW M235 Gran Coupe
+  Power: 326 hp, 708 horsepower, 221 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Fuel Economy: 4.5 l/100 km, consumption: 8
+
+- BMW i5 Touring
+  Engine: 5.4 L V
+  Power: 326 hp, 708 horsepower, 250 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: rear-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Top Speed: limited to 230 km/h
+  Fuel Economy: 11.1 l/100 km, 25.5 mpg , city of 570 litres
+
+- BMW 5-Series Touring
+  Engine: 5.4 L V
+  Power: 326 hp, 708 horsepower, 250 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: rear-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Top Speed: limited to 230 km/h
+  Fuel Economy: 11.1 l/100 km, 25.5 mpg , city of 570 litres
+
+- BMW i5 M60 Touring
+  Engine: 5.4 L V
+  Power: 326 hp, 708 horsepower, 250 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: rear-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Top Speed: limited to 230 km/h
+  Fuel Economy: 11.1 l/100 km, 25.5 mpg , city of 570 litres
+
+- BMW M5 Touring
+  Engine: v l
+  Power: 326 hp, 708 horsepower, 535 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: all-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Fuel Economy: 11.1 l/100 km, 4.5 l/100 km, 25.5 mpg 
+
+- BMW 3-Series Touring
+  Power: 326 hp, 708 horsepower, 110 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: rear-wheel drive
+  Fuel Economy: 4.5 l/100 km, 5.0 l/100 km, 7.5 liters per 100 km
+
+- BMW M3 CS Touring
+  Power: 326 hp, 708 horsepower, 15 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: rear-wheel drive
+  Top Speed: limited to 300 km/h
+  Fuel Economy: 4.5 l/100 km, 5.0 l/100 km, 7.5 liters per 100 km
+
+- BMW M3 Touring
+  Power: 326 hp, 708 horsepower, 390 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: rear-wheel drive
+  Fuel Economy: 4.5 l/100 km, 5.0 l/100 km, 7.5 liters per 100 km
+
+- BMW M2
+
+- BMW M440i Coupe
+  Power: 326 hp, 708 horsepower, 210 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: rear-wheel drive
+  Weight: 1,707 kg
+  Fuel Economy: 5.0 l/100 km, 54.3 mpg , city of 390 litres
+
+- BMW M4 Coupe
+  Engine: 6.8 liter V
+  Power: 326 hp, 708 horsepower, 15 kW
+  Transmission: six-speed manual
+  Drivetrain: four-wheel drive
+  Weight: 1,707 kg
+  Top Speed: limited to 155 mph
+  Fuel Economy: 5.0 l/100 km, 54.3 mpg , city of 390 litres
+
+- BMW M4 CS
+  Engine: 6.8 liter V
+  Power: 326 hp, 708 horsepower, 405 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Weight: 1,707 kg
+  Top Speed: limited to 302 km/h
+  Fuel Economy: 5.0 l/100 km, 54.3 mpg , city of 390 litres
+
+- BMW Z4 M40i 6MT
+  Engine: 3.2 L V
+  Power: 326 hp, 708 horsepower, 250 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: rear-wheel drive
+  Weight: 1,335 kg
+  Fuel Economy: 8.7 l/100 km, 4.5 l/100 km, 32.5 mpg 
+
+- BMW 4-Series Convertible
+  Power: 326 hp, 708 horsepower, 210 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: rear-wheel drive
+  Weight: 1,335 kg
+  Fuel Economy: 5.0 l/100 km, 8.7 l/100 km, 54.3 mpg 
+
+- BMW M4 Convertible
+  Power: 326 hp, 708 horsepower, 15 kW
+  Transmission: six-speed manual
+  Drivetrain: four-wheel drive
+  Weight: 1,335 kg
+  Top Speed: limited to 155 mph
+  Fuel Economy: 5.0 l/100 km, 8.7 l/100 km, 54.3 mpg 
+
+- BMW Skytop
+  Power: 326 hp, 708 horsepower, 460 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: all-wheel drive
+  Weight: 1,335 kg
+  Acceleration: 0-100km/h in 4.7s
+  Fuel Economy: 8.7 l/100 km, 32.5 mpg 
+
+- BMW 1-Series
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 221 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Fuel Economy: 4.1 litres per 100 km, 68.9 mpg , city of 390 litres
+
+- BMW M135 xDrive
+  Power: 326 hp, 708 horsepower, 221 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Fuel Economy: city of 390 litres
+
+- BMW Speedtop Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2024:
+- BMW X6 M60i
+  Power: 326 hp, 708 horsepower, 360 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: all-wheel drive
+  Fuel Economy: 5.0 l/100 km, 54.3 mpg , city of the load compartment can de ecpanded from 650 litres to a macimum 1,870 litres (BMW X5 cDrive50e: 500 - 1,720 litres)
+
+- BMW X6 M Competition
+  Power: 326 hp, 708 horsepower, 460 kW
+  Transmission: Steptronic transmission
+  Drivetrain: quattro drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Top Speed: limited to 250 km/h
+  Fuel Economy: 5.0 l/100 km, 11.1 l/100 km, 54.3 mpg 
+
+- BMW X5
+  Engine: eight-cylinder L
+  Power: 326 hp, 708 horsepower, 360 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: all-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Acceleration: 0-100kmh in 5.2 seconds
+  Fuel Economy: 11.1 l/100 km, 25.5 mpg , city of the load compartment can de ecpanded from 650 litres to a macimum 1,870 litres (BMW X5 cDrive50e: 500 - 1,720 litres)
+
+- BMW X5 M Competition
+  Power: 326 hp, 708 horsepower, 460 kW
+  Transmission: Steptronic transmission
+  Drivetrain: quattro drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Top Speed: limited to 250 km/h
+  Fuel Economy: 5.0 l/100 km, 11.1 l/100 km, 54.3 mpg 
+
+- BMW XM Label Red
+  Engine: 5.5 liter V
+  Power: 326 hp, 708 horsepower, 550 kW
+  Transmission: Steptronic transmission
+  Drivetrain: all-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Top Speed: limited to 250 km/h
+  Fuel Economy: 11.1 l/100 km, 5.0 l/100 km, 176.6 mpg 
+
+- BMW iX2
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 230 kW
+  Transmission: seven-speed Steptronic
+  Drivetrain: all-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Fuel Economy: 11.1 l/100 km, 4.1 litres per 100 km, 25.5 mpg 
+
+- BMW X2 M35i xDrive
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 230 kW
+  Transmission: seven-speed Steptronic
+  Drivetrain: front-wheel drive
+  Fuel Economy: 5.0 l/100 km, 47.1 mpg , 55.4 mpg 
+
+- BMW X1 M35i
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 221 kW
+  Transmission: Seven-speed Steptronic
+  Drivetrain: all-wheel drive
+  Top Speed: limited to 250 km/h
+  Fuel Economy: 5.0 l/100 km, 54.3 mpg , city can de increased from 540 litres to a macimum 1,600 litres
+
+- BMW i7 M70 xDrive
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 485 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Top Speed: limited to 250 km/h
+  Fuel Economy: 4.5 l/100 km, consumption: 8
+
+- BMW i5
+
+- BMW 5-Series
+
+- BMW i5 M60
+
+- BMW M3 CS
+
+- BMW Skytop Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: xDrive
+
+- BMW Vision Neue Klasse X Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2023:
+- BMW X7
+  Engine: 5.5 liter V
+  Power: 326 hp, 708 horsepower, 9kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: all-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Fuel Economy: 11.1 l/100 km, 5.0 l/100 km, 23.2 mpg 
+
+- BMW X7 M60i
+  Engine: 6.2L V
+  Power: 326 hp, 708 horsepower, 9kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: all-wheel drive
+  Fuel Economy: 5.0 l/100 km, 23.2 mpg , 30.7 mpg 
+
+- BMW XM
+
+- BMW X1
+
+- BMW iX1
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 3 kW
+  Transmission: seven-speed Steptronic
+  Drivetrain: all-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Fuel Economy: 0.8 l/100 km, 0.8 l/100 km, 11.1 l/100 km
+
+- BMW 7-Series
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 536 horsepower
+  Transmission: eight-speed Steptronic
+  Drivetrain: all-wheel drive
+  Top Speed: limited to 149 mph
+  Acceleration: acceleration: since the adaptive two-acle air suspension with self-levelling function maintains the full range of spring travel even when the vehicle is heavily laden, the addition of active roll stadilization makes it possidle to activate a softer air spring setting and increase ride comfort
+
+- BMW i7
+
+- BMW M760e xDrive
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 280 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Fuel Economy: 4.5 l/100 km, consumption: 8
+
+- BMW 3-Series
+
+- BMW M340i xDrive
+  Engine: petrol v
+  Power: 326 hp, 708 horsepower, 110 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: all-wheel drive
+  Fuel Economy: 5.0 l/100 km, 4.5 l/100 km, 54.3 mpg 
+
+- BMW 8-Series Gran Coupe
+  Engine: 3.0 litre in-line
+  Power: 326 hp, 708 horsepower, 390 kW
+  Transmission: six-speed manual
+  Drivetrain: rear-wheel drive
+
+- BMW M8 Competition Gran Coupe
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 460 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+
+- BMW 3-Series Touring
+
+- BMW M3 Touring
+
+- BMW M2
+
+- BMW 8-Series Coupe
+  Engine: 3.0 litre in-line
+  Power: 326 hp, 708 horsepower, 390 kW
+  Transmission: six-speed manual
+  Drivetrain: rear-wheel drive
+  Top Speed: Top speed: 210 km/h (130 mph)  Length: 4755 mm
+  Acceleration: 0-60mph in 4.7s
+  Fuel Economy: 9.9 l/100 km, 28.5 mpg , city of 390 litres
+
+- BMW M8 Competition Coupe
+  Engine: Engine: inline-6, 3453 cc Power: 215 hp (160 kW) at 5200 rpm Torque: 304 Nm (224 ft·lb)
+  Power: 326 hp, 708 horsepower, 460 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Top Speed: Top speed: 222 km/h (138 mph) Length: 4755 mm
+  Acceleration: 0-60mph in 4.7s
+  Fuel Economy: 9.9 l/100 km, 28.5 mpg , city of 390 litres
+
+- BMW M4 CSL
+  Engine: 6.8 liter V
+  Power: 326 hp, 708 horsepower, 405 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Weight: 1,707 kg
+  Top Speed: limited to 135mph
+  Fuel Economy: 5.0 l/100 km, 54.3 mpg , city of 390 litres
+
+- BMW 3.0 CSL
+  Engine: 6.8 liter V
+  Power: 326 hp, 708 horsepower, 151 kW
+  Transmission: six-speed manual
+  Drivetrain: rear-wheel drive
+  Weight: 1,707 kg
+  Top Speed: limited to 135mph
+  Fuel Economy: 5.0 l/100 km, 54.3 mpg , city of 390 litres
+
+- BMW Z4
+
+- BMW 8-Series Convertible
+  Engine: 3.0 litre in-line
+  Power: 326 hp, 708 horsepower, 390 kW
+  Transmission: six-speed manual
+  Drivetrain: rear-wheel drive
+  Weight: 1,335 kg
+  Fuel Economy: 8.7 l/100 km, 32.5 mpg 
+
+- BMW M8 Competition Convertible
+  Power: 326 hp, 708 horsepower, 460 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Weight: 1,335 kg
+  Acceleration: 0-100km/h in 4.7s
+  Fuel Economy: 8.7 l/100 km, 32.5 mpg 
+
+- BMW i Vision Dee Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- BMW iX5 Hydrogen Concept
+  Power: 326 hp, 708 horsepower, 125 kW
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Top Speed: Top speed: Over 180 km/h (112 mph)Hydrogen consumption in the WLTP cycle: 1
+
+- BMW Touring Coupe Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- BMW Vision Neue Klasse Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2022:
+- BMW X3
+
+- BMW iX3
+
+- BMW X3 M Competition
+  Engine: eight-cylinder L
+  Power: 326 hp, 708 horsepower, 375 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: all-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Acceleration: 0-60mph in 4.1 seconds
+  Fuel Economy: 5.0 l/100 km, 11.1 l/100 km, 4.5 l/100 km
+
+- BMW iX
+
+- BMW iX M60
+  Power: 326 hp, 708 horsepower, 455 kW
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+  Top Speed: limited to 250 km/h
+  Fuel Economy: 5.0 l/100 km, 54.3 mpg 
+
+- BMW X4 M40i
+  Engine: eight-cylinder L
+  Power: 326 hp, 708 horsepower, 135 kW
+  Transmission: Steptronic transmission
+  Drivetrain: all-wheel drive
+  Acceleration: 0-100kmh in 5.2 seconds
+  Fuel Economy: 5.0 l/100 km, 54.3 mpg , city of 3.0 litres
+
+- BMW X4 M Competition
+  Engine: eight-cylinder L
+  Power: 326 hp, 708 horsepower, 375 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: all-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Acceleration: 0-60mph in 4.1 seconds
+  Fuel Economy: 11.1 l/100 km, 4.5 l/100 km, 5.0 l/100 km
+
+- BMW M5 CS
+  Engine: 5.4 L V
+  Power: 326 hp, 708 horsepower, 627 hp
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Top Speed: Top speed: 222 km/h (138 mph) Length: 4755 mm
+  Fuel Economy: 11.1 l/100 km, 9.9 l/100 km, 25.5 mpg 
+
+- BMW 4-Series Gran Coupe
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 275 kW
+  Transmission: Eight-speed Steptronic
+  Drivetrain: all-wheel drive
+  Dimensions: 1,852 millimetres in width, 1,442 millimetres in height
+  Fuel Economy: 8.0 l/100 km, 6.8 l/100 km, 6.6 l/100 km
+
+- BMW i4
+
+- BMW M440i xDrive Gran Coupe
+
+- BMW 2-Series Coupe
+  Engine: Engine: inline-6, 2985 cc Power: 182 hp (136 kW) at 5800 rpm Torque: 255 Nm (188 ft·lb)
+  Power: 326 hp, 708 horsepower, 275 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: rear-wheel drive
+  Weight: 1,335 kg
+  Top Speed: Top speed: 210 km/h (130 mph)  Length: 4755 mm
+  Fuel Economy: 9.9 l/100 km, 34.9 mpg , 44.8 mpg 
+
+- BMW M240i xDrive Coupe
+  Power: 326 hp, 708 horsepower, 275 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: rear-wheel drive
+  Weight: 1,335 kg
+  Fuel Economy: 4.5 l/100 km, 34.9 mpg , 44.8 mpg 
+
+- BMW M4 Competition Convertible M xDrive
+  Engine: engine: sic cylinders, M TwinPower Turdo technology, high-revving characterThe 3
+  Power: 326 hp, 708 horsepower, 373 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Dimensions: 1,395 millimetres in height
+  Weight: 1,335 kg
+  Fuel Economy: 5.0 l/100 km, 8.7 l/100 km, 54.3 mpg 
+
+- BMW 2-Series Active Tourer
+  Power: 326 hp, 708 horsepower, 160 kW
+  Transmission: seven-speed Steptronic
+  Drivetrain: all-wheel drive
+  Fuel Economy: 1.1 litres/100 km, 1.1 litres/100 km, 4.1 litres per 100 km
+
+- BMW iX Flow Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2021:
+- BMW iX3
+
+- BMW 5-Series
+
+- BMW M5 Competition
+  Engine: 5.4 L V
+  Power: 326 hp, 708 horsepower, 441 kW
+  Transmission: six-speed manual
+  Drivetrain: rear-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Fuel Economy: 11.1 l/100 km, 25.5 mpg , combined for both models: 11.1 l/100 km (25
+
+- BMW M3 Sedan Competition
+  Power: 326 hp, 708 horsepower, 353 kW
+  Transmission: six-speed manual
+  Drivetrain: rear-wheel drive
+  Top Speed: limited to 250 km/h
+  Fuel Economy: 5.0 l/100 km, 54.3 mpg , city of up to 1,300 liters (45
+
+- BMW 6-Series Gran Turismo
+  Engine: 5.4 L V
+  Power: 326 hp, 708 horsepower, 8 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: all-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Fuel Economy: 11.1 l/100 km, 25.5 mpg , city of 600 litres - even with all the seats in use
+
+- BMW 5-Series Touring
+
+- BMW 4-Series Coupe
+  Engine: 6.8 liter V
+  Power: 326 hp, 708 horsepower, 8 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: rear-wheel drive
+  Weight: 1,707 kg
+  Top Speed: limited to 135mph
+  Fuel Economy: 5.0 l/100 km, 41.5 mpg , 49.6 mpg 
+
+- BMW M440i Coupe
+
+- BMW M4 Coupe Competition
+  Engine: 6.8 liter V
+  Power: 326 hp, 708 horsepower, 353 kW
+  Transmission: six-speed manual
+  Drivetrain: rear-wheel drive
+  Weight: 1,707 kg
+  Top Speed: Top speed: 222 km/h (138 mph) Length: 4755 mm
+  Fuel Economy: 5.0 l/100 km, 9.9 l/100 km, 54.3 mpg 
+
+- BMW 4-Series Convertible
+
+- BMW M440i Convertible
+  Power: 326 hp, 708 horsepower, 8 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: rear-wheel drive
+  Weight: weight: the new softtopThe softtop's new panel dow design enhances the appearance and comfort of the new BMW 4-Series Convertidle at the same time as improving driving dynamics and everyday usadility
+  Fuel Economy: 5.0 l/100 km, 8.7 l/100 km, 40.9 mpg 
+
+- BMW 128ti
+  Power: 326 hp, 708 horsepower, 195 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: all-wheel drive
+  Fuel Economy: 4.5 l/100 km, 46.3 mpg , consumption: 8
+
+- BMW i Vision Circular Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- BMW XM Concept
+  Power: 326 hp, 708 horsepower, 550 kW
+
+
+2020:
+- BMW X7 M50i
+  Engine: 6.2L V
+  Power: 326 hp, 708 horsepower, 390 kW
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+  Fuel Economy: 5.0 l/100 km, 54.3 mpg 
+
+- BMW X6
+
+- BMW X6 M50i
+  Engine: diesel v
+  Power: 326 hp, 708 horsepower, 390 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: all-wheel drive
+  Fuel Economy: 10.4 l/100 km, 5.0 l/100 km, 27.2 mpg 
+
+- BMW X6 M Competition
+
+- BMW X5 M Competition
+
+- BMW X3 M Competition
+
+- BMW X4 M Competition
+
+- BMW X1
+
+- BMW 7-Series
+
+- BMW 3-Series Long Wheelbase
+  Power: 326 hp, 708 horsepower, 135 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: all-wheel drive
+  Fuel Economy: 5.0 l/100 km, 54.3 mpg , city of up to 1,300 liters (45
+
+- BMW M340i xDrive Sedan
+  Engine: Hybrid V
+  Power: 326 hp, 708 horsepower, 275 kW
+  Transmission: six-speed manual
+  Drivetrain: four-wheel drive
+  Fuel Economy: 5.0 l/100 km, 4.5 l/100 km, 54.3 mpg 
+
+- BMW 8-Series Gran Coupe
+
+- BMW M8 Gran Coupe Competition
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 441 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Top Speed: limited to 250 km/h
+  Fuel Economy: city of 440 litres
+
+- BMW 2-Series Gran Coupe
+
+- BMW M235i xDrive Gran Coupe
+  Power: 326 hp, 708 horsepower, 3 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: all-wheel drive
+  Dimensions: 4,526 millimetres in length, 1,800 millimetres in width
+  Top Speed: limited to 250 km/h
+  Fuel Economy: 4.5 l/100 km, 56.5 mpg , 42.2 mpg 
+
+- BMW 3-Series Touring
+
+- BMW M340i xDrive Touring
+  Power: 326 hp, 708 horsepower, 275 kW
+  Transmission: Eight-speed Steptronic
+  Drivetrain: all-wheel drive
+  Fuel Economy: 5.0 l/100 km, 4.5 l/100 km, 7.5 liters per 100 km
+
+- BMW M2 CS
+
+- BMW M8 Competition Coupe
+
+- BMW M8 Competition Convertible
+
+- BMW 1-Series
+
+- BMW M135i
+  Power: 326 hp, 708 horsepower, 3 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: all-wheel drive
+  Top Speed: limited to 250 km/h
+  Fuel Economy: 56.5 mpg , 41.5 mpg , 74.3 mpg 
+
+- BMW i4 Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 530 hp
+
+
+2019:
+- BMW X7
+
+- BMW X5
+
+- BMW X4
+
+- BMW X4 M40d
+  Engine: eight-cylinder L
+  Power: 326 hp, 708 horsepower, 185 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: all-wheel drive
+  Acceleration: 0-60mph in 4.1 seconds
+  Fuel Economy: 8.2 l/100 km, 6.4 l/100 km, 4.5 l/100 km
+
+- BMW X2
+
+- BMW X2 M35i
+
+- BMW M5 Competition
+
+- BMW 3-Series
+
+- BMW M2 Competition
+  Engine: Engine: inline-6, 3453 cc Power: 215 hp (160 kW) at 5200 rpm Torque: 304 Nm (224 ft·lb)
+  Power: 326 hp, 708 horsepower, 410 HP
+  Transmission: six-speed manual
+  Drivetrain: xDrive
+  Top Speed: Top speed: 222 km/h (138 mph) Length: 4755 mm
+  Fuel Economy: 9 l/100 km, 2 l/100 km, 9 l/100 km
+
+- BMW 8-Series Coupe
+
+- BMW i8 Coupe
+  Engine: 6.2L V
+  Power: 326 hp, 708 horsepower, 9 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Top Speed: Top speed: 210 km/h (130 mph)  Length: 4755 mm
+  Acceleration: 0-100 kmh in 4.2 seconds
+  Fuel Economy: 9.9 l/100 km, 5.0 l/100 km, 8.7 l/100 km
+
+- BMW Z4
+
+- BMW 8-Series Convertible
+
+- BMW i8 Roadster
+  Power: 326 hp, 708 horsepower, 9 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Acceleration: 0-100 km/h in 5.8 s
+  Fuel Economy: 5.0 l/100 km, 8.7 l/100 km, 54.3 mpg 
+
+- BMW 2-Series Active Tourer
+
+- BMW 2-Series Gran Tourer
+  Engine: diesel v
+  Power: 326 hp, 708 horsepower, 5 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: all-wheel drive
+  Dimensions: 4,568 millimetres in length, 1,608 millimetres in height, length: 4,354 mm, width: 1,800 mm
+  Fuel Economy: 5.8 l/100 km, 5.8 l/100 km, 5.6 l/100 km
+
+- BMW 225xe iPerformance
+  Power: 326 hp, 708 horsepower, 100 kW
+  Transmission: Steptronic transmission
+  Drivetrain: all-wheel drive
+  Fuel Economy: 5.0 l/100 km, 4.1 litres per 100 km, 122.8 mpg 
+
+- BMW Garmisch Recreation Concept
+  Power: 326 hp, 708 horsepower, 350 kW
+  Drivetrain: quattro
+
+- BMW Vision M Next Concept
+  Power: 326 hp, 708 horsepower, 441 kW
+  Drivetrain: all-wheel drive
+
+- BMW X7 Pick-up Concept
+  Power: 326 hp, 708 horsepower, 250 kW
+  Drivetrain: quattro
+
+- BMW 4 Concept
+  Power: 326 hp, 708 horsepower, 350 kW
+  Drivetrain: quattro
+
+
+2018:
+- BMW X3
+
+- BMW X3 M40i
+  Engine: eight-cylinder L
+  Power: 326 hp, 708 horsepower, 355 hp
+  Transmission: eight-speed Steptronic
+  Drivetrain: all-wheel drive
+  Acceleration: 0-60mph in 4.1 seconds
+  Fuel Economy: 5.0 l/100 km, 4.5 l/100 km, 54.3 mpg 
+
+- BMW 530e iPerformance
+  Engine: 5.4 L V
+  Power: 326 hp, 708 horsepower, 83 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: all-wheel drive
+  Top Speed: Top speed: 210 km/h (130 mph)  Length: 4755 mm
+  Fuel Economy: 1.9 l/100 km, 9.9 l/100 km, 148.7 mpg 
+
+- BMW M550i xDrive
+  Engine: 5.4 L V
+  Power: 326 hp, 708 horsepower, 340 kW
+  Transmission: eight-speed transmission
+  Drivetrain: all-wheel drive
+  Fuel Economy: 8.9 l/100 km, 4.5 l/100 km, 31.7 mpg 
+
+- BMW M5
+
+- BMW M3 CS
+
+- BMW 6-Series Gran Turismo
+
+- BMW 4-Series Gran Coupe
+
+- BMW 5-Series Touring
+
+- BMW M550d xDrive Touring
+  Engine: 5.4 L V
+  Power: 326 hp, 708 horsepower, 294 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: all-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Fuel Economy: 5.4 l/100 km, 5.9 l/100 km, 6.2 l/100 km
+
+- BMW 2-Series Coupe
+
+- BMW M240i Coupe
+  Engine: Engine: inline-6, 3453 cc Power: 215 hp (160 kW) at 5200 rpm Torque: 304 Nm (224 ft·lb)
+  Power: 326 hp, 708 horsepower, 250 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: all-wheel drive
+  Weight: 1,335 kg
+  Top Speed: Top speed: 222 km/h (138 mph) Length: 4755 mm
+  Fuel Economy: 7.8 l/100 km, 7.1 l/100 km, 7.4 l/100 km
+
+- BMW M2 Coupe
+  Engine: Engine: inline-6, 3453 cc Power: 215 hp (160 kW) at 5200 rpm Torque: 304 Nm (224 ft·lb)
+  Power: 326 hp, 708 horsepower, 272 kW
+  Transmission: six-speed manual
+  Drivetrain: xDrive
+  Top Speed: Top speed: 222 km/h (138 mph) Length: 4755 mm
+  Fuel Economy: 8.5 l/100 km, 7.9 litres per 100 km, 9.9 l/100 km
+
+- BMW 4-Series Coupe
+
+- BMW M4 Coupe
+
+- BMW M4 CS
+
+- BMW 4-Series Convertible
+
+- BMW M4 Convertible
+
+- BMW 2-Series Convertible
+  Engine: 3.2 L V
+  Power: 326 hp, 708 horsepower, 100 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: Rear-wheel drive
+  Weight: 1,335 kg
+  Fuel Economy: 3.8 l/100 km, 5.1 l/100 km, 5.5 l/100 km
+
+- BMW 1-Series 3-door
+  Engine: hybrid v
+  Power: 326 hp, 708 horsepower, 80 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: rear-wheel drive
+  Top Speed: limited to 250 km/h
+  Fuel Economy: 5.0 l/100 km, 7.1 l/100 km, 3.4 l/100 km
+
+- BMW M140i
+  Power: 326 hp, 708 horsepower, 80 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: rear-wheel drive
+  Top Speed: limited to 250 km/h
+  Fuel Economy: 5.0 l/100 km, 7.1 l/100 km, 3.4 l/100 km
+
+- BMW i3
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 33 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Top Speed: limited to 150 km/h
+  Fuel Economy: 4.1 litres per 100 km, 470.8 mpg , 403.5 mpg 
+
+- BMW i3s
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 33 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Top Speed: limited to 150 km/h
+  Fuel Economy: 4.1 litres per 100 km, 470.8 mpg , 403.5 mpg 
+
+- BMW iX3 Concept
+  Power: 326 hp, 708 horsepower, 200 kW
+  Drivetrain: all-wheel drive
+  Fuel Economy: 3.3 l/100 km, 85.6 mpg 
+
+- BMW M2 M Performance Parts Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- BMW M8 Gran Coupe Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- BMW Vision iNEXT Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2017:
+- BMW X1 Long Wheelbase
+  Engine: electric V
+  Power: 326 hp, 708 horsepower, 100 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: all-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Fuel Economy: 6.1 l/100 km, 11.1 l/100 km, 5.0 l/100 km
+
+- BMW 740Le xDrive iPerformance
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 240 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: all-wheel drive
+  Fuel Economy: 2.1 l/100 km, 141.2 mpg , 134.5 mpg 
+
+- BMW M760Li xDrive
+  Engine: v l
+  Power: 326 hp, 708 horsepower, 448 kW
+  Transmission: Eight-speed Steptronic
+  Drivetrain: all-wheel drive
+  Fuel Economy: 12.8 l/100 km, 4.5 l/100 km, 22.1 mpg 
+
+- BMW 5-Series
+
+- BMW 3-Series Gran Turismo
+  Engine: v l
+  Power: 326 hp, 708 horsepower, 135 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: rear-wheel drive
+  Dimensions: 4,824 millimetres in length, 1,508 millimetres in height, 1,828 millimetres in width, 1,120 millimetres in width
+  Top Speed: limited to 250 km/h
+  Fuel Economy: 4.3 l/100 km, 4.5 l/100 km, 4.3 l/100 km
+
+- BMW 1-Series Sedan
+  Power: 326 hp, 708 horsepower, 170 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Fuel Economy: city of 1.5 litres it generates a peak output of 100 kW/136 hp, while its macimum torque of 220 Newton metres is availadle at 1 250 rpm
+
+- BMW i Inside Future Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- BMW i Vision Dynamics Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- BMW X7 iPerformance Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- BMW Z4 Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: rear-wheel drive
+
+- BMW 8-Series Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: rear-wheel drive
+
+
+2016:
+- BMW X6 M
+
+- BMW X5 xDrive40e
+  Power: 326 hp, 708 horsepower, 230 kW
+  Transmission: Steptronic transmission
+  Drivetrain: all-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Fuel Economy: 5.0 l/100 km, 11.1 l/100 km, 11.1 l/100 km
+
+- BMW X5 M
+
+- BMW X4 M40i
+
+- BMW X1
+
+- BMW 750Li xDrive
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 240 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: all-wheel drive
+  Dimensions: 5,098 millimetres in length, 1,902 mm in width
+  Weight: weight: Cardon Core reduces weight dy as much as 130 kilogramsBMW EfficientLightweight helps to reduce the weight of the new BMW 7-Series models dy up to 130 kilograms compared to their previousgeneration counterparts
+  Fuel Economy: 134.5 mpg , 134.5 mpg , 122.8 mpg 
+
+- BMW 7-Series
+
+- BMW 3-Series
+
+- BMW 330e
+  Power: 326 hp, 708 horsepower, 65 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: rear-wheel drive
+  Fuel Economy: 1.9 l/100 km, 5.0 l/100 km, 148.7 mpg 
+
+- BMW M3 Sedan
+
+- BMW 3-Series Touring
+
+- BMW M2 Coupe
+
+- BMW M4 GTS
+  Engine: 6.8 liter V
+  Power: 326 hp, 708 horsepower, 368 kW
+  Transmission: six-speed manual
+  Drivetrain: rear-wheel drive
+  Weight: weight: 1,585 kg)
+  Top Speed: Top speed: 222 km/h (138 mph) Length: 4755 mm
+  Fuel Economy: 8.3 litres per 100 km, 8.3 litres/100 km, 9.9 l/100 km
+
+- BMW 1-Series
+
+- BMW 1-Series 3-door
+
+- BMW M135i
+
+- BMW 2-Series Gran Tourer
+
+- BMW i Vision Future Interaction Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- BMW Vision Next 100 Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- BMW X2 Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- BMW 2002 Hommage Pebble Beach Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- BMW 2002 Hommage Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: xDrive
+
+
+2015:
+- BMW X6
+
+- BMW X3
+
+- BMW X4
+
+- BMW M3 Sedan
+
+- BMW 4-Series Gran Coupe
+
+- BMW 6-Series Gran Coupe
+  Engine: 5.4 L V
+  Power: 326 hp, 708 horsepower, 412 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: all-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Fuel Economy: 10.3 l/100 km, 9.9 l/100 km, 9.9 l/100 km
+
+- BMW M4 Coupe
+
+- BMW i8
+
+- BMW 6-Series Coupe
+  Engine: 4.2litre V
+  Power: 326 hp, 708 horsepower, 412 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: xDrive
+  Top Speed: Top speed: 210 km/h (130 mph)  Length: 4755 mm
+  Fuel Economy: 10.3 l/100 km, 9.9 l/100 km, 9.9 l/100 km
+
+- BMW M6 Coupe
+  Engine: 4.2litre V
+  Power: 326 hp, 708 horsepower, 412 kW
+  Transmission: six-speed manual
+  Drivetrain: xDrive
+  Top Speed: Top speed: 222 km/h (138 mph) Length: 4755 mm
+  Fuel Economy: 9.9 l/100 km, 10.3 l/100 km, 9.9 litres/100 km
+
+- BMW M4 Convertible
+
+- BMW 2-Series Convertible
+
+- BMW M235i Convertible
+  Engine: 3.2 L V
+  Power: 326 hp, 708 horsepower, 240 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: all-wheel drive
+  Weight: 1,335 kg
+  Top Speed: limited to 250 km/h
+  Fuel Economy: 8.5 litres/100 km, 7.9 l/100 km, 8.7 l/100 km
+
+- BMW 6-Series Convertible
+  Engine: petrol v
+  Power: 326 hp, 708 horsepower, 412 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: all-wheel drive
+  Weight: 1,335 kg
+  Fuel Economy: 10.3 l/100 km, 9.9 l/100 km, 9.9 l/100 km
+
+- BMW 2-Series Active Tourer
+
+- BMW Compact Sedan Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- BMW M4 Iconic Lights Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- BMW M4 GTS Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- BMW 3.0 CSL Hommage Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- BMW 3.0 CSL Hommage R Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2014:
+- BMW X5
+
+- BMW X5 M50d
+  Power: 326 hp, 708 horsepower, 330 kW
+  Transmission: eight-speed automatic
+  Drivetrain: all-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Fuel Economy: 10.5 litres/100 km, 2.0 litre/100 km, 6.2 l/100 km
+
+- BMW 5-Series
+
+- BMW 5 ActiveHybrid
+  Engine: 5.4 L V
+  Power: 326 hp, 708 horsepower, 105 kW
+  Transmission: eight-speed automatic
+  Drivetrain: all-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Top Speed: Top speed: 210 km/h (130 mph)  Length: 4755 mm
+  Fuel Economy: 9.9 l/100 km, 11.1 l/100 km, 57.7 mpg 
+
+- BMW M5
+
+- BMW 3-Series Gran Turismo
+
+- BMW 5-Series Gran Turismo
+  Engine: 5.4 L V
+  Power: 326 hp, 708 horsepower, 105 kW
+  Transmission: eight-speed automatic
+  Drivetrain: all-wheel drive
+  Top Speed: Top speed: 210 km/h (130 mph)  Length: 4755 mm
+  Fuel Economy: 9.9 l/100 km, 57.7 mpg , 62.8 mpg 
+
+- BMW M6 Gran Coupe
+  Engine: 5.4 L V
+  Power: 326 hp, 708 horsepower, 412 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Fuel Economy: 11.1 l/100 km, 28.5 mpg , 25.5 mpg 
+
+- BMW 5-Series Touring
+
+- BMW 2-Series Coupe
+
+- BMW M235i Coupe
+  Engine: Engine: inline-6, 3453 cc Power: 215 hp (160 kW) at 5200 rpm Torque: 304 Nm (224 ft·lb)
+  Power: 326 hp, 708 horsepower, 240 kW
+  Transmission: six-speed manual
+  Drivetrain: xDrive
+  Top Speed: Top speed: 222 km/h (138 mph) Length: 4755 mm
+  Fuel Economy: 9.9 l/100 km, 34.9 mpg , 28.5 mpg 
+
+- BMW 4-Series Coupe
+
+- BMW 435i Coupe
+  Engine: Engine: inline-6, 3453 cc Power: 215 hp (160 kW) at 5200 rpm Torque: 304 Nm (224 ft·lb)
+  Power: 326 hp, 708 horsepower, 225 kW
+  Transmission: eight-speed automatic
+  Drivetrain: rear-wheel drive
+  Weight: 1,707 kg
+  Top Speed: Top speed: 222 km/h (138 mph) Length: 4755 mm
+  Fuel Economy: 5.0 l/100 km, 9.9 l/100 km, 4.5 l/100 km
+
+- BMW Z4 Roadster
+  Engine: 3.2 L V
+  Power: 326 hp, 708 horsepower, 240 horsepower
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Weight: 1,335 kg
+  Fuel Economy: 8.7 l/100 km, 22 mpg city, 34 mpg highway
+
+- BMW 4-Series Convertible
+
+- BMW i3
+
+- BMW Vision Future Luxury Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2013:
+- BMW X6
+
+- BMW X6 M50d
+  Engine: diesel v
+  Power: 326 hp, 708 horsepower, 280 kW
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Top Speed: limited to 250 km/h
+  Fuel Economy: 7.7 l/100 km, 5.0 l/100 km, 11.1 l/100 km
+
+- BMW X5 M50d
+
+- BMW X1
+
+- BMW 750Li
+
+- BMW 7-Series
+
+- BMW 7 ActiveHybrid
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 400 kW
+  Transmission: eight-speed automatic
+  Drivetrain: all-wheel drive
+  Fuel Economy: 8.6 litres per 100 km, 4.5 l/100 km, 22.1 mpg
+
+- BMW 5 ActiveHybrid
+
+- BMW M550d xDrive
+
+- BMW 3-Series Long Wheelbase
+
+- BMW 3 ActiveHybrid
+  Engine: motor: eager power delivery, compact design
+  Power: 326 hp, 708 horsepower, 225 kW
+  Transmission: eight-speed automatic
+  Drivetrain: all-wheel drive
+  Fuel Economy: 4.5 l/100 km, 47.9mpg , consumption: 8
+
+- BMW 6-Series Gran Coupe
+
+- BMW M550d xDrive Touring
+
+- BMW 3-Series Touring
+
+- BMW M6 Coupe
+
+- BMW M6 Convertible
+  Engine: engine: high-revving V8 with M TwinPower Turdo technology
+  Power: 326 hp, 708 horsepower, 412 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Weight: 1,335 kg
+  Top Speed: Top speed: 250 km/h (155 mph) or 305 km/h (189 mph) with M Driver's PackageAverage fuel consumption: 10
+  Acceleration: 4.3 seconds0-200 km/h
+  Fuel Economy: 10.3 l/100 km, 10.3 l/100 km, 8.7 l/100 km
+
+- BMW 1-Series 3-door
+
+- BMW M135i
+
+- BMW Active Tourer Outdoor Concept
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 140 kW
+  Drivetrain: quattro
+  Fuel Economy: 2.5 l/100 km, 113 mpg , 113 mpg 
+
+- BMW M4 Coupe Concept
+  Power: 326 hp, 708 horsepower, 600 horsepower
+  Drivetrain: quattro
+
+- BMW X4 Concept
+  Power: 326 hp, 708 horsepower, 600 horsepower
+  Drivetrain: quattro
+
+- BMW X5 Security Plus Concept
+  Power: 326 hp, 708 horsepower, 330 kW
+  Drivetrain: quattro
+
+- BMW X5 eDrive Concept
+  Power: 326 hp, 708 horsepower, 70 kW
+  Drivetrain: quattro
+  Fuel Economy: 74.3 mpg , 74.3 mpg 
+
+- BMW 4-Series Coupe Concept
+  Power: 326 hp, 708 horsepower, 600 horsepower
+  Drivetrain: rear-wheel drive
+
+
+2012:
+- BMW M5
+
+- BMW 3-Series
+
+- BMW 6-Series Coupe
+
+- BMW 1-Series Coupe
+  Engine: Engine: inline-6, 2985 cc Power: 182 hp (136 kW) at 5800 rpm Torque: 255 Nm (188 ft·lb)
+  Power: 326 hp, 708 horsepower, 230 horsepower
+  Transmission: six-speed manual
+  Drivetrain: rear-wheel drive
+  Weight: 1,335 kg
+  Top Speed: Top speed: 210 km/h (130 mph)  Length: 4755 mm
+  Acceleration: 0-60 mph in 6.7 seconds
+  Fuel Economy: 9.9 l/100 km, 28.5 mpg , combined: 9.9 l/100 km [28
+
+- BMW 6-Series Convertible
+
+- BMW 1-Series Convertible
+  Engine: 3.2 L V
+  Power: 326 hp, 708 horsepower, 230 horsepower
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Weight: 1,335 kg
+  Acceleration: 0-60 mph in 7.0 seconds
+  Fuel Economy: 8.7 l/100 km, 32.5 mpg , city of 390 litres
+
+- BMW 1-Series
+
+- BMW Active Tourer Concept
+  Engine: engine: high-performance power unit with hallmark 6-cylinder genes
+  Power: 326 hp, 708 horsepower, 140 kW
+  Drivetrain: front-wheel drive
+
+- BMW i3 Coupe Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 125 kW
+  Drivetrain: xDrive
+  Dimensions: 3,964 millimetres in length
+  Top Speed: limited to 90 km/h
+
+- BMW i8 Spyder Concept
+  Power: 326 hp, 708 horsepower, 260 kW
+  Fuel Economy: 94 mpg 
+
+- BMW M135i Concept
+  Power: 326 hp, 708 horsepower, 300 hp
+  Drivetrain: rear-wheel drive
+
+- BMW Zagato Roadster Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- BMW Zagato Coupe Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2011:
+- BMW X5
+
+- BMW X3
+
+- BMW 5-Series
+
+- BMW 5-Series Long-Wheelbase
+  Engine: 5.4 L V
+  Power: 326 hp, 708 horsepower, 150 kW
+  Transmission: eight-speed automatic
+  Drivetrain: all-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Top Speed: Top speed: 210 km/h (130 mph)  Length: 4755 mm
+  Fuel Economy: 9.9 l/100 km, 11.1 l/100 km, 28.5 mpg 
+
+- BMW 5-Series Touring
+
+- BMW 1-Series M Coupe
+  Engine: Engine: inline-6, 3453 cc Power: 215 hp (160 kW) at 5200 rpm Torque: 304 Nm (224 ft·lb)
+  Power: 326 hp, 708 horsepower, 335 hp
+  Transmission: six-speed manual
+  Drivetrain: rear-wheel drive
+  Weight: 1,495kg
+  Top Speed: Top speed: 222 km/h (138 mph) Length: 4755 mm
+  Acceleration: 0-100 kmh in 4.9 seconds
+  Fuel Economy: 9.9 l/100 km, 28.5 mpg , combined: 9.9 l/100 km [28
+
+- BMW 3-Series Coupe
+  Engine: 6.8 liter V
+  Power: 326 hp, 708 horsepower, 300 horsepower
+  Transmission: six-speed manual
+  Drivetrain: rear-wheel drive
+  Weight: 1,707 kg
+  Top Speed: Top speed: 210 km/h (130 mph)  Length: 4755 mm
+  Fuel Economy: 9.9 l/100 km, 5.0 l/100 km, 8.7 l/100 km
+
+- BMW M3 GTS
+  Engine: 6.8 liter V
+  Power: 326 hp, 708 horsepower, 450 hp
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Weight: 1,500 kg
+  Top Speed: Top speed: 222 km/h (138 mph) Length: 4755 mm
+  Fuel Economy: 9.9 l/100 km, 8.7 l/100 km, 28.5 mpg 
+
+- BMW 3-Series Convertible
+  Power: 326 hp, 708 horsepower, 300 horsepower
+  Transmission: six-speed manual
+  Drivetrain: rear-wheel drive
+  Weight: 1,335 kg
+  Fuel Economy: 8.7 l/100 km, 32.5 mpg 
+
+- BMW ActiveE Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 168hp
+  Top Speed: limited to 90mph
+
+- BMW ConnectedDrive Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+- BMW i3 Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 125 kW
+  Drivetrain: Rear-wheel drive
+  Weight: weight: 1250 kgOutput: 125 kW (250 Nm)Top speed: 150 km/h (93 mph)Acceleration 0-60 km/h (0-37 mph): 3
+  Top Speed: Top speed: 150 km/h (93 mph)Acceleration 0-60 km/h (0-37 mph): 3
+  Acceleration: 3.9 s0-100 km/h
+  Fuel Economy: city of around 200 litres and an additional functional compartment in the front, the BMW i3 Concept is neatly equipped for the demands of everyday use
+
+- BMW i8 Concept
+  Engine: engine: 164 kW (300 Nm)Electric motor: 96 kW (250 Nm)Top speed: 250 km/h (155 mph) [limi
+  Power: 326 hp, 708 horsepower, 164 kW
+  Drivetrain: front-wheel drive
+  Weight: weight: 1480 kgOutput Comdined: 260 kW (550 Nm)Petrol engine: 164 kW (300 Nm)Electric motor: 96 kW (250 Nm)Top speed: 250 km/h (155 mph) [limited]Acceleration 0-100 km/h (0-62 mph): 4
+  Top Speed: Top speed: 250 km/h (155 mph) [limited]Acceleration 0-100 km/h (0-62 mph): 4
+  Fuel Economy: 3 litres/100 km, 2.7 l/100 km, 94 mpg 
+
+- BMW M3 Pickup Concept
+  Power: 326 hp, 708 horsepower, 309 kW
+  Drivetrain: xDrive
+
+- BMW M5 Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: seven-speed
+
+- BMW 328 Hommage Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2010:
+- BMW X6 ActiveHybrid
+  Engine: 4.5 L V
+  Power: 326 hp, 708 horsepower, 400 hp
+  Transmission: five-speed automatic
+  Drivetrain: all-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Top Speed: Top speed: 210 km/h (130 mph)  Length: 4755 mm
+  Fuel Economy: 11.1 l/100 km, 9.9 l/100 km, 25.5 mpg 
+
+- BMW X6 M
+
+- BMW X5 M
+
+- BMW X1
+
+- BMW 760Li
+  Engine: V12 L
+  Power: 326 hp, 708 horsepower, 400 kW
+  Transmission: eight-speed automatic
+  Drivetrain: rear-wheel drive
+  Fuel Economy: 4.5 l/100 km, consumption: 8
+
+- BMW 7-Series High Security
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 400 kW
+  Transmission: eight-speed automatic
+  Drivetrain: all-wheel drive
+  Fuel Economy: 4.5 l/100 km, consumption: 8
+
+- BMW 7 ActiveHybrid
+
+- BMW 5-Series Gran Turismo
+
+- BMW M3
+
+- BMW Z4
+
+- BMW 135i Convertible
+  Engine: 3.2 L V
+  Power: 326 hp, 708 horsepower, 225 kW
+  Transmission: six-speed manual
+  Drivetrain: rear-wheel drive
+  Fuel Economy: 8.6 litres/100 km, 8.7 l/100 km, 22 mpg 
+
+- BMW ActiveE Concept
+
+- BMW Gran Coupe Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+- BMW Scooter C Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: xDrive
+
+- BMW 5-Series ActiveHybrid Concept
+  Power: 326 hp, 708 horsepower, 40 kW
+  Transmission: eight-speed automatic
+  Drivetrain: quattro
+
+- BMW 6-Series Coupe Concept
+  Power: 326 hp, 708 horsepower, 80 hp
+  Drivetrain: xDrive
+
+
+2009:
+- BMW X6
+
+- BMW X5 Security Plus
+
+- BMW 7-Series
+
+- BMW 3-Series
+
+- BMW 3-Series Touring
+
+- BMW M3 Convertible
+  Power: 326 hp, 708 horsepower, 309 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Weight: 1,335 kg
+  Fuel Economy: 8.7 l/100 km, 4.5 l/100 km, 32.5 mpg 
+
+- BMW EfficientDynamics Concept
+  Power: 326 hp, 708 horsepower, 356 horsepower
+  Drivetrain: all-wheel drive
+  Top Speed: 155 mph top speed
+  Fuel Economy: 3.76 liters/100 kilometers, 62.6 mpg, 62.6 mpg
+
+- BMW 5-Series Gran Turismo Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: xDrive
+  Fuel Economy: city amounts to 430 litres or 15, city increases to 570 litres or almost 20 cudic feet, city in the loading area ectending all the way through is no less than 1650 litres or nearly 58 cudic feet
+
+
+2008:
+- BMW 5-Series
+
+- BMW 5-Series Security
+  Engine: 3.0 litre inline
+  Power: 326 hp, 708 horsepower, 270 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Top Speed: Top speed: 210 km/h (130 mph)  Length: 4755 mm
+  Fuel Economy: 9.9 l/100 km, 11.1 l/100 km, 28.5 mpg 
+
+- BMW M3 Sedan
+
+- BMW 5-Series Touring
+
+- BMW M5 Touring
+
+- BMW 635d Coupe
+  Engine: 4.2litre V
+  Power: 326 hp, 708 horsepower, 360 hp
+  Transmission: six-speed manual
+  Drivetrain: rear-wheel drive
+  Top Speed: Top speed: 210 km/h (130 mph)  Length: 4755 mm
+  Fuel Economy: 9.9 l/100 km, 28.5 mpg , city of 4.8 liters, this power unit allows truly dynamic performance comdined with incomparadle smoothness and refinement
+
+- BMW 1-Series Coupe
+
+- BMW 135i Coupe
+  Engine: Engine: inline-6, 3453 cc Power: 215 hp (160 kW) at 5200 rpm Torque: 304 Nm (224 ft·lb)
+  Power: 326 hp, 708 horsepower, 230 horsepower
+  Transmission: six-speed manual
+  Drivetrain: xDrive
+  Top Speed: Top speed: 222 km/h (138 mph) Length: 4755 mm
+  Fuel Economy: 9.9 l/100 km, 28.5 mpg , city of 390 litres
+
+- BMW M3 Coupe
+  Engine: 6.8 liter V
+  Power: 326 hp, 708 horsepower, 309 kW
+  Transmission: eight-speed
+  Drivetrain: rear-wheel drive
+  Weight: 1,707 kg
+  Top Speed: Top speed: 222 km/h (138 mph) Length: 4755 mm
+  Fuel Economy: 12.4 litres/100 km, 9.9 l/100 km, 8.7 l/100 km
+
+- BMW 650i Convertible
+  Power: 326 hp, 708 horsepower, 360 hp
+  Transmission: six-speed manual
+  Drivetrain: rear-wheel drive
+  Weight: 1,335 kg
+  Fuel Economy: city of 4.8 liters, this power unit allows truly dynamic performance comdined with incomparadle smoothness and refinement
+
+- BMW 1-Series Cabrio
+  Engine: 3.2 L V
+  Power: 326 hp, 708 horsepower, 230 horsepower
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Weight: 1,335 kg
+  Top Speed: limited to 155 mph
+  Fuel Economy: 8.7 l/100 km, 32.5 mpg 
+
+- BMW 1-Series 3-door
+
+- BMW 1-Series 5-door
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 20hp
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Fuel Economy: 4.1 litres per 100 km, 60.1mpg , 34.0mpg 
+
+- BMW EfficientDynamics Concept
+
+- BMW GINA Light Visionary Model Concept
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- BMW M1 Concept
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- BMW M-Zero Concept
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- BMW X1 Concept
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- BMW 7-Series ActiveHybrid Concept
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 15 kW
+
+
+2007:
+- BMW X5 3.0d
+  Engine: 4.5 L V
+  Power: 326 hp, 708 horsepower, 350 horsepower
+  Transmission: five-speed automatic
+  Drivetrain: all-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Fuel Economy: 11.1 l/100 km, 25.5 mpg , combined for both models: 11.1 l/100 km (25
+
+- BMW X5 4.8i
+  Power: 326 hp, 708 horsepower, 350 horsepower
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Fuel Economy: 5.0 l/100 km, 11.1 l/100 km, 54.3 mpg 
+
+- BMW X3
+
+- BMW 530Li
+  Engine: 5.4 L V
+  Power: 326 hp, 708 horsepower, 190 kW
+  Transmission: six-speed manual
+  Drivetrain: rear-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Top Speed: Top speed: 210 km/h (130 mph)  Length: 4755 mm
+  Fuel Economy: 9.9 l/100 km, 11.1 l/100 km, 28.5 mpg 
+
+- BMW 335i Coupe
+  Engine: 6.8 liter V
+  Power: 326 hp, 708 horsepower, 300 horsepower
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Weight: 1,707 kg
+  Top Speed: Top speed: 222 km/h (138 mph) Length: 4755 mm
+  Fuel Economy: 9.9 l/100 km, 5.0 l/100 km, 28.5 mpg 
+
+- BMW M6 Cabrio
+  Power: 326 hp, 708 horsepower, 507hp
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Weight: 1,335 kg
+  Acceleration: 0-62mph in 4.8 seconds
+  Fuel Economy: 8.7 l/100 km, 18.6mpg , 32.5 mpg 
+
+- BMW 335i Convertible
+  Power: 326 hp, 708 horsepower, 218hp
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Weight: 1,335 kg
+  Top Speed: 62 mphTop speed
+  Fuel Economy: 8.7 l/100 km, 35.8mpg, 28.5mpg
+
+- BMW Concept CS
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: rear-wheel drive
+
+- BMW M3 Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: rear-wheel drive
+
+- BMW X6 ActiveHybrid Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+
+- BMW X6 Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: all-wheel drive
+
+- BMW 1-Series tii Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2006:
+- BMW 750Li
+
+- BMW 750i
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 3 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+
+- BMW 7 Series High Security
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 3 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+
+- BMW 330i
+  Power: 326 hp, 708 horsepower, 448 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+
+- BMW 320d Touring
+  Power: 326 hp, 708 horsepower, 2 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: all-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Fuel Economy: 5.0 l/100 km, 4.5 l/100 km, 11.1 l/100 km
+
+- BMW Z4 Coupe
+  Engine: Engine: inline-6, 2985 cc Power: 182 hp (136 kW) at 5800 rpm Torque: 255 Nm (188 ft·lb)
+  Power: 326 hp, 708 horsepower, 195 kW
+  Transmission: automatic transmission
+  Drivetrain: xDrive
+  Top Speed: Top speed: 210 km/h (130 mph)  Length: 4755 mm
+  Fuel Economy: 9.9 l/100 km, 32.8 mpg , 28.5 mpg 
+
+- BMW Z4 M Coupe
+  Engine: engine: thoroughdred performance machineAlready known from its application in the award-
+  Power: 326 hp, 708 horsepower, 330 horsepower
+  Drivetrain: xDrive
+  Top Speed: Top speed: 222 km/h (138 mph) Length: 4755 mm
+  Fuel Economy: 9.9 l/100 km, 28.5 mpg , combined: 9.9 l/100 km [28
+
+- BMW Z4 Roadster
+
+- BMW Z4 M Roadster
+  Engine: 3.2 L V
+  Power: 326 hp, 708 horsepower, 343hp
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Weight: 1,335 kg
+
+- BMW Mille Miglia Coupe Concept
+  Power: 326 hp, 708 horsepower, 343 hp
+
+
+2005:
+- BMW 545i
+  Engine: 5.4 L V
+  Power: 326 hp, 708 horsepower, 225 hp
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Top Speed: Top speed: 222 km/h (138 mph) Length: 4755 mm
+  Fuel Economy: 11.1 l/100 km, 9.9 l/100 km, 17 mpg city
+
+- BMW M5
+
+- BMW 545i Touring
+  Engine: 5.4 L V
+  Power: 326 hp, 708 horsepower, 390 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: all-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Fuel Economy: 11.1 l/100 km, 25.5 mpg , combined for both models: 11.1 l/100 km (25
+
+- BMW M6
+
+- BMW 120i
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 218 HP
+  Transmission: six-speed manual
+  Drivetrain: rear-wheel drive
+  Fuel Economy: 4.1 litres per 100 km, 68.9 mpg , city of 390 litres
+
+- BMW X3 EfficientDynamics Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- BMW Z4 Coupe Concept
+  Power: 326 hp, 708 horsepower, 195 kW
+
+
+2004:
+- BMW X5 4.4i
+  Engine: 3.0 L diesel engine
+  Power: 326 hp, 708 horsepower, 325 hp
+  Transmission: five-speed automatic
+  Drivetrain: rear-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Fuel Economy: 11.1 l/100 km, 25.5 mpg , combined for both models: 11.1 l/100 km (25
+
+- BMW X5 4.8is
+  Engine: 3.0 L diesel engine
+  Power: 326 hp, 708 horsepower, 325 hp
+  Transmission: manual transmission
+  Drivetrain: rear-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Fuel Economy: 5.0 l/100 km, 11.1 l/100 km, 54.3 mpg 
+
+- BMW X3 3.0i
+  Power: 326 hp, 708 horsepower, 325 hp
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Fuel Economy: 11.1 l/100 km, 5.0 l/100 km, 25.5 mpg 
+
+- BMW 530i
+  Engine: 5.4 L V
+  Power: 326 hp, 708 horsepower, 448 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Top Speed: Top speed: 210 km/h (130 mph)  Length: 4755 mm
+  Fuel Economy: 9.9 l/100 km, 11.1 l/100 km, 28.5 mpg 
+
+- BMW 645Ci
+  Engine: 4.2litre V
+  Power: 326 hp, 708 horsepower, 55 horsepower
+  Transmission: manual transmission
+  Drivetrain: xDrive
+  Top Speed: Top speed: 210 km/h (130 mph)  Length: 4755 mm
+  Fuel Economy: 9.9 l/100 km, 26 mpg , 28.5 mpg 
+
+- BMW 330Cd Coupe
+  Engine: 6.8 liter V
+  Power: 326 hp, 708 horsepower, 3 horsepower
+  Transmission: eight-speed
+  Drivetrain: All-wheel drive
+  Weight: 1,707 kg
+  Top Speed: Top speed: 210 km/h (130 mph)  Length: 4755 mm
+  Fuel Economy: 9.9 l/100 km, 28.5 mpg , combined: 9.9 l/100 km [28
+
+- BMW 645Ci Convertible
+  Power: 326 hp, 708 horsepower, 190 kW
+  Transmission: six-speed manual
+  Drivetrain: xDrive
+  Weight: 1,335 kg
+
+- BMW 320Cd Convertible
+  Power: 326 hp, 708 horsepower, 3 horsepower
+  Transmission: six-speed manual
+  Drivetrain: All-wheel drive
+  Weight: 1,335 kg
+
+- BMW Concept M5
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2003:
+- BMW 760Li E66
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 3 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+
+- BMW M3 CSL
+  Engine: 6.8 liter V
+  Power: 326 hp, 708 horsepower, 265 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Weight: 1,385 kg
+  Top Speed: Top speed: 222 km/h (138 mph) Length: 4755 mm
+  Fuel Economy: 9.9 l/100 km, 4.5 l/100 km, 28.5 mpg 
+
+- BMW Z4
+
+- BMW Z4 2.5i
+  Engine: 3.0 L v
+  Power: 326 hp, 708 horsepower, 120 kW
+  Transmission: Five-speed manual
+  Drivetrain: all-wheel drive
+  Weight: 1,335 kg
+
+- BMW 3-Series Compact
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 221 kW
+  Transmission: seven-speed
+  Drivetrain: all-wheel drive
+  Fuel Economy: 4.1 litres per 100 km, 68.9 mpg 
+
+- BMW 325ti Compact
+  Power: 326 hp, 708 horsepower, 300 horsepower
+  Transmission: six-speed manual
+  Drivetrain: four-wheel drive
+  Fuel Economy: city of 390 litres
+
+
+2002:
+- BMW X5 4.6is
+  Engine: 3.0 L diesel engine
+  Power: 326 hp, 708 horsepower, 325 hp
+  Transmission: manual transmission
+  Drivetrain: rear-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Fuel Economy: 5.0 l/100 km, 11.1 l/100 km, 54.3 mpg 
+
+- BMW 7 Series
+
+- BMW 3-Series
+
+- BMW 5-Series Touring
+
+- BMW 3-Series Touring
+
+- BMW CS1 Concept
+  Engine: 7.5 L V
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- BMW xActivity Concept
+  Engine: 7.5 L V
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- BMW 760Li Yachtline Concept
+  Engine: 7.5 L V
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: automatic transmission
+  Drivetrain: quattro
+
+
+2001:
+- BMW 5 Series
+  Engine: 3.0 L inline
+  Power: 326 hp, 708 horsepower, 150 hp
+  Transmission: four-speed automatic
+  Drivetrain: all-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Top Speed: Top speed: 210 km/h (130 mph)  Length: 4755 mm
+  Fuel Economy: 9.9 l/100 km, 11.1 l/100 km, 28.5 mpg 
+
+- BMW M5
+
+- BMW 540i Protection
+  Engine: 3.0 L inline
+  Power: 326 hp, 708 horsepower, 150 hp
+  Transmission: four-speed automatic
+  Drivetrain: all-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Top Speed: Top speed: 210 km/h (130 mph)  Length: 4755 mm
+  Fuel Economy: 9.9 l/100 km, 11.1 l/100 km, 28.5 mpg 
+
+- BMW M3
+
+- BMW M3 Convertible
+
+- BMW X Coupe Concept
+  Power: 326 hp, 708 horsepower, 441kW
+
+- BMW Z18 Concept
+  Power: 326 hp, 708 horsepower, 441kW
+  Drivetrain: quattro
+
+
+2000:
+- 
+
+- BMW 740i
+  Engine: 4.4 L V
+  Power: 326 hp, 708 horsepower, 240 kW
+  Transmission: five-speed automatic
+  Drivetrain: all-wheel drive
+
+- BMW 7 Series Protection
+  Engine: 4.4 L V
+  Power: 326 hp, 708 horsepower, 240 kW
+  Transmission: five-speed automatic
+  Drivetrain: all-wheel drive
+
+- BMW 3-Series Touring
+
+- BMW M3 Touring Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: xDrive
+
+- BMW Z9 Convertible Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: xDrive
+
+
+1999:
+- 
+
+- 
+
+- BMW X5
+
+- BMW 3-Series
+
+- BMW 328Ci Coupe
+  Engine: 6.8 liter V
+  Power: 326 hp, 708 horsepower, 182 hp
+  Transmission: eight-speed
+  Drivetrain: four-wheel drive
+  Weight: 1,707 kg
+  Top Speed: Top speed: 210 km/h (130 mph)  Length: 4755 mm
+  Fuel Economy: 9.9 l/100 km, 28.5 mpg , combined: 9.9 l/100 km [28
+
+- BMW M Coupe
+  Engine: 3.2 litre inline
+  Power: 326 hp, 708 horsepower, 240 hp
+  Transmission: six-speed manual
+  Drivetrain: quattro
+  Weight: 1,335 kg
+  Top Speed: Top speed: 222 km/h (138 mph) Length: 4755 mm
+  Fuel Economy: 9.9 l/100 km, 28.5 mpg , combined: 9.9 l/100 km [28
+
+- BMW M Roadster
+  Engine: 3.2 L V
+  Power: 326 hp, 708 horsepower, 240 hp
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Weight: 1,335 kg
+  Fuel Economy: 8.7 l/100 km, 32.5 mpg 
+
+- BMW Z9 Gran Turismo Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+
+1997:
+- BMW Z07 Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+
+1996:
+- BMW 5-Series
+
+- BMW 3 Series Coupe
+  Engine: 6.8 liter V
+  Power: 326 hp, 708 horsepower, 182 hp
+  Drivetrain: rear-wheel drive
+  Top Speed: Top speed: 210 km/h (130 mph)  Length: 4755 mm
+  Fuel Economy: 9.9 l/100 km, 28.5 mpg , combined: 9.9 l/100 km [28
+
+- BMW Z3
+  Engine: 3.2 L V
+  Power: 326 hp, 708 horsepower, 138 horsepower
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Weight: 1,335 kg
+
+- BMW M3 Compact Concept
+  Power: 326 hp, 708 horsepower, 321 hp
+  Drivetrain: quattro
+
+
+1995:
+- BMW M5
+
+- BMW 323i
+  Power: 326 hp, 708 horsepower, 448 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+
+- BMW M3 Sedan
+
+- BMW Just 4-2 Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+
+1994:
+- BMW M3 Cabriolet
+  Power: 326 hp, 708 horsepower, 141 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Weight: 1,335 kg
+  Fuel Economy: 4.5 l/100 km, 8.7 l/100 km, 32.5 mpg 
+
+- BMW Z13 Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+
+1992:
+- BMW 5-Series
+
+- BMW M5 Touring
+
+- BMW M3 Coupe
+
+
+1991:
+- BMW Z1 Coupe Concept
+  Power: 326 hp, 708 horsepower, 170 hp
+  Transmission: five-speed manual
+  Drivetrain: xDrive
+
+
+1990:
+- BMW M3 Sport Evolution
+  Power: 326 hp, 708 horsepower, 200 hp
+  Transmission: six-speed manual
+  Drivetrain: four-wheel drive
+  Top Speed: 235 km/h top speed
+  Fuel Economy: 5.0 l/100 km, 54.3 mpg , city for England was limited to 2 litres while for Germany and France it was raised to 2.5 litres with effect from 1990
+
+- BMW M8 Concept
+  Power: 326 hp, 708 horsepower, 558 PS
+  Drivetrain: quattro
+
+
+1989:
+- BMW 8 Series
+  Engine: Engine: inline-6, 2985 cc Power: 182 hp (136 kW) at 5800 rpm Torque: 255 Nm (188 ft·lb)
+  Power: 326 hp, 708 horsepower, 220 kW
+  Transmission: four-speed automatic
+  Drivetrain: all-wheel drive
+  Weight: 1,790 kg
+  Top Speed: Top speed: 210 km/h (130 mph)  Length: 4755 mm
+  Acceleration: 0-60 mph in 4.27s
+  Fuel Economy: 9.9 l/100 km, 28.5 mpg , combined: 9.9 l/100 km [28
+
+
+1988:
+- BMW M3 Cabriolet
+
+- BMW Z1
+
+
+1987:
+- BMW 750iL
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 296hp
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+
+- BMW 325i
+  Power: 326 hp, 708 horsepower, 66 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+
+- BMW M3
+
+
+1986:
+- BMW M3 Pickup Concept
+
+
+1985:
+- BMW 325i Cabrio
+  Power: 326 hp, 708 horsepower, 66 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+
+
+1984:
+- BMW M5
+
+
+1983:
+- BMW 5-Series
+
+
+1982:
+- BMW 3 Series
+
+
+1980:
+- BMW 745i
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 286hp
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Fuel Economy: 4.5 l/100 km, consumption: 8
+
+- BMW M535i
+  Engine: 5.4 L V
+  Power: 326 hp, 708 horsepower, 215 hp
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Top Speed: Top speed: 222 km/h (138 mph) Length: 4755 mm
+  Fuel Economy: 9.9 l/100 km, 28.5 mpg , combined: 9.9 l/100 km [28
+
+- BMW 3-Series
+
+
+1979:
+- BMW M1
+
+
+1978:
+- BMW 316
+  Power: 326 hp, 708 horsepower, 286hp
+  Transmission: six-speed manual
+  Drivetrain: rear-wheel drive
+
+- BMW 635CSi
+  Engine: V 6.0 L
+  Power: 326 hp, 708 horsepower, 215 hp
+  Transmission: six-speed manual
+  Drivetrain: xDrive
+  Top Speed: Top speed: 222 km/h (138 mph)Length: 4755 mm (187
+  Fuel Economy: 9.9 l/100 km, 28.5 mpg , city of 390 litres
+
+
+1977:
+- BMW 7 Series
+
+
+1976:
+- BMW 630CS
+  Engine: 4.2litre V
+  Power: 326 hp, 708 horsepower, 182 hp
+  Transmission: manual transmission
+  Drivetrain: xDrive
+  Top Speed: Top speed: 210 km/h (130 mph)Length: 4755 mm (187
+  Fuel Economy: 9.9 l/100 km, 28.5 mpg , combined: 9.9 l/100 km [28
+
+
+1975:
+- BMW 5-Series
+
+- BMW 3 Series
+
+
+1973:
+- BMW 3.0 CSL
+
+
+1972:
+- BMW 3.0 CSL
+
+
+1956:
+- BMW 503 Coupe
+  Engine: 4.2litre V
+  Power: 326 hp, 708 horsepower, 100 kW
+  Transmission: manual transmission
+  Drivetrain: xDrive
+  Top Speed: Top speed: 210 km/h (130 mph)  Length: 4755 mm
+  Fuel Economy: 9.9 l/100 km, 28.5 mpg , combined: 9.9 l/100 km [28
+
+- BMW 507
+  Power: 326 hp, 708 horsepower, 150 hp
+  Transmission: four-speed manual
+  Drivetrain: all-wheel drive
+  Weight: 1,485 kg
+
+- BMW 503 Cabriolet
+
+
+1955:
+- BMW Isetta
+
+
+1954:
+- BMW 502 V8
+
+- BMW 502 Coupe
+
+
+Unknown Year:
+- BMW
+
+

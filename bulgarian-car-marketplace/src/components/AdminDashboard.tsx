@@ -137,33 +137,33 @@ const StatusBadge = styled.span<{ status: string }>`
     switch (props.status) {
       case 'active':
         return `
-          background: #4caf50;
-          color: white;
+          background: ${({ theme }) => theme.colors.success.main};
+          color: ${({ theme }) => theme.colors.success.contrastText};
         `;
       case 'inactive':
         return `
-          background: #00ffddff;
-          color: white;
+          background: ${({ theme }) => theme.colors.warning.main};
+          color: ${({ theme }) => theme.colors.warning.contrastText};
         `;
       case 'suspended':
         return `
-          background: #f44336;
+          background: ${({ theme }) => theme.colors.error.main};
           color: white;
         `;
       case 'sold':
         return `
-          background: #2196f3;
-          color: white;
+          background: ${({ theme }) => theme.colors.info.main};
+          color: ${({ theme }) => theme.colors.info.contrastText};
         `;
       case 'pending':
         return `
-          background: #3bdbffff;
-          color: black;
+          background: ${({ theme }) => theme.colors.warning.main};
+          color: ${({ theme }) => theme.colors.warning.contrastText};
         `;
       default:
         return `
-          background: #9e9e9e;
-          color: white;
+          background: ${({ theme }) => theme.colors.grey[500]};
+          color: ${({ theme }) => theme.colors.grey[50]};
         `;
     }
   }}
@@ -320,7 +320,7 @@ const AdminDashboard: React.FC = () => {
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('bg-BG', {
       style: 'currency',
-      currency: 'BGN'
+      currency: 'EUR'
     }).format(price);
   };
 

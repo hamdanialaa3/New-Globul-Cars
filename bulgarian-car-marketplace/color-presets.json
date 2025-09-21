@@ -48,13 +48,13 @@
       "background": "#212529",
       "text": "#FFFFFF"
     },
-    "minimal": {
-      "name": "بسيط رمادي",
-      "primary": "#6C757D",
-      "secondary": "#ADB5BD",
-      "accent": "#495057",
-      "background": "#F8F9FA",
-      "text": "#212529"
+    "mobile-de": {
+      "name": "Mobile.de (ألماني كلاسيكي)",
+      "primary": "#003366",
+      "secondary": "#CC0000",
+      "accent": "#0066CC",
+      "background": "#FFFFFF",
+      "text": "#333333"
     }
   },
   "instructions": {

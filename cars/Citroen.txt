@@ -1,0 +1,522 @@
+Citroen Car Models and Generations:
+
+2026:
+- Citroen C5 Aircross
+  Engine: V L
+  Power: 326 hp, 708 horsepower, 145hp
+  Drivetrain: four-wheel drive
+
+
+2025:
+- Citroen C3 Aircross
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 100 kW
+  Transmission: six-speed transmission
+  Drivetrain: four-wheel drive
+  Dimensions: 2,580 mm wheelbase
+  Fuel Economy: 34 mpg
+
+- Citroen C4 X
+  Engine: engine:Boot volume: 510 litres, meeting the needs of professionals and rental services
+  Power: 326 hp, 708 horsepower, 115 kW
+  Transmission: eight-speed automatic
+  Dimensions: width: 1,800 mm, width: 1,440 mm
+
+- Citroen C4
+  Engine: engine:Boot volume: 510 litres, meeting the needs of professionals and rental services
+  Power: 326 hp, 708 horsepower, 115 kW
+  Transmission: eight-speed automatic
+  Dimensions: width: 1,800 mm, width: 1,440 mm
+  Acceleration: 0-100 km/h in 6.15 s
+  Fuel Economy: 3.8 L/100 km, 61.4 mpg 
+
+- Citroen Ami
+  Power: 326 hp, 708 horsepower, 207hp
+  Dimensions: 3,700mm in length
+  Fuel Economy: 3.8 L/100 km, 61.4 mpg 
+
+
+2024:
+- Citroen e-C3
+  Engine: v 3.0 liter
+  Power: 326 hp, 708 horsepower, 44kW
+  Transmission: automatic transmission
+  Drivetrain: front-wheel drive
+
+- Citroen Ami Buggy Vision Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Citroen Basalt Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Citroen C5 Aircross Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2023:
+- Citroen C4 X
+
+- Citroen Type Holidays Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2022:
+- Citroen C5 Aircross
+
+- Citroen C3 Aircross
+
+- Citroen C5 X
+  Power: 326 hp, 708 horsepower, 225hp
+  Drivetrain: four-wheel drive
+  Fuel Economy: city of up to 565 litres when loaded up to the rear seat backrest, city has increased by 30 litres over the predecessor
+
+- Citroen Oli Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 40kW
+  Transmission: automatic transmission
+  Weight: 2,500kg
+
+
+2021:
+- Citroen C4
+
+- Citroen Ami
+
+
+2020:
+- Citroen C3
+
+
+2019:
+- Citroen C3-XR SUV
+  Power: 326 hp, 708 horsepower, 207hp
+  Drivetrain: four-wheel drive
+
+- Citroen Ami One Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 350 kW
+  Drivetrain: quattro
+  Weight: Weight: 425kgREAD MORE
+
+- Citroen 19 19 Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 100 kW
+  Drivetrain: quattro
+  Dimensions: 4,655 mmWidth, 2,240 mmHeight, Length: 4,655 mm, Width: 2,240 mm
+
+
+2018:
+- Citroen C5 Aircross
+
+- Citroen C3 Aircross
+
+- Citroen C4 Cactus
+  Power: 326 hp, 708 horsepower, 207hp
+  Transmission: automatic transmission
+
+
+2017:
+- Citroen e-Mehari
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 100 kW
+  Drivetrain: four-wheel drive
+
+- Citroen C6
+  Engine: 3.6L V
+  Power: 326 hp, 708 horsepower, 425 hp
+
+- Citroen C-Elysee
+  Engine: hybrid v
+  Power: 326 hp, 708 horsepower, 228 horsepower
+  Transmission: six-speed manual
+
+- Citroen C3
+
+- Citroen C4 Picasso
+  Power: 326 hp, 708 horsepower, 230 Nm 
+  Fuel Economy: 1l/km, 4.1 litres per 100 km, 68.9 mpg 
+
+- Citroen Grand C4 Picasso
+  Power: 326 hp, 708 horsepower, 230 Nm 
+  Fuel Economy: 1l/km, 4.1 litres per 100 km, 68.9 mpg 
+
+- Citroen C-Aircross Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Citroen SpaceTourer 4x4 E Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2016:
+- Citroen CXperience Concept
+  Power: 326 hp, 708 horsepower, 80 kW
+
+- Citroen C3 WRC Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Citroen e-Mehari by Courreges Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Citroen SpaceTourer Hyphen Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: four-wheel drive
+
+
+2015:
+- Citroen C3-XR
+
+- Citroen C4 Cactus
+
+- Citroen DS3 Cabrio
+  Power: 326 hp, 708 horsepower, 170 kW
+  Weight: 1,587 lb
+  Fuel Economy: 3.0l/100 km, 3.6l/100 km, 4.1l /100 km
+
+- Citroen C4
+
+- Citroen C1
+  Power: 326 hp, 708 horsepower, 207hp
+  Transmission: manual gearbox
+  Drivetrain: rear-wheel drive
+  Fuel Economy: 4.3l/100 km, 3.8 L/100 km, 61.4 mpg 
+
+- Citroen DS3
+  Power: 326 hp, 708 horsepower, 207hp
+  Transmission: manual gearbox
+  Drivetrain: all-wheel drive
+  Fuel Economy: 3.0l/100 km, 3.6l/100 km, 4.1l /100 km
+
+- Citroen Aircross Concept
+  Power: 326 hp, 708 horsepower, 70kW
+  Fuel Economy: 1.7 l/100 km, 1.7 l/100 km, 166mpg 
+
+- Citroen Cactus M Concept
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2014:
+- Citroen C5 CrossTourer
+  Power: 326 hp, 708 horsepower, 200 kW
+  Drivetrain: four-wheel drive
+  Fuel Economy: city has increased by 30 litres over the predecessor
+
+- Citroen DS3 Cabrio
+
+- Citroen C3
+
+- Citroen C4 Picasso
+
+- Citroen Grand C4 Picasso
+
+- Citroen C4 Cactus Airflow 2L Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: automatic transmission
+  Dimensions: 4,156 mmWidth, 1,729 mmHeight, Length: 4,156 mm, Width: 1,729 mm
+  Weight: weight: the production Citroen C4 Cactus already ships with a range of features designed to reduce fuel consumption
+  Fuel Economy: 2l/100 km, 2l/100 km, 3.1l/100 km
+
+- Citroen C-XR Concept
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2013:
+- Citroen C4 Aircross
+  Power: 326 hp, 708 horsepower, 470 hp
+  Drivetrain: four-wheel drive
+
+- Citroen C4 L
+  Engine: hybrid v
+  Power: 326 hp, 708 horsepower, 228 horsepower
+  Transmission: six-speed manual
+  Drivetrain: quattro
+
+- Citroen C-Elysee
+
+- Citroen C1
+
+- Citroen C3 Picasso
+  Power: 326 hp, 708 horsepower, 207hp
+
+- Citroen Cactus Concept
+  Power: 326 hp, 708 horsepower, 600 horsepower
+  Drivetrain: quattro
+  Fuel Economy: 3 l/100 km
+
+- Citroen DS3 Cabrio Racing Concept
+  Power: 326 hp, 708 horsepower, 600 horsepower
+  Drivetrain: quattro
+
+- Citroen Technospace Concept
+  Power: 326 hp, 708 horsepower, 600 horsepower
+  Drivetrain: quattro
+  Fuel Economy: city (537 Litres VDA)
+
+
+2012:
+- Citroen DS5
+  Power: 326 hp, 708 horsepower, 147 kW
+  Fuel Economy: 3.8 L/100 km, 61.4 mpg 
+
+- Citroen DS4
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 200hp
+  Transmission: seven-speed
+  Drivetrain: four-wheel drive
+  Fuel Economy: 3.8 L/100 km, 61.4 mpg 
+
+- Citroen DS4 Racing Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Citroen Numero 9 Concept
+  Power: 326 hp, 708 horsepower, 295hp
+  Drivetrain: four-wheel drive
+  Weight: weight: 1,500kgPLUG-IN HYBRID DRIVETRAIN 1
+  Top Speed: Top speed: 152 mph (244km/h)Fuel Consumption: 166 mpg (1
+  Acceleration: 25.3 seconds0-62 mph
+  Fuel Economy: 1.7 l/100km, 166mpg , 166 mpg 
+
+
+2011:
+- Citroen C5
+
+- Citroen C4
+
+- Citroen DS3
+
+- Citroen DS3 Racing
+  Engine: Engine: THP 207hpTransmission: 6-speed manualEngine Type: 4 cylinders, 16v petrol + turd
+  Power: 326 hp, 708 horsepower, 207hp
+  Transmission: manual gearbox
+  Drivetrain: all-wheel drive
+  Acceleration: 26.5 s0-100 km/h
+  Fuel Economy: 3.8 L/100 km, 61.4 mpg , Citycarver2 ⇵2015Like all Audi S models, the Audi S1 Sportback also come with quattro permanent all-wheel drive onboard
+
+- Citroen C-Zero
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 47 kW
+  Dimensions: 3,700mm in length
+  Acceleration: 0-100 km/h in 15 seconds
+
+- Citroen Tubik Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: front-wheel drive
+
+
+2010:
+- Citroen C3
+
+- Citroen DS High Rider Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+- Citroen GQ Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+- Citroen Lacoste Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+- Citroen Metropolis Concept
+  Power: 326 hp, 708 horsepower, 40kW
+  Drivetrain: four-wheel drive
+
+- Citroen Survolt Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+
+2009:
+- Citroen C4
+
+- Citroen C4 Coupe
+  Power: 326 hp, 708 horsepower, 207hp
+  Top Speed: limited to 250 kmh
+  Acceleration: 0-100 km/h in 6.15 s
+  Fuel Economy: 3.8 L/100 km, 61.4 mpg 
+
+- Citroen C1
+
+- Citroen C2
+  Power: 326 hp, 708 horsepower, 207hp
+  Dimensions: 3,700mm in length
+  Fuel Economy: 4.4 l/100 km, 3.8 L/100 km, 61.4 mpg 
+
+- Citroen C3 Picasso
+
+- Citroen DS Inside Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Citroen REVOLTe Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2008:
+- Citroen C4 Sedan
+  Engine: hybrid v
+  Power: 326 hp, 708 horsepower, 110 hp
+  Transmission: six-speed manual
+
+- Citroen C4 notchback
+  Engine: hybrid v
+  Power: 326 hp, 708 horsepower, 158 horsepower
+  Transmission: six-speed manual
+
+- Citroen C5
+
+- Citroen C5 Estate
+  Power: 326 hp, 708 horsepower, 200 kW
+  Drivetrain: four-wheel drive
+  Fuel Economy: city has increased by 30 litres over the predecessor
+
+- Citroen C4 WRC HYmotion4 Concept
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 125kW
+
+- Citroen GT Concept
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Citroen Hypnos Concept
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 200 horsepower
+  Drivetrain: four-wheel drive
+  Fuel Economy: 63mpg 
+
+
+2007:
+- Citroen C-Crosser
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 470 hp
+  Drivetrain: four-wheel drive
+
+- Citroen C4 Picasso
+
+- Citroen Grand C4 Picasso
+
+- Citroen Cruise Crosser Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Citroen C5 Airscape Concept
+  Power: 326 hp, 708 horsepower, 150 kW
+  Drivetrain: four-wheel drive
+
+- Citroen C-Cactus Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Weight: 1,306 kg
+  Fuel Economy: 3.4 l/100 km, 3.4l/100 km
+
+
+2006:
+- Citroen C6
+
+- Citroen C3 Pluriel
+  Engine: 1.6 litre petrol engines
+  Power: 326 hp, 708 horsepower, 82 kW
+  Transmission: five-speed manual
+  Weight: 1,587 lb
+
+- Citroen C3
+
+- Citroen C3 X-TR
+  Engine: 1.6 litre petrol engines
+  Power: 326 hp, 708 horsepower, 82 kW
+  Transmission: five-speed manual
+  Drivetrain: front-wheel drive
+  Weight: 1,280 kg
+  Fuel Economy: 3.8 L/100 km, 61.4 mpg , 40 mpg
+
+- Citroen C1 3door
+  Power: 326 hp, 708 horsepower, 68 PS
+  Transmission: manual gearbox
+  Drivetrain: rear-wheel drive
+  Fuel Economy: 3.8 L/100 km, 3.8 L/100 km, 3.8 L/100 km
+
+- Citroen C1 5door
+  Power: 326 hp, 708 horsepower, 68 PS
+  Transmission: manual gearbox
+  Drivetrain: rear-wheel drive
+  Fuel Economy: 3.8 L/100 km, 3.8 L/100 km, 61.4 mpg 
+
+- Citroen C-Buggy Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Citroen C-Metisse Concept
+  Power: 326 hp, 708 horsepower, 400Nm 
+  Weight: 1,400kg
+  Fuel Economy: 45 mpg 
+
+
+2005:
+- Citroen C5
+
+- Citroen C5 Break
+  Engine: 2.9 L V
+  Power: 326 hp, 708 horsepower, 136 hp
+  Drivetrain: four-wheel drive
+
+- Citroen C4 Coupe
+
+- Citroen C4
+
+- Citroen C-Airplay Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Citroen C-SportLounge Concept Car
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2004:
+- Citroen C3 Pluriel HDi 70
+  Engine: 1.6 L petrol engines
+  Power: 326 hp, 708 horsepower, 60 PS
+  Transmission: manual transmission
+  Weight: 1,587 lb
+
+- Citroen C2
+
+- Citroen Xsara Picasso
+  Power: 326 hp, 708 horsepower, 95 PS
+  Transmission: manual transmission
+  Drivetrain: four-wheel drive
+
+- Citroen C4 Sport Concept
+  Power: 326 hp, 708 horsepower, 90 PS
+
+
+2003:
+- Citroen C8 Exclusive
+  Power: 326 hp, 708 horsepower, 1987PS
+  Transmission: automatic transmission
+  Drivetrain: four-wheel drive
+
+- Citroen CAirlounge Concept
+
+
+2002:
+- Citroen C-Airdream Concept
+
+
+2001:
+- Citroen C-Crosser Concept
+
+
+1999:
+- Citroen Xsara Picasso
+
+
+Unknown Year:
+- Citroen
+
+

@@ -13,7 +13,25 @@ interface TranslationContextType {
 const TranslationContext = React.createContext<TranslationContextType | undefined>(undefined);
 
 export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [language, setLanguage] = useState<BulgarianLanguage>('bg');
+  // Force Bulgarian as default language and clear old localStorage
+  const [language, setLanguageState] = useState<BulgarianLanguage>(() => {
+    if (typeof window !== 'undefined') {
+      // Clear any old language setting
+      localStorage.removeItem('bulgarian.language');
+      // Set Bulgarian as default
+      localStorage.setItem('bulgarian.language', 'bg');
+      return 'bg';
+    }
+    return 'bg';
+  });
+
+  // Save language to localStorage when it changes
+  const setLanguage = useCallback((lang: BulgarianLanguage) => {
+    setLanguageState(lang);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('bulgarian.language', lang);
+    }
+  }, []);
 
   const t = useCallback((key: string, defaultValue?: string): string => {
     const keys = key.split('.');
@@ -31,7 +49,7 @@ export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ c
     language,
     setLanguage,
     t
-  }), [language, t]);
+  }), [language, setLanguage, t]);
 
   return (
     <TranslationContext.Provider value={contextValue}>

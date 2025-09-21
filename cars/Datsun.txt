@@ -1,0 +1,19 @@
+Datsun Car Models and Generations:
+
+2015:
+- Datsun on-DO
+  Power: 326 hp, 708 horsepower, 87 hp
+  Drivetrain: 4Matic
+  Fuel Economy: city of 530L
+
+- Datsun mi-DO
+  Power: 326 hp, 708 horsepower, 87 hp
+  Transmission: four-speed automatic
+  Drivetrain: front-wheel drive
+
+
+2014:
+- Datsun redi-Go Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+

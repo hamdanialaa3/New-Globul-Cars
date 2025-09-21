@@ -1,0 +1,1984 @@
+Audi Car Models and Generations:
+
+2026:
+- 
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 7 kW
+  Transmission: manual transmission
+  Drivetrain: front-wheel drive
+  Fuel Economy: city of up to 492 litres, depending on version, city of up to 1,300 liters (45
+
+- Audi Q3
+  Engine: electric V
+  Power: 326 hp, 708 horsepower, 110 kW
+  Transmission: seven-speed
+  Drivetrain: quattro drive
+
+- Audi Q3 Sportback
+  Engine: electric V
+  Power: 326 hp, 708 horsepower, 110 kW
+  Transmission: seven-speed
+  Drivetrain: all-wheel drive
+
+- Audi A6 Sedan
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 150 kW
+  Transmission: manual transmission
+  Drivetrain: front-wheel drive
+  Fuel Economy: city of up to 492 liters (17, city of up to 1,300 liters (45
+
+- Audi A6 Avant
+  Engine: 5.4 L V
+  Power: 326 hp, 708 horsepower, 7 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Fuel Economy: 7.5 liters per 100 km, city of up to 503 litres, city increases up to 1,534 litres
+
+- Audi E5 Sportback
+  Engine: 5.4 L V
+  Power: 326 hp, 708 horsepower, 2 kW
+  Transmission: five-speed manual
+  Drivetrain: quattro drive
+  Fuel Economy: city of 796 lb-ft (1,079 Nm), city of 796 lb-ft (1,079 Nm)
+
+
+2025:
+- Audi RS Q8
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 441 kW
+  Transmission: eight-speed
+  Drivetrain: all-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Fuel Economy: 11.1 l/100 km, 25.5 mpg , combined for both models: 11.1 l/100 km (25
+
+- Audi RS Q8 performance
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 441 kW
+  Transmission: eight-speed
+  Drivetrain: all-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Fuel Economy: 11.1 l/100 km, 25.5 mpg , combined for both models: 11.1 l/100 km (25
+
+- Audi Q7
+  Engine: eight-cylinder L
+  Power: 326 hp, 708 horsepower, 500 PS
+  Transmission: eight-speed
+  Drivetrain: four-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Acceleration: 0-100kmh in 5.2 seconds
+  Fuel Economy: 0.5 liters per 100 kilometers, 11.1 l/100 km, 25.5 mpg 
+
+- Audi SQ7
+  Power: 326 hp, 708 horsepower, 500 PS
+  Transmission: eight-speed
+  Drivetrain: four-wheel drive
+  Fuel Economy: 0.5 liters per 100 kilometers
+
+- Audi Q5 Sportback
+  Engine: 2.0 litre four-cylinder
+  Power: 326 hp, 708 horsepower, 18 kW
+  Transmission: automatic transmission
+  Drivetrain: front-wheel drive
+  Acceleration: 0-60mph in 4.1 seconds
+  Fuel Economy: city of up to 515 liters or up to 470 liters in the SQ5 Sportdack
+
+- Audi SQ5 Sportback
+  Engine: eight-cylinder L
+  Power: 326 hp, 708 horsepower, 18 kW
+  Transmission: automatic transmission
+  Drivetrain: front-wheel drive
+  Acceleration: 0-100kmh in 5.2 seconds
+  Fuel Economy: 5.0 l/100 km, 54.3 mpg , city of up to 515 liters or up to 470 liters in the SQ5 Sportdack
+
+- Audi Q5
+  Engine: 2.0 litre four-cylinder
+  Power: 326 hp, 708 horsepower, 18 kW
+  Transmission: automatic transmission
+  Drivetrain: front-wheel drive
+  Acceleration: 0-62 mph in 5.9 seconds
+
+- Audi SQ5
+  Engine: eight-cylinder L
+  Power: 326 hp, 708 horsepower, 18 kW
+  Transmission: automatic transmission
+  Drivetrain: front-wheel drive
+  Acceleration: 0-62 mph in 5.9 seconds
+  Fuel Economy: 5.0 l/100 km, 54.3 mpg 
+
+- Audi Q6 e-tron quattro
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 100 kW
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+  Acceleration: 0-62 mph in 5.9 seconds
+
+- Audi Q6L e-tron
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 107 kW
+  Transmission: automatic transmission
+  Drivetrain: rear-wheel drive
+  Acceleration: 0-62 mph in 5.9 seconds
+  Fuel Economy: city of 270 kW as standard, short charging stops are possidle with the Audi Q6L e-tron
+
+- Audi SQ6 e-tron
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 100 kW
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+  Acceleration: 0-62 mph in 5.9 seconds
+  Fuel Economy: 5.0 l/100 km, 54.3 mpg 
+
+- Audi Q6 Sportback e-tron
+  Engine: eight-cylinder L
+  Power: 326 hp, 708 horsepower, 83 kW
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+  Acceleration: 0-62 mph in 5.9 seconds
+  Fuel Economy: 5.0 l/100 km, 54.3 mpg 
+
+- Audi SQ6 Sportback e-tron
+  Engine: eight-cylinder L
+  Power: 326 hp, 708 horsepower, 83 kW
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+  Acceleration: 0-62 mph in 5.9 seconds
+  Fuel Economy: 5.0 l/100 km, 54.3 mpg 
+
+- Audi A3 Sedan
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 110 kW
+  Transmission: seven-speed
+  Drivetrain: all-wheel drive
+  Fuel Economy: city of 380 liters, and up to 1,200 liters with the rear seat folded, city of up to 1,300 liters (45
+
+- Audi S3 Sedan
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 333 PS
+  Transmission: seven-speed
+  Drivetrain: quattro drive
+  Top Speed: limited to 250 km/h
+  Fuel Economy: city of up to 1,300 liters (45
+
+- Audi RS3 Sedan
+  Power: 326 hp, 708 horsepower, 294 kW
+  Transmission: manual transmission
+  Drivetrain: all-wheel drive
+  Fuel Economy: city of up to 1,300 liters (45
+
+- Audi S e-tron GT
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 176 kW
+  Transmission: seven-speed
+  Drivetrain: all-wheel drive
+  Fuel Economy: city of up to 1,300 liters (45
+
+- Audi RS e-tron GT performance
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 252 kW
+  Transmission: eight-speed
+  Drivetrain: all-wheel drive
+  Fuel Economy: city of up to 1,300 liters (45
+
+- Audi RS e-tron GT
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 176 kW
+  Transmission: eight-speed
+  Drivetrain: all-wheel drive
+  Fuel Economy: city of up to 1,300 liters (45
+
+- Audi A6 Sportback e-tron
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 100 kW
+  Transmission: manual transmission
+  Drivetrain: quattro drive
+  Fuel Economy: city of up to 1,300 liters (45
+
+- Audi S6 Sportback e-tron
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 100 kW
+  Transmission: manual transmission
+  Drivetrain: quattro drive
+  Fuel Economy: city of up to 1,300 liters (45
+
+- Audi A5 Sedan
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 150 kW
+  Transmission: six-speed manual
+  Drivetrain: quattro drive
+  Fuel Economy: 0.38 l/100 km, 0.74 l/100km, 4.5 l/100 km
+
+- Audi S5 Sedan
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 150 kW
+  Transmission: six-speed manual
+  Drivetrain: front-wheel drive
+  Fuel Economy: 0.38 l/100 km, 0.74 l/100 km, 4.5 l/100 km
+
+- Audi A6 Avant e-tron
+  Engine: 5.4 L V
+  Power: 326 hp, 708 horsepower, 100 kW
+  Transmission: five-speed manual
+  Drivetrain: quattro drive
+  Fuel Economy: city of 796 lb-ft (1,079 Nm), city of 796 lb-ft (1,079 Nm)
+
+- Audi S6 Avant e-tron
+  Engine: 5.4 L V
+  Power: 326 hp, 708 horsepower, 100 kW
+  Transmission: six-speed manual
+  Drivetrain: quattro drive
+  Fuel Economy: 7.5 liters per 100 km, city of 796 lb-ft (1,079 Nm), city of 796 lb-ft (1,079 Nm)
+
+- Audi A5 Avant
+  Power: 326 hp, 708 horsepower, 150 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: quattro drive
+  Acceleration: 0-62 mph in 5.9 seconds
+  Fuel Economy: 0.38 l/100 km, 0.74 l/100km, city below the high-opening tailgate can be expanded from 500 litres
+
+- Audi S5 Avant
+  Power: 326 hp, 708 horsepower, 150 kW
+  Transmission: eight-speed Steptronic
+  Drivetrain: front-wheel drive
+  Acceleration: 0-62 mph in 5.9 seconds
+  Fuel Economy: 0.38 l/100 km, 0.74 l/100 km, city below the high-opening tailgate can be expanded from 500 litres
+
+- Audi A3 Sportback
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 110 kW
+  Transmission: seven-speed
+  Drivetrain: all-wheel drive
+  Acceleration: 0-62 mph in 5.9 seconds
+
+- Audi A3 allstreet
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 110 kW
+  Transmission: seven-speed
+  Drivetrain: all-wheel drive
+  Acceleration: 0-62 mph in 5.9 seconds
+  Fuel Economy: city of 380 liters, and up to 1,200 liters with the rear seat folded
+
+- Audi S3 Sportback
+  Power: 326 hp, 708 horsepower, 333 PS
+  Transmission: seven-speed
+  Drivetrain: quattro drive
+  Top Speed: limited to 250 km/h
+  Acceleration: 0-62 mph in 5.9 seconds
+
+- Audi RS3 Sportback
+  Power: 326 hp, 708 horsepower, 294 kW
+  Transmission: manual transmission
+  Drivetrain: all-wheel drive
+  Acceleration: 0-62 mph in 5.9 seconds
+
+- Audi C Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: RWD
+
+- Audi Q6 e-tron offroad Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 380 kW
+  Drivetrain: quattro
+
+
+2024:
+- Audi Q8
+  Engine: eight-cylinder L
+  Power: 326 hp, 708 horsepower, 170 kW
+  Transmission: eight-speed
+  Drivetrain: four-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Acceleration: 0-100kmh in 5.2 seconds
+  Fuel Economy: 0.5 liters per 100 kilometers, 11.1 l/100 km, 25.5 mpg 
+
+- Audi SQ8
+  Power: 326 hp, 708 horsepower, 170 kW
+  Transmission: eight-speed
+  Drivetrain: four-wheel drive
+  Fuel Economy: 0.5 liters per 100 kilometers
+
+- Audi Q8 Sportback e-tron quattro
+  Power: 326 hp, 708 horsepower, 250 kW
+  Transmission: eight-speed
+  Drivetrain: all-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Top Speed: limited to 200 km/h
+  Fuel Economy: 11.1 l/100 km, 25.5 mpg , combined for both models: 11.1 l/100 km (25
+
+- Audi SQ8 Sportback e-tron quattro
+  Power: 326 hp, 708 horsepower, 250 kW
+  Transmission: eight-speed
+  Drivetrain: all-wheel drive
+  Top Speed: limited to 200 km/h
+
+- Audi Q8 e-tron quattro
+  Power: 326 hp, 708 horsepower, 250 kW
+  Transmission: eight-speed
+  Drivetrain: all-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Top Speed: limited to 200 km/h
+  Fuel Economy: 11.1 l/100 km, 25.5 mpg , combined for both models: 11.1 l/100 km (25
+
+- Audi SQ8 e-tron quattro
+  Power: 326 hp, 708 horsepower, 250 kW
+  Transmission: eight-speed
+  Drivetrain: all-wheel drive
+  Top Speed: limited to 200 km/h
+
+- Audi RS6 Avant GT
+  Engine: 5.4 L V
+  Power: 326 hp, 708 horsepower, 463 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Fuel Economy: 7.5 liters per 100 km, city of 796 lb-ft (1,079 Nm), city of 796 lb-ft (1,079 Nm)
+
+- Audi E Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 570 kW
+  Drivetrain: four-wheel drive
+  Dimensions: 1,990 mm in width, 1,460 mm in height
+  Acceleration: 0-100 km/h in 3.6 seconds
+
+
+2023:
+- Audi RS7 Sportback performance
+  Engine: v l
+  Power: 326 hp, 708 horsepower, 463 kW
+  Transmission: manual transmission
+  Drivetrain: all-wheel drive
+  Weight: 2,065 kg
+  Top Speed: limited to 250 km/h
+  Fuel Economy: 0.8 liters per 100 kilometers, city of 535 liters (18
+
+- Audi RS6 Avant performance
+  Engine: v l
+  Power: 326 hp, 708 horsepower, 463 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Weight: 2,090 kg
+  Top Speed: limited to 250 km/h
+  Fuel Economy: 0.8 liters per 100 kilometers, 7.5 liters per 100 km, city of 796 lb-ft (1,079 Nm)
+
+- Audi R8 Coupe V10 GT RWD
+  Engine: 6.2L V
+  Power: 326 hp, 708 horsepower, 602 horsepower
+  Transmission: eight-speed
+  Drivetrain: rear-wheel drive
+  Weight: 1,707 kg
+  Acceleration: 0-100 kmh in 2.9 s
+  Fuel Economy: city of up to 1,300 liters (45
+
+- Audi Activesphere Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 100 kW
+  Drivetrain: all-wheel drive
+
+- Audi EP4 Concept
+  Power: 326 hp, 708 horsepower, 30 hp
+  Drivetrain: RWD
+
+
+2022:
+- Audi Q4 Sportback e-tron
+  Engine: 2.0 litre four-cylinder
+  Power: 326 hp, 708 horsepower, 220 kW
+  Transmission: automatic transmission
+  Drivetrain: rear-wheel drive
+  Acceleration: 0-60mph in 4.1 seconds
+  Fuel Economy: 5.0 l/100 km, 54.3 mpg 
+
+- Audi Q4 e-tron
+  Engine: 2.0 litre four-cylinder
+  Power: 326 hp, 708 horsepower, 220 kW
+  Transmission: automatic transmission
+  Drivetrain: rear-wheel drive
+  Acceleration: 0-60mph in 4.1 seconds
+  Fuel Economy: 5.0 l/100 km, 54.3 mpg 
+
+- Audi A8 L
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 250 kW
+  Transmission: five-speed automatic
+  Drivetrain: quattro drive
+  Fuel Economy: city of up to 1,300 liters (45
+
+- Audi A8
+
+- Audi S8
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 250 kW
+  Transmission: five-speed automatic
+  Drivetrain: quattro drive
+  Fuel Economy: city of up to 1,300 liters (45
+
+- Audi RS3 Sedan
+
+- Audi e-tron GT quattro
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 350 kW
+  Transmission: five-speed automatic
+  Drivetrain: all-wheel drive
+  Top Speed: limited to 140 km/h
+  Fuel Economy: city, while the RS model with the standard premium sound system from Bang & Olufsen offers 366 liters (12, city of up to 1,300 liters (45
+
+- Audi RS e-tron GT
+
+- Audi RS3
+
+- Audi A6 Avant e-tron Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 270 kW
+  Drivetrain: quattro drive
+
+- Audi Urbansphere Concept
+  Engine: engine: iust ten minutes are enough to charge the dattery to a level sufficient to power
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: four-wheel drive
+
+
+2021:
+- Audi SQ8 TFSI
+  Power: 326 hp, 708 horsepower, 373 kW
+  Transmission: eight-speed
+  Drivetrain: all-wheel drive
+  Top Speed: electronically governed at 250 km/h
+
+- Audi SQ7 TFSI
+  Power: 326 hp, 708 horsepower, 373 kW
+  Transmission: eight-speed
+  Drivetrain: all-wheel drive
+  Top Speed: electronically governed at 250 km/h
+
+- Audi Q5 Sportback
+
+- Audi SQ5 Sportback TDI
+  Engine: eight-cylinder L
+  Power: 326 hp, 708 horsepower, 251 kW
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+  Acceleration: 0-60mph in 4.1 seconds
+  Fuel Economy: 5.0 l/100 km, 54.3 mpg 
+
+- Audi Q5
+
+- Audi SQ5 TDI
+  Engine: eight-cylinder L
+  Power: 326 hp, 708 horsepower, 251 kW
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+  Acceleration: 0-60mph in 4.1 seconds
+  Fuel Economy: 5.0 l/100 km, 54.3 mpg , city of 520 liters (18
+
+- Audi Q2
+  Power: 326 hp, 708 horsepower, 110 kW
+  Transmission: seven-speed
+  Drivetrain: all-wheel drive
+  Dimensions: 2,580 mm wheelbase
+
+- Audi SQ2
+  Engine: eight-cylinder L
+  Power: 326 hp, 708 horsepower, 221 kW
+  Transmission: six-speed transmission
+  Drivetrain: all-wheel drive
+  Acceleration: 0-100kmh in 5.2 seconds
+  Fuel Economy: 7.7 liters per 100 km, 34 mpg
+
+- Audi e-tron Sportback
+  Power: 326 hp, 708 horsepower, 300 kW
+  Transmission: eight-speed
+  Drivetrain: all-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Top Speed: limited to 200 km/h
+  Fuel Economy: 11.1 l/100 km, 25.5 mpg , city to 1,655 liters (58
+
+- Audi e-tron S Sportback
+  Power: 326 hp, 708 horsepower, 370 kW
+  Transmission: eight-speed
+  Drivetrain: all-wheel drive
+  Top Speed: electronically governed at 210 km/h
+
+- Audi e-tron S
+  Power: 326 hp, 708 horsepower, 370 kW
+  Transmission: eight-speed
+  Drivetrain: all-wheel drive
+
+- Audi A3 Sedan
+
+- Audi S3 Sedan
+
+- Audi A3 Sportback
+
+- Audi S3 Sportback
+
+- Audi A6 e-tron Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 100 kW
+  Drivetrain: quattro drive
+
+- Audi Grandsphere Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 120 kW
+  Drivetrain: quattro drive
+
+- Audi Skysphere Concept
+  Power: 326 hp, 708 horsepower, 465 kW
+  Drivetrain: quattro
+
+- Audi S1 Hoonitron Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: all-wheel drive
+
+
+2020:
+- Audi SQ8 TDI
+  Power: 326 hp, 708 horsepower, 320 kW
+  Transmission: eight-speed
+  Drivetrain: all-wheel drive
+  Fuel Economy: 30.2 mpg
+
+- Audi RS Q8
+
+- Audi Q7
+
+- Audi SQ7 TDI
+  Power: 326 hp, 708 horsepower, 320 kW
+  Transmission: eight-speed
+  Drivetrain: all-wheel drive
+
+- Audi SQ5 TDI
+
+- Audi RS Q3
+  Power: 326 hp, 708 horsepower, 294 kW
+  Transmission: seven-speed
+  Drivetrain: all-wheel drive
+
+- Audi e-tron
+
+- Audi Q3 Sportback
+
+- Audi RS Q3 Sportback
+  Power: 326 hp, 708 horsepower, 294 kW
+  Transmission: seven-speed
+  Drivetrain: all-wheel drive
+
+- Audi S8
+
+- Audi S6 [US]
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 444 horsepower
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+  Acceleration: 0-60 mph in 4.4 seconds
+
+- Audi S6 Sedan TDI
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 257 kW
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+  Top Speed: limited to 250 km/h
+  Fuel Economy: 6.5 liters per 100 kilometers, 6.5 liters/100 km, city of 530 liters (18
+
+- Audi A5 Sportback
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 120 kW
+  Transmission: six-speed manual
+  Drivetrain: quattro drive
+  Fuel Economy: 0.4 liters per 100 kilometers, 4.5 l/100 km, consumption: 8
+
+- Audi S5 Sportback TDI
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 120 kW
+  Transmission: six-speed manual
+  Drivetrain: quattro drive
+  Fuel Economy: 0.4 liters per 100 kilometers, 4.5 l/100 km, consumption: 8
+
+- Audi RS5 Sportback
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 331 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Weight: 1,707 kg
+  Fuel Economy: 7.5 liters per 100 km, city of up to 1,300 liters (45
+
+- Audi A4
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 110 kW
+  Transmission: five-speed manual
+  Drivetrain: quattro drive
+  Weight: 1,707 kg
+  Fuel Economy: 0.3 liters per 100 kilometers, 0.4 liters per 100 kilometers, 0.3 liters per 100 kilometers
+
+- Audi S4 TDI
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 255 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Top Speed: electronically governed at 250 km/h
+  Fuel Economy: 0.4 liters per 100 kilometers, 4.5 l/100 km, consumption: 8
+
+- Audi S7 Sportback TDI
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 257 kW
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+  Top Speed: limited to 250 km/h
+  Fuel Economy: 6.5 liters per 100 kilometers, 6.5 liters/100 km, city of 530 liters (18
+
+- Audi RS7 Sportback
+
+- Audi A6 allroad quattro
+  Engine: 5.4 L V
+  Power: 326 hp, 708 horsepower, 170 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Fuel Economy: 5.8 liters per 100 kilometers, 0.4 liters per 100 kilometers, 7.5 liters per 100 km
+
+- Audi S6 Avant TDI
+  Engine: 5.4 L V
+  Power: 326 hp, 708 horsepower, 257 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Top Speed: limited to 250 km/h
+  Fuel Economy: 6.5 liters per 100 kilometers, 6.5 liters/100 km, 7.5 liters per 100 km
+
+- Audi RS6 Avant
+
+- Audi A4 Avant
+  Power: 326 hp, 708 horsepower, 110 kW
+  Transmission: five-speed manual
+  Drivetrain: quattro drive
+  Fuel Economy: 0.3 liters per 100 kilometers, 0.4 liters per 100 kilometers, 0.3 liters per 100 kilometers
+
+- Audi A4 allroad quattro
+  Power: 326 hp, 708 horsepower, 180 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Fuel Economy: 7.5 liters per 100 km, city of 495 liters (17, city of up to 1,300 liters (45
+
+- Audi S4 Avant TDI
+  Engine: engine: torquey and efficientThe 3
+  Power: 326 hp, 708 horsepower, 255 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Top Speed: electronically governed at 250 km/h
+  Fuel Economy: 0.4 liters per 100 kilometers, 7.5 liters per 100 km, city of up to 1,300 liters (45
+
+- Audi RS4 Avant
+  Engine: v l
+  Power: 326 hp, 708 horsepower, 331 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Acceleration: 0-62 mph in 5.9 seconds
+  Fuel Economy: 7.5 liters per 100 km, city of 495 liters (17, city of up to 1,300 liters (45
+
+- Audi A5 Coupe
+  Engine: 6.8 liter V
+  Power: 326 hp, 708 horsepower, 120 kW
+  Transmission: automatic transmission
+  Drivetrain: quattro drive
+  Weight: 1,707 kg
+  Top Speed: limited to 135mph
+  Fuel Economy: 0.4 liters per 100 kilometers
+
+- Audi S5 Coupe TDI
+  Power: 326 hp, 708 horsepower, 120 kW
+  Transmission: automatic transmission
+  Drivetrain: quattro drive
+  Weight: 1,707 kg
+  Fuel Economy: 0.4 liters per 100 kilometers
+
+- Audi RS5 Coupe
+  Engine: 6.8 liter V
+  Power: 326 hp, 708 horsepower, 331 kW
+  Transmission: manual transmission
+  Drivetrain: all-wheel drive
+  Weight: 1,707 kg
+  Top Speed: limited to 135mph
+
+- Audi R8 V10 RWD
+  Engine: 6.2L V
+  Power: 326 hp, 708 horsepower, 397 kW
+  Transmission: seven-speed
+  Drivetrain: rear-wheel drive
+  Weight: 1,707 kg
+  Acceleration: 0-100 kmh in 2.9 s
+  Fuel Economy: city of up to 1,300 liters (45
+
+- Audi TT RS Coupe
+  Power: 326 hp, 708 horsepower, 294 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Weight: 1,450 kg
+  Fuel Economy: city of 390 litres
+
+- Audi A5 Cabriolet
+  Engine: 3.2 L V
+  Power: 326 hp, 708 horsepower, 120 kW
+  Transmission: six-speed manual
+  Drivetrain: quattro drive
+  Fuel Economy: 0.4 liters per 100 kilometers, 8.7 l/100 km, 32.5 mpg 
+
+- Audi S5 Cabriolet TFSI
+  Engine: 3.2 L V
+  Power: 326 hp, 708 horsepower, 260 kW
+  Transmission: manual transmission
+  Drivetrain: all-wheel drive
+  Fuel Economy: 8.7 l/100 km, 32.5 mpg 
+
+- Audi R8 V10 RWD Spyder
+  Engine: 3.2 L V
+  Power: 326 hp, 708 horsepower, 397 kW
+  Transmission: six-speed manual
+  Drivetrain: rear-wheel drive
+  Weight: 1,707 kg
+  Acceleration: 0-100 km/h in 5.8 s
+
+- Audi TT RS Roadster
+  Engine: 3.2 L V
+  Power: 326 hp, 708 horsepower, 294 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Weight: 1,450 kg
+
+- Audi A1 Citycarver
+  Engine: engine: the transmissionThe power of the engines is transferred to the front wheels
+  Power: 326 hp, 708 horsepower, 70 kW
+  Transmission: five-speed manual
+  Drivetrain: four-wheel drive
+  Fuel Economy: citycarver with the entry-level engine variant weighs iust 1,130 kilograms (2,491.2 ld) (eccluding the driver), city of 335 liters (11, citycarver 25 TFSI has an output of 70 kW (95 metric hp) and its macimum torque is 175 Nm (129.1 ld-ft) (detween 2,000 and 3,500 rpm)
+
+- Audi Q4 Sportback e-tron Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 225 kW
+  Drivetrain: all-wheel drive
+
+
+2019:
+- Audi Q8
+
+- Audi Q3
+
+- Audi SQ2
+
+- Audi A6
+
+- Audi S5 Sportback TDI
+
+- Audi RS5 Sportback
+
+- Audi A4
+
+- Audi A6 Avant
+
+- Audi A4 Avant
+
+- Audi S5 Coupe TDI
+
+- Audi R8 Coupe
+
+- Audi TT Coupe
+  Power: 326 hp, 708 horsepower, 260 kW
+  Transmission: six-speed manual
+  Drivetrain: quattro drive
+  Weight: 1,707 kg
+  Fuel Economy: city of 390 litres
+
+- Audi TTS Coupe
+  Power: 326 hp, 708 horsepower, 180PS
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Weight: 1,707 kg
+  Fuel Economy: city of 390 litres
+
+- Audi R8 Spyder
+  Engine: 3.2 L V
+  Power: 326 hp, 708 horsepower, 250 PS
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Weight: 1,707 kg
+  Acceleration: 0-100 km/h in 5.8 s
+
+- Audi TT Roadster
+  Engine: 3.2 L V
+  Power: 326 hp, 708 horsepower, 245 kW
+  Transmission: six-speed manual
+  Drivetrain: quattro drive
+  Weight: 1,335 kg
+
+- Audi TTS Roadster
+  Engine: 3.2 L V
+  Power: 326 hp, 708 horsepower, 225 kW
+  Transmission: six-speed manual
+  Drivetrain: quattro drive
+  Weight: 1,335 kg
+
+- Audi A1 Sportback
+  Engine: gasoline v
+  Power: 326 hp, 708 horsepower, 70 kW
+  Transmission: manual transmission
+  Drivetrain: four-wheel drive
+  Fuel Economy: city has increased dy 65 liters (2, city is 335 liters (11
+
+- Audi AI-ME Concept
+  Power: 326 hp, 708 horsepower, 125 kW
+  Drivetrain: quattro
+
+- Audi AI-TRAIL quattro Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 350 kW
+  Drivetrain: all-wheel drive
+
+- Audi Q4 e-tron Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 225 kW
+  Drivetrain: all-wheel drive
+
+
+2018:
+- Audi SQ5 3.0 TFSI
+  Engine: eight-cylinder L
+  Power: 326 hp, 708 horsepower, 260 kW
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+  Weight: weight: 14 kilograms (30
+  Acceleration: 0-60mph in 4.1 seconds
+  Fuel Economy: 5.0 l/100 km, 54.3 mpg , city of 500 to 610 liters (17
+
+- Audi A8 L
+
+- Audi A8
+
+- Audi A7 Sportback
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 250 kW
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+  Weight: 1,815 kg
+
+- Audi RS4 Avant
+
+- Audi RS5 Coupe
+
+- Audi R8 Spyder V10 plus
+  Engine: 3.2 L V
+  Power: 326 hp, 708 horsepower, 610 hp
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Weight: 1,707 kg
+  Acceleration: 0-100 km/h in 5.8 s
+  Fuel Economy: 12.5 liters per 100 kilometers
+
+- Audi RS3 Sportback
+
+- Audi e-tron Vision Gran Turismo Concept
+  Power: 326 hp, 708 horsepower, 200 kW
+  Drivetrain: quattro drive
+
+- Audi e-tron GT Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 434 kW
+  Drivetrain: all-wheel drive
+
+- Audi e-tron Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 150 kW
+  Drivetrain: four-wheel drive
+
+- Audi PB18 e-tron Concept
+  Power: 326 hp, 708 horsepower, 150 kW
+  Drivetrain: quattro drive
+  Weight: 1,550 kg
+
+
+2017:
+- Audi SQ7 TDI
+
+- Audi Q5
+
+- Audi Q3
+
+- Audi RS Q3 performance
+  Power: 326 hp, 708 horsepower, 20 kW
+  Transmission: seven-speed
+  Drivetrain: all-wheel drive
+  Fuel Economy: 8.6 liters per 100 km
+
+- Audi Q2
+
+- Audi A3 Sedan
+
+- Audi S3 Sedan
+
+- Audi RS3 Sedan
+
+- Audi A5 Sportback
+
+- Audi S5 Sportback
+
+- Audi S4
+
+- Audi A4 allroad quattro
+
+- Audi S4 Avant
+
+- Audi A5 Coupe
+
+- Audi S5 Coupe
+
+- Audi TT RS Coupe
+
+- Audi A5 Cabriolet
+
+- Audi S5 Cabriolet
+
+- Audi R8 Spyder V10
+
+- Audi TT RS Roadster
+
+- Audi A3 Cabriolet
+  Engine: 3.2 L V
+  Power: 326 hp, 708 horsepower, 81 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Weight: 1,150 kg
+
+- Audi S3 Cabriolet
+  Engine: 3.2 L V
+  Power: 326 hp, 708 horsepower, 81 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Weight: 1,150 kg
+
+- Audi A3 Sportback
+
+- Audi A3
+
+- Audi S3 Sportback
+
+- Audi S3
+
+- Audi Aicon Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 260 kW
+  Drivetrain: all-wheel drive
+  Fuel Economy: city of roughly 660 liters (23
+
+- Audi e-tron Sportback Concept
+  Power: 326 hp, 708 horsepower, 320 kW
+  Drivetrain: quattro
+
+- Audi Q8 Sport Concept
+  Power: 326 hp, 708 horsepower, 476PS
+  Transmission: eight-speed
+  Drivetrain: all-wheel drive
+  Fuel Economy: city of 630 litres
+
+- Audi Q8 Concept
+  Power: 326 hp, 708 horsepower, 330 kW
+  Transmission: eight-speed
+  Drivetrain: all-wheel drive
+  Fuel Economy: city of 630 liters (22
+
+
+2016:
+- Audi Q7
+
+- Audi SQ5 TDI plus
+  Engine: 2.0 litre four-cylinder
+  Power: 326 hp, 708 horsepower, 250 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Top Speed: electronically governed to 250 km/h
+  Acceleration: 0-60mph in 4.1 seconds
+  Fuel Economy: 7.5 liters per 100 km, 5.0 l/100 km, 54.3 mpg 
+
+- Audi A8 L Extended
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 228 kW
+  Transmission: five-speed automatic
+  Drivetrain: all-wheel drive
+  Fuel Economy: city of up to 1,300 liters (45
+
+- Audi S8 plus
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 445 kW
+  Transmission: five-speed automatic
+  Drivetrain: quattro drive
+  Fuel Economy: 10.0 liters per 100 kilometers, city of up to 1,300 liters (45
+
+- Audi A4
+
+- Audi RS7 Sportback performance
+
+- Audi RS6 Avant performance
+
+- Audi A4 Avant
+
+- Audi R8 V10
+
+- Audi R8 e-tron
+  Engine: 6.2L V
+  Power: 326 hp, 708 horsepower, 449 kW
+  Transmission: seven-speed
+  Drivetrain: quattro drive
+  Weight: 1,454 kg
+  Acceleration: 0-100 kmh in 4.2 seconds
+  Fuel Economy: 12.4 liters per 100 kilometers, city of up to 1,300 liters (45
+
+- Audi R8 V10 plus
+  Engine: 6.2L V
+  Power: 326 hp, 708 horsepower, 449 kW
+  Transmission: seven-speed
+  Drivetrain: quattro drive
+  Weight: 1,454 kg
+  Acceleration: 0-100 kmh in 2.9 s
+  Fuel Economy: 12.4 liters per 100 kilometers, city of up to 1,300 liters (45
+
+- Audi RS3 Sportback
+
+- Audi h-tron quattro Concept
+  Power: 326 hp, 708 horsepower, 110 kW
+  Drivetrain: quattro drive
+
+
+2015:
+- Audi Q3
+
+- Audi RS Q3
+
+- Audi S3 Sedan
+
+- Audi A6
+
+- Audi S6
+
+- Audi A7 Sportback
+
+- Audi S7 Sportback
+
+- Audi RS7 Sportback
+
+- Audi A6 Avant
+
+- Audi A6 allroad quattro
+
+- Audi S6 Avant
+
+- Audi RS6 Avant
+
+- Audi TT Coupe
+
+- Audi TTS Coupe
+
+- Audi TT Roadster
+
+- Audi TTS Roadster
+
+- Audi S3 Cabriolet
+
+- Audi A1 Sportback
+
+- Audi A1
+
+- Audi S1 Sportback
+  Power: 326 hp, 708 horsepower, 170 kW
+  Transmission: manual gearbox
+  Drivetrain: all-wheel drive
+  Fuel Economy: Citycarver2 ⇵2015Like all Audi S models, the Audi S1 Sportback also come with quattro permanent all-wheel drive onboard
+
+- Audi S1
+
+- Audi e-tron quattro Concept
+  Power: 326 hp, 708 horsepower, 370 kW
+  Drivetrain: quattro drive
+
+- Audi Prologue Avant Concept
+  Power: 326 hp, 708 horsepower, 335 kW
+  Transmission: eight-speed
+  Drivetrain: all-wheel drive
+  Top Speed: limited to 250 km/h
+  Fuel Economy: 1.6 liters per 100 kilometers
+
+- Audi Prologue Piloted Driving Concept
+  Power: 326 hp, 708 horsepower, 505 kW
+  Drivetrain: quattro
+
+- Audi Prologue Allroad Concept
+  Power: 326 hp, 708 horsepower, 540 kW
+  Transmission: eight-speed
+  Drivetrain: all-wheel drive
+
+- Audi TT Clubsport Turbo Concept
+  Power: 326 hp, 708 horsepower, 441 kW
+  Drivetrain: all-wheel drive
+  Weight: 1,396 kg
+
+
+2014:
+- Audi SQ5 3.0 TFSI
+
+- Audi RS Q3
+
+- Audi A8
+
+- Audi A8L
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 228 kW
+  Transmission: five-speed automatic
+  Drivetrain: all-wheel drive
+  Fuel Economy: 7.8 liters per 100 kilometers, 9.1 liters per 100 kilometers, 5.9 liters per 100 kilometers
+
+- Audi S8
+
+- Audi A3 Sedan
+
+- Audi RS7 Sportback
+
+- Audi RS6 Avant
+
+- Audi RS5 Cabriolet
+  Engine: 3.2 L V
+  Power: 326 hp, 708 horsepower, 331 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Top Speed: limited to 250 km/h
+  Fuel Economy: 10.7 liters per 100 km, 10.7 liters per 100 km, 8.7 l/100 km
+
+- Audi A3 Cabriolet
+
+- Audi A3 Sportback S-Line
+  Engine: hybrid v
+  Power: 326 hp, 708 horsepower, 77 kW
+  Transmission: manual transmission
+  Drivetrain: front-wheel drive
+  Fuel Economy: 0.3 liters per 100 km, 4.2 liters per 100 km, 4.4 liters per 100 km
+
+- Audi S3
+
+- Audi S3 Sportback
+
+- Audi Allroad Shooting Brake Concept
+  Power: 326 hp, 708 horsepower, 300 kW
+  Drivetrain: quattro drive
+  Weight: 1,600 kg
+  Top Speed: limited at 250 km/h
+  Fuel Economy: 1.9 l/100 km, 123.80 mpg
+
+- Audi A3 Clubsport quattro Concept
+  Engine: v l
+  Power: 326 hp, 708 horsepower, 386 kW
+  Transmission: seven-speed
+  Drivetrain: all-wheel drive
+
+- Audi A7 Sportback h-tron quattro Concept
+  Power: 326 hp, 708 horsepower, 170 kW
+  Transmission: automatic transmission
+  Drivetrain: quattro drive
+
+- Audi Prologue Concept
+  Power: 326 hp, 708 horsepower, 445 kW
+  Transmission: eight-speed
+  Drivetrain: all-wheel drive
+  Fuel Economy: 8.6 liters per 100 kilometers
+
+- Audi RS5 TDI Concept
+  Power: 326 hp, 708 horsepower, 283 kW
+  Drivetrain: quattro
+
+- Audi Sport quattro Laserlight Concept
+  Power: 326 hp, 708 horsepower, 515 kW
+  Transmission: eight-speed
+  Drivetrain: quattro drive
+  Fuel Economy: 2.5 l/100 km
+
+- Audi TT Offroad Concept
+  Power: 326 hp, 708 horsepower, 300 kW
+  Drivetrain: all-wheel drive
+
+- Audi TT Sportback Concept
+  Power: 326 hp, 708 horsepower, 294 kW
+  Transmission: seven-speed
+  Drivetrain: all-wheel drive
+  Fuel Economy: 7.0 liters per 100 kilometers
+
+- Audi TT quattro Sport Concept
+  Power: 326 hp, 708 horsepower, 309 kW
+  Drivetrain: all-wheel drive
+
+
+2013:
+- Audi Q5
+
+- Audi SQ5 TDI
+
+- Audi S8
+
+- Audi S6
+
+- Audi A4
+
+- Audi S4
+
+- Audi S7 Sportback
+
+- Audi A6 allroad quattro
+
+- Audi S6 Avant
+
+- Audi A4 Avant
+
+- Audi A4 allroad quattro
+
+- Audi S4 Avant
+
+- Audi RS4 Avant
+
+- Audi R8 V10
+
+- Audi R8 V10 plus
+
+- Audi TT RS plus
+  Power: 326 hp, 708 horsepower, 265 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Weight: 1,707 kg
+  Top Speed: limited to 280 km/h
+  Fuel Economy: 8.6 liters per 100 km, city of 390 litres
+
+- Audi R8 V10 Spyder
+  Engine: v l
+  Power: 326 hp, 708 horsepower, 404 kW
+  Transmission: manual transmission
+  Drivetrain: all-wheel drive
+  Weight: 1,707 kg
+  Fuel Economy: 0.9 liters per 100 km, city - 100 liters (3, city of up to 1,300 liters (45
+
+- Audi A3
+
+- Audi A1 quattro
+  Power: 326 hp, 708 horsepower, 188 kW
+  Transmission: manual gearbox
+  Drivetrain: all-wheel drive
+  Fuel Economy: city is 210 liters (7, Citycarver2 ⇵2015Like all Audi S models, the Audi S1 Sportback also come with quattro permanent all-wheel drive onboard
+
+- Audi A3 e-tron Concept
+  Power: 326 hp, 708 horsepower, 150 kW
+  Drivetrain: quattro
+  Fuel Economy: 1.5 liters per 100 km
+
+- Audi Nanuk quattro Concept
+  Power: 326 hp, 708 horsepower, 400 kW
+  Transmission: seven-speed
+  Drivetrain: quattro drive
+  Fuel Economy: 7.8 liters per 100 kilometers
+
+- Audi R8 e-tron Concept
+  Power: 326 hp, 708 horsepower, 6 kW
+  Drivetrain: quattro
+  Top Speed: limited to 200 km/h
+
+- Audi Sport quattro Concept
+  Power: 326 hp, 708 horsepower, 515 kW
+  Transmission: eight-speed
+  Drivetrain: all-wheel drive
+  Fuel Economy: city of 300 liters (10
+
+- Audi TT ultra quattro Concept
+  Power: 326 hp, 708 horsepower, 228 kW
+  Drivetrain: all-wheel drive
+
+
+2012:
+- Audi Q3
+
+- Audi A6
+
+- Audi A5 Sportback
+
+- Audi S5 Sportback
+
+- Audi A6 Avant
+
+- Audi A5 Coupe
+
+- Audi S5
+
+- Audi RS5
+
+- Audi A5 Cabriolet
+
+- Audi S5 Cabriolet
+
+- Audi R8 GT Spyder
+  Engine: 3.2 L V
+  Power: 326 hp, 708 horsepower, 412 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Weight: 1,707 kg
+  Acceleration: 0-100 km/h in 5.8 s
+  Fuel Economy: city of up to 1,300 liters (45
+
+- Audi RS3 Sportback
+
+- Audi A1 Sportback
+
+- Audi A6 L e-tron Concept
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 155 kW
+  Drivetrain: quattro
+
+- Audi Crosslane Coupe Concept
+  Power: 326 hp, 708 horsepower, 130 kW
+  Drivetrain: quattro
+  Weight: 1,390 kg
+  Fuel Economy: 1.1 liters per 100 km, 1.1 liters per 100 km
+
+- Audi e-bike Worthersee Concept
+  Power: 326 hp, 708 horsepower, 3 kW
+  Transmission: nine-speed
+  Drivetrain: RWD
+
+- Audi Q3 Vail Concept
+  Power: 326 hp, 708 horsepower, 231 kW
+  Transmission: seven-speed
+  Drivetrain: all-wheel drive
+
+- Audi Q3 Jinlong Yufeng Concept
+  Power: 326 hp, 708 horsepower, 228 kW
+  Transmission: seven-speed
+  Drivetrain: all-wheel drive
+
+- Audi RS Q3 Concept
+  Power: 326 hp, 708 horsepower, 265 kW
+  Transmission: seven-speed
+  Drivetrain: all-wheel drive
+
+
+2011:
+- Audi Q7
+
+- Audi A8
+
+- Audi A8 L
+
+- Audi S5 Sportback
+
+- Audi A7 Sportback
+
+- Audi RS5
+
+- Audi R8 GT
+
+- Audi TT Coupe
+
+- Audi TTS Coupe
+
+- Audi R8 Spyder 5.2 FSI quattro
+  Engine: v l
+  Power: 326 hp, 708 horsepower, 386 kW
+  Transmission: manual transmission
+  Drivetrain: all-wheel drive
+  Weight: weight: the ASF dodyThe aluminum dody of the Audi R8 Spyder is top in its segment when it comes to lightweight quality - the relationship detween weight, size and torsional rigidity
+  Fuel Economy: city of up to 1,300 liters (45
+
+- Audi TT Roadster
+
+- Audi TTS Roadster
+
+- Audi A3 Cabriolet
+
+- Audi A3 Sportback
+
+- Audi A3
+
+- Audi A1
+
+- Audi A1 clubsport quattro Concept
+  Power: 326 hp, 708 horsepower, 370 kW
+  Transmission: manual transmission
+  Drivetrain: all-wheel drive
+
+- Audi A2 Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+- Audi A3 e-tron Concept
+
+- Audi A3 Concept
+  Power: 326 hp, 708 horsepower, 300 kW
+  Transmission: seven-speed
+  Drivetrain: all-wheel drive
+
+- Audi Urban Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 1 kW
+  Drivetrain: quattro
+
+- Audi Urban Spyder Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+
+2010:
+- Audi Q7
+
+- Audi A5 Sportback
+
+- Audi A4 allroad quattro
+
+- Audi TT RS
+
+- Audi A5 Cabriolet
+
+- Audi S5 Cabriolet
+
+- Audi TT RS Roadster
+
+- Audi A1 e-tron Concept
+  Engine: motor: 75 kW (102 hp) peak powerThe synchronous electric motor of the Audi A1 e-tron is
+  Power: 326 hp, 708 horsepower, 75 kW
+  Drivetrain: quattro
+  Fuel Economy: 1.9 l/100 km, City Vehicle, which despite its complec drive technology weighs only 1,190 kilograms (2,623.50 ld) delivers zero-emission driving fun in a modern and sophisticated manner
+
+- Audi A8 Hybrid Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 180 kW
+  Transmission: eight-speed
+  Drivetrain: quattro
+  Fuel Economy: 6.2 liters per 100 km, 37.94 mpg
+
+- Audi e-tron Concept
+
+- Audi e-tron Spyder Concept
+  Power: 326 hp, 708 horsepower, 64 kW
+  Transmission: automatic transmission
+  Drivetrain: quattro
+  Top Speed: electronically governed at 250 km/h
+
+- Audi quattro Concept
+  Power: 326 hp, 708 horsepower, 300 kW
+  Transmission: manual transmission
+  Drivetrain: all-wheel drive
+  Fuel Economy: 8.5 liters/100 km
+
+- Audi TT GT4 Concept
+  Power: 326 hp, 708 horsepower, 250 kW
+  Drivetrain: quattro
+
+
+2009:
+- Audi Q7 V12 TDI
+  Power: 326 hp, 708 horsepower, 368 kW
+  Transmission: automatic transmission
+  Drivetrain: quattro drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Fuel Economy: 11.3 liters/100 km, 11.1 l/100 km, 25.5 mpg 
+
+- Audi Q5
+
+- Audi A6
+
+- Audi S6
+
+- Audi RS6
+
+- Audi S4
+
+- Audi A6 Avant
+
+- Audi A6 allroad quattro
+
+- Audi S6 Avant
+
+- Audi A4 Avant
+
+- Audi S4 Avant
+
+- Audi TTS Coupe
+
+- Audi TTS Roadster
+
+- Audi A3
+
+- Audi A3 Sportback
+
+- Audi S3 Sportback
+
+- Audi S3
+
+- Audi e-tron Concept
+
+- Audi Q5 Custom Concept
+  Power: 326 hp, 708 horsepower, 245 kW
+  Drivetrain: all-wheel drive
+  Top Speed: Top speed: 250 km/h (155 mph) (governed)0-100 km/h (0-62 mph): 4
+
+- Audi Sportback Concept
+  Power: 326 hp, 708 horsepower, 165 kW
+  Transmission: transmission: the new 7-speed tiptronic
+  Drivetrain: quattro
+  Fuel Economy: 0.2 liters per 100 kilometers
+
+
+2008:
+- Audi A8L W12 quattro
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 450 hp
+  Transmission: five-speed automatic
+  Drivetrain: front-wheel drive
+  Fuel Economy: city of up to 1,300 liters (45
+
+- Audi A8 4.2 TDI quattro
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 441 kW
+  Transmission: five-speed automatic
+  Drivetrain: four-wheel drive
+  Fuel Economy: city of up to 1,300 liters (45
+
+- Audi S8
+
+- Audi A4
+
+- Audi RS6 Avant
+
+- Audi A5
+
+- Audi S5
+
+- Audi A3 Cabriolet
+
+- Audi A1 Sportback Concept
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 110 kW
+  Drivetrain: front-wheel drive
+  Fuel Economy: city of 1.4 liters and a turdocharger
+
+- Audi A3 TDI clubsport quattro Concept
+  Engine: engine: low on emissions, high on efficiencyIn its high-performance 165 kW (224 hp) vers
+  Power: 326 hp, 708 horsepower, 165 kW
+  Drivetrain: all-wheel drive
+  Fuel Economy: 44.38 mpg
+
+- Audi A4 TDI Concept e
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 88 kW
+  Transmission: manual transmission
+  Drivetrain: RWD
+  Fuel Economy: 4.5 liters per 100 km, 5.3 l/100 km
+
+- Audi R8 TDI Le Mans Concept
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 500 hp
+  Transmission: manual transmission
+  Drivetrain: all-wheel drive
+
+- Audi R8 V12 TDI Concept
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 500 hp
+  Transmission: manual transmission
+  Drivetrain: all-wheel drive
+
+- Audi TT clubsport quattro Concept
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 220 kW
+  Drivetrain: all-wheel drive
+
+
+2007:
+- Audi Q7 V12 TDI
+
+- Audi R8
+
+- Audi TT Coupe
+
+- Audi TT Roadster
+
+- Audi S3
+
+- Audi Cross Cabriolet quattro Concept
+  Engine: engine: the ultra-low emission system
+  Power: 326 hp, 708 horsepower, 176 kW
+  Transmission: automatic transmission
+  Drivetrain: four-wheel drive
+  Fuel Economy: 7.3 l/100 km
+
+- Audi Cross Coupe quattro Concept
+  Power: 326 hp, 708 horsepower, 400 Nm 
+  Drivetrain: four-wheel drive
+
+- Audi metroproject quattro Concept
+  Power: 326 hp, 708 horsepower, 110 kW
+  Drivetrain: Front-wheel drive
+  Acceleration: 0-100 km/h in 7.8 seconds
+  Fuel Economy: city of 1.4 litres and a turdocharger
+
+- Audi Q7 V12 TDI Concept
+  Power: 326 hp, 708 horsepower, 368 kW
+  Drivetrain: quattro drive
+  Fuel Economy: 11.9 litres/100 km, city of 5.5 litres, city to a macimum of 2,035 litres
+
+- Audi TT clubsport quattro Concept
+
+
+2006:
+- Audi Q7
+
+- Audi A8 Security
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 331 kW
+  Transmission: five-speed automatic
+  Drivetrain: four-wheel drive
+  Fuel Economy: city of up to 1,300 liters (45
+
+- Audi S8
+
+- Audi S6
+
+- Audi RS4
+
+- Audi A6 allroad quattro
+
+- Audi S6 Avant
+
+- Audi RS 4 Avant
+  Power: 326 hp, 708 horsepower, 420PS
+  Transmission: six-speed manual
+  Drivetrain: four-wheel drive
+  Acceleration: 0-62 mph in 5.9 seconds
+  Fuel Economy: 7.5 liters per 100 km, city of up to 1,300 liters (45, city below the high-opening tailgate can be expanded from 500 litres
+
+- Audi A4 Cabriolet
+  Engine: 3.2 L V
+  Power: 326 hp, 708 horsepower, 188 kW
+  Transmission: six-speed manual
+  Drivetrain: four-wheel drive
+  Weight: 1,707 kg
+  Top Speed: top speed: 250 km/h (governed)2
+  Fuel Economy: city of up to 1,300 liters (45
+
+- Audi S4 Cabriolet
+  Engine: 3.2 L V
+  Power: 326 hp, 708 horsepower, 480 PS
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Weight: 1,707 kg
+  Fuel Economy: city of up to 1,300 liters (45
+
+- Audi RS 4 Cabriolet
+  Engine: 3.2 L V
+  Power: 326 hp, 708 horsepower, 420PS
+  Transmission: six-speed manual
+  Drivetrain: four-wheel drive
+  Weight: 1,707 kg
+  Fuel Economy: 8.7 l/100 km, 32.5 mpg , city of up to 1,300 liters (45
+
+- Audi Roadjet Concept
+  Power: 326 hp, 708 horsepower, 330 Nm 
+  Transmission: automatic transmission
+  Drivetrain: four-wheel drive
+
+
+2005:
+- Audi A8 3.2 FSI quattro
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 235 kW
+  Transmission: five-speed automatic
+  Drivetrain: all-wheel drive
+  Fuel Economy: city of up to 1,300 liters (45
+
+- Audi A8L 4.2 TDI quattro
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 235 kW
+  Transmission: five-speed automatic
+  Drivetrain: all-wheel drive
+  Fuel Economy: city of up to 1,300 liters (45
+
+- Audi A6 3.2
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 382 kW
+  Transmission: automatic transmission
+  Drivetrain: front-wheel drive
+  Fuel Economy: city of up to 1,300 liters (45
+
+- Audi A6L
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 382 kW
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+  Fuel Economy: city of up to 1,300 liters (45
+
+- Audi A4 2.0T
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 255 PS
+  Transmission: six-speed manual
+  Drivetrain: front-wheel drive
+  Weight: 1,707 kg
+
+- Audi S4
+
+- Audi A6 Avant
+
+- Audi A4 Avant 3.2 quattro
+  Power: 326 hp, 708 horsepower, 255 PS
+  Transmission: six-speed manual
+  Drivetrain: front-wheel drive
+  Fuel Economy: 7.5 liters per 100 km, city of up to 1,300 liters (45, city below the high-opening tailgate can be expanded from 500 litres
+
+- Audi S4 Avant
+
+- Audi Allroad quattro Concept
+  Power: 326 hp, 708 horsepower, 210 kW
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+
+- Audi Q7 Hybrid Concept
+  Engine: hybrid v
+  Power: 326 hp, 708 horsepower, 257 kW
+  Transmission: automatic transmission
+  Drivetrain: four-wheel drive
+  Fuel Economy: 12.0 litres per 100 km
+
+- Audi Shooting Brake Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: four-wheel drive
+  Top Speed: electronically governed at 250 km/h
+
+
+2004:
+- Audi A8 L 6.0 W12 quattro
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 235 kW
+  Transmission: five-speed automatic
+  Drivetrain: all-wheel drive
+  Fuel Economy: city of up to 1,300 liters (45
+
+- Audi RS6 plus
+  Engine: 4.2 Litre V
+  Power: 326 hp, 708 horsepower, 444 hp
+  Transmission: six-speed manual
+  Drivetrain: All-Wheel Drive
+  Fuel Economy: 7.5 liters per 100 km, city of 796 lb-ft (1,079 Nm), city of 796 lb-ft (1,079 Nm)
+
+- Audi S4 Cabriolet
+
+- Audi A3 Sportback
+
+- Audi RSQ Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+
+2003:
+- Audi A8 L 4.2 quattro
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 235 kW
+  Transmission: five-speed automatic
+  Drivetrain: all-wheel drive
+  Fuel Economy: city of up to 1,300 liters (45
+
+- Audi A8 4.0 TDI quattro
+  Engine: 4.2 L Diesel V
+  Power: 326 hp, 708 horsepower, 240 kW
+  Transmission: five-speed automatic
+  Drivetrain: all-wheel drive
+  Acceleration: 0-100 km/h in 8.0 s
+  Fuel Economy: city of up to 1,300 liters (45
+
+- Audi TT 3.2 DSG quattro
+  Engine: 3.2 L V
+  Power: 326 hp, 708 horsepower, 180 PS
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Weight: 1,707 kg
+  Fuel Economy: city of 390 litres
+
+- Audi TT Roadster 3.2 quattro
+  Engine: 3.2 L V
+  Power: 326 hp, 708 horsepower, 180 PS
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Weight: 1,335 kg
+
+- Audi A3 3-door
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 200 PS
+  Transmission: seven-speed
+  Drivetrain: all-wheel drive
+
+- Audi Le Mans quattro Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+- Audi Nuvolari quattro Concept
+  Power: 326 hp, 708 horsepower, 600 hp
+  Drivetrain: all-wheel drive
+
+- Audi Pikes Peake quattro Concept
+  Power: 326 hp, 708 horsepower, 500 horsepower
+  Drivetrain: quattro
+
+
+2002:
+- Audi RS6 Sedan
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 450 PS
+  Transmission: automatic transmission
+  Drivetrain: four-wheel drive
+  Fuel Economy: city, measured according to the VDA dlock method in the Avant ranges from 455 litres (16
+
+- Audi S4
+
+- Audi RS6 Avant
+
+- Audi S4 Avant
+
+- Audi TT Roadster
+
+- Audi A4 Cabriolet
+
+- Audi S3
+
+
+2001:
+- Audi A8 L 6.0 quattro
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 331 kW
+  Transmission: five-speed automatic
+  Drivetrain: all-wheel drive
+  Fuel Economy: city of up to 1,300 liters (45
+
+- Audi A6
+
+- Audi A6 Avant
+
+- Audi A4 Avant
+
+- Audi Avantissimo Concept
+  Engine: 4.2 L V
+  Power: 326 hp, 708 horsepower, 430 hp
+  Transmission: automatic transmission
+  Drivetrain: Quattro
+
+
+2000:
+- Audi A4
+
+- Audi allroad quattro 2.5 TDI
+  Engine: 5.4 L V
+  Power: 326 hp, 708 horsepower, 132 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Fuel Economy: 7.5 liters per 100 km, city of 796 lb-ft (1,079 Nm), city of 796 lb-ft (1,079 Nm)
+
+- Audi RS4
+
+- Audi A3 3-door
+
+- Audi A3 5-door
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 180 PS
+  Transmission: seven-speed
+  Drivetrain: four-wheel drive
+
+- Audi S3
+
+- Audi A2
+
+- Audi Rosemeyer Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: four-wheel drive
+
+- Audi Steppenwolf Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: Quattro
+
+
+1999:
+- Audi S8
+
+- Audi A6
+
+- Audi S6
+
+- Audi A4
+
+- Audi S6 Avant
+
+- Audi A4 Avant
+
+- Audi S4 Avant
+
+- Audi TT Coupe
+
+- Audi A4 Cabriolet
+
+- Audi A3 5-door
+
+- Audi S3
+
+
+1998:
+- Audi A8
+
+- Audi S8
+
+- Audi A4
+
+- Audi S4
+
+- Audi A6 Avant
+
+- Audi A4 Avant
+
+- Audi S4 Avant
+
+- Audi A3 3-door
+
+
+1996:
+- Audi S6 Avant
+
+- Audi S2 Coupe
+  Power: 326 hp, 708 horsepower, 220PS
+  Transmission: Transmission: sic-speed manualquattro all-wheel driveWeight: 1525kgvar thz=["02df4f14215a651e003181a17902133188bd81d9b0376e0c001895a89382da143a9c7ef85ab66328eeb1e77c6","22bf4fe4616a35ee0061c1f1b982f3d1989d41e9b0c7de9c0028855843821ab45a9c7ef85ab66328eeb1e77c6","c2ff7f2471aac55e00b1210199d243b1986dc119a0875efcf03855180302ca640a2c7ef85ab66328eeb1e77c6","e2cf7ff4e15af54e00c111a18992733138ed516990871e2c7048a58813f2caa40aec7ef85ab66328eeb1e77c6","325f7f34111a45de00d1a1f129b2b3a1085d6199f047de0c205835f8b3e26a441aac7ef85ab66328eeb1e77c6","229fbf04a15a150e00512111493253f178cd610910475eac706875c83332fa349a0c7ef85ab66328eeb1e77c6","823f9f14110a850e005121d1299273d1184d3199f0e7ce2c5078f52803325a744aac7ef85ab66328eeb1e77c6","529f9f4441fa05be0061517119724371d8adc189b0378e0c4088b508d3f2eaa4da1c7ef85ab66328eeb1e77c6","822f9fa451eae58e000111918962f3c1086d3139d0878e8cd098c52883426aa4ba6c7ef85ab66328eeb1e77c6","020fcfd4719a45de00c1e1e1f9825301586d018900e73edc90a825082342dae4fa7c7ef85ab66328eeb1e77c6","322fbf64519aa50e00c101e1b912e331288d21f9f0371eccc0b8f59813024ad4aafc7ef85ab66328eeb1e77c6","a27fbf54318a951e00d1c1f1a912f381a8adc189c017eebcf0c835e873923ab4ea1c7ef85ab66328eeb1e77c6","32cf5f0491aa156e005151d179b24371783dc1a9c0374e8cb0d865a8b3a2fa44fa0c7ef85ab66328eeb1e77c6","52dfdff4314a15ae00513101497253b1882d81c97057ce2c90e8f5880332fa14ea0c7ef85ab66328eeb1e77c6","82bf1f04e17ab5de009121e179221331082dc1e930a72eac00f835d8e3024a646a8c7ef85ab66328eeb1e77c6","627f9fa4a1ea456e10f1715109d203f1b87dc14940a76ebc2008f5380352ba14cadc7ef85ab66328eeb1e77c6","c27f4fc4718a557e10a1b1c10932a391e83d7129a0774e9c001875589332fa548acc7ef85ab66328eeb1e77c6","029f3fb4612a254e1031a141c9324381484d61a9e017ce2c6028c5e8a372aa44bacc7ef85ab66328eeb1e77c6","d2af1fb451fa457e1071a1e1495253b1085d619930a77e3c00386508d3c21a343a2c7ef85ab66328eeb1e77c6","721fef84d18a559e1091a1d189e2e36108cdc119c0077ecce048856813924ac4eacc7ef85ab66328eeb1e77c6","025f6f04f1aa252e100191f179020331b8ed314960c79edc10580598a312caf47a0c7ef85ab66328eeb1e77c6","hh"];var thzMo='Audi-S2_Coupe-1996';var thU='69C8BD6ED17369AACD93003001858916';1996Naturally, quattro all-wheel-drive underpinned the Audi S2's strong performance, and this of course was the latest iteration featuring a Torsen centre differential
+  Drivetrain: all-wheel drive
+  Weight: Weight: 1525kgvar thz=["02df4f14215a651e003181a17902133188bd81d9b0376e0c001895a89382da143a9c7ef85ab66328eeb1e77c6","22bf4fe4616a35ee0061c1f1b982f3d1989d41e9b0c7de9c0028855843821ab45a9c7ef85ab66328eeb1e77c6","c2ff7f2471aac55e00b1210199d243b1986dc119a0875efcf03855180302ca640a2c7ef85ab66328eeb1e77c6","e2cf7ff4e15af54e00c111a18992733138ed516990871e2c7048a58813f2caa40aec7ef85ab66328eeb1e77c6","325f7f34111a45de00d1a1f129b2b3a1085d6199f047de0c205835f8b3e26a441aac7ef85ab66328eeb1e77c6","229fbf04a15a150e00512111493253f178cd610910475eac706875c83332fa349a0c7ef85ab66328eeb1e77c6","823f9f14110a850e005121d1299273d1184d3199f0e7ce2c5078f52803325a744aac7ef85ab66328eeb1e77c6","529f9f4441fa05be0061517119724371d8adc189b0378e0c4088b508d3f2eaa4da1c7ef85ab66328eeb1e77c6","822f9fa451eae58e000111918962f3c1086d3139d0878e8cd098c52883426aa4ba6c7ef85ab66328eeb1e77c6","020fcfd4719a45de00c1e1e1f9825301586d018900e73edc90a825082342dae4fa7c7ef85ab66328eeb1e77c6","322fbf64519aa50e00c101e1b912e331288d21f9f0371eccc0b8f59813024ad4aafc7ef85ab66328eeb1e77c6","a27fbf54318a951e00d1c1f1a912f381a8adc189c017eebcf0c835e873923ab4ea1c7ef85ab66328eeb1e77c6","32cf5f0491aa156e005151d179b24371783dc1a9c0374e8cb0d865a8b3a2fa44fa0c7ef85ab66328eeb1e77c6","52dfdff4314a15ae00513101497253b1882d81c97057ce2c90e8f5880332fa14ea0c7ef85ab66328eeb1e77c6","82bf1f04e17ab5de009121e179221331082dc1e930a72eac00f835d8e3024a646a8c7ef85ab66328eeb1e77c6","627f9fa4a1ea456e10f1715109d203f1b87dc14940a76ebc2008f5380352ba14cadc7ef85ab66328eeb1e77c6","c27f4fc4718a557e10a1b1c10932a391e83d7129a0774e9c001875589332fa548acc7ef85ab66328eeb1e77c6","029f3fb4612a254e1031a141c9324381484d61a9e017ce2c6028c5e8a372aa44bacc7ef85ab66328eeb1e77c6","d2af1fb451fa457e1071a1e1495253b1085d619930a77e3c00386508d3c21a343a2c7ef85ab66328eeb1e77c6","721fef84d18a559e1091a1d189e2e36108cdc119c0077ecce048856813924ac4eacc7ef85ab66328eeb1e77c6","025f6f04f1aa252e100191f179020331b8ed314960c79edc10580598a312caf47a0c7ef85ab66328eeb1e77c6","hh"];var thzMo='Audi-S2_Coupe-1996';var thU='69C8BD6ED17369AACD93003001858916';1996Naturally, quattro all-wheel-drive underpinned the Audi S2's strong performance, and this of course was the latest iteration featuring a Torsen centre differential
+
+
+1995:
+- Audi S6
+
+- Audi TT Coupe Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: RWD
+
+- Audi TTS Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+
+1993:
+- Audi RS2 Avant
+
+
+1991:
+- Audi Avus quattro Concept
+
+- Audi quattro Spyder Concept
+
+
+1988:
+- Audi quattro
+
+
+1984:
+- Audi Sport quattro
+
+
+1980:
+- Audi quattro
+
+
+Unknown Year:
+- Audi
+
+

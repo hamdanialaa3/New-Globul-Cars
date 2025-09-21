@@ -3,25 +3,25 @@
 
 import { createGlobalStyle, DefaultTheme } from 'styled-components';
 
-// Bulgarian Color Palette - نظام أزرق متدرج احترافي
+// Bulgarian Color Palette - نظام ألوان mobile.de مستوحى من التصميم الألماني
 export const bulgarianColors = {
-  // الألوان الأساسية - نظام أزرق متدرج
+  // الألوان الأساسية - نظام mobile.de (أزرق داكن، أحمر، أبيض)
   primary: {
-    main: '#007BFF',        // أزرق أساسي احترافي
-    light: '#4DA6FF',       // أزرق فاتح
-    dark: '#0056CC',        // أزرق غامق
+    main: '#003366',        // أزرق داكن للهيدر (mobile.de style)
+    light: '#0066CC',       // أزرق فاتح للروابط
+    dark: '#002244',        // أزرق أغمق
     contrastText: '#FFFFFF' // نص أبيض على الأزرق
   },
   secondary: {
-    main: '#6C757D',        // أزرق رمادي
-    light: '#ADB5BD',       // أزرق رمادي فاتح
-    dark: '#495057',        // أزرق رمادي داكن
+    main: '#CC0000',        // أحمر للأزرار الرئيسية (mobile.de style)
+    light: '#FF3333',       // أحمر فاتح
+    dark: '#990000',        // أحمر داكن
     contrastText: '#FFFFFF'
   },
   accent: {
-    main: '#4169E1',        // أزرق ملكي (أزرق أحمر)
-    light: '#6495ED',       // أزرق ملكي فاتح
-    dark: '#1E3A8A',        // أزرق ملكي داكن
+    main: '#0066CC',        // أزرق للروابط والتأكيدات
+    light: '#3399FF',       // أزرق أفتح
+    dark: '#004499',        // أزرق أغمق
     contrastText: '#FFFFFF'
   },
 
@@ -71,59 +71,59 @@ export const bulgarianColors = {
     900: '#0F172A'   // أزرق رمادي أسود تقريباً
   },
 
-  // ألوان الحالة - نظام أزرق
+  // ألوان الحالة - نظام mobile.de (أحمر للخطأ، أخضر للنجاح)
   success: {
-    main: '#20B2AA',    // أزرق مخضر
-    light: '#7FFFD4',   // أكوامارين
-    dark: '#008080',    // أزرق مخضر داكن
+    main: '#28A745',    // أخضر للنجاح
+    light: '#51CF66',   // أخضر فاتح
+    dark: '#1E7E34',    // أخضر داكن
     contrastText: '#FFFFFF'
   },
   warning: {
-    main: '#00CED1',    // تركواز (أزرق أصفر)
-    light: '#40E0D0',   // تركواز فاتح
-    dark: '#008B8B',    // تركواز داكن
+    main: '#FFC107',    // أصفر للتحذير
+    light: '#FFCA2C',   // أصفر فاتح
+    dark: '#D39E00',    // أصفر داكن
     contrastText: '#000000'
   },
   error: {
-    main: '#DC143C',    // قرمزي (أحمر مع لمسة زرقاء)
-    light: '#FF6347',   // طماطم
-    dark: '#8B0000',    // أحمر داكن
+    main: '#CC0000',    // أحمر للخطأ (mobile.de style)
+    light: '#FF3333',   // أحمر فاتح
+    dark: '#990000',    // أحمر داكن
     contrastText: '#FFFFFF'
   },
   info: {
-    main: '#1E90FF',    // أزرق دوجر
-    light: '#87CEFA',   // سماوي فاتح
-    dark: '#0000CD',    // أزرق متوسط
+    main: '#0066CC',    // أزرق للمعلومات
+    light: '#3399FF',   // أزرق فاتح
+    dark: '#004499',    // أزرق داكن
     contrastText: '#FFFFFF'
   },
 
-  // ألوان الخلفية - نظام أزرق احترافي
+  // ألوان الخلفية - نظام mobile.de (أبيض، رمادي فاتح)
   background: {
-    default: '#F8FAFC',     // أزرق رمادي فاتح جداً
-    paper: '#FFFFFF',       // أبيض نقي
-    dark: '#0F172A',        // أزرق رمادي داكن
-    semiDark: 'rgba(15, 23, 42, 0.85)', // أزرق رمادي شبه داكن
-    lightOverlay: 'rgba(248, 250, 252, 0.95)', // تراكب أزرق فاتح
-    darkOverlay: 'rgba(15, 23, 42, 0.7)' // تراكب أزرق داكن
+    default: '#FFFFFF',     // أبيض نقي (mobile.de style)
+    paper: '#F8F9FA',       // رمادي فاتح جداً للبطاقات
+    dark: '#F5F5F5',        // رمادي فاتح للعناصر الثانوية
+    semiDark: 'rgba(0, 51, 102, 0.85)', // أزرق داكن شبه شفاف
+    lightOverlay: 'rgba(255, 255, 255, 0.95)', // تراكب أبيض
+    darkOverlay: 'rgba(0, 51, 102, 0.7)' // تراكب أزرق داكن
   },
 
-  // ألوان النصوص - مع تباين مثالي للقراءة
+  // ألوان النصوص - مع تباين مثالي للقراءة (mobile.de style)
   text: {
-    primary: '#0F172A',     // أزرق رمادي داكن جداً (على خلفيات فاتحة)
-    secondary: '#475569',   // أزرق رمادي متوسط (على خلفيات فاتحة)
-    onDark: '#F8FAFC',      // أزرق رمادي فاتح (على خلفيات داكنة)
-    onLight: '#0F172A',     // أزرق رمادي داكن (على خلفيات فاتحة)
-    disabled: '#94A3B8',    // أزرق رمادي متوسط داكن
-    hint: '#CBD5E1'         // أزرق رمادي فاتح
+    primary: '#333333',     // رمادي داكن (mobile.de style)
+    secondary: '#666666',   // رمادي متوسط
+    onDark: '#FFFFFF',      // أبيض على الخلفيات الداكنة
+    onLight: '#333333',     // رمادي داكن على الخلفيات الفاتحة
+    disabled: '#999999',    // رمادي فاتح للعناصر المعطلة
+    hint: '#CCCCCC'         // رمادي باهت للتلميحات
   }
 };
 
-// Bulgarian Typography
+// Bulgarian Typography - خطوط mobile.de (نظيفة وألمانية)
 export const bulgarianTypography = {
   fontFamily: {
-    primary: "'Roboto', 'Helvetica', 'Arial', sans-serif",
-    secondary: "'Open Sans', 'Helvetica', 'Arial', sans-serif",
-    accent: "'Montserrat', 'Helvetica', 'Arial', sans-serif"
+    primary: "'Arial', 'Helvetica', sans-serif",  // خطوط نظيفة (mobile.de style)
+    secondary: "'Helvetica', 'Arial', sans-serif",
+    accent: "'Arial Black', 'Arial', sans-serif"
   },
   fontSize: {
     xs: '0.75rem',    // 12px
@@ -210,37 +210,37 @@ export const bulgarianTheme: DefaultTheme = {
   shadows: bulgarianShadows,
   borderRadius: bulgarianBorderRadius,
 
-  // Component specific styles
+  // Component specific styles - مكونات mobile.de
   components: {
     button: {
-      borderRadius: bulgarianBorderRadius.base,
-      fontWeight: bulgarianTypography.fontWeight.medium,
+      borderRadius: bulgarianBorderRadius.sm,  // حواف أقل دائرية (mobile.de style)
+      fontWeight: bulgarianTypography.fontWeight.bold,
       transition: 'all 0.2s ease-in-out',
-      backgroundColor: bulgarianColors.primary.main,
-      color: bulgarianColors.primary.contrastText,
-      border: `2px solid ${bulgarianColors.primary.main}`,
+      backgroundColor: bulgarianColors.secondary.main,  // أحمر للأزرار الرئيسية
+      color: bulgarianColors.secondary.contrastText,
+      border: `2px solid ${bulgarianColors.secondary.main}`,
       '&:hover': {
-        backgroundColor: bulgarianColors.primary.dark,
-        borderColor: bulgarianColors.primary.dark
+        backgroundColor: bulgarianColors.secondary.dark,
+        borderColor: bulgarianColors.secondary.dark
       }
     },
     input: {
-      borderRadius: bulgarianBorderRadius.base,
-      border: `2px solid ${bulgarianColors.primary.main}`,
+      borderRadius: bulgarianBorderRadius.sm,  // حواف بسيطة
+      border: `1px solid #CCCCCC`,  // حدود رمادية (mobile.de style)
       padding: `${bulgarianSpacing.sm} ${bulgarianSpacing.md}`,
       fontSize: bulgarianTypography.fontSize.base,
       backgroundColor: bulgarianColors.background.paper,
       color: bulgarianColors.text.primary,
       transition: 'border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
     '&:focus': {
-        borderColor: bulgarianColors.secondary.main,
-        boxShadow: `0 0 0 3px rgba(0, 123, 255, 0.3)`
+        borderColor: bulgarianColors.primary.main,
+        boxShadow: `0 0 0 2px rgba(0, 102, 204, 0.2)`  // ظل أزرق فاتح
       }
     },
     card: {
-      borderRadius: bulgarianBorderRadius.lg,
-      boxShadow: bulgarianShadows.base,
-      border: `2px solid ${bulgarianColors.primary.main}`,
+      borderRadius: bulgarianBorderRadius.sm,  // حواف بسيطة
+      boxShadow: bulgarianShadows.sm,  // ظل بسيط
+      border: `1px solid #E0E0E0`,  // حدود رمادية فاتحة
       backgroundColor: bulgarianColors.background.paper,
       color: bulgarianColors.text.primary
     }
@@ -263,7 +263,7 @@ export const GlobalStyles = createGlobalStyle`
   body {
     font-family: ${bulgarianTypography.fontFamily.primary};
     color: ${bulgarianColors.text.primary};
-    background-color: ${bulgarianColors.background.default};
+    background-color: ${bulgarianColors.background.default};  // أبيض (mobile.de style)
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -306,35 +306,35 @@ export const GlobalStyles = createGlobalStyle`
     }
   }
 
-  /* تبسيط الأزرار */
+  /* تبسيط الأزرار - mobile.de style */
   button {
     font-family: inherit;
-    border: 2px solid ${bulgarianColors.primary.main};
+    border: 1px solid ${bulgarianColors.secondary.main};  // حدود حمراء
     cursor: pointer;
-    font-weight: ${bulgarianTypography.fontWeight.medium};
+    font-weight: ${bulgarianTypography.fontWeight.bold};
     padding: ${bulgarianSpacing.sm} ${bulgarianSpacing.md};
-    border-radius: ${bulgarianBorderRadius.md};
+    border-radius: ${bulgarianBorderRadius.sm};  // حواف بسيطة
     transition: all 0.2s ease-in-out;
-    background: ${bulgarianColors.primary.main};
-    color: ${bulgarianColors.primary.contrastText};
+    background: ${bulgarianColors.secondary.main};  // خلفية حمراء
+    color: ${bulgarianColors.secondary.contrastText};
 
     &:hover {
-      background: ${bulgarianColors.primary.dark};
-      border-color: ${bulgarianColors.primary.dark};
+      background: ${bulgarianColors.secondary.dark};  // أحمر أغمق عند التمرير
+      border-color: ${bulgarianColors.secondary.dark};
     }
 
     &:focus {
       outline: none;
-      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.3);
+      box-shadow: 0 0 0 2px rgba(204, 0, 0, 0.3);  // ظل أحمر
     }
   }
 
-  /* تبسيط البطاقات */
+  /* تبسيط البطاقات - mobile.de style */
   .card, .container, .paper {
     background: ${bulgarianColors.background.paper};
-    border: 1px solid ${bulgarianColors.grey[200]};
-    border-radius: ${bulgarianBorderRadius.lg};
-    box-shadow: ${bulgarianShadows.sm};
+    border: 1px solid #E0E0E0;  // حدود رمادية فاتحة
+    border-radius: ${bulgarianBorderRadius.sm};  // حواف بسيطة
+    box-shadow: ${bulgarianShadows.sm};  // ظل بسيط
     padding: ${bulgarianSpacing.lg};
     margin-bottom: ${bulgarianSpacing.lg};
     color: ${bulgarianColors.text.primary};
@@ -371,18 +371,18 @@ export const GlobalStyles = createGlobalStyle`
     }
   }
 
-  /* تبسيط الهيدر والفوتر */
+  /* تبسيط الهيدر والفوتر - mobile.de style */
   header, .header {
-    background: ${bulgarianColors.background.paper};
-    border-bottom: 1px solid ${bulgarianColors.grey[200]};
+    background: ${bulgarianColors.primary.main};  // أزرق داكن للهيدر
+    border-bottom: 1px solid ${bulgarianColors.primary.dark};
     box-shadow: ${bulgarianShadows.sm};
     padding: ${bulgarianSpacing.md} ${bulgarianSpacing.lg};
-    color: ${bulgarianColors.text.primary};
+    color: ${bulgarianColors.primary.contrastText};  // نص أبيض
   }
 
   footer, .footer {
-    background: ${bulgarianColors.grey[50]};
-    border-top: 1px solid ${bulgarianColors.grey[200]};
+    background: ${bulgarianColors.background.paper};  // أبيض للفوتر
+    border-top: 1px solid #E0E0E0;
     padding: ${bulgarianSpacing.lg};
     color: ${bulgarianColors.text.primary};
   }
@@ -413,241 +413,7 @@ export const GlobalStyles = createGlobalStyle`
     backdrop-filter: blur(5px);
   }
 
-  /* Header specific styles */
-  header {
-    background-color: rgba(9, 9, 9, 0.95) !important;
-    backdrop-filter: blur(10px);
-    border-bottom: 3px solid ${bulgarianColors.primary.dark};
-    box-shadow: ${bulgarianShadows.md};
-    position: relative;
-    z-index: 1000;
-  }
-
-  header * {
-    color: ${bulgarianColors.primary.contrastText} !important;
-  }
-
-  header a {
-    color: ${bulgarianColors.primary.contrastText} !important;
-    font-weight: ${bulgarianTypography.fontWeight.bold};
-
-    &:hover {
-      color: ${bulgarianColors.secondary.main} !important;
-    }
-  }
-
-  /* Footer specific styles */
-  footer {
-    background-color: rgba(15, 23, 42, 0.95) !important;
-    backdrop-filter: blur(10px);
-    border-top: 3px solid ${bulgarianColors.primary.main};
-    box-shadow: ${bulgarianShadows.md};
-    color: ${bulgarianColors.text.onDark} !important;
-    margin-top: auto;
-  }
-
-  footer *,
-  footer a {
-    color: ${bulgarianColors.primary.contrastText} !important;
-  }
-
-  footer a:hover {
-    color: ${bulgarianColors.secondary.light} !important;
-  }
-
-  /* Navigation styles */
-  nav, .navbar, .menu {
-    background-color: rgba(6, 6, 5, 0.95) !important;
-    backdrop-filter: blur(10px);
-    border-bottom: 2px solid ${bulgarianColors.primary.dark};
-  }
-
-  nav a, .navbar a, .menu a {
-    color: ${bulgarianColors.primary.contrastText} !important;
-    font-weight: ${bulgarianTypography.fontWeight.medium};
-
-    &:hover {
-      color: ${bulgarianColors.secondary.main} !important;
-      background-color: rgba(0, 123, 255, 0.2);
-    }
-  }
-
-  /* Dropdown menus */
-  .dropdown, .dropdown-menu {
-    background-color: rgba(248, 250, 252, 0.98) !important;
-    backdrop-filter: blur(10px);
-    border: 2px solid ${bulgarianColors.primary.main};
-    box-shadow: ${bulgarianShadows.lg};
-  }
-
-  .dropdown a, .dropdown-menu a {
-    color: ${bulgarianColors.text.primary} !important;
-
-    &:hover {
-      background-color: ${bulgarianColors.primary.light};
-      color: ${bulgarianColors.primary.contrastText} !important;
-    }
-  }
-
-  /* Form elements with blue theme */
-  input, textarea, select {
-    background-color: rgba(248, 250, 252, 0.9) !important;
-    border: 2px solid ${bulgarianColors.primary.main};
-    color: ${bulgarianColors.text.primary};
-    font-size: ${bulgarianTypography.fontSize.base};
-    padding: ${bulgarianSpacing.sm} ${bulgarianSpacing.md};
-    border-radius: ${bulgarianBorderRadius.base};
-    transition: all 0.2s ease-in-out;
-
-    &:focus {
-      border-color: ${bulgarianColors.secondary.main};
-      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.3);
-      outline: none;
-    }
-
-    &::placeholder {
-      color: ${bulgarianColors.text.hint};
-    }
-  }
-
-  /* Labels */
-  label {
-    color: ${bulgarianColors.text.primary};
-    font-weight: ${bulgarianTypography.fontWeight.medium};
-    margin-bottom: ${bulgarianSpacing.xs};
-    display: block;
-  }
-
-  /* Checkboxes and radio buttons */
-  input[type="checkbox"], input[type="radio"] {
-    accent-color: ${bulgarianColors.primary.main};
-  }
-
-  /* Links with better contrast */
-  a {
-    color: ${bulgarianColors.primary.dark};
-    text-decoration: none;
-    font-weight: ${bulgarianTypography.fontWeight.medium};
-    transition: all 0.2s ease-in-out;
-    position: relative;
-
-    &:hover {
-      color: ${bulgarianColors.secondary.main};
-      text-decoration: underline;
-    }
-
-    &:focus {
-      outline: 2px solid ${bulgarianColors.primary.main};
-      outline-offset: 2px;
-    }
-  }
-
-  /* Alert and notification styles */
-  .alert, .notification, .message {
-    border-radius: ${bulgarianBorderRadius.base};
-    padding: ${bulgarianSpacing.md};
-    margin-bottom: ${bulgarianSpacing.md};
-    font-weight: ${bulgarianTypography.fontWeight.medium};
-  }
-
-  .alert-success {
-    background-color: rgba(154, 205, 50, 0.9);
-    border: 2px solid ${bulgarianColors.success.main};
-    color: ${bulgarianColors.success.contrastText};
-  }
-
-  .alert-warning {
-    background-color: rgba(0, 0, 0, 0.9);
-    border: 2px solid ${bulgarianColors.warning.main};
-    color: ${bulgarianColors.warning.contrastText};
-  }
-
-  .alert-error {
-    background-color: rgba(220, 20, 60, 0.9);
-    border: 2px solid ${bulgarianColors.error.main};
-    color: ${bulgarianColors.error.contrastText};
-  }
-
-  .alert-info {
-    background-color: rgba(0, 206, 209, 0.9);
-    border: 2px solid ${bulgarianColors.info.main};
-    color: ${bulgarianColors.info.contrastText};
-  }
-
-  /* Loading and progress indicators */
-  .loading-spinner {
-    border: 3px solid ${bulgarianColors.grey[300]};
-    border-top: 3px solid ${bulgarianColors.primary.main};
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-  }
-
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-
-  /* Badge and tag styles */
-  .badge, .tag {
-    background-color: ${bulgarianColors.primary.main};
-    color: ${bulgarianColors.primary.contrastText};
-    padding: ${bulgarianSpacing.xs} ${bulgarianSpacing.sm};
-    border-radius: ${bulgarianBorderRadius.sm};
-    font-size: ${bulgarianTypography.fontSize.sm};
-    font-weight: ${bulgarianTypography.fontWeight.medium};
-  }
-
-  .badge-secondary {
-    background-color: ${bulgarianColors.secondary.main};
-    color: ${bulgarianColors.secondary.contrastText};
-  }
-
-  /* Responsive utilities */
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 ${bulgarianSpacing.md};
-  }
-
-  @media (min-width: ${bulgarianBreakpoints.sm}) {
-    .container {
-      padding: 0 ${bulgarianSpacing.lg};
-    }
-  }
-
-  @media (min-width: ${bulgarianBreakpoints.md}) {
-    .container {
-      padding: 0 ${bulgarianSpacing.xl};
-    }
-  }
-
-  /* Accessibility */
-  .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
-  }
-
-  /* Focus styles with yellow theme */
-  *:focus {
-    outline: 2px solid ${bulgarianColors.primary.main};
-    outline-offset: 2px;
-  }
-
-  button:focus,
-  input:focus,
-  textarea:focus,
-  select:focus {
-    outline: 2px solid ${bulgarianColors.secondary.main};
-    outline-offset: 2px;
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.3);
-  }
+  /* (تم تبسيط الأنماط العالمية لتجنب التعارض وضمان تطبيق ألوان mobile.de) */
 
   /* Print styles */
   @media print {

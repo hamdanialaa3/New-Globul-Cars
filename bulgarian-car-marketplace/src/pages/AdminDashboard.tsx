@@ -376,7 +376,7 @@ const AdminDashboard: React.FC = () => {
 
         <StatCard>
           <StatTitle>{t('admin.totalRevenue')}</StatTitle>
-          <StatValue>{stats.totalRevenue} лв</StatValue>
+          <StatValue>{stats.totalRevenue} €</StatValue>
           <StatChange positive>+22%</StatChange>
         </StatCard>
       </StatsGrid>
@@ -480,7 +480,7 @@ const AdminDashboard: React.FC = () => {
                   {cars.map(car => (
                     <tr key={car.id}>
                       <TableCell>{car.title}</TableCell>
-                      <TableCell>{car.price} лв</TableCell>
+                      <TableCell>{car.price} €</TableCell>
                       <TableCell>{car.userName}</TableCell>
                       <TableCell>
                         <StatusBadge status={getCarStatusBadge(car.status)}>

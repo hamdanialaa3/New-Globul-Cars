@@ -1,0 +1,490 @@
+Ford Car Models and Generations:
+
+2026:
+- Ford Ranger Super Duty [AU]
+
+2025:
+- Ford Expedition
+- Ford Capri
+- Ford Kuga
+- Ford Explorer
+- Ford Explorer ST
+- Ford Mustang GTD
+- Ford F-150 Lobo
+- Ford Maverick
+- Ford Maverick Lobo
+
+2024:
+- Ford Mustang Mach-E Rally
+- Ford Mustang GT
+- Ford Mustang Dark Horse
+- Ford Mustang GT Convertible
+- Ford F-150
+- Ford F-150 Raptor
+- Ford F-150 Lightning Switchgear Concept
+- Ford F-150 Lightning SuperTruck Concept
+- Ford RS2.00 Concept
+
+2023:
+- Ford Everest
+- Ford Escape
+- Ford F-150 Raptor R
+- Ford F-Series Super Duty
+- Ford Ranger
+- Ford Ranger Raptor
+
+2022:
+- Ford Bronco Raptor
+- Ford Expedition
+- Ford Focus Active Wagon
+- Ford Fiesta
+- Ford Fiesta Active
+- Ford Fiesta ST
+- Ford Focus
+- Ford Focus ST
+- Ford F-150 Lightning
+- Ford Maverick
+
+2021:
+- Ford Mustang Mach-E
+- Ford Mustang Mach-E GT
+- Ford Bronco 4-door
+- Ford Bronco 2-door
+- Ford Bronco Sport
+- Ford Puma ST
+- Ford Mustang Mach 1
+- Ford F-150
+- Ford F-150 Raptor
+- Ford Bronco Riptide Concept
+- Ford F-100 Eluminator Concept
+
+2020:
+- Ford Kuga
+- Ford Explorer
+- Ford Explorer ST
+- Ford Escape
+- Ford Puma
+- Ford Focus ST Wagon
+- Ford Mustang Shelby GT500
+- Ford Focus ST
+- Ford S-MAX
+- Ford Galaxy
+- Ford F-Series Super Duty
+- Ford F-Series Super Duty Tremor Off-Road Package
+- Ford Ranger Wildtrak
+- Ford Bronco Badlands Sasquatch 2-Door Concept
+- Ford Mustang Mach-E 1400 Concept
+- Ford Mustang Cobra Jet 1400 Concept
+
+2019:
+- Ford Edge [EU]
+- Ford Edge ST
+- Ford Territory [CN]
+- Ford Fusion
+- Ford Focus Sedan
+- Ford Focus Wagon
+- Ford Focus Wagon Vignale
+- Ford Focus Active Wagon
+- Ford Mondeo Wagon Hybrid
+- Ford Mustang Shelby GT350
+- Ford Focus ST-Line
+- Ford Focus Vignale
+- Ford Focus
+- Ford Focus Active
+- Ford Ka plus
+- Ford Ka plus Active
+- Ford Transit Connect Wagon
+- Ford F-150 Raptor
+- Ford Ranger [US]
+- Ford Ranger Raptor
+- Ford Bronco R Concept
+- Ford Mustang Lithium Concept
+
+2018:
+- Ford Expedition
+- Ford Explorer Sport
+- Ford EcoSport
+- Ford EcoSport [US]
+- Ford Mustang GT
+- Ford Mustang GT Convertible
+- Ford Fiesta ST
+- Ford F-150
+
+2017:
+- Ford Kuga
+- Ford Escape
+- Ford Fusion V6 Sport
+- Ford GT
+- Ford Fiesta
+- Ford Fiesta Active
+- Ford Fiesta ST200
+- Ford Ka plus
+- Ford F-150 Raptor
+- Ford F-Series Super Duty
+- Ford F-150 Raptor F-22 Concept
+
+2016:
+- Ford Everest
+- Ford Explorer
+- Ford Taurus [CN]
+- Ford Falcon XR8 Sprint
+- Ford Falcon XR6 Sprint Turbo
+- Ford Mustang Shelby GT350
+- Ford Focus RS
+- Ford Galaxy
+- Ford Ranger
+
+2015:
+- Ford Expedition
+- Ford Edge
+- Ford Focus Sedan
+- Ford Mondeo
+- Ford Escort
+- Ford Focus Wagon
+- Ford Focus ST Wagon
+- Ford Mondeo Wagon
+- Ford Mustang EcoBoost
+- Ford Mustang GT
+- Ford Mustang Convertible
+- Ford Focus
+- Ford Focus ST
+- Ford S-MAX
+- Ford C-MAX
+- Ford Grand C-MAX
+- Ford F-150
+- Ford Super Duty
+
+2014:
+- Ford Fiesta Sedan
+- Ford Fiesta
+- Ford Transit Connect Wagon
+- Ford Transit Connect
+- Ford F-150 Tremor
+- Ford F-150 SVT Raptor Special Edition
+- Ford C-MAX Solar Energi Concept
+- Ford S-MAX Vignale Concept
+
+2013:
+- Ford Kuga
+- Ford Escape
+- Ford EcoSport
+- Ford Flex
+- Ford Fusion
+- Ford Taurus
+- Ford Taurus SHO
+- Ford Mustang
+- Ford Mustang GT
+- Ford Mustang Shelby GT500
+- Ford Mustang Boss 302
+- Ford Mustang Shelby GT500 Convertible
+- Ford Fiesta ST
+- Ford Focus ST
+- Ford B-MAX
+- Ford F-150
+- Ford Super Duty
+- Ford Atlas Concept
+- Ford Edge Concept
+- Ford Escort Concept
+- Ford Ka Concept
+- Ford Mondeo Vignale Concept
+- Ford S-MAX Concept
+
+2012:
+- Ford Territory
+- Ford Mustang Boss 302 Laguna Seca
+- Ford Mustang Boss 302
+- Ford Focus Electric
+- Ford Focus ST
+- Ford Ranger
+- Ford Ranger Wildtrak
+- Ford Mustang Cobra Jet Twin-Turbo Concept
+- Ford Tourneo Custom Concept
+
+2011:
+- Ford Explorer
+- Ford Edge
+- Ford Focus Sedan
+- Ford Mondeo
+- Ford Mondeo 5-door
+- Ford Focus Estate
+- Ford Mondeo Wagon
+- Ford Mustang GT
+- Ford Focus
+- Ford Focus RS500
+- Ford S-MAX
+- Ford Galaxy
+- Ford Transit Connect Electric
+- Ford Transit Connect Taxi
+- Ford C-MAX
+- Ford Grand C-MAX
+- Ford F-150 SVT Raptor SuperCrew
+- Ford Super Duty
+- Ford B-MAX Concept
+- Ford Evos Concept
+- Ford Fiesta ST Concept
+- Ford Mad Max Concept
+- Ford Vertrek Concept
+
+2010:
+- Ford Fusion
+- Ford Taurus
+- Ford Taurus SHO
+- Ford Fiesta Sedan
+- Ford Mustang
+- Ford Mustang Shelby GT500
+- Ford Mustang Convertible
+- Ford Mustang Shelby GT500 Convertible
+- Ford F-150 SVT Raptor R
+- Ford Ranger
+- Ford Focus Race Car Concept
+- Ford Police Interceptor Concept
+- Ford Start Concept
+- Ford Stealth Police Interceptor Concept
+
+2009:
+- Ford Flex
+- Ford Focus Sedan
+- Ford Focus X Road
+- Ford Fiesta 5-door
+- Ford Focus RS
+- Ford Ka
+- Ford F-150 Platinum
+- Ford F-150 FX4
+- Ford iosis MAX Concept
+
+2008:
+- Ford Kuga
+- Ford Escape
+- Ford Taurus X
+- Ford Focus
+- Ford Taurus
+- Ford FG Falcon G6E
+- Ford FG Falcon XR8
+- Ford Five Hundred
+- Ford Focus Estate
+- Ford Mustang Shelby GT500KR
+- Ford Focus Coupe-Cabriolet
+- Ford Fiesta
+- Ford Focus [EU]
+- Ford Focus ST
+- Ford Transit Connect
+- Ford F-450 Super Duty
+- Ford F-250 Super Duty
+- Ford FG Falcon Ute R6
+- Ford FG Falcon Ute XR6 Turbo
+- Ford Explorer America Concept
+- Ford Ranger Max Concept
+- Ford Verve Sedan Concept
+
+2007:
+- Ford Expedition
+- Ford Edge
+- Ford Mondeo
+- Ford Mondeo Wagon
+- Ford Mustang Shelby GT500
+- Ford Mustang Shelby GT500 Convertible
+- Ford C-MAX
+- Ford Airstream Concept
+- Ford Interceptor Concept
+- Ford Mondeo Wagon Concept
+- Ford Mondeo Concept
+- Ford Verve Concept
+- Ford Verve 5-door Concept
+
+2006:
+- Ford Explorer
+- Ford Escape
+- Ford Fusion
+- Ford Focus
+- Ford BF MkII Falcon XR8
+- Ford Focus Coupe-Cabriolet
+- Ford Fiesta
+- Ford Focus ST
+- Ford S-MAX
+- Ford Galaxy
+- Ford Fusion EUR
+- Ford Freestar
+- Ford F-150
+- Ford F-350
+- Ford Ranger
+- Ford F-250 Super Chief Concept
+- Ford iosis Concept
+- Ford iosis X Concept
+- Ford Mustang Giugiaro Concept
+- Ford Reflex Concept
+- Ford 4-Trac Concept
+
+2005:
+- Ford Freestyle Limited
+- Ford Mondeo
+- Ford Mondeo ST TDCi
+- Ford Five Hundred Limited
+- Ford BA Fairlane Ghia MkII
+- Ford BA Fairlane G220 MkII
+- Ford Mondeo Estate
+- Ford Mondeo ST220 Estate
+- Ford Mustang
+- Ford Mustang GT
+- Ford GT
+- Ford Mustang Convertible
+- Ford Mustang GT Convertible
+- Ford Fiesta ST
+- Ford BF Falcon XR8 Ute
+- Ford Equator Concept
+- Ford Fairlane Concept
+- Ford Mustang Racecar Prototype
+- Ford Shelby SVT Cobra GT500 Mustang Show Car
+- Ford Shelby GR1 Concept
+- Ford SYNus Concept
+
+2004:
+- Ford Mondeo Titanium TDCi
+- Ford Focus 3door [EU]
+- Ford Focus TDCi 5door [EU]
+- Ford F-150 SVT Lightning
+- Ford BA MkII Falcon Ute
+- Ford Bronco Concept
+- Ford Explorer Sport Trac Concept
+- Ford Focus Vignale Concept
+- Ford Focus 4door Concept
+- Ford Mustang GTR 40th Anniversary Concept
+- Ford Shelby GR1 Concept
+- Ford Shelby Cobra Concept
+- Ford Thunderbird FAB 1 Concept
+
+2003:
+- Ford Expedition
+- Ford Explorer
+- Ford Escape
+- Ford Focus
+- Ford Taurus
+- Ford Mustang Mach 1
+- Ford Mustang SVT Cobra Convertible
+- Ford Ka
+- Ford Focus CMax
+- Ford F-150
+- Ford Explorer Sport Trac
+- Ford Mustang GT Convertible Concept
+- Ford Mustang GT Coupe Concept
+- Ford Visos Concept
+
+2002:
+- Ford Mondeo ST220
+- Ford BA Falcon XR8
+- Ford SVT Focus
+- Ford Focus RS
+- Ford Focus CMax Concept
+- Ford GT40 Concept
+- Ford R7 Concept
+
+2001:
+- Ford Falcon XR8
+- Ford Crown Victoria
+- Ford Mustang Bullitt GT
+- Ford R5 Concept
+
+2000:
+- Ford Mustang SVT Cobra R
+- Ford Mustang Convertible
+- Ford Mustang Bullitt Concept
+
+1999:
+- Ford Mustang
+
+1998:
+- Ford Focus Sedan
+- Ford AU Falcon XR6 VCT
+- Ford Focus Estate
+- Ford Mustang Cobra
+- Ford Mustang GT
+- Ford Focus
+- Ford Focus 5-door
+
+1997:
+- Ford EL Falcon GT
+
+1996:
+- Ford Mustang GT
+
+1995:
+- Ford GT90 Concept
+
+1993:
+- Ford Mustang
+
+1992:
+- Ford EB II Falcon GT
+
+1988:
+- Ford Mustang
+
+1983:
+- Ford Mustang
+
+1980:
+- Ford Bronco
+
+1979:
+- Ford Mustang
+
+1978:
+- Ford Bronco
+
+1977:
+- Ford Mustang
+
+1975:
+- Ford Mustang Cobra II
+
+1973:
+- Ford Mustang Mach 1
+
+1972:
+- Ford XA Falcon GT
+- Ford Mustang
+
+1971:
+- Ford Mustang Boss 351
+- Ford Capri RS2600
+
+1970:
+- Ford Mustang
+- Ford Mustang Boss 302
+- Ford Mustang Boss 429
+- Ford Mustang Milano Concept
+
+1969:
+- Ford Mustang
+- Ford Mustang Boss 302
+- Ford Mustang Boss 429
+- Ford Mustang Shelby GT500
+- Ford Mustang GT
+
+1968:
+- Ford Mustang Bullitt
+
+1967:
+- Ford Mustang
+- Ford Mustang Shelby GT500
+
+1966:
+- Ford Bronco
+- Ford Mustang GT
+- Ford Bronco Roadster
+- Ford Bronco Pickup
+- Ford Mustang Mach 2 Concept
+- Ford Mustang Mach 1 Concept
+
+1965:
+- Ford Mustang Shelby GT350
+
+1964:
+- Ford Mustang
+- Ford GT Prototype
+
+1962:
+- Ford Mustang Roadster Concept Car
+
+Unknown Year:
+- Ford
+

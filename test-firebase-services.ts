@@ -17,7 +17,7 @@ async function testFirebaseServices() {
       model: 'X5',
       year: 2023,
       price: 85000,
-      currency: 'BGN',
+      currency: 'EUR',
       location: 'София',
       description: 'Отличен автомобил в перфектно състояние'
     });

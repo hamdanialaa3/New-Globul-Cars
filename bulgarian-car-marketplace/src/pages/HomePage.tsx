@@ -6,52 +6,26 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { useTranslation } from '../hooks/useTranslation';
 import { bulgarianCarService, BulgarianCar } from '../firebase';
-import heroBackground from '../assets/hero-background.jpg';
 
 // Styled Components
 const HomeContainer = styled.div`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: #f8fafc;
+  background: ${({ theme }) => theme.colors.background.default}; /* استخدام الثيم */
 `;
 
 const HeroSection = styled.section`
-  background:
-    linear-gradient(
-      rgba(0, 0, 0, 0.6),
-      rgba(0, 0, 0, 0.4)
-    ),
-    url(${heroBackground}) center/cover no-repeat,
-    linear-gradient(135deg, #3b82f6 0%, #2563eb 50%, #3b82f6 100%);
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  color: white;
+  background: ${({ theme }) => theme.colors.background.paper}; /* أبيض مثل mobile.de */
+  color: ${({ theme }) => theme.colors.text.primary};
   padding: ${({ theme }) => theme.spacing['4xl']} 0;
   text-align: center;
   position: relative;
-  min-height: 70vh;
+  min-height: 50vh;
   display: flex;
   align-items: center;
   justify-content: center;
-
-  /* إضافة طبقة إضافية لتحسين وضوح النص */
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(
-      135deg,
-      rgba(59, 130, 246, 0.3) 0%,
-      rgba(37, 99, 235, 0.2) 50%,
-      rgba(59, 130, 246, 0.3) 100%
-    );
-    pointer-events: none;
-  }
+  border-bottom: 2px solid ${({ theme }) => theme.colors.primary.main};
 `;
 
 const HeroContent = styled.div`
@@ -68,6 +42,7 @@ const HeroTitle = styled.h1`
   font-weight: ${({ theme }) => theme.typography.fontWeight.extrabold};
   margin-bottom: ${({ theme }) => theme.spacing.lg};
   line-height: ${({ theme }) => theme.typography.lineHeight.tight};
+  color: ${({ theme }) => theme.colors.text.primary}; /* استخدام الثيم */
 
   @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
     font-size: ${({ theme }) => theme.typography.fontSize['4xl']};
@@ -119,7 +94,7 @@ const HeroButton = styled(Link)`
 `;
 
 const StatsSection = styled.section`
-  background: #ffffff;
+  background: ${({ theme }) => theme.colors.background.paper}; /* استخدام الثيم */
   padding: ${({ theme }) => theme.spacing['4xl']} 0;
 `;
 
@@ -149,7 +124,7 @@ const StatItem = styled.div`
 `;
 
 const FeaturedCarsSection = styled.section`
-  background: #f8fafc;
+  background: ${({ theme }) => theme.colors.background.default}; /* استخدام الثيم */
   padding: ${({ theme }) => theme.spacing['4xl']} 0;
 `;
 
@@ -265,7 +240,7 @@ const ViewAllButton = styled(Link)`
 `;
 
 const FeaturesSection = styled.section`
-  background: #ffffff;
+  background: ${({ theme }) => theme.colors.background.paper}; /* استخدام الثيم */
   padding: ${({ theme }) => theme.spacing['4xl']} 0;
 `;
 

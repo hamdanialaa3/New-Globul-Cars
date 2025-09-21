@@ -1,0 +1,131 @@
+Abt Car Models and Generations:
+
+2008:
+- ABT Audi R8
+  Power: 326 hp, 708 horsepower, 530 HP
+
+- ABT Audi AS5
+  Power: 326 hp, 708 horsepower, 240 hp
+  Drivetrain: Quattro
+
+
+2007:
+- ABT Audi TT-R
+  Power: 326 hp, 708 horsepower, 355 HP
+
+- ABT Audi TT
+  Power: 326 hp, 708 horsepower, 355 HP
+
+
+2006:
+- ABT Audi Q7
+  Power: 326 hp, 708 horsepower, 272 HP
+  Drivetrain: all-wheel drive
+
+- ABT Audi Allroad Quattro
+  Power: 326 hp, 708 horsepower, 180 HP
+  Drivetrain: all-wheel drive
+
+
+2005:
+- ABT VW Polo
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- ABT VW Passat
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- ABT VW Golf GTI
+  Power: 326 hp, 708 horsepower, 230 hp
+
+- ABT VW Golf
+  Power: 326 hp, 708 horsepower, 150 hp
+
+- ABT Audi AS6 Avant
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- ABT Audi AS4 Avant
+  Power: 326 hp, 708 horsepower, 140 HP
+  Drivetrain: quattro
+
+- ABT Audi AS4
+  Power: 326 hp, 708 horsepower, 140 HP
+
+- ABT Audi AS3
+  Power: 326 hp, 708 horsepower, 96 kW
+
+
+2004:
+- ABT Audi AS6
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- ABT Audi AS400
+  Engine: 2.7 litre V
+  Power: 326 hp, 708 horsepower, 400 HP
+  Drivetrain: Quattro
+  Top Speed: 290 km/h top speed
+
+- ABT Audi AS3 Sportback
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2003:
+- ABT VW Touran
+  Power: 326 hp, 708 horsepower, 74 kW
+
+- ABT VW Touareg
+  Power: 326 hp, 708 horsepower, 370 HP
+  Drivetrain: xDrive
+
+- ABT VW Sporting Van T5
+  Power: 326 hp, 708 horsepower, 200 hp
+
+- ABT VW New Beetle Cabriolet
+  Power: 326 hp, 708 horsepower, 105 kW
+
+- ABT Audi RS6 Avant
+  Power: 326 hp, 708 horsepower, 450 hp
+  Drivetrain: quattro
+
+- ABT Audi AS8
+  Power: 326 hp, 708 horsepower, 450 HP
+  Drivetrain: quattro
+  Fuel Economy: city of 4.2 litres as well as quattro-drive, Adt Sportsline has created a dreathtaking model which perfectly unites lucury and sportiness: the Adt AS8, city of 4.2 litres as well as quattro-drive unites the lucury of the top class limousine with the powerful sportiness of a sports car
+
+- ABT Audi AS4 Cabriolet
+  Power: 326 hp, 708 horsepower, 162 kW
+
+
+2002:
+- ABT Skoda Superb
+  Power: 326 hp, 708 horsepower, 110 kW
+  Fuel Economy: city of up to 6.6 litres in the past, Skoda is now following the sign of the times and offers a range of petrol and diesel engines for the new generation
+
+- ABT Skoda Fabia
+  Engine: petrol v
+  Power: 326 hp, 708 horsepower, 92 kW
+
+- ABT Seat Leon
+  Power: 326 hp, 708 horsepower, 132 kW
+
+- ABT Audi allroad quattro
+  Power: 326 hp, 708 horsepower, 184 kW
+  Drivetrain: xDrive
+
+- ABT Audi TT Sport Roadster
+  Power: 326 hp, 708 horsepower, 165 kW
+
+- ABT Audi TT Sport
+  Power: 326 hp, 708 horsepower, 221 kW
+
+- ABT Audi TT-Limited Wide Body
+  Power: 326 hp, 708 horsepower, 228 kW
+
+- ABT Audi TT-Limited II
+  Power: 326 hp, 708 horsepower, 195 kW
+  Drivetrain: quattro drive
+
+- ABT Audi TT-Limited
+  Power: 326 hp, 708 horsepower, 450 HP
+  Drivetrain: quattro
+
+

@@ -103,6 +103,8 @@ export interface BulgarianCar {
 export interface CarSearchFilters {
   make?: string;
   model?: string;
+  generation?: string; // جيل السيارة (مثل G05, F15)
+  bodyStyle?: string; // نوع الهيكل (SUV, Sedan, Coupe, etc.)
   minYear?: number;
   maxYear?: number;
   minPrice?: number;
@@ -620,7 +622,7 @@ export class BulgarianCarService {
       throw new Error('Цената трябва да бъде положително число');
     }
 
-    if (price > 10000000) { // 10 million BGN
+    if (price > 10000000) { // 10 million EUR
       throw new Error('Цената е твърде висока');
     }
   }

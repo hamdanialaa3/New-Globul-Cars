@@ -1,0 +1,68 @@
+Baic Car Models and Generations:
+
+2026:
+- BAIC Beijing BJ40e
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 138 kW
+  Drivetrain: four-wheel drive
+  Fuel Economy: 8.68 L/100 km
+
+
+2025:
+- BAIC Beijing BJ60e
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- BAIC ArcFox Alpha S5
+  Power: 326 hp, 708 horsepower, 200 kW
+  Drivetrain: front-wheel drive
+
+- BAIC ArcFox 77 Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2024:
+- BAIC Beijing BJ40 Taklimakan Rally Champion
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- BAIC Beijing BJ40P
+  Engine: diesel v
+  Power: 326 hp, 708 horsepower, 120kw
+  Drivetrain: AWD
+
+- BAIC Beijing BJ30
+  Power: 326 hp, 708 horsepower, 326 hp
+  Fuel Economy: 6.45L/100km
+
+- BAIC ArcFox Kaola
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- BAIC ArcFox Alpha T5
+  Power: 326 hp, 708 horsepower, 185 kW
+
+- BAIC ArcFox Alpha S HI
+  Power: 326 hp, 708 horsepower, 7 kW
+
+
+2023:
+- BAIC Beijing BJ60
+
+- BAIC Beijing BJ40
+
+
+2014:
+- BAIC Beijing BJ40
+
+
+2010:
+- BAIC Beijing B40 Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+
+2008:
+- BAIC Beijing B40 Concept
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+

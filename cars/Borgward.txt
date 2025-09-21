@@ -1,0 +1,37 @@
+Borgward Car Models and Generations:
+
+2020:
+- Borgward BX3
+  Power: 326 hp, 708 horsepower, 110kW
+  Drivetrain: RWD
+
+
+2017:
+- Borgward Isabella Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 220 kW
+  Drivetrain: all-wheel drive
+
+
+2016:
+- Borgward BX6 TS Concept
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 200 kW
+  Transmission: seven-speed
+  Drivetrain: all-wheel drive
+
+- Borgward BX5 Concept
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 200 kW
+  Transmission: seven-speed
+  Drivetrain: all-wheel drive
+
+
+2015:
+- Borgward BX7 TS Concept
+  Power: 326 hp, 708 horsepower, 165 kW
+  Drivetrain: all-wheel drive
+
+- Borgward BX7 Concept
+
+

@@ -1,0 +1,10 @@
+Czinger Car Models and Generations:
+
+2021:
+- Czinger 21C
+  Engine: V12 l
+  Power: 326 hp, 708 horsepower, 329hp
+  Transmission: seven-speed
+  Drivetrain: quattro
+
+

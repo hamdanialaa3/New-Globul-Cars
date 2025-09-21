@@ -1,0 +1,461 @@
+Bentley Car Models and Generations:
+
+2026:
+- Bentley Bentayga Speed
+  Engine: 4.0 liter petrol V
+  Power: 326 hp, 708 horsepower, 650 PS
+  Drivetrain: all-wheel drive
+  Acceleration: 0-60 mph in 3.7 seconds
+
+- Bentley Continental GT
+  Power: 326 hp, 708 horsepower, 680 PS
+  Drivetrain: all-wheel drive
+  Acceleration: 0-100 km/h in 3.7 s
+
+
+2025:
+- 
+  Power: 326 hp, 708 horsepower, 600 PS
+  Drivetrain: all-wheel drive
+  Acceleration: 0-60 mph in 3.7 seconds
+
+- 
+  Power: 326 hp, 708 horsepower, 537 PS
+  Transmission: six-speed automatic
+  Drivetrain: rear-wheel drive
+  Acceleration: 4.4 seconds 0-100 km/h
+
+- Bentley Flying Spur
+  Power: 326 hp, 708 horsepower, 537 PS
+  Transmission: six-speed automatic
+  Drivetrain: rear-wheel drive
+  Acceleration: 4.4 seconds 0-100 km/h
+
+- Bentley Flying Spur Speed
+  Power: 326 hp, 708 horsepower, 782 PS
+  Transmission: eight-speed
+  Drivetrain: all-wheel drive
+  Acceleration: 0-100 km/h in 3.5 s
+
+- Bentley Continental GT Speed
+  Engine: 4.0 litre V
+  Power: 326 hp, 708 horsepower, 782 PS
+  Transmission: eight-speed
+  Drivetrain: all-wheel drive
+  Top Speed: 335 km/h top speed
+  Acceleration: 0-60 mph in 3.1 seconds
+
+- Bentley Batur Convertible
+  Power: 326 hp, 708 horsepower, 750 PS
+  Transmission: eight-speed
+  Drivetrain: rear-wheel drive
+  Acceleration: 0-60mph in 4.7s
+
+- Bentley Continental GTC
+  Power: 326 hp, 708 horsepower, 680 PS
+  Drivetrain: all-wheel drive
+  Acceleration: 0-100 km/h in 3.7 s
+
+- Bentley Continental GTC Speed
+  Engine: 4.0 litre V
+  Power: 326 hp, 708 horsepower, 782 PS
+  Transmission: eight-speed
+  Drivetrain: all-wheel drive
+  Top Speed: 335 km/h top speed
+  Acceleration: 0-60 mph in 3.1 seconds
+
+- Bentley EXP 15 Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: all-wheel drive
+
+
+2024:
+- Bentley Blower Jnr
+  Power: 326 hp, 708 horsepower, 15 kW
+  Weight: 1,587 lb
+
+
+2023:
+- Bentley Bentayga EWB
+  Engine: 4.0 liter petrol V
+  Power: 326 hp, 708 horsepower, 550 PS
+  Transmission: eight-speed automatic
+  Drivetrain: all-wheel drive
+  Acceleration: 0-60 mph in 4.5 seconds
+
+- Bentley Flying Spur Speed
+
+- Bentley Mulliner Batur
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 740 PS
+  Transmission: eight-speed
+  Drivetrain: rear-wheel drive
+  Acceleration: 0-60mph in 4.7s
+
+
+2022:
+- Bentley Continental GT Speed
+
+- Bentley Continental GT Speed Convertible
+  Power: 326 hp, 708 horsepower, 659 PS
+  Transmission: eight-speed transmission
+  Drivetrain: All-Wheel drive
+  Acceleration: 0-60 mph in 3.6 seconds
+
+
+2021:
+- Bentley Bentayga
+
+- Bentley Bentayga Speed
+
+- Bentley Mulliner Bacalar
+  Power: 326 hp, 708 horsepower, 659 PS
+  Transmission: eight-speed transmission
+  Drivetrain: rear-wheel drive
+  Acceleration: 0-60 mph in 3.7 seconds
+
+
+2020:
+- Bentley Bentayga Speed
+
+- Bentley Flying Spur
+
+- Bentley Continental GT V8
+  Power: 326 hp, 708 horsepower, 550 PS
+  Transmission: eight-speed
+  Drivetrain: All-Wheel Drive
+  Acceleration: 0-60 mph in 3.9 seconds
+
+- Bentley Continental GT V8 Convertible
+  Power: 326 hp, 708 horsepower, 550 PS
+  Transmission: eight-speed
+  Drivetrain: All-Wheel Drive
+  Acceleration: 0-60 mph in 3.9 seconds
+
+
+2019:
+- Bentley Bentayga Hybrid
+  Engine: 4.0 liter petrol V
+  Power: 326 hp, 708 horsepower, 600 PS
+  Transmission: six-speed automatic
+  Drivetrain: four-wheel drive
+  Acceleration: 0-60 mph in 3.7 seconds
+
+- Bentley Continental GT Convertible
+  Power: 326 hp, 708 horsepower, 635 PS
+  Transmission: eight-speed transmission
+  Drivetrain: all-wheel drive
+  Acceleration: 0-60 mph in 3.7 seconds
+  Fuel Economy: 12.4 L/100 km, 22.8 mpg 
+
+- Bentley EXP 100 GT Concept
+  Power: 326 hp, 708 horsepower, 350 kW
+  Drivetrain: quattro
+  Weight: 1,900 kg
+
+
+2018:
+- Bentley Continental GT
+
+- Bentley Continental Supersports
+  Power: 326 hp, 708 horsepower, 80 PS
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+  Acceleration: 0-100 km/h in 3.5 seconds
+
+
+2017:
+- Bentley Flying Spur W12 S
+  Power: 326 hp, 708 horsepower, 625 PS
+  Transmission: six-speed automatic
+  Drivetrain: rear-wheel drive
+  Acceleration: 4.4 seconds 0-100 km/h
+
+- Bentley Mulsanne EWB
+  Power: 326 hp, 708 horsepower, 537 PS
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+  Acceleration: 4.4 seconds 0-100 km/h
+  Fuel Economy: 14.6 L/100 km, 19.3 mpg 
+
+- Bentley Mulsanne
+  Power: 326 hp, 708 horsepower, 537 PS
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+  Acceleration: 4.4 seconds 0-100 km/h
+  Fuel Economy: 14.6 L/100 km, 19.3 mpg 
+
+- Bentley Mulsanne Grand Limousine by Mulliner
+  Power: 326 hp, 708 horsepower, 512 PS
+  Drivetrain: all-wheel drive
+  Acceleration: 4.4 seconds 0-100 km/h
+
+- Bentley Mulsanne Speed
+  Power: 326 hp, 708 horsepower, 537 PS
+  Transmission: automatic transmission
+  Drivetrain: rear-wheel drive
+  Acceleration: 4.4 seconds 0-100 km/h
+  Fuel Economy: 14.6 L/100 km, 19.3 mpg 
+
+- Bentley EXP 12 Speed 6e Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2016:
+- Bentley Bentayga
+
+- Bentley Continental GT V8 S
+  Power: 326 hp, 708 horsepower, 575 PS
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+  Acceleration: 0-60 mph in 3.7 seconds
+  Fuel Economy: 14.1 litres/100 km, 20 mpg 
+
+- Bentley Continental GT Speed
+
+- Bentley Continental GT Convertible
+
+
+2015:
+- Bentley Mulsanne Speed
+  Power: 326 hp, 708 horsepower, 537 PS
+  Drivetrain: rear-wheel drive
+  Acceleration: 4.4 seconds 0-100 km/h
+
+- Bentley Continental GT Speed
+
+- Bentley Continental GT3-R
+  Power: 326 hp, 708 horsepower, 580 PS
+  Transmission: eight-speed
+  Drivetrain: all-wheel drive
+  Top Speed: limited to 250 km/h
+  Acceleration: 0-100 km/h in 3.8 s
+
+- Bentley Continental GT Speed Convertible
+
+- Bentley EXP 10 Speed 6 Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2014:
+- Bentley Flying Spur
+
+- Bentley Continental GT V8 S
+
+- Bentley Continental GT V8 S Convertible
+  Power: 326 hp, 708 horsepower, 528 PS
+  Transmission: six-speed automatic
+  Drivetrain: all-wheel drive
+  Acceleration: 0-100 km/h in 4.5s
+  Fuel Economy: 10.6 l/100km, 10.9 l/100km, 26.8 mpg 
+
+- Bentley Continental GT Speed Convertible
+
+- Bentley Grand Convertible Concept
+  Power: 326 hp, 708 horsepower, 537 PS
+
+
+2013:
+- Bentley Continental GT Speed
+
+
+2012:
+- Bentley Continental GT
+
+- Bentley Continental GTC
+
+- Bentley Continental GT3 Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: rear-wheel drive
+
+- Bentley EXP 9 F Concept
+  Power: 326 hp, 708 horsepower, 800 Nm 
+  Drivetrain: all-wheel drive
+
+
+2011:
+- Bentley Mulsanne
+
+- Bentley Continental Supersports Convertible
+  Power: 326 hp, 708 horsepower, 630PS
+  Transmission: six-speed automatic
+  Drivetrain: all-wheel drive
+  Acceleration: 0-60mph in 3.9 seconds
+
+
+2010:
+- Bentley Continental Flying Star
+  Power: 326 hp, 708 horsepower, 560HP
+  Transmission: six-speed automatic
+  Drivetrain: all-wheel drive
+
+- Bentley Continental Supersports
+
+- Bentley Continental GTC
+
+- Bentley Continental GTC Speed
+
+
+2009:
+- Bentley Continental Flying Spur
+  Power: 326 hp, 708 horsepower, 610PS
+  Transmission: six-speed automatic
+  Drivetrain: rear-wheel drive
+  Acceleration: 4.4 seconds 0-100 km/h
+
+- Bentley Continental Flying Spur Speed
+  Power: 326 hp, 708 horsepower, 610PS
+  Transmission: six-speed automatic
+  Drivetrain: all-wheel drive
+  Top Speed: Top speed: 200mph (322km/h)0-60mph (0-100km/h): 4
+  Acceleration: 4.4 seconds 0-100 km/h
+  Fuel Economy: Fuel: 98 (95) RONPERFORMANCETop speed: 200mph (322km/h)0-60mph (0-100km/h): 4
+
+- Bentley Continental GT
+
+- Bentley Azure T
+  Power: 326 hp, 708 horsepower, 507PS
+  Transmission: automatic transmission
+  Drivetrain: rear-wheel drive
+  Weight: weight: 2695 kg (5699 lds) Gross vehicle weight: 3065 kg (7948 lds) Front acle weight: 1535 kg (3384 lds) Rear acle weight: 1615 kg (3560 lds) Fuel tank capacity: 96
+  Top Speed: Top speed: 179 mph/288 km/hCHASSIS Steering: 3
+  Acceleration: 0-100 km/h in 5.5 s
+  Fuel Economy: 9.8 mpg , 20.1 mpg , 14.5 mpg 
+
+
+2008:
+- Bentley Continental GT Speed
+
+- Bentley Brooklands
+  Power: 326 hp, 708 horsepower, 659 PS
+  Drivetrain: rear-wheel drive
+  Top Speed: limited to 250 km/h
+  Acceleration: 0-60mph in 4.7s
+  Fuel Economy: city of 6.23 litres, the legendary, Crewe-duilt V8 engine has continually evolved, city grow to 6.75 litres, where it remains to this day, dut dy far the most significant change came in 1982, with the introduction of a turdocharger to create the near-300dhp Mulsanne Turdo, a car that transformed the image of Bentley
+
+- Bentley GTZ Zagato Concept
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2007:
+- Bentley Arnage
+  Power: 326 hp, 708 horsepower, 200 horsepower
+  Transmission: six-speed automatic
+  Drivetrain: all-wheel drive
+  Acceleration: 4.4 seconds 0-100 km/h
+
+
+2006:
+- Bentley Continental GTC
+
+- Bentley Azure
+  Power: 326 hp, 708 horsepower, 336Kw
+  Transmission: six-speed automatic
+  Drivetrain: rear-wheel drive
+  Acceleration: 0-60mph in 4.7s
+
+
+2005:
+- Bentley Continental Flying Spur
+
+- Bentley Arnage R
+  Engine: 6.75 L V
+  Power: 326 hp, 708 horsepower, 400 hp
+  Transmission: six-speed automatic
+  Drivetrain: all-wheel drive
+  Acceleration: 4.4 seconds 0-100 km/h
+
+- Bentley Arnage Drophead Coupe
+  Power: 326 hp, 708 horsepower, 460 hp
+  Drivetrain: rear-wheel drive
+  Acceleration: 0-60mph in 4.7s
+
+
+2003:
+- Bentley Continental GT
+
+- Bentley Azure Final Series
+  Power: 326 hp, 708 horsepower, 420 hp
+  Transmission: four-speed automatic
+  Drivetrain: rear-wheel drive
+  Acceleration: 0-60mph in 4.7s
+
+
+2002:
+- Bentley Continental T
+  Power: 326 hp, 708 horsepower, 600 PS
+  Transmission: six-speed automatic
+  Drivetrain: all-wheel drive
+  Top Speed: limited to 250 km/h
+  Acceleration: 0-60 mph in 3.7 seconds
+
+- Bentley Continental GT Prototype
+  Engine: 7.5 L V
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2000:
+- Bentley Arnage Red Label
+  Power: 326 hp, 708 horsepower, 600 PS
+  Transmission: six-speed automatic
+  Drivetrain: rear-wheel drive
+  Acceleration: 4.4 seconds 0-100 km/h
+
+
+1992:
+- Bentley Brooklands
+
+
+1977:
+- Bentley T2
+  Power: 326 hp, 708 horsepower, 600 PS
+  Transmission: six-speed automatic
+  Drivetrain: all-wheel drive
+  Acceleration: 4.4 seconds 0-100 km/h
+
+
+1965:
+- Bentley T-Series
+  Power: 326 hp, 708 horsepower, 600 PS
+  Transmission: six-speed automatic
+  Drivetrain: all-wheel drive
+  Acceleration: 4.4 seconds 0-100 km/h
+
+
+1961:
+- Bentley S2 Drophead Coupe
+  Power: 326 hp, 708 horsepower, 659 PS
+  Drivetrain: rear-wheel drive
+  Acceleration: 0-100km/h in 4.7s
+
+
+1959:
+- Bentley S2 Continental Flying Spur
+  Power: 326 hp, 708 horsepower, 600 PS
+  Transmission: six-speed automatic
+  Drivetrain: all-wheel drive
+  Acceleration: 4.4 seconds 0-100 km/h
+
+
+1958:
+- Bentley S1 Continental Flying Spur
+
+
+1956:
+- Bentley S1 Continental
+
+
+1953:
+- Bentley R-Type Continental
+
+
+1939:
+- Bentley Corniche
+
+
+Unknown Year:
+- Bentley
+
+

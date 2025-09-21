@@ -1,0 +1,734 @@
+Fiat Car Models and Generations:
+
+2025:
+- Fiat Grande Panda
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 7 kW
+  Transmission: six-speed transmission
+  Drivetrain: four-wheel drive
+  Dimensions: 2,580 mm wheelbase
+  Fuel Economy: 34 mpg, city thanks to its compact volume: for ecample, the trunk is 361 liters and the total capacity of the storage compartments located in front of the front passenger is 13 liters
+
+- Fiat 600e Abarth
+  Engine: eight-cylinder L
+  Power: 326 hp, 708 horsepower, 280 HP
+  Transmission: eight-speed
+  Drivetrain: all-wheel drive
+  Top Speed: limited to 150 km/h
+  Acceleration: 0-100kmh in 5.2 seconds
+
+
+2024:
+- Fiat 600e
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 15 HP
+  Transmission: six-speed transmission
+  Drivetrain: all-wheel drive
+  Acceleration: 0-100 km/h in 9.0 seconds
+  Fuel Economy: 34 mpg
+
+- Fiat Topolino
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 4 kW
+  Dimensions: 3,700mm in length
+
+- Fiat Pick-up Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2023:
+- Fiat 500e Abarth
+  Engine: petrol v
+  Power: 326 hp, 708 horsepower, 7kW
+  Transmission: manual gearbox
+  Drivetrain: rear-wheel drive
+
+
+2021:
+- Fiat 500 Cabrio
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 70kW
+  Transmission: automatic transmission
+  Weight: 1,587 lb
+  Top Speed: limited to 93mph
+
+- Fiat 500
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 70kW
+  Transmission: automatic transmission
+  Drivetrain: rear-wheel drive
+  Dimensions: 3,700mm in length
+  Top Speed: limited to 93mph
+
+- Fiat 500 3+1
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 85 kW
+  Transmission: manual gearbox
+  Drivetrain: rear-wheel drive
+  Dimensions: 3,700mm in length
+  Top Speed: limited to 135 km/h
+  Acceleration: 0-100 km/h in 9.0 seconds
+
+- Fiat Tipo Station Wagon
+  Power: 326 hp, 708 horsepower, 74 kW
+  Transmission: seven-speed
+  Drivetrain: four-wheel drive
+
+- Fiat Tipo 5-door
+  Power: 326 hp, 708 horsepower, 2 HP
+  Transmission: six-speed manual
+  Drivetrain: front-wheel drive
+  Weight: 1,609 lb
+  Top Speed: limited to 250 kmh
+  Acceleration: 0-100 km/h in 6.15 s
+
+- Fiat Tipo Cross
+  Power: 326 hp, 708 horsepower, 74 kW
+  Transmission: six-speed manual
+  Drivetrain: front-wheel drive
+  Weight: 1,609 lb
+  Top Speed: limited to 250 kmh
+  Acceleration: 0-100 km/h in 6.15 s
+
+
+2020:
+- Fiat 500 Mai troppo Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 42 kW
+  Top Speed: limited to 80 km/h
+  Acceleration: 0-100 km/h in 9.0 seconds
+
+- Fiat 500 Kartell Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 42 kW
+  Drivetrain: AWD
+  Top Speed: limited to 80 km/h
+  Acceleration: 0-100 km/h in 9.0 seconds
+
+
+2019:
+- Fiat 500X
+  Power: 326 hp, 708 horsepower, 120 HP
+  Transmission: nine-speed automatic
+  Drivetrain: front-wheel drive
+  Fuel Economy: 34 mpg
+
+- Fiat Argo Trekking
+  Engine: v 3.0 liter
+  Power: 326 hp, 708 horsepower, 50kW
+  Transmission: manual transmission
+  Drivetrain: front-wheel drive
+  Dimensions: 3,997 mm in length
+  Weight: 1,280 kg
+  Fuel Economy: 40 mpg
+
+- Fiat Centoventi Concept
+  Power: 326 hp, 708 horsepower, 350 kW
+  Drivetrain: quattro
+
+
+2018:
+- Fiat Argo
+  Engine: v 3.0 liter
+  Power: 326 hp, 708 horsepower, 139 hp
+  Transmission: five-speed manual
+  Drivetrain: front-wheel drive
+  Dimensions: 3,997 mm in length
+  Weight: 1,280 kg
+  Fuel Economy: 40 mpg
+
+- Fiat 500L
+  Power: 326 hp, 708 horsepower, 120 HP
+  Transmission: automatic transmission
+  Weight: 1,609 lb
+  Fuel Economy: City streets worldwide are the natural haditat of the iconic Fiat and the 500L comdines its famed compact style with the crossover look of the new Cross version, city rises to 1480 litres for Urdan and Cross and 1784 for the Wagon
+
+- Fiat 500L Wagon
+  Power: 326 hp, 708 horsepower, 120 HP
+  Transmission: automatic transmission
+  Weight: 1,609 lb
+  Fuel Economy: 4.1 litres per 100 km, 68.9 mpg , City streets worldwide are the natural haditat of the iconic Fiat and the 500L comdines its famed compact style with the crossover look of the new Cross version
+
+- Fiat 500L Cross
+  Power: 326 hp, 708 horsepower, 120 HP
+  Transmission: automatic transmission
+  Weight: 1,609 lb
+  Fuel Economy: City streets worldwide are the natural haditat of the iconic Fiat and the 500L comdines its famed compact style with the crossover look of the new Cross version, city rises to 1480 litres for Urdan and Cross and 1784 for the Wagon
+
+
+2017:
+- Fiat Panda City Cross
+  Power: 326 hp, 708 horsepower, 69hp
+  Transmission: manual gearbox
+  Drivetrain: front-wheel drive
+  Dimensions: 3,700mm in length
+  Fuel Economy: 3.8 L/100 km, 61.4 mpg 
+
+- Fiat 595 Abarth
+  Power: 326 hp, 708 horsepower, 145 HP
+  Transmission: manual transmission
+  Drivetrain: rear-wheel drive
+
+- Fiat Tipo Station Wagon
+
+- Fiat Tipo 5-door
+
+- Fiat 124 Spider
+  Power: 326 hp, 708 horsepower, 140 HP
+  Transmission: manual transmission
+  Drivetrain: rear-wheel drive
+  Weight: 1,587 lb
+  Acceleration: 0-100 km/h in 7.5 seconds
+
+- Fiat 124 Spider Abarth
+  Engine: four-cylinder 1.4 litre
+  Power: 326 hp, 708 horsepower, 170 HP
+  Transmission: automatic transmission
+  Drivetrain: rear-wheel drive
+
+- Fiat Qubo
+  Engine: diesel v
+  Power: 326 hp, 708 horsepower, 77hp
+  Transmission: automatic transmission
+
+- Fiat Mobi
+  Power: 326 hp, 708 horsepower, 100HP
+  Drivetrain: four-wheel drive
+
+- Fiat Fiorino
+  Power: 326 hp, 708 horsepower, 95 HP
+
+
+2016:
+- Fiat 500
+
+- Fiat Tipo
+
+- Fiat Toro
+  Engine: diesel v
+  Power: 326 hp, 708 horsepower, 139 hp
+  Drivetrain: four-wheel drive
+
+- Fiat Fullback
+  Power: 326 hp, 708 horsepower, 81kW
+  Transmission: five-speed manual
+  Weight: 1,100 kg
+
+- Fiat Fullback Concept
+
+
+2015:
+- Fiat Panda Cross
+
+- Fiat 500X
+
+- Fiat Freemont Cross
+
+- Fiat Doblo
+
+- Fiat Doblo Cargo
+
+- Fiat 695 Abarth Biposto
+
+
+2014:
+- Fiat 500e
+
+- Fiat 500L Trekking
+
+- Fiat FCC4 Concept
+
+
+2013:
+- Fiat Panda
+
+- Fiat 500L
+
+- Fiat Viaggio
+
+- Fiat Strada
+
+
+2012:
+- Fiat Freemont
+
+- Fiat Palio
+
+
+2011:
+- Fiat 500C Abarth
+
+- Fiat Punto Evo Abarth
+
+- Fiat Uno
+
+- Fiat Idea
+
+- Fiat 500 Coupe Zagato Concept
+
+
+2010:
+- Fiat 500C
+
+- Fiat Doblo
+
+- Fiat Doblo Cargo
+
+- Fiat Punto Evo
+
+- Fiat Sedici
+
+- Fiat Uno Cabrio Concept
+
+
+2009:
+- Fiat 500 Abarth
+
+- Fiat 500 Abarth Assetto Corse
+
+- Fiat Fiorino Qubo
+
+- Fiat 500 Barbie Concept
+
+
+2008:
+- Fiat 500
+
+- Fiat Grande Punto Abarth
+
+- Fiat Fiorino
+
+- Fiat Croma
+
+- Fiat Portofino Concept
+
+
+2007:
+- Fiat Panda 100HP
+
+- Fiat Bravo
+
+- Fiat Linea
+
+
+2006:
+- Fiat Panda Cross
+
+- Fiat Sedici
+
+- Fiat Ulysse
+
+- Fiat Panda Multi Eco Concept
+
+
+2005:
+- Fiat Doblo
+
+- Fiat Doblo Cargo
+
+- Fiat Grande Punto
+
+- Fiat Croma
+
+- Fiat 600 50th
+
+- Fiat Oltre Concept
+
+
+2004:
+- Fiat Seicento
+
+- Fiat Multipla
+
+- Fiat Trepiuno Concept
+
+- Fiat Idea 5terre Concept
+
+
+2003:
+- Fiat Panda
+
+- Fiat Strada
+
+- Fiat Punto Active
+
+- Fiat Punto Dynamic
+
+- Fiat Idea 1.9 Multijet Dynamic
+
+- Fiat Barchetta
+
+- Fiat Marrakech Concept
+
+
+2002:
+- Fiat Palio Weekend
+
+- Fiat Palio
+
+- Fiat Ulysse 2.0 JTD
+
+- Fiat Stilo Multi Wagon Actual
+
+- Fiat Stilo Dynamic
+
+- Fiat Stilo Abarth
+
+- Fiat Multipla
+
+- Fiat Albea
+
+- Fiat Simba Concept
+
+
+2001:
+- Fiat Doblo
+
+
+1994:
+- Fiat Cinquecento Sporting 1.1i
+
+
+1993:
+- Fiat Punto
+
+- Fiat Croma
+
+
+1992:
+- Fiat Cinquecento Elettra
+
+
+1991:
+- Fiat Panda
+
+
+1990:
+- Fiat Panda Elettra
+
+- Fiat Tipo
+
+- Fiat Uno
+
+- Fiat Tempra SW
+
+
+1986:
+- Fiat Regata 100 Weekend
+
+
+1985:
+- Fiat Ritmo Supercabrio
+
+
+1984:
+- Fiat Regata 75
+
+
+1983:
+- Fiat Argenta
+
+
+1981:
+- Fiat Ritmo S 85 Cabrio Bertone
+
+- Fiat 127 Diesel
+
+
+1980:
+- Fiat 900 E Panorama
+
+- Fiat 127 Panorama
+
+
+1978:
+- Fiat Ritmo
+
+- Fiat 132 Diesel
+
+- Fiat 131 Supermirafiori
+
+- Fiat 131 Racing
+
+
+1976:
+- Fiat 131 Abarth Rally
+
+
+1974:
+- Fiat Campagnola
+
+- Fiat 132 GLS 1800
+
+- Fiat 132 1600 GL
+
+- Fiat 131 Mirafiori
+
+
+1972:
+- Fiat X1-9
+
+- Fiat 128 Rally
+
+- Fiat 126
+
+
+1971:
+- Fiat 127
+
+
+1970:
+- Fiat 125 Special
+
+
+1969:
+- Fiat 124 Sport Spider
+
+- Fiat Dino Spider
+
+- Fiat 130 2800 Limousine
+
+- Fiat 128
+
+
+1968:
+- Fiat 850 Special
+
+- Fiat 124 Special
+
+
+1967:
+- Fiat 125
+
+
+1966:
+- Fiat 124 Saloon
+
+- Fiat 124 Familiare
+
+- Fiat 1100 R Station Wagon
+
+
+1965:
+- Fiat 850 Spider
+
+
+1963:
+- Fiat 1500 S Cabriolet
+
+
+1962:
+- Fiat 1500 L
+
+- Fiat 1100 D Station Wagon
+
+- Fiat 1100 D
+
+
+1961:
+- Fiat 2300 Station Wagon
+
+- Fiat 2300 Saloon
+
+- Fiat 1500
+
+
+1959:
+- Fiat 1800
+
+
+1957:
+- Fiat 500
+
+- Fiat 1200 Granluce Berlina
+
+
+1955:
+- Fiat Campagnola A
+
+- Fiat 600
+
+
+1954:
+- Fiat Turbina Concept
+
+
+1953:
+- Fiat 1400
+
+
+1952:
+- Fiat 8V
+
+
+1950:
+- Fiat 1400 Cabriolet
+
+
+1949:
+- Fiat Topolino 500 C
+
+- Fiat 1100 E
+
+
+1948:
+- Fiat Topolino 500 B
+
+
+1938:
+- Fiat 2800 Berlina
+
+
+1937:
+- Fiat 508 C Balilla 1100
+
+
+1936:
+- Fiat Topolino 500
+
+
+1935:
+- Fiat 1500
+
+
+1934:
+- Fiat 527 Ardita 2500
+
+
+1933:
+- Fiat 518 Ardita 2000
+
+
+1932:
+- Fiat 508 Balilla Sport
+
+- Fiat 508 Balilla 3 Marce
+
+
+1931:
+- Fiat 522 C
+
+
+1929:
+- Fiat 514 Saloon
+
+
+1928:
+- Fiat 525 Touring
+
+- Fiat 525
+
+- Fiat 521 C
+
+
+1927:
+- Fiat 806 Corsa
+
+- Fiat 520
+
+
+1926:
+- Fiat 512 Torpedo
+
+- Fiat 507 Touring
+
+
+1923:
+- Fiat Mefistofele Eldridge Record
+
+- Fiat 805-405 Corsa
+
+
+1922:
+- Fiat 804-404 Corsa
+
+- Fiat 519 S
+
+
+1921:
+- Fiat 801-402 Corsa
+
+- Fiat 501 SS
+
+
+1919:
+- Fiat 510
+
+- Fiat 505
+
+- Fiat 501 Saloon
+
+- Fiat 501 S Torpedo Sport
+
+
+1914:
+- Fiat S.57-14B Corsa
+
+
+1912:
+- Fiat Tipo 3 TER
+
+- Fiat 12-15 HP Zero
+
+
+1911:
+- Fiat S.76 300 HP Record
+
+- Fiat S.74 Corsa
+
+
+1910:
+- Fiat 30-45 HP Tipo 4
+
+
+1908:
+- Fiat Fiacre
+
+- Fiat 20-30 HP
+
+- Fiat 15-25 HP Brevetti Tipo 2
+
+
+1907:
+- Fiat Taunus Corsa
+
+- Fiat 28-40 HP Corsa Targa Florio
+
+- Fiat 18-24 HP
+
+- Fiat 130 HP Grand Prix de France Corsa
+
+
+1906:
+- Fiat 110 HP
+
+
+1905:
+- Fiat Brevetti
+
+
+1904:
+- Fiat 75 HP Corsa
+
+
+1903:
+- Fiat 16-20 HP
+
+
+1902:
+- Fiat 24 HP Corsa
+
+
+1901:
+- Fiat 12 HP
+
+
+1899:
+- Fiat 3 1-2 HP
+
+
+Unknown Year:
+- Fiat
+
+

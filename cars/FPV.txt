@@ -1,0 +1,92 @@
+Fpv Car Models and Generations:
+
+2014:
+- FPV GT F 351
+  Engine: 5.8 litre V
+  Power: 326 hp, 708 horsepower, 351 kW
+  Transmission: manual transmission
+
+
+2008:
+- FPV Super Pursuit
+  Power: 326 hp, 708 horsepower, 326 hp
+  Fuel Economy: 14.4L/100km
+
+- FPV GT-P
+  Power: 326 hp, 708 horsepower, 315kW
+  Transmission: manual transmission
+  Drivetrain: 4Motion
+  Fuel Economy: 14L/100km
+
+- FPV GT-E
+  Power: 326 hp, 708 horsepower, 315kW
+  Transmission: automatic transmission
+  Fuel Economy: 14L/100km
+
+- FPV GT
+  Power: 326 hp, 708 horsepower, 315kW
+  Transmission: manual transmission
+  Fuel Economy: 14L/100km
+
+- FPV Falcon F6 Ute
+  Power: 326 hp, 708 horsepower, 310kW
+  Transmission: manual transmission
+  Fuel Economy: 12.8L/100km, 13L/100km, 14.4L/100km
+
+- FPV Falcon F6
+  Power: 326 hp, 708 horsepower, 310kW
+  Transmission: manual transmission
+  Fuel Economy: 12.3L/100km, 12.1L/100km
+
+- FPV F6X
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 270kW
+  Transmission: automatic transmission
+
+
+2007:
+- FPV GT Cobra
+  Power: 326 hp, 708 horsepower, 302kW
+  Transmission: six-speed manual
+
+- FPV GT 40th Anniversary
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: automatic transmission
+  Drivetrain: quattro
+
+- FPV F6 R-Spec Typhoon
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: automatic transmission
+  Drivetrain: xDrive
+
+- FPV Cobra Ute
+  Power: 326 hp, 708 horsepower, 302kW
+  Transmission: manual transmission
+
+- FPV BF MkII Force 8
+  Power: 326 hp, 708 horsepower, 6HP
+  Transmission: automatic transmission
+
+- FPV BF MkII Force 6
+  Power: 326 hp, 708 horsepower, 6HP
+  Transmission: automatic transmission
+
+
+2006:
+- FPV BF MkII Super Pursuit
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- FPV BF MkII Pursuit
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- FPV BF MkII GT-P
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- FPV BF MkII GT
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 326 hp
+
+

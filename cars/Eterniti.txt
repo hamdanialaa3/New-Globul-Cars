@@ -1,0 +1,13 @@
+Eterniti Car Models and Generations:
+
+2013:
+- Eterniti Artemis
+  Power: 326 hp, 708 horsepower, 441kW
+  Acceleration: 0-100 km/h in 4.5 s
+
+
+2011:
+- Eterniti Hemera Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+

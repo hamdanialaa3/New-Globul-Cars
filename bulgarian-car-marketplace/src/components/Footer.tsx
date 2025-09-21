@@ -5,27 +5,26 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { useTranslation } from '../hooks/useTranslation';
+import logoImage from '../assets/logo.png';
 import {
   ProfessionalFacebookIcon,
   ProfessionalInstagramIcon,
   ProfessionalTwitterIcon,
-  ProfessionalLinkedInIcon,
-  ProfessionalCarIcon
+  ProfessionalLinkedInIcon
 } from './CustomIcons';
 
 // Styled Components
 const FooterContainer = styled.footer`
-  background: ${({ theme }) => theme.colors.grey[800]};
-  color: ${({ theme }) => theme.colors.text.onDark};
+  background: ${({ theme }) => theme.colors.background.paper};
+  color: ${({ theme }) => theme.colors.text.primary};
   margin-top: auto;
-  border-radius: ${({ theme }) => theme.borderRadius.xl} ${({ theme }) => theme.borderRadius.xl} 0 0;
+  border-top: 1px solid ${({ theme }) => theme.colors.grey[200]};
 `;
 
 const FooterContent = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   padding: ${({ theme }) => theme.spacing['2xl']} ${({ theme }) => theme.spacing.md};
-  border-radius: ${({ theme }) => theme.borderRadius.xl};
 `;
 
 const FooterGrid = styled.div`
@@ -37,10 +36,19 @@ const FooterGrid = styled.div`
 
 const FooterSection = styled.div`
   h3 {
-    color: ${({ theme }) => theme.colors.primary.main};
+    color: ${({ theme }) => theme.colors.text.primary};
     font-size: ${({ theme }) => theme.typography.fontSize.lg};
     font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
     margin-bottom: ${({ theme }) => theme.spacing.md};
+    display: flex;
+    align-items: center;
+    
+    img {
+      height: 32px;
+      width: auto;
+      margin-right: 8px;
+      border-radius: ${({ theme }) => theme.borderRadius.sm};
+    }
   }
 
   ul {
@@ -54,25 +62,29 @@ const FooterSection = styled.div`
   }
 
   a {
-    color: ${({ theme }) => theme.colors.grey[300]};
+    color: ${({ theme }) => theme.colors.text.secondary};
     text-decoration: none;
     font-size: ${({ theme }) => theme.typography.fontSize.base};
-    transition: color 0.2s ease-in-out;
+    transition: color 0.2s ease-in-out, text-decoration-color 0.2s ease-in-out;
 
     &:hover {
-      color: ${({ theme }) => theme.colors.primary.light};
+      color: ${({ theme }) => theme.colors.primary.main};
+      text-decoration: underline;
+      text-underline-offset: 2px;
     }
   }
 `;
 
 const FooterLink = styled(Link)`
-  color: ${({ theme }) => theme.colors.grey[300]};
+  color: ${({ theme }) => theme.colors.text.secondary};
   text-decoration: none;
   font-size: ${({ theme }) => theme.typography.fontSize.base};
-  transition: color 0.2s ease-in-out;
+  transition: color 0.2s ease-in-out, text-decoration-color 0.2s ease-in-out;
 
   &:hover {
-    color: ${({ theme }) => theme.colors.primary.light};
+    color: ${({ theme }) => theme.colors.primary.main};
+    text-decoration: underline;
+    text-underline-offset: 2px;
   }
 `;
 
@@ -88,36 +100,28 @@ const SocialLink = styled.a`
   justify-content: center;
   width: 40px;
   height: 40px;
-  background: ${({ theme }) => theme.colors.grey[700]};
+  background: ${({ theme }) => theme.colors.background.paper};
+  border: 1px solid ${({ theme }) => theme.colors.grey[300]};
   border-radius: 50%;
-  color: ${({ theme }) => theme.colors.grey[300]};
+  color: ${({ theme }) => theme.colors.text.secondary};
   text-decoration: none;
   font-size: ${({ theme }) => theme.typography.fontSize.lg};
   transition: all 0.2s ease-in-out;
 
   &:hover {
     background: ${({ theme }) => theme.colors.primary.main};
+    border-color: ${({ theme }) => theme.colors.primary.main};
     color: ${({ theme }) => theme.colors.primary.contrastText};
     transform: translateY(-2px);
   }
 `;
 
 const FooterBottom = styled.div`
-  border-top: 1px solid ${({ theme }) => theme.colors.grey[600]};
+  border-top: 1px solid ${({ theme }) => theme.colors.grey[200]};
   padding-top: ${({ theme }) => theme.spacing.lg};
   text-align: center;
   font-size: ${({ theme }) => theme.typography.fontSize.sm};
-  color: ${({ theme }) => theme.colors.grey[300]};
-  background: linear-gradient(
-    180deg,
-    ${({ theme }) => theme.colors.grey[700]} 0%,
-    ${({ theme }) => theme.colors.grey[800]} 50%,
-    ${({ theme }) => theme.colors.grey[900]} 100%
-  );
-  border-radius: 0 0 ${({ theme }) => theme.borderRadius.xl} ${({ theme }) => theme.borderRadius.xl};
-  margin: 0 -${({ theme }) => theme.spacing.md};
-  padding-left: ${({ theme }) => theme.spacing.md};
-  padding-right: ${({ theme }) => theme.spacing.md};
+  color: ${({ theme }) => theme.colors.text.secondary};
 `;
 
 const Copyright = styled.div`
@@ -131,30 +135,15 @@ const FooterLinks = styled.div`
   flex-wrap: wrap;
 
   a {
-    color: ${({ theme }) => theme.colors.grey[400]};
+    color: ${({ theme }) => theme.colors.text.secondary};
     text-decoration: none;
     font-size: ${({ theme }) => theme.typography.fontSize.sm};
-    transition: all 0.3s ease-in-out;
-    position: relative;
+    transition: color 0.2s ease-in-out, text-decoration-color 0.2s ease-in-out;
 
     &:hover {
-      color: ${({ theme }) => theme.colors.primary.light};
-      transform: translateY(-1px);
-    }
-    
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: -2px;
-      left: 0;
-      width: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, ${({ theme }) => theme.colors.primary.main}, transparent);
-      transition: width 0.3s ease-in-out;
-    }
-    
-    &:hover::after {
-      width: 100%;
+      color: ${({ theme }) => theme.colors.primary.main};
+      text-decoration: underline;
+      text-underline-offset: 2px;
     }
   }
 `;
@@ -184,7 +173,10 @@ const Footer: React.FC = () => {
         <FooterGrid>
           {/* Company Info */}
           <FooterSection>
-            <h3><ProfessionalCarIcon size={24} /> Globul Cars</h3>
+            <h3>
+              <img src={logoImage} alt="Globul Cars" />
+              Globul Cars
+            </h3>
             <p>
               {t('footer.description')}
             </p>

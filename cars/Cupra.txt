@@ -1,0 +1,79 @@
+Cupra Car Models and Generations:
+
+2025:
+- Cupra Formentor
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 150PS
+  Transmission: manual transmission
+  Drivetrain: all-wheel drive
+
+- Cupra Terramar
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 150PS
+  Drivetrain: all-wheel drive
+  Fuel Economy: city to 602 litres (when loaded up to the height of the rear seat dackrests)
+
+- Cupra Born VZ
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 240kW
+  Transmission: automatic gearbox
+  Drivetrain: front-wheel drive
+  Dimensions: 1,504 mm in height
+  Top Speed: limited to 200km/h
+  Fuel Economy: 6.7 l per 100 km, 6.8 l per 100 km
+
+- Cupra Tindaya Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2024:
+- Cupra Tavascan
+  Engine: 2.4 L four-cylinder
+  Power: 326 hp, 708 horsepower, 340PS
+  Drivetrain: all-wheel drive
+
+
+2023:
+- Cupra DarkRebel Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2022:
+- Cupra Formentor VZ5
+  Engine: v l
+  Power: 326 hp, 708 horsepower, 245PS
+  Transmission: seven-speed
+  Drivetrain: all-wheel drive
+
+- Cupra Born
+
+- Cupra UrbanRebel Concept
+  Power: 326 hp, 708 horsepower, 226PS
+  Drivetrain: front-wheel drive
+
+
+2021:
+- Cupra Formentor
+
+- Cupra Tavascan Extreme E Concept
+  Power: 326 hp, 708 horsepower, 300 kW
+
+- Cupra UrbanRebel Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 250kW
+
+
+2019:
+- Cupra Formentor Concept
+
+- Cupra Tavascan Concept
+
+
+2018:
+- Cupra e-Racer Concept
+
+
+Unknown Year:
+- Cupra
+
+

@@ -9,6 +9,7 @@ import { useTranslation } from '../hooks/useTranslation';
 import { bulgarianAuthService } from '../firebase';
 import { BulgarianUser } from '../firebase/auth-service';
 import NotificationBell from './NotificationBell';
+import logoImage from '../assets/logo.png';
 import {
   ProfessionalSettingsIcon,
   ProfessionalUserIcon,
@@ -18,15 +19,15 @@ import {
   ProfessionalFontIcon
 } from './CustomIcons';
 
-// Styled Components
+// Styled Components - Mobile.de Style
 const HeaderContainer = styled.header`
-  background: #ffffff;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  background: ${({ theme }) => theme.colors.primary.main}; /* أزرق داكن مثل mobile.de */
+  box-shadow: ${({ theme }) => theme.shadows.sm};
   position: sticky;
   top: 0;
   z-index: 1000;
-  border-bottom: 1px solid #e5e7eb;
-  border-radius: 0 0 ${({ theme }) => theme.borderRadius.xl} ${({ theme }) => theme.borderRadius.xl};
+  border-bottom: 2px solid ${({ theme }) => theme.colors.primary.dark};
+  color: ${({ theme }) => theme.colors.primary.contrastText}; /* نص أبيض */
 `;
 
 const HeaderContent = styled.div`
@@ -43,14 +44,25 @@ const HeaderContent = styled.div`
 const Logo = styled(Link)`
   font-size: ${({ theme }) => theme.typography.fontSize['2xl']};
   font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
-  color: ${({ theme }) => theme.colors.primary.main};
+  color: ${({ theme }) => theme.colors.primary.contrastText}; /* أبيض على الأزرق */
   text-decoration: none;
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.sm};
+  
+  img {
+    height: 113px;
+    width: auto;
+    border-radius: ${({ theme }) => theme.borderRadius.sm};
+    transition: transform 0.2s ease-in-out;
+  }
 
   &:hover {
-    color: ${({ theme }) => theme.colors.primary.dark};
+    color: ${({ theme }) => theme.colors.accent.main}; /* أزرق فاتح عند التمرير */
+    
+    img {
+      transform: scale(1.05);
+    }
   }
 `;
 
@@ -61,7 +73,7 @@ const Navigation = styled.nav`
 `;
 
 const NavLink = styled(Link)`
-  color: ${({ theme }) => theme.colors.text.primary};
+  color: ${({ theme }) => theme.colors.primary.contrastText}; /* أبيض على الأزرق */
   text-decoration: none;
   font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
   padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
@@ -69,17 +81,15 @@ const NavLink = styled(Link)`
   transition: all 0.2s ease-in-out;
 
   &:hover {
-    background-color: ${({ theme }) => theme.colors.grey[100]};
-    color: ${({ theme }) => theme.colors.primary.main};
+    background-color: ${({ theme }) => theme.colors.primary.dark}; /* أزرق أغمق عند التمرير */
+    color: ${({ theme }) => theme.colors.accent.main}; /* أزرق فاتح */
   }
 
   &.active {
-    background-color: ${({ theme }) => theme.colors.primary.main};
-    color: ${({ theme }) => theme.colors.primary.contrastText};
+    background-color: ${({ theme }) => theme.colors.secondary.main}; /* أحمر للنشط */
+    color: ${({ theme }) => theme.colors.secondary.contrastText};
   }
 `;
-
-// Removed legacy user menu components to avoid duplication; user actions are now in Settings menu
 
 const DropdownMenu = styled.div<{ $isOpen: boolean }>`
   position: absolute;
@@ -236,7 +246,7 @@ const Header: React.FC = () => {
       <HeaderContent>
         {/* Logo */}
         <Logo to="/">
-          <img src="/logo-new.png" alt="Globul Cars Logo" style={{ height: '75px', width: 'auto' }} />
+          <img src={logoImage} alt="Globul Cars Logo" />
         </Logo>
 
         {/* Navigation */}

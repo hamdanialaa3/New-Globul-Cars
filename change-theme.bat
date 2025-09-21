@@ -8,19 +8,21 @@ echo [1] الأزرق الاحترافي
 echo [2] الأخضر الطبيعي
 echo [3] الأحمر الجريء
 echo [4] البنفسجي الأنيق
-echo [5] الداكن العصري
-echo [6] البسيط الرمادي
-echo [7] العودة للأصفر الافتراضي
+echo [7] الداكن العصري
+echo [8] البسيط الرمادي
+echo [9] Mobile.de (ألماني كلاسيكي)
+echo [10] العودة للأصفر الافتراضي
 echo.
-set /p choice="اختر رقم المظهر (1-7): "
+set /p choice="اختر رقم المظهر (1-10): "
 
 if "%choice%"=="1" goto blue
 if "%choice%"=="2" goto green
 if "%choice%"=="3" goto red
 if "%choice%"=="4" goto purple
-if "%choice%"=="5" goto dark
-if "%choice%"=="6" goto minimal
-if "%choice%"=="7" goto default
+if "%choice%"=="7" goto dark
+if "%choice%"=="8" goto minimal
+if "%choice%"=="9" goto mobilede
+if "%choice%"=="10" goto default
 goto invalid
 
 :blue
@@ -51,6 +53,11 @@ goto end
 :minimal
 echo تطبيق المظهر البسيط...
 powershell -Command "(Get-Content 'bulgarian-car-marketplace\src\styles\theme.ts') -replace 'primary: \{[^}]*\}', 'primary: { main: ''#6C757D'', light: ''#ADB5BD'', dark: ''#495057'', contrastText: ''#FFFFFF'' }' -replace 'secondary: \{[^}]*\}', 'secondary: { main: ''#ADB5BD'', light: ''#CED4DA'', dark: ''#6C757D'', contrastText: ''#000000'' }' -replace 'accent: \{[^}]*\}', 'accent: { main: ''#495057'', light: ''#6C757D'', dark: ''#343A40'', contrastText: ''#FFFFFF'' }' -replace 'background: \{[^}]*\}', 'background: { default: ''#F8F9FA'', paper: ''#FFFFFF'' }' | Set-Content 'bulgarian-car-marketplace\src\styles\theme.ts'"
+goto end
+
+:mobilede
+echo تطبيق مظهر Mobile.de...
+powershell -Command "(Get-Content 'bulgarian-car-marketplace\src\styles\theme.ts') -replace 'primary: \{[^}]*\}', 'primary: { main: ''#003366'', light: ''#0066CC'', dark: ''#002244'', contrastText: ''#FFFFFF'' }' -replace 'secondary: \{[^}]*\}', 'secondary: { main: ''#CC0000'', light: ''#FF3333'', dark: ''#990000'', contrastText: ''#FFFFFF'' }' -replace 'accent: \{[^}]*\}', 'accent: { main: ''#0066CC'', light: ''#3399FF'', dark: ''#004499'', contrastText: ''#FFFFFF'' }' -replace 'background: \{[^}]*\}', 'background: { default: ''#FFFFFF'', paper: ''#F8F9FA'' }' -replace 'text: \{[^}]*\}', 'text: { primary: ''#333333'', secondary: ''#666666'' }' | Set-Content 'bulgarian-car-marketplace\src\styles\theme.ts'"
 goto end
 
 :default

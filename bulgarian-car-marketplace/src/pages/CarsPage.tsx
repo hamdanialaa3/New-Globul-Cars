@@ -6,8 +6,77 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { useTranslation } from '../hooks/useTranslation';
 import { bulgarianCarService, BulgarianCar, CarSearchFilters } from '../firebase';
-import { CAR_MAKES, YEARS_OPTIONS } from '../constants/carMakes';
+import { YEARS_OPTIONS } from '../constants/carMakes';
 import AdvancedSearch from '../components/AdvancedSearch';
+import CarSearchSystem from '../components/CarSearchSystem';
+import DetailedSearch from '../components/DetailedSearch';
+
+// Interface for detailed search filters
+interface DetailedSearchFilters {
+  make: string;
+  model: string;
+  generation: string;
+  bodyStyle: string;
+  vehicleType: string;
+  seats: { from: string; to: string };
+  doors: string;
+  slidingDoor: string;
+  condition: string;
+  paymentType: string;
+  price: { from: string; to: string };
+  firstRegistration: { from: string; to: string };
+  mileage: { from: string; to: string };
+  huValid: string;
+  owner: string;
+  serviceHistory: boolean;
+  roadworthy: boolean;
+  inspection: boolean;
+  country: string;
+  location: string;
+  radius: string;
+  delivery: boolean;
+  fuelType: string;
+  power: { from: string; to: string; unit: 'PS' | 'kW' };
+  displacement: { from: string; to: string };
+  tankSize: { from: string; to: string };
+  weight: { from: string; to: string };
+  cylinders: { from: string; to: string };
+  driveType: string;
+  transmission: string;
+  fuelConsumption: string;
+  emissionSticker: string;
+  emissionClass: string;
+  particulateFilter: boolean;
+  exteriorColor: string;
+  metallic: boolean;
+  matte: boolean;
+  towbar: string;
+  towbarAssistant: boolean;
+  brakedTrailerLoad: string;
+  unbrakedTrailerLoad: string;
+  supportLoad: string;
+  parkingAssist: string[];
+  cruiseControl: string;
+  interiorColor: string;
+  interiorMaterial: string;
+  airbags: string;
+  climateControl: string;
+  extras: string[];
+  sellerType: string;
+  sellerRating: string;
+  onlineSince: string;
+  warranty: boolean;
+  withImages: boolean;
+  withVideo: boolean;
+  vatDeductible: boolean;
+  nonSmoker: boolean;
+  reducedPrice: boolean;
+  taxi: boolean;
+  damagedVehicles: string;
+  business: string;
+  qualitySeal: string;
+  searchDescription: string;
+}
 
 // Styled Components
 const CarsContainer = styled.div`
@@ -38,13 +107,25 @@ const PageHeader = styled.div`
   }
 `;
 
-const FiltersSection = styled.div`
+const Layout = styled.div`
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: ${({ theme }) => theme.spacing['2xl']};
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const FiltersSection = styled.aside`
   background: ${({ theme }) => theme.colors.background.paper};
   border-radius: ${({ theme }) => theme.borderRadius.lg};
   padding: ${({ theme }) => theme.spacing['2xl']};
   box-shadow: ${({ theme }) => theme.shadows.base};
-  margin-bottom: ${({ theme }) => theme.spacing['2xl']};
   border: 1px solid ${({ theme }) => theme.colors.grey[200]};
+  position: sticky;
+  top: ${({ theme }) => theme.spacing['2xl']};
+  height: fit-content;
 `;
 
 const FiltersGrid = styled.div`
@@ -80,6 +161,9 @@ const FilterGroup = styled.div`
   }
 `;
 
+// مكون خاص للقائمة المنسدلة مع أيقونات الشركات
+// تم استبداله بالنظام الجديد CarSearchSystem
+
 const FilterActions = styled.div`
   display: flex;
   gap: ${({ theme }) => theme.spacing.md};
@@ -114,7 +198,7 @@ const FilterButton = styled.button`
   }
 `;
 
-const ResultsSection = styled.div`
+const ResultsSection = styled.section`
   margin-bottom: ${({ theme }) => theme.spacing['2xl']};
 `;
 
@@ -205,6 +289,15 @@ const CarTitle = styled.h3`
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  margin: 0;
+  flex: 1;
+`;
+
+const CarTitleWithBrand = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.sm};
+  margin-bottom: ${({ theme }) => theme.spacing.sm};
 `;
 
 const CarPrice = styled.div`
@@ -276,6 +369,7 @@ const CarsPage: React.FC = () => {
   const [sortBy, setSortBy] = useState<'createdAt' | 'price' | 'mileage' | 'year'>('createdAt');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [isAdvancedSearchExpanded, setIsAdvancedSearchExpanded] = useState(false);
+  const [showDetailedSearch, setShowDetailedSearch] = useState(false);
 
 // Generate years array from 1900 to 2025
 // const YEARS_OPTIONS = (() => {
@@ -322,7 +416,30 @@ const CarsPage: React.FC = () => {
     loadCars();
   }, [loadCars]);
 
-  // Handle filter changes
+  // Handle detailed search
+  const handleDetailedSearch = useCallback((detailedFilters: DetailedSearchFilters) => {
+    const newFilters: CarSearchFilters = {
+      make: detailedFilters.make || undefined,
+      model: detailedFilters.model || undefined,
+      generation: detailedFilters.generation || undefined,
+      bodyStyle: detailedFilters.bodyStyle || undefined,
+      minPrice: detailedFilters.price.from ? parseInt(detailedFilters.price.from) : undefined,
+      maxPrice: detailedFilters.price.to ? parseInt(detailedFilters.price.to) : undefined,
+      fuelType: detailedFilters.fuelType || undefined,
+      transmission: detailedFilters.transmission || undefined,
+      condition: detailedFilters.condition || undefined,
+      minYear: detailedFilters.firstRegistration.from ? parseInt(detailedFilters.firstRegistration.from) : undefined,
+      maxYear: detailedFilters.firstRegistration.to ? parseInt(detailedFilters.firstRegistration.to) : undefined,
+      maxMileage: detailedFilters.mileage.to ? parseInt(detailedFilters.mileage.to) : undefined,
+      location: detailedFilters.location ? {
+        city: detailedFilters.location,
+        radius: detailedFilters.radius ? parseInt(detailedFilters.radius) : undefined
+      } : undefined,
+      // Add more mappings as needed
+    };
+    setFilters(newFilters);
+    setShowDetailedSearch(false);
+  }, []);
   const handleFilterChange = (key: keyof CarSearchFilters, value: any) => {
     setFilters(prev => ({
       ...prev,
@@ -362,41 +479,59 @@ const CarsPage: React.FC = () => {
           onToggleExpanded={() => setIsAdvancedSearchExpanded(!isAdvancedSearchExpanded)}
         />
 
-        {/* Filters Section */}
-        <FiltersSection>
-          <FiltersGrid>
-            <FilterGroup>
-              <label>{t('cars.filters.make')}</label>
-              <select
-                value={filters.make || ''}
-                onChange={(e) => handleFilterChange('make', e.target.value)}
-              >
-                <option value="">{t('cars.filters.allMakes')}</option>
-                {CAR_MAKES.map((make) => (
-                  <option key={make} value={make}>
-                    {make}
-                  </option>
-                ))}
-              </select>
-            </FilterGroup>
+        <Layout>
+          {/* Filters Section (left sidebar) */}
+          <FiltersSection>
+            {/* النظام الجديد للبحث الهرمي */}
+            <CarSearchSystem
+              onSearch={(searchFilters) => {
+                // تحويل فلاتر النظام الجديد إلى فلاتر النظام القديم
+                const newFilters: CarSearchFilters = {
+                  ...filters,
+                  make: searchFilters.make || undefined,
+                  model: searchFilters.model || undefined,
+                  generation: searchFilters.generation || undefined,
+                  bodyStyle: searchFilters.bodyStyle || undefined
+                };
+                setFilters(newFilters);
+              }}
+              initialFilters={{
+                make: filters.make || '',
+                model: filters.model || '',
+                generation: filters.generation || '',
+                bodyStyle: filters.bodyStyle || ''
+              }}
+            />
 
-            <FilterGroup>
-              <label>{t('cars.filters.priceRange')} (€)</label>
-              <div style={{ display: 'flex', gap: '8px' }}>
+            <FiltersGrid>
+
+              <FilterGroup>
+                <label>{t('cars.filters.priceRange')} (€)</label>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <input
+                    type="number"
+                    placeholder={t('cars.filters.fromPrice')}
+                    value={filters.minPrice || ''}
+                    onChange={(e) => handleFilterChange('minPrice', parseInt(e.target.value) || undefined)}
+                  />
+                  <input
+                    type="number"
+                    placeholder={t('cars.filters.toPrice')}
+                    value={filters.maxPrice || ''}
+                    onChange={(e) => handleFilterChange('maxPrice', parseInt(e.target.value) || undefined)}
+                  />
+                </div>
+              </FilterGroup>
+
+              <FilterGroup>
+                <label>{t('cars.filters.mileage')} (km)</label>
                 <input
                   type="number"
-                  placeholder={t('cars.filters.fromPrice')}
-                  value={filters.minPrice || ''}
-                  onChange={(e) => handleFilterChange('minPrice', parseInt(e.target.value) || undefined)}
+                  placeholder={t('cars.filters.maxMileage')}
+                  value={filters.maxMileage || ''}
+                  onChange={(e) => handleFilterChange('maxMileage', parseInt(e.target.value) || undefined)}
                 />
-                <input
-                  type="number"
-                  placeholder={t('cars.filters.toPrice')}
-                  value={filters.maxPrice || ''}
-                  onChange={(e) => handleFilterChange('maxPrice', parseInt(e.target.value) || undefined)}
-                />
-              </div>
-            </FilterGroup>
+              </FilterGroup>
 
             <FilterGroup>
               <label>{t('cars.filters.fuelType')}</label>
@@ -448,20 +583,77 @@ const CarsPage: React.FC = () => {
                 </select>
               </div>
             </FilterGroup>
-          </FiltersGrid>
 
-          <FilterActions>
-            <FilterButton onClick={loadCars}>
-              {t('cars.filters.search')}
-            </FilterButton>
-            <FilterButton className="secondary" onClick={clearFilters}>
-              {t('cars.filters.clear')}
-            </FilterButton>
-          </FilterActions>
-        </FiltersSection>
+              <FilterGroup>
+                <label>{t('cars.filters.location')}</label>
+                <input
+                  type="text"
+                  placeholder={t('cars.filters.city')}
+                  value={filters.location?.city || ''}
+                  onChange={(e) => handleFilterChange('location', {
+                    ...filters.location,
+                    city: e.target.value || undefined
+                  })}
+                />
+              </FilterGroup>
 
-        {/* Results Section */}
-        <ResultsSection>
+              <FilterGroup>
+                <label>{t('cars.filters.radius')} (km)</label>
+                <input
+                  type="number"
+                  placeholder={t('cars.filters.searchRadius')}
+                  value={filters.location?.radius || ''}
+                  onChange={(e) => handleFilterChange('location', {
+                    ...filters.location,
+                    radius: parseInt(e.target.value) || undefined
+                  })}
+                />
+              </FilterGroup>
+
+            <FilterGroup>
+              <label>{t('cars.filters.transmission')}</label>
+              <select
+                value={filters.transmission || ''}
+                onChange={(e) => handleFilterChange('transmission', e.target.value)}
+              >
+                <option value="">{t('cars.filters.allTransmissions')}</option>
+                <option value="manual">{t('cars.transmissions.manual')}</option>
+                <option value="automatic">{t('cars.transmissions.automatic')}</option>
+                <option value="semi-automatic">{t('cars.transmissions.semiAutomatic')}</option>
+                <option value="cvt">{t('cars.transmissions.cvt')}</option>
+              </select>
+            </FilterGroup>
+
+            <FilterGroup>
+              <label>{t('cars.filters.condition')}</label>
+              <select
+                value={filters.condition || ''}
+                onChange={(e) => handleFilterChange('condition', e.target.value)}
+              >
+                <option value="">{t('cars.filters.allConditions')}</option>
+                <option value="new">{t('cars.conditions.new')}</option>
+                <option value="used">{t('cars.conditions.used')}</option>
+                <option value="damaged">{t('cars.conditions.damaged')}</option>
+              </select>
+            </FilterGroup>
+
+            </FiltersGrid>
+
+            <FilterActions>
+              <FilterButton onClick={loadCars}>
+                {t('cars.filters.search')}
+              </FilterButton>
+              <FilterButton className="secondary" onClick={clearFilters}>
+                {t('cars.filters.clear')}
+              </FilterButton>
+              <FilterButton className="secondary" onClick={() => setShowDetailedSearch(true)}>
+                {t('detailedSearch.title')}
+              </FilterButton>
+            </FilterActions>
+          </FiltersSection>
+
+          {/* Results Section (right content) */}
+          <ResultsSection>
           <ResultsHeader>
             <div>
               <h2>{t('cars.results.title')}</h2>
@@ -483,59 +675,97 @@ const CarsPage: React.FC = () => {
             </SortSelect>
           </ResultsHeader>
 
-          {loading ? (
-            <LoadingSpinner>
-              {t('common.loading')}
-            </LoadingSpinner>
-          ) : cars.length === 0 ? (
-            <NoResults>
-              <h3>{t('cars.noResults.title')}</h3>
-              <p>{t('cars.noResults.message')}</p>
-              <FilterButton onClick={clearFilters}>
-                {t('cars.noResults.clearFilters')}
-              </FilterButton>
-            </NoResults>
-          ) : (
-            <CarsGrid>
-              {cars.map((car) => (
-                <CarCard key={car.id}>
-                  <Link to={`/cars/${car.id}`} style={{ textDecoration: 'none' }}>
-                    <CarImage>
-                      {car.images.length > 0 ? (
-                        <img
-                          src={car.images[0]}
-                          alt={car.title}
-                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                        />
-                      ) : (
-                        '🚗'
-                      )}
-                      {car.isFeatured && (
-                        <CarBadge>{t('cars.featured')}</CarBadge>
-                      )}
-                    </CarImage>
-                    <CarContent>
-                      <CarTitle>{car.title}</CarTitle>
-                      <CarPrice>{car.price.toLocaleString()}</CarPrice>
-                      <CarDetails>
-                        <CarDetail>📅 {car.year}</CarDetail>
-                        <CarDetail>⚡ {car.power} HP</CarDetail>
-                        <CarDetail>⛽ {car.fuelType}</CarDetail>
-                      </CarDetails>
-                      <CarDetails>
-                        <CarDetail>🛣️ {car.mileage.toLocaleString()} km</CarDetail>
-                        <CarDetail>🔄 {car.transmission}</CarDetail>
-                      </CarDetails>
-                      <CarLocation>
-                        📍 {car.location.city}, {car.location.region}
-                      </CarLocation>
-                    </CarContent>
-                  </Link>
-                </CarCard>
-              ))}
-            </CarsGrid>
-          )}
-        </ResultsSection>
+            {loading ? (
+              <LoadingSpinner>
+                {t('common.loading')}
+              </LoadingSpinner>
+            ) : cars.length === 0 ? (
+              <NoResults>
+                <h3>{t('cars.noResults.title')}</h3>
+                <p>{t('cars.noResults.message')}</p>
+                <FilterButton onClick={clearFilters}>
+                  {t('cars.noResults.clearFilters')}
+                </FilterButton>
+              </NoResults>
+            ) : (
+              <CarsGrid>
+                {cars.map((car) => (
+                  <CarCard key={car.id}>
+                    <Link to={`/cars/${car.id}`} style={{ textDecoration: 'none' }}>
+                      <CarImage>
+                        {car.images.length > 0 ? (
+                          <img
+                            src={car.images[0]}
+                            alt={car.title}
+                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                          />
+                        ) : (
+                          '🚗'
+                        )}
+                        {car.isFeatured && (
+                          <CarBadge>{t('cars.featured')}</CarBadge>
+                        )}
+                      </CarImage>
+                      <CarContent>
+                        <CarTitleWithBrand>
+                          <CarTitle>{car.title}</CarTitle>
+                        </CarTitleWithBrand>
+                        <CarPrice>{car.price.toLocaleString()}</CarPrice>
+                        <CarDetails>
+                          <CarDetail>📅 {car.year}</CarDetail>
+                          <CarDetail>⚡ {car.power} HP</CarDetail>
+                          <CarDetail>⛽ {car.fuelType}</CarDetail>
+                        </CarDetails>
+                        <CarDetails>
+                          <CarDetail>🛣️ {car.mileage.toLocaleString()} km</CarDetail>
+                          <CarDetail>🔄 {car.transmission}</CarDetail>
+                        </CarDetails>
+                        <CarLocation>
+                          📍 {car.location.city}, {car.location.region}
+                        </CarLocation>
+                      </CarContent>
+                    </Link>
+                  </CarCard>
+                ))}
+              </CarsGrid>
+            )}
+          </ResultsSection>
+        </Layout>
+
+        {/* Detailed Search Modal */}
+        {showDetailedSearch && (
+          <DetailedSearch
+            onSearch={handleDetailedSearch}
+            onClose={() => setShowDetailedSearch(false)}
+            onSaveSearch={() => {
+              // Handle save search functionality
+              setShowDetailedSearch(false);
+            }}
+            initialFilters={{
+              make: filters.make || '',
+              model: filters.model || '',
+              generation: filters.generation || '',
+              bodyStyle: filters.bodyStyle || '',
+              price: {
+                from: filters.minPrice?.toString() || '',
+                to: filters.maxPrice?.toString() || ''
+              },
+              firstRegistration: {
+                from: filters.minYear?.toString() || '',
+                to: filters.maxYear?.toString() || ''
+              },
+              mileage: {
+                from: '',
+                to: filters.maxMileage?.toString() || ''
+              },
+              fuelType: filters.fuelType || '',
+              transmission: filters.transmission || '',
+              condition: filters.condition || '',
+              location: filters.location?.city || '',
+              radius: filters.location?.radius?.toString() || '10'
+            }}
+          />
+        )}
       </PageContainer>
     </CarsContainer>
   );

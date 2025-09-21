@@ -3,6 +3,14 @@ const path = require('path');
 const app = express();
 const port = process.env.PORT || 3000;
 
+// Disable cache for all responses
+app.use((req, res, next) => {
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  next();
+});
+
 // Serve static files from build directory
 app.use(express.static(path.join(__dirname, 'build')));
 
@@ -12,14 +20,5 @@ app.use((req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`✅ Bulgarian Car Marketplace is running on:`);
-  console.log(`   Local:    http://localhost:${port}`);
-  console.log(`   Network:  http://172.23.96.1:${port}`);
-  console.log('\n🚀 Server is stable and ready to use!');
-});
-
-// Handle graceful shutdown
-process.on('SIGINT', () => {
-  console.log('\n🛑 Server shutting down gracefully...');
-  process.exit(0);
+  console.log(`Server running on http://localhost:${port}`);
 });

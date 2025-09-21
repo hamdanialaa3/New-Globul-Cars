@@ -117,8 +117,8 @@ const OfflineIndicator = styled.div`
   top: 20px;
   left: 20px;
   right: 20px;
-  background: #ff6b6b;
-  color: white;
+  background: ${({ theme }) => theme.colors.error.main};
+  color: ${({ theme }) => theme.colors.error.contrastText};
   padding: 0.75rem 1rem;
   border-radius: ${({ theme }) => theme.borderRadius.lg};
   box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
@@ -140,8 +140,8 @@ const OnlineIndicator = styled.div`
   top: 20px;
   left: 20px;
   right: 20px;
-  background: #51cf66;
-  color: white;
+  background: ${({ theme }) => theme.colors.success.main};
+  color: ${({ theme }) => theme.colors.success.contrastText};
   padding: 0.75rem 1rem;
   border-radius: ${({ theme }) => theme.borderRadius.lg};
   box-shadow: 0 5px 15px rgba(81, 207, 102, 0.3);
