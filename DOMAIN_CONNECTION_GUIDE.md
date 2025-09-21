@@ -8,7 +8,7 @@
 ### 2. إضافة الدومين المخصص
 - اضغط على **"Add custom domain"**
 - أدخل: `globul.net`
-- اختر الموقع: **globul-cars-prod** (الإنتاج)
+- اختر الموقع: **studio-448742006-a3493** (الإنتاج)
 - اضغط **"Continue"**
 
 ### 3. انسخ سجلات DNS
@@ -20,7 +20,7 @@ Value: [عنوان IP من Firebase]
 
 Type: CNAME
 Name: www
-Value: globul-cars-prod.web.app
+Value: studio-448742006-a3493.web.app
 ```
 
 ### 4. أضف السجلات في لوحة تحكم الدومين
@@ -42,3 +42,5 @@ Value: globul-cars-prod.web.app
 
 ---
 **تاريخ الإنشاء:** 20 سبتمبر 2025
+**تاريخ آخر تحديث:** 21 سبتمبر 2025
+**الموقع المستخدم:** studio-448742006-a3493

@@ -6,8 +6,8 @@
   "targets": {
     "studio-448742006-a3493": {
       "hosting": {
-        "globul-cars-prod": [
-          "globul-cars-prod"
+        "production": [
+          "studio-448742006-a3493"
         ]
       }
     }
