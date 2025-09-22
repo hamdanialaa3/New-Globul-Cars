@@ -235,7 +235,7 @@ class InsuranceService {
     finalPremium: number;
     currency: string;
   } {
-    let basePremium = vehicleValue * 0.03; // 3% of vehicle value
+    const basePremium = vehicleValue * 0.03; // 3% of vehicle value
 
     const riskFactors: { [key: string]: number } = {
       age: driverAge < 25 ? 1.5 : driverAge > 60 ? 1.2 : 1.0,

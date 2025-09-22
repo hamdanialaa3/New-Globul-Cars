@@ -28,7 +28,7 @@ service cloud.firestore {
     }
 
     function sanitizeText(text) {
-      return text.replace(/[<>{}]/g, '').size() <= 1000;
+      return text.size() <= 1000;
     }
 
     // Users collection

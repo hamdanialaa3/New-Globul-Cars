@@ -222,16 +222,34 @@ const Divider = styled.div`
   }
 `;
 
-const SocialRegisterButton = styled.button<{ provider: 'google' | 'facebook' }>`
+const SocialRegisterButton = styled.button<{ provider: 'google' | 'facebook' | 'twitter' | 'microsoft' | 'apple' | 'icloud' }>`
   display: flex;
   align-items: center;
   justify-content: center;
   gap: ${({ theme }) => theme.spacing.sm};
   padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.lg};
-  border: 2px solid ${({ theme, provider }) =>
-    provider === 'google' ? '#4285f4' : '#1877f2'};
-  background: ${({ theme, provider }) =>
-    provider === 'google' ? '#4285f4' : '#1877f2'};
+  border: 2px solid ${({ theme, provider }) => {
+    switch (provider) {
+      case 'google': return '#4285f4';
+      case 'facebook': return '#1877f2';
+      case 'twitter': return '#1da1f2';
+      case 'microsoft': return '#0078d4';
+      case 'apple': return '#000000';
+      case 'icloud': return '#007aff';
+      default: return '#4285f4';
+    }
+  }};
+  background: ${({ theme, provider }) => {
+    switch (provider) {
+      case 'google': return '#4285f4';
+      case 'facebook': return '#1877f2';
+      case 'twitter': return '#1da1f2';
+      case 'microsoft': return '#0078d4';
+      case 'apple': return '#000000';
+      case 'icloud': return '#007aff';
+      default: return '#4285f4';
+    }
+  }};
   color: white;
   border-radius: ${({ theme }) => theme.borderRadius.md};
   font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
@@ -241,8 +259,17 @@ const SocialRegisterButton = styled.button<{ provider: 'google' | 'facebook' }>`
   width: 100%;
 
   &:hover {
-    background: ${({ theme, provider }) =>
-      provider === 'google' ? '#3367d6' : '#166fe5'};
+    background: ${({ theme, provider }) => {
+      switch (provider) {
+        case 'google': return '#3367d6';
+        case 'facebook': return '#166fe5';
+        case 'twitter': return '#1a91da';
+        case 'microsoft': return '#106ebe';
+        case 'apple': return '#333333';
+        case 'icloud': return '#0056cc';
+        default: return '#3367d6';
+      }
+    }};
     transform: translateY(-1px);
   }
 
@@ -276,7 +303,7 @@ const RegisterPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [socialLoading, setSocialLoading] = useState<'google' | 'facebook' | null>(null);
+  const [socialLoading, setSocialLoading] = useState<'google' | 'facebook' | 'twitter' | 'microsoft' | 'apple' | 'icloud' | null>(null);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -465,6 +492,78 @@ const RegisterPage: React.FC = () => {
     } catch (error: any) {
       console.error('Facebook registration error:', error);
       setErrors({ general: t('register.facebookRegisterError') });
+    } finally {
+      setSocialLoading(null);
+    }
+  };
+
+  // Handle Twitter registration
+  const handleTwitterRegister = async () => {
+    try {
+      setSocialLoading('twitter');
+      setErrors({});
+
+      await bulgarianAuthService.signInWithTwitter();
+
+      // Redirect to home page
+      navigate('/');
+    } catch (error: any) {
+      console.error('Twitter registration error:', error);
+      setErrors({ general: t('register.twitterRegisterError') });
+    } finally {
+      setSocialLoading(null);
+    }
+  };
+
+  // Handle Microsoft registration
+  const handleMicrosoftRegister = async () => {
+    try {
+      setSocialLoading('microsoft');
+      setErrors({});
+
+      await bulgarianAuthService.signInWithMicrosoft();
+
+      // Redirect to home page
+      navigate('/');
+    } catch (error: any) {
+      console.error('Microsoft registration error:', error);
+      setErrors({ general: t('register.microsoftRegisterError') });
+    } finally {
+      setSocialLoading(null);
+    }
+  };
+
+  // Handle Apple registration
+  const handleAppleRegister = async () => {
+    try {
+      setSocialLoading('apple');
+      setErrors({});
+
+      await bulgarianAuthService.signInWithApple();
+
+      // Redirect to home page
+      navigate('/');
+    } catch (error: any) {
+      console.error('Apple registration error:', error);
+      setErrors({ general: t('register.appleRegisterError') });
+    } finally {
+      setSocialLoading(null);
+    }
+  };
+
+  // Handle iCloud registration
+  const handleICloudRegister = async () => {
+    try {
+      setSocialLoading('icloud');
+      setErrors({});
+
+      await bulgarianAuthService.signInWithICloud();
+
+      // Redirect to home page
+      navigate('/');
+    } catch (error: any) {
+      console.error('iCloud registration error:', error);
+      setErrors({ general: t('register.icloudRegisterError') });
     } finally {
       setSocialLoading(null);
     }
@@ -681,6 +780,46 @@ const RegisterPage: React.FC = () => {
           >
             <span className="icon">f</span>
             {socialLoading === 'facebook' ? t('register.creatingAccount') : t('register.continueWithFacebook')}
+          </SocialRegisterButton>
+
+          <SocialRegisterButton
+            type="button"
+            provider="twitter"
+            onClick={handleTwitterRegister}
+            disabled={socialLoading !== null}
+          >
+            <span className="icon">🐦</span>
+            {socialLoading === 'twitter' ? t('register.creatingAccount') : t('register.continueWithTwitter')}
+          </SocialRegisterButton>
+
+          <SocialRegisterButton
+            type="button"
+            provider="microsoft"
+            onClick={handleMicrosoftRegister}
+            disabled={socialLoading !== null}
+          >
+            <span className="icon">M</span>
+            {socialLoading === 'microsoft' ? t('register.creatingAccount') : t('register.continueWithMicrosoft')}
+          </SocialRegisterButton>
+
+          <SocialRegisterButton
+            type="button"
+            provider="apple"
+            onClick={handleAppleRegister}
+            disabled={socialLoading !== null}
+          >
+            <span className="icon"></span>
+            {socialLoading === 'apple' ? t('register.creatingAccount') : t('register.continueWithApple')}
+          </SocialRegisterButton>
+
+          <SocialRegisterButton
+            type="button"
+            provider="icloud"
+            onClick={handleICloudRegister}
+            disabled={socialLoading !== null}
+          >
+            <span className="icon">☁️</span>
+            {socialLoading === 'icloud' ? t('register.creatingAccount') : t('register.continueWithICloud')}
           </SocialRegisterButton>
         </div>
 

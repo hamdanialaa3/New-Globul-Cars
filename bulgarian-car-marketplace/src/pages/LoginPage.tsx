@@ -162,16 +162,34 @@ const Divider = styled.div`
   }
 `;
 
-const SocialLoginButton = styled.button<{ provider: 'google' | 'facebook' }>`
+const SocialLoginButton = styled.button<{ provider: 'google' | 'facebook' | 'twitter' | 'microsoft' | 'apple' | 'icloud' }>`
   display: flex;
   align-items: center;
   justify-content: center;
   gap: ${({ theme }) => theme.spacing.md};
   padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.lg};
-  border: 2px solid ${({ theme, provider }) =>
-    provider === 'google' ? '#4285f4' : '#1877f2'};
-  background: ${({ theme, provider }) =>
-    provider === 'google' ? '#4285f4' : '#1877f2'};
+  border: 2px solid ${({ theme, provider }) => {
+    switch (provider) {
+      case 'google': return '#4285f4';
+      case 'facebook': return '#1877f2';
+      case 'twitter': return '#1da1f2';
+      case 'microsoft': return '#0078d4';
+      case 'apple': return '#000000';
+      case 'icloud': return '#007aff';
+      default: return '#4285f4';
+    }
+  }};
+  background: ${({ theme, provider }) => {
+    switch (provider) {
+      case 'google': return '#4285f4';
+      case 'facebook': return '#1877f2';
+      case 'twitter': return '#1da1f2';
+      case 'microsoft': return '#0078d4';
+      case 'apple': return '#000000';
+      case 'icloud': return '#007aff';
+      default: return '#4285f4';
+    }
+  }};
   color: white;
   border-radius: ${({ theme }) => theme.borderRadius.md};
   font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
@@ -181,8 +199,17 @@ const SocialLoginButton = styled.button<{ provider: 'google' | 'facebook' }>`
   width: 100%;
 
   &:hover {
-    background: ${({ theme, provider }) =>
-      provider === 'google' ? '#3367d6' : '#166fe5'};
+    background: ${({ theme, provider }) => {
+      switch (provider) {
+        case 'google': return '#3367d6';
+        case 'facebook': return '#166fe5';
+        case 'twitter': return '#1a91da';
+        case 'microsoft': return '#106ebe';
+        case 'apple': return '#333333';
+        case 'icloud': return '#0056cc';
+        default: return '#3367d6';
+      }
+    }};
     transform: translateY(-1px);
   }
 
@@ -220,7 +247,7 @@ const LoginPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [socialLoading, setSocialLoading] = useState<'google' | 'facebook' | null>(null);
+  const [socialLoading, setSocialLoading] = useState<'google' | 'facebook' | 'twitter' | 'microsoft' | 'apple' | 'icloud' | null>(null);
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -344,6 +371,78 @@ const LoginPage: React.FC = () => {
     }
   };
 
+  // Handle Twitter login
+  const handleTwitterLogin = async () => {
+    try {
+      setSocialLoading('twitter');
+      setErrors({ email: '', password: '', general: '' });
+
+      await bulgarianAuthService.signInWithTwitter();
+
+      // Redirect to home page
+      navigate('/');
+    } catch (error: any) {
+      console.error('Twitter login error:', error);
+      setErrors(prev => ({ ...prev, general: t('login.twitterLoginError') }));
+    } finally {
+      setSocialLoading(null);
+    }
+  };
+
+  // Handle Microsoft login
+  const handleMicrosoftLogin = async () => {
+    try {
+      setSocialLoading('microsoft');
+      setErrors({ email: '', password: '', general: '' });
+
+      await bulgarianAuthService.signInWithMicrosoft();
+
+      // Redirect to home page
+      navigate('/');
+    } catch (error: any) {
+      console.error('Microsoft login error:', error);
+      setErrors(prev => ({ ...prev, general: t('login.microsoftLoginError') }));
+    } finally {
+      setSocialLoading(null);
+    }
+  };
+
+  // Handle Apple login
+  const handleAppleLogin = async () => {
+    try {
+      setSocialLoading('apple');
+      setErrors({ email: '', password: '', general: '' });
+
+      await bulgarianAuthService.signInWithApple();
+
+      // Redirect to home page
+      navigate('/');
+    } catch (error: any) {
+      console.error('Apple login error:', error);
+      setErrors(prev => ({ ...prev, general: t('login.appleLoginError') }));
+    } finally {
+      setSocialLoading(null);
+    }
+  };
+
+  // Handle iCloud login
+  const handleICloudLogin = async () => {
+    try {
+      setSocialLoading('icloud');
+      setErrors({ email: '', password: '', general: '' });
+
+      await bulgarianAuthService.signInWithICloud();
+
+      // Redirect to home page
+      navigate('/');
+    } catch (error: any) {
+      console.error('iCloud login error:', error);
+      setErrors(prev => ({ ...prev, general: t('login.icloudLoginError') }));
+    } finally {
+      setSocialLoading(null);
+    }
+  };
+
   return (
     <LoginContainer>
       <Header />
@@ -431,6 +530,46 @@ const LoginPage: React.FC = () => {
           >
             <span className="icon">f</span>
             {socialLoading === 'facebook' ? t('login.signingIn') : t('login.continueWithFacebook')}
+          </SocialLoginButton>
+
+          <SocialLoginButton
+            type="button"
+            provider="twitter"
+            onClick={handleTwitterLogin}
+            disabled={socialLoading !== null}
+          >
+            <span className="icon">🐦</span>
+            {socialLoading === 'twitter' ? t('login.signingIn') : t('login.continueWithTwitter')}
+          </SocialLoginButton>
+
+          <SocialLoginButton
+            type="button"
+            provider="microsoft"
+            onClick={handleMicrosoftLogin}
+            disabled={socialLoading !== null}
+          >
+            <span className="icon">M</span>
+            {socialLoading === 'microsoft' ? t('login.signingIn') : t('login.continueWithMicrosoft')}
+          </SocialLoginButton>
+
+          <SocialLoginButton
+            type="button"
+            provider="apple"
+            onClick={handleAppleLogin}
+            disabled={socialLoading !== null}
+          >
+            <span className="icon"></span>
+            {socialLoading === 'apple' ? t('login.signingIn') : t('login.continueWithApple')}
+          </SocialLoginButton>
+
+          <SocialLoginButton
+            type="button"
+            provider="icloud"
+            onClick={handleICloudLogin}
+            disabled={socialLoading !== null}
+          >
+            <span className="icon">☁️</span>
+            {socialLoading === 'icloud' ? t('login.signingIn') : t('login.continueWithICloud')}
           </SocialLoginButton>
         </div>
 

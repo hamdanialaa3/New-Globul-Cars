@@ -11,7 +11,6 @@ import { getAnalytics, Analytics } from 'firebase/analytics';
 // Google Cloud Services Imports
 import { BigQuery } from '@google-cloud/bigquery';
 import { SessionsClient } from '@google-cloud/dialogflow';
-import { Loader } from '@googlemaps/js-api-loader';
 import { ImageAnnotatorClient } from '@google-cloud/vision';
 import { SpeechClient } from '@google-cloud/speech';
 import { TextToSpeechClient } from '@google-cloud/text-to-speech';
@@ -67,12 +66,8 @@ export const bigquery = new BigQuery({ projectId });
 export const dialogflowClient = new SessionsClient();
 
 // Google Maps
-const mapsApiKey = process.env.GOOGLE_MAPS_API_KEY || 'your-google-maps-api-key';
-export const mapsLoader = new Loader({
-  apiKey: mapsApiKey,
-  version: 'weekly',
-  libraries: ['places']
-});
+// const mapsApiKey = process.env.GOOGLE_MAPS_API_KEY || 'your-google-maps-api-key';
+export const mapsLoader = null; // Temporarily disabled
 
 // Vision AI
 export const visionClient = new ImageAnnotatorClient();

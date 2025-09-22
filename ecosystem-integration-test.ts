@@ -170,7 +170,7 @@ async function runEcosystemIntegrationTests() {
       }
 
       console.log(`   Inspection score: ${inspection.results.overallScore}/100 (${inspection.results.overallGrade})`);
-    } catch (error) {
+    } catch {
       // Expected for mock ID - just log
       console.log(`   Mock inspection test completed (expected error for test ID)`);
     }

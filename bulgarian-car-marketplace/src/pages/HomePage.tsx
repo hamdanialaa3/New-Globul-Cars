@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { useTranslation } from '../hooks/useTranslation';
 import { bulgarianCarService, BulgarianCar } from '../firebase';
+import LazyImage from '../components/LazyImage';
 
 // Styled Components
 const HomeContainer = styled.div`
@@ -360,13 +361,23 @@ const HomePage: React.FC = () => {
                     <Link to={`/cars/${car.id}`} style={{ textDecoration: 'none' }}>
                       <CarImage>
                         {car.images.length > 0 ? (
-                          <img
+                          <LazyImage
                             src={car.images[0]}
                             alt={car.title}
-                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                            placeholder="🚗"
                           />
                         ) : (
-                          '🚗'
+                          <div style={{
+                            width: '100%',
+                            height: '100%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: '2rem',
+                            color: '#ccc'
+                          }}>
+                            🚗
+                          </div>
                         )}
                       </CarImage>
                       <CarContent>

@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from '../hooks/useTranslation';
 import { bulgarianAuthService, BulgarianUser } from '../firebase';
+import LazyImage from '../components/LazyImage';
 
 // Styled Components
 const ProfileContainer = styled.div`
@@ -751,9 +752,23 @@ const ProfilePage: React.FC = () => {
                     <CarCard key={car.id}>
                       <div className="car-image">
                         {car.mainImage ? (
-                          <img src={car.mainImage} alt={car.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                          <LazyImage
+                            src={car.mainImage}
+                            alt={car.title}
+                            placeholder="🚗"
+                          />
                         ) : (
-                          '🚗'
+                          <div style={{
+                            width: '100%',
+                            height: '100%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: '2rem',
+                            color: '#ccc'
+                          }}>
+                            🚗
+                          </div>
                         )}
                       </div>
                       <div className="car-title">{car.title}</div>

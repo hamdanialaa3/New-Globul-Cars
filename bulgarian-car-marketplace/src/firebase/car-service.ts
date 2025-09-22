@@ -24,6 +24,7 @@ import {
   deleteObject,
   listAll
 } from 'firebase/storage';
+import { cacheService } from '../services/cache-service';
 import { db, storage, BulgarianFirebaseUtils } from './firebase-config';
 
 // Car Condition Types
@@ -235,7 +236,7 @@ export class BulgarianCarService {
     }
   }
 
-  // Search cars with filters
+  // Search cars with filters - Optimized version with caching
   async searchCars(
     filters: CarSearchFilters = {},
     sortBy: 'createdAt' | 'price' | 'mileage' | 'year' = 'createdAt',
@@ -244,17 +245,38 @@ export class BulgarianCarService {
     startAfterDoc?: DocumentSnapshot
   ): Promise<{ cars: BulgarianCar[]; hasMore: boolean; lastDoc?: DocumentSnapshot }> {
     try {
+      // Create cache key from search parameters
+      const cacheKey = `search_${JSON.stringify(filters)}_${sortBy}_${sortOrder}_${limitCount}_${startAfterDoc?.id || 'start'}`;
+
+      // Check cache first (only for non-paginated results)
+      if (!startAfterDoc) {
+        const cachedResult = cacheService.get(cacheKey);
+        if (cachedResult) {
+          return cachedResult;
+        }
+      }
+
       let q = query(collection(db, 'cars'));
 
-      // Apply filters
-      if (filters.make) {
+      // Apply filters with optimized index usage
+      // Priority: Apply most selective filters first
+      if (filters.isActive !== undefined) {
+        q = query(q, where('isActive', '==', filters.isActive));
+      }
+
+      if (filters.isSold !== undefined) {
+        q = query(q, where('isSold', '==', filters.isSold));
+      }
+
+      // Apply make/model filters (compound index available)
+      if (filters.make && filters.model) {
+        q = query(q, where('make', '==', filters.make));
+        q = query(q, where('model', '==', filters.model));
+      } else if (filters.make) {
         q = query(q, where('make', '==', filters.make));
       }
 
-      if (filters.model) {
-        q = query(q, where('model', '==', filters.model));
-      }
-
+      // Apply other filters
       if (filters.fuelType) {
         q = query(q, where('fuelType', '==', filters.fuelType));
       }
@@ -267,14 +289,6 @@ export class BulgarianCarService {
         q = query(q, where('condition', '==', filters.condition));
       }
 
-      if (filters.isActive !== undefined) {
-        q = query(q, where('isActive', '==', filters.isActive));
-      }
-
-      if (filters.isSold !== undefined) {
-        q = query(q, where('isSold', '==', filters.isSold));
-      }
-
       if (filters.hasImages !== undefined) {
         if (filters.hasImages) {
           q = query(q, where('images', '!=', []));
@@ -283,7 +297,7 @@ export class BulgarianCarService {
         }
       }
 
-      // Apply sorting
+      // Apply sorting (must be last before pagination)
       q = query(q, orderBy(sortBy, sortOrder));
 
       // Apply pagination
@@ -319,8 +333,14 @@ export class BulgarianCarService {
       }
 
       const hasMore = querySnapshot.size > limitCount;
+      const result = { cars, hasMore, lastDoc };
 
-      return { cars, hasMore, lastDoc };
+      // Cache the result for non-paginated queries
+      if (!startAfterDoc) {
+        cacheService.set(cacheKey, result, 5 * 60 * 1000); // Cache for 5 minutes
+      }
+
+      return result;
     } catch (error: any) {
       throw this.handleCarError(error);
     }

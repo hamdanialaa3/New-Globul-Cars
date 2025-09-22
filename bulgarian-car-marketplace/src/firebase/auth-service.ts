@@ -7,6 +7,8 @@ import {
   signOut,
   GoogleAuthProvider,
   FacebookAuthProvider,
+  TwitterAuthProvider,
+  OAuthProvider,
   signInWithPopup,
   onAuthStateChanged,
   User,
@@ -59,6 +61,14 @@ export class BulgarianAuthService {
   private constructor() {
     // Initialize auth state listener
     this.initializeAuthStateListener();
+  }
+
+  // Helper method to safely extract error code
+  private getErrorCode(error: unknown): string {
+    if (error instanceof Error && 'code' in error) {
+      return (error as { code: string }).code;
+    }
+    return 'unknown';
   }
 
   static getInstance(): BulgarianAuthService {
@@ -135,7 +145,7 @@ export class BulgarianAuthService {
       });
 
       return userCredential;
-    } catch (error: any) {
+    } catch (error: unknown) {
       throw this.handleAuthError(error);
     }
   }
@@ -149,7 +159,7 @@ export class BulgarianAuthService {
       await this.updateLastLogin(userCredential.user.uid);
 
       return userCredential;
-    } catch (error: any) {
+    } catch (error: unknown) {
       throw this.handleAuthError(error);
     }
   }
@@ -173,7 +183,7 @@ export class BulgarianAuthService {
       }
 
       return result;
-    } catch (error: any) {
+    } catch (error: unknown) {
       throw this.handleAuthError(error);
     }
   }
@@ -197,7 +207,98 @@ export class BulgarianAuthService {
       }
 
       return result;
-    } catch (error: any) {
+    } catch (error: unknown) {
+      throw this.handleAuthError(error);
+    }
+  }
+
+  // Sign in with Twitter
+  async signInWithTwitter(): Promise<UserCredential> {
+    try {
+      const provider = new TwitterAuthProvider();
+
+      const result = await signInWithPopup(auth, provider);
+
+      // Check if user exists, if not create Bulgarian profile
+      const userExists = await this.userExists(result.user.uid);
+      if (!userExists) {
+        await this.createUserFromSocialLogin(result.user, 'twitter');
+      } else {
+        await this.updateLastLogin(result.user.uid);
+      }
+
+      return result;
+    } catch (error: unknown) {
+      throw this.handleAuthError(error);
+    }
+  }
+
+  // Sign in with Microsoft
+  async signInWithMicrosoft(): Promise<UserCredential> {
+    try {
+      const provider = new OAuthProvider('microsoft.com');
+      provider.addScope('email');
+      provider.addScope('profile');
+      provider.addScope('openid');
+
+      const result = await signInWithPopup(auth, provider);
+
+      // Check if user exists, if not create Bulgarian profile
+      const userExists = await this.userExists(result.user.uid);
+      if (!userExists) {
+        await this.createUserFromSocialLogin(result.user, 'microsoft');
+      } else {
+        await this.updateLastLogin(result.user.uid);
+      }
+
+      return result;
+    } catch (error: unknown) {
+      throw this.handleAuthError(error);
+    }
+  }
+
+  // Sign in with Apple
+  async signInWithApple(): Promise<UserCredential> {
+    try {
+      const provider = new OAuthProvider('apple.com');
+      provider.addScope('email');
+      provider.addScope('name');
+
+      const result = await signInWithPopup(auth, provider);
+
+      // Check if user exists, if not create Bulgarian profile
+      const userExists = await this.userExists(result.user.uid);
+      if (!userExists) {
+        await this.createUserFromSocialLogin(result.user, 'apple');
+      } else {
+        await this.updateLastLogin(result.user.uid);
+      }
+
+      return result;
+    } catch (error: unknown) {
+      throw this.handleAuthError(error);
+    }
+  }
+
+  // Sign in with iCloud
+  async signInWithICloud(): Promise<UserCredential> {
+    try {
+      const provider = new OAuthProvider('apple.com');
+      provider.addScope('email');
+      provider.addScope('name');
+
+      const result = await signInWithPopup(auth, provider);
+
+      // Check if user exists, if not create Bulgarian profile
+      const userExists = await this.userExists(result.user.uid);
+      if (!userExists) {
+        await this.createUserFromSocialLogin(result.user, 'icloud');
+      } else {
+        await this.updateLastLogin(result.user.uid);
+      }
+
+      return result;
+    } catch (error: unknown) {
       throw this.handleAuthError(error);
     }
   }
@@ -206,7 +307,7 @@ export class BulgarianAuthService {
   async signOut(): Promise<void> {
     try {
       await signOut(auth);
-    } catch (error: any) {
+    } catch (error: unknown) {
       throw this.handleAuthError(error);
     }
   }
@@ -222,7 +323,7 @@ export class BulgarianAuthService {
         return userDoc.data() as BulgarianUser;
       }
       return null;
-    } catch (error: any) {
+    } catch (error: unknown) {
       throw this.handleAuthError(error);
     }
   }
@@ -256,7 +357,7 @@ export class BulgarianAuthService {
         ...updates,
         updatedAt: new Date()
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       throw this.handleAuthError(error);
     }
   }
@@ -268,7 +369,7 @@ export class BulgarianAuthService {
         url: `${window.location.origin}/reset-password`,
         handleCodeInApp: true
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       throw this.handleAuthError(error);
     }
   }
@@ -286,7 +387,7 @@ export class BulgarianAuthService {
           verifiedAt: new Date()
         });
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       throw this.handleAuthError(error);
     }
   }
@@ -344,7 +445,8 @@ export class BulgarianAuthService {
     return passwordRegex.test(password);
   }
 
-  private handleAuthError(error: any): Error {
+  private handleAuthError(error: unknown): Error {
+    const errorCode = this.getErrorCode(error);
     const errorMessages: { [key: string]: string } = {
       'auth/email-already-in-use': 'Този имейл вече е регистриран',
       'auth/weak-password': 'Паролата е твърде слаба',
@@ -360,7 +462,7 @@ export class BulgarianAuthService {
       'auth/cancelled-popup-request': 'Заявката беше отменена'
     };
 
-    const bulgarianMessage = errorMessages[error.code] || 'Възникна грешка при вход';
+    const bulgarianMessage = errorMessages[errorCode] || 'Възникна грешка при вход';
     return new Error(bulgarianMessage);
   }
 }

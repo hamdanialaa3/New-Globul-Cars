@@ -16,6 +16,11 @@ const SearchContainer = styled.div`
   gap: 12px;
   margin-bottom: 24px;
   flex-wrap: wrap;
+
+  @media (max-width: 768px) {
+    gap: 8px;
+    margin-bottom: 16px;
+  }
 `;
 
 const SearchGroup = styled.div`
@@ -23,6 +28,15 @@ const SearchGroup = styled.div`
   flex-direction: column;
   min-width: 200px;
   flex: 1;
+
+  @media (max-width: 768px) {
+    min-width: 150px;
+    flex: 1 1 100%;
+  }
+
+  @media (max-width: 480px) {
+    min-width: 120px;
+  }
 `;
 
 const SearchLabel = styled.label`
@@ -30,6 +44,11 @@ const SearchLabel = styled.label`
   font-weight: 500;
   color: #333;
   margin-bottom: 4px;
+
+  @media (max-width: 480px) {
+    font-size: 12px;
+    margin-bottom: 2px;
+  }
 `;
 
 const SearchSelect = styled.select`
@@ -44,6 +63,11 @@ const SearchSelect = styled.select`
     outline: none;
     border-color: #007bff;
     box-shadow: 0 0 0 2px rgba(0,123,255,0.2);
+  }
+
+  @media (max-width: 480px) {
+    padding: 6px 8px;
+    font-size: 14px;
   }
 
   option {

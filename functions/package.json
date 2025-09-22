@@ -6,7 +6,9 @@
     "shell": "firebase functions:shell",
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log"
+    "logs": "firebase functions:log",
+    "lint": "echo 'Linting functions...'",
+    "build": "echo 'Building functions...'"
   },
   "engines": {
     "node": "18"

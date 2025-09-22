@@ -10,6 +10,7 @@ import { YEARS_OPTIONS } from '../constants/carMakes';
 import AdvancedSearch from '../components/AdvancedSearch';
 import CarSearchSystem from '../components/CarSearchSystem';
 import DetailedSearch from '../components/DetailedSearch';
+import LazyImage from '../components/LazyImage';
 
 // Interface for detailed search filters
 interface DetailedSearchFilters {
@@ -88,16 +89,37 @@ const PageContainer = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 ${({ theme }) => theme.spacing.md};
+
+  @media (max-width: 768px) {
+    padding: 0 ${({ theme }) => theme.spacing.sm};
+  }
+
+  @media (max-width: 480px) {
+    padding: 0 ${({ theme }) => theme.spacing.xs};
+  }
 `;
 
 const PageHeader = styled.div`
   text-align: center;
   margin-bottom: ${({ theme }) => theme.spacing['3xl']};
 
+  @media (max-width: 768px) {
+    margin-bottom: ${({ theme }) => theme.spacing['2xl']};
+  }
+
   h1 {
     font-size: ${({ theme }) => theme.typography.fontSize['4xl']};
     font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
     color: ${({ theme }) => theme.colors.text.primary};
+
+    @media (max-width: 768px) {
+      font-size: ${({ theme }) => theme.typography.fontSize['3xl']};
+    }
+
+    @media (max-width: 480px) {
+      font-size: ${({ theme }) => theme.typography.fontSize['2xl']};
+    }
+  }
     margin-bottom: ${({ theme }) => theme.spacing.md};
   }
 
@@ -694,13 +716,23 @@ const CarsPage: React.FC = () => {
                     <Link to={`/cars/${car.id}`} style={{ textDecoration: 'none' }}>
                       <CarImage>
                         {car.images.length > 0 ? (
-                          <img
+                          <LazyImage
                             src={car.images[0]}
                             alt={car.title}
-                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                            placeholder="🚗"
                           />
                         ) : (
-                          '🚗'
+                          <div style={{
+                            width: '100%',
+                            height: '100%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: '2rem',
+                            color: '#ccc'
+                          }}>
+                            🚗
+                          </div>
                         )}
                         {car.isFeatured && (
                           <CarBadge>{t('cars.featured')}</CarBadge>

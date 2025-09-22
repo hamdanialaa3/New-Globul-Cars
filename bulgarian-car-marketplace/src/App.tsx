@@ -13,6 +13,8 @@ import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
 import AnalyticsTracker from './components/AnalyticsTracker';
+import PerformanceMonitor from './components/PerformanceMonitor';
+import BundleAnalyzer from './components/BundleAnalyzer';
 
 // Lazy load pages for better performance
 const HomePage = React.lazy(() => import('./pages/HomePage'));
@@ -271,6 +273,8 @@ const App: React.FC = () => {
         </Router>
         </TranslationProvider>
       </ErrorBoundary>
+      <PerformanceMonitor />
+      <BundleAnalyzer />
     </ThemeProvider>
   );
 };

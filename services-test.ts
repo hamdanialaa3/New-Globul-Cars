@@ -1,6 +1,10 @@
 // src/services/services-test.ts
 // Comprehensive Test Suite for Bulgarian Firebase Services
 
+// Initialize Firebase first
+import { initializeBulgarianFirebase } from './index';
+await initializeBulgarianFirebase();
+
 import {
   BulgarianUser
 } from './auth-service';
@@ -13,7 +17,6 @@ import {
   MessageStats
 } from './messaging-service';
 import {
-  initializeBulgarianFirebase,
   bulgarianUtils,
   checkBulgarianFirebaseStatus
 } from './index';

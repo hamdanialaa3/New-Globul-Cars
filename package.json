@@ -71,6 +71,8 @@
   "devDependencies": {
     "@types/axios": "^0.9.36",
     "@types/node": "^24.5.2",
+    "@typescript-eslint/eslint-plugin": "^8.44.1",
+    "@typescript-eslint/parser": "^8.44.1",
     "eslint": "^8.0.0",
     "firebase-tools": "^13.0.0",
     "prettier": "^3.0.0",
@@ -141,8 +143,8 @@
       "url": "https://github.com/features/copilot"
     },
     {
-      "name": "Hamdan Alaa",
-      "email": "hamdanialaa3@gmail.com",
+      "name": "Al-Hamdani Alaa",
+      "email": "globul.net.m@gmail.com",
       "url": "https://github.com/hamdanialaa3"
     }
   ],

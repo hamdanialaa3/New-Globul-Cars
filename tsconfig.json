@@ -63,7 +63,9 @@
     "**/*.spec.ts",
     "coverage",
     ".firebase",
-    "functions"
+    "functions",
+    "comprehensive_car_data.ts",
+    "extract-netcarshow-data.js"
   ],
   "ts-node": {
     "esm": true,

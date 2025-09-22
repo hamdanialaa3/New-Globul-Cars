@@ -8,6 +8,8 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
   FacebookAuthProvider,
+  TwitterAuthProvider,
+  OAuthProvider,
   signOut,
   onAuthStateChanged,
   sendPasswordResetEmail,
@@ -109,6 +111,14 @@ export class BulgarianAuthService {
     this.initializeAuthListener();
   }
 
+  // Helper method to safely extract error code
+  private getErrorCode(error: unknown): string {
+    if (error instanceof Error && 'code' in error) {
+      return (error as { code: string }).code;
+    }
+    return 'unknown';
+  }
+
   // Initialize authentication state listener
   private initializeAuthListener(): void {
     onAuthStateChanged(auth, async (user: User | null) => {
@@ -177,8 +187,8 @@ export class BulgarianAuthService {
 
       this.currentUser = bulgarianUser;
       return bulgarianUser;
-    } catch (error: any) {
-      throw new Error(this.getBulgarianErrorMessage(error.code));
+    } catch (error: unknown) {
+      throw new Error(this.getBulgarianErrorMessage(this.getErrorCode(error)));
     }
   }
 
@@ -199,8 +209,8 @@ export class BulgarianAuthService {
 
       this.currentUser = bulgarianUser;
       return bulgarianUser;
-    } catch (error: any) {
-      throw new Error(this.getBulgarianErrorMessage(error.code));
+    } catch (error: unknown) {
+      throw new Error(this.getBulgarianErrorMessage(this.getErrorCode(error)));
     }
   }
 
@@ -219,13 +229,13 @@ export class BulgarianAuthService {
 
       let bulgarianUser = await this.getBulgarianUserData(user);
       if (!bulgarianUser) {
-        bulgarianUser = await this.createBulgarianUserFromSocial(user, 'google');
+        bulgarianUser = await this.createBulgarianUserFromSocial(user);
       }
 
       this.currentUser = bulgarianUser;
       return bulgarianUser;
-    } catch (error: any) {
-      throw new Error(this.getBulgarianErrorMessage(error.code));
+    } catch (error: unknown) {
+      throw new Error(this.getBulgarianErrorMessage(this.getErrorCode(error)));
     }
   }
 
@@ -241,13 +251,101 @@ export class BulgarianAuthService {
 
       let bulgarianUser = await this.getBulgarianUserData(user);
       if (!bulgarianUser) {
-        bulgarianUser = await this.createBulgarianUserFromSocial(user, 'facebook');
+        bulgarianUser = await this.createBulgarianUserFromSocial(user);
       }
 
       this.currentUser = bulgarianUser;
       return bulgarianUser;
-    } catch (error: any) {
-      throw new Error(this.getBulgarianErrorMessage(error.code));
+    } catch (error: unknown) {
+      throw new Error(this.getBulgarianErrorMessage(this.getErrorCode(error)));
+    }
+  }
+
+  // Sign in with Twitter
+  public async signInWithTwitter(): Promise<BulgarianUser> {
+    try {
+      const provider = new TwitterAuthProvider();
+
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      let bulgarianUser = await this.getBulgarianUserData(user);
+      if (!bulgarianUser) {
+        bulgarianUser = await this.createBulgarianUserFromSocial(user);
+      }
+
+      this.currentUser = bulgarianUser;
+      return bulgarianUser;
+    } catch (error: unknown) {
+      const errorCode = error instanceof Error && 'code' in error ? (error as { code: string }).code : 'unknown';
+      throw new Error(this.getBulgarianErrorMessage(errorCode));
+    }
+  }
+
+  // Sign in with Microsoft
+  public async signInWithMicrosoft(): Promise<BulgarianUser> {
+    try {
+      const provider = new OAuthProvider('microsoft.com');
+      provider.addScope('email');
+      provider.addScope('profile');
+      provider.addScope('openid');
+
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      let bulgarianUser = await this.getBulgarianUserData(user);
+      if (!bulgarianUser) {
+        bulgarianUser = await this.createBulgarianUserFromSocial(user);
+      }
+
+      this.currentUser = bulgarianUser;
+      return bulgarianUser;
+    } catch (error: unknown) {
+      throw new Error(this.getBulgarianErrorMessage(this.getErrorCode(error)));
+    }
+  }
+
+  // Sign in with Apple
+  public async signInWithApple(): Promise<BulgarianUser> {
+    try {
+      const provider = new OAuthProvider('apple.com');
+      provider.addScope('email');
+      provider.addScope('name');
+
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      let bulgarianUser = await this.getBulgarianUserData(user);
+      if (!bulgarianUser) {
+        bulgarianUser = await this.createBulgarianUserFromSocial(user);
+      }
+
+      this.currentUser = bulgarianUser;
+      return bulgarianUser;
+    } catch (error: unknown) {
+      throw new Error(this.getBulgarianErrorMessage(this.getErrorCode(error)));
+    }
+  }
+
+  // Sign in with iCloud (Apple ID)
+  public async signInWithICloud(): Promise<BulgarianUser> {
+    try {
+      const provider = new OAuthProvider('apple.com');
+      provider.addScope('email');
+      provider.addScope('name');
+
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      let bulgarianUser = await this.getBulgarianUserData(user);
+      if (!bulgarianUser) {
+        bulgarianUser = await this.createBulgarianUserFromSocial(user);
+      }
+
+      this.currentUser = bulgarianUser;
+      return bulgarianUser;
+    } catch (error: unknown) {
+      throw new Error(this.getBulgarianErrorMessage(this.getErrorCode(error)));
     }
   }
 
@@ -307,8 +405,8 @@ export class BulgarianAuthService {
 
     try {
       await updatePassword(auth.currentUser, newPassword);
-    } catch (error: any) {
-      throw new Error(this.getBulgarianErrorMessage(error.code));
+    } catch (error: unknown) {
+      throw new Error(this.getBulgarianErrorMessage(this.getErrorCode(error)));
     }
   }
 
@@ -316,8 +414,8 @@ export class BulgarianAuthService {
   public async sendPasswordReset(email: string): Promise<void> {
     try {
       await sendPasswordResetEmail(auth, email);
-    } catch (error: any) {
-      throw new Error(this.getBulgarianErrorMessage(error.code));
+    } catch (error: unknown) {
+      throw new Error(this.getBulgarianErrorMessage(this.getErrorCode(error)));
     }
   }
 
@@ -335,8 +433,8 @@ export class BulgarianAuthService {
       await deleteUser(auth.currentUser);
 
       this.currentUser = null;
-    } catch (error: any) {
-      throw new Error(this.getBulgarianErrorMessage(error.code));
+    } catch (error: unknown) {
+      throw new Error(this.getBulgarianErrorMessage(this.getErrorCode(error)));
     }
   }
 
@@ -361,10 +459,12 @@ export class BulgarianAuthService {
   }
 
   private createBulgarianUserObject(user: User, userData: UserCreationData): BulgarianUser {
+    const email = user.email || '';
+    const displayName = userData.displayName || user.displayName || (user.email ? user.email.split('@')[0] : 'User');
     return {
       uid: user.uid,
-      email: user.email!,
-      displayName: userData.displayName || user.displayName || user.email!.split('@')[0],
+      email: email,
+      displayName: displayName,
       photoURL: user.photoURL || undefined,
       phoneNumber: userData.phoneNumber,
       location: userData.location || BULGARIAN_CONFIG.region,
@@ -423,9 +523,11 @@ export class BulgarianAuthService {
   }
 
   private async createBulgarianUserFromFirebaseUser(user: User): Promise<BulgarianUser> {
+    const email = user.email || '';
+    const displayName = user.displayName || (user.email ? user.email.split('@')[0] : 'User');
     const bulgarianUser = this.createBulgarianUserObject(user, {
-      email: user.email!,
-      displayName: user.displayName || user.email!.split('@')[0]
+      email: email,
+      displayName: displayName
     });
 
     await setDoc(doc(db, 'users', user.uid), {
@@ -438,10 +540,12 @@ export class BulgarianAuthService {
     return bulgarianUser;
   }
 
-  private async createBulgarianUserFromSocial(user: User, _provider: string): Promise<BulgarianUser> {
+  private async createBulgarianUserFromSocial(user: User): Promise<BulgarianUser> {
+    const email = user.email || '';
+    const displayName = user.displayName || (user.email ? user.email.split('@')[0] : 'User');
     const bulgarianUser = this.createBulgarianUserObject(user, {
-      email: user.email!,
-      displayName: user.displayName || user.email!.split('@')[0]
+      email: email,
+      displayName: displayName
     });
 
     // Social login users are pre-verified

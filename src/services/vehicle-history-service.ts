@@ -265,7 +265,7 @@ export const getVehicleHistoryReport = async (data: VehicleHistoryRequest) => {
   // This would be implemented in Firebase Functions
   // Integration with carVertical or CARFAX Europe APIs
 
-  const { vin, country = 'BG' } = data;
+  const { vin } = data;
 
   // Mock response for development
   const mockReport: VehicleHistoryReport = {
