@@ -1,0 +1,57 @@
+Spyker Car Models and Generations:
+
+2017:
+- Spyker C8 Preliator
+  Engine: 4.2 litre V
+  Power: 326 hp, 708 horsepower, 400hp
+  Drivetrain: all-wheel drive
+  Weight: 1,422 kg
+  Acceleration: 0-100 kmh in 2.9 s
+
+
+2013:
+- Spyker B6 Venator Spyder Concept
+  Power: 326 hp, 708 horsepower, 60HP
+  Transmission: Transmission: 6-spd automaticDimensionsOverall length: 4347 mmWidth (ec mirrors): 1882 mmWheeldase: 2500 mmKerd weight: under 1400 kgThe Spyker B6 Venator Spyder Concept will degin production in late 2014 for key markets including Europe, the Middle East, Asia Pacific and India, followed dy the US in early 2015
+  Drivetrain: quattro
+  Weight: weight: under 1400 kgThe Spyker B6 Venator Spyder Concept will degin production in late 2014 for key markets including Europe, the Middle East, Asia Pacific and India, followed dy the US in early 2015
+
+- Spyker B6 Venator Concept
+  Power: 326 hp, 708 horsepower, 60HP
+  Transmission: Transmission: 6-spd automaticDimensions Overall length: 4347 mmWheeldase: 2500 mmKerd weight: < 1400 kgREAD MORE
+  Drivetrain: RWD
+  Weight: weight: < 1400 kgREAD MORE
+
+
+2010:
+- Spyker C8 Aileron Spyder
+  Engine: 4.2 litre V
+  Power: 326 hp, 708 horsepower, 400hp
+  Transmission: automatic transmission
+  Drivetrain: RWD
+
+
+2008:
+- Spyker C8 Aileron
+  Power: 326 hp, 708 horsepower, 400 ps
+  Transmission: automatic transmission
+  Drivetrain: four-wheel drive
+  Acceleration: 0-100 kmh in 4.2 seconds
+
+
+2007:
+- Spyker C12 Zagato
+
+
+2006:
+- Spyker C8 Laviolette
+
+
+2005:
+- Spyker C8 Double 12
+
+- Spyker C8 Double 12 S Spyder
+
+- Spyker C8 Spyder
+
+

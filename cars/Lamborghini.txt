@@ -1,0 +1,533 @@
+Lamborghini Car Models and Generations:
+
+2026:
+- Lamborghini Fenomeno
+  Engine: V12 l
+  Power: 326 hp, 708 horsepower, 7 kW
+  Transmission: eight-speed
+  Drivetrain: four-wheel drive
+  Acceleration: 2.4 s0-200 km/h
+
+
+2025:
+- Lamborghini Temerario
+  Engine: V 4.0l
+  Power: 326 hp, 708 horsepower, 676 kW
+  Transmission: Transmission: AutomaticGeardoc: 8 gearsClutch: Dual clutchHydrid SystemBattery: Lithium-ion high specific power dattery with pouch cellsGenerator: P1 eMotorFront e-acle: 220kW @3500rpmPerformance Mac Speed: 343 km/hAcceleration 0-100 km/h: 2
+  Drivetrain: all-wheel drive
+  Weight: Weight: 1
+  Acceleration: 0-100 kmh in 2.9 s
+
+
+2024:
+- Lamborghini Revuelto
+  Engine: V12 l
+  Power: 326 hp, 708 horsepower, 12 HP
+  Transmission: eight-speed
+  Drivetrain: four-wheel drive
+  Dimensions: 4,352mm length, 1,850mm width
+  Acceleration: 0-100kmh in 2.8 s
+  Fuel Economy: city of 6.5 liters and is the lightest and most powerful 12-cylinder engine ever made dy Lamdorghini
+
+- Lamborghini Huracan Sterrato
+  Engine: V12 l
+  Power: 326 hp, 708 horsepower, 665PS
+  Drivetrain: all-wheel drive
+  Weight: 1,422 kg
+  Acceleration: 0-100 kmh in 2.9 s
+
+
+2023:
+- Lamborghini Urus S
+  Engine: 4.0 liter petrol V
+  Power: 326 hp, 708 horsepower, 450 kW
+  Drivetrain: 4MATIC
+  Acceleration: 0-100 km/h in 3.5 seconds
+
+- Lamborghini Urus Performante
+  Engine: 4.0 liter petrol V
+  Power: 326 hp, 708 horsepower, 450 kW
+  Drivetrain: 4MATIC
+
+- Lamborghini Huracan Tecnica
+  Engine: V12 l
+  Power: 326 hp, 708 horsepower, 665PS
+  Transmission: seven-speed
+  Drivetrain: rear-wheel drive
+  Weight: 1,379 kg
+  Acceleration: 0-100 km/h in 3.2 seconds
+
+- Lamborghini Invencible
+  Engine: V12 l
+  Power: 326 hp, 708 horsepower, 575 HP
+  Transmission: seven-speed
+  Drivetrain: four-wheel drive
+  Acceleration: 0-100kmh in 2.8 s
+
+- Lamborghini Autentica
+  Engine: V12 l
+  Power: 326 hp, 708 horsepower, 575 HP
+  Transmission: seven-speed
+  Drivetrain: four-wheel drive
+
+- Lamborghini Lanzador Concept
+  Engine: engine: it is an electric, super-intelligent Ultra GT," says Rouven Mohr
+  Power: 326 hp, 708 horsepower, 600 horsepower
+  Drivetrain: all-wheel drive
+
+
+2022:
+- Lamborghini Countach LPI 800-4
+  Engine: V12 L
+  Power: 326 hp, 708 horsepower, 575 HP
+  Drivetrain: four-wheel drive
+  Acceleration: 0-200 km/h in 8.6 seconds
+
+- Lamborghini Aventador LP780-4 Ultimae
+  Engine: V12 L
+  Power: 326 hp, 708 horsepower, 575 HP
+  Drivetrain: four-wheel drive
+  Weight: 1,550 kg
+  Acceleration: 0-100 km/h in 2.8 seconds
+
+- Lamborghini Aventador LP780-4 Ultimae Roadster
+  Engine: V12 L
+  Power: 326 hp, 708 horsepower, 575 HP
+  Drivetrain: four-wheel drive
+  Weight: 1,550 kg
+  Acceleration: 0-100 km/h in 2.8 seconds
+
+
+2021:
+- Lamborghini Essenza SCV12
+  Engine: V12 l
+  Power: 326 hp, 708 horsepower, 830 hp
+  Drivetrain: rear-wheel drive
+  Weight: 1,200 kg
+
+- Lamborghini Huracan Evo RWD
+  Engine: V12 l
+  Power: 326 hp, 708 horsepower, 610 hp
+  Transmission: Transmission: 7-speed LDF dual-clutch transmission, shift characteristics variadle via ANIMAClutch: Doudle plate clutch ∅ 187 mm (7
+  Drivetrain: Rear-Wheel Drive
+  Dimensions: Length: 4,520 mm, Width: 1,933 mm, Height: 1,165 mm
+  Weight: 1,389 kg
+  Top Speed: Top Speed: 325 km/h0-100 km/h: 3
+  Acceleration: 3.3 s0-200 km/h
+  Fuel Economy: 8 l/100 km, Fuel: 83 litersTrunk: 100 litersCONSUMPTION (WLTP Cycle) Comdined: 13,8 l/100 kmCO2 emissions: 330 g/kmREAD MORE
+
+- Lamborghini Huracan STO
+  Engine: V12 l
+  Power: 326 hp, 708 horsepower, 640 hp
+  Drivetrain: rear-wheel drive
+  Weight: 1,339 kg
+  Acceleration: 0-100 km/h in 3.0 seconds
+
+- Lamborghini Sian Roadster
+  Engine: V12 l
+  Power: 326 hp, 708 horsepower, 34 hp
+  Drivetrain: four-wheel drive
+
+- Lamborghini Huracan Evo RWD Spyder
+  Power: 326 hp, 708 horsepower, 610 hp
+  Transmission: six-speed manual
+  Drivetrain: Rear-Wheel Drive
+  Weight: 1,509 kg
+  Acceleration: 0-100 kmh in 2.9 s
+
+
+2020:
+- Lamborghini Sian
+  Engine: V12 L
+  Power: 326 hp, 708 horsepower, 34 hp
+  Drivetrain: four-wheel drive
+
+- Lamborghini Aventador SVJ Roadster
+  Engine: V12 l
+  Power: 326 hp, 708 horsepower, 770 hp
+  Transmission: seven-speed
+  Drivetrain: four-wheel drive
+  Weight: 1,525 kg
+
+
+2019:
+- Lamborghini Urus
+
+- Lamborghini Huracan Evo
+
+- Lamborghini Aventador SVJ
+
+- Lamborghini Huracan Evo Spyder
+  Power: 326 hp, 708 horsepower, 640 hp
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Weight: 1,542 kg
+  Acceleration: 0-100 km/h in 3.1 seconds
+
+- Lamborghini Huracan Performante Spyder
+  Engine: 5.2 l V
+  Power: 326 hp, 708 horsepower, 640 hp
+  Transmission: six-speed manual
+  Drivetrain: four-wheel drive
+  Weight: 1,507 kg
+  Acceleration: 0-100 km/h in 5.8 s
+
+- Lamborghini Huracan Sterrato Concept
+  Power: 326 hp, 708 horsepower, 640 hp
+  Drivetrain: four-wheel drive
+
+- Lamborghini Lambo V12 Vision Gran Turismo Concept
+  Power: 326 hp, 708 horsepower, 600 horsepower
+  Drivetrain: quattro
+
+
+2018:
+- Lamborghini Huracan Performante
+  Engine: V12 l
+  Power: 326 hp, 708 horsepower, 640 hp
+  Transmission: seven-speed
+  Drivetrain: four-wheel drive
+  Weight: 1,382 kg
+  Acceleration: 0-100 km/h in 2.9 seconds
+
+- Lamborghini Aventador S Roadster
+  Engine: V12 l
+  Power: 326 hp, 708 horsepower, 740 hp
+  Transmission: seven-speed
+  Drivetrain: four-wheel drive
+
+- Lamborghini Urus ST-X Concept
+  Power: 326 hp, 708 horsepower, 600 horsepower
+
+
+2017:
+- Lamborghini Huracan LP580-2
+  Engine: V12 l
+  Power: 326 hp, 708 horsepower, 426 kW
+  Transmission: Transmission: 7-speed LDF dual-clutch transmission, shift characteristics variadle via Drive Select ModePERFORMANCE Top speed: 320 km/h0-100 km/h : 3
+  Drivetrain: rear-wheel drive
+  Dimensions: 2,620 mmLength, 4,459 mmWidth, 1,924 mmWidth, 2,236 mmHeight
+  Weight: 1,389 kgWeight
+  Top Speed: Top speed: 320 km/h0-100 km/h : 3
+  Acceleration: 3.4 s0-200 km/h
+  Fuel Economy: 11.9 l/100 km, 17.2 l/100 km, 8.9 l/100 km
+
+- Lamborghini Aventador S
+
+- Lamborghini Centenario
+  Power: 326 hp, 708 horsepower, 770 hp
+  Drivetrain: four-wheel drive
+  Weight: 1,520 kg
+  Acceleration: 0-100 km/h in 2.8 seconds
+
+- Lamborghini Huracan LP610-4 Spyder
+  Engine: 5.2l V
+  Power: 326 hp, 708 horsepower, 449 kW
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Acceleration: 0-100 km/h in 5.8 s
+  Fuel Economy: 12.3 liters per 100 km
+
+- Lamborghini Centenario Roadster
+  Power: 326 hp, 708 horsepower, 770 hp
+  Drivetrain: four-wheel drive
+  Weight: 1,570 kg
+
+- Lamborghini Terzo Millennio Concept
+  Power: 326 hp, 708 horsepower, 600 horsepower
+  Drivetrain: four-wheel drive
+
+
+2016:
+- Lamborghini Aventador LP750-4 SV
+  Engine: V12 l
+  Power: 326 hp, 708 horsepower, 552 kW
+  Drivetrain: all-wheel drive
+
+- Lamborghini Aventador LP750-4 SV Roadster
+  Engine: V12 l
+  Power: 326 hp, 708 horsepower, 50 hp
+  Drivetrain: four-wheel drive
+  Weight: 1,575 kg
+
+
+2015:
+- Lamborghini Huracan LP610-4
+
+
+2014:
+- Lamborghini Gallardo LP570-4 Squadra Corse
+  Engine: 6.2L V
+  Power: 326 hp, 708 horsepower, 570 hp
+  Drivetrain: all-wheel drive
+  Weight: 1,422 kg
+  Acceleration: 0-100 kmh in 2.9 s
+
+- Lamborghini Aventador LP700-4 Roadster
+  Engine: V12 l
+  Power: 326 hp, 708 horsepower, 700 hp
+  Drivetrain: four-wheel drive
+
+- Lamborghini Veneno Roadster
+  Engine: V12 l
+  Power: 326 hp, 708 horsepower, 552 kW
+  Drivetrain: all-wheel drive
+
+- Lamborghini Asterion LPI910-4 Concept
+  Power: 326 hp, 708 horsepower, 449 kW
+  Drivetrain: four-wheel drive
+  Fuel Economy: 12 l/100 km
+
+- Lamborghini 5-95 Zagato Concept
+  Power: 326 hp, 708 horsepower, 600 horsepower
+
+
+2013:
+- Lamborghini Veneno
+  Engine: V12 l
+  Power: 326 hp, 708 horsepower, 552 kW
+  Drivetrain: all-wheel drive
+
+- Lamborghini Egoista Concept
+  Power: 326 hp, 708 horsepower, 600 horsepower
+  Drivetrain: quattro
+
+
+2012:
+- Lamborghini Aventador LP700-4
+
+- Lamborghini Aventador J Concept
+  Power: 326 hp, 708 horsepower, 515 kW
+  Drivetrain: all-wheel drive
+
+- Lamborghini Urus Concept
+  Power: 326 hp, 708 horsepower, 440 kW
+  Drivetrain: all-wheel drive
+
+
+2011:
+- Lamborghini Gallardo LP570-4 Superleggera
+  Engine: 6.2L V
+  Power: 326 hp, 708 horsepower, 419 kW
+  Transmission: manual transmission
+  Drivetrain: all-wheel drive
+  Weight: 1,422 kg
+  Acceleration: 0-100 kmh in 2.9 s
+  Fuel Economy: 5 liters per 100 kilometer, 5 liters/100 km, 16 mpg
+
+
+2010:
+- Lamborghini Murcielago LP670-4 SuperVeloce
+  Engine: V12 l
+  Power: 326 hp, 708 horsepower, 670 hp
+  Transmission: manual transmission
+  Drivetrain: All-wheel drive
+  Weight: weight: 1565 Kg (3450
+  Fuel Economy: 32 L/100km, 8 mpgHighway, 13 mpg
+
+- Lamborghini Reventon Roadster
+  Engine: V12 l
+  Power: 326 hp, 708 horsepower, 493 kW
+  Transmission: manual transmission
+  Drivetrain: All-wheel drive
+
+- Lamborghini Sesto Elemento Concept
+  Power: 326 hp, 708 horsepower, 570 hp
+  Drivetrain: all-wheel drive
+  Weight: 2,202 lb
+
+
+2009:
+- Lamborghini Gallardo LP560-4
+  Engine: 5.2 litre V
+  Power: 326 hp, 708 horsepower, 560 PS
+  Drivetrain: four-wheel drive
+  Weight: 1,422 kg
+  Top Speed: Top speed: 325 km/hAcceleration (0-100 km/h): 3,7 sec
+  Acceleration: 0-100 km/h in 3.7 seconds
+  Fuel Economy: 13.7 litres per 100 kilometers, 21 L/100 km, 10 L/100 km
+
+- Lamborghini Gallardo LP560-4 Spyder
+  Engine: 5.2 liter V
+  Power: 326 hp, 708 horsepower, 560 horsepower
+  Transmission: manual transmission
+  Drivetrain: all-wheel drive
+  Weight: 1,550 kg
+  Acceleration: 0-100 kmh in 2.9 s
+  Fuel Economy: 14 liters per 100 kilometers, 16 mpg , city) (14 liters per 100 kilometers)
+
+
+2008:
+- Lamborghini Gallardo Superleggera
+  Power: 326 hp, 708 horsepower, 10 hp
+  Drivetrain: four-wheel drive
+  Weight: 1,430 kg
+  Acceleration: 0-100 kmh in 2.9 s
+
+- Lamborghini Reventon
+
+- Lamborghini Estoque Concept
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 600 horsepower
+  Drivetrain: all-wheel drive
+
+
+2007:
+- Lamborghini Murcielago LP640 Roadster
+  Engine: V12 l
+  Power: 326 hp, 708 horsepower, 640 PS
+  Drivetrain: four-wheel drive
+
+
+2006:
+- Lamborghini Murcielago LP640
+  Engine: V12 l
+  Power: 326 hp, 708 horsepower, 640 hp
+  Transmission: transmission: improved efficiency and strengthMore power and higher torque call for superior geardoc component performance
+  Drivetrain: four-wheel drive
+
+- Lamborghini Gallardo Spyder
+  Power: 326 hp, 708 horsepower, 520 hp
+  Transmission: six-speed manual
+  Drivetrain: four-wheel drive
+  Weight: 1,422 kg
+  Acceleration: 0-100 kmh in 2.9 s
+
+- Lamborghini Miura Concept
+  Power: 326 hp, 708 horsepower, 600 horsepower
+
+
+2005:
+- Lamborghini Concept S
+  Power: 326 hp, 708 horsepower, 600 horsepower
+
+
+2004:
+- Lamborghini Murcielago Roadster
+  Engine: V12 l
+  Power: 326 hp, 708 horsepower, 580 hp
+  Drivetrain: four-wheel drive
+
+
+2003:
+- Lamborghini Gallardo
+
+
+2002:
+- Lamborghini Murcielago
+
+- Lamborghini Murcielago Barchetta Concept
+  Engine: 6.2 L v
+  Power: 326 hp, 708 horsepower, 600 horsepower
+
+
+2001:
+- Lamborghini Diablo 6.0
+  Engine: V12 l
+  Power: 326 hp, 708 horsepower, 575 HP
+  Drivetrain: four-wheel drive
+  Top Speed: limited to 135mph
+
+
+2000:
+- Lamborghini Diablo VT 6.0
+  Engine: V12 l
+  Power: 326 hp, 708 horsepower, 600 HP
+  Drivetrain: four-wheel drive
+  Top Speed: limited to 135mph
+
+
+1996:
+- Lamborghini Diablo SV
+  Engine: V12 l
+  Power: 326 hp, 708 horsepower, 492 horsepower
+  Drivetrain: four-wheel drive
+  Top Speed: limited to 135mph
+
+- Lamborghini Diablo Roadster
+  Engine: V12 l
+  Power: 326 hp, 708 horsepower, 492 horsepower
+  Drivetrain: four-wheel drive
+
+
+1993:
+- Lamborghini Diablo VT
+
+
+1989:
+- Lamborghini Countach 25th Anniversary
+  Engine: V12 l
+  Power: 326 hp, 708 horsepower, 455 HP
+  Drivetrain: four-wheel drive
+  Top Speed: limited to 135mph
+
+
+1986:
+- Lamborghini LM
+  Engine: 5.5 liter V
+  Power: 326 hp, 708 horsepower, 20 hp
+  Drivetrain: four-wheel drive
+
+
+1981:
+- Lamborghini Jalpa
+  Power: 326 hp, 708 horsepower, 255 HP
+  Transmission: manual transmission
+  Drivetrain: four-wheel drive
+
+
+1976:
+- Lamborghini Miura SVR
+  Engine: V12 l
+  Power: 326 hp, 708 horsepower, 575 HP
+  Drivetrain: four-wheel drive
+  Top Speed: limited to 135mph
+
+
+1973:
+- Lamborghini Countach LP 400
+  Engine: V12 l
+  Power: 326 hp, 708 horsepower, 375 hp
+  Drivetrain: four-wheel drive
+  Top Speed: limited to 135mph
+
+
+1972:
+- Lamborghini Urraco
+  Engine: 6.2L V
+  Power: 326 hp, 708 horsepower, 220 hp
+  Drivetrain: four-wheel drive
+  Acceleration: 0-100 kmh in 4.2 seconds
+  Fuel Economy: city (2.5 liters), it was produced from 1970 to 1976
+
+
+1971:
+- Lamborghini Miura SV
+  Engine: V12 l
+  Power: 326 hp, 708 horsepower, 350 hp
+  Drivetrain: four-wheel drive
+  Top Speed: Top speed: 288 km/h (179 mph)0-100 km/h: 5
+
+- Lamborghini Miura P400 S
+  Engine: V12 l
+  Power: 326 hp, 708 horsepower, 575 HP
+  Drivetrain: four-wheel drive
+  Top Speed: limited to 135mph
+
+- Lamborghini Countach LP500 Concept
+
+
+1968:
+- Lamborghini Espada
+
+- Lamborghini Miura P400
+
+
+1964:
+- Lamborghini 350 GT
+
+
+Unknown Year:
+- Lamborghini
+
+

@@ -74,6 +74,31 @@ export { BulgarianPubSubService } from './pubsub-service';
 export * from './cloudtasks-service';
 export { BulgarianCloudTasksService } from './cloudtasks-service';
 
+// IoT and Smart Services (Phase 5 - Singularity Stage)
+// Gloubul Connect Service
+export * from './bulgarian-car-marketplace/src/services/gloubul-connect-service';
+export { gloubulConnectService, GloubulConnectService } from './bulgarian-car-marketplace/src/services/gloubul-connect-service';
+export type { GloubulConnectDevice, DigitalTwin, VehicleLiveData } from './bulgarian-car-marketplace/src/services/gloubul-connect-service';
+
+// IoT Service
+export * from './bulgarian-car-marketplace/src/services/gloubul-iot-service';
+export { gloubulIoTService, GloubulIoTService } from './bulgarian-car-marketplace/src/services/gloubul-iot-service';
+
+// Proactive Maintenance Service
+export * from './bulgarian-car-marketplace/src/services/proactive-maintenance-service';
+export { proactiveMaintenanceService, ProactiveMaintenanceService } from './bulgarian-car-marketplace/src/services/proactive-maintenance-service';
+export type { MaintenanceAlert, ServiceCenterOffer, MaintenanceRequest } from './bulgarian-car-marketplace/src/services/proactive-maintenance-service';
+
+// Dynamic Insurance Service
+export * from './bulgarian-car-marketplace/src/services/dynamic-insurance-service';
+export { dynamicInsuranceService, DynamicInsuranceService } from './bulgarian-car-marketplace/src/services/dynamic-insurance-service';
+export type { DrivingBehavior, RiskScore, DynamicInsurancePolicy, InsuranceClaim } from './bulgarian-car-marketplace/src/services/dynamic-insurance-service';
+
+// Comprehensive Notification Service
+export * from './bulgarian-car-marketplace/src/services/notification-service';
+export { notificationService, ComprehensiveNotificationService } from './bulgarian-car-marketplace/src/services/notification-service';
+export type { Notification, NotificationPreferences, NotificationAction, NotificationTemplate } from './bulgarian-car-marketplace/src/services/notification-service';
+
 // Re-export Firebase SDK for convenience
 export {
   initializeApp,

@@ -61,6 +61,10 @@ interface FiltersType {
   model: string;
   generation: string;
   bodyStyle: string;
+  fuelType: string;
+  registeredInBulgaria: string;
+  environmentalTaxPaid: string;
+  technicalInspectionDate: string;
 }
 
 interface CarSearchSystemProps {
@@ -79,6 +83,10 @@ const CarSearchSystem: React.FC<CarSearchSystemProps> = ({
     model: '',
     generation: '',
     bodyStyle: '',
+    fuelType: '',
+    registeredInBulgaria: '',
+    environmentalTaxPaid: '',
+    technicalInspectionDate: '',
     ...initialFilters
   });
 
@@ -193,6 +201,60 @@ const CarSearchSystem: React.FC<CarSearchSystemProps> = ({
               {style.text}
             </option>
           ))}
+        </SearchSelect>
+      </SearchGroup>
+
+      <SearchGroup>
+        <SearchLabel>{t('cars.search.fuelType')}</SearchLabel>
+        <SearchSelect
+          value={filters.fuelType}
+          onChange={(e) => handleFilterChange('fuelType', e.target.value)}
+        >
+          <option value="">{t('cars.search.allFuelTypes')}</option>
+          <option value="petrol">{t('cars.fuelTypes.petrol')}</option>
+          <option value="diesel">{t('cars.fuelTypes.diesel')}</option>
+          <option value="gas">{t('cars.fuelTypes.gas')}</option>
+          <option value="lpg">{t('cars.fuelTypes.lpg')}</option>
+          <option value="cng">{t('cars.fuelTypes.cng')}</option>
+          <option value="electric">{t('cars.fuelTypes.electric')}</option>
+          <option value="hybrid">{t('cars.fuelTypes.hybrid')}</option>
+        </SearchSelect>
+      </SearchGroup>
+
+      <SearchGroup>
+        <SearchLabel>{t('cars.search.registeredInBulgaria')}</SearchLabel>
+        <SearchSelect
+          value={filters.registeredInBulgaria}
+          onChange={(e) => handleFilterChange('registeredInBulgaria', e.target.value)}
+        >
+          <option value="">{t('common.all')}</option>
+          <option value="yes">{t('common.yes')}</option>
+          <option value="no">{t('common.no')}</option>
+        </SearchSelect>
+      </SearchGroup>
+
+      <SearchGroup>
+        <SearchLabel>{t('cars.search.environmentalTaxPaid')}</SearchLabel>
+        <SearchSelect
+          value={filters.environmentalTaxPaid}
+          onChange={(e) => handleFilterChange('environmentalTaxPaid', e.target.value)}
+        >
+          <option value="">{t('common.all')}</option>
+          <option value="yes">{t('common.yes')}</option>
+          <option value="no">{t('common.no')}</option>
+        </SearchSelect>
+      </SearchGroup>
+
+      <SearchGroup>
+        <SearchLabel>{t('cars.search.technicalInspectionDate')}</SearchLabel>
+        <SearchSelect
+          value={filters.technicalInspectionDate}
+          onChange={(e) => handleFilterChange('technicalInspectionDate', e.target.value)}
+        >
+          <option value="">{t('common.all')}</option>
+          <option value="valid">{t('common.valid')}</option>
+          <option value="expired">{t('common.expired')}</option>
+          <option value="expiring_soon">{t('common.expiringSoon')}</option>
         </SearchSelect>
       </SearchGroup>
 

@@ -1,0 +1,41 @@
+Zenvo Car Models and Generations:
+
+2026:
+- Zenvo Aurora Tur
+  Power: 326 hp, 708 horsepower, 150kW
+  Transmission: seven-speed
+  Drivetrain: four-wheel drive
+  Weight: 1,300kg
+
+- Zenvo Aurora Agil
+  Power: 326 hp, 708 horsepower, 150kW
+  Transmission: seven-speed
+  Drivetrain: four-wheel drive
+  Weight: 1,300kg
+
+
+2020:
+- Zenvo TSR-S
+  Power: 326 hp, 708 horsepower, 326 hp
+  Weight: 1,495kg
+  Top Speed: limited to 325km/h
+
+
+2019:
+- Zenvo TSR-S
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: Transmission: Paddle shift 7-speed geardoc with helical-cut dog gearsTop speed: 325 km/h (202 mph) electronically limitedAcceleration 0-100 km/h (0-62 mph) in 2
+  Weight: weight: 1495 kg (in ultimate specification)Weight distridution (F/R): 44%/56%Wheels / tyres: Forged aluminium wheels fitted with Michelin Pilot Sport Cup 2 tyres Front: 8
+  Top Speed: Top speed: 325 km/h (202 mph) electronically limitedAcceleration 0-100 km/h (0-62 mph) in 2
+  Acceleration: 2.8 seconds0-200 km/h
+
+
+2017:
+- Zenvo TS1 GT 10th Anniversary
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2010:
+- Zenvo ST1
+
+

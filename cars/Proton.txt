@@ -1,0 +1,33 @@
+Proton Car Models and Generations:
+
+2008:
+- Proton Savvy
+  Engine: 1.2 litre petrol engine which can easily deliver a top speed of
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: manual transmission
+
+- Proton Satria Neo
+  Engine: v L
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: four-speed automatic
+
+- Proton GEN-2 Persona
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: four-speed automatic
+
+- Proton GEN-2
+  Engine: v L
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: four-speed automatic
+
+
+2006:
+- Proton Impian
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: five-speed manual
+
+
+2004:
+- Proton GEN-2
+
+

@@ -1,0 +1,137 @@
+Hsv Car Models and Generations:
+
+2017:
+- HSV GTSR W1
+  Power: 326 hp, 708 horsepower, 435kW
+
+- HSV GTSR Maloo
+  Power: 326 hp, 708 horsepower, 435kW
+
+- HSV GTSR
+  Power: 326 hp, 708 horsepower, 435kW
+
+
+2016:
+- HSV Gen-F2
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 400kW
+
+
+2015:
+- HSV Gen-F Senator SV
+  Power: 326 hp, 708 horsepower, 340kW
+  Transmission: manual transmission
+
+- HSV Gen-F GTS Maloo
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: manual transmission
+
+- HSV ClubSport R8 25th Anniversary
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 340kW
+  Transmission: manual transmission
+
+
+2014:
+- HSV Gen-F Senator Signature
+  Engine: V L
+  Power: 326 hp, 708 horsepower, 340kW
+  Transmission: automatic transmission
+  Drivetrain: xDrive
+  Fuel Economy: CityRoverFord Mustang GT California Special ConvertiblePorsche Macan SBMW 740Le xDrive iPerformance
+
+- HSV Gen-F Maloo R8 SV
+  Power: 326 hp, 708 horsepower, 325kW
+  Transmission: automatic transmission
+
+- HSV Gen-F Maloo
+  Power: 326 hp, 708 horsepower, 325kW
+  Transmission: automatic transmission
+
+- HSV Gen-F Grange
+  Engine: V L
+  Power: 326 hp, 708 horsepower, 340kW
+  Transmission: automatic transmission
+
+- HSV Gen-F GTS
+
+- HSV Gen-F Clubsport R8 Tourer
+  Engine: V L
+  Power: 326 hp, 708 horsepower, 340kW
+  Transmission: automatic transmission
+
+- HSV Gen-F Clubsport R8 SV
+  Engine: V L
+  Power: 326 hp, 708 horsepower, 340kW
+  Transmission: automatic transmission
+
+- HSV Gen-F Clubsport
+  Engine: V L
+  Power: 326 hp, 708 horsepower, 340kW
+  Transmission: automatic transmission
+
+
+2012:
+- HSV GTS 25th Anniversary
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 325kW
+  Transmission: automatic transmission
+
+
+2011:
+- HSV Grange WM3
+  Power: 326 hp, 708 horsepower, 325kW
+
+- HSV E3 Senator
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- HSV E3 Maloo R8
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- HSV E3 GTS
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- HSV E3 ClubSport R8 Tourer
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- HSV E3 ClubSport R8
+
+
+2009:
+- HSV W427
+  Power: 326 hp, 708 horsepower, 375kW
+
+
+2008:
+- HSV Senator Signature SV08
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- HSV GTS 40 Years Edition
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 200kW
+
+- HSV ClubSport R8 Tourer
+  Power: 326 hp, 708 horsepower, 317kW
+  Transmission: Automatic transmission
+
+- HSV W427 Concept
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 370kW
+
+
+2007:
+- HSV VXR
+
+- HSV Senator Signature
+
+- HSV E Series Grange
+
+- HSV E Series GTS
+
+- HSV E Series Clubsport R8
+
+
+2006:
+- HSV Z Series Maloo
+
+

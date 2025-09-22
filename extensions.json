@@ -1,0 +1,32 @@
+{
+  "firestore-bigquery-export": {
+    "params": {
+      "collectionPath": "cars",
+      "dataset": "globul_cars_analytics",
+      "table": "cars",
+      "location": "europe-west3",
+      "timePartitioning": "DAY",
+      "timePartitioningField": "timestamp"
+    }
+  },
+  "firestore-bigquery-export-service-leads": {
+    "params": {
+      "collectionPath": "serviceLeads",
+      "dataset": "globul_cars_analytics",
+      "table": "service_leads",
+      "location": "europe-west3",
+      "timePartitioning": "DAY",
+      "timePartitioningField": "timestamp"
+    }
+  },
+  "firestore-bigquery-export-direct-sales": {
+    "params": {
+      "collectionPath": "directSaleRequests",
+      "dataset": "globul_cars_analytics",
+      "table": "direct_sale_requests",
+      "location": "europe-west3",
+      "timePartitioning": "DAY",
+      "timePartitioningField": "timestamp"
+    }
+  }
+}

@@ -1,0 +1,28 @@
+Rivian Car Models and Generations:
+
+2027:
+- Rivian R3X
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+- Rivian R3
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: RWD
+
+- Rivian R2
+  Power: 326 hp, 708 horsepower, 35hP
+  Drivetrain: RWD
+
+
+2022:
+- Rivian R1T
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 800 hp
+  Drivetrain: AWD
+
+
+Unknown Year:
+- Rivian
+  Power: 326 hp, 708 horsepower, 326 hp
+
+

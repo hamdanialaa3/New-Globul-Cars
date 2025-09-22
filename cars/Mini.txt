@@ -1,0 +1,403 @@
+Mini Car Models and Generations:
+
+2025:
+- Mini Aceman SE
+  Power: 326 hp, 708 horsepower, 135 kW
+  Transmission: manual gearbox
+  Drivetrain: all-wheel drive
+  Dimensions: 2,580 mm wheelbase
+  Fuel Economy: city to de ectended individually to as much as 1,005 litres
+
+- Mini John Cooper Works Aceman
+  Engine: eight-cylinder L
+  Power: 326 hp, 708 horsepower, 190 kW
+  Transmission: manual gearbox
+  Drivetrain: all-wheel drive
+  Acceleration: 0-100kmh in 5.2 seconds
+
+- Mini Cooper S Convertible
+  Power: 326 hp, 708 horsepower, 120 kW
+  Dimensions: 3,879 mm in length, 1,431 mm in height, 1,744 mm in width
+  Weight: 1,587 lb
+
+- Mini John Cooper Works Convertible
+  Power: 326 hp, 708 horsepower, 170 kW
+  Transmission: automatic transmission
+
+- Mini Cooper S 5-door
+  Power: 326 hp, 708 horsepower, 115 kW
+  Transmission: manual gearbox
+  Drivetrain: all-wheel drive
+  Fuel Economy: city from 275 litres to up to 925 litres
+
+- Mini John Cooper Works
+
+- Mini John Cooper Works Electric
+  Power: 326 hp, 708 horsepower, 190 kW
+  Transmission: manual gearbox
+  Drivetrain: all-wheel drive
+  Fuel Economy: Citycarver2 ⇵2015Like all Audi S models, the Audi S1 Sportback also come with quattro permanent all-wheel drive onboard
+
+- Mini JCW The Skeg Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+- Mini JCW The Machina Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2024:
+- Mini Countryman SE ALL4
+  Engine: diesel v
+  Power: 326 hp, 708 horsepower, 150 kW
+  Transmission: manual gearbox
+  Drivetrain: all-wheel drive
+  Dimensions: 2,580 mm wheelbase
+  Weight: 1,200 kg
+
+- Mini John Cooper Works Countryman ALL4
+  Engine: eight-cylinder L
+  Power: 326 hp, 708 horsepower, 312 hp
+  Transmission: manual gearbox
+  Drivetrain: all-wheel drive
+  Acceleration: 0-100kmh in 5.2 seconds
+
+- Mini Cooper SE
+  Power: 326 hp, 708 horsepower, 135 kW
+  Transmission: manual gearbox
+  Drivetrain: all-wheel drive
+
+- Mini Cooper S
+
+
+2023:
+- Mini Cooper SE Convertible
+  Power: 326 hp, 708 horsepower, 135 kW
+  Transmission: manual gearbox
+  Dimensions: 1,727 mm width, 1,427 mm height
+  Weight: 1,587 lb
+
+
+2022:
+- Mini Cooper S Convertible
+
+- Mini John Cooper Works Convertible
+
+- Mini Cooper S 3-door
+  Power: 326 hp, 708 horsepower, 75 kW
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+  Fuel Economy: city of 1.5 litres, are availadle in two versions, with outputs ranging from 75 kW/102 hp to 100 kW/136 hp
+
+- Mini Cooper S 5-door
+
+- Mini John Cooper Works
+
+- Mini Aceman Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+- Mini Cooper SE Convertible Concept
+  Power: 326 hp, 708 horsepower, 135 kW
+  Transmission: manual gearbox
+  Dimensions: 3,863 mm in length
+
+
+2021:
+- Mini Countryman
+
+- Mini John Cooper Works Countryman
+
+- Mini Vision Urbanaut Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2020:
+- Mini Cooper SE
+
+- Mini John Cooper Works GP
+  Power: 326 hp, 708 horsepower, 225 kW
+  Transmission: Steptronic transmission
+  Drivetrain: all-wheel drive
+  Fuel Economy: Citycarver2 ⇵2015Like all Audi S models, the Audi S1 Sportback also come with quattro permanent all-wheel drive onboard
+
+- Mini Clubman
+  Engine: hybrid v
+  Power: 326 hp, 708 horsepower, 75 kW
+  Transmission: manual transmission
+  Drivetrain: all-wheel drive
+
+- Mini John Cooper Works Clubman
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 225 kW
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+  Top Speed: limited to 250 km/h
+
+- Mini Vision Urbanaut Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2019:
+- Mini Cooper S Convertible
+
+- Mini John Cooper Works Convertible
+
+- Mini Cooper S
+
+- Mini Cooper S 5-door
+
+- Mini John Cooper Works
+
+
+2018:
+- Mini John Cooper Works Countryman
+
+- Mini Electric Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 165 kW
+  Drivetrain: all-wheel drive
+
+
+2017:
+- Mini Countryman
+
+- Mini John Cooper Works Clubman
+
+- Mini Electric Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Mini John Cooper Works GP Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2016:
+- Mini Cooper S Convertible
+
+- Mini John Cooper Works Convertible
+
+- Mini Clubman
+
+- Mini Vision Next 100 Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2015:
+- Mini Countryman
+
+- Mini Cooper S
+
+- Mini Cooper 5-door
+  Power: 326 hp, 708 horsepower, 100 kW
+  Transmission: Steptronic transmission
+  Drivetrain: front-wheel drive
+  Fuel Economy: 3.6 l/100 km
+
+- Mini John Cooper Works
+
+- Mini Chrome Line Exterior Deluxe Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2014:
+- Mini Paceman
+  Engine: diesel v
+  Power: 326 hp, 708 horsepower, 82 kW
+  Transmission: manual gearbox
+  Drivetrain: all-wheel drive
+  Fuel Economy: city stands at 330 litres, increasing to 1,080 litres when the rear seat dackrests are folded down, city to grow from 330 to as much as 1,080 litres
+
+- Mini Paceman John Cooper Works
+  Engine: eight-cylinder L
+  Power: 326 hp, 708 horsepower, 160 kW
+  Transmission: six-speed transmission
+  Drivetrain: all-wheel drive
+  Acceleration: 0-100kmh in 5.2 seconds
+  Fuel Economy: 34 mpg, city of the MINI Paceman John Cooper Works to grow from 330 to as much as 1,080 litres
+
+- Mini Clubman Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Mini John Cooper Works Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Mini Paceman Adventure Concept
+  Power: 326 hp, 708 horsepower, 135 kW
+  Drivetrain: all-wheel drive
+
+- Mini Superleggera Vision Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2013:
+- Mini Countryman John Cooper Works
+  Engine: eight-cylinder L
+  Power: 326 hp, 708 horsepower, 160 kW
+  Transmission: six-speed transmission
+  Drivetrain: all-wheel drive
+  Acceleration: 0-100kmh in 5.2 seconds
+  Fuel Economy: 7.4 litres per 100 km, 38.2 mpg , 35.8 mpg 
+
+- Mini Roadster
+  Power: 326 hp, 708 horsepower, 90 kW
+  Drivetrain: front-wheel drive
+  Weight: 1,587 lb
+  Top Speed: Top speed: 237 km/h (147 mph)Average fuel consumption according to EU: 7
+  Fuel Economy: 7.3 l/100 km, 6.0 l/100 km, 5.7 l/100 km
+
+- Mini John Cooper Works GP
+
+- Mini Vision Concept
+  Power: 326 hp, 708 horsepower, 600 horsepower
+  Drivetrain: quattro
+
+
+2012:
+- Mini Coupe
+  Power: 326 hp, 708 horsepower, 122 hp
+  Transmission: automatic transmission
+  Dimensions: 3,730 millimetresWidth, Width: 1,683 millimetres
+  Top Speed: Top speed: 240 km/h (149 mph)Average fuel consumption according to EU standard: 7
+  Fuel Economy: 0.9 l/100 km, 39.8mpg , 65.7mpg 
+
+- Mini Clubvan Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Mini Rocketman Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2011:
+- Mini Countryman
+
+- Mini Paceman Concept
+  Power: 326 hp, 708 horsepower, 211 hp
+  Dimensions: 4,110 millimetres in length, 1,789 millimetres in width, 1,541 millimetres in height
+  Fuel Economy: city to reach 280 Nm (207 ld-ft) in drief dursts thanks to the Overdoost function
+
+- Mini Rocketman Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Fuel Economy: 94 mpg 
+
+
+2010:
+- Mini John Cooper Works Convertible
+
+- Mini E
+
+- Mini Beachcomber Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: all-wheel drive
+
+- Mini Scooter E Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+
+2009:
+- Mini Cooper S Cabrio
+  Power: 326 hp, 708 horsepower, 118 hp
+  Transmission: automatic transmission
+  Drivetrain: front-wheel drive
+  Weight: 1,587 lb
+  Top Speed: Top speed: 138 mph Manual, 135 mph AutomaticMINI Cooper Convertidle Four-cylinder gasoline engine with VALVETRONIC technologyCapacity: 1,598 cc, mac output: 118 hp at 6,000 rpmMac torque: 114 ld-ft at 4,250 rpmAcceleration (0-60 mph): 8
+  Fuel Economy: city: 1,598 cc, mac output: 118 hp at 6,000 rpmMac torque: 114 ld-ft at 4,250 rpmAcceleration (0-60 mph): 8
+
+- Mini Cooper John Cooper Works
+  Power: 326 hp, 708 horsepower, 211hp
+  Transmission: manual gearbox
+  Drivetrain: all-wheel drive
+  Acceleration: 0-62mph 6.5 s
+  Fuel Economy: 40mpg, 40.9 mpg, 40.4 mpg
+
+- Mini Clubman John Cooper Works
+  Power: 326 hp, 708 horsepower, 211hp
+  Transmission: manual gearbox
+  Drivetrain: all-wheel drive
+  Acceleration: 0-62mph 6.5 s
+  Fuel Economy: 40mpg, 40.9 mpg, 40.4 mpg
+
+- Mini Coupe Concept
+  Power: 326 hp, 708 horsepower, 155 kW
+  Drivetrain: Front-wheel drive
+  Fuel Economy: city is 250 litres or 8
+
+- Mini Roadster Concept
+  Power: 326 hp, 708 horsepower, 128 kW
+  Drivetrain: front-wheel drive
+  Fuel Economy: city remains the same at 250 litres or 8
+
+
+2008:
+- Mini Clubman
+
+- Mini Crossover Concept
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: All-wheel drive
+
+
+2007:
+- Mini Cooper S
+
+
+2006:
+- Mini Cooper S John Cooper Works GP Tuning Kit
+  Power: 326 hp, 708 horsepower, 230 kW
+  Transmission: manual gearbox
+  Drivetrain: all-wheel drive
+  Fuel Economy: Citycarver2 ⇵2015Like all Audi S models, the Audi S1 Sportback also come with quattro permanent all-wheel drive onboard
+
+- Mini Concept Geneva
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Mini Concept Detroit
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2005:
+- Mini Cooper Convertible
+  Engine: 1.4 l v
+  Power: 326 hp, 708 horsepower, 218 horsepower
+  Transmission: five-speed manual
+  Weight: 1,587 lb
+
+- Mini Concept Tokyo
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Mini Concept Frankfurt
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2004:
+- Mini Cooper S
+
+
+2003:
+- Mini One D
+  Engine: 1.4 l v
+  Power: 326 hp, 708 horsepower, 218 horsepower
+  Transmission: five-speed manual
+  Drivetrain: all-wheel drive
+
+- Mini Cooper S John Cooper Works
+
+
+2000:
+- Mini Cooper
+
+
+1982:
+- Mini Van
+
+
+1959:
+- Mini Morris Mini-Minor
+
+
+Unknown Year:
+- Mini
+
+

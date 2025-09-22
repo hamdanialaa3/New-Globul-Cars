@@ -1,0 +1,9 @@
+Twr Car Models and Generations:
+
+2025:
+- TWR Supercat
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: rear-wheel drive
+  Weight: 1,605kg
+
+

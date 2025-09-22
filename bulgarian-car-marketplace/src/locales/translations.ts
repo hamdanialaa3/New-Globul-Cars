@@ -96,6 +96,9 @@ export const translations = {
         allTransmissions: 'Всички трансмисии',
         condition: 'Състояние',
         allConditions: 'Всички състояния',
+        registeredInBulgaria: 'Регистрирана в България',
+        environmentalTaxPaid: 'Данък екологичен платен',
+        technicalInspectionDate: 'Дата на технически преглед',
         search: 'Търси',
         clear: 'Изчисти филтрите'
       },
@@ -176,7 +179,11 @@ export const translations = {
       view: 'Виж',
       details: 'Детайли',
       more: 'Повече',
-      less: 'По-малко'
+      less: 'По-малко',
+      all: 'Всички',
+      valid: 'Валиден',
+      expired: 'Изтекъл',
+      expiringSoon: 'Изтича скоро'
     },
     login: {
       title: 'Вход',
@@ -459,6 +466,39 @@ export const translations = {
         searchDescription: 'Описание на търсенето',
         searchPlaceholder: 'Въведете ключови думи...'
       }
+    },
+    carDetails: {
+      basicInfo: 'Основна информация',
+      technicalSpecs: 'Технически характеристики',
+      location: 'Местоположение',
+      contactSeller: 'Свържете се с продавача',
+      seller: 'Продавач',
+      phone: 'Телефон',
+      sendMessage: 'Изпрати съобщение',
+      description: 'Описание',
+      features: 'Особености',
+      marketComparison: 'Сравнение със средния пазар',
+      averagePrice: 'Средна цена',
+      priceDifference: 'Разлика в цената',
+      marketPosition: 'Позиция на пазара',
+      excellentPrice: 'Отлична цена',
+      goodPrice: 'Добра цена',
+      fairPrice: 'Справедлива цена',
+      highPrice: 'Висока цена',
+      registeredInBulgaria: 'Регистрирана в България',
+      environmentalTaxPaid: 'Данък екологичен платен',
+      technicalInspectionValid: 'Технически преглед валиден',
+      address: 'Адрес',
+      year: 'Година',
+      mileage: 'Пробег',
+      fuelType: 'Тип гориво',
+      transmission: 'Трансмисия',
+      power: 'Мощност',
+      engineSize: 'Обем на двигателя',
+      error: {
+        notFound: 'Колата не е намерена',
+        backToCars: 'Обратно към колите'
+      }
     }
   },
   en: {
@@ -557,6 +597,9 @@ export const translations = {
         allTransmissions: 'All Transmissions',
         condition: 'Condition',
         allConditions: 'All Conditions',
+        registeredInBulgaria: 'Registered in Bulgaria',
+        environmentalTaxPaid: 'Environmental Tax Paid',
+        technicalInspectionDate: 'Technical Inspection Date',
         search: 'Search',
         clear: 'Clear Filters'
       },
@@ -665,7 +708,11 @@ export const translations = {
       view: 'View',
       details: 'Details',
       more: 'More',
-      less: 'Less'
+      less: 'Less',
+      all: 'All',
+      valid: 'Valid',
+      expired: 'Expired',
+      expiringSoon: 'Expiring Soon'
     },
     detailedSearch: {
       title: 'Detailed Search',
@@ -908,6 +955,39 @@ export const translations = {
         choose: 'Choose',
         searchDescription: 'Search description',
         searchPlaceholder: 'Enter keywords...'
+      }
+    },
+    carDetails: {
+      basicInfo: 'Basic Information',
+      technicalSpecs: 'Technical Specifications',
+      location: 'Location',
+      contactSeller: 'Contact Seller',
+      seller: 'Seller',
+      phone: 'Phone',
+      sendMessage: 'Send Message',
+      description: 'Description',
+      features: 'Features',
+      marketComparison: 'Market Comparison',
+      averagePrice: 'Average Price',
+      priceDifference: 'Price Difference',
+      marketPosition: 'Market Position',
+      excellentPrice: 'Excellent Price',
+      goodPrice: 'Good Price',
+      fairPrice: 'Fair Price',
+      highPrice: 'High Price',
+      registeredInBulgaria: 'Registered in Bulgaria',
+      environmentalTaxPaid: 'Environmental Tax Paid',
+      technicalInspectionValid: 'Technical Inspection Valid',
+      address: 'Address',
+      year: 'Year',
+      mileage: 'Mileage',
+      fuelType: 'Fuel Type',
+      transmission: 'Transmission',
+      power: 'Power',
+      engineSize: 'Engine Size',
+      error: {
+        notFound: 'Car not found',
+        backToCars: 'Back to Cars'
       }
     }
   }

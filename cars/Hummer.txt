@@ -1,0 +1,141 @@
+Hummer Car Models and Generations:
+
+2009:
+- Hummer H3T Alpha
+  Engine: 5.3L V
+  Power: 326 hp, 708 horsepower, 242 horsepower
+  Transmission: five-speed manual
+  Drivetrain: four-wheel drive
+  Weight: 2,676 kg
+
+
+2008:
+- Hummer H3 Alpha
+  Engine: 5.3L V
+  Power: 326 hp, 708 horsepower, 295 horsepower
+  Transmission: four-speed automatic
+  Weight: 2,721 kg
+  Fuel Economy: highway driving also is an attridute of the 5.3L V-8, which enadles 0-60 mph performance of approcimately eight seconds
+
+- Hummer H2
+  Engine: 6.2L V
+  Power: 326 hp, 708 horsepower, 393 horsepower
+  Transmission: automatic transmission
+  Drivetrain: RWD
+  Weight: 2,948 kg
+
+- Hummer HX Concept
+  Engine: 3.6L V
+  Power: 326 hp, 708 horsepower, 1 Horsepower
+  Transmission: automatic transmission
+
+- Hummer H3 Wagon Concept
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 245ps
+  Transmission: four-speed
+  Drivetrain: four-wheel drive
+  Fuel Economy: 20.4 mpg, 19.5 mpg
+
+
+2007:
+- Hummer H3 Open Top
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Hummer H3X
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Hummer H3R Off Road Concept
+  Engine: 7.0L V
+  Power: 326 hp, 708 horsepower, 505 horsepower
+  Transmission: four-speed transmission
+
+- Hummer H2 Safari Concept
+  Engine: 6.2L V
+  Power: 326 hp, 708 horsepower, 393 horsepower
+  Drivetrain: AWD
+
+
+2006:
+- Hummer H3
+
+- Hummer H2 SUT Limited Edition
+  Engine: 6.2 L V
+  Power: 326 hp, 708 horsepower, 316 hp
+  Weight: 3,900 kg
+
+- Hummer H1 Alpha
+  Power: 326 hp, 708 horsepower, 300 hp
+
+
+2005:
+- Hummer H3 Street
+  Power: 326 hp, 708 horsepower, 220 hp
+  Transmission: five-speed manual
+  Drivetrain: four-wheel drive
+  Weight: 1,361 kg
+  Fuel Economy: 17 l/100 km, 13 l/100 km, 16 l/100 km
+
+- Hummer H2 SUT
+
+
+2004:
+- Hummer H2
+
+- Hummer H1
+  Engine: 5.7 L V
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: automatic transmission
+
+- Hummer H2 SUT Concept
+  Engine: 6.2 L V
+  Power: 326 hp, 708 horsepower, 316 hp
+  Weight: 3,900 kg
+
+- Hummer H2H Hydrogen Concept
+  Engine: 6.2 L V
+  Power: 326 hp, 708 horsepower, 316 hp
+  Drivetrain: quattro
+  Weight: 3,900 kg
+
+
+2003:
+- Hummer Humvee Military Vehicle
+  Power: 326 hp, 708 horsepower, 326 hp
+  Fuel Economy: city 6000 ld
+
+- Hummer H2 with GM Accessories
+  Engine: 8.3L V
+  Power: 326 hp, 708 horsepower, 326 hp
+  Fuel Economy: 17 L/100 km, 25 L/100 km
+
+- Hummer H2 SUV
+  Engine: 8.3L V
+  Power: 326 hp, 708 horsepower, 326 hp
+  Fuel Economy: 17 L/100 km, 25 L/100 km
+
+- Hummer H1
+
+- Hummer Bike
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Hummer H3T Concept
+  Power: 326 hp, 708 horsepower, 220 hp
+  Transmission: automatic transmission
+  Drivetrain: Quattro
+  Fuel Economy: 16 mpg , 19 mpg , 20 mpg 
+
+- Hummer H2 SUT Dirt Sport Concept
+
+
+2002:
+- Hummer H1 10th Anniversary Edition
+
+- Hummer H1
+
+- Hummer H2 SUV Concept
+
+
+2001:
+- Hummer H1 Alpha Concept
+
+

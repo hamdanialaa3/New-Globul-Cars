@@ -1,0 +1,533 @@
+Volvo Car Models and Generations:
+
+2026:
+- Volvo EX30 Cross Country
+  Engine: electric V
+  Power: 326 hp, 708 horsepower, 117PS
+  Drivetrain: all-wheel drive
+  Dimensions: 2,580 mm wheelbase
+
+- Volvo XC70 [CN]
+  Engine: 2.0 litre four-cylinder
+  Power: 326 hp, 708 horsepower, 310 kW
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+  Acceleration: 0-100 km/h in 3.5 seconds
+
+- Volvo XC60
+  Engine: 2.0 litre four-cylinder
+  Power: 326 hp, 708 horsepower, 310 kW
+  Transmission: automatic transmission
+  Drivetrain: quattro
+  Acceleration: 0-100 km/h in 3.5 seconds
+
+- Volvo S90
+  Engine: 5.4 L V
+  Power: 326 hp, 708 horsepower, 330 kW
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+
+- Volvo ES90
+  Engine: 5.4 L V
+  Power: 326 hp, 708 horsepower, 350 kW
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+
+
+2025:
+- Volvo XC90
+  Engine: v l
+  Power: 326 hp, 708 horsepower, 116 kW
+  Transmission: eight-speed
+  Drivetrain: all-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Acceleration: 0-100kmh in 5.2 seconds
+  Fuel Economy: 11.1 l/100 km, 25.5 mpg , combined for both models: 11.1 l/100 km (25
+
+- Volvo EX30
+
+
+2024:
+- Volvo EX90
+  Engine: electric V
+  Power: 326 hp, 708 horsepower, 111kW
+  Transmission: eight-speed
+  Drivetrain: all-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Fuel Economy: 11.1 l/100 km, 25.5 mpg , combined for both models: 11.1 l/100 km (25
+
+- Volvo EM90
+  Engine: 2.2 litre diesel engine
+  Power: 326 hp, 708 horsepower, 116 kW
+  Transmission: automatic transmission
+  Drivetrain: AWD
+
+
+2023:
+- Volvo XC40 Recharge
+  Engine: electric V
+  Power: 326 hp, 708 horsepower, 69kW
+  Drivetrain: all-wheel drive
+
+
+2022:
+- Volvo XC60
+
+- Volvo C40 Recharge
+  Engine: electric V
+  Power: 326 hp, 708 horsepower, 78kW
+  Drivetrain: all-wheel drive
+
+
+2021:
+- Volvo Recharge Concept
+  Engine: electric V
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2020:
+- Volvo XC90
+
+- Volvo XC40 Recharge
+
+- Volvo S90
+
+- Volvo V90
+  Engine: 5.4 L V
+  Power: 326 hp, 708 horsepower, 463 kW
+  Transmission: five-speed manual
+  Drivetrain: all-wheel drive
+  Fuel Economy: city of 796 lb-ft (1,079 Nm), city of 796 lb-ft (1,079 Nm)
+
+- Volvo V90 Cross Country
+  Engine: 5.4 L V
+  Power: 326 hp, 708 horsepower, 463 kW
+  Transmission: five-speed manual
+  Drivetrain: all-wheel drive
+  Fuel Economy: city of 796 lb-ft (1,079 Nm), city of 796 lb-ft (1,079 Nm)
+
+
+2019:
+- Volvo S60
+  Power: 326 hp, 708 horsepower, 340hp
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+
+- Volvo S60 T8 Polestar Engineered
+  Engine: electric V
+  Power: 326 hp, 708 horsepower, 390hp
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Fuel Economy: 4.5 l/100 km, 104.5mpg , consumption: 8
+
+- Volvo V60
+  Engine: electric V
+  Power: 326 hp, 708 horsepower, 340 hp
+  Transmission: eight-speed Steptronic
+  Drivetrain: all-wheel drive
+  Fuel Economy: 7.5 liters per 100 km, city below the high-opening tailgate can be expanded from 500 litres
+
+- Volvo V60 Cross Country
+  Engine: electric V
+  Power: 326 hp, 708 horsepower, 250 hp
+  Transmission: eight-speed Steptronic
+  Drivetrain: All-wheel drive
+  Fuel Economy: 7.5 liters per 100 km, city below the high-opening tailgate can be expanded from 500 litres
+
+
+2018:
+- Volvo XC40
+
+- Volvo XC60
+
+- Volvo XC60 Polestar
+  Engine: 2.0 litre four-cylinder
+  Power: 326 hp, 708 horsepower, 421 horsepower
+  Transmission: automatic transmission
+  Drivetrain: 4Matic
+  Acceleration: 0-60mph in 4.1 seconds
+  Fuel Economy: 2.1 l/100 km, 5.0 l/100 km, 54.3 mpg 
+
+- Volvo 360c Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2017:
+- Volvo S90
+
+- Volvo V90 Estate
+  Engine: 5.4 L V
+  Power: 326 hp, 708 horsepower, 410 hp
+  Transmission: five-speed manual
+  Drivetrain: all-wheel drive
+  Fuel Economy: city of 796 lb-ft (1,079 Nm), city of 796 lb-ft (1,079 Nm)
+
+- Volvo V90 Cross Country
+
+- Volvo V40
+  Engine: electric V
+  Power: 326 hp, 708 horsepower, 225 kW
+  Transmission: seven-speed
+  Drivetrain: four-wheel drive
+
+- Volvo V40 Cross Country
+  Engine: electric V
+  Power: 326 hp, 708 horsepower, 225 kW
+  Transmission: seven-speed
+  Drivetrain: four-wheel drive
+
+
+2016:
+- Volvo XC90 T8 Twin Engine
+  Engine: electric V
+  Power: 326 hp, 708 horsepower, 407 hp
+  Transmission: eight-speed
+  Drivetrain: all-wheel drive
+  Acceleration: 0-62mph in 5.6 seconds
+  Fuel Economy: 134.5mpg 
+
+- Volvo XC90 Polestar
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 421 hp
+  Transmission: eight-speed
+  Drivetrain: all-wheel drive
+  Acceleration: 0-100 km/h in 5.5 seconds
+  Fuel Economy: 2.1 l/100 km
+
+- Volvo S60 Cross Country
+  Power: 326 hp, 708 horsepower, 254 hp
+  Transmission: six-speed manual
+  Drivetrain: front-wheel drive
+  Fuel Economy: 4.2 l/100 km
+
+- Volvo V60 Cross Country
+
+- Volvo 40.2 Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Volvo 40.1 Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2015:
+- Volvo XC90
+
+
+2014:
+- Volvo XC60
+
+- Volvo S60
+
+- Volvo S80
+  Engine: 5.4 L V
+  Power: 326 hp, 708 horsepower, 115 hp
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+  Fuel Economy: 4.1 l/100 km, 4.1 l/100km, 4.2 l/100 km
+
+- Volvo V60
+
+- Volvo V60 Plug-in Hybrid
+  Power: 326 hp, 708 horsepower, 215 hp
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Fuel Economy: 1.8 l/100km, 4.0 l/100 km, 4.1 l/100 km
+
+- Volvo V70
+  Engine: 5.4 L V
+  Power: 326 hp, 708 horsepower, 115 hp
+  Transmission: five-speed manual
+  Drivetrain: all-wheel drive
+  Fuel Economy: 4.1 l/100 km, 4.1 l/100km, 4.2 l/100 km
+
+- Volvo XC70
+
+- Volvo Estate Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: AWD
+
+- Volvo XC Coupe Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2013:
+- Volvo V60 Plug-in Hybrid
+
+- Volvo V40
+
+- Volvo V40 Cross Country
+
+- Volvo Coupe Concept
+  Power: 326 hp, 708 horsepower, 400 hp
+  Drivetrain: quattro
+
+
+2012:
+- Volvo S60 Polestar Concept
+  Power: 326 hp, 708 horsepower, 508 hp
+  Drivetrain: all-wheel drive
+  Top Speed: Top speed: >300 km/hEngine Volvo T6 inline sic (B6304T4)508 hp @ 6500rpm575Nm @ 5500rpmMac rpm: 7100Modified cylinder head and comdustion chamdersModified inlet manifold and air intakeSpecial manufactured conrodsGarret 3171 turdoFerrita 3
+
+- Volvo XC60 Plug-in Hybrid Concept
+  Engine: gasoline v
+  Power: 326 hp, 708 horsepower, 350 horsepower
+  Transmission: eight-speed automatic
+  Drivetrain: four-wheel drive
+  Acceleration: 0-100 km/h in 6.1 seconds
+  Fuel Economy: 2.3 l/100 km, 100 mpg, 50 mpg
+
+
+2011:
+- Volvo XC90
+
+- Volvo V60
+
+- Volvo C30 BEV
+  Engine: engine: Electric engine 40/82KWPower output: Electric engine 82kW, 111 dhpAcceleration 0
+  Power: 326 hp, 708 horsepower, 24 kW
+  Transmission: seven-speed
+  Drivetrain: four-wheel drive
+  Weight: weight: 280 kgCardon diocide emissions (tailpipe): noneREAD MORE
+
+- Volvo C30 Polestar Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Volvo Universe Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Volvo You Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2010:
+- Volvo S80
+
+- Volvo S80L
+  Engine: 5.4 L V
+  Power: 326 hp, 708 horsepower, 285 hp
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+
+- Volvo C70
+  Power: 326 hp, 708 horsepower, 170 PS
+  Transmission: five-speed manual
+  Drivetrain: front-wheel drive
+  Acceleration: 0-60mph in 10.3 seconds
+  Fuel Economy: 6.0 l/100 km, 6.6 l/100 km, 8.9 l/100 km
+
+- Volvo C30
+
+- Volvo Air Motion Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+
+2009:
+- Volvo XC60
+
+- Volvo S60 Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: AWD
+
+
+2008:
+- Volvo S40
+  Engine: 2.0 litre petrol engines
+  Power: 326 hp, 708 horsepower, 145 PS
+  Transmission: five-speed manual
+  Drivetrain: all-wheel drive
+  Acceleration: 0-60 mph in 8.9 seconds
+  Fuel Economy: 38.2mpg, 57.6mpg , 32.5 mpg 
+
+- Volvo V70
+
+- Volvo XC70
+
+- Volvo V70 Police car
+  Engine: 5.4 L V
+  Power: 326 hp, 708 horsepower, 185 hp
+  Transmission: five-speed manual
+  Drivetrain: rear-wheel drive
+  Fuel Economy: city of 796 lb-ft (1,079 Nm), city of 796 lb-ft (1,079 Nm)
+
+- Volvo V50
+  Engine: engine: the range-topping 230 PS, 2
+  Power: 326 hp, 708 horsepower, 145 PS
+  Transmission: five-speed manual
+  Drivetrain: AWD
+  Dimensions: 4,689 mm in length
+  Weight: 2,000 kg
+  Acceleration: 0-60 mph in 9.0 seconds
+  Fuel Economy: 38.2mpg, 55.4mpg , 32.5mpg 
+
+
+2007:
+- Volvo V70
+
+- Volvo XC70
+
+- Volvo C30
+
+- Volvo Caresto V8 Speedster Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Volvo C30 Heico Concept
+  Engine: v l
+  Power: 326 hp, 708 horsepower, 300 horsepower
+  Acceleration: 0-100 km/h in 5.4 seconds
+
+- Volvo Heico C30 SEMA Concept
+  Engine: v l
+  Power: 326 hp, 708 horsepower, 300 horsepower
+
+- Volvo Heico S80 SEMA Concept
+  Power: 326 hp, 708 horsepower, 6 HP
+  Drivetrain: front-wheel drive
+
+- Volvo ReCharge Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Fuel Economy: 5.5 litres per 100 km, 1.9 l/100km, 124 mpg
+
+- Volvo S80 Heico Concept
+  Engine: v l
+  Power: 326 hp, 708 horsepower, 350 hp
+
+- Volvo XC60 Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Volvo XC70 Surf Rescue Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+
+2006:
+- Volvo XC90
+
+- Volvo S80
+
+- Volvo C70
+
+
+2005:
+- Volvo S60
+
+- Volvo V50
+
+- Volvo C30 Design Concept
+  Power: 326 hp, 708 horsepower, 260 horsepower
+  Top Speed: limited to 250 km/h
+  Acceleration: 0-100 km/h in 6 seconds
+
+- Volvo T6 Roadster Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: AWD
+
+- Volvo XC70 AT Concept
+  Power: 326 hp, 708 horsepower, 400 horsepower
+  Drivetrain: AWD
+
+
+2004:
+- Volvo S40
+
+- Volvo V70
+
+- Volvo XC70
+
+- Volvo Evolve S40 Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Volvo V50 SV Concept
+  Power: 326 hp, 708 horsepower, 300 horsepower
+  Transmission: manual transmission
+  Drivetrain: AWD
+
+- Volvo XC90 PUV Concept
+  Power: 326 hp, 708 horsepower, 650 horsepower
+
+- Volvo YCC Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Volvo 3CC Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2003:
+- Volvo S60 R
+  Power: 326 hp, 708 horsepower, 300 horsepower
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+  Top Speed: limited to 250 km/h
+  Fuel Economy: city of up to 1,300 liters (45
+
+- Volvo S80
+
+- Volvo V70 R
+  Engine: 2.5 liter in-line
+  Power: 326 hp, 708 horsepower, 300 horsepower
+  Transmission: five-speed manual
+  Drivetrain: all-wheel drive
+  Top Speed: limited to 250 km/h
+  Fuel Economy: city of 796 lb-ft (1,079 Nm), city of 796 lb-ft (1,079 Nm)
+
+- Volvo VCC Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: Quattro
+
+
+2002:
+- Volvo XC90
+
+- Volvo ACC 2 Concept
+  Engine: 7.5 L V
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2001:
+- Volvo S80
+
+- Volvo S40
+
+- Volvo V40
+
+- Volvo C70 Coupe
+  Engine: 6.8 liter V
+  Power: 326 hp, 708 horsepower, 236 horsepower
+  Transmission: automatic transmission
+  Drivetrain: rear-wheel drive
+  Weight: 1,707 kg
+  Top Speed: limited to 135mph
+
+- Volvo C70 Convertible
+  Power: 326 hp, 708 horsepower, 236 hp
+  Transmission: six-speed manual
+
+- Volvo ACC Concept
+  Power: 326 hp, 708 horsepower, 441kW
+
+- Volvo PCC 2 Concept
+  Power: 326 hp, 708 horsepower, 441kW
+
+- Volvo SCC Concept
+
+
+2000:
+- Volvo S60
+
+- Volvo PCC Concept
+
+
+1999:
+- Volvo V70 XC
+
+
+1997:
+- Volvo V70
+
+
+Unknown Year:
+- Volvo
+
+

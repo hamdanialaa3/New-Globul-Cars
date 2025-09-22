@@ -1,0 +1,20 @@
+Studiotorino Car Models and Generations:
+
+2008:
+- StudioTorino Maserati Cinqueporte
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- StudioTorino CoupeTorino
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2006:
+- StudioTorino RKcoupe
+  Power: 326 hp, 708 horsepower, 324 kW
+
+
+2005:
+- StudioTorino RKspyder
+  Power: 326 hp, 708 horsepower, 326 hp
+
+

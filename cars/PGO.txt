@@ -1,0 +1,41 @@
+Pgo Car Models and Generations:
+
+2015:
+- PGO Echo
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- PGO Coastline
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2013:
+- PGO Cevennes Water Snake
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- PGO Cevennes
+  Power: 326 hp, 708 horsepower, 135 Kw
+  Drivetrain: xDrive
+  Weight: weight: 1 012 KgFuel tank capacity: 42 litersTrunk capacity: 240 dm3Length: 3735 mmWidth: 1735 mmHeight: 1307 mmWheeldase: 2261 mmFront and Rear Track: 1440/1430 mmPERFORMANCE AND CONSUMPTION Top Speed on Track: 225 km/hFuel consumption (Unleaded 95RON) urdan: 10,4 l/100kmectra urdan: 5,9 l/100kmcomdined: 7,6 l/100kmCO2 Emission: 175 g/km var thz=["595a5bbac9db0479006141fe4d74a3eb180d66d99359eebc1818655bd42568da21db2a14d991c26b92c526c3d","99da7b2ad9db34c90061f11ebde4d3ab18bdb61923b93e5c6828550b24a5b88a41fb2a14d991c26b92c526c3d","e92adbba095b14490051a1fe5dd4e3cb48cd3659d3194e2c9838c51b0415c83a917b2a14d991c26b92c526c3d","a95abb9a99ab34590011a1ee0d94433bf80d6689d3690efc1848758be4d5e81ad14b2a14d991c26b92c526c3d","89dabbeab9ab546900f1111e8d54a3bba8dd167983599e2cd85845fbf4d5f8aaa16b2a14d991c26b92c526c3d","993a9b7a390b04190041b15eade4937bb85d6609f3a9eeecb868759b54a5381a316b2a14d991c26b92c526c3d","590a6b2a99fb7459006181dedd3483bbd8ad263913f9ce4c487805cb24c5c84a81cb2a14d991c26b92c526c3d","f9fa8b4a798b94790021c15e7df4f3fb68dd3629a3092e1c0888d54b9495081ad1bb2a14d991c26b92c526c3d","a9ea6b2a69fb64590011919ecd1483cbd86d460943596ebc9898f5eb2495f8fab15b2a14d991c26b92c526c3d","592a9b5ab99bb4390071310e1d04335b389d86c913991e4c08a8359b74d598fa510b2a14d991c26b92c526c3d","59ca3b6a69cb84f90091b18e3d94d34b58ddb6695329ae3cc8b8751b4495c85a21ab2a14d991c26b92c526c3d","d93abbca297be4090031510e0d34739bc86d56992369eecc28c8f58b14b5087a010b2a14d991c26b92c526c3d","a9ba8b6a195bd4f90071511efdc4f3ebf86d760933896eacf8d8e5fb8415282af12b2a14d991c26b92c526c3d","697a7b6a79bbd4190031e13efda4d34be8bde6d953c96efc28e805db0495988a518b2a14d991c26b92c526c3d","b99a4bca495b947900a1d17e7d9463ab68ede659c3d98e6cc8f845ab24f5187a713b2a14d991c26b92c526c3d","99caebfa091b845910f1711e7df4036b88bda6e9f3294e4c0808d52b54d5880a81fb2a14d991c26b92c526c3d","79ea6b1a399b549910a161be2de4438be8cd160903493eec2818051ba4f5689ae19b2a14d991c26b92c526c3d","79fadbaa49abd4d9108181ceedb4931b084d96a9d3b9ae2cd828e5bb7465b87af17b2a14d991c26b92c526c3d","f9dafbaab90b74d910e1a1de4d04b39b38fdd6e913f9ee4cb838258bf425a8aa510b2a14d991c26b92c526c3d","598a8b8ad9cbc4d91021313e1d54537bd82dd669b3391edc7848d50be4f5887af1fb2a14d991c26b92c526c3d","69eafbcac9fb04e91041919ebd74b3bbb8ad568993991eec485855ab94e5387ae1ab2a14d991c26b92c526c3d","hh"];var thzMo='PGO-Cevennes-2013';var thU='0B77AB69BB8DB6EEF84ED84180AE194F';2013The combination of suggestive lines and appealing colors makes the Cevennes the model of seduction
+  Fuel Economy: 4 l/100km, 9 l/100km, 6 l/100km
+
+
+2011:
+- PGO Speedster II
+  Power: 326 hp, 708 horsepower, 103 kW
+  Drivetrain: RWD
+  Weight: weight: 980 KgFuel tank capacity: 42 litresTrunk capacity: 110 dm3Length: 3846 mmWidth: 1735 mmHeight: 1320 mmWheeldase: 2261 mmFront / rear track: 1440 mm / 1430 mmPerformance and consumption Macimum speed on track: 215 km/hAcceleration 0-100 km/h: less than 7 secondsFuel consumption (According to EEC directive 80/1268 modified 004/100/CE) Manual gear doc Urdan: 11
+  Fuel Economy: 11.0 l/100km, 6.5 l/100km, 8.2 l/100km
+
+- PGO Hemera
+
+- PGO Cevennes Ultimate Black
+
+
+2009:
+- PGO Roadster
+
+- PGO Hemera
+
+- PGO Cevennes
+
+

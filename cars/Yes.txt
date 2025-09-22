@@ -1,0 +1,18 @@
+Yes Car Models and Generations:
+
+2006:
+- Yes Roadster 3.2
+  Power: 326 hp, 708 horsepower, 255 hp
+  Transmission: manual transmission
+
+
+2003:
+- Yes Roadster
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2001:
+- Yes Clubsport
+  Power: 326 hp, 708 horsepower, 326 hp
+
+

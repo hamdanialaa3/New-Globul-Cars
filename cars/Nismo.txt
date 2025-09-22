@@ -1,0 +1,49 @@
+Nismo Car Models and Generations:
+
+2009:
+- Nismo Nissan 370Z
+  Power: 326 hp, 708 horsepower, 350 hp
+  Transmission: manual transmission
+  Drivetrain: xDrive
+
+
+2007:
+- Nismo Nissan 350Z
+  Engine: v l
+  Power: 326 hp, 708 horsepower, 306 horsepower
+  Transmission: manual transmission
+
+
+2005:
+- Nismo Nissan Skyline R34 GTR Z Tune
+  Power: 326 hp, 708 horsepower, 160 hp
+  Drivetrain: rear-wheel drive
+
+- Nismo Nissan Frontier King Cab
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Nismo Nissan Frontier Crew Cab
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2004:
+- Nismo Police Nissan 350Z
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Nismo Nissan Sentra
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Nismo Nissan Altima S-Tune
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Nismo Nissan Altima R-Tune
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Nismo Nissan 350Z Drift Car
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Nismo Nissan 350Z
+
+- Nismo Nissan Titan Concept
+
+

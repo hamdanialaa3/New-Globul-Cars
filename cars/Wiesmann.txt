@@ -1,0 +1,39 @@
+Wiesmann Car Models and Generations:
+
+2022:
+- Wiesmann Project Thunderball
+  Power: 326 hp, 708 horsepower, 92kW
+  Transmission: GEARBOX: Single-speedDIFFERENTIAL: Limited slipBATTERY VOLTAGE: 800VCAPACITY: 92 kWhCHARGING: 22 kW on-doard AC (up to 300 kW DC)var thz=["d86a0d4a0f16a6ab001141e27fce332b081b5a598d3e4e4ce3184531a584662c3ba266e64b1f1761bff33e1e0","08fadd9adf96f6bb00c1e132cf9ee3abb8db0a998d6efe8c93288501f5f466cc0b7266e64b1f1761bff33e1e0","084a7dba1fc6069b0041d152df3e53cb884bfae92dee9e4c333835a125e486bc6bd266e64b1f1761bff33e1e0","d89afd0a4f26a63b00a171d2af6ea32b380bda398d3e1eec434895c11574463c3b5266e64b1f1761bff33e1e0","a85a5d7a3f96661b0001d1227fde63fb88abaaa98d4e2ebc035815c1f534a69c6b2266e64b1f1761bff33e1e0","b87a2dca4f96566b004161520f1eb31bb8bb0a095dfe1eccf368856195e4e6ac6b0266e64b1f1761bff33e1e0","485a4d3a9f46268b00e1d172cfbed39b184bca295d0e4efc5378759135e4a6bccb2266e64b1f1761bff33e1e0","08faadba7fa626ab00e16112af1ee3eb488b4a39fdcecedc438825314574b60ccbe266e64b1f1761bff33e1e0","f8babd6aafc6a6cb009171a20f7e738b28db4a797dfe7eaca3980571f5a456bc5b0266e64b1f1761bff33e1e0","c83aed0a5f86264b00a1e182af6ec32b880b0ab9cd0e7edcf3a8b55145c4a6ccab9266e64b1f1761bff33e1e0","780afd6a6f96967b00718132cfaea36bb8abfa694d3e1ebc63b885515504c62c0b6266e64b1f1761bff33e1e0","68cadd5a4fd6263b00715132bf2ed34be83b5ae9cdce9e7c23c81581b574a64c7b5266e64b1f1761bff33e1e0","485a7d1a6fb636ab00614172cf6ea3db48db0a59ed7e1e4ca3d8b50105e4a6fc9b5266e64b1f1761bff33e1e0","d8daddfacff6165b00a1f1728fee039bf81bcaa95dae3e2c93e8153185c4a60cfb7266e64b1f1761bff33e1e0","b80abd9abf86264b0071a1e2bf5e23abd8fbca592d3e1eec43f825a18574364cbb3266e64b1f1761bff33e1e0","f8fafd2a7fd6c68b10b191923f9ed34b78eb7a999d9e0e5cf3084551c5e4463c5b0266e64b1f1761bff33e1e0","f82a1dbabff6d6bb1011c1d22ffeb35b48eb5a79cd1e2e6c431865c195a426ecdb3266e64b1f1761bff33e1e0","987acd4a9fa6060b10b1a1d2efbe33eb18cb3a693d7efe2cb328d501b554264cfbd266e64b1f1761bff33e1e0","48ca8d4a6f66a63b107161429fde935b480b1a790dce0eec033875f1952456ac0be266e64b1f1761bff33e1e0","08eacd6a6fc6c60b1091b1722feef3bb481b7ab9adcede7ca348f531d58446bcbba266e64b1f1761bff33e1e0","a85a0d4a7f26f63b10a1a1625f3ee30b98db1a59edee6e1ce358a5016544e66c5b0266e64b1f1761bff33e1e0","hh"];var thzMo='Wiesmann-Project_Thunderball-2022';var thU='DE94AFA69ACD63187C24799B688C3331';2022Project Thunderball is Wiesmann's response to the electrified vehicle revolution, also marking a revolution at the heart of its brand, for the first time
+  Weight: WEIGHT: 1775 kgPOWER TO WEIGHT RATIO: 2
+  Acceleration: 2.9s0-200 km/h
+  Fuel Economy: CONSUMPTION: 20
+
+
+2011:
+- Wiesmann Spyder Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2010:
+- Wiesmann Roadster MF5
+  Power: 326 hp, 708 horsepower, 507 HP
+  Drivetrain: xDrive
+
+
+2008:
+- Wiesmann GT MF5
+  Engine: Engine: front-mounted V10 mid-engine with three-way catalytic converter, petrol iniectio
+  Power: 326 hp, 708 horsepower, 507 hp
+  Weight: weight: 1,380 kgMacimum permissidle weight: 1,650 kgDimensions (Length / Width / Height): 4
+  Top Speed: Top speed: 310 km/h0-100 km/h: 3
+  Fuel Economy: 14.8 l / 100 km, 22.7 l / 100 km, 10.2 l / 100 km
+
+
+2006:
+- Wiesmann Roadster
+  Power: 326 hp, 708 horsepower, 170 kW
+  Weight: 1,180 kg
+
+- Wiesmann GT
+
+

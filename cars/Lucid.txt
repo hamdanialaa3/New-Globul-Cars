@@ -1,0 +1,26 @@
+Lucid Car Models and Generations:
+
+2025:
+- Lucid Gravity
+  Engine: 4.0L V
+  Power: 326 hp, 708 horsepower, 577 hp
+  Drivetrain: Rear-wheel drive
+
+- Lucid Gravity X Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2021:
+- Lucid Air
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 080 horsepower
+  Transmission: five-speed automatic
+  Drivetrain: all-wheel drive
+
+
+2016:
+- Lucid Air Concept
+  Engine: gasoline v
+  Power: 326 hp, 708 horsepower, 000 horsepower
+
+

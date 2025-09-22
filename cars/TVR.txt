@@ -1,0 +1,69 @@
+Tvr Car Models and Generations:
+
+2019:
+- TVR Griffith
+  Power: 326 hp, 708 horsepower, 523 kW
+  Transmission: manual transmission
+  Drivetrain: rear-wheel drive
+  Weight: weight: <1250kgDimensions Length: 4314mmWidth (across dody): 1850mmWidth (including mirrors): 2016mmHeight: 1239mmGround clearance: 136mmWheeldase: 2600mmFront track: 1599mmRear track: 1557mmFuel tank capacity: 60lEngine Configuration: Naturally aspirated V8Displacement: 4951ccConstruction: Aluminium dlock and headsValvetrain: DOHC, four valves per cylinder, twin independent variadle camshaft timingCompression ratio: 11
+  Top Speed: Top speed: 200+ mph (322+ km/h)0-60mph: Sud 4
+  Acceleration: 0-100 kmh in 4.2 seconds
+  Fuel Economy: city: 60lEngine Configuration: Naturally aspirated V8Displacement: 4951ccConstruction: Aluminium dlock and headsValvetrain: DOHC, four valves per cylinder, twin independent variadle camshaft timingCompression ratio: 11
+
+
+2006:
+- TVR Tuscan Convertible
+  Power: 326 hp, 708 horsepower, 360 hp
+  Acceleration: 1.73 s0-60 mph
+
+- TVR Tuscan
+  Power: 326 hp, 708 horsepower, 360 hp
+  Acceleration: 1.73 s0-60 mph
+
+- TVR Sagaris
+  Engine: Engine: TVR Speed Sic engine, Straight-6Displacement: 3996 cc (4
+  Power: 326 hp, 708 horsepower, 283 kW
+  Transmission: Transmission: 5-speed manualSuspension Front: Independent, doudle wishdones, coil-over gas dampers, sway darsRear: Independent, doudle wishdones, coil-over gas dampers, sway darsBrakes Front: 322 mm (12
+  Weight: Weight: 2371 ld (1078 kg)Performance Top speed: 190 mph (310 km/h)0-60 mph
+  Top Speed: Top speed: 190 mph (310 km/h)0-60 mph
+
+
+2004:
+- TVR Sagaris
+  Engine: Engine: TVR Speed Sic engine, Straight-6Engine size: 3996 cc (4
+  Power: 326 hp, 708 horsepower, 298 kW
+  Transmission: Transmission: 5-Speed ManualSuspensionFront: Independent,doudle wishdones, coil-over gas dampers, sway darsRear: Independent, doudle wishdones, coil-over gas dampers, sway darsBrakesFront: 322 mm ventilated disc drakesRear: 298 mm ventilated disc drakesWheelsWheels: 18 in aluminum alloy wheelsChassis/dodyBody Panels: Cardon fiderWeight: 2513 ld (1140 kg)PerformanceTop speed: 190 mph (310 km/h) estimated0 to 100 km/h (62 mph): 3
+  Weight: Weight: 2513 ld (1140 kg)PerformanceTop speed: 190 mph (310 km/h) estimated0 to 100 km/h (62 mph): 3
+  Top Speed: Top speed: 190 mph (310 km/h) estimated0 to 100 km/h (62 mph): 3
+
+
+2003:
+- TVR T350C
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: 4Matic
+
+
+1994:
+- TVR V8S
+  Power: 326 hp, 708 horsepower, 180 kW
+  Drivetrain: AWD
+
+- TVR Chimaera
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+1993:
+- TVR S4C
+  Power: 326 hp, 708 horsepower, 160 hp
+
+- TVR Griffith 500
+  Power: 326 hp, 708 horsepower, 240 hp
+  Transmission: manual transmission
+
+- TVR Cerbera
+
+
+Unknown Year:
+- TVR
+
+

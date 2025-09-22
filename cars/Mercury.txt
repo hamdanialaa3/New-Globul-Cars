@@ -1,0 +1,83 @@
+Mercury Car Models and Generations:
+
+2010:
+- Mercury Milan Hybrid
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 155 horsepower
+
+- Mercury Milan
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 155 horsepower
+  Transmission: automatic transmission
+  Fuel Economy: 5 mpg 
+
+
+2008:
+- Mercury Sable
+  Power: 326 hp, 708 horsepower, 260 horsepower
+
+- Mercury Mariner
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: four-wheel drive
+
+
+2006:
+- Mercury Mountaineer
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Mercury Montego
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+
+- Mercury Milan Premier V6
+  Engine: hybrid v
+  Power: 326 hp, 708 horsepower, 221 hp
+  Transmission: five-speed manual
+
+- Mercury Milan
+
+- Mercury Mariner Hybrid
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2004:
+- Mercury Monterey Advance Trac
+  Engine: 4.2 L V
+  Power: 326 hp, 708 horsepower, 201 hp
+
+- Mercury Meta One Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2003:
+- Mercury Marauder
+  Power: 326 hp, 708 horsepower, 302 hp
+
+- Mercury Messenger Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: Quattro
+
+
+2002:
+- Mercury Marauder Convertible Concept
+  Engine: 7.5 L V
+  Power: 326 hp, 708 horsepower, 302 hp
+
+- Mercury Marauder Concept
+  Engine: 7.5 L V
+  Power: 326 hp, 708 horsepower, 302 hp
+
+
+2001:
+- Mercury Cougar Zn
+  Power: 326 hp, 708 horsepower, 130 horsepower
+  Drivetrain: front-wheel drive
+
+- Mercury Cougar C2
+
+
+1968:
+- Mercury Cougar by Ringbrothers
+
+

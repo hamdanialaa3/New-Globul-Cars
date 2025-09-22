@@ -1,0 +1,127 @@
+Tata Car Models and Generations:
+
+2025:
+- Tata Sierra
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Tata Curvv.ev
+  Power: 326 hp, 708 horsepower, 123 kW
+  Acceleration: 0-100km/h in 8.6 seconds
+
+- Tata Curvv
+  Power: 326 hp, 708 horsepower, 9 kW
+  Transmission: automatic transmission
+
+- Tata Avinya X Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+
+2024:
+- Tata Safari
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: xDrive
+
+- Tata Punch.ev
+  Engine: v L
+  Power: 326 hp, 708 horsepower, 25 kW
+
+- Tata Nexon.ev
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Tata Nexon
+  Power: 326 hp, 708 horsepower, 2KW
+
+- Tata Harrier
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2023:
+- Tata Sierra.ev Concept
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2022:
+- Tata Punch
+
+- Tata Curvv Concept
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Tata Avinya Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2020:
+- Tata Altroz
+  Power: 326 hp, 708 horsepower, 75kW
+  Drivetrain: xDrive
+
+- Tata Sierra Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Tata HBX Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2019:
+- Tata H2X Concept
+  Power: 326 hp, 708 horsepower, 350 kW
+  Drivetrain: quattro
+
+- Tata Buzzard Concept
+  Power: 326 hp, 708 horsepower, 350 kW
+  Drivetrain: quattro
+
+- Tata Altroz EV Concept
+  Power: 326 hp, 708 horsepower, 350 kW
+  Drivetrain: quattro
+
+
+2018:
+- Tata H5X Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Tata EVision Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Tata 45X Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2015:
+- Tata Hexa Concept
+  Engine: 2.2 litre V
+  Power: 326 hp, 708 horsepower, 115 kW
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+
+- Tata Bolt Sport Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+
+2014:
+- Tata Nexon Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 110 PS
+  Drivetrain: rear-wheel drive
+  Fuel Economy: 5.68 l/100km
+
+- Tata ConnectNext Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: automatic transmission
+
+
+2012:
+- Tata Megapixel Concept
+
+
+2011:
+- Tata Pixel Concept
+
+

@@ -78,5 +78,31 @@
   },
   "dataconnect": {
     "source": "dataconnect"
+  },
+  "extensions": {
+    "firestore-bigquery-export": {
+      "params": {
+        "collectionPath": "cars",
+        "dataset": "globul_cars_analytics",
+        "table": "cars",
+        "location": "europe-west3"
+      }
+    },
+    "firestore-bigquery-export-service-leads": {
+      "params": {
+        "collectionPath": "serviceLeads",
+        "dataset": "globul_cars_analytics",
+        "table": "service_leads",
+        "location": "europe-west3"
+      }
+    },
+    "firestore-bigquery-export-direct-sales": {
+      "params": {
+        "collectionPath": "directSaleRequests",
+        "dataset": "globul_cars_analytics",
+        "table": "direct_sale_requests",
+        "location": "europe-west3"
+      }
+    }
   }
 }

@@ -1,0 +1,53 @@
+Kleemann Car Models and Generations:
+
+2007:
+- Kleemann GTK Concept
+  Power: 326 hp, 708 horsepower, 540 HP
+
+
+2005:
+- Kleemann Mercedes-Benz SLK 55K S8
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Kleemann Mercedes-Benz SLK 20K
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: 4Matic
+
+- Kleemann Mercedes-Benz E 50K CC
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Kleemann Mercedes-Benz C 20K
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Kleemann Mercedes-Benz CLS 50K S8
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+
+2004:
+- Kleemann Mercedes-Benz S 60
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Kleemann Mercedes-Benz SL 50K S8
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Kleemann Mercedes-Benz E 55 K3
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: RWD
+
+- Kleemann Mercedes-Benz C 55K S8
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Kleemann Mercedes-Benz CL 60
+
+- Kleemann Mercedes-Benz CLK 50K
+
+
+2003:
+- Kleemann Mercedes-Benz SL Xtreme
+
+
+2001:
+- Kleemann Mercedes-Benz CLK 55K
+
+

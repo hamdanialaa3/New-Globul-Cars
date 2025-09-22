@@ -1,0 +1,462 @@
+Vauxhall Car Models and Generations:
+
+2023:
+- Vauxhall Grandland GSe
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 300PS
+  Drivetrain: All-wheel drive
+  Fuel Economy: 217.3mpg
+
+- Vauxhall Astra Sports Tourer GSe
+  Power: 326 hp, 708 horsepower, 180PS
+  Transmission: seven-speed
+  Drivetrain: All-wheel drive
+  Dimensions: 4,689 mm in length
+  Weight: 2,000 kg
+
+- Vauxhall Astra GSe
+  Power: 326 hp, 708 horsepower, 225PS
+  Transmission: automatic gearbox
+  Drivetrain: All-wheel drive
+  Top Speed: limited to 250 kmh
+  Fuel Economy: 6.7 l per 100 km, 6.8 l per 100 km
+
+
+2022:
+- Vauxhall Grandland
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 180PS
+  Transmission: eight-speed automatic
+  Drivetrain: All-wheel drive
+  Acceleration: 0-60mph in 8.9 seconds
+  Fuel Economy: 192mpg , 45.6mpg, 54.3mpg
+
+- Vauxhall Astra Sports Tourer
+  Engine: diesel v
+  Power: 326 hp, 708 horsepower, 180hp
+  Transmission: eight-speed automatic
+  Drivetrain: All-wheel drive
+  Dimensions: 4,689 mm in length
+  Weight: 2,000 kg
+
+- Vauxhall Astra
+
+
+2021:
+- Vauxhall Mokka
+  Engine: electric V
+  Power: 326 hp, 708 horsepower, 100hp
+  Transmission: eight-speed automatic
+  Drivetrain: All-wheel drive
+  Fuel Economy: 6mpg , 51.4mpg , 4mpg 
+
+
+2020:
+- Vauxhall Astra
+
+- Vauxhall Corsa
+  Engine: v 3.0 liter
+  Power: 326 hp, 708 horsepower, 75PS
+  Transmission: eight-speed automatic
+  Drivetrain: front-wheel drive
+  Dimensions: 3,997 mm in length
+  Weight: 1,280 kg
+  Acceleration: 0-60mph in 12.4 seconds
+  Fuel Economy: 47.8mpg , 53.3mpg , 47.9mpg 
+
+- Vauxhall Corsa-e
+  Engine: v 3.0 liter
+  Power: 326 hp, 708 horsepower, 136hp
+  Transmission: seven-speed
+  Drivetrain: front-wheel drive
+  Dimensions: 3,997 mm in length
+
+
+2018:
+- Vauxhall Grandland X
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 133 kW
+  Transmission: automatic transmission
+  Drivetrain: All-wheel drive
+
+- Vauxhall Crossland X
+  Power: 326 hp, 708 horsepower, 81PS
+  Transmission: five-speed manual
+  Drivetrain: All-wheel drive
+  Fuel Economy: 54.3mpg , 58.9mpg , 57.3mpg 
+
+- Vauxhall VXR8 GTS-R
+  Engine: V 6.0 L
+  Power: 326 hp, 708 horsepower, 595PS
+  Transmission: six-speed automatic
+
+- Vauxhall Insignia Sports Tourer
+  Power: 326 hp, 708 horsepower, 188 kW
+  Transmission: eight-speed automatic
+  Drivetrain: all-wheel drive
+  Fuel Economy: city that has increased to 1,665 litres, 135 litres, more than the outgoing model, city has increased further too, reaching 1,665 litres when the rear seats are folded down - 135 litres more than the outgoing model, city of up to 565 litres when loaded up to the rear seat backrest
+
+- Vauxhall Insignia Country Tourer
+  Power: 326 hp, 708 horsepower, 188 kW
+  Transmission: eight-speed automatic
+  Drivetrain: all-wheel drive
+  Fuel Economy: city of up to 565 litres when loaded up to the rear seat backrest, city has increased by 30 litres over the predecessor
+
+- Vauxhall GT X Experimental Concept
+  Power: 326 hp, 708 horsepower, 50kW
+
+
+2017:
+- Vauxhall Mokka X
+  Power: 326 hp, 708 horsepower, 152PS
+  Transmission: five-speed transmission
+  Drivetrain: all-wheel drive
+  Fuel Economy: 47.1mpg , 64.2mpg, 76.3mpg
+
+- Vauxhall Insignia Grand Sport
+  Engine: 20014.0 L V
+  Power: 326 hp, 708 horsepower, 110PS
+  Transmission: eight-speed automatic
+  Drivetrain: all-wheel drive
+  Fuel Economy: 37.7mpg, 57.6mpg, 47.6mpg
+
+
+2016:
+- Vauxhall Astra Sports Tourer
+
+- Vauxhall Astra
+
+- Vauxhall Corsa VXR
+  Engine: v 3.0 liter
+  Power: 326 hp, 708 horsepower, 205PS
+  Transmission: manual transmission
+  Drivetrain: front-wheel drive
+  Weight: 1,280 kg
+  Acceleration: 0-60mph in 6.5 seconds
+  Fuel Economy: 37.7mpg , 40 mpg
+
+
+2015:
+- Vauxhall Corsa
+
+- Vauxhall CorsaVan
+  Engine: v 3.0 liter
+  Power: 326 hp, 708 horsepower, 95PS
+  Transmission: seven-speed
+  Drivetrain: front-wheel drive
+  Dimensions: 3,997 mm in length
+  Weight: 1,280 kg
+  Fuel Economy: 85.6mpg , 40 mpg, CITY AND MODEL VARIANTSThe new Corsavan has a class-leading payload, up dy 21kg versus the outgoing model to 571kg, and a flat loading capacity of 920 litres
+
+- Vauxhall Viva
+  Power: 326 hp, 708 horsepower, 75PS
+  Transmission: five-speed transmission
+  Drivetrain: rear-wheel drive
+  Fuel Economy: 3.8 L/100 km, 65.7mpg , 61.4 mpg 
+
+- Vauxhall Adam Rocks Air
+  Power: 326 hp, 708 horsepower, 115PS
+  Transmission: five-speed manual
+  Drivetrain: rear-wheel drive
+  Acceleration: 0-60mph in 14.9 seconds
+  Fuel Economy: 3.8 L/100 km, 55.4mpg , 53.3mpg 
+
+
+2014:
+- Vauxhall Insignia
+
+- Vauxhall VXR8
+
+- Vauxhall Insignia Sports Tourer
+
+- Vauxhall Insignia Country Tourer
+
+- Vauxhall Meriva
+  Power: 326 hp, 708 horsepower, 136PS
+  Transmission: automatic transmission
+  Drivetrain: All-wheel drive
+  Fuel Economy: 4.1 litres per 100 km, 64.2mpg , 47.1mpg 
+
+
+2013:
+- Vauxhall Mokka
+
+- Vauxhall VXR8 Tourer
+  Engine: 5.4 L V
+  Power: 326 hp, 708 horsepower, 431PS
+  Transmission: Manual Gearbox
+  Drivetrain: all-wheel drive
+  Fuel Economy: city of 796 lb-ft (1,079 Nm), city of 796 lb-ft (1,079 Nm)
+
+- Vauxhall Cascada
+  Power: 326 hp, 708 horsepower, 325ps
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+  Fuel Economy: 44.8mpg , 54.3mpg , 39.2mpg 
+
+- Vauxhall Astra VXR
+  Power: 326 hp, 708 horsepower, 280PS
+  Transmission: six-speed manual
+  Drivetrain: All-wheel drive
+  Top Speed: limited to 250 kmh
+  Fuel Economy: 6.7 l per 100 km, 6.8 l per 100 km, 34.9mpg
+
+- Vauxhall Adam
+
+
+2012:
+- Vauxhall Ampera
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 325 horsepower
+  Transmission: six-speed manual
+  Drivetrain: All-wheel drive
+
+- Vauxhall Astra GTC
+  Engine: Hybrid
+
+
+
+
+ 
+
+
+
+V
+  Power: 326 hp, 708 horsepower, 325PS
+  Transmission: six-speed manual
+  Drivetrain: front-wheel drive
+  Top Speed: limited to 250 kmh
+  Acceleration: 0-60mph in 7.8 seconds
+  Fuel Economy: 62.8mpg , 58.9mpg 
+
+- Vauxhall Zafira Tourer
+  Power: 326 hp, 708 horsepower, 110PS
+  Transmission: five-speed manual
+
+- Vauxhall VXR Maloo
+  Power: 326 hp, 708 horsepower, 431PS
+  Transmission: manual transmission
+  Acceleration: 0-60mph in 4.9 seconds
+
+
+2011:
+- Vauxhall Antara
+  Engine: engine: one of the most efficient in its classThe 2
+  Power: 326 hp, 708 horsepower, 163PS
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+  Dimensions: height: 1,717 mm
+  Weight: 1,500kg
+  Fuel Economy: 44.8mpg, 42.8mpg , 44.8mpg
+
+- Vauxhall VXR8
+
+- Vauxhall Astra Sports Tourer
+
+- Vauxhall Corsa
+
+- Vauxhall Corsa VXR Nurburgring Edition
+  Engine: v 3.0 liter
+  Power: 326 hp, 708 horsepower, 205PS
+  Transmission: manual transmission
+  Drivetrain: front-wheel drive
+  Dimensions: 3,997 mm in length
+  Fuel Economy: 40 mpg
+
+- Vauxhall Meriva
+
+- Vauxhall Zafira Tourer Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2010:
+- Vauxhall Insignia VXR
+  Engine: 20014.0 L V
+  Power: 326 hp, 708 horsepower, 325 horsepower
+  Drivetrain: all-wheel drive
+  Acceleration: 0-60mph in 5.8 seconds
+
+- Vauxhall Insignia Sports Tourer
+
+- Vauxhall Insignia VXR Sports Tourer
+  Power: 326 hp, 708 horsepower, 325PS
+  Drivetrain: all-wheel drive
+  Fuel Economy: city of up to 565 litres when loaded up to the rear seat backrest
+
+- Vauxhall Astra
+
+- Vauxhall GTC Paris Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+
+2009:
+- Vauxhall Insignia
+
+
+2008:
+- Vauxhall Corsa VXR
+
+
+2007:
+- Vauxhall Antara
+
+- Vauxhall VXR8
+
+- Vauxhall Corsa 5-door
+  Engine: v 3.0 liter
+  Power: 326 hp, 708 horsepower, 133 kW
+  Transmission: seven-speed
+  Drivetrain: front-wheel drive
+  Weight: 1,280 kg
+  Fuel Economy: 40 mpg
+
+- Vauxhall Corsa 3-door
+  Engine: v 3.0 liter
+  Power: 326 hp, 708 horsepower, 133 kW
+  Transmission: seven-speed
+  Drivetrain: front-wheel drive
+  Weight: 1,280 kg
+  Fuel Economy: 40 mpg
+
+
+2006:
+- Vauxhall Vectra
+  Engine: 3.2 L V
+  Power: 326 hp, 708 horsepower, 122 PS
+  Drivetrain: all-wheel drive
+
+- Vauxhall Vectra VXR
+  Engine: V 6.0 L
+  Power: 326 hp, 708 horsepower, 90 kW
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+
+- Vauxhall Vectra Estate
+  Engine: 3.2 litre V
+  Power: 326 hp, 708 horsepower, 90 kW
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+
+- Vauxhall Vectra VXR Estate
+  Engine: 3.2 litre V
+  Power: 326 hp, 708 horsepower, 90 kW
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+  Fuel Economy: city of up to 565 litres when loaded up to the rear seat backrest
+
+- Vauxhall Astra TwinTop
+  Engine: 2.2 L v
+  Power: 326 hp, 708 horsepower, 220 hp
+  Drivetrain: rear-wheel drive
+
+- Vauxhall Signum
+  Power: 326 hp, 708 horsepower, 136hp
+
+- Vauxhall Meriva
+
+- Vauxhall Meriva VXR
+  Power: 326 hp, 708 horsepower, 133 kW
+
+
+2005:
+- Vauxhall Astra Estate
+  Power: 326 hp, 708 horsepower, 188 kW
+  Transmission: manual transmission
+  Drivetrain: All-wheel drive
+  Dimensions: 4,689 mm in length
+  Weight: 2,000 kg
+
+- Vauxhall Monaro VXR
+  Engine: V 6.0 L
+  Power: 326 hp, 708 horsepower, 297 kW
+  Drivetrain: four-wheel drive
+  Top Speed: Top speed: 222 km/h (138 mph) Length: 4755 mm
+  Fuel Economy: 9.9 l/100 km, 28.5 mpg , combined: 9.9 l/100 km [28
+
+- Vauxhall Tigra
+  Power: 326 hp, 708 horsepower, 90 PS
+  Weight: 1,587 lb
+
+- Vauxhall VX220 Turbo
+  Power: 326 hp, 708 horsepower, 147 hp
+  Weight: 1,587 lb
+
+- Vauxhall Astra Sport Hatch
+  Power: 326 hp, 708 horsepower, 136hp
+  Transmission: automatic gearbox
+  Drivetrain: front-wheel drive
+  Top Speed: limited to 250 kmh
+  Fuel Economy: 6.7 l per 100 km, 6.8 l per 100 km
+
+- Vauxhall Astra 5-door
+  Power: 326 hp, 708 horsepower, 136hp
+  Transmission: automatic gearbox
+  Drivetrain: front-wheel drive
+  Top Speed: limited to 250 kmh
+  Fuel Economy: 6.7 l per 100 km, 6.8 l per 100 km
+
+- Vauxhall Astra VXR
+
+- Vauxhall Corsa
+
+- Vauxhall Signum
+
+- Vauxhall Meriva
+
+- Vauxhall Zafira
+
+- Vauxhall Zafira VXR
+  Power: 326 hp, 708 horsepower, 177 kW
+  Drivetrain: All-wheel drive
+
+
+2004:
+- Vauxhall Agila
+  Engine: 1.2 L gasoline engines were smaller than the European-market
+  Power: 326 hp, 708 horsepower, 136hp
+  Transmission: manual gearbox
+  Drivetrain: rear-wheel drive
+  Fuel Economy: 3.8 L/100 km, 61.4 mpg 
+
+- Vauxhall Zafira
+
+
+2003:
+- Vauxhall VX Lightning Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: Quattro
+
+
+2001:
+- Vauxhall Omega
+  Engine: 2.0 L petrol and a
+  Power: 326 hp, 708 horsepower, 188 kW
+  Transmission: six-speed automatic
+  Drivetrain: rear-wheel drive
+
+- Vauxhall Astra Convertible
+  Engine: 2.2 L v
+  Power: 326 hp, 708 horsepower, 66 kW
+
+
+2000:
+- Vauxhall Frontera
+  Power: 326 hp, 708 horsepower, 707 horsepower
+  Drivetrain: all-wheel drive
+
+- Vauxhall Astra Coupe
+
+- Vauxhall Agila
+
+
+1999:
+- Vauxhall Tigra
+
+- Vauxhall Corsa
+
+
+Unknown Year:
+- Vauxhall
+
+

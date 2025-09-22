@@ -60,6 +60,10 @@ const CarSearchSystem: React.FC<CarSearchSystemProps> = ({
     model: '',
     generation: '',
     bodyStyle: '',
+    fuelType: '',
+    registeredInBulgaria: '',
+    environmentalTaxPaid: '',
+    technicalInspectionDate: '',
     ...initialFilters
   });
 

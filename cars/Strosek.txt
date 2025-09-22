@@ -1,0 +1,16 @@
+Strosek Car Models and Generations:
+
+2006:
+- Strosek Porsche Cayman
+  Power: 326 hp, 708 horsepower, 380 hp
+
+- Strosek Nissan 350Z
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: Quattro
+
+
+2005:
+- Strosek Porsche Cayenne
+  Power: 326 hp, 708 horsepower, 326 hp
+
+

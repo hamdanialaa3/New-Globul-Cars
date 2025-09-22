@@ -32,6 +32,34 @@ Want to change the entire look of your app? It's super easy!
 
 ---
 
+## 🚀 Quick Start
+
+### Development Mode
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm start
+```
+
+### Production Build & Serve
+```bash
+# Build for production
+npm run build
+
+# Serve the built app (recommended)
+npx serve -s build -l 3001
+
+# Or use Python server (basic)
+python -m http.server 3001 --directory build
+```
+
+### Quick Launch (Windows)
+Double-click `Start-App.bat` to automatically build and serve the app.
+
+---
+
 ## �🌟 Overview
 Globul Cars is a modern, progressive web application for buying and selling cars in Bulgaria. Built with React, TypeScript, and Firebase, featuring real-time messaging, push notifications, and full PWA capabilities.
 

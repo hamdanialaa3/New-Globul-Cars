@@ -1,0 +1,100 @@
+Techart Car Models and Generations:
+
+2012:
+- TechArt Porsche 911 Carrera
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2011:
+- TechArt Porsche Panamera GrandGT
+  Power: 326 hp, 708 horsepower, 368 kW
+
+
+2010:
+- TechArt Porsche Panamera Black Edition
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- TechArt Porsche Panamera
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- TechArt Porsche Cayman
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- TechArt Porsche Boxster
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- TechArt Porsche 911 Turbo Aerokit II
+  Power: 326 hp, 708 horsepower, 120 hp
+  Drivetrain: 4Matic
+
+- TechArt Porsche 911 Turbo
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- TechArt Concept One
+  Power: 326 hp, 708 horsepower, 150 hp
+  Drivetrain: quattro
+
+
+2009:
+- TechArt Porsche Cayenne
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- TechArt Porsche 911 Cabrio Aerokit I
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- TechArt Porsche 911 Aerokit I
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2008:
+- TechArt Porsche Cayenne Magnum
+  Power: 326 hp, 708 horsepower, 620 hp
+
+- TechArt Porsche Cayenne
+
+- TechArt Porsche 911 Turbo GTstreet R
+  Power: 326 hp, 708 horsepower, 485 kW
+  Transmission: manual transmission
+
+- TechArt Porsche 911 Turbo GTstreet Cabrio
+  Power: 326 hp, 708 horsepower, 463 kW
+
+- TechArt Porsche 911 GT2 GTstreet RS
+  Power: 326 hp, 708 horsepower, 700 PS
+
+
+2007:
+- TechArt Porsche Carrera GT
+  Power: 326 hp, 708 horsepower, 612 hp
+  Drivetrain: quattro
+
+- TechArt Porsche 911 Turbo GTstreet
+
+- TechArt Porsche 911 Turbo Cabriolet
+  Power: 326 hp, 708 horsepower, 630 hp
+  Transmission: manual transmission
+  Drivetrain: quattro
+
+- TechArt Porsche 911 Turbo
+
+
+2006:
+- TechArt Porsche Cayman S
+  Power: 326 hp, 708 horsepower, 310 hp
+
+- TechArt Porsche Cayman
+
+- TechArt Porsche 911 Turbo 997
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- TechArt Porsche 911 Carrera S Police Car
+
+- TechArt Porsche 911 Carrera 4 997
+
+- TechArt GTsport
+
+
+2005:
+- TechArt Porsche Boxster
+
+

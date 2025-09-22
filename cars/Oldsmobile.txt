@@ -1,0 +1,113 @@
+Oldsmobile Car Models and Generations:
+
+2003:
+- Oldsmobile Alero
+  Engine: 3.5L V
+  Power: 326 hp, 708 horsepower, 170 hp
+
+
+2002:
+- Oldsmobile Silhouette
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: FWD
+
+- Oldsmobile Intrigue
+  Engine: V 3.8 L
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Oldsmobile Bravada Indy Pace Car
+  Engine: 4.3 L V
+  Power: 326 hp, 708 horsepower, 160 hp
+  Drivetrain: all-wheel drive
+  Fuel Economy: 22 mpg, 21 mpg, 21 mpg
+
+- Oldsmobile Bravada
+  Engine: 4.3 L V
+  Power: 326 hp, 708 horsepower, 160 hp
+  Drivetrain: all-wheel drive
+  Fuel Economy: 22 mpg, 21 mpg, 21 mpg
+
+- Oldsmobile Aurora
+  Power: 326 hp, 708 horsepower, 215 hp
+
+- Oldsmobile Alero GL
+  Engine: 3.5L V
+  Power: 326 hp, 708 horsepower, 170 hp
+  Drivetrain: 4Matic
+
+
+2001:
+- Oldsmobile Aurora Indy Pace Car
+  Power: 326 hp, 708 horsepower, 215 hp
+  Drivetrain: RWD
+
+- Oldsmobile Aurora
+  Power: 326 hp, 708 horsepower, 215 hp
+
+- Oldsmobile Alero
+
+
+2000:
+- Oldsmobile Silhouette OSV
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: FWD
+
+- Oldsmobile Silhouette
+
+- Oldsmobile Intrigue OSV
+  Engine: V 3.8 L
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Oldsmobile Intrigue
+
+- Oldsmobile Bravada
+
+- Oldsmobile Alero OSV
+  Engine: 3.5L V
+  Power: 326 hp, 708 horsepower, 170 hp
+
+- Oldsmobile Alero
+
+- Oldsmobile Profile Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+1999:
+- Oldsmobile Recon Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+
+1997:
+- Oldsmobile Alero Concept
+  Engine: 3.5L V
+  Power: 326 hp, 708 horsepower, 170 hp
+  Drivetrain: quattro
+
+
+1988:
+- Oldsmobile Aerotech Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+
+1976:
+- Oldsmobile Cutlass S
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: manual transmission
+
+
+1971:
+- Oldsmobile 442
+  Power: 326 hp, 708 horsepower, 350 hp
+  Transmission: automatic transmission
+  Drivetrain: rear-wheel drive
+
+
+1961:
+- Oldsmobile Cutlass
+  Power: 326 hp, 708 horsepower, 155 hp
+  Transmission: three-speed manual
+  Weight: 1,270 kg
+
+

@@ -1,0 +1,42 @@
+Lynk_co Car Models and Generations:
+
+2025:
+- Lynk Co 02
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 250 kW
+  Drivetrain: all-wheel drive
+
+
+2019:
+- Lynk Co 03
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Lynk Co 02
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Lynk Co 01 Update
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Lynk Co 03 Cyan Concept
+  Engine: 1.6 litre V
+  Power: 326 hp, 708 horsepower, 528hp
+  Drivetrain: Front-wheel drive
+  Acceleration: 0-100 km/h in 4.4 s
+
+
+2018:
+- Lynk Co 01
+
+- Lynk Co 03 Cyan Racing Concept
+
+
+2017:
+- Lynk Co CCC Concept
+
+- Lynk Co 03 Concept
+
+
+2016:
+- Lynk Co 01 Concept
+
+
