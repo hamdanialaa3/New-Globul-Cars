@@ -1,7 +1,8 @@
 // src/hooks/useTranslation.tsx
 // Translation hook for Bulgarian/English support
 
-import React, { useContext, useState, useMemo, useCallback } from 'react';
+import * as React from 'react';
+import { useContext, useState, useMemo, useCallback } from 'react';
 import { translations, BulgarianLanguage } from '../locales/translations';
 
 interface TranslationContextType {

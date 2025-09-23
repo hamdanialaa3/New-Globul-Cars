@@ -146,7 +146,7 @@ export class ComprehensiveNotificationService {
       };
 
       // التحقق من تفضيلات المستخدم
-      const shouldSend = await this.shouldSendNotification(notification.userId, notification);
+      const shouldSend = await this.shouldSendNotification(notification.userId, notificationData);
       if (!shouldSend) {
         console.log(`تم تجاهل الإشعار للمستخدم ${notification.userId} حسب تفضيلاته`);
         return notificationId;

@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import SubscriptionManager from '../components/subscription/SubscriptionManager';
 import { useAuth } from '../hooks/useAuth';
-import { ProfessionalSettingsIcon } from '../components/CustomIcons';
+import { Settings } from 'lucide-react';
 
 const PageContainer = styled.div`
   min-height: 100vh;
@@ -92,7 +92,7 @@ const SubscriptionPage: React.FC = () => {
     <PageContainer>
       <Header>
         <HeaderContent>
-          <ProfessionalSettingsIcon />
+          <Settings />
           <div>
             <HeaderTitle>B2B Analytics Portal</HeaderTitle>
             <HeaderSubtitle>

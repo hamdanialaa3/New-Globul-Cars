@@ -1,0 +1,19 @@
+{
+  "totalCars": 8962,
+  "brands": 183,
+  "categories": 7,
+  "generations": 4,
+  "sizes": 3,
+  "engineSizes": 70,
+  "fuelTypes": 4,
+  "transmissions": 113,
+  "colors": 0,
+  "years": 118,
+  "generatedAt": "2025-09-22T22:26:19.208Z",
+  "currency": "EUR",
+  "country": "Bulgaria",
+  "languages": [
+    "bg",
+    "en"
+  ]
+}

@@ -1,7 +1,8 @@
 // src/components/DetailedSearch.tsx
 // مكون البحث التفصيلي المستوحى من mobile.de
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import * as React from 'react';
 import styled from 'styled-components';
 import { useTranslation } from '../hooks/useTranslation';
 import { getAllMakes, getModelsByMake, getGenerationsByModel, getBodyStylesByGeneration } from '../constants/carData_static';

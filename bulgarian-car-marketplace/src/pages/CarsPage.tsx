@@ -1,14 +1,17 @@
 // src/pages/CarsPage.tsx
 // Cars Page for Bulgarian Car Marketplace
 
-import React, { useState, useEffect, useCallback } from 'react';
+import * as React from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { useTranslation } from '../hooks/useTranslation';
-import { bulgarianCarService, BulgarianCar, CarSearchFilters } from '../firebase';
+import { bulgarianCarService, BulgarianCar, CarSearchFilters, FuelType, TransmissionType, CarCondition } from '../firebase';
 import { YEARS_OPTIONS } from '../constants/carMakes';
 import AdvancedSearch from '../components/AdvancedSearch';
-import CarSearchSystem from '../components/CarSearchSystem';
+// Import theme types
+import '../styles/theme';
+import CarSearchSystem from '../components/CarSearchSystemNew';
 import DetailedSearch from '../components/DetailedSearch';
 import LazyImage from '../components/LazyImage';
 
@@ -447,9 +450,9 @@ const CarsPage: React.FC = () => {
       bodyStyle: detailedFilters.bodyStyle || undefined,
       minPrice: detailedFilters.price.from ? parseInt(detailedFilters.price.from) : undefined,
       maxPrice: detailedFilters.price.to ? parseInt(detailedFilters.price.to) : undefined,
-      fuelType: detailedFilters.fuelType || undefined,
-      transmission: detailedFilters.transmission || undefined,
-      condition: detailedFilters.condition || undefined,
+      fuelType: detailedFilters.fuelType as FuelType || undefined,
+      transmission: detailedFilters.transmission as TransmissionType || undefined,
+      condition: detailedFilters.condition as CarCondition || undefined,
       minYear: detailedFilters.firstRegistration.from ? parseInt(detailedFilters.firstRegistration.from) : undefined,
       maxYear: detailedFilters.firstRegistration.to ? parseInt(detailedFilters.firstRegistration.to) : undefined,
       maxMileage: detailedFilters.mileage.to ? parseInt(detailedFilters.mileage.to) : undefined,
@@ -506,22 +509,66 @@ const CarsPage: React.FC = () => {
           <FiltersSection>
             {/* النظام الجديد للبحث الهرمي */}
             <CarSearchSystem
-              onSearch={(searchFilters) => {
-                // تحويل فلاتر النظام الجديد إلى فلاتر النظام القديم
-                const newFilters: CarSearchFilters = {
-                  ...filters,
-                  make: searchFilters.make || undefined,
-                  model: searchFilters.model || undefined,
-                  generation: searchFilters.generation || undefined,
-                  bodyStyle: searchFilters.bodyStyle || undefined
-                };
-                setFilters(newFilters);
-              }}
-              initialFilters={{
-                make: filters.make || '',
-                model: filters.model || '',
-                generation: filters.generation || '',
-                bodyStyle: filters.bodyStyle || ''
+              onSearchResults={(results) => {
+                // تحويل نتائج البحث من CarDataFromFile إلى BulgarianCar
+                const bulgarianCars: BulgarianCar[] = results.map((car, index) => ({
+                  id: `search-result-${index}`,
+                  ownerId: 'system',
+                  ownerName: 'System Search',
+                  ownerEmail: 'search@globulcars.com',
+
+                  // Basic Information
+                  make: car.brand,
+                  model: car.model,
+                  year: car.year,
+                  mileage: 0, // لا توجد معلومات في البيانات الأساسية
+                  price: typeof (car as any).price === 'string' ? ((car as any).price ? parseFloat((car as any).price.replace(/[^\d.]/g, '')) || 0 : 0) : (typeof (car as any).price === 'number' ? (car as any).price : 0),
+                  currency: 'EUR',
+
+                  // Technical Details
+                  fuelType: (car.fuelType as any) || 'petrol',
+                  transmission: (car.transmission as any) || 'manual',
+                  engineSize: typeof (car as any).engineSize === 'string' ? ((car as any).engineSize ? parseFloat((car as any).engineSize.replace(/[^\d.]/g, '')) || 0 : 0) : (typeof (car as any).engineSize === 'number' ? (car as any).engineSize : 0),
+                  power: typeof (car as any).power === 'string' ? ((car as any).power ? parseFloat((car as any).power.replace(/[^\d.]/g, '')) || 0 : 0) : (typeof (car as any).power === 'number' ? (car as any).power : 0),
+                  condition: (car.condition as any) || 'used',
+
+                  // Location
+                  location: {
+                    city: 'Sofia', // افتراضي
+                    region: 'Sofia',
+                    postalCode: '1000',
+                    country: 'Bulgaria'
+                  },
+
+                  // Description
+                  title: `${car.brand} ${car.model} ${car.year}`,
+                  description: `سيارة ${car.brand} ${car.model} من سنة ${car.year}. ${car.engineSize ? `محرك: ${car.engineSize}L` : ''} ${car.power ? `قوة: ${car.power}HP` : ''}`,
+                  features: [],
+                  color: car.color || 'Unknown',
+
+                  // Media
+                  images: [],
+                  mainImage: '',
+
+                  // Status
+                  isActive: true,
+                  isSold: false,
+                  isFeatured: false,
+                  views: 0,
+                  favorites: 0,
+
+                  // Bulgarian Specific
+                  hasBulgarianRegistration: true,
+                  vinNumber: `VIN${index}`,
+                  firstRegistrationDate: new Date(car.year, 0, 1),
+                  inspectionValidUntil: new Date(car.year + 2, 0, 1),
+
+                  // Metadata
+                  createdAt: new Date(),
+                  updatedAt: new Date()
+                }));
+
+                setCars(bulgarianCars);
               }}
             />
 

@@ -59,6 +59,7 @@
   },
   "devDependencies": {
     "@craco/craco": "^7.1.0",
+    "@types/react-icons": "^2.2.7",
     "babel-plugin-styled-components": "^2.1.4",
     "firebase-tools": "^13.0.0"
   },

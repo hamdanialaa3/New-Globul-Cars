@@ -1,0 +1,1052 @@
+حاليًا، لدي نظام بحث متطور للسيارات يشبه mobile.de، لكني لم أضف بعد جميع البيانات الكاملة للسيارات (الماركات، الموديلات، السنوات، إلخ). سأقوم بإنشاء بيانات شاملة ومفصلة للسيارات في بلغاريا لتغطية جميع الجوانب.
+
+سأضيف:
+
+قائمة كاملة بالماركات (علامات تجارية) الشائعة في بلغاريا.
+
+الموديلات الخاصة بكل ماركة.
+
+السنوات من 1990 إلى 2024.
+
+أنواع الوقود، ناقل الحركة، الألوان، إلخ.
+
+سأقوم بإنشاء ملف بيانات مفصل (car-data.json) يحتوي على معلومات شاملة عن السيارات، وملف ملخص (car-data-summary.json) لإحصائيات البيانات.
+
+كما سأقوم بتحسين خدمة البيانات لتدعم هذه البيانات الجديدة، وتوفير وظائف البحث والتصفية المتقدمة.
+
+دعني أبدأ بإنشاء البيانات الشاملة وتحسين الخدمة.
+
+نعم! إليك الاستكمال الكامل لأنواع السيارات والفئات والموديلات والسنوات مع بيانات حقيقية للسياق البلغاري:
+32. قاعدة البيانات الشاملة للسيارات في بلغاريا (CompleteCarDatabase.ts)
+typescript
+
+
+// أنواع السيارات الكاملة المتوفرة في بلغاريا
+
+توقف هنا انا افضل جمع المعلومات عن انواعي السيارات في المجلد المخصص سوف اشرح عنه :
+C:\Users\hamda\Desktop\New Globul Cars\cars\brand_directories
+هذا يحتوي على مجلدات كل مجلد مكتوب به :
+نوع سيارة او براند 
+فيه ملف كل ملف يحتوي : الفئات والموديلات 
+من خلال هذه المعلومات تستنتج وتستخرج المعلومات والتفاصيل هذا الزامي عليك 
+و هذا التلي هو نبذه عن بعض السيارت بشكل مختصر لكن في المجد اعلاه فيه كل التفاصيل التي تحتاجها انت :
+export const completeCarDatabase = {
+  // العلامات التجارية الرئيسية المتوفرة في بلغاريا
+  brands: {
+    german: [
+      'Volkswagen', 'Mercedes-Benz', 'BMW', 'Audi', 'Opel', 'Porsche',
+      'Smart', 'Mini', 'Ford Germany'
+    ],
+    japanese: [
+      'Toyota', 'Honda', 'Nissan', 'Mazda', 'Mitsubishi', 'Subaru',
+      'Suzuki', 'Lexus', 'Infiniti', 'Acura'
+    ],
+    korean: [
+      'Hyundai', 'Kia', 'SsangYong', 'Daewoo'
+    ],
+    french: [
+      'Renault', 'Peugeot', 'Citroën', 'DS Automobiles'
+    ],
+    italian: [
+      'Fiat', 'Alfa Romeo', 'Lancia', 'Ferrari', 'Lamborghini', 'Maserati'
+    ],
+    american: [
+      'Ford', 'Chevrolet', 'Jeep', 'Cadillac', 'Tesla', 'Chrysler', 'Dodge'
+    ],
+    swedish: [
+      'Volvo', 'Saab'
+    ],
+    czech: [
+      'Škoda'
+    ],
+    british: [
+      'Land Rover', 'Jaguar', 'Bentley', 'Rolls-Royce', 'Aston Martin', 'MG'
+    ],
+    other: [
+      'SEAT', 'Dacia', 'Lada', 'Trabant', 'Wartburg'
+    ]
+  },
+
+  // جميع الموديلات الشهيرة في بلغاريا
+  models: {
+    // Volkswagen
+    Volkswagen: [
+      'Golf', 'Passat', 'Polo', 'Tiguan', 'Touareg', 'Arteon', 'T-Roc',
+      'Touran', 'Sharan', 'Caddy', 'Transporter', 'Amarok', 'Up!', 'ID.3',
+      'ID.4', 'ID.5', 'Scirocco', 'Beetle', 'Jetta'
+    ],
+    
+    // Mercedes-Benz
+    'Mercedes-Benz': [
+      'C-Class', 'E-Class', 'S-Class', 'A-Class', 'B-Class', 'CLA', 'CLS',
+      'GLA', 'GLB', 'GLC', 'GLE', 'GLS', 'G-Class', 'V-Class', 'Sprinter',
+      'Vito', 'AMG GT', 'SL', 'CLK', 'ML'
+    ],
+
+    // BMW
+    BMW: [
+      '3 Series', '5 Series', '7 Series', '1 Series', '2 Series', '4 Series',
+      '6 Series', '8 Series', 'X1', 'X2', 'X3', 'X4', 'X5', 'X6', 'X7',
+      'Z4', 'i3', 'i4', 'i8', 'M3', 'M5', 'M8'
+    ],
+
+    // Audi
+    Audi: [
+      'A1', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8', 'Q2', 'Q3', 'Q5', 'Q7',
+      'Q8', 'TT', 'R8', 'e-tron', 'RS3', 'RS4', 'RS5', 'RS6', 'RS7'
+    ],
+
+    // Toyota
+    Toyota: [
+      'Corolla', 'Camry', 'Yaris', 'Auris', 'Avensis', 'RAV4', 'Highlander',
+      'Land Cruiser', 'Hilux', 'Prius', 'C-HR', 'Aygo', 'Supra', 'GT86'
+    ],
+
+    // Ford
+    Ford: [
+      'Focus', 'Fiesta', 'Mondeo', 'Kuga', 'EcoSport', 'Puma', 'S-Max',
+      'Galaxy', 'Mustang', 'Ranger', 'Transit', 'Tourneo'
+    ],
+
+    // Renault
+    Renault: [
+      'Clio', 'Megane', 'Scenic', 'Captur', 'Kadjar', 'Koleos', 'Talisman',
+      'Laguna', 'Twingo', 'Zoe', 'Kangoo', 'Master', 'Trafic'
+    ],
+
+    // Opel
+    Opel: [
+      'Astra', 'Corsa', 'Insignia', 'Zafira', 'Mokka', 'Crossland X',
+      'Grandland X', 'Combo', 'Vivaro', 'Movano', 'Adam', 'Karl'
+    ],
+
+    // Škoda
+    Škoda: [
+      'Octavia', 'Superb', 'Fabia', 'Rapid', 'Kamiq', 'Karoq', 'Kodiaq',
+      'Scala', 'Enyaq', 'Citigo', 'Yeti', 'Roomster'
+    ],
+
+    // Hyundai
+    Hyundai: [
+      'i10', 'i20', 'i30', 'Elantra', 'Sonata', 'Tucson', 'Santa Fe',
+      'Kona', 'Bayon', 'Ioniq', 'Ioniq 5', 'Ioniq 6', 'Genesis'
+    ],
+
+    // Kia
+    Kia: [
+      'Picanto', 'Rio', 'Ceed', 'ProCeed', 'Sportage', 'Sorento', 'Stonic',
+      'Xceed', 'Niro', 'EV6', 'Soul', 'Carnival', 'Stinger'
+    ],
+
+    // Nissan
+    Nissan: [
+      'Micra', 'Note', 'Almera', 'Qashqai', 'X-Trail', 'Juke', 'Leaf',
+      'Navara', 'Patrol', 'GT-R', '370Z', 'Pathfinder'
+    ],
+
+    // Peugeot
+    Peugeot: [
+      '108', '208', '308', '508', '2008', '3008', '5008', 'Rifter',
+      'Traveller', 'Partner', 'Expert', 'Boxer'
+    ],
+
+    // Citroën
+    Citroën: [
+      'C1', 'C3', 'C4', 'C5', 'Berlingo', 'Cactus', 'C4 Picasso',
+      'Grand C4 Picasso', 'Spacetourer', 'Jumpy', 'Jumper'
+    ],
+
+    // Honda
+    Honda: [
+      'Jazz', 'Civic', 'Accord', 'CR-V', 'HR-V', 'e', 'NSX'
+    ],
+
+    // Mazda
+    Mazda: [
+      '2', '3', '6', 'CX-3', 'CX-5', 'CX-9', 'MX-5', 'RX-8'
+    ],
+
+    // Volvo
+    Volvo: [
+      'S40', 'S60', 'S80', 'S90', 'V40', 'V60', 'V70', 'V90',
+      'XC40', 'XC60', 'XC70', 'XC90', 'C30', 'C70'
+    ],
+
+    // Dacia
+    Dacia: [
+      'Sandero', 'Logan', 'Duster', 'Lodgy', 'Dokker', 'Spring'
+    ],
+
+    // SEAT
+    SEAT: [
+      'Ibiza', 'Leon', 'Toledo', 'Ateca', 'Tarraco', 'Arona', 'Mii'
+    ],
+
+    // Fiat
+    Fiat: [
+      '500', 'Panda', 'Punto', 'Tipo', '500L', '500X', 'Doblo',
+      'Qubo', 'Ulysse', 'Ducato'
+    ],
+
+    // Jeep
+    Jeep: [
+      'Renegade', 'Compass', 'Cherokee', 'Grand Cherokee', 'Wrangler'
+    ],
+
+    // Land Rover
+    'Land Rover': [
+      'Defender', 'Discovery', 'Discovery Sport', 'Range Rover',
+      'Range Rover Sport', 'Range Rover Evoque', 'Range Rover Velar'
+    ]
+  },
+
+  // الأجيال والتحديثات الرئيسية
+  generations: {
+    // Volkswagen Golf
+    'Volkswagen Golf': [
+      'Golf I (1974-1983)',
+      'Golf II (1983-1992)',
+      'Golf III (1991-1997)',
+      'Golf IV (1997-2003)',
+      'Golf V (2003-2008)',
+      'Golf VI (2008-2012)',
+      'Golf VII (2012-2019)',
+      'Golf VIII (2019-الآن)'
+    ],
+
+    // BMW 3 Series
+    'BMW 3 Series': [
+      'E21 (1975-1983)',
+      'E30 (1982-1994)',
+      'E36 (1990-2000)',
+      'E46 (1998-2005)',
+      'E90 (2005-2013)',
+      'F30 (2012-2019)',
+      'G20 (2019-الآن)'
+    ],
+
+    // Mercedes-Benz C-Class
+    'Mercedes-Benz C-Class': [
+      'W202 (1993-2000)',
+      'W203 (2000-2007)',
+      'W204 (2007-2014)',
+      'W205 (2014-2021)',
+      'W206 (2021-الآن)'
+    ],
+
+    // Audi A4
+    'Audi A4': [
+      'B5 (1994-2001)',
+      'B6 (2000-2005)',
+      'B7 (2004-2008)',
+      'B8 (2007-2015)',
+      'B9 (2015-2023)',
+      'B10 (2023-الآن)'
+    ],
+
+    // Toyota Corolla
+    'Toyota Corolla': [
+      'E100 (1991-1997)',
+      'E110 (1995-2000)',
+      'E120 (2000-2006)',
+      'E140 (2006-2013)',
+      'E160 (2012-2018)',
+      'E210 (2018-الآن)'
+    ]
+  },
+
+  // الفئات والأنواع باللغتين البلغارية والإنجليزية
+  categories: {
+    vehicleTypes: [
+      { value: 'sedan', label: 'Седан', label_en: 'Sedan' },
+      { value: 'hatchback', label: 'Хечбек', label_en: 'Hatchback' },
+      { value: 'combi', label: 'Комби', label_en: 'Estate' },
+      { value: 'suv', label: 'Джип/SUV', label_en: 'SUV' },
+      { value: 'coupe', label: 'Купе', label_en: 'Coupe' },
+      { value: 'cabrio', label: 'Кабрио', label_en: 'Convertible' },
+      { value: 'minivan', label: 'Миниван', label_en: 'Minivan' },
+      { value: 'pickup', label: 'Пикап', label_en: 'Pickup' },
+      { value: 'van', label: 'Ван', label_en: 'Van' },
+      { value: 'limousine', label: 'Лимузина', label_en: 'Limousine' },
+      { value: 'sports', label: 'Спортен', label_en: 'Sports' }
+    ],
+
+    engineSizes: [
+      '0.6', '0.8', '1.0', '1.1', '1.2', '1.3', '1.4', '1.5', '1.6', '1.7',
+      '1.8', '1.9', '2.0', '2.2', '2.3', '2.4', '2.5', '2.7', '2.8', '3.0',
+      '3.2', '3.5', '3.6', '3.7', '4.0', '4.2', '4.4', '4.7', '5.0', '5.5',
+      '6.0', '6.2', '6.5', '7.0'
+    ],
+
+    fuelTypes: [
+      { value: 'petrol', label: 'Бензин', label_en: 'Petrol' },
+      { value: 'diesel', label: 'Дизел', label_en: 'Diesel' },
+      { value: 'electric', label: 'Електрически', label_en: 'Electric' },
+      { value: 'hybrid', label: 'Хибриден', label_en: 'Hybrid' },
+      { value: 'plug-in-hybrid', label: 'Plug-in хибрид', label_en: 'Plug-in Hybrid' },
+      { value: 'lpg', label: 'Пропан/Бутан', label_en: 'LPG' },
+      { value: 'cng', label: 'Природен газ', label_en: 'Natural Gas' }
+    ],
+
+    transmissions: [
+      { value: 'manual', label: 'Ръчна', label_en: 'Manual' },
+      { value: 'automatic', label: 'Автоматична', label_en: 'Automatic' },
+      { value: 'semi-automatic', label: 'Полу-автоматична', label_en: 'Semi-Automatic' },
+      { value: 'cvt', label: 'CVT', label_en: 'CVT' },
+      { value: 'dsg', label: 'DSG', label_en: 'DSG' }
+    ],
+
+    colors: {
+      basic: [
+        'черен', 'бял', 'сив', 'сребрист', 'червен', 'син', 'зелен',
+        'жълт', 'оранжев', 'кафяв', 'бежов', 'лилав', 'розов', 'златен'
+      ],
+      metallic: [
+        'сив металик', 'сребрист металик', 'черен металик', 'син металик',
+        'червен металик', 'зелен металик', 'кафяв металик', 'лилав металик'
+      ],
+      pearl: [
+        'бял перла', 'черен перла', 'сив перла', 'син перла'
+      ],
+      matte: [
+        'матов черен', 'матов сив', 'матов бял', 'матов син'
+      ]
+    },
+
+    conditions: [
+      { value: 'new', label: 'Нов', label_en: 'New' },
+      { value: 'used', label: 'Употребяван', label_en: 'Used' },
+      { value: 'damaged', label: 'Повреден', label_en: 'Damaged' },
+      { value: 'emergency', label: 'Авариен', label_en: 'Emergency' },
+      { value: 'for-parts', label: 'За части', label_en: 'For Parts' },
+      { value: 'classic', label: 'Класически', label_en: 'Classic' }
+    ],
+
+    sellerTypes: [
+      { value: 'dealer', label: 'Търговец', label_en: 'Dealer' },
+      { value: 'private', label: 'Частно лице', label_en: 'Private' },
+      { value: 'company', label: 'Фирма', label_en: 'Company' }
+    ],
+
+    // سنوات الإنتاج من 1970 إلى 2024
+    years: Array.from({ length: 55 }, (_, i) => 1970 + i).reverse(),
+
+    // مدن بلغاريا الرئيسية
+    cities: [
+      'София', 'Пловдив', 'Варна', 'Бургас', 'Русе', 'Стара Загора',
+      'Плевен', 'Сливен', 'Добрич', 'Шумен', 'Перник', 'Хасково',
+      'Ямбол', 'Пазарджик', 'Благоевград', 'Велико Търново',
+      'Видин', 'Монтана', 'Враца', 'Габрово', 'Смолян', 'Кърджали',
+      'Търговище', 'Ловеч', 'Силистра', 'Разград'
+    ],
+
+    // الأحجام
+    sizes: [
+      'Малък', 'Среден', 'Голям', 'Много голям'
+    ],
+
+    // أنواع الدفع
+    driveTypes: [
+      { value: 'fwd', label: 'Предно предаване', label_en: 'Front Wheel Drive' },
+      { value: 'rwd', label: 'Задно предаване', label_en: 'Rear Wheel Drive' },
+      { value: 'awd', label: '4x4/Цяло предаване', label_en: 'All Wheel Drive' },
+      { value: '4wd', label: '4x4', label_en: '4WD' }
+    ]
+  },
+
+  // الميزات والمواصفات
+  features: {
+    exterior: [
+      'Алуминиеви джанти', 'LED фарове', 'Ксенонови фарове', 'Мъгляви светлини',
+      'Панорамен покрив', 'Рейлинг за покрива', 'Тонирани стъкла',
+      'Сензор за дъжд', 'Сензор за светлина', 'Автоматични чистачки',
+      'Подгряване на стъклата', 'Задвижване на вратите', 'Ключ без изваждане',
+      'Система за контрол на налягането на гуми', 'Камера за backup',
+      'Парктроници', '360° камера', 'LED дневни светлини'
+    ],
+
+    interior: [
+      'Кожен салон', 'Нагреваеми седалки', 'Вентилирани седалки',
+      'Седалки с памет', 'Ел. регулиране на седалките', 'Климатроник',
+      'Двузонов климатроник', 'Автоматичен климатик', 'Навигационна система',
+      'Apple CarPlay', 'Android Auto', 'Bluetooth', 'CD/DVD плеър',
+      'Хард диск', 'Индукционно зареждане', 'USB портове',
+      'Круз контрол', 'Адаптивен круз контрол', 'Музикална система с високо качество',
+      'Дисплей в предното стъкло', 'Цифров табло', 'Слънчеви щори'
+    ],
+
+    safety: [
+      'ABS', 'ESP', 'Airbag водач', 'Airbag пътник', 'Странични airbag-ове',
+      'Завеси за глава', 'Контрол на стабилността', 'Контрол на спускане',
+      'Помощ при изкачване', 'Система за слепа зона', 'Автоматично спиране',
+      'Система за разпознаване на пешеходци', 'Система за поддържане на лентата',
+      'Автоматичен светлинен съветник', 'Автоматичен висок светлинен съветник',
+      'Камера за нощно виждане', 'Система за контрол на умората',
+      'ISOFIX', 'Детски ключалки'
+    ],
+
+    comfort: [
+      'Автоматичен паркинг', 'Старт-стоп система', 'Ключ без изваждане',
+      'Безключово палене', 'Ел. сгъваеми огледала', 'Подгряване на огледалата',
+      'Подгряване на волана', 'Масаж на седалките', 'Подлакътници',
+      'Подгряване на предния стъкло', 'Асистент за видимост', 'Регулиране на височината на фара'
+    ]
+  }
+};
+
+// بيانات محاكاة واقعية للسيارات في بلغاريا
+export const generateMockCarData = (count: number = 1000) => {
+  const brands = Object.values(completeCarDatabase.brands).flat();
+  const cities = completeCarDatabase.categories.cities;
+  const fuelTypes = completeCarDatabase.categories.fuelTypes;
+  const transmissions = completeCarDatabase.categories.transmissions;
+  const colors = [...completeCarDatabase.categories.colors.basic, ...completeCarDatabase.categories.colors.metallic];
+  const conditions = completeCarDatabase.categories.conditions;
+  
+  const mockData = [];
+  
+  for (let i = 0; i < count; i++) {
+    const brand = brands[Math.floor(Math.random() * brands.length)];
+    const models = completeCarDatabase.models[brand as keyof typeof completeCarDatabase.models] || ['Unknown'];
+    const model = models[Math.floor(Math.random() * models.length)];
+    
+    const car = {
+      id: `car_${i + 1}`,
+      brand,
+      model,
+      year: Math.floor(Math.random() * (2024 - 1990 + 1)) + 1990,
+      price: Math.floor(Math.random() * 50000) + 5000, // 5000-55000 €
+      currency: 'EUR',
+      mileage: Math.floor(Math.random() * 300000),
+      fuelType: fuelTypes[Math.floor(Math.random() * fuelTypes.length)].value,
+      transmission: transmissions[Math.floor(Math.random() * transmissions.length)].value,
+      engineSize: parseFloat((0.8 + Math.random() * 5).toFixed(1)),
+      power: Math.floor(Math.random() * 500) + 60,
+      powerUnit: 'hp' as const,
+      doors: [2, 3, 4, 5][Math.floor(Math.random() * 4)],
+      seats: [2, 4, 5, 7][Math.floor(Math.random() * 4)],
+      color: colors[Math.floor(Math.random() * colors.length)],
+      condition: conditions[Math.floor(Math.random() * conditions.length)].value,
+      location: cities[Math.floor(Math.random() * cities.length)],
+      description: `Добре поддържан ${brand} ${model} в отлично състояние. Пълна сервизна история.`,
+      features: [],
+      images: [],
+      sellerType: ['dealer', 'private'][Math.floor(Math.random() * 2)] as 'dealer' | 'private',
+      dealerRating: Math.random() > 0.5 ? parseFloat((3 + Math.random() * 2).toFixed(1)) : undefined,
+      createdAt: new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000).toISOString()
+    };
+    
+    // إضافة ميزات عشوائية
+    const featureCount = Math.floor(Math.random() * 10) + 5;
+    const allFeatures = Object.values(completeCarDatabase.features).flat();
+    for (let j = 0; j < featureCount; j++) {
+      const feature = allFeatures[Math.floor(Math.random() * allFeatures.length)];
+      if (!car.features.includes(feature)) {
+        car.features.push(feature);
+      }
+    }
+    
+    mockData.push(car);
+  }
+  
+  return mockData;
+};
+
+// خدمة البيانات المحدثة مع جميع الأنواع
+export class CompleteCarDataService {
+  private carData: any[] = [];
+  private database = completeCarDatabase;
+
+  async loadData(): Promise<void> {
+    try {
+      // محاولة تحميل البيانات الحقيقية أولاً
+      const response = await fetch('/data/car-data.json');
+      this.carData = await response.json();
+    } catch (error) {
+      // استخدام البيانات المحاكاة إذا فشل التحميل
+      console.log('Using mock data...');
+      this.carData = generateMockCarData(1500);
+    }
+  }
+
+  getAllBrands(): string[] {
+    return Object.values(this.database.brands).flat().sort();
+  }
+
+  getModelsByBrand(brand: string): string[] {
+    return this.database.models[brand as keyof typeof this.database.models] || [];
+  }
+
+  getGenerationsByModel(brand: string, model: string): string[] {
+    const key = `${brand} ${model}`;
+    return this.database.generations[key as keyof typeof this.database.generations] || [];
+  }
+
+  getAvailableOptions() {
+    return {
+      // أنواع المركبات
+      vehicleTypes: this.database.categories.vehicleTypes,
+      
+      // أحجام المحركات
+      engineSizes: this.database.categories.engineSizes,
+      
+      // أنواع الوقود
+      fuelTypes: this.database.categories.fuelTypes,
+      
+      // ناقل الحركة
+      transmissions: this.database.categories.transmissions,
+      
+      // الألوان
+      colors: this.database.categories.colors,
+      
+      // الحالات
+      conditions: this.database.categories.conditions,
+      
+      // أنواع البائعين
+      sellerTypes: this.database.categories.sellerTypes,
+      
+      // السنوات
+      years: this.database.categories.years,
+      
+      // المدن
+      cities: this.database.categories.cities,
+      
+      // الأحجام
+      sizes: this.database.categories.sizes,
+      
+      // أنواع الدفع
+      driveTypes: this.database.categories.driveTypes,
+      
+      // الميزات
+      features: this.database.features,
+      
+      // العلامات التجارية والموديلات
+      brands: this.getAllBrands(),
+      modelsByBrand: this.getAllModelsByBrand()
+    };
+  }
+
+  private getAllModelsByBrand(): Record<string, string[]> {
+    const modelsByBrand: Record<string, string[]> = {};
+    this.getAllBrands().forEach(brand => {
+      modelsByBrand[brand] = this.getModelsByBrand(brand);
+    });
+    return modelsByBrand;
+  }
+
+  // البحث المتقدم مع جميع الفلاتر
+  advancedSearch(params: any): any[] {
+    let results = [...this.carData];
+
+    // تطبيق جميع الفلاتر
+    if (params.make) {
+      results = results.filter(car => 
+        car.brand.toLowerCase() === params.make.toLowerCase()
+      );
+    }
+
+    if (params.model) {
+      results = results.filter(car => 
+        car.model.toLowerCase().includes(params.model.toLowerCase())
+      );
+    }
+
+    if (params.minPrice) {
+      results = results.filter(car => car.price >= parseFloat(params.minPrice));
+    }
+
+    if (params.maxPrice) {
+      results = results.filter(car => car.price <= parseFloat(params.maxPrice));
+    }
+
+    if (params.minYear) {
+      results = results.filter(car => car.year >= parseInt(params.minYear));
+    }
+
+    if (params.maxYear) {
+      results = results.filter(car => car.year <= parseInt(params.maxYear));
+    }
+
+    if (params.fuelType && params.fuelType.length > 0) {
+      results = results.filter(car => params.fuelType.includes(car.fuelType));
+    }
+
+    if (params.transmission && params.transmission.length > 0) {
+      results = results.filter(car => params.transmission.includes(car.transmission));
+    }
+
+    if (params.city) {
+      results = results.filter(car => 
+        car.location.toLowerCase().includes(params.city.toLowerCase())
+      );
+    }
+
+    if (params.condition && params.condition.length > 0) {
+      results = results.filter(car => params.condition.includes(car.condition));
+    }
+
+    // تطبيق فلاتر إضافية...
+    if (params.minMileage) {
+      results = results.filter(car => car.mileage >= parseInt(params.minMileage));
+    }
+
+    if (params.maxMileage) {
+      results = results.filter(car => car.mileage <= parseInt(params.maxMileage));
+    }
+
+    if (params.minPower) {
+      results = results.filter(car => car.power >= parseInt(params.minPower));
+    }
+
+    if (params.maxPower) {
+      results = results.filter(car => car.power <= parseInt(params.maxPower));
+    }
+
+    if (params.doors) {
+      results = results.filter(car => car.doors === parseInt(params.doors));
+    }
+
+    if (params.color) {
+      results = results.filter(car => 
+        car.color.toLowerCase().includes(params.color.toLowerCase())
+      );
+    }
+
+    return results;
+  }
+
+  // الحصول على إحصائيات البيانات
+  getStatistics() {
+    const totalCars = this.carData.length;
+    const brands = new Set(this.carData.map(car => car.brand)).size;
+    const models = new Set(this.carData.map(car => car.model)).size;
+    const avgPrice = totalCars > 0 ? 
+      Math.round(this.carData.reduce((sum, car) => sum + car.price, 0) / totalCars) : 0;
+    const avgMileage = totalCars > 0 ? 
+      Math.round(this.carData.reduce((sum, car) => sum + car.mileage, 0) / totalCars) : 0;
+    const avgYear = totalCars > 0 ? 
+      Math.round(this.carData.reduce((sum, car) => sum + car.year, 0) / totalCars) : 0;
+
+    return {
+      totalCars,
+      brands,
+      models,
+      avgPrice,
+      avgMileage,
+      avgYear,
+      minPrice: Math.min(...this.carData.map(car => car.price)),
+      maxPrice: Math.max(...this.carData.map(car => car.price)),
+      minYear: Math.min(...this.carData.map(car => car.year)),
+      maxYear: Math.max(...this.carData.map(car => car.year))
+    };
+  }
+}
+
+export const completeCarDataService = new CompleteCarDataService();
+33. واجهة البحث المحدثة مع جميع الفئات (EnhancedSearchInterface.tsx)
+tsx
+import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
+import { completeCarDataService } from './CompleteCarDatabase';
+import { SearchFilterSection } from './SearchFilterSection';
+import { VehicleTypeSelector } from './VehicleTypeSelector';
+import { PriceRangeSelector } from './PriceRangeSelector';
+import { TechnicalSpecsSelector } from './TechnicalSpecsSelector';
+import { FeaturesSelector } from './FeaturesSelector';
+
+export const EnhancedSearchInterface: React.FC = () => {
+  const { t, i18n } = useTranslation();
+  const [availableData, setAvailableData] = useState<any>(null);
+  const [searchParams, setSearchParams] = useState<any>({});
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    initializeData();
+  }, []);
+
+  const initializeData = async () => {
+    try {
+      await completeCarDataService.loadData();
+      const options = completeCarDataService.getAvailableOptions();
+      setAvailableData(options);
+    } catch (error) {
+      console.error('Error initializing data:', error);
+    }
+  };
+
+  const handleSearch = async () => {
+    setLoading(true);
+    try {
+      const results = completeCarDataService.advancedSearch(searchParams);
+      setSearchResults(results);
+    } catch (error) {
+      console.error('Search error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateSearchParam = (key: string, value: any) => {
+    setSearchParams(prev => ({
+      ...prev,
+      [key]: value
+    }));
+  };
+
+  if (!availableData) {
+    return <div>Зареждане на данни...</div>;
+  }
+
+  return (
+    <EnhancedSearchContainer>
+      {/* شريط البحث السريع */}
+      <QuickSearchBar>
+        <SearchInput
+          type="text"
+          placeholder={t('cars.search.quickSearch', 'Търсене по марка, модел, характеристика...')}
+          onKeyPress={(e) => {
+            if (e.key === 'Enter') handleSearch();
+          }}
+        />
+        <SearchButton onClick={handleSearch}>
+          {t('cars.search.search', 'Търси')}
+        </SearchButton>
+      </QuickSearchBar>
+
+      {/* الفلاتر الرئيسية */}
+      <MainFilters>
+        <FilterGroup>
+          <label>{t('cars.search.make', 'Марка')}</label>
+          <select 
+            value={searchParams.make || ''}
+            onChange={(e) => updateSearchParam('make', e.target.value)}
+          >
+            <option value="">{t('cars.search.allMakes', 'Всички марки')}</option>
+            {availableData.brands.map((brand: string) => (
+              <option key={brand} value={brand}>{brand}</option>
+            ))}
+          </select>
+        </FilterGroup>
+
+        <FilterGroup>
+          <label>{t('cars.search.model', 'Модел')}</label>
+          <select 
+            value={searchParams.model || ''}
+            onChange={(e) => updateSearchParam('model', e.target.value)}
+            disabled={!searchParams.make}
+          >
+            <option value="">{t('cars.search.allModels', 'Всички модели')}</option>
+            {availableData.modelsByBrand[searchParams.make]?.map((model: string) => (
+              <option key={model} value={model}>{model}</option>
+            ))}
+          </select>
+        </FilterGroup>
+
+        <FilterGroup>
+          <label>{t('cars.search.priceRange', 'Ценови диапазон')}</label>
+          <PriceRangeSelector
+            minPrice={searchParams.minPrice}
+            maxPrice={searchParams.maxPrice}
+            onPriceChange={(min, max) => {
+              updateSearchParam('minPrice', min);
+              updateSearchParam('maxPrice', max);
+            }}
+          />
+        </FilterGroup>
+
+        <FilterGroup>
+          <label>{t('cars.search.year', 'Година')}</label>
+          <YearRange>
+            <select 
+              value={searchParams.minYear || ''}
+              onChange={(e) => updateSearchParam('minYear', e.target.value)}
+            >
+              <option value="">{t('cars.search.from', 'От')}</option>
+              {availableData.years.map((year: number) => (
+                <option key={year} value={year}>{year}</option>
+              ))}
+            </select>
+            <select 
+              value={searchParams.maxYear || ''}
+              onChange={(e) => updateSearchParam('maxYear', e.target.value)}
+            >
+              <option value="">{t('cars.search.to', 'До')}</option>
+              {availableData.years.map((year: number) => (
+                <option key={year} value={year}>{year}</option>
+              ))}
+            </select>
+          </YearRange>
+        </FilterGroup>
+      </MainFilters>
+
+      {/* فلاتر متقدمة قابلة للطي */}
+      <AdvancedFilters>
+        <Accordion title={t('cars.search.vehicleType', 'Тип автомобил')}>
+          <VehicleTypeSelector
+            vehicleTypes={availableData.vehicleTypes}
+            selectedTypes={searchParams.vehicleTypes || []}
+            onTypesChange={(types) => updateSearchParam('vehicleTypes', types)}
+          />
+        </Accordion>
+
+        <Accordion title={t('cars.search.technicalSpecs', 'Технически характеристики')}>
+          <TechnicalSpecsSelector
+            fuelTypes={availableData.fuelTypes}
+            transmissions={availableData.transmissions}
+            driveTypes={availableData.driveTypes}
+            selectedFuelTypes={searchParams.fuelTypes || []}
+            selectedTransmissions={searchParams.transmissions || []}
+            selectedDriveType={searchParams.driveType}
+            onSpecsChange={(specs) => {
+              updateSearchParam('fuelTypes', specs.fuelTypes);
+              updateSearchParam('transmissions', specs.transmissions);
+              updateSearchParam('driveType', specs.driveType);
+            }}
+          />
+        </Accordion>
+
+        <Accordion title={t('cars.search.features', 'Екстри')}>
+          <FeaturesSelector
+            features={availableData.features}
+            selectedFeatures={searchParams.features || []}
+            onFeaturesChange={(features) => updateSearchParam('features', features)}
+          />
+        </Accordion>
+
+        <Accordion title={t('cars.search.location', 'Локация')}>
+          <LocationSelector
+            cities={availableData.cities}
+            selectedCity={searchParams.city}
+            radius={searchParams.radius}
+            onLocationChange={(city, radius) => {
+              updateSearchParam('city', city);
+              updateSearchParam('radius', radius);
+            }}
+          />
+        </Accordion>
+      </AdvancedFilters>
+
+      {/* نتائج البحث */}
+      <SearchResults>
+        <ResultsHeader>
+          <ResultsCount>
+            {t('cars.search.resultsCount', 'Намерени резултати')}: {searchResults.length}
+          </ResultsCount>
+          <SortOptions>
+            <select>
+              <option>{t('cars.search.sortByRelevance', 'По отношение')}</option>
+              <option>{t('cars.search.sortByPriceAsc', 'Цена (възходяща)')}</option>
+              <option>{t('cars.search.sortByPriceDesc', 'Цена (низходяща)')}</option>
+              <option>{t('cars.search.sortByYearDesc', 'Най-нови')}</option>
+              <option>{t('cars.search.sortByMileageAsc', 'Пробег (възходящ)')}</option>
+            </select>
+          </SortOptions>
+        </ResultsHeader>
+
+        <ResultsGrid>
+          {searchResults.map(car => (
+            <CarCard key={car.id} car={car} />
+          ))}
+        </ResultsGrid>
+      </SearchResults>
+    </EnhancedSearchContainer>
+  );
+};
+
+// المكونات المساعدة
+const Accordion: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <AccordionContainer>
+      <AccordionHeader onClick={() => setIsOpen(!isOpen)}>
+        {title}
+        <AccordionIcon>{isOpen ? '▼' : '►'}</AccordionIcon>
+      </AccordionHeader>
+      {isOpen && <AccordionContent>{children}</AccordionContent>}
+    </AccordionContainer>
+  );
+};
+
+// Styled Components
+const EnhancedSearchContainer = styled.div`
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+`;
+
+const QuickSearchBar = styled.div`
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+`;
+
+const SearchInput = styled.input`
+  flex: 1;
+  padding: 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 16px;
+  
+  &:focus {
+    outline: none;
+    border-color: #0066b3;
+  }
+`;
+
+const SearchButton = styled.button`
+  padding: 12px 30px;
+  background: #0066b3;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  
+  &:hover {
+    background: #004d84;
+  }
+  
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+`;
+
+const MainFilters = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+`;
+
+const FilterGroup = styled.div`
+  label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: white;
+  }
+`;
+
+const YearRange = styled.div`
+  display: flex;
+  gap: 10px;
+  
+  select {
+    flex: 1;
+  }
+`;
+
+const AdvancedFilters = styled.div`
+  margin-bottom: 30px;
+`;
+
+const AccordionContainer = styled.div`
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  overflow: hidden;
+`;
+
+const AccordionHeader = styled.div`
+  padding: 15px 20px;
+  background: #f8f9fa;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  
+  &:hover {
+    background: #e9ecef;
+  }
+`;
+
+const AccordionIcon = styled.span`
+  font-size: 12px;
+`;
+
+const AccordionContent = styled.div`
+  padding: 20px;
+  background: white;
+`;
+
+const SearchResults = styled.div`
+  margin-top: 30px;
+`;
+
+const ResultsHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+`;
+
+const ResultsCount = styled.div`
+  font-size: 18px;
+  font-weight: 600;
+`;
+
+const SortOptions = styled.div`
+  select {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+`;
+
+const ResultsGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+`;
+
+export default EnhancedSearchInterface;
+34. تحديث نظام الترجمة مع جميع الفئات الجديدة
+typescript
+export const translations = {
+  bg: {
+    cars: {
+      search: {
+        // ... الترجمات السابقة
+        
+        // الترجمات الجديدة
+        vehicleType: 'Тип автомобил',
+        technicalSpecs: 'Технически характеристики',
+        features: 'Екстри',
+        location: 'Локация',
+        allMakes: 'Всички марки',
+        allModels: 'Всички модели',
+        priceRange: 'Ценови диапазон',
+        year: 'Година',
+        from: 'От',
+        to: 'До',
+        sortByRelevance: 'По отношение',
+        sortByPriceAsc: 'Цена (възходяща)',
+        sortByPriceDesc: 'Цена (низходяща)',
+        sortByYearDesc: 'Най-нови',
+        sortByMileageAsc: 'Пробег (възходящ)'
+      },
+      
+      categories: {
+        sedan: 'Седан',
+        hatchback: 'Хечбек',
+        combi: 'Комби',
+        suv: 'Дж

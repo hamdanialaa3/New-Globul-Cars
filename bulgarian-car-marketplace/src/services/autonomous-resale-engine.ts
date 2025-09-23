@@ -650,7 +650,7 @@ export class AutonomousResaleEngine {
     return {
       demand: analysis.demandLevel === 'high' ? 80 : analysis.demandLevel === 'medium' ? 50 : 20,
       inventory: 60, // نسبة مئوية
-      seasonalFactor: this.BULGARIAN_MARKET_DATA.seasonalFactors[new Date().toLocaleString('en', { month: 'long' })] * 100
+      seasonalFactor: (this.BULGARIAN_MARKET_DATA.seasonalFactors as any)[new Date().toLocaleString('en', { month: 'long' })] * 100 || 100
     };
   }
 

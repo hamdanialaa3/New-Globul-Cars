@@ -10,14 +10,7 @@ import { bulgarianAuthService } from '../firebase';
 import { BulgarianUser } from '../firebase/auth-service';
 import NotificationBell from './NotificationBell';
 import logoImage from '../assets/logo.png';
-import {
-  ProfessionalSettingsIcon,
-  ProfessionalUserIcon,
-  ProfessionalLogoutIcon,
-  ProfessionalLoginIcon,
-  ProfessionalUserPlusIcon,
-  ProfessionalFontIcon
-} from './CustomIcons';
+import { Settings, User, LogOut, LogIn, UserPlus, Type } from 'lucide-react';
 
 // Styled Components - Mobile.de Style
 const HeaderContainer = styled.header`
@@ -258,7 +251,7 @@ const Header: React.FC = () => {
           {/* Settings Menu: contains language, auth/profile, and text toggle */}
           <SettingsMenu className="settings-menu">
             <SettingsButton onClick={() => setIsSettingsOpen(!isSettingsOpen)} aria-haspopup="menu" aria-expanded={isSettingsOpen}>
-              <ProfessionalSettingsIcon size={16} /> <span>Settings</span>
+              <Settings size={16} /> <span>Settings</span>
             </SettingsButton>
             <DropdownMenu $isOpen={isSettingsOpen}>
               {/* Language controls (moved, not duplicated) */}
@@ -274,26 +267,26 @@ const Header: React.FC = () => {
               {user ? (
                 <>
                   <DropdownItem onClick={() => { navigate('/dashboard'); setIsSettingsOpen(false); }}>
-                    <ProfessionalUserIcon size={16} /> Dashboard
+                    <User size={16} /> Dashboard
                   </DropdownItem>
                   <DropdownItem onClick={() => { handleLogout(); setIsSettingsOpen(false); }} className="danger">
-                    <ProfessionalLogoutIcon size={16} /> {t('nav.logout')}
+                    <LogOut size={16} /> {t('nav.logout')}
                   </DropdownItem>
                 </>
               ) : (
                 <>
                   <DropdownItem onClick={() => { navigate('/login'); setIsSettingsOpen(false); }}>
-                    <ProfessionalLoginIcon size={16} /> {t('nav.login')}
+                    <LogIn size={16} /> {t('nav.login')}
                   </DropdownItem>
                   <DropdownItem onClick={() => { navigate('/register'); setIsSettingsOpen(false); }}>
-                    <ProfessionalUserPlusIcon size={16} /> {t('nav.register')}
+                    <UserPlus size={16} /> {t('nav.register')}
                   </DropdownItem>
                 </>
               )}
 
               {/* Bold text toggle */}
               <DropdownItem onClick={() => setIsBoldText(!isBoldText)}>
-                <ProfessionalFontIcon size={16} />
+                <Type size={16} />
                 {isBoldText ? 'Disable bold text' : 'Enable bold text'}
               </DropdownItem>
             </DropdownMenu>

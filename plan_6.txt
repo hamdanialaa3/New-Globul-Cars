@@ -1,0 +1,912 @@
+✨
+
+الاستكمال النهائي والمتقدّم لنظام GLOUBUL Cars
+نعم! إليك الاستكمال المتقدّم مع ميزات احترافية إضافية تجعل النظام مشابهًا تمامًا لـ mobile.de:
+
+27. نظام الفلاتر المتقدمة مع البحث الحقيقي (AdvancedFilterSystem.tsx)
+tsx
+import React, { useState, useMemo } from 'react';
+import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
+
+interface AdvancedFilterSystemProps {
+  filters: any;
+  onFiltersChange: (filters: any) => void;
+  availableData: any;
+}
+
+export const AdvancedFilterSystem: React.FC<AdvancedFilterSystemProps> = ({
+  filters,
+  onFiltersChange,
+  availableData
+}) => {
+  const { t } = useTranslation();
+  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
+    basic: true,
+    price: true,
+    technical: false,
+    exterior: false,
+    interior: false,
+    features: false
+  });
+
+  const toggleSection = (section: string) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
+
+  const updateFilter = (key: string, value: any) => {
+    onFiltersChange({
+      ...filters,
+      [key]: value
+    });
+  };
+
+  const addExcludeVehicle = () => {
+    const newExcludes = [...(filters.excludeVehicles || []), { make: '', model: '' }];
+    updateFilter('excludeVehicles', newExcludes);
+  };
+
+  const removeExcludeVehicle = (index: number) => {
+    const newExcludes = filters.excludeVehicles.filter((_: any, i: number) => i !== index);
+    updateFilter('excludeVehicles', newExcludes);
+  };
+
+  const updateExcludeVehicle = (index: number, field: string, value: string) => {
+    const newExcludes = filters.excludeVehicles.map((vehicle: any, i: number) =>
+      i === index ? { ...vehicle, [field]: value } : vehicle
+    );
+    updateFilter('excludeVehicles', newExcludes);
+  };
+
+  return (
+    <FilterSystemContainer>
+      {/* Basic Data Section */}
+      <FilterSection>
+        <SectionHeader onClick={() => toggleSection('basic')}>
+          <SectionTitle>
+            {t('cars.search.basicData', 'Основни данни')}
+            <SectionCount>{filters.make || filters.model ? '1' : '0'}</SectionCount>
+          </SectionTitle>
+          <ExpandIcon expanded={expandedSections.basic}>▼</ExpandIcon>
+        </SectionHeader>
+        
+        {expandedSections.basic && (
+          <SectionContent>
+            <FilterGrid columns={2}>
+              <FilterGroup>
+                <label>{t('cars.search.make', 'Марка')}</label>
+                <SearchableSelect
+                  value={filters.make}
+                  onChange={(value) => updateFilter('make', value)}
+                  options={availableData.makes}
+                  placeholder={t('cars.search.anyMake', 'Всяка марка')}
+                />
+              </FilterGroup>
+
+              <FilterGroup>
+                <label>{t('cars.search.model', 'Модел')}</label>
+                <SearchableSelect
+                  value={filters.model}
+                  onChange={(value) => updateFilter('model', value)}
+                  options={availableData.models}
+                  placeholder={t('cars.search.anyModel', 'Всеки модел')}
+                  disabled={!filters.make}
+                />
+              </FilterGroup>
+            </FilterGrid>
+
+            <ExampleText>
+              {t('cars.search.example', 'напр.')} GTI, 320d, Hybrid...
+            </ExampleText>
+
+            {/* Add Other Vehicles */}
+            <AddVehicleButton type="button">
+              + {t('cars.search.addOtherVehicles', 'Добави други автомобили')}
+            </AddVehicleButton>
+
+            {/* Exclude Vehicles */}
+            <ExcludeSection>
+              <ExcludeTitle>
+                {t('cars.search.excludeVehicles', 'Изключи автомобили от резултатите')}
+              </ExcludeTitle>
+              
+              {(filters.excludeVehicles || []).map((vehicle: any, index: number) => (
+                <ExcludeVehicle key={index}>
+                  <FilterGrid columns={2}>
+                    <FilterGroup>
+                      <label>{t('cars.search.make', 'Марка')}</label>
+                      <select
+                        value={vehicle.make}
+                        onChange={(e) => updateExcludeVehicle(index, 'make', e.target.value)}
+                      >
+                        <option value="">{t('cars.search.any', 'Всяка')}</option>
+                        {availableData.makes.map((make: string) => (
+                          <option key={make} value={make}>{make}</option>
+                        ))}
+                      </select>
+                    </FilterGroup>
+
+                    <FilterGroup>
+                      <label>{t('cars.search.model', 'Модел')}</label>
+                      <select
+                        value={vehicle.model}
+                        onChange={(e) => updateExcludeVehicle(index, 'model', e.target.value)}
+                        disabled={!vehicle.make}
+                      >
+                        <option value="">{t('cars.search.any', 'Всеки')}</option>
+                        {availableData.modelsByMake?.[vehicle.make]?.map((model: string) => (
+                          <option key={model} value={model}>{model}</option>
+                        ))}
+                      </select>
+                    </FilterGroup>
+                  </FilterGrid>
+                  <RemoveExcludeButton onClick={() => removeExcludeVehicle(index)}>
+                    ×
+                  </RemoveExcludeButton>
+                </ExcludeVehicle>
+              ))}
+              
+              <AddExcludeButton onClick={addExcludeVehicle}>
+                + {t('cars.search.excludeOtherVehicles', 'Изключи други автомобили')}
+              </AddExcludeButton>
+            </ExcludeSection>
+
+            {/* Vehicle Type */}
+            <FilterGroup>
+              <label>{t('cars.search.vehicleType', 'Тип автомобил')}</label>
+              <CheckboxGrid>
+                {availableData.vehicleTypes.map((type: any) => (
+                  <CheckboxLabel key={type.value}>
+                    <input
+                      type="checkbox"
+                      checked={filters.vehicleTypes?.includes(type.value)}
+                      onChange={(e) => {
+                        const newTypes = e.target.checked
+                          ? [...(filters.vehicleTypes || []), type.value]
+                          : (filters.vehicleTypes || []).filter((t: string) => t !== type.value);
+                        updateFilter('vehicleTypes', newTypes);
+                      }}
+                    />
+                    {type.label}
+                  </CheckboxLabel>
+                ))}
+              </CheckboxGrid>
+            </FilterGroup>
+
+            {/* Seats and Doors */}
+            <FilterGrid columns={3}>
+              <FilterGroup>
+                <label>{t('cars.search.seatsFrom', 'Места от')}</label>
+                <select value={filters.minSeats} onChange={(e) => updateFilter('minSeats', e.target.value)}>
+                  <option value="">{t('cars.search.any', 'Всяка')}</option>
+                  {[2, 3, 4, 5, 6, 7, 8].map(seats => (
+                    <option key={seats} value={seats}>{seats}</option>
+                  ))}
+                </select>
+              </FilterGroup>
+
+              <FilterGroup>
+                <label>{t('cars.search.seatsTo', 'Места до')}</label>
+                <select value={filters.maxSeats} onChange={(e) => updateFilter('maxSeats', e.target.value)}>
+                  <option value="">{t('cars.search.any', 'Всяка')}</option>
+                  {[2, 3, 4, 5, 6, 7, 8].map(seats => (
+                    <option key={seats} value={seats}>{seats}</option>
+                  ))}
+                </select>
+              </FilterGroup>
+
+              <FilterGroup>
+                <label>{t('cars.search.doors', 'Брой врати')}</label>
+                <select value={filters.doors} onChange={(e) => updateFilter('doors', e.target.value)}>
+                  <option value="">{t('cars.search.any', 'Всяка')}</option>
+                  {[2, 3, 4, 5].map(doors => (
+                    <option key={doors} value={doors}>{doors}</option>
+                  ))}
+                </select>
+              </FilterGroup>
+            </FilterGrid>
+          </SectionContent>
+        )}
+      </FilterSection>
+
+      {/* Price and Condition Section */}
+      <FilterSection>
+        <SectionHeader onClick={() => toggleSection('price')}>
+          <SectionTitle>
+            {t('cars.search.priceCondition', 'Цена и състояние')}
+            <SectionCount>{
+              [filters.minPrice, filters.maxPrice, filters.condition, filters.paymentType]
+                .filter(Boolean).length
+            }</SectionCount>
+          </SectionTitle>
+          <ExpandIcon expanded={expandedSections.price}>▼</ExpandIcon>
+        </SectionHeader>
+        
+        {expandedSections.price && (
+          <SectionContent>
+            {/* Condition Type */}
+            <FilterGroup>
+              <label>{t('cars.search.condition', 'Състояние')}</label>
+              <CheckboxGrid columns={3}>
+                {availableData.conditions.map((condition: any) => (
+                  <CheckboxLabel key={condition.value}>
+                    <input
+                      type="checkbox"
+                      checked={filters.conditions?.includes(condition.value)}
+                      onChange={(e) => {
+                        const newConditions = e.target.checked
+                          ? [...(filters.conditions || []), condition.value]
+                          : (filters.conditions || []).filter((c: string) => c !== condition.value);
+                        updateFilter('conditions', newConditions);
+                      }}
+                    />
+                    {condition.label}
+                  </CheckboxLabel>
+                ))}
+              </CheckboxGrid>
+            </FilterGroup>
+
+            {/* Payment Type */}
+            <FilterGroup>
+              <label>{t('cars.search.paymentType', 'Начин на плащане')}</label>
+              <RadioGroup>
+                <RadioLabel>
+                  <input
+                    type="radio"
+                    name="paymentType"
+                    value="buy"
+                    checked={filters.paymentType === 'buy'}
+                    onChange={(e) => updateFilter('paymentType', e.target.value)}
+                  />
+                  {t('cars.search.buy', 'Купува')}
+                </RadioLabel>
+                <RadioLabel>
+                  <input
+                    type="radio"
+                    name="paymentType"
+                    value="leasing"
+                    checked={filters.paymentType === 'leasing'}
+                    onChange={(e) => updateFilter('paymentType', e.target.value)}
+                  />
+                  {t('cars.search.leasing', 'Лизинг')}
+                </RadioLabel>
+              </RadioGroup>
+            </FilterGroup>
+
+            {/* Price Range */}
+            <FilterGroup>
+              <label>{t('cars.search.price', 'Цена')} (€)</label>
+              <PriceRangeContainer>
+                <PriceInput
+                  type="number"
+                  placeholder={t('cars.search.from', 'от')}
+                  value={filters.minPrice}
+                  onChange={(e) => updateFilter('minPrice', e.target.value)}
+                />
+                <PriceSeparator>-</PriceSeparator>
+                <PriceInput
+                  type="number"
+                  placeholder={t('cars.search.to', 'до')}
+                  value={filters.maxPrice}
+                  onChange={(e) => updateFilter('maxPrice', e.target.value)}
+                />
+              </PriceRangeContainer>
+            </FilterGroup>
+
+            {/* Additional Options */}
+            <FilterGroup>
+              <CheckboxLabel>
+                <input
+                  type="checkbox"
+                  checked={filters.withPictures}
+                  onChange={(e) => updateFilter('withPictures', e.target.checked)}
+                />
+                {t('cars.search.withPictures', 'Само обяви със снимки')}
+              </CheckboxLabel>
+              
+              <CheckboxLabel>
+                <input
+                  type="checkbox"
+                  checked={filters.vatReclaimable}
+                  onChange={(e) => updateFilter('vatReclaimable', e.target.checked)}
+                />
+                {t('cars.search.vatReclaimable', 'Възстановим ДДС')}
+              </CheckboxLabel>
+              
+              <CheckboxLabel>
+                <input
+                  type="checkbox"
+                  checked={filters.warranty}
+                  onChange={(e) => updateFilter('warranty', e.target.checked)}
+                />
+                {t('cars.search.withWarranty', 'С гаранция')}
+              </CheckboxLabel>
+            </FilterGroup>
+          </SectionContent>
+        )}
+      </FilterSection>
+
+      {/* Technical Data Section */}
+      <TechnicalDataSection 
+        filters={filters}
+        onFiltersChange={onFiltersChange}
+        expanded={expandedSections.technical}
+        onToggle={() => toggleSection('technical')}
+        availableData={availableData}
+      />
+
+      {/* Features Sections would continue similarly... */}
+    </FilterSystemContainer>
+  );
+};
+
+// مكون الإختيار القابل للبحث
+const SearchableSelect: React.FC<{
+  value: string;
+  onChange: (value: string) => void;
+  options: string[];
+  placeholder: string;
+  disabled?: boolean;
+}> = ({ value, onChange, options, placeholder, disabled }) => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
+
+  const filteredOptions = options.filter(option =>
+    option.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  return (
+    <SelectContainer>
+      <SelectButton 
+        type="button" 
+        onClick={() => setIsOpen(!isOpen)}
+        disabled={disabled}
+      >
+        {value || placeholder}
+        <SelectArrow>▼</SelectArrow>
+      </SelectButton>
+      
+      {isOpen && (
+        <SelectDropdown>
+          <SearchInput
+            type="text"
+            placeholder="Търси..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            autoFocus
+          />
+          <OptionList>
+            <Option 
+              onClick={() => {
+                onChange('');
+                setIsOpen(false);
+                setSearchTerm('');
+              }}
+            >
+              {placeholder}
+            </Option>
+            {filteredOptions.map(option => (
+              <Option 
+                key={option}
+                onClick={() => {
+                  onChange(option);
+                  setIsOpen(false);
+                  setSearchTerm('');
+                }}
+              >
+                {option}
+              </Option>
+            ))}
+          </OptionList>
+        </SelectDropdown>
+      )}
+    </SelectContainer>
+  );
+};
+
+// Styled Components
+const FilterSystemContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.md};
+`;
+
+const FilterSection = styled.div`
+  border: 1px solid ${({ theme }) => theme.colors.grey[200]};
+  border-radius: ${({ theme }) => theme.borderRadius.base};
+  overflow: hidden;
+`;
+
+const SectionHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: ${({ theme }) => theme.spacing.md};
+  background: ${({ theme }) => theme.colors.grey[50]};
+  cursor: pointer;
+  user-select: none;
+  
+  &:hover {
+    background: ${({ theme }) => theme.colors.grey[100]};
+  }
+`;
+
+const SectionTitle = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.sm};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
+`;
+
+const SectionCount = styled.span`
+  background: ${({ theme }) => theme.colors.primary.main};
+  color: white;
+  border-radius: 10px;
+  padding: 2px 8px;
+  font-size: 12px;
+  min-width: 20px;
+  text-align: center;
+`;
+
+const ExpandIcon = styled.span<{ expanded: boolean }>`
+  transition: transform 0.2s ease-in-out;
+  transform: ${({ expanded }) => expanded ? 'rotate(180deg)' : 'rotate(0deg)'};
+  font-size: 12px;
+`;
+
+const SectionContent = styled.div`
+  padding: ${({ theme }) => theme.spacing.md};
+`;
+
+const FilterGrid = styled.div<{ columns: number }>`
+  display: grid;
+  grid-template-columns: repeat(${props => props.columns}, 1fr);
+  gap: ${({ theme }) => theme.spacing.md};
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const FilterGroup = styled.div`
+  label {
+    display: block;
+    font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
+    margin-bottom: ${({ theme }) => theme.spacing.sm};
+    font-size: ${({ theme }) => theme.typography.fontSize.sm};
+  }
+`;
+
+const ExampleText = styled.div`
+  color: ${({ theme }) => theme.colors.text.secondary};
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
+  margin: ${({ theme }) => theme.spacing.sm} 0;
+  font-style: italic;
+`;
+
+const AddVehicleButton = styled.button`
+  background: transparent;
+  color: ${({ theme }) => theme.colors.primary.main};
+  border: 1px dashed ${({ theme }) => theme.colors.primary.main};
+  padding: ${({ theme }) => theme.spacing.sm};
+  border-radius: ${({ theme }) => theme.borderRadius.base};
+  cursor: pointer;
+  width: 100%;
+  margin: ${({ theme }) => theme.spacing.md} 0;
+  
+  &:hover {
+    background: ${({ theme }) => theme.colors.primary.light};
+  }
+`;
+
+const ExcludeSection = styled.div`
+  border: 1px solid ${({ theme }) => theme.colors.grey[200]};
+  border-radius: ${({ theme }) => theme.borderRadius.base};
+  padding: ${({ theme }) => theme.spacing.md};
+  margin: ${({ theme }) => theme.spacing.md} 0;
+  background: ${({ theme }) => theme.colors.grey[50]};
+`;
+
+const ExcludeTitle = styled.div`
+  font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
+  margin-bottom: ${({ theme }) => theme.spacing.md};
+`;
+
+const ExcludeVehicle = styled.div`
+  position: relative;
+  padding: ${({ theme }) => theme.spacing.md};
+  background: white;
+  border-radius: ${({ theme }) => theme.borderRadius.base};
+  margin-bottom: ${({ theme }) => theme.spacing.sm};
+`;
+
+const RemoveExcludeButton = styled.button`
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: ${({ theme }) => theme.colors.error};
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  font-size: 12px;
+`;
+
+const AddExcludeButton = styled.button`
+  background: transparent;
+  color: ${({ theme }) => theme.colors.text.secondary};
+  border: 1px dashed ${({ theme }) => theme.colors.grey[300]};
+  padding: ${({ theme }) => theme.spacing.sm};
+  border-radius: ${({ theme }) => theme.borderRadius.base};
+  cursor: pointer;
+  width: 100%;
+  
+  &:hover {
+    border-color: ${({ theme }) => theme.colors.primary.main};
+    color: ${({ theme }) => theme.colors.primary.main};
+  }
+`;
+
+const CheckboxGrid = styled.div<{ columns?: number }>`
+  display: grid;
+  grid-template-columns: repeat(${props => props.columns || 2}, 1fr);
+  gap: ${({ theme }) => theme.spacing.sm};
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const CheckboxLabel = styled.label`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.sm};
+  cursor: pointer;
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
+  
+  input {
+    width: auto;
+  }
+`;
+
+const RadioGroup = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.lg};
+`;
+
+const RadioLabel = styled.label`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.sm};
+  cursor: pointer;
+`;
+
+const PriceRangeContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.sm};
+`;
+
+const PriceInput = styled.input`
+  flex: 1;
+  padding: ${({ theme }) => theme.spacing.sm};
+  border: 1px solid ${({ theme }) => theme.colors.grey[300]};
+  border-radius: ${({ theme }) => theme.borderRadius.base};
+`;
+
+const PriceSeparator = styled.span`
+  color: ${({ theme }) => theme.colors.text.secondary};
+`;
+
+const SelectContainer = styled.div`
+  position: relative;
+`;
+
+const SelectButton = styled.button`
+  width: 100%;
+  padding: ${({ theme }) => theme.spacing.sm};
+  border: 1px solid ${({ theme }) => theme.colors.grey[300]};
+  border-radius: ${({ theme }) => theme.borderRadius.base};
+  background: white;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const SelectArrow = styled.span`
+  font-size: 10px;
+`;
+
+const SelectDropdown = styled.div`
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid ${({ theme }) => theme.colors.grey[300]};
+  border-radius: ${({ theme }) => theme.borderRadius.base};
+  box-shadow: ${({ theme }) => theme.shadows.lg};
+  z-index: 1000;
+  max-height: 200px;
+  overflow: hidden;
+`;
+
+const SearchInput = styled.input`
+  width: 100%;
+  padding: ${({ theme }) => theme.spacing.sm};
+  border: none;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.grey[200]};
+  
+  &:focus {
+    outline: none;
+  }
+`;
+
+const OptionList = styled.div`
+  max-height: 150px;
+  overflow-y: auto;
+`;
+
+const Option = styled.div`
+  padding: ${({ theme }) => theme.spacing.sm};
+  cursor: pointer;
+  
+  &:hover {
+    background: ${({ theme }) => theme.colors.grey[100]};
+  }
+`;
+
+export default AdvancedFilterSystem;
+28. نظام البيانات المتقدّم مع المحاكاة الحقيقية (AdvancedDataService.ts)
+typescript
+import { CarDataFromFile, CarDataSummary } from '../types/CarData';
+import { SearchParams } from '../components/CarSearchSystemAdvanced';
+
+class AdvancedDataService {
+  private carData: CarDataFromFile[] = [];
+  private summary: CarDataSummary | null = null;
+  private searchCache: Map<string, CarDataFromFile[]> = new Map();
+
+  // بيانات محاكاة واقعية للبلغار
+  private mockData: CarDataFromFile[] = [
+    {
+      id: '1',
+      brand: 'Volkswagen',
+      model: 'Golf',
+      year: 2020,
+      price: 28500,
+      currency: 'EUR',
+      mileage: 45000,
+      fuelType: 'petrol',
+      transmission: 'manual',
+      engineSize: 1.5,
+      power: 150,
+      powerUnit: 'hp',
+      doors: 5,
+      seats: 5,
+      color: 'черен',
+      condition: 'used',
+      location: 'София',
+      description: 'Отлично състояние, пълна сервизна история, без инциденти. Комбиниран разход: 5.8l/100km.',
+      features: ['климатик', 'кожен салон', 'камера за backup', 'ABS', 'ESP'],
+      images: ['golf1.jpg', 'golf2.jpg'],
+      sellerType: 'dealer',
+      dealerRating: 4.5,
+      createdAt: '2024-01-15'
+    },
+    {
+      id: '2',
+      brand: 'BMW',
+      model: '320d',
+      year: 2019,
+      price: 32500,
+      currency: 'EUR',
+      mileage: 68000,
+      fuelType: 'diesel',
+      transmission: 'automatic',
+      engineSize: 2.0,
+      power: 190,
+      powerUnit: 'hp',
+      doors: 4,
+      seats: 5,
+      color: 'бял',
+      condition: 'used',
+      location: 'Пловдив',
+      description: 'Много добре поддържан BMW 320d с пълна екипировка.',
+      features: ['навигация', 'кожен салон', 'панорамен покрив', 'LED фарове'],
+      images: ['bmw1.jpg', 'bmw2.jpg'],
+      sellerType: 'private',
+      createdAt: '2024-01-14'
+    }
+    // يمكن إضافة المزيد من البيانات المحاكاة...
+  ];
+
+  async loadData(): Promise<void> {
+    try {
+      // محاولة تحميل البيانات الحقيقية أولاً
+      const [carDataResponse, summaryResponse] = await Promise.allSettled([
+        fetch('/data/car-data.json'),
+        fetch('/data/car-data-summary.json')
+      ]);
+      
+      if (carDataResponse.status === 'fulfilled') {
+        this.carData = await carDataResponse.value.json();
+      } else {
+        // استخدام البيانات المحاكاة إذا فشل التحميل
+        this.carData = this.mockData;
+      }
+      
+      if (summaryResponse.status === 'fulfilled') {
+        this.summary = await summaryResponse.value.json();
+      } else {
+        this.summary = this.generateSummary();
+      }
+      
+      this.preprocessData();
+    } catch (error) {
+      console.error('Error loading car data, using mock data:', error);
+      this.carData = this.mockData;
+      this.summary = this.generateSummary();
+      this.preprocessData();
+    }
+  }
+
+  private generateSummary(): CarDataSummary {
+    return {
+      totalCars: this.carData.length,
+      brands: new Set(this.carData.map(car => car.brand)).size,
+      models: new Set(this.carData.map(car => car.model)).size,
+      minPrice: Math.min(...this.carData.map(car => car.price)),
+      maxPrice: Math.max(...this.carData.map(car => car.price)),
+      minYear: Math.min(...this.carData.map(car => car.year)),
+      maxYear: Math.max(...this.carData.map(car => car.year)),
+      currency: 'EUR',
+      country: 'BG',
+      lastUpdated: new Date().toISOString()
+    };
+  }
+
+  private preprocessData(): void {
+    // تحسين البيانات للبحث
+    this.carData.forEach(car => {
+      car.features = car.features || [];
+      // إضافة بيانات إضافية للبحث
+      car.features.push(
+        `${car.brand} ${car.model}`,
+        `${car.year}`,
+        `${car.fuelType}`,
+        `${car.transmission}`
+      );
+    });
+  }
+
+  advancedSearch(params: SearchParams): CarDataFromFile[] {
+    const cacheKey = JSON.stringify(params);
+    
+    if (this.searchCache.has(cacheKey)) {
+      return this.searchCache.get(cacheKey)!;
+    }
+
+    let results = [...this.carData];
+
+    // تطبيق الفلاتر بشكل تسلسلي
+    results = this.applyMakeFilter(results, params.make);
+    results = this.applyModelFilter(results, params.model);
+    results = this.applyPriceFilter(results, params.minPrice, params.maxPrice);
+    results = this.applyYearFilter(results, params.minFirstRegistration, params.maxFirstRegistration);
+    results = this.applyMileageFilter(results, params.minMileage, params.maxMileage);
+    results = this.applyFuelTypeFilter(results, params.fuelType);
+    results = this.applyTransmissionFilter(results, params.transmission);
+    results = this.applyLocationFilter(results, params.city, params.radius);
+    results = this.applyVehicleTypeFilter(results, params.vehicleType);
+    results = this.applyConditionFilter(results, params.conditions);
+    results = this.applyFeaturesFilter(results, params);
+
+    this.searchCache.set(cacheKey, results);
+    return results;
+  }
+
+  private applyMakeFilter(results: CarDataFromFile[], make: string): CarDataFromFile[] {
+    if (!make) return results;
+    return results.filter(car => 
+      car.brand.toLowerCase() === make.toLowerCase()
+    );
+  }
+
+  private applyModelFilter(results: CarDataFromFile[], model: string): CarDataFromFile[] {
+    if (!model) return results;
+    return results.filter(car => 
+      car.model.toLowerCase().includes(model.toLowerCase())
+    );
+  }
+
+  private applyPriceFilter(results: CarDataFromFile[], minPrice: string, maxPrice: string): CarDataFromFile[] {
+    let filtered = results;
+    
+    if (minPrice) {
+      const min = parseFloat(minPrice);
+      filtered = filtered.filter(car => car.price >= min);
+    }
+    
+    if (maxPrice) {
+      const max = parseFloat(maxPrice);
+      filtered = filtered.filter(car => car.price <= max);
+    }
+    
+    return filtered;
+  }
+
+  private applyYearFilter(results: CarDataFromFile[], minYear: string, maxYear: string): CarDataFromFile[] {
+    let filtered = results;
+    
+    if (minYear) {
+      const min = parseInt(minYear);
+      filtered = filtered.filter(car => car.year >= min);
+    }
+    
+    if (maxYear) {
+      const max = parseInt(maxYear);
+      filtered = filtered.filter(car => car.year <= max);
+    }
+    
+    return filtered;
+  }
+
+  private applyMileageFilter(results: CarDataFromFile[], minMileage: string, maxMileage: string): CarDataFromFile[] {
+    let filtered = results;
+    
+    if (minMileage) {
+      const min = parseInt(minMileage);
+      filtered = filtered.filter(car => car.mileage >= min);
+    }
+    
+    if (maxMileage) {
+      const max = parseInt(maxMileage);
+      filtered = filtered.filter(car => car.mileage <= max);
+    }
+    
+    return filtered;
+  }
+
+  private applyFuelTypeFilter(results: CarDataFromFile[], fuelTypes: string[]): CarDataFromFile[] {
+    if (!fuelTypes || fuelTypes.length === 0) return results;
+    return results.filter(car => fuelTypes.includes(car.fuelType));
+  }
+
+  private applyTransmissionFilter(results: CarDataFromFile[], transmissions: string[]): CarDataFromFile[] {
+    if (!transmissions || transmissions.length === 0) return results;
+    return results.filter(car => transmissions.includes(car.transmission));
+  }
+
+  private applyLocationFilter(results: CarDataFromFile[], city: string, radius: string): CarDataFromFile[] {
+    if (!city) return results;
+    
+    // محاكاة تصفية الموقع (في التطبيق الحقيقي ستحتاج إلى إحداثيات فعلية)
+    return results.filter(car => 
+      car.location.toLowerCase().includes(city.toLowerCase())
+    );
+  }
+
+  private applyVehicleTypeFilter(results: CarDataFromFile[], vehicleTypes: string[]): CarDataFromFile[] {
+    if (!vehicleTypes || vehicleTypes.length === 0) return results;
+    
+    return results.filter(car => {
+      const carType = this.determineVehicleType(car);
+      return vehicleTypes.includes(carType);
+    });
+  }
+
+  private applyConditionFilter(results: CarDataFromFile[], conditions: string[]): CarDataFromFile[] {
+    if (!conditions || conditions.length === 0) return results;
+    return results.filter(car => conditions.includes(car.condition));
+  }
+
+  private applyFeaturesFilter(results: CarDataFromFile[], params: SearchParams): CarDataFromFile[] {
+    let filtered = results;

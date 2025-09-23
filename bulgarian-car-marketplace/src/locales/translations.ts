@@ -145,6 +145,59 @@ export const translations = {
         mileageLow: 'Пробег (нисък към висок)',
         mileageHigh: 'Пробег (висок към нисък)'
       },
+      search: {
+        simple: 'Бързо търсене',
+        advanced: 'Разширено търсене',
+        simpleTitle: 'Бързо търсене',
+        advancedTitle: 'Разширено търсене',
+        simplePlaceholder: 'Въведете марка, модел или характеристики...',
+        year: 'Година',
+        city: 'Град',
+        brand: 'Марка',
+        category: 'Категория',
+        generation: 'Поколение',
+        size: 'Размер',
+        engineSize: 'Обем на двигателя',
+        fuelType: 'Тип гориво',
+        transmission: 'Трансмисия',
+        color: 'Цвят',
+        searching: 'Търсене...',
+        search: 'Търси',
+        advancedSearch: 'Разширено търсене',
+        quick: 'Бързо търсене',
+        detailed: 'Детайлно търсене',
+        quickPlaceholder: 'Търсене на марка, модел или характеристика...',
+        showResults: 'Покажи резултати',
+        saveSearch: 'Запази търсенето',
+        basicData: 'Основни данни',
+        typeCondition: 'Тип и състояние',
+        technicalData: 'Технически данни',
+        exterior: 'Екстериор',
+        interior: 'Интериор',
+        offerDetails: 'Детайли на офертата',
+        
+        // Vehicle Types
+        vehicleTypes: {
+          cabrio: 'Кабрио/Родстер',
+          estate: 'Комби',
+          suv: 'Джип/Пикап',
+          saloon: 'Седан',
+          small: 'Малък автомобил',
+          sports: 'Спортен автомобил/Купе',
+          van: 'Ван/Миниван',
+          other: 'Други'
+        },
+        
+        // Conditions
+        conditions: {
+          new: 'Нов',
+          used: 'Употребяван',
+          preRegistration: 'Пререгистрация',
+          employee: 'Служителка кола',
+          classic: 'Класически автомобил',
+          demo: 'Демонстрационен автомобил'
+        }
+      },
       featured: 'Препоръчан'
     },
     common: {
@@ -183,7 +236,8 @@ export const translations = {
       all: 'Всички',
       valid: 'Валиден',
       expired: 'Изтекъл',
-      expiringSoon: 'Изтича скоро'
+      expiringSoon: 'Изтича скоро',
+      searching: 'Търсене...'
     },
     login: {
       title: 'Вход',
@@ -659,6 +713,59 @@ export const translations = {
         new: 'New',
         used: 'Used',
         damaged: 'Damaged'
+      },
+      search: {
+        simple: 'Quick Search',
+        advanced: 'Advanced Search',
+        simpleTitle: 'Quick Search',
+        advancedTitle: 'Advanced Search',
+        simplePlaceholder: 'Enter make, model or specifications...',
+        year: 'Year',
+        city: 'City',
+        brand: 'Brand',
+        category: 'Category',
+        generation: 'Generation',
+        size: 'Size',
+        engineSize: 'Engine Size',
+        fuelType: 'Fuel Type',
+        transmission: 'Transmission',
+        color: 'Color',
+        searching: 'Searching...',
+        search: 'Search',
+        advancedSearch: 'Advanced Search',
+        quick: 'Quick Search',
+        detailed: 'Detailed Search',
+        quickPlaceholder: 'Search for brand, model or feature...',
+        showResults: 'Show Results',
+        saveSearch: 'Save Search',
+        basicData: 'Basic Data',
+        typeCondition: 'Type and Condition',
+        technicalData: 'Technical Data',
+        exterior: 'Exterior',
+        interior: 'Interior',
+        offerDetails: 'Offer Details',
+        
+        // Vehicle Types
+        vehicleTypes: {
+          cabrio: 'Cabriolet/Roadster',
+          estate: 'Estate Car',
+          suv: 'Off-road Vehicle/Pickup Truck/SUV',
+          saloon: 'Saloon',
+          small: 'Small Car',
+          sports: 'Sports Car/Coupe',
+          van: 'Van/Minibus',
+          other: 'Other'
+        },
+        
+        // Conditions
+        conditions: {
+          new: 'New',
+          used: 'Used',
+          preRegistration: 'Pre-Registration',
+          employee: 'Employee\'s car',
+          classic: 'Classic Vehicle',
+          demo: 'Demonstration Vehicle'
+        }
       }
     },
     login: {
@@ -760,7 +867,8 @@ export const translations = {
       all: 'All',
       valid: 'Valid',
       expired: 'Expired',
-      expiringSoon: 'Expiring Soon'
+      expiringSoon: 'Expiring Soon',
+      searching: 'Searching...'
     },
     detailedSearch: {
       title: 'Detailed Search',
@@ -1037,6 +1145,22 @@ export const translations = {
         notFound: 'Car not found',
         backToCars: 'Back to Cars'
       }
+    },
+    analytics: {
+      searchStats: 'Search Statistics',
+      foundCars: 'Cars Found',
+      searchTime: 'Search Time',
+      averagePrice: 'Average Price',
+      priceDistribution: 'Price Distribution',
+      topBrands: 'Top Brands'
+    },
+    rating: {
+      dealerRating: 'Dealer Rating',
+      ratings: 'ratings',
+      addRating: 'Add Your Rating',
+      commentPlaceholder: 'Write your opinion...',
+      submitting: 'Submitting...',
+      submit: 'Submit Rating'
     },
     ratings: {
       customerReviews: 'Отзиви от клиенти',

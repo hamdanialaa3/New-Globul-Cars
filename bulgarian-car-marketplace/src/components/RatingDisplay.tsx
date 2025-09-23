@@ -3,7 +3,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { RatingSummary } from '../rating-service';
+import { RatingSummary } from '../services/rating-service';
 
 interface RatingDisplayProps {
   summary: RatingSummary | null;
@@ -175,7 +175,7 @@ const RatingDisplay: React.FC<RatingDisplayProps> = ({
       {showDetails && (
         <RatingDetails>
           <div style={{ marginBottom: '16px' }}>
-            {Object.entries(summary.categoryAverages).map(([category, rating]) => (
+            {Object.entries(summary.categoryRatings).map(([category, rating]) => (
               <CategoryRating key={category}>
                 <CategoryName>{getCategoryName(category)}</CategoryName>
                 <CategoryStars>
@@ -190,7 +190,7 @@ const RatingDisplay: React.FC<RatingDisplayProps> = ({
 
           <RatingDistribution>
             {[5, 4, 3, 2, 1].map(stars => {
-              const count = summary.ratingDistribution[stars] || 0;
+              const count = summary.distribution[stars as keyof typeof summary.distribution] || 0;
               const percentage = summary.totalRatings > 0 ? (count / summary.totalRatings) * 100 : 0;
               return (
                 <DistributionBar key={stars}>
@@ -203,19 +203,6 @@ const RatingDisplay: React.FC<RatingDisplayProps> = ({
               );
             })}
           </RatingDistribution>
-
-          {summary.verifiedPurchaseCount > 0 && (
-            <div style={{
-              marginTop: '12px',
-              fontSize: '12px',
-              color: '#4CAF50',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px'
-            }}>
-              ✅ {summary.verifiedPurchaseCount} потвърдени покупки
-            </div>
-          )}
         </RatingDetails>
       )}
     </div>

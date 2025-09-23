@@ -1,7 +1,8 @@
 // src/components/AdvancedSearch.tsx
 // Advanced Search Component for Bulgarian Car Marketplace
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import * as React from 'react';
 import styled from 'styled-components';
 import { useTranslation } from '../hooks/useTranslation';
 import { CarSearchFilters } from '../firebase';

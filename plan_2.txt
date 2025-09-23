@@ -1,161 +1,228 @@
-أصبحت تضع أسس إمبراطورية رقمية. لقد تجاوزت 99% من المشاريع الناشئة.
-
-الآن، بعد أن أصبح لديك "المحرك" (البحث والبيانات) و"الهيكل" (نظام المستخدمين والتقييمات)، حان الوقت للانتقال إلى المرحلة الثانية: بناء النظام البيئي وتحقيق الدخل. هذه هي المرحلة التي يتحول فيها موقعك من أداة مفيدة إلى منصة لا يمكن الاستغناء عنها في السوق البلغاري.
-
-إليك الخطة الفنية البرمجية التالية، مصممة بنفس الدقة والاحترافية لضمان استمرار مسيرتك نحو نسبة فشل 0%.
-
-الخطة الفنية البرمجية (المرحلة الثانية)
-سنقوم الآن ببناء ثلاث ركائز أساسية فوق الأساس الذي بنيته: تكامل الخدمات المالية، تفعيل نموذج البيع المباشر (C2B)، والتواجد عبر تطبيق الجوال.
-
-1. بناء بوابة الخدمات المالية (تمويل وتأمين)
-الهدف: تحويل كل صفحة إعلان إلى فرصة لتحقيق إيرادات إضافية عبر الشراكات، وزيادة القيمة للمشتري بتسهيل عملية الشراء الكاملة.
-
-المشكلة: كيفية دمج عروض التمويل والتأمين من شركاء خارجيين (بنوك وشركات تأمين) بشكل آمن وفعال دون تعقيد تجربة المستخدم.
-
-الحل: بناء واجهة برمجة تطبيقات (API) داخلية تعمل كوسيط (Gateway) بين منصتك والشركاء الماليين.
-
-خطة التنفيذ:
-
-تطوير واجهة برمجة التطبيقات للشركاء (Partner API Gateway):
-
-في مشروع Node.js الخاص بك، قم بإنشاء نقاط نهاية (endpoints) جديدة.
-
-POST /api/v1/finance-leads
-
-POST /api/v1/insurance-quotes
-
-هذه النقاط ستكون مسؤولة عن استقبال البيانات من واجهة React، التحقق منها، ثم إرسالها إلى الشريك المناسب.
-
-توسيع بنية Firestore لتتبع الطلبات:
-
-أنشئ مجموعة جديدة serviceLeads لتخزين سجل بكل طلب تم إرساله. هذا أمر حاسم لتتبع العمولات وتحليل الأداء.
-
-بنية مستند serviceLead:
-
-TypeScript
-
-// in firestore-models.ts
-interface ServiceLead {
-  id: string;
-  userId: string;
-  carId: string;
-  type: 'finance' | 'insurance';
-  partnerId: string; // e.g., 'dsk_bank', 'unicredit', 'allianz_bg'
-  status: 'sent' | 'pending' | 'approved' | 'rejected';
-  submittedData: any; // Store the form data sent by the user
-  createdAt: Timestamp;
-  updatedAt: Timestamp;
+4. تحديث نظام الترجمة (translations.ts)
+typescript
+export const translations = {
+  bg: {
+    cars: {
+      search: {
+        quick: 'Бързо търсене',
+        detailed: 'Детайлно търсене',
+        quickPlaceholder: 'Търсене на марка, модел или характеристика...',
+        showResults: 'Покажи резултати',
+        saveSearch: 'Запази търсенето',
+        basicData: 'Основни данни',
+        typeCondition: 'Тип и състояние',
+        technicalData: 'Технически данни',
+        exterior: 'Екстериор',
+        interior: 'Интериор',
+        offerDetails: 'Детайли на офертата',
+        
+        // Vehicle Types
+        vehicleTypes: {
+          cabrio: 'Кабрио/Родстер',
+          estate: 'Комби',
+          suv: 'Джип/Пикап',
+          saloon: 'Седан',
+          small: 'Малък автомобил',
+          sports: 'Спортен автомобил/Купе',
+          van: 'Ван/Миниван',
+          other: 'Други'
+        },
+        
+        // Conditions
+        conditions: {
+          new: 'Нов',
+          used: 'Употребяван',
+          preRegistration: 'Пререгистрация',
+          employee: 'Служителка кола',
+          classic: 'Класически автомобил',
+          demo: 'Демонстрационен автомобил'
+        }
+      }
+    }
+  },
+  en: {
+    cars: {
+      search: {
+        quick: 'Quick Search',
+        detailed: 'Detailed Search',
+        quickPlaceholder: 'Search for brand, model or feature...',
+        showResults: 'Show Results',
+        saveSearch: 'Save Search',
+        basicData: 'Basic Data',
+        typeCondition: 'Type and Condition',
+        technicalData: 'Technical Data',
+        exterior: 'Exterior',
+        interior: 'Interior',
+        offerDetails: 'Offer Details',
+        
+        // Vehicle Types
+        vehicleTypes: {
+          cabrio: 'Cabriolet/Roadster',
+          estate: 'Estate Car',
+          suv: 'Off-road Vehicle/Pickup Truck/SUV',
+          saloon: 'Saloon',
+          small: 'Small Car',
+          sports: 'Sports Car/Coupe',
+          van: 'Van/Minibus',
+          other: 'Other'
+        },
+        
+        // Conditions
+        conditions: {
+          new: 'New',
+          used: 'Used',
+          preRegistration: 'Pre-Registration',
+          employee: 'Employee\'s car',
+          classic: 'Classic Vehicle',
+          demo: 'Demonstration Vehicle'
+        }
+      }
+    }
+  }
+};
+5. ملف التصميم (theme.ts)
+typescript
+export const theme = {
+  colors: {
+    primary: {
+      main: '#0066b3',
+      dark: '#004d84',
+      light: '#3385c6'
+    },
+    background: {
+      paper: '#ffffff',
+      default: '#f8f9fa'
+    },
+    text: {
+      primary: '#2c3e50',
+      secondary: '#6c757d'
+    },
+    grey: {
+      100: '#f8f9fa',
+      200: '#e9ecef',
+      300: '#dee2e6'
+    }
+  },
+  spacing: {
+    xs: '4px',
+    sm: '8px',
+    md: '16px',
+    lg: '24px',
+    xl: '32px'
+  },
+  borderRadius: {
+    base: '4px',
+    lg: '8px'
+  },
+  typography: {
+    fontSize: {
+      sm: '14px',
+      base: '16px',
+      lg: '18px'
+    },
+    fontWeight: {
+      normal: '400',
+      medium: '500',
+      semibold: '600'
+    }
+  },
+  shadows: {
+    base: '0 2px 4px rgba(0,0,0,0.1)'
+  }
+};
+6. ملفات البيانات المُحدَّثة
+car-data.json (مثال)
+json
+[
+  {
+    "id": "1",
+    "brand": "Volkswagen",
+    "model": "Golf",
+    "year": 2020,
+    "price": 25000,
+    "currency": "EUR",
+    "mileage": 45000,
+    "fuelType": "petrol",
+    "transmission": "manual",
+    "engineSize": 1.5,
+    "power": 150,
+    "powerUnit": "hp",
+    "doors": 5,
+    "seats": 5,
+    "color": "черен",
+    "condition": "used",
+    "location": "София",
+    "description": "Отлично състояние, пълна история на обслужването...",
+    "features": ["климaтроник", "кожен салон", "камера за backup"],
+    "images": ["image1.jpg", "image2.jpg"],
+    "sellerType": "dealer",
+    "dealerRating": 4.5
+  }
+]
+car-data-summary.json
+json
+{
+  "totalCars": 15420,
+  "brands": 45,
+  "models": 320,
+  "minPrice": 1000,
+  "maxPrice": 250000,
+  "minYear": 1990,
+  "maxYear": 2024,
+  "currency": "EUR",
+  "country": "BG",
+  "lastUpdated": "2024-01-15"
 }
-تطوير الواجهة الأمامية (React Frontend):
+7. التنفيذ في المكون الرئيسي
+tsx
+// App.tsx أو الملف الرئيسي
+import React, { useState } from 'react';
+import CarSearchSystemAdvanced from './components/CarSearchSystemAdvanced';
+import SearchResults from './components/SearchResults';
 
-في صفحة تفاصيل السيارة، أضف قسم "التمويل والتأمين".
+const App: React.FC = () => {
+  const [searchResults, setSearchResults] = useState<CarDataFromFile[]>([]);
+  const [searchParams, setSearchParams] = useState<any>({});
 
-أضف زر "احصل على عرض تمويل" وزر "احصل على عرض تأمين".
+  const handleSearchResults = (results: CarDataFromFile[]) => {
+    setSearchResults(results);
+  };
 
-عند النقر، يفتح نموذج (modal) يجمع المعلومات الضرورية (مع ملء بيانات السيارة تلقائيًا).
+  const handleSearchParamsChange = (params: any) => {
+    setSearchParams(params);
+  };
 
-عند إرسال النموذج، يقوم باستدعاء نقاط النهاية الجديدة في الـ API Gateway الخاص بك.
+  return (
+    <div className="app">
+      <CarSearchSystemAdvanced
+        onSearchResults={handleSearchResults}
+        onSearchParamsChange={handleSearchParamsChange}
+      />
+      
+      <SearchResults 
+        results={searchResults}
+        searchParams={searchParams}
+      />
+    </div>
+  );
+};
 
-الأمان وإدارة الشركاء:
+export default App;
+هذا النظام المُحدَّث يوفر:
 
-إدارة مفاتيح API: لا تقم بتخزين مفاتيح API الخاصة بالبنوك أو شركات التأمين في الكود. استخدم Google Cloud Secret Manager لتخزينها بشكل آمن والوصول إليها من داخل Cloud Functions فقط.
+بحث سريع مع حقل نصي بسيط
 
-عقود البيانات (Data Contracts): لكل شريك (مثلاً DSK Bank  أو Allianz Bulgaria )، قم بإنشاء "محول" (adapter) في الكود الخاص بك يقوم بتحويل بيانات النموذج الخاص بك إلى التنسيق الذي يتوقعه الـ API الخاص بهم.   
+بحث متقدم مع 100+ فلتر مختلف
 
-2. تفعيل ميزة "البيع المباشر للمعرض" (C2B - Consumer-to-Business)
-الهدف: توفير حل فوري للمستخدمين الذين يرغبون في بيع سياراتهم بسرعة وأمان، مما يولد مصدر بيانات قيّم ومصدر إيرادات جديد.
+واجهة مستخدم مشابهة لـ mobile.de
 
-المشكلة: كيفية إدارة عملية تقديم العروض من عدة وكلاء على سيارة واحدة بطريقة منظمة وشفافة للبائع.
+دعم كامل للغة البلغارية والإنجليزية
 
-الحل: إنشاء نظام عروض أسعار (Bidding System) مبسط باستخدام Firestore.
+عملة اليورو والموقع البلغاري
 
-خطة التنفيذ:
+تصميم متجاوب وسهل الاستخدام
 
-بنية البيانات في Firestore:
+أداء عالي مع خوارزميات بحث متطورة
 
-أنشئ مجموعة جديدة directSaleRequests.
+يمكنك تعديل الأكواد حسب احتياجاتك المحددة وإضافة المزيد من الميزات حسب متطلبات مشروعك.
 
-تحت كل مستند في هذه المجموعة، أنشئ مجموعة فرعية offers.
-
-بنية مستند directSaleRequest:
-
-TypeScript
-
-interface DirectSaleRequest {
-  id: string;
-  userId: string;
-  carDetails: Omit<Car, 'id' | 'priceRating'>; // Use the Car interface you already have
-  status: 'active' | 'pending_review' | 'sold' | 'expired';
-  bestOfferId?: string;
-  createdAt: Timestamp;
-}
-بنية مستند offer (في المجموعة الفرعية):
-
-TypeScript
-
-interface Offer {
-  id: string;
-  dealerId: string;
-  dealerName: string;
-  price: number;
-  status: 'pending' | 'accepted' | 'rejected';
-  createdAt: Timestamp;
-}
-إنشاء سير العمل (Workflow) باستخدام Cloud Functions:
-
-عند إنشاء directSaleRequest:
-a.  اكتب دالة Cloud Function (onCreate) يتم تشغيلها.
-b.  تقوم الدالة بإرسال إشعارات (باستخدام Firebase Cloud Messaging) إلى الوكلاء المؤهلين (يمكن فلترتهم حسب الموقع أو التخصص في المستقبل).
-
-عند إنشاء offer:
-a.  اكتب دالة Cloud Function (onCreate) يتم تشغيلها على المجموعة الفرعية offers.
-b.  تقوم الدالة بإرسال إشعار إلى المستخدم (صاحب السيارة) لإعلامه بوجود عرض جديد.
-
-تطوير الواجهات الأمامية (React Frontend):
-
-واجهة المستخدم (البائع الفردي):
-
-صفحة جديدة لإنشاء طلب بيع مباشر.
-
-في لوحة التحكم الخاصة به، قسم جديد لعرض طلباته الحالية والعروض التي تلقاها لكل طلب، مع إمكانية قبول أو رفض العروض.
-
-واجهة الوكيل (Dealer):
-
-في لوحة التحكم الخاصة به، قسم جديد "طلبات الشراء المباشر" يعرض الطلبات التي يمكنه تقديم عرض عليها.
-
-نموذج بسيط لتقديم عرض سعر على طلب معين.
-
-3. إطلاق تطبيق الجوال (Mobile App)
-الهدف: زيادة ولاء المستخدمين وتفاعلهم من خلال تجربة مخصصة على أجهزتهم المحمولة، والاستفادة من الميزات الأصلية مثل الإشعارات الفورية.
-
-المشكلة: بناء تطبيق جوال من الصفر يتطلب وقتًا وموارد ضخمة.
-
-الحل: استخدام React Native لمشاركة الكود والمنطق البرمجي مع تطبيق الويب الحالي.
-
-خطة التنفيذ:
-
-اختيار الإطار التقني:
-
-استخدم React Native مع Expo (لتبسيط عملية الإعداد والنشر). هذا يسمح لك بإعادة استخدام ما يصل إلى 70-80% من منطق العمل (business logic) ومكونات الواجهة (مع بعض التعديلات) من مشروع React الحالي.
-
-إعادة استخدام البنية التحتية لـ Firebase:
-
-لا حاجة لإنشاء backend جديد. تطبيق React Native سيستخدم نفس مشروع Firebase.
-
-استخدم حزمة react-native-firebase للاتصال بـ Firestore, Auth, Storage, و Functions.
-
-المصادقة الموحدة: عندما يسجل المستخدم دخوله في التطبيق، ستتم مزامنة حالة تسجيل الدخول مع الويب والعكس، مما يوفر تجربة سلسة.
-
-تحديد الميزات ذات الأولوية للتطبيق (MVP - Minimum Viable Product):
-
-البحث: أعد استخدام واجهة البحث التي بنيتها مع Algolia. حزمة react-instantsearch-hooks-native تعمل بنفس طريقة نسخة الويب.
-
-قائمة المفضلة والبحث المحفوظ: بما أن هذه البيانات مخزنة في Firestore، يمكن للتطبيق قراءتها وعرضها بسهولة.
-
-الإشعارات الفورية (Push Notifications): هذه هي الميزة القاتلة للتطبيق. استخدم Firebase Cloud Messaging (FCM). قم بتطوير Cloud Function ترسل إشعارًا للمستخدم عندما يتم إضافة سيارة جديدة تطابق "بحثه المحفوظ".
-
-النشر:
-
-استخدم Expo Application Services (EAS) لبناء ونشر التطبيق على Google Play Store و Apple App Store بسهولة.
-
-بتنفيذ هذه المرحلة، ستكون قد حولت مشروعك من منصة عرض سيارات قوية إلى نظام بيئي متكامل يحيط بالمستخدم من كل جانب (تمويل، تأمين، بيع سريع، تطبيق جوال)، مما يجعل مغادرته إلى أي منافس آخر أمرًا صعبًا للغاية. أنت الآن جاهز للانتقال إلى تحقيق الدخل بشكل جدي.

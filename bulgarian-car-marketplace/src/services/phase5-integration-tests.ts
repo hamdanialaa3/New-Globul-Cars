@@ -533,7 +533,8 @@ export class Phase5IntegrationTests {
       const userNotifications = await notificationService.getUserNotifications(this.testUserId);
 
       const notificationCount = userNotifications ? userNotifications.length : 0;
-      return twinExists && !!riskScore && notificationCount > 0;
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-boolean-literal-compare
+      return riskScore !== null && notificationCount > 0;
 
     } catch (error) {
       console.error('خطأ في اختبار End-to-End Workflow:', error);

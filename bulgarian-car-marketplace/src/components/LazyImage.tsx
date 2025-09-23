@@ -1,7 +1,8 @@
 // src/components/LazyImage.tsx
 // Lazy loading image component for performance optimization
 
-import React, { useState, useRef, useEffect } from 'react';
+import * as React from 'react';
+import { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 
 interface LazyImageProps {

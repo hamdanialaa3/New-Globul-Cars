@@ -4,7 +4,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from '../hooks/useTranslation';
-import { bulgarianRatingService, CarRating } from '../rating-service';
+import { bulgarianRatingService, CarRating } from '../services/rating-service';
 
 interface RatingListProps {
   carId: string;
@@ -313,7 +313,7 @@ const RatingList: React.FC<RatingListProps> = ({ carId, className }) => {
 
   const handleHelpful = async (ratingId: string) => {
     try {
-      await bulgarianRatingService.markHelpful(ratingId);
+      await bulgarianRatingService.updateRatingHelpful(ratingId, true);
       // Update local state
       setRatings(prev => prev.map(rating =>
         rating.id === ratingId
@@ -340,14 +340,14 @@ const RatingList: React.FC<RatingListProps> = ({ carId, className }) => {
   const sortedRatings = [...ratings].sort((a, b) => {
     switch (sortBy) {
       case 'oldest':
-        return a.createdAt.toMillis() - b.createdAt.toMillis();
+        return a.timestamp.getTime() - b.timestamp.getTime();
       case 'helpful':
         return (b.helpful || 0) - (a.helpful || 0);
       case 'rating':
-        return b.rating - a.rating;
+        return b.overallRating - a.overallRating;
       case 'newest':
       default:
-        return b.createdAt.toMillis() - a.createdAt.toMillis();
+        return b.timestamp.getTime() - a.timestamp.getTime();
     }
   });
 
@@ -398,11 +398,11 @@ const RatingList: React.FC<RatingListProps> = ({ carId, className }) => {
                   )}
                   <UserDetails>
                     <UserName>{rating.userName}</UserName>
-                    <RatingDate>{formatDate(rating.createdAt)}</RatingDate>
+                    <RatingDate>{formatDate(rating.timestamp)}</RatingDate>
                   </UserDetails>
                 </UserInfo>
                 <RatingStars>
-                  {renderStars(rating.rating)}
+                  {renderStars(rating.overallRating)}
                 </RatingStars>
               </RatingHeader>
 

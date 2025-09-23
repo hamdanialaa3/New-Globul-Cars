@@ -12,6 +12,15 @@ import {
   PriceDistributionChart
 } from '../components/analytics/Charts';
 
+// Market Trend Interface
+interface MarketTrend {
+  period: string;
+  averagePrice: number;
+  totalListings: number;
+  priceChange: number;
+  popularMakes: string[];
+}
+
 const PortalContainer = styled.div`
   min-height: 100vh;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -359,8 +368,8 @@ const B2BAnalyticsPortal: React.FC = () => {
                 padding: '10px',
                 borderBottom: '1px solid #eee'
               }}>
-                <span>{trend.make} {trend.model}</span>
-                <span>{trend.searchCount} търсения</span>
+                <span>{trend.popularMakes.join(', ')}</span>
+                <span>{trend.totalListings} обяви</span>
                 <span>{formatCurrency(trend.averagePrice)}</span>
               </div>
             ))}

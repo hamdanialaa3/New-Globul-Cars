@@ -6,12 +6,7 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { useTranslation } from '../hooks/useTranslation';
 import logoImage from '../assets/logo.png';
-import {
-  ProfessionalFacebookIcon,
-  ProfessionalInstagramIcon,
-  ProfessionalTwitterIcon,
-  ProfessionalLinkedInIcon
-} from './CustomIcons';
+import { Facebook, Instagram, Twitter, Linkedin } from 'lucide-react';
 
 // Styled Components
 const FooterContainer = styled.footer`
@@ -182,16 +177,16 @@ const Footer: React.FC = () => {
             </p>
             <SocialLinks>
               <SocialLink href="https://facebook.com/globulcars" target="_blank" rel="noopener noreferrer">
-                <ProfessionalFacebookIcon size={20} />
+                <Facebook size={20} />
               </SocialLink>
               <SocialLink href="https://instagram.com/globulcars" target="_blank" rel="noopener noreferrer">
-                <ProfessionalInstagramIcon size={20} />
+                <Instagram size={20} />
               </SocialLink>
               <SocialLink href="https://twitter.com/globulcars" target="_blank" rel="noopener noreferrer">
-                <ProfessionalTwitterIcon size={20} />
+                <Twitter size={20} />
               </SocialLink>
               <SocialLink href="https://linkedin.com/company/globulcars" target="_blank" rel="noopener noreferrer">
-                <ProfessionalLinkedInIcon size={20} />
+                <Linkedin size={20} />
               </SocialLink>
             </SocialLinks>
           </FooterSection>

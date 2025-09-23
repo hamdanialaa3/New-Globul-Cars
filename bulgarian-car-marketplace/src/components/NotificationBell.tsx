@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from '../hooks/useTranslation';
 import { fcmService, PushNotification } from '../services/fcm-service';
-import { ProfessionalBellIcon } from './CustomIcons';
+import { Bell } from 'lucide-react';
 
 const NotificationContainer = styled.div`
   position: relative;
@@ -255,7 +255,7 @@ const NotificationBell: React.FC = () => {
         hasUnread={unreadCount > 0}
         aria-label={t('notifications.title')}
       >
-        <span className="bell-icon"><ProfessionalBellIcon size={20} /></span>
+        <span className="bell-icon"><Bell size={20} /></span>
         {unreadCount > 0 && (
           <NotificationBadge>
             {unreadCount > 99 ? '99+' : unreadCount}
@@ -276,7 +276,7 @@ const NotificationBell: React.FC = () => {
         <NotificationList>
           {notifications.length === 0 ? (
             <EmptyNotifications>
-              <div className="icon"><ProfessionalBellIcon size={48} /></div>
+              <div className="icon"><Bell size={48} /></div>
               <p>{t('notifications.noNotifications')}</p>
             </EmptyNotifications>
           ) : (

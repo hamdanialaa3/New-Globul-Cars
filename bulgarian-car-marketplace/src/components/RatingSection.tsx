@@ -4,7 +4,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from '../hooks/useTranslation';
-import { bulgarianRatingService, RatingSummary } from '../../../rating-service';
+import { bulgarianRatingService, RatingSummary } from '../services/rating-service';
 import RatingDisplay from './RatingDisplay';
 import RatingList from './RatingList';
 import AddRatingForm from './AddRatingForm';
@@ -160,13 +160,6 @@ const RatingSection: React.FC<RatingSectionProps> = ({
     };
 
     loadSummary();
-
-    // Subscribe to rating summary changes
-    const unsubscribe = bulgarianRatingService.subscribeToRatingSummary(carId, (newSummary: RatingSummary | null) => {
-      setSummary(newSummary);
-    });
-
-    return unsubscribe;
   }, [carId]);
 
   useEffect(() => {
@@ -190,9 +183,17 @@ const RatingSection: React.FC<RatingSectionProps> = ({
     setShowAddForm(true);
   };
 
-  const handleReviewAdded = () => {
+  const handleReviewAdded = async () => {
     setShowAddForm(false);
     setUserHasReviewed(true);
+    
+    // Reload rating summary after adding new review
+    try {
+      const ratingSummary = await bulgarianRatingService.getRatingSummary(carId);
+      setSummary(ratingSummary);
+    } catch (error) {
+      console.error('Error reloading rating summary:', error);
+    }
   };
 
   const handleCancel = () => {

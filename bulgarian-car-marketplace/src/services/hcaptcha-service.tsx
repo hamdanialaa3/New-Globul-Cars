@@ -127,7 +127,7 @@ export const HCaptchaComponent = forwardRef<any, HCaptchaComponentProps>(
 
     useImperativeHandle(ref, () => ({
       execute: () => captchaRef.current?.execute(),
-      reset: () => captchaRef.current?.reset(),
+      reset: () => (captchaRef.current as any)?.reset?.(),
     }));
 
     const siteKey = process.env.REACT_APP_HCAPTCHA_SITE_KEY || '';

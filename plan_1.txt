@@ -1,347 +1,765 @@
-الهدف الرئيسي: أن تصبح المنصة الأكثر موثوقية وسهولة في الاستخدام لعرض وبيع السيارات في بلغاريا. في هذه المرحلة، التركيز ليس على تحقيق الربح، بل على اكتساب الحصة السوقية وبناء الثقة المطلقة.
-
-1. التميز في تجربة المستخدم الأساسية (Product Excellence):
-محرك بحث لا مثيل له: البحث هو المنتج الأساسي. يجب أن يكون أسرع وأكثر دقة من أي منافس محلي.
-
-التنفيذ: استنادًا إلى البيانات التي قمت باستخراجها، قم بتطوير فلاتر بحث فائقة الدقة تتجاوز الماركة والموديل. أضف فلاتر خاصة بالسوق البلغاري: "مسجلة في بلغاريا"، "ضريبة البيئة مدفوعة"، "تاريخ الفحص الفني"، "نوع الوقود (غاز/بنزين)".
-
-صفحة إعلان غنية بالمعلومات: صفحة الإعلان يجب أن تكون مصدر الحقيقة الوحيد للمشتري.
-
-التنفيذ: اعرض جميع المواصفات الفنية التي استخرجتها بشكل منظم. أضف ميزة "مقارنة مع متوسط السوق" بناءً على تحليلك للبيانات الموجودة لديك. هذا يبني ثقة فورية.
-
-تجربة بائعين سلسة (Seller Experience):
-
-التنفيذ: قم ببناء لوحة تحكم بسيطة وفعالة للبائعين (Dealers). يجب أن تكون عملية إضافة إعلان أسهل وأسرع من أي منصة أخرى. استلهم من واجهة برمجة التطبيقات للبائعين في mobile.de  لتعرف ما هي البيانات الهامة التي يحتاجها البائعون.   
-
-2. بناء جدار الثقة (The Trust Moat):
-نظام تقييم الأسعار (Price Rating): هذه هي الميزة القاتلة في mobile.de. إنها تبني ثقة هائلة.   
-
-التنفيذ: باستخدام بياناتك، قم بإنشاء خوارزمية بسيطة تقيم كل إعلان (مثلاً: "سعر ممتاز"، "سعر جيد"، "سعر عادل") بناءً على الموديل، السنة، والمسافة المقطوعة مقارنة بالإعلانات الأخرى.
-
-ملفات تعريف موثوقة للبائعين:
-
-التنفيذ: قم بإنشاء صفحات مخصصة للبائعين المعتمدين (Dealers) تعرض جميع سياراتهم، معلومات الاتصال، وتقييمات المشترين. قم بالتحقق من هوية البائعين يدوياً في البداية لضمان عدم وجود محتالين.
-
-الدفع الآمن (Safe Pay): قدم خدمة دفع آمنة كوسيط للمعاملات بين الأفراد.   
-
-التنفيذ: الشراكة مع شركة تكنولوجيا مالية (FinTech) محلية في بلغاريا لتوفير خدمة ضمان (Escrow Service). هذا يزيل أكبر مخاوف المشترين الأفراد.
-
-3. استراتيجية اختراق السوق (Go-to-Market):
-التركيز على البائعين أولاً: لا يمكنك جذب المشترين بدون سيارات.
-
-التنفيذ: استهدف أفضل 50 معرض سيارات في صوفيا. قدم لهم "باقة الشريك المؤسس": إعلانات مميزة مجانية لمدة عام كامل مقابل التزامهم بعرض جميع سياراتهم على منصتك حصرياً أو أولاً.
-
-التسويق الموجه:
-
-التنفيذ: قم بحملات إعلانية مدفوعة (Google Ads, Facebook Ads) تستهدف بشكل دقيق عمليات البحث عن موديلات سيارات محددة في بلغاريا. بدلاً من الإعلان عن "شراء سيارة"، أعلن عن "شراء BMW X5 2018 في صوفيا".
-
-المرحلة الثانية: بناء النظام البيئي وتحقيق الدخل (الأشهر 7-18)
-الهدف الرئيسي: تحويل المنصة من مجرد موقع إعلانات إلى سوق متكامل يقدم خدمات ذات قيمة مضافة، والبدء في تحقيق إيرادات مستدامة.
-
-1. توسيع الخدمات (Service Expansion):
-تكامل التمويل والتأمين: هذه هي أكبر مصادر الإيرادات لـ mobile.de بعد الإعلانات.   
-
-التنفيذ: قم ببناء واجهة برمجة تطبيقات (API) للشراكات. عقد شراكات مع بنوك بلغارية كبرى (مثل DSK Bank, UniCredit Bulbank) وشركات تأمين (مثل Bulstrad, Armeec). أضف حاسبة تمويل في كل صفحة إعلان، وزر "اطلب عرض تمويل/تأمين". ستكون إيراداتك عبارة عن عمولة على كل صفقة ناجحة.
-
-خدمة "البيع المباشر للمعرض" (C2B - Consumer-to-Business):
-
-التنفيذ: أطلق ميزة تسمح للمستخدمين الأفراد بالحصول على عرض شراء فوري لسياراتهم من شبكة البائعين المعتمدين لديك. هذا يحل مشكلة كبيرة للمستخدمين الذين يريدون بيع سياراتهم بسرعة وأمان. يمكنك أخذ عمولة صغيرة من البائع على كل سيارة يشتريها عبر هذه الميزة.   
-
-تطبيق الجوال (Mobile App):
-
-التنفيذ: قم بتطوير تطبيق جوال احترافي يقدم تجربة مستخدم متكاملة. الميزات الأساسية يجب أن تشمل: البحث المحفوظ، الإشعارات الفورية عند إضافة إعلانات جديدة تطابق بحثك، ومزامنة المفضلة عبر الأجهزة.   
-
-2. نموذج تحقيق الدخل (Monetization Model):
-باقات الإعلانات للبائعين:
-
-التنفيذ: قدم ثلاث باقات للبائعين (أساسية، محسنة، مميزة) مستوحاة من نموذج mobile.de.   
-
-أساسية (Basis): عدد محدود من الإعلانات.
-
-محسنة (Standard): عدد أكبر من الإعلانات + ظهور أفضل في نتائج البحث.
-
-مميزة (Premium): عدد غير محدود + ظهور في الصفحة الأولى + إحصائيات مفصلة عن أداء الإعلانات.
-
-الإعلانات المدفوعة للأفراد:
-
-التنفيذ: يمكن للأفراد نشر إعلان واحد مجانًا، ولكن يمكنهم الدفع مقابل ميزات إضافية مثل "تمييز الإعلان" أو "إعادة النشر للأعلى".   
-
-المرحلة الثالثة: الهيمنة على السوق والابتكار (الأشهر 19 فصاعدًا)
-الهدف الرئيسي: ترسيخ مكانتك كقائد مطلق للسوق لا يمكن منافسته، من خلال الاستفادة من البيانات والابتكار المستمر.
-
-1. البيانات كمنتج (Data as a Product):
-لوحة معلومات تحليلات السوق:
-
-التنفيذ: لديك الآن بيانات لا تقدر بثمن عن السوق البلغاري. قم بإنشاء منتج اشتراك (SaaS) للبائعين وشركات التأمين والبنوك يوفر لهم رؤى حصرية: متوسط أسعار الموديلات، السيارات الأكثر طلبًا، اتجاهات السوق، إلخ.
-
-واجهة برمجة تطبيقات للبيانات (Data API):
-
-التنفيذ: قدم API مدفوعًا للشركاء للوصول إلى بيانات السوق بشكل برمجي، مما يفتح مصدر دخل جديد عالي الهامش.
-
-2. الابتكار القائم على الذكاء الاصطناعي:
-أداة تقييم ذكية:
-
-التنفيذ: استخدم نماذج تعلم الآلة (Machine Learning) لتحليل بياناتك وتقديم أداة تقييم سيارات هي الأكثر دقة في بلغاريا، مع الأخذ في الاعتبار عوامل دقيقة تتجاوز الموديل والمسافة المقطوعة.
-
-التخصيص (Personalization):
-
-التنفيذ: استخدم الذكاء الاصطناعي لتقديم توصيات مخصصة للمشترين، وإشعارات استباقية حول صيانة السيارات المحتملة، واقتراح أفضل وقت لبيع سيارتهم.
-
-3. بناء المجتمع وتوسيع النطاق:
-المحتوى المتخصص:
-
-التنفيذ: أطلق قسم "مجلة ودليل" على الموقع، يقدم مراجعات للسيارات، نصائح للشراء والبيع، وأخبار السوق. هذا يجعلك المصدر الأول للمعلومات وليس فقط للبيع.   
-
-التوسع في فئات جديدة:
-
-التنفيذ: بعد الهيمنة على سوق السيارات، قم بالتوسع إلى فئات أخرى كما فعل mobile.de: الدراجات النارية، الشاحنات، الكرفانات، وحتى الدراجات الكهربائية.   
-
-هذه الخطة ليست مجرد قائمة مهام، بل هي استراتيجية متكاملة تضمن أن كل خطوة تبنيها تزيد من قيمة مشروعك وتقلل من مخاطر الفشل، لتحويل "gloubul Net Auto" من مشروع واعد إلى القائد المطلق لسوق السيارات في بلغاريا.
-
-
-
-
-
-
-
-الان لنتحدث عن الخطه الفنيه البرمجي كيف نضيف الى المشروع الميزات الموجوده وما هو النقص الحالي ولو نحن في البداية اذا عرفت الذي ارسلته لك هو عبارة عن امور كلها منفذه حالية
-
-
-ممتاز. هذا هو الموقف الذي تتحول فيه الرؤية إلى واقع. لديك الأساس (Foundation)، والآن سنبني عليه ناطحة سحاب (Skyscraper) تقنياً.
-
-بناءً على تحليلي العميق لمشروعك الحالي وهدفك المتمثل في mobile.de، وبشرط "نسبة فشل 0%"، سأقدم لك الخطة الفنية البرمجية. هذه ليست مجرد قائمة ميزات، بل هي خارطة طريق معمارية (Architectural Roadmap) لكيفية تطوير الكود الحالي لديك خطوة بخطوة.
-
-سنركز على المرحلة الأولى: التأسيس وبناء الثقة، لأن تنفيذها بشكل صحيح هو ما يضمن عدم فشل المشروع.
-
-الوضع الحالي (ما لديك):
-Backend: Node.js/TypeScript + Firebase (Auth, Firestore, Storage, Functions). هذا اختيار ممتاز وقوي.
-
-Frontend: React. مثالي لبناء واجهة مستخدم تفاعلية وسريعة.
-
-Data: لديك آلية لاستخراج البيانات (Scraping)، مما يعني أن لديك وقود (بيانات السيارات) لتشغيل المحرك.
-
-النقص الحالي (الفجوات التقنية الرئيسية):
-البحث المتقدم: Firestore وحده غير كافٍ لإنشاء تجربة بحث سريعة ومعقدة تشبه mobile.de (بحث نصي، فلاتر متعددة، ترتيب حسب الصلة).
-
-تحليل البيانات في الوقت الفعلي: لا توجد آلية حالية لحساب "تقييم السعر" تلقائيًا عند إضافة أو تحديث إعلان.
-
-إدارة البائعين المحترفين (Dealers): نظام المستخدمين الحالي (BulgarianUser) يحتاج إلى التوسع لتمييز البائعين الأفراد عن الوكلاء المحترفين وإعطاء الوكلاء أدوات خاصة بهم.
-
-نظام الثقة (التقييمات والمراجعات): لا توجد بنية تحتية لجمع وإدارة تقييمات المشترين للبائعين.
-
-الخطة الفنية البرمجية (المرحلة الأولى)
-هذه هي الخطوات العملية التي يمكنك البدء في تنفيذها في Visual Studio Code.
-
-1. بناء محرك بحث لا مثيل له (Search Engine)
-المشكلة: استعلامات Firestore محدودة. لا يمكنك إجراء بحث نصي كامل أو تطبيق فلاتر معقدة بكفاءة عالية.
-الحل: دمج خدمة بحث متخصصة. الخيار الأفضل والأكثر تكاملاً مع بيئتك هو Algolia.
-
-خطة التنفيذ:
-
-إعداد Algolia:
-
-أنشئ حسابًا في Algolia.
-
-قم بتثبيت إضافة Firebase الرسمية "Search with Algolia". هذه الإضافة ستقوم تلقائيًا بمزامنة البيانات من مجموعة Firestore (مثلاً cars) إلى فهرس Algolia الخاص بك.
-
-تعديل بنية Firestore (Data Schema):
-
-في مجموعة cars، تأكد من أن كل مستند يحتوي على جميع الحقول القابلة للبحث والفهرسة. مثال:
-
-TypeScript
-
-// in firestore-models.ts
-interface Car {
-  id: string;
-  make: string; // "BMW"
-  model: string; // "X5"
-  year: number; // 2022
-  price: number; // 65000
-  mileage: number; // 15000
-  fuelType: 'petrol' | 'diesel' | 'electric' | 'gas';
-  isRegisteredInBG: boolean;
-  hasPaidEcoTax: boolean;
-  //... all other technical specs
+نظام البحث المتطور لمشروع GLOUBUL Cars
+بناءً على متطلباتك، سأقوم بتطوير نظام بحث متكامل مشابه لـ mobile.de مع التخصيص للسياق البلغاري. إليك التطوير الشامل:
+
+1. المكون الرئيسي المُحدَّث (CarSearchSystemAdvanced.tsx)
+tsx
+import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
+import { carDataBrowserService } from '../../services/carDataBrowserService';
+import { SearchFilterSection } from './components/SearchFilterSection';
+import { SearchTabs } from './components/SearchTabs';
+import { SearchResults } from './components/SearchResults';
+import { LoadingSpinner } from '../common/LoadingSpinner';
+
+interface CarSearchSystemAdvancedProps {
+  onSearchResults: (results: CarDataFromFile[]) => void;
+  onSearchParamsChange?: (params: SearchParams) => void;
 }
-تطوير واجهة البحث (React Frontend):
 
-استخدم مكتبة react-instantsearch-hooks-web الرسمية من Algolia.
-
-هذه المكتبة توفر مكونات جاهزة (Hooks & Components) لبناء واجهة بحث كاملة في دقائق: شريط بحث، فلاتر (checkboxes, range sliders)، نتائج فورية، وترقيم الصفحات.
-
-مثال الكود في React:
-
-JavaScript
-
-// SearchPage.tsx
-import { InstantSearch, SearchBox, Hits, RefinementList } from 'react-instantsearch-hooks-web';
-import algoliasearch from 'algoliasearch/lite';
-
-const searchClient = algoliasearch('YOUR_APP_ID', 'YOUR_SEARCH_API_KEY');
-
-function SearchPage() {
-  return (
-    <InstantSearch searchClient={searchClient} indexName="cars">
-      <SearchBox />
-      <RefinementList attribute="make" /> {/* Filter by make */}
-      <RefinementList attribute="fuelType" /> {/* Filter by fuel type */}
-      <Hits />
-    </InstantSearch>
-  );
+export interface SearchParams {
+  // Basic Data
+  make: string;
+  model: string;
+  vehicleType: string[];
+  minSeats: string;
+  maxSeats: string;
+  doors: string;
+  slidingDoor: string;
+  
+  // Type and Condition
+  condition: string[];
+  paymentType: string[];
+  minPrice: string;
+  maxPrice: string;
+  minFirstRegistration: string;
+  maxFirstRegistration: string;
+  minMileage: string;
+  maxMileage: string;
+  huValidUntil: string;
+  owners: string;
+  fullServiceHistory: boolean;
+  roadworthy: boolean;
+  newService: boolean;
+  
+  // Location
+  country: string;
+  city: string;
+  zipCode: string;
+  radius: string;
+  deliveryAvailable: boolean;
+  
+  // Technical Data
+  fuelType: string[];
+  minPower: string;
+  maxPower: string;
+  powerUnit: 'hp' | 'kw';
+  minEngineSize: string;
+  maxEngineSize: string;
+  minFuelTank: string;
+  maxFuelTank: string;
+  minWeight: string;
+  maxWeight: string;
+  minCylinders: string;
+  maxCylinders: string;
+  driveType: string;
+  transmission: string[];
+  maxFuelConsumption: string;
+  emissionSticker: string;
+  emissionClass: string;
+  particulateFilter: boolean;
+  
+  // Exterior
+  exteriorColor: string[];
+  exteriorFinish: string[];
+  trailerCoupling: string;
+  trailerAssist: boolean;
+  minTrailerLoadBraked: string;
+  minTrailerLoadUnbraked: string;
+  noseWeight: string;
+  parkingSensors: string[];
+  camera360: boolean;
+  rearTrafficAlert: boolean;
+  selfSteering: boolean;
+  cruiseControl: string[];
+  
+  // Exterior Others (Checkboxes)
+  exteriorFeatures: string[];
+  
+  // Interior
+  interiorColor: string[];
+  interiorMaterial: string[];
+  airbags: string[];
+  airConditioning: string[];
+  interiorFeatures: string[];
+  
+  // Offer Details
+  sellerType: string[];
+  minDealerRating: string;
+  adOnlineSince: string;
+  withPictures: boolean;
+  withVideo: boolean;
+  discountOffers: boolean;
+  nonSmoker: boolean;
+  taxi: boolean;
+  vatReclaimable: boolean;
+  warranty: boolean;
+  damagedVehicles: string;
+  commercialImport: string;
+  approvedUsed: string;
+  searchInDescription: string;
 }
-2. بناء ميزة "تقييم السعر" الآلية (Price Rating Engine)
-المشكلة: كيف تحسب ما إذا كان سعر السيارة "ممتازًا" أو "عادلًا" تلقائيًا وبشكل فوري؟
-الحل: استخدام Firebase Cloud Functions لإجراء التحليل في الخلفية.
 
-خطة التنفيذ:
-
-توسيع بنية Firestore:
-
-أضف حقلاً جديدًا إلى Car interface:
-
-TypeScript
-
-interface Car {
-  //... other fields
-  priceRating?: 'excellent' | 'good' | 'fair' | 'high';
-}
-إنشاء Cloud Function:
-
-اكتب دالة onCarWritten التي يتم تشغيلها (onWrite) كلما تم إنشاء أو تحديث مستند في مجموعة cars.
-
-منطق الدالة:
-a.  عند تشغيل الدالة، تأخذ بيانات السيارة الجديدة/المحدثة (الماركة، الموديل، السنة، المسافة المقطوعة).
-b.  تقوم الدالة بإجراء استعلام (query) في Firestore للعثور على سيارات مشابهة (نفس الماركة، الموديل، وسنة الصنع ± سنة واحدة).
-c.  تحسب متوسط السعر للسيارات المماثلة.
-d.  تقارن سعر السيارة الحالية بالمتوسط وتحدد التقييم (excellent, good, etc.).
-e.  تقوم بتحديث (update) مستند السيارة في Firestore بالتقييم الجديد.
-
-مثال الكود (Cloud Function):
-
-TypeScript
-
-// functions/src/index.ts
-import * as functions from 'firebase-functions';
-import * as admin from 'firebase-admin';
-admin.initializeApp();
-
-exports.calculatePriceRating = functions.firestore
- .document('cars/{carId}')
- .onWrite(async (change, context) => {
-    const carData = change.after.data();
-    if (!carData) return null;
-
-    // 1. Query for similar cars
-    const similarCarsSnapshot = await admin.firestore().collection('cars')
-     .where('make', '==', carData.make)
-     .where('model', '==', carData.model)
-     .where('year', '>=', carData.year - 1)
-     .where('year', '<=', carData.year + 1)
-     .get();
-
-    // 2. Calculate average price
-    let totalPrice = 0;
-    let count = 0;
-    similarCarsSnapshot.forEach(doc => {
-      totalPrice += doc.data().price;
-      count++;
-    });
-    const averagePrice = count > 0? totalPrice / count : carData.price;
-
-    // 3. Determine and update rating
-    let rating = 'fair';
-    if (carData.price < averagePrice * 0.9) rating = 'excellent';
-    else if (carData.price < averagePrice) rating = 'good';
-    else if (carData.price > averagePrice * 1.1) rating = 'high';
-
-    return change.after.ref.update({ priceRating: rating });
+const CarSearchSystemAdvanced: React.FC<CarSearchSystemAdvancedProps> = ({
+  onSearchResults,
+  onSearchParamsChange
+}) => {
+  const { t } = useTranslation();
+  const [activeTab, setActiveTab] = useState<'quick' | 'detailed'>('quick');
+  const [loading, setLoading] = useState(false);
+  const [searchParams, setSearchParams] = useState<SearchParams>({
+    make: '',
+    model: '',
+    vehicleType: [],
+    minSeats: '',
+    maxSeats: '',
+    doors: '',
+    slidingDoor: '',
+    condition: [],
+    paymentType: ['buy'],
+    minPrice: '',
+    maxPrice: '',
+    minFirstRegistration: '',
+    maxFirstRegistration: '',
+    minMileage: '',
+    maxMileage: '',
+    huValidUntil: '',
+    owners: '',
+    fullServiceHistory: false,
+    roadworthy: false,
+    newService: false,
+    country: 'BG',
+    city: '',
+    zipCode: '',
+    radius: '10',
+    deliveryAvailable: false,
+    fuelType: [],
+    minPower: '',
+    maxPower: '',
+    powerUnit: 'hp',
+    minEngineSize: '',
+    maxEngineSize: '',
+    minFuelTank: '',
+    maxFuelTank: '',
+    minWeight: '',
+    maxWeight: '',
+    minCylinders: '',
+    maxCylinders: '',
+    driveType: '',
+    transmission: [],
+    maxFuelConsumption: '',
+    emissionSticker: '',
+    emissionClass: '',
+    particulateFilter: false,
+    exteriorColor: [],
+    exteriorFinish: [],
+    trailerCoupling: '',
+    trailerAssist: false,
+    minTrailerLoadBraked: '',
+    minTrailerLoadUnbraked: '',
+    noseWeight: '',
+    parkingSensors: [],
+    camera360: false,
+    rearTrafficAlert: false,
+    selfSteering: false,
+    cruiseControl: [],
+    exteriorFeatures: [],
+    interiorColor: [],
+    interiorMaterial: [],
+    airbags: [],
+    airConditioning: [],
+    interiorFeatures: [],
+    sellerType: [],
+    minDealerRating: '',
+    adOnlineSince: '',
+    withPictures: false,
+    withVideo: false,
+    discountOffers: false,
+    nonSmoker: false,
+    taxi: false,
+    vatReclaimable: false,
+    warranty: false,
+    damagedVehicles: 'show',
+    commercialImport: '',
+    approvedUsed: '',
+    searchInDescription: ''
   });
-3. بناء نظام إدارة البائعين (Seller Management System)
-المشكلة: الحاجة إلى فصل البائعين الأفراد عن الوكلاء المحترفين (Dealers).
-الحل: استخدام Firebase Auth Custom Claims وربطها بمجموعات منفصلة في Firestore.
 
-خطة التنفيذ:
+  const [availableData, setAvailableData] = useState({
+    makes: [] as string[],
+    models: [] as string[],
+    cities: [] as string[],
+    // ... other available options
+  });
 
-إعداد الأدوار (Roles) باستخدام Custom Claims:
+  useEffect(() => {
+    loadInitialData();
+  }, []);
 
-عندما يسجل وكيل جديد (من خلال عملية تحقق يدوية في البداية)، قم بتعيين "claim" مخصص له.
-
-مثال (Cloud Function لتعيين دور الوكيل):
-
-TypeScript
-
-// functions/src/index.ts
-exports.setDealerRole = functions.https.onCall(async (data, context) => {
-  // Add security checks here to ensure only admins can call this
-  const uid = data.uid;
-  await admin.auth().setCustomUserClaims(uid, { role: 'dealer' });
-  return { message: `Success! ${uid} is now a dealer.` };
-});
-إنشاء مجموعة dealers في Firestore:
-
-عندما يتم تعيين وكيل، أنشئ مستندًا له في مجموعة dealers باستخدام نفس uid الخاص به.
-
-بنية مستند dealer:
-
-TypeScript
-
-interface Dealer {
-  uid: string;
-  companyName: string;
-  vatNumber: string;
-  address: string;
-  logoUrl: string; // Link to Firebase Storage
-  averageRating: number;
-  reviewCount: number;
-}
-تأمين البيانات باستخدام Firestore Security Rules:
-
-هذه هي أهم خطوة لضمان الأمان.
-
-مثال لقواعد الأمان:
-
-// firestore.rules
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    // Only dealers can create/edit their own profile
-    match /dealers/{dealerId} {
-      allow read;
-      allow write: if request.auth.uid == dealerId && request.auth.token.role == 'dealer';
+  const loadInitialData = async () => {
+    try {
+      await carDataBrowserService.loadData();
+      const cities = [
+        'София', 'Пловдив', 'Варна', 'Бургас', 'Русе', 'Стара Загора', 
+        'Плевен', 'Сливен', 'Добрич', 'Шумен', 'Перник', 'Хасково'
+      ];
+      
+      setAvailableData({
+        makes: carDataBrowserService.getAllBrands(),
+        models: [],
+        cities
+      });
+    } catch (error) {
+      console.error('Error loading data:', error);
     }
-    // A car can only be created/edited by its owner, who must be a dealer or private seller
-    match /cars/{carId} {
-      allow read;
-      allow create: if request.auth!= null;
-      allow update, delete: if resource.data.ownerId == request.auth.uid;
+  };
+
+  const handleParamChange = (key: keyof SearchParams, value: any) => {
+    const updatedParams = { ...searchParams, [key]: value };
+    setSearchParams(updatedParams);
+    onSearchParamsChange?.(updatedParams);
+  };
+
+  const handleSearch = async () => {
+    setLoading(true);
+    try {
+      const results = await carDataBrowserService.advancedSearch(searchParams);
+      onSearchResults(results);
+    } catch (error) {
+      console.error('Search error:', error);
+      onSearchResults([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleQuickSearch = (query: string) => {
+    setLoading(true);
+    try {
+      const results = carDataBrowserService.searchCars(query, {});
+      onSearchResults(results);
+    } catch (error) {
+      console.error('Quick search error:', error);
+      onSearchResults([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const saveSearch = () => {
+    // Implement save search functionality
+    localStorage.setItem('savedSearch', JSON.stringify(searchParams));
+  };
+
+  return (
+    <SearchContainer>
+      <SearchTabs
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        onSaveSearch={saveSearch}
+      />
+      
+      {activeTab === 'quick' ? (
+        <QuickSearchSection
+          onSearch={handleQuickSearch}
+          placeholder={t('cars.search.quickPlaceholder', 'Търсене на марка, модел...')}
+        />
+      ) : (
+        <DetailedSearchContainer>
+          <SearchActions>
+            <SearchButton onClick={handleSearch} disabled={loading}>
+              {loading ? <LoadingSpinner size="small" /> : t('cars.search.showResults', 'Покажи резултати')}
+            </SearchButton>
+            <SaveSearchButton onClick={saveSearch}>
+              {t('cars.search.saveSearch', 'Запази търсенето')}
+            </SaveSearchButton>
+          </SearchActions>
+
+          <FilterSections>
+            <SearchFilterSection
+              title={t('cars.search.basicData', 'Основни данни')}
+              params={searchParams}
+              onParamChange={handleParamChange}
+              availableData={availableData}
+              section="basic"
+            />
+            
+            <SearchFilterSection
+              title={t('cars.search.typeCondition', 'Тип и състояние')}
+              params={searchParams}
+              onParamChange={handleParamChange}
+              availableData={availableData}
+              section="condition"
+            />
+            
+            <SearchFilterSection
+              title={t('cars.search.technicalData', 'Технически данни')}
+              params={searchParams}
+              onParamChange={handleParamChange}
+              availableData={availableData}
+              section="technical"
+            />
+            
+            <SearchFilterSection
+              title={t('cars.search.exterior', 'Екстериор')}
+              params={searchParams}
+              onParamChange={handleParamChange}
+              availableData={availableData}
+              section="exterior"
+            />
+            
+            <SearchFilterSection
+              title={t('cars.search.interior', 'Интериор')}
+              params={searchParams}
+              onParamChange={handleParamChange}
+              availableData={availableData}
+              section="interior"
+            />
+            
+            <SearchFilterSection
+              title={t('cars.search.offerDetails', 'Детайли на офертата')}
+              params={searchParams}
+              onParamChange={handleParamChange}
+              availableData={availableData}
+              section="offer"
+            />
+          </FilterSections>
+        </DetailedSearchContainer>
+      )}
+    </SearchContainer>
+  );
+};
+
+// Styled Components
+const SearchContainer = styled.div`
+  background: ${({ theme }) => theme.colors.background.paper};
+  border-radius: ${({ theme }) => theme.borderRadius.lg};
+  padding: ${({ theme }) => theme.spacing.xl};
+  margin-bottom: ${({ theme }) => theme.spacing.xl};
+  box-shadow: ${({ theme }) => theme.shadows.base};
+  border: 1px solid ${({ theme }) => theme.colors.grey[200]};
+`;
+
+const DetailedSearchContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.lg};
+`;
+
+const SearchActions = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.md};
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: ${({ theme }) => theme.spacing.lg};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.grey[200]};
+`;
+
+const SearchButton = styled.button<{ disabled: boolean }>`
+  padding: ${({ theme }) => `${theme.spacing.md} ${theme.spacing.xl}`};
+  background: ${({ theme, disabled }) => 
+    disabled ? theme.colors.grey[300] : theme.colors.primary.main};
+  color: white;
+  border: none;
+  border-radius: ${({ theme }) => theme.borderRadius.base};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
+  cursor: ${({ disabled }) => disabled ? 'not-allowed' : 'pointer'};
+  min-width: 160px;
+  
+  &:hover:not(:disabled) {
+    background: ${({ theme }) => theme.colors.primary.dark};
+  }
+`;
+
+const SaveSearchButton = styled.button`
+  padding: ${({ theme }) => `${theme.spacing.md} ${theme.spacing.xl}`};
+  background: transparent;
+  color: ${({ theme }) => theme.colors.primary.main};
+  border: 1px solid ${({ theme }) => theme.colors.primary.main};
+  border-radius: ${({ theme }) => theme.borderRadius.base};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
+  cursor: pointer;
+  
+  &:hover {
+    background: ${({ theme }) => theme.colors.primary.light};
+  }
+`;
+
+const FilterSections = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.xl};
+`;
+
+export default CarSearchSystemAdvanced;
+2. خدمة البيانات المُحدَّثة (carDataBrowserService.ts)
+typescript
+interface AdvancedSearchFilters {
+  // Basic Data
+  make?: string;
+  model?: string;
+  vehicleType?: string[];
+  minSeats?: number;
+  maxSeats?: number;
+  doors?: string;
+  
+  // Type and Condition
+  condition?: string[];
+  minPrice?: number;
+  maxPrice?: number;
+  minFirstRegistration?: number;
+  maxFirstRegistration?: number;
+  minMileage?: number;
+  maxMileage?: number;
+  
+  // Technical Data
+  fuelType?: string[];
+  minPower?: number;
+  maxPower?: number;
+  minEngineSize?: number;
+  maxEngineSize?: number;
+  transmission?: string[];
+  driveType?: string;
+  
+  // Location
+  city?: string;
+  radius?: number;
+  
+  // And all other filter properties...
+}
+
+class CarDataBrowserService {
+  private carData: CarDataFromFile[] = [];
+  private summary: CarDataSummary | null = null;
+
+  async loadData(): Promise<void> {
+    try {
+      const [carDataResponse, summaryResponse] = await Promise.all([
+        fetch('/data/car-data.json'),
+        fetch('/data/car-data-summary.json')
+      ]);
+      
+      this.carData = await carDataResponse.json();
+      this.summary = await summaryResponse.json();
+      
+      this.processData();
+    } catch (error) {
+      console.error('Error loading car data:', error);
+      throw error;
     }
   }
+
+  advancedSearch(filters: SearchParams): CarDataFromFile[] {
+    let results = [...this.carData];
+
+    // Basic Data Filters
+    if (filters.make) {
+      results = results.filter(car => 
+        car.brand.toLowerCase() === filters.make.toLowerCase()
+      );
+    }
+
+    if (filters.model) {
+      results = results.filter(car => 
+        car.model.toLowerCase().includes(filters.model.toLowerCase())
+      );
+    }
+
+    if (filters.vehicleType.length > 0) {
+      results = results.filter(car =>
+        filters.vehicleType.includes(this.mapVehicleType(car.category))
+      );
+    }
+
+    // Price Filter
+    if (filters.minPrice) {
+      const minPrice = parseFloat(filters.minPrice);
+      results = results.filter(car => car.price >= minPrice);
+    }
+
+    if (filters.maxPrice) {
+      const maxPrice = parseFloat(filters.maxPrice);
+      results = results.filter(car => car.price <= maxPrice);
+    }
+
+    // Year Filter
+    if (filters.minFirstRegistration) {
+      const minYear = parseInt(filters.minFirstRegistration);
+      results = results.filter(car => car.year >= minYear);
+    }
+
+    if (filters.maxFirstRegistration) {
+      const maxYear = parseInt(filters.maxFirstRegistration);
+      results = results.filter(car => car.year <= maxYear);
+    }
+
+    // Mileage Filter
+    if (filters.minMileage) {
+      const minMileage = parseInt(filters.minMileage);
+      results = results.filter(car => car.mileage >= minMileage);
+    }
+
+    if (filters.maxMileage) {
+      const maxMileage = parseInt(filters.maxMileage);
+      results = results.filter(car => car.mileage <= maxMileage);
+    }
+
+    // Fuel Type Filter
+    if (filters.fuelType.length > 0) {
+      results = results.filter(car =>
+        filters.fuelType.includes(car.fuelType)
+      );
+    }
+
+    // Transmission Filter
+    if (filters.transmission.length > 0) {
+      results = results.filter(car =>
+        filters.transmission.includes(car.transmission)
+      );
+    }
+
+    // Location Filter
+    if (filters.city) {
+      results = results.filter(car =>
+        car.location.toLowerCase().includes(filters.city.toLowerCase())
+      );
+    }
+
+    // Search in Description
+    if (filters.searchInDescription) {
+      const searchTerm = filters.searchInDescription.toLowerCase();
+      results = results.filter(car =>
+        car.description?.toLowerCase().includes(searchTerm) ||
+        car.features?.some(feature => feature.toLowerCase().includes(searchTerm))
+      );
+    }
+
+    return results;
+  }
+
+  private mapVehicleType(category: string): string {
+    const typeMap: { [key: string]: string } = {
+      'седан': 'saloon',
+      'комби': 'estate',
+      'джип': 'suv',
+      'купе': 'coupe',
+      'кабрио': 'cabrio',
+      'миниван': 'van'
+    };
+    return typeMap[category.toLowerCase()] || 'other';
+  }
+
+  getAllBrands(): string[] {
+    return [...new Set(this.carData.map(car => car.brand))].sort();
+  }
+
+  getModelsByBrand(brand: string): string[] {
+    return [...new Set(this.carData
+      .filter(car => car.brand === brand)
+      .map(car => car.model)
+    )].sort();
+  }
+
+  getAvailableOptions(): any {
+    return {
+      vehicleTypes: ['седан', 'комби', 'джип', 'купе', 'кабрио', 'миниван'],
+      fuelTypes: [...new Set(this.carData.map(car => car.fuelType))],
+      transmissions: [...new Set(this.carData.map(car => car.transmission))],
+      conditions: ['нов', 'употребяван', 'пререгистрация', 'служителска'],
+      cities: ['София', 'Пловдив', 'Варна', 'Бургас', 'Русе', 'Стара Загора']
+    };
+  }
 }
-4. بناء نظام التقييمات والمراجعات (Reviews System)
-المشكلة: لا توجد طريقة للمشترين لتقييم البائعين.
-الحل: إنشاء مجموعة فرعية (subcollection) للمراجعات تحت كل وكيل في Firestore.
 
-خطة التنفيذ:
+export const carDataBrowserService = new CarDataBrowserService();
+3. مكونات الفلاتر (components/SearchFilterSection.tsx)
+tsx
+import React from 'react';
+import styled from 'styled-components';
+import { SearchParams } from '../CarSearchSystemAdvanced';
 
-بنية البيانات:
-
-تحت كل مستند في مجموعة dealers، أنشئ مجموعة فرعية اسمها reviews.
-
-بنية مستند review:
-
-TypeScript
-
-interface Review {
-  buyerId: string;
-  buyerName: string;
-  rating: number; // 1 to 5
-  comment: string;
-  createdAt: Timestamp;
+interface SearchFilterSectionProps {
+  title: string;
+  params: SearchParams;
+  onParamChange: (key: keyof SearchParams, value: any) => void;
+  availableData: any;
+  section: string;
 }
-تحديث متوسط التقييم (Cloud Function):
 
-أنشئ دالة Cloud Function يتم تشغيلها (onWrite) على dealers/{dealerId}/reviews/{reviewId}.
+export const SearchFilterSection: React.FC<SearchFilterSectionProps> = ({
+  title,
+  params,
+  onParamChange,
+  availableData,
+  section
+}) => {
+  const renderBasicDataSection = () => (
+    <FilterGrid columns={3}>
+      <FilterGroup>
+        <label>Марка</label>
+        <select 
+          value={params.make} 
+          onChange={(e) => onParamChange('make', e.target.value)}
+        >
+          <option value="">Всички</option>
+          {availableData.makes.map((make: string) => (
+            <option key={make} value={make}>{make}</option>
+          ))}
+        </select>
+      </FilterGroup>
 
-في كل مرة تتم فيها إضافة أو حذف أو تعديل مراجعة، تقوم الدالة بإعادة حساب متوسط التقييم وعدد المراجعات وتحديثها في المستند الرئيسي للوكيل (dealers/{dealerId}). هذا يمنع الحاجة إلى قراءة جميع المراجعات في كل مرة تريد فيها عرض متوسط التقييم، مما يوفر التكاليف ويزيد السرعة بشكل هائل.
+      <FilterGroup>
+        <label>Модел</label>
+        <select 
+          value={params.model} 
+          onChange={(e) => onParamChange('model', e.target.value)}
+        >
+          <option value="">Всички</option>
+          {/* Populate models based on selected make */}
+        </select>
+      </FilterGroup>
 
-بهذه الخطة الفنية، أنت لا تضيف ميزات فحسب، بل تبني بنية تحتية قوية وقابلة للتطوير ومؤمنة. كل خطوة تستخدم الأدوات التي لديك بالفعل (Firebase/GCP) وتضيف القطع المفقودة بالطريقة الأكثر احترافية وكفاءة.
+      <FilterGroup>
+        <label>Тип автомобил</label>
+        <MultiSelect>
+          {['кабрио', 'комби', 'джип', 'седан', 'малък', 'спортен', 'ван'].map(type => (
+            <CheckboxLabel key={type}>
+              <input
+                type="checkbox"
+                checked={params.vehicleType.includes(type)}
+                onChange={(e) => {
+                  const newTypes = e.target.checked
+                    ? [...params.vehicleType, type]
+                    : params.vehicleType.filter(t => t !== type);
+                  onParamChange('vehicleType', newTypes);
+                }}
+              />
+              {type}
+            </CheckboxLabel>
+          ))}
+        </MultiSelect>
+      </FilterGroup>
+    </FilterGrid>
+  );
+
+  const renderPriceSection = () => (
+    <FilterGrid columns={2}>
+      <FilterGroup>
+        <label>Цена от (€)</label>
+        <input
+          type="number"
+          value={params.minPrice}
+          onChange={(e) => onParamChange('minPrice', e.target.value)}
+          placeholder="Минимум"
+        />
+      </FilterGroup>
+      <FilterGroup>
+        <label>Цена до (€)</label>
+        <input
+          type="number"
+          value={params.maxPrice}
+          onChange={(e) => onParamChange('maxPrice', e.target.value)}
+          placeholder="Максимум"
+        />
+      </FilterGroup>
+    </FilterGrid>
+  );
+
+  // Similar rendering functions for other sections...
+
+  const renderSection = () => {
+    switch (section) {
+      case 'basic':
+        return renderBasicDataSection();
+      case 'condition':
+        return renderPriceSection();
+      // Add cases for other sections...
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <SectionContainer>
+      <SectionTitle>{title}</SectionTitle>
+      {renderSection()}
+    </SectionContainer>
+  );
+};
+
+// Styled Components
+const SectionContainer = styled.div`
+  padding: ${({ theme }) => theme.spacing.lg};
+  border: 1px solid ${({ theme }) => theme.colors.grey[200]};
+  border-radius: ${({ theme }) => theme.borderRadius.base};
+  background: ${({ theme }) => theme.colors.background.default};
+`;
+
+const SectionTitle = styled.h3`
+  margin: 0 0 ${({ theme }) => theme.spacing.lg} 0;
+  font-size: ${({ theme }) => theme.typography.fontSize.lg};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.semibold};
+  color: ${({ theme }) => theme.colors.text.primary};
+`;
+
+const FilterGrid = styled.div<{ columns: number }>`
+  display: grid;
+  grid-template-columns: repeat(${props => props.columns}, 1fr);
+  gap: ${({ theme }) => theme.spacing.lg};
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const FilterGroup = styled.div`
+  label {
+    display: block;
+    font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
+    color: ${({ theme }) => theme.colors.text.primary};
+    margin-bottom: ${({ theme }) => theme.spacing.sm};
+    font-size: ${({ theme }) => theme.typography.fontSize.sm};
+  }
+  
+  select, input {
+    width: 100%;
+    padding: ${({ theme }) => theme.spacing.sm};
+    border: 1px solid ${({ theme }) => theme.colors.grey[300]};
+    border-radius: ${({ theme }) => theme.borderRadius.base};
+    font-size: ${({ theme }) => theme.typography.fontSize.sm};
+    background: white;
+    
+    &:focus {
+      outline: none;
+      border-color: ${({ theme }) => theme.colors.primary.main};
+    }
+  }
+`;
+
+const MultiSelect = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.xs};
+`;
+
+const CheckboxLabel = styled.label`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.sm};
+  font-weight: normal;
+  cursor: pointer;
+  
+  input {
+    width: auto;
+  }
+`;
