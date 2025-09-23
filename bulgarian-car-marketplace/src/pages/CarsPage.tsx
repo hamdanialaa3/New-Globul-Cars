@@ -7,7 +7,6 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { useTranslation } from '../hooks/useTranslation';
 import { bulgarianCarService, BulgarianCar, CarSearchFilters, FuelType, TransmissionType, CarCondition } from '../firebase';
-import { YEARS_OPTIONS } from '../constants/carMakes';
 import AdvancedSearch from '../components/AdvancedSearch';
 // Import theme types
 import '../styles/theme';
@@ -132,69 +131,7 @@ const PageHeader = styled.div`
   }
 `;
 
-const Layout = styled.div`
-  display: grid;
-  grid-template-columns: 300px 1fr;
-  gap: ${({ theme }) => theme.spacing['2xl']};
-
-  @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
-    grid-template-columns: 1fr;
-  }
-`;
-
-const FiltersSection = styled.aside`
-  background: ${({ theme }) => theme.colors.background.paper};
-  border-radius: ${({ theme }) => theme.borderRadius.lg};
-  padding: ${({ theme }) => theme.spacing['2xl']};
-  box-shadow: ${({ theme }) => theme.shadows.base};
-  border: 1px solid ${({ theme }) => theme.colors.grey[200]};
-  position: sticky;
-  top: ${({ theme }) => theme.spacing['2xl']};
-  height: fit-content;
-`;
-
-const FiltersGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: ${({ theme }) => theme.spacing.lg};
-  margin-bottom: ${({ theme }) => theme.spacing.xl};
-`;
-
-const FilterGroup = styled.div`
-  label {
-    display: block;
-    font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
-    color: ${({ theme }) => theme.colors.text.primary};
-    margin-bottom: ${({ theme }) => theme.spacing.sm};
-    font-size: ${({ theme }) => theme.typography.fontSize.sm};
-  }
-
-  select, input {
-    width: 100%;
-    padding: ${({ theme }) => theme.spacing.md};
-    border: 1px solid ${({ theme }) => theme.colors.grey[300]};
-    border-radius: ${({ theme }) => theme.borderRadius.base};
-    font-size: ${({ theme }) => theme.typography.fontSize.base};
-    background: ${({ theme }) => theme.colors.background.paper};
-    transition: border-color 0.2s ease-in-out;
-
-    &:focus {
-      outline: none;
-      border-color: ${({ theme }) => theme.colors.primary.main};
-      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.primary.main}20;
-    }
-  }
-`;
-
-// مكون خاص للقائمة المنسدلة مع أيقونات الشركات
-// تم استبداله بالنظام الجديد CarSearchSystem
-
-const FilterActions = styled.div`
-  display: flex;
-  gap: ${({ theme }) => theme.spacing.md};
-  justify-content: center;
-  flex-wrap: wrap;
-`;
+// Removed old sidebar filter styled components after layout simplification
 
 const FilterButton = styled.button`
   padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.xl};
@@ -465,12 +402,7 @@ const CarsPage: React.FC = () => {
     setFilters(newFilters);
     setShowDetailedSearch(false);
   }, []);
-  const handleFilterChange = (key: keyof CarSearchFilters, value: any) => {
-    setFilters(prev => ({
-      ...prev,
-      [key]: value || undefined
-    }));
-  };
+  // Sidebar filter handler removed with old layout
 
   // Clear filters
   const clearFilters = () => {
@@ -494,22 +426,9 @@ const CarsPage: React.FC = () => {
           <p>{t('cars.subtitle')}</p>
         </PageHeader>
 
-        {/* Advanced Search */}
-        <AdvancedSearch
-          filters={filters}
-          onFiltersChange={setFilters}
-          onSearch={loadCars}
-          onClear={clearFilters}
-          isExpanded={isAdvancedSearchExpanded}
-          onToggleExpanded={() => setIsAdvancedSearchExpanded(!isAdvancedSearchExpanded)}
-        />
-
-        <Layout>
-          {/* Filters Section (left sidebar) */}
-          <FiltersSection>
-            {/* النظام الجديد للبحث الهرمي */}
-            <CarSearchSystem
-              onSearchResults={(results) => {
+        {/* Simple Search (top, full width) */}
+        <CarSearchSystem
+          onSearchResults={(results) => {
                 // تحويل نتائج البحث من CarDataFromFile إلى BulgarianCar
                 const bulgarianCars: BulgarianCar[] = results.map((car, index) => ({
                   id: `search-result-${index}`,
@@ -569,160 +488,21 @@ const CarsPage: React.FC = () => {
                 }));
 
                 setCars(bulgarianCars);
-              }}
-            />
+          }}
+        />
 
-            <FiltersGrid>
+        {/* Advanced Search (collapsible, full width) */}
+        <AdvancedSearch
+          filters={filters}
+          onFiltersChange={setFilters}
+          onSearch={loadCars}
+          onClear={clearFilters}
+          isExpanded={isAdvancedSearchExpanded}
+          onToggleExpanded={() => setIsAdvancedSearchExpanded(!isAdvancedSearchExpanded)}
+        />
 
-              <FilterGroup>
-                <label>{t('cars.filters.priceRange')} (€)</label>
-                <div style={{ display: 'flex', gap: '8px' }}>
-                  <input
-                    type="number"
-                    placeholder={t('cars.filters.fromPrice')}
-                    value={filters.minPrice || ''}
-                    onChange={(e) => handleFilterChange('minPrice', parseInt(e.target.value) || undefined)}
-                  />
-                  <input
-                    type="number"
-                    placeholder={t('cars.filters.toPrice')}
-                    value={filters.maxPrice || ''}
-                    onChange={(e) => handleFilterChange('maxPrice', parseInt(e.target.value) || undefined)}
-                  />
-                </div>
-              </FilterGroup>
-
-              <FilterGroup>
-                <label>{t('cars.filters.mileage')} (km)</label>
-                <input
-                  type="number"
-                  placeholder={t('cars.filters.maxMileage')}
-                  value={filters.maxMileage || ''}
-                  onChange={(e) => handleFilterChange('maxMileage', parseInt(e.target.value) || undefined)}
-                />
-              </FilterGroup>
-
-            <FilterGroup>
-              <label>{t('cars.filters.fuelType')}</label>
-              <select
-                value={filters.fuelType || ''}
-                onChange={(e) => handleFilterChange('fuelType', e.target.value)}
-              >
-                <option value="">{t('cars.filters.allFuelTypes')}</option>
-                <option value="petrol">{t('cars.fuelTypes.petrol')}</option>
-                <option value="diesel">{t('cars.fuelTypes.diesel')}</option>
-                <option value="electric">{t('cars.fuelTypes.electric')}</option>
-                <option value="hybrid">{t('cars.fuelTypes.hybrid')}</option>
-                <option value="gas">{t('cars.fuelTypes.gas')}</option>
-                <option value="lpg">{t('cars.fuelTypes.lpg')}</option>
-                <option value="cng">{t('cars.fuelTypes.cng')}</option>
-                <option value="hydrogen">{t('cars.fuelTypes.hydrogen')}</option>
-                <option value="ethanol">{t('cars.fuelTypes.ethanol')}</option>
-                <option value="biodiesel">{t('cars.fuelTypes.biodiesel')}</option>
-                <option value="other">{t('cars.fuelTypes.other')}</option>
-              </select>
-            </FilterGroup>
-
-            <FilterGroup>
-              <label>{t('cars.filters.year')}</label>
-              <div style={{ display: 'flex', gap: '8px' }}>
-                <select
-                  value={filters.minYear || ''}
-                  onChange={(e) => handleFilterChange('minYear', e.target.value ? parseInt(e.target.value) : undefined)}
-                  style={{ flex: 1 }}
-                >
-                  <option value="">{t('cars.filters.fromYear')}</option>
-                  {YEARS_OPTIONS.map((year) => (
-                    <option key={`min-${year}`} value={year}>
-                      {year}
-                    </option>
-                  ))}
-                </select>
-                <select
-                  value={filters.maxYear || ''}
-                  onChange={(e) => handleFilterChange('maxYear', e.target.value ? parseInt(e.target.value) : undefined)}
-                  style={{ flex: 1 }}
-                >
-                  <option value="">{t('cars.filters.toYear')}</option>
-                  {YEARS_OPTIONS.map((year) => (
-                    <option key={`max-${year}`} value={year}>
-                      {year}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </FilterGroup>
-
-              <FilterGroup>
-                <label>{t('cars.filters.location')}</label>
-                <input
-                  type="text"
-                  placeholder={t('cars.filters.city')}
-                  value={filters.location?.city || ''}
-                  onChange={(e) => handleFilterChange('location', {
-                    ...filters.location,
-                    city: e.target.value || undefined
-                  })}
-                />
-              </FilterGroup>
-
-              <FilterGroup>
-                <label>{t('cars.filters.radius')} (km)</label>
-                <input
-                  type="number"
-                  placeholder={t('cars.filters.searchRadius')}
-                  value={filters.location?.radius || ''}
-                  onChange={(e) => handleFilterChange('location', {
-                    ...filters.location,
-                    radius: parseInt(e.target.value) || undefined
-                  })}
-                />
-              </FilterGroup>
-
-            <FilterGroup>
-              <label>{t('cars.filters.transmission')}</label>
-              <select
-                value={filters.transmission || ''}
-                onChange={(e) => handleFilterChange('transmission', e.target.value)}
-              >
-                <option value="">{t('cars.filters.allTransmissions')}</option>
-                <option value="manual">{t('cars.transmissions.manual')}</option>
-                <option value="automatic">{t('cars.transmissions.automatic')}</option>
-                <option value="semi-automatic">{t('cars.transmissions.semiAutomatic')}</option>
-                <option value="cvt">{t('cars.transmissions.cvt')}</option>
-              </select>
-            </FilterGroup>
-
-            <FilterGroup>
-              <label>{t('cars.filters.condition')}</label>
-              <select
-                value={filters.condition || ''}
-                onChange={(e) => handleFilterChange('condition', e.target.value)}
-              >
-                <option value="">{t('cars.filters.allConditions')}</option>
-                <option value="new">{t('cars.conditions.new')}</option>
-                <option value="used">{t('cars.conditions.used')}</option>
-                <option value="damaged">{t('cars.conditions.damaged')}</option>
-              </select>
-            </FilterGroup>
-
-            </FiltersGrid>
-
-            <FilterActions>
-              <FilterButton onClick={loadCars}>
-                {t('cars.filters.search')}
-              </FilterButton>
-              <FilterButton className="secondary" onClick={clearFilters}>
-                {t('cars.filters.clear')}
-              </FilterButton>
-              <FilterButton className="secondary" onClick={() => setShowDetailedSearch(true)}>
-                {t('detailedSearch.title')}
-              </FilterButton>
-            </FilterActions>
-          </FiltersSection>
-
-          {/* Results Section (right content) */}
-          <ResultsSection>
+        {/* Results Section */}
+        <ResultsSection>
           <ResultsHeader>
             <div>
               <h2>{t('cars.results.title')}</h2>
@@ -758,16 +538,17 @@ const CarsPage: React.FC = () => {
               </NoResults>
             ) : (
               <CarsGrid>
-                {cars.map((car) => (
+                {cars.map((car) => {
+                  const imgCount = Array.isArray(car.images) ? car.images.length : 0;
+                  const firstImg = imgCount > 0 ? car.images![0] : undefined;
+                  const city = car.location?.city ?? '—';
+                  const region = car.location?.region ?? '';
+                  return (
                   <CarCard key={car.id}>
                     <Link to={`/cars/${car.id}`} style={{ textDecoration: 'none' }}>
                       <CarImage>
-                        {car.images.length > 0 ? (
-                          <LazyImage
-                            src={car.images[0]}
-                            alt={car.title}
-                            placeholder="🚗"
-                          />
+                        {firstImg ? (
+                          <LazyImage src={firstImg} alt={car.title} placeholder="🚗" />
                         ) : (
                           <div style={{
                             width: '100%',
@@ -789,27 +570,26 @@ const CarsPage: React.FC = () => {
                         <CarTitleWithBrand>
                           <CarTitle>{car.title}</CarTitle>
                         </CarTitleWithBrand>
-                        <CarPrice>{car.price.toLocaleString()}</CarPrice>
+                        <CarPrice>{Number.isFinite(car.price as any) ? Number(car.price).toLocaleString() : '—'}</CarPrice>
                         <CarDetails>
                           <CarDetail>📅 {car.year}</CarDetail>
                           <CarDetail>⚡ {car.power} HP</CarDetail>
                           <CarDetail>⛽ {car.fuelType}</CarDetail>
                         </CarDetails>
                         <CarDetails>
-                          <CarDetail>🛣️ {car.mileage.toLocaleString()} km</CarDetail>
+                          <CarDetail>🛣️ {Number.isFinite(car.mileage as any) ? Number(car.mileage).toLocaleString() : '—'} km</CarDetail>
                           <CarDetail>🔄 {car.transmission}</CarDetail>
                         </CarDetails>
                         <CarLocation>
-                          📍 {car.location.city}, {car.location.region}
+                          📍 {city}{region ? `, ${region}` : ''}
                         </CarLocation>
                       </CarContent>
                     </Link>
                   </CarCard>
-                ))}
+                );})}
               </CarsGrid>
             )}
           </ResultsSection>
-        </Layout>
 
         {/* Detailed Search Modal */}
         {showDetailedSearch && (

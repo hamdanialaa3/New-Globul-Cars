@@ -1,6 +1,82 @@
 // src/locales/translations.ts
 export const translations = {
   bg: {
+    search: {
+      any: 'Всяко',
+      from: 'от',
+      to: 'до',
+      other: 'Друго',
+      allDriveTypes: 'Всички задвижвания',
+      driveType: {
+        awd: '4x4',
+        fwd: 'Предно задвижване',
+        rwd: 'Задно задвижване'
+      },
+      towbar: {
+        fixed: 'Фиксирано',
+        detachable: 'Откачащо се',
+        swiveling: 'Завъртащо се'
+      },
+      none: 'Без',
+      cruise: {
+        none: 'Без круиз контрол',
+        cruise: 'Круиз контрол',
+        adaptive: 'Адаптивен круиз контрол'
+      },
+      emissionSticker: {
+        green: 'Зелена',
+        yellow: 'Жълта',
+        red: 'Червена'
+      },
+      emissionClass: 'Екологичен клас',
+      exteriorColor: 'Цвят екстериор',
+      interiorColor: 'Цвят интериор',
+      interiorMaterial: 'Материал интериор',
+      airbags: 'Въздушни възглавници',
+      climateControl: 'Климатик',
+      towbarLabel: 'Теглич',
+      parkingSensors: 'Паркинг асистент',
+      cruiseControl: 'Круиз контрол',
+      fuelConsumptionMax: 'Разход (комбиниран) до',
+      fuelTank: 'Обем на резервоара (л)',
+      weight: 'Тегло (кг)',
+      cylinders: 'Цилиндри',
+      driveTypeLabel: 'Тип задвижване',
+      bodyStyle: 'Тип каросерия',
+      paymentType: 'Тип плащане',
+      payment: {
+        buy: 'Купуване',
+        leasing: 'Лизинг'
+      },
+      damage: {
+        none: 'Без',
+        accident: 'Катастрофирал автомобил',
+        damaged: 'Повреден',
+        unrepaired: 'Ненаправен',
+        forParts: 'За части',
+        nonRunner: 'Не в движение'
+      },
+      seller: {
+        dealer: 'Търговец',
+        private: 'Частно лице',
+        company: 'Компания'
+      },
+      sellerRatingMin: 'Миним. рейтинг на търговец',
+      discountOffers: 'Оферти с отстъпка',
+      nonSmoker: 'Автомобил без пушене',
+      withVideo: 'С видео',
+      warranty: 'Гаранция',
+      vatReclaimable: 'ДДС с право на данъчен кредит',
+      trailerAssist: 'Асистент за ремарке',
+      trailerLoadBraked: 'Товар с ремарке (със спирачки) (кг)',
+      trailerLoadUnbraked: 'Товар с ремарке (без спирачки) (кг)',
+      noseWeight: 'Носим товар (кг)',
+      matte: 'Мат',
+      metallic: 'Металик',
+      commercial: 'Комерсиален',
+      approvedProgramme: 'Сертифицирани програми',
+      adOnlineSince: 'Обява онлайн от (дни)'
+    },
     nav: {
       home: 'Начало',
       cars: 'Коли',

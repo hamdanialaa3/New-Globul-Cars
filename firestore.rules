@@ -51,19 +51,19 @@ service cloud.firestore {
 
     // Cars collection
     match /cars/{carId} {
-      // Allow read for all authenticated users
-      allow read: if isAuthenticated();
+      // Allow public read for active, unsold cars (for homepage, listing, etc.)
+      allow read: if (resource.data.isActive == true && resource.data.isSold == false) || isAuthenticated();
 
-      // Allow create for authenticated users
+      // Allow create for authenticated users; align with ownerId field in app schema
       allow create: if isAuthenticated() &&
-                       request.auth.uid == request.resource.data.sellerId &&
-                       request.resource.data.keys().hasAll(['title', 'price', 'sellerId']);
+                       request.auth.uid == request.resource.data.ownerId &&
+                       request.resource.data.keys().hasAll(['title', 'price', 'ownerId']);
 
-      // Allow update for sellers and admins
-      allow update: if isOwner(resource.data.sellerId) || isAdmin();
+      // Allow update for owners and admins
+      allow update: if isOwner(resource.data.ownerId) || isAdmin();
 
-      // Allow delete for sellers and admins
-      allow delete: if isOwner(resource.data.sellerId) || isAdmin();
+      // Allow delete for owners and admins
+      allow delete: if isOwner(resource.data.ownerId) || isAdmin();
     }
 
     // Car messages collection

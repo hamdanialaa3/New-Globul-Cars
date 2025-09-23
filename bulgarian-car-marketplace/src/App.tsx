@@ -94,11 +94,12 @@ const PageLoader: React.FC = () => (
 const App: React.FC = () => {
   return (
     <ThemeProvider theme={bulgarianTheme}>
-      <ErrorBoundary>
-        <TranslationProvider>
-          <SkipNavigation />
-          <GlobalStyles />
-          <Router>
+      {/* Router must wrap ErrorBoundary to ensure any Link in fallback has Router context */}
+      <Router>
+        <ErrorBoundary>
+          <TranslationProvider>
+            <SkipNavigation />
+            <GlobalStyles />
             <AnalyticsTracker />
             <Suspense fallback={<PageLoader />}>
               <Routes>
@@ -145,8 +146,17 @@ const App: React.FC = () => {
                   </Layout>
                 }
               />
+              {/* Keep both '/sell-car' and '/sell' for compatibility */}
               <Route
                 path="/sell-car"
+                element={
+                  <Layout>
+                    <SellCarPage />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/sell"
                 element={
                   <Layout>
                     <SellCarPage />
@@ -270,9 +280,9 @@ const App: React.FC = () => {
               />
             </Routes>
           </Suspense>
-        </Router>
-        </TranslationProvider>
-      </ErrorBoundary>
+          </TranslationProvider>
+        </ErrorBoundary>
+      </Router>
       <PerformanceMonitor />
       <BundleAnalyzer />
     </ThemeProvider>

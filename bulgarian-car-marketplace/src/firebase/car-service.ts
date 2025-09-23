@@ -36,6 +36,12 @@ export type FuelType = 'petrol' | 'diesel' | 'electric' | 'hybrid' | 'gas';
 // Transmission Types
 export type TransmissionType = 'manual' | 'automatic' | 'semi-automatic';
 
+// Drive Types
+export type DriveType = 'awd' | 'fwd' | 'rwd';
+
+// Payment Types
+export type PaymentType = 'buy' | 'leasing';
+
 // Bulgarian Car Interface
 export interface BulgarianCar {
   id: string;
@@ -51,6 +57,11 @@ export interface BulgarianCar {
   mileage: number;
   price: number;
   currency: string;
+  bodyStyle?: string; // Vehicle type (SUV, Sedan, etc.)
+  seats?: number;
+  doors?: number;
+  slidingDoor?: boolean;
+  paymentType?: PaymentType;
 
   // Technical Details
   fuelType: FuelType;
@@ -58,6 +69,15 @@ export interface BulgarianCar {
   engineSize: number; // in cubic centimeters
   power: number; // in horsepower
   condition: CarCondition;
+  powerKW?: number; // optional derived
+  driveType?: DriveType;
+  fuelConsumptionCombined?: number; // l/100km
+  emissionSticker?: string;
+  emissionClass?: string;
+  particulateFilter?: boolean;
+  fuelTankVolumeL?: number;
+  weightKg?: number;
+  cylinders?: number;
 
   // Location
   location: {
@@ -76,6 +96,21 @@ export interface BulgarianCar {
   description: string;
   features: string[];
   color: string;
+  exteriorColorCategory?: string; // e.g., black, grey, red
+  metallic?: boolean;
+  matte?: boolean;
+  towbar?: 'fixed' | 'detachable' | 'swiveling' | 'none';
+  trailerAssist?: boolean;
+  brakedTrailerLoadKg?: number;
+  unbrakedTrailerLoadKg?: number;
+  noseWeightKg?: number; // support load
+  parkingAssist?: string[]; // e.g., front, rear, camera, 360
+  cruiseControl?: 'none' | 'cruise' | 'adaptive';
+  interiorColor?: string;
+  interiorMaterial?: string; // fabric, leather, alcantara, etc.
+  airbags?: string; // level
+  climateControl?: string; // types
+  extras?: string[]; // additional features
 
   // Media
   images: string[]; // URLs to Firebase Storage
@@ -93,11 +128,30 @@ export interface BulgarianCar {
   vinNumber?: string;
   firstRegistrationDate?: Date;
   inspectionValidUntil?: Date;
+  numberOfOwners?: number;
+  fullServiceHistory?: boolean;
+  roadworthy?: boolean;
+  newService?: boolean;
+  deliveryAvailable?: boolean;
 
   // Metadata
   createdAt: Date;
   updatedAt: Date;
   lastViewedAt?: Date;
+
+  // Offer details
+  sellerType?: 'dealer' | 'private' | 'company';
+  sellerRating?: number; // 0-5
+  adOnlineSinceDays?: number;
+  withVideo?: boolean;
+  discountOffer?: boolean;
+  nonSmoker?: boolean;
+  taxi?: boolean;
+  vatReclaimable?: boolean;
+  warranty?: boolean;
+  damagedVehicles?: string; // descriptor
+  commercial?: boolean; // export/import
+  approvedUsedProgramme?: string;
 }
 
 // Car Search Filters
@@ -106,14 +160,19 @@ export interface CarSearchFilters {
   model?: string;
   generation?: string; // جيل السيارة (مثل G05, F15)
   bodyStyle?: string; // نوع الهيكل (SUV, Sedan, Coupe, etc.)
+  seats?: { from?: number; to?: number };
+  doors?: { from?: number; to?: number };
+  slidingDoor?: boolean;
   minYear?: number;
   maxYear?: number;
   minPrice?: number;
   maxPrice?: number;
+  minMileage?: number;
   maxMileage?: number;
   fuelType?: FuelType;
   transmission?: TransmissionType;
   condition?: CarCondition;
+  paymentType?: PaymentType;
   location?: {
     city?: string;
     region?: string;
@@ -124,6 +183,47 @@ export interface CarSearchFilters {
   hasImages?: boolean;
   isActive?: boolean;
   isSold?: boolean;
+  // Technical
+  driveType?: DriveType;
+  power?: { from?: number; to?: number; unit?: 'hp' | 'kW' };
+  engineSizeCc?: { from?: number; to?: number };
+  fuelTankVolumeL?: { from?: number; to?: number };
+  weightKg?: { from?: number; to?: number };
+  cylinders?: { from?: number; to?: number };
+  fuelConsumptionCombinedMax?: number;
+  emissionSticker?: string;
+  emissionClass?: string;
+  particulateFilter?: boolean;
+  // Exterior
+  exteriorColorCategory?: string;
+  metallic?: boolean;
+  matte?: boolean;
+  towbar?: 'fixed' | 'detachable' | 'swiveling' | 'none';
+  trailerAssist?: boolean;
+  brakedTrailerLoadKg?: { from?: number };
+  unbrakedTrailerLoadKg?: { from?: number };
+  noseWeightKg?: { from?: number };
+  parkingAssist?: string[];
+  cruiseControl?: 'none' | 'cruise' | 'adaptive';
+  // Interior
+  interiorColor?: string;
+  interiorMaterial?: string;
+  airbags?: string;
+  climateControl?: string;
+  extras?: string[];
+  // Offer details
+  sellerType?: 'dealer' | 'private' | 'company';
+  sellerRatingMin?: number;
+  adOnlineSinceDays?: number;
+  withVideo?: boolean;
+  discountOffer?: boolean;
+  nonSmoker?: boolean;
+  taxi?: boolean;
+  vatReclaimable?: boolean;
+  warranty?: boolean;
+  damagedVehicles?: string;
+  commercial?: boolean;
+  approvedUsedProgramme?: string;
 }
 
 // Bulgarian Car Service
@@ -346,6 +446,80 @@ export class BulgarianCarService {
     }
   }
 
+  // Get distinct option values for specified fields by scanning recent active cars (cached)
+  async getDistinctOptions(fields: Array<keyof BulgarianCar | string>, limitCount: number = 300): Promise<Record<string, string[]>> {
+    const cacheKey = `distinct_options_${fields.sort().join(',')}_${limitCount}`;
+    const cached = cacheService.get(cacheKey);
+    if (cached) return cached;
+
+    // Fetch recent active cars
+    let q = query(
+      collection(db, 'cars'),
+      where('isActive', '==', true),
+      orderBy('createdAt', 'desc'),
+      limit(limitCount)
+    );
+
+    const snapshot = await getDocs(q);
+    const sets: Record<string, Set<string>> = {};
+    fields.forEach(f => sets[String(f)] = new Set<string>());
+
+    snapshot.forEach(docSnap => {
+      const data = docSnap.data() as any;
+      for (const field of fields) {
+        const key = String(field);
+        const value = data[key];
+        if (value === undefined || value === null) continue;
+        if (Array.isArray(value)) {
+          value.forEach((v: any) => v != null && sets[key].add(String(v)));
+        } else if (typeof value === 'object') {
+          // skip nested objects here
+        } else {
+          sets[key].add(String(value));
+        }
+      }
+      // Special-cases for nested/alias fields
+      if (fields.includes('parkingAssist')) {
+        const pa = data['parkingAssist'];
+        if (Array.isArray(pa)) {
+          pa.forEach((v: any) => v != null && sets['parkingAssist'].add(String(v)));
+        }
+      }
+    });
+
+    const result: Record<string, string[]> = {};
+    for (const f of fields) {
+      result[String(f)] = Array.from(sets[String(f)] || []).sort((a, b) => a.localeCompare(b));
+    }
+
+    cacheService.set(cacheKey, result, 5 * 60 * 1000);
+    return result;
+  }
+
+  // Get distinct models by make (cached)
+  async getModelsByMake(make: string, limitCount: number = 300): Promise<string[]> {
+    const cacheKey = `models_by_make_${make}_${limitCount}`;
+    const cached = cacheService.get(cacheKey);
+    if (cached) return cached;
+
+    let q = query(
+      collection(db, 'cars'),
+      where('make', '==', make),
+      orderBy('createdAt', 'desc'),
+      limit(limitCount)
+    );
+
+    const snapshot = await getDocs(q);
+    const set = new Set<string>();
+    snapshot.forEach(s => {
+      const data = s.data();
+      if (data.model) set.add(String(data.model));
+    });
+    const arr = Array.from(set).sort((a, b) => a.localeCompare(b));
+    cacheService.set(cacheKey, arr, 5 * 60 * 1000);
+    return arr;
+  }
+
   // Check if car matches advanced filters (client-side filtering)
   private matchesAdvancedFilters(car: BulgarianCar, filters: CarSearchFilters): boolean {
     // Price range
@@ -365,6 +539,9 @@ export class BulgarianCarService {
     }
 
     // Max mileage
+    if (filters.minMileage !== undefined && car.mileage < filters.minMileage) {
+      return false;
+    }
     if (filters.maxMileage !== undefined && car.mileage > filters.maxMileage) {
       return false;
     }
@@ -386,6 +563,103 @@ export class BulgarianCarService {
         return false;
       }
     }
+
+    // Basic extra filters
+    if (filters.bodyStyle && car.bodyStyle !== filters.bodyStyle) return false;
+    if (filters.seats) {
+      if (filters.seats.from !== undefined && (car.seats ?? 0) < filters.seats.from) return false;
+      if (filters.seats.to !== undefined && (car.seats ?? 0) > filters.seats.to) return false;
+    }
+    if (filters.doors) {
+      if (filters.doors.from !== undefined && (car.doors ?? 0) < filters.doors.from) return false;
+      if (filters.doors.to !== undefined && (car.doors ?? 0) > filters.doors.to) return false;
+    }
+    if (filters.slidingDoor !== undefined && (car.slidingDoor || false) !== filters.slidingDoor) return false;
+    if (filters.paymentType && car.paymentType !== filters.paymentType) return false;
+
+    // Technical filters
+    if (filters.driveType && car.driveType !== filters.driveType) return false;
+    if (filters.power) {
+      const hp = car.power;
+      const value = filters.power;
+      const carValue = value.unit === 'kW' && car.powerKW ? car.powerKW : hp;
+      if (value.from !== undefined && (carValue ?? 0) < value.from) return false;
+      if (value.to !== undefined && (carValue ?? 0) > value.to) return false;
+    }
+    if (filters.engineSizeCc) {
+      const cc = car.engineSize;
+      if (filters.engineSizeCc.from !== undefined && cc < filters.engineSizeCc.from) return false;
+      if (filters.engineSizeCc.to !== undefined && cc > filters.engineSizeCc.to) return false;
+    }
+    if (filters.fuelTankVolumeL) {
+      const v = car.fuelTankVolumeL ?? 0;
+      if (filters.fuelTankVolumeL.from !== undefined && v < filters.fuelTankVolumeL.from) return false;
+      if (filters.fuelTankVolumeL.to !== undefined && v > filters.fuelTankVolumeL.to) return false;
+    }
+    if (filters.weightKg) {
+      const w = car.weightKg ?? 0;
+      if (filters.weightKg.from !== undefined && w < filters.weightKg.from) return false;
+      if (filters.weightKg.to !== undefined && w > filters.weightKg.to) return false;
+    }
+    if (filters.cylinders) {
+      const c = car.cylinders ?? 0;
+      if (filters.cylinders.from !== undefined && c < filters.cylinders.from) return false;
+      if (filters.cylinders.to !== undefined && c > filters.cylinders.to) return false;
+    }
+    if (filters.fuelConsumptionCombinedMax !== undefined) {
+      const fc = car.fuelConsumptionCombined ?? Number.MAX_SAFE_INTEGER;
+      if (fc > filters.fuelConsumptionCombinedMax) return false;
+    }
+    if (filters.emissionSticker && car.emissionSticker !== filters.emissionSticker) return false;
+    if (filters.emissionClass && car.emissionClass !== filters.emissionClass) return false;
+    if (filters.particulateFilter !== undefined && (car.particulateFilter || false) !== filters.particulateFilter) return false;
+
+    // Exterior
+    if (filters.exteriorColorCategory && car.exteriorColorCategory !== filters.exteriorColorCategory) return false;
+    if (filters.metallic !== undefined && (car.metallic || false) !== filters.metallic) return false;
+    if (filters.matte !== undefined && (car.matte || false) !== filters.matte) return false;
+    if (filters.towbar && (car.towbar || 'none') !== filters.towbar) return false;
+    if (filters.trailerAssist !== undefined && (car.trailerAssist || false) !== filters.trailerAssist) return false;
+    if (filters.brakedTrailerLoadKg?.from !== undefined && (car.brakedTrailerLoadKg ?? 0) < filters.brakedTrailerLoadKg.from) return false;
+    if (filters.unbrakedTrailerLoadKg?.from !== undefined && (car.unbrakedTrailerLoadKg ?? 0) < filters.unbrakedTrailerLoadKg.from) return false;
+    if (filters.noseWeightKg?.from !== undefined && (car.noseWeightKg ?? 0) < filters.noseWeightKg.from) return false;
+    if (filters.parkingAssist && filters.parkingAssist.length > 0) {
+      const hasAll = (filters.parkingAssist).every(p => (car.parkingAssist || []).includes(p));
+      if (!hasAll) return false;
+    }
+    if (filters.cruiseControl && (car.cruiseControl || 'none') !== filters.cruiseControl) return false;
+
+    // Interior
+    if (filters.interiorColor && car.interiorColor !== filters.interiorColor) return false;
+    if (filters.interiorMaterial && car.interiorMaterial !== filters.interiorMaterial) return false;
+    if (filters.airbags && car.airbags !== filters.airbags) return false;
+    if (filters.climateControl && car.climateControl !== filters.climateControl) return false;
+    if (filters.extras && filters.extras.length > 0) {
+      const hasAllExtras = filters.extras.every(x => (car.extras || []).includes(x));
+      if (!hasAllExtras) return false;
+    }
+
+    // Offer details
+    if (filters.sellerType && car.sellerType !== filters.sellerType) return false;
+    if (filters.sellerRatingMin !== undefined && (car.sellerRating ?? 0) < filters.sellerRatingMin) return false;
+    if (filters.adOnlineSinceDays !== undefined) {
+      // Compute days since ad was created
+      const now = new Date();
+      const created = car.createdAt instanceof Date ? car.createdAt : new Date(car.createdAt);
+      const diffMs = now.getTime() - created.getTime();
+      const daysSince = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+      // Keep ads that are not older than the specified days window
+      if (daysSince > filters.adOnlineSinceDays) return false;
+    }
+    if (filters.withVideo !== undefined && (car.withVideo || false) !== filters.withVideo) return false;
+    if (filters.discountOffer !== undefined && (car.discountOffer || false) !== filters.discountOffer) return false;
+    if (filters.nonSmoker !== undefined && (car.nonSmoker || false) !== filters.nonSmoker) return false;
+    if (filters.taxi !== undefined && (car.taxi || false) !== filters.taxi) return false;
+    if (filters.vatReclaimable !== undefined && (car.vatReclaimable || false) !== filters.vatReclaimable) return false;
+    if (filters.warranty !== undefined && (car.warranty || false) !== filters.warranty) return false;
+    if (filters.damagedVehicles && (car.damagedVehicles || '') !== filters.damagedVehicles) return false;
+    if (filters.commercial !== undefined && (car.commercial || false) !== filters.commercial) return false;
+    if (filters.approvedUsedProgramme && (car.approvedUsedProgramme || '') !== filters.approvedUsedProgramme) return false;
 
     // Keywords search
     if (filters.keywords) {
@@ -600,6 +874,13 @@ export class BulgarianCarService {
 
       return cars;
     } catch (error: any) {
+      // Gracefully degrade on permission issues for public featured cars
+      if (error && (error.code === 'permission-denied' || error.code === 'failed-precondition')) {
+        if (process.env.NODE_ENV !== 'production') {
+          console.warn('getPopularCars permission issue, returning empty list:', error);
+        }
+        return [];
+      }
       throw this.handleCarError(error);
     }
   }

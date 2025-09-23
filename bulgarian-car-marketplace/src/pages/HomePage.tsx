@@ -356,16 +356,16 @@ const HomePage: React.FC = () => {
           ) : (
             <>
               <CarsGrid>
-                {featuredCars.map((car) => (
+                {featuredCars.map((car) => {
+                  const imgCount = Array.isArray(car.images) ? car.images.length : 0;
+                  const firstImg = imgCount > 0 ? car.images![0] : undefined;
+                  const city = car.location?.city ?? '—';
+                  return (
                   <CarCard key={car.id}>
                     <Link to={`/cars/${car.id}`} style={{ textDecoration: 'none' }}>
                       <CarImage>
-                        {car.images.length > 0 ? (
-                          <LazyImage
-                            src={car.images[0]}
-                            alt={car.title}
-                            placeholder="🚗"
-                          />
+                        {firstImg ? (
+                          <LazyImage src={firstImg} alt={car.title} placeholder="🚗" />
                         ) : (
                           <div style={{
                             width: '100%',
@@ -389,13 +389,13 @@ const HomePage: React.FC = () => {
                           <CarDetail>⛽ {car.fuelType}</CarDetail>
                         </CarDetails>
                         <CarDetails>
-                          <CarDetail>📍 {car.location.city}</CarDetail>
+                          <CarDetail>📍 {city}</CarDetail>
                           <CarDetail>👁️ {car.views}</CarDetail>
                         </CarDetails>
                       </CarContent>
                     </Link>
                   </CarCard>
-                ))}
+                );})}
               </CarsGrid>
 
               <div style={{ textAlign: 'center' }}>
