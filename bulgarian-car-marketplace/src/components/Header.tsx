@@ -9,7 +9,7 @@ import { useTranslation } from '../hooks/useTranslation';
 import { bulgarianAuthService } from '../firebase';
 import { BulgarianUser } from '../firebase/auth-service';
 import NotificationBell from './NotificationBell';
-import logoImage from '../assets/logo.png';
+import Globe3DLogo from './Globe3DLogo';
 import { Settings, User, LogOut, LogIn, UserPlus, Type } from 'lucide-react';
 
 // Styled Components - Mobile.de Style
@@ -239,7 +239,7 @@ const Header: React.FC = () => {
       <HeaderContent>
         {/* Logo */}
         <Logo to="/">
-          <img src={logoImage} alt="Globul Cars Logo" />
+          <Globe3DLogo width={120} height={120} />
         </Logo>
 
         {/* Navigation */}
