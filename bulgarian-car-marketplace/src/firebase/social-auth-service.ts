@@ -32,39 +32,98 @@ appleProvider.addScope('name');
 // Social Auth Service Class
 export class SocialAuthService {
   /**
-   * Sign in with Google
+   * Sign in with Google (with popup fallback to redirect)
    */
   static async signInWithGoogle(): Promise<UserCredential> {
     try {
+      // First try popup
       const result = await signInWithPopup(auth, googleProvider);
       return result;
     } catch (error: any) {
+      console.warn('Google popup failed, trying redirect:', error.code);
+
+      // If popup is blocked, try redirect
+      if (error.code === 'auth/popup-blocked' ||
+          error.code === 'auth/popup-closed-by-user' ||
+          error.code === 'auth/cancelled-popup-request') {
+
+        console.log('Popup blocked, using redirect method...');
+        await signInWithRedirect(auth, googleProvider);
+
+        // This will redirect the user, so we return a promise that never resolves
+        // The result will be handled by handleRedirectResult on page load
+        return new Promise((resolve, reject) => {
+          // Set a timeout to reject if redirect doesn't happen
+          setTimeout(() => {
+            reject(new Error('Redirect timeout - please check if popup blocker is enabled'));
+          }, 5000);
+        });
+      }
+
       console.error('Google sign-in error:', error);
       throw new Error(this.getErrorMessage(error.code, 'Google'));
     }
   }
 
   /**
-   * Sign in with Facebook
+   * Sign in with Facebook (with popup fallback to redirect)
    */
   static async signInWithFacebook(): Promise<UserCredential> {
     try {
+      // First try popup
       const result = await signInWithPopup(auth, facebookProvider);
       return result;
     } catch (error: any) {
+      console.warn('Facebook popup failed, trying redirect:', error.code);
+
+      // If popup is blocked, try redirect
+      if (error.code === 'auth/popup-blocked' ||
+          error.code === 'auth/popup-closed-by-user' ||
+          error.code === 'auth/cancelled-popup-request') {
+
+        console.log('Popup blocked, using redirect method...');
+        await signInWithRedirect(auth, facebookProvider);
+
+        // This will redirect the user, so we return a promise that never resolves
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            reject(new Error('Redirect timeout - please check if popup blocker is enabled'));
+          }, 5000);
+        });
+      }
+
       console.error('Facebook sign-in error:', error);
       throw new Error(this.getErrorMessage(error.code, 'Facebook'));
     }
   }
 
   /**
-   * Sign in with Apple/iCloud
+   * Sign in with Apple/iCloud (with popup fallback to redirect)
    */
   static async signInWithApple(): Promise<UserCredential> {
     try {
+      // First try popup
       const result = await signInWithPopup(auth, appleProvider);
       return result;
     } catch (error: any) {
+      console.warn('Apple popup failed, trying redirect:', error.code);
+
+      // If popup is blocked, try redirect
+      if (error.code === 'auth/popup-blocked' ||
+          error.code === 'auth/popup-closed-by-user' ||
+          error.code === 'auth/cancelled-popup-request') {
+
+        console.log('Popup blocked, using redirect method...');
+        await signInWithRedirect(auth, appleProvider);
+
+        // This will redirect the user, so we return a promise that never resolves
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            reject(new Error('Redirect timeout - please check if popup blocker is enabled'));
+          }, 5000);
+        });
+      }
+
       console.error('Apple sign-in error:', error);
       throw new Error(this.getErrorMessage(error.code, 'Apple'));
     }

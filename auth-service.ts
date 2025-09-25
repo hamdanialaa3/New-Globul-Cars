@@ -516,7 +516,7 @@ export class BulgarianAuthService {
     const bulgarianUser = this.createBulgarianUserObject(user, {
       email: email,
       displayName: displayName
-    });
+    } as UserCreationData);
 
     await setDoc(doc(db, 'users', user.uid), {
       ...bulgarianUser,
@@ -534,7 +534,7 @@ export class BulgarianAuthService {
     const bulgarianUser = this.createBulgarianUserObject(user, {
       email: email,
       displayName: displayName
-    });
+    } as UserCreationData);
 
     // Social login users are pre-verified
     bulgarianUser.isVerified = true;
@@ -595,6 +595,11 @@ export class BulgarianAuthService {
     };
 
     return errorMessages[errorCode] || 'Възникна грешка при удостоверяване';
+  }
+
+  // Get current user method
+  public getCurrentUser(): User | null {
+    return auth.currentUser;
   }
 }
 

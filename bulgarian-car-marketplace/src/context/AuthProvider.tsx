@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'firebase/auth';
 import { auth } from '../firebase/firebase-config';
+import { SocialAuthService } from '../firebase/social-auth-service';
 
 interface AuthContextType {
   currentUser: User | null;
@@ -27,6 +28,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setCurrentUser(user);
       setLoading(false);
     });
+
+    // Handle redirect result on app load
+    const handleRedirectResult = async () => {
+      try {
+        const result = await SocialAuthService.handleRedirectResult();
+        if (result && result.user) {
+          console.log('Redirect sign-in successful:', result.user.email);
+          // User will be set by onAuthStateChanged above
+        }
+      } catch (error) {
+        console.error('Redirect result error:', error);
+        // Don't show error to user as this might be normal (no redirect pending)
+      }
+    };
+
+    handleRedirectResult();
 
     return unsubscribe;
   }, []);
