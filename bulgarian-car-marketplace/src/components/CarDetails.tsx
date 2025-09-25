@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { BulgarianMessagingService } from '../../../messaging-service';
-import { BulgarianAuthService } from '../../../auth-service';
+import { BulgarianMessagingService } from '../services/messaging-service';
+import { BulgarianAuthService } from '../services/auth-service';
 
 // Mock car data for demonstration
 const mockCarData = [

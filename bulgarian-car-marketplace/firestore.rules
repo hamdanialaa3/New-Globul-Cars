@@ -31,23 +31,21 @@ service cloud.firestore {
     // Users collection
     match /users/{userId} {
       // Allow read/write for the user themselves
-      allow read, write: if isOwner(userId) && isValidUser();
+      allow read, write: if isOwner(userId);
 
       // Allow admins to read/write all users
       allow read, write: if isAdmin();
 
       // Allow read for authenticated users (for profiles)
-      allow read: if isAuthenticated() && isValidUser();
+      allow read: if isAuthenticated();
 
-      // Validate user data on create/update
-      allow create: if request.resource.data.keys().hasAll(['email', 'displayName']) &&
-                       request.resource.data.email is string &&
-                       request.resource.data.displayName is string &&
-                       request.resource.data.email.matches('[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}');
+      // Allow create for new users (even if not verified yet)
+      allow create: if isAuthenticated() && 
+                       request.resource.data.uid == request.auth.uid;
 
-      // Prevent sensitive field updates
-      allow update: if !request.resource.data.diff(resource.data).affectedKeys()
-                       .hasAny(['email', 'createdAt', 'lastLogin']);
+      // Allow update for user themselves (including lastLoginAt)
+      allow update: if isOwner(userId) && 
+                       request.resource.data.uid == request.auth.uid;
     }
 
     // Cars collection

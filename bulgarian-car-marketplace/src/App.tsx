@@ -22,6 +22,25 @@ const HomePage = React.lazy(() => import('./pages/HomePage'));
 const CarsPage = React.lazy(() => import('./pages/CarsPage'));
 const CarDetailsPage = React.lazy(() => import('./pages/CarDetailsPage'));
 const SellCarPage = React.lazy(() => import('./pages/SellCarPage'));
+const SellPage = React.lazy(() => import('./pages/SellPage'));
+const VehicleSelectionPage = React.lazy(() => import('./pages/VehicleSelectionPage'));
+const SellerTypePage = React.lazy(() => import('./pages/SellerTypePage'));
+const VehicleDataPage = React.lazy(() => import('./pages/VehicleDataPage'));
+
+// Mobile.de-style sell workflow pages
+const VehicleStartPage = React.lazy(() => import('./pages/sell/VehicleStartPage'));
+const SellerTypePageNew = React.lazy(() => import('./pages/sell/SellerTypePage'));
+const VehicleDataPageNew = React.lazy(() => import('./pages/sell/VehicleDataPage'));
+const EquipmentMainPage = React.lazy(() => import('./pages/sell/EquipmentMainPage'));
+const SafetyEquipmentPage = React.lazy(() => import('./pages/sell/SafetyEquipmentPage'));
+const ComfortEquipmentPage = React.lazy(() => import('./pages/sell/ComfortEquipmentPage'));
+const InfotainmentEquipmentPage = React.lazy(() => import('./pages/sell/InfotainmentEquipmentPage'));
+const ExtrasEquipmentPage = React.lazy(() => import('./pages/sell/ExtrasEquipmentPage'));
+const ImagesPage = React.lazy(() => import('./pages/sell/ImagesPage'));
+const PricingPage = React.lazy(() => import('./pages/sell/PricingPage'));
+const ContactNamePage = React.lazy(() => import('./pages/sell/ContactNamePage'));
+const ContactAddressPage = React.lazy(() => import('./pages/sell/ContactAddressPage'));
+const ContactPhonePage = React.lazy(() => import('./pages/sell/ContactPhonePage'));
 const ProfilePage = React.lazy(() => import('./pages/ProfilePage'));
 const LoginPage = React.lazy(() => import('./pages/LoginPage'));
 const RegisterPage = React.lazy(() => import('./pages/RegisterPage'));
@@ -32,6 +51,9 @@ const ThemeTest = React.lazy(() => import('./components/ThemeTest'));
 const BackgroundTest = React.lazy(() => import('./components/BackgroundTest'));
 const FullThemeDemo = React.lazy(() => import('./components/FullThemeDemo'));
 const EffectsTest = React.lazy(() => import('./components/EffectsTest'));
+const PrivacyPolicyPage = React.lazy(() => import('./pages/PrivacyPolicyPage'));
+const TermsOfServicePage = React.lazy(() => import('./pages/TermsOfServicePage'));
+const DataDeletionPage = React.lazy(() => import('./pages/DataDeletionPage'));
 
 // Layout Component
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -160,7 +182,136 @@ const App: React.FC = () => {
                 path="/sell"
                 element={
                   <Layout>
-                    <SellCarPage />
+                    <SellPage />
+                  </Layout>
+                }
+              />
+              {/* Mobile.de-style sell workflow */}
+              <Route
+                path="/sell/auto"
+                element={
+                  <Layout>
+                    <VehicleStartPage />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/sell/inserat/:vehicleType/verkaeufertyp"
+                element={
+                  <Layout>
+                    <SellerTypePageNew />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/sell/inserat/:vehicleType/fahrzeugdaten/antrieb-und-umwelt"
+                element={
+                  <Layout>
+                    <VehicleDataPageNew />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/sell/inserat/:vehicleType/ausstattung"
+                element={
+                  <Layout>
+                    <EquipmentMainPage />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/sell/inserat/:vehicleType/ausstattung/sicherheit"
+                element={
+                  <Layout>
+                    <SafetyEquipmentPage />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/sell/inserat/:vehicleType/ausstattung/komfort"
+                element={
+                  <Layout>
+                    <ComfortEquipmentPage />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/sell/inserat/:vehicleType/ausstattung/infotainment"
+                element={
+                  <Layout>
+                    <InfotainmentEquipmentPage />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/sell/inserat/:vehicleType/ausstattung/extras"
+                element={
+                  <Layout>
+                    <ExtrasEquipmentPage />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/sell/inserat/:vehicleType/details/bilder"
+                element={
+                  <Layout>
+                    <ImagesPage />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/sell/inserat/:vehicleType/details/preis"
+                element={
+                  <Layout>
+                    <PricingPage />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/sell/inserat/:vehicleType/kontakt/name"
+                element={
+                  <Layout>
+                    <ContactNamePage />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/sell/inserat/:vehicleType/kontakt/adresse"
+                element={
+                  <Layout>
+                    <ContactAddressPage />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/sell/inserat/:vehicleType/kontakt/telefonnummer"
+                element={
+                  <Layout>
+                    <ContactPhonePage />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/sell/vehicle-selection"
+                element={
+                  <Layout>
+                    <VehicleSelectionPage />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/sell/seller-type"
+                element={
+                  <Layout>
+                    <SellerTypePage />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/sell/vehicle-data"
+                element={
+                  <Layout>
+                    <VehicleDataPage />
                   </Layout>
                 }
               />
@@ -239,6 +390,32 @@ const App: React.FC = () => {
                 element={
                   <Layout>
                     <EffectsTest />
+                  </Layout>
+                }
+              />
+
+              {/* Legal Pages */}
+              <Route
+                path="/privacy-policy"
+                element={
+                  <Layout>
+                    <PrivacyPolicyPage />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/terms-of-service"
+                element={
+                  <Layout>
+                    <TermsOfServicePage />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/data-deletion"
+                element={
+                  <Layout>
+                    <DataDeletionPage />
                   </Layout>
                 }
               />

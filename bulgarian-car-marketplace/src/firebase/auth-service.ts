@@ -403,9 +403,25 @@ export class BulgarianAuthService {
   }
 
   private async updateLastLogin(uid: string): Promise<void> {
-    await updateDoc(doc(db, 'users', uid), {
-      lastLoginAt: new Date()
-    });
+    try {
+      // Check if user document exists first
+      const userDoc = await getDoc(doc(db, 'users', uid));
+      if (userDoc.exists()) {
+        await updateDoc(doc(db, 'users', uid), {
+          lastLoginAt: new Date()
+        });
+      } else {
+        // If user doesn't exist, create the document first
+        await setDoc(doc(db, 'users', uid), {
+          uid,
+          lastLoginAt: new Date(),
+          createdAt: new Date()
+        });
+      }
+    } catch (error) {
+      console.error('Error updating last login:', error);
+      // Don't throw error to prevent breaking the auth flow
+    }
   }
 
   private async createUserFromSocialLogin(user: User, provider: string): Promise<void> {

@@ -1,363 +1,201 @@
-// src/pages/SellCarPage.tsx
-// Sell Car Page for Bulgarian Car Marketplace
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { useTranslation } from '../hooks/useTranslation';
+import { Car, Plus, TrendingUp, ArrowRight, Info } from 'lucide-react';
 
-// Styled Components
-const SellCarContainer = styled.div`
+const Container = styled.div`
   min-height: 100vh;
-  padding: 2rem 0;
-  background: #f8fafc;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f172a 100%);
+  padding: 20px;
 `;
 
-const PageContainer = styled.div`
-  max-width: 800px;
+const Content = styled.div`
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0 1rem;
 `;
 
-const PageHeader = styled.div`
+const Hero = styled.div`
   text-align: center;
-  margin-bottom: 3rem;
-  background: white;
-  padding: 3rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 50px;
+  padding: 40px 20px;
+`;
 
-  h1 {
+const Title = styled.h1`
+  font-size: 3.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4a 50%, #f7b731 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 20px;
+`;
+
+const Subtitle = styled.p`
+  font-size: 1.2rem;
+  color: #e2e8f0;
+  margin-bottom: 30px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+`;
+
+const Stats = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin: 40px 0;
+  flex-wrap: wrap;
+`;
+
+const Stat = styled.div`
+  text-align: center;
+  
+  .number {
     font-size: 2.5rem;
     font-weight: bold;
-    color: #1a202c;
-    margin-bottom: 1rem;
+    color: #ffd700;
+    display: block;
   }
-
-  p {
-    font-size: 1.25rem;
-    color: #4a5568;
-    max-width: 600px;
-    margin: 0 auto;
-  }
-`;
-
-const FormContainer = styled.div`
-  background: white;
-  border-radius: 12px;
-  padding: 3rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e2e8f0;
-`;
-
-const FormSection = styled.div`
-  margin-bottom: 2rem;
-
-  &:last-child {
-    margin-bottom: 0;
-  }
-
-  h3 {
-    font-size: 1.25rem;
-    font-weight: bold;
-    color: #1a202c;
-    margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid #1976d2;
+  
+  .label {
+    color: #94a3b8;
+    font-size: 0.9rem;
+    margin-top: 5px;
   }
 `;
 
-const FormGrid = styled.div`
+const Grid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 30px;
+  margin: 50px 0;
 `;
 
-const FormGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-
-  label {
-    font-weight: 500;
-    color: #1a202c;
-    font-size: 0.875rem;
-  }
-
-  input, select, textarea {
-    padding: 0.75rem;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    font-size: 1rem;
-    background: white;
-    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-
-    &:focus {
-      outline: none;
-      border-color: #1976d2;
-      box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
-    }
-
-    &::placeholder {
-      color: #9ca3af;
-    }
-  }
-
-  textarea {
-    resize: vertical;
-    min-height: 100px;
-  }
-`;
-
-const ActionButton = styled.button<{ variant?: 'primary' | 'secondary' }>`
-  padding: 1rem 2rem;
-  border: 2px solid ${({ variant }) => variant === 'secondary' ? '#d1d5db' : '#1976d2'};
-  background: ${({ variant }) => variant === 'secondary' ? 'transparent' : '#1976d2'};
-  color: ${({ variant }) => variant === 'secondary' ? '#1a202c' : 'white'};
-  font-weight: bold;
-  font-size: 1rem;
-  border-radius: 12px;
+const Card = styled.div<{ featured?: boolean }>`
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(20px);
+  border: 2px solid ${props => props.featured ? '#ffd700' : 'rgba(255, 255, 255, 0.1)'};
+  border-radius: 20px;
+  padding: 30px;
   cursor: pointer;
-  transition: all 0.3s ease-in-out;
-  min-width: 150px;
+  transition: all 0.3s ease;
 
   &:hover {
-    background: ${({ variant }) => variant === 'secondary' ? '#f3f4f6' : '#1565c0'};
-    border-color: ${({ variant }) => variant === 'secondary' ? '#9ca3af' : '#1565c0'};
-    transform: translateY(-2px);
-  }
-
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
-
-    &:hover {
-      background: ${({ variant }) => variant === 'secondary' ? 'transparent' : '#1976d2'};
-      border-color: ${({ variant }) => variant === 'secondary' ? '#d1d5db' : '#1976d2'};
-      transform: none;
-    }
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(255, 215, 0, 0.2);
+    border-color: #ffd700;
   }
 `;
 
-const FormActions = styled.div`
+const Icon = styled.div`
+  width: 70px;
+  height: 70px;
+  background: linear-gradient(135deg, #ffd700, #ffed4a);
+  border-radius: 20px;
   display: flex;
-  gap: 1rem;
+  align-items: center;
   justify-content: center;
-  margin-top: 3rem;
-  padding-top: 2rem;
-  border-top: 1px solid #e2e8f0;
+  margin-bottom: 20px;
+  color: #1a1a2e;
+  font-size: 1.5rem;
 `;
 
-// Sell Car Page Component
-const SellCarPage: React.FC = () => {
-  const { t } = useTranslation();
+const CardTitle = styled.h3`
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #ffffff;
+  margin-bottom: 15px;
+`;
+
+const CardDesc = styled.p`
+  color: #94a3b8;
+  line-height: 1.6;
+  margin-bottom: 20px;
+`;
+
+const Button = styled.button`
+  width: 100%;
+  background: linear-gradient(135deg, #ffd700, #ffed4a);
+  color: #1a1a2e;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(255, 215, 0, 0.3);
+  }
+`;
+
+const SellCarPage = () => {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    make: '',
-    model: '',
-    year: '',
-    price: '',
-    mileage: '',
-    fuelType: '',
-    transmission: '',
-    city: '',
-    title: '',
-    description: ''
-  });
 
-  // Handle input changes
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+  const handleStartListing = () => {
+    navigate('/sell/vehicle-selection');
   };
 
-  // Handle form submission
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-
-    try {
-      // Simulate form submission
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      alert('Обявата беше изпратена успешно! / Listing submitted successfully!');
-      navigate('/cars');
-    } catch (error) {
-      console.error('Error submitting form:', error);
-      alert('Възникна грешка / Error occurred');
-    } finally {
-      setLoading(false);
-    }
+  const handleInstantSale = () => {
+    navigate('/sell/instant-evaluation');
   };
-
-  // Common car makes
-  const carMakes = [
-    'Audi', 'BMW', 'Mercedes-Benz', 'Volkswagen', 'Toyota', 'Honda', 'Ford', 'Chevrolet',
-    'Nissan', 'Hyundai', 'Kia', 'Mazda', 'Subaru', 'Volvo', 'Peugeot', 'Renault',
-    'Citroën', 'Fiat', 'Opel', 'Škoda', 'SEAT', 'Dacia', 'Mitsubishi', 'Suzuki'
-  ];
-
-  // Years from current year down to 1990
-  const years = Array.from({ length: new Date().getFullYear() - 1989 }, (_, i) => new Date().getFullYear() - i);
 
   return (
-    <SellCarContainer>
-      <PageContainer>
-        {/* Page Header */}
-        <PageHeader>
-          <h1>{t('sellCar.title', 'Продай колата си')}</h1>
-          <p>{t('sellCar.subtitle', 'Публикувайте обява за вашата кола за по-бързо продаване')}</p>
-        </PageHeader>
+    <Container>
+      <Content>
+        <Hero>
+          <Title>Продай Автомобила си</Title>
+          <Subtitle>Професионална платформа за продажба на автомобили в България</Subtitle>
+          
+          <Stats>
+            <Stat>
+              <span className="number">50K+</span>
+              <span className="label">Купувачи месечно</span>
+            </Stat>
+            <Stat>
+              <span className="number">15K+</span>
+              <span className="label">Продадени коли</span>
+            </Stat>
+            <Stat>
+              <span className="number">4.8</span>
+              <span className="label">Рейтинг</span>
+            </Stat>
+          </Stats>
+        </Hero>
 
-        {/* Form */}
-        <FormContainer>
-          <form onSubmit={handleSubmit}>
-            {/* Basic Information */}
-            <FormSection>
-              <h3>{t('sellCar.basicInfo', 'Основна информация')}</h3>
-              <FormGrid>
-                <FormGroup>
-                  <label>{t('sellCar.make', 'Марка')} *</label>
-                  <select name="make" value={formData.make} onChange={handleInputChange} required>
-                    <option value="">{t('sellCar.selectMake', 'Избери марка')}</option>
-                    {carMakes.map((make) => (
-                      <option key={make} value={make}>
-                        {make}
-                      </option>
-                    ))}
-                  </select>
-                </FormGroup>
+        <Grid>
+          <Card featured>
+            <Icon>
+              <Plus />
+            </Icon>
+            <CardTitle>Създай Обява</CardTitle>
+            <CardDesc>Създай професионална обява и достигни до хиляди купувачи</CardDesc>
+            <Button onClick={handleStartListing}>
+              Започни Обява
+              <ArrowRight size={20} />
+            </Button>
+          </Card>
 
-                <FormGroup>
-                  <label>{t('sellCar.model', 'Модел')} *</label>
-                  <input
-                    type="text"
-                    name="model"
-                    value={formData.model}
-                    onChange={handleInputChange}
-                    placeholder={t('sellCar.modelPlaceholder', 'Въведете модел')}
-                    required
-                  />
-                </FormGroup>
-
-                <FormGroup>
-                  <label>{t('sellCar.year', 'Година')} *</label>
-                  <select name="year" value={formData.year} onChange={handleInputChange} required>
-                    <option value="">{t('sellCar.selectYear', 'Избери година')}</option>
-                    {years.map((year) => (
-                      <option key={year} value={year}>
-                        {year}
-                      </option>
-                    ))}
-                  </select>
-                </FormGroup>
-
-                <FormGroup>
-                  <label>{t('sellCar.price', 'Цена')} (€) *</label>
-                  <input
-                    type="number"
-                    name="price"
-                    value={formData.price}
-                    onChange={handleInputChange}
-                    placeholder="15000"
-                    min="0"
-                    required
-                  />
-                </FormGroup>
-
-                <FormGroup>
-                  <label>{t('sellCar.mileage', 'Пробег (км)')}</label>
-                  <input
-                    type="number"
-                    name="mileage"
-                    value={formData.mileage}
-                    onChange={handleInputChange}
-                    placeholder="150000"
-                    min="0"
-                  />
-                </FormGroup>
-
-                <FormGroup>
-                  <label>{t('sellCar.fuelType', 'Тип гориво')}</label>
-                  <select name="fuelType" value={formData.fuelType} onChange={handleInputChange}>
-                    <option value="">{t('sellCar.selectFuelType', 'Избери тип гориво')}</option>
-                    <option value="petrol">{t('sellCar.fuelTypes.petrol', 'Бензин')}</option>
-                    <option value="diesel">{t('sellCar.fuelTypes.diesel', 'Дизел')}</option>
-                    <option value="electric">{t('sellCar.fuelTypes.electric', 'Електрически')}</option>
-                    <option value="hybrid">{t('sellCar.fuelTypes.hybrid', 'Хибриден')}</option>
-                    <option value="gas">{t('sellCar.fuelTypes.gas', 'Газ')}</option>
-                  </select>
-                </FormGroup>
-
-                <FormGroup>
-                  <label>{t('sellCar.transmission', 'Трансмисия')}</label>
-                  <select name="transmission" value={formData.transmission} onChange={handleInputChange}>
-                    <option value="">{t('sellCar.selectTransmission', 'Izberi transmisiya')}</option>
-                    <option value="manual">{t('sellCar.transmissions.manual', 'Ръчна')}</option>
-                    <option value="automatic">{t('sellCar.transmissions.automatic', 'Автоматична')}</option>
-                    <option value="semiAutomatic">{t('sellCar.transmissions.semiAutomatic', 'Полуавтоматична')}</option>
-                  </select>
-                </FormGroup>
-
-                <FormGroup>
-                  <label>{t('sellCar.city', 'Град')}</label>
-                  <input
-                    type="text"
-                    name="city"
-                    value={formData.city}
-                    onChange={handleInputChange}
-                    placeholder={t('sellCar.cityPlaceholder', 'Въведете град')}
-                  />
-                </FormGroup>
-              </FormGrid>
-            </FormSection>
-
-            {/* Description */}
-            <FormSection>
-              <h3>{t('sellCar.description', 'Описание')}</h3>
-              <FormGroup>
-                <label>{t('sellCar.title', 'Заглавие')}</label>
-                <input
-                  type="text"
-                  name="title"
-                  value={formData.title}
-                  onChange={handleInputChange}
-                  placeholder={t('sellCar.titlePlaceholder', 'Кратко заглавие за обявата')}
-                />
-              </FormGroup>
-
-              <FormGroup>
-                <label>{t('sellCar.description', 'Описание')}</label>
-                <textarea
-                  name="description"
-                  value={formData.description}
-                  onChange={handleInputChange}
-                  placeholder={t('sellCar.descriptionPlaceholder', 'Опишете вашата кола подробно...')}
-                  rows={4}
-                />
-              </FormGroup>
-            </FormSection>
-
-            {/* Form Actions */}
-            <FormActions>
-              <ActionButton type="button" variant="secondary" onClick={() => navigate('/cars')}>
-                {t('common.cancel', 'Отказ')}
-              </ActionButton>
-              <ActionButton type="submit" disabled={loading}>
-                {loading ? t('common.loading', 'Зареждане...') : t('sellCar.submit', 'Публикувай обява')}
-              </ActionButton>
-            </FormActions>
-          </form>
-        </FormContainer>
-      </PageContainer>
-    </SellCarContainer>
+          <Card>
+            <Icon>
+              <TrendingUp />
+            </Icon>
+            <CardTitle>Бърза Продажба</CardTitle>
+            <CardDesc>Продай веднага на търговци със гарантирана цена</CardDesc>
+            <Button onClick={handleInstantSale}>
+              Получи Цена
+              <ArrowRight size={20} />
+            </Button>
+          </Card>
+        </Grid>
+      </Content>
+    </Container>
   );
 };
 
 export default SellCarPage;
-

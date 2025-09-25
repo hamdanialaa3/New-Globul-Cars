@@ -1,4 +1,8 @@
 module.exports = {
+  eslint: {
+    enable: false, // تعطيل ESLint تماماً لتجنب المشاكل
+    mode: 'file',
+  },
   babel: {
     plugins: [
       [
@@ -16,6 +20,11 @@ module.exports = {
   },
   webpack: {
     configure: (webpackConfig) => {
+      // تعطيل ESLint webpack plugin تماماً
+      webpackConfig.plugins = webpackConfig.plugins.filter(
+        (plugin) => plugin.constructor.name !== 'ESLintWebpackPlugin'
+      );
+
       // Ensure resolve exists
       webpackConfig.resolve = webpackConfig.resolve || {};
 

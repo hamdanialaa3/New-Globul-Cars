@@ -1573,47 +1573,194 @@ export const translations = {
       anonymous: 'Анонимен потребител',
       for: 'за'
     },
-    cityZipCode: 'Град / пощенски код',
-    radius: 'Радиус',
-    additionalOffersWithDelivery: 'Допълнителни оферти с доставка',
-    any: 'Всички',
-    from: 'от',
-    to: 'до',
-    yes: 'Да',
-    no: 'Не',
-    buy: 'Купуване',
-    leasing: 'Лизинг',
-    new: 'Нов',
-    used: 'Употребяван',
-    preRegistration: 'Предварителна регистрация',
-    employeeCar: 'Служебна кола',
-    classicVehicle: 'Класическо превозно средство',
-    demonstrationVehicle: 'Демонстрационно превозно средство',
-    cabriolet: 'Кабриолет/ Родстер',
-    estate: 'Комби',
-    suv: 'Внедорожник/ Пикап/SUV',
-    saloon: 'Седан',
-    small: 'Малка кола',
-    sports: 'Спортна кола/Купе',
-    van: 'Ван/Микробус',
-    other: 'Други',
-    bulgaria: 'България',
-    germany: 'Германия',
-    france: 'Франция',
-    italy: 'Италия',
-    spain: 'Испания',
-    german: 'Немски',
-    japanese: 'Японски',
-    american: 'Американски',
-    korean: 'Корейски',
-    french: 'Френски',
-    italian: 'Италиански',
-    swedish: 'Шведски',
-    search: 'Търсене',
-    searching: 'Търсене...',
-    reset: 'Нулиране',
-    saveSearch: 'Запази това търсене',
-    comingSoon: 'Очаквайте скоро...'
+    dashboard: {
+      title: 'Табло на продавача',
+      subtitle: 'Управлявайте своите обяви и следете представянето им',
+      stats: {
+        listingsOnline: 'Обяви онлайн',
+        views: 'Преглеждания',
+        newInquiries: 'Нови запитвания',
+        potentialSales: 'Потенциални продажби',
+        thisWeek: 'тази седмица',
+        lastWeek: 'от миналата седмица',
+        unread: 'непрочетени',
+        basedOnInquiries: 'Базиран на запитвания'
+      },
+      myListings: 'Моите обяви',
+      recentInquiries: 'Последни запитвания',
+      notifications: 'Известия',
+      quickActions: 'Бързи действия',
+      improvementTips: 'Съвети за подобряване',
+      carStatus: {
+        active: 'Активна',
+        pending: 'Чака одобрение',
+        sold: 'Продадена'
+      },
+      actions: {
+        addNewListing: 'Добави нова обява',
+        viewStatistics: 'Виж статистики',
+        viewAllMessages: 'Виж всички съобщения',
+        editProfile: 'Редактирай профил',
+        settings: 'Настройки',
+        financialReports: 'Финансови отчети',
+        support: 'Поддръжка'
+      },
+      tips: {
+        addMorePhotos: 'Добавете повече снимки за по-добро представяне',
+        respondQuickly: 'Отговаряйте бързо на запитванията',
+        maintainCompetitivePrices: 'Поддържайте конкурентни цени',
+        updateDescriptions: 'Обновявайте описанията редовно'
+      },
+      timeAgo: {
+        hoursAgo: 'преди {{count}} часа',
+        daysAgo: 'преди {{count}} дни',
+        dayAgo: 'преди 1 ден'
+      },
+      messages: {
+        interestedInCar: 'интересувам се от колата. Може ли да се видим утре?',
+        carMileage: 'Колко е пробегът на колата? Има ли някакви проблеми?',
+        moreInteriorPhotos: 'Може ли да получа още снимки от интериора?'
+      },
+    },
+    dashboard: {
+      title: 'Табло на продавача',
+      subtitle: 'Управлявайте своите обяви и следете представянето им',
+      stats: {
+        listingsOnline: 'Обяви онлайн',
+        views: 'Преглеждания',
+        newInquiries: 'Нови запитвания',
+        potentialSales: 'Потенциални продажби',
+        thisWeek: 'тази седмица',
+        lastWeek: 'от миналата седмица',
+        unread: 'непрочетени',
+        basedOnInquiries: 'Базиран на запитвания'
+      },
+      myListings: 'Моите обяви',
+      recentInquiries: 'Последни запитвания',
+      notifications: 'Известия',
+      quickActions: 'Бързи действия',
+      improvementTips: 'Съвети за подобряване',
+      carStatus: {
+        active: 'Активна',
+        pending: 'Чака одобрение',
+        sold: 'Продадена'
+      },
+      actions: {
+        addNewListing: 'Добави нова обява',
+        viewStatistics: 'Виж статистики',
+        viewAllMessages: 'Виж всички съобщения',
+        editProfile: 'Редактирай профил',
+        settings: 'Настройки',
+        financialReports: 'Финансови отчети',
+        support: 'Поддръжка'
+      },
+      tips: {
+        addMorePhotos: 'Добавете повече снимки за по-добро представяне',
+        respondQuickly: 'Отговаряйте бързо на запитванията',
+        maintainCompetitivePrices: 'Поддържайте конкурентни цени',
+        updateDescriptions: 'Обновявайте описанията редовно'
+      },
+      timeAgo: {
+        hoursAgo: 'преди {{count}} часа',
+        daysAgo: 'преди {{count}} дни',
+        dayAgo: 'преди 1 ден'
+      },
+      messages: {
+        interestedInCar: 'интересувам се от колата. Може ли да се видим утре?',
+        carMileage: 'Колко е пробегът на колата? Има ли някакви проблеми?',
+        moreInteriorPhotos: 'Може ли да получи още снимки от интериора?'
+      }
+    },
+    dashboard: {
+      title: 'Seller Dashboard',
+      subtitle: 'Manage your listings and track their performance',
+      stats: {
+        listingsOnline: 'Listings Online',
+        views: 'Views',
+        newInquiries: 'New Inquiries',
+        potentialSales: 'Potential Sales',
+        thisWeek: 'this week',
+        lastWeek: 'from last week',
+        unread: 'unread',
+        basedOnInquiries: 'Based on inquiries'
+      },
+      myListings: 'My Listings',
+      recentInquiries: 'Recent Inquiries',
+      notifications: 'Notifications',
+      quickActions: 'Quick Actions',
+      improvementTips: 'Improvement Tips',
+      carStatus: {
+        active: 'Active',
+        pending: 'Pending Approval',
+        sold: 'Sold'
+      },
+      actions: {
+        addNewListing: 'Add New Listing',
+        viewStatistics: 'View Statistics',
+        viewAllMessages: 'View All Messages',
+        editProfile: 'Edit Profile',
+        settings: 'Settings',
+        financialReports: 'Financial Reports',
+        support: 'Support'
+      },
+      tips: {
+        addMorePhotos: 'Add more photos for better presentation',
+        respondQuickly: 'Respond quickly to inquiries',
+        maintainCompetitivePrices: 'Maintain competitive prices',
+        updateDescriptions: 'Update descriptions regularly'
+      },
+      timeAgo: {
+        hoursAgo: '{{count}} hours ago',
+        daysAgo: '{{count}} days ago',
+        dayAgo: '1 day ago'
+      },
+      messages: {
+        interestedInCar: 'interested in the car. Can we meet tomorrow?',
+        carMileage: 'What is the car\'s mileage? Are there any problems?',
+        moreInteriorPhotos: 'Can I get more photos of the interior?'
+      }
+    },
+    cityZipCode: 'City / postal code',
+    radius: 'Radius',
+    additionalOffersWithDelivery: 'Additional offers with delivery',
+    any: 'Any',
+    from: 'from',
+    to: 'to',
+    yes: 'Yes',
+    no: 'No',
+    buy: 'Buy',
+    leasing: 'Leasing',
+    new: 'New',
+    used: 'Used',
+    preRegistration: 'Pre-registration',
+    employeeCar: 'Employee car',
+    classicVehicle: 'Classic vehicle',
+    demonstrationVehicle: 'Demonstration vehicle',
+    cabriolet: 'Cabriolet/Roadster',
+    estate: 'Estate',
+    suv: 'SUV/Pickup/Off-road',
+    saloon: 'Saloon',
+    small: 'Small car',
+    sports: 'Sports car/Coupe',
+    van: 'Van/Minibus',
+    other: 'Other',
+    bulgaria: 'Bulgaria',
+    germany: 'Germany',
+    france: 'France',
+    italy: 'Italy',
+    spain: 'Spain',
+    german: 'German',
+    japanese: 'Japanese',
+    american: 'American',
+    korean: 'Korean',
+    french: 'French',
+    italian: 'Italian',
+    swedish: 'Swedish',
+    search: 'Search',
+    searching: 'Searching...',
+    reset: 'Reset',
+    saveSearch: 'Save this search',
+    comingSoon: 'Coming soon...'
   }
 };
 

@@ -165,7 +165,17 @@ export const PerformanceMonitor: React.FC = () => {
 
     // Subscribe to metrics updates
     const unsubscribe = performanceService.subscribe((newMetrics) => {
-      setMetrics(newMetrics);
+      setMetrics(prevMetrics => {
+        // Only update if metrics actually changed
+        if (!prevMetrics || 
+            prevMetrics.loadTime !== newMetrics.loadTime ||
+            prevMetrics.renderTime !== newMetrics.renderTime ||
+            prevMetrics.memoryUsage !== newMetrics.memoryUsage ||
+            prevMetrics.networkLatency !== newMetrics.networkLatency) {
+          return newMetrics;
+        }
+        return prevMetrics;
+      });
     });
 
     // Show monitor in development

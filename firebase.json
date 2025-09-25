@@ -12,7 +12,7 @@
   },
   "hosting": {
     "site": "studio-448742006-a3493",
-    "public": "bulgarian-car-marketplace/build",
+    "public": "build",
     "ignore": [
       "firebase.json",
       "**/.*",

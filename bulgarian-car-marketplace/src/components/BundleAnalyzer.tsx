@@ -164,7 +164,7 @@ export const BundleAnalyzer: React.FC = () => {
       
       <ScoreContainer>
         <ScoreLabel>Performance Score</ScoreLabel>
-        <ScoreValue score={performanceScore}>
+        <ScoreValue $score={performanceScore}>
           {performanceScore}/100
         </ScoreValue>
       </ScoreContainer>
@@ -275,10 +275,10 @@ const ScoreLabel = styled.span`
   color: #ccc;
 `;
 
-const ScoreValue = styled.span<{ score: number }>`
-  color: ${({ score }) => 
-    score >= 80 ? '#4ade80' : 
-    score >= 60 ? '#fbbf24' : 
+const ScoreValue = styled.span<{ $score: number }>`
+  color: ${({ $score }) => 
+    $score >= 80 ? '#4ade80' : 
+    $score >= 60 ? '#fbbf24' : 
     '#f87171'
   };
   font-weight: bold;
