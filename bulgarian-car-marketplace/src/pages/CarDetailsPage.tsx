@@ -1,16 +1,14 @@
-// src/pages/CarDetailsPage.tsx
-// Car Details Page for Bulgarian Car Marketplace
-
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useTranslation } from '../hooks/useTranslation';
 import { bulgarianCarService, BulgarianCar } from '../firebase';
+import LazyImage from '../components/LazyImage';
+import RatingSystem from '../components/RatingSystem';
 
-// Styled Components
-const CarDetailsContainer = styled.div`
+const DetailsContainer = styled.div`
   min-height: 100vh;
-  padding: ${({ theme }) => theme.spacing['2xl']} 0;
+  padding: ${({ theme }) => theme.spacing.xl} 0;
 `;
 
 const PageContainer = styled.div`
@@ -19,478 +17,325 @@ const PageContainer = styled.div`
   padding: 0 ${({ theme }) => theme.spacing.md};
 `;
 
-const LoadingSpinner = styled.div`
+const BackButton = styled.button`
   display: flex;
-  justify-content: center;
   align-items: center;
-  padding: ${({ theme }) => theme.spacing['4xl']};
-  font-size: ${({ theme }) => theme.typography.fontSize.lg};
-  color: ${({ theme }) => theme.colors.text.secondary};
-`;
+  gap: ${({ theme }) => theme.spacing.sm};
+  padding: ${({ theme }) => theme.spacing.md};
+  background: ${({ theme }) => theme.colors.grey[100]};
+  border: 1px solid ${({ theme }) => theme.colors.grey[300]};
+  border-radius: ${({ theme }) => theme.borderRadius.base};
+  cursor: pointer;
+  margin-bottom: ${({ theme }) => theme.spacing.xl};
+  transition: all 0.2s ease;
 
-const ErrorMessage = styled.div`
-  text-align: center;
-  padding: ${({ theme }) => theme.spacing['4xl']};
-  background: ${({ theme }) => theme.colors.error.light}20;
-  border: 1px solid ${({ theme }) => theme.colors.error.light};
-  border-radius: ${({ theme }) => theme.borderRadius.lg};
-  color: ${({ theme }) => theme.colors.error.main};
-
-  h3 {
-    font-size: ${({ theme }) => theme.typography.fontSize['2xl']};
-    margin-bottom: ${({ theme }) => theme.spacing.md};
-  }
-
-  p {
-    font-size: ${({ theme }) => theme.typography.fontSize.base};
+  &:hover {
+    background: ${({ theme }) => theme.colors.grey[200]};
   }
 `;
 
 const CarHeader = styled.div`
-  margin-bottom: ${({ theme }) => theme.spacing['2xl']};
-`;
-
-const Breadcrumb = styled.div`
-  margin-bottom: ${({ theme }) => theme.spacing.lg};
-
-  a {
-    color: ${({ theme }) => theme.colors.text.secondary};
-    text-decoration: none;
-
-    &:hover {
-      color: ${({ theme }) => theme.colors.primary.main};
-    }
-
-    &:not(:last-child)::after {
-      content: '>';
-      margin: 0 ${({ theme }) => theme.spacing.sm};
-      color: ${({ theme }) => theme.colors.text.secondary};
-    }
-  }
-`;
-
-const CarTitle = styled.h1`
-  font-size: ${({ theme }) => theme.typography.fontSize['4xl']};
-  font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
-  color: ${({ theme }) => theme.colors.text.primary};
-  margin-bottom: ${({ theme }) => theme.spacing.md};
-`;
-
-const CarPrice = styled.div`
-  font-size: ${({ theme }) => theme.typography.fontSize['5xl']};
-  font-weight: ${({ theme }) => theme.typography.fontWeight.extrabold};
-  color: ${({ theme }) => theme.colors.primary.main};
-  margin-bottom: ${({ theme }) => theme.spacing.lg};
-
-  &::before {
-    content: '€';
-    margin-right: ${({ theme }) => theme.spacing.sm};
-  }
-`;
-
-const CarGrid = styled.div`
   display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: ${({ theme }) => theme.spacing['2xl']};
-  margin-bottom: ${({ theme }) => theme.spacing['3xl']};
+  grid-template-columns: 1fr 1fr;
+  gap: ${({ theme }) => theme.spacing.xl};
+  margin-bottom: ${({ theme }) => theme.spacing.xl};
 
-  @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
+  @media (max-width: 768px) {
     grid-template-columns: 1fr;
   }
 `;
 
-const CarGallery = styled.div`
-  background: ${({ theme }) => theme.colors.background.paper};
-  border-radius: ${({ theme }) => theme.borderRadius.lg};
-  padding: ${({ theme }) => theme.spacing.lg};
-  box-shadow: ${({ theme }) => theme.shadows.base};
-  border: 1px solid ${({ theme }) => theme.colors.grey[200]};
+const CarImages = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.md};
 `;
 
 const MainImage = styled.div`
   width: 100%;
   height: 400px;
   background: ${({ theme }) => theme.colors.grey[200]};
-  border-radius: ${({ theme }) => theme.borderRadius.md};
+  border-radius: ${({ theme }) => theme.borderRadius.lg};
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: ${({ theme }) => theme.typography.fontSize['4xl']};
-  margin-bottom: ${({ theme }) => theme.spacing.lg};
-  overflow: hidden;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
 `;
 
 const ThumbnailGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: ${({ theme }) => theme.spacing.sm};
 `;
 
-const Thumbnail = styled.div<{ active: boolean }>`
-  width: 80px;
-  height: 60px;
+const Thumbnail = styled.div`
+  width: 100%;
+  height: 80px;
   background: ${({ theme }) => theme.colors.grey[200]};
-  border-radius: ${({ theme }) => theme.borderRadius.sm};
-  cursor: pointer;
-  border: 2px solid ${({ theme, active }) => active ? theme.colors.primary.main : 'transparent'};
+  border-radius: ${({ theme }) => theme.borderRadius.base};
   overflow: hidden;
-  transition: border-color 0.2s ease-in-out;
+  cursor: pointer;
+  transition: transform 0.2s ease;
 
   &:hover {
-    border-color: ${({ theme }) => theme.colors.primary.main};
-  }
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    transform: scale(1.05);
   }
 `;
 
 const CarInfo = styled.div`
-  background: ${({ theme }) => theme.colors.background.paper};
-  border-radius: ${({ theme }) => theme.borderRadius.lg};
-  padding: ${({ theme }) => theme.spacing['2xl']};
-  box-shadow: ${({ theme }) => theme.shadows.base};
-  border: 1px solid ${({ theme }) => theme.colors.grey[200]};
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.lg};
 `;
 
-const InfoSection = styled.div`
-  margin-bottom: ${({ theme }) => theme.spacing['2xl']};
+const CarTitle = styled.h1`
+  font-size: ${({ theme }) => theme.typography.fontSize['3xl']};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
+  color: ${({ theme }) => theme.colors.text.primary};
+  margin: 0;
+`;
 
-  &:last-child {
-    margin-bottom: 0;
-  }
+const CarPrice = styled.div`
+  font-size: ${({ theme }) => theme.typography.fontSize['4xl']};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.extrabold};
+  color: ${({ theme }) => theme.colors.primary.main};
+  margin: 0;
 
-  h3 {
-    font-size: ${({ theme }) => theme.typography.fontSize.xl};
-    font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
-    color: ${({ theme }) => theme.colors.text.primary};
-    margin-bottom: ${({ theme }) => theme.spacing.lg};
-    padding-bottom: ${({ theme }) => theme.spacing.sm};
-    border-bottom: 2px solid ${({ theme }) => theme.colors.primary.main};
+  &::before {
+    content: '€';
+    margin-right: ${({ theme }) => theme.spacing.xs};
   }
 `;
 
-const InfoGrid = styled.div`
+const CarDetails = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: ${({ theme }) => theme.spacing.md};
 `;
 
-const InfoItem = styled.div`
+const DetailItem = styled.div`
   display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.xs};
-
-  .label {
-    font-size: ${({ theme }) => theme.typography.fontSize.sm};
-    color: ${({ theme }) => theme.colors.text.secondary};
-    font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
-  }
-
-  .value {
-    font-size: ${({ theme }) => theme.typography.fontSize.base};
-    color: ${({ theme }) => theme.colors.text.primary};
-    font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
-  }
+  justify-content: space-between;
+  padding: ${({ theme }) => theme.spacing.md};
+  background: ${({ theme }) => theme.colors.grey[50]};
+  border-radius: ${({ theme }) => theme.borderRadius.base};
 `;
 
-const CarDescription = styled.div`
-  font-size: ${({ theme }) => theme.typography.fontSize.base};
-  line-height: ${({ theme }) => theme.typography.lineHeight.relaxed};
+const DetailLabel = styled.span`
+  color: ${({ theme }) => theme.colors.text.secondary};
+`;
+
+const DetailValue = styled.span`
   color: ${({ theme }) => theme.colors.text.primary};
-  margin-bottom: ${({ theme }) => theme.spacing.xl};
-`;
-
-const FeaturesList = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: ${({ theme }) => theme.spacing.sm};
-`;
-
-const Feature = styled.span`
-  background: ${({ theme }) => theme.colors.grey[100]};
-  color: ${({ theme }) => theme.colors.text.primary};
-  padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.sm};
-  border-radius: ${({ theme }) => theme.borderRadius.sm};
-  font-size: ${({ theme }) => theme.typography.fontSize.sm};
   font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
 `;
 
-const ContactSection = styled.div`
-  background: ${({ theme }) => theme.colors.primary.main};
-  color: white;
+const Description = styled.div`
+  margin-top: ${({ theme }) => theme.spacing.xl};
+  padding: ${({ theme }) => theme.spacing.xl};
+  background: white;
   border-radius: ${({ theme }) => theme.borderRadius.lg};
-  padding: ${({ theme }) => theme.spacing['2xl']};
-  margin-top: ${({ theme }) => theme.spacing['2xl']};
+  box-shadow: ${({ theme }) => theme.shadows.base};
 `;
 
-const ContactTitle = styled.h3`
-  font-size: ${({ theme }) => theme.typography.fontSize['2xl']};
+const DescriptionTitle = styled.h2`
+  font-size: ${({ theme }) => theme.typography.fontSize.xl};
   font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
+  color: ${({ theme }) => theme.colors.text.primary};
+  margin: 0 0 ${({ theme }) => theme.spacing.lg} 0;
+`;
+
+const DescriptionText = styled.p`
+  color: ${({ theme }) => theme.colors.text.primary};
+  line-height: 1.6;
+  margin: 0;
+`;
+
+const ContactSection = styled.div`
+  margin-top: ${({ theme }) => theme.spacing.xl};
+  padding: ${({ theme }) => theme.spacing.xl};
+  background: white;
+  border-radius: ${({ theme }) => theme.borderRadius.lg};
+  box-shadow: ${({ theme }) => theme.shadows.base};
+`;
+
+const ContactTitle = styled.h2`
+  font-size: ${({ theme }) => theme.typography.fontSize.xl};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
+  color: ${({ theme }) => theme.colors.text.primary};
+  margin: 0 0 ${({ theme }) => theme.spacing.lg} 0;
+`;
+
+const ContactButton = styled.button`
+  width: 100%;
+  padding: ${({ theme }) => theme.spacing.lg};
+  background: ${({ theme }) => theme.colors.primary.main};
+  color: white;
+  border: none;
+  border-radius: ${({ theme }) => theme.borderRadius.base};
+  font-size: ${({ theme }) => theme.typography.fontSize.lg};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background: ${({ theme }) => theme.colors.primary.dark};
+  }
+`;
+
+const LoadingContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
+`;
+
+const ErrorContainer = styled.div`
+  text-align: center;
+  padding: ${({ theme }) => theme.spacing.xl};
+`;
+
+const ErrorTitle = styled.h2`
+  color: ${({ theme }) => theme.colors.error.main};
+  margin-bottom: ${({ theme }) => theme.spacing.md};
+`;
+
+const ErrorText = styled.p`
+  color: ${({ theme }) => theme.colors.text.secondary};
   margin-bottom: ${({ theme }) => theme.spacing.lg};
 `;
 
-const ContactInfo = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: ${({ theme }) => theme.spacing.lg};
-  margin-bottom: ${({ theme }) => theme.spacing.xl};
-`;
-
-const ContactItem = styled.div`
-  display: flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.spacing.md};
-
-  .icon {
-    font-size: ${({ theme }) => theme.typography.fontSize['2xl']};
-  }
-
-  .info {
-    h4 {
-      font-size: ${({ theme }) => theme.typography.fontSize.base};
-      font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
-      margin-bottom: ${({ theme }) => theme.spacing.xs};
-    }
-
-    p {
-      font-size: ${({ theme }) => theme.typography.fontSize.sm};
-      opacity: 0.9;
-      margin: 0;
-    }
-  }
-`;
-
-const ContactButton = styled(Link)`
-  display: inline-block;
-  background: white;
-  color: ${({ theme }) => theme.colors.primary.main};
-  padding: ${({ theme }) => theme.spacing.lg} ${({ theme }) => theme.spacing['2xl']};
-  border-radius: ${({ theme }) => theme.borderRadius.lg};
-  font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
-  font-size: ${({ theme }) => theme.typography.fontSize.lg};
-  text-decoration: none;
-  transition: all 0.3s ease-in-out;
-  text-align: center;
-
-  &:hover {
-    background: ${({ theme }) => theme.colors.grey[100]};
-    transform: translateY(-2px);
-  }
-`;
-
-// Car Details Page Component
 const CarDetailsPage: React.FC = () => {
-  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const { t } = useTranslation();
   const [car, setCar] = useState<BulgarianCar | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeImageIndex, setActiveImageIndex] = useState(0);
 
-  // Load car details
   useEffect(() => {
-    const loadCarDetails = async () => {
+    const loadCar = async () => {
       if (!id) {
-        setError('Car ID is required');
+        setError('Car ID not provided');
         setLoading(false);
         return;
       }
 
       try {
-        setLoading(true);
         const carData = await bulgarianCarService.getCarById(id);
-
-        if (!carData) {
+        if (carData) {
+          setCar(carData);
+        } else {
           setError('Car not found');
-          return;
         }
-
-        setCar(carData);
-
-        // Mark as viewed
-        await bulgarianCarService.markCarAsViewed(id);
       } catch (err) {
-        console.error('Error loading car details:', err);
         setError('Failed to load car details');
+        console.error('Error loading car:', err);
       } finally {
         setLoading(false);
       }
     };
 
-    loadCarDetails();
+    loadCar();
   }, [id]);
 
   if (loading) {
     return (
-      <CarDetailsContainer>
-        <PageContainer>
-          <LoadingSpinner>
-            {t('common.loading')}
-          </LoadingSpinner>
-        </PageContainer>
-      </CarDetailsContainer>
+      <LoadingContainer>
+        <div>Loading car details...</div>
+      </LoadingContainer>
     );
   }
 
   if (error || !car) {
     return (
-      <CarDetailsContainer>
-        <PageContainer>
-          <ErrorMessage>
-            <h3>{t('carDetails.error.title')}</h3>
-            <p>{error || t('carDetails.error.notFound')}</p>
-            <Link to="/cars" style={{ color: 'inherit', textDecoration: 'underline' }}>
-              {t('carDetails.error.backToCars')}
-            </Link>
-          </ErrorMessage>
-        </PageContainer>
-      </CarDetailsContainer>
+      <ErrorContainer>
+        <ErrorTitle>Error</ErrorTitle>
+        <ErrorText>{error || 'Car not found'}</ErrorText>
+        <button onClick={() => navigate('/cars')}>
+          Back to Cars
+        </button>
+      </ErrorContainer>
     );
   }
 
   return (
-    <CarDetailsContainer>
+    <DetailsContainer>
       <PageContainer>
-        {/* Breadcrumb */}
-        <Breadcrumb>
-          <Link to="/">{t('nav.home')}</Link>
-          <Link to="/cars">{t('nav.cars')}</Link>
-          <span>{car.title}</span>
-        </Breadcrumb>
+        <BackButton onClick={() => navigate('/cars')}>
+          ← Back to Cars
+        </BackButton>
 
-        {/* Car Header */}
         <CarHeader>
-          <CarTitle>{car.title}</CarTitle>
-          <CarPrice>{car.price.toLocaleString()}</CarPrice>
-        </CarHeader>
-
-        {/* Car Grid */}
-        <CarGrid>
-          {/* Car Gallery */}
-          <CarGallery>
+          <CarImages>
             <MainImage>
-              {car.images.length > 0 ? (
-                <img src={car.images[activeImageIndex]} alt={car.title} />
+              {car.mainImage ? (
+                <LazyImage src={car.mainImage} alt={car.title} placeholder="🚗" />
               ) : (
-                '🚗'
+                <div style={{ fontSize: '4rem', color: '#ccc' }}>🚗</div>
               )}
             </MainImage>
-
-            {car.images.length > 1 && (
-              <ThumbnailGrid>
-                {car.images.map((image, index) => (
-                  <Thumbnail
-                    key={index}
-                    active={index === activeImageIndex}
-                    onClick={() => setActiveImageIndex(index)}
-                  >
-                    <img src={image} alt={`${car.title} ${index + 1}`} />
-                  </Thumbnail>
-                ))}
-              </ThumbnailGrid>
-            )}
-          </CarGallery>
-
-          {/* Car Info */}
-          <CarInfo>
-            {/* Basic Information */}
-            <InfoSection>
-              <h3>{t('carDetails.basicInfo')}</h3>
-              <InfoGrid>
-                <InfoItem>
-                  <span className="label">{t('carDetails.year')}</span>
-                  <span className="value">{car.year}</span>
-                </InfoItem>
-                <InfoItem>
-                  <span className="label">{t('carDetails.mileage')}</span>
-                  <span className="value">{car.mileage.toLocaleString()} km</span>
-                </InfoItem>
-                <InfoItem>
-                  <span className="label">{t('carDetails.fuelType')}</span>
-                  <span className="value">{car.fuelType}</span>
-                </InfoItem>
-                <InfoItem>
-                  <span className="label">{t('carDetails.transmission')}</span>
-                  <span className="value">{car.transmission}</span>
-                </InfoItem>
-                <InfoItem>
-                  <span className="label">{t('carDetails.power')}</span>
-                  <span className="value">{car.power} HP</span>
-                </InfoItem>
-                <InfoItem>
-                  <span className="label">{t('carDetails.engineSize')}</span>
-                  <span className="value">{car.engineSize} cc</span>
-                </InfoItem>
-              </InfoGrid>
-            </InfoSection>
-
-            {/* Location */}
-            <InfoSection>
-              <h3>{t('carDetails.location')}</h3>
-              <InfoItem>
-                <span className="label">{t('carDetails.address')}</span>
-                <span className="value">
-                  {car.location.city}, {car.location.region}, {car.location.country}
-                </span>
-              </InfoItem>
-            </InfoSection>
-
-            {/* Contact Section */}
-            <ContactSection>
-              <ContactTitle>{t('carDetails.contactSeller')}</ContactTitle>
-              <ContactInfo>
-                <ContactItem>
-                  <span className="icon">👤</span>
-                  <div className="info">
-                    <h4>{car.ownerName}</h4>
-                    <p>{t('carDetails.seller')}</p>
-                  </div>
-                </ContactItem>
-                {car.ownerPhone && (
-                  <ContactItem>
-                    <span className="icon">📞</span>
-                    <div className="info">
-                      <h4>{car.ownerPhone}</h4>
-                      <p>{t('carDetails.phone')}</p>
-                    </div>
-                  </ContactItem>
-                )}
-              </ContactInfo>
-              <ContactButton to={`/contact/${car.id}`}>
-                {t('carDetails.sendMessage')}
-              </ContactButton>
-            </ContactSection>
-          </CarInfo>
-        </CarGrid>
-
-        {/* Description */}
-        <InfoSection>
-          <h3>{t('carDetails.description')}</h3>
-          <CarDescription>{car.description}</CarDescription>
-        </InfoSection>
-
-        {/* Features */}
-        {car.features.length > 0 && (
-          <InfoSection>
-            <h3>{t('carDetails.features')}</h3>
-            <FeaturesList>
-              {car.features.map((feature, index) => (
-                <Feature key={index}>{feature}</Feature>
+            <ThumbnailGrid>
+              {car.images?.slice(0, 4).map((image, index) => (
+                <Thumbnail key={index}>
+                  <LazyImage src={image} alt={`${car.title} ${index + 1}`} placeholder="🚗" />
+                </Thumbnail>
               ))}
-            </FeaturesList>
-          </InfoSection>
-        )}
+            </ThumbnailGrid>
+          </CarImages>
+
+          <CarInfo>
+            <CarTitle>{car.title}</CarTitle>
+            <CarPrice>{car.price.toLocaleString()}</CarPrice>
+            
+            <CarDetails>
+              <DetailItem>
+                <DetailLabel>Year</DetailLabel>
+                <DetailValue>{car.year}</DetailValue>
+              </DetailItem>
+              <DetailItem>
+                <DetailLabel>Mileage</DetailLabel>
+                <DetailValue>{car.mileage.toLocaleString()} km</DetailValue>
+              </DetailItem>
+              <DetailItem>
+                <DetailLabel>Fuel Type</DetailLabel>
+                <DetailValue>{car.fuelType}</DetailValue>
+              </DetailItem>
+              <DetailItem>
+                <DetailLabel>Transmission</DetailLabel>
+                <DetailValue>{car.transmission}</DetailValue>
+              </DetailItem>
+              <DetailItem>
+                <DetailLabel>Power</DetailLabel>
+                <DetailValue>{car.power} HP</DetailValue>
+              </DetailItem>
+              <DetailItem>
+                <DetailLabel>Color</DetailLabel>
+                <DetailValue>{car.color}</DetailValue>
+              </DetailItem>
+            </CarDetails>
+          </CarInfo>
+        </CarHeader>
+
+        <Description>
+          <DescriptionTitle>Description</DescriptionTitle>
+          <DescriptionText>{car.description}</DescriptionText>
+        </Description>
+
+        <ContactSection>
+          <ContactTitle>Contact Seller</ContactTitle>
+          <ContactButton>
+            Contact {car.ownerName}
+          </ContactButton>
+        </ContactSection>
+
+        <RatingSystem
+          rating={car.sellerRating || 0}
+          dealerRating={car.sellerRating}
+          showForm={true}
+        />
       </PageContainer>
-    </CarDetailsContainer>
+    </DetailsContainer>
   );
 };
 

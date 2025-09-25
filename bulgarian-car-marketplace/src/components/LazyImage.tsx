@@ -1,58 +1,99 @@
-// src/components/LazyImage.tsx
-// Lazy loading image component for performance optimization
-
-import * as React from 'react';
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 
 interface LazyImageProps {
   src: string;
   alt: string;
-  className?: string;
   placeholder?: string;
+  className?: string;
+  style?: React.CSSProperties;
   onLoad?: () => void;
   onError?: () => void;
+  threshold?: number;
+  rootMargin?: string;
+  fallback?: string;
+  loading?: 'lazy' | 'eager';
+  decoding?: 'async' | 'sync' | 'auto';
+  sizes?: string;
+  srcSet?: string;
 }
 
-const ImageContainer = styled.div`
+const LazyImageContainer = styled.div`
   position: relative;
-  width: 100%;
-  height: 100%;
-  background: #f5f5f5;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   overflow: hidden;
+  background: ${({ theme }) => theme.colors.grey[100]};
+  border-radius: ${({ theme }) => theme.borderRadius.base};
 `;
 
-const StyledImage = styled.img<{ loaded: boolean }>`
+const LazyImagePlaceholder = styled.div<{ isLoaded: boolean }>`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: ${({ theme }) => theme.colors.grey[100]};
+  display: ${({ isLoaded }) => (isLoaded ? 'none' : 'flex')};
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.3s ease;
+  opacity: ${({ isLoaded }) => (isLoaded ? 0 : 1)};
+`;
+
+const LazyImageSpinner = styled.div`
+  width: 24px;
+  height: 24px;
+  border: 2px solid ${({ theme }) => theme.colors.grey[300]};
+  border-top: 2px solid ${({ theme }) => theme.colors.primary.main};
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+`;
+
+const LazyImageElement = styled.img<{ isLoaded: boolean }>`
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: ${props => props.loaded ? 1 : 0};
-  transition: opacity 0.3s ease-in-out;
+  transition: opacity 0.3s ease;
+  opacity: ${({ isLoaded }) => (isLoaded ? 1 : 0)};
 `;
 
-const Placeholder = styled.div`
+const LazyImageError = styled.div`
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 2rem;
-  color: #ccc;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: ${({ theme }) => theme.colors.grey[100]};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: ${({ theme }) => theme.colors.text.secondary};
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
 `;
 
 const LazyImage: React.FC<LazyImageProps> = ({
   src,
   alt,
+  placeholder,
   className,
-  placeholder = '🚗',
+  style,
   onLoad,
-  onError
+  onError,
+  threshold = 0.1,
+  rootMargin = '50px',
+  fallback,
+  loading = 'lazy',
+  decoding = 'async',
+  sizes,
+  srcSet,
 }) => {
-  const [loaded, setLoaded] = useState(false);
-  const [error, setError] = useState(false);
-  const [inView, setInView] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [isInView, setIsInView] = useState(false);
   const imgRef = useRef<HTMLImageElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -60,11 +101,14 @@ const LazyImage: React.FC<LazyImageProps> = ({
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setInView(true);
+          setIsInView(true);
           observer.disconnect();
         }
       },
-      { threshold: 0.1 }
+      {
+        threshold,
+        rootMargin,
+      }
     );
 
     if (containerRef.current) {
@@ -72,32 +116,61 @@ const LazyImage: React.FC<LazyImageProps> = ({
     }
 
     return () => observer.disconnect();
-  }, []);
+  }, [threshold, rootMargin]);
 
   const handleLoad = () => {
-    setLoaded(true);
+    setIsLoaded(true);
+    setIsError(false);
     onLoad?.();
   };
 
   const handleError = () => {
-    setError(true);
+    setIsError(true);
+    setIsLoaded(false);
     onError?.();
   };
 
   return (
-    <ImageContainer ref={containerRef} className={className}>
-      {!error && inView && (
-        <StyledImage
-          ref={imgRef}
-          src={src}
-          alt={alt}
-          loaded={loaded}
-          onLoad={handleLoad}
-          onError={handleError}
-        />
+    <LazyImageContainer
+      ref={containerRef}
+      className={className}
+      style={style}
+    >
+      <LazyImagePlaceholder isLoaded={isLoaded}>
+        {placeholder ? (
+          <img
+            src={placeholder}
+            alt=""
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          />
+        ) : (
+          <LazyImageSpinner />
+        )}
+      </LazyImagePlaceholder>
+
+      {isInView && (
+        <>
+          {isError ? (
+            <LazyImageError>
+              {fallback || 'Failed to load image'}
+            </LazyImageError>
+          ) : (
+            <LazyImageElement
+              ref={imgRef}
+              src={src}
+              alt={alt}
+              isLoaded={isLoaded}
+              loading={loading}
+              decoding={decoding}
+              sizes={sizes}
+              srcSet={srcSet}
+              onLoad={handleLoad}
+              onError={handleError}
+            />
+          )}
+        </>
       )}
-      {(!loaded || error) && <Placeholder>{placeholder}</Placeholder>}
-    </ImageContainer>
+    </LazyImageContainer>
   );
 };
 

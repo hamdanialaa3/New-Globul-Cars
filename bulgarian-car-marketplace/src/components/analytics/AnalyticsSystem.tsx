@@ -1,263 +1,305 @@
-// src/components/analytics/AnalyticsSystem.tsx
-// نظام الإحصائيات والتحليلات لسوق السيارات البلغاري
-
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { 
+  BarChart, 
+  Bar, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  PieChart,
+  Pie,
+  Cell,
+  Area,
+  AreaChart
+} from 'recharts';
 import { useTranslation } from '../../hooks/useTranslation';
 
-interface AnalyticsSystemProps {
-  searchResults: any[];
-  searchParams: any;
-  searchDuration: number;
+interface AnalyticsData {
+  period: string;
+  value: number;
+  label?: string;
+  color?: string;
 }
 
-export const AnalyticsSystem: React.FC<AnalyticsSystemProps> = ({
-  searchResults,
-  searchParams,
-  searchDuration
-}) => {
-  const { t } = useTranslation();
+interface AnalyticsMetric {
+  title: string;
+  value: string | number;
+  change: number;
+  changeType: 'positive' | 'negative' | 'neutral';
+  format?: 'number' | 'currency' | 'percentage';
+}
 
-  const getPriceDistribution = () => {
-    const priceRanges = [
-      { range: '0-5,000€', min: 0, max: 5000, count: 0 },
-      { range: '5,001-10,000€', min: 5001, max: 10000, count: 0 },
-      { range: '10,001-20,000€', min: 10001, max: 20000, count: 0 },
-      { range: '20,001-30,000€', min: 20001, max: 30000, count: 0 },
-      { range: '30,001+€', min: 30001, max: Infinity, count: 0 }
-    ];
+interface AnalyticsSystemProps {
+  data?: AnalyticsData[];
+  metrics?: AnalyticsMetric[];
+  type?: 'bar' | 'line' | 'pie' | 'area';
+  title?: string;
+  subtitle?: string;
+  height?: number;
+  showLegend?: boolean;
+  showTooltip?: boolean;
+  showGrid?: boolean;
+  className?: string;
+  style?: React.CSSProperties;
+  onDataPointClick?: (data: any) => void;
+}
 
-    searchResults.forEach((car: any) => {
-      priceRanges.forEach(range => {
-        if (car.price >= range.min && car.price <= range.max) {
-          range.count++;
-        }
-      });
-    });
-
-    return priceRanges;
-  };
-
-  const getTopBrands = () => {
-    const brandCounts: Record<string, number> = {};
-
-    searchResults.forEach((car: any) => {
-      brandCounts[car.brand] = (brandCounts[car.brand] || 0) + 1;
-    });
-
-    return Object.entries(brandCounts)
-      .sort(([,a], [,b]) => b - a)
-      .slice(0, 5)
-      .map(([brand, count]) => ({ brand, count }));
-  };
-
-  const getAveragePrice = () => {
-    if (searchResults.length === 0) return 0;
-    return Math.round(searchResults.reduce((sum: number, car: any) => sum + car.price, 0) / searchResults.length);
-  };
-
-  const priceDistribution = getPriceDistribution();
-  const topBrands = getTopBrands();
-  const averagePrice = getAveragePrice();
-
-  return (
-    <AnalyticsContainer>
-      <AnalyticsTitle>{t('analytics.searchStats', 'Статистика на търсенето')}</AnalyticsTitle>
-
-      <StatsGrid>
-        <StatCard>
-          <StatNumber>{searchResults.length}</StatNumber>
-          <StatLabel>{t('analytics.foundCars', 'Намерени автомобили')}</StatLabel>
-        </StatCard>
-
-        <StatCard>
-          <StatNumber>{searchDuration}ms</StatNumber>
-          <StatLabel>{t('analytics.searchTime', 'Време за търсене')}</StatLabel>
-        </StatCard>
-
-        <StatCard>
-          <StatNumber>{averagePrice}€</StatNumber>
-          <StatLabel>{t('analytics.averagePrice', 'Средна цена')}</StatLabel>
-        </StatCard>
-      </StatsGrid>
-
-      <ChartsGrid>
-        <ChartContainer>
-          <ChartTitle>{t('analytics.priceDistribution', 'Разпределение на цените')}</ChartTitle>
-          <PriceBars>
-            {priceDistribution.map(range => (
-              <PriceBar key={range.range}>
-                <BarLabel>{range.range}</BarLabel>
-                <BarContainer>
-                  <BarFill
-                    width={`${searchResults.length > 0 ? (range.count / searchResults.length) * 100 : 0}%`}
-                  />
-                </BarContainer>
-                <BarCount>{range.count}</BarCount>
-              </PriceBar>
-            ))}
-          </PriceBars>
-        </ChartContainer>
-
-        <ChartContainer>
-          <ChartTitle>{t('analytics.topBrands', 'Топ марки')}</ChartTitle>
-          <BrandsList>
-            {topBrands.map(({ brand, count }) => (
-              <BrandItem key={brand}>
-                <BrandName>{brand}</BrandName>
-                <BrandCount>{count}</BrandCount>
-                <BrandBar width={`${(count / searchResults.length) * 100}%`} />
-              </BrandItem>
-            ))}
-          </BrandsList>
-        </ChartContainer>
-      </ChartsGrid>
-    </AnalyticsContainer>
-  );
-};
-
-const AnalyticsContainer = styled.div`
+const AnalyticsSystemContainer = styled.div`
   background: ${({ theme }) => theme.colors.background.paper};
-  border-radius: ${({ theme }) => theme.borderRadius.base};
-  padding: ${({ theme }) => theme.spacing.lg};
-  margin-top: ${({ theme }) => theme.spacing.xl};
+  border-radius: ${({ theme }) => theme.borderRadius.lg};
+  padding: ${({ theme }) => theme.spacing.xl};
   box-shadow: ${({ theme }) => theme.shadows.base};
   border: 1px solid ${({ theme }) => theme.colors.grey[200]};
 `;
 
-const AnalyticsTitle = styled.h3`
-  margin: 0 0 ${({ theme }) => theme.spacing.lg} 0;
+const AnalyticsSystemHeader = styled.div`
+  margin-bottom: ${({ theme }) => theme.spacing.xl};
+`;
+
+const AnalyticsSystemTitle = styled.h2`
+  font-size: ${({ theme }) => theme.typography.fontSize['2xl']};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
   color: ${({ theme }) => theme.colors.text.primary};
-  font-size: ${({ theme }) => theme.typography.fontSize.lg};
-  font-weight: 600;
+  margin: 0 0 ${({ theme }) => theme.spacing.sm} 0;
 `;
 
-const StatsGrid = styled.div`
+const AnalyticsSystemSubtitle = styled.p`
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
+  color: ${({ theme }) => theme.colors.text.secondary};
+  margin: 0;
+`;
+
+const AnalyticsSystemMetrics = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: ${({ theme }) => theme.spacing.md};
-  margin-bottom: ${({ theme }) => theme.spacing.lg};
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: ${({ theme }) => theme.spacing.lg};
+  margin-bottom: ${({ theme }) => theme.spacing.xl};
 `;
 
-const StatCard = styled.div`
-  text-align: center;
-  padding: ${({ theme }) => theme.spacing.md};
+const AnalyticsSystemMetric = styled.div`
+  background: ${({ theme }) => theme.colors.grey[50]};
+  padding: ${({ theme }) => theme.spacing.lg};
+  border-radius: ${({ theme }) => theme.borderRadius.base};
+  border: 1px solid ${({ theme }) => theme.colors.grey[200]};
+`;
+
+const AnalyticsSystemMetricTitle = styled.h3`
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
+  color: ${({ theme }) => theme.colors.text.secondary};
+  margin: 0 0 ${({ theme }) => theme.spacing.sm} 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+`;
+
+const AnalyticsSystemMetricValue = styled.div`
+  font-size: ${({ theme }) => theme.typography.fontSize['2xl']};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
+  color: ${({ theme }) => theme.colors.text.primary};
+  margin: 0 0 ${({ theme }) => theme.spacing.xs} 0;
+`;
+
+const AnalyticsSystemMetricChange = styled.div<{ changeType: 'positive' | 'negative' | 'neutral' }>`
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
+  color: ${({ theme, changeType }) => {
+    switch (changeType) {
+      case 'positive': return theme.colors.success.main;
+      case 'negative': return theme.colors.error.main;
+      case 'neutral': return theme.colors.text.secondary;
+      default: return theme.colors.text.secondary;
+    }
+  }};
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.xs};
+`;
+
+const AnalyticsSystemChart = styled.div<{ height: number }>`
+  height: ${({ height }) => height}px;
+  width: 100%;
+`;
+
+const AnalyticsSystemEmpty = styled.div<{ height: number }>`
+  height: ${({ height }) => height}px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: ${({ theme }) => theme.colors.text.secondary};
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
   background: ${({ theme }) => theme.colors.grey[50]};
   border-radius: ${({ theme }) => theme.borderRadius.base};
-  border: 1px solid ${({ theme }) => theme.colors.grey[200]};
+  border: 1px dashed ${({ theme }) => theme.colors.grey[300]};
 `;
 
-const StatNumber = styled.div`
-  font-size: 24px;
-  font-weight: bold;
-  color: ${({ theme }) => theme.colors.primary.main};
-  margin-bottom: ${({ theme }) => theme.spacing.xs};
-`;
+const AnalyticsSystem: React.FC<AnalyticsSystemProps> = ({
+  data = [],
+  metrics = [],
+  type = 'bar',
+  title = 'Analytics',
+  subtitle,
+  height = 300,
+  showLegend = true,
+  showTooltip = true,
+  showGrid = true,
+  className,
+  style,
+  onDataPointClick,
+}) => {
+  const { t } = useTranslation();
+  const [chartData, setChartData] = useState<AnalyticsData[]>(data);
 
-const StatLabel = styled.div`
-  font-size: ${({ theme }) => theme.typography.fontSize.sm};
-  color: ${({ theme }) => theme.colors.text.secondary};
-  font-weight: 500;
-`;
+  useEffect(() => {
+    setChartData(data);
+  }, [data]);
 
-const ChartsGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: ${({ theme }) => theme.spacing.lg};
-`;
+  const formatValue = (value: string | number, format?: string) => {
+    if (typeof value === 'string') return value;
+    
+    switch (format) {
+      case 'currency':
+        return new Intl.NumberFormat('bg-BG', {
+          style: 'currency',
+          currency: 'EUR',
+        }).format(value);
+      case 'percentage':
+        return `${value}%`;
+      case 'number':
+      default:
+        return new Intl.NumberFormat('bg-BG').format(value);
+    }
+  };
 
-const ChartContainer = styled.div`
-  border: 1px solid ${({ theme }) => theme.colors.grey[200]};
-  border-radius: ${({ theme }) => theme.borderRadius.base};
-  padding: ${({ theme }) => theme.spacing.md};
-  background: ${({ theme }) => theme.colors.background.paper};
-`;
+  const getChangeIcon = (changeType: 'positive' | 'negative' | 'neutral') => {
+    switch (changeType) {
+      case 'positive':
+        return '↗';
+      case 'negative':
+        return '↘';
+      case 'neutral':
+      default:
+        return '→';
+    }
+  };
 
-const ChartTitle = styled.h4`
-  margin: 0 0 ${({ theme }) => theme.spacing.md} 0;
-  font-size: ${({ theme }) => theme.typography.fontSize.base};
-  font-weight: 600;
-  color: ${({ theme }) => theme.colors.text.primary};
-`;
+  const renderChart = () => {
+    if (chartData.length === 0) {
+      return (
+        <AnalyticsSystemEmpty height={height}>
+          {t('analytics.noData', 'No data available')}
+        </AnalyticsSystemEmpty>
+      );
+    }
 
-const PriceBars = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.sm};
-`;
+    const commonProps = {
+      data: chartData,
+      margin: { top: 20, right: 30, left: 20, bottom: 5 },
+    };
 
-const PriceBar = styled.div`
-  display: flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.spacing.sm};
-`;
+    switch (type) {
+      case 'bar':
+        return (
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart {...commonProps}>
+              {showGrid && <CartesianGrid strokeDasharray="3 3" />}
+              <XAxis dataKey="period" />
+              <YAxis />
+              {showTooltip && <Tooltip />}
+              {showLegend && <Bar dataKey="value" fill="#8884d8" />}
+            </BarChart>
+          </ResponsiveContainer>
+        );
 
-const BarLabel = styled.span`
-  min-width: 100px;
-  font-size: ${({ theme }) => theme.typography.fontSize.sm};
-  color: ${({ theme }) => theme.colors.text.secondary};
-`;
+      case 'line':
+        return (
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart {...commonProps}>
+              {showGrid && <CartesianGrid strokeDasharray="3 3" />}
+              <XAxis dataKey="period" />
+              <YAxis />
+              {showTooltip && <Tooltip />}
+              {showLegend && <Line type="monotone" dataKey="value" stroke="#8884d8" strokeWidth={2} />}
+            </LineChart>
+          </ResponsiveContainer>
+        );
 
-const BarContainer = styled.div`
-  flex: 1;
-  background: ${({ theme }) => theme.colors.grey[200]};
-  height: 20px;
-  border-radius: 10px;
-  overflow: hidden;
-`;
+      case 'pie':
+        return (
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie
+                data={chartData as any}
+                cx="50%"
+                cy="50%"
+                labelLine={false}
+                label={(props: any) => `${props.name} ${(props.percent * 100).toFixed(0)}%`}
+                outerRadius={80}
+                fill="#8884d8"
+                dataKey="value"
+              >
+                {chartData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color || `#${Math.floor(Math.random()*16777215).toString(16)}`} />
+                ))}
+              </Pie>
+              {showTooltip && <Tooltip />}
+              {showLegend && <Bar dataKey="value" fill="#8884d8" />}
+            </PieChart>
+          </ResponsiveContainer>
+        );
 
-const BarFill = styled.div<{ width: string }>`
-  background: ${({ theme }) => theme.colors.primary.main};
-  height: 100%;
-  width: ${props => props.width};
-  transition: width 0.3s ease-in-out;
-`;
+      case 'area':
+        return (
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart {...commonProps}>
+              {showGrid && <CartesianGrid strokeDasharray="3 3" />}
+              <XAxis dataKey="period" />
+              <YAxis />
+              {showTooltip && <Tooltip />}
+              {showLegend && <Area type="monotone" dataKey="value" stroke="#8884d8" fill="#8884d8" fillOpacity={0.3} />}
+            </AreaChart>
+          </ResponsiveContainer>
+        );
 
-const BarCount = styled.span`
-  min-width: 30px;
-  text-align: right;
-  font-size: ${({ theme }) => theme.typography.fontSize.sm};
-  color: ${({ theme }) => theme.colors.text.primary};
-  font-weight: 500;
-`;
+      default:
+        return null;
+    }
+  };
 
-const BrandsList = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.sm};
-`;
+  return (
+    <AnalyticsSystemContainer className={className} style={style}>
+      <AnalyticsSystemHeader>
+        <AnalyticsSystemTitle>{title}</AnalyticsSystemTitle>
+        {subtitle && (
+          <AnalyticsSystemSubtitle>{subtitle}</AnalyticsSystemSubtitle>
+        )}
+      </AnalyticsSystemHeader>
 
-const BrandItem = styled.div`
-  display: flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.spacing.sm};
-  position: relative;
-`;
+      {metrics.length > 0 && (
+        <AnalyticsSystemMetrics>
+          {metrics.map((metric, index) => (
+            <AnalyticsSystemMetric key={index}>
+              <AnalyticsSystemMetricTitle>{metric.title}</AnalyticsSystemMetricTitle>
+              <AnalyticsSystemMetricValue>
+                {formatValue(metric.value, metric.format)}
+              </AnalyticsSystemMetricValue>
+              <AnalyticsSystemMetricChange changeType={metric.changeType}>
+                <span>{getChangeIcon(metric.changeType)}</span>
+                <span>{Math.abs(metric.change)}%</span>
+              </AnalyticsSystemMetricChange>
+            </AnalyticsSystemMetric>
+          ))}
+        </AnalyticsSystemMetrics>
+      )}
 
-const BrandName = styled.span`
-  min-width: 100px;
-  font-size: ${({ theme }) => theme.typography.fontSize.sm};
-  color: ${({ theme }) => theme.colors.text.primary};
-`;
-
-const BrandCount = styled.span`
-  min-width: 30px;
-  text-align: right;
-  font-size: ${({ theme }) => theme.typography.fontSize.sm};
-  color: ${({ theme }) => theme.colors.text.secondary};
-  font-weight: 500;
-`;
-
-const BrandBar = styled.div<{ width: string }>`
-  background: ${({ theme }) => theme.colors.primary.light};
-  height: 8px;
-  width: ${props => props.width};
-  border-radius: 4px;
-  position: absolute;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  opacity: 0.7;
-`;
+      <AnalyticsSystemChart height={height}>
+        {renderChart()}
+      </AnalyticsSystemChart>
+    </AnalyticsSystemContainer>
+  );
+};
 
 export default AnalyticsSystem;

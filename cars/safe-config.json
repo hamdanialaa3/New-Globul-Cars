@@ -1,0 +1,9 @@
+{
+  "maxBrands": 5,
+  "maxModelsPerBrand": 10,
+  "maxImagesPerModel": 30,
+  "smartDelayMin": 5000,
+  "smartDelayMax": 12000,
+  "simulationMode": false,
+  "verboseMode": true
+}

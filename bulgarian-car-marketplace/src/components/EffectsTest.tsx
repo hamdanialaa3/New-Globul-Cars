@@ -1,165 +1,413 @@
-// src/components/EffectsTest.tsx
-// Component to test the lighting and fade effects with black-grey theme
-
 import React from 'react';
 import styled from 'styled-components';
+import { useTranslation } from '../hooks/useTranslation';
 
-const EffectsContainer = styled.div`
-  padding: ${({ theme }) => theme.spacing.xl};
+const EffectsTestContainer = styled.div`
+  min-height: 100vh;
+  padding: ${({ theme }) => theme.spacing.xl} 0;
+  background: ${({ theme }) => theme.colors.background.default};
+  color: ${({ theme }) => theme.colors.text.primary};
+`;
+
+const PageContainer = styled.div`
   max-width: 1200px;
   margin: 0 auto;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  padding: 0 ${({ theme }) => theme.spacing.md};
+`;
+
+const PageTitle = styled.h1`
   text-align: center;
-`;
-
-const EffectCard = styled.div`
-  background: linear-gradient(135deg,
-    rgba(255, 255, 255, 0.95) 0%,
-    rgba(255, 255, 240, 0.98) 50%,
-    rgba(255, 255, 255, 0.96) 100%
-  );
-  backdrop-filter: blur(15px);
-  border: 3px solid ${({ theme }) => theme.colors.primary.main};
-  border-radius: ${({ theme }) => theme.borderRadius.xl};
-  padding: ${({ theme }) => theme.spacing.xl};
-  margin: ${({ theme }) => theme.spacing.lg};
-  box-shadow: 0 8px 25px rgba(255, 215, 0, 0.2), ${({ theme }) => theme.shadows.lg};
-  max-width: 600px;
-  width: 100%;
-  transition: all 0.4s ease-in-out;
-  animation: cardFadeIn 1s ease-out;
-
-  &:hover {
-    transform: translateY(-5px) scale(1.02);
-    box-shadow: 0 12px 35px rgba(255, 215, 0, 0.3), ${({ theme }) => theme.shadows.xl};
-    border-color: ${({ theme }) => theme.colors.primary.dark};
-  }
-
-  @keyframes cardFadeIn {
-    0% {
-      opacity: 0;
-      transform: translateY(20px) scale(0.95);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-  }
-`;
-
-const GlowButton = styled.button`
-  background: linear-gradient(135deg,
-    ${({ theme }) => theme.colors.primary.main} 0%,
-    ${({ theme }) => theme.colors.primary.dark} 50%,
-    ${({ theme }) => theme.colors.secondary.main} 100%
-  );
+  margin-bottom: ${({ theme }) => theme.spacing.xl};
   color: ${({ theme }) => theme.colors.text.primary};
-  border: 2px solid ${({ theme }) => theme.colors.primary.dark};
-  padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.lg};
-  border-radius: ${({ theme }) => theme.borderRadius.lg};
-  font-size: ${({ theme }) => theme.typography.fontSize.lg};
+  font-size: ${({ theme }) => theme.typography.fontSize['4xl']};
   font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
+`;
+
+const EffectsTestCard = styled.div`
+  background: ${({ theme }) => theme.colors.background.paper};
+  border-radius: ${({ theme }) => theme.borderRadius.lg};
+  padding: ${({ theme }) => theme.spacing.xl};
+  box-shadow: ${({ theme }) => theme.shadows.base};
+  border: 1px solid ${({ theme }) => theme.colors.grey[200]};
+  margin-bottom: ${({ theme }) => theme.spacing.xl};
+`;
+
+const EffectsTestTitle = styled.h2`
+  font-size: ${({ theme }) => theme.typography.fontSize['2xl']};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
+  color: ${({ theme }) => theme.colors.text.primary};
+  margin: 0 0 ${({ theme }) => theme.spacing.lg} 0;
+`;
+
+const EffectsTestGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: ${({ theme }) => theme.spacing.lg};
+  margin-bottom: ${({ theme }) => theme.spacing.xl};
+`;
+
+const EffectsTestItem = styled.div`
+  padding: ${({ theme }) => theme.spacing.lg};
+  background: ${({ theme }) => theme.colors.grey[50]};
+  border-radius: ${({ theme }) => theme.borderRadius.base};
+  border: 1px solid ${({ theme }) => theme.colors.grey[200]};
+`;
+
+const EffectsTestItemTitle = styled.h3`
+  font-size: ${({ theme }) => theme.typography.fontSize.lg};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
+  color: ${({ theme }) => theme.colors.text.primary};
+  margin: 0 0 ${({ theme }) => theme.spacing.md} 0;
+`;
+
+const EffectsTestItemText = styled.p`
+  color: ${({ theme }) => theme.colors.text.secondary};
+  margin: 0 0 ${({ theme }) => theme.spacing.md} 0;
+  line-height: 1.5;
+`;
+
+const EffectsTestButton = styled.button`
+  padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.lg};
+  background: ${({ theme }) => theme.colors.primary.main};
+  color: ${({ theme }) => theme.colors.primary.contrastText};
+  border: none;
+  border-radius: ${({ theme }) => theme.borderRadius.base};
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
   cursor: pointer;
-  transition: all 0.3s ease-in-out;
-  position: relative;
-  overflow: hidden;
-  margin: ${({ theme }) => theme.spacing.sm};
-  text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
-  animation: buttonGlow 2s ease-in-out infinite alternate;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-    transition: left 0.5s;
-  }
-
-  &:hover::before {
-    left: 100%;
-  }
+  transition: background-color 0.2s ease;
 
   &:hover {
-    background: linear-gradient(135deg,
-      ${({ theme }) => theme.colors.primary.dark} 0%,
-      ${({ theme }) => theme.colors.secondary.main} 50%,
-      ${({ theme }) => theme.colors.secondary.dark} 100%
-    );
-    transform: translateY(-3px) scale(1.05);
-    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
-    border-color: ${({ theme }) => theme.colors.primary.dark};
+    background: ${({ theme }) => theme.colors.primary.dark};
+  }
+`;
+
+const EffectsTestInput = styled.input`
+  width: 100%;
+  padding: ${({ theme }) => theme.spacing.md};
+  border: 1px solid ${({ theme }) => theme.colors.grey[300]};
+  border-radius: ${({ theme }) => theme.borderRadius.base};
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
+  background: ${({ theme }) => theme.colors.background.paper};
+  color: ${({ theme }) => theme.colors.text.primary};
+  margin-bottom: ${({ theme }) => theme.spacing.md};
+
+  &:focus {
+    outline: none;
+    border-color: ${({ theme }) => theme.colors.primary.main};
+  }
+`;
+
+const EffectsTestSelect = styled.select`
+  width: 100%;
+  padding: ${({ theme }) => theme.spacing.md};
+  border: 1px solid ${({ theme }) => theme.colors.grey[300]};
+  border-radius: ${({ theme }) => theme.borderRadius.base};
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
+  background: ${({ theme }) => theme.colors.background.paper};
+  color: ${({ theme }) => theme.colors.text.primary};
+  margin-bottom: ${({ theme }) => theme.spacing.md};
+
+  &:focus {
+    outline: none;
+    border-color: ${({ theme }) => theme.colors.primary.main};
+  }
+`;
+
+const EffectsTestTextArea = styled.textarea`
+  width: 100%;
+  padding: ${({ theme }) => theme.spacing.md};
+  border: 1px solid ${({ theme }) => theme.colors.grey[300]};
+  border-radius: ${({ theme }) => theme.borderRadius.base};
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
+  background: ${({ theme }) => theme.colors.background.paper};
+  color: ${({ theme }) => theme.colors.text.primary};
+  min-height: 100px;
+  resize: vertical;
+  margin-bottom: ${({ theme }) => theme.spacing.md};
+
+  &:focus {
+    outline: none;
+    border-color: ${({ theme }) => theme.colors.primary.main};
+  }
+`;
+
+const EffectsTestCheckbox = styled.input`
+  margin-right: ${({ theme }) => theme.spacing.sm};
+`;
+
+const EffectsTestCheckboxLabel = styled.label`
+  display: flex;
+  align-items: center;
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
+  color: ${({ theme }) => theme.colors.text.primary};
+  cursor: pointer;
+  margin-bottom: ${({ theme }) => theme.spacing.sm};
+`;
+
+const EffectsTestRadio = styled.input`
+  margin-right: ${({ theme }) => theme.spacing.sm};
+`;
+
+const EffectsTestRadioLabel = styled.label`
+  display: flex;
+  align-items: center;
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
+  color: ${({ theme }) => theme.colors.text.primary};
+  cursor: pointer;
+  margin-bottom: ${({ theme }) => theme.spacing.sm};
+`;
+
+const EffectsTestProgress = styled.progress`
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: ${({ theme }) => theme.colors.grey[200]};
+  margin-bottom: ${({ theme }) => theme.spacing.md};
+
+  &::-webkit-progress-bar {
+    background: ${({ theme }) => theme.colors.grey[200]};
+    border-radius: 4px;
   }
 
-  &:active {
-    transform: translateY(-1px) scale(1.02);
-    box-shadow: 0 3px 10px rgba(255, 215, 0, 0.3);
+  &::-webkit-progress-value {
+    background: ${({ theme }) => theme.colors.primary.main};
+    border-radius: 4px;
   }
+`;
 
-  @keyframes buttonGlow {
-    0% {
-      box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+const EffectsTestAlert = styled.div<{ type: 'success' | 'warning' | 'error' | 'info' }>`
+  padding: ${({ theme }) => theme.spacing.md};
+  border-radius: ${({ theme }) => theme.borderRadius.base};
+  margin-bottom: ${({ theme }) => theme.spacing.md};
+  border-left: 4px solid ${({ theme, type }) => {
+    switch (type) {
+      case 'success': return theme.colors.success.main;
+      case 'warning': return theme.colors.warning.main;
+      case 'error': return theme.colors.error.main;
+      case 'info': return theme.colors.info.main;
+      default: return theme.colors.grey[300];
     }
-    100% {
-      box-shadow: 0 4px 15px rgba(255, 215, 0, 0.6);
+  }};
+  background: ${({ theme, type }) => {
+    switch (type) {
+      case 'success': return theme.colors.success.light + '20';
+      case 'warning': return theme.colors.warning.light + '20';
+      case 'error': return theme.colors.error.light + '20';
+      case 'info': return theme.colors.info.light + '20';
+      default: return theme.colors.grey[50];
     }
-  }
+  }};
+  color: ${({ theme, type }) => {
+    switch (type) {
+      case 'success': return theme.colors.success.dark;
+      case 'warning': return theme.colors.warning.dark;
+      case 'error': return theme.colors.error.dark;
+      case 'info': return theme.colors.info.dark;
+      default: return theme.colors.text.primary;
+    }
+  }};
+`;
+
+const EffectsTestBadge = styled.span<{ variant: 'primary' | 'secondary' | 'success' | 'warning' | 'error' }>`
+  display: inline-block;
+  padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.sm};
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
+  font-size: ${({ theme }) => theme.typography.fontSize.xs};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
+  background: ${({ theme, variant }) => {
+    switch (variant) {
+      case 'primary': return theme.colors.primary.main;
+      case 'secondary': return theme.colors.secondary.main;
+      case 'success': return theme.colors.success.main;
+      case 'warning': return theme.colors.warning.main;
+      case 'error': return theme.colors.error.main;
+      default: return theme.colors.grey[300];
+    }
+  }};
+  color: white;
+  margin-right: ${({ theme }) => theme.spacing.sm};
+  margin-bottom: ${({ theme }) => theme.spacing.sm};
+`;
+
+const EffectsTestTable = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: ${({ theme }) => theme.spacing.md};
+`;
+
+const EffectsTestTableHeader = styled.th`
+  padding: ${({ theme }) => theme.spacing.md};
+  text-align: left;
+  background: ${({ theme }) => theme.colors.grey[100]};
+  color: ${({ theme }) => theme.colors.text.primary};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.grey[300]};
+`;
+
+const EffectsTestTableCell = styled.td`
+  padding: ${({ theme }) => theme.spacing.md};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.grey[200]};
+  color: ${({ theme }) => theme.colors.text.primary};
 `;
 
 const EffectsTest: React.FC = () => {
+  const { t } = useTranslation();
+
   return (
-    <EffectsContainer>
-      <EffectCard>
-        <h1 style={{
-          color: '#000000',
-          textShadow: '2px 2px 4px rgba(0,0,0,0.3), 1px 1px 2px rgba(255,255,255,0.5)',
-          animation: 'textShimmer 4s ease-in-out infinite'
-        }}>
-          🎨 Visual Effects Test
-        </h1>
-        <h2 style={{
-          color: '#000000',
-          textShadow: '1px 1px 2px rgba(255,255,255,0.3)',
-          marginBottom: '1rem'
-        }}>
-          Visual Effects Test
-        </h2>
+    <EffectsTestContainer>
+      <PageContainer>
+        <PageTitle>{t('effectsTest.title', 'Effects Test Page')}</PageTitle>
 
-        <p style={{
-          color: '#000000',
-          textShadow: '1px 1px 2px rgba(255,255,255,0.3)',
-          marginBottom: '2rem'
-        }}>
-          If you see these effects, the design is working correctly:
-        </p>
+        <EffectsTestCard>
+          <EffectsTestTitle>{t('effectsTest.overview', 'Overview')}</EffectsTestTitle>
+          <EffectsTestGrid>
+            <EffectsTestItem>
+              <EffectsTestItemTitle>{t('effectsTest.primaryEffects', 'Primary Effects')}</EffectsTestItemTitle>
+              <EffectsTestItemText>
+                Test the primary effects and their variations.
+              </EffectsTestItemText>
+              <EffectsTestButton>{t('effectsTest.testPrimary', 'Test Primary')}</EffectsTestButton>
+            </EffectsTestItem>
 
-        <div>
-          <GlowButton>Glowing Button</GlowButton>
-          <GlowButton>Another Button</GlowButton>
-        </div>
+            <EffectsTestItem>
+              <EffectsTestItemTitle>{t('effectsTest.secondaryEffects', 'Secondary Effects')}</EffectsTestItemTitle>
+              <EffectsTestItemText>
+                Test the secondary effects and their variations.
+              </EffectsTestItemText>
+              <EffectsTestButton>{t('effectsTest.testSecondary', 'Test Secondary')}</EffectsTestButton>
+            </EffectsTestItem>
 
-        <div style={{ marginTop: '2rem' }}>
-          <h3 style={{ color: '#000000', marginBottom: '1rem' }}>
-            ✅ Applied Effects:
-          </h3>
-          <ul style={{ textAlign: 'left', color: '#000000' }}>
-            <li>Multi-layer gradient background</li>
-            <li>Progressive fade effect on page load</li>
-            <li>Animated lighting on buttons</li>
-            <li>Light reflection effects</li>
-            <li>Dynamic text shadows</li>
-            <li>Card interactions on hover</li>
-            <li>Shimmer effect on headings</li>
-          </ul>
-        </div>
-      </EffectCard>
-    </EffectsContainer>
+            <EffectsTestItem>
+              <EffectsTestItemTitle>{t('effectsTest.accentEffects', 'Accent Effects')}</EffectsTestItemTitle>
+              <EffectsTestItemText>
+                Test the accent effects and their variations.
+              </EffectsTestItemText>
+              <EffectsTestButton>{t('effectsTest.testAccent', 'Test Accent')}</EffectsTestButton>
+            </EffectsTestItem>
+
+            <EffectsTestItem>
+              <EffectsTestItemTitle>{t('effectsTest.neutralEffects', 'Neutral Effects')}</EffectsTestItemTitle>
+              <EffectsTestItemText>
+                Test the neutral effects and their variations.
+              </EffectsTestItemText>
+              <EffectsTestButton>{t('effectsTest.testNeutral', 'Test Neutral')}</EffectsTestButton>
+            </EffectsTestItem>
+          </EffectsTestGrid>
+        </EffectsTestCard>
+
+        <EffectsTestCard>
+          <EffectsTestTitle>{t('effectsTest.typography', 'Typography')}</EffectsTestTitle>
+          <EffectsTestGrid>
+            <EffectsTestItem>
+              <EffectsTestItemTitle>{t('effectsTest.headings', 'Headings')}</EffectsTestItemTitle>
+              <EffectsTestItemText>
+                Test different heading sizes and weights.
+              </EffectsTestItemText>
+              <EffectsTestButton>{t('effectsTest.testHeadings', 'Test Headings')}</EffectsTestButton>
+            </EffectsTestItem>
+
+            <EffectsTestItem>
+              <EffectsTestItemTitle>{t('effectsTest.bodyText', 'Body Text')}</EffectsTestItemTitle>
+              <EffectsTestItemText>
+                Test body text styles and variations.
+              </EffectsTestItemText>
+              <EffectsTestButton>{t('effectsTest.testBodyText', 'Test Body Text')}</EffectsTestButton>
+            </EffectsTestItem>
+
+            <EffectsTestItem>
+              <EffectsTestItemTitle>{t('effectsTest.captions', 'Captions')}</EffectsTestItemTitle>
+              <EffectsTestItemText>
+                Test caption and small text styles.
+              </EffectsTestItemText>
+              <EffectsTestButton>{t('effectsTest.testCaptions', 'Test Captions')}</EffectsTestButton>
+            </EffectsTestItem>
+
+            <EffectsTestItem>
+              <EffectsTestItemTitle>{t('effectsTest.links', 'Links')}</EffectsTestItemTitle>
+              <EffectsTestItemText>
+                Test link styles and hover effects.
+              </EffectsTestItemText>
+              <EffectsTestButton>{t('effectsTest.testLinks', 'Test Links')}</EffectsTestButton>
+            </EffectsTestItem>
+          </EffectsTestGrid>
+        </EffectsTestCard>
+
+        <EffectsTestCard>
+          <EffectsTestTitle>{t('effectsTest.components', 'Components')}</EffectsTestTitle>
+          <EffectsTestGrid>
+            <EffectsTestItem>
+              <EffectsTestItemTitle>{t('effectsTest.buttons', 'Buttons')}</EffectsTestItemTitle>
+              <EffectsTestItemText>
+                Test different button styles and states.
+              </EffectsTestItemText>
+              <EffectsTestButton>{t('effectsTest.testButtons', 'Test Buttons')}</EffectsTestButton>
+            </EffectsTestItem>
+
+            <EffectsTestItem>
+              <EffectsTestItemTitle>{t('effectsTest.inputs', 'Inputs')}</EffectsTestItemTitle>
+              <EffectsTestItemText>
+                Test input field styles and states.
+              </EffectsTestItemText>
+              <EffectsTestButton>{t('effectsTest.testInputs', 'Test Inputs')}</EffectsTestButton>
+            </EffectsTestItem>
+
+            <EffectsTestItem>
+              <EffectsTestItemTitle>{t('effectsTest.cards', 'Cards')}</EffectsTestItemTitle>
+              <EffectsTestItemText>
+                Test card component styles and variations.
+              </EffectsTestItemText>
+              <EffectsTestButton>{t('effectsTest.testCards', 'Test Cards')}</EffectsTestButton>
+            </EffectsTestItem>
+
+            <EffectsTestItem>
+              <EffectsTestItemTitle>{t('effectsTest.modals', 'Modals')}</EffectsTestItemTitle>
+              <EffectsTestItemText>
+                Test modal component styles and states.
+              </EffectsTestItemText>
+              <EffectsTestButton>{t('effectsTest.testModals', 'Test Modals')}</EffectsTestButton>
+            </EffectsTestItem>
+          </EffectsTestGrid>
+        </EffectsTestCard>
+
+        <EffectsTestCard>
+          <EffectsTestTitle>{t('effectsTest.layout', 'Layout')}</EffectsTestTitle>
+          <EffectsTestGrid>
+            <EffectsTestItem>
+              <EffectsTestItemTitle>{t('effectsTest.grid', 'Grid')}</EffectsTestItemTitle>
+              <EffectsTestItemText>
+                Test grid layout system and responsiveness.
+              </EffectsTestItemText>
+              <EffectsTestButton>{t('effectsTest.testGrid', 'Test Grid')}</EffectsTestButton>
+            </EffectsTestItem>
+
+            <EffectsTestItem>
+              <EffectsTestItemTitle>{t('effectsTest.spacing', 'Spacing')}</EffectsTestItemTitle>
+              <EffectsTestItemText>
+                Test spacing system and consistency.
+              </EffectsTestItemText>
+              <EffectsTestButton>{t('effectsTest.testSpacing', 'Test Spacing')}</EffectsTestButton>
+            </EffectsTestItem>
+
+            <EffectsTestItem>
+              <EffectsTestItemTitle>{t('effectsTest.borders', 'Borders')}</EffectsTestItemTitle>
+              <EffectsTestItemText>
+                Test border styles and radius variations.
+              </EffectsTestItemText>
+              <EffectsTestButton>{t('effectsTest.testBorders', 'Test Borders')}</EffectsTestButton>
+            </EffectsTestItem>
+
+            <EffectsTestItem>
+              <EffectsTestItemTitle>{t('effectsTest.shadows', 'Shadows')}</EffectsTestItemTitle>
+              <EffectsTestItemText>
+                Test shadow styles and depth variations.
+              </EffectsTestItemText>
+              <EffectsTestButton>{t('effectsTest.testShadows', 'Test Shadows')}</EffectsTestButton>
+            </EffectsTestItem>
+          </EffectsTestGrid>
+        </EffectsTestCard>
+      </PageContainer>
+    </EffectsTestContainer>
   );
 };
 

@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { useTranslation } from '../hooks/useTranslation';
 import { bulgarianCarService, BulgarianCar, CarSearchFilters, FuelType, TransmissionType, CarCondition } from '../firebase';
-import AdvancedSearch from '../components/AdvancedSearch';
+import AdvancedFilterSystemMobile from '../components/AdvancedFilterSystemMobile';
 // Import theme types
 import '../styles/theme';
 import CarSearchSystem from '../components/CarSearchSystemNew';
@@ -327,11 +327,11 @@ const CarsPage: React.FC = () => {
   const { t } = useTranslation();
   const [cars, setCars] = useState<BulgarianCar[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState<CarSearchFilters>({});
+  const [filters, setFilters] = useState<Record<string, any>>({});
   const [sortBy, setSortBy] = useState<'createdAt' | 'price' | 'mileage' | 'year'>('createdAt');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
-  const [isAdvancedSearchExpanded, setIsAdvancedSearchExpanded] = useState(false);
   const [showDetailedSearch, setShowDetailedSearch] = useState(false);
+  const [isAdvancedSearchExpanded, setIsAdvancedSearchExpanded] = useState(false);
 
 // Generate years array from 1900 to 2025
 // const YEARS_OPTIONS = (() => {
@@ -356,11 +356,11 @@ const CarsPage: React.FC = () => {
 //   'SEAT', 'Seres', 'Sin Cars', 'Skoda', 'Smart', 'SsangYong', 'Subaru', 'Suzuki', 'Tata', 'Tesla',
 //   'Toyota', 'Tatra', 'TVR', 'UAZ', 'Volkswagen', 'Volvo', 'Voyah', 'Wiesmann', 'Xpeng', 'Zeekr'
 // ];  // Load cars
-  const loadCars = useCallback(async () => {
+  const loadCars = useCallback(async (searchFilters?: any) => {
     try {
       setLoading(true);
       const result = await bulgarianCarService.searchCars(
-        filters,
+        searchFilters || filters,
         sortBy,
         sortOrder,
         20
@@ -428,77 +428,84 @@ const CarsPage: React.FC = () => {
 
         {/* Simple Search (top, full width) */}
         <CarSearchSystem
-          onSearchResults={(results) => {
-                // تحويل نتائج البحث من CarDataFromFile إلى BulgarianCar
-                const bulgarianCars: BulgarianCar[] = results.map((car, index) => ({
-                  id: `search-result-${index}`,
-                  ownerId: 'system',
-                  ownerName: 'System Search',
-                  ownerEmail: 'search@globulcars.com',
+          filters={[]}
+          results={cars as any}
+          loading={loading}
+          onSearch={loadCars}
+          onReset={clearFilters}
+          onSearchResults={(results: any) => {
+            console.log('Search results:', results);
+            // تحويل نتائج البحث من CarDataFromFile إلى BulgarianCar
+            const bulgarianCars: BulgarianCar[] = results.map((car: any, index: number) => ({
+              id: `search-result-${index}`,
+              ownerId: 'system',
+              ownerName: 'System Search',
+              ownerEmail: 'search@globulcars.com',
 
-                  // Basic Information
-                  make: car.brand,
-                  model: car.model,
-                  year: car.year,
-                  mileage: 0, // لا توجد معلومات في البيانات الأساسية
-                  price: typeof (car as any).price === 'string' ? ((car as any).price ? parseFloat((car as any).price.replace(/[^\d.]/g, '')) || 0 : 0) : (typeof (car as any).price === 'number' ? (car as any).price : 0),
-                  currency: 'EUR',
+              // Basic Information
+              make: car.brand,
+              model: car.model,
+              year: car.year,
+              mileage: 0, // لا توجد معلومات في البيانات الأساسية
+              price: typeof (car as any).price === 'string' ? ((car as any).price ? parseFloat((car as any).price.replace(/[^\d.]/g, '')) || 0 : 0) : (typeof (car as any).price === 'number' ? (car as any).price : 0),
+              currency: 'EUR',
 
-                  // Technical Details
-                  fuelType: (car.fuelType as any) || 'petrol',
-                  transmission: (car.transmission as any) || 'manual',
-                  engineSize: typeof (car as any).engineSize === 'string' ? ((car as any).engineSize ? parseFloat((car as any).engineSize.replace(/[^\d.]/g, '')) || 0 : 0) : (typeof (car as any).engineSize === 'number' ? (car as any).engineSize : 0),
-                  power: typeof (car as any).power === 'string' ? ((car as any).power ? parseFloat((car as any).power.replace(/[^\d.]/g, '')) || 0 : 0) : (typeof (car as any).power === 'number' ? (car as any).power : 0),
-                  condition: (car.condition as any) || 'used',
+              // Technical Details
+              fuelType: (car.fuelType as any) || 'petrol',
+              transmission: (car.transmission as any) || 'manual',
+              engineSize: typeof (car as any).engineSize === 'string' ? ((car as any).engineSize ? parseFloat((car as any).engineSize.replace(/[^\d.]/g, '')) || 0 : 0) : (typeof (car as any).engineSize === 'number' ? (car as any).engineSize : 0),
+              power: typeof (car as any).power === 'string' ? ((car as any).power ? parseFloat((car as any).power.replace(/[^\d.]/g, '')) || 0 : 0) : (typeof (car as any).power === 'number' ? (car as any).power : 0),
+              condition: (car.condition as any) || 'used',
 
-                  // Location
-                  location: {
-                    city: 'Sofia', // افتراضي
-                    region: 'Sofia',
-                    postalCode: '1000',
-                    country: 'Bulgaria'
-                  },
+              // Location
+              location: {
+                city: 'Sofia', // افتراضي
+                region: 'Sofia',
+                postalCode: '1000',
+                country: 'Bulgaria'
+              },
 
-                  // Description
-                  title: `${car.brand} ${car.model} ${car.year}`,
-                  description: `سيارة ${car.brand} ${car.model} من سنة ${car.year}. ${car.engineSize ? `محرك: ${car.engineSize}L` : ''} ${car.power ? `قوة: ${car.power}HP` : ''}`,
-                  features: [],
-                  color: car.color || 'Unknown',
+              // Description
+              title: `${car.brand} ${car.model} ${car.year}`,
+              description: `سيارة ${car.brand} ${car.model} من سنة ${car.year}. ${car.engineSize ? `محرك: ${car.engineSize}L` : ''} ${car.power ? `قوة: ${car.power}HP` : ''}`,
+              features: [],
+              color: car.color || 'Unknown',
 
-                  // Media
-                  images: [],
-                  mainImage: '',
+              // Media
+              images: [],
+              mainImage: '',
 
-                  // Status
-                  isActive: true,
-                  isSold: false,
-                  isFeatured: false,
-                  views: 0,
-                  favorites: 0,
+              // Status
+              isActive: true,
+              isSold: false,
+              isFeatured: false,
+              views: 0,
+              favorites: 0,
 
-                  // Bulgarian Specific
-                  hasBulgarianRegistration: true,
-                  vinNumber: `VIN${index}`,
-                  firstRegistrationDate: new Date(car.year, 0, 1),
-                  inspectionValidUntil: new Date(car.year + 2, 0, 1),
+              // Bulgarian Specific
+              hasBulgarianRegistration: true,
+              vinNumber: `VIN${index}`,
+              firstRegistrationDate: new Date(car.year, 0, 1),
+              inspectionValidUntil: new Date(car.year + 2, 0, 1),
 
-                  // Metadata
-                  createdAt: new Date(),
-                  updatedAt: new Date()
-                }));
+              // Metadata
+              createdAt: new Date(),
+              updatedAt: new Date()
+            }));
 
-                setCars(bulgarianCars);
+            setCars(bulgarianCars);
           }}
         />
 
-        {/* Advanced Search (collapsible, full width) */}
-        <AdvancedSearch
-          filters={filters}
-          onFiltersChange={setFilters}
+        {/* Advanced Filter System - Mobile.de inspired */}
+        <AdvancedFilterSystemMobile
           onSearch={loadCars}
-          onClear={clearFilters}
-          isExpanded={isAdvancedSearchExpanded}
-          onToggleExpanded={() => setIsAdvancedSearchExpanded(!isAdvancedSearchExpanded)}
+          onReset={clearFilters}
+          onSaveSearch={(filters) => {
+            console.log('Saving search filters:', filters);
+            // Implement save search functionality
+          }}
+          loading={loading}
         />
 
         {/* Results Section */}
@@ -594,35 +601,10 @@ const CarsPage: React.FC = () => {
         {/* Detailed Search Modal */}
         {showDetailedSearch && (
           <DetailedSearch
-            onSearch={handleDetailedSearch}
-            onClose={() => setShowDetailedSearch(false)}
-            onSaveSearch={() => {
-              // Handle save search functionality
-              setShowDetailedSearch(false);
-            }}
-            initialFilters={{
-              make: filters.make || '',
-              model: filters.model || '',
-              generation: filters.generation || '',
-              bodyStyle: filters.bodyStyle || '',
-              price: {
-                from: filters.minPrice?.toString() || '',
-                to: filters.maxPrice?.toString() || ''
-              },
-              firstRegistration: {
-                from: filters.minYear?.toString() || '',
-                to: filters.maxYear?.toString() || ''
-              },
-              mileage: {
-                from: '',
-                to: filters.maxMileage?.toString() || ''
-              },
-              fuelType: filters.fuelType || '',
-              transmission: filters.transmission || '',
-              condition: filters.condition || '',
-              location: filters.location?.city || '',
-              radius: filters.location?.radius?.toString() || '10'
-            }}
+            filters={[]}
+            onSearch={handleDetailedSearch as any}
+            onReset={() => setShowDetailedSearch(false)}
+            loading={false}
           />
         )}
       </PageContainer>

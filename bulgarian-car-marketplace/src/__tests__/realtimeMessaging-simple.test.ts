@@ -1,5 +1,6 @@
 // src/__tests__/realtimeMessaging-simple.test.ts
 // Simple tests for Real-time Messaging Service
+export {};
 
 describe('RealtimeMessagingService - Simple Tests', () => {
   it('should have basic test structure', () => {

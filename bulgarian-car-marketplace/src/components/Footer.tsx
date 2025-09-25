@@ -1,25 +1,30 @@
-// src/components/Footer.tsx
-// Footer Component for Bulgarian Car Marketplace
-
 import React from 'react';
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 import { useTranslation } from '../hooks/useTranslation';
-import logoImage from '../assets/logo.png';
-import { Facebook, Instagram, Twitter, Linkedin } from 'lucide-react';
+import { 
+  Facebook, 
+  Twitter, 
+  Instagram, 
+  Linkedin, 
+  Youtube,
+  Mail,
+  Phone,
+  MapPin,
+  Globe,
+  Heart
+} from 'lucide-react';
 
-// Styled Components
 const FooterContainer = styled.footer`
   background: ${({ theme }) => theme.colors.background.paper};
-  color: ${({ theme }) => theme.colors.text.primary};
-  margin-top: auto;
   border-top: 1px solid ${({ theme }) => theme.colors.grey[200]};
+  margin-top: auto;
 `;
 
 const FooterContent = styled.div`
   max-width: 1200px;
   margin: 0 auto;
-  padding: ${({ theme }) => theme.spacing['2xl']} ${({ theme }) => theme.spacing.md};
+  padding: ${({ theme }) => theme.spacing.xl} ${({ theme }) => theme.spacing.md};
 `;
 
 const FooterGrid = styled.div`
@@ -30,83 +35,70 @@ const FooterGrid = styled.div`
 `;
 
 const FooterSection = styled.div`
-  h3 {
-    color: ${({ theme }) => theme.colors.text.primary};
-    font-size: ${({ theme }) => theme.typography.fontSize.lg};
-    font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
-    margin-bottom: ${({ theme }) => theme.spacing.md};
-    display: flex;
-    align-items: center;
-    
-    img {
-      height: 32px;
-      width: auto;
-      margin-right: 8px;
-      border-radius: ${({ theme }) => theme.borderRadius.sm};
-    }
-  }
+  display: flex;
+  flex-direction: column;
+`;
 
-  ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  li {
-    margin-bottom: ${({ theme }) => theme.spacing.sm};
-  }
-
-  a {
-    color: ${({ theme }) => theme.colors.text.secondary};
-    text-decoration: none;
-    font-size: ${({ theme }) => theme.typography.fontSize.base};
-    transition: color 0.2s ease-in-out, text-decoration-color 0.2s ease-in-out;
-
-    &:hover {
-      color: ${({ theme }) => theme.colors.primary.main};
-      text-decoration: underline;
-      text-underline-offset: 2px;
-    }
-  }
+const FooterSectionTitle = styled.h3`
+  font-size: ${({ theme }) => theme.typography.fontSize.lg};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
+  color: ${({ theme }) => theme.colors.text.primary};
+  margin: 0 0 ${({ theme }) => theme.spacing.md} 0;
 `;
 
 const FooterLink = styled(Link)`
   color: ${({ theme }) => theme.colors.text.secondary};
   text-decoration: none;
-  font-size: ${({ theme }) => theme.typography.fontSize.base};
-  transition: color 0.2s ease-in-out, text-decoration-color 0.2s ease-in-out;
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
+  margin-bottom: ${({ theme }) => theme.spacing.sm};
+  transition: color 0.2s ease;
 
   &:hover {
     color: ${({ theme }) => theme.colors.primary.main};
-    text-decoration: underline;
-    text-underline-offset: 2px;
   }
 `;
 
-const SocialLinks = styled.div`
+const FooterText = styled.p`
+  color: ${({ theme }) => theme.colors.text.secondary};
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
+  margin: 0 0 ${({ theme }) => theme.spacing.sm} 0;
+  line-height: 1.5;
+`;
+
+const FooterContactItem = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: ${({ theme }) => theme.spacing.sm};
+  color: ${({ theme }) => theme.colors.text.secondary};
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
+`;
+
+const FooterContactIcon = styled.span`
+  margin-right: ${({ theme }) => theme.spacing.sm};
+  color: ${({ theme }) => theme.colors.primary.main};
+`;
+
+const FooterSocialLinks = styled.div`
   display: flex;
   gap: ${({ theme }) => theme.spacing.md};
   margin-top: ${({ theme }) => theme.spacing.md};
 `;
 
-const SocialLink = styled.a`
+const FooterSocialLink = styled.a`
   display: flex;
   align-items: center;
   justify-content: center;
   width: 40px;
   height: 40px;
-  background: ${({ theme }) => theme.colors.background.paper};
-  border: 1px solid ${({ theme }) => theme.colors.grey[300]};
-  border-radius: 50%;
+  background: ${({ theme }) => theme.colors.grey[100]};
   color: ${({ theme }) => theme.colors.text.secondary};
+  border-radius: 50%;
   text-decoration: none;
-  font-size: ${({ theme }) => theme.typography.fontSize.lg};
-  transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease;
 
   &:hover {
     background: ${({ theme }) => theme.colors.primary.main};
-    border-color: ${({ theme }) => theme.colors.primary.main};
-    color: ${({ theme }) => theme.colors.primary.contrastText};
+    color: white;
     transform: translateY(-2px);
   }
 `;
@@ -114,144 +106,141 @@ const SocialLink = styled.a`
 const FooterBottom = styled.div`
   border-top: 1px solid ${({ theme }) => theme.colors.grey[200]};
   padding-top: ${({ theme }) => theme.spacing.lg};
-  text-align: center;
-  font-size: ${({ theme }) => theme.typography.fontSize.sm};
-  color: ${({ theme }) => theme.colors.text.secondary};
-`;
-
-const Copyright = styled.div`
-  margin: 0 0 ${({ theme }) => theme.spacing.sm} 0;
-`;
-
-const FooterLinks = styled.div`
   display: flex;
-  justify-content: center;
-  gap: ${({ theme }) => theme.spacing.lg};
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: ${({ theme }) => theme.spacing.md};
 
-  a {
-    color: ${({ theme }) => theme.colors.text.secondary};
-    text-decoration: none;
-    font-size: ${({ theme }) => theme.typography.fontSize.sm};
-    transition: color 0.2s ease-in-out, text-decoration-color 0.2s ease-in-out;
-
-    &:hover {
-      color: ${({ theme }) => theme.colors.primary.main};
-      text-decoration: underline;
-      text-underline-offset: 2px;
-    }
+  @media (min-width: 768px) {
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
   }
 `;
 
-const BulgarianFlag = styled.div`
-  width: 20px;
-  height: 15px;
-  background: linear-gradient(to bottom,
-    ${({ theme }) => theme.colors.primary.main} 33%,
-    white 33% 66%,
-    ${({ theme }) => theme.colors.secondary.main} 66%
-  );
-  border-radius: 2px;
-  display: inline-block;
-  margin-right: ${({ theme }) => theme.spacing.xs};
-  vertical-align: middle;
+const FooterCopyright = styled.p`
+  margin: 0;
+  color: ${({ theme }) => theme.colors.text.secondary};
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.xs};
 `;
 
-// Footer Component
+const FooterBottomLinks = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.lg};
+  flex-wrap: wrap;
+  justify-content: center;
+
+  @media (min-width: 768px) {
+    justify-content: flex-end;
+  }
+`;
+
+const FooterBottomLink = styled(Link)`
+  color: ${({ theme }) => theme.colors.text.secondary};
+  text-decoration: none;
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.primary.main};
+  }
+`;
+
 const Footer: React.FC = () => {
   const { t } = useTranslation();
-  const currentYear = new Date().getFullYear();
 
   return (
     <FooterContainer>
       <FooterContent>
         <FooterGrid>
-          {/* Company Info */}
           <FooterSection>
-            <h3>
-              <img src={logoImage} alt="Globul Cars" />
-              Globul Cars
-            </h3>
-            <p>
-              {t('footer.description')}
-            </p>
-            <SocialLinks>
-              <SocialLink href="https://facebook.com/globulcars" target="_blank" rel="noopener noreferrer">
+            <FooterSectionTitle>{t('footer.about.title', 'About Us')}</FooterSectionTitle>
+            <FooterText>
+              {t('footer.about.description', 'Your trusted partner in finding the perfect car in Bulgaria. We connect buyers and sellers with quality vehicles and exceptional service.')}
+            </FooterText>
+            <FooterSocialLinks>
+              <FooterSocialLink href="#" aria-label="Facebook">
                 <Facebook size={20} />
-              </SocialLink>
-              <SocialLink href="https://instagram.com/globulcars" target="_blank" rel="noopener noreferrer">
-                <Instagram size={20} />
-              </SocialLink>
-              <SocialLink href="https://twitter.com/globulcars" target="_blank" rel="noopener noreferrer">
+              </FooterSocialLink>
+              <FooterSocialLink href="#" aria-label="Twitter">
                 <Twitter size={20} />
-              </SocialLink>
-              <SocialLink href="https://linkedin.com/company/globulcars" target="_blank" rel="noopener noreferrer">
+              </FooterSocialLink>
+              <FooterSocialLink href="#" aria-label="Instagram">
+                <Instagram size={20} />
+              </FooterSocialLink>
+              <FooterSocialLink href="#" aria-label="LinkedIn">
                 <Linkedin size={20} />
-              </SocialLink>
-            </SocialLinks>
+              </FooterSocialLink>
+              <FooterSocialLink href="#" aria-label="YouTube">
+                <Youtube size={20} />
+              </FooterSocialLink>
+            </FooterSocialLinks>
           </FooterSection>
 
-          {/* Quick Links */}
           <FooterSection>
-            <h3>{t('footer.quickLinks')}</h3>
-            <ul>
-              <li><FooterLink to="/">{t('nav.home')}</FooterLink></li>
-              <li><FooterLink to="/cars">{t('nav.cars')}</FooterLink></li>
-              <li><FooterLink to="/sell">{t('nav.sell')}</FooterLink></li>
-              <li><FooterLink to="/about">{t('nav.about')}</FooterLink></li>
-              <li><FooterLink to="/contact">{t('nav.contact')}</FooterLink></li>
-            </ul>
+            <FooterSectionTitle>{t('footer.quickLinks.title', 'Quick Links')}</FooterSectionTitle>
+            <FooterLink to="/">{t('footer.quickLinks.home', 'Home')}</FooterLink>
+            <FooterLink to="/cars">{t('footer.quickLinks.cars', 'Cars')}</FooterLink>
+            <FooterLink to="/sell">{t('footer.quickLinks.sell', 'Sell Car')}</FooterLink>
+            <FooterLink to="/about">{t('footer.quickLinks.about', 'About')}</FooterLink>
+            <FooterLink to="/contact">{t('footer.quickLinks.contact', 'Contact')}</FooterLink>
+            <FooterLink to="/help">{t('footer.quickLinks.help', 'Help')}</FooterLink>
           </FooterSection>
 
-          {/* Services */}
           <FooterSection>
-            <h3>{t('footer.services')}</h3>
-            <ul>
-              <li><FooterLink to="/services/car-valuation">{t('footer.carValuation')}</FooterLink></li>
-              <li><FooterLink to="/services/financing">{t('footer.financing')}</FooterLink></li>
-              <li><FooterLink to="/services/insurance">{t('footer.insurance')}</FooterLink></li>
-              <li><FooterLink to="/services/maintenance">{t('footer.maintenance')}</FooterLink></li>
-              <li><FooterLink to="/services/trade-in">{t('footer.tradeIn')}</FooterLink></li>
-            </ul>
+            <FooterSectionTitle>{t('footer.categories.title', 'Categories')}</FooterSectionTitle>
+            <FooterLink to="/cars?category=sedan">{t('footer.categories.sedan', 'Sedan')}</FooterLink>
+            <FooterLink to="/cars?category=suv">{t('footer.categories.suv', 'SUV')}</FooterLink>
+            <FooterLink to="/cars?category=hatchback">{t('footer.categories.hatchback', 'Hatchback')}</FooterLink>
+            <FooterLink to="/cars?category=coupe">{t('footer.categories.coupe', 'Coupe')}</FooterLink>
+            <FooterLink to="/cars?category=convertible">{t('footer.categories.convertible', 'Convertible')}</FooterLink>
+            <FooterLink to="/cars?category=wagon">{t('footer.categories.wagon', 'Wagon')}</FooterLink>
           </FooterSection>
 
-          {/* Contact Info */}
           <FooterSection>
-            <h3>{t('footer.contact')}</h3>
-            <ul>
-              <li>
-                <strong>{t('footer.phone')}:</strong><br />
-                +359 2 123 4567
-              </li>
-              <li>
-                <strong>{t('footer.email')}:</strong><br />
-                info@globulcars.bg
-              </li>
-              <li>
-                <strong>{t('footer.address')}:</strong><br />
-                ул. Витоша 1<br />
-                София 1000, България
-              </li>
-              <li>
-                <strong>{t('footer.workingHours')}:</strong><br />
-                Пн-Пт: 9:00-18:00<br />
-                Сб: 10:00-16:00
-              </li>
-            </ul>
+            <FooterSectionTitle>{t('footer.contact.title', 'Contact Info')}</FooterSectionTitle>
+            <FooterContactItem>
+              <FooterContactIcon>
+                <MapPin size={16} />
+              </FooterContactIcon>
+              {t('footer.contact.address', 'Sofia, Bulgaria')}
+            </FooterContactItem>
+            <FooterContactItem>
+              <FooterContactIcon>
+                <Phone size={16} />
+              </FooterContactIcon>
+              {t('footer.contact.phone', '+359 2 123 4567')}
+            </FooterContactItem>
+            <FooterContactItem>
+              <FooterContactIcon>
+                <Mail size={16} />
+              </FooterContactIcon>
+              {t('footer.contact.email', 'info@globulcars.bg')}
+            </FooterContactItem>
+            <FooterContactItem>
+              <FooterContactIcon>
+                <Globe size={16} />
+              </FooterContactIcon>
+              {t('footer.contact.website', 'www.globulcars.bg')}
+            </FooterContactItem>
           </FooterSection>
         </FooterGrid>
 
         <FooterBottom>
-          <Copyright>
-            <BulgarianFlag />
-            © {currentYear} Globul Cars. {t('footer.copyright')}
-          </Copyright>
-          <FooterLinks>
-            <a href="/privacy">{t('footer.privacy')}</a>
-            <a href="/terms">{t('footer.terms')}</a>
-            <a href="/cookies">{t('footer.cookies')}</a>
-            <a href="/sitemap">{t('footer.sitemap')}</a>
-          </FooterLinks>
+          <FooterCopyright>
+            © 2024 Globul Cars. {t('footer.copyright.rights', 'All rights reserved.')} 
+            <Heart size={16} color="#e53e3e" />
+          </FooterCopyright>
+          <FooterBottomLinks>
+            <FooterBottomLink to="/privacy">{t('footer.legal.privacy', 'Privacy Policy')}</FooterBottomLink>
+            <FooterBottomLink to="/terms">{t('footer.legal.terms', 'Terms of Service')}</FooterBottomLink>
+            <FooterBottomLink to="/cookies">{t('footer.legal.cookies', 'Cookie Policy')}</FooterBottomLink>
+            <FooterBottomLink to="/sitemap">{t('footer.legal.sitemap', 'Sitemap')}</FooterBottomLink>
+          </FooterBottomLinks>
         </FooterBottom>
       </FooterContent>
     </FooterContainer>

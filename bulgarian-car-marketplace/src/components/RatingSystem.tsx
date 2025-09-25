@@ -1,356 +1,670 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { Star, ThumbsUp, ThumbsDown, Heart, Smile, Frown } from 'lucide-react';
 import { useTranslation } from '../hooks/useTranslation';
 
-interface RatingSystemProps {
-  dealerRating?: number;
-  onRatingSubmit?: (rating: number, comment: string) => void;
-  showForm?: boolean;
+interface RatingOption {
+  id: string;
+  label: string;
+  value: number;
+  icon?: React.ReactNode;
+  color?: string;
 }
 
-export const RatingSystem: React.FC<RatingSystemProps> = ({
-  dealerRating,
-  onRatingSubmit,
-  showForm = true
-}) => {
-  const { t } = useTranslation();
-  const [userRating, setUserRating] = useState(0);
-  const [hoverRating, setHoverRating] = useState(0);
-  const [comment, setComment] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleSubmit = async () => {
-    if (userRating === 0) return;
-
-    setIsSubmitting(true);
-    try {
-      await onRatingSubmit?.(userRating, comment);
-      setUserRating(0);
-      setComment('');
-      // إظهار رسالة نجاح
-    } catch (error) {
-      console.error('Error submitting rating:', error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  // محاكاة بيانات التقييمات للعرض
-  const mockRatingData = {
-    averageRating: dealerRating || 4.5,
-    totalRatings: 125,
-    ratingBreakdown: {
-      5: 75,
-      4: 30,
-      3: 15,
-      2: 3,
-      1: 2
-    }
-  };
-
-  return (
-    <RatingContainer>
-      <RatingTitle>{t('cars.rating.dealerRating', 'Оценка на търговеца')}</RatingTitle>
-
-      <RatingOverview>
-        <OverallRating>
-          <RatingValue>{mockRatingData.averageRating.toFixed(1)}</RatingValue>
-          <Stars rating={mockRatingData.averageRating} size="large" />
-          <RatingCount>{mockRatingData.totalRatings} {t('cars.rating.ratings', 'оценки')}</RatingCount>
-        </OverallRating>
-
-        <RatingBreakdown>
-          {[5, 4, 3, 2, 1].map(stars => (
-            <RatingRow key={stars}>
-              <Stars rating={stars} size="small" />
-              <RatingBar>
-                <RatingFill width={`${(mockRatingData.ratingBreakdown[stars as keyof typeof mockRatingData.ratingBreakdown] / mockRatingData.totalRatings) * 100}%`} />
-              </RatingBar>
-              <RatingPercentage>{mockRatingData.ratingBreakdown[stars as keyof typeof mockRatingData.ratingBreakdown]}</RatingPercentage>
-            </RatingRow>
-          ))}
-        </RatingBreakdown>
-      </RatingOverview>
-
-      {/* نموذج إضافة تقييم */}
-      {showForm && (
-        <RatingForm>
-          <FormTitle>{t('cars.rating.addRating', 'Добавете вашата оценка')}</FormTitle>
-
-          <StarsInteractive
-            rating={userRating}
-            hoverRating={hoverRating}
-            onRatingChange={setUserRating}
-            onHoverChange={setHoverRating}
-          />
-
-          <CommentTextarea
-            placeholder={t('cars.rating.commentPlaceholder', 'Напишете вашето мнение...')}
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-            rows={4}
-          />
-
-          <SubmitButton
-            onClick={handleSubmit}
-            disabled={userRating === 0 || isSubmitting}
-          >
-            {isSubmitting ? t('cars.rating.submitting', 'Изпращане...') : t('cars.rating.submit', 'Изпрати оценка')}
-          </SubmitButton>
-        </RatingForm>
-      )}
-
-      {/* قسم المراجعات الأخيرة */}
-      <RecentReviews>
-        <ReviewsTitle>{t('cars.rating.recentReviews', 'Последни отзиви')}</ReviewsTitle>
-        <ReviewList>
-          <ReviewItem>
-            <ReviewHeader>
-              <ReviewerName>Иван Петров</ReviewerName>
-              <ReviewDate>15.01.2024</ReviewDate>
-              <Stars rating={5} size="small" />
-            </ReviewHeader>
-            <ReviewText>
-              Отличен търговец! Автомобилът беше точно както е описан. Бързо и професионално обслужване.
-            </ReviewText>
-          </ReviewItem>
-
-          <ReviewItem>
-            <ReviewHeader>
-              <ReviewerName>Мария Димитрова</ReviewerName>
-              <ReviewDate>12.01.2024</ReviewDate>
-              <Stars rating={4} size="small" />
-            </ReviewHeader>
-            <ReviewText>
-              Добър опит. Цената беше справедлива и нямаше скрити проблеми. Препоръчвам!
-            </ReviewText>
-          </ReviewItem>
-
-          <ReviewItem>
-            <ReviewHeader>
-              <ReviewerName>Георги Стоянов</ReviewerName>
-              <ReviewDate>08.01.2024</ReviewDate>
-              <Stars rating={5} size="small" />
-            </ReviewHeader>
-            <ReviewText>
-              Професионален подход и отлична комуникация. Автомобилът е в перфектно състояние.
-            </ReviewText>
-          </ReviewItem>
-        </ReviewList>
-      </RecentReviews>
-    </RatingContainer>
-  );
-};
-
-// مكون النجوم التفاعلي
-const StarsInteractive: React.FC<{
+interface RatingSystemProps {
   rating: number;
-  hoverRating: number;
-  onRatingChange: (rating: number) => void;
-  onHoverChange: (rating: number) => void;
-}> = ({ rating, hoverRating, onRatingChange, onHoverChange }) => {
-  return (
-    <StarsContainer>
-      {[1, 2, 3, 4, 5].map(star => (
-        <StarButton
-          key={star}
-          onMouseEnter={() => onHoverChange(star)}
-          onMouseLeave={() => onHoverChange(0)}
-          onClick={() => onRatingChange(star)}
-        >
-          <Star filled={star <= (hoverRating || rating)}>★</Star>
-        </StarButton>
-      ))}
-    </StarsContainer>
-  );
-};
+  dealerRating?: number;
+  maxRating?: number;
+  onRatingChange?: (rating: number) => void;
+  type?: 'star' | 'thumbs' | 'heart' | 'smile' | 'custom';
+  size?: 'sm' | 'md' | 'lg';
+  showLabel?: boolean;
+  showForm?: boolean;
+  showValue?: boolean;
+  showCount?: boolean;
+  count?: number;
+  disabled?: boolean;
+  interactive?: boolean;
+  className?: string;
+  style?: React.CSSProperties;
+  onHover?: (rating: number) => void;
+  onLeave?: () => void;
+  customOptions?: RatingOption[];
+}
 
-// مكون النجوم للعرض فقط
-const Stars: React.FC<{ rating: number; size?: 'small' | 'large' }> = ({ rating, size = 'small' }) => {
-  return (
-    <StarsContainer>
-      {[1, 2, 3, 4, 5].map(star => (
-        <Star key={star} filled={star <= rating} size={size}>★</Star>
-      ))}
-    </StarsContainer>
-  );
-};
-
-// Styled Components
-const RatingContainer = styled.div`
-  background: white;
-  border-radius: ${({ theme }) => theme.borderRadius.base};
-  padding: ${({ theme }) => theme.spacing.lg};
-  margin-top: ${({ theme }) => theme.spacing.xl};
-  box-shadow: ${({ theme }) => theme.shadows.base};
-`;
-
-const RatingTitle = styled.h3`
-  margin: 0 0 ${({ theme }) => theme.spacing.lg} 0;
-  color: ${({ theme }) => theme.colors.text.primary};
-  font-size: ${({ theme }) => theme.typography.fontSize.lg};
-`;
-
-const RatingOverview = styled.div`
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: ${({ theme }) => theme.spacing.xl};
-  margin-bottom: ${({ theme }) => theme.spacing.xl};
-
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-  }
-`;
-
-const OverallRating = styled.div`
-  text-align: center;
-`;
-
-const RatingValue = styled.div`
-  font-size: 48px;
-  font-weight: bold;
-  color: ${({ theme }) => theme.colors.primary.main};
-`;
-
-const RatingCount = styled.div`
-  color: ${({ theme }) => theme.colors.text.secondary};
-  margin-top: ${({ theme }) => theme.spacing.sm};
-`;
-
-const RatingBreakdown = styled.div`
+const RatingSystemContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.sm};
 `;
 
-const RatingRow = styled.div`
-  display: flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.spacing.sm};
-`;
-
-const RatingBar = styled.div`
-  flex: 1;
-  background: ${({ theme }) => theme.colors.grey[200]};
-  height: 8px;
-  border-radius: 4px;
-  overflow: hidden;
-`;
-
-const RatingFill = styled.div<{ width: string }>`
-  background: ${({ theme }) => theme.colors.primary.main};
-  height: 100%;
-  width: ${props => props.width};
-`;
-
-const RatingPercentage = styled.span`
-  min-width: 40px;
-  text-align: right;
+const RatingSystemLabel = styled.label`
   font-size: ${({ theme }) => theme.typography.fontSize.sm};
-`;
-
-const RatingForm = styled.div`
-  border-top: 1px solid ${({ theme }) => theme.colors.grey[200]};
-  padding-top: ${({ theme }) => theme.spacing.lg};
-`;
-
-const FormTitle = styled.h4`
-  margin: 0 0 ${({ theme }) => theme.spacing.md} 0;
-`;
-
-const StarsContainer = styled.div`
-  display: flex;
-  gap: 4px;
-  margin-bottom: ${({ theme }) => theme.spacing.md};
-`;
-
-const StarButton = styled.button`
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-`;
-
-const Star = styled.span<{ filled: boolean; size?: 'small' | 'large' }>`
-  color: ${({ filled, theme }) =>
-    filled ? theme.colors.warning : theme.colors.grey[300]};
-  font-size: ${({ size }) => size === 'large' ? '24px' : '16px'};
-  transition: color 0.2s ease-in-out;
-`;
-
-const CommentTextarea = styled.textarea`
-  width: 100%;
-  padding: ${({ theme }) => theme.spacing.sm};
-  border: 1px solid ${({ theme }) => theme.colors.grey[300]};
-  border-radius: ${({ theme }) => theme.borderRadius.base};
-  font-family: inherit;
-  resize: vertical;
-
-  &:focus {
-    outline: none;
-    border-color: ${({ theme }) => theme.colors.primary.main};
-  }
-`;
-
-const SubmitButton = styled.button<{ disabled: boolean }>`
-  margin-top: ${({ theme }) => theme.spacing.md};
-  padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.lg};
-  background: ${({ theme, disabled }) =>
-    disabled ? theme.colors.grey[300] : theme.colors.primary.main};
-  color: white;
-  border: none;
-  border-radius: ${({ theme }) => theme.borderRadius.base};
-  cursor: ${({ disabled }) => disabled ? 'not-allowed' : 'pointer'};
-
-  &:hover:not(:disabled) {
-    background: ${({ theme }) => theme.colors.primary.dark};
-  }
-`;
-
-const RecentReviews = styled.div`
-  margin-top: ${({ theme }) => theme.spacing.xl};
-  border-top: 1px solid ${({ theme }) => theme.colors.grey[200]};
-  padding-top: ${({ theme }) => theme.spacing.lg};
-`;
-
-const ReviewsTitle = styled.h4`
-  margin: 0 0 ${({ theme }) => theme.spacing.md} 0;
-  color: ${({ theme }) => theme.colors.text.primary};
-`;
-
-const ReviewList = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.md};
-`;
-
-const ReviewItem = styled.div`
-  padding: ${({ theme }) => theme.spacing.md};
-  background: ${({ theme }) => theme.colors.grey[50]};
-  border-radius: ${({ theme }) => theme.borderRadius.base};
-`;
-
-const ReviewHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: ${({ theme }) => theme.spacing.sm};
-`;
-
-const ReviewerName = styled.span`
   font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
   color: ${({ theme }) => theme.colors.text.primary};
 `;
 
-const ReviewDate = styled.span`
-  color: ${({ theme }) => theme.colors.text.secondary};
-  font-size: ${({ theme }) => theme.typography.fontSize.sm};
+const RatingSystemStars = styled.div<{ size: string; disabled: boolean }>`
+  display: flex;
+  gap: ${({ theme, size }) => {
+    switch (size) {
+      case 'sm': return theme.spacing.xs;
+      case 'lg': return theme.spacing.sm;
+      default: return theme.spacing.xs;
+    }
+  }};
+  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
 `;
 
-const ReviewText = styled.p`
-  margin: 0;
-  color: ${({ theme }) => theme.colors.text.primary};
-  line-height: 1.5;
+const RatingSystemStar = styled.button<{ 
+  filled: boolean; 
+  size: string; 
+  disabled: boolean;
+  interactive: boolean;
+}>`
+  background: none;
+  border: none;
+  cursor: ${({ disabled, interactive }) => 
+    disabled || !interactive ? 'not-allowed' : 'pointer'
+  };
+  padding: ${({ theme, size }) => {
+    switch (size) {
+      case 'sm': return theme.spacing.xs;
+      case 'lg': return theme.spacing.sm;
+      default: return theme.spacing.xs;
+    }
+  }};
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover:not(:disabled) {
+    background: ${({ theme }) => theme.colors.grey[100]};
+    transform: scale(1.1);
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.primary.light + '40'};
+  }
+
+  svg {
+    width: ${({ size }) => {
+      switch (size) {
+        case 'sm': return '16px';
+        case 'lg': return '24px';
+        default: return '20px';
+      }
+    }};
+    height: ${({ size }) => {
+      switch (size) {
+        case 'sm': return '16px';
+        case 'lg': return '24px';
+        default: return '20px';
+      }
+    }};
+    color: ${({ theme, filled }) => 
+      filled ? theme.colors.warning.main : theme.colors.grey[300]
+    };
+    transition: color 0.2s ease;
+  }
 `;
+
+const RatingSystemThumbs = styled.div<{ size: string; disabled: boolean }>`
+  display: flex;
+  gap: ${({ theme, size }) => {
+    switch (size) {
+      case 'sm': return theme.spacing.sm;
+      case 'lg': return theme.spacing.md;
+      default: return theme.spacing.sm;
+    }
+  }};
+  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
+`;
+
+const RatingSystemThumb = styled.button<{ 
+  active: boolean; 
+  size: string; 
+  disabled: boolean;
+  interactive: boolean;
+  type: 'up' | 'down';
+}>`
+  background: ${({ theme, active, type }) => {
+    if (active) {
+      return type === 'up' ? theme.colors.success.main : theme.colors.error.main;
+    }
+    return theme.colors.grey[100];
+  }};
+  border: 1px solid ${({ theme, active, type }) => {
+    if (active) {
+      return type === 'up' ? theme.colors.success.main : theme.colors.error.main;
+    }
+    return theme.colors.grey[300];
+  }};
+  border-radius: ${({ theme }) => theme.borderRadius.base};
+  padding: ${({ theme, size }) => {
+    switch (size) {
+      case 'sm': return `${theme.spacing.sm} ${theme.spacing.md}`;
+      case 'lg': return `${theme.spacing.md} ${theme.spacing.lg}`;
+      default: return `${theme.spacing.sm} ${theme.spacing.md}`;
+    }
+  }};
+  cursor: ${({ disabled, interactive }) => 
+    disabled || !interactive ? 'not-allowed' : 'pointer'
+  };
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.xs};
+
+  &:hover:not(:disabled) {
+    background: ${({ theme, active, type }) => {
+      if (active) {
+        return type === 'up' ? theme.colors.success.dark : theme.colors.error.dark;
+      }
+      return theme.colors.grey[200];
+    }};
+    transform: scale(1.05);
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.primary.light + '40'};
+  }
+
+  svg {
+    width: ${({ size }) => {
+      switch (size) {
+        case 'sm': return '16px';
+        case 'lg': return '20px';
+        default: return '18px';
+      }
+    }};
+    height: ${({ size }) => {
+      switch (size) {
+        case 'sm': return '16px';
+        case 'lg': return '20px';
+        default: return '18px';
+      }
+    }};
+    color: ${({ theme, active, type }) => {
+      if (active) {
+        return type === 'up' ? theme.colors.success.contrastText : theme.colors.error.contrastText;
+      }
+      return theme.colors.text.secondary;
+    }};
+  }
+`;
+
+const RatingSystemHearts = styled.div<{ size: string; disabled: boolean }>`
+  display: flex;
+  gap: ${({ theme, size }) => {
+    switch (size) {
+      case 'sm': return theme.spacing.xs;
+      case 'lg': return theme.spacing.sm;
+      default: return theme.spacing.xs;
+    }
+  }};
+  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
+`;
+
+const RatingSystemHeart = styled.button<{ 
+  filled: boolean; 
+  size: string; 
+  disabled: boolean;
+  interactive: boolean;
+}>`
+  background: none;
+  border: none;
+  cursor: ${({ disabled, interactive }) => 
+    disabled || !interactive ? 'not-allowed' : 'pointer'
+  };
+  padding: ${({ theme, size }) => {
+    switch (size) {
+      case 'sm': return theme.spacing.xs;
+      case 'lg': return theme.spacing.sm;
+      default: return theme.spacing.xs;
+    }
+  }};
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover:not(:disabled) {
+    background: ${({ theme }) => theme.colors.grey[100]};
+    transform: scale(1.1);
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.primary.light + '40'};
+  }
+
+  svg {
+    width: ${({ size }) => {
+      switch (size) {
+        case 'sm': return '16px';
+        case 'lg': return '24px';
+        default: return '20px';
+      }
+    }};
+    height: ${({ size }) => {
+      switch (size) {
+        case 'sm': return '16px';
+        case 'lg': return '24px';
+        default: return '20px';
+      }
+    }};
+    color: ${({ theme, filled }) => 
+      filled ? theme.colors.error.main : theme.colors.grey[300]
+    };
+    transition: color 0.2s ease;
+  }
+`;
+
+const RatingSystemSmiles = styled.div<{ size: string; disabled: boolean }>`
+  display: flex;
+  gap: ${({ theme, size }) => {
+    switch (size) {
+      case 'sm': return theme.spacing.sm;
+      case 'lg': return theme.spacing.md;
+      default: return theme.spacing.sm;
+    }
+  }};
+  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
+`;
+
+const RatingSystemSmile = styled.button<{ 
+  active: boolean, 
+  size: string, 
+  disabled: boolean,
+  interactive: boolean,
+  type: 'up' | 'down'
+}>`
+  background: ${({ theme, active, type }) => {
+    if (active) {
+      return type === 'up' ? theme.colors.success.main : theme.colors.error.main;
+    }
+    return theme.colors.grey[100];
+  }};
+  border: 1px solid ${({ theme, active, type }) => {
+    if (active) {
+      return type === 'up' ? theme.colors.success.main : theme.colors.error.main;
+    }
+    return theme.colors.grey[300];
+  }};
+  border-radius: ${({ theme }) => theme.borderRadius.base};
+  padding: ${({ theme, size }) => {
+    switch (size) {
+      case 'sm': return `${theme.spacing.sm} ${theme.spacing.md}`;
+      case 'lg': return `${theme.spacing.md} ${theme.spacing.lg}`;
+      default: return `${theme.spacing.sm} ${theme.spacing.md}`;
+    }
+  }};
+  cursor: ${({ disabled, interactive }) => 
+    disabled || !interactive ? 'not-allowed' : 'pointer'
+  };
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.xs};
+
+  &:hover:not(:disabled) {
+    background: ${({ theme, active, type }) => {
+      if (active) {
+        return type === 'up' ? theme.colors.success.dark : theme.colors.error.dark;
+      }
+      return theme.colors.grey[200];
+    }};
+    transform: scale(1.05);
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.primary.light + '40'};
+  }
+
+  svg {
+    width: ${({ size }) => {
+      switch (size) {
+        case 'sm': return '16px';
+        case 'lg': return '20px';
+        default: return '18px';
+      }
+    }};
+    height: ${({ size }) => {
+      switch (size) {
+        case 'sm': return '16px';
+        case 'lg': return '20px';
+        default: return '18px';
+      }
+    }};
+    color: ${({ theme, active, type }) => {
+      if (active) {
+        return type === 'up' ? theme.colors.success.contrastText : theme.colors.error.contrastText;
+      }
+      return theme.colors.text.secondary;
+    }};
+  }
+`;
+
+const RatingSystemCustom = styled.div<{ size: string; disabled: boolean }>`
+  display: flex;
+  gap: ${({ theme, size }) => {
+    switch (size) {
+      case 'sm': return theme.spacing.sm;
+      case 'lg': return theme.spacing.md;
+      default: return theme.spacing.sm;
+    }
+  }};
+  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
+`;
+
+const RatingSystemCustomOption = styled.button<{ 
+  active: boolean; 
+  size: string; 
+  disabled: boolean;
+  interactive: boolean;
+  color?: string;
+}>`
+  background: ${({ theme, active, color }) => {
+    if (active) {
+      return color || theme.colors.primary.main;
+    }
+    return theme.colors.grey[100];
+  }};
+  border: 1px solid ${({ theme, active, color }) => {
+    if (active) {
+      return color || theme.colors.primary.main;
+    }
+    return theme.colors.grey[300];
+  }};
+  border-radius: ${({ theme }) => theme.borderRadius.base};
+  padding: ${({ theme, size }) => {
+    switch (size) {
+      case 'sm': return `${theme.spacing.sm} ${theme.spacing.md}`;
+      case 'lg': return `${theme.spacing.md} ${theme.spacing.lg}`;
+      default: return `${theme.spacing.sm} ${theme.spacing.md}`;
+    }
+  }};
+  cursor: ${({ disabled, interactive }) => 
+    disabled || !interactive ? 'not-allowed' : 'pointer'
+  };
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.xs};
+
+  &:hover:not(:disabled) {
+    background: ${({ theme, active, color }) => {
+      if (active) {
+        return color || theme.colors.primary.dark;
+      }
+      return theme.colors.grey[200];
+    }};
+    transform: scale(1.05);
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.primary.light + '40'};
+  }
+
+  svg {
+    width: ${({ size }) => {
+      switch (size) {
+        case 'sm': return '16px';
+        case 'lg': return '20px';
+        default: return '18px';
+      }
+    }};
+    height: ${({ size }) => {
+      switch (size) {
+        case 'sm': return '16px';
+        case 'lg': return '20px';
+        default: return '18px';
+      }
+    }};
+    color: ${({ theme, active, color }) => {
+      if (active) {
+        return color || theme.colors.primary.contrastText;
+      }
+      return theme.colors.text.secondary;
+    }};
+  }
+`;
+
+const RatingSystemInfo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.sm};
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
+  color: ${({ theme }) => theme.colors.text.secondary};
+`;
+
+const RatingSystemValue = styled.span`
+  font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
+  color: ${({ theme }) => theme.colors.text.primary};
+`;
+
+const RatingSystemCount = styled.span`
+  color: ${({ theme }) => theme.colors.text.secondary};
+`;
+
+const RatingSystem: React.FC<RatingSystemProps> = ({
+  rating,
+  maxRating = 5,
+  onRatingChange,
+  type = 'star',
+  size = 'md',
+  showLabel = true,
+  showValue = true,
+  showCount = true,
+  count = 0,
+  disabled = false,
+  interactive = true,
+  className,
+  style,
+  onHover,
+  onLeave,
+  customOptions = [],
+}) => {
+  const { t } = useTranslation();
+  const [hoveredRating, setHoveredRating] = useState(0);
+
+  const handleRatingClick = (newRating: number) => {
+    if (disabled || !interactive) return;
+    onRatingChange?.(newRating);
+  };
+
+  const handleMouseEnter = (newRating: number) => {
+    if (disabled || !interactive) return;
+    setHoveredRating(newRating);
+    onHover?.(newRating);
+  };
+
+  const handleMouseLeave = () => {
+    if (disabled || !interactive) return;
+    setHoveredRating(0);
+    onLeave?.();
+  };
+
+  const renderStars = () => {
+    return Array.from({ length: maxRating }, (_, index) => {
+      const starRating = index + 1;
+      const isFilled = starRating <= (hoveredRating || rating);
+      
+      return (
+        <RatingSystemStar
+          key={starRating}
+          filled={isFilled}
+          size={size}
+          disabled={disabled}
+          interactive={interactive}
+          onClick={() => handleRatingClick(starRating)}
+          onMouseEnter={() => handleMouseEnter(starRating)}
+          onMouseLeave={handleMouseLeave}
+        >
+          <Star size={20} />
+        </RatingSystemStar>
+      );
+    });
+  };
+
+  const renderThumbs = () => {
+    return (
+      <>
+        <RatingSystemThumb
+          active={rating === 1}
+          size={size}
+          disabled={disabled}
+          interactive={interactive}
+          type="up"
+          onClick={() => handleRatingClick(rating === 1 ? 0 : 1)}
+          onMouseEnter={() => handleMouseEnter(1)}
+          onMouseLeave={handleMouseLeave}
+        >
+          <ThumbsUp size={18} />
+        </RatingSystemThumb>
+        <RatingSystemThumb
+          active={rating === -1}
+          size={size}
+          disabled={disabled}
+          interactive={interactive}
+          type="down"
+          onClick={() => handleRatingClick(rating === -1 ? 0 : -1)}
+          onMouseEnter={() => handleMouseEnter(-1)}
+          onMouseLeave={handleMouseLeave}
+        >
+          <ThumbsDown size={18} />
+        </RatingSystemThumb>
+      </>
+    );
+  };
+
+  const renderHearts = () => {
+    return Array.from({ length: maxRating }, (_, index) => {
+      const heartRating = index + 1;
+      const isFilled = heartRating <= (hoveredRating || rating);
+      
+      return (
+        <RatingSystemHeart
+          key={heartRating}
+          filled={isFilled}
+          size={size}
+          disabled={disabled}
+          interactive={interactive}
+          onClick={() => handleRatingClick(heartRating)}
+          onMouseEnter={() => handleMouseEnter(heartRating)}
+          onMouseLeave={handleMouseLeave}
+        >
+          <Heart size={20} />
+        </RatingSystemHeart>
+      );
+    });
+  };
+
+  const renderSmiles = () => {
+    return (
+      <>
+        <RatingSystemSmile
+          active={rating === 1}
+          size={size}
+          disabled={disabled}
+          interactive={interactive}
+          type="up"
+          onClick={() => handleRatingClick(rating === 1 ? 0 : 1)}
+          onMouseEnter={() => handleMouseEnter(1)}
+          onMouseLeave={handleMouseLeave}
+        >
+          <Smile size={18} />
+        </RatingSystemSmile>
+        <RatingSystemSmile
+          active={rating === -1}
+          size={size}
+          disabled={disabled}
+          interactive={interactive}
+          type="down"
+          onClick={() => handleRatingClick(rating === -1 ? 0 : -1)}
+          onMouseEnter={() => handleMouseEnter(-1)}
+          onMouseLeave={handleMouseLeave}
+        >
+          <Frown size={18} />
+        </RatingSystemSmile>
+      </>
+    );
+  };
+
+  const renderCustom = () => {
+    return customOptions.map((option) => {
+      const isActive = option.value === rating;
+      
+      return (
+        <RatingSystemCustomOption
+          key={option.id}
+          active={isActive}
+          size={size}
+          disabled={disabled}
+          interactive={interactive}
+          color={option.color}
+          onClick={() => handleRatingClick(option.value)}
+          onMouseEnter={() => handleMouseEnter(option.value)}
+          onMouseLeave={handleMouseLeave}
+        >
+          {option.icon}
+          {option.label}
+        </RatingSystemCustomOption>
+      );
+    });
+  };
+
+  const renderRating = () => {
+    switch (type) {
+      case 'star':
+        return <RatingSystemStars size={size} disabled={disabled}>{renderStars()}</RatingSystemStars>;
+      case 'thumbs':
+        return <RatingSystemThumbs size={size} disabled={disabled}>{renderThumbs()}</RatingSystemThumbs>;
+      case 'heart':
+        return <RatingSystemHearts size={size} disabled={disabled}>{renderHearts()}</RatingSystemHearts>;
+      case 'smile':
+        return <RatingSystemSmiles size={size} disabled={disabled}>{renderSmiles()}</RatingSystemSmiles>;
+      case 'custom':
+        return <RatingSystemCustom size={size} disabled={disabled}>{renderCustom()}</RatingSystemCustom>;
+      default:
+        return <RatingSystemStars size={size} disabled={disabled}>{renderStars()}</RatingSystemStars>;
+    }
+  };
+
+  return (
+    <RatingSystemContainer className={className} style={style}>
+      {showLabel && (
+        <RatingSystemLabel>
+          {t('ratingSystem.label', 'Rating')}
+        </RatingSystemLabel>
+      )}
+      
+      {renderRating()}
+      
+      {(showValue || showCount) && (
+        <RatingSystemInfo>
+          {showValue && (
+            <RatingSystemValue>
+              {rating} / {maxRating}
+            </RatingSystemValue>
+          )}
+          {showCount && count > 0 && (
+            <RatingSystemCount>
+              ({count} {t('ratingSystem.votes', 'votes')})
+            </RatingSystemCount>
+          )}
+        </RatingSystemInfo>
+      )}
+    </RatingSystemContainer>
+  );
+};
 
 export default RatingSystem;

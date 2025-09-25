@@ -1,457 +1,633 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { Search, Filter, X, ChevronDown, ChevronUp, MapPin, Calendar, Euro } from 'lucide-react';
 import { useTranslation } from '../hooks/useTranslation';
-import { AdvancedSearchParams, CarDataFromFile, AvailableFilterOptions } from '../types/CarData';
-import { advancedDataService } from '../services/AdvancedDataService';
-import AdvancedFilterSystem from './AdvancedFilterSystem';
-import { SmartSearchSuggestions } from './SmartSearchSuggestions';
-import AnalyticsSystem from './analytics/AnalyticsSystem';
-import RatingSystem from './RatingSystem';
-import { LoadingSpinner } from './LoadingSpinner';
+import SearchableSelect from './SearchableSelect';
+import CheckboxGrid from './CheckboxGrid';
+import SearchTabs from './SearchTabs';
+import SearchResults from './SearchResults';
+import SmartSearchSuggestions from './SmartSearchSuggestions';
 
-interface CarSearchSystemAdvancedProps {
-  onSearchResults: (results: CarDataFromFile[]) => void;
-  onSearchParamsChange?: (params: AdvancedSearchParams) => void;
+interface CarSearchOption {
+  value: string;
+  label: string;
+  disabled?: boolean;
+  group?: string;
 }
 
-const CarSearchSystemAdvanced: React.FC<CarSearchSystemAdvancedProps> = (props) => {
-  const { onSearchResults, onSearchParamsChange } = props;
-  const { t } = useTranslation();
-  const [searchParams, setSearchParams] = useState<AdvancedSearchParams>({
-    make: '',
-    model: '',
-    vehicleType: [],
-    minSeats: '',
-    maxSeats: '',
-    doors: '',
-    slidingDoor: '',
-    condition: [],
-    paymentType: [],
-    minPrice: '',
-    maxPrice: '',
-    minFirstRegistration: '',
-    maxFirstRegistration: '',
-    minMileage: '',
-    maxMileage: '',
-    huValidUntil: '',
-    owners: '',
-    fullServiceHistory: false,
-    roadworthy: false,
-    newService: false,
-    country: 'BG',
-    city: '',
-    zipCode: '',
-    radius: '',
-    deliveryAvailable: false,
-    fuelType: [],
-    minPower: '',
-    maxPower: '',
-    powerUnit: 'hp',
-    minEngineSize: '',
-    maxEngineSize: '',
-    minFuelTank: '',
-    maxFuelTank: '',
-    minWeight: '',
-    maxWeight: '',
-    minCylinders: '',
-    maxCylinders: '',
-    driveType: '',
-    transmission: [],
-    maxFuelConsumption: '',
-    emissionSticker: '',
-    emissionClass: '',
-    particulateFilter: false,
-    exteriorColor: [],
-    exteriorFinish: [],
-    trailerCoupling: '',
-    trailerAssist: false,
-    minTrailerLoadBraked: '',
-    minTrailerLoadUnbraked: '',
-    noseWeight: '',
-    parkingSensors: [],
-    camera360: false,
-    rearTrafficAlert: false,
-    selfSteering: false,
-    cruiseControl: [],
-    exteriorFeatures: [],
-    interiorColor: [],
-    interiorMaterial: [],
-    airbags: [],
-    airConditioning: [],
-    interiorFeatures: [],
-    sellerType: [],
-    minDealerRating: '',
-    adOnlineSince: '',
-    withPictures: false,
-    vatReclaimable: false,
-    warranty: false,
-    nonSmoker: false,
-    excludeVehicles: []
-  });
-  const [quickQuery, setQuickQuery] = useState('');
-  const [showSuggestions, setShowSuggestions] = useState(false);
+interface CarSearchFilter {
+  id: string;
+  label: string;
+  type: 'select' | 'checkbox' | 'range' | 'text' | 'date' | 'location';
+  options?: CarSearchOption[];
+  value?: any;
+  placeholder?: string;
+  min?: number;
+  max?: number;
+  step?: number;
+  unit?: string;
+  required?: boolean;
+  description?: string;
+}
 
-  // استرجاع آخر بحث محفوظ عند تحميل الصفحة
-  useEffect(() => {
-    const savedParams = localStorage.getItem('globul_last_search');
-    if (savedParams) {
-      try {
-        const parsed = JSON.parse(savedParams);
-        setSearchParams(parsed);
-      } catch {}
-    }
-  }, []);
-
-
-  const [isLoading, setIsLoading] = useState(false);
-  const [searchResults, setSearchResults] = useState<CarDataFromFile[]>([]);
-  const [availableData, setAvailableData] = useState<AvailableFilterOptions>({
-    makes: [],
-    models: [],
-    modelsByMake: {},
-    vehicleTypes: [],
-    conditions: [],
-    cities: [],
-    fuelTypes: [],
-    transmissions: [],
-    colors: [],
-    features: []
-  });
-  const [searchDuration, setSearchDuration] = useState(0);
-  const [showAnalytics, setShowAnalytics] = useState(false);
-
-  // تحميل البيانات عند بدء التطبيق
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        await advancedDataService.loadData();
-        const options = advancedDataService.getAvailableOptions();
-        setAvailableData(options);
-      } catch (error) {
-        console.error('Error loading data:', error);
-      }
-    };
-    loadData();
-  }, []);
-
-  // استرجاع آخر بحث محفوظ عند تحميل الصفحة
-  useEffect(() => {
-    const savedParams = localStorage.getItem('globul_last_search');
-    if (savedParams) {
-      try {
-        const parsed = JSON.parse(savedParams);
-        setSearchParams(parsed);
-      } catch {}
-    }
-  }, []);
-
-  const handleSearch = async () => {
-    setIsLoading(true);
-    const startTime = performance.now();
-
-    try {
-      const results = advancedDataService.advancedSearch(searchParams);
-      const endTime = performance.now();
-      setSearchDuration(Math.round(endTime - startTime));
-
-      setSearchResults(results);
-      if (typeof onSearchResults === 'function') onSearchResults(results);
-      setShowAnalytics(true);
-      if (typeof onSearchParamsChange === 'function') onSearchParamsChange(searchParams);
-    } catch (error) {
-      console.error('Search error:', error);
-      setSearchResults([]);
-      if (typeof onSearchResults === 'function') onSearchResults([]);
-    } finally {
-      setIsLoading(false);
-    }
+interface CarSearchResult {
+  id: string;
+  title: string;
+  description: string;
+  image: string;
+  price: number;
+  currency: string;
+  location: string;
+  date: string;
+  category: string;
+  brand: string;
+  model: string;
+  year: number;
+  mileage: number;
+  fuelType: string;
+  transmission: string;
+  engineSize: number;
+  color: string;
+  condition: string;
+  features: string[];
+  rating: number;
+  reviewCount: number;
+  seller: {
+    name: string;
+    avatar: string;
+    rating: number;
+    verified: boolean;
   };
+  isFavorite: boolean;
+  isPromoted: boolean;
+  isNew: boolean;
+}
 
-  const handleParamsChange = (newParams: AdvancedSearchParams) => {
-  setSearchParams(newParams);
-  if (typeof onSearchParamsChange === 'function') onSearchParamsChange(newParams);
-  };
+interface CarSearchSystemAdvancedProps {
+  filters: CarSearchFilter[];
+  results: CarSearchResult[];
+  loading?: boolean;
+  totalResults?: number;
+  currentPage?: number;
+  totalPages?: number;
+  onSearch: (filters: Record<string, any>) => void;
+  onReset: () => void;
+  onPageChange?: (page: number) => void;
+  onSortChange?: (sortBy: string, sortOrder: 'asc' | 'desc') => void;
+  onViewChange?: (view: 'grid' | 'list') => void;
+  onResultClick?: (result: CarSearchResult) => void;
+  onFavoriteToggle?: (resultId: string) => void;
+  onFilterChange?: (filters: Record<string, any>) => void;
+  className?: string;
+  style?: React.CSSProperties;
+  showAdvanced?: boolean;
+  onToggleAdvanced?: (show: boolean) => void;
+  showFilters?: boolean;
+  onToggleFilters?: (show: boolean) => void;
+  showSuggestions?: boolean;
+  onSuggestionClick?: (suggestion: any) => void;
+  onClearRecent?: () => void;
+}
 
-  return (
-    <SearchContainer>
-      {/* زر حفظ البحث */}
-      <div style={{ textAlign: 'right', marginBottom: 12 }}>
-        <button
-          style={{ padding: '8px 18px', borderRadius: '6px', background: '#007BFF', color: '#fff', border: 'none', cursor: 'pointer', fontWeight: 500 }}
-          onClick={() => {
-            localStorage.setItem('globul_last_search', JSON.stringify(searchParams));
-            alert('تم حفظ البحث بنجاح!');
-          }}
-        >
-          حفظ البحث الحالي
-        </button>
-      </div>
-      <SearchHeader>
-        <SearchTitle>{t('cars.search.advanced', 'Разширено търсене')}</SearchTitle>
-        <SearchDescription>
-          {t('cars.search.advancedDescription', 'Намерете идеалния автомобил с нашата мощна система за филтриране')}
-        </SearchDescription>
-      </SearchHeader>
-
-      {/* بحث سريع مع اقتراحات ذكية */}
-      <div style={{ position: 'relative', marginBottom: 32 }}>
-        <input
-          type="text"
-          value={quickQuery}
-          onChange={e => {
-            setQuickQuery(e.target.value);
-            setShowSuggestions(e.target.value.length > 2);
-          }}
-          placeholder={t('cars.search.quickPlaceholder', 'Търсене на марка, модел или характеристика...')}
-          style={{ width: '100%', padding: '12px', fontSize: '16px', borderRadius: '8px', border: '1px solid #ccc' }}
-        />
-        {showSuggestions && (
-          <SmartSearchSuggestions
-            query={quickQuery}
-            carData={searchResults.length > 0 ? searchResults : []}
-            onSuggestionSelect={suggestion => {
-              setQuickQuery(suggestion);
-              setShowSuggestions(false);
-            }}
-          />
-        )}
-      </div>
-
-      <AdvancedFilterSystem
-        searchParams={searchParams}
-        onFiltersChange={handleParamsChange}
-        availableData={availableData}
-        onSearch={handleSearch}
-        isLoading={isLoading}
-      />
-
-      {isLoading && <LoadingSpinner />}
-
-      {showAnalytics && searchResults.length > 0 && (
-        <AnalyticsSystem
-          searchResults={searchResults}
-          searchParams={searchParams}
-          searchDuration={searchDuration}
-        />
-      )}
-
-      {/* نظام التقييمات */}
-      <RatingSystem
-        dealerRating={4.5}
-        onRatingSubmit={(rating, comment) => {
-          console.log('Rating submitted:', rating, comment);
-          // هنا يمكن إضافة منطق إرسال التقييم للخادم
-        }}
-      />
-
-      {/* عرض النتائج */}
-      <SearchResultsContainer>
-        <ResultsHeader>
-          <ResultsTitle>
-            {t('cars.search.results', 'Резултати от търсенето')}
-            {searchResults.length > 0 && (
-              <ResultsCount>({searchResults.length})</ResultsCount>
-            )}
-          </ResultsTitle>
-        </ResultsHeader>
-
-        {searchResults.length === 0 && !isLoading && showAnalytics && (
-          <NoResults>
-            <NoResultsTitle>{t('cars.search.noResults', 'Няма намерени резултати')}</NoResultsTitle>
-            <NoResultsText>
-              {t('cars.search.tryAdjustingFilters', 'Опитайте да промените филтрите си или да разширите критериите за търсене.')}
-            </NoResultsText>
-          </NoResults>
-        )}
-
-        {searchResults.length > 0 && (
-          <ResultsGrid>
-            {searchResults.map(car => (
-              <CarCard key={car.id}>
-                <CarImage>
-                  {car.images && car.images.length > 0 ? (
-                    <img src={car.images[0]} alt={`${car.brand} ${car.model}`} />
-                  ) : (
-                    <NoImage>{t('cars.noImage', 'Няма снимка')}</NoImage>
-                  )}
-                </CarImage>
-                <CarInfo>
-                  <CarTitle>{car.brand} {car.model} {car.year}</CarTitle>
-                  <CarPrice>{car.price.toLocaleString()} €</CarPrice>
-                  <CarDetails>
-                    <DetailItem>{car.mileage.toLocaleString()} km</DetailItem>
-                    <DetailItem>{car.fuelType}</DetailItem>
-                    <DetailItem>{car.transmission}</DetailItem>
-                    <DetailItem>{car.location}</DetailItem>
-                  </CarDetails>
-                  <CarDescription>{car.description}</CarDescription>
-                </CarInfo>
-              </CarCard>
-            ))}
-          </ResultsGrid>
-        )}
-      </SearchResultsContainer>
-    </SearchContainer>
-  );
-};
-
-// Styled Components
-const SearchContainer = styled.div`
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: ${({ theme }) => theme.spacing.lg};
-  background: ${({ theme }) => theme.colors.background.paper};
-  border-radius: ${({ theme }) => theme.borderRadius.lg};
-  box-shadow: ${({ theme }) => theme.shadows.base};
+const CarSearchSystemAdvancedContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.lg};
 `;
 
-const SearchHeader = styled.div`
-  text-align: center;
-  margin-bottom: ${({ theme }) => theme.spacing.xl};
-  padding-bottom: ${({ theme }) => theme.spacing.lg};
-  border-bottom: 1px solid ${({ theme }) => theme.colors.grey[300]};
-`;
-
-const SearchTitle = styled.h1`
-  font-size: ${({ theme }) => theme.typography.fontSize.xl};
-  font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
-  color: ${({ theme }) => theme.colors.text.primary};
-  margin: 0 0 ${({ theme }) => theme.spacing.sm} 0;
-`;
-
-const SearchDescription = styled.p`
-  font-size: ${({ theme }) => theme.typography.fontSize.base};
-  color: ${({ theme }) => theme.colors.text.secondary};
-  margin: 0;
-  max-width: 600px;
-  margin: 0 auto;
-`;
-
-const SearchResultsContainer = styled.div`
-  margin-top: ${({ theme }) => theme.spacing.xl};
-`;
-
-const ResultsHeader = styled.div`
+const CarSearchSystemAdvancedHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: ${({ theme }) => theme.spacing.lg};
 `;
 
-const ResultsTitle = styled.h2`
+const CarSearchSystemAdvancedTitle = styled.h1`
+  font-size: ${({ theme }) => theme.typography.fontSize['3xl']};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
+  color: ${({ theme }) => theme.colors.text.primary};
+  margin: 0;
+`;
+
+const CarSearchSystemAdvancedToggles = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.md};
+`;
+
+const CarSearchSystemAdvancedToggle = styled.button`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.sm};
+  background: none;
+  border: 1px solid ${({ theme }) => theme.colors.grey[300]};
+  border-radius: ${({ theme }) => theme.borderRadius.base};
+  padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: ${({ theme }) => theme.colors.text.primary};
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
+
+  &:hover {
+    border-color: ${({ theme }) => theme.colors.primary.main};
+    background: ${({ theme }) => theme.colors.primary.light + '10'};
+  }
+`;
+
+const CarSearchSystemAdvancedContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.lg};
+`;
+
+const CarSearchSystemAdvancedSearch = styled.div`
+  background: ${({ theme }) => theme.colors.background.paper};
+  border-radius: ${({ theme }) => theme.borderRadius.lg};
+  padding: ${({ theme }) => theme.spacing.xl};
+  box-shadow: ${({ theme }) => theme.shadows.base};
+  border: 1px solid ${({ theme }) => theme.colors.grey[200]};
+`;
+
+const CarSearchSystemAdvancedTabs = styled.div`
+  margin-bottom: ${({ theme }) => theme.spacing.lg};
+`;
+
+const CarSearchSystemAdvancedForm = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.lg};
+`;
+
+const CarSearchSystemAdvancedSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.md};
+`;
+
+const CarSearchSystemAdvancedSectionTitle = styled.h3`
   font-size: ${({ theme }) => theme.typography.fontSize.lg};
   font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
   color: ${({ theme }) => theme.colors.text.primary};
   margin: 0;
+  padding-bottom: ${({ theme }) => theme.spacing.sm};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.grey[200]};
+`;
+
+const CarSearchSystemAdvancedRow = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: ${({ theme }) => theme.spacing.lg};
+`;
+
+const CarSearchSystemAdvancedField = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.sm};
+`;
+
+const CarSearchSystemAdvancedLabel = styled.label<{ required: boolean }>`
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
+  color: ${({ theme }) => theme.colors.text.primary};
+  
+  &::after {
+    content: ${({ required }) => (required ? ' *' : '')};
+    color: ${({ theme }) => theme.colors.error.main};
+  }
+`;
+
+const CarSearchSystemAdvancedDescription = styled.p`
+  font-size: ${({ theme }) => theme.typography.fontSize.xs};
+  color: ${({ theme }) => theme.colors.text.secondary};
+  margin: 0;
+  line-height: 1.4;
+`;
+
+const CarSearchSystemAdvancedInput = styled.input`
+  width: 100%;
+  padding: ${({ theme }) => theme.spacing.md};
+  border: 1px solid ${({ theme }) => theme.colors.grey[300]};
+  border-radius: ${({ theme }) => theme.borderRadius.base};
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
+  background: ${({ theme }) => theme.colors.background.paper};
+  color: ${({ theme }) => theme.colors.text.primary};
+  transition: border-color 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: ${({ theme }) => theme.colors.primary.main};
+  }
+
+  &::placeholder {
+    color: ${({ theme }) => theme.colors.text.secondary};
+  }
+`;
+
+const CarSearchSystemAdvancedRange = styled.div`
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.sm};
 `;
 
-const ResultsCount = styled.span`
-  color: ${({ theme }) => theme.colors.primary.main};
-  font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
-`;
-
-const NoResults = styled.div`
-  text-align: center;
-  padding: ${({ theme }) => theme.spacing.xl};
-  background: ${({ theme }) => theme.colors.grey[50]};
+const CarSearchSystemAdvancedRangeInput = styled.input`
+  flex: 1;
+  padding: ${({ theme }) => theme.spacing.md};
+  border: 1px solid ${({ theme }) => theme.colors.grey[300]};
   border-radius: ${({ theme }) => theme.borderRadius.base};
-`;
-
-const NoResultsTitle = styled.h3`
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
+  background: ${({ theme }) => theme.colors.background.paper};
   color: ${({ theme }) => theme.colors.text.primary};
-  margin: 0 0 ${({ theme }) => theme.spacing.md} 0;
-`;
+  text-align: center;
 
-const NoResultsText = styled.p`
-  color: ${({ theme }) => theme.colors.text.secondary};
-  margin: 0;
-`;
-
-const ResultsGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: ${({ theme }) => theme.spacing.lg};
-
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
+  &:focus {
+    outline: none;
+    border-color: ${({ theme }) => theme.colors.primary.main};
   }
 `;
 
-const CarCard = styled.div`
-  background: white;
-  border-radius: ${({ theme }) => theme.borderRadius.base};
-  box-shadow: ${({ theme }) => theme.shadows.base};
-  overflow: hidden;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: ${({ theme }) => theme.shadows.lg};
-  }
-`;
-
-const CarImage = styled.div`
-  height: 200px;
-  background: ${({ theme }) => theme.colors.grey[100]};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-`;
-
-const NoImage = styled.div`
+const CarSearchSystemAdvancedRangeSeparator = styled.span`
   color: ${({ theme }) => theme.colors.text.secondary};
   font-size: ${({ theme }) => theme.typography.fontSize.sm};
 `;
 
-const CarInfo = styled.div`
-  padding: ${({ theme }) => theme.spacing.md};
-`;
-
-const CarTitle = styled.h3`
-  font-size: ${({ theme }) => theme.typography.fontSize.base};
-  font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
-  color: ${({ theme }) => theme.colors.text.primary};
-  margin: 0 0 ${({ theme }) => theme.spacing.sm} 0;
-`;
-
-const CarPrice = styled.div`
-  font-size: ${({ theme }) => theme.typography.fontSize.lg};
-  font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
-  color: ${({ theme }) => theme.colors.primary.main};
-  margin-bottom: ${({ theme }) => theme.spacing.sm};
-`;
-
-const CarDetails = styled.div`
+const CarSearchSystemAdvancedActions = styled.div`
   display: flex;
   gap: ${({ theme }) => theme.spacing.md};
-  margin-bottom: ${({ theme }) => theme.spacing.sm};
-  flex-wrap: wrap;
+  justify-content: flex-end;
+  margin-top: ${({ theme }) => theme.spacing.lg};
+  padding-top: ${({ theme }) => theme.spacing.lg};
+  border-top: 1px solid ${({ theme }) => theme.colors.grey[200]};
 `;
 
-const DetailItem = styled.span`
+const CarSearchSystemAdvancedButton = styled.button<{ variant: 'primary' | 'secondary' }>`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.sm};
+  padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.lg};
+  border: 1px solid ${({ theme, variant }) => 
+    variant === 'primary' ? theme.colors.primary.main : theme.colors.grey[300]
+  };
+  border-radius: ${({ theme }) => theme.borderRadius.base};
+  background: ${({ theme, variant }) => 
+    variant === 'primary' ? theme.colors.primary.main : 'transparent'
+  };
+  color: ${({ theme, variant }) => 
+    variant === 'primary' ? theme.colors.primary.contrastText : theme.colors.text.primary
+  };
   font-size: ${({ theme }) => theme.typography.fontSize.sm};
-  color: ${({ theme }) => theme.colors.text.secondary};
-  background: ${({ theme }) => theme.colors.grey[100]};
-  padding: 2px 8px;
-  border-radius: 4px;
+  font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: ${({ theme, variant }) => 
+      variant === 'primary' ? theme.colors.primary.dark : theme.colors.grey[100]
+    };
+    border-color: ${({ theme, variant }) => 
+      variant === 'primary' ? theme.colors.primary.dark : theme.colors.grey[400]
+    };
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
 `;
 
-const CarDescription = styled.p`
-  font-size: ${({ theme }) => theme.typography.fontSize.sm};
-  color: ${({ theme }) => theme.colors.text.secondary};
-  margin: 0;
-  line-height: 1.4;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-`;
+const CarSearchSystemAdvanced: React.FC<CarSearchSystemAdvancedProps> = ({
+  filters,
+  results,
+  loading = false,
+  totalResults = 0,
+  currentPage = 1,
+  totalPages = 1,
+  onSearch,
+  onReset,
+  onPageChange,
+  onSortChange,
+  onViewChange,
+  onResultClick,
+  onFavoriteToggle,
+  onFilterChange,
+  className,
+  style,
+  showAdvanced = false,
+  onToggleAdvanced,
+  showFilters = false,
+  onToggleFilters,
+  showSuggestions = true,
+  onSuggestionClick,
+  onClearRecent,
+}) => {
+  const { t } = useTranslation();
+  const [formData, setFormData] = useState<Record<string, any>>({});
+  const [isAdvancedOpen, setIsAdvancedOpen] = useState(showAdvanced);
+  const [isFiltersOpen, setIsFiltersOpen] = useState(showFilters);
+  const [activeTab, setActiveTab] = useState('search');
+  const [showSuggestionsState, setShowSuggestionsState] = useState(false);
+
+  const tabs = [
+    { id: 'search', label: t('carSearch.tabs.search', 'Search'), icon: <Search size={16} /> },
+    { id: 'filters', label: t('carSearch.tabs.filters', 'Filters'), icon: <Filter size={16} /> },
+    { id: 'popular', label: t('carSearch.tabs.popular', 'Popular'), icon: <Star size={16} /> },
+    { id: 'trending', label: t('carSearch.tabs.trending', 'Trending'), icon: <TrendingUp size={16} /> },
+  ];
+
+  const suggestions = [
+    { id: '1', text: 'BMW 3 Series', type: 'brand' as const, category: 'Luxury' },
+    { id: '2', text: 'Audi A4', type: 'brand' as const, category: 'Luxury' },
+    { id: '3', text: 'Mercedes C-Class', type: 'brand' as const, category: 'Luxury' },
+    { id: '4', text: 'Volkswagen Golf', type: 'brand' as const, category: 'Compact' },
+    { id: '5', text: 'Toyota Corolla', type: 'brand' as const, category: 'Compact' },
+  ];
+
+  useEffect(() => {
+    const initialData: Record<string, any> = {};
+    filters.forEach(filter => {
+      if (filter.type === 'checkbox') {
+        initialData[filter.id] = filter.value || [];
+      } else {
+        initialData[filter.id] = filter.value || '';
+      }
+    });
+    setFormData(initialData);
+  }, [filters]);
+
+  const handleInputChange = (filterId: string, value: any) => {
+    setFormData(prev => ({
+      ...prev,
+      [filterId]: value
+    }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSearch(formData);
+  };
+
+  const handleReset = () => {
+    const resetData: Record<string, any> = {};
+    filters.forEach(filter => {
+      if (filter.type === 'checkbox') {
+        resetData[filter.id] = [];
+      } else {
+        resetData[filter.id] = '';
+      }
+    });
+    setFormData(resetData);
+    onReset();
+  };
+
+  const handleToggleAdvanced = () => {
+    const newState = !isAdvancedOpen;
+    setIsAdvancedOpen(newState);
+    onToggleAdvanced?.(newState);
+  };
+
+  const handleToggleFilters = () => {
+    const newState = !isFiltersOpen;
+    setIsFiltersOpen(newState);
+    onToggleFilters?.(newState);
+  };
+
+  const handleTabChange = (tabId: string) => {
+    setActiveTab(tabId);
+    if (tabId === 'search') {
+      setShowSuggestionsState(true);
+    } else {
+      setShowSuggestionsState(false);
+    }
+  };
+
+  const handleSuggestionClick = (suggestion: any) => {
+    onSuggestionClick?.(suggestion);
+    setShowSuggestionsState(false);
+  };
+
+  const renderFilter = (filter: CarSearchFilter) => {
+    switch (filter.type) {
+      case 'select':
+        return (
+          <SearchableSelect
+            options={filter.options || []}
+            value={formData[filter.id] || ''}
+            onChange={(value) => handleInputChange(filter.id, value)}
+            placeholder={filter.placeholder || `Select ${filter.label}`}
+            showSearch={true}
+            groupBy={true}
+          />
+        );
+
+      case 'checkbox':
+        return (
+          <CheckboxGrid
+            options={filter.options || []}
+            value={formData[filter.id] || []}
+            onChange={(value) => handleInputChange(filter.id, value)}
+            columns={2}
+            showDescriptions={true}
+          />
+        );
+
+      case 'range':
+        return (
+          <CarSearchSystemAdvancedRange>
+            <CarSearchSystemAdvancedRangeInput
+              type="number"
+              placeholder="Min"
+              value={formData[filter.id]?.min || ''}
+              onChange={(e) => handleInputChange(filter.id, {
+                ...formData[filter.id],
+                min: e.target.value ? Number(e.target.value) : undefined
+              })}
+              min={filter.min}
+              max={filter.max}
+              step={filter.step}
+            />
+            <CarSearchSystemAdvancedRangeSeparator>to</CarSearchSystemAdvancedRangeSeparator>
+            <CarSearchSystemAdvancedRangeInput
+              type="number"
+              placeholder="Max"
+              value={formData[filter.id]?.max || ''}
+              onChange={(e) => handleInputChange(filter.id, {
+                ...formData[filter.id],
+                max: e.target.value ? Number(e.target.value) : undefined
+              })}
+              min={filter.min}
+              max={filter.max}
+              step={filter.step}
+            />
+            {filter.unit && (
+              <CarSearchSystemAdvancedRangeSeparator>{filter.unit}</CarSearchSystemAdvancedRangeSeparator>
+            )}
+          </CarSearchSystemAdvancedRange>
+        );
+
+      case 'date':
+        return (
+          <CarSearchSystemAdvancedInput
+            type="date"
+            value={formData[filter.id] || ''}
+            onChange={(e) => handleInputChange(filter.id, e.target.value)}
+          />
+        );
+
+      case 'location':
+        return (
+          <CarSearchSystemAdvancedInput
+            type="text"
+            placeholder={filter.placeholder || `Enter ${filter.label}`}
+            value={formData[filter.id] || ''}
+            onChange={(e) => handleInputChange(filter.id, e.target.value)}
+          />
+        );
+
+      case 'text':
+      default:
+        return (
+          <CarSearchSystemAdvancedInput
+            type="text"
+            placeholder={filter.placeholder || `Enter ${filter.label}`}
+            value={formData[filter.id] || ''}
+            onChange={(e) => handleInputChange(filter.id, e.target.value)}
+          />
+        );
+    }
+  };
+
+  const groupedFilters = filters.reduce((groups, filter) => {
+    const group = filter.group || 'General';
+    if (!groups[group]) groups[group] = [];
+    groups[group].push(filter);
+    return groups;
+  }, {} as Record<string, CarSearchFilter[]>);
+
+  return (
+    <CarSearchSystemAdvancedContainer className={className} style={style}>
+      <CarSearchSystemAdvancedHeader>
+        <CarSearchSystemAdvancedTitle>
+          {t('carSearch.title', 'Advanced Car Search')}
+        </CarSearchSystemAdvancedTitle>
+        <CarSearchSystemAdvancedToggles>
+          <CarSearchSystemAdvancedToggle onClick={handleToggleAdvanced}>
+            <Filter size={16} />
+            {isAdvancedOpen ? 'Hide Advanced' : 'Show Advanced'}
+            {isAdvancedOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+          </CarSearchSystemAdvancedToggle>
+          <CarSearchSystemAdvancedToggle onClick={handleToggleFilters}>
+            <Filter size={16} />
+            {isFiltersOpen ? 'Hide Filters' : 'Show Filters'}
+            {isFiltersOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+          </CarSearchSystemAdvancedToggle>
+        </CarSearchSystemAdvancedToggles>
+      </CarSearchSystemAdvancedHeader>
+
+      <CarSearchSystemAdvancedContent>
+        <CarSearchSystemAdvancedSearch>
+          <CarSearchSystemAdvancedTabs>
+            <SearchTabs
+              tabs={tabs}
+              activeTab={activeTab}
+              onTabChange={handleTabChange}
+              variant="pills"
+              size="md"
+            />
+          </CarSearchSystemAdvancedTabs>
+
+          <CarSearchSystemAdvancedForm onSubmit={handleSubmit}>
+            {isAdvancedOpen && (
+              <CarSearchSystemAdvancedSection>
+                <CarSearchSystemAdvancedSectionTitle>
+                  {t('carSearch.advanced.title', 'Advanced Options')}
+                </CarSearchSystemAdvancedSectionTitle>
+                <CarSearchSystemAdvancedRow>
+                  {filters.filter(f => f.type === 'range' || f.type === 'date' || f.type === 'location').map((filter) => (
+                    <CarSearchSystemAdvancedField key={filter.id}>
+                      <CarSearchSystemAdvancedLabel required={filter.required || false}>
+                        {filter.label}
+                      </CarSearchSystemAdvancedLabel>
+                      {filter.description && (
+                        <CarSearchSystemAdvancedDescription>{filter.description}</CarSearchSystemAdvancedDescription>
+                      )}
+                      {renderFilter(filter)}
+                    </CarSearchSystemAdvancedField>
+                  ))}
+                </CarSearchSystemAdvancedRow>
+              </CarSearchSystemAdvancedSection>
+            )}
+
+            {isFiltersOpen && (
+              <CarSearchSystemAdvancedSection>
+                <CarSearchSystemAdvancedSectionTitle>
+                  {t('carSearch.filters.title', 'Filters')}
+                </CarSearchSystemAdvancedSectionTitle>
+                <CarSearchSystemAdvancedRow>
+                  {filters.filter(f => f.type === 'select' || f.type === 'checkbox').map((filter) => (
+                    <CarSearchSystemAdvancedField key={filter.id}>
+                      <CarSearchSystemAdvancedLabel required={filter.required || false}>
+                        {filter.label}
+                      </CarSearchSystemAdvancedLabel>
+                      {filter.description && (
+                        <CarSearchSystemAdvancedDescription>{filter.description}</CarSearchSystemAdvancedDescription>
+                      )}
+                      {renderFilter(filter)}
+                    </CarSearchSystemAdvancedField>
+                  ))}
+                </CarSearchSystemAdvancedRow>
+              </CarSearchSystemAdvancedSection>
+            )}
+
+            <CarSearchSystemAdvancedActions>
+              <CarSearchSystemAdvancedButton
+                type="button"
+                variant="secondary"
+                onClick={handleReset}
+              >
+                <X size={16} />
+                {t('carSearch.reset', 'Reset')}
+              </CarSearchSystemAdvancedButton>
+              <CarSearchSystemAdvancedButton
+                type="submit"
+                variant="primary"
+                disabled={loading}
+              >
+                <Search size={16} />
+                {loading ? t('carSearch.searching', 'Searching...') : t('carSearch.search', 'Search')}
+              </CarSearchSystemAdvancedButton>
+            </CarSearchSystemAdvancedActions>
+          </CarSearchSystemAdvancedForm>
+        </CarSearchSystemAdvancedSearch>
+
+        {showSuggestions && showSuggestionsState && (
+          <SmartSearchSuggestions
+            suggestions={suggestions}
+            onSuggestionClick={handleSuggestionClick}
+            onClearRecent={onClearRecent}
+            maxSuggestions={10}
+            showCategories={true}
+            showCounts={true}
+          />
+        )}
+
+        <SearchResults
+          results={results}
+          loading={loading}
+          totalResults={totalResults}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={onPageChange}
+          onSortChange={onSortChange}
+          onViewChange={onViewChange}
+          onResultClick={onResultClick}
+          onFavoriteToggle={onFavoriteToggle}
+          onFilterChange={onFilterChange}
+          showFilters={true}
+          showSort={true}
+          showViewToggle={true}
+          showPagination={true}
+        />
+      </CarSearchSystemAdvancedContent>
+    </CarSearchSystemAdvancedContainer>
+  );
+};
 
 export default CarSearchSystemAdvanced;

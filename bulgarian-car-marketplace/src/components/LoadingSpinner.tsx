@@ -1,47 +1,57 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
 
+interface LoadingSpinnerProps {
+  size?: 'small' | 'medium' | 'large';
+  color?: string;
+  text?: string;
+}
+
 const spin = keyframes`
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 `;
 
-const SpinnerContainer = styled.div`
+const SpinnerContainer = styled.div<{ size: string }>`
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  padding: ${({ theme }) => theme.spacing.xl};
+  justify-content: center;
+  gap: ${({ theme }) => theme.spacing.md};
 `;
 
-const Spinner = styled.div`
-  width: 40px;
-  height: 40px;
-  border: 4px solid ${({ theme }) => theme.colors.grey[200]};
-  border-top: 4px solid ${({ theme }) => theme.colors.primary.main};
+const Spinner = styled.div<{ size: string; color: string }>`
+  width: ${({ size }) => 
+    size === 'small' ? '20px' : 
+    size === 'medium' ? '40px' : '60px'
+  };
+  height: ${({ size }) => 
+    size === 'small' ? '20px' : 
+    size === 'medium' ? '40px' : '60px'
+  };
+  border: 3px solid ${({ color }) => color}20;
+  border-top: 3px solid ${({ color }) => color};
   border-radius: 50%;
   animation: ${spin} 1s linear infinite;
 `;
 
-const LoadingText = styled.p`
+const SpinnerText = styled.p`
   margin: 0;
-  margin-left: ${({ theme }) => theme.spacing.md};
   color: ${({ theme }) => theme.colors.text.secondary};
-  font-size: ${({ theme }) => theme.typography.fontSize.base};
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
 `;
 
-interface LoadingSpinnerProps {
-  text?: string;
-}
-
-const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
-  text = 'Loading...'
+export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({ 
+  size = 'medium', 
+  color = '#2563eb',
+  text 
 }) => {
   return (
-    <SpinnerContainer>
-      <Spinner />
-      <LoadingText>{text}</LoadingText>
+    <SpinnerContainer size={size}>
+      <Spinner size={size} color={color} />
+      {text && <SpinnerText>{text}</SpinnerText>}
     </SpinnerContainer>
   );
 };
 
-export { LoadingSpinner };
+export default LoadingSpinner;

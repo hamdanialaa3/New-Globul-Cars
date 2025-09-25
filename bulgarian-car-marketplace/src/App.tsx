@@ -5,6 +5,7 @@ import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import { TranslationProvider } from './hooks/useTranslation';
+import { AuthProvider } from './context/AuthProvider';
 import { bulgarianTheme, GlobalStyles } from './styles/theme';
 import ErrorBoundary from './components/ErrorBoundary';
 import { SkipNavigation } from './components/Accessibility';
@@ -97,11 +98,11 @@ const App: React.FC = () => {
       {/* Router must wrap ErrorBoundary to ensure any Link in fallback has Router context */}
       <Router>
         <ErrorBoundary>
-          <TranslationProvider>
-            <SkipNavigation />
-            <GlobalStyles />
-            <AnalyticsTracker />
-            <Suspense fallback={<PageLoader />}>
+          <AuthProvider>
+            <TranslationProvider>
+              <SkipNavigation />
+              <GlobalStyles />
+              <Suspense fallback={<PageLoader />}>
               <Routes>
               {/* Full-screen pages */}
               <Route
@@ -280,7 +281,8 @@ const App: React.FC = () => {
               />
             </Routes>
           </Suspense>
-          </TranslationProvider>
+            </TranslationProvider>
+          </AuthProvider>
         </ErrorBoundary>
       </Router>
       <PerformanceMonitor />

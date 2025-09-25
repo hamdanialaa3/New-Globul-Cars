@@ -1,126 +1,141 @@
-// src/components/NotificationBell.tsx
-// Notification Bell Component for Push Notifications
-
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { Bell, X } from 'lucide-react';
 import { useTranslation } from '../hooks/useTranslation';
-import { fcmService, PushNotification } from '../services/fcm-service';
-import { Bell } from 'lucide-react';
 
-const NotificationContainer = styled.div`
+interface Notification {
+  id: string;
+  title: string;
+  message: string;
+  type: 'info' | 'success' | 'warning' | 'error';
+  timestamp: Date;
+  read: boolean;
+  actionUrl?: string;
+}
+
+interface NotificationBellProps {
+  notifications?: Notification[];
+  onNotificationClick?: (notification: Notification) => void;
+  onMarkAsRead?: (notificationId: string) => void;
+  onMarkAllAsRead?: () => void;
+  onClearAll?: () => void;
+  maxNotifications?: number;
+  showCount?: boolean;
+  className?: string;
+}
+
+const NotificationBellContainer = styled.div`
   position: relative;
   display: inline-block;
 `;
 
-const NotificationButton = styled.button<{ hasUnread: boolean }>`
+const NotificationBellButton = styled.button<{ hasUnread: boolean }>`
   position: relative;
   background: none;
   border: none;
   cursor: pointer;
   padding: ${({ theme }) => theme.spacing.sm};
   border-radius: ${({ theme }) => theme.borderRadius.base};
-  transition: background-color 0.2s ease-in-out;
+  color: ${({ theme }) => theme.colors.text.primary};
+  transition: all 0.2s ease;
 
   &:hover {
-    background-color: ${({ theme }) => theme.colors.grey[100]};
+    background: ${({ theme }) => theme.colors.grey[100]};
   }
 
-  .bell-icon {
-    font-size: ${({ theme }) => theme.typography.fontSize.xl};
-    color: ${({ theme, hasUnread }) =>
-      hasUnread ? theme.colors.primary.main : theme.colors.text.secondary};
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.primary.main};
   }
 `;
 
-const NotificationBadge = styled.span`
+const NotificationCount = styled.span`
   position: absolute;
-  top: 4px;
-  right: 4px;
+  top: -2px;
+  right: -2px;
   background: ${({ theme }) => theme.colors.error.main};
   color: white;
   border-radius: 50%;
-  width: 18px;
-  height: 18px;
-  font-size: ${({ theme }) => theme.typography.fontSize.xs};
-  font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
+  width: 20px;
+  height: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid ${({ theme }) => theme.colors.background.paper};
+  font-size: ${({ theme }) => theme.typography.fontSize.xs};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
 `;
 
 const NotificationDropdown = styled.div<{ isOpen: boolean }>`
   position: absolute;
   top: 100%;
   right: 0;
+  width: 320px;
+  max-height: 400px;
   background: ${({ theme }) => theme.colors.background.paper};
   border: 1px solid ${({ theme }) => theme.colors.grey[200]};
-  border-radius: ${({ theme }) => theme.borderRadius.md};
+  border-radius: ${({ theme }) => theme.borderRadius.lg};
   box-shadow: ${({ theme }) => theme.shadows.lg};
-  min-width: 350px;
-  max-width: 400px;
-  max-height: 500px;
-  overflow: hidden;
   z-index: 1000;
-  opacity: ${({ isOpen }) => (isOpen ? 1 : 0)};
-  visibility: ${({ isOpen }) => (isOpen ? 'visible' : 'hidden')};
-  transform: translateY(${({ isOpen }) => (isOpen ? '0' : '-10px')});
-  transition: all 0.2s ease-in-out;
+  display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
+  overflow: hidden;
 `;
 
 const NotificationHeader = styled.div`
-  padding: ${({ theme }) => theme.spacing.lg};
-  border-bottom: 1px solid ${({ theme }) => theme.colors.grey[100]};
+  padding: ${({ theme }) => theme.spacing.md};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.grey[200]};
   display: flex;
   justify-content: space-between;
   align-items: center;
+`;
 
-  h3 {
-    margin: 0;
-    font-size: ${({ theme }) => theme.typography.fontSize.lg};
-    font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
+const NotificationHeaderTitle = styled.h3`
+  margin: 0;
+  font-size: ${({ theme }) => theme.typography.fontSize.lg};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
+  color: ${({ theme }) => theme.colors.text.primary};
+`;
+
+const NotificationHeaderActions = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.sm};
+`;
+
+const NotificationHeaderButton = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: ${({ theme }) => theme.spacing.xs};
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
+  color: ${({ theme }) => theme.colors.text.secondary};
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: ${({ theme }) => theme.colors.grey[100]};
     color: ${({ theme }) => theme.colors.text.primary};
   }
 `;
 
-const ClearButton = styled.button`
-  background: none;
-  border: none;
-  color: ${({ theme }) => theme.colors.primary.main};
-  cursor: pointer;
-  font-size: ${({ theme }) => theme.typography.fontSize.sm};
-  font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
-
-  &:hover {
-    text-decoration: underline;
-  }
-`;
-
 const NotificationList = styled.div`
-  max-height: 400px;
+  max-height: 300px;
   overflow-y: auto;
-
-  &::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: ${({ theme }) => theme.colors.grey[100]};
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: ${({ theme }) => theme.colors.grey[400]};
-    border-radius: 3px;
-  }
 `;
 
-const NotificationItem = styled.div<{ read: boolean }>`
+const NotificationItem = styled.div<{ isRead: boolean; type: string }>`
   padding: ${({ theme }) => theme.spacing.md};
   border-bottom: 1px solid ${({ theme }) => theme.colors.grey[100]};
   cursor: pointer;
-  transition: background-color 0.2s ease-in-out;
-  background: ${({ theme, read }) =>
-    read ? 'transparent' : theme.colors.primary.light}10;
+  transition: all 0.2s ease;
+  background: ${({ isRead }) => (isRead ? 'transparent' : '#f8f9ff')};
+  border-left: 3px solid ${({ theme, type }) => {
+    switch (type) {
+      case 'success': return theme.colors.success.main;
+      case 'warning': return theme.colors.warning.main;
+      case 'error': return theme.colors.error.main;
+      case 'info': return theme.colors.info.main;
+      default: return theme.colors.grey[300];
+    }
+  }};
 
   &:hover {
     background: ${({ theme }) => theme.colors.grey[50]};
@@ -131,172 +146,163 @@ const NotificationItem = styled.div<{ read: boolean }>`
   }
 `;
 
-const NotificationTitle = styled.h4`
-  margin: 0 0 ${({ theme }) => theme.spacing.xs} 0;
-  font-size: ${({ theme }) => theme.typography.fontSize.base};
-  font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
-  color: ${({ theme }) => theme.colors.text.primary};
+const NotificationItemHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: ${({ theme }) => theme.spacing.xs};
 `;
 
-const NotificationBody = styled.p`
-  margin: 0 0 ${({ theme }) => theme.spacing.xs} 0;
+const NotificationItemTitle = styled.h4`
+  margin: 0;
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
+  color: ${({ theme }) => theme.colors.text.primary};
+  line-height: 1.4;
+`;
+
+const NotificationItemTime = styled.span`
+  font-size: ${({ theme }) => theme.typography.fontSize.xs};
+  color: ${({ theme }) => theme.colors.text.secondary};
+  white-space: nowrap;
+  margin-left: ${({ theme }) => theme.spacing.sm};
+`;
+
+const NotificationItemMessage = styled.p`
+  margin: 0;
   font-size: ${({ theme }) => theme.typography.fontSize.sm};
   color: ${({ theme }) => theme.colors.text.secondary};
   line-height: 1.4;
 `;
 
-const NotificationTime = styled.span`
-  font-size: ${({ theme }) => theme.typography.fontSize.xs};
-  color: ${({ theme }) => theme.colors.text.secondary};
-`;
-
-const EmptyNotifications = styled.div`
+const NotificationEmpty = styled.div`
   padding: ${({ theme }) => theme.spacing.xl};
   text-align: center;
   color: ${({ theme }) => theme.colors.text.secondary};
-
-  .icon {
-    font-size: ${({ theme }) => theme.typography.fontSize['4xl']};
-    margin-bottom: ${({ theme }) => theme.spacing.lg};
-    opacity: 0.5;
-  }
-
-  p {
-    margin: 0;
-    font-size: ${({ theme }) => theme.typography.fontSize.base};
-  }
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
 `;
 
-const NotificationBell: React.FC = () => {
+const NotificationBell: React.FC<NotificationBellProps> = ({
+  notifications = [],
+  onNotificationClick,
+  onMarkAsRead,
+  onMarkAllAsRead,
+  onClearAll,
+  maxNotifications = 10,
+  showCount = true,
+  className,
+}) => {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
-  const [notifications, setNotifications] = useState<PushNotification[]>([]);
-  const [unreadCount, setUnreadCount] = useState(0);
+  const [localNotifications, setLocalNotifications] = useState<Notification[]>(notifications);
 
-  // Load notifications on mount
   useEffect(() => {
-    setNotifications(fcmService.getNotifications());
-    setUnreadCount(fcmService.getUnreadCount());
+    setLocalNotifications(notifications);
+  }, [notifications]);
 
-    // Subscribe to notification updates
-    const unsubscribe = fcmService.subscribe((notification) => {
-      setNotifications(fcmService.getNotifications());
-      setUnreadCount(fcmService.getUnreadCount());
-    });
+  const unreadCount = localNotifications.filter(n => !n.read).length;
+  const displayNotifications = localNotifications.slice(0, maxNotifications);
 
-    return unsubscribe;
-  }, []);
-
-  // Handle notification click
-  const handleNotificationClick = (notification: PushNotification) => {
-    fcmService.markAsRead(notification.id);
-    setNotifications(fcmService.getNotifications());
-    setUnreadCount(fcmService.getUnreadCount());
-    setIsOpen(false);
-
-    // Navigate based on notification type
-    switch (notification.type) {
-      case 'message':
-        window.location.href = '/messages';
-        break;
-      case 'car_update':
-        if (notification.data?.carId) {
-          window.location.href = `/cars/${notification.data.carId}`;
-        }
-        break;
-      default:
-        // Stay on current page
-        break;
+  const handleNotificationClick = (notification: Notification) => {
+    if (!notification.read) {
+      onMarkAsRead?.(notification.id);
+      setLocalNotifications(prev =>
+        prev.map(n =>
+          n.id === notification.id ? { ...n, read: true } : n
+        )
+      );
     }
+    onNotificationClick?.(notification);
   };
 
-  // Clear all notifications
+  const handleMarkAllAsRead = () => {
+    onMarkAllAsRead?.();
+    setLocalNotifications(prev =>
+      prev.map(n => ({ ...n, read: true }))
+    );
+  };
+
   const handleClearAll = () => {
-    fcmService.clearNotifications();
-    setNotifications([]);
-    setUnreadCount(0);
+    onClearAll?.();
+    setLocalNotifications([]);
   };
 
-  // Format notification time
   const formatTime = (timestamp: Date) => {
     const now = new Date();
     const diff = now.getTime() - timestamp.getTime();
-    const minutes = Math.floor(diff / (1000 * 60));
-    const hours = Math.floor(diff / (1000 * 60 * 60));
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const minutes = Math.floor(diff / 60000);
+    const hours = Math.floor(diff / 3600000);
+    const days = Math.floor(diff / 86400000);
 
-    if (minutes < 1) return t('common.now');
-    if (minutes < 60) return `${minutes}m`;
-    if (hours < 24) return `${hours}h`;
-    return `${days}d`;
+    if (minutes < 1) return t('notifications.justNow', 'Just now');
+    if (minutes < 60) return t('notifications.minutesAgo', `${minutes}m ago`);
+    if (hours < 24) return t('notifications.hoursAgo', `${hours}h ago`);
+    return t('notifications.daysAgo', `${days}d ago`);
   };
-
-  // Toggle dropdown
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen);
-  };
-
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (isOpen && !(event.target as Element).closest('.notification-container')) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isOpen]);
 
   return (
-    <NotificationContainer className="notification-container">
-      <NotificationButton
-        onClick={toggleDropdown}
+    <NotificationBellContainer className={className}>
+      <NotificationBellButton
         hasUnread={unreadCount > 0}
-        aria-label={t('notifications.title')}
+        onClick={() => setIsOpen(!isOpen)}
+        aria-label={t('notifications.bellAriaLabel', 'Notifications')}
       >
-        <span className="bell-icon"><Bell size={20} /></span>
-        {unreadCount > 0 && (
-          <NotificationBadge>
-            {unreadCount > 99 ? '99+' : unreadCount}
-          </NotificationBadge>
+        <Bell size={20} />
+        {showCount && unreadCount > 0 && (
+          <NotificationCount>{unreadCount}</NotificationCount>
         )}
-      </NotificationButton>
+      </NotificationBellButton>
 
       <NotificationDropdown isOpen={isOpen}>
         <NotificationHeader>
-          <h3>{t('notifications.title')}</h3>
-          {notifications.length > 0 && (
-            <ClearButton onClick={handleClearAll}>
-              {t('notifications.clearAll')}
-            </ClearButton>
-          )}
+          <NotificationHeaderTitle>
+            {t('notifications.title', 'Notifications')}
+          </NotificationHeaderTitle>
+          <NotificationHeaderActions>
+            {unreadCount > 0 && (
+              <NotificationHeaderButton onClick={handleMarkAllAsRead}>
+                {t('notifications.markAllRead', 'Mark all read')}
+              </NotificationHeaderButton>
+            )}
+            {localNotifications.length > 0 && (
+              <NotificationHeaderButton onClick={handleClearAll}>
+                {t('notifications.clearAll', 'Clear all')}
+              </NotificationHeaderButton>
+            )}
+            <NotificationHeaderButton onClick={() => setIsOpen(false)}>
+              <X size={16} />
+            </NotificationHeaderButton>
+          </NotificationHeaderActions>
         </NotificationHeader>
 
         <NotificationList>
-          {notifications.length === 0 ? (
-            <EmptyNotifications>
-              <div className="icon"><Bell size={48} /></div>
-              <p>{t('notifications.noNotifications')}</p>
-            </EmptyNotifications>
+          {displayNotifications.length === 0 ? (
+            <NotificationEmpty>
+              {t('notifications.empty', 'No notifications')}
+            </NotificationEmpty>
           ) : (
-            notifications.map((notification) => (
+            displayNotifications.map((notification) => (
               <NotificationItem
                 key={notification.id}
-                read={notification.read}
+                isRead={notification.read}
+                type={notification.type}
                 onClick={() => handleNotificationClick(notification)}
               >
-                <NotificationTitle>{notification.title}</NotificationTitle>
-                <NotificationBody>{notification.body}</NotificationBody>
-                <NotificationTime>
-                  {formatTime(notification.timestamp)}
-                </NotificationTime>
+                <NotificationItemHeader>
+                  <NotificationItemTitle>{notification.title}</NotificationItemTitle>
+                  <NotificationItemTime>
+                    {formatTime(notification.timestamp)}
+                  </NotificationItemTime>
+                </NotificationItemHeader>
+                <NotificationItemMessage>
+                  {notification.message}
+                </NotificationItemMessage>
               </NotificationItem>
             ))
           )}
         </NotificationList>
       </NotificationDropdown>
-    </NotificationContainer>
+    </NotificationBellContainer>
   );
 };
 

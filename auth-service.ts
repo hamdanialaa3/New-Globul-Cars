@@ -8,7 +8,6 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
   FacebookAuthProvider,
-  TwitterAuthProvider,
   OAuthProvider,
   signOut,
   onAuthStateChanged,
@@ -261,10 +260,12 @@ export class BulgarianAuthService {
     }
   }
 
-  // Sign in with Twitter
-  public async signInWithTwitter(): Promise<BulgarianUser> {
+  // Sign in with Apple
+  public async signInWithApple(): Promise<BulgarianUser> {
     try {
-      const provider = new TwitterAuthProvider();
+      const provider = new OAuthProvider('apple.com');
+      provider.addScope('email');
+      provider.addScope('name');
 
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
@@ -304,19 +305,6 @@ export class BulgarianAuthService {
       throw new Error(this.getBulgarianErrorMessage(this.getErrorCode(error)));
     }
   }
-
-  // Sign in with Apple
-  public async signInWithApple(): Promise<BulgarianUser> {
-    try {
-      const provider = new OAuthProvider('apple.com');
-      provider.addScope('email');
-      provider.addScope('name');
-
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-
-      let bulgarianUser = await this.getBulgarianUserData(user);
-      if (!bulgarianUser) {
         bulgarianUser = await this.createBulgarianUserFromSocial(user);
       }
 

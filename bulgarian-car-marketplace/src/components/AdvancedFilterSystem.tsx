@@ -1,704 +1,538 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { Filter, X, ChevronDown, ChevronUp, Search, Star, TrendingUp, Clock } from 'lucide-react';
 import { useTranslation } from '../hooks/useTranslation';
-import { AdvancedSearchParams, AvailableFilterOptions } from '../types/CarData';
-import { SearchableSelect } from './SearchableSelect';
-import { CheckboxGrid } from './CheckboxGrid';
+import SearchableSelect from './SearchableSelect';
+import CheckboxGrid from './CheckboxGrid';
+import SearchTabs from './SearchTabs';
 
-interface AdvancedFilterSystemProps {
-  searchParams: AdvancedSearchParams;
-  onFiltersChange: (filters: AdvancedSearchParams) => void;
-  availableData: AvailableFilterOptions;
-  onSearch: () => void;
-  isLoading?: boolean;
-}
-
-interface FilterSectionProps {
-  title: string;
-  titleBg: string;
-  children: React.ReactNode;
-  expanded: boolean;
-  onToggle: () => void;
+interface FilterOption {
+  value: string;
+  label: string;
+  disabled?: boolean;
+  group?: string;
   count?: number;
 }
 
-const AdvancedFilterSystem: React.FC<AdvancedFilterSystemProps> = ({
-  searchParams,
-  onFiltersChange,
-  availableData,
-  onSearch,
-  isLoading = false
-}) => {
-  const { t } = useTranslation();
-  const [expandedSections, setExpandedSections] = useState({
-    basic: true,
-    price: true,
-    location: false,
-    technical: false,
-    exterior: false,
-    interior: false,
-    offer: false,
-    exclude: false
-  });
+interface FilterGroup {
+  id: string;
+  label: string;
+  type: 'select' | 'checkbox' | 'range' | 'text' | 'date' | 'location';
+  options?: FilterOption[];
+  value?: any;
+  placeholder?: string;
+  min?: number;
+  max?: number;
+  step?: number;
+  unit?: string;
+  required?: boolean;
+  description?: string;
+  showCounts?: boolean;
+  showSearch?: boolean;
+  groupBy?: boolean;
+  maxSelections?: number;
+}
 
-  const toggleSection = (section: keyof typeof expandedSections) => {
-    setExpandedSections(prev => ({
-      ...prev,
-      [section]: !prev[section]
-    }));
-  };
+interface AdvancedFilterSystemProps {
+  filterGroups: FilterGroup[];
+  onFilterChange: (filters: Record<string, any>) => void;
+  onReset: () => void;
+  loading?: boolean;
+  className?: string;
+  style?: React.CSSProperties;
+  showAdvanced?: boolean;
+  onToggleAdvanced?: (show: boolean) => void;
+  showFilters?: boolean;
+  onToggleFilters?: (show: boolean) => void;
+  showTabs?: boolean;
+  onTabChange?: (tabId: string) => void;
+  activeTab?: string;
+  showCounts?: boolean;
+  showSearch?: boolean;
+  showGroupBy?: boolean;
+  maxSelections?: number;
+}
 
-  const updateFilter = (key: keyof AdvancedSearchParams, value: any) => {
-    onFiltersChange({
-      ...searchParams,
-      [key]: value
-    });
-  };
+const AdvancedFilterSystemContainer = styled.div`
+  background: ${({ theme }) => theme.colors.background.paper};
+  border-radius: ${({ theme }) => theme.borderRadius.lg};
+  padding: ${({ theme }) => theme.spacing.xl};
+  box-shadow: ${({ theme }) => theme.shadows.base};
+  border: 1px solid ${({ theme }) => theme.colors.grey[200]};
+`;
 
-  const handleArrayFilter = (key: keyof AdvancedSearchParams, value: string, checked: boolean) => {
-    const currentArray = searchParams[key] as string[] || [];
-    const newArray = checked
-      ? [...currentArray, value]
-      : currentArray.filter(item => item !== value);
+const AdvancedFilterSystemHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: ${({ theme }) => theme.spacing.lg};
+`;
 
-    updateFilter(key, newArray);
-  };
+const AdvancedFilterSystemTitle = styled.h2`
+  font-size: ${({ theme }) => theme.typography.fontSize['2xl']};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
+  color: ${({ theme }) => theme.colors.text.primary};
+  margin: 0;
+`;
 
-  const clearAllFilters = () => {
-    // Reset to initial state
-    onFiltersChange({
-      make: '',
-      model: '',
-      vehicleType: [],
-      minSeats: '',
-      maxSeats: '',
-      doors: '',
-      slidingDoor: '',
-      condition: [],
-      paymentType: [],
-      minPrice: '',
-      maxPrice: '',
-      minFirstRegistration: '',
-      maxFirstRegistration: '',
-      minMileage: '',
-      maxMileage: '',
-      huValidUntil: '',
-      owners: '',
-      fullServiceHistory: false,
-      roadworthy: false,
-      newService: false,
-      country: 'BG',
-      city: '',
-      zipCode: '',
-      radius: '',
-      deliveryAvailable: false,
-      fuelType: [],
-      minPower: '',
-      maxPower: '',
-      powerUnit: 'hp',
-      minEngineSize: '',
-      maxEngineSize: '',
-      minFuelTank: '',
-      maxFuelTank: '',
-      minWeight: '',
-      maxWeight: '',
-      minCylinders: '',
-      maxCylinders: '',
-      driveType: '',
-      transmission: [],
-      maxFuelConsumption: '',
-      emissionSticker: '',
-      emissionClass: '',
-      particulateFilter: false,
-      exteriorColor: [],
-      exteriorFinish: [],
-      trailerCoupling: '',
-      trailerAssist: false,
-      minTrailerLoadBraked: '',
-      minTrailerLoadUnbraked: '',
-      noseWeight: '',
-      parkingSensors: [],
-      camera360: false,
-      rearTrafficAlert: false,
-      selfSteering: false,
-      cruiseControl: [],
-      exteriorFeatures: [],
-      interiorColor: [],
-      interiorMaterial: [],
-      airbags: [],
-      airConditioning: [],
-      interiorFeatures: [],
-      sellerType: [],
-      minDealerRating: '',
-      adOnlineSince: '',
-      withPictures: false,
-      vatReclaimable: false,
-      warranty: false,
-      nonSmoker: false,
-      excludeVehicles: []
-    });
-  };
+const AdvancedFilterSystemToggles = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.md};
+`;
 
-  return (
-    <FilterSystemContainer>
-      {/* Basic Data Section */}
-      <FilterSection
-        title="Basic Data"
-        titleBg="Основни данни"
-        expanded={expandedSections.basic}
-        onToggle={() => toggleSection('basic')}
-      >
-        <FilterGrid columns={2}>
-          <FilterGroup>
-            <FilterLabel>{t('cars.search.make', 'Марка')}</FilterLabel>
-            <SearchableSelect
-              value={searchParams.make}
-              onChange={(value) => updateFilter('make', value)}
-              options={availableData.makes}
-              placeholder={t('cars.search.allMakes', 'Всички марки')}
-            />
-          </FilterGroup>
+const AdvancedFilterSystemToggle = styled.button`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.sm};
+  background: none;
+  border: 1px solid ${({ theme }) => theme.colors.grey[300]};
+  border-radius: ${({ theme }) => theme.borderRadius.base};
+  padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: ${({ theme }) => theme.colors.text.primary};
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
 
-          <FilterGroup>
-            <FilterLabel>{t('cars.search.model', 'Модел')}</FilterLabel>
-            <SearchableSelect
-              value={searchParams.model}
-              onChange={(value) => updateFilter('model', value)}
-              options={searchParams.make ? availableData.modelsByMake[searchParams.make] || [] : availableData.models}
-              placeholder={t('cars.search.allModels', 'Всички модели')}
-              disabled={!searchParams.make}
-            />
-          </FilterGroup>
+  &:hover {
+    border-color: ${({ theme }) => theme.colors.primary.main};
+    background: ${({ theme }) => theme.colors.primary.light + '10'};
+  }
+`;
 
-          <FilterGroup>
-            <FilterLabel>{t('cars.search.vehicleType', 'Тип превозно средство')}</FilterLabel>
-            <CheckboxGrid columns={2}>
-              {availableData.vehicleTypes.map(type => (
-                <CheckboxLabel key={type.value}>
-                  <input
-                    type="checkbox"
-                    checked={searchParams.vehicleType.includes(type.value)}
-                    onChange={(e) => handleArrayFilter('vehicleType', type.value, e.target.checked)}
-                  />
-                  {t(`cars.vehicleTypes.${type.value}`, type.labelBg)}
-                </CheckboxLabel>
-              ))}
-            </CheckboxGrid>
-          </FilterGroup>
+const AdvancedFilterSystemTabs = styled.div`
+  margin-bottom: ${({ theme }) => theme.spacing.lg};
+`;
 
-          <FilterGroup>
-            <FilterLabel>{t('cars.search.seats', 'Брой места')}</FilterLabel>
-            <PriceRangeContainer>
-              <PriceInput
-                type="number"
-                placeholder={t('cars.search.min', 'мин.')}
-                value={searchParams.minSeats}
-                onChange={(e) => updateFilter('minSeats', e.target.value)}
-              />
-              <PriceSeparator>-</PriceSeparator>
-              <PriceInput
-                type="number"
-                placeholder={t('cars.search.max', 'макс.')}
-                value={searchParams.maxSeats}
-                onChange={(e) => updateFilter('maxSeats', e.target.value)}
-              />
-            </PriceRangeContainer>
-          </FilterGroup>
+const AdvancedFilterSystemForm = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.lg};
+`;
 
-          <FilterGroup>
-            <FilterLabel>{t('cars.search.doors', 'Брой врати')}</FilterLabel>
-            <FilterSelect
-              value={searchParams.doors}
-              onChange={(e) => updateFilter('doors', e.target.value)}
-            >
-              <option value="">{t('cars.search.any', 'Без значение')}</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-            </FilterSelect>
-          </FilterGroup>
-        </FilterGrid>
-      </FilterSection>
-
-      {/* Price & Condition Section */}
-      <FilterSection
-        title="Price & Condition"
-        titleBg="Цена и състояние"
-        expanded={expandedSections.price}
-        onToggle={() => toggleSection('price')}
-      >
-        <FilterGrid columns={2}>
-          <FilterGroup>
-            <FilterLabel>{t('cars.search.condition', 'Състояние')}</FilterLabel>
-            <CheckboxGrid columns={1}>
-              {availableData.conditions.map(condition => (
-                <CheckboxLabel key={condition.value}>
-                  <input
-                    type="checkbox"
-                    checked={searchParams.condition.includes(condition.value)}
-                    onChange={(e) => handleArrayFilter('condition', condition.value, e.target.checked)}
-                  />
-                  {t(`cars.conditions.${condition.value}`, condition.labelBg)}
-                </CheckboxLabel>
-              ))}
-            </CheckboxGrid>
-          </FilterGroup>
-
-          <FilterGroup>
-            <FilterLabel>{t('cars.search.priceRange', 'Ценови диапазон (€)')}</FilterLabel>
-            <PriceRangeContainer>
-              <PriceInput
-                type="number"
-                placeholder={t('cars.search.min', 'мин.')}
-                value={searchParams.minPrice}
-                onChange={(e) => updateFilter('minPrice', e.target.value)}
-              />
-              <PriceSeparator>-</PriceSeparator>
-              <PriceInput
-                type="number"
-                placeholder={t('cars.search.max', 'макс.')}
-                value={searchParams.maxPrice}
-                onChange={(e) => updateFilter('maxPrice', e.target.value)}
-              />
-            </PriceRangeContainer>
-          </FilterGroup>
-
-          <FilterGroup>
-            <FilterLabel>{t('cars.search.firstRegistration', 'Първа регистрация')}</FilterLabel>
-            <PriceRangeContainer>
-              <PriceInput
-                type="number"
-                placeholder={t('cars.search.from', 'от')}
-                value={searchParams.minFirstRegistration}
-                onChange={(e) => updateFilter('minFirstRegistration', e.target.value)}
-              />
-              <PriceSeparator>-</PriceSeparator>
-              <PriceInput
-                type="number"
-                placeholder={t('cars.search.to', 'до')}
-                value={searchParams.maxFirstRegistration}
-                onChange={(e) => updateFilter('maxFirstRegistration', e.target.value)}
-              />
-            </PriceRangeContainer>
-          </FilterGroup>
-
-          <FilterGroup>
-            <FilterLabel>{t('cars.search.mileage', 'Пробег (km)')}</FilterLabel>
-            <PriceRangeContainer>
-              <PriceInput
-                type="number"
-                placeholder={t('cars.search.min', 'мин.')}
-                value={searchParams.minMileage}
-                onChange={(e) => updateFilter('minMileage', e.target.value)}
-              />
-              <PriceSeparator>-</PriceSeparator>
-              <PriceInput
-                type="number"
-                placeholder={t('cars.search.max', 'макс.')}
-                value={searchParams.maxMileage}
-                onChange={(e) => updateFilter('maxMileage', e.target.value)}
-              />
-            </PriceRangeContainer>
-          </FilterGroup>
-        </FilterGrid>
-
-        <FilterGroup>
-          <CheckboxLabel>
-            <input
-              type="checkbox"
-              checked={searchParams.withPictures}
-              onChange={(e) => updateFilter('withPictures', e.target.checked)}
-            />
-            {t('cars.search.withPictures', 'Само обяви със снимки')}
-          </CheckboxLabel>
-
-          <CheckboxLabel>
-            <input
-              type="checkbox"
-              checked={searchParams.vatReclaimable}
-              onChange={(e) => updateFilter('vatReclaimable', e.target.checked)}
-            />
-            {t('cars.search.vatReclaimable', 'Възстановим ДДС')}
-          </CheckboxLabel>
-
-          <CheckboxLabel>
-            <input
-              type="checkbox"
-              checked={searchParams.warranty}
-              onChange={(e) => updateFilter('warranty', e.target.checked)}
-            />
-            {t('cars.search.withWarranty', 'С гаранция')}
-          </CheckboxLabel>
-        </FilterGroup>
-      </FilterSection>
-
-      {/* Location Section */}
-      <FilterSection
-        title="Location"
-        titleBg="Местоположение"
-        expanded={expandedSections.location}
-        onToggle={() => toggleSection('location')}
-      >
-        <FilterGrid columns={2}>
-          <FilterGroup>
-            <FilterLabel>{t('cars.search.city', 'Град')}</FilterLabel>
-            <SearchableSelect
-              value={searchParams.city}
-              onChange={(value) => updateFilter('city', value)}
-              options={availableData.cities}
-              placeholder={t('cars.search.allCities', 'Всички градове')}
-            />
-          </FilterGroup>
-
-          <FilterGroup>
-            <FilterLabel>{t('cars.search.radius', 'Радиус (km)')}</FilterLabel>
-            <FilterSelect
-              value={searchParams.radius}
-              onChange={(e) => updateFilter('radius', e.target.value)}
-            >
-              <option value="">{t('cars.search.any', 'Без значение')}</option>
-              <option value="25">25 km</option>
-              <option value="50">50 km</option>
-              <option value="100">100 km</option>
-              <option value="200">200 km</option>
-            </FilterSelect>
-          </FilterGroup>
-        </FilterGrid>
-      </FilterSection>
-
-      {/* Technical Data Section */}
-      <TechnicalDataSection
-        searchParams={searchParams}
-        onFiltersChange={onFiltersChange}
-        expanded={expandedSections.technical}
-        onToggle={() => toggleSection('technical')}
-        availableData={availableData}
-      />
-
-      {/* Action Buttons */}
-      <ActionButtonsContainer>
-        <SearchButton onClick={onSearch} disabled={isLoading}>
-          {isLoading ? t('cars.search.searching', 'Търсене...') : t('cars.search.showResults', 'Покажи резултатите')}
-        </SearchButton>
-        <ClearButton onClick={clearAllFilters}>
-          {t('cars.search.clearFilters', 'Изчисти филтрите')}
-        </ClearButton>
-      </ActionButtonsContainer>
-    </FilterSystemContainer>
-  );
-};
-
-// Filter Section Component
-const FilterSection: React.FC<FilterSectionProps> = ({
-  title,
-  titleBg,
-  children,
-  expanded,
-  onToggle,
-  count
-}) => {
-  const { t } = useTranslation();
-
-  return (
-    <FilterSectionContainer>
-      <SectionHeader onClick={onToggle}>
-        <SectionTitle>
-          {t(`cars.search.${title.toLowerCase().replace(' ', '')}`, titleBg)}
-          {count !== undefined && count > 0 && (
-            <SectionCount>{count}</SectionCount>
-          )}
-        </SectionTitle>
-        <ExpandIcon expanded={expanded}>▼</ExpandIcon>
-      </SectionHeader>
-
-      {expanded && (
-        <SectionContent>
-          {children}
-        </SectionContent>
-      )}
-    </FilterSectionContainer>
-  );
-};
-
-// Technical Data Section Component
-const TechnicalDataSection: React.FC<{
-  searchParams: AdvancedSearchParams;
-  onFiltersChange: (filters: AdvancedSearchParams) => void;
-  expanded: boolean;
-  onToggle: () => void;
-  availableData: AvailableFilterOptions;
-}> = ({ searchParams, onFiltersChange, expanded, onToggle, availableData }) => {
-  const { t } = useTranslation();
-
-  const updateFilter = (key: keyof AdvancedSearchParams, value: any) => {
-    onFiltersChange({
-      ...searchParams,
-      [key]: value
-    });
-  };
-
-  const handleArrayFilter = (key: keyof AdvancedSearchParams, value: string, checked: boolean) => {
-    const currentArray = searchParams[key] as string[] || [];
-    const newArray = checked
-      ? [...currentArray, value]
-      : currentArray.filter(item => item !== value);
-
-    updateFilter(key, newArray);
-  };
-
-  return (
-    <FilterSection
-      title="Technical Data"
-      titleBg="Технически данни"
-      expanded={expanded}
-      onToggle={onToggle}
-    >
-      <FilterGrid columns={2}>
-        <FilterGroup>
-          <FilterLabel>{t('cars.search.fuelType', 'Тип гориво')}</FilterLabel>
-          <CheckboxGrid columns={1}>
-            {availableData.fuelTypes.map(fuel => (
-              <CheckboxLabel key={fuel.value}>
-                <input
-                  type="checkbox"
-                  checked={searchParams.fuelType.includes(fuel.value)}
-                  onChange={(e) => handleArrayFilter('fuelType', fuel.value, e.target.checked)}
-                />
-                {t(`cars.fuelTypes.${fuel.value}`, fuel.labelBg)}
-              </CheckboxLabel>
-            ))}
-          </CheckboxGrid>
-        </FilterGroup>
-
-        <FilterGroup>
-          <FilterLabel>{t('cars.search.transmission', 'Скоростна кутия')}</FilterLabel>
-          <CheckboxGrid columns={1}>
-            {availableData.transmissions.map(transmission => (
-              <CheckboxLabel key={transmission.value}>
-                <input
-                  type="checkbox"
-                  checked={searchParams.transmission.includes(transmission.value)}
-                  onChange={(e) => handleArrayFilter('transmission', transmission.value, e.target.checked)}
-                />
-                {t(`cars.transmissions.${transmission.value}`, transmission.labelBg)}
-              </CheckboxLabel>
-            ))}
-          </CheckboxGrid>
-        </FilterGroup>
-
-        <FilterGroup>
-          <FilterLabel>{t('cars.search.power', 'Мощност')}</FilterLabel>
-          <PriceRangeContainer>
-            <PriceInput
-              type="number"
-              placeholder={t('cars.search.min', 'мин.')}
-              value={searchParams.minPower}
-              onChange={(e) => updateFilter('minPower', e.target.value)}
-            />
-            <PriceSeparator>-</PriceSeparator>
-            <PriceInput
-              type="number"
-              placeholder={t('cars.search.max', 'макс.')}
-              value={searchParams.maxPower}
-              onChange={(e) => updateFilter('maxPower', e.target.value)}
-            />
-            <FilterSelect
-              value={searchParams.powerUnit}
-              onChange={(e) => updateFilter('powerUnit', e.target.value)}
-              style={{ width: 'auto', marginLeft: '8px' }}
-            >
-              <option value="hp">к.с.</option>
-              <option value="kw">kW</option>
-            </FilterSelect>
-          </PriceRangeContainer>
-        </FilterGroup>
-
-        <FilterGroup>
-          <FilterLabel>{t('cars.search.engineSize', 'Работен обем (л)')}</FilterLabel>
-          <PriceRangeContainer>
-            <PriceInput
-              type="number"
-              step="0.1"
-              placeholder={t('cars.search.min', 'мин.')}
-              value={searchParams.minEngineSize}
-              onChange={(e) => updateFilter('minEngineSize', e.target.value)}
-            />
-            <PriceSeparator>-</PriceSeparator>
-            <PriceInput
-              type="number"
-              step="0.1"
-              placeholder={t('cars.search.max', 'макс.')}
-              value={searchParams.maxEngineSize}
-              onChange={(e) => updateFilter('maxEngineSize', e.target.value)}
-            />
-          </PriceRangeContainer>
-        </FilterGroup>
-      </FilterGrid>
-    </FilterSection>
-  );
-};
-
-// Styled Components
-const FilterSystemContainer = styled.div`
+const AdvancedFilterSystemSection = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.md};
 `;
 
-const FilterSectionContainer = styled.div`
-  border: 1px solid ${({ theme }) => theme.colors.grey[200]};
-  border-radius: ${({ theme }) => theme.borderRadius.base};
-  overflow: hidden;
-`;
-
-const SectionHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: ${({ theme }) => theme.spacing.md};
-  background: ${({ theme }) => theme.colors.grey[50]};
-  cursor: pointer;
-  user-select: none;
-
-  &:hover {
-    background: ${({ theme }) => theme.colors.grey[100]};
-  }
-`;
-
-const SectionTitle = styled.div`
-  display: flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.spacing.sm};
+const AdvancedFilterSystemSectionTitle = styled.h3`
+  font-size: ${({ theme }) => theme.typography.fontSize.lg};
   font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
+  color: ${({ theme }) => theme.colors.text.primary};
+  margin: 0;
+  padding-bottom: ${({ theme }) => theme.spacing.sm};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.grey[200]};
 `;
 
-const SectionCount = styled.span`
-  background: ${({ theme }) => theme.colors.primary.main};
-  color: white;
-  border-radius: 10px;
-  padding: 2px 8px;
-  font-size: 12px;
-  min-width: 20px;
-  text-align: center;
-`;
-
-const ExpandIcon = styled.span<{ expanded: boolean }>`
-  transition: transform 0.2s ease-in-out;
-  transform: ${({ expanded }) => expanded ? 'rotate(180deg)' : 'rotate(0deg)'};
-  font-size: 12px;
-`;
-
-const SectionContent = styled.div`
-  padding: ${({ theme }) => theme.spacing.md};
-`;
-
-const FilterGrid = styled.div<{ columns: number }>`
+const AdvancedFilterSystemRow = styled.div`
   display: grid;
-  grid-template-columns: repeat(${props => props.columns}, 1fr);
-  gap: ${({ theme }) => theme.spacing.md};
-
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-  }
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: ${({ theme }) => theme.spacing.lg};
 `;
 
-const FilterGroup = styled.div`
-  label {
-    display: block;
-    font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
-    margin-bottom: ${({ theme }) => theme.spacing.sm};
-    font-size: ${({ theme }) => theme.typography.fontSize.sm};
-  }
+const AdvancedFilterSystemField = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.sm};
 `;
 
-const FilterLabel = styled.label`
-  display: block;
+const AdvancedFilterSystemLabel = styled.label<{ required: boolean }>`
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
   font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
-  margin-bottom: ${({ theme }) => theme.spacing.sm};
-  font-size: ${({ theme }) => theme.typography.fontSize.sm};
-`;
-
-const FilterSelect = styled.select`
-  width: 100%;
-  padding: ${({ theme }) => theme.spacing.sm};
-  border: 1px solid ${({ theme }) => theme.colors.grey[300]};
-  border-radius: ${({ theme }) => theme.borderRadius.base};
-  background: white;
-  font-size: ${({ theme }) => theme.typography.fontSize.base};
-
-  &:focus {
-    outline: none;
-    border-color: ${({ theme }) => theme.colors.primary.main};
+  color: ${({ theme }) => theme.colors.text.primary};
+  
+  &::after {
+    content: ${({ required }) => (required ? ' *' : '')};
+    color: ${({ theme }) => theme.colors.error.main};
   }
 `;
 
-const CheckboxLabel = styled.label`
-  display: flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.spacing.sm};
-  cursor: pointer;
-  font-size: ${({ theme }) => theme.typography.fontSize.sm};
-
-  input {
-    width: auto;
-  }
-`;
-
-const PriceRangeContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.spacing.sm};
-`;
-
-const PriceInput = styled.input`
-  flex: 1;
-  padding: ${({ theme }) => theme.spacing.sm};
-  border: 1px solid ${({ theme }) => theme.colors.grey[300]};
-  border-radius: ${({ theme }) => theme.borderRadius.base};
-
-  &:focus {
-    outline: none;
-    border-color: ${({ theme }) => theme.colors.primary.main};
-  }
-`;
-
-const PriceSeparator = styled.span`
+const AdvancedFilterSystemDescription = styled.p`
+  font-size: ${({ theme }) => theme.typography.fontSize.xs};
   color: ${({ theme }) => theme.colors.text.secondary};
+  margin: 0;
+  line-height: 1.4;
 `;
 
-const ActionButtonsContainer = styled.div`
+const AdvancedFilterSystemInput = styled.input`
+  width: 100%;
+  padding: ${({ theme }) => theme.spacing.md};
+  border: 1px solid ${({ theme }) => theme.colors.grey[300]};
+  border-radius: ${({ theme }) => theme.borderRadius.base};
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
+  background: ${({ theme }) => theme.colors.background.paper};
+  color: ${({ theme }) => theme.colors.text.primary};
+  transition: border-color 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: ${({ theme }) => theme.colors.primary.main};
+  }
+
+  &::placeholder {
+    color: ${({ theme }) => theme.colors.text.secondary};
+  }
+`;
+
+const AdvancedFilterSystemRange = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.sm};
+`;
+
+const AdvancedFilterSystemRangeInput = styled.input`
+  flex: 1;
+  padding: ${({ theme }) => theme.spacing.md};
+  border: 1px solid ${({ theme }) => theme.colors.grey[300]};
+  border-radius: ${({ theme }) => theme.borderRadius.base};
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
+  background: ${({ theme }) => theme.colors.background.paper};
+  color: ${({ theme }) => theme.colors.text.primary};
+  text-align: center;
+
+  &:focus {
+    outline: none;
+    border-color: ${({ theme }) => theme.colors.primary.main};
+  }
+`;
+
+const AdvancedFilterSystemRangeSeparator = styled.span`
+  color: ${({ theme }) => theme.colors.text.secondary};
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
+`;
+
+const AdvancedFilterSystemActions = styled.div`
   display: flex;
   gap: ${({ theme }) => theme.spacing.md};
   justify-content: flex-end;
   margin-top: ${({ theme }) => theme.spacing.lg};
-  padding-top: ${({ theme }) => theme.spacing.md};
+  padding-top: ${({ theme }) => theme.spacing.lg};
   border-top: 1px solid ${({ theme }) => theme.colors.grey[200]};
 `;
 
-const SearchButton = styled.button<{ disabled?: boolean }>`
+const AdvancedFilterSystemButton = styled.button<{ variant: 'primary' | 'secondary' }>`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.sm};
   padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.lg};
-  background: ${({ theme, disabled }) => disabled ? theme.colors.grey[300] : theme.colors.primary.main};
-  color: ${({ theme, disabled }) => disabled ? theme.colors.text.secondary : theme.colors.primary.contrastText};
-  border: none;
+  border: 1px solid ${({ theme, variant }) => 
+    variant === 'primary' ? theme.colors.primary.main : theme.colors.grey[300]
+  };
   border-radius: ${({ theme }) => theme.borderRadius.base};
-  font-size: ${({ theme }) => theme.typography.fontSize.base};
+  background: ${({ theme, variant }) => 
+    variant === 'primary' ? theme.colors.primary.main : 'transparent'
+  };
+  color: ${({ theme, variant }) => 
+    variant === 'primary' ? theme.colors.primary.contrastText : theme.colors.text.primary
+  };
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
   font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
-  cursor: ${({ disabled }) => disabled ? 'not-allowed' : 'pointer'};
-
-  &:hover:not(:disabled) {
-    background: ${({ theme }) => theme.colors.primary.dark};
-  }
-`;
-
-const ClearButton = styled(SearchButton)`
-  background: transparent;
-  color: ${({ theme }) => theme.colors.text.secondary};
-  border: 1px solid ${({ theme }) => theme.colors.grey[300]};
+  cursor: pointer;
+  transition: all 0.2s ease;
 
   &:hover {
-    background: ${({ theme }) => theme.colors.grey[50]};
+    background: ${({ theme, variant }) => 
+      variant === 'primary' ? theme.colors.primary.dark : theme.colors.grey[100]
+    };
+    border-color: ${({ theme, variant }) => 
+      variant === 'primary' ? theme.colors.primary.dark : theme.colors.grey[400]
+    };
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
   }
 `;
+
+const AdvancedFilterSystem: React.FC<AdvancedFilterSystemProps> = ({
+  filterGroups,
+  onFilterChange,
+  onReset,
+  loading = false,
+  className,
+  style,
+  showAdvanced = false,
+  onToggleAdvanced,
+  showFilters = false,
+  onToggleFilters,
+  showTabs = true,
+  onTabChange,
+  activeTab = 'all',
+  showCounts = true,
+  showSearch = true,
+  showGroupBy = true,
+  maxSelections = 10,
+}) => {
+  const { t } = useTranslation();
+  const [formData, setFormData] = useState<Record<string, any>>({});
+  const [isAdvancedOpen, setIsAdvancedOpen] = useState(showAdvanced);
+  const [isFiltersOpen, setIsFiltersOpen] = useState(showFilters);
+
+  const tabs = [
+    { id: 'all', label: t('filterSystem.tabs.all', 'All Filters'), icon: <Filter size={16} /> },
+    { id: 'basic', label: t('filterSystem.tabs.basic', 'Basic'), icon: <Search size={16} /> },
+    { id: 'advanced', label: t('filterSystem.tabs.advanced', 'Advanced'), icon: <ChevronDown size={16} /> },
+    { id: 'popular', label: t('filterSystem.tabs.popular', 'Popular'), icon: <Star size={16} /> },
+    { id: 'trending', label: t('filterSystem.tabs.trending', 'Trending'), icon: <TrendingUp size={16} /> },
+  ];
+
+  useEffect(() => {
+    const initialData: Record<string, any> = {};
+    filterGroups.forEach(group => {
+      if (group.type === 'checkbox') {
+        initialData[group.id] = group.value || [];
+      } else {
+        initialData[group.id] = group.value || '';
+      }
+    });
+    setFormData(initialData);
+  }, [filterGroups]);
+
+  const handleInputChange = (groupId: string, value: any) => {
+    setFormData(prev => ({
+      ...prev,
+      [groupId]: value
+    }));
+    onFilterChange({ ...formData, [groupId]: value });
+  };
+
+  const handleReset = () => {
+    const resetData: Record<string, any> = {};
+    filterGroups.forEach(group => {
+      if (group.type === 'checkbox') {
+        resetData[group.id] = [];
+      } else {
+        resetData[group.id] = '';
+      }
+    });
+    setFormData(resetData);
+    onReset();
+  };
+
+  const handleToggleAdvanced = () => {
+    const newState = !isAdvancedOpen;
+    setIsAdvancedOpen(newState);
+    onToggleAdvanced?.(newState);
+  };
+
+  const handleToggleFilters = () => {
+    const newState = !isFiltersOpen;
+    setIsFiltersOpen(newState);
+    onToggleFilters?.(newState);
+  };
+
+  const handleTabChange = (tabId: string) => {
+    onTabChange?.(tabId);
+  };
+
+  const renderFilter = (group: FilterGroup) => {
+    switch (group.type) {
+      case 'select':
+        return (
+          <SearchableSelect
+            options={group.options || []}
+            value={formData[group.id] || ''}
+            onChange={(value) => handleInputChange(group.id, value)}
+            placeholder={group.placeholder || `Select ${group.label}`}
+            showSearch={group.showSearch !== false}
+            groupBy={group.groupBy !== false}
+          />
+        );
+
+      case 'checkbox':
+        return (
+          <CheckboxGrid
+            options={group.options || []}
+            value={formData[group.id] || []}
+            onChange={(value) => handleInputChange(group.id, value)}
+            columns={2}
+            showDescriptions={true}
+            showCounts={group.showCounts !== false}
+            maxSelections={group.maxSelections || maxSelections}
+          />
+        );
+
+      case 'range':
+        return (
+          <AdvancedFilterSystemRange>
+            <AdvancedFilterSystemRangeInput
+              type="number"
+              placeholder="Min"
+              value={formData[group.id]?.min || ''}
+              onChange={(e) => handleInputChange(group.id, {
+                ...formData[group.id],
+                min: e.target.value ? Number(e.target.value) : undefined
+              })}
+              min={group.min}
+              max={group.max}
+              step={group.step}
+            />
+            <AdvancedFilterSystemRangeSeparator>to</AdvancedFilterSystemRangeSeparator>
+            <AdvancedFilterSystemRangeInput
+              type="number"
+              placeholder="Max"
+              value={formData[group.id]?.max || ''}
+              onChange={(e) => handleInputChange(group.id, {
+                ...formData[group.id],
+                max: e.target.value ? Number(e.target.value) : undefined
+              })}
+              min={group.min}
+              max={group.max}
+              step={group.step}
+            />
+            {group.unit && (
+              <AdvancedFilterSystemRangeSeparator>{group.unit}</AdvancedFilterSystemRangeSeparator>
+            )}
+          </AdvancedFilterSystemRange>
+        );
+
+      case 'date':
+        return (
+          <AdvancedFilterSystemInput
+            type="date"
+            value={formData[group.id] || ''}
+            onChange={(e) => handleInputChange(group.id, e.target.value)}
+          />
+        );
+
+      case 'location':
+        return (
+          <AdvancedFilterSystemInput
+            type="text"
+            placeholder={group.placeholder || `Enter ${group.label}`}
+            value={formData[group.id] || ''}
+            onChange={(e) => handleInputChange(group.id, e.target.value)}
+          />
+        );
+
+      case 'text':
+      default:
+        return (
+          <AdvancedFilterSystemInput
+            type="text"
+            placeholder={group.placeholder || `Enter ${group.label}`}
+            value={formData[group.id] || ''}
+            onChange={(e) => handleInputChange(group.id, e.target.value)}
+          />
+        );
+    }
+  };
+
+  const getFilterGroupsByTab = (tabId: string) => {
+    switch (tabId) {
+      case 'basic':
+        return filterGroups.filter(g => g.type === 'select' || g.type === 'text');
+      case 'advanced':
+        return filterGroups.filter(g => g.type === 'range' || g.type === 'date' || g.type === 'location');
+      case 'popular':
+        return filterGroups.filter(g => g.showCounts !== false);
+      case 'trending':
+        return filterGroups.filter(g => g.showCounts !== false);
+      case 'all':
+      default:
+        return filterGroups;
+    }
+  };
+
+  const currentFilterGroups = getFilterGroupsByTab(activeTab);
+
+  return (
+    <AdvancedFilterSystemContainer className={className} style={style}>
+      <AdvancedFilterSystemHeader>
+        <AdvancedFilterSystemTitle>
+          {t('filterSystem.title', 'Advanced Filter System')}
+        </AdvancedFilterSystemTitle>
+        <AdvancedFilterSystemToggles>
+          <AdvancedFilterSystemToggle onClick={handleToggleAdvanced}>
+            <Filter size={16} />
+            {isAdvancedOpen ? 'Hide Advanced' : 'Show Advanced'}
+            {isAdvancedOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+          </AdvancedFilterSystemToggle>
+          <AdvancedFilterSystemToggle onClick={handleToggleFilters}>
+            <Filter size={16} />
+            {isFiltersOpen ? 'Hide Filters' : 'Show Filters'}
+            {isFiltersOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+          </AdvancedFilterSystemToggle>
+        </AdvancedFilterSystemToggles>
+      </AdvancedFilterSystemHeader>
+
+      {showTabs && (
+        <AdvancedFilterSystemTabs>
+          <SearchTabs
+            tabs={tabs}
+            activeTab={activeTab}
+            onTabChange={handleTabChange}
+            variant="pills"
+            size="md"
+          />
+        </AdvancedFilterSystemTabs>
+      )}
+
+      <AdvancedFilterSystemForm>
+        {isAdvancedOpen && (
+          <AdvancedFilterSystemSection>
+            <AdvancedFilterSystemSectionTitle>
+              {t('filterSystem.advanced.title', 'Advanced Options')}
+            </AdvancedFilterSystemSectionTitle>
+            <AdvancedFilterSystemRow>
+              {currentFilterGroups.filter(g => g.type === 'range' || g.type === 'date' || g.type === 'location').map((group) => (
+                <AdvancedFilterSystemField key={group.id}>
+                  <AdvancedFilterSystemLabel required={group.required || false}>
+                    {group.label}
+                  </AdvancedFilterSystemLabel>
+                  {group.description && (
+                    <AdvancedFilterSystemDescription>{group.description}</AdvancedFilterSystemDescription>
+                  )}
+                  {renderFilter(group)}
+                </AdvancedFilterSystemField>
+              ))}
+            </AdvancedFilterSystemRow>
+          </AdvancedFilterSystemSection>
+        )}
+
+        {isFiltersOpen && (
+          <AdvancedFilterSystemSection>
+            <AdvancedFilterSystemSectionTitle>
+              {t('filterSystem.filters.title', 'Filters')}
+            </AdvancedFilterSystemSectionTitle>
+            <AdvancedFilterSystemRow>
+              {currentFilterGroups.filter(g => g.type === 'select' || g.type === 'checkbox' || g.type === 'text').map((group) => (
+                <AdvancedFilterSystemField key={group.id}>
+                  <AdvancedFilterSystemLabel required={group.required || false}>
+                    {group.label}
+                  </AdvancedFilterSystemLabel>
+                  {group.description && (
+                    <AdvancedFilterSystemDescription>{group.description}</AdvancedFilterSystemDescription>
+                  )}
+                  {renderFilter(group)}
+                </AdvancedFilterSystemField>
+              ))}
+            </AdvancedFilterSystemRow>
+          </AdvancedFilterSystemSection>
+        )}
+
+        <AdvancedFilterSystemActions>
+          <AdvancedFilterSystemButton
+            type="button"
+            variant="secondary"
+            onClick={handleReset}
+          >
+            <X size={16} />
+            {t('filterSystem.reset', 'Reset')}
+          </AdvancedFilterSystemButton>
+          <AdvancedFilterSystemButton
+            type="button"
+            variant="primary"
+            disabled={loading}
+          >
+            <Filter size={16} />
+            {loading ? t('filterSystem.applying', 'Applying...') : t('filterSystem.apply', 'Apply Filters')}
+          </AdvancedFilterSystemButton>
+        </AdvancedFilterSystemActions>
+      </AdvancedFilterSystemForm>
+    </AdvancedFilterSystemContainer>
+  );
+};
 
 export default AdvancedFilterSystem;

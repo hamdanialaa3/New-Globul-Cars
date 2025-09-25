@@ -9,7 +9,7 @@ import { useTranslation } from '../hooks/useTranslation';
 import { bulgarianAuthService } from '../firebase';
 import { BulgarianUser } from '../firebase/auth-service';
 import NotificationBell from './NotificationBell';
-import Globe3DLogo from './Globe3DLogo';
+// Replace 3D logo with official image logo
 import { Settings, User, LogOut, LogIn, UserPlus, Type } from 'lucide-react';
 
 // Styled Components - Mobile.de Style
@@ -44,7 +44,7 @@ const Logo = styled(Link)`
   gap: ${({ theme }) => theme.spacing.sm};
   
   img {
-    height: 113px;
+    height: 282px; /* ~250% of previous ~113px */
     width: auto;
     border-radius: ${({ theme }) => theme.borderRadius.sm};
     transition: transform 0.2s ease-in-out;
@@ -238,8 +238,8 @@ const Header: React.FC = () => {
     <HeaderContainer>
       <HeaderContent>
         {/* Logo */}
-        <Logo to="/">
-          <Globe3DLogo width={120} height={120} />
+        <Logo to="/" aria-label="Globul Cars Home">
+          <img src="/official-logo.png" alt="Globul Cars" loading="eager" decoding="async" />
         </Logo>
 
         {/* Navigation */}

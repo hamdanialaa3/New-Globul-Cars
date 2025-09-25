@@ -1,214 +1,126 @@
-// src/components/Accessibility.tsx
-// Accessibility Components for Bulgarian Car Marketplace
+import React, { useEffect } from 'react';
+import styled from 'styled-components';
 
-import React from 'react';
-import { AccessibilityUtils, AriaLiveRegionProps, AccessibleButtonProps, AccessibleFieldProps } from '../utils/accessibility';
-
-// ARIA live region for dynamic content updates
-export const AriaLiveRegion: React.FC<AriaLiveRegionProps> = ({
-  message,
-  priority = 'polite',
-  'aria-label': ariaLabel
-}) => {
-  return (
-    <div
-      aria-live={priority}
-      aria-label={ariaLabel}
-      style={{
-        position: 'absolute',
-        left: '-10000px',
-        width: '1px',
-        height: '1px',
-        overflow: 'hidden'
-      }}
-    >
-      {message}
-    </div>
-  );
-};
-
-// Accessible button component
-export const AccessibleButton: React.FC<AccessibleButtonProps> = ({
-  onClick,
-  children,
-  ariaLabel,
-  disabled = false,
-  variant = 'primary',
-  size = 'medium'
-}) => {
-  const handleKeyPress = (event: React.KeyboardEvent) => {
-    if (!disabled && (event.key === 'Enter' || event.key === ' ')) {
-      event.preventDefault();
-      onClick();
-    }
-  };
-
-  const getPadding = () => {
-    switch (size) {
-      case 'small': return '8px 16px';
-      case 'large': return '16px 32px';
-      default: return '12px 24px';
-    }
-  };
-
-  const getFontSize = () => {
-    switch (size) {
-      case 'small': return '14px';
-      case 'large': return '18px';
-      default: return '16px';
-    }
-  };
-
-  const getBackgroundColor = () => {
-    if (disabled) return '#ccc';
-    switch (variant) {
-      case 'primary': return '#1976d2';
-      case 'danger': return '#d32f2f';
-      default: return '#757575';
-    }
-  };
-
-  return (
-    <button
-      onClick={onClick}
-      onKeyPress={handleKeyPress}
-      aria-label={ariaLabel}
-      disabled={disabled}
-      tabIndex={disabled ? -1 : 0}
-      style={{
-        padding: getPadding(),
-        border: 'none',
-        borderRadius: '4px',
-        cursor: disabled ? 'not-allowed' : 'pointer',
-        fontSize: getFontSize(),
-        fontWeight: '500',
-        backgroundColor: getBackgroundColor(),
-        color: 'white',
-        opacity: disabled ? 0.6 : 1,
-        transition: 'all 0.2s ease'
-      }}
-    >
-      {children}
-    </button>
-  );
-};
-
-// Accessible form field wrapper
-export const AccessibleField: React.FC<AccessibleFieldProps> = ({
-  label,
-  error,
-  required = false,
-  children,
-  description
-}) => {
-  const fieldId = AccessibilityUtils.generateId('field');
-  const errorId = error ? AccessibilityUtils.generateId('error') : undefined;
-  const descId = description ? AccessibilityUtils.generateId('desc') : undefined;
-
-  const describedBy = [errorId, descId].filter(Boolean).join(' ') || undefined;
-
-  return (
-    <div style={{ marginBottom: '16px' }}>
-      <label
-        htmlFor={fieldId}
-        style={{
-          display: 'block',
-          marginBottom: '4px',
-          fontWeight: '500',
-          color: error ? '#d32f2f' : '#333'
-        }}
-      >
-        {label}
-        {required && <span style={{ color: '#d32f2f' }} aria-label="Задължително"> *</span>}
-      </label>
-
-      {description && (
-        <p
-          id={descId}
-          style={{
-            margin: '0 0 8px 0',
-            fontSize: '14px',
-            color: '#666'
-          }}
-        >
-          {description}
-        </p>
-      )}
-
-      <div>
-        {React.isValidElement(children) ? (
-          React.cloneElement(children, {
-            id: fieldId,
-            'aria-describedby': describedBy,
-            'aria-invalid': !!error,
-            'aria-required': required
-          } as any)
-        ) : (
-          children
-        )}
-      </div>
-
-      {error && (
-        <p
-          id={errorId}
-          role="alert"
-          style={{
-            margin: '4px 0 0 0',
-            fontSize: '14px',
-            color: '#d32f2f'
-          }}
-        >
-          {error}
-        </p>
-      )}
-    </div>
-  );
-};
-
-// Skip navigation component
+// Skip Navigation Component
 export const SkipNavigation: React.FC = () => {
-  React.useEffect(() => {
-    const skipLink = AccessibilityUtils.createSkipLink('main-content', 'Отиди към основното съдържание');
-    document.body.insertBefore(skipLink, document.body.firstChild);
+  useEffect(() => {
+    // Add keyboard navigation support
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Tab') {
+        document.body.classList.add('keyboard-navigation');
+      }
+    };
+
+    const handleMouseDown = () => {
+      document.body.classList.remove('keyboard-navigation');
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('mousedown', handleMouseDown);
 
     return () => {
-      if (skipLink.parentNode) {
-        skipLink.parentNode.removeChild(skipLink);
-      }
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('mousedown', handleMouseDown);
     };
   }, []);
 
-  return null;
-};
-
-// Screen reader only text
-export const ScreenReaderOnly: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
-    <span
-      style={{
-        position: 'absolute',
-        width: '1px',
-        height: '1px',
-        padding: '0',
-        margin: '-1px',
-        overflow: 'hidden',
-        clip: 'rect(0, 0, 0, 0)',
-        whiteSpace: 'nowrap',
-        border: '0'
-      }}
-    >
-      {children}
-    </span>
+    <SkipLink href="#main-content">
+      Skip to main content
+    </SkipLink>
   );
 };
 
-// Focus trap hook for modals
-export const useFocusTrap = (containerRef: React.RefObject<HTMLElement>) => {
-  React.useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
+// Focus Management Hook
+export const useFocusManagement = () => {
+  const trapFocus = (element: HTMLElement) => {
+    const focusableElements = element.querySelectorAll(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    
+    const firstElement = focusableElements[0] as HTMLElement;
+    const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
 
-    const cleanup = AccessibilityUtils.trapFocus(container);
-    return cleanup;
-  }, [containerRef]);
+    const handleTabKey = (e: KeyboardEvent) => {
+      if (e.key === 'Tab') {
+        if (e.shiftKey) {
+          if (document.activeElement === firstElement) {
+            lastElement.focus();
+            e.preventDefault();
+          }
+        } else {
+          if (document.activeElement === lastElement) {
+            firstElement.focus();
+            e.preventDefault();
+          }
+        }
+      }
+    };
+
+    element.addEventListener('keydown', handleTabKey);
+    
+    return () => {
+      element.removeEventListener('keydown', handleTabKey);
+    };
+  };
+
+  return { trapFocus };
 };
+
+// Screen Reader Only Text
+export const ScreenReaderOnly: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  return <ScreenReaderText>{children}</ScreenReaderText>;
+};
+
+// Styled Components
+const SkipLink = styled.a`
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: ${({ theme }) => theme.colors.primary.main};
+  color: white;
+  padding: 8px;
+  text-decoration: none;
+  border-radius: 0 0 4px 4px;
+  z-index: 1000;
+  transition: top 0.3s;
+
+  &:focus {
+    top: 0;
+  }
+`;
+
+const ScreenReaderText = styled.span`
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+`;
+
+// Global styles for keyboard navigation
+export const addKeyboardNavigationStyles = () => {
+  const style = document.createElement('style');
+  style.textContent = `
+    .keyboard-navigation *:focus {
+      outline: 2px solid #2563eb !important;
+      outline-offset: 2px !important;
+    }
+    
+    .keyboard-navigation button:focus,
+    .keyboard-navigation a:focus,
+    .keyboard-navigation input:focus,
+    .keyboard-navigation select:focus,
+    .keyboard-navigation textarea:focus {
+      outline: 2px solid #2563eb !important;
+      outline-offset: 2px !important;
+    }
+  `;
+  document.head.appendChild(style);
+};
+
+export default { SkipNavigation, useFocusManagement, ScreenReaderOnly };

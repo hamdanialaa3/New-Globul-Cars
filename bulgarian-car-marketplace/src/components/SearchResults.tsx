@@ -1,155 +1,632 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { 
+  Search, 
+  Filter, 
+  SortAsc, 
+  SortDesc, 
+  Grid, 
+  List, 
+  ChevronLeft, 
+  ChevronRight,
+  Star,
+  MapPin,
+  Calendar,
+  Euro
+} from 'lucide-react';
 import { useTranslation } from '../hooks/useTranslation';
-import { CarDataFromFile } from '../services/carDataBrowserService';
+import LazyImage from './LazyImage';
 
-interface SearchResultsProps {
-  results: CarDataFromFile[];
-  searchParams: any;
-  isLoading: boolean;
+interface SearchResult {
+  id: string;
+  title: string;
+  description: string;
+  image: string;
+  price: number;
+  currency: string;
+  location: string;
+  date: string;
+  category: string;
+  brand: string;
+  model: string;
+  year: number;
+  mileage: number;
+  fuelType: string;
+  transmission: string;
+  engineSize: number;
+  color: string;
+  condition: string;
+  features: string[];
+  rating: number;
+  reviewCount: number;
+  seller: {
+    name: string;
+    avatar: string;
+    rating: number;
+    verified: boolean;
+  };
+  isFavorite: boolean;
+  isPromoted: boolean;
+  isNew: boolean;
 }
 
-const ResultsContainer = styled.div`
-  margin-top: ${({ theme }) => theme.spacing.lg};
+interface SearchResultsProps {
+  results: SearchResult[];
+  loading?: boolean;
+  totalResults?: number;
+  currentPage?: number;
+  totalPages?: number;
+  onPageChange?: (page: number) => void;
+  onSortChange?: (sortBy: string, sortOrder: 'asc' | 'desc') => void;
+  onViewChange?: (view: 'grid' | 'list') => void;
+  onResultClick?: (result: SearchResult) => void;
+  onFavoriteToggle?: (resultId: string) => void;
+  onFilterChange?: (filters: Record<string, any>) => void;
+  className?: string;
+  style?: React.CSSProperties;
+  showFilters?: boolean;
+  showSort?: boolean;
+  showViewToggle?: boolean;
+  showPagination?: boolean;
+}
+
+const SearchResultsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.lg};
 `;
 
-const ResultsHeader = styled.div`
+const SearchResultsHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: ${({ theme }) => theme.spacing.md};
-  padding-bottom: ${({ theme }) => theme.spacing.sm};
-  border-bottom: 1px solid ${({ theme }) => theme.colors.grey[300]};
+  flex-wrap: wrap;
+  gap: ${({ theme }) => theme.spacing.md};
 `;
 
-const ResultsCount = styled.h3`
+const SearchResultsInfo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.md};
+`;
+
+const SearchResultsCount = styled.div`
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
+  color: ${({ theme }) => theme.colors.text.secondary};
+`;
+
+const SearchResultsControls = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.md};
+`;
+
+const SearchResultsSort = styled.select`
+  padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
+  border: 1px solid ${({ theme }) => theme.colors.grey[300]};
+  border-radius: ${({ theme }) => theme.borderRadius.base};
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
+  background: ${({ theme }) => theme.colors.background.paper};
+  color: ${({ theme }) => theme.colors.text.primary};
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+    border-color: ${({ theme }) => theme.colors.primary.main};
+  }
+`;
+
+const SearchResultsViewToggle = styled.div`
+  display: flex;
+  border: 1px solid ${({ theme }) => theme.colors.grey[300]};
+  border-radius: ${({ theme }) => theme.borderRadius.base};
+  overflow: hidden;
+`;
+
+const SearchResultsViewButton = styled.button<{ isActive: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.xs};
+  padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
+  border: none;
+  background: ${({ theme, isActive }) => 
+    isActive ? theme.colors.primary.main : 'transparent'
+  };
+  color: ${({ theme, isActive }) => 
+    isActive ? theme.colors.primary.contrastText : theme.colors.text.primary
+  };
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: ${({ theme, isActive }) => 
+      isActive ? theme.colors.primary.dark : theme.colors.grey[100]
+    };
+  }
+`;
+
+const SearchResultsGrid = styled.div<{ view: 'grid' | 'list' }>`
+  display: grid;
+  grid-template-columns: ${({ view }) => 
+    view === 'grid' 
+      ? 'repeat(auto-fill, minmax(300px, 1fr))' 
+      : '1fr'
+  };
+  gap: ${({ theme }) => theme.spacing.lg};
+`;
+
+const SearchResultCard = styled.div<{ view: 'grid' | 'list' }>`
+  background: ${({ theme }) => theme.colors.background.paper};
+  border-radius: ${({ theme }) => theme.borderRadius.lg};
+  box-shadow: ${({ theme }) => theme.shadows.base};
+  border: 1px solid ${({ theme }) => theme.colors.grey[200]};
+  overflow: hidden;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  display: ${({ view }) => view === 'list' ? 'flex' : 'block'};
+
+  &:hover {
+    box-shadow: ${({ theme }) => theme.shadows.lg};
+    transform: translateY(-2px);
+  }
+`;
+
+const SearchResultImage = styled.div<{ view: 'grid' | 'list' }>`
+  position: relative;
+  width: ${({ view }) => view === 'list' ? '200px' : '100%'};
+  height: ${({ view }) => view === 'list' ? '150px' : '200px'};
+  flex-shrink: 0;
+  overflow: hidden;
+`;
+
+const SearchResultBadges = styled.div`
+  position: absolute;
+  top: ${({ theme }) => theme.spacing.sm};
+  left: ${({ theme }) => theme.spacing.sm};
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.xs};
+`;
+
+const SearchResultBadge = styled.span<{ type: 'promoted' | 'new' | 'favorite' }>`
+  padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.sm};
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
+  font-size: ${({ theme }) => theme.typography.fontSize.xs};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
+  background: ${({ theme, type }) => {
+    switch (type) {
+      case 'promoted': return theme.colors.warning.main;
+      case 'new': return theme.colors.success.main;
+      case 'favorite': return theme.colors.error.main;
+      default: return theme.colors.grey[300];
+    }
+  }};
+  color: white;
+`;
+
+const SearchResultContent = styled.div<{ view: 'grid' | 'list' }>`
+  padding: ${({ theme }) => theme.spacing.lg};
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.sm};
+`;
+
+const SearchResultHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: ${({ theme }) => theme.spacing.sm};
+`;
+
+const SearchResultTitle = styled.h3`
   font-size: ${({ theme }) => theme.typography.fontSize.lg};
   font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
   color: ${({ theme }) => theme.colors.text.primary};
   margin: 0;
+  line-height: 1.4;
 `;
 
-const NoResults = styled.div`
+const SearchResultPrice = styled.div`
+  font-size: ${({ theme }) => theme.typography.fontSize.xl};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
+  color: ${({ theme }) => theme.colors.primary.main};
+  text-align: right;
+`;
+
+const SearchResultMeta = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: ${({ theme }) => theme.spacing.sm};
+  margin-bottom: ${({ theme }) => theme.spacing.sm};
+`;
+
+const SearchResultMetaItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.xs};
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
+  color: ${({ theme }) => theme.colors.text.secondary};
+`;
+
+const SearchResultDescription = styled.p`
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
+  color: ${({ theme }) => theme.colors.text.secondary};
+  line-height: 1.5;
+  margin: 0 0 ${({ theme }) => theme.spacing.sm} 0;
+`;
+
+const SearchResultFeatures = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: ${({ theme }) => theme.spacing.xs};
+  margin-bottom: ${({ theme }) => theme.spacing.sm};
+`;
+
+const SearchResultFeature = styled.span`
+  padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.sm};
+  background: ${({ theme }) => theme.colors.grey[100]};
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
+  font-size: ${({ theme }) => theme.typography.fontSize.xs};
+  color: ${({ theme }) => theme.colors.text.secondary};
+`;
+
+const SearchResultFooter = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  padding-top: ${({ theme }) => theme.spacing.sm};
+  border-top: 1px solid ${({ theme }) => theme.colors.grey[200]};
+`;
+
+const SearchResultSeller = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.sm};
+`;
+
+const SearchResultSellerAvatar = styled.div`
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: ${({ theme }) => theme.colors.grey[200]};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
+  color: ${({ theme }) => theme.colors.text.secondary};
+`;
+
+const SearchResultSellerInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const SearchResultSellerName = styled.div`
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
+  color: ${({ theme }) => theme.colors.text.primary};
+`;
+
+const SearchResultSellerRating = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.xs};
+  font-size: ${({ theme }) => theme.typography.fontSize.xs};
+  color: ${({ theme }) => theme.colors.text.secondary};
+`;
+
+const SearchResultRating = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.xs};
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
+  color: ${({ theme }) => theme.colors.text.secondary};
+`;
+
+const SearchResultsPagination = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.sm};
+  margin-top: ${({ theme }) => theme.spacing.xl};
+`;
+
+const SearchResultsPaginationButton = styled.button<{ disabled: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.xs};
+  padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
+  border: 1px solid ${({ theme }) => theme.colors.grey[300]};
+  border-radius: ${({ theme }) => theme.borderRadius.base};
+  background: ${({ theme }) => theme.colors.background.paper};
+  color: ${({ theme }) => theme.colors.text.primary};
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
+  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
+  opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    border-color: ${({ theme }) => theme.colors.primary.main};
+    background: ${({ theme }) => theme.colors.primary.light + '10'};
+  }
+`;
+
+const SearchResultsPaginationInfo = styled.div`
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
+  color: ${({ theme }) => theme.colors.text.secondary};
+  margin: 0 ${({ theme }) => theme.spacing.md};
+`;
+
+const SearchResultsEmpty = styled.div`
   text-align: center;
   padding: ${({ theme }) => theme.spacing.xl};
   color: ${({ theme }) => theme.colors.text.secondary};
 `;
 
-const NoResultsTitle = styled.h3`
-  font-size: ${({ theme }) => theme.typography.fontSize.lg};
-  margin-bottom: ${({ theme }) => theme.spacing.md};
-`;
-
-const NoResultsText = styled.p`
-  font-size: ${({ theme }) => theme.typography.fontSize.base};
-  margin-bottom: ${({ theme }) => theme.spacing.lg};
-`;
-
-const CarGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: ${({ theme }) => theme.spacing.lg};
-  margin-top: ${({ theme }) => theme.spacing.lg};
-`;
-
-const CarCard = styled.div`
-  background: ${({ theme }) => theme.colors.background.paper};
-  border-radius: ${({ theme }) => theme.borderRadius.base};
-  box-shadow: ${({ theme }) => theme.shadows.base};
-  overflow: hidden;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: ${({ theme }) => theme.shadows['2xl']};
-  }
-`;
-
-const CarInfo = styled.div`
-  padding: ${({ theme }) => theme.spacing.md};
-`;
-
-const CarTitle = styled.h4`
-  font-size: ${({ theme }) => theme.typography.fontSize.base};
-  font-weight: ${({ theme }) => theme.typography.fontWeight.semibold};
-  color: ${({ theme }) => theme.colors.text.primary};
-  margin: 0 0 ${({ theme }) => theme.spacing.xs} 0;
-`;
-
-const CarPrice = styled.p`
-  font-size: ${({ theme }) => theme.typography.fontSize.lg};
-  font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
-  color: ${({ theme }) => theme.colors.primary.main};
-  margin: 0 0 ${({ theme }) => theme.spacing.sm} 0;
-`;
-
-const CarDetails = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: ${({ theme }) => theme.spacing.sm};
-  font-size: ${({ theme }) => theme.typography.fontSize.sm};
+const SearchResultsLoading = styled.div`
+  text-align: center;
+  padding: ${({ theme }) => theme.spacing.xl};
   color: ${({ theme }) => theme.colors.text.secondary};
-`;
-
-const CarDetail = styled.span`
-  display: flex;
-  align-items: center;
-
-  &:before {
-    content: '•';
-    margin-right: ${({ theme }) => theme.spacing.xs};
-    color: ${({ theme }) => theme.colors.primary.main};
-  }
 `;
 
 const SearchResults: React.FC<SearchResultsProps> = ({
   results,
-  searchParams,
-  isLoading
+  loading = false,
+  totalResults = 0,
+  currentPage = 1,
+  totalPages = 1,
+  onPageChange,
+  onSortChange,
+  onViewChange,
+  onResultClick,
+  onFavoriteToggle,
+  onFilterChange,
+  className,
+  style,
+  showFilters = true,
+  showSort = true,
+  showViewToggle = true,
+  showPagination = true,
 }) => {
   const { t } = useTranslation();
+  const [view, setView] = useState<'grid' | 'list'>('grid');
+  const [sortBy, setSortBy] = useState('relevance');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
-  if (isLoading) {
-    return <ResultsContainer>Loading results...</ResultsContainer>;
+  const handleViewChange = (newView: 'grid' | 'list') => {
+    setView(newView);
+    onViewChange?.(newView);
+  };
+
+  const handleSortChange = (newSortBy: string) => {
+    setSortBy(newSortBy);
+    onSortChange?.(newSortBy, sortOrder);
+  };
+
+  const handleSortOrderToggle = () => {
+    const newOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+    setSortOrder(newOrder);
+    onSortChange?.(sortBy, newOrder);
+  };
+
+  const handleResultClick = (result: SearchResult) => {
+    onResultClick?.(result);
+  };
+
+  const handleFavoriteToggle = (resultId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    onFavoriteToggle?.(resultId);
+  };
+
+  const formatPrice = (price: number, currency: string) => {
+    return new Intl.NumberFormat('bg-BG', {
+      style: 'currency',
+      currency: currency,
+    }).format(price);
+  };
+
+  const formatDate = (date: string) => {
+    return new Date(date).toLocaleDateString('bg-BG');
+  };
+
+  const formatMileage = (mileage: number) => {
+    return new Intl.NumberFormat('bg-BG').format(mileage) + ' km';
+  };
+
+  if (loading) {
+    return (
+      <SearchResultsContainer className={className} style={style}>
+        <SearchResultsLoading>
+          {t('searchResults.loading', 'Loading results...')}
+        </SearchResultsLoading>
+      </SearchResultsContainer>
+    );
   }
 
   if (results.length === 0) {
     return (
-      <ResultsContainer>
-        <NoResults>
-          <NoResultsTitle>{t('cars.noResults.title')}</NoResultsTitle>
-          <NoResultsText>{t('cars.noResults.message')}</NoResultsText>
-        </NoResults>
-      </ResultsContainer>
+      <SearchResultsContainer className={className} style={style}>
+        <SearchResultsEmpty>
+          {t('searchResults.empty', 'No results found')}
+        </SearchResultsEmpty>
+      </SearchResultsContainer>
     );
   }
 
   return (
-    <ResultsContainer>
-      <ResultsHeader>
-        <ResultsCount>
-          Found {results.length} cars
-        </ResultsCount>
-      </ResultsHeader>
+    <SearchResultsContainer className={className} style={style}>
+      <SearchResultsHeader>
+        <SearchResultsInfo>
+          <SearchResultsCount>
+            {t('searchResults.count', `${totalResults} results found`)}
+          </SearchResultsCount>
+        </SearchResultsInfo>
 
-      <CarGrid>
-        {results.map((car, index) => (
-          <CarCard key={`${car.brand}-${car.model}-${car.year}-${index}`}>
-            <CarInfo>
-              <CarTitle>{`${car.brand} ${car.model}`}</CarTitle>
-              <CarPrice>{car.price || 'Price not available'}</CarPrice>
-              <CarDetails>
-                <CarDetail>{car.year}</CarDetail>
-                {car.fuelType && <CarDetail>{car.fuelType}</CarDetail>}
-                {car.transmission && <CarDetail>{car.transmission}</CarDetail>}
-                {car.engineSize && <CarDetail>{car.engineSize}</CarDetail>}
-              </CarDetails>
-            </CarInfo>
-          </CarCard>
+        <SearchResultsControls>
+          {showSort && (
+            <SearchResultsSort
+              value={sortBy}
+              onChange={(e) => handleSortChange(e.target.value)}
+            >
+              <option value="relevance">{t('searchResults.sort.relevance', 'Relevance')}</option>
+              <option value="price">{t('searchResults.sort.price', 'Price')}</option>
+              <option value="date">{t('searchResults.sort.date', 'Date')}</option>
+              <option value="mileage">{t('searchResults.sort.mileage', 'Mileage')}</option>
+              <option value="year">{t('searchResults.sort.year', 'Year')}</option>
+            </SearchResultsSort>
+          )}
+
+          {showViewToggle && (
+            <SearchResultsViewToggle>
+              <SearchResultsViewButton
+                isActive={view === 'grid'}
+                onClick={() => handleViewChange('grid')}
+              >
+                <Grid size={16} />
+                {t('searchResults.view.grid', 'Grid')}
+              </SearchResultsViewButton>
+              <SearchResultsViewButton
+                isActive={view === 'list'}
+                onClick={() => handleViewChange('list')}
+              >
+                <List size={16} />
+                {t('searchResults.view.list', 'List')}
+              </SearchResultsViewButton>
+            </SearchResultsViewToggle>
+          )}
+        </SearchResultsControls>
+      </SearchResultsHeader>
+
+      <SearchResultsGrid view={view}>
+        {results.map((result) => (
+          <SearchResultCard
+            key={result.id}
+            view={view}
+            onClick={() => handleResultClick(result)}
+          >
+            <SearchResultImage view={view}>
+              <LazyImage
+                src={result.image}
+                alt={result.title}
+                placeholder="/placeholder-car.jpg"
+              />
+              <SearchResultBadges>
+                {result.isPromoted && (
+                  <SearchResultBadge type="promoted">
+                    {t('searchResults.badges.promoted', 'Promoted')}
+                  </SearchResultBadge>
+                )}
+                {result.isNew && (
+                  <SearchResultBadge type="new">
+                    {t('searchResults.badges.new', 'New')}
+                  </SearchResultBadge>
+                )}
+                {result.isFavorite && (
+                  <SearchResultBadge type="favorite">
+                    {t('searchResults.badges.favorite', 'Favorite')}
+                  </SearchResultBadge>
+                )}
+              </SearchResultBadges>
+            </SearchResultImage>
+
+            <SearchResultContent view={view}>
+              <SearchResultHeader>
+                <SearchResultTitle>{result.title}</SearchResultTitle>
+                <SearchResultPrice>
+                  {formatPrice(result.price, result.currency)}
+                </SearchResultPrice>
+              </SearchResultHeader>
+
+              <SearchResultMeta>
+                <SearchResultMetaItem>
+                  <MapPin size={14} />
+                  {result.location}
+                </SearchResultMetaItem>
+                <SearchResultMetaItem>
+                  <Calendar size={14} />
+                  {formatDate(result.date)}
+                </SearchResultMetaItem>
+                <SearchResultMetaItem>
+                  {result.year}
+                </SearchResultMetaItem>
+                <SearchResultMetaItem>
+                  {formatMileage(result.mileage)}
+                </SearchResultMetaItem>
+              </SearchResultMeta>
+
+              <SearchResultDescription>
+                {result.description}
+              </SearchResultDescription>
+
+              <SearchResultFeatures>
+                {result.features.slice(0, 3).map((feature, index) => (
+                  <SearchResultFeature key={index}>
+                    {feature}
+                  </SearchResultFeature>
+                ))}
+                {result.features.length > 3 && (
+                  <SearchResultFeature>
+                    +{result.features.length - 3} more
+                  </SearchResultFeature>
+                )}
+              </SearchResultFeatures>
+
+              <SearchResultFooter>
+                <SearchResultSeller>
+                  <SearchResultSellerAvatar>
+                    {result.seller.name.charAt(0).toUpperCase()}
+                  </SearchResultSellerAvatar>
+                  <SearchResultSellerInfo>
+                    <SearchResultSellerName>
+                      {result.seller.name}
+                    </SearchResultSellerName>
+                    <SearchResultSellerRating>
+                      <Star size={12} />
+                      {result.seller.rating}
+                    </SearchResultSellerRating>
+                  </SearchResultSellerInfo>
+                </SearchResultSeller>
+
+                <SearchResultRating>
+                  <Star size={14} />
+                  {result.rating}
+                  <span>({result.reviewCount})</span>
+                </SearchResultRating>
+              </SearchResultFooter>
+            </SearchResultContent>
+          </SearchResultCard>
         ))}
-      </CarGrid>
-    </ResultsContainer>
+      </SearchResultsGrid>
+
+      {showPagination && totalPages > 1 && (
+        <SearchResultsPagination>
+          <SearchResultsPaginationButton
+            disabled={currentPage === 1}
+            onClick={() => onPageChange?.(currentPage - 1)}
+          >
+            <ChevronLeft size={16} />
+            {t('searchResults.pagination.previous', 'Previous')}
+          </SearchResultsPaginationButton>
+
+          <SearchResultsPaginationInfo>
+            {t('searchResults.pagination.page', `Page ${currentPage} of ${totalPages}`)}
+          </SearchResultsPaginationInfo>
+
+          <SearchResultsPaginationButton
+            disabled={currentPage === totalPages}
+            onClick={() => onPageChange?.(currentPage + 1)}
+          >
+            {t('searchResults.pagination.next', 'Next')}
+            <ChevronRight size={16} />
+          </SearchResultsPaginationButton>
+        </SearchResultsPagination>
+      )}
+    </SearchResultsContainer>
   );
 };
 
-export { SearchResults };
+export default SearchResults;

@@ -1,209 +1,413 @@
-// src/components/FullThemeDemo.tsx
-// Comprehensive demo of the enhanced black-grey theme
-
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
+import { useTranslation } from '../hooks/useTranslation';
 
-const DemoContainer = styled.div`
-  padding: ${({ theme }) => theme.spacing.xl};
-  max-width: 1400px;
-  margin: 0 auto;
+const FullThemeDemoContainer = styled.div`
   min-height: 100vh;
+  padding: ${({ theme }) => theme.spacing.xl} 0;
+  background: ${({ theme }) => theme.colors.background.default};
+  color: ${({ theme }) => theme.colors.text.primary};
 `;
 
-const DemoSection = styled.section`
+const PageContainer = styled.div`
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 ${({ theme }) => theme.spacing.md};
+`;
+
+const PageTitle = styled.h1`
+  text-align: center;
+  margin-bottom: ${({ theme }) => theme.spacing.xl};
+  color: ${({ theme }) => theme.colors.text.primary};
+  font-size: ${({ theme }) => theme.typography.fontSize['4xl']};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
+`;
+
+const FullThemeDemoCard = styled.div`
+  background: ${({ theme }) => theme.colors.background.paper};
+  border-radius: ${({ theme }) => theme.borderRadius.lg};
+  padding: ${({ theme }) => theme.spacing.xl};
+  box-shadow: ${({ theme }) => theme.shadows.base};
+  border: 1px solid ${({ theme }) => theme.colors.grey[200]};
   margin-bottom: ${({ theme }) => theme.spacing.xl};
 `;
 
-const ColorGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: ${({ theme }) => theme.spacing.md};
-  margin: ${({ theme }) => theme.spacing.lg} 0;
+const FullThemeDemoTitle = styled.h2`
+  font-size: ${({ theme }) => theme.typography.fontSize['2xl']};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
+  color: ${({ theme }) => theme.colors.text.primary};
+  margin: 0 0 ${({ theme }) => theme.spacing.lg} 0;
 `;
 
-const ColorCard = styled.div<{ bgColor: string; textColor: string }>`
-  background: ${({ bgColor }) => bgColor};
-  color: ${({ textColor }) => textColor};
-  padding: ${({ theme }) => theme.spacing.md};
-  border-radius: ${({ theme }) => theme.borderRadius.lg};
-  text-align: center;
+const FullThemeDemoGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: ${({ theme }) => theme.spacing.lg};
+  margin-bottom: ${({ theme }) => theme.spacing.xl};
+`;
+
+const FullThemeDemoItem = styled.div`
+  padding: ${({ theme }) => theme.spacing.lg};
+  background: ${({ theme }) => theme.colors.grey[50]};
+  border-radius: ${({ theme }) => theme.borderRadius.base};
+  border: 1px solid ${({ theme }) => theme.colors.grey[200]};
+`;
+
+const FullThemeDemoItemTitle = styled.h3`
+  font-size: ${({ theme }) => theme.typography.fontSize.lg};
   font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
-  border: 2px solid ${({ theme }) => theme.colors.primary.main};
-  transition: all 0.3s ease-in-out;
+  color: ${({ theme }) => theme.colors.text.primary};
+  margin: 0 0 ${({ theme }) => theme.spacing.md} 0;
+`;
+
+const FullThemeDemoItemText = styled.p`
+  color: ${({ theme }) => theme.colors.text.secondary};
+  margin: 0 0 ${({ theme }) => theme.spacing.md} 0;
+  line-height: 1.5;
+`;
+
+const FullThemeDemoButton = styled.button`
+  padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.lg};
+  background: ${({ theme }) => theme.colors.primary.main};
+  color: ${({ theme }) => theme.colors.primary.contrastText};
+  border: none;
+  border-radius: ${({ theme }) => theme.borderRadius.base};
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 
   &:hover {
-    transform: translateY(-5px) scale(1.05);
-    box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3);
+    background: ${({ theme }) => theme.colors.primary.dark};
   }
 `;
 
-const ButtonGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: ${({ theme }) => theme.spacing.md};
-  margin: ${({ theme }) => theme.spacing.lg} 0;
-`;
-
-const TestInput = styled.input`
+const FullThemeDemoInput = styled.input`
   width: 100%;
-  margin: ${({ theme }) => theme.spacing.sm} 0;
+  padding: ${({ theme }) => theme.spacing.md};
+  border: 1px solid ${({ theme }) => theme.colors.grey[300]};
+  border-radius: ${({ theme }) => theme.borderRadius.base};
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
+  background: ${({ theme }) => theme.colors.background.paper};
+  color: ${({ theme }) => theme.colors.text.primary};
+  margin-bottom: ${({ theme }) => theme.spacing.md};
+
+  &:focus {
+    outline: none;
+    border-color: ${({ theme }) => theme.colors.primary.main};
+  }
 `;
 
-const TestTextarea = styled.textarea`
+const FullThemeDemoSelect = styled.select`
   width: 100%;
-  height: 100px;
-  margin: ${({ theme }) => theme.spacing.sm} 0;
+  padding: ${({ theme }) => theme.spacing.md};
+  border: 1px solid ${({ theme }) => theme.colors.grey[300]};
+  border-radius: ${({ theme }) => theme.borderRadius.base};
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
+  background: ${({ theme }) => theme.colors.background.paper};
+  color: ${({ theme }) => theme.colors.text.primary};
+  margin-bottom: ${({ theme }) => theme.spacing.md};
+
+  &:focus {
+    outline: none;
+    border-color: ${({ theme }) => theme.colors.primary.main};
+  }
 `;
 
-const InteractiveCard = styled.div`
-  margin: ${({ theme }) => theme.spacing.md} 0;
-  padding: ${({ theme }) => theme.spacing.lg};
+const FullThemeDemoTextArea = styled.textarea`
+  width: 100%;
+  padding: ${({ theme }) => theme.spacing.md};
+  border: 1px solid ${({ theme }) => theme.colors.grey[300]};
+  border-radius: ${({ theme }) => theme.borderRadius.base};
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
+  background: ${({ theme }) => theme.colors.background.paper};
+  color: ${({ theme }) => theme.colors.text.primary};
+  min-height: 100px;
+  resize: vertical;
+  margin-bottom: ${({ theme }) => theme.spacing.md};
+
+  &:focus {
+    outline: none;
+    border-color: ${({ theme }) => theme.colors.primary.main};
+  }
+`;
+
+const FullThemeDemoCheckbox = styled.input`
+  margin-right: ${({ theme }) => theme.spacing.sm};
+`;
+
+const FullThemeDemoCheckboxLabel = styled.label`
+  display: flex;
+  align-items: center;
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
+  color: ${({ theme }) => theme.colors.text.primary};
   cursor: pointer;
+  margin-bottom: ${({ theme }) => theme.spacing.sm};
+`;
+
+const FullThemeDemoRadio = styled.input`
+  margin-right: ${({ theme }) => theme.spacing.sm};
+`;
+
+const FullThemeDemoRadioLabel = styled.label`
+  display: flex;
+  align-items: center;
+  font-size: ${({ theme }) => theme.typography.fontSize.sm};
+  color: ${({ theme }) => theme.colors.text.primary};
+  cursor: pointer;
+  margin-bottom: ${({ theme }) => theme.spacing.sm};
+`;
+
+const FullThemeDemoProgress = styled.progress`
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: ${({ theme }) => theme.colors.grey[200]};
+  margin-bottom: ${({ theme }) => theme.spacing.md};
+
+  &::-webkit-progress-bar {
+    background: ${({ theme }) => theme.colors.grey[200]};
+    border-radius: 4px;
+  }
+
+  &::-webkit-progress-value {
+    background: ${({ theme }) => theme.colors.primary.main};
+    border-radius: 4px;
+  }
+`;
+
+const FullThemeDemoAlert = styled.div<{ type: 'success' | 'warning' | 'error' | 'info' }>`
+  padding: ${({ theme }) => theme.spacing.md};
+  border-radius: ${({ theme }) => theme.borderRadius.base};
+  margin-bottom: ${({ theme }) => theme.spacing.md};
+  border-left: 4px solid ${({ theme, type }) => {
+    switch (type) {
+      case 'success': return theme.colors.success.main;
+      case 'warning': return theme.colors.warning.main;
+      case 'error': return theme.colors.error.main;
+      case 'info': return theme.colors.info.main;
+      default: return theme.colors.grey[300];
+    }
+  }};
+  background: ${({ theme, type }) => {
+    switch (type) {
+      case 'success': return theme.colors.success.light + '20';
+      case 'warning': return theme.colors.warning.light + '20';
+      case 'error': return theme.colors.error.light + '20';
+      case 'info': return theme.colors.info.light + '20';
+      default: return theme.colors.grey[50];
+    }
+  }};
+  color: ${({ theme, type }) => {
+    switch (type) {
+      case 'success': return theme.colors.success.dark;
+      case 'warning': return theme.colors.warning.dark;
+      case 'error': return theme.colors.error.dark;
+      case 'info': return theme.colors.info.dark;
+      default: return theme.colors.text.primary;
+    }
+  }};
+`;
+
+const FullThemeDemoBadge = styled.span<{ variant: 'primary' | 'secondary' | 'success' | 'warning' | 'error' }>`
+  display: inline-block;
+  padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.sm};
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
+  font-size: ${({ theme }) => theme.typography.fontSize.xs};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
+  background: ${({ theme, variant }) => {
+    switch (variant) {
+      case 'primary': return theme.colors.primary.main;
+      case 'secondary': return theme.colors.secondary.main;
+      case 'success': return theme.colors.success.main;
+      case 'warning': return theme.colors.warning.main;
+      case 'error': return theme.colors.error.main;
+      default: return theme.colors.grey[300];
+    }
+  }};
+  color: white;
+  margin-right: ${({ theme }) => theme.spacing.sm};
+  margin-bottom: ${({ theme }) => theme.spacing.sm};
+`;
+
+const FullThemeDemoTable = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: ${({ theme }) => theme.spacing.md};
+`;
+
+const FullThemeDemoTableHeader = styled.th`
+  padding: ${({ theme }) => theme.spacing.md};
+  text-align: left;
+  background: ${({ theme }) => theme.colors.grey[100]};
+  color: ${({ theme }) => theme.colors.text.primary};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.grey[300]};
+`;
+
+const FullThemeDemoTableCell = styled.td`
+  padding: ${({ theme }) => theme.spacing.md};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.grey[200]};
+  color: ${({ theme }) => theme.colors.text.primary};
 `;
 
 const FullThemeDemo: React.FC = () => {
-  const [activeTab, setActiveTab] = useState('colors');
+  const { t } = useTranslation();
 
   return (
-    <DemoContainer>
-      <h1>🎨 Enhanced Black-Grey Theme Demo</h1>
-      
-      <nav style={{ marginBottom: '2rem' }}>
-        <button 
-          className={activeTab === 'colors' ? 'btn-primary' : 'btn-outline'}
-          onClick={() => setActiveTab('colors')}
-        >
-          Colors
-        </button>
-        <button 
-          className={activeTab === 'buttons' ? 'btn-secondary' : 'btn-outline'}
-          onClick={() => setActiveTab('buttons')}
-          style={{ marginLeft: '1rem' }}
-        >
-          Buttons
-        </button>
-        <button 
-          className={activeTab === 'forms' ? 'btn-accent' : 'btn-outline'}
-          onClick={() => setActiveTab('forms')}
-          style={{ marginLeft: '1rem' }}
-        >
-          Forms
-        </button>
-        <button 
-          className={activeTab === 'effects' ? 'btn-primary' : 'btn-outline'}
-          onClick={() => setActiveTab('effects')}
-          style={{ marginLeft: '1rem' }}
-        >
-          Effects
-        </button>
-      </nav>
+    <FullThemeDemoContainer>
+      <PageContainer>
+        <PageTitle>{t('fullThemeDemo.title', 'Full Theme Demo Page')}</PageTitle>
 
-      {activeTab === 'colors' && (
-        <DemoSection className="card">
-          <h2>🌈 Enhanced Color Palette</h2>
-          <ColorGrid>
-            <ColorCard bgColor="#000000" textColor="#ffffff">
-              Black<br/>#000000
-            </ColorCard>
-            <ColorCard bgColor="#333333" textColor="#ffffff">
-              Dark Grey<br/>#333333
-            </ColorCard>
-            <ColorCard bgColor="#666666" textColor="#ffffff">
-              Medium Grey<br/>#666666
-            </ColorCard>
-            <ColorCard bgColor="#999999" textColor="#000000">
-              Light Grey<br/>#999999
-            </ColorCard>
-            <ColorCard bgColor="#cccccc" textColor="#000000">
-              Very Light Grey<br/>#cccccc
-            </ColorCard>
-            <ColorCard bgColor="#ffffff" textColor="#000000">
-              White<br/>#ffffff
-            </ColorCard>
-          </ColorGrid>
-        </DemoSection>
-      )}
+        <FullThemeDemoCard>
+          <FullThemeDemoTitle>{t('fullThemeDemo.overview', 'Overview')}</FullThemeDemoTitle>
+          <FullThemeDemoGrid>
+            <FullThemeDemoItem>
+              <FullThemeDemoItemTitle>{t('fullThemeDemo.primaryTheme', 'Primary Theme')}</FullThemeDemoItemTitle>
+              <FullThemeDemoItemText>
+                Test the primary theme and its variations.
+              </FullThemeDemoItemText>
+              <FullThemeDemoButton>{t('fullThemeDemo.testPrimary', 'Test Primary')}</FullThemeDemoButton>
+            </FullThemeDemoItem>
 
-      {activeTab === 'buttons' && (
-        <DemoSection className="card">
-          <h2>🔘 Enhanced Button Collection</h2>
-          <ButtonGrid>
-            <button className="btn-primary">Primary Button<br/>Reddish Primary</button>
-            <button className="btn-secondary">Secondary Button<br/>Greenish Secondary</button>
-            <button className="btn-accent">Accent Button<br/>Bluish Accent</button>
-            <button className="btn-outline">Outline Button</button>
-          </ButtonGrid>
-          <p>All buttons contain gradient lighting and fade effects</p>
-        </DemoSection>
-      )}
+            <FullThemeDemoItem>
+              <FullThemeDemoItemTitle>{t('fullThemeDemo.secondaryTheme', 'Secondary Theme')}</FullThemeDemoItemTitle>
+              <FullThemeDemoItemText>
+                Test the secondary theme and its variations.
+              </FullThemeDemoItemText>
+              <FullThemeDemoButton>{t('fullThemeDemo.testSecondary', 'Test Secondary')}</FullThemeDemoButton>
+            </FullThemeDemoItem>
 
-      {activeTab === 'forms' && (
-        <DemoSection className="card">
-          <h2>📝 Enhanced Form Elements</h2>
-          <TestInput 
-            type="text" 
-            placeholder="Type here to test input field"
-          />
-          <TestTextarea 
-            placeholder="Type here to test textarea"
-          />
-          <select style={{ width: '100%', margin: '1rem 0' }}>
-            <option>Choose an option</option>
-            <option>First Option</option>
-            <option>Second Option</option>
-          </select>
-        </DemoSection>
-      )}
+            <FullThemeDemoItem>
+              <FullThemeDemoItemTitle>{t('fullThemeDemo.accentTheme', 'Accent Theme')}</FullThemeDemoItemTitle>
+              <FullThemeDemoItemText>
+                Test the accent theme and its variations.
+              </FullThemeDemoItemText>
+              <FullThemeDemoButton>{t('fullThemeDemo.testAccent', 'Test Accent')}</FullThemeDemoButton>
+            </FullThemeDemoItem>
 
-      {activeTab === 'effects' && (
-        <DemoSection className="card">
-          <h2>✨ Visual Effects</h2>
-          <InteractiveCard className="card">
-            <h3>Interactive Card</h3>
-            <p>Hover over this card to see fade and lighting effects</p>
-          </InteractiveCard>
-          
-          <div style={{ marginTop: '2rem' }}>
-            <h3>Background Effects:</h3>
-            <ul>
-              <li>✅ Multi-layer color gradient on background</li>
-              <li>✅ Gradual fade effect when loading page</li>
-              <li>✅ Animated lighting on elements</li>
-              <li>✅ Reflection effects on buttons</li>
-              <li>✅ Dynamic shadows for texts</li>
-              <li>✅ Smooth transitions between states</li>
-            </ul>
-          </div>
-        </DemoSection>
-      )}
+            <FullThemeDemoItem>
+              <FullThemeDemoItemTitle>{t('fullThemeDemo.neutralTheme', 'Neutral Theme')}</FullThemeDemoItemTitle>
+              <FullThemeDemoItemText>
+                Test the neutral theme and its variations.
+              </FullThemeDemoItemText>
+              <FullThemeDemoButton>{t('fullThemeDemo.testNeutral', 'Test Neutral')}</FullThemeDemoButton>
+            </FullThemeDemoItem>
+          </FullThemeDemoGrid>
+        </FullThemeDemoCard>
 
-      <DemoSection className="card">
-        <h2>📊 Theme Information</h2>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1rem' }}>
-          <div>
-            <h4>🎯 Main Features:</h4>
-            <ul>
-              <li>Background image: carpic.jpg</li>
-              <li>Varied black-grey color gradients</li>
-              <li>High contrast for readability</li>
-              <li>Advanced visual effects</li>
-            </ul>
-          </div>
-          <div>
-            <h4>🌈 Grey Shades:</h4>
-            <ul>
-              <li>Black (#000000)</li>
-              <li>Dark Grey (#333333)</li>
-              <li>Medium Grey (#666666)</li>
-              <li>Light Grey (#999999)</li>
-              <li>Very Light Grey (#cccccc)</li>
-              <li>White (#ffffff)</li>
-            </ul>
-          </div>
-        </div>
-      </DemoSection>
-    </DemoContainer>
+        <FullThemeDemoCard>
+          <FullThemeDemoTitle>{t('fullThemeDemo.typography', 'Typography')}</FullThemeDemoTitle>
+          <FullThemeDemoGrid>
+            <FullThemeDemoItem>
+              <FullThemeDemoItemTitle>{t('fullThemeDemo.headings', 'Headings')}</FullThemeDemoItemTitle>
+              <FullThemeDemoItemText>
+                Test different heading sizes and weights.
+              </FullThemeDemoItemText>
+              <FullThemeDemoButton>{t('fullThemeDemo.testHeadings', 'Test Headings')}</FullThemeDemoButton>
+            </FullThemeDemoItem>
+
+            <FullThemeDemoItem>
+              <FullThemeDemoItemTitle>{t('fullThemeDemo.bodyText', 'Body Text')}</FullThemeDemoItemTitle>
+              <FullThemeDemoItemText>
+                Test body text styles and variations.
+              </FullThemeDemoItemText>
+              <FullThemeDemoButton>{t('fullThemeDemo.testBodyText', 'Test Body Text')}</FullThemeDemoButton>
+            </FullThemeDemoItem>
+
+            <FullThemeDemoItem>
+              <FullThemeDemoItemTitle>{t('fullThemeDemo.captions', 'Captions')}</FullThemeDemoItemTitle>
+              <FullThemeDemoItemText>
+                Test caption and small text styles.
+              </FullThemeDemoItemText>
+              <FullThemeDemoButton>{t('fullThemeDemo.testCaptions', 'Test Captions')}</FullThemeDemoButton>
+            </FullThemeDemoItem>
+
+            <FullThemeDemoItem>
+              <FullThemeDemoItemTitle>{t('fullThemeDemo.links', 'Links')}</FullThemeDemoItemTitle>
+              <FullThemeDemoItemText>
+                Test link styles and hover effects.
+              </FullThemeDemoItemText>
+              <FullThemeDemoButton>{t('fullThemeDemo.testLinks', 'Test Links')}</FullThemeDemoButton>
+            </FullThemeDemoItem>
+          </FullThemeDemoGrid>
+        </FullThemeDemoCard>
+
+        <FullThemeDemoCard>
+          <FullThemeDemoTitle>{t('fullThemeDemo.components', 'Components')}</FullThemeDemoTitle>
+          <FullThemeDemoGrid>
+            <FullThemeDemoItem>
+              <FullThemeDemoItemTitle>{t('fullThemeDemo.buttons', 'Buttons')}</FullThemeDemoItemTitle>
+              <FullThemeDemoItemText>
+                Test different button styles and states.
+              </FullThemeDemoItemText>
+              <FullThemeDemoButton>{t('fullThemeDemo.testButtons', 'Test Buttons')}</FullThemeDemoButton>
+            </FullThemeDemoItem>
+
+            <FullThemeDemoItem>
+              <FullThemeDemoItemTitle>{t('fullThemeDemo.inputs', 'Inputs')}</FullThemeDemoItemTitle>
+              <FullThemeDemoItemText>
+                Test input field styles and states.
+              </FullThemeDemoItemText>
+              <FullThemeDemoButton>{t('fullThemeDemo.testInputs', 'Test Inputs')}</FullThemeDemoButton>
+            </FullThemeDemoItem>
+
+            <FullThemeDemoItem>
+              <FullThemeDemoItemTitle>{t('fullThemeDemo.cards', 'Cards')}</FullThemeDemoItemTitle>
+              <FullThemeDemoItemText>
+                Test card component styles and variations.
+              </FullThemeDemoItemText>
+              <FullThemeDemoButton>{t('fullThemeDemo.testCards', 'Test Cards')}</FullThemeDemoButton>
+            </FullThemeDemoItem>
+
+            <FullThemeDemoItem>
+              <FullThemeDemoItemTitle>{t('fullThemeDemo.modals', 'Modals')}</FullThemeDemoItemTitle>
+              <FullThemeDemoItemText>
+                Test modal component styles and states.
+              </FullThemeDemoItemText>
+              <FullThemeDemoButton>{t('fullThemeDemo.testModals', 'Test Modals')}</FullThemeDemoButton>
+            </FullThemeDemoItem>
+          </FullThemeDemoGrid>
+        </FullThemeDemoCard>
+
+        <FullThemeDemoCard>
+          <FullThemeDemoTitle>{t('fullThemeDemo.layout', 'Layout')}</FullThemeDemoTitle>
+          <FullThemeDemoGrid>
+            <FullThemeDemoItem>
+              <FullThemeDemoItemTitle>{t('fullThemeDemo.grid', 'Grid')}</FullThemeDemoItemTitle>
+              <FullThemeDemoItemText>
+                Test grid layout system and responsiveness.
+              </FullThemeDemoItemText>
+              <FullThemeDemoButton>{t('fullThemeDemo.testGrid', 'Test Grid')}</FullThemeDemoButton>
+            </FullThemeDemoItem>
+
+            <FullThemeDemoItem>
+              <FullThemeDemoItemTitle>{t('fullThemeDemo.spacing', 'Spacing')}</FullThemeDemoItemTitle>
+              <FullThemeDemoItemText>
+                Test spacing system and consistency.
+              </FullThemeDemoItemText>
+              <FullThemeDemoButton>{t('fullThemeDemo.testSpacing', 'Test Spacing')}</FullThemeDemoButton>
+            </FullThemeDemoItem>
+
+            <FullThemeDemoItem>
+              <FullThemeDemoItemTitle>{t('fullThemeDemo.borders', 'Borders')}</FullThemeDemoItemTitle>
+              <FullThemeDemoItemText>
+                Test border styles and radius variations.
+              </FullThemeDemoItemText>
+              <FullThemeDemoButton>{t('fullThemeDemo.testBorders', 'Test Borders')}</FullThemeDemoButton>
+            </FullThemeDemoItem>
+
+            <FullThemeDemoItem>
+              <FullThemeDemoItemTitle>{t('fullThemeDemo.shadows', 'Shadows')}</FullThemeDemoItemTitle>
+              <FullThemeDemoItemText>
+                Test shadow styles and depth variations.
+              </FullThemeDemoItemText>
+              <FullThemeDemoButton>{t('fullThemeDemo.testShadows', 'Test Shadows')}</FullThemeDemoButton>
+            </FullThemeDemoItem>
+          </FullThemeDemoGrid>
+        </FullThemeDemoCard>
+      </PageContainer>
+    </FullThemeDemoContainer>
   );
 };
 
