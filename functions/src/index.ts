@@ -93,4 +93,4 @@ export {
 } from './proactive-maintenance';
 
 // Export social token exchange functions, metrics & rotation stub
-export { getSocialAccessToken, fetchSocialAccessToken, getSocialTokenMetrics, rotateSocialPlatformTokens } from './social-tokens';
+export { getSocialAccessToken, fetchSocialAccessToken, getSocialTokenMetrics, rotateSocialPlatformTokens, snapshotSocialTokenMetrics } from './social-tokens';

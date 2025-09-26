@@ -26,6 +26,7 @@ This document tracks the staged migration from exposing long‑lived social medi
 * Verification function `verifyEphemeralToken` implemented (signature + exp)
 * Ops claims scaffold added (derived from purpose: read / create / insights) + `HIDE_RAW_TOKENS` flag to force opaque delivery
 * Rotation scheduler stub (`rotateSocialPlatformTokens`) with basic anomaly heuristic (invalid+expired >10% of issued)
+* Metrics snapshot scheduler stub (`snapshotSocialTokenMetrics`) every 5m (planned BigQuery/Firestore export)
 * HTTP response now includes `X-Social-Token-Issuer` header; callable returns `issuer` field
 
 ### Frontend (`social-token-provider.ts`)
@@ -91,6 +92,7 @@ Planned additions:
   - [x] Ops claims derivation + tests (purpose -> ops)
   - [ ] Add verification function & integrate client-side service validation
     - [x] Rotation stub + anomaly heuristic
+      - [x] Metrics snapshot stub (future export pipeline)
 - [x] Create GitHub Action to grep & fail on new `REACT_APP_*ACCESS_TOKEN` usages (baseline in `.github/workflows/ci.yml`)
   - [ ] Add allowlist for legacy docs if needed
   - [x] (Added) Optional Secret Manager dynamic retrieval scaffold (will enforce in Phase 2)

@@ -333,3 +333,15 @@ export const rotateSocialPlatformTokens = functions.pubsub.schedule('every 24 ho
   // No real rotation yet; return stub
   return { rotated: false, skipped: true, details };
 });
+
+// Snapshot metrics to (future) BigQuery / Firestore (stub only)
+interface MetricsSnapshotResult { stored: boolean; transport: 'none' | 'bigquery' | 'firestore'; size: number; }
+export const snapshotSocialTokenMetrics = functions.pubsub.schedule('every 5 minutes').onRun(async (): Promise<MetricsSnapshotResult> => {
+  const snapshot = {
+    ts: Date.now(),
+    ...metrics
+  };
+  // Future: write to BigQuery table `social_token_metrics` or Firestore collection.
+  // For now, just return stub.
+  return { stored: false, transport: 'none', size: Object.keys(snapshot).length };
+});
