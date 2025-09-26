@@ -91,3 +91,6 @@ export {
   sendMaintenanceReminders,
   updateMaintenanceRequests
 } from './proactive-maintenance';
+
+// Export social token exchange functions, metrics & rotation stub
+export { getSocialAccessToken, fetchSocialAccessToken, getSocialTokenMetrics, rotateSocialPlatformTokens } from './social-tokens';

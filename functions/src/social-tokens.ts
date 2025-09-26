@@ -315,3 +315,21 @@ export const getSocialTokenMetrics = functions.https.onCall(async (_data, contex
     now: Date.now()
   };
 });
+
+// --- Rotation & Anomaly (Stub Implementations) ---
+interface RotationResult { rotated: boolean; details: Record<string, any>; skipped?: boolean; }
+
+// Placeholder: will integrate with platform-specific rotation later.
+export const rotateSocialPlatformTokens = functions.pubsub.schedule('every 24 hours').onRun(async () : Promise<RotationResult> => {
+  const details: Record<string, any> = {};
+  // Basic anomaly heuristic: invalid + expired > 10% of issued in last interval (approx using totals)
+  const issued = metrics.ephemeralIssued || 0;
+  const problematic = metrics.ephemeralInvalid + metrics.ephemeralExpired;
+  const anomaly = issued > 50 && problematic / issued > 0.10; // threshold
+  if (anomaly) {
+    details.anomalyDetected = true;
+    details.problematicRatio = +(problematic / issued).toFixed(3);
+  }
+  // No real rotation yet; return stub
+  return { rotated: false, skipped: true, details };
+});
