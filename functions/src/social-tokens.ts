@@ -55,7 +55,11 @@ const metrics = {
   rateLimitHits: 0,
   lastRequestAt: 0,
   secretFetches: 0,
-  secretFetchFailures: 0
+  secretFetchFailures: 0,
+  ephemeralIssued: 0,
+  ephemeralVerified: 0,
+  ephemeralInvalid: 0,
+  ephemeralExpired: 0
 };
 
 // Simple in-memory rate limit buckets (ephemeral)
@@ -86,13 +90,53 @@ const EPHEMERAL_TOKEN_TTL_SECONDS = 60 * 5; // 5 minutes short-lived
 const ENABLE_EPHEMERAL = process.env.ENABLE_EPHEMERAL_TOKENS === '1';
 const EPHEMERAL_SIGNING_SECRET = process.env.EPHEMERAL_SIGNING_SECRET || 'dev-insecure-secret-change';
 
-function createEphemeralToken(platform: string, raw: string): { value: string; expiresAt: number } {
+function createEphemeralToken(platform: string): { value: string; expiresAt: number } {
   const issuedAt = Date.now();
   const expiresAt = issuedAt + EPHEMERAL_TOKEN_TTL_SECONDS * 1000;
-  const payload = JSON.stringify({ p: platform, iat: issuedAt, exp: expiresAt, v: 1 });
-  const hmac = crypto.createHmac('sha256', EPHEMERAL_SIGNING_SECRET).update(payload + raw.slice(0, 12)).digest('base64url');
+  const payloadObj = { p: platform, iat: issuedAt, exp: expiresAt, v: 1 };
+  const payload = JSON.stringify(payloadObj);
+  const hmac = crypto.createHmac('sha256', EPHEMERAL_SIGNING_SECRET).update(payload).digest('base64url');
   const value = Buffer.from(payload).toString('base64url') + '.' + hmac;
   return { value, expiresAt };
+}
+
+export interface EphemeralVerificationResult {
+  valid: boolean;
+  platform?: string;
+  issuedAt?: number;
+  expiresAt?: number;
+  version?: number;
+  reason?: string;
+}
+
+export function verifyEphemeralToken(token: string): EphemeralVerificationResult {
+  try {
+    const parts = token.split('.');
+    if (parts.length !== 2) {
+      metrics.ephemeralInvalid++;
+      return { valid: false, reason: 'format' };
+    }
+    const payloadB64 = parts[0];
+    const sig = parts[1];
+    const payloadJson = Buffer.from(payloadB64, 'base64url').toString('utf8');
+    const expected = crypto.createHmac('sha256', EPHEMERAL_SIGNING_SECRET).update(payloadJson).digest('base64url');
+    const match = expected.length === sig.length && crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(sig));
+    if (!match) {
+      metrics.ephemeralInvalid++;
+      return { valid: false, reason: 'signature' };
+    }
+    const obj = JSON.parse(payloadJson);
+    const now = Date.now();
+    if (now > obj.exp) {
+      metrics.ephemeralExpired++;
+      return { valid: false, reason: 'expired', platform: obj.p, issuedAt: obj.iat, expiresAt: obj.exp, version: obj.v };
+    }
+    metrics.ephemeralVerified++;
+    return { valid: true, platform: obj.p, issuedAt: obj.iat, expiresAt: obj.exp, version: obj.v };
+  } catch (e: any) {
+    metrics.ephemeralInvalid++;
+    return { valid: false, reason: 'exception' };
+  }
 }
 
 async function readToken(platform: string): Promise<string | null> {
@@ -166,7 +210,8 @@ async function coreGetToken(platform: string): Promise<TokenResponse> {
       issuer: secretManagerClient ? 'secret-manager' : 'env'
   };
   if (ENABLE_EPHEMERAL) {
-    const eph = createEphemeralToken(platform, raw);
+    const eph = createEphemeralToken(platform);
+    metrics.ephemeralIssued++;
     base.ephemeral = eph;
     base.wrapped = true;
     // In production we should avoid including raw token when ephemeral is enabled.

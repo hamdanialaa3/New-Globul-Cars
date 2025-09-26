@@ -23,6 +23,7 @@ This document tracks the staged migration from exposing long‑lived social medi
 * In-memory 10m TTL cache (bridge only – not persistent)
 * Optional Secret Manager lookup (controlled via `ENABLE_SECRET_MANAGER=1`) with per-platform secret naming (`SOCIAL_TOKEN_<PLATFORM>` or override `SECRET_<PLATFORM>_NAME`)
 * Ephemeral wrapper (toggle `ENABLE_EPHEMERAL_TOKENS=1`) issuing 5m signed opaque token (HMAC SHA-256) – dev keeps raw for debugging, production hides raw
+* Verification function `verifyEphemeralToken` implemented (signature + exp)
 * HTTP response now includes `X-Social-Token-Issuer` header; callable returns `issuer` field
 
 ### Frontend (`social-token-provider.ts`)
@@ -69,6 +70,7 @@ Resolution order:
 Planned additions:
 * BigQuery export (daily) for anomaly detection
 * Alert if backendIssues / requests > 0.05 rolling window
+* Metrics expansion: ephemeralIssued, ephemeralVerified, ephemeralInvalid, ephemeralExpired
 
 ## Decommission Plan for Fallback
 | Step | Trigger | Action |
@@ -83,6 +85,7 @@ Planned additions:
 - [x] Introduce per-request rate limiting (basic in-memory) – expand to sliding window & persistence
 - [ ] Add unit tests: cache hit, cache miss, auth required, metrics shape (partial: auth + rate limit + ephemeral covered)
 - [x] Ephemeral token scaffold (HMAC) with production raw suppression
+  - [x] Ephemeral verification function + tests (signature / expiration)
   - [ ] Add verification function & integrate client-side service validation
 - [x] Create GitHub Action to grep & fail on new `REACT_APP_*ACCESS_TOKEN` usages (baseline in `.github/workflows/ci.yml`)
   - [ ] Add allowlist for legacy docs if needed

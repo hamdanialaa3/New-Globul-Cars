@@ -56,6 +56,29 @@ async function run() {
     assert.ok(result.ephemeral?.value, 'ephemeral value present');
     assert.notStrictEqual(result.token, 'TIKTOK_LONG_TOKEN_XYZ');
     assert.strictEqual(result.rawIncluded, false);
+
+    const verify = fresh.verifyEphemeralToken(result.token);
+    assert.ok(verify.valid, 'ephemeral token should verify');
+    assert.strictEqual(verify.platform, 'tiktok');
+  });
+
+  await test('ephemeral verification fails with tampered signature', async () => {
+    const mod = require('../src/social-tokens');
+    const chg = 'AAA';
+    const bad = 'XXXX.' + chg;
+    const res = mod.verifyEphemeralToken(bad);
+    assert.ok(!res.valid, 'should be invalid');
+  });
+
+  await test('ephemeral token expiration detection', async () => {
+    // fabricate an already expired token
+    const mod = require('../src/social-tokens');
+    const pastExp = Date.now() - 1000;
+    const payload = JSON.stringify({ p: 'facebook', iat: pastExp - 5000, exp: pastExp, v: 1 });
+    const hmac = require('crypto').createHmac('sha256', process.env.EPHEMERAL_SIGNING_SECRET || 'dev-insecure-secret-change').update(payload).digest('base64url');
+    const token = Buffer.from(payload).toString('base64url') + '.' + hmac;
+    const res = mod.verifyEphemeralToken(token);
+    assert.ok(!res.valid && res.reason === 'expired', 'should detect expiration');
   });
 
   // Rate limit test (exceed per-user limit quickly)
