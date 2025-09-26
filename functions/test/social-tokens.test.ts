@@ -28,11 +28,14 @@ async function run() {
     const wrapped = testEnv.wrap(socialTokens.getSocialAccessToken);
     process.env.FUNCTIONS_EMULATOR = 'true';
     process.env.REACT_APP_FACEBOOK_ACCESS_TOKEN = 'FAKE_FACEBOOK_TOKEN_TEST';
-    const result = await wrapped({ platform: 'facebook' }, { auth: { uid: 'user1' } } as any);
+    const result = await wrapped({ platform: 'facebook', purpose: 'analytics' }, { auth: { uid: 'user1' } } as any);
     assert.strictEqual(result.token, 'FAKE_FACEBOOK_TOKEN_TEST');
     assert.strictEqual(result.platform, 'facebook');
     assert.ok(typeof result.expiresIn === 'number');
     assert.ok(result.issuer, 'issuer should be defined');
+    if (result.ops) {
+      assert.ok(result.ops.includes('insights'), 'ops should include insights for analytics purpose');
+    }
   });
 
   await test('env fallback still works when secret manager disabled', async () => {
@@ -43,19 +46,20 @@ async function run() {
     assert.strictEqual(result.token, 'IG_TOKEN_ABC');
   });
 
-  await test('ephemeral wrapping returns opaque token in production mode', async () => {
+  await test('ephemeral wrapping returns opaque token in production mode with ops claims', async () => {
     // Force reload of module with new env flags
     process.env.ENABLE_EPHEMERAL_TOKENS = '1';
-    process.env.NODE_ENV = 'production';
+    process.env.HIDE_RAW_TOKENS = '1';
     process.env.REACT_APP_TIKTOK_ACCESS_TOKEN = 'TIKTOK_LONG_TOKEN_XYZ';
     delete require.cache[require.resolve('../src/social-tokens')];
     const fresh = require('../src/social-tokens');
     const wrapped = testEnv.wrap(fresh.getSocialAccessToken);
-    const result = await wrapped({ platform: 'tiktok' }, { auth: { uid: 'u_tt' } } as any);
+    const result = await wrapped({ platform: 'tiktok', purpose: 'post_content' }, { auth: { uid: 'u_tt' } } as any);
     assert.ok(result.wrapped, 'wrapped flag should be true');
     assert.ok(result.ephemeral?.value, 'ephemeral value present');
     assert.notStrictEqual(result.token, 'TIKTOK_LONG_TOKEN_XYZ');
     assert.strictEqual(result.rawIncluded, false);
+    assert.ok(result.ops && result.ops.includes('create'), 'ops should include create for post_content');
 
     const verify = fresh.verifyEphemeralToken(result.token);
     assert.ok(verify.valid, 'ephemeral token should verify');

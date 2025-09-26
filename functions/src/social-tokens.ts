@@ -42,6 +42,7 @@ interface TokenResponse {
     value: string; // signed opaque token
     expiresAt: number;
   };
+  ops?: string[]; // allowed operations (claims)
   // future: scopes, refreshEndpoint, rotationId
 }
 
@@ -88,16 +89,17 @@ function checkAndIncrementRateLimit(key: string, bucketMap: Record<string, Bucke
 const DEFAULT_TTL_SECONDS = 60 * 10; // 10 minutes (bridge only)
 const EPHEMERAL_TOKEN_TTL_SECONDS = 60 * 5; // 5 minutes short-lived
 const ENABLE_EPHEMERAL = process.env.ENABLE_EPHEMERAL_TOKENS === '1';
+const HIDE_RAW_TOKENS = process.env.HIDE_RAW_TOKENS === '1'; // safer gating than NODE_ENV only
 const EPHEMERAL_SIGNING_SECRET = process.env.EPHEMERAL_SIGNING_SECRET || 'dev-insecure-secret-change';
 
-function createEphemeralToken(platform: string): { value: string; expiresAt: number } {
+function createEphemeralToken(platform: string, ops: string[]): { value: string; expiresAt: number; ops: string[] } {
   const issuedAt = Date.now();
   const expiresAt = issuedAt + EPHEMERAL_TOKEN_TTL_SECONDS * 1000;
-  const payloadObj = { p: platform, iat: issuedAt, exp: expiresAt, v: 1 };
+  const payloadObj = { p: platform, iat: issuedAt, exp: expiresAt, v: 1, ops };
   const payload = JSON.stringify(payloadObj);
   const hmac = crypto.createHmac('sha256', EPHEMERAL_SIGNING_SECRET).update(payload).digest('base64url');
   const value = Buffer.from(payload).toString('base64url') + '.' + hmac;
-  return { value, expiresAt };
+  return { value, expiresAt, ops };
 }
 
 export interface EphemeralVerificationResult {
@@ -179,7 +181,7 @@ async function readToken(platform: string): Promise<string | null> {
   }
 }
 
-async function coreGetToken(platform: string): Promise<TokenResponse> {
+async function coreGetToken(platform: string, opts?: { purpose?: string }): Promise<TokenResponse> {
   const now = Date.now();
   const cacheKey = platform;
   const cached = memoryCache[cacheKey];
@@ -210,12 +212,16 @@ async function coreGetToken(platform: string): Promise<TokenResponse> {
       issuer: secretManagerClient ? 'secret-manager' : 'env'
   };
   if (ENABLE_EPHEMERAL) {
-    const eph = createEphemeralToken(platform);
+    // Derive allowed ops from purpose (very basic mapping for now)
+    const purpose = opts?.purpose || 'generic';
+    const ops = deriveOpsForPurpose(purpose);
+    const eph = createEphemeralToken(platform, ops);
     metrics.ephemeralIssued++;
     base.ephemeral = eph;
     base.wrapped = true;
+    base.ops = ops;
     // In production we should avoid including raw token when ephemeral is enabled.
-    if (process.env.NODE_ENV === 'production') {
+    if (HIDE_RAW_TOKENS) {
       base.rawIncluded = false;
       // Replace exposed token with opaque ephemeral value to clients
       base.token = eph.value;
@@ -225,6 +231,15 @@ async function coreGetToken(platform: string): Promise<TokenResponse> {
     }
   }
   return base;
+}
+
+function deriveOpsForPurpose(purpose: string): string[] {
+  switch (purpose) {
+    case 'read_profile': return ['read'];
+    case 'post_content': return ['create','read'];
+    case 'analytics': return ['read','insights'];
+    default: return ['read'];
+  }
 }
 
 export const getSocialAccessToken = functions.https.onCall(async (data: TokenRequestData, context): Promise<TokenResponse> => {
@@ -253,7 +268,7 @@ export const getSocialAccessToken = functions.https.onCall(async (data: TokenReq
   metrics.lastRequestAt = Date.now();
 
   // Cache key includes platform only (purpose not yet differentiating tokens in bridge mode)
-  return coreGetToken(platform);
+  return coreGetToken(platform, { purpose: data?.purpose });
 });
 
 // (Future) HTTP function variant for non-Firebase callers
@@ -279,7 +294,7 @@ export const fetchSocialAccessToken = functions.https.onRequest(async (req, res)
     metrics.requests++;
     metrics.perPlatform[platform] = (metrics.perPlatform[platform] || 0) + 1;
     metrics.lastRequestAt = Date.now();
-    const response = await coreGetToken(platform);
+  const response = await coreGetToken(platform, { purpose: req.query.purpose as string });
     res.setHeader('X-Social-Token-Issuer', response.issuer || 'unknown');
     res.status(200).json(response as TokenResponse);
   } catch (e: any) {

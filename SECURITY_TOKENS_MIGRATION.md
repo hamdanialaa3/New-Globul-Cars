@@ -24,6 +24,7 @@ This document tracks the staged migration from exposing long‑lived social medi
 * Optional Secret Manager lookup (controlled via `ENABLE_SECRET_MANAGER=1`) with per-platform secret naming (`SOCIAL_TOKEN_<PLATFORM>` or override `SECRET_<PLATFORM>_NAME`)
 * Ephemeral wrapper (toggle `ENABLE_EPHEMERAL_TOKENS=1`) issuing 5m signed opaque token (HMAC SHA-256) – dev keeps raw for debugging, production hides raw
 * Verification function `verifyEphemeralToken` implemented (signature + exp)
+* Ops claims scaffold added (derived from purpose: read / create / insights) + `HIDE_RAW_TOKENS` flag to force opaque delivery
 * HTTP response now includes `X-Social-Token-Issuer` header; callable returns `issuer` field
 
 ### Frontend (`social-token-provider.ts`)
@@ -86,6 +87,7 @@ Planned additions:
 - [ ] Add unit tests: cache hit, cache miss, auth required, metrics shape (partial: auth + rate limit + ephemeral covered)
 - [x] Ephemeral token scaffold (HMAC) with production raw suppression
   - [x] Ephemeral verification function + tests (signature / expiration)
+  - [x] Ops claims derivation + tests (purpose -> ops)
   - [ ] Add verification function & integrate client-side service validation
 - [x] Create GitHub Action to grep & fail on new `REACT_APP_*ACCESS_TOKEN` usages (baseline in `.github/workflows/ci.yml`)
   - [ ] Add allowlist for legacy docs if needed
