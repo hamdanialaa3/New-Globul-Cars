@@ -1,0 +1,62 @@
+import * as assert from 'assert';
+import * as fft from 'firebase-functions-test';
+
+const testEnv = (fft as any).default ? (fft as any).default() : (fft as any)();
+const socialTokens = require('../src/social-tokens');
+
+async function run() {
+  const results: { name: string; ok: boolean; error?: any }[] = [];
+  async function test(name: string, fn: () => Promise<void>) {
+    try { await fn(); results.push({ name, ok: true }); }
+    catch (e) { results.push({ name, ok: false, error: e }); }
+  }
+
+  await test('rejects missing platform', async () => {
+    const wrapped = testEnv.wrap(socialTokens.getSocialAccessToken);
+    await assert.rejects(() => wrapped({}, { auth: { uid: 'u1' } } as any), /platform is required/);
+  });
+
+  await test('rejects unauthenticated when not emulator', async () => {
+    const wrapped = testEnv.wrap(socialTokens.getSocialAccessToken);
+    const prev = process.env.FUNCTIONS_EMULATOR;
+    delete process.env.FUNCTIONS_EMULATOR;
+    await assert.rejects(() => wrapped({ platform: 'facebook' }, {} as any), /Authentication required/);
+    if (prev) process.env.FUNCTIONS_EMULATOR = prev;
+  });
+
+  await test('returns token when authenticated (emulator mode)', async () => {
+    const wrapped = testEnv.wrap(socialTokens.getSocialAccessToken);
+    process.env.FUNCTIONS_EMULATOR = 'true';
+    process.env.REACT_APP_FACEBOOK_ACCESS_TOKEN = 'FAKE_FACEBOOK_TOKEN_TEST';
+    const result = await wrapped({ platform: 'facebook' }, { auth: { uid: 'user1' } } as any);
+    assert.strictEqual(result.token, 'FAKE_FACEBOOK_TOKEN_TEST');
+    assert.strictEqual(result.platform, 'facebook');
+    assert.ok(typeof result.expiresIn === 'number');
+  });
+
+  // Rate limit test (exceed per-user limit quickly)
+  await test('rate limiting per user', async () => {
+    const wrapped = testEnv.wrap(socialTokens.getSocialAccessToken);
+    const limitAttempts = 15; // above configured 10
+    let hit = false;
+    for (let i = 0; i < limitAttempts; i++) {
+      try {
+        await wrapped({ platform: 'facebook' }, { auth: { uid: 'limited_user' } } as any);
+      } catch (e: any) {
+        if (e?.message && /Rate limit/i.test(e.message)) {
+          hit = true;
+          break;
+        }
+      }
+    }
+    assert.ok(hit, 'should hit rate limit for user');
+  });
+
+  const passed = results.filter(r => r.ok).length;
+  const failed = results.length - passed;
+  console.log(`Social Token Tests: ${passed} passed, ${failed} failed`);
+  results.filter(r => !r.ok).forEach(r => console.error('FAIL', r.name, r.error));
+  if (failed > 0) process.exit(1);
+}
+
+run();
