@@ -22,6 +22,7 @@ This document tracks the staged migration from exposing long‑lived social medi
 * Metrics: `getSocialTokenMetrics` (requests, cacheHits, perPlatform)
 * In-memory 10m TTL cache (bridge only – not persistent)
 * Optional Secret Manager lookup (controlled via `ENABLE_SECRET_MANAGER=1`) with per-platform secret naming (`SOCIAL_TOKEN_<PLATFORM>` or override `SECRET_<PLATFORM>_NAME`)
+* HTTP response now includes `X-Social-Token-Issuer` header; callable returns `issuer` field
 
 ### Frontend (`social-token-provider.ts`)
 Resolution order:
@@ -79,7 +80,7 @@ Planned additions:
 
 ## Action Checklist (Next Sprint)
 - [ ] Integrate GCP Secret Manager fetch for raw tokens
-- [ ] Add `X-Social-Token-Issuer` header for callable responses
+- [x] Add `X-Social-Token-Issuer` header + callable `issuer` field
 - [x] Introduce per-request rate limiting (basic in-memory) – expand to sliding window & persistence
 - [ ] Add unit tests: cache hit, cache miss, auth required, metrics shape (partial: auth + rate limit covered)
 - [x] Create GitHub Action to grep & fail on new `REACT_APP_*ACCESS_TOKEN` usages (baseline in `.github/workflows/ci.yml`)

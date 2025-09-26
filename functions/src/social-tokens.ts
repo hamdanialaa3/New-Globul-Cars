@@ -34,6 +34,7 @@ interface TokenResponse {
   token: string;
   expiresIn: number; // seconds
   issuedAt: number;
+  issuer?: string; // identifies backend source variant
   // future: scopes, refreshEndpoint, rotationId
 }
 
@@ -142,7 +143,8 @@ async function coreGetToken(platform: string): Promise<TokenResponse> {
     platform,
     token: raw,
     expiresIn: DEFAULT_TTL_SECONDS,
-    issuedAt: now
+    issuedAt: now,
+    issuer: secretManagerClient ? 'secret-manager' : 'env'
   };
 }
 
@@ -199,7 +201,8 @@ export const fetchSocialAccessToken = functions.https.onRequest(async (req, res)
     metrics.perPlatform[platform] = (metrics.perPlatform[platform] || 0) + 1;
     metrics.lastRequestAt = Date.now();
     const response = await coreGetToken(platform);
-  res.status(200).json(response as TokenResponse);
+    res.setHeader('X-Social-Token-Issuer', response.issuer || 'unknown');
+    res.status(200).json(response as TokenResponse);
   } catch (e: any) {
     res.status(500).json({ error: e?.message || 'internal error' });
   }

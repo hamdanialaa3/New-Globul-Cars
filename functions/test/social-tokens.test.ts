@@ -32,6 +32,7 @@ async function run() {
     assert.strictEqual(result.token, 'FAKE_FACEBOOK_TOKEN_TEST');
     assert.strictEqual(result.platform, 'facebook');
     assert.ok(typeof result.expiresIn === 'number');
+    assert.ok(result.issuer, 'issuer should be defined');
   });
 
   await test('env fallback still works when secret manager disabled', async () => {
