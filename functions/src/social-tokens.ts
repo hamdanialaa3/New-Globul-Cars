@@ -5,6 +5,24 @@
 // real OAuth exchange / token minting in later phase.
 
 import * as functions from 'firebase-functions';
+// Optional Secret Manager integration (lazy required)
+// Using 'any' to avoid needing @types; dynamic import keeps optional nature.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let secretManagerClient: any = null;
+async function getSecretManager() {
+  if (!process.env.ENABLE_SECRET_MANAGER) return null;
+  if (!secretManagerClient) {
+    try {
+      // Dynamically import to avoid cold-start penalty if unused
+  const sm: any = await import('@google-cloud/secret-manager');
+  secretManagerClient = new sm.SecretManagerServiceClient();
+    } catch (e) {
+      console.warn('[social-tokens] Secret Manager unavailable, continuing with env tokens');
+      return null;
+    }
+  }
+  return secretManagerClient;
+}
 
 interface TokenRequestData {
   platform: 'facebook' | 'instagram' | 'tiktok';
@@ -27,7 +45,9 @@ const metrics = {
   cacheHits: 0,
   backendIssues: 0,
   rateLimitHits: 0,
-  lastRequestAt: 0
+  lastRequestAt: 0,
+  secretFetches: 0,
+  secretFetchFailures: 0
 };
 
 // Simple in-memory rate limit buckets (ephemeral)
@@ -55,7 +75,34 @@ function checkAndIncrementRateLimit(key: string, bucketMap: Record<string, Bucke
 }
 const DEFAULT_TTL_SECONDS = 60 * 10; // 10 minutes (bridge only)
 
-function readEnvToken(platform: string): string | null {
+async function readToken(platform: string): Promise<string | null> {
+  // 1. Secret Manager (if enabled)
+  try {
+    const sm = await getSecretManager();
+    if (sm) {
+      const projectId = process.env.GCLOUD_PROJECT || process.env.GCP_PROJECT || process.env.GOOGLE_CLOUD_PROJECT;
+      if (projectId) {
+        const defaultSecretName = `SOCIAL_TOKEN_${platform.toUpperCase()}`; // e.g. SOCIAL_TOKEN_FACEBOOK
+        const overrideName = process.env[`SECRET_${platform.toUpperCase()}_NAME`];
+        const secretId = overrideName || defaultSecretName;
+        const name = `projects/${projectId}/secrets/${secretId}/versions/latest`;
+        try {
+          const [version] = await sm.accessSecretVersion({ name });
+          const payload = version.payload?.data?.toString();
+          if (payload) {
+            metrics.secretFetches++;
+            return payload.trim();
+          }
+        } catch (e) {
+          metrics.secretFetchFailures++;
+          // fall through to env fallback
+        }
+      }
+    }
+  } catch (e) {
+    metrics.secretFetchFailures++;
+  }
+  // 2. Environment fallback (bridge)
   switch (platform) {
     case 'facebook':
       return process.env.FACEBOOK_LONG_LIVED_TOKEN || process.env.REACT_APP_FACEBOOK_ACCESS_TOKEN || null;
@@ -82,7 +129,7 @@ async function coreGetToken(platform: string): Promise<TokenResponse> {
     };
   }
 
-  const raw = readEnvToken(platform);
+  const raw = await readToken(platform);
   if (!raw) {
     metrics.backendIssues++;
     throw new functions.https.HttpsError('failed-precondition', `No token configured for ${platform}`);

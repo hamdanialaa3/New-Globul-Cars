@@ -34,6 +34,14 @@ async function run() {
     assert.ok(typeof result.expiresIn === 'number');
   });
 
+  await test('env fallback still works when secret manager disabled', async () => {
+    delete process.env.ENABLE_SECRET_MANAGER; // ensure disabled
+    const wrapped = testEnv.wrap(socialTokens.getSocialAccessToken);
+    process.env.REACT_APP_INSTAGRAM_ACCESS_TOKEN = 'IG_TOKEN_ABC';
+    const result = await wrapped({ platform: 'instagram' }, { auth: { uid: 'u_ig' } } as any);
+    assert.strictEqual(result.token, 'IG_TOKEN_ABC');
+  });
+
   // Rate limit test (exceed per-user limit quickly)
   await test('rate limiting per user', async () => {
     const wrapped = testEnv.wrap(socialTokens.getSocialAccessToken);

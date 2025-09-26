@@ -21,6 +21,7 @@ This document tracks the staged migration from exposing long‑lived social medi
 * HTTP: `fetchSocialAccessToken` for non-Firebase contexts
 * Metrics: `getSocialTokenMetrics` (requests, cacheHits, perPlatform)
 * In-memory 10m TTL cache (bridge only – not persistent)
+* Optional Secret Manager lookup (controlled via `ENABLE_SECRET_MANAGER=1`) with per-platform secret naming (`SOCIAL_TOKEN_<PLATFORM>` or override `SECRET_<PLATFORM>_NAME`)
 
 ### Frontend (`social-token-provider.ts`)
 Resolution order:
@@ -83,6 +84,7 @@ Planned additions:
 - [ ] Add unit tests: cache hit, cache miss, auth required, metrics shape (partial: auth + rate limit covered)
 - [x] Create GitHub Action to grep & fail on new `REACT_APP_*ACCESS_TOKEN` usages (baseline in `.github/workflows/ci.yml`)
   - [ ] Add allowlist for legacy docs if needed
+  - [x] (Added) Optional Secret Manager dynamic retrieval scaffold (will enforce in Phase 2)
 
 ---
 Maintainer: Security / Platform Engineering
