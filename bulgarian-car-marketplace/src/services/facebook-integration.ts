@@ -8,6 +8,8 @@ import FacebookMarketingService, { bulgarianMarketingService } from './facebook-
 import FacebookMessengerService, { bulgarianMessengerService } from './facebook-messenger-service';
 import FacebookAnalyticsService, { bulgarianAnalyticsService } from './facebook-analytics-service';
 import FacebookSharingService, { bulgarianSharingService } from './facebook-sharing-service';
+import FacebookGroupsService, { bulgarianGroupsService } from './facebook-groups-service';
+import BulgarianThreadsService, { bulgarianThreadsService } from './threads-service';
 
 // Type definitions for unified Facebook integration
 export interface FacebookIntegrationConfig {
@@ -28,6 +30,8 @@ export interface BulgarianCarFacebookIntegration {
   messenger: FacebookMessengerService;
   analytics: FacebookAnalyticsService;
   sharing: FacebookSharingService;
+  groups: FacebookGroupsService;
+  threads: BulgarianThreadsService;
   config: FacebookIntegrationConfig;
 }
 
@@ -61,6 +65,8 @@ class FacebookIntegrationManager {
       messenger: bulgarianMessengerService,
       analytics: bulgarianAnalyticsService,
       sharing: bulgarianSharingService,
+      groups: bulgarianGroupsService,
+      threads: bulgarianThreadsService,
       config: this.config
     };
 
@@ -78,6 +84,7 @@ class FacebookIntegrationManager {
     if (this.config.accessToken) {
       this.services.graph.setAccessToken(this.config.accessToken);
       this.services.marketing.setAccessToken(this.config.accessToken);
+      this.services.groups.setAccessToken(this.config.accessToken);
     }
 
     // Validate configuration

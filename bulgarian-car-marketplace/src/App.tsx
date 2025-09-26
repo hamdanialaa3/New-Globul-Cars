@@ -13,7 +13,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
-import AnalyticsTracker from './components/AnalyticsTracker';
+// import AnalyticsTracker from './components/AnalyticsTracker';
 import PerformanceMonitor from './components/PerformanceMonitor';
 import BundleAnalyzer from './components/BundleAnalyzer';
 
@@ -41,10 +41,11 @@ const PricingPage = React.lazy(() => import('./pages/sell/PricingPage'));
 const ContactNamePage = React.lazy(() => import('./pages/sell/ContactNamePage'));
 const ContactAddressPage = React.lazy(() => import('./pages/sell/ContactAddressPage'));
 const ContactPhonePage = React.lazy(() => import('./pages/sell/ContactPhonePage'));
+const MessagingPage = React.lazy(() => import('./pages/MessagingPage'));
 const ProfilePage = React.lazy(() => import('./pages/ProfilePage'));
 const LoginPage = React.lazy(() => import('./pages/LoginPage'));
 const RegisterPage = React.lazy(() => import('./pages/RegisterPage'));
-const MessagesPage = React.lazy(() => import('./pages/MessagesPage'));
+// const MessagesPage = React.lazy(() => import('./pages/MessagesPage'));
 const DashboardPage = React.lazy(() => import('./pages/DashboardPage'));
 const AdminDashboard = React.lazy(() => import('./components/AdminDashboard'));
 const ThemeTest = React.lazy(() => import('./components/ThemeTest'));
@@ -54,6 +55,15 @@ const EffectsTest = React.lazy(() => import('./components/EffectsTest'));
 const PrivacyPolicyPage = React.lazy(() => import('./pages/PrivacyPolicyPage'));
 const TermsOfServicePage = React.lazy(() => import('./pages/TermsOfServicePage'));
 const DataDeletionPage = React.lazy(() => import('./pages/DataDeletionPage'));
+const AdvancedSearchPage = React.lazy(() => import('./pages/AdvancedSearchPage'));
+const B2BAnalyticsPortal = React.lazy(() => import('./pages/B2BAnalyticsPortal'));
+const DigitalTwinPage = React.lazy(() => import('./pages/DigitalTwinPage'));
+const SubscriptionPage = React.lazy(() => import('./pages/SubscriptionPage'));
+const AboutPage = React.lazy(() => import('./pages/AboutPage'));
+const ContactPage = React.lazy(() => import('./pages/ContactPage'));
+const HelpPage = React.lazy(() => import('./pages/HelpPage'));
+const CookiePolicyPage = React.lazy(() => import('./pages/CookiePolicyPage'));
+const SitemapPage = React.lazy(() => import('./pages/SitemapPage'));
 
 // Layout Component
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -328,7 +338,7 @@ const App: React.FC = () => {
                 element={
                   <Layout>
                     <ProtectedRoute>
-                      <MessagesPage />
+                      <MessagingPage />
                     </ProtectedRoute>
                   </Layout>
                 }
@@ -394,6 +404,46 @@ const App: React.FC = () => {
                 }
               />
 
+              {/* Advanced Features */}
+              <Route
+                path="/advanced-search"
+                element={
+                  <Layout>
+                    <AdvancedSearchPage />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/analytics"
+                element={
+                  <Layout>
+                    <ProtectedRoute>
+                      <B2BAnalyticsPortal />
+                    </ProtectedRoute>
+                  </Layout>
+                }
+              />
+              <Route
+                path="/digital-twin"
+                element={
+                  <Layout>
+                    <ProtectedRoute>
+                      <DigitalTwinPage />
+                    </ProtectedRoute>
+                  </Layout>
+                }
+              />
+              <Route
+                path="/subscription"
+                element={
+                  <Layout>
+                    <ProtectedRoute>
+                      <SubscriptionPage />
+                    </ProtectedRoute>
+                  </Layout>
+                }
+              />
+
               {/* Legal Pages */}
               <Route
                 path="/privacy-policy"
@@ -416,6 +466,48 @@ const App: React.FC = () => {
                 element={
                   <Layout>
                     <DataDeletionPage />
+                  </Layout>
+                }
+              />
+
+              {/* Additional Pages */}
+              <Route
+                path="/about"
+                element={
+                  <Layout>
+                    <AboutPage />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/contact"
+                element={
+                  <Layout>
+                    <ContactPage />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/help"
+                element={
+                  <Layout>
+                    <HelpPage />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/cookie-policy"
+                element={
+                  <Layout>
+                    <CookiePolicyPage />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/sitemap"
+                element={
+                  <Layout>
+                    <SitemapPage />
                   </Layout>
                 }
               />

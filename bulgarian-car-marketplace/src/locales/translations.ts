@@ -1010,7 +1010,18 @@ export const translations = {
       searching: 'Searching...',
       reset: 'Reset',
       saveSearch: 'Save this search',
-      comingSoon: 'Coming soon...'
+      comingSoon: 'Coming soon...',
+
+      // Navigation translations
+      nav: {
+        home: 'Начало',
+        cars: 'Коли',
+        sell: 'Продай',
+        login: 'Вход',
+        register: 'Регистрация',
+        logout: 'Изход',
+        advancedSearch: 'Разширено търсене'
+      }
     },
     detailedSearch: {
       title: 'Detailed Search',
@@ -1661,15 +1672,42 @@ export const translations = {
         updateDescriptions: 'Обновявайте описанията редовно'
       },
       timeAgo: {
+        justNow: 'току-що',
         hoursAgo: 'преди {{count}} часа',
         daysAgo: 'преди {{count}} дни',
         dayAgo: 'преди 1 ден'
+      },
+      noListings: 'Няма обяви',
+      noMessages: 'Няма съобщения',
+      noNotifications: 'Няма известия',
+      carStatus: {
+        active: 'Активна',
+        pending: 'Чака одобрение',
+        sold: 'Продадена',
+        draft: 'Чернова'
       },
       messages: {
         interestedInCar: 'интересувам се от колата. Може ли да се видим утре?',
         carMileage: 'Колко е пробегът на колата? Има ли някакви проблеми?',
         moreInteriorPhotos: 'Може ли да получи още снимки от интериора?'
       }
+    },
+    messaging: {
+      title: 'Съобщения',
+      subtitle: 'Свържете се с продавачи и купувачи',
+      conversations: 'Разговори',
+      newMessage: 'Ново съобщение',
+      noConversations: 'Няма разговори',
+      selectConversation: 'Изберете разговор',
+      noMessages: 'Няма съобщения',
+      typeMessage: 'Напишете съобщение...',
+      sendMessage: 'Изпрати съобщение',
+      sending: 'Изпращане...',
+      messageSent: 'Съобщението е изпратено!',
+      sendError: 'Грешка при изпращане',
+      loginRequired: 'Трябва да влезете в профила си',
+      cannotMessageSelf: 'Не можете да си изпращате съобщения',
+      initialMessage: 'Здравейте! Интересувам се от {{car}}. Може ли да получим повече информация?'
     },
     dashboard: {
       title: 'Seller Dashboard',
@@ -1710,15 +1748,42 @@ export const translations = {
         updateDescriptions: 'Update descriptions regularly'
       },
       timeAgo: {
+        justNow: 'just now',
         hoursAgo: '{{count}} hours ago',
         daysAgo: '{{count}} days ago',
         dayAgo: '1 day ago'
+      },
+      noListings: 'No listings',
+      noMessages: 'No messages',
+      noNotifications: 'No notifications',
+      carStatus: {
+        active: 'Active',
+        pending: 'Pending Approval',
+        sold: 'Sold',
+        draft: 'Draft'
       },
       messages: {
         interestedInCar: 'interested in the car. Can we meet tomorrow?',
         carMileage: 'What is the car\'s mileage? Are there any problems?',
         moreInteriorPhotos: 'Can I get more photos of the interior?'
       }
+    },
+    messaging: {
+      title: 'Messages',
+      subtitle: 'Connect with sellers and buyers',
+      conversations: 'Conversations',
+      newMessage: 'New Message',
+      noConversations: 'No conversations',
+      selectConversation: 'Select a conversation',
+      noMessages: 'No messages',
+      typeMessage: 'Type a message...',
+      sendMessage: 'Send Message',
+      sending: 'Sending...',
+      messageSent: 'Message sent!',
+      sendError: 'Error sending message',
+      loginRequired: 'You need to log in',
+      cannotMessageSelf: 'You cannot message yourself',
+      initialMessage: 'Hello! I\'m interested in {{car}}. Can I get more information?'
     },
     cityZipCode: 'City / postal code',
     radius: 'Radius',
@@ -1760,7 +1825,18 @@ export const translations = {
     searching: 'Searching...',
     reset: 'Reset',
     saveSearch: 'Save this search',
-    comingSoon: 'Coming soon...'
+    comingSoon: 'Coming soon...',
+
+    // Navigation translations
+    nav: {
+      home: 'Home',
+      cars: 'Cars',
+      sell: 'Sell',
+      login: 'Login',
+      register: 'Register',
+      logout: 'Logout',
+      advancedSearch: 'Advanced Search'
+    }
   }
 };
 

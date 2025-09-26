@@ -46,7 +46,7 @@ const SectionTitle = styled.h2`
 const Paragraph = styled.p`
   line-height: 1.6;
   margin-bottom: 1rem;
-  color: ${props => props.theme.colors.textSecondary};
+  color: ${props => props.theme.colors.secondary};
 `;
 
 const List = styled.ul`
@@ -55,12 +55,12 @@ const List = styled.ul`
   
   li {
     margin-bottom: 0.5rem;
-    color: ${props => props.theme.colors.textSecondary};
+    color: ${props => props.theme.colors.secondary};
   }
 `;
 
 const ContactInfo = styled.div`
-  background: ${props => props.theme.colors.lightGray};
+  background: ${props => props.theme.colors.grey[100]};
   padding: 1.5rem;
   border-radius: 8px;
   margin: 1rem 0;
@@ -70,10 +70,10 @@ const LastUpdated = styled.div`
   text-align: center;
   margin: 2rem 0;
   padding: 1rem;
-  background: ${props => props.theme.colors.lightGray};
+  background: ${props => props.theme.colors.grey[100]};
   border-radius: 8px;
   font-style: italic;
-  color: ${props => props.theme.colors.textSecondary};
+  color: ${props => props.theme.colors.secondary};
 `;
 
 const PrivacyPolicyPage: React.FC = () => {

@@ -57,7 +57,8 @@ const CarCard = styled.div<{ selected: boolean }>`
   h3 {
     margin: 0 0 ${({ theme }) => theme.spacing.sm} 0;
     font-size: ${({ theme }) => theme.typography.fontSize.lg};
-    font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
+    font-weight: ${({ theme }) => theme.typography.fontWeight.semibold};
+    color: ${({ theme }) => theme.colors.text.primary};
   }
 
   p {
@@ -67,164 +68,66 @@ const CarCard = styled.div<{ selected: boolean }>`
   }
 `;
 
-const LoadingContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 400px;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.md};
-
-  .spinner {
-    width: 40px;
-    height: 40px;
-    border: 4px solid ${({ theme }) => theme.colors.grey[200]};
-    border-top: 4px solid ${({ theme }) => theme.colors.primary.main};
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-  }
-
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-`;
-
 const EmptyState = styled.div`
   text-align: center;
   padding: ${({ theme }) => theme.spacing.xl};
   color: ${({ theme }) => theme.colors.text.secondary};
 
   h3 {
-    margin: 0 0 ${({ theme }) => theme.spacing.md} 0;
+    margin: 0 0 ${({ theme }) => theme.spacing.sm} 0;
+    font-size: ${({ theme }) => theme.typography.fontSize.lg};
     color: ${({ theme }) => theme.colors.text.primary};
   }
 
   p {
     margin: 0;
-    font-size: ${({ theme }) => theme.typography.fontSize.lg};
+    font-size: ${({ theme }) => theme.typography.fontSize.base};
   }
 `;
 
-interface UserCar {
-  vin: string;
-  make: string;
-  model: string;
-  year: number;
-  licensePlate: string;
-  deviceConnected: boolean;
-}
+const DigitalTwinPage: React.FC = () => {
+  const [selectedCar, setSelectedCar] = useState<string | null>(null);
+  const [cars, setCars] = useState<Array<{ id: string; make: string; model: string; year: number }>>([]);
+  const [loading, setLoading] = useState(false);
 
-export const DigitalTwinPage: React.FC = () => {
-  const [userCars, setUserCars] = useState<UserCar[]>([]);
-  const [selectedVin, setSelectedVin] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  const loadUserData = useCallback(async () => {
-    try {
-      setLoading(true);
-
-      // محاكاة تحميل سيارات المستخدم - في الإنتاج سيتم من Firestore
-      const mockCars: UserCar[] = [
-        {
-          vin: '1HGCM82633A123456',
-          make: 'Honda',
-          model: 'Civic',
-          year: 2020,
-          licensePlate: 'CA 1234 AB',
-          deviceConnected: true
-        },
-        {
-          vin: '2T1BURHE0FC123456',
-          make: 'Toyota',
-          model: 'Corolla',
-          year: 2018,
-          licensePlate: 'CB 5678 CD',
-          deviceConnected: false
-        }
-      ];
-
-      setUserCars(mockCars);
-
-      // تحديد السيارة الأولى المتصلة كافتراضية
-      const connectedCar = mockCars.find(car => car.deviceConnected);
-      if (connectedCar) {
-        setSelectedVin(connectedCar.vin);
-      }
-
-    } catch (error) {
-      console.error('خطأ في تحميل بيانات المستخدم:', error);
-    } finally {
-      setLoading(false);
-    }
+  // Mock data - replace with actual API call
+  useEffect(() => {
+    setCars([
+      { id: '1', make: 'BMW', model: 'X5', year: 2020 },
+      { id: '2', make: 'Mercedes', model: 'C-Class', year: 2021 },
+      { id: '3', make: 'Audi', model: 'A4', year: 2019 }
+    ]);
   }, []);
 
-  useEffect(() => {
-    loadUserData();
-  }, [loadUserData]);
-
-  const handleCarSelect = (vin: string) => {
-    setSelectedVin(vin);
-  };
-
-  if (loading) {
-    return (
-      <PageContainer>
-        <LoadingContainer>
-          <div className="spinner"></div>
-          <p>جاري تحميل البيانات...</p>
-        </LoadingContainer>
-      </PageContainer>
-    );
-  }
-
-  if (!userCars.length) {
-    return (
-      <PageContainer>
-        <EmptyState>
-          <h3>لا توجد سيارات</h3>
-          <p>لم يتم العثور على سيارات مسجلة في حسابك</p>
-        </EmptyState>
-      </PageContainer>
-    );
-  }
+  const handleCarSelect = useCallback((carId: string) => {
+    setSelectedCar(carId);
+  }, []);
 
   return (
     <PageContainer>
       <PageHeader>
-        <h1>سيارتي الحية</h1>
-        <p>مراقبة سياراتك في الوقت الفعلي من خلال التوأم الرقمي</p>
+        <h1>Digital Twin Dashboard</h1>
+        <p>Monitor your vehicle's real-time data and performance</p>
       </PageHeader>
 
-      {/* اختيار السيارة */}
       <CarSelector>
-        <h2 style={{ marginBottom: '1rem', fontSize: '1.25rem', fontWeight: 'bold' }}>
-          اختر السيارة
-        </h2>
+        <h2>Select Your Vehicle</h2>
         <SelectorGrid>
-          {userCars.map((car) => (
+          {cars.map((car) => (
             <CarCard
-              key={car.vin}
-              selected={selectedVin === car.vin}
-              onClick={() => handleCarSelect(car.vin)}
+              key={car.id}
+              selected={selectedCar === car.id}
+              onClick={() => handleCarSelect(car.id)}
             >
-              <h3>{car.make} {car.model} {car.year}</h3>
-              <p>لوحة: {car.licensePlate}</p>
-              <p>VIN: {car.vin}</p>
-              <p style={{
-                color: car.deviceConnected ? '#16a34a' : '#dc2626',
-                fontWeight: 'bold'
-              }}>
-                {car.deviceConnected ? 'متصلة بالجهاز' : 'غير متصلة'}
-              </p>
+              <h3>{car.make} {car.model}</h3>
+              <p>Year: {car.year}</p>
             </CarCard>
           ))}
         </SelectorGrid>
       </CarSelector>
 
-      {/* عرض التوأم الرقمي */}
-      {selectedVin ? (
-        <DigitalTwinDashboard vin={selectedVin} />
+      {selectedCar ? (
+        <DigitalTwinDashboard vin={selectedCar} />
       ) : (
         <EmptyState>
           <h3>لم يتم اختيار سيارة</h3>
@@ -234,3 +137,5 @@ export const DigitalTwinPage: React.FC = () => {
     </PageContainer>
   );
 };
+
+export default DigitalTwinPage;

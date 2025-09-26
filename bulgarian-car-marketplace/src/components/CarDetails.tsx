@@ -3,6 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { BulgarianMessagingService } from '../services/messaging-service';
 import { BulgarianAuthService } from '../services/auth-service';
+import MessageButton from './messaging/MessageButton';
+import { useAuth } from '../context/AuthProvider';
 
 // Mock car data for demonstration
 const mockCarData = [
@@ -315,6 +317,7 @@ const ErrorMessage = styled.div`
 const CarDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [car, setCar] = useState<any>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [message, setMessage] = useState('');
@@ -537,6 +540,14 @@ const CarDetails: React.FC = () => {
               <div>
                 <Label>Адрес:</Label>
                 <Value>{car.location || 'Няма информация'}</Value>
+              </div>
+              <div style={{ marginTop: '1rem' }}>
+                <MessageButton
+                  carId={car.id.toString()}
+                  sellerId={car.seller?.id || 'unknown'}
+                  carTitle={`${car.make} ${car.model} ${car.year}`}
+                  sellerName={car.seller?.name || 'Unknown Seller'}
+                />
               </div>
               <TextArea
                 placeholder="Въведете вашето съобщение..."

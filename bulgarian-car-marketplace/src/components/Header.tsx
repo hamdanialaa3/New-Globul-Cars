@@ -10,7 +10,7 @@ import { bulgarianAuthService } from '../firebase';
 import { BulgarianUser } from '../firebase/auth-service';
 import NotificationBell from './NotificationBell';
 // Replace 3D logo with official image logo
-import { Settings, User, LogOut, LogIn, UserPlus, Type } from 'lucide-react';
+import { Settings, User, LogOut, LogIn, UserPlus, Type, MessageCircle } from 'lucide-react';
 
 // Styled Components - Mobile.de Style
 const HeaderContainer = styled.header`
@@ -247,6 +247,7 @@ const Header: React.FC = () => {
           <NavLink to="/">{t('nav.home')}</NavLink>
           <NavLink to="/cars">{t('nav.cars')}</NavLink>
           <NavLink to="/sell">{t('nav.sell')}</NavLink>
+          <NavLink to="/advanced-search">{t('nav.advancedSearch', 'Advanced Search')}</NavLink>
 
           {/* Settings Menu: contains language, auth/profile, and text toggle */}
           <SettingsMenu className="settings-menu">
@@ -266,8 +267,20 @@ const Header: React.FC = () => {
               {/* Auth/Profile controls */}
               {user ? (
                 <>
+                  <DropdownItem onClick={() => { navigate('/messages'); setIsSettingsOpen(false); }}>
+                    <MessageCircle size={16} /> {t('messaging.title')}
+                  </DropdownItem>
                   <DropdownItem onClick={() => { navigate('/dashboard'); setIsSettingsOpen(false); }}>
                     <User size={16} /> Dashboard
+                  </DropdownItem>
+                  <DropdownItem onClick={() => { navigate('/analytics'); setIsSettingsOpen(false); }}>
+                    <Settings size={16} /> Analytics
+                  </DropdownItem>
+                  <DropdownItem onClick={() => { navigate('/digital-twin'); setIsSettingsOpen(false); }}>
+                    <Settings size={16} /> Digital Twin
+                  </DropdownItem>
+                  <DropdownItem onClick={() => { navigate('/subscription'); setIsSettingsOpen(false); }}>
+                    <Settings size={16} /> Subscription
                   </DropdownItem>
                   <DropdownItem onClick={() => { handleLogout(); setIsSettingsOpen(false); }} className="danger">
                     <LogOut size={16} /> {t('nav.logout')}

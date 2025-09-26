@@ -189,6 +189,7 @@ const Footer: React.FC = () => {
             <FooterLink to="/about">{t('footer.quickLinks.about', 'About')}</FooterLink>
             <FooterLink to="/contact">{t('footer.quickLinks.contact', 'Contact')}</FooterLink>
             <FooterLink to="/help">{t('footer.quickLinks.help', 'Help')}</FooterLink>
+            <FooterLink to="/advanced-search">{t('footer.quickLinks.advancedSearch', 'Advanced Search')}</FooterLink>
           </FooterSection>
 
           <FooterSection>
@@ -236,9 +237,9 @@ const Footer: React.FC = () => {
             <Heart size={16} color="#e53e3e" />
           </FooterCopyright>
           <FooterBottomLinks>
-            <FooterBottomLink to="/privacy">{t('footer.legal.privacy', 'Privacy Policy')}</FooterBottomLink>
-            <FooterBottomLink to="/terms">{t('footer.legal.terms', 'Terms of Service')}</FooterBottomLink>
-            <FooterBottomLink to="/cookies">{t('footer.legal.cookies', 'Cookie Policy')}</FooterBottomLink>
+            <FooterBottomLink to="/privacy-policy">{t('footer.legal.privacy', 'Privacy Policy')}</FooterBottomLink>
+            <FooterBottomLink to="/terms-of-service">{t('footer.legal.terms', 'Terms of Service')}</FooterBottomLink>
+            <FooterBottomLink to="/cookie-policy">{t('footer.legal.cookies', 'Cookie Policy')}</FooterBottomLink>
             <FooterBottomLink to="/sitemap">{t('footer.legal.sitemap', 'Sitemap')}</FooterBottomLink>
           </FooterBottomLinks>
         </FooterBottom>

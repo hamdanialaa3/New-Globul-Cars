@@ -42,7 +42,7 @@ const SectionTitle = styled.h2`
 const Paragraph = styled.p`
   line-height: 1.6;
   margin-bottom: 1rem;
-  color: ${props => props.theme.colors.textSecondary};
+  color: ${props => props.theme.colors.secondary};
 `;
 
 const Form = styled.form`
@@ -106,11 +106,11 @@ const Button = styled.button`
   transition: background-color 0.3s ease;
 
   &:hover:not(:disabled) {
-    background: ${props => props.theme.colors.primaryDark};
+    background: ${props => props.theme.colors.primary.dark};
   }
 
   &:disabled {
-    background: ${props => props.theme.colors.border};
+    background: ${props => props.theme.colors.grey[300]};
     cursor: not-allowed;
   }
 `;
