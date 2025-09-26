@@ -6,6 +6,10 @@
 
 import * as functions from 'firebase-functions';
 import * as crypto from 'crypto';
+import * as admin from 'firebase-admin';
+
+// Initialize admin if not already (safe idempotent)
+try { if (!admin.apps.length) { admin.initializeApp(); } } catch { /* noop */ }
 // Optional Secret Manager integration (lazy required)
 // Using 'any' to avoid needing @types; dynamic import keeps optional nature.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -60,7 +64,14 @@ const metrics = {
   ephemeralIssued: 0,
   ephemeralVerified: 0,
   ephemeralInvalid: 0,
-  ephemeralExpired: 0
+  ephemeralExpired: 0,
+  ephemeralVerifiedPrev: 0,
+  snapshotStored: 0,
+  snapshotFailures: 0,
+  secretReloads: 0,
+  secretReloadFailures: 0,
+  rotations: 0,
+  rotationsSkipped: 0
 };
 
 // Simple in-memory rate limit buckets (ephemeral)
@@ -90,14 +101,87 @@ const DEFAULT_TTL_SECONDS = 60 * 10; // 10 minutes (bridge only)
 const EPHEMERAL_TOKEN_TTL_SECONDS = 60 * 5; // 5 minutes short-lived
 const ENABLE_EPHEMERAL = process.env.ENABLE_EPHEMERAL_TOKENS === '1';
 const HIDE_RAW_TOKENS = process.env.HIDE_RAW_TOKENS === '1'; // safer gating than NODE_ENV only
-const EPHEMERAL_SIGNING_SECRET = process.env.EPHEMERAL_SIGNING_SECRET || 'dev-insecure-secret-change';
+// --- Rotation Manifest & Signing Secrets Management ---
+// Firestore document holding current & previous signing secrets and generations
+const ROTATION_DOC_PATH = 'social_tokens/rotation_state';
+const EPHEMERAL_GRACE_MINUTES = Number(process.env.EPHEMERAL_GRACE_MINUTES || '45');
+interface SigningSecretsManifest {
+  currentGeneration: number;
+  previousGeneration?: number;
+  currentSecret: string;
+  previousSecret?: string;
+  graceUntil?: number; // timestamp after which previous is no longer valid
+  lastRotationAt: number;
+}
 
-function createEphemeralToken(platform: string, ops: string[]): { value: string; expiresAt: number; ops: string[] } {
+let manifestCache: { value: SigningSecretsManifest; loadedAt: number } | null = null;
+const MANIFEST_CACHE_TTL_MS = 60_000; // refresh at most every 60s
+let cachedSecrets: { currentSecret: string; previousSecret?: string; currentGeneration: number; previousGeneration?: number; graceUntil?: number } = {
+  currentSecret: process.env.EPHEMERAL_SIGNING_SECRET || 'dev-insecure-secret-change',
+  previousSecret: process.env.EPHEMERAL_SIGNING_SECRET_PREVIOUS,
+  currentGeneration: Number(process.env.EPHEMERAL_GENERATION || '1'),
+  previousGeneration: process.env.EPHEMERAL_SIGNING_SECRET_PREVIOUS ? Number(process.env.EPHEMERAL_GENERATION || '1') - 1 : undefined,
+  graceUntil: undefined
+};
+
+async function loadRotationManifest(force = false): Promise<SigningSecretsManifest> {
+  const now = Date.now();
+  if (!force && manifestCache && (now - manifestCache.loadedAt) < MANIFEST_CACHE_TTL_MS) {
+    return manifestCache.value;
+  }
+  try {
+    const docRef = admin.firestore().doc(ROTATION_DOC_PATH);
+    const snap = await docRef.get();
+    if (!snap.exists) {
+      // Initialize manifest using env bootstrap secrets
+      const initial: SigningSecretsManifest = {
+        currentGeneration: cachedSecrets.currentGeneration,
+        previousGeneration: cachedSecrets.previousGeneration,
+        currentSecret: cachedSecrets.currentSecret,
+        previousSecret: cachedSecrets.previousSecret,
+        lastRotationAt: now,
+        graceUntil: cachedSecrets.graceUntil
+      };
+      await docRef.set(initial, { merge: true });
+      manifestCache = { value: initial, loadedAt: now };
+      metrics.secretReloads++;
+      return initial;
+    }
+    const data = snap.data() as SigningSecretsManifest;
+    manifestCache = { value: data, loadedAt: now };
+    cachedSecrets = {
+      currentSecret: data.currentSecret,
+      previousSecret: data.previousSecret,
+      currentGeneration: data.currentGeneration,
+      previousGeneration: data.previousGeneration,
+      graceUntil: data.graceUntil
+    };
+    metrics.secretReloads++;
+    return data;
+  } catch (e) {
+    metrics.secretReloadFailures++;
+    // Fallback to in-memory bootstrap
+    return {
+      currentGeneration: cachedSecrets.currentGeneration,
+      previousGeneration: cachedSecrets.previousGeneration,
+      currentSecret: cachedSecrets.currentSecret,
+      previousSecret: cachedSecrets.previousSecret,
+      graceUntil: cachedSecrets.graceUntil,
+      lastRotationAt: cachedSecrets.currentGeneration === 1 ? (Date.now()) : (Date.now())
+    };
+  }
+}
+
+function getCachedSecrets() {
+  return cachedSecrets; // synchronous access for verification
+}
+
+function createEphemeralToken(platform: string, ops: string[], secret: string, generation: number): { value: string; expiresAt: number; ops: string[] } {
   const issuedAt = Date.now();
   const expiresAt = issuedAt + EPHEMERAL_TOKEN_TTL_SECONDS * 1000;
-  const payloadObj = { p: platform, iat: issuedAt, exp: expiresAt, v: 1, ops };
+  const payloadObj = { p: platform, iat: issuedAt, exp: expiresAt, v: 1, g: generation, ops };
   const payload = JSON.stringify(payloadObj);
-  const hmac = crypto.createHmac('sha256', EPHEMERAL_SIGNING_SECRET).update(payload).digest('base64url');
+  const hmac = crypto.createHmac('sha256', secret).update(payload).digest('base64url');
   const value = Buffer.from(payload).toString('base64url') + '.' + hmac;
   return { value, expiresAt, ops };
 }
@@ -121,19 +205,38 @@ export function verifyEphemeralToken(token: string): EphemeralVerificationResult
     const payloadB64 = parts[0];
     const sig = parts[1];
     const payloadJson = Buffer.from(payloadB64, 'base64url').toString('utf8');
-    const expected = crypto.createHmac('sha256', EPHEMERAL_SIGNING_SECRET).update(payloadJson).digest('base64url');
-    const match = expected.length === sig.length && crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(sig));
+    const obj = JSON.parse(payloadJson);
+    const gen: number | undefined = obj.g;
+
+    const { currentSecret, previousSecret, currentGeneration, previousGeneration, graceUntil } = getCachedSecrets();
+    // If generation expired (outside grace) and token references previous – treat as invalid
+    if (gen === previousGeneration && graceUntil && Date.now() > graceUntil) {
+      metrics.ephemeralInvalid++;
+      return { valid: false, reason: 'stale-generation' };
+    }
+
+    const expectedCurrent = crypto.createHmac('sha256', currentSecret).update(payloadJson).digest('base64url');
+    let match = expectedCurrent.length === sig.length && crypto.timingSafeEqual(Buffer.from(expectedCurrent), Buffer.from(sig));
+    let usedPrev = false;
+    if (!match && previousSecret && previousGeneration !== undefined) {
+      const expectedPrev = crypto.createHmac('sha256', previousSecret).update(payloadJson).digest('base64url');
+      match = expectedPrev.length === sig.length && crypto.timingSafeEqual(Buffer.from(expectedPrev), Buffer.from(sig));
+      if (match) usedPrev = true;
+    }
     if (!match) {
       metrics.ephemeralInvalid++;
       return { valid: false, reason: 'signature' };
     }
-    const obj = JSON.parse(payloadJson);
     const now = Date.now();
     if (now > obj.exp) {
       metrics.ephemeralExpired++;
       return { valid: false, reason: 'expired', platform: obj.p, issuedAt: obj.iat, expiresAt: obj.exp, version: obj.v };
     }
-    metrics.ephemeralVerified++;
+    if (usedPrev) {
+      metrics.ephemeralVerifiedPrev++;
+    } else {
+      metrics.ephemeralVerified++;
+    }
     return { valid: true, platform: obj.p, issuedAt: obj.iat, expiresAt: obj.exp, version: obj.v };
   } catch (e: any) {
     metrics.ephemeralInvalid++;
@@ -215,7 +318,10 @@ async function coreGetToken(platform: string, opts?: { purpose?: string }): Prom
     // Derive allowed ops from purpose (very basic mapping for now)
     const purpose = opts?.purpose || 'generic';
     const ops = deriveOpsForPurpose(purpose);
-    const eph = createEphemeralToken(platform, ops);
+    // Ensure latest manifest loaded (tolerate errors silently)
+    await loadRotationManifest();
+    const { currentSecret, currentGeneration } = getCachedSecrets();
+    const eph = createEphemeralToken(platform, ops, currentSecret, currentGeneration);
     metrics.ephemeralIssued++;
     base.ephemeral = eph;
     base.wrapped = true;
@@ -319,29 +425,91 @@ export const getSocialTokenMetrics = functions.https.onCall(async (_data, contex
 // --- Rotation & Anomaly (Stub Implementations) ---
 interface RotationResult { rotated: boolean; details: Record<string, any>; skipped?: boolean; }
 
-// Placeholder: will integrate with platform-specific rotation later.
+// Real HMAC signing secret rotation (platform raw token rotation remains placeholder)
 export const rotateSocialPlatformTokens = functions.pubsub.schedule('every 24 hours').onRun(async () : Promise<RotationResult> => {
   const details: Record<string, any> = {};
-  // Basic anomaly heuristic: invalid + expired > 10% of issued in last interval (approx using totals)
+  const enable = process.env.ENABLE_HMAC_ROTATION === '1' && ENABLE_EPHEMERAL;
+  if (!enable) {
+    metrics.rotationsSkipped++;
+    return { rotated: false, skipped: true, details: { reason: 'rotation-disabled-or-ephemeral-off' } };
+  }
+
+  // Load current manifest
+  const manifest = await loadRotationManifest(true);
+  details.before = { currentGeneration: manifest.currentGeneration, previousGeneration: manifest.previousGeneration };
+
+  // Basic anomaly heuristic: invalid + expired > 10% of issued
   const issued = metrics.ephemeralIssued || 0;
   const problematic = metrics.ephemeralInvalid + metrics.ephemeralExpired;
-  const anomaly = issued > 50 && problematic / issued > 0.10; // threshold
+  const anomaly = issued > 50 && problematic / (issued || 1) > 0.10;
   if (anomaly) {
     details.anomalyDetected = true;
     details.problematicRatio = +(problematic / issued).toFixed(3);
   }
-  // No real rotation yet; return stub
-  return { rotated: false, skipped: true, details };
+
+  // If previous still in grace window, optionally skip unless forced
+  const now = Date.now();
+  if (manifest.graceUntil && now < manifest.graceUntil) {
+    details.skippedReason = 'grace-active';
+    metrics.rotationsSkipped++;
+    return { rotated: false, skipped: true, details };
+  }
+
+  // Generate new secret
+  const newSecret = crypto.randomBytes(32).toString('hex');
+  const newGeneration = (manifest.currentGeneration || 1) + 1;
+  const graceUntil = now + EPHEMERAL_GRACE_MINUTES * 60_000;
+
+  const newManifest: SigningSecretsManifest = {
+    currentGeneration: newGeneration,
+    previousGeneration: manifest.currentGeneration,
+    currentSecret: newSecret,
+    previousSecret: manifest.currentSecret,
+    graceUntil,
+    lastRotationAt: now
+  };
+
+  await admin.firestore().doc(ROTATION_DOC_PATH).set(newManifest, { merge: false });
+  // Update caches synchronously for immediate verification correctness
+  manifestCache = { value: newManifest, loadedAt: now };
+  cachedSecrets = {
+    currentSecret: newManifest.currentSecret,
+    previousSecret: newManifest.previousSecret,
+    currentGeneration: newManifest.currentGeneration,
+    previousGeneration: newManifest.previousGeneration,
+    graceUntil: newManifest.graceUntil
+  };
+  metrics.rotations++;
+
+  details.after = { currentGeneration: newManifest.currentGeneration, previousGeneration: newManifest.previousGeneration, graceUntil };
+  return { rotated: true, details };
 });
 
 // Snapshot metrics to (future) BigQuery / Firestore (stub only)
-interface MetricsSnapshotResult { stored: boolean; transport: 'none' | 'bigquery' | 'firestore'; size: number; }
+interface MetricsSnapshotResult { stored: boolean; transport: 'none' | 'bigquery' | 'firestore'; size: number; generation: number; previousGeneration?: number; }
 export const snapshotSocialTokenMetrics = functions.pubsub.schedule('every 5 minutes').onRun(async (): Promise<MetricsSnapshotResult> => {
+  const manifest = await loadRotationManifest();
   const snapshot = {
     ts: Date.now(),
+    generation: manifest.currentGeneration,
+    previousGeneration: manifest.previousGeneration,
     ...metrics
   };
-  // Future: write to BigQuery table `social_token_metrics` or Firestore collection.
-  // For now, just return stub.
-  return { stored: false, transport: 'none', size: Object.keys(snapshot).length };
+  const enableStore = process.env.ENABLE_METRICS_SNAPSHOT_STORE === '1';
+  const useFirestore = process.env.METRICS_STORE === 'firestore';
+  if (!enableStore) {
+    return { stored: false, transport: 'none', size: Object.keys(snapshot).length, generation: manifest.currentGeneration, previousGeneration: manifest.previousGeneration };
+  }
+  try {
+    if (useFirestore) {
+      await admin.firestore().collection('social_token_metrics').add(snapshot);
+      metrics.snapshotStored++;
+      return { stored: true, transport: 'firestore', size: Object.keys(snapshot).length, generation: manifest.currentGeneration, previousGeneration: manifest.previousGeneration };
+    }
+    // Placeholder for future BigQuery integration
+    return { stored: false, transport: 'bigquery', size: Object.keys(snapshot).length, generation: manifest.currentGeneration, previousGeneration: manifest.previousGeneration };
+  } catch (e) {
+    metrics.snapshotFailures++;
+    return { stored: false, transport: useFirestore ? 'firestore' : 'none', size: Object.keys(snapshot).length, generation: manifest.currentGeneration, previousGeneration: manifest.previousGeneration };
+  }
 });

@@ -305,15 +305,6 @@ export class BulgarianAuthService {
       throw new Error(this.getBulgarianErrorMessage(this.getErrorCode(error)));
     }
   }
-        bulgarianUser = await this.createBulgarianUserFromSocial(user);
-      }
-
-      this.currentUser = bulgarianUser;
-      return bulgarianUser;
-    } catch (error: unknown) {
-      throw new Error(this.getBulgarianErrorMessage(this.getErrorCode(error)));
-    }
-  }
 
   // Sign in with iCloud (Apple ID)
   public async signInWithICloud(): Promise<BulgarianUser> {
@@ -595,11 +586,6 @@ export class BulgarianAuthService {
     };
 
     return errorMessages[errorCode] || 'Възникна грешка при удостоверяване';
-  }
-
-  // Get current user method
-  public getCurrentUser(): User | null {
-    return auth.currentUser;
   }
 }
 

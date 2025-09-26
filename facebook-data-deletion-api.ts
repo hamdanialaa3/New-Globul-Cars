@@ -2,7 +2,7 @@
 // Facebook Data Deletion API Implementation
 // تنفيذ API حذف البيانات لفيسبوك
 
-import { Request, Response } from 'express';
+import type { Request, Response } from 'express';
 import nodemailer from 'nodemailer';
 
 interface DataDeletionRequest {
@@ -22,7 +22,8 @@ class FacebookDataDeletionService {
   
   constructor() {
     // Configure email transporter for notifications
-    this.transporter = nodemailer.createTransporter({
+    // Correct nodemailer factory method is createTransport
+    this.transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST || 'smtp.gmail.com',
       port: 587,
       secure: false,

@@ -50,4 +50,19 @@ social_tokens/rotation_state: {
 - Deny raw token fallback once rotation stable + ephemeral path validated
 
 ---
-Status: Draft – implementation pending after Phase 2 verification adoption.
+## Implementation Status (Updated)
+The following pieces are now implemented:
+1. Firestore rotation manifest (`social_tokens/rotation_state`) auto-initialized from environment bootstrap.
+2. Dual-generation acceptance with grace window (default 45m via `EPHEMERAL_GRACE_MINUTES`).
+3. Scheduled rotation job (`rotateSocialPlatformTokens`) generating a new 32-byte HMAC secret, promoting current -> previous, setting `graceUntil`.
+4. Verification rejects previous generation tokens after grace expiration (`reason: 'stale-generation'`).
+5. Metrics extended: `rotations`, `rotationsSkipped`, `secretReloads`, `secretReloadFailures`.
+6. Snapshot function now records active manifest generations each run.
+
+Still pending (future phases):
+- Actual platform long-lived token rotation (currently only HMAC signing secret rotates).
+- BigQuery export + anomaly alert integration.
+- Manual forced rotation callable with role-based auth.
+- Multi-step rollback procedure doc.
+
+Status: Partial Implementation – HMAC key rotation live; platform token rotation & analytics pending.

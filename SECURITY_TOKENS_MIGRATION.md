@@ -10,7 +10,7 @@ This document tracks the staged migration from exposing long‑lived social medi
 | 1a | Complete | Introduced `social-token-provider.ts` abstraction (lazy, centralized) |
 | 1b | Complete | Added Firebase Functions callable `getSocialAccessToken` + HTTP `fetchSocialAccessToken` (bridge – still returns long token) |
 | 1c | In Progress | Frontend now attempts backend callable first, then falls back to env |
-| 2 | In Progress | Short‑lived wrapped tokens scaffold (ephemeral 5m) added; next: remove raw exposure + add claims validation |
+| 2 | In Progress | Short‑lived wrapped tokens (ephemeral 5m) + dual-generation HMAC with Firestore rotation manifest + scheduled rotation (HMAC only) |
 | 3 | Planned | Add refresh / rotation service + audit logging and anomaly detection |
 | 4 | Planned | Enforce per-user / per-role scoping (e.g. marketing vs. read-only) |
 | 5 | Planned | Add secrets manager (GCP Secret Manager) + automatic version rotation pipeline |
@@ -25,8 +25,9 @@ This document tracks the staged migration from exposing long‑lived social medi
 * Ephemeral wrapper (toggle `ENABLE_EPHEMERAL_TOKENS=1`) issuing 5m signed opaque token (HMAC SHA-256) – dev keeps raw for debugging, production hides raw
 * Verification function `verifyEphemeralToken` implemented (signature + exp)
 * Ops claims scaffold added (derived from purpose: read / create / insights) + `HIDE_RAW_TOKENS` flag to force opaque delivery
-* Rotation scheduler stub (`rotateSocialPlatformTokens`) with basic anomaly heuristic (invalid+expired >10% of issued)
-* Metrics snapshot scheduler stub (`snapshotSocialTokenMetrics`) every 5m (planned BigQuery/Firestore export)
+* Rotation scheduler (HMAC secret only) `rotateSocialPlatformTokens` with anomaly heuristic (invalid+expired >10% issued) + grace window enforcement
+* Firestore rotation manifest auto-init + dual-generation verification (rejects stale after grace)
+* Metrics snapshot scheduler (`snapshotSocialTokenMetrics`) every 5m (Firestore optional; BigQuery planned)
 * HTTP response now includes `X-Social-Token-Issuer` header; callable returns `issuer` field
 
 ### Frontend (`social-token-provider.ts`)
@@ -70,10 +71,12 @@ Resolution order:
   now
 }
 ```
-Planned additions:
+Planned additions / next:
 * BigQuery export (daily) for anomaly detection
 * Alert if backendIssues / requests > 0.05 rolling window
-* Metrics expansion: ephemeralIssued, ephemeralVerified, ephemeralInvalid, ephemeralExpired
+* Ops-claim enforcement middleware on downstream social actions
+* Automatic platform (raw) token refresh pipeline
+* Removal of env fallback in production once Secret Manager / rotation stable
 
 ## Decommission Plan for Fallback
 | Step | Trigger | Action |
@@ -83,16 +86,18 @@ Planned additions:
 | C | 2 weeks after B | Remove fallback branches + delete old env keys |
 
 ## Action Checklist (Next Sprint)
-- [ ] Integrate GCP Secret Manager fetch for raw tokens
+- [ ] Integrate GCP Secret Manager fetch for raw tokens (mandatory in prod)
 - [x] Add `X-Social-Token-Issuer` header + callable `issuer` field
 - [x] Introduce per-request rate limiting (basic in-memory) – expand to sliding window & persistence
 - [ ] Add unit tests: cache hit, cache miss, auth required, metrics shape (partial: auth + rate limit + ephemeral covered)
 - [x] Ephemeral token scaffold (HMAC) with production raw suppression
   - [x] Ephemeral verification function + tests (signature / expiration)
   - [x] Ops claims derivation + tests (purpose -> ops)
-  - [ ] Add verification function & integrate client-side service validation
+  - [ ] Add verification function & integrate client-side service validation (partial: backend + provider validation done)
     - [x] Rotation stub + anomaly heuristic
-      - [x] Metrics snapshot stub (future export pipeline)
+    - [x] Metrics snapshot (Firestore optional)
+  - [x] Dual-generation HMAC rotation manifest + scheduled rotation & grace
+  - [ ] Tests for rotation (dual-generation acceptance / stale rejection)
 - [x] Create GitHub Action to grep & fail on new `REACT_APP_*ACCESS_TOKEN` usages (baseline in `.github/workflows/ci.yml`)
   - [ ] Add allowlist for legacy docs if needed
   - [x] (Added) Optional Secret Manager dynamic retrieval scaffold (will enforce in Phase 2)
