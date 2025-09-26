@@ -43,6 +43,21 @@ async function run() {
     assert.strictEqual(result.token, 'IG_TOKEN_ABC');
   });
 
+  await test('ephemeral wrapping returns opaque token in production mode', async () => {
+    // Force reload of module with new env flags
+    process.env.ENABLE_EPHEMERAL_TOKENS = '1';
+    process.env.NODE_ENV = 'production';
+    process.env.REACT_APP_TIKTOK_ACCESS_TOKEN = 'TIKTOK_LONG_TOKEN_XYZ';
+    delete require.cache[require.resolve('../src/social-tokens')];
+    const fresh = require('../src/social-tokens');
+    const wrapped = testEnv.wrap(fresh.getSocialAccessToken);
+    const result = await wrapped({ platform: 'tiktok' }, { auth: { uid: 'u_tt' } } as any);
+    assert.ok(result.wrapped, 'wrapped flag should be true');
+    assert.ok(result.ephemeral?.value, 'ephemeral value present');
+    assert.notStrictEqual(result.token, 'TIKTOK_LONG_TOKEN_XYZ');
+    assert.strictEqual(result.rawIncluded, false);
+  });
+
   // Rate limit test (exceed per-user limit quickly)
   await test('rate limiting per user', async () => {
     const wrapped = testEnv.wrap(socialTokens.getSocialAccessToken);

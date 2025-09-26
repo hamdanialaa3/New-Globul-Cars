@@ -5,6 +5,7 @@
 // real OAuth exchange / token minting in later phase.
 
 import * as functions from 'firebase-functions';
+import * as crypto from 'crypto';
 // Optional Secret Manager integration (lazy required)
 // Using 'any' to avoid needing @types; dynamic import keeps optional nature.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -35,6 +36,12 @@ interface TokenResponse {
   expiresIn: number; // seconds
   issuedAt: number;
   issuer?: string; // identifies backend source variant
+  wrapped?: boolean; // indicates token is ephemeral wrapped form
+  rawIncluded?: boolean; // whether raw token also included (debug/dev only)
+  ephemeral?: {
+    value: string; // signed opaque token
+    expiresAt: number;
+  };
   // future: scopes, refreshEndpoint, rotationId
 }
 
@@ -75,6 +82,18 @@ function checkAndIncrementRateLimit(key: string, bucketMap: Record<string, Bucke
   return true;
 }
 const DEFAULT_TTL_SECONDS = 60 * 10; // 10 minutes (bridge only)
+const EPHEMERAL_TOKEN_TTL_SECONDS = 60 * 5; // 5 minutes short-lived
+const ENABLE_EPHEMERAL = process.env.ENABLE_EPHEMERAL_TOKENS === '1';
+const EPHEMERAL_SIGNING_SECRET = process.env.EPHEMERAL_SIGNING_SECRET || 'dev-insecure-secret-change';
+
+function createEphemeralToken(platform: string, raw: string): { value: string; expiresAt: number } {
+  const issuedAt = Date.now();
+  const expiresAt = issuedAt + EPHEMERAL_TOKEN_TTL_SECONDS * 1000;
+  const payload = JSON.stringify({ p: platform, iat: issuedAt, exp: expiresAt, v: 1 });
+  const hmac = crypto.createHmac('sha256', EPHEMERAL_SIGNING_SECRET).update(payload + raw.slice(0, 12)).digest('base64url');
+  const value = Buffer.from(payload).toString('base64url') + '.' + hmac;
+  return { value, expiresAt };
+}
 
 async function readToken(platform: string): Promise<string | null> {
   // 1. Secret Manager (if enabled)
@@ -139,13 +158,28 @@ async function coreGetToken(platform: string): Promise<TokenResponse> {
   const expiresAt = now + DEFAULT_TTL_SECONDS * 1000;
   memoryCache[cacheKey] = { token: raw, expiresAt };
 
-  return {
-    platform,
-    token: raw,
-    expiresIn: DEFAULT_TTL_SECONDS,
-    issuedAt: now,
-    issuer: secretManagerClient ? 'secret-manager' : 'env'
+  const base: TokenResponse = {
+      platform,
+      token: raw,
+      expiresIn: DEFAULT_TTL_SECONDS,
+      issuedAt: now,
+      issuer: secretManagerClient ? 'secret-manager' : 'env'
   };
+  if (ENABLE_EPHEMERAL) {
+    const eph = createEphemeralToken(platform, raw);
+    base.ephemeral = eph;
+    base.wrapped = true;
+    // In production we should avoid including raw token when ephemeral is enabled.
+    if (process.env.NODE_ENV === 'production') {
+      base.rawIncluded = false;
+      // Replace exposed token with opaque ephemeral value to clients
+      base.token = eph.value;
+      base.expiresIn = Math.floor((eph.expiresAt - now) / 1000);
+    } else {
+      base.rawIncluded = true; // allow inspection in dev
+    }
+  }
+  return base;
 }
 
 export const getSocialAccessToken = functions.https.onCall(async (data: TokenRequestData, context): Promise<TokenResponse> => {

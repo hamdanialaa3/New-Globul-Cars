@@ -10,7 +10,7 @@ This document tracks the staged migration from exposing long‑lived social medi
 | 1a | Complete | Introduced `social-token-provider.ts` abstraction (lazy, centralized) |
 | 1b | Complete | Added Firebase Functions callable `getSocialAccessToken` + HTTP `fetchSocialAccessToken` (bridge – still returns long token) |
 | 1c | In Progress | Frontend now attempts backend callable first, then falls back to env |
-| 2 | Planned | Rotate to short‑lived (10–15m) scoped tokens issued server-side; remove env fallback from client build |
+| 2 | In Progress | Short‑lived wrapped tokens scaffold (ephemeral 5m) added; next: remove raw exposure + add claims validation |
 | 3 | Planned | Add refresh / rotation service + audit logging and anomaly detection |
 | 4 | Planned | Enforce per-user / per-role scoping (e.g. marketing vs. read-only) |
 | 5 | Planned | Add secrets manager (GCP Secret Manager) + automatic version rotation pipeline |
@@ -22,6 +22,7 @@ This document tracks the staged migration from exposing long‑lived social medi
 * Metrics: `getSocialTokenMetrics` (requests, cacheHits, perPlatform)
 * In-memory 10m TTL cache (bridge only – not persistent)
 * Optional Secret Manager lookup (controlled via `ENABLE_SECRET_MANAGER=1`) with per-platform secret naming (`SOCIAL_TOKEN_<PLATFORM>` or override `SECRET_<PLATFORM>_NAME`)
+* Ephemeral wrapper (toggle `ENABLE_EPHEMERAL_TOKENS=1`) issuing 5m signed opaque token (HMAC SHA-256) – dev keeps raw for debugging, production hides raw
 * HTTP response now includes `X-Social-Token-Issuer` header; callable returns `issuer` field
 
 ### Frontend (`social-token-provider.ts`)
@@ -37,14 +38,12 @@ Resolution order:
 * Logging is intentionally minimal to avoid leaking tokens; only metadata is logged at debug level.
 
 ## Upcoming Changes (Phase 2 Tasks)
-1. Replace raw long-lived tokens with server-kept secrets (GCP Secret Manager).
-2. Introduce short-lived derived tokens (opaque or JWT-wrapped) containing:
-   * platform
-   * issuedAt / expiresAt
-   * allowed operations (claims)
-3. Enforce expiry & claim checks inside each service before API call.
-4. Add background rotation job (Cloud Scheduler + Function) to rotate platform tokens if supported.
+1. Replace raw long-lived tokens with server-kept secrets (GCP Secret Manager). (Optional path active)
+2. Short-lived derived token scaffold DONE (opaque HMAC) – Need to add explicit claims & verification middleware.
+3. Add verification helper (decode + HMAC re-check + exp enforcement) and integrate into social service calls.
+4. Background rotation job (Scheduler) for underlying long-lived tokens if platform supports.
 5. Remove direct `.env` platform token references from frontend build & CI lints on `REACT_APP_*_ACCESS_TOKEN` patterns.
+6. Add anomaly alerts if ephemeral issuance spikes per user/IP.
 
 ## Risk Register
 | Risk | Impact | Mitigation |
@@ -82,7 +81,9 @@ Planned additions:
 - [ ] Integrate GCP Secret Manager fetch for raw tokens
 - [x] Add `X-Social-Token-Issuer` header + callable `issuer` field
 - [x] Introduce per-request rate limiting (basic in-memory) – expand to sliding window & persistence
-- [ ] Add unit tests: cache hit, cache miss, auth required, metrics shape (partial: auth + rate limit covered)
+- [ ] Add unit tests: cache hit, cache miss, auth required, metrics shape (partial: auth + rate limit + ephemeral covered)
+- [x] Ephemeral token scaffold (HMAC) with production raw suppression
+  - [ ] Add verification function & integrate client-side service validation
 - [x] Create GitHub Action to grep & fail on new `REACT_APP_*ACCESS_TOKEN` usages (baseline in `.github/workflows/ci.yml`)
   - [ ] Add allowlist for legacy docs if needed
   - [x] (Added) Optional Secret Manager dynamic retrieval scaffold (will enforce in Phase 2)
