@@ -404,18 +404,27 @@ export class BulgarianAuthService {
 
   private async updateLastLogin(uid: string): Promise<void> {
     try {
-      // Check if user document exists first
-      const userDoc = await getDoc(doc(db, 'users', uid));
-      if (userDoc.exists()) {
-        await updateDoc(doc(db, 'users', uid), {
-          lastLoginAt: new Date()
-        });
-      } else {
-        // If user doesn't exist, create the document first
-        await setDoc(doc(db, 'users', uid), {
-          uid,
+      const currentUser = auth.currentUser;
+      if (!currentUser) return; // Nothing to do
+
+      const userRef = doc(db, 'users', uid);
+      const snapshot = await getDoc(userRef);
+
+      if (snapshot.exists()) {
+        // Merge only mutable fields; avoid overwriting createdAt or other profile data
+        await setDoc(userRef, {
           lastLoginAt: new Date(),
-          createdAt: new Date()
+          isVerified: currentUser.emailVerified || false
+        }, { merge: true });
+      } else {
+        // Create minimal compliant doc (rules require email & displayName on create)
+        await setDoc(userRef, {
+          uid,
+          email: currentUser.email || '',
+          displayName: currentUser.displayName || (currentUser.email ? currentUser.email.split('@')[0] : ''),
+          createdAt: new Date(),
+          lastLoginAt: new Date(),
+          isVerified: currentUser.emailVerified || false
         });
       }
     } catch (error) {

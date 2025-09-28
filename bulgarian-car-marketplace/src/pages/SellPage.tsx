@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { useTranslation } from '../hooks/useTranslation';
 
 const SellPageContainer = styled.div`
   min-height: 100vh;
@@ -14,166 +15,6 @@ const ContentWrapper = styled.div`
   padding: 0 1rem;
 `;
 
-const StepContainer = styled.div`
-  background: white;
-  border-radius: 20px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-  padding: 3rem;
-  margin: 2rem 0;
-  position: relative;
-  overflow: hidden;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, #667eea, #764ba2);
-  }
-`;
-
-const StepHeader = styled.div`
-  text-align: center;
-  margin-bottom: 3rem;
-`;
-
-const StepTitle = styled.h1`
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: #2c3e50;
-  margin: 0 0 1rem 0;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-`;
-
-const StepSubtitle = styled.p`
-  font-size: 1.2rem;
-  color: #7f8c8d;
-  margin: 0;
-  line-height: 1.6;
-`;
-
-const NavigationButtons = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 3rem;
-  padding-top: 2rem;
-  border-top: 1px solid #ecf0f1;
-`;
-
-const Button = styled.button<{ variant?: 'primary' | 'secondary' | 'outline' }>`
-  padding: 1rem 2rem;
-  border: none;
-  border-radius: 50px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  min-width: 150px;
-  position: relative;
-  overflow: hidden;
-
-  ${props => {
-    switch (props.variant) {
-      case 'primary':
-        return `
-          background: linear-gradient(135deg, #667eea, #764ba2);
-          color: white;
-          box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
-          
-          &:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
-          }
-        `;
-      case 'secondary':
-        return `
-          background: #f8f9fa;
-          color: #6c757d;
-          border: 2px solid #e9ecef;
-          
-          &:hover {
-            background: #e9ecef;
-            color: #495057;
-          }
-        `;
-      case 'outline':
-        return `
-          background: transparent;
-          color: #667eea;
-          border: 2px solid #667eea;
-          
-          &:hover {
-            background: #667eea;
-            color: white;
-          }
-        `;
-      default:
-        return `
-          background: #6c757d;
-          color: white;
-          
-          &:hover {
-            background: #5a6268;
-          }
-        `;
-    }
-  }}
-
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none !important;
-  }
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.5s;
-  }
-
-  &:hover::before {
-    left: 100%;
-  }
-`;
-
-const ProgressInfo = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  color: #7f8c8d;
-  font-size: 0.9rem;
-`;
-
-const ProgressBar = styled.div<{ progress: number }>`
-  width: 200px;
-  height: 6px;
-  background: #ecf0f1;
-  border-radius: 3px;
-  overflow: hidden;
-  position: relative;
-
-  &::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: ${props => props.progress}%;
-    background: linear-gradient(90deg, #667eea, #764ba2);
-    transition: width 0.5s ease;
-  }
-`;
 
 const HeaderCard = styled.div`
   background: white;
@@ -319,8 +160,10 @@ const InfoText = styled.div`
   }
 `;
 
+
 const SellPage: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleStartSelling = () => {
     navigate('/sell/auto');
@@ -330,76 +173,59 @@ const SellPage: React.FC = () => {
     <SellPageContainer>
       <ContentWrapper>
         <HeaderCard>
-          <Title>Продайте превозното си средство</Title>
-          <Subtitle>
-            Създайте професионална обява за вашето превозно средство с нашата 
-            интуитивна система за създаване на обяви
-          </Subtitle>
-          <StartButton onClick={handleStartSelling}>
-            Започнете сега
-          </StartButton>
+          <Title>{t('sell.hero.title')}</Title>
+          <Subtitle>{t('sell.hero.subtitle')}</Subtitle>
+          <StartButton onClick={handleStartSelling}>{t('sell.hero.startNow')}</StartButton>
         </HeaderCard>
 
         <FeaturesGrid>
           <FeatureCard>
             <FeatureIcon>🚗</FeatureIcon>
-            <FeatureTitle>Лесно и бързо</FeatureTitle>
-            <FeatureDescription>
-              Създайте обява за по-малко от 10 минути с нашата стъпка по стъпка система
-            </FeatureDescription>
+            <FeatureTitle>{t('sell.features.fast.title')}</FeatureTitle>
+            <FeatureDescription>{t('sell.features.fast.description')}</FeatureDescription>
           </FeatureCard>
 
           <FeatureCard>
             <FeatureIcon>📱</FeatureIcon>
-            <FeatureTitle>Мобилно приложение</FeatureTitle>
-            <FeatureDescription>
-              Управлявайте обявите си от всяко място с нашето мобилно приложение
-            </FeatureDescription>
+            <FeatureTitle>{t('sell.features.mobile.title')}</FeatureTitle>
+            <FeatureDescription>{t('sell.features.mobile.description')}</FeatureDescription>
           </FeatureCard>
 
           <FeatureCard>
             <FeatureIcon>🔒</FeatureIcon>
-            <FeatureTitle>Безопасно</FeatureTitle>
-            <FeatureDescription>
-              Всички ваши данни са защитени с най-високите стандарти за сигурност
-            </FeatureDescription>
+            <FeatureTitle>{t('sell.features.secure.title')}</FeatureTitle>
+            <FeatureDescription>{t('sell.features.secure.description')}</FeatureDescription>
           </FeatureCard>
 
           <FeatureCard>
             <FeatureIcon>💰</FeatureIcon>
-            <FeatureTitle>Безплатно</FeatureTitle>
-            <FeatureDescription>
-              Създавайте и управлявайте обявите си напълно безплатно
-            </FeatureDescription>
+            <FeatureTitle>{t('sell.features.free.title')}</FeatureTitle>
+            <FeatureDescription>{t('sell.features.free.description')}</FeatureDescription>
           </FeatureCard>
 
           <FeatureCard>
             <FeatureIcon>👥</FeatureIcon>
-            <FeatureTitle>Широка аудитория</FeatureTitle>
-            <FeatureDescription>
-              Достигнете хиляди потенциални купувачи в цяла България
-            </FeatureDescription>
+            <FeatureTitle>{t('sell.features.audience.title')}</FeatureTitle>
+            <FeatureDescription>{t('sell.features.audience.description')}</FeatureDescription>
           </FeatureCard>
 
           <FeatureCard>
             <FeatureIcon>📊</FeatureIcon>
-            <FeatureTitle>Аналитика</FeatureTitle>
-            <FeatureDescription>
-              Следете представянето на обявите си с детайлна аналитика
-            </FeatureDescription>
+            <FeatureTitle>{t('sell.features.analytics.title')}</FeatureTitle>
+            <FeatureDescription>{t('sell.features.analytics.description')}</FeatureDescription>
           </FeatureCard>
         </FeaturesGrid>
 
         <InfoCard>
-          <InfoTitle>ℹ️ Как работи системата?</InfoTitle>
+          <InfoTitle>{t('sell.howItWorks.title')}</InfoTitle>
           <InfoText>
-            1. <strong>Изберете типа на превозното средство</strong> - лека кола, джип, ван, мотоциклет<br/>
-            2. <strong>Попълнете основните данни</strong> - марка, модел, година, пробег<br/>
-            3. <strong>Добавете оборудването</strong> - безопасност, комфорт, инфотейнмънт<br/>
-            4. <strong>Качете снимки</strong> - до 20 снимки с високо качество<br/>
-            5. <strong>Определете цената</strong> - фиксирана или договорна<br/>
-            6. <strong>Добавете контакт</strong> - име, телефон, адрес<br/>
-            7. <strong>Публикувайте</strong> - обявата е готова!
+            {t('sell.howItWorks.steps.0')}<br/>
+            {t('sell.howItWorks.steps.1')}<br/>
+            {t('sell.howItWorks.steps.2')}<br/>
+            {t('sell.howItWorks.steps.3')}<br/>
+            {t('sell.howItWorks.steps.4')}<br/>
+            {t('sell.howItWorks.steps.5')}<br/>
+            {t('sell.howItWorks.steps.6')}
           </InfoText>
         </InfoCard>
       </ContentWrapper>

@@ -198,3 +198,4 @@ const SocialLogin: React.FC<SocialLoginProps> = ({
 
 export default SocialLogin;
 
+

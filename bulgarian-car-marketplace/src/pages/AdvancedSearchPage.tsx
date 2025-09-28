@@ -5,6 +5,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
+import { useTranslation } from '../hooks/useTranslation';
 
 // Professional Color Palette - Black & Yellow System
 const colors = {
@@ -329,6 +330,7 @@ const ResultsSummary = styled.div`
 
 // Main Component
 const AdvancedSearchPage: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   // Search Form State
@@ -533,25 +535,25 @@ const AdvancedSearchPage: React.FC = () => {
   ];
 
   const fuelTypes = [
-    'Бензин', 'Дизел', 'Електрически', 'Етанол (FFV, E85, etc.)',
-    'Хибриден (дизел/електрически)', 'Хибриден (бензин/електрически)',
-    'Водород', 'LPG', 'Природен газ', 'Други', 'Plug-in хибрид'
+    t('advancedSearch.gasolineFuel'), t('advancedSearch.dieselFuel'), t('advancedSearch.electricFuel'), t('advancedSearch.ethanolFuel'),
+    t('advancedSearch.hybridDieselElectric'), t('advancedSearch.hybridGasolineElectric'),
+    t('advancedSearch.hydrogenFuel'), t('advancedSearch.lpgFuel'), t('advancedSearch.naturalGasFuel'), t('advancedSearch.otherFuel'), t('advancedSearch.pluginHybridFuel')
   ];
 
   const exteriorColors = [
-    'Черен', 'Бежов', 'Сив', 'Кафяв', 'Бял', 'Оранжев', 'Син', 'Жълт', 'Червен', 'Зелен',
-    'Сребърен', 'Златен', 'Лилав', 'Мат', 'Металик'
+    t('advancedSearch.black'), t('advancedSearch.beige'), t('advancedSearch.gray'), t('advancedSearch.brown'), t('advancedSearch.white'), t('advancedSearch.orange'), t('advancedSearch.blue'), t('advancedSearch.yellow'), t('advancedSearch.red'), t('advancedSearch.green'),
+    t('advancedSearch.silver'), t('advancedSearch.gold'), t('advancedSearch.purple'), t('advancedSearch.matte'), t('advancedSearch.metallic')
   ];
 
-  const interiorColors = ['Бежов', 'Черен', 'Син', 'Кафяв', 'Сив', 'Червен', 'Други'];
+  const interiorColors = [t('advancedSearch.interiorBeige'), t('advancedSearch.interiorBlack'), t('advancedSearch.interiorBlue'), t('advancedSearch.interiorBrown'), t('advancedSearch.interiorGray'), t('advancedSearch.interiorRed'), t('advancedSearch.interiorOther')];
 
-  const interiorMaterials = ['Алкантара', 'Плат', 'Изкуствена кожа', 'Частична кожа', 'Пълна кожа', 'Велур', 'Други'];
+  const interiorMaterials = [t('advancedSearch.alcantara'), t('advancedSearch.fabric'), t('advancedSearch.artificialLeather'), t('advancedSearch.partialLeather'), t('advancedSearch.fullLeather'), t('advancedSearch.velour'), t('advancedSearch.materialOther')];
 
-  const countries = ['България', 'Германия', 'Австрия', 'Швейцария', 'Други'];
+  const countries = [t('advancedSearch.bulgaria'), t('advancedSearch.germany'), t('advancedSearch.austria'), t('advancedSearch.switzerland'), t('advancedSearch.countryOther')];
 
   const bulgarianCities = [
-    'София', 'Пловдив', 'Варна', 'Бургас', 'Русе', 'Стара Загора',
-    'Плевен', 'Добрич', 'Сливен', 'Шумен', 'Перник', 'Хасково'
+    t('advancedSearch.sofia'), t('advancedSearch.plovdiv'), t('advancedSearch.varna'), t('advancedSearch.burgas'), t('advancedSearch.ruse'), t('advancedSearch.staraZagora'),
+    t('advancedSearch.pleven'), t('advancedSearch.dobrich'), t('advancedSearch.sliven'), t('advancedSearch.shumen'), t('advancedSearch.pernik'), t('advancedSearch.haskovo')
   ];
 
   const radiusOptions = ['10 km', '25 km', '50 km', '100 km', '200 km'];
@@ -561,19 +563,19 @@ const AdvancedSearchPage: React.FC = () => {
       <Container>
         {/* Header */}
         <HeaderSection>
-          <h1>Подробно търсене: Коли – нови или употребявани</h1>
-          <p>Намерете идеалната кола с нашата разширена система за търсене</p>
+          <h1>{t('advancedSearch.title')}</h1>
+          <p>{t('advancedSearch.subtitle')}</p>
         </HeaderSection>
 
         {/* Search Form */}
         <SearchForm onSubmit={handleSearch}>
           {/* Basic Data */}
-          <SectionTitle>Основни данни</SectionTitle>
+          <SectionTitle>{t('advancedSearch.basicData')}</SectionTitle>
           <FormGrid>
             <FormGroup>
-              <label>Марка</label>
+              <label>{t('advancedSearch.make')}</label>
               <SearchSelect name="make" value={searchData.make} onChange={handleInputChange}>
-                <option value="">Всички</option>
+                <option value="">{t('advancedSearch.all')}</option>
                 {carMakes.map(make => (
                   <option key={make} value={make}>{make}</option>
                 ))}
@@ -581,40 +583,40 @@ const AdvancedSearchPage: React.FC = () => {
             </FormGroup>
 
             <FormGroup>
-              <label>Модел</label>
+              <label>{t('advancedSearch.model')}</label>
               <SearchInput
                 type="text"
                 name="model"
                 value={searchData.model}
                 onChange={handleInputChange}
-                placeholder="например: GTI …"
+                placeholder={t('advancedSearch.modelPlaceholder')}
               />
             </FormGroup>
 
             <FormGroup>
-              <label>Тип превозно средство</label>
+              <label>{t('advancedSearch.vehicleType')}</label>
               <SearchSelect name="vehicleType" value={searchData.vehicleType} onChange={handleInputChange}>
-                <option value="">Всички</option>
-                <option value="cabriolet">Кабриолет/ Родстър</option>
-                <option value="estate">Комби</option>
-                <option value="offroad">Джип/ Пикап/ SUV</option>
-                <option value="saloon">Седан</option>
-                <option value="small">Малък автомобил</option>
-                <option value="sports">Спортен/ Купе</option>
-                <option value="van">Ван/ Микробус</option>
-                <option value="other">Други</option>
+                <option value="">{t('advancedSearch.all')}</option>
+                <option value="cabriolet">{t('advancedSearch.cabriolet')}</option>
+                <option value="estate">{t('advancedSearch.estate')}</option>
+                <option value="offroad">{t('advancedSearch.offroad')}</option>
+                <option value="saloon">{t('advancedSearch.saloon')}</option>
+                <option value="small">{t('advancedSearch.small')}</option>
+                <option value="sports">{t('advancedSearch.sports')}</option>
+                <option value="van">{t('advancedSearch.van')}</option>
+                <option value="other">{t('advancedSearch.other')}</option>
               </SearchSelect>
             </FormGroup>
 
             <FormGroup>
-              <label>Брой места</label>
+              <label>{t('advancedSearch.numberOfSeats')}</label>
               <RangeGroup>
                 <SearchInput
                   type="number"
                   name="seatsFrom"
                   value={searchData.seatsFrom}
                   onChange={handleInputChange}
-                  placeholder="от"
+                  placeholder={t('advancedSearch.from')}
                 />
                 <span></span>
                 <SearchInput
@@ -622,20 +624,20 @@ const AdvancedSearchPage: React.FC = () => {
                   name="seatsTo"
                   value={searchData.seatsTo}
                   onChange={handleInputChange}
-                  placeholder="до"
+                  placeholder={t('advancedSearch.to')}
                 />
               </RangeGroup>
             </FormGroup>
 
             <FormGroup>
-              <label>Брой врати</label>
+              <label>{t('advancedSearch.numberOfDoors')}</label>
               <RangeGroup>
                 <SearchInput
                   type="number"
                   name="doorsFrom"
                   value={searchData.doorsFrom}
                   onChange={handleInputChange}
-                  placeholder="от"
+                  placeholder={t('advancedSearch.from')}
                 />
                 <span></span>
                 <SearchInput
@@ -643,51 +645,51 @@ const AdvancedSearchPage: React.FC = () => {
                   name="doorsTo"
                   value={searchData.doorsTo}
                   onChange={handleInputChange}
-                  placeholder="до"
+                  placeholder={t('advancedSearch.toPlaceholder')}
                 />
               </RangeGroup>
             </FormGroup>
 
             <FormGroup>
-              <label>Плъзгаща се врата</label>
+              <label>{t('advancedSearch.slidingDoor')}</label>
               <SearchSelect name="slidingDoor" value={searchData.slidingDoor} onChange={handleInputChange}>
-                <option value="">Всички</option>
-                <option value="yes">Да</option>
-                <option value="no">Не</option>
+                <option value="">{t('advancedSearch.all')}</option>
+                <option value="yes">{t('advancedSearch.yes')}</option>
+                <option value="no">{t('advancedSearch.no')}</option>
               </SearchSelect>
             </FormGroup>
 
             <FormGroup>
-              <label>Тип и състояние</label>
+              <label>{t('advancedSearch.typeAndCondition')}</label>
               <SearchSelect name="condition" value={searchData.condition} onChange={handleInputChange}>
-                <option value="">Всички</option>
-                <option value="new">Нови</option>
-                <option value="used">Употребявани</option>
-                <option value="pre-registration">Предварителна регистрация</option>
-                <option value="employee">Служебен автомобил</option>
-                <option value="classic">Класически</option>
-                <option value="demonstration">Демонстрационен</option>
+                <option value="">{t('advancedSearch.all')}</option>
+                <option value="new">{t('advancedSearch.newCondition')}</option>
+                <option value="used">{t('advancedSearch.usedCondition')}</option>
+                <option value="pre-registration">{t('advancedSearch.preRegistrationCondition')}</option>
+                <option value="employee">{t('advancedSearch.employeeCondition')}</option>
+                <option value="classic">{t('advancedSearch.classicCondition')}</option>
+                <option value="demonstration">{t('advancedSearch.demonstrationCondition')}</option>
               </SearchSelect>
             </FormGroup>
 
             <FormGroup>
-              <label>Тип плащане</label>
+              <label>{t('advancedSearch.paymentType')}</label>
               <SearchSelect name="paymentType" value={searchData.paymentType} onChange={handleInputChange}>
-                <option value="">Всички</option>
-                <option value="buy">Покупка</option>
-                <option value="leasing">Лизинг</option>
+                <option value="">{t('advancedSearch.allOptions')}</option>
+                <option value="buy">{t('advancedSearch.purchaseOption')}</option>
+                <option value="leasing">{t('advancedSearch.leasingOption')}</option>
               </SearchSelect>
             </FormGroup>
 
             <FormGroup>
-              <label>Цена</label>
+              <label>{t('advancedSearch.price')}</label>
               <RangeGroup>
                 <SearchInput
                   type="number"
                   name="priceFrom"
                   value={searchData.priceFrom}
                   onChange={handleInputChange}
-                  placeholder="от"
+                  placeholder={t('advancedSearch.fromPlaceholder')}
                 />
                 <span>€</span>
                 <SearchInput
@@ -695,20 +697,20 @@ const AdvancedSearchPage: React.FC = () => {
                   name="priceTo"
                   value={searchData.priceTo}
                   onChange={handleInputChange}
-                  placeholder="до"
+                  placeholder={t('advancedSearch.toPlaceholder')}
                 />
               </RangeGroup>
             </FormGroup>
 
             <FormGroup>
-              <label>Първа регистрация</label>
+              <label>{t('advancedSearch.firstRegistration')}</label>
               <RangeGroup>
                 <SearchInput
                   type="number"
                   name="firstRegistrationFrom"
                   value={searchData.firstRegistrationFrom}
                   onChange={handleInputChange}
-                  placeholder="от"
+                  placeholder={t('advancedSearch.fromPlaceholder')}
                   min="1950"
                   max="2025"
                 />
@@ -718,7 +720,7 @@ const AdvancedSearchPage: React.FC = () => {
                   name="firstRegistrationTo"
                   value={searchData.firstRegistrationTo}
                   onChange={handleInputChange}
-                  placeholder="до"
+                  placeholder={t('advancedSearch.toPlaceholder')}
                   min="1950"
                   max="2025"
                 />
@@ -726,14 +728,14 @@ const AdvancedSearchPage: React.FC = () => {
             </FormGroup>
 
             <FormGroup>
-              <label>Пробег</label>
+              <label>{t('advancedSearch.mileage')}</label>
               <RangeGroup>
                 <SearchInput
                   type="number"
                   name="mileageFrom"
                   value={searchData.mileageFrom}
                   onChange={handleInputChange}
-                  placeholder="от"
+                  placeholder={t('advancedSearch.fromPlaceholder')}
                 />
                 <span>km</span>
                 <SearchInput
@@ -741,26 +743,26 @@ const AdvancedSearchPage: React.FC = () => {
                   name="mileageTo"
                   value={searchData.mileageTo}
                   onChange={handleInputChange}
-                  placeholder="до"
+                  placeholder={t('advancedSearch.toPlaceholder')}
                 />
               </RangeGroup>
             </FormGroup>
 
             <FormGroup>
-              <label>HU поне валиден до</label>
+              <label>{t('advancedSearch.huValidUntil')}</label>
               <SearchInput
                 type="number"
                 name="huValid"
                 value={searchData.huValid}
                 onChange={handleInputChange}
-                placeholder="например: 2025"
+                placeholder={t('advancedSearch.exampleYear')}
               />
             </FormGroup>
 
             <FormGroup>
-              <label>Брой собственици</label>
+              <label>{t('advancedSearch.numberOfOwners')}</label>
               <SearchSelect name="ownersCount" value={searchData.ownersCount} onChange={handleInputChange}>
-                <option value="">Всички</option>
+                <option value="">{t('advancedSearch.allOptions')}</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
@@ -769,29 +771,29 @@ const AdvancedSearchPage: React.FC = () => {
             </FormGroup>
 
             <FormGroup>
-              <label>Пълна сервизна история</label>
+              <label>{t('advancedSearch.fullServiceHistory')}</label>
               <SearchSelect name="serviceHistory" value={searchData.serviceHistory} onChange={handleInputChange}>
-                <option value="">Всички</option>
-                <option value="yes">Да</option>
-                <option value="no">Не</option>
+                <option value="">{t('advancedSearch.allOptions')}</option>
+                <option value="yes">{t('advancedSearch.yesOption')}</option>
+                <option value="no">{t('advancedSearch.noOption')}</option>
               </SearchSelect>
             </FormGroup>
 
             <FormGroup>
-              <label>Пътно способен</label>
+              <label>{t('advancedSearch.roadworthy')}</label>
               <SearchSelect name="roadworthy" value={searchData.roadworthy} onChange={handleInputChange}>
-                <option value="">Всички</option>
-                <option value="yes">Да</option>
-                <option value="no">Не</option>
+                <option value="">{t('advancedSearch.allOptions')}</option>
+                <option value="yes">{t('advancedSearch.yesOption')}</option>
+                <option value="no">{t('advancedSearch.noOption')}</option>
               </SearchSelect>
             </FormGroup>
           </FormGrid>
 
           {/* Technical Data */}
-          <SectionTitle>Технически данни</SectionTitle>
+          <SectionTitle>{t('advancedSearch.technicalData')}</SectionTitle>
           <FormGrid>
             <FormGroup>
-              <label>Тип гориво</label>
+              <label>{t('advancedSearch.fuelType')}</label>
               <SearchSelect name="fuelType" value={searchData.fuelType} onChange={handleInputChange}>
                 <option value="">Всички</option>
                 {fuelTypes.map(fuel => (
@@ -801,14 +803,14 @@ const AdvancedSearchPage: React.FC = () => {
             </FormGroup>
 
             <FormGroup>
-              <label>Мощност</label>
+              <label>{t('advancedSearch.power')}</label>
               <RangeGroup>
                 <SearchInput
                   type="number"
                   name="powerFrom"
                   value={searchData.powerFrom}
                   onChange={handleInputChange}
-                  placeholder="от"
+                  placeholder={t('advancedSearch.fromPlaceholder')}
                 />
                 <span>hp</span>
                 <SearchInput
@@ -816,20 +818,20 @@ const AdvancedSearchPage: React.FC = () => {
                   name="powerTo"
                   value={searchData.powerTo}
                   onChange={handleInputChange}
-                  placeholder="до"
+                  placeholder={t('advancedSearch.toPlaceholder')}
                 />
               </RangeGroup>
             </FormGroup>
 
             <FormGroup>
-              <label>Работен обем</label>
+              <label>{t('advancedSearch.cubicCapacity')}</label>
               <RangeGroup>
                 <SearchInput
                   type="number"
                   name="cubicCapacityFrom"
                   value={searchData.cubicCapacityFrom}
                   onChange={handleInputChange}
-                  placeholder="от"
+                  placeholder={t('advancedSearch.fromPlaceholder')}
                 />
                 <span>ccm</span>
                 <SearchInput
@@ -837,17 +839,17 @@ const AdvancedSearchPage: React.FC = () => {
                   name="cubicCapacityTo"
                   value={searchData.cubicCapacityTo}
                   onChange={handleInputChange}
-                  placeholder="до"
+                  placeholder={t('advancedSearch.toPlaceholder')}
                 />
               </RangeGroup>
             </FormGroup>
           </FormGrid>
 
           {/* Exterior */}
-          <SectionTitle>Екстериор</SectionTitle>
+          <SectionTitle>{t('advancedSearch.exterior')}</SectionTitle>
           <FormGrid>
             <FormGroup>
-              <label>Цвят на каросерията</label>
+              <label>{t('advancedSearch.exteriorColour')}</label>
               <SearchSelect name="exteriorColor" value={searchData.exteriorColor} onChange={handleInputChange}>
                 <option value="">Всички</option>
                 {exteriorColors.map(color => (
@@ -857,7 +859,7 @@ const AdvancedSearchPage: React.FC = () => {
             </FormGroup>
 
             <FormGroup>
-              <label>Теглич</label>
+              <label>{t('advancedSearch.trailerCoupling')}</label>
               <SearchSelect name="trailerCoupling" value={searchData.trailerCoupling} onChange={handleInputChange}>
                 <option value="">Всички</option>
                 <option value="fixed">Фиксиран, detachable или swiveling</option>
@@ -867,24 +869,24 @@ const AdvancedSearchPage: React.FC = () => {
             </FormGroup>
 
             <FormGroup>
-              <label>Товароспособност теглич спирана</label>
+              <label>{t('advancedSearch.trailerLoadBraked')}</label>
               <SearchInput
                 type="number"
                 name="trailerLoadBraked"
                 value={searchData.trailerLoadBraked}
                 onChange={handleInputChange}
-                placeholder="от"
+                placeholder={t('advancedSearch.fromPlaceholder')}
               />
             </FormGroup>
 
             <FormGroup>
-              <label>Товароспособност теглич неспирана</label>
+              <label>{t('advancedSearch.trailerLoadUnbraked')}</label>
               <SearchInput
                 type="number"
                 name="trailerLoadUnbraked"
                 value={searchData.trailerLoadUnbraked}
                 onChange={handleInputChange}
-                placeholder="от"
+                placeholder={t('advancedSearch.fromPlaceholder')}
               />
             </FormGroup>
 
@@ -895,12 +897,12 @@ const AdvancedSearchPage: React.FC = () => {
                 name="noseWeight"
                 value={searchData.noseWeight}
                 onChange={handleInputChange}
-                placeholder="от"
+                placeholder={t('advancedSearch.fromPlaceholder')}
               />
             </FormGroup>
 
             <FormGroup>
-              <label>Паркинг сензори</label>
+              <label>{t('advancedSearch.parkingSensors')}</label>
               <CheckboxGroup>
                 <CheckboxLabel>
                   <input type="checkbox" name="parkingSensors" value="360camera" />
@@ -940,10 +942,10 @@ const AdvancedSearchPage: React.FC = () => {
           </FormGrid>
 
           {/* Interior */}
-          <SectionTitle>Интериор</SectionTitle>
+          <SectionTitle>{t('advancedSearch.interior')}</SectionTitle>
           <FormGrid>
             <FormGroup>
-              <label>Цвят на интериора</label>
+              <label>{t('advancedSearch.interiorColour')}</label>
               <SearchSelect name="interiorColor" value={searchData.interiorColor} onChange={handleInputChange}>
                 <option value="">Всички</option>
                 {interiorColors.map(color => (
@@ -953,7 +955,7 @@ const AdvancedSearchPage: React.FC = () => {
             </FormGroup>
 
             <FormGroup>
-              <label>Материал на интериора</label>
+              <label>{t('advancedSearch.interiorMaterial')}</label>
               <SearchSelect name="interiorMaterial" value={searchData.interiorMaterial} onChange={handleInputChange}>
                 <option value="">Всички</option>
                 {interiorMaterials.map(material => (
@@ -963,7 +965,7 @@ const AdvancedSearchPage: React.FC = () => {
             </FormGroup>
 
             <FormGroup>
-              <label>Еърбегове</label>
+              <label>{t('advancedSearch.airbags')}</label>
               <SearchSelect name="airbags" value={searchData.airbags} onChange={handleInputChange}>
                 <option value="">Всички</option>
                 <option value="driver">Еърбег за шофьора</option>
@@ -974,7 +976,7 @@ const AdvancedSearchPage: React.FC = () => {
             </FormGroup>
 
             <FormGroup>
-              <label>Климатик</label>
+              <label>{t('advancedSearch.airConditioning')}</label>
               <SearchSelect name="airConditioning" value={searchData.airConditioning} onChange={handleInputChange}>
                 <option value="">Всички</option>
                 <option value="no">Без климатик</option>
@@ -987,221 +989,221 @@ const AdvancedSearchPage: React.FC = () => {
             </FormGroup>
 
             <FormGroup>
-              <label>Екстри</label>
+              <label>{t('advancedSearch.extras')}</label>
               <CheckboxGroup>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="alarm" />
-                  Аларма
+                  {t('advancedSearch.alarm')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="ambient" />
-                  Амбиентно осветление
+                  {t('advancedSearch.ambientLighting')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="android" />
-                  Android Auto
+                  {t('advancedSearch.androidAuto')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="apple" />
-                  Apple CarPlay
+                  {t('advancedSearch.appleCarPlay')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="armrest" />
-                  Подлакътник
+                  {t('advancedSearch.armrest')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="autoMirror" />
-                  Автоматично затъмняващо се огледало
+                  {t('advancedSearch.autoTintedMirror')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="auxHeating" />
-                  Допълнително отопление
+                  {t('advancedSearch.additionalHeating')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="bluetooth" />
-                  Bluetooth
+                  {t('advancedSearch.bluetooth')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="cargoBarrier" />
-                  Преграда за багаж
+                  {t('advancedSearch.cargoBarrier')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="cdPlayer" />
-                  CD плейър
+                  {t('advancedSearch.cdPlayer')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="dab" />
-                  DAB радио
+                  {t('advancedSearch.dabRadio')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="digitalCockpit" />
-                  Дигитален кокпит
+                  {t('advancedSearch.digitalCockpit')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="disabled" />
-                  За инвалиди
+                  {t('advancedSearch.disabledAccess')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="electricBackseat" />
-                  Електрически задни седалки
+                  {t('advancedSearch.electricRearSeats')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="electricSeats" />
-                  Електрически седалки
+                  {t('advancedSearch.electricSeats')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="electricSeatsMemory" />
-                  Електрически седалки с памет
+                  {t('advancedSearch.electricSeatsMemory')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="electricWindows" />
-                  Електрически прозорци
+                  {t('advancedSearch.electricWindows')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="emergencyCall" />
-                  Система за спешни повиквания
+                  {t('advancedSearch.emergencyCallSystem')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="fatigueWarning" />
-                  Предупреждение за умора
+                  {t('advancedSearch.fatigueWarning')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="foldingSeats" />
-                  Сгъваеми задни седалки
+                  {t('advancedSearch.foldingRearSeats')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="foldingMirrors" />
-                  Сгъваеми огледала
+                  {t('advancedSearch.foldingMirrors')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="handsfree" />
-                  Hands-free система
+                  {t('advancedSearch.handsFreeSystem')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="headup" />
-                  Head-up дисплей
+                  {t('advancedSearch.headUpDisplay')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="heatedRearSeats" />
-                  Отопляеми задни седалки
+                  {t('advancedSearch.heatedRearSeats')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="heatedSeats" />
-                  Отопляеми седалки
+                  {t('advancedSearch.heatedSeats')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="heatedSteering" />
-                  Отопляем волан
+                  {t('advancedSearch.heatedSteeringWheel')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="inductionCharging" />
-                  Безжично зареждане
+                  {t('advancedSearch.wirelessCharging')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="integratedStreaming" />
-                  Интегрирано музикално стрийминг
+                  {t('advancedSearch.integratedMusicStreaming')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="isofix" />
-                  Isofix
+                  {t('advancedSearch.isofix')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="leatherSteering" />
-                  Кожен волан
+                  {t('advancedSearch.leatherSteeringWheel')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="lumbarSupport" />
-                  Лумбална опора
+                  {t('advancedSearch.lumbarSupport')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="massageSeats" />
-                  Масажни седалки
+                  {t('advancedSearch.massageSeats')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="multifunctionSteering" />
-                  Мултифункционален волан
+                  {t('advancedSearch.multifunctionalSteeringWheel')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="navigation" />
-                  Навигация
+                  {t('advancedSearch.navigation')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="onboardComputer" />
-                  Бордов компютър
+                  {t('advancedSearch.onBoardComputer')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="paddleShifters" />
-                  Paddle shifters
+                  {t('advancedSearch.paddleShifters')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="passengerIsofix" />
-                  Isofix за пътник
+                  {t('advancedSearch.passengerIsofix')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="seatVentilation" />
-                  Вентилация на седалките
+                  {t('advancedSearch.seatVentilation')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="showRightHand" />
-                  Дясно кормило
+                  {t('advancedSearch.rightHandDrive')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="skiBag" />
-                  Ски чанта
+                  {t('advancedSearch.skiBag')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="smokerPackage" />
-                  Пакет за пушачи
+                  {t('advancedSearch.smokersPackage')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="soundSystem" />
-                  Аудио система
+                  {t('advancedSearch.audioSystem')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="sportSeats" />
-                  Спортни седалки
+                  {t('advancedSearch.sportsSeats')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="touchscreen" />
-                  Тъчскрийн
+                  {t('advancedSearch.touchscreen')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="tunerRadio" />
-                  Тунер/радио
+                  {t('advancedSearch.tunerRadio')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="tv" />
-                  TV
+                  {t('advancedSearch.tv')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="usb" />
-                  USB порт
+                  {t('advancedSearch.usbPort')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="virtualMirrors" />
-                  Виртуални огледала
+                  {t('advancedSearch.virtualMirrors')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="voiceControl" />
-                  Гласов контрол
+                  {t('advancedSearch.voiceControl')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="winterPackage" />
-                  Зимен пакет
+                  {t('advancedSearch.winterPackage')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input type="checkbox" name="extras" value="wlan" />
-                  WLAN/WiFi hotspot
+                  {t('advancedSearch.wlanWifiHotspot')}
                 </CheckboxLabel>
               </CheckboxGroup>
             </FormGroup>
           </FormGrid>
 
           {/* Offer Details */}
-          <SectionTitle>Детайли на офертата</SectionTitle>
+          <SectionTitle>{t('advancedSearch.offerDetails')}</SectionTitle>
           <FormGrid>
             <FormGroup>
-              <label>Продавач</label>
+              <label>{t('advancedSearch.seller')}</label>
               <SearchSelect name="seller" value={searchData.seller} onChange={handleInputChange}>
                 <option value="">Всички</option>
                 <option value="dealer">Дилър</option>
@@ -1211,7 +1213,7 @@ const AdvancedSearchPage: React.FC = () => {
             </FormGroup>
 
             <FormGroup>
-              <label>Рейтинг на дилъра</label>
+              <label>{t('advancedSearch.dealerRating')}</label>
               <SearchSelect name="dealerRating" value={searchData.dealerRating} onChange={handleInputChange}>
                 <option value="">Всички</option>
                 <option value="3stars">от 3 звезди</option>
@@ -1221,7 +1223,7 @@ const AdvancedSearchPage: React.FC = () => {
             </FormGroup>
 
             <FormGroup>
-              <label>Обявата онлайн от</label>
+              <label>{t('advancedSearch.listingOnlineSince')}</label>
               <SearchSelect name="adOnlineSince" value={searchData.adOnlineSince} onChange={handleInputChange}>
                 <option value="">Всички</option>
                 <option value="1day">1 ден</option>
@@ -1232,7 +1234,7 @@ const AdvancedSearchPage: React.FC = () => {
             </FormGroup>
 
             <FormGroup>
-              <label>Специални опции</label>
+              <label>                  {t('advancedSearch.specialOptions')}</label>
               <CheckboxGroup>
                 <CheckboxLabel>
                   <input
@@ -1241,7 +1243,7 @@ const AdvancedSearchPage: React.FC = () => {
                     checked={searchData.adsWithPictures}
                     onChange={(e) => setSearchData(prev => ({ ...prev, adsWithPictures: e.target.checked }))}
                   />
-                  Обяви със снимки
+                  {t('advancedSearch.listingsWithPhotos')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input
@@ -1250,7 +1252,7 @@ const AdvancedSearchPage: React.FC = () => {
                     checked={searchData.adsWithVideo}
                     onChange={(e) => setSearchData(prev => ({ ...prev, adsWithVideo: e.target.checked }))}
                   />
-                  Обяви с видео
+                  {t('advancedSearch.listingsWithVideo')}
                 </CheckboxLabel>
                 <CheckboxLabel>
                   <input
@@ -1336,10 +1338,10 @@ const AdvancedSearchPage: React.FC = () => {
           </FormGrid>
 
           {/* Location */}
-          <SectionTitle>Местоположение</SectionTitle>
+          <SectionTitle>{t('advancedSearch.location')}</SectionTitle>
           <FormGrid>
             <FormGroup>
-              <label>Държава</label>
+              <label>{t('advancedSearch.country')}</label>
               <SearchSelect name="country" value={searchData.country} onChange={handleInputChange}>
                 <option value="">Всички</option>
                 {countries.map(country => (
@@ -1349,7 +1351,7 @@ const AdvancedSearchPage: React.FC = () => {
             </FormGroup>
 
             <FormGroup>
-              <label>Град / пощенски код</label>
+              <label>{t('advancedSearch.cityZipCode')}</label>
               <SearchSelect name="city" value={searchData.city} onChange={handleInputChange}>
                 <option value="">Всички</option>
                 {bulgarianCities.map(city => (
@@ -1359,7 +1361,7 @@ const AdvancedSearchPage: React.FC = () => {
             </FormGroup>
 
             <FormGroup>
-              <label>Радиус</label>
+              <label>{t('advancedSearch.radius')}</label>
               <SearchSelect name="radius" value={searchData.radius} onChange={handleInputChange}>
                 {radiusOptions.map(radius => (
                   <option key={radius} value={radius}>{radius}</option>
@@ -1368,7 +1370,7 @@ const AdvancedSearchPage: React.FC = () => {
             </FormGroup>
 
             <FormGroup>
-              <label>Оферти за доставка</label>
+              <label>{t('advancedSearch.deliveryOffers')}</label>
               <CheckboxGroup>
                 <CheckboxLabel>
                   <input
@@ -1384,16 +1386,16 @@ const AdvancedSearchPage: React.FC = () => {
           </FormGrid>
 
           {/* Search Description */}
-          <SectionTitle>Търсене в описание на автомобила</SectionTitle>
+          <SectionTitle>{t('advancedSearch.searchInDescription')}</SectionTitle>
           <FormGrid>
             <FormGroup style={{ gridColumn: '1 / -1' }}>
-              <label>например: drive mode switch, LTE, thermal glazing …</label>
+              <label>{t('advancedSearch.descriptionPlaceholder')}</label>
               <SearchInput
                 type="text"
                 name="searchDescription"
                 value={searchData.searchDescription}
                 onChange={handleInputChange}
-                placeholder="Въведете ключови думи за търсене в описанието"
+                placeholder={t('advancedSearch.enterKeywords')}
               />
             </FormGroup>
           </FormGrid>
@@ -1401,18 +1403,18 @@ const AdvancedSearchPage: React.FC = () => {
           {/* Action Buttons */}
           <ActionSection>
             <ResetButton type="button" onClick={handleReset}>
-              Нулирай филтрите
+              {t('advancedSearch.resetFilters')}
             </ResetButton>
             <SearchButton type="submit" disabled={isSearching}>
-              {isSearching ? 'Търсене...' : 'Търси коли'}
+              {isSearching ? t('advancedSearch.searching') : t('advancedSearch.searchCars')}
             </SearchButton>
           </ActionSection>
         </SearchForm>
 
         {/* Results Summary Placeholder */}
         <ResultsSummary>
-          <h4>Резултати от търсенето</h4>
-          <p>Приложете филтрите по-горе за да видите наличните коли</p>
+          <h4>{t('advancedSearch.searchResults')}</h4>
+          <p>{t('advancedSearch.applyFiltersAbove')}</p>
         </ResultsSummary>
       </Container>
     </SearchContainer>

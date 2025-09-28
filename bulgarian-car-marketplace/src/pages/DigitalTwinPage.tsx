@@ -3,6 +3,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
+import { useTranslation } from '../hooks/useTranslation';
 import { DigitalTwinDashboard } from '../components/DigitalTwinDashboard';
 
 const PageContainer = styled.div`
@@ -86,6 +87,7 @@ const EmptyState = styled.div`
 `;
 
 const DigitalTwinPage: React.FC = () => {
+  const { t } = useTranslation();
   const [selectedCar, setSelectedCar] = useState<string | null>(null);
   const [cars, setCars] = useState<Array<{ id: string; make: string; model: string; year: number }>>([]);
   const [loading, setLoading] = useState(false);
@@ -106,7 +108,7 @@ const DigitalTwinPage: React.FC = () => {
   return (
     <PageContainer>
       <PageHeader>
-        <h1>Digital Twin Dashboard</h1>
+        <h1>{t('settings.digitalTwin')}</h1>
         <p>Monitor your vehicle's real-time data and performance</p>
       </PageHeader>
 

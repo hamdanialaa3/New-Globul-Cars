@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useTranslation } from '../../hooks/useTranslation';
 import styled from 'styled-components';
 
 const StartContainer = styled.div`
@@ -222,14 +223,14 @@ const VehicleStartPage: React.FC = () => {
     navigate(`/sell/inserat/${selectedType}/verkaeufertyp?${params.toString()}`);
   };
 
+  const { t } = useTranslation();
+
   return (
     <StartContainer>
       <ContentWrapper>
         <HeaderCard>
-          <Title>Продайте превозното си средство</Title>
-          <Subtitle>
-            Изберете типа на превозното средство, което искате да продадете
-          </Subtitle>
+          <Title>{t('sell.start.chooseTypeTitle')}</Title>
+          <Subtitle>{t('sell.start.chooseTypeSubtitle')}</Subtitle>
         </HeaderCard>
 
         <VehicleTypeGrid>
@@ -254,17 +255,13 @@ const VehicleStartPage: React.FC = () => {
             disabled={!selectedType}
             onClick={handleContinue}
           >
-            Продължи
+            {t('sell.start.continue')}
           </ContinueButton>
         </div>
 
         <InfoCard>
-          <InfoTitle>ℹ️ Информация за процеса на продажба</InfoTitle>
-          <InfoText>
-            Процесът на продажба е разделен на няколко стъпки, които ще ви помогнат 
-            да създадете професионална обява за вашето превозно средство. 
-            Всяка стъпка е важна за привличане на сериозни купувачи.
-          </InfoText>
+          <InfoTitle>{t('sell.start.processInfoTitle')}</InfoTitle>
+          <InfoText>{t('sell.start.processInfoText')}</InfoText>
         </InfoCard>
       </ContentWrapper>
     </StartContainer>

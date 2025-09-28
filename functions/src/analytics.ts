@@ -304,8 +304,8 @@ export const getRegionalPriceVariations = onCall(async (request) => {
   }
 });
 
-// Get subscription status
-export const getSubscriptionStatus = onCall(async (request) => {
+// Get subscription status (add explicit CORS to avoid preflight failures when called from localhost or custom domains)
+export const getSubscriptionStatus = onCall({ cors: true }, async (request) => {
   if (!request.auth) {
     throw new Error('Authentication required');
   }

@@ -29,7 +29,7 @@ const NotificationBellContainer = styled.div`
   display: inline-block;
 `;
 
-const NotificationBellButton = styled.button<{ hasUnread: boolean }>`
+const NotificationBellButton = styled.button<{ $hasUnread: boolean }>`
   position: relative;
   background: none;
   border: none;
@@ -65,7 +65,7 @@ const NotificationCount = styled.span`
   font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
 `;
 
-const NotificationDropdown = styled.div<{ isOpen: boolean }>`
+const NotificationDropdown = styled.div<{ $isOpen: boolean }>`
   position: absolute;
   top: 100%;
   right: 0;
@@ -76,7 +76,7 @@ const NotificationDropdown = styled.div<{ isOpen: boolean }>`
   border-radius: ${({ theme }) => theme.borderRadius.lg};
   box-shadow: ${({ theme }) => theme.shadows.lg};
   z-index: 1000;
-  display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
+  display: ${({ $isOpen }) => ($isOpen ? 'block' : 'none')};
   overflow: hidden;
 `;
 
@@ -121,14 +121,14 @@ const NotificationList = styled.div`
   overflow-y: auto;
 `;
 
-const NotificationItem = styled.div<{ isRead: boolean; type: string }>`
+const NotificationItem = styled.div<{ $isRead: boolean; $type: string }>`
   padding: ${({ theme }) => theme.spacing.md};
   border-bottom: 1px solid ${({ theme }) => theme.colors.grey[100]};
   cursor: pointer;
   transition: all 0.2s ease;
-  background: ${({ isRead }) => (isRead ? 'transparent' : '#f8f9ff')};
-  border-left: 3px solid ${({ theme, type }) => {
-    switch (type) {
+  background: ${({ $isRead }) => ($isRead ? 'transparent' : '#f8f9ff')};
+  border-left: 3px solid ${({ theme, $type }) => {
+    switch ($type) {
       case 'success': return theme.colors.success.main;
       case 'warning': return theme.colors.warning.main;
       case 'error': return theme.colors.error.main;
@@ -183,7 +183,7 @@ const NotificationEmpty = styled.div`
 `;
 
 const NotificationBell: React.FC<NotificationBellProps> = ({
-  notifications = [],
+  notifications,
   onNotificationClick,
   onMarkAsRead,
   onMarkAllAsRead,
@@ -194,10 +194,13 @@ const NotificationBell: React.FC<NotificationBellProps> = ({
 }) => {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
-  const [localNotifications, setLocalNotifications] = useState<Notification[]>(notifications);
+  const [localNotifications, setLocalNotifications] = useState<Notification[]>(() => notifications ?? []);
 
+  // Sync when parent actually provides a notifications array reference (avoid recreating [])
   useEffect(() => {
-    setLocalNotifications(notifications);
+    if (notifications) {
+      setLocalNotifications(notifications);
+    }
   }, [notifications]);
 
   const unreadCount = localNotifications.filter(n => !n.read).length;
@@ -243,7 +246,7 @@ const NotificationBell: React.FC<NotificationBellProps> = ({
   return (
     <NotificationBellContainer className={className}>
       <NotificationBellButton
-        hasUnread={unreadCount > 0}
+        $hasUnread={unreadCount > 0}
         onClick={() => setIsOpen(!isOpen)}
         aria-label={t('notifications.bellAriaLabel', 'Notifications')}
       >
@@ -253,7 +256,7 @@ const NotificationBell: React.FC<NotificationBellProps> = ({
         )}
       </NotificationBellButton>
 
-      <NotificationDropdown isOpen={isOpen}>
+  <NotificationDropdown $isOpen={isOpen}>
         <NotificationHeader>
           <NotificationHeaderTitle>
             {t('notifications.title', 'Notifications')}
@@ -284,8 +287,8 @@ const NotificationBell: React.FC<NotificationBellProps> = ({
             displayNotifications.map((notification) => (
               <NotificationItem
                 key={notification.id}
-                isRead={notification.read}
-                type={notification.type}
+                $isRead={notification.read}
+                $type={notification.type}
                 onClick={() => handleNotificationClick(notification)}
               >
                 <NotificationItemHeader>

@@ -81,7 +81,7 @@ const FilterSections = styled.div`
   gap: 0;
 `;
 
-const FilterSection = styled.article<{ isExpanded: boolean }>`
+const FilterSection = styled.article`
   border-bottom: 1px solid ${({ theme }) => theme.colors.grey[200]};
   background: ${({ theme }) => theme.colors.background.paper};
   position: relative;
@@ -114,10 +114,12 @@ const SectionTitle = styled.h3`
   margin: 0;
 `;
 
-const SectionContent = styled.div<{ isExpanded: boolean }>`
+const SectionContent = styled.div<{ $isExpanded?: boolean }>`
   padding: ${({ theme }) => theme.spacing.lg};
-  display: ${({ isExpanded }) => isExpanded ? 'block' : 'none'};
   background: ${({ theme }) => theme.colors.background.paper};
+  /* Optional animation hook */
+  display: ${({ $isExpanded }) => ($isExpanded === false ? 'none' : 'block')};
+  transition: opacity 0.2s ease;
 `;
 
 const FilterGrid = styled.div`
@@ -371,12 +373,13 @@ const AdvancedFilterSystemMobile: React.FC<AdvancedFilterSystemMobileProps> = ({
 
       <FilterSections>
         {/* Basic Data Section */}
-        <FilterSection isExpanded={isSectionExpanded('basicData')}>
+    <FilterSection>
           <SectionHeader onClick={() => toggleSection('basicData')}>
             <SectionTitle>{t('advancedSearch.basicData', 'Basic Data')}</SectionTitle>
             {isSectionExpanded('basicData') ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
           </SectionHeader>
-          <SectionContent isExpanded={isSectionExpanded('basicData')}>
+          {isSectionExpanded('basicData') && (
+          <SectionContent>
             <FilterGrid>
               <FilterGroup>
                 <FilterLabel>{t('advancedSearch.make', 'Make')}</FilterLabel>
@@ -728,15 +731,16 @@ const AdvancedFilterSystemMobile: React.FC<AdvancedFilterSystemMobileProps> = ({
               </FilterGroup>
             </FilterGrid>
           </SectionContent>
+          )}
         </FilterSection>
 
         {/* Technical Data Section */}
-        <FilterSection isExpanded={isSectionExpanded('technicalData')}>
+  <FilterSection>
           <SectionHeader onClick={() => toggleSection('technicalData')}>
             <SectionTitle>{t('advancedSearch.technicalData', 'Technical data')}</SectionTitle>
             {isSectionExpanded('technicalData') ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
           </SectionHeader>
-          <SectionContent isExpanded={isSectionExpanded('technicalData')}>
+          <SectionContent $isExpanded={isSectionExpanded('technicalData')}>
             <FilterGrid>
               <FilterGroup>
                 <FilterLabel>{t('advancedSearch.fuelType', 'Fuel Type')}</FilterLabel>
@@ -1004,12 +1008,12 @@ const AdvancedFilterSystemMobile: React.FC<AdvancedFilterSystemMobileProps> = ({
         </FilterSection>
 
         {/* Exterior Section */}
-        <FilterSection isExpanded={isSectionExpanded('exterior')}>
+  <FilterSection>
           <SectionHeader onClick={() => toggleSection('exterior')}>
             <SectionTitle>{t('advancedSearch.exterior', 'Exterior')}</SectionTitle>
             {isSectionExpanded('exterior') ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
           </SectionHeader>
-          <SectionContent isExpanded={isSectionExpanded('exterior')}>
+          <SectionContent $isExpanded={isSectionExpanded('exterior')}>
             <FilterGrid>
               <FilterGroup>
                 <FilterLabel>{t('advancedSearch.exteriorColour', 'Exterior Colour')}</FilterLabel>
@@ -1275,12 +1279,12 @@ const AdvancedFilterSystemMobile: React.FC<AdvancedFilterSystemMobileProps> = ({
         </FilterSection>
 
         {/* Interior Section */}
-        <FilterSection isExpanded={isSectionExpanded('interior')}>
+  <FilterSection>
           <SectionHeader onClick={() => toggleSection('interior')}>
             <SectionTitle>{t('advancedSearch.interior', 'Interior')}</SectionTitle>
             {isSectionExpanded('interior') ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
           </SectionHeader>
-          <SectionContent isExpanded={isSectionExpanded('interior')}>
+          <SectionContent $isExpanded={isSectionExpanded('interior')}>
             <FilterGrid>
               <FilterGroup>
                 <FilterLabel>{t('advancedSearch.interiorColour', 'Interior Colour')}</FilterLabel>
@@ -1351,12 +1355,12 @@ const AdvancedFilterSystemMobile: React.FC<AdvancedFilterSystemMobileProps> = ({
         </FilterSection>
 
         {/* Offer Details Section - Will be implemented next */}
-        <FilterSection isExpanded={isSectionExpanded('offerDetails')}>
+  <FilterSection>
           <SectionHeader onClick={() => toggleSection('offerDetails')}>
             <SectionTitle>{t('advancedSearch.offerDetails', 'Offer Details')}</SectionTitle>
             {isSectionExpanded('offerDetails') ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
           </SectionHeader>
-          <SectionContent isExpanded={isSectionExpanded('offerDetails')}>
+          <SectionContent $isExpanded={isSectionExpanded('offerDetails')}>
             <FilterGrid>
               <FilterGroup>
                 <FilterLabel>{t('advancedSearch.sellerType', 'Seller Type')}</FilterLabel>

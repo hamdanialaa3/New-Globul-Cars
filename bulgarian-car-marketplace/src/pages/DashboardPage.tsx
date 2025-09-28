@@ -702,7 +702,7 @@ const DashboardPage: React.FC = () => {
     },
     {
       icon: '💬',
-      value: stats.totalInquiries.toString(),
+      value: recentMessages.length.toString(),
       label: t('dashboard.stats.newInquiries'),
       change: `${recentMessages.filter(m => !m.isRead).length} ${t('dashboard.stats.unread')}`,
       changeType: recentMessages.filter(m => !m.isRead).length > 0 ? 'warning' as const : 'info' as const

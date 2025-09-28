@@ -35,7 +35,7 @@ const Divider = styled.div`
   }
 `;
 
-const SocialButton = styled.button<{ provider: 'google' | 'facebook' | 'apple' }>`
+const SocialButton = styled.button<{ $provider: 'google' | 'facebook' | 'apple' }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -52,7 +52,7 @@ const SocialButton = styled.button<{ provider: 'google' | 'facebook' | 'apple' }
   width: 100%;
 
   &:hover {
-    border-color: ${({ theme, provider }) => {
+    border-color: ${({ theme, $provider: provider }) => {
       switch (provider) {
         case 'google': return '#4285f4';
         case 'facebook': return '#1877f2';
@@ -60,7 +60,7 @@ const SocialButton = styled.button<{ provider: 'google' | 'facebook' | 'apple' }
         default: return theme.colors.primary.main;
       }
     }};
-    background: ${({ theme, provider }) => {
+  background: ${({ theme, $provider: provider }) => {
       switch (provider) {
         case 'google': return '#f8f9ff';
         case 'facebook': return '#f0f2ff';
@@ -83,13 +83,13 @@ const SocialButton = styled.button<{ provider: 'google' | 'facebook' | 'apple' }
   }
 `;
 
-const IconWrapper = styled.div<{ provider: 'google' | 'facebook' | 'apple' }>`
+const IconWrapper = styled.div<{ $provider: 'google' | 'facebook' | 'apple' }>`
   display: flex;
   align-items: center;
   justify-content: center;
   width: 20px;
   height: 20px;
-  color: ${({ provider }) => {
+  color: ${({ $provider: provider }) => {
     switch (provider) {
       case 'google': return '#4285f4';
       case 'facebook': return '#1877f2';
@@ -181,12 +181,12 @@ const SocialLogin: React.FC<SocialLoginProps> = ({
 
       {onGoogleLogin && (
         <SocialButton
-          provider="google"
+          $provider="google"
           onClick={handleGoogleLogin}
           disabled={loading || disabled}
           type="button"
         >
-          <IconWrapper provider="google">
+          <IconWrapper $provider="google">
             <Chrome size={20} />
           </IconWrapper>
           {t('auth.continueWithGoogle', 'Continue with Google')}
@@ -195,12 +195,12 @@ const SocialLogin: React.FC<SocialLoginProps> = ({
 
       {onFacebookLogin && (
         <SocialButton
-          provider="facebook"
+          $provider="facebook"
           onClick={handleFacebookLogin}
           disabled={loading || disabled}
           type="button"
         >
-          <IconWrapper provider="facebook">
+          <IconWrapper $provider="facebook">
             <Facebook size={20} />
           </IconWrapper>
           {t('auth.continueWithFacebook', 'Continue with Facebook')}
@@ -209,12 +209,12 @@ const SocialLogin: React.FC<SocialLoginProps> = ({
 
       {onAppleLogin && (
         <SocialButton
-          provider="apple"
+          $provider="apple"
           onClick={handleAppleLogin}
           disabled={loading || disabled}
           type="button"
         >
-          <IconWrapper provider="apple">
+          <IconWrapper $provider="apple">
             <Apple size={20} />
           </IconWrapper>
           {t('auth.continueWithApple', 'Continue with Apple')}

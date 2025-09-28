@@ -1,131 +1,123 @@
-// src/components/subscription/SubscriptionManager.tsx
-// B2B Subscription Management Component for Bulgarian Car Marketplace
-
-import React, { useState, useEffect, useCallback } from 'react';
-import { httpsCallable } from 'firebase/functions';
-import { functions } from '../../firebase/firebase-config';
-import { useAuth } from '../../hooks/useAuth';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { CheckCircle, XCircle, CreditCard, TrendingUp } from 'lucide-react';
+import { CheckCircle, CreditCard, TrendingUp } from 'lucide-react';
+import { useTranslation } from '../../hooks/useTranslation';
 
-// Styled Components
+// Styled components
 const Container = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
-  background: ${({ theme }) => theme.colors.background};
 `;
 
-const Header = styled.div`
-  text-align: center;
-  margin-bottom: 2rem;
-`;
-
-const Title = styled.h2`
+const Title = styled.h1`
   font-size: 2.5rem;
   font-weight: bold;
-  color: ${({ theme }) => theme.colors.text.primary};
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
+  color: #1f2937;
+  text-align: center;
 `;
 
 const Subtitle = styled.p`
-  color: ${({ theme }) => theme.colors.text.secondary};
-  font-size: 1.1rem;
+  font-size: 1.125rem;
+  color: #6b7280;
+  margin-bottom: 3rem;
+  text-align: center;
 `;
 
-const Message = styled.div<{ type: 'success' | 'error' }>`
-  padding: 1rem;
-  border-radius: 8px;
-  margin-bottom: 1.5rem;
-  border: 1px solid ${props => props.type === 'success' ? '#10b981' : '#ef4444'};
-  background-color: ${props => props.type === 'success' ? '#f0fdf4' : '#fef2f2'};
-  color: ${props => props.type === 'success' ? '#166534' : '#dc2626'};
+const Grid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
 `;
 
-const Card = styled.div<{ highlight?: boolean }>`
+const Card = styled.div<{ $highlight?: boolean }>`
   background: white;
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border: ${props => props.highlight ? '2px solid #3b82f6' : '1px solid #e5e7eb'};
+  border: ${props => props.$highlight ? '2px solid #3b82f6' : '1px solid #e5e7eb'};
   overflow: hidden;
-  margin-bottom: 1.5rem;
+  transition: transform 0.2s;
+  
+  &:hover {
+    transform: translateY(-2px);
+  }
 `;
 
 const CardHeader = styled.div`
-  padding: 1.5rem;
+  padding: 2rem;
+  text-align: center;
   border-bottom: 1px solid #e5e7eb;
-  background: #f9fafb;
 `;
 
-const CardTitle = styled.h3`
-  font-size: 1.25rem;
+const PlanName = styled.h3`
+  font-size: 1.5rem;
   font-weight: 600;
-  color: ${({ theme }) => theme.colors.text.primary};
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+`;
+
+const Price = styled.div`
+  font-size: 3rem;
+  font-weight: bold;
+  color: #3b82f6;
+  margin: 1rem 0;
+`;
+
+const PriceUnit = styled.span`
+  font-size: 1rem;
+  color: #6b7280;
+  font-weight: normal;
 `;
 
 const CardContent = styled.div`
-  padding: 1.5rem;
+  padding: 2rem;
 `;
 
-const Badge = styled.span<{ variant?: 'default' | 'secondary' }>`
-  display: inline-flex;
+const FeatureList = styled.ul`
+  list-style: none;
+  padding: 0;
+  margin: 0 0 2rem 0;
+`;
+
+const FeatureItem = styled.li`
+  display: flex;
   align-items: center;
-  padding: 0.25rem 0.75rem;
-  border-radius: 9999px;
-  font-size: 0.75rem;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  color: #374151;
+`;
+
+const Button = styled.button<{ variant?: 'primary' | 'outline' }>`
+  width: 100%;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-size: 1rem;
   font-weight: 600;
-  background-color: ${props => props.variant === 'secondary' ? '#f3f4f6' : '#3b82f6'};
-  color: ${props => props.variant === 'secondary' ? '#374151' : 'white'};
-`;
-
-const Button = styled.button<{ variant?: 'outline' | 'destructive' }>`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  font-size: 0.875rem;
-  font-weight: 500;
+  border: 2px solid;
   cursor: pointer;
   transition: all 0.2s;
-  border: 1px solid;
-
-  ${props => {
-    if (props.variant === 'outline') {
-      return `
-        background: white;
-        border-color: #d1d5db;
-        color: #374151;
-        &:hover {
-          background: #f9fafb;
-          border-color: #9ca3af;
-        }
-      `;
-    } else if (props.variant === 'destructive') {
-      return `
-        background: #dc2626;
-        border-color: #dc2626;
-        color: white;
-        &:hover {
-          background: #b91c1c;
-          border-color: #b91c1c;
-        }
-      `;
-    } else {
-      return `
-        background: #3b82f6;
-        border-color: #3b82f6;
-        color: white;
-        &:hover {
-          background: #2563eb;
-          border-color: #2563eb;
-        }
-      `;
+  
+  ${props => props.variant === 'outline' ? `
+    background: transparent;
+    border-color: #d1d5db;
+    color: #374151;
+    &:hover {
+      background: #f9fafb;
+      border-color: #3b82f6;
+      color: #3b82f6;
     }
-  }}
+  ` : `
+    background: #3b82f6;
+    border-color: #3b82f6;
+    color: white;
+    &:hover {
+      background: #2563eb;
+      border-color: #2563eb;
+    }
+  `}
 
   &:disabled {
     opacity: 0.5;
@@ -133,345 +125,245 @@ const Button = styled.button<{ variant?: 'outline' | 'destructive' }>`
   }
 `;
 
-const Grid = styled.div`
+const Badge = styled.span`
+  position: absolute;
+  top: -10px;
+  right: 20px;
+  background: #ef4444;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+`;
+
+const BenefitsSection = styled.div`
+  margin-top: 4rem;
+`;
+
+const BenefitsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1.5rem;
+  gap: 2rem;
+  margin-top: 2rem;
 `;
 
-const StatusIndicator = styled.div<{ active: boolean }>`
+const BenefitCard = styled.div`
+  text-align: center;
+  padding: 2rem;
+`;
+
+const BenefitIcon = styled.div`
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: ${props => props.active ? '#166534' : '#dc2626'};
+  justify-content: center;
+  margin-bottom: 1rem;
 `;
 
-const ProgressBar = styled.div`
-  width: 100%;
-  height: 1rem;
-  background: #e5e7eb;
-  border-radius: 9999px;
-  overflow: hidden;
-  margin-top: 0.5rem;
-
-  div {
-    height: 100%;
-    background: #3b82f6;
-    border-radius: 9999px;
-    transition: width 0.3s ease;
-  }
+const BenefitTitle = styled.h3`
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 1rem;
 `;
 
-interface SubscriptionTier {
-  name: string;
-  price: number;
-  features: string[];
-  limits: {
-    requests_per_month: number;
-    concurrent_users: number;
-  };
-}
+const BenefitDescription = styled.p`
+  color: #6b7280;
+  line-height: 1.6;
+`;
 
-interface SubscriptionData {
-  hasSubscription: boolean;
-  subscriptionId?: string;
-  tier?: string;
-  status?: string;
-  isActive?: boolean;
-  startDate?: Date;
-  endDate?: Date;
-  autoRenew?: boolean;
-  billingInfo?: any;
-  usage?: {
-    requestsThisMonth: number;
-  };
-  features?: string[];
-  limits?: any;
-}
-
-const SUBSCRIPTION_TIERS: { [key: string]: SubscriptionTier } = {
-  basic: {
-    name: 'Basic Analytics',
-    price: 49.99,
-    features: ['basic_analytics', 'market_trends', 'price_history'],
-    limits: { requests_per_month: 1000, concurrent_users: 2 }
+// Subscription plans data
+const SUBSCRIPTION_PLANS = [
+  {
+    id: 'basic',
+    planKey: 'basic',
+    price: 29.99,
+    popular: false
   },
-  premium: {
-    name: 'Premium Analytics',
-    price: 149.99,
-    features: ['basic_analytics', 'advanced_analytics', 'car_valuation', 'dealer_insights', 'export_data'],
-    limits: { requests_per_month: 10000, concurrent_users: 10 }
+  {
+    id: 'premium',
+    planKey: 'premium',
+    price: 89.99,
+    popular: true
   },
-  enterprise: {
-    name: 'Enterprise Analytics',
-    price: 499.99,
-    features: ['premium_analytics', 'custom_analytics', 'api_access', 'priority_support', 'white_label'],
-    limits: { requests_per_month: 100000, concurrent_users: 50 }
+  {
+    id: 'enterprise',
+    planKey: 'enterprise',
+    price: 299.99,
+    popular: false
   }
-};
+];
 
 const SubscriptionManager: React.FC = () => {
-  const { user } = useAuth();
-  const [subscription, setSubscription] = useState<SubscriptionData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [actionLoading, setActionLoading] = useState(false);
-  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [loading, setLoading] = useState(false);
+  const { t, language } = useTranslation();
 
-  const loadSubscription = useCallback(async () => {
-    if (!user) return;
+  // Get features based on current language
+  const getPlanFeatures = (planKey: string) => {
+    if (language === 'bg') {
+      switch (planKey) {
+        case 'basic':
+          return [
+            'До 100 API заявки месечно',
+            'Основна пазарна аналитика',
+            'Поддръжка чрез имейл',
+            'Стандартен достъп до данни',
+            'Месечни отчети'
+          ];
+        case 'premium':
+          return [
+            'До 1,000 API заявки месечно',
+            'Разширена аналитика и прозрения',
+            'Приоритетна поддръжка чрез имейл',
+            'Пазарни данни в реално време',
+            'Персонализирани отчети и табла',
+            'Достъп до исторически данни'
+          ];
+        case 'enterprise':
+          return [
+            'Неограничени API заявки',
+            'Пълен пакет за аналитика',
+            'Отговорник за клиентски акаунт',
+            'Поддръжка по телефон и имейл',
+            'Персонализирани интеграции',
+            'Възможности за собствена марка',
+            'Разширени функции за сигурност'
+          ];
+        default:
+          return [];
+      }
+    } else {
+      switch (planKey) {
+        case 'basic':
+          return [
+            'Up to 100 API requests per month',
+            'Basic market analytics',
+            'Email support',
+            'Standard data access',
+            'Monthly reports'
+          ];
+        case 'premium':
+          return [
+            'Up to 1,000 API requests per month',
+            'Advanced analytics & insights',
+            'Priority email support',
+            'Real-time market data',
+            'Custom reports & dashboards',
+            'Historical data access'
+          ];
+        case 'enterprise':
+          return [
+            'Unlimited API requests',
+            'Complete analytics suite',
+            'Dedicated account manager',
+            'Phone & email support',
+            'Custom integrations',
+            'White-label options',
+            'Advanced security features'
+          ];
+        default:
+          return [];
+      }
+    }
+  };
 
-    try {
-      const getSubscription = httpsCallable(functions, 'getB2BSubscription');
-      const result = await getSubscription();
-      setSubscription(result.data as SubscriptionData);
-    } catch (error) {
-      console.error('Error loading subscription:', error);
-      setMessage({ type: 'error', text: 'Failed to load subscription details' });
-    } finally {
+  const handleSubscribe = (planId: string, planName: string, price: number) => {
+    setLoading(true);
+    // Mock subscription process
+    setTimeout(() => {
+      if (language === 'bg') {
+        alert(`Записване за ${planName} план за €${price}/месец`);
+      } else {
+        alert(`Subscribing to ${planName} plan for €${price}/month`);
+      }
       setLoading(false);
-    }
-  }, [user]);
-
-  useEffect(() => {
-    loadSubscription();
-  }, [loadSubscription]);
-
-  const handleSubscribe = async (tier: string) => {
-    setActionLoading(true);
-    setMessage(null);
-
-    try {
-      // Mock billing info - in real app, this would come from a form
-      const billingInfo = {
-        companyName: 'Test Company',
-        address: 'Sofia, Bulgaria',
-        contactEmail: user?.email || ''
-      };
-
-      const createSubscription = httpsCallable(functions, 'createB2BSubscription');
-      await createSubscription({
-        tier,
-        billingInfo,
-        paymentMethod: 'card',
-        autoRenew: true
-      });
-
-      setMessage({ type: 'success', text: 'Subscription created successfully! Please complete payment.' });
-      await loadSubscription(); // Reload subscription data
-    } catch (error: any) {
-      setMessage({ type: 'error', text: error.message || 'Failed to create subscription' });
-    } finally {
-      setActionLoading(false);
-    }
+    }, 1000);
   };
-
-  const handleCancel = async () => {
-    if (!subscription?.subscriptionId) return;
-
-    setActionLoading(true);
-    setMessage(null);
-
-    try {
-      const cancelSubscription = httpsCallable(functions, 'cancelB2BSubscription');
-      await cancelSubscription();
-      setMessage({ type: 'success', text: 'Subscription cancelled successfully' });
-      await loadSubscription();
-    } catch (error: any) {
-      setMessage({ type: 'error', text: error.message || 'Failed to cancel subscription' });
-    } finally {
-      setActionLoading(false);
-    }
-  };
-
-  const handleUpgrade = async (newTier: string) => {
-    setActionLoading(true);
-    setMessage(null);
-
-    try {
-      const upgradeSubscription = httpsCallable(functions, 'upgradeB2BSubscription');
-      await upgradeSubscription({ newTier });
-      setMessage({ type: 'success', text: `Subscription upgraded to ${newTier}!` });
-      await loadSubscription();
-    } catch (error: any) {
-      setMessage({ type: 'error', text: error.message || 'Failed to upgrade subscription' });
-    } finally {
-      setActionLoading(false);
-    }
-  };
-
-  if (loading) {
-    return <div className="flex justify-center p-8">Loading subscription details...</div>;
-  }
 
   return (
     <Container>
-      <Header>
-        <Title>B2B Analytics Subscriptions</Title>
-        <Subtitle>Choose the perfect analytics package for your car dealership business</Subtitle>
-      </Header>
+      <Title>{t('subscription.title')}</Title>
+      <Subtitle>
+        {t('subscription.subtitle')}
+      </Subtitle>
 
-      {message && (
-        <Message type={message.type}>{message.text}</Message>
-      )}
-
-      {/* Current Subscription Status */}
-      {subscription?.hasSubscription && (
-        <Card highlight>
-          <CardHeader>
-            <CardTitle>
-              <CreditCard size={20} />
-              Current Subscription
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
-              <div>
-                <p style={{ fontSize: '0.875rem', color: '#6b7280' }}>Tier</p>
-                <Badge variant={subscription.isActive ? 'default' : 'secondary'}>
-                  {subscription.tier}
-                </Badge>
-              </div>
-              <div>
-                <p style={{ fontSize: '0.875rem', color: '#6b7280' }}>Status</p>
-                <StatusIndicator active={subscription.isActive || false}>
-                  {subscription.isActive ? <CheckCircle size={16} /> : <XCircle size={16} />}
-                  <span>{subscription.status}</span>
-                </StatusIndicator>
-              </div>
-              <div>
-                <p style={{ fontSize: '0.875rem', color: '#6b7280' }}>Monthly Usage</p>
-                <p style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>
-                  {subscription.usage?.requestsThisMonth || 0} requests
-                </p>
-              </div>
-            </div>
-
-            {subscription.endDate && (
-              <div style={{ marginTop: '1rem' }}>
-                <p style={{ fontSize: '0.875rem', color: '#6b7280' }}>Expires</p>
-                <p>{subscription.endDate.toLocaleDateString()}</p>
-              </div>
-            )}
-
-            <div style={{ marginTop: '1rem', display: 'flex', gap: '0.5rem' }}>
-              {subscription.isActive && subscription.tier !== 'enterprise' && (
-                <Button
-                  variant="outline"
-                  onClick={() => handleUpgrade(
-                    subscription.tier === 'basic' ? 'premium' : 'enterprise'
-                  )}
-                  disabled={actionLoading}
-                >
-                  Upgrade
-                </Button>
-              )}
-              {subscription.isActive && (
-                <Button
-                  variant="destructive"
-                  onClick={handleCancel}
-                  disabled={actionLoading}
-                >
-                  Cancel Subscription
-                </Button>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Subscription Tiers */}
       <Grid>
-        {Object.entries(SUBSCRIPTION_TIERS).map(([tierKey, tier]) => (
-          <Card key={tierKey} highlight={subscription?.tier === tierKey}>
+        {SUBSCRIPTION_PLANS.map((plan) => (
+          <Card key={plan.id} $highlight={plan.popular} style={{ position: 'relative' }}>
+            {plan.popular && <Badge>{t('subscription.mostPopular')}</Badge>}
+            
             <CardHeader>
-              <CardTitle style={{ justifyContent: 'space-between', alignItems: 'center' }}>
-                {tier.name}
-                {subscription?.tier === tierKey && <Badge>Current</Badge>}
-              </CardTitle>
-              <div style={{ fontSize: '2rem', fontWeight: 'bold', marginTop: '0.5rem' }}>
-                €{tier.price}
-                <span style={{ fontSize: '0.875rem', fontWeight: 'normal', color: '#6b7280' }}>/month</span>
-              </div>
+              <PlanName>{t(`subscription.${plan.planKey}.name`)}</PlanName>
+              <Price>
+                €{plan.price}
+                <PriceUnit>{language === 'bg' ? '/месец' : '/month'}</PriceUnit>
+              </Price>
             </CardHeader>
+
             <CardContent>
-              <ul style={{ marginBottom: '1rem' }}>
-                {tier.features.map((feature, index) => (
-                  <li key={index} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                    <CheckCircle size={16} color="#10b981" />
-                    <span style={{ fontSize: '0.875rem', textTransform: 'capitalize' }}>
-                      {feature.replace('_', ' ')}
-                    </span>
-                  </li>
+              <FeatureList>
+                {getPlanFeatures(plan.planKey).map((feature, index) => (
+                  <FeatureItem key={index}>
+                    <CheckCircle size={20} color="#10b981" />
+                    <span>{feature}</span>
+                  </FeatureItem>
                 ))}
-              </ul>
+              </FeatureList>
 
-              <div style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '1rem' }}>
-                <p>Limits: {tier.limits.requests_per_month.toLocaleString()} requests/month</p>
-                <p>Users: {tier.limits.concurrent_users}</p>
-              </div>
-
-              {!subscription?.hasSubscription && (
-                <Button
-                  onClick={() => handleSubscribe(tierKey)}
-                  disabled={actionLoading}
-                  style={{ width: '100%' }}
-                >
-                  Subscribe
-                </Button>
-              )}
-
-              {subscription?.hasSubscription && subscription.tier !== tierKey && (
-                <Button
-                  onClick={() => handleUpgrade(tierKey)}
-                  disabled={actionLoading}
-                  variant="outline"
-                  style={{ width: '100%' }}
-                >
-                  Upgrade
-                </Button>
-              )}
+              <Button
+                variant={plan.popular ? 'primary' : 'outline'}
+                onClick={() => handleSubscribe(plan.id, t(`subscription.${plan.planKey}.name`), plan.price)}
+                disabled={loading}
+              >
+                {loading ? t('subscription.processing') : `${t('subscription.choose')} ${t(`subscription.${plan.planKey}.name`)}`}
+              </Button>
             </CardContent>
           </Card>
         ))}
       </Grid>
 
-      {/* Usage Analytics */}
-      {subscription?.hasSubscription && subscription.usage && (
+      <BenefitsSection>
         <Card>
           <CardHeader>
-            <CardTitle>
-              <TrendingUp size={20} />
-              Usage Analytics
-            </CardTitle>
+            <PlanName style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+              <TrendingUp size={24} />
+              {t('subscription.benefits.title')}
+            </PlanName>
           </CardHeader>
           <CardContent>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
-              <div>
-                <p style={{ fontSize: '0.875rem', color: '#6b7280' }}>This Month's Requests</p>
-                <p style={{ fontSize: '2rem', fontWeight: 'bold' }}>
-                  {subscription.usage.requestsThisMonth}
-                </p>
-                <p style={{ fontSize: '0.875rem', color: '#6b7280' }}>
-                  of {subscription.limits?.requests_per_month} allowed
-                </p>
-              </div>
-              <div>
-                <p style={{ fontSize: '0.875rem', color: '#6b7280' }}>Usage Percentage</p>
-                <ProgressBar>
-                  <div
-                    style={{
-                      width: `${Math.min(
-                        (subscription.usage.requestsThisMonth / (subscription.limits?.requests_per_month || 1)) * 100,
-                        100
-                      )}%`
-                    }}
-                  ></div>
-                </ProgressBar>
-              </div>
-            </div>
+            <BenefitsGrid>
+              <BenefitCard>
+                <BenefitIcon>
+                  <CreditCard size={48} color="#3b82f6" />
+                </BenefitIcon>
+                <BenefitTitle>{t('subscription.benefits.marketInsights.title')}</BenefitTitle>
+                <BenefitDescription>
+                  {t('subscription.benefits.marketInsights.description')}
+                </BenefitDescription>
+              </BenefitCard>
+
+              <BenefitCard>
+                <BenefitIcon>
+                  <TrendingUp size={48} color="#10b981" />
+                </BenefitIcon>
+                <BenefitTitle>{t('subscription.benefits.competitiveEdge.title')}</BenefitTitle>
+                <BenefitDescription>
+                  {t('subscription.benefits.competitiveEdge.description')}
+                </BenefitDescription>
+              </BenefitCard>
+
+              <BenefitCard>
+                <BenefitIcon>
+                  <CheckCircle size={48} color="#ef4444" />
+                </BenefitIcon>
+                <BenefitTitle>{t('subscription.benefits.reliableSupport.title')}</BenefitTitle>
+                <BenefitDescription>
+                  {t('subscription.benefits.reliableSupport.description')}
+                </BenefitDescription>
+              </BenefitCard>
+            </BenefitsGrid>
           </CardContent>
         </Card>
-      )}
+      </BenefitsSection>
     </Container>
   );
 };

@@ -8,7 +8,6 @@ import {
   doc, 
   getDoc,
   updateDoc,
-  Timestamp,
   onSnapshot,
   Unsubscribe
 } from 'firebase/firestore';
@@ -145,8 +144,17 @@ class DashboardService {
         };
       });
     } catch (error) {
+      const code = (error as { code?: string })?.code;
+      if (code === 'permission-denied') {
+        console.warn('[DashboardService] permission denied for recent cars – returning empty list (check Firestore rules)');
+        return [];
+      }
+      if (code === 'failed-precondition') {
+        console.warn('[DashboardService] recent cars index building in progress – returning empty list temporarily');
+        return [];
+      }
       console.error('Error fetching recent cars:', error);
-      throw error;
+      return [];
     }
   }
 
@@ -191,8 +199,17 @@ class DashboardService {
       
       return messages;
     } catch (error) {
+      const code = (error as { code?: string })?.code;
+      if (code === 'permission-denied') {
+        console.warn('[DashboardService] permission denied for recent messages – returning empty list (check Firestore rules)');
+        return [];
+      }
+      if (code === 'failed-precondition') {
+        console.warn('[DashboardService] recent messages index building – returning empty list temporarily');
+        return [];
+      }
       console.error('Error fetching recent messages:', error);
-      throw error;
+      return [];
     }
   }
 
@@ -221,8 +238,17 @@ class DashboardService {
         };
       });
     } catch (error) {
+      const code = (error as { code?: string })?.code;
+      if (code === 'permission-denied') {
+        console.warn('[DashboardService] permission denied for notifications – returning empty list (check Firestore rules)');
+        return [];
+      }
+      if (code === 'failed-precondition') {
+        console.warn('[DashboardService] notifications index building – returning empty list temporarily');
+        return [];
+      }
       console.error('Error fetching notifications:', error);
-      throw error;
+      return [];
     }
   }
 
@@ -234,107 +260,142 @@ class DashboardService {
     onMessagesUpdate: (messages: DashboardMessage[]) => void,
     onNotificationsUpdate: (notifications: DashboardNotification[]) => void
   ): () => void {
-    // Subscribe to cars changes
-    const carsQuery = query(
+    // Preflight: wait for indexes to be ready before attaching realtime listeners (reduces console spam)
+    const carsQueryRef = query(
       collection(db, 'cars'),
       where('sellerId', '==', userId),
       orderBy('updatedAt', 'desc')
     );
-    
-    const carsUnsubscribe = onSnapshot(carsQuery, async (snapshot) => {
-      const cars = snapshot.docs.map(doc => {
-        const data = doc.data();
-        return {
-          id: doc.id,
-          title: data.title || `${data.make} ${data.model}`,
-          make: data.make || '',
-          model: data.model || '',
-          year: data.year || 0,
-          price: data.price || 0,
-          status: data.status || 'draft',
-          views: data.views || 0,
-          inquiries: data.inquiries || 0,
-          createdAt: data.createdAt?.toDate() || new Date(),
-          updatedAt: data.updatedAt?.toDate() || new Date(),
-          imageUrl: data.images?.[0] || undefined
-        };
-      });
-      
-      onCarsUpdate(cars);
-      
-      // Recalculate stats
-      const stats = await this.calculateStatsFromCars(cars);
-      onStatsUpdate(stats);
-    });
-
-    // Subscribe to messages changes
-    const messagesQuery = query(
+    const messagesQueryRef = query(
       collection(db, 'messages'),
       where('receiverId', '==', userId),
       orderBy('timestamp', 'desc'),
       limit(5)
     );
-    
-    const messagesUnsubscribe = onSnapshot(messagesQuery, async (snapshot) => {
-      const messages = await Promise.all(
-        snapshot.docs.map(async (messageDoc) => {
-          const data = messageDoc.data();
-          
-          const senderRef = doc(db, 'users', data.senderId);
-          const senderDoc = await getDoc(senderRef);
-          const senderData = senderDoc.data();
-          
-          const carRef = doc(db, 'cars', data.carId);
-          const carDoc = await getDoc(carRef);
-          const carData = carDoc.data();
-          
-          return {
-            id: messageDoc.id,
-            senderId: data.senderId,
-            senderName: senderData?.displayName || senderData?.email || 'Unknown',
-            carId: data.carId,
-            carTitle: carData?.title || `${carData?.make} ${carData?.model}` || 'Unknown Car',
-            message: data.text || '',
-            timestamp: data.timestamp?.toDate() || new Date(),
-            isRead: data.isRead || false
-          };
-        })
-      );
-      
-      onMessagesUpdate(messages);
-    });
-
-    // Subscribe to notifications changes
-    const notificationsQuery = query(
+    const notificationsQueryRef = query(
       collection(db, 'notifications'),
       where('userId', '==', userId),
       orderBy('timestamp', 'desc'),
       limit(5)
     );
-    
-    const notificationsUnsubscribe = onSnapshot(notificationsQuery, (snapshot) => {
-      const notifications = snapshot.docs.map(doc => {
-        const data = doc.data();
-        return {
-          id: doc.id,
-          type: data.type || 'system',
-          title: data.title || 'Notification',
-          message: data.message || '',
-          timestamp: data.timestamp?.toDate() || new Date(),
-          isRead: data.isRead || false,
-          carId: data.carId || undefined
-        };
+
+    const preflightCheck = async () => {
+      try {
+        await Promise.all([
+          getDocs(carsQueryRef),
+          getDocs(messagesQueryRef),
+          getDocs(notificationsQueryRef)
+        ]);
+        return true;
+      } catch (err: any) {
+        const code = err?.code;
+        if (code === 'failed-precondition') {
+          console.warn('[DashboardService] Firestore indexes still building – retrying listener attachment shortly');
+          return false;
+        }
+        if (code === 'permission-denied') {
+          console.warn('[DashboardService] permission denied during preflight – listeners will retry (check rules)');
+          return false;
+        }
+        console.error('[DashboardService] unexpected preflight error, will retry:', err);
+        return false;
+      }
+    };
+
+    let cancelled = false;
+    const attachListeners = () => {
+      if (cancelled) return;
+      const carsUnsub = onSnapshot(carsQueryRef, async (snapshot) => {
+        const cars = snapshot.docs.map(doc => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            title: data.title || `${data.make} ${data.model}`,
+            make: data.make || '',
+            model: data.model || '',
+            year: data.year || 0,
+            price: data.price || 0,
+            status: data.status || 'draft',
+            views: data.views || 0,
+            inquiries: data.inquiries || 0,
+            createdAt: data.createdAt?.toDate() || new Date(),
+            updatedAt: data.updatedAt?.toDate() || new Date(),
+            imageUrl: data.images?.[0] || undefined
+          };
+        });
+        onCarsUpdate(cars);
+        const stats = await this.calculateStatsFromCars(cars);
+        onStatsUpdate(stats);
+      }, (err) => {
+        console.warn('[DashboardService] cars snapshot error:', err);
       });
-      
-      onNotificationsUpdate(notifications);
-    });
 
-    // Store unsubscribe functions
-    this.unsubscribeFunctions = [carsUnsubscribe, messagesUnsubscribe, notificationsUnsubscribe];
+      const messagesUnsub = onSnapshot(messagesQueryRef, async (snapshot) => {
+        const messages = await Promise.all(
+          snapshot.docs.map(async (messageDoc) => {
+            const data = messageDoc.data();
+            const senderRef = doc(db, 'users', data.senderId);
+            const senderDoc = await getDoc(senderRef);
+            const senderData = senderDoc.data();
+            const carRef = doc(db, 'cars', data.carId);
+            const carDoc = await getDoc(carRef);
+            const carData = carDoc.data();
+            return {
+              id: messageDoc.id,
+              senderId: data.senderId,
+              senderName: senderData?.displayName || senderData?.email || 'Unknown',
+              carId: data.carId,
+              carTitle: carData?.title || `${carData?.make} ${carData?.model}` || 'Unknown Car',
+              message: data.text || '',
+              timestamp: data.timestamp?.toDate() || new Date(),
+              isRead: data.isRead || false
+            };
+          })
+        );
+        onMessagesUpdate(messages);
+      }, (err) => {
+        console.warn('[DashboardService] messages snapshot error:', err);
+      });
 
-    // Return cleanup function
+      const notificationsUnsub = onSnapshot(notificationsQueryRef, (snapshot) => {
+        const notifications = snapshot.docs.map(doc => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            type: data.type || 'system',
+            title: data.title || 'Notification',
+            message: data.message || '',
+            timestamp: data.timestamp?.toDate() || new Date(),
+            isRead: data.isRead || false,
+            carId: data.carId || undefined
+          };
+        });
+        onNotificationsUpdate(notifications);
+      }, (err) => {
+        console.warn('[DashboardService] notifications snapshot error:', err);
+      });
+
+      this.unsubscribeFunctions = [carsUnsub, messagesUnsub, notificationsUnsub];
+    };
+
+    // Retry loop with exponential-ish backoff (fixed step + cap)
+    let attempt = 0;
+    const tryAttach = async () => {
+      if (cancelled) return;
+      const ready = await preflightCheck();
+      if (ready) {
+        attachListeners();
+      } else {
+        attempt++;
+        const delay = Math.min(5000, 1000 + attempt * 1000);
+        setTimeout(tryAttach, delay);
+      }
+    };
+    tryAttach();
+
     return () => {
-      this.unsubscribeFunctions.forEach(unsubscribe => unsubscribe());
+      cancelled = true;
+      this.unsubscribeFunctions.forEach(u => u && u());
       this.unsubscribeFunctions = [];
     };
   }

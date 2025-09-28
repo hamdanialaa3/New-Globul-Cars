@@ -333,7 +333,7 @@ export class BulgarianAuthService {
     try {
       await signOut(auth);
       this.currentUser = null;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Sign out error:', error);
       throw new Error('Грешка при излизане от системата');
     }
@@ -370,7 +370,7 @@ export class BulgarianAuthService {
 
       // Update local user object
       this.currentUser = { ...this.currentUser, ...updates };
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Profile update error:', error);
       throw new Error('Грешка при обновяване на профила');
     }
@@ -431,7 +431,7 @@ export class BulgarianAuthService {
         } as BulgarianUser;
       }
       return null;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error getting Bulgarian user data:', error);
       return null;
     }
@@ -542,11 +542,27 @@ export class BulgarianAuthService {
 
   private async updateLastLogin(uid: string): Promise<void> {
     try {
+      // Attempt to update existing user document
       await updateDoc(doc(db, 'users', uid), {
         lastLogin: serverTimestamp()
       });
-    } catch (error) {
-      console.error('Error updating last login:', error);
+  } catch {
+      // If the doc doesn't exist (not found / permission due to missing required fields), create minimal doc
+      // Firestore create rule requires 'email' and 'displayName'.
+      const currentUser = auth.currentUser;
+      try {
+        await setDoc(doc(db, 'users', uid), {
+          uid,
+          email: currentUser?.email || '',
+          displayName: currentUser?.displayName || (currentUser?.email ? currentUser.email.split('@')[0] : 'User'),
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+          lastLogin: serverTimestamp(),
+          isVerified: currentUser?.emailVerified || false
+        }, { merge: true });
+      } catch (inner) {
+        console.error('Error updating/creating last login:', inner);
+      }
     }
   }
 

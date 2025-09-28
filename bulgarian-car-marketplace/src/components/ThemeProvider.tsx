@@ -68,6 +68,7 @@ interface Theme {
       800: string;
       900: string;
     };
+    blue?: any; // optional extended palette
   };
   typography: {
     fontSize: {
@@ -198,6 +199,12 @@ const lightTheme: Theme = {
       800: '#1f2937',
       900: '#111827',
     },
+    // Minimal blue palette (some components expect theme.colors.blue)
+    blue: {
+      pure: '#007BFF',
+      light: '#60a5fa',
+      dark: '#1d4ed8'
+    } as any,
   },
   typography: {
     fontSize: {
@@ -319,6 +326,7 @@ const darkTheme: Theme = {
       800: '#f3f4f6',
       900: '#f9fafb',
     },
+    blue: lightTheme.colors.blue as any,
   },
 };
 
@@ -384,7 +392,8 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
 
   return (
     <ThemeContext.Provider value={contextValue}>
-      <StyledThemeProvider theme={theme}>
+      {/* Cast to any to satisfy styled-components DefaultTheme expectation quickly */}
+      <StyledThemeProvider theme={theme as any}>
         {children}
       </StyledThemeProvider>
     </ThemeContext.Provider>

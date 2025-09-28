@@ -27,7 +27,8 @@ import {
   serverTimestamp,
   DocumentSnapshot
 } from 'firebase/firestore';
-import { auth, db, BULGARIAN_CONFIG, BulgarianFirebaseUtils } from '../firebase/firebase-config';
+import { auth, db, BulgarianFirebaseUtils } from '../firebase/firebase-config';
+import { BULGARIAN_CONFIG } from '../config/bulgarian-config';
 
 // Bulgarian User interface with all required fields
 export interface BulgarianUser {
@@ -447,7 +448,7 @@ export class BulgarianAuthService {
       photoURL: user.photoURL || undefined,
       phoneNumber: userData.phoneNumber,
       location: userData.location || BULGARIAN_CONFIG.region,
-      preferredLanguage: userData.preferredLanguage || BULGARIAN_CONFIG.defaultLanguage,
+  preferredLanguage: (userData.preferredLanguage || BULGARIAN_CONFIG.defaultLanguage) as 'bg' | 'en',
       currency: BULGARIAN_CONFIG.currency,
       timezone: BULGARIAN_CONFIG.timezone,
       role: userData.role || 'buyer',

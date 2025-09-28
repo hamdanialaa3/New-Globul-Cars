@@ -195,7 +195,20 @@ const VehicleSpecsStep: React.FC<VehicleSpecsStepProps> = ({ data, onDataChange 
   const handleInputChange = (field: string, value: string | number) => {
     const newSpecs = { ...specs, [field]: value };
     setSpecs(newSpecs);
-    onDataChange(newSpecs);
+    const numericFields = ['fuelConsumption','co2Emissions','weight','maxWeight','length','width','height','wheelbase','groundClearance','trunkVolume','fuelTankCapacity','acceleration','topSpeed'];
+    const update: Partial<CarListing> = {};
+    Object.keys(newSpecs).forEach(k => {
+      const key = k as keyof typeof newSpecs;
+      const val = (newSpecs as any)[key];
+      if (numericFields.includes(key)) {
+        if (val === '' || val === undefined) return; // skip empty
+        const num = typeof val === 'number' ? val : parseFloat(val);
+        if (!isNaN(num)) (update as any)[key] = num;
+      } else {
+        (update as any)[key] = val;
+      }
+    });
+    onDataChange(update);
   };
 
   const handleFeatureToggle = (feature: string) => {
@@ -205,7 +218,7 @@ const VehicleSpecsStep: React.FC<VehicleSpecsStepProps> = ({ data, onDataChange 
     
     const newSpecs = { ...specs, features: newFeatures };
     setSpecs(newSpecs);
-    onDataChange(newSpecs);
+    onDataChange({ features: newFeatures });
   };
 
   return (

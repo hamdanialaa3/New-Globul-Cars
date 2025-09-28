@@ -5,8 +5,6 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const axios = require('axios');
 
-admin.initializeApp();
-
 // Bulgarian Financial Partners Configuration
 const FINANCIAL_PARTNERS = {
   dsk_bank: {

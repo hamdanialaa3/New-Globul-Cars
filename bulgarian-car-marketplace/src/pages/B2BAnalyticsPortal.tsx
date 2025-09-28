@@ -3,6 +3,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
+import { useTranslation } from '../hooks/useTranslation';
 import { httpsCallable } from 'firebase/functions';
 import { functions } from '../firebase/firebase-config';
 import {
@@ -224,6 +225,7 @@ interface SalesPeakData {
 }
 
 const B2BAnalyticsPortal: React.FC = () => {
+  const { t } = useTranslation();
   const [subscriptionStatus, setSubscriptionStatus] = useState<SubscriptionStatus | null>(null);
   const [priceAnalytics, setPriceAnalytics] = useState<PriceAnalytics | null>(null);
   const [marketTrends, setMarketTrends] = useState<MarketTrend[]>([]);
@@ -316,7 +318,7 @@ const B2BAnalyticsPortal: React.FC = () => {
   return (
     <PortalContainer>
       <PortalHeader>
-        <HeaderTitle>B2B Analytics Portal</HeaderTitle>
+        <HeaderTitle>{t('settings.analytics')}</HeaderTitle>
         <HeaderSubtitle>
           Аналитични данни и прозрения за пазара на автомобили в България
         </HeaderSubtitle>

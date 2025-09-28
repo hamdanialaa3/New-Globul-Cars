@@ -203,7 +203,8 @@ const InfoText = styled.p`
 
 const PricingStep: React.FC<PricingStepProps> = ({ data, onDataChange }) => {
   const [pricing, setPricing] = useState({
-    price: data.price || '',
+    // store as string for input but convert when sending out
+    price: (data.price?.toString?.() || ''),
     currency: data.currency || 'EUR',
     priceType: data.priceType || 'fixed',
     negotiable: data.negotiable || false,
@@ -235,22 +236,30 @@ const PricingStep: React.FC<PricingStepProps> = ({ data, onDataChange }) => {
   const handleInputChange = (field: string, value: string | number | boolean) => {
     const newPricing = { ...pricing, [field]: value };
     setPricing(newPricing);
-    onDataChange(newPricing);
+    // convert numeric fields to number when calling parent
+    const outbound: any = { ...newPricing };
+    if (outbound.price !== '' && typeof outbound.price === 'string') outbound.price = parseFloat(outbound.price) || 0;
+    if (outbound.warrantyMonths !== '' && typeof outbound.warrantyMonths === 'string') outbound.warrantyMonths = parseInt(outbound.warrantyMonths) || 0;
+    onDataChange(outbound);
   };
 
   const handlePaymentMethodToggle = (method: string) => {
     const newMethods = pricing.paymentMethods.includes(method)
       ? pricing.paymentMethods.filter(m => m !== method)
       : [...pricing.paymentMethods, method];
-    
     const newPricing = { ...pricing, paymentMethods: newMethods };
     setPricing(newPricing);
-    onDataChange(newPricing);
+    const outbound: any = { ...newPricing };
+    if (outbound.price !== '' && typeof outbound.price === 'string') outbound.price = parseFloat(outbound.price) || 0;
+    if (outbound.warrantyMonths !== '' && typeof outbound.warrantyMonths === 'string') outbound.warrantyMonths = parseInt(outbound.warrantyMonths) || 0;
+    onDataChange(outbound);
   };
 
-  const formatPrice = (price: string) => {
+  const formatPrice = (price: string | number) => {
     if (!price) return '0';
-    return new Intl.NumberFormat('bg-BG').format(parseInt(price));
+    const num = typeof price === 'string' ? parseFloat(price) : price;
+    if (isNaN(num)) return '0';
+    return new Intl.NumberFormat('bg-BG').format(num);
   };
 
   return (

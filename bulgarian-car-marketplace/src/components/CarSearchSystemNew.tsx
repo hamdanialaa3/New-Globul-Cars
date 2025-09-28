@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { Search, Filter, X, ChevronDown, ChevronUp, MapPin, Calendar, Euro, Star, TrendingUp } from 'lucide-react';
+import { Search, Filter, X, ChevronDown, ChevronUp, Star, TrendingUp } from 'lucide-react';
 import { useTranslation } from '../hooks/useTranslation';
 import SearchableSelect from './SearchableSelect';
 import CheckboxGrid from './CheckboxGrid';
@@ -260,20 +260,20 @@ const CarSearchSystemNewActions = styled.div`
   border-top: 1px solid ${({ theme }) => theme.colors.grey[200]};
 `;
 
-const CarSearchSystemNewButton = styled.button<{ variant: 'primary' | 'secondary' }>`
+const CarSearchSystemNewButton = styled.button<{ $variant: 'primary' | 'secondary' }>`
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.sm};
   padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.lg};
-  border: 1px solid ${({ theme, variant }) => 
-    variant === 'primary' ? theme.colors.primary.main : theme.colors.grey[300]
+  border: 1px solid ${({ theme, $variant }) => 
+    $variant === 'primary' ? theme.colors.primary.main : theme.colors.grey[300]
   };
   border-radius: ${({ theme }) => theme.borderRadius.base};
-  background: ${({ theme, variant }) => 
-    variant === 'primary' ? theme.colors.primary.main : 'transparent'
+  background: ${({ theme, $variant }) => 
+    $variant === 'primary' ? theme.colors.primary.main : 'transparent'
   };
-  color: ${({ theme, variant }) => 
-    variant === 'primary' ? theme.colors.primary.contrastText : theme.colors.text.primary
+  color: ${({ theme, $variant }) => 
+    $variant === 'primary' ? theme.colors.primary.contrastText : theme.colors.text.primary
   };
   font-size: ${({ theme }) => theme.typography.fontSize.sm};
   font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
@@ -281,11 +281,11 @@ const CarSearchSystemNewButton = styled.button<{ variant: 'primary' | 'secondary
   transition: all 0.2s ease;
 
   &:hover {
-    background: ${({ theme, variant }) => 
-      variant === 'primary' ? theme.colors.primary.dark : theme.colors.grey[100]
+    background: ${({ theme, $variant }) => 
+      $variant === 'primary' ? theme.colors.primary.dark : theme.colors.grey[100]
     };
-    border-color: ${({ theme, variant }) => 
-      variant === 'primary' ? theme.colors.primary.dark : theme.colors.grey[400]
+    border-color: ${({ theme, $variant }) => 
+      $variant === 'primary' ? theme.colors.primary.dark : theme.colors.grey[400]
     };
   }
 
@@ -496,28 +496,23 @@ const CarSearchSystemNew: React.FC<CarSearchSystemNewProps> = ({
     }
   };
 
-  const groupedFilters = filters.reduce((groups, filter) => {
-    const group = filter.group || 'General';
-    if (!groups[group]) groups[group] = [];
-    groups[group].push(filter);
-    return groups;
-  }, {} as Record<string, CarSearchFilter[]>);
+
 
   return (
     <CarSearchSystemNewContainer className={className} style={style}>
       <CarSearchSystemNewHeader>
         <CarSearchSystemNewTitle>
-          {t('carSearch.title', 'New Car Search System')}
+          {t('carSearch.title')}
         </CarSearchSystemNewTitle>
         <CarSearchSystemNewToggles>
           <CarSearchSystemNewToggle onClick={handleToggleAdvanced}>
             <Filter size={16} />
-            {isAdvancedOpen ? 'Hide Advanced' : 'Show Advanced'}
+            {isAdvancedOpen ? t('carSearch.hideAdvanced') : t('carSearch.showAdvanced')}
             {isAdvancedOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
           </CarSearchSystemNewToggle>
           <CarSearchSystemNewToggle onClick={handleToggleFilters}>
             <Filter size={16} />
-            {isFiltersOpen ? 'Hide Filters' : 'Show Filters'}
+            {isFiltersOpen ? t('carSearch.hideFilters') : t('carSearch.showFilters')}
             {isFiltersOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
           </CarSearchSystemNewToggle>
         </CarSearchSystemNewToggles>
@@ -539,7 +534,7 @@ const CarSearchSystemNew: React.FC<CarSearchSystemNewProps> = ({
             {isAdvancedOpen && (
               <CarSearchSystemNewSection>
                 <CarSearchSystemNewSectionTitle>
-                  {t('carSearch.advanced.title', 'Advanced Options')}
+                  {t('carSearch.advanced.title')}
                 </CarSearchSystemNewSectionTitle>
                 <CarSearchSystemNewRow>
                   {filters.filter(f => f.type === 'range' || f.type === 'date' || f.type === 'location').map((filter) => (
@@ -560,7 +555,7 @@ const CarSearchSystemNew: React.FC<CarSearchSystemNewProps> = ({
             {isFiltersOpen && (
               <CarSearchSystemNewSection>
                 <CarSearchSystemNewSectionTitle>
-                  {t('carSearch.filters.title', 'Filters')}
+                  {t('carSearch.filters.title')}
                 </CarSearchSystemNewSectionTitle>
                 <CarSearchSystemNewRow>
                   {filters.filter(f => f.type === 'select' || f.type === 'checkbox').map((filter) => (
@@ -581,19 +576,19 @@ const CarSearchSystemNew: React.FC<CarSearchSystemNewProps> = ({
             <CarSearchSystemNewActions>
               <CarSearchSystemNewButton
                 type="button"
-                variant="secondary"
+                $variant="secondary"
                 onClick={handleReset}
               >
                 <X size={16} />
-                {t('carSearch.reset', 'Reset')}
+                {t('carSearch.reset')}
               </CarSearchSystemNewButton>
               <CarSearchSystemNewButton
                 type="submit"
-                variant="primary"
+                $variant="primary"
                 disabled={loading}
               >
                 <Search size={16} />
-                {loading ? t('carSearch.searching', 'Searching...') : t('carSearch.search', 'Search')}
+                {loading ? t('carSearch.searching') : t('carSearch.search')}
               </CarSearchSystemNewButton>
             </CarSearchSystemNewActions>
           </CarSearchSystemNewForm>

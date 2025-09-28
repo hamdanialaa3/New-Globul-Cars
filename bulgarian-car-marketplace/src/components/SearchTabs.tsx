@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Search, Filter, Star, TrendingUp, Clock } from 'lucide-react';
 import { useTranslation } from '../hooks/useTranslation';
@@ -23,40 +23,40 @@ interface SearchTabsProps {
   size?: 'sm' | 'md' | 'lg';
 }
 
-const SearchTabsContainer = styled.div<{ variant: string; size: string }>`
+const SearchTabsContainer = styled.div<{ $variant: string; $size: string }>`
   display: flex;
-  background: ${({ theme, variant }) => {
-    switch (variant) {
+  background: ${({ theme, $variant }) => {
+    switch ($variant) {
       case 'pills': return theme.colors.grey[100];
       case 'underline': return 'transparent';
       default: return theme.colors.background.paper;
     }
   }};
-  border-radius: ${({ theme, variant }) => {
-    switch (variant) {
+  border-radius: ${({ theme, $variant }) => {
+    switch ($variant) {
       case 'pills': return theme.borderRadius.lg;
       case 'underline': return '0';
       default: return theme.borderRadius.base;
     }
   }};
-  border: ${({ theme, variant }) => {
-    switch (variant) {
+  border: ${({ theme, $variant }) => {
+    switch ($variant) {
       case 'pills': return 'none';
       case 'underline': return 'none';
       default: return `1px solid ${theme.colors.grey[200]}`;
     }
   }};
   overflow: hidden;
-  gap: ${({ theme, variant }) => {
-    switch (variant) {
+  gap: ${({ theme, $variant }) => {
+    switch ($variant) {
       case 'pills': return theme.spacing.xs;
       case 'underline': return '0';
       default: return '0';
     }
   }};
-  padding: ${({ theme, variant, size }) => {
-    if (variant === 'pills') {
-      switch (size) {
+  padding: ${({ theme, $variant, $size }) => {
+    if ($variant === 'pills') {
+      switch ($size) {
         case 'sm': return theme.spacing.xs;
         case 'lg': return theme.spacing.sm;
         default: return theme.spacing.xs;
@@ -67,65 +67,65 @@ const SearchTabsContainer = styled.div<{ variant: string; size: string }>`
 `;
 
 const SearchTabButton = styled.button<{ 
-  isActive: boolean; 
-  variant: string; 
-  size: string;
+  $isActive: boolean; 
+  $variant: string; 
+  $size: string;
   disabled: boolean;
 }>`
   display: flex;
   align-items: center;
-  gap: ${({ theme, size }) => {
-    switch (size) {
+  gap: ${({ theme, $size }) => {
+    switch ($size) {
       case 'sm': return theme.spacing.xs;
       case 'lg': return theme.spacing.md;
       default: return theme.spacing.sm;
     }
   }};
-  padding: ${({ theme, size }) => {
-    switch (size) {
+  padding: ${({ theme, $size }) => {
+    switch ($size) {
       case 'sm': return `${theme.spacing.sm} ${theme.spacing.md}`;
       case 'lg': return `${theme.spacing.lg} ${theme.spacing.xl}`;
       default: return `${theme.spacing.md} ${theme.spacing.lg}`;
     }
   }};
   border: none;
-  background: ${({ theme, isActive, variant, disabled }) => {
+  background: ${({ theme, $isActive, $variant, disabled }) => {
     if (disabled) return 'transparent';
-    if (variant === 'pills') {
-      return isActive ? theme.colors.primary.main : 'transparent';
+    if ($variant === 'pills') {
+      return $isActive ? theme.colors.primary.main : 'transparent';
     }
-    if (variant === 'underline') {
+    if ($variant === 'underline') {
       return 'transparent';
     }
-    return isActive ? theme.colors.primary.main : 'transparent';
+    return $isActive ? theme.colors.primary.main : 'transparent';
   }};
-  color: ${({ theme, isActive, variant, disabled }) => {
+  color: ${({ theme, $isActive, $variant, disabled }) => {
     if (disabled) return theme.colors.text.disabled;
-    if (variant === 'pills') {
-      return isActive ? theme.colors.primary.contrastText : theme.colors.text.primary;
+    if ($variant === 'pills') {
+      return $isActive ? theme.colors.primary.contrastText : theme.colors.text.primary;
     }
-    if (variant === 'underline') {
-      return isActive ? theme.colors.primary.main : theme.colors.text.secondary;
+    if ($variant === 'underline') {
+      return $isActive ? theme.colors.primary.main : theme.colors.text.secondary;
     }
-    return isActive ? theme.colors.primary.contrastText : theme.colors.text.primary;
+    return $isActive ? theme.colors.primary.contrastText : theme.colors.text.primary;
   }};
-  font-size: ${({ theme, size }) => {
-    switch (size) {
+  font-size: ${({ theme, $size }) => {
+    switch ($size) {
       case 'sm': return theme.typography.fontSize.sm;
       case 'lg': return theme.typography.fontSize.lg;
       default: return theme.typography.fontSize.sm;
     }
   }};
-  font-weight: ${({ theme, isActive }) => 
-    isActive ? theme.typography.fontWeight.medium : theme.typography.fontWeight.normal
+  font-weight: ${({ theme, $isActive }) => 
+    $isActive ? theme.typography.fontWeight.medium : theme.typography.fontWeight.normal
   };
   cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
   transition: all 0.2s ease;
   position: relative;
   flex: 1;
   justify-content: center;
-  border-radius: ${({ theme, variant }) => {
-    switch (variant) {
+  border-radius: ${({ theme, $variant }) => {
+    switch ($variant) {
       case 'pills': return theme.borderRadius.base;
       case 'underline': return '0';
       default: return '0';
@@ -133,14 +133,14 @@ const SearchTabButton = styled.button<{
   }};
 
   &:hover:not(:disabled) {
-    background: ${({ theme, isActive, variant }) => {
-      if (variant === 'pills') {
-        return isActive ? theme.colors.primary.dark : theme.colors.grey[200];
+    background: ${({ theme, $isActive, $variant }) => {
+      if ($variant === 'pills') {
+        return $isActive ? theme.colors.primary.dark : theme.colors.grey[200];
       }
-      if (variant === 'underline') {
+      if ($variant === 'underline') {
         return 'transparent';
       }
-      return isActive ? theme.colors.primary.dark : theme.colors.grey[100];
+      return $isActive ? theme.colors.primary.dark : theme.colors.grey[100];
     }};
   }
 
@@ -149,8 +149,8 @@ const SearchTabButton = styled.button<{
     box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.primary.light + '40'};
   }
 
-  ${({ variant, isActive, theme }) => {
-    if (variant === 'underline' && isActive) {
+  ${({ $variant, $isActive, theme }) => {
+    if ($variant === 'underline' && $isActive) {
       return `
         &::after {
           content: '';
@@ -198,24 +198,24 @@ const SearchTabLabel = styled.span`
   text-overflow: ellipsis;
 `;
 
-const SearchTabCount = styled.span<{ isActive: boolean; variant: string }>`
-  background: ${({ theme, isActive, variant }) => {
-    if (variant === 'pills') {
-      return isActive ? 'rgba(255, 255, 255, 0.2)' : theme.colors.grey[300];
+const SearchTabCount = styled.span<{ $isActive: boolean; $variant: string }>`
+  background: ${({ theme, $isActive, $variant }) => {
+    if ($variant === 'pills') {
+      return $isActive ? 'rgba(255, 255, 255, 0.2)' : theme.colors.grey[300];
     }
-    if (variant === 'underline') {
-      return isActive ? theme.colors.primary.light + '20' : theme.colors.grey[200];
+    if ($variant === 'underline') {
+      return $isActive ? theme.colors.primary.light + '20' : theme.colors.grey[200];
     }
-    return isActive ? 'rgba(255, 255, 255, 0.2)' : theme.colors.grey[300];
+    return $isActive ? 'rgba(255, 255, 255, 0.2)' : theme.colors.grey[300];
   }};
-  color: ${({ theme, isActive, variant }) => {
-    if (variant === 'pills') {
-      return isActive ? theme.colors.primary.contrastText : theme.colors.text.secondary;
+  color: ${({ theme, $isActive, $variant }) => {
+    if ($variant === 'pills') {
+      return $isActive ? theme.colors.primary.contrastText : theme.colors.text.secondary;
     }
-    if (variant === 'underline') {
-      return isActive ? theme.colors.primary.main : theme.colors.text.secondary;
+    if ($variant === 'underline') {
+      return $isActive ? theme.colors.primary.main : theme.colors.text.secondary;
     }
-    return isActive ? theme.colors.primary.contrastText : theme.colors.text.secondary;
+    return $isActive ? theme.colors.primary.contrastText : theme.colors.text.secondary;
   }};
   padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.sm};
   border-radius: ${({ theme }) => theme.borderRadius.sm};
@@ -259,15 +259,15 @@ const SearchTabs: React.FC<SearchTabsProps> = ({
     <SearchTabsContainer 
       className={className} 
       style={style}
-      variant={variant}
-      size={size}
+      $variant={variant}
+      $size={size}
     >
       {tabs.map((tab) => (
         <SearchTabButton
           key={tab.id}
-          isActive={activeTab === tab.id}
-          variant={variant}
-          size={size}
+          $isActive={activeTab === tab.id}
+          $variant={variant}
+          $size={size}
           disabled={tab.disabled || false}
           onClick={() => !tab.disabled && onTabChange(tab.id)}
           aria-selected={activeTab === tab.id}
@@ -285,8 +285,8 @@ const SearchTabs: React.FC<SearchTabsProps> = ({
           
           {showCounts && tab.count !== undefined && (
             <SearchTabCount 
-              isActive={activeTab === tab.id}
-              variant={variant}
+              $isActive={activeTab === tab.id}
+              $variant={variant}
             >
               {tab.count}
             </SearchTabCount>

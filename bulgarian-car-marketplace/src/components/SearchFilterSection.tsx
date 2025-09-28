@@ -146,9 +146,6 @@ const SearchFilterSection: React.FC<SearchFilterSectionProps> = ({
     onParamChange(key, value);
   };
 
-  const handleCheckboxChange = (key: keyof AdvancedSearchParams, checked: boolean) => {
-    onParamChange(key, checked);
-  };
 
   const handleArrayChange = (key: keyof AdvancedSearchParams, value: string, checked: boolean) => {
     const currentArray = searchParams[key] as string[];
@@ -161,11 +158,11 @@ const SearchFilterSection: React.FC<SearchFilterSectionProps> = ({
 
   return (
     <FilterContainer>
-      {/* Basic Data Section */}
-      <SectionTitle>Basic Data</SectionTitle>
+  {/* Basic Data Section */}
+  <SectionTitle>{t('carSearch.basicData', 'Basic Data')}</SectionTitle>
       <FilterGrid>
         <FilterGroup>
-          <FilterLabel>Make</FilterLabel>
+          <FilterLabel>{t('carSearch.make', 'Make')}</FilterLabel>
           <FilterInput
             type="text"
             value={searchParams.make}
@@ -175,7 +172,7 @@ const SearchFilterSection: React.FC<SearchFilterSectionProps> = ({
         </FilterGroup>
 
         <FilterGroup>
-          <FilterLabel>Model</FilterLabel>
+          <FilterLabel>{t('carSearch.model', 'Model')}</FilterLabel>
           <FilterInput
             type="text"
             value={searchParams.model}
@@ -185,7 +182,7 @@ const SearchFilterSection: React.FC<SearchFilterSectionProps> = ({
         </FilterGroup>
 
         <FilterGroup>
-          <FilterLabel>Min Price (€)</FilterLabel>
+          <FilterLabel>{t('carSearch.minPrice', 'Min Price (€)')}</FilterLabel>
           <FilterInput
             type="number"
             value={searchParams.minPrice}
@@ -195,7 +192,7 @@ const SearchFilterSection: React.FC<SearchFilterSectionProps> = ({
         </FilterGroup>
 
         <FilterGroup>
-          <FilterLabel>Max Price (€)</FilterLabel>
+          <FilterLabel>{t('carSearch.maxPrice', 'Max Price (€)')}</FilterLabel>
           <FilterInput
             type="number"
             value={searchParams.maxPrice}
@@ -205,11 +202,11 @@ const SearchFilterSection: React.FC<SearchFilterSectionProps> = ({
         </FilterGroup>
       </FilterGrid>
 
-      {/* Type and Condition Section */}
-      <SectionTitle>Type and Condition</SectionTitle>
+  {/* Type and Condition Section */}
+  <SectionTitle>{t('carSearch.typeAndCondition', 'Type and Condition')}</SectionTitle>
       <FilterGrid>
         <FilterGroup>
-          <FilterLabel>Condition</FilterLabel>
+          <FilterLabel>{t('carSearch.condition', 'Condition')}</FilterLabel>
           <CheckboxGroup>
             <CheckboxLabel>
               <input
@@ -217,7 +214,7 @@ const SearchFilterSection: React.FC<SearchFilterSectionProps> = ({
                 checked={searchParams.condition.includes('new')}
                 onChange={(e) => handleArrayChange('condition', 'new', e.target.checked)}
               />
-              New
+              {t('carSearch.new', 'New')}
             </CheckboxLabel>
             <CheckboxLabel>
               <input
@@ -225,13 +222,13 @@ const SearchFilterSection: React.FC<SearchFilterSectionProps> = ({
                 checked={searchParams.condition.includes('used')}
                 onChange={(e) => handleArrayChange('condition', 'used', e.target.checked)}
               />
-              Used
+              {t('carSearch.used', 'Used')}
             </CheckboxLabel>
           </CheckboxGroup>
         </FilterGroup>
 
         <FilterGroup>
-          <FilterLabel>Fuel Type</FilterLabel>
+          <FilterLabel>{t('carSearch.fuelType', 'Fuel Type')}</FilterLabel>
           <CheckboxGroup>
             <CheckboxLabel>
               <input
@@ -239,7 +236,7 @@ const SearchFilterSection: React.FC<SearchFilterSectionProps> = ({
                 checked={searchParams.fuelType.includes('petrol')}
                 onChange={(e) => handleArrayChange('fuelType', 'petrol', e.target.checked)}
               />
-              Petrol
+              {t('carSearch.petrol', 'Petrol')}
             </CheckboxLabel>
             <CheckboxLabel>
               <input
@@ -247,7 +244,7 @@ const SearchFilterSection: React.FC<SearchFilterSectionProps> = ({
                 checked={searchParams.fuelType.includes('diesel')}
                 onChange={(e) => handleArrayChange('fuelType', 'diesel', e.target.checked)}
               />
-              Diesel
+              {t('carSearch.diesel', 'Diesel')}
             </CheckboxLabel>
             <CheckboxLabel>
               <input
@@ -255,13 +252,13 @@ const SearchFilterSection: React.FC<SearchFilterSectionProps> = ({
                 checked={searchParams.fuelType.includes('electric')}
                 onChange={(e) => handleArrayChange('fuelType', 'electric', e.target.checked)}
               />
-              Electric
+              {t('carSearch.electric', 'Electric')}
             </CheckboxLabel>
           </CheckboxGroup>
         </FilterGroup>
 
         <FilterGroup>
-          <FilterLabel>Transmission</FilterLabel>
+          <FilterLabel>{t('carSearch.transmission', 'Transmission')}</FilterLabel>
           <CheckboxGroup>
             <CheckboxLabel>
               <input
@@ -269,7 +266,7 @@ const SearchFilterSection: React.FC<SearchFilterSectionProps> = ({
                 checked={searchParams.transmission.includes('manual')}
                 onChange={(e) => handleArrayChange('transmission', 'manual', e.target.checked)}
               />
-              Manual
+              {t('carSearch.manual', 'Manual')}
             </CheckboxLabel>
             <CheckboxLabel>
               <input
@@ -277,17 +274,17 @@ const SearchFilterSection: React.FC<SearchFilterSectionProps> = ({
                 checked={searchParams.transmission.includes('automatic')}
                 onChange={(e) => handleArrayChange('transmission', 'automatic', e.target.checked)}
               />
-              Automatic
+              {t('carSearch.automatic', 'Automatic')}
             </CheckboxLabel>
           </CheckboxGroup>
         </FilterGroup>
       </FilterGrid>
 
-      {/* Location Section */}
-      <SectionTitle>Location</SectionTitle>
+  {/* Location Section */}
+  <SectionTitle>{t('carSearch.location', 'Location')}</SectionTitle>
       <FilterGrid>
         <FilterGroup>
-          <FilterLabel>City</FilterLabel>
+          <FilterLabel>{t('carSearch.city', 'City')}</FilterLabel>
           <FilterInput
             type="text"
             value={searchParams.city}
@@ -297,12 +294,12 @@ const SearchFilterSection: React.FC<SearchFilterSectionProps> = ({
         </FilterGroup>
 
         <FilterGroup>
-          <FilterLabel>Radius (km)</FilterLabel>
+          <FilterLabel>{t('carSearch.radius', 'Radius (km)')}</FilterLabel>
           <FilterSelect
             value={searchParams.radius}
             onChange={(e) => handleInputChange('radius', e.target.value)}
           >
-            <option value="">Any</option>
+            <option value="">{t('carSearch.any', 'Any')}</option>
             <option value="10">10 km</option>
             <option value="25">25 km</option>
             <option value="50">50 km</option>
@@ -314,10 +311,10 @@ const SearchFilterSection: React.FC<SearchFilterSectionProps> = ({
       {/* Action Buttons */}
       <ActionButtons>
         <SecondaryButton onClick={onClear}>
-          Clear Filters
+          {t('carSearch.clearFilters', 'Clear Filters')}
         </SecondaryButton>
         <PrimaryButton onClick={onSearch} disabled={isLoading}>
-          {isLoading ? 'Searching...' : 'Search'}
+          {isLoading ? t('carSearch.searching', 'Searching...') : t('carSearch.search', 'Search')}
         </PrimaryButton>
       </ActionButtons>
     </FilterContainer>

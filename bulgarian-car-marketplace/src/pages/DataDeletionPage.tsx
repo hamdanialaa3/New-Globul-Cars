@@ -64,7 +64,7 @@ const Label = styled.label`
 
 const Input = styled.input`
   padding: 12px;
-  border: 2px solid ${props => props.theme.colors.border};
+  border: 2px solid ${props => props.theme.colors.grey[300]};
   border-radius: 8px;
   font-size: 1rem;
   transition: border-color 0.3s ease;
@@ -81,7 +81,7 @@ const Input = styled.input`
 
 const TextArea = styled.textarea`
   padding: 12px;
-  border: 2px solid ${props => props.theme.colors.border};
+  border: 2px solid ${props => props.theme.colors.grey[300]};
   border-radius: 8px;
   font-size: 1rem;
   min-height: 100px;

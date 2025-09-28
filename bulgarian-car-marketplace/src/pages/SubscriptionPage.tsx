@@ -4,6 +4,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { useTranslation } from '../hooks/useTranslation';
 import SubscriptionManager from '../components/subscription/SubscriptionManager';
 import { useAuth } from '../hooks/useAuth';
 import { Settings } from 'lucide-react';
@@ -74,6 +75,7 @@ const BackButton = styled.button`
 `;
 
 const SubscriptionPage: React.FC = () => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -94,7 +96,7 @@ const SubscriptionPage: React.FC = () => {
         <HeaderContent>
           <Settings />
           <div>
-            <HeaderTitle>B2B Analytics Portal</HeaderTitle>
+            <HeaderTitle>{t('settings.subscription')}</HeaderTitle>
             <HeaderSubtitle>
               Manage your subscription and access advanced car market analytics
             </HeaderSubtitle>

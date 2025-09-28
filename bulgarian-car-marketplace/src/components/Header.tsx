@@ -252,12 +252,12 @@ const Header: React.FC = () => {
           {/* Settings Menu: contains language, auth/profile, and text toggle */}
           <SettingsMenu className="settings-menu">
             <SettingsButton onClick={() => setIsSettingsOpen(!isSettingsOpen)} aria-haspopup="menu" aria-expanded={isSettingsOpen}>
-              <Settings size={16} /> <span>Settings</span>
+              <Settings size={16} /> <span>{t('settings.title', 'Settings')}</span>
             </SettingsButton>
             <DropdownMenu $isOpen={isSettingsOpen}>
               {/* Language controls (moved, not duplicated) */}
               <div style={{ padding: '12px', borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
-                <div style={{ marginBottom: '8px', fontSize: '0.9rem', opacity: 0.8 }}>Language</div>
+                <div style={{ marginBottom: '8px', fontSize: '0.9rem', opacity: 0.8 }}>{t('settings.language', 'Language')}</div>
                 <LanguageSelector>
                   <LanguageButton $active={language === 'bg'} onClick={() => setLanguage('bg')}>БГ</LanguageButton>
                   <LanguageButton $active={language === 'en'} onClick={() => setLanguage('en')}>EN</LanguageButton>
@@ -271,16 +271,16 @@ const Header: React.FC = () => {
                     <MessageCircle size={16} /> {t('messaging.title')}
                   </DropdownItem>
                   <DropdownItem onClick={() => { navigate('/dashboard'); setIsSettingsOpen(false); }}>
-                    <User size={16} /> Dashboard
+                    <User size={16} /> {t('settings.dashboard')}
                   </DropdownItem>
                   <DropdownItem onClick={() => { navigate('/analytics'); setIsSettingsOpen(false); }}>
-                    <Settings size={16} /> Analytics
+                    <Settings size={16} /> {t('settings.analytics')}
                   </DropdownItem>
                   <DropdownItem onClick={() => { navigate('/digital-twin'); setIsSettingsOpen(false); }}>
-                    <Settings size={16} /> Digital Twin
+                    <Settings size={16} /> {t('settings.digitalTwin')}
                   </DropdownItem>
                   <DropdownItem onClick={() => { navigate('/subscription'); setIsSettingsOpen(false); }}>
-                    <Settings size={16} /> Subscription
+                    <Settings size={16} /> {t('settings.subscription')}
                   </DropdownItem>
                   <DropdownItem onClick={() => { handleLogout(); setIsSettingsOpen(false); }} className="danger">
                     <LogOut size={16} /> {t('nav.logout')}
@@ -300,7 +300,7 @@ const Header: React.FC = () => {
               {/* Bold text toggle */}
               <DropdownItem onClick={() => setIsBoldText(!isBoldText)}>
                 <Type size={16} />
-                {isBoldText ? 'Disable bold text' : 'Enable bold text'}
+                {isBoldText ? t('settings.disableBoldText', 'Disable bold text') : t('settings.enableBoldText')}
               </DropdownItem>
             </DropdownMenu>
           </SettingsMenu>

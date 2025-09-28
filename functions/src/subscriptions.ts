@@ -55,7 +55,7 @@ interface B2BSubscription {
 }
 
 // Create new B2B subscription
-export const createB2BSubscription = onCall(async (request) => {
+export const createB2BSubscription = onCall({ cors: true }, async (request) => {
   if (!request.auth) {
     throw new Error('Authentication required');
   }
@@ -137,7 +137,7 @@ export const createB2BSubscription = onCall(async (request) => {
 });
 
 // Get subscription details
-export const getB2BSubscription = onCall(async (request) => {
+export const getB2BSubscription = onCall({ cors: true }, async (request) => {
   if (!request.auth) {
     throw new Error('Authentication required');
   }
@@ -187,7 +187,7 @@ export const getB2BSubscription = onCall(async (request) => {
 });
 
 // Cancel subscription
-export const cancelB2BSubscription = onCall(async (request) => {
+export const cancelB2BSubscription = onCall({ cors: true }, async (request) => {
   if (!request.auth) {
     throw new Error('Authentication required');
   }
@@ -238,7 +238,7 @@ export const cancelB2BSubscription = onCall(async (request) => {
 });
 
 // Upgrade subscription
-export const upgradeB2BSubscription = onCall(async (request) => {
+export const upgradeB2BSubscription = onCall({ cors: true }, async (request) => {
   if (!request.auth) {
     throw new Error('Authentication required');
   }

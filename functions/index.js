@@ -352,11 +352,18 @@ exports.processInsuranceQuote = financialServices.processInsuranceQuote;
 exports.getFinancialServiceStatus = financialServices.getFinancialServiceStatus;
 exports.cleanupOldLeads = financialServices.cleanupOldLeads;
 
-// Export analytics functions
-const analytics = require('./src/analytics');
-exports.getAveragePriceByModel = analytics.getAveragePriceByModel;
-exports.getMarketTrends = analytics.getMarketTrends;
-exports.getDealerPerformance = analytics.getDealerPerformance;
-exports.getSalesPeakHours = analytics.getSalesPeakHours;
-exports.getRegionalPriceVariations = analytics.getRegionalPriceVariations;
-exports.getSubscriptionStatus = analytics.getSubscriptionStatus;
+// Export analytics functions (temporarily commenting out due to compilation issues)
+// const analytics = require('./src/analytics');
+// exports.getAveragePriceByModel = analytics.getAveragePriceByModel;
+// exports.getMarketTrends = analytics.getMarketTrends;
+// exports.getDealerPerformance = analytics.getDealerPerformance;
+// exports.getSalesPeakHours = analytics.getSalesPeakHours;
+// exports.getRegionalPriceVariations = analytics.getRegionalPriceVariations;
+// exports.getSubscriptionStatus = analytics.getSubscriptionStatus;
+
+// Export subscription functions (with CORS enabled)
+const subscriptions = require('./lib/subscriptions');
+exports.createB2BSubscription = subscriptions.createB2BSubscription;
+exports.getB2BSubscription = subscriptions.getB2BSubscription;
+exports.cancelB2BSubscription = subscriptions.cancelB2BSubscription;
+exports.upgradeB2BSubscription = subscriptions.upgradeB2BSubscription;

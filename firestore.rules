@@ -124,8 +124,12 @@ service cloud.firestore {
       // Allow read for notification owners
       allow read: if isOwner(resource.data.userId);
 
-      // Allow create for system (server-side)
-      allow create: if false; // Only server-side functions can create
+      // Allow create by authenticated sender creating a notification for a receiver (client-side messaging)
+      allow create: if isAuthenticated() &&
+                       request.resource.data.keys().hasAll(['type','title','message','userId','carId','senderId','timestamp','isRead']) &&
+                       request.resource.data.type == 'new_message' &&
+                       request.auth.uid == request.resource.data.senderId &&
+                       request.resource.data.isRead == false;
 
       // Allow update for notification owners
       allow update: if isOwner(resource.data.userId);
@@ -163,6 +167,38 @@ service cloud.firestore {
 
       // Allow delete for review owners and moderators
       allow delete: if isOwner(resource.data.userId) || isModerator();
+    }
+
+    // Direct messages collection (user-to-user about cars)
+    match /messages/{messageId} {
+      // NOTE: Simplified rules to avoid legacy documents (missing senderId/receiverId) causing whole query failures.
+      // A query fails if ANY matching doc is denied; previously, docs with null senderId caused permission-denied.
+      // Read: Allow if the authenticated user is either sender or receiver. Missing field docs simply won't match the query filters.
+      allow read: if isAuthenticated() && (
+        request.auth.uid == resource.data.senderId ||
+        request.auth.uid == resource.data.receiverId
+      );
+
+      // Create: sender must be auth user, participants differ, basic validation
+      allow create: if isAuthenticated() &&
+                       request.auth.uid == request.resource.data.senderId &&
+                       request.resource.data.senderId != request.resource.data.receiverId &&
+                       request.resource.data.keys().hasAll(['senderId','receiverId','carId','text','timestamp','isRead']) &&
+                       request.resource.data.isRead == false &&
+                       request.resource.data.text is string && request.resource.data.text.size() > 0 && request.resource.data.text.size() <= 1000;
+
+      // Update: Only participants may update; immutable linkage fields must stay the same.
+      allow update: if isAuthenticated() && (
+                       request.auth.uid == resource.data.senderId || request.auth.uid == resource.data.receiverId) &&
+                       request.resource.data.senderId == resource.data.senderId &&
+                       request.resource.data.receiverId == resource.data.receiverId &&
+                       request.resource.data.carId == resource.data.carId &&
+                       request.resource.data.text is string && request.resource.data.text.size() > 0 && request.resource.data.text.size() <= 1000;
+
+      // Delete: Allow either participant (could be further restricted or audited in future)
+      allow delete: if isAuthenticated() && (
+        request.auth.uid == resource.data.senderId || request.auth.uid == resource.data.receiverId
+      );
     }
 
     // Reports collection

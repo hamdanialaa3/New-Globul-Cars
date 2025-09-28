@@ -12,7 +12,9 @@ import {
   User,
   Lock,
   Eye,
-  Trash2
+  Trash2,
+  Mail,
+  Phone
 } from 'lucide-react';
 
 // Styled Components

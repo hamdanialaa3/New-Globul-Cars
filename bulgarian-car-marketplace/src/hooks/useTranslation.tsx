@@ -3,12 +3,13 @@
 
 import * as React from 'react';
 import { useContext, useState, useMemo, useCallback } from 'react';
-import { translations, BulgarianLanguage } from '../locales/translations';
+// TEMP: using minimal translations to allow app to compile
+import { translations, BulgarianLanguage } from '../locales/minimal-translations';
 
 interface TranslationContextType {
   language: BulgarianLanguage;
   setLanguage: (lang: BulgarianLanguage) => void;
-  t: (key: string, defaultValue?: string) => string;
+  t: (key: string, defaultValue?: string, interpolations?: Record<string, string | number>) => string;
 }
 
 const TranslationContext = React.createContext<TranslationContextType | undefined>(undefined);
@@ -34,7 +35,7 @@ export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ c
     }
   }, []);
 
-  const t = useCallback((key: string, defaultValue?: string): string => {
+  const t = useCallback((key: string, defaultValue?: string, interpolations?: Record<string, string | number>): string => {
     const keys = key.split('.');
     let value: any = translations[language];
 
@@ -43,7 +44,17 @@ export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ c
       if (value === undefined) break;
     }
 
-    return value || defaultValue || key;
+    let result = value || defaultValue || key;
+
+    // Handle interpolation for tokens like {{count}}
+    if (typeof result === 'string' && interpolations) {
+      Object.entries(interpolations).forEach(([key, val]) => {
+        const regex = new RegExp(`{{${key}}}`, 'g');
+        result = result.replace(regex, String(val));
+      });
+    }
+
+    return result;
   }, [language]);
 
   const contextValue = useMemo<TranslationContextType>(() => ({

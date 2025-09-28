@@ -3,7 +3,6 @@ import {
   query, 
   where, 
   orderBy, 
-  limit, 
   getDocs, 
   doc, 
   getDoc,
@@ -11,8 +10,7 @@ import {
   updateDoc,
   onSnapshot,
   Unsubscribe,
-  serverTimestamp,
-  Timestamp
+  serverTimestamp
 } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
 
@@ -106,8 +104,8 @@ class MessagingService {
       const messagesSnapshot = await getDocs(messagesQuery);
       
       const messages = await Promise.all(
-        messagesSnapshot.docs.map(async (doc) => {
-          const data = doc.data();
+        messagesSnapshot.docs.map(async (messageDoc) => {
+          const data = messageDoc.data();
           
           // Get sender info
           const senderDoc = await getDoc(doc(db, 'users', data.senderId));
@@ -122,7 +120,7 @@ class MessagingService {
           const carData = carDoc.data();
           
           return {
-            id: doc.id,
+            id: messageDoc.id,
             senderId: data.senderId,
             receiverId: data.receiverId,
             carId: data.carId,
@@ -146,6 +144,11 @@ class MessagingService {
   // Get all conversations for a user
   async getUserConversations(userId: string): Promise<Conversation[]> {
     try {
+      // Guard: if no authenticated user id provided, return empty without querying Firestore
+      if (!userId) {
+        console.warn('[MessagingService] getUserConversations called without userId – returning empty list');
+        return [];
+      }
       // Get all messages where user is sender or receiver
       const messagesQuery = query(
         collection(db, 'messages'),
@@ -158,8 +161,8 @@ class MessagingService {
       // Group messages by car and other participant
       const conversationMap = new Map<string, Conversation>();
       
-      for (const doc of messagesSnapshot.docs) {
-        const data = doc.data();
+      for (const msgDoc of messagesSnapshot.docs) {
+        const data = msgDoc.data();
         const otherUserId = data.receiverId;
         const carId = data.carId;
         const conversationKey = `${carId}_${otherUserId}`;
@@ -169,7 +172,7 @@ class MessagingService {
           const otherUserDoc = await getDoc(doc(db, 'users', otherUserId));
           const otherUserData = otherUserDoc.data();
           
-          // Get car info
+          // Get car info for title display
           const carDoc = await getDoc(doc(db, 'cars', carId));
           const carData = carDoc.data();
           
@@ -180,7 +183,7 @@ class MessagingService {
             lastMessageTime: undefined,
             unreadCount: 0,
             carId,
-            carTitle: carData?.title || `${carData?.make} ${carData?.model}` || 'Unknown Car',
+            carTitle: carData?.title || (carData?.make && carData?.model ? `${carData.make} ${carData.model}` : 'Unknown Car'),
             otherParticipant: {
               id: otherUserId,
               name: otherUserData?.displayName || otherUserData?.email || 'Unknown',
@@ -194,7 +197,7 @@ class MessagingService {
         // Update last message if this is more recent
         if (!conversation.lastMessageTime || data.timestamp > conversation.lastMessageTime) {
           conversation.lastMessage = {
-            id: doc.id,
+            id: msgDoc.id,
             senderId: data.senderId,
             receiverId: data.receiverId,
             carId: data.carId,
@@ -220,8 +223,8 @@ class MessagingService {
 
       const receivedMessagesSnapshot = await getDocs(receivedMessagesQuery);
       
-      for (const doc of receivedMessagesSnapshot.docs) {
-        const data = doc.data();
+      for (const msgDoc of receivedMessagesSnapshot.docs) {
+        const data = msgDoc.data();
         const otherUserId = data.senderId;
         const carId = data.carId;
         const conversationKey = `${carId}_${otherUserId}`;
@@ -242,7 +245,7 @@ class MessagingService {
             lastMessageTime: undefined,
             unreadCount: 0,
             carId,
-            carTitle: carData?.title || `${carData?.make} ${carData?.model}` || 'Unknown Car',
+            carTitle: carData?.title || (carData?.make && carData?.model ? `${carData.make} ${carData.model}` : 'Unknown Car'),
             otherParticipant: {
               id: otherUserId,
               name: otherUserData?.displayName || otherUserData?.email || 'Unknown',
@@ -256,7 +259,7 @@ class MessagingService {
         // Update last message if this is more recent
         if (!conversation.lastMessageTime || data.timestamp > conversation.lastMessageTime) {
           conversation.lastMessage = {
-            id: doc.id,
+            id: msgDoc.id,
             senderId: data.senderId,
             receiverId: data.receiverId,
             carId: data.carId,
@@ -369,6 +372,10 @@ class MessagingService {
     userId: string,
     onConversationsUpdate: (conversations: Conversation[]) => void
   ): () => void {
+    if (!userId) {
+      console.warn('[MessagingService] subscribeToUserConversations called without userId – no subscription established');
+      return () => {};
+    }
     const messagesQuery = query(
       collection(db, 'messages'),
       where('receiverId', '==', userId),
@@ -377,8 +384,15 @@ class MessagingService {
 
     const unsubscribe = onSnapshot(messagesQuery, async (snapshot) => {
       // Re-fetch conversations when messages change
-      const conversations = await this.getUserConversations(userId);
-      onConversationsUpdate(conversations);
+      try {
+        const conversations = await this.getUserConversations(userId);
+        onConversationsUpdate(conversations);
+      } catch (err: any) {
+        if (err?.code === 'permission-denied') {
+          console.error('[MessagingService] permission-denied while refreshing conversations – check Firestore rules deployment');
+        }
+        console.error('[MessagingService] subscribeToUserConversations snapshot handler error:', err);
+      }
     });
 
     this.unsubscribeFunctions.push(unsubscribe);
@@ -397,9 +411,9 @@ class MessagingService {
       const senderDoc = await getDoc(doc(db, 'users', senderId));
       const senderData = senderDoc.data();
       
-      // Get car info
-      const carDoc = await getDoc(doc(db, 'cars', carId));
-      const carData = carDoc.data();
+  // Optionally could fetch car data if needed for notification body (currently not used)
+  // const carDoc = await getDoc(doc(db, 'cars', carId));
+  // const carData = carDoc.data();
       
       const notificationData = {
         type: 'new_message',
