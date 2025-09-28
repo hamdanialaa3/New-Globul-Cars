@@ -5,7 +5,7 @@ import * as React from 'react';
 import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { useTranslation } from '../hooks/useTranslation';
+import { useLanguage } from '../contexts/LanguageContext';
 import { bulgarianCarService, BulgarianCar, CarSearchFilters, FuelType, TransmissionType, CarCondition } from '../firebase';
 import AdvancedFilterSystemMobile from '../components/AdvancedFilterSystemMobile';
 // Import theme types
@@ -324,7 +324,7 @@ const NoResults = styled.div`
 
 // Cars Page Component
 const CarsPage: React.FC = () => {
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const [cars, setCars] = useState<BulgarianCar[]>([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState<Record<string, any>>({});

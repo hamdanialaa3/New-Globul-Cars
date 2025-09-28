@@ -4,7 +4,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { ChevronDown, ChevronUp, Search, Save, RotateCcw } from 'lucide-react';
-import { useTranslation } from '../hooks/useTranslation';
+import { useLanguage } from '../contexts/LanguageContext';
 
 // Styled Components - Mobile.de inspired design
 const FilterContainer = styled.div`
@@ -81,7 +81,7 @@ const FilterSections = styled.div`
   gap: 0;
 `;
 
-const FilterSection = styled.article`
+const FilterSection = styled.article<{ isExpanded: boolean }>`
   border-bottom: 1px solid ${({ theme }) => theme.colors.grey[200]};
   background: ${({ theme }) => theme.colors.background.paper};
   position: relative;
@@ -114,12 +114,10 @@ const SectionTitle = styled.h3`
   margin: 0;
 `;
 
-const SectionContent = styled.div<{ $isExpanded?: boolean }>`
+const SectionContent = styled.div<{ isExpanded: boolean }>`
   padding: ${({ theme }) => theme.spacing.lg};
+  display: ${({ isExpanded }) => isExpanded ? 'block' : 'none'};
   background: ${({ theme }) => theme.colors.background.paper};
-  /* Optional animation hook */
-  display: ${({ $isExpanded }) => ($isExpanded === false ? 'none' : 'block')};
-  transition: opacity 0.2s ease;
 `;
 
 const FilterGrid = styled.div`
@@ -309,7 +307,7 @@ const AdvancedFilterSystemMobile: React.FC<AdvancedFilterSystemMobileProps> = ({
   onSaveSearch,
   loading = false
 }) => {
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['basicData']));
   const [filters, setFilters] = useState<FilterValue>({});
 
@@ -352,85 +350,84 @@ const AdvancedFilterSystemMobile: React.FC<AdvancedFilterSystemMobileProps> = ({
   return (
     <FilterContainer>
       <FilterHeader>
-        <FilterTitle>{t('advancedSearch.title', 'Detailed Search: Cars – new or used')}</FilterTitle>
+        <FilterTitle>{t('advancedSearch.title')}</FilterTitle>
         <FilterActions>
           <FilterButton variant="secondary" onClick={handleReset} disabled={loading}>
             <RotateCcw size={16} />
-            {t('advancedSearch.reset', 'Reset')}
+            {t('advancedSearch.reset')}
           </FilterButton>
           {onSaveSearch && (
             <FilterButton variant="success" onClick={handleSaveSearch} disabled={loading}>
               <Save size={16} />
-              {t('advancedSearch.saveSearch', 'Save this search')}
+              {t('advancedSearch.saveSearch')}
             </FilterButton>
           )}
           <FilterButton variant="primary" onClick={handleSearch} disabled={loading}>
             <Search size={16} />
-            {loading ? t('advancedSearch.searching', 'Searching...') : t('advancedSearch.search', 'Search')}
+            {loading ? t('advancedSearch.searching') : t('advancedSearch.search')}
           </FilterButton>
         </FilterActions>
       </FilterHeader>
 
       <FilterSections>
         {/* Basic Data Section */}
-    <FilterSection>
+        <FilterSection isExpanded={isSectionExpanded('basicData')}>
           <SectionHeader onClick={() => toggleSection('basicData')}>
-            <SectionTitle>{t('advancedSearch.basicData', 'Basic Data')}</SectionTitle>
+            <SectionTitle>{t('advancedSearch.basicData')}</SectionTitle>
             {isSectionExpanded('basicData') ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
           </SectionHeader>
-          {isSectionExpanded('basicData') && (
-          <SectionContent>
+          <SectionContent isExpanded={isSectionExpanded('basicData')}>
             <FilterGrid>
               <FilterGroup>
-                <FilterLabel>{t('advancedSearch.make', 'Make')}</FilterLabel>
+                <FilterLabel>{t('advancedSearch.make')}</FilterLabel>
                 <FilterSelect
                   value={filters.make || 'any'}
                   onChange={(e) => handleFilterChange('make', e.target.value === 'any' ? '' : e.target.value)}
                 >
-                  <option value="any">{t('advancedSearch.any', 'Any')}</option>
-                  <optgroup label={t('advancedSearch.german', 'German')}>
+                  <option value="any">{t('advancedSearch.any')}</option>
+                  <optgroup label={t('advancedSearch.german')}>
                     <option value="bmw">BMW</option>
                     <option value="mercedes">Mercedes-Benz</option>
                     <option value="audi">Audi</option>
                     <option value="volkswagen">Volkswagen</option>
                     <option value="porsche">Porsche</option>
                   </optgroup>
-                  <optgroup label={t('advancedSearch.japanese', 'Japanese')}>
+                  <optgroup label={t('advancedSearch.japanese')}>
                     <option value="toyota">Toyota</option>
                     <option value="honda">Honda</option>
                     <option value="nissan">Nissan</option>
                     <option value="mazda">Mazda</option>
                     <option value="subaru">Subaru</option>
                   </optgroup>
-                  <optgroup label={t('advancedSearch.american', 'American')}>
+                  <optgroup label={t('advancedSearch.american')}>
                     <option value="ford">Ford</option>
                     <option value="chevrolet">Chevrolet</option>
                     <option value="dodge">Dodge</option>
                     <option value="jeep">Jeep</option>
                     <option value="tesla">Tesla</option>
                   </optgroup>
-                  <optgroup label={t('advancedSearch.korean', 'Korean')}>
+                  <optgroup label={t('advancedSearch.korean')}>
                     <option value="hyundai">Hyundai</option>
                     <option value="kia">Kia</option>
                   </optgroup>
-                  <optgroup label={t('advancedSearch.french', 'French')}>
+                  <optgroup label={t('advancedSearch.french')}>
                     <option value="peugeot">Peugeot</option>
                     <option value="renault">Renault</option>
                     <option value="citroen">Citroën</option>
                   </optgroup>
-                  <optgroup label={t('advancedSearch.italian', 'Italian')}>
+                  <optgroup label={t('advancedSearch.italian')}>
                     <option value="fiat">Fiat</option>
                     <option value="alfa-romeo">Alfa Romeo</option>
                     <option value="ferrari">Ferrari</option>
                     <option value="lamborghini">Lamborghini</option>
                     <option value="maserati">Maserati</option>
                   </optgroup>
-                  <optgroup label={t('advancedSearch.swedish', 'Swedish')}>
+                  <optgroup label={t('advancedSearch.swedish')}>
                     <option value="volvo">Volvo</option>
                     <option value="saab">Saab</option>
                     <option value="polestar">Polestar</option>
                   </optgroup>
-                  <optgroup label={t('advancedSearch.other', 'Other')}>
+                  <optgroup label={t('advancedSearch.other')}>
                     <option value="skoda">Škoda</option>
                     <option value="seat">SEAT</option>
                   </optgroup>
@@ -438,46 +435,46 @@ const AdvancedFilterSystemMobile: React.FC<AdvancedFilterSystemMobileProps> = ({
               </FilterGroup>
 
               <FilterGroup>
-                <FilterLabel>{t('advancedSearch.model', 'Model')}</FilterLabel>
+                <FilterLabel>{t('advancedSearch.model')}</FilterLabel>
                 <FilterInput
                   type="text"
-                  placeholder={t('advancedSearch.modelPlaceholder', 'e.g. GTI …')}
+                  placeholder={t('advancedSearch.modelPlaceholder')}
                   value={filters.model || ''}
                   onChange={(e) => handleFilterChange('model', e.target.value)}
                 />
               </FilterGroup>
 
               <FilterGroup>
-                <FilterLabel>{t('advancedSearch.vehicleType', 'Vehicle type')}</FilterLabel>
+                <FilterLabel>{t('advancedSearch.vehicleType')}</FilterLabel>
                 <FilterSelect
                   value={filters.vehicleType || 'any'}
                   onChange={(e) => handleFilterChange('vehicleType', e.target.value === 'any' ? '' : e.target.value)}
                 >
-                  <option value="any">{t('advancedSearch.any', 'Any')}</option>
-                  <option value="cabriolet">{t('advancedSearch.cabriolet', 'Cabriolet/ Roadster')}</option>
-                  <option value="estate">{t('advancedSearch.estate', 'Estate Car')}</option>
-                  <option value="suv">{t('advancedSearch.suv', 'Off-road Vehicle/ Pickup Truck/SUV')}</option>
-                  <option value="saloon">{t('advancedSearch.saloon', 'Saloon')}</option>
-                  <option value="small">{t('advancedSearch.small', 'Small Car')}</option>
-                  <option value="sports">{t('advancedSearch.sports', 'Sports Car/Coupe')}</option>
-                  <option value="van">{t('advancedSearch.van', 'Van/Minibus')}</option>
-                  <option value="other">{t('advancedSearch.other', 'Other')}</option>
+                  <option value="any">{t('advancedSearch.any')}</option>
+                  <option value="cabriolet">{t('advancedSearch.cabriolet')}</option>
+                  <option value="estate">{t('advancedSearch.estate')}</option>
+                  <option value="suv">{t('advancedSearch.suv')}</option>
+                  <option value="saloon">{t('advancedSearch.saloon')}</option>
+                  <option value="small">{t('advancedSearch.small')}</option>
+                  <option value="sports">{t('advancedSearch.sports')}</option>
+                  <option value="van">{t('advancedSearch.van')}</option>
+                  <option value="other">{t('advancedSearch.other')}</option>
                 </FilterSelect>
               </FilterGroup>
 
               <FilterGroup>
-                <FilterLabel>{t('advancedSearch.numberOfSeats', 'Number of Seats')}</FilterLabel>
+                <FilterLabel>{t('advancedSearch.numberOfSeats')}</FilterLabel>
                 <RangeContainer>
                   <RangeInput
                     type="number"
-                    placeholder={t('advancedSearch.from', 'from')}
+                    placeholder={t('advancedSearch.from')}
                     value={filters.seatsFrom || ''}
                     onChange={(e) => handleFilterChange('seatsFrom', e.target.value)}
                   />
                   <RangeSeparator>to</RangeSeparator>
                   <RangeInput
                     type="number"
-                    placeholder={t('advancedSearch.to', 'to')}
+                    placeholder={t('advancedSearch.to')}
                     value={filters.seatsTo || ''}
                     onChange={(e) => handleFilterChange('seatsTo', e.target.value)}
                   />
@@ -485,12 +482,12 @@ const AdvancedFilterSystemMobile: React.FC<AdvancedFilterSystemMobileProps> = ({
               </FilterGroup>
 
               <FilterGroup>
-                <FilterLabel>{t('advancedSearch.numberOfDoors', 'Number of doors')}</FilterLabel>
+                <FilterLabel>{t('advancedSearch.numberOfDoors')}</FilterLabel>
                 <FilterSelect
                   value={filters.doors || 'any'}
                   onChange={(e) => handleFilterChange('doors', e.target.value === 'any' ? '' : e.target.value)}
                 >
-                  <option value="any">{t('advancedSearch.any', 'Any')}</option>
+                  <option value="any">{t('advancedSearch.any')}</option>
                   <option value="2">2</option>
                   <option value="3">3</option>
                   <option value="4">4</option>
@@ -500,28 +497,28 @@ const AdvancedFilterSystemMobile: React.FC<AdvancedFilterSystemMobileProps> = ({
               </FilterGroup>
 
               <FilterGroup>
-                <FilterLabel>{t('advancedSearch.slidingDoor', 'Sliding door')}</FilterLabel>
+                <FilterLabel>{t('advancedSearch.slidingDoor')}</FilterLabel>
                 <FilterSelect
                   value={filters.slidingDoor || 'any'}
                   onChange={(e) => handleFilterChange('slidingDoor', e.target.value === 'any' ? '' : e.target.value)}
                 >
-                  <option value="any">{t('advancedSearch.any', 'Any')}</option>
-                  <option value="yes">{t('advancedSearch.yes', 'Yes')}</option>
-                  <option value="no">{t('advancedSearch.no', 'No')}</option>
+                  <option value="any">{t('advancedSearch.any')}</option>
+                  <option value="yes">{t('advancedSearch.yes')}</option>
+                  <option value="no">{t('advancedSearch.no')}</option>
                 </FilterSelect>
               </FilterGroup>
 
               <FilterGroup>
-                <FilterLabel>{t('advancedSearch.typeAndCondition', 'Type and condition')}</FilterLabel>
+                <FilterLabel>{t('advancedSearch.typeAndCondition')}</FilterLabel>
                 <CheckboxGrid>
                   {[
-                    { value: 'any', label: t('advancedSearch.any', 'Any') },
-                    { value: 'new', label: t('advancedSearch.new', 'New') },
-                    { value: 'used', label: t('advancedSearch.used', 'Used') },
-                    { value: 'pre-registration', label: t('advancedSearch.preRegistration', 'Pre-Registration') },
+                    { value: 'any', label: t('advancedSearch.any') },
+                    { value: 'new', label: t('advancedSearch.new') },
+                    { value: 'used', label: t('advancedSearch.used') },
+                    { value: 'pre-registration', label: t('advancedSearch.preRegistration') },
                     { value: 'employee', label: t('advancedSearch.employeeCar', 'Employee\'s car') },
-                    { value: 'classic', label: t('advancedSearch.classicVehicle', 'Classic Vehicle') },
-                    { value: 'demonstration', label: t('advancedSearch.demonstrationVehicle', 'Demonstration Vehicle') }
+                    { value: 'classic', label: t('advancedSearch.classicVehicle') },
+                    { value: 'demonstration', label: t('advancedSearch.demonstrationVehicle') }
                   ].map(option => (
                     <CheckboxItem key={option.value}>
                       <CheckboxInput
@@ -543,11 +540,11 @@ const AdvancedFilterSystemMobile: React.FC<AdvancedFilterSystemMobileProps> = ({
               </FilterGroup>
 
               <FilterGroup>
-                <FilterLabel>{t('advancedSearch.paymentType', 'Payment type')}</FilterLabel>
+                <FilterLabel>{t('advancedSearch.paymentType')}</FilterLabel>
                 <CheckboxGrid>
                   {[
-                    { value: 'buy', label: t('advancedSearch.buy', 'Buy') },
-                    { value: 'leasing', label: t('advancedSearch.leasing', 'Leasing') }
+                    { value: 'buy', label: t('advancedSearch.buy') },
+                    { value: 'leasing', label: t('advancedSearch.leasing') }
                   ].map(option => (
                     <CheckboxItem key={option.value}>
                       <CheckboxInput
@@ -569,18 +566,18 @@ const AdvancedFilterSystemMobile: React.FC<AdvancedFilterSystemMobileProps> = ({
               </FilterGroup>
 
               <FilterGroup>
-                <FilterLabel>{t('advancedSearch.price', 'Price')}</FilterLabel>
+                <FilterLabel>{t('advancedSearch.price')}</FilterLabel>
                 <RangeContainer>
                   <RangeInput
                     type="number"
-                    placeholder={t('advancedSearch.from', 'from')}
+                    placeholder={t('advancedSearch.from')}
                     value={filters.priceFrom || ''}
                     onChange={(e) => handleFilterChange('priceFrom', e.target.value)}
                   />
                   <RangeSeparator>€</RangeSeparator>
                   <RangeInput
                     type="number"
-                    placeholder={t('advancedSearch.to', 'to')}
+                    placeholder={t('advancedSearch.to')}
                     value={filters.priceTo || ''}
                     onChange={(e) => handleFilterChange('priceTo', e.target.value)}
                   />
@@ -589,18 +586,18 @@ const AdvancedFilterSystemMobile: React.FC<AdvancedFilterSystemMobileProps> = ({
               </FilterGroup>
 
               <FilterGroup>
-                <FilterLabel>{t('advancedSearch.firstRegistrationDate', 'First Registration Date')}</FilterLabel>
+                <FilterLabel>{t('advancedSearch.firstRegistrationDate')}</FilterLabel>
                 <RangeContainer>
                   <RangeInput
                     type="number"
-                    placeholder={t('advancedSearch.from', 'from')}
+                    placeholder={t('advancedSearch.from')}
                     value={filters.registrationFrom || ''}
                     onChange={(e) => handleFilterChange('registrationFrom', e.target.value)}
                   />
                   <RangeSeparator>to</RangeSeparator>
                   <RangeInput
                     type="number"
-                    placeholder={t('advancedSearch.to', 'to')}
+                    placeholder={t('advancedSearch.to')}
                     value={filters.registrationTo || ''}
                     onChange={(e) => handleFilterChange('registrationTo', e.target.value)}
                   />
@@ -608,18 +605,18 @@ const AdvancedFilterSystemMobile: React.FC<AdvancedFilterSystemMobileProps> = ({
               </FilterGroup>
 
               <FilterGroup>
-                <FilterLabel>{t('advancedSearch.mileage', 'Mileage')}</FilterLabel>
+                <FilterLabel>{t('advancedSearch.mileage')}</FilterLabel>
                 <RangeContainer>
                   <RangeInput
                     type="number"
-                    placeholder={t('advancedSearch.from', 'from')}
+                    placeholder={t('advancedSearch.from')}
                     value={filters.mileageFrom || ''}
                     onChange={(e) => handleFilterChange('mileageFrom', e.target.value)}
                   />
                   <RangeSeparator>km</RangeSeparator>
                   <RangeInput
                     type="number"
-                    placeholder={t('advancedSearch.to', 'to')}
+                    placeholder={t('advancedSearch.to')}
                     value={filters.mileageTo || ''}
                     onChange={(e) => handleFilterChange('mileageTo', e.target.value)}
                   />
@@ -628,24 +625,24 @@ const AdvancedFilterSystemMobile: React.FC<AdvancedFilterSystemMobileProps> = ({
               </FilterGroup>
 
               <FilterGroup>
-                <FilterLabel>{t('advancedSearch.huValid', 'HU at least valid')}</FilterLabel>
+                <FilterLabel>{t('advancedSearch.huValid')}</FilterLabel>
                 <FilterSelect
                   value={filters.huValid || 'any'}
                   onChange={(e) => handleFilterChange('huValid', e.target.value === 'any' ? '' : e.target.value)}
                 >
-                  <option value="any">{t('advancedSearch.any', 'Any')}</option>
-                  <option value="yes">{t('advancedSearch.yes', 'Yes')}</option>
-                  <option value="no">{t('advancedSearch.no', 'No')}</option>
+                  <option value="any">{t('advancedSearch.any')}</option>
+                  <option value="yes">{t('advancedSearch.yes')}</option>
+                  <option value="no">{t('advancedSearch.no')}</option>
                 </FilterSelect>
               </FilterGroup>
 
               <FilterGroup>
-                <FilterLabel>{t('advancedSearch.numberOfOwners', 'Number of Owners')}</FilterLabel>
+                <FilterLabel>{t('advancedSearch.numberOfOwners')}</FilterLabel>
                 <FilterSelect
                   value={filters.owners || 'any'}
                   onChange={(e) => handleFilterChange('owners', e.target.value === 'any' ? '' : e.target.value)}
                 >
-                  <option value="any">{t('advancedSearch.any', 'Any')}</option>
+                  <option value="any">{t('advancedSearch.any')}</option>
                   <option value="1">1</option>
                   <option value="2">2</option>
                   <option value="3">3</option>
@@ -654,57 +651,57 @@ const AdvancedFilterSystemMobile: React.FC<AdvancedFilterSystemMobileProps> = ({
               </FilterGroup>
 
               <FilterGroup>
-                <FilterLabel>{t('advancedSearch.fullServiceHistory', 'Full service history')}</FilterLabel>
+                <FilterLabel>{t('advancedSearch.fullServiceHistory')}</FilterLabel>
                 <FilterSelect
                   value={filters.serviceHistory || 'any'}
                   onChange={(e) => handleFilterChange('serviceHistory', e.target.value === 'any' ? '' : e.target.value)}
                 >
-                  <option value="any">{t('advancedSearch.any', 'Any')}</option>
-                  <option value="yes">{t('advancedSearch.yes', 'Yes')}</option>
-                  <option value="no">{t('advancedSearch.no', 'No')}</option>
+                  <option value="any">{t('advancedSearch.any')}</option>
+                  <option value="yes">{t('advancedSearch.yes')}</option>
+                  <option value="no">{t('advancedSearch.no')}</option>
                 </FilterSelect>
               </FilterGroup>
 
               <FilterGroup>
-                <FilterLabel>{t('advancedSearch.roadworthy', 'Roadworthy')}</FilterLabel>
+                <FilterLabel>{t('advancedSearch.roadworthy')}</FilterLabel>
                 <FilterSelect
                   value={filters.roadworthy || 'any'}
                   onChange={(e) => handleFilterChange('roadworthy', e.target.value === 'any' ? '' : e.target.value)}
                 >
-                  <option value="any">{t('advancedSearch.any', 'Any')}</option>
-                  <option value="yes">{t('advancedSearch.yes', 'Yes')}</option>
-                  <option value="no">{t('advancedSearch.no', 'No')}</option>
+                  <option value="any">{t('advancedSearch.any')}</option>
+                  <option value="yes">{t('advancedSearch.yes')}</option>
+                  <option value="no">{t('advancedSearch.no')}</option>
                 </FilterSelect>
               </FilterGroup>
 
               <FilterGroup>
-                <FilterLabel>{t('advancedSearch.country', 'Country')}</FilterLabel>
+                <FilterLabel>{t('advancedSearch.country')}</FilterLabel>
                 <FilterSelect
                   value={filters.country || 'any'}
                   onChange={(e) => handleFilterChange('country', e.target.value === 'any' ? '' : e.target.value)}
                 >
-                  <option value="any">{t('advancedSearch.any', 'Any')}</option>
-                  <option value="bulgaria">{t('advancedSearch.bulgaria', 'Bulgaria')}</option>
-                  <option value="germany">{t('advancedSearch.germany', 'Germany')}</option>
-                  <option value="france">{t('advancedSearch.france', 'France')}</option>
-                  <option value="italy">{t('advancedSearch.italy', 'Italy')}</option>
-                  <option value="spain">{t('advancedSearch.spain', 'Spain')}</option>
-                  <option value="other">{t('advancedSearch.other', 'Other')}</option>
+                  <option value="any">{t('advancedSearch.any')}</option>
+                  <option value="bulgaria">{t('advancedSearch.bulgaria')}</option>
+                  <option value="germany">{t('advancedSearch.germany')}</option>
+                  <option value="france">{t('advancedSearch.france')}</option>
+                  <option value="italy">{t('advancedSearch.italy')}</option>
+                  <option value="spain">{t('advancedSearch.spain')}</option>
+                  <option value="other">{t('advancedSearch.other')}</option>
                 </FilterSelect>
               </FilterGroup>
 
               <FilterGroup>
-                <FilterLabel>{t('advancedSearch.cityZipCode', 'City / zip code')}</FilterLabel>
+                <FilterLabel>{t('advancedSearch.cityZipCode')}</FilterLabel>
                 <FilterInput
                   type="text"
-                  placeholder={t('advancedSearch.any', 'Any')}
+                  placeholder={t('advancedSearch.any')}
                   value={filters.location || ''}
                   onChange={(e) => handleFilterChange('location', e.target.value)}
                 />
               </FilterGroup>
 
               <FilterGroup>
-                <FilterLabel>{t('advancedSearch.radius', 'Radius')}</FilterLabel>
+                <FilterLabel>{t('advancedSearch.radius')}</FilterLabel>
                 <FilterSelect
                   value={filters.radius || '10'}
                   onChange={(e) => handleFilterChange('radius', e.target.value)}
@@ -726,37 +723,36 @@ const AdvancedFilterSystemMobile: React.FC<AdvancedFilterSystemMobileProps> = ({
                     checked={filters.delivery || false}
                     onChange={(e) => handleFilterChange('delivery', e.target.checked)}
                   />
-                  {t('advancedSearch.additionalOffersWithDelivery', 'Additional offers with delivery')}
+                  {t('advancedSearch.additionalOffersWithDelivery')}
                 </CheckboxItem>
               </FilterGroup>
             </FilterGrid>
           </SectionContent>
-          )}
         </FilterSection>
 
         {/* Technical Data Section */}
-  <FilterSection>
+        <FilterSection isExpanded={isSectionExpanded('technicalData')}>
           <SectionHeader onClick={() => toggleSection('technicalData')}>
-            <SectionTitle>{t('advancedSearch.technicalData', 'Technical data')}</SectionTitle>
+            <SectionTitle>{t('advancedSearch.technicalData')}</SectionTitle>
             {isSectionExpanded('technicalData') ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
           </SectionHeader>
-          <SectionContent $isExpanded={isSectionExpanded('technicalData')}>
+          <SectionContent isExpanded={isSectionExpanded('technicalData')}>
             <FilterGrid>
               <FilterGroup>
-                <FilterLabel>{t('advancedSearch.fuelType', 'Fuel Type')}</FilterLabel>
+                <FilterLabel>{t('advancedSearch.fuelType')}</FilterLabel>
                 <CheckboxGrid>
                   {[
-                    { value: 'petrol', label: t('advancedSearch.petrol', 'Petrol') },
-                    { value: 'diesel', label: t('advancedSearch.diesel', 'Diesel') },
-                    { value: 'electric', label: t('advancedSearch.electric', 'Electric') },
-                    { value: 'ethanol', label: t('advancedSearch.ethanol', 'Ethanol (FFV, E85, etc.)') },
-                    { value: 'hybrid-diesel', label: t('advancedSearch.hybridDiesel', 'Hybrid (diesel/electric)') },
-                    { value: 'hybrid-petrol', label: t('advancedSearch.hybridPetrol', 'Hybrid (petrol/electric)') },
-                    { value: 'hydrogen', label: t('advancedSearch.hydrogen', 'Hydrogen') },
-                    { value: 'lpg', label: t('advancedSearch.lpg', 'LPG') },
-                    { value: 'natural-gas', label: t('advancedSearch.naturalGas', 'Natural Gas') },
-                    { value: 'other', label: t('advancedSearch.other', 'Other') },
-                    { value: 'plug-in-hybrid', label: t('advancedSearch.plugInHybrid', 'Plug-in hybrid') }
+                    { value: 'petrol', label: t('advancedSearch.petrol') },
+                    { value: 'diesel', label: t('advancedSearch.diesel') },
+                    { value: 'electric', label: t('advancedSearch.electric') },
+                    { value: 'ethanol', label: t('advancedSearch.ethanol') },
+                    { value: 'hybrid-diesel', label: t('advancedSearch.hybridDiesel') },
+                    { value: 'hybrid-petrol', label: t('advancedSearch.hybridPetrol') },
+                    { value: 'hydrogen', label: t('advancedSearch.hydrogen') },
+                    { value: 'lpg', label: t('advancedSearch.lpg') },
+                    { value: 'natural-gas', label: t('advancedSearch.naturalGas') },
+                    { value: 'other', label: t('advancedSearch.other') },
+                    { value: 'plug-in-hybrid', label: t('advancedSearch.plugInHybrid') }
                   ].map(option => (
                     <CheckboxItem key={option.value}>
                       <CheckboxInput
@@ -778,18 +774,18 @@ const AdvancedFilterSystemMobile: React.FC<AdvancedFilterSystemMobileProps> = ({
               </FilterGroup>
 
               <FilterGroup>
-                <FilterLabel>{t('advancedSearch.power', 'Power')}</FilterLabel>
+                <FilterLabel>{t('advancedSearch.power')}</FilterLabel>
                 <RangeContainer>
                   <RangeInput
                     type="number"
-                    placeholder={t('advancedSearch.from', 'from')}
+                    placeholder={t('advancedSearch.from')}
                     value={filters.powerFrom || ''}
                     onChange={(e) => handleFilterChange('powerFrom', e.target.value)}
                   />
                   <RangeSeparator>hp</RangeSeparator>
                   <RangeInput
                     type="number"
-                    placeholder={t('advancedSearch.to', 'to')}
+                    placeholder={t('advancedSearch.to')}
                     value={filters.powerTo || ''}
                     onChange={(e) => handleFilterChange('powerTo', e.target.value)}
                   />
@@ -802,24 +798,24 @@ const AdvancedFilterSystemMobile: React.FC<AdvancedFilterSystemMobileProps> = ({
                       checked={filters.powerUnit === 'kW' || false}
                       onChange={(e) => handleFilterChange('powerUnit', e.target.checked ? 'kW' : 'hp')}
                     />
-                    {t('advancedSearch.kW', 'kW')}
+                    {t('advancedSearch.kW')}
                   </CheckboxItem>
                 </div>
               </FilterGroup>
 
               <FilterGroup>
-                <FilterLabel>{t('advancedSearch.cubicCapacity', 'Cubic Capacity')}</FilterLabel>
+                <FilterLabel>{t('advancedSearch.cubicCapacity')}</FilterLabel>
                 <RangeContainer>
                   <RangeInput
                     type="number"
-                    placeholder={t('advancedSearch.from', 'from')}
+                    placeholder={t('advancedSearch.from')}
                     value={filters.cubicCapacityFrom || ''}
                     onChange={(e) => handleFilterChange('cubicCapacityFrom', e.target.value)}
                   />
                   <RangeSeparator>ccm</RangeSeparator>
                   <RangeInput
                     type="number"
-                    placeholder={t('advancedSearch.to', 'to')}
+                    placeholder={t('advancedSearch.to')}
                     value={filters.cubicCapacityTo || ''}
                     onChange={(e) => handleFilterChange('cubicCapacityTo', e.target.value)}
                   />
@@ -828,18 +824,18 @@ const AdvancedFilterSystemMobile: React.FC<AdvancedFilterSystemMobileProps> = ({
               </FilterGroup>
 
               <FilterGroup>
-                <FilterLabel>{t('advancedSearch.fuelTankVolume', 'Fuel tank volume')}</FilterLabel>
+                <FilterLabel>{t('advancedSearch.fuelTankVolume')}</FilterLabel>
                 <RangeContainer>
                   <RangeInput
                     type="number"
-                    placeholder={t('advancedSearch.from', 'from')}
+                    placeholder={t('advancedSearch.from')}
                     value={filters.tankVolumeFrom || ''}
                     onChange={(e) => handleFilterChange('tankVolumeFrom', e.target.value)}
                   />
                   <RangeSeparator>l</RangeSeparator>
                   <RangeInput
                     type="number"
-                    placeholder={t('advancedSearch.to', 'to')}
+                    placeholder={t('advancedSearch.to')}
                     value={filters.tankVolumeTo || ''}
                     onChange={(e) => handleFilterChange('tankVolumeTo', e.target.value)}
                   />
@@ -848,18 +844,18 @@ const AdvancedFilterSystemMobile: React.FC<AdvancedFilterSystemMobileProps> = ({
               </FilterGroup>
 
               <FilterGroup>
-                <FilterLabel>{t('advancedSearch.weight', 'Weight')}</FilterLabel>
+                <FilterLabel>{t('advancedSearch.weight')}</FilterLabel>
                 <RangeContainer>
                   <RangeInput
                     type="number"
-                    placeholder={t('advancedSearch.from', 'from')}
+                    placeholder={t('advancedSearch.from')}
                     value={filters.weightFrom || ''}
                     onChange={(e) => handleFilterChange('weightFrom', e.target.value)}
                   />
                   <RangeSeparator>kg</RangeSeparator>
                   <RangeInput
                     type="number"
-                    placeholder={t('advancedSearch.to', 'to')}
+                    placeholder={t('advancedSearch.to')}
                     value={filters.weightTo || ''}
                     onChange={(e) => handleFilterChange('weightTo', e.target.value)}
                   />
@@ -868,18 +864,18 @@ const AdvancedFilterSystemMobile: React.FC<AdvancedFilterSystemMobileProps> = ({
               </FilterGroup>
 
               <FilterGroup>
-                <FilterLabel>{t('advancedSearch.cylinder', 'Cylinder')}</FilterLabel>
+                <FilterLabel>{t('advancedSearch.cylinder')}</FilterLabel>
                 <RangeContainer>
                   <RangeInput
                     type="number"
-                    placeholder={t('advancedSearch.from', 'from')}
+                    placeholder={t('advancedSearch.from')}
                     value={filters.cylinderFrom || ''}
                     onChange={(e) => handleFilterChange('cylinderFrom', e.target.value)}
                   />
                   <RangeSeparator>to</RangeSeparator>
                   <RangeInput
                     type="number"
-                    placeholder={t('advancedSearch.to', 'to')}
+                    placeholder={t('advancedSearch.to')}
                     value={filters.cylinderTo || ''}
                     onChange={(e) => handleFilterChange('cylinderTo', e.target.value)}
                   />
@@ -887,13 +883,13 @@ const AdvancedFilterSystemMobile: React.FC<AdvancedFilterSystemMobileProps> = ({
               </FilterGroup>
 
               <FilterGroup>
-                <FilterLabel>{t('advancedSearch.driveType', 'Drive type')}</FilterLabel>
+                <FilterLabel>{t('advancedSearch.driveType')}</FilterLabel>
                 <CheckboxGrid>
                   {[
-                    { value: 'any', label: t('advancedSearch.any', 'Any') },
-                    { value: 'all-wheel', label: t('advancedSearch.allWheelDrive', 'All wheel drive') },
-                    { value: 'front-wheel', label: t('advancedSearch.frontWheelDrive', 'Front wheel drive') },
-                    { value: 'rear-wheel', label: t('advancedSearch.rearWheelDrive', 'Rear wheel drive') }
+                    { value: 'any', label: t('advancedSearch.any') },
+                    { value: 'all-wheel', label: t('advancedSearch.allWheelDrive') },
+                    { value: 'front-wheel', label: t('advancedSearch.frontWheelDrive') },
+                    { value: 'rear-wheel', label: t('advancedSearch.rearWheelDrive') }
                   ].map(option => (
                     <CheckboxItem key={option.value}>
                       <CheckboxInput
@@ -915,12 +911,12 @@ const AdvancedFilterSystemMobile: React.FC<AdvancedFilterSystemMobileProps> = ({
               </FilterGroup>
 
               <FilterGroup>
-                <FilterLabel>{t('advancedSearch.transmission', 'Transmission')}</FilterLabel>
+                <FilterLabel>{t('advancedSearch.transmission')}</FilterLabel>
                 <CheckboxGrid>
                   {[
-                    { value: 'automatic', label: t('advancedSearch.automatic', 'Automatic') },
-                    { value: 'semi-automatic', label: t('advancedSearch.semiAutomatic', 'Semi-automatic') },
-                    { value: 'manual', label: t('advancedSearch.manualGearbox', 'Manual gearbox') }
+                    { value: 'automatic', label: t('advancedSearch.automatic') },
+                    { value: 'semi-automatic', label: t('advancedSearch.semiAutomatic') },
+                    { value: 'manual', label: t('advancedSearch.manualGearbox') }
                   ].map(option => (
                     <CheckboxItem key={option.value}>
                       <CheckboxInput
@@ -942,12 +938,12 @@ const AdvancedFilterSystemMobile: React.FC<AdvancedFilterSystemMobileProps> = ({
               </FilterGroup>
 
               <FilterGroup>
-                <FilterLabel>{t('advancedSearch.fuelConsumptionCombined', 'Fuel consumption (combined) up to')}</FilterLabel>
+                <FilterLabel>{t('advancedSearch.fuelConsumptionCombined')}</FilterLabel>
                 <FilterSelect
                   value={filters.fuelConsumption || 'any'}
                   onChange={(e) => handleFilterChange('fuelConsumption', e.target.value === 'any' ? '' : e.target.value)}
                 >
-                  <option value="any">{t('advancedSearch.any', 'Any')}</option>
+                  <option value="any">{t('advancedSearch.any')}</option>
                   <option value="3">3 L/100km</option>
                   <option value="4">4 L/100km</option>
                   <option value="5">5 L/100km</option>
@@ -963,26 +959,26 @@ const AdvancedFilterSystemMobile: React.FC<AdvancedFilterSystemMobileProps> = ({
               </FilterGroup>
 
               <FilterGroup>
-                <FilterLabel>{t('advancedSearch.emissionSticker', 'Emission Sticker')}</FilterLabel>
+                <FilterLabel>{t('advancedSearch.emissionSticker')}</FilterLabel>
                 <FilterSelect
                   value={filters.emissionSticker || 'any'}
                   onChange={(e) => handleFilterChange('emissionSticker', e.target.value === 'any' ? '' : e.target.value)}
                 >
-                  <option value="any">{t('advancedSearch.any', 'Any')}</option>
-                  <option value="green">{t('advancedSearch.green', 'Green')}</option>
-                  <option value="yellow">{t('advancedSearch.yellow', 'Yellow')}</option>
-                  <option value="red">{t('advancedSearch.red', 'Red')}</option>
-                  <option value="none">{t('advancedSearch.none', 'None')}</option>
+                  <option value="any">{t('advancedSearch.any')}</option>
+                  <option value="green">{t('advancedSearch.green')}</option>
+                  <option value="yellow">{t('advancedSearch.yellow')}</option>
+                  <option value="red">{t('advancedSearch.red')}</option>
+                  <option value="none">{t('advancedSearch.none')}</option>
                 </FilterSelect>
               </FilterGroup>
 
               <FilterGroup>
-                <FilterLabel>{t('advancedSearch.emissionClass', 'Emission Class')}</FilterLabel>
+                <FilterLabel>{t('advancedSearch.emissionClass')}</FilterLabel>
                 <FilterSelect
                   value={filters.emissionClass || 'any'}
                   onChange={(e) => handleFilterChange('emissionClass', e.target.value === 'any' ? '' : e.target.value)}
                 >
-                  <option value="any">{t('advancedSearch.any', 'Any')}</option>
+                  <option value="any">{t('advancedSearch.any')}</option>
                   <option value="euro1">Euro 1</option>
                   <option value="euro2">Euro 2</option>
                   <option value="euro3">Euro 3</option>
@@ -1000,7 +996,7 @@ const AdvancedFilterSystemMobile: React.FC<AdvancedFilterSystemMobileProps> = ({
                     checked={filters.particulateFilter || false}
                     onChange={(e) => handleFilterChange('particulateFilter', e.target.checked)}
                   />
-                  {t('advancedSearch.particulateFilter', 'Particulate filter')}
+                  {t('advancedSearch.particulateFilter')}
                 </CheckboxItem>
               </FilterGroup>
             </FilterGrid>
@@ -1008,30 +1004,30 @@ const AdvancedFilterSystemMobile: React.FC<AdvancedFilterSystemMobileProps> = ({
         </FilterSection>
 
         {/* Exterior Section */}
-  <FilterSection>
+        <FilterSection isExpanded={isSectionExpanded('exterior')}>
           <SectionHeader onClick={() => toggleSection('exterior')}>
-            <SectionTitle>{t('advancedSearch.exterior', 'Exterior')}</SectionTitle>
+            <SectionTitle>{t('advancedSearch.exterior')}</SectionTitle>
             {isSectionExpanded('exterior') ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
           </SectionHeader>
-          <SectionContent $isExpanded={isSectionExpanded('exterior')}>
+          <SectionContent isExpanded={isSectionExpanded('exterior')}>
             <FilterGrid>
               <FilterGroup>
-                <FilterLabel>{t('advancedSearch.exteriorColour', 'Exterior Colour')}</FilterLabel>
+                <FilterLabel>{t('advancedSearch.exteriorColour')}</FilterLabel>
                 <ColorGrid>
                   {[
-                    { value: 'black', label: t('advancedSearch.black', 'Black'), color: '#000000' },
-                    { value: 'beige', label: t('advancedSearch.beige', 'Beige'), color: '#F5F5DC' },
-                    { value: 'grey', label: t('advancedSearch.grey', 'Grey'), color: '#808080' },
-                    { value: 'brown', label: t('advancedSearch.brown', 'Brown'), color: '#8B4513' },
-                    { value: 'white', label: t('advancedSearch.white', 'White'), color: '#FFFFFF' },
-                    { value: 'orange', label: t('advancedSearch.orange', 'Orange'), color: '#FFA500' },
-                    { value: 'blue', label: t('advancedSearch.blue', 'Blue'), color: '#0000FF' },
-                    { value: 'yellow', label: t('advancedSearch.yellow', 'Yellow'), color: '#FFFF00' },
-                    { value: 'red', label: t('advancedSearch.red', 'Red'), color: '#FF0000' },
-                    { value: 'green', label: t('advancedSearch.green', 'Green'), color: '#008000' },
-                    { value: 'silver', label: t('advancedSearch.silver', 'Silver'), color: '#C0C0C0' },
-                    { value: 'gold', label: t('advancedSearch.gold', 'Gold'), color: '#FFD700' },
-                    { value: 'purple', label: t('advancedSearch.purple', 'Purple'), color: '#800080' }
+                    { value: 'black', label: t('advancedSearch.black'), color: '#000000' },
+                    { value: 'beige', label: t('advancedSearch.beige'), color: '#F5F5DC' },
+                    { value: 'grey', label: t('advancedSearch.grey'), color: '#808080' },
+                    { value: 'brown', label: t('advancedSearch.brown'), color: '#8B4513' },
+                    { value: 'white', label: t('advancedSearch.white'), color: '#FFFFFF' },
+                    { value: 'orange', label: t('advancedSearch.orange'), color: '#FFA500' },
+                    { value: 'blue', label: t('advancedSearch.blue'), color: '#0000FF' },
+                    { value: 'yellow', label: t('advancedSearch.yellow'), color: '#FFFF00' },
+                    { value: 'red', label: t('advancedSearch.red'), color: '#FF0000' },
+                    { value: 'green', label: t('advancedSearch.green'), color: '#008000' },
+                    { value: 'silver', label: t('advancedSearch.silver'), color: '#C0C0C0' },
+                    { value: 'gold', label: t('advancedSearch.gold'), color: '#FFD700' },
+                    { value: 'purple', label: t('advancedSearch.purple'), color: '#800080' }
                   ].map(option => (
                     <ColorItem key={option.value} color={option.color}>
                       <HiddenCheckbox
@@ -1058,7 +1054,7 @@ const AdvancedFilterSystemMobile: React.FC<AdvancedFilterSystemMobileProps> = ({
                       checked={filters.matte || false}
                       onChange={(e) => handleFilterChange('matte', e.target.checked)}
                     />
-                    {t('advancedSearch.matte', 'Matte')}
+                    {t('advancedSearch.matte')}
                   </CheckboxItem>
                   <CheckboxItem>
                     <CheckboxInput
@@ -1066,21 +1062,21 @@ const AdvancedFilterSystemMobile: React.FC<AdvancedFilterSystemMobileProps> = ({
                       checked={filters.metallic || false}
                       onChange={(e) => handleFilterChange('metallic', e.target.checked)}
                     />
-                    {t('advancedSearch.metallic', 'Metallic')}
+                    {t('advancedSearch.metallic')}
                   </CheckboxItem>
                 </div>
               </FilterGroup>
 
               <FilterGroup>
-                <FilterLabel>{t('advancedSearch.trailerCoupling', 'Trailer coupling')}</FilterLabel>
+                <FilterLabel>{t('advancedSearch.trailerCoupling')}</FilterLabel>
                 <FilterSelect
                   value={filters.trailerCoupling || 'any'}
                   onChange={(e) => handleFilterChange('trailerCoupling', e.target.value === 'any' ? '' : e.target.value)}
                 >
-                  <option value="any">{t('advancedSearch.any', 'Any')}</option>
-                  <option value="fix-detachable-swiveling">{t('advancedSearch.fixDetachableSwiveling', 'Fix, detachable or swiveling')}</option>
-                  <option value="detachable-swiveling">{t('advancedSearch.detachableSwiveling', 'Detachable or swiveling')}</option>
-                  <option value="swiveling">{t('advancedSearch.swiveling', 'Swiveling')}</option>
+                  <option value="any">{t('advancedSearch.any')}</option>
+                  <option value="fix-detachable-swiveling">{t('advancedSearch.fixDetachableSwiveling')}</option>
+                  <option value="detachable-swiveling">{t('advancedSearch.detachableSwiveling')}</option>
+                  <option value="swiveling">{t('advancedSearch.swiveling')}</option>
                 </FilterSelect>
               </FilterGroup>
 
@@ -1091,17 +1087,17 @@ const AdvancedFilterSystemMobile: React.FC<AdvancedFilterSystemMobileProps> = ({
                     checked={filters.trailerAssist || false}
                     onChange={(e) => handleFilterChange('trailerAssist', e.target.checked)}
                   />
-                  {t('advancedSearch.trailerAssist', 'Trailer assist')}
+                  {t('advancedSearch.trailerAssist')}
                 </CheckboxItem>
               </FilterGroup>
 
               <FilterGroup>
-                <FilterLabel>{t('advancedSearch.trailerLoadBraked', 'Trailer load braked from')}</FilterLabel>
+                <FilterLabel>{t('advancedSearch.trailerLoadBraked')}</FilterLabel>
                 <FilterSelect
                   value={filters.trailerLoadBraked || 'any'}
                   onChange={(e) => handleFilterChange('trailerLoadBraked', e.target.value === 'any' ? '' : e.target.value)}
                 >
-                  <option value="any">{t('advancedSearch.any', 'Any')}</option>
+                  <option value="any">{t('advancedSearch.any')}</option>
                   <option value="500">500 kg</option>
                   <option value="750">750 kg</option>
                   <option value="1000">1000 kg</option>
@@ -1113,12 +1109,12 @@ const AdvancedFilterSystemMobile: React.FC<AdvancedFilterSystemMobileProps> = ({
               </FilterGroup>
 
               <FilterGroup>
-                <FilterLabel>{t('advancedSearch.trailerLoadUnbraked', 'Trailer load unbraked from')}</FilterLabel>
+                <FilterLabel>{t('advancedSearch.trailerLoadUnbraked')}</FilterLabel>
                 <FilterSelect
                   value={filters.trailerLoadUnbraked || 'any'}
                   onChange={(e) => handleFilterChange('trailerLoadUnbraked', e.target.value === 'any' ? '' : e.target.value)}
                 >
-                  <option value="any">{t('advancedSearch.any', 'Any')}</option>
+                  <option value="any">{t('advancedSearch.any')}</option>
                   <option value="200">200 kg</option>
                   <option value="300">300 kg</option>
                   <option value="400">400 kg</option>
@@ -1129,12 +1125,12 @@ const AdvancedFilterSystemMobile: React.FC<AdvancedFilterSystemMobileProps> = ({
               </FilterGroup>
 
               <FilterGroup>
-                <FilterLabel>{t('advancedSearch.noseWeight', 'Nose Weight')}</FilterLabel>
+                <FilterLabel>{t('advancedSearch.noseWeight')}</FilterLabel>
                 <FilterSelect
                   value={filters.noseWeight || 'any'}
                   onChange={(e) => handleFilterChange('noseWeight', e.target.value === 'any' ? '' : e.target.value)}
                 >
-                  <option value="any">{t('advancedSearch.any', 'Any')}</option>
+                  <option value="any">{t('advancedSearch.any')}</option>
                   <option value="50">50 kg</option>
                   <option value="75">75 kg</option>
                   <option value="100">100 kg</option>
@@ -1144,15 +1140,15 @@ const AdvancedFilterSystemMobile: React.FC<AdvancedFilterSystemMobileProps> = ({
               </FilterGroup>
 
               <FilterGroup>
-                <FilterLabel>{t('advancedSearch.parkingSensors', 'Parking sensors')}</FilterLabel>
+                <FilterLabel>{t('advancedSearch.parkingSensors')}</FilterLabel>
                 <CheckboxGrid>
                   {[
-                    { value: '360-camera', label: t('advancedSearch.camera360', '360° Camera') },
-                    { value: 'camera', label: t('advancedSearch.camera', 'Camera') },
-                    { value: 'front', label: t('advancedSearch.front', 'Front') },
-                    { value: 'rear', label: t('advancedSearch.rear', 'Rear') },
-                    { value: 'rear-traffic-alert', label: t('advancedSearch.rearTrafficAlert', 'Rear traffic alert') },
-                    { value: 'self-steering', label: t('advancedSearch.selfSteering', 'Self-steering systems') }
+                    { value: '360-camera', label: t('advancedSearch.camera360') },
+                    { value: 'camera', label: t('advancedSearch.camera') },
+                    { value: 'front', label: t('advancedSearch.front') },
+                    { value: 'rear', label: t('advancedSearch.rear') },
+                    { value: 'rear-traffic-alert', label: t('advancedSearch.rearTrafficAlert') },
+                    { value: 'self-steering', label: t('advancedSearch.selfSteering') }
                   ].map(option => (
                     <CheckboxItem key={option.value}>
                       <CheckboxInput
@@ -1174,12 +1170,12 @@ const AdvancedFilterSystemMobile: React.FC<AdvancedFilterSystemMobileProps> = ({
               </FilterGroup>
 
               <FilterGroup>
-                <FilterLabel>{t('advancedSearch.cruiseControl', 'Cruise control')}</FilterLabel>
+                <FilterLabel>{t('advancedSearch.cruiseControl')}</FilterLabel>
                 <CheckboxGrid>
                   {[
-                    { value: 'any', label: t('advancedSearch.any', 'Any') },
-                    { value: 'cruise-control', label: t('advancedSearch.cruiseControl', 'Cruise control') },
-                    { value: 'adaptive-cruise', label: t('advancedSearch.adaptiveCruiseControl', 'Adaptive Cruise Control') }
+                    { value: 'any', label: t('advancedSearch.any') },
+                    { value: 'cruise-control', label: t('advancedSearch.cruiseControl') },
+                    { value: 'adaptive-cruise', label: t('advancedSearch.adaptiveCruiseControl') }
                   ].map(option => (
                     <CheckboxItem key={option.value}>
                       <CheckboxInput
@@ -1201,60 +1197,60 @@ const AdvancedFilterSystemMobile: React.FC<AdvancedFilterSystemMobileProps> = ({
               </FilterGroup>
 
               <FilterGroup>
-                <FilterLabel>{t('advancedSearch.others', 'Others')}</FilterLabel>
+                <FilterLabel>{t('advancedSearch.others')}</FilterLabel>
                 <CheckboxGrid>
                   {[
                     { value: 'abs', label: 'ABS' },
-                    { value: 'adaptive-cornering-lights', label: t('advancedSearch.adaptiveCorneringLights', 'Adaptive cornering lights') },
-                    { value: 'adaptive-lighting', label: t('advancedSearch.adaptiveLighting', 'Adaptive lighting') },
-                    { value: 'air-suspension', label: t('advancedSearch.airSuspension', 'Air suspension') },
-                    { value: 'all-season-tyres', label: t('advancedSearch.allSeasonTyres', 'All season tyres') },
-                    { value: 'alloy-wheels', label: t('advancedSearch.alloyWheels', 'Alloy wheels') },
-                    { value: 'bi-xenon-headlights', label: t('advancedSearch.biXenonHeadlights', 'Bi-xenon headlights') },
-                    { value: 'blind-spot-assist', label: t('advancedSearch.blindSpotAssist', 'Blind spot assist') },
-                    { value: 'central-locking', label: t('advancedSearch.centralLocking', 'Central locking') },
-                    { value: 'daytime-running-lights', label: t('advancedSearch.daytimeRunningLights', 'Daytime running lights') },
-                    { value: 'distance-warning', label: t('advancedSearch.distanceWarning', 'Distance warning system') },
-                    { value: 'dynamic-chassis', label: t('advancedSearch.dynamicChassis', 'Dynamic chassis control') },
-                    { value: 'electric-tailgate', label: t('advancedSearch.electricTailgate', 'Electric tailgate') },
-                    { value: 'emergency-brake', label: t('advancedSearch.emergencyBrake', 'Emergency brake assist') },
-                    { value: 'emergency-tyre', label: t('advancedSearch.emergencyTyre', 'Emergency tyre') },
-                    { value: 'emergency-tyre-repair', label: t('advancedSearch.emergencyTyreRepair', 'Emergency tyre repair kit') },
+                    { value: 'adaptive-cornering-lights', label: t('advancedSearch.adaptiveCorneringLights') },
+                    { value: 'adaptive-lighting', label: t('advancedSearch.adaptiveLighting') },
+                    { value: 'air-suspension', label: t('advancedSearch.airSuspension') },
+                    { value: 'all-season-tyres', label: t('advancedSearch.allSeasonTyres') },
+                    { value: 'alloy-wheels', label: t('advancedSearch.alloyWheels') },
+                    { value: 'bi-xenon-headlights', label: t('advancedSearch.biXenonHeadlights') },
+                    { value: 'blind-spot-assist', label: t('advancedSearch.blindSpotAssist') },
+                    { value: 'central-locking', label: t('advancedSearch.centralLocking') },
+                    { value: 'daytime-running-lights', label: t('advancedSearch.daytimeRunningLights') },
+                    { value: 'distance-warning', label: t('advancedSearch.distanceWarning') },
+                    { value: 'dynamic-chassis', label: t('advancedSearch.dynamicChassis') },
+                    { value: 'electric-tailgate', label: t('advancedSearch.electricTailgate') },
+                    { value: 'emergency-brake', label: t('advancedSearch.emergencyBrake') },
+                    { value: 'emergency-tyre', label: t('advancedSearch.emergencyTyre') },
+                    { value: 'emergency-tyre-repair', label: t('advancedSearch.emergencyTyreRepair') },
                     { value: 'esp', label: 'ESP' },
-                    { value: 'fog-lamps', label: t('advancedSearch.fogLamps', 'Fog lamps') },
-                    { value: 'folding-roof', label: t('advancedSearch.foldingRoof', 'Folding roof') },
-                    { value: 'four-wheel-drive', label: t('advancedSearch.fourWheelDrive', 'Four wheel drive') },
-                    { value: 'glare-free-high-beam', label: t('advancedSearch.glareFreeHighBeam', 'Glare-free high beam headlights') },
-                    { value: 'headlight-washer', label: t('advancedSearch.headlightWasher', 'Headlight washer system') },
-                    { value: 'heated-windshield', label: t('advancedSearch.heatedWindshield', 'Heated windshield') },
-                    { value: 'high-beam-assist', label: t('advancedSearch.highBeamAssist', 'High beam assist') },
-                    { value: 'hill-start-assist', label: t('advancedSearch.hillStartAssist', 'Hill-start assist') },
-                    { value: 'immobilizer', label: t('advancedSearch.immobilizer', 'Immobilizer') },
-                    { value: 'keyless-central-locking', label: t('advancedSearch.keylessCentralLocking', 'Keyless central locking') },
-                    { value: 'lane-change-assist', label: t('advancedSearch.laneChangeAssist', 'Lane change assist') },
-                    { value: 'laser-headlights', label: t('advancedSearch.laserHeadlights', 'Laser headlights') },
-                    { value: 'led-headlights', label: t('advancedSearch.ledHeadlights', 'LED headlights') },
-                    { value: 'led-running-lights', label: t('advancedSearch.ledRunningLights', 'LED running lights') },
-                    { value: 'light-sensor', label: t('advancedSearch.lightSensor', 'Light sensor') },
-                    { value: 'night-vision', label: t('advancedSearch.nightVision', 'Night vision assist') },
-                    { value: 'panoramic-roof', label: t('advancedSearch.panoramicRoof', 'Panoramic roof') },
-                    { value: 'power-assisted-steering', label: t('advancedSearch.powerAssistedSteering', 'Power Assisted Steering') },
-                    { value: 'rain-sensor', label: t('advancedSearch.rainSensor', 'Rain sensor') },
-                    { value: 'roof-rack', label: t('advancedSearch.roofRack', 'Roof rack') },
-                    { value: 'spare-tyre', label: t('advancedSearch.spareTyre', 'Spare tyre') },
-                    { value: 'speed-limit-control', label: t('advancedSearch.speedLimitControl', 'Speed limit control system') },
-                    { value: 'sports-package', label: t('advancedSearch.sportsPackage', 'Sports package') },
-                    { value: 'sports-suspension', label: t('advancedSearch.sportsSuspension', 'Sports suspension') },
-                    { value: 'start-stop', label: t('advancedSearch.startStop', 'Start-stop system') },
-                    { value: 'steel-wheels', label: t('advancedSearch.steelWheels', 'Steel wheels') },
-                    { value: 'summer-tyres', label: t('advancedSearch.summerTyres', 'Summer tyres') },
-                    { value: 'sunroof', label: t('advancedSearch.sunroof', 'Sunroof') },
-                    { value: 'tinted-windows', label: t('advancedSearch.tintedWindows', 'Tinted windows') },
-                    { value: 'traction-control', label: t('advancedSearch.tractionControl', 'Traction control') },
-                    { value: 'traffic-sign-recognition', label: t('advancedSearch.trafficSignRecognition', 'Traffic sign recognition') },
-                    { value: 'tyre-pressure-monitoring', label: t('advancedSearch.tyrePressureMonitoring', 'Tyre pressure monitoring') },
-                    { value: 'winter-tyres', label: t('advancedSearch.winterTyres', 'Winter tyres') },
-                    { value: 'xenon-headlights', label: t('advancedSearch.xenonHeadlights', 'Xenon headlights') }
+                    { value: 'fog-lamps', label: t('advancedSearch.fogLamps') },
+                    { value: 'folding-roof', label: t('advancedSearch.foldingRoof') },
+                    { value: 'four-wheel-drive', label: t('advancedSearch.fourWheelDrive') },
+                    { value: 'glare-free-high-beam', label: t('advancedSearch.glareFreeHighBeam') },
+                    { value: 'headlight-washer', label: t('advancedSearch.headlightWasher') },
+                    { value: 'heated-windshield', label: t('advancedSearch.heatedWindshield') },
+                    { value: 'high-beam-assist', label: t('advancedSearch.highBeamAssist') },
+                    { value: 'hill-start-assist', label: t('advancedSearch.hillStartAssist') },
+                    { value: 'immobilizer', label: t('advancedSearch.immobilizer') },
+                    { value: 'keyless-central-locking', label: t('advancedSearch.keylessCentralLocking') },
+                    { value: 'lane-change-assist', label: t('advancedSearch.laneChangeAssist') },
+                    { value: 'laser-headlights', label: t('advancedSearch.laserHeadlights') },
+                    { value: 'led-headlights', label: t('advancedSearch.ledHeadlights') },
+                    { value: 'led-running-lights', label: t('advancedSearch.ledRunningLights') },
+                    { value: 'light-sensor', label: t('advancedSearch.lightSensor') },
+                    { value: 'night-vision', label: t('advancedSearch.nightVision') },
+                    { value: 'panoramic-roof', label: t('advancedSearch.panoramicRoof') },
+                    { value: 'power-assisted-steering', label: t('advancedSearch.powerAssistedSteering') },
+                    { value: 'rain-sensor', label: t('advancedSearch.rainSensor') },
+                    { value: 'roof-rack', label: t('advancedSearch.roofRack') },
+                    { value: 'spare-tyre', label: t('advancedSearch.spareTyre') },
+                    { value: 'speed-limit-control', label: t('advancedSearch.speedLimitControl') },
+                    { value: 'sports-package', label: t('advancedSearch.sportsPackage') },
+                    { value: 'sports-suspension', label: t('advancedSearch.sportsSuspension') },
+                    { value: 'start-stop', label: t('advancedSearch.startStop') },
+                    { value: 'steel-wheels', label: t('advancedSearch.steelWheels') },
+                    { value: 'summer-tyres', label: t('advancedSearch.summerTyres') },
+                    { value: 'sunroof', label: t('advancedSearch.sunroof') },
+                    { value: 'tinted-windows', label: t('advancedSearch.tintedWindows') },
+                    { value: 'traction-control', label: t('advancedSearch.tractionControl') },
+                    { value: 'traffic-sign-recognition', label: t('advancedSearch.trafficSignRecognition') },
+                    { value: 'tyre-pressure-monitoring', label: t('advancedSearch.tyrePressureMonitoring') },
+                    { value: 'winter-tyres', label: t('advancedSearch.winterTyres') },
+                    { value: 'xenon-headlights', label: t('advancedSearch.xenonHeadlights') }
                   ].map(option => (
                     <CheckboxItem key={option.value}>
                       <CheckboxInput
@@ -1279,27 +1275,27 @@ const AdvancedFilterSystemMobile: React.FC<AdvancedFilterSystemMobileProps> = ({
         </FilterSection>
 
         {/* Interior Section */}
-  <FilterSection>
+        <FilterSection isExpanded={isSectionExpanded('interior')}>
           <SectionHeader onClick={() => toggleSection('interior')}>
-            <SectionTitle>{t('advancedSearch.interior', 'Interior')}</SectionTitle>
+            <SectionTitle>{t('advancedSearch.interior')}</SectionTitle>
             {isSectionExpanded('interior') ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
           </SectionHeader>
-          <SectionContent $isExpanded={isSectionExpanded('interior')}>
+          <SectionContent isExpanded={isSectionExpanded('interior')}>
             <FilterGrid>
               <FilterGroup>
-                <FilterLabel>{t('advancedSearch.interiorColour', 'Interior Colour')}</FilterLabel>
+                <FilterLabel>{t('advancedSearch.interiorColour')}</FilterLabel>
                 <ColorGrid>
                   {[
-                    { value: 'black', label: t('advancedSearch.black', 'Black'), color: '#000000' },
-                    { value: 'beige', label: t('advancedSearch.beige', 'Beige'), color: '#F5F5DC' },
-                    { value: 'grey', label: t('advancedSearch.grey', 'Grey'), color: '#808080' },
-                    { value: 'brown', label: t('advancedSearch.brown', 'Brown'), color: '#8B4513' },
-                    { value: 'white', label: t('advancedSearch.white', 'White'), color: '#FFFFFF' },
-                    { value: 'blue', label: t('advancedSearch.blue', 'Blue'), color: '#0000FF' },
-                    { value: 'red', label: t('advancedSearch.red', 'Red'), color: '#FF0000' },
-                    { value: 'green', label: t('advancedSearch.green', 'Green'), color: '#008000' },
-                    { value: 'silver', label: t('advancedSearch.silver', 'Silver'), color: '#C0C0C0' },
-                    { value: 'other', label: t('advancedSearch.other', 'Other'), color: '#666666' }
+                    { value: 'black', label: t('advancedSearch.black'), color: '#000000' },
+                    { value: 'beige', label: t('advancedSearch.beige'), color: '#F5F5DC' },
+                    { value: 'grey', label: t('advancedSearch.grey'), color: '#808080' },
+                    { value: 'brown', label: t('advancedSearch.brown'), color: '#8B4513' },
+                    { value: 'white', label: t('advancedSearch.white'), color: '#FFFFFF' },
+                    { value: 'blue', label: t('advancedSearch.blue'), color: '#0000FF' },
+                    { value: 'red', label: t('advancedSearch.red'), color: '#FF0000' },
+                    { value: 'green', label: t('advancedSearch.green'), color: '#008000' },
+                    { value: 'silver', label: t('advancedSearch.silver'), color: '#C0C0C0' },
+                    { value: 'other', label: t('advancedSearch.other'), color: '#666666' }
                   ].map(option => (
                     <ColorItem key={option.value} color={option.color}>
                       <HiddenCheckbox
@@ -1322,15 +1318,15 @@ const AdvancedFilterSystemMobile: React.FC<AdvancedFilterSystemMobileProps> = ({
               </FilterGroup>
 
               <FilterGroup>
-                <FilterLabel>{t('advancedSearch.interiorMaterial', 'Interior Material')}</FilterLabel>
+                <FilterLabel>{t('advancedSearch.interiorMaterial')}</FilterLabel>
                 <CheckboxGrid>
                   {[
-                    { value: 'cloth', label: t('advancedSearch.cloth', 'Cloth') },
-                    { value: 'leather', label: t('advancedSearch.leather', 'Leather') },
-                    { value: 'part-leather', label: t('advancedSearch.partLeather', 'Part leather') },
-                    { value: 'alcantara', label: t('advancedSearch.alcantara', 'Alcantara') },
-                    { value: 'velour', label: t('advancedSearch.velour', 'Velour') },
-                    { value: 'other', label: t('advancedSearch.other', 'Other') }
+                    { value: 'cloth', label: t('advancedSearch.cloth') },
+                    { value: 'leather', label: t('advancedSearch.leather') },
+                    { value: 'part-leather', label: t('advancedSearch.partLeather') },
+                    { value: 'alcantara', label: t('advancedSearch.alcantara') },
+                    { value: 'velour', label: t('advancedSearch.velour') },
+                    { value: 'other', label: t('advancedSearch.other') }
                   ].map(option => (
                     <CheckboxItem key={option.value}>
                       <CheckboxInput
@@ -1355,21 +1351,21 @@ const AdvancedFilterSystemMobile: React.FC<AdvancedFilterSystemMobileProps> = ({
         </FilterSection>
 
         {/* Offer Details Section - Will be implemented next */}
-  <FilterSection>
+        <FilterSection isExpanded={isSectionExpanded('offerDetails')}>
           <SectionHeader onClick={() => toggleSection('offerDetails')}>
-            <SectionTitle>{t('advancedSearch.offerDetails', 'Offer Details')}</SectionTitle>
+            <SectionTitle>{t('advancedSearch.offerDetails')}</SectionTitle>
             {isSectionExpanded('offerDetails') ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
           </SectionHeader>
-          <SectionContent $isExpanded={isSectionExpanded('offerDetails')}>
+          <SectionContent isExpanded={isSectionExpanded('offerDetails')}>
             <FilterGrid>
               <FilterGroup>
-                <FilterLabel>{t('advancedSearch.sellerType', 'Seller Type')}</FilterLabel>
+                <FilterLabel>{t('advancedSearch.sellerType')}</FilterLabel>
                 <CheckboxGrid>
                   {[
-                    { value: 'dealer', label: t('advancedSearch.dealer', 'Dealer') },
-                    { value: 'private', label: t('advancedSearch.private', 'Private') },
-                    { value: 'garage', label: t('advancedSearch.garage', 'Garage') },
-                    { value: 'other', label: t('advancedSearch.other', 'Other') }
+                    { value: 'dealer', label: t('advancedSearch.dealer') },
+                    { value: 'private', label: t('advancedSearch.private') },
+                    { value: 'garage', label: t('advancedSearch.garage') },
+                    { value: 'other', label: t('advancedSearch.other') }
                   ].map(option => (
                     <CheckboxItem key={option.value}>
                       <CheckboxInput
@@ -1391,13 +1387,13 @@ const AdvancedFilterSystemMobile: React.FC<AdvancedFilterSystemMobileProps> = ({
               </FilterGroup>
 
               <FilterGroup>
-                <FilterLabel>{t('advancedSearch.warranty', 'Warranty')}</FilterLabel>
+                <FilterLabel>{t('advancedSearch.warranty')}</FilterLabel>
                 <CheckboxGrid>
                   {[
-                    { value: 'any', label: t('advancedSearch.any', 'Any') },
-                    { value: 'warranty', label: t('advancedSearch.warranty', 'Warranty') },
-                    { value: 'extended-warranty', label: t('advancedSearch.extendedWarranty', 'Extended warranty') },
-                    { value: 'no-warranty', label: t('advancedSearch.noWarranty', 'No warranty') }
+                    { value: 'any', label: t('advancedSearch.any') },
+                    { value: 'warranty', label: t('advancedSearch.warranty') },
+                    { value: 'extended-warranty', label: t('advancedSearch.extendedWarranty') },
+                    { value: 'no-warranty', label: t('advancedSearch.noWarranty') }
                   ].map(option => (
                     <CheckboxItem key={option.value}>
                       <CheckboxInput
@@ -1419,13 +1415,13 @@ const AdvancedFilterSystemMobile: React.FC<AdvancedFilterSystemMobileProps> = ({
               </FilterGroup>
 
               <FilterGroup>
-                <FilterLabel>{t('advancedSearch.serviceHistory', 'Service History')}</FilterLabel>
+                <FilterLabel>{t('advancedSearch.serviceHistory')}</FilterLabel>
                 <CheckboxGrid>
                   {[
-                    { value: 'any', label: t('advancedSearch.any', 'Any') },
-                    { value: 'full-service-history', label: t('advancedSearch.fullServiceHistory', 'Full service history') },
-                    { value: 'partial-service-history', label: t('advancedSearch.partialServiceHistory', 'Partial service history') },
-                    { value: 'no-service-history', label: t('advancedSearch.noServiceHistory', 'No service history') }
+                    { value: 'any', label: t('advancedSearch.any') },
+                    { value: 'full-service-history', label: t('advancedSearch.fullServiceHistory') },
+                    { value: 'partial-service-history', label: t('advancedSearch.partialServiceHistory') },
+                    { value: 'no-service-history', label: t('advancedSearch.noServiceHistory') }
                   ].map(option => (
                     <CheckboxItem key={option.value}>
                       <CheckboxInput
@@ -1447,12 +1443,12 @@ const AdvancedFilterSystemMobile: React.FC<AdvancedFilterSystemMobileProps> = ({
               </FilterGroup>
 
               <FilterGroup>
-                <FilterLabel>{t('advancedSearch.accidentFree', 'Accident Free')}</FilterLabel>
+                <FilterLabel>{t('advancedSearch.accidentFree')}</FilterLabel>
                 <CheckboxGrid>
                   {[
-                    { value: 'any', label: t('advancedSearch.any', 'Any') },
-                    { value: 'accident-free', label: t('advancedSearch.accidentFree', 'Accident free') },
-                    { value: 'damaged', label: t('advancedSearch.damaged', 'Damaged') }
+                    { value: 'any', label: t('advancedSearch.any') },
+                    { value: 'accident-free', label: t('advancedSearch.accidentFree') },
+                    { value: 'damaged', label: t('advancedSearch.damaged') }
                   ].map(option => (
                     <CheckboxItem key={option.value}>
                       <CheckboxInput
@@ -1474,12 +1470,12 @@ const AdvancedFilterSystemMobile: React.FC<AdvancedFilterSystemMobileProps> = ({
               </FilterGroup>
 
               <FilterGroup>
-                <FilterLabel>{t('advancedSearch.roadworthy', 'Roadworthy')}</FilterLabel>
+                <FilterLabel>{t('advancedSearch.roadworthy')}</FilterLabel>
                 <CheckboxGrid>
                   {[
-                    { value: 'any', label: t('advancedSearch.any', 'Any') },
-                    { value: 'roadworthy', label: t('advancedSearch.roadworthy', 'Roadworthy') },
-                    { value: 'not-roadworthy', label: t('advancedSearch.notRoadworthy', 'Not roadworthy') }
+                    { value: 'any', label: t('advancedSearch.any') },
+                    { value: 'roadworthy', label: t('advancedSearch.roadworthy') },
+                    { value: 'not-roadworthy', label: t('advancedSearch.notRoadworthy') }
                   ].map(option => (
                     <CheckboxItem key={option.value}>
                       <CheckboxInput
@@ -1501,25 +1497,25 @@ const AdvancedFilterSystemMobile: React.FC<AdvancedFilterSystemMobileProps> = ({
               </FilterGroup>
 
               <FilterGroup>
-                <FilterLabel>{t('advancedSearch.huValid', 'HU Valid')}</FilterLabel>
+                <FilterLabel>{t('advancedSearch.huValid')}</FilterLabel>
                 <FilterSelect
                   value={filters.huValid || 'any'}
                   onChange={(e) => handleFilterChange('huValid', e.target.value === 'any' ? '' : e.target.value)}
                 >
-                  <option value="any">{t('advancedSearch.any', 'Any')}</option>
-                  <option value="valid">{t('advancedSearch.valid', 'Valid')}</option>
-                  <option value="expired">{t('advancedSearch.expired', 'Expired')}</option>
-                  <option value="expiring-soon">{t('advancedSearch.expiringSoon', 'Expiring soon')}</option>
+                  <option value="any">{t('advancedSearch.any')}</option>
+                  <option value="valid">{t('advancedSearch.valid')}</option>
+                  <option value="expired">{t('advancedSearch.expired')}</option>
+                  <option value="expiring-soon">{t('advancedSearch.expiringSoon')}</option>
                 </FilterSelect>
               </FilterGroup>
 
               <FilterGroup>
-                <FilterLabel>{t('advancedSearch.numberOfOwners', 'Number of Owners')}</FilterLabel>
+                <FilterLabel>{t('advancedSearch.numberOfOwners')}</FilterLabel>
                 <FilterSelect
                   value={filters.numberOfOwners || 'any'}
                   onChange={(e) => handleFilterChange('numberOfOwners', e.target.value === 'any' ? '' : e.target.value)}
                 >
-                  <option value="any">{t('advancedSearch.any', 'Any')}</option>
+                  <option value="any">{t('advancedSearch.any')}</option>
                   <option value="1">1</option>
                   <option value="2">2</option>
                   <option value="3">3</option>
@@ -1529,13 +1525,13 @@ const AdvancedFilterSystemMobile: React.FC<AdvancedFilterSystemMobileProps> = ({
               </FilterGroup>
 
               <FilterGroup>
-                <FilterLabel>{t('advancedSearch.availability', 'Availability')}</FilterLabel>
+                <FilterLabel>{t('advancedSearch.availability')}</FilterLabel>
                 <CheckboxGrid>
                   {[
-                    { value: 'any', label: t('advancedSearch.any', 'Any') },
-                    { value: 'available', label: t('advancedSearch.available', 'Available') },
-                    { value: 'reserved', label: t('advancedSearch.reserved', 'Reserved') },
-                    { value: 'sold', label: t('advancedSearch.sold', 'Sold') }
+                    { value: 'any', label: t('advancedSearch.any') },
+                    { value: 'available', label: t('advancedSearch.available') },
+                    { value: 'reserved', label: t('advancedSearch.reserved') },
+                    { value: 'sold', label: t('advancedSearch.sold') }
                   ].map(option => (
                     <CheckboxItem key={option.value}>
                       <CheckboxInput
@@ -1557,12 +1553,12 @@ const AdvancedFilterSystemMobile: React.FC<AdvancedFilterSystemMobileProps> = ({
               </FilterGroup>
 
               <FilterGroup>
-                <FilterLabel>{t('advancedSearch.delivery', 'Delivery')}</FilterLabel>
+                <FilterLabel>{t('advancedSearch.delivery')}</FilterLabel>
                 <CheckboxGrid>
                   {[
-                    { value: 'any', label: t('advancedSearch.any', 'Any') },
-                    { value: 'delivery-available', label: t('advancedSearch.deliveryAvailable', 'Delivery available') },
-                    { value: 'pickup-only', label: t('advancedSearch.pickupOnly', 'Pickup only') }
+                    { value: 'any', label: t('advancedSearch.any') },
+                    { value: 'delivery-available', label: t('advancedSearch.deliveryAvailable') },
+                    { value: 'pickup-only', label: t('advancedSearch.pickupOnly') }
                   ].map(option => (
                     <CheckboxItem key={option.value}>
                       <CheckboxInput

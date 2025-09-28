@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Search, Filter, Star, TrendingUp, Clock } from 'lucide-react';
-import { useTranslation } from '../hooks/useTranslation';
 
 interface SearchTab {
   id: string;
@@ -236,7 +235,6 @@ const SearchTabs: React.FC<SearchTabsProps> = ({
   variant = 'default',
   size = 'md',
 }) => {
-  const { t } = useTranslation();
 
   const getDefaultIcon = (tabId: string) => {
     switch (tabId) {
@@ -280,7 +278,7 @@ const SearchTabs: React.FC<SearchTabsProps> = ({
           )}
           
           <SearchTabLabel>
-            {t(`searchTabs.${tab.id}`, tab.label)}
+            {tab.label}
           </SearchTabLabel>
           
           {showCounts && tab.count !== undefined && (

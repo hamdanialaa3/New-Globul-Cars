@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Search, Filter, X, ChevronDown, ChevronUp, Star, TrendingUp } from 'lucide-react';
-import { useTranslation } from '../hooks/useTranslation';
+import { useLanguage } from '../contexts/LanguageContext';
 import SearchableSelect from './SearchableSelect';
 import CheckboxGrid from './CheckboxGrid';
 import SearchTabs from './SearchTabs';
@@ -320,7 +320,7 @@ const CarSearchSystemNew: React.FC<CarSearchSystemNewProps> = ({
   onSuggestionClick,
   onClearRecent,
 }) => {
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const [formData, setFormData] = useState<Record<string, any>>({});
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(showAdvanced);
   const [isFiltersOpen, setIsFiltersOpen] = useState(showFilters);
@@ -328,10 +328,10 @@ const CarSearchSystemNew: React.FC<CarSearchSystemNewProps> = ({
   const [showSuggestionsState, setShowSuggestionsState] = useState(false);
 
   const tabs = [
-    { id: 'search', label: t('carSearch.tabs.search', 'Search'), icon: <Search size={16} /> },
-    { id: 'filters', label: t('carSearch.tabs.filters', 'Filters'), icon: <Filter size={16} /> },
-    { id: 'popular', label: t('carSearch.tabs.popular', 'Popular'), icon: <Star size={16} /> },
-    { id: 'trending', label: t('carSearch.tabs.trending', 'Trending'), icon: <TrendingUp size={16} /> },
+    { id: 'search', label: t('carSearch.tabs.search'), icon: <Search size={16} /> },
+    { id: 'filters', label: t('carSearch.tabs.filters'), icon: <Filter size={16} /> },
+    { id: 'popular', label: t('carSearch.tabs.popular'), icon: <Star size={16} /> },
+    { id: 'trending', label: t('carSearch.tabs.trending'), icon: <TrendingUp size={16} /> },
   ];
 
   const suggestions = [

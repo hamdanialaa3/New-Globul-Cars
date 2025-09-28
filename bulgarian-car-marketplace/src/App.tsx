@@ -1,16 +1,16 @@
 // src/App.tsx
-// Main App Component for Bulgarian Car Marketplace
+// Main App Component for Bulgarian Car Marketplace with Global Translation System
 
 import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
-import { TranslationProvider } from './hooks/useTranslation';
+import { LanguageProvider } from './contexts/LanguageContext';
 import { AuthProvider } from './context/AuthProvider';
 import { bulgarianTheme, GlobalStyles } from './styles/theme';
 import ErrorBoundary from './components/ErrorBoundary';
 import { SkipNavigation } from './components/Accessibility';
-import Header from './components/Header';
-import Footer from './components/Footer';
+import Header from './components/Header/Header';
+import Footer from './components/Footer/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
 // import AnalyticsTracker from './components/AnalyticsTracker';
@@ -131,7 +131,7 @@ const App: React.FC = () => {
       <Router>
         <ErrorBoundary>
           <AuthProvider>
-            <TranslationProvider>
+            <LanguageProvider>
               <SkipNavigation />
               <GlobalStyles />
               <Suspense fallback={<PageLoader />}>
@@ -550,7 +550,7 @@ const App: React.FC = () => {
               />
             </Routes>
           </Suspense>
-            </TranslationProvider>
+            </LanguageProvider>
           </AuthProvider>
         </ErrorBoundary>
       </Router>

@@ -14,7 +14,7 @@ import {
   Calendar,
   Euro
 } from 'lucide-react';
-import { useTranslation } from '../hooks/useTranslation';
+import { useLanguage } from '../contexts/LanguageContext';
 import LazyImage from './LazyImage';
 
 interface SearchResult {
@@ -392,7 +392,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({
   showViewToggle = true,
   showPagination = true,
 }) => {
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const [view, setView] = useState<'grid' | 'list'>('grid');
   const [sortBy, setSortBy] = useState('relevance');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
@@ -441,7 +441,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({
     return (
       <SearchResultsContainer className={className} style={style}>
         <SearchResultsLoading>
-          {t('searchResults.loading', 'Loading results...')}
+          {t('searchResults.loading')}
         </SearchResultsLoading>
       </SearchResultsContainer>
     );
@@ -451,7 +451,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({
     return (
       <SearchResultsContainer className={className} style={style}>
         <SearchResultsEmpty>
-          {t('searchResults.empty', 'No results found')}
+          {t('searchResults.empty')}
         </SearchResultsEmpty>
       </SearchResultsContainer>
     );
@@ -462,7 +462,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({
       <SearchResultsHeader>
         <SearchResultsInfo>
           <SearchResultsCount>
-            {t('searchResults.count', `${totalResults} results found`)}
+            {t('searchResults.count')}
           </SearchResultsCount>
         </SearchResultsInfo>
 
@@ -472,11 +472,11 @@ const SearchResults: React.FC<SearchResultsProps> = ({
               value={sortBy}
               onChange={(e) => handleSortChange(e.target.value)}
             >
-              <option value="relevance">{t('searchResults.sort.relevance', 'Relevance')}</option>
-              <option value="price">{t('searchResults.sort.price', 'Price')}</option>
-              <option value="date">{t('searchResults.sort.date', 'Date')}</option>
-              <option value="mileage">{t('searchResults.sort.mileage', 'Mileage')}</option>
-              <option value="year">{t('searchResults.sort.year', 'Year')}</option>
+              <option value="relevance">{t('searchResults.sort.relevance')}</option>
+              <option value="price">{t('searchResults.sort.price')}</option>
+              <option value="date">{t('searchResults.sort.date')}</option>
+              <option value="mileage">{t('searchResults.sort.mileage')}</option>
+              <option value="year">{t('searchResults.sort.year')}</option>
             </SearchResultsSort>
           )}
 
@@ -487,14 +487,14 @@ const SearchResults: React.FC<SearchResultsProps> = ({
                 onClick={() => handleViewChange('grid')}
               >
                 <Grid size={16} />
-                {t('searchResults.view.grid', 'Grid')}
+                {t('searchResults.view.grid')}
               </SearchResultsViewButton>
               <SearchResultsViewButton
                 isActive={view === 'list'}
                 onClick={() => handleViewChange('list')}
               >
                 <List size={16} />
-                {t('searchResults.view.list', 'List')}
+                {t('searchResults.view.list')}
               </SearchResultsViewButton>
             </SearchResultsViewToggle>
           )}
@@ -517,17 +517,17 @@ const SearchResults: React.FC<SearchResultsProps> = ({
               <SearchResultBadges>
                 {result.isPromoted && (
                   <SearchResultBadge type="promoted">
-                    {t('searchResults.badges.promoted', 'Promoted')}
+                    {t('searchResults.badges.promoted')}
                   </SearchResultBadge>
                 )}
                 {result.isNew && (
                   <SearchResultBadge type="new">
-                    {t('searchResults.badges.new', 'New')}
+                    {t('searchResults.badges.new')}
                   </SearchResultBadge>
                 )}
                 {result.isFavorite && (
                   <SearchResultBadge type="favorite">
-                    {t('searchResults.badges.favorite', 'Favorite')}
+                    {t('searchResults.badges.favorite')}
                   </SearchResultBadge>
                 )}
               </SearchResultBadges>
@@ -609,18 +609,18 @@ const SearchResults: React.FC<SearchResultsProps> = ({
             onClick={() => onPageChange?.(currentPage - 1)}
           >
             <ChevronLeft size={16} />
-            {t('searchResults.pagination.previous', 'Previous')}
+            {t('searchResults.pagination.previous')}
           </SearchResultsPaginationButton>
 
           <SearchResultsPaginationInfo>
-            {t('searchResults.pagination.page', `Page ${currentPage} of ${totalPages}`)}
+            {t('searchResults.pagination.page')}
           </SearchResultsPaginationInfo>
 
           <SearchResultsPaginationButton
             disabled={currentPage === totalPages}
             onClick={() => onPageChange?.(currentPage + 1)}
           >
-            {t('searchResults.pagination.next', 'Next')}
+            {t('searchResults.pagination.next')}
             <ChevronRight size={16} />
           </SearchResultsPaginationButton>
         </SearchResultsPagination>

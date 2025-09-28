@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { translations } from './minimal-translations';
+import { translations } from './translations';
 
 export type Language = 'bg' | 'en';
 

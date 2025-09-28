@@ -1,10 +1,11 @@
 // src/pages/HomePage.tsx
-// Home Page for Bulgarian Car Marketplace
+// Smart Home Page for Bulgarian Car Marketplace with Global Translation
 
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { useTranslation } from '../hooks/useTranslation';
+import { useLanguage } from '../contexts/LanguageContext';
+import LanguageToggle from '../components/LanguageToggle/LanguageToggle';
 import { bulgarianCarService, BulgarianCar } from '../firebase';
 import LazyImage from '../components/LazyImage';
 
@@ -277,7 +278,7 @@ const FeatureCard = styled.div`
 
 // Home Page Component
 const HomePage: React.FC = () => {
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const [featuredCars, setFeaturedCars] = useState<BulgarianCar[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -316,6 +317,12 @@ const HomePage: React.FC = () => {
               {t('home.hero.sellCar')}
             </HeroButton>
           </HeroButtons>
+          
+          {/* Language Demo Section */}
+          <div style={{ marginTop: '2rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem' }}>
+            <span style={{ fontSize: '1.1rem', fontWeight: '600' }}>🌐 Language:</span>
+            <LanguageToggle size="medium" />
+          </div>
         </HeroContent>
       </HeroSection>
 

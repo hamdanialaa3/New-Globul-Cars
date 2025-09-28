@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { useTranslation } from '../hooks/useTranslation';
+import { useLanguage } from '../contexts/LanguageContext';
 import { bulgarianCarService, BulgarianCar } from '../firebase';
 import LazyImage from '../components/LazyImage';
 import RatingSystem from '../components/RatingSystem';
@@ -208,7 +208,7 @@ const ErrorText = styled.p`
 const CarDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const [car, setCar] = useState<BulgarianCar | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

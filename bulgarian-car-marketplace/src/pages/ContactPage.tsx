@@ -3,7 +3,7 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useTranslation } from '../hooks/useTranslation';
+import { useLanguage } from '../contexts/LanguageContext';
 import { 
   Mail, 
   Phone, 
@@ -240,7 +240,7 @@ const FAQItem = styled.div`
 `;
 
 const ContactPage: React.FC = () => {
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -283,23 +283,23 @@ const ContactPage: React.FC = () => {
     <ContactContainer>
       <Container>
         <Header>
-          <h1>{t('contact.title', 'Contact Us')}</h1>
+          <h1>{t('contact.title')}</h1>
           <p>
-            {t('contact.subtitle', 'We are here to help you with any questions or concerns. Get in touch with our team.')}
+            {t('contact.subtitle')}
           </p>
         </Header>
 
         <ContactGrid>
           <ContactInfo>
-            <h2>{t('contact.info.title', 'Get in Touch')}</h2>
+            <h2>{t('contact.info.title')}</h2>
             
             <ContactItem>
               <div className="icon">
                 <MapPin size={24} />
               </div>
               <div className="content">
-                <h3>{t('contact.info.address.title', 'Address')}</h3>
-                <p>{t('contact.info.address.text', 'Sofia, Bulgaria')}</p>
+                <h3>{t('contact.info.address.title')}</h3>
+                <p>{t('contact.info.address.text')}</p>
               </div>
             </ContactItem>
 
@@ -308,8 +308,8 @@ const ContactPage: React.FC = () => {
                 <Phone size={24} />
               </div>
               <div className="content">
-                <h3>{t('contact.info.phone.title', 'Phone')}</h3>
-                <p>{t('contact.info.phone.text', '+359 2 123 4567')}</p>
+                <h3>{t('contact.info.phone.title')}</h3>
+                <p>{t('contact.info.phone.text')}</p>
               </div>
             </ContactItem>
 
@@ -318,8 +318,8 @@ const ContactPage: React.FC = () => {
                 <Mail size={24} />
               </div>
               <div className="content">
-                <h3>{t('contact.info.email.title', 'Email')}</h3>
-                <p>{t('contact.info.email.text', 'info@globulcars.bg')}</p>
+                <h3>{t('contact.info.email.title')}</h3>
+                <p>{t('contact.info.email.text')}</p>
               </div>
             </ContactItem>
 
@@ -328,24 +328,24 @@ const ContactPage: React.FC = () => {
                 <Clock size={24} />
               </div>
               <div className="content">
-                <h3>{t('contact.info.hours.title', 'Working Hours')}</h3>
-                <p>{t('contact.info.hours.text', 'Mon-Fri: 9:00-18:00')}</p>
+                <h3>{t('contact.info.hours.title')}</h3>
+                <p>{t('contact.info.hours.text')}</p>
               </div>
             </ContactItem>
           </ContactInfo>
 
           <ContactForm onSubmit={handleSubmit}>
-            <h2>{t('contact.form.title', 'Send us a Message')}</h2>
+            <h2>{t('contact.form.title')}</h2>
             
             {isSubmitted && (
               <SuccessMessage>
                 <CheckCircle size={20} />
-                {t('contact.form.success', 'Thank you! Your message has been sent successfully.')}
+                {t('contact.form.success')}
               </SuccessMessage>
             )}
 
             <FormGroup>
-              <label htmlFor="name">{t('contact.form.name', 'Full Name')}</label>
+              <label htmlFor="name">{t('contact.form.name')}</label>
               <input
                 type="text"
                 id="name"
@@ -357,7 +357,7 @@ const ContactPage: React.FC = () => {
             </FormGroup>
 
             <FormGroup>
-              <label htmlFor="email">{t('contact.form.email', 'Email Address')}</label>
+              <label htmlFor="email">{t('contact.form.email')}</label>
               <input
                 type="email"
                 id="email"
@@ -369,7 +369,7 @@ const ContactPage: React.FC = () => {
             </FormGroup>
 
             <FormGroup>
-              <label htmlFor="phone">{t('contact.form.phone', 'Phone Number')}</label>
+              <label htmlFor="phone">{t('contact.form.phone')}</label>
               <input
                 type="tel"
                 id="phone"
@@ -380,22 +380,22 @@ const ContactPage: React.FC = () => {
             </FormGroup>
 
             <FormGroup>
-              <label htmlFor="inquiryType">{t('contact.form.inquiryType', 'Inquiry Type')}</label>
+              <label htmlFor="inquiryType">{t('contact.form.inquiryType')}</label>
               <select
                 id="inquiryType"
                 name="inquiryType"
                 value={formData.inquiryType}
                 onChange={handleInputChange}
               >
-                <option value="general">{t('contact.form.inquiryTypes.general', 'General Inquiry')}</option>
-                <option value="support">{t('contact.form.inquiryTypes.support', 'Technical Support')}</option>
-                <option value="sales">{t('contact.form.inquiryTypes.sales', 'Sales Question')}</option>
-                <option value="partnership">{t('contact.form.inquiryTypes.partnership', 'Partnership')}</option>
+                <option value="general">{t('contact.form.inquiryTypes.general')}</option>
+                <option value="support">{t('contact.form.inquiryTypes.support')}</option>
+                <option value="sales">{t('contact.form.inquiryTypes.sales')}</option>
+                <option value="partnership">{t('contact.form.inquiryTypes.partnership')}</option>
               </select>
             </FormGroup>
 
             <FormGroup>
-              <label htmlFor="subject">{t('contact.form.subject', 'Subject')}</label>
+              <label htmlFor="subject">{t('contact.form.subject')}</label>
               <input
                 type="text"
                 id="subject"
@@ -407,7 +407,7 @@ const ContactPage: React.FC = () => {
             </FormGroup>
 
             <FormGroup>
-              <label htmlFor="message">{t('contact.form.message', 'Message')}</label>
+              <label htmlFor="message">{t('contact.form.message')}</label>
               <textarea
                 id="message"
                 name="message"
@@ -419,47 +419,47 @@ const ContactPage: React.FC = () => {
 
             <SubmitButton type="submit" disabled={isSubmitting}>
               <Send size={20} />
-              {isSubmitting ? t('contact.form.sending', 'Sending...') : t('contact.form.send', 'Send Message')}
+              {isSubmitting ? t('contact.form.sending') : t('contact.form.send')}
             </SubmitButton>
           </ContactForm>
         </ContactGrid>
 
         <FAQSection>
-          <h2>{t('contact.faq.title', 'Frequently Asked Questions')}</h2>
+          <h2>{t('contact.faq.title')}</h2>
           
           <FAQItem>
             <div className="question">
-              {t('contact.faq.q1', 'How do I list my car for sale?')}
+              {t('contact.faq.q1')}
             </div>
             <div className="answer">
-              {t('contact.faq.a1', 'Simply click on "Sell Car" in the navigation menu, fill out the required information, upload photos, and your listing will be live within minutes.')}
+              {t('contact.faq.a1')}
             </div>
           </FAQItem>
 
           <FAQItem>
             <div className="question">
-              {t('contact.faq.q2', 'Is it free to list my car?')}
+              {t('contact.faq.q2')}
             </div>
             <div className="answer">
-              {t('contact.faq.a2', 'Yes, basic listings are completely free. We also offer premium features for enhanced visibility.')}
+              {t('contact.faq.a2')}
             </div>
           </FAQItem>
 
           <FAQItem>
             <div className="question">
-              {t('contact.faq.q3', 'How do I contact a seller?')}
+              {t('contact.faq.q3')}
             </div>
             <div className="answer">
-              {t('contact.faq.a3', 'You can use our built-in messaging system to contact sellers directly through their car listings.')}
+              {t('contact.faq.a3')}
             </div>
           </FAQItem>
 
           <FAQItem>
             <div className="question">
-              {t('contact.faq.q4', 'What payment methods do you accept?')}
+              {t('contact.faq.q4')}
             </div>
             <div className="answer">
-              {t('contact.faq.a4', 'We support various payment methods including bank transfers, credit cards, and cash payments.')}
+              {t('contact.faq.a4')}
             </div>
           </FAQItem>
         </FAQSection>

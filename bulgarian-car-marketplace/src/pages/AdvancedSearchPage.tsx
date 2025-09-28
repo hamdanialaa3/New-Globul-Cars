@@ -795,7 +795,7 @@ const AdvancedSearchPage: React.FC = () => {
             <FormGroup>
               <label>{t('advancedSearch.fuelType')}</label>
               <SearchSelect name="fuelType" value={searchData.fuelType} onChange={handleInputChange}>
-                <option value="">Всички</option>
+                <option value="">{t('advancedSearch.allOptions')}</option>
                 {fuelTypes.map(fuel => (
                   <option key={fuel} value={fuel}>{fuel}</option>
                 ))}
@@ -851,7 +851,7 @@ const AdvancedSearchPage: React.FC = () => {
             <FormGroup>
               <label>{t('advancedSearch.exteriorColour')}</label>
               <SearchSelect name="exteriorColor" value={searchData.exteriorColor} onChange={handleInputChange}>
-                <option value="">Всички</option>
+                <option value="">{t('advancedSearch.allOptions')}</option>
                 {exteriorColors.map(color => (
                   <option key={color} value={color}>{color}</option>
                 ))}
@@ -861,7 +861,7 @@ const AdvancedSearchPage: React.FC = () => {
             <FormGroup>
               <label>{t('advancedSearch.trailerCoupling')}</label>
               <SearchSelect name="trailerCoupling" value={searchData.trailerCoupling} onChange={handleInputChange}>
-                <option value="">Всички</option>
+                <option value="">{t('advancedSearch.allOptions')}</option>
                 <option value="fixed">Фиксиран, detachable или swiveling</option>
                 <option value="detachable">Detachable или swiveling</option>
                 <option value="swiveling">Swiveling</option>
@@ -934,7 +934,7 @@ const AdvancedSearchPage: React.FC = () => {
             <FormGroup>
               <label>Круиз контрол</label>
               <SearchSelect name="cruiseControl" value={searchData.cruiseControl} onChange={handleInputChange}>
-                <option value="">Всички</option>
+                <option value="">{t('advancedSearch.allOptions')}</option>
                 <option value="cruise">Круиз контрол</option>
                 <option value="adaptive">Adaptive Cruise Control</option>
               </SearchSelect>
@@ -947,7 +947,7 @@ const AdvancedSearchPage: React.FC = () => {
             <FormGroup>
               <label>{t('advancedSearch.interiorColour')}</label>
               <SearchSelect name="interiorColor" value={searchData.interiorColor} onChange={handleInputChange}>
-                <option value="">Всички</option>
+                <option value="">{t('advancedSearch.allOptions')}</option>
                 {interiorColors.map(color => (
                   <option key={color} value={color}>{color}</option>
                 ))}
@@ -957,7 +957,7 @@ const AdvancedSearchPage: React.FC = () => {
             <FormGroup>
               <label>{t('advancedSearch.interiorMaterial')}</label>
               <SearchSelect name="interiorMaterial" value={searchData.interiorMaterial} onChange={handleInputChange}>
-                <option value="">Всички</option>
+                <option value="">{t('advancedSearch.allOptions')}</option>
                 {interiorMaterials.map(material => (
                   <option key={material} value={material}>{material}</option>
                 ))}
@@ -967,7 +967,7 @@ const AdvancedSearchPage: React.FC = () => {
             <FormGroup>
               <label>{t('advancedSearch.airbags')}</label>
               <SearchSelect name="airbags" value={searchData.airbags} onChange={handleInputChange}>
-                <option value="">Всички</option>
+                <option value="">{t('advancedSearch.allOptions')}</option>
                 <option value="driver">Еърбег за шофьора</option>
                 <option value="front">Предни еърбегове</option>
                 <option value="frontside">Предни и странични еърбегове</option>
@@ -978,7 +978,7 @@ const AdvancedSearchPage: React.FC = () => {
             <FormGroup>
               <label>{t('advancedSearch.airConditioning')}</label>
               <SearchSelect name="airConditioning" value={searchData.airConditioning} onChange={handleInputChange}>
-                <option value="">Всички</option>
+                <option value="">{t('advancedSearch.allOptions')}</option>
                 <option value="no">Без климатик</option>
                 <option value="manual">Ръчен или автоматичен климатик</option>
                 <option value="auto">Автоматичен климатик</option>
@@ -1205,7 +1205,7 @@ const AdvancedSearchPage: React.FC = () => {
             <FormGroup>
               <label>{t('advancedSearch.seller')}</label>
               <SearchSelect name="seller" value={searchData.seller} onChange={handleInputChange}>
-                <option value="">Всички</option>
+                <option value="">{t('advancedSearch.allOptions')}</option>
                 <option value="dealer">Дилър</option>
                 <option value="private">Частно лице</option>
                 <option value="company">Фирма</option>
@@ -1215,7 +1215,7 @@ const AdvancedSearchPage: React.FC = () => {
             <FormGroup>
               <label>{t('advancedSearch.dealerRating')}</label>
               <SearchSelect name="dealerRating" value={searchData.dealerRating} onChange={handleInputChange}>
-                <option value="">Всички</option>
+                <option value="">{t('advancedSearch.allOptions')}</option>
                 <option value="3stars">от 3 звезди</option>
                 <option value="4stars">от 4 звезди</option>
                 <option value="5stars">от 5 звезди</option>
@@ -1225,7 +1225,7 @@ const AdvancedSearchPage: React.FC = () => {
             <FormGroup>
               <label>{t('advancedSearch.listingOnlineSince')}</label>
               <SearchSelect name="adOnlineSince" value={searchData.adOnlineSince} onChange={handleInputChange}>
-                <option value="">Всички</option>
+                <option value="">{t('advancedSearch.allOptions')}</option>
                 <option value="1day">1 ден</option>
                 <option value="3days">3 дни</option>
                 <option value="7days">7 дни</option>
@@ -1320,7 +1320,7 @@ const AdvancedSearchPage: React.FC = () => {
             <FormGroup>
               <label>Търговски, експорт/импорт</label>
               <SearchSelect name="commercialExport" value={searchData.commercialExport} onChange={handleInputChange}>
-                <option value="">Всички</option>
+                <option value="">{t('advancedSearch.allOptions')}</option>
                 <option value="commercial">Търговски</option>
                 <option value="export">Експорт</option>
                 <option value="import">Импорт</option>
@@ -1343,7 +1343,7 @@ const AdvancedSearchPage: React.FC = () => {
             <FormGroup>
               <label>{t('advancedSearch.country')}</label>
               <SearchSelect name="country" value={searchData.country} onChange={handleInputChange}>
-                <option value="">Всички</option>
+                <option value="">{t('advancedSearch.allOptions')}</option>
                 {countries.map(country => (
                   <option key={country} value={country}>{country}</option>
                 ))}
@@ -1353,7 +1353,7 @@ const AdvancedSearchPage: React.FC = () => {
             <FormGroup>
               <label>{t('advancedSearch.cityZipCode')}</label>
               <SearchSelect name="city" value={searchData.city} onChange={handleInputChange}>
-                <option value="">Всички</option>
+                <option value="">{t('advancedSearch.allOptions')}</option>
                 {bulgarianCities.map(city => (
                   <option key={city} value={city}>{city}</option>
                 ))}
