@@ -1,166 +1,37 @@
-// src/components/CarSearchSystem.tsx
-// نظام البحث الجديد المستوحى من netcarshow.com
+// CarSearchSystem/CarSearchSystem.tsx
+// المكون الرئيسي المعاد هيكلته لنظام البحث في السيارات
 
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
+import React from 'react';
 import { useTranslation } from '../hooks/useTranslation';
+import { useCarSearch } from './CarSearchSystem/hooks/useCarSearch';
+import { CarSearchSystemProps } from './CarSearchSystem/types';
 import {
-  getAllMakes,
-  getModelsForMake,
-  getGenerationsForModel,
-  getBodyStylesForGeneration
-} from '../constants/carData';
-
-const SearchContainer = styled.div`
-  display: flex;
-  gap: 12px;
-  margin-bottom: 24px;
-  flex-wrap: wrap;
-
-  @media (max-width: 768px) {
-    gap: 8px;
-    margin-bottom: 16px;
-  }
-`;
-
-const SearchGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-  min-width: 200px;
-  flex: 1;
-
-  @media (max-width: 768px) {
-    min-width: 150px;
-    flex: 1 1 100%;
-  }
-
-  @media (max-width: 480px) {
-    min-width: 120px;
-  }
-`;
-
-const SearchLabel = styled.label`
-  font-size: 14px;
-  font-weight: 500;
-  color: #333;
-  margin-bottom: 4px;
-
-  @media (max-width: 480px) {
-    font-size: 12px;
-    margin-bottom: 2px;
-  }
-`;
-
-const SearchSelect = styled.select`
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 16px;
-  background: white;
-  cursor: pointer;
-
-  &:focus {
-    outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 0 2px rgba(0,123,255,0.2);
-  }
-
-  @media (max-width: 480px) {
-    padding: 6px 8px;
-    font-size: 14px;
-  }
-
-  option {
-    padding: 8px;
-  }
-`;
-
-interface OptionType {
-  value: string;
-  text: string;
-}
-
-interface FiltersType {
-  make: string;
-  model: string;
-  generation: string;
-  bodyStyle: string;
-  fuelType: string;
-  registeredInBulgaria: string;
-  environmentalTaxPaid: string;
-  technicalInspectionDate: string;
-}
-
-interface CarSearchSystemProps {
-  onSearch: (filters: FiltersType) => void;
-  initialFilters?: Partial<FiltersType>;
-}
+  SearchContainer,
+  SearchGroup,
+  SearchLabel,
+  SearchSelect,
+  SearchButton
+} from './CarSearchSystem/styles';
 
 const CarSearchSystem: React.FC<CarSearchSystemProps> = ({
   onSearch,
   initialFilters = {}
 }) => {
   const { t } = useTranslation();
-  
-  const [filters, setFilters] = useState<FiltersType>({
-    make: '',
-    model: '',
-    generation: '',
-    bodyStyle: '',
-    fuelType: '',
-    registeredInBulgaria: '',
-    environmentalTaxPaid: '',
-    technicalInspectionDate: '',
-    ...initialFilters
-  });
 
-  // بيانات تجريبية - سيتم استبدالها بالبيانات المستخرجة من netcarshow
-  const [makes] = useState<OptionType[]>(getAllMakes());
-
-  const [models, setModels] = useState<OptionType[]>([]);
-  const [generations, setGenerations] = useState<OptionType[]>([]);
-  const [bodyStyles, setBodyStyles] = useState<OptionType[]>([]);
-
-  // عند تغيير الشركة، تحديث الموديلات
-  useEffect(() => {
-    if (filters.make) {
-      const newModels = getModelsForMake(filters.make);
-      setModels(newModels);
-    } else {
-      setModels([]);
-    }
-    // إعادة تعيين الموديل والجيل عند تغيير الشركة
-    setFilters(prev => ({ ...prev, model: '', generation: '', bodyStyle: '' }));
-  }, [filters.make]);
-
-  // عند تغيير الموديل، تحديث الأجيال
-  useEffect(() => {
-    if (filters.model) {
-      const newGenerations = getGenerationsForModel(filters.make, filters.model);
-      setGenerations(newGenerations);
-    } else {
-      setGenerations([]);
-    }
-    setFilters(prev => ({ ...prev, generation: '', bodyStyle: '' }));
-  }, [filters.model, filters.make]);
-
-  // عند تغيير الجيل، تحديث أنواع الهيكل
-  useEffect(() => {
-    if (filters.generation) {
-      const newBodyStyles = getBodyStylesForGeneration(filters.make, filters.model, filters.generation);
-      setBodyStyles(newBodyStyles);
-    } else {
-      setBodyStyles([]);
-    }
-    setFilters(prev => ({ ...prev, bodyStyle: '' }));
-  }, [filters.generation, filters.make, filters.model]);
-
-  const handleFilterChange = (key: string, value: string) => {
-    setFilters(prev => ({ ...prev, [key]: value }));
-  };
+  const {
+    filters,
+    makes,
+    models,
+    generations,
+    bodyStyles,
+    updateFilter,
+    searchCars
+  } = useCarSearch(initialFilters);
 
   const handleSearch = () => {
     onSearch(filters);
+    searchCars();
   };
 
   return (
@@ -169,7 +40,7 @@ const CarSearchSystem: React.FC<CarSearchSystemProps> = ({
         <SearchLabel>{t('detailedSearch.basicData.make')}</SearchLabel>
         <SearchSelect
           value={filters.make}
-          onChange={(e) => handleFilterChange('make', e.target.value)}
+          onChange={(e) => updateFilter('make', e.target.value)}
         >
           <option value="">{t('detailedSearch.basicData.anyMake')}</option>
           {makes.map(make => (
@@ -184,7 +55,7 @@ const CarSearchSystem: React.FC<CarSearchSystemProps> = ({
         <SearchLabel>{t('detailedSearch.basicData.model')}</SearchLabel>
         <SearchSelect
           value={filters.model}
-          onChange={(e) => handleFilterChange('model', e.target.value)}
+          onChange={(e) => updateFilter('model', e.target.value)}
           disabled={!filters.make}
         >
           <option value="">{t('detailedSearch.basicData.anyModel')}</option>
@@ -200,7 +71,7 @@ const CarSearchSystem: React.FC<CarSearchSystemProps> = ({
         <SearchLabel>{t('detailedSearch.basicData.generation')}</SearchLabel>
         <SearchSelect
           value={filters.generation}
-          onChange={(e) => handleFilterChange('generation', e.target.value)}
+          onChange={(e) => updateFilter('generation', e.target.value)}
           disabled={!filters.model}
         >
           <option value="">{t('detailedSearch.basicData.anyGeneration')}</option>
@@ -216,7 +87,7 @@ const CarSearchSystem: React.FC<CarSearchSystemProps> = ({
         <SearchLabel>{t('detailedSearch.basicData.bodyStyle')}</SearchLabel>
         <SearchSelect
           value={filters.bodyStyle}
-          onChange={(e) => handleFilterChange('bodyStyle', e.target.value)}
+          onChange={(e) => updateFilter('bodyStyle', e.target.value)}
           disabled={!filters.generation}
         >
           <option value="">{t('detailedSearch.basicData.anyBodyStyle')}</option>
@@ -232,7 +103,7 @@ const CarSearchSystem: React.FC<CarSearchSystemProps> = ({
         <SearchLabel>{t('cars.search.fuelType')}</SearchLabel>
         <SearchSelect
           value={filters.fuelType}
-          onChange={(e) => handleFilterChange('fuelType', e.target.value)}
+          onChange={(e) => updateFilter('fuelType', e.target.value)}
         >
           <option value="">{t('cars.search.allFuelTypes')}</option>
           <option value="petrol">{t('cars.fuelTypes.petrol')}</option>
@@ -249,7 +120,7 @@ const CarSearchSystem: React.FC<CarSearchSystemProps> = ({
         <SearchLabel>{t('cars.search.registeredInBulgaria')}</SearchLabel>
         <SearchSelect
           value={filters.registeredInBulgaria}
-          onChange={(e) => handleFilterChange('registeredInBulgaria', e.target.value)}
+          onChange={(e) => updateFilter('registeredInBulgaria', e.target.value)}
         >
           <option value="">{t('common.all')}</option>
           <option value="yes">{t('common.yes')}</option>
@@ -261,7 +132,7 @@ const CarSearchSystem: React.FC<CarSearchSystemProps> = ({
         <SearchLabel>{t('cars.search.environmentalTaxPaid')}</SearchLabel>
         <SearchSelect
           value={filters.environmentalTaxPaid}
-          onChange={(e) => handleFilterChange('environmentalTaxPaid', e.target.value)}
+          onChange={(e) => updateFilter('environmentalTaxPaid', e.target.value)}
         >
           <option value="">{t('common.all')}</option>
           <option value="yes">{t('common.yes')}</option>
@@ -273,7 +144,7 @@ const CarSearchSystem: React.FC<CarSearchSystemProps> = ({
         <SearchLabel>{t('cars.search.technicalInspectionDate')}</SearchLabel>
         <SearchSelect
           value={filters.technicalInspectionDate}
-          onChange={(e) => handleFilterChange('technicalInspectionDate', e.target.value)}
+          onChange={(e) => updateFilter('technicalInspectionDate', e.target.value)}
         >
           <option value="">{t('common.all')}</option>
           <option value="valid">{t('common.valid')}</option>
@@ -283,16 +154,9 @@ const CarSearchSystem: React.FC<CarSearchSystemProps> = ({
       </SearchGroup>
 
       <SearchGroup style={{ alignSelf: 'flex-end' }}>
-        <button onClick={handleSearch} style={{
-          padding: '12px 24px',
-          background: '#007bff',
-          color: 'white',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: 'pointer'
-        }}>
+        <SearchButton onClick={handleSearch}>
           {t('detailedSearch.search')}
-        </button>
+        </SearchButton>
       </SearchGroup>
     </SearchContainer>
   );

@@ -55,7 +55,8 @@
     "deploy:hosting": "firebase deploy --only hosting",
     "deploy:functions": "firebase deploy --only functions",
     "serve": "firebase serve --only hosting",
-    "emulate": "firebase emulators:start"
+    "emulate": "firebase emulators:start",
+    "prepare": "husky"
   },
   "eslintConfig": {
     "extends": [
@@ -63,17 +64,32 @@
       "react-app/jest"
     ]
   },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,css,md}": [
+      "prettier --write"
+    ]
+  },
   "devDependencies": {
     "@craco/craco": "^7.1.0",
     "@types/react-icons": "^2.2.7",
+    "@typescript-eslint/eslint-plugin": "^5.62.0",
     "babel-plugin-styled-components": "^2.1.4",
     "browserify-zlib": "^0.2.0",
     "buffer": "^6.0.3",
     "crypto-browserify": "^3.12.1",
     "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-complexity": "^1.0.2",
+    "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-prettier": "^5.5.4",
+    "eslint-plugin-react": "^7.37.5",
     "eslint-webpack-plugin": "^4.2.0",
     "firebase-tools": "^13.0.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.3",
     "madge": "^8.0.0",
     "process": "^0.11.10",
     "stream-browserify": "^3.0.0",
