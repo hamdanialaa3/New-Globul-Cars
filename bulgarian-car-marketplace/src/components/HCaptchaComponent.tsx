@@ -1,5 +1,5 @@
 // hCaptcha React Component
-// مكون React لـ hCaptcha
+// (Comment removed - was in Arabic)
 
 import React, { forwardRef, useImperativeHandle, useRef } from 'react';
 import HCaptcha from '@hcaptcha/react-hcaptcha';
@@ -32,8 +32,8 @@ export const HCaptchaComponent = forwardRef<any, HCaptchaComponentProps>(
           backgroundColor: '#f9f9f9',
           textAlign: 'center'
         }}>
-          <p>hCaptcha not configured</p>
-          <small>Please configure REACT_APP_HCAPTCHA_SITE_KEY in your .env file</small>
+          <p>hCaptcha не е конфигуриран</p>
+          <small>Моля, конфигурирайте REACT_APP_HCAPTCHA_SITE_KEY във вашия .env файл</small>
         </div>
       );
     }

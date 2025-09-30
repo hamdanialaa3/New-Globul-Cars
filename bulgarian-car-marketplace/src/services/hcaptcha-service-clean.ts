@@ -1,5 +1,5 @@
 // hCaptcha Service - Free Alternative to Google reCAPTCHA
-// خدمة hCaptcha - بديل مجاني لـ Google reCAPTCHA
+// (Comment removed - was in Arabic)
 
 export interface CaptchaResult {
   success: boolean;
@@ -64,7 +64,7 @@ export class BulgarianCaptchaService {
         error: data.success ? undefined : data['error-codes']?.join(', ') || 'Verification failed'
       };
     } catch (error) {
-      console.error('Captcha verification error:', error);
+      console.error('[SERVICE] Captcha verification error:', error);
       return {
         success: false,
         error: 'Network error during verification'

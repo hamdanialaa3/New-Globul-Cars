@@ -52,7 +52,7 @@ export class BulgarianRatingService {
   }
 
   private initializeMockData() {
-    // بيانات محاكاة للتقييمات البلغارية
+    // (Comment removed - was in Arabic)
     this.ratings = [
       {
         id: '1',

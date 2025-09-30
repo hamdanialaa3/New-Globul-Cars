@@ -82,7 +82,7 @@ export class EmailVerificationService {
       };
 
     } catch (error: any) {
-      console.error('Email verification error:', error);
+      console.error('[SERVICE] Email verification error:', error);
       
       let errorMessage: string;
       
@@ -143,7 +143,7 @@ export class EmailVerificationService {
       };
 
     } catch (error: any) {
-      console.error('Email verification with code error:', error);
+      console.error('[SERVICE] Email verification with code error:', error);
       
       let errorMessage: string;
       
@@ -185,7 +185,7 @@ export class EmailVerificationService {
         previousEmail: info.data.previousEmail || undefined
       };
     } catch (error: any) {
-      console.error('Get action code info error:', error);
+      console.error('[SERVICE] Get action code info error:', error);
       return null;
     }
   }
@@ -220,7 +220,7 @@ export class EmailVerificationService {
       };
 
     } catch (error: any) {
-      console.error('Email update verification error:', error);
+      console.error('[SERVICE] Email update verification error:', error);
       
       let errorMessage: string;
       
@@ -280,7 +280,7 @@ export class EmailVerificationService {
     try {
       await user.reload();
     } catch (error) {
-      console.error('Error reloading user:', error);
+      console.error('[SERVICE] Error reloading user:', error);
     }
   }
 }

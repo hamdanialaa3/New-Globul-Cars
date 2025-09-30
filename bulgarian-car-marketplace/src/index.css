@@ -9,6 +9,7 @@ html {
 
 *, *::before, *::after {
   box-sizing: border-box;
+  border-radius: 8px;
 }
 
 /* Ensure body doesn't cause horizontal scroll due to 100vw issues */

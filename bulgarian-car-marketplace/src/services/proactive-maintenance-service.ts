@@ -70,7 +70,7 @@ export class ProactiveMaintenanceService {
   private readonly BULGARIAN_TIMEZONE = 'Europe/Sofia';
 
   /**
-   * إنشاء تنبيه صيانة استباقي
+   * (Comment removed - was in Arabic)
    */
   async createMaintenanceAlert(alertData: Omit<MaintenanceAlert, 'id' | 'createdAt' | 'expiresAt'>): Promise<string> {
     try {
@@ -81,24 +81,24 @@ export class ProactiveMaintenanceService {
         ...alertData,
         id: alertId,
         createdAt: Timestamp.now(),
-        expiresAt: Timestamp.fromDate(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)) // 7 أيام
+        expiresAt: Timestamp.fromDate(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)) // 7 ????
       };
 
       await setDoc(alertRef, alert);
 
-      // إرسال إشعارات لمراكز الخدمة المناسبة
+      // (Comment removed - was in Arabic)
       await this.notifyServiceCenters(alert);
 
       return alertId;
 
     } catch (error) {
-      console.error('خطأ في إنشاء تنبيه الصيانة:', error);
+      console.error('[SERVICE] :', error);
       throw new Error('فشل في إنشاء تنبيه الصيانة');
     }
   }
 
   /**
-   * الحصول على تنبيهات الصيانة لمستخدم
+   * (Comment removed - was in Arabic)
    */
   async getUserMaintenanceAlerts(userId: string): Promise<MaintenanceAlert[]> {
     try {
@@ -113,13 +113,13 @@ export class ProactiveMaintenanceService {
       return alertsSnapshot.docs.map(doc => doc.data() as MaintenanceAlert);
 
     } catch (error) {
-      console.error('خطأ في الحصول على تنبيهات الصيانة:', error);
+      console.error('[SERVICE] :', error);
       return [];
     }
   }
 
   /**
-   * إرسال عرض من مركز خدمة
+   * (Comment removed - was in Arabic)
    */
   async submitServiceOffer(alertId: string, offer: ServiceCenterOffer): Promise<void> {
     try {
@@ -132,7 +132,7 @@ export class ProactiveMaintenanceService {
 
       const alert = alertDoc.data() as MaintenanceAlert;
 
-      // إضافة العرض إلى قائمة العروض
+      // (Comment removed - was in Arabic)
       const updatedOffers = [...alert.serviceCenters, offer];
 
       await updateDoc(alertRef, {
@@ -140,13 +140,13 @@ export class ProactiveMaintenanceService {
       });
 
     } catch (error) {
-      console.error('خطأ في إرسال عرض الخدمة:', error);
+      console.error('[SERVICE] :', error);
       throw new Error('فشل في إرسال عرض الخدمة');
     }
   }
 
   /**
-   * قبول عرض صيانة وإنشاء طلب خدمة
+   * (Comment removed - was in Arabic)
    */
   async acceptServiceOffer(alertId: string, centerId: string, scheduledDate: Date): Promise<string> {
     try {
@@ -164,7 +164,7 @@ export class ProactiveMaintenanceService {
         throw new Error('عرض الخدمة غير موجود');
       }
 
-      // إنشاء طلب الخدمة
+      // (Comment removed - was in Arabic)
       const requestId = `request_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       const requestRef = doc(this.db, 'maintenanceRequests', requestId);
 
@@ -176,7 +176,7 @@ export class ProactiveMaintenanceService {
         serviceCenterId: centerId,
         status: 'confirmed',
         scheduledDate: Timestamp.fromDate(scheduledDate),
-        estimatedCompletion: Timestamp.fromDate(new Date(scheduledDate.getTime() + 2 * 60 * 60 * 1000)), // 2 ساعات
+        estimatedCompletion: Timestamp.fromDate(new Date(scheduledDate.getTime() + 2 * 60 * 60 * 1000)), // 2 ?????
         actualCost: selectedOffer.price,
         currency: 'EUR',
         workDescription: alert.recommendedActions,
@@ -187,7 +187,7 @@ export class ProactiveMaintenanceService {
 
       await setDoc(requestRef, request);
 
-      // تحديث حالة التنبيه
+      // (Comment removed - was in Arabic)
       await updateDoc(alertRef, {
         status: 'accepted'
       });
@@ -195,13 +195,13 @@ export class ProactiveMaintenanceService {
       return requestId;
 
     } catch (error) {
-      console.error('خطأ في قبول عرض الخدمة:', error);
+      console.error('[SERVICE] :', error);
       throw new Error('فشل في قبول عرض الخدمة');
     }
   }
 
   /**
-   * الحصول على طلبات الصيانة لمستخدم
+   * (Comment removed - was in Arabic)
    */
   async getUserMaintenanceRequests(userId: string): Promise<MaintenanceRequest[]> {
     try {
@@ -215,13 +215,13 @@ export class ProactiveMaintenanceService {
       return requestsSnapshot.docs.map(doc => doc.data() as MaintenanceRequest);
 
     } catch (error) {
-      console.error('خطأ في الحصول على طلبات الصيانة:', error);
+      console.error('[SERVICE] :', error);
       return [];
     }
   }
 
   /**
-   * تحديث حالة طلب الصيانة
+   * (Comment removed - was in Arabic)
    */
   async updateMaintenanceRequest(requestId: string, updates: Partial<MaintenanceRequest>): Promise<void> {
     try {
@@ -233,37 +233,34 @@ export class ProactiveMaintenanceService {
       });
 
     } catch (error) {
-      console.error('خطأ في تحديث طلب الصيانة:', error);
+      console.error('[SERVICE] :', error);
       throw new Error('فشل في تحديث طلب الصيانة');
     }
   }
 
   /**
-   * إشعار مراكز الخدمة بتنبيه صيانة جديد
+   * (Comment removed - was in Arabic)
    */
   private async notifyServiceCenters(alert: MaintenanceAlert): Promise<void> {
     try {
-      // في الإنتاج، سيتم إرسال إشعارات لمراكز الخدمة عبر FCM أو Pub/Sub
-      console.log(`إرسال إشعار صيانة لمراكز الخدمة بالقرب من ${alert.vin}`);
-
-      // محاكاة إرسال إشعارات
+      // (Comment removed - was in Arabic)
+// (Comment removed - was in Arabic)
       const mockCenters = await this.getNearbyServiceCenters(alert.vin);
 
       for (const center of mockCenters) {
-        // إرسال إشعار لكل مركز خدمة
-        console.log(`إرسال إشعار لمركز ${center.name}: ${alert.title}`);
-      }
+        // (Comment removed - was in Arabic)
+}
 
     } catch (error) {
-      console.error('خطأ في إشعار مراكز الخدمة:', error);
+      console.error('[SERVICE] :', error);
     }
   }
 
   /**
-   * الحصول على مراكز الخدمة القريبة (محاكاة)
+   * (Comment removed - was in Arabic)
    */
   private async getNearbyServiceCenters(vin: string): Promise<any[]> {
-    // في الإنتاج، سيتم البحث الفعلي بناءً على موقع السيارة
+    // (Comment removed - was in Arabic)
     return [
       {
         id: 'center_1',
@@ -293,19 +290,19 @@ export class ProactiveMaintenanceService {
   }
 
   /**
-   * تحليل البيانات للكشف عن الحاجة للصيانة
+   * (Comment removed - was in Arabic)
    */
   analyzeMaintenanceNeeds(digitalTwin: any): MaintenanceAlert | null {
     const issues: string[] = [];
     const actions: string[] = [];
 
-    // فحص مستوى الوقود
+    // (Comment removed - was in Arabic)
     if (digitalTwin.fuelLevelPercent < 15) {
       issues.push('مستوى الوقود منخفض');
       actions.push('تزويد الوقود');
     }
 
-    // فحص حالة المحرك
+    // (Comment removed - was in Arabic)
     if (digitalTwin.engineHealth === 'critical') {
       issues.push('حالة المحرك حرجة - أكواد أعطال نشطة');
       actions.push('فحص تشخيصي شامل للمحرك');
@@ -315,7 +312,7 @@ export class ProactiveMaintenanceService {
       actions.push('فحص وقائي للمحرك');
     }
 
-    // فحص الصيانة الدورية
+    // (Comment removed - was in Arabic)
     if (digitalTwin.totalMileage >= digitalTwin.nextServiceDueKm) {
       issues.push('الصيانة الدورية مطلوبة');
       actions.push('تغيير زيت المحرك وفلاتر');
@@ -323,7 +320,7 @@ export class ProactiveMaintenanceService {
       actions.push('فحص السوائل والأنظمة الكهربائية');
     }
 
-    // فحص البطارية
+    // (Comment removed - was in Arabic)
     if (digitalTwin.batteryLevel < 30) {
       issues.push('بطارية الجهاز ضعيفة');
       actions.push('فحص وشحن بطارية الجهاز');
@@ -333,7 +330,7 @@ export class ProactiveMaintenanceService {
       return null;
     }
 
-    // تحديد الأولوية
+    // (Comment removed - was in Arabic)
     let priority: 'low' | 'medium' | 'high' | 'critical' = 'low';
     if (issues.some(issue => issue.includes('حرجة') || issue.includes('critical'))) {
       priority = 'critical';

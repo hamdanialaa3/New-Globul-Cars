@@ -42,7 +42,7 @@ const EnhancedNavLink: React.FC<NavLinkProps> = ({
 }) => {
   const { user } = useAuth();
 
-  // إذا لم تكن الصفحة محمية، عرض الرابط العادي
+  // (Comment removed - was in Arabic)
   if (!requireAuth) {
     return (
       <a href={href} className={className} onClick={onClick}>
@@ -51,7 +51,7 @@ const EnhancedNavLink: React.FC<NavLinkProps> = ({
     );
   }
 
-  // إذا كانت محمية والمستخدم مسجل دخوله، عرض الرابط العادي
+  // (Comment removed - was in Arabic)
   if (user) {
     return (
       <a href={href} className={className} onClick={onClick}>
@@ -60,7 +60,7 @@ const EnhancedNavLink: React.FC<NavLinkProps> = ({
     );
   }
 
-  // إذا كانت محمية والمستخدم غير مسجل دخوله، عرض رابط محمي
+  // (Comment removed - was in Arabic)
   return (
     <NavLinkWrapper>
       <ProtectedNavLink 

@@ -17,7 +17,7 @@ declare global {
   }
 }
 
-// Firebase configuration - تم تحديثه بالقيم الصحيحة
+// Firebase configuration - ?? ?????? ?????? ???????
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY || "AIzaSyCYxOoD-tViZHLh3XhdbwQo8rRA5Q56NVs",
   authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN || "studio-448742006-a3493.firebaseapp.com",

@@ -2,7 +2,7 @@ import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import mainLogo from '../assets/logos/Copilot_20250926_020825.png';
 
-// تأثير الإضاءة الدوارة حول الشكل
+// (Comment removed - was in Arabic)
 const glowRotation = keyframes`
   0% {
     filter: 
@@ -42,7 +42,7 @@ const glowRotation = keyframes`
   }
 `;
 
-// الحاوية الرئيسية للشعار
+// (Comment removed - was in Arabic)
 const LogoContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -50,7 +50,7 @@ const LogoContainer = styled.div`
   padding: 2rem 0;
 `;
 
-// الشعار مع التأثير المحسن
+// (Comment removed - was in Arabic)
 const AnimatedLogo = styled.img`
   width: 120px;
   height: auto;
@@ -58,10 +58,10 @@ const AnimatedLogo = styled.img`
   transition: all 0.3s ease;
   cursor: pointer;
   
-  /* خلفية شفافة لإبراز الشكل فقط */
+  /* (Comment removed - was in Arabic)
   background: transparent;
   
-  /* تحسين جودة العرض */
+  /* (Comment removed - was in Arabic)
   image-rendering: -webkit-optimize-contrast;
   image-rendering: crisp-edges;
   
@@ -74,13 +74,13 @@ const AnimatedLogo = styled.img`
       drop-shadow(0 0 40px #4169e1);
   }
   
-  /* تأثير إضافي عند التحميل */
+  /* (Comment removed - was in Arabic)
   &:active {
     transform: scale(0.95);
   }
 `;
 
-// نص مساعد (اختياري)
+// (Comment removed - was in Arabic)
 const LogoText = styled.div`
   text-align: center;
   margin-top: 1rem;

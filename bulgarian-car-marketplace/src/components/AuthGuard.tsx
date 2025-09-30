@@ -1,7 +1,12 @@
+// src/components/AuthGuard.tsx
+// Authentication Guard Component with Translation Support
+
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthProvider';
+import { useLanguage } from '../contexts/LanguageContext';
 import styled from 'styled-components';
+import { Lock, LogIn, Home } from 'lucide-react';
 
 const LoginRequiredContainer = styled.div`
   display: flex;
@@ -24,15 +29,17 @@ const MessageCard = styled.div`
 `;
 
 const LockIcon = styled.div`
-  font-size: 4rem;
   margin-bottom: 1.5rem;
   color: #ff6b6b;
+  display: flex;
+  justify-content: center;
 `;
 
 const Title = styled.h2`
   color: #333;
   margin-bottom: 1rem;
   font-size: 1.8rem;
+  font-weight: 600;
 `;
 
 const Message = styled.p`
@@ -43,6 +50,9 @@ const Message = styled.p`
 `;
 
 const LoginButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border: none;
@@ -68,6 +78,33 @@ const BackButton = styled(LoginButton)`
   }
 `;
 
+const LoadingContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+  gap: 1rem;
+`;
+
+const LoadingSpinner = styled.div`
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(102, 126, 234, 0.2);
+  border-top-color: #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+`;
+
+const LoadingText = styled.p`
+  color: ${({ theme }) => theme.colors.text.secondary};
+  font-size: 1rem;
+`;
+
 interface AuthGuardProps {
   children: React.ReactNode;
   requireAuth?: boolean;
@@ -75,46 +112,50 @@ interface AuthGuardProps {
 
 const LoginRequiredMessage: React.FC = () => {
   const location = useLocation();
+  const { t } = useLanguage();
   
   const handleLogin = () => {
-    // توجيه إلى صفحة تسجيل الدخول
     window.location.href = '/login';
   };
 
   const handleBack = () => {
-    // العودة للصفحة الرئيسية
     window.location.href = '/';
   };
 
-  const getPageName = (pathname: string) => {
-    const pageNames: { [key: string]: string } = {
-      '/advanced-search': 'البحث المتقدم',
-      '/sell': 'بيع السيارة',
-      '/sell-car': 'بيع السيارة',
-      '/brand-gallery': 'معرض العلامات التجارية',
-      '/dealers': 'الوكلاء',
-      '/finance': 'التمويل'
+  const getPageName = (pathname: string): string => {
+    const pageMap: { [key: string]: string } = {
+      '/advanced-search': t('auth.pageNames.advancedSearch'),
+      '/sell': t('auth.pageNames.sell'),
+      '/sell-car': t('auth.pageNames.sellCar'),
+      '/brand-gallery': t('auth.pageNames.brandGallery'),
+      '/dealers': t('auth.pageNames.dealers'),
+      '/finance': t('auth.pageNames.finance')
     };
-    return pageNames[pathname] || 'هذه الصفحة';
+    return pageMap[pathname] || t('auth.pageNames.thisPage');
   };
 
   return (
     <LoginRequiredContainer>
       <MessageCard>
-        <LockIcon>🔒</LockIcon>
-        <Title>تسجيل الدخول مطلوب</Title>
+        <LockIcon>
+          <Lock size={64} />
+        </LockIcon>
+        <Title>{t('auth.required.title')}</Title>
         <Message>
-          للوصول إلى <strong>{getPageName(location.pathname)}</strong>، 
-          يجب عليك تسجيل الدخول أولاً.
+          {t('auth.required.message')}
           <br /><br />
-          سجل دخولك للاستمتاع بجميع المميزات والخدمات المتاحة.
+          <strong>{getPageName(location.pathname)}</strong>
+          <br /><br />
+          {t('auth.required.enjoyFeatures')}
         </Message>
         <div>
           <LoginButton onClick={handleLogin}>
-            🔑 تسجيل الدخول
+            <LogIn size={20} />
+            {t('auth.required.loginButton')}
           </LoginButton>
           <BackButton onClick={handleBack}>
-            🏠 العودة للرئيسية
+            <Home size={20} />
+            {t('auth.required.backButton')}
           </BackButton>
         </div>
       </MessageCard>
@@ -124,27 +165,24 @@ const LoginRequiredMessage: React.FC = () => {
 
 const AuthGuard: React.FC<AuthGuardProps> = ({ children, requireAuth = false }) => {
   const { user, loading } = useAuth();
+  const { t } = useLanguage();
 
-  // إذا كان التحميل جارياً
+  // Loading state
   if (loading) {
     return (
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        height: '50vh' 
-      }}>
-        <div>جاري التحميل...</div>
-      </div>
+      <LoadingContainer>
+        <LoadingSpinner />
+        <LoadingText>{t('common.loading')}</LoadingText>
+      </LoadingContainer>
     );
   }
 
-  // إذا كانت الصفحة تتطلب تسجيل دخول ولم يسجل المستخدم دخوله
+  // Authentication required but user not logged in
   if (requireAuth && !user) {
     return <LoginRequiredMessage />;
   }
 
-  // إذا كان كل شيء على ما يرام، عرض المحتوى
+  // All good, render children
   return <>{children}</>;
 };
 

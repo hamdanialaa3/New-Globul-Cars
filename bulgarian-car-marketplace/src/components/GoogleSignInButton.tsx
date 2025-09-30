@@ -1,5 +1,5 @@
 // src/components/GoogleSignInButton.tsx
-// زر تسجيل دخول Google مع معالجة popup-blocked
+// (Comment removed - was in Arabic)
 
 import React, { useState } from 'react';
 import styled from 'styled-components';

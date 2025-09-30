@@ -233,7 +233,7 @@ const FinancePage: React.FC = () => {
               €{monthlyPayment.toFixed(2)}
             </MonthlyPayment>
             <p style={{ color: '#666', fontSize: '0.9rem' }}>
-              *هذا مجرد تقدير تقريبي. للحصول على عرض دقيق، يرجى التواصل مع مستشار التمويل
+              * (Comment removed - was in Arabic)
             </p>
           </ResultCard>
         )}

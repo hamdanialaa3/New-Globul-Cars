@@ -1,6 +1,7 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -13,6 +14,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 }) => {
   const { currentUser, loading } = useAuth();
   const location = useLocation();
+  const { t } = useLanguage();
 
   if (loading) {
     return (
@@ -22,7 +24,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
         alignItems: 'center',
         minHeight: '50vh'
       }}>
-        <div>Loading...</div>
+        <div>{t('common.loading')}</div>
       </div>
     );
   }

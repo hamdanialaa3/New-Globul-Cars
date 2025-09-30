@@ -1,0 +1,437 @@
+import styled from 'styled-components';
+
+// Main Profile Container
+export const ProfileContainer = styled.div`
+  min-height: 100vh;
+  padding: ${({ theme }) => theme.spacing['2xl']} 0;
+  background: ${({ theme }) => theme.colors.grey[50]};
+`;
+
+// Page Container
+export const PageContainer = styled.div`
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 ${({ theme }) => theme.spacing.md};
+`;
+
+// Page Header
+export const PageHeader = styled.div`
+  text-align: center;
+  margin-bottom: ${({ theme }) => theme.spacing['3xl']};
+  background: ${({ theme }) => theme.colors.background.paper};
+  padding: ${({ theme }) => theme.spacing['3xl']};
+  border-radius: ${({ theme }) => theme.borderRadius.lg};
+  box-shadow: ${({ theme }) => theme.shadows.base};
+
+  h1 {
+    font-size: ${({ theme }) => theme.typography.fontSize['4xl']};
+    font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
+    color: ${({ theme }) => theme.colors.text.primary};
+    margin-bottom: ${({ theme }) => theme.spacing.md};
+  }
+
+  p {
+    font-size: ${({ theme }) => theme.typography.fontSize.xl};
+    color: ${({ theme }) => theme.colors.text.secondary};
+    max-width: 600px;
+    margin: 0 auto;
+  }
+`;
+
+// Profile Grid Layout
+export const ProfileGrid = styled.div`
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: ${({ theme }) => theme.spacing['2xl']};
+  margin-bottom: ${({ theme }) => theme.spacing['3xl']};
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+// Profile Sidebar
+export const ProfileSidebar = styled.div`
+  background: ${({ theme }) => theme.colors.background.paper};
+  border-radius: ${({ theme }) => theme.borderRadius.lg};
+  padding: ${({ theme }) => theme.spacing['2xl']};
+  box-shadow: ${({ theme }) => theme.shadows.base};
+  height: fit-content;
+`;
+
+// Profile Avatar Section
+export const ProfileAvatar = styled.div`
+  text-align: center;
+  margin-bottom: ${({ theme }) => theme.spacing['2xl']};
+
+  .avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: ${({ theme }) => theme.colors.primary.main};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto ${({ theme }) => theme.spacing.lg};
+    font-size: ${({ theme }) => theme.typography.fontSize['4xl']};
+    color: ${({ theme }) => theme.colors.primary.contrastText};
+    font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
+  }
+
+  .name {
+    font-size: ${({ theme }) => theme.typography.fontSize.xl};
+    font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
+    color: ${({ theme }) => theme.colors.text.primary};
+    margin-bottom: ${({ theme }) => theme.spacing.sm};
+  }
+
+  .email {
+    font-size: ${({ theme }) => theme.typography.fontSize.base};
+    color: ${({ theme }) => theme.colors.text.secondary};
+  }
+`;
+
+// Profile Statistics Grid
+export const ProfileStats = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: ${({ theme }) => theme.spacing.md};
+  margin-bottom: ${({ theme }) => theme.spacing['2xl']};
+`;
+
+// Individual Stat Item
+export const StatItem = styled.div`
+  text-align: center;
+  padding: ${({ theme }) => theme.spacing.lg};
+  background: ${({ theme }) => theme.colors.grey[50]};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+
+  .stat-number {
+    font-size: ${({ theme }) => theme.typography.fontSize['2xl']};
+    font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
+    color: ${({ theme }) => theme.colors.primary.main};
+    display: block;
+  }
+
+  .stat-label {
+    font-size: ${({ theme }) => theme.typography.fontSize.sm};
+    color: ${({ theme }) => theme.colors.text.secondary};
+    margin-top: ${({ theme }) => theme.spacing.xs};
+  }
+`;
+
+// Profile Actions Container
+export const ProfileActions = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.sm};
+`;
+
+// Action Button with Variants
+export const ActionButton = styled.button<{ variant?: 'primary' | 'secondary' | 'danger' }>`
+  padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.lg};
+  border: 2px solid ${({ theme, variant }) => {
+    switch (variant) {
+      case 'secondary':
+        return theme.colors.grey[300];
+      case 'danger':
+        return theme.colors.error.main;
+      default:
+        return theme.colors.primary.main;
+    }
+  }};
+  background: ${({ theme, variant }) => {
+    switch (variant) {
+      case 'secondary':
+        return 'transparent';
+      case 'danger':
+        return theme.colors.error.main;
+      default:
+        return theme.colors.primary.main;
+    }
+  }};
+  color: ${({ theme, variant }) => {
+    switch (variant) {
+      case 'secondary':
+        return theme.colors.text.primary;
+      case 'danger':
+        return theme.colors.error.contrastText;
+      default:
+        return theme.colors.primary.contrastText;
+    }
+  }};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
+  font-size: ${({ theme }) => theme.typography.fontSize.base};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  text-align: left;
+
+  &:hover {
+    background: ${({ theme, variant }) => {
+      switch (variant) {
+        case 'secondary':
+          return theme.colors.grey[100];
+        case 'danger':
+          return theme.colors.error.dark;
+        default:
+          return theme.colors.primary.dark;
+      }
+    }};
+    border-color: ${({ theme, variant }) => {
+      switch (variant) {
+        case 'secondary':
+          return theme.colors.grey[400];
+        case 'danger':
+          return theme.colors.error.dark;
+        default:
+          return theme.colors.primary.dark;
+      }
+    }};
+  }
+`;
+
+// Profile Content Area
+export const ProfileContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing['2xl']};
+`;
+
+// Content Section
+export const ContentSection = styled.div`
+  background: ${({ theme }) => theme.colors.background.paper};
+  border-radius: ${({ theme }) => theme.borderRadius.lg};
+  padding: ${({ theme }) => theme.spacing['2xl']};
+  box-shadow: ${({ theme }) => theme.shadows.base};
+`;
+
+// Section Header
+export const SectionHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: ${({ theme }) => theme.spacing['2xl']};
+  padding-bottom: ${({ theme }) => theme.spacing.lg};
+  border-bottom: 2px solid ${({ theme }) => theme.colors.primary.main};
+
+  h2 {
+    font-size: ${({ theme }) => theme.typography.fontSize['2xl']};
+    font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
+    color: ${({ theme }) => theme.colors.text.primary};
+    margin: 0;
+  }
+
+  .edit-btn {
+    padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
+    background: ${({ theme }) => theme.colors.primary.main};
+    color: ${({ theme }) => theme.colors.primary.contrastText};
+    border: none;
+    border-radius: ${({ theme }) => theme.borderRadius.sm};
+    font-size: ${({ theme }) => theme.typography.fontSize.sm};
+    cursor: pointer;
+    transition: background 0.2s ease-in-out;
+
+    &:hover {
+      background: ${({ theme }) => theme.colors.primary.dark};
+    }
+  }
+`;
+
+// Form Grid Layout
+export const FormGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: ${({ theme }) => theme.spacing.lg};
+`;
+
+// Form Group
+export const FormGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.sm};
+
+  label {
+    font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
+    color: ${({ theme }) => theme.colors.text.primary};
+    font-size: ${({ theme }) => theme.typography.fontSize.sm};
+  }
+
+  input, select, textarea {
+    padding: ${({ theme }) => theme.spacing.md};
+    border: 1px solid ${({ theme }) => theme.colors.grey[300]};
+    border-radius: ${({ theme }) => theme.borderRadius.base};
+    font-size: ${({ theme }) => theme.typography.fontSize.base};
+    background: ${({ theme }) => theme.colors.background.paper};
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+
+    &:focus {
+      outline: none;
+      border-color: ${({ theme }) => theme.colors.primary.main};
+      box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.primary.main}20;
+    }
+
+    &::placeholder {
+      color: ${({ theme }) => theme.colors.text.secondary};
+    }
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+`;
+
+// Form Actions
+export const FormActions = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.lg};
+  justify-content: flex-end;
+  margin-top: ${({ theme }) => theme.spacing['2xl']};
+  padding-top: ${({ theme }) => theme.spacing['2xl']};
+  border-top: 1px solid ${({ theme }) => theme.colors.grey[200]};
+`;
+
+// Save Button
+export const SaveButton = styled.button`
+  padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing['2xl']};
+  background: ${({ theme }) => theme.colors.success.main};
+  color: ${({ theme }) => theme.colors.success.contrastText};
+  border: none;
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
+  font-size: ${({ theme }) => theme.typography.fontSize.base};
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+
+  &:hover {
+    background: ${({ theme }) => theme.colors.success.dark};
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+`;
+
+// Cancel Button
+export const CancelButton = styled.button`
+  padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing['2xl']};
+  background: transparent;
+  color: ${({ theme }) => theme.colors.text.secondary};
+  border: 1px solid ${({ theme }) => theme.colors.grey[300]};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+  font-size: ${({ theme }) => theme.typography.fontSize.base};
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    background: ${({ theme }) => theme.colors.grey[100]};
+    border-color: ${({ theme }) => theme.colors.grey[400]};
+  }
+`;
+
+// Cars List Grid
+export const CarsList = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: ${({ theme }) => theme.spacing.lg};
+`;
+
+// Individual Car Card
+export const CarCard = styled.div`
+  background: ${({ theme }) => theme.colors.background.paper};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+  padding: ${({ theme }) => theme.spacing.lg};
+  box-shadow: ${({ theme }) => theme.shadows.sm};
+  border: 1px solid ${({ theme }) => theme.colors.grey[200]};
+  transition: box-shadow 0.2s ease-in-out;
+
+  &:hover {
+    box-shadow: ${({ theme }) => theme.shadows.base};
+  }
+
+  .car-image {
+    width: 100%;
+    height: 150px;
+    background: ${({ theme }) => theme.colors.grey[200]};
+    border-radius: ${({ theme }) => theme.borderRadius.sm};
+    margin-bottom: ${({ theme }) => theme.spacing.md};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .car-title {
+    font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
+    color: ${({ theme }) => theme.colors.text.primary};
+    margin-bottom: ${({ theme }) => theme.spacing.sm};
+    font-size: ${({ theme }) => theme.typography.fontSize.lg};
+  }
+
+  .car-price {
+    font-size: ${({ theme }) => theme.typography.fontSize.xl};
+    font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
+    color: ${({ theme }) => theme.colors.primary.main};
+    margin-bottom: ${({ theme }) => theme.spacing.sm};
+  }
+
+  .car-details {
+    color: ${({ theme }) => theme.colors.text.secondary};
+    font-size: ${({ theme }) => theme.typography.fontSize.sm};
+    margin-bottom: ${({ theme }) => theme.spacing.md};
+  }
+
+  .car-actions {
+    display: flex;
+    gap: ${({ theme }) => theme.spacing.sm};
+
+    .action-btn {
+      flex: 1;
+      padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
+      background: ${({ theme }) => theme.colors.primary.main};
+      color: ${({ theme }) => theme.colors.primary.contrastText};
+      border: none;
+      border-radius: ${({ theme }) => theme.borderRadius.sm};
+      font-size: ${({ theme }) => theme.typography.fontSize.sm};
+      cursor: pointer;
+      transition: background 0.2s ease-in-out;
+
+      &:hover {
+        background: ${({ theme }) => theme.colors.primary.dark};
+      }
+    }
+  }
+`;
+
+// Empty State
+export const EmptyState = styled.div`
+  text-align: center;
+  padding: ${({ theme }) => theme.spacing['3xl']};
+  color: ${({ theme }) => theme.colors.text.secondary};
+
+  .empty-icon {
+    font-size: ${({ theme }) => theme.typography.fontSize['4xl']};
+    margin-bottom: ${({ theme }) => theme.spacing.lg};
+    display: block;
+  }
+
+  .empty-title {
+    font-size: ${({ theme }) => theme.typography.fontSize.xl};
+    font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
+    color: ${({ theme }) => theme.colors.text.primary};
+    margin-bottom: ${({ theme }) => theme.spacing.md};
+  }
+
+  .empty-description {
+    font-size: ${({ theme }) => theme.typography.fontSize.base};
+    margin-bottom: ${({ theme }) => theme.spacing['2xl']};
+  }
+`;

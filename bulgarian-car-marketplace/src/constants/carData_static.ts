@@ -1,5 +1,5 @@
 // src/constants/carData_static.ts
-// بيانات السيارات الشاملة - ملف ثابت
+// (Comment removed - was in Arabic)
 
 export interface CarMake {
   id: string;
@@ -25,7 +25,7 @@ export interface CarBodyStyle {
   name: string;
 }
 
-// بيانات السيارات الشاملة
+// (Comment removed - was in Arabic)
 export const CAR_DATA: CarMake[] = [
   {
     "id": "abt",
@@ -4060,7 +4060,7 @@ export const CAR_DATA: CarMake[] = [
   }
 ];
 
-// دوال مساعدة للبحث في البيانات
+// (Comment removed - was in Arabic)
 export const getAllMakes = (): { id: string; name: string }[] => {
   return CAR_DATA.map(make => ({
     id: make.id,

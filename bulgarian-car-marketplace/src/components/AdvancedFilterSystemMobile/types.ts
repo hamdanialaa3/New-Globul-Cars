@@ -1,5 +1,5 @@
 // AdvancedFilterSystemMobile/types.ts
-// تعريفات الأنواع لنظام التصفية المتقدم للأجهزة المحمولة
+// (Comment removed - was in Arabic)
 
 export interface FilterValue {
   [key: string]: any;

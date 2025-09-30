@@ -84,7 +84,7 @@ export class DynamicInsuranceService {
   private readonly BULGARIAN_TIMEZONE = 'Europe/Sofia';
 
   /**
-   * تسجيل سلوك القيادة اليومي
+   * (Comment removed - was in Arabic)
    */
   async recordDrivingBehavior(behavior: Omit<DrivingBehavior, 'date'>): Promise<void> {
     try {
@@ -96,21 +96,21 @@ export class DynamicInsuranceService {
 
       await setDoc(behaviorRef, behaviorData);
 
-      // تحديث نقاط المخاطر
+      // (Comment removed - was in Arabic)
       await this.updateRiskScore(behavior.userId, behavior.vin);
 
     } catch (error) {
-      console.error('خطأ في تسجيل سلوك القيادة:', error);
+      console.error('[SERVICE] :', error);
       throw new Error('فشل في تسجيل سلوك القيادة');
     }
   }
 
   /**
-   * حساب وتحديث نقاط المخاطر
+   * (Comment removed - was in Arabic)
    */
   private async updateRiskScore(userId: string, vin: string): Promise<void> {
     try {
-      // الحصول على سلوك القيادة للأشهر الثلاثة الماضية
+      // (Comment removed - was in Arabic)
       const threeMonthsAgo = new Date();
       threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
 
@@ -126,26 +126,26 @@ export class DynamicInsuranceService {
 
       if (behaviors.length === 0) return;
 
-      // حساب متوسط السلوك
+      // (Comment removed - was in Arabic)
       const avgBehavior = this.calculateAverageBehavior(behaviors);
 
-      // حساب نقاط المخاطر باستخدام Vertex AI (محاكاة)
+      // (Comment removed - was in Arabic)
       const riskScore = await this.calculateRiskScore(avgBehavior);
 
-      // حفظ نقاط المخاطر
+      // (Comment removed - was in Arabic)
       const riskRef = doc(this.db, 'riskScores', `${userId}_${vin}`);
       await setDoc(riskRef, riskScore);
 
-      // تحديث قسط التأمين
+      // (Comment removed - was in Arabic)
       await this.adjustInsurancePremium(userId, vin, riskScore);
 
     } catch (error) {
-      console.error('خطأ في تحديث نقاط المخاطر:', error);
+      console.error('[SERVICE] :', error);
     }
   }
 
   /**
-   * حساب متوسط سلوك القيادة
+   * (Comment removed - was in Arabic)
    */
   private calculateAverageBehavior(behaviors: DrivingBehavior[]): Omit<DrivingBehavior, 'userId' | 'vin' | 'date'> {
     const total = behaviors.length;
@@ -167,11 +167,11 @@ export class DynamicInsuranceService {
   }
 
   /**
-   * حساب نقاط المخاطر باستخدام Vertex AI
+   * (Comment removed - was in Arabic)
    */
   private async calculateRiskScore(behavior: Omit<DrivingBehavior, 'userId' | 'vin' | 'date'>): Promise<RiskScore> {
-    // محاكاة حساب نقاط المخاطر
-    // في الإنتاج، سيتم استخدام Vertex AI للتحليل المتقدم
+    // (Comment removed - was in Arabic)
+    // (Comment removed - was in Arabic)
 
     let speedRisk = 0;
     if (behavior.maxSpeed > 120) speedRisk = 30;
@@ -209,7 +209,7 @@ export class DynamicInsuranceService {
   }
 
   /**
-   * تعديل قسط التأمين بناءً على نقاط المخاطر
+   * (Comment removed - was in Arabic)
    */
   private async adjustInsurancePremium(userId: string, vin: string, riskScore: RiskScore): Promise<void> {
     try {
@@ -225,7 +225,7 @@ export class DynamicInsuranceService {
       for (const policyDoc of policySnapshot.docs) {
         const policy = policyDoc.data() as DynamicInsurancePolicy;
 
-        // حساب التعديل بناءً على نقاط المخاطر
+        // (Comment removed - was in Arabic)
         let riskAdjustment = 0;
         if (riskScore.overallScore < 20) riskAdjustment = -15; // خصم 15%
         else if (riskScore.overallScore < 40) riskAdjustment = -5; // خصم 5%
@@ -239,17 +239,15 @@ export class DynamicInsuranceService {
           riskAdjustment,
           lastRiskAssessment: Timestamp.now()
         });
-
-        console.log(`تم تحديث قسط التأمين للسيارة ${vin}: ${policy.currentPremium} → ${newPremium} EUR`);
-      }
+}
 
     } catch (error) {
-      console.error('خطأ في تعديل قسط التأمين:', error);
+      console.error('[SERVICE] :', error);
     }
   }
 
   /**
-   * الحصول على نقاط المخاطر لمستخدم
+   * (Comment removed - was in Arabic)
    */
   async getRiskScore(userId: string, vin: string): Promise<RiskScore | null> {
     try {
@@ -262,13 +260,13 @@ export class DynamicInsuranceService {
 
       return null;
     } catch (error) {
-      console.error('خطأ في الحصول على نقاط المخاطر:', error);
+      console.error('[SERVICE] :', error);
       return null;
     }
   }
 
   /**
-   * الحصول على بوليصة التأمين النشطة
+   * (Comment removed - was in Arabic)
    */
   async getActivePolicy(userId: string, vin: string): Promise<DynamicInsurancePolicy | null> {
     try {
@@ -287,13 +285,13 @@ export class DynamicInsuranceService {
 
       return null;
     } catch (error) {
-      console.error('خطأ في الحصول على البوليصة النشطة:', error);
+      console.error('[SERVICE] :', error);
       return null;
     }
   }
 
   /**
-   * تقديم مطالبة تأمين
+   * (Comment removed - was in Arabic)
    */
   async fileInsuranceClaim(claimData: Omit<InsuranceClaim, 'claimId' | 'reportDate' | 'status'>): Promise<string> {
     try {
@@ -311,19 +309,19 @@ export class DynamicInsuranceService {
 
       await setDoc(claimRef, claim);
 
-      // إشعار شركة التأمين (محاكاة)
+      // (Comment removed - was in Arabic)
       await this.notifyInsuranceProvider(claim);
 
       return claimId;
 
     } catch (error) {
-      console.error('خطأ في تقديم مطالبة التأمين:', error);
+      console.error('[SERVICE] :', error);
       throw new Error('فشل في تقديم مطالبة التأمين');
     }
   }
 
   /**
-   * الحصول على مطالبات التأمين لمستخدم
+   * (Comment removed - was in Arabic)
    */
   async getUserInsuranceClaims(userId: string): Promise<InsuranceClaim[]> {
     try {
@@ -336,30 +334,28 @@ export class DynamicInsuranceService {
       return claimsSnapshot.docs.map(doc => doc.data() as InsuranceClaim);
 
     } catch (error) {
-      console.error('خطأ في الحصول على مطالبات التأمين:', error);
+      console.error('[SERVICE] :', error);
       return [];
     }
   }
 
   /**
-   * إشعار شركة التأمين بمطالبة جديدة
+   * (Comment removed - was in Arabic)
    */
   private async notifyInsuranceProvider(claim: InsuranceClaim): Promise<void> {
     try {
-      // في الإنتاج، سيتم إرسال إشعار لشركة التأمين عبر API
-      console.log(`إرسال إشعار مطالبة تأمين لشركة التأمين: ${claim.claimId}`);
-
-    } catch (error) {
-      console.error('خطأ في إشعار شركة التأمين:', error);
+      // (Comment removed - was in Arabic)
+} catch (error) {
+      console.error('[SERVICE] :', error);
     }
   }
 
   /**
-   * كشف الحوادث التلقائي وتقديم مطالبة فورية
+   * (Comment removed - was in Arabic)
    */
   async processAccidentClaim(vin: string, location: any, severity: 'minor' | 'moderate' | 'major'): Promise<void> {
     try {
-      // الحصول على بيانات السيارة والمستخدم
+      // (Comment removed - was in Arabic)
       const twinQuery = query(
         collection(this.db, 'digitalTwins'),
         where('vin', '==', vin)
@@ -370,7 +366,7 @@ export class DynamicInsuranceService {
 
       const twin = twinSnapshot.docs[0].data();
 
-      // تقدير الضرر بناءً على الشدة
+      // (Comment removed - was in Arabic)
       let estimatedDamage = 0;
       switch (severity) {
         case 'minor': estimatedDamage = 500; break;
@@ -378,7 +374,7 @@ export class DynamicInsuranceService {
         case 'major': estimatedDamage = 10000; break;
       }
 
-      // تقديم مطالبة تلقائية
+      // (Comment removed - was in Arabic)
       const claimData = {
         policyId: '', // سيتم البحث عنه
         userId: twin.userId,
@@ -398,10 +394,8 @@ export class DynamicInsuranceService {
       };
 
       const claimId = await this.fileInsuranceClaim(claimData);
-      console.log(`تم تقديم مطالبة تأمين تلقائية: ${claimId} للسيارة ${vin}`);
-
-    } catch (error) {
-      console.error('خطأ في معالجة مطالبة الحادث:', error);
+} catch (error) {
+      console.error('[SERVICE] :', error);
     }
   }
 }

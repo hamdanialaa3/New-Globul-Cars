@@ -32,7 +32,7 @@ class CarDataBrowserService {
 
       this.isLoaded = true;
     } catch (error) {
-      console.error('Error loading Bulgarian car data:', error);
+      console.error('[SERVICE] Error loading Bulgarian car data:', error);
       throw error;
     }
   }

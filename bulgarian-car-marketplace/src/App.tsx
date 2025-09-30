@@ -17,6 +17,7 @@ import AuthGuard from './components/AuthGuard';
 // import AnalyticsTracker from './components/AnalyticsTracker';
 import PerformanceMonitor from './components/PerformanceMonitor';
 import BundleAnalyzer from './components/BundleAnalyzer';
+import NotFoundPage from './components/NotFoundPage';
 
 // Lazy load pages for better performance
 const HomePage = React.lazy(() => import('./pages/HomePage'));
@@ -74,6 +75,9 @@ const ContactPage = React.lazy(() => import('./pages/ContactPage'));
 const HelpPage = React.lazy(() => import('./pages/HelpPage'));
 const CookiePolicyPage = React.lazy(() => import('./pages/CookiePolicyPage'));
 const SitemapPage = React.lazy(() => import('./pages/SitemapPage'));
+const NotificationsPage = React.lazy(() => import('./pages/NotificationsPage'));
+const SavedSearchesPage = React.lazy(() => import('./pages/SavedSearchesPage'));
+const FavoritesPage = React.lazy(() => import('./pages/FavoritesPage'));
 
 // Layout Component
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -427,6 +431,36 @@ const App: React.FC = () => {
                 }
               />
               <Route
+                path="/notifications"
+                element={
+                  <Layout>
+                    <ProtectedRoute>
+                      <NotificationsPage />
+                    </ProtectedRoute>
+                  </Layout>
+                }
+              />
+              <Route
+                path="/saved-searches"
+                element={
+                  <Layout>
+                    <ProtectedRoute>
+                      <SavedSearchesPage />
+                    </ProtectedRoute>
+                  </Layout>
+                }
+              />
+              <Route
+                path="/favorites"
+                element={
+                  <Layout>
+                    <ProtectedRoute>
+                      <FavoritesPage />
+                    </ProtectedRoute>
+                  </Layout>
+                }
+              />
+              <Route
                 path="/dashboard"
                 element={
                   <Layout>
@@ -653,34 +687,7 @@ const App: React.FC = () => {
                 path="*"
                 element={
                   <Layout>
-                    <div style={{
-                      textAlign: 'center',
-                      padding: '4rem 2rem',
-                      minHeight: '50vh',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'center',
-                      alignItems: 'center'
-                    }}>
-                      <h1 style={{ fontSize: '4rem', marginBottom: '1rem' }}>404</h1>
-                      <h2 style={{ marginBottom: '2rem' }}>Страницата не е намерена</h2>
-                      <p style={{ marginBottom: '2rem', color: '#666' }}>
-                        Страницата, която търсите, не съществува или е преместена.
-                      </p>
-                      <a
-                        href="/"
-                        style={{
-                          padding: '12px 24px',
-                          background: '#1976d2',
-                          color: 'white',
-                          borderRadius: '8px',
-                          textDecoration: 'none',
-                          fontWeight: 'bold'
-                        }}
-                      >
-                        Към началната страница
-                      </a>
-                    </div>
+                    <NotFoundPage />
                   </Layout>
                 }
               />

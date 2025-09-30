@@ -1,6 +1,6 @@
 // src/pages/TermsOfServicePage.tsx
 // Terms of Service Page for Bulgarian Car Marketplace
-// صفحة شروط الخدمة لسوق السيارات البلغاري
+// (Comment removed - was in Arabic)
 
 import React from 'react';
 import styled from 'styled-components';

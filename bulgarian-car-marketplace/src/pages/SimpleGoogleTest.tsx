@@ -1,5 +1,5 @@
 // src/pages/SimpleGoogleTest.tsx
-// صفحة اختبار بسيطة لـ Google Authentication
+// (Comment removed - was in Arabic)
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
@@ -107,7 +107,7 @@ const SimpleGoogleTest: React.FC = () => {
     try {
       console.log('🚀 بدء اختبار مباشر لـ Google Sign-in...');
       
-      // استيراد Firebase
+      // (Comment removed - was in Arabic)
       const { getAuth, GoogleAuthProvider, signInWithPopup } = await import('firebase/auth');
       
       const auth = getAuth();
@@ -117,7 +117,7 @@ const SimpleGoogleTest: React.FC = () => {
       console.log('Provider تم إنشاؤه:', !!provider);
       console.log('Auth Domain:', auth.config.authDomain);
       
-      // محاولة تسجيل الدخول
+      // (Comment removed - was in Arabic)
       console.log('محاولة signInWithPopup...');
       const result = await signInWithPopup(auth, provider);
       
@@ -134,7 +134,7 @@ UID: ${result.user.uid}`);
 كود الخطأ: ${err.code || 'غير محدد'}
 رسالة الخطأ: ${err.message || 'غير محددة'}`;
 
-      // تحليل الأخطاء الشائعة
+      // (Comment removed - was in Arabic)
       if (err.code === 'auth/popup-blocked') {
         errorMessage += '\n\n💡 الحل: فعّل النوافذ المنبثقة لهذا الموقع';
       } else if (err.code === 'auth/unauthorized-domain') {

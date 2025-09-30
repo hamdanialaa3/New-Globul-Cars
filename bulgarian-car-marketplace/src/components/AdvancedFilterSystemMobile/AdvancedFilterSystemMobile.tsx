@@ -1,5 +1,5 @@
 // AdvancedFilterSystemMobile/AdvancedFilterSystemMobile.tsx
-// المكون الرئيسي المعاد هيكلته لنظام التصفية المتقدم للأجهزة المحمولة
+// (Comment removed - was in Arabic)
 
 import React from 'react';
 import { ChevronDown, ChevronUp, Search, Save, RotateCcw } from 'lucide-react';

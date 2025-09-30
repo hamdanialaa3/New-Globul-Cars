@@ -1,5 +1,5 @@
 // Translation Service - Free Alternative to Google Translate
-// خدمة الترجمة - بديل مجاني لـ Google Translate
+// (Comment removed - was in Arabic)
 
 // Mock translation function since google-translate-api-browser is not available
 const mockTranslate = async (text: string, options: any) => {
@@ -63,7 +63,7 @@ export class BulgarianTranslationService {
         raw: result.raw
       };
     } catch (error) {
-      console.error('Translation error:', error);
+      console.error('[SERVICE] Translation error:', error);
       return null;
     }
   }
@@ -103,7 +103,7 @@ export class BulgarianTranslationService {
       const result = await mockTranslate(text, { to: 'en' });
       return result.from.language.iso;
     } catch (error) {
-      console.error('Language detection error:', error);
+      console.error('[SERVICE] Language detection error:', error);
       return null;
     }
   }

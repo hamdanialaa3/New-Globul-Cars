@@ -24,8 +24,8 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
     const notification = document.createElement('div');
     notification.className = 'language-change-notification';
     notification.textContent = newLanguage === 'bg' 
-      ? '🇧🇬 Български' 
-      : '🇺🇸 English';
+      ? '🌍 Български' 
+      : '🌍 English';
     
     document.body.appendChild(notification);
     
@@ -37,20 +37,22 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
     }, 2000);
   };
 
-  const getFlag = () => language === 'bg' ? '🇧🇬' : '🇺🇸';
-  const getLanguageName = () => language === 'bg' ? 'БГ' : 'EN';
+  const getLanguageText = () => language === 'bg' ? 'BG' : 'EN';
 
   return (
-    <button 
-      className={`language-toggle ${size} ${className}`}
+        <button 
+      className={`language-toggle ${size} ${className} ${language === 'en' ? 'english' : 'bulgarian'}`}
       onClick={toggleLanguage}
       title={language === 'bg' ? 'Switch to English' : 'Превключи на български'}
       aria-label={language === 'bg' ? 'Switch to English' : 'Превключи на български'}
     >
-      <span className="flag">{getFlag()}</span>
+      <span className="flag">
+        <span className="globe-icon">🌍</span>
+        <span className="globe-text">{getLanguageText()}</span>
+      </span>
       {showText && (
         <span className="language-text">
-          {getLanguageName()}
+          {getLanguageText()}
         </span>
       )}
       <span className="toggle-arrow">↔️</span>

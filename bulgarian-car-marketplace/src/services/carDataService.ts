@@ -63,10 +63,7 @@ export class CarDataService {
 
       const brandDirs = fs.readdirSync(this.brandDirectoriesPath)
         .filter(item => fs.statSync(path.join(this.brandDirectoriesPath, item)).isDirectory());
-
-      console.log(`Loading data for ${brandDirs.length} brands...`);
-
-      for (const brandDir of brandDirs) {
+for (const brandDir of brandDirs) {
         try {
           const brandData = this.loadBrandData(brandDir);
           if (brandData) {
@@ -76,10 +73,8 @@ export class CarDataService {
           console.error(`Error loading brand ${brandDir}:`, error);
         }
       }
-
-      console.log(`Successfully loaded ${this.brandsData.size} brands`);
-    } catch (error) {
-      console.error('Error loading brand data:', error);
+} catch (error) {
+      console.error('[SERVICE] Error loading brand data:', error);
     }
   }
 

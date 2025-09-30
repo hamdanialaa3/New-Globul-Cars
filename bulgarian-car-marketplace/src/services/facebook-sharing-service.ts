@@ -1,6 +1,6 @@
 // src/services/facebook-sharing-service.ts
 // Professional Facebook Sharing & Open Graph Integration for Bulgarian Car Marketplace
-// تكامل احترافي مع Facebook Sharing & Open Graph لسوق السيارات البلغاري
+// (Comment removed - was in Arabic)
 
 interface CarListing {
   id: string;
@@ -61,7 +61,7 @@ interface SocialShareMetrics {
 
 /**
  * Professional Facebook Sharing Service
- * خدمة احترافية لمشاركة Facebook
+ * (Comment removed - was in Arabic)
  */
 export class FacebookSharingService {
   private static readonly FACEBOOK_APP_ID = process.env.REACT_APP_FACEBOOK_APP_ID;
@@ -74,7 +74,7 @@ export class FacebookSharingService {
 
   /**
    * Initialize Facebook SDK for JavaScript
-   * تهيئة Facebook SDK لـ JavaScript
+   * (Comment removed - was in Arabic)
    */
   private initializeSocialSDK(): void {
     if (typeof window !== 'undefined' && FacebookSharingService.FACEBOOK_APP_ID) {
@@ -99,15 +99,13 @@ export class FacebookSharingService {
           xfbml: true,
           version: 'v18.0'
         });
-
-        console.log('🔗 Facebook SDK initialized for Bulgarian Car Marketplace');
-      };
+};
     }
   }
 
   /**
    * Generate Open Graph meta tags for car listing
-   * إنشاء علامات Open Graph الفوقية لقائمة السيارات
+   * (Comment removed - was in Arabic)
    */
   generateCarOpenGraphTags(car: CarListing, language: 'bg' | 'en' = 'bg'): OpenGraphTags {
     const title = language === 'bg'
@@ -139,11 +137,11 @@ export class FacebookSharingService {
 
   /**
    * Share car listing to Facebook
-   * مشاركة قائمة السيارة على Facebook
+   * (Comment removed - was in Arabic)
    */
   async shareCarToFacebook(car: CarListing, language: 'bg' | 'en' = 'bg'): Promise<boolean> {
     if (typeof window === 'undefined' || !(window as any).FB) {
-      console.error('Facebook SDK not loaded');
+      console.error('[SERVICE] Facebook SDK not loaded');
       return false;
     }
 
@@ -157,28 +155,27 @@ export class FacebookSharingService {
           quote: `${shareContent.title}\n\n${shareContent.description}\n\n${shareContent.hashtags.join(' ')}`,
         }, (response: any) => {
           if (response && !response.error_message) {
-            console.log('✅ Car shared to Facebook successfully');
-            this.trackShareEvent('facebook', car.id, shareContent.url, language);
+this.trackShareEvent('facebook', car.id, shareContent.url, language);
             resolve(true);
           } else {
-            console.error('Facebook share error:', response?.error_message);
+            console.error('[SERVICE] Facebook share error:', response?.error_message);
             resolve(false);
           }
         });
       });
     } catch (error) {
-      console.error('Error sharing to Facebook:', error);
+      console.error('[SERVICE] Error sharing to Facebook:', error);
       return false;
     }
   }
 
   /**
    * Share car listing via Facebook Messenger
-   * مشاركة قائمة السيارة عبر Facebook Messenger
+   * (Comment removed - was in Arabic)
    */
   async shareCarViaMessenger(car: CarListing, language: 'bg' | 'en' = 'bg'): Promise<boolean> {
     if (typeof window === 'undefined' || !(window as any).FB) {
-      console.error('Facebook SDK not loaded');
+      console.error('[SERVICE] Facebook SDK not loaded');
       return false;
     }
 
@@ -191,24 +188,23 @@ export class FacebookSharingService {
           link: shareContent.url,
         }, (response: any) => {
           if (response && !response.error_message) {
-            console.log('✅ Car shared via Messenger successfully');
-            this.trackShareEvent('facebook', car.id, shareContent.url, language);
+this.trackShareEvent('facebook', car.id, shareContent.url, language);
             resolve(true);
           } else {
-            console.error('Messenger share error:', response?.error_message);
+            console.error('[SERVICE] Messenger share error:', response?.error_message);
             resolve(false);
           }
         });
       });
     } catch (error) {
-      console.error('Error sharing via Messenger:', error);
+      console.error('[SERVICE] Error sharing via Messenger:', error);
       return false;
     }
   }
 
   /**
    * Generate shareable URLs for different platforms
-   * إنشاء روابط قابلة للمشاركة لمنصات مختلفة
+   * (Comment removed - was in Arabic)
    */
   generateShareUrls(car: CarListing, language: 'bg' | 'en' = 'bg'): { [platform: string]: string } {
     const shareContent = this.prepareCarShareContent(car, language);
@@ -230,7 +226,7 @@ export class FacebookSharingService {
 
   /**
    * Prepare shareable content for car listing
-   * تحضير المحتوى القابل للمشاركة لقائمة السيارة
+   * (Comment removed - was in Arabic)
    */
   private prepareCarShareContent(car: CarListing, language: 'bg' | 'en' = 'bg'): ShareableContent {
     const title = language === 'bg'
@@ -257,7 +253,7 @@ export class FacebookSharingService {
 
   /**
    * Create Facebook post for new car listing
-   * إنشاء منشور Facebook لقائمة سيارة جديدة
+   * (Comment removed - was in Arabic)
    */
   async createCarListingPost(car: CarListing, language: 'bg' | 'en' = 'bg'): Promise<string | null> {
     try {
@@ -290,20 +286,18 @@ ${car.description.en.substring(0, 300)}...
 #BulgarianCars #${car.make} #${car.model} #CarsForSale #${car.location.replace(/\s+/g, '')}`;
 
       // This would require page access token and appropriate permissions
-      console.log('📱 Car listing post prepared:', postContent.substring(0, 100) + '...');
-      console.log('🔗 Post would include link:', `${FacebookSharingService.BASE_URL}/car/${car.id}`);
-      
-      // Return mock post ID for now
+      console.log('Mock Facebook post created for car:', `${car.make} ${car.model}`);
+// Return mock post ID for now
       return `post_${car.id}_${Date.now()}`;
     } catch (error) {
-      console.error('Error creating car listing post:', error);
+      console.error('[SERVICE] Error creating car listing post:', error);
       return null;
     }
   }
 
   /**
    * Generate Facebook Event for car show or dealership event
-   * إنشاء حدث Facebook لمعرض السيارات أو حدث الوكالة
+   * (Comment removed - was in Arabic)
    */
   async createCarShowEvent(eventData: {
     title: string;
@@ -315,20 +309,19 @@ ${car.description.en.substring(0, 300)}...
     language: 'bg' | 'en';
   }): Promise<string | null> {
     try {
-      console.log('🎪 Car show event prepared:', eventData.title);
-      console.log('📝 Event description preview:', eventData.description.substring(0, 100) + '...');
-      
+      console.log('Mock Facebook event created for car show');
+
       // Return mock event ID for now
       return `event_${Date.now()}`;
     } catch (error) {
-      console.error('Error creating car show event:', error);
+      console.error('[SERVICE] Error creating car show event:', error);
       return null;
     }
   }
 
   /**
    * Generate dynamic Open Graph meta tags for HTML head
-   * إنشاء علامات Open Graph الديناميكية لرأس HTML
+   * (Comment removed - was in Arabic)
    */
   injectOpenGraphTags(tags: OpenGraphTags): void {
     if (typeof document === 'undefined') return;
@@ -350,13 +343,11 @@ ${car.description.en.substring(0, 300)}...
       meta.setAttribute('content', content);
       document.head.appendChild(meta);
     });
-
-    console.log('🏷️ Open Graph tags injected');
-  }
+}
 
   /**
    * Track social share events
-   * تتبع أحداث المشاركة الاجتماعية
+   * (Comment removed - was in Arabic)
    */
   private trackShareEvent(platform: string, carId: string, shareUrl: string, language: 'bg' | 'en'): void {
     const shareMetrics: SocialShareMetrics = {
@@ -368,9 +359,7 @@ ${car.description.en.substring(0, 300)}...
     };
 
     // Send to analytics service
-    console.log('📊 Share event tracked:', shareMetrics);
-
-    // You could integrate with Google Analytics, Facebook Analytics, or your own tracking
+// You could integrate with Google Analytics, Facebook Analytics, or your own tracking
     if (typeof window !== 'undefined' && (window as any).gtag) {
       (window as any).gtag('event', 'share', {
         method: platform,
@@ -382,7 +371,7 @@ ${car.description.en.substring(0, 300)}...
 
   /**
    * Get share statistics for a car listing
-   * الحصول على إحصائيات المشاركة لقائمة السيارة
+   * (Comment removed - was in Arabic)
    */
   async getShareStatistics(carId: string): Promise<{ [platform: string]: number } | null> {
     try {
@@ -398,34 +387,29 @@ ${car.description.en.substring(0, 300)}...
       };
 
       mockStats.total = Object.values(mockStats).reduce((sum, count) => sum + count, 0);
-
-      console.log(`📈 Share stats for car ${carId}:`, mockStats);
-      return mockStats;
+return mockStats;
     } catch (error) {
-      console.error('Error fetching share statistics:', error);
+      console.error('[SERVICE] Error fetching share statistics:', error);
       return null;
     }
   }
 
   /**
    * Validate Open Graph tags with Facebook Debugger
-   * التحقق من صحة علامات Open Graph مع Facebook Debugger
+   * (Comment removed - was in Arabic)
    */
   async validateOpenGraphTags(url: string): Promise<any> {
     try {
       // This would call Facebook's Graph API to scrape and validate OG tags
       const debugUrl = `https://developers.facebook.com/tools/debug/sharing/?q=${encodeURIComponent(url)}`;
-      
-      console.log(`🔍 Validate OG tags at: ${debugUrl}`);
-      
-      return {
+return {
         url: url,
         debugUrl: debugUrl,
         status: 'valid',
         message: 'Open Graph tags are properly configured'
       };
     } catch (error) {
-      console.error('Error validating Open Graph tags:', error);
+      console.error('[SERVICE] Error validating Open Graph tags:', error);
       return null;
     }
   }

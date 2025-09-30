@@ -1,6 +1,7 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface AdminRouteProps {
   children: React.ReactNode;
@@ -8,6 +9,7 @@ interface AdminRouteProps {
 
 const AdminRoute: React.FC<AdminRouteProps> = ({ children }) => {
   const { currentUser, loading } = useAuth();
+  const { t } = useLanguage();
 
   if (loading) {
     return (
@@ -17,7 +19,7 @@ const AdminRoute: React.FC<AdminRouteProps> = ({ children }) => {
         alignItems: 'center',
         minHeight: '50vh'
       }}>
-        <div>Loading...</div>
+        <div>{t('common.loading')}</div>
       </div>
     );
   }

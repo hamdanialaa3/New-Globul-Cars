@@ -1,6 +1,6 @@
 // src/services/facebook-analytics-service.ts
 // Professional Facebook Analytics Integration for Bulgarian Car Marketplace
-// تكامل احترافي مع Facebook Analytics لسوق السيارات البلغاري
+// (Comment removed - was in Arabic)
 
 interface FacebookPixelEvent {
   event: 'PageView' | 'ViewContent' | 'Search' | 'AddToCart' | 'InitiateCheckout' | 'Purchase' | 'Lead' | 'CompleteRegistration' | 'Contact' | 'ScheduleTest' | 'ViewCarDetails';
@@ -110,7 +110,7 @@ interface FacebookInsights {
 
 /**
  * Professional Facebook Analytics Service
- * خدمة احترافية لـ Facebook Analytics
+ * (Comment removed - was in Arabic)
  */
 export class FacebookAnalyticsService {
   private static readonly GRAPH_API_URL = 'https://graph.facebook.com/v18.0';
@@ -125,7 +125,7 @@ export class FacebookAnalyticsService {
 
   /**
    * Initialize Facebook Pixel for client-side tracking
-   * تهيئة Facebook Pixel لتتبع الجانب العميل
+   * (Comment removed - was in Arabic)
    */
   private initializePixel(): void {
     if (typeof window !== 'undefined' && FacebookAnalyticsService.PIXEL_ID) {
@@ -152,15 +152,13 @@ export class FacebookAnalyticsService {
         // Initialize with Pixel ID
         (window as any).fbq('init', FacebookAnalyticsService.PIXEL_ID);
         (window as any).fbq('track', 'PageView');
-
-        console.log('🔍 Facebook Pixel initialized for Bulgarian Car Marketplace');
-      }
+}
     }
   }
 
   /**
    * Track page view event
-   * تتبع حدث مشاهدة الصفحة
+   * (Comment removed - was in Arabic)
    */
   trackPageView(pageUrl: string, userId?: string): void {
     if (typeof window !== 'undefined' && (window as any).fbq) {
@@ -182,14 +180,12 @@ export class FacebookAnalyticsService {
       (window as any).fbq('track', 'PageView', eventData.customData, {
         eventID: eventData.eventID
       });
-
-      console.log(`📄 Page view tracked: ${pageUrl}`);
-    }
+}
   }
 
   /**
    * Track car view event with detailed analytics
-   * تتبع حدث مشاهدة السيارة مع تحليلات مفصلة
+   * (Comment removed - was in Arabic)
    */
   async trackCarView(carData: CarViewEvent): Promise<void> {
     // Client-side Facebook Pixel tracking
@@ -233,13 +229,11 @@ export class FacebookAnalyticsService {
         location: carData.location
       }
     });
-
-    console.log(`🚗 Car view tracked: ${carData.make} ${carData.model} - €${carData.price}`);
-  }
+}
 
   /**
    * Track search event with filters
-   * تتبع حدث البحث مع الفلاتر
+   * (Comment removed - was in Arabic)
    */
   async trackCarSearch(searchData: CarSearchEvent): Promise<void> {
     const searchValue = searchData.filters.minPrice && searchData.filters.maxPrice 
@@ -268,13 +262,11 @@ export class FacebookAnalyticsService {
         currency: 'EUR'
       }
     });
-
-    console.log(`🔍 Search tracked: "${searchData.searchQuery}" - ${searchData.resultsCount} results`);
-  }
+}
 
   /**
    * Track contact/lead event
-   * تتبع حدث الاتصال/العميل المحتمل
+   * (Comment removed - was in Arabic)
    */
   async trackCarContact(contactData: CarContactEvent): Promise<void> {
     if (typeof window !== 'undefined' && (window as any).fbq) {
@@ -305,13 +297,11 @@ export class FacebookAnalyticsService {
         currency: 'EUR'
       }
     });
-
-    console.log(`📞 Contact/Lead tracked for car: ${contactData.carId}`);
-  }
+}
 
   /**
    * Track test drive scheduling
-   * تتبع جدولة تجربة القيادة
+   * (Comment removed - was in Arabic)
    */
   async trackTestDriveScheduled(testDriveData: TestDriveEvent): Promise<void> {
     if (typeof window !== 'undefined' && (window as any).fbq) {
@@ -334,13 +324,11 @@ export class FacebookAnalyticsService {
         currency: 'EUR'
       }
     });
-
-    console.log(`🚙 Test drive scheduled for car: ${testDriveData.carId}`);
-  }
+}
 
   /**
    * Track car purchase/sale completion
-   * تتبع إتمام شراء/بيع السيارة
+   * (Comment removed - was in Arabic)
    */
   async trackCarPurchase(carId: string, price: number, buyerId?: string): Promise<void> {
     if (typeof window !== 'undefined' && (window as any).fbq) {
@@ -365,13 +353,11 @@ export class FacebookAnalyticsService {
         currency: 'EUR'
       }
     });
-
-    console.log(`💰 Car purchase tracked: ${carId} - €${price}`);
-  }
+}
 
   /**
    * Server-side event tracking via Conversions API
-   * تتبع الأحداث من الخادم عبر Conversions API
+   * (Comment removed - was in Arabic)
    */
   private async trackServerSideEvent(eventData: FacebookPixelEvent): Promise<boolean> {
     if (!this.accessToken || !FacebookAnalyticsService.PIXEL_ID) {
@@ -412,25 +398,23 @@ export class FacebookAnalyticsService {
       const result = await response.json();
 
       if (result.error) {
-        console.error('Server-side tracking error:', result.error);
+        console.error('[SERVICE] Server-side tracking error:', result.error);
         return false;
       }
-
-      console.log('✅ Server-side event tracked successfully');
-      return true;
+return true;
     } catch (error) {
-      console.error('Error in server-side tracking:', error);
+      console.error('[SERVICE] Error in server-side tracking:', error);
       return false;
     }
   }
 
   /**
    * Get comprehensive page insights
-   * الحصول على رؤى شاملة للصفحة
+   * (Comment removed - was in Arabic)
    */
   async getPageInsights(days: number = 30): Promise<FacebookInsights['pageInsights'] | null> {
     if (!this.accessToken) {
-      console.error('Access token required for page insights');
+      console.error('[SERVICE] Access token required for page insights');
       return null;
     }
 
@@ -455,7 +439,7 @@ export class FacebookAnalyticsService {
       const result = await response.json();
 
       if (result.error) {
-        console.error('Page insights error:', result.error);
+        console.error('[SERVICE] Page insights error:', result.error);
         return null;
       }
 
@@ -489,22 +473,20 @@ export class FacebookAnalyticsService {
             break;
         }
       });
-
-      console.log(`📊 Page insights retrieved: ${insights.impressions} impressions, ${insights.reach} reach`);
-      return insights;
+return insights;
     } catch (error) {
-      console.error('Error fetching page insights:', error);
+      console.error('[SERVICE] Error fetching page insights:', error);
       return null;
     }
   }
 
   /**
    * Get audience demographics and interests
-   * الحصول على الديموغرافيا واهتمامات الجمهور
+   * (Comment removed - was in Arabic)
    */
   async getAudienceInsights(): Promise<FacebookInsights['audienceInsights'] | null> {
     if (!this.accessToken) {
-      console.error('Access token required for audience insights');
+      console.error('[SERVICE] Access token required for audience insights');
       return null;
     }
 
@@ -553,18 +535,16 @@ export class FacebookAnalyticsService {
           'Premium Car Buyers'
         ]
       };
-
-      console.log('👥 Audience insights retrieved (mock data)');
       return mockInsights;
     } catch (error) {
-      console.error('Error fetching audience insights:', error);
+      console.error('[SERVICE] Error fetching audience insights:', error);
       return null;
     }
   }
 
   /**
    * Get conversion metrics
-   * الحصول على مقاييس التحويل
+   * (Comment removed - was in Arabic)
    */
   async getConversionInsights(days: number = 30): Promise<FacebookInsights['conversionInsights'] | null> {
     try {
@@ -575,18 +555,16 @@ export class FacebookAnalyticsService {
         cost_per_lead: 8.50,
         conversion_rate: 26.7
       };
-
-      console.log(`📈 Conversion insights: ${mockConversions.leads} leads, ${mockConversions.purchases} purchases`);
-      return mockConversions;
+return mockConversions;
     } catch (error) {
-      console.error('Error fetching conversion insights:', error);
+      console.error('[SERVICE] Error fetching conversion insights:', error);
       return null;
     }
   }
 
   /**
    * Generate comprehensive analytics report
-   * إنشاء تقرير تحليلات شامل
+   * (Comment removed - was in Arabic)
    */
   async generateAnalyticsReport(days: number = 30): Promise<FacebookInsights | null> {
     try {
@@ -605,11 +583,9 @@ export class FacebookAnalyticsService {
         audienceInsights,
         conversionInsights
       };
-
-      console.log('📋 Comprehensive analytics report generated');
-      return report;
+return report;
     } catch (error) {
-      console.error('Error generating analytics report:', error);
+      console.error('[SERVICE] Error generating analytics report:', error);
       return null;
     }
   }
@@ -628,7 +604,7 @@ export class FacebookAnalyticsService {
 
   /**
    * Hash user data for privacy compliance
-   * تشفير بيانات المستخدم للامتثال للخصوصية
+   * (Comment removed - was in Arabic)
    */
   private async hashUserData(data: string): Promise<string> {
     if (typeof window !== 'undefined' && window.crypto && window.crypto.subtle) {

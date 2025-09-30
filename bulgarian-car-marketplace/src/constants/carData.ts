@@ -1,7 +1,7 @@
 // src/constants/carData.ts
-// بيانات السيارات المستخرجة من netcarshow.com
+// (Comment removed - was in Arabic)
 
-// استيراد البيانات من الملف الثابت
+// (Comment removed - was in Arabic)
 import { CAR_DATA as STATIC_CAR_DATA } from './carData_static';
 
 export interface CarMake {
@@ -28,21 +28,21 @@ export interface CarBodyStyle {
   name: string;
 }
 
-// بيانات السيارات المستخرجة من netcarshow.com
+// (Comment removed - was in Arabic)
 export const CAR_DATA: CarMake[] = STATIC_CAR_DATA;
 
-// دالة لدمج بيانات السيارات الجديدة مع القديمة
+// (Comment removed - was in Arabic)
 export const mergeCarData = (newData: CarMake[]): CarMake[] => {
   const merged = [...CAR_DATA];
 
   newData.forEach(newMake => {
     const existingMake = merged.find(m => m.id === newMake.id);
     if (existingMake) {
-      // دمج الموديلات
+      // (Comment removed - was in Arabic)
       newMake.models.forEach(newModel => {
         const existingModel = existingMake.models.find(m => m.id === newModel.id);
         if (existingModel) {
-          // دمج الأجيال
+          // (Comment removed - was in Arabic)
           newModel.generations.forEach(newGen => {
             const existingGen = existingModel.generations.find(g => g.id === newGen.id);
             if (!existingGen) {
@@ -61,7 +61,7 @@ export const mergeCarData = (newData: CarMake[]): CarMake[] => {
   return merged;
 };
 
-// دالة للحصول على جميع الشركات المصنعة
+// (Comment removed - was in Arabic)
 export const getAllMakes = (): { value: string; text: string }[] => {
   return CAR_DATA.map(make => ({
     value: make.id,
@@ -69,7 +69,7 @@ export const getAllMakes = (): { value: string; text: string }[] => {
   }));
 };
 
-// دالة للحصول على الموديلات لشركة معينة
+// (Comment removed - was in Arabic)
 export const getModelsForMake = (makeId: string): { value: string; text: string }[] => {
   const make = CAR_DATA.find(m => m.id === makeId);
   if (!make) return [];
@@ -79,7 +79,7 @@ export const getModelsForMake = (makeId: string): { value: string; text: string 
   }));
 };
 
-// دالة للحصول على الأجيال لموديل معين
+// (Comment removed - was in Arabic)
 export const getGenerationsForModel = (makeId: string, modelId: string): { value: string; text: string }[] => {
   const make = CAR_DATA.find(m => m.id === makeId);
   if (!make) return [];
@@ -91,7 +91,7 @@ export const getGenerationsForModel = (makeId: string, modelId: string): { value
   }));
 };
 
-// دالة للحصول على أنواع الهيكل لجيل معين
+// (Comment removed - was in Arabic)
 export const getBodyStylesForGeneration = (makeId: string, modelId: string, generationId: string): { value: string; text: string }[] => {
   const make = CAR_DATA.find(m => m.id === makeId);
   if (!make) return [];

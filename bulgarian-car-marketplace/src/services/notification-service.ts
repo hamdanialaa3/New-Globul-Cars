@@ -58,7 +58,7 @@ export class ComprehensiveNotificationService {
   private db = getFirestore();
   private readonly BULGARIAN_TIMEZONE = 'Europe/Sofia';
 
-  // قوالب الإشعارات
+  // (Comment removed - was in Arabic)
   private readonly TEMPLATES: { [key: string]: NotificationTemplate } = {
     accident_detected: {
       type: 'accident',
@@ -134,7 +134,7 @@ export class ComprehensiveNotificationService {
   };
 
   /**
-   * إرسال إشعار جديد
+   * (Comment removed - was in Arabic)
    */
   async sendNotification(notification: Omit<Notification, 'id' | 'timestamp'>): Promise<string> {
     try {
@@ -145,30 +145,26 @@ export class ComprehensiveNotificationService {
         timestamp: Timestamp.now()
       };
 
-      // التحقق من تفضيلات المستخدم
+      // (Comment removed - was in Arabic)
       const shouldSend = await this.shouldSendNotification(notification.userId, notificationData);
       if (!shouldSend) {
-        console.log(`تم تجاهل الإشعار للمستخدم ${notification.userId} حسب تفضيلاته`);
-        return notificationId;
+return notificationId;
       }
 
       await setDoc(doc(this.db, 'notifications', notificationId), notificationData);
 
-      // إرسال الإشعارات عبر القنوات المختلفة
+      // (Comment removed - was in Arabic)
       await this.sendViaChannels(notificationData);
-
-      console.log(`تم إرسال إشعار: ${notification.title} للمستخدم ${notification.userId}`);
-
-      return notificationId;
+return notificationId;
 
     } catch (error) {
-      console.error('خطأ في إرسال الإشعار:', error);
+      console.error('[SERVICE] :', error);
       throw new Error('فشل في إرسال الإشعار');
     }
   }
 
   /**
-   * إرسال إشعار باستخدام قالب
+   * (Comment removed - was in Arabic)
    */
   async sendTemplatedNotification(
     userId: string,
@@ -182,7 +178,7 @@ export class ComprehensiveNotificationService {
         throw new Error(`قالب الإشعار غير موجود: ${templateKey}`);
       }
 
-      // استبدال المتغيرات في القالب
+      // (Comment removed - was in Arabic)
       const title = this.interpolateTemplate(template.titleTemplate, templateData);
       const message = this.interpolateTemplate(template.messageTemplate, templateData);
 
@@ -204,13 +200,13 @@ export class ComprehensiveNotificationService {
       return await this.sendNotification(notification);
 
     } catch (error) {
-      console.error('خطأ في إرسال الإشعار المُعد:', error);
+      console.error('[SERVICE] :', error);
       throw error;
     }
   }
 
   /**
-   * الحصول على إشعارات المستخدم
+   * (Comment removed - was in Arabic)
    */
   async getUserNotifications(
     userId: string,
@@ -243,13 +239,13 @@ export class ComprehensiveNotificationService {
       return snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }) as Notification);
 
     } catch (error) {
-      console.error('خطأ في الحصول على إشعارات المستخدم:', error);
+      console.error('[SERVICE] :', error);
       return [];
     }
   }
 
   /**
-   * تحديد إشعار كمقروء
+   * (Comment removed - was in Arabic)
    */
   async markAsRead(notificationId: string, userId: string): Promise<void> {
     try {
@@ -271,13 +267,13 @@ export class ComprehensiveNotificationService {
       });
 
     } catch (error) {
-      console.error('خطأ في تحديد الإشعار كمقروء:', error);
+      console.error('[SERVICE] :', error);
       throw error;
     }
   }
 
   /**
-   * حذف إشعار
+   * (Comment removed - was in Arabic)
    */
   async deleteNotification(notificationId: string, userId: string): Promise<void> {
     try {
@@ -298,13 +294,13 @@ export class ComprehensiveNotificationService {
       });
 
     } catch (error) {
-      console.error('خطأ في حذف الإشعار:', error);
+      console.error('[SERVICE] :', error);
       throw error;
     }
   }
 
   /**
-   * تحديث تفضيلات الإشعارات
+   * (Comment removed - was in Arabic)
    */
   async updateNotificationPreferences(
     userId: string,
@@ -319,13 +315,13 @@ export class ComprehensiveNotificationService {
       }, { merge: true });
 
     } catch (error) {
-      console.error('خطأ في تحديث تفضيلات الإشعارات:', error);
+      console.error('[SERVICE] :', error);
       throw error;
     }
   }
 
   /**
-   * الحصول على تفضيلات الإشعارات
+   * (Comment removed - was in Arabic)
    */
   async getNotificationPreferences(userId: string): Promise<NotificationPreferences | null> {
     try {
@@ -335,7 +331,7 @@ export class ComprehensiveNotificationService {
         return prefsDoc.data() as NotificationPreferences;
       }
 
-      // إرجاع التفضيلات الافتراضية
+      // (Comment removed - was in Arabic)
       return {
         userId,
         email: true,
@@ -359,13 +355,13 @@ export class ComprehensiveNotificationService {
       };
 
     } catch (error) {
-      console.error('خطأ في الحصول على تفضيلات الإشعارات:', error);
+      console.error('[SERVICE] :', error);
       return null;
     }
   }
 
   /**
-   * إرسال إشعار طوارئ للحوادث
+   * (Comment removed - was in Arabic)
    */
   async sendAccidentAlert(
     userId: string,
@@ -392,18 +388,18 @@ export class ComprehensiveNotificationService {
         }
       );
 
-      // إشعار الطوارئ إذا كان الحادث خطيراً
+      // (Comment removed - was in Arabic)
       if (severity === 'major') {
         await this.notifyEmergencyServices(location, severity);
       }
 
     } catch (error) {
-      console.error('خطأ في إرسال إشعار الحادث:', error);
+      console.error('[SERVICE] :', error);
     }
   }
 
   /**
-   * إرسال إشعار صيانة
+   * (Comment removed - was in Arabic)
    */
   async sendMaintenanceAlert(
     userId: string,
@@ -431,12 +427,12 @@ export class ComprehensiveNotificationService {
       );
 
     } catch (error) {
-      console.error('خطأ في إرسال إشعار الصيانة:', error);
+      console.error('[SERVICE] :', error);
     }
   }
 
   /**
-   * إرسال إشعار تحديث التأمين
+   * (Comment removed - was in Arabic)
    */
   async sendInsuranceUpdate(
     userId: string,
@@ -466,12 +462,12 @@ export class ComprehensiveNotificationService {
       );
 
     } catch (error) {
-      console.error('خطأ في إرسال إشعار التأمين:', error);
+      console.error('[SERVICE] :', error);
     }
   }
 
   /**
-   * إرسال إشعار عرض شراء
+   * (Comment removed - was in Arabic)
    */
   async sendSaleOfferNotification(
     userId: string,
@@ -500,12 +496,12 @@ export class ComprehensiveNotificationService {
       );
 
     } catch (error) {
-      console.error('خطأ في إرسال إشعار عرض الشراء:', error);
+      console.error('[SERVICE] :', error);
     }
   }
 
   /**
-   * إرسال تحديث أسعار السوق
+   * (Comment removed - was in Arabic)
    */
   async sendMarketUpdate(
     userId: string,
@@ -533,24 +529,24 @@ export class ComprehensiveNotificationService {
       );
 
     } catch (error) {
-      console.error('خطأ في إرسال تحديث السوق:', error);
+      console.error('[SERVICE] :', error);
     }
   }
 
   /**
-   * التحقق من إمكانية إرسال الإشعار
+   * (Comment removed - was in Arabic)
    */
   private async shouldSendNotification(userId: string, notification: Notification): Promise<boolean> {
     try {
       const preferences = await this.getNotificationPreferences(userId);
       if (!preferences) return true; // إرسال افتراضي
 
-      // التحقق من فئة الإشعار
+      // (Comment removed - was in Arabic)
       if (!preferences.categories[notification.type]) {
         return false;
       }
 
-      // التحقق من ساعات الهدوء
+      // (Comment removed - was in Arabic)
       if (preferences.quietHours.enabled) {
         const now = new Date();
         const currentTime = now.getHours() * 100 + now.getMinutes();
@@ -558,7 +554,7 @@ export class ComprehensiveNotificationService {
         const endTime = this.parseTime(preferences.quietHours.end);
 
         if (this.isTimeInRange(currentTime, startTime, endTime)) {
-          // في ساعات الهدوء، فقط الإشعارات الحرجة
+          // (Comment removed - was in Arabic)
           return notification.priority === 'critical';
         }
       }
@@ -566,13 +562,13 @@ export class ComprehensiveNotificationService {
       return true;
 
     } catch (error) {
-      console.error('خطأ في التحقق من إمكانية إرسال الإشعار:', error);
+      console.error('[SERVICE] :', error);
       return true; // إرسال في حالة الخطأ
     }
   }
 
   /**
-   * إرسال الإشعار عبر القنوات المختلفة
+   * (Comment removed - was in Arabic)
    */
   private async sendViaChannels(notification: Notification): Promise<void> {
     try {
@@ -591,67 +587,59 @@ export class ComprehensiveNotificationService {
       }
 
     } catch (error) {
-      console.error('خطأ في إرسال الإشعار عبر القنوات:', error);
+      console.error('[SERVICE] :', error);
     }
   }
 
   /**
-   * إرسال إشعار Push
+   * (Comment removed - was in Arabic)
    */
   private async sendPushNotification(notification: Notification): Promise<void> {
     try {
-      // في الإنتاج، سيتم استخدام FCM أو خدمة Push أخرى
-      console.log(`إرسال Push للمستخدم ${notification.userId}: ${notification.title}`);
-
-    } catch (error) {
-      console.error('خطأ في إرسال Push:', error);
+      // (Comment removed - was in Arabic)
+} catch (error) {
+      console.error('[SERVICE] Push:', error);
     }
   }
 
   /**
-   * إرسال إشعار بريد إلكتروني
+   * (Comment removed - was in Arabic)
    */
   private async sendEmailNotification(notification: Notification): Promise<void> {
     try {
-      // في الإنتاج، سيتم استخدام SendGrid أو خدمة بريد إلكتروني
-      console.log(`إرسال بريد إلكتروني للمستخدم ${notification.userId}: ${notification.title}`);
-
-    } catch (error) {
-      console.error('خطأ في إرسال البريد الإلكتروني:', error);
+      // (Comment removed - was in Arabic)
+} catch (error) {
+      console.error('[SERVICE] :', error);
     }
   }
 
   /**
-   * إرسال إشعار SMS
+   * (Comment removed - was in Arabic)
    */
   private async sendSMSNotification(notification: Notification): Promise<void> {
     try {
-      // في الإنتاج، سيتم استخدام Twilio أو خدمة SMS
-      console.log(`إرسال SMS للمستخدم ${notification.userId}: ${notification.title}`);
-
-    } catch (error) {
-      console.error('خطأ في إرسال SMS:', error);
+      // (Comment removed - was in Arabic)
+} catch (error) {
+      console.error('[SERVICE] SMS:', error);
     }
   }
 
   /**
-   * إشعار خدمات الطوارئ
+   * (Comment removed - was in Arabic)
    */
   private async notifyEmergencyServices(
     location: { latitude: number; longitude: number },
     severity: string
   ): Promise<void> {
     try {
-      // في الإنتاج، سيتم إرسال إشعار لخدمات الطوارئ المحلية
-      console.log(`إرسال إشعار لخدمات الطوارئ: ${severity} في ${location.latitude}, ${location.longitude}`);
-
-    } catch (error) {
-      console.error('خطأ في إشعار خدمات الطوارئ:', error);
+      // (Comment removed - was in Arabic)
+} catch (error) {
+      console.error('[SERVICE] :', error);
     }
   }
 
   /**
-   * الحصول على معلومات السيارة
+   * (Comment removed - was in Arabic)
    */
   private async getCarInfo(vin: string): Promise<string> {
     try {
@@ -662,13 +650,13 @@ export class ComprehensiveNotificationService {
       }
       return `VIN: ${vin}`;
     } catch (error) {
-      console.error('خطأ في الحصول على معلومات السيارة:', error);
+      console.error('[SERVICE] :', error);
       return `VIN: ${vin}`;
     }
   }
 
   /**
-   * استبدال المتغيرات في القالب
+   * (Comment removed - was in Arabic)
    */
   private interpolateTemplate(template: string, data: { [key: string]: string }): string {
     let result = template;
@@ -679,7 +667,7 @@ export class ComprehensiveNotificationService {
   }
 
   /**
-   * تحليل الوقت من سلسلة
+   * (Comment removed - was in Arabic)
    */
   private parseTime(timeStr: string): number {
     const [hours, minutes] = timeStr.split(':').map(Number);
@@ -687,19 +675,19 @@ export class ComprehensiveNotificationService {
   }
 
   /**
-   * التحقق من وجود الوقت في النطاق
+   * (Comment removed - was in Arabic)
    */
   private isTimeInRange(current: number, start: number, end: number): boolean {
     if (start <= end) {
       return current >= start && current <= end;
     } else {
-      // يمتد النطاق إلى اليوم التالي
+      // (Comment removed - was in Arabic)
       return current >= start || current <= end;
     }
   }
 
   /**
-   * إنشاء مستمع للإشعارات الجديدة
+   * (Comment removed - was in Arabic)
    */
   onNewNotifications(userId: string, callback: (notifications: Notification[]) => void): () => void {
     const q = query(
@@ -722,7 +710,7 @@ export class ComprehensiveNotificationService {
   }
 
   /**
-   * تنظيف الإشعارات المنتهية الصلاحية
+   * (Comment removed - was in Arabic)
    */
   async cleanupExpiredNotifications(): Promise<void> {
     try {
@@ -740,11 +728,8 @@ export class ComprehensiveNotificationService {
           expired: true
         });
       }
-
-      console.log(`تم تنظيف ${snapshot.size} إشعار منتهي الصلاحية`);
-
-    } catch (error) {
-      console.error('خطأ في تنظيف الإشعارات المنتهية:', error);
+} catch (error) {
+      console.error('[SERVICE] :', error);
     }
   }
 }

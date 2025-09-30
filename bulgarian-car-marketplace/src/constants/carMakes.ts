@@ -1,6 +1,6 @@
 // src/constants/carMakes.ts
 // Comprehensive Car Makes List for Bulgarian Car Marketplace
-// قائمة شاملة لماركات السيارات لسوق السيارات البلغاري
+// (Comment removed - was in Arabic)
 
 export const CAR_MAKES = [
   'ABT', 'AC Schnitzer', 'Abarth', 'Acura', 'Alfa Romeo', 'Alpina', 'Alpine', 'Apex', 'Arrinera', 'Artega',

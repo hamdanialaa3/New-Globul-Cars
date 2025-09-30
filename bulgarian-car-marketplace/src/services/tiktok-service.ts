@@ -1,6 +1,6 @@
 // src/services/tiktok-service.ts
 // TikTok Integration Service for Bulgarian Car Marketplace
-// خدمة التكامل مع TikTok لسوق السيارات البلغاري
+// (Comment removed - was in Arabic)
 
 import { Logger, LogLevel } from './logger-service';
 import { RateLimiter } from './rate-limiter-service';
@@ -64,7 +64,7 @@ export interface TikTokUserProfile {
 
 /**
  * TikTok Service for Bulgarian Car Marketplace
- * خدمة TikTok لسوق السيارات البلغاري
+ * (Comment removed - was in Arabic)
  */
 class TikTokService {
   private accessToken: string | null = null;
@@ -77,7 +77,7 @@ class TikTokService {
   };
 
   // Professional services for production readiness
-  // الخدمات المهنية للجاهزية الإنتاجية
+  // (Comment removed - was in Arabic)
   private logger: Logger;
   private rateLimiter: RateLimiter;
 
@@ -108,7 +108,7 @@ class TikTokService {
 
   /**
    * Set access token for API calls
-   * تعيين رمز الوصول لاستدعاءات API
+   * (Comment removed - was in Arabic)
    */
   setAccessToken(token: string): void {
     this.accessToken = token;
@@ -116,7 +116,7 @@ class TikTokService {
 
   /**
    * Get current user profile
-   * الحصول على ملف المستخدم الحالي
+   * (Comment removed - was in Arabic)
    */
   async getCurrentUser(): Promise<TikTokUserProfile> {
     const cacheKey = 'current_user_profile';
@@ -186,7 +186,7 @@ class TikTokService {
 
   /**
    * Post car video to TikTok
-   * نشر فيديو سيارة على TikTok
+   * (Comment removed - was in Arabic)
    */
   async postCarVideo(postData: TikTokCarPost): Promise<TikTokVideo> {
     if (!this.accessToken) {
@@ -223,14 +223,14 @@ class TikTokService {
       const data = await response.json();
       return this.mapTikTokVideo(data.data);
     } catch (error) {
-      console.error('Error posting to TikTok:', error);
+      console.error('[SERVICE] Error posting to TikTok:', error);
       throw error;
     }
   }
 
   /**
    * Get user's videos
-   * الحصول على فيديوهات المستخدم
+   * (Comment removed - was in Arabic)
    */
   async getUserVideos(userId?: string, limit: number = 20): Promise<TikTokVideo[]> {
     if (!this.accessToken) {
@@ -253,14 +253,14 @@ class TikTokService {
       const data = await response.json();
       return data.data.videos.map((video: any) => this.mapTikTokVideo(video));
     } catch (error) {
-      console.error('Error fetching TikTok videos:', error);
+      console.error('[SERVICE] Error fetching TikTok videos:', error);
       throw error;
     }
   }
 
   /**
    * Search for car-related videos
-   * البحث عن فيديوهات متعلقة بالسيارات
+   * (Comment removed - was in Arabic)
    */
   async searchCarVideos(query: string, limit: number = 20): Promise<TikTokVideo[]> {
     try {
@@ -281,14 +281,14 @@ class TikTokService {
       const data = await response.json();
       return data.data.videos.map((video: any) => this.mapTikTokVideo(video));
     } catch (error) {
-      console.error('Error searching TikTok videos:', error);
+      console.error('[SERVICE] Error searching TikTok videos:', error);
       throw error;
     }
   }
 
   /**
    * Get trending car videos in Bulgaria
-   * الحصول على فيديوهات السيارات الرائجة في بلغاريا
+   * (Comment removed - was in Arabic)
    */
   async getTrendingBulgarianCarVideos(limit: number = 20): Promise<TikTokVideo[]> {
     try {
@@ -323,14 +323,14 @@ class TikTokService {
 
       return uniqueVideos;
     } catch (error) {
-      console.error('Error getting trending Bulgarian car videos:', error);
+      console.error('[SERVICE] Error getting trending Bulgarian car videos:', error);
       throw error;
     }
   }
 
   /**
    * Get video comments
-   * الحصول على تعليقات الفيديو
+   * (Comment removed - was in Arabic)
    */
   async getVideoComments(videoId: string, limit: number = 20): Promise<TikTokComment[]> {
     if (!this.accessToken) {
@@ -353,14 +353,14 @@ class TikTokService {
       const data = await response.json();
       return data.data.comments.map((comment: any) => this.mapTikTokComment(comment));
     } catch (error) {
-      console.error('Error fetching video comments:', error);
+      console.error('[SERVICE] Error fetching video comments:', error);
       throw error;
     }
   }
 
   /**
    * Generate Bulgarian description for car post
-   * إنشاء وصف بلغاري لمنشور السيارة
+   * (Comment removed - was in Arabic)
    */
   private generateBulgarianDescription(postData: TikTokCarPost): string {
     let description = postData.description;
@@ -378,7 +378,7 @@ class TikTokService {
 
   /**
    * Map TikTok API user data to our interface
-   * تحويل بيانات مستخدم TikTok API إلى واجهتنا
+   * (Comment removed - was in Arabic)
    */
   private mapTikTokUser(data: any): TikTokUserProfile {
     return {
@@ -397,7 +397,7 @@ class TikTokService {
 
   /**
    * Map TikTok API video data to our interface
-   * تحويل بيانات فيديو TikTok API إلى واجهتنا
+   * (Comment removed - was in Arabic)
    */
   private mapTikTokVideo(data: any): TikTokVideo {
     return {
@@ -420,7 +420,7 @@ class TikTokService {
 
   /**
    * Map TikTok API comment data to our interface
-   * تحويل بيانات تعليق TikTok API إلى واجهتنا
+   * (Comment removed - was in Arabic)
    */
   private mapTikTokComment(data: any): TikTokComment {
     return {
@@ -436,7 +436,7 @@ class TikTokService {
 
   /**
    * Extract hashtags from text
-   * استخراج الهاشتاج من النص
+   * (Comment removed - was in Arabic)
    */
   private extractHashtags(text: string): string[] {
     const hashtagRegex = /#[\w\u0400-\u04FF]+/g;
@@ -446,7 +446,7 @@ class TikTokService {
 
   /**
    * Detect language from text
-   * كشف اللغة من النص
+   * (Comment removed - was in Arabic)
    */
   private detectLanguage(text: string): 'bg' | 'en' {
     // Simple language detection based on Cyrillic characters

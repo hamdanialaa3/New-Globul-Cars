@@ -3,9 +3,9 @@
 
 import { createGlobalStyle, DefaultTheme } from 'styled-components';
 
-// Bulgarian Color Palette - نظام ألوان mobile.de مستوحى من التصميم الألماني
+// Bulgarian Color Palette - ???? ????? mobile.de ?????? ?? ??????? ????????
 export const bulgarianColors = {
-  // الألوان الأساسية - نظام mobile.de (أزرق داكن، أحمر، أبيض)
+  // (Comment removed - was in Arabic)
   primary: {
     main: '#003366',        // أزرق داكن للهيدر (mobile.de style)
     light: '#0066CC',       // أزرق فاتح للروابط
@@ -25,7 +25,7 @@ export const bulgarianColors = {
     contrastText: '#FFFFFF'
   },
 
-  // ألوان إضافية للتحكم الدقيق - نظام أزرق متدرج
+  // (Comment removed - was in Arabic)
   blue: {
     pure: '#007BFF',        // أزرق نقي
     bright: '#00BFFF',      // أزرق لامع
@@ -57,7 +57,7 @@ export const bulgarianColors = {
     darkSlate: '#2F4F4F'    // لوحي داكن
   },
 
-  // ألوان محايدة - نظام أزرق رمادي
+  // (Comment removed - was in Arabic)
   grey: {
     50: '#F8FAFC',   // أزرق رمادي فاتح جداً
     100: '#F1F5F9',  // أزرق رمادي فاتح
@@ -71,7 +71,7 @@ export const bulgarianColors = {
     900: '#0F172A'   // أزرق رمادي أسود تقريباً
   },
 
-  // ألوان الحالة - نظام mobile.de (أحمر للخطأ، أخضر للنجاح)
+  // (Comment removed - was in Arabic)
   success: {
     main: '#28A745',    // أخضر للنجاح
     light: '#51CF66',   // أخضر فاتح
@@ -97,7 +97,7 @@ export const bulgarianColors = {
     contrastText: '#FFFFFF'
   },
 
-  // ألوان الخلفية - نظام mobile.de (أبيض، رمادي فاتح)
+  // (Comment removed - was in Arabic)
   background: {
     default: '#FFFFFF',     // أبيض نقي (mobile.de style)
     paper: '#F8F9FA',       // رمادي فاتح جداً للبطاقات
@@ -107,7 +107,7 @@ export const bulgarianColors = {
     darkOverlay: 'rgba(0, 51, 102, 0.7)' // تراكب أزرق داكن
   },
 
-  // ألوان النصوص - مع تباين مثالي للقراءة (mobile.de style)
+  // (Comment removed - was in Arabic)
   text: {
     primary: '#333333',     // رمادي داكن (mobile.de style)
     secondary: '#666666',   // رمادي متوسط
@@ -118,7 +118,7 @@ export const bulgarianColors = {
   }
 };
 
-// Bulgarian Typography - خطوط mobile.de (نظيفة وألمانية)
+// Bulgarian Typography - ???? mobile.de (????? ????????)
 export const bulgarianTypography = {
   fontFamily: {
     primary: "'Arial', 'Helvetica', sans-serif",  // خطوط نظيفة (mobile.de style)
@@ -175,7 +175,7 @@ export const bulgarianBreakpoints = {
   xl: '1920px'
 };
 
-// Bulgarian Shadows - نظام أزرق متدرج
+// Bulgarian Shadows - ???? ???? ?????
 export const bulgarianShadows = {
   none: 'none',
   sm: '0 1px 2px 0 rgba(0, 123, 255, 0.05)',
@@ -210,7 +210,7 @@ export const bulgarianTheme: DefaultTheme = {
   shadows: bulgarianShadows,
   borderRadius: bulgarianBorderRadius,
 
-  // Component specific styles - مكونات mobile.de
+  // Component specific styles - ?????? mobile.de
   components: {
     button: {
       borderRadius: bulgarianBorderRadius.sm,  // حواف أقل دائرية (mobile.de style)
@@ -247,7 +247,7 @@ export const bulgarianTheme: DefaultTheme = {
   }
 };
 
-// Global Styles - تبسيط لسهولة التحكم
+// Global Styles - ????? ?????? ??????
 export const GlobalStyles = createGlobalStyle`
   * {
     margin: 0;
@@ -306,7 +306,7 @@ export const GlobalStyles = createGlobalStyle`
     }
   }
 
-  /* تبسيط الأزرار - mobile.de style */
+  /* (Comment removed - was in Arabic)
   button {
     font-family: inherit;
     border: 1px solid ${bulgarianColors.secondary.main};  // حدود حمراء
@@ -329,7 +329,7 @@ export const GlobalStyles = createGlobalStyle`
     }
   }
 
-  /* تبسيط البطاقات - mobile.de style */
+  /* (Comment removed - was in Arabic)
   .card, .container, .paper {
     background: ${bulgarianColors.background.paper};
     border: 1px solid #E0E0E0;  // حدود رمادية فاتحة
@@ -340,7 +340,7 @@ export const GlobalStyles = createGlobalStyle`
     color: ${bulgarianColors.text.primary};
   }
 
-  /* تبسيط حقول الإدخال */
+  /* (Comment removed - was in Arabic)
   input, textarea, select {
     font-family: inherit;
     font-size: inherit;
@@ -358,7 +358,7 @@ export const GlobalStyles = createGlobalStyle`
     }
   }
 
-  /* تبسيط الروابط في التنقل */
+  /* (Comment removed - was in Arabic)
   nav a, .nav-link {
     color: ${bulgarianColors.text.primary};
     text-decoration: none;
@@ -371,7 +371,7 @@ export const GlobalStyles = createGlobalStyle`
     }
   }
 
-  /* تبسيط الهيدر والفوتر - mobile.de style */
+  /* (Comment removed - was in Arabic)
   header, .header {
     background: ${bulgarianColors.primary.main};  // أزرق داكن للهيدر
     border-bottom: 1px solid ${bulgarianColors.primary.dark};
@@ -447,7 +447,7 @@ export const GlobalStyles = createGlobalStyle`
     backdrop-filter: blur(5px);
   }
 
-  /* (تم تبسيط الأنماط العالمية لتجنب التعارض وضمان تطبيق ألوان mobile.de) */
+  /* (?? ????? ??????? ???????? ????? ??????? ????? ????? ????? mobile.de) */
 
   /* Print styles */
   @media print {

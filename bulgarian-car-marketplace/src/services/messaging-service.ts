@@ -189,7 +189,7 @@ export class BulgarianMessagingService {
 
       return docRef.id;
     } catch (error) {
-      console.error('Error sending message:', error);
+      console.error('[SERVICE] Error sending message:', error);
       throw new Error('Грешка при изпращане на съобщението');
     }
   }
@@ -308,7 +308,7 @@ export class BulgarianMessagingService {
 
       return chatRoomId;
     } catch (error) {
-      console.error('Error creating chat room:', error);
+      console.error('[SERVICE] Error creating chat room:', error);
       throw new Error('Грешка при създаване на чат стая');
     }
   }
@@ -361,7 +361,7 @@ export class BulgarianMessagingService {
 
       return docRef.id;
     } catch (error) {
-      console.error('Error sending chat message:', error);
+      console.error('[SERVICE] Error sending chat message:', error);
       throw new Error('Грешка при изпращане на съобщението');
     }
   }
@@ -437,7 +437,7 @@ export class BulgarianMessagingService {
         });
       }
     } catch (error) {
-      console.error('Error toggling message like:', error);
+      console.error('[SERVICE] Error toggling message like:', error);
       throw new Error('Грешка при харесване на съобщението');
     }
   }
@@ -470,7 +470,7 @@ export class BulgarianMessagingService {
         editedAt: serverTimestamp()
       });
     } catch (error) {
-      console.error('Error editing message:', error);
+      console.error('[SERVICE] Error editing message:', error);
       throw new Error('Грешка при редактиране на съобщението');
     }
   }
@@ -499,7 +499,7 @@ export class BulgarianMessagingService {
 
       await deleteDoc(messageRef);
     } catch (error) {
-      console.error('Error deleting message:', error);
+      console.error('[SERVICE] Error deleting message:', error);
       throw new Error('Грешка при изтриване на съобщението');
     }
   }
@@ -557,7 +557,7 @@ export class BulgarianMessagingService {
 
       return stats;
     } catch (error) {
-      console.error('Error getting message stats:', error);
+      console.error('[SERVICE] Error getting message stats:', error);
       throw new Error('Грешка при зареждане на статистиките');
     }
   }
@@ -577,7 +577,7 @@ export class BulgarianMessagingService {
       }
       return null;
     } catch (error) {
-      console.error('Error getting chat room:', error);
+      console.error('[SERVICE] Error getting chat room:', error);
       return null;
     }
   }
@@ -662,7 +662,7 @@ export class BulgarianMessagingService {
         [`messageCount.${messageType}`]: increment(1)
       });
     } catch (error) {
-      console.error('Error updating car activity:', error);
+      console.error('[SERVICE] Error updating car activity:', error);
     }
   }
 
@@ -674,7 +674,7 @@ export class BulgarianMessagingService {
         updatedAt: serverTimestamp()
       });
     } catch (error) {
-      console.error('Error updating user message stats:', error);
+      console.error('[SERVICE] Error updating user message stats:', error);
     }
   }
 
@@ -705,7 +705,7 @@ export class BulgarianMessagingService {
         ...unreadUpdates
       });
     } catch (error) {
-      console.error('Error updating chat room last message:', error);
+      console.error('[SERVICE] Error updating chat room last message:', error);
     }
   }
 
@@ -744,7 +744,7 @@ export class BulgarianMessagingService {
         createdAt: serverTimestamp()
       });
     } catch (error) {
-      console.error('Error sending notification:', error);
+      console.error('[SERVICE] Error sending notification:', error);
     }
   }
 

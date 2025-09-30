@@ -1,6 +1,6 @@
 // src/services/cache-service.ts
 // Professional Cache Service for Bulgarian Car Marketplace
-// خدمة التخزين المؤقت المهنية لسوق السيارات البلغاري
+// (Comment removed - was in Arabic)
 
 export interface CacheConfig {
   ttl: number; // Time to live in milliseconds
@@ -33,7 +33,7 @@ export interface CacheStats {
 
 /**
  * Professional Cache Service with LRU eviction and compression
- * خدمة التخزين المؤقت المهنية مع إزالة LRU والضغط
+ * (Comment removed - was in Arabic)
  */
 export class CacheService {
   private config: Required<CacheConfig>;
@@ -78,7 +78,7 @@ export class CacheService {
 
   /**
    * Get value from cache
-   * الحصول على قيمة من التخزين المؤقت
+   * (Comment removed - was in Arabic)
    */
   get<T = any>(key: string): T | null {
     const fullKey = this.getFullKey(key);
@@ -111,7 +111,7 @@ export class CacheService {
 
   /**
    * Set value in cache
-   * تعيين قيمة في التخزين المؤقت
+   * (Comment removed - was in Arabic)
    */
   set<T = any>(key: string, value: T, customTtl?: number): void {
     const fullKey = this.getFullKey(key);
@@ -146,7 +146,7 @@ export class CacheService {
 
   /**
    * Delete value from cache
-   * حذف قيمة من التخزين المؤقت
+   * (Comment removed - was in Arabic)
    */
   delete(key: string): boolean {
     const fullKey = this.getFullKey(key);
@@ -165,7 +165,7 @@ export class CacheService {
 
   /**
    * Check if key exists and is not expired
-   * التحقق من وجود المفتاح وأنه غير منتهي الصلاحية
+   * (Comment removed - was in Arabic)
    */
   has(key: string): boolean {
     const fullKey = this.getFullKey(key);
@@ -183,7 +183,7 @@ export class CacheService {
 
   /**
    * Get or set value (cache-aside pattern)
-   * الحصول على القيمة أو تعيينها (نمط cache-aside)
+   * (Comment removed - was in Arabic)
    */
   async getOrSet<T>(
     key: string,
@@ -202,7 +202,7 @@ export class CacheService {
 
   /**
    * Clear all cache entries
-   * مسح جميع إدخالات التخزين المؤقت
+   * (Comment removed - was in Arabic)
    */
   clear(): void {
     this.cache.clear();
@@ -213,7 +213,7 @@ export class CacheService {
 
   /**
    * Get cache statistics
-   * الحصول على إحصائيات التخزين المؤقت
+   * (Comment removed - was in Arabic)
    */
   getStats(): CacheStats {
     return { ...this.stats };
@@ -221,7 +221,7 @@ export class CacheService {
 
   /**
    * Get all keys
-   * الحصول على جميع المفاتيح
+   * (Comment removed - was in Arabic)
    */
   keys(): string[] {
     return Array.from(this.cache.keys()).map(key => this.stripNamespace(key));
@@ -229,7 +229,7 @@ export class CacheService {
 
   /**
    * Get cache size information
-   * الحصول على معلومات حجم التخزين المؤقت
+   * (Comment removed - was in Arabic)
    */
   getSizeInfo(): {
     entries: number;
@@ -247,7 +247,7 @@ export class CacheService {
 
   /**
    * Warm up cache with initial data
-   * تسخين التخزين المؤقت بالبيانات الأولية
+   * (Comment removed - was in Arabic)
    */
   async warmUp(data: Record<string, any>): Promise<void> {
     for (const [key, value] of Object.entries(data)) {
@@ -257,7 +257,7 @@ export class CacheService {
 
   /**
    * Export cache data for backup
-   * تصدير بيانات التخزين المؤقت للنسخ الاحتياطي
+   * (Comment removed - was in Arabic)
    */
   exportData(): Record<string, CacheEntry> {
     const data: Record<string, CacheEntry> = {};
@@ -272,7 +272,7 @@ export class CacheService {
 
   /**
    * Import cache data from backup
-   * استيراد بيانات التخزين المؤقت من النسخ الاحتياطي
+   * (Comment removed - was in Arabic)
    */
   importData(data: Record<string, CacheEntry>): void {
     this.clear();
@@ -285,7 +285,7 @@ export class CacheService {
 
   /**
    * Destroy cache service
-   * تدمير خدمة التخزين المؤقت
+   * (Comment removed - was in Arabic)
    */
   destroy(): void {
     if (this.cleanupInterval) {
@@ -301,7 +301,7 @@ export class CacheService {
 
   /**
    * Check if entry is expired
-   * التحقق من انتهاء صلاحية الإدخال
+   * (Comment removed - was in Arabic)
    */
   private isExpired(entry: CacheEntry): boolean {
     return Date.now() - entry.timestamp > entry.ttl;
@@ -309,7 +309,7 @@ export class CacheService {
 
   /**
    * Evict least recently used entry
-   * إزالة الإدخال الأقل استخداماً مؤخراً
+   * (Comment removed - was in Arabic)
    */
   private evictLRU(): void {
     if (this.accessOrder.length === 0) return;
@@ -327,7 +327,7 @@ export class CacheService {
 
   /**
    * Update access order for LRU
-   * تحديث ترتيب الوصول لـ LRU
+   * (Comment removed - was in Arabic)
    */
   private updateAccessOrder(key: string): void {
     this.removeFromAccessOrder(key);
@@ -336,7 +336,7 @@ export class CacheService {
 
   /**
    * Remove key from access order
-   * إزالة المفتاح من ترتيب الوصول
+   * (Comment removed - was in Arabic)
    */
   private removeFromAccessOrder(key: string): void {
     const index = this.accessOrder.indexOf(key);
@@ -347,7 +347,7 @@ export class CacheService {
 
   /**
    * Update hit rate
-   * تحديث معدل الإصابة
+   * (Comment removed - was in Arabic)
    */
   private updateHitRate(): void {
     const total = this.stats.hits + this.stats.misses;
@@ -356,7 +356,7 @@ export class CacheService {
 
   /**
    * Get full key with namespace
-   * الحصول على المفتاح الكامل مع مساحة الاسم
+   * (Comment removed - was in Arabic)
    */
   private getFullKey(key: string): string {
     return `${this.config.namespace}:${key}`;
@@ -364,7 +364,7 @@ export class CacheService {
 
   /**
    * Strip namespace from key
-   * إزالة مساحة الاسم من المفتاح
+   * (Comment removed - was in Arabic)
    */
   private stripNamespace(fullKey: string): string {
     return fullKey.replace(`${this.config.namespace}:`, '');
@@ -372,7 +372,7 @@ export class CacheService {
 
   /**
    * Estimate size of data in bytes
-   * تقدير حجم البيانات بالبايت
+   * (Comment removed - was in Arabic)
    */
   private estimateSize(data: any): number {
     if (data === null || data === undefined) return 0;
@@ -383,7 +383,7 @@ export class CacheService {
 
   /**
    * Compress data (simple implementation)
-   * ضغط البيانات (تنفيذ بسيط)
+   * (Comment removed - was in Arabic)
    */
   private compress(data: any): any {
     // In a real implementation, you would use a compression library
@@ -393,7 +393,7 @@ export class CacheService {
 
   /**
    * Decompress data
-   * فك ضغط البيانات
+   * (Comment removed - was in Arabic)
    */
   private decompress(data: any): any {
     // In a real implementation, you would use a decompression library
@@ -402,7 +402,7 @@ export class CacheService {
 
   /**
    * Clean up expired entries
-   * تنظيف الإدخالات المنتهية الصلاحية
+   * (Comment removed - was in Arabic)
    */
   private cleanup(): void {
     const now = Date.now();
@@ -421,7 +421,7 @@ export class CacheService {
 
   /**
    * Save cache to localStorage
-   * حفظ التخزين المؤقت في localStorage
+   * (Comment removed - was in Arabic)
    */
   private saveToPersistence(): void {
     try {
@@ -434,7 +434,7 @@ export class CacheService {
 
   /**
    * Load cache from localStorage
-   * تحميل التخزين المؤقت من localStorage
+   * (Comment removed - was in Arabic)
    */
   private loadFromPersistence(): void {
     try {
@@ -449,7 +449,7 @@ export class CacheService {
 }
 
 // Pre-configured cache instances for different use cases
-// مثيلات التخزين المؤقت المعدة مسبقاً للحالات المختلفة
+// (Comment removed - was in Arabic)
 
 export const apiCache = new CacheService({
   ttl: 300000, // 5 minutes
@@ -471,5 +471,5 @@ export const socialMediaCache = new CacheService({
 });
 
 // Legacy export for backward compatibility
-// تصدير قديم للتوافق مع الإصدارات السابقة
+// (Comment removed - was in Arabic)
 export const cacheService = apiCache;

@@ -36,7 +36,7 @@ class CarListingService {
       });
       return docRef.id;
     } catch (error) {
-      console.error('Error creating car listing:', error);
+      console.error('[SERVICE] Error creating car listing:', error);
       throw new Error('Failed to create car listing');
     }
   }
@@ -50,7 +50,7 @@ class CarListingService {
         updatedAt: serverTimestamp()
       });
     } catch (error) {
-      console.error('Error updating car listing:', error);
+      console.error('[SERVICE] Error updating car listing:', error);
       throw new Error('Failed to update car listing');
     }
   }
@@ -61,7 +61,7 @@ class CarListingService {
       const docRef = doc(db, this.collectionName, id);
       await deleteDoc(docRef);
     } catch (error) {
-      console.error('Error deleting car listing:', error);
+      console.error('[SERVICE] Error deleting car listing:', error);
       throw new Error('Failed to delete car listing');
     }
   }
@@ -84,7 +84,7 @@ class CarListingService {
       }
       return null;
     } catch (error) {
-      console.error('Error getting car listing:', error);
+      console.error('[SERVICE] Error getting car listing:', error);
       throw new Error('Failed to get car listing');
     }
   }
@@ -183,7 +183,7 @@ class CarListingService {
         hasPrev: page > 1
       };
     } catch (error) {
-      console.error('Error getting car listings:', error);
+      console.error('[SERVICE] Error getting car listings:', error);
       throw new Error('Failed to get car listings');
     }
   }
@@ -200,7 +200,7 @@ class CarListingService {
       const urls = await Promise.all(uploadPromises);
       return urls;
     } catch (error) {
-      console.error('Error uploading images:', error);
+      console.error('[SERVICE] Error uploading images:', error);
       throw new Error('Failed to upload images');
     }
   }
@@ -215,7 +215,7 @@ class CarListingService {
 
       await Promise.all(deletePromises);
     } catch (error) {
-      console.error('Error deleting images:', error);
+      console.error('[SERVICE] Error deleting images:', error);
       throw new Error('Failed to delete images');
     }
   }
@@ -234,7 +234,7 @@ class CarListingService {
         });
       }
     } catch (error) {
-      console.error('Error incrementing views:', error);
+      console.error('[SERVICE] Error incrementing views:', error);
       throw new Error('Failed to increment views');
     }
   }
@@ -259,7 +259,7 @@ class CarListingService {
       }
       return false;
     } catch (error) {
-      console.error('Error toggling favorite:', error);
+      console.error('[SERVICE] Error toggling favorite:', error);
       throw new Error('Failed to toggle favorite');
     }
   }
@@ -289,7 +289,7 @@ class CarListingService {
 
       return listings;
     } catch (error) {
-      console.error('Error getting listings by seller:', error);
+      console.error('[SERVICE] Error getting listings by seller:', error);
       throw new Error('Failed to get listings by seller');
     }
   }
@@ -360,7 +360,7 @@ class CarListingService {
         hasPrev: false
       };
     } catch (error) {
-      console.error('Error searching car listings:', error);
+      console.error('[SERVICE] Error searching car listings:', error);
       throw new Error('Failed to search car listings');
     }
   }
@@ -375,7 +375,7 @@ class CarListingService {
         expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days from now
       });
     } catch (error) {
-      console.error('Error publishing listing:', error);
+      console.error('[SERVICE] Error publishing listing:', error);
       throw new Error('Failed to publish listing');
     }
   }
@@ -389,7 +389,7 @@ class CarListingService {
         updatedAt: serverTimestamp()
       });
     } catch (error) {
-      console.error('Error marking listing as sold:', error);
+      console.error('[SERVICE] Error marking listing as sold:', error);
       throw new Error('Failed to mark listing as sold');
     }
   }
@@ -421,7 +421,7 @@ class CarListingService {
 
       return listings;
     } catch (error) {
-      console.error('Error getting featured listings:', error);
+      console.error('[SERVICE] Error getting featured listings:', error);
       throw new Error('Failed to get featured listings');
     }
   }
@@ -453,7 +453,7 @@ class CarListingService {
 
       return listings;
     } catch (error) {
-      console.error('Error getting urgent listings:', error);
+      console.error('[SERVICE] Error getting urgent listings:', error);
       throw new Error('Failed to get urgent listings');
     }
   }

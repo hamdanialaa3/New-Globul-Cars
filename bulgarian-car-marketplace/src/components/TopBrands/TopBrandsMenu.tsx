@@ -36,7 +36,7 @@ const TopBrandsMenu: React.FC<TopBrandsMenuProps> = ({ language: _language }) =>
         onClick={() => setIsOpen(!isOpen)}
         aria-expanded={isOpen}
       >
-        {/* أيقونة سيارة */}
+        {/* (Comment removed - was in Arabic) */}
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
           <path d="M5 17h14v-5l-3-4H8l-3 4v5zm0 0v2m14-2v2M7 11h10M9 14h6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>

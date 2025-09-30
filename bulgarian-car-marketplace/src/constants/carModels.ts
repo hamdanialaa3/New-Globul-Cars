@@ -1,6 +1,6 @@
 // src/constants/carModels.ts
 // Comprehensive Car Models List for Bulgarian Car Marketplace
-// قائمة شاملة لموديلات السيارات لسوق السيارات البلغاري
+// (Comment removed - was in Arabic)
 
 export const CAR_MODELS = [
   // BMW Models

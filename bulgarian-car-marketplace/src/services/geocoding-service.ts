@@ -69,7 +69,7 @@ export class GeocodingService {
       console.warn('Geocoding failed:', data.status);
       return null;
     } catch (error) {
-      console.error('Geocoding error:', error);
+      console.error('[SERVICE] Geocoding error:', error);
       return null;
     }
   }
@@ -106,7 +106,7 @@ export class GeocodingService {
       console.warn('Reverse geocoding failed:', data.status);
       return null;
     } catch (error) {
-      console.error('Reverse geocoding error:', error);
+      console.error('[SERVICE] Reverse geocoding error:', error);
       return null;
     }
   }
@@ -227,6 +227,7 @@ export class GeocodingService {
 
 // Export singleton instance
 export const geocodingService = new GeocodingService();
+
 
 
 

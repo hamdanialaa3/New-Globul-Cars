@@ -2,8 +2,11 @@
 // Main component for Advanced Search Page
 // Refactored from monolithic 1699-line file to modular structure
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useAdvancedSearch } from './hooks/useAdvancedSearch';
+import { useSavedSearches } from '../../hooks/useSavedSearches';
+import { SearchData } from './types';
+import { Bookmark } from 'lucide-react';
 import {
   SearchContainer,
   Container,
@@ -49,6 +52,72 @@ const AdvancedSearchPage: React.FC = () => {
     radiusOptions,
     t
   } = useAdvancedSearch();
+
+  const { saveSearch, getSearchSummary } = useSavedSearches();
+
+  const convertToSavedSearchFilters = (data: SearchData): any => {
+    return {
+      make: data.make || undefined,
+      model: data.model || undefined,
+      priceMin: data.priceFrom ? parseInt(data.priceFrom) : undefined,
+      priceMax: data.priceTo ? parseInt(data.priceTo) : undefined,
+      yearMin: data.firstRegistrationFrom ? parseInt(data.firstRegistrationFrom) : undefined,
+      yearMax: data.firstRegistrationTo ? parseInt(data.firstRegistrationTo) : undefined,
+      mileageMax: data.mileageTo ? parseInt(data.mileageTo) : undefined,
+      fuelType: data.fuelType || undefined,
+      transmission: data.transmission || undefined,
+      engineMin: data.cubicCapacityFrom ? parseInt(data.cubicCapacityFrom) : undefined,
+      engineMax: data.cubicCapacityTo ? parseInt(data.cubicCapacityTo) : undefined,
+      powerMin: data.powerFrom ? parseInt(data.powerFrom) : undefined,
+      powerMax: data.powerTo ? parseInt(data.powerTo) : undefined,
+      location: data.city || undefined,
+      radius: data.radius ? parseInt(data.radius) : undefined,
+      condition: data.condition || undefined,
+      vehicleType: data.vehicleType || undefined,
+    };
+  };
+  const [showSaveModal, setShowSaveModal] = useState(false);
+  const [searchName, setSearchName] = useState('');
+
+  const handleSaveSearch = async () => {
+    if (!searchName.trim()) {
+      alert(t('advancedSearch.pleaseEnterName') || 'Please enter a name for this search');
+      return;
+    }
+
+    // Convert SearchData to SavedSearchFilters
+    const filters: any = {
+      make: searchData.make || undefined,
+      model: searchData.model || undefined,
+      priceMin: searchData.priceFrom ? parseInt(searchData.priceFrom) : undefined,
+      priceMax: searchData.priceTo ? parseInt(searchData.priceTo) : undefined,
+      yearMin: searchData.firstRegistrationFrom ? parseInt(searchData.firstRegistrationFrom) : undefined,
+      yearMax: searchData.firstRegistrationTo ? parseInt(searchData.firstRegistrationTo) : undefined,
+      mileageMax: searchData.mileageTo ? parseInt(searchData.mileageTo) : undefined,
+      fuelType: searchData.fuelType || undefined,
+      transmission: searchData.transmission || undefined,
+      engineMin: searchData.cubicCapacityFrom ? parseInt(searchData.cubicCapacityFrom) : undefined,
+      engineMax: searchData.cubicCapacityTo ? parseInt(searchData.cubicCapacityTo) : undefined,
+      powerMin: searchData.powerFrom ? parseInt(searchData.powerFrom) : undefined,
+      powerMax: searchData.powerTo ? parseInt(searchData.powerTo) : undefined,
+      location: searchData.city || undefined,
+      radius: searchData.radius ? parseInt(searchData.radius) : undefined,
+      condition: searchData.condition || undefined,
+      vehicleType: searchData.vehicleType || undefined,
+    };
+
+    const success = await saveSearch({
+      name: searchName.trim(),
+      filters,
+      resultsCount: 0,
+      notifyOnNewResults: false
+    });
+
+    if (success) {
+      setShowSaveModal(false);
+      setSearchName('');
+    }
+  };
 
   return (
     <SearchContainer>
@@ -946,10 +1015,170 @@ const AdvancedSearchPage: React.FC = () => {
             <ResetButton type="button" onClick={handleReset}>
               {t('advancedSearch.resetFilters')}
             </ResetButton>
+            <SearchButton 
+              type="button" 
+              onClick={() => setShowSaveModal(true)}
+              style={{ 
+                background: '#28a745',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                justifyContent: 'center'
+              }}
+            >
+              <Bookmark size={18} />
+              {t('advancedSearch.saveSearch') || 'حفظ البحث'}
+            </SearchButton>
             <SearchButton type="submit" disabled={isSearching}>
               {isSearching ? t('advancedSearch.searching') : t('advancedSearch.searchCars')}
             </SearchButton>
           </ActionSection>
+
+          {/* Save Search Modal */}
+          {showSaveModal && (
+            <div style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'rgba(0, 0, 0, 0.5)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 9999
+            }} onClick={() => setShowSaveModal(false)}>
+              <div style={{
+                background: 'white',
+                borderRadius: '12px',
+                padding: '32px',
+                maxWidth: '500px',
+                width: '90%',
+                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)'
+              }} onClick={(e) => e.stopPropagation()}>
+                <h3 style={{
+                  fontSize: '24px',
+                  fontWeight: '600',
+                  marginBottom: '8px',
+                  color: '#212529'
+                }}>
+                  💾 {t('advancedSearch.saveSearch') || 'حفظ البحث'}
+                </h3>
+                <p style={{
+                  fontSize: '14px',
+                  color: '#6c757d',
+                  marginBottom: '24px'
+                }}>
+                  {t('advancedSearch.saveSearchDescription') || 'أعط اسماً لهذا البحث للوصول السريع لاحقاً'}
+                </p>
+                
+                <div style={{ marginBottom: '24px' }}>
+                  <label style={{
+                    display: 'block',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    marginBottom: '8px',
+                    color: '#212529'
+                  }}>
+                    {t('advancedSearch.searchName') || 'اسم البحث'}
+                  </label>
+                  <input
+                    type="text"
+                    value={searchName}
+                    onChange={(e) => setSearchName(e.target.value)}
+                    placeholder={t('advancedSearch.searchNamePlaceholder') || 'مثال: BMW 3 Series 2020+ Sofia'}
+                    style={{
+                      width: '100%',
+                      padding: '12px 16px',
+                      border: '1px solid #e5e5e5',
+                      borderRadius: '8px',
+                      fontSize: '16px',
+                      outline: 'none',
+                      transition: 'border-color 0.2s'
+                    }}
+                    onFocus={(e) => e.target.style.borderColor = '#005ca9'}
+                    onBlur={(e) => e.target.style.borderColor = '#e5e5e5'}
+                    autoFocus
+                  />
+                </div>
+
+                <div style={{
+                  padding: '16px',
+                  background: '#f8f9fa',
+                  borderRadius: '8px',
+                  marginBottom: '24px'
+                }}>
+                  <p style={{
+                    fontSize: '13px',
+                    color: '#6c757d',
+                    marginBottom: '8px'
+                  }}>
+                    📋 {t('advancedSearch.searchSummary') || 'ملخص البحث'}:
+                  </p>
+                  <p style={{
+                    fontSize: '14px',
+                    color: '#212529',
+                    fontWeight: '500'
+                  }}>
+                    {getSearchSummary(convertToSavedSearchFilters(searchData))}
+                  </p>
+                </div>
+
+                <div style={{
+                  display: 'flex',
+                  gap: '12px'
+                }}>
+                  <button
+                    onClick={() => setShowSaveModal(false)}
+                    style={{
+                      flex: 1,
+                      padding: '12px 24px',
+                      background: '#f8f9fa',
+                      border: 'none',
+                      borderRadius: '8px',
+                      fontSize: '16px',
+                      fontWeight: '500',
+                      cursor: 'pointer',
+                      transition: 'background 0.2s'
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.background = '#e9ecef'}
+                    onMouseLeave={(e) => e.currentTarget.style.background = '#f8f9fa'}
+                  >
+                    {t('common.cancel') || 'إلغاء'}
+                  </button>
+                  <button
+                    onClick={handleSaveSearch}
+                    disabled={!searchName.trim()}
+                    style={{
+                      flex: 1,
+                      padding: '12px 24px',
+                      background: searchName.trim() ? '#28a745' : '#ccc',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '8px',
+                      fontSize: '16px',
+                      fontWeight: '600',
+                      cursor: searchName.trim() ? 'pointer' : 'not-allowed',
+                      transition: 'all 0.2s',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '8px'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (searchName.trim()) e.currentTarget.style.background = '#218838';
+                    }}
+                    onMouseLeave={(e) => {
+                      if (searchName.trim()) e.currentTarget.style.background = '#28a745';
+                    }}
+                  >
+                    <Bookmark size={18} />
+                    {t('advancedSearch.save') || 'حفظ'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </SearchForm>
 
         {/* Results Summary Placeholder */}

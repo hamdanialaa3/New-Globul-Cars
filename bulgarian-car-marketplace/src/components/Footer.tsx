@@ -233,7 +233,7 @@ const Footer: React.FC = () => {
 
         <FooterBottom>
           <FooterCopyright>
-            © 2024 Globul Cars. {t('footer.copyright.rights', 'All rights reserved.')} 
+            © 2024 ---------. {t('footer.copyright.rights', 'All rights reserved.')} 
             <Heart size={16} color="#e53e3e" />
           </FooterCopyright>
           <FooterBottomLinks>

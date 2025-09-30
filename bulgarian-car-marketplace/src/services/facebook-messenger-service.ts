@@ -1,6 +1,6 @@
 // src/services/facebook-messenger-service.ts
 // Professional Facebook Messenger Integration for Bulgarian Car Marketplace
-// تكامل احترافي مع Facebook Messenger لسوق السيارات البلغاري
+// (Comment removed - was in Arabic)
 
 interface MessengerUser {
   id: string;
@@ -102,7 +102,7 @@ interface CarInquiry {
 
 /**
  * Professional Facebook Messenger Service for Car Marketplace
- * خدمة احترافية لـ Facebook Messenger لسوق السيارات
+ * (Comment removed - was in Arabic)
  */
 export class FacebookMessengerService {
   private static readonly GRAPH_API_URL = 'https://graph.facebook.com/v18.0';
@@ -117,15 +117,14 @@ export class FacebookMessengerService {
 
   /**
    * Verify webhook for Facebook Messenger
-   * التحقق من webhook لـ Facebook Messenger
+   * (Comment removed - was in Arabic)
    */
   verifyWebhook(mode: string, token: string, challenge: string): string | null {
     if (mode && token) {
       if (mode === 'subscribe' && token === this.verifyToken) {
-        console.log('🔗 Facebook Messenger webhook verified successfully');
-        return challenge;
+return challenge;
       } else {
-        console.error('❌ Failed to verify webhook - invalid token');
+        console.error('[SERVICE] Failed to verify webhook - invalid token');
         return null;
       }
     }
@@ -134,7 +133,7 @@ export class FacebookMessengerService {
 
   /**
    * Process incoming webhook messages
-   * معالجة الرسائل الواردة من webhook
+   * (Comment removed - was in Arabic)
    */
   async processWebhookMessage(body: any): Promise<void> {
     if (body.object === 'page') {
@@ -162,7 +161,7 @@ export class FacebookMessengerService {
 
   /**
    * Handle incoming text messages with Bulgarian car chatbot
-   * التعامل مع الرسائل النصية الواردة مع شات بوت السيارات البلغاري
+   * (Comment removed - was in Arabic)
    */
   private async handleMessage(senderId: string, message: any, userInfo: MessengerUser): Promise<void> {
     try {
@@ -264,14 +263,14 @@ export class FacebookMessengerService {
         }
       }
     } catch (error) {
-      console.error('Error handling message:', error);
+      console.error('[SERVICE] Error handling message:', error);
       await this.sendMessage(senderId, 'Sorry, something went wrong. Please try again. / Съжалявам, възникна грешка. Моля, опитай отново.');
     }
   }
 
   /**
    * Handle postback events (button clicks)
-   * التعامل مع أحداث postback (النقر على الأزرار)
+   * (Comment removed - was in Arabic)
    */
   private async handlePostback(senderId: string, postback: any, userInfo: MessengerUser): Promise<void> {
     const payload = postback.payload;
@@ -308,13 +307,13 @@ export class FacebookMessengerService {
           break;
       }
     } catch (error) {
-      console.error('Error handling postback:', error);
+      console.error('[SERVICE] Error handling postback:', error);
     }
   }
 
   /**
    * Send message with attachments and quick replies
-   * إرسال رسالة مع المرفقات والردود السريعة
+   * (Comment removed - was in Arabic)
    */
   async sendMessage(
     recipientId: string, 
@@ -323,7 +322,7 @@ export class FacebookMessengerService {
     quickReplies: MessengerQuickReply[] = []
   ): Promise<boolean> {
     if (!this.pageAccessToken) {
-      console.error('Page access token not found');
+      console.error('[SERVICE] Page access token not found');
       return false;
     }
 
@@ -354,21 +353,19 @@ export class FacebookMessengerService {
       const result = await response.json();
 
       if (result.error) {
-        console.error('Messenger API error:', result.error);
+        console.error('[SERVICE] Messenger API error:', result.error);
         return false;
       }
-
-      console.log('✅ Message sent successfully');
-      return true;
+return true;
     } catch (error) {
-      console.error('Error sending message:', error);
+      console.error('[SERVICE] Error sending message:', error);
       return false;
     }
   }
 
   /**
    * Get user information from Messenger
-   * الحصول على معلومات المستخدم من Messenger
+   * (Comment removed - was in Arabic)
    */
   async getUserInfo(userId: string): Promise<MessengerUser> {
     try {
@@ -384,7 +381,7 @@ export class FacebookMessengerService {
 
       return userInfo;
     } catch (error) {
-      console.error('Error fetching user info:', error);
+      console.error('[SERVICE] Error fetching user info:', error);
       // Return default user info
       return {
         id: userId,
@@ -399,7 +396,7 @@ export class FacebookMessengerService {
 
   /**
    * Create car carousel for displaying search results
-   * إنشاء عرض متحرك للسيارات لعرض نتائج البحث
+   * (Comment removed - was in Arabic)
    */
   private createCarCarousel(cars: any[], lang: 'bg' | 'en'): any {
     const elements = cars.slice(0, 10).map(car => ({
@@ -442,7 +439,7 @@ export class FacebookMessengerService {
 
   /**
    * Send car search options
-   * إرسال خيارات البحث عن السيارات
+   * (Comment removed - was in Arabic)
    */
   private async sendCarSearchOptions(recipientId: string, lang: 'bg' | 'en'): Promise<void> {
     const text = lang === 'bg'
@@ -461,7 +458,7 @@ export class FacebookMessengerService {
 
   /**
    * Send contact information
-   * إرسال معلومات الاتصال
+   * (Comment removed - was in Arabic)
    */
   private async sendContactInfo(recipientId: string, lang: 'bg' | 'en'): Promise<void> {
     const text = lang === 'bg'
@@ -495,7 +492,7 @@ export class FacebookMessengerService {
 
   /**
    * Transfer to human agent
-   * النقل إلى وكيل بشري
+   * (Comment removed - was in Arabic)
    */
   private async transferToHumanAgent(recipientId: string, lang: 'bg' | 'en'): Promise<void> {
     const text = lang === 'bg'
@@ -506,8 +503,7 @@ export class FacebookMessengerService {
 
     // Here you would typically integrate with a customer service platform
     // Log the request for manual follow-up
-    console.log(`🏷️ Human agent requested for user ${recipientId}`);
-  }
+}
 
   // Helper methods for text analysis
   private detectEnglish(text: string): boolean {
@@ -552,7 +548,7 @@ export class FacebookMessengerService {
 
   /**
    * Mock search cars function (replace with actual search logic)
-   * وظيفة وهمية للبحث عن السيارات (استبدل بمنطق البحث الفعلي)
+   * (Comment removed - was in Arabic)
    */
   private async searchCars(query: string, lang: 'bg' | 'en'): Promise<any[]> {
     // This is a mock implementation
@@ -574,7 +570,7 @@ export class FacebookMessengerService {
 
   /**
    * Log customer inquiry for analytics
-   * تسجيل استفسار العميل للتحليلات
+   * (Comment removed - was in Arabic)
    */
   private async logCustomerInquiry(userId: string, message: string, language: 'bg' | 'en'): Promise<void> {
     const inquiry: Partial<CarInquiry> = {
@@ -589,8 +585,7 @@ export class FacebookMessengerService {
     };
 
     // Here you would save to your database
-    console.log('📊 Logged customer inquiry:', inquiry);
-  }
+}
 }
 
 // Singleton instance for the Bulgarian Car Marketplace

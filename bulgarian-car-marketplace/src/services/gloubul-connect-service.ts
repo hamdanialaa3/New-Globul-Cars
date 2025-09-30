@@ -64,7 +64,7 @@ export class GloubulConnectService {
   private readonly BULGARIAN_TIMEZONE = 'Europe/Sofia';
 
   /**
-   * تسجيل جهاز جديد في النظام
+   * (Comment removed - was in Arabic)
    */
   async registerDevice(deviceData: Omit<GloubulConnectDevice, 'lastSeen' | 'status'>): Promise<void> {
     try {
@@ -77,38 +77,38 @@ export class GloubulConnectService {
 
       await setDoc(deviceRef, device);
 
-      // إنشاء التوأم الرقمي الأولي
+      // (Comment removed - was in Arabic)
       await this.initializeDigitalTwin(deviceData.vin, deviceData.userId);
 
     } catch (error) {
-      console.error('خطأ في تسجيل الجهاز:', error);
+      console.error('[SERVICE] :', error);
       throw new Error('فشل في تسجيل جهاز Gloubul Connect');
     }
   }
 
   /**
-   * تحديث بيانات حية من الجهاز
+   * (Comment removed - was in Arabic)
    */
   async updateLiveData(liveData: VehicleLiveData): Promise<void> {
     try {
-      // حفظ البيانات الحية
+      // (Comment removed - was in Arabic)
       const liveDataRef = doc(collection(this.db, 'vehicleLiveData'));
       await setDoc(liveDataRef, liveData);
 
-      // تحديث التوأم الرقمي
+      // (Comment removed - was in Arabic)
       await this.updateDigitalTwin(liveData);
 
-      // تحديث حالة الجهاز
+      // (Comment removed - was in Arabic)
       await this.updateDeviceStatus(liveData.deviceId, 'active');
 
     } catch (error) {
-      console.error('خطأ في تحديث البيانات الحية:', error);
+      console.error('[SERVICE] :', error);
       throw new Error('فشل في تحديث بيانات السيارة');
     }
   }
 
   /**
-   * إنشاء التوأم الرقمي الأولي
+   * (Comment removed - was in Arabic)
    */
   private async initializeDigitalTwin(vin: string, userId: string): Promise<void> {
     const twinRef = doc(this.db, 'digitalTwins', vin);
@@ -134,14 +134,14 @@ export class GloubulConnectService {
   }
 
   /**
-   * تحديث التوأم الرقمي بناءً على البيانات الحية (للاستخدام الداخلي والخارجي)
+   * (Comment removed - was in Arabic)
    */
   async updateDigitalTwinFromLiveData(liveData: VehicleLiveData): Promise<void> {
     await this.updateDigitalTwin(liveData);
   }
 
   /**
-   * تحديث التوأم الرقمي بناءً على البيانات الحية
+   * (Comment removed - was in Arabic)
    */
   private async updateDigitalTwin(liveData: VehicleLiveData): Promise<void> {
     const twinRef = doc(this.db, 'digitalTwins', liveData.vin);
@@ -153,13 +153,13 @@ export class GloubulConnectService {
 
     const currentTwin = twinDoc.data() as DigitalTwin;
 
-    // تحليل حالة المحرك
+    // (Comment removed - was in Arabic)
     const engineHealth = this.analyzeEngineHealth(liveData);
 
-    // حساب متوسط استهلاك الوقود
+    // (Comment removed - was in Arabic)
     const avgFuelConsumption = this.calculateAverageFuelConsumption(currentTwin, liveData);
 
-    // حساب نقاط القيادة
+    // (Comment removed - was in Arabic)
     const drivingScore = this.calculateDrivingScore(liveData);
 
     const updatedTwin: Partial<DigitalTwin> = {
@@ -177,7 +177,7 @@ export class GloubulConnectService {
   }
 
   /**
-   * تحليل حالة المحرك
+   * (Comment removed - was in Arabic)
    */
   private analyzeEngineHealth(liveData: VehicleLiveData): 'good' | 'warning' | 'critical' {
     const errorCodes = liveData.activeErrorCodes;
@@ -196,28 +196,28 @@ export class GloubulConnectService {
   }
 
   /**
-   * حساب متوسط استهلاك الوقود
+   * (Comment removed - was in Arabic)
    */
   private calculateAverageFuelConsumption(currentTwin: DigitalTwin, liveData: VehicleLiveData): number {
-    // منطق بسيط للحساب - في الإنتاج سيتم تحسينه
+    // (Comment removed - was in Arabic)
     const currentConsumption = (liveData.speed > 0) ? (liveData.fuelLevelPercent / liveData.speed) * 100 : 0;
     return (currentTwin.averageFuelConsumption + currentConsumption) / 2;
   }
 
   /**
-   * حساب نقاط القيادة
+   * (Comment removed - was in Arabic)
    */
   private calculateDrivingScore(liveData: VehicleLiveData): number {
     let score = 100;
 
-    // خصم النقاط بناءً على التسارع الحاد
+    // (Comment removed - was in Arabic)
     const harshAcceleration = Math.abs(liveData.acceleration.x) > 2 || Math.abs(liveData.acceleration.y) > 2;
     if (harshAcceleration) score -= 10;
 
-    // خصم النقاط للسرعة العالية
+    // (Comment removed - was in Arabic)
     if (liveData.speed > 120) score -= 15;
 
-    // خصم النقاط لضغط الإطارات المنخفض
+    // (Comment removed - was in Arabic)
     const lowTirePressure = Object.values(liveData.tirePressure).some(pressure => pressure < 2.0);
     if (lowTirePressure) score -= 5;
 
@@ -225,7 +225,7 @@ export class GloubulConnectService {
   }
 
   /**
-   * تحديث حالة الجهاز
+   * (Comment removed - was in Arabic)
    */
   private async updateDeviceStatus(deviceId: string, status: GloubulConnectDevice['status']): Promise<void> {
     const deviceRef = doc(this.db, 'gloubulConnectDevices', deviceId);
@@ -236,7 +236,7 @@ export class GloubulConnectService {
   }
 
   /**
-   * الحصول على التوأم الرقمي لسيارة
+   * (Comment removed - was in Arabic)
    */
   async getDigitalTwin(vin: string): Promise<DigitalTwin | null> {
     try {
@@ -249,13 +249,13 @@ export class GloubulConnectService {
 
       return null;
     } catch (error) {
-      console.error('خطأ في الحصول على التوأم الرقمي:', error);
+      console.error('[SERVICE] :', error);
       return null;
     }
   }
 
   /**
-   * الحصول على جميع الأجهزة لمستخدم
+   * (Comment removed - was in Arabic)
    */
   async getUserDevices(userId: string): Promise<GloubulConnectDevice[]> {
     try {
@@ -267,13 +267,13 @@ export class GloubulConnectService {
       const devicesSnapshot = await getDocs(devicesQuery);
       return devicesSnapshot.docs.map(doc => doc.data() as GloubulConnectDevice);
     } catch (error) {
-      console.error('خطأ في الحصول على أجهزة المستخدم:', error);
+      console.error('[SERVICE] :', error);
       return [];
     }
   }
 
   /**
-   * كشف الحوادث بناءً على بيانات التسارع
+   * (Comment removed - was in Arabic)
    */
   detectAccident(liveData: VehicleLiveData): boolean {
     const { acceleration } = liveData;
@@ -281,12 +281,12 @@ export class GloubulConnectService {
       acceleration.x ** 2 + acceleration.y ** 2 + acceleration.z ** 2
     );
 
-    // كشف تصادم إذا كان التسارع أكبر من 3G
+    // (Comment removed - was in Arabic)
     return totalAcceleration > 29.4; // 3G في m/s²
   }
 
   /**
-   * إرسال إشعار طوارئ للحوادث
+   * (Comment removed - was in Arabic)
    */
   async sendEmergencyAlert(vin: string, location: GeoPoint): Promise<void> {
     try {
@@ -299,10 +299,9 @@ export class GloubulConnectService {
         emergencyServicesNotified: false
       });
 
-      // هنا سيتم إرسال إشعار للطوارئ والمستخدم
-      console.log(`تم كشف حادث للسيارة ${vin} في الموقع: ${location.latitude}, ${location.longitude}`);
-    } catch (error) {
-      console.error('خطأ في إرسال إشعار الطوارئ:', error);
+      // (Comment removed - was in Arabic)
+} catch (error) {
+      console.error('[SERVICE] :', error);
     }
   }
 }

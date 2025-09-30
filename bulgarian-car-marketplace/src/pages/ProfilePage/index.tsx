@@ -1,0 +1,303 @@
+import React from 'react';
+import { useTranslation } from '../../hooks/useTranslation';
+import LazyImage from '../../components/LazyImage';
+import { useProfile } from './hooks/useProfile';
+import * as S from './styles';
+
+const ProfilePage: React.FC = () => {
+  const { t } = useTranslation();
+  const {
+    user,
+    userCars,
+    loading,
+    editing,
+    formData,
+    handleInputChange,
+    handleSaveProfile,
+    handleCancelEdit,
+    handleLogout,
+    setEditing,
+  } = useProfile();
+
+  // Loading state
+  if (loading) {
+    return (
+      <S.ProfileContainer>
+        <S.PageContainer>
+          <div style={{ textAlign: 'center', padding: '4rem' }}>
+            {t('common.loading')}
+          </div>
+        </S.PageContainer>
+      </S.ProfileContainer>
+    );
+  }
+
+  // Not logged in state
+  if (!user) {
+    return (
+      <S.ProfileContainer>
+        <S.PageContainer>
+          <div style={{ textAlign: 'center', padding: '4rem' }}>
+            {t('profile.notLoggedIn')}
+          </div>
+        </S.PageContainer>
+      </S.ProfileContainer>
+    );
+  }
+
+  return (
+    <S.ProfileContainer>
+      <S.PageContainer>
+        {/* Page Header */}
+        <S.PageHeader>
+          <h1>{t('profile.title')}</h1>
+          <p>{t('profile.subtitle')}</p>
+        </S.PageHeader>
+
+        {/* Profile Grid */}
+        <S.ProfileGrid>
+          {/* Profile Sidebar */}
+          <S.ProfileSidebar>
+            {/* Avatar and Basic Info */}
+            <S.ProfileAvatar>
+              <div className="avatar">
+                {user.displayName ? user.displayName.charAt(0).toUpperCase() : user.email.charAt(0).toUpperCase()}
+              </div>
+              <div className="name">{user.displayName || t('profile.anonymous')}</div>
+              <div className="email">{user.email}</div>
+            </S.ProfileAvatar>
+
+            {/* Stats */}
+            <S.ProfileStats>
+              <S.StatItem>
+                <span className="stat-number">{userCars.length}</span>
+                <span className="stat-label">{t('profile.stats.cars')}</span>
+              </S.StatItem>
+              <S.StatItem>
+                <span className="stat-number">0</span>
+                <span className="stat-label">{t('profile.stats.favorites')}</span>
+              </S.StatItem>
+            </S.ProfileStats>
+
+            {/* Actions */}
+            <S.ProfileActions>
+              <S.ActionButton onClick={() => setEditing(!editing)}>
+                {editing ? t('profile.cancelEdit') : t('profile.editProfile')}
+              </S.ActionButton>
+              <S.ActionButton variant="secondary" onClick={() => window.location.href = '/sell-car'}>
+                {t('profile.addCar')}
+              </S.ActionButton>
+              <S.ActionButton variant="secondary" onClick={() => window.location.href = '/messages'}>
+                {t('profile.messages')}
+              </S.ActionButton>
+              <S.ActionButton variant="danger" onClick={handleLogout}>
+                {t('profile.logout')}
+              </S.ActionButton>
+            </S.ProfileActions>
+          </S.ProfileSidebar>
+
+          {/* Profile Content */}
+          <S.ProfileContent>
+            {/* Personal Information */}
+            <S.ContentSection>
+              <S.SectionHeader>
+                <h2>{t('profile.personalInfo')}</h2>
+                {!editing && (
+                  <button className="edit-btn" onClick={() => setEditing(true)}>
+                    {t('profile.edit')}
+                  </button>
+                )}
+              </S.SectionHeader>
+
+              {editing ? (
+                <form onSubmit={(e) => { e.preventDefault(); handleSaveProfile(); }}>
+                  <S.FormGrid>
+                    <S.FormGroup>
+                      <label>{t('profile.displayName')}</label>
+                      <input
+                        type="text"
+                        name="displayName"
+                        value={formData.displayName}
+                        onChange={handleInputChange}
+                        placeholder={t('profile.displayNamePlaceholder')}
+                      />
+                    </S.FormGroup>
+
+                    <S.FormGroup>
+                      <label>{t('profile.phoneNumber')}</label>
+                      <input
+                        type="tel"
+                        name="phoneNumber"
+                        value={formData.phoneNumber}
+                        onChange={handleInputChange}
+                        placeholder="+359 88 123 4567"
+                      />
+                    </S.FormGroup>
+
+                    <S.FormGroup>
+                      <label>{t('profile.city')}</label>
+                      <input
+                        type="text"
+                        name="city"
+                        value={formData.city}
+                        onChange={handleInputChange}
+                        placeholder={t('profile.cityPlaceholder')}
+                      />
+                    </S.FormGroup>
+
+                    <S.FormGroup>
+                      <label>{t('profile.region')}</label>
+                      <input
+                        type="text"
+                        name="region"
+                        value={formData.region}
+                        onChange={handleInputChange}
+                        placeholder={t('profile.regionPlaceholder')}
+                      />
+                    </S.FormGroup>
+
+                    <S.FormGroup>
+                      <label>{t('profile.preferredLanguage')}</label>
+                      <select name="preferredLanguage" value={formData.preferredLanguage} onChange={handleInputChange}>
+                        <option value="bg">{t('languages.bulgarian')}</option>
+                        <option value="en">{t('languages.english')}</option>
+                      </select>
+                    </S.FormGroup>
+                  </S.FormGrid>
+
+                  <S.FormGroup>
+                    <label>{t('profile.bio')}</label>
+                    <textarea
+                      name="bio"
+                      value={formData.bio}
+                      onChange={handleInputChange}
+                      placeholder={t('profile.bioPlaceholder')}
+                      rows={4}
+                    />
+                  </S.FormGroup>
+
+                  <S.FormActions>
+                    <S.CancelButton type="button" onClick={handleCancelEdit}>
+                      {t('common.cancel')}
+                    </S.CancelButton>
+                    <S.SaveButton type="submit">
+                      {t('profile.saveChanges')}
+                    </S.SaveButton>
+                  </S.FormActions>
+                </form>
+              ) : (
+                <div>
+                  <S.FormGrid>
+                    <div>
+                      <strong>{t('profile.displayName')}:</strong> {user.displayName || t('profile.notSet')}
+                    </div>
+                    <div>
+                      <strong>{t('profile.phoneNumber')}:</strong> {user.phoneNumber || t('profile.notSet')}
+                    </div>
+                    <div>
+                      <strong>{t('profile.city')}:</strong> {user.location?.city || t('profile.notSet')}
+                    </div>
+                    <div>
+                      <strong>{t('profile.region')}:</strong> {user.location?.region || t('profile.notSet')}
+                    </div>
+                    <div>
+                      <strong>{t('profile.preferredLanguage')}:</strong> {
+                        user.preferredLanguage === 'bg' ? t('languages.bulgarian') : t('languages.english')
+                      }
+                    </div>
+                    <div>
+                      <strong>{t('profile.memberSince')}:</strong> {
+                        user.createdAt ? new Date(user.createdAt).toLocaleDateString() : t('profile.notSet')
+                      }
+                    </div>
+                  </S.FormGrid>
+
+                  {user.bio && (
+                    <div style={{ marginTop: '2rem' }}>
+                      <strong>{t('profile.bio')}:</strong>
+                      <p style={{ marginTop: '0.5rem', color: '#666' }}>{user.bio}</p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </S.ContentSection>
+
+            {/* My Cars */}
+            <S.ContentSection>
+              <S.SectionHeader>
+                <h2>{t('profile.myCars')}</h2>
+                <button className="edit-btn" onClick={() => window.location.href = '/sell-car'}>
+                  {t('profile.addCar')}
+                </button>
+              </S.SectionHeader>
+
+              {userCars.length > 0 ? (
+                <S.CarsList>
+                  {userCars.map((car) => (
+                    <S.CarCard key={car.id}>
+                      <div className="car-image">
+                        {car.mainImage ? (
+                          <LazyImage
+                            src={car.mainImage}
+                            alt={car.title}
+                            placeholder="🚗"
+                          />
+                        ) : (
+                          <div style={{
+                            width: '100%',
+                            height: '100%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: '2rem',
+                            color: '#ccc'
+                          }}>
+                            🚗
+                          </div>
+                        )}
+                      </div>
+                      <div className="car-title">{car.title}</div>
+                      <div className="car-price">€{car.price.toLocaleString()}</div>
+                      <div className="car-details">
+                        {car.year} • {car.mileage?.toLocaleString()} km • {car.fuelType}
+                      </div>
+                      <div className="car-actions">
+                        <button
+                          className="action-btn"
+                          onClick={() => window.location.href = `/cars/${car.id}`}
+                        >
+                          {t('profile.view')}
+                        </button>
+                        <button
+                          className="action-btn"
+                          onClick={() => window.location.href = `/cars/${car.id}/edit`}
+                        >
+                          {t('profile.edit')}
+                        </button>
+                      </div>
+                    </S.CarCard>
+                  ))}
+                </S.CarsList>
+              ) : (
+                <S.EmptyState>
+                  <span className="empty-icon">🚗</span>
+                  <div className="empty-title">{t('profile.noCars')}</div>
+                  <div className="empty-description">{t('profile.noCarsDescription')}</div>
+                  <button
+                    className="edit-btn"
+                    onClick={() => window.location.href = '/sell-car'}
+                    style={{ margin: '0 auto' }}
+                  >
+                    {t('profile.addFirstCar')}
+                  </button>
+                </S.EmptyState>
+              )}
+            </S.ContentSection>
+          </S.ProfileContent>
+        </S.ProfileGrid>
+      </S.PageContainer>
+    </S.ProfileContainer>
+  );
+};
+
+export default ProfilePage;

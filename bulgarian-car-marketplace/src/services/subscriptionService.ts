@@ -33,8 +33,7 @@ export const getB2BSubscription = async () => {
       error?.message?.includes('net::ERR_FAILED') ||
       error?.code === 'internal'
     )) {
-      console.log('🔧 Using mock subscription data due to CORS/network issues in development');
-      return MOCK_SUBSCRIPTION;
+return MOCK_SUBSCRIPTION;
     }
     
     throw error;
@@ -54,8 +53,7 @@ export const createB2BSubscription = async (data: any) => {
       error?.message?.includes('net::ERR_FAILED') ||
       error?.code === 'internal'
     )) {
-      console.log('🔧 Using mock create subscription response due to CORS/network issues in development');
-      return {
+return {
         success: true,
         subscriptionId: 'mock-id',
         tier: data.tier,
@@ -80,8 +78,7 @@ export const cancelB2BSubscription = async () => {
       error?.message?.includes('net::ERR_FAILED') ||
       error?.code === 'internal'
     )) {
-      console.log('🔧 Using mock cancel subscription response due to CORS/network issues in development');
-      return {
+return {
         success: true,
         message: 'Subscription cancelled successfully (mock)'
       };
@@ -104,8 +101,7 @@ export const upgradeB2BSubscription = async (data: any) => {
       error?.message?.includes('net::ERR_FAILED') ||
       error?.code === 'internal'
     )) {
-      console.log('🔧 Using mock upgrade subscription response due to CORS/network issues in development');
-      return {
+return {
         success: true,
         message: 'Subscription upgraded successfully (mock)',
         newTier: data.newTier,

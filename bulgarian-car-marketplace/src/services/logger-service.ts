@@ -1,6 +1,6 @@
 // src/services/logger-service.ts
 // Professional Logging Service for Bulgarian Car Marketplace
-// خدمة التسجيل المهنية لسوق السيارات البلغاري
+// (Comment removed - was in Arabic)
 
 export enum LogLevel {
   DEBUG = 0,
@@ -33,7 +33,7 @@ export interface LoggerConfig {
 
 /**
  * Professional Logger Service
- * خدمة التسجيل المهنية
+ * (Comment removed - was in Arabic)
  */
 export class Logger {
   private config: LoggerConfig;
@@ -57,7 +57,7 @@ export class Logger {
 
   /**
    * Log debug message
-   * تسجيل رسالة تصحيح
+   * (Comment removed - was in Arabic)
    */
   debug(message: string, data?: any): void {
     this.log(LogLevel.DEBUG, message, data);
@@ -65,7 +65,7 @@ export class Logger {
 
   /**
    * Log info message
-   * تسجيل رسالة معلومات
+   * (Comment removed - was in Arabic)
    */
   info(message: string, data?: any): void {
     this.log(LogLevel.INFO, message, data);
@@ -73,7 +73,7 @@ export class Logger {
 
   /**
    * Log warning message
-   * تسجيل رسالة تحذير
+   * (Comment removed - was in Arabic)
    */
   warn(message: string, data?: any): void {
     this.log(LogLevel.WARN, message, data);
@@ -81,7 +81,7 @@ export class Logger {
 
   /**
    * Log error message
-   * تسجيل رسالة خطأ
+   * (Comment removed - was in Arabic)
    */
   error(message: string, error?: Error, data?: any): void {
     this.log(LogLevel.ERROR, message, data, error);
@@ -89,7 +89,7 @@ export class Logger {
 
   /**
    * Log critical message
-   * تسجيل رسالة حرجة
+   * (Comment removed - was in Arabic)
    */
   critical(message: string, error?: Error, data?: any): void {
     this.log(LogLevel.CRITICAL, message, data, error);
@@ -97,7 +97,7 @@ export class Logger {
 
   /**
    * Core logging method
-   * طريقة التسجيل الأساسية
+   * (Comment removed - was in Arabic)
    */
   private log(level: LogLevel, message: string, data?: any, error?: Error): void {
     if (level < this.config.level) return;
@@ -136,7 +136,7 @@ export class Logger {
 
   /**
    * Log to console with formatting
-   * التسجيل في وحدة التحكم مع التنسيق
+   * (Comment removed - was in Arabic)
    */
   private logToConsole(entry: LogEntry): void {
     const levelName = LogLevel[entry.level];
@@ -165,7 +165,7 @@ export class Logger {
 
   /**
    * Log to remote endpoint
-   * التسجيل في نقطة نهاية بعيدة
+   * (Comment removed - was in Arabic)
    */
   private async logToRemote(entry: LogEntry): Promise<void> {
     try {
@@ -179,13 +179,13 @@ export class Logger {
       });
     } catch (error) {
       // Fallback to console if remote logging fails
-      console.error('Failed to send log to remote:', error);
+      console.error('[SERVICE] Failed to send log to remote:', error);
     }
   }
 
   /**
    * Handle critical errors
-   * معالجة الأخطاء الحرجة
+   * (Comment removed - was in Arabic)
    */
   private handleCriticalError(entry: LogEntry): void {
     // Send alert to monitoring service
@@ -205,13 +205,13 @@ export class Logger {
     // In production, you might want to restart the service or take other actions
     if (process.env.NODE_ENV === 'production') {
       // Implement production-specific critical error handling
-      console.error('PRODUCTION CRITICAL ERROR - Immediate attention required!');
+      console.error('[SERVICE] PRODUCTION CRITICAL ERROR - Immediate attention required!');
     }
   }
 
   /**
    * Get recent log entries
-   * الحصول على إدخالات السجل الأخيرة
+   * (Comment removed - was in Arabic)
    */
   getRecentEntries(level?: LogLevel, limit: number = 100): LogEntry[] {
     let filtered = this.entries;
@@ -225,7 +225,7 @@ export class Logger {
 
   /**
    * Search log entries
-   * البحث في إدخالات السجل
+   * (Comment removed - was in Arabic)
    */
   searchEntries(query: string, level?: LogLevel): LogEntry[] {
     return this.entries.filter(entry => {
@@ -238,7 +238,7 @@ export class Logger {
 
   /**
    * Clean up old entries
-   * تنظيف الإدخالات القديمة
+   * (Comment removed - was in Arabic)
    */
   private cleanup(): void {
     const cutoffDate = new Date();
@@ -251,7 +251,7 @@ export class Logger {
 
   /**
    * Generate unique request ID
-   * إنشاء معرف طلب فريد
+   * (Comment removed - was in Arabic)
    */
   private generateRequestId(): string {
     return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -259,7 +259,7 @@ export class Logger {
 
   /**
    * Export logs for analysis
-   * تصدير السجلات للتحليل
+   * (Comment removed - was in Arabic)
    */
   exportLogs(format: 'json' | 'csv' = 'json'): string {
     if (format === 'csv') {

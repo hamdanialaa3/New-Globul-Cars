@@ -1,6 +1,6 @@
 // src/services/threads-service.ts
 // Threads Service for Bulgarian Car Marketplace
-// خدمة Threads لسوق السيارات البلغاري
+// (Comment removed - was in Arabic)
 
 interface ThreadsPost {
   id: string;
@@ -47,7 +47,7 @@ class BulgarianThreadsService {
 
   /**
    * Get user profile information
-   * الحصول على معلومات الملف الشخصي للمستخدم
+   * (Comment removed - was in Arabic)
    */
   async getUserProfile(userId: string): Promise<ThreadsUser> {
     try {
@@ -62,14 +62,14 @@ class BulgarianThreadsService {
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error('Error fetching Threads user profile:', error);
+      console.error('[SERVICE] Error fetching Threads user profile:', error);
       throw error;
     }
   }
 
   /**
    * Get user's posts
-   * الحصول على منشورات المستخدم
+   * (Comment removed - was in Arabic)
    */
   async getUserPosts(userId: string, limit: number = 10): Promise<ThreadsPost[]> {
     try {
@@ -84,14 +84,14 @@ class BulgarianThreadsService {
       const data = await response.json();
       return data.data || [];
     } catch (error) {
-      console.error('Error fetching Threads posts:', error);
+      console.error('[SERVICE] Error fetching Threads posts:', error);
       throw error;
     }
   }
 
   /**
    * Create a car listing post on Threads
-   * إنشاء منشور إعلان سيارة على Threads
+   * (Comment removed - was in Arabic)
    */
   async createCarPost(carData: CarThreadsPost): Promise<string> {
     try {
@@ -101,22 +101,19 @@ class BulgarianThreadsService {
       // For now, we'll simulate posting since Threads API might have limitations
       // In production, you would use the actual Threads API endpoints
 
-      console.log('Creating Threads post for car:', carData.title);
-      console.log('Caption:', caption);
-
-      // Simulate API call
+// Simulate API call
       const mockPostId = `threads_post_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
       return mockPostId;
     } catch (error) {
-      console.error('Error creating Threads post:', error);
+      console.error('[SERVICE] Error creating Threads post:', error);
       throw error;
     }
   }
 
   /**
    * Generate caption for car post
-   * إنشاء نص لمنشور السيارة
+   * (Comment removed - was in Arabic)
    */
   private generateCarCaption(carData: CarThreadsPost): string {
     const { title, description, price, location, hashtags } = carData;
@@ -140,7 +137,7 @@ ${description}
 
   /**
    * Share car to Threads with multiple images
-   * مشاركة سيارة على Threads مع صور متعددة
+   * (Comment removed - was in Arabic)
    */
   async shareCarToThreads(carData: CarThreadsPost): Promise<{ postId: string; permalink: string }> {
     try {
@@ -154,33 +151,30 @@ ${description}
         permalink
       };
     } catch (error) {
-      console.error('Error sharing car to Threads:', error);
+      console.error('[SERVICE] Error sharing car to Threads:', error);
       throw error;
     }
   }
 
   /**
    * Search for car-related content on Threads
-   * البحث عن محتوى متعلق بالسيارات على Threads
+   * (Comment removed - was in Arabic)
    */
   async searchCarContent(query: string): Promise<ThreadsPost[]> {
     try {
       // Threads API doesn't have search functionality yet
       // This is a placeholder for future implementation
-
-      console.log('Searching Threads for:', query);
-
-      // Mock results
+// Mock results
       return [];
     } catch (error) {
-      console.error('Error searching Threads:', error);
+      console.error('[SERVICE] Error searching Threads:', error);
       throw error;
     }
   }
 
   /**
    * Get trending car hashtags on Threads
-   * الحصول على الهاشتاجات الشائعة للسيارات على Threads
+   * (Comment removed - was in Arabic)
    */
   getTrendingCarHashtags(): string[] {
     return [
@@ -204,28 +198,25 @@ ${description}
 
   /**
    * Schedule car promotion post
-   * جدولة منشور ترويجي للسيارة
+   * (Comment removed - was in Arabic)
    */
   async scheduleCarPromotion(carData: CarThreadsPost, scheduleTime: Date): Promise<string> {
     try {
       // In a real implementation, you would store this in a database
       // and have a cron job or scheduled task to post at the right time
-
-      console.log(`Scheduling Threads post for ${scheduleTime.toISOString()}`);
-      console.log('Car data:', carData);
-
+      console.log('Mock Threads post scheduled for:', scheduleTime);
       const scheduledPostId = `scheduled_${Date.now()}_${carData.carId}`;
 
       return scheduledPostId;
     } catch (error) {
-      console.error('Error scheduling Threads post:', error);
+      console.error('[SERVICE] Error scheduling Threads post:', error);
       throw error;
     }
   }
 
   /**
    * Get Threads insights for car posts
-   * الحصول على إحصائيات منشورات السيارات على Threads
+   * (Comment removed - was in Arabic)
    */
   async getCarPostInsights(postId: string): Promise<{
     likes: number;
@@ -244,44 +235,40 @@ ${description}
         reach: Math.floor(Math.random() * 1000) + 100
       };
     } catch (error) {
-      console.error('Error getting Threads insights:', error);
+      console.error('[SERVICE] Error getting Threads insights:', error);
       throw error;
     }
   }
 
   /**
    * Validate Threads access token
-   * التحقق من صحة رمز الوصول لـ Threads
+   * (Comment removed - was in Arabic)
    */
   async validateAccessToken(): Promise<boolean> {
     try {
       // Test token validity with a simple API call
-      const response = await fetch(
-        `${this.baseURL}/me?fields=id&access_token=${this.accessToken}`
-      );
+      const url = `${this.baseURL}/me?fields=id&access_token=${this.accessToken}`;
+      const response = await fetch(url);
 
       return response.ok;
     } catch (error) {
-      console.error('Error validating Threads token:', error);
+      console.error('[SERVICE] Error validating Threads token:', error);
       return false;
     }
   }
 
   /**
    * Refresh Threads access token
-   * تجديد رمز الوصول لـ Threads
+   * (Comment removed - was in Arabic)
    */
   async refreshAccessToken(): Promise<string> {
     try {
       // Threads uses long-lived tokens similar to Facebook
       // This is a placeholder for token refresh logic
-
-      console.log('Refreshing Threads access token');
-
-      // In production, implement proper token refresh
+// In production, implement proper token refresh
       return this.accessToken;
     } catch (error) {
-      console.error('Error refreshing Threads token:', error);
+      console.error('[SERVICE] Error refreshing Threads token:', error);
       throw error;
     }
   }

@@ -1,6 +1,6 @@
 // src/services/social-media-integration.ts
 // Comprehensive Social Media Integration for Bulgarian Car Marketplace
-// التكامل الشامل لوسائل التواصل الاجتماعي لسوق السيارات البلغاري
+// (Comment removed - was in Arabic)
 
 // Import all social media services
 import FacebookGraphService, { bulgarianFacebookGraph } from './facebook-graph-service';
@@ -64,7 +64,7 @@ export interface BulgarianCarSocialIntegration {
 
 /**
  * Comprehensive Social Media Integration Manager
- * مدير التكامل الشامل لوسائل التواصل الاجتماعي
+ * (Comment removed - was in Arabic)
  */
 class SocialMediaIntegrationManager {
   private config: SocialMediaConfig;
@@ -120,12 +120,10 @@ class SocialMediaIntegrationManager {
 
   /**
    * Initialize comprehensive social media integration
-   * تهيئة التكامل الشامل لوسائل التواصل الاجتماعي
+   * (Comment removed - was in Arabic)
    */
   private initializeIntegration(): void {
-    console.log('🚀 Initializing comprehensive social media integration for Bulgarian Car Marketplace...');
-
-    // Set access tokens for all services
+// Set access tokens for all services
     if (this.config.facebook.accessToken) {
       this.services.facebook.graph.setAccessToken(this.config.facebook.accessToken);
       this.services.facebook.marketing.setAccessToken(this.config.facebook.accessToken);
@@ -143,15 +141,11 @@ class SocialMediaIntegrationManager {
     // Validate configuration
     this.validateConfiguration();
 
-    console.log('✅ Social media integration initialized successfully');
-    console.log(`🇧🇬 Language: ${this.config.defaultLanguage === 'bg' ? 'Bulgarian' : 'English'}`);
-    console.log(`🏢 Environment: ${this.config.environment}`);
-    console.log(`📱 Platforms: Facebook, Threads, TikTok, Instagram`);
-  }
+}
 
   /**
    * Validate social media integration configuration
-   * التحقق من صحة تكوين التكامل لوسائل التواصل الاجتماعي
+   * (Comment removed - was in Arabic)
    */
   private validateConfiguration(): void {
     const warnings: string[] = [];
@@ -176,7 +170,7 @@ class SocialMediaIntegrationManager {
     }
 
     if (errors.length > 0) {
-      console.error('❌ Social Media Integration Errors:', errors);
+      console.error('[SERVICE] Social Media Integration Errors:', errors);
       throw new Error(`Social media configuration errors: ${errors.join(', ')}`);
     }
 
@@ -187,7 +181,7 @@ class SocialMediaIntegrationManager {
 
   /**
    * Get integration status
-   * الحصول على حالة التكامل
+   * (Comment removed - was in Arabic)
    */
   getStatus(): {
     facebook: boolean;
@@ -209,7 +203,7 @@ class SocialMediaIntegrationManager {
 
   /**
    * Post car to all available platforms
-   * نشر السيارة على جميع المنصات المتاحة
+   * (Comment removed - was in Arabic)
    */
   async postCarToAllPlatforms(carData: {
     id: string;
@@ -308,14 +302,14 @@ class SocialMediaIntegrationManager {
 
       return results;
     } catch (error) {
-      console.error('Error posting to social platforms:', error);
+      console.error('[SERVICE] Error posting to social platforms:', error);
       throw error;
     }
   }
 
   /**
    * Get trending content from all platforms
-   * الحصول على المحتوى الرائج من جميع المنصات
+   * (Comment removed - was in Arabic)
    */
   async getAllTrendingContent(limit: number = 10): Promise<{
     facebook: any[];

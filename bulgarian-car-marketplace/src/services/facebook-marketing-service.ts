@@ -1,6 +1,6 @@
 // src/services/facebook-marketing-service.ts
 // Professional Facebook Marketing API Integration for Bulgarian Car Marketplace
-// تكامل احترافي مع Facebook Marketing API لسوق السيارات البلغاري
+// (Comment removed - was in Arabic)
 
 interface CarAdData {
   make: string;
@@ -123,7 +123,7 @@ interface CampaignInsights {
 
 /**
  * Professional Facebook Marketing API Service
- * خدمة احترافية لـ Facebook Marketing API
+ * (Comment removed - was in Arabic)
  */
 export class FacebookMarketingService {
   private static readonly BASE_URL = 'https://graph.facebook.com/v18.0';
@@ -137,7 +137,7 @@ export class FacebookMarketingService {
 
   /**
    * Set access token for API calls
-   * تعيين رمز الوصول لاستدعاءات API
+   * (Comment removed - was in Arabic)
    */
   setAccessToken(token: string): void {
     this.accessToken = token;
@@ -145,7 +145,7 @@ export class FacebookMarketingService {
 
   /**
    * Create automated car advertisement campaign
-   * إنشاء حملة إعلانية آلية للسيارات
+   * (Comment removed - was in Arabic)
    */
   async createCarAdCampaign(carData: CarAdData, budget: number): Promise<FacebookAdCampaign> {
     if (!this.accessToken || !FacebookMarketingService.AD_ACCOUNT_ID) {
@@ -167,10 +167,7 @@ export class FacebookMarketingService {
         'POST',
         campaignData
       );
-
-      console.log(`🚗 Created car ad campaign: ${campaign.name}`);
-
-      // Step 2: Create Ad Set with Bulgarian targeting
+// Step 2: Create Ad Set with Bulgarian targeting
       const adSet = await this.createBulgarianCarAdSet(campaign.id, carData, budget);
 
       // Step 3: Create Ad Creative
@@ -178,23 +175,20 @@ export class FacebookMarketingService {
 
       // Step 4: Create Ad
       await this.createAd(adSet.id, creative.id, carData);
-
-      console.log('✅ Complete car advertisement created successfully');
-
-      return {
+return {
         ...campaign,
         targeting: adSet.targeting,
         daily_budget: budget
       };
     } catch (error) {
-      console.error('Error creating car ad campaign:', error);
+      console.error('[SERVICE] Error creating car ad campaign:', error);
       throw new Error('Failed to create advertisement / فشل في إنشاء الإعلان');
     }
   }
 
   /**
    * Create targeted ad set for Bulgarian car buyers
-   * إنشاء مجموعة إعلانات مستهدفة للمشترين البلغار
+   * (Comment removed - was in Arabic)
    */
   private async createBulgarianCarAdSet(
     campaignId: string, 
@@ -253,14 +247,12 @@ export class FacebookMarketingService {
       'POST',
       adSetData
     );
-
-    console.log(`🎯 Created Bulgarian targeted ad set for ${carData.make} ${carData.model}`);
-    return { ...adSet, targeting };
+return { ...adSet, targeting };
   }
 
   /**
    * Create compelling ad creative for car listing
-   * إنشاء إبداع إعلاني جذاب لقائمة السيارات
+   * (Comment removed - was in Arabic)
    */
   private async createCarAdCreative(carData: CarAdData): Promise<FacebookAdCreative> {
     // Upload car image to Facebook
@@ -301,14 +293,12 @@ export class FacebookMarketingService {
       'POST',
       creativeData
     );
-
-    console.log(`🎨 Created car ad creative for ${carData.make} ${carData.model}`);
-    return creative;
+return creative;
   }
 
   /**
    * Create final advertisement
-   * إنشاء الإعلان النهائي
+   * (Comment removed - was in Arabic)
    */
   private async createAd(adSetId: string, creativeId: string, carData: CarAdData): Promise<FacebookAd> {
     const adData = {
@@ -330,14 +320,12 @@ export class FacebookMarketingService {
       'POST',
       adData
     );
-
-    console.log(`📢 Created final advertisement for ${carData.make} ${carData.model}`);
-    return ad;
+return ad;
   }
 
   /**
    * Upload image to Facebook for ads
-   * رفع الصورة إلى Facebook للإعلانات
+   * (Comment removed - was in Arabic)
    */
   private async uploadImage(imageUrl: string): Promise<string> {
     try {
@@ -351,18 +339,16 @@ export class FacebookMarketingService {
         'POST',
         imageData
       );
-
-      console.log('📸 Car image uploaded to Facebook successfully');
-      return response.hash;
+return response.hash;
     } catch (error) {
-      console.error('Error uploading image:', error);
+      console.error('[SERVICE] Error uploading image:', error);
       throw new Error('Failed to upload car image / فشل في رفع صورة السيارة');
     }
   }
 
   /**
    * Get campaign insights and performance
-   * الحصول على إحصائيات الحملة والأداء
+   * (Comment removed - was in Arabic)
    */
   async getCampaignInsights(campaignId: string, dateRange?: { since: string; until: string }): Promise<CampaignInsights> {
     try {
@@ -379,36 +365,32 @@ export class FacebookMarketingService {
       }
 
       const insights = response.data[0];
-      console.log(`📊 Campaign insights: ${insights.impressions} impressions, ${insights.clicks} clicks`);
-      
-      return insights;
+return insights;
     } catch (error) {
-      console.error('Error fetching campaign insights:', error);
+      console.error('[SERVICE] Error fetching campaign insights:', error);
       throw new Error('Failed to fetch campaign insights / فشل في جلب إحصائيات الحملة');
     }
   }
 
   /**
    * Get all active campaigns
-   * الحصول على جميع الحملات النشطة
+   * (Comment removed - was in Arabic)
    */
   async getActiveCampaigns(): Promise<FacebookAdCampaign[]> {
     try {
       const response = await this.makeRequest<{ data: FacebookAdCampaign[] }>(
         `/act_${FacebookMarketingService.AD_ACCOUNT_ID}/campaigns?fields=id,name,objective,status,daily_budget,lifetime_budget&effective_status=[ACTIVE]`
       );
-
-      console.log(`📋 Found ${response.data.length} active campaigns`);
-      return response.data;
+return response.data;
     } catch (error) {
-      console.error('Error fetching campaigns:', error);
+      console.error('[SERVICE] Error fetching campaigns:', error);
       return [];
     }
   }
 
   /**
    * Pause or activate campaign
-   * إيقاف أو تفعيل الحملة
+   * (Comment removed - was in Arabic)
    */
   async updateCampaignStatus(campaignId: string, status: 'ACTIVE' | 'PAUSED'): Promise<boolean> {
     try {
@@ -416,18 +398,16 @@ export class FacebookMarketingService {
         status: status,
         access_token: this.accessToken
       });
-
-      console.log(`🔄 Campaign ${campaignId} status updated to ${status}`);
-      return true;
+return true;
     } catch (error) {
-      console.error('Error updating campaign status:', error);
+      console.error('[SERVICE] Error updating campaign status:', error);
       return false;
     }
   }
 
   /**
    * Create lookalike audience based on existing customers
-   * إنشاء جمهور مشابه بناء على العملاء الحاليين
+   * (Comment removed - was in Arabic)
    */
   async createLookalikeAudience(sourceAudienceId: string, name: string): Promise<string> {
     try {
@@ -447,36 +427,32 @@ export class FacebookMarketingService {
         'POST',
         audienceData
       );
-
-      console.log(`👥 Created lookalike audience: ${response.id}`);
-      return response.id;
+return response.id;
     } catch (error) {
-      console.error('Error creating lookalike audience:', error);
+      console.error('[SERVICE] Error creating lookalike audience:', error);
       throw new Error('Failed to create lookalike audience / فشل في إنشاء الجمهور المشابه');
     }
   }
 
   /**
    * Get conversion tracking data
-   * الحصول على بيانات تتبع التحويلات
+   * (Comment removed - was in Arabic)
    */
   async getConversions(campaignId: string): Promise<any> {
     try {
       const response = await this.makeRequest<{ data: any[] }>(
         `/${campaignId}/insights?fields=conversions,conversion_values,cost_per_conversion&action_breakdowns=action_type`
       );
-
-      console.log(`📈 Retrieved conversion data for campaign ${campaignId}`);
-      return response.data;
+return response.data;
     } catch (error) {
-      console.error('Error fetching conversions:', error);
+      console.error('[SERVICE] Error fetching conversions:', error);
       return [];
     }
   }
 
   /**
    * Make authenticated request to Marketing API
-   * إجراء طلب مصادق عليه إلى Marketing API
+   * (Comment removed - was in Arabic)
    */
   private async makeRequest<T>(
     endpoint: string, 

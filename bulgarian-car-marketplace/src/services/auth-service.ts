@@ -129,7 +129,7 @@ export class BulgarianAuthService {
             await this.updateLastLogin(user.uid);
           }
         } catch (error) {
-          console.error('Error loading user data:', error);
+          console.error('[SERVICE] Error loading user data:', error);
           this.currentUser = null;
         }
       } else {
@@ -335,7 +335,7 @@ export class BulgarianAuthService {
       await signOut(auth);
       this.currentUser = null;
     } catch (error) {
-      console.error('Sign out error:', error);
+      console.error('[SERVICE] Sign out error:', error);
       throw new Error('Грешка при излизане от системата');
     }
   }
@@ -372,7 +372,7 @@ export class BulgarianAuthService {
       // Update local user object
       this.currentUser = { ...this.currentUser, ...updates };
     } catch (error) {
-      console.error('Profile update error:', error);
+      console.error('[SERVICE] Profile update error:', error);
       throw new Error('Грешка при обновяване на профила');
     }
   }
@@ -433,7 +433,7 @@ export class BulgarianAuthService {
       }
       return null;
     } catch (error) {
-      console.error('Error getting Bulgarian user data:', error);
+      console.error('[SERVICE] Error getting Bulgarian user data:', error);
       return null;
     }
   }
@@ -547,7 +547,7 @@ export class BulgarianAuthService {
         lastLogin: serverTimestamp()
       });
     } catch (error) {
-      console.error('Error updating last login:', error);
+      console.error('[SERVICE] Error updating last login:', error);
     }
   }
 

@@ -1,6 +1,6 @@
 // src/pages/DataDeletionPage.tsx
 // Data Deletion Request Page for Facebook Integration
-// صفحة طلب حذف البيانات لتكامل فيسبوك
+// (Comment removed - was in Arabic)
 
 import React, { useState } from 'react';
 import styled from 'styled-components';

@@ -1,5 +1,5 @@
 // CarSearchSystem/styles.ts
-// التصميم المرئي لنظام البحث في السيارات
+// (Comment removed - was in Arabic)
 
 import styled from 'styled-components';
 

@@ -81,7 +81,7 @@ class MessagingService {
       
       return docRef.id;
     } catch (error) {
-      console.error('Error sending message:', error);
+      console.error('[SERVICE] Error sending message:', error);
       throw error;
     }
   }
@@ -136,7 +136,7 @@ class MessagingService {
       
       return messages;
     } catch (error) {
-      console.error('Error getting conversation:', error);
+      console.error('[SERVICE] Error getting conversation:', error);
       throw error;
     }
   }
@@ -280,7 +280,7 @@ class MessagingService {
         (b.lastMessageTime?.getTime() || 0) - (a.lastMessageTime?.getTime() || 0)
       );
     } catch (error) {
-      console.error('Error getting user conversations:', error);
+      console.error('[SERVICE] Error getting user conversations:', error);
       throw error;
     }
   }
@@ -308,7 +308,7 @@ class MessagingService {
       
       await Promise.all(updatePromises);
     } catch (error) {
-      console.error('Error marking messages as read:', error);
+      console.error('[SERVICE] Error marking messages as read:', error);
       throw error;
     }
   }
@@ -389,9 +389,9 @@ class MessagingService {
         onConversationsUpdate(conversations);
       } catch (err: any) {
         if (err?.code === 'permission-denied') {
-          console.error('[MessagingService] permission-denied while refreshing conversations – check Firestore rules deployment');
+          console.error('[SERVICE] [MessagingService] permission-denied while refreshing conversations  check Firestore rules deployment');
         }
-        console.error('[MessagingService] subscribeToUserConversations snapshot handler error:', err);
+        console.error('[SERVICE] [MessagingService] subscribeToUserConversations snapshot handler error:', err);
       }
     });
 
@@ -428,7 +428,7 @@ class MessagingService {
 
       await addDoc(collection(db, 'notifications'), notificationData);
     } catch (error) {
-      console.error('Error creating message notification:', error);
+      console.error('[SERVICE] Error creating message notification:', error);
       // Don't throw error to prevent breaking message sending
     }
   }
@@ -445,7 +445,7 @@ class MessagingService {
       const messagesSnapshot = await getDocs(messagesQuery);
       return messagesSnapshot.size;
     } catch (error) {
-      console.error('Error getting unread message count:', error);
+      console.error('[SERVICE] Error getting unread message count:', error);
       return 0;
     }
   }

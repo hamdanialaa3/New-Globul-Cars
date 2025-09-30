@@ -255,7 +255,7 @@ const ProfileDashboardPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [statusMessage, setStatusMessage] = useState<{ type: 'success' | 'error', message: string } | null>(null);
 
-  // تحميل بيانات الملف الشخصي
+  // (Comment removed - was in Arabic)
   useEffect(() => {
     const loadUserProfile = async () => {
       if (user) {
@@ -277,7 +277,7 @@ const ProfileDashboardPage: React.FC = () => {
     loadUserProfile();
   }, [user, t]);
 
-  // إعادة توجيه إذا لم يكن المستخدم مسجلاً دخوله
+  // (Comment removed - was in Arabic)
   useEffect(() => {
     if (!user && !loading) {
       navigate('/login');
@@ -304,7 +304,7 @@ const ProfileDashboardPage: React.FC = () => {
       message: t('profile.updateSuccess', 'Profile updated successfully!')
     });
     
-    // مسح الرسالة بعد 5 ثوان
+    // (Comment removed - was in Arabic)
     setTimeout(() => setStatusMessage(null), 5000);
   };
 

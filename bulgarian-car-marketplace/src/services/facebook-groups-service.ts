@@ -1,6 +1,6 @@
 // src/services/facebook-groups-service.ts
 // Facebook Groups API Service for Bulgarian Car Marketplace
-// خدمة Facebook Groups API لسوق السيارات البلغاري
+// (Comment removed - was in Arabic)
 
 import { FacebookGraphService, bulgarianFacebookGraph } from './facebook-graph-service';
 
@@ -47,7 +47,7 @@ export interface CarGroupPost {
 
 /**
  * Facebook Groups Service for Bulgarian Car Marketplace
- * خدمة مجموعات Facebook لسوق السيارات البلغاري
+ * (Comment removed - was in Arabic)
  */
 class FacebookGroupsService {
   private graphService: FacebookGraphService;
@@ -59,7 +59,7 @@ class FacebookGroupsService {
 
   /**
    * Set access token for API calls
-   * تعيين رمز الوصول لاستدعاءات API
+   * (Comment removed - was in Arabic)
    */
   setAccessToken(token: string): void {
     if (this.graphService && typeof (this.graphService as any).setAccessToken === 'function') {
@@ -69,7 +69,7 @@ class FacebookGroupsService {
 
   /**
    * Get user's groups
-   * الحصول على مجموعات المستخدم
+   * (Comment removed - was in Arabic)
    */
   async getUserGroups(userId: string = 'me'): Promise<FacebookGroup[]> {
     try {
@@ -78,14 +78,14 @@ class FacebookGroupsService {
 
       return response.data || [];
     } catch (error) {
-      console.error('Error fetching user groups:', error);
+      console.error('[SERVICE] Error fetching user groups:', error);
       throw error;
     }
   }
 
   /**
    * Get car-related groups in Bulgaria
-   * الحصول على المجموعات المتعلقة بالسيارات في بلغاريا
+   * (Comment removed - was in Arabic)
    */
   async getBulgarianCarGroups(): Promise<FacebookGroup[]> {
     try {
@@ -118,14 +118,14 @@ class FacebookGroupsService {
 
       return uniqueGroups;
     } catch (error) {
-      console.error('Error fetching Bulgarian car groups:', error);
+      console.error('[SERVICE] Error fetching Bulgarian car groups:', error);
       throw error;
     }
   }
 
   /**
    * Get group posts
-   * الحصول على منشورات المجموعة
+   * (Comment removed - was in Arabic)
    */
   async getGroupPosts(groupId: string, limit: number = 25): Promise<GroupPost[]> {
     try {
@@ -141,7 +141,7 @@ class FacebookGroupsService {
 
   /**
    * Post to a car group
-   * النشر في مجموعة سيارات
+   * (Comment removed - was in Arabic)
    */
   async postToCarGroup(postData: CarGroupPost): Promise<any> {
     try {
@@ -165,14 +165,14 @@ class FacebookGroupsService {
 
       return response;
     } catch (error) {
-      console.error('Error posting to car group:', error);
+      console.error('[SERVICE] Error posting to car group:', error);
       throw error;
     }
   }
 
   /**
    * Join a car group
-   * الانضمام إلى مجموعة سيارات
+   * (Comment removed - was in Arabic)
    */
   async joinCarGroup(groupId: string): Promise<boolean> {
     try {
@@ -188,7 +188,7 @@ class FacebookGroupsService {
 
   /**
    * Leave a car group
-   * مغادرة مجموعة سيارات
+   * (Comment removed - was in Arabic)
    */
   async leaveCarGroup(groupId: string): Promise<boolean> {
     try {
@@ -204,7 +204,7 @@ class FacebookGroupsService {
 
   /**
    * Search for car groups by location
-   * البحث عن مجموعات السيارات حسب الموقع
+   * (Comment removed - was in Arabic)
    */
   async searchCarGroupsByLocation(location: string, radius: number = 50): Promise<FacebookGroup[]> {
     try {
@@ -220,7 +220,7 @@ class FacebookGroupsService {
 
   /**
    * Get trending car discussions in groups
-   * الحصول على المناقشات الرائجة حول السيارات في المجموعات
+   * (Comment removed - was in Arabic)
    */
   async getTrendingCarDiscussions(limit: number = 10): Promise<any[]> {
     try {
@@ -257,7 +257,7 @@ class FacebookGroupsService {
         })
         .slice(0, limit);
     } catch (error) {
-      console.error('Error getting trending car discussions:', error);
+      console.error('[SERVICE] Error getting trending car discussions:', error);
       throw error;
     }
   }

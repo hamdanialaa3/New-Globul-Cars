@@ -77,7 +77,7 @@ const Footer: React.FC = () => {
 
         {/* Brand Logo Section */}
         <div className="footer-logos">
-          <GlowingLogo size="medium" showText={true} text="Globul Cars" />
+          <GlowingLogo size="small" showText={true} text="-------------" />
         </div>
 
         {/* Footer Bottom */}

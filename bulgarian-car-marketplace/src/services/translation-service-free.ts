@@ -1,5 +1,5 @@
 // Translation Service - Free Alternative to Google Translate
-// خدمة الترجمة - بديل مجاني لـ Google Translate
+// (Comment removed - was in Arabic)
 
 export interface TranslationOptions {
   from?: string;
@@ -65,16 +65,14 @@ export class BulgarianTranslationService {
 
       // For more complex translations, we'll use a simple fallback
       // In production, you might want to integrate with a translation API
-      console.log(`Translation needed: "${text}" from ${from} to ${to}`);
-
-      // For now, return the original text with a note
+// For now, return the original text with a note
       return {
         text: `${text} [Translation needed: ${from} → ${to}]`,
         from: from === 'auto' ? this.detectLanguage(text) : from,
         to
       };
     } catch (error) {
-      console.error('Translation error:', error);
+      console.error('[SERVICE] Translation error:', error);
       return null;
     }
   }

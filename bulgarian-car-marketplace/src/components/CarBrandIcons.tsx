@@ -1,10 +1,10 @@
 // src/components/CarBrandIcons.tsx
-// أيقونات شركات السيارات مع الشعارات الأصلية
+// Car Brand Icons with Original Logos for Bulgarian Car Marketplace
 
 import React from 'react';
 import styled from 'styled-components';
 
-// تصميم الأيقونة
+// Icon wrapper styling
 const IconWrapper = styled.span<{ size?: number }>`
   display: inline-flex;
   align-items: center;
@@ -20,9 +20,9 @@ const IconWrapper = styled.span<{ size?: number }>`
   }
 `;
 
-// خريطة أيقونات الشركات
+// Car brand icons mapping
 const brandIcons: Record<string, React.FC<{ size?: number }>> = {
-  // BMW - الشعار الأزرق والأبيض الأصلي
+  // BMW - Original blue and white logo
   'BMW': ({ size = 20 }) => (
     <IconWrapper size={size}>
       <svg viewBox="0 0 24 24" fill="none">
@@ -36,7 +36,7 @@ const brandIcons: Record<string, React.FC<{ size?: number }>> = {
     </IconWrapper>
   ),
 
-  // Mercedes-Benz - النجمة الثلاثية الشهيرة
+  // Mercedes-Benz - Famous three-pointed star
   'Mercedes-Benz': ({ size = 20 }) => (
     <IconWrapper size={size}>
       <svg viewBox="0 0 24 24" fill="none">
@@ -47,7 +47,7 @@ const brandIcons: Record<string, React.FC<{ size?: number }>> = {
     </IconWrapper>
   ),
 
-  // Audi - الحلقات الأربع
+  // Audi - Four rings logo
   'Audi': ({ size = 20 }) => (
     <IconWrapper size={size}>
       <svg viewBox="0 0 24 24" fill="none">
@@ -59,7 +59,7 @@ const brandIcons: Record<string, React.FC<{ size?: number }>> = {
     </IconWrapper>
   ),
 
-  // Toyota - الشعار البيضاوي
+  // Toyota - ?????? ????????
   'Toyota': ({ size = 20 }) => (
     <IconWrapper size={size}>
       <svg viewBox="0 0 24 24" fill="none">
@@ -80,7 +80,7 @@ const brandIcons: Record<string, React.FC<{ size?: number }>> = {
     </IconWrapper>
   ),
 
-  // Ford - الشعار البيضاوي الأزرق
+  // Ford - ?????? ???????? ??????
   'Ford': ({ size = 20 }) => (
     <IconWrapper size={size}>
       <svg viewBox="0 0 24 24" fill="none">
@@ -90,7 +90,7 @@ const brandIcons: Record<string, React.FC<{ size?: number }>> = {
     </IconWrapper>
   ),
 
-  // Honda - H الأحمر
+  // Honda - H ??????
   'Honda': ({ size = 20 }) => (
     <IconWrapper size={size}>
       <svg viewBox="0 0 24 24" fill="none">
@@ -100,7 +100,7 @@ const brandIcons: Record<string, React.FC<{ size?: number }>> = {
     </IconWrapper>
   ),
 
-  // Hyundai - H المائل
+  // Hyundai - H ??????
   'Hyundai': ({ size = 20 }) => (
     <IconWrapper size={size}>
       <svg viewBox="0 0 24 24" fill="none">
@@ -110,7 +110,7 @@ const brandIcons: Record<string, React.FC<{ size?: number }>> = {
     </IconWrapper>
   ),
 
-  // Nissan - الدائرة والشريط
+  // Nissan - ??????? ???????
   'Nissan': ({ size = 20 }) => (
     <IconWrapper size={size}>
       <svg viewBox="0 0 24 24" fill="none">
@@ -121,7 +121,7 @@ const brandIcons: Record<string, React.FC<{ size?: number }>> = {
     </IconWrapper>
   ),
 
-  // Renault - الماسة
+  // Renault - ??????
   'Renault': ({ size = 20 }) => (
     <IconWrapper size={size}>
       <svg viewBox="0 0 24 24" fill="none">
@@ -130,7 +130,7 @@ const brandIcons: Record<string, React.FC<{ size?: number }>> = {
     </IconWrapper>
   ),
 
-  // Peugeot - الأسد
+  // Peugeot - ?????
   'Peugeot': ({ size = 20 }) => (
     <IconWrapper size={size}>
       <svg viewBox="0 0 24 24" fill="none">
@@ -141,7 +141,7 @@ const brandIcons: Record<string, React.FC<{ size?: number }>> = {
     </IconWrapper>
   ),
 
-  // Citroën - الشيفرون المزدوج
+  // Citroën - ???????? ???????
   'Citroën': ({ size = 20 }) => (
     <IconWrapper size={size}>
       <svg viewBox="0 0 24 24" fill="none">
@@ -151,7 +151,7 @@ const brandIcons: Record<string, React.FC<{ size?: number }>> = {
     </IconWrapper>
   ),
 
-  // Skoda - السهم في الدائرة
+  // Skoda - ????? ?? ???????
   'Skoda': ({ size = 20 }) => (
     <IconWrapper size={size}>
       <svg viewBox="0 0 24 24" fill="none">
@@ -161,7 +161,7 @@ const brandIcons: Record<string, React.FC<{ size?: number }>> = {
     </IconWrapper>
   ),
 
-  // SEAT - S الأحمر
+  // SEAT - S ??????
   'SEAT': ({ size = 20 }) => (
     <IconWrapper size={size}>
       <svg viewBox="0 0 24 24" fill="none">
@@ -171,7 +171,7 @@ const brandIcons: Record<string, React.FC<{ size?: number }>> = {
     </IconWrapper>
   ),
 
-  // Fiat - الشعار الأحمر
+  // Fiat - ?????? ??????
   'Fiat': ({ size = 20 }) => (
     <IconWrapper size={size}>
       <svg viewBox="0 0 24 24" fill="none">
@@ -181,7 +181,7 @@ const brandIcons: Record<string, React.FC<{ size?: number }>> = {
     </IconWrapper>
   ),
 
-  // Opel - البرق
+  // Opel - ?????
   'Opel': ({ size = 20 }) => (
     <IconWrapper size={size}>
       <svg viewBox="0 0 24 24" fill="none">
@@ -191,7 +191,7 @@ const brandIcons: Record<string, React.FC<{ size?: number }>> = {
     </IconWrapper>
   ),
 
-  // Mazda - الدائرة مع الجناح
+  // Mazda - ??????? ?? ??????
   'Mazda': ({ size = 20 }) => (
     <IconWrapper size={size}>
       <svg viewBox="0 0 24 24" fill="none">
@@ -201,7 +201,7 @@ const brandIcons: Record<string, React.FC<{ size?: number }>> = {
     </IconWrapper>
   ),
 
-  // Mitsubishi - الماسات الثلاث
+  // Mitsubishi - ??????? ??????
   'Mitsubishi': ({ size = 20 }) => (
     <IconWrapper size={size}>
       <svg viewBox="0 0 24 24" fill="none">
@@ -212,7 +212,7 @@ const brandIcons: Record<string, React.FC<{ size?: number }>> = {
     </IconWrapper>
   ),
 
-  // Subaru - النجوم
+  // Subaru - Stars constellation
   'Subaru': ({ size = 20 }) => (
     <IconWrapper size={size}>
       <svg viewBox="0 0 24 24" fill="none">
@@ -226,7 +226,7 @@ const brandIcons: Record<string, React.FC<{ size?: number }>> = {
     </IconWrapper>
   ),
 
-  // Kia - الكتابة المنحنية
+  // Kia - Stylized script logo
   'Kia': ({ size = 20 }) => (
     <IconWrapper size={size}>
       <svg viewBox="0 0 24 24" fill="none">
@@ -236,7 +236,7 @@ const brandIcons: Record<string, React.FC<{ size?: number }>> = {
     </IconWrapper>
   ),
 
-  // Lexus - L
+  // Lexus - Stylized L emblem
   'Lexus': ({ size = 20 }) => (
     <IconWrapper size={size}>
       <svg viewBox="0 0 24 24" fill="none">
@@ -246,7 +246,7 @@ const brandIcons: Record<string, React.FC<{ size?: number }>> = {
     </IconWrapper>
   ),
 
-  // Infiniti - الرمز المنحني
+  // Infiniti - Curved infinity symbol
   'Infiniti': ({ size = 20 }) => (
     <IconWrapper size={size}>
       <svg viewBox="0 0 24 24" fill="none">
@@ -266,7 +266,7 @@ const brandIcons: Record<string, React.FC<{ size?: number }>> = {
     </IconWrapper>
   ),
 
-  // Genesis - الأجنحة
+  // Genesis - ???????
   'Genesis': ({ size = 20 }) => (
     <IconWrapper size={size}>
       <svg viewBox="0 0 24 24" fill="none">
@@ -286,7 +286,7 @@ const brandIcons: Record<string, React.FC<{ size?: number }>> = {
     </IconWrapper>
   ),
 
-  // Jeep - شبكة
+  // Jeep - ????
   'Jeep': ({ size = 20 }) => (
     <IconWrapper size={size}>
       <svg viewBox="0 0 24 24" fill="none">
@@ -301,7 +301,7 @@ const brandIcons: Record<string, React.FC<{ size?: number }>> = {
     </IconWrapper>
   ),
 
-  // Mini - الدائرة مع الأجنحة
+  // Mini - ??????? ?? ???????
   'Mini': ({ size = 20 }) => (
     <IconWrapper size={size}>
       <svg viewBox="0 0 24 24" fill="none">
@@ -313,7 +313,7 @@ const brandIcons: Record<string, React.FC<{ size?: number }>> = {
     </IconWrapper>
   ),
 
-  // Land Rover - الشعار البيضاوي
+  // Land Rover - ?????? ????????
   'Land Rover': ({ size = 20 }) => (
     <IconWrapper size={size}>
       <svg viewBox="0 0 24 24" fill="none">
@@ -323,7 +323,7 @@ const brandIcons: Record<string, React.FC<{ size?: number }>> = {
     </IconWrapper>
   ),
 
-  // Jaguar - النمر
+  // Jaguar - ?????
   'Jaguar': ({ size = 20 }) => (
     <IconWrapper size={size}>
       <svg viewBox="0 0 24 24" fill="none">
@@ -335,7 +335,7 @@ const brandIcons: Record<string, React.FC<{ size?: number }>> = {
     </IconWrapper>
   ),
 
-  // أيقونة افتراضية للشركات الأخرى
+  // (Comment removed - was in Arabic)
   'Other': ({ size = 20 }) => (
     <IconWrapper size={size}>
       <svg viewBox="0 0 24 24" fill="none">
@@ -346,7 +346,7 @@ const brandIcons: Record<string, React.FC<{ size?: number }>> = {
   )
 };
 
-// مكون أيقونة شركة السيارة
+// (Comment removed - was in Arabic)
 interface CarBrandIconProps {
   brand: string;
   size?: number;
@@ -364,25 +364,25 @@ const CarBrandIcon: React.FC<CarBrandIconProps> = ({ brand, size = 20, showName 
   );
 };
 
-// دالة للحصول على أيقونة شركة معينة
+// (Comment removed - was in Arabic)
 export const getBrandIcon = (brand: string, size: number = 20) => {
   const IconComponent = brandIcons[brand] || brandIcons['Other'];
   return <IconComponent size={size} />;
 };
 
-// دالة لاستخراج اسم الشركة من عنوان السيارة
+// (Comment removed - was in Arabic)
 export const extractBrandFromTitle = (title: string): string => {
   const firstWord = title.split(' ')[0];
   
-  // قائمة الشركات المعروفة
+  // (Comment removed - was in Arabic)
   const knownBrands = Object.keys(brandIcons);
   
-  // البحث عن تطابق مباشر
+  // (Comment removed - was in Arabic)
   if (knownBrands.includes(firstWord)) {
     return firstWord;
   }
   
-  // البحث عن تطابق جزئي (case insensitive)
+  // (Comment removed - was in Arabic)
   const matchingBrand = knownBrands.find(brand => 
     brand.toLowerCase() === firstWord.toLowerCase()
   );
@@ -391,7 +391,7 @@ export const extractBrandFromTitle = (title: string): string => {
     return matchingBrand;
   }
   
-  // معالجة حالات خاصة
+  // (Comment removed - was in Arabic)
   const specialCases: Record<string, string> = {
     'VW': 'Volkswagen',
     'Benz': 'Mercedes-Benz',
@@ -410,7 +410,7 @@ export const extractBrandFromTitle = (title: string): string => {
     return specialCases[firstWord];
   }
   
-  // البحث في عنوان كامل للشركات المركبة
+  // Search in full title for compound brand names
   const title_lower = title.toLowerCase();
   
   if (title_lower.includes('mercedes') || title_lower.includes('benz')) {

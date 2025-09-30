@@ -148,7 +148,7 @@ export const DigitalTwinDashboard: React.FC<DigitalTwinDashboardProps> = ({ vin 
 
   useEffect(() => {
     loadDigitalTwin();
-    // تحديث البيانات كل 30 ثانية
+    // (Comment removed - was in Arabic)
     const interval = setInterval(loadDigitalTwin, 30000);
     return () => clearInterval(interval);
   }, [loadDigitalTwin]);
@@ -198,7 +198,7 @@ export const DigitalTwinDashboard: React.FC<DigitalTwinDashboardProps> = ({ vin 
 
   return (
     <DashboardContainer>
-      {/* رأس اللوحة */}
+      {/* (Comment removed - was in Arabic) */}
       <StatusCard>
         <CardTitle>
           <Zap size={24} color="#2563eb" />
@@ -206,7 +206,7 @@ export const DigitalTwinDashboard: React.FC<DigitalTwinDashboardProps> = ({ vin 
         </CardTitle>
 
         <StatusGrid>
-          {/* حالة المحرك */}
+          {/* (Comment removed - was in Arabic) */}
           <StatusItem>
             {getEngineHealthIcon(digitalTwin.engineHealth)}
             <div>
@@ -218,7 +218,7 @@ export const DigitalTwinDashboard: React.FC<DigitalTwinDashboardProps> = ({ vin 
             </div>
           </StatusItem>
 
-          {/* مستوى الوقود */}
+          {/* (Comment removed - was in Arabic) */}
           <StatusItem>
             <Fuel size={20} color="#2563eb" />
             <div>
@@ -227,7 +227,7 @@ export const DigitalTwinDashboard: React.FC<DigitalTwinDashboardProps> = ({ vin 
             </div>
           </StatusItem>
 
-          {/* البطارية */}
+          {/* (Comment removed - was in Arabic) */}
           <StatusItem>
             <Battery size={20} color="#16a34a" />
             <div>
@@ -236,7 +236,7 @@ export const DigitalTwinDashboard: React.FC<DigitalTwinDashboardProps> = ({ vin 
             </div>
           </StatusItem>
 
-          {/* نقاط القيادة */}
+          {/* (Comment removed - was in Arabic) */}
           <StatusItem>
             <Gauge size={20} color="#9333ea" />
             <div>
@@ -247,7 +247,7 @@ export const DigitalTwinDashboard: React.FC<DigitalTwinDashboardProps> = ({ vin 
         </StatusGrid>
       </StatusCard>
 
-      {/* الموقع والحالة */}
+      {/* (Comment removed - was in Arabic) */}
       <InfoGrid>
         <InfoCard>
           <CardTitle>
@@ -293,7 +293,7 @@ export const DigitalTwinDashboard: React.FC<DigitalTwinDashboardProps> = ({ vin 
         </InfoCard>
       </InfoGrid>
 
-      {/* أكواد الأعطال */}
+      {/* (Comment removed - was in Arabic) */}
       {digitalTwin.activeErrorCodes.length > 0 && (
         <StatusCard>
           <CardTitle style={{ color: '#dc2626' }}>
@@ -322,7 +322,7 @@ export const DigitalTwinDashboard: React.FC<DigitalTwinDashboardProps> = ({ vin 
         </StatusCard>
       )}
 
-      {/* تنبيهات الصيانة */}
+      {/* (Comment removed - was in Arabic) */}
       {digitalTwin.totalMileage >= digitalTwin.nextServiceDueKm && (
         <AlertBox alertType="warning">
           <Clock size={16} />
@@ -332,4 +332,4 @@ export const DigitalTwinDashboard: React.FC<DigitalTwinDashboardProps> = ({ vin 
       )}
     </DashboardContainer>
   );
-};
+}

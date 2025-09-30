@@ -1,5 +1,5 @@
 // Supabase Configuration - Free Alternative to Firebase
-// إعداد Supabase - بديل مجاني لـ Firebase
+// (Comment removed - was in Arabic)
 
 import { createClient } from '@supabase/supabase-js';
 

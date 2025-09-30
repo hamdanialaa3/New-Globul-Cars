@@ -63,7 +63,7 @@ class FCMService {
         this.messaging = getMessaging(app);
       }
     } catch (error) {
-      console.error('Failed to initialize FCM:', error);
+      console.error('[SERVICE] Failed to initialize FCM:', error);
     }
   }
 
@@ -83,14 +83,12 @@ class FCMService {
       const permission = await Notification.requestPermission();
 
       if (permission === 'granted') {
-        console.log('Notification permission granted');
-        return true;
+return true;
       } else {
-        console.log('Notification permission denied');
-        return false;
+return false;
       }
     } catch (error) {
-      console.error('Error requesting notification permission:', error);
+      console.error('[SERVICE] Error requesting notification permission:', error);
       return false;
     }
   }
@@ -99,12 +97,12 @@ class FCMService {
   async getFCMToken(): Promise<string | null> {
     try {
       if (!this.messaging) {
-        console.error('FCM not initialized');
+        console.error('[SERVICE] FCM not initialized');
         return null;
       }
 
       if (!this.vapidKey) {
-        console.error('VAPID key not configured');
+        console.error('[SERVICE] VAPID key not configured');
         return null;
       }
 
@@ -113,14 +111,12 @@ class FCMService {
       });
 
       if (token) {
-        console.log('FCM token obtained:', token);
-        return token;
+return token;
       } else {
-        console.log('No FCM token available');
-        return null;
+return null;
       }
     } catch (error) {
-      console.error('Error getting FCM token:', error);
+      console.error('[SERVICE] Error getting FCM token:', error);
       return null;
     }
   }
@@ -128,14 +124,12 @@ class FCMService {
   // Listen for incoming messages
   setupMessageListener() {
     if (!this.messaging) {
-      console.error('FCM not initialized');
+      console.error('[SERVICE] FCM not initialized');
       return;
     }
 
     onMessage(this.messaging, (payload: MessagePayload) => {
-      console.log('Message received:', payload);
-
-      const notification: PushNotification = {
+const notification: PushNotification = {
         id: payload.messageId || Date.now().toString(),
         title: payload.notification?.title || 'New Notification',
         body: payload.notification?.body || '',
@@ -265,7 +259,7 @@ class FCMService {
     try {
       localStorage.setItem('globul-cars-notifications', JSON.stringify(this.notifications));
     } catch (error) {
-      console.error('Error saving notifications:', error);
+      console.error('[SERVICE] Error saving notifications:', error);
     }
   }
 
@@ -281,7 +275,7 @@ class FCMService {
         }));
       }
     } catch (error) {
-      console.error('Error loading notifications:', error);
+      console.error('[SERVICE] Error loading notifications:', error);
     }
   }
 

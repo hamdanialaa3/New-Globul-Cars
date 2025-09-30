@@ -5,7 +5,7 @@ class AdvancedDataService {
   private summary: CarDataSummary | null = null;
   private searchCache: Map<string, CarDataFromFile[]> = new Map();
 
-  // بيانات محاكاة واقعية للبلغار
+  // Realistic mock data for Bulgarian market
   private mockData: CarDataFromFile[] = [
     {
       id: '1',
@@ -139,7 +139,7 @@ class AdvancedDataService {
 
   async loadData(): Promise<void> {
     try {
-      // محاولة تحميل البيانات الحقيقية أولاً
+      // Attempt to load real data first
       const [carDataResponse, summaryResponse] = await Promise.allSettled([
         fetch('/data/car-data.json'),
         fetch('/data/car-data-summary.json')
@@ -148,7 +148,7 @@ class AdvancedDataService {
       if (carDataResponse.status === 'fulfilled') {
         this.carData = await carDataResponse.value.json();
       } else {
-        // استخدام البيانات المحاكاة إذا فشل التحميل
+        // Use mock data if loading fails
         this.carData = this.mockData;
       }
 
@@ -160,7 +160,7 @@ class AdvancedDataService {
 
       this.preprocessData();
     } catch (error) {
-      console.error('Error loading car data, using mock data:', error);
+      console.error('[SERVICE] Error loading car data, using mock data:', error);
       this.carData = this.mockData;
       this.summary = this.generateSummary();
       this.preprocessData();
@@ -183,10 +183,10 @@ class AdvancedDataService {
   }
 
   private preprocessData(): void {
-    // تحسين البيانات للبحث
+    // Optimize data for searching
     this.carData.forEach(car => {
       car.features = car.features || [];
-      // إضافة بيانات إضافية للبحث
+      // Add additional search metadata
       car.features.push(
         `${car.brand} ${car.model}`,
         `${car.year}`,
@@ -205,7 +205,7 @@ class AdvancedDataService {
 
     let results = [...this.carData];
 
-    // تطبيق الفلاتر بشكل تسلسلي
+    // (Comment removed - was in Arabic)
     results = this.applyMakeFilter(results, params.make);
     results = this.applyModelFilter(results, params.model);
     results = this.applyPriceFilter(results, params.minPrice, params.maxPrice);
@@ -301,7 +301,7 @@ class AdvancedDataService {
   private applyLocationFilter(results: CarDataFromFile[], city: string, radius: string): CarDataFromFile[] {
     if (!city) return results;
 
-    // محاكاة تصفية الموقع (في التطبيق الحقيقي ستحتاج إلى إحداثيات فعلية)
+    // (Comment removed - was in Arabic)
     return results.filter(car =>
       car.location.toLowerCase().includes(city.toLowerCase())
     );
@@ -383,7 +383,7 @@ class AdvancedDataService {
   private applyFeaturesFilter(results: CarDataFromFile[], params: AdvancedSearchParams): CarDataFromFile[] {
     let filtered = results;
 
-    // تطبيق فلاتر الميزات الإضافية
+    // (Comment removed - was in Arabic)
     if (params.withPictures) {
       filtered = filtered.filter(car => car.images && car.images.length > 0);
     }
@@ -410,7 +410,7 @@ class AdvancedDataService {
   }
 
   private determineVehicleType(car: CarDataFromFile): string {
-    // منطق بسيط لتحديد نوع المركبة
+    // (Comment removed - was in Arabic)
     if (car.doors === 2) return 'coupe';
     if (car.seats >= 7) return 'van';
     if (car.model.toLowerCase().includes('suv') || car.model.toLowerCase().includes('x5')) return 'suv';

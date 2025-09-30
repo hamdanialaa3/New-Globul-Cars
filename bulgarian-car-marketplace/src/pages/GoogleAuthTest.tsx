@@ -125,7 +125,7 @@ const GoogleAuthTest: React.FC = () => {
   const runDiagnostic = () => {
     setDebugInfo('Running diagnostic... Check console for details.');
     
-    // اختبار التكوين الجديد
+    // (Comment removed - was in Arabic)
     console.log('🧪 اختبار التكوين الجديد...');
     const configTest = testNewFirebaseConfig();
     

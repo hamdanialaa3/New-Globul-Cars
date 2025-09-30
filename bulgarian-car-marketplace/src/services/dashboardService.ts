@@ -109,7 +109,7 @@ class DashboardService {
         weeklyViews
       };
     } catch (error) {
-      console.error('Error fetching dashboard stats:', error);
+      console.error('[SERVICE] Error fetching dashboard stats:', error);
       throw error;
     }
   }
@@ -153,7 +153,7 @@ class DashboardService {
         console.warn('[DashboardService] recent cars index building in progress – returning empty list temporarily');
         return [];
       }
-      console.error('Error fetching recent cars:', error);
+      console.error('[SERVICE] Error fetching recent cars:', error);
       return [];
     }
   }
@@ -208,7 +208,7 @@ class DashboardService {
         console.warn('[DashboardService] recent messages index building – returning empty list temporarily');
         return [];
       }
-      console.error('Error fetching recent messages:', error);
+      console.error('[SERVICE] Error fetching recent messages:', error);
       return [];
     }
   }
@@ -247,7 +247,7 @@ class DashboardService {
         console.warn('[DashboardService] notifications index building – returning empty list temporarily');
         return [];
       }
-      console.error('Error fetching notifications:', error);
+      console.error('[SERVICE] Error fetching notifications:', error);
       return [];
     }
   }
@@ -297,7 +297,7 @@ class DashboardService {
           console.warn('[DashboardService] permission denied during preflight – listeners will retry (check rules)');
           return false;
         }
-        console.error('[DashboardService] unexpected preflight error, will retry:', err);
+        console.error('[SERVICE] [DashboardService] unexpected preflight error, will retry:', err);
         return false;
       }
     };
@@ -435,7 +435,7 @@ class DashboardService {
       const messageRef = doc(db, 'messages', messageId);
       await updateDoc(messageRef, { isRead: true });
     } catch (error) {
-      console.error('Error marking message as read:', error);
+      console.error('[SERVICE] Error marking message as read:', error);
       throw error;
     }
   }
@@ -446,7 +446,7 @@ class DashboardService {
       const notificationRef = doc(db, 'notifications', notificationId);
       await updateDoc(notificationRef, { isRead: true });
     } catch (error) {
-      console.error('Error marking notification as read:', error);
+      console.error('[SERVICE] Error marking notification as read:', error);
       throw error;
     }
   }

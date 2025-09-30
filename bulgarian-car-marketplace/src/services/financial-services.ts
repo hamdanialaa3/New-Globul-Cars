@@ -57,7 +57,7 @@ export class BulgarianFinancialServices {
 
       return docRef.id;
     } catch (error) {
-      console.error('Error submitting finance lead:', error);
+      console.error('[SERVICE] Error submitting finance lead:', error);
       throw new Error('Грешка при изпращане на заявката за финансиране');
     }
   }
@@ -91,7 +91,7 @@ export class BulgarianFinancialServices {
 
       return docRef.id;
     } catch (error) {
-      console.error('Error submitting insurance quote:', error);
+      console.error('[SERVICE] Error submitting insurance quote:', error);
       throw new Error('Грешка при изпращане на заявката за застраховка');
     }
   }
@@ -112,7 +112,7 @@ export class BulgarianFinancialServices {
         ...doc.data()
       } as ServiceLead));
     } catch (error) {
-      console.error('Error getting user service leads:', error);
+      console.error('[SERVICE] Error getting user service leads:', error);
       throw new Error('Грешка при зареждане на заявките');
     }
   }
@@ -131,7 +131,7 @@ export class BulgarianFinancialServices {
       }
       return null;
     } catch (error) {
-      console.error('Error getting service lead:', error);
+      console.error('[SERVICE] Error getting service lead:', error);
       return null;
     }
   }

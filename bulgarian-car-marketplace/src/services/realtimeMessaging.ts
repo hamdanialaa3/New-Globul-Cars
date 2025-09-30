@@ -271,7 +271,7 @@ export class RealtimeMessagingService {
         receiverId
       });
     } catch (error: any) {
-      console.error('Failed to send typing indicator:', error);
+      console.error('[SERVICE] Failed to send typing indicator:', error);
     }
   }
 
@@ -351,7 +351,7 @@ export class RealtimeMessagingService {
         });
       }
     } catch (error: any) {
-      console.error('Failed to update chat room:', error);
+      console.error('[SERVICE] Failed to update chat room:', error);
     }
   }
 
@@ -369,7 +369,7 @@ export class RealtimeMessagingService {
         updatedAt: Timestamp.fromDate(new Date())
       });
     } catch (error: any) {
-      console.error('Failed to update unread count:', error);
+      console.error('[SERVICE] Failed to update unread count:', error);
     }
   }
 

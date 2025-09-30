@@ -7,7 +7,7 @@ const ExtrasEquipmentContainer = styled.div`
   background: var(--bg-color, ${props => props.theme?.colors?.background?.default || '#f5f7fa'});
   padding: 2rem 0;
   
-  /* CSS Custom Properties للتحكم الكامل في الألوان */
+  /* CSS Custom Properties ?????? ?????? ?? ??????? */
   --primary-color: ${props => props.theme?.colors?.primary?.main || '#007BFF'};
   --secondary-color: ${props => props.theme?.colors?.secondary?.main || '#6C757D'};
   --bg-color: ${props => props.theme?.colors?.background?.default || '#f5f7fa'};
@@ -200,7 +200,7 @@ const ExtrasEquipmentPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const [selectedEquipment, setSelectedEquipment] = useState<string[]>([]);
 
-  // Customizable color scheme - يمكنك تغيير هذه الألوان حسب الحاجة
+  // Customizable color scheme - ????? ????? ??? ??????? ??? ??????
   const colorScheme = {
     primary: '#28a745',        // اللون الأساسي - تم تغييره إلى أخضر
     secondary: '#dc3545',      // اللون الثانوي - تم تغييره إلى أحمر

@@ -1,5 +1,5 @@
 // Socket.io Configuration - Free Real-time Messaging
-// إعداد Socket.io - رسائل فورية مجانية
+// (Comment removed - was in Arabic)
 
 import { io, Socket } from 'socket.io-client';
 
@@ -33,59 +33,50 @@ export class BulgarianSocketService {
 
     // Connection events
     this.socket.on('connect', () => {
-      console.log('🔗 Connected to Socket.io server');
-      this.reconnectAttempts = 0;
+this.reconnectAttempts = 0;
     });
 
     this.socket.on('disconnect', (reason) => {
-      console.log('🔌 Disconnected from Socket.io server:', reason);
-    });
+});
 
     this.socket.on('connect_error', (error) => {
-      console.error('❌ Socket connection error:', error);
+      console.error('[SERVICE] Socket connection error:', error);
       this.reconnectAttempts++;
 
       if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-        console.error('🚫 Max reconnection attempts reached');
+        console.error('[SERVICE] Max reconnection attempts reached');
       }
     });
 
     // Car-related events
     this.socket.on('car:new', (data) => {
-      console.log('🚗 New car added:', data);
-      this.emit('car:new', data);
+this.emit('car:new', data);
     });
 
     this.socket.on('car:updated', (data) => {
-      console.log('🔄 Car updated:', data);
-      this.emit('car:updated', data);
+this.emit('car:updated', data);
     });
 
     this.socket.on('car:deleted', (data) => {
-      console.log('🗑️ Car deleted:', data);
-      this.emit('car:deleted', data);
+this.emit('car:deleted', data);
     });
 
     // Message events
     this.socket.on('message:new', (data) => {
-      console.log('💬 New message:', data);
-      this.emit('message:new', data);
+this.emit('message:new', data);
     });
 
     this.socket.on('message:read', (data) => {
-      console.log('👁️ Message read:', data);
-      this.emit('message:read', data);
+this.emit('message:read', data);
     });
 
     // User events
     this.socket.on('user:online', (data) => {
-      console.log('🟢 User online:', data);
-      this.emit('user:online', data);
+this.emit('user:online', data);
     });
 
     this.socket.on('user:offline', (data) => {
-      console.log('🔴 User offline:', data);
-      this.emit('user:offline', data);
+this.emit('user:offline', data);
     });
   }
 
@@ -100,16 +91,14 @@ export class BulgarianSocketService {
   joinCarRoom(carId: string) {
     if (this.socket) {
       this.socket.emit('join:car', { carId });
-      console.log(`🚪 Joined car room: ${carId}`);
-    }
+}
   }
 
   // Leave car room
   leaveCarRoom(carId: string) {
     if (this.socket) {
       this.socket.emit('leave:car', { carId });
-      console.log(`🚪 Left car room: ${carId}`);
-    }
+}
   }
 
   // Send message

@@ -1,5 +1,5 @@
 // AdvancedFilterSystemMobile/hooks/useAdvancedFilter.ts
-// خطاف مخصص لإدارة منطق نظام التصفية المتقدم
+// (Comment removed - was in Arabic)
 
 import { useState, useCallback } from 'react';
 import { FilterValue, SectionState } from '../types';

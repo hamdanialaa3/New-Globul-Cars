@@ -211,7 +211,7 @@ export class BulgarianProfileService {
 
       return completeProfile;
     } catch (error) {
-      console.error('Error creating complete profile:', error);
+      console.error('[SERVICE] Error creating complete profile:', error);
       throw new Error('Failed to create user profile');
     }
   }
@@ -249,7 +249,7 @@ export class BulgarianProfileService {
         });
       }
     } catch (error) {
-      console.error('Error updating user profile:', error);
+      console.error('[SERVICE] Error updating user profile:', error);
       throw error;
     }
   }
@@ -280,7 +280,7 @@ export class BulgarianProfileService {
       
       return downloadURL;
     } catch (error) {
-      console.error('Error uploading profile picture:', error);
+      console.error('[SERVICE] Error uploading profile picture:', error);
       throw new Error('Failed to upload profile picture');
     }
   }
@@ -310,7 +310,7 @@ export class BulgarianProfileService {
         updatedAt: serverTimestamp()
       });
     } catch (error) {
-      console.error('Error setting up dealer profile:', error);
+      console.error('[SERVICE] Error setting up dealer profile:', error);
       throw error;
     }
   }
@@ -362,7 +362,7 @@ export class BulgarianProfileService {
         });
       }
     } catch (error) {
-      console.error('Error tracking user activity:', error);
+      console.error('[SERVICE] Error tracking user activity:', error);
       // Don't throw error for tracking failures
     }
   }
@@ -384,7 +384,7 @@ export class BulgarianProfileService {
       // For now, return the structure
       return [];
     } catch (error) {
-      console.error('Error getting user favorites:', error);
+      console.error('[SERVICE] Error getting user favorites:', error);
       return [];
     }
   }
@@ -400,7 +400,7 @@ export class BulgarianProfileService {
         updatedAt: serverTimestamp()
       });
     } catch (error) {
-      console.error('Error updating preferences:', error);
+      console.error('[SERVICE] Error updating preferences:', error);
       throw new Error('Failed to update preferences');
     }
   }
@@ -418,7 +418,7 @@ export class BulgarianProfileService {
         callback(null);
       }
     }, (error) => {
-      console.error('Error in real-time profile listener:', error);
+      console.error('[SERVICE] Error in real-time profile listener:', error);
       callback(null);
     });
   }
@@ -437,7 +437,7 @@ export class BulgarianProfileService {
       
       return null;
     } catch (error) {
-      console.error('Error getting user profile:', error);
+      console.error('[SERVICE] Error getting user profile:', error);
       throw new Error('Failed to get user profile');
     }
   }
@@ -477,7 +477,7 @@ export class BulgarianProfileService {
       }
       
     } catch (error) {
-      console.error('Error deleting user profile:', error);
+      console.error('[SERVICE] Error deleting user profile:', error);
       throw new Error('Failed to delete user profile');
     }
   }
@@ -523,7 +523,7 @@ export class BulgarianProfileService {
       });
       
     } catch (error) {
-      console.error('Error updating email:', error);
+      console.error('[SERVICE] Error updating email:', error);
       throw error;
     }
   }
@@ -548,7 +548,7 @@ export class BulgarianProfileService {
       await updatePassword(auth.currentUser, newPassword);
       
     } catch (error) {
-      console.error('Error updating password:', error);
+      console.error('[SERVICE] Error updating password:', error);
       throw error;
     }
   }

@@ -111,17 +111,17 @@ class ErrorBoundary extends Component<Props, State> {
 
       return (
         <ErrorContainer>
-          <ErrorTitle>Oops! Something went wrong</ErrorTitle>
+          <ErrorTitle>Нещо се обърка!</ErrorTitle>
           <ErrorMessage>
-            We're sorry, but something unexpected happened. Please try refreshing the page.
+            Съжаляваме, но възникна неочаквана грешка. Моля, опреснете страницата.
           </ErrorMessage>
           <RetryButton onClick={this.handleRetry}>
-            Try Again
+            Опитай отново
           </RetryButton>
           
           {process.env.NODE_ENV === 'development' && this.state.error && (
             <ErrorDetails>
-              <ErrorSummary>Error Details (Development Only)</ErrorSummary>
+              <ErrorSummary>Детайли за грешката (само за разработчици)</ErrorSummary>
               <ErrorCode>
                 {this.state.error.toString()}
                 {this.state.errorInfo && (

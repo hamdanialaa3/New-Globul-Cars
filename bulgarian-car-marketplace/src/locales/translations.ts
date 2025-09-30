@@ -29,7 +29,28 @@ export const translations = {
         insurance: { title: 'Застраховка', description: 'Партнираме с водещи застрахователни компании за най-добри цени' }
       }
     },
-    nav: { home: 'Начало', cars: 'Коли', sell: 'Продай', brandGallery: 'Бранд Галерия', login: 'Вход', register: 'Регистрация', logout: 'Изход' },
+    nav: { 
+      home: 'Начало', 
+      cars: 'Търси коли', 
+      sell: 'Продай', 
+      brandGallery: 'Бранд Галерия', 
+      login: 'Вход', 
+      register: 'Регистрация', 
+      logout: 'Изход',
+      favorites: 'Любими',
+      messages: 'Съобщения',
+      notifications: 'Известия',
+      myAccount: 'Моят профил',
+      settings: 'Настройки',
+      profile: 'Профил',
+      dashboard: 'Табло',
+      dealers: 'Търговци',
+      finance: 'Финансиране',
+      insurance: 'Застраховка',
+      about: 'За нас',
+      contact: 'Контакт',
+      help: 'Помощ'
+    },
     topBrands: {
       topBrands: 'Топ марки',
       allBrands: 'Всички марки',
@@ -73,7 +94,15 @@ export const translations = {
     },
     advancedSearch: {
       title: 'Подробно търсене: Коли – нови или употребявани',
-      search: 'Търси', searching: 'Търся...', saveSearch: 'Запази това търсене', reset: 'Нулирай', resetFilters: 'Изчисти филтрите',
+      search: 'Търси', searching: 'Търся...', 
+      saveSearch: 'Запази търсенето',
+      save: 'Запази',
+      searchName: 'Име на търсенето',
+      searchNamePlaceholder: 'напр. BMW 3 Series 2020+ София',
+      saveSearchDescription: 'Дайте име на това търсене за бърз достъп по-късно',
+      searchSummary: 'Резюме на търсенето',
+      pleaseEnterName: 'Моля, въведете име за търсенето',
+      reset: 'Нулирай', resetFilters: 'Изчисти филтрите',
       applyFiltersAbove: 'Приложи горните филтри', searchCars: 'Търси коли', searchResults: 'Резултати от търсенето',
       basicData: 'Основни данни', technicalData: 'Технически данни', exterior: 'Екстериор', interior: 'Интериор', offerDetails: 'Детайли на офертата',
       any: 'Всички', from: 'от', to: 'до', yes: 'Да', no: 'Не', comingSoon: 'Скоро...', fuelType: 'Тип гориво',
@@ -117,6 +146,28 @@ export const translations = {
       recentInquiries: 'Последни запитвания', noMessages: 'Няма съобщения', notifications: 'Известия', noNotifications: 'Няма известия', quickActions: 'Бързи действия',
       improvementTips: 'Съвети за подобрение', tips: { addMorePhotos: 'Добавете повече снимки', respondQuickly: 'Отговаряйте бързо', maintainCompetitivePrices: 'Поддържайте конкурентни цени', updateDescriptions: 'Актуализирайте описанията' }
     },
+    notifications: {
+      title: 'Известия',
+      loading: 'Зареждане...',
+      noNotifications: 'Няма известия',
+      noNotificationsDesc: 'Ще получавате известия тук за важни събития.',
+      justNow: 'Току-що',
+      minutesAgo: 'преди минути',
+      hoursAgo: 'преди часове',
+      daysAgo: 'преди дни',
+      viewDetails: 'Виж детайли',
+      markAsRead: 'Отбележи като прочетено',
+      delete: 'Изтрий',
+      markAllRead: 'Отбележи всички като прочетени',
+      settings: 'Настройки',
+      viewAll: 'Виж всички',
+      loginRequired: 'Изисква се вход',
+      loginToView: 'Моля, влезте в системата, за да видите известията си.',
+      all: 'Всички',
+      unread: 'Непрочетени',
+      messages: 'Съобщения',
+      system: 'Система'
+    },
     fullThemeDemo: {
       title: 'Демо на пълна тема', overview: 'Преглед', primaryTheme: 'Основна тема', testPrimary: 'Тествай основна', secondaryTheme: 'Вторична тема', testSecondary: 'Тествай вторична', accentTheme: 'Акцентна тема', testAccent: 'Тествай акцент', neutralTheme: 'Неутрална тема', testNeutral: 'Тествай неутрална',
       typography: 'Типография', headings: 'Заглавия', testHeadings: 'Тествай заглавия', bodyText: 'Основен текст', testBodyText: 'Тествай текст', captions: 'Надписи', testCaptions: 'Тествай надписи', links: 'Връзки', testLinks: 'Тествай връзки',
@@ -127,7 +178,148 @@ export const translations = {
     auth: {
       login: { title: 'Вход', email: 'Имейл', password: 'Парола', loading: 'Влизане...', submit: 'Вход', noAccount: 'Нямате акаунт?', register: 'Регистрирайте се тук' },
       register: { title: 'Регистрация', firstName: 'Име', lastName: 'Фамилия', email: 'Имейл', password: 'Парола', confirmPassword: 'Потвърди парола', loading: 'Създаване...', submit: 'Регистрация', haveAccount: 'Вече имате акаунт?', login: 'Влезте тук' },
-      orContinueWith: 'Или продължи с', continueWithGoogle: 'Вход с Google', continueWithFacebook: 'Вход с Facebook', continueWithApple: 'Вход с Apple'
+      orContinueWith: 'Или продължи с', continueWithGoogle: 'Вход с Google', continueWithFacebook: 'Вход с Facebook', continueWithApple: 'Вход с Apple',
+      required: {
+        title: 'Изисква се вход',
+        message: 'За достъп до тази страница, моля влезте в профила си.',
+        loginButton: 'Вход в системата',
+        backButton: 'Обратно към началото',
+        enjoyFeatures: 'Влезте, за да се насладите на всички функции и услуги.'
+      },
+      pageNames: {
+        advancedSearch: 'Подробното търсене',
+        sell: 'Продажбата на кола',
+        sellCar: 'Продажбата на кола',
+        brandGallery: 'Галерията на марки',
+        dealers: 'Търговците',
+        finance: 'Финансирането',
+        thisPage: 'тази страница'
+      }
+    },
+    errors: {
+      notFound: {
+        title: '404',
+        subtitle: 'Страницата не е намерена',
+        description: 'Страницата, която търсите, не съществува или е преместена.',
+        homeButton: 'Към началната страница'
+      }
+    },
+    common: {
+      back: 'Назад',
+      loading: 'Зареждане...',
+      save: 'Запази',
+      cancel: 'Отказ',
+      confirm: 'Потвърди',
+      delete: 'Изтрий',
+      edit: 'Редактирай',
+      bulgarian: 'Български',
+      english: 'English',
+      language: 'Език',
+      theme: 'Тема',
+      lightMode: 'Светъл режим',
+      darkMode: 'Тъмен режим',
+      clearCache: 'Изчисти кеша',
+      cacheCleared: 'Кешът е изчистен успешно!'
+    },
+    emailVerification: {
+      invalidLink: 'Невалиден линк за потвърждение',
+      successTitle: 'Потвърждение успешно!',
+      successMessage: 'Вашият имейл адрес е успешно потвърден!',
+      errorTitle: 'Грешка при потвърждение',
+      errorMessage: 'Грешка при потвърждение на имейл адреса',
+      verifyingTitle: 'Потвърждаване...',
+      goToHome: 'Към началната страница',
+      goToLogin: 'Към вход',
+      autoRedirect: 'Ще бъдете пренасочени автоматично след 3 секунди...'
+    },
+    search: {
+      placeholder: 'Търсене на коли...',
+      button: 'Търси',
+      advanced: 'Подробно търсене',
+      results: 'Резултати',
+      noResults: 'Няма намерени резултати',
+      loading: 'Зареждане...'
+    },
+    header: {
+      loggedAs: 'Влязъл като',
+      // My Account Section
+      myAccount: 'Моят профил',
+      overview: 'Преглед',
+      myStatistics: 'Моята статистика',
+      myProfile: 'Моят профил',
+      
+      // Vehicles Section
+      vehiclesSection: 'Моите коли',
+      carPark: 'Моите превозни средства',
+      myAds: 'Моите обяви',
+      savedSearches: 'Запазени търсения',
+      mySearches: 'Моите търсения',
+      myFavorites: 'Любими',
+      garage: 'Гараж',
+      
+      // Communication Section
+      communicationSection: 'Комуникация',
+      messages: 'Съобщения',
+      notifications: 'Известия',
+      inquiries: 'Запитвания',
+      
+      // Transactions Section
+      transactionsSection: 'Транзакции',
+      orders: 'Поръчки',
+      financeCalculator: 'Финансов калкулатор',
+      financialReports: 'Финансови отчети',
+      insurance: 'Застраховка',
+      
+      // Settings Section
+      settingsSection: 'Настройки и контрол',
+      preferences: 'Предпочитания',
+      
+      // Appearance
+      appearance: 'Външен вид',
+      lightMode: 'Светъл режим',
+      darkMode: 'Тъмен режим',
+      autoMode: 'Автоматичен',
+      
+      // Text Size
+      textSize: 'Размер на текста',
+      textSmall: 'Малък',
+      textMedium: 'Среден',
+      textLarge: 'Голям',
+      
+      // Language
+      language: 'Език',
+      bulgarian: 'Български',
+      english: 'English',
+      
+      // Notification Settings
+      notificationSettings: 'Настройки за известия',
+      emailNotif: 'Имейл известия',
+      pushNotif: 'Push известия',
+      smsNotif: 'SMS известия',
+      
+      // Account Settings
+      accountSettings: 'Настройки на профила',
+      editProfile: 'Редактирай профил',
+      changeAvatar: 'Промени аватар',
+      changeCover: 'Промени корица',
+      privacySettings: 'Настройки за поверителност',
+      personalData: 'Лични данни',
+      
+      // Security
+      security: 'Сигурност',
+      changePassword: 'Промени парола',
+      twoFactorAuth: 'Двуфакторна автентикация',
+      activeSessions: 'Активни сесии',
+      
+      // Help & Support
+      helpSupport: 'Помощ и поддръжка',
+      faq: 'Често задавани въпроси',
+      contactSupport: 'Свържи се с поддръжка',
+      reportIssue: 'Докладвай проблем',
+      dealerInfo: 'Информация за търговеца',
+      
+      // Actions
+      logout: 'Изход'
     }
   },
   en: {
@@ -148,7 +340,28 @@ export const translations = {
         insurance: { title: 'Insurance', description: 'We partner with leading insurance companies for the best rates' }
       }
     },
-    nav: { home: 'Home', cars: 'Cars', sell: 'Sell', brandGallery: 'Brand Gallery', login: 'Login', register: 'Register', logout: 'Logout' },
+    nav: { 
+      home: 'Home', 
+      cars: 'Search Cars', 
+      sell: 'Sell', 
+      brandGallery: 'Brand Gallery', 
+      login: 'Login', 
+      register: 'Register', 
+      logout: 'Logout',
+      favorites: 'Favorites',
+      messages: 'Messages',
+      notifications: 'Notifications',
+      myAccount: 'My Account',
+      settings: 'Settings',
+      profile: 'Profile',
+      dashboard: 'Dashboard',
+      dealers: 'Dealers',
+      finance: 'Finance',
+      insurance: 'Insurance',
+      about: 'About',
+      contact: 'Contact',
+      help: 'Help'
+    },
     topBrands: {
       topBrands: 'Top Brands',
       allBrands: 'All Brands',
@@ -187,8 +400,16 @@ export const translations = {
       pagination: { previous: 'Previous', next: 'Next', page: 'Page' }
     },
     advancedSearch: {
-      title: 'Detailed Search: Cars – new or used',
-      search: 'Search', searching: 'Searching...', saveSearch: 'Save this search', reset: 'Reset', resetFilters: 'Reset Filters',
+      title: 'Advanced Search: Cars – new or used',
+      search: 'Search', searching: 'Searching...', 
+      saveSearch: 'Save Search',
+      save: 'Save',
+      searchName: 'Search Name',
+      searchNamePlaceholder: 'e.g. BMW 3 Series 2020+ Sofia',
+      saveSearchDescription: 'Give this search a name for quick access later',
+      searchSummary: 'Search Summary',
+      pleaseEnterName: 'Please enter a name for this search',
+      reset: 'Reset', resetFilters: 'Clear Filters',
       applyFiltersAbove: 'Apply filters above', searchCars: 'Search Cars', searchResults: 'Search Results',
       basicData: 'Basic Data', technicalData: 'Technical data', exterior: 'Exterior', interior: 'Interior', offerDetails: 'Offer Details',
       any: 'Any', from: 'from', to: 'to', yes: 'Yes', no: 'No', comingSoon: 'Coming soon...', fuelType: 'Fuel type',
@@ -231,6 +452,28 @@ export const translations = {
       recentInquiries: 'Recent Inquiries', noMessages: 'No messages', notifications: 'Notifications', noNotifications: 'No notifications', quickActions: 'Quick Actions',
       improvementTips: 'Improvement Tips', tips: { addMorePhotos: 'Add more photos', respondQuickly: 'Respond quickly', maintainCompetitivePrices: 'Maintain competitive prices', updateDescriptions: 'Update descriptions' }
     },
+    notifications: {
+      title: 'Notifications',
+      loading: 'Loading...',
+      noNotifications: 'No notifications',
+      noNotificationsDesc: 'You will receive notifications here for important events.',
+      justNow: 'Just now',
+      minutesAgo: 'minutes ago',
+      hoursAgo: 'hours ago',
+      daysAgo: 'days ago',
+      viewDetails: 'View details',
+      markAsRead: 'Mark as read',
+      delete: 'Delete',
+      markAllRead: 'Mark all as read',
+      settings: 'Settings',
+      viewAll: 'View all',
+      loginRequired: 'Login Required',
+      loginToView: 'Please sign in to view your notifications.',
+      all: 'All',
+      unread: 'Unread',
+      messages: 'Messages',
+      system: 'System'
+    },
     fullThemeDemo: {
       title: 'Full Theme Demo Page', overview: 'Overview', primaryTheme: 'Primary Theme', testPrimary: 'Test Primary', secondaryTheme: 'Secondary Theme', testSecondary: 'Test Secondary', accentTheme: 'Accent Theme', testAccent: 'Test Accent', neutralTheme: 'Neutral Theme', testNeutral: 'Test Neutral',
       typography: 'Typography', headings: 'Headings', testHeadings: 'Test Headings', bodyText: 'Body Text', testBodyText: 'Test Body Text', captions: 'Captions', testCaptions: 'Test Captions', links: 'Links', testLinks: 'Test Links',
@@ -241,7 +484,148 @@ export const translations = {
     auth: {
       login: { title: 'Login', email: 'Email', password: 'Password', loading: 'Logging in...', submit: 'Login', noAccount: "Don't have an account?", register: 'Register here' },
       register: { title: 'Register', firstName: 'First Name', lastName: 'Last Name', email: 'Email', password: 'Password', confirmPassword: 'Confirm Password', loading: 'Creating account...', submit: 'Register', haveAccount: 'Already have an account?', login: 'Login here' },
-      orContinueWith: 'Or continue with', continueWithGoogle: 'Continue with Google', continueWithFacebook: 'Continue with Facebook', continueWithApple: 'Continue with Apple'
+      orContinueWith: 'Or continue with', continueWithGoogle: 'Continue with Google', continueWithFacebook: 'Continue with Facebook', continueWithApple: 'Continue with Apple',
+      required: {
+        title: 'Login Required',
+        message: 'Please sign in to access this page.',
+        loginButton: 'Sign In',
+        backButton: 'Back to Home',
+        enjoyFeatures: 'Sign in to enjoy all features and services.'
+      },
+      pageNames: {
+        advancedSearch: 'Advanced Search',
+        sell: 'Sell Car',
+        sellCar: 'Sell Car',
+        brandGallery: 'Brand Gallery',
+        dealers: 'Dealers',
+        finance: 'Finance',
+        thisPage: 'this page'
+      }
+    },
+    errors: {
+      notFound: {
+        title: '404',
+        subtitle: 'Page Not Found',
+        description: 'The page you are looking for does not exist or has been moved.',
+        homeButton: 'Go to Homepage'
+      }
+    },
+    common: {
+      back: 'Back',
+      loading: 'Loading...',
+      save: 'Save',
+      cancel: 'Cancel',
+      confirm: 'Confirm',
+      delete: 'Delete',
+      edit: 'Edit',
+      bulgarian: 'Bulgarian',
+      english: 'English',
+      language: 'Language',
+      theme: 'Theme',
+      lightMode: 'Light Mode',
+      darkMode: 'Dark Mode',
+      clearCache: 'Clear Cache',
+      cacheCleared: 'Cache cleared successfully!'
+    },
+    emailVerification: {
+      invalidLink: 'Invalid verification link',
+      successTitle: 'Verification Successful!',
+      successMessage: 'Your email address has been verified successfully!',
+      errorTitle: 'Verification Error',
+      errorMessage: 'Error verifying email address',
+      verifyingTitle: 'Verifying...',
+      goToHome: 'Go to Homepage',
+      goToLogin: 'Go to Login',
+      autoRedirect: 'You will be redirected automatically in 3 seconds...'
+    },
+    search: {
+      placeholder: 'Search for cars...',
+      button: 'Search',
+      advanced: 'Advanced Search',
+      results: 'Results',
+      noResults: 'No results found',
+      loading: 'Loading...'
+    },
+    header: {
+      loggedAs: 'Logged as',
+      // My Account Section
+      myAccount: 'My Account',
+      overview: 'Overview',
+      myStatistics: 'My Statistics',
+      myProfile: 'My Profile',
+      
+      // Vehicles Section
+      vehiclesSection: 'My Vehicles',
+      carPark: 'My Vehicles',
+      myAds: 'My Ads',
+      savedSearches: 'Saved Searches',
+      mySearches: 'My Searches',
+      myFavorites: 'Favorites',
+      garage: 'Garage',
+      
+      // Communication Section
+      communicationSection: 'Communication',
+      messages: 'Messages',
+      notifications: 'Notifications',
+      inquiries: 'Inquiries',
+      
+      // Transactions Section
+      transactionsSection: 'Transactions',
+      orders: 'Orders',
+      financeCalculator: 'Finance Calculator',
+      financialReports: 'Financial Reports',
+      insurance: 'Insurance',
+      
+      // Settings Section
+      settingsSection: 'Settings & Control',
+      preferences: 'Preferences',
+      
+      // Appearance
+      appearance: 'Appearance',
+      lightMode: 'Light Mode',
+      darkMode: 'Dark Mode',
+      autoMode: 'Auto',
+      
+      // Text Size
+      textSize: 'Text Size',
+      textSmall: 'Small',
+      textMedium: 'Medium',
+      textLarge: 'Large',
+      
+      // Language
+      language: 'Language',
+      bulgarian: 'Български',
+      english: 'English',
+      
+      // Notification Settings
+      notificationSettings: 'Notification Settings',
+      emailNotif: 'Email Notifications',
+      pushNotif: 'Push Notifications',
+      smsNotif: 'SMS Notifications',
+      
+      // Account Settings
+      accountSettings: 'Account Settings',
+      editProfile: 'Edit Profile',
+      changeAvatar: 'Change Avatar',
+      changeCover: 'Change Cover',
+      privacySettings: 'Privacy Settings',
+      personalData: 'Personal Data',
+      
+      // Security
+      security: 'Security',
+      changePassword: 'Change Password',
+      twoFactorAuth: 'Two-Factor Authentication',
+      activeSessions: 'Active Sessions',
+      
+      // Help & Support
+      helpSupport: 'Help & Support',
+      faq: 'FAQ',
+      contactSupport: 'Contact Support',
+      reportIssue: 'Report Issue',
+      dealerInfo: 'Dealer Info',
+      
+      // Actions
+      logout: 'Logout'
     }
   }
 } as const;

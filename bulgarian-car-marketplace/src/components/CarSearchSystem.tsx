@@ -1,5 +1,5 @@
 // CarSearchSystem/CarSearchSystem.tsx
-// المكون الرئيسي المعاد هيكلته لنظام البحث في السيارات
+// (Comment removed - was in Arabic)
 
 import React from 'react';
 import { useTranslation } from '../hooks/useTranslation';

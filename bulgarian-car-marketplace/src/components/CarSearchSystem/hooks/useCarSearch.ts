@@ -1,5 +1,5 @@
 // CarSearchSystem/hooks/useCarSearch.ts
-// خطاف مخصص لإدارة منطق البحث في السيارات
+// (Comment removed - was in Arabic)
 
 import { useState, useEffect, useCallback } from 'react';
 import { FiltersType, OptionType } from '../types';
@@ -23,13 +23,13 @@ export const useCarSearch = (initialFilters: Partial<FiltersType> = {}) => {
     ...initialFilters
   });
 
-  // بيانات تجريبية - سيتم استبدالها بالبيانات المستخرجة من netcarshow
+  // (Comment removed - was in Arabic)
   const [makes] = useState<OptionType[]>(getAllMakes());
   const [models, setModels] = useState<OptionType[]>([]);
   const [generations, setGenerations] = useState<OptionType[]>([]);
   const [bodyStyles, setBodyStyles] = useState<OptionType[]>([]);
 
-  // عند تغيير الشركة، تحديث الموديلات
+  // (Comment removed - was in Arabic)
   useEffect(() => {
     if (filters.make) {
       const newModels = getModelsForMake(filters.make);
@@ -37,11 +37,11 @@ export const useCarSearch = (initialFilters: Partial<FiltersType> = {}) => {
     } else {
       setModels([]);
     }
-    // إعادة تعيين الموديل والجيل عند تغيير الشركة
+    // (Comment removed - was in Arabic)
     setFilters(prev => ({ ...prev, model: '', generation: '', bodyStyle: '' }));
   }, [filters.make]);
 
-  // عند تغيير الموديل، تحديث الأجيال
+  // (Comment removed - was in Arabic)
   useEffect(() => {
     if (filters.model) {
       const newGenerations = getGenerationsForModel(filters.make, filters.model);
@@ -52,7 +52,7 @@ export const useCarSearch = (initialFilters: Partial<FiltersType> = {}) => {
     setFilters(prev => ({ ...prev, generation: '', bodyStyle: '' }));
   }, [filters.model, filters.make]);
 
-  // عند تغيير الجيل، تحديث أنواع الهيكل
+  // (Comment removed - was in Arabic)
   useEffect(() => {
     if (filters.generation) {
       const newBodyStyles = getBodyStylesForGeneration(filters.make, filters.model, filters.generation);
@@ -84,9 +84,9 @@ export const useCarSearch = (initialFilters: Partial<FiltersType> = {}) => {
   }, []);
 
   const searchCars = useCallback(() => {
-    // منطق البحث في السيارات
+    // (Comment removed - was in Arabic)
     console.log('البحث بالفلاتر:', filters);
-    // هنا سيتم تنفيذ منطق البحث الفعلي
+    // (Comment removed - was in Arabic)
   }, [filters]);
 
   return {

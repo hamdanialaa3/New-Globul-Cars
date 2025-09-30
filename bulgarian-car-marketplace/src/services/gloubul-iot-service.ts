@@ -1,5 +1,5 @@
 // IoT Service for Bulgarian Car Marketplace
-// خدمة IoT لسوق السيارات البلغاري
+// (Comment removed - was in Arabic)
 
 import { PubSub } from '@google-cloud/pubsub';
 // import { IoTClient } from '@google-cloud/iot'; // Not available in this environment
@@ -78,7 +78,7 @@ export class GloubulIoTService {
   }
 
   /**
-   * إنشاء سجل أجهزة IoT جديد
+   * (Comment removed - was in Arabic)
    */
   async createDeviceRegistry(): Promise<void> {
     try {
@@ -117,7 +117,7 @@ export class GloubulIoTService {
   }
 
   /**
-   * تسجيل جهاز جديد في IoT Core
+   * (Comment removed - was in Arabic)
    */
   async registerDevice(deviceId: string, publicKey?: string): Promise<void> {
     try {
@@ -157,7 +157,7 @@ export class GloubulIoTService {
   }
 
   /**
-   * إنشاء مواضيع Pub/Sub للأحداث
+   * (Comment removed - was in Arabic)
    */
   async createPubSubTopics(): Promise<void> {
     try {
@@ -187,21 +187,21 @@ export class GloubulIoTService {
   }
 
   /**
-   * إنشاء جداول BigQuery للبيانات
+   * (Comment removed - was in Arabic)
    */
   async createBigQueryTables(): Promise<void> {
     try {
       const datasetId = 'gloubul_iot_data';
       const dataset = this.bigqueryClient.dataset(datasetId);
 
-      // إنشاء Dataset إذا لم يكن موجوداً
+      // (Comment removed - was in Arabic)
       const [datasetExists] = await dataset.exists();
       if (!datasetExists) {
         await this.bigqueryClient.createDataset(datasetId);
         logger.info(`تم إنشاء مجموعة البيانات: ${datasetId}`);
       }
 
-      // إنشاء جدول البيانات الحية
+      // (Comment removed - was in Arabic)
       const liveDataSchema = [
         { name: 'deviceId', type: 'STRING', mode: 'REQUIRED' },
         { name: 'vin', type: 'STRING', mode: 'REQUIRED' },
@@ -225,7 +225,7 @@ export class GloubulIoTService {
 
       await dataset.createTable('live_vehicle_data', { schema: liveDataSchema });
 
-      // إنشاء جدول التوأم الرقمي
+      // (Comment removed - was in Arabic)
       const twinSchema = [
         { name: 'vin', type: 'STRING', mode: 'REQUIRED' },
         { name: 'userId', type: 'STRING', mode: 'REQUIRED' },
@@ -259,7 +259,7 @@ export class GloubulIoTService {
   }
 
   /**
-   * إرسال بيانات إلى BigQuery
+   * (Comment removed - was in Arabic)
    */
   async insertDataToBigQuery(tableName: string, data: any[]): Promise<void> {
     try {
@@ -276,7 +276,7 @@ export class GloubulIoTService {
   }
 
   /**
-   * نشر حدث إلى Pub/Sub
+   * (Comment removed - was in Arabic)
    */
   async publishEvent(topicName: string, data: any, attributes?: Record<string, string>): Promise<void> {
     try {
@@ -296,7 +296,7 @@ export class GloubulIoTService {
   }
 
   /**
-   * الحصول على إحصائيات الأجهزة
+   * (Comment removed - was in Arabic)
    */
   async getDeviceStats(): Promise<any> {
     try {
@@ -320,7 +320,7 @@ export class GloubulIoTService {
   }
 
   /**
-   * إزالة جهاز من IoT Core
+   * (Comment removed - was in Arabic)
    */
   async removeDevice(deviceId: string): Promise<void> {
     try {

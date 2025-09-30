@@ -95,7 +95,7 @@ export interface ResaleRecommendation {
 export class AutonomousResaleEngine {
   private db = getFirestore();
   private readonly BULGARIAN_MARKET_DATA = {
-    // بيانات سوق السيارات البلغاري
+    // (Comment removed - was in Arabic)
     depreciation: {
       '1_year': 0.15,  // 15% في السنة الأولى
       '2_years': 0.22, // 22% في السنتين
@@ -120,11 +120,11 @@ export class AutonomousResaleEngine {
   };
 
   /**
-   * تحليل السوق لسيارة محددة
+   * (Comment removed - was in Arabic)
    */
   async analyzeMarketValue(vin: string): Promise<MarketAnalysis> {
     try {
-      // الحصول على بيانات السيارة
+      // (Comment removed - was in Arabic)
       const carDoc = await getDoc(doc(this.db, 'cars', vin));
       if (!carDoc.exists()) {
         throw new Error('السيارة غير موجودة');
@@ -132,16 +132,16 @@ export class AutonomousResaleEngine {
 
       const car = carDoc.data();
 
-      // البحث عن صفقات مشابهة في السوق البلغاري
+      // (Comment removed - was in Arabic)
       const comparableSales = await this.findComparableSales(car);
 
-      // حساب القيمة السوقية
+      // (Comment removed - was in Arabic)
       const marketValue = this.calculateMarketValue(car, comparableSales);
 
-      // تحليل الاتجاهات
+      // (Comment removed - was in Arabic)
       const marketTrend = await this.analyzeMarketTrends(car.make, car.model);
 
-      // تحديد مستوى الطلب
+      // (Comment removed - was in Arabic)
       const demandLevel = this.calculateDemandLevel(comparableSales);
 
       const analysis: MarketAnalysis = {
@@ -164,19 +164,19 @@ export class AutonomousResaleEngine {
         analysisDate: Timestamp.now()
       };
 
-      // حفظ التحليل
+      // (Comment removed - was in Arabic)
       await setDoc(doc(this.db, 'marketAnalysis', vin), analysis);
 
       return analysis;
 
     } catch (error) {
-      console.error('خطأ في تحليل السوق:', error);
+      console.error('[SERVICE] :', error);
       throw new Error('فشل في تحليل السوق');
     }
   }
 
   /**
-   * إنشاء استراتيجية بيع ذاتي
+   * (Comment removed - was in Arabic)
    */
   async createAutonomousSaleStrategy(
     vin: string,
@@ -184,10 +184,10 @@ export class AutonomousResaleEngine {
     strategy: 'aggressive' | 'conservative' | 'balanced'
   ): Promise<string> {
     try {
-      // تحليل السوق أولاً
+      // (Comment removed - was in Arabic)
       const marketAnalysis = await this.analyzeMarketValue(vin);
 
-      // تحديد الأسعار بناءً على الاستراتيجية
+      // (Comment removed - was in Arabic)
       const prices = this.calculateStrategyPrices(marketAnalysis, strategy);
 
       const saleStrategy: AutonomousSaleStrategy = {
@@ -218,29 +218,26 @@ export class AutonomousResaleEngine {
 
       await setDoc(doc(this.db, 'saleStrategies', saleStrategy.strategyId), saleStrategy);
 
-      // تحديث حالة السيارة
+      // (Comment removed - was in Arabic)
       await updateDoc(doc(this.db, 'cars', vin), {
         saleStrategy: saleStrategy.strategyId,
         autonomousSale: true,
         lastMarketAnalysis: Timestamp.now()
       });
-
-      console.log(`تم إنشاء استراتيجية بيع ذاتي للسيارة ${vin}: ${strategy}`);
-
-      return saleStrategy.strategyId;
+return saleStrategy.strategyId;
 
     } catch (error) {
-      console.error('خطأ في إنشاء استراتيجية البيع:', error);
+      console.error('[SERVICE] :', error);
       throw new Error('فشل في إنشاء استراتيجية البيع');
     }
   }
 
   /**
-   * معالجة عرض شراء جديد
+   * (Comment removed - was in Arabic)
    */
   async processSaleOffer(strategyId: string, offer: Omit<SaleOffer, 'offerId' | 'timestamp'>): Promise<void> {
     try {
-      // الحصول على الاستراتيجية
+      // (Comment removed - was in Arabic)
       const strategyDoc = await getDoc(doc(this.db, 'saleStrategies', strategyId));
       if (!strategyDoc.exists()) {
         throw new Error('استراتيجية البيع غير موجودة');
@@ -248,27 +245,27 @@ export class AutonomousResaleEngine {
 
       const strategy = strategyDoc.data() as AutonomousSaleStrategy;
 
-      // إنشاء العرض
+      // (Comment removed - was in Arabic)
       const offerData: SaleOffer = {
         ...offer,
         offerId: `offer_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         timestamp: Timestamp.now()
       };
 
-      // تطبيق منطق الاستراتيجية
+      // (Comment removed - was in Arabic)
       const decision = await this.applyStrategyLogic(strategy, offerData);
 
-      // تحديث العرض بالقرار
+      // (Comment removed - was in Arabic)
       offerData.status = decision.status;
       if (decision.counterOffer) {
         offerData.counterOffer = decision.counterOffer;
         offerData.status = 'counter_offered';
       }
 
-      // حفظ العرض
+      // (Comment removed - was in Arabic)
       await setDoc(doc(this.db, 'saleOffers', offerData.offerId), offerData);
 
-      // تحديث الاستراتيجية
+      // (Comment removed - was in Arabic)
       strategy.currentOffers.push(offerData);
       strategy.performance.totalOffers++;
       strategy.performance.averageOffer =
@@ -290,34 +287,31 @@ export class AutonomousResaleEngine {
         performance: strategy.performance
       });
 
-      // إشعار المستخدم إذا لزم الأمر
+      // (Comment removed - was in Arabic)
       if (decision.notifyUser) {
         await this.notifyUserOfOffer(strategy.userId, offerData, decision);
       }
-
-      console.log(`تم معالجة عرض شراء: ${offerData.amount} EUR - ${decision.status}`);
-
-    } catch (error) {
-      console.error('خطأ في معالجة عرض الشراء:', error);
+} catch (error) {
+      console.error('[SERVICE] :', error);
       throw new Error('فشل في معالجة عرض الشراء');
     }
   }
 
   /**
-   * الحصول على توصية إعادة البيع
+   * (Comment removed - was in Arabic)
    */
   async getResaleRecommendation(vin: string): Promise<ResaleRecommendation> {
     try {
-      // تحليل السوق الحالي
+      // (Comment removed - was in Arabic)
       const marketAnalysis = await this.analyzeMarketValue(vin);
 
-      // تحليل التوقيت الأمثل
+      // (Comment removed - was in Arabic)
       const optimalTiming = await this.analyzeOptimalTiming(marketAnalysis);
 
-      // تحليل الظروف السوقية
+      // (Comment removed - was in Arabic)
       const marketConditions = await this.analyzeMarketConditions(marketAnalysis);
 
-      // تحديد التوصية
+      // (Comment removed - was in Arabic)
       const recommendation = this.generateRecommendation(marketAnalysis, optimalTiming, marketConditions);
 
       return {
@@ -331,17 +325,17 @@ export class AutonomousResaleEngine {
       };
 
     } catch (error) {
-      console.error('خطأ في الحصول على توصية إعادة البيع:', error);
+      console.error('[SERVICE] :', error);
       throw new Error('فشل في الحصول على التوصية');
     }
   }
 
   /**
-   * البحث عن صفقات مشابهة
+   * (Comment removed - was in Arabic)
    */
   private async findComparableSales(car: any): Promise<MarketComparable[]> {
     try {
-      // البحث في قاعدة البيانات عن سيارات مشابهة تم بيعها
+      // (Comment removed - was in Arabic)
       const comparableQuery = query(
         collection(this.db, 'soldCars'),
         where('make', '==', car.make),
@@ -376,21 +370,21 @@ export class AutonomousResaleEngine {
       return comparables.sort((a, b) => b.similarity - a.similarity).slice(0, 5);
 
     } catch (error) {
-      console.error('خطأ في البحث عن صفقات مشابهة:', error);
+      console.error('[SERVICE] :', error);
       return [];
     }
   }
 
   /**
-   * حساب القيمة السوقية
+   * (Comment removed - was in Arabic)
    */
   private calculateMarketValue(car: any, comparables: MarketComparable[]): number {
     if (comparables.length === 0) {
-      // حساب أساسي إذا لم توجد صفقات مشابهة
+      // (Comment removed - was in Arabic)
       return this.calculateBaseMarketValue(car);
     }
 
-    // حساب متوسط الأسعار المرجح بالتشابه
+    // (Comment removed - was in Arabic)
     let totalWeightedPrice = 0;
     let totalWeight = 0;
 
@@ -402,7 +396,7 @@ export class AutonomousResaleEngine {
 
     const averagePrice = totalWeightedPrice / totalWeight;
 
-    // تعديل بناءً على العمر والكيلومترات
+    // (Comment removed - was in Arabic)
     const ageAdjustment = this.calculateAgeAdjustment(car.year);
     const mileageAdjustment = this.calculateMileageAdjustment(car.mileage);
 
@@ -410,10 +404,10 @@ export class AutonomousResaleEngine {
   }
 
   /**
-   * حساب القيمة الأساسية
+   * (Comment removed - was in Arabic)
    */
   private calculateBaseMarketValue(car: any): number {
-    // قيم أساسية للسيارات البلغارية (باليورو)
+    // (Comment removed - was in Arabic)
     const baseValues: { [key: string]: number } = {
       'VW Golf': 15000,
       'BMW 3 Series': 25000,
@@ -431,7 +425,7 @@ export class AutonomousResaleEngine {
     const currentYear = new Date().getFullYear();
     const age = currentYear - car.year;
 
-    // تطبيق الإهلاك
+    // (Comment removed - was in Arabic)
     let depreciation = 0;
     if (age <= 1) depreciation = this.BULGARIAN_MARKET_DATA.depreciation['1_year'];
     else if (age <= 2) depreciation = this.BULGARIAN_MARKET_DATA.depreciation['2_years'];
@@ -443,20 +437,20 @@ export class AutonomousResaleEngine {
   }
 
   /**
-   * حساب التشابه بين سيارتين
+   * (Comment removed - was in Arabic)
    */
   private calculateSimilarity(car1: any, car2: any): number {
     let similarity = 100;
 
-    // اختلاف السنة (كل سنة = -10 نقاط)
+    // (Comment removed - was in Arabic)
     const yearDiff = Math.abs(car1.year - car2.year);
     similarity -= yearDiff * 10;
 
-    // اختلاف الكيلومترات (كل 10000 كم = -5 نقاط)
+    // (Comment removed - was in Arabic)
     const mileageDiff = Math.abs(car1.mileage - car2.mileage) / 10000;
     similarity -= mileageDiff * 5;
 
-    // اختلاف السعر (كل 1000 يورو = -2 نقاط)
+    // (Comment removed - was in Arabic)
     if (car2.price) {
       const priceDiff = Math.abs(car1.price - car2.price) / 1000;
       similarity -= priceDiff * 2;
@@ -466,7 +460,7 @@ export class AutonomousResaleEngine {
   }
 
   /**
-   * تقييم حالة السيارة
+   * (Comment removed - was in Arabic)
    */
   private assessCondition(car: any): 'excellent' | 'good' | 'fair' | 'poor' {
     const currentYear = new Date().getFullYear();
@@ -479,7 +473,7 @@ export class AutonomousResaleEngine {
   }
 
   /**
-   * حساب مستوى الثقة في التحليل
+   * (Comment removed - was in Arabic)
    */
   private calculateConfidence(comparables: MarketComparable[]): number {
     if (comparables.length === 0) return 30;
@@ -489,11 +483,11 @@ export class AutonomousResaleEngine {
   }
 
   /**
-   * تحليل اتجاهات السوق
+   * (Comment removed - was in Arabic)
    */
   private async analyzeMarketTrends(make: string, model: string): Promise<'increasing' | 'stable' | 'decreasing'> {
     try {
-      // تحليل أسعار البيع في الأشهر الماضية
+      // (Comment removed - was in Arabic)
       const sixMonthsAgo = new Date();
       sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
 
@@ -520,13 +514,13 @@ export class AutonomousResaleEngine {
       return 'stable';
 
     } catch (error) {
-      console.error('خطأ في تحليل اتجاهات السوق:', error);
+      console.error('[SERVICE] :', error);
       return 'stable';
     }
   }
 
   /**
-   * حساب مستوى الطلب
+   * (Comment removed - was in Arabic)
    */
   private calculateDemandLevel(comparables: MarketComparable[]): 'high' | 'medium' | 'low' {
     const recentComparables = comparables.filter(comp =>
@@ -539,7 +533,7 @@ export class AutonomousResaleEngine {
   }
 
   /**
-   * حساب أسعار الاستراتيجية
+   * (Comment removed - was in Arabic)
    */
   private calculateStrategyPrices(analysis: MarketAnalysis, strategy: string): { target: number; minimum: number } {
     const basePrice = analysis.marketValue;
@@ -565,7 +559,7 @@ export class AutonomousResaleEngine {
   }
 
   /**
-   * تطبيق منطق الاستراتيجية
+   * (Comment removed - was in Arabic)
    */
   private async applyStrategyLogic(strategy: AutonomousSaleStrategy, offer: SaleOffer): Promise<{
     status: 'pending' | 'accepted' | 'declined' | 'counter_offered';
@@ -574,17 +568,17 @@ export class AutonomousResaleEngine {
   }> {
     const amount = offer.amount;
 
-    // قبول تلقائي إذا تجاوز السعر المطلوب
+    // (Comment removed - was in Arabic)
     if (amount >= strategy.rules.acceptOffersAbove) {
       return { status: 'accepted', notifyUser: true };
     }
 
-    // رفض إذا كان أقل من السعر الأدنى
+    // (Comment removed - was in Arabic)
     if (amount < strategy.rules.declineOffersBelow) {
       return { status: 'declined', notifyUser: false };
     }
 
-    // التفاوض التلقائي
+    // (Comment removed - was in Arabic)
     if (strategy.rules.autoNegotiate && strategy.performance.negotiationRounds < strategy.rules.maxNegotiationRounds) {
       const counterOffer = Math.min(strategy.targetPrice * 0.95, amount * 1.08);
       return {
@@ -594,12 +588,12 @@ export class AutonomousResaleEngine {
       };
     }
 
-    // انتظار قرار المستخدم
+    // (Comment removed - was in Arabic)
     return { status: 'pending', notifyUser: true };
   }
 
   /**
-   * إشعار المستخدم بالعرض
+   * (Comment removed - was in Arabic)
    */
   private async notifyUserOfOffer(userId: string, offer: SaleOffer, decision: any): Promise<void> {
     try {
@@ -614,17 +608,17 @@ export class AutonomousResaleEngine {
       });
 
     } catch (error) {
-      console.error('خطأ في إشعار المستخدم:', error);
+      console.error('[SERVICE] :', error);
     }
   }
 
   /**
-   * تحليل التوقيت الأمثل
+   * (Comment removed - was in Arabic)
    */
   private async analyzeOptimalTiming(analysis: MarketAnalysis): Promise<any> {
     const currentMonth = new Date().toLocaleString('en', { month: 'long' });
 
-    // العثور على أفضل شهر للبيع
+    // (Comment removed - was in Arabic)
     let bestMonth = currentMonth;
     let maxIncrease = 0;
 
@@ -643,10 +637,10 @@ export class AutonomousResaleEngine {
   }
 
   /**
-   * تحليل الظروف السوقية
+   * (Comment removed - was in Arabic)
    */
   private async analyzeMarketConditions(analysis: MarketAnalysis): Promise<any> {
-    // محاكاة تحليل الظروف السوقية
+    // (Comment removed - was in Arabic)
     return {
       demand: analysis.demandLevel === 'high' ? 80 : analysis.demandLevel === 'medium' ? 50 : 20,
       inventory: 60, // نسبة مئوية
@@ -655,14 +649,14 @@ export class AutonomousResaleEngine {
   }
 
   /**
-   * توليد التوصية
+   * (Comment removed - was in Arabic)
    */
   private generateRecommendation(analysis: MarketAnalysis, timing: any, conditions: any): any {
     const reasons = [];
     let action: 'sell_now' | 'wait' | 'hold' = 'hold';
     let confidence = 50;
 
-    // تحليل الظروف الحالية
+    // (Comment removed - was in Arabic)
     if (conditions.demand > 70 && analysis.marketTrend === 'increasing') {
       action = 'sell_now';
       confidence = 80;
@@ -690,7 +684,7 @@ export class AutonomousResaleEngine {
   }
 
   /**
-   * تعديلات العمر
+   * (Comment removed - was in Arabic)
    */
   private calculateAgeAdjustment(year: number): number {
     const currentYear = new Date().getFullYear();
@@ -704,7 +698,7 @@ export class AutonomousResaleEngine {
   }
 
   /**
-   * تعديلات الكيلومترات
+   * (Comment removed - was in Arabic)
    */
   private calculateMileageAdjustment(mileage: number): number {
     if (mileage < 20000) return 1.05;

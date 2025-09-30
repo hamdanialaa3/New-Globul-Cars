@@ -1,6 +1,6 @@
 // src/services/rate-limiter-service.ts
 // Professional Rate Limiter Service for Bulgarian Car Marketplace
-// خدمة تحديد معدل الطلبات المهنية لسوق السيارات البلغاري
+// (Comment removed - was in Arabic)
 
 export interface RateLimitConfig {
   maxRequests: number;
@@ -32,7 +32,7 @@ export class RateLimitExceededError extends Error {
 
 /**
  * Professional Rate Limiter with Circuit Breaker Pattern
- * محدد معدل الطلبات المهني مع نمط قاطع الدائرة
+ * (Comment removed - was in Arabic)
  */
 export class RateLimiter {
   private config: RateLimitConfig;
@@ -58,7 +58,7 @@ export class RateLimiter {
 
   /**
    * Check if request is allowed
-   * التحقق من إمكانية السماح بالطلب
+   * (Comment removed - was in Arabic)
    */
   async checkLimit(identifier: string = 'default'): Promise<void> {
     // Check circuit breaker
@@ -135,7 +135,7 @@ export class RateLimiter {
 
   /**
    * Execute function with rate limiting
-   * تنفيذ الوظيفة مع تحديد معدل الطلبات
+   * (Comment removed - was in Arabic)
    */
   async execute<T>(
     fn: () => Promise<T>,
@@ -193,7 +193,7 @@ export class RateLimiter {
 
   /**
    * Get current status
-   * الحصول على الحالة الحالية
+   * (Comment removed - was in Arabic)
    */
   getStatus(identifier: string = 'default'): {
     requests: number;
@@ -232,7 +232,7 @@ export class RateLimiter {
 
   /**
    * Reset rate limit for identifier
-   * إعادة تعيين تحديد معدل الطلبات للمعرف
+   * (Comment removed - was in Arabic)
    */
   reset(identifier: string = 'default'): void {
     this.requests.delete(identifier);
@@ -240,7 +240,7 @@ export class RateLimiter {
 
   /**
    * Reset circuit breaker
-   * إعادة تعيين قاطع الدائرة
+   * (Comment removed - was in Arabic)
    */
   resetCircuitBreaker(): void {
     this.circuitBreakerState = 'CLOSED';
@@ -250,7 +250,7 @@ export class RateLimiter {
 
   /**
    * Record circuit breaker failure
-   * تسجيل فشل قاطع الدائرة
+   * (Comment removed - was in Arabic)
    */
   private recordFailure(): void {
     this.circuitBreakerFailures++;
@@ -263,7 +263,7 @@ export class RateLimiter {
 
   /**
    * Clean up expired entries
-   * تنظيف الإدخالات المنتهية الصلاحية
+   * (Comment removed - was in Arabic)
    */
   private cleanup(): void {
     const now = Date.now();
@@ -277,7 +277,7 @@ export class RateLimiter {
 
   /**
    * Utility delay function
-   * وظيفة تأخير مساعدة
+   * (Comment removed - was in Arabic)
    */
   private delay(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -285,7 +285,7 @@ export class RateLimiter {
 
   /**
    * Get statistics
-   * الحصول على الإحصائيات
+   * (Comment removed - was in Arabic)
    */
   getStats(): {
     totalRequests: number;

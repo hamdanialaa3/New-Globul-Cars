@@ -13,18 +13,90 @@ import TopBrandsMenu from './TopBrands/TopBrandsMenu';
 // Replace 3D logo with official image logo
 import { Settings, User, LogOut, LogIn, UserPlus, Type, MessageCircle } from 'lucide-react';
 
-// Styled Components - Mobile.de Style
+// Styled Components - Mobile.de Style with Metallic Bottom Section
 const HeaderContainer = styled.header`
-  background: ${({ theme }) => theme.colors.primary.main}; /* أزرق داكن مثل mobile.de */
-  box-shadow: ${({ theme }) => theme.shadows.sm};
   position: sticky;
   top: 0;
   z-index: 1000;
-  border-bottom: 2px solid ${({ theme }) => theme.colors.primary.dark};
-  color: ${({ theme }) => theme.colors.primary.contrastText}; /* نص أبيض */
+  box-shadow: ${({ theme }) => theme.shadows.lg};
 `;
 
-const HeaderContent = styled.div`
+// Upper Header Section - Clean and Professional
+const UpperHeader = styled.div`
+  background: ${({ theme }) => theme.colors.primary.main};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.primary.dark};
+  padding: ${({ theme }) => theme.spacing.sm} 0;
+`;
+
+const UpperHeaderContent = styled.div`
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 ${({ theme }) => theme.spacing.md};
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+// Lower Header Section - Metallic Aluminum Effect
+const LowerHeader = styled.div`
+  background: linear-gradient(
+    135deg,
+    #ff8c42 0%,     /* Bright orange */
+    #ff6b35 25%,    /* Vibrant orange */
+    #e55a2b 50%,    /* Deep orange */
+    #cc4a1f 75%,    /* Dark orange */
+    #8b4513 90%,    /* Saddle brown */
+    #2c2c2c 100%    /* Dark charcoal */
+  );
+  background-size: 400% 400%;
+  animation: metallicShimmer 8s ease-in-out infinite;
+  position: relative;
+
+  /* Metallic texture overlay */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+      radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(255,255,255,0.05) 0%, transparent 50%),
+      linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.02) 50%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* Subtle inner glow */
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(255,140,66,0.3) 0%,
+      rgba(255,107,53,0.2) 30%,
+      rgba(229,90,43,0.1) 60%,
+      rgba(204,74,31,0.05) 80%,
+      transparent 100%
+    );
+    pointer-events: none;
+  }
+
+  @keyframes metallicShimmer {
+    0%, 100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+`;
+
+const LowerHeaderContent = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   padding: ${({ theme }) => theme.spacing.md};
@@ -38,7 +110,7 @@ const HeaderContent = styled.div`
 const Logo = styled(Link)`
   font-size: ${({ theme }) => theme.typography.fontSize['2xl']};
   font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
-  color: ${({ theme }) => theme.colors.primary.contrastText}; /* أبيض على الأزرق */
+  color: ${({ theme }) => theme.colors.primary.contrastText}; /* (Comment removed - was in Arabic)
   text-decoration: none;
   display: flex;
   align-items: center;
@@ -52,7 +124,7 @@ const Logo = styled(Link)`
   }
 
   &:hover {
-    color: ${({ theme }) => theme.colors.accent.main}; /* أزرق فاتح عند التمرير */
+    color: ${({ theme }) => theme.colors.accent.main}; /* (Comment removed - was in Arabic)
     
     img {
       transform: scale(1.05);
@@ -67,21 +139,43 @@ const Navigation = styled.nav`
 `;
 
 const NavLink = styled(Link)`
-  color: ${({ theme }) => theme.colors.primary.contrastText}; /* أبيض على الأزرق */
+  color: ${({ theme }) => theme.colors.primary.contrastText};
   text-decoration: none;
   font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
   padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
   border-radius: ${({ theme }) => theme.borderRadius.lg};
   transition: all 0.2s ease-in-out;
+  position: relative;
 
   &:hover {
-    background-color: ${({ theme }) => theme.colors.primary.dark}; /* أزرق أغمق عند التمرير */
-    color: ${({ theme }) => theme.colors.accent.main}; /* أزرق فاتح */
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
 
   &.active {
-    background-color: ${({ theme }) => theme.colors.secondary.main}; /* أحمر للنشط */
-    color: ${({ theme }) => theme.colors.secondary.contrastText};
+    background-color: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Metallic glow effect on hover */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: inherit;
+  }
+
+  &:hover::before {
+    opacity: 1;
   }
 `;
 
@@ -89,15 +183,18 @@ const DropdownMenu = styled.div<{ $isOpen: boolean }>`
   position: absolute;
   top: 100%;
   right: 0;
-  background: ${({ theme }) => theme.colors.background.paper};
-  border: 1px solid ${({ theme }) => theme.colors.grey[200]};
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: ${({ theme }) => theme.borderRadius.lg};
-  box-shadow: ${({ theme }) => theme.shadows.lg};
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
   min-width: 200px;
   opacity: ${({ $isOpen }) => ($isOpen ? 1 : 0)};
   visibility: ${({ $isOpen }) => ($isOpen ? 'visible' : 'hidden')};
   transform: translateY(${({ $isOpen }) => ($isOpen ? '0' : '-10px')});
-  transition: all 0.2s ease-in-out;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 1000;
 `;
 
@@ -110,23 +207,44 @@ const DropdownItem = styled.button`
   cursor: pointer;
   font-size: ${({ theme }) => theme.typography.fontSize.base};
   color: ${({ theme }) => theme.colors.text.primary};
-  transition: background-color 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
   border-radius: ${({ theme }) => theme.borderRadius.md};
+  position: relative;
 
   &:hover {
-    background-color: ${({ theme }) => theme.colors.grey[50]};
+    background: linear-gradient(135deg, rgba(255,140,66,0.1), rgba(255,107,53,0.1));
+    color: ${({ theme }) => theme.colors.primary.main};
+    transform: translateX(4px);
   }
 
   &:not(:last-child) {
-    border-bottom: 1px solid ${({ theme }) => theme.colors.grey[100]};
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
   }
 
   &.danger {
     color: ${({ theme }) => theme.colors.error.main};
 
     &:hover {
-      background-color: ${({ theme }) => theme.colors.error.light}20;
+      background: linear-gradient(135deg, rgba(244, 67, 54, 0.1), rgba(211, 47, 47, 0.1));
+      color: ${({ theme }) => theme.colors.error.dark};
     }
+  }
+
+  /* Subtle metallic highlight */
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, #ff8c42, #ff6b35);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  &:hover::before {
+    opacity: 1;
   }
 `;
 
@@ -138,17 +256,27 @@ const LanguageSelector = styled.div`
 
 const LanguageButton = styled.button<{ $active: boolean }>`
   padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.sm};
-  background: ${({ theme, $active }) => $active ? theme.colors.primary.main : 'transparent'};
-  color: ${({ theme, $active }) => $active ? theme.colors.primary.contrastText : theme.colors.text.primary};
-  border: 1px solid ${({ theme, $active }) => $active ? theme.colors.primary.main : theme.colors.grey[300]};
+  background: ${({ $active }) => $active ?
+    'linear-gradient(135deg, #ff8c42, #ff6b35)' :
+    'rgba(255, 255, 255, 0.1)'};
+  color: ${({ $active }) => $active ? '#fff' : 'rgba(255, 255, 255, 0.8)'};
+  border: 1px solid ${({ $active }) => $active ?
+    'rgba(255, 255, 255, 0.3)' :
+    'rgba(255, 255, 255, 0.2)'};
   border-radius: ${({ theme }) => theme.borderRadius.sm};
   font-size: ${({ theme }) => theme.typography.fontSize.sm};
+  font-weight: ${({ $active }) => $active ? 'bold' : 'normal'};
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
+  transition: all 0.3s ease-in-out;
+  backdrop-filter: blur(10px);
 
   &:hover {
-    background: ${({ theme, $active }) => $active ? theme.colors.primary.dark : theme.colors.grey[100]};
-    border-color: ${({ theme, $active }) => $active ? theme.colors.primary.dark : theme.colors.grey[400]};
+    background: ${({ $active }) => $active ?
+      'linear-gradient(135deg, #ff6b35, #e55a2b)' :
+      'rgba(255, 255, 255, 0.2)'};
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   }
 `;
 
@@ -161,15 +289,20 @@ const SettingsButton = styled.button`
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.sm};
-  background: none;
-  border: 1px solid ${({ theme }) => theme.colors.grey[300]};
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
   cursor: pointer;
   padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
   border-radius: ${({ theme }) => theme.borderRadius.lg};
-  transition: background-color 0.2s ease-in-out;
+  transition: all 0.3s ease-in-out;
+  backdrop-filter: blur(10px);
 
   &:hover {
-    background-color: ${({ theme }) => theme.colors.grey[100]};
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   }
 `;
 
@@ -237,83 +370,95 @@ const Header: React.FC = () => {
 
   return (
     <HeaderContainer>
-      <HeaderContent>
-        {/* Logo */}
-        <Logo to="/" aria-label="Globul Cars Home">
-          <img src="/official-logo.png" alt="Globul Cars" loading="eager" decoding="async" />
-        </Logo>
+      {/* Upper Header - Logo and Essential Navigation */}
+      <UpperHeader>
+        <UpperHeaderContent>
+          {/* Logo */}
+          <Logo to="/" aria-label="Globul Cars Home">
+            <img src="/official-logo.png" alt="Globul Cars" loading="eager" decoding="async" />
+          </Logo>
 
-        {/* Navigation */}
-        <Navigation>
-          <NavLink to="/">{t('nav.home')}</NavLink>
-          
-          {/* Top Brands Menu */}
-          <TopBrandsMenu />
-          
-          <NavLink to="/cars">{t('nav.cars')}</NavLink>
-          <NavLink to="/sell">{t('nav.sell')}</NavLink>
-          <NavLink to="/advanced-search">{t('nav.advancedSearch', 'Advanced Search')}</NavLink>
+          {/* Essential Navigation - Key links only */}
+          <Navigation>
+            <NavLink to="/">{t('nav.home')}</NavLink>
+            <NavLink to="/cars">{t('nav.cars')}</NavLink>
+            <NavLink to="/sell">{t('nav.sell')}</NavLink>
+          </Navigation>
+        </UpperHeaderContent>
+      </UpperHeader>
 
-          {/* Settings Menu: contains language, auth/profile, and text toggle */}
-          <SettingsMenu className="settings-menu">
-            <SettingsButton onClick={() => setIsSettingsOpen(!isSettingsOpen)} aria-haspopup="menu" aria-expanded={isSettingsOpen}>
-              <Settings size={16} /> <span>{t('settings.title', 'Settings')}</span>
-            </SettingsButton>
-            <DropdownMenu $isOpen={isSettingsOpen}>
-              {/* Language controls (moved, not duplicated) */}
-              <div style={{ padding: '12px', borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
-                <div style={{ marginBottom: '8px', fontSize: '0.9rem', opacity: 0.8 }}>{t('settings.language', 'Language')}</div>
-                <LanguageSelector>
-                  <LanguageButton $active={language === 'bg'} onClick={() => setLanguage('bg')}>БГ</LanguageButton>
-                  <LanguageButton $active={language === 'en'} onClick={() => setLanguage('en')}>EN</LanguageButton>
-                </LanguageSelector>
-              </div>
+      {/* Lower Header - Metallic Section with Full Navigation */}
+      <LowerHeader>
+        <LowerHeaderContent>
+          {/* Extended Navigation */}
+          <Navigation>
+            <NavLink to="/advanced-search">{t('nav.advancedSearch', 'Advanced Search')}</NavLink>
+            <TopBrandsMenu />
+          </Navigation>
 
-              {/* Auth/Profile controls */}
-              {user ? (
-                <>
-                  <DropdownItem onClick={() => { navigate('/messages'); setIsSettingsOpen(false); }}>
-                    <MessageCircle size={16} /> {t('messaging.title')}
-                  </DropdownItem>
-                  <DropdownItem onClick={() => { navigate('/dashboard'); setIsSettingsOpen(false); }}>
-                    <User size={16} /> {t('settings.dashboard')}
-                  </DropdownItem>
-                  <DropdownItem onClick={() => { navigate('/analytics'); setIsSettingsOpen(false); }}>
-                    <Settings size={16} /> {t('settings.analytics')}
-                  </DropdownItem>
-                  <DropdownItem onClick={() => { navigate('/digital-twin'); setIsSettingsOpen(false); }}>
-                    <Settings size={16} /> {t('settings.digitalTwin')}
-                  </DropdownItem>
-                  <DropdownItem onClick={() => { navigate('/subscription'); setIsSettingsOpen(false); }}>
-                    <Settings size={16} /> {t('settings.subscription')}
-                  </DropdownItem>
-                  <DropdownItem onClick={() => { handleLogout(); setIsSettingsOpen(false); }} className="danger">
-                    <LogOut size={16} /> {t('nav.logout')}
-                  </DropdownItem>
-                </>
-              ) : (
-                <>
-                  <DropdownItem onClick={() => { navigate('/login'); setIsSettingsOpen(false); }}>
-                    <LogIn size={16} /> {t('nav.login')}
-                  </DropdownItem>
-                  <DropdownItem onClick={() => { navigate('/register'); setIsSettingsOpen(false); }}>
-                    <UserPlus size={16} /> {t('nav.register')}
-                  </DropdownItem>
-                </>
-              )}
+          {/* Settings Menu and Notifications */}
+          <Navigation>
+            {/* Settings Menu: contains language, auth/profile, and text toggle */}
+            <SettingsMenu className="settings-menu">
+              <SettingsButton onClick={() => setIsSettingsOpen(!isSettingsOpen)} aria-haspopup="menu" aria-expanded={isSettingsOpen}>
+                <Settings size={16} /> <span>{t('settings.title', 'Settings')}</span>
+              </SettingsButton>
+              <DropdownMenu $isOpen={isSettingsOpen}>
+                {/* Language controls (moved, not duplicated) */}
+                <div style={{ padding: '12px', borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
+                  <div style={{ marginBottom: '8px', fontSize: '0.9rem', opacity: 0.8 }}>{t('settings.language', 'Language')}</div>
+                  <LanguageSelector>
+                    <LanguageButton $active={language === 'bg'} onClick={() => setLanguage('bg')}>БГ</LanguageButton>
+                    <LanguageButton $active={language === 'en'} onClick={() => setLanguage('en')}>EN</LanguageButton>
+                  </LanguageSelector>
+                </div>
 
-              {/* Bold text toggle */}
-              <DropdownItem onClick={() => setIsBoldText(!isBoldText)}>
-                <Type size={16} />
-                {isBoldText ? t('settings.disableBoldText', 'Disable bold text') : t('settings.enableBoldText')}
-              </DropdownItem>
-            </DropdownMenu>
-          </SettingsMenu>
+                {/* Auth/Profile controls */}
+                {user ? (
+                  <>
+                    <DropdownItem onClick={() => { navigate('/messages'); setIsSettingsOpen(false); }}>
+                      <MessageCircle size={16} /> {t('messaging.title')}
+                    </DropdownItem>
+                    <DropdownItem onClick={() => { navigate('/dashboard'); setIsSettingsOpen(false); }}>
+                      <User size={16} /> {t('settings.dashboard')}
+                    </DropdownItem>
+                    <DropdownItem onClick={() => { navigate('/analytics'); setIsSettingsOpen(false); }}>
+                      <Settings size={16} /> {t('settings.analytics')}
+                    </DropdownItem>
+                    <DropdownItem onClick={() => { navigate('/digital-twin'); setIsSettingsOpen(false); }}>
+                      <Settings size={16} /> {t('settings.digitalTwin')}
+                    </DropdownItem>
+                    <DropdownItem onClick={() => { navigate('/subscription'); setIsSettingsOpen(false); }}>
+                      <Settings size={16} /> {t('settings.subscription')}
+                    </DropdownItem>
+                    <DropdownItem onClick={() => { handleLogout(); setIsSettingsOpen(false); }} className="danger">
+                      <LogOut size={16} /> {t('nav.logout')}
+                    </DropdownItem>
+                  </>
+                ) : (
+                  <>
+                    <DropdownItem onClick={() => { navigate('/login'); setIsSettingsOpen(false); }}>
+                      <LogIn size={16} /> {t('nav.login')}
+                    </DropdownItem>
+                    <DropdownItem onClick={() => { navigate('/register'); setIsSettingsOpen(false); }}>
+                      <UserPlus size={16} /> {t('nav.register')}
+                    </DropdownItem>
+                  </>
+                )}
 
-          {/* Notification Bell remains available */}
-          {user && <NotificationBell />}
-        </Navigation>
-      </HeaderContent>
+                {/* Bold text toggle */}
+                <DropdownItem onClick={() => setIsBoldText(!isBoldText)}>
+                  <Type size={16} />
+                  {isBoldText ? t('settings.disableBoldText', 'Disable bold text') : t('settings.enableBoldText')}
+                </DropdownItem>
+              </DropdownMenu>
+            </SettingsMenu>
+
+            {/* Notification Bell remains available */}
+            {user && <NotificationBell />}
+          </Navigation>
+        </LowerHeaderContent>
+      </LowerHeader>
     </HeaderContainer>
   );
 };

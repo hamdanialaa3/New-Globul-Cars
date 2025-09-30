@@ -1,5 +1,5 @@
 // CarSearchSystem/index.ts
-// نقطة الدخول الرئيسية لنظام البحث في السيارات
+// (Comment removed - was in Arabic)
 
 export { default } from './CarSearchSystem';
 export { default as CarSearchSystem } from './CarSearchSystem';

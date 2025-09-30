@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { EmailVerificationService } from '../services/email-verification';
-import { useTranslation } from '../hooks/useTranslation';
+import { useLanguage } from '../contexts/LanguageContext';
 import { CheckCircle, AlertCircle, Mail, ArrowLeft } from 'lucide-react';
 
 const PageContainer = styled.div`
@@ -114,7 +114,7 @@ const LoadingSpinner = styled.div`
 const EmailVerificationPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { language } = useTranslation();
+  const { t } = useLanguage();
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [message, setMessage] = useState<string>('');
 
@@ -125,11 +125,7 @@ const EmailVerificationPage: React.FC = () => {
 
       if (!oobCode || mode !== 'verifyEmail') {
         setStatus('error');
-        setMessage(
-          language === 'bg'
-            ? 'Невалиден линк за потвърждение'
-            : 'Invalid verification link'
-        );
+        setMessage(t('emailVerification.invalidLink'));
         return;
       }
 
@@ -138,11 +134,7 @@ const EmailVerificationPage: React.FC = () => {
         
         if (result.success) {
           setStatus('success');
-          setMessage(
-            language === 'bg'
-              ? 'Вашият имейл адрес е успешно потвърден!'
-              : 'Your email address has been verified successfully!'
-          );
+          setMessage(t('emailVerification.successMessage'));
           
           // Redirect to home page after 3 seconds
           setTimeout(() => {
@@ -154,25 +146,21 @@ const EmailVerificationPage: React.FC = () => {
         }
       } catch (error) {
         setStatus('error');
-        setMessage(
-          language === 'bg'
-            ? 'Грешка при потвърждение на имейл адреса'
-            : 'Error verifying email address'
-        );
+        setMessage(t('emailVerification.errorMessage'));
       }
     };
 
     verifyEmail();
-  }, [searchParams, language, navigate]);
+  }, [searchParams, t, navigate]);
 
   const getTitle = () => {
     switch (status) {
       case 'success':
-        return language === 'bg' ? 'Потвърждение успешно!' : 'Verification Successful!';
+        return t('emailVerification.successTitle');
       case 'error':
-        return language === 'bg' ? 'Грешка при потвърждение' : 'Verification Error';
+        return t('emailVerification.errorTitle');
       default:
-        return language === 'bg' ? 'Потвърждаване...' : 'Verifying...';
+        return t('emailVerification.verifyingTitle');
     }
   };
 
@@ -202,7 +190,7 @@ const EmailVerificationPage: React.FC = () => {
           <div>
             <ActionButton onClick={() => navigate('/')}>
               <ArrowLeft size={20} />
-              {language === 'bg' ? 'Към началната страница' : 'Go to Homepage'}
+              {t('emailVerification.goToHome')}
             </ActionButton>
             
             {status === 'error' && (
@@ -211,7 +199,7 @@ const EmailVerificationPage: React.FC = () => {
                 onClick={() => navigate('/login')}
               >
                 <Mail size={20} />
-                {language === 'bg' ? 'Към вход' : 'Go to Login'}
+                {t('emailVerification.goToLogin')}
               </ActionButton>
             )}
           </div>
@@ -219,9 +207,7 @@ const EmailVerificationPage: React.FC = () => {
 
         {status === 'success' && (
           <p style={{ fontSize: '0.875rem', color: '#666', marginTop: '16px' }}>
-            {language === 'bg'
-              ? 'Ще бъдете пренасочени автоматично след 3 секунди...'
-              : 'You will be redirected automatically in 3 seconds...'}
+            {t('emailVerification.autoRedirect')}
           </p>
         )}
       </VerificationCard>

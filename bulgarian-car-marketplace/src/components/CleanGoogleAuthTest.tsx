@@ -89,7 +89,7 @@ const CleanGoogleAuthTest = () => {
   const [logs, setLogs] = useState('');
   const [user, setUser] = useState<UserType | null>(null);
 
-  // إعادة توجيه console.log إلى حالة logs
+  // (Comment removed - was in Arabic)
   useEffect(() => {
     const originalLog = console.log;
     const originalError = console.error;
@@ -116,11 +116,11 @@ const CleanGoogleAuthTest = () => {
     };
   }, []);
 
-  // التحقق من نتيجة redirect عند تحميل الصفحة
+  // (Comment removed - was in Arabic)
   useEffect(() => {
     const checkAuthResult = async () => {
       try {
-        // استيراد الدالة
+        // (Comment removed - was in Arabic)
         const { checkCleanAuthResult } = await import('../utils/clean-google-auth');
         const result = await checkCleanAuthResult();
         
@@ -128,7 +128,7 @@ const CleanGoogleAuthTest = () => {
           if (result.success) {
             setStatus({
               type: 'success',
-              message: result.message || 'تم تسجيل الدخول بنجاح!'
+              message: result.message || 'Login successful!'
             });
             if (result.user) {
               setUser({
@@ -140,12 +140,12 @@ const CleanGoogleAuthTest = () => {
           } else {
             setStatus({
               type: 'error',
-              message: result.message || 'فشل في تسجيل الدخول'
+              message: result.message || 'Login failed'
             });
           }
         }
       } catch (error) {
-        console.error('خطأ في التحقق من المصادقة:', error);
+        console.error('[AUTH] Error checking authentication:', error);
       }
     };
 
@@ -158,12 +158,12 @@ const CleanGoogleAuthTest = () => {
     setLogs('');
     
     try {
-      // استيراد الدالة الجديدة
+      // (Comment removed - was in Arabic)
       const { cleanGoogleAuth } = await import('../utils/clean-google-auth');
       
       setStatus({
         type: 'info',
-        message: 'جاري تنظيف النظام وإعادة التشغيل...'
+        message: 'Cleaning system and restarting...'
       });
       
       const result = await cleanGoogleAuth();
@@ -171,25 +171,25 @@ const CleanGoogleAuthTest = () => {
       if (result.redirected) {
         setStatus({
           type: 'info',
-          message: 'تم بدء عملية إعادة التوجيه إلى Google...'
+          message: 'Redirecting to Google...'
         });
       } else if (result.success) {
         setStatus({
           type: 'success',
-          message: 'تم تنظيف النظام بنجاح!'
+          message: 'System cleaned successfully!'
         });
       } else {
         setStatus({
           type: 'error',
-          message: result.message || 'فشل في تنظيف النظام'
+          message: result.message || 'Failed to clean system'
         });
       }
       
     } catch (error) {
-      console.error('خطأ:', error);
+      console.error('[AUTH] Error:', error);
       setStatus({
         type: 'error',
-        message: `خطأ: ${error instanceof Error ? error.message : 'حدث خطأ غير متوقع'}`
+        message: `Error: ${error instanceof Error ? error.message : 'Unexpected error occurred'}`
       });
     } finally {
       setLoading(false);
@@ -204,14 +204,14 @@ const CleanGoogleAuthTest = () => {
   return (
     <Container>
       <Card>
-        <Title>🧹 تنظيف وإصلاح Google Authentication</Title>
+        <Title>🧹 Google Authentication Cleanup & Repair</Title>
         
         {user && (
           <StatusBox type="success">
-            <h3>✅ مرحباً!</h3>
-            <p><strong>البريد الإلكتروني:</strong> {user.email}</p>
-            <p><strong>الاسم:</strong> {user.displayName || 'غير محدد'}</p>
-            <p><strong>معرف المستخدم:</strong> {user.uid}</p>
+            <h3>✅ Welcome!</h3>
+            <p><strong>Email:</strong> {user.email}</p>
+            <p><strong>Name:</strong> {user.displayName || 'Not specified'}</p>
+            <p><strong>User ID:</strong> {user.uid}</p>
           </StatusBox>
         )}
 
@@ -227,40 +227,40 @@ const CleanGoogleAuthTest = () => {
             disabled={loading}
             style={{ fontSize: '18px', padding: '20px 40px' }}
           >
-            {loading ? '⏳ جاري المعالجة...' : '🧹 تنظيف وإعادة تشغيل Google Sign-in'}
+            {loading ? '⏳ Processing...' : '🧹 Clean & Restart Google Sign-in'}
           </Button>
           
           <Button onClick={clearLogs}>
-            🗑️ مسح السجلات
+            🗑️ Clear Logs
           </Button>
         </div>
 
         <div style={{ marginTop: '30px' }}>
-          <h3>📋 تفاصيل العملية:</h3>
-          <ul style={{ textAlign: 'right', lineHeight: '1.8' }}>
-            <li>مسح جميع البيانات المحفوظة (localStorage & sessionStorage)</li>
-            <li>مسح cookies الخاصة بـ Firebase</li>
-            <li>إنشاء Firebase app جديد بالتكوين الصحيح</li>
-            <li>استخدام Redirect بدلاً من Popup لتجنب حظر المتصفح</li>
-            <li>فحص النتيجة عند العودة من Google</li>
+          <h3>📋 Process Details:</h3>
+          <ul style={{ textAlign: 'left', lineHeight: '1.8' }}>
+            <li>Clear all cached data (localStorage & sessionStorage)</li>
+            <li>Clear Firebase cookies</li>
+            <li>Create new Firebase app with correct configuration</li>
+            <li>Use Redirect instead of Popup to avoid browser blocking</li>
+            <li>Check result when returning from Google</li>
           </ul>
         </div>
 
         {logs && (
           <div>
-            <h3>📊 سجل العمليات:</h3>
+            <h3>📊 Operation Log:</h3>
             <LogBox>{logs}</LogBox>
           </div>
         )}
       </Card>
 
       <Card>
-        <h3>🔧 معلومات التكوين الحالي:</h3>
+        <h3>🔧 Current Configuration:</h3>
         <div style={{ fontSize: '14px', color: '#666' }}>
           <p><strong>Project ID:</strong> studio-448742006-a3493</p>
           <p><strong>Auth Domain:</strong> studio-448742006-a3493.firebaseapp.com</p>
           <p><strong>API Key:</strong> AIzaSyCYxOoD-tViZHLh3XhdbwQo8rRA5Q56NVs</p>
-          <p><strong>النهج:</strong> Redirect مع تنظيف شامل</p>
+          <p><strong>Approach:</strong> Redirect with comprehensive cleanup</p>
         </div>
       </Card>
     </Container>

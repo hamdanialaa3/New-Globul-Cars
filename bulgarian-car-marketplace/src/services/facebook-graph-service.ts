@@ -1,6 +1,6 @@
 // src/services/facebook-graph-service.ts
 // Professional Facebook Graph API Integration
-// تكامل احترافي مع Facebook Graph API
+// (Comment removed - was in Arabic)
 
 interface FacebookUser {
   id: string;
@@ -101,7 +101,7 @@ interface GraphApiResponse<T> {
 
 /**
  * Professional Facebook Graph API Service
- * خدمة احترافية لـ Facebook Graph API
+ * (Comment removed - was in Arabic)
  */
 export class FacebookGraphService {
   private static readonly BASE_URL = 'https://graph.facebook.com/v18.0';
@@ -114,7 +114,7 @@ export class FacebookGraphService {
 
   /**
    * Set access token for API calls
-   * تعيين رمز الوصول لاستدعاءات API
+   * (Comment removed - was in Arabic)
    */
   setAccessToken(token: string): void {
     this.accessToken = token;
@@ -122,7 +122,7 @@ export class FacebookGraphService {
 
   /**
    * Get current user profile with Bulgarian localization
-   * الحصول على ملف المستخدم الحالي مع الترجمة البلغارية
+   * (Comment removed - was in Arabic)
    */
   async getCurrentUser(): Promise<FacebookUser> {
     if (!this.accessToken) {
@@ -143,18 +143,16 @@ export class FacebookGraphService {
       const response = await this.makeRequest<FacebookUser>(`/me?fields=${fields}`);
       
       // Log for Bulgarian car marketplace
-      console.log('🇧🇬 Facebook user fetched for Bulgarian Car Marketplace');
-      
-      return response;
+return response;
     } catch (error) {
-      console.error('Error fetching Facebook user:', error);
+      console.error('[SERVICE] Error fetching Facebook user:', error);
       throw new Error('Failed to fetch user profile / فشل في جلب ملف المستخدم');
     }
   }
 
   /**
    * Get user's friends for social features
-   * الحصول على أصدقاء المستخدم للميزات الاجتماعية
+   * (Comment removed - was in Arabic)
    */
   async getUserFriends(userId: string = 'me', limit: number = 50): Promise<FacebookUser[]> {
     if (!this.accessToken) {
@@ -165,18 +163,16 @@ export class FacebookGraphService {
       const response = await this.makeRequest<GraphApiResponse<FacebookUser[]>>(
         `/${userId}/friends?fields=id,name,picture&limit=${limit}`
       );
-
-      console.log(`🤝 Found ${response.data.length} friends for car marketplace social features`);
-      return response.data;
+return response.data;
     } catch (error) {
-      console.error('Error fetching friends:', error);
+      console.error('[SERVICE] Error fetching friends:', error);
       return []; // Return empty array instead of throwing
     }
   }
 
   /**
    * Get user's posts for engagement analysis
-   * الحصول على منشورات المستخدم لتحليل التفاعل
+   * (Comment removed - was in Arabic)
    */
   async getUserPosts(userId: string = 'me', limit: number = 25): Promise<FacebookPost[]> {
     if (!this.accessToken) {
@@ -198,18 +194,16 @@ export class FacebookGraphService {
       const response = await this.makeRequest<GraphApiResponse<FacebookPost[]>>(
         `/${userId}/posts?fields=${fields}&limit=${limit}`
       );
-
-      console.log(`📱 Fetched ${response.data.length} posts for user engagement analysis`);
-      return response.data;
+return response.data;
     } catch (error) {
-      console.error('Error fetching posts:', error);
+      console.error('[SERVICE] Error fetching posts:', error);
       return [];
     }
   }
 
   /**
    * Get Bulgarian Car Marketplace Facebook page data
-   * الحصول على بيانات صفحة Facebook لسوق السيارات البلغاري
+   * (Comment removed - was in Arabic)
    */
   async getBulgarianCarPage(): Promise<FacebookPage> {
     try {
@@ -230,18 +224,16 @@ export class FacebookGraphService {
         `/${FacebookGraphService.BULGARIAN_PAGE_ID}?fields=${fields}`,
         true // Use app token
       );
-
-      console.log('🇧🇬 Bulgarian Car Marketplace page data fetched');
-      return response;
+return response;
     } catch (error) {
-      console.error('Error fetching Bulgarian car page:', error);
+      console.error('[SERVICE] Error fetching Bulgarian car page:', error);
       throw new Error('Failed to fetch page data / فشل في جلب بيانات الصفحة');
     }
   }
 
   /**
    * Get page posts for Bulgarian Car Marketplace
-   * الحصول على منشورات الصفحة لسوق السيارات البلغاري
+   * (Comment removed - was in Arabic)
    */
   async getPagePosts(limit: number = 20): Promise<FacebookPost[]> {
     try {
@@ -260,18 +252,16 @@ export class FacebookGraphService {
         `/${FacebookGraphService.BULGARIAN_PAGE_ID}/posts?fields=${fields}&limit=${limit}`,
         true
       );
-
-      console.log(`🚗 Fetched ${response.data.length} posts from Bulgarian Car Marketplace page`);
-      return response.data;
+return response.data;
     } catch (error) {
-      console.error('Error fetching page posts:', error);
+      console.error('[SERVICE] Error fetching page posts:', error);
       return [];
     }
   }
 
   /**
    * Search for car-related content
-   * البحث عن محتوى متعلق بالسيارات
+   * (Comment removed - was in Arabic)
    */
   async searchCarContent(query: string, type: 'user' | 'page' | 'event' = 'page'): Promise<any[]> {
     try {
@@ -281,18 +271,16 @@ export class FacebookGraphService {
         `/search?q=${encodedQuery}&type=${type}&fields=id,name,category,picture`,
         true
       );
-
-      console.log(`🔍 Found ${response.data.length} car-related ${type}s in Bulgaria`);
-      return response.data;
+return response.data;
     } catch (error) {
-      console.error('Error searching car content:', error);
+      console.error('[SERVICE] Error searching car content:', error);
       return [];
     }
   }
 
   /**
    * Get user's interests for targeted advertising
-   * الحصول على اهتمامات المستخدم للإعلانات المستهدفة
+   * (Comment removed - was in Arabic)
    */
   async getUserInterests(userId: string = 'me'): Promise<string[]> {
     if (!this.accessToken) {
@@ -307,18 +295,16 @@ export class FacebookGraphService {
       const interests = response.data
         .filter(like => like.category && like.name)
         .map(like => like.name);
-
-      console.log(`🎯 Extracted ${interests.length} interests for targeted advertising`);
-      return interests;
+return interests;
     } catch (error) {
-      console.error('Error fetching interests:', error);
+      console.error('[SERVICE] Error fetching interests:', error);
       return [];
     }
   }
 
   /**
    * Post to Bulgarian Car Marketplace page (requires page access token)
-   * النشر على صفحة سوق السيارات البلغاري
+   * (Comment removed - was in Arabic)
    */
   async postToPage(message: string, link?: string, imageUrl?: string): Promise<string | null> {
     if (!this.accessToken) {
@@ -352,18 +338,16 @@ export class FacebookGraphService {
       if (result.error) {
         throw new Error(result.error.message);
       }
-
-      console.log('🚗 Successfully posted to Bulgarian Car Marketplace page');
-      return result.id;
+return result.id;
     } catch (error) {
-      console.error('Error posting to page:', error);
+      console.error('[SERVICE] Error posting to page:', error);
       throw new Error('Failed to post to page / فشل في النشر على الصفحة');
     }
   }
 
   /**
    * Get insights for a specific post
-   * الحصول على إحصائيات منشور معين
+   * (Comment removed - was in Arabic)
    */
   async getPostInsights(postId: string): Promise<any> {
     try {
@@ -378,18 +362,16 @@ export class FacebookGraphService {
         `/${postId}/insights?metric=${metrics}`,
         true
       );
-
-      console.log(`📊 Fetched insights for post ${postId}`);
-      return response.data;
+return response.data;
     } catch (error) {
-      console.error('Error fetching post insights:', error);
+      console.error('[SERVICE] Error fetching post insights:', error);
       return null;
     }
   }
 
   /**
    * Make authenticated request to Graph API
-   * إجراء طلب مصادق عليه إلى Graph API
+   * (Comment removed - was in Arabic)
    */
   private async makeRequest<T>(endpoint: string, useAppToken: boolean = false): Promise<T> {
     let url = `${FacebookGraphService.BASE_URL}${endpoint}`;
@@ -427,7 +409,7 @@ export class FacebookGraphService {
 
   /**
    * Get Bulgarian localized error messages
-   * الحصول على رسائل الخطأ المترجمة للبلغارية
+   * (Comment removed - was in Arabic)
    */
   private static getLocalizedError(error: string, locale: 'bg' | 'en' = 'bg'): string {
     const errors = {

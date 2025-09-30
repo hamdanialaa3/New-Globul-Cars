@@ -1,6 +1,6 @@
 // src/services/instagram-service.ts
 // Instagram Integration Service for Bulgarian Car Marketplace
-// خدمة التكامل مع Instagram لسوق السيارات البلغاري
+// (Comment removed - was in Arabic)
 
 import { Logger, LogLevel } from './logger-service';
 import { RateLimiter } from './rate-limiter-service';
@@ -77,7 +77,7 @@ export interface InstagramStory {
 
 /**
  * Instagram Service for Bulgarian Car Marketplace
- * خدمة Instagram لسوق السيارات البلغاري
+ * (Comment removed - was in Arabic)
  */
 class InstagramService {
   private accessToken: string | null = null;
@@ -90,7 +90,7 @@ class InstagramService {
   };
 
   // Professional services for production readiness
-  // الخدمات المهنية للجاهزية الإنتاجية
+  // (Comment removed - was in Arabic)
   private logger: Logger;
   private rateLimiter: RateLimiter;
 
@@ -121,7 +121,7 @@ class InstagramService {
 
   /**
    * Set access token for API calls
-   * تعيين رمز الوصول لاستدعاءات API
+   * (Comment removed - was in Arabic)
    */
   setAccessToken(token: string): void {
     this.accessToken = token;
@@ -129,7 +129,7 @@ class InstagramService {
 
   /**
    * Get current user profile
-   * الحصول على ملف المستخدم الحالي
+   * (Comment removed - was in Arabic)
    */
   async getCurrentUser(): Promise<InstagramUserProfile> {
     const cacheKey = 'current_user_profile';
@@ -194,7 +194,7 @@ class InstagramService {
 
   /**
    * Post car content to Instagram
-   * نشر محتوى سيارة على Instagram
+   * (Comment removed - was in Arabic)
    */
   async postCarContent(postData: InstagramCarPost): Promise<InstagramPost> {
     if (!this.accessToken) {
@@ -253,14 +253,14 @@ class InstagramService {
       const mediaData = await mediaResponse.json();
       return this.mapInstagramPost(mediaData);
     } catch (error) {
-      console.error('Error posting to Instagram:', error);
+      console.error('[SERVICE] Error posting to Instagram:', error);
       throw error;
     }
   }
 
   /**
    * Get user's posts
-   * الحصول على منشورات المستخدم
+   * (Comment removed - was in Arabic)
    */
   async getUserPosts(limit: number = 20): Promise<InstagramPost[]> {
     if (!this.accessToken) {
@@ -277,14 +277,14 @@ class InstagramService {
       const data = await response.json();
       return data.data.map((post: any) => this.mapInstagramPost(post));
     } catch (error) {
-      console.error('Error fetching Instagram posts:', error);
+      console.error('[SERVICE] Error fetching Instagram posts:', error);
       throw error;
     }
   }
 
   /**
    * Search for car-related posts
-   * البحث عن منشورات متعلقة بالسيارات
+   * (Comment removed - was in Arabic)
    */
   async searchCarPosts(query: string, limit: number = 20): Promise<InstagramPost[]> {
     try {
@@ -313,14 +313,14 @@ class InstagramService {
       const mediaData = await mediaResponse.json();
       return mediaData.data.map((post: any) => this.mapInstagramPost(post));
     } catch (error) {
-      console.error('Error searching Instagram posts:', error);
+      console.error('[SERVICE] Error searching Instagram posts:', error);
       throw error;
     }
   }
 
   /**
    * Get trending car posts in Bulgaria
-   * الحصول على منشورات السيارات الرائجة في بلغاريا
+   * (Comment removed - was in Arabic)
    */
   async getTrendingBulgarianCarPosts(limit: number = 20): Promise<InstagramPost[]> {
     try {
@@ -357,14 +357,14 @@ class InstagramService {
 
       return uniquePosts;
     } catch (error) {
-      console.error('Error getting trending Bulgarian car posts:', error);
+      console.error('[SERVICE] Error getting trending Bulgarian car posts:', error);
       throw error;
     }
   }
 
   /**
    * Get post comments
-   * الحصول على تعليقات المنشور
+   * (Comment removed - was in Arabic)
    */
   async getPostComments(postId: string, limit: number = 20): Promise<InstagramComment[]> {
     if (!this.accessToken) {
@@ -381,14 +381,14 @@ class InstagramService {
       const data = await response.json();
       return data.data.map((comment: any) => this.mapInstagramComment(comment));
     } catch (error) {
-      console.error('Error fetching post comments:', error);
+      console.error('[SERVICE] Error fetching post comments:', error);
       throw error;
     }
   }
 
   /**
    * Create Instagram Story for car
-   * إنشاء قصة Instagram للسيارة
+   * (Comment removed - was in Arabic)
    */
   async createCarStory(storyData: { carId: string; mediaUrl: string; stickerText?: string }): Promise<InstagramStory> {
     if (!this.accessToken) {
@@ -425,14 +425,14 @@ class InstagramService {
         carId: storyData.carId
       };
     } catch (error) {
-      console.error('Error creating Instagram story:', error);
+      console.error('[SERVICE] Error creating Instagram story:', error);
       throw error;
     }
   }
 
   /**
    * Generate Bulgarian caption for car post
-   * إنشاء تعليق بلغاري لمنشور السيارة
+   * (Comment removed - was in Arabic)
    */
   private generateBulgarianCaption(postData: InstagramCarPost): string {
     let caption = postData.caption;
@@ -450,7 +450,7 @@ class InstagramService {
 
   /**
    * Map Instagram API user data to our interface
-   * تحويل بيانات مستخدم Instagram API إلى واجهتنا
+   * (Comment removed - was in Arabic)
    */
   private mapInstagramUser(data: any): InstagramUserProfile {
     return {
@@ -470,7 +470,7 @@ class InstagramService {
 
   /**
    * Map Instagram API post data to our interface
-   * تحويل بيانات منشور Instagram API إلى واجهتنا
+   * (Comment removed - was in Arabic)
    */
   private mapInstagramPost(data: any): InstagramPost {
     return {
@@ -492,7 +492,7 @@ class InstagramService {
 
   /**
    * Map Instagram API comment data to our interface
-   * تحويل بيانات تعليق Instagram API إلى واجهتنا
+   * (Comment removed - was in Arabic)
    */
   private mapInstagramComment(data: any): InstagramComment {
     return {
@@ -507,7 +507,7 @@ class InstagramService {
 
   /**
    * Extract hashtags from text
-   * استخراج الهاشتاج من النص
+   * (Comment removed - was in Arabic)
    */
   private extractHashtags(text: string): string[] {
     const hashtagRegex = /#[\w\u0400-\u04FF]+/g;
@@ -517,7 +517,7 @@ class InstagramService {
 
   /**
    * Detect language from text
-   * كشف اللغة من النص
+   * (Comment removed - was in Arabic)
    */
   private detectLanguage(text: string): 'bg' | 'en' {
     // Simple language detection based on Cyrillic characters

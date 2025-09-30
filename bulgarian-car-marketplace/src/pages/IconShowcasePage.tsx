@@ -1,5 +1,5 @@
 // Icon Showcase Page - Temporarily disabled due to icon library migration
-// صفحة عرض الأيقونات - معطلة مؤقتاً بسبب ترحيل مكتبة الأيقونات
+// (Comment removed - was in Arabic)
 
 import React from 'react';
 import styled from 'styled-components';
@@ -26,9 +26,8 @@ const IconShowcasePage: React.FC = () => {
   return (
     <PageContainer>
       <PlaceholderMessage>
-        <h2>Icon Showcase</h2>
-        <p>Icon showcase temporarily disabled during icon library migration.</p>
-        <p>عرض الأيقونات معطل مؤقتاً أثناء ترحيل مكتبة الأيقونات.</p>
+        <h2>Галерия на икони</h2>
+        <p>Показването на икони е временно деактивирано по време на миграцията на библиотеката с икони.</p>
       </PlaceholderMessage>
     </PageContainer>
   );

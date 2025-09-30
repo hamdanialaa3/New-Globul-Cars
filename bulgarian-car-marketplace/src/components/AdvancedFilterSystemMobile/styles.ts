@@ -1,5 +1,5 @@
 // AdvancedFilterSystemMobile/styles.ts
-// مكونات التصميم لنظام التصفية المتقدم للأجهزة المحمولة
+// (Comment removed - was in Arabic)
 
 import styled from 'styled-components';
 

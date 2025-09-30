@@ -1,5 +1,5 @@
 // hCaptcha Service - Free Alternative to Google reCAPTCHA
-// خدمة hCaptcha - بديل مجاني لـ Google reCAPTCHA
+// (Comment removed - was in Arabic)
 
 import HCaptcha from '@hcaptcha/react-hcaptcha';
 import React, { forwardRef, useImperativeHandle, useRef } from 'react';
@@ -67,7 +67,7 @@ export class BulgarianCaptchaService {
         error: data.success ? undefined : data['error-codes']?.join(', ') || 'Verification failed'
       };
     } catch (error) {
-      console.error('Captcha verification error:', error);
+      console.error('[SERVICE] Captcha verification error:', error);
       return {
         success: false,
         error: 'Network error during verification'
@@ -155,16 +155,14 @@ export const HCaptchaComponent = forwardRef<any, HCaptchaComponentProps>(
         size={size}
         languageOverride={language}
         onVerify={(token) => {
-          console.log('Captcha verified:', token);
-          onVerify(token);
+onVerify(token);
         }}
         onError={(error) => {
-          console.error('Captcha error:', error);
+          console.error('[SERVICE] Captcha error:', error);
           onError?.(error);
         }}
         onExpire={() => {
-          console.log('Captcha expired');
-          onExpire?.();
+onExpire?.();
         }}
       />
     );

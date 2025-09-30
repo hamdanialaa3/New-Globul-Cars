@@ -1,6 +1,6 @@
 // src/services/facebook-integration.ts
 // Comprehensive Facebook Integration Index for Bulgarian Car Marketplace
-// فهرس التكامل الشامل مع Facebook لسوق السيارات البلغاري
+// (Comment removed - was in Arabic)
 
 // Import all Facebook services
 import FacebookGraphService, { bulgarianFacebookGraph } from './facebook-graph-service';
@@ -37,7 +37,7 @@ export interface BulgarianCarFacebookIntegration {
 
 /**
  * Comprehensive Facebook Integration Manager
- * مدير التكامل الشامل مع Facebook
+ * (Comment removed - was in Arabic)
  */
 class FacebookIntegrationManager {
   private config: FacebookIntegrationConfig;
@@ -75,12 +75,10 @@ class FacebookIntegrationManager {
 
   /**
    * Initialize comprehensive Facebook integration
-   * تهيئة التكامل الشامل مع Facebook
+   * (Comment removed - was in Arabic)
    */
   private initializeIntegration(): void {
-    console.log('🚀 Initializing comprehensive Facebook integration for Bulgarian Car Marketplace...');
-
-    // Set access tokens for all services
+// Set access tokens for all services
     if (this.config.accessToken) {
       this.services.graph.setAccessToken(this.config.accessToken);
       this.services.marketing.setAccessToken(this.config.accessToken);
@@ -90,14 +88,11 @@ class FacebookIntegrationManager {
     // Validate configuration
     this.validateConfiguration();
 
-    console.log('✅ Facebook integration initialized successfully');
-    console.log(`🇧🇬 Language: ${this.config.defaultLanguage === 'bg' ? 'Bulgarian' : 'English'}`);
-    console.log(`🏢 Environment: ${this.config.environment}`);
-  }
+}
 
   /**
    * Validate Facebook integration configuration
-   * التحقق من صحة تكوين التكامل مع Facebook
+   * (Comment removed - was in Arabic)
    */
   private validateConfiguration(): void {
     const warnings: string[] = [];
@@ -132,17 +127,15 @@ class FacebookIntegrationManager {
     }
 
     if (errors.length > 0) {
-      console.error('❌ Facebook Integration Errors:');
+      console.error('[SERVICE] Facebook Integration Errors:');
       errors.forEach(error => console.error(`  • ${error}`));
       throw new Error('Facebook integration configuration incomplete');
     }
-
-    console.log('✅ Facebook configuration validated');
-  }
+}
 
   /**
    * Get all Facebook services
-   * الحصول على جميع خدمات Facebook
+   * (Comment removed - was in Arabic)
    */
   getServices(): BulgarianCarFacebookIntegration {
     return this.services;
@@ -150,7 +143,7 @@ class FacebookIntegrationManager {
 
   /**
    * Get specific Facebook service
-   * الحصول على خدمة Facebook محددة
+   * (Comment removed - was in Arabic)
    */
   getService<T extends keyof Omit<BulgarianCarFacebookIntegration, 'config'>>(
     serviceName: T
@@ -160,7 +153,7 @@ class FacebookIntegrationManager {
 
   /**
    * Comprehensive car listing workflow
-   * سير عمل شامل لقائمة السيارات
+   * (Comment removed - was in Arabic)
    */
   async processNewCarListing(carData: any, options?: {
     createAd?: boolean;
@@ -180,16 +173,11 @@ class FacebookIntegrationManager {
     const results: any = {};
     const errors: string[] = [];
     const language = options?.language || this.config.defaultLanguage;
-
-    console.log(`🚗 Processing new car listing: ${carData.make} ${carData.model} ${carData.year}`);
-
-    try {
+try {
       // 1. Create Open Graph tags for sharing
       const openGraphTags = this.services.sharing.generateCarOpenGraphTags(carData, language);
       results.openGraphTags = openGraphTags;
-      console.log('✅ Open Graph tags generated');
-
-      // 2. Track analytics event
+// 2. Track analytics event
       if (options?.trackAnalytics !== false) {
         await this.services.analytics.trackCarView({
           carId: carData.id,
@@ -202,8 +190,7 @@ class FacebookIntegrationManager {
           timestamp: Date.now()
         });
         results.analyticsTracked = true;
-        console.log('✅ Analytics event tracked');
-      }
+}
 
       // 3. Create Facebook advertisement
       if (options?.createAd && this.config.adAccountId) {
@@ -213,8 +200,7 @@ class FacebookIntegrationManager {
             Math.min(50, carData.price * 0.01) // Dynamic budget: 1% of car price, max €50/day
           );
           results.advertisement = campaign.id;
-          console.log('✅ Facebook advertisement created');
-        } catch (error) {
+} catch (error) {
           errors.push(`Failed to create advertisement: ${error}`);
         }
       }
@@ -224,8 +210,7 @@ class FacebookIntegrationManager {
         try {
           const postId = await this.services.sharing.createCarListingPost(carData, language);
           results.pagePost = postId;
-          console.log('✅ Facebook page post created');
-        } catch (error) {
+} catch (error) {
           errors.push(`Failed to create page post: ${error}`);
         }
       }
@@ -236,7 +221,7 @@ class FacebookIntegrationManager {
         errors
       };
     } catch (error) {
-      console.error('Error processing car listing:', error);
+      console.error('[SERVICE] Error processing car listing:', error);
       errors.push(`General processing error: ${error}`);
       
       return {
@@ -249,7 +234,7 @@ class FacebookIntegrationManager {
 
   /**
    * Handle customer inquiry workflow
-   * التعامل مع سير عمل استفسار العميل
+   * (Comment removed - was in Arabic)
    */
   async processCustomerInquiry(inquiryData: {
     carId: string;
@@ -264,10 +249,7 @@ class FacebookIntegrationManager {
     trackingId?: string;
   }> {
     const language = inquiryData.language || this.config.defaultLanguage;
-
-    console.log(`📞 Processing customer inquiry for car ${inquiryData.carId}`);
-
-    try {
+try {
       // Track contact event
       await this.services.analytics.trackCarContact({
         carId: inquiryData.carId,
@@ -311,16 +293,13 @@ class FacebookIntegrationManager {
       }
 
       const trackingId = `inquiry_${inquiryData.carId}_${Date.now()}`;
-
-      console.log('✅ Customer inquiry processed successfully');
-
-      return {
+return {
         success: true,
         response,
         trackingId
       };
     } catch (error) {
-      console.error('Error processing customer inquiry:', error);
+      console.error('[SERVICE] Error processing customer inquiry:', error);
       return {
         success: false
       };
@@ -329,7 +308,7 @@ class FacebookIntegrationManager {
 
   /**
    * Generate comprehensive Facebook integration report
-   * إنشاء تقرير شامل للتكامل مع Facebook
+   * (Comment removed - was in Arabic)
    */
   async generateIntegrationReport(days: number = 30): Promise<{
     pageInsights?: any;
@@ -345,9 +324,7 @@ class FacebookIntegrationManager {
     };
     recommendations: string[];
   }> {
-    console.log('📊 Generating comprehensive Facebook integration report...');
-
-    try {
+try {
       // Get analytics insights
       const analyticsReport = await this.services.analytics.generateAnalyticsReport(days);
 
@@ -385,10 +362,7 @@ class FacebookIntegrationManager {
       if (analyticsReport?.conversionInsights && analyticsReport.conversionInsights.conversion_rate < 20) {
         recommendations.push('Optimize conversion rate - current rate is below 20%');
       }
-
-      console.log('✅ Integration report generated successfully');
-
-      return {
+return {
         pageInsights: analyticsReport?.pageInsights,
         audienceInsights: analyticsReport?.audienceInsights,
         conversionInsights: analyticsReport?.conversionInsights,
@@ -397,7 +371,7 @@ class FacebookIntegrationManager {
         recommendations
       };
     } catch (error) {
-      console.error('Error generating integration report:', error);
+      console.error('[SERVICE] Error generating integration report:', error);
       return {
         integrationStatus: {
           graph: false,
@@ -413,17 +387,16 @@ class FacebookIntegrationManager {
 
   /**
    * Update integration configuration
-   * تحديث تكوين التكامل
+   * (Comment removed - was in Arabic)
    */
   updateConfiguration(newConfig: Partial<FacebookIntegrationConfig>): void {
     this.config = { ...this.config, ...newConfig };
-    console.log('🔄 Facebook integration configuration updated');
-    this.initializeIntegration();
+this.initializeIntegration();
   }
 
   /**
    * Get current configuration (without sensitive data)
-   * الحصول على التكوين الحالي (بدون بيانات حساسة)
+   * (Comment removed - was in Arabic)
    */
   getConfiguration(): Omit<FacebookIntegrationConfig, 'accessToken' | 'pageAccessToken'> {
     const { accessToken, pageAccessToken, ...publicConfig } = this.config;

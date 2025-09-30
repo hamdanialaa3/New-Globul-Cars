@@ -1,26 +1,26 @@
-// Feature Flags للتجريب الآمن - لا نكسر المشروع
+// Feature Flags ??????? ????? - ?? ???? ???????
 export const FEATURE_FLAGS = {
-  // إعادة هيكلة الملفات الكبيرة
+  // (Comment removed - was in Arabic)
   ENABLE_NEW_ADVANCED_SEARCH: false,
   ENABLE_SPLIT_CAR_DATA: false,
   ENABLE_NEW_DASHBOARD: false,
   ENABLE_NEW_PROFILE_PAGE: false,
 
-  // مراقبة الجودة
+  // (Comment removed - was in Arabic)
   ENABLE_STRICT_ESLINT: false,
   ENABLE_CODE_COVERAGE: false,
 
-  // أدوات التطوير
+  // (Comment removed - was in Arabic)
   ENABLE_PERFORMANCE_MONITORING: false,
   ENABLE_BUNDLE_ANALYZER: false
 };
 
-// دوال مساعدة للتحقق من التفعيل
+// (Comment removed - was in Arabic)
 export const isFeatureEnabled = (feature: keyof typeof FEATURE_FLAGS): boolean => {
   return FEATURE_FLAGS[feature];
 };
 
-// تحذير عند استخدام ميزة غير مفعلة
+// (Comment removed - was in Arabic)
 export const warnIfFeatureDisabled = (feature: keyof typeof FEATURE_FLAGS, message: string) => {
   if (!isFeatureEnabled(feature)) {
     console.warn(`⚠️ Feature "${feature}" is disabled: ${message}`);

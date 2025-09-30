@@ -1,5 +1,5 @@
 // AdvancedFilterSystemMobile/index.ts
-// نقطة الدخول الرئيسية لنظام التصفية المتقدم للأجهزة المحمولة
+// (Comment removed - was in Arabic)
 
 export { default } from './AdvancedFilterSystemMobile';
 export { default as AdvancedFilterSystemMobile } from './AdvancedFilterSystemMobile';

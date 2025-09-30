@@ -1,5 +1,5 @@
 // CarSearchSystem/types.ts
-// تعريف الأنواع لنظام البحث في السيارات
+// (Comment removed - was in Arabic)
 
 export interface OptionType {
   value: string;

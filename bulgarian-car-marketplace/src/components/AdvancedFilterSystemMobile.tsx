@@ -1,5 +1,5 @@
 // AdvancedFilterSystemMobile.tsx
-// إعادة توجيه الاستيراد إلى المكون المعاد هيكلته
+// (Comment removed - was in Arabic)
 
 export { default } from './AdvancedFilterSystemMobile/';
 export * from './AdvancedFilterSystemMobile/';

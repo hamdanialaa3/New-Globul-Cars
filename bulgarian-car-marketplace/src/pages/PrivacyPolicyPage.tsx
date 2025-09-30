@@ -1,6 +1,6 @@
 // src/pages/PrivacyPolicyPage.tsx
 // Privacy Policy Page for Bulgarian Car Marketplace
-// صفحة سياسة الخصوصية لسوق السيارات البلغاري
+// (Comment removed - was in Arabic)
 
 import React from 'react';
 import styled from 'styled-components';
