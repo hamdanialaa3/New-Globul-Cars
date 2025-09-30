@@ -14,7 +14,6 @@ import Footer from './components/Footer/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
 import AuthGuard from './components/AuthGuard';
-import ProtectedLayout from './components/ProtectedLayout';
 // import AnalyticsTracker from './components/AnalyticsTracker';
 import PerformanceMonitor from './components/PerformanceMonitor';
 import BundleAnalyzer from './components/BundleAnalyzer';
@@ -79,9 +78,9 @@ const SitemapPage = React.lazy(() => import('./pages/SitemapPage'));
 // Layout Component
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
-    <div style={{ 
-      minHeight: '100vh', 
-      display: 'flex', 
+    <div style={{
+      minHeight: '100vh',
+      display: 'flex',
       flexDirection: 'column',
       background: '#f8fafc'
     }}>
@@ -91,10 +90,15 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       <main
         id="main-content"
         role="main"
-        style={{ flex: 1 }}
+        style={{
+          flex: 1,
+          padding: '0 1rem'
+        }}
         tabIndex={-1}
       >
-        {children}
+        <div className="page-container">
+          {children}
+        </div>
       </main>
       <footer role="contentinfo">
         <Footer />

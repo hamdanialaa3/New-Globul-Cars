@@ -1,7 +1,9 @@
 // functions/financial-services.js
 // Cloud Functions for Bulgarian Financial Services
 
-const functions = require('firebase-functions');
+const {onCall} = require('firebase-functions/v2/https');
+const {onDocumentCreated} = require('firebase-functions/v2/firestore');
+const {onSchedule} = require('firebase-functions/v2/scheduler');
 const admin = require('firebase-admin');
 const axios = require('axios');
 
@@ -10,19 +12,19 @@ const FINANCIAL_PARTNERS = {
   dsk_bank: {
     name: 'ДСК Банк',
     apiUrl: 'https://api.dsk.bg/finance',
-    apiKey: functions.config().dsk?.api_key,
+    apiKey: process.env.DSK_API_KEY,
     commission: 0.02 // 2%
   },
   unicredit: {
     name: 'УниКредит Булбанк',
     apiUrl: 'https://api.unicredit.bg/finance',
-    apiKey: functions.config().unicredit?.api_key,
+    apiKey: process.env.UNICREDIT_API_KEY,
     commission: 0.025 // 2.5%
   },
   raiffeisen: {
     name: 'Райфайзенбанк България',
     apiUrl: 'https://api.raiffeisen.bg/finance',
-    apiKey: functions.config().raiffeisen?.api_key,
+    apiKey: process.env.RAIFFEISEN_API_KEY,
     commission: 0.022 // 2.2%
   }
 };
@@ -31,19 +33,19 @@ const INSURANCE_PARTNERS = {
   allianz_bg: {
     name: 'Allianz Bulgaria',
     apiUrl: 'https://api.allianz.bg/insurance',
-    apiKey: functions.config().allianz?.api_key,
+    apiKey: process.env.ALLIANZ_API_KEY,
     commission: 0.15 // 15%
   },
   bulstrad: {
     name: 'Булстрад Виена Иншурънс Груп',
     apiUrl: 'https://api.bulstrad.bg/insurance',
-    apiKey: functions.config().bulstrad?.api_key,
+    apiKey: process.env.BULSTRAD_API_KEY,
     commission: 0.12 // 12%
   },
   generali_bg: {
     name: 'Дженерали Застраховане',
     apiUrl: 'https://api.generali.bg/insurance',
-    apiKey: functions.config().generali?.api_key,
+    apiKey: process.env.GENERALI_API_KEY,
     commission: 0.14 // 14%
   }
 };
@@ -51,11 +53,9 @@ const INSURANCE_PARTNERS = {
 /**
  * Process finance lead and send to multiple Bulgarian banks
  */
-exports.processFinanceLead = functions.firestore
-  .document('serviceLeads/{leadId}')
-  .onCreate(async (snap, context) => {
-    const leadData = snap.data();
-    const leadId = context.params.leadId;
+exports.processFinanceLead = onDocumentCreated('serviceLeads/{leadId}', async (event) => {
+    const leadData = event.data.data();
+    const leadId = event.params.leadId;
 
     // Only process finance leads
     if (leadData.type !== 'finance') return;
@@ -90,7 +90,7 @@ exports.processFinanceLead = functions.firestore
       }
 
       // Update lead with results
-      await snap.ref.update({
+      await admin.firestore().collection('serviceLeads').doc(leadId).update({
         partnerResponses: results,
         processedAt: admin.firestore.FieldValue.serverTimestamp(),
         status: 'sent'
@@ -105,7 +105,7 @@ exports.processFinanceLead = functions.firestore
       console.error(`Error processing finance lead ${leadId}:`, error);
 
       // Update lead with error status
-      await snap.ref.update({
+      await admin.firestore().collection('serviceLeads').doc(leadId).update({
         status: 'error',
         error: error.message,
         processedAt: admin.firestore.FieldValue.serverTimestamp()
@@ -116,11 +116,9 @@ exports.processFinanceLead = functions.firestore
 /**
  * Process insurance quote and send to Bulgarian insurance companies
  */
-exports.processInsuranceQuote = functions.firestore
-  .document('serviceLeads/{leadId}')
-  .onCreate(async (snap, context) => {
-    const leadData = snap.data();
-    const leadId = context.params.leadId;
+exports.processInsuranceQuote = onDocumentCreated('serviceLeads/{leadId}', async (event) => {
+    const leadData = event.data.data();
+    const leadId = event.params.leadId;
 
     // Only process insurance leads
     if (leadData.type !== 'insurance') return;
@@ -155,7 +153,7 @@ exports.processInsuranceQuote = functions.firestore
       }
 
       // Update lead with results
-      await snap.ref.update({
+      await admin.firestore().collection('serviceLeads').doc(leadId).update({
         partnerResponses: results,
         processedAt: admin.firestore.FieldValue.serverTimestamp(),
         status: 'sent'
@@ -170,7 +168,7 @@ exports.processInsuranceQuote = functions.firestore
       console.error(`Error processing insurance quote ${leadId}:`, error);
 
       // Update lead with error status
-      await snap.ref.update({
+      await admin.firestore().collection('serviceLeads').doc(leadId).update({
         status: 'error',
         error: error.message,
         processedAt: admin.firestore.FieldValue.serverTimestamp()
@@ -347,26 +345,26 @@ async function sendUserNotification(userId, type, results) {
 /**
  * HTTP endpoint to get financial service status
  */
-exports.getFinancialServiceStatus = functions.https.onCall(async (data, context) => {
+exports.getFinancialServiceStatus = onCall({ cors: true }, async (request) => {
   // Check if user is authenticated
-  if (!context.auth) {
-    throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
+  if (!request.auth) {
+    throw new Error('User must be authenticated');
   }
 
-  const { leadId } = data;
+  const { leadId } = request.data;
 
   try {
     const leadDoc = await admin.firestore().collection('serviceLeads').doc(leadId).get();
 
     if (!leadDoc.exists) {
-      throw new functions.https.HttpsError('not-found', 'Lead not found');
+      throw new Error('Lead not found');
     }
 
     const leadData = leadDoc.data();
 
     // Check if user owns this lead
-    if (leadData.userId !== context.auth.uid) {
-      throw new functions.https.HttpsError('permission-denied', 'Access denied');
+    if (leadData.userId !== request.auth.uid) {
+      throw new Error('Access denied');
     }
 
     return {
@@ -377,37 +375,34 @@ exports.getFinancialServiceStatus = functions.https.onCall(async (data, context)
 
   } catch (error) {
     console.error('Error getting financial service status:', error);
-    throw new functions.https.HttpsError('internal', 'Error retrieving status');
+    throw new Error('Error retrieving status');
   }
 });
 
 /**
  * Scheduled function to clean up old leads
  */
-exports.cleanupOldLeads = functions.pubsub
-  .schedule('0 2 * * *') // Run daily at 2 AM
-  .timeZone('Europe/Sofia')
-  .onRun(async (context) => {
-    const cutoffDate = new Date();
-    cutoffDate.setDate(cutoffDate.getDate() - 90); // 90 days ago
+exports.cleanupOldLeads = onSchedule('0 2 * * *', async (event) => {
+  const cutoffDate = new Date();
+  cutoffDate.setDate(cutoffDate.getDate() - 90); // 90 days ago
 
-    try {
-      const oldLeads = await admin.firestore()
-        .collection('serviceLeads')
-        .where('createdAt', '<', cutoffDate)
-        .where('status', 'in', ['expired', 'rejected'])
-        .get();
+  try {
+    const oldLeads = await admin.firestore()
+      .collection('serviceLeads')
+      .where('createdAt', '<', cutoffDate)
+      .where('status', 'in', ['expired', 'rejected'])
+      .get();
 
-      const batch = admin.firestore().batch();
-      oldLeads.docs.forEach(doc => {
-        batch.delete(doc.ref);
-      });
+    const batch = admin.firestore().batch();
+    oldLeads.docs.forEach(doc => {
+      batch.delete(doc.ref);
+    });
 
-      await batch.commit();
+    await batch.commit();
 
-      console.log(`Cleaned up ${oldLeads.size} old leads`);
+    console.log(`Cleaned up ${oldLeads.size} old leads`);
 
-    } catch (error) {
-      console.error('Error cleaning up old leads:', error);
-    }
-  });
+  } catch (error) {
+    console.error('Error cleaning up old leads:', error);
+  }
+});

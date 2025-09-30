@@ -4,7 +4,8 @@
 // NOTE: Currently returns existing environment tokens (development bridge). Replace with
 // real OAuth exchange / token minting in later phase.
 
-import * as functions from 'firebase-functions';
+import { onCall, onRequest } from 'firebase-functions/v2/https';
+import { onSchedule } from 'firebase-functions/v2/scheduler';
 import * as crypto from 'crypto';
 import * as admin from 'firebase-admin';
 
@@ -301,7 +302,7 @@ async function coreGetToken(platform: string, opts?: { purpose?: string }): Prom
   const raw = await readToken(platform);
   if (!raw) {
     metrics.backendIssues++;
-    throw new functions.https.HttpsError('failed-precondition', `No token configured for ${platform}`);
+    throw new Error(`No token configured for ${platform}`);
   }
 
   const expiresAt = now + DEFAULT_TTL_SECONDS * 1000;
@@ -348,25 +349,25 @@ function deriveOpsForPurpose(purpose: string): string[] {
   }
 }
 
-export const getSocialAccessToken = functions.https.onCall(async (data: TokenRequestData, context): Promise<TokenResponse> => {
-  const platform = data?.platform;
+export const getSocialAccessToken = onCall({ cors: true }, async (request): Promise<TokenResponse> => {
+  const platform = request.data?.platform;
   if (!platform) {
-    throw new functions.https.HttpsError('invalid-argument', 'platform is required');
+    throw new Error('platform is required');
   }
 
   // Basic auth enforcement (Phase 1). Allow unauth only in emulator / development.
   const isEmulator = process.env.FUNCTIONS_EMULATOR === 'true';
-  if (!context.auth && !isEmulator) {
-    throw new functions.https.HttpsError('unauthenticated', 'Authentication required');
+  if (!request.auth && !isEmulator) {
+    throw new Error('Authentication required');
   }
 
   // Rate limiting (per UID or anonymous tag)
-  const uidKey = context.auth?.uid || '__anon__';
-  const limit = context.auth ? rateLimitConfig.maxPerUid : Math.min(rateLimitConfig.maxPerIp, 5); // tighten anon callable
+  const uidKey = request.auth?.uid || '__anon__';
+  const limit = request.auth ? rateLimitConfig.maxPerUid : Math.min(rateLimitConfig.maxPerIp, 5); // tighten anon callable
   const ok = checkAndIncrementRateLimit(uidKey, userBuckets, limit);
   if (!ok) {
     metrics.rateLimitHits++;
-    throw new functions.https.HttpsError('resource-exhausted', 'Rate limit exceeded');
+    throw new Error('Rate limit exceeded');
   }
 
   metrics.requests++;
@@ -374,11 +375,11 @@ export const getSocialAccessToken = functions.https.onCall(async (data: TokenReq
   metrics.lastRequestAt = Date.now();
 
   // Cache key includes platform only (purpose not yet differentiating tokens in bridge mode)
-  return coreGetToken(platform, { purpose: data?.purpose });
+  return coreGetToken(platform, { purpose: request.data?.purpose });
 });
 
 // (Future) HTTP function variant for non-Firebase callers
-export const fetchSocialAccessToken = functions.https.onRequest(async (req, res) => {
+export const fetchSocialAccessToken = onRequest({ cors: true }, async (req, res) => {
   if (req.method !== 'GET') {
     res.status(405).json({ error: 'Method Not Allowed' });
     return;
@@ -409,10 +410,10 @@ export const fetchSocialAccessToken = functions.https.onRequest(async (req, res)
 });
 
 // Lightweight metrics callable for observability (no tokens returned)
-export const getSocialTokenMetrics = functions.https.onCall(async (_data, context) => {
+export const getSocialTokenMetrics = onCall({ cors: true }, async (request) => {
   const isEmulator = process.env.FUNCTIONS_EMULATOR === 'true';
-  if (!context.auth && !isEmulator) {
-    throw new functions.https.HttpsError('unauthenticated', 'Authentication required');
+  if (!request.auth && !isEmulator) {
+    throw new Error('Authentication required');
   }
   return {
     ...metrics,
@@ -426,12 +427,13 @@ export const getSocialTokenMetrics = functions.https.onCall(async (_data, contex
 interface RotationResult { rotated: boolean; details: Record<string, any>; skipped?: boolean; }
 
 // Real HMAC signing secret rotation (platform raw token rotation remains placeholder)
-export const rotateSocialPlatformTokens = functions.pubsub.schedule('every 24 hours').onRun(async () : Promise<RotationResult> => {
+export const rotateSocialPlatformTokens = onSchedule('every 24 hours', async () => {
   const details: Record<string, any> = {};
   const enable = process.env.ENABLE_HMAC_ROTATION === '1' && ENABLE_EPHEMERAL;
   if (!enable) {
     metrics.rotationsSkipped++;
-    return { rotated: false, skipped: true, details: { reason: 'rotation-disabled-or-ephemeral-off' } };
+    console.log('Token rotation skipped:', { rotated: false, skipped: true, details: { reason: 'rotation-disabled-or-ephemeral-off' } });
+    return;
   }
 
   // Load current manifest
@@ -482,12 +484,12 @@ export const rotateSocialPlatformTokens = functions.pubsub.schedule('every 24 ho
   metrics.rotations++;
 
   details.after = { currentGeneration: newManifest.currentGeneration, previousGeneration: newManifest.previousGeneration, graceUntil };
-  return { rotated: true, details };
+  console.log('Token rotation completed:', { rotated: true, details });
 });
 
 // Snapshot metrics to (future) BigQuery / Firestore (stub only)
 interface MetricsSnapshotResult { stored: boolean; transport: 'none' | 'bigquery' | 'firestore'; size: number; generation: number; previousGeneration?: number; }
-export const snapshotSocialTokenMetrics = functions.pubsub.schedule('every 5 minutes').onRun(async (): Promise<MetricsSnapshotResult> => {
+export const snapshotSocialTokenMetrics = onSchedule('every 5 minutes', async () => {
   const manifest = await loadRotationManifest();
   const snapshot = {
     ts: Date.now(),
@@ -498,18 +500,20 @@ export const snapshotSocialTokenMetrics = functions.pubsub.schedule('every 5 min
   const enableStore = process.env.ENABLE_METRICS_SNAPSHOT_STORE === '1';
   const useFirestore = process.env.METRICS_STORE === 'firestore';
   if (!enableStore) {
-    return { stored: false, transport: 'none', size: Object.keys(snapshot).length, generation: manifest.currentGeneration, previousGeneration: manifest.previousGeneration };
+    console.log('Metrics snapshot disabled:', { stored: false, transport: 'none', size: Object.keys(snapshot).length, generation: manifest.currentGeneration, previousGeneration: manifest.previousGeneration });
+    return;
   }
   try {
     if (useFirestore) {
       await admin.firestore().collection('social_token_metrics').add(snapshot);
       metrics.snapshotStored++;
-      return { stored: true, transport: 'firestore', size: Object.keys(snapshot).length, generation: manifest.currentGeneration, previousGeneration: manifest.previousGeneration };
+      console.log('Metrics snapshot stored in Firestore:', { stored: true, transport: 'firestore', size: Object.keys(snapshot).length, generation: manifest.currentGeneration, previousGeneration: manifest.previousGeneration });
+      return;
     }
     // Placeholder for future BigQuery integration
-    return { stored: false, transport: 'bigquery', size: Object.keys(snapshot).length, generation: manifest.currentGeneration, previousGeneration: manifest.previousGeneration };
+    console.log('Metrics snapshot completed:', { stored: false, transport: 'bigquery', size: Object.keys(snapshot).length, generation: manifest.currentGeneration, previousGeneration: manifest.previousGeneration });
   } catch (e) {
     metrics.snapshotFailures++;
-    return { stored: false, transport: useFirestore ? 'firestore' : 'none', size: Object.keys(snapshot).length, generation: manifest.currentGeneration, previousGeneration: manifest.previousGeneration };
+    console.log('Metrics snapshot failed:', { stored: false, transport: useFirestore ? 'firestore' : 'none', size: Object.keys(snapshot).length, generation: manifest.currentGeneration, previousGeneration: manifest.previousGeneration });
   }
 });

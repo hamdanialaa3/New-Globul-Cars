@@ -398,6 +398,40 @@ export const GlobalStyles = createGlobalStyle`
     background-color: rgba(241, 245, 249, 0.98) !important;
   }
 
+  /* Container styles for mobile.de-like layout */
+  .page-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Responsive container adjustments */
+  @media (max-width: 768px) {
+    .page-container {
+      padding: 0 0.5rem;
+      max-width: 100%;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .page-container {
+      padding: 0 0.25rem;
+    }
+  }
+
+  /* Main content area styling */
+  main {
+    background: ${bulgarianColors.background.default};
+    flex: 1;
+  }
+
+  /* Ensure header and footer take full width */
+  header, footer {
+    width: 100%;
+  }
+
   /* Modal and overlay styles */
   .modal, .overlay, .popup, .dialog {
     background-color: rgba(255, 255, 240, 0.98) !important;
