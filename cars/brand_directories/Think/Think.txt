@@ -1,8 +1,0 @@
-Think Car Models and Generations:
-
-2008:
-- Think city
-  Engine: electric v
-  Power: 326 hp, 708 horsepower, 4 kW
-
-

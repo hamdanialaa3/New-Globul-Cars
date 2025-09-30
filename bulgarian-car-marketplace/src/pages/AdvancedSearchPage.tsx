@@ -2,331 +2,480 @@
 // Advanced Search Page for Bulgarian Car Marketplace
 // Inspired by mobile.de advanced search functionality
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import { useTranslation } from '../hooks/useTranslation';
 
-// Professional Color Palette - Black & Yellow System
+// Mobile.de Exact Colors - Professional Design System
 const colors = {
   primary: {
-    yellow: '#FFD700',
-    yellowMedium: '#F4C430',
-    yellowDark: '#DAA520',
-    yellowDeep: '#B8860B',
+    orange: '#FF7900',      // Mobile.de main orange
+    orangeHover: '#E86900', // Orange hover state
+    orangeLight: '#FFF4ED', // Light orange background
+    blue: '#0066CC',        // Mobile.de blue
+    blueHover: '#0052A3',   // Blue hover state
   },
   neutral: {
+    white: '#FFFFFF',
+    grayBg: '#F8F9FA',      // Main background
+    grayLight: '#F1F3F4',   // Light gray
+    grayBorder: '#E1E5E9',  // Border color
+    grayText: '#5F6368',    // Secondary text
+    grayDark: '#3C4043',    // Primary text
     black: '#000000',
-    blackLight: '#1a1a1a',
-    blackMedium: '#333333',
-    blackSoft: '#4a4a4a',
-    gray: '#666666',
-    grayLight: '#999999',
-    grayLighter: '#cccccc',
-    white: '#ffffff',
   },
-  accent: {
-    success: '#10B981',
-    warning: '#F59E0B',
-    error: '#EF4444',
-    info: '#3B82F6',
+  text: {
+    primary: '#202124',     // Main text color
+    secondary: '#5F6368',   // Secondary text
+    link: '#1A73E8',        // Link color
   }
 };
 
-// Animations
-const fadeIn = keyframes`
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-`;
 
-const slideIn = keyframes`
-  from { opacity: 0; transform: translateX(-20px); }
-  to { opacity: 1; transform: translateX(0); }
-`;
 
-// Main Container
+// Mobile.de Exact Layout Container
 const SearchContainer = styled.div`
   min-height: 100vh;
-  background: linear-gradient(
-    135deg,
-    ${colors.neutral.blackLight} 0%,
-    ${colors.primary.yellowMedium} 25%,
-    ${colors.primary.yellowDark} 50%,
-    ${colors.neutral.blackMedium} 75%,
-    ${colors.neutral.black} 100%
-  );
-  padding: 2rem 0;
+  background: ${colors.neutral.grayBg};
+  padding: 24px 0;
+  direction: ltr;
 `;
 
 const Container = styled.div`
-  max-width: 1400px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 16px;
+  direction: ltr;
 `;
 
-// Header Section
+// Mobile.de Header Style - Simple and Clean
 const HeaderSection = styled.div`
-  text-align: center;
-  margin-bottom: 3rem;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(218, 165, 32, 0.3);
-  border-radius: 24px;
-  padding: 3rem 2rem;
-  animation: ${fadeIn} 0.8s ease-out;
+  margin-bottom: 24px;
+  text-align: left;
 
   h1 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    background: linear-gradient(135deg, ${colors.primary.yellow}, ${colors.primary.yellowDark});
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 1rem;
+    font-size: 28px;
+    font-weight: 400;
+    color: ${colors.text.primary};
+    margin: 0 0 8px 0;
+    line-height: 1.2;
   }
 
   p {
-    font-size: 1.1rem;
-    color: ${colors.neutral.white};
-    opacity: 0.9;
-    max-width: 600px;
-    margin: 0 auto;
+    font-size: 14px;
+    color: ${colors.text.secondary};
+    margin: 0;
+    line-height: 1.4;
   }
 `;
 
-// Search Form Container
+// Mobile.de Form Container - Exact Style with Sections
 const SearchForm = styled.form`
-  background: rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(25px);
-  border: 1px solid rgba(218, 165, 32, 0.3);
-  border-radius: 24px;
-  padding: 3rem;
-  margin-bottom: 2rem;
-  animation: ${fadeIn} 1s ease-out;
+  background: ${colors.neutral.white};
+  border: 1px solid ${colors.neutral.grayBorder};
+  border-radius: 8px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  overflow: hidden;
 `;
 
-// Section Title
-const SectionTitle = styled.h3`
-  font-size: 1.4rem;
-  font-weight: 600;
-  color: ${colors.primary.yellow};
-  margin-bottom: 2rem;
-  padding-bottom: 1rem;
-  border-bottom: 2px solid rgba(218, 165, 32, 0.3);
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-
-  &::before {
-    content: '';
-    width: 4px;
-    height: 24px;
-    background: ${colors.primary.yellow};
-    border-radius: 2px;
+// Section Card - Mobile.de Style
+const SectionCard = styled.div`
+  border-bottom: 1px solid ${colors.neutral.grayBorder};
+  
+  &:last-child {
+    border-bottom: none;
   }
 `;
 
-// Form Grid
+// Section Header - Clickable Mobile.de Style
+const SectionHeader = styled.div<{ isOpen: boolean }>`
+  background: ${props => props.isOpen ? colors.neutral.grayLight : colors.neutral.white};
+  padding: 16px 20px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.2s ease;
+  
+  &:hover {
+    background: ${colors.neutral.grayLight};
+  }
+`;
+
+// Section Content - Expandable
+const SectionContent = styled.div<{ isOpen: boolean }>`
+  max-height: ${props => props.isOpen ? '2000px' : '0'};
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  background: ${colors.neutral.white};
+`;
+
+// Section Body - Padding for content
+const SectionBody = styled.div`
+  padding: 20px;
+`;
+
+// Mobile.de Section Title Style
+const SectionTitle = styled.h3`
+  font-size: 16px;
+  font-weight: 500;
+  color: ${colors.text.primary};
+  margin: 0;
+  padding: 0;
+  border: none;
+`;
+
+// Expand/Collapse Icon
+const ExpandIcon = styled.span<{ isOpen: boolean }>`
+  font-size: 14px;
+  color: ${colors.text.secondary};
+  transition: transform 0.2s ease;
+  transform: ${props => props.isOpen ? 'rotate(180deg)' : 'rotate(0deg)'};
+  
+  &::before {
+    content: '▼';
+  }
+`;
+
+// Mobile.de Grid Layout - Multi-column like original
 const FormGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 2rem;
-  margin-bottom: 2rem;
+  gap: 16px;
+  margin-bottom: 24px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
-// Form Group
+// Mobile.de Form Group Style
 const FormGroup = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 6px;
 
   label {
-    font-weight: 500;
-    color: ${colors.neutral.white};
-    font-size: 0.9rem;
-    margin-bottom: 0.25rem;
+    font-weight: 400;
+    color: ${colors.text.primary};
+    font-size: 14px;
+    margin: 0;
+    line-height: 1.4;
   }
 `;
 
-// Professional Input
+// Mobile.de Input Style - Exact Match
 const SearchInput = styled.input`
-  padding: 0.875rem 1rem;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(218, 165, 32, 0.3);
-  border-radius: 12px;
-  font-size: 0.95rem;
-  color: ${colors.neutral.white};
-  transition: all 0.3s ease;
+  padding: 12px 16px;
+  background: ${colors.neutral.white};
+  border: 1px solid ${colors.neutral.grayBorder};
+  border-radius: 4px;
+  font-size: 14px;
+  color: ${colors.text.primary};
+  transition: border-color 0.2s ease;
+  height: 44px;
+  line-height: 1.4;
+  width: 100%;
+  box-sizing: border-box;
 
   &::placeholder {
-    color: rgba(255, 255, 255, 0.6);
+    color: ${colors.text.secondary};
   }
 
   &:focus {
     outline: none;
-    border-color: ${colors.primary.yellow};
-    background: rgba(255, 255, 255, 0.15);
-    box-shadow: 0 0 0 3px rgba(218, 165, 32, 0.2);
+    border-color: ${colors.primary.blue};
   }
 
   &:hover {
-    border-color: rgba(218, 165, 32, 0.5);
+    border-color: ${colors.primary.blue};
   }
 `;
 
-// Professional Select
+// Mobile.de Select Style - Exact Match
 const SearchSelect = styled.select`
-  padding: 0.875rem 1rem;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(218, 165, 32, 0.3);
-  border-radius: 12px;
-  font-size: 0.95rem;
-  color: ${colors.neutral.white};
+  padding: 12px 16px;
+  background: ${colors.neutral.white};
+  border: 1px solid ${colors.neutral.grayBorder};
+  border-radius: 4px;
+  font-size: 14px;
+  color: ${colors.text.primary};
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: border-color 0.2s ease;
+  height: 44px;
+  line-height: 1.4;
+  width: 100%;
+  box-sizing: border-box;
 
   option {
-    background: ${colors.neutral.black};
-    color: ${colors.neutral.white};
-    padding: 0.5rem;
+    background: ${colors.neutral.white};
+    color: ${colors.text.primary};
+    padding: 8px 16px;
+    font-size: 14px;
   }
 
   &:focus {
     outline: none;
-    border-color: ${colors.primary.yellow};
-    background: rgba(255, 255, 255, 0.15);
-    box-shadow: 0 0 0 3px rgba(218, 165, 32, 0.2);
+    border-color: ${colors.primary.blue};
   }
 
   &:hover {
-    border-color: rgba(218, 165, 32, 0.5);
+    border-color: ${colors.primary.blue};
   }
 `;
 
-// Checkbox Group
+// Mobile.de Checkbox Group Style
 const CheckboxGroup = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
 `;
 
 const CheckboxLabel = styled.label`
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  font-size: 0.9rem;
-  color: ${colors.neutral.white};
+  gap: 10px;
+  font-size: 14px;
+  color: ${colors.text.primary};
   cursor: pointer;
-  padding: 0.5rem;
-  border-radius: 8px;
-  transition: background-color 0.2s ease;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  line-height: 1.4;
+  white-space: nowrap;
+  user-select: none;
 
   &:hover {
-    background: rgba(218, 165, 32, 0.1);
+    background: rgba(0, 102, 204, 0.05);
   }
 
+  /* Hide the default checkbox */
   input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    accent-color: ${colors.primary.yellow};
-    cursor: pointer;
+    display: none;
   }
 `;
 
-// Range Input Group
+// Custom circular checkbox style
+const CustomCheckbox = styled.div<{ checked: boolean }>`
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid ${props => props.checked ? '#10B981' : 'rgba(239, 68, 68, 0.3)'};
+  background: ${props => props.checked ? '#10B981' : 'rgba(239, 68, 68, 0.1)'};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  position: relative;
+  flex-shrink: 0;
+
+  /* Checkmark icon */
+  &::after {
+    content: '✓';
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    opacity: ${props => props.checked ? 1 : 0};
+    transform: ${props => props.checked ? 'scale(1)' : 'scale(0.3)'};
+    transition: all 0.2s ease;
+  }
+
+  /* Hover effect */
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+`;
+
+// Mobile.de Range Input Group Style
 const RangeGroup = styled.div`
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  gap: 1rem;
-  align-items: end;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  width: 100%;
 
   span {
-    color: ${colors.neutral.grayLight};
-    font-size: 0.9rem;
-    text-align: center;
-    padding-bottom: 0.5rem;
+    color: ${colors.text.secondary};
+    font-size: 14px;
+    white-space: nowrap;
+    padding: 0 4px;
+  }
+
+  input {
+    flex: 1;
   }
 `;
 
-// Action Buttons
+// Mobile.de Action Section - Horizontal Layout
 const ActionSection = styled.div`
   display: flex;
-  gap: 1.5rem;
-  justify-content: center;
+  gap: 12px;
   align-items: center;
-  margin-top: 3rem;
-  padding-top: 2rem;
-  border-top: 1px solid rgba(218, 165, 32, 0.3);
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid ${colors.neutral.grayBorder};
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
 `;
 
 const SearchButton = styled.button`
-  padding: 1.25rem 3rem;
-  background: linear-gradient(135deg, ${colors.primary.yellow}, ${colors.primary.yellowDark});
-  color: ${colors.neutral.black};
+  padding: 12px 32px;
+  background: ${colors.primary.orange};
+  color: ${colors.neutral.white};
   border: none;
-  border-radius: 12px;
-  font-weight: 600;
-  font-size: 1.1rem;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 16px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+  transition: background-color 0.2s ease;
+  height: 44px;
+  min-width: 120px;
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(218, 165, 32, 0.4);
+    background: ${colors.primary.orangeHover};
   }
 
   &:active {
-    transform: translateY(0);
+    background: ${colors.primary.orangeHover};
+  }
+
+  &:disabled {
+    background: ${colors.neutral.grayBorder};
+    cursor: not-allowed;
   }
 `;
 
 const ResetButton = styled.button`
-  padding: 1.25rem 2rem;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  color: ${colors.neutral.white};
-  border: 1px solid rgba(218, 165, 32, 0.3);
-  border-radius: 12px;
-  font-weight: 500;
-  font-size: 1rem;
+  padding: 12px 24px;
+  background: ${colors.neutral.white};
+  color: ${colors.text.secondary};
+  border: 1px solid ${colors.neutral.grayBorder};
+  border-radius: 4px;
+  font-weight: 400;
+  font-size: 14px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
+  height: 44px;
+  min-width: 100px;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: ${colors.primary.yellow};
+    background: ${colors.neutral.grayLight};
+    border-color: ${colors.primary.blue};
   }
 `;
 
-// Results Summary (placeholder for now)
+// Results Summary - Clean White Card
 const ResultsSummary = styled.div`
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(218, 165, 32, 0.3);
-  border-radius: 16px;
+  background: ${colors.neutral.white};
+  border: 1px solid ${colors.neutral.grayBorder};
+  border-radius: 8px;
   padding: 2rem;
   margin-top: 2rem;
-  text-align: center;
-  animation: ${slideIn} 0.8s ease-out;
+  text-align: left; /* Left align content */
+  direction: ltr; /* Left-to-right direction */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
 
   h4 {
-    color: ${colors.primary.yellow};
+    color: ${colors.primary.blue};
     font-size: 1.3rem;
     margin-bottom: 1rem;
+    text-align: left; /* Left align heading */
+    direction: ltr; /* Left-to-right direction */
   }
 
   p {
-    color: ${colors.neutral.white};
-    opacity: 0.8;
+    color: ${colors.text.secondary};
     font-size: 1rem;
+    text-align: left; /* Left align paragraph */
+    direction: ltr; /* Left-to-right direction */
   }
 `;
+
+// Search Data Interface
+interface SearchData {
+  // Basic Data
+  make: string;
+  model: string;
+  vehicleType: string;
+  seatsFrom: string;
+  seatsTo: string;
+  doorsFrom: string;
+  doorsTo: string;
+  slidingDoor: string;
+  condition: string;
+  paymentType: string;
+  priceFrom: string;
+  priceTo: string;
+  firstRegistrationFrom: string;
+  firstRegistrationTo: string;
+  mileageFrom: string;
+  mileageTo: string;
+  huValid: string;
+  ownersCount: string;
+  serviceHistory: string;
+  roadworthy: string;
+  // Technical Data
+  fuelType: string;
+  powerFrom: string;
+  powerTo: string;
+  cubicCapacityFrom: string;
+  cubicCapacityTo: string;
+  fuelTankVolumeFrom: string;
+  fuelTankVolumeTo: string;
+  weightFrom: string;
+  weightTo: string;
+  cylindersFrom: string;
+  cylindersTo: string;
+  driveType: string;
+  transmission: string;
+  fuelConsumptionUpTo: string;
+  emissionSticker: string;
+  emissionClass: string;
+  particulateFilter: string;
+  // Exterior
+  exteriorColor: string;
+  trailerCoupling: string;
+  trailerLoadBraked: string;
+  trailerLoadUnbraked: string;
+  noseWeight: string;
+  parkingSensors: string[];
+  cruiseControl: string;
+  // Interior
+  interiorColor: string;
+  interiorMaterial: string;
+  airbags: string;
+  airConditioning: string;
+  extras: string[];
+  // Offer Details
+  seller: string;
+  dealerRating: string;
+  adOnlineSince: string;
+  adsWithPictures: boolean;
+  adsWithVideo: boolean;
+  discountOffers: boolean;
+  nonSmokerVehicle: boolean;
+  taxi: boolean;
+  vatReclaimable: boolean;
+  warranty: boolean;
+  damagedVehicles: boolean;
+  commercialExport: string;
+  approvedUsedProgramme: string;
+  // Location
+  country: string;
+  city: string;
+  radius: string;
+  deliveryOffers: boolean;
+  // Search
+  searchDescription: string;
+}
 
 // Main Component
 const AdvancedSearchPage: React.FC = () => {
@@ -334,7 +483,7 @@ const AdvancedSearchPage: React.FC = () => {
   const navigate = useNavigate();
 
   // Search Form State
-  const [searchData, setSearchData] = useState({
+  const [searchData, setSearchData] = useState<SearchData>({
     // Basic Data
     make: '',
     model: '',
@@ -412,6 +561,47 @@ const AdvancedSearchPage: React.FC = () => {
   });
 
   const [isSearching, setIsSearching] = useState(false);
+
+  // Section collapse/expand state - Mobile.de style sections
+  const [sectionsOpen, setSectionsOpen] = useState({
+    basicData: true,
+    technicalData: false,
+    exterior: false,
+    interior: false,
+    offerDetails: false,
+    location: false,
+    searchDescription: false
+  });
+
+  // Toggle section visibility
+  const toggleSection = (sectionName: keyof typeof sectionsOpen) => {
+    setSectionsOpen(prev => ({
+      ...prev,
+      [sectionName]: !prev[sectionName]
+    }));
+  };
+
+  // Handle checkbox (circular) toggle
+  const handleCheckboxToggle = (fieldName: string, value: string) => {
+    setSearchData(prev => {
+      const currentArray = prev[fieldName as keyof typeof prev] as string[];
+      const isChecked = currentArray.includes(value);
+      
+      if (isChecked) {
+        // Remove from array
+        return {
+          ...prev,
+          [fieldName]: currentArray.filter(item => item !== value)
+        };
+      } else {
+        // Add to array
+        return {
+          ...prev,
+          [fieldName]: [...currentArray, value]
+        };
+      }
+    });
+  };
 
   // Handle Input Changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -569,9 +759,18 @@ const AdvancedSearchPage: React.FC = () => {
 
         {/* Search Form */}
         <SearchForm onSubmit={handleSearch}>
-          {/* Basic Data */}
-          <SectionTitle>{t('advancedSearch.basicData')}</SectionTitle>
-          <FormGrid>
+          {/* Basic Data Section */}
+          <SectionCard>
+            <SectionHeader 
+              isOpen={sectionsOpen.basicData}
+              onClick={() => toggleSection('basicData')}
+            >
+              <SectionTitle>{t('advancedSearch.basicData')}</SectionTitle>
+              <ExpandIcon isOpen={sectionsOpen.basicData} />
+            </SectionHeader>
+            <SectionContent isOpen={sectionsOpen.basicData}>
+              <SectionBody>
+                <FormGrid>
             <FormGroup>
               <label>{t('advancedSearch.make')}</label>
               <SearchSelect name="make" value={searchData.make} onChange={handleInputChange}>
@@ -787,11 +986,23 @@ const AdvancedSearchPage: React.FC = () => {
                 <option value="no">{t('advancedSearch.noOption')}</option>
               </SearchSelect>
             </FormGroup>
-          </FormGrid>
+                </FormGrid>
+              </SectionBody>
+            </SectionContent>
+          </SectionCard>
 
-          {/* Technical Data */}
-          <SectionTitle>{t('advancedSearch.technicalData')}</SectionTitle>
-          <FormGrid>
+          {/* Technical Data Section */}
+          <SectionCard>
+            <SectionHeader 
+              isOpen={sectionsOpen.technicalData}
+              onClick={() => toggleSection('technicalData')}
+            >
+              <SectionTitle>{t('advancedSearch.technicalData')}</SectionTitle>
+              <ExpandIcon isOpen={sectionsOpen.technicalData} />
+            </SectionHeader>
+            <SectionContent isOpen={sectionsOpen.technicalData}>
+              <SectionBody>
+                <FormGrid>
             <FormGroup>
               <label>{t('advancedSearch.fuelType')}</label>
               <SearchSelect name="fuelType" value={searchData.fuelType} onChange={handleInputChange}>
@@ -842,13 +1053,25 @@ const AdvancedSearchPage: React.FC = () => {
                   placeholder={t('advancedSearch.toPlaceholder')}
                 />
               </RangeGroup>
-            </FormGroup>
-          </FormGrid>
+                  </FormGroup>
+                </FormGrid>
+              </SectionBody>
+            </SectionContent>
+          </SectionCard>
 
-          {/* Exterior */}
-          <SectionTitle>{t('advancedSearch.exterior')}</SectionTitle>
-          <FormGrid>
-            <FormGroup>
+          {/* Exterior Section */}
+          <SectionCard>
+            <SectionHeader 
+              isOpen={sectionsOpen.exterior}
+              onClick={() => toggleSection('exterior')}
+            >
+              <SectionTitle>{t('advancedSearch.exterior')}</SectionTitle>
+              <ExpandIcon isOpen={sectionsOpen.exterior} />
+            </SectionHeader>
+            <SectionContent isOpen={sectionsOpen.exterior}>
+              <SectionBody>
+                <FormGrid>
+                  <FormGroup>
               <label>{t('advancedSearch.exteriorColour')}</label>
               <SearchSelect name="exteriorColor" value={searchData.exteriorColor} onChange={handleInputChange}>
                 <option value="">{t('advancedSearch.allOptions')}</option>
@@ -904,28 +1127,28 @@ const AdvancedSearchPage: React.FC = () => {
             <FormGroup>
               <label>{t('advancedSearch.parkingSensors')}</label>
               <CheckboxGroup>
-                <CheckboxLabel>
-                  <input type="checkbox" name="parkingSensors" value="360camera" />
+                <CheckboxLabel onClick={() => handleCheckboxToggle('parkingSensors', '360camera')}>
+                  <CustomCheckbox checked={searchData.parkingSensors.includes('360camera')} />
                   360° Camera
                 </CheckboxLabel>
-                <CheckboxLabel>
-                  <input type="checkbox" name="parkingSensors" value="camera" />
+                <CheckboxLabel onClick={() => handleCheckboxToggle('parkingSensors', 'camera')}>
+                  <CustomCheckbox checked={searchData.parkingSensors.includes('camera')} />
                   Camera
                 </CheckboxLabel>
-                <CheckboxLabel>
-                  <input type="checkbox" name="parkingSensors" value="front" />
+                <CheckboxLabel onClick={() => handleCheckboxToggle('parkingSensors', 'front')}>
+                  <CustomCheckbox checked={searchData.parkingSensors.includes('front')} />
                   Front
                 </CheckboxLabel>
-                <CheckboxLabel>
-                  <input type="checkbox" name="parkingSensors" value="rear" />
+                <CheckboxLabel onClick={() => handleCheckboxToggle('parkingSensors', 'rear')}>
+                  <CustomCheckbox checked={searchData.parkingSensors.includes('rear')} />
                   Rear
                 </CheckboxLabel>
-                <CheckboxLabel>
-                  <input type="checkbox" name="parkingSensors" value="reartraffic" />
+                <CheckboxLabel onClick={() => handleCheckboxToggle('parkingSensors', 'reartraffic')}>
+                  <CustomCheckbox checked={searchData.parkingSensors.includes('reartraffic')} />
                   Rear traffic alert
                 </CheckboxLabel>
-                <CheckboxLabel>
-                  <input type="checkbox" name="parkingSensors" value="selfsteering" />
+                <CheckboxLabel onClick={() => handleCheckboxToggle('parkingSensors', 'selfsteering')}>
+                  <CustomCheckbox checked={searchData.parkingSensors.includes('selfsteering')} />
                   Self-steering systems
                 </CheckboxLabel>
               </CheckboxGroup>
@@ -938,13 +1161,25 @@ const AdvancedSearchPage: React.FC = () => {
                 <option value="cruise">Круиз контрол</option>
                 <option value="adaptive">Adaptive Cruise Control</option>
               </SearchSelect>
-            </FormGroup>
-          </FormGrid>
+                  </FormGroup>
+                </FormGrid>
+              </SectionBody>
+            </SectionContent>
+          </SectionCard>
 
-          {/* Interior */}
-          <SectionTitle>{t('advancedSearch.interior')}</SectionTitle>
-          <FormGrid>
-            <FormGroup>
+          {/* Interior Section */}
+          <SectionCard>
+            <SectionHeader 
+              isOpen={sectionsOpen.interior}
+              onClick={() => toggleSection('interior')}
+            >
+              <SectionTitle>{t('advancedSearch.interior')}</SectionTitle>
+              <ExpandIcon isOpen={sectionsOpen.interior} />
+            </SectionHeader>
+            <SectionContent isOpen={sectionsOpen.interior}>
+              <SectionBody>
+                <FormGrid>
+                  <FormGroup>
               <label>{t('advancedSearch.interiorColour')}</label>
               <SearchSelect name="interiorColor" value={searchData.interiorColor} onChange={handleInputChange}>
                 <option value="">{t('advancedSearch.allOptions')}</option>
@@ -1039,104 +1274,104 @@ const AdvancedSearchPage: React.FC = () => {
                   <input type="checkbox" name="extras" value="digitalCockpit" />
                   {t('advancedSearch.digitalCockpit')}
                 </CheckboxLabel>
-                <CheckboxLabel>
-                  <input type="checkbox" name="extras" value="disabled" />
+                <CheckboxLabel onClick={() => handleCheckboxToggle('extras', 'disabled')}>
+                  <CustomCheckbox checked={searchData.extras.includes('disabled')} />
                   {t('advancedSearch.disabledAccess')}
                 </CheckboxLabel>
-                <CheckboxLabel>
-                  <input type="checkbox" name="extras" value="electricBackseat" />
+                <CheckboxLabel onClick={() => handleCheckboxToggle('extras', 'electricBackseat')}>
+                  <CustomCheckbox checked={searchData.extras.includes('electricBackseat')} />
                   {t('advancedSearch.electricRearSeats')}
                 </CheckboxLabel>
-                <CheckboxLabel>
-                  <input type="checkbox" name="extras" value="electricSeats" />
+                <CheckboxLabel onClick={() => handleCheckboxToggle('extras', 'electricSeats')}>
+                  <CustomCheckbox checked={searchData.extras.includes('electricSeats')} />
                   {t('advancedSearch.electricSeats')}
                 </CheckboxLabel>
-                <CheckboxLabel>
-                  <input type="checkbox" name="extras" value="electricSeatsMemory" />
+                <CheckboxLabel onClick={() => handleCheckboxToggle('extras', 'electricSeatsMemory')}>
+                  <CustomCheckbox checked={searchData.extras.includes('electricSeatsMemory')} />
                   {t('advancedSearch.electricSeatsMemory')}
                 </CheckboxLabel>
-                <CheckboxLabel>
-                  <input type="checkbox" name="extras" value="electricWindows" />
+                <CheckboxLabel onClick={() => handleCheckboxToggle('extras', 'electricWindows')}>
+                  <CustomCheckbox checked={searchData.extras.includes('electricWindows')} />
                   {t('advancedSearch.electricWindows')}
                 </CheckboxLabel>
-                <CheckboxLabel>
-                  <input type="checkbox" name="extras" value="emergencyCall" />
+                <CheckboxLabel onClick={() => handleCheckboxToggle('extras', 'emergencyCall')}>
+                  <CustomCheckbox checked={searchData.extras.includes('emergencyCall')} />
                   {t('advancedSearch.emergencyCallSystem')}
                 </CheckboxLabel>
-                <CheckboxLabel>
-                  <input type="checkbox" name="extras" value="fatigueWarning" />
+                <CheckboxLabel onClick={() => handleCheckboxToggle('extras', 'fatigueWarning')}>
+                  <CustomCheckbox checked={searchData.extras.includes('fatigueWarning')} />
                   {t('advancedSearch.fatigueWarning')}
                 </CheckboxLabel>
-                <CheckboxLabel>
-                  <input type="checkbox" name="extras" value="foldingSeats" />
+                <CheckboxLabel onClick={() => handleCheckboxToggle('extras', 'foldingSeats')}>
+                  <CustomCheckbox checked={searchData.extras.includes('foldingSeats')} />
                   {t('advancedSearch.foldingRearSeats')}
                 </CheckboxLabel>
-                <CheckboxLabel>
-                  <input type="checkbox" name="extras" value="foldingMirrors" />
+                <CheckboxLabel onClick={() => handleCheckboxToggle('extras', 'foldingMirrors')}>
+                  <CustomCheckbox checked={searchData.extras.includes('foldingMirrors')} />
                   {t('advancedSearch.foldingMirrors')}
                 </CheckboxLabel>
-                <CheckboxLabel>
-                  <input type="checkbox" name="extras" value="handsfree" />
+                <CheckboxLabel onClick={() => handleCheckboxToggle('extras', 'handsfree')}>
+                  <CustomCheckbox checked={searchData.extras.includes('handsfree')} />
                   {t('advancedSearch.handsFreeSystem')}
                 </CheckboxLabel>
-                <CheckboxLabel>
-                  <input type="checkbox" name="extras" value="headup" />
+                <CheckboxLabel onClick={() => handleCheckboxToggle('extras', 'headup')}>
+                  <CustomCheckbox checked={searchData.extras.includes('headup')} />
                   {t('advancedSearch.headUpDisplay')}
                 </CheckboxLabel>
-                <CheckboxLabel>
-                  <input type="checkbox" name="extras" value="heatedRearSeats" />
+                <CheckboxLabel onClick={() => handleCheckboxToggle('extras', 'heatedRearSeats')}>
+                  <CustomCheckbox checked={searchData.extras.includes('heatedRearSeats')} />
                   {t('advancedSearch.heatedRearSeats')}
                 </CheckboxLabel>
-                <CheckboxLabel>
-                  <input type="checkbox" name="extras" value="heatedSeats" />
+                <CheckboxLabel onClick={() => handleCheckboxToggle('extras', 'heatedSeats')}>
+                  <CustomCheckbox checked={searchData.extras.includes('heatedSeats')} />
                   {t('advancedSearch.heatedSeats')}
                 </CheckboxLabel>
-                <CheckboxLabel>
-                  <input type="checkbox" name="extras" value="heatedSteering" />
+                <CheckboxLabel onClick={() => handleCheckboxToggle('extras', 'heatedSteering')}>
+                  <CustomCheckbox checked={searchData.extras.includes('heatedSteering')} />
                   {t('advancedSearch.heatedSteeringWheel')}
                 </CheckboxLabel>
-                <CheckboxLabel>
-                  <input type="checkbox" name="extras" value="inductionCharging" />
+                <CheckboxLabel onClick={() => handleCheckboxToggle('extras', 'inductionCharging')}>
+                  <CustomCheckbox checked={searchData.extras.includes('inductionCharging')} />
                   {t('advancedSearch.wirelessCharging')}
                 </CheckboxLabel>
-                <CheckboxLabel>
-                  <input type="checkbox" name="extras" value="integratedStreaming" />
+                <CheckboxLabel onClick={() => handleCheckboxToggle('extras', 'integratedStreaming')}>
+                  <CustomCheckbox checked={searchData.extras.includes('integratedStreaming')} />
                   {t('advancedSearch.integratedMusicStreaming')}
                 </CheckboxLabel>
-                <CheckboxLabel>
-                  <input type="checkbox" name="extras" value="isofix" />
+                <CheckboxLabel onClick={() => handleCheckboxToggle('extras', 'isofix')}>
+                  <CustomCheckbox checked={searchData.extras.includes('isofix')} />
                   {t('advancedSearch.isofix')}
                 </CheckboxLabel>
-                <CheckboxLabel>
-                  <input type="checkbox" name="extras" value="leatherSteering" />
+                <CheckboxLabel onClick={() => handleCheckboxToggle('extras', 'leatherSteering')}>
+                  <CustomCheckbox checked={searchData.extras.includes('leatherSteering')} />
                   {t('advancedSearch.leatherSteeringWheel')}
                 </CheckboxLabel>
-                <CheckboxLabel>
-                  <input type="checkbox" name="extras" value="lumbarSupport" />
+                <CheckboxLabel onClick={() => handleCheckboxToggle('extras', 'lumbarSupport')}>
+                  <CustomCheckbox checked={searchData.extras.includes('lumbarSupport')} />
                   {t('advancedSearch.lumbarSupport')}
                 </CheckboxLabel>
-                <CheckboxLabel>
-                  <input type="checkbox" name="extras" value="massageSeats" />
+                <CheckboxLabel onClick={() => handleCheckboxToggle('extras', 'massageSeats')}>
+                  <CustomCheckbox checked={searchData.extras.includes('massageSeats')} />
                   {t('advancedSearch.massageSeats')}
                 </CheckboxLabel>
-                <CheckboxLabel>
-                  <input type="checkbox" name="extras" value="multifunctionSteering" />
+                <CheckboxLabel onClick={() => handleCheckboxToggle('extras', 'multifunctionSteering')}>
+                  <CustomCheckbox checked={searchData.extras.includes('multifunctionSteering')} />
                   {t('advancedSearch.multifunctionalSteeringWheel')}
                 </CheckboxLabel>
-                <CheckboxLabel>
-                  <input type="checkbox" name="extras" value="navigation" />
+                <CheckboxLabel onClick={() => handleCheckboxToggle('extras', 'navigation')}>
+                  <CustomCheckbox checked={searchData.extras.includes('navigation')} />
                   {t('advancedSearch.navigation')}
                 </CheckboxLabel>
-                <CheckboxLabel>
-                  <input type="checkbox" name="extras" value="onboardComputer" />
+                <CheckboxLabel onClick={() => handleCheckboxToggle('extras', 'onboardComputer')}>
+                  <CustomCheckbox checked={searchData.extras.includes('onboardComputer')} />
                   {t('advancedSearch.onBoardComputer')}
                 </CheckboxLabel>
-                <CheckboxLabel>
-                  <input type="checkbox" name="extras" value="paddleShifters" />
+                <CheckboxLabel onClick={() => handleCheckboxToggle('extras', 'paddleShifters')}>
+                  <CustomCheckbox checked={searchData.extras.includes('paddleShifters')} />
                   {t('advancedSearch.paddleShifters')}
                 </CheckboxLabel>
-                <CheckboxLabel>
-                  <input type="checkbox" name="extras" value="passengerIsofix" />
+                <CheckboxLabel onClick={() => handleCheckboxToggle('extras', 'passengerIsofix')}>
+                  <CustomCheckbox checked={searchData.extras.includes('passengerIsofix')} />
                   {t('advancedSearch.passengerIsofix')}
                 </CheckboxLabel>
                 <CheckboxLabel>
@@ -1196,13 +1431,25 @@ const AdvancedSearchPage: React.FC = () => {
                   {t('advancedSearch.wlanWifiHotspot')}
                 </CheckboxLabel>
               </CheckboxGroup>
-            </FormGroup>
-          </FormGrid>
+                  </FormGroup>
+                </FormGrid>
+              </SectionBody>
+            </SectionContent>
+          </SectionCard>
 
-          {/* Offer Details */}
-          <SectionTitle>{t('advancedSearch.offerDetails')}</SectionTitle>
-          <FormGrid>
-            <FormGroup>
+          {/* Offer Details Section */}
+          <SectionCard>
+            <SectionHeader 
+              isOpen={sectionsOpen.offerDetails}
+              onClick={() => toggleSection('offerDetails')}
+            >
+              <SectionTitle>{t('advancedSearch.offerDetails')}</SectionTitle>
+              <ExpandIcon isOpen={sectionsOpen.offerDetails} />
+            </SectionHeader>
+            <SectionContent isOpen={sectionsOpen.offerDetails}>
+              <SectionBody>
+                <FormGrid>
+                  <FormGroup>
               <label>{t('advancedSearch.seller')}</label>
               <SearchSelect name="seller" value={searchData.seller} onChange={handleInputChange}>
                 <option value="">{t('advancedSearch.allOptions')}</option>
@@ -1334,13 +1581,25 @@ const AdvancedSearchPage: React.FC = () => {
                 <option value="yes">Да</option>
                 <option value="no">Не</option>
               </SearchSelect>
-            </FormGroup>
-          </FormGrid>
+                  </FormGroup>
+                </FormGrid>
+              </SectionBody>
+            </SectionContent>
+          </SectionCard>
 
-          {/* Location */}
-          <SectionTitle>{t('advancedSearch.location')}</SectionTitle>
-          <FormGrid>
-            <FormGroup>
+          {/* Location Section */}
+          <SectionCard>
+            <SectionHeader 
+              isOpen={sectionsOpen.location}
+              onClick={() => toggleSection('location')}
+            >
+              <SectionTitle>{t('advancedSearch.location')}</SectionTitle>
+              <ExpandIcon isOpen={sectionsOpen.location} />
+            </SectionHeader>
+            <SectionContent isOpen={sectionsOpen.location}>
+              <SectionBody>
+                <FormGrid>
+                  <FormGroup>
               <label>{t('advancedSearch.country')}</label>
               <SearchSelect name="country" value={searchData.country} onChange={handleInputChange}>
                 <option value="">{t('advancedSearch.allOptions')}</option>
@@ -1382,23 +1641,38 @@ const AdvancedSearchPage: React.FC = () => {
                   Покажи само оферти с доставка
                 </CheckboxLabel>
               </CheckboxGroup>
-            </FormGroup>
-          </FormGrid>
+                  </FormGroup>
+                </FormGrid>
+              </SectionBody>
+            </SectionContent>
+          </SectionCard>
 
-          {/* Search Description */}
-          <SectionTitle>{t('advancedSearch.searchInDescription')}</SectionTitle>
-          <FormGrid>
-            <FormGroup style={{ gridColumn: '1 / -1' }}>
-              <label>{t('advancedSearch.descriptionPlaceholder')}</label>
-              <SearchInput
-                type="text"
-                name="searchDescription"
-                value={searchData.searchDescription}
-                onChange={handleInputChange}
-                placeholder={t('advancedSearch.enterKeywords')}
-              />
-            </FormGroup>
-          </FormGrid>
+          {/* Search Description Section */}
+          <SectionCard>
+            <SectionHeader 
+              isOpen={sectionsOpen.searchDescription}
+              onClick={() => toggleSection('searchDescription')}
+            >
+              <SectionTitle>{t('advancedSearch.searchInDescription')}</SectionTitle>
+              <ExpandIcon isOpen={sectionsOpen.searchDescription} />
+            </SectionHeader>
+            <SectionContent isOpen={sectionsOpen.searchDescription}>
+              <SectionBody>
+                <FormGrid>
+                  <FormGroup style={{ gridColumn: '1 / -1' }}>
+                    <label>{t('advancedSearch.descriptionPlaceholder')}</label>
+                    <SearchInput
+                      type="text"
+                      name="searchDescription"
+                      value={searchData.searchDescription}
+                      onChange={handleInputChange}
+                      placeholder={t('advancedSearch.enterKeywords')}
+                    />
+                  </FormGroup>
+                </FormGrid>
+              </SectionBody>
+            </SectionContent>
+          </SectionCard>
 
           {/* Action Buttons */}
           <ActionSection>

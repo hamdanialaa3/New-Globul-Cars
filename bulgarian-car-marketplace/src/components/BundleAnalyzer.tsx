@@ -92,7 +92,7 @@ class BundleAnalyzerService {
   getPerformanceScore(): number {
     if (!this.bundleInfo) return 0;
 
-    const { totalSize, gzippedSize } = this.bundleInfo;
+    const { gzippedSize } = this.bundleInfo;
     
     // Score based on bundle size (lower is better)
     if (gzippedSize < 100000) return 100; // Excellent

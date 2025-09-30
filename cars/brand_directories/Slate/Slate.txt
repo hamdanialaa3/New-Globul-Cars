@@ -1,8 +1,0 @@
-Slate Car Models and Generations:
-
-2027:
-- Slate Truck EV
-  Power: 326 hp, 708 horsepower, 150 kW
-  Drivetrain: rear-wheel drive
-
-

@@ -1,13 +1,14 @@
 // src/pages/HomePage.tsx
 // Smart Home Page for Bulgarian Car Marketplace with Global Translation
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { useLanguage } from '../contexts/LanguageContext';
 import LanguageToggle from '../components/LanguageToggle/LanguageToggle';
 import { bulgarianCarService, BulgarianCar } from '../firebase';
 import LazyImage from '../components/LazyImage';
+import CompleteLogoCollection from '../components/CompleteLogoCollection';
 
 // Styled Components
 const HomeContainer = styled.div`
@@ -347,6 +348,139 @@ const HomePage: React.FC = () => {
           </StatItem>
         </StatsContainer>
       </StatsSection>
+
+      {/* Complete Logo Collection Section */}
+      <section style={{
+        background: 'linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%)',
+        padding: '4rem 0',
+        position: 'relative',
+        zIndex: 1
+      }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1rem' }}>
+          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+            <h2 style={{
+              fontSize: '2.5rem',
+              fontWeight: 'bold',
+              color: '#005ca9',
+              marginBottom: '0.5rem'
+            }}>
+              Complete Logo Collection
+            </h2>
+            <p style={{
+              fontSize: '1.1rem',
+              color: '#6c757d',
+              marginBottom: '2rem',
+              maxWidth: '600px',
+              margin: '0 auto 2rem'
+            }}>
+              Our logos are designed to be versatile, professional, and instantly recognizable across all platforms and media types.
+            </p>
+            <Link
+              to="/brand-gallery"
+              style={{
+                display: 'inline-block',
+                background: '#005ca9',
+                color: 'white',
+                padding: '0.75rem 1.5rem',
+                borderRadius: '0.5rem',
+                textDecoration: 'none',
+                fontWeight: 'bold',
+                transition: 'all 0.3s ease',
+                border: '2px solid #005ca9'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'white';
+                e.currentTarget.style.color = '#005ca9';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = '#005ca9';
+                e.currentTarget.style.color = 'white';
+              }}
+            >
+              View All Collections →
+            </Link>
+          </div>
+
+          {/* Complete Logo Collection with Rotating Images */}
+          <Suspense fallback={<div style={{ textAlign: 'center', padding: '2rem' }}>Loading logo collection...</div>}>
+            {React.createElement(
+              lazy(() => import('../components/CompleteLogoCollection')),
+              {
+                imageSize: 140,
+                rotationSpeed: 3000,
+                showCount: 8
+              }
+            )}
+          </Suspense>
+        </div>
+      </section>
+
+      {/* Dynamic Image Gallery Section */}
+      <section style={{
+        background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+        padding: '4rem 0',
+        position: 'relative',
+        zIndex: 1
+      }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1rem' }}>
+          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+            <h2 style={{
+              fontSize: '2.5rem',
+              fontWeight: 'bold',
+              color: '#005ca9',
+              marginBottom: '0.5rem'
+            }}>
+              Dynamic Image Gallery
+            </h2>
+            <p style={{
+              fontSize: '1.1rem',
+              color: '#6c757d',
+              marginBottom: '2rem',
+              maxWidth: '600px',
+              margin: '0 auto 2rem'
+            }}>
+              Experience our rotating image gallery featuring beautiful car photography.
+              Images change automatically with smooth circular transitions.
+            </p>
+            <Link
+              to="/brand-gallery"
+              style={{
+                display: 'inline-block',
+                background: '#005ca9',
+                color: 'white',
+                padding: '0.75rem 1.5rem',
+                borderRadius: '0.5rem',
+                textDecoration: 'none',
+                fontWeight: 'bold',
+                transition: 'all 0.3s ease',
+                border: '2px solid #005ca9'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'white';
+                e.currentTarget.style.color = '#005ca9';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = '#005ca9';
+                e.currentTarget.style.color = 'white';
+              }}
+            >
+              View Full Gallery →
+            </Link>
+          </div>
+
+          {/* Import and use CircularImageGallery */}
+          <Suspense fallback={<div style={{ textAlign: 'center', padding: '2rem' }}>Loading gallery...</div>}>
+            {React.createElement(
+              lazy(() => import('../components/CircularImageGallery')),
+              {
+                imageSize: 160,
+                rotationSpeed: 3500,
+                showCount: 6
+              }
+            )}
+          </Suspense>
+        </div>
+      </section>
 
       {/* Featured Cars Section */}
       <FeaturedCarsSection style={{ position: 'relative', zIndex: 1 }}>

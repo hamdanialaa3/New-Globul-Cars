@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Star, ThumbsUp, ThumbsDown, Heart, Smile, Frown } from 'lucide-react';
 import { useTranslation } from '../hooks/useTranslation';

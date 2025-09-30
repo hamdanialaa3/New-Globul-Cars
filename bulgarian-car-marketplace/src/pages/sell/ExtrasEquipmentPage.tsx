@@ -1,11 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 
 const ExtrasEquipmentContainer = styled.div`
   min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: var(--bg-color, ${props => props.theme?.colors?.background?.default || '#f5f7fa'});
   padding: 2rem 0;
+  
+  /* CSS Custom Properties للتحكم الكامل في الألوان */
+  --primary-color: ${props => props.theme?.colors?.primary?.main || '#007BFF'};
+  --secondary-color: ${props => props.theme?.colors?.secondary?.main || '#6C757D'};
+  --bg-color: ${props => props.theme?.colors?.background?.default || '#f5f7fa'};
+  --card-bg-color: ${props => props.theme?.colors?.background?.paper || '#FFFFFF'};
+  --text-primary: ${props => props.theme?.colors?.text?.primary || '#212529'};
+  --text-secondary: ${props => props.theme?.colors?.text?.secondary || '#6C757D'};
+  --border-color: ${props => props.theme?.colors?.grey?.[200] || '#DEE2E6'};
+  --hover-color: ${props => props.theme?.colors?.grey?.[100] || '#E9ECEF'};
+  --shadow: ${props => props.theme?.shadows?.lg || '0 20px 40px rgba(0, 0, 0, 0.1)'};
 `;
 
 const ContentWrapper = styled.div`
@@ -15,9 +26,9 @@ const ContentWrapper = styled.div`
 `;
 
 const HeaderCard = styled.div`
-  background: white;
+  background: var(--card-bg-color);
   border-radius: 20px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow);
   padding: 3rem;
   margin-bottom: 2rem;
   text-align: center;
@@ -26,9 +37,9 @@ const HeaderCard = styled.div`
 const Title = styled.h1`
   font-size: 2.5rem;
   font-weight: 700;
-  color: #2c3e50;
+  color: var(--text-primary);
   margin: 0 0 1rem 0;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -36,45 +47,54 @@ const Title = styled.h1`
 
 const Subtitle = styled.p`
   font-size: 1.2rem;
-  color: #7f8c8d;
+  color: var(--text-secondary);
   margin: 0 0 2rem 0;
   line-height: 1.6;
 `;
 
 const EquipmentCard = styled.div`
-  background: white;
+  background: var(--card-bg-color);
   border-radius: 20px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow);
   padding: 3rem;
   margin-bottom: 2rem;
 `;
 
 const EquipmentGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 1rem;
   margin: 2rem 0;
+  justify-items: stretch;
+  width: 100%;
 `;
 
 const CheckboxItem = styled.label`
   display: flex;
   align-items: center;
   cursor: pointer;
-  padding: 1rem;
-  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
   transition: all 0.3s ease;
   border: 2px solid transparent;
-  background: #f8f9fa;
+  background: var(--card-bg-color);
+  width: 100%;
+  min-height: 48px;
+  box-sizing: border-box;
+  color: var(--text-primary);
 
   &:hover {
-    background-color: #e9ecef;
-    border-color: #dee2e6;
+    background-color: var(--hover-color);
+    border-color: var(--primary-color);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.1);
   }
 
   &:has(input:checked) {
-    background: linear-gradient(135deg, #667eea, #764ba2);
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
     color: white;
     border-color: transparent;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
   }
 `;
 
@@ -82,12 +102,15 @@ const Checkbox = styled.input`
   margin-right: 0.8rem;
   width: 18px;
   height: 18px;
-  accent-color: #667eea;
+  accent-color: var(--primary-color);
 `;
 
 const CheckboxText = styled.span`
   font-size: 0.9rem;
   font-weight: 500;
+  line-height: 1.4;
+  flex: 1;
+  text-align: left;
 `;
 
 const NavigationButtons = styled.div`
@@ -96,7 +119,7 @@ const NavigationButtons = styled.div`
   align-items: center;
   margin-top: 3rem;
   padding-top: 2rem;
-  border-top: 1px solid #ecf0f1;
+  border-top: 1px solid var(--border-color);
 `;
 
 const Button = styled.button<{ variant?: 'primary' | 'secondary' }>`
@@ -113,33 +136,33 @@ const Button = styled.button<{ variant?: 'primary' | 'secondary' }>`
     switch (props.variant) {
       case 'primary':
         return `
-          background: linear-gradient(135deg, #667eea, #764ba2);
+          background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
           color: white;
-          box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+          box-shadow: 0 10px 20px rgba(0, 123, 255, 0.3);
           
           &:hover {
             transform: translateY(-2px);
-            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 15px 30px rgba(0, 123, 255, 0.4);
           }
         `;
       case 'secondary':
         return `
-          background: #f8f9fa;
-          color: #6c757d;
-          border: 2px solid #e9ecef;
+          background: var(--card-bg-color);
+          color: var(--text-secondary);
+          border: 2px solid var(--border-color);
           
           &:hover {
-            background: #e9ecef;
-            color: #495057;
+            background: var(--hover-color);
+            color: var(--text-primary);
           }
         `;
       default:
         return `
-          background: #6c757d;
+          background: var(--secondary-color);
           color: white;
           
           &:hover {
-            background: #5a6268;
+            opacity: 0.8;
           }
         `;
     }
@@ -153,21 +176,21 @@ const Button = styled.button<{ variant?: 'primary' | 'secondary' }>`
 `;
 
 const InfoCard = styled.div`
-  background: #f8f9fa;
+  background: var(--hover-color);
   border-radius: 15px;
   padding: 2rem;
   margin: 2rem 0;
-  border-left: 4px solid #667eea;
+  border-left: 4px solid var(--primary-color);
 `;
 
 const InfoTitle = styled.h4`
-  color: #2c3e50;
+  color: var(--text-primary);
   margin: 0 0 1rem 0;
   font-size: 1.2rem;
 `;
 
 const InfoText = styled.p`
-  color: #7f8c8d;
+  color: var(--text-secondary);
   line-height: 1.6;
   margin: 0;
 `;
@@ -176,6 +199,22 @@ const ExtrasEquipmentPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [selectedEquipment, setSelectedEquipment] = useState<string[]>([]);
+
+  // Customizable color scheme - يمكنك تغيير هذه الألوان حسب الحاجة
+  const colorScheme = {
+    primary: '#28a745',        // اللون الأساسي - تم تغييره إلى أخضر
+    secondary: '#dc3545',      // اللون الثانوي - تم تغييره إلى أحمر
+    success: '#28A745',        // لون النجاح
+    danger: '#DC3545',         // لون الخطر
+    warning: '#FFC107',        // لون التحذير
+    info: '#17A2B8',          // لون المعلومات
+    background: '#f8f9fa',     // لون الخلفية
+    cardBackground: '#FFFFFF', // لون خلفية البطاقات
+    textPrimary: '#212529',    // لون النص الأساسي
+    textSecondary: '#6C757D',  // لون النص الثانوي
+    border: '#DEE2E6',         // لون الحدود
+    hover: '#E9ECEF'          // لون التمرير
+  };
 
   // Extract parameters from URL
   const vehicleType = searchParams.get('vt');
@@ -192,35 +231,56 @@ const ExtrasEquipmentPage: React.FC = () => {
 
   const extrasEquipment = [
     'Аларма',
-    'Имобилайзер',
-    'Централно заключване',
-    'Дистанционно заключване',
-    'Безключов достъп',
-    'Старт-стоп система',
-    'Круиз контрол',
-    'Адаптивен круиз контрол',
-    'Система за поддържане на лентата',
-    'Система за помощ при изкачване',
-    'Система за спускане по хълмове',
-    'Система за предупреждение за заспиване',
-    'Система за предупреждение за излизане от лентата',
-    'Система за предупреждение за сляпа зона',
-    'Система за помощ при паркиране',
-    'Камера за заден ход',
-    'Парктроник',
-    'Система за нощно виждане',
-    'Система за разпознаване на знаци',
-    'Система за предупреждение за пешеходци',
-    'Система за разпознаване на глас',
-    'Система за разпознаване на жестове',
-    'Виртуален асистент',
-    'Интернет в колата',
-    'WiFi хотспот',
+    'Амбиентно осветление',
+    'Android Auto',
+    'Apple CarPlay',
+    'Подлакътник',
+    'Автоматично затъмняващи огледала',
+    'Допълнително отопление',
+    'Bluetooth',
+    'Преграда за товари',
+    'CD плейър',
+    'DAB радио',
+    'Дигитален кокпит',
+    'Достъп за инвалиди',
+    'Електрически задни седалки',
+    'Електрически седалки',
+    'Електрически седалки с памет',
+    'Електрически прозорци',
+    'Система за извънредни повиквания',
+    'Предупреждение за умора',
+    'Сгъваеми задни седалки',
+    'Сгъваеми огледала',
+    'Hands-free система',
+    'Head-up дисплей',
+    'Подгрявани задни седалки',
+    'Подгрявани седалки',
+    'Подгряван волан',
     'Безжично зареждане',
-    'USB портове',
-    '12V контакти',
-    '220V контакт',
-    'Инвертор'
+    'Вградено стрийминг на музика',
+    'ISOFIX',
+    'Кожен волан',
+    'Лумбална поддръжка',
+    'Масажни седалки',
+    'Многофункционален волан',
+    'Навигация',
+    'Бордови компютър',
+    'Лостчета за скорости',
+    'ISOFIX за пътник',
+    'Вентилация на седалките',
+    'Десен волан',
+    'Ски чанта',
+    'Пакет за пушачи',
+    'Аудио система',
+    'Спортни седалки',
+    'Тъчскрийн',
+    'Радио тунер',
+    'ТВ',
+    'USB порт',
+    'Виртуални огледала',
+    'Гласово управление',
+    'Зимен пакет',
+    'WLAN/WiFi хотспот'
   ];
 
   const handleEquipmentToggle = (equipment: string) => {
@@ -271,7 +331,18 @@ const ExtrasEquipmentPage: React.FC = () => {
   };
 
   return (
-    <ExtrasEquipmentContainer>
+    <ExtrasEquipmentContainer 
+      style={{
+        '--primary-color': colorScheme.primary, 
+        '--secondary-color': colorScheme.secondary, 
+        '--bg-color': colorScheme.background,
+        '--card-bg-color': colorScheme.cardBackground,
+        '--text-primary': colorScheme.textPrimary,
+        '--text-secondary': colorScheme.textSecondary,
+        '--border-color': colorScheme.border,
+        '--hover-color': colorScheme.hover
+      } as React.CSSProperties}
+    >
       <ContentWrapper>
         <HeaderCard>
           <Title>Екстри</Title>

@@ -516,7 +516,7 @@ const AdvancedFilterSystemMobile: React.FC<AdvancedFilterSystemMobileProps> = ({
                     { value: 'new', label: t('advancedSearch.new') },
                     { value: 'used', label: t('advancedSearch.used') },
                     { value: 'pre-registration', label: t('advancedSearch.preRegistration') },
-                    { value: 'employee', label: t('advancedSearch.employeeCar', 'Employee\'s car') },
+                    { value: 'employee', label: t('advancedSearch.employeeCar') },
                     { value: 'classic', label: t('advancedSearch.classicVehicle') },
                     { value: 'demonstration', label: t('advancedSearch.demonstrationVehicle') }
                   ].map(option => (

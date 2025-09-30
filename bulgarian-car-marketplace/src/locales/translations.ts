@@ -29,7 +29,15 @@ export const translations = {
         insurance: { title: 'Застраховка', description: 'Партнираме с водещи застрахователни компании за най-добри цени' }
       }
     },
-    nav: { home: 'Начало', cars: 'Коли', sell: 'Продай', login: 'Вход', register: 'Регистрация', logout: 'Изход' },
+    nav: { home: 'Начало', cars: 'Коли', sell: 'Продай', brandGallery: 'Бранд Галерия', login: 'Вход', register: 'Регистрация', logout: 'Изход' },
+    topBrands: {
+      topBrands: 'Топ марки',
+      allBrands: 'Всички марки',
+      viewAll: 'Виж всички',
+      series: 'серии',
+      popularBrands: 'Популярни марки',
+      generation: 'Генерация'
+    },
     footer: {
       description: 'Водещата платформа за търсене и продажба на коли в България с хиляди проверени обяви.',
       quickLinks: 'Бързи връзки', services: 'Услуги', contact: 'Контакт', support: 'Поддръжка',
@@ -120,7 +128,7 @@ export const translations = {
       login: { title: 'Вход', email: 'Имейл', password: 'Парола', loading: 'Влизане...', submit: 'Вход', noAccount: 'Нямате акаунт?', register: 'Регистрирайте се тук' },
       register: { title: 'Регистрация', firstName: 'Име', lastName: 'Фамилия', email: 'Имейл', password: 'Парола', confirmPassword: 'Потвърди парола', loading: 'Създаване...', submit: 'Регистрация', haveAccount: 'Вече имате акаунт?', login: 'Влезте тук' },
       orContinueWith: 'Или продължи с', continueWithGoogle: 'Вход с Google', continueWithFacebook: 'Вход с Facebook', continueWithApple: 'Вход с Apple'
-  },
+    }
   },
   en: {
     home: {
@@ -140,7 +148,15 @@ export const translations = {
         insurance: { title: 'Insurance', description: 'We partner with leading insurance companies for the best rates' }
       }
     },
-    nav: { home: 'Home', cars: 'Cars', sell: 'Sell', login: 'Login', register: 'Register', logout: 'Logout' },
+    nav: { home: 'Home', cars: 'Cars', sell: 'Sell', brandGallery: 'Brand Gallery', login: 'Login', register: 'Register', logout: 'Logout' },
+    topBrands: {
+      topBrands: 'Top Brands',
+      allBrands: 'All Brands',
+      viewAll: 'View All',
+      series: 'series',
+      popularBrands: 'Popular Brands',
+      generation: 'Generation'
+    },
     footer: {
       description: 'The leading platform for buying and selling cars in Bulgaria with thousands of verified listings.',
       quickLinks: 'Quick Links', services: 'Services', contact: 'Contact', support: 'Support',
@@ -196,7 +212,7 @@ export const translations = {
       searchInDescription: 'Search in Description', descriptionPlaceholder: 'Enter keywords to search in description...', enterKeywords: 'Enter keywords...', availability: 'Availability', available: 'Available', reserved: 'Reserved', sold: 'Sold', delivery: 'Delivery', deliveryAvailable: 'Delivery available', pickupOnly: 'Pickup only',
       sellerType: 'Seller Type', dealer: 'Dealer', private: 'Private', garage: 'Garage', extendedWarranty: 'Extended warranty', noWarranty: 'No warranty',
       serviceHistory: 'Service History', partialServiceHistory: 'Partial service history', noServiceHistory: 'No service history', accidentFree: 'Accident free', damaged: 'Damaged', notRoadworthy: 'Not roadworthy', valid: 'Valid', expired: 'Expired', expiringSoon: 'Expiring soon'
-    }
+    },
     dashboard: {
       title: 'Dashboard', subtitle: 'Manage your listings and activity', overview: 'Overview',
       totalCars: 'Total Cars', viewCars: 'View Cars', totalUsers: 'Total Users', viewUsers: 'View Users', totalMessages: 'Total Messages', viewMessages: 'View Messages', totalRevenue: 'Total Revenue', viewRevenue: 'View Revenue',

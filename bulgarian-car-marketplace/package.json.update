@@ -1,0 +1,47 @@
+# تعليمات تحديث package.json
+
+## يجب إضافة هذه Dependencies:
+
+افتح ملف `bulgarian-car-marketplace/package.json` وأضف:
+
+```json
+{
+  "dependencies": {
+    "@react-google-maps/api": "^2.19.3",
+    "@googlemaps/js-api-loader": "^1.16.6",
+    
+    // ... باقي dependencies الموجودة
+  },
+  "devDependencies": {
+    "@types/google.maps": "^3.55.0",
+    
+    // ... باقي devDependencies الموجودة
+  }
+}
+```
+
+## ثم شغل:
+
+```bash
+cd bulgarian-car-marketplace
+npm install
+```
+
+## أو شغل مباشرة:
+
+```bash
+cd bulgarian-car-marketplace
+npm install @react-google-maps/api @googlemaps/js-api-loader
+npm install --save-dev @types/google.maps
+```
+
+---
+
+بعد التثبيت، أعد تشغيل خادم التطوير:
+
+```bash
+npm start
+```
+
+
+

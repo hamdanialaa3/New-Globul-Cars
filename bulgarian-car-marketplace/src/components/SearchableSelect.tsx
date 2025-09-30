@@ -180,7 +180,7 @@ const SearchableSelectGroup = styled.div`
   border-bottom: 1px solid ${({ theme }) => theme.colors.grey[200]};
 `;
 
-const SearchableSelectOption = styled.button<{ 
+const StyledSelectOption = styled.button<{ 
   isSelected: boolean; 
   isDisabled: boolean;
   isHighlighted: boolean;
@@ -432,7 +432,7 @@ const SearchableSelect: React.FC<SearchableSelectProps> = ({
                 {groupOptions.map((option, index) => {
                   const globalIndex = filteredOptions.findIndex(o => o.value === option.value);
                   return (
-                    <SearchableSelectOption
+                    <StyledSelectOption
                       key={option.value}
                       ref={(el: HTMLButtonElement | null) => { optionRefs.current[globalIndex] = el; }}
                       type="button"
@@ -443,7 +443,7 @@ const SearchableSelect: React.FC<SearchableSelectProps> = ({
                       onMouseEnter={() => handleOptionMouseEnter(globalIndex)}
                     >
                       {option.label}
-                    </SearchableSelectOption>
+                    </StyledSelectOption>
                   );
                 })}
               </div>

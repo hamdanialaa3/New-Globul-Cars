@@ -1,6 +1,7 @@
 // Smart Footer Component with Global Translation Support
 import React from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
+import GlowingLogo from '../GlowingLogo';
 import './Footer.css';
 
 const Footer: React.FC = () => {
@@ -39,6 +40,7 @@ const Footer: React.FC = () => {
               <li><a href="/cars">{t('nav.cars')}</a></li>
               <li><a href="/advanced-search">{t('nav.advancedSearch')}</a></li>
               <li><a href="/sell">{t('nav.sell')}</a></li>
+              <li><a href="/brand-gallery">{t('nav.brandGallery')}</a></li>
             </ul>
           </div>
 
@@ -71,6 +73,11 @@ const Footer: React.FC = () => {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Brand Logo Section */}
+        <div className="footer-logos">
+          <GlowingLogo size="medium" showText={true} text="Globul Cars" />
         </div>
 
         {/* Footer Bottom */}

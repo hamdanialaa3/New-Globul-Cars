@@ -4,6 +4,9 @@
 // Export Firebase configuration and utilities
 export { default as app, auth, db, storage, functions, BulgarianFirebaseUtils } from './firebase-config';
 
+// Export App Check service
+export { BulgarianAppCheckService } from './app-check-service';
+
 // Export authentication service
 export { BulgarianAuthService, bulgarianAuthService, type BulgarianUser } from './auth-service';
 

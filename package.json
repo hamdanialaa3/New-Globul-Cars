@@ -48,6 +48,7 @@
   "dependencies": {
     "@azure/msal-node": "^3.7.4",
     "@dataconnect/generated": "file:src/dataconnect-generated",
+    "@genkit-ai/firebase": "^1.0.4",
     "@google-cloud/bigquery": "^8.1.1",
     "@google-cloud/dialogflow": "^7.2.0",
     "@google-cloud/kms": "^5.2.0",

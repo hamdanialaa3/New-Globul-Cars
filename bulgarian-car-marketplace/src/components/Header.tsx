@@ -9,6 +9,7 @@ import { useTranslation } from '../hooks/useTranslation';
 import { bulgarianAuthService } from '../firebase';
 import { BulgarianUser } from '../firebase/auth-service';
 import NotificationBell from './NotificationBell';
+import TopBrandsMenu from './TopBrands/TopBrandsMenu';
 // Replace 3D logo with official image logo
 import { Settings, User, LogOut, LogIn, UserPlus, Type, MessageCircle } from 'lucide-react';
 
@@ -245,6 +246,10 @@ const Header: React.FC = () => {
         {/* Navigation */}
         <Navigation>
           <NavLink to="/">{t('nav.home')}</NavLink>
+          
+          {/* Top Brands Menu */}
+          <TopBrandsMenu />
+          
           <NavLink to="/cars">{t('nav.cars')}</NavLink>
           <NavLink to="/sell">{t('nav.sell')}</NavLink>
           <NavLink to="/advanced-search">{t('nav.advancedSearch', 'Advanced Search')}</NavLink>

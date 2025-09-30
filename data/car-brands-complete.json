@@ -1,0 +1,493 @@
+{
+  "brands": [
+    {
+      "id": "mercedes-benz",
+      "name": "Mercedes-Benz",
+      "logo": "/assets/brands/mercedes-benz.svg",
+      "country": "Germany",
+      "totalSeries": 37,
+      "popular": true,
+      "series": [
+        {
+          "id": "a-class",
+          "name": "A-Class",
+          "generations": [
+            { "code": "W168", "years": "1997-2004" },
+            { "code": "W169", "years": "2004-2012" },
+            { "code": "W176", "years": "2012-2018" },
+            { "code": "W177", "years": "2018-present" }
+          ]
+        },
+        {
+          "id": "c-class",
+          "name": "C-Class",
+          "generations": [
+            { "code": "W202", "years": "1993-2000" },
+            { "code": "W203", "years": "2000-2007" },
+            { "code": "W204", "years": "2007-2014" },
+            { "code": "W205", "years": "2014-2021" },
+            { "code": "W206", "years": "2021-present" }
+          ]
+        },
+        {
+          "id": "e-class",
+          "name": "E-Class",
+          "generations": [
+            { "code": "W210", "years": "1995-2002" },
+            { "code": "W211", "years": "2002-2009" },
+            { "code": "W212", "years": "2009-2016" },
+            { "code": "W213", "years": "2016-present" }
+          ]
+        },
+        {
+          "id": "s-class",
+          "name": "S-Class",
+          "generations": [
+            { "code": "W220", "years": "1998-2005" },
+            { "code": "W221", "years": "2005-2013" },
+            { "code": "W222", "years": "2013-2020" },
+            { "code": "W223", "years": "2020-present" }
+          ]
+        },
+        {
+          "id": "g-class",
+          "name": "G-Class",
+          "generations": [
+            { "code": "W460", "years": "1979-1992" },
+            { "code": "W461", "years": "1992-present" },
+            { "code": "W463", "years": "1990-2018" },
+            { "code": "W464", "years": "2018-present" }
+          ]
+        },
+        {
+          "id": "gla",
+          "name": "GLA",
+          "generations": [
+            { "code": "X156", "years": "2013-2020" },
+            { "code": "H247", "years": "2020-present" }
+          ]
+        },
+        {
+          "id": "glc",
+          "name": "GLC",
+          "generations": [
+            { "code": "X253", "years": "2015-2022" },
+            { "code": "X254", "years": "2022-present" }
+          ]
+        },
+        {
+          "id": "gle",
+          "name": "GLE",
+          "generations": [
+            { "code": "W166", "years": "2011-2019" },
+            { "code": "V167", "years": "2019-present" }
+          ]
+        },
+        {
+          "id": "gls",
+          "name": "GLS",
+          "generations": [
+            { "code": "X166", "years": "2015-2019" },
+            { "code": "X167", "years": "2019-present" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bmw",
+      "name": "BMW",
+      "logo": "/assets/brands/bmw.svg",
+      "country": "Germany",
+      "totalSeries": 24,
+      "popular": true,
+      "series": [
+        {
+          "id": "1-series",
+          "name": "1 Series",
+          "generations": [
+            { "code": "E81/E82/E87/E88", "years": "2004-2013" },
+            { "code": "F20/F21", "years": "2011-2019" },
+            { "code": "F40", "years": "2019-present" }
+          ]
+        },
+        {
+          "id": "3-series",
+          "name": "3 Series",
+          "generations": [
+            { "code": "E36", "years": "1990-2000" },
+            { "code": "E46", "years": "1998-2006" },
+            { "code": "E90/E91/E92/E93", "years": "2005-2013" },
+            { "code": "F30/F31/F34/F35", "years": "2012-2019" },
+            { "code": "G20/G21", "years": "2019-present" }
+          ]
+        },
+        {
+          "id": "5-series",
+          "name": "5 Series",
+          "generations": [
+            { "code": "E39", "years": "1995-2004" },
+            { "code": "E60/E61", "years": "2003-2010" },
+            { "code": "F10/F11", "years": "2010-2017" },
+            { "code": "G30/G31", "years": "2017-present" }
+          ]
+        },
+        {
+          "id": "7-series",
+          "name": "7 Series",
+          "generations": [
+            { "code": "E38", "years": "1994-2001" },
+            { "code": "E65/E66", "years": "2001-2008" },
+            { "code": "F01/F02", "years": "2008-2015" },
+            { "code": "G11/G12", "years": "2015-present" }
+          ]
+        },
+        {
+          "id": "x1",
+          "name": "X1",
+          "generations": [
+            { "code": "E84", "years": "2009-2015" },
+            { "code": "F48", "years": "2015-2022" },
+            { "code": "U11", "years": "2022-present" }
+          ]
+        },
+        {
+          "id": "x3",
+          "name": "X3",
+          "generations": [
+            { "code": "E83", "years": "2003-2010" },
+            { "code": "F25", "years": "2010-2017" },
+            { "code": "G01", "years": "2017-present" }
+          ]
+        },
+        {
+          "id": "x5",
+          "name": "X5",
+          "generations": [
+            { "code": "E53", "years": "1999-2006" },
+            { "code": "E70", "years": "2006-2013" },
+            { "code": "F15", "years": "2013-2018" },
+            { "code": "G05", "years": "2018-present" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "audi",
+      "name": "Audi",
+      "logo": "/assets/brands/audi.svg",
+      "country": "Germany",
+      "totalSeries": 19,
+      "popular": true,
+      "series": [
+        {
+          "id": "a3",
+          "name": "A3",
+          "generations": [
+            { "code": "8L", "years": "1996-2003" },
+            { "code": "8P", "years": "2003-2013" },
+            { "code": "8V", "years": "2012-2020" },
+            { "code": "8Y", "years": "2020-present" }
+          ]
+        },
+        {
+          "id": "a4",
+          "name": "A4",
+          "generations": [
+            { "code": "B5", "years": "1994-2001" },
+            { "code": "B6", "years": "2000-2006" },
+            { "code": "B7", "years": "2004-2008" },
+            { "code": "B8", "years": "2007-2015" },
+            { "code": "B9", "years": "2015-present" }
+          ]
+        },
+        {
+          "id": "a6",
+          "name": "A6",
+          "generations": [
+            { "code": "C4", "years": "1994-1997" },
+            { "code": "C5", "years": "1997-2004" },
+            { "code": "C6", "years": "2004-2011" },
+            { "code": "C7", "years": "2011-2018" },
+            { "code": "C8", "years": "2018-present" }
+          ]
+        },
+        {
+          "id": "q3",
+          "name": "Q3",
+          "generations": [
+            { "code": "8U", "years": "2011-2018" },
+            { "code": "F3", "years": "2018-present" }
+          ]
+        },
+        {
+          "id": "q5",
+          "name": "Q5",
+          "generations": [
+            { "code": "8R", "years": "2008-2017" },
+            { "code": "FY", "years": "2017-present" }
+          ]
+        },
+        {
+          "id": "q7",
+          "name": "Q7",
+          "generations": [
+            { "code": "4L", "years": "2005-2015" },
+            { "code": "4M", "years": "2015-present" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "volkswagen",
+      "name": "Volkswagen",
+      "logo": "/assets/brands/volkswagen.svg",
+      "country": "Germany",
+      "totalSeries": 27,
+      "popular": true,
+      "series": [
+        {
+          "id": "golf",
+          "name": "Golf",
+          "generations": [
+            { "code": "Mk4", "years": "1997-2003" },
+            { "code": "Mk5", "years": "2003-2008" },
+            { "code": "Mk6", "years": "2008-2012" },
+            { "code": "Mk7", "years": "2012-2019" },
+            { "code": "Mk8", "years": "2019-present" }
+          ]
+        },
+        {
+          "id": "passat",
+          "name": "Passat",
+          "generations": [
+            { "code": "B5", "years": "1996-2005" },
+            { "code": "B6", "years": "2005-2010" },
+            { "code": "B7", "years": "2010-2014" },
+            { "code": "B8", "years": "2014-present" }
+          ]
+        },
+        {
+          "id": "tiguan",
+          "name": "Tiguan",
+          "generations": [
+            { "code": "5N", "years": "2007-2016" },
+            { "code": "AD1", "years": "2016-present" }
+          ]
+        },
+        {
+          "id": "polo",
+          "name": "Polo",
+          "generations": [
+            { "code": "Mk4", "years": "2001-2009" },
+            { "code": "Mk5", "years": "2009-2017" },
+            { "code": "Mk6", "years": "2017-present" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "toyota",
+      "name": "Toyota",
+      "logo": "/assets/brands/toyota.svg",
+      "country": "Japan",
+      "totalSeries": 19,
+      "popular": true,
+      "series": [
+        {
+          "id": "corolla",
+          "name": "Corolla",
+          "generations": [
+            { "code": "E120/E130", "years": "2000-2008" },
+            { "code": "E140/E150", "years": "2006-2013" },
+            { "code": "E170/E180", "years": "2013-2019" },
+            { "code": "E210", "years": "2018-present" }
+          ]
+        },
+        {
+          "id": "camry",
+          "name": "Camry",
+          "generations": [
+            { "code": "XV30", "years": "2001-2006" },
+            { "code": "XV40", "years": "2006-2011" },
+            { "code": "XV50", "years": "2011-2017" },
+            { "code": "XV70", "years": "2017-present" }
+          ]
+        },
+        {
+          "id": "rav4",
+          "name": "RAV4",
+          "generations": [
+            { "code": "XA20", "years": "2000-2005" },
+            { "code": "XA30", "years": "2005-2012" },
+            { "code": "XA40", "years": "2012-2018" },
+            { "code": "XA50", "years": "2018-present" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "skoda",
+      "name": "Škoda",
+      "logo": "/assets/brands/skoda.svg",
+      "country": "Czech Republic",
+      "totalSeries": 13,
+      "popular": true,
+      "series": [
+        {
+          "id": "octavia",
+          "name": "Octavia",
+          "generations": [
+            { "code": "1U", "years": "1996-2010" },
+            { "code": "1Z", "years": "2004-2013" },
+            { "code": "5E", "years": "2013-2020" },
+            { "code": "NX", "years": "2020-present" }
+          ]
+        },
+        {
+          "id": "superb",
+          "name": "Superb",
+          "generations": [
+            { "code": "3U", "years": "2001-2008" },
+            { "code": "3T", "years": "2008-2015" },
+            { "code": "3V", "years": "2015-present" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "renault",
+      "name": "Renault",
+      "logo": "/assets/brands/renault.svg",
+      "country": "France",
+      "totalSeries": 20,
+      "popular": true,
+      "series": [
+        {
+          "id": "clio",
+          "name": "Clio",
+          "generations": [
+            { "code": "II", "years": "1998-2012" },
+            { "code": "III", "years": "2005-2014" },
+            { "code": "IV", "years": "2012-2019" },
+            { "code": "V", "years": "2019-present" }
+          ]
+        },
+        {
+          "id": "megane",
+          "name": "Megane",
+          "generations": [
+            { "code": "II", "years": "2002-2009" },
+            { "code": "III", "years": "2008-2016" },
+            { "code": "IV", "years": "2015-present" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "peugeot",
+      "name": "Peugeot",
+      "logo": "/assets/brands/peugeot.svg",
+      "country": "France",
+      "totalSeries": 28,
+      "popular": true,
+      "series": [
+        {
+          "id": "208",
+          "name": "208",
+          "generations": [
+            { "code": "I", "years": "2012-2019" },
+            { "code": "II", "years": "2019-present" }
+          ]
+        },
+        {
+          "id": "308",
+          "name": "308",
+          "generations": [
+            { "code": "I", "years": "2007-2014" },
+            { "code": "II", "years": "2013-2021" },
+            { "code": "III", "years": "2021-present" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "volvo",
+      "name": "Volvo",
+      "logo": "/assets/brands/volvo.svg",
+      "country": "Sweden",
+      "totalSeries": 15,
+      "popular": true,
+      "series": [
+        {
+          "id": "xc60",
+          "name": "XC60",
+          "generations": [
+            { "code": "I", "years": "2008-2017" },
+            { "code": "II", "years": "2017-present" }
+          ]
+        },
+        {
+          "id": "xc90",
+          "name": "XC90",
+          "generations": [
+            { "code": "I", "years": "2002-2014" },
+            { "code": "II", "years": "2014-present" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cupra",
+      "name": "Cupra",
+      "logo": "/assets/brands/cupra.svg",
+      "country": "Spain",
+      "totalSeries": 6,
+      "popular": true,
+      "series": [
+        {
+          "id": "formentor",
+          "name": "Formentor",
+          "generations": [
+            { "code": "KM", "years": "2020-present" }
+          ]
+        },
+        {
+          "id": "born",
+          "name": "Born",
+          "generations": [
+            { "code": "KZ", "years": "2021-present" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "polestar",
+      "name": "Polestar",
+      "logo": "/assets/brands/polestar.svg",
+      "country": "Sweden",
+      "totalSeries": 4,
+      "popular": true,
+      "series": [
+        {
+          "id": "polestar-2",
+          "name": "Polestar 2",
+          "generations": [
+            { "code": "V", "years": "2019-present" }
+          ]
+        },
+        {
+          "id": "polestar-3",
+          "name": "Polestar 3",
+          "generations": [
+            { "code": "I", "years": "2022-present" }
+          ]
+        }
+      ]
+    }
+  ],
+  "statistics": {
+    "totalBrands": 11,
+    "totalSeries": 169,
+    "totalGenerations": 250
+  }
+}

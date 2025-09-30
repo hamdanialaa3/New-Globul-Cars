@@ -14,7 +14,7 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
   showText = true,
   size = 'medium'
 }) => {
-  const { language, setLanguage, t } = useLanguage();
+  const { language, setLanguage } = useLanguage();
 
   const toggleLanguage = () => {
     const newLanguage = language === 'bg' ? 'en' : 'bg';

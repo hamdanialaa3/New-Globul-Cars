@@ -1,0 +1,1012 @@
+{
+  "carBrands": [
+    {
+      "id": "mercedes-benz",
+      "name": "Mercedes-Benz",
+      "nameAr": "مرسيدس-بنز",
+      "country": "Germany",
+      "countryAr": "ألمانيا",
+      "seriesCount": 37,
+      "logo": "mercedes-logo.png",
+      "category": "luxury",
+      "popular": true,
+      "series": [
+        {
+          "name": "A-Class",
+          "nameAr": "الفئة A",
+          "type": "Compact",
+          "bodyTypes": ["Sedan", "Hatchback"]
+        },
+        {
+          "name": "C-Class",
+          "nameAr": "الفئة C",
+          "type": "Mid-size luxury",
+          "bodyTypes": ["Sedan", "Station Wagon", "Coupe", "Convertible"]
+        },
+        {
+          "name": "E-Class",
+          "nameAr": "الفئة E",
+          "type": "Executive",
+          "bodyTypes": ["Sedan", "Station Wagon", "Coupe", "Convertible"]
+        },
+        {
+          "name": "S-Class",
+          "nameAr": "الفئة S",
+          "type": "Full-size luxury",
+          "bodyTypes": ["Sedan", "Coupe"]
+        },
+        {
+          "name": "GLA",
+          "nameAr": "جي إل إيه",
+          "type": "Compact SUV",
+          "bodyTypes": ["SUV"]
+        },
+        {
+          "name": "GLC",
+          "nameAr": "جي إل سي",
+          "type": "Compact executive SUV",
+          "bodyTypes": ["SUV", "Coupe"]
+        },
+        {
+          "name": "GLE",
+          "nameAr": "جي إل إي",
+          "type": "Mid-size luxury SUV",
+          "bodyTypes": ["SUV", "Coupe"]
+        },
+        {
+          "name": "GLS",
+          "nameAr": "جي إل إس",
+          "type": "Full-size luxury SUV",
+          "bodyTypes": ["SUV"]
+        },
+        {
+          "name": "G-Class",
+          "nameAr": "الفئة G",
+          "type": "Luxury off-road SUV",
+          "bodyTypes": ["SUV"]
+        },
+        {
+          "name": "SL",
+          "nameAr": "إس إل",
+          "type": "Grand tourer",
+          "bodyTypes": ["Roadster"]
+        },
+        {
+          "name": "AMG GT",
+          "nameAr": "إيه إم جي جي تي",
+          "type": "Sports car",
+          "bodyTypes": ["Coupe", "Roadster"]
+        },
+        {
+          "name": "EQE",
+          "nameAr": "إي كيو إي",
+          "type": "Electric executive",
+          "bodyTypes": ["Sedan", "SUV"]
+        },
+        {
+          "name": "EQS",
+          "nameAr": "إي كيو إس",
+          "type": "Electric luxury",
+          "bodyTypes": ["Sedan", "SUV"]
+        }
+      ]
+    },
+    {
+      "id": "volkswagen",
+      "name": "Volkswagen",
+      "nameAr": "فولكس فاجن",
+      "country": "Germany",
+      "countryAr": "ألمانيا",
+      "seriesCount": 27,
+      "logo": "vw-logo.png",
+      "category": "mainstream",
+      "popular": true,
+      "series": [
+        {
+          "name": "Golf",
+          "nameAr": "جولف",
+          "type": "Compact",
+          "bodyTypes": ["Hatchback", "Station Wagon"]
+        },
+        {
+          "name": "Polo",
+          "nameAr": "بولو",
+          "type": "Supermini",
+          "bodyTypes": ["Hatchback"]
+        },
+        {
+          "name": "Passat",
+          "nameAr": "باسات",
+          "type": "Mid-size",
+          "bodyTypes": ["Sedan", "Station Wagon"]
+        },
+        {
+          "name": "Tiguan",
+          "nameAr": "تيجوان",
+          "type": "Compact SUV",
+          "bodyTypes": ["SUV"]
+        },
+        {
+          "name": "Touareg",
+          "nameAr": "طوارق",
+          "type": "Mid-size luxury SUV",
+          "bodyTypes": ["SUV"]
+        },
+        {
+          "name": "T-Roc",
+          "nameAr": "تي روك",
+          "type": "Subcompact SUV",
+          "bodyTypes": ["SUV"]
+        },
+        {
+          "name": "Arteon",
+          "nameAr": "أرتيون",
+          "type": "Mid-size luxury",
+          "bodyTypes": ["Sedan", "Station Wagon"]
+        },
+        {
+          "name": "ID.3",
+          "nameAr": "آي دي 3",
+          "type": "Electric compact",
+          "bodyTypes": ["Hatchback"]
+        },
+        {
+          "name": "ID.4",
+          "nameAr": "آي دي 4",
+          "type": "Electric SUV",
+          "bodyTypes": ["SUV"]
+        },
+        {
+          "name": "ID.5",
+          "nameAr": "آي دي 5",
+          "type": "Electric SUV Coupe",
+          "bodyTypes": ["SUV"]
+        },
+        {
+          "name": "Transporter",
+          "nameAr": "ترانسبورتر",
+          "type": "Commercial van",
+          "bodyTypes": ["Van"]
+        }
+      ]
+    },
+    {
+      "id": "bmw",
+      "name": "BMW",
+      "nameAr": "بي إم دبليو",
+      "country": "Germany",
+      "countryAr": "ألمانيا",
+      "seriesCount": 24,
+      "logo": "bmw-logo.png",
+      "category": "luxury",
+      "popular": true,
+      "series": [
+        {
+          "name": "1 Series",
+          "nameAr": "الفئة الأولى",
+          "type": "Compact",
+          "bodyTypes": ["Hatchback"]
+        },
+        {
+          "name": "2 Series",
+          "nameAr": "الفئة الثانية",
+          "type": "Compact executive",
+          "bodyTypes": ["Coupe", "Gran Coupe", "Active Tourer"]
+        },
+        {
+          "name": "3 Series",
+          "nameAr": "الفئة الثالثة",
+          "type": "Compact executive",
+          "bodyTypes": ["Sedan", "Touring", "Gran Turismo"]
+        },
+        {
+          "name": "4 Series",
+          "nameAr": "الفئة الرابعة",
+          "type": "Compact executive",
+          "bodyTypes": ["Coupe", "Convertible", "Gran Coupe"]
+        },
+        {
+          "name": "5 Series",
+          "nameAr": "الفئة الخامسة",
+          "type": "Executive",
+          "bodyTypes": ["Sedan", "Touring"]
+        },
+        {
+          "name": "6 Series",
+          "nameAr": "الفئة السادسة",
+          "type": "Grand tourer",
+          "bodyTypes": ["Coupe", "Convertible", "Gran Coupe"]
+        },
+        {
+          "name": "7 Series",
+          "nameAr": "الفئة السابعة",
+          "type": "Full-size luxury",
+          "bodyTypes": ["Sedan"]
+        },
+        {
+          "name": "8 Series",
+          "nameAr": "الفئة الثامنة",
+          "type": "Grand tourer",
+          "bodyTypes": ["Coupe", "Convertible", "Gran Coupe"]
+        },
+        {
+          "name": "X1",
+          "nameAr": "إكس 1",
+          "type": "Subcompact luxury SUV",
+          "bodyTypes": ["SUV"]
+        },
+        {
+          "name": "X2",
+          "nameAr": "إكس 2",
+          "type": "Subcompact luxury SUV",
+          "bodyTypes": ["SUV"]
+        },
+        {
+          "name": "X3",
+          "nameAr": "إكس 3",
+          "type": "Compact luxury SUV",
+          "bodyTypes": ["SUV"]
+        },
+        {
+          "name": "X4",
+          "nameAr": "إكس 4",
+          "type": "Compact luxury SUV",
+          "bodyTypes": ["SUV Coupe"]
+        },
+        {
+          "name": "X5",
+          "nameAr": "إكس 5",
+          "type": "Mid-size luxury SUV",
+          "bodyTypes": ["SUV"]
+        },
+        {
+          "name": "X6",
+          "nameAr": "إكس 6",
+          "type": "Mid-size luxury SUV",
+          "bodyTypes": ["SUV Coupe"]
+        },
+        {
+          "name": "X7",
+          "nameAr": "إكس 7",
+          "type": "Full-size luxury SUV",
+          "bodyTypes": ["SUV"]
+        },
+        {
+          "name": "iX",
+          "nameAr": "آي إكس",
+          "type": "Electric SUV",
+          "bodyTypes": ["SUV"]
+        },
+        {
+          "name": "i4",
+          "nameAr": "آي 4",
+          "type": "Electric executive",
+          "bodyTypes": ["Gran Coupe"]
+        },
+        {
+          "name": "M3",
+          "nameAr": "إم 3",
+          "type": "High-performance",
+          "bodyTypes": ["Sedan"]
+        },
+        {
+          "name": "M5",
+          "nameAr": "إم 5",
+          "type": "High-performance",
+          "bodyTypes": ["Sedan"]
+        },
+        {
+          "name": "Z4",
+          "nameAr": "زد 4",
+          "type": "Roadster",
+          "bodyTypes": ["Roadster"]
+        }
+      ]
+    },
+    {
+      "id": "audi",
+      "name": "Audi",
+      "nameAr": "أودي",
+      "country": "Germany",
+      "countryAr": "ألمانيا",
+      "seriesCount": 19,
+      "logo": "audi-logo.png",
+      "category": "luxury",
+      "popular": true,
+      "series": [
+        {
+          "name": "A1",
+          "nameAr": "إيه 1",
+          "type": "Supermini",
+          "bodyTypes": ["Hatchback"]
+        },
+        {
+          "name": "A3",
+          "nameAr": "إيه 3",
+          "type": "Compact executive",
+          "bodyTypes": ["Sedan", "Sportback"]
+        },
+        {
+          "name": "A4",
+          "nameAr": "إيه 4",
+          "type": "Compact executive",
+          "bodyTypes": ["Sedan", "Avant"]
+        },
+        {
+          "name": "A5",
+          "nameAr": "إيه 5",
+          "type": "Compact executive",
+          "bodyTypes": ["Coupe", "Sportback", "Cabriolet"]
+        },
+        {
+          "name": "A6",
+          "nameAr": "إيه 6",
+          "type": "Executive",
+          "bodyTypes": ["Sedan", "Avant"]
+        },
+        {
+          "name": "A7",
+          "nameAr": "إيه 7",
+          "type": "Executive",
+          "bodyTypes": ["Sportback"]
+        },
+        {
+          "name": "A8",
+          "nameAr": "إيه 8",
+          "type": "Full-size luxury",
+          "bodyTypes": ["Sedan"]
+        },
+        {
+          "name": "Q2",
+          "nameAr": "كيو 2",
+          "type": "Subcompact luxury SUV",
+          "bodyTypes": ["SUV"]
+        },
+        {
+          "name": "Q3",
+          "nameAr": "كيو 3",
+          "type": "Compact luxury SUV",
+          "bodyTypes": ["SUV", "Sportback"]
+        },
+        {
+          "name": "Q5",
+          "nameAr": "كيو 5",
+          "type": "Compact luxury SUV",
+          "bodyTypes": ["SUV", "Sportback"]
+        },
+        {
+          "name": "Q7",
+          "nameAr": "كيو 7",
+          "type": "Mid-size luxury SUV",
+          "bodyTypes": ["SUV"]
+        },
+        {
+          "name": "Q8",
+          "nameAr": "كيو 8",
+          "type": "Mid-size luxury SUV",
+          "bodyTypes": ["SUV"]
+        },
+        {
+          "name": "e-tron",
+          "nameAr": "إي ترون",
+          "type": "Electric SUV",
+          "bodyTypes": ["SUV"]
+        },
+        {
+          "name": "e-tron GT",
+          "nameAr": "إي ترون جي تي",
+          "type": "Electric sports",
+          "bodyTypes": ["Sedan"]
+        },
+        {
+          "name": "TT",
+          "nameAr": "تي تي",
+          "type": "Sports car",
+          "bodyTypes": ["Coupe", "Roadster"]
+        },
+        {
+          "name": "R8",
+          "nameAr": "آر 8",
+          "type": "Sports car",
+          "bodyTypes": ["Coupe", "Spyder"]
+        }
+      ]
+    },
+    {
+      "id": "skoda",
+      "name": "Škoda",
+      "nameAr": "سكودا",
+      "country": "Czech Republic",
+      "countryAr": "التشيك",
+      "seriesCount": 13,
+      "logo": "skoda-logo.png",
+      "category": "mainstream",
+      "popular": true,
+      "series": [
+        {
+          "name": "Fabia",
+          "nameAr": "فابيا",
+          "type": "Supermini",
+          "bodyTypes": ["Hatchback", "Estate"]
+        },
+        {
+          "name": "Scala",
+          "nameAr": "سكالا",
+          "type": "Small family",
+          "bodyTypes": ["Hatchback"]
+        },
+        {
+          "name": "Octavia",
+          "nameAr": "أوكتافيا",
+          "type": "Small family",
+          "bodyTypes": ["Sedan", "Estate"]
+        },
+        {
+          "name": "Superb",
+          "nameAr": "سوبرب",
+          "type": "Large family",
+          "bodyTypes": ["Sedan", "Estate"]
+        },
+        {
+          "name": "Kamiq",
+          "nameAr": "كاميك",
+          "type": "Subcompact SUV",
+          "bodyTypes": ["SUV"]
+        },
+        {
+          "name": "Karoq",
+          "nameAr": "كاروك",
+          "type": "Compact SUV",
+          "bodyTypes": ["SUV"]
+        },
+        {
+          "name": "Kodiaq",
+          "nameAr": "كودياك",
+          "type": "Mid-size SUV",
+          "bodyTypes": ["SUV"]
+        },
+        {
+          "name": "Enyaq",
+          "nameAr": "إينياك",
+          "type": "Electric SUV",
+          "bodyTypes": ["SUV", "Coupe"]
+        },
+        {
+          "name": "Elroq",
+          "nameAr": "إلروك",
+          "type": "Electric SUV",
+          "bodyTypes": ["SUV"]
+        }
+      ]
+    },
+    {
+      "id": "toyota",
+      "name": "Toyota",
+      "nameAr": "تويوتا",
+      "country": "Japan",
+      "countryAr": "اليابان",
+      "seriesCount": 19,
+      "logo": "toyota-logo.png",
+      "category": "mainstream",
+      "popular": true,
+      "series": [
+        {
+          "name": "Yaris",
+          "nameAr": "ياريس",
+          "type": "Supermini",
+          "bodyTypes": ["Hatchback"]
+        },
+        {
+          "name": "Corolla",
+          "nameAr": "كورولا",
+          "type": "Compact",
+          "bodyTypes": ["Sedan", "Hatchback", "Touring Sports"]
+        },
+        {
+          "name": "Camry",
+          "nameAr": "كامري",
+          "type": "Mid-size",
+          "bodyTypes": ["Sedan"]
+        },
+        {
+          "name": "Prius",
+          "nameAr": "بريوس",
+          "type": "Hybrid compact",
+          "bodyTypes": ["Hatchback"]
+        },
+        {
+          "name": "RAV4",
+          "nameAr": "راف 4",
+          "type": "Compact SUV",
+          "bodyTypes": ["SUV"]
+        },
+        {
+          "name": "C-HR",
+          "nameAr": "سي إتش آر",
+          "type": "Subcompact SUV",
+          "bodyTypes": ["SUV"]
+        },
+        {
+          "name": "Highlander",
+          "nameAr": "هايلاندر",
+          "type": "Mid-size SUV",
+          "bodyTypes": ["SUV"]
+        },
+        {
+          "name": "Land Cruiser",
+          "nameAr": "لاند كروزر",
+          "type": "Full-size SUV",
+          "bodyTypes": ["SUV"]
+        },
+        {
+          "name": "Hilux",
+          "nameAr": "هايلوكس",
+          "type": "Pickup truck",
+          "bodyTypes": ["Pickup"]
+        },
+        {
+          "name": "bZ4X",
+          "nameAr": "بي زد 4 إكس",
+          "type": "Electric SUV",
+          "bodyTypes": ["SUV"]
+        },
+        {
+          "name": "GR Supra",
+          "nameAr": "جي آر سوبرا",
+          "type": "Sports car",
+          "bodyTypes": ["Coupe"]
+        }
+      ]
+    },
+    {
+      "id": "renault",
+      "name": "Renault",
+      "nameAr": "رينو",
+      "country": "France",
+      "countryAr": "فرنسا",
+      "seriesCount": 20,
+      "logo": "renault-logo.png",
+      "category": "mainstream",
+      "popular": true,
+      "series": [
+        {
+          "name": "Clio",
+          "nameAr": "كليو",
+          "type": "Supermini",
+          "bodyTypes": ["Hatchback"]
+        },
+        {
+          "name": "Captur",
+          "nameAr": "كابتشر",
+          "type": "Subcompact SUV",
+          "bodyTypes": ["SUV"]
+        },
+        {
+          "name": "Megane",
+          "nameAr": "ميجان",
+          "type": "Small family",
+          "bodyTypes": ["Hatchback", "Estate"]
+        },
+        {
+          "name": "Kadjar",
+          "nameAr": "كادجار",
+          "type": "Compact SUV",
+          "bodyTypes": ["SUV"]
+        },
+        {
+          "name": "Austral",
+          "nameAr": "أوسترال",
+          "type": "Compact SUV",
+          "bodyTypes": ["SUV"]
+        },
+        {
+          "name": "Scenic",
+          "nameAr": "سينيك",
+          "type": "Compact MPV",
+          "bodyTypes": ["MPV"]
+        },
+        {
+          "name": "Espace",
+          "nameAr": "إسباس",
+          "type": "Large MPV",
+          "bodyTypes": ["MPV"]
+        },
+        {
+          "name": "Zoe",
+          "nameAr": "زوي",
+          "type": "Electric supermini",
+          "bodyTypes": ["Hatchback"]
+        },
+        {
+          "name": "Megane E-Tech",
+          "nameAr": "ميجان إي تيك",
+          "type": "Electric compact",
+          "bodyTypes": ["SUV"]
+        }
+      ]
+    },
+    {
+      "id": "volvo",
+      "name": "Volvo",
+      "nameAr": "فولفو",
+      "country": "Sweden",
+      "countryAr": "السويد",
+      "seriesCount": 15,
+      "logo": "volvo-logo.png",
+      "category": "luxury",
+      "popular": true,
+      "series": [
+        {
+          "name": "V40",
+          "nameAr": "في 40",
+          "type": "Small family",
+          "bodyTypes": ["Hatchback"]
+        },
+        {
+          "name": "V60",
+          "nameAr": "في 60",
+          "type": "Compact executive",
+          "bodyTypes": ["Estate"]
+        },
+        {
+          "name": "V90",
+          "nameAr": "في 90",
+          "type": "Executive",
+          "bodyTypes": ["Estate"]
+        },
+        {
+          "name": "S60",
+          "nameAr": "إس 60",
+          "type": "Compact executive",
+          "bodyTypes": ["Sedan"]
+        },
+        {
+          "name": "S90",
+          "nameAr": "إس 90",
+          "type": "Executive",
+          "bodyTypes": ["Sedan"]
+        },
+        {
+          "name": "XC40",
+          "nameAr": "إكس سي 40",
+          "type": "Subcompact luxury SUV",
+          "bodyTypes": ["SUV"]
+        },
+        {
+          "name": "XC60",
+          "nameAr": "إكس سي 60",
+          "type": "Compact luxury SUV",
+          "bodyTypes": ["SUV"]
+        },
+        {
+          "name": "XC90",
+          "nameAr": "إكس سي 90",
+          "type": "Mid-size luxury SUV",
+          "bodyTypes": ["SUV"]
+        },
+        {
+          "name": "C40",
+          "nameAr": "سي 40",
+          "type": "Electric SUV",
+          "bodyTypes": ["SUV Coupe"]
+        },
+        {
+          "name": "EX30",
+          "nameAr": "إي إكس 30",
+          "type": "Electric SUV",
+          "bodyTypes": ["SUV"]
+        },
+        {
+          "name": "EX90",
+          "nameAr": "إي إكس 90",
+          "type": "Electric SUV",
+          "bodyTypes": ["SUV"]
+        }
+      ]
+    },
+    {
+      "id": "peugeot",
+      "name": "Peugeot",
+      "nameAr": "بيجو",
+      "country": "France",
+      "countryAr": "فرنسا",
+      "seriesCount": 28,
+      "logo": "peugeot-logo.png",
+      "category": "mainstream",
+      "popular": true,
+      "series": [
+        {
+          "name": "208",
+          "nameAr": "208",
+          "type": "Supermini",
+          "bodyTypes": ["Hatchback"]
+        },
+        {
+          "name": "2008",
+          "nameAr": "2008",
+          "type": "Subcompact SUV",
+          "bodyTypes": ["SUV"]
+        },
+        {
+          "name": "308",
+          "nameAr": "308",
+          "type": "Small family",
+          "bodyTypes": ["Hatchback", "SW"]
+        },
+        {
+          "name": "3008",
+          "nameAr": "3008",
+          "type": "Compact SUV",
+          "bodyTypes": ["SUV"]
+        },
+        {
+          "name": "408",
+          "nameAr": "408",
+          "type": "Compact fastback",
+          "bodyTypes": ["Fastback"]
+        },
+        {
+          "name": "508",
+          "nameAr": "508",
+          "type": "Mid-size",
+          "bodyTypes": ["Sedan", "SW"]
+        },
+        {
+          "name": "5008",
+          "nameAr": "5008",
+          "type": "Mid-size SUV",
+          "bodyTypes": ["SUV"]
+        },
+        {
+          "name": "e-208",
+          "nameAr": "إي 208",
+          "type": "Electric supermini",
+          "bodyTypes": ["Hatchback"]
+        },
+        {
+          "name": "e-2008",
+          "nameAr": "إي 2008",
+          "type": "Electric SUV",
+          "bodyTypes": ["SUV"]
+        }
+      ]
+    },
+    {
+      "id": "cupra",
+      "name": "Cupra",
+      "nameAr": "كوبرا",
+      "country": "Spain",
+      "countryAr": "إسبانيا",
+      "seriesCount": 6,
+      "logo": "cupra-logo.png",
+      "category": "performance",
+      "popular": true,
+      "series": [
+        {
+          "name": "Born",
+          "nameAr": "بورن",
+          "type": "Electric compact",
+          "bodyTypes": ["Hatchback"]
+        },
+        {
+          "name": "Formentor",
+          "nameAr": "فورمينتور",
+          "type": "Compact SUV",
+          "bodyTypes": ["SUV"]
+        },
+        {
+          "name": "Leon",
+          "nameAr": "ليون",
+          "type": "Compact",
+          "bodyTypes": ["Hatchback", "Sportstourer"]
+        },
+        {
+          "name": "Ateca",
+          "nameAr": "أتيكا",
+          "type": "Compact SUV",
+          "bodyTypes": ["SUV"]
+        },
+        {
+          "name": "Terramar",
+          "nameAr": "تيرامار",
+          "type": "Compact SUV",
+          "bodyTypes": ["SUV"]
+        },
+        {
+          "name": "Tavascan",
+          "nameAr": "تافاسكان",
+          "type": "Electric SUV",
+          "bodyTypes": ["SUV"]
+        }
+      ]
+    },
+    {
+      "id": "polestar",
+      "name": "Polestar",
+      "nameAr": "بولستار",
+      "country": "Sweden",
+      "countryAr": "السويد",
+      "seriesCount": 4,
+      "logo": "polestar-logo.png",
+      "category": "electric-performance",
+      "popular": true,
+      "series": [
+        {
+          "name": "Polestar 2",
+          "nameAr": "بولستار 2",
+          "type": "Electric fastback",
+          "bodyTypes": ["Fastback"]
+        },
+        {
+          "name": "Polestar 3",
+          "nameAr": "بولستار 3",
+          "type": "Electric SUV",
+          "bodyTypes": ["SUV"]
+        },
+        {
+          "name": "Polestar 4",
+          "nameAr": "بولستار 4",
+          "type": "Electric SUV Coupe",
+          "bodyTypes": ["SUV Coupe"]
+        },
+        {
+          "name": "Polestar 5",
+          "nameAr": "بولستار 5",
+          "type": "Electric GT",
+          "bodyTypes": ["Sedan"]
+        }
+      ]
+    }
+  ],
+  "bodyTypes": [
+    {
+      "id": "sedan",
+      "name": "Sedan",
+      "nameAr": "سيدان",
+      "description": "Four-door car with separate trunk",
+      "descriptionAr": "سيارة بأربعة أبواب مع صندوق منفصل"
+    },
+    {
+      "id": "suv",
+      "name": "SUV",
+      "nameAr": "دفع رباعي",
+      "description": "Sport Utility Vehicle",
+      "descriptionAr": "سيارة رياضية متعددة الاستخدامات"
+    },
+    {
+      "id": "hatchback",
+      "name": "Hatchback",
+      "nameAr": "هاتشباك",
+      "description": "Compact car with rear door",
+      "descriptionAr": "سيارة مدمجة مع باب خلفي"
+    },
+    {
+      "id": "station-wagon",
+      "name": "Station Wagon",
+      "nameAr": "ستيشن واغن",
+      "description": "Extended family car with cargo space",
+      "descriptionAr": "سيارة عائلية ممتدة مع مساحة تخزين"
+    },
+    {
+      "id": "coupe",
+      "name": "Coupe",
+      "nameAr": "كوبيه",
+      "description": "Two-door sports car",
+      "descriptionAr": "سيارة رياضية بابين"
+    },
+    {
+      "id": "convertible",
+      "name": "Convertible",
+      "nameAr": "كابريوليه",
+      "description": "Car with retractable roof",
+      "descriptionAr": "سيارة ذات سقف قابل للطي"
+    },
+    {
+      "id": "van",
+      "name": "Van",
+      "nameAr": "فان",
+      "description": "Large family or commercial vehicle",
+      "descriptionAr": "مركبة عائلية أو تجارية كبيرة"
+    },
+    {
+      "id": "pickup",
+      "name": "Pickup Truck",
+      "nameAr": "بيك أب",
+      "description": "Truck with open cargo area",
+      "descriptionAr": "شاحنة مع منطقة شحن مفتوحة"
+    },
+    {
+      "id": "roadster",
+      "name": "Roadster",
+      "nameAr": "رودستر",
+      "description": "Two-seat convertible sports car",
+      "descriptionAr": "سيارة رياضية مكشوفة بمقعدين"
+    }
+  ],
+  "fuelTypes": [
+    {
+      "id": "petrol",
+      "name": "Petrol",
+      "nameAr": "بنزين"
+    },
+    {
+      "id": "diesel",
+      "name": "Diesel",
+      "nameAr": "ديزل"
+    },
+    {
+      "id": "electric",
+      "name": "Electric",
+      "nameAr": "كهربائي"
+    },
+    {
+      "id": "hybrid",
+      "name": "Hybrid",
+      "nameAr": "هجين"
+    },
+    {
+      "id": "plug-in-hybrid",
+      "name": "Plug-in Hybrid",
+      "nameAr": "هجين قابل للشحن"
+    },
+    {
+      "id": "cng",
+      "name": "CNG",
+      "nameAr": "غاز طبيعي مضغوط"
+    },
+    {
+      "id": "lpg",
+      "name": "LPG",
+      "nameAr": "غاز البترول المسال"
+    }
+  ],
+  "transmission": [
+    {
+      "id": "manual",
+      "name": "Manual",
+      "nameAr": "يدوي"
+    },
+    {
+      "id": "automatic",
+      "name": "Automatic",
+      "nameAr": "أوتوماتيك"
+    },
+    {
+      "id": "semi-automatic",
+      "name": "Semi-Automatic",
+      "nameAr": "نصف أوتوماتيك"
+    },
+    {
+      "id": "cvt",
+      "name": "CVT",
+      "nameAr": "سي في تي"
+    }
+  ],
+  "categories": [
+    {
+      "id": "luxury",
+      "name": "Luxury",
+      "nameAr": "فاخرة"
+    },
+    {
+      "id": "mainstream",
+      "name": "Mainstream",
+      "nameAr": "عادية"
+    },
+    {
+      "id": "performance",
+      "name": "Performance",
+      "nameAr": "رياضية"
+    },
+    {
+      "id": "electric-performance",
+      "name": "Electric Performance",
+      "nameAr": "رياضية كهربائية"
+    },
+    {
+      "id": "budget",
+      "name": "Budget",
+      "nameAr": "اقتصادية"
+    }
+  ]
+}

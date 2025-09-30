@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { Search, Filter, X, ChevronDown, ChevronUp, MapPin, Calendar, Euro } from 'lucide-react';
+import { Search, Filter, X, ChevronDown, ChevronUp } from 'lucide-react';
 import { useTranslation } from '../hooks/useTranslation';
 import SearchableSelect from './SearchableSelect';
 import CheckboxGrid from './CheckboxGrid';
@@ -386,12 +386,7 @@ const DetailedSearch: React.FC<DetailedSearchProps> = ({
     }
   };
 
-  const groupedFilters = filters.reduce((groups, filter) => {
-    const group = filter.group || 'General';
-    if (!groups[group]) groups[group] = [];
-    groups[group].push(filter);
-    return groups;
-  }, {} as Record<string, DetailedSearchFilter[]>);
+  // Group filters by category (currently unused but kept for future expansion)
 
   return (
     <DetailedSearchContainer className={className} style={style}>

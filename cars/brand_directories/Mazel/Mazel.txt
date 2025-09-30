@@ -1,7 +1,0 @@
-Mazel Car Models and Generations:
-
-2006:
-- Mazel Identity i1
-  Power: 326 hp, 708 horsepower, 326 hp
-
-

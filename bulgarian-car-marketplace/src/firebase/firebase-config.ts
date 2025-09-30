@@ -7,26 +7,64 @@ import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 import { getFunctions } from 'firebase/functions';
 import { getAnalytics, Analytics } from 'firebase/analytics';
+import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check';
 import { BULGARIAN_CONFIG } from '../config/bulgarian-config';
 
-// Firebase configuration
+// Type declaration for reCAPTCHA
+declare global {
+  interface Window {
+    grecaptcha?: any;
+  }
+}
+
+// Firebase configuration - تم تحديثه بالقيم الصحيحة
 const firebaseConfig = {
-  apiKey: process.env.REACT_APP_FIREBASE_API_KEY || BULGARIAN_CONFIG.api.firebase.apiKey,
-  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN || BULGARIAN_CONFIG.api.firebase.authDomain,
-  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID || BULGARIAN_CONFIG.api.firebase.projectId,
-  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET || BULGARIAN_CONFIG.api.firebase.storageBucket,
-  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID || BULGARIAN_CONFIG.api.firebase.messagingSenderId,
-  appId: process.env.REACT_APP_FIREBASE_APP_ID || BULGARIAN_CONFIG.api.firebase.appId
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY || "AIzaSyCYxOoD-tViZHLh3XhdbwQo8rRA5Q56NVs",
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN || "studio-448742006-a3493.firebaseapp.com",
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID || "studio-448742006-a3493",
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET || "studio-448742006-a3493.firebasestorage.app",
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID || "687922812237",
+  appId: process.env.REACT_APP_FIREBASE_APP_ID || "1:687922812237:web:e2f36cf22eab4e53ddd304",
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID || "G-ENC064NX05"
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+
+// Initialize App Check with reCAPTCHA v3 - currently disabled
+let appCheck: any = null;
+if (typeof window !== 'undefined') {
+  const siteKey = process.env.REACT_APP_RECAPTCHA_SITE_KEY?.trim();
+
+  // App Check is currently disabled to prevent reCAPTCHA runtime errors
+  if (process.env.REACT_APP_DISABLE_APP_CHECK === 'true') {
+    console.log('Firebase App Check is disabled via REACT_APP_DISABLE_APP_CHECK=true');
+    console.log('To enable App Check:');
+    console.log('1. Get a reCAPTCHA v3 site key from https://www.google.com/recaptcha/admin');
+    console.log('2. Set REACT_APP_RECAPTCHA_SITE_KEY in .env');
+    console.log('3. Set REACT_APP_DISABLE_APP_CHECK=false');
+  } else if (!siteKey || siteKey === '') {
+    console.warn('reCAPTCHA site key missing. App Check not initialized.');
+  } else {
+    console.log('Initializing Firebase App Check...');
+    try {
+      appCheck = initializeAppCheck(app, {
+        provider: new ReCaptchaV3Provider(siteKey),
+        isTokenAutoRefreshEnabled: true
+      });
+      console.log('Firebase App Check initialized successfully');
+    } catch (error) {
+      console.error('Failed to initialize App Check:', error);
+    }
+  }
+}
 
 // Initialize Firebase services
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
 export const functions = getFunctions(app);
+export { appCheck };
 
 // Initialize Analytics (only in production and if measurement ID is provided)
 const analytics: Analytics | null = (typeof window !== 'undefined' && process.env.VITE_FIREBASE_MEASUREMENT_ID)

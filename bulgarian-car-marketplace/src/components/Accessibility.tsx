@@ -123,4 +123,5 @@ export const addKeyboardNavigationStyles = () => {
   document.head.appendChild(style);
 };
 
-export default { SkipNavigation, useFocusManagement, ScreenReaderOnly };
+const AccessibilityTools = { SkipNavigation, useFocusManagement, ScreenReaderOnly };
+export default AccessibilityTools;

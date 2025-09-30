@@ -1,18 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { 
-  Search, 
-  Filter, 
-  SortAsc, 
-  SortDesc, 
   Grid, 
   List, 
   ChevronLeft, 
   ChevronRight,
   Star,
   MapPin,
-  Calendar,
-  Euro
+  Calendar
 } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import LazyImage from './LazyImage';
@@ -395,7 +390,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({
   const { t } = useLanguage();
   const [view, setView] = useState<'grid' | 'list'>('grid');
   const [sortBy, setSortBy] = useState('relevance');
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [sortOrder] = useState<'asc' | 'desc'>('desc');
 
   const handleViewChange = (newView: 'grid' | 'list') => {
     setView(newView);
@@ -407,20 +402,11 @@ const SearchResults: React.FC<SearchResultsProps> = ({
     onSortChange?.(newSortBy, sortOrder);
   };
 
-  const handleSortOrderToggle = () => {
-    const newOrder = sortOrder === 'asc' ? 'desc' : 'asc';
-    setSortOrder(newOrder);
-    onSortChange?.(sortBy, newOrder);
-  };
-
   const handleResultClick = (result: SearchResult) => {
     onResultClick?.(result);
   };
 
-  const handleFavoriteToggle = (resultId: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    onFavoriteToggle?.(resultId);
-  };
+  // Note: Sort order toggle and favorite toggle functions removed as they're not currently used in the UI
 
   const formatPrice = (price: number, currency: string) => {
     return new Intl.NumberFormat('bg-BG', {

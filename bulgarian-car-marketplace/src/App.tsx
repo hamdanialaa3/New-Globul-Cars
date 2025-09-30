@@ -13,6 +13,8 @@ import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
+import AuthGuard from './components/AuthGuard';
+import ProtectedLayout from './components/ProtectedLayout';
 // import AnalyticsTracker from './components/AnalyticsTracker';
 import PerformanceMonitor from './components/PerformanceMonitor';
 import BundleAnalyzer from './components/BundleAnalyzer';
@@ -45,6 +47,9 @@ const MessagingPage = React.lazy(() => import('./pages/MessagingPage'));
 const ProfilePage = React.lazy(() => import('./pages/ProfilePage'));
 const LoginPage = React.lazy(() => import('./pages/LoginPage'));
 const RegisterPage = React.lazy(() => import('./pages/RegisterPage'));
+const EmailVerificationPage = React.lazy(() => import('./pages/EmailVerificationPage'));
+const GoogleAuthTest = React.lazy(() => import('./pages/GoogleAuthTest'));
+const SimpleGoogleTest = React.lazy(() => import('./pages/SimpleGoogleTest'));
 // const MessagesPage = React.lazy(() => import('./pages/MessagesPage'));
 const DashboardPage = React.lazy(() => import('./pages/DashboardPage'));
 const AdminDashboard = React.lazy(() => import('./components/AdminDashboard'));
@@ -56,10 +61,16 @@ const PrivacyPolicyPage = React.lazy(() => import('./pages/PrivacyPolicyPage'));
 const TermsOfServicePage = React.lazy(() => import('./pages/TermsOfServicePage'));
 const DataDeletionPage = React.lazy(() => import('./pages/DataDeletionPage'));
 const AdvancedSearchPage = React.lazy(() => import('./pages/AdvancedSearchPage'));
+const AddCarPage = React.lazy(() => import('./pages/AddCarPage'));
+const CleanGoogleAuthTest = React.lazy(() => import('./components/CleanGoogleAuthTest'));
+const MyListingsPage = React.lazy(() => import('./pages/MyListingsPage'));
 const B2BAnalyticsPortal = React.lazy(() => import('./pages/B2BAnalyticsPortal'));
 const DigitalTwinPage = React.lazy(() => import('./pages/DigitalTwinPage'));
 const SubscriptionPage = React.lazy(() => import('./pages/SubscriptionPage'));
 const AboutPage = React.lazy(() => import('./pages/AboutPage'));
+const BrandGalleryPage = React.lazy(() => import('./pages/BrandGalleryPage'));
+const DealersPage = React.lazy(() => import('./pages/DealersPage'));
+const FinancePage = React.lazy(() => import('./pages/FinancePage'));
 const ContactPage = React.lazy(() => import('./pages/ContactPage'));
 const HelpPage = React.lazy(() => import('./pages/HelpPage'));
 const CookiePolicyPage = React.lazy(() => import('./pages/CookiePolicyPage'));
@@ -153,6 +164,38 @@ const App: React.FC = () => {
                   </FullScreenLayout>
                 }
               />
+              <Route
+                path="/email-verified"
+                element={
+                  <FullScreenLayout>
+                    <EmailVerificationPage />
+                  </FullScreenLayout>
+                }
+              />
+              <Route
+                path="/clean-google-auth"
+                element={
+                  <FullScreenLayout>
+                    <CleanGoogleAuthTest />
+                  </FullScreenLayout>
+                }
+              />
+              <Route
+                path="/google-test"
+                element={
+                  <FullScreenLayout>
+                    <GoogleAuthTest />
+                  </FullScreenLayout>
+                }
+              />
+              <Route
+                path="/simple-google-test"
+                element={
+                  <FullScreenLayout>
+                    <SimpleGoogleTest />
+                  </FullScreenLayout>
+                }
+              />
 
               {/* Pages with header/footer */}
               <Route
@@ -184,7 +227,9 @@ const App: React.FC = () => {
                 path="/sell-car"
                 element={
                   <Layout>
-                    <SellCarPage />
+                    <AuthGuard requireAuth={true}>
+                      <SellCarPage />
+                    </AuthGuard>
                   </Layout>
                 }
               />
@@ -192,7 +237,9 @@ const App: React.FC = () => {
                 path="/sell"
                 element={
                   <Layout>
-                    <SellPage />
+                    <AuthGuard requireAuth={true}>
+                      <SellPage />
+                    </AuthGuard>
                   </Layout>
                 }
               />
@@ -201,7 +248,9 @@ const App: React.FC = () => {
                 path="/sell/auto"
                 element={
                   <Layout>
-                    <VehicleStartPage />
+                    <AuthGuard requireAuth={true}>
+                      <VehicleStartPage />
+                    </AuthGuard>
                   </Layout>
                 }
               />
@@ -209,7 +258,9 @@ const App: React.FC = () => {
                 path="/sell/inserat/:vehicleType/verkaeufertyp"
                 element={
                   <Layout>
-                    <SellerTypePageNew />
+                    <AuthGuard requireAuth={true}>
+                      <SellerTypePageNew />
+                    </AuthGuard>
                   </Layout>
                 }
               />
@@ -217,7 +268,9 @@ const App: React.FC = () => {
                 path="/sell/inserat/:vehicleType/fahrzeugdaten/antrieb-und-umwelt"
                 element={
                   <Layout>
-                    <VehicleDataPageNew />
+                    <AuthGuard requireAuth={true}>
+                      <VehicleDataPageNew />
+                    </AuthGuard>
                   </Layout>
                 }
               />
@@ -225,7 +278,9 @@ const App: React.FC = () => {
                 path="/sell/inserat/:vehicleType/ausstattung"
                 element={
                   <Layout>
-                    <EquipmentMainPage />
+                    <AuthGuard requireAuth={true}>
+                      <EquipmentMainPage />
+                    </AuthGuard>
                   </Layout>
                 }
               />
@@ -233,7 +288,9 @@ const App: React.FC = () => {
                 path="/sell/inserat/:vehicleType/ausstattung/sicherheit"
                 element={
                   <Layout>
-                    <SafetyEquipmentPage />
+                    <AuthGuard requireAuth={true}>
+                      <SafetyEquipmentPage />
+                    </AuthGuard>
                   </Layout>
                 }
               />
@@ -241,7 +298,9 @@ const App: React.FC = () => {
                 path="/sell/inserat/:vehicleType/ausstattung/komfort"
                 element={
                   <Layout>
-                    <ComfortEquipmentPage />
+                    <AuthGuard requireAuth={true}>
+                      <ComfortEquipmentPage />
+                    </AuthGuard>
                   </Layout>
                 }
               />
@@ -249,7 +308,9 @@ const App: React.FC = () => {
                 path="/sell/inserat/:vehicleType/ausstattung/infotainment"
                 element={
                   <Layout>
-                    <InfotainmentEquipmentPage />
+                    <AuthGuard requireAuth={true}>
+                      <InfotainmentEquipmentPage />
+                    </AuthGuard>
                   </Layout>
                 }
               />
@@ -257,7 +318,9 @@ const App: React.FC = () => {
                 path="/sell/inserat/:vehicleType/ausstattung/extras"
                 element={
                   <Layout>
-                    <ExtrasEquipmentPage />
+                    <AuthGuard requireAuth={true}>
+                      <ExtrasEquipmentPage />
+                    </AuthGuard>
                   </Layout>
                 }
               />
@@ -265,7 +328,9 @@ const App: React.FC = () => {
                 path="/sell/inserat/:vehicleType/details/bilder"
                 element={
                   <Layout>
-                    <ImagesPage />
+                    <AuthGuard requireAuth={true}>
+                      <ImagesPage />
+                    </AuthGuard>
                   </Layout>
                 }
               />
@@ -273,7 +338,9 @@ const App: React.FC = () => {
                 path="/sell/inserat/:vehicleType/details/preis"
                 element={
                   <Layout>
-                    <PricingPage />
+                    <AuthGuard requireAuth={true}>
+                      <PricingPage />
+                    </AuthGuard>
                   </Layout>
                 }
               />
@@ -281,7 +348,9 @@ const App: React.FC = () => {
                 path="/sell/inserat/:vehicleType/kontakt/name"
                 element={
                   <Layout>
-                    <ContactNamePage />
+                    <AuthGuard requireAuth={true}>
+                      <ContactNamePage />
+                    </AuthGuard>
                   </Layout>
                 }
               />
@@ -289,7 +358,9 @@ const App: React.FC = () => {
                 path="/sell/inserat/:vehicleType/kontakt/adresse"
                 element={
                   <Layout>
-                    <ContactAddressPage />
+                    <AuthGuard requireAuth={true}>
+                      <ContactAddressPage />
+                    </AuthGuard>
                   </Layout>
                 }
               />
@@ -297,7 +368,9 @@ const App: React.FC = () => {
                 path="/sell/inserat/:vehicleType/kontakt/telefonnummer"
                 element={
                   <Layout>
-                    <ContactPhonePage />
+                    <AuthGuard requireAuth={true}>
+                      <ContactPhonePage />
+                    </AuthGuard>
                   </Layout>
                 }
               />
@@ -305,7 +378,9 @@ const App: React.FC = () => {
                 path="/sell/vehicle-selection"
                 element={
                   <Layout>
-                    <VehicleSelectionPage />
+                    <AuthGuard requireAuth={true}>
+                      <VehicleSelectionPage />
+                    </AuthGuard>
                   </Layout>
                 }
               />
@@ -313,7 +388,9 @@ const App: React.FC = () => {
                 path="/sell/seller-type"
                 element={
                   <Layout>
-                    <SellerTypePage />
+                    <AuthGuard requireAuth={true}>
+                      <SellerTypePage />
+                    </AuthGuard>
                   </Layout>
                 }
               />
@@ -321,7 +398,9 @@ const App: React.FC = () => {
                 path="/sell/vehicle-data"
                 element={
                   <Layout>
-                    <VehicleDataPage />
+                    <AuthGuard requireAuth={true}>
+                      <VehicleDataPage />
+                    </AuthGuard>
                   </Layout>
                 }
               />
@@ -409,7 +488,30 @@ const App: React.FC = () => {
                 path="/advanced-search"
                 element={
                   <Layout>
-                    <AdvancedSearchPage />
+                    <AuthGuard requireAuth={true}>
+                      <AdvancedSearchPage />
+                    </AuthGuard>
+                  </Layout>
+                }
+              />
+              {/* New Car Listing System */}
+              <Route
+                path="/add-car"
+                element={
+                  <Layout>
+                    <ProtectedRoute>
+                      <AddCarPage />
+                    </ProtectedRoute>
+                  </Layout>
+                }
+              />
+              <Route
+                path="/my-listings"
+                element={
+                  <Layout>
+                    <ProtectedRoute>
+                      <MyListingsPage />
+                    </ProtectedRoute>
                   </Layout>
                 }
               />
@@ -476,6 +578,36 @@ const App: React.FC = () => {
                 element={
                   <Layout>
                     <AboutPage />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/brand-gallery"
+                element={
+                  <Layout>
+                    <AuthGuard requireAuth={true}>
+                      <BrandGalleryPage />
+                    </AuthGuard>
+                  </Layout>
+                }
+              />
+              <Route
+                path="/dealers"
+                element={
+                  <Layout>
+                    <AuthGuard requireAuth={true}>
+                      <DealersPage />
+                    </AuthGuard>
+                  </Layout>
+                }
+              />
+              <Route
+                path="/finance"
+                element={
+                  <Layout>
+                    <AuthGuard requireAuth={true}>
+                      <FinancePage />
+                    </AuthGuard>
                   </Layout>
                 }
               />

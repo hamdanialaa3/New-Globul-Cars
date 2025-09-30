@@ -32,14 +32,29 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     // Handle redirect result on app load
     const handleRedirectResult = async () => {
       try {
+        console.log('🔍 Checking for redirect result...');
         const result = await SocialAuthService.handleRedirectResult();
         if (result && result.user) {
-          console.log('Redirect sign-in successful:', result.user.email);
+          console.log('✅ Redirect sign-in successful:', result.user.email);
           // User will be set by onAuthStateChanged above
+          // Show success message to user
+          if (typeof window !== 'undefined') {
+            const successMessage = `تم تسجيل الدخول بنجاح! مرحباً ${result.user.displayName || result.user.email}`;
+            // You can show a toast notification here if you have a toast system
+            console.log('🎉', successMessage);
+          }
+        } else {
+          console.log('ℹ️ No redirect result found (normal on direct page loads)');
         }
-      } catch (error) {
-        console.error('Redirect result error:', error);
-        // Don't show error to user as this might be normal (no redirect pending)
+      } catch (error: any) {
+        console.error('❌ Redirect result error:', error);
+        if (error.code !== 'auth/no-auth-event') {
+          // Only log actual errors, not the normal "no redirect pending" case
+          console.error('Redirect error details:', {
+            code: error.code,
+            message: error.message
+          });
+        }
       }
     };
 
