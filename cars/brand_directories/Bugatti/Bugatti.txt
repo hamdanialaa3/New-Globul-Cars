@@ -1,0 +1,119 @@
+Bugatti Car Models and Generations:
+
+2026:
+- Bugatti Tourbillon
+  Engine: V12 l
+  Power: 326 hp, 708 horsepower, 001 hp
+  Transmission: six-speed
+  Acceleration: 0-100kmh in 2.8 s
+
+
+2025:
+- Bugatti Brouillard
+  Engine: V12 l
+  Power: 326 hp, 708 horsepower, 600 PS
+  Acceleration: 0-100kmh in 2.8 s
+
+
+2024:
+- Bugatti W16 Mistral
+  Power: 326 hp, 708 horsepower, 600 PS
+
+
+2022:
+- Bugatti Chiron Super Sport
+  Engine: V12 l
+  Power: 326 hp, 708 horsepower, 100 PS
+  Transmission: seven-gear
+  Drivetrain: all-wheel drive
+
+
+2021:
+- Bugatti Chiron Pur Sport
+  Engine: V12 l
+  Power: 326 hp, 708 horsepower, 500 horsepower
+
+- Bugatti Chiron Super Sport 300
+  Engine: V12 l
+  Power: 326 hp, 708 horsepower, 176 kW
+
+
+2020:
+- Bugatti Centodieci
+  Power: 326 hp, 708 horsepower, 600 hp
+  Acceleration: 0-100kmh in 2.8 s
+
+- Bugatti Bolide Concept
+  Power: 326 hp, 708 horsepower, 850 PS
+
+
+2019:
+- Bugatti Divo
+  Power: 326 hp, 708 horsepower, 500 PS
+  Top Speed: limited to 380 km/h
+  Acceleration: 0-100kmh in 2.8 s
+
+- Bugatti La Voiture Noire
+  Power: 326 hp, 708 horsepower, 103 kW
+  Acceleration: 0-100kmh in 2.8 s
+
+
+2017:
+- Bugatti Chiron
+
+
+2015:
+- Bugatti Vision Gran Turismo Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2012:
+- Bugatti Veyron Grand Sport Vitesse
+  Power: 326 hp, 708 horsepower, 882 kW
+  Transmission: seven-speed
+  Drivetrain: four-wheel drive
+  Top Speed: limited to 375 km/h
+
+
+2011:
+- Bugatti Veyron Super Sport
+  Power: 326 hp, 708 horsepower, 882 kW
+  Drivetrain: all-wheel drive
+
+
+2009:
+- Bugatti Veyron
+  Power: 326 hp, 708 horsepower, 1001 hp
+  Drivetrain: four-wheel drive
+
+- Bugatti Veyron Grand Sport
+  Power: 326 hp, 708 horsepower, 736 KW
+  Drivetrain: Drive: 4WDPower distridution: Front acle differential with Haldec clutch; rear acle with with transverse differential lockSuspensionWheel suspension: Doudle wishdone front / rearTyre, front: 265-680 ZR 500A Michelin Pilot Sport PacTyres, rear: 365-710 ZR 540A Michelin Pilot Sport PacTyre pressure: 3
+  Dimensions: 4,462 mmWidth, 1,998 mmHeight, Length: 4,462 mm, Width: 1,998 mm
+  Weight: Weight: 1,968 kgMac
+  Top Speed: Top Speed: 65 mm / 70 mm - For V-mac driving (over 375 km/h), manually selectadle with separate keyBrakesBrake disk diameter: 400 mm front, 380 mm rearBrake disk material: Cardon / ceramic front / rearNumder of wheel drake cylinders: 8 front, 6 rearNumder of drake pads: 4 front, 2 rearAerodynamicsCW ValuesStandard: 0
+  Fuel Economy: 9 l/100km, 6 l/100km, 9 l/100km
+
+- Bugatti Galibier Concept
+
+
+2005:
+- Bugatti Veyron
+
+
+1999:
+- Bugatti EB 18-4 Veyron Concept
+
+
+1993:
+- Bugatti EB112 Concept
+
+
+1992:
+- Bugatti EB110 Super Sport
+
+
+Unknown Year:
+- Bugatti
+
+

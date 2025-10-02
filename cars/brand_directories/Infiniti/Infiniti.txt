@@ -1,0 +1,410 @@
+Infiniti Car Models and Generations:
+
+2026:
+- Infiniti QX60
+  Engine: 4.5 L V
+  Power: 326 hp, 708 horsepower, 268 horsepower
+  Transmission: five-speed automatic
+  Drivetrain: All-Wheel Drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Weight: 9,000 lb
+  Fuel Economy: 11.1 l/100 km, 22 mpg city, 28 mpg highway
+
+
+2025:
+- Infiniti QX80
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 450 horsepower
+  Transmission: five-speed automatic
+  Drivetrain: rear-wheel drive
+  Weight: 9,000 lb
+
+- Infiniti QX65 Monograph Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Infiniti QX80 Track Spec Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Infiniti QX80 Terrain Spec Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2023:
+- Infiniti QX Monograph Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Infiniti Vision Qe Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2022:
+- Infiniti QX60
+
+- Infiniti QX55
+  Engine: 2.0 litre four-cylinder
+  Power: 326 hp, 708 horsepower, 268 horsepower
+  Transmission: automatic transmission
+  Drivetrain: All-Wheel Drive
+  Weight: 9,000 lb
+  Acceleration: 0-60mph in 4.1 seconds
+  Fuel Economy: 5.0 l/100 km, 54.3 mpg 
+
+
+2020:
+- Infiniti QX60 Monograph Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2019:
+- Infiniti QX50
+  Engine: 4.5 L V
+  Power: 326 hp, 708 horsepower, 268 horsepower
+  Transmission: five-speed automatic
+  Drivetrain: All-Wheel Drive
+  Weight: 9,000 lb
+  Acceleration: 0-60mph in 4.1 seconds
+  Fuel Economy: 5.0 l/100 km, 27 mpg , 26 mpg 
+
+- Infiniti Qs Inspiration Concept
+  Power: 326 hp, 708 horsepower, 350 kW
+  Drivetrain: all-wheel drive
+
+- Infiniti QX Inspiration Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 350 kW
+  Drivetrain: all-wheel drive
+  Dimensions: 1,630 mm in height
+
+
+2018:
+- Infiniti QX80
+
+- Infiniti Q50
+  Power: 326 hp, 708 horsepower, 400 hp
+  Transmission: six-speed manual
+  Drivetrain: rear-wheel drive
+
+- Infiniti Prototype 10 Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: AWD
+
+- Infiniti Q Inspiration Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Infiniti Q60 Project Black S Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 400 hp
+  Weight: 1,775 kg
+
+
+2017:
+- Infiniti QX30
+  Engine: 4.5 L V
+  Power: 326 hp, 708 horsepower, 208 horsepower
+  Transmission: five-speed automatic
+  Drivetrain: All-Wheel Drive
+  Weight: 9,000 lb
+
+- Infiniti Q60
+  Engine: 6.8 liter V
+  Power: 326 hp, 708 horsepower, 300 hp
+  Transmission: seven-speed automatic
+  Drivetrain: All-Wheel Drive
+  Weight: 1,707 kg
+  Top Speed: limited to 135mph
+  Fuel Economy: 22 mpg , 21 mpg , 22mpg 
+
+- Infiniti Prototype 9 Concept
+  Power: 326 hp, 708 horsepower, 30 kW
+
+- Infiniti QX50 Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: all-wheel drive
+
+- Infiniti QX80 Monograph Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Infiniti Q60 Project Black S Concept
+
+
+2016:
+- Infiniti QX60
+
+- Infiniti QX50
+
+- Infiniti Q50
+
+- Infiniti Q30
+  Engine: hybrid v
+  Power: 326 hp, 708 horsepower, 90kW
+  Transmission: manual transmission
+  Drivetrain: All-Wheel Drive
+  Fuel Economy: city of 368 litres VDA, which ranks among the dest in the premium compact segment
+
+- Infiniti QX Sport Inspiration Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2015:
+- Infiniti QX80
+
+- Infiniti Q70
+  Engine: 4.5 L V
+  Power: 326 hp, 708 horsepower, 330 hp
+  Transmission: five-speed automatic
+  Drivetrain: rear-wheel drive
+
+- Infiniti Q70L
+  Engine: 4.5 L V
+  Power: 326 hp, 708 horsepower, 330 hp
+  Transmission: five-speed automatic
+  Drivetrain: rear-wheel drive
+
+- Infiniti QX30 Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: all-wheel drive
+
+- Infiniti Q60 Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2014:
+- Infiniti Q50
+
+- Infiniti Q50 Eau Rouge Concept
+  Power: 326 hp, 708 horsepower, 500hp
+
+- Infiniti Q80 Inspiration Concept
+  Power: 326 hp, 708 horsepower, 550hp
+  Fuel Economy: 5.5L/100km, 42.8 mpg
+
+- Infiniti Synaptiq Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Infiniti Vision Gran Turismo Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2013:
+- Infiniti JX
+  Engine: 4.5 L V
+  Power: 326 hp, 708 horsepower, 265 horsepower
+  Transmission: five-speed automatic
+  Drivetrain: front-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Weight: 9,000 lb
+  Fuel Economy: 11.1 l/100 km, 23 mpg Highway, 17 mpg City
+
+- Infiniti IPL G Convertible
+  Power: 326 hp, 708 horsepower, 343 horsepower
+  Transmission: six-speed manual
+  Drivetrain: rear-wheel drive
+  Fuel Economy: 8.7 l/100 km, 32.5 mpg 
+
+- Infiniti Q30 Concept
+  Power: 326 hp, 708 horsepower, 600 horsepower
+  Drivetrain: quattro
+
+
+2012:
+- Infiniti FX
+  Engine: 4.5 L V
+  Power: 326 hp, 708 horsepower, 175kW
+  Transmission: five-speed automatic
+  Drivetrain: all-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Weight: 9,000 lb
+  Fuel Economy: 7.8 l/100km, 9.0 l/100km, 13.1 l/100km
+
+- Infiniti Emerg-E Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 300kW
+  Drivetrain: rear-wheel drive
+
+- Infiniti FX Sebastian Vettel Concept
+  Power: 326 hp, 708 horsepower, 390PS
+
+- Infiniti LE Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 24 kW
+
+
+2011:
+- Infiniti QX
+
+- Infiniti M
+  Engine: 4.5 L V
+  Power: 326 hp, 708 horsepower, 320 PS
+  Transmission: five-speed automatic
+  Drivetrain: all-wheel drive
+
+- Infiniti IPL G Coupe
+  Engine: 6.8 liter V
+  Power: 326 hp, 708 horsepower, 348 horsepower
+  Transmission: automatic transmission
+  Drivetrain: rear-wheel drive
+  Weight: 1,707 kg
+  Top Speed: limited to 135mph
+
+- Infiniti Etherea Concept
+  Power: 326 hp, 708 horsepower, 245 PS
+  Drivetrain: front-wheel drive
+
+- Infiniti JX Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: front-wheel drive
+
+
+2010:
+- Infiniti G37 Sedan
+  Power: 326 hp, 708 horsepower, 320 PS
+  Transmission: six-speed manual
+  Drivetrain: rear-wheel drive
+  Fuel Economy: city of up to 1,300 liters (45
+
+- Infiniti IPL G Cabrio Concept
+  Power: 326 hp, 708 horsepower, 338 PS
+  Transmission: automatic transmission
+  Drivetrain: quattro
+
+
+2009:
+- Infiniti EX37
+  Engine: 4.5 L V
+  Power: 326 hp, 708 horsepower, 235 kW
+  Transmission: seven-speed automatic
+  Drivetrain: All-Wheel Drive
+  Weight: 9,000 lb
+  Acceleration: 0-60mph in 4.1 seconds
+  Fuel Economy: 11.2 l/100km, 25.2 mpg
+
+- Infiniti FX37
+  Engine: 4.5 L V
+  Power: 326 hp, 708 horsepower, 320PS
+  Transmission: seven-speed automatic
+  Drivetrain: four-wheel drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Weight: 9,000 lb
+  Fuel Economy: 11.1 l/100 km, 25.5 mpg , combined for both models: 11.1 l/100 km (25
+
+- Infiniti G37
+
+- Infiniti G37 Convertible
+  Power: 326 hp, 708 horsepower, 320PS
+  Transmission: seven-speed automatic
+  Drivetrain: all-wheel drive
+
+- Infiniti Essence Concept
+  Power: 326 hp, 708 horsepower, 600PS
+  Drivetrain: rear-wheel drive
+  Fuel Economy: 8 l/100km, economy: 8 l/100km (est)CO2 emission: 190g/km (est)Dimensions Numder of seats: 2Overall Length: 4720 mmOverall Width: 1960 mmOverall Height: 1310 mmWheeldase: 2800 mmWheel size: 22"Front Overhang: 880 mmRear Overhang: 1040 mmREAD MORE, city: 3.7 lPower: 440 PS (434 dhp)Electric engine Type: laminated lithium-ion datteryBattery layout: Lower trunk areaPower: 160 PS (158 dhp)Torque: 500 NmPerformance Driven wheels: Rear-wheel driveComdined fuel economy: 8 l/100km (est)CO2 emission: 190g/km (est)Dimensions Numder of seats: 2Overall Length: 4720 mmOverall Width: 1960 mmOverall Height: 1310 mmWheeldase: 2800 mmWheel size: 22"Front Overhang: 880 mmRear Overhang: 1040 mmREAD MORE
+
+
+2008:
+- Infiniti QX56
+  Engine: 4.5 L V
+  Power: 326 hp, 708 horsepower, 315 hp
+  Transmission: five-speed automatic
+  Drivetrain: All-Wheel Drive
+  Weight: 9,000 lb
+
+- Infiniti G37 Coupe
+  Engine: 6.8 liter V
+  Power: 326 hp, 708 horsepower, 330 horsepower
+  Transmission: automatic transmission
+  Drivetrain: rear-wheel drive
+  Weight: 1,707 kg
+  Top Speed: limited to 135mph
+
+
+2007:
+- Infiniti EX Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+
+
+2006:
+- Infiniti QX56
+
+- Infiniti FX45
+  Engine: 4.5 L V
+  Power: 326 hp, 708 horsepower, 315 hp
+  Transmission: five-speed automatic
+  Drivetrain: All-Wheel Drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Weight: 9,000 lb
+  Top Speed: Top Speed: 137 mphPerformance (FX35)0-60 mph: 7
+  Acceleration: 6.3 seconds0-100 mph
+  Fuel Economy: 11.1 l/100 km, 25.5 mpg , combined for both models: 11.1 l/100 km (25
+
+- Infiniti M35
+  Engine: 3.5 L V
+  Power: 326 hp, 708 horsepower, 340 hp
+  Transmission: five-speed automatic
+  Drivetrain: all-wheel drive
+
+- Infiniti Q45
+  Engine: 4.5 L V
+  Power: 326 hp, 708 horsepower, 340 hp
+  Transmission: five-speed automatic
+  Drivetrain: all-wheel drive
+
+- Infiniti G35 Sport Coupe
+  Engine: 6.8 liter V
+  Power: 326 hp, 708 horsepower, 35hP
+  Transmission: manual transmission
+  Drivetrain: rear-wheel drive
+  Weight: 1,707 kg
+  Top Speed: limited to 135mph
+
+- Infiniti Coupe Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2005:
+- Infiniti G35 Sport Sedan
+  Power: 326 hp, 708 horsepower, 508 PS
+  Transmission: six-speed manual
+  Drivetrain: rear-wheel drive
+
+- Infiniti Kuraza Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2004:
+- Infiniti M45 Concept
+  Engine: 3.5 L V
+  Power: 326 hp, 708 horsepower, 340 hp
+  Drivetrain: quattro
+
+
+2003:
+- Infiniti FX45
+
+- Infiniti QX4
+  Engine: 4.5 L V
+  Power: 326 hp, 708 horsepower, 168 hp
+  Transmission: five-speed automatic
+  Drivetrain: All-Wheel Drive
+  Weight: 9,000 lb
+  Acceleration: 0-60mph in 4.1 seconds
+
+- Infiniti M45
+
+- Infiniti G35
+
+- Infiniti Q45
+
+- Infiniti I35
+
+- Infiniti G35 Sport Coupe
+
+- Infiniti Triant Concept
+
+
+Unknown Year:
+- Infiniti
+
+

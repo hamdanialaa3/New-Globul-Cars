@@ -1,0 +1,71 @@
+Carlsson Car Models and Generations:
+
+2006:
+- Carlsson Mercedes-Benz S-Class
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: AWD
+
+- Carlsson Mercedes-Benz M-Class
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Carlsson Mercedes-Benz B-Class
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2005:
+- Carlsson Mercedes-Benz SLK
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Carlsson Mercedes-Benz CLS
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: RWD
+
+- Carlsson Mercedes-Benz A-Class
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+
+2004:
+- Carlsson Mercedes-Benz E-Class
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2003:
+- Carlsson Mercedes-Benz SL
+
+- Carlsson Mercedes-Benz CLK RS
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Carlsson Mercedes-Benz CLK
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2001:
+- Carlsson Mercedes-Benz A-Class
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2000:
+- Carlsson Mercedes-Benz SLK
+
+- Carlsson Mercedes-Benz M-Class
+
+- Carlsson Mercedes-Benz C-Class
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+1999:
+- Carlsson Mercedes-Benz SL
+
+- Carlsson Mercedes-Benz S-Class
+
+
+1998:
+- Carlsson Mercedes-Benz CLK
+
+
+1995:
+- Carlsson Mercedes-Benz C-Class
+  Power: 326 hp, 708 horsepower, 326 hp
+
+

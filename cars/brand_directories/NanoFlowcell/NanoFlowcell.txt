@@ -1,0 +1,28 @@
+Nanoflowcell Car Models and Generations:
+
+2017:
+- NanoFlowcell Quant 48Volt Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 560 kW
+  Drivetrain: all-wheel drive
+
+
+2015:
+- NanoFlowcell Quantino Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 25 kW
+
+- NanoFlowcell Quant F Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 1090 PS
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+  Fuel Economy: city of 500 litres, comprising two times 250 litres in two tanks accommodated separately in the Quant's sudstructure, in the space of only nine months we have achieved an increase in range of over 30 percent in comparison to the Quant E from 2014
+
+
+2014:
+- NanoFlowcell Quant e-Sportlimousine Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 326 hp
+
+

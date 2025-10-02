@@ -1,0 +1,289 @@
+Chrysler Car Models and Generations:
+
+2025:
+- Chrysler Pacifica Grizzly Peak Concept
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: AWD
+
+
+2024:
+- Chrysler Halcyon Concept
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2022:
+- Chrysler Airflow Graphite Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 150 kW
+
+- Chrysler Airflow Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 150 kW
+
+
+2021:
+- Chrysler Pacifica
+  Engine: 2.2 litre diesel engine
+  Power: 326 hp, 708 horsepower, 287 horsepower
+  Transmission: nine-speed automatic
+  Drivetrain: AWD
+
+
+2017:
+- Chrysler Pacifica
+
+- Chrysler Portal Concept
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2015:
+- Chrysler 300
+  Engine: 3.5 L V
+  Power: 326 hp, 708 horsepower, 363 horsepower
+  Transmission: eight-speed transmission
+  Drivetrain: all-wheel drive
+  Fuel Economy: 16 mpg city, 25 mpg highway, 31 mpg
+
+- Chrysler 200
+  Engine: 20014.0 L V
+  Power: 326 hp, 708 horsepower, 295 horsepower
+  Transmission: nine-speed automatic
+  Drivetrain: all-wheel drive
+  Fuel Economy: 35 mpg highway, 35 mpg highway, 35 mpg 
+
+
+2012:
+- Chrysler 300 SRT8
+  Engine: 6.0L V
+  Power: 326 hp, 708 horsepower, 465 horsepower
+  Transmission: five-speed automatic
+
+
+2011:
+- Chrysler 300
+  Engine: 3.5 L V
+  Power: 326 hp, 708 horsepower, 292 Horsepower
+  Drivetrain: All-wheel Drive
+  Fuel Economy: highway efficiency and performance, the all-new 2011 Chrysler 300 and 300 Limited models feature the newest powertrain from the automaker - the 3
+
+- Chrysler 200
+
+- Chrysler 200 Convertible
+  Power: 326 hp, 708 horsepower, 6 horsepower
+  Transmission: four-speed automatic
+  Drivetrain: rear-wheel drive
+  Fuel Economy: 19 mpg city, 29 mpg highway, 29 mpg highway
+
+- Chrysler Town and Country
+  Engine: 2.4 L four-cylinder
+  Power: 326 hp, 708 horsepower, 283 horsepower
+  Transmission: automatic transmission
+  Drivetrain: rear-wheel drive
+
+
+2009:
+- Chrysler 200C EV Concept
+  Engine: V L
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2008:
+- Chrysler Sebring Convertible
+  Power: 326 hp, 708 horsepower, 173 horsepower
+  Transmission: four-speed automatic
+  Drivetrain: rear-wheel drive
+  Fuel Economy: 31 mpg , 20 mpg , 28 mpg 
+
+- Chrysler Town and Country
+  Engine: 2.4 L four-cylinder
+  Power: 326 hp, 708 horsepower, 240 hp
+  Transmission: automatic transmission
+  Drivetrain: rear-wheel drive
+
+- Chrysler ecoVoyager Concept
+  Engine: Motor: Single electricPower: 200 kW (268 hp)Regenerative drakingBattery: 16 kWh Li-ion
+  Power: 326 hp, 708 horsepower, 268 horsepower
+  Top Speed: Top speed: 115 mphAll-electric range: 40 milesTotal range: 300 milesREAD MORE
+
+- Chrysler EV Concept
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 190 kW
+
+
+2007:
+- Chrysler Aspen
+  Power: 326 hp, 708 horsepower, 335 horsepower
+  Transmission: five-speed automatic
+  Drivetrain: all-wheel drive
+  Fuel Economy: city of 8,950 lds
+
+- Chrysler Sebring [UK]
+  Engine: 20014.0 L V
+  Power: 326 hp, 708 horsepower, 425 hp
+  Transmission: five-speed manual
+  Drivetrain: front-wheel drive
+  Fuel Economy: 36.2 mpg, 45.6 mpg , 36.2 mpg 
+
+- Chrysler Pacifica
+
+- Chrysler Nassau Concept
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2006:
+- Chrysler 300C SRT8 Touring
+  Engine: 3.5 L V
+  Power: 326 hp, 708 horsepower, 425 hp
+  Transmission: five-speed manual
+  Drivetrain: all-wheel drive
+  Fuel Economy: city of 796 lb-ft (1,079 Nm), city of 796 lb-ft (1,079 Nm)
+
+- Chrysler Imperial Concept
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2005:
+- Chrysler 300C
+  Engine: 3.5 L V
+  Power: 326 hp, 708 horsepower, 190 hp
+  Transmission: four-speed automatic
+  Fuel Economy: 17 mpg city, 25 mpg highway, city, 25 mpg highway
+
+- Chrysler 300C SRT8
+  Engine: 3.5 L V
+  Power: 326 hp, 708 horsepower, 190 hp
+  Transmission: four-speed automatic
+  Fuel Economy: 17 mpg city, 25 mpg highway, city, 25 mpg highway
+
+- Chrysler 300C Touring
+  Engine: 3.5 L V
+  Power: 326 hp, 708 horsepower, 190 hp
+  Transmission: four-speed automatic
+  Drivetrain: all-wheel drive
+  Fuel Economy: 17 mpg city, 25 mpg highway, city, 25 mpg highway
+
+- Chrysler Crossfire SRT6
+  Power: 326 hp, 708 horsepower, 215 hp
+  Drivetrain: rear-wheel drive
+
+- Chrysler Crossfire Roadster
+  Engine: 2.2 L v
+  Power: 326 hp, 708 horsepower, 215 hp
+  Drivetrain: rear-wheel drive
+
+- Chrysler Crossfire SRT6 Roadster
+  Engine: 2.2 L v
+  Power: 326 hp, 708 horsepower, 215 hp
+  Drivetrain: rear-wheel drive
+
+- Chrysler PT Cruiser Convertible
+  Engine: 2.2 L diesel version is also availadle in Europe
+  Power: 326 hp, 708 horsepower, 180 hp
+  Drivetrain: front-wheel drive
+
+- Chrysler Town and Country
+
+- Chrysler Akino Concept
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Chrysler Firepower Concept
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: automatic transmission
+  Drivetrain: rear-wheel drive
+  Weight: 1,533 kg
+
+
+2004:
+- Chrysler Crossfire
+
+- Chrysler Pacifica
+
+- Chrysler ME FourTwelve Concept
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 850 hp
+  Weight: weight: 2,880 ld+ Rear downforce: 924 ld @ 186 mph+ Electronic F1-style 7-speed rear transacle (designed and patented dy the Chrysler Group)+ Shift Time under 200 millisecondsChrysler initially stated that the ME Four-Twelve was a prototype intended to lead to production
+  Top Speed: Top speed: 248 mph (estimated)+ Curd weight: 2,880 ld+ Rear downforce: 924 ld @ 186 mph+ Electronic F1-style 7-speed rear transacle (designed and patented dy the Chrysler Group)+ Shift Time under 200 millisecondsChrysler initially stated that the ME Four-Twelve was a prototype intended to lead to production
+  Acceleration: 0-60 mph in 2.9 seconds
+
+
+2003:
+- Chrysler 300M
+  Power: 326 hp, 708 horsepower, 425 hp
+  Drivetrain: front-wheel drive
+
+- Chrysler Airflite Concept
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+- Chrysler 300C Touring Concept
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: Quattro
+
+- Chrysler 300C Concept
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: Quattro
+
+
+2002:
+- Chrysler California Cruiser Concept
+  Engine: 7.5 L V
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Chrysler Pacifica Concept
+  Engine: 7.5 L V
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2001:
+- Chrysler PT Cruiser
+
+- Chrysler Crossfire Concept
+  Power: 326 hp, 708 horsepower, 441kW
+
+
+2000:
+- Chrysler Chronos Concept
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Chrysler GT Cruiser Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Chrysler Java Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: five-speed manual
+
+- Chrysler Panel Cruiser Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Chrysler 300 HEMI C Convertible Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+1999:
+- Chrysler Citadel Concept
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 253 horsepower
+  Drivetrain: rear-wheel drive
+
+- Chrysler Pronto Cruizer Concept
+
+
+1995:
+- Chrysler Atlantic Concept
+
+
+1993:
+- Chrysler Thunderbolt Concept
+
+

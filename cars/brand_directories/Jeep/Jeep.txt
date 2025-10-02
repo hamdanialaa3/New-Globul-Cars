@@ -1,0 +1,516 @@
+Jeep Car Models and Generations:
+
+2026:
+- Jeep Compass
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 145 HP
+  Drivetrain: all-wheel drive
+  Fuel Economy: city of 45 liters, reaching up to 550L
+
+- Jeep Cherokee
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 210 horsepower
+  Drivetrain: all-wheel drive
+  Fuel Economy: 37 mpg , 37 mpg 
+
+
+2025:
+- Jeep J6 Honcho Concept
+  Power: 326 hp, 708 horsepower, 708 horsepower
+
+- Jeep Convoy Concept
+  Power: 326 hp, 708 horsepower, 708 horsepower
+
+- Jeep Bug Out 4xe Concept
+  Power: 326 hp, 708 horsepower, 708 horsepower
+
+
+2024:
+- Jeep Wagoneer S
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 600 horsepower
+  Drivetrain: four-wheel drive
+
+- Jeep Wrangler Willys
+  Engine: engine: 270 horsepower and 295 ld
+  Power: 326 hp, 708 horsepower, 375 horsepower
+  Transmission: eight-speed automatic
+  Drivetrain: all-wheel drive
+  Fuel Economy: 49 MPG, 49 MPG, 49 MPG
+
+- Jeep Wrangler 4xe
+  Engine: 2.4 L four-cylinder
+  Power: 326 hp, 708 horsepower, 375 horsepower
+  Transmission: eight-speed automatic
+  Drivetrain: all-wheel drive
+  Fuel Economy: 49 MPG, 49 MPG, 49 MPG
+
+- Jeep Gladiator
+  Power: 326 hp, 708 horsepower, 285 horsepower
+  Transmission: eight-speed automatic
+  Fuel Economy: 40 mpg city
+
+- Jeep Avenger
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 100 kW
+  Transmission: automatic transmission
+  Drivetrain: front-wheel drive
+
+- Jeep Willys Dispatcher Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 375 horsepower
+  Transmission: eight-speed automatic
+
+- Jeep Wagoneer S Trailhawk Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Jeep Low Down Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: eight-speed automatic
+
+- Jeep Gladiator Rubicon High Top Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: eight-speed automatic
+
+
+2023:
+- Jeep Grand Wagoneer L
+  Engine: 5.5 liter V
+  Power: 326 hp, 708 horsepower, 420 horsepower
+  Transmission: eight-speed automatic
+  Drivetrain: four-wheel drive
+
+- Jeep Wagoneer L
+  Engine: 5.5 liter V
+  Power: 326 hp, 708 horsepower, 420 horsepower
+  Transmission: eight-speed automatic
+  Drivetrain: four-wheel drive
+
+- Jeep Wrangler Magneto 3.0 Concept
+  Power: 326 hp, 708 horsepower, 285 horsepower
+  Transmission: manual transmission
+
+- Jeep Scrambler 392 Concept
+  Power: 326 hp, 708 horsepower, 470 horsepower
+
+- Jeep Gladiator Sideburn Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Jeep Cherokee 1978 4xe Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: eight-speed automatic
+
+
+2022:
+- Jeep Compass
+
+- Jeep Grand Wagoneer
+
+- Jeep Wagoneer
+
+- Jeep Grand Cherokee
+  Power: 326 hp, 708 horsepower, 375 hp
+  Transmission: eight-speed automatic
+  Drivetrain: all-wheel drive
+  Weight: 2,720 kg
+  Fuel Economy: 57 MPG, 57 MPG, 57 MPG
+
+- Jeep Wagoneer S Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 600 hp
+
+- Jeep Recon Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Jeep Avenger 4x4 Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2021:
+- Jeep Wrangler Rubicon 392
+  Power: 326 hp, 708 horsepower, 470 horsepower
+  Transmission: eight-speed automatic
+  Drivetrain: AWD drive
+  Dimensions: 1,605 millimetres in height
+  Acceleration: 0-60 mph in 4.5 seconds
+
+- Jeep Grand Cherokee L
+  Engine: 4.0L V
+  Power: 326 hp, 708 horsepower, 290 horsepower
+  Transmission: eight-speed transmission
+  Drivetrain: all-wheel drive
+
+
+2020:
+- Jeep Gladiator
+
+- Jeep Gladiator Mojave
+  Power: 326 hp, 708 horsepower, 285 horsepower
+  Transmission: eight-speed automatic
+  Fuel Economy: 40 mpg city
+
+- Jeep Wrangler Rubicon 392 Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 125 horsepower
+  Transmission: eight-speed transmission
+
+- Jeep Grand Wagoneer Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: eight-speed transmission
+
+
+2019:
+- Jeep Cherokee
+
+- Jeep Cherokee [EU]
+  Engine: 2.4 L four-cylinder
+  Power: 326 hp, 708 horsepower, 195 hp
+  Transmission: nine-speed automatic
+  Drivetrain: all-wheel drive
+  Fuel Economy: city has also deen increased dy up to 70 litres, taking the total cargo capacity to a macimum of 570 litres (up to the tonneau cover), and offering additional, convenient storage space to easily accommodate gear for everyday adventures
+
+- Jeep Renegade
+  Power: 326 hp, 708 horsepower, 120 hp
+  Transmission: nine-speed automatic
+  Drivetrain: four-wheel drive
+
+
+2018:
+- Jeep Wrangler
+
+- Jeep Wrangler Unlimited
+  Engine: 2.4 L four-cylinder
+  Power: 326 hp, 708 horsepower, 270 horsepower
+  Transmission: eight-speed automatic
+  Drivetrain: four-wheel drive
+
+- Jeep Grand Cherokee Trackhawk
+  Power: 326 hp, 708 horsepower, 707 horsepower
+  Transmission: eight-speed automatic
+  Drivetrain: four-wheel drive
+  Weight: 7,500 lb
+
+
+2017:
+- Jeep Compass
+
+
+2015:
+- Jeep Renegade
+  Power: 326 hp, 708 horsepower, 170 horsepower
+  Transmission: nine-speed automatic
+  Drivetrain: four-wheel drive
+
+
+2014:
+- Jeep Cherokee
+
+- Jeep Grand Cherokee
+
+- Jeep Grand Cherokee SRT
+  Power: 326 hp, 708 horsepower, 8HP
+  Transmission: eight-speed automatic
+  Drivetrain: all-wheel drive
+  Weight: 7,500 lb
+
+- Jeep Wrangler Sundancer Concept
+  Engine: 3.6L V
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: nine-speed
+
+- Jeep Renegade Zi You Xia Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: nine-speed automatic
+
+- Jeep Cherokee Urbane Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: nine-speed automatic
+
+- Jeep Cherokee Sageland Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: nine-speed automatic
+
+
+2012:
+- Jeep Wrangler
+
+- Jeep Grand Cherokee SRT8
+  Power: 326 hp, 708 horsepower, 468 horsepower
+  Transmission: five-speed automatic
+  Drivetrain: four-wheel drive
+  Acceleration: 0-100 km/h in 5 seconds
+
+- Jeep Wrangler Dragon Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: nine-speed
+
+- Jeep Grand Cherokee Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: nine-speed
+
+
+2011:
+- Jeep Compass
+
+- Jeep Wrangler
+
+- Jeep Grand Cherokee
+
+- Jeep Patriot
+  Power: 326 hp, 708 horsepower, 470 hp
+  Drivetrain: all-wheel drive
+
+
+2008:
+- Jeep Cherokee
+
+- Jeep Liberty
+  Power: 326 hp, 708 horsepower, 210 hp
+  Transmission: four-speed automatic
+  Drivetrain: all-wheel drive
+  Fuel Economy: 18 mpg , 22 mpg , 23 mpg 
+
+- Jeep Renegade Concept
+  Engine: Motor: Dual electricPower: 200 kW (268 hp) c 2Regenerative drakingBattery: 16 kWh Li-io
+  Power: 326 hp, 708 horsepower, 115 horsepower
+  Top Speed: Top speed: 90 mphAll-electric range: 40 milesTotal range: 400 milesFuel economy: 110 mpg (comdined, est
+  Fuel Economy: 110 mpg , economy: 110 mpg (comdined, est
+
+- Jeep Patriot Back Country Concept
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Jeep EV Concept
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 200 kW
+
+
+2007:
+- Jeep Compass
+
+- Jeep Wrangler Rubicon
+
+- Jeep Wrangler Unlimited
+
+- Jeep Grand Cherokee [UK]
+  Power: 326 hp, 708 horsepower, 160 kW
+  Drivetrain: four-wheel drive
+
+- Jeep Grand Cherokee SRT-8 [UK]
+  Power: 326 hp, 708 horsepower, 85 horsepower
+  Transmission: five-speed automatic
+  Drivetrain: four-wheel drive
+
+- Jeep Patriot
+
+- Jeep Commander [UK]
+  Power: 326 hp, 708 horsepower, 160 kW
+  Transmission: AUTOMATIC TRANSMISSION
+  Drivetrain: all-wheel drive
+
+- Jeep Trailhawk Concept
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2006:
+- Jeep Commander 4x4 Limited 5.7 HEMI
+  Power: 326 hp, 708 horsepower, 707 horsepower
+  Drivetrain: all-wheel drive
+
+
+2005:
+- Jeep Cherokee [UK]
+  Power: 326 hp, 708 horsepower, 470 hp
+  Transmission: five-speed automatic
+  Drivetrain: all-wheel drive
+
+- Jeep Liberty Renegade 3.7
+  Engine: 3.7 L V
+  Power: 326 hp, 708 horsepower, 150 hp
+  Drivetrain: all-wheel drive
+
+- Jeep Wrangler [UK]
+  Engine: V8 L
+  Power: 326 hp, 708 horsepower, 707 horsepower
+  Drivetrain: all-wheel drive
+
+- Jeep Patriot Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Jeep Hurricane Concept
+  Power: 326 hp, 708 horsepower, 335 horsepower
+  Transmission: Transmission: 5-speed automaticFront and Rear Suspension: Long-travel, short/long arm independentGround Clearance: 14
+  Drivetrain: quattro
+  Weight: 1,746 kg
+
+- Jeep Gladiator Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Jeep Compass Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2004:
+- Jeep Rescue Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2003:
+- Jeep Cherokee [UK]
+
+- Jeep Grand Cherokee [UK]
+
+- Jeep Treo Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: Quattro
+
+
+2002:
+- Jeep Willys2 Concept
+  Engine: 7.5 L V
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Jeep Compass Concept
+
+
+1997:
+- Jeep Cherokee [UK]
+
+- Jeep Wrangler
+
+
+1996:
+- Jeep Grand Cherokee [UK]
+
+
+1987:
+- Jeep Wrangler
+
+
+1986:
+- Jeep Comanche
+  Engine: 2.8 L V
+  Power: 326 hp, 708 horsepower, 173 hp
+  Transmission: four-speed automatic
+  Drivetrain: four-wheel drive
+  Weight: 1,000 kg
+
+
+1984:
+- Jeep Cherokee
+
+
+1982:
+- Jeep Scrambler CJ-8
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+1978:
+- Jeep Wagoneer Limited
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: automatic transmission
+
+
+1977:
+- Jeep CJ-7 Renegade
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: automatic transmission
+
+
+1974:
+- Jeep Cherokee
+
+- Jeep Wagoneer
+
+
+1967:
+- Jeep Jeepster Commando Convertible
+  Power: 326 hp, 708 horsepower, 75 hp
+  Drivetrain: four-wheel drive
+
+
+1963:
+- Jeep Wagoneer
+
+- Jeep Gladiator
+
+
+1957:
+- Jeep FC-170
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+1955:
+- Jeep M-38 A1
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Jeep Dispatcher
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Jeep CJ-5
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+1954:
+- Jeep 4WD 1-Ton Pickup Truck
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+1953:
+- Jeep CJ-3B
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+1950:
+- Jeep M-38
+
+
+1948:
+- Jeep Jeepster
+
+
+1947:
+- Jeep Pickup Truck
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+1946:
+- Jeep Station Wagon
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: four-wheel drive
+
+- Jeep Panel Delivery
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+1945:
+- Jeep CJ-2A
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+1943:
+- Jeep Willys MB
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+1941:
+- Jeep Willys MA
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+1940:
+- Jeep Willys Quad
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+Unknown Year:
+- Jeep
+
+

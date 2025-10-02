@@ -1,0 +1,11 @@
+Spada Car Models and Generations:
+
+2011:
+- Spada Codatronca Monza
+  Engine: V8 7 liter
+  Power: 326 hp, 708 horsepower, 720 hp
+  Drivetrain: RWD
+  Weight: Weight: 1
+  Top Speed: Top Speed: 335 km/h0-100 km/h: 3
+
+

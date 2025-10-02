@@ -145,7 +145,28 @@ service cloud.firestore {
 
       // Allow create for authenticated users
       allow create: if isAuthenticated() &&
-                       request.auth.uid == request.resource.data.userId;
+                       request.auth.uid == request.resource.data.userId &&
+                       request.resource.data.keys().hasAll(['userId', 'carId', 'carData']);
+
+      // Allow update for owners
+      allow update: if isOwner(resource.data.userId);
+
+      // Allow delete for owners
+      allow delete: if isOwner(resource.data.userId);
+    }
+
+    // Saved Searches collection
+    match /savedSearches/{searchId} {
+      // Allow read for owners
+      allow read: if isOwner(resource.data.userId);
+
+      // Allow create for authenticated users (max 10 per user)
+      allow create: if isAuthenticated() &&
+                       request.auth.uid == request.resource.data.userId &&
+                       request.resource.data.keys().hasAll(['userId', 'name', 'filters']);
+
+      // Allow update for owners
+      allow update: if isOwner(resource.data.userId);
 
       // Allow delete for owners
       allow delete: if isOwner(resource.data.userId);

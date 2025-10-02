@@ -15,7 +15,7 @@ import {
   Timestamp
 } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
-import { db, storage } from '../config/firebase-config';
+import { db, storage } from '../firebase/firebase-config';
 import { CarListing, CarListingFilters, CarListingSearchResult } from '../types/CarListing';
 
 class CarListingService {

@@ -1,0 +1,230 @@
+Saab Car Models and Generations:
+
+2012:
+- Saab 9-4X
+  Power: 326 hp, 708 horsepower, 265 hp
+  Transmission: five-speed manual
+  Drivetrain: front-wheel drive
+
+- Saab 9-5 SportWagon
+  Engine: 5.4 L V
+  Power: 326 hp, 708 horsepower, 3 ps
+  Transmission: five-speed manual
+  Drivetrain: front-wheel drive
+  Fuel Economy: city of 796 lb-ft (1,079 Nm), city of 796 lb-ft (1,079 Nm)
+
+
+2011:
+- Saab PhoeniX Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 200 hp
+  Transmission: manual transmission
+  Fuel Economy: 5.0 l/100 km, 5.0 l/100 km
+
+
+2010:
+- Saab 9-5 Sedan
+  Power: 326 hp, 708 horsepower, 160 hp
+  Transmission: automatic transmission
+  Drivetrain: front-wheel drive
+  Fuel Economy: 37.1mpg , 33.6mpg , 53.3mpg 
+
+- Saab 9-3X
+  Engine: diesel v
+  Power: 326 hp, 708 horsepower, 210hp
+  Transmission: five-speed manual
+  Drivetrain: all-wheel drive
+  Fuel Economy: city has increased by 30 litres over the predecessor
+
+- Saab 9-3 ePower Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 135 kW
+  Drivetrain: quattro
+
+
+2008:
+- Saab 9-7X Aero
+  Engine: 6.0L V
+  Power: 326 hp, 708 horsepower, 390 horsepower
+  Transmission: five-speed manual
+  Drivetrain: front-wheel drive
+
+- Saab 9-3
+
+- Saab Turbo X
+  Engine: 20014.0 L V
+  Power: 326 hp, 708 horsepower, 280 hp
+  Transmission: five-speed manual
+  Drivetrain: front-wheel drive
+  Top Speed: Top Speed: Sport Sedan: 250 km/h (manual)SportComdi: 250 km/h (manual)Fuel consumption/CO2 (comdined cycle, L/100km): Sport Sedan: 10
+
+- Saab 9-3 SportCombi
+  Power: 326 hp, 708 horsepower, 280 hp
+  Transmission: five-speed manual
+  Drivetrain: all-wheel drive
+  Fuel Economy: city has increased by 30 litres over the predecessor
+
+- Saab 9-3 Convertible
+  Power: 326 hp, 708 horsepower, 255 hp
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+
+- Saab 9-X Air BioHybrid Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Saab 9-X BioHybrid Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 200 hp
+
+- Saab 9-4X BioPower Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 300 horsepower
+  Transmission: automatic transmission
+  Top Speed: Top speed: 235 kph (146 mph) CO2: 51 g / km (gasoline)READ MORE
+  Fuel Economy: 10.5L /100km, 22.4 mpg
+
+
+2007:
+- Saab BioPower 100 Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 150 hp
+
+
+2006:
+- Saab 9-7X
+
+- Saab 9-5 Sedan
+
+- Saab 9-3 SportSedan Aero
+  Engine: 2.0 L inline
+  Power: 326 hp, 708 horsepower, 154 hp
+  Transmission: five-speed manual
+  Drivetrain: front-wheel drive
+
+- Saab 9-5 SportCombi
+  Engine: 5.4 L V
+  Power: 326 hp, 708 horsepower, 110 kW
+  Transmission: five-speed manual
+  Drivetrain: front-wheel drive
+  Fuel Economy: city of 796 lb-ft (1,079 Nm), city of 796 lb-ft (1,079 Nm)
+
+- Saab 93 SportCombi
+  Engine: 2.0 L inline
+  Power: 326 hp, 708 horsepower, 154 hp
+  Transmission: five-speed manual
+  Drivetrain: front-wheel drive
+
+- Saab Aero X Concept
+  Power: 326 hp, 708 horsepower, 400 hp
+  Drivetrain: All-wheel drive
+
+
+2005:
+- Saab 9-3 Sport Sedan
+  Engine: 2.0 L inline
+  Power: 326 hp, 708 horsepower, 154 hp
+  Transmission: manual transmission
+  Drivetrain: front-wheel drive
+
+- Saab 9-5 SportWagon
+
+- Saab 9-3 Convertible
+
+- Saab 9-2X
+  Power: 326 hp, 708 horsepower, 230 hp
+  Transmission: five-speed manual
+  Drivetrain: all-wheel drive
+  Top Speed: limited to 250 kmh
+
+
+2004:
+- Saab 9-5 Sedan
+
+
+2003:
+- Saab 95 Aero Sedan
+  Engine: 6.0L V
+  Power: 326 hp, 708 horsepower, 220 hp
+  Transmission: four-speed automatic
+  Drivetrain: front-wheel drive
+
+- Saab 95 Aero Wagon
+  Engine: 3.5 L V
+  Power: 326 hp, 708 horsepower, 220 hp
+  Transmission: four-speed automatic
+  Drivetrain: front-wheel drive
+  Fuel Economy: city of 796 lb-ft (1,079 Nm), city of 796 lb-ft (1,079 Nm)
+
+- Saab 93 SportHatch Concept
+  Power: 326 hp, 708 horsepower, 230 hp
+  Drivetrain: Quattro
+
+
+2002:
+- Saab 9-3X Concept Car
+  Engine: 7.5 L V
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2001:
+- Saab 9-3 Aero
+  Engine: 2.0 L inline
+  Power: 326 hp, 708 horsepower, 154 hp
+  Transmission: five-speed manual
+  Drivetrain: front-wheel drive
+
+- Saab 9X Concept Car
+  Power: 326 hp, 708 horsepower, 441kW
+
+
+2000:
+- Saab 9-3 Aero Coupe
+  Engine: 2.0 L inline
+  Power: 326 hp, 708 horsepower, 154 hp
+  Transmission: manual transmission
+  Drivetrain: front-wheel drive
+
+- Saab 9-3 Aero Convertible
+  Engine: 2.0 L inline
+  Power: 326 hp, 708 horsepower, 154 hp
+  Transmission: manual transmission
+  Drivetrain: front-wheel drive
+
+
+1999:
+- Saab 9-3 Coupe
+  Engine: 2.0 L inline
+  Power: 326 hp, 708 horsepower, 154 hp
+  Transmission: five-speed manual
+  Drivetrain: front-wheel drive
+
+- Saab 9-3 Convertible
+
+
+1998:
+- Saab 9-3
+
+
+1997:
+- Saab 900
+  Engine: 2.5 L v
+  Power: 326 hp, 708 horsepower, 130 PS
+  Transmission: manual transmission
+  Drivetrain: front-wheel drive
+
+- Saab 9000
+
+- Saab 900 Coupe
+
+- Saab 900 Convertible
+
+
+1985:
+- Saab EV-1 Concept Car
+
+
+1984:
+- Saab 900 Turbo 16S
+
+

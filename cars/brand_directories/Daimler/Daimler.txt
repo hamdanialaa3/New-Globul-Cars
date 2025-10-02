@@ -1,0 +1,8 @@
+Daimler Car Models and Generations:
+
+2005:
+- Daimler Super Eight
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: xDrive
+
+

@@ -1,0 +1,241 @@
+Gmc Car Models and Generations:
+
+2025:
+- GMC Yukon AT4
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 420 horsepower
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+
+- GMC Yukon Denali
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 420 horsepower
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+
+- GMC Terrain
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 175 horsepower
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+
+
+2024:
+- GMC Acadia
+  Engine: 5.3L V
+  Power: 326 hp, 708 horsepower, 328 horsepower
+  Transmission: eight-speed automatic
+  Drivetrain: all-wheel drive
+
+- GMC Hummer EV SUV
+  Engine: 5.3L V
+  Power: 326 hp, 708 horsepower, 830 horsepower
+  Drivetrain: Rear-wheel drive
+
+- GMC Sierra EV
+  Engine: 5.3L V
+  Power: 326 hp, 708 horsepower, 754 horsepower
+  Weight: 4,309 kg
+
+- GMC Sierra HD
+  Engine: 5.3L V
+  Power: 326 hp, 708 horsepower, 470 horsepower
+  Transmission: automatic transmission
+  Weight: 9,072 kg
+
+
+2023:
+- GMC Canyon
+  Engine: 5.3L V
+  Power: 326 hp, 708 horsepower, 420 horsepower
+  Fuel Economy: 40 mpg city
+
+
+2022:
+- GMC Terrain AT4
+  Engine: 5.3L V
+  Power: 326 hp, 708 horsepower, 185 horsepower
+  Drivetrain: all-wheel drive
+
+- GMC Sierra
+  Engine: 6.2L V
+  Power: 326 hp, 708 horsepower, 000 horsepower
+  Transmission: eight-speed automatic
+  Drivetrain: Four-wheel drive
+
+- GMC Hummer EV
+
+
+2021:
+- GMC Yukon AT4
+
+- GMC Yukon Denali
+
+- GMC Canyon
+
+- GMC Canyon AT4 OVRLANDX Concept
+  Engine: 3.6L V
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: eight-speed automatic
+
+
+2020:
+- GMC Acadia
+
+- GMC Sierra HD
+
+
+2019:
+- GMC Sierra Denali
+  Engine: 5.3L V
+  Power: 326 hp, 708 horsepower, 000 horsepower
+  Transmission: automatic transmission
+
+
+2018:
+- GMC Yukon Denali
+
+- GMC Terrain Denali
+  Engine: 5.3L V
+  Power: 326 hp, 708 horsepower, 470 hp
+  Transmission: nine-speed automatic
+  Drivetrain: all-wheel drive
+
+
+2017:
+- GMC Acadia
+
+- GMC Sierra 2500HD All Terrain X
+  Engine: 6.6L V
+  Power: 326 hp, 708 horsepower, 445 hp
+  Transmission: automatic transmission
+  Weight: 8,500 lb
+
+- GMC Sierra Denali 2500HD
+  Engine: 5.3L V
+  Power: 326 hp, 708 horsepower, 000 horsepower
+  Transmission: automatic transmission
+  Weight: 8,500 lb
+
+- GMC Canyon Denali
+  Engine: 3.6L V
+  Power: 326 hp, 708 horsepower, 420 horsepower
+  Transmission: automatic transmission
+  Drivetrain: four-wheel drive
+  Weight: 3,175 kg
+  Fuel Economy: 26 mpg highway, 31 mpg highway
+
+- GMC Sierra 2500HD All Mountain Concept
+  Engine: diesel V
+  Power: 326 hp, 708 horsepower, 445 horsepower
+  Transmission: automatic transmission
+
+
+2016:
+- GMC Terrain
+
+- GMC Sierra
+
+- GMC Sierra All Terrain X
+  Engine: 5.3L V
+  Power: 326 hp, 708 horsepower, 365 horsepower
+
+
+2015:
+- GMC Yukon Denali
+
+- GMC Yukon XL
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 420 horsepower
+  Transmission: automatic transmission
+  Drivetrain: Rear-wheel drive
+
+- GMC Sierra HD
+
+- GMC Sierra All Terrain HD
+  Engine: 5.3L V
+  Power: 326 hp, 708 horsepower, 000 horsepower
+  Transmission: automatic transmission
+  Weight: 8,500 lb
+
+- GMC Canyon
+
+
+2014:
+- GMC Sierra
+
+- GMC Sierra Denali
+
+
+2013:
+- GMC Acadia
+
+
+2011:
+- GMC Sierra All Terrain HD Concept
+  Engine: Engine: Duramac 6
+  Power: 326 hp, 708 horsepower, 397 horsepower
+  Transmission: automatic transmission
+  Drivetrain: four-wheel drive
+  Weight: 1,225 kg
+
+
+2010:
+- GMC Terrain
+
+- GMC Granite Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+
+2008:
+- GMC Denali XT Concept
+  Engine: 4.9L v
+  Power: 326 hp, 708 horsepower, 326 horsepower
+  Drivetrain: rear-wheel drive
+  Weight: 1,587 kg
+
+
+2007:
+- GMC Yukon Denali
+
+- GMC Yukon XL
+
+- GMC Yukon
+
+- GMC Acadia
+
+- GMC Sierra
+
+- GMC Sierra Denali
+
+- GMC Sierra Classic
+  Engine: 4.3L V
+  Power: 326 hp, 708 horsepower, 195 hp
+  Transmission: four-speed automatic
+  Drivetrain: all-wheel drive
+  Weight: 4,763 kg
+  Fuel Economy: city 4L70 four-speed automatic and a new 6L80 sic-speed with the Sierra Denali's 6.2L engine
+
+- GMC Sierra 3500 HD SLT Crew Cab
+  Engine: 6.0L gasoline V-
+  Power: 326 hp, 708 horsepower, 353 horsepower
+  Transmission: automatic transmission
+  Weight: 8,392 kg
+  Fuel Economy: city center console (20.1 L), specific door panels, seats and other trim elements, city: 20.1 liters of undivided volume
+
+
+2005:
+- GMC Envoy Denali
+
+- GMC Envoy XL Denali
+
+- GMC Sierra Denali 1500 Crew Cab
+
+- GMC Graphyte Concept
+
+
+Unknown Year:
+- GMC
+
+

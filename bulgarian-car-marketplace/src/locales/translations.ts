@@ -27,6 +27,122 @@ export const translations = {
         verified: { title: 'Проверени обяви', description: 'Всички коли са проверени и валидирани преди публикуване' },
         finance: { title: 'Финансови решения', description: 'Гъвкави опции за финансиране и лизинг за всеки бюджет' },
         insurance: { title: 'Застраховка', description: 'Партнираме с водещи застрахователни компании за най-добри цени' }
+      },
+      cityCars: {
+        title: 'Коли по градове',
+        subtitle: 'Разгледайте автомобили във всички градове на България',
+        viewAll: 'Виж всички градове',
+        carsAvailable: 'налични коли',
+        viewCars: 'Виж коли',
+        selectCity: 'Изберете град',
+        mapDescription: 'Кликнете на града, за да видите автомобилите'
+      }
+    },
+    cars: {
+      title: 'Търси коли',
+      subtitle: 'Намерете идеалния автомобил за вас',
+      loading: 'Зареждане на автомобили...',
+      noResults: 'Няма намерени автомобили',
+      found: 'Намерени'
+    },
+    sell: {
+      hero: {
+        title: 'Продайте вашия автомобил бързо и лесно',
+        subtitle: 'Достигнете до хиляди потенциални купувачи в цяла България',
+        startNow: 'Започнете сега',
+        smartAdd: 'Smart добавяне',
+        smartAddDescription: 'Интелигентно създаване на обява'
+      },
+      features: {
+        fast: {
+          title: 'Бързо и лесно',
+          description: 'Създайте обява за минути с нашия интуитивен процес стъпка по стъпка'
+        },
+        mobile: {
+          title: 'Мобилна оптимизация',
+          description: 'Създавайте и управлявайте обяви от всяко устройство - телефон, таблет или компютър'
+        },
+        secure: {
+          title: 'Сигурно и защитено',
+          description: 'Вашите данни са защитени с най-съвременните технологии за сигурност'
+        },
+        free: {
+          title: 'Безплатна публикация',
+          description: 'Публикувайте обяви безплатно и достигнете до широка аудитория без скрити такси'
+        },
+        audience: {
+          title: 'Голяма аудитория',
+          description: 'Хиляди активни купувачи търсят автомобили всеки ден в нашата платформа'
+        },
+        analytics: {
+          title: 'Статистика и анализи',
+          description: 'Следете прегледите, запитванията и интереса към вашата обява в реално време'
+        }
+      },
+      howItWorks: {
+        title: 'Как работи?',
+        steps: {
+          0: 'Изберете типа на превозното средство и типа продавач',
+          1: 'Въведете основна информация - марка, модел, година, пробег',
+          2: 'Добавете оборудване и екстри за по-голяма привлекателност',
+          3: 'Качете качествени снимки на автомобила (до 20 снимки)',
+          4: 'Определете цената и условията на продажбата',
+          5: 'Добавете вашите контактни данни и местоположение',
+          6: 'Прегледайте и публикувайте обявата - готово!'
+        }
+      },
+      start: {
+        chooseTypeTitle: 'Изберете тип превозно средство',
+        chooseTypeSubtitle: 'Изберете категорията, която най-добре описва вашето превозно средство',
+        continue: 'Продължи',
+        processInfoTitle: 'За процеса на публикуване',
+        processInfoText: 'Публикуването на обява отнема само няколко минути. Следвайте стъпките и попълнете необходимата информация. Всички данни се записват автоматично, така че можете да продължите по-късно.',
+        vehicleTypes: {
+          car: { title: 'Лека кола', desc: 'За лично ползване' },
+          suv: { title: 'Джип/SUV', desc: 'Високопроходим' },
+          van: { title: 'Ван', desc: 'Товарен/Комби' },
+          motorcycle: { title: 'Мотоциклет', desc: 'Двуколесен' },
+          truck: { title: 'Камион', desc: 'Товарен' },
+          bus: { title: 'Автобус', desc: 'Пътнически' }
+        }
+      },
+      sellerType: {
+        title: 'Тип продавач',
+        subtitle: 'Определете типа на продавача за да персонализираме процеса',
+        continue: 'Продължи',
+        back: 'Назад',
+        private: {
+          title: 'Частно лице',
+          description: 'Продавам собствената си кола',
+          features: {
+            0: 'Без данъчни задължения',
+            1: 'По-ниски такси',
+            2: 'Директна комуникация',
+            3: 'Гъвкави условия'
+          }
+        },
+        dealer: {
+          title: 'Търговец',
+          description: 'Търговец на превозни средства',
+          features: {
+            0: 'Професионално обслужване',
+            1: 'Гаранция за качество',
+            2: 'Финансиране',
+            3: 'Търговска регистрация'
+          }
+        },
+        company: {
+          title: 'Фирма',
+          description: 'Фирма продава служебни коли',
+          features: {
+            0: 'Голям брой превозни средства',
+            1: 'Професионално обслужване',
+            2: 'Търговска регистрация',
+            3: 'Специални условия'
+          }
+        },
+        infoTitle: 'Защо е важно да изберете правилния тип продавач?',
+        infoText: 'Типът продавач определя какви документи ще бъдат необходими, какви такси ще се прилагат и какви права и задължения ще имате като продавач.'
       }
     },
     nav: { 
@@ -338,6 +454,122 @@ export const translations = {
         verified: { title: 'Verified Listings', description: 'All cars are checked and validated before being published' },
         finance: { title: 'Finance Solutions', description: 'Flexible financing and leasing options for every budget' },
         insurance: { title: 'Insurance', description: 'We partner with leading insurance companies for the best rates' }
+      },
+      cityCars: {
+        title: 'Cars by Cities',
+        subtitle: 'Explore vehicles in all cities across Bulgaria',
+        viewAll: 'View All Cities',
+        carsAvailable: 'cars available',
+        viewCars: 'View Cars',
+        selectCity: 'Select a city',
+        mapDescription: 'Click on a city to view its cars'
+      }
+    },
+    cars: {
+      title: 'Browse Cars',
+      subtitle: 'Find the perfect vehicle for you',
+      loading: 'Loading cars...',
+      noResults: 'No cars found',
+      found: 'Found'
+    },
+    sell: {
+      hero: {
+        title: 'Sell Your Car Fast & Easy',
+        subtitle: 'Reach thousands of potential buyers across Bulgaria',
+        startNow: 'Start Now',
+        smartAdd: 'Smart Add',
+        smartAddDescription: 'Intelligent listing creation'
+      },
+      features: {
+        fast: {
+          title: 'Fast & Easy',
+          description: 'Create a listing in minutes with our intuitive step-by-step process'
+        },
+        mobile: {
+          title: 'Mobile Optimized',
+          description: 'Create and manage listings from any device - phone, tablet or computer'
+        },
+        secure: {
+          title: 'Secure & Safe',
+          description: 'Your data is protected with the latest security technologies'
+        },
+        free: {
+          title: 'Free Publication',
+          description: 'Publish listings for free and reach a wide audience without hidden fees'
+        },
+        audience: {
+          title: 'Large Audience',
+          description: 'Thousands of active buyers search for cars daily on our platform'
+        },
+        analytics: {
+          title: 'Statistics & Analytics',
+          description: 'Track views, inquiries and interest in your listing in real-time'
+        }
+      },
+      howItWorks: {
+        title: 'How It Works?',
+        steps: {
+          0: 'Select vehicle type and seller type',
+          1: 'Enter basic information - make, model, year, mileage',
+          2: 'Add equipment and extras for more appeal',
+          3: 'Upload quality photos of the car (up to 20 photos)',
+          4: 'Set the price and sale conditions',
+          5: 'Add your contact details and location',
+          6: 'Review and publish the listing - done!'
+        }
+      },
+      start: {
+        chooseTypeTitle: 'Choose Vehicle Type',
+        chooseTypeSubtitle: 'Select the category that best describes your vehicle',
+        continue: 'Continue',
+        processInfoTitle: 'About the Publishing Process',
+        processInfoText: 'Publishing a listing takes just a few minutes. Follow the steps and fill in the required information. All data is saved automatically, so you can continue later.',
+        vehicleTypes: {
+          car: { title: 'Passenger Car', desc: 'Personal use' },
+          suv: { title: 'SUV/Jeep', desc: 'Off-road' },
+          van: { title: 'Van', desc: 'Cargo/Combi' },
+          motorcycle: { title: 'Motorcycle', desc: 'Two-wheeled' },
+          truck: { title: 'Truck', desc: 'Cargo' },
+          bus: { title: 'Bus', desc: 'Passenger' }
+        }
+      },
+      sellerType: {
+        title: 'Seller Type',
+        subtitle: 'Define the seller type to personalize the process',
+        continue: 'Continue',
+        back: 'Back',
+        private: {
+          title: 'Private Person',
+          description: 'Selling my own car',
+          features: {
+            0: 'No tax obligations',
+            1: 'Lower fees',
+            2: 'Direct communication',
+            3: 'Flexible terms'
+          }
+        },
+        dealer: {
+          title: 'Dealer',
+          description: 'Vehicle dealer',
+          features: {
+            0: 'Professional service',
+            1: 'Quality guarantee',
+            2: 'Financing options',
+            3: 'Commercial registration'
+          }
+        },
+        company: {
+          title: 'Company',
+          description: 'Company selling fleet vehicles',
+          features: {
+            0: 'Large vehicle inventory',
+            1: 'Professional service',
+            2: 'Commercial registration',
+            3: 'Special conditions'
+          }
+        },
+        infoTitle: 'Why is it important to choose the right seller type?',
+        infoText: 'The seller type determines what documents will be required, what fees will apply, and what rights and obligations you will have as a seller.'
       }
     },
     nav: { 

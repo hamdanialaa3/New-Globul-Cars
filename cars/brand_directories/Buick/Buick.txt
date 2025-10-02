@@ -1,0 +1,374 @@
+Buick Car Models and Generations:
+
+2025:
+- Buick Enclave
+  Engine: 3.6L V
+  Power: 326 hp, 708 horsepower, 328 horsepower
+  Transmission: eight-speed automatic
+  Drivetrain: all-wheel drive
+
+- Buick Electra SUV Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Buick Electra Orbit Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Buick Electra MPV Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Buick Electra GS Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 326 hp
+  Dimensions: 3,200 mm wheelbase
+
+
+2024:
+- Buick Envista
+  Engine: 2.4 L four-cylinder
+  Power: 326 hp, 708 horsepower, 136 horsepower
+  Transmission: nine-speed automatic
+  Drivetrain: all-wheel drive
+  Fuel Economy: 30 mpg 
+
+- Buick Envision
+  Engine: 2.4 L four-cylinder
+  Power: 326 hp, 708 horsepower, 228 horsepower
+  Transmission: nine-speed automatic
+  Drivetrain: all-wheel drive
+
+- Buick Encore GX
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 137 horsepower
+  Transmission: nine-speed automatic
+  Drivetrain: all-wheel drive
+  Fuel Economy: 30 mpg , 27 mpg 
+
+- Buick Electra-L Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Buick Electra-LT Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: AWD
+
+
+2022:
+- Buick Enclave
+
+- Buick Electra-X Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Buick Wildcat EV Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: AWD
+
+
+2021:
+- Buick Envision
+
+- Buick GL8 Flagship Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2020:
+- Buick Encore GX
+
+- Buick Electra Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 435 kW
+
+
+2019:
+- Buick Envision
+
+- Buick GL8 Avenir Concept
+  Power: 326 hp, 708 horsepower, 350 kW
+  Drivetrain: quattro
+
+
+2018:
+- Buick Enclave
+
+- Buick Regal Sportback
+  Engine: 3.6L V
+  Power: 326 hp, 708 horsepower, 250 hp
+  Transmission: eight-speed automatic
+  Drivetrain: all-wheel drive
+
+- Buick Regal GS
+  Engine: 3.6L V
+  Power: 326 hp, 708 horsepower, 310 horsepower
+  Transmission: nine-speed automatic
+  Drivetrain: all-wheel drive
+
+- Buick Regal TourX
+  Engine: 3.6L V
+  Power: 326 hp, 708 horsepower, 250 hp
+  Transmission: eight-speed automatic
+  Drivetrain: all-wheel drive
+  Fuel Economy: city of up to 565 litres when loaded up to the rear seat backrest, city has increased by 30 litres over the predecessor
+
+- Buick Enspire Concept
+  Power: 326 hp, 708 horsepower, 410 kW
+  Acceleration: 0-60 mph in 4 seconds
+
+
+2017:
+- Buick Encore
+
+- Buick LaCrosse
+  Engine: 3.6L V
+  Power: 326 hp, 708 horsepower, 305 horsepower
+  Transmission: eight-speed automatic
+  Drivetrain: all-wheel drive
+
+
+2016:
+- Buick Envision
+
+- Buick Cascada
+  Engine: 3.6L V
+  Power: 326 hp, 708 horsepower, 149 kW
+  Transmission: six-speed automatic
+  Drivetrain: all-wheel drive
+
+- Buick Avista Concept
+  Engine: 3.0L V
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: eight-speed automatic
+
+
+2015:
+- Buick Avenir Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: automatic transmission
+
+
+2014:
+- Buick Regal
+
+- Buick LaCrosse
+
+
+2013:
+- Buick Encore
+
+- Buick Enclave
+
+- Buick Verano Turbo
+  Engine: 3.6L V
+  Power: 326 hp, 708 horsepower, 250 horsepower
+  Transmission: six-speed manual
+  Drivetrain: all-wheel drive
+
+- Buick Riviera Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 600 horsepower
+  Drivetrain: quattro
+
+
+2012:
+- Buick Regal GS
+
+- Buick Verano
+
+
+2011:
+- Buick Regal
+
+- Buick GL8
+
+- Buick Envision Concept
+  Engine: gasoline v
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: eight-speed transmission
+  Drivetrain: AWD
+
+- Buick LaCrosse GL Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2010:
+- Buick LaCrosse
+
+- Buick Regal GS Concept
+  Power: 326 hp, 708 horsepower, 190 kW
+  Transmission: six-speed manual
+  Drivetrain: AWD
+
+
+2009:
+- Buick Business Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2008:
+- Buick Enclave
+
+- Buick LaCrosse Super
+  Engine: 4.6L V
+  Power: 326 hp, 708 horsepower, 224 kW
+  Drivetrain: AWD
+  Acceleration: 0-60 mph in 5.7 seconds
+
+- Buick Lucerne Super
+  Engine: 4.6L V
+  Power: 326 hp, 708 horsepower, 224 kW
+  Drivetrain: AWD
+  Acceleration: 0-60 mph in 5.7 seconds
+
+- Buick Invicta Concept
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 250 horsepower
+  Transmission: automatic transmission
+
+
+2007:
+- Buick Riviera Concept Coupe
+  Power: 326 hp, 708 horsepower, 326 hp
+  Fuel Economy: city: 2 + 2Bodyshell: Cardon fider panelsEcterior dimensions (mm)Wheeldase: 2870Length: 4710Width: 1940 (eccluding mirrors)Height: 1415 (doors closed)Front overhang: 918Rear overhang: 924Front track: 1645Rear track: 1635READ MORE
+
+
+2006:
+- Buick Lucerne CXS
+  Engine: 4.6L V
+  Power: 326 hp, 708 horsepower, 275 horsepower
+  Transmission: four-speed automatic
+  Drivetrain: front-wheel drive
+
+- Buick Enclave Concept
+  Power: 326 hp, 708 horsepower, 270 horsepower
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+
+
+2005:
+- Buick Rendezvous CX
+  Engine: 3.6L V
+  Power: 326 hp, 708 horsepower, 242 horsepower
+  Transmission: four-speed automatic
+  Drivetrain: front-wheel drive
+  Fuel Economy: 19 mpg city, 26 mpg highway, 18 mpg city
+
+- Buick LaCrosse CXS
+  Engine: 3.8L V
+  Power: 326 hp, 708 horsepower, 200 horsepower
+  Drivetrain: AWD
+  Fuel Economy: 20 mpg city, 29 mpg highway, 19 mpg city
+
+- Buick Royaum
+  Power: 326 hp, 708 horsepower, 345 kW
+
+- Buick Century
+  Engine: 3.1L V
+  Power: 326 hp, 708 horsepower, 175 horsepower
+  Drivetrain: xDrive
+  Fuel Economy: 20 mpg , 29 mpg , city driving and 29 mpg on the highway
+
+- Buick Terraza CXL
+  Engine: 3.5L V
+  Power: 326 hp, 708 horsepower, 200 horsepower
+  Transmission: automatic transmission
+  Drivetrain: front-wheel drive
+
+
+2004:
+- Buick Rainier
+  Engine: 3.6L V
+  Power: 326 hp, 708 horsepower, 275 horsepower
+  Transmission: four-speed transmission
+  Drivetrain: all-wheel drive
+  Weight: 3,015 kg
+
+- Buick Velite Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: automatic transmission
+
+
+2003:
+- Buick Park Avenue Ultra
+  Engine: 3.6L V
+  Power: 326 hp, 708 horsepower, 240 hp
+  Drivetrain: AWD
+
+
+2002:
+- Buick Regal
+
+
+2001:
+- Buick LeSabre
+  Engine: 3.6L V
+  Power: 326 hp, 708 horsepower, 205 hp
+  Transmission: six-speed automatic
+  Drivetrain: AWD
+
+- Buick Blackhawk Concept
+  Power: 326 hp, 708 horsepower, 463 horsepower
+  Transmission: four-speed automatic
+
+- Buick 2-2 Bengal Roadster Concept
+  Power: 326 hp, 708 horsepower, 250 horsepower
+  Transmission: automatic transmission
+
+
+2000:
+- Buick Regal GNX Show Car
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Buick Regal Cielo Concept
+  Power: 326 hp, 708 horsepower, 240 horsepower
+
+
+1999:
+- Buick Cielo Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+
+1998:
+- Buick Signia Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+
+1995:
+- Buick XP2000 Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+
+1988:
+- Buick Wildcat Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+1972:
+- Buick Silver Arrow Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+1956:
+- Buick Centurion Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+1951:
+- Buick XP-300 Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+1938:
+- Buick YJob Concept
+
+
+1936:
+- Buick Century
+
+
+Unknown Year:
+- Buick
+
+

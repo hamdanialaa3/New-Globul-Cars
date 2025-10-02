@@ -23,23 +23,19 @@ import NotFoundPage from './components/NotFoundPage';
 const HomePage = React.lazy(() => import('./pages/HomePage'));
 const CarsPage = React.lazy(() => import('./pages/CarsPage'));
 const CarDetailsPage = React.lazy(() => import('./pages/CarDetailsPage'));
-const SellCarPage = React.lazy(() => import('./pages/SellCarPage'));
-const SellPage = React.lazy(() => import('./pages/SellPage'));
-const VehicleSelectionPage = React.lazy(() => import('./pages/VehicleSelectionPage'));
-const SellerTypePage = React.lazy(() => import('./pages/SellerTypePage'));
-const VehicleDataPage = React.lazy(() => import('./pages/VehicleDataPage'));
+const SellPage = React.lazy(() => import('./pages/SellPageNew'));
 
-// Mobile.de-style sell workflow pages
-const VehicleStartPage = React.lazy(() => import('./pages/sell/VehicleStartPage'));
-const SellerTypePageNew = React.lazy(() => import('./pages/sell/SellerTypePage'));
-const VehicleDataPageNew = React.lazy(() => import('./pages/sell/VehicleDataPage'));
+// Mobile.de-style sell workflow pages (الوحيد المستخدم)
+const VehicleStartPage = React.lazy(() => import('./pages/sell/VehicleStartPageNew'));
+const SellerTypePageNew = React.lazy(() => import('./pages/sell/SellerTypePageNew'));
+const VehicleDataPageNew = React.lazy(() => import('./pages/sell/VehicleData'));
 const EquipmentMainPage = React.lazy(() => import('./pages/sell/EquipmentMainPage'));
-const SafetyEquipmentPage = React.lazy(() => import('./pages/sell/SafetyEquipmentPage'));
-const ComfortEquipmentPage = React.lazy(() => import('./pages/sell/ComfortEquipmentPage'));
-const InfotainmentEquipmentPage = React.lazy(() => import('./pages/sell/InfotainmentEquipmentPage'));
-const ExtrasEquipmentPage = React.lazy(() => import('./pages/sell/ExtrasEquipmentPage'));
-const ImagesPage = React.lazy(() => import('./pages/sell/ImagesPage'));
-const PricingPage = React.lazy(() => import('./pages/sell/PricingPage'));
+const SafetyEquipmentPage = React.lazy(() => import('./pages/sell/Equipment/SafetyPage'));
+const ComfortEquipmentPage = React.lazy(() => import('./pages/sell/Equipment/ComfortPage'));
+const InfotainmentEquipmentPage = React.lazy(() => import('./pages/sell/Equipment/InfotainmentPage'));
+const ExtrasEquipmentPage = React.lazy(() => import('./pages/sell/Equipment/ExtrasPage'));
+const ImagesPage = React.lazy(() => import('./pages/sell/Images'));
+const PricingPage = React.lazy(() => import('./pages/sell/Pricing'));
 const ContactNamePage = React.lazy(() => import('./pages/sell/ContactNamePage'));
 const ContactAddressPage = React.lazy(() => import('./pages/sell/ContactAddressPage'));
 const ContactPhonePage = React.lazy(() => import('./pages/sell/ContactPhonePage'));
@@ -61,7 +57,6 @@ const PrivacyPolicyPage = React.lazy(() => import('./pages/PrivacyPolicyPage'));
 const TermsOfServicePage = React.lazy(() => import('./pages/TermsOfServicePage'));
 const DataDeletionPage = React.lazy(() => import('./pages/DataDeletionPage'));
 const AdvancedSearchPage = React.lazy(() => import('./pages/AdvancedSearchPage'));
-const AddCarPage = React.lazy(() => import('./pages/AddCarPage'));
 const CleanGoogleAuthTest = React.lazy(() => import('./components/CleanGoogleAuthTest'));
 const MyListingsPage = React.lazy(() => import('./pages/MyListingsPage'));
 const B2BAnalyticsPortal = React.lazy(() => import('./pages/B2BAnalyticsPortal'));
@@ -230,24 +225,29 @@ const App: React.FC = () => {
                   </Layout>
                 }
               />
-              {/* Keep both '/sell-car' and '/sell' for compatibility */}
-              <Route
-                path="/sell-car"
-                element={
-                  <Layout>
-                    <AuthGuard requireAuth={true}>
-                      <SellCarPage />
-                    </AuthGuard>
-                  </Layout>
-                }
-              />
+              {/* Unified Sell System - Mobile.de Style Only */}
               <Route
                 path="/sell"
                 element={
                   <Layout>
-                    <AuthGuard requireAuth={true}>
-                      <SellPage />
-                    </AuthGuard>
+                    <SellPage />
+                  </Layout>
+                }
+              />
+              {/* Redirect old routes to new system */}
+              <Route
+                path="/sell-car"
+                element={
+                  <Layout>
+                    <SellPage />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/add-car"
+                element={
+                  <Layout>
+                    <SellPage />
                   </Layout>
                 }
               />
@@ -383,36 +383,6 @@ const App: React.FC = () => {
                 }
               />
               <Route
-                path="/sell/vehicle-selection"
-                element={
-                  <Layout>
-                    <AuthGuard requireAuth={true}>
-                      <VehicleSelectionPage />
-                    </AuthGuard>
-                  </Layout>
-                }
-              />
-              <Route
-                path="/sell/seller-type"
-                element={
-                  <Layout>
-                    <AuthGuard requireAuth={true}>
-                      <SellerTypePage />
-                    </AuthGuard>
-                  </Layout>
-                }
-              />
-              <Route
-                path="/sell/vehicle-data"
-                element={
-                  <Layout>
-                    <AuthGuard requireAuth={true}>
-                      <VehicleDataPage />
-                    </AuthGuard>
-                  </Layout>
-                }
-              />
-              <Route
                 path="/profile"
                 element={
                   <Layout>
@@ -533,16 +503,6 @@ const App: React.FC = () => {
                 }
               />
               {/* New Car Listing System */}
-              <Route
-                path="/add-car"
-                element={
-                  <Layout>
-                    <ProtectedRoute>
-                      <AddCarPage />
-                    </ProtectedRoute>
-                  </Layout>
-                }
-              />
               <Route
                 path="/my-listings"
                 element={

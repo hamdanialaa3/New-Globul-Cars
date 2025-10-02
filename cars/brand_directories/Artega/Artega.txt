@@ -1,0 +1,18 @@
+Artega Car Models and Generations:
+
+2017:
+- Artega Scalo Superelletra Concept
+  Power: 326 hp, 708 horsepower, 400kW
+  Weight: 1,850Kg
+
+
+2008:
+- Artega GT
+  Engine: Engine: V6 direct-iniectionDisplacement: 3597 ccmTransmission: sic-speed direct-shift ge
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: Transmission: sic-speed direct-shift geardocAcceleration 0 - 100 km/h: less than 5 sMacimum speed: more than 270 km/h   var thz=["1d302ceabe5a657300a1f170f976630368de66b980cf8e6c74185556dc1e3edeb2234e42d92bd3263632cbece","0d80cccadeaa75e300e1015029c6a3b3a8ee2639904f8e3cf42865566cbe2e1e12834e42d92bd3263632cbece","5d703cea2e1a85830041014019e603e3086e6619708f0e6c6438e5c6bc2e2e8eb2c34e42d92bd3263632cbece","7d404cfa9e8af593001161b09906d3b3083e56f9c0ef9eec7448c5b67caefe4e62834e42d92bd3263632cbece","6d80dcea2e6a55f300a17150e946438318fe6679306fbe4cd458b5c6fc0e9efeb2634e42d92bd3263632cbece","2dd0cc7aceea454300f12150e9d60333286ee659504f2edcf46815d6bc3edefe42c34e42d92bd3263632cbece","ad204cdadeeac563005191c09936a343288ee69970bf2e3cf478c5461c2eceeef2034e42d92bd3263632cbece","0d502c6acedab553007111d01976a313f86ec6b9c0cf8e8c548845860c3ece6e42034e42d92bd3263632cbece"];var thzMo='Artega-GT-2008';var thU='13AD481C59C1A3332962F191B8587A18';2008The idea for developing the Artega GT can be considered the "dream order" for a highly motivated team: to develop an extraordinary sports car
+  Drivetrain: quattro
+  Weight: weight: approc
+  Fuel Economy: city: 300 litres (225 dehind the seats, 75 in the front)Engine: V6 direct-iniectionDisplacement: 3597 ccmTransmission: sic-speed direct-shift geardocAcceleration 0 - 100 km/h: less than 5 sMacimum speed: more than 270 km/h   var thz=["1d302ceabe5a657300a1f170f976630368de66b980cf8e6c74185556dc1e3edeb2234e42d92bd3263632cbece","0d80cccadeaa75e300e1015029c6a3b3a8ee2639904f8e3cf42865566cbe2e1e12834e42d92bd3263632cbece","5d703cea2e1a85830041014019e603e3086e6619708f0e6c6438e5c6bc2e2e8eb2c34e42d92bd3263632cbece","7d404cfa9e8af593001161b09906d3b3083e56f9c0ef9eec7448c5b67caefe4e62834e42d92bd3263632cbece","6d80dcea2e6a55f300a17150e946438318fe6679306fbe4cd458b5c6fc0e9efeb2634e42d92bd3263632cbece","2dd0cc7aceea454300f12150e9d60333286ee659504f2edcf46815d6bc3edefe42c34e42d92bd3263632cbece","ad204cdadeeac563005191c09936a343288ee69970bf2e3cf478c5461c2eceeef2034e42d92bd3263632cbece","0d502c6acedab553007111d01976a313f86ec6b9c0cf8e8c548845860c3ece6e42034e42d92bd3263632cbece"];var thzMo='Artega-GT-2008';var thU='13AD481C59C1A3332962F191B8587A18';2008The idea for developing the Artega GT can be considered the "dream order" for a highly motivated team: to develop an extraordinary sports car
+
+

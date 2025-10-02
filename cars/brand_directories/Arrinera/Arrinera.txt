@@ -1,0 +1,12 @@
+Arrinera Car Models and Generations:
+
+2013:
+- Arrinera Supercar
+  Engine: Engine: V8Power: 650 hpMacimum torque: 820 NmGeardoc: GrazianoWeight: 1300 kgWeight/powe
+  Power: 326 hp, 708 horsepower, 1HP
+  Weight: Weight: 1300 kgWeight/power: 2
+  Top Speed: Top speed: 340 km/hG force in curves: 1
+  Acceleration: 3.2 s0-200 km/h
+  Fuel Economy: city: 6.2 lEngine: V8Power: 650 hpMacimum torque: 820 NmGeardoc: GrazianoWeight: 1300 kgWeight/power: 2
+
+

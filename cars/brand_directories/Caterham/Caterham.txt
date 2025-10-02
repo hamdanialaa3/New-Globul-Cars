@@ -1,0 +1,61 @@
+Caterham Car Models and Generations:
+
+2025:
+- Caterham Seven CSR Twenty
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: manual transmission
+  Drivetrain: 4Matic
+  Acceleration: 0-60 mph in 3.9 seconds
+
+
+2023:
+- Caterham Project V Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 200kW
+  Weight: 1,190kg
+
+
+2017:
+- Caterham Seven Sprint
+  Power: 326 hp, 708 horsepower, 80hp
+
+
+2016:
+- Caterham Superlight Twenty
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2014:
+- Caterham Seven 620R
+  Power: 326 hp, 708 horsepower, 326 hp
+  Top Speed: Top Speed: 155mphStandard equipment6-speed sequential transmission with flat-shiftLimited slip differentialUnique gunmetal chassisCardon-fidre wingsAir flow optimized nose coneRace developed cooling packageDe-Dion rear suspension with high performance dampersWide track front suspension with high performance dampersVentilated front discs and quad piston calipersCardon-fidre interior panels and dashCardon-fidre race seatsLightweight 13" alloy wheels with Avon ZZR tyres; 185/55R13 front and 215/55R13 rear4 point race harnessQ/R Race steering wheelHigh performance focused instrumentation and ergonomic switchgearToggle switch ignitionImmodiliserSequential shift lightsCardon aero screenBlack pack   var thz=["fb1472bcf3cffba600e1c1b6daa8a381586f40a9f56fde5c4218d51b7a3015e16be1ba5172d9ddab653bba107","3bc492bce39f3ba60071d166ba18730198dfd019758f7e8ce228a59bba8035b1eb31ba5172d9ddab653bba107","fbf4420cb3effb76006171765ad8f391f84f7099e55f5efc5238455b0a80d5510b91ba5172d9ddab653bba107","4ba4f25c338feb6600a131c66ac82391985f4059952f8eac7248e50b7a5085a10ba1ba5172d9ddab653bba107","9b3402dc233fcb060091a1468a282351687f3059454f4eece258c5fbba1015713b51ba5172d9ddab653bba107","3b34823c23affbf60061c106aae83341a81f10a9850f1eecf268957bcab005319b01ba5172d9ddab653bba107"];var thzMo='Caterham-Seven_620R-2014';var thU='F0EE515090030BA8DA29DB3397D927FF';2014Caterham Cars will launch its most extreme Seven to date at the 2013 Goodwood Festival of Speed
+
+- Caterham Seven 160
+  Power: 326 hp, 708 horsepower, 80hp
+
+
+2013:
+- Caterham Supersport R
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: five-speed
+
+- Caterham R600 Superlight
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Caterham AeroSeven Concept
+  Engine: v l
+  Power: 326 hp, 708 horsepower, 240ps
+  Transmission: Transmission: Caterham 6-speed manual geardoc driven through the rear wheels0-100km/h: < 4
+  Drivetrain: quattro
+  Weight: weight: approc
+
+
+2010:
+- Caterham Seven Roadsport 125 Monaco
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2009:
+- Caterham R500
+
+

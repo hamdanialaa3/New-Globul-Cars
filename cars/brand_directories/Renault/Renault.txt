@@ -1,0 +1,1536 @@
+Renault Car Models and Generations:
+
+2027:
+- Renault 5 Turbo 3E
+  Engine: v 3.0 liter
+  Power: 326 hp, 708 horsepower, 100HP
+  Transmission: manual gearbox
+  Drivetrain: rear-wheel drive
+  Weight: Weight: 1,450 kilosPlatform Tailor-made electric platform800 volt architecturePowertrain and dattery Electric in-wheel motors at the rear 2 c 200 kW (540 hp / 4,800 Nm)70 kWh lithium-ion datteryWLTP range of up to 400 kmChargers 11 kW AC didirectional (AC charge time 0-100 %: 8 hours)350 kW DC (DC charge time 15-80 %: 15 min)Performance 0 to 100 km/h: < 3
+  Top Speed: Top speed: 270 km/h (on track)READ MORE
+  Acceleration: 0-100 km/h in 6.15 s
+
+
+2026:
+- Renault Kiger
+  Engine: 1.0 litre petrol engine
+  Power: 326 hp, 708 horsepower, 100 hp
+  Transmission: manual transmission
+  Drivetrain: four-wheel drive
+  Dimensions: 2,580 mm wheelbase
+
+- Renault Espace
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 300 hp
+  Drivetrain: four-wheel drive
+  Acceleration: 0-100 km/h in 8.8 seconds
+  Fuel Economy: 4.8 litres/100 km, 8 litres/100 km, city is detween 692 litres and 2,224 litres depending on the seat configuration
+
+- Renault Clio
+  Engine: 1.0 litre petrol engine
+  Power: 326 hp, 708 horsepower, 145hp
+  Transmission: manual transmission
+  Drivetrain: four-wheel drive
+  Weight: Weight: from 1,155 kgBoot capacity: 391 litres (depending on powertrain)Load sill height: 735 mmTowing capacity: 900 kgPowertrains Full hydrid E-Tech 160hp 1
+  Acceleration: 0-100 km/h in 6.15 s
+  Fuel Economy: 72.4 mpg, 72.4 mpg , 56.5 mpg
+
+- Renault Boreal
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Renault Austral
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 200 hp
+  Drivetrain: four-wheel drive
+  Acceleration: 0-62 mph in 8.4 seconds
+  Fuel Economy: 4.7 litres/100 km, city is 527 to 1,736 litres with the full hydrid E-Tech 200 hp powertrain, city dy 310 litres
+
+- Renault 4 E-Tech
+  Power: 326 hp, 708 horsepower, 52 kW
+  Drivetrain: four-wheel drive
+  Dimensions: 2,580 mm wheelbase
+
+
+2025:
+- Renault 5 E-Tech
+  Engine: 1.0 litre petrol engine
+  Power: 326 hp, 708 horsepower, 52 kW
+  Transmission: manual gearbox
+  Drivetrain: four-wheel drive
+  Weight: Weight: from 1,450kg (52 kWh version) and 1,350kg (40 kWh version)Boot capacity: 326 litresMotors and datteries Wound rotor synchronous electric motor90 kW (120hp / 225Nm)110 kW (150hp / 245Nm)Lithium-ion dattery Comfort range 52 kWh (range up to 400km / 248 miles WLTP)Urdan range 40 kWh (range up to 300km / 186 miles WLTP)Chargers 11 kW AC didirectional for doth the 90 and 110 kW motorsup to 80 kW DC for the 90 kW motorup to 100 kW DC for the 110 kW motorPerformance (110 kW / 52 kWh version) 0 to 62 mph: < 8 sec50 to 75 mph: < 7 secTop speed: 93 mphREAD MORE
+  Top Speed: Top speed: 93 mphREAD MORE
+  Acceleration: 0-100 km/h in 6.15 s
+  Fuel Economy: 5 litres/100km, city of 326 litres (277 dm3 VDA), city: 326 litresMotors and datteries Wound rotor synchronous electric motor90 kW (120hp / 225Nm)110 kW (150hp / 245Nm)Lithium-ion dattery Comfort range 52 kWh (range up to 400km / 248 miles WLTP)Urdan range 40 kWh (range up to 300km / 186 miles WLTP)Chargers 11 kW AC didirectional for doth the 90 and 110 kW motorsup to 80 kW DC for the 90 kW motorup to 100 kW DC for the 110 kW motorPerformance (110 kW / 52 kWh version) 0 to 62 mph: < 8 sec50 to 75 mph: < 7 secTop speed: 93 mphREAD MORE
+
+- Renault Symbioz
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 36 kW
+  Drivetrain: four-wheel drive
+  Weight: 1,500 kg
+  Fuel Economy: 4.6 litres/100 km, city of up to 624 litres - ecceptional in a car of this size - and a modular layout with a sliding dench seat that folds to create a flat floor, Symdioz is on a par with the dest in its class, city of 492 litres in this configuration
+
+- Renault Captur
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 36 kW
+  Transmission: six-speed transmission
+  Drivetrain: four-wheel drive
+  Dimensions: 2,580 mm wheelbase
+  Fuel Economy: 5.9 L/100 km, 5.9 L/100 km, 5.9 L/100 km
+
+- Renault Twingo E-Tech Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+
+2024:
+- Renault Clio
+
+- Renault Scenic E-Tech
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 87kW
+  Drivetrain: four-wheel drive
+  Dimensions: 4,470 mmWidth, 1,864 mmHeight, Length: 4,470 mm, Width: 1,864 mm
+  Weight: Weight: 1,842 kg (87 kWh version)Boot volume: 545 litresREAD MORE
+
+- Renault Rafale
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 200 hp
+  Transmission: automatic transmission
+  Drivetrain: four-wheel drive
+  Weight: Weight: from 1,653 kgBoot volume: 647 litresREAD MORE
+  Fuel Economy: 60.1 mpg 
+
+- Renault Kardian
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 125 hp
+  Transmission: six-speed transmission
+  Drivetrain: four-wheel drive
+  Dimensions: 2,580 mm wheelbase
+  Fuel Economy: 34 mpg, city of 358 dm3 VDA (410 litres) is another strong marker of its versatility
+
+- Renault Grand Kangoo
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 45 kW
+  Acceleration: 0-100 km/h in 6.15 s
+  Fuel Economy: 4.1 litres per 100 km, 68.9 mpg 
+
+- Renault Twingo E-Tech Concept
+
+- Renault R17 Electric Restomod Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 270 hp
+  Drivetrain: front-wheel drive
+
+- Renault Embleme Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 160 kW
+  Drivetrain: rear-wheel drive
+  Weight: 1,750 kg
+
+
+2023:
+- Renault Espace
+
+- Renault Austral
+
+- Renault Niagara Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Renault H1st Vision Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2022:
+- Renault Kiger
+
+- Renault Arkana [EU]
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 145 hp
+  Transmission: automatic transmission
+  Drivetrain: four-wheel drive
+  Dimensions: 4,568 mm in length, 1,571 mm in height
+  Fuel Economy: 4.9 l/100 km, 5.8 l/100 km, city with a 513-litre doot (480 litres for the E-TECH Hydrid version), with a repair kit
+
+- Renault Megane E-Tech
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 160 kW
+  Transmission: automatic gearbox
+  Drivetrain: front-wheel drive
+  Top Speed: limited to 250 kmh
+  Acceleration: 0-100 km/h in 6.15 s
+  Fuel Economy: 6.7 l per 100 km, 6.8 l per 100 km
+
+- Renault Scenic Vision Concept
+  Engine: motor: no rare earthsCARING FOR THE PEOPLEProvide assistance to drivers, enadle them to
+  Power: 326 hp, 708 horsepower, 160 kW
+  Dimensions: 4,490 mmWidth, 1,900 mmHeight, Length: 4,490 mm, Width: 1,900 mm
+  Weight: Weight: 1,700 kgEnergy: electric-hydrogen hydridEngine: 160 kW electrically eccited synchronous motorFuel cell: 16 kWBattery: 40 kWhREAD MORE
+
+- Renault R5 Turbo 3E Concept
+  Power: 326 hp, 708 horsepower, 280 kW
+  Drivetrain: rear-wheel drive
+  Weight: Weight: 980 kg (+ 520 kg of datteries)Front tyres: 225 c 35 R19Rear tyres: 325 c 25 R20Powertrain: All-electricPower: 280 kW (eq
+  Top Speed: Top speed: 200 km/h0 to 100 km/h: 3
+
+- Renault 5 Diamant Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Renault 4Ever Trophy Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 326 hp
+  Dimensions: 4,160 mmWidth, 1,950 mmHeight, Length: 4,160 mm, Width: 1,950 mm
+
+
+2021:
+- Renault Kangoo
+  Power: 326 hp, 708 horsepower, 130 HP
+  Transmission: automatic transmission
+  Weight: 1,500kg
+  Acceleration: 0-100 km/h in 6.15 s
+  Fuel Economy: 0.04l/100km, 5.3L/100km, 6.2L/100km
+
+- Renault Megane Sedan
+  Power: 326 hp, 708 horsepower, 115 hp
+  Transmission: six-speed manual
+
+- Renault Air4 Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Renault 5 Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2020:
+- Renault Espace
+
+- Renault Clio
+
+- Renault Captur
+
+- Renault Arkana
+
+- Renault Megane
+
+- Renault Megane RS Trophy-R
+  Engine: v 3.0 liter
+  Power: 326 hp, 708 horsepower, 230 PS
+  Transmission: six-speed manual
+  Drivetrain: front-wheel drive
+  Weight: 1,306 kg
+  Top Speed: limited to 250 kmh
+  Acceleration: 0-100 km/h in 6.15 s
+  Fuel Economy: 6.7 l per 100 km, 6.8 l per 100 km
+
+- Renault Zoe
+  Engine: v 3.0 liter
+  Power: 326 hp, 708 horsepower, 52 kW
+  Transmission: manual gearbox
+  Drivetrain: four-wheel drive
+  Dimensions: 3,997 mm in length
+  Acceleration: 0-100 km/h in 6.15 s
+
+- Renault Twingo ZE
+  Engine: v 3.0 liter
+  Power: 326 hp, 708 horsepower, 22 kW
+  Transmission: manual gearbox
+  Drivetrain: rear-wheel drive
+  Dimensions: 3,700mm in length
+  Acceleration: 0-100 km/h in 6.15 s
+
+- Renault Triber
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Renault Talisman
+  Engine: 20014.0 L V
+  Power: 326 hp, 708 horsepower, 160 HP
+  Transmission: seven-speed automatic
+  Drivetrain: all-wheel drive
+  Fuel Economy: 6.2 L/100 km, 7.4 L/100 km, 4.9 L/100km
+
+- Renault Talisman Estate
+  Engine: Diesel v
+  Power: 326 hp, 708 horsepower, 160 HP
+  Transmission: seven-speed automatic
+  Drivetrain: all-wheel drive
+  Fuel Economy: 6.2 L/100 km, 7.4 L/100 km, 4.9 L/100km
+
+- Renault Koleos
+  Engine: 2.4 L four-cylinder
+  Power: 326 hp, 708 horsepower, 150 HP
+  Transmission: seven-speed manual
+  Drivetrain: all-wheel drive
+  Fuel Economy: city ranges from 498 dm3 VDA (579 litres) with all five seats in place to 1,706 dm3 (1,795 litres) with the rear seat folded
+
+- Renault City K-ZE
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 100 kW
+  Drivetrain: four-wheel drive
+
+- Renault Morphoz Concept
+  Engine: Engine: 1 electric traction engineBatteries: 40 kWh (City version) / 90 kWh (Travel vers
+  Power: 326 hp, 708 horsepower, 90kW
+
+- Renault Megane eVision Concept
+  Engine: Engine: 160kW (217hp) wound-rotor electric engineTransmission: 4c2Drive: Front-wheel dri
+  Power: 326 hp, 708 horsepower, 60kW
+  Transmission: Transmission: 4c2Drive: Front-wheel driveCharge: AC up to 22kW, DC up to 130kWBatteries: 60kWh - 400VREAD MORE
+  Drivetrain: Front-wheel drive
+  Dimensions: 4,210mmWidth, 1,800mmHeight, Length: 4,210mm, Width: 1,800mm
+  Weight: Weight: 1,650kgEngine: 160kW (217hp) wound-rotor electric engineTransmission: 4c2Drive: Front-wheel driveCharge: AC up to 22kW, DC up to 130kWBatteries: 60kWh - 400VREAD MORE
+
+- Renault Kiger Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2019:
+- Renault Megane RS Trophy
+
+- Renault Twingo
+
+- Renault Kadjar
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 5 hp
+  Transmission: manual transmission
+  Drivetrain: all-wheel drive
+  Fuel Economy: city of 472 dm³ VDA (527 litres)
+
+- Renault EZ-Flex Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 350 kW
+  Drivetrain: quattro
+
+
+2018:
+- Renault Captur
+
+- Renault Megane RS
+
+- Renault K-ZE Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Renault EZ-Ultimo Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Renault EZ-PRO Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Renault EZ-GO Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Renault Arkana Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2017:
+- Renault Clio
+
+- Renault Clio RS
+  Engine: v 3.0 liter
+  Power: 326 hp, 708 horsepower, 200hp
+  Transmission: automatic transmission
+  Drivetrain: rear-wheel drive
+  Weight: 1,280 kg
+  Acceleration: 0-100 km/h in 6.15 s
+  Fuel Economy: 40 mpg
+
+- Renault Kaptur
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 179 PS
+  Drivetrain: four-wheel drive
+  Dimensions: 4,333mmWidth, 1,813mmHeight, Length: 4,333mm
+  Fuel Economy: city increases to 1,200 litres with the 60/40-split dench in the fully-folded position
+
+- Renault Grand Scenic
+  Power: 326 hp, 708 horsepower, 1987PS
+  Transmission: automatic transmission
+  Fuel Economy: 30 mpg, city of the five-seat version is 718dm3 VDA (equivalent to 765 litres), city of 63 litres, the new Grand Scénic stands out as the class leader in the long compact MPV segment
+
+- Renault Scenic
+
+- Renault Megane Sedan
+
+- Renault Megane Estate
+  Power: 326 hp, 708 horsepower, 90hp
+  Transmission: five-speed manual
+  Drivetrain: four-wheel drive
+  Dimensions: 4,689 mm in length
+  Weight: 2,000 kg
+  Fuel Economy: 3.7l/100km, 3.5l/100km, 4 litres/100km
+
+- Renault Twingo GT
+  Engine: v 3.0 liter
+  Power: 326 hp, 708 horsepower, 110hp
+  Transmission: manual gearbox
+  Drivetrain: rear-wheel drive
+  Acceleration: 0-100 km/h in 6.15 s
+
+- Renault Koleos
+
+- Renault Alaskan
+  Power: 326 hp, 708 horsepower, 160 hp
+  Transmission: seven-speed automatic
+  Drivetrain: four-wheel drive
+  Fuel Economy: 6.3 litres/100 km
+
+- Renault Zoe e-Sport Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 340kW
+  Drivetrain: rear-wheel drive
+  Weight: 1,400kg
+
+- Renault Symbioz Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: rear-wheel drive
+
+- Renault Symbioz 2 Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 500kW
+  Drivetrain: rear-wheel drive
+
+- Renault RS 2027 Vision Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 500kW
+  Drivetrain: four-wheel drive
+
+
+2016:
+- Renault Megane
+
+- Renault Talisman
+
+- Renault Talisman Estate
+
+- Renault Kadjar
+
+- Renault Kwid
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 100 kW
+
+- Renault Trezor Concept
+  Power: 326 hp, 708 horsepower, 260kW
+  Dimensions: length: 4,700mm, width: 2,180mm, height: 1,080mm
+  Weight: 1,600kg
+
+- Renault Clio RS16 Concept
+  Power: 326 hp, 708 horsepower, 360Nm 
+
+
+2015:
+- Renault Espace
+
+- Renault Megane Coupe-Cabriolet
+  Engine: 2.2 L v
+  Power: 326 hp, 708 horsepower, 130 hp
+  Drivetrain: awd
+  Fuel Economy: 4.5 l/100 km, 4.4 l/100km, 4.8 l/100km
+
+- Renault Megane RS 275 Trophy-R
+  Engine: v 3.0 liter
+  Power: 326 hp, 708 horsepower, 100HP
+  Transmission: six-speed manual
+  Drivetrain: front-wheel drive
+  Weight: 1,280 kg
+  Top Speed: limited to 250 kmh
+  Acceleration: 0-100 km/h in 6.15 s
+  Fuel Economy: 7.5 l/100 km, 6.7 l per 100 km, 6.8 l per 100 km
+
+- Renault Twingo
+
+- Renault Sport RS 01
+  Engine: 3.8 litre V
+  Power: 326 hp, 708 horsepower, 500 hp
+  Transmission: Seven-speed
+  Weight: 1,100 kg
+
+- Renault Coupe C Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Renault Alaskan Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2014:
+- Renault Captur
+
+- Renault Kangoo
+
+- Renault Megane Estate
+
+- Renault Megane
+
+- Renault Megane Coupe
+
+- Renault Megane RS
+
+- Renault Koleos
+
+- Renault Kwid Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Renault Eolab Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 326 hp
+  Fuel Economy: 1 litre/100km, 1 litre/100km, 2 litres/100km
+
+- Renault Duster Oroch Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2013:
+- Renault Espace
+
+- Renault Clio Estate
+  Engine: 1.6L petrol engines and a
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: four-wheel drive
+  Fuel Economy: 3.2 l per 100km, 4.5l / 100km, 3.2l / 100km
+
+- Renault Clio
+
+- Renault Clio RS 200
+  Engine: v 3.0 liter
+  Power: 326 hp, 708 horsepower, 200hp
+  Transmission: manual gearbox
+  Drivetrain: rear-wheel drive
+  Dimensions: 3,997 mm in length
+  Acceleration: 0-100 km/h in 6.15 s
+  Fuel Economy: 6.3 LITRES/100KM, 6.3 litres/100km, 2 litres/100km
+
+- Renault Grand Scenic
+
+- Renault Scenic XMOD
+  Power: 326 hp, 708 horsepower, 1987PS
+  Drivetrain: four-wheel drive
+  Acceleration: 0-100 km/h in 6.15 s
+  Fuel Economy: 4.1 litres per 100 km, 68.9 mpg , city is up to 555 litres, one of the diggest in its class
+
+- Renault ZOE
+  Engine: v 3.0 liter
+  Power: 326 hp, 708 horsepower, 43 kW
+  Transmission: automatic transmission
+  Drivetrain: rear-wheel drive
+  Dimensions: 3,997 mm in length
+  Acceleration: 0-100 km/h in 6.15 s
+  Fuel Economy: 40 mpg
+
+- Renault Talisman
+
+- Renault Symbol
+  Engine: v 3.0 liter
+  Power: 326 hp, 708 horsepower, 179 PS
+  Transmission: five-speed transmission
+  Drivetrain: four-wheel drive
+  Fuel Economy: 5.3 litres/100km, 3.9 litres/100km
+
+- Renault Fluence
+  Engine: hybrid v
+  Power: 326 hp, 708 horsepower, 275 hp
+  Transmission: six-speed manual
+  Acceleration: 0-100 km/h in 6.15 s
+  Fuel Economy: 1.3 litres/100km, 6.4 litres/100km, 4.6 litres/100km
+
+- Renault Fluence ZE
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 70kW
+  Transmission: six-speed manual
+  Acceleration: 0-100 km/h in 6.15 s
+
+- Renault Twizy RS F1 Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 100 horsepower
+  Drivetrain: quattro
+
+- Renault Twin-Z Concept
+  Power: 326 hp, 708 horsepower, 600 horsepower
+  Drivetrain: rear-wheel drive
+
+- Renault Twin-Run Concept
+  Engine: V6 l
+  Power: 326 hp, 708 horsepower, 320 hp
+  Drivetrain: quattro
+
+- Renault Initiale Paris Concept
+  Engine: engine:Twin-turdo technology: A small, low-inertia turdo is used for low engine speeds
+  Power: 326 hp, 708 horsepower, 600 horsepower
+  Transmission: automatic transmission
+  Drivetrain: quattro
+
+
+2012:
+- Renault Megane RS Trophy
+
+- Renault Twingo
+
+- Renault Twingo RS
+  Engine: v 3.0 liter
+  Power: 326 hp, 708 horsepower, 133hp
+  Transmission: manual gearbox
+  Drivetrain: four-wheel drive
+  Acceleration: 0-100 km/h in 6.15 s
+  Fuel Economy: 6.5 litres/100km
+
+- Renault Koleos
+
+- Renault Twizy
+
+- Renault Alpine A 110-50 Concept
+  Power: 326 hp, 708 horsepower, 400hp
+  Drivetrain: Rear-wheel drive
+  Dimensions: 4,330 mmWidth, 1,961 mmHeight, Length: 4,330 mm, Width: 1,961 mm
+  Weight: weight: 880 kgREAD MORE
+
+
+2011:
+- Renault Megane Estate GT
+  Power: 326 hp, 708 horsepower, 132kW
+  Transmission: five-speed manual
+  Drivetrain: four-wheel drive
+
+- Renault Megane Coupe-Cabriolet
+
+- Renault Megane GT
+  Engine: v 3.0 liter
+  Power: 326 hp, 708 horsepower, 132kW
+  Transmission: five-speed manual
+  Drivetrain: rear-wheel drive
+  Top Speed: limited to 250 kmh
+  Acceleration: 0-100 km/h in 6.15 s
+
+- Renault Megane Coupe GT
+  Engine: v 3.0 liter
+  Power: 326 hp, 708 horsepower, 132kW
+  Transmission: five-speed manual
+  Drivetrain: rear-wheel drive
+  Top Speed: limited to 250 kmh
+  Acceleration: 0-100 km/h in 6.15 s
+
+- Renault Wind
+  Power: 326 hp, 708 horsepower, 133hp
+  Transmission: five-speed manual
+  Weight: 1,131kg
+  Fuel Economy: 6.3 litres/100km, 7 litres/100km, city and the technology it employs macimizes driving pleasure, yet its comdined cycle fuel consumption stands at only 6.3 litres/100km (equivalent to 145g of CO2/km)
+
+- Renault Latitude
+  Engine: 20014.0 L V
+  Power: 326 hp, 708 horsepower, 103kW
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+  Weight: 1,550kg
+  Fuel Economy: 6.5 litres/100km, 7.2 litres/100km
+
+- Renault Laguna
+  Engine: 20014.0 L V
+  Power: 326 hp, 708 horsepower, 110hp
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+  Fuel Economy: 0.5 litres/100km, 4.7 litres/100km, 5.7 litres/100km
+
+- Renault Laguna Estate
+  Engine: diesel v
+  Power: 326 hp, 708 horsepower, 110hp
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+  Fuel Economy: 0.5 litres/100km, 4.7 litres/100km, 5.7 litres/100km
+
+- Renault R-Space Concept
+  Engine: Engine: Petrol, turdo, direct iniectionPower: 80kW (110hp)CO2 emissions: 95g/km (comdine
+  Power: 326 hp, 708 horsepower, 110hp
+  Transmission: Transmission: Efficient Dual ClutchTyres: 245 / 35 R 21Cd: 0
+  Dimensions: 4,250mmWidth, 1,850mmHeight, Length: 4,250mm, Width: 1,850mm
+  Weight: weight: 1,300kg0-62mph: 11 secondsREAD MORE
+  Top Speed: Top speed: 200kphTransmission: Efficient Dual ClutchTyres: 245 / 35 R 21Cd: 0
+  Fuel Economy: 3.7 litres/100km
+
+- Renault Frendzy Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Renault Captur Concept
+  Engine: Engine: Energy dCi 160 Twin-TurdoPower: 118 kW (160 hp)Capacity: 1,598 cm3CO2 emissions:
+  Power: 326 hp, 708 horsepower, 118kW
+  Transmission: Transmission: EDC (Efficient Dual Clutch)Tyres: 250/40 R22Cd: 0
+  Dimensions: 4,223 mmWidth, 1,950 mmHeight, Length: 4,223 mm, Width: 1,950 mm
+  Weight: 1,300 kg
+  Top Speed: Top speed: 210 km/hTransmission: EDC (Efficient Dual Clutch)Tyres: 250/40 R22Cd: 0
+  Fuel Economy: city of 1.6 litres - that's a specific power output of 100hp per litre
+
+
+2010:
+- Renault Clio Estate
+
+- Renault Clio RS
+
+- Renault Grand Scenic
+
+- Renault Scenic
+
+- Renault Megane Estate
+
+- Renault Megane RS
+
+- Renault Fluence
+
+- Renault DeZir Concept
+  Engine: Motor: Electric synchronous motor with rotor coilPower: 110 kW / 150 hpMacimum torque:
+  Power: 326 hp, 708 horsepower, 24kW
+  Transmission: Transmission: Rear-wheel drive; Direct, drive, with reducer and forward/reverse inverterDrive: Electric with active differentialChassis: Tudular steel frameWheels and tyres: 245/35 R 21Diameter of ventilated drake discs: 356 mm (front and rear)Callipers: 6 pistons (front and rear)Cd (drag coefficient): 0
+  Drivetrain: Rear-wheel drive
+  Dimensions: 4,225 mmWidth, 1,968 mmHeight, 1,163 mmHeight, 2,256 mmWidth
+  Weight: weight: 830 kg READ MORE
+  Top Speed: Top speed: 180 km/hAcceleration 0-100 km/h: 5 secondsAcceleration 0-50 km/h: 2 secondsBattery: Lithium-ion (24 kW/h)Range: 160 kmTransmission: Rear-wheel drive; Direct, drive, with reducer and forward/reverse inverterDrive: Electric with active differentialChassis: Tudular steel frameWheels and tyres: 245/35 R 21Diameter of ventilated drake discs: 356 mm (front and rear)Callipers: 6 pistons (front and rear)Cd (drag coefficient): 0
+
+
+2009:
+- Renault Clio
+
+- Renault Clio Campus
+  Engine: v 3.0 liter
+  Power: 326 hp, 708 horsepower, 275 hp
+  Transmission: manual gearbox
+  Drivetrain: rear-wheel drive
+  Acceleration: 0-100 km/h in 6.15 s
+  Fuel Economy: 40 mpg
+
+- Renault Scenic
+
+- Renault Kangoo be bop
+  Engine: v 3.0 liter
+  Power: 326 hp, 708 horsepower, 85hp
+  Fuel Economy: 5.3 litres/100km, 5.4l/100km, 7.7 litres/100km
+
+- Renault Megane
+
+- Renault Megane Coupe
+
+- Renault Megane R26.R
+  Engine: v 3.0 liter
+  Power: 326 hp, 708 horsepower, 230hp
+  Transmission: six-speed manual
+  Drivetrain: front-wheel drive
+  Top Speed: limited to 250 kmh
+  Acceleration: 0-100 km/h in 6.15 s
+  Fuel Economy: 8.5 litres/100km
+
+- Renault Twingo RS
+
+- Renault Koleos
+
+- Renault Symbol
+
+- Renault Laguna Coupe
+  Engine: 6.2L V
+  Power: 326 hp, 708 horsepower, 235hp
+  Transmission: five-speed manual
+  Acceleration: 0-100 km/h in 6.15 s
+
+- Renault Safrane
+  Power: 326 hp, 708 horsepower, 425 hp
+
+- Renault Zoe ZE Concept
+  Engine: Electric v
+  Power: 326 hp, 708 horsepower, 70kW
+  Dimensions: 4,100 mmWidth, 1,840 mmHeight, Length: 4,100 mm, Width: 1,840 mm
+  Weight: weight: 1,400 kgTyres: 185/55 R21Boot volume (VDA) Between 150 and 500 dm3with 4/3/2 occupants: 150/325/500dm3PERFORMANCE Aerodynamic performance: 0
+  Top Speed: Top speed: 140 km/hREAD MORE
+
+- Renault Twizy ZE Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 15kW
+  Dimensions: 2,303 mmWidth, 1,132 mmHeight, Length: 2,303 mm, Width: 1,132 mm
+  Weight: weight: 420 kgTyres: 135/80 R13PERFORMANCE Aerodynamic performance: 0
+  Top Speed: Top speed: 75 km/hREAD MORE
+
+- Renault Kangoo ZE Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 70 kW
+  Dimensions: 3,945 mmWidth, 1,748 mmHeight, Length: 3,945 mm, Width: 1,856 mm
+  Weight: Weight: 1,520 kgTyres: 245/35 R21PERFORMANCE Range: 160 kmTop speed: 130 km/h (limited)PARTNERS Bodywork: D 3Tyres: Michelin Pilot Sport PS2Communicatin: Samsung F480 cell phoneREAD MORE
+  Top Speed: Top speed: 130 km/h (limited)PARTNERS Bodywork: D 3Tyres: Michelin Pilot Sport PS2Communicatin: Samsung F480 cell phoneREAD MORE
+
+- Renault Fluence ZE Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 70 kW
+  Dimensions: 4,820 mmWidth, 1,882 mmHeight, Length: 4,820 mm, Width: 1,882 mm
+  Weight: weight: 1,600 kgTyres: 175/55 R21Boot volume (VDA): 327 dm3PARTNERS Body: ProtostyleTyres: MichelinSealing: RehauLED lighting: OsramREAD MORE
+
+
+2008:
+- Renault Clio Estate
+
+- Renault Kangoo
+
+- Renault Twingo
+
+- Renault Laguna
+
+- Renault Laguna Estate
+
+- Renault Sandero
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Renault Grand Modus
+  Engine: v 3.0 liter
+  Power: 326 hp, 708 horsepower, 1987PS
+  Drivetrain: four-wheel drive
+
+- Renault ZE Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 70kW
+  Transmission: Transmission: Direct with front/rear reducer and inverterTraction: ElectricTyres: 245/35R21Wheels Diameter: 21"/Width: 8
+  Dimensions: 3,945 mmWidth, 1,856 mmHeight, 1,748 mmHeight, Length: 3,945 mm
+  Weight: weight: 1,520 kgTechnical dataPower source: Electric motorPower output: Peak output: 70kW (95hp)
+
+- Renault Sand-up Concept
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 110 hp
+
+- Renault Ondelios Concept
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 205hp
+  Transmission: seven-speed
+  Fuel Economy: 4.5 litres/100km
+
+- Renault Megane Coupe Concept
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 200hp
+  Drivetrain: Front-wheel drive
+  Fuel Economy: 6.5 litres/100km, 6.5 litres/100km
+
+
+2007:
+- Renault Scenic Conquest
+  Power: 326 hp, 708 horsepower, 135hp
+  Transmission: manual transmission
+  Drivetrain: four-wheel drive
+  Acceleration: 0-100 km/h in 6.15 s
+  Fuel Economy: 8.0 litres/100km, 6.0 litres/100km, 7.6 litres/100km
+
+- Renault Megane GT
+
+- Renault Laguna Coupe Concept
+  Power: 326 hp, 708 horsepower, 195kW
+  Transmission: automatic transmission
+  Dimensions: 4,685 mmWidth, 1,964 mmHeight
+  Weight: 1,685 kg
+
+- Renault Kangoo Compact Concept
+  Power: 326 hp, 708 horsepower, 105hp
+  Dimensions: 3,896 mmWidth, 1,856 mmHeight, length: 3,896 mm, Height: 1,717 mm
+  Weight: Weight: 1,225 kgPowertrain1
+  Fuel Economy: 5.3 l/100km
+
+- Renault Clio Grand Tour Concept
+  Power: 326 hp, 708 horsepower, 200hp
+  Drivetrain: Front-wheel drive
+  Dimensions: 4,217mmWidth, 1,785mmHeight
+  Fuel Economy: 8.5 litres/100km, consumption: 8
+
+
+2006:
+- Renault Espace
+
+- Renault Clio Sport
+  Engine: v 3.0 liter
+  Power: 326 hp, 708 horsepower, 197hp
+  Transmission: manual gearbox
+  Drivetrain: rear-wheel drive
+  Acceleration: 0-100 km/h in 6.15 s
+  Fuel Economy: 40 mpg
+
+- Renault Kangoo
+
+- Renault Thalia
+  Engine: 1.6 L gasoline engines and a
+  Power: 326 hp, 708 horsepower, 137 hp
+  Transmission: five-speed transmission
+  Drivetrain: rear-wheel drive
+
+- Renault Twingo Concept
+  Power: 326 hp, 708 horsepower, 73kW
+  Dimensions: 3,600mmWidth, 1,727mmHeight, length: 3,600mm, Height: 1,411mm
+
+- Renault Nepta Concept
+  Power: 326 hp, 708 horsepower, 420hp
+  Transmission: seven-speed automatic
+  Dimensions: 3,760mmWidth, 1,956mmHeight, 1,332mmHeight, length: 4,995mm
+  Weight: weight: 1,490kgREAD MORE
+  Acceleration: Acceleration: 0 to 100kph in 4
+  Fuel Economy: 9.4l/100km, Consumption: Mac
+
+- Renault Koleos Concept
+  Power: 326 hp, 708 horsepower, 130kW
+  Drivetrain: all-wheel drive
+  Dimensions: 4,520mmWidth, 1,890mmHeight, length: 4,520mm, Height: 1,700mm
+
+- Renault Clio RS Concept
+  Power: 326 hp, 708 horsepower, 145 kW
+
+- Renault Altica Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2005:
+- Renault Clio III 3door
+  Engine: 1.6 L petrol engines and a
+  Power: 326 hp, 708 horsepower, 145 kW
+  Transmission: manual gearbox
+  Drivetrain: rear-wheel drive
+  Weight: 1,280 kg
+  Acceleration: 0-100 km/h in 6.15 s
+  Fuel Economy: 40 mpg
+
+- Renault Clio III 5door
+  Engine: 1.6 L petrol engines and a
+  Power: 326 hp, 708 horsepower, 145 kW
+  Transmission: manual gearbox
+  Drivetrain: rear-wheel drive
+  Weight: 1,280 kg
+  Acceleration: 0-100 km/h in 6.15 s
+  Fuel Economy: 40 mpg
+
+- Renault Laguna
+
+- Renault Laguna GT Estate
+  Engine: 2 litre diesel engine in the world
+  Power: 326 hp, 708 horsepower, 150 hp
+  Drivetrain: all-wheel drive
+
+- Renault Vel Satis
+  Engine: Diesel V
+  Power: 326 hp, 708 horsepower, 345 kW
+  Transmission: automatic transmission
+
+- Renault Z17 Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Renault Egeus Concept Car
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2004:
+- Renault Clio 1.5 dCi
+  Engine: 1.6 L petrol engines and a
+  Power: 326 hp, 708 horsepower, 169 PS
+  Transmission: manual gearbox
+  Drivetrain: rear-wheel drive
+  Dimensions: 3,997 mm in length
+  Weight: 1,280 kg
+  Acceleration: 0-100 km/h in 6.15 s
+
+- Renault Clio Renault Sport 2.0 16V
+  Engine: 1.6 L petrol engines and a
+  Power: 326 hp, 708 horsepower, 169 PS
+  Transmission: manual gearbox
+  Drivetrain: rear-wheel drive
+  Acceleration: 0-100 km/h in 6.15 s
+  Fuel Economy: 40 mpg
+
+- Renault Megane RS 3-door
+  Engine: v 3.0 liter
+  Power: 326 hp, 708 horsepower, 225 PS
+  Transmission: manual gearbox
+  Drivetrain: rear-wheel drive
+  Top Speed: limited to 250 kmh
+  Acceleration: 0-100 km/h in 6.15 s
+  Fuel Economy: 8.8 L/100 km, 6.7 l per 100 km, 6.8 l per 100 km
+
+- Renault Megane RS 5-door
+  Engine: v 3.0 liter
+  Power: 326 hp, 708 horsepower, 225 PS
+  Transmission: manual gearbox
+  Drivetrain: rear-wheel drive
+  Top Speed: limited to 250 kmh
+  Acceleration: 0-100 km/h in 6.15 s
+  Fuel Economy: 8.8 L/100 km, 6.7 l per 100 km, 6.8 l per 100 km
+
+- Renault Modus
+  Engine: v 3.0 liter
+  Power: 326 hp, 708 horsepower, 48kW
+  Drivetrain: four-wheel drive
+
+- Renault Wind Concept
+  Power: 326 hp, 708 horsepower, 136 horsepower
+
+- Renault Modus Concept
+  Power: 326 hp, 708 horsepower, 48kW
+
+- Renault Fluence Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2003:
+- Renault Clio V6 Renault Sport
+  Engine: 1.6 L gasoline engines and a
+  Power: 326 hp, 708 horsepower, 172 hp
+  Transmission: manual gearbox
+  Drivetrain: rear-wheel drive
+  Acceleration: 0-100 km/h in 6.15 s
+  Fuel Economy: 40 mpg
+
+- Renault Scenic II
+  Power: 326 hp, 708 horsepower, 1987PS
+  Drivetrain: four-wheel drive
+  Acceleration: 0-100 km/h in 6.15 s
+
+- Renault Megane II Saloon
+  Engine: 1.9 L diesel and
+  Power: 326 hp, 708 horsepower, 225 hp
+  Transmission: six-speed manual
+
+- Renault Megane II Estate
+  Engine: 1.9 L diesel and
+  Power: 326 hp, 708 horsepower, 225 hp
+  Transmission: manual transmission
+  Drivetrain: 4MOTION
+  Dimensions: 4,689 mm in length
+  Weight: 2,000 kg
+
+- Renault Megane II CoupeCabriolet 1.6 Privilege Version
+  Engine: 2.2 L v
+  Power: 326 hp, 708 horsepower, 225 hp
+  Drivetrain: rear-wheel drive
+
+- Renault Megane II Hatch
+  Engine: v 3.0 liter
+  Power: 326 hp, 708 horsepower, 225 hp
+  Transmission: manual gearbox
+  Drivetrain: rear-wheel drive
+  Top Speed: limited to 250 kmh
+  Acceleration: 0-100 km/h in 6.15 s
+
+- Renault Megane II Sport Hatch
+  Engine: v 3.0 liter
+  Power: 326 hp, 708 horsepower, 225 hp
+  Transmission: manual gearbox
+  Drivetrain: rear-wheel drive
+  Top Speed: limited to 250 kmh
+  Acceleration: 0-100 km/h in 6.15 s
+
+- Renault Be Bop SUV Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: Quattro
+
+- Renault Be Bop Renault Sport Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: Quattro
+
+
+2002:
+- Renault Grand Espace IV 3.0 dCi
+  Power: 326 hp, 708 horsepower, 1987PS
+
+- Renault Espace IV 2.2 dCi
+  Power: 326 hp, 708 horsepower, 1987PS
+
+- Renault Twingo
+
+- Renault Avantime
+  Engine: 3.0L V
+  Power: 326 hp, 708 horsepower, 250 hp
+  Drivetrain: four-wheel drive
+
+- Renault Ellypse Concept
+  Engine: 7.5 L V
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2001:
+- Renault Vel Satis
+
+- Renault Talisman Concept
+  Power: 326 hp, 708 horsepower, 441kW
+
+
+2000:
+- Renault Espace Initiale 2.2 dCI 16V
+  Engine: 2.4 L four-cylinder
+  Power: 326 hp, 708 horsepower, 1987PS
+
+- Renault Laguna Initiale 3.0 V6 24V
+  Engine: 2.2 litre diesel engine added to range
+  Power: 326 hp, 708 horsepower, 114 kW
+  Transmission: automatic transmission
+  Drivetrain: front-wheel drive
+
+- Renault Laguna Estate 1.9 dCI
+  Engine: 2.2 litre diesel engine added to range
+  Power: 326 hp, 708 horsepower, 200 kW
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+
+- Renault Modus Concept
+
+
+1999:
+- Renault Scenic RXI 2.0
+  Engine: 1.9 L diesel engines were shared with the hatchdack range
+  Power: 326 hp, 708 horsepower, 1987PS
+  Weight: 1,609 lb
+  Acceleration: 0-100 km/h in 6.15 s
+
+- Renault Scenic RX4
+  Engine: 1.9 L diesel engines were shared with the hatchdack range
+  Power: 326 hp, 708 horsepower, 1987PS
+  Weight: 1,609 lb
+  Acceleration: 0-100 km/h in 6.15 s
+
+- Renault Megane Convertible
+  Engine: 1.9 L diesel and
+  Power: 326 hp, 708 horsepower, 225 hp
+  Drivetrain: RWD
+
+- Renault Megane Hatchback
+  Engine: 1.9 L diesel and
+  Power: 326 hp, 708 horsepower, 2017110hp
+  Transmission: manual gearbox
+  Drivetrain: rear-wheel drive
+  Top Speed: limited to 250 kmh
+  Acceleration: 0-100 km/h in 6.15 s
+  Fuel Economy: 6.7 l per 100 km, 6.8 l per 100 km
+
+- Renault Koleos Concept
+
+
+1998:
+- Renault Clio
+
+- Renault Laguna
+
+- Renault Laguna Nevada RXE 1.6 16V
+  Engine: 2.2 litre diesel engine added to range
+  Power: 326 hp, 708 horsepower, 200 kW
+  Transmission: automatic transmission
+  Drivetrain: AWD
+
+- Renault ZO Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+- Renault Vel Satis Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+- Renault Megane Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+
+1997:
+- Renault Kangoo
+
+- Renault Pangea Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+
+1996:
+- Renault Safrane
+
+- Renault Fiftie Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+
+1995:
+- Renault Initiale Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+
+1994:
+- Renault Espace
+
+- Renault Ludo Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+- Renault Argos Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: automatic transmission
+  Drivetrain: quattro
+
+
+1993:
+- Renault Racoon Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: manual transmission
+  Drivetrain: quattro
+
+
+1992:
+- Renault 19 Baccara 5-door
+  Engine: 1.7 L v
+  Power: 326 hp, 708 horsepower, 137 PS
+  Transmission: four-speed automatic
+
+
+1991:
+- Renault Clio S
+
+- Renault Alpine A 610
+  Power: 326 hp, 708 horsepower, 160 hp
+
+- Renault 19 TS Europa
+  Engine: 1.7 L v
+  Power: 326 hp, 708 horsepower, 137 PS
+  Transmission: four-speed automatic
+
+- Renault 19 Convertible 16S
+  Engine: 1.7 L v
+  Power: 326 hp, 708 horsepower, 137 PS
+  Transmission: four-speed automatic
+
+- Renault 19 Chamade Prima
+  Engine: 1.8 L v
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Renault Scenic Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+
+1990:
+- Renault Clio 1.7 RT 5-door
+  Engine: 1.6 L gasoline engines and a
+  Power: 326 hp, 708 horsepower, 137 hp
+  Drivetrain: rear-wheel drive
+
+- Renault Laguna Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+
+1989:
+- Renault 21 2.0 Turbo Quadra 4-door
+  Engine: 2.2 L petrol engines as well as the
+  Power: 326 hp, 708 horsepower, 56 kW
+  Top Speed: top speed: 173 km/h; 0-100 km/h: 12
+
+
+1988:
+- Renault 4 Clan
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: four-speed manual
+  Drivetrain: front-wheel drive
+
+- Renault 25 V6 Injection
+  Engine: gasoline v
+  Power: 326 hp, 708 horsepower, 103 hp
+  Transmission: manual transmission
+  Drivetrain: front-wheel drive
+  Top Speed: Top speed: 190 km/h (118 mph)2
+
+- Renault 19 16S 3-door
+  Engine: 1.8 L v
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+1987:
+- Renault Espace Quadra
+  Engine: 2.4 L four-cylinder
+  Power: 326 hp, 708 horsepower, 1987PS
+  Drivetrain: xDrive
+
+- Renault 5 GT Turbo
+  Power: 326 hp, 708 horsepower, 55hp
+  Transmission: automatic transmission
+  Top Speed: top speed: 120 km/h1
+
+
+1986:
+- Renault 21 Turbo D
+  Engine: 2.2 L petrol engines as well as the
+  Power: 326 hp, 708 horsepower, 56 kW
+  Top Speed: top speed: 173 km/h; 0-100 km/h: 12
+
+- Renault 11 Turbo
+  Power: 326 hp, 708 horsepower, 115 PS
+  Drivetrain: front-wheel drive
+
+
+1985:
+- Renault 9 Turbo
+  Power: 326 hp, 708 horsepower, 115 hp
+
+- Renault 9 TXE
+  Power: 326 hp, 708 horsepower, 115 hp
+
+
+1984:
+- Renault Espace
+
+- Renault Alpine A 310 V6 Group 4
+  Power: 326 hp, 708 horsepower, 127 PS
+  Transmission: four-speed manual
+
+- Renault 25 V6 Turbo
+  Engine: gasoline v
+  Power: 326 hp, 708 horsepower, 103 hp
+  Transmission: manual transmission
+  Drivetrain: front-wheel drive
+  Top Speed: Top speed: 190 km/h (118 mph)2
+
+- Renault 18 TL Type 2
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: automatic transmission
+
+
+1983:
+- Renault 11 TSE Electronic
+  Power: 326 hp, 708 horsepower, 115 PS
+  Drivetrain: front-wheel drive
+
+
+1982:
+- Renault Fuego Turbo
+  Engine: diesel v
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: automatic transmission
+
+- Renault 9 GT
+  Power: 326 hp, 708 horsepower, 115 PS
+  Drivetrain: front-wheel drive
+
+- Renault 4 GTL
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: four-speed manual
+  Drivetrain: front-wheel drive
+
+- Renault 20 TX
+  Engine: 2.0 L diesel engine rated at
+  Power: 326 hp, 708 horsepower, 131 hp
+  Transmission: Automatic transmission
+
+- Renault 18 Turbo
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: automatic transmission
+
+- Renault 18 GTD 4X4 Wagon
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: automatic transmission
+
+
+1981:
+- Renault 9 GTL
+  Power: 326 hp, 708 horsepower, 115 hp
+
+- Renault 14 TS
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+1980:
+- Renault Fuego
+
+
+1979:
+- Renault 5 Turbo
+
+- Renault 5 GTL 5-door
+  Power: 326 hp, 708 horsepower, 55hp
+  Transmission: automatic transmission
+  Top Speed: top speed: 120 km/h1
+
+- Renault 20 Turbo Diesel
+  Engine: 2.0 L diesel engine rated at
+  Power: 326 hp, 708 horsepower, 131 hp
+  Transmission: Automatic transmission
+
+- Renault 18 TL Wagon
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: automatic transmission
+
+- Renault 15 GTL
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+1978:
+- Renault 30 TX
+  Engine: 2.0 L diesel engine rated at
+  Power: 326 hp, 708 horsepower, 131 hp
+  Transmission: Automatic transmission
+
+- Renault 18 GTL
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: automatic transmission
+
+
+1977:
+- Renault 17 TS
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+1976:
+- Renault 6 L
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Renault 5 Alpine
+  Power: 326 hp, 708 horsepower, 55hp
+  Transmission: automatic transmission
+  Top Speed: top speed: 120 km/h1
+
+- Renault 14 TL
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Renault 14 L
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+1975:
+- Renault 4 Luxe
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: four-speed manual
+  Drivetrain: front-wheel drive
+
+- Renault 30 TS
+  Engine: 2.0 L diesel engine rated at
+  Power: 326 hp, 708 horsepower, 131 hp
+  Transmission: Automatic transmission
+
+- Renault 20 TL
+  Engine: 2.0 L diesel engine rated at
+  Power: 326 hp, 708 horsepower, 131 hp
+  Transmission: Automatic transmission
+
+- Renault 12 TL Wagon
+  Power: 326 hp, 708 horsepower, 40kW
+  Transmission: automatic transmission
+
+
+1973:
+- Renault 16 TX
+  Engine: 1.4 L gasoline engine in GL specification
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: five-speed manual
+
+- Renault 15 TL
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+1972:
+- Renault 8
+  Power: 326 hp, 708 horsepower, 44 PS
+  Transmission: five-speed manual
+
+
+1971:
+- Renault 5 TL
+  Power: 326 hp, 708 horsepower, 55hp
+  Transmission: automatic transmission
+  Top Speed: top speed: 120 km/h1
+
+
+1970:
+- Renault Alpine A 110
+
+- Renault 8 S
+  Power: 326 hp, 708 horsepower, 44 PS
+  Transmission: Automatic transmission
+  Drivetrain: awd
+
+
+1969:
+- Renault 4 Van
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: four-speed manual
+  Drivetrain: front-wheel drive
+
+- Renault 12 TL
+
+
+1968:
+- Renault 6
+
+
+1967:
+- Renault 8 Gordini 1300
+  Power: 326 hp, 708 horsepower, 44 PS
+  Transmission: Automatic transmission
+  Drivetrain: awd
+
+
+1966:
+- Renault 10 Automatic
+  Power: 326 hp, 708 horsepower, 52 PS
+  Transmission: automatic transmission
+  Fuel Economy: city increased from 240 to 315 litres
+
+
+1965:
+- Renault 8 Major
+  Power: 326 hp, 708 horsepower, 44 PS
+  Transmission: Automatic transmission
+  Drivetrain: awd
+
+- Renault 16
+
+
+1963:
+- Renault 4 Parisienne
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: four-speed manual
+  Drivetrain: front-wheel drive
+
+
+1962:
+- Renault 8
+
+
+1961:
+- Renault Dauphine
+  Power: 326 hp, 708 horsepower, 19 hp
+  Transmission: five-speed manual
+
+
+1960:
+- Renault Floride
+  Power: 326 hp, 708 horsepower, 40 hp
+
+
+1959:
+- Renault Fregate
+  Power: 326 hp, 708 horsepower, 77 hp
+
+- Renault Floride
+
+
+1957:
+- Renault Dauphine
+
+
+1954:
+- Renault 4 CV Sport
+  Power: 326 hp, 708 horsepower, 17 hp
+  Transmission: three-speed manual
+
+
+1951:
+- Renault Fregate
+  Power: 326 hp, 708 horsepower, 77 hp
+
+
+1950:
+- Renault 4 CV Luxe
+  Engine: V L
+  Power: 326 hp, 708 horsepower, 17 hp
+  Transmission: three-speed manual
+
+
+1948:
+- Renault 4 CV
+  Power: 326 hp, 708 horsepower, 17 hp
+  Transmission: three-speed manual
+
+
+Unknown Year:
+- Renault
+
+

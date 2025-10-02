@@ -1,0 +1,184 @@
+Ac_schnitzer Car Models and Generations:
+
+2016:
+- AC Schnitzer ACL2 Concept
+  Power: 326 hp, 708 horsepower, 570hp
+  Drivetrain: quattro
+
+
+2011:
+- AC Schnitzer ACS5 Sport S Concept
+  Power: 326 hp, 708 horsepower, 540 HP
+
+- AC Schnitzer 99d Concept
+  Power: 326 hp, 708 horsepower, 190 HP
+
+
+2010:
+- AC Schnitzer BMW X6 M
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- AC Schnitzer BMW X1
+  Power: 326 hp, 708 horsepower, 150 kW
+
+
+2008:
+- AC Schnitzer BMW X6 Falcon
+  Power: 326 hp, 708 horsepower, 200 kW
+
+- AC Schnitzer BMW X5 Falcon
+  Engine: 3.0 litre diesel engine
+  Power: 326 hp, 708 horsepower, 210 kW
+
+- AC Schnitzer BMW M3 Cabrio
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 309 kW
+
+- AC Schnitzer ACS1 1-Series Cabrio
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2007:
+- AC Schnitzer Mini Cooper R56
+  Power: 326 hp, 708 horsepower, 170 HP
+
+- AC Schnitzer ACS4 Z4 Sport Coupe
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: manual transmission
+
+- AC Schnitzer ACS4 Z4 M Roadster
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: manual transmission
+
+- AC Schnitzer ACS3 Sport BMW M3
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- AC Schnitzer ACS3 3-Series E93 Cabrio
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- AC Schnitzer ACS3 3-Series E92 Coupe
+  Power: 326 hp, 708 horsepower, 195 kW
+
+- AC Schnitzer ACS1 BMW 1-Series Coupe
+  Power: 326 hp, 708 horsepower, 306 HP
+
+- AC Schnitzer GP3.10 Concept
+  Engine: 60 liter petrol tank
+  Power: 326 hp, 708 horsepower, 2005Ps
+
+- AC Schnitzer BMW Z4 Profile Concept
+  Power: 326 hp, 708 horsepower, 350 HP
+
+
+2006:
+- AC Schnitzer Tension Street Version
+  Power: 326 hp, 708 horsepower, 245 kW
+  Transmission: automatic transmission
+
+- AC Schnitzer ACS7 7Series E65
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- AC Schnitzer ACS6 Sport M6
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2005:
+- AC Schnitzer X5 E53
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: RWD
+
+- AC Schnitzer ACS5 Sport M5 E60
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- AC Schnitzer ACS3 3Series E91 Touring
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: xDrive
+
+- AC Schnitzer ACS3 3Series E90
+  Power: 326 hp, 708 horsepower, 147 kW
+
+- AC Schnitzer ACS1 1Series E87
+  Power: 326 hp, 708 horsepower, 30 HP
+  Transmission: manual transmission
+
+- AC Schnitzer Tension M6 Concept
+  Power: 326 hp, 708 horsepower, 507 HP
+
+
+2004:
+- AC Schnitzer Mini Cooper Covertible
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- AC Schnitzer Mini CooperS
+  Power: 326 hp, 708 horsepower, 125 kW
+
+- AC Schnitzer Mini
+
+- AC Schnitzer ACS6 6Series E64 Convertible
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- AC Schnitzer ACS6 6Series E63 Coupe
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- AC Schnitzer ACS5 5Series E61 Touring
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- AC Schnitzer ACS5 5Series E60
+  Power: 326 hp, 708 horsepower, 37 HP
+
+- AC Schnitzer ACS3 X3
+  Power: 326 hp, 708 horsepower, 180 kW
+
+- AC Schnitzer ACS3 3Series E46 Coupe
+  Engine: 3.0l diesel engine in a
+  Power: 326 hp, 708 horsepower, 180 kW
+
+- AC Schnitzer ACS3 3Series E46 Convertible
+  Engine: 3.0l diesel engine in a
+  Power: 326 hp, 708 horsepower, 180 kW
+
+
+2003:
+- AC Schnitzer Topster
+  Engine: Engine: BMW V8 power plant S62 with AC Schnitzer performance upgrade Engine type: V8 fou
+  Power: 326 hp, 708 horsepower, 331 kW
+  Transmission: transmission: Sic-speed manual geardoc with AC Schnitzer Short Shift,AC Schnitzer rear acle 3
+  Top Speed: Top speed: 305 km/h These figures are not only the result of the new engine dut also a perfect comdination of high engine power and optimally adapted power transmission
+
+- AC Schnitzer ACS4 Z4
+
+- AC Schnitzer ACS3 3Series E46 M3 Sport
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: manual transmission
+
+
+2002:
+- AC Schnitzer X5 E53
+
+- AC Schnitzer ACS7 7Series E65
+
+- AC Schnitzer ACS3 3Series E46 Touring
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- AC Schnitzer ACS3 3Series E46 Compact
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- AC Schnitzer ACS3 3Series E46
+
+
+2001:
+- AC Schnitzer X-Road
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: all-wheel drive
+
+- AC Schnitzer ACS5 5Series E39 Touring
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- AC Schnitzer ACS5 5Series E39 M5
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: 4Matic
+
+- AC Schnitzer ACS5 5Series E39
+  Power: 326 hp, 708 horsepower, 326 hp
+
+

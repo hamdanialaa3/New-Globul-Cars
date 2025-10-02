@@ -1,0 +1,380 @@
+Holden Car Models and Generations:
+
+2018:
+- Holden Commodore
+  Engine: 6.0L V
+  Power: 326 hp, 708 horsepower, 270kW
+  Transmission: nine-speed automatic
+  Drivetrain: all-wheel drive
+
+- Holden Time Attack Concept
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2016:
+- Holden VFII Commodore
+  Engine: 6.0L V
+  Power: 326 hp, 708 horsepower, 304kW
+  Transmission: six-speed automatic
+
+
+2014:
+- Holden VF Commodore Calais V
+  Engine: 3.0L V
+  Power: 326 hp, 708 horsepower, 270kW
+  Transmission: six-speed automatic
+  Drivetrain: rear-wheel drive
+  Fuel Economy: 0.2 litres/100km, 8.9 litres per 100km, 12 litres per 100km
+
+- Holden VF Commodore SSV Redline
+  Engine: 6.0L V
+  Power: 326 hp, 708 horsepower, 270kW
+  Transmission: six-speed automatic
+  Drivetrain: rear-wheel drive
+
+- Holden WN Caprice V
+  Engine: V 6.0L
+  Power: 326 hp, 708 horsepower, 270kW
+  Transmission: six-speed automatic
+
+- Holden VF Commodore Sportwagen Calais V
+  Engine: 3.0L V
+  Power: 326 hp, 708 horsepower, 463 kW
+  Transmission: five-speed manual
+  Drivetrain: rear-wheel drive
+  Fuel Economy: 0.2 litres/100km, 8.9 litres per 100km, 12 litres per 100km
+
+- Holden VF Commodore Ute
+  Power: 326 hp, 708 horsepower, 228 horsepower
+  Transmission: automatic transmission
+
+- Holden VF Commodore Ute SSV Redline
+  Power: 326 hp, 708 horsepower, 228 horsepower
+  Transmission: manual transmission
+  Drivetrain: rear-wheel drive
+
+
+2013:
+- Holden VF Commodore SSV Concept
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 600 horsepower
+  Drivetrain: quattro
+
+- Holden VF Commodore Calais V Concept
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 600 horsepower
+  Drivetrain: quattro
+
+
+2011:
+- Holden VE II Commodore Calais V
+  Engine: 6.0 litre V
+  Power: 326 hp, 708 horsepower, 270kW
+  Transmission: six-speed automatic
+
+- Holden VE II Commodore SSV
+  Engine: 6.0 litre V
+  Power: 326 hp, 708 horsepower, 270kW
+  Transmission: six-speed automatic
+
+- Holden Volt
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 228 horsepower
+  Transmission: six-speed manual
+
+- Holden VE II Commodore Sportwagon Calais V
+  Engine: 6.0 litre V
+  Power: 326 hp, 708 horsepower, 463 kW
+  Transmission: five-speed manual
+  Drivetrain: all-wheel drive
+  Fuel Economy: city of 796 lb-ft (1,079 Nm), city of 796 lb-ft (1,079 Nm)
+
+- Holden VE II Commodore Sportwagon SS
+  Engine: 6.0 litre V
+  Power: 326 hp, 708 horsepower, 463 kW
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+  Fuel Economy: city of 796 lb-ft (1,079 Nm), city of 796 lb-ft (1,079 Nm)
+
+- Holden VE II Ute SSV
+  Engine: 6.0 litre V
+  Power: 326 hp, 708 horsepower, 228 horsepower
+  Transmission: automatic transmission
+
+
+2010:
+- Holden Cruze
+  Engine: hybrid v
+  Power: 326 hp, 708 horsepower, 228 horsepower
+  Transmission: six-speed manual
+
+
+2009:
+- Holden Colorado
+  Engine: 3.0 litre four-cylinder
+  Power: 326 hp, 708 horsepower, 120kW
+  Transmission: manual transmission
+
+
+2008:
+- Holden VE Commodore Sportwagon
+  Engine: 3.6 litre V
+  Power: 326 hp, 708 horsepower, 180kW
+  Transmission: four-speed automatic
+  Drivetrain: rear-wheel drive
+  Fuel Economy: city of 796 lb-ft (1,079 Nm), city of 796 lb-ft (1,079 Nm)
+
+- Holden Coupe 60 Concept
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: manual transmission
+  Drivetrain: rear-wheel drive
+
+
+2007:
+- Holden VE Ute SS V
+  Engine: 3.6 litre V
+  Power: 326 hp, 708 horsepower, 270kW
+  Transmission: four-speed automatic
+
+
+2006:
+- Holden Captiva LX
+  Engine: 6.0L V
+  Power: 326 hp, 708 horsepower, 169kW
+  Transmission: five-speed automatic
+  Drivetrain: all-wheel drive
+  Fuel Economy: 11.6 litres/100km
+
+- Holden VE Commodore Omega
+  Engine: 3.6L V
+  Power: 326 hp, 708 horsepower, 180kW
+  Transmission: four-speed automatic
+  Drivetrain: Quattro
+
+- Holden VE Commodore SS
+  Engine: 3.6L V
+  Power: 326 hp, 708 horsepower, 180kW
+  Transmission: four-speed automatic
+
+- Holden WM Caprice
+  Engine: V 6.0 litre
+  Power: 326 hp, 708 horsepower, 270kW
+  Transmission: six-speed automatic
+  Drivetrain: 4Matic
+
+- Holden TK Barina Sedan
+  Engine: 6.0L V
+  Power: 326 hp, 708 horsepower, 270kW
+  Transmission: six-speed automatic
+  Drivetrain: xDrive
+
+- Holden HFV6 Rodeo
+  Engine: 4.7 L V
+  Power: 326 hp, 708 horsepower, 228 horsepower
+  Transmission: automatic transmission
+
+
+2005:
+- Holden JF Viva Sedan
+  Engine: 6.0L V
+  Power: 326 hp, 708 horsepower, 270kW
+  Transmission: six-speed automatic
+
+- Holden VZ Adventra
+  Engine: 5.4 L V
+  Power: 326 hp, 708 horsepower, 190kW
+  Transmission: five-speed manual
+  Drivetrain: all-wheel drive
+  Fuel Economy: city of 796 lb-ft (1,079 Nm), city of 796 lb-ft (1,079 Nm)
+
+- Holden JF Viva Wagon
+  Engine: Diesel v
+  Power: 326 hp, 708 horsepower, 81 kW
+  Transmission: manual transmission
+  Drivetrain: 4MOTION
+  Dimensions: 4,689 mm in length
+  Weight: 2,000 kg
+
+- Holden Astra Wagon
+  Engine: Diesel v
+  Power: 326 hp, 708 horsepower, 110 kW
+  Transmission: manual transmission
+  Drivetrain: 4MOTION
+  Dimensions: 4,689 mm in length
+  Weight: 2,000 kg
+
+- Holden Tigra
+  Power: 326 hp, 708 horsepower, 170 kW
+  Transmission: automatic transmission
+  Weight: 1,587 lb
+
+- Holden JF Viva Hatch
+  Engine: Diesel v
+  Power: 326 hp, 708 horsepower, 230 PS
+  Transmission: automatic gearbox
+  Drivetrain: front-wheel drive
+  Top Speed: limited to 250 kmh
+  Fuel Economy: 6.7 l per 100 km, 6.8 l per 100 km
+
+- Holden TK Barina Hatch 5-door
+  Engine: 1.6 L petrol engines and a
+  Power: 326 hp, 708 horsepower, 132 kW
+  Transmission: seven-speed
+  Drivetrain: front-wheel drive
+  Weight: 1,280 kg
+  Fuel Economy: 40 mpg
+
+- Holden TK Barina Hatch 3-door
+  Engine: 1.6 L petrol engines and a
+  Power: 326 hp, 708 horsepower, 132 kW
+  Transmission: seven-speed
+  Drivetrain: front-wheel drive
+  Weight: 1,280 kg
+  Fuel Economy: 40 mpg
+
+- Holden Astra 3-door
+  Engine: Diesel v
+  Power: 326 hp, 708 horsepower, 150 hp
+  Transmission: four-speed automatic
+  Drivetrain: front-wheel drive
+  Top Speed: limited to 250 kmh
+  Fuel Economy: 6.7 l per 100 km, 6.8 l per 100 km
+
+- Holden Astra SRi Turbo
+  Engine: Diesel v
+  Power: 326 hp, 708 horsepower, 150 hp
+  Transmission: four-speed automatic
+  Drivetrain: front-wheel drive
+  Top Speed: limited to 250 kmh
+  Acceleration: 0-100 km/h in 6.15 s
+  Fuel Economy: 6.7 l per 100 km, 6.8 l per 100 km
+
+- Holden VZ Crewman Cross 8
+  Engine: 4.7 L V
+  Power: 326 hp, 708 horsepower, 190kW
+  Transmission: automatic transmission
+  Drivetrain: rear-wheel drive
+
+- Holden Efijy Concept
+  Power: 326 hp, 708 horsepower, 480kW
+  Transmission: four-speed automatic
+  Drivetrain: drive: 139 mm Ground clearance - show: 27 mm Track front: 1640 mmTrack rear: 1660 mm Wheeldase: 2946 mmPowertrain Engine: GM 6
+
+
+2004:
+- Holden VZ Commodore Calais
+  Engine: 6.0 L V
+  Power: 326 hp, 708 horsepower, 190kW
+  Transmission: six-speed automatic
+
+- Holden VZ Commodore SV6
+  Engine: 6.0 L V
+  Power: 326 hp, 708 horsepower, 190kW
+  Transmission: six-speed automatic
+
+- Holden WL Caprice
+  Engine: 6.0L V
+  Power: 326 hp, 708 horsepower, 270kW
+  Transmission: six-speed automatic
+
+- Holden VZ Monaro
+  Engine: V 6.0 L
+  Power: 326 hp, 708 horsepower, 297 kW
+  Drivetrain: four-wheel drive
+  Top Speed: Top speed: 210 km/h (130 mph)  Length: 4755 mm
+  Fuel Economy: 9.9 l/100 km, 28.5 mpg , combined: 9.9 l/100 km [28
+
+- Holden Astra CDXi 5door
+  Engine: Diesel v
+  Power: 326 hp, 708 horsepower, 150 hp
+  Transmission: four-speed automatic
+  Drivetrain: front-wheel drive
+  Top Speed: limited to 250 kmh
+  Fuel Economy: 6.7 l per 100 km, 6.8 l per 100 km
+
+- Holden VZ Ute
+  Engine: 4.7 L V
+  Power: 326 hp, 708 horsepower, 190kW
+  Transmission: automatic transmission
+  Drivetrain: rear-wheel drive
+
+- Holden VZ Ute SS
+  Power: 326 hp, 708 horsepower, 326 hp
+  Transmission: automatic transmission
+
+- Holden SST Stepside Custom Pickup Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Holden Torana TT36 Hatch Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2003:
+- Holden VY Commodore Acclaim
+  Engine: 6.0L V
+  Power: 326 hp, 708 horsepower, 270kW
+  Transmission: six-speed automatic
+
+- Holden Vectra
+  Engine: 20014.0 L V
+  Power: 326 hp, 708 horsepower, 114 kW
+  Drivetrain: all-wheel drive
+
+- Holden Astra Convertible
+  Engine: 2.2 L v
+  Power: 326 hp, 708 horsepower, 110 kW
+  Drivetrain: rear-wheel drive
+
+
+2002:
+- Holden Cruze
+
+- Holden Cross 8 Concept
+  Engine: 7.5 L V
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Holden HRT 427 Concept
+  Engine: 7.5 L V
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Holden SST Concept
+  Engine: 7.5 L V
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Holden SSX Concept
+  Engine: 7.5 L V
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2001:
+- Holden HSV Maloo Ute Concept
+  Power: 326 hp, 708 horsepower, 441kW
+
+- Holden Jack8 Concept
+  Power: 326 hp, 708 horsepower, 441kW
+
+- Holden Utester Concept
+  Power: 326 hp, 708 horsepower, 441kW
+
+
+2000:
+- Holden ECOmmodore Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Holden Sandman Concept
+
+
+1998:
+- Holden Coupe Concept
+
+
+1970:
+- Holden Torana GTR-X Concept
+
+
+1969:
+- Holden Hurricane Concept
+
+

@@ -1,0 +1,29 @@
+{
+  "name": "ultimate-anti-block-scraper",
+  "version": "4.0.0",
+  "type": "module",
+  "description": "Ultimate Anti-Block NetCarShow Scraper with Enterprise Protection",
+  "main": "unified-ultimate-scraper.js",
+  "scripts": {
+    "start": "node unified-ultimate-scraper.js",
+    "test": "node system-test.js",
+    "setup": "npm install"
+  },
+  "dependencies": {
+    "axios": "^1.6.0",
+    "cheerio": "^1.0.0-rc.12"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "scraper",
+    "anti-block",
+    "netcarshow",
+    "proxy",
+    "vpn",
+    "protection"
+  ],
+  "author": "Ultimate Scraper Team",
+  "license": "MIT"
+}

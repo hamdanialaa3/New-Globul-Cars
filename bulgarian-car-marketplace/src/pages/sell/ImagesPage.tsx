@@ -1,6 +1,8 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
+import ImageOptimizationService from '../../services/imageOptimizationService';
+import WorkflowPersistenceService from '../../services/workflowPersistenceService';
 
 const ImagesContainer = styled.div`
   min-height: 100vh;
@@ -267,7 +269,17 @@ const ImagesPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const [images, setImages] = useState<File[]>([]);
   const [isDragOver, setIsDragOver] = useState(false);
+  const [isOptimizing, setIsOptimizing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Load saved images on mount
+  useEffect(() => {
+    const savedImages = WorkflowPersistenceService.getImagesAsFiles();
+    if (savedImages.length > 0) {
+      setImages(savedImages);
+      console.log(`✅ Loaded ${savedImages.length} saved images`);
+    }
+  }, []);
 
   // Extract parameters from URL
   const vehicleType = searchParams.get('vt');
@@ -305,7 +317,7 @@ const ImagesPage: React.FC = () => {
     handleFiles(files);
   };
 
-  const handleFiles = (files: File[]) => {
+  const handleFiles = async (files: File[]) => {
     const imageFiles = files.filter(file => file.type.startsWith('image/'));
     
     if (imageFiles.length === 0) {
@@ -318,7 +330,36 @@ const ImagesPage: React.FC = () => {
       return;
     }
 
-    setImages(prev => [...prev, ...imageFiles]);
+    // Validate images
+    const validation = ImageOptimizationService.validateImages(imageFiles);
+    if (!validation.isValid) {
+      alert('Грешка при валидация на снимките:\n' + validation.errors.join('\n'));
+      return;
+    }
+
+    try {
+      setIsOptimizing(true);
+      console.log('🔄 Optimizing images...');
+      
+      // Optimize images
+      const optimizedImages = await ImageOptimizationService.optimizeImages(imageFiles, {
+        maxWidth: 1920,
+        maxHeight: 1080,
+        quality: 0.85
+      });
+
+      setImages(prev => [...prev, ...optimizedImages]);
+      
+      // Save to localStorage
+      await WorkflowPersistenceService.saveImages([...images, ...optimizedImages]);
+      
+      console.log('✅ Images optimized and saved');
+    } catch (error) {
+      console.error('❌ Error processing images:', error);
+      alert('Възникна грешка при обработка на снимките.');
+    } finally {
+      setIsOptimizing(false);
+    }
   };
 
   const handleDeleteImage = (index: number) => {
@@ -368,26 +409,38 @@ const ImagesPage: React.FC = () => {
     navigate(`/sell/inserat/${vehicleType || 'pkw'}/ausstattung/extras?${params.toString()}`);
   };
 
-  const handleContinue = () => {
-    // Build URL with parameters
-    const params = new URLSearchParams();
-    if (vehicleType) params.set('vt', vehicleType);
-    if (sellerType) params.set('st', sellerType);
-    if (make) params.set('mk', make);
-    if (model) params.set('md', model);
-    if (fuelType) params.set('fm', fuelType);
-    if (year) params.set('fy', year);
-    if (mileage) params.set('mi', mileage);
-    if (condition) params.set('i', condition);
-    if (safety) params.set('safety', safety);
-    if (comfort) params.set('comfort', comfort);
-    if (infotainment) params.set('infotainment', infotainment);
-    if (extras) params.set('extras', extras);
-    if (images.length > 0) {
-      params.set('images', images.length.toString());
+  const handleContinue = async () => {
+    if (images.length === 0) {
+      alert('Моля, качете поне една снимка!');
+      return;
     }
 
-    navigate(`/sell/inserat/${vehicleType || 'pkw'}/details/preis?${params.toString()}`);
+    try {
+      // Save images to localStorage
+      await WorkflowPersistenceService.saveImages(images);
+      console.log('💾 Images saved to localStorage');
+
+      // Build URL with parameters
+      const params = new URLSearchParams();
+      if (vehicleType) params.set('vt', vehicleType);
+      if (sellerType) params.set('st', sellerType);
+      if (make) params.set('mk', make);
+      if (model) params.set('md', model);
+      if (fuelType) params.set('fm', fuelType);
+      if (year) params.set('fy', year);
+      if (mileage) params.set('mi', mileage);
+      if (condition) params.set('i', condition);
+      if (safety) params.set('safety', safety);
+      if (comfort) params.set('comfort', comfort);
+      if (infotainment) params.set('infotainment', infotainment);
+      if (extras) params.set('extras', extras);
+      params.set('images', images.length.toString());
+
+      navigate(`/sell/inserat/${vehicleType || 'pkw'}/details/preis?${params.toString()}`);
+    } catch (error) {
+      console.error('❌ Error saving images:', error);
+      alert('Възникна грешка при запазване на снимките.');
+    }
   };
 
   return (
@@ -405,20 +458,26 @@ const ImagesPage: React.FC = () => {
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
-          onClick={() => fileInputRef.current?.click()}
+          onClick={() => !isOptimizing && fileInputRef.current?.click()}
         >
-          <UploadIcon>📸</UploadIcon>
-          <UploadText>Качете снимки на превозното средство</UploadText>
+          <UploadIcon>{isOptimizing ? '⏳' : '📸'}</UploadIcon>
+          <UploadText>
+            {isOptimizing ? 'Оптимизиране на снимките...' : 'Качете снимки на превозното средство'}
+          </UploadText>
           <UploadSubtext>
-            Плъзнете снимките тук или кликнете за да изберете файлове
+            {isOptimizing 
+              ? 'Моля изчакайте, докато снимките се оптимизират.'
+              : 'Плъзнете снимките тук или кликнете за да изберете файлове'
+            }
           </UploadSubtext>
-          <UploadButton>Изберете снимки</UploadButton>
+          {!isOptimizing && <UploadButton>Изберете снимки</UploadButton>}
           <HiddenInput
             ref={fileInputRef}
             type="file"
             multiple
             accept="image/*"
             onChange={handleFileSelect}
+            disabled={isOptimizing}
           />
         </UploadArea>
 

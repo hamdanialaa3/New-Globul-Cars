@@ -1,0 +1,154 @@
+Alfa Romeo Car Models and Generations:
+
+2025 Alfa Romeo Junior Ibrida Q4
+2025 Alfa Romeo Junior
+2024 Alfa Romeo 33 Stradale
+2023 Alfa Romeo Tonale [UK]
+2023 Alfa Romeo Tonale Plug-In Hybrid Q4
+2023 Alfa Romeo Tonale
+2023 Alfa Romeo Stelvio Quadrifoglio 100th Anniversary
+2023 Alfa Romeo Stelvio
+2023 Alfa Romeo Giulia SWB Zagato
+2023 Alfa Romeo Giulia Quadrifoglio 100th Anniversary
+2023 Alfa Romeo Giulia
+2021 Alfa Romeo Stelvio Veloce Ti
+2021 Alfa Romeo Giulia GTA
+2020 Alfa Romeo Stelvio Quadrifoglio
+2020 Alfa Romeo Stelvio
+2020 Alfa Romeo Giulia Quadrifoglio
+2020 Alfa Romeo Giulia
+2020 Alfa Romeo 4C Spider 33 Stradale Tributo
+2019 Alfa Romeo Tonale Concept
+2019 Alfa Romeo Giulietta
+2018 Alfa Romeo Stelvio Quadrifoglio [US]
+2018 Alfa Romeo Stelvio Quadrifoglio
+2018 Alfa Romeo Stelvio
+2017 Alfa Romeo MiTo
+2017 Alfa Romeo Giulietta
+2017 Alfa Romeo Giulia Veloce
+2017 Alfa Romeo Giulia Quadrifoglio Carabinieri
+2016 Alfa Romeo Giulia Quadrifoglio
+2016 Alfa Romeo Giulia
+2016 Alfa Romeo Disco Volante Spyder Touring
+2015 Alfa Romeo Giulietta Sprint
+2015 Alfa Romeo 4C Spider
+2015 Alfa Romeo 4C Coupe [US]
+2014 Alfa Romeo MiTo Quadrifoglio Verde
+2014 Alfa Romeo MiTo
+2014 Alfa Romeo Giulietta Quadrifoglio Verde
+2014 Alfa Romeo Giulietta
+2014 Alfa Romeo 4C [UK]
+2014 Alfa Romeo 4C Spider Concept
+2014 Alfa Romeo 4C
+2013 Alfa Romeo Gloria Concept
+2013 Alfa Romeo Disco Volante Touring
+2012 Alfa Romeo Disco Volante Touring Concept
+2011 Alfa Romeo TZ3 Stradale
+2011 Alfa Romeo Giulietta
+2011 Alfa Romeo 4C Concept
+2010 Alfa Romeo TZ3 Corsa
+2010 Alfa Romeo Pandion Concept
+2010 Alfa Romeo MiTo Quadrifoglio Verde
+2010 Alfa Romeo MiTo 1.4 MultiAir
+2010 Alfa Romeo 2uettottanta Concept
+2010 Alfa Romeo 159 1750 TBi
+2009 Alfa Romeo MiTo [UK]
+2009 Alfa Romeo MiTo GTA Concept
+2009 Alfa Romeo Mi.To
+2009 Alfa Romeo Brera S
+2009 Alfa Romeo 8C Spider
+2009 Alfa Romeo 159 Sportwagon
+2009 Alfa Romeo 159
+2007 Alfa Romeo GT Q2
+2007 Alfa Romeo 8c Competizione
+2007 Alfa Romeo 147 Q2
+2007 Alfa Romeo 147 Murphy and Nye
+2007 Alfa Romeo 147 CnC
+2006 Alfa Romeo Spider [UK]
+2006 Alfa Romeo Spider
+2006 Alfa Romeo 159 Sportwagon
+2005 Alfa Romeo Brera [UK]
+2005 Alfa Romeo Brera
+2005 Alfa Romeo 159
+2004 Alfa Romeo Visconti Concept ItalDesign
+2004 Alfa Romeo 8C Competizione
+2004 Alfa Romeo 166
+2004 Alfa Romeo 156 GTA Autodelta
+2004 Alfa Romeo 156 Crosswagon Q4
+2004 Alfa Romeo 156 Crosswagon
+2004 Alfa Romeo 147 5door
+2004 Alfa Romeo 147 3door
+2003 Alfa Romeo Spider
+2003 Alfa Romeo Kamal Concept
+2003 Alfa Romeo GTV
+2003 Alfa Romeo GT
+2003 Alfa Romeo 156 Sportwagon 2.0 JTD
+2003 Alfa Romeo 156 GTA Autodelta
+2003 Alfa Romeo 156 2.4 JTD
+2003 Alfa Romeo 147 TI
+2002 Alfa Romeo 147 JTD 16V
+2002 Alfa Romeo 147 GTA
+2000 Alfa Romeo 147
+1998 Alfa Romeo 166
+1998 Alfa Romeo 156
+1997 Alfa Romeo 146
+1997 Alfa Romeo 145
+1996 Alfa Romeo Nuvola Concept
+1993 Alfa Romeo 155 2.5 V6 TI DTM
+1993 Alfa Romeo 155
+1991 Alfa Romeo 164 Proteo Concept
+1990 Alfa Romeo Spider
+1989 Alfa Romeo RZ
+1988 Alfa Romeo 75 1.8i Turbo
+1988 Alfa Romeo 75
+1987 Alfa Romeo 75 1.8i Turbo TCC
+1987 Alfa Romeo 164
+1986 Alfa Romeo 75 1.8i Turbo Evoluzione
+1985 Alfa Romeo 33 1.5 4x4
+1983 Alfa Romeo Spider
+1983 Alfa Romeo Giulietta 2.0 Turbodelta
+1983 Alfa Romeo Arna
+1983 Alfa Romeo Alfasud Sprint Quadrifoglio Verde
+1983 Alfa Romeo Alfasud Sprint Grand Prix
+1983 Alfa Romeo Alfa 6
+1983 Alfa Romeo 33 1.5 Giardinetta 4x4
+1982 Alfa Romeo Alfetta 2.0
+1982 Alfa Romeo 182 T Formula 1
+1980 Alfa Romeo Alfetta GTV 6 2.5i
+1979 Alfa Romeo Alfasud Sprint 1.5 Veloce
+1979 Alfa Romeo 2.0i TS Formula 3
+1976 Alfa Romeo Brabham Formula 1
+1976 Alfa Romeo Alfetta GTV 2.0
+1971 Alfa Romeo Alfasud 1.2
+1971 Alfa Romeo 2000 Berlina
+1970 Alfa Romeo Montreal
+1969 Alfa Romeo Giulia Coupe GT Junior Z
+1968 Alfa Romeo Giulia Coupe 1300 GTA Junior
+1967 Alfa Romeo Spider
+1967 Alfa Romeo 33 Stradale
+1966 Alfa Romeo Scarabeo Concept
+1966 Alfa Romeo Giulia Coupe 1300 GT Junior
+1962 Alfa Romeo Giulia Berlina
+1962 Alfa Romeo 2600 Spider
+1961 Alfa Romeo Giulietta Sprint
+1960 Alfa Romeo Giulietta SZ
+1959 Alfa Romeo Giulietta Sprint
+1957 Alfa Romeo Giulietta Sprint
+1955 Alfa Romeo Giulietta Spider
+1955 Alfa Romeo Giulietta Berlina
+1955 Alfa Romeo 750 Competizione
+1954 Alfa Romeo Giulietta Sprint
+1954 Alfa Romeo 2000 Sport Spider
+1952 Alfa Romeo C 52 Disco Volante 2000 Spider
+1951 Alfa Romeo Tipo 159 Alfetta
+1951 Alfa Romeo 1900
+1947 Alfa Romeo 158
+1946 Alfa Romeo 6C 2300 Villa DEste
+1939 Alfa Romeo 412
+1938 Alfa Romeo Tipo 158 Alfetta
+1938 Alfa Romeo 6C 2300 Mille Miglia
+1931 Alfa Romeo 8C 2300
+1928 Alfa Romeo 6C 1500 Sport
+1925 Alfa Romeo P2
+1923 Alfa Romeo RM Sport
+1922 Alfa Romeo RL

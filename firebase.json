@@ -11,7 +11,7 @@
     "source": "functions"
   },
   "hosting": {
-    "site": "studio-448742006-a3493",
+    "site": "globul-net-cb499",
     "public": "bulgarian-car-marketplace/build",
     "ignore": [
       "firebase.json",
@@ -43,7 +43,8 @@
           }
         ]
       }
-    ]
+    ],
+    "appAssociation": "AUTO"
   },
   "storage": {
     "rules": "storage.rules"

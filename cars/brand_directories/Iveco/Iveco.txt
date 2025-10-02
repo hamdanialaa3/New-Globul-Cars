@@ -1,0 +1,15 @@
+Iveco Car Models and Generations:
+
+2009:
+- Iveco Campagnola
+  Engine: diesel v
+  Power: 326 hp, 708 horsepower, 4 HP
+  Weight: 1,250kg
+  Fuel Economy: 12.1 litres per 100km
+
+
+2008:
+- Iveco Massif
+  Power: 326 hp, 708 horsepower, 0 HP
+
+

@@ -473,3 +473,5 @@ const EmptyButton = styled.button`
 `;
 
 export default FavoritesPage;
+
+

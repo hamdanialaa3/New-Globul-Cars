@@ -1,0 +1,8 @@
+Farbio Car Models and Generations:
+
+2008:
+- Farbio GTS
+  Power: 326 hp, 708 horsepower, 326 hp
+  Acceleration: 0-60mph in 4.8 seconds
+
+

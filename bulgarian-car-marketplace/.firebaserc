@@ -2,14 +2,6 @@
   "projects": {
     "default": "studio-448742006-a3493"
   },
-  "targets": {
-    "studio-448742006-a3493": {
-      "hosting": {
-        "globul-cars-prod": [
-          "globul-cars-prod"
-        ]
-      }
-    }
-  },
+  "targets": {},
   "etags": {}
 }

@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
+import { useAuth } from '../../context/AuthProvider';
+import SellWorkflowService from '../../services/sellWorkflowService';
+import WorkflowPersistenceService from '../../services/workflowPersistenceService';
 
 const ContactPhoneContainer = styled.div`
   min-height: 100vh;
@@ -210,14 +213,37 @@ const SummaryText = styled.p`
   line-height: 1.6;
 `;
 
+const ErrorCard = styled.div`
+  background: #fee;
+  border: 2px solid #fcc;
+  border-radius: 15px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+  color: #c00;
+  text-align: center;
+`;
+
+const SuccessCard = styled.div`
+  background: #efe;
+  border: 2px solid #cfc;
+  border-radius: 15px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+  color: #060;
+  text-align: center;
+`;
+
 const ContactPhonePage: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { user } = useAuth();
   const [contact, setContact] = useState({
     additionalPhone: '',
     availableHours: '',
     additionalInfo: ''
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Extract parameters from URL
   const vehicleType = searchParams.get('vt');
@@ -292,13 +318,88 @@ const ContactPhonePage: React.FC = () => {
     navigate(`/sell/inserat/${vehicleType || 'pkw'}/kontakt/adresse?${params.toString()}`);
   };
 
-  const handleFinish = () => {
-    // Here you would typically save all the data to Firebase
-    // For now, we'll just show a success message
-    alert('Обявата е създадена успешно!');
-    
-    // Redirect to the main page or dashboard
-    navigate('/');
+  const handleFinish = async () => {
+    if (!user) {
+      setError('Моля, влезте в профила си, за да публикувате обява.');
+      navigate('/login');
+      return;
+    }
+
+    setIsSubmitting(true);
+    setError(null);
+
+    try {
+      // Collect all workflow data from URL parameters
+      const workflowData = {
+        vehicleType,
+        sellerType,
+        make,
+        model,
+        fuelType,
+        year,
+        mileage,
+        condition,
+        safety,
+        comfort,
+        infotainment,
+        extras,
+        images,
+        price,
+        currency,
+        priceType,
+        negotiable,
+        financing,
+        tradeIn,
+        warranty,
+        warrantyMonths,
+        paymentMethods,
+        sellerName,
+        sellerEmail,
+        sellerPhone,
+        preferredContact,
+        location,
+        city,
+        region,
+        postalCode,
+        additionalPhone: contact.additionalPhone,
+        availableHours: contact.availableHours,
+        additionalInfo: contact.additionalInfo
+      };
+
+      // Validate data
+      const validation = SellWorkflowService.validateWorkflowData(workflowData);
+      if (!validation.isValid) {
+        setError(`Липсва задължителна информация: ${validation.missingFields.join(', ')}`);
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Get saved images from localStorage
+      const savedImages = WorkflowPersistenceService.getImagesAsFiles();
+      console.log(`📸 Found ${savedImages.length} saved images`);
+
+      // Create car listing with images
+      const carId = await SellWorkflowService.createCarListing(
+        workflowData,
+        user.uid,
+        savedImages.length > 0 ? savedImages : undefined
+      );
+
+      console.log('✅ Обявата е създадена успешно!', carId);
+
+      // Clear workflow cache and images
+      WorkflowPersistenceService.clearState();
+
+      // Show success message
+      alert(`✅ Обявата е публикувана успешно!\n\nID: ${carId}\n\nСега можете да я видите в "Моите обяви".`);
+
+      // Redirect to my listings page
+      navigate('/my-listings');
+    } catch (error: any) {
+      console.error('❌ Error creating car listing:', error);
+      setError(error.message || 'Възникна грешка при създаване на обявата. Моля, опитайте отново.');
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -355,13 +456,20 @@ const ContactPhonePage: React.FC = () => {
           </SummaryText>
         </SummaryCard>
 
+        {error && (
+          <ErrorCard>
+            <strong>⚠️ Грешка</strong><br/>
+            {error}
+          </ErrorCard>
+        )}
+
         <NavigationButtons>
-          <Button variant="secondary" onClick={handleBack}>
+          <Button variant="secondary" onClick={handleBack} disabled={isSubmitting}>
             ← Назад
           </Button>
 
-          <Button variant="primary" onClick={handleFinish}>
-            Завърши →
+          <Button variant="primary" onClick={handleFinish} disabled={isSubmitting}>
+            {isSubmitting ? '⏳ Публикуване...' : '✅ Публикувай обявата'}
           </Button>
         </NavigationButtons>
 

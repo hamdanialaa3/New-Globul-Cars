@@ -1,0 +1,246 @@
+Lincoln Car Models and Generations:
+
+2025:
+- Lincoln Aviator
+  Engine: eight-cylinder L
+  Power: 326 hp, 708 horsepower, 400 horsepower
+  Transmission: automatic transmission
+  Drivetrain: Four-Wheel Drive
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Acceleration: 0-100kmh in 5.2 seconds
+  Fuel Economy: 11.1 l/100 km, 25.5 mpg , combined for both models: 11.1 l/100 km (25
+
+- Lincoln Navigator
+  Engine: 4.0L V
+  Power: 326 hp, 708 horsepower, 440 horsepower
+  Drivetrain: four-wheel drive
+  Fuel Economy: city to 8,700 lds
+
+
+2024:
+- Lincoln Nautilus
+  Engine: 2.0 litre four-cylinder
+  Power: 326 hp, 708 horsepower, 250 horsepower
+  Transmission: eight-speed automatic
+  Drivetrain: all-wheel drive
+  Acceleration: 0-60mph in 4.1 seconds
+
+
+2023:
+- Lincoln Corsair
+  Engine: electric V
+  Power: 326 hp, 708 horsepower, 335 horsepower
+  Drivetrain: all-wheel drive
+
+
+2022:
+- Lincoln Navigator
+  Engine: V l
+  Power: 326 hp, 708 horsepower, 440 horsepower
+  Drivetrain: all-wheel drive
+
+- Lincoln Model L100 Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Lincoln Star Concept
+  Engine: electric v
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2021:
+- Lincoln Nautilus
+
+- Lincoln Anniversary Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Lincoln Aviator Shinola Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: all-wheel drive
+
+- Lincoln Zephyr Reflection Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2020:
+- Lincoln Aviator
+
+- Lincoln Corsair
+
+
+2019:
+- Lincoln Nautilus
+
+- Lincoln MKC
+  Engine: electric V
+  Power: 326 hp, 708 horsepower, 285 horsepower
+  Drivetrain: all-wheel drive
+
+
+2018:
+- Lincoln Navigator
+
+- Lincoln Aviator Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2017:
+- Lincoln MKZ
+  Engine: V6 l
+  Power: 326 hp, 708 horsepower, 400 horsepower
+  Transmission: six-speed manual
+  Drivetrain: front-wheel drive
+
+- Lincoln Continental
+  Engine: 3.0 L V
+  Power: 326 hp, 708 horsepower, 400 horsepower
+  Transmission: five-speed automatic
+  Drivetrain: all-wheel drive
+
+
+2016:
+- Lincoln MKX
+  Engine: 2.0 litre four-cylinder
+  Power: 326 hp, 708 horsepower, 330 horsepower
+  Transmission: automatic transmission
+  Drivetrain: Front-wheel drive
+  Acceleration: 0-60mph in 4.1 seconds
+
+- Lincoln Navigator Concept
+  Power: 326 hp, 708 horsepower, 400 horsepower
+
+
+2015:
+- Lincoln Navigator
+
+- Lincoln MKC
+
+- Lincoln Continental Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2014:
+- Lincoln MKX Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2013:
+- Lincoln MKT
+  Engine: V
+
+
+
+
+ 
+
+
+
+L
+  Power: 326 hp, 708 horsepower, 355 horsepower
+  Transmission: SIX-SPEED TRANSMISSION
+  Drivetrain: ALL-WHEEL DRIVE
+  Dimensions: 4,938 millimetres in length, 2,015 millimetres in width
+  Fuel Economy: 11.1 l/100 km, 17 mpg city, 25 mpg highway
+
+- Lincoln MKZ
+
+- Lincoln MKS
+  Engine: 5.4 L V
+  Power: 326 hp, 708 horsepower, 355 horsepower
+  Transmission: SIX-SPEED TRANSMISSION
+  Drivetrain: front-wheel drive
+  Fuel Economy: 19 mpg city, 28 mpg highway, 26 mpg 
+
+- Lincoln MKC Concept
+  Power: 326 hp, 708 horsepower, 600 horsepower
+  Drivetrain: quattro
+
+
+2012:
+- Lincoln MKZ Concept
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: quattro
+
+
+2011:
+- Lincoln MKX
+
+
+2010:
+- Lincoln MKT
+
+- Lincoln MKZ
+
+
+2009:
+- Lincoln MKS
+
+- Lincoln C Concept
+  Power: 326 hp, 708 horsepower, 180 horsepower
+  Fuel Economy: 43 mpg 
+
+
+2008:
+- Lincoln MKT Concept
+  Engine: Electric V
+  Power: 326 hp, 708 horsepower, 415 horsepower
+  Transmission: Transmission: 6-speed select-shift AWDChassis Length: 208
+  Drivetrain: AWD
+
+
+2007:
+- Lincoln Navigator
+
+- Lincoln MKX
+
+- Lincoln MKZ
+
+- Lincoln MKR Concept
+  Power: 326 hp, 708 horsepower, 415 horsepower
+
+
+2006:
+- Lincoln Mark LT
+  Engine: 8.3 L V
+  Power: 326 hp, 708 horsepower, 310 horsepower
+  Transmission: automatic transmission
+  Drivetrain: all-wheel drive
+
+- Lincoln MKS Concept
+  Power: 326 hp, 708 horsepower, 315 horsepower
+
+
+2004:
+- Lincoln Aviator Concept
+
+- Lincoln Mark X Concept
+  Engine: 3.9 L V
+  Power: 326 hp, 708 horsepower, 280 hp
+
+
+2003:
+- Lincoln Aviator
+
+- Lincoln Town Car
+  Engine: 4.6 L V
+  Power: 326 hp, 708 horsepower, 220 hp
+  Transmission: five-speed automatic
+  Drivetrain: all-wheel drive
+
+- Lincoln Navicross Concept
+  Engine: 4.2 L V
+  Power: 326 hp, 708 horsepower, 326 hp
+  Drivetrain: Quattro
+
+
+2002:
+- Lincoln Continental Concept
+
+
+2001:
+- Lincoln MK9 Concept
+
+
+Unknown Year:
+- Lincoln
+
+

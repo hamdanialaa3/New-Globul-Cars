@@ -1,0 +1,35 @@
+Saleen Car Models and Generations:
+
+2006:
+- Saleen Ford Mustang S281 Speedster
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Saleen Ford Mustang S281 Scenic Roof
+  Power: 326 hp, 708 horsepower, 326 hp
+
+- Saleen Ford Mustang 302 Parnelli Jones
+  Power: 326 hp, 708 horsepower, 370 horsepower
+  Drivetrain: 4Matic
+
+- Saleen Ford F-150 S331 Sport Truck
+  Power: 326 hp, 708 horsepower, 326 hp
+
+
+2005:
+- Saleen S7 Twin Turbo
+  Power: 326 hp, 708 horsepower, 500 horsepower
+  Fuel Economy: city, return-less, 52 ld/hr fuel iniectors
+
+- Saleen Ford Mustang S281 Supercharged
+
+- Saleen Ford Mustang S281 Extreme
+
+- Saleen Ford Mustang S281 3 Valve
+
+- Saleen Ford Focus S121 N2O
+
+
+2002:
+- Saleen S7
+
+
