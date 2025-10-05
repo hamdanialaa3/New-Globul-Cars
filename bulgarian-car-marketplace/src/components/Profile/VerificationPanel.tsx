@@ -1,43 +1,41 @@
 // src/components/Profile/VerificationPanel.tsx
-// Verification Panel Component - لوحة التحقق
+// Verification Panel Component - عرض التحققات
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
 
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Mail, Phone, IdCard, Building, CheckCircle, Clock, XCircle } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { PhoneVerificationModal, IDVerificationModal } from '../Verification';
 
 // ==================== STYLED COMPONENTS ====================
 
 const PanelContainer = styled.div`
-  width: 100%;
-  padding: 20px;
   background: white;
   border-radius: 12px;
+  padding: 24px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 `;
 
 const PanelHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
   margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #f0f0f0;
   
   h3 {
-    margin: 0 0 8px 0;
-    font-size: 1.25rem;
-    color: #333;
-  }
-  
-  p {
     margin: 0;
-    font-size: 0.875rem;
-    color: #666;
-    line-height: 1.5;
+    font-size: 1.2rem;
+    color: #333;
   }
 `;
 
 const VerificationList = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
 `;
 
 const VerificationItem = styled.div<{ $verified: boolean }>`
@@ -45,75 +43,75 @@ const VerificationItem = styled.div<{ $verified: boolean }>`
   align-items: center;
   justify-content: space-between;
   padding: 16px;
+  background: ${props => props.$verified ? '#f1f8e9' : '#fff3e0'};
   border-radius: 8px;
-  background: ${props => props.$verified ? '#f0f9ff' : '#f9f9f9'};
-  border: 1px solid ${props => props.$verified ? '#4CAF50' : '#e0e0e0'};
-  transition: all 0.2s ease;
+  border: 1px solid ${props => props.$verified ? '#c5e1a5' : '#ffe082'};
+  transition: all 0.3s ease;
   
   &:hover {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transform: translateX(4px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
 `;
 
-const ItemLeft = styled.div`
+const ItemInfo = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
   flex: 1;
 `;
 
-const IconContainer = styled.div<{ $verified: boolean }>`
+const IconWrapper = styled.div<{ $verified: boolean }>`
   width: 40px;
   height: 40px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: ${props => props.$verified ? '#4CAF50' : '#ccc'};
+  background: ${props => props.$verified ? '#4caf50' : '#ff9800'};
   color: white;
 `;
 
-const ItemInfo = styled.div`
-  flex: 1;
-  
-  .item-title {
-    font-weight: 600;
-    font-size: 1rem;
+const ItemText = styled.div`
+  h4 {
+    margin: 0 0 4px 0;
+    font-size: 0.95rem;
     color: #333;
-    margin-bottom: 4px;
+    font-weight: 600;
   }
   
-  .item-description {
-    font-size: 0.875rem;
+  p {
+    margin: 0;
+    font-size: 0.8rem;
     color: #666;
   }
 `;
 
 const StatusBadge = styled.div<{ $status: 'verified' | 'pending' | 'unverified' }>`
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 0.875rem;
-  font-weight: 500;
   
   ${props => {
     switch (props.$status) {
       case 'verified':
         return `
-          background: #e8f5e9;
-          color: #4CAF50;
+          background: #4caf50;
+          color: white;
         `;
       case 'pending':
         return `
-          background: #fff3e0;
-          color: #FF9800;
+          background: #ff9800;
+          color: white;
         `;
-      default:
+      case 'unverified':
         return `
-          background: #f5f5f5;
-          color: #999;
+          background: #e0e0e0;
+          color: #666;
         `;
     }
   }}
@@ -121,17 +119,22 @@ const StatusBadge = styled.div<{ $status: 'verified' | 'pending' | 'unverified' 
 
 const ActionButton = styled.button`
   padding: 8px 16px;
-  background: #FF7900;
-  color: white;
   border: none;
   border-radius: 6px;
-  font-size: 0.875rem;
-  font-weight: 500;
+  background: #FF7900;
+  color: white;
+  font-size: 0.85rem;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
   
   &:hover {
     background: #ff8c1a;
+    transform: translateY(-2px);
+  }
+  
+  &:active {
+    transform: translateY(0);
   }
 `;
 
@@ -142,7 +145,7 @@ interface VerificationPanelProps {
   phoneVerified: boolean;
   idVerified: boolean;
   businessVerified: boolean;
-  onVerifyClick?: (type: 'phone' | 'id' | 'business') => void;
+  onVerifyClick?: (type: string) => void;
 }
 
 const VerificationPanel: React.FC<VerificationPanelProps> = ({
@@ -153,106 +156,112 @@ const VerificationPanel: React.FC<VerificationPanelProps> = ({
   onVerifyClick
 }) => {
   const { language } = useLanguage();
+  const [showPhoneModal, setShowPhoneModal] = useState(false);
+  const [showIDModal, setShowIDModal] = useState(false);
+
+  const handleVerify = (type: string) => {
+    if (type === 'phone') {
+      setShowPhoneModal(true);
+    } else if (type === 'identity') {
+      setShowIDModal(true);
+    }
+    onVerifyClick?.(type);
+  };
 
   const verifications = [
     {
       id: 'email',
-      icon: Mail,
+      icon: <Mail size={20} />,
       title: language === 'bg' ? 'Имейл' : 'Email',
-      description: language === 'bg' 
-        ? 'Потвърдете вашия имейл адрес' 
-        : 'Verify your email address',
+      description: language === 'bg' ? 'Потвърдете имейл адреса си' : 'Verify your email address',
       verified: emailVerified,
-      action: null
+      canVerify: !emailVerified
     },
     {
       id: 'phone',
-      icon: Phone,
+      icon: <Phone size={20} />,
       title: language === 'bg' ? 'Телефон' : 'Phone',
-      description: language === 'bg'
-        ? 'Потвърдете телефонен номер (+359)'
-        : 'Verify phone number (+359)',
+      description: language === 'bg' ? 'Потвърдете телефонния си номер' : 'Verify your phone number',
       verified: phoneVerified,
-      action: 'phone'
+      canVerify: !phoneVerified
     },
     {
-      id: 'id',
-      icon: IdCard,
+      id: 'identity',
+      icon: <IdCard size={20} />,
       title: language === 'bg' ? 'Самоличност' : 'Identity',
-      description: language === 'bg'
-        ? 'Качете лична карта за потвърждение'
-        : 'Upload ID card for verification',
+      description: language === 'bg' ? 'Потвърдете самоличността си' : 'Verify your identity',
       verified: idVerified,
-      action: 'id'
+      canVerify: !idVerified
     },
     {
       id: 'business',
-      icon: Building,
-      title: language === 'bg' ? 'Фирма' : 'Business',
-      description: language === 'bg'
-        ? 'Потвърдете фирмена регистрация'
-        : 'Verify business registration',
+      icon: <Building size={20} />,
+      title: language === 'bg' ? 'Бизнес' : 'Business',
+      description: language === 'bg' ? 'Потвърдете бизнес акаунта си' : 'Verify your business account',
       verified: businessVerified,
-      action: 'business'
+      canVerify: !businessVerified
     }
   ];
 
-  const getStatusIcon = (verified: boolean) => {
-    if (verified) return <CheckCircle size={18} />;
-    return <Clock size={18} />;
-  };
-
-  const getStatusText = (verified: boolean) => {
-    if (verified) {
-      return language === 'bg' ? 'Потвърдено' : 'Verified';
-    }
-    return language === 'bg' ? 'Непотвърдено' : 'Not Verified';
-  };
-
   return (
-    <PanelContainer>
-      <PanelHeader>
-        <h3>{language === 'bg' ? 'Потвърждение' : 'Verification'}</h3>
-        <p>
-          {language === 'bg'
-            ? 'Потвърдете акаунта си за по-висока степен на доверие'
-            : 'Verify your account for higher trust level'}
-        </p>
-      </PanelHeader>
+    <>
+      <PanelContainer>
+        <PanelHeader>
+          <CheckCircle size={22} color="#FF7900" />
+          <h3>
+            {language === 'bg' ? 'Потвърждения' : 'Verifications'}
+          </h3>
+        </PanelHeader>
 
-      <VerificationList>
-        {verifications.map(item => (
-          <VerificationItem key={item.id} $verified={item.verified}>
-            <ItemLeft>
-              <IconContainer $verified={item.verified}>
-                <item.icon size={20} />
-              </IconContainer>
-              
+        <VerificationList>
+          {verifications.map((item) => (
+            <VerificationItem key={item.id} $verified={item.verified}>
               <ItemInfo>
-                <div className="item-title">{item.title}</div>
-                <div className="item-description">{item.description}</div>
+                <IconWrapper $verified={item.verified}>
+                  {item.icon}
+                </IconWrapper>
+                <ItemText>
+                  <h4>{item.title}</h4>
+                  <p>{item.description}</p>
+                </ItemText>
               </ItemInfo>
-            </ItemLeft>
 
-            {item.verified ? (
-              <StatusBadge $status="verified">
-                {getStatusIcon(true)}
-                {getStatusText(true)}
-              </StatusBadge>
-            ) : item.action ? (
-              <ActionButton onClick={() => onVerifyClick?.(item.action as any)}>
-                {language === 'bg' ? 'Потвърди' : 'Verify'}
-              </ActionButton>
-            ) : (
-              <StatusBadge $status="unverified">
-                {getStatusIcon(false)}
-                {getStatusText(false)}
-              </StatusBadge>
-            )}
-          </VerificationItem>
-        ))}
-      </VerificationList>
-    </PanelContainer>
+              {item.verified ? (
+                <StatusBadge $status="verified">
+                  <CheckCircle size={14} />
+                  {language === 'bg' ? 'Потвърдено' : 'Verified'}
+                </StatusBadge>
+              ) : (
+                <ActionButton onClick={() => handleVerify(item.id)}>
+                  {language === 'bg' ? 'Потвърди' : 'Verify'}
+                </ActionButton>
+              )}
+            </VerificationItem>
+          ))}
+        </VerificationList>
+      </PanelContainer>
+
+      {/* Modals */}
+      {showPhoneModal && (
+        <PhoneVerificationModal
+          onClose={() => setShowPhoneModal(false)}
+          onSuccess={() => {
+            setShowPhoneModal(false);
+            window.location.reload();
+          }}
+        />
+      )}
+
+      {showIDModal && (
+        <IDVerificationModal
+          onClose={() => setShowIDModal(false)}
+          onSuccess={() => {
+            setShowIDModal(false);
+            window.location.reload();
+          }}
+        />
+      )}
+    </>
   );
 };
 

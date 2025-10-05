@@ -324,7 +324,7 @@ const PhoneVerificationModal: React.FC<PhoneVerificationModalProps> = ({
               {otp.map((digit, index) => (
                 <OTPInput
                   key={index}
-                  ref={el => otpRefs.current[index] = el}
+                  ref={(el) => { otpRefs.current[index] = el; }}
                   type="text"
                   maxLength={1}
                   value={digit}
