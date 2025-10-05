@@ -2,12 +2,34 @@ import { BulgarianUser } from '../../firebase';
 
 // Profile Form Data Interface
 export interface ProfileFormData {
-  displayName: string;
-  phoneNumber: string;
-  city: string;
-  region: string;
-  bio: string;
+  // Required fields (from ID card)
+  firstName: string;
+  lastName: string;
+  
+  // Optional personal info (from ID card)
+  middleName?: string;
+  dateOfBirth?: string;
+  placeOfBirth?: string;
+  nationality?: string;
+  
+  // Optional physical info (from ID card back)
+  height?: string;
+  eyeColor?: string;
+  
+  // Optional contact & location (from ID card back)
+  phoneNumber?: string;
+  email?: string;
+  address?: string;
+  city?: string;
+  postalCode?: string;
+  
+  // Optional other
+  bio?: string;
   preferredLanguage: string;
+  
+  // Legacy (for backwards compatibility)
+  displayName?: string;
+  region?: string;
 }
 
 // Profile Statistics Interface

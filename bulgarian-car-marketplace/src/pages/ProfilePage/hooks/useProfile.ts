@@ -16,10 +16,19 @@ export const useProfile = (): UseProfileReturn => {
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [formData, setFormData] = useState<ProfileFormData>({
-    displayName: '',
+    firstName: '',
+    lastName: '',
+    middleName: '',
+    dateOfBirth: '',
+    placeOfBirth: '',
+    nationality: 'BG',
+    height: '',
+    eyeColor: '',
     phoneNumber: '',
+    email: '',
+    address: '',
     city: '',
-    region: '',
+    postalCode: '',
     bio: '',
     preferredLanguage: 'bg'
   });
@@ -39,10 +48,19 @@ export const useProfile = (): UseProfileReturn => {
       if (currentUser) {
         setUser(currentUser);
         setFormData({
-          displayName: currentUser.displayName || '',
+          firstName: (currentUser as any).firstName || '',
+          lastName: (currentUser as any).lastName || '',
+          middleName: (currentUser as any).middleName || '',
+          dateOfBirth: (currentUser as any).dateOfBirth || '',
+          placeOfBirth: (currentUser as any).placeOfBirth || '',
+          nationality: (currentUser as any).nationality || 'BG',
+          height: (currentUser as any).height || '',
+          eyeColor: (currentUser as any).eyeColor || '',
           phoneNumber: currentUser.phoneNumber || '',
+          email: currentUser.email || '',
+          address: (currentUser as any).address || '',
           city: currentUser.location?.city || '',
-          region: currentUser.location?.region || '',
+          postalCode: (currentUser as any).postalCode || '',
           bio: currentUser.bio || '',
           preferredLanguage: currentUser.preferredLanguage || 'bg'
         });
@@ -72,15 +90,21 @@ export const useProfile = (): UseProfileReturn => {
     try {
       if (!user) return;
 
+      //  Validate required fields
+      if (!formData.firstName?.trim() || !formData.lastName?.trim()) {
+        alert('First Name and Last Name are required! / Име и Фамилия са задължителни!');
+        return;
+      }
+
       await bulgarianAuthService.updateUserProfile({
         uid: user.uid,
-        displayName: formData.displayName,
-        phoneNumber: formData.phoneNumber,
-        bio: formData.bio,
+        displayName: `${formData.firstName} ${formData.lastName}`.trim(),
+        phoneNumber: formData.phoneNumber || '',
+        bio: formData.bio || '',
         location: {
-          city: formData.city,
-          region: formData.region,
-          postalCode: ''
+          city: formData.city || '',
+          region: '',
+          postalCode: formData.postalCode || ''
         },
         preferredLanguage: formData.preferredLanguage as 'bg' | 'en'
       });
@@ -97,10 +121,19 @@ export const useProfile = (): UseProfileReturn => {
   const handleCancelEdit = () => {
     if (user) {
       setFormData({
-        displayName: user.displayName || '',
+        firstName: (user as any).firstName || '',
+        lastName: (user as any).lastName || '',
+        middleName: (user as any).middleName || '',
+        dateOfBirth: (user as any).dateOfBirth || '',
+        placeOfBirth: (user as any).placeOfBirth || '',
+        nationality: (user as any).nationality || 'BG',
+        height: (user as any).height || '',
+        eyeColor: (user as any).eyeColor || '',
         phoneNumber: user.phoneNumber || '',
+        email: user.email || '',
+        address: (user as any).address || '',
         city: user.location?.city || '',
-        region: user.location?.region || '',
+        postalCode: (user as any).postalCode || '',
         bio: user.bio || '',
         preferredLanguage: user.preferredLanguage || 'bg'
       });
