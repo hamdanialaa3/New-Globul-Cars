@@ -19,6 +19,9 @@
 export { default as ProfileImageUploader } from './ProfileImageUploader';
 export { default as CoverImageUploader } from './CoverImageUploader';
 export { default as TrustBadge } from './TrustBadge';
+export { default as ImageCropper } from './ImageCropper';
+export { default as ProfileGallery } from './ProfileGallery';
+export { default as VerificationPanel } from './VerificationPanel';
 
 // ==================== USAGE EXAMPLES ====================
 

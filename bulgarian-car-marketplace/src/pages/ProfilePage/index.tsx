@@ -5,7 +5,9 @@ import { useProfile } from './hooks/useProfile';
 import { 
   ProfileImageUploader, 
   CoverImageUploader, 
-  TrustBadge 
+  TrustBadge,
+  ProfileGallery,
+  VerificationPanel
 } from '../../components/Profile';
 import * as S from './styles';
 
@@ -243,6 +245,27 @@ const ProfilePage: React.FC = () => {
                   )}
                 </div>
               )}
+            </S.ContentSection>
+
+            {/* Verification Panel */}
+            <S.ContentSection>
+              <VerificationPanel
+                emailVerified={(user as any).verification?.email?.verified || false}
+                phoneVerified={(user as any).verification?.phone?.verified || false}
+                idVerified={(user as any).verification?.identity?.verified || false}
+                businessVerified={(user as any).verification?.business?.verified || false}
+                onVerifyClick={(type) => console.log('Verify:', type)}
+              />
+            </S.ContentSection>
+
+            {/* Photo Gallery */}
+            <S.ContentSection>
+              <ProfileGallery
+                userId={user.uid}
+                images={(user as any).gallery || []}
+                maxImages={9}
+                onUpdate={(images) => console.log('Gallery updated:', images)}
+              />
             </S.ContentSection>
 
             {/* My Cars */}
