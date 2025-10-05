@@ -7,7 +7,9 @@ import {
   CoverImageUploader, 
   TrustBadge,
   ProfileGallery,
-  VerificationPanel
+  VerificationPanel,
+  ProfileStats as ProfileStatsComponent,
+  ProfileCompletion
 } from '../../components/Profile';
 import * as S from './styles';
 
@@ -92,17 +94,19 @@ const ProfilePage: React.FC = () => {
               badges={(user as any).verification?.badges || []}
             />
 
-            {/* Stats */}
-            <S.ProfileStats>
-              <S.StatItem>
-                <span className="stat-number">{userCars.length}</span>
-                <span className="stat-label">{t('profile.stats.cars')}</span>
-              </S.StatItem>
-              <S.StatItem>
-                <span className="stat-number">0</span>
-                <span className="stat-label">{t('profile.stats.favorites')}</span>
-              </S.StatItem>
-            </S.ProfileStats>
+            {/* Profile Completion */}
+            <div style={{ marginTop: '20px' }}>
+              <ProfileCompletion
+                hasProfileImage={!!(user as any).profileImage}
+                hasCoverImage={!!(user as any).coverImage}
+                hasBio={!!user.bio}
+                hasPhone={!!user.phoneNumber}
+                hasLocation={!!user.location?.city}
+                emailVerified={(user as any).verification?.email?.verified || false}
+                phoneVerified={(user as any).verification?.phone?.verified || false}
+                idVerified={(user as any).verification?.identity?.verified || false}
+              />
+            </div>
 
             {/* Actions */}
             <S.ProfileActions>
@@ -123,6 +127,18 @@ const ProfilePage: React.FC = () => {
 
           {/* Profile Content */}
           <S.ProfileContent>
+            {/* Statistics Overview */}
+            <S.ContentSection>
+              <ProfileStatsComponent
+                carsListed={(user as any).stats?.carsListed || 0}
+                carsSold={(user as any).stats?.carsSold || 0}
+                totalViews={(user as any).stats?.totalViews || 0}
+                responseTime={(user as any).stats?.responseTime || 0}
+                responseRate={(user as any).stats?.responseRate || 0}
+                totalMessages={(user as any).stats?.totalMessages || 0}
+              />
+            </S.ContentSection>
+
             {/* Personal Information */}
             <S.ContentSection>
               <S.SectionHeader>

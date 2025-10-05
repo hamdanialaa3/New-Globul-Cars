@@ -22,6 +22,8 @@ export { default as TrustBadge } from './TrustBadge';
 export { default as ImageCropper } from './ImageCropper';
 export { default as ProfileGallery } from './ProfileGallery';
 export { default as VerificationPanel } from './VerificationPanel';
+export { default as ProfileStats } from './ProfileStats';
+export { default as ProfileCompletion } from './ProfileCompletion';
 
 // ==================== USAGE EXAMPLES ====================
 
