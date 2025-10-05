@@ -1,107 +1,86 @@
 rules_version = '2';
 
-// Storage Security Rules for Globul Cars - Bulgarian Marketplace
-// قواعد أمان التخزين - سوق السيارات البلغاري
+// Storage Rules - SIMPLIFIED for Bulgarian Car Marketplace
+// قواعد مبسطة جداً للتخزين
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
 
 service firebase.storage {
   match /b/{bucket}/o {
     
-    // Helper function to check if user is authenticated
-    function isAuthenticated() {
-      return request.auth != null;
-    }
-    
-    // Helper function to check if user owns the resource
-    function isOwner(userId) {
-      return isAuthenticated() && request.auth.uid == userId;
-    }
-    
-    // Helper function to check file size
-    function isValidSize(maxSizeMB) {
-      return request.resource.size < maxSizeMB * 1024 * 1024;
-    }
-    
-    // Helper function to check if file is an image
-    function isImage() {
-      return request.resource.contentType.matches('image/.*');
-    }
-    
     // ==================== USER PROFILE IMAGES ====================
     
-    // Profile images (avatar/photo)
-    match /users/{userId}/profile/{imageFile} {
-      // Anyone can read (public profiles)
+    // Profile images - أي مستخدم مسجل يمكنه الرفع
+    match /users/{userId}/profile/{allPaths=**} {
+      // Public read
       allow read: if true;
       
-      // Only owner can upload/update/delete
-      // Any image, max 10MB (simplified!)
-      allow write: if isOwner(userId) && 
-                      isImage() &&
-                      isValidSize(10);
+      // Authenticated write (owner only)
+      allow write: if request.auth != null && 
+                      request.auth.uid == userId &&
+                      request.resource.contentType.matches('image/.*') &&
+                      request.resource.size < 10 * 1024 * 1024; // 10MB
     }
     
-    // Cover images
-    match /users/{userId}/cover/{imageFile} {
-      // Anyone can read (public)
+    // Cover images - أي صورة مستطيلة
+    match /users/{userId}/cover/{allPaths=**} {
+      // Public read
       allow read: if true;
       
-      // Only owner can upload/update/delete
-      // Any image, max 15MB (simplified!)
-      allow write: if isOwner(userId) && 
-                      isImage() &&
-                      isValidSize(15);
+      // Authenticated write (owner only)
+      allow write: if request.auth != null && 
+                      request.auth.uid == userId &&
+                      request.resource.contentType.matches('image/.*') &&
+                      request.resource.size < 15 * 1024 * 1024; // 15MB
     }
     
     // Gallery images
-    match /users/{userId}/gallery/{imageFile} {
-      // Anyone can read
+    match /users/{userId}/gallery/{allPaths=**} {
+      // Public read
       allow read: if true;
       
-      // Only owner can write
-      // Any image, max 10MB
-      allow write: if isOwner(userId) && 
-                      isImage() &&
-                      isValidSize(10);
-    }
-    
-    // ==================== DOCUMENTS (PRIVATE) ====================
-    
-    // ID verification documents (private!)
-    match /users/{userId}/documents/{docFile} {
-      // Only owner or admin can read
-      allow read: if isOwner(userId);
-      
-      // Only owner can write
-      // Any file type, max 5MB
-      allow write: if isOwner(userId) && isValidSize(5);
+      // Authenticated write (owner only)
+      allow write: if request.auth != null && 
+                      request.auth.uid == userId &&
+                      request.resource.contentType.matches('image/.*') &&
+                      request.resource.size < 10 * 1024 * 1024; // 10MB
     }
     
     // ==================== CAR IMAGES ====================
     
-    // Car listing images
-    match /cars/{carId}/images/{imageFile} {
-      // Anyone can read
+    // Car images - للإعلانات
+    match /cars/{carId}/{allPaths=**} {
+      // Public read
       allow read: if true;
       
-      // Authenticated users can write
-      // Any image, max 10MB
-      allow write: if isAuthenticated() && 
-                      isImage() &&
-                      isValidSize(10);
+      // Authenticated write
+      allow write: if request.auth != null &&
+                      request.resource.contentType.matches('image/.*') &&
+                      request.resource.size < 10 * 1024 * 1024;
+    }
+    
+    // ==================== DOCUMENTS (PRIVATE) ====================
+    
+    // Private documents (ID, etc.)
+    match /users/{userId}/documents/{allPaths=**} {
+      // Owner read only
+      allow read: if request.auth != null && request.auth.uid == userId;
+      
+      // Owner write only
+      allow write: if request.auth != null && 
+                      request.auth.uid == userId &&
+                      request.resource.size < 5 * 1024 * 1024; // 5MB
     }
     
     // ==================== PUBLIC ASSETS ====================
     
-    // Public assets (logos, etc)
+    // Public files
     match /public/{allPaths=**} {
       allow read: if true;
-      allow write: if false; // Only via admin
+      allow write: if false; // Admin only via backend
     }
     
-    // ==================== CATCH ALL ====================
+    // ==================== DEFAULT DENY ====================
     
-    // Deny everything else by default
     match /{allPaths=**} {
       allow read, write: if false;
     }
