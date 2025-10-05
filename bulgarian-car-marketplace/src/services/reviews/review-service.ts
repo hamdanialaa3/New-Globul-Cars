@@ -138,8 +138,8 @@ export class ReviewService {
       // 4. Update seller stats
       await this.updateSellerStats(data.sellerId);
 
-      // 5. Award badge if criteria met
-      await trustScoreService.checkReviewBadges(data.sellerId);
+      // 5. Update trust score (badges will be checked there)
+      await trustScoreService.calculateTrustScore(data.sellerId);
 
       console.log('✅ Review submitted:', docRef.id);
 
