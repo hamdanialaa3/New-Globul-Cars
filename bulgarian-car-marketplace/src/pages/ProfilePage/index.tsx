@@ -2,6 +2,11 @@ import React from 'react';
 import { useTranslation } from '../../hooks/useTranslation';
 import LazyImage from '../../components/LazyImage';
 import { useProfile } from './hooks/useProfile';
+import { 
+  ProfileImageUploader, 
+  CoverImageUploader, 
+  TrustBadge 
+} from '../../components/Profile';
 import * as S from './styles';
 
 const ProfilePage: React.FC = () => {
@@ -48,24 +53,42 @@ const ProfilePage: React.FC = () => {
   return (
     <S.ProfileContainer>
       <S.PageContainer>
-        {/* Page Header */}
-        <S.PageHeader>
-          <h1>{t('profile.title')}</h1>
-          <p>{t('profile.subtitle')}</p>
-        </S.PageHeader>
+        {/* Cover Image */}
+        <CoverImageUploader
+          currentImageUrl={user.coverImage?.url}
+          onUploadSuccess={(url) => console.log('Cover uploaded:', url)}
+          onUploadError={(error) => console.error('Cover error:', error)}
+        />
 
         {/* Profile Grid */}
         <S.ProfileGrid>
           {/* Profile Sidebar */}
           <S.ProfileSidebar>
-            {/* Avatar and Basic Info */}
-            <S.ProfileAvatar>
-              <div className="avatar">
-                {user.displayName ? user.displayName.charAt(0).toUpperCase() : user.email.charAt(0).toUpperCase()}
+            {/* Profile Image */}
+            <div style={{ marginTop: '-80px', marginBottom: '20px' }}>
+              <ProfileImageUploader
+                currentImageUrl={user.profileImage?.url}
+                onUploadSuccess={(url) => console.log('Profile uploaded:', url)}
+                onUploadError={(error) => console.error('Profile error:', error)}
+              />
+            </div>
+
+            {/* User Info */}
+            <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+              <div style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '8px' }}>
+                {user.displayName || t('profile.anonymous')}
               </div>
-              <div className="name">{user.displayName || t('profile.anonymous')}</div>
-              <div className="email">{user.email}</div>
-            </S.ProfileAvatar>
+              <div style={{ color: '#666', fontSize: '0.875rem' }}>
+                {user.email}
+              </div>
+            </div>
+
+            {/* Trust Badge */}
+            <TrustBadge
+              trustScore={user.verification?.trustScore || 10}
+              level={user.verification?.level || 'unverified'}
+              badges={user.verification?.badges || []}
+            />
 
             {/* Stats */}
             <S.ProfileStats>

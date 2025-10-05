@@ -1,0 +1,343 @@
+// src/components/Profile/CoverImageUploader.tsx
+// Cover Image Uploader Component - مكون رفع صورة الغلاف
+// الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
+
+import React, { useState, useRef } from 'react';
+import styled from 'styled-components';
+import { Image, Upload, X, Loader } from 'lucide-react';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { ProfileService } from '../../services/profile';
+import { useAuth } from '../../hooks/useAuth';
+import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from '../../firebase/firebase-config';
+
+// ==================== STYLED COMPONENTS ====================
+
+const CoverContainer = styled.div`
+  position: relative;
+  width: 100%;
+  height: 300px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  margin-bottom: 60px;
+`;
+
+const CoverImage = styled.div<{ $imageUrl?: string }>`
+  width: 100%;
+  height: 100%;
+  background-image: ${props => props.$imageUrl ? `url(${props.$imageUrl})` : 'none'};
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    filter: brightness(0.9);
+  }
+`;
+
+const Placeholder = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  color: white;
+  
+  svg {
+    opacity: 0.7;
+  }
+  
+  span {
+    font-size: 1.125rem;
+    font-weight: 500;
+  }
+`;
+
+const UploadButton = styled.button`
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  padding: 12px 20px;
+  background: rgba(255, 255, 255, 0.95);
+  border: none;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  color: #667eea;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+  &:hover {
+    background: white;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+`;
+
+const DeleteButton = styled.button`
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(239, 83, 80, 0.95);
+  border: 2px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+
+  &:hover {
+    background: #ef5350;
+    transform: scale(1.1);
+  }
+
+  svg {
+    color: white;
+  }
+`;
+
+const HiddenInput = styled.input`
+  display: none;
+`;
+
+const LoadingOverlay = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  gap: 12px;
+
+  svg {
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+`;
+
+const ProgressText = styled.div`
+  font-size: 1.125rem;
+  font-weight: 600;
+`;
+
+const ProgressSubtext = styled.div`
+  font-size: 0.875rem;
+  opacity: 0.9;
+`;
+
+const ErrorBanner = styled.div`
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #ef5350;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  box-shadow: 0 4px 12px rgba(239, 83, 80, 0.3);
+  max-width: 90%;
+  text-align: center;
+`;
+
+// ==================== COMPONENT ====================
+
+interface CoverImageUploaderProps {
+  currentImageUrl?: string;
+  onUploadSuccess?: (url: string) => void;
+  onUploadError?: (error: string) => void;
+}
+
+const CoverImageUploader: React.FC<CoverImageUploaderProps> = ({
+  currentImageUrl,
+  onUploadSuccess,
+  onUploadError
+}) => {
+  const { t } = useLanguage();
+  const { user } = useAuth();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [imageUrl, setImageUrl] = useState<string | undefined>(currentImageUrl);
+  const [uploading, setUploading] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [error, setError] = useState<string | null>(null);
+
+  // Handle file selection
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+
+    setError(null);
+    setUploading(true);
+    setProgress(10);
+
+    try {
+      // 1. Validate
+      if (!file.type.startsWith('image/')) {
+        throw new Error(t('profile.errors.mustBeImage', 'File must be an image'));
+      }
+
+      if (file.size > 10 * 1024 * 1024) {
+        throw new Error(
+          t('profile.errors.coverTooLarge', 'Cover image must be less than 10MB')
+        );
+      }
+
+      setProgress(20);
+
+      // 2. Process (optimize for 1200×400)
+      console.log('🖼️ Processing cover image...');
+      const processed = await ProfileService.image.processCoverImage(file);
+      setProgress(40);
+
+      // 3. Upload
+      console.log('☁️ Uploading to Firebase...');
+      const url = await ProfileService.image.uploadImage(
+        user.uid,
+        file,
+        'cover/cover.jpg'
+      );
+      setProgress(70);
+
+      // 4. Update Firestore
+      console.log('💾 Updating Firestore...');
+      await updateDoc(doc(db, 'users', user.uid), {
+        'coverImage.url': url,
+        'coverImage.uploadedAt': serverTimestamp(),
+        updatedAt: serverTimestamp()
+      });
+      setProgress(100);
+
+      // Success!
+      setImageUrl(url);
+      onUploadSuccess?.(url);
+      console.log('✅ Cover image uploaded!');
+
+    } catch (err: any) {
+      console.error('❌ Upload failed:', err);
+      const errorMsg = err.message || t('profile.errors.uploadFailed', 'Upload failed');
+      setError(errorMsg);
+      onUploadError?.(errorMsg);
+    } finally {
+      setUploading(false);
+      setProgress(0);
+      
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+
+  // Handle delete
+  const handleDelete = async () => {
+    if (!user || !imageUrl) return;
+
+    const confirmed = window.confirm(
+      t('profile.confirmDeleteCover', 'Delete cover image?')
+    );
+
+    if (!confirmed) return;
+
+    setUploading(true);
+
+    try {
+      await ProfileService.image.deleteImage(user.uid, 'cover/cover.jpg');
+      
+      await updateDoc(doc(db, 'users', user.uid), {
+        coverImage: null,
+        updatedAt: serverTimestamp()
+      });
+
+      setImageUrl(undefined);
+      console.log('✅ Cover image deleted');
+
+    } catch (err: any) {
+      console.error('❌ Delete failed:', err);
+      setError(err.message);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  // Handle click
+  const handleClick = () => {
+    if (uploading) return;
+    fileInputRef.current?.click();
+  };
+
+  return (
+    <CoverContainer>
+      <CoverImage $imageUrl={imageUrl} onClick={handleClick}>
+        {!imageUrl && (
+          <Placeholder>
+            <Image size={64} />
+            <span>{t('profile.addCoverImage', 'Add Cover Image')}</span>
+          </Placeholder>
+        )}
+
+        {uploading && (
+          <LoadingOverlay>
+            <Loader size={48} />
+            <ProgressText>{progress}%</ProgressText>
+            <ProgressSubtext>
+              {t('profile.uploading', 'Uploading...')}
+            </ProgressSubtext>
+          </LoadingOverlay>
+        )}
+      </CoverImage>
+
+      <HiddenInput
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        onChange={handleFileSelect}
+        disabled={uploading}
+      />
+
+      {!uploading && (
+        <UploadButton onClick={handleClick} disabled={uploading}>
+          <Upload size={18} />
+          {imageUrl 
+            ? t('profile.changeCover', 'Change Cover')
+            : t('profile.uploadCover', 'Upload Cover')
+          }
+        </UploadButton>
+      )}
+
+      {imageUrl && !uploading && (
+        <DeleteButton onClick={handleDelete}>
+          <X size={18} />
+        </DeleteButton>
+      )}
+
+      {error && <ErrorBanner>{error}</ErrorBanner>}
+    </CoverContainer>
+  );
+};
+
+export default CoverImageUploader;
