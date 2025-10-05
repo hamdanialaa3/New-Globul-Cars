@@ -2,7 +2,7 @@
 // Profile Image Gallery Component - معرض صور البروفايل
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import { Plus, X, Image as ImageIcon, Loader } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
