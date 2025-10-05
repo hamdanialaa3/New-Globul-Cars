@@ -26,7 +26,12 @@ export const translations = {
         search: { title: 'Умно търсене', description: 'Усъвършенствана система за търсене с множество филтри за намиране на идеалната кола' },
         verified: { title: 'Проверени обяви', description: 'Всички коли са проверени и валидирани преди публикуване' },
         finance: { title: 'Финансови решения', description: 'Гъвкави опции за финансиране и лизинг за всеки бюджет' },
-        insurance: { title: 'Застраховка', description: 'Партнираме с водещи застрахователни компании за най-добри цени' }
+        insurance: { title: 'Застраховка', description: 'Партнираме с водещи застрахователни компании за най-добри цени' },
+        pricing: { title: 'Най-добри цени', description: 'Конкурентни цени с прозрачни сделки и без скрити такси' },
+        secure: { title: 'Сигурни транзакции', description: 'Безопасна обработка на плащания със защита на купувач и продавач' },
+        mobile: { title: 'Мобилно приложение', description: 'Достъп до пазара навсякъде с нашето адаптивно мобилно приложение' },
+        local: { title: 'Местна експертиза', description: 'Задълбочени познания за българския автомобилен пазар и местните регулации' },
+        fast: { title: 'Бърза обработка', description: 'Бързи обяви на коли и незабавна комуникация между купувачи и продавачи' }
       },
       cityCars: {
         title: 'Коли по градове',
@@ -165,7 +170,50 @@ export const translations = {
       insurance: 'Застраховка',
       about: 'За нас',
       contact: 'Контакт',
-      help: 'Помощ'
+      help: 'Помощ',
+      advancedSearch: 'Разширено търсене'
+    },
+    profile: {
+      title: 'Моят профил',
+      subtitle: 'Управлявайте вашия профил и настройки',
+      editProfile: 'Редактирай профил',
+      addCar: 'Добави кола',
+      messages: 'Съобщения',
+      logout: 'Изход',
+      personalInfo: 'Лична информация',
+      edit: 'Редактирай',
+      save: 'Запази',
+      cancel: 'Отказ',
+      displayName: 'Име',
+      email: 'Имейл',
+      phoneNumber: 'Телефон',
+      city: 'Град',
+      region: 'Регион',
+      preferredLanguage: 'Предпочитан език',
+      memberSince: 'Член от',
+      notSet: 'Не е зададено',
+      stats: {
+        cars: 'Коли',
+        favorites: 'Любими',
+        messages: 'Съобщения',
+        views: 'Прегледи'
+      },
+      myCars: 'Моите коли',
+      noCars: 'Нямате добавени коли',
+      noCarsDescription: 'Започнете да продавате вашите автомобили сега',
+      addFirstCar: 'Добави първа кола',
+      accountSettings: 'Настройки на акаунта',
+      notifications: 'Известия',
+      privacy: 'Поверителност',
+      security: 'Сигурност',
+      deleteAccount: 'Изтрий акаунт',
+      deleteAccountConfirm: 'Сигурни ли сте, че искате да изтриете акаунта си?'
+    },
+    languages: {
+      bulgarian: 'Български',
+      english: 'English',
+      bg: 'Български',
+      en: 'English'
     },
     topBrands: {
       topBrands: 'Топ марки',
@@ -242,7 +290,97 @@ export const translations = {
       searchInDescription: 'Търси в описанието', descriptionPlaceholder: 'Въведете ключови думи за търсене в описанието...', enterKeywords: 'Въведете ключови думи...', availability: 'Наличност', available: 'Наличен', reserved: 'Резервиран', sold: 'Продаден', delivery: 'Доставка', deliveryAvailable: 'Възможна доставка', pickupOnly: 'Само вземане',
       // Extended filters (second definition merged)
       sellerType: 'Тип продавач', dealer: 'Дилър', private: 'Частно лице', garage: 'Автокъща', extendedWarranty: 'Разширена гаранция', noWarranty: 'Без гаранция',
-      serviceHistory: 'Сервизна история', partialServiceHistory: 'Частична сервизна история', noServiceHistory: 'Без сервизна история', accidentFree: 'Без катастрофи', damaged: 'Повредено', notRoadworthy: 'Не е годен за движение', valid: 'Валиден', expired: 'Изтекъл', expiringSoon: 'Изтича скоро'
+      serviceHistory: 'Сервизна история', partialServiceHistory: 'Частична сервизна история', noServiceHistory: 'Без сервизна история', accidentFree: 'Без катастрофи', damaged: 'Повредено', notRoadworthy: 'Не е годен за движение', valid: 'Валиден', expired: 'Изтекъл', expiringSoon: 'Изтича скоро',
+      
+      // Missing fuel types
+      electricFuel: 'Електрически',
+      ethanolFuel: 'Етанол',
+      hybridDieselElectric: 'Хибрид дизел/електрически',
+      hybridGasolineElectric: 'Хибрид бензин/електрически',
+      hydrogenFuel: 'Водород',
+      lpgFuel: 'LPG (газ)',
+      naturalGasFuel: 'Природен газ (CNG)',
+      otherFuel: 'Друго',
+      pluginHybridFuel: 'Plug-in хибрид',
+      
+      // Missing colors
+      black: 'Черен',
+      beige: 'Бежов',
+      gray: 'Сив',
+      brown: 'Кафяв',
+      white: 'Бял',
+      orange: 'Оранжев',
+      blue: 'Син',
+      yellow: 'Жълт',
+      red: 'Червен',
+      green: 'Зелен',
+      silver: 'Сребърен',
+      gold: 'Златен',
+      purple: 'Лилав',
+      matte: 'Матов',
+      metallic: 'Металик',
+      
+      // Missing interior colors
+      interiorBeige: 'Бежов',
+      interiorBlack: 'Черен',
+      interiorBlue: 'Син',
+      interiorBrown: 'Кафяв',
+      interiorGray: 'Сив',
+      interiorRed: 'Червен',
+      interiorOther: 'Друг',
+      
+      // Missing interior materials
+      alcantara: 'Алкантара',
+      fabric: 'Плат',
+      artificialLeather: 'Изкуствена кожа',
+      partialLeather: 'Частична кожа',
+      fullLeather: 'Пълна кожа',
+      velour: 'Велур',
+      materialOther: 'Друг',
+      
+      // Missing countries
+      austria: 'Австрия',
+      switzerland: 'Швейцария',
+      countryOther: 'Друга',
+      
+      // Missing cities
+      sofia: 'София',
+      plovdiv: 'Пловдив',
+      varna: 'Варна',
+      burgas: 'Бургас',
+      ruse: 'Русе',
+      staraZagora: 'Стара Загора',
+      pleven: 'Плевен',
+      dobrich: 'Добрич',
+      sliven: 'Сливен',
+      shumen: 'Шумен',
+      pernik: 'Перник',
+      haskovo: 'Хасково',
+      
+      // Missing general fields
+      subtitle: 'Намерете идеалния автомобил с подробни филтри',
+      all: 'Всички',
+      offroad: 'Офроуд',
+      
+      // Missing condition types
+      newCondition: 'Нов',
+      usedCondition: 'Употребяван',
+      preRegistrationCondition: 'Предварителна регистрация',
+      employeeCondition: 'Служебна кола',
+      classicCondition: 'Класически',
+      demonstrationCondition: 'Демонстрационен',
+      
+      // Missing purchase options
+      purchaseOption: 'Покупка',
+      leasingOption: 'Лизинг',
+      
+      // Missing registration fields
+      firstRegistration: 'Първа регистрация',
+      huValidUntil: 'HU валиден до',
+      exampleYear: 'напр. 2020',
+      
+      // Missing technical data
+      fuelTankVolume: 'Обем на резервоара'
   },
     dashboard: {
       title: 'Табло', subtitle: 'Управлявайте вашите обяви и активност', overview: 'Преглед',
@@ -453,7 +591,12 @@ export const translations = {
         search: { title: 'Smart Search', description: 'Advanced search system with multiple filters to find your ideal car' },
         verified: { title: 'Verified Listings', description: 'All cars are checked and validated before being published' },
         finance: { title: 'Finance Solutions', description: 'Flexible financing and leasing options for every budget' },
-        insurance: { title: 'Insurance', description: 'We partner with leading insurance companies for the best rates' }
+        insurance: { title: 'Insurance', description: 'We partner with leading insurance companies for the best rates' },
+        pricing: { title: 'Best Pricing', description: 'Competitive pricing with transparent deals and no hidden fees' },
+        secure: { title: 'Secure Transactions', description: 'Safe and secure payment processing with buyer and seller protection' },
+        mobile: { title: 'Mobile Friendly', description: 'Access the marketplace anywhere with our responsive mobile app' },
+        local: { title: 'Local Expertise', description: 'Deep knowledge of the Bulgarian car market and local regulations' },
+        fast: { title: 'Fast Processing', description: 'Quick car listings and instant communication between buyers and sellers' }
       },
       cityCars: {
         title: 'Cars by Cities',
@@ -592,7 +735,50 @@ export const translations = {
       insurance: 'Insurance',
       about: 'About',
       contact: 'Contact',
-      help: 'Help'
+      help: 'Help',
+      advancedSearch: 'Advanced Search'
+    },
+    profile: {
+      title: 'My Profile',
+      subtitle: 'Manage your profile and settings',
+      editProfile: 'Edit Profile',
+      addCar: 'Add Car',
+      messages: 'Messages',
+      logout: 'Logout',
+      personalInfo: 'Personal Information',
+      edit: 'Edit',
+      save: 'Save',
+      cancel: 'Cancel',
+      displayName: 'Name',
+      email: 'Email',
+      phoneNumber: 'Phone',
+      city: 'City',
+      region: 'Region',
+      preferredLanguage: 'Preferred Language',
+      memberSince: 'Member Since',
+      notSet: 'Not Set',
+      stats: {
+        cars: 'Cars',
+        favorites: 'Favorites',
+        messages: 'Messages',
+        views: 'Views'
+      },
+      myCars: 'My Cars',
+      noCars: 'You have no cars listed',
+      noCarsDescription: 'Start selling your vehicles now',
+      addFirstCar: 'Add First Car',
+      accountSettings: 'Account Settings',
+      notifications: 'Notifications',
+      privacy: 'Privacy',
+      security: 'Security',
+      deleteAccount: 'Delete Account',
+      deleteAccountConfirm: 'Are you sure you want to delete your account?'
+    },
+    languages: {
+      bulgarian: 'Bulgarian',
+      english: 'English',
+      bg: 'Bulgarian',
+      en: 'English'
     },
     topBrands: {
       topBrands: 'Top Brands',
@@ -664,7 +850,97 @@ export const translations = {
       taxi: 'Taxi', vatDeductible: 'VAT Deductible', damagedVehicles: 'Damaged Vehicles', dontShow: 'Don\'t Show', commercialExportImport: 'Commercial, Export/Import', approvedUsedCarProgram: 'Approved Used Car Program', choose: 'Choose', location: 'Location', deliveryOffers: 'Delivery Offers', showOnlyDeliveryOffers: 'Show only offers with delivery',
       searchInDescription: 'Search in Description', descriptionPlaceholder: 'Enter keywords to search in description...', enterKeywords: 'Enter keywords...', availability: 'Availability', available: 'Available', reserved: 'Reserved', sold: 'Sold', delivery: 'Delivery', deliveryAvailable: 'Delivery available', pickupOnly: 'Pickup only',
       sellerType: 'Seller Type', dealer: 'Dealer', private: 'Private', garage: 'Garage', extendedWarranty: 'Extended warranty', noWarranty: 'No warranty',
-      serviceHistory: 'Service History', partialServiceHistory: 'Partial service history', noServiceHistory: 'No service history', accidentFree: 'Accident free', damaged: 'Damaged', notRoadworthy: 'Not roadworthy', valid: 'Valid', expired: 'Expired', expiringSoon: 'Expiring soon'
+      serviceHistory: 'Service History', partialServiceHistory: 'Partial service history', noServiceHistory: 'No service history', accidentFree: 'Accident free', damaged: 'Damaged', notRoadworthy: 'Not roadworthy', valid: 'Valid', expired: 'Expired', expiringSoon: 'Expiring soon',
+      
+      // Missing fuel types
+      electricFuel: 'Electric',
+      ethanolFuel: 'Ethanol',
+      hybridDieselElectric: 'Hybrid Diesel/Electric',
+      hybridGasolineElectric: 'Hybrid Gasoline/Electric',
+      hydrogenFuel: 'Hydrogen',
+      lpgFuel: 'LPG (Gas)',
+      naturalGasFuel: 'Natural Gas (CNG)',
+      otherFuel: 'Other',
+      pluginHybridFuel: 'Plug-in Hybrid',
+      
+      // Missing colors
+      black: 'Black',
+      beige: 'Beige',
+      gray: 'Gray',
+      brown: 'Brown',
+      white: 'White',
+      orange: 'Orange',
+      blue: 'Blue',
+      yellow: 'Yellow',
+      red: 'Red',
+      green: 'Green',
+      silver: 'Silver',
+      gold: 'Gold',
+      purple: 'Purple',
+      matte: 'Matte',
+      metallic: 'Metallic',
+      
+      // Missing interior colors
+      interiorBeige: 'Beige',
+      interiorBlack: 'Black',
+      interiorBlue: 'Blue',
+      interiorBrown: 'Brown',
+      interiorGray: 'Gray',
+      interiorRed: 'Red',
+      interiorOther: 'Other',
+      
+      // Missing interior materials
+      alcantara: 'Alcantara',
+      fabric: 'Fabric',
+      artificialLeather: 'Artificial Leather',
+      partialLeather: 'Partial Leather',
+      fullLeather: 'Full Leather',
+      velour: 'Velour',
+      materialOther: 'Other',
+      
+      // Missing countries
+      austria: 'Austria',
+      switzerland: 'Switzerland',
+      countryOther: 'Other',
+      
+      // Missing cities
+      sofia: 'Sofia',
+      plovdiv: 'Plovdiv',
+      varna: 'Varna',
+      burgas: 'Burgas',
+      ruse: 'Ruse',
+      staraZagora: 'Stara Zagora',
+      pleven: 'Pleven',
+      dobrich: 'Dobrich',
+      sliven: 'Sliven',
+      shumen: 'Shumen',
+      pernik: 'Pernik',
+      haskovo: 'Haskovo',
+      
+      // Missing general fields
+      subtitle: 'Find your ideal car with detailed filters',
+      all: 'All',
+      offroad: 'Offroad',
+      
+      // Missing condition types
+      newCondition: 'New',
+      usedCondition: 'Used',
+      preRegistrationCondition: 'Pre-Registration',
+      employeeCondition: 'Employee\'s Car',
+      classicCondition: 'Classic',
+      demonstrationCondition: 'Demonstration',
+      
+      // Missing purchase options
+      purchaseOption: 'Purchase',
+      leasingOption: 'Leasing',
+      
+      // Missing registration fields
+      firstRegistration: 'First Registration',
+      huValidUntil: 'HU Valid Until',
+      exampleYear: 'e.g. 2020',
+      
+      // Missing technical data
+      fuelTankVolume: 'Fuel Tank Volume'
     },
     dashboard: {
       title: 'Dashboard', subtitle: 'Manage your listings and activity', overview: 'Overview',

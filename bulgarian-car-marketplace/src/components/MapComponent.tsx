@@ -1,3 +1,6 @@
+// Note: Using @react-google-maps/api Marker component which wraps google.maps.Marker
+// TODO: Migrate to AdvancedMarkerElement when @react-google-maps/api adds support
+
 import React from 'react';
 import { GoogleMap, LoadScript, Marker, InfoWindow } from '@react-google-maps/api';
 import styled from 'styled-components';
@@ -130,6 +133,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
 };
 
 export default MapComponent;
+
 
 
 

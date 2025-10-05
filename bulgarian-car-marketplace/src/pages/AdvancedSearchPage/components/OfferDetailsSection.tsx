@@ -32,11 +32,11 @@ export const OfferDetailsSection: React.FC<OfferDetailsSectionProps> = ({
 
   return (
     <SectionCard>
-      <SectionHeader isOpen={isOpen} onClick={onToggle}>
+      <SectionHeader $isOpen={isOpen} onClick={onToggle}>
         <SectionTitle>{t('advancedSearch.offerDetails')}</SectionTitle>
-        <ExpandIcon isOpen={isOpen} />
+        <ExpandIcon $isOpen={isOpen} />
       </SectionHeader>
-      <SectionContent isOpen={isOpen}>
+      <SectionContent $isOpen={isOpen}>
         <SectionBody>
           <FormGrid>
             <FormGroup>

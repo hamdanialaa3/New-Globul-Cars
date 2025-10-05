@@ -38,11 +38,11 @@ export const ExteriorSection: React.FC<ExteriorSectionProps> = ({
 
   return (
     <SectionCard>
-      <SectionHeader isOpen={isOpen} onClick={onToggle}>
+      <SectionHeader $isOpen={isOpen} onClick={onToggle}>
         <SectionTitle>{t('advancedSearch.exterior')}</SectionTitle>
-        <ExpandIcon isOpen={isOpen} />
+        <ExpandIcon $isOpen={isOpen} />
       </SectionHeader>
-      <SectionContent isOpen={isOpen}>
+      <SectionContent $isOpen={isOpen}>
         <SectionBody>
           <FormGrid>
             <FormGroup>

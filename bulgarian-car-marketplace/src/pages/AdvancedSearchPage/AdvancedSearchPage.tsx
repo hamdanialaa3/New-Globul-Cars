@@ -159,13 +159,13 @@ const AdvancedSearchPage: React.FC = () => {
           {/* Search Description Section */}
           <SectionCard>
             <SectionHeader
-              isOpen={sectionsOpen.searchDescription}
+              $isOpen={sectionsOpen.searchDescription}
               onClick={() => toggleSection('searchDescription')}
             >
               <span>{t('advancedSearch.searchInDescription')}</span>
               <span>{sectionsOpen.searchDescription ? '▲' : '▼'}</span>
             </SectionHeader>
-            <SectionContent isOpen={sectionsOpen.searchDescription}>
+            <SectionContent $isOpen={sectionsOpen.searchDescription}>
               <SectionBody>
                 <FormGrid>
                   <FormGroup style={{ gridColumn: '1 / -1' }}>

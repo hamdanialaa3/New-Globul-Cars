@@ -86,8 +86,8 @@ export const SectionCard = styled.div`
 `;
 
 // Section Header - Clickable Mobile.de Style
-export const SectionHeader = styled.div<{ isOpen: boolean }>`
-  background: ${props => props.isOpen ? colors.neutral.grayLight : colors.neutral.white};
+export const SectionHeader = styled.div<{ $isOpen: boolean }>`
+  background: ${props => props.$isOpen ? colors.neutral.grayLight : colors.neutral.white};
   padding: 16px 20px;
   cursor: pointer;
   display: flex;
@@ -101,8 +101,8 @@ export const SectionHeader = styled.div<{ isOpen: boolean }>`
 `;
 
 // Section Content - Expandable
-export const SectionContent = styled.div<{ isOpen: boolean }>`
-  max-height: ${props => props.isOpen ? '2000px' : '0'};
+export const SectionContent = styled.div<{ $isOpen: boolean }>`
+  max-height: ${props => props.$isOpen ? '2000px' : '0'};
   overflow: hidden;
   transition: max-height 0.3s ease;
   background: ${colors.neutral.white};
@@ -124,11 +124,11 @@ export const SectionTitle = styled.h3`
 `;
 
 // Expand/Collapse Icon
-export const ExpandIcon = styled.span<{ isOpen: boolean }>`
+export const ExpandIcon = styled.span<{ $isOpen: boolean }>`
   font-size: 14px;
   color: ${colors.text.secondary};
   transition: transform 0.2s ease;
-  transform: ${props => props.isOpen ? 'rotate(180deg)' : 'rotate(0deg)'};
+  transform: ${props => props.$isOpen ? 'rotate(180deg)' : 'rotate(0deg)'};
 
   &::before {
     content: '▼';

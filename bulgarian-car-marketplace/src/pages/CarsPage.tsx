@@ -9,6 +9,7 @@ import styled from 'styled-components';
 import { useLanguage } from '../contexts/LanguageContext';
 import { BULGARIAN_CITIES } from '../constants/bulgarianCities';
 import carListingService from '../services/carListingService';
+import advancedSearchService from '../services/advancedSearchService';
 import { CarListing } from '../types/CarListing';
 import AISearchEngine from '../components/AISearchEngine';
 import CarCard from '../components/CarCard';

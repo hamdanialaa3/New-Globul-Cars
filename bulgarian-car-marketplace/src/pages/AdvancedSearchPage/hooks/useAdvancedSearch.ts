@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '../../../hooks/useTranslation';
 import { SearchData, SectionState, SectionName } from '../types';
+import advancedSearchService from '../../../services/advancedSearchService';
 
 const createInitialSearchData = (): SearchData => ({
   // Basic Data
@@ -151,8 +152,12 @@ export const useAdvancedSearch = () => {
     setIsSearching(true);
 
     try {
-      // Simulate search
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      console.log('🔍 Starting advanced search with filters:', searchData);
+      
+      // ✅ Use the new advanced search service
+      const results = await advancedSearchService.searchCars(searchData);
+      
+      console.log(`✅ Search completed: ${results.length} cars found`);
 
       // Navigate to results page with search params
       const searchParams = new URLSearchParams();
@@ -164,7 +169,8 @@ export const useAdvancedSearch = () => {
 
       navigate(`/cars?${searchParams.toString()}`);
     } catch (error) {
-      console.error('Search error:', error);
+      console.error('❌ Search error:', error);
+      alert('حدث خطأ أثناء البحث. يرجى المحاولة مرة أخرى.');
     } finally {
       setIsSearching(false);
     }

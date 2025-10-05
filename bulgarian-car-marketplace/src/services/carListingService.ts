@@ -19,7 +19,7 @@ import { db, storage } from '../firebase/firebase-config';
 import { CarListing, CarListingFilters, CarListingSearchResult } from '../types/CarListing';
 
 class CarListingService {
-  private collectionName = 'carListings';
+  private collectionName = 'cars'; // ✅ Unified with sellWorkflowService
 
   // Create a new car listing
   async createListing(listing: Omit<CarListing, 'id' | 'createdAt' | 'updatedAt'>): Promise<string> {

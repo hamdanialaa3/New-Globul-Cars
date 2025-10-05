@@ -72,14 +72,59 @@ export class SellWorkflowService {
       engineSize: workflowData.engineSize ? parseFloat(workflowData.engineSize) : undefined,
       color: workflowData.color,
       description: workflowData.description || '',
-      accidentHistory: false,
-      serviceHistory: true,
+      
+      // ⭐ NEW: Vehicle Details
+      numberOfSeats: workflowData.seats ? parseInt(workflowData.seats) : undefined,
+      numberOfDoors: workflowData.doors ? parseInt(workflowData.doors) : undefined,
+      condition: workflowData.condition || 'used',
+      previousOwners: workflowData.previousOwners ? parseInt(workflowData.previousOwners) : undefined,
+      
+      // ⭐ NEW: Registration & Inspection
+      firstRegistrationDate: workflowData.firstRegistration 
+        ? new Date(workflowData.firstRegistration) 
+        : undefined,
+      inspectionValidUntil: workflowData.huValid 
+        ? new Date(workflowData.huValid) 
+        : undefined,
+      
+      // ⭐ NEW: Technical Details
+      fuelTankVolume: workflowData.fuelTankVolume ? parseFloat(workflowData.fuelTankVolume) : undefined,
+      cylinders: workflowData.cylinders ? parseInt(workflowData.cylinders) : undefined,
+      driveType: workflowData.driveType || '',
+      emissionSticker: workflowData.emissionSticker || '',
+      emissionClass: workflowData.emissionClass || '',
+      particulateFilter: workflowData.particulateFilter === 'true',
+      weight: workflowData.weight ? parseFloat(workflowData.weight) : undefined,
+      fuelConsumption: workflowData.fuelConsumption ? parseFloat(workflowData.fuelConsumption) : undefined,
+      
+      // ⭐ NEW: Colors
+      interiorColor: workflowData.interiorColor || '',
+      interiorMaterial: workflowData.interiorMaterial || '',
+      
+      // ⭐ NEW: Exterior Features
+      trailerCoupling: workflowData.trailerCoupling === 'true',
+      trailerLoadBraked: workflowData.trailerLoadBraked ? parseInt(workflowData.trailerLoadBraked) : undefined,
+      trailerLoadUnbraked: workflowData.trailerLoadUnbraked ? parseInt(workflowData.trailerLoadUnbraked) : undefined,
+      noseWeight: workflowData.noseWeight ? parseInt(workflowData.noseWeight) : undefined,
+      cruiseControl: workflowData.cruiseControl || '',
+      slidingDoor: workflowData.slidingDoor === 'true',
+      
+      // History
+      accidentHistory: workflowData.hasAccidentHistory === 'true',
+      serviceHistory: workflowData.hasServiceHistory === 'true',
       
       // Equipment Arrays
       safetyEquipment: parseArray(workflowData.safety),
       comfortEquipment: parseArray(workflowData.comfort),
       infotainmentEquipment: parseArray(workflowData.infotainment),
       extras: parseArray(workflowData.extras),
+      
+      // ⭐ NEW: Specific Equipment Arrays
+      parkingSensors: parseArray(workflowData.parkingSensors),
+      
+      // ⭐ NEW: Specific Equipment Fields
+      airbags: workflowData.airbags || '',
+      airConditioning: workflowData.airConditioning || '',
       
       // Pricing
       price: parseFloat(workflowData.price || '0'),
@@ -92,6 +137,7 @@ export class SellWorkflowService {
       warrantyMonths: workflowData.warrantyMonths ? parseInt(workflowData.warrantyMonths) : undefined,
       paymentMethods: parseArray(workflowData.paymentMethods),
       additionalCosts: workflowData.additionalCosts,
+      vatDeductible: workflowData.vatDeductible === 'true',
       
       // Seller Information
       sellerType: workflowData.sellerType || 'private',
@@ -101,6 +147,19 @@ export class SellWorkflowService {
       preferredContact: parseArray(workflowData.preferredContact),
       availableHours: workflowData.availableHours,
       additionalInfo: workflowData.additionalInfo,
+      
+      // ⭐ NEW: Dealer Info
+      dealerRating: workflowData.dealerRating ? parseFloat(workflowData.dealerRating) : undefined,
+      
+      // ⭐ NEW: Vehicle Status
+      isDamaged: workflowData.isDamaged === 'true',
+      isRoadworthy: workflowData.isRoadworthy !== 'false',
+      nonSmoker: workflowData.nonSmoker === 'true',
+      taxi: workflowData.taxi === 'true',
+      
+      // ⭐ NEW: Media
+      hasVideo: workflowData.hasVideo === 'true',
+      videoUrl: workflowData.videoUrl || '',
       
       // Location (both old and new structure for compatibility)
       city: cityData?.id || workflowData.city || '',

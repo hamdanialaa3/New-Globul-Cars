@@ -39,11 +39,11 @@ export const InteriorSection: React.FC<InteriorSectionProps> = ({
 
   return (
     <SectionCard>
-      <SectionHeader isOpen={isOpen} onClick={onToggle}>
+      <SectionHeader $isOpen={isOpen} onClick={onToggle}>
         <SectionTitle>{t('advancedSearch.interior')}</SectionTitle>
-        <ExpandIcon isOpen={isOpen} />
+        <ExpandIcon $isOpen={isOpen} />
       </SectionHeader>
-      <SectionContent isOpen={isOpen}>
+      <SectionContent $isOpen={isOpen}>
         <SectionBody>
           <FormGrid>
             <FormGroup>

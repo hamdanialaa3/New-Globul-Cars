@@ -34,11 +34,11 @@ export const TechnicalDataSection: React.FC<TechnicalDataSectionProps> = ({
 
   return (
     <SectionCard>
-      <SectionHeader isOpen={isOpen} onClick={onToggle}>
+      <SectionHeader $isOpen={isOpen} onClick={onToggle}>
         <SectionTitle>{t('advancedSearch.technicalData')}</SectionTitle>
-        <ExpandIcon isOpen={isOpen} />
+        <ExpandIcon $isOpen={isOpen} />
       </SectionHeader>
-      <SectionContent isOpen={isOpen}>
+      <SectionContent $isOpen={isOpen}>
         <SectionBody>
           <FormGrid>
             <FormGroup>
