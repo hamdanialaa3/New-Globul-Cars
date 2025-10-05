@@ -14,6 +14,12 @@
  * 3. profileStatsService - إحصائيات البروفايل
  */
 
+// ==================== IMPORTS ====================
+
+import { imageProcessingService } from './image-processing-service';
+import { trustScoreService } from './trust-score-service';
+import { profileStatsService } from './profile-stats-service';
+
 // ==================== EXPORTS ====================
 
 // Image Processing
@@ -43,10 +49,6 @@ export {
 export type { ProfileStats } from './profile-stats-service';
 
 // ==================== CONSOLIDATED SERVICE ====================
-
-import { imageProcessingService } from './image-processing-service';
-import { trustScoreService } from './trust-score-service';
-import { profileStatsService } from './profile-stats-service';
 
 /**
  * Main Profile Service
@@ -95,32 +97,6 @@ export const ProfileService = {
  * await ProfileService.stats.incrementCarsSold(userId);
  * await ProfileService.stats.updateResponseTime(userId, 30);
  */
-
-// ==================== TYPE DEFINITIONS ====================
-
-export interface CompleteProfile {
-  // User info
-  uid: string;
-  email: string;
-  displayName: string;
-  phoneNumber?: string;
-  bio?: string;
-  
-  // Images
-  profileImage?: ProfileImage;
-  coverImage?: ProfileImage;
-  gallery: ProfileImage[];
-  
-  // Verification
-  verification: VerificationStatus;
-  
-  // Stats
-  stats: ProfileStats;
-  
-  // Metadata
-  createdAt: Date;
-  updatedAt: Date;
-}
 
 // Default export
 export default ProfileService;
