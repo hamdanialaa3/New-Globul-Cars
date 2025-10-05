@@ -10,6 +10,7 @@ import { ProfileService } from '../../services/profile';
 import { useAuth } from '../../hooks/useAuth';
 import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
+import { measureAsync } from '../../utils/performance-monitor';
 
 // ==================== STYLED COMPONENTS ====================
 
@@ -200,16 +201,16 @@ const ProfileImageUploader: React.FC<ProfileImageUploaderProps> = ({
 
       // 2. Process image (compression + variants)
       console.log('🖼️ Processing image...');
-      const processed = await ProfileService.image.processProfileImage(file);
+      const processed = await measureAsync('processProfileImage', async () => {
+        return await ProfileService.image.processProfileImage(file);
+      });
       setProgress(40);
 
       // 3. Upload to Firebase Storage
       console.log('☁️ Uploading to Firebase...');
-      const url = await ProfileService.image.uploadImage(
-        user.uid,
-        file,
-        'profile/avatar.jpg'
-      );
+      const url = await measureAsync('uploadProfileImage', async () => {
+        return await ProfileService.image.uploadImage(user.uid, file, 'profile/avatar.jpg');
+      });
       setProgress(70);
 
       // 4. Update Firestore
