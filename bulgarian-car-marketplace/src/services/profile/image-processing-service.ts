@@ -142,20 +142,21 @@ export class ImageProcessingService {
   // ==================== PRIVATE METHODS ====================
 
   /**
-   * Validate image file
-   * التحقق من صحة ملف الصورة
+   * Validate image file (simplified - any image, reasonable size)
+   * التحقق من صحة ملف الصورة (مبسط)
    */
   private validateImage(file: File, maxSize: number): void {
     if (!file.type.startsWith('image/')) {
-      throw new Error('Файлът трябва да е изображение / File must be an image');
+      throw new Error('File must be an image');
     }
 
     if (file.size > maxSize) {
       const maxMB = Math.floor(maxSize / (1024 * 1024));
-      throw new Error(
-        `Изображението трябва да е под ${maxMB}MB / Image must be under ${maxMB}MB`
-      );
+      throw new Error(`Image must be under ${maxMB}MB`);
     }
+    
+    // No aspect ratio check - any rectangle image is OK!
+    console.log('✓ Image validation passed');
   }
 
   /**
