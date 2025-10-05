@@ -27,6 +27,7 @@ export { default as ProfileCompletion } from './ProfileCompletion';
 export { default as LoadingSkeleton } from './LoadingSkeleton';
 export { default as EmptyState } from './EmptyState';
 export { default as AnimatedCard } from './AnimatedCard';
+export { default as IDReferenceHelper } from './IDReferenceHelper';
 
 // ==================== USAGE EXAMPLES ====================
 

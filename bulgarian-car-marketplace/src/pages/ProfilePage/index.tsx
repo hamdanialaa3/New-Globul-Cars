@@ -9,7 +9,8 @@ import {
   ProfileGallery,
   VerificationPanel,
   ProfileStats as ProfileStatsComponent,
-  ProfileCompletion
+  ProfileCompletion,
+  IDReferenceHelper
 } from '../../components/Profile';
 import * as S from './styles';
 
@@ -27,6 +28,9 @@ const ProfilePage: React.FC = () => {
     handleLogout,
     setEditing,
   } = useProfile();
+
+  // Track active field for ID helper
+  const [activeField, setActiveField] = React.useState<string | undefined>(undefined);
 
   // Loading state
   if (loading) {
@@ -160,6 +164,8 @@ const ProfilePage: React.FC = () => {
                         name="displayName"
                         value={formData.displayName}
                         onChange={handleInputChange}
+                        onFocus={() => setActiveField('firstName')}
+                        onBlur={() => setActiveField(undefined)}
                         placeholder={t('profile.displayNamePlaceholder')}
                       />
                     </S.FormGroup>
@@ -182,6 +188,8 @@ const ProfilePage: React.FC = () => {
                         name="city"
                         value={formData.city}
                         onChange={handleInputChange}
+                        onFocus={() => setActiveField('city')}
+                        onBlur={() => setActiveField(undefined)}
                         placeholder={t('profile.cityPlaceholder')}
                       />
                     </S.FormGroup>
@@ -193,6 +201,8 @@ const ProfilePage: React.FC = () => {
                         name="region"
                         value={formData.region}
                         onChange={handleInputChange}
+                        onFocus={() => setActiveField('address')}
+                        onBlur={() => setActiveField(undefined)}
                         placeholder={t('profile.regionPlaceholder')}
                       />
                     </S.FormGroup>
@@ -357,6 +367,13 @@ const ProfilePage: React.FC = () => {
             </S.ContentSection>
           </S.ProfileContent>
         </S.ProfileGrid>
+
+        {/* ID Reference Helper - shows when editing */}
+        {editing && (
+          <IDReferenceHelper 
+            activeField={activeField}
+          />
+        )}
       </S.PageContainer>
     </S.ProfileContainer>
   );
