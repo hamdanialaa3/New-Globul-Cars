@@ -189,11 +189,11 @@ const ProfileImageUploader: React.FC<ProfileImageUploaderProps> = ({
     try {
       // 1. Validate file
       if (!file.type.startsWith('image/')) {
-        throw new Error(t('profile.errors.mustBeImage', 'File must be an image'));
+        throw new Error('File must be an image');
       }
 
       if (file.size > 5 * 1024 * 1024) {
-        throw new Error(t('profile.errors.imageTooLarge', 'Image must be less than 5MB'));
+        throw new Error('Image must be less than 5MB');
       }
 
       setProgress(20);
@@ -233,7 +233,7 @@ const ProfileImageUploader: React.FC<ProfileImageUploaderProps> = ({
 
     } catch (err: any) {
       console.error('❌ Upload failed:', err);
-      setError(err.message || t('profile.errors.uploadFailed', 'Upload failed'));
+      setError(err.message || 'Upload failed');
       onUploadError?.(err.message);
     } finally {
       setUploading(false);
@@ -250,9 +250,7 @@ const ProfileImageUploader: React.FC<ProfileImageUploaderProps> = ({
   const handleDelete = async () => {
     if (!user || !imageUrl) return;
 
-    const confirmed = window.confirm(
-      t('profile.confirmDeleteImage', 'Delete profile image?')
-    );
+    const confirmed = window.confirm('Delete profile image?');
 
     if (!confirmed) return;
 

@@ -26,7 +26,7 @@ const TrustHeader = styled.div`
   justify-content: space-between;
 `;
 
-const TrustLevel = styled.div<{ $level: TrustLevel }>`
+const TrustLevelDisplay = styled.div<{ $level: TrustLevel }>`
   display: flex;
   align-items: center;
   gap: 8px;
@@ -170,7 +170,7 @@ const TrustBadgeComponent: React.FC<TrustBadgeProps> = ({
         </BadgesContainer>
       ) : (
         <EmptyBadges>
-          {t('profile.noBadges', 'No badges yet. Complete verification to earn badges!')}
+          No badges yet. Complete verification to earn badges!
         </EmptyBadges>
       )}
     </TrustContainer>

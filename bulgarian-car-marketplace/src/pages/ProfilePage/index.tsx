@@ -55,7 +55,7 @@ const ProfilePage: React.FC = () => {
       <S.PageContainer>
         {/* Cover Image */}
         <CoverImageUploader
-          currentImageUrl={user.coverImage?.url}
+          currentImageUrl={(user as any).coverImage?.url}
           onUploadSuccess={(url) => console.log('Cover uploaded:', url)}
           onUploadError={(error) => console.error('Cover error:', error)}
         />
@@ -67,7 +67,7 @@ const ProfilePage: React.FC = () => {
             {/* Profile Image */}
             <div style={{ marginTop: '-80px', marginBottom: '20px' }}>
               <ProfileImageUploader
-                currentImageUrl={user.profileImage?.url}
+                currentImageUrl={(user as any).profileImage?.url}
                 onUploadSuccess={(url) => console.log('Profile uploaded:', url)}
                 onUploadError={(error) => console.error('Profile error:', error)}
               />
@@ -85,9 +85,9 @@ const ProfilePage: React.FC = () => {
 
             {/* Trust Badge */}
             <TrustBadge
-              trustScore={user.verification?.trustScore || 10}
-              level={user.verification?.level || 'unverified'}
-              badges={user.verification?.badges || []}
+              trustScore={(user as any).verification?.trustScore || 10}
+              level={(user as any).verification?.level || 'unverified'}
+              badges={(user as any).verification?.badges || []}
             />
 
             {/* Stats */}

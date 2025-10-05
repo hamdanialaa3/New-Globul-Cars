@@ -199,13 +199,11 @@ const CoverImageUploader: React.FC<CoverImageUploaderProps> = ({
     try {
       // 1. Validate
       if (!file.type.startsWith('image/')) {
-        throw new Error(t('profile.errors.mustBeImage', 'File must be an image'));
+        throw new Error('File must be an image');
       }
 
       if (file.size > 10 * 1024 * 1024) {
-        throw new Error(
-          t('profile.errors.coverTooLarge', 'Cover image must be less than 10MB')
-        );
+        throw new Error('Cover image must be less than 10MB');
       }
 
       setProgress(20);
@@ -240,7 +238,7 @@ const CoverImageUploader: React.FC<CoverImageUploaderProps> = ({
 
     } catch (err: any) {
       console.error('❌ Upload failed:', err);
-      const errorMsg = err.message || t('profile.errors.uploadFailed', 'Upload failed');
+      const errorMsg = err.message || 'Upload failed';
       setError(errorMsg);
       onUploadError?.(errorMsg);
     } finally {
@@ -257,9 +255,7 @@ const CoverImageUploader: React.FC<CoverImageUploaderProps> = ({
   const handleDelete = async () => {
     if (!user || !imageUrl) return;
 
-    const confirmed = window.confirm(
-      t('profile.confirmDeleteCover', 'Delete cover image?')
-    );
+    const confirmed = window.confirm('Delete cover image?');
 
     if (!confirmed) return;
 
@@ -296,7 +292,7 @@ const CoverImageUploader: React.FC<CoverImageUploaderProps> = ({
         {!imageUrl && (
           <Placeholder>
             <Image size={64} />
-            <span>{t('profile.addCoverImage', 'Add Cover Image')}</span>
+            <span>Add Cover Image</span>
           </Placeholder>
         )}
 
@@ -305,7 +301,7 @@ const CoverImageUploader: React.FC<CoverImageUploaderProps> = ({
             <Loader size={48} />
             <ProgressText>{progress}%</ProgressText>
             <ProgressSubtext>
-              {t('profile.uploading', 'Uploading...')}
+              Uploading...
             </ProgressSubtext>
           </LoadingOverlay>
         )}
@@ -322,10 +318,7 @@ const CoverImageUploader: React.FC<CoverImageUploaderProps> = ({
       {!uploading && (
         <UploadButton onClick={handleClick} disabled={uploading}>
           <Upload size={18} />
-          {imageUrl 
-            ? t('profile.changeCover', 'Change Cover')
-            : t('profile.uploadCover', 'Upload Cover')
-          }
+          {imageUrl ? 'Change Cover' : 'Upload Cover'}
         </UploadButton>
       )}
 

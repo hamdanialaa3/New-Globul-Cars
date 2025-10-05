@@ -19,29 +19,34 @@
 // Image Processing
 export {
   imageProcessingService,
-  ImageProcessingService,
-  type ProfileImage,
-  type ImageVariants
+  ImageProcessingService
 } from './image-processing-service';
+
+export type { ProfileImage, ImageVariants } from './image-processing-service';
 
 // Trust Score
 export {
   trustScoreService,
   TrustScoreService,
   TrustLevel,
-  type Badge,
-  type VerificationStatus,
   BADGE_DEFINITIONS
 } from './trust-score-service';
+
+export type { Badge, VerificationStatus } from './trust-score-service';
 
 // Profile Stats
 export {
   profileStatsService,
-  ProfileStatsService,
-  type ProfileStats
+  ProfileStatsService
 } from './profile-stats-service';
 
+export type { ProfileStats } from './profile-stats-service';
+
 // ==================== CONSOLIDATED SERVICE ====================
+
+import { imageProcessingService } from './image-processing-service';
+import { trustScoreService } from './trust-score-service';
+import { profileStatsService } from './profile-stats-service';
 
 /**
  * Main Profile Service

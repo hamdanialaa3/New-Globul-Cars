@@ -204,6 +204,3 @@ export class ImageProcessingService {
 
 // Export singleton instance
 export const imageProcessingService = ImageProcessingService.getInstance();
-
-// ==================== EXPORT TYPES ====================
-export type { ProfileImage, ImageVariants };

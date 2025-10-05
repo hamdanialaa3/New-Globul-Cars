@@ -2,7 +2,7 @@
 // Profile Statistics Service - خدمة إحصائيات البروفايل
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
 
-import { doc, updateDoc, increment, serverTimestamp } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, increment, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
 import { trustScoreService } from './trust-score-service';
 
@@ -222,8 +222,8 @@ export class ProfileStatsService {
    */
   private async checkTopSellerBadge(userId: string): Promise<void> {
     try {
-      const userDoc = await doc(db, 'users', userId);
-      const snapshot = await userDoc.get();
+      const userDocRef = doc(db, 'users', userId);
+      const snapshot = await getDoc(userDocRef);
       const carsSold = snapshot.data()?.stats?.carsSold || 0;
 
       if (carsSold >= 10) {
