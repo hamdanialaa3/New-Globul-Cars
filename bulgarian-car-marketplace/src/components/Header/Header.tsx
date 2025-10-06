@@ -517,7 +517,7 @@ const Header: React.FC = () => {
               {isMainNavOpen && (
                 <div className="main-nav-menu">
                   <div className="main-nav-header">
-                    <span>Explore Cars</span>
+                    <span>{t('nav.exploreCars')}</span>
                   </div>
                   <div className="main-nav-items">
                     <button
@@ -525,14 +525,14 @@ const Header: React.FC = () => {
                       onClick={() => handleMainNavItemClick('/top-brands')}
                     >
                       <Car size={18} />
-                      <span>Top Brands</span>
+                      <span>{t('nav.topBrands')}</span>
                     </button>
                     <button
                       className="main-nav-item"
                       onClick={() => handleMainNavItemClick('/cars')}
                     >
                       <Search size={18} />
-                      <span>Search Cars</span>
+                      <span>{t('nav.searchCars')}</span>
                     </button>
                     <button
                       className="main-nav-item"
@@ -543,7 +543,7 @@ const Header: React.FC = () => {
                         <circle cx="11" cy="11" r="8"/>
                         <path d="m13 2-2 8-8-2 8-2 2-8z"/>
                       </svg>
-                      <span>Advanced Search</span>
+                      <span>{t('nav.advancedSearch')}</span>
                     </button>
                   </div>
                 </div>

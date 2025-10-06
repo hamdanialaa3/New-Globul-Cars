@@ -1,7 +1,6 @@
 // Smart Footer Component with Global Translation Support
 import React from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
-import GlowingLogo from '../GlowingLogo';
 import './Footer.css';
 
 const Footer: React.FC = () => {
@@ -16,7 +15,14 @@ const Footer: React.FC = () => {
         <div className="footer-grid">
           {/* Company Info */}
           <div className="footer-section">
-            <h3 className="footer-title">Globul Cars</h3>
+            <div className="footer-brand">
+              <img 
+                src="/official-logo.png" 
+                alt="Globul" 
+                className="footer-logo"
+              />
+              <h3 className="footer-title">Globul</h3>
+            </div>
             <p className="footer-description">
               {t('footer.description')}
             </p>
@@ -75,16 +81,11 @@ const Footer: React.FC = () => {
           </div>
         </div>
 
-        {/* Brand Logo Section */}
-        <div className="footer-logos">
-          <GlowingLogo size="small" showText={true} text="-------------" />
-        </div>
-
         {/* Footer Bottom */}
         <div className="footer-bottom">
           <div className="footer-bottom-content">
             <p className="copyright">
-              © {currentYear} Globul Cars. {t('footer.rights')}
+              © {currentYear} Globul. {t('footer.rights')}
             </p>
             <div className="footer-bottom-links">
               <a href="/privacy">{t('footer.privacy')}</a>

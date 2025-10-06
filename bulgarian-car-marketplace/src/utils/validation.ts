@@ -1,183 +1,331 @@
 // src/utils/validation.ts
-// Validation utilities for Bulgarian Car Marketplace
+// Validation Utilities - أدوات التحقق من الصحة
+// الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
 
-// Email validation
-export const validateEmail = (email: string): boolean => {
+// ==================== VALIDATION FUNCTIONS ====================
+
+/**
+ * Validate Bulgarian phone number (+359 format)
+ */
+export const validateBulgarianPhone = (phone: string): { valid: boolean; message?: string } => {
+  if (!phone || !phone.trim()) {
+    return { valid: true }; // Optional field
+  }
+
+  const phoneRegex = /^\+359\s?\d{1,2}\s?\d{3}\s?\d{4}$/;
+  const cleanPhone = phone.replace(/\s/g, '');
+  
+  if (!cleanPhone.startsWith('+359')) {
+    return {
+      valid: false,
+      message: 'Phone must start with +359 / Телефонът трябва да започва с +359'
+    };
+  }
+
+  if (cleanPhone.length !== 13) { // +359 + 9 digits
+    return {
+      valid: false,
+      message: 'Invalid phone format / Невалиден формат на телефон'
+    };
+  }
+
+  return { valid: true };
+};
+
+/**
+ * Validate email format
+ */
+export const validateEmail = (email: string): { valid: boolean; message?: string } => {
+  if (!email || !email.trim()) {
+    return { valid: false, message: 'Email is required / Имейлът е задължителен' };
+  }
+
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
+  
+  if (!emailRegex.test(email)) {
+    return {
+      valid: false,
+      message: 'Invalid email format / Невалиден формат на имейл'
+    };
+  }
+
+  return { valid: true };
 };
 
-// Bulgarian phone number validation
-export const validateBulgarianPhone = (phone: string): boolean => {
-  // Remove all spaces and check format
-  const cleanPhone = phone.replace(/\s+/g, '');
+/**
+ * Validate BULSTAT number (9-13 digits)
+ */
+export const validateBULSTAT = (bulstat: string): { valid: boolean; message?: string } => {
+  if (!bulstat || !bulstat.trim()) {
+    return { valid: true }; // Optional field
+  }
 
-  // Check for +359 prefix format (+359 + operator + 9 digits = 14 digits total)
-  const bulgarianRegex = /^\+359[8-9]\d{9}$/;
+  const cleanBulstat = bulstat.replace(/\s/g, '');
+  
+  if (!/^\d{9,13}$/.test(cleanBulstat)) {
+    return {
+      valid: false,
+      message: 'BULSTAT must be 9-13 digits / БУЛСТАТ трябва да бъде 9-13 цифри'
+    };
+  }
 
-  // Check for local format (0 + operator + 9 digits = 11 digits total)
-  const localRegex = /^0[8-9]\d{9}$/;
-
-  return bulgarianRegex.test(cleanPhone) || localRegex.test(cleanPhone);
+  return { valid: true };
 };
 
-// Password strength validation
-export const validatePasswordStrength = (password: string): {
-  isValid: boolean;
-  score: number;
-  feedback: string[];
-} => {
-  const feedback: string[] = [];
-  let score = 0;
-
-  // Length check
-  if (password.length >= 8) {
-    score += 1;
-  } else {
-    feedback.push('Password must be at least 8 characters long');
+/**
+ * Validate VAT number (BG + 9 digits)
+ */
+export const validateVAT = (vat: string): { valid: boolean; message?: string } => {
+  if (!vat || !vat.trim()) {
+    return { valid: true }; // Optional field
   }
 
-  // Lowercase check
-  if (/[a-z]/.test(password)) {
-    score += 1;
-  } else {
-    feedback.push('Password must contain lowercase letters');
+  const vatRegex = /^BG\d{9,10}$/;
+  
+  if (!vatRegex.test(vat.replace(/\s/g, ''))) {
+    return {
+      valid: false,
+      message: 'VAT must be BG + 9-10 digits / ДДС номер: BG + 9-10 цифри'
+    };
   }
 
-  // Uppercase check
-  if (/[A-Z]/.test(password)) {
-    score += 1;
-  } else {
-    feedback.push('Password must contain uppercase letters');
+  return { valid: true };
+};
+
+/**
+ * Validate website URL
+ */
+export const validateWebsite = (url: string): { valid: boolean; message?: string } => {
+  if (!url || !url.trim()) {
+    return { valid: true }; // Optional field
   }
 
-  // Number check
-  if (/\d/.test(password)) {
-    score += 1;
-  } else {
-    feedback.push('Password must contain numbers');
+  try {
+    const urlObj = new URL(url);
+    if (!urlObj.protocol.startsWith('http')) {
+      return {
+        valid: false,
+        message: 'URL must start with http:// or https://'
+      };
+    }
+    return { valid: true };
+  } catch {
+    return {
+      valid: false,
+      message: 'Invalid URL format / Невалиден URL формат'
+    };
+  }
+};
+
+/**
+ * Validate Bulgarian postal code (4 digits)
+ */
+export const validatePostalCode = (code: string): { valid: boolean; message?: string } => {
+  if (!code || !code.trim()) {
+    return { valid: true }; // Optional field
   }
 
-  // Special character check (optional, adds bonus point)
-  if (/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>?]/.test(password)) {
-    score += 1;
+  if (!/^\d{4}$/.test(code)) {
+    return {
+      valid: false,
+      message: 'Postal code must be 4 digits / Пощенският код трябва да е 4 цифри'
+    };
+  }
+
+  return { valid: true };
+};
+
+/**
+ * Validate date of birth (must be 18+)
+ */
+export const validateDateOfBirth = (dateStr: string): { valid: boolean; message?: string } => {
+  if (!dateStr || !dateStr.trim()) {
+    return { valid: true }; // Optional field
+  }
+
+  // Parse DD.MM.YYYY or DD/MM/YYYY format
+  const parts = dateStr.split(/[./-]/);
+  if (parts.length !== 3) {
+    return {
+      valid: false,
+      message: 'Use format DD.MM.YYYY / Използвайте формат ДД.ММ.ГГГГ'
+    };
+  }
+
+  const day = parseInt(parts[0]);
+  const month = parseInt(parts[1]) - 1;
+  const year = parseInt(parts[2]);
+
+  const birthDate = new Date(year, month, day);
+  const today = new Date();
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const monthDiff = today.getMonth() - birthDate.getMonth();
+  
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+
+  if (age < 18) {
+    return {
+      valid: false,
+      message: 'You must be 18+ / Трябва да сте 18+'
+    };
+  }
+
+  if (year < 1900 || year > today.getFullYear()) {
+    return {
+      valid: false,
+      message: 'Invalid year / Невалидна година'
+    };
+  }
+
+  return { valid: true };
+};
+
+/**
+ * Validate business name (minimum 2 characters)
+ */
+export const validateBusinessName = (name: string): { valid: boolean; message?: string } => {
+  if (!name || !name.trim()) {
+    return {
+      valid: false,
+      message: 'Business name is required / Името на фирмата е задължително'
+    };
+  }
+
+  if (name.trim().length < 2) {
+    return {
+      valid: false,
+      message: 'Business name too short / Името на фирмата е твърде кратко'
+    };
+  }
+
+  return { valid: true };
+};
+
+/**
+ * Validate name (minimum 2 characters, only letters)
+ */
+export const validateName = (name: string, fieldName: string): { valid: boolean; message?: string } => {
+  if (!name || !name.trim()) {
+    return {
+      valid: false,
+      message: `${fieldName} is required / ${fieldName} е задължително`
+    };
+  }
+
+  if (name.trim().length < 2) {
+    return {
+      valid: false,
+      message: `${fieldName} too short / ${fieldName} е твърде кратко`
+    };
+  }
+
+  // Allow Cyrillic and Latin letters, spaces, hyphens
+  if (!/^[А-Яа-яA-Za-z\s-]+$/.test(name)) {
+    return {
+      valid: false,
+      message: `${fieldName} must contain only letters / ${fieldName} само букви`
+    };
+  }
+
+  return { valid: true };
+};
+
+/**
+ * Validate all profile data
+ */
+export interface ValidationResult {
+  valid: boolean;
+  errors: { [key: string]: string };
+}
+
+export const validateProfileData = (
+  formData: any,
+  accountType: 'individual' | 'business'
+): ValidationResult => {
+  const errors: { [key: string]: string } = {};
+
+  // Common validations
+  if (formData.phoneNumber) {
+    const phoneValidation = validateBulgarianPhone(formData.phoneNumber);
+    if (!phoneValidation.valid) {
+      errors.phoneNumber = phoneValidation.message!;
+    }
+  }
+
+  if (formData.postalCode) {
+    const postalValidation = validatePostalCode(formData.postalCode);
+    if (!postalValidation.valid) {
+      errors.postalCode = postalValidation.message!;
+    }
+  }
+
+  if (formData.dateOfBirth) {
+    const dobValidation = validateDateOfBirth(formData.dateOfBirth);
+    if (!dobValidation.valid) {
+      errors.dateOfBirth = dobValidation.message!;
+    }
+  }
+
+  // Individual account validations
+  if (accountType === 'individual') {
+    const firstNameValidation = validateName(formData.firstName, 'First Name / Име');
+    if (!firstNameValidation.valid) {
+      errors.firstName = firstNameValidation.message!;
+    }
+
+    const lastNameValidation = validateName(formData.lastName, 'Last Name / Фамилия');
+    if (!lastNameValidation.valid) {
+      errors.lastName = lastNameValidation.message!;
+    }
+  }
+
+  // Business account validations
+  if (accountType === 'business') {
+    const businessNameValidation = validateBusinessName(formData.businessName);
+    if (!businessNameValidation.valid) {
+      errors.businessName = businessNameValidation.message!;
+    }
+
+    if (formData.bulstat) {
+      const bulstatValidation = validateBULSTAT(formData.bulstat);
+      if (!bulstatValidation.valid) {
+        errors.bulstat = bulstatValidation.message!;
+      }
+    }
+
+    if (formData.vatNumber) {
+      const vatValidation = validateVAT(formData.vatNumber);
+      if (!vatValidation.valid) {
+        errors.vatNumber = vatValidation.message!;
+      }
+    }
+
+    if (formData.website) {
+      const websiteValidation = validateWebsite(formData.website);
+      if (!websiteValidation.valid) {
+        errors.website = websiteValidation.message!;
+      }
+    }
+
+    if (formData.businessPhone) {
+      const phoneValidation = validateBulgarianPhone(formData.businessPhone);
+      if (!phoneValidation.valid) {
+        errors.businessPhone = phoneValidation.message!;
+      }
+    }
+
+    if (formData.businessPostalCode) {
+      const postalValidation = validatePostalCode(formData.businessPostalCode);
+      if (!postalValidation.valid) {
+        errors.businessPostalCode = postalValidation.message!;
+      }
+    }
   }
 
   return {
-    isValid: score >= 4,
-    score,
-    feedback
+    valid: Object.keys(errors).length === 0,
+    errors
   };
-};
-
-// Bulgarian name validation (Cyrillic and Latin support)
-export const validateBulgarianName = (name: string): boolean => {
-  // Allow Cyrillic, Latin letters, spaces, hyphens, and apostrophes
-  const nameRegex = /^[а-яА-Яa-zA-Z\s\-']+$/;
-  return nameRegex.test(name.trim()) && name.trim().length >= 2;
-};
-
-// City validation (Bulgarian cities)
-export const validateBulgarianCity = (city: string): boolean => {
-  const bulgarianCities = [
-    'София', 'Пловдив', 'Варна', 'Бургас', 'Русе', 'Стара Загора',
-    'Плевен', 'Добрич', 'Сливен', 'Шумен', 'Перник', 'Хасково',
-    'Ямбол', 'Пазарджик', 'Благоевград', 'Велико Търново', 'Враца',
-    'Габрово', 'Асеновград', 'Видин', 'Кърджали', 'Кюстендил', 'Монтана',
-    'Търговище', 'Силистра', 'Ловеч', 'Разград', 'Смолян', 'Дупница',
-    'Горна Оряховица', 'Димитровград', 'Свищов', 'Петрич', 'Сандански',
-    'Самоков', 'Лом', 'Карлово', 'Айтос', 'Несебър', 'Поморие'
-  ];
-
-  return bulgarianCities.includes(city.trim());
-};
-
-// Car year validation
-export const validateCarYear = (year: number): boolean => {
-  const currentYear = new Date().getFullYear();
-  return year >= 1900 && year <= currentYear + 1; // Allow next year for pre-orders
-};
-
-// Car price validation (Bulgarian market)
-export const validateCarPrice = (price: number): boolean => {
-  // Reasonable price range for Bulgarian market (EUR)
-  return price >= 100 && price <= 500000;
-};
-
-// VIN validation (Vehicle Identification Number)
-export const validateVIN = (vin: string): boolean => {
-  if (vin.length !== 17) return false;
-
-  // Remove spaces and convert to uppercase
-  const cleanVIN = vin.replace(/\s+/g, '').toUpperCase();
-
-  // Basic VIN format check (should contain only valid characters)
-  const vinRegex = /^[A-HJ-NPR-Z0-9]{17}$/;
-  return vinRegex.test(cleanVIN);
-};
-
-// Sanitize input (remove potentially dangerous characters)
-export const sanitizeInput = (input: string): string => {
-  return input
-    .replace(/[<>]/g, '') // Remove angle brackets
-    .replace(/javascript:/gi, '') // Remove javascript: protocol
-    .replace(/on\w+\s*=/gi, '') // Remove event handlers
-    .trim();
-};
-
-// Rate limiting helper (simple in-memory implementation)
-class RateLimiter {
-  private attempts: Map<string, { count: number; resetTime: number }> = new Map();
-  private maxAttempts: number;
-  private windowMs: number;
-
-  constructor(maxAttempts: number = 5, windowMs: number = 15 * 60 * 1000) { // 15 minutes
-    this.maxAttempts = maxAttempts;
-    this.windowMs = windowMs;
-  }
-
-  isAllowed(identifier: string): boolean {
-    const now = Date.now();
-    const record = this.attempts.get(identifier);
-
-    if (!record || now > record.resetTime) {
-      // Reset or create new record
-      this.attempts.set(identifier, { count: 1, resetTime: now + this.windowMs });
-      return true;
-    }
-
-    if (record.count >= this.maxAttempts) {
-      return false;
-    }
-
-    record.count++;
-    return true;
-  }
-
-  reset(identifier: string): void {
-    this.attempts.delete(identifier);
-  }
-}
-
-// Export rate limiter instance
-export const authRateLimiter = new RateLimiter(5, 15 * 60 * 1000); // 5 attempts per 15 minutes
-
-// CSRF protection helper (simple token generation)
-export const generateCSRFToken = (): string => {
-  return Math.random().toString(36).substring(2) + Date.now().toString(36);
-};
-
-// Input sanitization for forms
-export const sanitizeFormData = (data: Record<string, any>): Record<string, any> => {
-  const sanitized: Record<string, any> = {};
-
-  for (const [key, value] of Object.entries(data)) {
-    if (typeof value === 'string') {
-      sanitized[key] = sanitizeInput(value);
-    } else {
-      sanitized[key] = value;
-    }
-  }
-
-  return sanitized;
 };

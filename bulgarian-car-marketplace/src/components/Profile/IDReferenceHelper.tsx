@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { CreditCard, X, Eye, EyeOff, ChevronDown, ChevronUp } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { fieldMappings } from './id-helper/fieldMappings';
 
 // ==================== STYLED COMPONENTS ====================
 
@@ -13,13 +14,15 @@ const HelperContainer = styled.div<{ $collapsed: boolean }>`
   position: fixed;
   right: 20px;
   top: 100px;
-  width: ${props => props.$collapsed ? '60px' : '380px'};
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-  z-index: 9999;
+  width: ${props => props.$collapsed ? '50px' : '280px'};
+  background: rgba(255, 255, 255, 0.98);
+  border-radius: 12px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
+  z-index: 99;
   transition: all 0.3s ease;
   overflow: hidden;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 121, 0, 0.1);
   
   @media (max-width: 1200px) {
     display: none; /* Hide on smaller screens */
@@ -27,7 +30,7 @@ const HelperContainer = styled.div<{ $collapsed: boolean }>`
 `;
 
 const HelperHeader = styled.div`
-  padding: 16px;
+  padding: 10px 12px;
   background: linear-gradient(135deg, #FF7900, #ff8c1a);
   color: white;
   display: flex;
@@ -37,21 +40,21 @@ const HelperHeader = styled.div`
   
   h4 {
     margin: 0;
-    font-size: 0.95rem;
+    font-size: 0.75rem;
     font-weight: 600;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
   }
 `;
 
 const HelperContent = styled.div<{ $show: boolean }>`
-  max-height: ${props => props.$show ? '600px' : '0'};
+  max-height: ${props => props.$show ? '450px' : '0'};
   overflow-y: auto;
   transition: max-height 0.3s ease;
   
   &::-webkit-scrollbar {
-    width: 6px;
+    width: 4px;
   }
   
   &::-webkit-scrollbar-track {
@@ -60,13 +63,13 @@ const HelperContent = styled.div<{ $show: boolean }>`
   
   &::-webkit-scrollbar-thumb {
     background: #FF7900;
-    border-radius: 3px;
+    border-radius: 2px;
   }
 `;
 
 const IDImageContainer = styled.div<{ $visible: boolean }>`
   position: relative;
-  padding: 16px;
+  padding: 10px;
   opacity: ${props => props.$visible ? 1 : 0.3};
   transition: all 0.3s ease;
   filter: ${props => props.$visible ? 'none' : 'blur(8px)'};
@@ -76,10 +79,12 @@ const IDImage = styled.img`
   width: 100%;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
+  opacity: 0.4; /* 40% opacity - شفافية 40% */
+  transition: transform 0.3s ease, opacity 0.3s ease;
   
   &:hover {
     transform: scale(1.02);
+    opacity: 0.6; /* زيادة الوضوح قليلاً عند التمرير */
   }
 `;
 
@@ -104,17 +109,17 @@ const HighlightOverlay = styled.div<{ $active: boolean; $position: { top: string
 `;
 
 const FieldMappingList = styled.div`
-  padding: 16px;
+  padding: 10px;
   border-top: 1px solid #f0f0f0;
 `;
 
 const FieldMappingItem = styled.div<{ $active: boolean }>`
-  padding: 12px;
-  margin-bottom: 8px;
+  padding: 8px 10px;
+  margin-bottom: 6px;
   background: ${props => props.$active ? '#fff5e6' : '#f9f9f9'};
-  border-left: 3px solid ${props => props.$active ? '#FF7900' : 'transparent'};
-  border-radius: 6px;
-  font-size: 0.85rem;
+  border-left: 2px solid ${props => props.$active ? '#FF7900' : 'transparent'};
+  border-radius: 4px;
+  font-size: 0.7rem;
   transition: all 0.2s ease;
   
   &:hover {
@@ -125,28 +130,30 @@ const FieldMappingItem = styled.div<{ $active: boolean }>`
   .field-name {
     font-weight: 600;
     color: #333;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
+    font-size: 0.68rem;
   }
   
   .field-value {
     color: #666;
     font-family: monospace;
+    font-size: 0.65rem;
   }
 `;
 
 const ToggleButton = styled.button`
   width: 100%;
-  padding: 12px;
+  padding: 8px;
   border: none;
   background: #f9f9f9;
   color: #666;
-  font-size: 0.85rem;
+  font-size: 0.7rem;
   font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 4px;
   transition: all 0.2s ease;
   
   &:hover {
@@ -156,11 +163,11 @@ const ToggleButton = styled.button`
 `;
 
 const InfoBadge = styled.div`
-  padding: 8px 12px;
-  margin: 12px 16px;
+  padding: 6px 10px;
+  margin: 8px 10px;
   background: #e3f2fd;
-  border-radius: 8px;
-  font-size: 0.75rem;
+  border-radius: 6px;
+  font-size: 0.65rem;
   color: #1976d2;
   text-align: center;
 `;
@@ -181,74 +188,6 @@ const IDReferenceHelper: React.FC<IDReferenceHelperProps> = ({
   const [showID, setShowID] = useState(true);
   const [currentSide, setCurrentSide] = useState<'front' | 'back'>('front');
 
-  // Field mappings with positions on ID card
-  const fieldMappings: any = {
-    front: {
-      firstName: {
-        label_bg: 'Име',
-        label_en: 'First Name',
-        value: 'СЛАВИНА',
-        position: { top: '40%', left: '52%', width: '30%', height: '8%' }
-      },
-      middleName: {
-        label_bg: 'Презиме',
-        label_en: 'Father\'s Name', 
-        value: 'ГЕОРГИЕВА',
-        position: { top: '48%', left: '52%', width: '30%', height: '8%' }
-      },
-      lastName: {
-        label_bg: 'Фамилия',
-        label_en: 'Surname',
-        value: 'ИВАНОВА',
-        position: { top: '32%', left: '52%', width: '30%', height: '8%' }
-      },
-      dateOfBirth: {
-        label_bg: 'Дата на раждане',
-        label_en: 'Date of Birth',
-        value: '01.08.1995',
-        position: { top: '64%', left: '52%', width: '30%', height: '6%' }
-      },
-      nationality: {
-        label_bg: 'Гражданство',
-        label_en: 'Nationality',
-        value: 'БЪЛГАРИЯ/BGR',
-        position: { top: '56%', left: '52%', width: '30%', height: '6%' }
-      }
-    },
-    back: {
-      birthPlace: {
-        label_bg: 'Място на раждане',
-        label_en: 'Place of Birth',
-        value: 'СОФИЯ/SOFIA',
-        position: { top: '12%', left: '50%', width: '45%', height: '8%' }
-      },
-      address: {
-        label_bg: 'Постоянен адрес',
-        label_en: 'Permanent Address',
-        value: 'бул.КНЯГИНЯ МАРИЯ ЛУИЗА 48 ет.5 ап.26',
-        position: { top: '28%', left: '15%', width: '70%', height: '10%' }
-      },
-      city: {
-        label_bg: 'Град',
-        label_en: 'City',
-        value: 'СОФИЯ/SOFIA',
-        position: { top: '20%', left: '50%', width: '45%', height: '8%' }
-      },
-      height: {
-        label_bg: 'Ръст',
-        label_en: 'Height',
-        value: '168 cm',
-        position: { top: '44%', left: '18%', width: '15%', height: '8%' }
-      },
-      eyeColor: {
-        label_bg: 'Цвят на очите',
-        label_en: 'Eye Color',
-        value: 'КАФЯВИ/BROWN',
-        position: { top: '44%', left: '60%', width: '35%', height: '8%' }
-      }
-    }
-  };
-
   const currentFields = fieldMappings[currentSide];
   const currentFieldData = activeField ? currentFields[activeField] : null;
 
@@ -262,7 +201,7 @@ const IDReferenceHelper: React.FC<IDReferenceHelperProps> = ({
     return (
       <HelperContainer $collapsed={true}>
         <HelperHeader onClick={() => setCollapsed(false)}>
-          <CreditCard size={24} />
+          <CreditCard size={20} />
         </HelperHeader>
       </HelperContainer>
     );
@@ -272,10 +211,10 @@ const IDReferenceHelper: React.FC<IDReferenceHelperProps> = ({
     <HelperContainer $collapsed={false}>
       <HelperHeader onClick={() => setCollapsed(!collapsed)}>
         <h4>
-          <CreditCard size={18} />
-          {language === 'bg' ? 'Лична карта помощник' : 'ID Card Helper'}
+          <CreditCard size={14} />
+          {language === 'bg' ? 'Лична карта' : 'ID Card'}
         </h4>
-        <div style={{ display: 'flex', gap: '8px' }}>
+        <div style={{ display: 'flex', gap: '6px' }}>
           <button
             onClick={(e) => { e.stopPropagation(); setShowID(!showID); }}
             style={{
@@ -283,12 +222,12 @@ const IDReferenceHelper: React.FC<IDReferenceHelperProps> = ({
               border: 'none',
               color: 'white',
               cursor: 'pointer',
-              padding: '4px'
+              padding: '2px'
             }}
           >
-            {showID ? <Eye size={18} /> : <EyeOff size={18} />}
+            {showID ? <Eye size={14} /> : <EyeOff size={14} />}
           </button>
-          {collapsed ? <ChevronDown size={18} /> : <ChevronUp size={18} />}
+          {collapsed ? <ChevronDown size={14} /> : <ChevronUp size={14} />}
         </div>
       </HelperHeader>
 
@@ -313,10 +252,10 @@ const IDReferenceHelper: React.FC<IDReferenceHelperProps> = ({
         </IDImageContainer>
 
         <ToggleButton onClick={() => setCurrentSide(currentSide === 'front' ? 'back' : 'front')}>
-          <CreditCard size={16} />
+          <CreditCard size={12} />
           {currentSide === 'front'
-            ? (language === 'bg' ? 'عرض الخلف' : 'Show Back')
-            : (language === 'bg' ? 'عرض الأمام' : 'Show Front')
+            ? (language === 'bg' ? 'الخلف' : 'Back')
+            : (language === 'bg' ? 'الأمام' : 'Front')
           }
         </ToggleButton>
 

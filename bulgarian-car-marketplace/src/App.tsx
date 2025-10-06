@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { AuthProvider } from './context/AuthProvider';
+import { ToastProvider } from './components/Toast';
 import { bulgarianTheme, GlobalStyles } from './styles/theme';
 import ErrorBoundary from './components/ErrorBoundary';
 import { SkipNavigation } from './components/Accessibility';
@@ -146,9 +147,10 @@ const App: React.FC = () => {
         <ErrorBoundary>
           <AuthProvider>
             <LanguageProvider>
-              <SkipNavigation />
-              <GlobalStyles />
-              <Suspense fallback={<PageLoader />}>
+              <ToastProvider>
+                <SkipNavigation />
+                <GlobalStyles />
+                <Suspense fallback={<PageLoader />}>
               <Routes>
               {/* Full-screen pages */}
               <Route
@@ -653,6 +655,7 @@ const App: React.FC = () => {
               />
             </Routes>
           </Suspense>
+              </ToastProvider>
             </LanguageProvider>
           </AuthProvider>
         </ErrorBoundary>

@@ -28,6 +28,8 @@ export { default as LoadingSkeleton } from './LoadingSkeleton';
 export { default as EmptyState } from './EmptyState';
 export { default as AnimatedCard } from './AnimatedCard';
 export { default as IDReferenceHelper } from './IDReferenceHelper';
+export { default as BusinessUpgradeCard } from './BusinessUpgradeCard';
+export { default as BusinessBackground } from './BusinessBackground';
 
 // ==================== USAGE EXAMPLES ====================
 

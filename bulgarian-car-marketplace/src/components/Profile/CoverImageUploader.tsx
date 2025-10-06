@@ -6,6 +6,7 @@ import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import { Image, Upload, X, Loader } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { useTranslation } from '../../hooks/useTranslation';
 import { ProfileService } from '../../services/profile';
 import { useAuth } from '../../hooks/useAuth';
 import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
@@ -61,23 +62,29 @@ const UploadButton = styled.button`
   position: absolute;
   bottom: 16px;
   right: 16px;
-  padding: 12px 20px;
+  padding: 8px 16px;
   background: rgba(255, 255, 255, 0.95);
   border: none;
   border-radius: 8px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   cursor: pointer;
   font-weight: 500;
+  font-size: 0.82rem;
   color: #667eea;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
 
   &:hover {
     background: white;
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
   }
 
   &:disabled {
@@ -85,30 +92,43 @@ const UploadButton = styled.button`
     cursor: not-allowed;
     transform: none;
   }
+  
+  svg {
+    width: 16px;
+    height: 16px;
+  }
 `;
 
 const DeleteButton = styled.button`
   position: absolute;
   top: 16px;
   right: 16px;
-  width: 36px;
-  height: 36px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   background: rgba(239, 83, 80, 0.95);
-  border: 2px solid white;
+  border: none;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 8px rgba(239, 83, 80, 0.3);
 
   &:hover {
     background: #ef5350;
     transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(239, 83, 80, 0.4);
   }
-
+  
+  &:active {
+    transform: scale(1);
+    box-shadow: 0 1px 4px rgba(239, 83, 80, 0.3);
+  }
+  
   svg {
+    width: 16px;
+    height: 16px;
     color: white;
   }
 `;
@@ -178,7 +198,7 @@ const CoverImageUploader: React.FC<CoverImageUploaderProps> = ({
   onUploadSuccess,
   onUploadError
 }) => {
-  const { t } = useLanguage();
+  const { t } = useTranslation();
   const { user } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -318,7 +338,7 @@ const CoverImageUploader: React.FC<CoverImageUploaderProps> = ({
       {!uploading && (
         <UploadButton onClick={handleClick} disabled={uploading}>
           <Upload size={18} />
-          {imageUrl ? 'Change Cover' : 'Upload Cover'}
+          {imageUrl ? t('profile.changeCover') : t('profile.uploadCover')}
         </UploadButton>
       )}
 

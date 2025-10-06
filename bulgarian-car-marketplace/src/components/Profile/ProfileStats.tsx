@@ -11,56 +11,72 @@ import { useLanguage } from '../../contexts/LanguageContext';
 
 const StatsContainer = styled.div`
   width: 100%;
-  padding: 20px;
+  padding: 12px;
   background: white;
-  border-radius: 12px;
+  border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 `;
 
 const StatsGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: space-between;
+  
+  @media (max-width: 768px) {
+    flex-wrap: wrap;
+  }
 `;
 
 const StatCard = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  padding: 20px;
+  gap: 8px;
+  padding: 10px 14px;
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  border-radius: 12px;
+  border-radius: 8px;
   transition: all 0.3s ease;
+  flex: 1;
+  min-width: 140px;
   
   &:hover {
-    transform: translateY(-4px);
+    transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
 `;
 
 const StatIcon = styled.div<{ $color: string }>`
-  width: 48px;
-  height: 48px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   background: ${props => props.$color};
   color: white;
-  margin-bottom: 12px;
+  flex-shrink: 0;
+`;
+
+const StatContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
 `;
 
 const StatValue = styled.div`
-  font-size: 1.75rem;
+  font-size: 1.1rem;
   font-weight: bold;
   color: #333;
-  margin-bottom: 4px;
+  line-height: 1;
 `;
 
 const StatLabel = styled.div`
-  font-size: 0.875rem;
+  font-size: 0.7rem;
   color: #666;
-  text-align: center;
+  line-height: 1;
+  white-space: nowrap;
 `;
 
 // ==================== COMPONENT ====================
@@ -136,10 +152,12 @@ const ProfileStats: React.FC<ProfileStatsProps> = ({
         {stats.map((stat, index) => (
           <StatCard key={index}>
             <StatIcon $color={stat.color}>
-              <stat.icon size={24} />
+              <stat.icon size={18} />
             </StatIcon>
-            <StatValue>{stat.value}</StatValue>
-            <StatLabel>{stat.label}</StatLabel>
+            <StatContent>
+              <StatValue>{stat.value}</StatValue>
+              <StatLabel>{stat.label}</StatLabel>
+            </StatContent>
           </StatCard>
         ))}
       </StatsGrid>

@@ -6,7 +6,12 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Mail, Phone, IdCard, Building, CheckCircle, Clock, XCircle } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { PhoneVerificationModal, IDVerificationModal } from '../Verification';
+import { 
+  PhoneVerificationModal, 
+  IDVerificationModal,
+  EmailVerificationModal,
+  BusinessVerificationModal 
+} from '../Verification';
 
 // ==================== STYLED COMPONENTS ====================
 
@@ -118,23 +123,26 @@ const StatusBadge = styled.div<{ $status: 'verified' | 'pending' | 'unverified' 
 `;
 
 const ActionButton = styled.button`
-  padding: 8px 16px;
+  padding: 6px 14px;
   border: none;
   border-radius: 6px;
   background: #FF7900;
   color: white;
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(255, 121, 0, 0.2);
   
   &:hover {
     background: #ff8c1a;
     transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(255, 121, 0, 0.3);
   }
   
   &:active {
     transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(255, 121, 0, 0.2);
   }
 `;
 
@@ -156,14 +164,20 @@ const VerificationPanel: React.FC<VerificationPanelProps> = ({
   onVerifyClick
 }) => {
   const { language } = useLanguage();
+  const [showEmailModal, setShowEmailModal] = useState(false);
   const [showPhoneModal, setShowPhoneModal] = useState(false);
   const [showIDModal, setShowIDModal] = useState(false);
+  const [showBusinessModal, setShowBusinessModal] = useState(false);
 
   const handleVerify = (type: string) => {
-    if (type === 'phone') {
+    if (type === 'email') {
+      setShowEmailModal(true);
+    } else if (type === 'phone') {
       setShowPhoneModal(true);
     } else if (type === 'identity') {
       setShowIDModal(true);
+    } else if (type === 'business') {
+      setShowBusinessModal(true);
     }
     onVerifyClick?.(type);
   };
@@ -242,6 +256,16 @@ const VerificationPanel: React.FC<VerificationPanelProps> = ({
       </PanelContainer>
 
       {/* Modals */}
+      {showEmailModal && (
+        <EmailVerificationModal
+          onClose={() => setShowEmailModal(false)}
+          onSuccess={() => {
+            setShowEmailModal(false);
+            window.location.reload();
+          }}
+        />
+      )}
+
       {showPhoneModal && (
         <PhoneVerificationModal
           onClose={() => setShowPhoneModal(false)}
@@ -257,6 +281,16 @@ const VerificationPanel: React.FC<VerificationPanelProps> = ({
           onClose={() => setShowIDModal(false)}
           onSuccess={() => {
             setShowIDModal(false);
+            window.location.reload();
+          }}
+        />
+      )}
+
+      {showBusinessModal && (
+        <BusinessVerificationModal
+          onClose={() => setShowBusinessModal(false)}
+          onSuccess={() => {
+            setShowBusinessModal(false);
             window.location.reload();
           }}
         />

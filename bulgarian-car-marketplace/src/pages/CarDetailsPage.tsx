@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { useLanguage } from '../contexts/LanguageContext';
 import { bulgarianCarService, BulgarianCar } from '../firebase';
+import { useAuth } from '../hooks/useAuth';
+import { ProfileStatsService } from '../services/profile/profile-stats-service';
 import LazyImage from '../components/LazyImage';
 import RatingSystem from '../components/RatingSystem';
 
@@ -208,10 +209,11 @@ const ErrorText = styled.p`
 const CarDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { t } = useLanguage();
+  const { user } = useAuth();
   const [car, setCar] = useState<BulgarianCar | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [viewTracked, setViewTracked] = useState(false);
 
   useEffect(() => {
     const loadCar = async () => {
@@ -238,6 +240,35 @@ const CarDetailsPage: React.FC = () => {
 
     loadCar();
   }, [id]);
+
+  // Track view once car is loaded
+  useEffect(() => {
+    if (car && car.id && !viewTracked) {
+      const trackView = async () => {
+        try {
+          const sellerId = (car as any).sellerId;
+          const viewerUserId = user?.uid;
+          
+          if (sellerId && viewerUserId && sellerId !== viewerUserId) {
+            // Only track views from other users (not own cars)
+            await ProfileStatsService.getInstance().incrementTotalViews(sellerId);
+            console.log('📊 Stats updated: View tracked');
+            setViewTracked(true);
+          } else if (sellerId && !viewerUserId) {
+            // Track anonymous views too
+            await ProfileStatsService.getInstance().incrementTotalViews(sellerId);
+            console.log('📊 Stats updated: Anonymous view tracked');
+            setViewTracked(true);
+          }
+        } catch (statsError) {
+          console.error('⚠️ Failed to track view:', statsError);
+          // Continue anyway - don't block the main flow
+        }
+      };
+      
+      trackView();
+    }
+  }, [car, user, viewTracked]);
 
   if (loading) {
     return (

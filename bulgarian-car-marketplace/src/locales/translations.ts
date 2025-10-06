@@ -171,7 +171,11 @@ export const translations = {
       about: 'За нас',
       contact: 'Контакт',
       help: 'Помощ',
-      advancedSearch: 'Разширено търсене'
+      advancedSearch: 'Разширено търсене',
+      explore: 'Разгледай',
+      exploreCars: 'Разгледай коли',
+      topBrands: 'Топ марки',
+      searchCars: 'Търси коли'
     },
     profile: {
       title: 'Моят профил',
@@ -192,6 +196,14 @@ export const translations = {
       preferredLanguage: 'Предпочитан език',
       memberSince: 'Член от',
       notSet: 'Не е зададено',
+      bio: 'Биография',
+      bioPlaceholder: 'Напишете кратка биография за себе си...',
+      saveChanges: 'Запази промените',
+      cancelEdit: 'Отказ',
+      gallery: 'Галерия',
+      addImage: 'Добави снимка',
+      changeCover: 'Смени корица',
+      uploadCover: 'Качи корица',
       stats: {
         cars: 'Коли',
         favorites: 'Любими',
@@ -736,7 +748,11 @@ export const translations = {
       about: 'About',
       contact: 'Contact',
       help: 'Help',
-      advancedSearch: 'Advanced Search'
+      advancedSearch: 'Advanced Search',
+      explore: 'Explore',
+      exploreCars: 'Explore Cars',
+      topBrands: 'Top Brands',
+      searchCars: 'Search Cars'
     },
     profile: {
       title: 'My Profile',
@@ -757,6 +773,14 @@ export const translations = {
       preferredLanguage: 'Preferred Language',
       memberSince: 'Member Since',
       notSet: 'Not Set',
+      bio: 'Bio',
+      bioPlaceholder: 'Write a short bio about yourself...',
+      saveChanges: 'Save Changes',
+      cancelEdit: 'Cancel',
+      gallery: 'Gallery',
+      addImage: 'Add Image',
+      changeCover: 'Change Cover',
+      uploadCover: 'Upload Cover',
       stats: {
         cars: 'Cars',
         favorites: 'Favorites',

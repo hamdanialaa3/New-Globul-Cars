@@ -18,6 +18,8 @@
 
 export { default as PhoneVerificationModal } from './PhoneVerificationModal';
 export { default as IDVerificationModal } from './IDVerificationModal';
+export { default as EmailVerificationModal } from './EmailVerificationModal';
+export { default as BusinessVerificationModal } from './BusinessVerificationModal';
 export { default as DocumentUpload } from './DocumentUpload';
 
 // ==================== USAGE EXAMPLES ====================

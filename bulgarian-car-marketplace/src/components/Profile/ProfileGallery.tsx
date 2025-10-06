@@ -6,6 +6,7 @@ import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import { Plus, X, Image as ImageIcon, Loader } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { useTranslation } from '../../hooks/useTranslation';
 import { ProfileService } from '../../services/profile';
 
 // ==================== STYLED COMPONENTS ====================
@@ -153,7 +154,7 @@ const ProfileGallery: React.FC<ProfileGalleryProps> = ({
   maxImages = 9,
   onUpdate
 }) => {
-  const { t } = useLanguage();
+  const { t } = useTranslation();
   const [gallery, setGallery] = useState<string[]>(images);
   const [uploading, setUploading] = useState<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -223,7 +224,7 @@ const ProfileGallery: React.FC<ProfileGalleryProps> = ({
   return (
     <GalleryContainer>
       <GalleryHeader>
-        <h3>Gallery</h3>
+        <h3>{t('profile.gallery')}</h3>
         <span>{gallery.length} / {maxImages}</span>
       </GalleryHeader>
 
@@ -231,7 +232,7 @@ const ProfileGallery: React.FC<ProfileGalleryProps> = ({
         {/* Existing images */}
         {gallery.map((url, index) => (
           <GalleryItem key={url}>
-            <img src={url} alt={`Gallery ${index + 1}`} />
+            <img src={url} alt={`${t('profile.gallery')} ${index + 1}`} />
             <DeleteButton onClick={() => handleDelete(index, url)}>
               <X size={14} />
             </DeleteButton>
@@ -256,7 +257,7 @@ const ProfileGallery: React.FC<ProfileGalleryProps> = ({
             ) : (
               <PlaceholderContent>
                 <Plus size={32} />
-                <span>Add Image</span>
+                <span>{t('profile.addImage')}</span>
               </PlaceholderContent>
             )}
           </GalleryItem>

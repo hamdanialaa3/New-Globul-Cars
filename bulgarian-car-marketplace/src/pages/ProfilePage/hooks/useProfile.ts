@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from '../../../hooks/useTranslation';
 import { bulgarianAuthService, BulgarianUser } from '../../../firebase';
+import { useToast } from '../../../components/Toast';
+import { validateProfileData } from '../../../utils/validation';
+import { doc, onSnapshot } from 'firebase/firestore';
+import { db } from '../../../firebase/firebase-config';
 import {
   ProfileFormData,
   ProfileCar,
@@ -9,21 +13,33 @@ import {
 
 export const useProfile = (): UseProfileReturn => {
   const { t } = useTranslation();
+  const toast = useToast();
 
   // State management
   const [user, setUser] = useState<BulgarianUser | null>(null);
-  const [userCars] = useState<ProfileCar[]>([]);
+  const [userCars, setUserCars] = useState<ProfileCar[]>([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [formData, setFormData] = useState<ProfileFormData>({
+    accountType: 'individual',
     firstName: '',
     lastName: '',
     middleName: '',
     dateOfBirth: '',
     placeOfBirth: '',
-    nationality: 'BG',
-    height: '',
-    eyeColor: '',
+    businessName: '',
+    bulstat: '',
+    vatNumber: '',
+    businessType: 'dealership',
+    registrationNumber: '',
+    businessAddress: '',
+    businessCity: '',
+    businessPostalCode: '',
+    website: '',
+    businessPhone: '',
+    businessEmail: '',
+    workingHours: '',
+    businessDescription: '',
     phoneNumber: '',
     email: '',
     address: '',
@@ -38,6 +54,34 @@ export const useProfile = (): UseProfileReturn => {
     loadUserData();
   }, []);
 
+  // Real-time updates listener
+  useEffect(() => {
+    if (!user?.uid) return;
+
+    const unsubscribe = onSnapshot(
+      doc(db, 'users', user.uid),
+      (snapshot) => {
+        if (snapshot.exists()) {
+          const userData = snapshot.data();
+          setUser(prev => ({
+            ...prev,
+            ...userData,
+            uid: user.uid,
+            email: user.email,
+            displayName: userData.displayName || prev?.displayName
+          } as BulgarianUser));
+          
+          console.log('🔄 Real-time update received');
+        }
+      },
+      (error) => {
+        console.error('Real-time listener error:', error);
+      }
+    );
+
+    return () => unsubscribe();
+  }, [user?.uid]);
+
   // Load user data function
   const loadUserData = async () => {
     try {
@@ -48,14 +92,25 @@ export const useProfile = (): UseProfileReturn => {
       if (currentUser) {
         setUser(currentUser);
         setFormData({
+          accountType: (currentUser as any).accountType || 'individual',
           firstName: (currentUser as any).firstName || '',
           lastName: (currentUser as any).lastName || '',
           middleName: (currentUser as any).middleName || '',
           dateOfBirth: (currentUser as any).dateOfBirth || '',
           placeOfBirth: (currentUser as any).placeOfBirth || '',
-          nationality: (currentUser as any).nationality || 'BG',
-          height: (currentUser as any).height || '',
-          eyeColor: (currentUser as any).eyeColor || '',
+          businessName: (currentUser as any).businessName || '',
+          bulstat: (currentUser as any).bulstat || '',
+          vatNumber: (currentUser as any).vatNumber || '',
+          businessType: (currentUser as any).businessType || 'dealership',
+          registrationNumber: (currentUser as any).registrationNumber || '',
+          businessAddress: (currentUser as any).businessAddress || '',
+          businessCity: (currentUser as any).businessCity || '',
+          businessPostalCode: (currentUser as any).businessPostalCode || '',
+          website: (currentUser as any).website || '',
+          businessPhone: (currentUser as any).businessPhone || '',
+          businessEmail: (currentUser as any).businessEmail || '',
+          workingHours: (currentUser as any).workingHours || '',
+          businessDescription: (currentUser as any).businessDescription || '',
           phoneNumber: currentUser.phoneNumber || '',
           email: currentUser.email || '',
           address: (currentUser as any).address || '',
@@ -65,9 +120,24 @@ export const useProfile = (): UseProfileReturn => {
           preferredLanguage: currentUser.preferredLanguage || 'bg'
         });
 
-        // Load user's cars (placeholder for future implementation)
-        // const cars = await bulgarianCarService.getUserCars(currentUser.id);
-        // setUserCars(cars);
+        // Load user's cars
+        try {
+          const { bulgarianCarService } = await import('../../../firebase');
+          const cars = await bulgarianCarService.getUserCarListings(currentUser.uid, false);
+          setUserCars(cars.map(car => ({
+            id: car.id || '',
+            title: `${car.make} ${car.model}`,
+            price: car.price,
+            mainImage: car.mainImage || car.images?.[0] || '',
+            year: car.year,
+            mileage: car.mileage,
+            fuelType: car.fuelType || 'petrol',
+            status: car.isSold ? 'sold' : (car.isActive ? 'active' : 'inactive')
+          })));
+        } catch (carsError) {
+          console.error('Error loading user cars:', carsError);
+          // Continue without cars - don't block profile loading
+        }
       }
     } catch (error) {
       console.error('Error loading user data:', error);
@@ -90,15 +160,20 @@ export const useProfile = (): UseProfileReturn => {
     try {
       if (!user) return;
 
-      //  Validate required fields
-      if (!formData.firstName?.trim() || !formData.lastName?.trim()) {
-        alert('First Name and Last Name are required! / Име и Фамилия са задължителни!');
+      // Validate profile data
+      const validation = validateProfileData(formData, formData.accountType);
+      if (!validation.valid) {
+        const errorMessages = Object.values(validation.errors).join('\n');
+        toast.error(errorMessages, 'Validation Error / Грешка при валидация');
         return;
       }
 
-      await bulgarianAuthService.updateUserProfile({
+      // Prepare update data with all fields
+      const updateData: any = {
         uid: user.uid,
-        displayName: `${formData.firstName} ${formData.lastName}`.trim(),
+        displayName: formData.accountType === 'business' 
+          ? formData.businessName 
+          : `${formData.firstName} ${formData.lastName}`.trim(),
         phoneNumber: formData.phoneNumber || '',
         bio: formData.bio || '',
         location: {
@@ -106,14 +181,50 @@ export const useProfile = (): UseProfileReturn => {
           region: '',
           postalCode: formData.postalCode || ''
         },
-        preferredLanguage: formData.preferredLanguage as 'bg' | 'en'
-      });
+        preferredLanguage: formData.preferredLanguage as 'bg' | 'en',
+        
+        // Account type
+        accountType: formData.accountType,
+        
+        // Individual fields
+        firstName: formData.firstName || '',
+        lastName: formData.lastName || '',
+        middleName: formData.middleName || '',
+        dateOfBirth: formData.dateOfBirth || '',
+        placeOfBirth: formData.placeOfBirth || '',
+        address: formData.address || '',
+        
+        // Business fields (saved regardless, but only used if business)
+        businessName: formData.businessName || '',
+        bulstat: formData.bulstat || '',
+        vatNumber: formData.vatNumber || '',
+        businessType: formData.businessType || '',
+        registrationNumber: formData.registrationNumber || '',
+        businessAddress: formData.businessAddress || '',
+        businessCity: formData.businessCity || '',
+        businessPostalCode: formData.businessPostalCode || '',
+        website: formData.website || '',
+        businessPhone: formData.businessPhone || '',
+        businessEmail: formData.businessEmail || '',
+        workingHours: formData.workingHours || '',
+        businessDescription: formData.businessDescription || ''
+      };
 
+      await bulgarianAuthService.updateUserProfile(updateData);
+
+      toast.success(
+        'Profile updated successfully! / Профилът е обновен успешно!',
+        'Success / Успех'
+      );
+      
       setEditing(false);
       await loadUserData(); // Reload data
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error updating profile:', error);
-      alert(t('profile.updateError'));
+      toast.error(
+        error.message || 'Failed to update profile / Грешка при обновяване на профила',
+        'Error / Грешка'
+      );
     }
   };
 
@@ -121,14 +232,25 @@ export const useProfile = (): UseProfileReturn => {
   const handleCancelEdit = () => {
     if (user) {
       setFormData({
+        accountType: (user as any).accountType || 'individual',
         firstName: (user as any).firstName || '',
         lastName: (user as any).lastName || '',
         middleName: (user as any).middleName || '',
         dateOfBirth: (user as any).dateOfBirth || '',
         placeOfBirth: (user as any).placeOfBirth || '',
-        nationality: (user as any).nationality || 'BG',
-        height: (user as any).height || '',
-        eyeColor: (user as any).eyeColor || '',
+        businessName: (user as any).businessName || '',
+        bulstat: (user as any).bulstat || '',
+        vatNumber: (user as any).vatNumber || '',
+        businessType: (user as any).businessType || 'dealership',
+        registrationNumber: (user as any).registrationNumber || '',
+        businessAddress: (user as any).businessAddress || '',
+        businessCity: (user as any).businessCity || '',
+        businessPostalCode: (user as any).businessPostalCode || '',
+        website: (user as any).website || '',
+        businessPhone: (user as any).businessPhone || '',
+        businessEmail: (user as any).businessEmail || '',
+        workingHours: (user as any).workingHours || '',
+        businessDescription: (user as any).businessDescription || '',
         phoneNumber: user.phoneNumber || '',
         email: user.email || '',
         address: (user as any).address || '',
@@ -167,5 +289,6 @@ export const useProfile = (): UseProfileReturn => {
     handleCancelEdit,
     handleLogout,
     setEditing,
+    setUser
   };
 };

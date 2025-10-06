@@ -85,13 +85,13 @@ const UploadButton = styled.button`
 
 const DeleteButton = styled.button`
   position: absolute;
-  top: -10px;
-  right: -10px;
-  width: 30px;
-  height: 30px;
+  top: -8px;
+  right: -8px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   background: #ef5350;
-  border: 2px solid #fff;
+  border: none;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -319,7 +319,7 @@ const ProfileImageUploader: React.FC<ProfileImageUploaderProps> = ({
 
       {imageUrl && !uploading && (
         <DeleteButton onClick={handleDelete}>
-          <X size={16} />
+          <X size={12} />
         </DeleteButton>
       )}
 

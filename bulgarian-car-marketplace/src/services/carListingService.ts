@@ -17,6 +17,7 @@ import {
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import { db, storage } from '../firebase/firebase-config';
 import { CarListing, CarListingFilters, CarListingSearchResult } from '../types/CarListing';
+import { ProfileStatsService } from './profile/profile-stats-service';
 
 class CarListingService {
   private collectionName = 'cars'; // ✅ Unified with sellWorkflowService
@@ -384,10 +385,33 @@ class CarListingService {
   async markAsSold(id: string): Promise<void> {
     try {
       const docRef = doc(db, this.collectionName, id);
+      
+      // Get car data to find owner
+      const carDoc = await getDoc(docRef);
+      if (!carDoc.exists()) {
+        throw new Error('Car not found');
+      }
+      
+      const carData = carDoc.data() as CarListing;
+      const sellerId = carData.sellerId;
+      
+      // Update car status
       await updateDoc(docRef, {
         status: 'sold',
-        updatedAt: serverTimestamp()
+        updatedAt: serverTimestamp(),
+        soldAt: serverTimestamp()
       });
+      
+      // ✅ Increment cars sold stat
+      if (sellerId) {
+        try {
+          await ProfileStatsService.getInstance().incrementCarsSold(sellerId);
+          console.log('📊 Stats updated: Cars sold +1');
+        } catch (statsError) {
+          console.error('⚠️ Failed to update stats:', statsError);
+          // Continue anyway - don't block the main flow
+        }
+      }
     } catch (error) {
       console.error('[SERVICE] Error marking listing as sold:', error);
       throw new Error('Failed to mark listing as sold');

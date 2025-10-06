@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { useAuth } from '../../context/AuthProvider';
 import SellWorkflowService from '../../services/sellWorkflowService';
 import WorkflowPersistenceService from '../../services/workflowPersistenceService';
+import { ProfileStatsService } from '../../services/profile/profile-stats-service';
 
 const ContactPhoneContainer = styled.div`
   min-height: 100vh;
@@ -386,6 +387,15 @@ const ContactPhonePage: React.FC = () => {
       );
 
       console.log('✅ Обявата е създадена успешно!', carId);
+
+      // ✅ Increment cars listed stat
+      try {
+        await ProfileStatsService.getInstance().incrementCarsListed(user.uid);
+        console.log('📊 Stats updated: Cars listed +1');
+      } catch (statsError) {
+        console.error('⚠️ Failed to update stats:', statsError);
+        // Continue anyway - don't block the main flow
+      }
 
       // Clear workflow cache and images
       WorkflowPersistenceService.clearState();

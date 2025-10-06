@@ -1,13 +1,14 @@
 // Seller Type Page with Workflow - Auto Continue
 // صفحة نوع البائع مع الأتمتة - انتقال تلقائي
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
 import styled from 'styled-components';
 import { User, Building2, Factory, Check } from 'lucide-react';
 import SplitScreenLayout from '../../components/SplitScreenLayout';
 import { WorkflowFlow } from '../../components/WorkflowVisualization';
+import { bulgarianAuthService } from '../../firebase';
 
 const ContentSection = styled.div`
   display: flex;
@@ -147,8 +148,41 @@ const SellerTypePageNew: React.FC = () => {
   const [searchParams] = useSearchParams();
   const { language, t } = useLanguage();
   const [hoveredType, setHoveredType] = useState<string | null>(null);
+  const [autoDetectedType, setAutoDetectedType] = useState<string | null>(null);
 
   const vehicleType = searchParams.get('vt');
+
+  // Auto-detect seller type from user profile
+  useEffect(() => {
+    const detectSellerType = async () => {
+      try {
+        const user = await bulgarianAuthService.getCurrentUserProfile();
+        if (user) {
+          const accountType = (user as any).accountType;
+          if (accountType === 'business') {
+            const businessType = (user as any).businessType;
+            // Map business type to seller type
+            const sellerTypeMap: Record<string, string> = {
+              'dealership': 'dealer',
+              'trader': 'dealer',
+              'company': 'company'
+            };
+            const detectedType = sellerTypeMap[businessType] || 'dealer';
+            setAutoDetectedType(detectedType);
+            
+            // Auto-select and navigate after 1.5 seconds
+            setTimeout(() => {
+              handleSelect(detectedType);
+            }, 1500);
+          }
+        }
+      } catch (error) {
+        console.error('Error detecting seller type:', error);
+      }
+    };
+
+    detectSellerType();
+  }, []);
 
   const sellerTypes = [
     { id: 'private', IconComponent: User },
@@ -181,6 +215,31 @@ const SellerTypePageNew: React.FC = () => {
       <HeaderCard>
         <Title>{t('sell.sellerType.title')}</Title>
         <Subtitle>{t('sell.sellerType.subtitle')}</Subtitle>
+        
+        {/* Auto-Detection Notice */}
+        {autoDetectedType && (
+          <div style={{
+            marginTop: '16px',
+            padding: '12px 16px',
+            background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(147, 197, 253, 0.1))',
+            border: '2px solid #3b82f6',
+            borderRadius: '10px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+            color: '#1e40af',
+            fontSize: '0.85rem',
+            fontWeight: '600',
+            animation: 'pulse 2s ease-in-out infinite'
+          }}>
+            <Building2 size={20} />
+            <span>
+              {language === 'bg'
+                ? `✓ Бизнес акаунт открит! Автоматично избиране на "${autoDetectedType}"...`
+                : `✓ Business account detected! Auto-selecting "${autoDetectedType}"...`}
+            </span>
+          </div>
+        )}
       </HeaderCard>
 
       <SellerGrid>

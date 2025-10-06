@@ -1,10 +1,13 @@
 import styled from 'styled-components';
 
 // Main Profile Container
-export const ProfileContainer = styled.div`
+export const ProfileContainer = styled.div<{ $isBusinessMode?: boolean }>`
   min-height: 100vh;
   padding: ${({ theme }) => theme.spacing['2xl']} 0;
-  background: ${({ theme }) => theme.colors.grey[50]};
+  background: ${({ theme, $isBusinessMode }) => 
+    $isBusinessMode ? 'transparent' : theme.colors.grey[50]
+  };
+  position: relative;
 `;
 
 // Page Container
@@ -12,6 +15,8 @@ export const PageContainer = styled.div`
   max-width: 1000px;
   margin: 0 auto;
   padding: 0 ${({ theme }) => theme.spacing.md};
+  position: relative;
+  z-index: 1;
 `;
 
 // Page Header
@@ -51,12 +56,25 @@ export const ProfileGrid = styled.div`
 `;
 
 // Profile Sidebar
-export const ProfileSidebar = styled.div`
-  background: ${({ theme }) => theme.colors.background.paper};
+export const ProfileSidebar = styled.div<{ $isBusinessMode?: boolean }>`
+  background: ${({ theme, $isBusinessMode }) => 
+    $isBusinessMode 
+      ? 'rgba(255, 255, 255, 0.95)' 
+      : theme.colors.background.paper
+  };
+  backdrop-filter: ${({ $isBusinessMode }) => 
+    $isBusinessMode ? 'blur(20px) saturate(180%)' : 'none'
+  };
   border-radius: ${({ theme }) => theme.borderRadius.lg};
   padding: ${({ theme }) => theme.spacing['2xl']};
-  box-shadow: ${({ theme }) => theme.shadows.base};
+  box-shadow: ${({ theme, $isBusinessMode }) => 
+    $isBusinessMode
+      ? '0 8px 32px rgba(30, 58, 138, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.3)'
+      : theme.shadows.base
+  };
   height: fit-content;
+  position: relative;
+  z-index: 1;
 `;
 
 // Profile Avatar Section
@@ -129,8 +147,8 @@ export const ProfileActions = styled.div`
 
 // Action Button with Variants
 export const ActionButton = styled.button<{ variant?: 'primary' | 'secondary' | 'danger' }>`
-  padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.lg};
-  border: 2px solid ${({ theme, variant }) => {
+  padding: 10px 16px;
+  border: 1.5px solid ${({ theme, variant }) => {
     switch (variant) {
       case 'secondary':
         return theme.colors.grey[300];
@@ -161,11 +179,12 @@ export const ActionButton = styled.button<{ variant?: 'primary' | 'secondary' | 
     }
   }};
   font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
-  font-size: ${({ theme }) => theme.typography.fontSize.base};
+  font-size: 0.85rem;
   border-radius: ${({ theme }) => theme.borderRadius.md};
   cursor: pointer;
   transition: all 0.2s ease-in-out;
   text-align: left;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
   &:hover {
     background: ${({ theme, variant }) => {
@@ -188,6 +207,13 @@ export const ActionButton = styled.button<{ variant?: 'primary' | 'secondary' | 
           return theme.colors.primary.dark;
       }
     }};
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+  
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   }
 `;
 
@@ -199,11 +225,24 @@ export const ProfileContent = styled.div`
 `;
 
 // Content Section
-export const ContentSection = styled.div`
-  background: ${({ theme }) => theme.colors.background.paper};
+export const ContentSection = styled.div<{ $isBusinessMode?: boolean }>`
+  background: ${({ theme, $isBusinessMode }) => 
+    $isBusinessMode 
+      ? 'rgba(255, 255, 255, 0.95)' 
+      : theme.colors.background.paper
+  };
+  backdrop-filter: ${({ $isBusinessMode }) => 
+    $isBusinessMode ? 'blur(20px) saturate(180%)' : 'none'
+  };
   border-radius: ${({ theme }) => theme.borderRadius.lg};
   padding: ${({ theme }) => theme.spacing['2xl']};
-  box-shadow: ${({ theme }) => theme.shadows.base};
+  box-shadow: ${({ theme, $isBusinessMode }) => 
+    $isBusinessMode
+      ? '0 8px 32px rgba(30, 58, 138, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.3)'
+      : theme.shadows.base
+  };
+  position: relative;
+  z-index: 1;
 `;
 
 // Section Header
@@ -223,17 +262,26 @@ export const SectionHeader = styled.div`
   }
 
   .edit-btn {
-    padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
+    padding: 6px 12px;
     background: ${({ theme }) => theme.colors.primary.main};
     color: ${({ theme }) => theme.colors.primary.contrastText};
     border: none;
     border-radius: ${({ theme }) => theme.borderRadius.sm};
-    font-size: ${({ theme }) => theme.typography.fontSize.sm};
+    font-size: 0.8rem;
+    font-weight: 500;
     cursor: pointer;
-    transition: background 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 2px 4px rgba(255, 121, 0, 0.2);
 
     &:hover {
       background: ${({ theme }) => theme.colors.primary.dark};
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(255, 121, 0, 0.3);
+    }
+    
+    &:active {
+      transform: translateY(0);
+      box-shadow: 0 1px 2px rgba(255, 121, 0, 0.2);
     }
   }
 `;
@@ -241,27 +289,27 @@ export const SectionHeader = styled.div`
 // Form Grid Layout
 export const FormGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: ${({ theme }) => theme.spacing.lg};
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: ${({ theme }) => theme.spacing.xs};
 `;
 
 // Form Group
 export const FormGroup = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.sm};
+  gap: 2px;
 
   label {
     font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
     color: ${({ theme }) => theme.colors.text.primary};
-    font-size: ${({ theme }) => theme.typography.fontSize.sm};
+    font-size: 11px;
   }
 
   input, select, textarea {
-    padding: ${({ theme }) => theme.spacing.md};
+    padding: 6px 10px;
     border: 1px solid ${({ theme }) => theme.colors.grey[300]};
     border-radius: ${({ theme }) => theme.borderRadius.base};
-    font-size: ${({ theme }) => theme.typography.fontSize.base};
+    font-size: 13px;
     background: ${({ theme }) => theme.colors.background.paper};
     transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 
@@ -272,13 +320,15 @@ export const FormGroup = styled.div`
     }
 
     &::placeholder {
-      color: ${({ theme }) => theme.colors.text.secondary};
+      color: #b0b0b0;
+      font-size: 12px;
+      opacity: 0.7;
     }
   }
 
   textarea {
     resize: vertical;
-    min-height: 100px;
+    min-height: 70px;
   }
 `;
 
@@ -294,40 +344,58 @@ export const FormActions = styled.div`
 
 // Save Button
 export const SaveButton = styled.button`
-  padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing['2xl']};
+  padding: 10px 20px;
   background: ${({ theme }) => theme.colors.success.main};
   color: ${({ theme }) => theme.colors.success.contrastText};
   border: none;
   border-radius: ${({ theme }) => theme.borderRadius.md};
   font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
-  font-size: ${({ theme }) => theme.typography.fontSize.base};
+  font-size: 0.85rem;
   cursor: pointer;
-  transition: background 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 2px 4px rgba(76, 175, 80, 0.2);
 
   &:hover {
     background: ${({ theme }) => theme.colors.success.dark};
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+  }
+  
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(76, 175, 80, 0.2);
   }
 
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+    transform: none;
   }
 `;
 
 // Cancel Button
 export const CancelButton = styled.button`
-  padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing['2xl']};
+  padding: 10px 20px;
   background: transparent;
   color: ${({ theme }) => theme.colors.text.secondary};
   border: 1px solid ${({ theme }) => theme.colors.grey[300]};
   border-radius: ${({ theme }) => theme.borderRadius.md};
-  font-size: ${({ theme }) => theme.typography.fontSize.base};
+  font-size: 0.85rem;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 
   &:hover {
     background: ${({ theme }) => theme.colors.grey[100]};
     border-color: ${({ theme }) => theme.colors.grey[400]};
+    transform: translateY(-2px);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12);
+  }
+  
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
   }
 `;
 

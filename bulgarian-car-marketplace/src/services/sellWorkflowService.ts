@@ -144,6 +144,7 @@ export class SellWorkflowService {
       sellerName: workflowData.sellerName || '',
       sellerEmail: workflowData.sellerEmail || '',
       sellerPhone: workflowData.sellerPhone || '',
+      sellerId: userId,  // ✅ Owner user ID
       preferredContact: parseArray(workflowData.preferredContact),
       availableHours: workflowData.availableHours,
       additionalInfo: workflowData.additionalInfo,

@@ -1,20 +1,39 @@
 import { BulgarianUser } from '../../firebase';
 
+// Account Type
+export type AccountType = 'individual' | 'business';
+
+// Business Type
+export type BusinessType = 'dealership' | 'trader' | 'company';
+
 // Profile Form Data Interface
 export interface ProfileFormData {
-  // Required fields (from ID card)
+  // Account Type
+  accountType: AccountType;
+  
+  // Required fields (from ID card) - For Individual
   firstName: string;
   lastName: string;
   
-  // Optional personal info (from ID card)
+  // Optional personal info (from ID card) - For Individual
   middleName?: string;
   dateOfBirth?: string;
   placeOfBirth?: string;
-  nationality?: string;
   
-  // Optional physical info (from ID card back)
-  height?: string;
-  eyeColor?: string;
+  // Business Information - For Business
+  businessName?: string;           // Име на фирмата (Required for business)
+  bulstat?: string;                 // БУЛСТАТ/ЕИК (Bulgarian Company Registration)
+  vatNumber?: string;               // ДДС номер (VAT Number)
+  businessType?: BusinessType;      // Тип на бизнеса
+  registrationNumber?: string;      // Търговски регистър
+  businessAddress?: string;         // Адрес на фирмата
+  businessCity?: string;            // Град
+  businessPostalCode?: string;      // Пощенски код
+  website?: string;                 // Уебсайт
+  businessPhone?: string;           // Телефон на фирмата
+  businessEmail?: string;           // Имейл на фирмата
+  workingHours?: string;            // Работно време
+  businessDescription?: string;     // Описание на бизнеса
   
   // Optional contact & location (from ID card back)
   phoneNumber?: string;
@@ -66,6 +85,7 @@ export interface ProfileActions {
   handleCancelEdit: () => void;
   handleLogout: () => Promise<void>;
   setEditing: (editing: boolean) => void;
+  setUser: React.Dispatch<React.SetStateAction<BulgarianUser | null>>;
 }
 
 // Combined Profile Hook Return Type
