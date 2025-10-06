@@ -781,7 +781,7 @@ const ProfilePage: React.FC = () => {
             {/* Verification Panel */}
             <S.ContentSection>
               <VerificationPanel
-                emailVerified={user.emailVerified || (user as any).verification?.email?.verified || false}
+                emailVerified={(user as any).emailVerified || (user as any).verification?.email?.verified || false}
                 phoneVerified={(user as any).verification?.phone?.verified || false}
                 idVerified={(user as any).verification?.identity?.verified || false}
                 businessVerified={(user as any).verification?.business?.verified || false}
