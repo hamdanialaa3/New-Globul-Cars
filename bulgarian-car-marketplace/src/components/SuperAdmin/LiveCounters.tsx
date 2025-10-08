@@ -197,7 +197,7 @@ const LiveCounters: React.FC<LiveCountersProps> = ({ stats }) => {
   useEffect(() => {
     const fetchCounters = async () => {
       try {
-        const data = await liveFirebaseCountersService.getCounters();
+        const data = await liveFirebaseCountersService.getLiveAnalytics();
         setCounters(data);
       } catch (error) {
         console.error("Error fetching live counters:", error);

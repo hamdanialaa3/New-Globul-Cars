@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '../../../hooks/useTranslation';
 import { bulgarianAuthService, BulgarianUser } from '../../../firebase';
+import { bulgarianCarService, BulgarianCar } from '../../../firebase/car-service';
 import { useToast } from '../../../components/Toast';
 import { validateProfileData } from '../../../utils/validation';
 import { doc, onSnapshot, getDoc } from 'firebase/firestore';
@@ -123,7 +124,7 @@ export const useProfile = (): UseProfileReturn => {
         // Load user's cars
         const cars = await bulgarianCarService.getUserCarListings(currentUser.uid);
         const carsWithViews = await Promise.all(
-          cars.map(async (car) => {
+          cars.map(async (car: BulgarianCar) => {
             const carDoc = await getDoc(doc(db, 'cars', car.id));
             const carData = carDoc.exists() ? carDoc.data() : {};
             const titleParts = car.title.split(' ');

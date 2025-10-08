@@ -104,5 +104,5 @@ export {
 // Export chat notification functions
 export { sendChatNotification } from './notifications';
 
-// Export social token exchange functions, metrics & rotation stub
-export { getSocialAccessToken, fetchSocialAccessToken, getSocialTokenMetrics, rotateSocialPlatformTokens, snapshotSocialTokenMetrics } from './social-tokens';
+// Export geolocation functions
+export { geocodeAddressOnCarCreate } from './geolocation';
