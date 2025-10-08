@@ -67,6 +67,8 @@ export interface ProfileCar {
   fuelType: string;
   mainImage?: string;
   status?: 'active' | 'inactive' | 'sold';
+  views?: number;
+  inquiries?: number;
 }
 
 // Profile State Interface

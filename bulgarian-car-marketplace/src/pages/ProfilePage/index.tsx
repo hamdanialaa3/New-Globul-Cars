@@ -785,7 +785,7 @@ const ProfilePage: React.FC = () => {
                   {/* Other */}
                   <div style={{ marginBottom: '12px' }}>
                     <h4 style={{ margin: '0 0 8px 0', color: '#666', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <IconWrapper $color="#666" $size={14}><Settings /></IconWrapper>
+                      <IconWrapper $color="#666" $size={14}><SettingsIcon /></IconWrapper>
                       {language === 'bg' ? 'Други настройки' : 'Other Settings'}
                     </h4>
                     <S.FormGroup>
@@ -888,7 +888,7 @@ const ProfilePage: React.FC = () => {
                   {/* Other */}
                   <div>
                     <h4 style={{ margin: '0 0 8px 0', paddingBottom: '5px', borderBottom: '1px solid #e0e0e0', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <IconWrapper $color="#666" $size={14}><Settings /></IconWrapper>
+                      <IconWrapper $color="#666" $size={14}><SettingsIcon /></IconWrapper>
                       {language === 'bg' ? 'Други' : 'Other'}
                     </h4>
                     <S.FormGrid>
