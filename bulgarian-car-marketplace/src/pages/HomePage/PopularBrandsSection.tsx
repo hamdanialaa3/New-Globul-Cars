@@ -220,12 +220,12 @@ const PopularBrandsSection: React.FC = () => {
         // Fetch count for each popular brand
         for (const brand of POPULAR_BRANDS) {
           try {
-            const result = await bulgarianCarService.getListings({
-              make: brand.id,
-              limit: 1,
-              sortBy: 'createdAt',
-              sortOrder: 'desc'
-            });
+            const result = await bulgarianCarService.searchCars(
+              { make: brand.id },
+              'createdAt',
+              'desc',
+              1
+            );
             counts[brand.id] = result.total || 0;
           } catch (error) {
             console.error(`Error fetching count for ${brand.id}:`, error);
