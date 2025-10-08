@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { bulgarianCarService, BulgarianCar } from '../firebase';
+import { bulgarianCarService, BulgarianCar, functions } from '../firebase';
+import { httpsCallable } from 'firebase/functions';
 import { useAuth } from '../hooks/useAuth';
 import { ProfileStatsService } from '../services/profile/profile-stats-service';
 import LazyImage from '../components/LazyImage';
 import RatingSystem from '../components/RatingSystem';
+import { useLanguage } from '../contexts/LanguageContext';
+import { ArrowLeft, User, MessageCircle, ExternalLink } from 'lucide-react';
 
 const DetailsContainer = styled.div`
   min-height: 100vh;
@@ -178,6 +181,10 @@ const ContactButton = styled.button`
   font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
   cursor: pointer;
   transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
 
   &:hover {
     background: ${({ theme }) => theme.colors.primary.dark};
@@ -209,66 +216,45 @@ const ErrorText = styled.p`
 const CarDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { language } = useLanguage();
   const [car, setCar] = useState<BulgarianCar | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [viewTracked, setViewTracked] = useState(false);
+  const { user } = useAuth();
+  const profileStatsService = new ProfileStatsService();
 
   useEffect(() => {
-    const loadCar = async () => {
-      if (!id) {
-        setError('Car ID not provided');
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const carData = await bulgarianCarService.getCarById(id);
-        if (carData) {
+    const fetchCarAndIncrementView = async () => {
+      if (id) {
+        try {
+          // Fetch car details
+          const carData = await bulgarianCarService.getCarById(id);
           setCar(carData);
-        } else {
-          setError('Car not found');
+
+          // Increment view count via Cloud Function
+          // We run this in a try-catch block so that failing to increment
+          // does not prevent the user from seeing the car details.
+          try {
+            // Only run in production to avoid unnecessary function calls during development
+            if (process.env.NODE_ENV === 'production') {
+              const incrementView = httpsCallable(functions, 'incrementCarViewCount');
+              await incrementView({ carId: id });
+            }
+          } catch (incrementError) {
+            console.error("Failed to increment view count:", incrementError);
+          }
+
+        } catch (err) {
+          setError('Failed to fetch car details.');
+          console.error(err);
+        } finally {
+          setLoading(false);
         }
-      } catch (err) {
-        setError('Failed to load car details');
-        console.error('Error loading car:', err);
-      } finally {
-        setLoading(false);
       }
     };
 
-    loadCar();
+    fetchCarAndIncrementView();
   }, [id]);
-
-  // Track view once car is loaded
-  useEffect(() => {
-    if (car && car.id && !viewTracked) {
-      const trackView = async () => {
-        try {
-          const sellerId = (car as any).sellerId;
-          const viewerUserId = user?.uid;
-          
-          if (sellerId && viewerUserId && sellerId !== viewerUserId) {
-            // Only track views from other users (not own cars)
-            await ProfileStatsService.getInstance().incrementTotalViews(sellerId);
-            console.log('📊 Stats updated: View tracked');
-            setViewTracked(true);
-          } else if (sellerId && !viewerUserId) {
-            // Track anonymous views too
-            await ProfileStatsService.getInstance().incrementTotalViews(sellerId);
-            console.log('📊 Stats updated: Anonymous view tracked');
-            setViewTracked(true);
-          }
-        } catch (statsError) {
-          console.error('⚠️ Failed to track view:', statsError);
-          // Continue anyway - don't block the main flow
-        }
-      };
-      
-      trackView();
-    }
-  }, [car, user, viewTracked]);
 
   if (loading) {
     return (
@@ -294,22 +280,49 @@ const CarDetailsPage: React.FC = () => {
     <DetailsContainer>
       <PageContainer>
         <BackButton onClick={() => navigate('/cars')}>
-          ← Back to Cars
+          <ArrowLeft size={18} />
+          {language === 'bg' ? 'Назад към автомобилите' : 'Back to Cars'}
         </BackButton>
 
         <CarHeader>
           <CarImages>
             <MainImage>
               {car.mainImage ? (
-                <LazyImage src={car.mainImage} alt={car.title} placeholder="🚗" />
+                <LazyImage 
+                  src={car.mainImage} 
+                  alt={car.title} 
+                  placeholder={
+                    <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#ccc" strokeWidth="1.5">
+                      <path d="M5 17h14v2H5v-2zm0-2h14V9H5v6zm7-13l9 5v8H3V7l9-5z"/>
+                      <circle cx="7.5" cy="14.5" r="1.5"/>
+                      <circle cx="16.5" cy="14.5" r="1.5"/>
+                    </svg>
+                  } 
+                />
               ) : (
-                <div style={{ fontSize: '4rem', color: '#ccc' }}>🚗</div>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '4rem', color: '#ccc' }}>
+                  <svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <path d="M5 17h14v2H5v-2zm0-2h14V9H5v6zm7-13l9 5v8H3V7l9-5z"/>
+                    <circle cx="7.5" cy="14.5" r="1.5"/>
+                    <circle cx="16.5" cy="14.5" r="1.5"/>
+                  </svg>
+                </div>
               )}
             </MainImage>
             <ThumbnailGrid>
               {car.images?.slice(0, 4).map((image, index) => (
                 <Thumbnail key={index}>
-                  <LazyImage src={image} alt={`${car.title} ${index + 1}`} placeholder="🚗" />
+                  <LazyImage 
+                    src={image} 
+                    alt={`${car.title} ${index + 1}`} 
+                    placeholder={
+                      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ccc" strokeWidth="1.5">
+                        <path d="M5 17h14v2H5v-2zm0-2h14V9H5v6zm7-13l9 5v8H3V7l9-5z"/>
+                        <circle cx="7.5" cy="14.5" r="1.5"/>
+                        <circle cx="16.5" cy="14.5" r="1.5"/>
+                      </svg>
+                    }
+                  />
                 </Thumbnail>
               ))}
             </ThumbnailGrid>
@@ -354,10 +367,68 @@ const CarDetailsPage: React.FC = () => {
         </Description>
 
         <ContactSection>
-          <ContactTitle>Contact Seller</ContactTitle>
-          <ContactButton>
-            Contact {car.ownerName}
-          </ContactButton>
+          <ContactTitle>
+            {language === 'bg' ? 'Информация за продавача' : 'Seller Information'}
+          </ContactTitle>
+          
+          <div style={{ marginBottom: '1rem', paddingBottom: '1rem', borderBottom: '1px solid #e0e0e0' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+              <User size={18} color="#FF8F10" />
+              <strong style={{ color: '#212529' }}>
+                {car.ownerName || (language === 'bg' ? 'Продавач' : 'Seller')}
+              </strong>
+            </div>
+            
+            {car.userId && (
+              <button
+                onClick={() => navigate(`/profile/${car.userId}`)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '8px 16px',
+                  background: 'transparent',
+                  border: '1px solid #FF8F10',
+                  borderRadius: '6px',
+                  color: '#FF8F10',
+                  fontSize: '0.9rem',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  marginTop: '0.5rem'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = '#FF8F10';
+                  e.currentTarget.style.color = 'white';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'transparent';
+                  e.currentTarget.style.color = '#FF8F10';
+                }}
+              >
+                <ExternalLink size={16} />
+                {language === 'bg' ? 'Виж профила' : 'View Profile'}
+              </button>
+            )}
+          </div>
+          
+          {user && car.userId && car.userId !== user.uid && (
+            <ContactButton
+              onClick={() => navigate(`/messages?userId=${car.userId}`)}
+            >
+              <MessageCircle size={20} />
+              {language === 'bg' ? 'Изпрати съобщение' : 'Send Message'}
+            </ContactButton>
+          )}
+          
+          {!user && (
+            <ContactButton
+              onClick={() => navigate('/login')}
+              style={{ background: '#6c757d' }}
+            >
+              {language === 'bg' ? 'Влезте, за да изпратите съобщение' : 'Login to send a message'}
+            </ContactButton>
+          )}
         </ContactSection>
 
         <RatingSystem

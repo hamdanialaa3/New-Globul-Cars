@@ -20,6 +20,14 @@ import {
 } from 'lucide-react';
 import { liveFirebaseCountersService } from '../../services/live-firebase-counters-service';
 
+interface LiveCountersProps {
+  stats: {
+    totalCars: number;
+    totalUsers: number;
+    totalViews: number;
+  };
+}
+
 const CountersContainer = styled.div`
   background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
   border: 2px solid #ffd700;
@@ -108,12 +116,6 @@ const CounterValue = styled.div`
   color: #ffd700;
   margin-bottom: 8px;
   text-shadow: 0 2px 4px rgba(255, 215, 0, 0.3);
-  animation: countUp 1s ease-out;
-  
-  @keyframes countUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
 `;
 
 const CounterLabel = styled.div`
@@ -175,302 +177,107 @@ const LoadingSpinner = styled.div`
   gap: 10px;
 `;
 
-const LiveCounters: React.FC = () => {
-  const [analytics, setAnalytics] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
+const LiveCounters: React.FC<LiveCountersProps> = ({ stats }) => {
+  const [counters, setCounters] = useState({
+    totalUsers: 0,
+    totalCars: 0,
+    totalMessages: 0,
+    totalViews: 0,
+    totalRevenue: 0,
+    firestoreReads: 0,
+    firestoreWrites: 0,
+    storageUsage: 0,
+    functionInvocations: 0,
+    activeSessions: 0,
+    lastUpdated: new Date(),
+    systemHealth: 'OK',
+    alerts: 0
+  });
 
   useEffect(() => {
-    const loadAnalytics = async () => {
+    const fetchCounters = async () => {
       try {
-        setLoading(true);
-        console.log('🔄 Loading live Firebase analytics...');
-        const data = await liveFirebaseCountersService.getLiveAnalytics();
-        console.log('✅ Live analytics loaded:', data);
-        setAnalytics(data);
-        setLastUpdated(new Date());
+        const data = await liveFirebaseCountersService.getCounters();
+        setCounters(data);
       } catch (error) {
-        console.error('❌ Error loading live analytics:', error);
-        console.log('🔄 Using fallback mock data...');
-        
-        // Set fallback data with realistic values
-        setAnalytics({
-          totalUsers: 4,
-          activeUsers: 2,
-          totalCars: 12,
-          activeCars: 10,
-          totalMessages: 45,
-          totalViews: 1250,
-          revenue: 25000,
-          storageUsage: 20.5,
-          firestoreReads: 164,
-          firestoreWrites: 61,
-          hostingDownloads: 144,
-          functionsInvocations: 7,
-          lastUpdated: new Date(),
-          dailyActiveUsers: 2,
-          day1Retention: 75,
-          hostingGrowth: 92.4,
-          functionsGrowth: 133.3,
-          storageGrowth: 208.6,
-          lastDeployment: 'Oct 6, 2025 12:14 PM',
-          deployedBy: 'globul.net.m@gmail.com',
-          isMockData: true
-        });
-      } finally {
-        setLoading(false);
+        console.error("Error fetching live counters:", error);
       }
     };
 
-    loadAnalytics();
-    
-    // Refresh every 30 seconds
-    const interval = setInterval(loadAnalytics, 30000);
-    
+    fetchCounters();
+    const interval = setInterval(fetchCounters, 5000); // Refresh every 5 seconds
+
     return () => clearInterval(interval);
   }, []);
 
-  if (loading) {
-    return (
-      <CountersContainer>
-        <LoadingSpinner>
-          <Activity size={20} className="animate-spin" />
-          Loading live Firebase data...
-        </LoadingSpinner>
-      </CountersContainer>
-    );
-  }
-
-  // Show mock data indicator
-  const MockDataIndicator = styled.div`
-    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-    color: #ffffff;
-    padding: 8px 16px;
-    border-radius: 8px;
-    font-size: 12px;
-    font-weight: 600;
-    text-align: center;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-  `;
-
-  if (!analytics) {
-    return (
-      <CountersContainer>
-        <div style={{ textAlign: 'center', color: '#ffd700', fontSize: '18px' }}>
-          Failed to load live data
-        </div>
-      </CountersContainer>
-    );
-  }
-
   return (
     <CountersContainer>
-      {analytics?.isMockData && (
-        <MockDataIndicator>
-          <AlertTriangle size={16} />
-          Using Mock Data - Firebase Connection Failed
-        </MockDataIndicator>
-      )}
-      
       <SectionTitle>
-        <Activity size={24} />
-        Live Firebase Counters
-        <span style={{ fontSize: '14px', opacity: 0.7, marginLeft: 'auto' }}>
-          Last updated: {lastUpdated.toLocaleTimeString()}
-        </span>
+        <Activity />
+        Live Platform Statistics
       </SectionTitle>
-
       <CountersGrid>
-        {/* Users Counter */}
         <CounterCard>
-          <StatusIndicator $status="online" />
-          <CounterIcon>
-            <Users size={28} />
-          </CounterIcon>
-          <CounterValue>{analytics.totalUsers}</CounterValue>
+          <CounterIcon><Users /></CounterIcon>
+          <CounterValue>{stats.totalUsers.toLocaleString()}</CounterValue>
           <CounterLabel>Total Users</CounterLabel>
-          <CounterChange $positive={analytics.activeUsers > 0}>
-            <TrendingUp size={12} />
-            {analytics.activeUsers} active
-          </CounterChange>
         </CounterCard>
-
-        {/* Cars Counter */}
         <CounterCard>
-          <StatusIndicator $status="online" />
-          <CounterIcon>
-            <Car size={28} />
-          </CounterIcon>
-          <CounterValue>{analytics.totalCars}</CounterValue>
+          <CounterIcon><Car /></CounterIcon>
+          <CounterValue>{stats.totalCars.toLocaleString()}</CounterValue>
           <CounterLabel>Total Cars</CounterLabel>
-          <CounterChange $positive={analytics.activeCars > 0}>
-            <TrendingUp size={12} />
-            {analytics.activeCars} active
-          </CounterChange>
         </CounterCard>
-
-        {/* Messages Counter */}
         <CounterCard>
-          <StatusIndicator $status="online" />
-          <CounterIcon>
-            <MessageSquare size={28} />
-          </CounterIcon>
-          <CounterValue>{analytics.totalMessages}</CounterValue>
-          <CounterLabel>Messages</CounterLabel>
-          <CounterChange $positive={true}>
-            <Activity size={12} />
-            Real-time
-          </CounterChange>
-        </CounterCard>
-
-        {/* Views Counter */}
-        <CounterCard>
-          <StatusIndicator $status="online" />
-          <CounterIcon>
-            <Eye size={28} />
-          </CounterIcon>
-          <CounterValue>{analytics.totalViews}</CounterValue>
+          <CounterIcon><Eye /></CounterIcon>
+          <CounterValue>{stats.totalViews.toLocaleString()}</CounterValue>
           <CounterLabel>Total Views</CounterLabel>
-          <CounterChange $positive={true}>
-            <TrendingUp size={12} />
-            Growing
-          </CounterChange>
         </CounterCard>
-
-        {/* Revenue Counter */}
         <CounterCard>
-          <StatusIndicator $status="online" />
-          <CounterIcon>
-            <DollarSign size={28} />
-          </CounterIcon>
-          <CounterValue>€{analytics.revenue}</CounterValue>
-          <CounterLabel>Revenue</CounterLabel>
-          <CounterChange $positive={analytics.revenue > 0}>
-            <TrendingUp size={12} />
-            Commission
-          </CounterChange>
+          <CounterIcon><MessageSquare /></CounterIcon>
+          <CounterValue>{counters.totalMessages.toLocaleString()}</CounterValue>
+          <CounterLabel>Total Messages</CounterLabel>
         </CounterCard>
-
-        {/* Storage Counter */}
         <CounterCard>
-          <StatusIndicator $status="online" />
-          <CounterIcon>
-            <HardDrive size={28} />
-          </CounterIcon>
-          <CounterValue>{analytics.storageUsage}MB</CounterValue>
-          <CounterLabel>Storage Used</CounterLabel>
-          <CounterChange $positive={true}>
-            <TrendingUp size={12} />
-            +{analytics.storageGrowth}%
-          </CounterChange>
+          <CounterIcon><DollarSign /></CounterIcon>
+          <CounterValue>€{counters.totalRevenue.toLocaleString()}</CounterValue>
+          <CounterLabel>Total Revenue</CounterLabel>
         </CounterCard>
-
-        {/* Firestore Reads */}
         <CounterCard>
-          <StatusIndicator $status="online" />
-          <CounterIcon>
-            <Database size={28} />
-          </CounterIcon>
-          <CounterValue>{analytics.firestoreReads}</CounterValue>
+          <CounterIcon><HardDrive /></CounterIcon>
+          <CounterValue>{counters.storageUsage.toLocaleString()} MB</CounterValue>
+          <CounterLabel>Storage Usage</CounterLabel>
+        </CounterCard>
+        <CounterCard>
+          <CounterIcon><Database /></CounterIcon>
+          <CounterValue>{counters.firestoreReads.toLocaleString()}</CounterValue>
           <CounterLabel>Firestore Reads</CounterLabel>
-          <CounterChange $positive={true}>
-            <Activity size={12} />
-            Current
-          </CounterChange>
         </CounterCard>
-
-        {/* Firestore Writes */}
         <CounterCard>
-          <StatusIndicator $status="online" />
-          <CounterIcon>
-            <Database size={28} />
-          </CounterIcon>
-          <CounterValue>{analytics.firestoreWrites}</CounterValue>
+          <CounterIcon><Database /></CounterIcon>
+          <CounterValue>{counters.firestoreWrites.toLocaleString()}</CounterValue>
           <CounterLabel>Firestore Writes</CounterLabel>
-          <CounterChange $positive={true}>
-            <Activity size={12} />
-            Current
-          </CounterChange>
         </CounterCard>
-
-        {/* Hosting Downloads */}
         <CounterCard>
-          <StatusIndicator $status="online" />
-          <CounterIcon>
-            <Download size={28} />
-          </CounterIcon>
-          <CounterValue>{analytics.hostingDownloads}MB</CounterValue>
-          <CounterLabel>Hosting Downloads</CounterLabel>
-          <CounterChange $positive={true}>
-            <TrendingUp size={12} />
-            +{analytics.hostingGrowth}%
-          </CounterChange>
+          <CounterIcon><Download /></CounterIcon>
+          <CounterValue>{counters.functionInvocations.toLocaleString()}</CounterValue>
+          <CounterLabel>Function Invocations</CounterLabel>
         </CounterCard>
-
-        {/* Functions Invocations */}
         <CounterCard>
-          <StatusIndicator $status="online" />
-          <CounterIcon>
-            <Zap size={28} />
-          </CounterIcon>
-          <CounterValue>{analytics.functionsInvocations}</CounterValue>
-          <CounterLabel>Functions Calls</CounterLabel>
-          <CounterChange $positive={true}>
-            <TrendingUp size={12} />
-            +{analytics.functionsGrowth}%
-          </CounterChange>
+          <CounterIcon><Zap /></CounterIcon>
+          <CounterValue>{counters.activeSessions.toLocaleString()}</CounterValue>
+          <CounterLabel>Active Sessions</CounterLabel>
         </CounterCard>
-
-        {/* Daily Active Users */}
         <CounterCard>
-          <StatusIndicator $status={analytics.dailyActiveUsers > 0 ? 'online' : 'warning'} />
-          <CounterIcon>
-            <Users size={28} />
-          </CounterIcon>
-          <CounterValue>{analytics.dailyActiveUsers}</CounterValue>
-          <CounterLabel>Daily Active Users</CounterLabel>
-          <CounterChange $positive={false} $neutral={true}>
-            <Clock size={12} />
-            Today
-          </CounterChange>
+          <CounterIcon><CheckCircle /></CounterIcon>
+          <CounterValue>{counters.systemHealth}</CounterValue>
+          <CounterLabel>System Health</CounterLabel>
         </CounterCard>
-
-        {/* System Status */}
         <CounterCard>
-          <StatusIndicator $status="online" />
-          <CounterIcon>
-            <CheckCircle size={28} />
-          </CounterIcon>
-          <CounterValue>99.9%</CounterValue>
-          <CounterLabel>System Uptime</CounterLabel>
-          <CounterChange $positive={true}>
-            <CheckCircle size={12} />
-            Healthy
-          </CounterChange>
+          <CounterIcon><AlertCircle /></CounterIcon>
+          <CounterValue>{counters.alerts.toLocaleString()}</CounterValue>
+          <CounterLabel>Alerts</CounterLabel>
         </CounterCard>
       </CountersGrid>
-
-      {/* Deployment Info */}
-      <div style={{ 
-        background: 'linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%)',
-        border: '2px solid #ffd700',
-        borderRadius: '12px',
-        padding: '20px',
-        marginTop: '20px',
-        textAlign: 'center'
-      }}>
-        <div style={{ color: '#ffd700', fontSize: '16px', fontWeight: '600', marginBottom: '10px' }}>
-          🚀 Last Deployment
-        </div>
-        <div style={{ color: '#ffed4e', fontSize: '14px' }}>
-          {analytics.lastDeployment} by {analytics.deployedBy}
-        </div>
-      </div>
     </CountersContainer>
   );
 };

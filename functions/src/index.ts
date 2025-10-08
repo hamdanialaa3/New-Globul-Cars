@@ -1,6 +1,15 @@
 // functions/src/index.ts
 // Main entry point for Firebase Functions
 
+// Export statistics and counter functions
+export {
+  incrementCarViewCount,
+  onCarCreate,
+  onCarDelete,
+  onUserCreate,
+  onUserDelete
+} from './stats';
+
 // Export analytics functions
 export {
   getAveragePriceByModel,

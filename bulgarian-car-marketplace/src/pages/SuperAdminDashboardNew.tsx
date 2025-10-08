@@ -6,6 +6,8 @@ import { realDataInitializer } from '../services/real-data-initializer';
 import { advancedRealDataService } from '../services/advanced-real-data-service';
 import { firebaseRealDataService } from '../services/firebase-real-data-service';
 import { uniqueOwnerService } from '../services/unique-owner-service';
+import { doc, onSnapshot } from 'firebase/firestore';
+import { db } from '../firebase/firebase-config';
 
 // Import components
 import AdminHeader from '../components/SuperAdmin/AdminHeader';
@@ -58,13 +60,14 @@ const LoadingState = styled.div`
 
 const SuperAdminDashboard: React.FC = () => {
   const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState('overview');
   const [analytics, setAnalytics] = useState<RealTimeAnalytics | null>(null);
   const [userActivity, setUserActivity] = useState<UserActivity[]>([]);
   const [contentModeration, setContentModeration] = useState<ContentModeration | null>(null);
+  const [marketStats, setMarketStats] = useState({ totalCars: 0, totalUsers: 0, totalViews: 0 });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [session, setSession] = useState<any>(null);
-  const [activeTab, setActiveTab] = useState('overview');
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
 
@@ -173,7 +176,17 @@ const SuperAdminDashboard: React.FC = () => {
       }
     };
 
+    // Real-time listener for market stats
+    const statsDocRef = doc(db, 'market', 'stats');
+    const unsubscribe = onSnapshot(statsDocRef, (doc) => {
+      if (doc.exists()) {
+        setMarketStats(doc.data() as any);
+      }
+    });
+
     initializeDashboard();
+
+    return () => unsubscribe(); // Cleanup listener on component unmount
   }, [navigate]);
 
   const handleLogout = async () => {
@@ -195,6 +208,10 @@ const SuperAdminDashboard: React.FC = () => {
   const handleCloseUserModal = () => {
     setIsUserModalOpen(false);
     setSelectedUser(null);
+  };
+
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
   };
 
   if (loading) {
@@ -222,13 +239,9 @@ const SuperAdminDashboard: React.FC = () => {
       <TabContent>
         {activeTab === 'overview' && (
           <>
+            <AdminOverview analytics={analytics} />
+            <LiveCounters stats={marketStats} />
             <FirebaseConnectionTest />
-            <LiveCounters />
-            <AdminOverview 
-              analytics={analytics} 
-              userActivity={userActivity} 
-              onUserClick={handleUserClick}
-            />
           </>
         )}
 
