@@ -39,12 +39,32 @@ import {
 import * as S from './styles';
 import { TabNavigation, TabButton, SyncButton, FollowButton } from './TabNavigation.styles';
 import styled, { keyframes } from 'styled-components';
+// Import new services - moved to top
+import { googleProfileSyncService } from '../../services/google/google-profile-sync.service';
+import { carAnalyticsService } from '../../services/analytics/car-analytics.service';
+import { carDeleteService } from '../../services/garage/car-delete.service';
+import { followService } from '../../services/social/follow.service';
+import PrivacySettings from '../../components/Profile/Security/PrivacySettings';
+import ProfileAnalyticsDashboard from '../../components/Profile/Analytics/ProfileAnalyticsDashboard';
+import { useToast } from '../../components/Toast';
 
-// Animations
-const slideIn = keyframes`
+// ==================== ANIMATIONS ====================
+
+// Fade in animation
+const fadeIn = keyframes`
   from {
     opacity: 0;
-    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+  }
+`;
+
+// Slide and fade from left
+const slideInFromLeft = keyframes`
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
   }
   to {
     opacity: 1;
@@ -52,17 +72,69 @@ const slideIn = keyframes`
   }
 `;
 
+// Profile image morph animation (كبيرة → صغيرة)
+const profileImageMorph = keyframes`
+  0% {
+    width: 120px;
+    height: 120px;
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-10px) scale(0.8);
+    opacity: 0.8;
+  }
+  100% {
+    width: 60px;
+    height: 60px;
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+`;
+
+// Content fade and slide up
+const fadeSlideUp = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
+
+// Scale and fade
+const scaleIn = keyframes`
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+`;
+
+// ==================== STYLED COMPONENTS ====================
+
 // Compact Header for non-Profile tabs
 const CompactHeader = styled.div`
   display: flex;
   align-items: center;
   gap: 16px;
-  padding: 20px;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 20px 24px;
+  background: linear-gradient(135deg, white 0%, #fafafa 100%);
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   margin-bottom: 24px;
-  animation: ${slideIn} 0.3s ease-out;
+  animation: ${slideInFromLeft} 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(255, 121, 0, 0.1);
+  
+  &:hover {
+    box-shadow: 0 6px 16px rgba(255, 121, 0, 0.15);
+    border-color: rgba(255, 121, 0, 0.3);
+  }
 `;
 
 const ProfileImageSmall = styled.img`
@@ -71,16 +143,19 @@ const ProfileImageSmall = styled.img`
   border-radius: 50%;
   object-fit: cover;
   border: 3px solid #FF7900;
-  box-shadow: 0 2px 8px rgba(255, 121, 0, 0.3);
-  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(255, 121, 0, 0.4);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: ${profileImageMorph} 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   
   &:hover {
-    transform: scale(1.05);
+    transform: scale(1.1) rotate(3deg);
+    box-shadow: 0 6px 16px rgba(255, 121, 0, 0.5);
   }
 `;
 
 const UserInfo = styled.div`
   flex: 1;
+  animation: ${fadeIn} 0.5s ease-out 0.2s both;
 `;
 
 const UserName = styled.div`
@@ -88,6 +163,10 @@ const UserName = styled.div`
   font-weight: 700;
   color: #212529;
   margin-bottom: 4px;
+  background: linear-gradient(135deg, #212529 0%, #495057 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 `;
 
 const UserEmail = styled.div`
@@ -97,17 +176,8 @@ const UserEmail = styled.div`
 
 const FullWidthContent = styled.div`
   width: 100%;
-  animation: ${slideIn} 0.3s ease-out;
+  animation: ${fadeSlideUp} 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 `;
-
-// Import new services
-import { googleProfileSyncService } from '../../services/google/google-profile-sync.service';
-import { carAnalyticsService } from '../../services/analytics/car-analytics.service';
-import { carDeleteService } from '../../services/garage/car-delete.service';
-import { followService } from '../../services/social/follow.service';
-import PrivacySettings from '../../components/Profile/Security/PrivacySettings';
-import ProfileAnalyticsDashboard from '../../components/Profile/Analytics/ProfileAnalyticsDashboard';
-import { useToast } from '../../components/Toast';
 
 // Professional Icon Wrapper with shadow effects
 const IconWrapper = styled.span<{ $color?: string; $size?: number }>`
