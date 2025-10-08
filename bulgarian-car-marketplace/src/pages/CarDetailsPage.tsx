@@ -221,7 +221,6 @@ const CarDetailsPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { user } = useAuth();
-  const profileStatsService = new ProfileStatsService();
 
   useEffect(() => {
     const fetchCarAndIncrementView = async () => {
@@ -291,13 +290,6 @@ const CarDetailsPage: React.FC = () => {
                 <LazyImage 
                   src={car.mainImage} 
                   alt={car.title} 
-                  placeholder={
-                    <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#ccc" strokeWidth="1.5">
-                      <path d="M5 17h14v2H5v-2zm0-2h14V9H5v6zm7-13l9 5v8H3V7l9-5z"/>
-                      <circle cx="7.5" cy="14.5" r="1.5"/>
-                      <circle cx="16.5" cy="14.5" r="1.5"/>
-                    </svg>
-                  } 
                 />
               ) : (
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '4rem', color: '#ccc' }}>
@@ -314,14 +306,7 @@ const CarDetailsPage: React.FC = () => {
                 <Thumbnail key={index}>
                   <LazyImage 
                     src={image} 
-                    alt={`${car.title} ${index + 1}`} 
-                    placeholder={
-                      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ccc" strokeWidth="1.5">
-                        <path d="M5 17h14v2H5v-2zm0-2h14V9H5v6zm7-13l9 5v8H3V7l9-5z"/>
-                        <circle cx="7.5" cy="14.5" r="1.5"/>
-                        <circle cx="16.5" cy="14.5" r="1.5"/>
-                      </svg>
-                    }
+                    alt={`${car.title} ${index + 1}`}
                   />
                 </Thumbnail>
               ))}
@@ -379,9 +364,9 @@ const CarDetailsPage: React.FC = () => {
               </strong>
             </div>
             
-            {car.userId && (
+            {car.sellerId && (
               <button
-                onClick={() => navigate(`/profile/${car.userId}`)}
+                onClick={() => navigate(`/profile/${car.sellerId}`)}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -412,9 +397,9 @@ const CarDetailsPage: React.FC = () => {
             )}
           </div>
           
-          {user && car.userId && car.userId !== user.uid && (
+          {user && car.sellerId && car.sellerId !== user.uid && (
             <ContactButton
-              onClick={() => navigate(`/messages?userId=${car.userId}`)}
+              onClick={() => navigate(`/messages?userId=${car.sellerId}`)}
             >
               <MessageCircle size={20} />
               {language === 'bg' ? 'Изпрати съобщение' : 'Send Message'}
@@ -427,7 +412,7 @@ const CarDetailsPage: React.FC = () => {
               style={{ background: '#6c757d' }}
             >
               {language === 'bg' ? 'Влезте, за да изпратите съобщение' : 'Login to send a message'}
-            </ContactButton>
+          </ContactButton>
           )}
         </ContactSection>
 

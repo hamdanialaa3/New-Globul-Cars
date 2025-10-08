@@ -4,11 +4,10 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
-import { bulgarianCarService } from '../firebase/car-service';
+import { bulgarianCarService, BulgarianCar } from '../firebase/car-service';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../context/AuthProvider';
 import { MapPin, Fuel, Gauge, Calendar, MessageCircle, User } from 'lucide-react';
-import type { BulgarianCar } from '../types/car';
 
 interface FeaturedCarsProps {
   limit?: number;
@@ -242,7 +241,7 @@ const FeaturedCars: React.FC<FeaturedCarsProps> = ({
       
       // Fetch real cars from Firebase
       const result = await bulgarianCarService.searchCars(
-        { status: 'active' }, // Only active listings
+        {}, // No filters, get all cars
         'createdAt',
         'desc',
         limit
@@ -329,7 +328,7 @@ const FeaturedCars: React.FC<FeaturedCarsProps> = ({
                     <circle cx="7.5" cy="14.5" r="1.5"/>
                     <circle cx="16.5" cy="14.5" r="1.5"/>
                   </svg>
-                </CarImage>
+            </CarImage>
               )}
               <PriceTag>{formatPrice(car.price)}</PriceTag>
             </CarImageWrapper>
