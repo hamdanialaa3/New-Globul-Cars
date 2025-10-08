@@ -220,8 +220,8 @@ const ProfilePage: React.FC = () => {
     loadUserCars
   } = useProfile();
 
-  // Read tab from URL or default to 'garage'
-  const initialTab = (searchParams.get('tab') as 'profile' | 'garage' | 'analytics' | 'settings') || 'garage';
+  // Read tab from URL or default to 'profile'
+  const initialTab = (searchParams.get('tab') as 'profile' | 'garage' | 'analytics' | 'settings') || 'profile';
   const [activeTab, setActiveTab] = React.useState<'profile' | 'garage' | 'analytics' | 'settings'>(initialTab);
   
   // Update activeTab when URL changes
