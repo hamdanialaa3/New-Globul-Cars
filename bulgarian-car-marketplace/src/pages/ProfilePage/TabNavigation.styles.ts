@@ -19,19 +19,19 @@ export const TabNavigation = styled.div`
 
 export const TabButton = styled.button<{ $active: boolean }>`
   flex: 1;
-  min-width: 120px;
-  padding: 12px 20px;
+  min-width: 110px;
+  padding: 10px 16px;
   background: ${props => props.$active ? '#FF7900' : 'transparent'};
   color: ${props => props.$active ? 'white' : '#6c757d'};
   border: none;
   border-radius: 8px;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
   transition: all 0.2s ease;
   
   &:hover {
@@ -39,14 +39,20 @@ export const TabButton = styled.button<{ $active: boolean }>`
     transform: translateY(-1px);
   }
   
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+  
   @media (max-width: 768px) {
-    min-width: 100px;
-    padding: 10px 12px;
-    font-size: 0.85rem;
+    min-width: 85px;
+    padding: 8px 10px;
+    font-size: 0.75rem;
+    gap: 4px;
     
     svg {
-      width: 16px;
-      height: 16px;
+      width: 14px;
+      height: 14px;
     }
   }
 `;

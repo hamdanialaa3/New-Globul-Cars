@@ -40,7 +40,8 @@ const Section = styled.div`
   h3 {
     margin: 0 0 16px 0;
     font-size: 1.1rem;
-    color: #495057;
+    color: #212529;
+    font-weight: 700;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -71,11 +72,13 @@ const SettingInfo = styled.div`
     font-weight: 600;
     color: #212529;
     margin-bottom: 4px;
+    font-size: 0.95rem;
   }
   
   .description {
     font-size: 0.85rem;
     color: #6c757d;
+    line-height: 1.4;
   }
 `;
 
@@ -108,11 +111,14 @@ const Select = styled.select`
   border: 1px solid #dee2e6;
   border-radius: 6px;
   font-size: 0.9rem;
+  color: #212529;
+  background: white;
   cursor: pointer;
   
   &:focus {
     outline: none;
     border-color: #FF7900;
+    box-shadow: 0 0 0 3px rgba(255, 121, 0, 0.1);
   }
 `;
 
