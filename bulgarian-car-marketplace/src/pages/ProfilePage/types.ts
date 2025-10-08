@@ -60,15 +60,13 @@ export interface ProfileStats {
 // Car Information Interface (simplified for profile display)
 export interface ProfileCar {
   id: string;
-  title: string;
-  price: number;
+  make: string;
+  model: string;
   year: number;
-  mileage?: number;
-  fuelType: string;
-  mainImage?: string;
-  status?: 'active' | 'inactive' | 'sold';
-  views?: number;
-  inquiries?: number;
+  price: number;
+  imageUrl: string;
+  status?: 'active' | 'sold' | 'pending';
+  viewCount?: number;
 }
 
 // Profile State Interface

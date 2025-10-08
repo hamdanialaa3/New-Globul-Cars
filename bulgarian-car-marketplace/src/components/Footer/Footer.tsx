@@ -1,6 +1,7 @@
 // Smart Footer Component with Global Translation Support
 import React from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { MapPin, Phone, Mail, Globe } from 'lucide-react';
 import './Footer.css';
 
 const Footer: React.FC = () => {
@@ -66,15 +67,21 @@ const Footer: React.FC = () => {
             <h4 className="footer-subtitle">{t('footer.contact')}</h4>
             <div className="contact-info">
               <div className="contact-item">
-                <span className="contact-icon">📍</span>
+                <span className="contact-icon">
+                  <MapPin size={18} color="#FF8F10" />
+                </span>
                 <span>{t('footer.address')}</span>
               </div>
               <div className="contact-item">
-                <span className="contact-icon">📞</span>
+                <span className="contact-icon">
+                  <Phone size={18} color="#FF8F10" />
+                </span>
                 <span>+359 2 123 4567</span>
               </div>
               <div className="contact-item">
-                <span className="contact-icon">✉️</span>
+                <span className="contact-icon">
+                  <Mail size={18} color="#FF8F10" />
+                </span>
                 <span>info@globulcars.bg</span>
               </div>
             </div>
@@ -94,7 +101,8 @@ const Footer: React.FC = () => {
             </div>
             <div className="language-info">
               <span className="current-language">
-                {language === 'bg' ? '🇧🇬 Български' : '🇺🇸 English'}
+                <Globe size={16} style={{ marginRight: '6px' }} />
+                {language === 'bg' ? 'Български' : 'English'}
               </span>
             </div>
           </div>

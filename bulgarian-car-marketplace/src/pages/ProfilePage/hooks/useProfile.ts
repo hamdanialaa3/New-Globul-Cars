@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '../../../hooks/useTranslation';
 import { bulgarianAuthService, BulgarianUser } from '../../../firebase';
 import { useToast } from '../../../components/Toast';
 import { validateProfileData } from '../../../utils/validation';
-import { doc, onSnapshot } from 'firebase/firestore';
+import { doc, onSnapshot, getDoc } from 'firebase/firestore';
 import { db } from '../../../firebase/firebase-config';
 import {
   ProfileFormData,
@@ -80,10 +80,10 @@ export const useProfile = (): UseProfileReturn => {
     );
 
     return () => unsubscribe();
-  }, [user?.uid]);
+  }, [user?.uid, user?.email]);
 
   // Load user data function
-  const loadUserData = async () => {
+  const loadUserData = useCallback(async () => {
     try {
       setLoading(true);
 
@@ -114,37 +114,44 @@ export const useProfile = (): UseProfileReturn => {
           phoneNumber: currentUser.phoneNumber || '',
           email: currentUser.email || '',
           address: (currentUser as any).address || '',
-          city: currentUser.location?.city || '',
+          city: (currentUser as any).city || '',
           postalCode: (currentUser as any).postalCode || '',
-          bio: currentUser.bio || '',
+          bio: (currentUser as any).bio || '',
           preferredLanguage: currentUser.preferredLanguage || 'bg'
         });
 
         // Load user's cars
-        try {
-          const { bulgarianCarService } = await import('../../../firebase');
-          const cars = await bulgarianCarService.getUserCarListings(currentUser.uid, false);
-          setUserCars(cars.map(car => ({
-            id: car.id || '',
-            title: `${car.make} ${car.model}`,
-            price: car.price,
-            mainImage: car.mainImage || car.images?.[0] || '',
-            year: car.year,
-            mileage: car.mileage,
-            fuelType: car.fuelType || 'petrol',
-            status: car.isSold ? 'sold' : (car.isActive ? 'active' : 'inactive')
-          })));
-        } catch (carsError) {
-          console.error('Error loading user cars:', carsError);
-          // Continue without cars - don't block profile loading
-        }
+        const cars = await bulgarianAuthService.getUserCars(currentUser.uid);
+        const carsWithViews = await Promise.all(
+          cars.map(async (car) => {
+            const carDoc = await getDoc(doc(db, 'cars', car.id));
+            const carData = carDoc.exists() ? carDoc.data() : {};
+            const titleParts = car.title.split(' ');
+            
+            return {
+              id: car.id,
+              make: titleParts[0] || 'Unknown',
+              model: titleParts.slice(1).join(' ') || 'Model',
+              year: car.year,
+              price: car.price,
+              imageUrl: car.mainImage,
+              status: car.status,
+              viewCount: carData.viewCount || 0,
+            };
+          })
+        );
+        setUserCars(carsWithViews);
+
+      } else {
+        toast.error(t('profile.load_user_error'));
       }
     } catch (error) {
       console.error('Error loading user data:', error);
+      toast.error(t('profile.load_user_error_generic'));
     } finally {
       setLoading(false);
     }
-  };
+  }, [t, toast]);
 
   // Handle form input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {

@@ -130,6 +130,12 @@
 }
 
 .contact-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.contact-icon {
   font-size: 1.2rem;
   width: 24px;
   text-align: center;

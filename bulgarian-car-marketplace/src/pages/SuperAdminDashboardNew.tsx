@@ -239,7 +239,11 @@ const SuperAdminDashboard: React.FC = () => {
       <TabContent>
         {activeTab === 'overview' && (
           <>
-            <AdminOverview analytics={analytics} />
+            <AdminOverview 
+              analytics={analytics} 
+              userActivity={userActivity} 
+              onUserClick={handleUserClick} 
+            />
             <LiveCounters stats={marketStats} />
             <FirebaseConnectionTest />
           </>
