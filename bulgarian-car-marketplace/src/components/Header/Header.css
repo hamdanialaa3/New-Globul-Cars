@@ -333,18 +333,10 @@
   border-bottom: 1px solid rgba(255, 223, 0, 0.2);
 }
 
-.settings-item {
-  color: #EAEAEA;
-}
-
-.settings-item:hover {
-  background: rgba(255, 223, 0, 0.2);
-  color: #FFFFFF;
-}
-
 .menu-section .section-title {
-  color: #FFDF00;
-  opacity: 0.8;
+  color: #adb5bd;
+  font-size: 0.7rem;
+  font-weight: 600;
 }
 
 .menu-divider {
@@ -509,9 +501,9 @@
   align-items: center;
   gap: 8px;
   padding: 10px 16px;
-  font-size: 12px;
+  font-size: 0.7rem;
   font-weight: 600;
-  color: #6c757d;
+  color: #adb5bd;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   background: #f8f9fa;
@@ -537,15 +529,15 @@
   background: none;
   border: none;
   text-align: left;
-  font-size: 14px;
-  color: #212529;
+  font-size: 0.8rem;
+  color: #495057;
   cursor: pointer;
   transition: all 0.2s ease;
   position: relative;
 }
 
 .settings-item svg {
-  color: #6c757d;
+  color: #adb5bd;
   flex-shrink: 0;
   transition: all 0.2s ease;
 }
@@ -555,12 +547,12 @@
 }
 
 .settings-item:hover {
-  background: #f8f9fa;
-  color: #005ca9;
+  background: rgba(255, 121, 0, 0.05);
+  color: #FF7900;
 }
 
 .settings-item:hover svg {
-  color: #005ca9;
+  color: #FF7900;
   transform: scale(1.1);
 }
 
