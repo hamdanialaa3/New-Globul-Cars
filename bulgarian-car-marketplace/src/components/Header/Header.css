@@ -188,9 +188,9 @@
 .login-button,
 .register-button,
 .action-button {
-  padding: 8px 16px;
-  border-radius: 10px;
-  font-size: 14px;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -200,7 +200,7 @@
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .login-button:hover,
@@ -226,7 +226,7 @@
 }
 
 .action-button {
-  padding: 10px; /* Make icon buttons circular/square */
+  padding: 8px;
 }
 
 /* User Section */
