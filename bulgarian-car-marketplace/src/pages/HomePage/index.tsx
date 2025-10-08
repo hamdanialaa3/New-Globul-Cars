@@ -7,6 +7,7 @@ import styled from 'styled-components';
 // Lazy load all sections for better performance
 const HeroSection = React.lazy(() => import('./HeroSection'));
 const StatsSection = React.lazy(() => import('./StatsSection'));
+const PopularBrandsSection = React.lazy(() => import('./PopularBrandsSection'));
 const CityCarsSection = React.lazy(() => import('./CityCarsSection'));
 const ImageGallerySection = React.lazy(() => import('./ImageGallerySection'));
 const FeaturedCarsSection = React.lazy(() => import('./FeaturedCarsSection'));
@@ -35,6 +36,10 @@ const HomePage: React.FC = () => {
 
       <Suspense fallback={<LoadingFallback>Loading stats...</LoadingFallback>}>
         <StatsSection />
+      </Suspense>
+
+      <Suspense fallback={<LoadingFallback>Loading popular brands...</LoadingFallback>}>
+        <PopularBrandsSection />
       </Suspense>
 
       <Suspense fallback={<LoadingFallback>Loading city cars...</LoadingFallback>}>
