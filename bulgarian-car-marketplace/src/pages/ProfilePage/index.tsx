@@ -15,6 +15,9 @@ import {
   BusinessUpgradeCard,
   BusinessBackground
 } from '../../components/Profile';
+import { TrustLevel } from '../../services/profile/trust-score-service';
+import { doc, updateDoc } from 'firebase/firestore';
+import { db } from '../../firebase/firebase-config';
 import { 
   RefreshCw, 
   User, 
@@ -181,7 +184,7 @@ const ProfilePage: React.FC = () => {
             {/* Trust Badge */}
             <TrustBadge
               trustScore={user.verification?.trustScore || 10}
-              level={user.verification?.level || 'unverified'}
+              level={user.verification?.level || TrustLevel.UNVERIFIED}
               badges={user.verification?.badges || []}
             />
 
@@ -807,17 +810,20 @@ const ProfilePage: React.FC = () => {
             <S.ContentSection>
               <ProfileGallery
                 userId={user.uid}
-                images={user.gallery || []}
+                images={(user.gallery || []).map(img => typeof img === 'string' ? img : img.url)}
                 maxImages={9}
                 onUpdate={async (images) => {
                   try {
-                    const { doc, updateDoc } = await import('firebase/firestore');
-                    const { db } = await import('../../firebase/firebase-config');
+                    const galleryData = images.map(url => ({
+                      url,
+                      uploadedAt: new Date(),
+                      caption: ''
+                    }));
                     await updateDoc(doc(db, 'users', user.uid), {
-                      gallery: images
+                      gallery: galleryData
                     });
                     // Update local user state
-                    setUser(prev => prev ? { ...prev, gallery: images } : null);
+                    setUser(prev => prev ? { ...prev, gallery: galleryData } : null);
                     if (process.env.NODE_ENV === 'development') {
                       console.log('✅ Gallery updated and saved');
                     }

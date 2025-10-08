@@ -5,7 +5,7 @@
 import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import { Plus, X, Image as ImageIcon, Loader } from 'lucide-react';
-import { useLanguage } from '../../contexts/LanguageContext';
+// import { useLanguage } from '../../contexts/LanguageContext'; // Unused
 import { useTranslation } from '../../hooks/useTranslation';
 import { ProfileService } from '../../services/profile';
 

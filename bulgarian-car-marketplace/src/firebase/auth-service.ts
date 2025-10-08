@@ -21,6 +21,7 @@ import {
 import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
 import { auth, db, BulgarianFirebaseUtils } from './firebase-config';
 import { BULGARIAN_CONFIG } from '../config/bulgarian-config';
+import { TrustLevel, Badge } from '../services/profile/trust-score-service';
 
 // Bulgarian User Interface - Extended for Profile System
 export interface BulgarianUser {
@@ -98,12 +99,8 @@ export interface BulgarianUser {
       documents?: string[];
     };
     trustScore?: number;
-    level?: 'unverified' | 'basic' | 'verified' | 'trusted' | 'premium';
-    badges?: Array<{ 
-      type: string; 
-      earnedAt: Date;
-      description?: string;
-    }>;
+    level?: TrustLevel;
+    badges?: Badge[];
   };
   
   // Statistics

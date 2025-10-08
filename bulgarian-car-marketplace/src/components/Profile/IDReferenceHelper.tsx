@@ -4,7 +4,7 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { CreditCard, X, Eye, EyeOff, ChevronDown, ChevronUp } from 'lucide-react';
+import { CreditCard, Eye, EyeOff, ChevronDown, ChevronUp } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { fieldMappings } from './id-helper/fieldMappings';
 
