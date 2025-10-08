@@ -224,9 +224,9 @@ const PopularBrandsSection: React.FC = () => {
               { make: brand.id },
               'createdAt',
               'desc',
-              1
+              100
             );
-            counts[brand.id] = result.total || 0;
+            counts[brand.id] = result.cars.length || 0;
           } catch (error) {
             console.error(`Error fetching count for ${brand.id}:`, error);
             counts[brand.id] = 0;
