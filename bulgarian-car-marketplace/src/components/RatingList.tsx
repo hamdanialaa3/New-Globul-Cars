@@ -4,7 +4,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from '../hooks/useTranslation';
-import { bulgarianRatingService, CarRating } from '../services/rating-service';
+import { bulgarianRatingService, CarRating } from '../services/reviews/rating-service';
 
 interface RatingListProps {
   carId: string;
@@ -290,14 +290,14 @@ const RatingList: React.FC<RatingListProps> = ({ carId, className }) => {
       );
 
       if (reset) {
-        setRatings(result);
+        setRatings(result.ratings);
       } else {
-        setRatings(prev => [...prev, ...result]);
+        setRatings(prev => [...prev, ...result.ratings]);
       }
 
-      setHasMore(result.length === 10);
-      if (result.length > 0) {
-        setLastDoc(result[result.length - 1]);
+      setHasMore(result.hasMore);
+      if (result.lastDoc) {
+        setLastDoc(result.lastDoc);
       }
     } catch (error) {
       console.error('Error loading ratings:', error);
@@ -340,14 +340,14 @@ const RatingList: React.FC<RatingListProps> = ({ carId, className }) => {
   const sortedRatings = [...ratings].sort((a, b) => {
     switch (sortBy) {
       case 'oldest':
-        return a.timestamp.getTime() - b.timestamp.getTime();
+        return a.createdAt.getTime() - b.createdAt.getTime();
       case 'helpful':
         return (b.helpful || 0) - (a.helpful || 0);
       case 'rating':
-        return b.overallRating - a.overallRating;
+        return b.rating - a.rating;
       case 'newest':
       default:
-        return b.timestamp.getTime() - a.timestamp.getTime();
+        return b.createdAt.getTime() - a.createdAt.getTime();
     }
   });
 
@@ -393,16 +393,16 @@ const RatingList: React.FC<RatingListProps> = ({ carId, className }) => {
                     <UserAvatar src={rating.userAvatar} alt={rating.userName} />
                   ) : (
                     <DefaultAvatar>
-                      {rating.userName.charAt(0).toUpperCase()}
+                      {rating.userName?.charAt(0).toUpperCase() || 'U'}
                     </DefaultAvatar>
                   )}
                   <UserDetails>
                     <UserName>{rating.userName}</UserName>
-                    <RatingDate>{formatDate(rating.timestamp)}</RatingDate>
+                    <RatingDate>{formatDate(rating.createdAt)}</RatingDate>
                   </UserDetails>
                 </UserInfo>
                 <RatingStars>
-                  {renderStars(rating.overallRating)}
+                  {renderStars(rating.rating)}
                 </RatingStars>
               </RatingHeader>
 
@@ -415,7 +415,7 @@ const RatingList: React.FC<RatingListProps> = ({ carId, className }) => {
                     <ProsConsSection>
                       <SectionTitle>{t('ratings.pros')}</SectionTitle>
                       <TagList>
-                        {rating.pros.map((pro, index) => (
+                        {rating.pros.map((pro: string, index: number) => (
                           <Tag key={index} type="pro">{pro}</Tag>
                         ))}
                       </TagList>
@@ -425,7 +425,7 @@ const RatingList: React.FC<RatingListProps> = ({ carId, className }) => {
                     <ProsConsSection>
                       <SectionTitle>{t('ratings.cons')}</SectionTitle>
                       <TagList>
-                        {rating.cons.map((con, index) => (
+                        {rating.cons.map((con: string, index: number) => (
                           <Tag key={index} type="con">{con}</Tag>
                         ))}
                       </TagList>

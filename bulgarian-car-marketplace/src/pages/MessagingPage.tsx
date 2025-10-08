@@ -3,133 +3,181 @@ import styled from 'styled-components';
 import { useTranslation } from '../hooks/useTranslation';
 import ConversationsList from '../components/messaging/ConversationsList';
 import ConversationView from '../components/messaging/ConversationView';
-import { Conversation } from '../services/messagingService';
+import { Conversation } from '../services/messaging/advanced-messaging-service';
 
-// Styled Components
+// Facebook Messenger Style Components
 const MessagingContainer = styled.div`
-  min-height: 100vh;
-  background:
-    linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 25%, #2A2A2A 50%, #1A1A1A 75%, #0A0A0A 100%),
-    radial-gradient(circle at 20% 80%, rgba(0, 212, 255, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(0, 212, 255, 0.05) 0%, transparent 50%);
-  position: relative;
-  overflow-x: hidden;
-  padding: 2rem 0;
+  height: 100vh;
+  background: #f0f2f5;
+  display: flex;
+  flex-direction: column;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 `;
 
-const Container = styled.div`
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 1rem;
+const MessagingHeader = styled.div`
+  background: #4267B2;
+  color: white;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  z-index: 10;
 `;
 
-const Header = styled.div`
-  text-align: center;
-  margin-bottom: 3rem;
-  background: rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 24px;
-  padding: 3rem 2rem;
-  position: relative;
+const HeaderTitle = styled.h1`
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+  color: white;
+`;
+
+const HeaderActions = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+`;
+
+const HeaderButton = styled.button`
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+`;
+
+const MessagingContent = styled.div`
+  flex: 1;
+  display: flex;
+  height: calc(100vh - 60px);
   overflow: hidden;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(45deg, transparent 30%, rgba(0, 212, 255, 0.1) 50%, transparent 70%);
-    opacity: 0.1;
-    pointer-events: none;
-  }
-
-  h1 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    background: linear-gradient(135deg, #FFFFFF, #00D4FF);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 1rem;
-    text-shadow: 0 4px 20px rgba(0, 212, 255, 0.3);
-    position: relative;
-    z-index: 1;
-  }
-
-  p {
-    font-size: 1.1rem;
-    color: rgba(255, 255, 255, 0.8);
-    opacity: 0.9;
-    max-width: 600px;
-    margin: 0 auto;
-    position: relative;
-    z-index: 1;
-  }
-`;
-
-const MessagingGrid = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 2rem;
-  height: 70vh;
-
-  @media (max-width: 1024px) {
-    grid-template-columns: 1fr;
-    height: auto;
-  }
 `;
 
 const ConversationsColumn = styled.div`
-  @media (max-width: 1024px) {
-    height: 50vh;
+  width: 360px;
+  background: white;
+  border-right: 1px solid #e4e6ea;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    position: absolute;
+    z-index: 20;
+    height: 100%;
   }
 `;
 
-const ConversationColumn = styled.div`
-  @media (max-width: 1024px) {
-    height: 50vh;
+const ConversationColumn = styled.div<{ $showConversation?: boolean }>`
+  flex: 1;
+  background: #f0f2f5;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+
+  @media (max-width: 768px) {
+    display: ${props => props.$showConversation ? 'flex' : 'none'};
   }
+`;
+
+const EmptyState = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #65676b;
+  text-align: center;
+  padding: 40px;
+`;
+
+const EmptyIcon = styled.div`
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+`;
+
+const EmptyTitle = styled.h3`
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  color: #1c1e21;
+`;
+
+const EmptyDescription = styled.p`
+  font-size: 15px;
+  margin: 0;
+  color: #65676b;
 `;
 
 const MessagingPage: React.FC = () => {
   const { t } = useTranslation();
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
+  const [showConversation, setShowConversation] = useState(false);
 
   const handleConversationSelect = (conversation: Conversation) => {
     setSelectedConversation(conversation);
+    setShowConversation(true);
   };
 
   const handleBackToConversations = () => {
     setSelectedConversation(null);
+    setShowConversation(false);
   };
 
   return (
     <MessagingContainer>
-      <Container>
-        <Header>
-          <h1>{t('messaging.title')}</h1>
-          <p>{t('messaging.subtitle')}</p>
-        </Header>
+      <MessagingHeader>
+        <HeaderTitle>{t('messaging.title')}</HeaderTitle>
+        <HeaderActions>
+          <HeaderButton title="Search">
+            🔍
+          </HeaderButton>
+          <HeaderButton title="New Message">
+            ✏️
+          </HeaderButton>
+          <HeaderButton title="Options">
+            ⋮
+          </HeaderButton>
+        </HeaderActions>
+      </MessagingHeader>
 
-        <MessagingGrid>
-          <ConversationsColumn>
-            <ConversationsList
-              onConversationSelect={handleConversationSelect}
-              selectedConversationId={selectedConversation?.id}
-            />
-          </ConversationsColumn>
+      <MessagingContent>
+        <ConversationsColumn>
+          <ConversationsList
+            onConversationSelect={handleConversationSelect}
+            selectedConversationId={selectedConversation?.id}
+          />
+        </ConversationsColumn>
 
-          <ConversationColumn>
+        <ConversationColumn $showConversation={showConversation}>
+          {selectedConversation ? (
             <ConversationView
               conversation={selectedConversation}
               onBack={handleBackToConversations}
             />
-          </ConversationColumn>
-        </MessagingGrid>
-      </Container>
+          ) : (
+            <EmptyState>
+              <EmptyIcon>💬</EmptyIcon>
+              <EmptyTitle>{t('messaging.selectConversation')}</EmptyTitle>
+              <EmptyDescription>
+                {t('messaging.selectConversationDescription')}
+              </EmptyDescription>
+            </EmptyState>
+          )}
+        </ConversationColumn>
+      </MessagingContent>
     </MessagingContainer>
   );
 };

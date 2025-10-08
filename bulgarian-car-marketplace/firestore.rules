@@ -24,112 +24,12 @@ service cloud.firestore {
       return email.matches('.*@.*\\..*');
     }
 
-    // Cars Collection Rules
-    match /cars/{carId} {
-      // Anyone can read active cars
-      allow read: if resource.data.isActive == true && 
-                     resource.data.isSold == false &&
-                     resource.data.status == 'active';
-      
-      // Owners can read their own cars (any status)
-      allow read: if isSignedIn() && resource.data.sellerId == request.auth.uid;
-      
-      // Admins can read all
-      allow read: if isAdmin();
-      
-      // Authenticated users can create cars
-      allow create: if isSignedIn() &&
-                       request.resource.data.sellerId == request.auth.uid &&
-                       request.resource.data.sellerEmail == request.auth.token.email &&
-                       request.resource.data.make is string &&
-                       request.resource.data.model is string &&
-                       request.resource.data.year is number &&
-                       request.resource.data.price is number &&
-                       request.resource.data.price > 0;
-      
-      // Owners can update their own cars
-      allow update: if isSignedIn() && resource.data.sellerId == request.auth.uid;
-      
-      // Admins can update any car
-      allow update: if isAdmin();
-      
-      // Owners can delete their own cars
-      allow delete: if isSignedIn() && resource.data.sellerId == request.auth.uid;
-      
-      // Admins can delete any car
-      allow delete: if isAdmin();
-    }
-
-    // Users Collection Rules
-    match /users/{userId} {
-      // Users can read their own data
-      allow read: if isOwner(userId);
-      
-      // Admins can read all users
-      allow read: if isAdmin();
-      
-      // Users can create their own profile
-      allow create: if isOwner(userId);
-      
-      // Users can update their own profile
-      allow update: if isOwner(userId);
-      
-      // Admins can update any profile
-      allow update: if isAdmin();
-    }
-
-    // Favorites Collection Rules
-    match /favorites/{favoriteId} {
-      // Users can read their own favorites
-      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
-      
-      // Users can create their own favorites
-      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
-      
-      // Users can delete their own favorites
-      allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
-    }
-
-    // Messages Collection Rules
-    match /messages/{messageId} {
-      // Users can read messages they sent or received
-      allow read: if isSignedIn() && 
-                     (resource.data.senderId == request.auth.uid ||
-                      resource.data.receiverId == request.auth.uid);
-      
-      // Users can create messages
-      allow create: if isSignedIn() && 
-                       request.resource.data.senderId == request.auth.uid;
-      
-      // Users can update their own sent messages (mark as read, etc.)
-      allow update: if isSignedIn() && 
-                       (resource.data.senderId == request.auth.uid ||
-                        resource.data.receiverId == request.auth.uid);
-    }
-
-    // Saved Searches Collection Rules
-    match /savedSearches/{searchId} {
-      // Users can read their own saved searches
-      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
-      
-      // Users can create their own saved searches
-      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
-      
-      // Users can update their own saved searches
-      allow update: if isSignedIn() && resource.data.userId == request.auth.uid;
-      
-      // Users can delete their own saved searches
-      allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
-    }
-
-    // Analytics Collection Rules (Admin only)
-    match /analytics/{document=**} {
-      allow read, write: if isAdmin();
-    }
-
-    // Default deny all other collections
+    // TEMPORARY: Allow all read access for development
+    // This is for testing purposes only - REMOVE IN PRODUCTION
     match /{document=**} {
-      allow read, write: if false;
+      allow read: if true;
+      allow write: if isSignedIn();
     }
+
   }
 }

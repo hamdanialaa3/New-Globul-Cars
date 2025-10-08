@@ -128,7 +128,7 @@ Quality:        ⭐⭐⭐⭐⭐
 
 ## 🚀 **Quick Start:**
 
-```bash
+   ```bash
 # Clone the repository
 cd bulgarian-car-marketplace
 

@@ -3,7 +3,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { RatingSummary } from '../services/rating-service';
+import { RatingSummary } from '../services/reviews/rating-service';
 
 interface RatingDisplayProps {
   summary: RatingSummary | null;
@@ -175,13 +175,13 @@ const RatingDisplay: React.FC<RatingDisplayProps> = ({
       {showDetails && (
         <RatingDetails>
           <div style={{ marginBottom: '16px' }}>
-            {Object.entries(summary.categoryRatings).map(([category, rating]) => (
+            {summary.categoryRatings && Object.entries(summary.categoryRatings).map(([category, rating]) => (
               <CategoryRating key={category}>
                 <CategoryName>{getCategoryName(category)}</CategoryName>
                 <CategoryStars>
-                  {renderCategoryStars(rating)}
+                  {renderCategoryStars(rating as number)}
                   <span style={{ marginLeft: '8px', fontSize: '12px', color: '#666' }}>
-                    {rating.toFixed(1)}
+                    {(rating as number).toFixed(1)}
                   </span>
                 </CategoryStars>
               </CategoryRating>
@@ -190,7 +190,7 @@ const RatingDisplay: React.FC<RatingDisplayProps> = ({
 
           <RatingDistribution>
             {[5, 4, 3, 2, 1].map(stars => {
-              const count = summary.distribution[stars as keyof typeof summary.distribution] || 0;
+              const count = summary.ratingDistribution[stars] || 0;
               const percentage = summary.totalRatings > 0 ? (count / summary.totalRatings) * 100 : 0;
               return (
                 <DistributionBar key={stars}>

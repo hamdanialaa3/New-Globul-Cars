@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useTranslation } from '../hooks/useTranslation';
 import { useAuth } from '../hooks/useAuth';
-import ProfileManager from '../components/ProfileManager';
+// ProfileManager has been merged into ProfilePage - using ProfilePage instead
+// import ProfileManager from '../components/ProfileManager';
 import BulgarianProfileService from '../services/bulgarian-profile-service';
 import { BulgarianUserProfile } from '../firebase/social-auth-service';
 import { 
@@ -331,9 +332,23 @@ const ProfileDashboardPage: React.FC = () => {
     switch (activeSection) {
       case 'profile':
         return user ? (
-          <ProfileManager
-            onClose={() => {}}
-          />
+          <div style={{ padding: '2rem', textAlign: 'center' }}>
+            <h3>Profile Management</h3>
+            <p>Profile management has been moved to the main Profile page.</p>
+            <button onClick={() => navigate('/profile')} style={{ 
+              padding: '1rem 2rem', 
+              background: '#FF7900', 
+              color: 'white', 
+              border: 'none', 
+              borderRadius: '8px', 
+              cursor: 'pointer',
+              fontSize: '1rem',
+              fontWeight: '600',
+              marginTop: '1rem'
+            }}>
+              Go to Profile Page
+            </button>
+          </div>
         ) : null;
       
       case 'settings':

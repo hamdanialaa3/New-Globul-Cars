@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from '../../hooks/useTranslation';
 import { useAuth } from '../../context/AuthProvider';
-import { messagingService } from '../../services/messagingService';
+import { messagingService } from '../../services/messaging/advanced-messaging-service';
 
 // Styled Components
 const MessageButtonContainer = styled.div`

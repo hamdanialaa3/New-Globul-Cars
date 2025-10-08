@@ -3,7 +3,7 @@
 // (Comment removed - was in Arabic)
 
 import { Logger, LogLevel } from './logger-service';
-import { RateLimiter } from './rate-limiter-service';
+import { rateLimiter } from './rate-limiting-service';
 import { socialMediaCache } from './cache-service';
 
 // TikTok Video interface
@@ -79,7 +79,7 @@ class TikTokService {
   // Professional services for production readiness
   // (Comment removed - was in Arabic)
   private logger: Logger;
-  private rateLimiter: RateLimiter;
+  private rateLimiter: any;
 
   constructor() {
     // Initialize with environment variables
@@ -94,11 +94,7 @@ class TikTokService {
       retentionDays: 7
     });
 
-    this.rateLimiter = new RateLimiter({
-      maxRequests: 100, // TikTok API limit
-      windowMs: 60000, // 1 minute
-      service: 'TikTokAPI'
-    });
+    this.rateLimiter = rateLimiter;
 
     this.logger.info('TikTokService initialized', {
       hasAccessToken: !!this.accessToken,

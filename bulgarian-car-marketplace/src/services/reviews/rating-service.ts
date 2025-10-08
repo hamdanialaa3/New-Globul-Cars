@@ -2,7 +2,7 @@
 // Rating Service - خدمة التقييمات بالنجوم
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
 
-import { doc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, serverTimestamp, collection, query, where, orderBy, limit, startAfter, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
 
 // ==================== INTERFACES ====================
@@ -20,11 +20,34 @@ export interface RatingData {
   };
 }
 
+export interface RatingSummary {
+  averageRating: number;
+  totalRatings: number;
+  ratingDistribution: { [key: number]: number };
+  categoryRatings?: { [key: string]: number };
+}
+
 export interface RatingLevel {
   level: 'excellent' | 'good' | 'average' | 'poor' | 'very_poor' | 'no_rating';
   color: string;
   label_bg: string;
   label_en: string;
+}
+
+export interface CarRating {
+  id: string;
+  carId: string;
+  userId: string;
+  rating: number;
+  title?: string;
+  comment?: string;
+  createdAt: Date;
+  pros: string[];
+  cons: string[];
+  helpful?: number;
+  userAvatar?: string;
+  userName?: string;
+  verifiedPurchase?: boolean;
 }
 
 // ==================== SERVICE CLASS ====================
@@ -146,7 +169,7 @@ export class RatingService {
    * Get rating summary text
    * الحصول على نص ملخص التقييم
    */
-  getRatingSummary(rating: number, totalReviews: number, language: 'bg' | 'en'): string {
+  getRatingSummaryText(rating: number, totalReviews: number, language: 'bg' | 'en'): string {
     const level = this.getRatingLevel(rating);
     const label = language === 'bg' ? level.label_bg : level.label_en;
 
@@ -203,7 +226,117 @@ export class RatingService {
   isRecommendedSeller(rating: number, totalReviews: number): boolean {
     return rating >= 4.0 && totalReviews >= 5;
   }
+
+  // Get car ratings
+  async getCarRatings(carId: string, limitCount: number = 10, lastDoc?: any): Promise<{ ratings: CarRating[], hasMore: boolean, lastDoc?: any }> {
+    try {
+      const ratingsRef = collection(db, 'ratings');
+      let q = query(
+        ratingsRef,
+        where('carId', '==', carId),
+        orderBy('createdAt', 'desc'),
+        limit(limitCount + 1)
+      );
+
+      if (lastDoc) {
+        q = query(
+          ratingsRef,
+          where('carId', '==', carId),
+          orderBy('createdAt', 'desc'),
+          startAfter(lastDoc),
+          limit(limitCount + 1)
+        );
+      }
+
+      const snapshot = await getDocs(q);
+      const ratings = snapshot.docs.slice(0, limitCount).map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        createdAt: doc.data().createdAt?.toDate() || new Date()
+      } as CarRating));
+
+      const hasMore = snapshot.docs.length > limitCount;
+      const newLastDoc = hasMore ? snapshot.docs[limitCount - 1] : null;
+
+      return {
+        ratings,
+        hasMore,
+        lastDoc: newLastDoc
+      };
+    } catch (error) {
+      console.error('Error getting car ratings:', error);
+      return { ratings: [], hasMore: false };
+    }
+  }
+
+  // Update rating helpful count
+  async updateRatingHelpful(ratingId: string, isHelpful: boolean): Promise<void> {
+    try {
+      const ratingRef = doc(db, 'ratings', ratingId);
+      await updateDoc(ratingRef, {
+        helpful: isHelpful ? 1 : 0,
+        updatedAt: serverTimestamp()
+      });
+    } catch (error) {
+      console.error('Error updating rating helpful:', error);
+      throw error;
+    }
+  }
+
+  // Get rating summary
+  async getRatingSummary(carId: string): Promise<RatingSummary> {
+    try {
+      const ratingsRef = collection(db, 'ratings');
+      const q = query(ratingsRef, where('carId', '==', carId));
+      const snapshot = await getDocs(q);
+      
+      const ratings = snapshot.docs.map(doc => doc.data().rating as number);
+      const totalRatings = ratings.length;
+      const averageRating = totalRatings > 0 ? ratings.reduce((sum, rating) => sum + rating, 0) / totalRatings : 0;
+      
+      const ratingDistribution: { [key: number]: number } = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+      ratings.forEach(rating => {
+        ratingDistribution[rating] = (ratingDistribution[rating] || 0) + 1;
+      });
+
+      return {
+        averageRating,
+        totalRatings,
+        ratingDistribution
+      };
+    } catch (error) {
+      console.error('Error getting rating summary:', error);
+      return {
+        averageRating: 0,
+        totalRatings: 0,
+        ratingDistribution: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }
+      };
+    }
+  }
+
+  // Get user ratings
+  async getUserRatings(userId: string): Promise<CarRating[]> {
+    try {
+      const ratingsRef = collection(db, 'ratings');
+      const q = query(
+        ratingsRef,
+        where('userId', '==', userId),
+        orderBy('createdAt', 'desc')
+      );
+      const snapshot = await getDocs(q);
+      
+      return snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        createdAt: doc.data().createdAt?.toDate() || new Date()
+      } as CarRating));
+    } catch (error) {
+      console.error('Error getting user ratings:', error);
+      return [];
+    }
+  }
 }
 
 // Export singleton instance
 export const ratingService = RatingService.getInstance();
+export const bulgarianRatingService = RatingService.getInstance();

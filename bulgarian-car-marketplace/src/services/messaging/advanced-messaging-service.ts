@@ -14,7 +14,8 @@ import {
   serverTimestamp,
   Timestamp,
   getDocs,
-  limit
+  limit,
+  writeBatch
 } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '../../firebase/firebase-config';
@@ -49,11 +50,18 @@ export interface Conversation {
   id: string;
   participants: string[];
   carId?: string;
+  carTitle?: string;
+  otherParticipant?: {
+    id: string;
+    name: string;
+    avatar?: string;
+  };
   lastMessage?: {
     text: string;
     senderId: string;
     timestamp: Date;
   };
+  lastMessageAt?: Date;
   unreadCount: { [userId: string]: number };
   typing?: { [userId: string]: boolean };
   createdAt: Date;
@@ -338,7 +346,141 @@ export class AdvancedMessagingService {
       callback(messages);
     });
   }
+
+  // Get user conversations
+  async getUserConversations(userId: string): Promise<Conversation[]> {
+    try {
+      const conversationsRef = collection(db, 'conversations');
+      const q = query(
+        conversationsRef,
+        where('participants', 'array-contains', userId),
+        orderBy('lastMessageAt', 'desc')
+      );
+      
+      const snapshot = await getDocs(q);
+      return snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      } as Conversation));
+    } catch (error) {
+      console.error('Error getting user conversations:', error);
+      return [];
+    }
+  }
+
+  // Subscribe to user conversations
+  subscribeToUserConversations(
+    userId: string,
+    callback: (conversations: Conversation[]) => void
+  ): () => void {
+    const conversationsRef = collection(db, 'conversations');
+    const q = query(
+      conversationsRef,
+      where('participants', 'array-contains', userId),
+      orderBy('lastMessageAt', 'desc')
+    );
+
+    return onSnapshot(q, (snapshot) => {
+      const conversations = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      } as Conversation));
+      callback(conversations);
+    });
+  }
+
+  // Get conversation messages
+  async getConversation(
+    userId: string,
+    otherUserId: string,
+    carId?: string
+  ): Promise<Message[]> {
+    try {
+      const messagesRef = collection(db, 'messages');
+      let q = query(
+        messagesRef,
+        where('senderId', 'in', [userId, otherUserId]),
+        where('receiverId', 'in', [userId, otherUserId]),
+        orderBy('createdAt', 'asc')
+      );
+
+      if (carId) {
+        q = query(
+          messagesRef,
+          where('carId', '==', carId),
+          orderBy('createdAt', 'asc')
+        );
+      }
+
+      const snapshot = await getDocs(q);
+      return snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        createdAt: doc.data().createdAt?.toDate() || new Date(),
+        readAt: doc.data().readAt?.toDate()
+      } as Message));
+    } catch (error) {
+      console.error('Error getting conversation:', error);
+      return [];
+    }
+  }
+
+  // Subscribe to conversation messages
+  subscribeToConversation(
+    conversationId: string,
+    userId: string,
+    otherUserId: string,
+    callback: (message: Message) => void
+  ): () => void {
+    const q = query(
+      collection(db, 'messages'),
+      where('conversationId', '==', conversationId),
+      orderBy('createdAt', 'asc'),
+      limit(100)
+    );
+
+    return onSnapshot(q, (snapshot) => {
+      snapshot.docChanges().forEach((change) => {
+        if (change.type === 'added') {
+          const message = {
+            id: change.doc.id,
+            ...change.doc.data(),
+            createdAt: change.doc.data().createdAt?.toDate() || new Date(),
+            readAt: change.doc.data().readAt?.toDate()
+          } as Message;
+          callback(message);
+        }
+      });
+    });
+  }
+
+  // Mark messages as read
+  async markMessagesAsRead(conversationId: string, userId: string): Promise<void> {
+    try {
+      const messagesRef = collection(db, 'messages');
+      const q = query(
+        messagesRef,
+        where('conversationId', '==', conversationId),
+        where('receiverId', '==', userId),
+        where('readAt', '==', null)
+      );
+
+      const snapshot = await getDocs(q);
+      const batch = writeBatch(db);
+      
+      snapshot.docs.forEach((doc) => {
+        batch.update(doc.ref, { readAt: serverTimestamp() });
+      });
+
+      await batch.commit();
+    } catch (error) {
+      console.error('Error marking messages as read:', error);
+    }
+  }
 }
 
 // Export singleton
 export const advancedMessagingService = AdvancedMessagingService.getInstance();
+
+// Export aliases for backward compatibility
+export const messagingService = advancedMessagingService;

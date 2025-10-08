@@ -110,7 +110,7 @@ export const validateWebsite = (url: string): { valid: boolean; message?: string
     }
     return { valid: true };
   } catch {
-    return {
+  return {
       valid: false,
       message: 'Invalid URL format / Невалиден URL формат'
     };

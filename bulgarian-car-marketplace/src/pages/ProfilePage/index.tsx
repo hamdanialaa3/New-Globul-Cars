@@ -3,7 +3,6 @@ import { useTranslation } from '../../hooks/useTranslation';
 import { useLanguage } from '../../contexts/LanguageContext';
 import LazyImage from '../../components/LazyImage';
 import { useProfile } from './hooks/useProfile';
-import { bulgarianAuthService } from '../../firebase';
 import { 
   ProfileImageUploader, 
   CoverImageUploader, 

@@ -8,7 +8,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 // Import Firebase configuration
-import './firebase';
+import './firebase/firebase-config';
 
 // Bulgarian Car Marketplace
 const root = ReactDOM.createRoot(

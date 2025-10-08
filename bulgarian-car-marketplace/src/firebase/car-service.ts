@@ -45,7 +45,7 @@ export type PaymentType = 'buy' | 'leasing';
 // Bulgarian Car Interface
 export interface BulgarianCar {
   id: string;
-  ownerId: string;
+  sellerId: string;
   ownerName: string;
   ownerEmail: string;
   ownerPhone?: string;
@@ -270,10 +270,10 @@ export class BulgarianCarService {
   }
 
   // Update car listing
-  async updateCarListing(carId: string, updates: Partial<BulgarianCar>, ownerId: string): Promise<void> {
+  async updateCarListing(carId: string, updates: Partial<BulgarianCar>, sellerId: string): Promise<void> {
     try {
       // Verify ownership
-      await this.verifyCarOwnership(carId, ownerId);
+      await this.verifyCarOwnership(carId, sellerId);
 
       // Validate updates
       if (updates.price !== undefined) {
@@ -297,10 +297,10 @@ export class BulgarianCarService {
   }
 
   // Delete car listing
-  async deleteCarListing(carId: string, ownerId: string): Promise<void> {
+  async deleteCarListing(carId: string, sellerId: string): Promise<void> {
     try {
       // Verify ownership
-      await this.verifyCarOwnership(carId, ownerId);
+      await this.verifyCarOwnership(carId, sellerId);
 
       // Delete associated images
       await this.deleteCarImages(carId);
@@ -687,7 +687,7 @@ export class BulgarianCarService {
     try {
       let q = query(
         collection(db, 'cars'),
-        where('ownerId', '==', userId),
+        where('sellerId', '==', userId),
         orderBy('createdAt', 'desc')
       );
 
@@ -928,13 +928,13 @@ export class BulgarianCarService {
     }
   }
 
-  private async verifyCarOwnership(carId: string, ownerId: string): Promise<void> {
+  private async verifyCarOwnership(carId: string, sellerId: string): Promise<void> {
     const car = await this.getCarById(carId);
     if (!car) {
       throw new Error('Автомобилът не е намерен');
     }
 
-    if (car.ownerId !== ownerId) {
+    if (car.sellerId !== sellerId) {
       throw new Error('Нямате права да редактирате този автомобил');
     }
   }

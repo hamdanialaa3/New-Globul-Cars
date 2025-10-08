@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { BulgarianMessagingService } from '../services/messaging-service';
-import { BulgarianAuthService } from '../services/auth-service';
+import { advancedMessagingService } from '../services/messaging/advanced-messaging-service';
 import MessageButton from './messaging/MessageButton';
 import { useAuth } from '../context/AuthProvider';
 
@@ -338,19 +337,21 @@ const CarDetails: React.FC = () => {
 
     setIsSending(true);
     try {
-      const authService = new BulgarianAuthService();
-      const messagingService = new BulgarianMessagingService();
-
-      const currentUser = await authService.getCurrentUser();
-      if (!currentUser) {
+      // Use the auth hook instead of auth service directly
+      if (!user) {
         alert('Трябва да сте влезли в системата за да изпратите съобщение');
         return;
       }
 
-      await messagingService.sendCarMessage(
-        car.id.toString(),
-        message,
-        'question'
+      // Create or get conversation for this car
+      const conversationId = `car_${car.id}`;
+      const receiverId = car.sellerId || 'unknown';
+      
+      await advancedMessagingService.sendMessage(
+        conversationId,
+        user.uid,
+        receiverId,
+        message
       );
 
       setMessage('');

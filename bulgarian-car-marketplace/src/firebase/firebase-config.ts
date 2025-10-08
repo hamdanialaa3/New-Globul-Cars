@@ -34,29 +34,8 @@ const app = initializeApp(firebaseConfig);
 // Initialize App Check with reCAPTCHA v3 - currently disabled
 let appCheck: any = null;
 if (typeof window !== 'undefined') {
-  const siteKey = process.env.REACT_APP_RECAPTCHA_SITE_KEY?.trim();
-
-  // App Check is currently disabled to prevent reCAPTCHA runtime errors
-  if (process.env.REACT_APP_DISABLE_APP_CHECK === 'true') {
-    console.log('Firebase App Check is disabled via REACT_APP_DISABLE_APP_CHECK=true');
-    console.log('To enable App Check:');
-    console.log('1. Get a reCAPTCHA v3 site key from https://www.google.com/recaptcha/admin');
-    console.log('2. Set REACT_APP_RECAPTCHA_SITE_KEY in .env');
-    console.log('3. Set REACT_APP_DISABLE_APP_CHECK=false');
-  } else if (!siteKey || siteKey === '') {
-    console.warn('reCAPTCHA site key missing. App Check not initialized.');
-  } else {
-    console.log('Initializing Firebase App Check...');
-    try {
-      appCheck = initializeAppCheck(app, {
-        provider: new ReCaptchaV3Provider(siteKey),
-        isTokenAutoRefreshEnabled: true
-      });
-      console.log('Firebase App Check initialized successfully');
-    } catch (error) {
-      console.error('Failed to initialize App Check:', error);
-    }
-  }
+  // App Check is disabled to prevent reCAPTCHA runtime errors
+  console.log('Firebase App Check is disabled to prevent connection issues');
 }
 
 // Initialize Firebase services

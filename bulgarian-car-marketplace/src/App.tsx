@@ -41,12 +41,16 @@ const ContactNamePage = React.lazy(() => import('./pages/sell/ContactNamePage'))
 const ContactAddressPage = React.lazy(() => import('./pages/sell/ContactAddressPage'));
 const ContactPhonePage = React.lazy(() => import('./pages/sell/ContactPhonePage'));
 const MessagingPage = React.lazy(() => import('./pages/MessagingPage'));
+const AdminPage = React.lazy(() => import('./pages/AdminPage'));
+const AdminLoginPage = React.lazy(() => import('./pages/AdminLoginPage'));
+const SuperAdminLogin = React.lazy(() => import('./pages/SuperAdminLogin'));
+const SuperAdminDashboard = React.lazy(() => import('./pages/SuperAdminDashboardNew'));
 const ProfilePage = React.lazy(() => import('./pages/ProfilePage'));
 const LoginPage = React.lazy(() => import('./pages/LoginPage'));
 const RegisterPage = React.lazy(() => import('./pages/RegisterPage'));
 const EmailVerificationPage = React.lazy(() => import('./pages/EmailVerificationPage'));
 const GoogleAuthTest = React.lazy(() => import('./pages/GoogleAuthTest'));
-const SimpleGoogleTest = React.lazy(() => import('./pages/SimpleGoogleTest'));
+// const SimpleGoogleTest = React.lazy(() => import('./pages/SimpleGoogleTest')); // Moved to DDD/
 // const MessagesPage = React.lazy(() => import('./pages/MessagesPage'));
 const DashboardPage = React.lazy(() => import('./pages/DashboardPage'));
 const AdminDashboard = React.lazy(() => import('./components/AdminDashboard'));
@@ -193,14 +197,15 @@ const App: React.FC = () => {
                   </FullScreenLayout>
                 }
               />
-              <Route
+              {/* SimpleGoogleTest moved to DDD/ - deprecated */}
+              {/* <Route
                 path="/simple-google-test"
                 element={
                   <FullScreenLayout>
                     <SimpleGoogleTest />
                   </FullScreenLayout>
                 }
-              />
+              /> */}
 
               {/* Pages with header/footer */}
               <Route
@@ -401,6 +406,36 @@ const App: React.FC = () => {
                     </ProtectedRoute>
                   </Layout>
                 }
+              />
+              <Route
+                path="/admin-login"
+                element={
+                  <Layout>
+                    <AdminLoginPage />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/admin"
+                element={
+                  <Layout>
+                    <ProtectedRoute>
+                      <AdminPage />
+                    </ProtectedRoute>
+                  </Layout>
+                }
+              />
+              <Route
+                path="/super-admin-login"
+                element={
+                  <Layout>
+                    <SuperAdminLogin />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/super-admin"
+                element={<SuperAdminDashboard />}
               />
               <Route
                 path="/notifications"

@@ -3,7 +3,7 @@
 // (Comment removed - was in Arabic)
 
 import { Logger, LogLevel } from './logger-service';
-import { RateLimiter } from './rate-limiter-service';
+import { rateLimiter } from './rate-limiting-service';
 import { socialMediaCache } from './cache-service';
 
 // Instagram Post interface
@@ -92,7 +92,7 @@ class InstagramService {
   // Professional services for production readiness
   // (Comment removed - was in Arabic)
   private logger: Logger;
-  private rateLimiter: RateLimiter;
+  private rateLimiter: any;
 
   constructor() {
     // Initialize with environment variables
@@ -107,11 +107,7 @@ class InstagramService {
       retentionDays: 7
     });
 
-    this.rateLimiter = new RateLimiter({
-      maxRequests: 200, // Instagram API limit (higher than TikTok)
-      windowMs: 60000, // 1 minute
-      service: 'InstagramAPI'
-    });
+    this.rateLimiter = rateLimiter;
 
     this.logger.info('InstagramService initialized', {
       hasAccessToken: !!this.accessToken,
