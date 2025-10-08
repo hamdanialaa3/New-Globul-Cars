@@ -954,6 +954,8 @@ const ProfilePage: React.FC = () => {
                 }}
               />
             </S.ContentSection>
+              </>
+            )}
 
             {/* Garage Tab */}
             {activeTab === 'garage' && (
