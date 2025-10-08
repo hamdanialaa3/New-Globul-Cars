@@ -25,8 +25,10 @@ const PricingPageNew: React.FC = () => {
     }
 
     const params = new URLSearchParams(searchParams.toString());
-    params.set('pr', price);
-    if (negotiable) params.set('ng', 'true');
+    params.set('price', price);
+    params.set('currency', 'EUR');
+    params.set('priceType', 'fixed');
+    if (negotiable) params.set('negotiable', 'true');
     
     navigate(`/sell/inserat/${vehicleType || 'car'}/kontakt/name?${params.toString()}`);
   };
