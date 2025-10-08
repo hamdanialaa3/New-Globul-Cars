@@ -609,7 +609,13 @@ export const GarageSection: React.FC<GarageSectionProps> = ({
                 {car.mainImage ? (
                   <LazyImage src={car.mainImage} alt={car.title} />
                 ) : (
-                  <div className="placeholder">🚗</div>
+                  <div className="placeholder">
+                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <path d="M5 17h14v2H5v-2zm0-2h14V9H5v6zm7-13l9 5v8H3V7l9-5z"/>
+                      <circle cx="7.5" cy="14.5" r="1.5"/>
+                      <circle cx="16.5" cy="14.5" r="1.5"/>
+                    </svg>
+                  </div>
                 )}
                 <StatusBadge $status={car.status}>
                   {getStatusLabel(car.status)}
@@ -690,7 +696,13 @@ export const GarageSection: React.FC<GarageSectionProps> = ({
         </GarageGrid>
       ) : (
         <EmptyGarage>
-          <div className="empty-icon">🚗</div>
+          <div className="empty-icon">
+            <svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <path d="M5 17h14v2H5v-2zm0-2h14V9H5v6zm7-13l9 5v8H3V7l9-5z"/>
+              <circle cx="7.5" cy="14.5" r="1.5"/>
+              <circle cx="16.5" cy="14.5" r="1.5"/>
+            </svg>
+          </div>
           <h3>{t('profile.garage.emptyTitle')}</h3>
           <p>{t('profile.garage.emptyDescription')}</p>
           <AddButton onClick={onAddNew}>

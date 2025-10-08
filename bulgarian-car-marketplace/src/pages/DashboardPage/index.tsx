@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from '../../hooks/useTranslation';
 import { useDashboard } from './hooks/useDashboard';
+import { Car, Eye, MessageCircle, Plus, BarChart3, Mail, Edit, Settings, FileText, HelpCircle, Loader } from 'lucide-react';
 import * as S from './styles';
 
 const DashboardPage: React.FC = () => {
@@ -23,7 +24,9 @@ const DashboardPage: React.FC = () => {
       <S.DashboardContainer>
         <S.Container>
           <div style={{ textAlign: 'center', padding: '4rem 0' }}>
-            <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>⏳</div>
+            <div style={{ marginBottom: '1rem' }}>
+              <Loader size={48} color={S.colors.neutral.grayLighter} style={{ animation: 'spin 1s linear infinite' }} />
+            </div>
             <div style={{ color: S.colors.neutral.grayLighter }}>{t('common.loading')}</div>
           </div>
         </S.Container>
@@ -37,7 +40,12 @@ const DashboardPage: React.FC = () => {
       <S.DashboardContainer>
         <S.Container>
           <div style={{ textAlign: 'center', padding: '4rem 0' }}>
-            <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>❌</div>
+            <div style={{ marginBottom: '1rem' }}>
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke={S.colors.accent.error} strokeWidth="2">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M15 9l-6 6M9 9l6 6"/>
+              </svg>
+            </div>
             <div style={{ color: S.colors.accent.error }}>{error}</div>
           </div>
         </S.Container>
@@ -56,16 +64,26 @@ const DashboardPage: React.FC = () => {
       <S.Container>
         {/* Statistics */}
         <S.StatsGrid>
-          {formattedStats.map((stat, index) => (
-            <S.StatCard key={index}>
-              <div className="stat-icon">{stat.icon}</div>
-              <div className="stat-value">{stat.value}</div>
-              <div className="stat-label">{stat.label}</div>
-              <div className={`stat-change ${stat.changeType}`}>
-                {stat.change}
-              </div>
-            </S.StatCard>
-          ))}
+          {formattedStats.map((stat, index) => {
+            const IconComponent = 
+              stat.icon === 'car' ? Car :
+              stat.icon === 'eye' ? Eye :
+              stat.icon === 'message' ? MessageCircle :
+              stat.icon === 'euro' ? BarChart3 : Car;
+            
+            return (
+              <S.StatCard key={index}>
+                <div className="stat-icon">
+                  <IconComponent size={32} />
+                </div>
+                <div className="stat-value">{stat.value}</div>
+                <div className="stat-label">{stat.label}</div>
+                <div className={`stat-change ${stat.changeType}`}>
+                  {stat.change}
+                </div>
+              </S.StatCard>
+            );
+          })}
         </S.StatsGrid>
 
         {/* Main Content */}
@@ -81,14 +99,22 @@ const DashboardPage: React.FC = () => {
                       {car.imageUrl ? (
                         <img src={car.imageUrl} alt={car.title} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }} />
                       ) : (
-                        '🚗'
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+                          <Car size={32} color="#adb5bd" />
+                        </div>
                       )}
                     </div>
                     <div className="car-info">
                       <div className="car-title">{car.title}</div>
                       <div className="car-details">{car.year} • {car.make} {car.model}</div>
-                      <div className="car-details">
-                        👁️ {car.views} {t('dashboard.stats.views').toLowerCase()} • 💬 {car.inquiries} {t('dashboard.stats.newInquiries').toLowerCase()}
+                      <div className="car-details" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                          <Eye size={14} /> {car.views}
+                        </span>
+                        <span>•</span>
+                        <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                          <MessageCircle size={14} /> {car.inquiries}
+                        </span>
                       </div>
                     </div>
                     <div className={`car-status ${car.status}`}>
@@ -106,10 +132,12 @@ const DashboardPage: React.FC = () => {
               </S.CarList>
               <S.QuickActions>
                 <S.ActionButton>
-                  ➕ {t('dashboard.actions.addNewListing')}
+                  <Plus size={18} style={{ marginRight: '6px' }} />
+                  {t('dashboard.actions.addNewListing')}
                 </S.ActionButton>
                 <S.ActionButton>
-                  📊 {t('dashboard.actions.viewStatistics')}
+                  <BarChart3 size={18} style={{ marginRight: '6px' }} />
+                  {t('dashboard.actions.viewStatistics')}
                 </S.ActionButton>
               </S.QuickActions>
             </S.ContentCard>
@@ -140,7 +168,8 @@ const DashboardPage: React.FC = () => {
                 )}
               </S.MessageList>
               <S.ActionButton>
-                📨 {t('dashboard.actions.viewAllMessages')}
+                <Mail size={18} style={{ marginRight: '6px' }} />
+                {t('dashboard.actions.viewAllMessages')}
               </S.ActionButton>
             </S.ContentCard>
           </S.MainContent>
@@ -178,16 +207,20 @@ const DashboardPage: React.FC = () => {
               <h3>{t('dashboard.quickActions')}</h3>
               <S.QuickActions>
                 <S.ActionButton>
-                  📝 {t('dashboard.actions.editProfile')}
+                  <Edit size={18} style={{ marginRight: '6px' }} />
+                  {t('dashboard.actions.editProfile')}
                 </S.ActionButton>
                 <S.ActionButton>
-                  ⚙️ {t('dashboard.actions.settings')}
+                  <Settings size={18} style={{ marginRight: '6px' }} />
+                  {t('dashboard.actions.settings')}
                 </S.ActionButton>
                 <S.ActionButton>
-                  📊 {t('dashboard.actions.financialReports')}
+                  <FileText size={18} style={{ marginRight: '6px' }} />
+                  {t('dashboard.actions.financialReports')}
                 </S.ActionButton>
                 <S.ActionButton>
-                  🆘 {t('dashboard.actions.support')}
+                  <HelpCircle size={18} style={{ marginRight: '6px' }} />
+                  {t('dashboard.actions.support')}
                 </S.ActionButton>
               </S.QuickActions>
             </S.ContentCard>

@@ -87,28 +87,28 @@ export const useDashboard = (): UseDashboardReturn => {
   // Format stats for display
   const formattedStats: FormattedStat[] = stats ? [
     {
-      icon: '🚗',
+      icon: 'car',
       value: stats.activeListings.toString(),
       label: t('dashboard.stats.listingsOnline'),
       change: `+${stats.weeklyViews} ${t('dashboard.stats.thisWeek')}`,
       changeType: 'positive' as const
     },
     {
-      icon: '👁️',
+      icon: 'eye',
       value: stats.totalViews.toLocaleString(),
       label: t('dashboard.stats.views'),
       change: `+${stats.weeklyViews} ${t('dashboard.stats.lastWeek')}`,
       changeType: 'positive' as const
     },
     {
-      icon: '💬',
+      icon: 'message',
       value: recentMessages.length.toString(),
       label: t('dashboard.stats.newInquiries'),
       change: `${recentMessages.filter(m => !m.isRead).length} ${t('dashboard.stats.unread')}`,
       changeType: recentMessages.filter(m => !m.isRead).length > 0 ? 'warning' as const : 'info' as const
     },
     {
-      icon: '💰',
+      icon: 'euro',
       value: `€${stats.potentialSales.toLocaleString()}`,
       label: t('dashboard.stats.potentialSales'),
       change: t('dashboard.stats.basedOnInquiries'),
