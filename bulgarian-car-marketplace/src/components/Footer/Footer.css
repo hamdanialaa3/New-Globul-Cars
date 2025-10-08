@@ -1,7 +1,7 @@
 /* Smart Footer Styles with Translation Support */
 .main-footer {
-  background: linear-gradient(135deg, #2c3e50, #34495e);
-  color: white;
+  background: #000000 !important; /* أسود تماماً */
+  color: #FFDF00; /* أصفر ألمنيوم */
   padding: 3rem 0 1rem;
   margin-top: auto;
   border-radius: 8px 8px 0 0;
@@ -40,22 +40,19 @@
 
 .footer-title {
   font-size: 1.8rem;
-  background: linear-gradient(135deg, #3498db, #1abc9c);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #FF8F10 !important; /* برتقالي ألمنيوم */
   font-weight: 700;
   margin: 0;
 }
 
 .footer-subtitle {
-  color: #3498db;
+  color: #FF8F10 !important; /* برتقالي ألمنيوم - العناوين */
   font-size: 1.1rem;
   font-weight: 600;
 }
 
 .footer-description {
-  color: #bdc3c7;
+  color: #FFDF00 !important; /* أصفر ألمنيوم - النصوص */
   line-height: 1.6;
   margin-bottom: 1.5rem;
 }
@@ -74,12 +71,12 @@
 .stat-number {
   font-size: 1.3rem;
   font-weight: 700;
-  color: #1abc9c;
+  color: #FF8F10 !important; /* برتقالي ألمنيوم - الأرقام */
 }
 
 .stat-label {
   font-size: 0.8rem;
-  color: #95a5a6;
+  color: #FFDF00 !important; /* أصفر ألمنيوم */
   text-align: center;
 }
 
@@ -93,7 +90,7 @@
 }
 
 .footer-links a {
-  color: #bdc3c7;
+  color: #FFDF00 !important; /* أصفر ألمنيوم - الروابط */
   text-decoration: none;
   transition: all 0.3s ease;
   position: relative;
@@ -106,12 +103,12 @@
   height: 2px;
   bottom: -3px;
   left: 0;
-  background: linear-gradient(135deg, #3498db, #1abc9c);
+  background: #FF8F10; /* برتقالي ألمنيوم */
   transition: width 0.3s ease;
 }
 
 .footer-links a:hover {
-  color: #3498db;
+  color: #FF8F10 !important; /* برتقالي ألمنيوم عند الـ hover */
   transform: translateX(5px);
 }
 
@@ -129,7 +126,7 @@
   display: flex;
   align-items: center;
   gap: 0.8rem;
-  color: #bdc3c7;
+  color: #FFDF00 !important; /* أصفر ألمنيوم - معلومات الاتصال */
 }
 
 .contact-icon {
@@ -139,7 +136,7 @@
 }
 
 .footer-bottom {
-  border-top: 1px solid #34495e;
+  border-top: 1px solid #FF8F10; /* برتقالي ألمنيوم - الخط الفاصل */
   padding-top: 1.5rem;
 }
 
@@ -152,7 +149,7 @@
 }
 
 .copyright {
-  color: #95a5a6;
+  color: #FFDF00 !important; /* أصفر ألمنيوم */
   font-size: 0.9rem;
 }
 
@@ -162,14 +159,14 @@
 }
 
 .footer-bottom-links a {
-  color: #95a5a6;
+  color: #FFDF00 !important; /* أصفر ألمنيوم */
   text-decoration: none;
   font-size: 0.9rem;
   transition: color 0.3s ease;
 }
 
 .footer-bottom-links a:hover {
-  color: #3498db;
+  color: #FF8F10 !important; /* برتقالي ألمنيوم عند الـ hover */
 }
 
 .language-info {
@@ -178,13 +175,13 @@
 }
 
 .current-language {
-  color: #1abc9c;
+  color: #FF8F10 !important; /* برتقالي ألمنيوم */
   font-weight: 600;
   font-size: 0.9rem;
   padding: 0.3rem 0.8rem;
-  background: rgba(26, 188, 156, 0.1);
+  background: rgba(255, 143, 16, 0.1);
   border-radius: 15px;
-  border: 1px solid rgba(26, 188, 156, 0.3);
+  border: 1px solid rgba(255, 143, 16, 0.3);
 }
 
 /* Mobile Responsive */
