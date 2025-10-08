@@ -22,7 +22,7 @@ import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
 import { auth, db, BulgarianFirebaseUtils } from './firebase-config';
 import { BULGARIAN_CONFIG } from '../config/bulgarian-config';
 
-// Bulgarian User Interface
+// Bulgarian User Interface - Extended for Profile System
 export interface BulgarianUser {
   uid: string;
   email: string;
@@ -31,11 +31,99 @@ export interface BulgarianUser {
   photoURL?: string;
   bio?: string;
   preferredLanguage: 'bg' | 'en';
+  
+  // Account Type
+  accountType?: 'individual' | 'business';
+  
+  // Personal Information (Individual)
+  firstName?: string;
+  lastName?: string;
+  middleName?: string;
+  dateOfBirth?: string;
+  placeOfBirth?: string;
+  address?: string;
+  postalCode?: string;
+  
+  // Business Information
+  businessName?: string;
+  bulstat?: string;
+  vatNumber?: string;
+  businessType?: 'dealership' | 'trader' | 'company';
+  registrationNumber?: string;
+  businessAddress?: string;
+  businessCity?: string;
+  businessPostalCode?: string;
+  website?: string;
+  businessPhone?: string;
+  businessEmail?: string;
+  workingHours?: string;
+  businessDescription?: string;
+  
+  // Images
+  profileImage?: { 
+    url: string; 
+    uploadedAt: Date;
+    thumbnailUrl?: string;
+  };
+  coverImage?: { 
+    url: string; 
+    uploadedAt: Date;
+    thumbnailUrl?: string;
+  };
+  gallery?: Array<{ 
+    url: string; 
+    uploadedAt: Date;
+    caption?: string;
+  }>;
+  
+  // Verification System
+  verification?: {
+    email?: { 
+      verified: boolean; 
+      verifiedAt?: Date;
+    };
+    phone?: { 
+      verified: boolean; 
+      verifiedAt?: Date;
+      phoneNumber?: string;
+    };
+    identity?: { 
+      verified: boolean; 
+      verifiedAt?: Date;
+      documentType?: string;
+    };
+    business?: { 
+      verified: boolean; 
+      verifiedAt?: Date;
+      documents?: string[];
+    };
+    trustScore?: number;
+    level?: 'unverified' | 'basic' | 'verified' | 'trusted' | 'premium';
+    badges?: Array<{ 
+      type: string; 
+      earnedAt: Date;
+      description?: string;
+    }>;
+  };
+  
+  // Statistics
+  stats?: {
+    carsListed?: number;
+    carsSold?: number;
+    totalViews?: number;
+    responseTime?: number;
+    responseRate?: number;
+    totalMessages?: number;
+    averageRating?: number;
+    totalReviews?: number;
+  };
+  
   location?: {
     city: string;
     region: string;
     postalCode: string;
   };
+  
   profile: {
     isDealer: boolean;
     companyName?: string;
@@ -44,14 +132,17 @@ export interface BulgarianUser {
     preferredCurrency: string;
     timezone: string;
   };
+  
   preferences: {
     notifications: boolean;
     marketingEmails: boolean;
     language: 'bg' | 'en';
   };
+  
   createdAt: Date;
   lastLoginAt: Date;
   isVerified: boolean;
+  emailVerified?: boolean;
 }
 
 // Bulgarian Authentication Service

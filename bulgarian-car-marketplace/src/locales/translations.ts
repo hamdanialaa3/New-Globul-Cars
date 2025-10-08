@@ -204,6 +204,9 @@ export const translations = {
       addImage: 'Добави снимка',
       changeCover: 'Смени корица',
       uploadCover: 'Качи корица',
+      anonymous: 'Анонимен',
+      notLoggedIn: 'Моля влезте в системата за да видите вашия профил',
+      view: 'Преглед',
       stats: {
         cars: 'Коли',
         favorites: 'Любими',
@@ -970,6 +973,9 @@ export const translations = {
       addImage: 'Add Image',
       changeCover: 'Change Cover',
       uploadCover: 'Upload Cover',
+      anonymous: 'Anonymous',
+      notLoggedIn: 'Please sign in to view your profile',
+      view: 'View',
       stats: {
         cars: 'Cars',
         favorites: 'Favorites',

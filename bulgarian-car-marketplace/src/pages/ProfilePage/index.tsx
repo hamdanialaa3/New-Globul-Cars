@@ -117,7 +117,7 @@ const ProfilePage: React.FC = () => {
     );
   }
 
-  const isBusinessMode = (user as any)?.accountType === 'business' || formData.accountType === 'business';
+  const isBusinessMode = user?.accountType === 'business' || formData.accountType === 'business';
 
   return (
     <S.ProfileContainer $isBusinessMode={isBusinessMode}>
@@ -127,9 +127,17 @@ const ProfilePage: React.FC = () => {
       <S.PageContainer>
         {/* Cover Image */}
         <CoverImageUploader
-          currentImageUrl={(user as any).coverImage?.url}
-          onUploadSuccess={(url) => console.log('Cover uploaded:', url)}
-          onUploadError={(error) => console.error('Cover error:', error)}
+          currentImageUrl={user.coverImage?.url}
+          onUploadSuccess={(url) => {
+            if (process.env.NODE_ENV === 'development') {
+              console.log('Cover uploaded:', url);
+            }
+          }}
+          onUploadError={(error) => {
+            if (process.env.NODE_ENV === 'development') {
+              console.error('Cover error:', error);
+            }
+          }}
         />
 
         {/* Profile Grid */}
@@ -139,9 +147,17 @@ const ProfilePage: React.FC = () => {
             {/* Profile Image */}
             <div style={{ marginTop: '-80px', marginBottom: '20px' }}>
               <ProfileImageUploader
-                currentImageUrl={(user as any).profileImage?.url}
-                onUploadSuccess={(url) => console.log('Profile uploaded:', url)}
-                onUploadError={(error) => console.error('Profile error:', error)}
+                currentImageUrl={user.profileImage?.url}
+                onUploadSuccess={(url) => {
+                  if (process.env.NODE_ENV === 'development') {
+                    console.log('Profile uploaded:', url);
+                  }
+                }}
+                onUploadError={(error) => {
+                  if (process.env.NODE_ENV === 'development') {
+                    console.error('Profile error:', error);
+                  }
+                }}
               />
             </div>
 
@@ -156,7 +172,7 @@ const ProfilePage: React.FC = () => {
             </div>
 
             {/* Business Upgrade Card - Only for Individual Accounts */}
-            {!editing && ((user as any)?.accountType === 'individual' || !((user as any)?.accountType)) && (
+            {!editing && (user?.accountType === 'individual' || !user?.accountType) && (
               <div style={{ marginBottom: '20px' }}>
                 <BusinessUpgradeCard onUpgrade={handleUpgradeToBusiness} />
               </div>
@@ -164,22 +180,22 @@ const ProfilePage: React.FC = () => {
 
             {/* Trust Badge */}
             <TrustBadge
-              trustScore={(user as any).verification?.trustScore || 10}
-              level={(user as any).verification?.level || 'unverified'}
-              badges={(user as any).verification?.badges || []}
+              trustScore={user.verification?.trustScore || 10}
+              level={user.verification?.level || 'unverified'}
+              badges={user.verification?.badges || []}
             />
 
             {/* Profile Completion */}
             <div style={{ marginTop: '20px' }}>
               <ProfileCompletion
-                hasProfileImage={!!(user as any).profileImage}
-                hasCoverImage={!!(user as any).coverImage}
+                hasProfileImage={!!user.profileImage}
+                hasCoverImage={!!user.coverImage}
                 hasBio={!!user.bio}
                 hasPhone={!!user.phoneNumber}
                 hasLocation={!!user.location?.city}
-                emailVerified={(user as any).verification?.email?.verified || false}
-                phoneVerified={(user as any).verification?.phone?.verified || false}
-                idVerified={(user as any).verification?.identity?.verified || false}
+                emailVerified={user.emailVerified || user.verification?.email?.verified || false}
+                phoneVerified={user.verification?.phone?.verified || false}
+                idVerified={user.verification?.identity?.verified || false}
               />
             </div>
 
@@ -188,10 +204,10 @@ const ProfilePage: React.FC = () => {
               <S.ActionButton onClick={() => setEditing(!editing)}>
                 {editing ? t('profile.cancelEdit') : t('profile.editProfile')}
               </S.ActionButton>
-              <S.ActionButton variant="secondary" onClick={() => window.location.href = '/sell-car'}>
+              <S.ActionButton variant="secondary" onClick={() => { /* Navigate to sell page */ window.location.href = '/sell'; }}>
                 {t('profile.addCar')}
               </S.ActionButton>
-              <S.ActionButton variant="secondary" onClick={() => window.location.href = '/messages'}>
+              <S.ActionButton variant="secondary" onClick={() => { /* Navigate to messages */ window.location.href = '/messages'; }}>
                 {t('profile.messages')}
               </S.ActionButton>
               <S.ActionButton variant="danger" onClick={handleLogout}>
@@ -205,12 +221,12 @@ const ProfilePage: React.FC = () => {
             {/* Statistics Overview */}
             <S.ContentSection $isBusinessMode={isBusinessMode}>
               <ProfileStatsComponent
-                carsListed={(user as any).stats?.carsListed || 0}
-                carsSold={(user as any).stats?.carsSold || 0}
-                totalViews={(user as any).stats?.totalViews || 0}
-                responseTime={(user as any).stats?.responseTime || 0}
-                responseRate={(user as any).stats?.responseRate || 0}
-                totalMessages={(user as any).stats?.totalMessages || 0}
+                carsListed={user.stats?.carsListed || 0}
+                carsSold={user.stats?.carsSold || 0}
+                totalViews={user.stats?.totalViews || 0}
+                responseTime={user.stats?.responseTime || 0}
+                responseRate={user.stats?.responseRate || 0}
+                totalMessages={user.stats?.totalMessages || 0}
               />
             </S.ContentSection>
 
@@ -689,21 +705,21 @@ const ProfilePage: React.FC = () => {
                     </h4>
                   <S.FormGrid>
                     <div>
-                        <strong>{language === 'bg' ? 'Име' : 'First Name'}:</strong> {(user as any).firstName || t('profile.notSet')}
+                        <strong>{language === 'bg' ? 'Име' : 'First Name'}:</strong> {user.firstName || t('profile.notSet')}
                       </div>
                       <div>
-                        <strong>{language === 'bg' ? 'Презиме' : 'Middle Name'}:</strong> {(user as any).middleName || t('profile.notSet')}
+                        <strong>{language === 'bg' ? 'Презиме' : 'Middle Name'}:</strong> {user.middleName || t('profile.notSet')}
                       </div>
                       <div>
-                        <strong>{language === 'bg' ? 'Фамилия' : 'Last Name'}:</strong> {(user as any).lastName || t('profile.notSet')}
+                        <strong>{language === 'bg' ? 'Фамилия' : 'Last Name'}:</strong> {user.lastName || t('profile.notSet')}
                     </div>
                     <div>
                         <strong>{language === 'bg' ? 'Дата на раждане' : 'Date of Birth'}:</strong> {
-                          (user as any).dateOfBirth ? new Date((user as any).dateOfBirth).toLocaleDateString('bg-BG') : t('profile.notSet')
+                          user.dateOfBirth ? new Date(user.dateOfBirth).toLocaleDateString('bg-BG') : t('profile.notSet')
                         }
                     </div>
                     <div>
-                        <strong>{language === 'bg' ? 'Място на раждане' : 'Place of Birth'}:</strong> {(user as any).placeOfBirth || t('profile.notSet')}
+                        <strong>{language === 'bg' ? 'Място на раждане' : 'Place of Birth'}:</strong> {user.placeOfBirth || t('profile.notSet')}
                       </div>
                     </S.FormGrid>
                   </div>
@@ -736,13 +752,13 @@ const ProfilePage: React.FC = () => {
                         <strong>{language === 'bg' ? 'Град' : 'City'}:</strong> {user.location?.city || t('profile.notSet')}
                     </div>
                       <div>
-                        <strong>{language === 'bg' ? 'Пощенски код' : 'Postal Code'}:</strong> {(user as any).postalCode || t('profile.notSet')}
+                        <strong>{language === 'bg' ? 'Пощенски код' : 'Postal Code'}:</strong> {user.postalCode || t('profile.notSet')}
                       </div>
                     </S.FormGrid>
-                    {(user as any).address && (
+                    {user.address && (
                       <div style={{ marginTop: '12px' }}>
                         <strong>{language === 'bg' ? 'Адрес' : 'Address'}:</strong>
-                        <div style={{ marginTop: '4px', color: '#666' }}>{(user as any).address}</div>
+                        <div style={{ marginTop: '4px', color: '#666' }}>{user.address}</div>
                       </div>
                     )}
                   </div>
@@ -780,10 +796,10 @@ const ProfilePage: React.FC = () => {
             {/* Verification Panel */}
             <S.ContentSection>
               <VerificationPanel
-                emailVerified={(user as any).emailVerified || (user as any).verification?.email?.verified || false}
-                phoneVerified={(user as any).verification?.phone?.verified || false}
-                idVerified={(user as any).verification?.identity?.verified || false}
-                businessVerified={(user as any).verification?.business?.verified || false}
+                emailVerified={user.emailVerified || user.verification?.email?.verified || false}
+                phoneVerified={user.verification?.phone?.verified || false}
+                idVerified={user.verification?.identity?.verified || false}
+                businessVerified={user.verification?.business?.verified || false}
               />
             </S.ContentSection>
 
@@ -791,7 +807,7 @@ const ProfilePage: React.FC = () => {
             <S.ContentSection>
               <ProfileGallery
                 userId={user.uid}
-                images={(user as any).gallery || []}
+                images={user.gallery || []}
                 maxImages={9}
                 onUpdate={async (images) => {
                   try {
@@ -801,10 +817,14 @@ const ProfilePage: React.FC = () => {
                       gallery: images
                     });
                     // Update local user state
-                    setUser(prev => prev ? { ...prev, gallery: images } as any : null);
-                    console.log('✅ Gallery updated and saved');
+                    setUser(prev => prev ? { ...prev, gallery: images } : null);
+                    if (process.env.NODE_ENV === 'development') {
+                      console.log('✅ Gallery updated and saved');
+                    }
                   } catch (error) {
-                    console.error('❌ Failed to save gallery:', error);
+                    if (process.env.NODE_ENV === 'development') {
+                      console.error('❌ Failed to save gallery:', error);
+                    }
                   }
                 }}
               />
@@ -814,7 +834,7 @@ const ProfilePage: React.FC = () => {
             <S.ContentSection>
               <S.SectionHeader>
                 <h2>{t('profile.myCars')}</h2>
-                <button className="edit-btn" onClick={() => window.location.href = '/sell-car'}>
+                <button className="edit-btn" onClick={() => window.location.href = '/sell'}>
                   {t('profile.addCar')}
                 </button>
               </S.SectionHeader>
@@ -875,7 +895,7 @@ const ProfilePage: React.FC = () => {
                   <div className="empty-description">{t('profile.noCarsDescription')}</div>
                   <button
                     className="edit-btn"
-                    onClick={() => window.location.href = '/sell-car'}
+                    onClick={() => window.location.href = '/sell'}
                     style={{ margin: '0 auto' }}
                   >
                     {t('profile.addFirstCar')}
@@ -887,7 +907,7 @@ const ProfilePage: React.FC = () => {
         </S.ProfileGrid>
 
         {/* ID Reference Helper - shows when editing & individual account */}
-        {editing && ((user as any)?.accountType !== 'business' && formData.accountType === 'individual') && (
+        {editing && (user?.accountType !== 'business' && formData.accountType === 'individual') && (
           <IDReferenceHelper 
             activeField={activeField}
           />
