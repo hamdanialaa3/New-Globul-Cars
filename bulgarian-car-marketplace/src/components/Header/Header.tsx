@@ -184,7 +184,7 @@ const Header: React.FC = () => {
                             <LayoutDashboard size={18} />
                             <span>{t('header.overview')}</span>
                           </button>
-                          <button className="settings-item" onClick={() => handleSettingsItemClick('/dashboard')}>
+                          <button className="settings-item" onClick={() => handleSettingsItemClick('/analytics')}>
                             <BarChart3 size={18} />
                             <span>{t('header.myStatistics')}</span>
                           </button>
@@ -206,7 +206,7 @@ const Header: React.FC = () => {
                             <Car size={18} />
                             <span>{t('header.carPark')}</span>
                           </button>
-                          <button className="settings-item" onClick={() => handleSettingsItemClick('/sell-car')}>
+                          <button className="settings-item" onClick={() => handleSettingsItemClick('/my-listings')}>
                             <FileText size={18} />
                             <span>{t('header.myAds')}</span>
                           </button>
@@ -273,117 +273,40 @@ const Header: React.FC = () => {
                             <span>{t('header.settingsSection')}</span>
                           </div>
                           
-                          {/* Preferences Submenu */}
+                          {/* Preferences - Navigate to Profile Settings Tab */}
                         <button
-                            className="settings-item submenu-trigger"
-                            onClick={() => setPreferencesOpen(!preferencesOpen)}
+                            className="settings-item"
+                            onClick={() => handleSettingsItemClick('/profile?tab=settings')}
                         >
                             <Sliders size={18} />
                             <span>{t('header.preferences')}</span>
-                            {preferencesOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
                         </button>
-                          {preferencesOpen && (
-                            <div className="submenu">
-                              <div className="submenu-header">
-                                <Sun size={16} />
-                                <span>{t('header.appearance')}</span>
-                              </div>
-                              <div className="submenu-header">
-                                <Type size={16} />
-                                <span>{t('header.textSize')}</span>
-                              </div>
-                              <div className="submenu-header">
-                                <Globe size={16} />
-                                <span>{t('header.language')}</span>
-                              </div>
-                              <div className="submenu-header">
-                                <Bell size={16} />
-                                <span>{t('header.notificationSettings')}</span>
-                              </div>
-                            </div>
-                          )}
-
-                          {/* Account Settings Submenu */}
+                          {/* Account Settings - Navigate to Profile Tab */}
                         <button
-                            className="settings-item submenu-trigger"
-                            onClick={() => setAccountSettingsOpen(!accountSettingsOpen)}
+                            className="settings-item"
+                            onClick={() => handleSettingsItemClick('/profile?tab=profile')}
                           >
                             <UserCog size={18} />
                             <span>{t('header.accountSettings')}</span>
-                            {accountSettingsOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
                           </button>
-                          {accountSettingsOpen && (
-                            <div className="submenu">
-                              <button className="submenu-item" onClick={() => handleSettingsItemClick('/profile/edit')}>
-                                <Edit size={16} />
-                                <span>{t('header.editProfile')}</span>
-                              </button>
-                              <button className="submenu-item" onClick={() => handleSettingsItemClick('/profile/avatar')}>
-                                <Image size={16} />
-                                <span>{t('header.changeAvatar')}</span>
-                              </button>
-                              <button className="submenu-item" onClick={() => handleSettingsItemClick('/profile/cover')}>
-                                <Image size={16} />
-                                <span>{t('header.changeCover')}</span>
-                        </button>
-                              <button className="submenu-item" onClick={() => handleSettingsItemClick('/privacy')}>
-                                <Shield size={16} />
-                                <span>{t('header.privacySettings')}</span>
-                        </button>
-                            </div>
-                          )}
 
-                          {/* Security Submenu */}
+                          {/* Security - Navigate to Profile Settings Tab */}
                         <button
-                            className="settings-item submenu-trigger"
-                            onClick={() => setSecurityOpen(!securityOpen)}
+                            className="settings-item"
+                            onClick={() => handleSettingsItemClick('/profile?tab=settings')}
                         >
                             <Shield size={18} />
                             <span>{t('header.security')}</span>
-                            {securityOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
                         </button>
-                          {securityOpen && (
-                            <div className="submenu">
-                              <button className="submenu-item" onClick={() => handleSettingsItemClick('/security/password')}>
-                                <Key size={16} />
-                                <span>{t('header.changePassword')}</span>
-                        </button>
-                              <button className="submenu-item" onClick={() => handleSettingsItemClick('/security/2fa')}>
-                                <ShieldCheck size={16} />
-                                <span>{t('header.twoFactorAuth')}</span>
-                        </button>
-                              <button className="submenu-item" onClick={() => handleSettingsItemClick('/security/sessions')}>
-                                <Monitor size={16} />
-                                <span>{t('header.activeSessions')}</span>
-                        </button>
-                            </div>
-                          )}
 
-                          {/* Help & Support Submenu */}
+                          {/* Help & Support - Navigate to Help Page */}
                         <button
-                            className="settings-item submenu-trigger"
-                            onClick={() => setHelpSupportOpen(!helpSupportOpen)}
+                            className="settings-item"
+                            onClick={() => handleSettingsItemClick('/help')}
                         >
                             <HelpCircle size={18} />
                             <span>{t('header.helpSupport')}</span>
-                            {helpSupportOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
                         </button>
-                          {helpSupportOpen && (
-                            <div className="submenu">
-                              <button className="submenu-item" onClick={() => handleSettingsItemClick('/help')}>
-                                <Book size={16} />
-                                <span>{t('header.faq')}</span>
-                              </button>
-                              <button className="submenu-item" onClick={() => handleSettingsItemClick('/contact')}>
-                                <MessageCircle size={16} />
-                                <span>{t('header.contactSupport')}</span>
-                              </button>
-                              <button className="submenu-item" onClick={() => handleSettingsItemClick('/contact')}>
-                                <AlertTriangle size={16} />
-                                <span>{t('header.reportIssue')}</span>
-                              </button>
-                            </div>
-                          )}
                         </div>
                       </div>
                     </div>
