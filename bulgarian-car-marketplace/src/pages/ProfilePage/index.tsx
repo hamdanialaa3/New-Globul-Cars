@@ -331,9 +331,9 @@ const ProfilePage: React.FC = () => {
 
         {/* Profile Grid - Only for Profile tab */}
         {activeTab === 'profile' && (
-        <S.ProfileGrid>
-          {/* Profile Sidebar */}
-          <S.ProfileSidebar $isBusinessMode={isBusinessMode}>
+          <S.ProfileGrid>
+            {/* Profile Sidebar */}
+            <S.ProfileSidebar $isBusinessMode={isBusinessMode}>
             {/* Profile Image */}
             <div style={{ marginTop: '-80px', marginBottom: '20px' }}>
               <ProfileImageUploader
@@ -1032,9 +1032,6 @@ const ProfilePage: React.FC = () => {
                 }}
               />
             </S.ContentSection>
-              </>
-            )}
-
           </S.ProfileContent>
         </S.ProfileGrid>
         )}
