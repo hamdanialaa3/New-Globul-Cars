@@ -88,8 +88,8 @@ const ProfilePage: React.FC = () => {
     loadUserCars
   } = useProfile();
 
-  // Active tab state
-  const [activeTab, setActiveTab] = React.useState<'profile' | 'garage' | 'analytics' | 'settings'>('profile');
+  // Active tab state (default to garage to show the new feature)
+  const [activeTab, setActiveTab] = React.useState<'profile' | 'garage' | 'analytics' | 'settings'>('garage');
   
   // Track active field for ID helper
   const [activeField, setActiveField] = React.useState<string | undefined>(undefined);
