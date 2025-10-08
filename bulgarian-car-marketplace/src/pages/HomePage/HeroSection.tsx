@@ -8,16 +8,21 @@ import { useLanguage } from '../../contexts/LanguageContext';
 import LanguageToggle from '../../components/LanguageToggle/LanguageToggle';
 
 const HeroSection = styled.section`
-  background: ${({ theme }) => theme.colors.background.paper};
-  color: ${({ theme }) => theme.colors.text.primary};
-  padding: ${({ theme }) => theme.spacing['4xl']} 0;
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  color: #212529;
+  padding: 3rem 0;
   text-align: center;
   position: relative;
-  min-height: 50vh;
+  min-height: 40vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-bottom: 2px solid ${({ theme }) => theme.colors.primary.main};
+  border-bottom: 1px solid #e0e0e0;
+  
+  @media (max-width: 600px) {
+    padding: 2rem 0;
+    min-height: 35vh;
+  }
 `;
 
 const HeroContent = styled.div`
@@ -30,22 +35,33 @@ const HeroContent = styled.div`
 `;
 
 const HeroTitle = styled.h1`
-  font-size: ${({ theme }) => theme.typography.fontSize['5xl']};
-  font-weight: ${({ theme }) => theme.typography.fontWeight.extrabold};
-  margin-bottom: ${({ theme }) => theme.spacing.lg};
-  line-height: ${({ theme }) => theme.typography.lineHeight.tight};
-  color: ${({ theme }) => theme.colors.text.primary};
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+  color: #212529;
 
-  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-    font-size: ${({ theme }) => theme.typography.fontSize['4xl']};
+  @media (max-width: 960px) {
+    font-size: 2rem;
+  }
+  
+  @media (max-width: 600px) {
+    font-size: 1.75rem;
   }
 `;
 
 const HeroSubtitle = styled.p`
-  font-size: ${({ theme }) => theme.typography.fontSize.xl};
-  margin-bottom: ${({ theme }) => theme.spacing['2xl']};
-  line-height: ${({ theme }) => theme.typography.lineHeight.relaxed};
-  opacity: 0.9;
+  font-size: 1.125rem;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+  color: #6c757d;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  
+  @media (max-width: 600px) {
+    font-size: 1rem;
+  }
 `;
 
 const HeroButtons = styled.div`
@@ -57,30 +73,30 @@ const HeroButtons = styled.div`
 
 const HeroButton = styled(Link)`
   display: inline-block;
-  padding: ${({ theme }) => theme.spacing.lg} ${({ theme }) => theme.spacing['2xl']};
-  background: ${({ theme }) => theme.colors.secondary.main};
-  color: white;
+  padding: 0.875rem 2rem;
+  background: #FF8F10;
+  color: #000000;
   text-decoration: none;
-  font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
-  font-size: ${({ theme }) => theme.typography.fontSize.lg};
-  border-radius: ${({ theme }) => theme.borderRadius.lg};
-  transition: all 0.3s ease-in-out;
-  box-shadow: ${({ theme }) => theme.shadows.lg};
+  font-weight: 600;
+  font-size: 1rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(255, 143, 16, 0.3);
 
   &:hover {
-    background: ${({ theme }) => theme.colors.secondary.dark};
+    background: #FFDF00;
     transform: translateY(-2px);
-    box-shadow: ${({ theme }) => theme.shadows.xl};
+    box-shadow: 0 6px 16px rgba(255, 223, 0, 0.4);
   }
 
   &.secondary {
     background: transparent;
-    border: 2px solid white;
-    color: white;
+    border: 2px solid #FF8F10;
+    color: #FF8F10;
 
     &:hover {
-      background: white;
-      color: ${({ theme }) => theme.colors.primary.main};
+      background: #FF8F10;
+      color: #000000;
     }
   }
 `;
@@ -93,8 +109,9 @@ const LanguageDemoSection = styled.div`
   gap: 1rem;
 
   span {
-    font-size: 1.1rem;
+    font-size: 0.9rem;
     font-weight: 600;
+    color: #495057;
   }
 `;
 
@@ -120,7 +137,7 @@ const HeroSectionComponent: React.FC = () => {
         </HeroButtons>
 
         <LanguageDemoSection>
-          <span>🌐 Language:</span>
+          <span>Language:</span>
           <LanguageToggle size="medium" />
         </LanguageDemoSection>
       </HeroContent>

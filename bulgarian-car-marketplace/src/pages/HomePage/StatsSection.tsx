@@ -7,32 +7,53 @@ import { useLanguage } from '../../contexts/LanguageContext';
 import { SectionContainer } from './styles';
 
 const StatsSection = styled.section`
-  background: ${({ theme }) => theme.colors.background.paper};
-  padding: ${({ theme }) => theme.spacing['4xl']} 0;
+  background: #ffffff;
+  padding: 3rem 0;
+  
+  @media (max-width: 600px) {
+    padding: 2rem 0;
+  }
 `;
 
 const StatsContainer = styled.div`
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 ${({ theme }) => theme.spacing.md};
+  padding: 0 1rem;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: ${({ theme }) => theme.spacing['2xl']};
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 2rem;
   text-align: center;
+  
+  @media (max-width: 600px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
 `;
 
 const StatItem = styled.div`
   h3 {
-    font-size: ${({ theme }) => theme.typography.fontSize['4xl']};
-    font-weight: ${({ theme }) => theme.typography.fontWeight.extrabold};
-    color: ${({ theme }) => theme.colors.primary.main};
-    margin-bottom: ${({ theme }) => theme.spacing.sm};
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #FF8F10;
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
   }
 
   p {
-    font-size: ${({ theme }) => theme.typography.fontSize.lg};
-    color: ${({ theme }) => theme.colors.text.secondary};
-    font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
+    font-size: 1rem;
+    color: #6c757d;
+    font-weight: 500;
+    line-height: 1.5;
+  }
+  
+  @media (max-width: 600px) {
+    h3 {
+      font-size: 2rem;
+    }
+    
+    p {
+      font-size: 0.9rem;
+    }
   }
 `;
 
