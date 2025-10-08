@@ -202,11 +202,11 @@ const Header: React.FC = () => {
                             <Car size={16} />
                             <span>{t('header.vehiclesSection')}</span>
                           </div>
-                          <button className="settings-item" onClick={() => handleSettingsItemClick('/my-listings')}>
+                          <button className="settings-item" onClick={() => handleSettingsItemClick('/profile?tab=garage')}>
                             <Car size={18} />
                             <span>{t('header.carPark')}</span>
                           </button>
-                          <button className="settings-item" onClick={() => handleSettingsItemClick('/my-listings')}>
+                          <button className="settings-item" onClick={() => handleSettingsItemClick('/profile?tab=garage')}>
                             <FileText size={18} />
                             <span>{t('header.myAds')}</span>
                           </button>
