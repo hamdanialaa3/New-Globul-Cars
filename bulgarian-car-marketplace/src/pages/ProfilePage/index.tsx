@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from '../../hooks/useTranslation';
 import { useLanguage } from '../../contexts/LanguageContext';
 import LazyImage from '../../components/LazyImage';
@@ -203,6 +204,7 @@ const ProfilePage: React.FC = () => {
   const { t } = useTranslation();
   const { language } = useLanguage();
   const toast = useToast();
+  const [searchParams] = useSearchParams();
   const {
     user,
     userCars,
@@ -218,8 +220,17 @@ const ProfilePage: React.FC = () => {
     loadUserCars
   } = useProfile();
 
-  // Active tab state (default to garage to show the new feature)
-  const [activeTab, setActiveTab] = React.useState<'profile' | 'garage' | 'analytics' | 'settings'>('garage');
+  // Read tab from URL or default to 'garage'
+  const initialTab = (searchParams.get('tab') as 'profile' | 'garage' | 'analytics' | 'settings') || 'garage';
+  const [activeTab, setActiveTab] = React.useState<'profile' | 'garage' | 'analytics' | 'settings'>(initialTab);
+  
+  // Update activeTab when URL changes
+  useEffect(() => {
+    const tabParam = searchParams.get('tab') as 'profile' | 'garage' | 'analytics' | 'settings';
+    if (tabParam && ['profile', 'garage', 'analytics', 'settings'].includes(tabParam)) {
+      setActiveTab(tabParam);
+    }
+  }, [searchParams]);
   
   // Track active field for ID helper
   const [activeField, setActiveField] = React.useState<string | undefined>(undefined);
