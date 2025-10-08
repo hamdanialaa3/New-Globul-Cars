@@ -367,13 +367,13 @@ const FeaturedCars: React.FC<FeaturedCarsProps> = ({
               <SellerInfo>
                 <SellerName>
                   <User size={14} />
-                  <span>{car.sellerName || (language === 'bg' ? 'Продавач' : 'Seller')}</span>
+                  <span>{car.ownerName || (language === 'bg' ? 'Продавач' : 'Seller')}</span>
                 </SellerName>
                 
                 {user && (
                   <MessageButton
-                    onClick={(e) => handleMessageClick(e, car.userId || '')}
-                    disabled={!car.userId || car.userId === user.uid}
+                    onClick={(e) => handleMessageClick(e, car.sellerId || '')}
+                    disabled={!car.sellerId || car.sellerId === user.uid}
                   >
                     <MessageCircle size={14} />
                     {language === 'bg' ? 'Съобщение' : 'Message'}

@@ -1124,9 +1124,9 @@ const ProfilePage: React.FC = () => {
               <GarageSection
                 cars={userCars.map(car => ({
                   id: car.id,
-                  title: car.title,
-                  make: car.title.split(' ')[0] || '',
-                  model: car.title.split(' ')[1] || '',
+                  title: car.title || `${car.make} ${car.model}`,
+                  make: car.make || '',
+                  model: car.model || '',
                   year: car.year,
                   price: car.price,
                   currency: 'EUR' as const,

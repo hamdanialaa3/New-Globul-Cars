@@ -121,7 +121,7 @@ export const useProfile = (): UseProfileReturn => {
         });
 
         // Load user's cars
-        const cars = await bulgarianAuthService.getUserCars(currentUser.uid);
+        const cars = await bulgarianCarService.getUserCarListings(currentUser.uid);
         const carsWithViews = await Promise.all(
           cars.map(async (car) => {
             const carDoc = await getDoc(doc(db, 'cars', car.id));
@@ -130,13 +130,19 @@ export const useProfile = (): UseProfileReturn => {
             
             return {
               id: car.id,
+              title: car.title,
               make: titleParts[0] || 'Unknown',
               model: titleParts.slice(1).join(' ') || 'Model',
               year: car.year,
               price: car.price,
               imageUrl: car.mainImage,
+              mainImage: car.mainImage,
+              mileage: car.mileage,
+              fuelType: car.fuelType,
               status: car.status,
               viewCount: carData.viewCount || 0,
+              views: carData.views || 0,
+              inquiries: carData.inquiries || 0,
             };
           })
         );

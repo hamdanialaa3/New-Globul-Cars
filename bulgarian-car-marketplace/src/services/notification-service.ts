@@ -3,12 +3,12 @@
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
-import { app, db } from '../firebase/firebase-config';
+import firebaseApp, { db } from '../firebase/firebase-config';
 import { doc, updateDoc } from 'firebase/firestore';
 import { bulgarianAuthService } from '../firebase';
 
 class NotificationService {
-  private messaging = getMessaging(app);
+  private messaging = getMessaging(firebaseApp);
 
   /**
    * Requests permission to show notifications and saves the token.

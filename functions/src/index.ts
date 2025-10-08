@@ -98,8 +98,11 @@ export {
   acceptServiceOffer,
   analyzeProactiveMaintenance,
   sendMaintenanceReminders,
-  updateMaintenanceRequests
+  getMaintenanceStats
 } from './proactive-maintenance';
+
+// Export chat notification functions
+export { sendChatNotification } from './notifications';
 
 // Export social token exchange functions, metrics & rotation stub
 export { getSocialAccessToken, fetchSocialAccessToken, getSocialTokenMetrics, rotateSocialPlatformTokens, snapshotSocialTokenMetrics } from './social-tokens';
