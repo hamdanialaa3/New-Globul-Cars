@@ -289,6 +289,7 @@ export const useProfile = (): UseProfileReturn => {
     handleCancelEdit,
     handleLogout,
     setEditing,
-    setUser
+    setUser,
+    loadUserCars: loadUserData // Expose reload function for external use
   };
 };
