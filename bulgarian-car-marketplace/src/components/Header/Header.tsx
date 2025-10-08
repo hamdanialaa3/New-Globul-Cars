@@ -116,7 +116,7 @@ const Header: React.FC = () => {
               src="/globul-logo.png" 
               alt="Globul Cars Logo" 
               className="logo-icon"
-              style={{ width: '40px', height: '40px', objectFit: 'contain' }}
+              style={{ width: '55px', height: '55px', objectFit: 'contain' }}
             />
             <span className="logo-text">Globul Cars</span>
           </div>
