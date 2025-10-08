@@ -232,6 +232,7 @@
 /* User Section */
 .user-name {
   font-weight: 500;
+  font-size: 0.75rem !important; /* 60% smaller - 12px */
   color: #FFDF00 !important; /* Important to override other styles */
 }
 
@@ -239,6 +240,7 @@
   background: transparent;
   border: none;
   color: #FFDF00;
+  font-size: 0.75rem !important; /* 60% smaller */
   transition: all 0.2s ease;
 }
 
@@ -627,6 +629,7 @@
   gap: 10px;
   width: 100%;
   padding: 12px 16px;
+  font-size: 0.75rem !important; /* 60% smaller - 12px */
   margin-top: 8px;
   background: none;
   border: none;
