@@ -244,7 +244,7 @@ export const ProfileAnalyticsDashboard: React.FC<ProfileAnalyticsDashboardProps>
   };
 
   const t = (key: string) => {
-    const translations: Record<string, Record<string, string>> = {
+    const translations: Record<string, Record<string, any>> = {
       bg: {
         title: 'Аналитика на профила',
         profileViews: 'Прегледи на профила',

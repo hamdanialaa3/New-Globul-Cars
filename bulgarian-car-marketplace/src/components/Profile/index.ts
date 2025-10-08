@@ -31,6 +31,7 @@ export { default as IDReferenceHelper } from './IDReferenceHelper';
 export { default as BusinessUpgradeCard } from './BusinessUpgradeCard';
 export { default as BusinessBackground } from './BusinessBackground';
 export { GarageSection } from './GarageSection';
+export { FollowButton } from './FollowButton';
 
 // Export types
 export type { GarageCar } from './GarageSection';

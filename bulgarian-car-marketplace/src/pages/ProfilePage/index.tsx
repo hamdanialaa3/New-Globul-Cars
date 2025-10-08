@@ -28,11 +28,26 @@ import {
   Car, 
   Phone, 
   Home, 
-  Settings,
-  UserCircle
+  Settings as SettingsIcon,
+  UserCircle,
+  BarChart3,
+  Shield,
+  Download,
+  UserPlus,
+  UserCheck
 } from 'lucide-react';
 import * as S from './styles';
+import { TabNavigation, TabButton, SyncButton, FollowButton } from './TabNavigation.styles';
 import styled from 'styled-components';
+
+// Import new services
+import { googleProfileSyncService } from '../../services/google/google-profile-sync.service';
+import { carAnalyticsService } from '../../services/analytics/car-analytics.service';
+import { carDeleteService } from '../../services/garage/car-delete.service';
+import { followService } from '../../services/social/follow.service';
+import PrivacySettings from '../../components/Profile/Security/PrivacySettings';
+import ProfileAnalyticsDashboard from '../../components/Profile/Analytics/ProfileAnalyticsDashboard';
+import { useToast } from '../../components/Toast';
 
 // Professional Icon Wrapper with shadow effects
 const IconWrapper = styled.span<{ $color?: string; $size?: number }>`
@@ -57,6 +72,7 @@ const IconWrapper = styled.span<{ $color?: string; $size?: number }>`
 const ProfilePage: React.FC = () => {
   const { t } = useTranslation();
   const { language } = useLanguage();
+  const toast = useToast();
   const {
     user,
     userCars,
@@ -68,14 +84,25 @@ const ProfilePage: React.FC = () => {
     handleCancelEdit,
     handleLogout,
     setEditing,
-    setUser
+    setUser,
+    loadUserCars
   } = useProfile();
 
+  // Active tab state
+  const [activeTab, setActiveTab] = React.useState<'profile' | 'garage' | 'analytics' | 'settings'>('profile');
+  
   // Track active field for ID helper
   const [activeField, setActiveField] = React.useState<string | undefined>(undefined);
   
   // Track account type switch warning
   const [showAccountTypeWarning, setShowAccountTypeWarning] = React.useState(false);
+  
+  // Google sync state
+  const [syncing, setSyncing] = React.useState(false);
+  
+  // Follow state
+  const [isFollowing, setIsFollowing] = React.useState(false);
+  const [followersCount, setFollowersCount] = React.useState(0);
   
   // Handle account type change
   const handleAccountTypeChange = (newType: 'individual' | 'business') => {
@@ -92,8 +119,57 @@ const ProfilePage: React.FC = () => {
   const handleUpgradeToBusiness = () => {
     setEditing(true);
     handleAccountTypeChange('business');
-    // Scroll to top to see the form
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+  
+  // Handle Google profile sync
+  const handleGoogleSync = async () => {
+    if (!user) return;
+    
+    try {
+      setSyncing(true);
+      const currentUser = await import('../../firebase/firebase-config').then(m => m.auth.currentUser);
+      if (currentUser) {
+        await googleProfileSyncService.syncGoogleProfile(currentUser);
+        toast.success(language === 'bg' ? 'Профилът е синхронизиран!' : 'Profile synced!');
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error('Sync error:', error);
+      toast.error(language === 'bg' ? 'Грешка при синхронизация' : 'Sync error');
+    } finally {
+      setSyncing(false);
+    }
+  };
+  
+  // Handle car delete
+  const handleDeleteCar = async (carId: string) => {
+    if (!user) return;
+    
+    const confirm = window.confirm(
+      language === 'bg' 
+        ? 'Сигурни ли сте, че искате да изтриете тази кола? Това действие е необратимо!'
+        : 'Are you sure you want to delete this car? This action is irreversible!'
+    );
+    
+    if (!confirm) return;
+    
+    try {
+      const result = await carDeleteService.deleteCar(carId, user.uid);
+      
+      if (result.success) {
+        toast.success(result.message);
+        loadUserCars?.(); // Reload cars
+      } else {
+        toast.error(result.message);
+        if (result.errors && result.errors.length > 0) {
+          console.warn('Delete warnings:', result.errors);
+        }
+      }
+    } catch (error) {
+      console.error('Delete error:', error);
+      toast.error(language === 'bg' ? 'Грешка при изтриване' : 'Delete error');
+    }
   };
 
   // Loading state
@@ -130,6 +206,37 @@ const ProfilePage: React.FC = () => {
       <BusinessBackground isBusinessAccount={isBusinessMode} />
       
       <S.PageContainer>
+        {/* Tab Navigation */}
+        <TabNavigation>
+          <TabButton 
+            $active={activeTab === 'profile'}
+            onClick={() => setActiveTab('profile')}
+          >
+            <UserCircle size={18} />
+            {language === 'bg' ? 'Профил' : 'Profile'}
+          </TabButton>
+          <TabButton 
+            $active={activeTab === 'garage'}
+            onClick={() => setActiveTab('garage')}
+          >
+            <Car size={18} />
+            {language === 'bg' ? 'Гараж' : 'Garage'}
+          </TabButton>
+          <TabButton 
+            $active={activeTab === 'analytics'}
+            onClick={() => setActiveTab('analytics')}
+          >
+            <BarChart3 size={18} />
+            {language === 'bg' ? 'Статистика' : 'Analytics'}
+          </TabButton>
+          <TabButton 
+            $active={activeTab === 'settings'}
+            onClick={() => setActiveTab('settings')}
+          >
+            <Shield size={18} />
+            {language === 'bg' ? 'Настройки' : 'Settings'}
+          </TabButton>
+        </TabNavigation>
         {/* Cover Image */}
         <CoverImageUploader
           currentImageUrl={user.coverImage?.url}
@@ -171,9 +278,19 @@ const ProfilePage: React.FC = () => {
               <div style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '8px' }}>
                 {user.displayName || t('profile.anonymous')}
               </div>
-              <div style={{ color: '#666', fontSize: '0.875rem' }}>
+              <div style={{ color: '#666', fontSize: '0.875rem', marginBottom: '12px' }}>
                 {user.email}
               </div>
+              
+              {/* Google Sync Button */}
+              {user.email?.includes('gmail.com') && (
+                <SyncButton onClick={handleGoogleSync} disabled={syncing}>
+                  <RefreshCw size={16} className={syncing ? 'spinning' : ''} />
+                  {syncing 
+                    ? (language === 'bg' ? 'Синхронизиране...' : 'Syncing...') 
+                    : (language === 'bg' ? 'Синхронизирай от Google' : 'Sync from Google')}
+                </SyncButton>
+              )}
             </div>
 
             {/* Business Upgrade Card - Only for Individual Accounts */}
@@ -838,42 +955,51 @@ const ProfilePage: React.FC = () => {
               />
             </S.ContentSection>
 
-            {/* My Garage - Professional Car Management */}
-            <S.ContentSection>
-              <GarageSection
-                cars={userCars.map(car => ({
-                  id: car.id,
-                  title: car.title,
-                  make: car.title.split(' ')[0] || '',
-                  model: car.title.split(' ')[1] || '',
-                  year: car.year,
-                  price: car.price,
-                  currency: 'EUR' as const,
-                  mainImage: car.mainImage,
-                  mileage: car.mileage,
-                  fuelType: car.fuelType,
-                  status: car.status as any || 'active',
-                  views: Math.floor(Math.random() * 500), // TODO: Get real views from stats
-                  inquiries: Math.floor(Math.random() * 50), // TODO: Get real inquiries
-                  createdAt: new Date(),
-                  updatedAt: new Date()
-                }))}
-                onEdit={(carId) => {
-                  window.location.href = `/cars/${carId}/edit`;
-                }}
-                onDelete={async (carId) => {
-                  try {
-                    // TODO: Implement delete functionality
-                    console.log('Delete car:', carId);
-                  } catch (error) {
-                    console.error('Error deleting car:', error);
-                  }
-                }}
-                onAddNew={() => {
-                  window.location.href = '/sell';
-                }}
-              />
-            </S.ContentSection>
+            {/* Garage Tab */}
+            {activeTab === 'garage' && (
+              <S.ContentSection>
+                <GarageSection
+                  cars={userCars.map(car => ({
+                    id: car.id,
+                    title: car.title,
+                    make: car.title.split(' ')[0] || '',
+                    model: car.title.split(' ')[1] || '',
+                    year: car.year,
+                    price: car.price,
+                    currency: 'EUR' as const,
+                    mainImage: car.mainImage,
+                    mileage: car.mileage,
+                    fuelType: car.fuelType,
+                    status: car.status as any || 'active',
+                    views: car.views || 0,
+                    inquiries: car.inquiries || 0,
+                    createdAt: new Date(),
+                    updatedAt: new Date()
+                  }))}
+                  onEdit={(carId) => {
+                    window.location.href = `/cars/${carId}/edit`;
+                  }}
+                  onDelete={handleDeleteCar}
+                  onAddNew={() => {
+                    window.location.href = '/sell';
+                  }}
+                />
+              </S.ContentSection>
+            )}
+            
+            {/* Analytics Tab */}
+            {activeTab === 'analytics' && user && (
+              <S.ContentSection>
+                <ProfileAnalyticsDashboard userId={user.uid} />
+              </S.ContentSection>
+            )}
+            
+            {/* Settings Tab */}
+            {activeTab === 'settings' && user && (
+              <S.ContentSection>
+                <PrivacySettings userId={user.uid} />
+              </S.ContentSection>
+            )}
           </S.ProfileContent>
         </S.ProfileGrid>
 

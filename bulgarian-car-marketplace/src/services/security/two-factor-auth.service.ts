@@ -10,7 +10,7 @@ import {
   multiFactor,
   PhoneMultiFactorGenerator
 } from 'firebase/auth';
-import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, updateDoc, serverTimestamp, getDoc } from 'firebase/firestore';
 import { auth, db } from '../../firebase/firebase-config';
 
 interface TwoFactorSetup {

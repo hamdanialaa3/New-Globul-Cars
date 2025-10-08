@@ -9,7 +9,7 @@ import {
   getRedirectResult,
   UserCredential
 } from 'firebase/auth';
-import { doc, setDoc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, setDoc, getDoc, updateDoc, serverTimestamp, collection, query, where, getDocs } from 'firebase/firestore';
 import { auth, db } from '../../firebase/firebase-config';
 
 interface GitHubUserData {

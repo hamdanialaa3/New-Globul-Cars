@@ -66,6 +66,7 @@ export interface ProfileCar {
   mileage?: number;
   fuelType: string;
   mainImage?: string;
+  status?: 'active' | 'inactive' | 'sold';
 }
 
 // Profile State Interface
@@ -89,4 +90,6 @@ export interface ProfileActions {
 }
 
 // Combined Profile Hook Return Type
-export interface UseProfileReturn extends ProfileState, ProfileActions {}
+export interface UseProfileReturn extends ProfileState, ProfileActions {
+  loadUserCars?: () => void;
+}
