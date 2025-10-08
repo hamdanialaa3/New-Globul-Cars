@@ -9,6 +9,7 @@ import LazyImage from '../components/LazyImage';
 import RatingSystem from '../components/RatingSystem';
 import { useLanguage } from '../contexts/LanguageContext';
 import { ArrowLeft, User, MessageCircle, ExternalLink } from 'lucide-react';
+import CarMap from '../components/CarMap/CarMap';
 
 const DetailsContainer = styled.div`
   min-height: 100vh;
@@ -19,6 +20,21 @@ const PageContainer = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 ${({ theme }) => theme.spacing.md};
+`;
+
+const MapSection = styled.div`
+  margin-top: ${({ theme }) => theme.spacing.xl};
+  padding: ${({ theme }) => theme.spacing.xl};
+  background: white;
+  border-radius: ${({ theme }) => theme.borderRadius.lg};
+  box-shadow: ${({ theme }) => theme.shadows.base};
+`;
+
+const MapTitle = styled.h2`
+  font-size: ${({ theme }) => theme.typography.fontSize.xl};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
+  color: ${({ theme }) => theme.colors.text.primary};
+  margin: 0 0 ${({ theme }) => theme.spacing.lg} 0;
 `;
 
 const BackButton = styled.button`
@@ -350,6 +366,13 @@ const CarDetailsPage: React.FC = () => {
           <DescriptionTitle>Description</DescriptionTitle>
           <DescriptionText>{car.description}</DescriptionText>
         </Description>
+
+        {car.location && car.location.latitude && car.location.longitude && (
+          <MapSection>
+            <MapTitle>{language === 'bg' ? 'Местоположение на автомобила' : 'Car Location'}</MapTitle>
+            <CarMap lat={car.location.latitude} lng={car.location.longitude} />
+          </MapSection>
+        )}
 
         <ContactSection>
           <ContactTitle>

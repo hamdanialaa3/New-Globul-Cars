@@ -38,9 +38,29 @@ const ImagesPageNew: React.FC = () => {
     setSelectedFiles(prev => prev.filter((_, i) => i !== index));
   };
 
-  const handleContinue = () => {
-    const params = new URLSearchParams(searchParams.toString());
-    navigate(`/sell/inserat/${vehicleType || 'car'}/preis?${params.toString()}`);
+  const handleContinue = async () => {
+    if (selectedFiles.length === 0) {
+      alert(language === 'bg' ? 'Моля, качете поне една снимка!' : 'Please upload at least one photo!');
+      return;
+    }
+
+    try {
+      // Import WorkflowPersistenceService dynamically
+      const { default: WorkflowPersistenceService } = await import('../../services/workflowPersistenceService');
+      
+      // Save images to localStorage using the service
+      await WorkflowPersistenceService.saveImages(selectedFiles);
+      console.log('💾 Images saved successfully:', selectedFiles.length);
+
+      const params = new URLSearchParams(searchParams.toString());
+      params.set('images', selectedFiles.length.toString());
+      navigate(`/sell/inserat/${vehicleType || 'car'}/details/preis?${params.toString()}`);
+    } catch (error) {
+      console.error('❌ Error saving images:', error);
+      alert(language === 'bg' 
+        ? 'Възникна грешка при запазване на снимките. Моля, опитайте отново.' 
+        : 'Error saving images. Please try again.');
+    }
   };
 
   const workflowSteps = [

@@ -39,7 +39,7 @@ const ExtrasEquipmentPageNew: React.FC = () => {
     if (selectedFeatures.length > 0) {
       params.set('extras', selectedFeatures.join(','));
     }
-    navigate(`/sell/inserat/${vehicleType || 'car'}/bilder?${params.toString()}`);
+    navigate(`/sell/inserat/${vehicleType || 'car'}/details/bilder?${params.toString()}`);
   };
 
   const workflowSteps = [
