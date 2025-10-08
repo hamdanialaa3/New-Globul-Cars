@@ -13,8 +13,10 @@ import {
   ProfileCompletion,
   IDReferenceHelper,
   BusinessUpgradeCard,
-  BusinessBackground
+  BusinessBackground,
+  GarageSection
 } from '../../components/Profile';
+import type { GarageCar } from '../../components/Profile';
 import { TrustLevel } from '../../services/profile/trust-score-service';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
@@ -836,78 +838,41 @@ const ProfilePage: React.FC = () => {
               />
             </S.ContentSection>
 
-            {/* My Cars */}
+            {/* My Garage - Professional Car Management */}
             <S.ContentSection>
-              <S.SectionHeader>
-                <h2>{t('profile.myCars')}</h2>
-                <button className="edit-btn" onClick={() => window.location.href = '/sell'}>
-                  {t('profile.addCar')}
-                </button>
-              </S.SectionHeader>
-
-              {userCars.length > 0 ? (
-                <S.CarsList>
-                  {userCars.map((car) => (
-                    <S.CarCard key={car.id}>
-                      <div className="car-image">
-                        {car.mainImage ? (
-                          <LazyImage
-                            src={car.mainImage}
-                            alt={car.title}
-                            placeholder="🚗"
-                          />
-                        ) : (
-                          <div style={{
-                            width: '100%',
-                            height: '100%',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            fontSize: '2rem',
-                            color: '#ccc'
-                          }}>
-                            🚗
-                          </div>
-                        )}
-                      </div>
-                      <div className="car-title">{car.title}</div>
-                      <div className="car-price">€{car.price.toLocaleString()}</div>
-                      <div className="car-details">
-                        {car.year} • {car.mileage?.toLocaleString()} km • {car.fuelType}
-                      </div>
-                      <div className="car-actions">
-                        <button
-                          className="action-btn"
-                          onClick={() => window.location.href = `/cars/${car.id}`}
-                        >
-                          {t('profile.view')}
-                        </button>
-                        <button
-                          className="action-btn"
-                          onClick={() => window.location.href = `/cars/${car.id}/edit`}
-                        >
-                          {t('profile.edit')}
-                        </button>
-                      </div>
-                    </S.CarCard>
-                  ))}
-                </S.CarsList>
-              ) : (
-                <S.EmptyState>
-                          <span className="empty-icon">
-                            <IconWrapper $color="#ccc" $size={64}><Car /></IconWrapper>
-                          </span>
-                  <div className="empty-title">{t('profile.noCars')}</div>
-                  <div className="empty-description">{t('profile.noCarsDescription')}</div>
-                  <button
-                    className="edit-btn"
-                    onClick={() => window.location.href = '/sell'}
-                    style={{ margin: '0 auto' }}
-                  >
-                    {t('profile.addFirstCar')}
-                  </button>
-                </S.EmptyState>
-              )}
+              <GarageSection
+                cars={userCars.map(car => ({
+                  id: car.id,
+                  title: car.title,
+                  make: car.title.split(' ')[0] || '',
+                  model: car.title.split(' ')[1] || '',
+                  year: car.year,
+                  price: car.price,
+                  currency: 'EUR' as const,
+                  mainImage: car.mainImage,
+                  mileage: car.mileage,
+                  fuelType: car.fuelType,
+                  status: car.status as any || 'active',
+                  views: Math.floor(Math.random() * 500), // TODO: Get real views from stats
+                  inquiries: Math.floor(Math.random() * 50), // TODO: Get real inquiries
+                  createdAt: new Date(),
+                  updatedAt: new Date()
+                }))}
+                onEdit={(carId) => {
+                  window.location.href = `/cars/${carId}/edit`;
+                }}
+                onDelete={async (carId) => {
+                  try {
+                    // TODO: Implement delete functionality
+                    console.log('Delete car:', carId);
+                  } catch (error) {
+                    console.error('Error deleting car:', error);
+                  }
+                }}
+                onAddNew={() => {
+                  window.location.href = '/sell';
+                }}
+              />
             </S.ContentSection>
           </S.ProfileContent>
         </S.ProfileGrid>
