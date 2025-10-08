@@ -16,6 +16,7 @@ const AdminContainer = styled.div`
   background-repeat: no-repeat;
   padding: ${({ theme }) => theme.spacing.xl};
   position: relative;
+  filter: blur(0.5px);
   
   &::before {
     content: '';
@@ -24,9 +25,8 @@ const AdminContainer = styled.div`
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(245, 245, 245, 0.88);
+    background: rgba(245, 245, 245, 0.7);
     z-index: 0;
-    filter: blur(1px);
   }
   
   & > * {

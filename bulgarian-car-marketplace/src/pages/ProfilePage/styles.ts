@@ -10,6 +10,7 @@ export const ProfileContainer = styled.div<{ $isBusinessMode?: boolean }>`
   background-attachment: fixed;
   background-repeat: no-repeat;
   position: relative;
+  filter: blur(0.5px);
   
   &::before {
     content: '';
@@ -19,10 +20,9 @@ export const ProfileContainer = styled.div<{ $isBusinessMode?: boolean }>`
     right: 0;
     bottom: 0;
     background: ${({ $isBusinessMode }) => 
-      $isBusinessMode ? 'rgba(255, 255, 255, 0.88)' : 'rgba(249, 250, 251, 0.92)'
+      $isBusinessMode ? 'rgba(255, 255, 255, 0.7)' : 'rgba(249, 250, 251, 0.72)'
     };
     z-index: 0;
-    filter: blur(1px);
   }
 `;
 

@@ -12,6 +12,7 @@ export const MyListingsContainer = styled.div`
   background-repeat: no-repeat;
   padding: 2rem 0;
   position: relative;
+  filter: blur(0.5px);
   
   &::before {
     content: '';
@@ -20,9 +21,8 @@ export const MyListingsContainer = styled.div`
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(248, 249, 250, 0.92);
+    background: rgba(248, 249, 250, 0.7);
     z-index: 0;
-    filter: blur(1.5px);
   }
 `;
 

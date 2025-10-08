@@ -13,6 +13,7 @@ const FeaturesSection = styled.section`
   background-repeat: no-repeat;
   padding: 3rem 0;
   position: relative;
+  filter: blur(0.5px);
   
   &::before {
     content: '';
@@ -21,9 +22,8 @@ const FeaturesSection = styled.section`
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(230, 243, 255, 0.9);
+    background: rgba(230, 243, 255, 0.72);
     z-index: 0;
-    filter: blur(2px);
   }
   
   @media (max-width: 600px) {

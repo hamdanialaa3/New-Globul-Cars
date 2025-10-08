@@ -26,6 +26,7 @@ export const LoginContainer = styled.div`
   padding: ${({ theme }) => theme.spacing.lg};
   position: relative;
   overflow: hidden;
+  filter: blur(0.5px);
 
   &::before {
     content: '';
@@ -34,9 +35,8 @@ export const LoginContainer = styled.div`
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(102, 126, 234, 0.15);
-    backdrop-filter: blur(3px);
-    filter: blur(2px);
+    background: rgba(102, 126, 234, 0.25);
+    backdrop-filter: blur(0.5px);
   }
 `;
 

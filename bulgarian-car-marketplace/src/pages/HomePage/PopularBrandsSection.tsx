@@ -37,6 +37,7 @@ const SectionContainer = styled.section`
   max-width: 1200px;
   margin: 0 auto;
   position: relative;
+  filter: blur(0.5px);
   
   &::before {
     content: '';
@@ -45,9 +46,8 @@ const SectionContainer = styled.section`
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(248, 249, 250, 0.92);
+    background: rgba(248, 249, 250, 0.7);
     z-index: 0;
-    filter: blur(1px);
   }
   
   @media (max-width: 600px) {

@@ -21,6 +21,7 @@ const HeroSection = styled.section`
   display: flex;
   align-items: center;
   justify-content: center;
+  filter: blur(0.5px);
   
   &::before {
     content: '';
@@ -29,7 +30,7 @@ const HeroSection = styled.section`
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.65);
     z-index: 0;
   }
   

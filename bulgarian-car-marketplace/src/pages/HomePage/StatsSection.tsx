@@ -14,6 +14,7 @@ const StatsSection = styled.section`
   background-repeat: no-repeat;
   padding: 3rem 0;
   position: relative;
+  filter: blur(0.5px);
   
   &::before {
     content: '';
@@ -22,9 +23,8 @@ const StatsSection = styled.section`
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(255, 255, 255, 0.88);
+    background: rgba(255, 255, 255, 0.68);
     z-index: 0;
-    filter: blur(1.5px);
   }
   
   @media (max-width: 600px) {
