@@ -9,8 +9,30 @@ import { collection, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firesto
 
 const AdminContainer = styled.div`
   min-height: 100vh;
-  background: ${({ theme }) => theme.colors.background.default};
+  background-image: url('/assets/backgrounds/metal-bg-6.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
   padding: ${({ theme }) => theme.spacing.xl};
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(245, 245, 245, 0.88);
+    z-index: 0;
+    filter: blur(1px);
+  }
+  
+  & > * {
+    position: relative;
+    z-index: 1;
+  }
 `;
 
 const Header = styled.div`

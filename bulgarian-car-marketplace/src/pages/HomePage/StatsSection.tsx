@@ -7,8 +7,25 @@ import { useLanguage } from '../../contexts/LanguageContext';
 import { SectionContainer } from './styles';
 
 const StatsSection = styled.section`
-  background: #ffffff;
+  background-image: url('/assets/backgrounds/metal-bg-1.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
   padding: 3rem 0;
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.88);
+    z-index: 0;
+    filter: blur(1.5px);
+  }
   
   @media (max-width: 600px) {
     padding: 2rem 0;
@@ -23,6 +40,8 @@ const StatsContainer = styled.div`
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 2rem;
   text-align: center;
+  position: relative;
+  z-index: 1;
   
   @media (max-width: 600px) {
     grid-template-columns: repeat(2, 1fr);

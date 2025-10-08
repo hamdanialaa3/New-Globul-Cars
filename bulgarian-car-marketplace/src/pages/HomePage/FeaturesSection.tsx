@@ -6,10 +6,25 @@ import styled from 'styled-components';
 import { useTranslation } from '../../hooks/useTranslation';
 
 const FeaturesSection = styled.section`
-  background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
+  background-image: url('/assets/backgrounds/metal-bg-1.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
   padding: 3rem 0;
   position: relative;
-  z-index: 1;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(230, 243, 255, 0.9);
+    z-index: 0;
+    filter: blur(2px);
+  }
   
   @media (max-width: 600px) {
     padding: 2rem 0;

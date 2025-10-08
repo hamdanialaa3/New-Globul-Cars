@@ -18,15 +18,11 @@ export const LoginContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg,
-    #667eea 0%,
-    #764ba2 25%,
-    #f093fb 50%,
-    #f5576c 75%,
-    #4facfe 100%
-  );
-  background-size: 400% 400%;
-  animation: gradientShift 15s ease infinite;
+  background-image: url('/assets/backgrounds/metal-bg-2.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
   padding: ${({ theme }) => theme.spacing.lg};
   position: relative;
   overflow: hidden;
@@ -38,14 +34,9 @@ export const LoginContainer = styled.div`
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(1px);
-  }
-
-  @keyframes gradientShift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+    background: rgba(102, 126, 234, 0.15);
+    backdrop-filter: blur(3px);
+    filter: blur(2px);
   }
 `;
 

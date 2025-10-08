@@ -4,10 +4,26 @@ import styled from 'styled-components';
 export const ProfileContainer = styled.div<{ $isBusinessMode?: boolean }>`
   min-height: 100vh;
   padding: ${({ theme }) => theme.spacing['2xl']} 0;
-  background: ${({ theme, $isBusinessMode }) => 
-    $isBusinessMode ? 'transparent' : theme.colors.grey[50]
-  };
+  background-image: url('/assets/backgrounds/metal-bg-3.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
   position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: ${({ $isBusinessMode }) => 
+      $isBusinessMode ? 'rgba(255, 255, 255, 0.88)' : 'rgba(249, 250, 251, 0.92)'
+    };
+    z-index: 0;
+    filter: blur(1px);
+  }
 `;
 
 // Page Container
@@ -16,7 +32,7 @@ export const PageContainer = styled.div`
   margin: 0 auto;
   padding: 0 ${({ theme }) => theme.spacing.md};
   position: relative;
-  z-index: 1;
+  z-index: 2;
 `;
 
 // Page Header

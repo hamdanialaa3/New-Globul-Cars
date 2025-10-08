@@ -19,6 +19,24 @@ const Container = styled.div`
   padding: 2rem;
   max-width: 1600px;
   margin: 0 auto;
+  background-image: url('/assets/backgrounds/metal-bg-5.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(248, 249, 250, 0.9);
+    z-index: 0;
+    filter: blur(2px);
+  }
 
   @media (max-width: 1200px) {
     grid-template-columns: 1fr 350px;
@@ -35,9 +53,14 @@ const LeftPanel = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  position: relative;
+  z-index: 1;
 `;
 
 const RightPanel = styled.div`
+  position: relative;
+  z-index: 1;
+  
   @media (max-width: 968px) {
     order: -1; // Show workflow first on mobile
   }

@@ -29,9 +29,26 @@ const POPULAR_BRANDS = [
 // Styled Components
 const SectionContainer = styled.section`
   padding: 3rem 1rem;
-  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  background-image: url('/assets/backgrounds/metal-bg-1.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
   max-width: 1200px;
   margin: 0 auto;
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(248, 249, 250, 0.92);
+    z-index: 0;
+    filter: blur(1px);
+  }
   
   @media (max-width: 600px) {
     padding: 2rem 1rem;
@@ -41,6 +58,8 @@ const SectionContainer = styled.section`
 const SectionHeader = styled.div`
   text-align: center;
   margin-bottom: 2.5rem;
+  position: relative;
+  z-index: 1;
   
   @media (max-width: 600px) {
     margin-bottom: 2rem;
