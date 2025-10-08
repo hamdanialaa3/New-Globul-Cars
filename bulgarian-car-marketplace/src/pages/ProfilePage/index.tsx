@@ -159,7 +159,7 @@ const UserInfo = styled.div`
 `;
 
 const UserName = styled.div`
-  font-size: 1.25rem;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #212529;
   margin-bottom: 4px;
@@ -170,7 +170,7 @@ const UserName = styled.div`
 `;
 
 const UserEmail = styled.div`
-  font-size: 0.9rem;
+  font-size: 0.7rem;
   color: #6c757d;
 `;
 
@@ -423,10 +423,10 @@ const ProfilePage: React.FC = () => {
 
             {/* User Info */}
             <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-              <div style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '8px' }}>
+              <div style={{ fontSize: '0.9rem', fontWeight: 'bold', marginBottom: '6px' }}>
                 {user.displayName || t('profile.anonymous')}
               </div>
-              <div style={{ color: '#666', fontSize: '0.875rem', marginBottom: '12px' }}>
+              <div style={{ color: '#666', fontSize: '0.75rem', marginBottom: '10px' }}>
                 {user.email}
               </div>
               
