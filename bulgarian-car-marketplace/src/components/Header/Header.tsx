@@ -244,23 +244,15 @@ const Header: React.FC = () => {
 
                         <div className="menu-divider"></div>
 
-                        {/* Section 4: Transactions */}
+                        {/* Section 4: Finance */}
                         <div className="menu-section">
                           <div className="section-title">
-                            <ShoppingCart size={16} />
-                            <span>{t('header.transactionsSection')}</span>
+                            <Calculator size={16} />
+                            <span>{t('header.financeSection')}</span>
                           </div>
-                          <button className="settings-item" onClick={() => handleSettingsItemClick('/dashboard')}>
-                            <ShoppingCart size={18} />
-                            <span>{t('header.orders')}</span>
-                          </button>
                           <button className="settings-item" onClick={() => handleSettingsItemClick('/finance')}>
                             <Calculator size={18} />
                             <span>{t('header.financeCalculator')}</span>
-                          </button>
-                          <button className="settings-item" onClick={() => handleSettingsItemClick('/dashboard')}>
-                            <TrendingUp size={18} />
-                            <span>{t('header.financialReports')}</span>
                           </button>
                         </div>
 
