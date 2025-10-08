@@ -62,6 +62,13 @@ const EnhancedLoginPage: React.FC = () => {
     <LoginContainer>
       <LoginCard>
         <LoginHeader>
+          <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+            <img 
+              src="/globul-logo.png" 
+              alt="Globul Cars Logo" 
+              style={{ width: '80px', height: '80px', objectFit: 'contain', margin: '0 auto' }}
+            />
+          </div>
           <LoginTitle>{t('auth.welcomeBack', 'Welcome Back!')}</LoginTitle>
           <LoginSubtitle>{t('auth.loginSubtitle', 'Sign in to continue to your account')}</LoginSubtitle>
           <BulgarianInfo>

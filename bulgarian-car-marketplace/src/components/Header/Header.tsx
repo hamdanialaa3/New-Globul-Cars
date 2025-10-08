@@ -112,7 +112,12 @@ const Header: React.FC = () => {
         <div className="header-container">
           {/* Logo Section */}
           <div className="logo-section" onClick={() => navigate('/')}>
-            <Car className="logo-icon" size={32} />
+            <img 
+              src="/globul-logo.png" 
+              alt="Globul Cars Logo" 
+              className="logo-icon"
+              style={{ width: '40px', height: '40px', objectFit: 'contain' }}
+            />
             <span className="logo-text">Globul Cars</span>
           </div>
 

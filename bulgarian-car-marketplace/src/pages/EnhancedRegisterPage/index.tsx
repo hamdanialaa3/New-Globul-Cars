@@ -77,6 +77,13 @@ const EnhancedRegisterPage: React.FC = () => {
     <RegisterContainer>
       <RegisterCard>
         <RegisterHeader>
+          <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+            <img 
+              src="/globul-logo.png" 
+              alt="Globul Cars Logo" 
+              style={{ width: '80px', height: '80px', objectFit: 'contain', margin: '0 auto' }}
+            />
+          </div>
           <RegisterTitle>{t('auth.createAccount', 'Create Your Account')}</RegisterTitle>
           <RegisterSubtitle>{t('auth.registerSubtitle', 'Join the Bulgarian car marketplace today')}</RegisterSubtitle>
           <BulgarianInfo>

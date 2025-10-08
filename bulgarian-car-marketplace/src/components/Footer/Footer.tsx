@@ -18,9 +18,10 @@ const Footer: React.FC = () => {
           <div className="footer-section">
             <div className="footer-brand">
               <img 
-                src="/official-logo.png" 
-                alt="Globul" 
+                src="/globul-logo.png" 
+                alt="Globul Cars Logo" 
                 className="footer-logo"
+                style={{ width: '50px', height: '50px', objectFit: 'contain' }}
               />
               <h3 className="footer-title">Globul</h3>
             </div>
