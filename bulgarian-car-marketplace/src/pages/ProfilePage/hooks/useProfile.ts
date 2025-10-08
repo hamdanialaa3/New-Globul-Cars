@@ -140,7 +140,7 @@ export const useProfile = (): UseProfileReturn => {
               mainImage: car.mainImage,
               mileage: car.mileage,
               fuelType: car.fuelType,
-              status: car.status,
+              status: (carData.status as 'active' | 'sold' | 'pending' | 'draft') || 'active',
               viewCount: carData.viewCount || 0,
               views: carData.views || 0,
               inquiries: carData.inquiries || 0,
