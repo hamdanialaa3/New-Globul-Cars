@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
 import styled from 'styled-components';
-import { carListingService } from '../../firebase/car-service';
+import { bulgarianCarService } from '../../firebase/car-service';
 
 // Popular brands configuration with logos
 const POPULAR_BRANDS = [
@@ -220,7 +220,7 @@ const PopularBrandsSection: React.FC = () => {
         // Fetch count for each popular brand
         for (const brand of POPULAR_BRANDS) {
           try {
-            const result = await carListingService.getListings({
+            const result = await bulgarianCarService.getListings({
               make: brand.id,
               limit: 1,
               sortBy: 'createdAt',
