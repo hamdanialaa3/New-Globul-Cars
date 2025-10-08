@@ -367,10 +367,10 @@ const CarDetailsPage: React.FC = () => {
           <DescriptionText>{car.description}</DescriptionText>
         </Description>
 
-        {car.location && car.location.latitude && car.location.longitude && (
+        {car.location && car.location.coordinates?.latitude && car.location.coordinates?.longitude && (
           <MapSection>
             <MapTitle>{language === 'bg' ? 'Местоположение на автомобила' : 'Car Location'}</MapTitle>
-            <CarMap lat={car.location.latitude} lng={car.location.longitude} />
+            <CarMap lat={car.location.coordinates.latitude} lng={car.location.coordinates.longitude} />
           </MapSection>
         )}
 

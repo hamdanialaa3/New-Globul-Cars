@@ -45,11 +45,18 @@ const ImagesPageNew: React.FC = () => {
     }
 
     try {
-      // Import WorkflowPersistenceService dynamically
-      const { default: WorkflowPersistenceService } = await import('../../services/workflowPersistenceService');
-      
-      // Save images to localStorage using the service
-      await WorkflowPersistenceService.saveImages(selectedFiles);
+      // Save images to localStorage as base64
+      const imagePromises = selectedFiles.map(file => {
+        return new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result as string);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+      });
+
+      const base64Images = await Promise.all(imagePromises);
+      localStorage.setItem('globul_sell_workflow_images', JSON.stringify(base64Images));
       console.log('💾 Images saved successfully:', selectedFiles.length);
 
       const params = new URLSearchParams(searchParams.toString());
