@@ -89,7 +89,7 @@ const CityCarsSection: React.FC = () => {
           onCityClick={handleCityClick}
           loading={loading}
           language={language}
-          initialDisplayCount={8}
+          initialDisplayCount={6}
         />
       </S.ContentWrapper>
     </S.SectionContainer>
