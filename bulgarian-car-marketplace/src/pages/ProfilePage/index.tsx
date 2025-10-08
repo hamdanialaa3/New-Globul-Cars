@@ -38,7 +38,67 @@ import {
 } from 'lucide-react';
 import * as S from './styles';
 import { TabNavigation, TabButton, SyncButton, FollowButton } from './TabNavigation.styles';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
+
+// Animations
+const slideIn = keyframes`
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+`;
+
+// Compact Header for non-Profile tabs
+const CompactHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 24px;
+  animation: ${slideIn} 0.3s ease-out;
+`;
+
+const ProfileImageSmall = styled.img`
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #FF7900;
+  box-shadow: 0 2px 8px rgba(255, 121, 0, 0.3);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: scale(1.05);
+  }
+`;
+
+const UserInfo = styled.div`
+  flex: 1;
+`;
+
+const UserName = styled.div`
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #212529;
+  margin-bottom: 4px;
+`;
+
+const UserEmail = styled.div`
+  font-size: 0.9rem;
+  color: #6c757d;
+`;
+
+const FullWidthContent = styled.div`
+  width: 100%;
+  animation: ${slideIn} 0.3s ease-out;
+`;
 
 // Import new services
 import { googleProfileSyncService } from '../../services/google/google-profile-sync.service';
@@ -237,8 +297,10 @@ const ProfilePage: React.FC = () => {
             {language === 'bg' ? 'Настройки' : 'Settings'}
           </TabButton>
         </TabNavigation>
-        {/* Cover Image */}
-        <CoverImageUploader
+        
+        {/* Cover Image - Only show in Profile tab */}
+        {activeTab === 'profile' && (
+          <CoverImageUploader
           currentImageUrl={user.coverImage?.url}
           onUploadSuccess={(url) => {
             if (process.env.NODE_ENV === 'development') {
@@ -251,8 +313,24 @@ const ProfilePage: React.FC = () => {
             }
           }}
         />
+        )}
 
-        {/* Profile Grid */}
+        {/* Compact Header for other tabs */}
+        {activeTab !== 'profile' && (
+          <CompactHeader>
+            <ProfileImageSmall
+              src={user.profileImage?.url || '/default-avatar.png'}
+              alt={user.displayName || 'User'}
+            />
+            <UserInfo>
+              <UserName>{user.displayName || t('profile.anonymous')}</UserName>
+              <UserEmail>{user.email}</UserEmail>
+            </UserInfo>
+          </CompactHeader>
+        )}
+
+        {/* Profile Grid - Only for Profile tab */}
+        {activeTab === 'profile' && (
         <S.ProfileGrid>
           {/* Profile Sidebar */}
           <S.ProfileSidebar $isBusinessMode={isBusinessMode}>
@@ -957,53 +1035,51 @@ const ProfilePage: React.FC = () => {
               </>
             )}
 
-            {/* Garage Tab */}
-            {activeTab === 'garage' && (
-              <S.ContentSection>
-                <GarageSection
-                  cars={userCars.map(car => ({
-                    id: car.id,
-                    title: car.title,
-                    make: car.title.split(' ')[0] || '',
-                    model: car.title.split(' ')[1] || '',
-                    year: car.year,
-                    price: car.price,
-                    currency: 'EUR' as const,
-                    mainImage: car.mainImage,
-                    mileage: car.mileage,
-                    fuelType: car.fuelType,
-                    status: car.status as any || 'active',
-                    views: car.views || 0,
-                    inquiries: car.inquiries || 0,
-                    createdAt: new Date(),
-                    updatedAt: new Date()
-                  }))}
-                  onEdit={(carId) => {
-                    window.location.href = `/cars/${carId}/edit`;
-                  }}
-                  onDelete={handleDeleteCar}
-                  onAddNew={() => {
-                    window.location.href = '/sell';
-                  }}
-                />
-              </S.ContentSection>
-            )}
-            
-            {/* Analytics Tab */}
-            {activeTab === 'analytics' && user && (
-              <S.ContentSection>
-                <ProfileAnalyticsDashboard userId={user.uid} />
-              </S.ContentSection>
-            )}
-            
-            {/* Settings Tab */}
-            {activeTab === 'settings' && user && (
-              <S.ContentSection>
-                <PrivacySettings userId={user.uid} />
-              </S.ContentSection>
-            )}
           </S.ProfileContent>
         </S.ProfileGrid>
+        )}
+
+        {/* Content for other tabs - Full width without sidebar */}
+        {activeTab !== 'profile' && (
+          <FullWidthContent>
+            {activeTab === 'garage' && (
+              <GarageSection
+                cars={userCars.map(car => ({
+                  id: car.id,
+                  title: car.title,
+                  make: car.title.split(' ')[0] || '',
+                  model: car.title.split(' ')[1] || '',
+                  year: car.year,
+                  price: car.price,
+                  currency: 'EUR' as const,
+                  mainImage: car.mainImage,
+                  mileage: car.mileage,
+                  fuelType: car.fuelType,
+                  status: car.status as any || 'active',
+                  views: car.views || 0,
+                  inquiries: car.inquiries || 0,
+                  createdAt: new Date(),
+                  updatedAt: new Date()
+                }))}
+                onEdit={(carId) => {
+                  window.location.href = `/cars/${carId}/edit`;
+                }}
+                onDelete={handleDeleteCar}
+                onAddNew={() => {
+                  window.location.href = '/sell';
+                }}
+              />
+            )}
+
+            {activeTab === 'analytics' && (
+              <ProfileAnalyticsDashboard userId={user.uid} />
+            )}
+
+            {activeTab === 'settings' && (
+              <PrivacySettings userId={user.uid} />
+            )}
+          </FullWidthContent>
+        )}
 
         {/* ID Reference Helper - shows when editing & individual account */}
         {editing && (user?.accountType !== 'business' && formData.accountType === 'individual') && (
