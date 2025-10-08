@@ -48,7 +48,6 @@ const Header: React.FC = () => {
   const navigate = useNavigate();
   const { t } = useLanguage();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isMainNavOpen, setIsMainNavOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
@@ -58,13 +57,6 @@ const Header: React.FC = () => {
   const [helpSupportOpen, setHelpSupportOpen] = useState(false);
   const settingsRef = useRef<HTMLDivElement>(null);
   const mainNavRef = useRef<HTMLDivElement>(null);
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/cars?search=${encodeURIComponent(searchQuery)}`);
-    }
-  };
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -124,23 +116,33 @@ const Header: React.FC = () => {
             <span className="logo-text">Globul Cars</span>
           </div>
 
-          {/* Search Bar - Desktop */}
-          <div className="search-section">
-            <form onSubmit={handleSearch} className="search-form">
-              <div className="search-input-wrapper">
-                <Search className="search-icon" size={20} />
-                <input
-                  type="text"
-                  placeholder="Search for cars..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="search-input"
-                />
-              </div>
-              <button type="submit" className="search-button">
-                Search
-              </button>
-            </form>
+          {/* Search Bar Removed */}
+
+          {/* Central Action Buttons */}
+          <div className="central-actions">
+            <LanguageToggle size="small" showText={false} className="action-bar-button" />
+            
+            <button
+              className="action-bar-button"
+              onClick={() => navigate('/favorites')}
+              title={t('nav.favorites')}
+            >
+              <Heart size={20} />
+            </button>
+            
+            <button
+              className="action-bar-button"
+              onClick={() => navigate('/messages')}
+              title={t('nav.messages')}
+            >
+              <MessageCircle size={20} />
+            </button>
+            
+            <NotificationDropdown
+              isOpen={isNotificationsOpen}
+              onToggle={toggleNotifications}
+              onClose={closeNotifications}
+            />
           </div>
 
           {/* Right Section */}
@@ -149,30 +151,6 @@ const Header: React.FC = () => {
             <div className="user-section">
               {user ? (
                 <div className="user-section-content">
-                  {/* Quick Actions - Always visible */}
-                  <div className="quick-actions">
-                    <LanguageToggle size="small" showText={false} className="glow-button" />
-                    
-                    <button
-                      className="action-button glow-button"
-                      onClick={() => navigate('/favorites')}
-                      title={t('nav.favorites')}
-                    >
-                      <Heart size={20} />
-                    </button>
-                    <button
-                      className="action-button glow-button"
-                      onClick={() => navigate('/messages')}
-                      title={t('nav.messages')}
-                    >
-                      <MessageCircle size={20} />
-                    </button>
-                    <NotificationDropdown
-                      isOpen={isNotificationsOpen}
-                      onToggle={toggleNotifications}
-                      onClose={closeNotifications}
-                    />
-                  </div>
 
                   <div className="user-menu" ref={settingsRef}>
                   <button className="user-button" onClick={() => navigate('/profile')}>
@@ -254,14 +232,7 @@ const Header: React.FC = () => {
                             <MessageCircle size={18} />
                             <span>{t('header.messages')}</span>
                           </button>
-                          <button
-                            className="settings-item"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setIsSettingsOpen(false);
-                              setIsNotificationsOpen(!isNotificationsOpen);
-                            }}
-                          >
+                          <button className="settings-item" onClick={() => handleSettingsItemClick('/notifications')}>
                             <Bell size={18} />
                             <span>{t('header.notifications')}</span>
                           </button>
@@ -445,31 +416,6 @@ const Header: React.FC = () => {
                       {t('nav.register')}
                     </button>
                   </div>
-                  
-                  {/* Quick Actions - Moved below auth buttons */}
-                  <div className="quick-actions">
-                    <LanguageToggle size="small" showText={false} className="glow-button" />
-                    
-                    <button
-                      className="action-button glow-button"
-                      onClick={() => navigate('/favorites')}
-                      title={t('nav.favorites')}
-                    >
-                      <Heart size={20} />
-                    </button>
-                    <button
-                      className="action-button glow-button"
-                      onClick={() => navigate('/messages')}
-                      title={t('nav.messages')}
-                    >
-                      <MessageCircle size={20} />
-                    </button>
-                    <NotificationDropdown
-                      isOpen={isNotificationsOpen}
-                      onToggle={toggleNotifications}
-                      onClose={closeNotifications}
-                    />
-                  </div>
                 </div>
               )}
             </div>
@@ -565,23 +511,6 @@ const Header: React.FC = () => {
       {/* Mobile Menu */}
       {isMenuOpen && (
         <div className="mobile-menu">
-          <div className="mobile-search">
-            <form onSubmit={handleSearch} className="search-form">
-              <div className="search-input-wrapper">
-                <Search className="search-icon" size={20} />
-                <input
-                  type="text"
-                  placeholder="Search for cars..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="search-input"
-                />
-              </div>
-              <button type="submit" className="search-button">
-                Search
-              </button>
-            </form>
-          </div>
 
           <div className="mobile-nav-links">
             <EnhancedNavLink href="/" className="mobile-nav-link" onClick={() => setIsMenuOpen(false)}>

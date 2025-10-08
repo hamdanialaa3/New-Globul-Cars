@@ -1,0 +1,49 @@
+/* ActionBar.css - Independent transparent action bar */
+
+.action-bar {
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  background: transparent;
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 223, 0, 0.2);
+  padding: 8px 0;
+}
+
+.action-bar-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  justify-content: center;
+}
+
+.action-bar-button {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 223, 0, 0.3);
+  border-radius: 10px;
+  padding: 10px;
+  cursor: pointer;
+  color: #FFDF00;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-bar-button:hover {
+  background: rgba(255, 223, 0, 0.2);
+  border-color: #FFDF00;
+  color: #FFFFFF;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 223, 0, 0.4);
+}
