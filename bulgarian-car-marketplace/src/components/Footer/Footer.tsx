@@ -96,9 +96,10 @@ const Footer: React.FC = () => {
               © {currentYear} Globul. {t('footer.rights')}
             </p>
             <div className="footer-bottom-links">
-              <a href="/privacy">{t('footer.privacy')}</a>
-              <a href="/terms">{t('footer.terms')}</a>
-              <a href="/cookies">{t('footer.cookies')}</a>
+              <a href="/privacy-policy">{t('footer.privacy')}</a>
+              <a href="/terms-of-service">{t('footer.terms')}</a>
+              <a href="/cookie-policy">{t('footer.cookies')}</a>
+              <a href="/data-deletion">{t('footer.dataDeletion', 'Data Deletion')}</a>
             </div>
             <div className="language-info">
               <span className="current-language">

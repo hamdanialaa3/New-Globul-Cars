@@ -71,6 +71,7 @@ const DigitalTwinPage = React.lazy(() => import('./pages/DigitalTwinPage'));
 const SubscriptionPage = React.lazy(() => import('./pages/SubscriptionPage'));
 const AboutPage = React.lazy(() => import('./pages/AboutPage'));
 const BrandGalleryPage = React.lazy(() => import('./pages/BrandGalleryPage'));
+const TopBrandsPage = React.lazy(() => import('./pages/TopBrandsPage'));
 const DealersPage = React.lazy(() => import('./pages/DealersPage'));
 const FinancePage = React.lazy(() => import('./pages/FinancePage'));
 const ContactPage = React.lazy(() => import('./pages/ContactPage'));
@@ -438,6 +439,7 @@ const MainLayout: React.FC = () => (
 
       {/* Additional Pages */}
       <Route path="/about" element={<AboutPage />} />
+      <Route path="/top-brands" element={<TopBrandsPage />} />
       <Route
         path="/brand-gallery"
         element={

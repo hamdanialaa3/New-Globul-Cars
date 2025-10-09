@@ -265,7 +265,7 @@ export const translations = {
     footer: {
       description: 'Водещата платформа за търсене и продажба на коли в България с хиляди проверени обяви.',
       quickLinks: 'Бързи връзки', services: 'Услуги', contact: 'Контакт', support: 'Поддръжка',
-      address: 'София, България', rights: 'Всички права запазени.', privacy: 'Поверителност', terms: 'Условия', cookies: 'Бисквитки'
+      address: 'София, България', rights: 'Всички права запазени.', privacy: 'Поверителност', terms: 'Условия', cookies: 'Бисквитки', dataDeletion: 'Изтриване на данни'
     },
     contact: {
       title: 'Свържете се с нас',
@@ -1057,7 +1057,7 @@ export const translations = {
     footer: {
       description: 'The leading platform for buying and selling cars in Bulgaria with thousands of verified listings.',
       quickLinks: 'Quick Links', services: 'Services', contact: 'Contact', support: 'Support',
-      address: 'Sofia, Bulgaria', rights: 'All rights reserved.', privacy: 'Privacy', terms: 'Terms', cookies: 'Cookies'
+      address: 'Sofia, Bulgaria', rights: 'All rights reserved.', privacy: 'Privacy', terms: 'Terms', cookies: 'Cookies', dataDeletion: 'Data Deletion'
     },
     contact: {
       title: 'Contact Us', subtitle: 'We are here to help you with any questions or concerns. Get in touch with our team.',
