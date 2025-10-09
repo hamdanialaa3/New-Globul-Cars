@@ -15,6 +15,9 @@ import AdminNavigation from '../components/SuperAdmin/AdminNavigation';
 import AdminOverview from '../components/SuperAdmin/AdminOverview';
 import LiveCounters from '../components/SuperAdmin/LiveCounters';
 import FirebaseConnectionTest from '../components/SuperAdmin/FirebaseConnectionTest';
+import ProjectInfoPanel from '../components/SuperAdmin/ProjectInfoPanel';
+import RealTimeAlertsPanel from '../components/SuperAdmin/RealTimeAlertsPanel';
+import VisitorAnalyticsPanel from '../components/SuperAdmin/VisitorAnalyticsPanel';
 import RealDataDisplay from '../components/RealDataDisplay';
 import AdvancedCharts from '../components/AdvancedCharts';
 import RealDataManager from '../components/RealDataManager';
@@ -254,6 +257,7 @@ const SuperAdminDashboard: React.FC = () => {
               onUserClick={handleUserClick} 
             />
             <LiveCounters stats={marketStats} />
+            <RealTimeAlertsPanel />
             <FirebaseConnectionTest />
           </>
         )}
@@ -271,7 +275,10 @@ const SuperAdminDashboard: React.FC = () => {
         )}
 
         {activeTab === 'analytics' && (
-          <AdvancedAnalytics analytics={analytics} />
+          <>
+            <VisitorAnalyticsPanel />
+            <AdvancedAnalytics analytics={analytics} />
+          </>
         )}
 
         {activeTab === 'notifications' && (
@@ -292,6 +299,10 @@ const SuperAdminDashboard: React.FC = () => {
 
         {activeTab === 'content' && (
           <AdvancedContentManagement />
+        )}
+
+        {activeTab === 'project' && (
+          <ProjectInfoPanel />
         )}
 
         {activeTab === 'facebook' && (
