@@ -99,7 +99,7 @@ const Footer: React.FC = () => {
               <a href="/privacy-policy">{t('footer.privacy')}</a>
               <a href="/terms-of-service">{t('footer.terms')}</a>
               <a href="/cookie-policy">{t('footer.cookies')}</a>
-              <a href="/data-deletion">{t('footer.dataDeletion', 'Data Deletion')}</a>
+              <a href="/data-deletion">{t('footer.dataDeletion')}</a>
             </div>
             <div className="language-info">
               <span className="current-language">
