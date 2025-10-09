@@ -9,23 +9,20 @@ interface AdminHeaderProps {
   onLogout: () => void;
 }
 
-const DashboardHeader = styled.div`
+const AdminToolbar = styled.div`
   background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-  border: 2px solid #ffd700;
-  border-radius: 15px;
-  padding: 30px;
-  margin: 20px;
-  margin-bottom: 30px;
-  box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
-  text-align: center;
-  position: relative;
-  color: #ffd700;
+  border-bottom: 2px solid #ffd700;
+  padding: 12px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 `;
 
 const SessionInfo = styled.div`
-  position: absolute;
-  top: 15px;
-  left: 15px;
   background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
   color: #000000;
   padding: 8px 16px;
@@ -37,13 +34,21 @@ const SessionInfo = styled.div`
 `;
 
 const HeaderControls = styled.div`
-  position: absolute;
-  top: 15px;
-  right: 15px;
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
-  max-width: 60%;
+`;
+
+const DashboardHeader = styled.div`
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  border: 2px solid #ffd700;
+  border-radius: 15px;
+  padding: 20px;
+  margin: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+  text-align: center;
+  color: #ffd700;
 `;
 
 const ControlButton = styled.button<{ $variant: 'primary' | 'danger' }>`
@@ -106,37 +111,41 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ session, onLogout }) => {
   };
 
   return (
-    <DashboardHeader>
-      <SessionInfo>
-        🔐 Unique Owner Session
-      </SessionInfo>
+    <>
+      <AdminToolbar>
+        <SessionInfo>
+          Unique Owner Session
+        </SessionInfo>
+        
+        <HeaderControls>
+          <ControlButton $variant="primary" onClick={handleInitializeData}>
+            <Settings size={12} />
+            Initialize Data
+          </ControlButton>
+          <ControlButton $variant="primary" onClick={() => window.open(firebaseRealDataService.getFirebaseConsoleUrl(), '_blank')}>
+            <Database size={12} />
+            Firebase
+          </ControlButton>
+          <ControlButton $variant="primary" onClick={() => window.open(firebaseRealDataService.getFirestoreConsoleUrl(), '_blank')}>
+            <Database size={12} />
+            Firestore
+          </ControlButton>
+          <ControlButton $variant="primary" onClick={() => window.location.reload()}>
+            <Settings size={12} />
+            Refresh
+          </ControlButton>
+          <ControlButton $variant="danger" onClick={onLogout}>
+            <LogOut size={12} />
+            Logout
+          </ControlButton>
+        </HeaderControls>
+      </AdminToolbar>
       
-      <HeaderControls>
-        <ControlButton $variant="primary" onClick={handleInitializeData}>
-          <Settings size={12} />
-          Initialize Data
-        </ControlButton>
-        <ControlButton $variant="primary" onClick={() => window.open(firebaseRealDataService.getFirebaseConsoleUrl(), '_blank')}>
-          <Database size={12} />
-          Firebase
-        </ControlButton>
-        <ControlButton $variant="primary" onClick={() => window.open(firebaseRealDataService.getFirestoreConsoleUrl(), '_blank')}>
-          <Database size={12} />
-          Firestore
-        </ControlButton>
-        <ControlButton $variant="primary" onClick={() => window.location.reload()}>
-          <Settings size={12} />
-          Refresh
-        </ControlButton>
-        <ControlButton $variant="danger" onClick={onLogout}>
-          <LogOut size={12} />
-          Logout
-        </ControlButton>
-      </HeaderControls>
-      
-      <HeaderTitle>SUPER ADMIN DASHBOARD</HeaderTitle>
-      <HeaderSubtitle>Welcome, {session?.name || 'Admin'}! Real-time Firebase data monitoring and control center</HeaderSubtitle>
-    </DashboardHeader>
+      <DashboardHeader>
+        <HeaderTitle>SUPER ADMIN DASHBOARD</HeaderTitle>
+        <HeaderSubtitle>Welcome, {session?.name || 'Admin'}! Real-time Firebase data monitoring and control center</HeaderSubtitle>
+      </DashboardHeader>
+    </>
   );
 };
 

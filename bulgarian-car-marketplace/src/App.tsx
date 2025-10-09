@@ -190,6 +190,18 @@ const App: React.FC = () => {
                         </FullScreenLayout>
                       } />
                       
+                      {/* Super Admin Routes - Full Screen (no header/footer) */}
+                      <Route path="/super-admin-login" element={
+                        <FullScreenLayout>
+                          <SuperAdminLogin />
+                        </FullScreenLayout>
+                      } />
+                      <Route path="/super-admin" element={
+                        <FullScreenLayout>
+                          <SuperAdminDashboard />
+                        </FullScreenLayout>
+                      } />
+                      
                       {/* All other routes with header/footer */}
                       <Route path="/*" element={<MainLayout />} />
                     </Routes>
@@ -338,8 +350,6 @@ const MainLayout: React.FC = () => (
           </ProtectedRoute>
         }
       />
-      <Route path="/super-admin-login" element={<SuperAdminLogin />} />
-      <Route path="/super-admin" element={<SuperAdminDashboard />} />
       <Route
         path="/notifications"
         element={
