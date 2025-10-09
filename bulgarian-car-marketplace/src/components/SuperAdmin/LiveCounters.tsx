@@ -177,7 +177,7 @@ const LoadingSpinner = styled.div`
   gap: 10px;
 `;
 
-const LiveCounters: React.FC<LiveCountersProps> = ({ stats }) => {
+const LiveCounters: React.FC<LiveCountersProps> = ({ stats = { totalCars: 0, totalUsers: 0, totalViews: 0 } }) => {
   const [counters, setCounters] = useState({
     totalUsers: 0,
     totalCars: 0,
@@ -219,17 +219,17 @@ const LiveCounters: React.FC<LiveCountersProps> = ({ stats }) => {
       <CountersGrid>
         <CounterCard>
           <CounterIcon><Users /></CounterIcon>
-          <CounterValue>{stats.totalUsers.toLocaleString()}</CounterValue>
+          <CounterValue>{(stats?.totalUsers || 0).toLocaleString()}</CounterValue>
           <CounterLabel>Total Users</CounterLabel>
         </CounterCard>
         <CounterCard>
           <CounterIcon><Car /></CounterIcon>
-          <CounterValue>{stats.totalCars.toLocaleString()}</CounterValue>
+          <CounterValue>{(stats?.totalCars || 0).toLocaleString()}</CounterValue>
           <CounterLabel>Total Cars</CounterLabel>
         </CounterCard>
         <CounterCard>
           <CounterIcon><Eye /></CounterIcon>
-          <CounterValue>{stats.totalViews.toLocaleString()}</CounterValue>
+          <CounterValue>{(stats?.totalViews || 0).toLocaleString()}</CounterValue>
           <CounterLabel>Total Views</CounterLabel>
         </CounterCard>
         <CounterCard>
