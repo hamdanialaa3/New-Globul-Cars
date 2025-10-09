@@ -183,7 +183,12 @@ const SuperAdminDashboard: React.FC = () => {
         const statsDocRef = doc(db, 'market', 'stats');
         const statsDoc = await getDoc(statsDocRef);
         if (statsDoc.exists()) {
-          setMarketStats(statsDoc.data() as any);
+          const data = statsDoc.data();
+          setMarketStats({
+            totalCars: data?.totalCars || 0,
+            totalUsers: data?.totalUsers || 0,
+            totalViews: data?.totalViews || 0
+          });
         }
       } catch (error) {
         console.log('Stats not available yet');
