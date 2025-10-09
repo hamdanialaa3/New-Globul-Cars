@@ -80,17 +80,17 @@ const ControlButton = styled.button<{ $variant: 'primary' | 'danger' }>`
 
 const HeaderTitle = styled.h1`
   color: #ffd700;
-  font-size: 36px;
-  font-weight: 800;
-  margin: 0 0 10px 0;
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 5px 0;
   text-shadow: 0 2px 4px rgba(255, 215, 0, 0.3);
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: 1px;
 `;
 
 const HeaderSubtitle = styled.p`
   color: #ffd700;
-  font-size: 16px;
+  font-size: 12px;
   margin: 0;
   opacity: 0.9;
 `;
@@ -134,7 +134,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ session, onLogout }) => {
         </ControlButton>
       </HeaderControls>
       
-      <HeaderTitle>⚡ SUPER ADMIN DASHBOARD</HeaderTitle>
+      <HeaderTitle>SUPER ADMIN DASHBOARD</HeaderTitle>
       <HeaderSubtitle>Welcome, {session?.name || 'Admin'}! Real-time Firebase data monitoring and control center</HeaderSubtitle>
     </DashboardHeader>
   );
