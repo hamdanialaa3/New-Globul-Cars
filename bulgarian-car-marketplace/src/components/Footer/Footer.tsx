@@ -1,7 +1,7 @@
 // Smart Footer Component with Global Translation Support
 import React from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { MapPin, Phone, Mail, Globe } from 'lucide-react';
+import { MapPin, Phone, Mail, Globe, Facebook } from 'lucide-react';
 import './Footer.css';
 
 const Footer: React.FC = () => {
@@ -84,6 +84,19 @@ const Footer: React.FC = () => {
                   <Mail size={18} color="#FF8F10" />
                 </span>
                 <span>info@globulcars.bg</span>
+              </div>
+              <div className="contact-item">
+                <a 
+                  href="https://www.facebook.com/people/Bulgarian-Car-Marketplace/100080260449528/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#1877f2', textDecoration: 'none' }}
+                >
+                  <span className="contact-icon">
+                    <Facebook size={18} color="#1877f2" />
+                  </span>
+                  <span>{language === 'bg' ? 'Последвайте ни във Facebook' : 'Follow us on Facebook'}</span>
+                </a>
               </div>
             </div>
           </div>

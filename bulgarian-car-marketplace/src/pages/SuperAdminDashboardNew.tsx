@@ -25,6 +25,7 @@ import AdvancedUserManagement from '../components/AdvancedUserManagement';
 import PermissionManagement from '../components/PermissionManagement';
 import AuditLogging from '../components/AuditLogging';
 import UserDetailsModal from '../components/UserDetailsModal';
+import FacebookAdminPanel from '../components/SuperAdmin/FacebookAdminPanel';
 
 // Styled Components
 const DashboardContainer = styled.div`
@@ -283,6 +284,10 @@ const SuperAdminDashboard: React.FC = () => {
 
         {activeTab === 'content' && (
           <AdvancedContentManagement />
+        )}
+
+        {activeTab === 'facebook' && (
+          <FacebookAdminPanel language="bg" />
         )}
       </TabContent>
 

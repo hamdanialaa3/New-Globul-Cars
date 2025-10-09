@@ -8,7 +8,8 @@ import {
   Bell, 
   Settings,
   Database,
-  Activity
+  Activity,
+  Facebook
 } from 'lucide-react';
 
 interface AdminNavigationProps {
@@ -84,6 +85,7 @@ const TabButton = styled.button<{ $active: boolean }>`
 const AdminNavigation: React.FC<AdminNavigationProps> = ({ activeTab, onTabChange }) => {
   const tabs = [
     { id: 'overview', label: 'Overview', icon: BarChart3 },
+    { id: 'facebook', label: 'Facebook', icon: Facebook },
     { id: 'realdata', label: 'Real Data', icon: Database },
     { id: 'charts', label: 'Charts', icon: Activity },
     { id: 'data', label: 'Data', icon: Settings },

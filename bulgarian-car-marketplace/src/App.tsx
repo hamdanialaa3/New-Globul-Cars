@@ -166,9 +166,9 @@ const App: React.FC = () => {
           <AuthProvider>
             <ToastProvider>
               <GoogleReCaptchaProvider reCaptchaKey={recaptchaKey || "dummy-key"}>
-                <FacebookPixel />
-                <FacebookMessengerWidget />
                 <Router>
+                  <FacebookPixel />
+                  <FacebookMessengerWidget />
                   <SkipNavigation />
                   <NotificationHandler />
                   <Suspense fallback={<div className="loading-spinner"></div>}>
