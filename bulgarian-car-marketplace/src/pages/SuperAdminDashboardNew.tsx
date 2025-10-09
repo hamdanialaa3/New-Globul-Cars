@@ -6,7 +6,7 @@ import { realDataInitializer } from '../services/real-data-initializer';
 import { advancedRealDataService } from '../services/advanced-real-data-service';
 import { firebaseRealDataService } from '../services/firebase-real-data-service';
 import { uniqueOwnerService } from '../services/unique-owner-service';
-import { doc, onSnapshot } from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
 
 // Import components
@@ -177,17 +177,26 @@ const SuperAdminDashboard: React.FC = () => {
       }
     };
 
-    // Real-time listener for market stats
-    const statsDocRef = doc(db, 'market', 'stats');
-    const unsubscribe = onSnapshot(statsDocRef, (doc) => {
-      if (doc.exists()) {
-        setMarketStats(doc.data() as any);
+    // Load market stats (using getDoc to avoid conflicts)
+    const loadMarketStats = async () => {
+      try {
+        const statsDocRef = doc(db, 'market', 'stats');
+        const statsDoc = await getDoc(statsDocRef);
+        if (statsDoc.exists()) {
+          setMarketStats(statsDoc.data() as any);
+        }
+      } catch (error) {
+        console.log('Stats not available yet');
       }
-    });
+    };
 
     initializeDashboard();
+    loadMarketStats();
+    
+    // Refresh stats every 30 seconds
+    const statsInterval = setInterval(loadMarketStats, 30000);
 
-    return () => unsubscribe(); // Cleanup listener on component unmount
+    return () => clearInterval(statsInterval);
   }, [navigate]);
 
   const handleLogout = async () => {
