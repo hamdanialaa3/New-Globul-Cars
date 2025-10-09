@@ -254,8 +254,8 @@ const IDReferenceHelper: React.FC<IDReferenceHelperProps> = ({
         <ToggleButton onClick={() => setCurrentSide(currentSide === 'front' ? 'back' : 'front')}>
           <CreditCard size={12} />
           {currentSide === 'front'
-            ? (language === 'bg' ? 'الخلف' : 'Back')
-            : (language === 'bg' ? 'الأمام' : 'Front')
+            ? (language === 'bg' ? 'Гръб' : 'Back')
+            : (language === 'bg' ? 'Предна страна' : 'Front')
           }
         </ToggleButton>
 
