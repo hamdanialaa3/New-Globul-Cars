@@ -16,6 +16,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
 import AuthGuard from './components/AuthGuard';
 import NotificationHandler from './components/NotificationHandler';
+import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 // import AnalyticsTracker from './components/AnalyticsTracker';
 import PerformanceMonitor from './components/PerformanceMonitor';
 import BundleAnalyzer from './components/BundleAnalyzer';
@@ -145,6 +146,15 @@ const PageLoader: React.FC = () => (
 
 // App Component
 const App: React.FC = () => {
+  const recaptchaKey = process.env.REACT_APP_RECAPTCHA_SITE_KEY;
+
+  if (!recaptchaKey) {
+    // In a real app, you might want to show an error page or have a fallback.
+    console.error("reCAPTCHA Site Key is not defined in environment variables.");
+    // For this example, we'll render the app without reCAPTCHA protection.
+    // A better approach would be to prevent the app from running without it.
+  }
+
   return (
     <ThemeProvider theme={bulgarianTheme}>
       <GlobalStyles />
@@ -152,15 +162,35 @@ const App: React.FC = () => {
         <LanguageProvider>
           <AuthProvider>
             <ToastProvider>
-              <Router>
-                <SkipNavigation />
-                <NotificationHandler />
-                <Suspense fallback={<div className="loading-spinner"></div>}>
-                  <Routes>
-                    <Route path="/*" element={<MainLayout />} />
-                  </Routes>
-                </Suspense>
-              </Router>
+              <GoogleReCaptchaProvider reCaptchaKey={recaptchaKey || "dummy-key"}>
+                <Router>
+                  <SkipNavigation />
+                  <NotificationHandler />
+                  <Suspense fallback={<div className="loading-spinner"></div>}>
+                    <Routes>
+                      {/* Auth Routes - Full Screen (no header/footer) */}
+                      <Route path="/login" element={
+                        <FullScreenLayout>
+                          <LoginPage />
+                        </FullScreenLayout>
+                      } />
+                      <Route path="/register" element={
+                        <FullScreenLayout>
+                          <RegisterPage />
+                        </FullScreenLayout>
+                      } />
+                      <Route path="/verification" element={
+                        <FullScreenLayout>
+                          <EmailVerificationPage />
+                        </FullScreenLayout>
+                      } />
+                      
+                      {/* All other routes with header/footer */}
+                      <Route path="/*" element={<MainLayout />} />
+                    </Routes>
+                  </Suspense>
+                </Router>
+              </GoogleReCaptchaProvider>
             </ToastProvider>
           </AuthProvider>
         </LanguageProvider>
@@ -434,18 +464,12 @@ const MainLayout: React.FC = () => (
       />
       <Route path="/contact" element={<ContactPage />} />
       <Route path="/help" element={<HelpPage />} />
+      <Route path="/support" element={<HelpPage />} /> {/* Support redirects to Help */}
       <Route path="/cookie-policy" element={<CookiePolicyPage />} />
       <Route path="/sitemap" element={<SitemapPage />} />
 
-      {/* 404 Page */}
-      <Route
-        path="*"
-        element={
-          <Layout>
-            <NotFoundPage />
-          </Layout>
-        }
-      />
+      {/* 404 Page - Already wrapped in Layout by MainLayout */}
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   </Layout>
 );

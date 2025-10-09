@@ -1,14 +1,18 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { User, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'firebase/auth';
+import { User, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, updateProfile } from 'firebase/auth';
 import { auth } from '../firebase/firebase-config';
 import { SocialAuthService } from '../firebase/social-auth-service';
+
+interface RegisterOptions {
+  displayName?: string;
+}
 
 interface AuthContextType {
   currentUser: User | null;
   user: User | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string) => Promise<void>;
+  register: (email: string, password: string, options?: RegisterOptions) => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -67,8 +71,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     await signInWithEmailAndPassword(auth, email, password);
   };
 
-  const register = async (email: string, password: string) => {
-    await createUserWithEmailAndPassword(auth, email, password);
+  const register = async (email: string, password: string, options?: RegisterOptions) => {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    
+    // Update user profile if displayName is provided
+    if (options?.displayName && userCredential.user) {
+      await updateProfile(userCredential.user, {
+        displayName: options.displayName
+      });
+    }
   };
 
   const logout = async () => {

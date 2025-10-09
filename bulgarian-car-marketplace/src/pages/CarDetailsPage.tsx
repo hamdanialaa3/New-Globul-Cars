@@ -8,7 +8,7 @@ import { ProfileStatsService } from '../services/profile/profile-stats-service';
 import LazyImage from '../components/LazyImage';
 import RatingSystem from '../components/RatingSystem';
 import { useLanguage } from '../contexts/LanguageContext';
-import { ArrowLeft, User, MessageCircle, ExternalLink } from 'lucide-react';
+import { ArrowLeft, User, MessageCircle, ExternalLink, Languages } from 'lucide-react';
 import CarMap from '../components/CarMap/CarMap';
 
 const DetailsContainer = styled.div`
@@ -35,6 +35,58 @@ const MapTitle = styled.h2`
   font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
   color: ${({ theme }) => theme.colors.text.primary};
   margin: 0 0 ${({ theme }) => theme.spacing.lg} 0;
+`;
+
+const Description = styled.div`
+  margin-top: ${({ theme }) => theme.spacing.xl};
+  padding: ${({ theme }) => theme.spacing.xl};
+  background: white;
+  border-radius: ${({ theme }) => theme.borderRadius.lg};
+  box-shadow: ${({ theme }) => theme.shadows.base};
+`;
+
+const DescriptionHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: ${({ theme }) => theme.spacing.lg};
+`;
+
+const DescriptionTitle = styled.h2`
+  font-size: ${({ theme }) => theme.typography.fontSize.xl};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
+  color: ${({ theme }) => theme.colors.text.primary};
+  margin: 0 0 ${({ theme }) => theme.spacing.lg} 0;
+`;
+
+const DescriptionText = styled.p`
+  color: ${({ theme }) => theme.colors.text.primary};
+  line-height: 1.6;
+  margin: 0;
+`;
+
+const TranslateButton = styled.button`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.sm};
+  padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
+  background: transparent;
+  border: 1px solid ${({ theme }) => theme.colors.primary.main};
+  color: ${({ theme }) => theme.colors.primary.main};
+  border-radius: ${({ theme }) => theme.borderRadius.base};
+  cursor: pointer;
+  font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: ${({ theme }) => theme.colors.primary.main};
+    color: white;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 `;
 
 const BackButton = styled.button`
@@ -150,27 +202,6 @@ const DetailValue = styled.span`
   font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
 `;
 
-const Description = styled.div`
-  margin-top: ${({ theme }) => theme.spacing.xl};
-  padding: ${({ theme }) => theme.spacing.xl};
-  background: white;
-  border-radius: ${({ theme }) => theme.borderRadius.lg};
-  box-shadow: ${({ theme }) => theme.shadows.base};
-`;
-
-const DescriptionTitle = styled.h2`
-  font-size: ${({ theme }) => theme.typography.fontSize.xl};
-  font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
-  color: ${({ theme }) => theme.colors.text.primary};
-  margin: 0 0 ${({ theme }) => theme.spacing.lg} 0;
-`;
-
-const DescriptionText = styled.p`
-  color: ${({ theme }) => theme.colors.text.primary};
-  line-height: 1.6;
-  margin: 0;
-`;
-
 const ContactSection = styled.div`
   margin-top: ${({ theme }) => theme.spacing.xl};
   padding: ${({ theme }) => theme.spacing.xl};
@@ -237,6 +268,8 @@ const CarDetailsPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { user } = useAuth();
+  const [translatedDescription, setTranslatedDescription] = useState<string | null>(null);
+  const [isTranslating, setIsTranslating] = useState(false);
 
   useEffect(() => {
     const fetchCarAndIncrementView = async () => {
@@ -270,6 +303,24 @@ const CarDetailsPage: React.FC = () => {
 
     fetchCarAndIncrementView();
   }, [id]);
+
+  const handleTranslate = async () => {
+    if (!car?.description) return;
+
+    setIsTranslating(true);
+    try {
+      const translate = httpsCallable(functions, 'translateText');
+      const targetLanguage = language === 'bg' ? 'en' : 'bg';
+      const result = await translate({ text: car.description, targetLanguage });
+      const data = result.data as { translatedText: string };
+      setTranslatedDescription(data.translatedText);
+    } catch (err) {
+      console.error("Translation failed:", err);
+      // Optionally show a toast notification to the user
+    } finally {
+      setIsTranslating(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -363,11 +414,23 @@ const CarDetailsPage: React.FC = () => {
         </CarHeader>
 
         <Description>
-          <DescriptionTitle>Description</DescriptionTitle>
-          <DescriptionText>{car.description}</DescriptionText>
+          <DescriptionHeader>
+            <DescriptionTitle>Description</DescriptionTitle>
+            {user && (
+              <TranslateButton onClick={handleTranslate} disabled={isTranslating}>
+                <Languages size={18} />
+                {isTranslating 
+                  ? (language === 'bg' ? 'Превежда се...' : 'Translating...')
+                  : (language === 'bg' ? 'Превод на Английски' : 'Translate to Bulgarian')}
+              </TranslateButton>
+            )}
+          </DescriptionHeader>
+          <DescriptionText>
+            {translatedDescription || car.description}
+          </DescriptionText>
         </Description>
 
-        {car.location && car.location.coordinates?.latitude && car.location.coordinates?.longitude && (
+        {car.location?.coordinates && (
           <MapSection>
             <MapTitle>{language === 'bg' ? 'Местоположение на автомобила' : 'Car Location'}</MapTitle>
             <CarMap lat={car.location.coordinates.latitude} lng={car.location.coordinates.longitude} />

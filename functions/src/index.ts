@@ -106,3 +106,12 @@ export { sendChatNotification } from './notifications';
 
 // Export geolocation functions
 export { geocodeAddressOnCarCreate } from './geolocation';
+
+// Export image analysis functions
+export { analyzeCarImage } from './vision';
+
+// Export translation functions
+export { translateText } from './translation';
+
+// Export reCAPTCHA verification functions
+export { verifyRecaptchaToken } from './recaptcha';

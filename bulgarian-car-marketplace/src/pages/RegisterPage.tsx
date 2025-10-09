@@ -5,6 +5,9 @@ import { useTranslation } from '../hooks/useTranslation';
 import SocialLogin from '../components/SocialLogin';
 import { SocialAuthService } from '../firebase/social-auth-service';
 import { useAuth } from '../hooks/useAuth';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
+import { httpsCallable } from 'firebase/functions';
+import { functions } from '../firebase';
 
 const RegisterContainer = styled.div`
   min-height: 100vh;
@@ -113,6 +116,7 @@ const RegisterPage: React.FC = () => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -126,6 +130,12 @@ const RegisterPage: React.FC = () => {
     setLoading(true);
     setError('');
 
+    if (!executeRecaptcha) {
+      setError('reCAPTCHA not ready. Please try again.');
+      setLoading(false);
+      return;
+    }
+
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
       setLoading(false);
@@ -133,10 +143,27 @@ const RegisterPage: React.FC = () => {
     }
 
     try {
-      await register(formData.email, formData.password);
+      // 1. Get reCAPTCHA token
+      const recaptchaToken = await executeRecaptcha('register');
+
+      // 2. Verify token with backend
+      const verifyFunction = httpsCallable(functions, 'verifyRecaptchaToken');
+      await verifyFunction({ token: recaptchaToken, action: 'register' });
+
+      // 3. If verification is successful, proceed with registration
+      await register(formData.email, formData.password, {
+        displayName: `${formData.firstName} ${formData.lastName}`
+      });
+      
       navigate('/dashboard');
+
     } catch (err: any) {
-      setError(err.message || 'Registration failed');
+      console.error("Registration or reCAPTCHA error:", err);
+      if (err.code === 'functions/unauthenticated') {
+        setError('reCAPTCHA validation failed. Please try again.');
+      } else {
+        setError(err.message || 'Registration failed');
+      }
     } finally {
       setLoading(false);
     }
@@ -212,8 +239,8 @@ const RegisterPage: React.FC = () => {
             <Input
                 type="text"
               id="lastName"
-                name="lastName"
-                value={formData.lastName}
+              name="lastName"
+              value={formData.lastName}
               onChange={handleChange}
               required
               disabled={loading}
@@ -224,8 +251,8 @@ const RegisterPage: React.FC = () => {
             <Input
                 type="email"
               id="email"
-                name="email"
-                value={formData.email}
+              name="email"
+              value={formData.email}
               onChange={handleChange}
               required
               disabled={loading}
@@ -236,8 +263,8 @@ const RegisterPage: React.FC = () => {
             <Input
                 type="password"
               id="password"
-                name="password"
-                value={formData.password}
+              name="password"
+              value={formData.password}
               onChange={handleChange}
               required
               disabled={loading}
@@ -248,8 +275,8 @@ const RegisterPage: React.FC = () => {
             <Input
                 type="password"
               id="confirmPassword"
-                name="confirmPassword"
-                value={formData.confirmPassword}
+              name="confirmPassword"
+              value={formData.confirmPassword}
               onChange={handleChange}
               required
               disabled={loading}
