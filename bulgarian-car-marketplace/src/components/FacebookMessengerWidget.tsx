@@ -58,8 +58,13 @@ const FacebookMessengerWidget: React.FC<FacebookMessengerWidgetProps> = ({
     // Cleanup
     return () => {
       const chatWidget = document.querySelector('.fb-customerchat');
-      if (chatWidget) {
-        chatWidget.remove();
+      if (chatWidget && chatWidget.parentNode) {
+        chatWidget.parentNode.removeChild(chatWidget);
+      }
+      
+      const fbRoot = document.getElementById('fb-root');
+      if (fbRoot && fbRoot.parentNode) {
+        fbRoot.parentNode.removeChild(fbRoot);
       }
     };
   }, [defaultPageId, language]);
