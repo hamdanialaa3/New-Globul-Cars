@@ -31,16 +31,10 @@ import FacebookAdminPanel from '../components/SuperAdmin/FacebookAdminPanel';
 const DashboardContainer = styled.div`
   min-height: 100vh;
   background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #2d2d2d 100%);
-  padding: 0;
+  padding: 0 0 100px 0;
   margin: 0;
   color: #ffd700;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  overflow-y: auto;
 `;
 
 const TabContent = styled.div`
