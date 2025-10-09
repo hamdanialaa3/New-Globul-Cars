@@ -21,6 +21,8 @@ import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 import PerformanceMonitor from './components/PerformanceMonitor';
 import BundleAnalyzer from './components/BundleAnalyzer';
 import NotFoundPage from './components/NotFoundPage';
+import FacebookPixel from './components/FacebookPixel';
+import FacebookMessengerWidget from './components/FacebookMessengerWidget';
 
 // Lazy load pages for better performance
 const HomePage = React.lazy(() => import('./pages/HomePage'));
@@ -164,6 +166,8 @@ const App: React.FC = () => {
           <AuthProvider>
             <ToastProvider>
               <GoogleReCaptchaProvider reCaptchaKey={recaptchaKey || "dummy-key"}>
+                <FacebookPixel />
+                <FacebookMessengerWidget />
                 <Router>
                   <SkipNavigation />
                   <NotificationHandler />

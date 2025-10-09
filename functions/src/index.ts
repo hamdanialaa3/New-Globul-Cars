@@ -115,3 +115,7 @@ export { translateText } from './translation';
 
 // Export reCAPTCHA verification functions
 export { verifyRecaptchaToken } from './recaptcha';
+
+// Export Facebook integration functions
+export { handleFacebookDataDeletion } from './facebook/data-deletion';
+export { messengerWebhook } from './facebook/messenger-webhook';
