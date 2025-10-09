@@ -234,47 +234,47 @@ const LiveCounters: React.FC<LiveCountersProps> = ({ stats = { totalCars: 0, tot
         </CounterCard>
         <CounterCard>
           <CounterIcon><MessageSquare /></CounterIcon>
-          <CounterValue>{counters.totalMessages.toLocaleString()}</CounterValue>
+          <CounterValue>{(counters?.totalMessages || 0).toLocaleString()}</CounterValue>
           <CounterLabel>Total Messages</CounterLabel>
         </CounterCard>
         <CounterCard>
           <CounterIcon><DollarSign /></CounterIcon>
-          <CounterValue>€{counters.totalRevenue.toLocaleString()}</CounterValue>
+          <CounterValue>€{(counters?.totalRevenue || 0).toLocaleString()}</CounterValue>
           <CounterLabel>Total Revenue</CounterLabel>
         </CounterCard>
         <CounterCard>
           <CounterIcon><HardDrive /></CounterIcon>
-          <CounterValue>{counters.storageUsage.toLocaleString()} MB</CounterValue>
+          <CounterValue>{(counters?.storageUsage || 0).toLocaleString()} MB</CounterValue>
           <CounterLabel>Storage Usage</CounterLabel>
         </CounterCard>
         <CounterCard>
           <CounterIcon><Database /></CounterIcon>
-          <CounterValue>{counters.firestoreReads.toLocaleString()}</CounterValue>
+          <CounterValue>{(counters?.firestoreReads || 0).toLocaleString()}</CounterValue>
           <CounterLabel>Firestore Reads</CounterLabel>
         </CounterCard>
         <CounterCard>
           <CounterIcon><Database /></CounterIcon>
-          <CounterValue>{counters.firestoreWrites.toLocaleString()}</CounterValue>
+          <CounterValue>{(counters?.firestoreWrites || 0).toLocaleString()}</CounterValue>
           <CounterLabel>Firestore Writes</CounterLabel>
         </CounterCard>
         <CounterCard>
           <CounterIcon><Download /></CounterIcon>
-          <CounterValue>{counters.functionInvocations.toLocaleString()}</CounterValue>
+          <CounterValue>{(counters?.functionInvocations || 0).toLocaleString()}</CounterValue>
           <CounterLabel>Function Invocations</CounterLabel>
         </CounterCard>
         <CounterCard>
           <CounterIcon><Zap /></CounterIcon>
-          <CounterValue>{counters.activeSessions.toLocaleString()}</CounterValue>
+          <CounterValue>{(counters?.activeSessions || 0).toLocaleString()}</CounterValue>
           <CounterLabel>Active Sessions</CounterLabel>
         </CounterCard>
         <CounterCard>
           <CounterIcon><CheckCircle /></CounterIcon>
-          <CounterValue>{counters.systemHealth}</CounterValue>
+          <CounterValue>{counters?.systemHealth || 'OK'}</CounterValue>
           <CounterLabel>System Health</CounterLabel>
         </CounterCard>
         <CounterCard>
           <CounterIcon><AlertCircle /></CounterIcon>
-          <CounterValue>{counters.alerts.toLocaleString()}</CounterValue>
+          <CounterValue>{(counters?.alerts || 0).toLocaleString()}</CounterValue>
           <CounterLabel>Alerts</CounterLabel>
         </CounterCard>
       </CountersGrid>
