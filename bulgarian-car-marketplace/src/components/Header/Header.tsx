@@ -364,7 +364,7 @@ const Header: React.FC = () => {
                 aria-expanded={isMainNavOpen}
               >
                 <Menu size={16} />
-                <span>Explore</span>
+                <span>{t('nav.explore')}</span>
                 <svg 
                   className={`arrow ${isMainNavOpen ? 'rotate' : ''}`}
                   width="12" 
