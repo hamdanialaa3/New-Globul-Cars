@@ -2,8 +2,15 @@
 // functions/src/index.ts
 // Main entry point for Firebase Functions
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.syncDigitalTwinToBigQuery = exports.onLiveDataUpdated = exports.getDigitalTwin = exports.removeIoTDevice = exports.getIoTDeviceStats = exports.registerIoTDevice = exports.setupIoTInfrastructure = exports.analyzeMaintenanceNeeds = exports.onEmergencyAlertCreated = exports.receiveIoTData = exports.getInsuranceMarketStats = exports.getInsuranceProviders = exports.getClaimDetails = exports.fileInsuranceClaim = exports.getCustomerPolicies = exports.purchaseInsurancePolicy = exports.getInsuranceQuotes = exports.getCertificationStats = exports.verifyCertificate = exports.getVehicleCertificate = exports.getCustomerInspections = exports.getInspectionDetails = exports.scheduleVehicleInspection = exports.getServiceNetworkStats = exports.getAvailableTimeSlots = exports.getServiceCenterReviews = exports.submitServiceReview = exports.getCustomerServiceRequests = exports.createServiceRequest = exports.getServiceCenterDetails = exports.findServiceCenters = exports.getEVNetworkStats = exports.getEVCompatibility = exports.getEVChargingRoute = exports.findEVChargingStations = exports.getCachedVehicleHistory = exports.getVehicleHistoryReport = exports.b2bMarketInsightsAPI = exports.b2bValuationAPI = exports.upgradeB2BSubscription = exports.cancelB2BSubscription = exports.getB2BSubscription = exports.createB2BSubscription = exports.getCarValuation = exports.getSubscriptionStatus = exports.getRegionalPriceVariations = exports.getSalesPeakHours = exports.getDealerPerformance = exports.getMarketTrends = exports.getAveragePriceByModel = void 0;
-exports.snapshotSocialTokenMetrics = exports.rotateSocialPlatformTokens = exports.getSocialTokenMetrics = exports.fetchSocialAccessToken = exports.getSocialAccessToken = exports.updateMaintenanceRequests = exports.sendMaintenanceReminders = exports.analyzeProactiveMaintenance = exports.acceptServiceOffer = exports.getUserMaintenanceAlerts = exports.createMaintenanceAlert = exports.resetDigitalTwin = exports.getDigitalTwinStats = exports.analyzeDigitalTwinHealth = void 0;
+exports.registerIoTDevice = exports.setupIoTInfrastructure = exports.analyzeMaintenanceNeeds = exports.onEmergencyAlertCreated = exports.receiveIoTData = exports.getInsuranceMarketStats = exports.getInsuranceProviders = exports.getClaimDetails = exports.fileInsuranceClaim = exports.getCustomerPolicies = exports.purchaseInsurancePolicy = exports.getInsuranceQuotes = exports.getCertificationStats = exports.verifyCertificate = exports.getVehicleCertificate = exports.getCustomerInspections = exports.getInspectionDetails = exports.scheduleVehicleInspection = exports.getServiceNetworkStats = exports.getAvailableTimeSlots = exports.getServiceCenterReviews = exports.submitServiceReview = exports.getCustomerServiceRequests = exports.createServiceRequest = exports.getServiceCenterDetails = exports.findServiceCenters = exports.getEVNetworkStats = exports.getEVCompatibility = exports.getEVChargingRoute = exports.findEVChargingStations = exports.getCachedVehicleHistory = exports.getVehicleHistoryReport = exports.b2bMarketInsightsAPI = exports.b2bValuationAPI = exports.upgradeB2BSubscription = exports.cancelB2BSubscription = exports.getB2BSubscription = exports.createB2BSubscription = exports.getCarValuation = exports.getSubscriptionStatus = exports.getRegionalPriceVariations = exports.getSalesPeakHours = exports.getDealerPerformance = exports.getMarketTrends = exports.getAveragePriceByModel = exports.onUserDelete = exports.onUserCreate = exports.onCarDelete = exports.onCarCreate = exports.incrementCarViewCount = void 0;
+exports.syncAuthToFirestore = exports.getActiveAuthUsers = exports.getAuthUsersCount = exports.messengerWebhook = exports.handleFacebookDataDeletion = exports.verifyRecaptchaToken = exports.translateText = exports.analyzeCarImage = exports.geocodeAddressOnCarCreate = exports.sendChatNotification = exports.getMaintenanceStats = exports.sendMaintenanceReminders = exports.analyzeProactiveMaintenance = exports.acceptServiceOffer = exports.getUserMaintenanceAlerts = exports.createMaintenanceAlert = exports.resetDigitalTwin = exports.getDigitalTwinStats = exports.analyzeDigitalTwinHealth = exports.syncDigitalTwinToBigQuery = exports.onLiveDataUpdated = exports.getDigitalTwin = exports.removeIoTDevice = exports.getIoTDeviceStats = void 0;
+// Export statistics and counter functions
+var stats_1 = require("./stats");
+Object.defineProperty(exports, "incrementCarViewCount", { enumerable: true, get: function () { return stats_1.incrementCarViewCount; } });
+Object.defineProperty(exports, "onCarCreate", { enumerable: true, get: function () { return stats_1.onCarCreate; } });
+Object.defineProperty(exports, "onCarDelete", { enumerable: true, get: function () { return stats_1.onCarDelete; } });
+Object.defineProperty(exports, "onUserCreate", { enumerable: true, get: function () { return stats_1.onUserCreate; } });
+Object.defineProperty(exports, "onUserDelete", { enumerable: true, get: function () { return stats_1.onUserDelete; } });
 // Export analytics functions
 var analytics_1 = require("./analytics");
 Object.defineProperty(exports, "getAveragePriceByModel", { enumerable: true, get: function () { return analytics_1.getAveragePriceByModel; } });
@@ -86,12 +93,30 @@ Object.defineProperty(exports, "getUserMaintenanceAlerts", { enumerable: true, g
 Object.defineProperty(exports, "acceptServiceOffer", { enumerable: true, get: function () { return proactive_maintenance_1.acceptServiceOffer; } });
 Object.defineProperty(exports, "analyzeProactiveMaintenance", { enumerable: true, get: function () { return proactive_maintenance_1.analyzeProactiveMaintenance; } });
 Object.defineProperty(exports, "sendMaintenanceReminders", { enumerable: true, get: function () { return proactive_maintenance_1.sendMaintenanceReminders; } });
-Object.defineProperty(exports, "updateMaintenanceRequests", { enumerable: true, get: function () { return proactive_maintenance_1.updateMaintenanceRequests; } });
-// Export social token exchange functions, metrics & rotation stub
-var social_tokens_1 = require("./social-tokens");
-Object.defineProperty(exports, "getSocialAccessToken", { enumerable: true, get: function () { return social_tokens_1.getSocialAccessToken; } });
-Object.defineProperty(exports, "fetchSocialAccessToken", { enumerable: true, get: function () { return social_tokens_1.fetchSocialAccessToken; } });
-Object.defineProperty(exports, "getSocialTokenMetrics", { enumerable: true, get: function () { return social_tokens_1.getSocialTokenMetrics; } });
-Object.defineProperty(exports, "rotateSocialPlatformTokens", { enumerable: true, get: function () { return social_tokens_1.rotateSocialPlatformTokens; } });
-Object.defineProperty(exports, "snapshotSocialTokenMetrics", { enumerable: true, get: function () { return social_tokens_1.snapshotSocialTokenMetrics; } });
+Object.defineProperty(exports, "getMaintenanceStats", { enumerable: true, get: function () { return proactive_maintenance_1.getMaintenanceStats; } });
+// Export chat notification functions
+var notifications_1 = require("./notifications");
+Object.defineProperty(exports, "sendChatNotification", { enumerable: true, get: function () { return notifications_1.sendChatNotification; } });
+// Export geolocation functions
+var geolocation_1 = require("./geolocation");
+Object.defineProperty(exports, "geocodeAddressOnCarCreate", { enumerable: true, get: function () { return geolocation_1.geocodeAddressOnCarCreate; } });
+// Export image analysis functions
+var vision_1 = require("./vision");
+Object.defineProperty(exports, "analyzeCarImage", { enumerable: true, get: function () { return vision_1.analyzeCarImage; } });
+// Export translation functions
+var translation_1 = require("./translation");
+Object.defineProperty(exports, "translateText", { enumerable: true, get: function () { return translation_1.translateText; } });
+// Export reCAPTCHA verification functions
+var recaptcha_1 = require("./recaptcha");
+Object.defineProperty(exports, "verifyRecaptchaToken", { enumerable: true, get: function () { return recaptcha_1.verifyRecaptchaToken; } });
+// Export Facebook integration functions
+var data_deletion_1 = require("./facebook/data-deletion");
+Object.defineProperty(exports, "handleFacebookDataDeletion", { enumerable: true, get: function () { return data_deletion_1.handleFacebookDataDeletion; } });
+var messenger_webhook_1 = require("./facebook/messenger-webhook");
+Object.defineProperty(exports, "messengerWebhook", { enumerable: true, get: function () { return messenger_webhook_1.messengerWebhook; } });
+// Export Firebase Auth user functions
+var get_auth_users_count_1 = require("./get-auth-users-count");
+Object.defineProperty(exports, "getAuthUsersCount", { enumerable: true, get: function () { return get_auth_users_count_1.getAuthUsersCount; } });
+Object.defineProperty(exports, "getActiveAuthUsers", { enumerable: true, get: function () { return get_auth_users_count_1.getActiveAuthUsers; } });
+Object.defineProperty(exports, "syncAuthToFirestore", { enumerable: true, get: function () { return get_auth_users_count_1.syncAuthToFirestore; } });
 //# sourceMappingURL=index.js.map

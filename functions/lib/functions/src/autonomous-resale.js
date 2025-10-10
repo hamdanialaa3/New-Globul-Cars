@@ -133,7 +133,7 @@ exports.cleanupExpiredStrategies = (0, scheduler_1.onSchedule)({
 async function performMarketAnalysis(vin) {
     try {
         // الحصول على بيانات السيارة
-        const carDoc = await getDoc((0, firestore_2.doc)(db, 'cars', vin));
+        const carDoc = await (0, firestore_2.getDoc)((0, firestore_2.doc)(db, 'cars', vin));
         if (!carDoc.exists())
             return;
         const car = carDoc.data();
@@ -301,7 +301,7 @@ function calculateMileageAdjustment(mileage) {
  */
 async function applyAIStrategyLogic(strategyId, offer) {
     try {
-        const strategyDoc = await getDoc((0, firestore_2.doc)(db, 'saleStrategies', strategyId));
+        const strategyDoc = await (0, firestore_2.getDoc)((0, firestore_2.doc)(db, 'saleStrategies', strategyId));
         if (!strategyDoc.exists())
             return;
         const strategy = strategyDoc.data();
@@ -362,7 +362,7 @@ async function scheduleMarketMonitoring(strategyId) {
 async function checkStrategyAdjustment(strategyId) {
     var _a;
     try {
-        const strategyDoc = await getDoc((0, firestore_2.doc)(db, 'saleStrategies', strategyId));
+        const strategyDoc = await (0, firestore_2.getDoc)((0, firestore_2.doc)(db, 'saleStrategies', strategyId));
         if (!strategyDoc.exists())
             return;
         const strategy = strategyDoc.data();
@@ -392,7 +392,7 @@ async function checkStrategyAdjustment(strategyId) {
 async function optimizeStrategyPrices(strategyId) {
     var _a;
     try {
-        const strategyDoc = await getDoc((0, firestore_2.doc)(db, 'saleStrategies', strategyId));
+        const strategyDoc = await (0, firestore_2.getDoc)((0, firestore_2.doc)(db, 'saleStrategies', strategyId));
         if (!strategyDoc.exists())
             return;
         const strategy = strategyDoc.data();

@@ -1,6 +1,6 @@
 "use strict";
 // IoT Service for Bulgarian Car Marketplace
-// خدمة IoT لسوق السيارات البلغاري
+// (Comment removed - was in Arabic)
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.gloubulIoTService = exports.GloubulIoTService = void 0;
 const pubsub_1 = require("@google-cloud/pubsub");
@@ -51,7 +51,7 @@ class GloubulIoTService {
         this.bigqueryClient = new bigquery_1.BigQuery({ projectId });
     }
     /**
-     * إنشاء سجل أجهزة IoT جديد
+     * (Comment removed - was in Arabic)
      */
     async createDeviceRegistry() {
         try {
@@ -87,7 +87,7 @@ class GloubulIoTService {
         }
     }
     /**
-     * تسجيل جهاز جديد في IoT Core
+     * (Comment removed - was in Arabic)
      */
     async registerDevice(deviceId, publicKey) {
         try {
@@ -124,7 +124,7 @@ class GloubulIoTService {
         }
     }
     /**
-     * إنشاء مواضيع Pub/Sub للأحداث
+     * (Comment removed - was in Arabic)
      */
     async createPubSubTopics() {
         try {
@@ -152,19 +152,19 @@ class GloubulIoTService {
         }
     }
     /**
-     * إنشاء جداول BigQuery للبيانات
+     * (Comment removed - was in Arabic)
      */
     async createBigQueryTables() {
         try {
             const datasetId = 'gloubul_iot_data';
             const dataset = this.bigqueryClient.dataset(datasetId);
-            // إنشاء Dataset إذا لم يكن موجوداً
+            // (Comment removed - was in Arabic)
             const [datasetExists] = await dataset.exists();
             if (!datasetExists) {
                 await this.bigqueryClient.createDataset(datasetId);
                 logger.info(`تم إنشاء مجموعة البيانات: ${datasetId}`);
             }
-            // إنشاء جدول البيانات الحية
+            // (Comment removed - was in Arabic)
             const liveDataSchema = [
                 { name: 'deviceId', type: 'STRING', mode: 'REQUIRED' },
                 { name: 'vin', type: 'STRING', mode: 'REQUIRED' },
@@ -186,7 +186,7 @@ class GloubulIoTService {
                 { name: 'accelerationZ', type: 'FLOAT', mode: 'NULLABLE' }
             ];
             await dataset.createTable('live_vehicle_data', { schema: liveDataSchema });
-            // إنشاء جدول التوأم الرقمي
+            // (Comment removed - was in Arabic)
             const twinSchema = [
                 { name: 'vin', type: 'STRING', mode: 'REQUIRED' },
                 { name: 'userId', type: 'STRING', mode: 'REQUIRED' },
@@ -218,7 +218,7 @@ class GloubulIoTService {
         }
     }
     /**
-     * إرسال بيانات إلى BigQuery
+     * (Comment removed - was in Arabic)
      */
     async insertDataToBigQuery(tableName, data) {
         try {
@@ -233,7 +233,7 @@ class GloubulIoTService {
         }
     }
     /**
-     * نشر حدث إلى Pub/Sub
+     * (Comment removed - was in Arabic)
      */
     async publishEvent(topicName, data, attributes) {
         try {
@@ -251,7 +251,7 @@ class GloubulIoTService {
         }
     }
     /**
-     * الحصول على إحصائيات الأجهزة
+     * (Comment removed - was in Arabic)
      */
     async getDeviceStats() {
         try {
@@ -272,7 +272,7 @@ class GloubulIoTService {
         }
     }
     /**
-     * إزالة جهاز من IoT Core
+     * (Comment removed - was in Arabic)
      */
     async removeDevice(deviceId) {
         try {

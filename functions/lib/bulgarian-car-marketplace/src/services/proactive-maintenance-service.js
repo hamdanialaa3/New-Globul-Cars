@@ -9,26 +9,26 @@ class ProactiveMaintenanceService {
         this.BULGARIAN_TIMEZONE = 'Europe/Sofia';
     }
     /**
-     * إنشاء تنبيه صيانة استباقي
+     * (Comment removed - was in Arabic)
      */
     async createMaintenanceAlert(alertData) {
         try {
             const alertId = `alert_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
             const alertRef = (0, firestore_1.doc)(this.db, 'maintenanceAlerts', alertId);
-            const alert = Object.assign(Object.assign({}, alertData), { id: alertId, createdAt: firestore_1.Timestamp.now(), expiresAt: firestore_1.Timestamp.fromDate(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)) // 7 أيام
+            const alert = Object.assign(Object.assign({}, alertData), { id: alertId, createdAt: firestore_1.Timestamp.now(), expiresAt: firestore_1.Timestamp.fromDate(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)) // 7 ????
              });
             await (0, firestore_1.setDoc)(alertRef, alert);
-            // إرسال إشعارات لمراكز الخدمة المناسبة
+            // (Comment removed - was in Arabic)
             await this.notifyServiceCenters(alert);
             return alertId;
         }
         catch (error) {
-            console.error('خطأ في إنشاء تنبيه الصيانة:', error);
+            console.error('[SERVICE] :', error);
             throw new Error('فشل في إنشاء تنبيه الصيانة');
         }
     }
     /**
-     * الحصول على تنبيهات الصيانة لمستخدم
+     * (Comment removed - was in Arabic)
      */
     async getUserMaintenanceAlerts(userId) {
         try {
@@ -37,12 +37,12 @@ class ProactiveMaintenanceService {
             return alertsSnapshot.docs.map(doc => doc.data());
         }
         catch (error) {
-            console.error('خطأ في الحصول على تنبيهات الصيانة:', error);
+            console.error('[SERVICE] :', error);
             return [];
         }
     }
     /**
-     * إرسال عرض من مركز خدمة
+     * (Comment removed - was in Arabic)
      */
     async submitServiceOffer(alertId, offer) {
         try {
@@ -52,19 +52,19 @@ class ProactiveMaintenanceService {
                 throw new Error('تنبيه الصيانة غير موجود');
             }
             const alert = alertDoc.data();
-            // إضافة العرض إلى قائمة العروض
+            // (Comment removed - was in Arabic)
             const updatedOffers = [...alert.serviceCenters, offer];
             await (0, firestore_1.updateDoc)(alertRef, {
                 serviceCenters: updatedOffers
             });
         }
         catch (error) {
-            console.error('خطأ في إرسال عرض الخدمة:', error);
+            console.error('[SERVICE] :', error);
             throw new Error('فشل في إرسال عرض الخدمة');
         }
     }
     /**
-     * قبول عرض صيانة وإنشاء طلب خدمة
+     * (Comment removed - was in Arabic)
      */
     async acceptServiceOffer(alertId, centerId, scheduledDate) {
         try {
@@ -78,7 +78,7 @@ class ProactiveMaintenanceService {
             if (!selectedOffer) {
                 throw new Error('عرض الخدمة غير موجود');
             }
-            // إنشاء طلب الخدمة
+            // (Comment removed - was in Arabic)
             const requestId = `request_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
             const requestRef = (0, firestore_1.doc)(this.db, 'maintenanceRequests', requestId);
             const request = {
@@ -89,7 +89,7 @@ class ProactiveMaintenanceService {
                 serviceCenterId: centerId,
                 status: 'confirmed',
                 scheduledDate: firestore_1.Timestamp.fromDate(scheduledDate),
-                estimatedCompletion: firestore_1.Timestamp.fromDate(new Date(scheduledDate.getTime() + 2 * 60 * 60 * 1000)), // 2 ساعات
+                estimatedCompletion: firestore_1.Timestamp.fromDate(new Date(scheduledDate.getTime() + 2 * 60 * 60 * 1000)), // 2 ?????
                 actualCost: selectedOffer.price,
                 currency: 'EUR',
                 workDescription: alert.recommendedActions,
@@ -98,19 +98,19 @@ class ProactiveMaintenanceService {
                 updatedAt: firestore_1.Timestamp.now()
             };
             await (0, firestore_1.setDoc)(requestRef, request);
-            // تحديث حالة التنبيه
+            // (Comment removed - was in Arabic)
             await (0, firestore_1.updateDoc)(alertRef, {
                 status: 'accepted'
             });
             return requestId;
         }
         catch (error) {
-            console.error('خطأ في قبول عرض الخدمة:', error);
+            console.error('[SERVICE] :', error);
             throw new Error('فشل في قبول عرض الخدمة');
         }
     }
     /**
-     * الحصول على طلبات الصيانة لمستخدم
+     * (Comment removed - was in Arabic)
      */
     async getUserMaintenanceRequests(userId) {
         try {
@@ -119,12 +119,12 @@ class ProactiveMaintenanceService {
             return requestsSnapshot.docs.map(doc => doc.data());
         }
         catch (error) {
-            console.error('خطأ في الحصول على طلبات الصيانة:', error);
+            console.error('[SERVICE] :', error);
             return [];
         }
     }
     /**
-     * تحديث حالة طلب الصيانة
+     * (Comment removed - was in Arabic)
      */
     async updateMaintenanceRequest(requestId, updates) {
         try {
@@ -132,33 +132,31 @@ class ProactiveMaintenanceService {
             await (0, firestore_1.updateDoc)(requestRef, Object.assign(Object.assign({}, updates), { updatedAt: firestore_1.Timestamp.now() }));
         }
         catch (error) {
-            console.error('خطأ في تحديث طلب الصيانة:', error);
+            console.error('[SERVICE] :', error);
             throw new Error('فشل في تحديث طلب الصيانة');
         }
     }
     /**
-     * إشعار مراكز الخدمة بتنبيه صيانة جديد
+     * (Comment removed - was in Arabic)
      */
     async notifyServiceCenters(alert) {
         try {
-            // في الإنتاج، سيتم إرسال إشعارات لمراكز الخدمة عبر FCM أو Pub/Sub
-            console.log(`إرسال إشعار صيانة لمراكز الخدمة بالقرب من ${alert.vin}`);
-            // محاكاة إرسال إشعارات
+            // (Comment removed - was in Arabic)
+            // (Comment removed - was in Arabic)
             const mockCenters = await this.getNearbyServiceCenters(alert.vin);
             for (const center of mockCenters) {
-                // إرسال إشعار لكل مركز خدمة
-                console.log(`إرسال إشعار لمركز ${center.name}: ${alert.title}`);
+                // (Comment removed - was in Arabic)
             }
         }
         catch (error) {
-            console.error('خطأ في إشعار مراكز الخدمة:', error);
+            console.error('[SERVICE] :', error);
         }
     }
     /**
-     * الحصول على مراكز الخدمة القريبة (محاكاة)
+     * (Comment removed - was in Arabic)
      */
     async getNearbyServiceCenters(vin) {
-        // في الإنتاج، سيتم البحث الفعلي بناءً على موقع السيارة
+        // (Comment removed - was in Arabic)
         return [
             {
                 id: 'center_1',
@@ -187,17 +185,17 @@ class ProactiveMaintenanceService {
         ];
     }
     /**
-     * تحليل البيانات للكشف عن الحاجة للصيانة
+     * (Comment removed - was in Arabic)
      */
     analyzeMaintenanceNeeds(digitalTwin) {
         const issues = [];
         const actions = [];
-        // فحص مستوى الوقود
+        // (Comment removed - was in Arabic)
         if (digitalTwin.fuelLevelPercent < 15) {
             issues.push('مستوى الوقود منخفض');
             actions.push('تزويد الوقود');
         }
-        // فحص حالة المحرك
+        // (Comment removed - was in Arabic)
         if (digitalTwin.engineHealth === 'critical') {
             issues.push('حالة المحرك حرجة - أكواد أعطال نشطة');
             actions.push('فحص تشخيصي شامل للمحرك');
@@ -207,14 +205,14 @@ class ProactiveMaintenanceService {
             issues.push('تحذير من حالة المحرك');
             actions.push('فحص وقائي للمحرك');
         }
-        // فحص الصيانة الدورية
+        // (Comment removed - was in Arabic)
         if (digitalTwin.totalMileage >= digitalTwin.nextServiceDueKm) {
             issues.push('الصيانة الدورية مطلوبة');
             actions.push('تغيير زيت المحرك وفلاتر');
             actions.push('فحص المكابح والإطارات');
             actions.push('فحص السوائل والأنظمة الكهربائية');
         }
-        // فحص البطارية
+        // (Comment removed - was in Arabic)
         if (digitalTwin.batteryLevel < 30) {
             issues.push('بطارية الجهاز ضعيفة');
             actions.push('فحص وشحن بطارية الجهاز');
@@ -222,7 +220,7 @@ class ProactiveMaintenanceService {
         if (issues.length === 0) {
             return null;
         }
-        // تحديد الأولوية
+        // (Comment removed - was in Arabic)
         let priority = 'low';
         if (issues.some(issue => issue.includes('حرجة') || issue.includes('critical'))) {
             priority = 'critical';

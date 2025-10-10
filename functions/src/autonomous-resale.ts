@@ -1,6 +1,6 @@
 import { onDocumentCreated, onDocumentUpdated } from 'firebase-functions/v2/firestore';
 import { onSchedule } from 'firebase-functions/v2/scheduler';
-import { getFirestore, collection, doc, getDocs, setDoc, updateDoc, query, where, orderBy, limit, Timestamp } from 'firebase/firestore';
+import { getFirestore, collection, doc, getDocs, getDoc, setDoc, updateDoc, query, where, orderBy, limit, Timestamp } from 'firebase/firestore';
 import { logger } from 'firebase-functions';
 
 const db = getFirestore();

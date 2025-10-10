@@ -1,7 +1,7 @@
 // functions/src/subscriptions.ts
 // B2B Subscription Management for Bulgarian Car Marketplace
 
-import { onCall, onDocumentCreated } from 'firebase-functions/v2/https';
+import { onCall } from 'firebase-functions/v2/https';
 import { getFirestore } from 'firebase-admin/firestore';
 import { logger } from 'firebase-functions';
 import { BigQuery } from '@google-cloud/bigquery';

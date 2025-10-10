@@ -139,7 +139,7 @@ export const syncAuthToFirestore = functions.https.onCall(async (data, context) 
         // Check if user exists in Firestore
         const userDoc = await userRef.get();
         
-        if (!userDoc.exists()) {
+        if (!userDoc.exists) {
           // Create new user document
           batch.set(userRef, {
             uid: userRecord.uid,
