@@ -14,6 +14,7 @@ import {
   writeBatch
 } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
+import { firebaseAuthRealUsers } from './firebase-auth-real-users';
 
 // User Management Interfaces
 export interface UserRole {
@@ -219,6 +220,91 @@ class AdvancedUserManagementService {
     }
   ): Promise<{ users: AdvancedUser[]; total: number; hasMore: boolean }> {
     try {
+      console.log('🔄 Getting users from Firebase...');
+      
+      // Try to get users from Firebase Auth first (REAL data!)
+      try {
+        const authUsers = await firebaseAuthRealUsers.getAuthUsersList();
+        console.log(`✅ Got ${authUsers.length} REAL users from Firebase Auth`);
+        
+        // Convert Firebase Auth users to AdvancedUser format
+        const convertedUsers: AdvancedUser[] = authUsers.map(authUser => ({
+          uid: authUser.uid,
+          email: authUser.email,
+          displayName: authUser.displayName || 'User',
+          phoneNumber: authUser.phoneNumber || undefined,
+          location: {
+            city: 'Sofia',
+            region: 'Sofia',
+            country: 'Bulgaria'
+          },
+          profile: {
+            isDealer: false,
+            preferredCurrency: 'EUR' as const,
+            timezone: 'Europe/Sofia',
+            language: 'bg' as const,
+            avatar: authUser.photoURL || undefined
+          },
+          roles: ['user'],
+          customPermissions: [],
+          status: authUser.disabled ? 'suspended' : 'active' as const,
+          verification: {
+            email: authUser.emailVerified,
+            phone: !!authUser.phoneNumber,
+            identity: false,
+            business: false
+          },
+          preferences: {
+            notifications: true,
+            marketingEmails: false,
+            language: 'bg' as const,
+            currency: 'EUR' as const
+          },
+          security: {
+            lastLogin: authUser.lastSignInTime ? new Date(authUser.lastSignInTime) : new Date(),
+            loginCount: 0,
+            failedAttempts: 0,
+            twoFactorEnabled: false,
+            ipAddresses: [],
+            userAgent: 'Firebase Auth'
+          },
+          createdAt: authUser.createdAt ? new Date(authUser.createdAt) : new Date(),
+          updatedAt: new Date(),
+          createdBy: 'system',
+          lastModifiedBy: 'system'
+        }));
+        
+        // Apply filters if needed
+        let filteredUsers = convertedUsers;
+        
+        if (filters?.status) {
+          filteredUsers = filteredUsers.filter(u => u.status === filters.status);
+        }
+        
+        if (filters?.search) {
+          const searchLower = filters.search.toLowerCase();
+          filteredUsers = filteredUsers.filter(u => 
+            u.email.toLowerCase().includes(searchLower) ||
+            u.displayName.toLowerCase().includes(searchLower)
+          );
+        }
+        
+        // Pagination
+        const startIndex = (page - 1) * limitCount;
+        const endIndex = startIndex + limitCount;
+        const paginatedUsers = filteredUsers.slice(startIndex, endIndex);
+        
+        return {
+          users: paginatedUsers,
+          total: filteredUsers.length,
+          hasMore: endIndex < filteredUsers.length
+        };
+        
+      } catch (authError) {
+        console.warn('⚠️ Could not get from Firebase Auth, falling back to Firestore');
+      }
+      
+      // Fallback: Get from Firestore
       let q = query(collection(db, 'users'), orderBy('createdAt', 'desc'));
       
       if (filters?.status) {
