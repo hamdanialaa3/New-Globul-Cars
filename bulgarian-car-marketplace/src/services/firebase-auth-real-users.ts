@@ -63,10 +63,20 @@ class FirebaseAuthRealUsers {
     } catch (error: any) {
       console.error('❌ Error getting real auth users:', error);
       
-      // If function not deployed, return 0
+      // If function not deployed, use Firestore count instead
       if (error.code === 'functions/not-found') {
-        console.warn('⚠️ Cloud Function not deployed yet. Deploy with: firebase deploy --only functions');
-        return 0;
+        console.warn('⚠️ Cloud Function not deployed yet. Using Firestore as temporary fallback...');
+        try {
+          const { collection, getDocs } = await import('firebase/firestore');
+          const { db } = await import('../firebase/firebase-config');
+          const usersSnapshot = await getDocs(collection(db, 'users'));
+          const count = usersSnapshot.size;
+          console.log(`📊 Firestore users count: ${count}`);
+          return count;
+        } catch (firestoreError) {
+          console.error('Failed to get from Firestore too:', firestoreError);
+          return 0;
+        }
       }
       
       throw error;
@@ -108,16 +118,52 @@ class FirebaseAuthRealUsers {
    */
   async getAuthUsersList(): Promise<AuthUser[]> {
     try {
+      console.log('📞 Getting auth users list...');
+      
       const getAuthUsers = httpsCallable<{}, AuthUsersResponse>(
         this.functions, 
         'getAuthUsersCount'
       );
       
       const result = await getAuthUsers();
+      console.log(`✅ Got ${result.data.users.length} users from Cloud Function`);
       return result.data.users;
       
     } catch (error: any) {
       console.error('❌ Error getting auth users list:', error);
+      
+      // If Cloud Function not deployed, get from Firestore as fallback
+      if (error.code === 'functions/not-found') {
+        console.warn('⚠️ Cloud Function not ready. Reading from Firestore...');
+        try {
+          const { collection, getDocs } = await import('firebase/firestore');
+          const { db } = await import('../firebase/firebase-config');
+          const usersSnapshot = await getDocs(collection(db, 'users'));
+          
+          const users: AuthUser[] = usersSnapshot.docs.map(doc => {
+            const data = doc.data();
+            return {
+              uid: doc.id,
+              email: data.email || 'unknown@example.com',
+              displayName: data.displayName || data.name || 'User',
+              photoURL: data.photoURL || data.avatar || null,
+              emailVerified: data.emailVerified || false,
+              phoneNumber: data.phoneNumber || data.phone || null,
+              disabled: data.disabled || data.isBanned || false,
+              createdAt: data.createdAt?.toDate?.()?.toISOString() || new Date().toISOString(),
+              lastSignInTime: data.lastLogin?.toDate?.()?.toISOString() || data.lastLoginAt?.toDate?.()?.toISOString() || null,
+              providers: ['email']
+            };
+          });
+          
+          console.log(`✅ Got ${users.length} users from Firestore fallback`);
+          return users;
+        } catch (firestoreError) {
+          console.error('Failed to get from Firestore:', firestoreError);
+          return [];
+        }
+      }
+      
       return [];
     }
   }
