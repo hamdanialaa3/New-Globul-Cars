@@ -139,6 +139,11 @@ export class SocialAuthService {
   static async signInWithEmailAndPassword(email: string, password: string): Promise<UserCredential> {
     try {
       const result = await signInWithEmailAndPassword(auth, email, password);
+      
+      // AUTO-SYNC: Update user profile in Firestore
+      console.log('✅ Email/Password login successful, syncing to Firestore...');
+      await this.createOrUpdateBulgarianProfile(result.user);
+      
       return result;
     } catch (error: any) {
       console.error('Email/Password sign-in error:', error);
@@ -152,6 +157,11 @@ export class SocialAuthService {
   static async createUserWithEmailAndPassword(email: string, password: string): Promise<UserCredential> {
     try {
       const result = await createUserWithEmailAndPassword(auth, email, password);
+      
+      // AUTO-SYNC: Create user profile in Firestore
+      console.log('✅ Email/Password registration successful, creating Firestore profile...');
+      await this.createOrUpdateBulgarianProfile(result.user);
+      
       return result;
     } catch (error: any) {
       console.error('Email/Password registration error:', error);
@@ -177,6 +187,11 @@ export class SocialAuthService {
         displayName: result.user.displayName,
         uid: result.user.uid
       });
+      
+      // AUTO-SYNC: Create/Update user profile in Firestore
+      console.log('📝 Syncing Google user to Firestore...');
+      await this.createOrUpdateBulgarianProfile(result.user);
+      console.log('✅ Google user synced to Firestore');
       
       return result;
     } catch (error: any) {
@@ -241,8 +256,22 @@ export class SocialAuthService {
    */
   static async signInWithFacebook(): Promise<UserCredential> {
     try {
+      console.log('🔵 Starting Facebook sign-in process...');
+      
       // First try popup
       const result = await signInWithPopup(auth, facebookProvider);
+      
+      console.log('✅ Facebook sign-in successful:', {
+        email: result.user.email,
+        displayName: result.user.displayName,
+        uid: result.user.uid
+      });
+      
+      // AUTO-SYNC: Create/Update user profile in Firestore
+      console.log('📝 Syncing Facebook user to Firestore...');
+      await this.createOrUpdateBulgarianProfile(result.user);
+      console.log('✅ Facebook user synced to Firestore');
+      
       return result;
     } catch (error: any) {
       console.warn('Facebook popup failed, trying redirect:', error.code);

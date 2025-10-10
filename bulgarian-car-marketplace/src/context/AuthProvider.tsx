@@ -28,8 +28,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setCurrentUser(user);
+      
+      // AUTO-SYNC: Save/Update user in Firestore whenever auth state changes
+      if (user) {
+        try {
+          console.log('🔄 Auto-syncing user to Firestore:', user.email);
+          await SocialAuthService.createOrUpdateBulgarianProfile(user);
+          console.log('✅ User synced to Firestore successfully');
+        } catch (error) {
+          console.warn('⚠️ Could not sync user to Firestore:', error);
+          // Don't block login if Firestore sync fails
+        }
+      }
+      
       setLoading(false);
     });
 
@@ -40,6 +53,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         const result = await SocialAuthService.handleRedirectResult();
         if (result && result.user) {
           console.log('✅ Redirect sign-in successful:', result.user.email);
+          
+          // AUTO-SYNC: Save user to Firestore after redirect
+          try {
+            await SocialAuthService.createOrUpdateBulgarianProfile(result.user);
+            console.log('✅ Redirect user synced to Firestore');
+          } catch (error) {
+            console.warn('⚠️ Could not sync redirect user to Firestore');
+          }
+          
           // User will be set by onAuthStateChanged above
           // Show success message to user
           if (typeof window !== 'undefined') {
