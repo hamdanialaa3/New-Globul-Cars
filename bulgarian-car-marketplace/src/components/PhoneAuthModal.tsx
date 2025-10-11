@@ -14,7 +14,7 @@ interface PhoneAuthModalProps {
   onSuccess: () => void;
 }
 
-const Modal Overlay = styled.div<{ $isOpen: boolean }>`
+const ModalOverlay = styled.div<{ $isOpen: boolean }>`
   position: fixed;
   top: 0;
   left: 0;
