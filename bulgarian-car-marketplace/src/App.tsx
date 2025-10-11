@@ -55,6 +55,7 @@ const LoginPage = React.lazy(() => import('./pages/LoginPage'));
 const RegisterPage = React.lazy(() => import('./pages/RegisterPage'));
 const EmailVerificationPage = React.lazy(() => import('./pages/EmailVerificationPage'));
 const GoogleAuthTest = React.lazy(() => import('./pages/GoogleAuthTest'));
+const GoogleAuthDebug = React.lazy(() => import('./pages/GoogleAuthDebug'));
 // const SimpleGoogleTest = React.lazy(() => import('./pages/SimpleGoogleTest')); // Moved to DDD/
 // const MessagesPage = React.lazy(() => import('./pages/MessagesPage'));
 const DashboardPage = React.lazy(() => import('./pages/DashboardPage'));
@@ -188,6 +189,13 @@ const App: React.FC = () => {
                       <Route path="/verification" element={
                         <FullScreenLayout>
                           <EmailVerificationPage />
+                        </FullScreenLayout>
+                      } />
+                      
+                      {/* Debug Routes - Full Screen */}
+                      <Route path="/debug/google-auth" element={
+                        <FullScreenLayout>
+                          <GoogleAuthDebug />
                         </FullScreenLayout>
                       } />
                       
