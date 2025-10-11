@@ -1,5 +1,5 @@
 // LoginPageGlass.tsx - Premium Glass Morphism Login Page
-// With Background Slideshow and All 6 Authentication Methods
+// With Cinematic Background Slideshow and All 6 Authentication Methods
 
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -23,9 +23,10 @@ import {
 import { useTranslation } from '../../hooks/useTranslation';
 import { SocialAuthService } from '../../firebase/social-auth-service';
 import PhoneAuthModal from '../../components/PhoneAuthModal';
+import BackgroundSlideshow from '../../components/BackgroundSlideshow';
 import { useAuth } from '../../hooks/useAuth';
 
-// Background images array
+// Premium background images array
 const backgroundImages = [
   '/assets/images/Pic/pexels-bylukemiller-29566897.jpg',
   '/assets/images/Pic/pexels-james-collington-2147687246-30772805.jpg',
@@ -83,45 +84,6 @@ const PageContainer = styled.div`
 
   @media (max-width: 768px) {
     padding: 10px;
-  }
-`;
-
-const BackgroundSlider = styled.div<{ $currentImage: string }>`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: url(${props => props.$currentImage});
-    background-size: cover;
-    background-position: center;
-    transition: opacity 1.5s ease-in-out;
-    animation: ${fadeIn} 1.5s ease-in-out;
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-      135deg,
-      rgba(0, 0, 0, 0.7) 0%,
-      rgba(0, 0, 0, 0.5) 50%,
-      rgba(0, 0, 0, 0.7) 100%
-    );
-    z-index: 1;
   }
 `;
 
@@ -496,22 +458,12 @@ const LoginPageGlass: React.FC = () => {
   const { user } = useAuth();
 
   // State
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [formData, setFormData] = useState({ email: '', password: '', rememberMe: false });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [showPhoneModal, setShowPhoneModal] = useState(false);
-
-  // Background slideshow effect
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentImageIndex((prev) => (prev + 1) % backgroundImages.length);
-    }, 6000); // Change image every 6 seconds
-
-    return () => clearInterval(interval);
-  }, []);
 
   // Redirect if already logged in
   useEffect(() => {
@@ -596,7 +548,11 @@ const LoginPageGlass: React.FC = () => {
 
   return (
     <PageContainer>
-      <BackgroundSlider $currentImage={backgroundImages[currentImageIndex]} />
+      <BackgroundSlideshow 
+        images={backgroundImages} 
+        interval={7000}
+        transitionDuration={7}
+      />
       
       <GlassWrapper>
         <Title>{language === 'bg' ? 'Влезте' : 'Login'}</Title>
