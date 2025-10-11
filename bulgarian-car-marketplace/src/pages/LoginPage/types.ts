@@ -25,6 +25,8 @@ export interface LoginActions {
   handleGoogleLogin: () => Promise<void>;
   handleFacebookLogin: () => Promise<void>;
   handleAppleLogin: () => Promise<void>;
+  handlePhoneLogin: () => Promise<void>;
+  handleAnonymousLogin: () => Promise<void>;
   handleSocialLoginError: (error: string) => void;
   validateForm: () => boolean;
 }

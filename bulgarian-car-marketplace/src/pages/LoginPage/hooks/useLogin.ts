@@ -181,6 +181,31 @@ export const useLogin = (): UseLoginReturn => {
     }
   };
 
+  const handlePhoneLogin = async () => {
+    // Phone login will be handled by PhoneAuthModal
+    // This is just a placeholder
+    return;
+  };
+
+  const handleAnonymousLogin = async () => {
+    setLoading(true);
+    setError('');
+    setSuccess('');
+
+    try {
+      const result = await SocialAuthService.signInAnonymously();
+      console.log('Anonymous login successful:', result.user);
+      setSuccess(t('auth.loginSuccess', 'Login successful! Redirecting...'));
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 1000);
+    } catch (err: any) {
+      setError(err.message || 'Anonymous login failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleSocialLoginError = (error: string) => {
     setError(error);
   };
@@ -197,6 +222,8 @@ export const useLogin = (): UseLoginReturn => {
     handleGoogleLogin,
     handleFacebookLogin,
     handleAppleLogin,
+    handlePhoneLogin,
+    handleAnonymousLogin,
     handleSocialLoginError,
     validateForm
   };
