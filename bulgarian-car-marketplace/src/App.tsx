@@ -50,9 +50,9 @@ const AdminLoginPage = React.lazy(() => import('./pages/AdminLoginPage'));
 const SuperAdminLogin = React.lazy(() => import('./pages/SuperAdminLogin'));
 const SuperAdminDashboard = React.lazy(() => import('./pages/SuperAdminDashboardNew'));
 const ProfilePage = React.lazy(() => import('./pages/ProfilePage'));
-// Original Working Login Page
-const LoginPage = React.lazy(() => import('./pages/LoginPage'));
-const RegisterPage = React.lazy(() => import('./pages/RegisterPage'));
+// Glass Morphism Premium Auth Pages
+const LoginPage = React.lazy(() => import('./pages/LoginPage/LoginPageGlassFixed'));
+const RegisterPage = React.lazy(() => import('./pages/RegisterPage/RegisterPageGlassFixed'));
 const EmailVerificationPage = React.lazy(() => import('./pages/EmailVerificationPage'));
 const GoogleAuthTest = React.lazy(() => import('./pages/GoogleAuthTest'));
 const GoogleAuthDebug = React.lazy(() => import('./pages/GoogleAuthDebug'));
