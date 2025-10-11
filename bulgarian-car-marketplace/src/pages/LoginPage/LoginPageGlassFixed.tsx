@@ -1,12 +1,11 @@
-// LoginPageGlass.tsx - Premium Glass Morphism Login Page
-// With Cinematic Background Slideshow and All 6 Authentication Methods
+// LoginPageGlassFixed.tsx - Glass Morphism with Working Auth
+// Uses proven useLogin hook with beautiful glass design
 
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import { 
   Mail, 
-  Lock, 
   Eye, 
   EyeOff, 
   Chrome, 
@@ -25,7 +24,7 @@ import { useLogin } from './hooks/useLogin';
 import PhoneAuthModal from '../../components/PhoneAuthModal';
 import BackgroundSlideshow from '../../components/BackgroundSlideshow';
 
-// Premium background images array
+// Background images
 const backgroundImages = [
   '/assets/images/Pic/pexels-bylukemiller-29566897.jpg',
   '/assets/images/Pic/pexels-james-collington-2147687246-30772805.jpg',
@@ -41,34 +40,18 @@ const backgroundImages = [
 
 // Animations
 const fadeIn = keyframes`
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 `;
 
 const slideIn = keyframes`
-  from {
-    opacity: 0;
-    transform: translateX(-30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+  from { opacity: 0; transform: translateX(-30px); }
+  to { opacity: 1; transform: translateX(0); }
 `;
 
 const spin = keyframes`
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 `;
 
 // Styled Components
@@ -107,12 +90,10 @@ const GlassWrapper = styled.div`
     max-width: 100%;
     padding: 30px 20px;
     min-height: auto;
-    border-radius: 20px;
   }
 
   @media (max-width: 480px) {
     padding: 25px 15px;
-    border-radius: 16px;
   }
 `;
 
@@ -172,7 +153,6 @@ const Input = styled.input`
   color: #fff;
   padding: 0 50px 0 20px;
   transition: all 0.3s ease;
-  font-family: 'Poppins', 'Segoe UI', sans-serif;
 
   &::placeholder {
     color: rgba(255, 255, 255, 0.7);
@@ -198,7 +178,6 @@ const InputIcon = styled.div`
   transform: translateY(-50%);
   color: rgba(255, 255, 255, 0.8);
   cursor: pointer;
-  transition: color 0.3s ease;
 
   &:hover {
     color: #fff;
@@ -239,7 +218,6 @@ const RememberLabel = styled.label`
 const ForgotLink = styled(Link)`
   color: rgba(255, 255, 255, 0.9);
   text-decoration: none;
-  transition: all 0.3s ease;
 
   &:hover {
     color: #fff;
@@ -247,7 +225,7 @@ const ForgotLink = styled(Link)`
   }
 `;
 
-const SubmitButton = styled.button<{ $loading?: boolean }>`
+const SubmitButton = styled.button`
   width: 100%;
   height: 52px;
   background: #fff;
@@ -269,10 +247,6 @@ const SubmitButton = styled.button<{ $loading?: boolean }>`
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(255, 255, 255, 0.4);
     background: #f0f0f0;
-  }
-
-  &:active:not(:disabled) {
-    transform: translateY(0);
   }
 
   &:disabled {
@@ -313,7 +287,6 @@ const Divider = styled.div`
 
   @media (max-width: 480px) {
     margin: 20px 0;
-    
     span {
       font-size: 13px;
       padding: 0 10px;
@@ -334,7 +307,7 @@ const SocialButtons = styled.div`
   }
 `;
 
-const SocialButton = styled.button<{ $provider: 'google' | 'facebook' | 'apple' | 'phone' | 'anonymous' }>`
+const SocialButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -358,11 +331,6 @@ const SocialButton = styled.button<{ $provider: 'google' | 'facebook' | 'apple' 
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
-  }
-
-  @media (max-width: 768px) {
-    font-size: 13px;
-    padding: 11px 14px;
   }
 
   @media (max-width: 480px) {
@@ -393,7 +361,6 @@ const RegisterLink = styled.div`
     text-decoration: none;
     font-weight: 600;
     margin-left: 5px;
-    transition: all 0.3s ease;
 
     &:hover {
       text-decoration: underline;
@@ -451,161 +418,28 @@ const SecurityBadge = styled.div`
 `;
 
 // Main Component
-const LoginPageGlass: React.FC = () => {
-  const { t, language } = useTranslation();
-  const navigate = useNavigate();
-  const { user } = useAuth();
-
-  // State
-  const [formData, setFormData] = useState({ email: '', password: '', rememberMe: false });
-  const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+const LoginPageGlassFixed: React.FC = () => {
+  const { language } = useTranslation();
+  const { state, actions } = useLogin();
   const [showPhoneModal, setShowPhoneModal] = useState(false);
 
-  // Redirect if already logged in
-  useEffect(() => {
-    if (user) {
-      navigate('/dashboard');
-    }
-  }, [user, navigate]);
+  const {
+    formData,
+    showPassword,
+    loading,
+    error,
+    success
+  } = state;
 
-  // Handlers
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-    setSuccess('');
-
-    try {
-      await SocialAuthService.signInWithEmailAndPassword(formData.email, formData.password);
-      setSuccess(language === 'bg' ? 'Успешно влизане!' : 'Login successful!');
-      setTimeout(() => navigate('/dashboard'), 1000);
-    } catch (err: any) {
-      setError(err.message || (language === 'bg' ? 'Грешка при влизане' : 'Login failed'));
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleGoogleLogin = async () => {
-    setLoading(true);
-    setError('');
-    setSuccess('');
-    
-    try {
-      console.log('🔵 Starting Google login...');
-      
-      // Try popup first, fallback to redirect automatically
-      const result = await SocialAuthService.signInWithGoogle();
-      
-      console.log('✅ Google login successful:', result.user.email);
-      setSuccess(language === 'bg' ? 'Успешно влизане с Google!' : 'Google login successful!');
-      setTimeout(() => navigate('/dashboard'), 1500);
-    } catch (err: any) {
-      console.error('❌ Google login error:', err);
-      console.error('Error code:', err.code);
-      console.error('Error message:', err.message);
-      
-      // Don't show error if redirect is happening
-      if (err.message === 'REDIRECT_INITIATED' || err.message?.includes('redirect')) {
-        console.log('🔄 Redirecting to Google...');
-        return;
-      }
-      
-      // If popup failed, try redirect
-      if (err.code === 'auth/popup-blocked' || 
-          err.code === 'auth/popup-closed-by-user' ||
-          err.code === 'auth/cancelled-popup-request') {
-        console.log('🔄 Popup failed, trying redirect mode...');
-        try {
-          await SocialAuthService.signInWithGoogleRedirect();
-          // Redirect will happen, don't show error
-          return;
-        } catch (redirectErr) {
-          console.error('❌ Redirect also failed:', redirectErr);
-        }
-      }
-      
-      setError(err.message || (language === 'bg' ? 'Грешка при влизане с Google. الرجاء المحاولة مرة أخرى.' : 'Google login failed. Please try again.'));
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleFacebookLogin = async () => {
-    setLoading(true);
-    setError('');
-    setSuccess('');
-    
-    try {
-      console.log('🔵 Starting Facebook login...');
-      const result = await SocialAuthService.signInWithFacebook();
-      console.log('✅ Facebook login successful:', result.user.email);
-      setSuccess(language === 'bg' ? 'Успешно влизане с Facebook!' : 'Facebook login successful!');
-      setTimeout(() => navigate('/dashboard'), 1500);
-    } catch (err: any) {
-      console.error('❌ Facebook login error:', err);
-      console.error('Error code:', err.code);
-      console.error('Error message:', err.message);
-      
-      // If popup failed, try redirect
-      if (err.code === 'auth/popup-blocked' || 
-          err.code === 'auth/popup-closed-by-user' ||
-          err.code === 'auth/cancelled-popup-request') {
-        console.log('🔄 Popup failed, trying redirect mode...');
-        try {
-          await SocialAuthService.signInWithFacebookRedirect();
-          return;
-        } catch (redirectErr) {
-          console.error('❌ Redirect also failed:', redirectErr);
-        }
-      }
-      
-      setError(err.message || (language === 'bg' ? 'Грешка при влизане с Facebook' : 'Facebook login failed'));
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleAppleLogin = async () => {
-    setLoading(true);
-    setError('');
-    setSuccess('');
-    
-    try {
-      console.log('🍎 Starting Apple login...');
-      const result = await SocialAuthService.signInWithApple();
-      console.log('✅ Apple login successful:', result.user.email);
-      setSuccess(language === 'bg' ? 'Успешно влизане с Apple!' : 'Apple login successful!');
-      setTimeout(() => navigate('/dashboard'), 1500);
-    } catch (err: any) {
-      console.error('❌ Apple login error:', err);
-      setError(err.message || (language === 'bg' ? 'Грешка при влизане с Apple' : 'Apple login failed'));
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleAnonymousLogin = async () => {
-    setLoading(true);
-    setError('');
-    setSuccess('');
-    
-    try {
-      console.log('👤 Starting anonymous login...');
-      const result = await SocialAuthService.signInAnonymously();
-      console.log('✅ Anonymous login successful:', result.user.uid);
-      setSuccess(language === 'bg' ? 'Влезли сте като гост!' : 'Signed in as guest!');
-      setTimeout(() => navigate('/dashboard'), 1500);
-    } catch (err: any) {
-      console.error('❌ Anonymous login error:', err);
-      setError(err.message || (language === 'bg' ? 'Грешка при влизане като гост' : 'Anonymous login failed'));
-    } finally {
-      setLoading(false);
-    }
-  };
+  const {
+    handleInputChange,
+    handleSubmit,
+    handleGoogleLogin,
+    handleFacebookLogin,
+    handleAppleLogin,
+    handleAnonymousLogin,
+    setShowPassword
+  } = actions;
 
   return (
     <PageContainer>
@@ -641,9 +475,10 @@ const LoginPageGlass: React.FC = () => {
           <InputBox>
             <Input
               type="email"
+              name="email"
               placeholder={language === 'bg' ? 'Имейл адрес' : 'Email address'}
               value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              onChange={handleInputChange}
               required
               disabled={loading}
             />
@@ -655,9 +490,10 @@ const LoginPageGlass: React.FC = () => {
           <InputBox>
             <Input
               type={showPassword ? 'text' : 'password'}
+              name="password"
               placeholder={language === 'bg' ? 'Парола' : 'Password'}
               value={formData.password}
-              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+              onChange={handleInputChange}
               required
               disabled={loading}
             />
@@ -670,8 +506,9 @@ const LoginPageGlass: React.FC = () => {
             <RememberLabel>
               <input
                 type="checkbox"
+                name="rememberMe"
                 checked={formData.rememberMe}
-                onChange={(e) => setFormData({ ...formData, rememberMe: e.target.checked })}
+                onChange={handleInputChange}
                 disabled={loading}
               />
               {language === 'bg' ? 'Запомни ме' : 'Remember me'}
@@ -701,27 +538,27 @@ const LoginPageGlass: React.FC = () => {
         </Divider>
 
         <SocialButtons>
-          <SocialButton $provider="google" onClick={handleGoogleLogin} disabled={loading}>
+          <SocialButton onClick={handleGoogleLogin} disabled={loading}>
             <Chrome size={18} />
             Google
           </SocialButton>
 
-          <SocialButton $provider="facebook" onClick={handleFacebookLogin} disabled={loading}>
+          <SocialButton onClick={handleFacebookLogin} disabled={loading}>
             <Facebook size={18} />
             Facebook
           </SocialButton>
 
-          <SocialButton $provider="apple" onClick={handleAppleLogin} disabled={loading}>
+          <SocialButton onClick={handleAppleLogin} disabled={loading}>
             <Apple size={18} />
             Apple
           </SocialButton>
 
-          <SocialButton $provider="phone" onClick={() => setShowPhoneModal(true)} disabled={loading}>
+          <SocialButton onClick={() => setShowPhoneModal(true)} disabled={loading}>
             <Phone size={18} />
             {language === 'bg' ? 'Телефон' : 'Phone'}
           </SocialButton>
 
-          <GuestButton $provider="anonymous" onClick={handleAnonymousLogin} disabled={loading}>
+          <GuestButton onClick={handleAnonymousLogin} disabled={loading}>
             <UserCheck size={18} />
             {language === 'bg' ? 'Продължи като гост' : 'Continue as Guest'}
           </GuestButton>
@@ -745,13 +582,11 @@ const LoginPageGlass: React.FC = () => {
         onClose={() => setShowPhoneModal(false)}
         onSuccess={() => {
           setShowPhoneModal(false);
-          navigate('/dashboard');
         }}
       />
     </PageContainer>
   );
 };
 
-export default LoginPageGlass;
-
+export default LoginPageGlassFixed;
 

@@ -50,9 +50,9 @@ const AdminLoginPage = React.lazy(() => import('./pages/AdminLoginPage'));
 const SuperAdminLogin = React.lazy(() => import('./pages/SuperAdminLogin'));
 const SuperAdminDashboard = React.lazy(() => import('./pages/SuperAdminDashboardNew'));
 const ProfilePage = React.lazy(() => import('./pages/ProfilePage'));
-// Glass Morphism Premium Auth Pages
-const LoginPage = React.lazy(() => import('./pages/LoginPage/LoginPageGlass'));
-const RegisterPage = React.lazy(() => import('./pages/RegisterPage/RegisterPageGlass'));
+// Glass Morphism Premium Auth Pages (Fixed Version)
+const LoginPage = React.lazy(() => import('./pages/LoginPage/LoginPageGlassFixed'));
+const RegisterPage = React.lazy(() => import('./pages/RegisterPage'));
 const EmailVerificationPage = React.lazy(() => import('./pages/EmailVerificationPage'));
 const GoogleAuthTest = React.lazy(() => import('./pages/GoogleAuthTest'));
 // const SimpleGoogleTest = React.lazy(() => import('./pages/SimpleGoogleTest')); // Moved to DDD/
