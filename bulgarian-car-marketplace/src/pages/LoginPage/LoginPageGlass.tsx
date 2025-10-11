@@ -497,19 +497,39 @@ const LoginPageGlass: React.FC = () => {
     
     try {
       console.log('🔵 Starting Google login...');
+      
+      // Try popup first, fallback to redirect automatically
       const result = await SocialAuthService.signInWithGoogle();
+      
       console.log('✅ Google login successful:', result.user.email);
       setSuccess(language === 'bg' ? 'Успешно влизане с Google!' : 'Google login successful!');
       setTimeout(() => navigate('/dashboard'), 1500);
     } catch (err: any) {
       console.error('❌ Google login error:', err);
+      console.error('Error code:', err.code);
+      console.error('Error message:', err.message);
       
       // Don't show error if redirect is happening
-      if (err.message === 'REDIRECT_INITIATED') {
+      if (err.message === 'REDIRECT_INITIATED' || err.message?.includes('redirect')) {
+        console.log('🔄 Redirecting to Google...');
         return;
       }
       
-      setError(err.message || (language === 'bg' ? 'Грешка при влизане с Google' : 'Google login failed'));
+      // If popup failed, try redirect
+      if (err.code === 'auth/popup-blocked' || 
+          err.code === 'auth/popup-closed-by-user' ||
+          err.code === 'auth/cancelled-popup-request') {
+        console.log('🔄 Popup failed, trying redirect mode...');
+        try {
+          await SocialAuthService.signInWithGoogleRedirect();
+          // Redirect will happen, don't show error
+          return;
+        } catch (redirectErr) {
+          console.error('❌ Redirect also failed:', redirectErr);
+        }
+      }
+      
+      setError(err.message || (language === 'bg' ? 'Грешка при влизане с Google. الرجاء المحاولة مرة أخرى.' : 'Google login failed. Please try again.'));
     } finally {
       setLoading(false);
     }
@@ -528,6 +548,22 @@ const LoginPageGlass: React.FC = () => {
       setTimeout(() => navigate('/dashboard'), 1500);
     } catch (err: any) {
       console.error('❌ Facebook login error:', err);
+      console.error('Error code:', err.code);
+      console.error('Error message:', err.message);
+      
+      // If popup failed, try redirect
+      if (err.code === 'auth/popup-blocked' || 
+          err.code === 'auth/popup-closed-by-user' ||
+          err.code === 'auth/cancelled-popup-request') {
+        console.log('🔄 Popup failed, trying redirect mode...');
+        try {
+          await SocialAuthService.signInWithFacebookRedirect();
+          return;
+        } catch (redirectErr) {
+          console.error('❌ Redirect also failed:', redirectErr);
+        }
+      }
+      
       setError(err.message || (language === 'bg' ? 'Грешка при влизане с Facebook' : 'Facebook login failed'));
     } finally {
       setLoading(false);
@@ -718,4 +754,5 @@ const LoginPageGlass: React.FC = () => {
 };
 
 export default LoginPageGlass;
+
 
