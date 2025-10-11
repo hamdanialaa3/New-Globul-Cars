@@ -493,12 +493,23 @@ const LoginPageGlass: React.FC = () => {
   const handleGoogleLogin = async () => {
     setLoading(true);
     setError('');
+    setSuccess('');
+    
     try {
-      await SocialAuthService.signInWithGoogle();
-      setSuccess(language === 'bg' ? 'Успешно влизане!' : 'Login successful!');
-      setTimeout(() => navigate('/dashboard'), 1000);
+      console.log('🔵 Starting Google login...');
+      const result = await SocialAuthService.signInWithGoogle();
+      console.log('✅ Google login successful:', result.user.email);
+      setSuccess(language === 'bg' ? 'Успешно влизане с Google!' : 'Google login successful!');
+      setTimeout(() => navigate('/dashboard'), 1500);
     } catch (err: any) {
-      setError(err.message);
+      console.error('❌ Google login error:', err);
+      
+      // Don't show error if redirect is happening
+      if (err.message === 'REDIRECT_INITIATED') {
+        return;
+      }
+      
+      setError(err.message || (language === 'bg' ? 'Грешка при влизане с Google' : 'Google login failed'));
     } finally {
       setLoading(false);
     }
@@ -507,12 +518,17 @@ const LoginPageGlass: React.FC = () => {
   const handleFacebookLogin = async () => {
     setLoading(true);
     setError('');
+    setSuccess('');
+    
     try {
-      await SocialAuthService.signInWithFacebook();
-      setSuccess(language === 'bg' ? 'Успешно влизане!' : 'Login successful!');
-      setTimeout(() => navigate('/dashboard'), 1000);
+      console.log('🔵 Starting Facebook login...');
+      const result = await SocialAuthService.signInWithFacebook();
+      console.log('✅ Facebook login successful:', result.user.email);
+      setSuccess(language === 'bg' ? 'Успешно влизане с Facebook!' : 'Facebook login successful!');
+      setTimeout(() => navigate('/dashboard'), 1500);
     } catch (err: any) {
-      setError(err.message);
+      console.error('❌ Facebook login error:', err);
+      setError(err.message || (language === 'bg' ? 'Грешка при влизане с Facebook' : 'Facebook login failed'));
     } finally {
       setLoading(false);
     }
@@ -521,12 +537,17 @@ const LoginPageGlass: React.FC = () => {
   const handleAppleLogin = async () => {
     setLoading(true);
     setError('');
+    setSuccess('');
+    
     try {
-      await SocialAuthService.signInWithApple();
-      setSuccess(language === 'bg' ? 'Успешно влизане!' : 'Login successful!');
-      setTimeout(() => navigate('/dashboard'), 1000);
+      console.log('🍎 Starting Apple login...');
+      const result = await SocialAuthService.signInWithApple();
+      console.log('✅ Apple login successful:', result.user.email);
+      setSuccess(language === 'bg' ? 'Успешно влизане с Apple!' : 'Apple login successful!');
+      setTimeout(() => navigate('/dashboard'), 1500);
     } catch (err: any) {
-      setError(err.message);
+      console.error('❌ Apple login error:', err);
+      setError(err.message || (language === 'bg' ? 'Грешка при влизане с Apple' : 'Apple login failed'));
     } finally {
       setLoading(false);
     }
@@ -535,12 +556,17 @@ const LoginPageGlass: React.FC = () => {
   const handleAnonymousLogin = async () => {
     setLoading(true);
     setError('');
+    setSuccess('');
+    
     try {
-      await SocialAuthService.signInAnonymously();
+      console.log('👤 Starting anonymous login...');
+      const result = await SocialAuthService.signInAnonymously();
+      console.log('✅ Anonymous login successful:', result.user.uid);
       setSuccess(language === 'bg' ? 'Влезли сте като гост!' : 'Signed in as guest!');
-      setTimeout(() => navigate('/dashboard'), 1000);
+      setTimeout(() => navigate('/dashboard'), 1500);
     } catch (err: any) {
-      setError(err.message);
+      console.error('❌ Anonymous login error:', err);
+      setError(err.message || (language === 'bg' ? 'Грешка при влизане като гост' : 'Anonymous login failed'));
     } finally {
       setLoading(false);
     }

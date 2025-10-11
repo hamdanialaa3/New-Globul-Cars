@@ -477,12 +477,22 @@ const RegisterPageGlass: React.FC = () => {
   const handleGoogleRegister = async () => {
     setLoading(true);
     setError('');
+    setSuccess('');
+    
     try {
-      await SocialAuthService.signInWithGoogle();
-      setSuccess(language === 'bg' ? 'Успешна регистрация!' : 'Registration successful!');
-      setTimeout(() => navigate('/dashboard'), 1000);
+      console.log('🔵 Starting Google registration...');
+      const result = await SocialAuthService.signInWithGoogle();
+      console.log('✅ Google registration successful:', result.user.email);
+      setSuccess(language === 'bg' ? 'Успешна регистрация с Google!' : 'Google registration successful!');
+      setTimeout(() => navigate('/dashboard'), 1500);
     } catch (err: any) {
-      setError(err.message);
+      console.error('❌ Google registration error:', err);
+      
+      if (err.message === 'REDIRECT_INITIATED') {
+        return;
+      }
+      
+      setError(err.message || (language === 'bg' ? 'Грешка при регистрация с Google' : 'Google registration failed'));
     } finally {
       setLoading(false);
     }
@@ -491,12 +501,17 @@ const RegisterPageGlass: React.FC = () => {
   const handleFacebookRegister = async () => {
     setLoading(true);
     setError('');
+    setSuccess('');
+    
     try {
-      await SocialAuthService.signInWithFacebook();
-      setSuccess(language === 'bg' ? 'Успешна регистрация!' : 'Registration successful!');
-      setTimeout(() => navigate('/dashboard'), 1000);
+      console.log('🔵 Starting Facebook registration...');
+      const result = await SocialAuthService.signInWithFacebook();
+      console.log('✅ Facebook registration successful:', result.user.email);
+      setSuccess(language === 'bg' ? 'Успешна регистрация с Facebook!' : 'Facebook registration successful!');
+      setTimeout(() => navigate('/dashboard'), 1500);
     } catch (err: any) {
-      setError(err.message);
+      console.error('❌ Facebook registration error:', err);
+      setError(err.message || (language === 'bg' ? 'Грешка при регистрация с Facebook' : 'Facebook registration failed'));
     } finally {
       setLoading(false);
     }
@@ -505,12 +520,17 @@ const RegisterPageGlass: React.FC = () => {
   const handleAppleRegister = async () => {
     setLoading(true);
     setError('');
+    setSuccess('');
+    
     try {
-      await SocialAuthService.signInWithApple();
-      setSuccess(language === 'bg' ? 'Успешна регистрация!' : 'Registration successful!');
-      setTimeout(() => navigate('/dashboard'), 1000);
+      console.log('🍎 Starting Apple registration...');
+      const result = await SocialAuthService.signInWithApple();
+      console.log('✅ Apple registration successful:', result.user.email);
+      setSuccess(language === 'bg' ? 'Успешна регистрация с Apple!' : 'Apple registration successful!');
+      setTimeout(() => navigate('/dashboard'), 1500);
     } catch (err: any) {
-      setError(err.message);
+      console.error('❌ Apple registration error:', err);
+      setError(err.message || (language === 'bg' ? 'Грешка при регистрация с Apple' : 'Apple registration failed'));
     } finally {
       setLoading(false);
     }
@@ -519,12 +539,17 @@ const RegisterPageGlass: React.FC = () => {
   const handleAnonymousRegister = async () => {
     setLoading(true);
     setError('');
+    setSuccess('');
+    
     try {
-      await SocialAuthService.signInAnonymously();
+      console.log('👤 Starting anonymous sign-in...');
+      const result = await SocialAuthService.signInAnonymously();
+      console.log('✅ Anonymous sign-in successful:', result.user.uid);
       setSuccess(language === 'bg' ? 'Влезли сте като гост!' : 'Signed in as guest!');
-      setTimeout(() => navigate('/dashboard'), 1000);
+      setTimeout(() => navigate('/dashboard'), 1500);
     } catch (err: any) {
-      setError(err.message);
+      console.error('❌ Anonymous sign-in error:', err);
+      setError(err.message || (language === 'bg' ? 'Грешка при влизане като гост' : 'Anonymous sign-in failed'));
     } finally {
       setLoading(false);
     }
