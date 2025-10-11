@@ -302,8 +302,22 @@ export class SocialAuthService {
    */
   static async signInWithApple(): Promise<UserCredential> {
     try {
+      console.log('🍎 Starting Apple sign-in process...');
+      
       // First try popup
       const result = await signInWithPopup(auth, appleProvider);
+      
+      console.log('✅ Apple sign-in successful:', {
+        email: result.user.email,
+        displayName: result.user.displayName,
+        uid: result.user.uid
+      });
+      
+      // AUTO-SYNC: Create/Update user profile in Firestore
+      console.log('📝 Syncing Apple user to Firestore...');
+      await this.createOrUpdateBulgarianProfile(result.user);
+      console.log('✅ Apple user synced to Firestore');
+      
       return result;
     } catch (error: any) {
       console.warn('Apple popup failed, trying redirect:', error.code);
