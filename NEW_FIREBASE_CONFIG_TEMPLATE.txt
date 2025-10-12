@@ -1,0 +1,26 @@
+// ==========================================
+// استبدل هذا الكود في firebase-config.ts
+// السطور 21-29
+// ==========================================
+
+// Firebase configuration
+const firebaseConfig = {
+  apiKey: "PASTE_YOUR_NEW_API_KEY_HERE",
+  authDomain: "bulgarian-car-marketplace-2024.firebaseapp.com", // أو اسم مشروعك الجديد
+  projectId: "bulgarian-car-marketplace-2024", // أو اسم مشروعك الجديد
+  storageBucket: "bulgarian-car-marketplace-2024.appspot.com",
+  messagingSenderId: "PASTE_YOUR_SENDER_ID",
+  appId: "PASTE_YOUR_APP_ID",
+  measurementId: "G-XXXXXXX" // اختياري
+};
+
+// ==========================================
+// بعد تحديث الكود:
+// 1. احفظ الملف (Ctrl+S)
+// 2. في Terminal اكتب:
+//    npm run build
+//    firebase use --add (اختر المشروع الجديد)
+//    firebase deploy --only hosting
+// 3. جرب: npm start
+// ==========================================
+
