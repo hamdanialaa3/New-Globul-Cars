@@ -17,15 +17,15 @@ declare global {
   }
 }
 
-// Firebase configuration - ?? ?????? ?????? ???????
+// Firebase configuration - NEW PROJECT: Fire New Globul
 const firebaseConfig = {
-  apiKey: process.env.REACT_APP_FIREBASE_API_KEY || "AIzaSyCYxOoD-tViZHLh3XhdbwQo8rRA5Q56NVs",
-  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN || "studio-448742006-a3493.firebaseapp.com",
-  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID || "studio-448742006-a3493",
-  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET || "studio-448742006-a3493.firebasestorage.app",
-  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID || "687922812237",
-  appId: process.env.REACT_APP_FIREBASE_APP_ID || "1:687922812237:web:e2f36cf22eab4e53ddd304",
-  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID || "G-ENC064NX05"
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY || "AIzaSyAchmKCk8ipzv0dDwbQ2xU1Pa6o4CQsEu8",
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN || "fire-new-globul.firebaseapp.com",
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID || "fire-new-globul",
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET || "fire-new-globul.firebasestorage.app",
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID || "973379297533",
+  appId: process.env.REACT_APP_FIREBASE_APP_ID || "1:973379297533:web:59c6534d61a29cae5d9e94",
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID || "G-TDRZ4Z3D7Z"
 };
 
 // Initialize Firebase
