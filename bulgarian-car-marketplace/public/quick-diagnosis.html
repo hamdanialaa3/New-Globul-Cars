@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Auth Internal Error - Quick Diagnosis</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            direction: rtl;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .diagnostic-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #007bff;
+        }
+        
+        .button {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin: 10px;
+            min-width: 200px;
+        }
+        
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .console-output {
+            background: #1e1e1e;
+            color: #ffffff;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            min-height: 200px;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            direction: ltr;
+        }
+        
+        .instructions {
+            background: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .error-highlight {
+            background: #ffebee;
+            border-left: 4px solid #f44336;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        
+        .success-highlight {
+            background: #e8f5e8;
+            border-left: 4px solid #4caf50;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        
+        code {
+            background: #f1f3f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 تشخيص خطأ Firebase Auth</h1>
+            <p>تشخيص سريع لخطأ auth/internal-error</p>
+        </div>
+        
+        <div class="content">
+            <div class="error-highlight">
+                <h3>🚨 الخطأ المحدد: Firebase Error (auth/internal-error)</h3>
+                <p>هذا الخطأ يحدث عادة بسبب مشكلة في تكوين Firebase Console أو مشاكل في البيئة المحلية.</p>
+            </div>
+            
+            <div class="diagnostic-section">
+                <h3>🛠️ أدوات التشخيص</h3>
+                <button class="button" onclick="runQuickDiagnosis()">
+                    🚀 تشغيل التشخيص السريع
+                </button>
+                <button class="button" onclick="clearConsole()">
+                    🧹 مسح وحدة التحكم
+                </button>
+                <button class="button" onclick="goToFirebaseConsole()">
+                    🌐 فتح Firebase Console
+                </button>
+            </div>
+            
+            <div class="instructions">
+                <h3>📋 تعليمات التشغيل:</h3>
+                <ol>
+                    <li>اضغط على "تشغيل التشخيص السريع" لبدء الفحص</li>
+                    <li>افتح وحدة التحكم في المتصفح (F12) لرؤية النتائج التفصيلية</li>
+                    <li>راجع النتائج في الصندوق أدناه</li>
+                    <li>اتبع الحلول المقترحة</li>
+                </ol>
+            </div>
+            
+            <div class="success-highlight">
+                <h3>✅ أكثر الحلول فعالية:</h3>
+                <ul>
+                    <li><strong>Firebase Console:</strong> تأكد من تفعيل Google Sign-in Provider</li>
+                    <li><strong>Authorized Domains:</strong> إضافة localhost و127.0.0.1</li>
+                    <li><strong>Browser:</strong> مسح الكاش وتعطيل مانع الإعلانات</li>
+                    <li><strong>Network:</strong> فحص الـ VPN والـ Firewall</li>
+                </ul>
+            </div>
+            
+            <h3>📊 نتائج التشخيص:</h3>
+            <div id="console-output" class="console-output">
+                انتظار تشغيل التشخيص...
+                
+للبدء، اضغط على زر "تشغيل التشخيص السريع" أعلاه.
+            </div>
+            
+            <div class="diagnostic-section">
+                <h3>🔗 روابط مهمة:</h3>
+                <button class="button" onclick="window.open('https://console.firebase.google.com/project/studio-448742006-a3493/authentication/providers', '_blank')">
+                    Firebase Authentication Settings
+                </button>
+                <button class="button" onclick="window.open('https://console.cloud.google.com/apis/credentials', '_blank')">
+                    Google Cloud Credentials
+                </button>
+                <button class="button" onclick="window.open('http://localhost:3001/debug/internal-error', '_blank')">
+                    صفحة التشخيص الكاملة
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load Firebase diagnosis script -->
+    <script src="./firebase-auth-diagnosis.js"></script>
+    
+    <script>
+        let originalConsoleLog = console.log;
+        let originalConsoleError = console.error;
+        let originalConsoleWarn = console.warn;
+        let originalConsoleGroup = console.group;
+        let originalConsoleGroupEnd = console.groupEnd;
+        let originalConsoleTable = console.table;
+        
+        const outputDiv = document.getElementById('console-output');
+        
+        function appendToOutput(message, type = 'info') {
+            const colors = {
+                info: '#ffffff',
+                error: '#ff6b6b',
+                warn: '#ffd93d',
+                success: '#6bcf7f',
+                group: '#4fc3f7'
+            };
+            
+            const timestamp = new Date().toLocaleTimeString('ar-SA');
+            const coloredMessage = `<span style="color: ${colors[type]};">[${timestamp}] ${message}</span>\n`;
+            outputDiv.innerHTML += coloredMessage;
+            outputDiv.scrollTop = outputDiv.scrollHeight;
+        }
+        
+        // Override console methods to capture output
+        console.log = function(...args) {
+            originalConsoleLog.apply(console, args);
+            appendToOutput(args.join(' '), 'info');
+        };
+        
+        console.error = function(...args) {
+            originalConsoleError.apply(console, args);
+            appendToOutput('❌ ' + args.join(' '), 'error');
+        };
+        
+        console.warn = function(...args) {
+            originalConsoleWarn.apply(console, args);
+            appendToOutput('⚠️ ' + args.join(' '), 'warn');
+        };
+        
+        console.group = function(...args) {
+            originalConsoleGroup.apply(console, args);
+            appendToOutput('\n📁 ' + args.join(' '), 'group');
+        };
+        
+        console.groupEnd = function() {
+            originalConsoleGroupEnd.apply(console);
+            appendToOutput('📁 ───────────────────────────────', 'group');
+        };
+        
+        console.table = function(data) {
+            originalConsoleTable.apply(console, arguments);
+            if (typeof data === 'object') {
+                appendToOutput('📊 Table Data: ' + JSON.stringify(data, null, 2), 'info');
+            }
+        };
+        
+        // UI Functions
+        function runQuickDiagnosis() {
+            clearConsole();
+            appendToOutput('🔍 بدء التشخيص السريع...', 'info');
+            
+            if (typeof quickDiagnosis === 'function') {
+                quickDiagnosis();
+            } else if (typeof window.firebaseQuickDiagnosis === 'function') {
+                window.firebaseQuickDiagnosis();
+            } else {
+                appendToOutput('❌ فشل في تحميل أداة التشخيص', 'error');
+                appendToOutput('جاري إعادة المحاولة...', 'warn');
+                
+                // Fallback: reload script and try again
+                const script = document.createElement('script');
+                script.src = './firebase-auth-diagnosis.js?t=' + Date.now();
+                script.onload = function() {
+                    appendToOutput('✅ تم إعادة تحميل أداة التشخيص', 'success');
+                    setTimeout(() => {
+                        if (typeof quickDiagnosis === 'function') {
+                            quickDiagnosis();
+                        }
+                    }, 1000);
+                };
+                document.head.appendChild(script);
+            }
+        }
+        
+        function clearConsole() {
+            outputDiv.innerHTML = 'تم مسح وحدة التحكم...\n';
+        }
+        
+        function goToFirebaseConsole() {
+            window.open('https://console.firebase.google.com/project/studio-448742006-a3493/authentication/providers', '_blank');
+        }
+        
+        // Initialize
+        appendToOutput('🚀 صفحة التشخيص جاهزة للاستخدام', 'success');
+        appendToOutput('📝 اضغط على "تشغيل التشخيص السريع" للبدء', 'info');
+    </script>
+</body>
+</html>

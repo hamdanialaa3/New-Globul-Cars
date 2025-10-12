@@ -32,7 +32,7 @@ export const useLogin = (): UseLoginReturn => {
     validationErrors
   };
 
-  // (Comment removed - was in Arabic)
+  // Redirect if user is already logged in
   useEffect(() => {
     if (user) {
       navigate('/dashboard');
@@ -40,7 +40,7 @@ export const useLogin = (): UseLoginReturn => {
 
     // Run Firebase debug on development
     if (process.env.NODE_ENV === 'development') {
-      console.log('🔧 Running Firebase Debug...');
+      console.log('Running Firebase Debug...');
       FirebaseDebug.runDiagnostic();
     }
   }, [user, navigate]);
@@ -120,24 +120,40 @@ export const useLogin = (): UseLoginReturn => {
     setSuccess('');
 
     try {
+      // Enhanced error handling and diagnosis
+      console.log('🔐 Initiating Google login...');
+      
       const result = await SocialAuthService.signInWithGoogle();
-      console.log('Google login successful:', result.user);
-      setSuccess(t('auth.loginSuccess', 'Login successful! Redirecting...'));
+      console.log('✅ Google login successful:', result.user);
+      setSuccess(t('auth.loginSuccess', 'تم تسجيل الدخول بنجاح! جاري التوجيه...'));
       setTimeout(() => {
         navigate('/dashboard');
       }, 1000);
     } catch (err: any) {
-      console.error('Google login error:', err);
+      console.error('❌ Google login error:', err);
 
-      // Also show diagnostic info in console
-      console.group('🔍 Google Login Debug Info');
-      console.log('Error details:', err);
+      // Enhanced diagnostic info
+      console.group('🔍 Google Login Detailed Diagnosis');
+      console.log('Error object:', err);
+      console.log('Error code:', err?.code);
+      console.log('Error message:', err?.message);
       console.log('Current URL:', window.location.href);
+      console.log('Protocol:', window.location.protocol);
+      console.log('Host:', window.location.host);
       console.log('User agent:', navigator.userAgent);
-      FirebaseDebug.checkCommonIssues().forEach(issue => console.warn('⚠️', issue));
+      
+      // Check environment variables
+      console.log('Environment check:', {
+        apiKey: process.env.REACT_APP_FIREBASE_API_KEY ? '✅ Set' : '❌ Missing',
+        authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN ? '✅ Set' : '❌ Missing',
+        projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID ? '✅ Set' : '❌ Missing'
+      });
+      
       console.groupEnd();
 
-      setError(err.message || 'Google login failed');
+      // User-friendly error message
+      const userMessage = err?.message || 'حدث خطأ أثناء تسجيل الدخول مع Google. يرجى المحاولة مرة أخرى.';
+      setError(userMessage);
     } finally {
       setLoading(false);
     }
@@ -149,14 +165,17 @@ export const useLogin = (): UseLoginReturn => {
     setSuccess('');
 
     try {
+      console.log('🔵 Initiating Facebook login...');
       const result = await SocialAuthService.signInWithFacebook();
-      console.log('Facebook login successful:', result.user);
-      setSuccess(t('auth.loginSuccess', 'Login successful! Redirecting...'));
+      console.log('✅ Facebook login successful:', result.user);
+      setSuccess(t('auth.loginSuccess', 'تم تسجيل الدخول بنجاح! جاري التوجيه...'));
       setTimeout(() => {
         navigate('/dashboard');
       }, 1000);
     } catch (err: any) {
-      setError(err.message || 'Facebook login failed');
+      console.error('❌ Facebook login error:', err);
+      const userMessage = err?.message || 'حدث خطأ أثناء تسجيل الدخول مع Facebook. يرجى المحاولة مرة أخرى.';
+      setError(userMessage);
     } finally {
       setLoading(false);
     }
@@ -168,14 +187,17 @@ export const useLogin = (): UseLoginReturn => {
     setSuccess('');
 
     try {
+      console.log('🍎 Initiating Apple login...');
       const result = await SocialAuthService.signInWithApple();
-      console.log('Apple login successful:', result.user);
-      setSuccess(t('auth.loginSuccess', 'Login successful! Redirecting...'));
+      console.log('✅ Apple login successful:', result.user);
+      setSuccess(t('auth.loginSuccess', 'تم تسجيل الدخول بنجاح! جاري التوجيه...'));
       setTimeout(() => {
         navigate('/dashboard');
       }, 1000);
     } catch (err: any) {
-      setError(err.message || 'Apple login failed');
+      console.error('❌ Apple login error:', err);
+      const userMessage = err?.message || 'حدث خطأ أثناء تسجيل الدخول مع Apple. يرجى المحاولة مرة أخرى.';
+      setError(userMessage);
     } finally {
       setLoading(false);
     }
@@ -193,14 +215,17 @@ export const useLogin = (): UseLoginReturn => {
     setSuccess('');
 
     try {
+      console.log('👤 Initiating anonymous login...');
       const result = await SocialAuthService.signInAnonymously();
-      console.log('Anonymous login successful:', result.user);
-      setSuccess(t('auth.loginSuccess', 'Login successful! Redirecting...'));
+      console.log('✅ Anonymous login successful:', result.user);
+      setSuccess(t('auth.loginSuccess', 'تم الدخول كضيف بنجاح! جاري التوجيه...'));
       setTimeout(() => {
         navigate('/dashboard');
       }, 1000);
     } catch (err: any) {
-      setError(err.message || 'Anonymous login failed');
+      console.error('❌ Anonymous login error:', err);
+      const userMessage = err?.message || 'حدث خطأ أثناء الدخول كضيف. يرجى المحاولة مرة أخرى.';
+      setError(userMessage);
     } finally {
       setLoading(false);
     }

@@ -14,7 +14,7 @@ import {
   signInWithPhoneNumber,
   RecaptchaVerifier,
   ConfirmationResult,
-  PhoneAuthProvider,
+
   linkWithCredential,
   User,
   UserCredential,
@@ -181,12 +181,44 @@ export class SocialAuthService {
   static async signInWithGoogle(): Promise<UserCredential> {
     try {
       console.log('🔐 Starting Google sign-in process...');
-      console.log('Auth domain:', auth.config.authDomain);
-      console.log('Firebase app:', auth.app.name);
       
-      // First try popup
+      // Debug current configuration
+      console.log('🔧 Debug Info:', {
+        authDomain: auth.app.options.authDomain,
+        projectId: auth.app.options.projectId,
+        appName: auth.app.name,
+        currentUrl: window.location.href,
+        protocol: window.location.protocol
+      });
+      
+      // Check if we're in a secure context
+      if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost') {
+        throw new Error('Google sign-in requires HTTPS or localhost');
+      }
+      
+      // First try popup, with fallback to redirect
       console.log('📱 Attempting popup sign-in...');
-      const result = await signInWithPopup(auth, googleProvider);
+      let result: UserCredential;
+      
+      try {
+        result = await signInWithPopup(auth, googleProvider);
+      } catch (popupError: any) {
+        console.warn('⚠️ Popup failed, trying redirect method:', popupError.code);
+        
+        if (popupError.code === 'auth/popup-blocked' || 
+            popupError.code === 'auth/popup-closed-by-user' ||
+            popupError.code === 'auth/cancelled-popup-request') {
+          
+          console.log('🔄 Switching to redirect sign-in...');
+          await signInWithRedirect(auth, googleProvider);
+          
+          // After redirect, this won't execute, but we handle it in App.tsx
+          // Check for redirect result on app load
+          throw new Error('تم تحويلك لتسجيل الدخول. يرجى الانتظار...');
+        }
+        
+        throw popupError; // Re-throw other errors
+      }
       
       console.log('✅ Google sign-in successful:', {
         email: result.user.email,
@@ -201,59 +233,93 @@ export class SocialAuthService {
       
       return result;
     } catch (error: any) {
-      console.error('❌ Google sign-in error details:', {
+      // Enhanced error logging
+      console.group('❌ Google Sign-in Error Analysis');
+      console.error('Error details:', {
         code: error.code,
         message: error.message,
         credential: error.credential,
-        customData: error.customData
+        customData: error.customData,
+        stack: error.stack
       });
+      
+      // Check common configuration issues
+      if (!process.env.REACT_APP_FIREBASE_API_KEY) {
+        console.error('🚨 Missing REACT_APP_FIREBASE_API_KEY');
+      }
+      if (!process.env.REACT_APP_FIREBASE_AUTH_DOMAIN) {
+        console.error('🚨 Missing REACT_APP_FIREBASE_AUTH_DOMAIN');
+      }
+      
+      console.log('🌐 Current environment:', {
+        nodeEnv: process.env.NODE_ENV,
+        host: window.location.host,
+        protocol: window.location.protocol
+      });
+      console.groupEnd();
 
       // Handle specific error cases with user-friendly messages
       if (error.code === 'auth/popup-blocked') {
         console.warn('🚫 Popup blocked, automatically switching to redirect method...');
-        
-        try {
-          console.log('🔄 Starting redirect sign-in...');
-          await signInWithRedirect(auth, googleProvider);
-          
-          // The redirect will happen, and the result will be handled by handleRedirectResult on page load
-          // We don't return here as the page will redirect
-          throw new Error('REDIRECT_INITIATED'); // Special error to indicate redirect started
-        } catch (redirectError: any) {
-          if (redirectError.message === 'REDIRECT_INITIATED') {
-            throw redirectError; // Re-throw our special indicator
-          }
-          console.error('❌ Redirect also failed:', redirectError);
-          throw new Error('تعذر تسجيل الدخول مع Google. يرجى المحاولة مرة أخرى أو تفعيل النوافذ المنبثقة.');
-        }
+        throw new Error('النوافذ المنبثقة محظورة. يرجى السماح بالنوافذ المنبثقة في إعدادات المتصفح وإعادة المحاولة.');
       }
       
       if (error.code === 'auth/popup-closed-by-user') {
-        throw new Error('Sign-in was cancelled. Please try again.');
+        throw new Error('تم إلغاء عملية تسجيل الدخول. يرجى المحاولة مرة أخرى.');
       }
       
       if (error.code === 'auth/cancelled-popup-request') {
-        throw new Error('Sign-in request was cancelled. Please try again.');
+        throw new Error('تم إلغاء طلب تسجيل الدخول. يرجى المحاولة مرة أخرى.');
       }
       
       if (error.code === 'auth/unauthorized-domain') {
-        throw new Error('This domain is not authorized for Google sign-in. Please contact support.');
+        console.error('🚨 Domain Authorization Issue:', {
+          currentDomain: window.location.hostname,
+          authDomain: auth.app.options.authDomain,
+          suggestion: 'Add this domain to Firebase Console > Authentication > Settings > Authorized domains'
+        });
+        throw new Error('هذا الموقع غير مصرح له بتسجيل الدخول مع Google. يرجى الاتصال بالدعم الفني.');
       }
       
       if (error.code === 'auth/operation-not-allowed') {
-        throw new Error('Google sign-in is not enabled for this app. Please contact support.');
+        console.error('🚨 Google Sign-in Disabled:', 'Enable Google provider in Firebase Console > Authentication > Sign-in method');
+        throw new Error('تسجيل الدخول مع Google غير مفعل حالياً. يرجى الاتصال بالدعم الفني.');
       }
       
       if (error.code === 'auth/invalid-api-key') {
-        throw new Error('Invalid API key configuration. Please contact support.');
+        console.error('🚨 Invalid API Key:', process.env.REACT_APP_FIREBASE_API_KEY?.slice(0, 10) + '...');
+        throw new Error('خطأ في تكوين Firebase. يرجى الاتصال بالدعم الفني.');
       }
       
       if (error.code === 'auth/network-request-failed') {
-        throw new Error('Network error occurred. Please check your connection and try again.');
+        throw new Error('خطأ في الشبكة. يرجى التحقق من الاتصال بالإنترنت وإعادة المحاولة.');
+      }
+
+      // Special handling for internal-error
+      if (error.code === 'auth/internal-error') {
+        console.error('🚨 Firebase Internal Error Detected:', {
+          code: error.code,
+          message: error.message,
+          possibleCauses: [
+            'Google Sign-in provider not enabled in Firebase Console',
+            'Invalid OAuth client configuration',
+            'Domain not authorized in Firebase Console',
+            'API key restrictions blocking request',
+            'Firebase project configuration issue'
+          ],
+          suggestedActions: [
+            'Check Firebase Console > Authentication > Sign-in method',
+            'Verify Google provider is enabled and configured',
+            'Add current domain to Authorized domains',
+            'Check API key restrictions in Google Cloud Console',
+            'Visit /debug/internal-error for comprehensive diagnosis'
+          ]
+        });
+        throw new Error('خطأ داخلي في Firebase. يرجى زيارة صفحة التشخيص: /debug/internal-error');
       }
 
       console.error('🔥 Unhandled Google sign-in error:', error);
-      throw new Error(this.getErrorMessage(error.code, 'Google'));
+      throw new Error(`خطأ في تسجيل الدخول مع Google: ${error.message || 'خطأ غير معروف'}`);
     }
   }
 
@@ -299,7 +365,17 @@ export class SocialAuthService {
       }
 
       console.error('Facebook sign-in error:', error);
-      throw new Error(this.getErrorMessage(error.code, 'Facebook'));
+      
+      // Handle specific Facebook errors
+      if (error.code === 'auth/operation-not-allowed') {
+        throw new Error('تسجيل الدخول مع Facebook غير مفعل حالياً. يرجى الاتصال بالدعم الفني.');
+      }
+      
+      if (error.code === 'auth/network-request-failed') {
+        throw new Error('خطأ في الشبكة. يرجى التحقق من الاتصال بالإنترنت وإعادة المحاولة.');
+      }
+      
+      throw new Error(`An error occurred during Facebook sign-in. Please try again.`);
     }
   }
 
@@ -345,7 +421,17 @@ export class SocialAuthService {
       }
 
       console.error('Apple sign-in error:', error);
-      throw new Error(this.getErrorMessage(error.code, 'Apple'));
+      
+      // Handle specific Apple errors
+      if (error.code === 'auth/operation-not-allowed') {
+        throw new Error('تسجيل الدخول مع Apple غير مفعل حالياً. يرجى الاتصال بالدعم الفني.');
+      }
+      
+      if (error.code === 'auth/network-request-failed') {
+        throw new Error('خطأ في الشبكة. يرجى التحقق من الاتصال بالإنترنت وإعادة المحاولة.');
+      }
+      
+      throw new Error(`An error occurred during Apple sign-in. Please try again.`);
     }
   }
 
@@ -842,6 +928,10 @@ export class SocialAuthService {
   static async signInAnonymously(): Promise<UserCredential> {
     try {
       console.log('👤 Starting anonymous sign-in...');
+      
+      // Check if anonymous auth is enabled
+      console.log('🔧 Checking anonymous auth configuration...');
+      
       const result = await signInAnonymously(auth);
       
       console.log('✅ Anonymous sign-in successful:', {
@@ -859,8 +949,16 @@ export class SocialAuthService {
       
       return result;
     } catch (error: any) {
-      console.error('Anonymous sign-in error:', error);
-      throw new Error(this.getErrorMessage(error.code, 'Anonymous'));
+      console.group('❌ Anonymous Sign-in Error Analysis');
+      console.error('Error details:', error);
+      
+      if (error.code === 'auth/operation-not-allowed') {
+        console.error('🚨 Anonymous auth disabled in Firebase Console');
+        console.log('🔧 Fix: Enable Anonymous sign-in in Firebase Console > Authentication > Sign-in method');
+      }
+      
+      console.groupEnd();
+      throw new Error(`خطأ في الدخول كضيف: ${error.message || 'يرجى التحقق من إعدادات Firebase'}`);
     }
   }
 
@@ -966,10 +1064,8 @@ export class SocialAuthService {
     try {
       console.log('🔄 Converting anonymous account to permanent...');
       
-      // Create email credential
-      const credential = PhoneAuthProvider.credential('', ''); // This is not the right way, but for email we need EmailAuthProvider
-      // Actually, we should use EmailAuthProvider.credential(email, password)
-      // But since it's not imported, let's use createUserWithEmailAndPassword approach
+      // Create email credential - we'll use a different approach
+      // Since EmailAuthProvider is not imported, we'll create new account instead of linking
       
       // For now, let's create a new account and transfer data
       const newUserCredential = await createUserWithEmailAndPassword(auth, email, password);

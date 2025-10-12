@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حل سريع لمشكلة Firebase Auth</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            direction: rtl;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .step {
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            border-left: 5px solid #28a745;
+        }
+        .urgent {
+            background: #fff3cd;
+            border-left-color: #ffc107;
+        }
+        .critical {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+        }
+        .success {
+            background: #d4edda;
+            border-left-color: #28a745;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 5px;
+            font-weight: bold;
+        }
+        .button:hover {
+            background: #0056b3;
+        }
+        .code {
+            background: #f1f3f4;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            margin: 10px 0;
+            direction: ltr;
+        }
+        h1 {
+            color: #dc3545;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #28a745;
+            border-bottom: 2px solid #28a745;
+            padding-bottom: 10px;
+        }
+        .status {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚨 حل سريع لمشكلة Firebase Authentication</h1>
+        
+        <div class="step critical">
+            <h2>المشكلة الحالية</h2>
+            <div class="code">
+                خطأ في تسجيل الدخول مع Google: Firebase: Error (auth/requests-to-this-api-identitytoolkit-method-google.cloud.identitytoolkit.v1.projectconfigservice.getprojectconfig-are-blocked.)
+            </div>
+            <p><strong>السبب:</strong> Firebase Identity Toolkit API غير مفعل في Google Cloud Console.</p>
+        </div>
+
+        <div class="step urgent">
+            <h2>الحل الفوري - اتبع هذه الخطوات بالترتيب:</h2>
+            
+            <div class="status error">
+                <strong>الخطوة 1:</strong> تفعيل Identity Toolkit API
+            </div>
+            <ol>
+                <li>اضغط على الرابط: <a href="https://console.cloud.google.com/apis/api/identitytoolkit.googleapis.com/overview?project=studio-448742006-a3493" class="button" target="_blank">فتح Identity Toolkit API</a></li>
+                <li>اضغط على زر "ENABLE" أو "تفعيل"</li>
+                <li>انتظر حتى يظهر "API enabled" أو "تم التفعيل"</li>
+            </ol>
+
+            <div class="status warning">
+                <strong>الخطوة 2:</strong> تفعيل Firebase APIs الإضافية
+            </div>
+            <ul>
+                <li><a href="https://console.cloud.google.com/apis/api/firebase.googleapis.com/overview?project=studio-448742006-a3493" class="button" target="_blank">Firebase Management API</a></li>
+                <li><a href="https://console.cloud.google.com/apis/api/cloudresourcemanager.googleapis.com/overview?project=studio-448742006-a3493" class="button" target="_blank">Cloud Resource Manager API</a></li>
+            </ul>
+
+            <div class="status info">
+                <strong>الخطوة 3:</strong> تحقق من Billing
+            </div>
+            <p>تأكد أن مشروعك مرتبط ب Billing Account:</p>
+            <a href="https://console.cloud.google.com/billing/linkedaccount?project=studio-448742006-a3493" class="button" target="_blank">تحقق من Billing</a>
+        </div>
+
+        <div class="step success">
+            <h2>اختبار النظام بعد التفعيل</h2>
+            <p>بعد تفعيل جميع APIs، اختبر مباشرة:</p>
+            <ol>
+                <li><a href="http://localhost:3001/simple-auth-test.html" class="button" target="_blank">اختبار Firebase Auth</a></li>
+                <li><a href="http://localhost:3000" class="button" target="_blank">الذهاب للموقع الرئيسي</a></li>
+            </ol>
+        </div>
+
+        <div class="step">
+            <h2>معلومات المشروع</h2>
+            <div class="code">
+Project ID: studio-448742006-a3493<br>
+API Key: AIzaSyA6lVkoQIPqaQbmnVZOK1ykbM89iAGKKLg<br>
+Status: APIs محتاجة تفعيل
+            </div>
+        </div>
+
+        <div class="step">
+            <h2>روابط مفيدة إضافية</h2>
+            <ul>
+                <li><a href="https://console.firebase.google.com/project/studio-448742006-a3493/authentication/settings" class="button" target="_blank">Firebase Console - Authentication</a></li>
+                <li><a href="https://console.cloud.google.com/apis/dashboard?project=studio-448742006-a3493" class="button" target="_blank">Google Cloud APIs Dashboard</a></li>
+                <li><a href="https://firebase.google.com/docs/auth/web/start" class="button" target="_blank">Firebase Auth Documentation</a></li>
+            </ul>
+        </div>
+
+        <div class="step critical">
+            <h2>⚠️ ملاحظة مهمة</h2>
+            <p><strong>إذا لم تحل المشكلة بعد تفعيل APIs:</strong></p>
+            <ul>
+                <li>انتظر 5-10 دقائق لتفعيل APIs</li>
+                <li>امسح cache المتصفح (Ctrl+Shift+Delete)</li>
+                <li>أعد تشغيل الخادم</li>
+                <li>تحقق من أن Billing Account مفعل</li>
+            </ul>
+        </div>
+
+        <div class="step">
+            <h2>📞 للمساعدة الفورية</h2>
+            <p>إذا واجهت أي مشكلة، أرسل لي:</p>
+            <ul>
+                <li>screenshot من Google Cloud Console بعد تفعيل APIs</li>
+                <li>الرسالة التي تظهر عند محاولة تسجيل الدخول</li>
+                <li>حالة Billing Account</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

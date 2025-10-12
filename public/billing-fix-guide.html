@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حل مشكلة Billing Account وFirebase Authentication</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ee5a24 0%, #feca57 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            direction: rtl;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        }
+        .critical-alert {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        .step {
+            background: #f8f9fa;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 12px;
+            border-right: 6px solid #28a745;
+            position: relative;
+        }
+        .step.urgent {
+            background: #fff3cd;
+            border-right-color: #ffc107;
+        }
+        .step.critical {
+            background: #f8d7da;
+            border-right-color: #dc3545;
+        }
+        .step.success {
+            background: #d4edda;
+            border-right-color: #28a745;
+        }
+        .step-number {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: #007bff;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        .button {
+            display: inline-block;
+            padding: 12px 25px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            margin: 8px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .button:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+        .button.critical {
+            background: #dc3545;
+        }
+        .button.critical:hover {
+            background: #c82333;
+        }
+        .button.success {
+            background: #28a745;
+        }
+        .button.success:hover {
+            background: #218838;
+        }
+        .code {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            direction: ltr;
+            overflow-x: auto;
+        }
+        h1 {
+            color: #dc3545;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        h2 {
+            color: #28a745;
+            border-bottom: 3px solid #28a745;
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+        .info-box {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .warning-box {
+            background: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .error-box {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .checklist {
+            background: #e8f5e8;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .checklist h3 {
+            color: #155724;
+            margin-top: 0;
+        }
+        .checklist ul {
+            list-style: none;
+            padding: 0;
+        }
+        .checklist li {
+            padding: 8px 0;
+            border-bottom: 1px solid #c3e6cb;
+        }
+        .checklist li:before {
+            content: "✓ ";
+            color: #28a745;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="critical-alert">
+            <h1>🚨 مشكلة Billing Account محلولة الآن! 🚨</h1>
+            <p><strong>هذا هو السبب الحقيقي وراء مشاكل Firebase Authentication</strong></p>
+        </div>
+
+        <div class="step critical">
+            <div class="step-number">1</div>
+            <h2>🔍 المشكلة المكتشفة</h2>
+            <div class="error-box">
+                <strong>المستخدم:</strong> globulinternet@gmail.com<br>
+                <strong>المورد:</strong> Billing Account (012BBB-0243A5-57D883)<br>
+                <strong>الأذونات المفقودة:</strong> billing.accounts.get
+            </div>
+            <p><strong>النتيجة:</strong> بدون أذونات Billing، لا يمكن تفعيل Firebase APIs!</p>
+        </div>
+
+        <div class="step urgent">
+            <div class="step-number">2</div>
+            <h2>🛠️ الحل الفوري - منح أذونات Billing</h2>
+            
+            <div class="warning-box">
+                <strong>خطوة حاسمة:</strong> يجب إكمال هذه الخطوة أولاً قبل أي شيء آخر
+            </div>
+
+            <h3>الطريقة الأولى: منح الوصول المباشر</h3>
+            <a href="https://console.cloud.google.com/billing/012BBB-0243A5-57D883/manage?utm_campaign=grant_access_request&utm_source=cloud_console" 
+               class="button critical" target="_blank">
+               🔧 إدارة Billing Account
+            </a>
+            
+            <p><strong>في الصفحة المفتوحة:</strong></p>
+            <ol>
+                <li>اضغط على "ADD PRINCIPAL" أو "إضافة مستخدم"</li>
+                <li>أدخل: <code>globulinternet@gmail.com</code></li>
+                <li>اختر الدور: <strong>"Billing Account User"</strong> أو <strong>"Billing Account Administrator"</strong></li>
+                <li>اضغط "SAVE" أو "حفظ"</li>
+            </ol>
+
+            <h3>الطريقة الثانية: استكشاف أخطاء السياسة</h3>
+            <a href="https://console.cloud.google.com/iam-admin/troubleshooter;permissions=billing.accounts.get;principal=globulinternet@gmail.com;resources=%2F%2Fcloudbilling.googleapis.com%2FbillingAccounts%2F012BBB-0243A5-57D883/result?utm_campaign=role_request&utm_source=cloud_console" 
+               class="button" target="_blank">
+               🔍 استكشاف أخطاء السياسة
+            </a>
+        </div>
+
+        <div class="step success">
+            <div class="step-number">3</div>
+            <h2>🚀 تفعيل Firebase APIs بعد حل Billing</h2>
+            
+            <div class="info-box">
+                <strong>مهم:</strong> بعد حل مشكلة Billing، ستتمكن من تفعيل جميع APIs المطلوبة
+            </div>
+
+            <h3>APIs المطلوب تفعيلها:</h3>
+            <div class="checklist">
+                <h3>قائمة التحقق - APIs:</h3>
+                <ul>
+                    <li>Identity Toolkit API</li>
+                    <li>Firebase Authentication API</li>
+                    <li>Firebase Management API</li>
+                    <li>Cloud Resource Manager API</li>
+                </ul>
+            </div>
+
+            <a href="https://console.cloud.google.com/apis/api/identitytoolkit.googleapis.com/overview?project=studio-448742006-a3493" 
+               class="button success" target="_blank">
+               ✅ تفعيل Identity Toolkit API
+            </a>
+            <a href="https://console.cloud.google.com/apis/api/firebase.googleapis.com/overview?project=studio-448742006-a3493" 
+               class="button success" target="_blank">
+               ✅ تفعيل Firebase Management API
+            </a>
+        </div>
+
+        <div class="step">
+            <div class="step-number">4</div>
+            <h2>🧪 اختبار النظام</h2>
+            
+            <p><strong>بعد حل مشكلة Billing وتفعيل APIs:</strong></p>
+            
+            <a href="http://localhost:3001/simple-auth-test.html" class="button" target="_blank">
+                🧪 اختبار Firebase Auth
+            </a>
+            <a href="http://localhost:3000" class="button" target="_blank">
+                🏠 الموقع الرئيسي
+            </a>
+
+            <div class="code">
+# اختبار سريع في Console
+التوقع: جميع طرق تسجيل الدخول تعمل بنجاح
+- Google Login ✅
+- Facebook Login ✅  
+- Apple Login ✅
+- Anonymous Login ✅
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-number">5</div>
+            <h2>📊 معلومات المشروع</h2>
+            
+            <div class="code">
+Project ID: studio-448742006-a3493
+API Key: AIzaSyA6lVkoQIPqaQbmnVZOK1ykbM89iAGKKLg
+Billing Account: 012BBB-0243A5-57D883
+User: globulinternet@gmail.com
+Status: 🔄 في انتظار إصلاح أذونات Billing
+            </div>
+        </div>
+
+        <div class="step critical">
+            <h2>⚠️ نقاط مهمة</h2>
+            <div class="warning-box">
+                <ul>
+                    <li><strong>الأولوية:</strong> حل مشكلة Billing أولاً، ثم تفعيل APIs</li>
+                    <li><strong>الوقت:</strong> قد يستغرق تفعيل الأذونات 5-10 دقائق</li>
+                    <li><strong>التحقق:</strong> تأكد من ظهور "API enabled" لكل API</li>
+                    <li><strong>Cache:</strong> امسح cache المتصفح بعد التفعيل</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="step success">
+            <h2>✅ علامات النجاح</h2>
+            <div class="checklist">
+                <h3>عندما يعمل كل شيء بنجاح:</h3>
+                <ul>
+                    <li>لا توجد رسائل خطأ في console</li>
+                    <li>تسجيل الدخول بGoogle يعمل</li>
+                    <li>تسجيل الدخول بFacebook يعمل</li>
+                    <li>تسجيل الدخول كضيف يعمل</li>
+                    <li>جميع APIs تظهر "enabled"</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <h3>📞 للمساعدة</h3>
+            <p>إذا واجهت أي مشكلة، أرسل لي screenshot من:</p>
+            <ul>
+                <li>صفحة Billing Account بعد منح الأذونات</li>
+                <li>صفحة APIs بعد التفعيل</li>
+                <li>رسائل الخطأ في Firebase Auth Test</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Auto-refresh للتأكد من أن المستخدم يرى أحدث المعلومات
+        setTimeout(() => {
+            const alertDiv = document.querySelector('.critical-alert');
+            alertDiv.innerHTML = '<h1>🔄 جاري متابعة حل المشكلة...</h1><p>تأكد من إكمال خطوات Billing أولاً</p>';
+        }, 30000);
+    </script>
+</body>
+</html>

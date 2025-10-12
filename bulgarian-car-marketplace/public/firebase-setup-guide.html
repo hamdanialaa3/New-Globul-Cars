@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Console Configuration Guide</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            direction: rtl;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .step {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #007bff;
+        }
+        
+        .urgent {
+            border-left-color: #dc3545;
+            background: #fff5f5;
+        }
+        
+        .success {
+            border-left-color: #28a745;
+            background: #f0fff4;
+        }
+        
+        .button {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin: 10px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .button.urgent {
+            background: linear-gradient(45deg, #dc3545, #c82333);
+        }
+        
+        code {
+            background: #f1f3f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            direction: ltr;
+            display: inline-block;
+        }
+        
+        .code-block {
+            background: #1e1e1e;
+            color: #ffffff;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            direction: ltr;
+            overflow-x: auto;
+        }
+        
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .checklist li {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .checklist li:before {
+            content: "☐ ";
+            font-size: 1.2em;
+            margin-left: 10px;
+            color: #dc3545;
+        }
+        
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            color: #856404;
+        }
+        
+        .error {  
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔥 دليل إصلاح Firebase Authentication</h1>
+            <p>خطوات إصلاح مشاكل تسجيل الدخول</p>
+        </div>
+        
+        <div class="content">
+            <div class="error">
+                <h3>🚨 المشاكل الحالية</h3>
+                <ul>
+                    <li>❌ خطأ داخلي في Firebase (auth/internal-error)</li>
+                    <li>❌ فشل Google Sign-in</li>
+                    <li>❌ فشل Facebook Sign-in</li>
+                    <li>❌ فشل Apple Sign-in</li>
+                    <li>❌ مشكلة Firebase App Check Token</li>
+                </ul>
+            </div>
+
+            <div class="step urgent">
+                <h3>🔥 1. إصلاح Google Sign-in (أولوية قصوى)</h3>
+                <p><strong>السبب الأكثر احتمالاً:</strong> Google Sign-in Provider غير مفعل في Firebase Console</p>
+                
+                <a href="https://console.firebase.google.com/project/studio-448742006-a3493/authentication/providers" 
+                   target="_blank" class="button urgent">
+                    🔧 فتح Firebase Console - Authentication
+                </a>
+                
+                <h4>الخطوات:</h4>
+                <ul class="checklist">
+                    <li>اذهب للرابط أعلاه</li>
+                    <li>ابحث عن "Google" في قائمة Sign-in providers</li>
+                    <li>تأكد من أن الحالة "Enabled" (مفعّل)</li>
+                    <li>إذا كان معطل، اضغط على القلم للتحرير</li>
+                    <li>اضغط "Enable" ثم "Save"</li>
+                </ul>
+            </div>
+
+            <div class="step">
+                <h3>📍 2. إضافة Authorized Domains</h3>
+                
+                <a href="https://console.firebase.google.com/project/studio-448742006-a3493/authentication/settings" 
+                   target="_blank" class="button">
+                    🌐 فتح Authentication Settings
+                </a>
+                
+                <h4>النطاقات المطلوبة:</h4>
+                <div class="code-block">
+localhost
+127.0.0.1
+studio-448742006-a3493.firebaseapp.com
+                </div>
+                
+                <h4>الخطوات:</h4>
+                <ul class="checklist">
+                    <li>في قسم "Authorized domains"</li>
+                    <li>تأكد من وجود النطاقات أعلاه</li>
+                    <li>إذا لم تكن موجودة، اضغط "Add domain"</li>
+                </ul>
+            </div>
+
+            <div class="step">
+                <h3>🔑 3. فحص Google Cloud Console</h3>
+                
+                <a href="https://console.cloud.google.com/apis/credentials?project=studio-448742006-a3493" 
+                   target="_blank" class="button">
+                    ☁️ فتح Google Cloud Console
+                </a>
+                
+                <h4>التحقق من OAuth 2.0 Client IDs:</h4>
+                <ul class="checklist">
+                    <li>يجب وجود Web application client</li>
+                    <li>Authorized redirect URIs يجب أن تحتوي على:</li>
+                </ul>
+                
+                <div class="code-block">
+https://studio-448742006-a3493.firebaseapp.com/__/auth/handler
+http://localhost:3000
+                </div>
+            </div>
+
+            <div class="step success">
+                <h3>✅ 4. Firebase App Check - تم الإصلاح</h3>
+                <p>تم تعطيل Firebase App Check بالكامل لحل مشكلة <code>auth/firebase-app-check-token-is-invalid</code></p>
+                <div class="warning">
+                    <strong>ملاحظة:</strong> يمكن إعادة تفعيل App Check لاحقاً مع إعدادات reCAPTCHA صحيحة إذا لزم الأمر.
+                </div>
+            </div>
+
+            <div class="step">
+                <h3>🧪 5. اختبار النظام</h3>
+                
+                <a href="http://localhost:3000/auth-test" target="_blank" class="button">
+                    🚀 صفحة اختبار المصادقة
+                </a>
+                
+                <p>استخدم هذه الصفحة لاختبار جميع طرق تسجيل الدخول مع تسجيل مفصل للأخطاء.</p>
+            </div>
+
+            <div class="step">
+                <h3>🔧 6. التشخيص المتقدم</h3>
+                
+                <a href="http://localhost:3000/debug/internal-error" target="_blank" class="button">
+                    🔍 صفحة التشخيص الشاملة
+                </a>
+                
+                <p>إذا استمرت المشاكل، استخدم صفحة التشخيص للحصول على تحليل تفصيلي.</p>
+            </div>
+
+            <div class="warning">
+                <h3>⚡ خطة العمل السريعة (5 دقائق)</h3>
+                <ol>
+                    <li><strong>الخطوة 1:</strong> افتح Firebase Console وفعّل Google Sign-in Provider</li>
+                    <li><strong>الخطوة 2:</strong> تحقق من Authorized Domains</li>
+                    <li><strong>الخطوة 3:</strong> اختبر النظام في صفحة الاختبار</li>
+                    <li><strong>الخطوة 4:</strong> إذا لم تحل المشكلة، فحص Google Cloud Console</li>
+                </ol>
+            </div>
+
+            <div class="step">
+                <h3>📞 إذا استمرت المشاكل</h3>
+                <p>إذا جربت كل الخطوات أعلاه ولم تحل المشكلة:</p>
+                <ul>
+                    <li>🔍 شغّل التشخيص الشامل وانسخ النتائج</li>
+                    <li>🌐 جرب المشروع من جهاز/شبكة مختلفة</li>
+                    <li>🧹 امسح cache المتصفح وأعد تحميل الصفحة</li>
+                    <li>🔄 جرب متصفح مختلف (Chrome, Firefox, Edge)</li>
+                </ul>
+            </div>
+
+            <div style="text-align: center; padding: 20px; color: #666;">
+                <p><strong>تاريخ آخر تحديث:</strong> <span id="current-date"></span></p>
+                <p><strong>Project ID:</strong> studio-448742006-a3493</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Display current date
+        document.getElementById('current-date').textContent = new Date().toLocaleString('ar-SA');
+        
+        // Load Firebase console checklist
+        const script = document.createElement('script');
+        script.src = './firebase-console-checklist.js';
+        document.head.appendChild(script);
+    </script>
+</body>
+</html>

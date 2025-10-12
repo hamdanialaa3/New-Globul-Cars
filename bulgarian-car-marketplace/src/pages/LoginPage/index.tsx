@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from '../../hooks/useTranslation';
 import SocialLogin from '../../components/SocialLogin';
+import { FirebaseStatus } from '../../components/FirebaseStatusSimple';
 import {
   Eye,
   EyeOff,
@@ -196,6 +197,9 @@ const LoginPage: React.FC = () => {
           <Link to="/register">{t('auth.createAccount', 'Create one here')}</Link>
         </RegisterPrompt>
       </LoginCard>
+      
+      {/* Firebase Status Component for Development */}
+      <FirebaseStatus />
     </LoginContainer>
   );
 };

@@ -23,6 +23,9 @@ import BundleAnalyzer from './components/BundleAnalyzer';
 import NotFoundPage from './components/NotFoundPage';
 import FacebookPixel from './components/FacebookPixel';
 import FacebookMessengerWidget from './components/FacebookMessengerWidget';
+// Removed problematic imports
+// import useAuthRedirectHandler from './hooks/useAuthRedirectHandler';
+import SimpleAuthTest from './components/SimpleAuthTest';
 
 // Lazy load pages for better performance
 const HomePage = React.lazy(() => import('./pages/HomePage'));
@@ -85,6 +88,9 @@ const SitemapPage = React.lazy(() => import('./pages/SitemapPage'));
 const NotificationsPage = React.lazy(() => import('./pages/NotificationsPage'));
 const SavedSearchesPage = React.lazy(() => import('./pages/SavedSearchesPage'));
 const FavoritesPage = React.lazy(() => import('./pages/FavoritesPage'));
+const AuthDiagnosticsPage = React.lazy(() => import('./pages/AuthDiagnosticsPageFixed'));
+const InternalErrorDiagnostic = React.lazy(() => import('./components/InternalErrorDiagnostic'));
+const AuthTestComponent = React.lazy(() => import('./components/AuthTestComponent'));
 
 // Layout Component
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -196,6 +202,21 @@ const App: React.FC = () => {
                       <Route path="/debug/google-auth" element={
                         <FullScreenLayout>
                           <GoogleAuthDebug />
+                        </FullScreenLayout>
+                      } />
+                      <Route path="/debug/auth-diagnostics" element={
+                        <FullScreenLayout>
+                          <AuthDiagnosticsPage />
+                        </FullScreenLayout>
+                      } />
+                      <Route path="/debug/internal-error" element={
+                        <FullScreenLayout>
+                          <InternalErrorDiagnostic />
+                        </FullScreenLayout>
+                      } />
+                      <Route path="/auth-test" element={
+                        <FullScreenLayout>
+                          <SimpleAuthTest />
                         </FullScreenLayout>
                       } />
                       

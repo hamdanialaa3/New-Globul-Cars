@@ -3,11 +3,11 @@
 
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { getFirestore, initializeFirestore, CACHE_SIZE_UNLIMITED } from 'firebase/firestore';
+import { initializeFirestore, CACHE_SIZE_UNLIMITED } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 import { getFunctions } from 'firebase/functions';
 import { getAnalytics, Analytics } from 'firebase/analytics';
-import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check';
+// import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check'; // Disabled to prevent auth errors
 import { BULGARIAN_CONFIG } from '../config/bulgarian-config';
 
 // Type declaration for reCAPTCHA
@@ -31,12 +31,10 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// Initialize App Check with reCAPTCHA v3 - currently disabled
+// Initialize App Check - COMPLETELY DISABLED to prevent auth errors
 let appCheck: any = null;
-if (typeof window !== 'undefined') {
-  // App Check is disabled to prevent reCAPTCHA runtime errors
-  console.log('Firebase App Check is disabled to prevent connection issues');
-}
+console.log('🚫 Firebase App Check is completely disabled to prevent authentication errors');
+// DO NOT initialize App Check as it causes auth/firebase-app-check-token-is-invalid errors
 
 // Initialize Firebase services
 export const auth = getAuth(app);

@@ -1,56 +1,6 @@
 {
   "indexes": [
     {
-      "collectionGroup": "cars",
-      "queryScope": "COLLECTION",
-      "fields": [
-        { "fieldPath": "sellerId", "order": "ASCENDING" },
-        { "fieldPath": "updatedAt", "order": "DESCENDING" }
-      ]
-    },
-    {
-      "collectionGroup": "notifications",
-      "queryScope": "COLLECTION",
-      "fields": [
-        { "fieldPath": "userId", "order": "ASCENDING" },
-        { "fieldPath": "timestamp", "order": "DESCENDING" }
-      ]
-    },
-    {
-      "collectionGroup": "messages",
-      "queryScope": "COLLECTION",
-      "fields": [
-        { "fieldPath": "senderId", "order": "ASCENDING" },
-        { "fieldPath": "timestamp", "order": "DESCENDING" }
-      ]
-    },
-    {
-      "collectionGroup": "messages",
-      "queryScope": "COLLECTION",
-      "fields": [
-        { "fieldPath": "receiverId", "order": "ASCENDING" },
-        { "fieldPath": "timestamp", "order": "DESCENDING" }
-      ]
-    },
-    {
-      "collectionGroup": "messages",
-      "queryScope": "COLLECTION",
-      "fields": [
-        { "fieldPath": "carId", "order": "ASCENDING" },
-        { "fieldPath": "senderId", "order": "ASCENDING" },
-        { "fieldPath": "receiverId", "order": "ASCENDING" },
-        { "fieldPath": "timestamp", "order": "ASCENDING" }
-      ]
-    },
-    {
-      "collectionGroup": "messages",
-      "queryScope": "COLLECTION",
-      "fields": [
-        { "fieldPath": "participants", "arrayConfig": "CONTAINS" },
-        { "fieldPath": "timestamp", "order": "DESCENDING" }
-      ]
-    },
-    {
       "collectionGroup": "carMessages",
       "queryScope": "COLLECTION",
       "fields": [
@@ -61,36 +11,13 @@
         {
           "fieldPath": "timestamp",
           "order": "DESCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "carMessages",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "userId",
-          "order": "ASCENDING"
         },
         {
-          "fieldPath": "timestamp",
+          "fieldPath": "__name__",
           "order": "DESCENDING"
         }
-      ]
-    },
-    {
-      "collectionGroup": "carMessages",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "type",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "timestamp",
-          "order": "DESCENDING"
-        }
-      ]
+      ],
+      "density": "SPARSE_ALL"
     },
     {
       "collectionGroup": "carMessages",
@@ -107,25 +34,35 @@
         {
           "fieldPath": "timestamp",
           "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "DESCENDING"
         }
-      ]
+      ],
+      "density": "SPARSE_ALL"
     },
     {
-      "collectionGroup": "chatMessages",
+      "collectionGroup": "carMessages",
       "queryScope": "COLLECTION",
       "fields": [
         {
-          "fieldPath": "chatRoomId",
+          "fieldPath": "type",
           "order": "ASCENDING"
         },
         {
           "fieldPath": "timestamp",
-          "order": "ASCENDING"
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "DESCENDING"
         }
-      ]
+      ],
+      "density": "SPARSE_ALL"
     },
     {
-      "collectionGroup": "chatMessages",
+      "collectionGroup": "carMessages",
       "queryScope": "COLLECTION",
       "fields": [
         {
@@ -135,114 +72,55 @@
         {
           "fieldPath": "timestamp",
           "order": "DESCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "chatRooms",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "participants",
-          "arrayConfig": "CONTAINS"
         },
         {
-          "fieldPath": "updatedAt",
+          "fieldPath": "__name__",
           "order": "DESCENDING"
         }
-      ]
-    },
-    {
-      "collectionGroup": "chatRooms",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "carId",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "updatedAt",
-          "order": "DESCENDING"
-        }
-      ]
+      ],
+      "density": "SPARSE_ALL"
     },
     {
       "collectionGroup": "cars",
       "queryScope": "COLLECTION",
       "fields": [
-        {
-          "fieldPath": "sellerId",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "createdAt",
-          "order": "DESCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "cars",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "price",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "createdAt",
-          "order": "DESCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "cars",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "location.city",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "price",
-          "order": "ASCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "cars",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "make",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "model",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "price",
-          "order": "ASCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "cars",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "make",
-          "order": "ASCENDING"
-        },
         {
           "fieldPath": "fuelType",
           "order": "ASCENDING"
         },
         {
+          "fieldPath": "condition",
+          "order": "ASCENDING"
+        },
+        {
           "fieldPath": "price",
           "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "ASCENDING"
         }
-      ]
+      ],
+      "density": "SPARSE_ALL"
+    },
+    {
+      "collectionGroup": "cars",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "isActive",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "createdAt",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "DESCENDING"
+        }
+      ],
+      "density": "SPARSE_ALL"
     },
     {
       "collectionGroup": "cars",
@@ -259,44 +137,32 @@
         {
           "fieldPath": "views",
           "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "DESCENDING"
         }
-      ]
+      ],
+      "density": "SPARSE_ALL"
     },
     {
       "collectionGroup": "cars",
       "queryScope": "COLLECTION",
       "fields": [
         {
-          "fieldPath": "make",
+          "fieldPath": "isSold",
           "order": "ASCENDING"
         },
         {
-          "fieldPath": "condition",
-          "order": "ASCENDING"
+          "fieldPath": "createdAt",
+          "order": "DESCENDING"
         },
         {
-          "fieldPath": "price",
-          "order": "ASCENDING"
+          "fieldPath": "__name__",
+          "order": "DESCENDING"
         }
-      ]
-    },
-    {
-      "collectionGroup": "cars",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "fuelType",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "condition",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "price",
-          "order": "ASCENDING"
-        }
-      ]
+      ],
+      "density": "SPARSE_ALL"
     },
     {
       "collectionGroup": "cars",
@@ -313,36 +179,158 @@
         {
           "fieldPath": "price",
           "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "ASCENDING"
         }
-      ]
+      ],
+      "density": "SPARSE_ALL"
     },
     {
       "collectionGroup": "cars",
       "queryScope": "COLLECTION",
       "fields": [
         {
-          "fieldPath": "isActive",
+          "fieldPath": "location.city",
           "order": "ASCENDING"
         },
         {
-          "fieldPath": "createdAt",
-          "order": "DESCENDING"
+          "fieldPath": "price",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "ASCENDING"
         }
-      ]
+      ],
+      "density": "SPARSE_ALL"
     },
     {
       "collectionGroup": "cars",
       "queryScope": "COLLECTION",
       "fields": [
         {
-          "fieldPath": "isSold",
+          "fieldPath": "make",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "condition",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "price",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "ASCENDING"
+        }
+      ],
+      "density": "SPARSE_ALL"
+    },
+    {
+      "collectionGroup": "cars",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "make",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "fuelType",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "price",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "ASCENDING"
+        }
+      ],
+      "density": "SPARSE_ALL"
+    },
+    {
+      "collectionGroup": "cars",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "make",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "model",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "price",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "ASCENDING"
+        }
+      ],
+      "density": "SPARSE_ALL"
+    },
+    {
+      "collectionGroup": "cars",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "price",
           "order": "ASCENDING"
         },
         {
           "fieldPath": "createdAt",
           "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "DESCENDING"
         }
-      ]
+      ],
+      "density": "SPARSE_ALL"
+    },
+    {
+      "collectionGroup": "cars",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "sellerId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "createdAt",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "DESCENDING"
+        }
+      ],
+      "density": "SPARSE_ALL"
+    },
+    {
+      "collectionGroup": "cars",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "sellerId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "updatedAt",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "DESCENDING"
+        }
+      ],
+      "density": "SPARSE_ALL"
     },
     {
       "collectionGroup": "cars",
@@ -355,115 +343,35 @@
         {
           "fieldPath": "price",
           "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "ASCENDING"
         }
-      ]
+      ],
+      "density": "SPARSE_ALL"
     },
     {
-      "collectionGroup": "cars",
+      "collectionGroup": "chatMessages",
       "queryScope": "COLLECTION",
       "fields": [
         {
-          "fieldPath": "status",
+          "fieldPath": "chatRoomId",
           "order": "ASCENDING"
         },
         {
-          "fieldPath": "createdAt",
-          "order": "DESCENDING"
+          "fieldPath": "timestamp",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "ASCENDING"
         }
-      ]
+      ],
+      "density": "SPARSE_ALL"
     },
     {
-      "collectionGroup": "cars",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "status",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "make",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "createdAt",
-          "order": "DESCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "cars",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "status",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "city",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "createdAt",
-          "order": "DESCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "cars",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "status",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "vehicleType",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "createdAt",
-          "order": "DESCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "cars",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "status",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "fuelType",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "createdAt",
-          "order": "DESCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "cars",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "isFeatured",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "status",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "createdAt",
-          "order": "DESCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "favorites",
+      "collectionGroup": "chatMessages",
       "queryScope": "COLLECTION",
       "fields": [
         {
@@ -471,10 +379,53 @@
           "order": "ASCENDING"
         },
         {
-          "fieldPath": "createdAt",
+          "fieldPath": "timestamp",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "__name__",
           "order": "DESCENDING"
         }
-      ]
+      ],
+      "density": "SPARSE_ALL"
+    },
+    {
+      "collectionGroup": "chatRooms",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "carId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "updatedAt",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "DESCENDING"
+        }
+      ],
+      "density": "SPARSE_ALL"
+    },
+    {
+      "collectionGroup": "chatRooms",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "participants",
+          "arrayConfig": "CONTAINS"
+        },
+        {
+          "fieldPath": "updatedAt",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "DESCENDING"
+        }
+      ],
+      "density": "SPARSE_ALL"
     },
     {
       "collectionGroup": "favorites",
@@ -487,8 +438,116 @@
         {
           "fieldPath": "userId",
           "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "ASCENDING"
         }
-      ]
+      ],
+      "density": "SPARSE_ALL"
+    },
+    {
+      "collectionGroup": "favorites",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "userId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "createdAt",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "DESCENDING"
+        }
+      ],
+      "density": "SPARSE_ALL"
+    },
+    {
+      "collectionGroup": "messages",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "carId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "senderId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "receiverId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "timestamp",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "ASCENDING"
+        }
+      ],
+      "density": "SPARSE_ALL"
+    },
+    {
+      "collectionGroup": "messages",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "participants",
+          "arrayConfig": "CONTAINS"
+        },
+        {
+          "fieldPath": "timestamp",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "DESCENDING"
+        }
+      ],
+      "density": "SPARSE_ALL"
+    },
+    {
+      "collectionGroup": "messages",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "receiverId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "timestamp",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "DESCENDING"
+        }
+      ],
+      "density": "SPARSE_ALL"
+    },
+    {
+      "collectionGroup": "messages",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "senderId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "timestamp",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "DESCENDING"
+        }
+      ],
+      "density": "SPARSE_ALL"
     },
     {
       "collectionGroup": "notifications",
@@ -505,8 +564,70 @@
         {
           "fieldPath": "createdAt",
           "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "DESCENDING"
         }
-      ]
+      ],
+      "density": "SPARSE_ALL"
+    },
+    {
+      "collectionGroup": "notifications",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "userId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "timestamp",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "DESCENDING"
+        }
+      ],
+      "density": "SPARSE_ALL"
+    },
+    {
+      "collectionGroup": "reports",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "createdAt",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "DESCENDING"
+        }
+      ],
+      "density": "SPARSE_ALL"
+    },
+    {
+      "collectionGroup": "reports",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "targetId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "createdAt",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "DESCENDING"
+        }
+      ],
+      "density": "SPARSE_ALL"
     },
     {
       "collectionGroup": "reviews",
@@ -523,8 +644,13 @@
         {
           "fieldPath": "createdAt",
           "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "DESCENDING"
         }
-      ]
+      ],
+      "density": "SPARSE_ALL"
     },
     {
       "collectionGroup": "reviews",
@@ -537,50 +663,13 @@
         {
           "fieldPath": "createdAt",
           "order": "DESCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "reports",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "status",
-          "order": "ASCENDING"
         },
         {
-          "fieldPath": "createdAt",
+          "fieldPath": "__name__",
           "order": "DESCENDING"
         }
-      ]
-    },
-    {
-      "collectionGroup": "reports",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "targetId",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "createdAt",
-          "order": "DESCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "users",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "role",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "createdAt",
-          "order": "DESCENDING"
-        }
-      ]
+      ],
+      "density": "SPARSE_ALL"
     },
     {
       "collectionGroup": "users",
@@ -593,8 +682,32 @@
         {
           "fieldPath": "createdAt",
           "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "DESCENDING"
         }
-      ]
+      ],
+      "density": "SPARSE_ALL"
+    },
+    {
+      "collectionGroup": "users",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "role",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "createdAt",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "DESCENDING"
+        }
+      ],
+      "density": "SPARSE_ALL"
     }
   ],
   "fieldOverrides": []
