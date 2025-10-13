@@ -18,14 +18,10 @@ import AuthGuard from './components/AuthGuard';
 import NotificationHandler from './components/NotificationHandler';
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 // import AnalyticsTracker from './components/AnalyticsTracker';
-import PerformanceMonitor from './components/PerformanceMonitor';
-import BundleAnalyzer from './components/BundleAnalyzer';
 import NotFoundPage from './components/NotFoundPage';
 import FacebookPixel from './components/FacebookPixel';
-import FacebookMessengerWidget from './components/FacebookMessengerWidget';
 // Removed problematic imports
 // import useAuthRedirectHandler from './hooks/useAuthRedirectHandler';
-import SimpleAuthTest from './components/SimpleAuthTest';
 
 // Lazy load pages for better performance
 const HomePage = React.lazy(() => import('./pages/HomePage'));
@@ -57,9 +53,6 @@ const ProfilePage = React.lazy(() => import('./pages/ProfilePage'));
 const LoginPage = React.lazy(() => import('./pages/LoginPage/LoginPageGlassFixed'));
 const RegisterPage = React.lazy(() => import('./pages/RegisterPage/RegisterPageGlassFixed'));
 const EmailVerificationPage = React.lazy(() => import('./pages/EmailVerificationPage'));
-const GoogleAuthTest = React.lazy(() => import('./pages/GoogleAuthTest'));
-const GoogleAuthDebug = React.lazy(() => import('./pages/GoogleAuthDebug'));
-// const SimpleGoogleTest = React.lazy(() => import('./pages/SimpleGoogleTest')); // Moved to DDD/
 // const MessagesPage = React.lazy(() => import('./pages/MessagesPage'));
 const DashboardPage = React.lazy(() => import('./pages/DashboardPage'));
 const AdminDashboard = React.lazy(() => import('./components/AdminDashboard'));
@@ -71,7 +64,6 @@ const PrivacyPolicyPage = React.lazy(() => import('./pages/PrivacyPolicyPage'));
 const TermsOfServicePage = React.lazy(() => import('./pages/TermsOfServicePage'));
 const DataDeletionPage = React.lazy(() => import('./pages/DataDeletionPage'));
 const AdvancedSearchPage = React.lazy(() => import('./pages/AdvancedSearchPage'));
-const CleanGoogleAuthTest = React.lazy(() => import('./components/CleanGoogleAuthTest'));
 const MyListingsPage = React.lazy(() => import('./pages/MyListingsPage'));
 const B2BAnalyticsPortal = React.lazy(() => import('./pages/B2BAnalyticsPortal'));
 const DigitalTwinPage = React.lazy(() => import('./pages/DigitalTwinPage'));
@@ -88,9 +80,6 @@ const SitemapPage = React.lazy(() => import('./pages/SitemapPage'));
 const NotificationsPage = React.lazy(() => import('./pages/NotificationsPage'));
 const SavedSearchesPage = React.lazy(() => import('./pages/SavedSearchesPage'));
 const FavoritesPage = React.lazy(() => import('./pages/FavoritesPage'));
-const AuthDiagnosticsPage = React.lazy(() => import('./pages/AuthDiagnosticsPageFixed'));
-const InternalErrorDiagnostic = React.lazy(() => import('./components/InternalErrorDiagnostic'));
-const AuthTestComponent = React.lazy(() => import('./components/AuthTestComponent'));
 
 // Layout Component
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -195,28 +184,6 @@ const App: React.FC = () => {
                       <Route path="/verification" element={
                         <FullScreenLayout>
                           <EmailVerificationPage />
-                        </FullScreenLayout>
-                      } />
-                      
-                      {/* Debug Routes - Full Screen */}
-                      <Route path="/debug/google-auth" element={
-                        <FullScreenLayout>
-                          <GoogleAuthDebug />
-                        </FullScreenLayout>
-                      } />
-                      <Route path="/debug/auth-diagnostics" element={
-                        <FullScreenLayout>
-                          <AuthDiagnosticsPage />
-                        </FullScreenLayout>
-                      } />
-                      <Route path="/debug/internal-error" element={
-                        <FullScreenLayout>
-                          <InternalErrorDiagnostic />
-                        </FullScreenLayout>
-                      } />
-                      <Route path="/auth-test" element={
-                        <FullScreenLayout>
-                          <SimpleAuthTest />
                         </FullScreenLayout>
                       } />
                       

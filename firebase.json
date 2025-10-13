@@ -13,18 +13,10 @@
         "npm --prefix \"$RESOURCE_DIR\" run build"
       ],
       "source": "functions"
-    },
-    {
-      "source": "y",
-      "codebase": "y",
-      "predeploy": [
-        "npm --prefix \"$RESOURCE_DIR\" run lint",
-        "npm --prefix \"$RESOURCE_DIR\" run build"
-      ]
     }
   ],
   "hosting": {
-    "site": "studio-448742006-a3493",
+    "site": "fire-new-globul",
     "public": "bulgarian-car-marketplace/build",
     "ignore": [
       "firebase.json",

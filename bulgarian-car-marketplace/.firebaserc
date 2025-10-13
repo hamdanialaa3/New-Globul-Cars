@@ -1,6 +1,7 @@
 {
   "projects": {
-    "default": "studio-448742006-a3493"
+    "default": "fire-new-globul",
+    "old": "studio-448742006-a3493"
   },
   "targets": {},
   "etags": {}

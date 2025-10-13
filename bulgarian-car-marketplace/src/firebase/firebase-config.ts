@@ -18,9 +18,10 @@ declare global {
 }
 
 // Firebase configuration - NEW PROJECT: Fire New Globul
-// Using UNRESTRICTED API Key for authentication
+// Project ID: fire-new-globul
+// Project Number: 973379297533
 const firebaseConfig = {
-  apiKey: process.env.REACT_APP_FIREBASE_API_KEY || "AIzaSyAUYM_qygK5pUrlXtdDLmEi-_Kh9SyvRmk",
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY || "AIzaSyAchmKCk8ipzv0dDwbQ2xU1Pa6o4CQsEu8",
   authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN || "fire-new-globul.firebaseapp.com",
   projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID || "fire-new-globul",
   storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET || "fire-new-globul.firebasestorage.app",
