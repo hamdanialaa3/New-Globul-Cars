@@ -118,7 +118,11 @@ export { verifyRecaptchaToken } from './recaptcha';
 // Export Facebook integration functions
 export { handleFacebookDataDeletion } from './facebook/data-deletion';
 export { messengerWebhook } from './facebook/messenger-webhook';
-export { facebookCatalogXML, facebookCatalogCSV } from './facebook-catalog';
+
+// Export Multi-Platform Catalog Feeds
+export { googleMerchantFeed } from './catalog-feeds/google-feed';
+export { instagramShoppingFeed } from './catalog-feeds/instagram-feed';
+export { tiktokShoppingFeed } from './catalog-feeds/tiktok-feed';
 
 // Export Firebase Auth user functions
 export { 

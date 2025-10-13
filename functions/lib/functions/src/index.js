@@ -3,7 +3,7 @@
 // Main entry point for Firebase Functions
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.registerIoTDevice = exports.setupIoTInfrastructure = exports.analyzeMaintenanceNeeds = exports.onEmergencyAlertCreated = exports.receiveIoTData = exports.getInsuranceMarketStats = exports.getInsuranceProviders = exports.getClaimDetails = exports.fileInsuranceClaim = exports.getCustomerPolicies = exports.purchaseInsurancePolicy = exports.getInsuranceQuotes = exports.getCertificationStats = exports.verifyCertificate = exports.getVehicleCertificate = exports.getCustomerInspections = exports.getInspectionDetails = exports.scheduleVehicleInspection = exports.getServiceNetworkStats = exports.getAvailableTimeSlots = exports.getServiceCenterReviews = exports.submitServiceReview = exports.getCustomerServiceRequests = exports.createServiceRequest = exports.getServiceCenterDetails = exports.findServiceCenters = exports.getEVNetworkStats = exports.getEVCompatibility = exports.getEVChargingRoute = exports.findEVChargingStations = exports.getCachedVehicleHistory = exports.getVehicleHistoryReport = exports.b2bMarketInsightsAPI = exports.b2bValuationAPI = exports.upgradeB2BSubscription = exports.cancelB2BSubscription = exports.getB2BSubscription = exports.createB2BSubscription = exports.getCarValuation = exports.getSubscriptionStatus = exports.getRegionalPriceVariations = exports.getSalesPeakHours = exports.getDealerPerformance = exports.getMarketTrends = exports.getAveragePriceByModel = exports.onUserDelete = exports.onUserCreate = exports.onCarDelete = exports.onCarCreate = exports.incrementCarViewCount = void 0;
-exports.syncAuthToFirestore = exports.getActiveAuthUsers = exports.getAuthUsersCount = exports.facebookCatalogCSV = exports.facebookCatalogXML = exports.messengerWebhook = exports.handleFacebookDataDeletion = exports.verifyRecaptchaToken = exports.translateText = exports.analyzeCarImage = exports.geocodeAddressOnCarCreate = exports.sendMaintenanceReminders = exports.analyzeProactiveMaintenance = exports.acceptServiceOffer = exports.getUserMaintenanceAlerts = exports.createMaintenanceAlert = exports.resetDigitalTwin = exports.getDigitalTwinStats = exports.analyzeDigitalTwinHealth = exports.syncDigitalTwinToBigQuery = exports.onLiveDataUpdated = exports.getDigitalTwin = exports.removeIoTDevice = exports.getIoTDeviceStats = void 0;
+exports.syncAuthToFirestore = exports.getActiveAuthUsers = exports.getAuthUsersCount = exports.tiktokShoppingFeed = exports.instagramShoppingFeed = exports.googleMerchantFeed = exports.messengerWebhook = exports.handleFacebookDataDeletion = exports.verifyRecaptchaToken = exports.translateText = exports.analyzeCarImage = exports.geocodeAddressOnCarCreate = exports.sendMaintenanceReminders = exports.analyzeProactiveMaintenance = exports.acceptServiceOffer = exports.getUserMaintenanceAlerts = exports.createMaintenanceAlert = exports.resetDigitalTwin = exports.getDigitalTwinStats = exports.analyzeDigitalTwinHealth = exports.syncDigitalTwinToBigQuery = exports.onLiveDataUpdated = exports.getDigitalTwin = exports.removeIoTDevice = exports.getIoTDeviceStats = void 0;
 // Export statistics and counter functions
 var stats_1 = require("./stats");
 Object.defineProperty(exports, "incrementCarViewCount", { enumerable: true, get: function () { return stats_1.incrementCarViewCount; } });
@@ -112,9 +112,13 @@ var data_deletion_1 = require("./facebook/data-deletion");
 Object.defineProperty(exports, "handleFacebookDataDeletion", { enumerable: true, get: function () { return data_deletion_1.handleFacebookDataDeletion; } });
 var messenger_webhook_1 = require("./facebook/messenger-webhook");
 Object.defineProperty(exports, "messengerWebhook", { enumerable: true, get: function () { return messenger_webhook_1.messengerWebhook; } });
-var facebook_catalog_1 = require("./facebook-catalog");
-Object.defineProperty(exports, "facebookCatalogXML", { enumerable: true, get: function () { return facebook_catalog_1.facebookCatalogXML; } });
-Object.defineProperty(exports, "facebookCatalogCSV", { enumerable: true, get: function () { return facebook_catalog_1.facebookCatalogCSV; } });
+// Export Multi-Platform Catalog Feeds
+var google_feed_1 = require("./catalog-feeds/google-feed");
+Object.defineProperty(exports, "googleMerchantFeed", { enumerable: true, get: function () { return google_feed_1.googleMerchantFeed; } });
+var instagram_feed_1 = require("./catalog-feeds/instagram-feed");
+Object.defineProperty(exports, "instagramShoppingFeed", { enumerable: true, get: function () { return instagram_feed_1.instagramShoppingFeed; } });
+var tiktok_feed_1 = require("./catalog-feeds/tiktok-feed");
+Object.defineProperty(exports, "tiktokShoppingFeed", { enumerable: true, get: function () { return tiktok_feed_1.tiktokShoppingFeed; } });
 // Export Firebase Auth user functions
 var get_auth_users_count_1 = require("./get-auth-users-count");
 Object.defineProperty(exports, "getAuthUsersCount", { enumerable: true, get: function () { return get_auth_users_count_1.getAuthUsersCount; } });

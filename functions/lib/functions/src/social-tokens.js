@@ -432,7 +432,8 @@ exports.rotateSocialPlatformTokens = (0, scheduler_1.onSchedule)('every 24 hours
     if (manifest.graceUntil && now < manifest.graceUntil) {
         details.skippedReason = 'grace-active';
         metrics.rotationsSkipped++;
-        return { rotated: false, skipped: true, details };
+        console.log('Rotation skipped (grace active):', { rotated: false, skipped: true, details });
+        return;
     }
     // Generate new secret
     const newSecret = crypto.randomBytes(32).toString('hex');
