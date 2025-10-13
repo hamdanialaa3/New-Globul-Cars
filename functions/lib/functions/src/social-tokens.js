@@ -408,7 +408,7 @@ exports.getSocialTokenMetrics = (0, https_1.onCall)({ cors: true }, async (reque
     return Object.assign(Object.assign({}, metrics), { cacheHitRate: metrics.requests ? +(metrics.cacheHits / metrics.requests).toFixed(3) : 0, rateLimitConfig, now: Date.now() });
 });
 // Real HMAC signing secret rotation (platform raw token rotation remains placeholder)
-exports.rotateSocialPlatformTokens = (0, scheduler_1.onSchedule)('every 24 hours', async () => {
+exports.rotateSocialPlatformTokens = (0, scheduler_1.onSchedule)('every 24 hours', async (event) => {
     const details = {};
     const enable = process.env.ENABLE_HMAC_ROTATION === '1' && ENABLE_EPHEMERAL;
     if (!enable) {

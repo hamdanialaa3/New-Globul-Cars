@@ -427,7 +427,7 @@ export const getSocialTokenMetrics = onCall({ cors: true }, async (request) => {
 interface RotationResult { rotated: boolean; details: Record<string, any>; skipped?: boolean; }
 
 // Real HMAC signing secret rotation (platform raw token rotation remains placeholder)
-export const rotateSocialPlatformTokens = onSchedule('every 24 hours', async () => {
+export const rotateSocialPlatformTokens = onSchedule('every 24 hours', async (event) => {
   const details: Record<string, any> = {};
   const enable = process.env.ENABLE_HMAC_ROTATION === '1' && ENABLE_EPHEMERAL;
   if (!enable) {

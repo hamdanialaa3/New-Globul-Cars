@@ -97,12 +97,11 @@ export {
   getUserMaintenanceAlerts,
   acceptServiceOffer,
   analyzeProactiveMaintenance,
-  sendMaintenanceReminders,
-  getMaintenanceStats
+  sendMaintenanceReminders
 } from './proactive-maintenance';
 
 // Export chat notification functions
-export { sendChatNotification } from './notifications';
+// export { sendChatNotification } from './notifications';
 
 // Export geolocation functions
 export { geocodeAddressOnCarCreate } from './geolocation';
@@ -119,6 +118,7 @@ export { verifyRecaptchaToken } from './recaptcha';
 // Export Facebook integration functions
 export { handleFacebookDataDeletion } from './facebook/data-deletion';
 export { messengerWebhook } from './facebook/messenger-webhook';
+export { facebookCatalogXML, facebookCatalogCSV } from './facebook-catalog';
 
 // Export Firebase Auth user functions
 export { 

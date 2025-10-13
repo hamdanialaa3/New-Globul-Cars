@@ -38,8 +38,7 @@ export const geocodeAddressOnCarCreate = functions.region('europe-west1').firest
           address: address,
           key: GOOGLE_MAPS_API_KEY,
           region: 'BG' // Bias results towards Bulgaria
-        },
-        timeout: 5000 // 5 second timeout
+        }
       });
 
       if (response.data.status === 'OK' && response.data.results.length > 0) {
