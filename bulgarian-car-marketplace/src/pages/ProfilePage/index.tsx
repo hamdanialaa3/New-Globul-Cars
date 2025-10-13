@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from '../../hooks/useTranslation';
 import { useLanguage } from '../../contexts/LanguageContext';
 import LazyImage from '../../components/LazyImage';
@@ -205,6 +205,7 @@ const ProfilePage: React.FC = () => {
   const { language } = useLanguage();
   const toast = useToast();
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const {
     user,
     userCars,
@@ -221,13 +222,13 @@ const ProfilePage: React.FC = () => {
   } = useProfile();
 
   // Read tab from URL or default to 'profile'
-  const initialTab = (searchParams.get('tab') as 'profile' | 'garage' | 'analytics' | 'settings') || 'profile';
-  const [activeTab, setActiveTab] = React.useState<'profile' | 'garage' | 'analytics' | 'settings'>(initialTab);
+  const initialTab = (searchParams.get('tab') as 'profile' | 'analytics' | 'settings') || 'profile';
+  const [activeTab, setActiveTab] = React.useState<'profile' | 'analytics' | 'settings'>(initialTab);
   
   // Update activeTab when URL changes
   useEffect(() => {
-    const tabParam = searchParams.get('tab') as 'profile' | 'garage' | 'analytics' | 'settings';
-    if (tabParam && ['profile', 'garage', 'analytics', 'settings'].includes(tabParam)) {
+    const tabParam = searchParams.get('tab') as 'profile' | 'analytics' | 'settings';
+    if (tabParam && ['profile', 'analytics', 'settings'].includes(tabParam)) {
       setActiveTab(tabParam);
     }
   }, [searchParams]);
@@ -357,11 +358,11 @@ const ProfilePage: React.FC = () => {
             {language === 'bg' ? 'Профил' : 'Profile'}
           </TabButton>
           <TabButton 
-            $active={activeTab === 'garage'}
-            onClick={() => setActiveTab('garage')}
+            $active={false}
+            onClick={() => navigate('/my-listings')}
           >
             <Car size={18} />
-            {language === 'bg' ? 'Гараж' : 'Garage'}
+            {language === 'bg' ? 'Моите обяви' : 'My Ads'}
           </TabButton>
           <TabButton 
             $active={activeTab === 'analytics'}
@@ -1120,35 +1121,6 @@ const ProfilePage: React.FC = () => {
         {/* Content for other tabs - Full width without sidebar */}
         {activeTab !== 'profile' && (
           <FullWidthContent>
-            {activeTab === 'garage' && (
-              <GarageSection
-                cars={userCars.map(car => ({
-                  id: car.id,
-                  title: car.title || `${car.make} ${car.model}`,
-                  make: car.make || '',
-                  model: car.model || '',
-                  year: car.year,
-                  price: car.price,
-                  currency: 'EUR' as const,
-                  mainImage: car.mainImage,
-                  mileage: car.mileage,
-                  fuelType: car.fuelType,
-                  status: car.status as any || 'active',
-                  views: car.views || 0,
-                  inquiries: car.inquiries || 0,
-                  createdAt: new Date(),
-                  updatedAt: new Date()
-                }))}
-                onEdit={(carId) => {
-                  window.location.href = `/cars/${carId}/edit`;
-                }}
-                onDelete={handleDeleteCar}
-                onAddNew={() => {
-                  window.location.href = '/sell';
-                }}
-              />
-            )}
-
             {activeTab === 'analytics' && (
               <ProfileAnalyticsDashboard userId={user.uid} />
             )}

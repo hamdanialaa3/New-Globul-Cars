@@ -279,9 +279,10 @@ const SellerTypePageNew: React.FC = () => {
 
   const rightContent = (
     <WorkflowFlow
-      steps={workflowSteps}
       currentStepIndex={1}
       totalSteps={8}
+      carBrand={searchParams.get('mk') || undefined}
+      language={language}
     />
   );
 

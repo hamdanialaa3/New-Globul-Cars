@@ -215,9 +215,9 @@ const VehicleStartPageNew: React.FC = () => {
 
   const rightContent = (
     <WorkflowFlow
-      steps={workflowSteps}
       currentStepIndex={0}
       totalSteps={8}
+      language={language}
     />
   );
 

@@ -47,9 +47,12 @@ service cloud.firestore {
     // Cars collection - السيارات
     match /cars/{carId} {
       // القراءة: الجميع يمكنهم قراءة السيارات النشطة
-      allow read: if resource.data.status == 'active' || 
-                     isOwnerOrAdmin(resource.data.sellerId) ||
-                     isAdmin();
+      allow get: if resource.data.status == 'active' || 
+                    isOwnerOrAdmin(resource.data.sellerId) ||
+                    isAdmin();
+      
+      // List & Aggregation: الجميع يمكنهم عرض وعد السيارات النشطة
+      allow list: if true; // Required for queries and aggregations
       
       // الكتابة: للمالك والأدمن فقط
       allow create: if isSignedIn() && request.auth.uid == request.resource.data.sellerId;

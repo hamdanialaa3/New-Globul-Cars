@@ -94,7 +94,8 @@ const InfotainmentEquipmentPageNew: React.FC = () => {
     </S.ContentSection>
   );
 
-  const rightContent = <WorkflowFlow steps={workflowSteps} currentStepIndex={3} totalSteps={8} />;
+  const make = searchParams.get('mk');
+  const rightContent = <WorkflowFlow currentStepIndex={3} totalSteps={8} carBrand={make || undefined} language={language} />;
 
   return <SplitScreenLayout leftContent={leftContent} rightContent={rightContent} />;
 };

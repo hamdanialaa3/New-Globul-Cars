@@ -49,10 +49,16 @@ export class SellWorkflowService {
       c.nameEn === cityId
     );
 
-    // Parse arrays from comma-separated strings
-    const parseArray = (str: string | undefined): string[] => {
+    // Parse arrays from comma-separated strings OR arrays
+    const parseArray = (str: string | string[] | undefined): string[] => {
       if (!str) return [];
-      return str.split(',').map(s => s.trim()).filter(s => s);
+      // If already an array, return it
+      if (Array.isArray(str)) return str;
+      // If string, split it
+      if (typeof str === 'string') {
+        return str.split(',').map(s => s.trim()).filter(s => s);
+      }
+      return [];
     };
 
     // Get image URLs from workflow
@@ -242,7 +248,10 @@ export class SellWorkflowService {
       if (!workflowData.sellerName || !workflowData.sellerEmail || !workflowData.sellerPhone) {
         throw new Error('Missing seller contact information');
       }
-      if (!workflowData.region && !workflowData.city) {
+      // Check location - can be either flat (region/city) or nested (location.region/location.city)
+      const hasLocation = (workflowData.region && workflowData.city) || 
+                          (workflowData.location?.region && workflowData.location?.city);
+      if (!hasLocation) {
         throw new Error('Missing location information');
       }
 

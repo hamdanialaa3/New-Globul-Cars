@@ -38,11 +38,13 @@ const SafetyEquipmentPage = React.lazy(() => import('./pages/sell/Equipment/Safe
 const ComfortEquipmentPage = React.lazy(() => import('./pages/sell/Equipment/ComfortPage'));
 const InfotainmentEquipmentPage = React.lazy(() => import('./pages/sell/Equipment/InfotainmentPage'));
 const ExtrasEquipmentPage = React.lazy(() => import('./pages/sell/Equipment/ExtrasPage'));
+const UnifiedEquipmentPage = React.lazy(() => import('./pages/sell/Equipment/UnifiedEquipmentPage'));
 const ImagesPage = React.lazy(() => import('./pages/sell/Images'));
 const PricingPage = React.lazy(() => import('./pages/sell/Pricing'));
 const ContactNamePage = React.lazy(() => import('./pages/sell/ContactNamePage'));
 const ContactAddressPage = React.lazy(() => import('./pages/sell/ContactAddressPage'));
 const ContactPhonePage = React.lazy(() => import('./pages/sell/ContactPhonePage'));
+const UnifiedContactPage = React.lazy(() => import('./pages/sell/UnifiedContactPage'));
 const MessagingPage = React.lazy(() => import('./pages/MessagingPage'));
 const AdminPage = React.lazy(() => import('./pages/AdminPage'));
 const AdminLoginPage = React.lazy(() => import('./pages/AdminLoginPage'));
@@ -219,6 +221,7 @@ const MainLayout: React.FC = () => (
       <Route path="/" element={<HomePage />} />
       <Route path="/cars" element={<CarsPage />} />
       <Route path="/cars/:id" element={<CarDetailsPage />} />
+      <Route path="/car/:id" element={<CarDetailsPage />} />
       {/* Unified Sell System - Mobile.de Style Only */}
       <Route path="/sell" element={<SellPage />} />
       {/* Redirect old routes to new system */}
@@ -249,6 +252,17 @@ const MainLayout: React.FC = () => (
           </AuthGuard>
         }
       />
+      {/* NEW: Unified Equipment Page - All Features in One Place */}
+      <Route
+        path="/sell/inserat/:vehicleType/equipment"
+        element={
+          <AuthGuard requireAuth={true}>
+            <UnifiedEquipmentPage />
+          </AuthGuard>
+        }
+      />
+      
+      {/* Legacy Equipment Routes - Keep for backward compatibility */}
       <Route
         path="/sell/inserat/:vehicleType/ausstattung"
         element={
@@ -305,6 +319,17 @@ const MainLayout: React.FC = () => (
           </AuthGuard>
         }
       />
+      {/* NEW: Unified Contact Page - All Contact Info in One Place */}
+      <Route
+        path="/sell/inserat/:vehicleType/contact"
+        element={
+          <AuthGuard requireAuth={true}>
+            <UnifiedContactPage />
+          </AuthGuard>
+        }
+      />
+
+      {/* Legacy Contact Routes - Keep for backward compatibility */}
       <Route
         path="/sell/inserat/:vehicleType/kontakt/name"
         element={

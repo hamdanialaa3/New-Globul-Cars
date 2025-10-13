@@ -101,7 +101,7 @@ const VehicleDataPageNew: React.FC = () => {
     params.set('fy', formData.year);
     if (formData.mileage) params.set('mi', formData.mileage);
 
-    navigate(`/sell/inserat/${vehicleType || 'car'}/ausstattung/sicherheit?${params.toString()}`);
+    navigate(`/sell/inserat/${vehicleType || 'car'}/equipment?${params.toString()}`);
   };
 
   const workflowSteps = [
@@ -127,6 +127,26 @@ const VehicleDataPageNew: React.FC = () => {
             : 'Enter basic information about your vehicle'}
         </S.Subtitle>
       </S.HeaderCard>
+
+      {/* Top Navigation Buttons */}
+      <S.NavigationButtons>
+        <S.Button
+          type="button"
+          $variant="secondary"
+          onClick={() => navigate(-1)}
+        >
+          ← {language === 'bg' ? 'Назад' : 'Back'}
+        </S.Button>
+
+        <S.Button
+          type="button"
+          $variant="primary"
+          onClick={handleContinue}
+          disabled={!formData.make || !formData.year}
+        >
+          {language === 'bg' ? 'Продължи' : 'Continue'} →
+        </S.Button>
+      </S.NavigationButtons>
 
       {/* Required Fields */}
       <S.FormCard>
@@ -352,55 +372,79 @@ const VehicleDataPageNew: React.FC = () => {
         </S.FormGrid>
       </S.FormCard>
 
-      {/* Boolean Options with Red/Green Circles */}
+      {/* History Section with Cyber Toggle Buttons */}
       <S.FormCard>
         <S.SectionTitle>
           {language === 'bg' ? 'История' : 'History'}
         </S.SectionTitle>
 
-        <S.FormGroup>
-          <S.Label>
-            {language === 'bg' ? 'Има история на катастрофи' : 'Has accident history'}
-          </S.Label>
-          <S.BooleanOptions>
-            <S.BooleanOption
-              type="button"
-              $isSelected={formData.hasAccidentHistory === false}
-              onClick={() => handleInputChange('hasAccidentHistory', false)}
-            >
-              {language === 'bg' ? '✓ Не' : '✓ No'}
-            </S.BooleanOption>
-            <S.BooleanOption
-              type="button"
-              $isSelected={formData.hasAccidentHistory === true}
-              onClick={() => handleInputChange('hasAccidentHistory', true)}
-            >
-              {language === 'bg' ? '⚠ Да' : '⚠ Yes'}
-            </S.BooleanOption>
-          </S.BooleanOptions>
-        </S.FormGroup>
+        {/* Accident History */}
+        <S.HistoryRow>
+          <S.HistoryInfo>
+            <S.HistoryLabel>
+              {language === 'bg' ? 'Има история на катастрофи' : 'Has accident history'}
+            </S.HistoryLabel>
+            <S.HistoryHint>
+              {formData.hasAccidentHistory 
+                ? (language === 'bg' ? '⚠ Да' : '⚠ Yes')
+                : (language === 'bg' ? '✓ Не' : '✓ No')
+              }
+            </S.HistoryHint>
+          </S.HistoryInfo>
 
-        <S.FormGroup style={{ marginTop: '1.5rem' }}>
-          <S.Label>
-            {language === 'bg' ? 'Има сервизна история' : 'Has service history'}
-          </S.Label>
-          <S.BooleanOptions>
-            <S.BooleanOption
-              type="button"
-              $isSelected={formData.hasServiceHistory === true}
-              onClick={() => handleInputChange('hasServiceHistory', true)}
-            >
-              {language === 'bg' ? '✓ Да' : '✓ Yes'}
-            </S.BooleanOption>
-            <S.BooleanOption
-              type="button"
-              $isSelected={formData.hasServiceHistory === false}
-              onClick={() => handleInputChange('hasServiceHistory', false)}
-            >
-              {language === 'bg' ? '✗ Не' : '✗ No'}
-            </S.BooleanOption>
-          </S.BooleanOptions>
-        </S.FormGroup>
+          <S.CyberToggleWrapper>
+            <S.CyberToggleCheckbox
+              type="checkbox"
+              id="accident-history-toggle"
+              checked={formData.hasAccidentHistory || false}
+              onChange={(e) => handleInputChange('hasAccidentHistory', e.target.checked)}
+            />
+            <S.CyberToggleLabel htmlFor="accident-history-toggle">
+              <S.ToggleTrack />
+              <S.ToggleThumbIcon />
+              <S.ToggleThumbDots />
+              <S.ToggleThumbHighlight />
+              <S.ToggleLabels>
+                <S.ToggleLabelOn>YES</S.ToggleLabelOn>
+                <S.ToggleLabelOff>NO</S.ToggleLabelOff>
+              </S.ToggleLabels>
+            </S.CyberToggleLabel>
+          </S.CyberToggleWrapper>
+        </S.HistoryRow>
+
+        {/* Service History */}
+        <S.HistoryRow style={{ marginTop: '1rem' }}>
+          <S.HistoryInfo>
+            <S.HistoryLabel>
+              {language === 'bg' ? 'Има сервизна история' : 'Has service history'}
+            </S.HistoryLabel>
+            <S.HistoryHint>
+              {formData.hasServiceHistory 
+                ? (language === 'bg' ? '✓ Да' : '✓ Yes')
+                : (language === 'bg' ? '✗ Не' : '✗ No')
+              }
+            </S.HistoryHint>
+          </S.HistoryInfo>
+
+          <S.CyberToggleWrapper>
+            <S.CyberToggleCheckbox
+              type="checkbox"
+              id="service-history-toggle"
+              checked={formData.hasServiceHistory || false}
+              onChange={(e) => handleInputChange('hasServiceHistory', e.target.checked)}
+            />
+            <S.CyberToggleLabel htmlFor="service-history-toggle">
+              <S.ToggleTrack />
+              <S.ToggleThumbIcon />
+              <S.ToggleThumbDots />
+              <S.ToggleThumbHighlight />
+              <S.ToggleLabels>
+                <S.ToggleLabelOn>YES</S.ToggleLabelOn>
+                <S.ToggleLabelOff>NO</S.ToggleLabelOff>
+              </S.ToggleLabels>
+            </S.CyberToggleLabel>
+          </S.CyberToggleWrapper>
+        </S.HistoryRow>
       </S.FormCard>
 
       <S.NavigationButtons>
@@ -426,9 +470,10 @@ const VehicleDataPageNew: React.FC = () => {
 
   const rightContent = (
     <WorkflowFlow
-      steps={workflowSteps}
       currentStepIndex={2}
       totalSteps={8}
+      carBrand={formData.make || undefined}
+      language={language}
     />
   );
 

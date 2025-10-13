@@ -18,6 +18,7 @@ const ImagesPageNew: React.FC = () => {
   const [isDragOver, setIsDragOver] = useState(false);
 
   const vehicleType = searchParams.get('vt');
+  const make = searchParams.get('mk');
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -92,6 +93,16 @@ const ImagesPageNew: React.FC = () => {
         </S.Subtitle>
       </S.HeaderCard>
 
+      {/* Top Navigation Buttons */}
+      <S.NavigationButtons>
+        <S.Button type="button" $variant="secondary" onClick={() => navigate(-1)}>
+          ← {language === 'bg' ? 'Назад' : 'Back'}
+        </S.Button>
+        <S.Button type="button" $variant="primary" onClick={handleContinue}>
+          {language === 'bg' ? 'Продължи' : 'Continue'} →
+        </S.Button>
+      </S.NavigationButtons>
+
       <S.UploadCard
         $isDragOver={isDragOver}
         onDragOver={(e) => { e.preventDefault(); setIsDragOver(true); }}
@@ -161,7 +172,7 @@ const ImagesPageNew: React.FC = () => {
     </S.ContentSection>
   );
 
-  const rightContent = <WorkflowFlow steps={workflowSteps} currentStepIndex={4} totalSteps={8} />;
+  const rightContent = <WorkflowFlow currentStepIndex={4} totalSteps={8} carBrand={make || undefined} language={language} />;
 
   return <SplitScreenLayout leftContent={leftContent} rightContent={rightContent} />;
 };

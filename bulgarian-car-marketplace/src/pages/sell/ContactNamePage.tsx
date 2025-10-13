@@ -104,37 +104,200 @@ const Select = styled.select`
 `;
 
 const CheckboxGroup = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  display: flex;
+  flex-direction: column;
   gap: 1rem;
   margin-top: 1rem;
 `;
 
-const CheckboxItem = styled.label`
+const ContactMethodRow = styled.div`
   display: flex;
   align-items: center;
-  cursor: pointer;
-  padding: 0.8rem;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-  border: 2px solid transparent;
+  justify-content: space-between;
+  padding: 1rem;
+  border-radius: 10px;
+  background: rgba(102, 126, 234, 0.02);
+  transition: background 0.2s ease;
 
   &:hover {
-    background-color: #f8f9fa;
-    border-color: #e9ecef;
+    background: rgba(102, 126, 234, 0.05);
   }
 `;
 
-const Checkbox = styled.input`
-  margin-right: 0.8rem;
-  width: 18px;
-  height: 18px;
-  accent-color: #667eea;
+const ContactMethodInfo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 `;
 
-const CheckboxText = styled.span`
-  font-size: 0.9rem;
+const ContactMethodIcon = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: rgba(102, 126, 234, 0.1);
+  color: #667eea;
+  font-size: 1.2rem;
+`;
+
+const ContactMethodLabel = styled.span`
+  font-size: 0.95rem;
+  font-weight: 600;
   color: #2c3e50;
+`;
+
+// ==================== CYBER TOGGLE BUTTON STYLES ====================
+
+const CyberToggleWrapper = styled.div`
+  position: relative;
+  width: 80px;
+  height: 40px;
+  user-select: none;
+  overflow: hidden;
+`;
+
+const CyberToggleCheckbox = styled.input`
+  display: none;
+`;
+
+const CyberToggleLabel = styled.label`
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+`;
+
+const ToggleTrack = styled.span`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #2c2f33;
+  border-radius: 20px;
+  transition: background 0.4s ease-in-out;
+  box-shadow: inset 0 5px 10px rgba(0, 0, 0, 0.2), inset 0 2px 4px rgba(0, 0, 0, 0.4);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 38px;
+    height: 34px;
+    background: #fff;
+    border-radius: 50%;
+    transform: translateX(0);
+    transition: transform 0.4s cubic-bezier(0.3, 1.5, 0.7, 1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+  }
+
+  ${CyberToggleCheckbox}:checked + ${CyberToggleLabel} & {
+    background: #03e9f4;
+  }
+
+  ${CyberToggleCheckbox}:checked + ${CyberToggleLabel} &::before {
+    transform: translateX(37px);
+  }
+`;
+
+const ToggleThumbIcon = styled.span`
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  background: #fff;
+  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="%23000" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM175 175c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l47-47-47-47c-9.4-9.4-9.4-24.6 0-33.9z"/></svg>');
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: cover;
+  transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out;
+  opacity: 0;
+
+  ${CyberToggleCheckbox}:checked + ${CyberToggleLabel} & {
+    transform: translateX(38px) translateY(-50%);
+    opacity: 1;
+  }
+`;
+
+const ToggleThumbDots = styled.span`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 4px;
+  height: 4px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 
+    -10px 0 0 0 #fff,
+    10px 0 0 0 #fff,
+    0 -10px 0 0 #fff,
+    0 10px 0 0 #fff;
+  transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out;
+
+  ${CyberToggleCheckbox}:checked + ${CyberToggleLabel} & {
+    transform: translate(37px, -50%);
+    opacity: 0;
+  }
+`;
+
+const ToggleThumbHighlight = styled.span`
+  position: absolute;
+  top: 50%;
+  left: 7px;
+  transform: translateY(-50%);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.5), transparent);
+  transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out;
+  opacity: 0;
+
+  ${CyberToggleCheckbox}:checked + ${CyberToggleLabel} & {
+    transform: translateX(38px) translateY(-50%);
+    opacity: 1;
+  }
+`;
+
+const ToggleLabels = styled.span`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  justify-content: space-between;
+  width: 80%;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  pointer-events: none;
+  color: #555;
+`;
+
+const ToggleLabelOn = styled.span`
+  opacity: 0;
+  transition: opacity 0.4s ease-in-out;
+  color: #fff;
+
+  ${CyberToggleCheckbox}:checked + ${CyberToggleLabel} & {
+    opacity: 1;
+  }
+`;
+
+const ToggleLabelOff = styled.span`
+  opacity: 1;
+  transition: opacity 0.4s ease-in-out;
+  color: #fff;
+
+  ${CyberToggleCheckbox}:checked + ${CyberToggleLabel} & {
+    opacity: 0;
+  }
 `;
 
 const NavigationButtons = styled.div`
@@ -254,13 +417,13 @@ const ContactNamePage: React.FC = () => {
   const paymentMethods = searchParams.get('paymentMethods');
 
   const preferredContactMethods = [
-    'Телефон',
-    'Имейл',
-    'WhatsApp',
-    'Viber',
-    'Telegram',
-    'Facebook Messenger',
-    'SMS'
+    { id: 'Телефон', label: 'Телефон', icon: '📞' },
+    { id: 'Имейл', label: 'Имейл', icon: '📧' },
+    { id: 'WhatsApp', label: 'WhatsApp', icon: '💬' },
+    { id: 'Viber', label: 'Viber', icon: '📱' },
+    { id: 'Telegram', label: 'Telegram', icon: '✈️' },
+    { id: 'Facebook Messenger', label: 'Facebook Messenger', icon: '💭' },
+    { id: 'SMS', label: 'SMS', icon: '📨' }
   ];
 
   const handleInputChange = (field: string, value: string) => {
@@ -389,14 +552,31 @@ const ContactNamePage: React.FC = () => {
             <Label>Предпочитан начин на контакт</Label>
             <CheckboxGroup>
               {preferredContactMethods.map((method) => (
-                <CheckboxItem key={method}>
-                  <Checkbox
-                    type="checkbox"
-                    checked={contact.preferredContact.includes(method)}
-                    onChange={() => handleContactMethodToggle(method)}
-                  />
-                  <CheckboxText>{method}</CheckboxText>
-                </CheckboxItem>
+                <ContactMethodRow key={method.id}>
+                  <ContactMethodInfo>
+                    <ContactMethodIcon>{method.icon}</ContactMethodIcon>
+                    <ContactMethodLabel>{method.label}</ContactMethodLabel>
+                  </ContactMethodInfo>
+
+                  <CyberToggleWrapper>
+                    <CyberToggleCheckbox
+                      type="checkbox"
+                      id={`contact-method-${method.id}`}
+                      checked={contact.preferredContact.includes(method.id)}
+                      onChange={() => handleContactMethodToggle(method.id)}
+                    />
+                    <CyberToggleLabel htmlFor={`contact-method-${method.id}`}>
+                      <ToggleTrack />
+                      <ToggleThumbIcon />
+                      <ToggleThumbDots />
+                      <ToggleThumbHighlight />
+                      <ToggleLabels>
+                        <ToggleLabelOn>ON</ToggleLabelOn>
+                        <ToggleLabelOff>OFF</ToggleLabelOff>
+                      </ToggleLabels>
+                    </CyberToggleLabel>
+                  </CyberToggleWrapper>
+                </ContactMethodRow>
               ))}
             </CheckboxGroup>
           </FormGroup>

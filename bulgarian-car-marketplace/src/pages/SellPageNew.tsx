@@ -156,7 +156,7 @@ const FeatureDescription = styled.p`
 
 const SellPageNew: React.FC = () => {
   const navigate = useNavigate();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   const workflowSteps = [
     { id: 'start', label: 'Start', icon: undefined, isCompleted: true },
@@ -213,10 +213,9 @@ const SellPageNew: React.FC = () => {
 
   const rightContent = (
     <WorkflowFlow
-      steps={workflowSteps}
       currentStepIndex={0}
       totalSteps={9}
-      onStepClick={(stepId) => console.log('Step clicked:', stepId)}
+      language={language}
     />
   );
 

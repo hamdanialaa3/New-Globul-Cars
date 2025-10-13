@@ -30,10 +30,10 @@ export const HeaderCard = styled.div`
 `;
 
 export const Title = styled.h1`
-  font-size: 1.9rem;
+  font-size: 1.425rem; /* 150% من 0.95rem */
   font-weight: 700;
   color: #2c3e50;
-  margin: 0 0 0.75rem 0;
+  margin: 0 0 0.375rem 0;
   background: linear-gradient(135deg, #ff8f10, #005ca9);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -202,14 +202,14 @@ export const NavigationButtons = styled.div`
 `;
 
 export const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
-  padding: 1rem 2.5rem;
+  padding: 0.3rem 0.75rem; /* حجم المربع */
   border: none;
   border-radius: 50px;
-  font-size: 1.05rem;
+  font-size: 0.945rem; /* 150% من 0.63rem */
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  min-width: 150px;
+  min-width: 48px;
 
   ${props => props.$variant === 'primary' 
     ? `

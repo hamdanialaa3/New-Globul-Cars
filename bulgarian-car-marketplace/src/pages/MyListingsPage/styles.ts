@@ -129,7 +129,9 @@ export const ListingsGrid = styled.div`
   gap: 2rem;
 `;
 
-export const ListingCard = styled.div`
+export const CardContainer = styled.div`
+  display: flex;
+  flex-direction: column;
   background: white;
   border-radius: 1rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -142,6 +144,21 @@ export const ListingCard = styled.div`
   }
 `;
 
+export const ListingCard = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 600px;
+`;
+
+export const ActionBar = styled.div`
+  display: flex;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+  justify-content: center;
+`;
+
 export const ListingImage = styled.div`
   height: 200px;
   background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
@@ -151,6 +168,7 @@ export const ListingImage = styled.div`
   font-size: 3rem;
   color: #ccc;
   position: relative;
+  overflow: hidden;
 
   .status-badge {
     position: absolute;
@@ -161,6 +179,7 @@ export const ListingImage = styled.div`
     font-size: 0.8rem;
     font-weight: bold;
     text-transform: uppercase;
+    z-index: 2;
 
     &.active {
       background: #28a745;
@@ -182,10 +201,80 @@ export const ListingImage = styled.div`
       color: white;
     }
   }
+
+  .featured-badge {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background: #ffc107;
+    color: #212529;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.5rem;
+    font-size: 0.7rem;
+    font-weight: bold;
+    z-index: 2;
+  }
+
+  .urgent-badge {
+    position: absolute;
+    top: 3rem;
+    left: 1rem;
+    background: #dc3545;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.5rem;
+    font-size: 0.7rem;
+    font-weight: bold;
+    z-index: 2;
+  }
+
+  .image-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .image-count {
+      position: absolute;
+      bottom: 0.5rem;
+      right: 0.5rem;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.5rem;
+      font-size: 0.7rem;
+      font-weight: bold;
+    }
+
+    .video-indicator {
+      position: absolute;
+      bottom: 0.5rem;
+      left: 0.5rem;
+      background: rgba(220, 53, 69, 0.9);
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.5rem;
+      font-size: 0.7rem;
+      font-weight: bold;
+    }
+  }
 `;
 
 export const ListingInfo = styled.div`
   padding: 1.5rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow-y: auto;
 
   .title {
     font-size: 1.25rem;
@@ -193,6 +282,11 @@ export const ListingInfo = styled.div`
     color: #005ca9;
     margin-bottom: 0.5rem;
     display: block;
+    text-decoration: none;
+    
+    &:hover {
+      text-decoration: underline;
+    }
   }
 
   .price {
@@ -202,35 +296,96 @@ export const ListingInfo = styled.div`
     margin-bottom: 1rem;
   }
 
-  .details {
+  .vehicle-details {
+    margin-bottom: 1rem;
+    
+    .detail-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      color: #6c757d;
+      margin-bottom: 0.25rem;
+    }
+  }
+
+  .equipment-summary {
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    background: #f8f9fa;
+    border-radius: 0.5rem;
+    
+    .equipment-category {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      color: #495057;
+      margin-bottom: 0.25rem;
+    }
+  }
+
+  .location-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+  }
+
+  .contact-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: #495057;
+    margin-bottom: 1rem;
+    
+    .seller-type {
+      margin-left: auto;
+      font-size: 0.8rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      background: #e9ecef;
+    }
+  }
+
+  .stats {
     display: flex;
     justify-content: space-between;
     margin-bottom: 1rem;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     color: #6c757d;
-
-    .detail-item {
+    
+    .stat-item {
       display: flex;
       align-items: center;
       gap: 0.25rem;
     }
   }
 
-  .actions {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
+  .description {
+    font-size: 0.9rem;
+    color: #6c757d;
+    line-height: 1.4;
+    font-style: italic;
   }
 `;
 
 export const ActionButton = styled.button`
-  padding: 0.5rem 1rem;
+  width: 32px;
+  height: 32px;
   border: none;
-  border-radius: 0.5rem;
-  font-size: 0.9rem;
+  border-radius: 50%;
+  font-size: 0.8rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 
   &.edit {
     background: #005ca9;
@@ -238,6 +393,7 @@ export const ActionButton = styled.button`
 
     &:hover {
       background: #004080;
+      transform: translateY(-1px);
     }
   }
 
@@ -247,6 +403,7 @@ export const ActionButton = styled.button`
 
     &:hover {
       background: #c82333;
+      transform: translateY(-1px);
     }
   }
 
@@ -256,6 +413,7 @@ export const ActionButton = styled.button`
 
     &:hover {
       background: #5a6268;
+      transform: translateY(-1px);
     }
   }
 
@@ -265,6 +423,7 @@ export const ActionButton = styled.button`
 
     &:hover {
       background: #e0a800;
+      transform: translateY(-1px);
     }
   }
 `;

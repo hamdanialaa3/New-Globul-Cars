@@ -4,7 +4,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { MyListing } from './types';
-import { SectionContainer, ListingsGrid, ListingCard, ListingImage, ListingInfo, ActionButton, EmptyState, LoadingState } from './styles';
+import { SectionContainer, ListingsGrid, CardContainer, ListingCard, ListingImage, ListingInfo, ActionButton, ActionBar, EmptyState, LoadingState } from './styles';
 
 interface ListingsGridProps {
   listings: MyListing[];
@@ -12,6 +12,7 @@ interface ListingsGridProps {
   onEdit: (listingId: string) => void;
   onDelete: (listingId: string) => void;
   onToggleFeature: (listingId: string) => void;
+  onStatusChange?: (listingId: string, status: string) => void;
 }
 
 const ListingsGridComponent: React.FC<ListingsGridProps> = ({
@@ -19,7 +20,8 @@ const ListingsGridComponent: React.FC<ListingsGridProps> = ({
   loading,
   onEdit,
   onDelete,
-  onToggleFeature
+  onToggleFeature,
+  onStatusChange
 }) => {
   if (loading) {
     return (
@@ -51,73 +53,167 @@ const ListingsGridComponent: React.FC<ListingsGridProps> = ({
     <SectionContainer>
       <ListingsGrid>
         {listings.map((listing) => (
-          <ListingCard key={listing.id}>
-            <ListingImage>
-              <div className={`status-badge ${listing.status}`}>
-                {listing.status}
-              </div>
-              🚗
-            </ListingImage>
-
-            <ListingInfo>
-              <Link to={`/car/${listing.id}`} className="title">
-                {listing.title}
-              </Link>
-
-              <div className="price">
-                €{listing.price.toLocaleString()}
-              </div>
-
-              <div className="details">
-                <div className="detail-item">
-                  <span>👁️</span>
-                  {listing.views}
+          <CardContainer key={listing.id}>
+            <ListingCard>
+              <ListingImage>
+                <div className={`status-badge ${listing.status}`}>
+                  {listing.status}
                 </div>
-                <div className="detail-item">
-                  <span>💬</span>
-                  {listing.inquiries}
+                {listing.featured && <div className="featured-badge">⭐ Featured</div>}
+                {listing.isUrgent && <div className="urgent-badge">🔥 Urgent</div>}
+                <div className="image-placeholder">
+                  {listing.media.images.length > 0 ? (
+                    <img src={listing.media.images[0]} alt={listing.title} />
+                  ) : (
+                    <span>🚗</span>
+                  )}
+                  {listing.media.images.length > 1 && (
+                    <div className="image-count">+{listing.media.images.length - 1}</div>
+                  )}
+                  {listing.media.hasVideo && <div className="video-indicator">🎥</div>}
                 </div>
-                <div className="detail-item">
+              </ListingImage>
+
+              <ListingInfo>
+                <Link to={`/car/${listing.id}`} className="title">
+                  {listing.title}
+                </Link>
+
+                <div className="price">
+                  €{listing.price.toLocaleString()}
+                </div>
+
+                <div className="vehicle-details">
+                  <div className="detail-row">
+                    <span>📅</span>
+                    <span>{listing.vehicle.year}</span>
+                    <span>•</span>
+                    <span>🛣️</span>
+                    <span>{listing.vehicle.mileage.toLocaleString()} km</span>
+                  </div>
+                  <div className="detail-row">
+                    <span>⛽</span>
+                    <span>{listing.vehicle.fuelType}</span>
+                    <span>•</span>
+                    <span>⚙️</span>
+                    <span>{listing.vehicle.transmission}</span>
+                  </div>
+                  <div className="detail-row">
+                    <span>🚪</span>
+                    <span>{listing.vehicle.doors} doors</span>
+                    <span>•</span>
+                    <span>👥</span>
+                    <span>{listing.vehicle.seats} seats</span>
+                  </div>
+                </div>
+
+                <div className="equipment-summary">
+                  <div className="equipment-category">
+                    <span>🛡️ Safety:</span>
+                    <span>{listing.equipment.safety.length} features</span>
+                  </div>
+                  <div className="equipment-category">
+                    <span>✨ Comfort:</span>
+                    <span>{listing.equipment.comfort.length} features</span>
+                  </div>
+                  <div className="equipment-category">
+                    <span>🎵 Infotainment:</span>
+                    <span>{listing.equipment.infotainment.length} features</span>
+                  </div>
+                  <div className="equipment-category">
+                    <span>⚡ Extras:</span>
+                    <span>{listing.equipment.extras.length} features</span>
+                  </div>
+                </div>
+
+                <div className="location-info">
                   <span>📍</span>
-                  {listing.location}
+                  <span>{listing.location.cityName.bg}, {listing.location.region}</span>
                 </div>
-                <div className="detail-item">
-                  <span>⭐</span>
-                  {listing.featured ? 'Featured' : 'Standard'}
+
+                <div className="contact-info">
+                  <span>👤</span>
+                  <span>{listing.contact.sellerName}</span>
+                  <span className="seller-type">
+                    {listing.contact.sellerType === 'dealer' ? '🏢 Dealer' : '👤 Private'}
+                  </span>
                 </div>
-              </div>
 
-              <div className="actions">
-                <ActionButton
-                  className="view"
-                  onClick={() => window.open(`/car/${listing.id}`, '_blank')}
-                >
-                  View
-                </ActionButton>
+                <div className="stats">
+                  <div className="stat-item">
+                    <span>👁️</span>
+                    <span>{listing.views}</span>
+                  </div>
+                  <div className="stat-item">
+                    <span>💬</span>
+                    <span>{listing.inquiries}</span>
+                  </div>
+                  <div className="stat-item">
+                    <span>❤️</span>
+                    <span>{listing.favorites}</span>
+                  </div>
+                  <div className="stat-item">
+                    <span>📅</span>
+                    <span>{listing.createdAt.toLocaleDateString()}</span>
+                  </div>
+                </div>
 
-                <ActionButton
-                  className="edit"
-                  onClick={() => onEdit(listing.id)}
-                >
-                  Edit
-                </ActionButton>
+                {listing.description && (
+                  <div className="description">
+                    {listing.description.length > 100 
+                      ? `${listing.description.substring(0, 100)}...`
+                      : listing.description
+                    }
+                  </div>
+                )}
+              </ListingInfo>
+            </ListingCard>
 
-                <ActionButton
-                  className="feature"
-                  onClick={() => onToggleFeature(listing.id)}
-                >
-                  {listing.featured ? 'Unfeature' : 'Feature'}
-                </ActionButton>
+            <ActionBar>
+              <ActionButton
+                className="view"
+                onClick={() => window.open(`/car/${listing.id}`, '_blank')}
+                title="View Listing"
+              >
+                👁️
+              </ActionButton>
 
-                <ActionButton
-                  className="delete"
-                  onClick={() => onDelete(listing.id)}
-                >
-                  Delete
-                </ActionButton>
-              </div>
-            </ListingInfo>
-          </ListingCard>
+              <ActionButton
+                className="edit"
+                onClick={() => onEdit(listing.id)}
+                title="Edit Listing"
+              >
+                ✏️
+              </ActionButton>
+
+              <ActionButton
+                className="status"
+                onClick={() => {
+                  const newStatus = listing.status === 'active' ? 'inactive' : 'active';
+                  onStatusChange && onStatusChange(listing.id, newStatus);
+                }}
+                title={listing.status === 'active' ? 'Deactivate' : 'Activate'}
+              >
+                {listing.status === 'active' ? '⏸️' : '▶️'}
+              </ActionButton>
+
+              <ActionButton
+                className="feature"
+                onClick={() => onToggleFeature(listing.id)}
+                title={listing.featured ? 'Remove from Featured' : 'Make Featured'}
+              >
+                {listing.featured ? '⭐' : '☆'}
+              </ActionButton>
+
+              <ActionButton
+                className="delete"
+                onClick={() => onDelete(listing.id)}
+                title="Delete Listing"
+              >
+                🗑️
+              </ActionButton>
+            </ActionBar>
+          </CardContainer>
         ))}
       </ListingsGrid>
     </SectionContainer>

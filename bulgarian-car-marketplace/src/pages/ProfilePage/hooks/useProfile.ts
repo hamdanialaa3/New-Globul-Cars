@@ -6,6 +6,7 @@ import { useToast } from '../../../components/Toast';
 import { validateProfileData } from '../../../utils/validation';
 import { doc, onSnapshot, getDoc } from 'firebase/firestore';
 import { db } from '../../../firebase/firebase-config';
+import carListingService from '../../../services/carListingService';
 import {
   ProfileFormData,
   ProfileCar,
@@ -121,33 +122,29 @@ export const useProfile = (): UseProfileReturn => {
           preferredLanguage: currentUser.preferredLanguage || 'bg'
         });
 
-        // Load user's cars
-        const cars = await bulgarianCarService.getUserCarListings(currentUser.uid);
-        const carsWithViews = await Promise.all(
-          cars.map(async (car: BulgarianCar) => {
-            const carDoc = await getDoc(doc(db, 'cars', car.id));
-            const carData = carDoc.exists() ? carDoc.data() : {};
-            const titleParts = car.title.split(' ');
-            
-            return {
-              id: car.id,
-              title: car.title,
-              make: titleParts[0] || 'Unknown',
-              model: titleParts.slice(1).join(' ') || 'Model',
-              year: car.year,
-              price: car.price,
-              imageUrl: car.mainImage,
-              mainImage: car.mainImage,
-              mileage: car.mileage,
-              fuelType: car.fuelType,
-              status: (carData.status as 'active' | 'sold' | 'pending' | 'draft') || 'active',
-              viewCount: carData.viewCount || 0,
-              views: carData.views || 0,
-              inquiries: carData.inquiries || 0,
-            };
-          })
-        );
-        setUserCars(carsWithViews);
+        // Load user's cars من carListingService
+        const userListings = await carListingService.getListingsBySeller(currentUser.email || '');
+        
+        const carsForProfile = userListings.map(car => ({
+          id: car.id || '',
+          title: `${car.make} ${car.model}`,
+          make: car.make || '',
+          model: car.model || '',
+          year: car.year || 0,
+          price: car.price || 0,
+          imageUrl: (car.images && car.images.length > 0) ? 
+            (typeof car.images[0] === 'string' ? car.images[0] : '') : '',
+          mainImage: (car.images && car.images.length > 0) ? 
+            (typeof car.images[0] === 'string' ? car.images[0] : '') : '',
+          mileage: car.mileage,
+          fuelType: car.fuelType,
+          status: (car.status as 'active' | 'sold' | 'pending' | 'draft') || 'active',
+          viewCount: car.views || 0,
+          views: car.views || 0,
+          inquiries: 0,
+        }));
+        
+        setUserCars(carsForProfile);
 
       } else {
         toast.error(t('profile.load_user_error'));

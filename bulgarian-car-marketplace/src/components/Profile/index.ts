@@ -30,11 +30,11 @@ export { default as AnimatedCard } from './AnimatedCard';
 export { default as IDReferenceHelper } from './IDReferenceHelper';
 export { default as BusinessUpgradeCard } from './BusinessUpgradeCard';
 export { default as BusinessBackground } from './BusinessBackground';
-export { GarageSection } from './GarageSection';
+export { GarageSectionPro as GarageSection } from './GarageSection_Pro';
 export { FollowButton } from './FollowButton';
 
 // Export types
-export type { GarageCar } from './GarageSection';
+export type { GarageCar } from './GarageSection_Pro';
 
 // ==================== USAGE EXAMPLES ====================
 

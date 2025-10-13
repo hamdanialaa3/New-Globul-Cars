@@ -17,6 +17,7 @@ const PricingPageNew: React.FC = () => {
   const [negotiable, setNegotiable] = useState(false);
 
   const vehicleType = searchParams.get('vt');
+  const make = searchParams.get('mk');
 
   const handleContinue = () => {
     if (!price) {
@@ -30,7 +31,7 @@ const PricingPageNew: React.FC = () => {
     params.set('priceType', 'fixed');
     if (negotiable) params.set('negotiable', 'true');
     
-    navigate(`/sell/inserat/${vehicleType || 'car'}/kontakt/name?${params.toString()}`);
+    navigate(`/sell/inserat/${vehicleType || 'car'}/contact?${params.toString()}`);
   };
 
   const workflowSteps = [
@@ -52,6 +53,16 @@ const PricingPageNew: React.FC = () => {
           {language === 'bg' ? 'Определете цената на вашето превозно средство' : 'Set your vehicle price'}
         </S.Subtitle>
       </S.HeaderCard>
+
+      {/* Top Navigation Buttons */}
+      <S.NavigationButtons>
+        <S.Button type="button" $variant="secondary" onClick={() => navigate(-1)}>
+          ← {language === 'bg' ? 'Назад' : 'Back'}
+        </S.Button>
+        <S.Button type="button" $variant="primary" onClick={handleContinue} disabled={!price}>
+          {language === 'bg' ? 'Продължи' : 'Continue'} →
+        </S.Button>
+      </S.NavigationButtons>
 
       <S.FormCard>
         <S.Label>
@@ -109,7 +120,7 @@ const PricingPageNew: React.FC = () => {
     </S.ContentSection>
   );
 
-  const rightContent = <WorkflowFlow steps={workflowSteps} currentStepIndex={5} totalSteps={8} />;
+  const rightContent = <WorkflowFlow currentStepIndex={5} totalSteps={8} carBrand={make || undefined} language={language} />;
 
   return <SplitScreenLayout leftContent={leftContent} rightContent={rightContent} />;
 };

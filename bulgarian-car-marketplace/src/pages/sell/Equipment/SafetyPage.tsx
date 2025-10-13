@@ -123,9 +123,10 @@ const SafetyEquipmentPageNew: React.FC = () => {
 
   const rightContent = (
     <WorkflowFlow
-      steps={workflowSteps}
       currentStepIndex={3}
       totalSteps={8}
+      carBrand={searchParams.get('mk') || undefined}
+      language={language}
     />
   );
 
