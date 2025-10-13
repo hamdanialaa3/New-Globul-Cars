@@ -330,7 +330,7 @@ export class SocialAuthService {
     try {
       console.log('🔵 Starting Facebook sign-in process...');
       
-      // First try popup
+      // Use popup only (more reliable than redirect for Facebook)
       const result = await signInWithPopup(auth, facebookProvider);
       
       console.log('✅ Facebook sign-in successful:', {
@@ -346,36 +346,39 @@ export class SocialAuthService {
       
       return result;
     } catch (error: any) {
-      console.warn('Facebook popup failed, trying redirect:', error.code);
+      console.error('Facebook sign-in error:', error);
 
-      // If popup is blocked, try redirect
-      if (error.code === 'auth/popup-blocked' ||
-          error.code === 'auth/popup-closed-by-user' ||
-          error.code === 'auth/cancelled-popup-request') {
-
-        console.log('Popup blocked, using redirect method...');
-        await signInWithRedirect(auth, facebookProvider);
-
-        // This will redirect the user, so we return a promise that never resolves
-        return new Promise((resolve, reject) => {
-          setTimeout(() => {
-            reject(new Error('Redirect timeout - please check if popup blocker is enabled'));
-          }, 5000);
-        });
+      // Handle popup blocked error with user-friendly message
+      if (error.code === 'auth/popup-blocked') {
+        throw new Error('⚠️ النوافذ المنبثقة محظورة. يرجى السماح بالنوافذ المنبثقة في إعدادات المتصفح وإعادة المحاولة.\n\nخطوات الحل:\n1. اضغط على أيقونة "النوافذ المنبثقة محظورة" في شريط العنوان\n2. اختر "السماح دائماً بالنوافذ المنبثقة من هذا الموقع"\n3. حاول مرة أخرى');
       }
 
-      console.error('Facebook sign-in error:', error);
+      if (error.code === 'auth/popup-closed-by-user') {
+        throw new Error('تم إلغاء عملية تسجيل الدخول. يرجى المحاولة مرة أخرى.');
+      }
+
+      if (error.code === 'auth/cancelled-popup-request') {
+        throw new Error('تم إلغاء طلب تسجيل الدخول. يرجى المحاولة مرة أخرى.');
+      }
       
       // Handle specific Facebook errors
       if (error.code === 'auth/operation-not-allowed') {
         throw new Error('تسجيل الدخول مع Facebook غير مفعل حالياً. يرجى الاتصال بالدعم الفني.');
       }
+
+      if (error.code === 'auth/account-exists-with-different-credential') {
+        throw new Error('هذا البريد الإلكتروني مسجل بالفعل بطريقة تسجيل دخول أخرى. يرجى استخدام نفس طريقة تسجيل الدخول السابقة.');
+      }
       
       if (error.code === 'auth/network-request-failed') {
         throw new Error('خطأ في الشبكة. يرجى التحقق من الاتصال بالإنترنت وإعادة المحاولة.');
       }
+
+      if (error.code === 'auth/unauthorized-domain') {
+        throw new Error('هذا الموقع غير مصرح له بتسجيل الدخول مع Facebook. يرجى الاتصال بالدعم الفني.');
+      }
       
-      throw new Error(`An error occurred during Facebook sign-in. Please try again.`);
+      throw new Error(`خطأ في تسجيل الدخول مع Facebook: ${error.message || 'خطأ غير معروف'}. يرجى المحاولة مرة أخرى.`);
     }
   }
 
