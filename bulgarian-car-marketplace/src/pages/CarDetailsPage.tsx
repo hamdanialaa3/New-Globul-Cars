@@ -230,6 +230,12 @@ const EditableSelect = styled.select`
     font-size: 0.813rem;
     padding: 0.5rem;
   }
+
+  option.other-option {
+    font-weight: 700;
+    color: #2c3e50;
+    background: rgba(255, 121, 0, 0.05);
+  }
 `;
 
 const SaveButtonEnhanced = styled.button`
@@ -928,9 +934,13 @@ const CarDetailsPage: React.FC = () => {
   const [isDragOver, setIsDragOver] = useState(false);
   
   // State for "Other" option inputs
+  const [showOtherMake, setShowOtherMake] = useState(false);
+  const [showOtherModel, setShowOtherModel] = useState(false);
   const [showOtherFuelType, setShowOtherFuelType] = useState(false);
   const [showOtherTransmission, setShowOtherTransmission] = useState(false);
   const [showOtherColor, setShowOtherColor] = useState(false);
+  const [showOtherDoors, setShowOtherDoors] = useState(false);
+  const [showOtherSeats, setShowOtherSeats] = useState(false);
   const [showOtherRegion, setShowOtherRegion] = useState(false);
   
   // State for image gallery
@@ -1149,11 +1159,50 @@ const CarDetailsPage: React.FC = () => {
           <DetailRow>
             <DetailLabel>{language === 'bg' ? 'Марка' : 'Make'}</DetailLabel>
             {isEditMode ? (
-              <EditableInput
-                value={editedCar.make || ''}
-                onChange={(e) => handleInputChange('make', e.target.value)}
-                placeholder={language === 'bg' ? 'Въведете марка' : 'Enter make'}
-              />
+              <>
+                <EditableSelect
+                  value={showOtherMake ? 'Other' : (editedCar.make || '')}
+                  onChange={(e) => {
+                    if (e.target.value === 'Other') {
+                      setShowOtherMake(true);
+                    } else {
+                      setShowOtherMake(false);
+                      handleInputChange('make', e.target.value);
+                    }
+                  }}
+                >
+                  <option value="">{language === 'bg' ? 'Изберете марка' : 'Select make'}</option>
+                  <option value="Volkswagen">Volkswagen</option>
+                  <option value="BMW">BMW</option>
+                  <option value="Mercedes-Benz">Mercedes-Benz</option>
+                  <option value="Audi">Audi</option>
+                  <option value="Toyota">Toyota</option>
+                  <option value="Honda">Honda</option>
+                  <option value="Ford">Ford</option>
+                  <option value="Opel">Opel</option>
+                  <option value="Renault">Renault</option>
+                  <option value="Peugeot">Peugeot</option>
+                  <option value="Citroen">Citroen</option>
+                  <option value="Skoda">Skoda</option>
+                  <option value="SEAT">SEAT</option>
+                  <option value="Hyundai">Hyundai</option>
+                  <option value="Kia">Kia</option>
+                  <option value="Nissan">Nissan</option>
+                  <option value="Mazda">Mazda</option>
+                  <option value="Volvo">Volvo</option>
+                  <option value="Fiat">Fiat</option>
+                  <option value="Alfa Romeo">Alfa Romeo</option>
+                  <option className="other-option" value="Other">{language === 'bg' ? '▼ Друго' : '▼ Other'}</option>
+                </EditableSelect>
+                {showOtherMake && (
+                  <EditableInput
+                    value={editedCar.make || ''}
+                    onChange={(e) => handleInputChange('make', e.target.value)}
+                    placeholder={language === 'bg' ? 'Въведете марка' : 'Enter make'}
+                    style={{ marginTop: '0.5rem' }}
+                  />
+                )}
+              </>
             ) : (
               <DetailValue>{car.make || 'N/A'}</DetailValue>
             )}
@@ -1162,11 +1211,38 @@ const CarDetailsPage: React.FC = () => {
           <DetailRow>
             <DetailLabel>{language === 'bg' ? 'Модел' : 'Model'}</DetailLabel>
             {isEditMode ? (
-              <EditableInput
-                value={editedCar.model || ''}
-                onChange={(e) => handleInputChange('model', e.target.value)}
-                placeholder={language === 'bg' ? 'Въведете модел' : 'Enter model'}
-              />
+              <>
+                <EditableSelect
+                  value={showOtherModel ? 'Other' : (editedCar.model || '')}
+                  onChange={(e) => {
+                    if (e.target.value === 'Other') {
+                      setShowOtherModel(true);
+                    } else {
+                      setShowOtherModel(false);
+                      handleInputChange('model', e.target.value);
+                    }
+                  }}
+                >
+                  <option value="">{language === 'bg' ? 'Изберете модел' : 'Select model'}</option>
+                  <option value="Golf">Golf</option>
+                  <option value="Passat">Passat</option>
+                  <option value="Polo">Polo</option>
+                  <option value="Tiguan">Tiguan</option>
+                  <option value="Touareg">Touareg</option>
+                  <option value="Jetta">Jetta</option>
+                  <option value="ID.3">ID.3</option>
+                  <option value="ID.4">ID.4</option>
+                  <option className="other-option" value="Other">{language === 'bg' ? '▼ Друго' : '▼ Other'}</option>
+                </EditableSelect>
+                {showOtherModel && (
+                  <EditableInput
+                    value={editedCar.model || ''}
+                    onChange={(e) => handleInputChange('model', e.target.value)}
+                    placeholder={language === 'bg' ? 'Въведете модел' : 'Enter model'}
+                    style={{ marginTop: '0.5rem' }}
+                  />
+                )}
+              </>
             ) : (
               <DetailValue>{car.model || 'N/A'}</DetailValue>
             )}
@@ -1221,7 +1297,7 @@ const CarDetailsPage: React.FC = () => {
                   <option value="Electric">{language === 'bg' ? 'Електрически' : 'Electric'}</option>
                   <option value="Hybrid">{language === 'bg' ? 'Хибрид' : 'Hybrid'}</option>
                   <option value="LPG">{language === 'bg' ? 'ГПГ' : 'LPG'}</option>
-                  <option value="Other">{language === 'bg' ? 'Друго' : 'Other'}</option>
+                  <option className="other-option" value="Other">{language === 'bg' ? '▼ Друго' : '▼ Other'}</option>
                 </EditableSelect>
                 {showOtherFuelType && (
                   <EditableInput
@@ -1255,7 +1331,7 @@ const CarDetailsPage: React.FC = () => {
                   <option value="">{language === 'bg' ? 'Изберете трансмисия' : 'Select transmission'}</option>
                   <option value="Manual">{language === 'bg' ? 'Ръчна' : 'Manual'}</option>
                   <option value="Automatic">{language === 'bg' ? 'Автоматична' : 'Automatic'}</option>
-                  <option value="Other">{language === 'bg' ? 'Друго' : 'Other'}</option>
+                  <option className="other-option" value="Other">{language === 'bg' ? '▼ Друго' : '▼ Other'}</option>
                 </EditableSelect>
                 {showOtherTransmission && (
                   <EditableInput
@@ -1311,7 +1387,7 @@ const CarDetailsPage: React.FC = () => {
                   <option value="Yellow">{language === 'bg' ? 'Жълт' : 'Yellow'}</option>
                   <option value="Orange">{language === 'bg' ? 'Оранжев' : 'Orange'}</option>
                   <option value="Brown">{language === 'bg' ? 'Кафяв' : 'Brown'}</option>
-                  <option value="Other">{language === 'bg' ? 'Друго' : 'Other'}</option>
+                  <option className="other-option" value="Other">{language === 'bg' ? '▼ Друго' : '▼ Other'}</option>
                 </EditableSelect>
                 {showOtherColor && (
                   <EditableInput
@@ -1330,16 +1406,34 @@ const CarDetailsPage: React.FC = () => {
           <DetailRow>
             <DetailLabel>{language === 'bg' ? 'Врати' : 'Doors'}</DetailLabel>
             {isEditMode ? (
-              <EditableSelect
-                value={editedCar.doors || ''}
-                onChange={(e) => handleInputChange('doors', parseInt(e.target.value) || 0)}
-              >
-                <option value="">{language === 'bg' ? 'Изберете брой врати' : 'Select doors'}</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-              </EditableSelect>
+              <>
+                <EditableSelect
+                  value={showOtherDoors ? 'Other' : (editedCar.doors?.toString() || '')}
+                  onChange={(e) => {
+                    if (e.target.value === 'Other') {
+                      setShowOtherDoors(true);
+                    } else {
+                      setShowOtherDoors(false);
+                      handleInputChange('doors', e.target.value);
+                    }
+                  }}
+                >
+                  <option value="">{language === 'bg' ? 'Изберете брой врати' : 'Select doors'}</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option className="other-option" value="Other">{language === 'bg' ? '▼ Друго' : '▼ Other'}</option>
+                </EditableSelect>
+                {showOtherDoors && (
+                  <EditableInput
+                    value={editedCar.doors || ''}
+                    onChange={(e) => handleInputChange('doors', e.target.value)}
+                    placeholder={language === 'bg' ? 'Въведете брой врати' : 'Enter doors'}
+                    style={{ marginTop: '0.5rem' }}
+                  />
+                )}
+              </>
             ) : (
               <DetailValue>{car.doors || 'N/A'}</DetailValue>
             )}
@@ -1348,16 +1442,35 @@ const CarDetailsPage: React.FC = () => {
           <DetailRow>
             <DetailLabel>{language === 'bg' ? 'Места' : 'Seats'}</DetailLabel>
             {isEditMode ? (
-              <EditableSelect
-                value={editedCar.seats || ''}
-                onChange={(e) => handleInputChange('seats', parseInt(e.target.value) || 0)}
-              >
-                <option value="">{language === 'bg' ? 'Изберете брой места' : 'Select seats'}</option>
-                <option value="2">2</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="7">7</option>
-              </EditableSelect>
+              <>
+                <EditableSelect
+                  value={showOtherSeats ? 'Other' : (editedCar.seats?.toString() || '')}
+                  onChange={(e) => {
+                    if (e.target.value === 'Other') {
+                      setShowOtherSeats(true);
+                    } else {
+                      setShowOtherSeats(false);
+                      handleInputChange('seats', e.target.value);
+                    }
+                  }}
+                >
+                  <option value="">{language === 'bg' ? 'Изберете брой места' : 'Select seats'}</option>
+                  <option value="2">2</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                  <option className="other-option" value="Other">{language === 'bg' ? '▼ Друго' : '▼ Other'}</option>
+                </EditableSelect>
+                {showOtherSeats && (
+                  <EditableInput
+                    value={editedCar.seats || ''}
+                    onChange={(e) => handleInputChange('seats', e.target.value)}
+                    placeholder={language === 'bg' ? 'Въведете брой места' : 'Enter seats'}
+                    style={{ marginTop: '0.5rem' }}
+                  />
+                )}
+              </>
             ) : (
               <DetailValue>{car.seats || 'N/A'}</DetailValue>
             )}
@@ -1658,7 +1771,7 @@ const CarDetailsPage: React.FC = () => {
                 <option value="plovdiv">{language === 'bg' ? 'Пловдив' : 'Plovdiv'}</option>
                 <option value="varna">{language === 'bg' ? 'Варна' : 'Varna'}</option>
                 <option value="burgas">{language === 'bg' ? 'Бургас' : 'Burgas'}</option>
-                <option value="Other">{language === 'bg' ? 'Друго' : 'Other'}</option>
+                <option className="other-option" value="Other">{language === 'bg' ? '▼ Друго' : '▼ Other'}</option>
               </EditableSelect>
               {showOtherRegion && (
                 <EditableInput
