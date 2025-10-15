@@ -325,6 +325,16 @@ const rotate = keyframes`
   100% { transform: rotate(360deg); }
 `;
 
+const rotateVertical = keyframes`
+  0% { transform: rotateX(0deg); }
+  100% { transform: rotateX(360deg); }
+`;
+
+const rotateHorizontal = keyframes`
+  0% { transform: rotateY(0deg); }
+  100% { transform: rotateY(360deg); }
+`;
+
 const SectionIcon = styled.div`
   display: inline-flex;
   align-items: center;
@@ -680,6 +690,116 @@ const HiddenFileInput = styled.input`
   display: none;
 `;
 
+const LogoContainer = styled.div`
+  position: relative;
+  width: 150px;
+  height: 150px;
+  margin: 1rem auto;
+  perspective: 1000px;
+  transform-style: preserve-3d;
+`;
+
+const LogoImage = styled.img`
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.2));
+  z-index: 2;
+`;
+
+const GlowRingVertical = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  border-top-color: #FF7900;
+  border-bottom-color: #FF9533;
+  transform: translate(-50%, -50%);
+  animation: ${rotateVertical} 3s linear infinite;
+  filter: blur(2px);
+  opacity: 0.8;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    border-top-color: rgba(255, 121, 0, 0.3);
+    border-bottom-color: rgba(255, 149, 51, 0.3);
+  }
+`;
+
+const GlowRingHorizontal = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  border-left-color: #FF7900;
+  border-right-color: #FF9533;
+  transform: translate(-50%, -50%);
+  animation: ${rotateHorizontal} 4s linear infinite reverse;
+  filter: blur(2px);
+  opacity: 0.6;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    border-left-color: rgba(255, 121, 0, 0.2);
+    border-right-color: rgba(255, 149, 51, 0.2);
+  }
+`;
+
+const LogoGlow = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 121, 0, 0.15), transparent 70%);
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  animation: pulse 2s ease-in-out infinite;
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+    50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.05); }
+  }
+`;
+
+const LogoBrandName = styled.span`
+  position: absolute;
+  bottom: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1rem;
+  font-weight: 700;
+  color: #2c3e50;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  z-index: 3;
+`;
+
 // Toggle Switch Component
 const ToggleSwitch: React.FC<{ 
   isOn: boolean; 
@@ -912,32 +1032,20 @@ const CarDetailsPage: React.FC = () => {
             </ImagePlaceholder>
           )}
           {car.make && (
-            <div style={{ marginTop: '1rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
-              <img 
+            <LogoContainer>
+              <LogoGlow />
+              <GlowRingVertical />
+              <GlowRingHorizontal />
+              <LogoImage 
                 src={`/assets/images/professional_car_logos/${car.make}.png`}
                 alt={car.make}
-                style={{ 
-                  width: '120px', 
-                  height: '120px', 
-                  objectFit: 'contain',
-                  filter: 'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15))',
-                  transition: 'all 0.3s ease'
-                }}
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
-                  target.style.display = 'none';
+                  target.src = `/assets/images/professional_car_logos/mein_logo_rest.png`;
                 }}
               />
-              <span style={{ 
-                fontSize: '1rem', 
-                fontWeight: '700', 
-                color: '#2c3e50',
-                letterSpacing: '1px',
-                textTransform: 'uppercase'
-              }}>
-                {car.make}
-              </span>
-            </div>
+              <LogoBrandName>{car.make}</LogoBrandName>
+            </LogoContainer>
           )}
         </ImageSection>
 
