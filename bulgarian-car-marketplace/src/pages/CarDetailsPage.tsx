@@ -91,15 +91,6 @@ const ImageSection = styled.div`
   text-align: center;
 `;
 
-const CarImage = styled.img`
-  width: 100%;
-  max-width: 500px;
-  height: 300px;
-  object-fit: cover;
-  border-radius: 8px;
-  margin-bottom: 1rem;
-`;
-
 const ImagePlaceholder = styled.div`
   width: 100%;
   height: 300px;
@@ -721,10 +712,12 @@ const GlowRingVertical = styled.div`
   border: 3px solid transparent;
   border-top-color: #FF7900;
   border-bottom-color: #FF9533;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%) rotateX(0deg);
   animation: ${rotateVertical} 3s linear infinite;
   filter: blur(2px);
   opacity: 0.8;
+  z-index: 3;
+  pointer-events: none;
   
   &::before {
     content: '';
@@ -750,10 +743,12 @@ const GlowRingHorizontal = styled.div`
   border: 3px solid transparent;
   border-left-color: #FF7900;
   border-right-color: #FF9533;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%) rotateY(0deg);
   animation: ${rotateHorizontal} 4s linear infinite reverse;
   filter: blur(2px);
   opacity: 0.6;
+  z-index: 3;
+  pointer-events: none;
   
   &::before {
     content: '';
@@ -798,6 +793,86 @@ const LogoBrandName = styled.span`
   letter-spacing: 1px;
   text-transform: uppercase;
   z-index: 3;
+`;
+
+const GalleryContainer = styled.div`
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid rgba(208, 215, 222, 0.3);
+`;
+
+const GalleryTitle = styled.h3`
+  font-size: 0.938rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0 0 1rem 0;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+`;
+
+const MainImageContainer = styled.div`
+  position: relative;
+  width: 100%;
+  height: 350px;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+  background: #f8f9fa;
+  border: 2px solid #d0d7de;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+`;
+
+const MainImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+`;
+
+const ThumbnailGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 0.5rem;
+`;
+
+const ThumbnailItem = styled.div<{ $isActive?: boolean }>`
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 6px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid ${props => props.$isActive ? '#FF7900' : '#d0d7de'};
+  transition: all 0.3s ease;
+  background: #f8f9fa;
+
+  &:hover {
+    border-color: #FF7900;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 121, 0, 0.3);
+  }
+`;
+
+const ThumbnailImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+`;
+
+const ImageCount = styled.div`
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.688rem;
+  font-weight: 600;
 `;
 
 // Toggle Switch Component
@@ -885,6 +960,9 @@ const CarDetailsPage: React.FC = () => {
   const [showOtherTransmission, setShowOtherTransmission] = useState(false);
   const [showOtherColor, setShowOtherColor] = useState(false);
   const [showOtherRegion, setShowOtherRegion] = useState(false);
+  
+  // State for image gallery
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   useEffect(() => {
     const loadCar = async () => {
@@ -1027,16 +1105,6 @@ const CarDetailsPage: React.FC = () => {
 
       <MainContent>
         <ImageSection>
-          {car.images && car.images.length > 0 ? (
-            <CarImage 
-              src={typeof car.images[0] === 'string' ? car.images[0] : URL.createObjectURL(car.images[0])} 
-              alt={`${car.make} ${car.model}`} 
-            />
-          ) : (
-            <ImagePlaceholder>
-              <CarIcon size={60} color="#FF7900" />
-            </ImagePlaceholder>
-          )}
           {car.make && (
             <LogoContainer>
               <LogoGlow />
@@ -1052,6 +1120,52 @@ const CarDetailsPage: React.FC = () => {
               />
               <LogoBrandName>{car.make}</LogoBrandName>
             </LogoContainer>
+          )}
+
+          {car.images && car.images.length > 0 && (
+            <GalleryContainer>
+              <GalleryTitle>
+                {language === 'bg' ? 'Снимки на превозното средство' : 'Vehicle Photos'} ({car.images.length})
+              </GalleryTitle>
+              
+              <MainImageContainer>
+                <MainImage 
+                  src={
+                    typeof car.images[selectedImageIndex] === 'string' 
+                      ? car.images[selectedImageIndex] as unknown as string
+                      : URL.createObjectURL(car.images[selectedImageIndex])
+                  } 
+                  alt={`${car.make} ${car.model} - Photo ${selectedImageIndex + 1}`} 
+                />
+                <ImageCount>{selectedImageIndex + 1} / {car.images.length}</ImageCount>
+              </MainImageContainer>
+
+              <ThumbnailGrid>
+                {car.images.map((image, index) => (
+                  <ThumbnailItem 
+                    key={index} 
+                    $isActive={index === selectedImageIndex}
+                    onClick={() => setSelectedImageIndex(index)}
+                  >
+                    <ThumbnailImage 
+                      src={typeof image === 'string' ? image as unknown as string : URL.createObjectURL(image)} 
+                      alt={`Thumbnail ${index + 1}`} 
+                    />
+                  </ThumbnailItem>
+                ))}
+              </ThumbnailGrid>
+            </GalleryContainer>
+          )}
+
+          {(!car.images || car.images.length === 0) && (
+            <div style={{ marginTop: '2rem' }}>
+              <ImagePlaceholder>
+                <CarIcon size={60} color="#FF7900" />
+              </ImagePlaceholder>
+              <p style={{ textAlign: 'center', color: '#6c757d', fontSize: '0.875rem', marginTop: '1rem' }}>
+                {language === 'bg' ? 'Няма налични снимки' : 'No photos available'}
+              </p>
+            </div>
           )}
         </ImageSection>
 
