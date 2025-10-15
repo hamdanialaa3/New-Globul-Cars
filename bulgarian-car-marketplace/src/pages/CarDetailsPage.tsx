@@ -480,37 +480,37 @@ const ContactItem = styled.div<{ $isActive: boolean }>`
   }
 `;
 
-// Neomorphism Toggle Switch
+// Neomorphism Toggle Switch - 50% smaller
 const ToggleSwitchContainer = styled.div<{ $isOn: boolean }>`
   position: relative;
-  width: 80px;
-  height: 40px;
+  width: 40px;
+  height: 20px;
   background: #3e3e3e;
-  border-radius: 20px;
+  border-radius: 10px;
   box-shadow: 
-    10px 10px 20px rgba(0, 0, 0, 0.4), 
-    -10px -10px 20px rgba(255, 255, 255, 0.1);
+    5px 5px 10px rgba(0, 0, 0, 0.4), 
+    -5px -5px 10px rgba(255, 255, 255, 0.1);
   cursor: pointer;
   transition: all 0.4s ease;
 
   &:hover {
     box-shadow: 
-      12px 12px 24px rgba(0, 0, 0, 0.5), 
-      -12px -12px 24px rgba(255, 255, 255, 0.12);
+      6px 6px 12px rgba(0, 0, 0, 0.5), 
+      -6px -6px 12px rgba(255, 255, 255, 0.12);
   }
 `;
 
 const ToggleSwitchInner = styled.div<{ $isOn: boolean }>`
   position: absolute;
-  top: 3px;
-  left: 3px;
-  width: calc(100% - 6px);
-  height: calc(100% - 6px);
+  top: 1.5px;
+  left: 1.5px;
+  width: calc(100% - 3px);
+  height: calc(100% - 3px);
   background-color: #3e3e3e;
-  border-radius: 17px;
+  border-radius: 8.5px;
   box-shadow: 
-    inset 5px 5px 10px rgba(0, 0, 0, 0.4), 
-    inset -5px -5px 10px rgba(255, 255, 255, 0.1);
+    inset 2.5px 2.5px 5px rgba(0, 0, 0, 0.4), 
+    inset -2.5px -2.5px 5px rgba(255, 255, 255, 0.1);
   transition: background-color 0.4s ease;
 `;
 
@@ -527,15 +527,15 @@ const ToggleSwitchKnobContainer = styled.div<{ $isOn: boolean }>`
 
 const ToggleSwitchKnob = styled.div<{ $isOn: boolean }>`
   position: relative;
-  width: 34px;
-  height: 34px;
-  top: 3px;
-  left: 3px;
+  width: 17px;
+  height: 17px;
+  top: 1.5px;
+  left: 1.5px;
   background-color: #3e3e3e;
   border-radius: 50%;
   box-shadow: 
-    5px 5px 10px rgba(0, 0, 0, 0.5), 
-    -5px -5px 10px rgba(255, 255, 255, 0.1);
+    2.5px 2.5px 5px rgba(0, 0, 0, 0.5), 
+    -2.5px -2.5px 5px rgba(255, 255, 255, 0.1);
   transition: background-color 0.4s ease;
 `;
 
@@ -544,13 +544,13 @@ const ToggleSwitchNeon = styled.div<{ $isOn: boolean }>`
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 20px;
-  height: 20px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   transform: translate(-50%, -50%);
   box-shadow: ${props => props.$isOn
-    ? '0 0 10px #0f0, 0 0 20px #0f0, 0 0 30px #0f0, 0 0 40px #0f0'
-    : '0 0 10px #ff8c00, 0 0 20px #ff8c00'
+    ? '0 0 5px #0f0, 0 0 10px #0f0, 0 0 15px #0f0, 0 0 20px #0f0'
+    : '0 0 5px #ff8c00, 0 0 10px #ff8c00'
   };
   background: ${props => props.$isOn ? '#0f0' : '#ff8c00'};
   transition: all 0.4s ease;
@@ -879,6 +879,12 @@ const CarDetailsPage: React.FC = () => {
   const [photos, setPhotos] = useState<File[]>([]);
   const [photoUrls, setPhotoUrls] = useState<string[]>([]);
   const [isDragOver, setIsDragOver] = useState(false);
+  
+  // State for "Other" option inputs
+  const [showOtherFuelType, setShowOtherFuelType] = useState(false);
+  const [showOtherTransmission, setShowOtherTransmission] = useState(false);
+  const [showOtherColor, setShowOtherColor] = useState(false);
+  const [showOtherRegion, setShowOtherRegion] = useState(false);
 
   useEffect(() => {
     const loadCar = async () => {
@@ -1111,17 +1117,35 @@ const CarDetailsPage: React.FC = () => {
           <DetailRow>
             <DetailLabel>{language === 'bg' ? 'Гориво' : 'Fuel Type'}</DetailLabel>
             {isEditMode ? (
-              <EditableSelect
-                value={editedCar.fuelType || ''}
-                onChange={(e) => handleInputChange('fuelType', e.target.value)}
-              >
-                <option value="">{language === 'bg' ? 'Изберете гориво' : 'Select fuel type'}</option>
-                <option value="Petrol">{language === 'bg' ? 'Бензин' : 'Petrol'}</option>
-                <option value="Diesel">{language === 'bg' ? 'Дизел' : 'Diesel'}</option>
-                <option value="Electric">{language === 'bg' ? 'Електрически' : 'Electric'}</option>
-                <option value="Hybrid">{language === 'bg' ? 'Хибрид' : 'Hybrid'}</option>
-                <option value="LPG">{language === 'bg' ? 'ГПГ' : 'LPG'}</option>
-              </EditableSelect>
+              <>
+                <EditableSelect
+                  value={showOtherFuelType ? 'Other' : (editedCar.fuelType || '')}
+                  onChange={(e) => {
+                    if (e.target.value === 'Other') {
+                      setShowOtherFuelType(true);
+                    } else {
+                      setShowOtherFuelType(false);
+                      handleInputChange('fuelType', e.target.value);
+                    }
+                  }}
+                >
+                  <option value="">{language === 'bg' ? 'Изберете гориво' : 'Select fuel type'}</option>
+                  <option value="Petrol">{language === 'bg' ? 'Бензин' : 'Petrol'}</option>
+                  <option value="Diesel">{language === 'bg' ? 'Дизел' : 'Diesel'}</option>
+                  <option value="Electric">{language === 'bg' ? 'Електрически' : 'Electric'}</option>
+                  <option value="Hybrid">{language === 'bg' ? 'Хибрид' : 'Hybrid'}</option>
+                  <option value="LPG">{language === 'bg' ? 'ГПГ' : 'LPG'}</option>
+                  <option value="Other">{language === 'bg' ? 'Друго' : 'Other'}</option>
+                </EditableSelect>
+                {showOtherFuelType && (
+                  <EditableInput
+                    value={editedCar.fuelType || ''}
+                    onChange={(e) => handleInputChange('fuelType', e.target.value)}
+                    placeholder={language === 'bg' ? 'Въведете вид гориво' : 'Enter fuel type'}
+                    style={{ marginTop: '0.5rem' }}
+                  />
+                )}
+              </>
             ) : (
               <DetailValue>{car.fuelType || 'N/A'}</DetailValue>
             )}
@@ -1130,14 +1154,32 @@ const CarDetailsPage: React.FC = () => {
           <DetailRow>
             <DetailLabel>{language === 'bg' ? 'Скоростна кутия' : 'Transmission'}</DetailLabel>
             {isEditMode ? (
-              <EditableSelect
-                value={editedCar.transmission || ''}
-                onChange={(e) => handleInputChange('transmission', e.target.value)}
-              >
-                <option value="">{language === 'bg' ? 'Изберете трансмисия' : 'Select transmission'}</option>
-                <option value="Manual">{language === 'bg' ? 'Ръчна' : 'Manual'}</option>
-                <option value="Automatic">{language === 'bg' ? 'Автоматична' : 'Automatic'}</option>
-              </EditableSelect>
+              <>
+                <EditableSelect
+                  value={showOtherTransmission ? 'Other' : (editedCar.transmission || '')}
+                  onChange={(e) => {
+                    if (e.target.value === 'Other') {
+                      setShowOtherTransmission(true);
+                    } else {
+                      setShowOtherTransmission(false);
+                      handleInputChange('transmission', e.target.value);
+                    }
+                  }}
+                >
+                  <option value="">{language === 'bg' ? 'Изберете трансмисия' : 'Select transmission'}</option>
+                  <option value="Manual">{language === 'bg' ? 'Ръчна' : 'Manual'}</option>
+                  <option value="Automatic">{language === 'bg' ? 'Автоматична' : 'Automatic'}</option>
+                  <option value="Other">{language === 'bg' ? 'Друго' : 'Other'}</option>
+                </EditableSelect>
+                {showOtherTransmission && (
+                  <EditableInput
+                    value={editedCar.transmission || ''}
+                    onChange={(e) => handleInputChange('transmission', e.target.value)}
+                    placeholder={language === 'bg' ? 'Въведете тип трансмисия' : 'Enter transmission type'}
+                    style={{ marginTop: '0.5rem' }}
+                  />
+                )}
+              </>
             ) : (
               <DetailValue>{car.transmission || 'N/A'}</DetailValue>
             )}
@@ -1160,22 +1202,40 @@ const CarDetailsPage: React.FC = () => {
           <DetailRow>
             <DetailLabel>{language === 'bg' ? 'Цвят' : 'Color'}</DetailLabel>
             {isEditMode ? (
-              <EditableSelect
-                value={editedCar.color || ''}
-                onChange={(e) => handleInputChange('color', e.target.value)}
-              >
-                <option value="">{language === 'bg' ? 'Изберете цвят' : 'Select color'}</option>
-                <option value="White">{language === 'bg' ? 'Бял' : 'White'}</option>
-                <option value="Black">{language === 'bg' ? 'Черен' : 'Black'}</option>
-                <option value="Silver">{language === 'bg' ? 'Сребърен' : 'Silver'}</option>
-                <option value="Gray">{language === 'bg' ? 'Сив' : 'Gray'}</option>
-                <option value="Red">{language === 'bg' ? 'Червен' : 'Red'}</option>
-                <option value="Blue">{language === 'bg' ? 'Син' : 'Blue'}</option>
-                <option value="Green">{language === 'bg' ? 'Зелен' : 'Green'}</option>
-                <option value="Yellow">{language === 'bg' ? 'Жълт' : 'Yellow'}</option>
-                <option value="Orange">{language === 'bg' ? 'Оранжев' : 'Orange'}</option>
-                <option value="Brown">{language === 'bg' ? 'Кафяв' : 'Brown'}</option>
-              </EditableSelect>
+              <>
+                <EditableSelect
+                  value={showOtherColor ? 'Other' : (editedCar.color || '')}
+                  onChange={(e) => {
+                    if (e.target.value === 'Other') {
+                      setShowOtherColor(true);
+                    } else {
+                      setShowOtherColor(false);
+                      handleInputChange('color', e.target.value);
+                    }
+                  }}
+                >
+                  <option value="">{language === 'bg' ? 'Изберете цвят' : 'Select color'}</option>
+                  <option value="White">{language === 'bg' ? 'Бял' : 'White'}</option>
+                  <option value="Black">{language === 'bg' ? 'Черен' : 'Black'}</option>
+                  <option value="Silver">{language === 'bg' ? 'Сребърен' : 'Silver'}</option>
+                  <option value="Gray">{language === 'bg' ? 'Сив' : 'Gray'}</option>
+                  <option value="Red">{language === 'bg' ? 'Червен' : 'Red'}</option>
+                  <option value="Blue">{language === 'bg' ? 'Син' : 'Blue'}</option>
+                  <option value="Green">{language === 'bg' ? 'Зелен' : 'Green'}</option>
+                  <option value="Yellow">{language === 'bg' ? 'Жълт' : 'Yellow'}</option>
+                  <option value="Orange">{language === 'bg' ? 'Оранжев' : 'Orange'}</option>
+                  <option value="Brown">{language === 'bg' ? 'Кафяв' : 'Brown'}</option>
+                  <option value="Other">{language === 'bg' ? 'Друго' : 'Other'}</option>
+                </EditableSelect>
+                {showOtherColor && (
+                  <EditableInput
+                    value={editedCar.color || ''}
+                    onChange={(e) => handleInputChange('color', e.target.value)}
+                    placeholder={language === 'bg' ? 'Въведете цвят' : 'Enter color'}
+                    style={{ marginTop: '0.5rem' }}
+                  />
+                )}
+              </>
             ) : (
               <DetailValue>{car.color || 'N/A'}</DetailValue>
             )}
@@ -1495,16 +1555,34 @@ const CarDetailsPage: React.FC = () => {
         <DetailRow>
           <DetailLabel>{language === 'bg' ? 'Регион' : 'Region'}</DetailLabel>
           {isEditMode ? (
-            <EditableSelect
-              value={editedCar.region || ''}
-              onChange={(e) => handleInputChange('region', e.target.value)}
-            >
-              <option value="">{language === 'bg' ? 'Изберете регион' : 'Select region'}</option>
-              <option value="sofia">{language === 'bg' ? 'София' : 'Sofia'}</option>
-              <option value="plovdiv">{language === 'bg' ? 'Пловдив' : 'Plovdiv'}</option>
-              <option value="varna">{language === 'bg' ? 'Варна' : 'Varna'}</option>
-              <option value="burgas">{language === 'bg' ? 'Бургас' : 'Burgas'}</option>
-            </EditableSelect>
+            <>
+              <EditableSelect
+                value={showOtherRegion ? 'Other' : (editedCar.region || '')}
+                onChange={(e) => {
+                  if (e.target.value === 'Other') {
+                    setShowOtherRegion(true);
+                  } else {
+                    setShowOtherRegion(false);
+                    handleInputChange('region', e.target.value);
+                  }
+                }}
+              >
+                <option value="">{language === 'bg' ? 'Изберете регион' : 'Select region'}</option>
+                <option value="sofia">{language === 'bg' ? 'София' : 'Sofia'}</option>
+                <option value="plovdiv">{language === 'bg' ? 'Пловдив' : 'Plovdiv'}</option>
+                <option value="varna">{language === 'bg' ? 'Варна' : 'Varna'}</option>
+                <option value="burgas">{language === 'bg' ? 'Бургас' : 'Burgas'}</option>
+                <option value="Other">{language === 'bg' ? 'Друго' : 'Other'}</option>
+              </EditableSelect>
+              {showOtherRegion && (
+                <EditableInput
+                  value={editedCar.region || ''}
+                  onChange={(e) => handleInputChange('region', e.target.value)}
+                  placeholder={language === 'bg' ? 'Въведете регион' : 'Enter region'}
+                  style={{ marginTop: '0.5rem' }}
+                />
+              )}
+            </>
           ) : (
             <DetailValue>{car.region || 'N/A'}</DetailValue>
           )}
