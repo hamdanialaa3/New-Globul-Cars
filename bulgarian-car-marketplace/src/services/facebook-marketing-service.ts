@@ -263,8 +263,8 @@ return { ...adSet, targeting };
 
     // Create bilingual ad text
     const adText = {
-      bg: `🚗 ${carData.make} ${carData.model} ${carData.year}г.\n💰 ${carData.price.toLocaleString('bg-BG')} €\n📍 ${carData.location.city}, България\n${carData.description.bg}`,
-      en: `🚗 ${carData.make} ${carData.model} ${carData.year}\n💰 €${carData.price.toLocaleString('en-EU')}\n📍 ${carData.location.city}, Bulgaria\n${carData.description.en}`
+      bg: `${carData.make} ${carData.model} ${carData.year}г.\n💰 ${carData.price.toLocaleString('bg-BG')} €\n📍 ${carData.location.city}, България\n${carData.description.bg}`,
+      en: `${carData.make} ${carData.model} ${carData.year}\n💰 €${carData.price.toLocaleString('en-EU')}\n📍 ${carData.location.city}, Bulgaria\n${carData.description.en}`
     };
 
     const creativeData = {

@@ -60,6 +60,10 @@ const createInitialSearchData = (): SearchData => ({
   interiorMaterial: '',
   airbags: '',
   airConditioning: '',
+  // ✅ Equipment Arrays
+  safetyEquipment: [],
+  comfortEquipment: [],
+  infotainmentEquipment: [],
   extras: [],
   // Offer Details
   seller: '',

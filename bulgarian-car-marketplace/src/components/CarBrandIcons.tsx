@@ -335,12 +335,25 @@ const brandIcons: Record<string, React.FC<{ size?: number }>> = {
     </IconWrapper>
   ),
 
-  // (Comment removed - was in Arabic)
+  // Default Car Icon (replaced emoji with professional SVG)
   'Other': ({ size = 20 }) => (
     <IconWrapper size={size}>
       <svg viewBox="0 0 24 24" fill="none">
-        <circle cx="12" cy="12" r="11" fill="#666" stroke="#999" strokeWidth="1"/>
-        <text x="12" y="16" textAnchor="middle" fontSize="8" fill="white" fontWeight="bold">🚗</text>
+        <circle cx="12" cy="12" r="11" fill="#FF7900" stroke="#FF7900" strokeWidth="1"/>
+        {/* Modern Car Shape */}
+        <path
+          d="M7 14C7 14.1989 7.07902 14.3897 7.21967 14.5303C7.36032 14.671 7.55109 14.75 7.75 14.75H8C8.14889 14.75 8.29267 14.691 8.39645 14.5872C8.50022 14.4834 8.55556 14.3428 8.55556 14.1944V14H15.4444V14.1944C15.4444 14.3428 15.4998 14.4834 15.6036 14.5872C15.7073 14.691 15.8511 14.75 16 14.75H16.25C16.4489 14.75 16.6397 14.671 16.7803 14.5303C16.921 14.3897 17 14.1989 17 14V11.5L16.125 8.5C16.0273 8.14845 15.8225 7.83518 15.5391 7.60266C15.2556 7.37015 14.9082 7.23142 14.5475 7.20713H9.4525C9.09178 7.23142 8.7444 7.37015 8.46094 7.60266C8.17748 7.83518 7.97272 8.14845 7.875 8.5L7 11.5V14Z"
+          fill="white"
+          stroke="white"
+          strokeWidth="0.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        {/* Wheels */}
+        <circle cx="9.5" cy="14" r="0.6" fill="#FF7900"/>
+        <circle cx="14.5" cy="14" r="0.6" fill="#FF7900"/>
+        {/* Window */}
+        <path d="M9.5 9H14.5L15 11.5H9L9.5 9Z" fill="#FF7900" fillOpacity="0.3"/>
       </svg>
     </IconWrapper>
   )

@@ -29,12 +29,12 @@ class FirebaseDebugService {
 
       // Check cars collection
       const carsSnapshot = await getDocs(collection(db, 'cars'));
-      console.log('🚗 Cars found:', carsSnapshot.docs.length);
+      console.log('🔍 Cars found:', carsSnapshot.docs.length);
       const cars = carsSnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       }));
-      console.log('🚗 Cars data:', cars);
+      console.log('📊 Cars data:', cars);
 
       // Check messages collection
       const messagesSnapshot = await getDocs(collection(db, 'messages'));

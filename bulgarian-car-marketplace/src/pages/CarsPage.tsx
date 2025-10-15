@@ -10,6 +10,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { BULGARIAN_CITIES } from '../constants/bulgarianCities';
 import carListingService from '../services/carListingService';
 import advancedSearchService from '../services/advancedSearchService';
+import { CarIcon } from '../components/icons/CarIcon';
 import { CarListing } from '../types/CarListing';
 import AISearchEngine from '../components/AISearchEngine';
 import CarCard from '../components/CarCard';
@@ -301,7 +302,8 @@ const CarsPage: React.FC = () => {
         {/* Empty State */}
         {!loading && !error && cars.length === 0 && (
           <EmptyState>
-            <h3>🚗 {language === 'bg' ? 'Няма намерени автомобили' : 'No cars found'}</h3>
+            <CarIcon size={64} color="#FF7900" style={{ marginBottom: '16px', opacity: 0.6 }} />
+            <h3>{language === 'bg' ? 'Няма намерени автомобили' : 'No cars found'}</h3>
             <p>
               {cityData 
                 ? (language === 'bg' 

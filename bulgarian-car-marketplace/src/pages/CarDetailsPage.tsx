@@ -317,13 +317,13 @@ const rotate = keyframes`
 `;
 
 const rotateVertical = keyframes`
-  0% { transform: rotateX(0deg); }
-  100% { transform: rotateX(360deg); }
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
 `;
 
 const rotateHorizontal = keyframes`
-  0% { transform: rotateY(0deg); }
-  100% { transform: rotateY(360deg); }
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
 `;
 
 const SectionIcon = styled.div`
@@ -699,7 +699,7 @@ const LogoImage = styled.img`
   left: 50%;
   transform: translate(-50%, -50%);
   filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.2));
-  z-index: 2;
+  z-index: 5;
 `;
 
 const GlowRingVertical = styled.div`
@@ -709,59 +709,31 @@ const GlowRingVertical = styled.div`
   width: 140px;
   height: 140px;
   border-radius: 50%;
-  border: 3px solid transparent;
-  border-top-color: #FF7900;
-  border-bottom-color: #FF9533;
-  transform: translate(-50%, -50%) rotateX(0deg);
+  border: 4px solid transparent;
+  border-top: 4px solid #FF7900;
+  border-bottom: 4px solid #FF9533;
   animation: ${rotateVertical} 3s linear infinite;
-  filter: blur(2px);
+  filter: blur(3px);
   opacity: 0.8;
-  z-index: 3;
+  z-index: 4;
   pointer-events: none;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: -3px;
-    left: -3px;
-    right: -3px;
-    bottom: -3px;
-    border-radius: 50%;
-    border: 3px solid transparent;
-    border-top-color: rgba(255, 121, 0, 0.3);
-    border-bottom-color: rgba(255, 149, 51, 0.3);
-  }
 `;
 
 const GlowRingHorizontal = styled.div`
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 140px;
-  height: 140px;
+  width: 145px;
+  height: 145px;
   border-radius: 50%;
-  border: 3px solid transparent;
-  border-left-color: #FF7900;
-  border-right-color: #FF9533;
-  transform: translate(-50%, -50%) rotateY(0deg);
+  border: 4px solid transparent;
+  border-left: 4px solid #FF9533;
+  border-right: 4px solid #FF7900;
   animation: ${rotateHorizontal} 4s linear infinite reverse;
-  filter: blur(2px);
-  opacity: 0.6;
-  z-index: 3;
+  filter: blur(3px);
+  opacity: 0.7;
+  z-index: 4;
   pointer-events: none;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: -3px;
-    left: -3px;
-    right: -3px;
-    bottom: -3px;
-    border-radius: 50%;
-    border: 3px solid transparent;
-    border-left-color: rgba(255, 121, 0, 0.2);
-    border-right-color: rgba(255, 149, 51, 0.2);
-  }
 `;
 
 const LogoGlow = styled.div`
@@ -773,7 +745,7 @@ const LogoGlow = styled.div`
   border-radius: 50%;
   background: radial-gradient(circle, rgba(255, 121, 0, 0.15), transparent 70%);
   transform: translate(-50%, -50%);
-  z-index: 1;
+  z-index: 3;
   animation: pulse 2s ease-in-out infinite;
 
   @keyframes pulse {

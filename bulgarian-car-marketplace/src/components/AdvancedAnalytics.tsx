@@ -353,7 +353,7 @@ const AdvancedAnalytics: React.FC<AdvancedAnalyticsProps> = ({ analytics }) => {
       time: '2 minutes ago'
     },
     {
-      icon: '🚗',
+      icon: '📝',
       color: '#28a745',
       title: 'Car Listing Added',
       description: 'BMW X5 2020 added to marketplace',

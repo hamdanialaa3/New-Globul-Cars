@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { CarListing } from '../../types/CarListing';
+import { CarIconSimple } from '../icons/CarIcon';
 
 interface VehicleTypeStepProps {
   data: Partial<CarListing>;
@@ -121,7 +122,7 @@ const VehicleTypeStep: React.FC<VehicleTypeStepProps> = ({ data, onDataChange })
       id: 'car',
       title: 'Лека кола',
       titleEn: 'Passenger Car',
-      icon: '🚗',
+      icon: <CarIconSimple size={32} color="#FF7900" />,
       description: 'Леки автомобили за лично ползване',
       descriptionEn: 'Passenger cars for personal use'
     },

@@ -8,6 +8,7 @@ import { useAuth } from '../context/AuthProvider';
 import { useLanguage } from '../contexts/LanguageContext';
 import carListingService from '../services/carListingService';
 import { CarListing } from '../types/CarListing';
+import { CarIcon } from '../components/icons/CarIcon';
 import CarCard from '../components/CarCard';
 
 const PageContainer = styled.div`
@@ -175,6 +176,55 @@ const ErrorCard = styled.div`
   text-align: center;
 `;
 
+const ListingCardWrapper = styled.div`
+  position: relative;
+  transition: transform 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-4px);
+  }
+`;
+
+const ActionButtons = styled.div`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+  display: flex;
+  gap: 0.5rem;
+`;
+
+const ActionButton = styled.button<{ $variant?: 'view' | 'edit' | 'delete' }>`
+  background: ${props => {
+    if (props.$variant === 'delete') return '#e74c3c';
+    if (props.$variant === 'edit') return '#FF7900';
+    return '#667eea';
+  }};
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    background: ${props => {
+      if (props.$variant === 'delete') return '#c0392b';
+      if (props.$variant === 'edit') return '#e66a00';
+      return '#5568d3';
+    }};
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+`;
+
 const MyListingsPage: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -183,32 +233,34 @@ const MyListingsPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Load user's listings
+  // Load user's listings function (extracted to be reusable)
+  const loadListings = async () => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError(null);
+      console.log('🔄 Loading user listings...');
+
+      const userListings = await carListingService.getListingsBySeller(user.email || '');
+      setListings(userListings);
+
+      console.log(`✅ Loaded ${userListings.length} listings`);
+    } catch (err: any) {
+      console.error('❌ Error loading listings:', err);
+      setError(err.message || 'Failed to load listings');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Load on mount
   useEffect(() => {
-    const loadListings = async () => {
-      if (!user) {
-        navigate('/login');
-        return;
-      }
-
-      try {
-        setLoading(true);
-        setError(null);
-        console.log('🔄 Loading user listings...');
-
-        const userListings = await carListingService.getListingsBySeller(user.email || '');
-        setListings(userListings);
-
-        console.log(`✅ Loaded ${userListings.length} listings`);
-      } catch (err: any) {
-        console.error('❌ Error loading listings:', err);
-        setError(err.message || 'Failed to load listings');
-      } finally {
-        setLoading(false);
-      }
-    };
-
     loadListings();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, navigate]);
 
   // Calculate statistics
@@ -220,6 +272,32 @@ const MyListingsPage: React.FC = () => {
   // Handle create new listing
   const handleCreateListing = () => {
     navigate('/sell');
+  };
+
+  const handleViewDetails = (carId: string) => {
+    navigate(`/car-details/${carId}`);
+  };
+
+  const handleEditListing = (carId: string) => {
+    navigate(`/car-details/${carId}?edit=true`);
+  };
+
+  const handleDeleteListing = async (carId: string) => {
+    if (!window.confirm(language === 'bg' 
+      ? 'Сигурни ли сте, че искате да изтриете тази обява?' 
+      : 'Are you sure you want to delete this listing?')) {
+      return;
+    }
+
+    try {
+      await carListingService.deleteListing(carId);
+      // Refresh listings
+      loadListings();
+      alert(language === 'bg' ? 'Обявата е изтрита успешно!' : 'Listing deleted successfully!');
+    } catch (err) {
+      console.error('Error deleting listing:', err);
+      alert(language === 'bg' ? 'Грешка при изтриване' : 'Error deleting listing');
+    }
   };
 
   if (!user) {
@@ -282,7 +360,8 @@ const MyListingsPage: React.FC = () => {
         {/* Empty State */}
         {!loading && !error && listings.length === 0 && (
           <EmptyState>
-            <h3>🚗 {language === 'bg' ? 'Нямате обяви' : 'No listings yet'}</h3>
+            <CarIcon size={64} color="#FF7900" style={{ marginBottom: '16px', opacity: 0.6 }} />
+            <h3>{language === 'bg' ? 'Нямате обяви' : 'No listings yet'}</h3>
             <p>
               {language === 'bg'
                 ? 'Все още не сте създали обява за автомобил. Започнете сега и достигнете до хиляди потенциални купувачи!'
@@ -305,7 +384,41 @@ const MyListingsPage: React.FC = () => {
 
             <CarsGrid>
               {listings.map(listing => (
-                <CarCard key={listing.id} car={listing} />
+                <ListingCardWrapper key={listing.id}>
+                  <ActionButtons>
+                    <ActionButton 
+                      $variant="view"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (listing.id) handleViewDetails(listing.id);
+                      }}
+                      title={language === 'bg' ? 'Преглед' : 'View Details'}
+                    >
+                      👁️ {language === 'bg' ? 'Преглед' : 'View'}
+                    </ActionButton>
+                    <ActionButton 
+                      $variant="edit"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (listing.id) handleEditListing(listing.id);
+                      }}
+                      title={language === 'bg' ? 'Редактирай' : 'Edit'}
+                    >
+                      ✏️ {language === 'bg' ? 'Редактирай' : 'Edit'}
+                    </ActionButton>
+                    <ActionButton 
+                      $variant="delete"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (listing.id) handleDeleteListing(listing.id);
+                      }}
+                      title={language === 'bg' ? 'Изтрий' : 'Delete'}
+                    >
+                      🗑️ {language === 'bg' ? 'Изтрий' : 'Delete'}
+                    </ActionButton>
+                  </ActionButtons>
+                  <CarCard car={listing} />
+                </ListingCardWrapper>
               ))}
             </CarsGrid>
           </>

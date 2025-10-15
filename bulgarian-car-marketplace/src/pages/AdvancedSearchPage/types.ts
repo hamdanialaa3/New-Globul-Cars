@@ -54,6 +54,10 @@ export interface SearchData {
   interiorMaterial: string;
   airbags: string;
   airConditioning: string;
+  // ✅ Equipment Arrays
+  safetyEquipment: string[];
+  comfortEquipment: string[];
+  infotainmentEquipment: string[];
   extras: string[];
   // Offer Details
   seller: string;

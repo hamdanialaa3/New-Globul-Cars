@@ -5,6 +5,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { MyListing } from './types';
 import { SectionContainer, ListingsGrid, CardContainer, ListingCard, ListingImage, ListingInfo, ActionButton, ActionBar, EmptyState, LoadingState } from './styles';
+import { CarIcon } from '../../components/icons/CarIcon';
 
 interface ListingsGridProps {
   listings: MyListing[];
@@ -65,7 +66,9 @@ const ListingsGridComponent: React.FC<ListingsGridProps> = ({
                   {listing.media.images.length > 0 ? (
                     <img src={listing.media.images[0]} alt={listing.title} />
                   ) : (
-                    <span>🚗</span>
+                    <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+                      <CarIcon size={48} color="#FF7900" />
+                    </span>
                   )}
                   {listing.media.images.length > 1 && (
                     <div className="image-count">+{listing.media.images.length - 1}</div>

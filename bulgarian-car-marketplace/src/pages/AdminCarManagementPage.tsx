@@ -10,6 +10,7 @@ import carListingService from '../services/carListingService';
 import CityCarCountService from '../services/cityCarCountService';
 import { CarListing } from '../types/CarListing';
 import { Search, Filter, Trash2, Eye, CheckCircle, XCircle } from 'lucide-react';
+import { CarIcon } from '../components/icons/CarIcon';
 
 const PageContainer = styled.div`
   min-height: 100vh;
@@ -381,7 +382,7 @@ const AdminCarManagementPage: React.FC = () => {
                   <CarImageThumbnail src={car.images[0] as any} alt={`${car.make} ${car.model}`} />
                 ) : (
                   <div style={{ width: '60px', height: '60px', background: '#f1f3f5', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    🚗
+                    <CarIcon size={36} color="#FF7900" />
                   </div>
                 )}
               </Td>

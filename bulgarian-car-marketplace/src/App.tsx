@@ -67,6 +67,7 @@ const TermsOfServicePage = React.lazy(() => import('./pages/TermsOfServicePage')
 const DataDeletionPage = React.lazy(() => import('./pages/DataDeletionPage'));
 const AdvancedSearchPage = React.lazy(() => import('./pages/AdvancedSearchPage'));
 const MyListingsPage = React.lazy(() => import('./pages/MyListingsPage'));
+const EditCarPage = React.lazy(() => import('./pages/EditCarPage'));
 const B2BAnalyticsPortal = React.lazy(() => import('./pages/B2BAnalyticsPortal'));
 const DigitalTwinPage = React.lazy(() => import('./pages/DigitalTwinPage'));
 const SubscriptionPage = React.lazy(() => import('./pages/SubscriptionPage'));
@@ -443,6 +444,22 @@ const MainLayout: React.FC = () => (
           </ProtectedRoute>
         }
       />
+            <Route
+              path="/edit-car/:carId"
+              element={
+                <ProtectedRoute>
+                  <EditCarPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/car-details/:carId"
+              element={
+                <ProtectedRoute>
+                  <CarDetailsPage />
+                </ProtectedRoute>
+              }
+            />
       <Route
         path="/analytics"
         element={

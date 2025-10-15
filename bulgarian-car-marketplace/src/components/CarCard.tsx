@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import { Heart, MapPin, Calendar, Gauge, Fuel, Settings } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { CarListing } from '../types/CarListing';
+import { CarIcon } from './icons/CarIcon';
 
 interface CarCardProps {
   car: CarListing;
@@ -229,7 +230,9 @@ const CarCard: React.FC<CarCardProps> = ({ car }) => {
         {getMainImage() ? (
           <CarImage src={getMainImage()!} alt={`${car.make} ${car.model}`} />
         ) : (
-          <ImagePlaceholder>🚗</ImagePlaceholder>
+          <ImagePlaceholder>
+            <CarIcon size={60} color="#FF7900" />
+          </ImagePlaceholder>
         )}
         <FavoriteButton onClick={handleFavoriteClick}>
           <Heart size={20} />

@@ -77,6 +77,7 @@ const UnifiedContactPage: React.FC = () => {
   const price = searchParams.get('price');
   const currency = searchParams.get('currency');
   const priceType = searchParams.get('priceType');
+  const negotiable = searchParams.get('negotiable');
 
   // Load user profile data
   useEffect(() => {
@@ -124,12 +125,21 @@ const UnifiedContactPage: React.FC = () => {
     setIsSubmitting(true);
 
     try {
+      // Debug: Log all URL params
+      console.log('🔍 URL Parameters:', {
+        make, model, year, price, sellerType, vehicleType,
+        mileage, fuelType, transmission, color
+      });
+      
       // Validation
-      if (!make || !model) {
+      if (!make) {
         throw new Error(language === 'bg' 
-          ? 'Липсва задължителна информация: Марка и Модел' 
-          : 'Missing required information: Make and Model');
+          ? 'Липсва задължителна информация: Марка' 
+          : 'Missing required information: Make');
       }
+      
+      // Model is optional - use "Unknown" if not provided
+      const finalModel = model || (language === 'bg' ? 'Неизвестен модел' : 'Unknown Model');
 
       if (!year) {
         throw new Error(language === 'bg' 
@@ -155,67 +165,54 @@ const UnifiedContactPage: React.FC = () => {
           : 'Please select region and city');
       }
 
-      // Create car data
-      const carData = {
-        // Vehicle Info
+      // ✅ Build workflow data matching SellWorkflowService.transformWorkflowData structure
+      const workflowData = {
+        // Vehicle Type & Seller
+        vehicleType: vehicleType || 'car',
+        sellerType: sellerType || 'private',
+        
+        // Basic Vehicle Info (from URL params)
         make: make,
-        model: model, // ← IMPORTANT!
-        year: parseInt(year),
-        mileage: mileage ? parseInt(mileage) : 0,
+        model: finalModel,
+        year: year,
+        mileage: mileage || '0',
         fuelType: fuelType || 'Petrol',
+        fm: fuelType || 'Petrol', // alternative key
         transmission: transmission || 'Manual',
         color: color || '',
-        bodyType: vehicleType || 'sedan',
         
-        // Pricing
-        price: parseFloat(price),
+        // Pricing (from URL params)
+        price: price,
         currency: currency || 'EUR',
         priceType: priceType || 'fixed',
+        negotiable: negotiable === 'true',
         
-        // Contact
+        // Equipment (from URL params - already comma-separated strings)
+        safety: safety || '',
+        comfort: comfort || '',
+        infotainment: infotainment || '',
+        extras: extras || '',
+        
+        // Contact Information (from form)
         sellerName: contactData.sellerName,
         sellerEmail: contactData.sellerEmail,
         sellerPhone: contactData.sellerPhone,
         additionalPhone: contactData.additionalPhone || '',
-        preferredContact: contactData.preferredContact,
+        preferredContact: contactData.preferredContact.join(','), // convert array to string
         availableHours: contactData.availableHours || '',
+        additionalInfo: contactData.notes || '',
         
-        // Location
-        location: {
-          region: contactData.region,
-          city: contactData.city,
-          postalCode: contactData.postalCode || '',
-          address: contactData.location || ''
-        },
+        // Location (from form)
+        region: contactData.region,
+        city: contactData.city,
+        postalCode: contactData.postalCode || '',
+        location: contactData.location || '',
         
-        // Equipment
-        features: {
-          safety: safety ? safety.split(',') : [],
-          comfort: comfort ? comfort.split(',') : [],
-          infotainment: infotainment ? infotainment.split(',') : [],
-          extras: extras ? extras.split(',') : []
-        },
-        
-        // Images
-        images: images ? parseInt(images) : 0,
-        
-        // Additional
-        notes: contactData.notes || '',
-        condition: 'used',
-        status: 'active',
-        seller: {
-          type: sellerType || 'private',
-          uid: currentUser?.uid || ''
-        },
-        
-        // Metadata
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        views: 0,
-        favorites: 0
+        // Images (will be handled separately as File[])
+        images: images || '0'
       };
 
-      console.log('📝 Creating car listing with data:', carData);
+      console.log('📝 Creating car listing with workflow data:', workflowData);
 
       // Get current user ID
       const userId = currentUser?.uid;
@@ -225,8 +222,32 @@ const UnifiedContactPage: React.FC = () => {
           : 'Please log in to your account');
       }
 
-      // Create listing
-      const carId = await SellWorkflowService.createCarListing(carData, userId);
+      // ✅ Load images from localStorage and convert to Files
+      let imageFiles: File[] = [];
+      try {
+        const savedImagesJson = localStorage.getItem('globul_sell_workflow_images');
+        if (savedImagesJson) {
+          const base64Images = JSON.parse(savedImagesJson) as string[];
+          console.log(`📸 Found ${base64Images.length} images in localStorage`);
+          
+          // Convert base64 to File objects
+          imageFiles = await Promise.all(
+            base64Images.map(async (base64, index) => {
+              const response = await fetch(base64);
+              const blob = await response.blob();
+              return new File([blob], `car_image_${index + 1}.jpg`, { type: 'image/jpeg' });
+            })
+          );
+          
+          console.log(`✅ Converted ${imageFiles.length} images to File objects`);
+        }
+      } catch (error) {
+        console.error('⚠️ Error loading images from localStorage:', error);
+        // Continue without images - don't block listing creation
+      }
+
+      // Create listing with images
+      const carId = await SellWorkflowService.createCarListing(workflowData, userId, imageFiles);
 
       if (!carId) {
         throw new Error('Failed to create listing');
@@ -234,8 +255,8 @@ const UnifiedContactPage: React.FC = () => {
 
       // Success
       alert(language === 'bg' 
-        ? `✅ Обявата е публикувана успешно!\n\nМарка/Модел: ${make} ${model}\nГодина: ${year}\nID: ${carId}\n\nСега можете да я видите в "Моите обяви".`
-        : `✅ Listing published successfully!\n\nMake/Model: ${make} ${model}\nYear: ${year}\nID: ${carId}\n\nYou can now see it in "My Listings".`
+        ? `✅ Обявата е публикувана успешно!\n\nМарка/Модел: ${make} ${finalModel}\nГодина: ${year}\nID: ${carId}\n\nСега можете да я видите в "Моите обяви".`
+        : `✅ Listing published successfully!\n\nMake/Model: ${make} ${finalModel}\nYear: ${year}\nID: ${carId}\n\nYou can now see it in "My Listings".`
       );
 
       navigate('/my-listings');
@@ -519,7 +540,7 @@ const UnifiedContactPage: React.FC = () => {
             {language === 'bg' ? 'Превозно средство:' : 'Vehicle:'}
           </S.SummaryLabel>
           <S.SummaryValue>
-            {make} {model} ({year})
+            {make} {model || (language === 'bg' ? '(модел неизвестен)' : '(model not specified)')} ({year})
           </S.SummaryValue>
         </S.SummaryRow>
 

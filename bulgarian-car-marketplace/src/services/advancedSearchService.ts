@@ -215,6 +215,33 @@ class AdvancedSearchService {
         if (!hasAllSensors) return false;
       }
       
+      // ✅ Safety Equipment (array check)
+      if (searchData.safetyEquipment && searchData.safetyEquipment.length > 0) {
+        const carSafety = car.safetyEquipment || [];
+        const hasAllSafety = searchData.safetyEquipment.every(
+          item => carSafety.includes(item)
+        );
+        if (!hasAllSafety) return false;
+      }
+      
+      // ✅ Comfort Equipment (array check)
+      if (searchData.comfortEquipment && searchData.comfortEquipment.length > 0) {
+        const carComfort = car.comfortEquipment || [];
+        const hasAllComfort = searchData.comfortEquipment.every(
+          item => carComfort.includes(item)
+        );
+        if (!hasAllComfort) return false;
+      }
+      
+      // ✅ Infotainment Equipment (array check)
+      if (searchData.infotainmentEquipment && searchData.infotainmentEquipment.length > 0) {
+        const carInfotainment = car.infotainmentEquipment || [];
+        const hasAllInfotainment = searchData.infotainmentEquipment.every(
+          item => carInfotainment.includes(item)
+        );
+        if (!hasAllInfotainment) return false;
+      }
+      
       // Extras (array check)
       if (searchData.extras && searchData.extras.length > 0) {
         const carExtras = car.extras || [];

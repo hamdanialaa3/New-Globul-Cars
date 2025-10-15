@@ -230,8 +230,8 @@ this.trackShareEvent('facebook', car.id, shareContent.url, language);
    */
   private prepareCarShareContent(car: CarListing, language: 'bg' | 'en' = 'bg'): ShareableContent {
     const title = language === 'bg'
-      ? `🚗 ${car.make} ${car.model} ${car.year}г. - €${car.price.toLocaleString('bg-BG')}`
-      : `🚗 ${car.make} ${car.model} ${car.year} - €${car.price.toLocaleString('en-EU')}`;
+      ? `${car.make} ${car.model} ${car.year}г. - €${car.price.toLocaleString('bg-BG')}`
+      : `${car.make} ${car.model} ${car.year} - €${car.price.toLocaleString('en-EU')}`;
 
     const description = language === 'bg'
       ? `📍 ${car.location} | ${car.mileage.toLocaleString('bg-BG')} км | ${car.fuelType} | ${car.transmission}\n\n${car.description.bg.substring(0, 200)}...`
@@ -258,7 +258,7 @@ this.trackShareEvent('facebook', car.id, shareContent.url, language);
   async createCarListingPost(car: CarListing, language: 'bg' | 'en' = 'bg'): Promise<string | null> {
     try {
       const postContent = language === 'bg'
-        ? `🚗 Нова обява: ${car.make} ${car.model} ${car.year}г.
+        ? `Нова обява: ${car.make} ${car.model} ${car.year}г.
 
 💰 Цена: €${car.price.toLocaleString('bg-BG')}
 📍 Местоположение: ${car.location}
@@ -271,7 +271,7 @@ ${car.description.bg.substring(0, 300)}...
 👀 Вижте пълните детайли и още снимки на нашия сайт!
 
 #БългарскиКоли #${car.make} #${car.model} #АвтомобилиПродажба #${car.location.replace(/\s+/g, '')}`
-        : `🚗 New listing: ${car.make} ${car.model} ${car.year}
+        : `New listing: ${car.make} ${car.model} ${car.year}
 
 💰 Price: €${car.price.toLocaleString('en-EU')}
 📍 Location: ${car.location}

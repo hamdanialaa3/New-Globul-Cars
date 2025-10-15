@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { CarListing } from '../../types/CarListing';
+import { CarIconSimple } from '../icons/CarIcon';
 
 interface EquipmentStepProps {
   data: Partial<CarListing>;
@@ -355,7 +356,10 @@ const EquipmentStep: React.FC<EquipmentStepProps> = ({ data, onDataChange }) => 
         </EquipmentSection>
 
         <EquipmentSection>
-          <SectionTitle>🚗 Външен вид</SectionTitle>
+          <SectionTitle>
+            <CarIconSimple size={18} color="#FF7900" style={{ marginRight: '8px', verticalAlign: 'middle' }} />
+            Външен вид
+          </SectionTitle>
           <CheckboxGroup>
             {exteriorEquipment.map((item) => (
               <CheckboxItem key={item}>

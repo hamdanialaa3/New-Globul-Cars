@@ -182,8 +182,8 @@ return challenge;
           if (carResults.length > 0) {
             attachments = [this.createCarCarousel(carResults, lang)];
             responseText = lang === 'bg' 
-              ? `🚗 Намерих ${carResults.length} автомобила за теб:`
-              : `🚗 I found ${carResults.length} cars for you:`;
+              ? `Намерих ${carResults.length} автомобила за теб:`
+              : `I found ${carResults.length} cars for you:`;
           } else {
             responseText = lang === 'bg'
               ? '😔 Не намерих автомобили, отговарящи на критериите ти. Опитай с други параметри.'
@@ -233,7 +233,7 @@ return challenge;
           responseText = greeting;
           quickReplies = [
             { content_type: 'text', title: lang === 'bg' ? '🔍 Търся кола' : '🔍 Looking for a car', payload: 'SEARCH_CARS' },
-            { content_type: 'text', title: lang === 'bg' ? '🚗 Продавам кола' : '🚗 Selling a car', payload: 'SELL_CAR' },
+            { content_type: 'text', title: lang === 'bg' ? 'Продавам кола' : 'Selling a car', payload: 'SELL_CAR' },
             { content_type: 'text', title: lang === 'bg' ? '💰 Финансиране' : '💰 Financing', payload: 'FINANCING_INFO' },
             { content_type: 'text', title: lang === 'bg' ? '📞 Контакти' : '📞 Contact', payload: 'CONTACT_INFO' }
           ];
@@ -284,8 +284,8 @@ return challenge;
         
         case 'SELL_CAR':
           await this.sendMessage(senderId, lang === 'bg' 
-            ? '🚗 За да продадеш кола, посети нашия сайт и създай обява безплатно!'
-            : '🚗 To sell your car, visit our website and create a listing for free!');
+            ? 'За да продадеш кола, посети нашия сайт и създай обява безплатно!'
+            : 'To sell your car, visit our website and create a listing for free!');
           break;
         
         case 'FINANCING_INFO':

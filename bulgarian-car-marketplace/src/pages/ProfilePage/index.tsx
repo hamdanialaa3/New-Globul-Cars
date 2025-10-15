@@ -680,7 +680,7 @@ const ProfilePage: React.FC = () => {
                             required
                             style={{ borderColor: '#FF7900' }}
                           >
-                            <option value="dealership">🚗 {language === 'bg' ? 'Автосалон / Дилър' : 'Car Dealership'}</option>
+                            <option value="dealership">🏢 {language === 'bg' ? 'Автосалон / Дилър' : 'Car Dealership'}</option>
                             <option value="trader">🤝 {language === 'bg' ? 'Търговец' : 'Trader'}</option>
                             <option value="company">🏭 {language === 'bg' ? 'Компания' : 'Company'}</option>
                           </select>

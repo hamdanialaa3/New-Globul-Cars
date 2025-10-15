@@ -123,7 +123,7 @@ class BulgarianThreadsService {
       currency: 'EUR'
     }).format(price);
 
-    const caption = `🚗 ${title}
+    const caption = `${title}
 
 ${description}
 

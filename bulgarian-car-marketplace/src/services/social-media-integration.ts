@@ -271,7 +271,7 @@ class SocialMediaIntegrationManager {
           const tiktokPost = await this.services.tiktok.postCarVideo({
             carId: carData.id,
             title: `${carData.make} ${carData.model} ${carData.year}`,
-            description: `🚗 ${carData.make} ${carData.model} ${carData.year} - ${carData.price}€\n${carData.description}`,
+            description: `${carData.make} ${carData.model} ${carData.year} - ${carData.price}€\n${carData.description}`,
             videoUrl: carData.images[0], // Using image as video for now
             hashtags: [carData.make, carData.model, 'cars', 'продажба', 'коли'],
             language: this.config.defaultLanguage,
@@ -290,7 +290,7 @@ class SocialMediaIntegrationManager {
             carId: carData.id,
             mediaType: 'IMAGE',
             mediaUrls: [carData.images[0]],
-            caption: `🚗 ${carData.make} ${carData.model} ${carData.year} - ${carData.price}€\n${carData.description}`,
+            caption: `${carData.make} ${carData.model} ${carData.year} - ${carData.price}€\n${carData.description}`,
             hashtags: [carData.make, carData.model, 'cars', 'продажба', 'коли', 'българия'],
             language: this.config.defaultLanguage
           });
