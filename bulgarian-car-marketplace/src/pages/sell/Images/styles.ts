@@ -30,22 +30,27 @@ export const HeaderCard = styled.div`
 `;
 
 export const Title = styled.h1`
-  font-size: 1.425rem; /* 150% من 0.95rem */
+  font-size: 1.75rem; /* 28px - Global Standard */
   font-weight: 700;
   color: #2c3e50;
-  margin: 0 0 0.375rem 0;
+  margin: 0 0 0.75rem 0;
   background: linear-gradient(135deg, #ff8f10, #005ca9);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   letter-spacing: -0.5px;
+  line-height: 1.2;
+  
+  @media (max-width: 768px) {
+    font-size: 1.5rem;
+  }
 `;
 
 export const Subtitle = styled.p`
-  font-size: 0.95rem;
+  font-size: 1rem; /* 16px */
   color: #7f8c8d;
   margin: 0;
-  line-height: 1.5;
+  line-height: 1.6;
 `;
 
 export const UploadCard = styled.div<{ $isDragOver: boolean }>`

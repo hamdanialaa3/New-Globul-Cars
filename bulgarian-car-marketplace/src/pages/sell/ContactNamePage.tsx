@@ -152,8 +152,8 @@ const ContactMethodLabel = styled.span`
 
 const CyberToggleWrapper = styled.div`
   position: relative;
-  width: 80px;
-  height: 40px;
+  width: 60px;
+  height: 30px;
   user-select: none;
   overflow: hidden;
 `;
@@ -185,8 +185,8 @@ const ToggleTrack = styled.span`
     position: absolute;
     top: 3px;
     left: 3px;
-    width: 38px;
-    height: 34px;
+    width: 26px;
+    height: 26px;
     background: #fff;
     border-radius: 50%;
     transform: translateX(0);
@@ -199,17 +199,17 @@ const ToggleTrack = styled.span`
   }
 
   ${CyberToggleCheckbox}:checked + ${CyberToggleLabel} &::before {
-    transform: translateX(37px);
+    transform: translateX(30px);
   }
 `;
 
 const ToggleThumbIcon = styled.span`
   position: absolute;
   top: 50%;
-  left: 10px;
+  left: 7px;
   transform: translateY(-50%);
-  width: 16px;
-  height: 16px;
+  width: 12px;
+  height: 12px;
   background: #fff;
   mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="%23000" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM175 175c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l47-47-47-47c-9.4-9.4-9.4-24.6 0-33.9z"/></svg>');
   mask-repeat: no-repeat;
@@ -219,7 +219,7 @@ const ToggleThumbIcon = styled.span`
   opacity: 0;
 
   ${CyberToggleCheckbox}:checked + ${CyberToggleLabel} & {
-    transform: translateX(38px) translateY(-50%);
+    transform: translateX(32px) translateY(-50%);
     opacity: 1;
   }
 `;
@@ -229,19 +229,19 @@ const ToggleThumbDots = styled.span`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 4px;
-  height: 4px;
+  width: 3px;
+  height: 3px;
   background: #fff;
   border-radius: 50%;
   box-shadow: 
-    -10px 0 0 0 #fff,
-    10px 0 0 0 #fff,
-    0 -10px 0 0 #fff,
-    0 10px 0 0 #fff;
+    -7px 0 0 0 #fff,
+    7px 0 0 0 #fff,
+    0 -7px 0 0 #fff,
+    0 7px 0 0 #fff;
   transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out;
 
   ${CyberToggleCheckbox}:checked + ${CyberToggleLabel} & {
-    transform: translate(37px, -50%);
+    transform: translate(30px, -50%);
     opacity: 0;
   }
 `;
@@ -259,7 +259,7 @@ const ToggleThumbHighlight = styled.span`
   opacity: 0;
 
   ${CyberToggleCheckbox}:checked + ${CyberToggleLabel} & {
-    transform: translateX(38px) translateY(-50%);
+    transform: translateX(32px) translateY(-50%);
     opacity: 1;
   }
 `;
@@ -272,9 +272,9 @@ const ToggleLabels = styled.span`
   display: flex;
   justify-content: space-between;
   width: 80%;
-  font-size: 10px;
+  font-size: 7px;
   font-weight: 600;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
   text-transform: uppercase;
   pointer-events: none;
   color: #555;

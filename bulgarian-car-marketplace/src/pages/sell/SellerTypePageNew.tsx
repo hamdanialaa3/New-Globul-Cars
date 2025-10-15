@@ -37,7 +37,7 @@ const HeaderCard = styled.div`
 `;
 
 const Title = styled.h1`
-  font-size: 1.9rem;
+  font-size: 1.75rem; /* 28px - Global Standard */
   font-weight: 700;
   color: #2c3e50;
   margin: 0 0 0.75rem 0;
@@ -46,13 +46,18 @@ const Title = styled.h1`
   -webkit-text-fill-color: transparent;
   background-clip: text;
   letter-spacing: -0.5px;
+  line-height: 1.2;
+  
+  @media (max-width: 768px) {
+    font-size: 1.5rem;
+  }
 `;
 
 const Subtitle = styled.p`
-  font-size: 0.95rem;
+  font-size: 1rem; /* 16px */
   color: #7f8c8d;
   margin: 0;
-  line-height: 1.5;
+  line-height: 1.6;
 `;
 
 const SellerGrid = styled.div`
@@ -109,13 +114,15 @@ const IconWrapper = styled.div<{ $isHovered: boolean }>`
 `;
 
 const SellerTitle = styled.h3`
-  font-size: 1.1rem;
+  font-size: 1.125rem; /* 18px */
   font-weight: 700;
+  line-height: 1.3;
   margin: 0 0 0.5rem 0;
 `;
 
 const SellerDesc = styled.p`
-  font-size: 0.8rem;
+  font-size: 0.875rem; /* 14px */
+  line-height: 1.5;
   opacity: 0.85;
   margin: 0 0 1rem 0;
 `;
@@ -132,7 +139,8 @@ const FeatureItem = styled.li`
   align-items: flex-start;
   gap: 0.5rem;
   padding: 0.3rem 0;
-  font-size: 0.75rem;
+  font-size: 0.813rem; /* 13px */
+  line-height: 1.5;
   opacity: 0.8;
 
   svg {

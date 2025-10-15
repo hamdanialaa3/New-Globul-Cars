@@ -39,20 +39,23 @@
 }
 
 .footer-title {
-  font-size: 1.8rem;
+  font-size: 1.5rem; /* 24px - Balanced size */
   color: #FF8F10 !important; /* برتقالي ألمنيوم */
   font-weight: 700;
+  line-height: 1.2;
   margin: 0;
 }
 
 .footer-subtitle {
   color: #FF8F10 !important; /* برتقالي ألمنيوم - العناوين */
-  font-size: 1.1rem;
+  font-size: 1.125rem; /* 18px - Clear hierarchy */
   font-weight: 600;
+  line-height: 1.3;
 }
 
 .footer-description {
   color: #FFDF00 !important; /* أصفر ألمنيوم - النصوص */
+  font-size: 0.938rem; /* 15px - Comfortable reading */
   line-height: 1.6;
   margin-bottom: 1.5rem;
 }
@@ -69,13 +72,15 @@
 }
 
 .stat-number {
-  font-size: 1.3rem;
+  font-size: 1.25rem; /* 20px - Prominent but balanced */
   font-weight: 700;
+  line-height: 1.2;
   color: #FF8F10 !important; /* برتقالي ألمنيوم - الأرقام */
 }
 
 .stat-label {
-  font-size: 0.8rem;
+  font-size: 0.75rem; /* 12px - Clear labels */
+  line-height: 1.4;
   color: #FFDF00 !important; /* أصفر ألمنيوم */
   text-align: center;
 }
@@ -92,6 +97,8 @@
 .footer-links a {
   color: #FFDF00 !important; /* أصفر ألمنيوم - الروابط */
   text-decoration: none;
+  font-size: 0.875rem; /* 14px - Readable links */
+  line-height: 1.8;
   transition: all 0.3s ease;
   position: relative;
 }
@@ -136,7 +143,7 @@
 }
 
 .contact-icon {
-  font-size: 1.2rem;
+  font-size: 1.125rem; /* 18px - Proportional icons */
   width: 24px;
   text-align: center;
 }
@@ -156,7 +163,8 @@
 
 .copyright {
   color: #FFDF00 !important; /* أصفر ألمنيوم */
-  font-size: 0.9rem;
+  font-size: 0.813rem; /* 13px - Subtle copyright */
+  line-height: 1.5;
 }
 
 .footer-bottom-links {
@@ -167,7 +175,8 @@
 .footer-bottom-links a {
   color: #FFDF00 !important; /* أصفر ألمنيوم */
   text-decoration: none;
-  font-size: 0.9rem;
+  font-size: 0.813rem; /* 13px - Subtle links */
+  line-height: 1.5;
   transition: color 0.3s ease;
 }
 
@@ -183,7 +192,8 @@
 .current-language {
   color: #FF8F10 !important; /* برتقالي ألمنيوم */
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.813rem; /* 13px - Clear badge */
+  line-height: 1.4;
   padding: 0.3rem 0.8rem;
   background: rgba(255, 143, 16, 0.1);
   border-radius: 15px;

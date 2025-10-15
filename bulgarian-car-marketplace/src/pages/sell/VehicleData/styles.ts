@@ -30,22 +30,27 @@ export const HeaderCard = styled.div`
 `;
 
 export const Title = styled.h1`
-  font-size: 1.425rem; /* 150% من 0.95rem */
+  font-size: 1.75rem; /* 28px - Global Standard */
   font-weight: 700;
   color: #2c3e50;
-  margin: 0 0 0.375rem 0;
+  margin: 0 0 0.75rem 0;
   background: linear-gradient(135deg, #ff8f10, #005ca9);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   letter-spacing: -0.5px;
+  line-height: 1.2;
+  
+  @media (max-width: 768px) {
+    font-size: 1.5rem; /* 24px */
+  }
 `;
 
 export const Subtitle = styled.p`
-  font-size: 0.95rem;
+  font-size: 1rem; /* 16px - Comfortable reading */
   color: #7f8c8d;
   margin: 0;
-  line-height: 1.5;
+  line-height: 1.6;
 `;
 
 export const FormCard = styled.div`
@@ -57,11 +62,12 @@ export const FormCard = styled.div`
 `;
 
 export const SectionTitle = styled.h3`
-  font-size: 1.1rem;
+  font-size: 1.25rem; /* 20px - Clear hierarchy */
   font-weight: 600;
   color: #2c3e50;
   margin: 0 0 1.25rem 0;
   padding-bottom: 0.75rem;
+  line-height: 1.4;
   border-bottom: 2px solid rgba(255, 143, 16, 0.2);
 `;
 
@@ -82,9 +88,10 @@ export const FormGroup = styled.div`
 `;
 
 export const Label = styled.label<{ $required?: boolean }>`
+  font-size: 0.875rem; /* 14px - Standard label size */
   font-weight: 600;
-  color: #2c3e50;
-  font-size: 1.35rem; /* 150% من 0.9rem */
+  color: #495057;
+  line-height: 1.4;
   display: flex;
   align-items: center;
   gap: 0.25rem;
@@ -93,17 +100,21 @@ export const Label = styled.label<{ $required?: boolean }>`
     &::after {
       content: '*';
       color: #ff8f10;
-      font-size: 1.1rem;
+      font-size: 1rem;
     }
   `}
 `;
 
 export const Input = styled.input`
-  padding: 0.51rem; /* حجم المربع صغير */
+  width: 100%;
+  padding: 0.75rem 1rem;
   border: 2px solid #e9ecef;
   border-radius: 10px;
-  font-size: 0.855rem; /* 150% من 0.57rem - النص كبير */
+  font-size: 1rem; /* 16px - Comfortable input text */
+  line-height: 1.5;
   transition: all 0.3s ease;
+  background: white;
+  color: #2c3e50;
 
   &:focus {
     outline: none;
@@ -113,21 +124,26 @@ export const Input = styled.input`
 
   &::placeholder {
     color: #adb5bd;
+    font-size: 0.938rem;
   }
 
   &:disabled {
     background: #f8f9fa;
     color: #adb5bd;
     cursor: not-allowed;
+    opacity: 0.6;
   }
 `;
 
 export const Select = styled.select`
-  padding: 0.51rem; /* حجم المربع صغير */
+  width: 100%;
+  padding: 0.75rem 1rem;
   border: 2px solid #e9ecef;
   border-radius: 10px;
-  font-size: 0.855rem; /* 150% من 0.57rem - النص كبير */
+  font-size: 1rem; /* 16px - Standard select size */
+  line-height: 1.5;
   background: white;
+  color: #2c3e50;
   cursor: pointer;
   transition: all 0.3s ease;
 
@@ -142,6 +158,12 @@ export const Select = styled.select`
     color: #adb5bd;
     cursor: not-allowed;
     opacity: 0.6;
+  }
+  
+  option {
+    font-size: 1rem;
+    padding: 0.5rem;
+    line-height: 1.5;
   }
 `;
 
@@ -198,14 +220,15 @@ export const NavigationButtons = styled.div`
 `;
 
 export const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
-  padding: 0.3rem 0.75rem; /* حجم المربع صغير */
+  padding: 0.75rem 1.5rem;
   border: none;
   border-radius: 50px;
-  font-size: 0.945rem; /* 150% من 0.63rem - النص كبير */
+  font-size: 1rem; /* 16px - Global button standard */
   font-weight: 600;
+  line-height: 1;
   cursor: pointer;
   transition: all 0.3s ease;
-  min-width: 48px;
+  min-width: 120px;
 
   ${props => props.$variant === 'primary' 
     ? `
@@ -253,8 +276,9 @@ export const RequiredNote = styled.div`
 export const HintText = styled.small`
   display: block;
   margin-top: 0.5rem;
-  color: #7f8c8d;
-  font-size: 0.8rem;
+  color: #6c757d;
+  font-size: 0.75rem; /* 12px - Clear hints */
+  line-height: 1.4;
   font-style: italic;
 `;
 
@@ -293,8 +317,8 @@ export const HistoryHint = styled.span`
 
 export const CyberToggleWrapper = styled.div`
   position: relative;
-  width: 80px;
-  height: 40px;
+  width: 60px;
+  height: 30px;
   user-select: none;
   overflow: hidden;
 `;
@@ -317,22 +341,22 @@ export const ToggleTrack = styled.span`
   width: 100%;
   height: 100%;
   background: #2c2f33;
-  border-radius: 20px;
+  border-radius: 15px;
   transition: background 0.4s ease-in-out;
-  box-shadow: inset 0 5px 10px rgba(0, 0, 0, 0.2), inset 0 2px 4px rgba(0, 0, 0, 0.4);
+  box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.2), inset 0 1px 3px rgba(0, 0, 0, 0.4);
 
   &::before {
     content: '';
     position: absolute;
-    top: 3px;
-    left: 3px;
-    width: 38px;
-    height: 34px;
+    top: 2px;
+    left: 2px;
+    width: 26px;
+    height: 26px;
     background: #fff;
     border-radius: 50%;
     transform: translateX(0);
     transition: transform 0.4s cubic-bezier(0.3, 1.5, 0.7, 1);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   }
 
   ${CyberToggleCheckbox}:checked + ${CyberToggleLabel} & {
@@ -340,17 +364,17 @@ export const ToggleTrack = styled.span`
   }
 
   ${CyberToggleCheckbox}:checked + ${CyberToggleLabel} &::before {
-    transform: translateX(37px);
+    transform: translateX(30px);
   }
 `;
 
 export const ToggleThumbIcon = styled.span`
   position: absolute;
   top: 50%;
-  left: 10px;
+  left: 7px;
   transform: translateY(-50%);
-  width: 16px;
-  height: 16px;
+  width: 12px;
+  height: 12px;
   background: #fff;
   mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="%23000" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM175 175c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l47-47-47-47c-9.4-9.4-9.4-24.6 0-33.9z"/></svg>');
   mask-repeat: no-repeat;
@@ -360,7 +384,7 @@ export const ToggleThumbIcon = styled.span`
   opacity: 0;
 
   ${CyberToggleCheckbox}:checked + ${CyberToggleLabel} & {
-    transform: translateX(38px) translateY(-50%);
+    transform: translateX(32px) translateY(-50%);
     opacity: 1;
   }
 `;
@@ -370,19 +394,19 @@ export const ToggleThumbDots = styled.span`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 4px;
-  height: 4px;
+  width: 3px;
+  height: 3px;
   background: #fff;
   border-radius: 50%;
   box-shadow: 
-    -10px 0 0 0 #fff,
-    10px 0 0 0 #fff,
-    0 -10px 0 0 #fff,
-    0 10px 0 0 #fff;
+    -7px 0 0 0 #fff,
+    7px 0 0 0 #fff,
+    0 -7px 0 0 #fff,
+    0 7px 0 0 #fff;
   transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out;
 
   ${CyberToggleCheckbox}:checked + ${CyberToggleLabel} & {
-    transform: translate(37px, -50%);
+    transform: translate(30px, -50%);
     opacity: 0;
   }
 `;
@@ -413,9 +437,9 @@ export const ToggleLabels = styled.span`
   display: flex;
   justify-content: space-between;
   width: 80%;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 1px;
+  font-size: 0.625rem; /* 10px - Readable toggle labels */
+  font-weight: 700;
+  letter-spacing: 0.5px;
   text-transform: uppercase;
   pointer-events: none;
   color: #555;

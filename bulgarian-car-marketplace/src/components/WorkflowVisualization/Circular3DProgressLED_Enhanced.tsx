@@ -260,29 +260,44 @@ const GlassyOrbit = styled.div<{ $show: boolean }>`
   }
 `;
 
-// شعار السيارة في الوسط
+// شعار السيارة في الوسط - شكل مسنن ⚙️
 const CarLogoContainer = styled.div<{ $show: boolean }>`
   position: relative;
   z-index: 3;
-  width: ${props => props.$show ? '130px' : '0'}; /* أكبر بـ 125% من 90px */
-  height: ${props => props.$show ? '130px' : '0'}; /* ملء القرص الداخلي */
+  width: ${props => props.$show ? '130px' : '0'};
+  height: ${props => props.$show ? '130px' : '0'};
   opacity: ${props => props.$show ? 1 : 0};
   transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
+  
+  /* شكل مسنن بدلاً من الدائرة */
+  clip-path: polygon(
+    50% 0%, 61% 10%, 71% 8%, 79% 21%, 90% 29%, 
+    92% 42%, 100% 50%, 92% 58%, 90% 71%, 79% 79%, 
+    71% 92%, 61% 90%, 50% 100%, 39% 90%, 29% 92%, 
+    21% 79%, 10% 71%, 8% 58%, 0% 50%, 8% 42%, 
+    10% 29%, 21% 21%, 29% 8%, 39% 10%
+  );
+  
   background: 
-    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.05), transparent 70%);
-  padding: 0.75rem; /* padding أكبر */
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.08), transparent 70%);
+  padding: 0.75rem;
   
   /* تأثير التوهج حول الشعار */
   &::before {
     content: '';
     position: absolute;
-    inset: -10px;
-    border-radius: 50%;
-    background: radial-gradient(circle, transparent 40%, rgba(255, 143, 16, 0.1) 100%);
+    inset: -12px;
+    clip-path: polygon(
+      50% 0%, 61% 10%, 71% 8%, 79% 21%, 90% 29%, 
+      92% 42%, 100% 50%, 92% 58%, 90% 71%, 79% 79%, 
+      71% 92%, 61% 90%, 50% 100%, 39% 90%, 29% 92%, 
+      21% 79%, 10% 71%, 8% 58%, 0% 50%, 8% 42%, 
+      10% 29%, 21% 21%, 29% 8%, 39% 10%
+    );
+    background: radial-gradient(circle, transparent 40%, rgba(255, 143, 16, 0.15) 100%);
     animation: ${pulse} 3s ease-in-out infinite;
   }
 `;

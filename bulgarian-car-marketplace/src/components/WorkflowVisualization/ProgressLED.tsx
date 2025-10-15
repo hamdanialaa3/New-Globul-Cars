@@ -13,9 +13,9 @@ interface ProgressLEDProps {
 const LEDContainer = styled.div`
   width: 100%;
   padding: 1.5rem;
-  background: linear-gradient(135deg, #1e293b, #0f172a);
+  background: transparent; /* خلفية شفافة */
   border-radius: 15px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(255, 143, 16, 0.15); /* حدود خفيفة */
   position: relative;
   overflow: hidden;
 
@@ -31,8 +31,8 @@ const LEDContainer = styled.div`
 `;
 
 const LEDTitle = styled.div`
-  color: #cbd5e1;
-  font-size: 0.85rem;
+  color: #495057; /* لون داكن بدلاً من الفاتح */
+  font-size: 0.875rem; /* 14px */
   font-weight: 600;
   margin-bottom: 1rem;
   text-transform: uppercase;
@@ -44,19 +44,21 @@ const LEDTitle = styled.div`
 
 const ProgressPercentage = styled.span`
   color: #ff8f10;
-  font-size: 1.2rem;
+  font-size: 1.25rem; /* 20px */
   font-weight: 700;
+  line-height: 1.2;
   font-feature-settings: 'tnum';
-  text-shadow: 0 0 10px rgba(255, 143, 16, 0.5);
+  text-shadow: 0 0 10px rgba(255, 143, 16, 0.3);
 `;
 
 const LEDStrip = styled.div`
   display: flex;
   gap: 0.3rem;
   padding: 0.75rem;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(255, 143, 16, 0.03); /* خلفية خفيفة جداً برتقالية */
   border-radius: 10px;
-  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 143, 16, 0.15); /* حدود خفيفة */
+  box-shadow: none; /* إزالة الظل الداخلي */
 `;
 
 const LEDSegment = styled.div<{ $isActive: boolean; $index: number }>`
@@ -65,7 +67,7 @@ const LEDSegment = styled.div<{ $isActive: boolean; $index: number }>`
   border-radius: 6px;
   background: ${props => props.$isActive 
     ? 'linear-gradient(135deg, #ff8f10, #ffb347)' 
-    : 'rgba(255, 255, 255, 0.1)'
+    : 'rgba(200, 200, 200, 0.25)' /* رمادي فاتح بدلاً من أبيض */
   };
   
   ${props => props.$isActive && `
@@ -99,9 +101,10 @@ const StepIndicator = styled.div`
   display: flex;
   justify-content: space-between;
   margin-top: 0.75rem;
-  color: #94a3b8;
-  font-size: 0.7rem;
+  color: #6c757d; /* لون أغمق للوضوح */
+  font-size: 0.75rem; /* 12px */
   font-weight: 500;
+  line-height: 1.4;
 `;
 
 const ProgressLED: React.FC<ProgressLEDProps> = ({ progress, totalSteps, currentStep }) => {

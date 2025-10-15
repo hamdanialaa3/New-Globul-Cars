@@ -36,7 +36,7 @@ const HeaderCard = styled.div`
 `;
 
 const Title = styled.h1`
-  font-size: 1.9rem;
+  font-size: 1.75rem; /* 28px - Global Standard */
   font-weight: 700;
   color: #2c3e50;
   margin: 0 0 0.75rem 0;
@@ -45,13 +45,18 @@ const Title = styled.h1`
   -webkit-text-fill-color: transparent;
   background-clip: text;
   letter-spacing: -0.5px;
+  line-height: 1.2;
+  
+  @media (max-width: 768px) {
+    font-size: 1.5rem;
+  }
 `;
 
 const Subtitle = styled.p`
-  font-size: 0.95rem;
+  font-size: 1rem; /* 16px */
   color: #7f8c8d;
   margin: 0;
-  line-height: 1.5;
+  line-height: 1.6;
 `;
 
 const VehicleGrid = styled.div`
@@ -116,8 +121,9 @@ const VehicleIconWrapper = styled.div<{ $isHovered: boolean }>`
 `;
 
 const VehicleLabel = styled.div`
-  font-size: 0.95rem;
+  font-size: 1rem; /* 16px */
   font-weight: 600;
+  line-height: 1.3;
 `;
 
 const VehicleDesc = styled.div`
