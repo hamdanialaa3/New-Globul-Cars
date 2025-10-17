@@ -120,7 +120,7 @@ export interface CarListingFilters {
   region?: string;
   features?: string[];
   sellerType?: string;
-  sortBy?: 'price' | 'year' | 'mileage' | 'createdAt';
+  sortBy?: 'price' | 'year' | 'mileage' | 'createdAt' | 'updatedAt';
   sortOrder?: 'asc' | 'desc';
   page?: number;
   limit?: number;

@@ -8,6 +8,7 @@ import { useLanguage } from '../../../contexts/LanguageContext';
 import { doc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../../firebase/firebase-config';
 import { Shield, Eye, EyeOff, Lock, Users, Bell, Download, Trash2, AlertCircle } from 'lucide-react';
+import { deleteAccount } from '../../../services/security/delete-account.service';
 
 const Container = styled.div`
   background: white;
@@ -270,30 +271,50 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({ userId }) => {
   };
 
   const handleDeleteAccount = async () => {
-    const confirm1 = window.confirm(
-      language === 'bg' 
+    const c1 = window.confirm(
+      language === 'bg'
         ? 'Сигурни ли сте, че искате да изтриете акаунта си? Това действие е необратимо!'
         : 'Are you sure you want to delete your account? This action is irreversible!'
     );
-    
-    if (!confirm1) return;
-    
-    const confirm2 = window.prompt(
-      language === 'bg'
-        ? 'Въведете "DELETE" за потвърждение:'
-        : 'Type "DELETE" to confirm:'
+    if (!c1) return;
+
+    const c2 = window.prompt(
+      language === 'bg' ? 'Въведете "DELETE" за потвърждение:' : 'Type "DELETE" to confirm:'
     );
-    
-    if (confirm2 !== 'DELETE') {
+    if (c2 !== 'DELETE') {
       alert(language === 'bg' ? 'Отказано' : 'Cancelled');
       return;
     }
 
-    // TODO: Implement complete account deletion
-    alert(language === 'bg' 
-      ? 'Функцията ще бъде активирана скоро'
-      : 'Feature coming soon'
-    );
+    // Try direct deletion
+    let result = await deleteAccount();
+    if (result.reauthNeeded) {
+      // Prompt for re-auth method
+      const method = window.prompt(
+        language === 'bg'
+          ? 'За повторно удостоверяване въведете: password или google'
+          : 'For re-authentication, type: password or google'
+      );
+
+      if (method === 'password') {
+        const email = window.prompt(language === 'bg' ? 'Имейл:' : 'Email:') || '';
+        const password = window.prompt(language === 'bg' ? 'Парола:' : 'Password:') || '';
+        result = await deleteAccount({ method: 'password', email, password });
+      } else if (method === 'google') {
+        result = await deleteAccount({ method: 'google' });
+      }
+    }
+
+    if (result.success) {
+      alert(language === 'bg' ? 'Акаунтът е изтрит' : 'Account deleted');
+      window.location.href = '/';
+    } else {
+      alert(
+        language === 'bg'
+          ? `Грешка при изтриване: ${result.error || ''}`
+          : `Delete error: ${result.error || ''}`
+      );
+    }
   };
 
   const t = (key: string) => {

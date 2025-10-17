@@ -1,239 +1,249 @@
-// src/components/Messaging/ConversationList.tsx
-// Conversation List Component - قائمة المحادثات
-// الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
+/**
+ * Conversation List Component
+ * Displays list of all conversations for the current user
+ * Location: Bulgaria | Languages: BG, EN | Currency: EUR
+ */
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { MessageCircle, Circle } from 'lucide-react';
+import { useAuth } from '../../context/AuthProvider';
 import { useLanguage } from '../../contexts/LanguageContext';
-import type { Conversation } from '../../services/messaging';
+import messagingService, { ConversationWithUser } from '../../services/messaging/messaging.service';
+import { formatDistanceToNow } from 'date-fns';
+import { bg } from 'date-fns/locale/bg';
+import { enUS } from 'date-fns/locale/en-US';
 
-// ==================== STYLED COMPONENTS ====================
-
-const ListContainer = styled.div`
+const Container = styled.div`
   width: 100%;
   height: 100%;
   overflow-y: auto;
-  background: white;
+  background: #f8f9fa;
 `;
 
-const ConversationItem = styled.div<{ $active?: boolean; $unread?: boolean }>`
-  padding: 16px;
-  border-bottom: 1px solid #f0f0f0;
-  cursor: pointer;
+const ConversationItem = styled.div<{ $active: boolean; $unread: boolean }>`
   display: flex;
-  gap: 12px;
   align-items: center;
-  background: ${props => props.$active ? '#fff5e6' : 'white'};
-  border-left: 3px solid ${props => 
-    props.$active ? '#FF7900' : 
-    props.$unread ? '#4caf50' : 'transparent'
-  };
+  padding: 16px;
+  border-bottom: 1px solid #e0e0e0;
+  cursor: pointer;
+  background: ${props => props.$active ? '#fff' : 'transparent'};
+  border-left: 4px solid ${props => props.$unread ? '#FF7900' : 'transparent'};
   transition: all 0.2s ease;
   
   &:hover {
-    background: #f9f9f9;
+    background: #fff;
   }
 `;
 
-const Avatar = styled.div<{ $online?: boolean }>`
-  width: 52px;
-  height: 52px;
+const Avatar = styled.div<{ $imageUrl?: string }>`
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #FF7900, #ff8c1a);
+  background: ${props => props.$imageUrl 
+    ? `url(${props.$imageUrl}) center/cover` 
+    : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+  };
+  margin-right: 12px;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  font-weight: 700;
-  font-size: 1.25rem;
-  position: relative;
-  flex-shrink: 0;
-  
-  ${props => props.$online && `
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: 2px;
-      right: 2px;
-      width: 14px;
-      height: 14px;
-      background: #4caf50;
-      border: 2px solid white;
-      border-radius: 50%;
-    }
-  `}
+  font-weight: 600;
+  font-size: 18px;
 `;
 
 const ConversationInfo = styled.div`
   flex: 1;
   min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
 `;
 
-const ConversationHeader = styled.div`
+const TopRow = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 8px;
+  margin-bottom: 4px;
 `;
 
-const UserName = styled.div<{ $unread?: boolean }>`
-  font-size: 1rem;
-  font-weight: ${props => props.$unread ? 700 : 600};
-  color: #333;
+const UserName = styled.div<{ $unread: boolean }>`
+  font-weight: ${props => props.$unread ? '600' : '500'};
+  font-size: 15px;
+  color: #1a1a1a;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
 `;
 
 const Timestamp = styled.div`
-  font-size: 0.75rem;
-  color: #999;
+  font-size: 12px;
+  color: #666;
   white-space: nowrap;
 `;
 
-const LastMessage = styled.div<{ $unread?: boolean }>`
-  font-size: 0.875rem;
-  color: ${props => props.$unread ? '#333' : '#666'};
-  font-weight: ${props => props.$unread ? 600 : 400};
+const LastMessage = styled.div<{ $unread: boolean }>`
+  font-size: 14px;
+  color: ${props => props.$unread ? '#1a1a1a' : '#666'};
+  font-weight: ${props => props.$unread ? '500' : '400'};
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
-  display: flex;
-  align-items: center;
-  gap: 6px;
 `;
 
 const UnreadBadge = styled.div`
-  min-width: 24px;
-  height: 24px;
-  padding: 0 8px;
   background: #FF7900;
   color: white;
   border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.75rem;
-  font-weight: 700;
-  flex-shrink: 0;
+  padding: 2px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-left: 8px;
 `;
 
 const EmptyState = styled.div`
-  padding: 60px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #666;
+  padding: 40px 20px;
   text-align: center;
-  color: #999;
-  
-  svg {
-    margin-bottom: 16px;
-    opacity: 0.3;
-  }
-  
-  p {
-    margin: 8px 0 0 0;
-    font-size: 0.95rem;
-  }
 `;
 
-// ==================== COMPONENT ====================
+const LoadingState = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #666;
+`;
 
 interface ConversationListProps {
-  conversations: Conversation[];
   activeConversationId?: string;
-  currentUserId: string;
-  onSelectConversation: (conversationId: string) => void;
+  onConversationSelect: (conversationId: string) => void;
 }
 
 const ConversationList: React.FC<ConversationListProps> = ({
-  conversations,
   activeConversationId,
-  currentUserId,
-  onSelectConversation
+  onConversationSelect
 }) => {
+  const { currentUser } = useAuth();
   const { language } = useLanguage();
+  const [conversations, setConversations] = useState<ConversationWithUser[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const formatTime = (date: Date): string => {
-    const now = new Date();
-    const diff = now.getTime() - date.getTime();
-    const minutes = Math.floor(diff / 60000);
-    const hours = Math.floor(diff / 3600000);
-    const days = Math.floor(diff / 86400000);
+  useEffect(() => {
+    if (!currentUser) return;
 
-    if (minutes < 1) return language === 'bg' ? 'Сега' : 'Now';
-    if (minutes < 60) return `${minutes}${language === 'bg' ? 'м' : 'm'}`;
-    if (hours < 24) return `${hours}${language === 'bg' ? 'ч' : 'h'}`;
-    if (days < 7) return `${days}${language === 'bg' ? 'д' : 'd'}`;
+    setLoading(true);
+
+    const unsubscribe = messagingService.subscribeToConversations(
+      currentUser.uid,
+      (updatedConversations) => {
+        setConversations(updatedConversations);
+        setLoading(false);
+      }
+    );
+
+    return () => unsubscribe();
+  }, [currentUser]);
+
+  const getInitials = (name: string): string => {
+    return name
+      .split(' ')
+      .map(n => n[0])
+      .join('')
+      .substring(0, 2)
+      .toUpperCase();
+  };
+
+  const formatTime = (timestamp: any): string => {
+    if (!timestamp) return '';
     
-    return new Intl.DateTimeFormat('bg-BG', {
-      day: 'numeric',
-      month: 'short'
-    }).format(date);
+    const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+    const locale = language === 'bg' ? bg : enUS;
+    
+    return formatDistanceToNow(date, { 
+      addSuffix: true,
+      locale
+    });
   };
 
-  const getInitials = (name: string = 'U'): string => {
-    return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-  };
+  if (loading) {
+    return (
+      <Container>
+        <LoadingState>
+          {language === 'bg' ? 'Зареждане...' : 'Loading...'}
+        </LoadingState>
+      </Container>
+    );
+  }
 
   if (conversations.length === 0) {
     return (
-      <EmptyState>
-        <MessageCircle size={64} />
-        <p>
-          {language === 'bg' 
-            ? 'Все още нямате разговори'
-            : 'No conversations yet'}
-        </p>
-      </EmptyState>
+      <Container>
+        <EmptyState>
+          <h3>
+            {language === 'bg' 
+              ? 'Няма съобщения' 
+              : 'No messages'
+            }
+          </h3>
+          <p>
+            {language === 'bg'
+              ? 'Изпратете съобщение на продавач, за да започнете разговор'
+              : 'Send a message to a seller to start a conversation'
+            }
+          </p>
+        </EmptyState>
+      </Container>
     );
   }
 
   return (
-    <ListContainer>
-      {conversations.map(conversation => {
-        const unreadCount = conversation.unreadCount[currentUserId] || 0;
-        const hasUnread = unreadCount > 0;
+    <Container>
+      {conversations.map(({ conversation, otherUser }) => {
+        const unreadCount = currentUser 
+          ? conversation.unreadCount[currentUser.uid] || 0 
+          : 0;
+        const isUnread = unreadCount > 0;
+        const isActive = conversation.id === activeConversationId;
 
         return (
           <ConversationItem
             key={conversation.id}
-            $active={conversation.id === activeConversationId}
-            $unread={hasUnread}
-            onClick={() => onSelectConversation(conversation.id)}
+            $active={isActive}
+            $unread={isUnread}
+            onClick={() => onConversationSelect(conversation.id)}
           >
-            <Avatar $online={false}>
-              {getInitials('User')}
+            <Avatar $imageUrl={otherUser.photoURL}>
+              {!otherUser.photoURL && getInitials(otherUser.displayName)}
             </Avatar>
-
+            
             <ConversationInfo>
-              <ConversationHeader>
-                <UserName $unread={hasUnread}>
-                  {language === 'bg' ? 'Потребител' : 'User'}
+              <TopRow>
+                <UserName $unread={isUnread}>
+                  {otherUser.displayName}
                 </UserName>
-                {conversation.lastMessage && (
-                  <Timestamp>
-                    {formatTime(conversation.lastMessage.timestamp)}
-                  </Timestamp>
-                )}
-              </ConversationHeader>
-
-              {conversation.lastMessage && (
-                <LastMessage $unread={hasUnread}>
-                  {conversation.lastMessage.text}
-                </LastMessage>
-              )}
+                <Timestamp>
+                  {formatTime(conversation.lastMessage?.timestamp)}
+                </Timestamp>
+              </TopRow>
+              
+              <LastMessage $unread={isUnread}>
+                {conversation.lastMessage?.text || 
+                  (language === 'bg' ? 'Няма съобщения' : 'No messages')
+                }
+              </LastMessage>
             </ConversationInfo>
-
-            {hasUnread && (
-              <UnreadBadge>{unreadCount}</UnreadBadge>
-            )}
+            
+            {isUnread && <UnreadBadge>{unreadCount}</UnreadBadge>}
           </ConversationItem>
         );
       })}
-    </ListContainer>
+    </Container>
   );
 };
 
 export default ConversationList;
+

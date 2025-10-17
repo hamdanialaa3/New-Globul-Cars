@@ -1,325 +1,249 @@
-// src/components/Messaging/ChatWindow.tsx
-// Chat Window Component - نافذة المحادثة
-// الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
+/**
+ * Chat Window Component
+ * Displays messages and allows sending new messages
+ * Location: Bulgaria | Languages: BG, EN | Currency: EUR
+ */
 
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import { ArrowLeft, MoreVertical, Phone, Video } from 'lucide-react';
+import { useAuth } from '../../context/AuthProvider';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { advancedMessagingService } from '../../services/messaging';
-import type { Message } from '../../services/messaging';
-import MessageBubble from './MessageBubble';
-import MessageInput from './MessageInput';
-import TypingIndicator from './TypingIndicator';
+import messagingService, { Message } from '../../services/messaging/messaging.service';
+import { format } from 'date-fns';
+import { Send } from 'lucide-react';
 
-// ==================== STYLED COMPONENTS ====================
-
-const WindowContainer = styled.div`
+const Container = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: white;
-`;
-
-const WindowHeader = styled.div`
-  padding: 16px;
-  background: white;
-  border-bottom: 1px solid #e0e0e0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-`;
-
-const HeaderLeft = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex: 1;
-  min-width: 0;
-`;
-
-const BackButton = styled.button`
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: none;
-  background: #f0f0f0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  
-  @media (min-width: 768px) {
-    display: none;
-  }
-  
-  &:hover {
-    background: #e0e0e0;
-  }
-`;
-
-const Avatar = styled.div<{ $online?: boolean }>`
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #FF7900, #ff8c1a);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-weight: 700;
-  position: relative;
-  flex-shrink: 0;
-  
-  ${props => props.$online && `
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: 2px;
-      right: 2px;
-      width: 12px;
-      height: 12px;
-      background: #4caf50;
-      border: 2px solid white;
-      border-radius: 50%;
-    }
-  `}
-`;
-
-const UserInfo = styled.div`
-  flex: 1;
-  min-width: 0;
-  
-  h3 {
-    margin: 0 0 4px 0;
-    font-size: 1rem;
-    font-weight: 600;
-    color: #333;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  
-  p {
-    margin: 0;
-    font-size: 0.75rem;
-    color: #4caf50;
-  }
-`;
-
-const HeaderActions = styled.div`
-  display: flex;
-  gap: 8px;
-`;
-
-const IconButton = styled.button`
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: none;
-  background: #f0f0f0;
-  color: #666;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  
-  &:hover {
-    background: #e0e0e0;
-    color: #FF7900;
-  }
+  background: #fff;
 `;
 
 const MessagesContainer = styled.div`
   flex: 1;
   overflow-y: auto;
-  padding: 16px 0;
-  background: #f9f9f9;
-  
-  &::-webkit-scrollbar {
-    width: 6px;
-  }
-  
-  &::-webkit-scrollbar-thumb {
-    background: #ccc;
-    border-radius: 3px;
-  }
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 `;
 
-const DateSeparator = styled.div`
-  text-align: center;
-  padding: 16px 0;
+const MessageBubble = styled.div<{ $isOwn: boolean }>`
+  max-width: 70%;
+  align-self: ${props => props.$isOwn ? 'flex-end' : 'flex-start'};
+  background: ${props => props.$isOwn 
+    ? 'linear-gradient(135deg, #FF7900 0%, #FF6600 100%)' 
+    : '#f0f0f0'
+  };
+  color: ${props => props.$isOwn ? '#fff' : '#1a1a1a'};
+  padding: 12px 16px;
+  border-radius: 18px;
+  border-bottom-right-radius: ${props => props.$isOwn ? '4px' : '18px'};
+  border-bottom-left-radius: ${props => props.$isOwn ? '18px' : '4px'};
+  word-wrap: break-word;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+`;
+
+const MessageContent = styled.p`
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.4;
+`;
+
+const MessageTime = styled.span`
+  font-size: 11px;
+  opacity: 0.7;
+  margin-top: 4px;
+  display: block;
+`;
+
+const InputContainer = styled.div`
+  display: flex;
+  gap: 12px;
+  padding: 16px;
+  border-top: 1px solid #e0e0e0;
+  background: #fff;
+`;
+
+const Input = styled.input`
+  flex: 1;
+  padding: 12px 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 24px;
+  font-size: 15px;
+  outline: none;
+  transition: border-color 0.2s;
   
-  span {
-    display: inline-block;
-    padding: 6px 16px;
-    background: white;
-    border-radius: 12px;
-    font-size: 0.75rem;
+  &:focus {
+    border-color: #FF7900;
+  }
+  
+  &::placeholder {
     color: #999;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
 `;
 
-// ==================== COMPONENT ====================
+const SendButton = styled.button`
+  background: linear-gradient(135deg, #FF7900 0%, #FF6600 100%);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  
+  &:hover:not(:disabled) {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(255, 121, 0, 0.3);
+  }
+  
+  &:active:not(:disabled) {
+    transform: scale(0.95);
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+`;
+
+const EmptyState = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #666;
+  text-align: center;
+  padding: 40px 20px;
+`;
 
 interface ChatWindowProps {
   conversationId: string;
-  currentUserId: string;
-  receiverId: string;
-  receiverName?: string;
-  onBack?: () => void;
+  otherUserName: string;
 }
 
 const ChatWindow: React.FC<ChatWindowProps> = ({
   conversationId,
-  currentUserId,
-  receiverId,
-  receiverName,
-  onBack
+  otherUserName
 }) => {
+  const { currentUser } = useAuth();
   const { language } = useLanguage();
   const [messages, setMessages] = useState<Message[]>([]);
-  const [typing, setTyping] = useState<{ [key: string]: boolean }>({});
+  const [newMessage, setNewMessage] = useState('');
+  const [sending, setSending] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Subscribe to messages
   useEffect(() => {
-    const unsubscribe = advancedMessagingService.subscribeToMessages(
+    if (!conversationId) return;
+
+    const unsubscribe = messagingService.subscribeToMessages(
       conversationId,
-      setMessages
+      (updatedMessages) => {
+        setMessages(updatedMessages);
+      }
     );
 
-    return unsubscribe;
+    return () => unsubscribe();
   }, [conversationId]);
 
-  // Subscribe to typing
   useEffect(() => {
-    const unsubscribe = advancedMessagingService.subscribeToTyping(
-      conversationId,
-      setTyping
-    );
+    if (conversationId && currentUser) {
+      messagingService.markConversationAsRead(conversationId, currentUser.uid);
+    }
+  }, [conversationId, currentUser]);
 
-    return unsubscribe;
-  }, [conversationId]);
-
-  // Auto-scroll to bottom
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Mark as read
-  useEffect(() => {
-    advancedMessagingService.markAsRead(conversationId, currentUserId);
-  }, [conversationId, currentUserId, messages]);
+  const handleSendMessage = async () => {
+    if (!newMessage.trim() || !currentUser || sending) return;
 
-  const formatDateSeparator = (date: Date): string => {
-    const now = new Date();
-    const diffDays = Math.floor((now.getTime() - date.getTime()) / 86400000);
+    setSending(true);
 
-    if (diffDays === 0) {
-      return language === 'bg' ? 'Днес' : 'Today';
-    } else if (diffDays === 1) {
-      return language === 'bg' ? 'Вчера' : 'Yesterday';
-    } else {
-      return new Intl.DateTimeFormat(language === 'bg' ? 'bg-BG' : 'en-US', {
-        day: 'numeric',
-        month: 'long',
-        year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined
-      }).format(date);
+    try {
+      await messagingService.sendMessage(
+        conversationId,
+        currentUser.uid,
+        newMessage.trim()
+      );
+      
+      setNewMessage('');
+    } catch (error) {
+      console.error('Error sending message:', error);
+    } finally {
+      setSending(false);
     }
   };
 
-  const groupMessagesByDate = () => {
-    const groups: { date: string; messages: Message[] }[] = [];
-    let currentDate = '';
-
-    messages.forEach(message => {
-      const messageDate = message.createdAt.toDateString();
-      
-      if (messageDate !== currentDate) {
-        currentDate = messageDate;
-        groups.push({
-          date: formatDateSeparator(message.createdAt),
-          messages: [message]
-        });
-      } else {
-        groups[groups.length - 1].messages.push(message);
-      }
-    });
-
-    return groups;
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
   };
 
-  const messageGroups = groupMessagesByDate();
-  const isReceiverTyping = typing[receiverId];
+  const formatMessageTime = (timestamp: any): string => {
+    if (!timestamp) return '';
+    const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+    return format(date, 'HH:mm');
+  };
+
+  if (!conversationId) {
+    return (
+      <Container>
+        <EmptyState>
+          {language === 'bg'
+            ? 'Изберете разговор, за да започнете'
+            : 'Select a conversation to start'
+          }
+        </EmptyState>
+      </Container>
+    );
+  }
 
   return (
-    <WindowContainer>
-      <WindowHeader>
-        <HeaderLeft>
-          <BackButton onClick={onBack}>
-            <ArrowLeft size={20} />
-          </BackButton>
-
-          <Avatar $online={false}>
-            {receiverName ? receiverName[0].toUpperCase() : 'U'}
-          </Avatar>
-
-          <UserInfo>
-            <h3>{receiverName || (language === 'bg' ? 'Потребител' : 'User')}</h3>
-            {isReceiverTyping && (
-              <p>{language === 'bg' ? 'Пише...' : 'Typing...'}</p>
-            )}
-          </UserInfo>
-        </HeaderLeft>
-
-        <HeaderActions>
-          <IconButton title={language === 'bg' ? 'Обаждане' : 'Call'}>
-            <Phone size={20} />
-          </IconButton>
-          <IconButton title={language === 'bg' ? 'Видео' : 'Video'}>
-            <Video size={20} />
-          </IconButton>
-          <IconButton>
-            <MoreVertical size={20} />
-          </IconButton>
-        </HeaderActions>
-      </WindowHeader>
-
+    <Container>
       <MessagesContainer>
-        {messageGroups.map((group, index) => (
-          <div key={index}>
-            <DateSeparator>
-              <span>{group.date}</span>
-            </DateSeparator>
-
-            {group.messages.map(message => (
-              <MessageBubble
-                key={message.id}
-                message={message}
-                isOwn={message.senderId === currentUserId}
-              />
-            ))}
-          </div>
-        ))}
-
-        {isReceiverTyping && (
-          <TypingIndicator userName={receiverName} />
-        )}
-
+        {messages.map((message) => {
+          const isOwn = message.senderId === currentUser?.uid;
+          
+          return (
+            <MessageBubble key={message.id} $isOwn={isOwn}>
+              <MessageContent>{message.content}</MessageContent>
+              <MessageTime>{formatMessageTime(message.timestamp)}</MessageTime>
+            </MessageBubble>
+          );
+        })}
         <div ref={messagesEndRef} />
       </MessagesContainer>
 
-      <MessageInput
-        conversationId={conversationId}
-        senderId={currentUserId}
-        receiverId={receiverId}
-        onSend={() => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })}
-      />
-    </WindowContainer>
+      <InputContainer>
+        <Input
+          type="text"
+          value={newMessage}
+          onChange={(e) => setNewMessage(e.target.value)}
+          onKeyPress={handleKeyPress}
+          placeholder={language === 'bg' 
+            ? 'Напишете съобщение...' 
+            : 'Type a message...'
+          }
+          disabled={sending}
+        />
+        <SendButton
+          onClick={handleSendMessage}
+          disabled={!newMessage.trim() || sending}
+        >
+          <Send size={20} />
+        </SendButton>
+      </InputContainer>
+    </Container>
   );
 };
 
 export default ChatWindow;
+

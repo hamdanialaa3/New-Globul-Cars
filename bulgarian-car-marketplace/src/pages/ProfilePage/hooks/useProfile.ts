@@ -5,7 +5,7 @@ import { bulgarianCarService, BulgarianCar } from '../../../firebase/car-service
 import { useToast } from '../../../components/Toast';
 import { validateProfileData } from '../../../utils/validation';
 import { doc, onSnapshot, getDoc } from 'firebase/firestore';
-import { db } from '../../../firebase/firebase-config';
+import { db, auth } from '../../../firebase/firebase-config';
 import carListingService from '../../../services/carListingService';
 import {
   ProfileFormData,
@@ -13,7 +13,7 @@ import {
   UseProfileReturn
 } from '../types';
 
-export const useProfile = (): UseProfileReturn => {
+export const useProfile = (targetUserId?: string): UseProfileReturn => {
   const { t } = useTranslation();
   const toast = useToast();
 
@@ -22,6 +22,7 @@ export const useProfile = (): UseProfileReturn => {
   const [userCars, setUserCars] = useState<ProfileCar[]>([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
+  const [isOwnProfile, setIsOwnProfile] = useState(true); // NEW: track if viewing own profile
   const [formData, setFormData] = useState<ProfileFormData>({
     accountType: 'individual',
     firstName: '',
@@ -51,10 +52,10 @@ export const useProfile = (): UseProfileReturn => {
     preferredLanguage: 'bg'
   });
 
-  // Load user data on mount
+  // Load user data on mount or when targetUserId changes
   useEffect(() => {
     loadUserData();
-  }, []);
+  }, [targetUserId]); // Re-load when targetUserId changes
 
   // Real-time updates listener
   useEffect(() => {
@@ -89,8 +90,23 @@ export const useProfile = (): UseProfileReturn => {
     try {
       setLoading(true);
 
-      // Get current user
-      const currentUser = await bulgarianAuthService.getCurrentUserProfile();
+      // Determine if viewing own profile or another user's profile
+      const currentUserAuth = auth.currentUser;
+      const viewingOwnProfile = !targetUserId || targetUserId === currentUserAuth?.uid;
+      setIsOwnProfile(viewingOwnProfile);
+
+      // Get user profile (either current user or target user)
+      let currentUser: BulgarianUser | null;
+      if (targetUserId && !viewingOwnProfile) {
+        // Viewing another user's profile
+        currentUser = await bulgarianAuthService.getUserProfileById(targetUserId);
+        console.log('👤 Loading target user profile:', targetUserId);
+      } else {
+        // Viewing own profile
+        currentUser = await bulgarianAuthService.getCurrentUserProfile();
+        console.log('👤 Loading own profile');
+      }
+
       if (currentUser) {
         setUser(currentUser);
         setFormData({
@@ -292,6 +308,7 @@ export const useProfile = (): UseProfileReturn => {
     loading,
     editing,
     formData,
+    isOwnProfile, // NEW: expose isOwnProfile state
 
     // Actions
     loadUserData,

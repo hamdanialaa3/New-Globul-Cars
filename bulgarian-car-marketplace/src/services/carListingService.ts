@@ -93,13 +93,16 @@ class CarListingService {
   // Get all car listings with filters
   async getListings(filters: CarListingFilters = {}): Promise<CarListingSearchResult> {
     try {
+      console.log('🔥 [SERVICE] getListings called with filters:', filters);
       let q = query(collection(db, this.collectionName));
 
       // Apply filters
       if (filters.vehicleType) {
+        console.log('  📌 Adding vehicleType filter:', filters.vehicleType);
         q = query(q, where('vehicleType', '==', filters.vehicleType));
       }
       if (filters.make) {
+        console.log('  📌 Adding make filter:', filters.make);
         q = query(q, where('make', '==', filters.make));
       }
       if (filters.model) {
@@ -152,8 +155,21 @@ class CarListingService {
         q = query(q, where('sellerType', '==', filters.sellerType));
       }
 
-      // Apply sorting - ONLY if no region filter (to avoid index requirement)
-      if (!(filters as any).cityId && !filters.location && !filters.region && !(filters as any).regionId) {
+      // Apply sorting - ONLY if no filters that require composite index
+      // Skip orderBy if using: region, make, model, or any other where clause
+      const hasFiltersThatNeedIndex = (
+        (filters as any).cityId || 
+        filters.location || 
+        filters.region || 
+        (filters as any).regionId ||
+        filters.make ||
+        filters.model ||
+        filters.vehicleType ||
+        filters.fuelType ||
+        filters.transmission
+      );
+      
+      if (!hasFiltersThatNeedIndex) {
         const sortBy = filters.sortBy || 'createdAt';
         const sortOrder = filters.sortOrder || 'desc';
         q = query(q, orderBy(sortBy, sortOrder));
@@ -172,7 +188,10 @@ class CarListingService {
         q = query(q, limit(limitCount));
       }
 
+      console.log('🔥 [SERVICE] Executing Firebase query...');
       const querySnapshot = await getDocs(q);
+      console.log('🔥 [SERVICE] Query returned:', querySnapshot.size, 'documents');
+      
       const listings: CarListing[] = [];
       
       querySnapshot.forEach((doc) => {
@@ -185,6 +204,43 @@ class CarListingService {
           expiresAt: data.expiresAt?.toDate()
         } as CarListing);
       });
+      
+      console.log('🔥 [SERVICE] Processed listings:', listings.length);
+
+      // ✅ Client-side sorting if we couldn't use orderBy in Firebase
+      if (hasFiltersThatNeedIndex && listings.length > 0) {
+        const sortBy = (filters.sortBy || 'createdAt') as string;
+        const sortOrder = filters.sortOrder || 'desc';
+        
+        listings.sort((a, b) => {
+          const aValue = (a as any)[sortBy];
+          const bValue = (b as any)[sortBy];
+          
+          if (aValue === undefined || bValue === undefined) return 0;
+          
+          // Handle date sorting
+          if (sortBy === 'createdAt' || sortBy === 'updatedAt') {
+            const aTime = aValue instanceof Date ? aValue.getTime() : 0;
+            const bTime = bValue instanceof Date ? bValue.getTime() : 0;
+            return sortOrder === 'desc' ? bTime - aTime : aTime - bTime;
+          }
+          
+          // Handle number sorting
+          if (typeof aValue === 'number' && typeof bValue === 'number') {
+            return sortOrder === 'desc' ? bValue - aValue : aValue - bValue;
+          }
+          
+          // Handle string sorting
+          const aStr = String(aValue).toLowerCase();
+          const bStr = String(bValue).toLowerCase();
+          if (sortOrder === 'desc') {
+            return bStr.localeCompare(aStr);
+          }
+          return aStr.localeCompare(bStr);
+        });
+        
+        console.log(`✅ Client-side sorted ${listings.length} listings by ${sortBy} ${sortOrder}`);
+      }
 
       const total = listings.length; // This is simplified - in production, you'd want to get the total count separately
       const totalPages = Math.ceil(total / limitCount);

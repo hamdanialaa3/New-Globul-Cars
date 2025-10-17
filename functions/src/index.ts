@@ -130,3 +130,59 @@ export {
   getActiveAuthUsers, 
   syncAuthToFirestore 
 } from './get-auth-users-count';
+
+// Export RBAC and Custom Claims functions
+export {
+  setDefaultUserRole,
+  handleTokenRefresh
+} from './auth/set-user-claims';
+
+export {
+  upgradeToSeller,
+  checkSellerEligibility
+} from './auth/upgrade-to-seller';
+
+export {
+  setUserRole,
+  getUserClaims,
+  listUsersWithRoles
+} from './auth/admin-role-management';
+
+// Export Messaging and Notifications functions
+export {
+  sendMessageNotification,
+  updateMessageReadStatus
+} from './messaging/send-message-notification';
+
+// Export Reviews and Ratings functions
+export {
+  aggregateSellerRating,
+  validateReview
+} from './reviews/aggregate-seller-ratings';
+
+// Export Seller Dashboard functions
+export {
+  getSellerMetrics
+} from './seller/get-seller-metrics';
+
+// Export Search Engine functions
+export {
+  syncCarToAlgolia,
+  reindexAllCars
+} from './search/sync-to-algolia';
+
+// Export Payment functions (Stripe Connect)
+export {
+  createStripeSellerAccount,
+  createStripeAccountLink,
+  getStripeAccountStatus
+} from './payments/stripe-seller-account';
+
+export {
+  createCarPaymentIntent,
+  confirmCarPayment
+} from './payments/create-payment';
+
+export {
+  handleStripeWebhook
+} from './payments/webhook-handler';

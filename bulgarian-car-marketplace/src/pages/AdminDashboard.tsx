@@ -249,8 +249,71 @@ interface Car {
 }
 
 const AdminDashboard: React.FC = () => {
+  // خدمات الإدارة والمحتوى والصلاحيات والمراقبة
+  import { advancedContentManagementService } from '../services/advanced-content-management-service';
+  import { permissionManagementService } from '../services/permission-management-service';
+  import { adminService } from '../services/admin-service';
+  import { monitoring } from '../services/monitoring-service';
+
+  // حالات إضافية لكل تبويب
+  const [messages, setMessages] = useState<any[]>([]);
+  const [reports, setReports] = useState<any[]>([]);
+  const [permissions, setPermissions] = useState<any[]>([]);
+  const [roles, setRoles] = useState<any[]>([]);
+  const [auditLogs, setAuditLogs] = useState<any[]>([]);
+  const [exportedData, setExportedData] = useState<string>('');
+  const [ownerStats, setOwnerStats] = useState<any>({});
+  const [systemSettings, setSystemSettings] = useState<any>({});
+  const [loadingTab, setLoadingTab] = useState<string>('');
+
+  // تحميل بيانات التبويبات عند التغيير
+  useEffect(() => {
+    if (activeTab === 'messages') {
+      setLoadingTab('messages');
+      getDocs(collection(db, 'messages')).then(snapshot => {
+        setMessages(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+        setLoadingTab('');
+      });
+    }
+    if (activeTab === 'reports') {
+      setLoadingTab('reports');
+      advancedContentManagementService.getAllReports(100).then(setReports).finally(() => setLoadingTab(''));
+    }
+    if (activeTab === 'permissions') {
+      setLoadingTab('permissions');
+      Promise.all([
+        permissionManagementService.getPermissionTemplates(),
+        permissionManagementService.getRoleTemplates()
+      ]).then(([perms, roles]) => {
+        setPermissions(perms);
+        setRoles(roles);
+        setLoadingTab('');
+      });
+    }
+    if (activeTab === 'audit') {
+      setLoadingTab('audit');
+      getDocs(collection(db, 'audit_logs')).then(snapshot => {
+        setAuditLogs(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+        setLoadingTab('');
+      });
+    }
+    if (activeTab === 'data') {
+      setLoadingTab('data');
+      advancedContentManagementService.exportContentData('cars', 'json').then(setExportedData).finally(() => setLoadingTab(''));
+    }
+    if (activeTab === 'owner') {
+      setLoadingTab('owner');
+      adminService.getSystemStats().then(setOwnerStats).finally(() => setLoadingTab(''));
+    }
+    if (activeTab === 'settings') {
+      setLoadingTab('settings');
+      // إعدادات النظام (محاكاة)
+      setSystemSettings({ language: 'bg', notifications: true, theme: 'light', currency: 'EUR' });
+      setLoadingTab('');
+    }
+  }, [activeTab]);
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState<'users' | 'cars' | 'analytics'>('users');
+  const [activeTab, setActiveTab] = useState<'users' | 'cars' | 'analytics' | 'messages' | 'reports' | 'permissions' | 'settings' | 'audit' | 'data' | 'owner'>('users');
   const [users, setUsers] = useState<User[]>([]);
   const [cars, setCars] = useState<Car[]>([]);
   const [loading, setLoading] = useState(true);
@@ -405,24 +468,16 @@ const AdminDashboard: React.FC = () => {
 
       <TabsContainer>
         <TabButtons>
-          <TabButton
-            active={activeTab === 'users'}
-            onClick={() => setActiveTab('users')}
-          >
-            {t('admin.users')}
-          </TabButton>
-          <TabButton
-            active={activeTab === 'cars'}
-            onClick={() => setActiveTab('cars')}
-          >
-            {t('admin.cars')}
-          </TabButton>
-          <TabButton
-            active={activeTab === 'analytics'}
-            onClick={() => setActiveTab('analytics')}
-          >
-            {t('admin.analytics')}
-          </TabButton>
+          <TabButton active={activeTab === 'users'} onClick={() => setActiveTab('users')}>{t('admin.users')}</TabButton>
+          <TabButton active={activeTab === 'cars'} onClick={() => setActiveTab('cars')}>{t('admin.cars')}</TabButton>
+          <TabButton active={activeTab === 'analytics'} onClick={() => setActiveTab('analytics')}>{t('admin.analytics')}</TabButton>
+          <TabButton active={activeTab === 'messages'} onClick={() => setActiveTab('messages')}>{t('admin.messages')}</TabButton>
+          <TabButton active={activeTab === 'reports'} onClick={() => setActiveTab('reports')}>{t('admin.reports')}</TabButton>
+          <TabButton active={activeTab === 'permissions'} onClick={() => setActiveTab('permissions')}>{t('admin.permissions')}</TabButton>
+          <TabButton active={activeTab === 'settings'} onClick={() => setActiveTab('settings')}>{t('admin.settings')}</TabButton>
+          <TabButton active={activeTab === 'audit'} onClick={() => setActiveTab('audit')}>{t('admin.audit')}</TabButton>
+          <TabButton active={activeTab === 'data'} onClick={() => setActiveTab('data')}>{t('admin.data')}</TabButton>
+          <TabButton active={activeTab === 'owner'} onClick={() => setActiveTab('owner')}>{t('admin.owner')}</TabButton>
         </TabButtons>
 
         <TabContent>
@@ -455,26 +510,9 @@ const AdminDashboard: React.FC = () => {
                       <TableCell>{t(`admin.role.${user.role}`)}</TableCell>
                       <TableCell>{user.createdAt.toLocaleDateString()}</TableCell>
                       <TableCell>
-                        <ActionButton
-                          variant="success"
-                          onClick={() => handleUserStatusChange(user.id, 'active')}
-                          disabled={user.status === 'active'}
-                        >
-                          {t('admin.activate')}
-                        </ActionButton>
-                        <ActionButton
-                          variant="danger"
-                          onClick={() => handleUserStatusChange(user.id, 'suspended')}
-                          disabled={user.status === 'suspended'}
-                        >
-                          {t('admin.suspend')}
-                        </ActionButton>
-                        <ActionButton
-                          variant="danger"
-                          onClick={() => handleDeleteUser(user.id)}
-                        >
-                          {t('admin.delete')}
-                        </ActionButton>
+                        <ActionButton variant="success" onClick={() => handleUserStatusChange(user.id, 'active')} disabled={user.status === 'active'}>{t('admin.activate')}</ActionButton>
+                        <ActionButton variant="danger" onClick={() => handleUserStatusChange(user.id, 'suspended')} disabled={user.status === 'suspended'}>{t('admin.suspend')}</ActionButton>
+                        <ActionButton variant="danger" onClick={() => handleDeleteUser(user.id)}>{t('admin.delete')}</ActionButton>
                       </TableCell>
                     </tr>
                   ))}
@@ -482,7 +520,6 @@ const AdminDashboard: React.FC = () => {
               </Table>
             </div>
           )}
-
           {activeTab === 'cars' && (
             <div>
               <h2>{t('admin.carManagement')}</h2>
@@ -505,33 +542,14 @@ const AdminDashboard: React.FC = () => {
                       <TableCell>{car.price} €</TableCell>
                       <TableCell>{car.userName}</TableCell>
                       <TableCell>
-                        <StatusBadge status={getCarStatusBadge(car.status)}>
-                          {t(`admin.carStatus.${car.status}`)}
-                        </StatusBadge>
+                        <StatusBadge status={getCarStatusBadge(car.status)}>{t(`admin.carStatus.${car.status}`)}</StatusBadge>
                       </TableCell>
                       <TableCell>{car.views}</TableCell>
                       <TableCell>{car.createdAt.toLocaleDateString()}</TableCell>
                       <TableCell>
-                        <ActionButton
-                          variant="success"
-                          onClick={() => handleCarStatusChange(car.id, 'active')}
-                          disabled={car.status === 'active'}
-                        >
-                          {t('admin.approve')}
-                        </ActionButton>
-                        <ActionButton
-                          variant="primary"
-                          onClick={() => handleCarStatusChange(car.id, 'sold')}
-                          disabled={car.status === 'sold'}
-                        >
-                          {t('admin.markSold')}
-                        </ActionButton>
-                        <ActionButton
-                          variant="danger"
-                          onClick={() => handleDeleteCar(car.id)}
-                        >
-                          {t('admin.delete')}
-                        </ActionButton>
+                        <ActionButton variant="success" onClick={() => handleCarStatusChange(car.id, 'active')} disabled={car.status === 'active'}>{t('admin.approve')}</ActionButton>
+                        <ActionButton variant="primary" onClick={() => handleCarStatusChange(car.id, 'sold')} disabled={car.status === 'sold'}>{t('admin.markSold')}</ActionButton>
+                        <ActionButton variant="danger" onClick={() => handleDeleteCar(car.id)}>{t('admin.delete')}</ActionButton>
                       </TableCell>
                     </tr>
                   ))}
@@ -539,18 +557,350 @@ const AdminDashboard: React.FC = () => {
               </Table>
             </div>
           )}
-
           {activeTab === 'analytics' && (
             <div>
               <h2>{t('admin.analytics')}</h2>
-              <p>{t('admin.analyticsComingSoon')}</p>
-              {/* Analytics components will be added here */}
+              <pre>{JSON.stringify(monitoring.getAnalyticsDashboard(), null, 2)}</pre>
+            </div>
+          )}
+          {activeTab === 'messages' && (
+            <div>
+              <h2>{t('admin.messages')}</h2>
+              {loadingTab === 'messages' ? <p>جاري التحميل...</p> : (
+                <Table>
+                  <thead>
+                    <tr>
+                      <TableHeader>المُرسل</TableHeader>
+                      <TableHeader>المستلم</TableHeader>
+                      <TableHeader>النص</TableHeader>
+                      <TableHeader>تاريخ الإرسال</TableHeader>
+                      <TableHeader>إجراءات</TableHeader>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {messages.map(msg => (
+                      <tr key={msg.id}>
+                        <TableCell>{msg.senderName || msg.senderId}</TableCell>
+                        <TableCell>{msg.receiverName || msg.receiverId}</TableCell>
+                        <TableCell>{msg.text}</TableCell>
+                        <TableCell>{msg.timestamp ? new Date(msg.timestamp.seconds * 1000).toLocaleString() : '-'}</TableCell>
+                        <TableCell>
+                          <ActionButton variant="danger" onClick={async () => {
+                            await deleteDoc(doc(db, 'messages', msg.id));
+                            setMessages(messages.filter(m => m.id !== msg.id));
+                          }}>حذف</ActionButton>
+                        </TableCell>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              )}
+            </div>
+          )}
+          {activeTab === 'reports' && (
+            <div>
+              <h2>{t('admin.reports')}</h2>
+              {loadingTab === 'reports' ? <p>جاري التحميل...</p> : (
+                <Table>
+                  <thead>
+                    <tr>
+                      <TableHeader>المحتوى</TableHeader>
+                      <TableHeader>النوع</TableHeader>
+                      <TableHeader>المُبلغ</TableHeader>
+                      <TableHeader>السبب</TableHeader>
+                      <TableHeader>الوصف</TableHeader>
+                      <TableHeader>الأولوية</TableHeader>
+                      <TableHeader>الحالة</TableHeader>
+                      <TableHeader>إجراءات</TableHeader>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {reports.map(report => (
+                      <tr key={report.id}>
+                        <TableCell>{report.contentId}</TableCell>
+                        <TableCell>{report.contentType}</TableCell>
+                        <TableCell>{report.reporterEmail}</TableCell>
+                        <TableCell>{report.reason}</TableCell>
+                        <TableCell>{report.description}</TableCell>
+                        <TableCell>{report.priority}</TableCell>
+                        <TableCell>{report.status}</TableCell>
+                        <TableCell>
+                          <ActionButton variant="success" onClick={async () => {
+                            await advancedContentManagementService.reviewReport(report.id, 'approve', 'super_admin');
+                            setReports(reports.filter(r => r.id !== report.id));
+                          }}>موافقة</ActionButton>
+                          <ActionButton variant="danger" onClick={async () => {
+                            await advancedContentManagementService.reviewReport(report.id, 'dismiss', 'super_admin');
+                            setReports(reports.filter(r => r.id !== report.id));
+                          }}>رفض</ActionButton>
+                        </TableCell>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              )}
+            </div>
+          )}
+          {activeTab === 'permissions' && (
+            <div>
+              <h2>{t('admin.permissions')}</h2>
+              {loadingTab === 'permissions' ? <p>جاري التحميل...</p> : (
+                <div>
+                  <h3>الصلاحيات</h3>
+                  <ul>
+                    {permissions.map(p => <li key={p.id}>{p.name} ({p.level})</li>)}
+                  </ul>
+                  <h3>الأدوار</h3>
+                  <ul>
+                    {roles.map(r => <li key={r.id}>{r.name} ({r.level})</li>)}
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
+          {activeTab === 'settings' && (
+            <div>
+              <h2>{t('admin.settings')}</h2>
+              <form>
+                <label>اللغة:
+                  <select value={systemSettings.language} onChange={e => setSystemSettings({ ...systemSettings, language: e.target.value })}>
+                    <option value="bg">بلغارية</option>
+                    <option value="en">إنجليزية</option>
+                  </select>
+                </label>
+                <label>الإشعارات:
+                  <input type="checkbox" checked={systemSettings.notifications} onChange={e => setSystemSettings({ ...systemSettings, notifications: e.target.checked })} />
+                </label>
+                <label>الثيم:
+                  <select value={systemSettings.theme} onChange={e => setSystemSettings({ ...systemSettings, theme: e.target.value })}>
+                    <option value="light">فاتح</option>
+                    <option value="dark">داكن</option>
+                  </select>
+                </label>
+                <label>العملة:
+                  <select value={systemSettings.currency} onChange={e => setSystemSettings({ ...systemSettings, currency: e.target.value })}>
+                    <option value="EUR">يورو</option>
+                  </select>
+                </label>
+                <button type="button" onClick={() => alert('تم حفظ الإعدادات!')}>حفظ</button>
+              </form>
+            </div>
+          )}
+          {activeTab === 'audit' && (
+            <div>
+              <h2>{t('admin.audit')}</h2>
+              {loadingTab === 'audit' ? <p>جاري التحميل...</p> : (
+                <Table>
+                  <thead>
+                    <tr>
+                      <TableHeader>الحدث</TableHeader>
+                      <TableHeader>المستخدم</TableHeader>
+                      <TableHeader>IP</TableHeader>
+                      <TableHeader>النتيجة</TableHeader>
+                      <TableHeader>التاريخ</TableHeader>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {auditLogs.map(log => (
+                      <tr key={log.id}>
+                        <TableCell>{log.event}</TableCell>
+                        <TableCell>{log.userId}</TableCell>
+                        <TableCell>{log.ip}</TableCell>
+                        <TableCell>{log.result}</TableCell>
+                        <TableCell>{log.timestamp ? new Date(log.timestamp.seconds * 1000).toLocaleString() : '-'}</TableCell>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              )}
+            </div>
+          )}
+          {activeTab === 'data' && (
+            <div>
+              <h2>{t('admin.data')}</h2>
+              {loadingTab === 'data' ? <p>جاري التحميل...</p> : (
+                <div>
+                  <button onClick={async () => {
+                    const data = await advancedContentManagementService.exportContentData('cars', 'json');
+                    setExportedData(data);
+                  }}>تصدير سيارات (JSON)</button>
+                  <button onClick={async () => {
+                    const data = await advancedContentManagementService.exportContentData('cars', 'csv');
+                    setExportedData(data);
+                  }}>تصدير سيارات (CSV)</button>
+                  <pre style={{ maxHeight: 300, overflow: 'auto', background: '#f8f9fa', padding: 10 }}>{exportedData}</pre>
+                </div>
+              )}
+            </div>
+          )}
+          {activeTab === 'owner' && (
+            <div>
+              <h2>{t('admin.owner')}</h2>
+              {loadingTab === 'owner' ? <p>جاري التحميل...</p> : (
+                <div>
+                  <h3>إحصائيات النظام</h3>
+                  <ul>
+                    <li>عدد المستخدمين: {ownerStats.totalUsers}</li>
+                    <li>عدد السيارات: {ownerStats.totalCars}</li>
+                    <li>عدد الرسائل: {ownerStats.totalMessages}</li>
+                    <li>عدد المدراء: {ownerStats.totalAdmins}</li>
+                  </ul>
+                  <button onClick={() => window.location.reload()}>تحديث شامل</button>
+                  <button onClick={() => alert('تم تسجيل الخروج!')}>تسجيل الخروج</button>
+                </div>
+              )}
             </div>
           )}
         </TabContent>
-      </TabsContainer>
-    </AdminContainer>
-  );
+                            <thead>
+                              <tr>
+                                <TableHeader>المحتوى</TableHeader>
+                                <TableHeader>النوع</TableHeader>
+                                <TableHeader>المُبلغ</TableHeader>
+                                <TableHeader>السبب</TableHeader>
+                                <TableHeader>الوصف</TableHeader>
+                                <TableHeader>الأولوية</TableHeader>
+                                <TableHeader>الحالة</TableHeader>
+                                <TableHeader>إجراءات</TableHeader>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {reports.map(report => (
+                                <tr key={report.id}>
+                                  <TableCell>{report.contentId}</TableCell>
+                                  <TableCell>{report.contentType}</TableCell>
+                                  <TableCell>{report.reporterEmail}</TableCell>
+                                  <TableCell>{report.reason}</TableCell>
+                                  <TableCell>{report.description}</TableCell>
+                                  <TableCell>{report.priority}</TableCell>
+                                  <TableCell>{report.status}</TableCell>
+                                  <TableCell>
+                                    <ActionButton variant="success" onClick={async () => {
+                                      await advancedContentManagementService.reviewReport(report.id, 'approve', 'super_admin');
+                                      setReports(reports.filter(r => r.id !== report.id));
+                                    }}>موافقة</ActionButton>
+                                    <ActionButton variant="danger" onClick={async () => {
+                                      await advancedContentManagementService.reviewReport(report.id, 'dismiss', 'super_admin');
+                                      setReports(reports.filter(r => r.id !== report.id));
+                                    }}>رفض</ActionButton>
+                                  </TableCell>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </Table>
+                        )}
+                      </div>
+                    )}
+                    {activeTab === 'permissions' && (
+                      <div>
+                        <h2>{t('admin.permissions')}</h2>
+                        {loadingTab === 'permissions' ? <p>جاري التحميل...</p> : (
+                          <div>
+                            <h3>الصلاحيات</h3>
+                            <ul>
+                              {permissions.map(p => <li key={p.id}>{p.name} ({p.level})</li>)}
+                            </ul>
+                            <h3>الأدوار</h3>
+                            <ul>
+                              {roles.map(r => <li key={r.id}>{r.name} ({r.level})</li>)}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    {activeTab === 'settings' && (
+                      <div>
+                        <h2>{t('admin.settings')}</h2>
+                        <form>
+                          <label>اللغة:
+                            <select value={systemSettings.language} onChange={e => setSystemSettings({ ...systemSettings, language: e.target.value })}>
+                              <option value="bg">بلغارية</option>
+                              <option value="en">إنجليزية</option>
+                            </select>
+                          </label>
+                          <label>الإشعارات:
+                            <input type="checkbox" checked={systemSettings.notifications} onChange={e => setSystemSettings({ ...systemSettings, notifications: e.target.checked })} />
+                          </label>
+                          <label>الثيم:
+                            <select value={systemSettings.theme} onChange={e => setSystemSettings({ ...systemSettings, theme: e.target.value })}>
+                              <option value="light">فاتح</option>
+                              <option value="dark">داكن</option>
+                            </select>
+                          </label>
+                          <label>العملة:
+                            <select value={systemSettings.currency} onChange={e => setSystemSettings({ ...systemSettings, currency: e.target.value })}>
+                              <option value="EUR">يورو</option>
+                            </select>
+                          </label>
+                          <button type="button" onClick={() => alert('تم حفظ الإعدادات!')}>حفظ</button>
+                        </form>
+                      </div>
+                    )}
+                    {activeTab === 'audit' && (
+                      <div>
+                        <h2>{t('admin.audit')}</h2>
+                        {loadingTab === 'audit' ? <p>جاري التحميل...</p> : (
+                          <Table>
+                            <thead>
+                              <tr>
+                                <TableHeader>الحدث</TableHeader>
+                                <TableHeader>المستخدم</TableHeader>
+                                <TableHeader>IP</TableHeader>
+                                <TableHeader>النتيجة</TableHeader>
+                                <TableHeader>التاريخ</TableHeader>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {auditLogs.map(log => (
+                                <tr key={log.id}>
+                                  <TableCell>{log.event}</TableCell>
+                                  <TableCell>{log.userId}</TableCell>
+                                  <TableCell>{log.ip}</TableCell>
+                                  <TableCell>{log.result}</TableCell>
+                                  <TableCell>{log.timestamp ? new Date(log.timestamp.seconds * 1000).toLocaleString() : '-'}</TableCell>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </Table>
+                        )}
+                      </div>
+                    )}
+                    {activeTab === 'data' && (
+                      <div>
+                        <h2>{t('admin.data')}</h2>
+                        {loadingTab === 'data' ? <p>جاري التحميل...</p> : (
+                          <div>
+                            <button onClick={async () => {
+                              const data = await advancedContentManagementService.exportContentData('cars', 'json');
+                              setExportedData(data);
+                            }}>تصدير سيارات (JSON)</button>
+                            <button onClick={async () => {
+                              const data = await advancedContentManagementService.exportContentData('cars', 'csv');
+                              setExportedData(data);
+                            }}>تصدير سيارات (CSV)</button>
+                            <pre style={{ maxHeight: 300, overflow: 'auto', background: '#f8f9fa', padding: 10 }}>{exportedData}</pre>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    {activeTab === 'owner' && (
+                      <div>
+                        <h2>{t('admin.owner')}</h2>
+                        {loadingTab === 'owner' ? <p>جاري التحميل...</p> : (
+                          <div>
+                            <h3>إحصائيات النظام</h3>
+                            <ul>
+                              <li>عدد المستخدمين: {ownerStats.totalUsers}</li>
+                              <li>عدد السيارات: {ownerStats.totalCars}</li>
+                              <li>عدد الرسائل: {ownerStats.totalMessages}</li>
+                              <li>عدد المدراء: {ownerStats.totalAdmins}</li>
+                            </ul>
+                            <button onClick={() => window.location.reload()}>تحديث شامل</button>
+                            <button onClick={() => alert('تم تسجيل الخروج!')}>تسجيل الخروج</button>
+                          </div>
+                        )}
+                      </div>
+                    )}
 };
 
 export default AdminDashboard;

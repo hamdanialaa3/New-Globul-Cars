@@ -1,11 +1,10 @@
 // Popular Car Brands Section
 // قسم الماركات الشائعة مع الربط بالبيانات الحقيقية
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
 import styled from 'styled-components';
-import { bulgarianCarService } from '../../firebase/car-service';
 
 // Popular brands configuration with logos
 const POPULAR_BRANDS = [
@@ -111,12 +110,12 @@ const BrandsGrid = styled.div`
   }
 `;
 
-const BrandCard = styled.button<{ $hasCount: boolean }>`
+const BrandCard = styled.button`
   background: white;
-  border: 2px solid ${props => props.$hasCount ? '#FF8F10' : '#e0e0e0'};
+  border: 2px solid #e0e0e0;
   border-radius: 16px;
   padding: 1.5rem 1rem;
-  cursor: ${props => props.$hasCount ? 'pointer' : 'not-allowed'};
+  cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   flex-direction: column;
@@ -124,7 +123,7 @@ const BrandCard = styled.button<{ $hasCount: boolean }>`
   gap: 1rem;
   position: relative;
   overflow: hidden;
-  opacity: ${props => props.$hasCount ? 1 : 0.5};
+  opacity: 1;
   
   &::before {
     content: '';
@@ -139,17 +138,17 @@ const BrandCard = styled.button<{ $hasCount: boolean }>`
   }
   
   &:hover::before {
-    opacity: ${props => props.$hasCount ? 1 : 0};
+    opacity: 1;
   }
   
   &:hover {
-    transform: ${props => props.$hasCount ? 'translateY(-8px)' : 'none'};
-    box-shadow: ${props => props.$hasCount ? '0 12px 40px rgba(255, 143, 16, 0.3)' : 'none'};
-    border-color: ${props => props.$hasCount ? '#FFDF00' : '#e0e0e0'};
+    transform: translateY(-8px);
+    box-shadow: 0 12px 40px rgba(255, 143, 16, 0.3);
+    border-color: #FF8F10;
   }
   
   &:active {
-    transform: ${props => props.$hasCount ? 'translateY(-4px)' : 'none'};
+    transform: translateY(-4px);
   }
 `;
 
@@ -189,18 +188,7 @@ const BrandName = styled.div`
   }
 `;
 
-const CarCount = styled.div<{ $hasCount: boolean }>`
-  font-size: 0.8rem;
-  font-weight: 500;
-  color: ${props => props.$hasCount ? '#FF8F10' : '#adb5bd'};
-  position: relative;
-  z-index: 1;
-  line-height: 1.4;
-  
-  @media (max-width: 600px) {
-    font-size: 0.75rem;
-  }
-`;
+// ✅ Removed CarCount component - no need to display car counts
 
 const ViewMoreButton = styled.button`
   background: linear-gradient(135deg, #FF8F10 0%, #FFDF00 100%);
@@ -231,62 +219,16 @@ const ViewMoreButton = styled.button`
   }
 `;
 
-const LoadingState = styled.div`
-  text-align: center;
-  padding: 3rem;
-  color: #6c757d;
-  font-size: 1.1rem;
-`;
-
-interface BrandCount {
-  brandId: string;
-  count: number;
-}
+// ✅ Removed LoadingState and BrandCount interface - no longer needed
 
 const PopularBrandsSection: React.FC = () => {
   const navigate = useNavigate();
   const { language, t } = useLanguage();
-  const [brandCounts, setBrandCounts] = useState<Record<string, number>>({});
-  const [loading, setLoading] = useState(true);
+  // ✅ Removed brandCounts state - no longer needed since we don't display counts
 
-  // Fetch real car counts for each brand from Firebase
-  useEffect(() => {
-    const fetchBrandCounts = async () => {
-      try {
-        setLoading(true);
-        const counts: Record<string, number> = {};
-        
-        // Fetch count for each popular brand
-        for (const brand of POPULAR_BRANDS) {
-          try {
-            const result = await bulgarianCarService.searchCars(
-              { make: brand.id },
-              'createdAt',
-              'desc',
-              100
-            );
-            counts[brand.id] = result.cars.length || 0;
-          } catch (error) {
-            console.error(`Error fetching count for ${brand.id}:`, error);
-            counts[brand.id] = 0;
-          }
-        }
-        
-        setBrandCounts(counts);
-      } catch (error) {
-        console.error('Error fetching brand counts:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBrandCounts();
-  }, []);
-
-  const handleBrandClick = (brandId: string, count: number) => {
-    if (count > 0) {
-      navigate(`/cars?make=${encodeURIComponent(brandId)}`);
-    }
+  const handleBrandClick = (brandId: string) => {
+    // ✅ Always navigate, even if count is 0
+    navigate(`/cars?make=${encodeURIComponent(brandId)}`);
   };
 
   const handleViewMore = () => {
@@ -296,16 +238,6 @@ const PopularBrandsSection: React.FC = () => {
   const getBrandName = (brand: typeof POPULAR_BRANDS[0]) => {
     return language === 'bg' ? brand.nameBg : brand.nameEn;
   };
-
-  if (loading) {
-    return (
-      <SectionContainer>
-        <LoadingState>
-          {language === 'bg' ? 'Зареждане на марки...' : 'Loading brands...'}
-        </LoadingState>
-      </SectionContainer>
-    );
-  }
 
   return (
     <SectionContainer>
@@ -322,18 +254,11 @@ const PopularBrandsSection: React.FC = () => {
 
       <BrandsGrid>
         {POPULAR_BRANDS.map(brand => {
-          const count = brandCounts[brand.id] || 0;
-          const hasCount = count > 0;
-          
           return (
             <BrandCard
               key={brand.id}
-              onClick={() => handleBrandClick(brand.id, count)}
-              $hasCount={hasCount}
-              disabled={!hasCount}
-              title={hasCount 
-                ? `${language === 'bg' ? 'Преглед' : 'View'} ${count} ${language === 'bg' ? 'автомобила' : 'cars'}`
-                : language === 'bg' ? 'Няма налични автомобили' : 'No cars available'}
+              onClick={() => handleBrandClick(brand.id)}
+              title={`${language === 'bg' ? 'Преглед' : 'View'} ${getBrandName(brand)} ${language === 'bg' ? 'автомобили' : 'cars'}`}
             >
               <LogoContainer>
                 <img
@@ -346,11 +271,6 @@ const PopularBrandsSection: React.FC = () => {
                 />
               </LogoContainer>
               <BrandName>{getBrandName(brand)}</BrandName>
-              <CarCount $hasCount={hasCount}>
-                {count > 0 
-                  ? `${count} ${language === 'bg' ? 'автомобила' : 'cars'}`
-                  : language === 'bg' ? 'Скоро' : 'Coming soon'}
-              </CarCount>
             </BrandCard>
           );
         })}

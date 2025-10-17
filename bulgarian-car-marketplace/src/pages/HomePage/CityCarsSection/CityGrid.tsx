@@ -75,11 +75,14 @@ const CityGrid: React.FC<CityGridProps> = ({
                 {cityName}
               </S.CityName>
 
-              <S.CarCount>
-                <Car size={18} />
-                <S.CarCountNumber>{carCount}</S.CarCountNumber>
-                <span>{t('home.cityCars.carsAvailable')}</span>
-              </S.CarCount>
+              {/* ✅ Show car count notification only if > 0 */}
+              {carCount > 0 && (
+                <S.CarCount>
+                  <Car size={18} />
+                  <S.CarCountNumber>{carCount}</S.CarCountNumber>
+                  <span>{t('home.cityCars.carsAvailable')}</span>
+                </S.CarCount>
+              )}
 
               <S.ViewCarsButton>
                 {t('home.cityCars.viewCars')}
@@ -107,20 +110,20 @@ const CityGrid: React.FC<CityGridProps> = ({
         })}
       </S.GridContainer>
 
-      {/* ✅ زر عرض المزيد/أقل - محسّن */}
+      {/* ✅ Show More/Less Button - English & Bulgarian */}
       {hasMore && (
         <S.ShowMoreButton onClick={() => setShowAll(!showAll)}>
           {showAll ? (
             <>
               <ChevronUp size={20} style={{ marginRight: '0.5rem' }} />
-              {language === 'bg' ? 'إخفاء' : 'Show Less'}
+              {language === 'bg' ? 'Покажи по-малко' : 'Show Less'}
             </>
           ) : (
             <>
               <ChevronDown size={20} style={{ marginRight: '0.5rem' }} />
               {language === 'bg' 
-                ? `عرض جميع المدن (${cities.length - initialDisplayCount} أخرى)` 
-                : `Show All Cities (${cities.length - initialDisplayCount} more)`}
+                ? `Покажи всички региони (${cities.length - initialDisplayCount} повече)` 
+                : `Show All Regions (${cities.length - initialDisplayCount} more)`}
             </>
           )}
         </S.ShowMoreButton>

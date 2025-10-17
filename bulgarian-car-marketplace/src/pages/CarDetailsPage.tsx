@@ -4,6 +4,7 @@ import styled, { keyframes } from 'styled-components';
 import { CarIcon } from '../components/icons/CarIcon';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../context/AuthProvider';
+import { useCarViewTracking } from '../hooks/useProfileTracking';
 import carListingService from '../services/carListingService';
 import { CarListing } from '../types/CarListing';
 import { BULGARIA_REGIONS, getCitiesByRegion } from '../data/bulgaria-locations';
@@ -930,6 +931,9 @@ const CarDetailsPage: React.FC = () => {
   const [car, setCar] = useState<CarListing | null>(null);
   const [loading, setLoading] = useState(true);
   const [isEditMode, setIsEditMode] = useState(false);
+  
+  // 🎯 Auto-track car views (REAL ANALYTICS!)
+  useCarViewTracking(carId, car?.sellerId);
   const [editedCar, setEditedCar] = useState<Partial<CarListing>>({});
   const [saving, setSaving] = useState(false);
   const [photos, setPhotos] = useState<File[]>([]);

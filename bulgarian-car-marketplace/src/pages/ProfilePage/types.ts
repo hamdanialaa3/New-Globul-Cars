@@ -82,6 +82,7 @@ export interface ProfileState {
   loading: boolean;
   editing: boolean;
   formData: ProfileFormData;
+  isOwnProfile: boolean; // NEW: to determine if viewing own profile
 }
 
 // Profile Actions Interface

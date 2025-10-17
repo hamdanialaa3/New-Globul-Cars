@@ -20,7 +20,22 @@ const CoverContainer = styled.div`
   height: 300px;
   border-radius: 16px;
   overflow: hidden;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  
+  /* 🎨 Orange glassmorphic background for empty state */
+  background: linear-gradient(135deg,
+    rgba(255, 175, 64, 0.25) 0%,
+    rgba(255, 159, 42, 0.35) 30%,
+    rgba(255, 143, 16, 0.45) 60%,
+    rgba(255, 121, 0, 0.5) 100%
+  );
+  backdrop-filter: blur(12px) saturate(160%);
+  
+  /* Subtle yellow border */
+  border: 2px solid rgba(255, 215, 0, 0.3);
+  box-shadow: 
+    0 8px 28px rgba(255, 143, 16, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  
   margin-bottom: 60px;
 `;
 
@@ -64,7 +79,7 @@ const UploadButton = styled.button`
   right: 16px;
   padding: 8px 16px;
   background: rgba(255, 255, 255, 0.95);
-  border: none;
+  border: 1px solid rgba(255, 215, 0, 0.4);
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -72,12 +87,13 @@ const UploadButton = styled.button`
   cursor: pointer;
   font-weight: 500;
   font-size: 0.82rem;
-  color: #667eea;
+  color: #FF7900;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 6px rgba(255, 143, 16, 0.15);
 
   &:hover {
     background: white;
+    border-color: rgba(255, 143, 16, 0.6);
     transform: translateY(-2px);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
   }

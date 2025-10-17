@@ -46,16 +46,17 @@ const ContactAddressPage = React.lazy(() => import('./pages/sell/ContactAddressP
 const ContactPhonePage = React.lazy(() => import('./pages/sell/ContactPhonePage'));
 const UnifiedContactPage = React.lazy(() => import('./pages/sell/UnifiedContactPage'));
 const MessagingPage = React.lazy(() => import('./pages/MessagingPage'));
+const MessagesPage = React.lazy(() => import('./pages/MessagesPage'));
 const AdminPage = React.lazy(() => import('./pages/AdminPage'));
 const AdminLoginPage = React.lazy(() => import('./pages/AdminLoginPage'));
 const SuperAdminLogin = React.lazy(() => import('./pages/SuperAdminLogin'));
 const SuperAdminDashboard = React.lazy(() => import('./pages/SuperAdminDashboardNew'));
 const ProfilePage = React.lazy(() => import('./pages/ProfilePage'));
+const UsersDirectoryPage = React.lazy(() => import('./pages/UsersDirectoryPage'));
 // Glass Morphism Premium Auth Pages
 const LoginPage = React.lazy(() => import('./pages/LoginPage/LoginPageGlassFixed'));
 const RegisterPage = React.lazy(() => import('./pages/RegisterPage/RegisterPageGlassFixed'));
 const EmailVerificationPage = React.lazy(() => import('./pages/EmailVerificationPage'));
-// const MessagesPage = React.lazy(() => import('./pages/MessagesPage'));
 const DashboardPage = React.lazy(() => import('./pages/DashboardPage'));
 const AdminDashboard = React.lazy(() => import('./components/AdminDashboard'));
 const ThemeTest = React.lazy(() => import('./components/ThemeTest'));
@@ -360,14 +361,8 @@ const MainLayout: React.FC = () => (
         }
       />
       <Route path="/profile" element={<ProfilePage />} />
-      <Route
-        path="/messages"
-        element={
-          <ProtectedRoute>
-            <MessagingPage />
-          </ProtectedRoute>
-        }
-      />
+      <Route path="/users" element={<UsersDirectoryPage />} />
+      <Route path="/messages" element={<MessagesPage />} />
       <Route path="/admin-login" element={<AdminLoginPage />} />
       <Route
         path="/admin"

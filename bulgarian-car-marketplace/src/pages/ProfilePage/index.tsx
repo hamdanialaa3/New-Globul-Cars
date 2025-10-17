@@ -4,6 +4,8 @@ import { useTranslation } from '../../hooks/useTranslation';
 import { useLanguage } from '../../contexts/LanguageContext';
 import LazyImage from '../../components/LazyImage';
 import { useProfile } from './hooks/useProfile';
+import { useProfileTracking } from '../../hooks/useProfileTracking';
+import { bulgarianAuthService } from '../../firebase';
 import { 
   ProfileImageUploader, 
   CoverImageUploader, 
@@ -35,11 +37,13 @@ import {
   Shield,
   Download,
   UserPlus,
-  UserCheck
+  UserCheck,
+  Users,
+  MessageCircle
 } from 'lucide-react';
 import * as S from './styles';
 import { TabNavigation, TabButton, SyncButton, FollowButton } from './TabNavigation.styles';
-import styled, { keyframes } from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 // Import new services - moved to top
 import { googleProfileSyncService } from '../../services/google/google-profile-sync.service';
 import { carAnalyticsService } from '../../services/analytics/car-analytics.service';
@@ -105,6 +109,18 @@ const fadeSlideUp = keyframes`
   }
 `;
 
+// Tab content fade in (smooth transition between tabs)
+const tabFadeIn = keyframes`
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+`;
+
 // Scale and fade
 const scaleIn = keyframes`
   from {
@@ -129,7 +145,7 @@ const CompactHeader = styled.div`
   border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   margin-bottom: 24px;
-  animation: ${slideInFromLeft} 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  ${css`animation: ${slideInFromLeft} 0.4s cubic-bezier(0.4, 0, 0.2, 1);`}
   border: 1px solid rgba(255, 121, 0, 0.1);
   
   &:hover {
@@ -146,7 +162,7 @@ const ProfileImageSmall = styled.img`
   border: 3px solid #FF7900;
   box-shadow: 0 4px 12px rgba(255, 121, 0, 0.4);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  animation: ${profileImageMorph} 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  ${css`animation: ${profileImageMorph} 0.5s cubic-bezier(0.4, 0, 0.2, 1);`}
   
   &:hover {
     transform: scale(1.1) rotate(3deg);
@@ -156,7 +172,7 @@ const ProfileImageSmall = styled.img`
 
 const UserInfo = styled.div`
   flex: 1;
-  animation: ${fadeIn} 0.5s ease-out 0.2s both;
+  ${css`animation: ${fadeIn} 0.5s ease-out 0.2s both;`}
 `;
 
 const UserName = styled.div`
@@ -177,7 +193,19 @@ const UserEmail = styled.div`
 
 const FullWidthContent = styled.div`
   width: 100%;
-  animation: ${fadeSlideUp} 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  ${css`animation: ${tabFadeIn} 0.4s cubic-bezier(0.4, 0, 0.2, 1);`}
+  
+  /* Smooth transitions */
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+`;
+
+const AnimatedProfileGrid = styled(S.ProfileGrid)`
+  ${css`animation: ${tabFadeIn} 0.4s cubic-bezier(0.4, 0, 0.2, 1);`}
+`;
+
+const AnimatedTabContent = styled.div`
+  ${css`animation: ${tabFadeIn} 0.4s ease-out;`}
 `;
 
 // Professional Icon Wrapper with shadow effects
@@ -206,12 +234,17 @@ const ProfilePage: React.FC = () => {
   const toast = useToast();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+
+  // ✅ NEW: Read userId from URL to view another user's profile
+  const targetUserId = searchParams.get('userId') || undefined;
+
   const {
     user,
     userCars,
     loading,
     editing,
     formData,
+    isOwnProfile, // ✅ NEW: to determine if viewing own profile
     handleInputChange,
     handleSaveProfile,
     handleCancelEdit,
@@ -219,16 +252,28 @@ const ProfilePage: React.FC = () => {
     setEditing,
     setUser,
     loadUserCars
-  } = useProfile();
+  } = useProfile(targetUserId); // ✅ Pass targetUserId
 
   // Read tab from URL or default to 'profile'
-  const initialTab = (searchParams.get('tab') as 'profile' | 'analytics' | 'settings') || 'profile';
-  const [activeTab, setActiveTab] = React.useState<'profile' | 'analytics' | 'settings'>(initialTab);
+  const initialTab = (searchParams.get('tab') as 'profile' | 'myads' | 'analytics' | 'settings') || 'profile';
+  const [activeTab, setActiveTab] = React.useState<'profile' | 'myads' | 'analytics' | 'settings'>(initialTab);
+  const [isTransitioning, setIsTransitioning] = React.useState(false);
+  
+  // Smooth tab switching with fade effect
+  const handleTabChange = (tab: 'profile' | 'myads' | 'analytics' | 'settings') => {
+    if (tab === activeTab) return;
+    
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setActiveTab(tab);
+      setIsTransitioning(false);
+    }, 150); // Short fade out
+  };
   
   // Update activeTab when URL changes
   useEffect(() => {
-    const tabParam = searchParams.get('tab') as 'profile' | 'analytics' | 'settings';
-    if (tabParam && ['profile', 'analytics', 'settings'].includes(tabParam)) {
+    const tabParam = searchParams.get('tab') as 'profile' | 'myads' | 'analytics' | 'settings';
+    if (tabParam && ['profile', 'myads', 'analytics', 'settings'].includes(tabParam)) {
       setActiveTab(tabParam);
     }
   }, [searchParams]);
@@ -242,9 +287,56 @@ const ProfilePage: React.FC = () => {
   // Google sync state
   const [syncing, setSyncing] = React.useState(false);
   
+  // 🎯 Auto-track profile views (REAL ANALYTICS!)
+  useProfileTracking(user?.uid);
+  
   // Follow state
   const [isFollowing, setIsFollowing] = React.useState(false);
   const [followersCount, setFollowersCount] = React.useState(0);
+  const [followLoading, setFollowLoading] = React.useState(false);
+  
+  // Load follow status when viewing another user's profile
+  React.useEffect(() => {
+    if (!isOwnProfile && user?.uid && targetUserId) {
+      const loadFollowStatus = async () => {
+        const currentUserAuth = await bulgarianAuthService.getCurrentUserProfile();
+        if (currentUserAuth) {
+          const following = await followService.isFollowing(currentUserAuth.uid, targetUserId);
+          setIsFollowing(following);
+        }
+      };
+      loadFollowStatus();
+    }
+  }, [isOwnProfile, user?.uid, targetUserId]);
+  
+  // Handle follow/unfollow
+  const handleFollowToggle = async () => {
+    if (!user?.uid || !targetUserId || followLoading) return;
+    
+    const currentUserAuth = await bulgarianAuthService.getCurrentUserProfile();
+    if (!currentUserAuth) {
+      toast.error(language === 'bg' ? 'Моля влезте' : 'Please sign in');
+      return;
+    }
+    
+    setFollowLoading(true);
+    try {
+      if (isFollowing) {
+        await followService.unfollowUser(currentUserAuth.uid, targetUserId);
+        setIsFollowing(false);
+        toast.success(language === 'bg' ? 'Отписахте се' : 'Unfollowed');
+      } else {
+        await followService.followUser(currentUserAuth.uid, targetUserId);
+        setIsFollowing(true);
+        toast.success(language === 'bg' ? 'Последвахте' : 'Following');
+      }
+    } catch (error) {
+      console.error('Follow error:', error);
+      toast.error(language === 'bg' ? 'Грешка' : 'Error');
+    } finally {
+      setFollowLoading(false);
+    }
+  };
   
   // Handle account type change
   const handleAccountTypeChange = (newType: 'individual' | 'business') => {
@@ -352,32 +444,36 @@ const ProfilePage: React.FC = () => {
         <TabNavigation>
           <TabButton 
             $active={activeTab === 'profile'}
-            onClick={() => setActiveTab('profile')}
+            onClick={() => handleTabChange('profile')}
           >
             <UserCircle size={18} />
             {language === 'bg' ? 'Профил' : 'Profile'}
           </TabButton>
-          <TabButton 
-            $active={false}
-            onClick={() => navigate('/my-listings')}
-          >
-            <Car size={18} />
-            {language === 'bg' ? 'Моите обяви' : 'My Ads'}
-          </TabButton>
-          <TabButton 
-            $active={activeTab === 'analytics'}
-            onClick={() => setActiveTab('analytics')}
-          >
-            <BarChart3 size={18} />
-            {language === 'bg' ? 'Статистика' : 'Analytics'}
-          </TabButton>
-          <TabButton 
-            $active={activeTab === 'settings'}
-            onClick={() => setActiveTab('settings')}
-          >
-            <Shield size={18} />
-            {language === 'bg' ? 'Настройки' : 'Settings'}
-          </TabButton>
+          {isOwnProfile && (
+            <>
+              <TabButton 
+                $active={activeTab === 'myads'}
+                onClick={() => handleTabChange('myads')}
+              >
+                <Car size={18} />
+                {language === 'bg' ? 'Моите обяви' : 'My Ads'}
+              </TabButton>
+              <TabButton 
+                $active={activeTab === 'analytics'}
+                onClick={() => handleTabChange('analytics')}
+              >
+                <BarChart3 size={18} />
+                {language === 'bg' ? 'Статистика' : 'Analytics'}
+              </TabButton>
+              <TabButton 
+                $active={activeTab === 'settings'}
+                onClick={() => handleTabChange('settings')}
+              >
+                <Shield size={18} />
+                {language === 'bg' ? 'Настройки' : 'Settings'}
+              </TabButton>
+            </>
+          )}
         </TabNavigation>
         
         {/* Cover Image - Only show in Profile tab */}
@@ -412,8 +508,8 @@ const ProfilePage: React.FC = () => {
         )}
 
         {/* Profile Grid - Only for Profile tab */}
-        {activeTab === 'profile' && (
-          <S.ProfileGrid>
+        {activeTab === 'profile' && !isTransitioning && (
+          <AnimatedProfileGrid key="profile-tab">
             {/* Profile Sidebar */}
             <S.ProfileSidebar $isBusinessMode={isBusinessMode}>
             {/* Profile Image */}
@@ -442,8 +538,30 @@ const ProfilePage: React.FC = () => {
                 {user.email}
               </div>
               
-              {/* Google Sync Button */}
-              {user.email?.includes('gmail.com') && (
+              {/* Seller Rating (for sellers only) */}
+              {!isOwnProfile && user.accountType === 'business' && (
+                <div style={{ marginBottom: '12px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
+                  <React.Suspense fallback={<div>...</div>}>
+                    {(() => {
+                      const RatingStars = React.lazy(() => import('../../components/Reviews/RatingStars'));
+                      return <RatingStars rating={user.rating?.average || 0} totalReviews={user.rating?.total || 0} showText={true} />;
+                    })()}
+                  </React.Suspense>
+                </div>
+              )}
+              
+              {/* Followers/Following Count */}
+              <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', fontSize: '0.75rem', color: '#666', marginBottom: '10px' }}>
+                <div>
+                  <strong>{user.stats?.followers || 0}</strong> {language === 'bg' ? 'Последователи' : 'Followers'}
+                </div>
+                <div>
+                  <strong>{user.stats?.following || 0}</strong> {language === 'bg' ? 'Следва' : 'Following'}
+                </div>
+              </div>
+              
+              {/* Google Sync Button - Own profile only */}
+              {isOwnProfile && user.email?.includes('gmail.com') && (
                 <SyncButton onClick={handleGoogleSync} disabled={syncing}>
                   <RefreshCw size={16} className={syncing ? 'spinning' : ''} />
                   {syncing 
@@ -483,18 +601,80 @@ const ProfilePage: React.FC = () => {
 
             {/* Actions */}
             <S.ProfileActions>
-              <S.ActionButton onClick={() => setEditing(!editing)}>
-                {editing ? t('profile.cancelEdit') : t('profile.editProfile')}
-              </S.ActionButton>
-              <S.ActionButton variant="secondary" onClick={() => { /* Navigate to sell page */ window.location.href = '/sell'; }}>
-                {t('profile.addCar')}
-              </S.ActionButton>
-              <S.ActionButton variant="secondary" onClick={() => { /* Navigate to messages */ window.location.href = '/messages'; }}>
-                {t('profile.messages')}
-              </S.ActionButton>
-              <S.ActionButton variant="danger" onClick={handleLogout}>
-                {t('profile.logout')}
-              </S.ActionButton>
+              {isOwnProfile ? (
+                <>
+                  {/* Own Profile Actions */}
+                  <S.ActionButton onClick={() => setEditing(!editing)}>
+                    {editing ? t('profile.cancelEdit') : t('profile.editProfile')}
+                  </S.ActionButton>
+                  <S.ActionButton variant="secondary" onClick={() => { /* Navigate to sell page */ window.location.href = '/sell'; }}>
+                    {t('profile.addCar')}
+                  </S.ActionButton>
+                  <S.ActionButton variant="secondary" onClick={() => { /* Navigate to messages */ window.location.href = '/messages'; }}>
+                    {t('profile.messages')}
+                  </S.ActionButton>
+                  <S.ActionButton variant="secondary" onClick={() => navigate('/users')}>
+                    <Users size={18} />
+                    {language === 'bg' ? 'Директория' : 'Browse Users'}
+                  </S.ActionButton>
+                  <S.ActionButton variant="danger" onClick={handleLogout}>
+                    {t('profile.logout')}
+                  </S.ActionButton>
+                </>
+              ) : (
+                <>
+                  {/* Viewing Another User's Profile */}
+                  <S.ActionButton variant="primary" onClick={async () => {
+                    if (!user?.uid || !targetUserId) return;
+                    try {
+                      // Import messaging service
+                      const { default: messagingService } = await import('../../services/messaging/messaging.service');
+                      // Create or get conversation
+                      const conversationId = await messagingService.getOrCreateConversation(
+                        user.uid,
+                        targetUserId
+                      );
+                      // Navigate to messages page with this conversation
+                      navigate(`/messages?conversation=${conversationId}`);
+                    } catch (error) {
+                      console.error('Error creating conversation:', error);
+                      toast.error(language === 'bg' ? 'Грешка при създаване на разговор' : 'Error creating conversation');
+                    }
+                  }}>
+                    <Phone size={18} />
+                    {language === 'bg' ? 'Изпрати съобщение' : 'Send Message'}
+                  </S.ActionButton>
+                  <FollowButton 
+                    $following={isFollowing}
+                    onClick={handleFollowToggle}
+                    disabled={followLoading}
+                  >
+                    {isFollowing ? <UserCheck size={16} /> : <UserPlus size={16} />}
+                    {isFollowing 
+                      ? (language === 'bg' ? 'Последван' : 'Following')
+                      : (language === 'bg' ? 'Последвай' : 'Follow')
+                    }
+                  </FollowButton>
+                  <S.ActionButton variant="secondary" onClick={() => navigate('/users')}>
+                    <Users size={18} />
+                    {language === 'bg' ? 'Обратно към директорията' : 'Back to Directory'}
+                  </S.ActionButton>
+                  <S.ActionButton variant="secondary" onClick={() => {
+                    // Scroll to reviews section
+                    const reviewsSection = document.querySelector('[data-section="reviews"]');
+                    if (reviewsSection) {
+                      reviewsSection.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }}>
+                    <MessageCircle size={18} />
+                    {language === 'bg' ? 'Напиши отзив' : 'Write Review'}
+                  </S.ActionButton>
+                  <S.ActionButton variant="secondary" onClick={() => navigate('/')}>
+                    <Home size={18} />
+                    {language === 'bg' ? 'Начало' : 'Home'}
+                  </S.ActionButton>
+                </>
+              )}
             </S.ProfileActions>
           </S.ProfileSidebar>
 
@@ -503,7 +683,7 @@ const ProfilePage: React.FC = () => {
             {/* Statistics Overview */}
             <S.ContentSection $isBusinessMode={isBusinessMode}>
               <ProfileStatsComponent
-                carsListed={user.stats?.carsListed || 0}
+                carsListed={user.stats?.carsListed || userCars?.length || 0}
                 carsSold={user.stats?.carsSold || 0}
                 totalViews={user.stats?.totalViews || 0}
                 responseTime={user.stats?.responseTime || 0}
@@ -511,19 +691,62 @@ const ProfilePage: React.FC = () => {
                 totalMessages={user.stats?.totalMessages || 0}
               />
             </S.ContentSection>
+            
+            {/* Contact Information - For other users (sellers) */}
+            {!isOwnProfile && user?.accountType === 'business' && (
+              <S.ContentSection>
+                <S.SectionHeader>
+                  <h2>{language === 'bg' ? 'Информация за контакт' : 'Contact Information'}</h2>
+                </S.SectionHeader>
+                <div style={{ display: 'grid', gap: '12px' }}>
+                  {user.businessPhone && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px', background: '#f9f9f9', borderRadius: '8px' }}>
+                      <Phone size={16} color="#FF7900" />
+                      <a href={`tel:${user.businessPhone}`} style={{ color: '#1a1a1a', textDecoration: 'none', fontWeight: '500' }}>
+                        {user.businessPhone}
+                      </a>
+                    </div>
+                  )}
+                  {user.businessEmail && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px', background: '#f9f9f9', borderRadius: '8px' }}>
+                      <MessageCircle size={16} color="#FF7900" />
+                      <a href={`mailto:${user.businessEmail}`} style={{ color: '#1a1a1a', textDecoration: 'none', fontWeight: '500' }}>
+                        {user.businessEmail}
+                      </a>
+                    </div>
+                  )}
+                  {user.website && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px', background: '#f9f9f9', borderRadius: '8px' }}>
+                      <Building2 size={16} color="#FF7900" />
+                      <a href={user.website} target="_blank" rel="noopener noreferrer" style={{ color: '#1a1a1a', textDecoration: 'none', fontWeight: '500' }}>
+                        {user.website}
+                      </a>
+                    </div>
+                  )}
+                  {user.businessAddress && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px', background: '#f9f9f9', borderRadius: '8px' }}>
+                      <Home size={16} color="#FF7900" />
+                      <span style={{ color: '#1a1a1a', fontWeight: '500' }}>
+                        {user.businessAddress}, {user.businessCity}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </S.ContentSection>
+            )}
 
             {/* Personal Information */}
             <S.ContentSection $isBusinessMode={isBusinessMode}>
               <S.SectionHeader>
                 <h2>{t('profile.personalInfo')}</h2>
-                {!editing && (
+                {!editing && isOwnProfile && (
                   <button className="edit-btn" onClick={() => setEditing(true)}>
                     {t('profile.edit')}
                   </button>
                 )}
               </S.SectionHeader>
 
-              {editing ? (
+              {editing && isOwnProfile ? (
                 <form onSubmit={(e) => { e.preventDefault(); handleSaveProfile(); }}>
                   {/* Account Type Selector */}
                   <div style={{ marginBottom: '16px', padding: '12px', background: '#f9f9f9', borderRadius: '8px', border: '2px solid #e0e0e0' }}>
@@ -1086,47 +1309,159 @@ const ProfilePage: React.FC = () => {
             </S.ContentSection>
 
             {/* Photo Gallery */}
-            <S.ContentSection>
-              <ProfileGallery
-                userId={user.uid}
-                images={(user.gallery || []).map(img => typeof img === 'string' ? img : img.url)}
-                maxImages={9}
-                onUpdate={async (images) => {
-                  try {
-                    const galleryData = images.map(url => ({
-                      url,
-                      uploadedAt: new Date(),
-                      caption: ''
-                    }));
-                    await updateDoc(doc(db, 'users', user.uid), {
-                      gallery: galleryData
-                    });
-                    // Update local user state
-                    setUser(prev => prev ? { ...prev, gallery: galleryData } : null);
-                    if (process.env.NODE_ENV === 'development') {
-                      console.log('✅ Gallery updated and saved');
-                    }
-                  } catch (error) {
-                    if (process.env.NODE_ENV === 'development') {
+            {isOwnProfile && (
+              <S.ContentSection>
+                <ProfileGallery
+                  userId={user.uid}
+                  images={(user.gallery || []).map(img => typeof img === 'string' ? img : img.url)}
+                  maxImages={9}
+                  onUpdate={async (images) => {
+                    try {
+                      const galleryData = images.map(url => ({
+                        url,
+                        uploadedAt: new Date(),
+                        caption: ''
+                      }));
+                      await updateDoc(doc(db, 'users', user.uid), {
+                        gallery: galleryData
+                      });
+                      // Update local user state
+                      setUser(prev => prev ? { ...prev, gallery: galleryData } : null);
+                      if (process.env.NODE_ENV === 'development') {
+                        console.log('✅ Gallery updated and saved');
+                      }
+                    } catch (error) {
+                      if (process.env.NODE_ENV === 'development') {
                       console.error('❌ Failed to save gallery:', error);
                     }
                   }
                 }}
               />
             </S.ContentSection>
+            )}
+            
+            {/* User's Cars - For other users (sellers) */}
+            {!isOwnProfile && user?.uid && user.accountType === 'business' && userCars && userCars.length > 0 && (
+              <S.ContentSection>
+                <S.SectionHeader>
+                  <h2>{language === 'bg' ? 'Активни обяви' : 'Active Listings'}</h2>
+                  <span style={{ fontSize: '0.9rem', color: '#666' }}>
+                    {userCars.length} {language === 'bg' ? 'автомобила' : 'cars'}
+                  </span>
+                </S.SectionHeader>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '16px' }}>
+                  {userCars.slice(0, 6).map(car => (
+                    <div 
+                      key={car.id}
+                      onClick={() => navigate(`/car/${car.id}`)}
+                      style={{
+                        background: 'white',
+                        borderRadius: '8px',
+                        overflow: 'hidden',
+                        cursor: 'pointer',
+                        border: '1px solid #e0e0e0',
+                        transition: 'transform 0.2s, box-shadow 0.2s'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = 'translateY(-4px)';
+                        e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'translateY(0)';
+                        e.currentTarget.style.boxShadow = 'none';
+                      }}
+                    >
+                      <img 
+                        src={car.imageUrl || car.mainImage || '/placeholder-car.jpg'} 
+                        alt={car.title}
+                        style={{ width: '100%', height: '180px', objectFit: 'cover' }}
+                      />
+                      <div style={{ padding: '12px' }}>
+                        <div style={{ fontWeight: '600', marginBottom: '4px', fontSize: '0.95rem' }}>
+                          {car.make} {car.model}
+                        </div>
+                        <div style={{ color: '#666', fontSize: '0.85rem', marginBottom: '8px' }}>
+                          {car.year} • {car.mileage?.toLocaleString()} km
+                        </div>
+                        <div style={{ color: '#FF7900', fontWeight: '700', fontSize: '1.1rem' }}>
+                          {car.price?.toLocaleString()} €
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </S.ContentSection>
+            )}
+            
+            {/* Reviews Section - For other users only */}
+            {!isOwnProfile && user?.uid && (
+              <S.ContentSection data-section="reviews">
+                <S.SectionHeader>
+                  <h2>{language === 'bg' ? 'Отзиви' : 'Reviews'}</h2>
+                </S.SectionHeader>
+                
+                {/* Write Review Form - If viewing a seller */}
+                {user.accountType === 'business' && (
+                  <React.Suspense fallback={<div>Loading...</div>}>
+                    {(() => {
+                      const ReviewComposer = React.lazy(() => import('../../components/Reviews/ReviewComposer'));
+                      return <ReviewComposer 
+                        carId="general" 
+                        sellerId={user.uid} 
+                        onReviewSubmitted={() => {
+                          toast.success(language === 'bg' ? 'Благодаря за отзива!' : 'Thank you for your review!');
+                        }}
+                      />;
+                    })()}
+                  </React.Suspense>
+                )}
+                
+                {/* Reviews List */}
+                <React.Suspense fallback={<div>Loading reviews...</div>}>
+                  {(() => {
+                    const ReviewsList = React.lazy(() => import('../../components/Reviews/ReviewsList'));
+                    return <ReviewsList sellerId={user.uid} />;
+                  })()}
+                </React.Suspense>
+              </S.ContentSection>
+            )}
           </S.ProfileContent>
-        </S.ProfileGrid>
+        </AnimatedProfileGrid>
         )}
 
         {/* Content for other tabs - Full width without sidebar */}
-        {activeTab !== 'profile' && (
-          <FullWidthContent>
+        {activeTab !== 'profile' && !isTransitioning && (
+          <FullWidthContent key={`tab-${activeTab}`}>
+            {activeTab === 'myads' && (
+              <AnimatedTabContent>
+                <GarageSection
+                  cars={((userCars || []) as any[]).map(car => ({
+                    ...car,
+                    currency: 'EUR' as const,
+                    createdAt: car.createdAt || new Date(),
+                    title: car.title || `${car.make} ${car.model}`
+                  }))}
+                  onEdit={(carId) => navigate(`/car/${carId}?edit=true`)}
+                  onDelete={(carId) => {
+                    if (window.confirm(language === 'bg' ? 'Сигурни ли сте?' : 'Are you sure?')) {
+                      loadUserCars?.();
+                    }
+                  }}
+                  onAddNew={() => navigate('/sell')}
+                />
+              </AnimatedTabContent>
+            )}
+
             {activeTab === 'analytics' && (
-              <ProfileAnalyticsDashboard userId={user.uid} />
+              <AnimatedTabContent>
+                <ProfileAnalyticsDashboard userId={user.uid} />
+              </AnimatedTabContent>
             )}
 
             {activeTab === 'settings' && (
-              <PrivacySettings userId={user.uid} />
+              <AnimatedTabContent>
+                <PrivacySettings userId={user.uid} />
+              </AnimatedTabContent>
             )}
           </FullWidthContent>
         )}

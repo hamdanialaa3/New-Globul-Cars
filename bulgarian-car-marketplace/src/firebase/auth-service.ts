@@ -113,6 +113,14 @@ export interface BulgarianUser {
     totalMessages?: number;
     averageRating?: number;
     totalReviews?: number;
+    followers?: number;
+    following?: number;
+  };
+  
+  // Rating (for sellers)
+  rating?: {
+    average: number;
+    total: number;
   };
   
   location?: {
@@ -412,6 +420,22 @@ export class BulgarianAuthService {
       }
       return null;
     } catch (error: unknown) {
+      throw this.handleAuthError(error);
+    }
+  }
+
+  // Get any user profile by ID (for viewing other users' profiles)
+  async getUserProfileById(userId: string): Promise<BulgarianUser | null> {
+    try {
+      if (!userId) return null;
+
+      const userDoc = await getDoc(doc(db, 'users', userId));
+      if (userDoc.exists()) {
+        return userDoc.data() as BulgarianUser;
+      }
+      return null;
+    } catch (error: unknown) {
+      console.error('Error fetching user profile by ID:', error);
       throw this.handleAuthError(error);
     }
   }

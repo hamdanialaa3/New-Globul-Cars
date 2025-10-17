@@ -34,13 +34,13 @@ export const translations = {
         fast: { title: 'Бърза обработка', description: 'Бързи обяви на коли и незабавна комуникация между купувачи и продавачи' }
       },
       cityCars: {
-        title: 'Коли по градове',
-        subtitle: 'Разгледайте автомобили във всички градове на България',
-        viewAll: 'Виж всички градове',
+        title: 'Коли по региони',
+        subtitle: 'Разгледайте автомобили във всички региони на България',
+        viewAll: 'Виж всички региони',
         carsAvailable: 'налични коли',
         viewCars: 'Виж коли',
-        selectCity: 'Изберете град',
-        mapDescription: 'Кликнете на града, за да видите автомобилите'
+        selectCity: 'Изберете регион',
+        mapDescription: 'Кликнете на региона, за да видите автомобилите'
       }
     },
     cars: {
@@ -184,6 +184,7 @@ export const translations = {
       addCar: 'Добави кола',
       messages: 'Съобщения',
       logout: 'Изход',
+      load_user_error_generic: 'Грешка при зареждане на профила',
       personalInfo: 'Лична информация',
       edit: 'Редактирай',
       save: 'Запази',
@@ -826,13 +827,13 @@ export const translations = {
         fast: { title: 'Fast Processing', description: 'Quick car listings and instant communication between buyers and sellers' }
       },
       cityCars: {
-        title: 'Cars by Cities',
-        subtitle: 'Explore vehicles in all cities across Bulgaria',
-        viewAll: 'View All Cities',
+        title: 'Cars by Regions',
+        subtitle: 'Explore vehicles in all regions across Bulgaria',
+        viewAll: 'View All Regions',
         carsAvailable: 'cars available',
         viewCars: 'View Cars',
-        selectCity: 'Select a city',
-        mapDescription: 'Click on a city to view its cars'
+        selectCity: 'Select a region',
+        mapDescription: 'Click on a region to view its cars'
       }
     },
     cars: {
@@ -976,6 +977,7 @@ export const translations = {
       addCar: 'Add Car',
       messages: 'Messages',
       logout: 'Logout',
+      load_user_error_generic: 'Error loading profile',
       personalInfo: 'Personal Information',
       edit: 'Edit',
       save: 'Save',

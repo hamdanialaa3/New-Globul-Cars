@@ -28,7 +28,24 @@ const ImagePreview = styled.div<{ $hasImage: boolean }>`
   overflow: hidden;
   border: 4px solid #fff;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  background: ${props => props.$hasImage ? 'transparent' : 'linear-gradient(135deg, #667eea, #764ba2)'};
+  
+  /* 🎨 Orange glassmorphic background for empty state */
+  background: ${props => props.$hasImage 
+    ? 'transparent' 
+    : `linear-gradient(135deg,
+        rgba(255, 159, 42, 0.35) 0%,
+        rgba(255, 143, 16, 0.45) 50%,
+        rgba(255, 121, 0, 0.55) 100%
+      )`
+  };
+  backdrop-filter: ${props => props.$hasImage ? 'none' : 'blur(8px) saturate(150%)'};
+  
+  /* Glassy border for empty state */
+  border: ${props => props.$hasImage 
+    ? '4px solid #fff' 
+    : '4px solid rgba(255, 215, 0, 0.4)'
+  };
+  
   display: flex;
   align-items: center;
   justify-content: center;
@@ -37,7 +54,10 @@ const ImagePreview = styled.div<{ $hasImage: boolean }>`
 
   &:hover {
     transform: scale(1.05);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    box-shadow: ${props => props.$hasImage
+      ? '0 6px 20px rgba(0, 0, 0, 0.2)'
+      : '0 8px 24px rgba(255, 143, 16, 0.35), 0 0 0 2px rgba(255, 215, 0, 0.3)'
+    };
   }
 
   img {

@@ -4,49 +4,67 @@
 
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 import firebaseApp, { db } from '../firebase/firebase-config';
-import { doc, updateDoc } from 'firebase/firestore';
+import { doc, setDoc, collection } from 'firebase/firestore';
 import { bulgarianAuthService } from '../firebase';
 
 class NotificationService {
   private messaging = getMessaging(firebaseApp);
+  private readonly vapidKey = process.env.REACT_APP_FIREBASE_VAPID_KEY;
 
   /**
-   * Requests permission to show notifications and saves the token.
-   * @returns {Promise<string | null>} The FCM token or null if permission denied.
+   * Requests permission to show notifications and saves the token
+   * Supports multiple devices per user via fcmTokens subcollection
    */
   async requestPermissionAndSaveToken(): Promise<string | null> {
-    console.log('Requesting notification permission...');
+    // Silent fail if VAPID key is not configured (not critical for MVP)
+    if (!this.vapidKey) {
+      if (process.env.NODE_ENV === 'development') {
+        console.info('💡 FCM notifications disabled: VAPID key not configured in .env');
+      }
+      return null;
+    }
+    
     try {
       const currentUser = await bulgarianAuthService.getCurrentUserProfile();
       if (!currentUser) {
-        console.warn('Cannot request notification permission: user not logged in.');
-        return null;
+        return null; // Silent fail if not logged in
       }
 
       const permission = await Notification.requestPermission();
       if (permission === 'granted') {
-        console.log('Notification permission granted.');
         const fcmToken = await getToken(this.messaging, {
-          vapidKey: 'YOUR_VAPID_KEY_HERE', // TODO: Replace with your actual VAPID key from Firebase Console
+          vapidKey: this.vapidKey
         });
 
         if (fcmToken) {
-          console.log('FCM Token:', fcmToken);
-          // Save the token to the user's document in Firestore
-          const userDocRef = doc(db, 'users', currentUser.uid);
-          await updateDoc(userDocRef, { fcmToken });
-          console.log('FCM token saved to Firestore.');
+          // Save token to fcmTokens subcollection (supports multiple devices)
+          const tokenRef = doc(
+            collection(db, 'users', currentUser.uid, 'fcmTokens'),
+            fcmToken
+          );
+          
+          await setDoc(tokenRef, {
+            token: fcmToken,
+            createdAt: new Date(),
+            lastUsed: new Date(),
+            deviceInfo: {
+              userAgent: navigator.userAgent,
+              platform: navigator.platform
+            }
+          }, { merge: true });
+          
+          if (process.env.NODE_ENV === 'development') {
+            console.log('✅ FCM token saved');
+          }
           return fcmToken;
-        } else {
-          console.warn('No registration token available. Request permission to generate one.');
-          return null;
         }
-      } else {
-        console.warn('Notification permission denied.');
-        return null;
       }
+      return null;
     } catch (error) {
-      console.error('An error occurred while requesting notification permission or getting token:', error);
+      // Silent fail in production, log in development
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('⚠️ FCM setup incomplete (non-critical):', (error as Error).message);
+      }
       return null;
     }
   }

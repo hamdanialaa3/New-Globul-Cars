@@ -3,7 +3,7 @@
 // Main entry point for Firebase Functions
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.registerIoTDevice = exports.setupIoTInfrastructure = exports.analyzeMaintenanceNeeds = exports.onEmergencyAlertCreated = exports.receiveIoTData = exports.getInsuranceMarketStats = exports.getInsuranceProviders = exports.getClaimDetails = exports.fileInsuranceClaim = exports.getCustomerPolicies = exports.purchaseInsurancePolicy = exports.getInsuranceQuotes = exports.getCertificationStats = exports.verifyCertificate = exports.getVehicleCertificate = exports.getCustomerInspections = exports.getInspectionDetails = exports.scheduleVehicleInspection = exports.getServiceNetworkStats = exports.getAvailableTimeSlots = exports.getServiceCenterReviews = exports.submitServiceReview = exports.getCustomerServiceRequests = exports.createServiceRequest = exports.getServiceCenterDetails = exports.findServiceCenters = exports.getEVNetworkStats = exports.getEVCompatibility = exports.getEVChargingRoute = exports.findEVChargingStations = exports.getCachedVehicleHistory = exports.getVehicleHistoryReport = exports.b2bMarketInsightsAPI = exports.b2bValuationAPI = exports.upgradeB2BSubscription = exports.cancelB2BSubscription = exports.getB2BSubscription = exports.createB2BSubscription = exports.getCarValuation = exports.getSubscriptionStatus = exports.getRegionalPriceVariations = exports.getSalesPeakHours = exports.getDealerPerformance = exports.getMarketTrends = exports.getAveragePriceByModel = exports.onUserDelete = exports.onUserCreate = exports.onCarDelete = exports.onCarCreate = exports.incrementCarViewCount = void 0;
-exports.syncAuthToFirestore = exports.getActiveAuthUsers = exports.getAuthUsersCount = exports.tiktokShoppingFeed = exports.instagramShoppingFeed = exports.googleMerchantFeed = exports.messengerWebhook = exports.handleFacebookDataDeletion = exports.verifyRecaptchaToken = exports.translateText = exports.analyzeCarImage = exports.geocodeAddressOnCarCreate = exports.sendMaintenanceReminders = exports.analyzeProactiveMaintenance = exports.acceptServiceOffer = exports.getUserMaintenanceAlerts = exports.createMaintenanceAlert = exports.resetDigitalTwin = exports.getDigitalTwinStats = exports.analyzeDigitalTwinHealth = exports.syncDigitalTwinToBigQuery = exports.onLiveDataUpdated = exports.getDigitalTwin = exports.removeIoTDevice = exports.getIoTDeviceStats = void 0;
+exports.handleStripeWebhook = exports.confirmCarPayment = exports.createCarPaymentIntent = exports.getStripeAccountStatus = exports.createStripeAccountLink = exports.createStripeSellerAccount = exports.reindexAllCars = exports.syncCarToAlgolia = exports.getSellerMetrics = exports.validateReview = exports.aggregateSellerRating = exports.updateMessageReadStatus = exports.sendMessageNotification = exports.listUsersWithRoles = exports.getUserClaims = exports.setUserRole = exports.checkSellerEligibility = exports.upgradeToSeller = exports.handleTokenRefresh = exports.setDefaultUserRole = exports.syncAuthToFirestore = exports.getActiveAuthUsers = exports.getAuthUsersCount = exports.tiktokShoppingFeed = exports.instagramShoppingFeed = exports.googleMerchantFeed = exports.messengerWebhook = exports.handleFacebookDataDeletion = exports.verifyRecaptchaToken = exports.translateText = exports.analyzeCarImage = exports.geocodeAddressOnCarCreate = exports.sendMaintenanceReminders = exports.analyzeProactiveMaintenance = exports.acceptServiceOffer = exports.getUserMaintenanceAlerts = exports.createMaintenanceAlert = exports.resetDigitalTwin = exports.getDigitalTwinStats = exports.analyzeDigitalTwinHealth = exports.syncDigitalTwinToBigQuery = exports.onLiveDataUpdated = exports.getDigitalTwin = exports.removeIoTDevice = exports.getIoTDeviceStats = void 0;
 // Export statistics and counter functions
 var stats_1 = require("./stats");
 Object.defineProperty(exports, "incrementCarViewCount", { enumerable: true, get: function () { return stats_1.incrementCarViewCount; } });
@@ -124,4 +124,40 @@ var get_auth_users_count_1 = require("./get-auth-users-count");
 Object.defineProperty(exports, "getAuthUsersCount", { enumerable: true, get: function () { return get_auth_users_count_1.getAuthUsersCount; } });
 Object.defineProperty(exports, "getActiveAuthUsers", { enumerable: true, get: function () { return get_auth_users_count_1.getActiveAuthUsers; } });
 Object.defineProperty(exports, "syncAuthToFirestore", { enumerable: true, get: function () { return get_auth_users_count_1.syncAuthToFirestore; } });
+// Export RBAC and Custom Claims functions
+var set_user_claims_1 = require("./auth/set-user-claims");
+Object.defineProperty(exports, "setDefaultUserRole", { enumerable: true, get: function () { return set_user_claims_1.setDefaultUserRole; } });
+Object.defineProperty(exports, "handleTokenRefresh", { enumerable: true, get: function () { return set_user_claims_1.handleTokenRefresh; } });
+var upgrade_to_seller_1 = require("./auth/upgrade-to-seller");
+Object.defineProperty(exports, "upgradeToSeller", { enumerable: true, get: function () { return upgrade_to_seller_1.upgradeToSeller; } });
+Object.defineProperty(exports, "checkSellerEligibility", { enumerable: true, get: function () { return upgrade_to_seller_1.checkSellerEligibility; } });
+var admin_role_management_1 = require("./auth/admin-role-management");
+Object.defineProperty(exports, "setUserRole", { enumerable: true, get: function () { return admin_role_management_1.setUserRole; } });
+Object.defineProperty(exports, "getUserClaims", { enumerable: true, get: function () { return admin_role_management_1.getUserClaims; } });
+Object.defineProperty(exports, "listUsersWithRoles", { enumerable: true, get: function () { return admin_role_management_1.listUsersWithRoles; } });
+// Export Messaging and Notifications functions
+var send_message_notification_1 = require("./messaging/send-message-notification");
+Object.defineProperty(exports, "sendMessageNotification", { enumerable: true, get: function () { return send_message_notification_1.sendMessageNotification; } });
+Object.defineProperty(exports, "updateMessageReadStatus", { enumerable: true, get: function () { return send_message_notification_1.updateMessageReadStatus; } });
+// Export Reviews and Ratings functions
+var aggregate_seller_ratings_1 = require("./reviews/aggregate-seller-ratings");
+Object.defineProperty(exports, "aggregateSellerRating", { enumerable: true, get: function () { return aggregate_seller_ratings_1.aggregateSellerRating; } });
+Object.defineProperty(exports, "validateReview", { enumerable: true, get: function () { return aggregate_seller_ratings_1.validateReview; } });
+// Export Seller Dashboard functions
+var get_seller_metrics_1 = require("./seller/get-seller-metrics");
+Object.defineProperty(exports, "getSellerMetrics", { enumerable: true, get: function () { return get_seller_metrics_1.getSellerMetrics; } });
+// Export Search Engine functions
+var sync_to_algolia_1 = require("./search/sync-to-algolia");
+Object.defineProperty(exports, "syncCarToAlgolia", { enumerable: true, get: function () { return sync_to_algolia_1.syncCarToAlgolia; } });
+Object.defineProperty(exports, "reindexAllCars", { enumerable: true, get: function () { return sync_to_algolia_1.reindexAllCars; } });
+// Export Payment functions (Stripe Connect)
+var stripe_seller_account_1 = require("./payments/stripe-seller-account");
+Object.defineProperty(exports, "createStripeSellerAccount", { enumerable: true, get: function () { return stripe_seller_account_1.createStripeSellerAccount; } });
+Object.defineProperty(exports, "createStripeAccountLink", { enumerable: true, get: function () { return stripe_seller_account_1.createStripeAccountLink; } });
+Object.defineProperty(exports, "getStripeAccountStatus", { enumerable: true, get: function () { return stripe_seller_account_1.getStripeAccountStatus; } });
+var create_payment_1 = require("./payments/create-payment");
+Object.defineProperty(exports, "createCarPaymentIntent", { enumerable: true, get: function () { return create_payment_1.createCarPaymentIntent; } });
+Object.defineProperty(exports, "confirmCarPayment", { enumerable: true, get: function () { return create_payment_1.confirmCarPayment; } });
+var webhook_handler_1 = require("./payments/webhook-handler");
+Object.defineProperty(exports, "handleStripeWebhook", { enumerable: true, get: function () { return webhook_handler_1.handleStripeWebhook; } });
 //# sourceMappingURL=index.js.map

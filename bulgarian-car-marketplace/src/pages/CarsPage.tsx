@@ -136,8 +136,9 @@ const CarsPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
-  // Get city filter from URL
+  // Get filters from URL
   const cityId = searchParams.get('city');
+  const makeParam = searchParams.get('make');
   const cityData = cityId ? BULGARIAN_CITIES.find(c => c.id === cityId) : null;
 
   // Load cars from Firebase
@@ -147,13 +148,14 @@ const CarsPage: React.FC = () => {
         setLoading(true);
         setError(null);
         
-        // Read region from URL params INSIDE useEffect
+        // Read filters from URL params INSIDE useEffect
         const regionParam = searchParams.get('city'); // 'city' param is actually region!
+        const makeParam = searchParams.get('make');
         
-        console.log('🔍 URL params:', { regionParam });
-        logger.info('Loading cars from region', { region: regionParam });
+        console.log('🔍 URL params:', { regionParam, makeParam });
+        logger.info('Loading cars with filters', { region: regionParam, make: makeParam });
 
-        // Simple filter: only by region
+        // Build filters object
         const filters: any = {
           limit: 100,
           sortBy: 'createdAt',
@@ -164,15 +166,33 @@ const CarsPage: React.FC = () => {
         if (regionParam) {
           filters.cityId = regionParam; // Will be used as region in service
           console.log('🎯 Filtering by region:', regionParam);
-        } else {
-          console.log('📋 No region filter - loading all cars');
+        }
+
+        // Add make (brand) filter if provided
+        if (makeParam) {
+          filters.make = makeParam;
+          console.log('🎯 Filtering by make:', makeParam);
+        }
+
+        if (!regionParam && !makeParam) {
+          console.log('📋 No filters - loading all cars');
         }
 
         // Fetch cars from Firebase
+        console.log('📡 Fetching cars with filters:', filters);
         const result = await carListingService.getListings(filters);
         
+        console.log('📦 Result from Firebase:', {
+          total: result.listings.length,
+          filters: { region: regionParam, make: makeParam }
+        });
+        
         setCars(result.listings);
-        console.log(`✅ Loaded ${result.listings.length} cars from region: ${regionParam || 'all regions'}`);
+        console.log(`✅ Loaded ${result.listings.length} cars:`, 
+          regionParam ? `from region: ${regionParam}` : '',
+          makeParam ? `make: ${makeParam}` : '',
+          !regionParam && !makeParam ? 'all cars' : ''
+        );
       } catch (err: any) {
         console.error('❌ Error loading cars:', err);
         setError(err.message || 'Failed to load cars');
@@ -195,11 +215,33 @@ const CarsPage: React.FC = () => {
       <PageContainer>
         {/* Page Header */}
         <PageHeader>
-          <h1>{cityData ? `${t('cars.title')} - ${getCityDisplayName()}` : t('cars.title')}</h1>
+          <h1>
+            {cityData 
+              ? `${t('cars.title')} - ${getCityDisplayName()}`
+              : makeParam
+                ? `${t('cars.title')} - ${makeParam}`
+                : t('cars.title')}
+          </h1>
           <p>{t('cars.subtitle')}</p>
+          
+          {/* City Badge */}
           {cityData && (
             <CityBadge>
               📍 {getCityDisplayName()} · {cars.length} {language === 'bg' ? 'автомобила' : 'cars'}
+            </CityBadge>
+          )}
+          
+          {/* Brand/Make Badge */}
+          {makeParam && !cityData && (
+            <CityBadge>
+              🚗 {makeParam} · {cars.length} {language === 'bg' ? 'автомобила' : 'cars'}
+            </CityBadge>
+          )}
+          
+          {/* Combined Badge (Region + Brand) */}
+          {cityData && makeParam && (
+            <CityBadge>
+              📍 {getCityDisplayName()} · 🚗 {makeParam} · {cars.length} {language === 'bg' ? 'автомобила' : 'cars'}
             </CityBadge>
           )}
         </PageHeader>
@@ -228,13 +270,21 @@ const CarsPage: React.FC = () => {
             <CarIcon size={64} color="#FF7900" style={{ marginBottom: '16px', opacity: 0.6 }} />
             <h3>{language === 'bg' ? 'Няма намерени автомобили' : 'No cars found'}</h3>
             <p>
-              {cityData 
+              {cityData && makeParam
                 ? (language === 'bg' 
-                    ? `В момента няма обяви за автомобили в ${getCityDisplayName()}.` 
-                    : `Currently no car listings in ${getCityDisplayName()}.`)
-                : (language === 'bg' 
-                    ? 'В момента няма налични обяви за автомобили.' 
-                    : 'Currently no car listings available.')}
+                    ? `В момента няма обяви за ${makeParam} в ${getCityDisplayName()}.` 
+                    : `Currently no ${makeParam} listings in ${getCityDisplayName()}.`)
+                : cityData 
+                  ? (language === 'bg' 
+                      ? `В момента няма обяви за автомобили в ${getCityDisplayName()}.` 
+                      : `Currently no car listings in ${getCityDisplayName()}.`)
+                  : makeParam
+                    ? (language === 'bg' 
+                        ? `В момента няма обяви за ${makeParam}.` 
+                        : `Currently no ${makeParam} listings available.`)
+                    : (language === 'bg' 
+                        ? 'В момента няма налични обяви за автомобили.' 
+                        : 'Currently no car listings available.')}
             </p>
           </EmptyState>
         )}

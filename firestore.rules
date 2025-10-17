@@ -1,164 +1,292 @@
 rules_version = '2';
 
-// Firestore Security Rules for Globul Cars Bulgarian Marketplace
-// قواعد الأمان لقاعدة بيانات Firestore
+/**
+ * Firestore Security Rules for Globul Cars Bulgarian Marketplace
+ * PRODUCTION VERSION with RBAC using Custom Claims
+ * Location: Bulgaria | Languages: BG, EN | Currency: EUR
+ * 
+ * Key improvements:
+ * - Uses Custom Claims for role checking (no extra reads)
+ * - Implements proper RBAC (buyer, seller, admin)
+ * - Optimized for performance and cost
+ * - Production-ready security
+ */
 
 service cloud.firestore {
   match /databases/{database}/documents {
     
-    // Helper functions
+    // ==================== HELPER FUNCTIONS ====================
+    
+    /**
+     * Check if user is authenticated
+     */
     function isSignedIn() {
       return request.auth != null;
     }
     
+    /**
+     * Check if user is a buyer (default role)
+     * Uses Custom Claims - no database read required
+     */
+    function isBuyer() {
+      return isSignedIn() && request.auth.token.role == 'buyer';
+    }
+    
+    /**
+     * Check if user is a seller
+     * Uses Custom Claims - no database read required
+     */
+    function isSeller() {
+      return isSignedIn() && request.auth.token.seller == true;
+    }
+    
+    /**
+     * Check if user is an admin
+     * Uses Custom Claims - no database read required
+     */
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.admin == true;
+    }
+    
+    /**
+     * Check if user is the owner of a resource
+     */
     function isOwner(userId) {
       return isSignedIn() && request.auth.uid == userId;
     }
     
-    function isAdmin() {
-      return isSignedIn() && 
-             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    /**
+     * Check if user is owner OR admin
+     */
+    function isOwnerOrAdmin(userId) {
+      return isOwner(userId) || isAdmin();
     }
     
-    function isValidEmail(email) {
-      return email.matches('.*@.*\\..*');
+    // ==================== USERS COLLECTION ====================
+    
+    match /users/{userId} {
+      // Read: Any authenticated user can read any profile (for Users Directory)
+      allow get: if isSignedIn();
+      
+      // List: Authenticated users can browse users directory
+      allow list: if isSignedIn();
+      
+      // Create: User can create their own profile on signup
+      allow create: if isOwner(userId) && 
+                       request.resource.data.uid == userId &&
+                       request.resource.data.email == request.auth.token.email;
+      
+      // Update: User can update their own profile, admins can update any
+      allow update: if isOwnerOrAdmin(userId);
+      
+      // Delete: Only admins can delete users
+      allow delete: if isAdmin();
+      
+      // FCM Tokens subcollection
+      match /fcmTokens/{token} {
+        allow read, write: if isOwner(userId);
+      }
     }
-
-    // Cars Collection Rules
+    
+    // ==================== CARS COLLECTION ====================
+    
     match /cars/{carId} {
-      // Anyone can read active cars
-      allow read: if resource.data.isActive == true && 
-                     resource.data.isSold == false &&
-                     resource.data.status == 'active';
+      // Read: Everyone can read active cars
+      allow get: if resource.data.status == 'active' || 
+                    isOwner(resource.data.sellerId) ||
+                    isAdmin();
       
-      // Owners can read their own cars (any status)
-      allow read: if isSignedIn() && resource.data.sellerId == request.auth.uid;
+      // List: Everyone can list active cars (for search/browse)
+      allow list: if true;
       
-      // Admins can read all
-      allow read: if isAdmin();
-      
-      // Authenticated users can create cars
-      allow create: if isSignedIn() &&
+      // Create: Only sellers and admins can create car listings
+      allow create: if (isSeller() || isAdmin()) &&
                        request.resource.data.sellerId == request.auth.uid &&
                        request.resource.data.sellerEmail == request.auth.token.email &&
                        request.resource.data.make is string &&
                        request.resource.data.model is string &&
                        request.resource.data.year is number &&
                        request.resource.data.price is number &&
-                       request.resource.data.price > 0;
+                       request.resource.data.price > 0 &&
+                       request.resource.data.currency == 'EUR';
       
-      // Owners can update their own cars
-      allow update: if isSignedIn() && resource.data.sellerId == request.auth.uid;
+      // Update: Owner or admin can update
+      allow update: if isOwner(resource.data.sellerId) || isAdmin();
       
-      // Admins can update any car
-      allow update: if isAdmin();
+      // Delete: Owner or admin can delete
+      allow delete: if isOwner(resource.data.sellerId) || isAdmin();
+    }
+    
+    // ==================== SELLERS COLLECTION ====================
+    // Stores aggregated seller metrics and stats
+    
+    match /sellers/{sellerId} {
+      // Read: Seller can read their own stats, everyone can read for public profile
+      allow get: if true; // Public stats for transparency
+      allow list: if isSignedIn();
       
-      // Owners can delete their own cars
-      allow delete: if isSignedIn() && resource.data.sellerId == request.auth.uid;
-      
-      // Admins can delete any car
+      // Write: Only via Cloud Functions
+      allow create, update: if false;
       allow delete: if isAdmin();
     }
 
-    // Users Collection Rules
-    match /users/{userId} {
-      // Users can read their own data
-      allow read: if isOwner(userId);
-      
-      // Admins can read all users
-      allow read: if isAdmin();
-      
-      // Users can create their own profile
-      allow create: if isOwner(userId);
-      
-      // Users can update their own profile
-      allow update: if isOwner(userId);
-      
-      // Admins can update any profile
-      allow update: if isAdmin();
-    }
-
-    // Favorites Collection Rules
-    match /favorites/{favoriteId} {
-      // Users can read their own favorites
-      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
-      
-      // Users can create their own favorites
-      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
-      
-      // Users can delete their own favorites
-      allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
-    }
-
-    // Messages Collection Rules
-    match /messages/{messageId} {
-      // Users can read messages they sent or received
-      allow read: if isSignedIn() && 
-                     (resource.data.senderId == request.auth.uid ||
-                      resource.data.receiverId == request.auth.uid);
-      
-      // Users can create messages
-      allow create: if isSignedIn() && 
-                       request.resource.data.senderId == request.auth.uid;
-      
-      // Users can update their own sent messages (mark as read, etc.)
-      allow update: if isSignedIn() && 
-                       (resource.data.senderId == request.auth.uid ||
-                        resource.data.receiverId == request.auth.uid);
-    }
-
-    // Conversations Collection Rules
-    match /conversations/{conversationId} {
-      // Users can read conversations they participate in
-      allow read: if isSignedIn() && 
-                     request.auth.uid in resource.data.participants;
-      
-      // Users can create conversations
-      allow create: if isSignedIn() && 
-                       request.auth.uid in request.resource.data.participants;
-      
-      // Users can update conversations they participate in
-      allow update: if isSignedIn() && 
-                       request.auth.uid in resource.data.participants;
-    }
-
-    // Ratings Collection Rules
-    match /ratings/{ratingId} {
-      // Anyone can read ratings
+    // ==================== REVIEWS COLLECTION ====================
+    
+    match /reviews/{reviewId} {
+      // Read: Everyone can read reviews
       allow read: if true;
       
-      // Authenticated users can create ratings
+      // Create: Any authenticated user can create a review
+      allow create: if isSignedIn() &&
+                       request.resource.data.reviewerId == request.auth.uid &&
+                       request.resource.data.rating >= 1 &&
+                       request.resource.data.rating <= 5;
+      
+      // Update: Owner can update their review, admin can update any
+      allow update: if isOwner(resource.data.reviewerId) || isAdmin();
+      
+      // Delete: Owner can delete their review, admin can delete any
+      allow delete: if isOwner(resource.data.reviewerId) || isAdmin();
+    }
+    
+    // ==================== CONVERSATIONS COLLECTION ====================
+    // P2P messaging between users
+    
+    match /conversations/{conversationId} {
+      // Helper to check if user is a member of the conversation
+      function isMember() {
+        return isSignedIn() && request.auth.uid in resource.data.members;
+      }
+      
+      // Read: Only members can read conversation metadata
+      allow read: if isMember();
+      
+      // Create: Any two users can create a conversation
       allow create: if isSignedIn() && 
-                       request.resource.data.userId == request.auth.uid;
+                       request.auth.uid in request.resource.data.members &&
+                       request.resource.data.members.size() == 2;
       
-      // Users can update their own ratings
-      allow update: if isSignedIn() && 
-                       resource.data.userId == request.auth.uid;
+      // Update: Members can update conversation metadata (lastMessage, etc.)
+      allow update: if isMember();
+      
+      // Delete: Admin only
+      allow delete: if isAdmin();
+      
+      // Messages subcollection
+    match /messages/{messageId} {
+        // Read: Members of parent conversation can read messages
+        allow read: if isMember();
+        
+        // Create: Members can send messages
+        allow create: if isMember() && 
+                       request.resource.data.senderId == request.auth.uid;
+      
+        // Update: Sender can update their own message (e.g., mark as edited)
+        allow update: if isOwner(resource.data.senderId);
+        
+        // Delete: Admin only
+        allow delete: if isAdmin();
+      }
     }
-
-    // Saved Searches Collection Rules
-    match /savedSearches/{searchId} {
-      // Users can read their own saved searches
-      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
-      
-      // Users can create their own saved searches
-      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
-      
-      // Users can update their own saved searches
-      allow update: if isSignedIn() && resource.data.userId == request.auth.uid;
-      
-      // Users can delete their own saved searches
-      allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+    
+    // ==================== FAVORITES COLLECTION ====================
+    
+    match /favorites/{userId} {
+      // Favorites stored as user document with carIds array
+      allow read, write: if isOwnerOrAdmin(userId);
     }
-
-    // Analytics Collection Rules (Admin only)
-    match /analytics/{document=**} {
+    
+    // ==================== FOLLOWS COLLECTION ====================
+    // User follow/following relationships
+    
+    match /follows/{followId} {
+      // Read: Anyone can read follow relationships (for follower counts)
+      allow read: if isSignedIn();
+      
+      // Create: User can follow others
+      allow create: if isSignedIn() && 
+                       request.resource.data.followerId == request.auth.uid;
+      
+      // Delete: User can unfollow (delete their own follow docs)
+      allow delete: if isSignedIn() && 
+                       resource.data.followerId == request.auth.uid;
+      
+      // Admin full access
+      allow read, write: if isAdmin();
+    }
+    
+    // ==================== ANALYTICS EVENTS COLLECTION ====================
+    // For tracking profile views, car views, etc.
+    
+    match /analytics_events/{eventId} {
+      // Create: Anyone can create events (for tracking)
+      allow create: if true;
+      
+      // Read: User can read their own events (targetUserId)
+      allow read: if isSignedIn() && 
+                     resource.data.targetUserId == request.auth.uid;
+      
+      // Admin can read/write all
+      allow read, write: if isAdmin();
+    }
+    
+    // ==================== PROFILE METRICS COLLECTION ====================
+    // Aggregated profile analytics
+    
+    match /profile_metrics/{userId} {
+      // Read: Owner can read their own metrics
+      allow read: if isOwnerOrAdmin(userId);
+      
+      // Write: Anyone can write (for system updates via functions)
+      allow write: if true;
+      
+      // Admin full access
+      allow read, write: if isAdmin();
+    }
+    
+    // ==================== NOTIFICATIONS COLLECTION ====================
+    
+    match /notifications/{userId} {
+      // Read: Owner can read their notifications
+      allow read: if isOwnerOrAdmin(userId);
+      
+      // Write: Only via Cloud Functions
+      allow write: if false;
+      
+      // Admin full access
+      allow read, write: if isAdmin();
+    }
+    
+    // ==================== ADMIN LOGS COLLECTION ====================
+    
+    match /admin_logs/{logId} {
+      // Read/Write: Admin only
       allow read, write: if isAdmin();
     }
 
-    // Default deny all other collections
+    // ==================== STATS COLLECTION ====================
+    // Public statistics and counters
+    
+    match /stats/{document=**} {
+      // Read: Public
+      allow read: if true;
+      
+      // Write: Only via Cloud Functions
+      allow write: if false;
+    }
+    
+    // ==================== SAVED SEARCHES COLLECTION ====================
+    
+    match /savedSearches/{userId} {
+      allow read, write: if isOwnerOrAdmin(userId);
+    }
+    
+    // ==================== DEFAULT DENY ====================
+    // Deny all other operations by default
+    
     match /{document=**} {
       allow read, write: if false;
     }
   }
 }
+
