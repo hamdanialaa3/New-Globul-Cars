@@ -1,0 +1,259 @@
+{
+  "name": "Globul Cars - User Engagement & Interaction",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "car-viewed",
+        "options": {}
+      },
+      "id": "f1e2c3d4-3456-6789-01cd-webhook1carviewed",
+      "name": "Webhook - Car Viewed",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [240, 300],
+      "webhookId": "car-viewed-webhook"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "favorite-added",
+        "options": {}
+      },
+      "id": "f1e2c3d4-3456-6789-01cd-webhook2favorite",
+      "name": "Webhook - Favorite Added",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [240, 500],
+      "webhookId": "favorite-added-webhook"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "message-sent",
+        "options": {}
+      },
+      "id": "f1e2c3d4-3456-6789-01cd-webhook3message",
+      "name": "Webhook - Message Sent",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [240, 700],
+      "webhookId": "message-sent-webhook"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "search-performed",
+        "options": {}
+      },
+      "id": "f1e2c3d4-3456-6789-01cd-webhook4search",
+      "name": "Webhook - Search Performed",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [240, 900],
+      "webhookId": "search-performed-webhook"
+    },
+    {
+      "parameters": {
+        "jsCode": "const inputData = $input.first().json;\nconst { action, userId, data, timestamp } = inputData;\n\nconst engagementTypes = {\n  'car_viewed': { category: 'browsing', value: 1 },\n  'favorite_added': { category: 'interest', value: 5 },\n  'message_sent': { category: 'contact', value: 10 },\n  'search_performed': { category: 'exploration', value: 2 }\n};\n\nconst engagementInfo = engagementTypes[action] || { category: 'other', value: 1 };\n\nconst engagementScore = engagementInfo.value + (data?.isPeakHours ? 2 : 0);\n\nreturn {\n  json: {\n    userId,\n    action,\n    engagementInfo,\n    engagementScore,\n    processedAt: new Date().toISOString(),\n    requiresUrgentAction: action === 'message_sent'\n  }\n};"
+      },
+      "id": "f1e2c3d4-3456-6789-01cd-code1analyze",
+      "name": "Analyze Engagement",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [500, 600]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "condition1",
+              "leftValue": "={{ $json.action }}",
+              "rightValue": "message_sent",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "f1e2c3d4-3456-6789-01cd-if1message",
+      "name": "Is Message Sent?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [720, 600]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fire-new-globul.firebaseapp.com/api/seller-notification",
+        "authentication": "none",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "userId",
+              "value": "={{ $json.userId }}"
+            },
+            {
+              "name": "action",
+              "value": "={{ $json.action }}"
+            },
+            {
+              "name": "timestamp",
+              "value": "={{ $json.processedAt }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f1e2c3d4-3456-6789-01cd-http1notify",
+      "name": "Notify Seller",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [940, 500],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fire-new-globul.firebaseapp.com/api/engagement-analytics",
+        "authentication": "none",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "userId",
+              "value": "={{ $json.userId }}"
+            },
+            {
+              "name": "action",
+              "value": "={{ $json.action }}"
+            },
+            {
+              "name": "engagementScore",
+              "value": "={{ $json.engagementScore }}"
+            },
+            {
+              "name": "timestamp",
+              "value": "={{ $json.processedAt }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f1e2c3d4-3456-6789-01cd-http2analytics",
+      "name": "Log Engagement Analytics",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [940, 700],
+      "continueOnFail": true
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook - Car Viewed": {
+      "main": [
+        [
+          {
+            "node": "Analyze Engagement",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook - Favorite Added": {
+      "main": [
+        [
+          {
+            "node": "Analyze Engagement",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook - Message Sent": {
+      "main": [
+        [
+          {
+            "node": "Analyze Engagement",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook - Search Performed": {
+      "main": [
+        [
+          {
+            "node": "Analyze Engagement",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze Engagement": {
+      "main": [
+        [
+          {
+            "node": "Is Message Sent?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Message Sent?": {
+      "main": [
+        [
+          {
+            "node": "Notify Seller",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log Engagement Analytics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notify Seller": {
+      "main": [
+        [
+          {
+            "node": "Log Engagement Analytics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "00000000-0000-0000-0000-000000000000",
+  "meta": {
+    "instanceId": "globul-cars-instance"
+  },
+  "id": "workflow-5-user-engagement",
+  "tags": []
+}

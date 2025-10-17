@@ -1,4 +1,5 @@
 import { CarDataFromFile, CarDataSummary, AdvancedSearchParams, AvailableFilterOptions } from '../types/CarData';
+import { BULGARIAN_CITIES } from '../constants/bulgarianCities';
 
 class AdvancedDataService {
   private carData: CarDataFromFile[] = [];
@@ -448,13 +449,8 @@ class AdvancedDataService {
         { value: 'used', label: 'Used', labelBg: 'Употребяван' },
         { value: 'pre-registration', label: 'Pre-registered', labelBg: 'Пререгистрация' }
       ],
-      cities: [
-        'София - град', 'Пловдив', 'Варна', 'Бургас', 'Русе', 'Стара Загора', 
-        'Плевен', 'Сливен', 'Добрич', 'Шумен', 'Перник', 'Хасково', 'Ямбол', 
-        'Пазарджик', 'Благоевград', 'Велико Търново', 'Враца', 'Габрово', 
-        'Видин', 'Кюстендил', 'Кърджали', 'Монтана', 'Търговище', 'Ловеч', 
-        'Силистра', 'Разград', 'Смолян', 'София - област'
-      ],
+      // ✅ FIXED: Use BULGARIAN_CITIES constant instead of hardcoded
+      cities: BULGARIAN_CITIES.map(city => city.nameBg),
       fuelTypes: [
         { value: 'petrol', label: 'Petrol', labelBg: 'Бензин' },
         { value: 'diesel', label: 'Diesel', labelBg: 'Дизел' },

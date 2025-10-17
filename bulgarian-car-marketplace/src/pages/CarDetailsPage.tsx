@@ -6,6 +6,9 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../context/AuthProvider';
 import carListingService from '../services/carListingService';
 import { CarListing } from '../types/CarListing';
+import { BULGARIA_REGIONS, getCitiesByRegion } from '../data/bulgaria-locations';
+import DistanceIndicator from '../components/DistanceIndicator';
+import StaticMapEmbed from '../components/StaticMapEmbed';
 
 // ==================== Styled Components ====================
 
@@ -943,6 +946,10 @@ const CarDetailsPage: React.FC = () => {
   const [showOtherSeats, setShowOtherSeats] = useState(false);
   const [showOtherRegion, setShowOtherRegion] = useState(false);
   
+  // State for Bulgarian regions and cities
+  const [selectedRegion, setSelectedRegion] = useState<string>('');
+  const [availableCities, setAvailableCities] = useState<string[]>([]);
+  
   // State for image gallery
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
@@ -972,6 +979,15 @@ const CarDetailsPage: React.FC = () => {
       setIsEditMode(true);
     }
   }, [searchParams, currentUser]);
+
+  // Load cities when car data is loaded or region changes
+  useEffect(() => {
+    if (editedCar.region) {
+      const cities = getCitiesByRegion(editedCar.region);
+      setAvailableCities(cities);
+      setSelectedRegion(editedCar.region);
+    }
+  }, [editedCar.region]);
 
   const handleEdit = () => {
     setIsEditMode(true);
@@ -1754,34 +1770,31 @@ const CarDetailsPage: React.FC = () => {
         <DetailRow>
           <DetailLabel>{language === 'bg' ? 'Регион' : 'Region'}</DetailLabel>
           {isEditMode ? (
-            <>
-              <EditableSelect
-                value={showOtherRegion ? 'Other' : (editedCar.region || '')}
-                onChange={(e) => {
-                  if (e.target.value === 'Other') {
-                    setShowOtherRegion(true);
-                  } else {
-                    setShowOtherRegion(false);
-                    handleInputChange('region', e.target.value);
-                  }
-                }}
-              >
-                <option value="">{language === 'bg' ? 'Изберете регион' : 'Select region'}</option>
-                <option value="sofia">{language === 'bg' ? 'София' : 'Sofia'}</option>
-                <option value="plovdiv">{language === 'bg' ? 'Пловдив' : 'Plovdiv'}</option>
-                <option value="varna">{language === 'bg' ? 'Варна' : 'Varna'}</option>
-                <option value="burgas">{language === 'bg' ? 'Бургас' : 'Burgas'}</option>
-                <option className="other-option" value="Other">{language === 'bg' ? '▼ Друго' : '▼ Other'}</option>
-              </EditableSelect>
-              {showOtherRegion && (
-                <EditableInput
-                  value={editedCar.region || ''}
-                  onChange={(e) => handleInputChange('region', e.target.value)}
-                  placeholder={language === 'bg' ? 'Въведете регион' : 'Enter region'}
-                  style={{ marginTop: '0.5rem' }}
-                />
-              )}
-            </>
+            <EditableSelect
+              value={editedCar.region || ''}
+              onChange={(e) => {
+                const regionName = e.target.value;
+                handleInputChange('region', regionName);
+                setSelectedRegion(regionName);
+                
+                // Update available cities based on selected region
+                if (regionName) {
+                  const cities = getCitiesByRegion(regionName);
+                  setAvailableCities(cities);
+                  // Clear city selection when region changes
+                  handleInputChange('city', '');
+                } else {
+                  setAvailableCities([]);
+                }
+              }}
+            >
+              <option value="">{language === 'bg' ? 'Изберете регион' : 'Select region'}</option>
+              {BULGARIA_REGIONS.map((region) => (
+                <option key={region.name} value={region.name}>
+                  {language === 'bg' ? region.name : region.nameEn}
+                </option>
+              ))}
+            </EditableSelect>
           ) : (
             <DetailValue>{car.region || 'N/A'}</DetailValue>
           )}
@@ -1790,11 +1803,27 @@ const CarDetailsPage: React.FC = () => {
         <DetailRow>
           <DetailLabel>{language === 'bg' ? 'Град' : 'City'}</DetailLabel>
           {isEditMode ? (
-            <EditableInput
-              value={editedCar.city || ''}
-              onChange={(e) => handleInputChange('city', e.target.value)}
-              placeholder={language === 'bg' ? 'Въведете град' : 'Enter city'}
-            />
+            availableCities.length > 0 ? (
+              <EditableSelect
+                value={editedCar.city || ''}
+                onChange={(e) => handleInputChange('city', e.target.value)}
+              >
+                <option value="">{language === 'bg' ? 'Изберете град' : 'Select city'}</option>
+                {availableCities.map((city) => (
+                  <option key={city} value={city}>
+                    {city}
+                  </option>
+                ))}
+              </EditableSelect>
+            ) : (
+              <EditableInput
+                value={editedCar.city || ''}
+                onChange={(e) => handleInputChange('city', e.target.value)}
+                placeholder={language === 'bg' ? 'Първо изберете регион' : 'Select region first'}
+                disabled
+                style={{ opacity: 0.6, cursor: 'not-allowed' }}
+              />
+            )
           ) : (
             <DetailValue>{car.city || 'N/A'}</DetailValue>
           )}
@@ -1916,6 +1945,28 @@ const CarDetailsPage: React.FC = () => {
             </PhotoGrid>
           )}
         </PhotoUploadSection>
+      )}
+
+      {/* Distance & Directions - Only in view mode */}
+      {!isEditMode && car && car.city && (
+        <>
+          <DistanceIndicator
+            carLocation={{
+              city: car.city,
+              region: car.region,
+              coordinates: car.coordinates
+            }}
+          />
+
+          <StaticMapEmbed
+            location={{
+              city: car.city,
+              region: car.region,
+              coordinates: car.coordinates
+            }}
+            zoom={14}
+          />
+        </>
       )}
     </Container>
   );

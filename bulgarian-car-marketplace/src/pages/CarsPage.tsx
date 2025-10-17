@@ -9,12 +9,10 @@ import styled from 'styled-components';
 import { useLanguage } from '../contexts/LanguageContext';
 import { BULGARIAN_CITIES } from '../constants/bulgarianCities';
 import carListingService from '../services/carListingService';
-import advancedSearchService from '../services/advancedSearchService';
 import { CarIcon } from '../components/icons/CarIcon';
 import { CarListing } from '../types/CarListing';
-import AISearchEngine from '../components/AISearchEngine';
 import CarCard from '../components/CarCard';
-import AdvancedFilters from '../components/AdvancedFilters';
+import { logger } from '../services/logger-service';
 
 // Styled Components
 const CarsContainer = styled.div`
@@ -137,7 +135,6 @@ const CarsPage: React.FC = () => {
   const [cars, setCars] = useState<CarListing[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [appliedFilters, setAppliedFilters] = useState<any>({});
   
   // Get city filter from URL
   const cityId = searchParams.get('city');
@@ -149,59 +146,33 @@ const CarsPage: React.FC = () => {
       try {
         setLoading(true);
         setError(null);
-        console.log('🔄 Loading cars from Firebase with filters...', appliedFilters);
+        
+        // Read region from URL params INSIDE useEffect
+        const regionParam = searchParams.get('city'); // 'city' param is actually region!
+        
+        console.log('🔍 URL params:', { regionParam });
+        logger.info('Loading cars from region', { region: regionParam });
 
-        // Prepare filters from URL params and applied filters
+        // Simple filter: only by region
         const filters: any = {
           limit: 100,
           sortBy: 'createdAt',
           sortOrder: 'desc'
         };
 
-        // Add city filter
-        if (cityId || appliedFilters.city) {
-          filters.location = cityId || appliedFilters.city;
+        // Add region filter if provided
+        if (regionParam) {
+          filters.cityId = regionParam; // Will be used as region in service
+          console.log('🎯 Filtering by region:', regionParam);
+        } else {
+          console.log('📋 No region filter - loading all cars');
         }
-
-        // Add other filters
-        if (appliedFilters.make) filters.make = appliedFilters.make;
-        if (appliedFilters.yearFrom) filters.yearFrom = appliedFilters.yearFrom;
-        if (appliedFilters.yearTo) filters.yearTo = appliedFilters.yearTo;
-        if (appliedFilters.priceFrom) filters.priceFrom = appliedFilters.priceFrom;
-        if (appliedFilters.priceTo) filters.priceTo = appliedFilters.priceTo;
-        if (appliedFilters.fuelType) filters.fuelType = appliedFilters.fuelType;
-        if (appliedFilters.transmission) filters.transmission = appliedFilters.transmission;
-        if (appliedFilters.sellerType) filters.sellerType = appliedFilters.sellerType;
 
         // Fetch cars from Firebase
         const result = await carListingService.getListings(filters);
         
-        // Additional client-side filtering
-        let filteredCars = result.listings;
-        
-        // Filter by city (support both old and new structure)
-        if (cityId || appliedFilters.city) {
-          const targetCity = cityId || appliedFilters.city;
-          filteredCars = filteredCars.filter(car => 
-            car.city === targetCity || 
-            car.region === targetCity ||
-            (car as any).location?.cityId === targetCity ||
-            (car as any).locationData?.cityId === targetCity
-          );
-        }
-
-        // Filter by mileage range (client-side)
-        if (appliedFilters.mileageFrom || appliedFilters.mileageTo) {
-          filteredCars = filteredCars.filter(car => {
-            const mileage = car.mileage || 0;
-            if (appliedFilters.mileageFrom && mileage < appliedFilters.mileageFrom) return false;
-            if (appliedFilters.mileageTo && mileage > appliedFilters.mileageTo) return false;
-            return true;
-          });
-        }
-
-        setCars(filteredCars);
-        console.log(`✅ Loaded ${filteredCars.length} cars with filters`);
+        setCars(result.listings);
+        console.log(`✅ Loaded ${result.listings.length} cars from region: ${regionParam || 'all regions'}`);
       } catch (err: any) {
         console.error('❌ Error loading cars:', err);
         setError(err.message || 'Failed to load cars');
@@ -211,36 +182,7 @@ const CarsPage: React.FC = () => {
     };
 
     loadCars();
-  }, [cityId, appliedFilters]);
-
-  // AI Search handler
-  const handleAISearch = (query: string) => {
-    console.log('🔍 AI Search query:', query);
-    // TODO: Implement AI-powered search with semantic understanding
-  };
-
-  // Filters handlers
-  const handleApplyFilters = (filters: any) => {
-    console.log('🎯 Applying filters:', filters);
-    setAppliedFilters(filters);
-    
-    // Update URL with new filters
-    const newParams = new URLSearchParams();
-    if (filters.city) newParams.set('city', filters.city);
-    if (filters.make) newParams.set('make', filters.make);
-    if (filters.yearFrom) newParams.set('yearFrom', filters.yearFrom.toString());
-    if (filters.yearTo) newParams.set('yearTo', filters.yearTo.toString());
-    if (filters.priceFrom) newParams.set('priceFrom', filters.priceFrom.toString());
-    if (filters.priceTo) newParams.set('priceTo', filters.priceTo.toString());
-    
-    setSearchParams(newParams);
-  };
-
-  const handleClearFilters = () => {
-    console.log('🗑️ Clearing filters');
-    setAppliedFilters({});
-    setSearchParams({});
-  };
+  }, [searchParams]);
 
   // Get city display name
   const getCityDisplayName = () => {
@@ -262,26 +204,7 @@ const CarsPage: React.FC = () => {
           )}
         </PageHeader>
 
-        {/* AI-Powered Smart Search */}
-        <div style={{ marginBottom: '2rem', textAlign: 'center' }}>
-          <AISearchEngine onSearch={handleAISearch} />
-        </div>
-
-        {/* Advanced Filters */}
-        <AdvancedFilters
-          initialFilters={appliedFilters}
-          onApplyFilters={handleApplyFilters}
-          onClearFilters={handleClearFilters}
-        />
-
-        {/* Results Count */}
-        {!loading && cars.length > 0 && (
-          <ResultsCount>
-            {language === 'bg' 
-              ? `Намерени ${cars.length} автомобила` 
-              : `Found ${cars.length} cars`}
-          </ResultsCount>
-        )}
+        {/* No search or filters - just show cars! */}
 
         {/* Loading State */}
         {loading && (

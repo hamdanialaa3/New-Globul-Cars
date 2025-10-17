@@ -85,6 +85,20 @@
       "queryScope": "COLLECTION",
       "fields": [
         {
+          "fieldPath": "region",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "createdAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "cars",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
           "fieldPath": "fuelType",
           "order": "ASCENDING"
         },

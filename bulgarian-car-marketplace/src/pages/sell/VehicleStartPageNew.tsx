@@ -8,6 +8,8 @@ import styled from 'styled-components';
 import { Car, Truck, Bus, Bike, Caravan, CarFront } from 'lucide-react';
 import SplitScreenLayout from '../../components/SplitScreenLayout';
 import { WorkflowFlow } from '../../components/WorkflowVisualization';
+import { useAuth } from '../../context/AuthProvider';
+import N8nIntegrationService from '../../services/n8n-integration';
 
 const ContentSection = styled.div`
   display: flex;
@@ -149,6 +151,7 @@ const InfoText = styled.p`
 const VehicleStartPageNew: React.FC = () => {
   const navigate = useNavigate();
   const { language, t } = useLanguage();
+  const { user } = useAuth();
   const [hoveredType, setHoveredType] = useState<string | null>(null);
 
   const vehicleTypes = [
@@ -160,9 +163,18 @@ const VehicleStartPageNew: React.FC = () => {
     { id: 'bus', IconComponent: Bus }
   ];
 
-  const handleSelect = (typeId: string) => {
+  const handleSelect = async (typeId: string) => {
     const params = new URLSearchParams();
     params.set('vt', typeId);
+    
+    // N8N Integration: Trigger vehicle type selection
+    if (user?.uid) {
+      try {
+        await N8nIntegrationService.onVehicleTypeSelected(user.uid, typeId);
+      } catch (error) {
+        console.warn('N8N trigger failed (non-critical):', error);
+      }
+    }
     
     // Auto-navigate immediately
     navigate(`/sell/inserat/${typeId}/verkaeufertyp?${params.toString()}`);

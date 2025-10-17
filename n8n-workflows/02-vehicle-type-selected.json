@@ -1,0 +1,190 @@
+{
+  "name": "Globul Cars - Vehicle Type Selected",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "vehicle-type-selected",
+        "options": {}
+      },
+      "id": "a1a89a8f-75e6-4e61-b3e1-c2234567890a",
+      "name": "Webhook - Vehicle Type",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "globul-vehicle-type"
+    },
+    {
+      "parameters": {
+        "functionCode": "// تحليل نوع السيارة المختار\nconst { userId, vehicleType } = items[0].json;\n\n// تصنيف أنواع السيارات\nconst vehicleCategories = {\n  car: {\n    category: 'personal',\n    suggestedSellerType: 'private',\n    marketDemand: 'high',\n    recommendations: [\n      'Focus on fuel efficiency specifications',\n      'Highlight safety features and ratings',\n      'Include maintenance history',\n      'Add interior and exterior photos'\n    ]\n  },\n  suv: {\n    category: 'family',\n    suggestedSellerType: 'private',\n    marketDemand: 'very_high',\n    recommendations: [\n      'Emphasize space and seating capacity',\n      'Highlight 4WD/AWD capabilities',\n      'Include cargo space photos',\n      'Mention family-friendly features'\n    ]\n  },\n  truck: {\n    category: 'commercial',\n    suggestedSellerType: 'dealer',\n    marketDemand: 'medium',\n    recommendations: [\n      'Focus on payload and towing capacity',\n      'Include work history and usage',\n      'Highlight durability and reliability',\n      'Add photos of truck bed and equipment'\n    ]\n  },\n  van: {\n    category: 'commercial',\n    suggestedSellerType: 'dealer',\n    marketDemand: 'medium',\n    recommendations: [\n      'Emphasize cargo capacity',\n      'Include commercial use history',\n      'Highlight fuel efficiency',\n      'Show interior cargo space'\n    ]\n  },\n  motorcycle: {\n    category: 'recreational',\n    suggestedSellerType: 'private',\n    marketDemand: 'seasonal',\n    recommendations: [\n      'Include performance specifications',\n      'Highlight safety gear included',\n      'Add maintenance records',\n      'Show bike from multiple angles'\n    ]\n  },\n  bus: {\n    category: 'commercial',\n    suggestedSellerType: 'company',\n    marketDemand: 'low',\n    recommendations: [\n      'Focus on passenger capacity',\n      'Include route history',\n      'Highlight safety certifications',\n      'Show interior and engine bay'\n    ]\n  }\n};\n\n// الحصول على معلومات النوع المختار\nconst vehicleInfo = vehicleCategories[vehicleType] || {\n  category: 'other',\n  suggestedSellerType: 'private',\n  marketDemand: 'unknown',\n  recommendations: ['Add detailed specifications']\n};\n\n// تحديد ما إذا كان تجاري أم لا\nconst isCommercial = ['truck', 'van', 'bus'].includes(vehicleType);\n\n// اقتراحات السعر بناء على النوع\nconst pricingTips = {\n  car: 'Check similar models in Sofia and Plovdiv',\n  suv: 'SUVs have high resale value in Bulgaria',\n  truck: 'Commercial vehicles: factor in business use',\n  van: 'Delivery vans are in demand',\n  motorcycle: 'Seasonal pricing - higher in spring/summer',\n  bus: 'Specialized market - research thoroughly'\n};\n\n// إرجاع البيانات المعالجة\nreturn [{\n  json: {\n    userId,\n    vehicleType,\n    vehicleInfo,\n    isCommercial,\n    pricingTip: pricingTips[vehicleType] || 'Research market prices',\n    nextStep: 'seller_type_selection',\n    processingTimestamp: new Date().toISOString(),\n    bulgariaPeakSeason: vehicleType === 'motorcycle' ? 'April-September' : 'Year-round'\n  }\n}];"
+      },
+      "id": "b2b89a8f-75e6-4e61-b3e1-c2234567890b",
+      "name": "Analyze Vehicle Type",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.isCommercial}}",
+              "value2": "true"
+            }
+          ]
+        }
+      },
+      "id": "c3c89a8f-75e6-4e61-b3e1-c2234567890c",
+      "name": "Is Commercial Vehicle?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "businessAdvice",
+              "value": "Commercial vehicle detected - suggest business account upgrade"
+            },
+            {
+              "name": "sellerTypeRecommendation",
+              "value": "dealer"
+            },
+            {
+              "name": "specialFeatures",
+              "value": "Enable commercial vehicle features"
+            }
+          ]
+        }
+      },
+      "id": "d4d89a8f-75e6-4e61-b3e1-c2234567890d",
+      "name": "Commercial Vehicle Processing",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [900, 200]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "personalAdvice",
+              "value": "Personal vehicle - optimize for individual sellers"
+            },
+            {
+              "name": "sellerTypeRecommendation", 
+              "value": "private"
+            },
+            {
+              "name": "specialFeatures",
+              "value": "Enable personal selling features"
+            }
+          ]
+        }
+      },
+      "id": "e5e89a8f-75e6-4e61-b3e1-c2234567890e",
+      "name": "Personal Vehicle Processing",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [900, 400]
+    },
+    {
+      "parameters": {
+        "url": "={{$json.userId ? 'https://fire-new-globul.firebaseapp.com/api/user-preferences/' + $json.userId : 'https://fire-new-globul.firebaseapp.com/api/log-event'}}",
+        "authentication": "none",
+        "requestMethod": "POST",
+        "jsonParameters": true,
+        "options": {},
+        "bodyParametersJson": "={\n  \"event\": \"vehicle_type_selected\",\n  \"userId\": \"{{$json.userId}}\",\n  \"vehicleType\": \"{{$json.vehicleType}}\",\n  \"isCommercial\": {{$json.isCommercial}},\n  \"recommendations\": {{JSON.stringify($json.vehicleInfo.recommendations)}},\n  \"marketDemand\": \"{{$json.vehicleInfo.marketDemand}}\",\n  \"pricingTip\": \"{{$json.pricingTip}}\",\n  \"timestamp\": \"{{$json.processingTimestamp}}\"\n}",
+        "headerParametersJson": "{\n  \"Content-Type\": \"application/json\",\n  \"User-Agent\": \"n8n-globul-cars/1.0\"\n}"
+      },
+      "id": "f6f89a8f-75e6-4e61-b3e1-c2234567890f",
+      "name": "Update User Preferences",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [1120, 300],
+      "continueOnFail": true
+    }
+  ],
+  "connections": {
+    "Webhook - Vehicle Type": {
+      "main": [
+        [
+          {
+            "node": "Analyze Vehicle Type",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze Vehicle Type": {
+      "main": [
+        [
+          {
+            "node": "Is Commercial Vehicle?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Commercial Vehicle?": {
+      "main": [
+        [
+          {
+            "node": "Commercial Vehicle Processing",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Personal Vehicle Processing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Commercial Vehicle Processing": {
+      "main": [
+        [
+          {
+            "node": "Update User Preferences",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Personal Vehicle Processing": {
+      "main": [
+        [
+          {
+            "node": "Update User Preferences",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "00000000-0000-0000-0000-000000000000",
+  "id": "2",
+  "meta": {
+    "instanceId": "globul-cars-development"
+  },
+  "tags": [
+    {
+      "createdAt": "2025-10-16T00:00:00.000Z",
+      "updatedAt": "2025-10-16T00:00:00.000Z",
+      "id": "globul-cars",
+      "name": "Globul Cars"
+    }
+  ]
+}

@@ -9,7 +9,7 @@ export interface AuthDiagnosticResult {
   status: 'success' | 'warning' | 'error';
   message: string;
   details?: any;
-  solution?: string;
+  solution?: string | undefined;
 }
 
 export class FirebaseInternalErrorDiagnostic {

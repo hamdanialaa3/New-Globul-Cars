@@ -25,6 +25,9 @@
     "src/types"
   ],
   "exclude": [
-    "src/locales/translations.ts"
+    "src/locales/translations.ts",
+    "../DDD/**",
+    "../DEPRECATED_FILES_BACKUP/**",
+    "../dist/**"
   ]
 }

@@ -1,0 +1,105 @@
+{
+  "info": {
+    "name": "Globul Cars - n8n Cloud Webhooks",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "8f3c1c4e-8a1b-4a8e-9a6e-111122223333"
+  },
+  "item": [
+    {
+      "name": "Workflow 3 - Sell Funnel",
+      "item": [
+        {
+          "name": "Seller Type Selected",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/seller-type-selected", "host": ["{{baseUrl}}"], "path": ["seller-type-selected"] },
+            "body": { "mode": "raw", "raw": "{\n  \"step\": \"seller_type\",\n  \"userId\": \"u1\",\n  \"data\": { \"sellerType\": \"individual\" },\n  \"timestamp\": \"{{now}}\"\n}" }
+          }
+        },
+        {
+          "name": "Vehicle Data Entered",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/vehicle-data-entered", "host": ["{{baseUrl}}"], "path": ["vehicle-data-entered"] },
+            "body": { "mode": "raw", "raw": "{\n  \"step\": \"vehicle_data\",\n  \"userId\": \"u1\",\n  \"data\": { \"make\": \"VW\", \"model\": \"Golf\", \"year\": 2018, \"mileage\": 95000 },\n  \"timestamp\": \"{{now}}\"\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Workflow 4 - User Tracking",
+      "item": [
+        {
+          "name": "User Registered",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/user-registered", "host": ["{{baseUrl}}"], "path": ["user-registered"] },
+            "body": { "mode": "raw", "raw": "{\n  \"action\": \"user_registered\",\n  \"userId\": \"u2\",\n  \"userData\": { \"name\": \"Ivan\", \"phone\": \"+359888111222\", \"location\": \"Sofia\", \"emailVerified\": true, \"listingCount\": 0, \"accountType\": \"individual\" },\n  \"timestamp\": \"{{now}}\"\n}" }
+          }
+        },
+        {
+          "name": "Listing Created",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/listing-created", "host": ["{{baseUrl}}"], "path": ["listing-created"] },
+            "body": { "mode": "raw", "raw": "{\n  \"action\": \"listing_created\",\n  \"userId\": \"u2\",\n  \"userData\": { \"listingCount\": 1, \"accountType\": \"dealer\" },\n  \"timestamp\": \"{{now}}\"\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Workflow 5 - Engagement",
+      "item": [
+        {
+          "name": "Car Viewed",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/car-viewed", "host": ["{{baseUrl}}"], "path": ["car-viewed"] },
+            "body": { "mode": "raw", "raw": "{\n  \"action\": \"car_viewed\",\n  \"userId\": \"u3\",\n  \"data\": { \"carId\": \"c123\", \"isPeakHours\": true },\n  \"timestamp\": \"{{now}}\"\n}" }
+          }
+        },
+        {
+          "name": "Message Sent",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/message-sent", "host": ["{{baseUrl}}"], "path": ["message-sent"] },
+            "body": { "mode": "raw", "raw": "{\n  \"action\": \"message_sent\",\n  \"userId\": \"u3\",\n  \"data\": { \"carId\": \"c123\" },\n  \"timestamp\": \"{{now}}\"\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Workflow 6 - Admin/BI",
+      "item": [
+        {
+          "name": "Admin Login",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/admin-login", "host": ["{{baseUrl}}"], "path": ["admin-login"] },
+            "body": { "mode": "raw", "raw": "{\n  \"action\": \"admin_login\",\n  \"adminId\": \"a1\",\n  \"data\": { \"isNewLocation\": false, \"isNewDevice\": false },\n  \"timestamp\": \"{{now}}\"\n}" }
+          }
+        },
+        {
+          "name": "System Alert",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/system-alert", "host": ["{{baseUrl}}"], "path": ["system-alert"] },
+            "body": { "mode": "raw", "raw": "{\n  \"action\": \"system_alert\",\n  \"adminId\": \"a1\",\n  \"data\": { \"multipleFailedAttempts\": true },\n  \"timestamp\": \"{{now}}\"\n}" }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    { "key": "baseUrl", "value": "https://globul-cars-bg.app.n8n.cloud/webhook" },
+    { "key": "now", "value": "2025-10-16T10:00:00.000Z" }
+  ]
+}

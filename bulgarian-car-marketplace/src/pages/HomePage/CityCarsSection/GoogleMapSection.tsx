@@ -119,9 +119,15 @@ const GoogleMapSection: React.FC<GoogleMapSectionProps> = ({
   const [activeMarker, setActiveMarker] = useState<string | null>(null);
   const [map, setMap] = useState<google.maps.Map | null>(null);
 
+  const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY || 'AIzaSyDvULqHtzVQFWshx2fO755CMELUaMcm5_4';
+  
   const { isLoaded, loadError } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: 'AIzaSyDvULqHtzVQFWshx2fO755CMELUaMcm5_4'
+    googleMapsApiKey: apiKey,
+    libraries: ['places', 'geometry'] as any,
+    version: 'weekly',
+    language: language === 'bg' ? 'bg' : 'en',
+    region: 'BG'
   });
 
   const onLoad = useCallback((map: google.maps.Map) => {
@@ -157,14 +163,23 @@ const GoogleMapSection: React.FC<GoogleMapSectionProps> = ({
   };
 
   if (loadError) {
+    console.error('Google Maps Error:', loadError);
     return (
       <MapContainer>
-        <LoadingOverlay style={{ flexDirection: 'column', gap: '1rem' }}>
-          <div style={{ fontSize: '3rem' }}>⚠️</div>
-          <div style={{ textAlign: 'center', maxWidth: '400px', color: '#dc3545' }}>
-            {language === 'bg' 
-              ? 'Грешка при зареждане на картата. Моля, опреснете страницата.'
-              : 'Error loading map. Please refresh the page.'}
+        <LoadingOverlay style={{ flexDirection: 'column', gap: '1rem', padding: '2rem' }}>
+          <div style={{ fontSize: '3rem' }}>🗺️</div>
+          <div style={{ textAlign: 'center', maxWidth: '500px' }}>
+            <h3 style={{ color: '#005ca9', marginBottom: '0.5rem' }}>
+              {language === 'bg' ? 'Картата временно недостъпна' : 'Map temporarily unavailable'}
+            </h3>
+            <p style={{ color: '#6c757d', fontSize: '0.9rem', marginBottom: '1rem' }}>
+              {language === 'bg' 
+                ? 'Google Maps се зарежда... Можете да разгледате градовете по-долу.'
+                : 'Google Maps is loading... You can browse cities below.'}
+            </p>
+            <small style={{ color: '#999', fontSize: '0.8rem' }}>
+              API Key: {apiKey.substring(0, 20)}...
+            </small>
           </div>
         </LoadingOverlay>
       </MapContainer>

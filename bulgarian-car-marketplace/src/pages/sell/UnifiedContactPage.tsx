@@ -10,6 +10,15 @@ import { WorkflowFlow } from '../../components/WorkflowVisualization';
 import SellWorkflowService from '../../services/sellWorkflowService';
 import { BULGARIA_REGIONS, getCitiesByRegion } from '../../data/bulgaria-locations';
 import * as S from './UnifiedContactStyles';
+import { toast } from 'react-toastify';
+import { ErrorMessages, getErrorMessage } from '../../constants/ErrorMessages';
+import ReviewSummary from '../../components/ReviewSummary';
+import ImageUploadProgress from '../../components/ImageUploadProgress';
+import KeyboardShortcutsHelper from '../../components/KeyboardShortcutsHelper';
+import useDraftAutoSave from '../../hooks/useDraftAutoSave';
+import { useSellWorkflow } from '../../hooks/useSellWorkflow';
+import useWorkflowStep from '../../hooks/useWorkflowStep';
+import ImageUploadService from '../../services/image-upload-service';
 
 const CONTACT_METHODS = [
   { id: 'phone', iconComponent: 'PhoneIcon', labelBg: 'Телефон', labelEn: 'Phone' },
@@ -58,6 +67,21 @@ const UnifiedContactPage: React.FC = () => {
   const [availableCities, setAvailableCities] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
+  
+  // 🆕 New state for enhancements
+  const [showReview, setShowReview] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [totalImages, setTotalImages] = useState(0);
+  const [uploadErrors, setUploadErrors] = useState<string[]>([]);
+  
+  // 🆕 Hooks for new features
+  const { workflowData, updateWorkflowData } = useSellWorkflow();
+  const { saveDraft, isSaving, getTimeSinceLastSave } = useDraftAutoSave(
+    { ...workflowData, ...Object.fromEntries(searchParams) },
+    { currentStep: 7, interval: 30000 }
+  );
+  const { markComplete, logError } = useWorkflowStep(7, 'Contact Info');
 
   // Extract ALL parameters from URL
   const vehicleType = searchParams.get('vt');
@@ -120,50 +144,91 @@ const UnifiedContactPage: React.FC = () => {
     }));
   };
 
+  // 🆕 Enhanced validation with better error messages
+  const validateForm = (): boolean => {
+    // Make validation
+    if (!make) {
+      toast.error(getErrorMessage('MAKE_REQUIRED', language as 'bg' | 'en'));
+      logError('MAKE_REQUIRED');
+      return false;
+    }
+
+    // Year validation
+    if (!year) {
+      toast.error(getErrorMessage('YEAR_REQUIRED', language as 'bg' | 'en'));
+      logError('YEAR_REQUIRED');
+      return false;
+    }
+
+    const yearNum = parseInt(year);
+    const currentYear = new Date().getFullYear();
+    if (yearNum < 1900 || yearNum > currentYear + 1) {
+      toast.error(
+        getErrorMessage('YEAR_INVALID', language as 'bg' | 'en', { currentYear: currentYear.toString() })
+      );
+      return false;
+    }
+
+    // Price validation
+    if (!price) {
+      toast.error(getErrorMessage('PRICE_REQUIRED', language as 'bg' | 'en'));
+      logError('PRICE_REQUIRED');
+      return false;
+    }
+
+    const priceNum = parseFloat(price);
+    if (priceNum < 100) {
+      toast.error(getErrorMessage('PRICE_TOO_LOW', language as 'bg' | 'en'));
+      return false;
+    }
+    if (priceNum > 1000000) {
+      toast.error(getErrorMessage('PRICE_TOO_HIGH', language as 'bg' | 'en'));
+      return false;
+    }
+
+    // Contact validation
+    if (!contactData.sellerName) {
+      toast.error(getErrorMessage('NAME_REQUIRED', language as 'bg' | 'en'));
+      return false;
+    }
+
+    if (!contactData.sellerEmail) {
+      toast.error(getErrorMessage('EMAIL_REQUIRED', language as 'bg' | 'en'));
+      return false;
+    }
+
+    if (!contactData.sellerPhone) {
+      toast.error(getErrorMessage('PHONE_REQUIRED', language as 'bg' | 'en'));
+      return false;
+    }
+
+    // Location validation
+    if (!contactData.region) {
+      toast.error(getErrorMessage('REGION_REQUIRED', language as 'bg' | 'en'));
+      return false;
+    }
+
+    if (!contactData.city) {
+      toast.error(getErrorMessage('CITY_REQUIRED', language as 'bg' | 'en'));
+      return false;
+    }
+
+    return true;
+  };
+
   const handlePublish = async () => {
     setError('');
+    
+    // 🆕 Validate first
+    if (!validateForm()) {
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
-      // Debug: Log all URL params
-      console.log('🔍 URL Parameters:', {
-        make, model, year, price, sellerType, vehicleType,
-        mileage, fuelType, transmission, color
-      });
-      
-      // Validation
-      if (!make) {
-        throw new Error(language === 'bg' 
-          ? 'Липсва задължителна информация: Марка' 
-          : 'Missing required information: Make');
-      }
-      
       // Model is optional - use "Unknown" if not provided
       const finalModel = model || (language === 'bg' ? 'Неизвестен модел' : 'Unknown Model');
-
-      if (!year) {
-        throw new Error(language === 'bg' 
-          ? 'Липсва задължителна информация: Година' 
-          : 'Missing required information: Year');
-      }
-
-      if (!price) {
-        throw new Error(language === 'bg' 
-          ? 'Липсва задължителна информация: Цена' 
-          : 'Missing required information: Price');
-      }
-
-      if (!contactData.sellerName || !contactData.sellerEmail || !contactData.sellerPhone) {
-        throw new Error(language === 'bg' 
-          ? 'Моля попълнете всички контактни данни' 
-          : 'Please fill all contact information');
-      }
-
-      if (!contactData.region || !contactData.city) {
-        throw new Error(language === 'bg' 
-          ? 'Моля изберете област и град' 
-          : 'Please select region and city');
-      }
 
       // ✅ Build workflow data matching SellWorkflowService.transformWorkflowData structure
       const workflowData = {
@@ -246,20 +311,89 @@ const UnifiedContactPage: React.FC = () => {
         // Continue without images - don't block listing creation
       }
 
-      // Create listing with images
-      const carId = await SellWorkflowService.createCarListing(workflowData, userId, imageFiles);
+      // 🆕 Create listing first (without images)
+      const carId = await SellWorkflowService.createCarListing(workflowData, userId);
 
       if (!carId) {
         throw new Error('Failed to create listing');
       }
 
-      // Success
-      alert(language === 'bg' 
-        ? `✅ Обявата е публикувана успешно!\n\nМарка/Модел: ${make} ${finalModel}\nГодина: ${year}\nID: ${carId}\n\nСега можете да я видите в "Моите обяви".`
-        : `✅ Listing published successfully!\n\nMake/Model: ${make} ${finalModel}\nYear: ${year}\nID: ${carId}\n\nYou can now see it in "My Listings".`
+      console.log('✅ Car listing created:', carId);
+
+      // 🆕 Upload images with progress tracking (if available)
+      if (imageFiles && imageFiles.length > 0) {
+        setTotalImages(imageFiles.length);
+        
+        try {
+          const imageUrls = await ImageUploadService.uploadMultipleImages(
+            imageFiles,
+            carId,
+            (current, total, progress) => {
+              setCurrentImageIndex(current);
+              setUploadProgress(progress);
+            },
+            (fileName, error) => {
+              console.error(`Upload failed for ${fileName}:`, error);
+              setUploadErrors(prev => [...prev, `${fileName}: ${error.message}`]);
+            }
+          );
+
+          console.log(`✅ Uploaded ${imageUrls.length} images`);
+
+          // Update car document with image URLs
+          if (imageUrls.length > 0) {
+            await SellWorkflowService.updateCarListing(carId, {
+              images: imageUrls as any
+            });
+          }
+        } catch (uploadError) {
+          console.error('Image upload failed:', uploadError);
+          toast.warning(
+            language === 'bg'
+              ? '⚠️ Някои снимки не са качени, но обявата е създадена. Можете да добавите снимки по-късно.'
+              : '⚠️ Some images failed to upload, but listing was created. You can add images later.',
+            { autoClose: 5000 }
+          );
+        }
+      }
+
+      // 🆕 Mark step as completed in analytics
+      await markComplete({
+        carId,
+        make,
+        model: finalModel,
+        price: price ? parseFloat(price) : 0
+      });
+
+      // 🌐 N8N Integration
+      try {
+        const N8nService = await import('../../services/n8n-integration');
+        await N8nService.default.onCarPublished(currentUser.uid, carId, workflowData as any);
+      } catch (n8nError) {
+        console.warn('N8N webhook failed (non-critical):', n8nError);
+      }
+
+      // 🆕 Clear all workflow data
+      localStorage.removeItem('sell_workflow_images');
+      localStorage.removeItem('sell_workflow_files');
+      localStorage.removeItem('globul_cars_sell_workflow');
+      localStorage.removeItem('current_draft_id');
+
+      // 🆕 Success message with toast
+      toast.success(
+        getErrorMessage('PUBLISHED_SUCCESS', language as 'bg' | 'en'),
+        {
+          autoClose: 3000,
+          position: 'top-center'
+        }
       );
 
-      navigate('/my-listings');
+      console.log('🎉 Car listing published successfully!');
+
+      // Navigate with delay
+      setTimeout(() => {
+        navigate(`/car-details/${carId}?published=true`);
+      }, 1000);
 
     } catch (error: any) {
       console.error('❌ Error creating listing:', error);
@@ -313,6 +447,15 @@ const UnifiedContactPage: React.FC = () => {
 
         <S.Button
           type="button"
+          $variant="secondary"
+          onClick={() => saveDraft(true)}
+          disabled={isSaving}
+        >
+          💾 {language === 'bg' ? 'Запази' : 'Save Draft'}
+        </S.Button>
+
+        <S.Button
+          type="button"
           $variant="primary"
           onClick={handlePublish}
           disabled={!isFormValid || isSubmitting}
@@ -323,6 +466,14 @@ const UnifiedContactPage: React.FC = () => {
           } →
         </S.Button>
       </S.NavigationButtons>
+
+      {/* 🆕 Review Summary before publishing */}
+      <ReviewSummary
+        workflowData={Object.fromEntries(searchParams)}
+        imagesCount={parseInt(localStorage.getItem('sell_workflow_files_count') || '0')}
+        language={language as 'bg' | 'en'}
+        onEdit={() => navigate(-1)}
+      />
 
       {/* Section 1: Personal Info */}
       <S.SectionCard>
@@ -614,7 +765,51 @@ const UnifiedContactPage: React.FC = () => {
 
   const rightContent = <WorkflowFlow currentStepIndex={6} totalSteps={8} carBrand={make || undefined} language={language} />;
 
-  return <SplitScreenLayout leftContent={leftContent} rightContent={rightContent} />;
+  return (
+    <>
+      <SplitScreenLayout leftContent={leftContent} rightContent={rightContent} />
+      
+      {/* 🆕 Image Upload Progress Modal */}
+      <ImageUploadProgress
+        isUploading={isSubmitting && totalImages > 0}
+        currentImage={currentImageIndex}
+        totalImages={totalImages}
+        progress={uploadProgress}
+        errors={uploadErrors}
+        onRetry={() => {
+          setUploadErrors([]);
+          handlePublish();
+        }}
+      />
+      
+      {/* 🆕 Keyboard Shortcuts Helper */}
+      <KeyboardShortcutsHelper
+        onSave={() => saveDraft(true)}
+        onPublish={handlePublish}
+        onBack={() => navigate(-1)}
+        language={language as 'bg' | 'en'}
+      />
+      
+      {/* 🆕 Auto-save indicator */}
+      {isSaving && (
+        <div style={{
+          position: 'fixed',
+          bottom: '2rem',
+          right: '2rem',
+          background: 'rgba(16, 185, 129, 0.9)',
+          color: 'white',
+          padding: '0.75rem 1.25rem',
+          borderRadius: '8px',
+          fontSize: '0.875rem',
+          fontWeight: '600',
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+          zIndex: 998
+        }}>
+          💾 {getErrorMessage('AUTO_SAVED', language as 'bg' | 'en')}
+        </div>
+      )}
+    </>
+  );
 };
 
 export default UnifiedContactPage;

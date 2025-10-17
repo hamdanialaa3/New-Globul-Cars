@@ -1,0 +1,267 @@
+{
+  "name": "Globul Cars - User Tracking & Management",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "user-registered",
+        "options": {}
+      },
+      "id": "e9d8b5c2-2345-5678-90bc-webhook1registered",
+      "name": "Webhook - User Registered",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [240, 300],
+      "webhookId": "user-registered-webhook"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "user-logged-in",
+        "options": {}
+      },
+      "id": "e9d8b5c2-2345-5678-90bc-webhook2login",
+      "name": "Webhook - User Login",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [240, 500],
+      "webhookId": "user-login-webhook"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "profile-updated",
+        "options": {}
+      },
+      "id": "e9d8b5c2-2345-5678-90bc-webhook3profile",
+      "name": "Webhook - Profile Updated",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [240, 700],
+      "webhookId": "profile-updated-webhook"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "listing-created",
+        "options": {}
+      },
+      "id": "e9d8b5c2-2345-5678-90bc-webhook4listing",
+      "name": "Webhook - Listing Created",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [240, 900],
+      "webhookId": "listing-created-webhook"
+    },
+    {
+      "parameters": {
+        "jsCode": "const inputData = $input.first().json;\nconst { action, userId, userData, timestamp } = inputData;\n\nconst actionTypes = {\n  'user_registered': { category: 'acquisition', priority: 'high', kpi: 'new_users' },\n  'user_logged_in': { category: 'engagement', priority: 'medium', kpi: 'active_users' },\n  'profile_updated': { category: 'activation', priority: 'high', kpi: 'profile_completion' },\n  'listing_created': { category: 'conversion', priority: 'very_high', kpi: 'listings_created' }\n};\n\nconst actionInfo = actionTypes[action] || { category: 'other', priority: 'low', kpi: 'misc_actions' };\n\nconst userAnalysis = {\n  isNewUser: action === 'user_registered',\n  hasCompleteProfile: userData?.name && userData?.phone && userData?.location,\n  accountType: userData?.accountType || 'individual',\n  verificationStatus: userData?.emailVerified || false\n};\n\nlet userLevel = 'basic';\nif (userAnalysis.hasCompleteProfile && userAnalysis.verificationStatus) userLevel = 'verified';\nif (userData?.listingCount > 5) userLevel = 'power_user';\nif (userData?.accountType === 'dealer') userLevel = 'business';\n\nlet recommendations = [];\nif (!userAnalysis.hasCompleteProfile) recommendations.push('Complete profile');\nif (!userAnalysis.verificationStatus) recommendations.push('Verify email');\n\nconst engagementScore = (userAnalysis.hasCompleteProfile ? 30 : 0) + (userAnalysis.verificationStatus ? 40 : 0) + (userData?.listingCount || 0) * 10;\n\nreturn {\n  json: {\n    userId,\n    action,\n    actionInfo,\n    userAnalysis,\n    userLevel,\n    recommendations,\n    engagementScore,\n    processedAt: new Date().toISOString(),\n    requiresFollowUp: actionInfo.priority === 'high' || actionInfo.priority === 'very_high'\n  }\n};"
+      },
+      "id": "e9d8b5c2-2345-5678-90bc-code1analyze",
+      "name": "Analyze User Behavior",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [500, 600]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "condition1",
+              "leftValue": "={{ $json.action }}",
+              "rightValue": "user_registered",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "e9d8b5c2-2345-5678-90bc-if1newuser",
+      "name": "Is New User?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [720, 600]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fire-new-globul.firebaseapp.com/api/welcome-sequence",
+        "authentication": "none",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "userId",
+              "value": "={{ $json.userId }}"
+            },
+            {
+              "name": "userLevel",
+              "value": "={{ $json.userLevel }}"
+            },
+            {
+              "name": "recommendations",
+              "value": "={{ JSON.stringify($json.recommendations) }}"
+            },
+            {
+              "name": "timestamp",
+              "value": "={{ $json.processedAt }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e9d8b5c2-2345-5678-90bc-http1welcome",
+      "name": "Trigger Welcome Sequence",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [940, 500],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://fire-new-globul.firebaseapp.com/api/user-analytics",
+        "authentication": "none",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "userId",
+              "value": "={{ $json.userId }}"
+            },
+            {
+              "name": "action",
+              "value": "={{ $json.action }}"
+            },
+            {
+              "name": "userLevel",
+              "value": "={{ $json.userLevel }}"
+            },
+            {
+              "name": "engagementScore",
+              "value": "={{ $json.engagementScore }}"
+            },
+            {
+              "name": "timestamp",
+              "value": "={{ $json.processedAt }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e9d8b5c2-2345-5678-90bc-http2analytics",
+      "name": "Log User Analytics",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [940, 700],
+      "continueOnFail": true
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook - User Registered": {
+      "main": [
+        [
+          {
+            "node": "Analyze User Behavior",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook - User Login": {
+      "main": [
+        [
+          {
+            "node": "Analyze User Behavior",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook - Profile Updated": {
+      "main": [
+        [
+          {
+            "node": "Analyze User Behavior",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook - Listing Created": {
+      "main": [
+        [
+          {
+            "node": "Analyze User Behavior",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze User Behavior": {
+      "main": [
+        [
+          {
+            "node": "Is New User?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is New User?": {
+      "main": [
+        [
+          {
+            "node": "Trigger Welcome Sequence",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log User Analytics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trigger Welcome Sequence": {
+      "main": [
+        [
+          {
+            "node": "Log User Analytics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "00000000-0000-0000-0000-000000000000",
+  "meta": {
+    "instanceId": "globul-cars-instance"
+  },
+  "id": "workflow-4-user-tracking",
+  "tags": []
+}

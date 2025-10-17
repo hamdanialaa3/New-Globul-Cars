@@ -6,9 +6,15 @@ import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../../contexts/LanguageContext';
 import { BULGARIAN_CITIES, BulgarianCity } from '../../../constants/bulgarianCities';
 import CityCarCountService from '../../../services/cityCarCountService';
+import { convertCityCountsToRegionCounts } from '../../../services/cityRegionMapper';
 import GoogleMapSection from './GoogleMapSection';
+import BulgariaMapFallback from '../../../components/BulgariaMapFallback';
+import PremiumBulgariaMap from '../../../components/PremiumBulgariaMap';
+import AdvancedBulgariaMap from '../../../components/AdvancedBulgariaMap';
+import LeafletBulgariaMap from '../../../components/LeafletBulgariaMap';
 import CityGrid from './CityGrid';
 import * as S from './styles';
+import { logger } from '../../../services/logger-service';
 
 const CityCarsSection: React.FC = () => {
   const navigate = useNavigate();
@@ -22,15 +28,15 @@ const CityCarsSection: React.FC = () => {
     const fetchCityCounts = async () => {
       try {
         setLoading(true);
-        console.log('🔄 Fetching real car counts from Firebase...');
+        logger.info('Fetching city car counts from Firebase');
         
         // Get all city counts from Firebase
         const counts = await CityCarCountService.getAllCityCounts();
         setCityCarCounts(counts);
         
-        console.log('✅ City car counts loaded:', counts);
+        logger.info('City car counts loaded successfully', { totalCities: Object.keys(counts).length, counts });
       } catch (error) {
-        console.error('❌ Error fetching city car counts:', error);
+        logger.error('Error fetching city car counts', error as Error);
         // Fallback to mock data if Firebase fails
         const mockCounts: Record<string, number> = {};
         BULGARIAN_CITIES.forEach(city => {
@@ -71,16 +77,12 @@ const CityCarsSection: React.FC = () => {
           </S.ViewAllButton>
         </S.SectionHeader>
 
-        {/* Google Maps - Interactive */}
-        <GoogleMapSection
-          cities={BULGARIAN_CITIES}
-          selectedCity={selectedCity}
+        {/* Professional Leaflet Bulgaria Map */}
+        <LeafletBulgariaMap
+          carCounts={convertCityCountsToRegionCounts(cityCarCounts)}
           onCityClick={handleCityClick}
-          cityCarCounts={cityCarCounts}
+          highlightedCity={selectedCity || undefined}
         />
-        <S.MapHint>
-          {t('home.cityCars.mapDescription')}
-        </S.MapHint>
 
         {/* All Bulgarian Cities Grid - 28 Cities */}
         <CityGrid

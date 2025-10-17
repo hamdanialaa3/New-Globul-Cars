@@ -129,20 +129,35 @@ class CarListingService {
       if (filters.transmission) {
         q = query(q, where('transmission', '==', filters.transmission));
       }
-      if (filters.location) {
-        q = query(q, where('city', '==', filters.location));
-      }
-      if (filters.region) {
+      // ✅ FIXED: Use REGION for filtering (not city!)
+      // Region = المحافظة (PRIMARY for filtering)
+      // City = المدينة التابعة (decorative only)
+      if ((filters as any).cityId) {
+        // cityId in URL actually means regionId!
+        q = query(q, where('region', '==', (filters as any).cityId));
+      } else if (filters.location) {
+        // Backward compatibility
+        q = query(q, where('region', '==', filters.location));
+      } else if (filters.region) {
+        // Direct region filter
         q = query(q, where('region', '==', filters.region));
       }
+      
+      if ((filters as any).regionId) {
+        // Region filter
+        q = query(q, where('region', '==', (filters as any).regionId));
+      }
+      
       if (filters.sellerType) {
         q = query(q, where('sellerType', '==', filters.sellerType));
       }
 
-      // Apply sorting
-      const sortBy = filters.sortBy || 'createdAt';
-      const sortOrder = filters.sortOrder || 'desc';
-      q = query(q, orderBy(sortBy, sortOrder));
+      // Apply sorting - ONLY if no region filter (to avoid index requirement)
+      if (!(filters as any).cityId && !filters.location && !filters.region && !(filters as any).regionId) {
+        const sortBy = filters.sortBy || 'createdAt';
+        const sortOrder = filters.sortOrder || 'desc';
+        q = query(q, orderBy(sortBy, sortOrder));
+      }
 
       // Apply pagination
       const page = filters.page || 1;
@@ -183,8 +198,22 @@ class CarListingService {
         hasNext: page < totalPages,
         hasPrev: page > 1
       };
-    } catch (error) {
+    } catch (error: any) {
       console.error('[SERVICE] Error getting car listings:', error);
+      
+      // If index error, retry without orderBy
+      if (error.message?.includes('index') || error.code === 'failed-precondition') {
+        console.log('⚠️ Index not ready yet - retrying without orderBy...');
+        
+        // Remove orderBy from query by clearing sort params
+        const newFilters = { ...filters };
+        delete (newFilters as any).sortBy;
+        delete (newFilters as any).sortOrder;
+        
+        // Retry the query (this will skip the orderBy since sortBy is undefined)
+        return this.getListings(newFilters);
+      }
+      
       throw new Error('Failed to get car listings');
     }
   }

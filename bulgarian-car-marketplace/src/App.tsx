@@ -67,7 +67,11 @@ const TermsOfServicePage = React.lazy(() => import('./pages/TermsOfServicePage')
 const DataDeletionPage = React.lazy(() => import('./pages/DataDeletionPage'));
 const AdvancedSearchPage = React.lazy(() => import('./pages/AdvancedSearchPage'));
 const MyListingsPage = React.lazy(() => import('./pages/MyListingsPage'));
+const MyDraftsPage = React.lazy(() => import('./pages/MyDraftsPage'));
+const MigrationPage = React.lazy(() => import('./pages/MigrationPage'));
+const DebugCarsPage = React.lazy(() => import('./pages/DebugCarsPage'));
 const EditCarPage = React.lazy(() => import('./pages/EditCarPage'));
+const N8nTestPage = React.lazy(() => import('./pages/N8nTestPage'));
 const B2BAnalyticsPortal = React.lazy(() => import('./pages/B2BAnalyticsPortal'));
 const DigitalTwinPage = React.lazy(() => import('./pages/DigitalTwinPage'));
 const SubscriptionPage = React.lazy(() => import('./pages/SubscriptionPage'));
@@ -426,6 +430,9 @@ const MainLayout: React.FC = () => (
       {/* Effects Test Page */}
       <Route path="/effects-test" element={<EffectsTest />} />
 
+      {/* N8N Integration Test Page */}
+      <Route path="/n8n-test" element={<N8nTestPage />} />
+
       {/* Advanced Features */}
       <Route
         path="/advanced-search"
@@ -444,14 +451,22 @@ const MainLayout: React.FC = () => (
           </ProtectedRoute>
         }
       />
-            <Route
-              path="/edit-car/:carId"
-              element={
-                <ProtectedRoute>
-                  <EditCarPage />
-                </ProtectedRoute>
-              }
-            />
+      <Route
+        path="/my-drafts"
+        element={
+          <ProtectedRoute>
+            <MyDraftsPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/edit-car/:carId"
+        element={
+          <ProtectedRoute>
+            <EditCarPage />
+          </ProtectedRoute>
+        }
+      />
             <Route
               path="/car-details/:carId"
               element={
@@ -481,6 +496,26 @@ const MainLayout: React.FC = () => (
         element={
           <ProtectedRoute>
             <SubscriptionPage />
+          </ProtectedRoute>
+        }
+      />
+      
+      {/* Migration Page */}
+      <Route
+        path="/migration"
+        element={
+          <ProtectedRoute>
+            <MigrationPage />
+          </ProtectedRoute>
+        }
+      />
+      
+      {/* Debug Cars Page */}
+      <Route
+        path="/debug-cars"
+        element={
+          <ProtectedRoute>
+            <DebugCarsPage />
           </ProtectedRoute>
         }
       />

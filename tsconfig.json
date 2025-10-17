@@ -65,7 +65,12 @@
     ".firebase",
     "functions",
     "comprehensive_car_data.ts",
-    "extract-netcarshow-data.js"
+    "extract-netcarshow-data.js",
+    "DDD/**",
+    "DEPRECATED_FILES_BACKUP/**",
+    "DEPRECATED_DOCS/**",
+    "SESSION_REPORTS/**",
+    "bulgarian-car-marketplace/backups/**"
   ],
   "ts-node": {
     "esm": true,

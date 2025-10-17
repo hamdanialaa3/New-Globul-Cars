@@ -1,0 +1,256 @@
+{
+  "name": "Globul Cars - User Tracking & Management",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "user-registered",
+        "options": {}
+      },
+      "id": "webhook-user-registered",
+      "name": "Webhook - User Registered",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "user-registered-webhook"
+    },
+    {
+      "parameters": {
+        "path": "user-logged-in",
+        "options": {}
+      },
+      "id": "webhook-user-login",
+      "name": "Webhook - User Logged In",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 500],
+      "webhookId": "user-login-webhook"
+    },
+    {
+      "parameters": {
+        "path": "profile-updated",
+        "options": {}
+      },
+      "id": "webhook-profile-updated",
+      "name": "Webhook - Profile Updated",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 700],
+      "webhookId": "profile-updated-webhook"
+    },
+    {
+      "parameters": {
+        "path": "listing-created",
+        "options": {}
+      },
+      "id": "webhook-listing-created",
+      "name": "Webhook - Listing Created",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 900],
+      "webhookId": "listing-created-webhook"
+    },
+    {
+      "parameters": {
+        "functionCode": "// تحليل شامل لسلوك المستخدمين\nconst inputData = items[0].json;\nconst { action, userId, userData, timestamp } = inputData;\n\n// تصنيف أنواع الأنشطة\nconst actionTypes = {\n  'user_registered': {\n    category: 'acquisition',\n    priority: 'high',\n    followUp: 'welcome_sequence',\n    kpi: 'new_users'\n  },\n  'user_logged_in': {\n    category: 'engagement',\n    priority: 'medium',\n    followUp: 'session_tracking',\n    kpi: 'active_users'\n  },\n  'profile_updated': {\n    category: 'activation',\n    priority: 'high',\n    followUp: 'completion_check',\n    kpi: 'profile_completion'\n  },\n  'listing_created': {\n    category: 'conversion',\n    priority: 'very_high',\n    followUp: 'listing_optimization',\n    kpi: 'listings_created'\n  }\n};\n\n// الحصول على معلومات النشاط\nconst actionInfo = actionTypes[action] || {\n  category: 'other',\n  priority: 'low',\n  followUp: 'basic_tracking',\n  kpi: 'misc_actions'\n};\n\n// تحليل ملف المستخدم\nconst userAnalysis = {\n  isNewUser: action === 'user_registered',\n  hasCompletProfile: userData && userData.name && userData.phone && userData.location,\n  preferredLanguage: userData?.language || 'bg',\n  accountType: userData?.accountType || 'individual',\n  verificationStatus: userData?.emailVerified || false\n};\n\n// تحديد مستوى المستخدم\nlet userLevel = 'basic';\nif (userAnalysis.hasCompletProfile && userAnalysis.verificationStatus) {\n  userLevel = 'verified';\n}\nif (userData?.listingCount > 5) {\n  userLevel = 'power_user';\n}\nif (userData?.accountType === 'dealer') {\n  userLevel = 'business';\n}\n\n// اقتراحات التحسين للمستخدم\nlet recommendations = [];\nif (!userAnalysis.hasCompletProfile) {\n  recommendations.push('Complete profile for better visibility');\n}\nif (!userAnalysis.verificationStatus) {\n  recommendations.push('Verify email for full access');\n}\nif (userLevel === 'basic' && action === 'listing_created') {\n  recommendations.push('Consider upgrading to premium features');\n}\n\n// تحليل التوقيت والسلوك\nconst behaviorAnalysis = {\n  timestamp: new Date(timestamp),\n  hour: new Date(timestamp).getHours(),\n  dayOfWeek: new Date(timestamp).getDay(),\n  isBusinessHours: new Date(timestamp).getHours() >= 9 && new Date(timestamp).getHours() <= 17,\n  isWeekend: [0, 6].includes(new Date(timestamp).getDay()),\n  timeZone: 'Europe/Sofia'\n};\n\n// تحديد الإجراءات التلقائية المطلوبة\nlet automatedActions = [];\nif (action === 'user_registered') {\n  automatedActions.push('send_welcome_email');\n  automatedActions.push('setup_onboarding_sequence');\n}\nif (action === 'listing_created') {\n  automatedActions.push('send_listing_confirmation');\n  automatedActions.push('start_promotion_campaign');\n}\nif (!userAnalysis.verificationStatus && userLevel !== 'basic') {\n  automatedActions.push('send_verification_reminder');\n}\n\n// تحليل القيمة التجارية\nconst businessValue = {\n  ltv_potential: userLevel === 'business' ? 'high' : userLevel === 'verified' ? 'medium' : 'low',\n  engagement_score: (userAnalysis.hasCompletProfile ? 30 : 0) + \n                   (userAnalysis.verificationStatus ? 40 : 0) + \n                   (userData?.listingCount || 0) * 10,\n  conversion_likelihood: actionInfo.category === 'conversion' ? 'high' : \n                        actionInfo.category === 'activation' ? 'medium' : 'low'\n};\n\n// تحديد قطاعات المستخدمين\nlet userSegment = 'new_visitor';\nif (userLevel === 'business') userSegment = 'business_user';\nelse if (userLevel === 'power_user') userSegment = 'power_user';\nelse if (userLevel === 'verified') userSegment = 'active_user';\nelse if (userAnalysis.isNewUser) userSegment = 'new_user';\n\nreturn [{\n  json: {\n    userId,\n    action,\n    actionInfo,\n    userAnalysis,\n    userLevel,\n    userSegment,\n    recommendations,\n    behaviorAnalysis,\n    automatedActions,\n    businessValue,\n    processedAt: new Date().toISOString(),\n    requiresFollowUp: actionInfo.priority === 'high' || actionInfo.priority === 'very_high'\n  }\n}];"
+      },
+      "id": "analyze-user-behavior",
+      "name": "Analyze User Behavior",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [500, 600]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.action}}",
+              "value2": "user_registered"
+            }
+          ]
+        }
+      },
+      "id": "is-new-user",
+      "name": "Is New User?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [720, 600]
+    },
+    {
+      "parameters": {
+        "url": "https://fire-new-globul.firebaseapp.com/api/welcome-sequence",
+        "authentication": "none",
+        "requestMethod": "POST",
+        "jsonParameters": true,
+        "bodyParametersJson": "={\n  \"userId\": \"{{$json.userId}}\",\n  \"userLevel\": \"{{$json.userLevel}}\",\n  \"language\": \"{{$json.userAnalysis.preferredLanguage}}\",\n  \"recommendations\": {{JSON.stringify($json.recommendations)}},\n  \"timestamp\": \"{{$json.processedAt}}\"\n}",
+        "options": {}
+      },
+      "id": "trigger-welcome-sequence",
+      "name": "Trigger Welcome Sequence",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [940, 500],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "url": "https://fire-new-globul.firebaseapp.com/api/user-analytics",
+        "authentication": "none",
+        "requestMethod": "POST",
+        "jsonParameters": true,
+        "bodyParametersJson": "={\n  \"userId\": \"{{$json.userId}}\",\n  \"action\": \"{{$json.action}}\",\n  \"userLevel\": \"{{$json.userLevel}}\",\n  \"userSegment\": \"{{$json.userSegment}}\",\n  \"businessValue\": {{JSON.stringify($json.businessValue)}},\n  \"behaviorAnalysis\": {{JSON.stringify($json.behaviorAnalysis)}},\n  \"automatedActions\": {{JSON.stringify($json.automatedActions)}},\n  \"timestamp\": \"{{$json.processedAt}}\"\n}",
+        "options": {}
+      },
+      "id": "log-user-analytics",
+      "name": "Log User Analytics",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [940, 700],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$json.requiresFollowUp}}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "requires-followup",
+      "name": "Requires Follow-up?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [1160, 600]
+    },
+    {
+      "parameters": {
+        "url": "https://fire-new-globul.firebaseapp.com/api/schedule-followup",
+        "authentication": "none",
+        "requestMethod": "POST",
+        "jsonParameters": true,
+        "bodyParametersJson": "={\n  \"userId\": \"{{$json.userId}}\",\n  \"action\": \"{{$json.action}}\",\n  \"priority\": \"{{$json.actionInfo.priority}}\",\n  \"followUpType\": \"{{$json.actionInfo.followUp}}\",\n  \"recommendations\": {{JSON.stringify($json.recommendations)}},\n  \"scheduledFor\": \"{{new Date(Date.now() + 24*60*60*1000).toISOString()}}\"\n}",
+        "options": {}
+      },
+      "id": "schedule-followup",
+      "name": "Schedule Follow-up",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [1380, 500],
+      "continueOnFail": true
+    }
+  ],
+  "connections": {
+    "Webhook - User Registered": {
+      "main": [
+        [
+          {
+            "node": "Analyze User Behavior",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook - User Logged In": {
+      "main": [
+        [
+          {
+            "node": "Analyze User Behavior",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook - Profile Updated": {
+      "main": [
+        [
+          {
+            "node": "Analyze User Behavior",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook - Listing Created": {
+      "main": [
+        [
+          {
+            "node": "Analyze User Behavior",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze User Behavior": {
+      "main": [
+        [
+          {
+            "node": "Is New User?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is New User?": {
+      "main": [
+        [
+          {
+            "node": "Trigger Welcome Sequence",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log User Analytics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trigger Welcome Sequence": {
+      "main": [
+        [
+          {
+            "node": "Log User Analytics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log User Analytics": {
+      "main": [
+        [
+          {
+            "node": "Requires Follow-up?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Requires Follow-up?": {
+      "main": [
+        [
+          {
+            "node": "Schedule Follow-up",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "00000000-0000-0000-0000-000000000000"
+}

@@ -33,6 +33,10 @@ export interface CarListing {
   city: string;
   region: string;
   postalCode?: string;
+  coordinates?: {
+    lat: number;
+    lng: number;
+  };
 
   // Technical Specifications
   engineType?: string;

@@ -1,289 +1,329 @@
-// src/services/logger-service.ts
-// Professional Logging Service for Bulgarian Car Marketplace
-// (Comment removed - was in Arabic)
+// Logger Service - Unified Logging System
+// خدمة السجلات الموحدة - بديل لـ console.log/error/warn
 
-export enum LogLevel {
-  DEBUG = 0,
-  INFO = 1,
-  WARN = 2,
-  ERROR = 3,
-  CRITICAL = 4
+/**
+ * Unified Logger Service
+ * 
+ * Purpose:
+ * - Replace all console.log/error/warn in production
+ * - Send errors to Sentry (when configured)
+ * - Log to Firebase Analytics (optional)
+ * - Provide structured logging
+ * 
+ * Usage:
+ * ```typescript
+ * import { logger } from './services/logger-service';
+ * 
+ * logger.info('User logged in', { userId: '123' });
+ * logger.error('Payment failed', error, { orderId: '456' });
+ * logger.warn('Deprecated API used', { api: 'old-endpoint' });
+ * ```
+ */
+
+type LogLevel = 'debug' | 'info' | 'warn' | 'error' | 'fatal';
+
+interface LogContext {
+  [key: string]: any;
 }
 
-export interface LogEntry {
-  timestamp: string;
+interface LogEntry {
   level: LogLevel;
-  service: string;
   message: string;
-  data?: any;
+  timestamp: Date;
+  context?: LogContext;
   error?: Error;
   userId?: string;
   sessionId?: string;
-  requestId?: string;
 }
 
-export interface LoggerConfig {
-  level: LogLevel;
-  enableConsole: boolean;
-  enableRemote: boolean;
-  remoteEndpoint?: string;
-  maxEntries: number;
-  retentionDays: number;
-}
+class LoggerService {
+  private isDevelopment: boolean;
+  private isProduction: boolean;
+  private sessionId: string;
+  private userId: string | null = null;
 
-/**
- * Professional Logger Service
- * (Comment removed - was in Arabic)
- */
-export class Logger {
-  private config: LoggerConfig;
-  private entries: LogEntry[] = [];
-  private serviceName: string;
-
-  constructor(serviceName: string, config?: Partial<LoggerConfig>) {
-    this.serviceName = serviceName;
-    this.config = {
-      level: LogLevel.INFO,
-      enableConsole: true,
-      enableRemote: false,
-      maxEntries: 1000,
-      retentionDays: 7,
-      ...config
-    };
-
-    // Clean up old entries periodically
-    setInterval(() => this.cleanup(), 60000); // Every minute
+  constructor() {
+    this.isDevelopment = process.env.NODE_ENV === 'development';
+    this.isProduction = process.env.NODE_ENV === 'production';
+    this.sessionId = this.generateSessionId();
   }
 
   /**
-   * Log debug message
-   * (Comment removed - was in Arabic)
+   * Set current user ID for logging context
    */
-  debug(message: string, data?: any): void {
-    this.log(LogLevel.DEBUG, message, data);
+  setUserId(userId: string | null) {
+    this.userId = userId;
   }
 
   /**
-   * Log info message
-   * (Comment removed - was in Arabic)
+   * Debug level - development only
    */
-  info(message: string, data?: any): void {
-    this.log(LogLevel.INFO, message, data);
+  debug(message: string, context?: LogContext) {
+    if (this.isDevelopment) {
+      this.log('debug', message, undefined, context);
+    }
   }
 
   /**
-   * Log warning message
-   * (Comment removed - was in Arabic)
+   * Info level - general information
    */
-  warn(message: string, data?: any): void {
-    this.log(LogLevel.WARN, message, data);
+  info(message: string, context?: LogContext) {
+    this.log('info', message, undefined, context);
   }
 
   /**
-   * Log error message
-   * (Comment removed - was in Arabic)
+   * Warning level - something unexpected but not critical
    */
-  error(message: string, error?: Error, data?: any): void {
-    this.log(LogLevel.ERROR, message, data, error);
+  warn(message: string, context?: LogContext) {
+    this.log('warn', message, undefined, context);
   }
 
   /**
-   * Log critical message
-   * (Comment removed - was in Arabic)
+   * Error level - errors that need attention
    */
-  critical(message: string, error?: Error, data?: any): void {
-    this.log(LogLevel.CRITICAL, message, data, error);
+  error(message: string, error?: Error, context?: LogContext) {
+    this.log('error', message, error, context);
+    
+    // Send to error tracking service (Sentry)
+    this.sendToErrorTracking(message, error, context);
+  }
+
+  /**
+   * Fatal level - critical errors that stop execution
+   */
+  fatal(message: string, error?: Error, context?: LogContext) {
+    this.log('fatal', message, error, context);
+    
+    // Send to error tracking service with high priority
+    this.sendToErrorTracking(message, error, { ...context, severity: 'fatal' });
   }
 
   /**
    * Core logging method
-   * (Comment removed - was in Arabic)
    */
-  private log(level: LogLevel, message: string, data?: any, error?: Error): void {
-    if (level < this.config.level) return;
-
+  private log(
+    level: LogLevel,
+    message: string,
+    error?: Error,
+    context?: LogContext
+  ) {
     const entry: LogEntry = {
-      timestamp: new Date().toISOString(),
       level,
-      service: this.serviceName,
       message,
-      data,
+      timestamp: new Date(),
+      context,
       error,
-      requestId: this.generateRequestId()
+      userId: this.userId || undefined,
+      sessionId: this.sessionId
     };
 
-    // Add to local storage
-    this.entries.push(entry);
-    if (this.entries.length > this.config.maxEntries) {
-      this.entries.shift();
-    }
-
-    // Console logging
-    if (this.config.enableConsole) {
+    // 1. Console output (development only or errors in production)
+    if (this.isDevelopment || level === 'error' || level === 'fatal') {
       this.logToConsole(entry);
     }
 
-    // Remote logging
-    if (this.config.enableRemote && this.config.remoteEndpoint) {
-      this.logToRemote(entry);
+    // 2. Send to Firebase Analytics (optional)
+    if (this.isProduction && (level === 'error' || level === 'fatal')) {
+      this.logToFirebase(entry);
     }
 
-    // Handle critical errors
-    if (level >= LogLevel.CRITICAL) {
-      this.handleCriticalError(entry);
-    }
-  }
-
-  /**
-   * Log to console with formatting
-   * (Comment removed - was in Arabic)
-   */
-  private logToConsole(entry: LogEntry): void {
-    const levelName = LogLevel[entry.level];
-    const timestamp = new Date(entry.timestamp).toLocaleTimeString();
-    const prefix = `[${timestamp}] ${levelName} [${entry.service}]`;
-
-    switch (entry.level) {
-      case LogLevel.DEBUG:
-        console.debug(`${prefix} ${entry.message}`, entry.data || '');
-        break;
-      case LogLevel.INFO:
-        console.info(`${prefix} ${entry.message}`, entry.data || '');
-        break;
-      case LogLevel.WARN:
-        console.warn(`${prefix} ${entry.message}`, entry.data || '');
-        break;
-      case LogLevel.ERROR:
-      case LogLevel.CRITICAL:
-        console.error(`${prefix} ${entry.message}`, entry.error || entry.data || '');
-        if (entry.error?.stack) {
-          console.error(entry.error.stack);
-        }
-        break;
+    // 3. Store critical logs locally (for debugging)
+    if (level === 'error' || level === 'fatal') {
+      this.storeLocally(entry);
     }
   }
 
   /**
-   * Log to remote endpoint
-   * (Comment removed - was in Arabic)
+   * Log to console with colors and formatting
    */
-  private async logToRemote(entry: LogEntry): Promise<void> {
+  private logToConsole(entry: LogEntry) {
+    const { level, message, timestamp, context, error } = entry;
+    
+    const colors = {
+      debug: '\x1b[36m',   // Cyan
+      info: '\x1b[32m',    // Green
+      warn: '\x1b[33m',    // Yellow
+      error: '\x1b[31m',   // Red
+      fatal: '\x1b[35m'    // Magenta
+    };
+    
+    const reset = '\x1b[0m';
+    const color = colors[level];
+    
+    const timeStr = timestamp.toISOString();
+    const prefix = `${color}[${level.toUpperCase()}]${reset} ${timeStr}`;
+    
+    console.log(`${prefix} ${message}`);
+    
+    if (context && Object.keys(context).length > 0) {
+      console.log('Context:', context);
+    }
+    
+    if (error) {
+      console.error('Error:', error);
+      if (error.stack) {
+        console.error('Stack:', error.stack);
+      }
+    }
+  }
+
+  /**
+   * Send to Firebase Analytics
+   */
+  private async logToFirebase(entry: LogEntry) {
     try {
-      await fetch(this.config.remoteEndpoint!, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.REACT_APP_LOGGING_TOKEN || ''}`
-        },
-        body: JSON.stringify(entry)
-      });
+      // Only in production and when Firebase is available
+      if (!this.isProduction) return;
+      
+      const { logEvent } = await import('firebase/analytics');
+      const { analytics } = await import('../firebase/firebase-config');
+      
+      if (analytics) {
+        logEvent(analytics, 'app_log', {
+          level: entry.level,
+          message: entry.message,
+          user_id: entry.userId,
+          session_id: entry.sessionId,
+          ...entry.context
+        });
+      }
     } catch (error) {
-      // Fallback to console if remote logging fails
-      console.error('[SERVICE] Failed to send log to remote:', error);
+      // Fail silently - don't break the app
+      if (this.isDevelopment) {
+        console.error('Failed to log to Firebase:', error);
+      }
     }
   }
 
   /**
-   * Handle critical errors
-   * (Comment removed - was in Arabic)
+   * Send to error tracking service (Sentry)
+   * This will only work when Sentry is configured
    */
-  private handleCriticalError(entry: LogEntry): void {
-    // Send alert to monitoring service
-    if (process.env.REACT_APP_MONITORING_WEBHOOK) {
-      fetch(process.env.REACT_APP_MONITORING_WEBHOOK, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          text: `🚨 CRITICAL ERROR in ${entry.service}: ${entry.message}`,
-          level: 'critical',
-          service: entry.service,
-          timestamp: entry.timestamp
-        })
-      }).catch(err => console.error('Failed to send critical alert:', err));
+  private sendToErrorTracking(
+    message: string,
+    error?: Error,
+    context?: LogContext
+  ) {
+    try {
+      // Check if Sentry is available
+      if (typeof window !== 'undefined' && (window as any).Sentry) {
+        const Sentry = (window as any).Sentry;
+        
+        if (error) {
+          Sentry.captureException(error, {
+            tags: {
+              logger: 'custom',
+              ...context
+            },
+            extra: {
+              message,
+              userId: this.userId,
+              sessionId: this.sessionId
+            }
+          });
+        } else {
+          Sentry.captureMessage(message, {
+            level: 'error',
+            tags: context,
+            extra: {
+              userId: this.userId,
+              sessionId: this.sessionId
+            }
+          });
+        }
+      }
+    } catch (err) {
+      // Fail silently
+      if (this.isDevelopment) {
+        console.error('Failed to send to error tracking:', err);
+      }
     }
+  }
 
-    // In production, you might want to restart the service or take other actions
-    if (process.env.NODE_ENV === 'production') {
-      // Implement production-specific critical error handling
-      console.error('[SERVICE] PRODUCTION CRITICAL ERROR - Immediate attention required!');
+  /**
+   * Store logs locally for debugging
+   */
+  private storeLocally(entry: LogEntry) {
+    try {
+      const key = 'app_error_logs';
+      const stored = localStorage.getItem(key);
+      const logs = stored ? JSON.parse(stored) : [];
+      
+      // Keep only last 50 logs
+      logs.push({
+        ...entry,
+        timestamp: entry.timestamp.toISOString(),
+        error: entry.error ? {
+          message: entry.error.message,
+          stack: entry.error.stack
+        } : undefined
+      });
+      
+      if (logs.length > 50) {
+        logs.shift();
+      }
+      
+      localStorage.setItem(key, JSON.stringify(logs));
+    } catch (error) {
+      // LocalStorage might be full or disabled
+      // Fail silently
     }
   }
 
   /**
-   * Get recent log entries
-   * (Comment removed - was in Arabic)
+   * Get stored logs (for debugging)
    */
-  getRecentEntries(level?: LogLevel, limit: number = 100): LogEntry[] {
-    let filtered = this.entries;
-
-    if (level !== undefined) {
-      filtered = filtered.filter(entry => entry.level >= level);
+  getStoredLogs(): LogEntry[] {
+    try {
+      const stored = localStorage.getItem('app_error_logs');
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
     }
-
-    return filtered.slice(-limit);
   }
 
   /**
-   * Search log entries
-   * (Comment removed - was in Arabic)
+   * Clear stored logs
    */
-  searchEntries(query: string, level?: LogLevel): LogEntry[] {
-    return this.entries.filter(entry => {
-      const matchesQuery = entry.message.toLowerCase().includes(query.toLowerCase()) ||
-                          (entry.data && JSON.stringify(entry.data).toLowerCase().includes(query.toLowerCase()));
-      const matchesLevel = level === undefined || entry.level >= level;
-      return matchesQuery && matchesLevel;
-    });
-  }
-
-  /**
-   * Clean up old entries
-   * (Comment removed - was in Arabic)
-   */
-  private cleanup(): void {
-    const cutoffDate = new Date();
-    cutoffDate.setDate(cutoffDate.getDate() - this.config.retentionDays);
-
-    this.entries = this.entries.filter(entry =>
-      new Date(entry.timestamp) > cutoffDate
-    );
-  }
-
-  /**
-   * Generate unique request ID
-   * (Comment removed - was in Arabic)
-   */
-  private generateRequestId(): string {
-    return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-  }
-
-  /**
-   * Export logs for analysis
-   * (Comment removed - was in Arabic)
-   */
-  exportLogs(format: 'json' | 'csv' = 'json'): string {
-    if (format === 'csv') {
-      const headers = ['timestamp', 'level', 'service', 'message', 'data'];
-      const rows = this.entries.map(entry => [
-        entry.timestamp,
-        LogLevel[entry.level],
-        entry.service,
-        entry.message,
-        entry.data ? JSON.stringify(entry.data) : ''
-      ]);
-
-      return [headers, ...rows].map(row =>
-        row.map(field => `"${field}"`).join(',')
-      ).join('\n');
+  clearStoredLogs() {
+    try {
+      localStorage.removeItem('app_error_logs');
+    } catch {
+      // Fail silently
     }
+  }
 
-    return JSON.stringify(this.entries, null, 2);
+  /**
+   * Generate unique session ID
+   */
+  private generateSessionId(): string {
+    return `session_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+  }
+
+  /**
+   * Performance timing helper
+   */
+  time(label: string) {
+    if (this.isDevelopment) {
+      console.time(label);
+    }
+  }
+
+  /**
+   * Performance timing end helper
+   */
+  timeEnd(label: string) {
+    if (this.isDevelopment) {
+      console.timeEnd(label);
+    }
   }
 }
 
-// Global logger instance
-export const globalLogger = new Logger('Global', {
-  level: process.env.NODE_ENV === 'production' ? LogLevel.WARN : LogLevel.DEBUG,
-  enableRemote: !!process.env.REACT_APP_LOGGING_ENDPOINT,
-  remoteEndpoint: process.env.REACT_APP_LOGGING_ENDPOINT
-});
+// Singleton instance
+export const logger = new LoggerService();
+
+// Default export
+export default logger;
+
+// Helper type for typed logging
+export type { LogLevel, LogContext, LogEntry };

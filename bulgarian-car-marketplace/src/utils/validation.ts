@@ -12,7 +12,6 @@ export const validateBulgarianPhone = (phone: string): { valid: boolean; message
     return { valid: true }; // Optional field
   }
 
-  const phoneRegex = /^\+359\s?\d{1,2}\s?\d{3}\s?\d{4}$/;
   const cleanPhone = phone.replace(/\s/g, '');
   
   if (!cleanPhone.startsWith('+359')) {

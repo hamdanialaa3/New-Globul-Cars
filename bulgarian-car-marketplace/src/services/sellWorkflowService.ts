@@ -13,6 +13,8 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '../firebase/firebase-config';
 import { BULGARIAN_CITIES } from '../constants/bulgarianCities';
 import { CarListing } from '../types/CarListing';
+import LocationHelperService from './location-helper-service';
+import { logger } from './logger-service';
 
 // Extended location structure for new system
 export interface EnhancedLocation {
@@ -41,13 +43,31 @@ export class SellWorkflowService {
     workflowData: any,
     userId: string
   ): any {
-    // Find city details
-    const cityId = workflowData.region || workflowData.city;
-    const cityData = BULGARIAN_CITIES.find(c => 
-      c.id === cityId || 
-      c.nameBg === cityId || 
-      c.nameEn === cityId
+    // ✅ FIXED: Use REGION as primary location (not city!)
+    // Region = المحافظة (للبرمجة)
+    // City = المدينة التابعة (للجمال فقط)
+    
+    const regionName = workflowData.region; // e.g., "Варна"
+    const cityName = workflowData.city; // e.g., "Аксаково" (decorative only)
+    const postalCode = workflowData.postalCode; // decorative only
+    
+    // Find region in BULGARIAN_CITIES
+    const regionData = BULGARIAN_CITIES.find(
+      c => c.nameBg === regionName || 
+           c.nameEn === regionName || 
+           c.id === regionName?.toLowerCase().replace(/\s+/g, '-')
     );
+    
+    if (!regionData) {
+      logger.error('Invalid region', new Error('Region not found'), { region: regionName });
+      throw new Error(`Invalid location: Region "${regionName}" not found in Bulgarian regions list`);
+    }
+    
+    logger.info('Location processed successfully', { 
+      region: regionData.id, 
+      regionName: regionData.nameBg,
+      city: cityName 
+    });
 
     // Parse arrays from comma-separated strings OR arrays
     const parseArray = (str: string | string[] | undefined): string[] => {
@@ -168,25 +188,17 @@ export class SellWorkflowService {
       hasVideo: workflowData.hasVideo === 'true',
       videoUrl: workflowData.videoUrl || '',
       
-      // Location (both old and new structure for compatibility)
-      city: cityData?.id || workflowData.city || '',
-      region: workflowData.region || cityData?.nameBg || '',
-      postalCode: workflowData.postalCode,
-      location: workflowData.location,
+      // Location - SIMPLE: Use region as primary field
+      region: regionData.id, // e.g., 'varna' - PRIMARY for filtering ✅
+      regionNameBg: regionData.nameBg, // e.g., 'Варна'
+      regionNameEn: regionData.nameEn, // e.g., 'Varna'
       
-      // Enhanced location structure (custom field)
-      locationData: {
-        cityId: cityData?.id || cityId || '',
-        cityName: {
-          en: cityData?.nameEn || workflowData.city || '',
-          bg: cityData?.nameBg || workflowData.city || '',
-          ar: cityData?.nameAr || ''
-        },
-        coordinates: cityData?.coordinates || { lat: 42.6977, lng: 23.3219 },
-        region: workflowData.region,
-        postalCode: workflowData.postalCode,
-        address: workflowData.location
-      },
+      // City and postal code (decorative only - not used for filtering)
+      city: cityName || '', // e.g., 'Аксаково' - decorative ❌
+      postalCode: postalCode || '',
+      
+      // Coordinates from region
+      coordinates: regionData.coordinates,
       
       // System Fields
       status: 'active' as const,
@@ -282,10 +294,10 @@ export class SellWorkflowService {
         console.log(`✅ Images uploaded and linked to car ${carId}`);
       }
 
-      // Clear cache for the city
+      // Clear cache for the region
       const { CityCarCountService } = await import('./cityCarCountService');
-      if (carData.location?.cityId) {
-        CityCarCountService.clearCacheForCity(carData.location.cityId);
+      if (carData.region) {
+        CityCarCountService.clearCacheForCity(carData.region);
       }
 
       console.log('🎉 Car listing creation completed successfully!');

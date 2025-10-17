@@ -11,6 +11,12 @@ import { VehicleFormData, FUEL_TYPES, TRANSMISSION_TYPES, COLORS, DOOR_OPTIONS, 
 import { getAllBrands, getModelsForBrand, getVariantsForModel, modelHasVariants, isFeaturedBrand } from '../../../services/carBrandsService';
 import { Star, Zap } from 'lucide-react';
 import * as S from './styles';
+import Tooltip, { CarSellingTooltips } from '../../../components/Tooltip';
+import { toast } from 'react-toastify';
+import { getErrorMessage } from '../../../constants/ErrorMessages';
+import useDraftAutoSave from '../../../hooks/useDraftAutoSave';
+import useWorkflowStep from '../../../hooks/useWorkflowStep';
+import KeyboardShortcutsHelper from '../../../components/KeyboardShortcutsHelper';
 
 const VehicleDataPageNew: React.FC = () => {
   const navigate = useNavigate();
@@ -84,13 +90,40 @@ const VehicleDataPageNew: React.FC = () => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
+  // 🆕 Hooks for enhancements
+  const { saveDraft, isSaving } = useDraftAutoSave(
+    formData,
+    { currentStep: 2, interval: 30000 }
+  );
+  const { markComplete } = useWorkflowStep(2, 'Vehicle Data');
+
   const handleContinue = () => {
-    if (!formData.make || !formData.year) {
-      alert(language === 'bg' 
-        ? 'Моля, попълнете марката и годината!' 
-        : 'Please fill in make and year!');
+    // 🆕 Enhanced validation with toast
+    if (!formData.make) {
+      toast.error(getErrorMessage('MAKE_REQUIRED', language as 'bg' | 'en'));
       return;
     }
+    
+    if (!formData.year) {
+      toast.error(getErrorMessage('YEAR_REQUIRED', language as 'bg' | 'en'));
+      return;
+    }
+
+    const yearNum = parseInt(formData.year);
+    const currentYear = new Date().getFullYear();
+    if (yearNum < 1900 || yearNum > currentYear + 1) {
+      toast.error(
+        getErrorMessage('YEAR_INVALID', language as 'bg' | 'en', { currentYear: currentYear.toString() })
+      );
+      return;
+    }
+
+    // 🆕 Mark step as completed
+    markComplete({
+      make: formData.make,
+      model: formData.model,
+      year: formData.year
+    });
 
     const params = new URLSearchParams();
     if (vehicleType) params.set('vt', vehicleType);
@@ -156,7 +189,11 @@ const VehicleDataPageNew: React.FC = () => {
         
         <S.FormGrid>
           <S.FormGroup>
-            <S.Label $required>{language === 'bg' ? 'Марка' : 'Make'}</S.Label>
+            <S.Label $required>
+              {language === 'bg' ? 'Марка' : 'Make'}
+              {' '}
+              <Tooltip content={CarSellingTooltips[language].make} />
+            </S.Label>
             <S.Select
               value={formData.make}
               onChange={(e) => handleInputChange('make', e.target.value)}
@@ -185,7 +222,11 @@ const VehicleDataPageNew: React.FC = () => {
           </S.FormGroup>
 
           <S.FormGroup>
-            <S.Label $required>{language === 'bg' ? 'Година' : 'Year'}</S.Label>
+            <S.Label $required>
+              {language === 'bg' ? 'Година' : 'Year'}
+              {' '}
+              <Tooltip content={CarSellingTooltips[language].year} />
+            </S.Label>
             <S.Input
               type="number"
               value={formData.year}
@@ -284,7 +325,11 @@ const VehicleDataPageNew: React.FC = () => {
           )}
 
           <S.FormGroup>
-            <S.Label>{language === 'bg' ? 'Пробег (км)' : 'Mileage (km)'}</S.Label>
+            <S.Label>
+              {language === 'bg' ? 'Пробег (км)' : 'Mileage (km)'}
+              {' '}
+              <Tooltip content={CarSellingTooltips[language].mileage} />
+            </S.Label>
             <S.Input
               type="number"
               value={formData.mileage}
@@ -477,7 +522,38 @@ const VehicleDataPageNew: React.FC = () => {
     />
   );
 
-  return <SplitScreenLayout leftContent={leftContent} rightContent={rightContent} />;
+  return (
+    <>
+      <SplitScreenLayout leftContent={leftContent} rightContent={rightContent} />
+      
+      {/* 🆕 Keyboard Shortcuts */}
+      <KeyboardShortcutsHelper
+        onSave={() => saveDraft(true)}
+        onNext={handleContinue}
+        onBack={() => navigate(-1)}
+        language={language as 'bg' | 'en'}
+      />
+      
+      {/* 🆕 Auto-save indicator */}
+      {isSaving && (
+        <div style={{
+          position: 'fixed',
+          bottom: '2rem',
+          right: '2rem',
+          background: 'rgba(16, 185, 129, 0.9)',
+          color: 'white',
+          padding: '0.75rem 1.25rem',
+          borderRadius: '8px',
+          fontSize: '0.875rem',
+          fontWeight: '600',
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+          zIndex: 998
+        }}>
+          💾 {getErrorMessage('AUTO_SAVED', language as 'bg' | 'en')}
+        </div>
+      )}
+    </>
+  );
 };
 
 export default VehicleDataPageNew;

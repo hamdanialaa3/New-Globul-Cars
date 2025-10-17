@@ -4,6 +4,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useTranslation } from '../../locales/useTranslation';
+import { BULGARIAN_CITIES } from '../../constants/bulgarianCities';
 
 // Mobile.de color system - exact colors
 const colors = {
@@ -912,34 +913,11 @@ const SharedCarForm: React.FC<SharedCarFormProps> = ({
                   onChange={(e) => handleInputChange('location', e.target.value)}
                 >
                   <option value="">Изберете град</option>
-                  <option value="sofia-grad">София - град</option>
-                  <option value="plovdiv">Пловдив</option>
-                  <option value="varna">Варна</option>
-                  <option value="burgas">Бургас</option>
-                  <option value="ruse">Русе</option>
-                  <option value="stara-zagora">Стара Загора</option>
-                  <option value="pleven">Плевен</option>
-                  <option value="sliven">Сливен</option>
-                  <option value="dobrich">Добрич</option>
-                  <option value="shumen">Шумен</option>
-                  <option value="pernik">Перник</option>
-                  <option value="haskovo">Хасково</option>
-                  <option value="yambol">Ямбол</option>
-                  <option value="pazardzhik">Пазарджик</option>
-                  <option value="blagoevgrad">Благоевград</option>
-                  <option value="veliko-tarnovo">Велико Търново</option>
-                  <option value="vratsa">Враца</option>
-                  <option value="gabrovo">Габрово</option>
-                  <option value="vidin">Видин</option>
-                  <option value="kyustendil">Кюстендил</option>
-                  <option value="kardzhali">Кърджали</option>
-                  <option value="montana">Монтана</option>
-                  <option value="targovishte">Търговище</option>
-                  <option value="lovech">Ловеч</option>
-                  <option value="silistra">Силистра</option>
-                  <option value="razgrad">Разград</option>
-                  <option value="smolyan">Смолян</option>
-                  <option value="sofia-oblast">София - област</option>
+                  {BULGARIAN_CITIES.map(city => (
+                    <option key={city.id} value={city.id}>
+                      {city.nameBg}
+                    </option>
+                  ))}
                 </SearchSelect>
               </FormGroup>
 

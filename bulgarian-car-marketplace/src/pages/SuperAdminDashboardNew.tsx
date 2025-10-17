@@ -12,6 +12,7 @@ import { db } from '../firebase/firebase-config';
 // Import components
 import AdminHeader from '../components/SuperAdmin/AdminHeader';
 import AdminNavigation from '../components/SuperAdmin/AdminNavigation';
+import QuickLinksNavigation from '../components/SuperAdmin/QuickLinksNavigation';
 import AdminOverview from '../components/SuperAdmin/AdminOverview';
 import LiveCounters from '../components/SuperAdmin/LiveCounters';
 import FirebaseConnectionTest from '../components/SuperAdmin/FirebaseConnectionTest';
@@ -247,6 +248,9 @@ const SuperAdminDashboard: React.FC = () => {
       <AdminHeader session={session} onLogout={handleLogout} />
       
       <AdminNavigation activeTab={activeTab} onTabChange={setActiveTab} />
+
+      {/* Quick Links Navigation - All Project Pages */}
+      <QuickLinksNavigation />
 
       <TabContent>
         {activeTab === 'overview' && (

@@ -107,18 +107,20 @@ const CityGrid: React.FC<CityGridProps> = ({
         })}
       </S.GridContainer>
 
-      {/* زر عرض المزيد/أقل */}
+      {/* ✅ زر عرض المزيد/أقل - محسّن */}
       {hasMore && (
         <S.ShowMoreButton onClick={() => setShowAll(!showAll)}>
           {showAll ? (
             <>
-              {language === 'bg' ? 'Покажи по-малко' : 'Show Less'}
-              <ChevronUp size={20} style={{ marginLeft: '0.5rem' }} />
+              <ChevronUp size={20} style={{ marginRight: '0.5rem' }} />
+              {language === 'bg' ? 'إخفاء' : 'Show Less'}
             </>
           ) : (
             <>
-              {language === 'bg' ? `Покажи всички (${cities.length - initialDisplayCount} повече)` : `Show All (${cities.length - initialDisplayCount} more)`}
-              <ChevronDown size={20} style={{ marginLeft: '0.5rem' }} />
+              <ChevronDown size={20} style={{ marginRight: '0.5rem' }} />
+              {language === 'bg' 
+                ? `عرض جميع المدن (${cities.length - initialDisplayCount} أخرى)` 
+                : `Show All Cities (${cities.length - initialDisplayCount} more)`}
             </>
           )}
         </S.ShowMoreButton>

@@ -22,7 +22,7 @@ declare global {
 // Project Number: 973379297533
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY || "AIzaSyAchmKCk8ipzv0dDwbQ2xU1Pa6o4CQsEu8",
-  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN || "fire-new-globul.firebaseapp.com",
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN || "mobilebg.eu",
   projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID || "fire-new-globul",
   storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET || "fire-new-globul.firebasestorage.app",
   messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID || "973379297533",

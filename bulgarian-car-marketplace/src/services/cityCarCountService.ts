@@ -16,24 +16,26 @@ export class CityCarCountService {
 
   /**
    * Get car count for a specific city
+   * ✅ UPDATED: Now uses unified location structure
    */
   static async getCarsCountByCity(cityId: string): Promise<number> {
     // Check cache first
     const cached = this.cache[cityId];
     if (cached && Date.now() - cached.timestamp < this.CACHE_DURATION) {
-      console.log(`Cache hit for ${cityId}: ${cached.count}`);
+      console.log(`✅ Cache hit for ${cityId}: ${cached.count}`);
       return cached.count;
     }
 
     try {
+      // ✅ FIXED: Query using REGION (not city!)
+      // cityId parameter is actually regionId (e.g., 'varna')
       const q = query(
         collection(db, 'cars'),
-        where('location.city', '==', cityId),
-        where('isActive', '==', true),
+        where('region', '==', cityId),
+        where('status', '==', 'active'),
         where('isSold', '==', false)
       );
 
-      // Use getCountFromServer for better performance
       const snapshot = await getCountFromServer(q);
       const count = snapshot.data().count;
 
@@ -43,16 +45,13 @@ export class CityCarCountService {
         timestamp: Date.now()
       };
 
-      console.log(`Fetched count for ${cityId}: ${count}`);
+      console.log(`✅ Total cars in ${cityId}: ${count}`);
       return count;
     } catch (error) {
-      console.error(`Error fetching count for ${cityId}:`, error);
+      console.error(`❌ Error fetching count for ${cityId}:`, error);
       
       // Return cached value if exists, otherwise 0
-      if (cached) {
-        return cached.count;
-      }
-      return 0;
+      return cached?.count || 0;
     }
   }
 

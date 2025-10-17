@@ -263,30 +263,52 @@ export const ShowMoreButton = styled.button`
   align-items: center;
   justify-content: center;
   width: 100%;
-  max-width: 400px;
-  margin: 2rem auto 0;
-  padding: 1rem 2rem;
-  background: linear-gradient(135deg, rgba(0, 92, 169, 0.05), rgba(0, 102, 204, 0.05));
-  border: 2px solid #005ca9;
-  border-radius: 12px;
+  max-width: 500px;
+  margin: 2.5rem auto 0;
+  padding: 1.25rem 2.5rem;
+  background: white;
+  border: 3px solid #005ca9;
+  border-radius: 50px;
   color: #005ca9;
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 1.1rem;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 92, 169, 0.15);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #005ca9, #0066cc);
+    transition: left 0.3s ease;
+    z-index: -1;
+  }
 
   &:hover {
-    background: linear-gradient(135deg, #005ca9, #0066cc);
     color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 92, 169, 0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 92, 169, 0.3);
+    
+    &::before {
+      left: 0;
+    }
   }
 
   &:active {
-    transform: translateY(0);
+    transform: translateY(-1px);
   }
 
   svg {
     transition: transform 0.3s ease;
+  }
+  
+  &:hover svg {
+    transform: scale(1.1);
   }
 `;

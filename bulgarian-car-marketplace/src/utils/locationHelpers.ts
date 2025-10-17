@@ -1,8 +1,8 @@
 // Location Helper Utilities for Bulgarian Car Marketplace
 // أدوات مساعدة للموقع - بلغاريا فقط
 
-import { LocationData, createLocationData, validateLocationData } from '../types/LocationData';
-import { BULGARIAN_CITIES, getCityById, BulgarianCity } from '../constants/bulgarianCities';
+import { LocationData, createLocationData } from '../types/LocationData';
+import { BULGARIAN_CITIES, getCityById } from '../constants/bulgarianCities';
 
 /**
  * Convert city ID to LocationData
@@ -219,7 +219,7 @@ export function formatFullAddress(
   if (locationData.address) {
     parts.push(locationData.address);
   }
-  
+
   const cityName = language === 'en' ? locationData.cityName.en : locationData.cityName.bg;
   
   if (locationData.postalCode) {

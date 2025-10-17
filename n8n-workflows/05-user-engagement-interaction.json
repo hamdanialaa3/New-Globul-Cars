@@ -1,0 +1,256 @@
+{
+  "name": "Globul Cars - User Engagement & Interaction",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "car-viewed",
+        "options": {}
+      },
+      "id": "webhook-car-viewed",
+      "name": "Webhook - Car Viewed",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "car-viewed-webhook"
+    },
+    {
+      "parameters": {
+        "path": "favorite-added",
+        "options": {}
+      },
+      "id": "webhook-favorite-added",
+      "name": "Webhook - Favorite Added",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 500],
+      "webhookId": "favorite-added-webhook"
+    },
+    {
+      "parameters": {
+        "path": "message-sent",
+        "options": {}
+      },
+      "id": "webhook-message-sent",
+      "name": "Webhook - Message Sent",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 700],
+      "webhookId": "message-sent-webhook"
+    },
+    {
+      "parameters": {
+        "path": "search-performed",
+        "options": {}
+      },
+      "id": "webhook-search-performed",
+      "name": "Webhook - Search Performed",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 900],
+      "webhookId": "search-performed-webhook"
+    },
+    {
+      "parameters": {
+        "functionCode": "// تحليل شامل لتفاعل المستخدمين\nconst inputData = items[0].json;\nconst { action, userId, data, timestamp } = inputData;\n\n// تصنيف أنواع التفاعل\nconst engagementTypes = {\n  'car_viewed': {\n    category: 'browsing',\n    value: 1,\n    intent: 'discovery',\n    conversionPotential: 'low'\n  },\n  'favorite_added': {\n    category: 'interest',\n    value: 5,\n    intent: 'consideration',\n    conversionPotential: 'medium'\n  },\n  'message_sent': {\n    category: 'contact',\n    value: 10,\n    intent: 'purchase',\n    conversionPotential: 'high'\n  },\n  'search_performed': {\n    category: 'exploration',\n    value: 2,\n    intent: 'research',\n    conversionPotential: 'low'\n  }\n};\n\n// الحصول على معلومات التفاعل\nconst engagementInfo = engagementTypes[action] || {\n  category: 'other',\n  value: 1,\n  intent: 'unknown',\n  conversionPotential: 'very_low'\n};\n\n// تحليل السيارة المستهدفة\nconst carAnalysis = {\n  carId: data?.carId,\n  brand: data?.brand,\n  model: data?.model,\n  price: data?.price,\n  year: data?.year,\n  location: data?.location,\n  priceRange: data?.price ? \n    (data.price < 10000 ? 'budget' : \n     data.price < 25000 ? 'mid-range' : \n     data.price < 50000 ? 'premium' : 'luxury') : 'unknown'\n};\n\n// تحليل سلوك البحث\nconst searchAnalysis = action === 'search_performed' ? {\n  query: data?.query,\n  filters: data?.filters || {},\n  resultsCount: data?.resultsCount || 0,\n  hasFilters: Object.keys(data?.filters || {}).length > 0,\n  searchType: data?.query ? 'keyword' : 'filter-only'\n} : null;\n\n// تحليل الرسائل\nconst messageAnalysis = action === 'message_sent' ? {\n  recipientType: data?.recipientType || 'seller',\n  messageLength: data?.message?.length || 0,\n  containsPhoneRequest: data?.message?.toLowerCase().includes('phone') || data?.message?.toLowerCase().includes('телефон'),\n  containsPriceInquiry: data?.message?.toLowerCase().includes('price') || data?.message?.toLowerCase().includes('цена'),\n  urgencyLevel: data?.message?.toLowerCase().includes('urgent') || data?.message?.toLowerCase().includes('спешно') ? 'high' : 'medium'\n} : null;\n\n// تحليل الموقع الجغرافي\nconst locationAnalysis = {\n  userLocation: data?.userLocation,\n  carLocation: carAnalysis.location,\n  distance: data?.distance,\n  isLocalSearch: data?.distance && data.distance < 50,\n  isNationalSearch: data?.distance && data.distance > 100\n};\n\n// تحديد مرحلة رحلة الشراء\nlet buyerJourneyStage = 'awareness';\nif (action === 'search_performed' && searchAnalysis?.hasFilters) {\n  buyerJourneyStage = 'consideration';\n}\nif (action === 'favorite_added') {\n  buyerJourneyStage = 'consideration';\n}\nif (action === 'message_sent') {\n  buyerJourneyStage = 'decision';\n}\n\n// تحليل التوقيت\nconst timeAnalysis = {\n  timestamp: new Date(timestamp),\n  hour: new Date(timestamp).getHours(),\n  dayOfWeek: new Date(timestamp).getDay(),\n  isBusinessHours: new Date(timestamp).getHours() >= 9 && new Date(timestamp).getHours() <= 17,\n  isWeekend: [0, 6].includes(new Date(timestamp).getDay()),\n  isPeakHours: [19, 20, 21].includes(new Date(timestamp).getHours())\n};\n\n// اقتراحات التحسين\nlet optimizationSuggestions = [];\nif (action === 'car_viewed' && !data?.duration || data.duration < 30) {\n  optimizationSuggestions.push('Short view duration - improve car details page');\n}\nif (action === 'search_performed' && searchAnalysis?.resultsCount === 0) {\n  optimizationSuggestions.push('Zero results - expand search criteria suggestions');\n}\nif (action === 'message_sent' && messageAnalysis?.urgencyLevel === 'high') {\n  optimizationSuggestions.push('High urgency message - prioritize seller notification');\n}\n\n// تحديد الإجراءات التلقائية\nlet automatedActions = [];\nif (action === 'favorite_added') {\n  automatedActions.push('send_price_drop_alert_subscription');\n  automatedActions.push('suggest_similar_cars');\n}\nif (action === 'message_sent') {\n  automatedActions.push('notify_seller_immediately');\n  automatedActions.push('track_response_time');\n}\nif (action === 'search_performed' && searchAnalysis?.resultsCount > 50) {\n  automatedActions.push('suggest_filter_refinement');\n}\n\n// حساب نقاط التفاعل\nconst engagementScore = {\n  baseScore: engagementInfo.value,\n  timeBonus: timeAnalysis.isPeakHours ? 2 : timeAnalysis.isBusinessHours ? 1 : 0,\n  intentBonus: engagementInfo.conversionPotential === 'high' ? 5 : \n              engagementInfo.conversionPotential === 'medium' ? 3 : 1,\n  totalScore: engagementInfo.value + \n             (timeAnalysis.isPeakHours ? 2 : timeAnalysis.isBusinessHours ? 1 : 0) +\n             (engagementInfo.conversionPotential === 'high' ? 5 : \n              engagementInfo.conversionPotential === 'medium' ? 3 : 1)\n};\n\n// تحديد الأولوية للمتابعة\nconst followUpPriority = {\n  score: engagementScore.totalScore,\n  level: engagementScore.totalScore > 15 ? 'urgent' :\n         engagementScore.totalScore > 10 ? 'high' :\n         engagementScore.totalScore > 5 ? 'medium' : 'low',\n  timeframe: engagementScore.totalScore > 15 ? '1 hour' :\n             engagementScore.totalScore > 10 ? '4 hours' :\n             engagementScore.totalScore > 5 ? '24 hours' : '1 week'\n};\n\nreturn [{\n  json: {\n    userId,\n    action,\n    engagementInfo,\n    carAnalysis,\n    searchAnalysis,\n    messageAnalysis,\n    locationAnalysis,\n    buyerJourneyStage,\n    timeAnalysis,\n    optimizationSuggestions,\n    automatedActions,\n    engagementScore,\n    followUpPriority,\n    processedAt: new Date().toISOString(),\n    requiresUrgentAction: followUpPriority.level === 'urgent'\n  }\n}];"
+      },
+      "id": "analyze-engagement",
+      "name": "Analyze User Engagement",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [500, 650]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.action}}",
+              "value2": "message_sent"
+            }
+          ]
+        }
+      },
+      "id": "is-message-sent",
+      "name": "Is Message Sent?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [720, 650]
+    },
+    {
+      "parameters": {
+        "url": "https://fire-new-globul.firebaseapp.com/api/seller-notification",
+        "authentication": "none",
+        "requestMethod": "POST",
+        "jsonParameters": true,
+        "bodyParametersJson": "={\n  \"sellerId\": \"{{$json.carAnalysis.sellerId}}\",\n  \"carId\": \"{{$json.carAnalysis.carId}}\",\n  \"buyerId\": \"{{$json.userId}}\",\n  \"messagePreview\": \"{{$json.messageAnalysis.message}}\",\n  \"urgencyLevel\": \"{{$json.messageAnalysis.urgencyLevel}}\",\n  \"buyerLocation\": \"{{$json.locationAnalysis.userLocation}}\",\n  \"timestamp\": \"{{$json.processedAt}}\"\n}",
+        "options": {}
+      },
+      "id": "notify-seller",
+      "name": "Notify Seller",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [940, 550],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "url": "https://fire-new-globul.firebaseapp.com/api/engagement-analytics",
+        "authentication": "none",
+        "requestMethod": "POST",
+        "jsonParameters": true,
+        "bodyParametersJson": "={\n  \"userId\": \"{{$json.userId}}\",\n  \"action\": \"{{$json.action}}\",\n  \"carAnalysis\": {{JSON.stringify($json.carAnalysis)}},\n  \"buyerJourneyStage\": \"{{$json.buyerJourneyStage}}\",\n  \"engagementScore\": {{JSON.stringify($json.engagementScore)}},\n  \"followUpPriority\": {{JSON.stringify($json.followUpPriority)}},\n  \"timeAnalysis\": {{JSON.stringify($json.timeAnalysis)}},\n  \"optimizationSuggestions\": {{JSON.stringify($json.optimizationSuggestions)}},\n  \"timestamp\": \"{{$json.processedAt}}\"\n}",
+        "options": {}
+      },
+      "id": "log-engagement-analytics",
+      "name": "Log Engagement Analytics",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [940, 750],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$json.requiresUrgentAction}}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "requires-urgent-action",
+      "name": "Requires Urgent Action?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [1160, 650]
+    },
+    {
+      "parameters": {
+        "url": "https://fire-new-globul.firebaseapp.com/api/urgent-engagement-alert",
+        "authentication": "none",
+        "requestMethod": "POST",
+        "jsonParameters": true,
+        "bodyParametersJson": "={\n  \"userId\": \"{{$json.userId}}\",\n  \"action\": \"{{$json.action}}\",\n  \"urgencyReason\": \"High engagement score: {{$json.engagementScore.totalScore}}\",\n  \"recommendedActions\": {{JSON.stringify($json.automatedActions)}},\n  \"timeframe\": \"{{$json.followUpPriority.timeframe}}\",\n  \"carDetails\": {{JSON.stringify($json.carAnalysis)}},\n  \"timestamp\": \"{{$json.processedAt}}\"\n}",
+        "options": {}
+      },
+      "id": "send-urgent-alert",
+      "name": "Send Urgent Alert",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [1380, 550],
+      "continueOnFail": true
+    }
+  ],
+  "connections": {
+    "Webhook - Car Viewed": {
+      "main": [
+        [
+          {
+            "node": "Analyze User Engagement",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook - Favorite Added": {
+      "main": [
+        [
+          {
+            "node": "Analyze User Engagement",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook - Message Sent": {
+      "main": [
+        [
+          {
+            "node": "Analyze User Engagement",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook - Search Performed": {
+      "main": [
+        [
+          {
+            "node": "Analyze User Engagement",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze User Engagement": {
+      "main": [
+        [
+          {
+            "node": "Is Message Sent?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Message Sent?": {
+      "main": [
+        [
+          {
+            "node": "Notify Seller",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log Engagement Analytics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notify Seller": {
+      "main": [
+        [
+          {
+            "node": "Log Engagement Analytics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Engagement Analytics": {
+      "main": [
+        [
+          {
+            "node": "Requires Urgent Action?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Requires Urgent Action?": {
+      "main": [
+        [
+          {
+            "node": "Send Urgent Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "00000000-0000-0000-0000-000000000000"
+}

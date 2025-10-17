@@ -3,7 +3,7 @@
 // Provides a single interface to acquire tokens for social platforms without exposing long-lived secrets in client bundles.
 // NOTE: In production this should call a backend endpoint that returns short-lived tokens.
 
-import { Logger, LogLevel } from './logger-service';
+import { logger } from './logger-service';
 import { socialMediaCache } from './cache-service';
 
 // Lightweight verifier for opaque ephemeral tokens issued by backend (must mirror backend HMAC logic / but here we only structure-validate to avoid exposing secret)
@@ -61,16 +61,13 @@ export interface SocialToken {
  */
 export class SocialTokenProvider {
   private static instance: SocialTokenProvider;
-  private logger: Logger;
+  private logger: any;
   private inMemory: Map<SocialPlatform, SocialToken> = new Map();
   private CACHE_PREFIX = 'social_token';
 
   private constructor() {
-    this.logger = new Logger('SocialTokenProvider', {
-      level: LogLevel.INFO,
-      enableConsole: true,
-      enableRemote: false
-    });
+    // Using global logger instance
+    this.logger = logger;
   }
 
   static getInstance(): SocialTokenProvider {

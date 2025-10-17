@@ -185,11 +185,11 @@ export const useAdvancedSearch = () => {
     setSearchData(createInitialSearchData());
   };
 
-  // Data Arrays
+  // ✅ FIXED: Use popular brands (simpler and faster)
   const carMakes = [
-    'Audi', 'BMW', 'Mercedes-Benz', 'Volkswagen', 'Toyota', 'Honda', 'Ford', 'Opel',
-    'Nissan', 'Hyundai', 'Kia', 'Renault', 'Peugeot', 'Citroën', 'Fiat', 'Seat',
-    'Škoda', 'Dacia', 'Suzuki', 'Mazda', 'Mitsubishi', 'Volvo', 'Lexus', 'Infiniti'
+    'BMW', 'Mercedes-Benz', 'Audi', 'Volkswagen', 'Toyota', 'Honda', 
+    'Ford', 'Opel', 'Renault', 'Peugeot', 'Citroën', 'Fiat', 'Seat',
+    'Škoda', 'Dacia', 'Suzuki', 'Mazda', 'Mitsubishi', 'Volvo', 'Lexus'
   ];
 
   const fuelTypes = [

@@ -2,7 +2,7 @@
 // TikTok Integration Service for Bulgarian Car Marketplace
 // (Comment removed - was in Arabic)
 
-import { Logger, LogLevel } from './logger-service';
+import { logger } from './logger-service';
 import { rateLimiter } from './rate-limiting-service';
 import { socialMediaCache } from './cache-service';
 
@@ -78,21 +78,15 @@ class TikTokService {
 
   // Professional services for production readiness
   // (Comment removed - was in Arabic)
-  private logger: Logger;
+  private logger: any;
   private rateLimiter: any;
 
   constructor() {
     // Initialize with environment variables
     this.accessToken = process.env.REACT_APP_TIKTOK_ACCESS_TOKEN || null;
 
-    // Initialize professional services
-    this.logger = new Logger('TikTokService', {
-      level: LogLevel.INFO,
-      enableConsole: true,
-      enableRemote: true,
-      maxEntries: 1000,
-      retentionDays: 7
-    });
+    // Initialize professional services - using global logger
+    this.logger = logger as any;
 
     this.rateLimiter = rateLimiter;
 
