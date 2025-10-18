@@ -99,4 +99,28 @@ export interface ProfileActions {
 // Combined Profile Hook Return Type
 export interface UseProfileReturn extends ProfileState, ProfileActions {
   loadUserCars?: () => void;
+  
+  // NEW: Profile Type System
+  profileType?: 'private' | 'dealer' | 'company';
+  theme?: {
+    primary: string;
+    secondary: string;
+    accent: string;
+    gradient: string;
+  };
+  permissions?: {
+    canAddListings: boolean;
+    maxListings: number;
+    hasAnalytics: boolean;
+    hasAdvancedAnalytics: boolean;
+    hasTeam: boolean;
+    canExportData: boolean;
+    hasPrioritySupport: boolean;
+    canUseQuickReplies: boolean;
+    canBulkEdit: boolean;
+    canImportCSV: boolean;
+    canUseAPI: boolean;
+  };
+  planTier?: 'free' | 'premium' | 'dealer_basic' | 'dealer_pro' | 'dealer_enterprise' | 
+             'company_starter' | 'company_pro' | 'company_enterprise' | 'custom';
 }

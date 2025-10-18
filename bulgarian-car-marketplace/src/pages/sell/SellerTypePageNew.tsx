@@ -1,11 +1,14 @@
 // Seller Type Page with Workflow - Auto Continue
 // صفحة نوع البائع مع الأتمتة - انتقال تلقائي
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
 import styled from 'styled-components';
-import { User, Building2, Factory, Check } from 'lucide-react';
+import { Check } from 'lucide-react';
+import PersonIcon from '../../components/icons/PersonIcon';
+import DealerIcon from '../../components/icons/DealerIcon';
+import CompanyIcon from '../../components/icons/CompanyIcon';
 import SplitScreenLayout from '../../components/SplitScreenLayout';
 import { WorkflowFlow } from '../../components/WorkflowVisualization';
 import { bulgarianAuthService } from '../../firebase';
@@ -160,6 +163,21 @@ const SellerTypePageNew: React.FC = () => {
 
   const vehicleType = searchParams.get('vt');
 
+  const sellerTypes = [
+    { id: 'private', IconComponent: PersonIcon },
+    { id: 'dealer', IconComponent: DealerIcon },
+    { id: 'company', IconComponent: CompanyIcon }
+  ];
+
+  const handleSelect = useCallback((typeId: string) => {
+    const params = new URLSearchParams();
+    if (vehicleType) params.set('vt', vehicleType);
+    params.set('st', typeId);
+    
+    // Auto-navigate immediately
+    navigate(`/sell/inserat/${vehicleType || 'car'}/fahrzeugdaten/antrieb-und-umwelt?${params.toString()}`);
+  }, [navigate, vehicleType]);
+
   // Auto-detect seller type from user profile
   useEffect(() => {
     const detectSellerType = async () => {
@@ -190,33 +208,7 @@ const SellerTypePageNew: React.FC = () => {
     };
 
     detectSellerType();
-  }, []);
-
-  const sellerTypes = [
-    { id: 'private', IconComponent: User },
-    { id: 'dealer', IconComponent: Building2 },
-    { id: 'company', IconComponent: Factory }
-  ];
-
-  const handleSelect = (typeId: string) => {
-    const params = new URLSearchParams();
-    if (vehicleType) params.set('vt', vehicleType);
-    params.set('st', typeId);
-    
-    // Auto-navigate immediately
-    navigate(`/sell/inserat/${vehicleType || 'car'}/fahrzeugdaten/antrieb-und-umwelt?${params.toString()}`);
-  };
-
-  const workflowSteps = [
-    { id: 'vehicle', label: language === 'bg' ? 'Тип' : 'Type', icon: undefined, isCompleted: true },
-    { id: 'seller', label: language === 'bg' ? 'Продавач' : 'Seller', icon: undefined, isCompleted: false },
-    { id: 'data', label: language === 'bg' ? 'Данни' : 'Data', icon: undefined, isCompleted: false },
-    { id: 'equipment', label: language === 'bg' ? 'Оборудване' : 'Equipment', icon: undefined, isCompleted: false },
-    { id: 'images', label: language === 'bg' ? 'Снимки' : 'Images', icon: undefined, isCompleted: false },
-    { id: 'pricing', label: language === 'bg' ? 'Цена' : 'Price', icon: undefined, isCompleted: false },
-    { id: 'contact', label: language === 'bg' ? 'Контакт' : 'Contact', icon: undefined, isCompleted: false },
-    { id: 'publish', label: language === 'bg' ? 'Публикуване' : 'Publish', icon: undefined, isCompleted: false }
-  ];
+  }, [handleSelect]);
 
   const leftContent = (
     <ContentSection>
@@ -240,7 +232,7 @@ const SellerTypePageNew: React.FC = () => {
             fontWeight: '600',
             animation: 'pulse 2s ease-in-out infinite'
           }}>
-            <Building2 size={20} />
+            <DealerIcon size={20} color="#1e40af" />
             <span>
               {language === 'bg'
                 ? `✓ Бизнес акаунт открит! Автоматично избиране на "${autoDetectedType}"...`

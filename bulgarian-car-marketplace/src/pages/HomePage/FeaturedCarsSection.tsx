@@ -113,26 +113,3 @@ const FeaturedCarsSectionComponent: React.FC = () => {
 };
 
 export default FeaturedCarsSectionComponent;
-            Discover our handpicked selection of premium vehicles available in the Bulgarian marketplace.
-          </p>
-          <ViewAllButton to="/cars">
-            View All Cars →
-          </ViewAllButton>
-        </SectionHeader>
-
-        <Suspense fallback={<LoadingFallback>Loading featured cars...</LoadingFallback>}>
-          {React.createElement(
-            lazy(() => import('../../components/FeaturedCars')),
-            {
-              limit: 6,
-              showFilters: false,
-              enablePagination: false
-            }
-          )}
-        </Suspense>
-      </SectionContainer>
-    </FeaturedCarsSection>
-  );
-};
-
-export default FeaturedCarsSectionComponent;

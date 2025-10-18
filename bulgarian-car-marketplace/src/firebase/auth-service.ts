@@ -33,8 +33,11 @@ export interface BulgarianUser {
   bio?: string;
   preferredLanguage: 'bg' | 'en';
   
-  // Account Type
+  // Account Type (Legacy - keep for backward compatibility)
   accountType?: 'individual' | 'business';
+  
+  // NEW: Profile Type System (replaces accountType)
+  profileType?: 'private' | 'dealer' | 'company';  // Default: 'private'
   
   // Personal Information (Individual)
   firstName?: string;
@@ -77,8 +80,16 @@ export interface BulgarianUser {
     caption?: string;
   }>;
   
-  // Verification System
+  // Verification System (Enhanced for Profile Types)
   verification?: {
+    // Verification Level: none → basic → business → company
+    level?: 'none' | 'basic' | 'business' | 'company';  // NEW
+    status?: 'pending' | 'in_review' | 'approved' | 'rejected';  // NEW
+    submittedAt?: Date;  // NEW
+    reviewedAt?: Date;  // NEW
+    reviewerId?: string;  // NEW - admin who reviewed
+    notes?: string;  // NEW - admin notes
+    
     email?: { 
       verified: boolean; 
       verifiedAt?: Date;
@@ -98,9 +109,35 @@ export interface BulgarianUser {
       verifiedAt?: Date;
       documents?: string[];
     };
+    
+    // Documents (for verification workflow)
+    documents?: Array<{  // NEW
+      type: string;  // 'eik', 'vat', 'license', 'id'
+      url: string;
+      uploadedAt: Date;
+      verifiedAt?: Date;
+      status: 'pending' | 'approved' | 'rejected';
+    }>;
+    
     trustScore?: number;
-    level?: TrustLevel;
+    level_old?: TrustLevel;  // Renamed to avoid conflict
     badges?: Badge[];
+  };
+  
+  // NEW: Subscription Plan
+  plan?: {
+    tier: 'free' | 'premium' | 'dealer_basic' | 'dealer_pro' | 'dealer_enterprise' | 
+          'company_starter' | 'company_pro' | 'company_enterprise' | 'custom';
+    status: 'active' | 'trial' | 'past_due' | 'canceled';
+    renewsAt?: Date;
+    trialEndsAt?: Date;
+  };
+  
+  // NEW: Trust Score (separate from verification)
+  trust?: {
+    score: number;  // 0-100
+    reviewsCount: number;
+    positivePercent: number;  // 0-1
   };
   
   // Statistics

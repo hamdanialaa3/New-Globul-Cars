@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { AuthProvider } from './context/AuthProvider';
+import { ProfileTypeProvider } from './contexts/ProfileTypeContext';  // NEW: Profile Type System
 import { ToastProvider } from './components/Toast';
 import { bulgarianTheme, GlobalStyles } from './styles/theme';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -52,6 +53,11 @@ const AdminLoginPage = React.lazy(() => import('./pages/AdminLoginPage'));
 const SuperAdminLogin = React.lazy(() => import('./pages/SuperAdminLogin'));
 const SuperAdminDashboard = React.lazy(() => import('./pages/SuperAdminDashboardNew'));
 const ProfilePage = React.lazy(() => import('./pages/ProfilePage'));
+const ProfileRouter = React.lazy(() => import('./pages/ProfilePage/ProfileRouter'));  // NEW: Profile Type Router
+const VerificationPage = React.lazy(() => import('./features/verification/VerificationPage'));  // NEW: Verification System
+const BillingPage = React.lazy(() => import('./features/billing/BillingPage'));  // NEW: Billing System
+const AnalyticsDashboard = React.lazy(() => import('./features/analytics/AnalyticsDashboard'));  // NEW: Analytics System
+const TeamManagement = React.lazy(() => import('./features/team/TeamManagement'));  // NEW: Team Management
 const UsersDirectoryPage = React.lazy(() => import('./pages/UsersDirectoryPage'));
 // Glass Morphism Premium Auth Pages
 const LoginPage = React.lazy(() => import('./pages/LoginPage/LoginPageGlassFixed'));
@@ -169,6 +175,7 @@ const App: React.FC = () => {
       <ErrorBoundary>
         <LanguageProvider>
           <AuthProvider>
+            <ProfileTypeProvider>
             <ToastProvider>
               <GoogleReCaptchaProvider reCaptchaKey={recaptchaKey || "dummy-key"}>
                 <Router>
@@ -214,6 +221,7 @@ const App: React.FC = () => {
                 </Router>
               </GoogleReCaptchaProvider>
             </ToastProvider>
+            </ProfileTypeProvider>
           </AuthProvider>
         </LanguageProvider>
       </ErrorBoundary>
@@ -360,7 +368,11 @@ const MainLayout: React.FC = () => (
           </AuthGuard>
         }
       />
-      <Route path="/profile" element={<ProfilePage />} />
+      <Route path="/profile" element={<ProfileRouter />} />  {/* FIXED: Use new ProfileRouter instead of old ProfilePage */}
+      <Route path="/verification" element={<VerificationPage />} />  {/* NEW: Verification System */}
+      <Route path="/billing" element={<BillingPage />} />  {/* NEW: Billing System */}
+      <Route path="/analytics" element={<AnalyticsDashboard />} />  {/* NEW: Analytics System */}
+      <Route path="/team" element={<TeamManagement />} />  {/* NEW: Team Management */}
       <Route path="/users" element={<UsersDirectoryPage />} />
       <Route path="/messages" element={<MessagesPage />} />
       <Route path="/admin-login" element={<AdminLoginPage />} />
@@ -454,14 +466,14 @@ const MainLayout: React.FC = () => (
           </ProtectedRoute>
         }
       />
-      <Route
-        path="/edit-car/:carId"
-        element={
-          <ProtectedRoute>
-            <EditCarPage />
-          </ProtectedRoute>
-        }
-      />
+            <Route
+              path="/edit-car/:carId"
+              element={
+                <ProtectedRoute>
+                  <EditCarPage />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/car-details/:carId"
               element={

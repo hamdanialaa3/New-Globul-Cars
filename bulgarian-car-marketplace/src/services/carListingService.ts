@@ -170,9 +170,9 @@ class CarListingService {
       );
       
       if (!hasFiltersThatNeedIndex) {
-        const sortBy = filters.sortBy || 'createdAt';
-        const sortOrder = filters.sortOrder || 'desc';
-        q = query(q, orderBy(sortBy, sortOrder));
+      const sortBy = filters.sortBy || 'createdAt';
+      const sortOrder = filters.sortOrder || 'desc';
+      q = query(q, orderBy(sortBy, sortOrder));
       }
 
       // Apply pagination

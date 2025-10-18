@@ -6,8 +6,14 @@ import LazyImage from '../../components/LazyImage';
 import { useProfile } from './hooks/useProfile';
 import { useProfileTracking } from '../../hooks/useProfileTracking';
 import { bulgarianAuthService } from '../../firebase';
+import { useProfileType } from '../../contexts/ProfileTypeContext'; // NEW: Profile Type Context
+// NEW: Profile Type-Specific Components
+import PrivateProfile from './components/PrivateProfile';
+import DealerProfile from './components/DealerProfile';
+import CompanyProfile from './components/CompanyProfile';
 import { 
-  ProfileImageUploader, 
+  ProfileImageUploader,
+  LEDProgressAvatar, 
   CoverImageUploader, 
   TrustBadge,
   ProfileGallery,
@@ -136,7 +142,7 @@ const scaleIn = keyframes`
 // ==================== STYLED COMPONENTS ====================
 
 // Compact Header for non-Profile tabs
-const CompactHeader = styled.div`
+const CompactHeader = styled.div<{ $themeColor?: string }>`
   display: flex;
   align-items: center;
   gap: 16px;
@@ -146,27 +152,27 @@ const CompactHeader = styled.div`
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   margin-bottom: 24px;
   ${css`animation: ${slideInFromLeft} 0.4s cubic-bezier(0.4, 0, 0.2, 1);`}
-  border: 1px solid rgba(255, 121, 0, 0.1);
+  border: 1px solid ${props => props.$themeColor ? `${props.$themeColor}1A` : 'rgba(255, 121, 0, 0.1)'};
   
   &:hover {
-    box-shadow: 0 6px 16px rgba(255, 121, 0, 0.15);
-    border-color: rgba(255, 121, 0, 0.3);
+    box-shadow: 0 6px 16px ${props => props.$themeColor ? `${props.$themeColor}26` : 'rgba(255, 121, 0, 0.15)'};
+    border-color: ${props => props.$themeColor ? `${props.$themeColor}4D` : 'rgba(255, 121, 0, 0.3)'};
   }
 `;
 
-const ProfileImageSmall = styled.img`
+const ProfileImageSmall = styled.img<{ $themeColor?: string }>`
   width: 60px;
   height: 60px;
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid #FF7900;
-  box-shadow: 0 4px 12px rgba(255, 121, 0, 0.4);
+  border: 3px solid ${props => props.$themeColor || '#FF7900'};
+  box-shadow: 0 4px 12px ${props => props.$themeColor ? `${props.$themeColor}66` : 'rgba(255, 121, 0, 0.4)'};
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   ${css`animation: ${profileImageMorph} 0.5s cubic-bezier(0.4, 0, 0.2, 1);`}
   
   &:hover {
     transform: scale(1.1) rotate(3deg);
-    box-shadow: 0 6px 16px rgba(255, 121, 0, 0.5);
+    box-shadow: 0 6px 16px ${props => props.$themeColor ? `${props.$themeColor}99` : 'rgba(255, 121, 0, 0.5)'};
   }
 `;
 
@@ -234,6 +240,9 @@ const ProfilePage: React.FC = () => {
   const toast = useToast();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  
+  // 🎨 NEW: Profile Type Context for Dynamic Theming
+  const { profileType, theme, permissions, planTier } = useProfileType();
 
   // ✅ NEW: Read userId from URL to view another user's profile
   const targetUserId = searchParams.get('userId') || undefined;
@@ -495,11 +504,14 @@ const ProfilePage: React.FC = () => {
 
         {/* Compact Header for other tabs */}
         {activeTab !== 'profile' && (
-          <CompactHeader>
-            <ProfileImageSmall
-              src={user.profileImage?.url || '/default-avatar.png'}
-              alt={user.displayName || 'User'}
-            />
+          <CompactHeader $themeColor={theme.primary}>
+            <div style={{ transform: 'scale(0.5)', transformOrigin: 'center' }}>
+              <LEDProgressAvatar
+                user={user}
+                profileType={profileType}
+                size={120} // Will be scaled down to 60px
+              />
+            </div>
             <UserInfo>
               <UserName>{user.displayName || t('profile.anonymous')}</UserName>
               <UserEmail>{user.email}</UserEmail>
@@ -512,20 +524,12 @@ const ProfilePage: React.FC = () => {
           <AnimatedProfileGrid key="profile-tab">
             {/* Profile Sidebar */}
             <S.ProfileSidebar $isBusinessMode={isBusinessMode}>
-            {/* Profile Image */}
-            <div style={{ marginTop: '-80px', marginBottom: '20px' }}>
-              <ProfileImageUploader
-                currentImageUrl={user.profileImage?.url}
-                onUploadSuccess={(url) => {
-                  if (process.env.NODE_ENV === 'development') {
-                    console.log('Profile uploaded:', url);
-                  }
-                }}
-                onUploadError={(error) => {
-                  if (process.env.NODE_ENV === 'development') {
-                    console.error('Profile error:', error);
-                  }
-                }}
+            {/* Profile Image with LED Progress Ring */}
+            <div style={{ marginTop: '-80px', marginBottom: '20px', display: 'flex', justifyContent: 'center' }}>
+              <LEDProgressAvatar
+                user={user}
+                profileType={profileType}
+                onClick={() => isOwnProfile && setEditing(true)}
               />
             </div>
 
@@ -537,6 +541,122 @@ const ProfilePage: React.FC = () => {
               <div style={{ color: '#666', fontSize: '0.75rem', marginBottom: '10px' }}>
                 {user.email}
               </div>
+              
+              {/* Profile Type Switcher - Only for own profile */}
+              {isOwnProfile && (
+                <div style={{ marginBottom: '15px' }}>
+                  <div style={{ fontSize: '0.7rem', color: '#666', marginBottom: '8px', fontWeight: '600' }}>
+                    {language === 'bg' ? 'Тип профил' : 'Profile Type'}
+                  </div>
+                  <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
+                    <button
+                      onClick={() => {
+                        // Update profileType in Firestore
+                        const updateProfileType = async () => {
+                          try {
+                            await updateDoc(doc(db, 'users', user.uid), {
+                              profileType: 'private'
+                            });
+                            toast.success(language === 'bg' ? 'Профилът е променен на личен' : 'Profile changed to Private');
+                            window.location.reload();
+                          } catch (error) {
+                            console.error('Error updating profile type:', error);
+                            toast.error(language === 'bg' ? 'Грешка при промяна' : 'Error updating profile');
+                          }
+                        };
+                        updateProfileType();
+                      }}
+                      style={{
+                        padding: '6px 12px',
+                        fontSize: '0.7rem',
+                        fontWeight: '600',
+                        border: `2px solid ${profileType === 'private' ? '#FF8F10' : '#ddd'}`,
+                        background: profileType === 'private' ? '#FF8F10' : 'white',
+                        color: profileType === 'private' ? 'white' : '#666',
+                        borderRadius: '6px',
+                        cursor: 'pointer',
+                        transition: 'all 0.3s ease',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px'
+                      }}
+                    >
+                      <User size={14} />
+                      {language === 'bg' ? 'Личен' : 'Private'}
+                    </button>
+                    
+                    <button
+                      onClick={() => {
+                        const updateProfileType = async () => {
+                          try {
+                            await updateDoc(doc(db, 'users', user.uid), {
+                              profileType: 'dealer'
+                            });
+                            toast.success(language === 'bg' ? 'Профилът е променен на дилър' : 'Profile changed to Dealer');
+                            window.location.reload();
+                          } catch (error) {
+                            console.error('Error updating profile type:', error);
+                            toast.error(language === 'bg' ? 'Грешка при промяна' : 'Error updating profile');
+                          }
+                        };
+                        updateProfileType();
+                      }}
+                      style={{
+                        padding: '6px 12px',
+                        fontSize: '0.7rem',
+                        fontWeight: '600',
+                        border: `2px solid ${profileType === 'dealer' ? '#16a34a' : '#ddd'}`,
+                        background: profileType === 'dealer' ? '#16a34a' : 'white',
+                        color: profileType === 'dealer' ? 'white' : '#666',
+                        borderRadius: '6px',
+                        cursor: 'pointer',
+                        transition: 'all 0.3s ease',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px'
+                      }}
+                    >
+                      <Building2 size={14} />
+                      {language === 'bg' ? 'Дилър' : 'Dealer'}
+                    </button>
+                    
+                    <button
+                      onClick={() => {
+                        const updateProfileType = async () => {
+                          try {
+                            await updateDoc(doc(db, 'users', user.uid), {
+                              profileType: 'company'
+                            });
+                            toast.success(language === 'bg' ? 'Профилът е променен на компания' : 'Profile changed to Company');
+                            window.location.reload();
+                          } catch (error) {
+                            console.error('Error updating profile type:', error);
+                            toast.error(language === 'bg' ? 'Грешка при промяна' : 'Error updating profile');
+                          }
+                        };
+                        updateProfileType();
+                      }}
+                      style={{
+                        padding: '6px 12px',
+                        fontSize: '0.7rem',
+                        fontWeight: '600',
+                        border: `2px solid ${profileType === 'company' ? '#1d4ed8' : '#ddd'}`,
+                        background: profileType === 'company' ? '#1d4ed8' : 'white',
+                        color: profileType === 'company' ? 'white' : '#666',
+                        borderRadius: '6px',
+                        cursor: 'pointer',
+                        transition: 'all 0.3s ease',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px'
+                      }}
+                    >
+                      <Building2 size={14} />
+                      {language === 'bg' ? 'Компания' : 'Company'}
+                    </button>
+                  </div>
+                </div>
+              )}
               
               {/* Seller Rating (for sellers only) */}
               {!isOwnProfile && user.accountType === 'business' && (
@@ -581,7 +701,7 @@ const ProfilePage: React.FC = () => {
             {/* Trust Badge */}
             <TrustBadge
               trustScore={user.verification?.trustScore || 10}
-              level={user.verification?.level || TrustLevel.UNVERIFIED}
+              level={user.verification?.level_old || TrustLevel.UNVERIFIED}
               badges={user.verification?.badges || []}
             />
 

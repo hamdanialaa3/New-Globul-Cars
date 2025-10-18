@@ -3,6 +3,7 @@ import { useTranslation } from '../../../hooks/useTranslation';
 import { bulgarianAuthService, BulgarianUser } from '../../../firebase';
 import { bulgarianCarService, BulgarianCar } from '../../../firebase/car-service';
 import { useToast } from '../../../components/Toast';
+import { useProfileType } from '../../../contexts/ProfileTypeContext';  // NEW: Profile Type System
 import { validateProfileData } from '../../../utils/validation';
 import { doc, onSnapshot, getDoc } from 'firebase/firestore';
 import { db, auth } from '../../../firebase/firebase-config';
@@ -16,6 +17,7 @@ import {
 export const useProfile = (targetUserId?: string): UseProfileReturn => {
   const { t } = useTranslation();
   const toast = useToast();
+  const { profileType, theme, permissions, planTier } = useProfileType();  // NEW: Get profile type context
 
   // State management
   const [user, setUser] = useState<BulgarianUser | null>(null);
@@ -309,6 +311,12 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
     editing,
     formData,
     isOwnProfile, // NEW: expose isOwnProfile state
+
+    // NEW: Profile Type System
+    profileType,
+    theme,
+    permissions,
+    planTier,
 
     // Actions
     loadUserData,

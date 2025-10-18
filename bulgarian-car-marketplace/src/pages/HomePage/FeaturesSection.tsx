@@ -210,17 +210,3 @@ const FeaturesSectionComponent: React.FC = () => {
 };
 
 export default FeaturesSectionComponent;
-          {features.map((feature, index) => (
-            <FeatureCard key={index}>
-              <div className="icon">{feature.icon}</div>
-              <h3>{feature.title}</h3>
-              <p>{feature.description}</p>
-            </FeatureCard>
-          ))}
-        </FeaturesGrid>
-      </SectionContainer>
-    </FeaturesSection>
-  );
-};
-
-export default FeaturesSectionComponent;
