@@ -51,7 +51,7 @@ const StatsContainer = styled.div`
 
 const StatItem = styled.div`
   h3 {
-    font-size: 2.5rem;
+    font-size: 2rem;
     font-weight: 700;
     color: #FF8F10;
     margin-bottom: 0.5rem;
@@ -59,7 +59,7 @@ const StatItem = styled.div`
   }
 
   p {
-    font-size: 1rem;
+    font-size: 0.875rem;
     color: #6c757d;
     font-weight: 500;
     line-height: 1.5;
@@ -67,11 +67,11 @@ const StatItem = styled.div`
   
   @media (max-width: 600px) {
     h3 {
-      font-size: 2rem;
+      font-size: 1.75rem;
     }
     
     p {
-      font-size: 0.9rem;
+      font-size: 0.8rem;
     }
   }
 `;

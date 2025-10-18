@@ -23,18 +23,41 @@ const SectionHeader = styled.div`
   margin-bottom: 3rem;
 
   h2 {
-    font-size: 2.5rem;
+    font-size: 1.75rem;
     font-weight: bold;
     color: #005ca9;
     margin-bottom: 0.5rem;
   }
 
   p {
-    font-size: 1.1rem;
+    font-size: 0.95rem;
     color: #6c757d;
     margin-bottom: 2rem;
     max-width: 600px;
     margin: 0 auto 2rem;
+    line-height: 1.6;
+  }
+  
+  @media (max-width: 768px) {
+    h2 {
+      font-size: 1.5rem;
+    }
+    
+    p {
+      font-size: 0.9rem;
+    }
+  }
+  
+  @media (max-width: 600px) {
+    margin-bottom: 2rem;
+    
+    h2 {
+      font-size: 1.375rem;
+    }
+    
+    p {
+      font-size: 0.875rem;
+    }
   }
 `;
 
@@ -67,6 +90,29 @@ const FeaturedCarsSectionComponent: React.FC = () => {
         <SectionHeader>
           <h2>Featured Cars</h2>
           <p>
+            Discover our handpicked selection of premium vehicles available in the Bulgarian marketplace.
+          </p>
+          <ViewAllButton to="/cars">
+            View All Cars →
+          </ViewAllButton>
+        </SectionHeader>
+
+        <Suspense fallback={<LoadingFallback>Loading featured cars...</LoadingFallback>}>
+          {React.createElement(
+            lazy(() => import('../../components/FeaturedCars')),
+            {
+              limit: 6,
+              showFilters: false,
+              enablePagination: false
+            }
+          )}
+        </Suspense>
+      </SectionContainer>
+    </FeaturedCarsSection>
+  );
+};
+
+export default FeaturedCarsSectionComponent;
             Discover our handpicked selection of premium vehicles available in the Bulgarian marketplace.
           </p>
           <ViewAllButton to="/cars">

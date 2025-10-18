@@ -66,30 +66,30 @@ const SectionHeader = styled.div`
 `;
 
 const SectionTitle = styled.h2`
-  font-size: 2rem;
+  font-size: 1.75rem;
   font-weight: 700;
   color: #212529;
   margin-bottom: 0.75rem;
   line-height: 1.3;
   
   @media (max-width: 768px) {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
   }
   
   @media (max-width: 600px) {
-    font-size: 1.5rem;
+    font-size: 1.375rem;
   }
 `;
 
 const SectionSubtitle = styled.p`
-  font-size: 1rem;
+  font-size: 0.95rem;
   color: #6c757d;
   max-width: 600px;
   margin: 0 auto;
   line-height: 1.6;
   
   @media (max-width: 600px) {
-    font-size: 0.9rem;
+    font-size: 0.875rem;
   }
 `;
 
@@ -175,7 +175,7 @@ const LogoContainer = styled.div`
 `;
 
 const BrandName = styled.div`
-  font-size: 0.95rem;
+  font-size: 0.875rem;
   font-weight: 600;
   color: #212529;
   text-align: center;
@@ -184,7 +184,7 @@ const BrandName = styled.div`
   line-height: 1.4;
   
   @media (max-width: 600px) {
-    font-size: 0.875rem;
+    font-size: 0.8rem;
   }
 `;
 

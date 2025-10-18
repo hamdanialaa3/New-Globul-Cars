@@ -24,18 +24,41 @@ const SectionHeader = styled.div`
   margin-bottom: 3rem;
 
   h2 {
-    font-size: 2.5rem;
+    font-size: 1.75rem;
     font-weight: bold;
     color: #005ca9;
     margin-bottom: 0.5rem;
   }
 
   p {
-    font-size: 1.1rem;
+    font-size: 0.95rem;
     color: #6c757d;
     margin-bottom: 2rem;
     max-width: 600px;
     margin: 0 auto 2rem;
+    line-height: 1.6;
+  }
+  
+  @media (max-width: 768px) {
+    h2 {
+      font-size: 1.5rem;
+    }
+    
+    p {
+      font-size: 0.9rem;
+    }
+  }
+  
+  @media (max-width: 600px) {
+    margin-bottom: 2rem;
+    
+    h2 {
+      font-size: 1.375rem;
+    }
+    
+    p {
+      font-size: 0.875rem;
+    }
   }
 `;
 

@@ -42,7 +42,7 @@ const SectionHeader = styled.div`
   margin-bottom: 2.5rem;
 
   h2 {
-    font-size: 2rem;
+    font-size: 1.75rem;
     font-weight: 700;
     color: #212529;
     margin-bottom: 0.75rem;
@@ -50,22 +50,32 @@ const SectionHeader = styled.div`
   }
 
   p {
-    font-size: 1rem;
+    font-size: 0.95rem;
     color: #6c757d;
     line-height: 1.6;
     max-width: 600px;
     margin: 0 auto;
   }
   
-  @media (max-width: 600px) {
-    margin-bottom: 2rem;
-    
+  @media (max-width: 768px) {
     h2 {
-      font-size: 1.75rem;
+      font-size: 1.5rem;
     }
     
     p {
       font-size: 0.9rem;
+    }
+  }
+  
+  @media (max-width: 600px) {
+    margin-bottom: 2rem;
+    
+    h2 {
+      font-size: 1.375rem;
+    }
+    
+    p {
+      font-size: 0.875rem;
     }
   }
 `;
@@ -102,14 +112,14 @@ const FeatureCard = styled.div`
   }
 
   .icon {
-    font-size: 2.5rem;
+    font-size: 2rem;
     color: #FF8F10;
     margin-bottom: 1rem;
     font-weight: 600;
   }
 
   h3 {
-    font-size: 1.25rem;
+    font-size: 1.125rem;
     font-weight: 600;
     color: #212529;
     margin-bottom: 0.75rem;
@@ -119,18 +129,22 @@ const FeatureCard = styled.div`
   p {
     color: #6c757d;
     line-height: 1.6;
-    font-size: 0.95rem;
+    font-size: 0.875rem;
   }
   
   @media (max-width: 600px) {
     padding: 1.25rem;
     
+    .icon {
+      font-size: 1.75rem;
+    }
+    
     h3 {
-      font-size: 1.125rem;
+      font-size: 1rem;
     }
     
     p {
-      font-size: 0.875rem;
+      font-size: 0.8rem;
     }
   }
 `;
@@ -182,6 +196,20 @@ const FeaturesSectionComponent: React.FC = () => {
         </SectionHeader>
 
         <FeaturesGrid>
+          {features.map((feature, index) => (
+            <FeatureCard key={index}>
+              <div className="icon">{feature.icon}</div>
+              <h3>{feature.title}</h3>
+              <p>{feature.description}</p>
+            </FeatureCard>
+          ))}
+        </FeaturesGrid>
+      </SectionContainer>
+    </FeaturesSection>
+  );
+};
+
+export default FeaturesSectionComponent;
           {features.map((feature, index) => (
             <FeatureCard key={index}>
               <div className="icon">{feature.icon}</div>

@@ -50,23 +50,23 @@ const HeroContent = styled.div`
 `;
 
 const HeroTitle = styled.h1`
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-weight: 700;
   margin-bottom: 1rem;
-  line-height: 1.2;
+  line-height: 1.3;
   color: #212529;
 
   @media (max-width: 960px) {
-    font-size: 2rem;
+    font-size: 1.75rem;
   }
   
   @media (max-width: 600px) {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
   }
 `;
 
 const HeroSubtitle = styled.p`
-  font-size: 1.125rem;
+  font-size: 1rem;
   margin-bottom: 2rem;
   line-height: 1.6;
   color: #6c757d;
@@ -75,7 +75,7 @@ const HeroSubtitle = styled.p`
   margin-right: auto;
   
   @media (max-width: 600px) {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
 `;
 

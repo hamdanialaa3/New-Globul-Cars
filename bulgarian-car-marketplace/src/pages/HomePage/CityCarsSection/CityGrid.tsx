@@ -92,14 +92,17 @@ const CityGrid: React.FC<CityGridProps> = ({
                 <div
                   style={{
                     position: 'absolute',
-                    top: '0.5rem',
-                    right: '0.5rem',
+                    top: '0.75rem',
+                    right: '0.75rem',
                     background: 'linear-gradient(135deg, #ffd700, #ffed4e)',
-                    padding: '0.25rem 0.5rem',
-                    borderRadius: '4px',
+                    padding: '0.375rem 0.75rem',
+                    borderRadius: '6px',
                     fontSize: '0.75rem',
                     fontWeight: 'bold',
-                    color: '#7d6608'
+                    color: '#7d6608',
+                    boxShadow: '0 2px 6px rgba(255, 215, 0, 0.4)',
+                    textShadow: '0 1px 1px rgba(255, 255, 255, 0.5)',
+                    border: '1px solid rgba(255, 215, 0, 0.3)'
                   }}
                 >
                   ★ {language === 'bg' ? 'Столица' : 'Capital'}

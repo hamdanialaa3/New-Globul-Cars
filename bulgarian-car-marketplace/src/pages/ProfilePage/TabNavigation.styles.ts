@@ -260,10 +260,10 @@ export const TabButton = styled.button<{ $active: boolean }>`
     padding: 12px 16px;
     font-size: 0.85rem;
     gap: 8px;
-    
-    svg {
-      width: 18px;
-      height: 18px;
+  
+  svg {
+    width: 18px;
+    height: 18px;
     }
   }
   
@@ -435,7 +435,7 @@ export const FollowButton = styled.button<{ $following: boolean }>`
   `}
   
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
+  
   &:hover {
     ${({ $following }) => $following ? `
       background: linear-gradient(135deg,

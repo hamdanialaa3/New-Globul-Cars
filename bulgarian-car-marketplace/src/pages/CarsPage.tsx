@@ -1,9 +1,10 @@
 // src/pages/CarsPage.tsx
 // Cars Page for Bulgarian Car Marketplace
 // صفحة عرض السيارات مع فلترة متقدمة حسب المدن
+// ⚡ Performance Optimized with Firebase Caching + useMemo
 
 import * as React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -13,6 +14,7 @@ import { CarIcon } from '../components/icons/CarIcon';
 import { CarListing } from '../types/CarListing';
 import CarCard from '../components/CarCard';
 import { logger } from '../services/logger-service';
+import { firebaseCache, cacheKeys } from '../services/firebase-cache.service';
 
 // Styled Components
 const CarsContainer = styled.div`
@@ -141,7 +143,7 @@ const CarsPage: React.FC = () => {
   const makeParam = searchParams.get('make');
   const cityData = cityId ? BULGARIAN_CITIES.find(c => c.id === cityId) : null;
 
-  // Load cars from Firebase
+  // Load cars from Firebase with caching ⚡
   useEffect(() => {
     const loadCars = async () => {
       try {
@@ -178,13 +180,30 @@ const CarsPage: React.FC = () => {
           console.log('📋 No filters - loading all cars');
         }
 
-        // Fetch cars from Firebase
-        console.log('📡 Fetching cars with filters:', filters);
-        const result = await carListingService.getListings(filters);
+        // ⚡ Fetch cars with caching (5 minute cache)
+        const cacheKey = makeParam && regionParam 
+          ? `cars-${regionParam}-${makeParam}`
+          : regionParam 
+            ? cacheKeys.carsByCity(regionParam)
+            : makeParam 
+              ? cacheKeys.carsByMake(makeParam)
+              : cacheKeys.activeCars();
+
+        console.log('🔥 Using cache key:', cacheKey);
         
-        console.log('📦 Result from Firebase:', {
+        const result = await firebaseCache.getOrFetch(
+          cacheKey,
+          async () => {
+            console.log('📡 Fetching from Firebase (cache miss)...');
+            return await carListingService.getListings(filters);
+          },
+          { duration: 5 * 60 * 1000 } // 5 minutes
+        );
+        
+        console.log('📦 Result:', {
           total: result.listings.length,
-          filters: { region: regionParam, make: makeParam }
+          filters: { region: regionParam, make: makeParam },
+          cacheStats: firebaseCache.getStats()
         });
         
         setCars(result.listings);
@@ -204,11 +223,19 @@ const CarsPage: React.FC = () => {
     loadCars();
   }, [searchParams]);
 
-  // Get city display name
-  const getCityDisplayName = () => {
+  // Get city display name with useMemo ⚡
+  const cityDisplayName = useMemo(() => {
     if (!cityData) return '';
     return language === 'bg' ? cityData.nameBg : cityData.nameEn;
-  };
+  }, [cityData, language]);
+
+  // Memoized count text ⚡
+  const carsCountText = useMemo(() => {
+    const count = cars.length;
+    return language === 'bg' 
+      ? count === 1 ? 'автомобил' : 'автомобила'
+      : count === 1 ? 'car' : 'cars';
+  }, [cars.length, language]);
 
   return (
     <CarsContainer>
@@ -217,7 +244,7 @@ const CarsPage: React.FC = () => {
         <PageHeader>
           <h1>
             {cityData 
-              ? `${t('cars.title')} - ${getCityDisplayName()}`
+              ? `${t('cars.title')} - ${cityDisplayName}`
               : makeParam
                 ? `${t('cars.title')} - ${makeParam}`
                 : t('cars.title')}
@@ -227,21 +254,21 @@ const CarsPage: React.FC = () => {
           {/* City Badge */}
           {cityData && (
             <CityBadge>
-              📍 {getCityDisplayName()} · {cars.length} {language === 'bg' ? 'автомобила' : 'cars'}
+              📍 {cityDisplayName} · {cars.length} {carsCountText}
             </CityBadge>
           )}
           
           {/* Brand/Make Badge */}
           {makeParam && !cityData && (
             <CityBadge>
-              🚗 {makeParam} · {cars.length} {language === 'bg' ? 'автомобила' : 'cars'}
+              🚗 {makeParam} · {cars.length} {carsCountText}
             </CityBadge>
           )}
           
           {/* Combined Badge (Region + Brand) */}
           {cityData && makeParam && (
             <CityBadge>
-              📍 {getCityDisplayName()} · 🚗 {makeParam} · {cars.length} {language === 'bg' ? 'автомобила' : 'cars'}
+              📍 {cityDisplayName} · 🚗 {makeParam} · {cars.length} {carsCountText}
             </CityBadge>
           )}
         </PageHeader>
@@ -272,12 +299,12 @@ const CarsPage: React.FC = () => {
             <p>
               {cityData && makeParam
                 ? (language === 'bg' 
-                    ? `В момента няма обяви за ${makeParam} в ${getCityDisplayName()}.` 
-                    : `Currently no ${makeParam} listings in ${getCityDisplayName()}.`)
+                    ? `В момента няма обяви за ${makeParam} в ${cityDisplayName}.` 
+                    : `Currently no ${makeParam} listings in ${cityDisplayName}.`)
                 : cityData 
                   ? (language === 'bg' 
-                      ? `В момента няма обяви за автомобили в ${getCityDisplayName()}.` 
-                      : `Currently no car listings in ${getCityDisplayName()}.`)
+                      ? `В момента няма обяви за автомобили в ${cityDisplayName}.` 
+                      : `Currently no car listings in ${cityDisplayName}.`)
                   : makeParam
                     ? (language === 'bg' 
                         ? `В момента няма обяви за ${makeParam}.` 

@@ -48,7 +48,7 @@ export const SectionHeader = styled.div`
 `;
 
 export const SectionTitle = styled.h2`
-  font-size: 2.5rem;
+  font-size: 1.75rem;
   font-weight: 700;
   color: #005ca9;
   margin-bottom: 0.5rem;
@@ -58,20 +58,29 @@ export const SectionTitle = styled.h2`
   background-clip: text;
   
   @media (max-width: 768px) {
-    font-size: 2rem;
+    font-size: 1.5rem;
+  }
+  
+  @media (max-width: 600px) {
+    font-size: 1.375rem;
   }
 `;
 
 export const SectionSubtitle = styled.p`
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   color: #6c757d;
   margin-bottom: 2rem;
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
+  line-height: 1.6;
   
   @media (max-width: 768px) {
-    font-size: 1rem;
+    font-size: 0.9rem;
+  }
+  
+  @media (max-width: 600px) {
+    font-size: 0.875rem;
   }
 `;
 
@@ -121,17 +130,18 @@ export const GridContainer = styled.div`
 `;
 
 export const CityCard = styled.div<{ $isActive?: boolean }>`
-  background: white;
-  border-radius: 12px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  border-radius: 16px;
   padding: 1.5rem;
   cursor: pointer;
-  transition: all 0.3s ease;
-  border: 2px solid ${props => props.$isActive ? '#005ca9' : 'transparent'};
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid ${props => props.$isActive ? '#005ca9' : '#e9ecef'};
   box-shadow: ${props => props.$isActive 
     ? '0 8px 25px rgba(0, 92, 169, 0.25)' 
-    : '0 4px 15px rgba(0, 92, 169, 0.1)'};
+    : '0 4px 15px rgba(0, 92, 169, 0.08)'};
   position: relative;
   overflow: hidden;
+  backdrop-filter: blur(10px);
 
   &::before {
     content: '';
@@ -143,16 +153,17 @@ export const CityCard = styled.div<{ $isActive?: boolean }>`
     background: linear-gradient(
       90deg,
       transparent,
-      rgba(0, 92, 169, 0.1),
+      rgba(255, 143, 16, 0.08),
       transparent
     );
     transition: left 0.5s ease;
   }
 
   &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 35px rgba(0, 92, 169, 0.2);
-    border-color: #005ca9;
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 16px 40px rgba(0, 92, 169, 0.25);
+    border-color: #FF8F10;
+    background: linear-gradient(135deg, #ffffff 0%, #fffbf0 100%);
     
     &::before {
       left: 100%;
@@ -160,54 +171,99 @@ export const CityCard = styled.div<{ $isActive?: boolean }>`
   }
 
   &:active {
-    transform: translateY(-2px);
+    transform: translateY(-3px) scale(1.01);
   }
 `;
 
 export const CityName = styled.h3`
-  font-size: 1.25rem;
-  font-weight: 600;
+  font-size: 1.125rem;
+  font-weight: 700;
   color: #212529;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(0, 92, 169, 0.05);
+  border-radius: 8px;
+  border-left: 3px solid #005ca9;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+  
+  @media (max-width: 600px) {
+    font-size: 1rem;
+    padding: 0.4rem 0.6rem;
+  }
 `;
 
 export const CityIcon = styled.span`
-  font-size: 1.5rem;
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  filter: drop-shadow(0 1px 2px rgba(0, 92, 169, 0.3));
+  
+  @media (max-width: 600px) {
+    font-size: 1.125rem;
+  }
 `;
 
 export const CarCount = styled.div`
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #6c757d;
-  font-size: 0.95rem;
+  color: #495057;
+  font-size: 0.875rem;
   margin-bottom: 1rem;
+  padding: 0.375rem 0.75rem;
+  background: linear-gradient(135deg, rgba(255, 143, 16, 0.08), rgba(255, 223, 0, 0.08));
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  
+  @media (max-width: 600px) {
+    font-size: 0.8rem;
+    padding: 0.3rem 0.6rem;
+  }
 `;
 
 export const CarCountNumber = styled.span`
   font-weight: 700;
-  color: #005ca9;
-  font-size: 1.5rem;
+  color: #FF8F10;
+  font-size: 1.375rem;
+  text-shadow: 0 1px 2px rgba(255, 143, 16, 0.3);
+  
+  @media (max-width: 600px) {
+    font-size: 1.25rem;
+  }
 `;
 
 export const ViewCarsButton = styled.button`
   width: 100%;
   padding: 0.75rem;
-  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-  border: 1px solid #dee2e6;
+  background: linear-gradient(135deg, #005ca9, #0066cc);
+  border: none;
   border-radius: 8px;
-  color: #005ca9;
+  color: white;
   font-weight: 600;
+  font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 92, 169, 0.2);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 
   &:hover {
-    background: linear-gradient(135deg, #005ca9, #0066cc);
-    color: white;
-    border-color: #005ca9;
+    background: linear-gradient(135deg, #FF8F10, #FFDF00);
+    color: #000;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 143, 16, 0.4);
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+  
+  @media (max-width: 600px) {
+    font-size: 0.85rem;
+    padding: 0.65rem;
   }
 `;
 
@@ -265,18 +321,23 @@ export const ShowMoreButton = styled.button`
   width: 100%;
   max-width: 500px;
   margin: 2.5rem auto 0;
-  padding: 1.25rem 2.5rem;
+  padding: 1rem 2rem;
   background: white;
   border: 3px solid #005ca9;
   border-radius: 50px;
   color: #005ca9;
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 15px rgba(0, 92, 169, 0.15);
   position: relative;
   overflow: hidden;
+  
+  @media (max-width: 600px) {
+    font-size: 0.875rem;
+    padding: 0.875rem 1.75rem;
+  }
 
   &::before {
     content: '';
