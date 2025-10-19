@@ -7,23 +7,22 @@ import { useProfile } from './hooks/useProfile';
 import { useProfileTracking } from '../../hooks/useProfileTracking';
 import { bulgarianAuthService } from '../../firebase';
 import { useProfileType } from '../../contexts/ProfileTypeContext'; // NEW: Profile Type Context
+import type { ProfileType } from '../../contexts/ProfileTypeContext';  // ⚡ Type import
 // NEW: Profile Type-Specific Components
 import PrivateProfile from './components/PrivateProfile';
 import DealerProfile from './components/DealerProfile';
 import CompanyProfile from './components/CompanyProfile';
-import { 
-  ProfileImageUploader,
+import {
   LEDProgressAvatar, 
   CoverImageUploader, 
   TrustBadge,
   ProfileGallery,
   VerificationPanel,
-  ProfileStats as ProfileStatsComponent,
   ProfileCompletion,
   IDReferenceHelper,
-  BusinessUpgradeCard,
   BusinessBackground,
-  GarageSection
+  GarageSection,
+  ProfileTypeConfirmModal  // ⚡ NEW: Confirmation Modal
 } from '../../components/Profile';
 import type { GarageCar } from '../../components/Profile';
 import { TrustLevel } from '../../services/profile/trust-score-service';
@@ -57,78 +56,45 @@ import { carDeleteService } from '../../services/garage/car-delete.service';
 import { followService } from '../../services/social/follow.service';
 import PrivacySettings from '../../components/Profile/Security/PrivacySettings';
 import ProfileAnalyticsDashboard from '../../components/Profile/Analytics/ProfileAnalyticsDashboard';
+import ProfileDashboard from '../../components/Profile/ProfileDashboard';
+import VerificationBadge from '../../components/Profile/VerificationBadge';
 import { useToast } from '../../components/Toast';
 
 // ==================== ANIMATIONS ====================
+// ⚡ OPTIMIZED: Simplified animations - run once on mount, not infinite
 
-// Fade in animation
+// Simple fade in (once on mount)
 const fadeIn = keyframes`
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 `;
 
-// Slide and fade from left
+// Simple slide from left (once on mount)
 const slideInFromLeft = keyframes`
   from {
     opacity: 0;
-    transform: translateX(-30px);
+    transform: translate3d(-20px, 0, 0);  /* ⚡ GPU accelerated */
   }
   to {
     opacity: 1;
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
   }
 `;
 
-// Profile image morph animation (كبيرة → صغيرة)
-const profileImageMorph = keyframes`
-  0% {
-    width: 120px;
-    height: 120px;
-    transform: translateY(0) scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: translateY(-10px) scale(0.8);
-    opacity: 0.8;
-  }
-  100% {
-    width: 60px;
-    height: 60px;
-    transform: translateY(0) scale(1);
-    opacity: 1;
-  }
-`;
-
-// Content fade and slide up
-const fadeSlideUp = keyframes`
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-`;
-
-// Tab content fade in (smooth transition between tabs)
+// Tab fade in (for tab switching)
 const tabFadeIn = keyframes`
   from {
     opacity: 0;
-    transform: translateX(-10px);
+    transform: translate3d(-10px, 0, 0);
   }
   to {
     opacity: 1;
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
   }
 `;
 
-// Scale and fade
-const scaleIn = keyframes`
+// Profile image morph (gentle, runs once)
+const profileImageMorph = keyframes`
   from {
     opacity: 0;
     transform: scale(0.95);
@@ -168,10 +134,12 @@ const ProfileImageSmall = styled.img<{ $themeColor?: string }>`
   border: 3px solid ${props => props.$themeColor || '#FF7900'};
   box-shadow: 0 4px 12px ${props => props.$themeColor ? `${props.$themeColor}66` : 'rgba(255, 121, 0, 0.4)'};
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  ${css`animation: ${profileImageMorph} 0.5s cubic-bezier(0.4, 0, 0.2, 1);`}
+  will-change: transform;  /* ⚡ GPU acceleration */
+  /* ⚡ OPTIMIZED: Gentle morph runs once on load */
+  animation: ${profileImageMorph} 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   
   &:hover {
-    transform: scale(1.1) rotate(3deg);
+    transform: scale(1.08) rotate(2deg);  /* ⚡ Lighter rotation */
     box-shadow: 0 6px 16px ${props => props.$themeColor ? `${props.$themeColor}99` : 'rgba(255, 121, 0, 0.5)'};
   }
 `;
@@ -199,7 +167,8 @@ const UserEmail = styled.div`
 
 const FullWidthContent = styled.div`
   width: 100%;
-  ${css`animation: ${tabFadeIn} 0.4s cubic-bezier(0.4, 0, 0.2, 1);`}
+  /* ⚡ OPTIMIZED: Gentle fade in on mount */
+  animation: ${tabFadeIn} 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   
   /* Smooth transitions */
   opacity: 1;
@@ -207,11 +176,13 @@ const FullWidthContent = styled.div`
 `;
 
 const AnimatedProfileGrid = styled(S.ProfileGrid)`
-  ${css`animation: ${tabFadeIn} 0.4s cubic-bezier(0.4, 0, 0.2, 1);`}
+  /* ⚡ OPTIMIZED: Gentle fade in on mount */
+  animation: ${tabFadeIn} 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 `;
 
 const AnimatedTabContent = styled.div`
-  ${css`animation: ${tabFadeIn} 0.4s ease-out;`}
+  /* ⚡ OPTIMIZED: Quick fade for tab switching */
+  animation: ${tabFadeIn} 0.4s ease-out;
 `;
 
 // Professional Icon Wrapper with shadow effects
@@ -296,6 +267,10 @@ const ProfilePage: React.FC = () => {
   // Google sync state
   const [syncing, setSyncing] = React.useState(false);
   
+  // ⚡ NEW: Profile Type Confirmation Modal State
+  const [showProfileTypeModal, setShowProfileTypeModal] = React.useState(false);
+  const [pendingProfileType, setPendingProfileType] = React.useState<ProfileType | null>(null);
+  
   // 🎯 Auto-track profile views (REAL ANALYTICS!)
   useProfileTracking(user?.uid);
   
@@ -358,11 +333,43 @@ const ProfilePage: React.FC = () => {
     } as React.ChangeEvent<HTMLInputElement>);
   };
   
-  // Handle upgrade to business
-  const handleUpgradeToBusiness = () => {
-    setEditing(true);
-    handleAccountTypeChange('business');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  // ⚡ FIXED: Handle profile type confirmation
+  const handleConfirmProfileType = async () => {
+    if (!pendingProfileType || !user) return;
+    
+    try {
+      // Update profileType in Firestore
+      await updateDoc(doc(db, 'users', user.uid), {
+        profileType: pendingProfileType
+      });
+      
+      // Show success message based on type
+      const messages = {
+        private: { bg: 'Профилът е променен на личен', en: 'Profile changed to Private' },
+        dealer: { bg: 'Профилът е променен на дилър', en: 'Profile changed to Dealer' },
+        company: { bg: 'Профилът е променен на компания', en: 'Profile changed to Company' }
+      };
+      
+      toast.success(messages[pendingProfileType][language as 'bg' | 'en']);
+      
+      // Close modal
+      setShowProfileTypeModal(false);
+      setPendingProfileType(null);
+      
+      // Reload page to apply theme changes
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    } catch (error) {
+      console.error('Error updating profile type:', error);
+      toast.error(language === 'bg' ? 'Грешка при промяна на типа профил' : 'Error updating profile type');
+    }
+  };
+  
+  // ⚡ Handle profile type cancel
+  const handleCancelProfileType = () => {
+    setShowProfileTypeModal(false);
+    setPendingProfileType(null);
   };
   
   // Handle Google profile sync
@@ -444,6 +451,7 @@ const ProfilePage: React.FC = () => {
   const isBusinessMode = user?.accountType === 'business' || formData.accountType === 'business';
 
   return (
+    <>
     <S.ProfileContainer $isBusinessMode={isBusinessMode}>
       {/* Business Background - Only for Business Accounts */}
       <BusinessBackground isBusinessAccount={isBusinessMode} />
@@ -549,22 +557,11 @@ const ProfilePage: React.FC = () => {
                     {language === 'bg' ? 'Тип профил' : 'Profile Type'}
                   </div>
                   <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
+                    {/* ⚡ FIXED: Private Button - Now shows confirmation modal */}
                     <button
                       onClick={() => {
-                        // Update profileType in Firestore
-                        const updateProfileType = async () => {
-                          try {
-                            await updateDoc(doc(db, 'users', user.uid), {
-                              profileType: 'private'
-                            });
-                            toast.success(language === 'bg' ? 'Профилът е променен на личен' : 'Profile changed to Private');
-                            window.location.reload();
-                          } catch (error) {
-                            console.error('Error updating profile type:', error);
-                            toast.error(language === 'bg' ? 'Грешка при промяна' : 'Error updating profile');
-                          }
-                        };
-                        updateProfileType();
+                        setPendingProfileType('private');
+                        setShowProfileTypeModal(true);
                       }}
                       style={{
                         padding: '6px 12px',
@@ -585,21 +582,11 @@ const ProfilePage: React.FC = () => {
                       {language === 'bg' ? 'Личен' : 'Private'}
                     </button>
                     
+                    {/* ⚡ FIXED: Dealer Button - Now shows confirmation modal */}
                     <button
                       onClick={() => {
-                        const updateProfileType = async () => {
-                          try {
-                            await updateDoc(doc(db, 'users', user.uid), {
-                              profileType: 'dealer'
-                            });
-                            toast.success(language === 'bg' ? 'Профилът е променен на дилър' : 'Profile changed to Dealer');
-                            window.location.reload();
-                          } catch (error) {
-                            console.error('Error updating profile type:', error);
-                            toast.error(language === 'bg' ? 'Грешка при промяна' : 'Error updating profile');
-                          }
-                        };
-                        updateProfileType();
+                        setPendingProfileType('dealer');
+                        setShowProfileTypeModal(true);
                       }}
                       style={{
                         padding: '6px 12px',
@@ -620,21 +607,11 @@ const ProfilePage: React.FC = () => {
                       {language === 'bg' ? 'Дилър' : 'Dealer'}
                     </button>
                     
+                    {/* ⚡ FIXED: Company Button - Now shows confirmation modal */}
                     <button
                       onClick={() => {
-                        const updateProfileType = async () => {
-                          try {
-                            await updateDoc(doc(db, 'users', user.uid), {
-                              profileType: 'company'
-                            });
-                            toast.success(language === 'bg' ? 'Профилът е променен на компания' : 'Profile changed to Company');
-                            window.location.reload();
-                          } catch (error) {
-                            console.error('Error updating profile type:', error);
-                            toast.error(language === 'bg' ? 'Грешка при промяна' : 'Error updating profile');
-                          }
-                        };
-                        updateProfileType();
+                        setPendingProfileType('company');
+                        setShowProfileTypeModal(true);
                       }}
                       style={{
                         padding: '6px 12px',
@@ -654,6 +631,26 @@ const ProfilePage: React.FC = () => {
                       <Building2 size={14} />
                       {language === 'bg' ? 'Компания' : 'Company'}
                     </button>
+                  </div>
+                  
+                  {/* ✨ NEW: Verification Badges */}
+                  <div style={{ 
+                    display: 'flex', 
+                    flexWrap: 'wrap', 
+                    gap: '8px', 
+                    marginTop: '12px',
+                    justifyContent: 'center'
+                  }}>
+                    <VerificationBadge 
+                      type="email" 
+                      status={user?.email ? 'verified' : 'unverified'} 
+                      profileType={profileType}
+                    />
+                    <VerificationBadge 
+                      type="phone" 
+                      status={user?.phoneNumber ? 'verified' : 'unverified'} 
+                      profileType={profileType}
+                    />
                   </div>
                 </div>
               )}
@@ -691,13 +688,6 @@ const ProfilePage: React.FC = () => {
               )}
             </div>
 
-            {/* Business Upgrade Card - Only for Individual Accounts */}
-            {!editing && (user?.accountType === 'individual' || !user?.accountType) && (
-              <div style={{ marginBottom: '20px' }}>
-                <BusinessUpgradeCard onUpgrade={handleUpgradeToBusiness} />
-              </div>
-            )}
-
             {/* Trust Badge */}
             <TrustBadge
               trustScore={user.verification?.trustScore || 10}
@@ -719,19 +709,16 @@ const ProfilePage: React.FC = () => {
               />
             </div>
 
-            {/* Actions */}
+            {/* Actions - 🎯 OPTIMIZED: Removed duplicates */}
             <S.ProfileActions>
               {isOwnProfile ? (
                 <>
                   {/* Own Profile Actions */}
-                  <S.ActionButton onClick={() => setEditing(!editing)}>
+                  <S.ActionButton 
+                    onClick={() => setEditing(!editing)}
+                    data-action="edit-profile"
+                  >
                     {editing ? t('profile.cancelEdit') : t('profile.editProfile')}
-                  </S.ActionButton>
-                  <S.ActionButton variant="secondary" onClick={() => { /* Navigate to sell page */ window.location.href = '/sell'; }}>
-                    {t('profile.addCar')}
-                  </S.ActionButton>
-                  <S.ActionButton variant="secondary" onClick={() => { /* Navigate to messages */ window.location.href = '/messages'; }}>
-                    {t('profile.messages')}
                   </S.ActionButton>
                   <S.ActionButton variant="secondary" onClick={() => navigate('/users')}>
                     <Users size={18} />
@@ -800,17 +787,12 @@ const ProfilePage: React.FC = () => {
 
           {/* Profile Content */}
           <S.ProfileContent>
-            {/* Statistics Overview */}
-            <S.ContentSection $isBusinessMode={isBusinessMode}>
-              <ProfileStatsComponent
-                carsListed={user.stats?.carsListed || userCars?.length || 0}
-                carsSold={user.stats?.carsSold || 0}
-                totalViews={user.stats?.totalViews || 0}
-                responseTime={user.stats?.responseTime || 0}
-                responseRate={user.stats?.responseRate || 0}
-                totalMessages={user.stats?.totalMessages || 0}
-              />
-            </S.ContentSection>
+            {/* 🎯 UNIFIED: ProfileDashboard shows completion + stats + actions */}
+            {isOwnProfile && (
+              <S.ContentSection $isBusinessMode={isBusinessMode}>
+                <ProfileDashboard />
+              </S.ContentSection>
+            )}
             
             {/* Contact Information - For other users (sellers) */}
             {!isOwnProfile && user?.accountType === 'business' && (
@@ -1323,89 +1305,124 @@ const ProfilePage: React.FC = () => {
               ) : (
                 <div>
                   {/* Personal Info */}
-                  <div style={{ marginBottom: '16px' }}>
-                    <h4 style={{ margin: '0 0 8px 0', paddingBottom: '5px', borderBottom: '1px solid #e0e0e0', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <IconWrapper $color="#666" $size={14}><UserCircle /></IconWrapper>
+                  <div style={{ marginBottom: '24px' }}>
+                    <h4 style={{ margin: '0 0 16px 0', paddingBottom: '8px', borderBottom: '2px solid rgba(255, 143, 16, 0.3)', fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '8px', color: '#FF8F10', fontWeight: '700' }}>
+                      <IconWrapper $color="#FF8F10" $size={18}><UserCircle /></IconWrapper>
                       {language === 'bg' ? 'Лична информация' : 'Personal Information'}
                     </h4>
-                  <S.FormGrid>
-                    <div>
-                        <strong>{language === 'bg' ? 'Име' : 'First Name'}:</strong> {user.firstName || t('profile.notSet')}
-                      </div>
-                      <div>
-                        <strong>{language === 'bg' ? 'Презиме' : 'Middle Name'}:</strong> {user.middleName || t('profile.notSet')}
-                      </div>
-                      <div>
-                        <strong>{language === 'bg' ? 'Фамилия' : 'Last Name'}:</strong> {user.lastName || t('profile.notSet')}
-                    </div>
-                    <div>
-                        <strong>{language === 'bg' ? 'Дата на раждане' : 'Date of Birth'}:</strong> {
-                          user.dateOfBirth ? new Date(user.dateOfBirth).toLocaleDateString('bg-BG') : t('profile.notSet')
-                        }
-                    </div>
-                    <div>
-                        <strong>{language === 'bg' ? 'Място на раждане' : 'Place of Birth'}:</strong> {user.placeOfBirth || t('profile.notSet')}
-                      </div>
-                    </S.FormGrid>
+                    <S.NeumorphicInfoGrid>
+                      <S.NeumorphicFieldWrapper>
+                        <S.NeumorphicFieldLabel>{language === 'bg' ? 'Име' : 'First Name'}</S.NeumorphicFieldLabel>
+                        <S.NeumorphicInfoField>
+                          <S.NeumorphicFieldValue>{user.firstName || t('profile.notSet')}</S.NeumorphicFieldValue>
+                        </S.NeumorphicInfoField>
+                      </S.NeumorphicFieldWrapper>
+                      <S.NeumorphicFieldWrapper>
+                        <S.NeumorphicFieldLabel>{language === 'bg' ? 'Презиме' : 'Middle Name'}</S.NeumorphicFieldLabel>
+                        <S.NeumorphicInfoField>
+                          <S.NeumorphicFieldValue>{user.middleName || t('profile.notSet')}</S.NeumorphicFieldValue>
+                        </S.NeumorphicInfoField>
+                      </S.NeumorphicFieldWrapper>
+                      <S.NeumorphicFieldWrapper>
+                        <S.NeumorphicFieldLabel>{language === 'bg' ? 'Фамилия' : 'Last Name'}</S.NeumorphicFieldLabel>
+                        <S.NeumorphicInfoField>
+                          <S.NeumorphicFieldValue>{user.lastName || t('profile.notSet')}</S.NeumorphicFieldValue>
+                        </S.NeumorphicInfoField>
+                      </S.NeumorphicFieldWrapper>
+                      <S.NeumorphicFieldWrapper>
+                        <S.NeumorphicFieldLabel>{language === 'bg' ? 'Дата на раждане' : 'Date of Birth'}</S.NeumorphicFieldLabel>
+                        <S.NeumorphicInfoField>
+                          <S.NeumorphicFieldValue>
+                            {user.dateOfBirth ? new Date(user.dateOfBirth).toLocaleDateString('bg-BG') : t('profile.notSet')}
+                          </S.NeumorphicFieldValue>
+                        </S.NeumorphicInfoField>
+                      </S.NeumorphicFieldWrapper>
+                      <S.NeumorphicFieldWrapper>
+                        <S.NeumorphicFieldLabel>{language === 'bg' ? 'Място на раждане' : 'Place of Birth'}</S.NeumorphicFieldLabel>
+                        <S.NeumorphicInfoField>
+                          <S.NeumorphicFieldValue>{user.placeOfBirth || t('profile.notSet')}</S.NeumorphicFieldValue>
+                        </S.NeumorphicInfoField>
+                      </S.NeumorphicFieldWrapper>
+                    </S.NeumorphicInfoGrid>
                   </div>
 
 
                   {/* Contact */}
-                  <div style={{ marginBottom: '16px' }}>
-                    <h4 style={{ margin: '0 0 8px 0', paddingBottom: '5px', borderBottom: '1px solid #e0e0e0', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <IconWrapper $color="#666" $size={14}><Phone /></IconWrapper>
+                  <div style={{ marginBottom: '24px' }}>
+                    <h4 style={{ margin: '0 0 16px 0', paddingBottom: '8px', borderBottom: '2px solid rgba(255, 143, 16, 0.3)', fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '8px', color: '#FF8F10', fontWeight: '700' }}>
+                      <IconWrapper $color="#FF8F10" $size={18}><Phone /></IconWrapper>
                       {language === 'bg' ? 'Контактна информация' : 'Contact Information'}
                     </h4>
-                    <S.FormGrid>
-                      <div>
-                        <strong>{language === 'bg' ? 'Телефон' : 'Phone'}:</strong> {user.phoneNumber || t('profile.notSet')}
-                    </div>
-                    <div>
-                        <strong>{language === 'bg' ? 'Имейл' : 'Email'}:</strong> {user.email || t('profile.notSet')}
-                      </div>
-                    </S.FormGrid>
+                    <S.NeumorphicInfoGrid>
+                      <S.NeumorphicFieldWrapper>
+                        <S.NeumorphicFieldLabel>{language === 'bg' ? 'Телефон' : 'Phone'}</S.NeumorphicFieldLabel>
+                        <S.NeumorphicInfoField>
+                          <S.NeumorphicFieldValue>{user.phoneNumber || t('profile.notSet')}</S.NeumorphicFieldValue>
+                        </S.NeumorphicInfoField>
+                      </S.NeumorphicFieldWrapper>
+                      <S.NeumorphicFieldWrapper>
+                        <S.NeumorphicFieldLabel>{language === 'bg' ? 'Имейл' : 'Email'}</S.NeumorphicFieldLabel>
+                        <S.NeumorphicInfoField>
+                          <S.NeumorphicFieldValue>{user.email || t('profile.notSet')}</S.NeumorphicFieldValue>
+                        </S.NeumorphicInfoField>
+                      </S.NeumorphicFieldWrapper>
+                    </S.NeumorphicInfoGrid>
                   </div>
 
                   {/* Address */}
-                  <div style={{ marginBottom: '16px' }}>
-                    <h4 style={{ margin: '0 0 8px 0', paddingBottom: '5px', borderBottom: '1px solid #e0e0e0', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <IconWrapper $color="#666" $size={14}><Home /></IconWrapper>
+                  <div style={{ marginBottom: '24px' }}>
+                    <h4 style={{ margin: '0 0 16px 0', paddingBottom: '8px', borderBottom: '2px solid rgba(255, 143, 16, 0.3)', fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '8px', color: '#FF8F10', fontWeight: '700' }}>
+                      <IconWrapper $color="#FF8F10" $size={18}><Home /></IconWrapper>
                       {language === 'bg' ? 'Адресна информация' : 'Address Information'}
                     </h4>
-                    <S.FormGrid>
-                      <div>
-                        <strong>{language === 'bg' ? 'Град' : 'City'}:</strong> {user.location?.city || t('profile.notSet')}
-                    </div>
-                      <div>
-                        <strong>{language === 'bg' ? 'Пощенски код' : 'Postal Code'}:</strong> {user.postalCode || t('profile.notSet')}
-                      </div>
-                    </S.FormGrid>
+                    <S.NeumorphicInfoGrid>
+                      <S.NeumorphicFieldWrapper>
+                        <S.NeumorphicFieldLabel>{language === 'bg' ? 'Град' : 'City'}</S.NeumorphicFieldLabel>
+                        <S.NeumorphicInfoField>
+                          <S.NeumorphicFieldValue>{user.location?.city || t('profile.notSet')}</S.NeumorphicFieldValue>
+                        </S.NeumorphicInfoField>
+                      </S.NeumorphicFieldWrapper>
+                      <S.NeumorphicFieldWrapper>
+                        <S.NeumorphicFieldLabel>{language === 'bg' ? 'Пощенски код' : 'Postal Code'}</S.NeumorphicFieldLabel>
+                        <S.NeumorphicInfoField>
+                          <S.NeumorphicFieldValue>{user.postalCode || t('profile.notSet')}</S.NeumorphicFieldValue>
+                        </S.NeumorphicInfoField>
+                      </S.NeumorphicFieldWrapper>
+                    </S.NeumorphicInfoGrid>
                     {user.address && (
-                      <div style={{ marginTop: '12px' }}>
-                        <strong>{language === 'bg' ? 'Адрес' : 'Address'}:</strong>
-                        <div style={{ marginTop: '4px', color: '#666' }}>{user.address}</div>
-                      </div>
+                      <S.NeumorphicFieldWrapper style={{ marginTop: '16px' }}>
+                        <S.NeumorphicFieldLabel>{language === 'bg' ? 'Адрес' : 'Address'}</S.NeumorphicFieldLabel>
+                        <S.NeumorphicInfoField>
+                          <S.NeumorphicFieldValue>{user.address}</S.NeumorphicFieldValue>
+                        </S.NeumorphicInfoField>
+                      </S.NeumorphicFieldWrapper>
                     )}
                   </div>
 
                   {/* Other */}
-                  <div>
-                    <h4 style={{ margin: '0 0 8px 0', paddingBottom: '5px', borderBottom: '1px solid #e0e0e0', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <IconWrapper $color="#666" $size={14}><SettingsIcon /></IconWrapper>
+                  <div style={{ marginBottom: '24px' }}>
+                    <h4 style={{ margin: '0 0 16px 0', paddingBottom: '8px', borderBottom: '2px solid rgba(255, 143, 16, 0.3)', fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '8px', color: '#FF8F10', fontWeight: '700' }}>
+                      <IconWrapper $color="#FF8F10" $size={18}><SettingsIcon /></IconWrapper>
                       {language === 'bg' ? 'Други' : 'Other'}
                     </h4>
-                    <S.FormGrid>
-                    <div>
-                      <strong>{t('profile.preferredLanguage')}:</strong> {
-                          user.preferredLanguage === 'bg' ? '🇧🇬 ' + t('languages.bulgarian') : '🇬🇧 ' + t('languages.english')
-                      }
-                    </div>
-                    <div>
-                      <strong>{t('profile.memberSince')}:</strong> {
-                          user.createdAt ? new Date(user.createdAt).toLocaleDateString('bg-BG') : t('profile.notSet')
-                      }
-                    </div>
-                  </S.FormGrid>
+                    <S.NeumorphicInfoGrid>
+                      <S.NeumorphicFieldWrapper>
+                        <S.NeumorphicFieldLabel>{t('profile.preferredLanguage')}</S.NeumorphicFieldLabel>
+                        <S.NeumorphicInfoField>
+                          <S.NeumorphicFieldValue>
+                            {user.preferredLanguage === 'bg' ? '🇧🇬 ' + t('languages.bulgarian') : '🇬🇧 ' + t('languages.english')}
+                          </S.NeumorphicFieldValue>
+                        </S.NeumorphicInfoField>
+                      </S.NeumorphicFieldWrapper>
+                      <S.NeumorphicFieldWrapper>
+                        <S.NeumorphicFieldLabel>{t('profile.memberSince')}</S.NeumorphicFieldLabel>
+                        <S.NeumorphicInfoField>
+                          <S.NeumorphicFieldValue>
+                            {user.createdAt ? new Date(user.createdAt).toLocaleDateString('bg-BG') : t('profile.notSet')}
+                          </S.NeumorphicFieldValue>
+                        </S.NeumorphicInfoField>
+                      </S.NeumorphicFieldWrapper>
+                    </S.NeumorphicInfoGrid>
                   </div>
 
                   {user.bio && (
@@ -1594,6 +1611,17 @@ const ProfilePage: React.FC = () => {
         )}
       </S.PageContainer>
     </S.ProfileContainer>
+    
+    {/* ⚡ NEW: Profile Type Confirmation Modal */}
+    {pendingProfileType && (
+      <ProfileTypeConfirmModal
+        isOpen={showProfileTypeModal}
+        profileType={pendingProfileType}
+        onConfirm={handleConfirmProfileType}
+        onCancel={handleCancelProfileType}
+      />
+    )}
+    </>
   );
 };
 

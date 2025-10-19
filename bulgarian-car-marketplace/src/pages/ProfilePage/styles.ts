@@ -2,25 +2,17 @@ import styled, { keyframes, css } from 'styled-components';
 
 // ==================== KEYFRAMES ====================
 
-const shimmer = keyframes`
-  0% { background-position: -1000px 0; }
-  100% { background-position: 1000px 0; }
-`;
+// ⚡ OPTIMIZED: Removed all heavy infinite animations
+// Replaced with static effects and hover-based interactions
 
-const pulseGlow = keyframes`
-  0%, 100% { box-shadow: 0 0 20px rgba(255, 143, 16, 0.3); }
-  50% { box-shadow: 0 0 30px rgba(255, 143, 16, 0.5); }
-`;
-
-const float = keyframes`
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
-`;
-
-const gradientShift = keyframes`
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+// Gentle hover effect (GPU accelerated)
+const gentleHover = css`
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+  
+  &:hover {
+    transform: translateY(-3px);
+  }
 `;
 
 // ==================== MAIN CONTAINER ====================
@@ -44,8 +36,8 @@ export const ProfileContainer = styled.div<{ $isBusinessMode?: boolean }>`
       #eaeff4 90%,
       #f5f8fb 100%
     );
-  background-size: 100% 100%, 100% 100%, 200% 200%;
-  ${css`animation: ${gradientShift} 15s ease infinite;`}
+  background-size: 100% 100%, 100% 100%, 100% 100%;
+  /* ⚡ OPTIMIZED: Static gradient instead of animated */
   position: relative;
   overflow: hidden;
   
@@ -178,12 +170,15 @@ export const ProfileSidebar = styled.div<{ $isBusinessMode?: boolean }>`
       rgba(255, 215, 0, 0.4) 85%,
       rgba(255, 215, 0, 0) 100%
     );
-    box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
-    ${css`animation: ${shimmer} 3s linear infinite;`}
+    /* ⚡ OPTIMIZED: Static glow with gradient border */
+    box-shadow: 
+      0 0 12px rgba(255, 215, 0, 0.4),
+      inset 0 0 20px rgba(255, 215, 0, 0.1);
+    border: 2px solid rgba(255, 215, 0, 0.3);
   }
   
   &:hover {
-    transform: translateY(-4px);
+    transform: translateY(-3px) scale(1.01);  /* ⚡ Simpler transform */
     box-shadow: 
       0 1px 0 rgba(255, 255, 255, 0.9) inset,
       0 -1px 0 rgba(0, 0, 0, 0.08) inset,
@@ -222,12 +217,13 @@ export const ProfileAvatar = styled.div`
       inset 0 -2px 4px rgba(0, 0, 0, 0.1),
       inset 0 2px 4px rgba(255, 255, 255, 0.3);
     border: 3px solid rgba(255, 215, 0, 0.6);
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    ${css`animation: ${float} 3s ease-in-out infinite;`}
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;  /* ⚡ GPU acceleration */
+    /* ⚡ OPTIMIZED: No infinite animation, only hover effect */
     
     &:hover {
-      transform: scale(1.08) rotate(5deg);
-      ${css`animation: ${pulseGlow} 2s ease-in-out infinite;`}
+      transform: scale(1.05) rotate(3deg);  /* ⚡ Simpler & lighter */
+      /* ⚡ OPTIMIZED: Removed infinite animation - static glow instead */
       box-shadow: 
         0 12px 40px rgba(255, 143, 16, 0.5),
         0 4px 12px rgba(0, 0, 0, 0.15),
@@ -245,7 +241,7 @@ export const ProfileAvatar = styled.div`
     -webkit-text-fill-color: transparent;
     background-clip: text;
     margin-bottom: ${({ theme }) => theme.spacing.sm};
-    ${css`animation: ${gradientShift} 5s ease infinite;`}
+    /* ⚡ OPTIMIZED: Static gradient text - no animation */
   }
 
   .email {
@@ -320,7 +316,7 @@ export const StatItem = styled.div`
     background-clip: text;
     display: block;
     filter: drop-shadow(0 1px 2px rgba(255, 143, 16, 0.3));
-    ${css`animation: ${gradientShift} 4s ease infinite;`}
+    /* ⚡ OPTIMIZED: Static gradient - no animation */
   }
 
   .stat-label {
@@ -410,25 +406,30 @@ export const ActionButton = styled.button<{ variant?: 'primary' | 'secondary' | 
           box-shadow: 
             0 6px 20px rgba(255, 143, 16, 0.4),
             0 2px 6px rgba(0, 0, 0, 0.1),
-            inset 0 1px 0 rgba(255, 255, 255, 0.4),
-            inset 0 -1px 0 rgba(0, 0, 0, 0.1);
-          animation: ${gradientShift} 3s ease infinite;
-          
-          /* Shimmer Effect */
-          &::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg,
-              transparent 0%,
-              rgba(255, 255, 255, 0.3) 50%,
-              transparent 100%
-            );
-            animation: ${shimmer} 3s infinite;
-          }
+          inset 0 1px 0 rgba(255, 255, 255, 0.4),
+          inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+        /* ⚡ OPTIMIZED: Static gradient - no animation */
+        
+        /* Shimmer Effect - triggers on hover */
+        &::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.3) 50%,
+            transparent 100%
+          );
+          /* ⚡ OPTIMIZED: No infinite animation */
+        }
+        
+        &:hover::after {
+          left: 100%;
+          transition: left 1s ease;
+        }
         `;
     }
   }}
@@ -580,7 +581,7 @@ export const SectionHeader = styled.div`
     background-clip: text;
     margin: 0;
     filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
-    ${css`animation: ${gradientShift} 6s ease infinite;`}
+    /* ⚡ OPTIMIZED: Static gradient - no animation */
   }
 
   .edit-btn {
@@ -654,9 +655,10 @@ export const FormGroup = styled.div`
   }
 
   input, select, textarea {
-    padding: 10px 14px;
-    font-size: 0.95rem;
+    padding: 8px 12px; /* 🎯 COMPACT: Reduced from 10px 14px */
+    font-size: 0.9rem; /* 🎯 Slightly smaller */
     border-radius: 10px;
+    min-height: 38px; /* 🎯 Consistent height */
     
     /* Glassmorphic Input */
     background: linear-gradient(135deg,
@@ -690,7 +692,7 @@ export const FormGroup = styled.div`
 
     &::placeholder {
       color: #b0b0b0;
-      font-size: 0.9rem;
+      font-size: 0.85rem; /* 🎯 Slightly smaller */
       opacity: 0.6;
       font-weight: 500;
     }
@@ -707,8 +709,9 @@ export const FormGroup = styled.div`
 
   textarea {
     resize: vertical;
-    min-height: 90px;
+    min-height: 80px; /* 🎯 Reduced from 90px */
     font-family: inherit;
+    line-height: 1.5;
   }
 `;
 
@@ -767,9 +770,10 @@ export const SaveButton = styled.button`
     inset 0 -1px 0 rgba(0, 0, 0, 0.1);
   
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  ${css`animation: ${gradientShift} 3s ease infinite;`}
+  will-change: transform;  /* ⚡ GPU acceleration */
+  /* ⚡ OPTIMIZED: Static gradient - no infinite animation */
   
-  /* Shimmer Effect */
+  /* Shimmer Effect - triggers on hover */
   &::before {
     content: '';
     position: absolute;
@@ -782,7 +786,12 @@ export const SaveButton = styled.button`
       rgba(255, 255, 255, 0.3) 50%,
       transparent 100%
     );
-    ${css`animation: ${shimmer} 2.5s infinite;`}
+    /* ⚡ OPTIMIZED: No infinite animation */
+  }
+  
+  &:hover::before {
+    left: 100%;
+    transition: left 0.8s ease;
   }
 
   &:hover {
@@ -1109,7 +1118,8 @@ export const PageHeader = styled.div`
     box-shadow: 
       0 0 12px rgba(255, 215, 0, 0.8),
       0 0 24px rgba(255, 215, 0, 0.4);
-    ${css`animation: ${shimmer} 4s linear infinite;`}
+    /* ⚡ OPTIMIZED: Static glow - no animation */
+    filter: brightness(1.05);
   }
 
   h1 {
@@ -1128,7 +1138,7 @@ export const PageHeader = styled.div`
     background-clip: text;
     margin-bottom: ${({ theme }) => theme.spacing.md};
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-    ${css`animation: ${gradientShift} 8s ease infinite;`}
+    /* ⚡ OPTIMIZED: Static gradient - no animation */
   }
 
   p {
@@ -1137,5 +1147,204 @@ export const PageHeader = styled.div`
     max-width: 600px;
     margin: 0 auto;
     font-weight: 500;
+  }
+`;
+
+// ==================== NEUMORPHISM INFO FIELDS - PROFESSIONAL UPGRADE ====================
+
+const pulseOrange = keyframes`
+  0%, 100% {
+    box-shadow: 
+      0 0 8px rgba(255, 143, 16, 0.4),
+      0 0 12px rgba(255, 143, 16, 0.2);
+  }
+  50% {
+    box-shadow: 
+      0 0 12px rgba(255, 143, 16, 0.6),
+      0 0 16px rgba(255, 143, 16, 0.3),
+      0 0 20px rgba(255, 143, 16, 0.1);
+  }
+`;
+
+const labelFloat = keyframes`
+  from {
+    transform: translateY(8px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+`;
+
+// ✨ NEW: Wrapper for Field + Label (Label outside field now)
+export const NeumorphicFieldWrapper = styled.div`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+`;
+
+// ✨ UPGRADED: Label now floats OUTSIDE and ABOVE the field - COMPACT
+export const NeumorphicFieldLabel = styled.div`
+  position: absolute;
+  top: -10px; /* 🎯 Closer to field */
+  left: 14px; /* 🎯 Better alignment */
+  z-index: 3;
+  
+  font-size: 0.65rem; /* 🎯 Smaller for compact design */
+  font-weight: 700;
+  color: #FF8F10;
+  text-transform: uppercase;
+  letter-spacing: 1px; /* 🎯 Tighter spacing */
+  
+  /* Background to separate label from field */
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    transparent 40%,
+    #f5f8fb 40%,
+    #f5f8fb 60%,
+    transparent 60%,
+    transparent 100%
+  );
+  
+  padding: 0 6px; /* 🎯 Less padding */
+  
+  /* 3D effect */
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+  
+  /* Smooth entry animation */
+  animation: ${labelFloat} 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  
+  transition: all 0.3s ease;
+`;
+
+// ✨ UPGRADED: Field redesigned for labels-outside approach - SLEEK & COMPACT
+export const NeumorphicInfoField = styled.div`
+  position: relative;
+  background: #3e3e3e;
+  border-radius: 12px;
+  padding: 10px 16px; /* 🎯 COMPACT: Reduced from 18px/20px to 10px/16px */
+  margin-top: 12px; /* Space for floating label */
+  min-height: 42px; /* 🎯 SLEEK: Just enough for text */
+  display: flex;
+  align-items: center; /* Vertical center alignment */
+  
+  /* Neumorphism outer shadow - enhanced */
+  box-shadow: 
+    5px 5px 10px rgba(0, 0, 0, 0.4),
+    -5px -5px 10px rgba(255, 255, 255, 0.06),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  
+  /* Inner glow effect */
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.03) 0%,
+      rgba(0, 0, 0, 0.02) 100%
+    );
+    border-radius: 12px;
+    pointer-events: none;
+  }
+  
+  /* Orange accent line - refined and sleeker */
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 20%;
+    transform: translateY(-50%);
+    width: 2px; /* Thinner than 3px */
+    height: 50%; /* Shorter than 60% */
+    background: linear-gradient(
+      180deg,
+      rgba(255, 143, 16, 0) 0%,
+      rgba(255, 143, 16, 0.8) 20%,
+      rgba(255, 143, 16, 1) 50%,
+      rgba(255, 107, 0, 1) 80%,
+      rgba(255, 107, 0, 0) 100%
+    );
+    border-radius: 0 2px 2px 0;
+    box-shadow: 
+      0 0 8px rgba(255, 143, 16, 0.4),
+      0 0 12px rgba(255, 143, 16, 0.2);
+    animation: ${pulseOrange} 3s ease-in-out infinite;
+  }
+  
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Faster transition */
+  
+  &:hover {
+    transform: translateY(-2px); /* Subtle lift */
+    box-shadow: 
+      6px 6px 12px rgba(0, 0, 0, 0.5),
+      -6px -6px 12px rgba(255, 255, 255, 0.08),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+      
+    &::after {
+      height: 60%;
+      box-shadow: 
+        0 0 12px rgba(255, 143, 16, 0.6),
+        0 0 16px rgba(255, 143, 16, 0.3);
+    }
+    
+    /* Label glow on hover */
+    ${NeumorphicFieldLabel} {
+      color: #FFB84D;
+      text-shadow: 0 0 8px rgba(255, 143, 16, 0.5);
+    }
+  }
+  
+  /* Focus state when editing */
+  &:focus-within {
+    box-shadow: 
+      5px 5px 10px rgba(0, 0, 0, 0.4),
+      -5px -5px 10px rgba(255, 255, 255, 0.06),
+      inset 0 0 0 2px rgba(255, 143, 16, 0.3);
+  }
+`;
+
+// ✨ UPGRADED: Value styling with gradient text - COMPACT
+export const NeumorphicFieldValue = styled.div`
+  position: relative;
+  z-index: 2;
+  font-size: 0.95rem; /* 🎯 Slightly smaller for compact design */
+  font-weight: 600;
+  color: #ffffff;
+  line-height: 1.4; /* 🎯 Tighter line height */
+  
+  /* Gradient text effect for values */
+  background: linear-gradient(
+    135deg,
+    #ffffff 0%,
+    #f0f0f0 50%,
+    #e0e0e0 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  
+  /* Empty state */
+  &:empty::before {
+    content: attr(data-placeholder);
+    color: rgba(255, 255, 255, 0.3);
+    font-style: italic;
+  }
+`;
+
+export const NeumorphicInfoGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); /* 🎯 Slightly smaller cells */
+  gap: 16px; /* 🎯 COMPACT: Reduced from 20px */
+  margin-top: 16px; /* 🎯 Less top margin */
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 14px; /* 🎯 Even tighter on mobile */
   }
 `;
