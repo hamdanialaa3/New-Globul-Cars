@@ -168,6 +168,81 @@ const UserEmail = styled.div`
   color: #6c757d;
 `;
 
+// ⚡ NEW: Profile Type Switcher Bar (below cover image)
+const ProfileTypeSwitcher = styled.div<{ $themeColor?: string }>`
+  display: flex;
+  gap: 12px;
+  padding: 16px 24px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 249, 250, 0.95) 100%);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  margin: -30px auto 24px auto;
+  max-width: 500px;
+  position: relative;
+  z-index: 10;
+  border: 2px solid ${props => props.$themeColor ? `${props.$themeColor}33` : 'rgba(255, 143, 16, 0.2)'};
+  
+  @media (max-width: 768px) {
+    margin: -20px 16px 20px 16px;
+    padding: 12px 16px;
+    gap: 8px;
+    flex-direction: column;
+  }
+`;
+
+const ProfileTypeButton = styled.button<{ $active: boolean; $color: string }>`
+  flex: 1;
+  padding: 12px 20px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  border: 2px solid ${props => props.$active ? props.$color : '#dee2e6'};
+  background: ${props => props.$active 
+    ? `linear-gradient(135deg, ${props.$color} 0%, ${props.$color}E6 100%)` 
+    : 'white'};
+  color: ${props => props.$active ? 'white' : '#6c757d'};
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: ${props => props.$active 
+    ? `0 4px 12px ${props.$color}40` 
+    : '0 2px 6px rgba(0, 0, 0, 0.05)'};
+  
+  /* ⚡ Anti-flickering */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
+  
+  &:hover {
+    transform: translateZ(0) translateY(-2px);
+    border-color: ${props => props.$color};
+    background: ${props => props.$active 
+      ? `linear-gradient(135deg, ${props.$color}F0 0%, ${props.$color}CC 100%)` 
+      : `${props.$color}0D`};
+    color: ${props => props.$active ? 'white' : props.$color};
+    box-shadow: ${props => props.$active 
+      ? `0 6px 20px ${props.$color}60` 
+      : `0 4px 12px ${props.$color}20`};
+  }
+  
+  &:active {
+    transform: translateZ(0) translateY(0);
+  }
+  
+  svg {
+    flex-shrink: 0;
+  }
+  
+  @media (max-width: 768px) {
+    padding: 10px 16px;
+    font-size: 0.8rem;
+    gap: 6px;
+  }
+`;
+
 const FullWidthContent = styled.div`
   width: 100%;
   /* ⚡ OPTIMIZED: Gentle fade in on mount */
