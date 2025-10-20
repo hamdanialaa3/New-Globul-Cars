@@ -607,6 +607,50 @@ const ProfilePage: React.FC = () => {
           }}
         />
         )}
+        
+        {/* ⚡ NEW: Profile Type Switcher Bar - Below Cover Image */}
+        {activeTab === 'profile' && isOwnProfile && (
+          <ProfileTypeSwitcher $themeColor={theme.primary}>
+            {/* Private Button */}
+            <ProfileTypeButton
+              $active={profileType === 'private'}
+              $color="#FF8F10"
+              onClick={() => {
+                setPendingProfileType('private');
+                setShowProfileTypeModal(true);
+              }}
+            >
+              <User size={18} />
+              {language === 'bg' ? 'Личен' : 'Private'}
+            </ProfileTypeButton>
+            
+            {/* Dealer Button */}
+            <ProfileTypeButton
+              $active={profileType === 'dealer'}
+              $color="#16a34a"
+              onClick={() => {
+                setPendingProfileType('dealer');
+                setShowProfileTypeModal(true);
+              }}
+            >
+              <Building2 size={18} />
+              {language === 'bg' ? 'Дилър' : 'Dealer'}
+            </ProfileTypeButton>
+            
+            {/* Company Button */}
+            <ProfileTypeButton
+              $active={profileType === 'company'}
+              $color="#1d4ed8"
+              onClick={() => {
+                setPendingProfileType('company');
+                setShowProfileTypeModal(true);
+              }}
+            >
+              <Building2 size={18} />
+              {language === 'bg' ? 'Компания' : 'Company'}
+            </ProfileTypeButton>
+          </ProfileTypeSwitcher>
+        )}
 
         {/* Compact Header for other tabs */}
         {activeTab !== 'profile' && (
@@ -653,95 +697,12 @@ const ProfilePage: React.FC = () => {
               <div style={{ fontSize: '0.9rem', fontWeight: 'bold', marginBottom: '6px' }}>
                 {user.displayName || t('profile.anonymous')}
               </div>
-              <div style={{ color: '#666', fontSize: '0.75rem', marginBottom: '10px' }}>
+              <div style={{ color: '#666', fontSize: '0.75rem', marginBottom: '20px' }}>
                 {user.email}
               </div>
               
-              {/* Profile Type Switcher - Only for own profile */}
-              {isOwnProfile && (
-                <div style={{ marginBottom: '15px' }}>
-                  <div style={{ fontSize: '0.7rem', color: '#666', marginBottom: '8px', fontWeight: '600' }}>
-                    {language === 'bg' ? 'Тип профил' : 'Profile Type'}
-                  </div>
-                  <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
-                    {/* ⚡ FIXED: Private Button - Now shows confirmation modal */}
-                    <button
-                      onClick={() => {
-                        setPendingProfileType('private');
-                        setShowProfileTypeModal(true);
-                      }}
-                      style={{
-                        padding: '6px 12px',
-                        fontSize: '0.7rem',
-                        fontWeight: '600',
-                        border: `2px solid ${profileType === 'private' ? '#FF8F10' : '#ddd'}`,
-                        background: profileType === 'private' ? '#FF8F10' : 'white',
-                        color: profileType === 'private' ? 'white' : '#666',
-                        borderRadius: '6px',
-                        cursor: 'pointer',
-                        transition: 'all 0.3s ease',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '4px'
-                      }}
-                    >
-                      <User size={14} />
-                      {language === 'bg' ? 'Личен' : 'Private'}
-                    </button>
-                    
-                    {/* ⚡ FIXED: Dealer Button - Now shows confirmation modal */}
-                    <button
-                      onClick={() => {
-                        setPendingProfileType('dealer');
-                        setShowProfileTypeModal(true);
-                      }}
-                      style={{
-                        padding: '6px 12px',
-                        fontSize: '0.7rem',
-                        fontWeight: '600',
-                        border: `2px solid ${profileType === 'dealer' ? '#16a34a' : '#ddd'}`,
-                        background: profileType === 'dealer' ? '#16a34a' : 'white',
-                        color: profileType === 'dealer' ? 'white' : '#666',
-                        borderRadius: '6px',
-                        cursor: 'pointer',
-                        transition: 'all 0.3s ease',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '4px'
-                      }}
-                    >
-                      <Building2 size={14} />
-                      {language === 'bg' ? 'Дилър' : 'Dealer'}
-                    </button>
-                    
-                    {/* ⚡ FIXED: Company Button - Now shows confirmation modal */}
-                    <button
-                      onClick={() => {
-                        setPendingProfileType('company');
-                        setShowProfileTypeModal(true);
-                      }}
-                      style={{
-                        padding: '6px 12px',
-                        fontSize: '0.7rem',
-                        fontWeight: '600',
-                        border: `2px solid ${profileType === 'company' ? '#1d4ed8' : '#ddd'}`,
-                        background: profileType === 'company' ? '#1d4ed8' : 'white',
-                        color: profileType === 'company' ? 'white' : '#666',
-                        borderRadius: '6px',
-                        cursor: 'pointer',
-                        transition: 'all 0.3s ease',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '4px'
-                      }}
-                    >
-                      <Building2 size={14} />
-                      {language === 'bg' ? 'Компания' : 'Company'}
-                    </button>
-                  </div>
-                  
-                  {/* ✨ NEW: Verification Badges */}
-                  <div style={{ 
+              {/* ✨ NEW: Verification Badges */}
+              <div style={{ 
                     display: 'flex', 
                     flexWrap: 'wrap', 
                     gap: '8px', 
@@ -759,8 +720,7 @@ const ProfilePage: React.FC = () => {
                       profileType={profileType}
                     />
                   </div>
-                </div>
-              )}
+            </div>
               
               {/* Seller Rating (for sellers only) */}
               {!isOwnProfile && user.accountType === 'business' && (
