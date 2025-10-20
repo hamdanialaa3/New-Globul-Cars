@@ -15,9 +15,9 @@ interface ThemedProps {
 
 export const TabNavigation = styled.div<{ $themeColor?: string }>`
   display: flex;
-  gap: 10px;
-  margin-bottom: 28px;
-  padding: 12px;
+  gap: 8px;
+  margin-bottom: 20px;
+  padding: 8px;
   position: relative;
   border-radius: 18px;
   

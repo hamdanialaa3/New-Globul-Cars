@@ -1880,7 +1880,7 @@ const ProfilePage: React.FC = () => {
             {activeTab === 'consultations' && (
               <AnimatedTabContent>
                 <ConsultationsTab 
-                  userId={displayedUserId}
+                  userId={targetUserId || user?.uid || ''}
                   isOwnProfile={isOwnProfile}
                 />
               </AnimatedTabContent>

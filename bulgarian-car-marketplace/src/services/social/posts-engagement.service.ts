@@ -10,6 +10,7 @@ import {
   getDocs,
   updateDoc,
   query,
+  where,
   orderBy,
   limit,
   serverTimestamp,

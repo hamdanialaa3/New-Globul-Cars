@@ -133,7 +133,7 @@ const ConsultationCard = styled.div`
   }
 `;
 
-const ConsultationHeader = styled.div`
+const ConsultationHeader = styled.div<{ $status?: string }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -154,7 +154,7 @@ const ConsultationHeader = styled.div`
     padding: 4px 10px;
     border-radius: 12px;
     font-weight: 600;
-    background: ${(props: any) => {
+    background: ${(props) => {
       switch (props.$status) {
         case 'completed': return '#e8f5e9';
         case 'in_progress': return '#fff3e0';
@@ -162,7 +162,7 @@ const ConsultationHeader = styled.div`
         default: return '#f5f5f5';
       }
     }};
-    color: ${(props: any) => {
+    color: ${(props) => {
       switch (props.$status) {
         case 'completed': return '#2e7d32';
         case 'in_progress': return '#ef6c00';
