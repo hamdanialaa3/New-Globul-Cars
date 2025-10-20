@@ -472,19 +472,21 @@ const ProfilePage: React.FC = () => {
       <BusinessBackground isBusinessAccount={isBusinessMode} />
       
       <S.PageContainer>
-        {/* Tab Navigation */}
-        <TabNavigation>
+        {/* Tab Navigation - 🎨 DYNAMIC Theme Colors */}
+        <TabNavigation $themeColor={theme.primary}>
           <TabButton 
             $active={activeTab === 'profile'}
+            $themeColor={theme.primary}
             onClick={() => handleTabChange('profile')}
           >
             <UserCircle size={18} />
-            {language === 'bg' ? 'Профил' : 'Profile'}
+            {language === 'bg' ? 'Профil' : 'Profile'}
           </TabButton>
           {isOwnProfile && (
             <>
               <TabButton 
                 $active={activeTab === 'myads'}
+                $themeColor={theme.primary}
                 onClick={() => handleTabChange('myads')}
               >
                 <Car size={18} />
@@ -492,6 +494,7 @@ const ProfilePage: React.FC = () => {
               </TabButton>
               <TabButton 
                 $active={activeTab === 'analytics'}
+                $themeColor={theme.primary}
                 onClick={() => handleTabChange('analytics')}
               >
                 <BarChart3 size={18} />
@@ -499,6 +502,7 @@ const ProfilePage: React.FC = () => {
               </TabButton>
               <TabButton 
                 $active={activeTab === 'settings'}
+                $themeColor={theme.primary}
                 onClick={() => handleTabChange('settings')}
               >
                 <Shield size={18} />
@@ -545,8 +549,8 @@ const ProfilePage: React.FC = () => {
         {/* Profile Grid - Only for Profile tab */}
         {activeTab === 'profile' && !isTransitioning && (
           <AnimatedProfileGrid key="profile-tab">
-            {/* Profile Sidebar */}
-            <S.ProfileSidebar $isBusinessMode={isBusinessMode}>
+            {/* Profile Sidebar - 🎨 DYNAMIC Theme Colors */}
+            <S.ProfileSidebar $isBusinessMode={isBusinessMode} $themeColor={theme.primary}>
             {/* Profile Image with LED Progress Ring */}
             <div style={{ marginTop: '-80px', marginBottom: '20px', display: 'flex', justifyContent: 'center' }}>
               <LEDProgressAvatar
@@ -804,14 +808,14 @@ const ProfilePage: React.FC = () => {
           <S.ProfileContent>
             {/* 🎯 UNIFIED: ProfileDashboard shows completion + stats + actions */}
             {isOwnProfile && (
-              <S.ContentSection $isBusinessMode={isBusinessMode}>
+              <S.ContentSection $themeColor={theme.primary} $isBusinessMode={isBusinessMode}>
                 <ProfileDashboard />
               </S.ContentSection>
             )}
             
             {/* Contact Information - For other users (sellers) */}
             {!isOwnProfile && user?.accountType === 'business' && (
-              <S.ContentSection>
+              <S.ContentSection $themeColor={theme.primary}>
                 <S.SectionHeader>
                   <h2>{language === 'bg' ? 'Информация за контакт' : 'Contact Information'}</h2>
                 </S.SectionHeader>
@@ -853,7 +857,7 @@ const ProfilePage: React.FC = () => {
             )}
 
             {/* Personal Information */}
-            <S.ContentSection $isBusinessMode={isBusinessMode}>
+            <S.ContentSection $themeColor={theme.primary} $isBusinessMode={isBusinessMode}>
               <S.SectionHeader>
                 <h2>{t('profile.personalInfo')}</h2>
                 {!editing && isOwnProfile && (
@@ -1451,7 +1455,7 @@ const ProfilePage: React.FC = () => {
             </S.ContentSection>
 
             {/* Verification Panel */}
-            <S.ContentSection>
+            <S.ContentSection $themeColor={theme.primary}>
               <VerificationPanel
                 emailVerified={user.emailVerified || user.verification?.email?.verified || false}
                 phoneVerified={user.verification?.phone?.verified || false}
@@ -1462,7 +1466,7 @@ const ProfilePage: React.FC = () => {
 
             {/* Photo Gallery */}
             {isOwnProfile && (
-              <S.ContentSection>
+              <S.ContentSection $themeColor={theme.primary}>
                 <ProfileGallery
                   userId={user.uid}
                   images={(user.gallery || []).map(img => typeof img === 'string' ? img : img.url)}
@@ -1494,7 +1498,7 @@ const ProfilePage: React.FC = () => {
             
             {/* User's Cars - For other users (sellers) */}
             {!isOwnProfile && user?.uid && user.accountType === 'business' && userCars && userCars.length > 0 && (
-              <S.ContentSection>
+              <S.ContentSection $themeColor={theme.primary}>
                 <S.SectionHeader>
                   <h2>{language === 'bg' ? 'Активни обяви' : 'Active Listings'}</h2>
                   <span style={{ fontSize: '0.9rem', color: '#666' }}>
@@ -1547,7 +1551,7 @@ const ProfilePage: React.FC = () => {
             
             {/* Reviews Section - For other users only */}
             {!isOwnProfile && user?.uid && (
-              <S.ContentSection data-section="reviews">
+              <S.ContentSection $themeColor={theme.primary} data-section="reviews">
                 <S.SectionHeader>
                   <h2>{language === 'bg' ? 'Отзиви' : 'Reviews'}</h2>
                 </S.SectionHeader>

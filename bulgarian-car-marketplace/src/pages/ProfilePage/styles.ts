@@ -1,5 +1,24 @@
 import styled, { keyframes, css } from 'styled-components';
 
+// ==================== THEME COLOR HELPER ====================
+
+// 🎨 Helper function to convert hex color to rgba with opacity
+const hexToRgba = (hex: string, opacity: number): string => {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  if (!result) return `rgba(255, 143, 16, ${opacity})`;
+  
+  const r = parseInt(result[1], 16);
+  const g = parseInt(result[2], 16);
+  const b = parseInt(result[3], 16);
+  
+  return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+};
+
+// 🎨 Theme Color Props Interface
+interface ThemeColorProps {
+  $themeColor?: string;
+}
+
 // ==================== KEYFRAMES ====================
 
 // ⚡ OPTIMIZED: Removed all heavy infinite animations
@@ -112,7 +131,7 @@ export const ProfileGrid = styled.div`
 
 // ==================== PROFILE SIDEBAR ====================
 
-export const ProfileSidebar = styled.div<{ $isBusinessMode?: boolean }>`
+export const ProfileSidebar = styled.div<{ $isBusinessMode?: boolean; $themeColor?: string }>`
   /* 🎨 Premium Glassmorphism with Metallic Frame */
   background: 
     linear-gradient(135deg, 
@@ -126,15 +145,15 @@ export const ProfileSidebar = styled.div<{ $isBusinessMode?: boolean }>`
   border-radius: 20px;
   padding: ${({ theme }) => theme.spacing['2xl']};
   
-  /* Premium Aluminum Border */
+  /* 🎨 DYNAMIC: Premium Aluminum Border with Theme Color */
   border: 2px solid transparent;
   background-image: 
     linear-gradient(rgba(255, 255, 255, 0.95), rgba(248, 249, 250, 0.92)),
     linear-gradient(135deg, 
       rgba(192, 192, 192, 0.4) 0%,
-      rgba(255, 143, 16, 0.3) 25%,
-      rgba(255, 215, 0, 0.5) 50%,
-      rgba(255, 143, 16, 0.3) 75%,
+      ${props => props.$themeColor ? `${props.$themeColor}4D` : 'rgba(255, 143, 16, 0.3)'} 25%,
+      ${props => props.$themeColor ? `${props.$themeColor}80` : 'rgba(255, 215, 0, 0.5)'} 50%,
+      ${props => props.$themeColor ? `${props.$themeColor}4D` : 'rgba(255, 143, 16, 0.3)'} 75%,
       rgba(192, 192, 192, 0.4) 100%
     );
   background-origin: border-box;
@@ -154,7 +173,7 @@ export const ProfileSidebar = styled.div<{ $isBusinessMode?: boolean }>`
   z-index: 10;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   
-  /* Subtle Yellow Accent Stripe */
+  /* 🎨 DYNAMIC: Accent Stripe with Theme Color */
   &::before {
     content: '';
     position: absolute;
@@ -163,18 +182,21 @@ export const ProfileSidebar = styled.div<{ $isBusinessMode?: boolean }>`
     bottom: 12px;
     height: 3px;
     border-radius: 3px;
-    background: linear-gradient(90deg, 
-      rgba(255, 215, 0, 0) 0%,
-      rgba(255, 215, 0, 0.4) 15%,
-      rgba(255, 235, 59, 0.8) 50%,
-      rgba(255, 215, 0, 0.4) 85%,
-      rgba(255, 215, 0, 0) 100%
-    );
+    background: ${props => {
+      const color = props.$themeColor || '#FFD700';
+      return `linear-gradient(90deg, 
+        ${color}00 0%,
+        ${color}66 15%,
+        ${color}CC 50%,
+        ${color}66 85%,
+        ${color}00 100%
+      )`;
+    }};
     /* ⚡ OPTIMIZED: Static glow with gradient border */
     box-shadow: 
-      0 0 12px rgba(255, 215, 0, 0.4),
-      inset 0 0 20px rgba(255, 215, 0, 0.1);
-    border: 2px solid rgba(255, 215, 0, 0.3);
+      ${props => props.$themeColor ? `0 0 12px ${props.$themeColor}66` : '0 0 12px rgba(255, 215, 0, 0.4)'},
+      ${props => props.$themeColor ? `inset 0 0 20px ${props.$themeColor}1A` : 'inset 0 0 20px rgba(255, 215, 0, 0.1)'};
+    border: 2px solid ${props => props.$themeColor ? `${props.$themeColor}4D` : 'rgba(255, 215, 0, 0.3)'};
   }
   
   &:hover {
@@ -182,9 +204,9 @@ export const ProfileSidebar = styled.div<{ $isBusinessMode?: boolean }>`
     box-shadow: 
       0 1px 0 rgba(255, 255, 255, 0.9) inset,
       0 -1px 0 rgba(0, 0, 0, 0.08) inset,
-      0 20px 50px rgba(255, 143, 16, 0.15),
+      ${props => props.$themeColor ? `0 20px 50px ${props.$themeColor}26` : '0 20px 50px rgba(255, 143, 16, 0.15)'},
       0 5px 15px rgba(0, 0, 0, 0.08),
-      0 0 0 1px rgba(255, 143, 16, 0.1);
+      ${props => props.$themeColor ? `0 0 0 1px ${props.$themeColor}1A` : '0 0 0 1px rgba(255, 143, 16, 0.1)'};
   }
 
   @media (max-width: 768px) {
@@ -195,7 +217,7 @@ export const ProfileSidebar = styled.div<{ $isBusinessMode?: boolean }>`
 
 // ==================== PROFILE AVATAR ====================
 
-export const ProfileAvatar = styled.div`
+export const ProfileAvatar = styled.div<{ $themeColor?: string }>`
   text-align: center;
   margin-bottom: ${({ theme }) => theme.spacing['2xl']};
 
@@ -203,7 +225,9 @@ export const ProfileAvatar = styled.div`
     width: 120px;
     height: 120px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #FF8F10 0%, #FF7900 50%, #FF6600 100%);
+    background: ${props => props.$themeColor 
+      ? `linear-gradient(135deg, ${props.$themeColor} 0%, ${props.$themeColor}F0 50%, ${props.$themeColor}E0 100%)`
+      : 'linear-gradient(135deg, #FF8F10 0%, #FF7900 50%, #FF6600 100%)'};
     display: flex;
     align-items: center;
     justify-content: center;
@@ -212,11 +236,11 @@ export const ProfileAvatar = styled.div`
     color: white;
     font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
     box-shadow: 
-      0 8px 32px rgba(255, 143, 16, 0.4),
+      ${props => props.$themeColor ? `0 8px 32px ${props.$themeColor}66` : '0 8px 32px rgba(255, 143, 16, 0.4)'},
       0 2px 8px rgba(0, 0, 0, 0.1),
       inset 0 -2px 4px rgba(0, 0, 0, 0.1),
       inset 0 2px 4px rgba(255, 255, 255, 0.3);
-    border: 3px solid rgba(255, 215, 0, 0.6);
+    border: 3px solid ${props => props.$themeColor ? `${props.$themeColor}99` : 'rgba(255, 215, 0, 0.6)'};
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     will-change: transform;  /* ⚡ GPU acceleration */
     /* ⚡ OPTIMIZED: No infinite animation, only hover effect */
@@ -225,7 +249,7 @@ export const ProfileAvatar = styled.div`
       transform: scale(1.05) rotate(3deg);  /* ⚡ Simpler & lighter */
       /* ⚡ OPTIMIZED: Removed infinite animation - static glow instead */
       box-shadow: 
-        0 12px 40px rgba(255, 143, 16, 0.5),
+        ${props => props.$themeColor ? `0 12px 40px ${props.$themeColor}80` : '0 12px 40px rgba(255, 143, 16, 0.5)'},
         0 4px 12px rgba(0, 0, 0, 0.15),
         inset 0 -2px 4px rgba(0, 0, 0, 0.15),
         inset 0 2px 4px rgba(255, 255, 255, 0.4);
@@ -482,7 +506,7 @@ export const ProfileContent = styled.div`
   gap: ${({ theme }) => theme.spacing.xl};
 `;
 
-export const ContentSection = styled.div<{ $isBusinessMode?: boolean }>`
+export const ContentSection = styled.div<{ $isBusinessMode?: boolean; $themeColor?: string }>`
   /* 🎨 Premium Glassmorphism Card */
   background: linear-gradient(135deg,
     rgba(255, 255, 255, 0.92) 0%,
@@ -495,15 +519,15 @@ export const ContentSection = styled.div<{ $isBusinessMode?: boolean }>`
   border-radius: 18px;
   padding: ${({ theme }) => theme.spacing['2xl']};
   
-  /* Metallic Orange Border */
+  /* 🎨 DYNAMIC: Metallic Border with Theme Color */
   border: 2px solid transparent;
   background-image: 
     linear-gradient(rgba(255, 255, 255, 0.92), rgba(252, 252, 253, 0.88)),
     linear-gradient(135deg,
       rgba(200, 200, 200, 0.3) 0%,
-      rgba(255, 143, 16, 0.4) 30%,
-      rgba(255, 215, 0, 0.6) 50%,
-      rgba(255, 143, 16, 0.4) 70%,
+      ${props => props.$themeColor ? `${props.$themeColor}66` : 'rgba(255, 143, 16, 0.4)'} 30%,
+      ${props => props.$themeColor ? `${props.$themeColor}99` : 'rgba(255, 215, 0, 0.6)'} 50%,
+      ${props => props.$themeColor ? `${props.$themeColor}66` : 'rgba(255, 143, 16, 0.4)'} 70%,
       rgba(200, 200, 200, 0.3) 100%
     );
   background-origin: border-box;
@@ -520,7 +544,7 @@ export const ContentSection = styled.div<{ $isBusinessMode?: boolean }>`
   z-index: 1;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   
-  /* Subtle Yellow Glow Bottom */
+  /* 🎨 DYNAMIC: Glow Bottom with Theme Color */
   &::after {
     content: '';
     position: absolute;
@@ -528,11 +552,14 @@ export const ContentSection = styled.div<{ $isBusinessMode?: boolean }>`
     right: 15%;
     bottom: 0;
     height: 2px;
-    background: linear-gradient(90deg,
-      rgba(255, 215, 0, 0) 0%,
-      rgba(255, 215, 0, 0.5) 50%,
-      rgba(255, 215, 0, 0) 100%
-    );
+    background: ${props => {
+      const color = props.$themeColor || '#FFD700';
+      return `linear-gradient(90deg,
+        ${color}00 0%,
+        ${color}80 50%,
+        ${color}00 100%
+      )`;
+    }};
     border-radius: 0 0 18px 18px;
     filter: blur(1px);
   }
@@ -541,9 +568,9 @@ export const ContentSection = styled.div<{ $isBusinessMode?: boolean }>`
     transform: translateY(-2px);
     box-shadow: 
       0 1px 0 rgba(255, 255, 255, 1) inset,
-      0 12px 40px rgba(255, 143, 16, 0.12),
+      ${props => props.$themeColor ? `0 12px 40px ${props.$themeColor}1F` : '0 12px 40px rgba(255, 143, 16, 0.12)'},
       0 4px 10px rgba(0, 0, 0, 0.06),
-      0 0 0 1px rgba(255, 143, 16, 0.08);
+      ${props => props.$themeColor ? `0 0 0 1px ${props.$themeColor}14` : '0 0 0 1px rgba(255, 143, 16, 0.08)'};
   }
 `;
 

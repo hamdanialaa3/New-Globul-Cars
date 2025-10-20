@@ -2,26 +2,18 @@
 // 🎨 Premium Tab Navigation with Glassmorphism & Metallic Effects
 import styled, { keyframes, css } from 'styled-components';
 
+// 🎨 NEW: Theme Color Prop Interface
+interface ThemedProps {
+  $themeColor?: string;
+}
+
 // ==================== ANIMATIONS ====================
-
-const shimmer = keyframes`
-  0% { background-position: -1000px 0; }
-  100% { background-position: 1000px 0; }
-`;
-
-const pulseYellow = keyframes`
-  0%, 100% { opacity: 0.6; box-shadow: 0 0 8px rgba(255, 215, 0, 0.6); }
-  50% { opacity: 1; box-shadow: 0 0 16px rgba(255, 215, 0, 0.9); }
-`;
-
-const iconFloat = keyframes`
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-2px); }
-`;
+// ⚡ OPTIMIZED: Removed all infinite animations
+// Using only CSS transitions for better performance
 
 // ==================== TAB NAVIGATION ====================
 
-export const TabNavigation = styled.div`
+export const TabNavigation = styled.div<{ $themeColor?: string }>`
   display: flex;
   gap: 10px;
   margin-bottom: 28px;
@@ -38,25 +30,25 @@ export const TabNavigation = styled.div`
   backdrop-filter: blur(20px) saturate(160%);
   -webkit-backdrop-filter: blur(20px) saturate(160%);
   
-  /* Metallic Border with Orange-Yellow Gradient */
+  /* 🎨 DYNAMIC: Metallic Border with Theme Color Gradient */
   border: 2px solid transparent;
   background-image: 
     linear-gradient(rgba(245, 247, 250, 0.95), rgba(233, 237, 242, 0.9)),
     linear-gradient(135deg,
       rgba(192, 192, 192, 0.4) 0%,
-      rgba(255, 143, 16, 0.5) 25%,
-      rgba(255, 215, 0, 0.8) 50%,
-      rgba(255, 143, 16, 0.5) 75%,
+      ${props => props.$themeColor ? `${props.$themeColor}80` : 'rgba(255, 143, 16, 0.5)'} 25%,
+      ${props => props.$themeColor ? `${props.$themeColor}CC` : 'rgba(255, 215, 0, 0.8)'} 50%,
+      ${props => props.$themeColor ? `${props.$themeColor}80` : 'rgba(255, 143, 16, 0.5)'} 75%,
       rgba(192, 192, 192, 0.4) 100%
     );
   background-origin: border-box;
   background-clip: padding-box, border-box;
   
-  /* Premium Layered Shadows */
+  /* 🎨 DYNAMIC: Premium Layered Shadows with Theme Color */
   box-shadow:
     0 2px 0 rgba(255, 255, 255, 0.8) inset,
     0 -1px 0 rgba(0, 0, 0, 0.05) inset,
-    0 8px 32px rgba(255, 143, 16, 0.08),
+    ${props => props.$themeColor ? `0 8px 32px ${props.$themeColor}14` : '0 8px 32px rgba(255, 143, 16, 0.08)'},
     0 2px 8px rgba(0, 0, 0, 0.04),
     0 0 0 1px rgba(0, 0, 0, 0.02);
   
@@ -76,11 +68,13 @@ export const TabNavigation = styled.div`
   }
   
   &::-webkit-scrollbar-thumb {
-    background: linear-gradient(90deg, #FF8F10 0%, #FFDF00 100%);
+    background: ${props => props.$themeColor 
+      ? `linear-gradient(90deg, ${props.$themeColor} 0%, ${props.$themeColor}CC 100%)` 
+      : 'linear-gradient(90deg, #FF8F10 0%, #FFDF00 100%)'};
     border-radius: 4px;
   }
 
-  /* Animated Yellow Accent Stripe at Bottom */
+  /* 🎨 DYNAMIC: Animated Accent Stripe at Bottom with Theme Color */
   &::after {
     content: '';
     position: absolute;
@@ -89,18 +83,25 @@ export const TabNavigation = styled.div`
     bottom: 8px;
     height: 3px;
     border-radius: 3px;
-    background: linear-gradient(90deg, 
-      rgba(255, 215, 0, 0) 0%, 
-      rgba(255, 215, 0, 0.5) 10%,
-      rgba(255, 235, 59, 0.9) 30%,
-      rgba(255, 215, 0, 1) 50%, 
-      rgba(255, 235, 59, 0.9) 70%,
-      rgba(255, 215, 0, 0.5) 90%,
-      rgba(255, 215, 0, 0) 100%
-    );
+    background: ${props => {
+      const color = props.$themeColor || '#FFD700';
+      return `linear-gradient(90deg, 
+        ${color}00 0%, 
+        ${color}80 10%,
+        ${color}E6 30%,
+        ${color} 50%, 
+        ${color}E6 70%,
+        ${color}80 90%,
+        ${color}00 100%
+      )`;
+    }};
     pointer-events: none;
     z-index: 1;
-    ${css`animation: ${pulseYellow} 3s ease-in-out infinite;`}
+    /* ⚡ OPTIMIZED: Static glow instead of pulse animation */
+    opacity: 0.8;
+    box-shadow: ${props => props.$themeColor 
+      ? `0 0 12px ${props.$themeColor}B3` 
+      : '0 0 12px rgba(255, 215, 0, 0.7)'};
   }
   
   @media (max-width: 768px) {
@@ -112,7 +113,7 @@ export const TabNavigation = styled.div`
 
 // ==================== TAB BUTTON ====================
 
-export const TabButton = styled.button<{ $active: boolean }>`
+export const TabButton = styled.button<{ $active: boolean; $themeColor?: string }>`
   flex: 1;
   min-width: 120px;
   padding: 14px 20px;
@@ -129,25 +130,33 @@ export const TabButton = styled.button<{ $active: boolean }>`
   overflow: hidden;
   z-index: 2;
   
-  /* 🎨 ACTIVE STATE - Premium Orange Gradient */
-  ${({ $active }) => $active ? css`
-    background: linear-gradient(135deg,
-      rgba(255, 159, 42, 0.98) 0%,
-      rgba(255, 143, 16, 1) 30%,
-      rgba(255, 121, 0, 1) 60%,
-      rgba(255, 102, 0, 0.98) 100%
-    );
+  /* 🎨 DYNAMIC: ACTIVE STATE with Theme Color */
+  ${({ $active, $themeColor }) => $active ? css`
+    background: ${$themeColor 
+      ? `linear-gradient(135deg,
+          ${$themeColor}FA 0%,
+          ${$themeColor} 30%,
+          ${$themeColor} 60%,
+          ${$themeColor}FA 100%
+        )`
+      : `linear-gradient(135deg,
+          rgba(255, 159, 42, 0.98) 0%,
+          rgba(255, 143, 16, 1) 30%,
+          rgba(255, 121, 0, 1) 60%,
+          rgba(255, 102, 0, 0.98) 100%
+        )`
+    };
     background-size: 200% auto;
     color: white;
-    border: 2px solid rgba(255, 215, 0, 0.7);
+    border: 2px solid ${$themeColor ? `${$themeColor}B3` : 'rgba(255, 215, 0, 0.7)'};
     
-    /* Multi-layer Shadow System */
+    /* 🎨 DYNAMIC: Multi-layer Shadow System with Theme Color */
     box-shadow: 
       0 1px 0 rgba(255, 255, 255, 0.4) inset,
       0 -1px 0 rgba(0, 0, 0, 0.1) inset,
-      0 8px 24px rgba(255, 143, 16, 0.35),
-      0 3px 8px rgba(255, 121, 0, 0.25),
-      0 0 0 1px rgba(255, 215, 0, 0.3);
+      ${$themeColor ? `0 8px 24px ${$themeColor}59` : '0 8px 24px rgba(255, 143, 16, 0.35)'},
+      ${$themeColor ? `0 3px 8px ${$themeColor}40` : '0 3px 8px rgba(255, 121, 0, 0.25)'},
+      ${$themeColor ? `0 0 0 1px ${$themeColor}4D` : '0 0 0 1px rgba(255, 215, 0, 0.3)'};
     
     /* Shimmer Animation */
     &::before {
@@ -162,10 +171,17 @@ export const TabButton = styled.button<{ $active: boolean }>`
         rgba(255, 255, 255, 0.4) 50%,
         transparent 100%
       );
-      animation: ${shimmer} 2.5s infinite;
+      /* ⚡ OPTIMIZED: Static shimmer effect */
+      background-size: 200% 100%;
+      background-position: 0% 0%;
     }
     
-    /* Yellow Glow Border Top */
+    &:hover::before {
+      background-position: 100% 0%;
+      transition: background-position 0.6s ease;
+    }
+    
+    /* 🎨 DYNAMIC: Glow Border Top with Theme Color */
     &::after {
       content: '';
       position: absolute;
@@ -173,12 +189,19 @@ export const TabButton = styled.button<{ $active: boolean }>`
       left: 20%;
       right: 20%;
       height: 2px;
-      background: linear-gradient(90deg,
-        rgba(255, 235, 59, 0) 0%,
-        rgba(255, 235, 59, 1) 50%,
-        rgba(255, 235, 59, 0) 100%
-      );
-      box-shadow: 0 0 8px rgba(255, 235, 59, 0.8);
+      background: ${$themeColor 
+        ? `linear-gradient(90deg,
+            ${$themeColor}00 0%,
+            ${$themeColor} 50%,
+            ${$themeColor}00 100%
+          )`
+        : `linear-gradient(90deg,
+            rgba(255, 235, 59, 0) 0%,
+            rgba(255, 235, 59, 1) 50%,
+            rgba(255, 235, 59, 0) 100%
+          )`
+      };
+      box-shadow: ${$themeColor ? `0 0 8px ${$themeColor}CC` : '0 0 8px rgba(255, 235, 59, 0.8)'};
       border-radius: 2px 2px 0 0;
     }
   ` : css`
@@ -200,33 +223,41 @@ export const TabButton = styled.button<{ $active: boolean }>`
   
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   
-  /* HOVER STATE */
+  /* 🎨 DYNAMIC: HOVER STATE with Theme Color */
   &:hover {
-    ${({ $active }) => $active ? `
-      background: linear-gradient(135deg,
-        rgba(255, 175, 64, 1) 0%,
-        rgba(255, 159, 42, 1) 30%,
-        rgba(255, 143, 16, 1) 60%,
-        rgba(255, 121, 0, 1) 100%
-      );
+    ${({ $active, $themeColor }) => $active ? `
+      background: ${$themeColor 
+        ? `linear-gradient(135deg,
+            ${$themeColor}FF 0%,
+            ${$themeColor}FA 30%,
+            ${$themeColor} 60%,
+            ${$themeColor}FA 100%
+          )`
+        : `linear-gradient(135deg,
+            rgba(255, 175, 64, 1) 0%,
+            rgba(255, 159, 42, 1) 30%,
+            rgba(255, 143, 16, 1) 60%,
+            rgba(255, 121, 0, 1) 100%
+          )`
+      };
       transform: translateY(-2px) scale(1.02);
       box-shadow: 
         0 1px 0 rgba(255, 255, 255, 0.5) inset,
         0 -1px 0 rgba(0, 0, 0, 0.15) inset,
-        0 12px 32px rgba(255, 143, 16, 0.45),
-        0 4px 12px rgba(255, 121, 0, 0.3),
-        0 0 0 1px rgba(255, 215, 0, 0.5);
+        ${$themeColor ? `0 12px 32px ${$themeColor}73` : '0 12px 32px rgba(255, 143, 16, 0.45)'},
+        ${$themeColor ? `0 4px 12px ${$themeColor}4D` : '0 4px 12px rgba(255, 121, 0, 0.3)'},
+        ${$themeColor ? `0 0 0 1px ${$themeColor}80` : '0 0 0 1px rgba(255, 215, 0, 0.5)'};
     ` : `
       background: linear-gradient(135deg,
         rgba(255, 255, 255, 0.7) 0%,
         rgba(255, 248, 240, 0.6) 100%
       );
-      border-color: rgba(255, 143, 16, 0.35);
+      border-color: ${$themeColor ? `${$themeColor}59` : 'rgba(255, 143, 16, 0.35)'};
       color: #495057;
       transform: translateY(-1px);
       box-shadow: 
         0 1px 0 rgba(255, 255, 255, 0.8) inset,
-        0 6px 16px rgba(255, 143, 16, 0.1),
+        ${$themeColor ? `0 6px 16px ${$themeColor}1A` : '0 6px 16px rgba(255, 143, 16, 0.1)'},
         0 2px 6px rgba(0, 0, 0, 0.06);
   `}
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -252,7 +283,12 @@ export const TabButton = styled.button<{ $active: boolean }>`
       ? 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3))' 
       : 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1))'};
     transition: all 0.3s ease;
-    ${({ $active }) => $active ? css`animation: ${iconFloat} 2s ease-in-out infinite;` : ''}
+    will-change: transform;  /* ⚡ GPU acceleration */
+    /* ⚡ OPTIMIZED: No infinite float, only hover */
+  }
+  
+  &:hover svg {
+    transform: translateY(-2px);
   }
   
   @media (max-width: 768px) {
@@ -352,7 +388,7 @@ export const SyncButton = styled.button`
     cursor: not-allowed;
     
     .spinning {
-      animation: spin 1s linear infinite;
+      animation: spin 1s linear;  /* ⚡ OPTIMIZED: Spins once, not infinite */
     }
   }
   
@@ -366,7 +402,9 @@ export const SyncButton = styled.button`
   }
   
   &:hover:not(:disabled) svg {
-    ${css`animation: ${iconFloat} 1s ease-in-out infinite;`}
+    /* ⚡ OPTIMIZED: Simple transform instead of infinite animation */
+    transform: translateY(-2px) scale(1.05);
+    transition: transform 0.3s ease;
   }
 `;
 
@@ -430,7 +468,14 @@ export const FollowButton = styled.button<{ $following: boolean }>`
         rgba(255, 255, 255, 0.4) 50%,
         transparent 100%
       );
-      animation: ${shimmer} 3s infinite;
+      /* ⚡ OPTIMIZED: Static shimmer gradient */
+      background-size: 200% 100%;
+      background-position: 0% 0%;
+    }
+    
+    &:hover::before {
+      background-position: 100% 0%;
+      transition: background-position 0.8s ease;
     }
   `}
   
@@ -473,6 +518,8 @@ export const FollowButton = styled.button<{ $following: boolean }>`
   }
   
   &:hover svg {
-    ${css`animation: ${iconFloat} 1.5s ease-in-out infinite;`}
+    /* ⚡ OPTIMIZED: Simple transform instead of infinite float */
+    transform: translateY(-2px);
+    transition: transform 0.3s ease;
   }
 `;
