@@ -143,23 +143,23 @@ const InputBox = styled.div`
 const Input = styled.input`
   width: 100%;
   height: 52px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: rgba(0, 0, 0, 0.03);
+  border: 2px solid rgba(0, 0, 0, 0.1);
   border-radius: 50px;
   font-size: 16px;
-  color: #fff;
+  color: #2c3e50;
   padding: 0 50px 0 20px;
   transition: all 0.3s ease;
 
   &::placeholder {
-    color: rgba(255, 255, 255, 0.7);
+    color: rgba(0, 0, 0, 0.4);
   }
 
   &:focus {
     outline: none;
-    border-color: rgba(255, 255, 255, 0.7);
-    background: rgba(255, 255, 255, 0.15);
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+    border-color: #FF8F10;
+    background: rgba(255, 143, 16, 0.05);
+    box-shadow: 0 0 20px rgba(255, 143, 16, 0.2);
   }
 
   @media (max-width: 480px) {
@@ -173,11 +173,11 @@ const InputIcon = styled.div`
   right: 20px;
   top: 50%;
   transform: translateY(-50%);
-  color: rgba(255, 255, 255, 0.8);
+  color: #6c757d;
   cursor: pointer;
 
   &:hover {
-    color: #fff;
+    color: #2c3e50;
   }
 `;
 
@@ -201,11 +201,11 @@ const RememberLabel = styled.label`
   display: flex;
   align-items: center;
   gap: 8px;
-  color: rgba(255, 255, 255, 0.9);
+  color: #495057;
   cursor: pointer;
 
   input[type="checkbox"] {
-    accent-color: #fff;
+    accent-color: #FF8F10;
     width: 16px;
     height: 16px;
     cursor: pointer;
@@ -213,11 +213,11 @@ const RememberLabel = styled.label`
 `;
 
 const ForgotLink = styled(Link)`
-  color: rgba(255, 255, 255, 0.9);
+  color: #FF8F10;
   text-decoration: none;
 
   &:hover {
-    color: #fff;
+    color: #ff7900;
     text-decoration: underline;
   }
 `;
@@ -225,15 +225,15 @@ const ForgotLink = styled(Link)`
 const SubmitButton = styled.button`
   width: 100%;
   height: 52px;
-  background: #fff;
+  background: linear-gradient(135deg, #FF8F10 0%, #ff7900 100%);
   border: none;
   border-radius: 50px;
   font-size: 16px;
   font-weight: 600;
-  color: #333;
+  color: #fff;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 15px rgba(255, 143, 16, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -242,8 +242,8 @@ const SubmitButton = styled.button`
 
   &:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(255, 255, 255, 0.4);
-    background: #f0f0f0;
+    box-shadow: 0 6px 20px rgba(255, 143, 16, 0.4);
+    background: linear-gradient(135deg, #ff7900 0%, #e66d00 100%);
   }
 
   &:disabled {
@@ -272,12 +272,12 @@ const Divider = styled.div`
     content: '';
     flex: 1;
     height: 1px;
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(0, 0, 0, 0.2);
   }
 
   span {
     padding: 0 15px;
-    color: rgba(255, 255, 255, 0.8);
+    color: #6c757d;
     font-size: 14px;
     white-space: nowrap;
   }
@@ -310,18 +310,19 @@ const SocialButton = styled.button`
   justify-content: center;
   gap: 8px;
   padding: 12px 16px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: rgba(0, 0, 0, 0.03);
+  border: 2px solid rgba(0, 0, 0, 0.1);
   border-radius: 50px;
-  color: #fff;
+  color: #495057;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
 
   &:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 143, 16, 0.1);
+    border-color: #FF8F10;
+    color: #ff7900;
     transform: translateY(-2px);
   }
 
@@ -338,28 +339,32 @@ const SocialButton = styled.button`
 
 const GuestButton = styled(SocialButton)`
   grid-column: 1 / -1;
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 143, 16, 0.1);
+  border-color: #FF8F10;
+  color: #ff7900;
   font-weight: 600;
 
   &:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.25);
+    background: rgba(255, 143, 16, 0.2);
+    border-color: #ff7900;
   }
 `;
 
 const RegisterLink = styled.div`
   text-align: center;
   margin-top: 20px;
-  color: rgba(255, 255, 255, 0.9);
+  color: #495057;
   font-size: 14px;
   animation: ${slideIn} 0.6s ease 0.7s backwards;
 
   a {
-    color: #fff;
+    color: #FF8F10;
     text-decoration: none;
     font-weight: 600;
     margin-left: 5px;
 
     &:hover {
+      color: #ff7900;
       text-decoration: underline;
     }
   }
@@ -380,13 +385,13 @@ const Message = styled.div<{ $type: 'error' | 'success' }>`
   animation: ${fadeIn} 0.3s ease;
   
   ${props => props.$type === 'error' ? `
-    background: rgba(239, 68, 68, 0.2);
+    background: rgba(239, 68, 68, 0.15);
     border: 1px solid rgba(239, 68, 68, 0.5);
-    color: #fff;
+    color: #dc2626;
   ` : `
-    background: rgba(34, 197, 94, 0.2);
+    background: rgba(34, 197, 94, 0.15);
     border: 1px solid rgba(34, 197, 94, 0.5);
-    color: #fff;
+    color: #16a34a;
   `}
 
   @media (max-width: 480px) {
@@ -402,9 +407,9 @@ const SecurityBadge = styled.div`
   gap: 8px;
   margin-top: 20px;
   padding: 10px;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.03);
   border-radius: 12px;
-  color: rgba(255, 255, 255, 0.7);
+  color: #6c757d;
   font-size: 12px;
   animation: ${slideIn} 0.6s ease 0.8s backwards;
 
