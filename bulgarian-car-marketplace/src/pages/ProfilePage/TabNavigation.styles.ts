@@ -115,16 +115,16 @@ export const TabNavigation = styled.div<{ $themeColor?: string }>`
 
 export const TabButton = styled.button<{ $active: boolean; $themeColor?: string }>`
   flex: 1;
-  min-width: 120px;
-  padding: 14px 20px;
-  font-weight: 700;
+  min-width: 90px;
+  padding: 8px 14px;
+  font-weight: 600;
+  font-size: 0.8rem;
   letter-spacing: 0.3px;
-  font-size: 0.95rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
   border-radius: 14px;
   position: relative;
   overflow: hidden;

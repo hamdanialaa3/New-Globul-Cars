@@ -12,7 +12,7 @@ import type { ProfileType } from '../../contexts/ProfileTypeContext';  // ⚡ Ty
 import PrivateProfile from './components/PrivateProfile';
 import DealerProfile from './components/DealerProfile';
 import CompanyProfile from './components/CompanyProfile';
-import {
+import { 
   LEDProgressAvatar, 
   CoverImageUploader, 
   TrustBadge,
@@ -63,6 +63,7 @@ import PrivacySettingsManager from '../../components/Profile/Privacy/PrivacySett
 import ProfileAnalyticsDashboard from '../../components/Profile/Analytics/ProfileAnalyticsDashboard';
 import ProfileDashboard from '../../components/Profile/ProfileDashboard';
 import VerificationBadge from '../../components/Profile/VerificationBadge';
+import ConsultationsTab from './ConsultationsTab';
 import { useToast } from '../../components/Toast';
 
 // ==================== ANIMATIONS ====================
@@ -181,7 +182,8 @@ const ProfileTypeSwitcher = styled.div<{ $themeColor?: string }>`
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 249, 250, 0.98) 100%);
   border-radius: 20px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-  margin: -30px 24px 24px 200px; /* يبدأ بعد الصورة الشخصية */
+  margin: -30px 24px 24px auto; /* على يمين الصفحة */
+  margin-right: 24px;
   max-width: fit-content;
   position: relative;
   z-index: 10;
@@ -386,12 +388,12 @@ const ProfilePage: React.FC = () => {
   } = useProfile(targetUserId); // ✅ Pass targetUserId
 
   // Read tab from URL or default to 'profile'
-  const initialTab = (searchParams.get('tab') as 'profile' | 'myads' | 'campaigns' | 'analytics' | 'settings') || 'profile';
-  const [activeTab, setActiveTab] = React.useState<'profile' | 'myads' | 'campaigns' | 'analytics' | 'settings'>(initialTab);
+  const initialTab = (searchParams.get('tab') as 'profile' | 'myads' | 'campaigns' | 'analytics' | 'settings' | 'consultations') || 'profile';
+  const [activeTab, setActiveTab] = React.useState<'profile' | 'myads' | 'campaigns' | 'analytics' | 'settings' | 'consultations'>(initialTab);
   const [isTransitioning, setIsTransitioning] = React.useState(false);
   
   // Smooth tab switching with fade effect
-  const handleTabChange = (tab: 'profile' | 'myads' | 'campaigns' | 'analytics' | 'settings') => {
+  const handleTabChange = (tab: 'profile' | 'myads' | 'campaigns' | 'analytics' | 'settings' | 'consultations') => {
     if (tab === activeTab) return;
     
     setIsTransitioning(true);
@@ -403,8 +405,8 @@ const ProfilePage: React.FC = () => {
   
   // Update activeTab when URL changes
   useEffect(() => {
-    const tabParam = searchParams.get('tab') as 'profile' | 'myads' | 'campaigns' | 'analytics' | 'settings';
-    if (tabParam && ['profile', 'myads', 'campaigns', 'analytics', 'settings'].includes(tabParam)) {
+    const tabParam = searchParams.get('tab') as 'profile' | 'myads' | 'campaigns' | 'analytics' | 'settings' | 'consultations';
+    if (tabParam && ['profile', 'myads', 'campaigns', 'analytics', 'settings', 'consultations'].includes(tabParam)) {
       setActiveTab(tabParam);
     }
   }, [searchParams]);
@@ -630,7 +632,7 @@ const ProfilePage: React.FC = () => {
             $themeColor={theme.primary}
             onClick={() => handleTabChange('profile')}
           >
-            <UserCircle size={18} />
+            <UserCircle size={16} />
             {language === 'bg' ? 'Профil' : 'Profile'}
           </TabButton>
           {isOwnProfile && (
@@ -640,7 +642,7 @@ const ProfilePage: React.FC = () => {
                 $themeColor={theme.primary}
                 onClick={() => handleTabChange('myads')}
               >
-                <Car size={18} />
+                <Car size={16} />
                 {language === 'bg' ? 'Моите обяви' : 'My Ads'}
               </TabButton>
               <TabButton 
@@ -648,7 +650,7 @@ const ProfilePage: React.FC = () => {
                 $themeColor={theme.primary}
                 onClick={() => handleTabChange('campaigns')}
               >
-                <Megaphone size={18} />
+                <Megaphone size={16} />
                 {language === 'bg' ? 'Реклами' : 'Campaigns'}
               </TabButton>
               <TabButton 
@@ -656,7 +658,7 @@ const ProfilePage: React.FC = () => {
                 $themeColor={theme.primary}
                 onClick={() => handleTabChange('analytics')}
               >
-                <BarChart3 size={18} />
+                <BarChart3 size={16} />
                 {language === 'bg' ? 'Статистика' : 'Analytics'}
               </TabButton>
               <TabButton 
@@ -664,8 +666,16 @@ const ProfilePage: React.FC = () => {
                 $themeColor={theme.primary}
                 onClick={() => handleTabChange('settings')}
               >
-                <Shield size={18} />
+                <Shield size={16} />
                 {language === 'bg' ? 'Настройки' : 'Settings'}
+              </TabButton>
+              <TabButton 
+                $active={activeTab === 'consultations'}
+                $themeColor={theme.primary}
+                onClick={() => handleTabChange('consultations')}
+              >
+                <MessageCircle size={18} />
+                {language === 'bg' ? 'Консултации' : 'Consultations'}
               </TabButton>
             </>
           )}
@@ -701,7 +711,7 @@ const ProfilePage: React.FC = () => {
                 setShowProfileTypeModal(true);
               }}
             >
-              <User size={18} />
+              <User size={14} />
               {language === 'bg' ? 'Личен' : 'Private'}
             </ProfileTypeButton>
             
@@ -714,7 +724,7 @@ const ProfilePage: React.FC = () => {
                 setShowProfileTypeModal(true);
               }}
             >
-              <Building2 size={18} />
+              <Building2 size={14} />
               {language === 'bg' ? 'Дилър' : 'Dealer'}
             </ProfileTypeButton>
             
@@ -727,27 +737,29 @@ const ProfilePage: React.FC = () => {
                 setShowProfileTypeModal(true);
               }}
             >
-              <Building2 size={18} />
+              <Building2 size={14} />
               {language === 'bg' ? 'Компания' : 'Company'}
             </ProfileTypeButton>
             
             {/* Quick Actions - No spacer needed with new compact design */}
             <QuickActionsContainer>
-              {/* Business Info Button (goes to Settings) */}
-              <QuickActionButton 
-                $variant="success"
-                onClick={() => handleTabChange('settings')}
-              >
-                <Building2 size={13} />
-                {language === 'bg' ? 'معلومات المشروع' : 'Business Info'}
-              </QuickActionButton>
+              {/* Business Info Button - Only show for dealer/company profiles */}
+              {profileType !== 'private' && (
+                <QuickActionButton 
+                  $variant="success"
+                  onClick={() => handleTabChange('settings')}
+                >
+                  <Building2 size={13} />
+                  {language === 'bg' ? 'معلومات المشروع' : 'Business Info'}
+                </QuickActionButton>
+              )}
               
               {/* Personal Info Button (Edit Profile) */}
               <QuickActionButton 
                 $variant="primary"
                 onClick={() => setEditing(!editing)}
               >
-                <User size={16} />
+                <User size={13} />
                 {language === 'bg' ? 'المعلومات الشخصية' : 'Personal Info'}
               </QuickActionButton>
               
@@ -755,7 +767,7 @@ const ProfilePage: React.FC = () => {
               <QuickActionButton 
                 onClick={() => navigate('/add-car')}
               >
-                <Car size={16} />
+                <Car size={13} />
                 {language === 'bg' ? 'إضافة سيارة' : 'Add Car'}
               </QuickActionButton>
             </QuickActionsContainer>
@@ -813,7 +825,7 @@ const ProfilePage: React.FC = () => {
               
               {/* ✨ NEW: Verification Badges */}
               <div style={{ 
-                    display: 'flex', 
+                        display: 'flex',
                     flexWrap: 'wrap', 
                     gap: '8px', 
                     marginTop: '12px',
@@ -830,7 +842,7 @@ const ProfilePage: React.FC = () => {
                       profileType={profileType}
                     />
                   </div>
-            </div>
+                </div>
               
               {/* Seller Rating (for sellers only) */}
               {!isOwnProfile && user.accountType === 'business' && (
@@ -862,7 +874,7 @@ const ProfilePage: React.FC = () => {
                     ? (language === 'bg' ? 'Синхронизиране...' : 'Syncing...') 
                     : (language === 'bg' ? 'Синхронизирай от Google' : 'Sync from Google')}
                 </SyncButton>
-              )}
+            )}
 
             {/* Trust Badge */}
             <TrustBadge
@@ -961,7 +973,7 @@ const ProfilePage: React.FC = () => {
             {isOwnProfile && (
               <S.ContentSection $themeColor={theme.primary} $isBusinessMode={isBusinessMode}>
                 <ProfileDashboard />
-              </S.ContentSection>
+            </S.ContentSection>
             )}
             
             {/* Contact Information - For other users (sellers) */}
@@ -1860,8 +1872,17 @@ const ProfilePage: React.FC = () => {
                 
                 {/* Legacy Privacy Settings (can be removed later) */}
                 <div style={{ marginTop: '24px' }}>
-                  <PrivacySettings userId={user.uid} />
+                <PrivacySettings userId={user.uid} />
                 </div>
+              </AnimatedTabContent>
+            )}
+            
+            {activeTab === 'consultations' && (
+              <AnimatedTabContent>
+                <ConsultationsTab 
+                  userId={displayedUserId}
+                  isOwnProfile={isOwnProfile}
+                />
               </AnimatedTabContent>
             )}
           </FullWidthContent>

@@ -13,6 +13,7 @@ const PopularBrandsSection = React.lazy(() => import('./PopularBrandsSection'));
 const CityCarsSection = React.lazy(() => import('./CityCarsSection'));
 const ImageGallerySection = React.lazy(() => import('./ImageGallerySection'));
 const FeaturedCarsSection = React.lazy(() => import('./FeaturedCarsSection'));
+const CommunityFeedSection = React.lazy(() => import('./CommunityFeedSection'));
 const FeaturesSection = React.lazy(() => import('./FeaturesSection'));
 
 const HomeContainer = styled.div`
@@ -68,6 +69,12 @@ const HomePage: React.FC = () => {
       <LazySection rootMargin="300px" minHeight="600px">
         <Suspense fallback={<LoadingFallback>Loading featured cars...</LoadingFallback>}>
           <FeaturedCarsSection />
+        </Suspense>
+      </LazySection>
+
+      <LazySection rootMargin="300px" minHeight="800px">
+        <Suspense fallback={<LoadingFallback>Loading community feed...</LoadingFallback>}>
+          <CommunityFeedSection />
         </Suspense>
       </LazySection>
 
