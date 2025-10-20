@@ -35,15 +35,18 @@ const AvatarContainer = styled.div<{ size: number }>`
   }
 `;
 
-const LEDRing = styled.svg<{ progress: number; color: string }>`
+const LEDRing = styled.svg<{ progress: number; color: string; size: number }>`
   position: absolute;
-  top: -35px;
-  left: 10px;
-  width: 145px;
-  height: 145px;
-  transform: rotate(-90deg);
+  top: ${p => -(p.size * 0.29)}px;
+  left: ${p => p.size * 0.083}px;
+  width: ${p => p.size * 1.21}px;
+  height: ${p => p.size * 1.21}px;
+  transform: rotate(-90deg) translateZ(0);
   pointer-events: none;
-  will-change: transform;  /* ⚡ GPU acceleration */
+  
+  /* ⚡ FIXED: Prevent any rendering issues */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
   
   circle {
     fill: none;
@@ -55,7 +58,7 @@ const LEDRing = styled.svg<{ progress: number; color: string }>`
     
     &.progress {
       stroke: ${p => p.color};
-      stroke-width: 4.5;  /* ⚡ أعرض قليلاً للجمالية */
+      stroke-width: 4.5;
       stroke-dasharray: ${p => {
         const radius = 50;
         const circumference = 2 * Math.PI * radius;
@@ -63,17 +66,14 @@ const LEDRing = styled.svg<{ progress: number; color: string }>`
         return `${dashLength} ${circumference}`;
       }};
       stroke-linecap: round;
-      /* ⚡ OPTIMIZED: Static glow instead of animated pulse */
-      filter: drop-shadow(0 0 6px ${p => p.color}40) drop-shadow(0 0 2px ${p => p.color});
-      transition: stroke-dasharray 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-      /* ⚡ NO MORE INFINITE ANIMATION - only on hover */
+      transition: stroke-dasharray 0.6s cubic-bezier(0.4, 0, 0.2, 1), stroke-width 0.2s ease;
+      /* ⚡ FIXED: Removed drop-shadow to prevent flickering */
     }
   }
   
-  /* ⚡ Gentle hover effect instead of constant animation */
+  /* ⚡ Gentle hover effect - only stroke-width change */
   &:hover circle.progress {
-    filter: drop-shadow(0 0 8px ${p => p.color}60) drop-shadow(0 0 3px ${p => p.color});
-    stroke-width: 5;
+    stroke-width: 5.5;
   }
 `;
 
@@ -84,7 +84,13 @@ const AvatarImage = styled.img<{ shape: string }>`
   border-radius: ${p => p.shape === 'circle' ? '50%' : '12px'};
   border: 3px solid #fff;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  transition: all 0.3s ease;
+  background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
+  transition: transform 0.3s ease;
+  
+  /* ⚡ FIXED: Prevent image flickering */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
 `;
 
 const ProgressText = styled.div<{ progress: number }>`
@@ -99,6 +105,12 @@ const ProgressText = styled.div<{ progress: number }>`
   text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
   text-align: center;
   min-width: 120px;
+  
+  /* ⚡ FIXED: Prevent text flickering */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 `;
 
 const HelperText = styled.div`
@@ -110,6 +122,12 @@ const HelperText = styled.div`
   color: #9ca3af;
   white-space: nowrap;
   text-align: center;
+  
+  /* ⚡ FIXED: Prevent text flickering */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 `;
 
 const CompletionBadge = styled.div`
@@ -179,8 +197,11 @@ export const LEDProgressAvatar: React.FC<LEDProgressAvatarProps> = ({
   const avatarShape = shape || DEFAULT_SHAPES[profileType];
   const ringColor = ledColor || DEFAULT_LED_COLORS[profileType];
   
-  // Get photo URL or use default
-  const photoURL = user?.photoURL || '/assets/images/default-avatar.png';
+  // ⚡ FIXED: Better default avatar handling
+  const photoURL = user?.photoURL 
+    || user?.profileImage?.url 
+    || user?.profileImage 
+    || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120"%3E%3Crect fill="%23f0f0f0" width="120" height="120"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="48" fill="%23999"%3E' + (user?.firstName?.[0] || user?.businessName?.[0] || '?') + '%3C/text%3E%3C/svg%3E';
   
   // Get progress message
   const progressMessage = getProgressMessage(progress, language);
@@ -193,20 +214,20 @@ export const LEDProgressAvatar: React.FC<LEDProgressAvatarProps> = ({
       aria-label={onClick ? 'Change profile picture' : 'Profile picture'}
     >
       {/* LED Progress Ring */}
-      <LEDRing progress={progress} color={ringColor}>
+      <LEDRing progress={progress} color={ringColor} size={avatarSize}>
         {/* Background circle (gray) */}
         <circle
           className="background"
-          cx="50"
-          cy="50"
+          cx="50%"
+          cy="50%"
           r="46"
           vectorEffect="non-scaling-stroke"
         />
         {/* Progress circle (colored) */}
         <circle
           className="progress"
-          cx="50"
-          cy="50"
+          cx="50%"
+          cy="50%"
           r="46"
           vectorEffect="non-scaling-stroke"
         />
@@ -215,12 +236,14 @@ export const LEDProgressAvatar: React.FC<LEDProgressAvatarProps> = ({
       {/* Avatar Image */}
       <AvatarImage 
         src={photoURL}
-        alt={user?.displayName || 'Profile'}
+        alt={user?.displayName || user?.businessName || 'Profile'}
         shape={avatarShape}
         onError={(e) => {
-          // Fallback to default avatar on error
-          (e.target as HTMLImageElement).src = '/assets/images/default-avatar.png';
+          // ⚡ FIXED: Generate SVG placeholder with initials
+          const initial = user?.firstName?.[0] || user?.businessName?.[0] || '?';
+          (e.target as HTMLImageElement).src = `data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120"%3E%3Crect fill="%23${profileType === 'dealer' ? '16a34a' : profileType === 'company' ? '1d4ed8' : 'FF8F10'}" width="120" height="120"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="56" font-weight="bold" fill="white"%3E${initial}%3C/text%3E%3C/svg%3E`;
         }}
+        loading="eager"
       />
       
       {/* Completion Badge (100% only) */}

@@ -133,13 +133,16 @@ const ProfileImageSmall = styled.img<{ $themeColor?: string }>`
   object-fit: cover;
   border: 3px solid ${props => props.$themeColor || '#FF7900'};
   box-shadow: 0 4px 12px ${props => props.$themeColor ? `${props.$themeColor}66` : 'rgba(255, 121, 0, 0.4)'};
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  will-change: transform;  /* ⚡ GPU acceleration */
-  /* ⚡ OPTIMIZED: Gentle morph runs once on load */
-  animation: ${profileImageMorph} 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* ⚡ FIXED: Prevent flickering */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
   
   &:hover {
-    transform: scale(1.08) rotate(2deg);  /* ⚡ Lighter rotation */
+    transform: translateZ(0) scale(1.05);  /* ⚡ Simplified hover */
     box-shadow: 0 6px 16px ${props => props.$themeColor ? `${props.$themeColor}99` : 'rgba(255, 121, 0, 0.5)'};
   }
 `;
@@ -533,11 +536,20 @@ const ProfilePage: React.FC = () => {
         {/* Compact Header for other tabs */}
         {activeTab !== 'profile' && (
           <CompactHeader $themeColor={theme.primary}>
-            <div style={{ transform: 'scale(0.5)', transformOrigin: 'center' }}>
+            <div style={{ 
+              width: '60px', 
+              height: '60px', 
+              flexShrink: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              {/* ⚡ FIXED: Use proper size instead of scale() to prevent flickering */}
               <LEDProgressAvatar
                 user={user}
                 profileType={profileType}
-                size={120} // Will be scaled down to 60px
+                size={60}  // Direct size - no scaling!
+                showProgress={false}  // Hide progress text in compact mode
               />
             </div>
             <UserInfo>
