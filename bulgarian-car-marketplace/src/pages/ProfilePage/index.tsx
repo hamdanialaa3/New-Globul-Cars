@@ -58,6 +58,8 @@ import { carAnalyticsService } from '../../services/analytics/car-analytics.serv
 import { carDeleteService } from '../../services/garage/car-delete.service';
 import { followService } from '../../services/social/follow.service';
 import PrivacySettings from '../../components/Profile/Security/PrivacySettings';
+import DealershipInfoForm from '../../components/Profile/Dealership/DealershipInfoForm';
+import PrivacySettingsManager from '../../components/Profile/Privacy/PrivacySettingsManager';
 import ProfileAnalyticsDashboard from '../../components/Profile/Analytics/ProfileAnalyticsDashboard';
 import ProfileDashboard from '../../components/Profile/ProfileDashboard';
 import VerificationBadge from '../../components/Profile/VerificationBadge';
@@ -243,6 +245,62 @@ const ProfileTypeButton = styled.button<{ $active: boolean; $color: string }>`
     padding: 10px 16px;
     font-size: 0.8rem;
     gap: 6px;
+  }
+`;
+
+// Quick Action Buttons
+const QuickActionsContainer = styled.div`
+  display: flex;
+  gap: 16px;
+  margin-left: auto;
+  
+  @media (max-width: 768px) {
+    margin-left: 0;
+    width: 100%;
+    justify-content: space-between;
+  }
+`;
+
+const QuickActionButton = styled.button<{ $variant?: 'primary' | 'secondary' | 'success' }>`
+  padding: 10px 18px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border: 2px solid ${props => {
+    if (props.$variant === 'success') return '#16a34a';
+    if (props.$variant === 'primary') return '#3b82f6';
+    return '#6b7280';
+  }};
+  background: ${props => {
+    if (props.$variant === 'success') return 'linear-gradient(135deg, #16a34a 0%, #15803d 100%)';
+    if (props.$variant === 'primary') return 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)';
+    return 'white';
+  }};
+  color: ${props => props.$variant ? 'white' : '#374151'};
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px ${props => {
+      if (props.$variant === 'success') return 'rgba(22, 163, 74, 0.3)';
+      if (props.$variant === 'primary') return 'rgba(59, 130, 246, 0.3)';
+      return 'rgba(0, 0, 0, 0.1)';
+    }};
+  }
+  
+  svg {
+    flex-shrink: 0;
+  }
+  
+  @media (max-width: 768px) {
+    padding: 8px 12px;
+    font-size: 0.75rem;
+    gap: 4px;
   }
 `;
 
@@ -660,6 +718,38 @@ const ProfilePage: React.FC = () => {
               <Building2 size={18} />
               {language === 'bg' ? 'Компания' : 'Company'}
             </ProfileTypeButton>
+            
+            {/* Spacer */}
+            <div style={{ width: '1px', height: '30px', background: '#e5e7eb', margin: '0 8px' }} />
+            
+            {/* Quick Actions */}
+            <QuickActionsContainer>
+              {/* Business Info Button (goes to Settings) */}
+              <QuickActionButton 
+                $variant="success"
+                onClick={() => handleTabChange('settings')}
+              >
+                <Building2 size={16} />
+                {language === 'bg' ? 'معلومات المشروع' : 'Business Info'}
+              </QuickActionButton>
+              
+              {/* Personal Info Button (Edit Profile) */}
+              <QuickActionButton 
+                $variant="primary"
+                onClick={() => setEditing(!editing)}
+              >
+                <User size={16} />
+                {language === 'bg' ? 'المعلومات الشخصية' : 'Personal Info'}
+              </QuickActionButton>
+              
+              {/* Add Car Button */}
+              <QuickActionButton 
+                onClick={() => navigate('/add-car')}
+              >
+                <Car size={16} />
+                {language === 'bg' ? 'إضافة سيارة' : 'Add Car'}
+              </QuickActionButton>
+            </QuickActionsContainer>
           </ProfileTypeSwitcher>
         )}
 
@@ -786,18 +876,11 @@ const ProfilePage: React.FC = () => {
               />
             </div>
 
-            {/* Actions - 🎯 OPTIMIZED: Removed duplicates */}
+            {/* Actions - 🎯 OPTIMIZED: Removed Edit Profile duplicate, kept essential actions */}
             <S.ProfileActions>
               {isOwnProfile ? (
                 <>
-                  {/* Own Profile Actions */}
-                  <S.ActionButton 
-                    onClick={() => setEditing(!editing)}
-                    data-action="edit-profile"
-                    $themeColor={theme.primary}
-                  >
-                    {editing ? t('profile.cancelEdit') : t('profile.editProfile')}
-                  </S.ActionButton>
+                  {/* Own Profile Actions - Edit Profile removed as it's now in Quick Actions */}
                   <S.ActionButton variant="secondary" onClick={() => navigate('/users')} $themeColor={theme.primary}>
                     <Users size={18} />
                     {language === 'bg' ? 'Директория' : 'Browse Users'}
@@ -1682,7 +1765,94 @@ const ProfilePage: React.FC = () => {
 
             {activeTab === 'settings' && (
               <AnimatedTabContent>
-                <PrivacySettings userId={user.uid} />
+                {/* Profile Type Switcher - Also in Settings for convenience */}
+                {isOwnProfile && (
+                  <div style={{ marginBottom: '24px' }}>
+                    <ProfileTypeSwitcher $themeColor={theme.primary}>
+                      {/* Private Button */}
+                      <ProfileTypeButton
+                        $active={profileType === 'private'}
+                        $color="#FF8F10"
+                        onClick={() => {
+                          setPendingProfileType('private');
+                          setShowProfileTypeModal(true);
+                        }}
+                      >
+                        <User size={18} />
+                        {language === 'bg' ? 'Личен' : 'Private'}
+                      </ProfileTypeButton>
+                      
+                      {/* Dealer Button */}
+                      <ProfileTypeButton
+                        $active={profileType === 'dealer'}
+                        $color="#16a34a"
+                        onClick={() => {
+                          setPendingProfileType('dealer');
+                          setShowProfileTypeModal(true);
+                        }}
+                      >
+                        <Building2 size={18} />
+                        {language === 'bg' ? 'Дилър' : 'Dealer'}
+                      </ProfileTypeButton>
+                      
+                      {/* Company Button */}
+                      <ProfileTypeButton
+                        $active={profileType === 'company'}
+                        $color="#1d4ed8"
+                        onClick={() => {
+                          setPendingProfileType('company');
+                          setShowProfileTypeModal(true);
+                        }}
+                      >
+                        <Building2 size={18} />
+                        {language === 'bg' ? 'Компания' : 'Company'}
+                      </ProfileTypeButton>
+                    </ProfileTypeSwitcher>
+                  </div>
+                )}
+                
+                {/* Privacy Settings for all account types */}
+                <PrivacySettingsManager 
+                  userId={user.uid} 
+                  accountType={profileType === 'dealer' ? 'dealership' : 'individual'} 
+                />
+                
+                {/* Dealership Information Form - Show for all with message */}
+                <div style={{ marginTop: '24px' }}>
+                  {profileType !== 'dealer' && (
+                    <div style={{ 
+                      background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
+                      border: '2px solid #f59e0b',
+                      borderRadius: '12px',
+                      padding: '20px',
+                      marginBottom: '24px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px'
+                    }}>
+                      <AlertCircle size={24} color="#f59e0b" />
+                      <div>
+                        <div style={{ fontWeight: 'bold', marginBottom: '4px', color: '#92400e' }}>
+                          {language === 'bg' ? '💼 Информация за автокъщи' : '💼 Dealership Information'}
+                        </div>
+                        <div style={{ fontSize: '14px', color: '#78350f' }}>
+                          {language === 'bg' 
+                            ? 'За да попълните информация за вашата автокъща, моля превключете типа на профила си на "Дилър" от бутоните по-горе.' 
+                            : 'To fill in your dealership information, please switch your profile type to "Dealer" using the buttons above.'}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {profileType === 'dealer' && (
+                    <DealershipInfoForm userId={user.uid} />
+                  )}
+                </div>
+                
+                {/* Legacy Privacy Settings (can be removed later) */}
+                <div style={{ marginTop: '24px' }}>
+                  <PrivacySettings userId={user.uid} />
+                </div>
               </AnimatedTabContent>
             )}
           </FullWidthContent>
