@@ -461,7 +461,7 @@ const Header: React.FC = () => {
                   }}
                 >
                   <User size={16} />
-                  <span>نوع البائع</span>
+                  <span>{language === 'bg' ? 'Тип продавач' : 'Seller Type'}</span>
                   <svg 
                     className={`arrow ${isProfileTypeOpen ? 'rotate' : ''}`}
                     width="12" 
