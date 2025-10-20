@@ -51,6 +51,7 @@ const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isMainNavOpen, setIsMainNavOpen] = useState(false);
+  const [isProfileTypeOpen, setIsProfileTypeOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [preferencesOpen, setPreferencesOpen] = useState(false);
   const [accountSettingsOpen, setAccountSettingsOpen] = useState(false);
@@ -58,6 +59,7 @@ const Header: React.FC = () => {
   const [helpSupportOpen, setHelpSupportOpen] = useState(false);
   const settingsRef = useRef<HTMLDivElement>(null);
   const mainNavRef = useRef<HTMLDivElement>(null);
+  const profileTypeRef = useRef<HTMLDivElement>(null);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);

@@ -189,7 +189,7 @@ jobs:
       
       - name: Install dependencies
         working-directory: bulgarian-car-marketplace
-        run: npm ci
+        run: npm ci --legacy-peer-deps
       
       - name: Run npm audit (warnings allowed)
         working-directory: bulgarian-car-marketplace
