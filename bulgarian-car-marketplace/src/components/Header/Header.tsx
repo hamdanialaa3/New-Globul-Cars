@@ -41,6 +41,7 @@ import {
 import EnhancedNavLink from '../EnhancedNavLink';
 import LanguageToggle from '../LanguageToggle/LanguageToggle';
 import NotificationDropdown from '../NotificationDropdown/NotificationDropdown';
+import ProfileTypeSwitcher from './ProfileTypeSwitcher';
 import './Header.css';
 
 const Header: React.FC = () => {
@@ -126,6 +127,9 @@ const Header: React.FC = () => {
           {/* Central Action Buttons */}
           <div className="central-actions">
             <LanguageToggle size="small" showText={false} className="action-bar-button" />
+            
+            {/* Profile Type Switcher - Prominent Essential Element */}
+            <ProfileTypeSwitcher />
             
             <button
               className="action-bar-button"
