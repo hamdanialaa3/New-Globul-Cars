@@ -444,7 +444,7 @@ const Header: React.FC = () => {
               {t('nav.finance')}
             </EnhancedNavLink>
             
-            {/* Profile Type Dropdown - NEW */}
+            {/* Seller Type Dropdown */}
             {user && (
               <div className="main-nav-dropdown" ref={profileTypeRef} style={{ marginLeft: 'auto' }}>
                 <button 
@@ -461,7 +461,7 @@ const Header: React.FC = () => {
                   }}
                 >
                   <User size={16} />
-                  <span>Profile Type</span>
+                  <span>نوع البائع</span>
                   <svg 
                     className={`arrow ${isProfileTypeOpen ? 'rotate' : ''}`}
                     width="12" 
@@ -472,9 +472,9 @@ const Header: React.FC = () => {
                   </svg>
                 </button>
 
-                {/* Profile Type Switcher Dropdown */}
+                {/* Seller Type Switcher Dropdown - Centered */}
                 {isProfileTypeOpen && (
-                  <div className="main-nav-menu" style={{ right: 0, left: 'auto', minWidth: '200px' }}>
+                  <div className="main-nav-menu" style={{ right: 'auto', left: '50%', transform: 'translateX(-50%)', minWidth: '200px' }}>
                     <div style={{ padding: '12px' }}>
                       <ProfileTypeSwitcher />
                     </div>

@@ -121,7 +121,7 @@ jobs:
         run: npm install -g firebase-tools
       
       - name: Download build artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: build
           path: bulgarian-car-marketplace/build
@@ -152,7 +152,7 @@ jobs:
         run: npm install -g firebase-tools
       
       - name: Download build artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: build
           path: bulgarian-car-marketplace/build
