@@ -4,14 +4,11 @@
 
 import {
   collection,
-  doc,
-  getDoc,
   getDocs,
   query,
   where,
   orderBy,
-  limit,
-  Timestamp
+  limit
 } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
 import { Post } from './posts.service';
