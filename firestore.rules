@@ -286,6 +286,55 @@ service cloud.firestore {
       allow read, write: if isOwnerOrAdmin(userId);
     }
     
+    // ==================== AD CAMPAIGNS COLLECTIONS ====================
+    
+    // Campaigns Collection
+    match /campaigns/{campaignId} {
+      // Read: Any authenticated user can read campaigns (for display)
+      allow get: if isSignedIn();
+      
+      // List: Owner can list their own campaigns
+      allow list: if isSignedIn() && 
+                     resource.data.userId == request.auth.uid;
+      
+      // Create: Authenticated users can create campaigns
+      // Validation: budget >= 10 EUR, owner must be creator
+      allow create: if isSignedIn() && 
+                       request.resource.data.userId == request.auth.uid &&
+                       request.resource.data.budget >= 10 &&
+                       request.resource.data.dailyBudget > 0 &&
+                       request.resource.data.duration >= 1 &&
+                       request.resource.data.status in ['draft', 'active', 'paused'];
+      
+      // Update: Owner can update their own campaigns (status, budget)
+      // Cannot change userId or decrease spent budget
+      allow update: if isOwnerOrAdmin(request.resource.data.userId) &&
+                       request.resource.data.userId == resource.data.userId &&
+                       request.resource.data.spent >= resource.data.spent;
+      
+      // Delete: Owner or admin can delete
+      allow delete: if isOwnerOrAdmin(resource.data.userId);
+    }
+    
+    // Impressions Collection (subcollection under campaigns)
+    match /campaigns/{campaignId}/impressions/{impressionId} {
+      // Read: Campaign owner can read impressions
+      allow read: if isSignedIn() && 
+                     get(/databases/$(database)/documents/campaigns/$(campaignId)).data.userId == request.auth.uid;
+      
+      // Write: Only via Cloud Functions (system writes)
+      allow write: if false;
+    }
+    
+    // Daily Spending Collection (tracking daily budget usage)
+    match /daily_spending/{spendingId} {
+      // Read: Campaign owner can read their spending
+      allow read: if isSignedIn();
+      
+      // Write: Only via Cloud Functions (system writes)
+      allow write: if false;
+    }
+    
     // ==================== DEFAULT DENY ====================
     // Deny all other operations by default
     
