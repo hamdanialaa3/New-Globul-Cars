@@ -14,26 +14,23 @@ import { db } from '../../firebase/firebase-config';
 
 // ==================== STYLED COMPONENTS ====================
 
-const CoverContainer = styled.div`
+const CoverContainer = styled.div<{ $themeColor?: string }>`
   position: relative;
   width: 100%;
   height: 300px;
   border-radius: 16px;
   overflow: hidden;
   
-  /* 🎨 Orange glassmorphic background for empty state */
-  background: linear-gradient(135deg,
-    rgba(255, 175, 64, 0.25) 0%,
-    rgba(255, 159, 42, 0.35) 30%,
-    rgba(255, 143, 16, 0.45) 60%,
-    rgba(255, 121, 0, 0.5) 100%
-  );
+  /* 🎨 Dynamic glassmorphic background for empty state */
+  background: ${props => props.$themeColor
+    ? `linear-gradient(135deg, ${props.$themeColor}40 0%, ${props.$themeColor}59 30%, ${props.$themeColor}73 60%, ${props.$themeColor}80 100%)`
+    : 'linear-gradient(135deg, rgba(255, 175, 64, 0.25) 0%, rgba(255, 159, 42, 0.35) 30%, rgba(255, 143, 16, 0.45) 60%, rgba(255, 121, 0, 0.5) 100%)'};
   backdrop-filter: blur(12px) saturate(160%);
   
-  /* Subtle yellow border */
-  border: 2px solid rgba(255, 215, 0, 0.3);
+  /* Subtle border */
+  border: ${props => props.$themeColor ? `2px solid ${props.$themeColor}4D` : '2px solid rgba(255, 215, 0, 0.3)'};
   box-shadow: 
-    0 8px 28px rgba(255, 143, 16, 0.2),
+    ${props => props.$themeColor ? `0 8px 28px ${props.$themeColor}33` : '0 8px 28px rgba(255, 143, 16, 0.2)'},
     inset 0 1px 0 rgba(255, 255, 255, 0.3);
   
   margin-bottom: 60px;
@@ -73,13 +70,13 @@ const Placeholder = styled.div`
   }
 `;
 
-const UploadButton = styled.button`
+const UploadButton = styled.button<{ $themeColor?: string }>`
   position: absolute;
   bottom: 16px;
   right: 16px;
   padding: 8px 16px;
   background: rgba(255, 255, 255, 0.95);
-  border: 1px solid rgba(255, 215, 0, 0.4);
+  border: ${props => props.$themeColor ? `1px solid ${props.$themeColor}66` : '1px solid rgba(255, 215, 0, 0.4)'};
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -87,13 +84,13 @@ const UploadButton = styled.button`
   cursor: pointer;
   font-weight: 500;
   font-size: 0.82rem;
-  color: #FF7900;
+  color: ${props => props.$themeColor || '#FF7900'};
   transition: all 0.3s ease;
-  box-shadow: 0 2px 6px rgba(255, 143, 16, 0.15);
+  box-shadow: ${props => props.$themeColor ? `0 2px 6px ${props.$themeColor}26` : '0 2px 6px rgba(255, 143, 16, 0.15)'};
 
   &:hover {
     background: white;
-    border-color: rgba(255, 143, 16, 0.6);
+    border-color: ${props => props.$themeColor ? `${props.$themeColor}99` : 'rgba(255, 143, 16, 0.6)'};
     transform: translateY(-2px);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
   }
@@ -207,12 +204,14 @@ interface CoverImageUploaderProps {
   currentImageUrl?: string;
   onUploadSuccess?: (url: string) => void;
   onUploadError?: (error: string) => void;
+  themeColor?: string;
 }
 
 const CoverImageUploader: React.FC<CoverImageUploaderProps> = ({
   currentImageUrl,
   onUploadSuccess,
-  onUploadError
+  onUploadError,
+  themeColor = '#FF7900'
 }) => {
   const { t } = useTranslation();
   const { user } = useAuth();
@@ -323,7 +322,7 @@ const CoverImageUploader: React.FC<CoverImageUploaderProps> = ({
   };
 
   return (
-    <CoverContainer>
+    <CoverContainer $themeColor={themeColor}>
       <CoverImage $imageUrl={imageUrl} onClick={handleClick}>
         {!imageUrl && (
           <Placeholder>
@@ -352,7 +351,7 @@ const CoverImageUploader: React.FC<CoverImageUploaderProps> = ({
       />
 
       {!uploading && (
-        <UploadButton onClick={handleClick} disabled={uploading}>
+        <UploadButton onClick={handleClick} disabled={uploading} $themeColor={themeColor}>
           <Upload size={18} />
           {imageUrl ? t('profile.changeCover') : t('profile.uploadCover')}
         </UploadButton>

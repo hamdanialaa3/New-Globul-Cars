@@ -516,6 +516,7 @@ const ProfilePage: React.FC = () => {
         {activeTab === 'profile' && (
           <CoverImageUploader
           currentImageUrl={user.coverImage?.url}
+          themeColor={theme.primary}
           onUploadSuccess={(url) => {
             if (process.env.NODE_ENV === 'development') {
               console.log('Cover uploaded:', url);
@@ -736,10 +737,11 @@ const ProfilePage: React.FC = () => {
                   <S.ActionButton 
                     onClick={() => setEditing(!editing)}
                     data-action="edit-profile"
+                    $themeColor={theme.primary}
                   >
                     {editing ? t('profile.cancelEdit') : t('profile.editProfile')}
                   </S.ActionButton>
-                  <S.ActionButton variant="secondary" onClick={() => navigate('/users')}>
+                  <S.ActionButton variant="secondary" onClick={() => navigate('/users')} $themeColor={theme.primary}>
                     <Users size={18} />
                     {language === 'bg' ? 'Директория' : 'Browse Users'}
                   </S.ActionButton>
@@ -1461,6 +1463,7 @@ const ProfilePage: React.FC = () => {
                 phoneVerified={user.verification?.phone?.verified || false}
                 idVerified={user.verification?.identity?.verified || false}
                 businessVerified={user.verification?.business?.verified || false}
+                themeColor={theme.primary}
               />
             </S.ContentSection>
 

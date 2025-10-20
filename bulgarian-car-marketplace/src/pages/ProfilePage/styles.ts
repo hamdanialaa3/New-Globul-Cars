@@ -364,7 +364,7 @@ export const ProfileActions = styled.div`
   margin-top: ${({ theme }) => theme.spacing.xl};
 `;
 
-export const ActionButton = styled.button<{ variant?: 'primary' | 'secondary' | 'danger' }>`
+export const ActionButton = styled.button<{ variant?: 'primary' | 'secondary' | 'danger'; $themeColor?: string }>`
   padding: 12px 18px;
   font-weight: 700;
   font-size: 0.9rem;
@@ -376,7 +376,7 @@ export const ActionButton = styled.button<{ variant?: 'primary' | 'secondary' | 
   overflow: hidden;
   
   /* Glassmorphic Base */
-  ${({ variant }) => {
+  ${({ variant, $themeColor }) => {
     switch (variant) {
       case 'danger':
         return `
@@ -397,13 +397,13 @@ export const ActionButton = styled.button<{ variant?: 'primary' | 'secondary' | 
             rgba(248, 249, 250, 0.5) 100%
           );
           backdrop-filter: blur(10px) saturate(150%);
-          border: 2px solid rgba(255, 143, 16, 0.3);
+          border: ${$themeColor ? `2px solid ${$themeColor}4D` : '2px solid rgba(255, 143, 16, 0.3)'};
           color: #495057;
           box-shadow: 
             0 4px 12px rgba(0, 0, 0, 0.08),
             inset 0 1px 0 rgba(255, 255, 255, 0.8);
             
-          /* Thin Yellow Top Accent */
+          /* Thin Top Accent */
           &::before {
             content: '';
             position: absolute;
@@ -411,26 +411,22 @@ export const ActionButton = styled.button<{ variant?: 'primary' | 'secondary' | 
             left: 20%;
             right: 20%;
             height: 2px;
-            background: linear-gradient(90deg,
-              rgba(255, 215, 0, 0) 0%,
-              rgba(255, 215, 0, 0.8) 50%,
-              rgba(255, 215, 0, 0) 100%
-            );
+            background: ${$themeColor 
+              ? `linear-gradient(90deg, ${$themeColor}00 0%, ${$themeColor}CC 50%, ${$themeColor}00 100%)`
+              : 'linear-gradient(90deg, rgba(255, 215, 0, 0) 0%, rgba(255, 215, 0, 0.8) 50%, rgba(255, 215, 0, 0) 100%)'};
             border-radius: 2px 2px 0 0;
           }
         `;
       default:
         return css`
-          background: linear-gradient(135deg,
-            rgba(255, 143, 16, 0.95) 0%,
-            rgba(255, 121, 0, 1) 50%,
-            rgba(255, 102, 0, 0.98) 100%
-          );
+          background: ${$themeColor 
+            ? `linear-gradient(135deg, ${$themeColor}F2 0%, ${$themeColor} 50%, ${$themeColor}FA 100%)`
+            : 'linear-gradient(135deg, rgba(255, 143, 16, 0.95) 0%, rgba(255, 121, 0, 1) 50%, rgba(255, 102, 0, 0.98) 100%)'};
           background-size: 200% auto;
-          border: 1px solid rgba(255, 215, 0, 0.5);
+          border: ${$themeColor ? `1px solid ${$themeColor}CC` : '1px solid rgba(255, 215, 0, 0.5)'};
           color: white;
           box-shadow: 
-            0 6px 20px rgba(255, 143, 16, 0.4),
+            ${$themeColor ? `0 6px 20px ${$themeColor}66` : '0 6px 20px rgba(255, 143, 16, 0.4)'},
             0 2px 6px rgba(0, 0, 0, 0.1),
           inset 0 1px 0 rgba(255, 255, 255, 0.4),
           inset 0 -1px 0 rgba(0, 0, 0, 0.1);

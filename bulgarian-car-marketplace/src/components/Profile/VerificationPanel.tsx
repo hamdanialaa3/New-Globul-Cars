@@ -29,7 +29,7 @@ const pulseIcon = keyframes`
 
 // ==================== STYLED COMPONENTS ====================
 
-const PanelContainer = styled.div`
+const PanelContainer = styled.div<{ $themeColor?: string }>`
   border-radius: 16px;
   padding: 24px;
   position: relative;
@@ -41,8 +41,8 @@ const PanelContainer = styled.div`
   );
   backdrop-filter: blur(14px) saturate(160%);
   
-  /* Subtle orange border */
-  border: 2px solid rgba(255, 143, 16, 0.15);
+  /* Subtle theme border */
+  border: ${props => props.$themeColor ? `2px solid ${props.$themeColor}26` : '2px solid rgba(255, 143, 16, 0.15)'};
   
   box-shadow: 
     0 1px 0 rgba(255, 255, 255, 0.8) inset,
@@ -50,24 +50,20 @@ const PanelContainer = styled.div`
     0 2px 6px rgba(0, 0, 0, 0.03);
 `;
 
-const PanelHeader = styled.div`
+const PanelHeader = styled.div<{ $themeColor?: string }>`
   display: flex;
   align-items: center;
   gap: 12px;
   margin-bottom: 24px;
   padding-bottom: 18px;
   
-  /* Orange-yellow gradient border */
+  /* Theme gradient border */
   border-bottom: 2px solid transparent;
   background-image: 
     linear-gradient(white, white),
-    linear-gradient(90deg,
-      rgba(200, 200, 200, 0.2) 0%,
-      rgba(255, 143, 16, 0.5) 30%,
-      rgba(255, 215, 0, 0.8) 50%,
-      rgba(255, 143, 16, 0.5) 70%,
-      rgba(200, 200, 200, 0.2) 100%
-    );
+    ${props => props.$themeColor 
+      ? `linear-gradient(90deg, rgba(200, 200, 200, 0.2) 0%, ${props.$themeColor}80 30%, ${props.$themeColor}CC 50%, ${props.$themeColor}80 70%, rgba(200, 200, 200, 0.2) 100%)`
+      : 'linear-gradient(90deg, rgba(200, 200, 200, 0.2) 0%, rgba(255, 143, 16, 0.5) 30%, rgba(255, 215, 0, 0.8) 50%, rgba(255, 143, 16, 0.5) 70%, rgba(200, 200, 200, 0.2) 100%)'};
   background-origin: border-box;
   background-clip: padding-box, border-box;
   
@@ -84,7 +80,9 @@ const PanelHeader = styled.div`
   }
   
   svg {
-    filter: drop-shadow(0 2px 4px rgba(255, 143, 16, 0.3));
+    filter: ${props => props.$themeColor 
+      ? `drop-shadow(0 2px 4px ${props.$themeColor}4D)`
+      : 'drop-shadow(0 2px 4px rgba(255, 143, 16, 0.3))'};
   }
 `;
 
@@ -94,7 +92,7 @@ const VerificationList = styled.div`
   gap: 12px;
 `;
 
-const VerificationItem = styled.div<{ $verified: boolean }>`
+const VerificationItem = styled.div<{ $verified: boolean; $themeColor?: string }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -106,23 +104,29 @@ const VerificationItem = styled.div<{ $verified: boolean }>`
   /* Glassmorphic background */
   background: ${props => props.$verified 
     ? 'linear-gradient(135deg, rgba(76, 175, 80, 0.12) 0%, rgba(67, 160, 71, 0.08) 100%)'
-    : 'linear-gradient(135deg, rgba(255, 143, 16, 0.08) 0%, rgba(255, 215, 0, 0.05) 100%)'
+    : props.$themeColor 
+      ? `linear-gradient(135deg, ${props.$themeColor}14 0%, ${props.$themeColor}0D 100%)`
+      : 'linear-gradient(135deg, rgba(255, 143, 16, 0.08) 0%, rgba(255, 215, 0, 0.05) 100%)'
   };
   backdrop-filter: blur(8px);
   
   border: 1.5px solid ${props => props.$verified 
     ? 'rgba(76, 175, 80, 0.3)'
-    : 'rgba(255, 143, 16, 0.25)'
+    : props.$themeColor
+      ? `${props.$themeColor}40`
+      : 'rgba(255, 143, 16, 0.25)'
   };
   
   box-shadow: ${props => props.$verified
     ? '0 3px 10px rgba(76, 175, 80, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.5)'
-    : '0 3px 10px rgba(255, 143, 16, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.5)'
+    : props.$themeColor
+      ? `0 3px 10px ${props.$themeColor}14, inset 0 1px 0 rgba(255, 255, 255, 0.5)`
+      : '0 3px 10px rgba(255, 143, 16, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.5)'
   };
   
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   
-  /* Yellow left accent */
+  /* Left accent - verified uses yellow, unverified uses theme */
   ${props => props.$verified && `
     border-left: 3px solid rgba(255, 215, 0, 0.7);
   `}
@@ -131,11 +135,15 @@ const VerificationItem = styled.div<{ $verified: boolean }>`
     transform: translateX(6px) translateY(-2px);
     border-color: ${props => props.$verified 
       ? 'rgba(76, 175, 80, 0.5)'
-      : 'rgba(255, 143, 16, 0.4)'
+      : props.$themeColor
+        ? `${props.$themeColor}66`
+        : 'rgba(255, 143, 16, 0.4)'
     };
     box-shadow: ${props => props.$verified
       ? '0 6px 18px rgba(76, 175, 80, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.6)'
-      : '0 6px 18px rgba(255, 143, 16, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.6)'
+      : props.$themeColor
+        ? `0 6px 18px ${props.$themeColor}26, inset 0 1px 0 rgba(255, 255, 255, 0.6)`
+        : '0 6px 18px rgba(255, 143, 16, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.6)'
     };
   }
 `;
@@ -147,7 +155,7 @@ const ItemInfo = styled.div`
   flex: 1;
 `;
 
-const IconWrapper = styled.div<{ $verified: boolean }>`
+const IconWrapper = styled.div<{ $verified: boolean; $themeColor?: string }>`
   width: 44px;
   height: 44px;
   border-radius: 50%;
@@ -160,7 +168,9 @@ const IconWrapper = styled.div<{ $verified: boolean }>`
   /* Gradient background */
   background: ${props => props.$verified 
     ? 'linear-gradient(135deg, rgba(76, 175, 80, 0.95) 0%, rgba(67, 160, 71, 1) 100%)'
-    : 'linear-gradient(135deg, rgba(255, 159, 42, 0.95) 0%, rgba(255, 143, 16, 1) 100%)'
+    : props.$themeColor
+      ? `linear-gradient(135deg, ${props.$themeColor}F2 0%, ${props.$themeColor} 100%)`
+      : 'linear-gradient(135deg, rgba(255, 159, 42, 0.95) 0%, rgba(255, 143, 16, 1) 100%)'
   };
   
   color: white;
@@ -168,13 +178,15 @@ const IconWrapper = styled.div<{ $verified: boolean }>`
   box-shadow: 
     0 4px 14px ${props => props.$verified 
       ? 'rgba(76, 175, 80, 0.35)'
-      : 'rgba(255, 143, 16, 0.35)'
+      : props.$themeColor
+        ? `${props.$themeColor}59`
+        : 'rgba(255, 143, 16, 0.35)'
     },
     inset 0 1px 0 rgba(255, 255, 255, 0.3);
   
   transition: all 0.3s ease;
   
-  /* Yellow bottom accent for unverified */
+  /* Bottom accent for unverified */
   ${props => !props.$verified && `
     &::after {
       content: '';
@@ -271,7 +283,7 @@ const StatusBadge = styled.div<{ $status: 'verified' | 'pending' | 'unverified' 
   }
 `;
 
-const ActionButton = styled.button`
+const ActionButton = styled.button<{ $themeColor?: string }>`
   padding: 9px 18px;
   border: none;
   border-radius: 10px;
@@ -281,17 +293,18 @@ const ActionButton = styled.button`
   position: relative;
   overflow: hidden;
   
-  /* Orange glassmorphic button */
-  background: linear-gradient(135deg,
-    rgba(255, 159, 42, 0.95) 0%,
-    rgba(255, 143, 16, 1) 100%
-  );
+  /* Theme glassmorphic button */
+  background: ${props => props.$themeColor
+    ? `linear-gradient(135deg, ${props.$themeColor}F2 0%, ${props.$themeColor} 100%)`
+    : 'linear-gradient(135deg, rgba(255, 159, 42, 0.95) 0%, rgba(255, 143, 16, 1) 100%)'};
   background-size: 200% auto;
   color: white;
   border: 1px solid rgba(255, 215, 0, 0.5);
   
   box-shadow: 
-    0 4px 14px rgba(255, 143, 16, 0.35),
+    ${props => props.$themeColor
+      ? `0 4px 14px ${props.$themeColor}59`
+      : '0 4px 14px rgba(255, 143, 16, 0.35)'},
     inset 0 1px 0 rgba(255, 255, 255, 0.35);
   
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -320,13 +333,14 @@ const ActionButton = styled.button`
   }
   
   &:hover {
-    background: linear-gradient(135deg,
-      rgba(255, 175, 64, 1) 0%,
-      rgba(255, 159, 42, 1) 100%
-    );
+    background: ${props => props.$themeColor
+      ? `linear-gradient(135deg, ${props.$themeColor} 0%, ${props.$themeColor}E6 100%)`
+      : 'linear-gradient(135deg, rgba(255, 175, 64, 1) 0%, rgba(255, 159, 42, 1) 100%)'};
     transform: translateY(-2px);
     box-shadow: 
-      0 6px 20px rgba(255, 143, 16, 0.45),
+      ${props => props.$themeColor
+        ? `0 6px 20px ${props.$themeColor}73`
+        : '0 6px 20px rgba(255, 143, 16, 0.45)'},
       inset 0 1px 0 rgba(255, 255, 255, 0.4);
   }
   
@@ -346,6 +360,7 @@ interface VerificationPanelProps {
   idVerified: boolean;
   businessVerified: boolean;
   onVerifyClick?: (type: string) => void;
+  themeColor?: string;
 }
 
 const VerificationPanel: React.FC<VerificationPanelProps> = ({
@@ -353,7 +368,8 @@ const VerificationPanel: React.FC<VerificationPanelProps> = ({
   phoneVerified,
   idVerified,
   businessVerified,
-  onVerifyClick
+  onVerifyClick,
+  themeColor = '#FF7900'
 }) => {
   const { language } = useLanguage();
   const [showEmailModal, setShowEmailModal] = useState(false);
@@ -411,9 +427,9 @@ const VerificationPanel: React.FC<VerificationPanelProps> = ({
 
   return (
     <>
-      <PanelContainer>
-        <PanelHeader>
-          <CheckCircle size={22} color="#FF7900" />
+      <PanelContainer $themeColor={themeColor}>
+        <PanelHeader $themeColor={themeColor}>
+          <CheckCircle size={22} color={themeColor} />
           <h3>
             {language === 'bg' ? 'Потвърждения' : 'Verifications'}
           </h3>
@@ -421,9 +437,9 @@ const VerificationPanel: React.FC<VerificationPanelProps> = ({
 
         <VerificationList>
           {verifications.map((item) => (
-            <VerificationItem key={item.id} $verified={item.verified}>
+            <VerificationItem key={item.id} $verified={item.verified} $themeColor={themeColor}>
               <ItemInfo>
-                <IconWrapper $verified={item.verified}>
+                <IconWrapper $verified={item.verified} $themeColor={themeColor}>
                   {item.icon}
                 </IconWrapper>
                 <ItemText>
@@ -438,7 +454,7 @@ const VerificationPanel: React.FC<VerificationPanelProps> = ({
                   {language === 'bg' ? 'Потвърдено' : 'Verified'}
                 </StatusBadge>
               ) : (
-                <ActionButton onClick={() => handleVerify(item.id)}>
+                <ActionButton onClick={() => handleVerify(item.id)} $themeColor={themeColor}>
                   {language === 'bg' ? 'Потвърди' : 'Verify'}
                 </ActionButton>
               )}
