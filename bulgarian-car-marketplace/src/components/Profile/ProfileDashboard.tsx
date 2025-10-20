@@ -394,39 +394,7 @@ const ProfileDashboard: React.FC = () => {
         </StatCard>
       </StatsGrid>
       
-      {/* Quick Actions - 🎯 NOW LINKED! */}
-      <QuickActionsBar $theme={theme}>
-        <QuickAction 
-          $theme={theme}
-          onClick={() => navigate('/sell')}
-          title="Add a new car listing"
-        >
-          <Plus size={18} />
-          Add Listing
-        </QuickAction>
-        
-        <QuickAction 
-          $theme={theme}
-          onClick={() => {
-            const editButton = document.querySelector('[data-action="edit-profile"]') as HTMLButtonElement;
-            if (editButton) editButton.click();
-            else window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-          title="Edit your profile information"
-        >
-          <Edit size={18} />
-          Edit Profile
-        </QuickAction>
-        
-        <QuickAction 
-          $theme={theme}
-          onClick={() => navigate('/settings')}
-          title="Manage account settings"
-        >
-          <SettingsIcon size={18} />
-          Settings
-        </QuickAction>
-      </QuickActionsBar>
+      {/* ❌ REMOVED: Quick Actions (Add Listing, Edit Profile, Settings) per user request */}
     </DashboardContainer>
   );
 };
