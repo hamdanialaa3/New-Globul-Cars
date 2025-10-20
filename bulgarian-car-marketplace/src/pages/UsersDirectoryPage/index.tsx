@@ -1,0 +1,715 @@
+// src/pages/UsersDirectoryPage/index.tsx
+// Users Directory Page - Main Component
+// Location: Bulgaria | Languages: BG/EN | Currency: EUR
+
+import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { useAuth } from '../../contexts/AuthProvider';
+import { 
+  Users, 
+  Search, 
+  MapPin, 
+  Building2, 
+  ArrowUpDown,
+  Grid3x3,
+  Circle,
+  List
+} from 'lucide-react';
+import { collection, getDocs, query, limit } from 'firebase/firestore';
+import { db } from '../../firebase/firebase-config';
+import { BULGARIA_REGIONS } from '../../data/bulgaria-locations';
+import { followService } from '../../services/social/follow.service';
+import { BubblesGrid } from '../../components/UserBubble/BubblesGrid';
+import { OnlineUsersRow } from '../../components/UserBubble/OnlineUsersRow';
+
+// ==================== TYPES ====================
+
+interface UserProfile {
+  uid: string;
+  displayName: string;
+  email: string;
+  profileImage?: { url: string };
+  profileType?: 'private' | 'dealer' | 'company';
+  accountType?: 'individual' | 'business';
+  location?: {
+    city?: string;
+    region?: string;
+  };
+  verification?: {
+    emailVerified?: boolean;
+    phoneVerified?: boolean;
+    idVerified?: boolean;
+    trustScore?: number;
+  };
+  stats?: {
+    followers?: number;
+    following?: number;
+    listings?: number;
+  };
+  businessInfo?: {
+    companyName?: string;
+    dealerType?: string;
+  };
+  isOnline?: boolean;
+  createdAt?: any;
+}
+
+// ==================== STYLED COMPONENTS ====================
+
+const PageContainer = styled.div`
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f8fb 0%, #e8ecf1 100%);
+  padding: 32px 0;
+`;
+
+const Container = styled.div`
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 24px;
+`;
+
+const Header = styled.div`
+  text-align: center;
+  margin-bottom: 40px;
+  
+  h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin: 0 0 12px 0;
+    background: linear-gradient(135deg, #FF8F10 0%, #FFAD33 50%, #FF7900 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  p {
+    font-size: 1.1rem;
+    color: #6c757d;
+    margin: 0;
+  }
+`;
+
+const ControlsBar = styled.div`
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 32px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+`;
+
+const ViewModeSelector = styled.div`
+  display: flex;
+  gap: 8px;
+  background: #f8f9fa;
+  padding: 4px;
+  border-radius: 10px;
+`;
+
+const ViewModeButton = styled.button<{ $active: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: none;
+  background: ${p => p.$active ? 'white' : 'transparent'};
+  color: ${p => p.$active ? '#FF7900' : '#6c757d'};
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: ${p => p.$active ? '0 2px 8px rgba(0, 0, 0, 0.1)' : 'none'};
+  
+  &:hover {
+    background: white;
+    color: #FF7900;
+  }
+  
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+`;
+
+const FilterGroup = styled.div`
+  flex: 1;
+  min-width: 200px;
+  
+  label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    
+    svg {
+      color: #FF7900;
+    }
+  }
+`;
+
+const Input = styled.input`
+  width: 100%;
+  padding: 12px 16px;
+  border: 1.5px solid rgba(255, 143, 16, 0.2);
+  border-radius: 10px;
+  font-size: 0.95rem;
+  background: rgba(255, 255, 255, 0.8);
+  transition: all 0.3s ease;
+  
+  &:focus {
+    outline: none;
+    border-color: rgba(255, 143, 16, 0.6);
+    box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.25);
+    background: rgba(255, 247, 237, 0.5);
+  }
+`;
+
+const Select = styled.select`
+  width: 100%;
+  padding: 12px 16px;
+  border: 1.5px solid rgba(255, 143, 16, 0.2);
+  border-radius: 10px;
+  font-size: 0.95rem;
+  background: rgba(255, 255, 255, 0.8);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  
+  &:focus {
+    outline: none;
+    border-color: rgba(255, 143, 16, 0.6);
+    box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.25);
+    background: rgba(255, 247, 237, 0.5);
+  }
+`;
+
+const StatsBar = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  background: linear-gradient(135deg,
+    rgba(255, 159, 42, 0.12) 0%,
+    rgba(255, 215, 0, 0.08) 100%
+  );
+  border-radius: 12px;
+  margin-bottom: 24px;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  
+  h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #212529;
+    font-weight: 700;
+  }
+  
+  span {
+    font-size: 0.9rem;
+    color: #6c757d;
+    font-weight: 500;
+  }
+`;
+
+const LoadingState = styled.div`
+  text-align: center;
+  padding: 80px 20px;
+  
+  svg {
+    color: #FF7900;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  
+  p {
+    margin-top: 20px;
+    font-size: 1.1rem;
+    color: #6c757d;
+  }
+`;
+
+const EmptyState = styled.div`
+  text-align: center;
+  padding: 80px 20px;
+  
+  svg {
+    color: #dee2e6;
+    margin-bottom: 20px;
+  }
+  
+  h3 {
+    font-size: 1.5rem;
+    color: #495057;
+    margin: 0 0 12px 0;
+  }
+  
+  p {
+    font-size: 1rem;
+    color: #6c757d;
+  }
+`;
+
+// Old Grid view (fallback)
+const UsersGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const UserCard = styled.div`
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  border: 2px solid rgba(255, 143, 16, 0.12);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  
+  &:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255, 143, 16, 0.3);
+    box-shadow: 0 10px 32px rgba(255, 143, 16, 0.15);
+  }
+`;
+
+const UserHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+`;
+
+const Avatar = styled.div<{ $imageUrl?: string; $initial: string }>`
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: ${props => props.$imageUrl 
+    ? `url(${props.$imageUrl})` 
+    : 'linear-gradient(135deg, #FF8F10, #FF7900)'
+  };
+  background-size: cover;
+  background-position: center;
+  border: 3px solid rgba(255, 215, 0, 0.4);
+  box-shadow: 0 4px 12px rgba(255, 143, 16, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 28px;
+  font-weight: 800;
+  color: white;
+  
+  &::before {
+    content: '${p => !p.$imageUrl ? p.$initial : ''}';
+  }
+`;
+
+const UserInfo = styled.div`
+  flex: 1;
+  min-width: 0;
+`;
+
+const UserName = styled.h3`
+  margin: 0 0 6px 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #212529;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  
+  .badge {
+    font-size: 0.65rem;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-weight: 600;
+    background: linear-gradient(135deg, #FF8F10 0%, #FF7900 100%);
+    color: white;
+    box-shadow: 0 2px 6px rgba(255, 143, 16, 0.3);
+  }
+`;
+
+const UserEmail = styled.div`
+  font-size: 0.85rem;
+  color: #6c757d;
+  margin-bottom: 4px;
+`;
+
+const UserLocation = styled.div`
+  font-size: 0.8rem;
+  color: #6c757d;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  
+  svg {
+    color: #FF7900;
+  }
+`;
+
+// ==================== COMPONENT ====================
+
+const UsersDirectoryPage: React.FC = () => {
+  const { language } = useLanguage();
+  const { user: currentUser } = useAuth();
+  
+  const [users, setUsers] = useState<UserProfile[]>([]);
+  const [filteredUsers, setFilteredUsers] = useState<UserProfile[]>([]);
+  const [onlineUsers, setOnlineUsers] = useState<UserProfile[]>([]);
+  const [loading, setLoading] = useState(true);
+  
+  const [searchTerm, setSearchTerm] = useState('');
+  const [accountTypeFilter, setAccountTypeFilter] = useState<'all' | 'individual' | 'business'>('all');
+  const [regionFilter, setRegionFilter] = useState<string>('all');
+  const [sortBy, setSortBy] = useState<'name' | 'newest' | 'trust'>('name');
+  const [viewMode, setViewMode] = useState<'bubbles' | 'grid' | 'list'>('bubbles');
+  
+  const [followingUsers, setFollowingUsers] = useState<Set<string>>(new Set());
+  
+  useEffect(() => {
+    loadUsers();
+    if (currentUser) {
+      loadFollowingList();
+    }
+  }, [currentUser]);
+  
+  useEffect(() => {
+    applyFilters();
+  }, [users, searchTerm, accountTypeFilter, regionFilter, sortBy]);
+  
+  const loadUsers = async () => {
+    try {
+      setLoading(true);
+      const usersRef = collection(db, 'users');
+      const usersQuery = query(usersRef, limit(100));
+      const snapshot = await getDocs(usersQuery);
+      
+      const loadedUsers = snapshot.docs.map(doc => ({
+        uid: doc.id,
+        ...doc.data()
+      } as UserProfile));
+      
+      setUsers(loadedUsers);
+      
+      const online = loadedUsers.filter(u => u.isOnline).slice(0, 20);
+      setOnlineUsers(online);
+      
+      console.log('Loaded users:', loadedUsers.length, 'Online:', online.length);
+    } catch (error) {
+      console.error('Error loading users:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  const loadFollowingList = async () => {
+    if (!currentUser) return;
+    
+    try {
+      const following = await followService.getFollowing(currentUser.uid, 1000);
+      setFollowingUsers(new Set(following));
+    } catch (error) {
+      console.error('Error loading following:', error);
+    }
+  };
+  
+  const applyFilters = () => {
+    let filtered = [...users];
+    
+    if (searchTerm) {
+      filtered = filtered.filter(user => 
+        user.displayName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.businessInfo?.companyName?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+    
+    if (accountTypeFilter !== 'all') {
+      filtered = filtered.filter(user => user.accountType === accountTypeFilter);
+    }
+    
+    if (regionFilter !== 'all') {
+      filtered = filtered.filter(user => 
+        user.location?.region === regionFilter ||
+        user.location?.city === regionFilter
+      );
+    }
+    
+    filtered.sort((a, b) => {
+      switch (sortBy) {
+        case 'name':
+          return (a.displayName || '').localeCompare(b.displayName || '');
+        case 'newest':
+          return (b.createdAt?.toDate?.() || 0) - (a.createdAt?.toDate?.() || 0);
+        case 'trust':
+          return (b.verification?.trustScore || 0) - (a.verification?.trustScore || 0);
+        default:
+          return 0;
+      }
+    });
+    
+    setFilteredUsers(filtered);
+  };
+  
+  const handleFollow = async (userId: string) => {
+    if (!currentUser) {
+      alert(language === 'bg' ? 'Моля, влезте в профила си' : 'Please login');
+      return;
+    }
+    
+    const isFollowing = followingUsers.has(userId);
+    
+    if (isFollowing) {
+      await followService.unfollowUser(currentUser.uid, userId);
+      setFollowingUsers(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(userId);
+        return newSet;
+      });
+    } else {
+      await followService.followUser(currentUser.uid, userId);
+      setFollowingUsers(prev => new Set(prev).add(userId));
+    }
+  };
+  
+  const handleMessage = (userId: string) => {
+    alert('Messaging feature coming soon!');
+  };
+  
+  const t = (key: string) => {
+    const translations: Record<string, any> = {
+      bg: {
+        title: 'Директория на потребителите',
+        subtitle: 'Разгледайте всички потребители в платформата',
+        search: 'Търсене по име или имейл',
+        accountType: 'Тип акаунт',
+        all: 'Всички',
+        individual: 'Индивидуален',
+        business: 'Бизнес',
+        region: 'Регион',
+        sortBy: 'Подреди по',
+        name: 'Име',
+        newest: 'Най-нови',
+        trust: 'Доверие',
+        results: 'резултата',
+        loading: 'Зареждане на потребители...',
+        noUsers: 'Не са намерени потребители',
+        noUsersDesc: 'Опитайте да промените филтрите',
+        viewMode: 'Изглед'
+      },
+      en: {
+        title: 'Users Directory',
+        subtitle: 'Browse all users on the platform',
+        search: 'Search by name or email',
+        accountType: 'Account Type',
+        all: 'All',
+        individual: 'Individual',
+        business: 'Business',
+        region: 'Region',
+        sortBy: 'Sort by',
+        name: 'Name',
+        newest: 'Newest',
+        trust: 'Trust Score',
+        results: 'results',
+        loading: 'Loading users...',
+        noUsers: 'No users found',
+        noUsersDesc: 'Try adjusting your filters',
+        viewMode: 'View Mode'
+      }
+    };
+    return translations[language]?.[key] || key;
+  };
+  
+  if (loading) {
+    return (
+      <PageContainer>
+        <Container>
+          <LoadingState>
+            <Users size={64} />
+            <p>{t('loading')}</p>
+          </LoadingState>
+        </Container>
+      </PageContainer>
+    );
+  }
+  
+  return (
+    <PageContainer>
+      <Container>
+        <Header>
+          <h1>{t('title')}</h1>
+          <p>{t('subtitle')}</p>
+        </Header>
+        
+        <ControlsBar>
+          <ViewModeSelector>
+            <ViewModeButton 
+              $active={viewMode === 'bubbles'}
+              onClick={() => setViewMode('bubbles')}
+            >
+              <Circle size={18} />
+              Bubbles
+            </ViewModeButton>
+            
+            <ViewModeButton 
+              $active={viewMode === 'grid'}
+              onClick={() => setViewMode('grid')}
+            >
+              <Grid3x3 size={18} />
+              Grid
+            </ViewModeButton>
+            
+            <ViewModeButton 
+              $active={viewMode === 'list'}
+              onClick={() => setViewMode('list')}
+            >
+              <List size={18} />
+              List
+            </ViewModeButton>
+          </ViewModeSelector>
+          
+          <FilterGroup>
+            <label>
+              <Search size={16} />
+              {t('search')}
+            </label>
+            <Input
+              type="text"
+              placeholder={t('search')}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </FilterGroup>
+          
+          <FilterGroup style={{ maxWidth: '200px' }}>
+            <label>
+              <Building2 size={16} />
+              {t('accountType')}
+            </label>
+            <Select 
+              value={accountTypeFilter}
+              onChange={(e) => setAccountTypeFilter(e.target.value as any)}
+            >
+              <option value="all">{t('all')}</option>
+              <option value="individual">{t('individual')}</option>
+              <option value="business">{t('business')}</option>
+            </Select>
+          </FilterGroup>
+          
+          <FilterGroup style={{ maxWidth: '200px' }}>
+            <label>
+              <MapPin size={16} />
+              {t('region')}
+            </label>
+            <Select 
+              value={regionFilter}
+              onChange={(e) => setRegionFilter(e.target.value)}
+            >
+              <option value="all">{t('all')}</option>
+              {BULGARIA_REGIONS.map((region: any, index: number) => (
+                <option key={index} value={region.name}>
+                  {language === 'bg' ? region.name : region.nameEn}
+                </option>
+              ))}
+            </Select>
+          </FilterGroup>
+          
+          <FilterGroup style={{ maxWidth: '200px' }}>
+            <label>
+              <ArrowUpDown size={16} />
+              {t('sortBy')}
+            </label>
+            <Select 
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as any)}
+            >
+              <option value="name">{t('name')}</option>
+              <option value="newest">{t('newest')}</option>
+              <option value="trust">{t('trust')}</option>
+            </Select>
+          </FilterGroup>
+        </ControlsBar>
+        
+        <StatsBar>
+          <h3>{filteredUsers.length} {t('results')}</h3>
+        </StatsBar>
+        
+        {filteredUsers.length === 0 ? (
+          <EmptyState>
+            <Users size={80} />
+            <h3>{t('noUsers')}</h3>
+            <p>{t('noUsersDesc')}</p>
+          </EmptyState>
+        ) : viewMode === 'bubbles' ? (
+          <>
+            <OnlineUsersRow
+              onlineUsers={onlineUsers}
+              followingUsers={followingUsers}
+              onFollow={handleFollow}
+              onMessage={handleMessage}
+            />
+            
+            <BubblesGrid
+              users={filteredUsers}
+              density="comfortable"
+              bubbleSize="medium"
+              followingUsers={followingUsers}
+              onFollow={handleFollow}
+              onMessage={handleMessage}
+            />
+          </>
+        ) : viewMode === 'grid' ? (
+          <UsersGrid>
+            {filteredUsers.map((user) => (
+              <UserCard key={user.uid} onClick={() => window.location.href = `/profile?userId=${user.uid}`}>
+                <UserHeader>
+                  <Avatar 
+                    $imageUrl={user.profileImage?.url}
+                    $initial={user.displayName?.[0]?.toUpperCase() || '?'}
+                  />
+                  <UserInfo>
+                    <UserName>
+                      {user.displayName || 'User'}
+                      {user.accountType === 'business' && (
+                        <span className="badge">{t('business')}</span>
+                      )}
+                    </UserName>
+                    <UserEmail>
+                      {user.businessInfo?.companyName || user.email}
+                    </UserEmail>
+                    {user.location && (
+                      <UserLocation>
+                        <MapPin size={14} />
+                        {language === 'bg' ? user.location.region : user.location.city}
+                      </UserLocation>
+                    )}
+                  </UserInfo>
+                </UserHeader>
+              </UserCard>
+            ))}
+          </UsersGrid>
+        ) : (
+          <div>List view - coming soon</div>
+        )}
+      </Container>
+    </PageContainer>
+  );
+};
+
+export default UsersDirectoryPage;
+

@@ -176,61 +176,70 @@ const UserEmail = styled.div`
 // ⚡ NEW: Profile Type Switcher Bar (below cover image)
 const ProfileTypeSwitcher = styled.div<{ $themeColor?: string }>`
   display: flex;
-  gap: 12px;
-  padding: 16px 24px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 249, 250, 0.95) 100%);
-  border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-  margin: -30px auto 24px auto;
-  max-width: 500px;
+  gap: 8px;
+  padding: 10px 16px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 249, 250, 0.98) 100%);
+  border-radius: 20px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  margin: -30px 24px 24px 200px; /* يبدأ بعد الصورة الشخصية */
+  max-width: fit-content;
   position: relative;
   z-index: 10;
-  border: 2px solid ${props => props.$themeColor ? `${props.$themeColor}33` : 'rgba(255, 143, 16, 0.2)'};
+  border: 1.5px solid ${props => props.$themeColor ? `${props.$themeColor}33` : 'rgba(255, 143, 16, 0.2)'};
+  backdrop-filter: blur(10px);
   
   @media (max-width: 768px) {
     margin: -20px 16px 20px 16px;
-    padding: 12px 16px;
-    gap: 8px;
-    flex-direction: column;
+    padding: 8px 12px;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: center;
   }
 `;
 
 const ProfileTypeButton = styled.button<{ $active: boolean; $color: string }>`
-  flex: 1;
-  padding: 12px 20px;
-  font-size: 0.875rem;
-  font-weight: 700;
-  border: 2px solid ${props => props.$active ? props.$color : '#dee2e6'};
+  flex: 0 0 auto;
+  padding: 6px 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1.5px solid ${props => props.$active ? props.$color : '#e0e0e0'};
   background: ${props => props.$active 
     ? `linear-gradient(135deg, ${props.$color} 0%, ${props.$color}E6 100%)` 
     : 'white'};
   color: ${props => props.$active ? 'white' : '#6c757d'};
-  border-radius: 10px;
+  border-radius: 16px;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 5px;
   box-shadow: ${props => props.$active 
-    ? `0 4px 12px ${props.$color}40` 
-    : '0 2px 6px rgba(0, 0, 0, 0.05)'};
+    ? `0 2px 8px ${props.$color}35` 
+    : '0 1px 4px rgba(0, 0, 0, 0.04)'};
+  min-width: auto;
+  white-space: nowrap;
   
   /* ⚡ Anti-flickering */
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   transform: translateZ(0);
   
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+  
   &:hover {
-    transform: translateZ(0) translateY(-2px);
+    transform: translateZ(0) translateY(-1px);
     border-color: ${props => props.$color};
     background: ${props => props.$active 
       ? `linear-gradient(135deg, ${props.$color}F0 0%, ${props.$color}CC 100%)` 
       : `${props.$color}0D`};
     color: ${props => props.$active ? 'white' : props.$color};
     box-shadow: ${props => props.$active 
-      ? `0 6px 20px ${props.$color}60` 
-      : `0 4px 12px ${props.$color}20`};
+      ? `0 4px 14px ${props.$color}50` 
+      : `0 2px 8px ${props.$color}18`};
   }
   
   &:active {
@@ -251,50 +260,53 @@ const ProfileTypeButton = styled.button<{ $active: boolean; $color: string }>`
 // Quick Action Buttons
 const QuickActionsContainer = styled.div`
   display: flex;
-  gap: 16px;
-  margin-left: auto;
+  gap: 6px;
+  margin-left: 8px;
   
   @media (max-width: 768px) {
     margin-left: 0;
-    width: 100%;
-    justify-content: space-between;
+    gap: 4px;
+    flex-wrap: wrap;
   }
 `;
 
 const QuickActionButton = styled.button<{ $variant?: 'primary' | 'secondary' | 'success' }>`
-  padding: 10px 18px;
-  font-size: 0.875rem;
+  padding: 6px 12px;
+  font-size: 0.75rem;
   font-weight: 600;
-  border: 2px solid ${props => {
+  border: 1.5px solid ${props => {
     if (props.$variant === 'success') return '#16a34a';
     if (props.$variant === 'primary') return '#3b82f6';
-    return '#6b7280';
+    return '#9ca3af';
   }};
   background: ${props => {
     if (props.$variant === 'success') return 'linear-gradient(135deg, #16a34a 0%, #15803d 100%)';
     if (props.$variant === 'primary') return 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)';
     return 'white';
   }};
-  color: ${props => props.$variant ? 'white' : '#374151'};
-  border-radius: 8px;
+  color: ${props => props.$variant ? 'white' : '#4b5563'};
+  border-radius: 16px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   white-space: nowrap;
-  
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px ${props => {
-      if (props.$variant === 'success') return 'rgba(22, 163, 74, 0.3)';
-      if (props.$variant === 'primary') return 'rgba(59, 130, 246, 0.3)';
-      return 'rgba(0, 0, 0, 0.1)';
-    }};
-  }
+  min-width: auto;
   
   svg {
     flex-shrink: 0;
+    width: 13px;
+    height: 13px;
+  }
+  
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px ${props => {
+      if (props.$variant === 'success') return 'rgba(22, 163, 74, 0.25)';
+      if (props.$variant === 'primary') return 'rgba(59, 130, 246, 0.25)';
+      return 'rgba(0, 0, 0, 0.08)';
+    }};
   }
   
   @media (max-width: 768px) {
@@ -719,17 +731,14 @@ const ProfilePage: React.FC = () => {
               {language === 'bg' ? 'Компания' : 'Company'}
             </ProfileTypeButton>
             
-            {/* Spacer */}
-            <div style={{ width: '1px', height: '30px', background: '#e5e7eb', margin: '0 8px' }} />
-            
-            {/* Quick Actions */}
+            {/* Quick Actions - No spacer needed with new compact design */}
             <QuickActionsContainer>
               {/* Business Info Button (goes to Settings) */}
               <QuickActionButton 
                 $variant="success"
                 onClick={() => handleTabChange('settings')}
               >
-                <Building2 size={16} />
+                <Building2 size={13} />
                 {language === 'bg' ? 'معلومات المشروع' : 'Business Info'}
               </QuickActionButton>
               
