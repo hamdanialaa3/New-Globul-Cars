@@ -27,7 +27,7 @@ import {
 import type { GarageCar } from '../../components/Profile';
 import { TrustLevel } from '../../services/profile/trust-score-service';
 import { doc, updateDoc } from 'firebase/firestore';
-import { db } from '../../firebase/firebase-config';
+import { db, auth } from '../../firebase/firebase-config';
 import { 
   RefreshCw, 
   User, 
@@ -335,13 +335,28 @@ const ProfilePage: React.FC = () => {
   
   // ⚡ FIXED: Handle profile type confirmation
   const handleConfirmProfileType = async () => {
-    if (!pendingProfileType || !user) return;
+    // Get current Firebase Auth user
+    const currentUser = auth.currentUser;
+    
+    if (!pendingProfileType || !currentUser?.uid) {
+      console.error('❌ Cannot update profile type: missing data', { 
+        pendingProfileType, 
+        currentUser: currentUser?.uid,
+        user: user?.uid 
+      });
+      toast.error(language === 'bg' ? 'Моля влезте в профила си' : 'Please login to your profile');
+      return;
+    }
     
     try {
-      // Update profileType in Firestore
-      await updateDoc(doc(db, 'users', user.uid), {
+      console.log('🔄 Updating profile type...', { uid: currentUser.uid, newType: pendingProfileType });
+      
+      // Update profileType in Firestore using currentUser.uid
+      await updateDoc(doc(db, 'users', currentUser.uid), {
         profileType: pendingProfileType
       });
+      
+      console.log('✅ Profile type updated successfully');
       
       // Show success message based on type
       const messages = {
