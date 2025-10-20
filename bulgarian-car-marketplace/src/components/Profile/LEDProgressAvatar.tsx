@@ -198,10 +198,22 @@ export const LEDProgressAvatar: React.FC<LEDProgressAvatarProps> = ({
   const ringColor = ledColor || DEFAULT_LED_COLORS[profileType];
   
   // ⚡ FIXED: Better default avatar handling
-  const photoURL = user?.photoURL 
-    || user?.profileImage?.url 
-    || user?.profileImage 
-    || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120"%3E%3Crect fill="%23f0f0f0" width="120" height="120"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="48" fill="%23999"%3E' + (user?.firstName?.[0] || user?.businessName?.[0] || '?') + '%3C/text%3E%3C/svg%3E';
+  const getPhotoURL = (): string => {
+    if (typeof user?.photoURL === 'string') {
+      return user.photoURL;
+    }
+    if (typeof user?.profileImage === 'string') {
+      return user.profileImage;
+    }
+    if (user?.profileImage && typeof user.profileImage === 'object' && 'url' in user.profileImage) {
+      return user.profileImage.url;
+    }
+    // Generate default SVG avatar
+    const initial = user?.firstName?.[0] || user?.businessName?.[0] || '?';
+    return `data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120"%3E%3Crect fill="%23f0f0f0" width="120" height="120"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="48" fill="%23999"%3E${initial}%3C/text%3E%3C/svg%3E`;
+  };
+
+  const photoURL = getPhotoURL();
   
   // Get progress message
   const progressMessage = getProgressMessage(progress, language);

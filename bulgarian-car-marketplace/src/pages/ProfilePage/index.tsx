@@ -753,7 +753,6 @@ const ProfilePage: React.FC = () => {
                     : (language === 'bg' ? 'Синхронизирай от Google' : 'Sync from Google')}
                 </SyncButton>
               )}
-            </div>
 
             {/* Trust Badge */}
             <TrustBadge
