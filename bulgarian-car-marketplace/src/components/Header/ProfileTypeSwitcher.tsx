@@ -8,7 +8,7 @@ import { useLanguage } from '../../contexts/LanguageContext';
 
 const ProfileTypeSwitcher: React.FC = () => {
   const { profileType, switchProfileType, theme } = useProfileType();
-  const { language } = useLanguage();
+  const { t } = useLanguage();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSwitch = async (newType: 'private' | 'dealer' | 'company') => {
@@ -31,10 +31,10 @@ const ProfileTypeSwitcher: React.FC = () => {
         $color="#FF8F10"
         onClick={() => handleSwitch('private')}
         disabled={isLoading}
-        title={language === 'bg' ? 'Личен профил' : 'Private Profile'}
+        title={t('profileTypes.private')}
       >
         <User size={16} />
-        <span>{language === 'bg' ? 'Личен' : 'Private'}</span>
+        <span>{t('profileTypes.private')}</span>
       </TypeButton>
 
       <TypeButton
@@ -42,10 +42,10 @@ const ProfileTypeSwitcher: React.FC = () => {
         $color="#16a34a"
         onClick={() => handleSwitch('dealer')}
         disabled={isLoading}
-        title={language === 'bg' ? 'Дилърски профил' : 'Dealer Profile'}
+        title={t('profileTypes.dealer')}
       >
         <Building2 size={16} />
-        <span>{language === 'bg' ? 'Дилър' : 'Dealer'}</span>
+        <span>{t('profileTypes.dealer')}</span>
       </TypeButton>
 
       <TypeButton
@@ -53,10 +53,10 @@ const ProfileTypeSwitcher: React.FC = () => {
         $color="#1d4ed8"
         onClick={() => handleSwitch('company')}
         disabled={isLoading}
-        title={language === 'bg' ? 'Фирмен профил' : 'Company Profile'}
+        title={t('profileTypes.company')}
       >
         <Building2 size={16} />
-        <span>{language === 'bg' ? 'Компания' : 'Company'}</span>
+        <span>{t('profileTypes.company')}</span>
       </TypeButton>
     </SwitcherContainer>
   );

@@ -65,6 +65,7 @@ import ProfileDashboard from '../../components/Profile/ProfileDashboard';
 import VerificationBadge from '../../components/Profile/VerificationBadge';
 import ConsultationsTab from './ConsultationsTab';
 import { useToast } from '../../components/Toast';
+import ProfileImageUploader from '../../components/Profile/ProfileImageUploader';
 
 // ==================== ANIMATIONS ====================
 // ⚡ OPTIMIZED: Simplified animations - run once on mount, not infinite
@@ -548,7 +549,7 @@ const ProfilePage: React.FC = () => {
             onClick={() => handleTabChange('profile')}
           >
             <UserCircle size={16} />
-            {language === 'bg' ? 'Профil' : 'Profile'}
+            {language === 'bg' ? 'Профил' : 'Profile'}
           </TabButton>
           {isOwnProfile && (
             <>
@@ -614,40 +615,7 @@ const ProfilePage: React.FC = () => {
         />
         )}
         
-        {/* Quick Actions - Shown only on own profile */}
-        {activeTab === 'profile' && isOwnProfile && (
-          <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '16px 24px' }}>
-            <QuickActionsContainer>
-              {/* Business Info Button - Only show for dealer/company profiles */}
-              {profileType !== 'private' && (
-                <QuickActionButton 
-                  $variant="success"
-                  onClick={() => handleTabChange('settings')}
-                >
-                  <Building2 size={13} />
-                  {t('profile.businessInfo')}
-                </QuickActionButton>
-              )}
-              
-              {/* Personal Info Button (Edit Profile) */}
-              <QuickActionButton 
-                $variant="primary"
-                onClick={() => setEditing(!editing)}
-              >
-                <User size={13} />
-                {t('profile.personalInfo')}
-              </QuickActionButton>
-              
-              {/* Add Car Button */}
-              <QuickActionButton 
-                onClick={() => navigate('/add-car')}
-              >
-                <Car size={13} />
-                {t('profile.addCar')}
-              </QuickActionButton>
-            </QuickActionsContainer>
-          </div>
-        )}
+        {/* ❌ REMOVED: Quick Actions buttons (Add Listing, Edit Profile, Settings) per user request */}
 
         {/* Compact Header for other tabs */}
         {activeTab !== 'profile' && (
@@ -680,44 +648,42 @@ const ProfilePage: React.FC = () => {
           <AnimatedProfileGrid key="profile-tab">
             {/* Profile Sidebar - 🎨 DYNAMIC Theme Colors */}
             <S.ProfileSidebar $isBusinessMode={isBusinessMode} $themeColor={theme.primary}>
-            {/* Profile Image with LED Progress Ring */}
-            <div style={{ marginTop: '-80px', marginBottom: '20px', display: 'flex', justifyContent: 'center' }}>
-              <LEDProgressAvatar
-                user={user}
-                profileType={profileType}
-                onClick={() => isOwnProfile && setEditing(true)}
-              />
-            </div>
-
-            {/* User Info */}
-            <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-              <div style={{ fontSize: '0.9rem', fontWeight: 'bold', marginBottom: '6px' }}>
+            {/* User Info ABOVE Profile Image */}
+            <div style={{ textAlign: 'center', marginBottom: '12px', marginTop: '8px' }}>
+              <div style={{ fontSize: '1.1rem', fontWeight: 'bold', marginBottom: '4px' }}>
                 {user.displayName || t('profile.anonymous')}
               </div>
-              <div style={{ color: '#666', fontSize: '0.75rem', marginBottom: '20px' }}>
+              <div style={{ color: '#666', fontSize: '0.85rem', marginBottom: '10px' }}>
                 {user.email}
               </div>
-              
-              {/* ✨ NEW: Verification Badges */}
-              <div style={{ 
-                        display: 'flex',
-                    flexWrap: 'wrap', 
-                    gap: '8px', 
-                    marginTop: '12px',
-                    justifyContent: 'center'
-                  }}>
-                    <VerificationBadge 
-                      type="email" 
-                      status={user?.email ? 'verified' : 'unverified'} 
-                      profileType={profileType}
-                    />
-                    <VerificationBadge 
-                      type="phone" 
-                      status={user?.phoneNumber ? 'verified' : 'unverified'} 
-                      profileType={profileType}
-                    />
-                  </div>
-                </div>
+            </div>
+            {/* Profile Image Uploader (no ring) */}
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+              <ProfileImageUploader
+                currentImageUrl={user?.profileImage?.url}
+                onUploadSuccess={() => window.location.reload()}
+                onUploadError={(err) => alert(err)}
+              />
+            </div>
+            {/* ✨ NEW: Verification Badges */}
+            <div style={{ 
+              display: 'flex',
+              flexWrap: 'wrap', 
+              gap: '8px', 
+              marginTop: '12px',
+              justifyContent: 'center'
+            }}>
+              <VerificationBadge 
+                type="email" 
+                status={user?.email ? 'verified' : 'unverified'} 
+                profileType={profileType}
+              />
+              <VerificationBadge 
+                type="phone" 
+                status={user?.phoneNumber ? 'verified' : 'unverified'} 
+                profileType={profileType}
+              />
+            </div>
               
               {/* Seller Rating (for sellers only) */}
               {!isOwnProfile && user.accountType === 'business' && (
@@ -746,7 +712,7 @@ const ProfilePage: React.FC = () => {
                 <SyncButton onClick={handleGoogleSync} disabled={syncing}>
                   <RefreshCw size={16} className={syncing ? 'spinning' : ''} />
                   {syncing 
-                    ? (language === 'bg' ? 'Синхронизиране...' : 'Syncing...') 
+                    ? (language === 'bg' ? 'Синхронизацияне...' : 'Syncing...') 
                     : (language === 'bg' ? 'Синхронизирай от Google' : 'Sync from Google')}
                 </SyncButton>
             )}
@@ -1062,9 +1028,9 @@ const ProfilePage: React.FC = () => {
                             required
                             style={{ borderColor: '#FF7900' }}
                           >
-                            <option value="dealership">🏢 {language === 'bg' ? 'Автосалон / Дилър' : 'Car Dealership'}</option>
-                            <option value="trader">🤝 {language === 'bg' ? 'Търговец' : 'Trader'}</option>
-                            <option value="company">🏭 {language === 'bg' ? 'Компания' : 'Company'}</option>
+                            <option value="dealership">{language === 'bg' ? 'Автосалон / Дилър' : 'Car Dealership'}</option>
+                            <option value="trader">{language === 'bg' ? 'Търговец' : 'Trader'}</option>
+                            <option value="company">{language === 'bg' ? 'Компания' : 'Company'}</option>
                           </select>
                         </S.FormGroup>
 
@@ -1332,10 +1298,10 @@ const ProfilePage: React.FC = () => {
                     </h4>
                     <S.FormGroup>
                       <label>{language === 'bg' ? 'Предпочитан език' : 'Preferred Language'}</label>
-                      <select name="preferredLanguage" value={formData.preferredLanguage} onChange={handleInputChange}>
-                        <option value="bg">🇧🇬 {t('languages.bulgarian')}</option>
-                        <option value="en">🇬🇧 {t('languages.english')}</option>
-                      </select>
+                        <select name="preferredLanguage" value={formData.preferredLanguage} onChange={handleInputChange}>
+                          <option value="bg">{t('languages.bulgarian')}</option>
+                          <option value="en">{t('languages.english')}</option>
+                        </select>
                     </S.FormGroup>
                   </div>
 
@@ -1685,7 +1651,7 @@ const ProfilePage: React.FC = () => {
                       <AlertCircle size={24} color="#f59e0b" />
                       <div>
                         <div style={{ fontWeight: 'bold', marginBottom: '4px', color: '#92400e' }}>
-                          {language === 'bg' ? '💼 Информация за автокъщи' : '💼 Dealership Information'}
+                          {language === 'bg' ? 'Информация за автокъщи' : 'Dealership Information'}
                         </div>
                         <div style={{ fontSize: '14px', color: '#78350f' }}>
                           {language === 'bg' 
