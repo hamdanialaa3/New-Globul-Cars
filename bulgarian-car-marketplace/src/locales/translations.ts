@@ -177,11 +177,17 @@ export const translations = {
       topBrands: 'Топ марки',
       searchCars: 'Търси коли'
     },
+    profileTypes: {
+      private: 'Личен',
+      dealer: 'Дилър',
+      company: 'Компания',
+    },
     profile: {
       title: 'Моят профил',
       subtitle: 'Управлявайте вашия профил и настройки',
       editProfile: 'Редактирай профил',
       addCar: 'Добави кола',
+      businessInfo: 'Бизнес информация',
       messages: 'Съобщения',
       logout: 'Изход',
       load_user_error_generic: 'Грешка при зареждане на профила',
@@ -972,11 +978,17 @@ export const translations = {
       topBrands: 'Top Brands',
       searchCars: 'Search Cars'
     },
+    profileTypes: {
+      private: 'Private',
+      dealer: 'Dealer',
+      company: 'Company',
+    },
     profile: {
       title: 'My Profile',
       subtitle: 'Manage your profile and settings',
       editProfile: 'Edit Profile',
       addCar: 'Add Car',
+      businessInfo: 'Business Information',
       messages: 'Messages',
       logout: 'Logout',
       load_user_error_generic: 'Error loading profile',
