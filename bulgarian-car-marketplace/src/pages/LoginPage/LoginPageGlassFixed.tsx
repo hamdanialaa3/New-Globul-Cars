@@ -140,26 +140,32 @@ const InputBox = styled.div`
   }
 `;
 
-const Input = styled.input`
+const Input = styled.input<{ $verified?: boolean }>`
   width: 100%;
   height: 52px;
-  background: rgba(0, 0, 0, 0.03);
-  border: 2px solid rgba(0, 0, 0, 0.1);
+  background: ${props => props.$verified ? '#e9ecef' : 'rgba(0, 0, 0, 0.03)'};
+  border: 2px solid ${props => props.$verified ? '#ced4da' : 'rgba(0, 0, 0, 0.1)'};
   border-radius: 50px;
   font-size: 16px;
-  color: #2c3e50;
+  color: ${props => props.$verified ? '#6c757d' : '#2c3e50'};
   padding: 0 50px 0 20px;
   transition: all 0.3s ease;
 
   &::placeholder {
-    color: rgba(0, 0, 0, 0.4);
+    color: ${props => props.$verified ? '#adb5bd' : 'rgba(0, 0, 0, 0.4)'};
   }
 
   &:focus {
     outline: none;
-    border-color: #FF8F10;
-    background: rgba(255, 143, 16, 0.05);
-    box-shadow: 0 0 20px rgba(255, 143, 16, 0.2);
+    border-color: ${props => props.$verified ? '#ced4da' : '#5010ffff'};
+    background: ${props => props.$verified ? '#e9ecef' : 'rgba(255, 143, 16, 0.05)'};
+    box-shadow: ${props => props.$verified ? 'none' : '0 0 20px rgba(255, 143, 16, 0.2)'};
+  }
+
+  &:disabled {
+    background: #e9ecef;
+    color: #6c757d;
+    cursor: not-allowed;
   }
 
   @media (max-width: 480px) {
@@ -483,6 +489,7 @@ const LoginPageGlassFixed: React.FC = () => {
               onChange={handleInputChange}
               required
               disabled={loading}
+              $verified={!!success}
             />
             <InputIcon>
               <Mail size={20} />
@@ -498,6 +505,7 @@ const LoginPageGlassFixed: React.FC = () => {
               onChange={handleInputChange}
               required
               disabled={loading}
+              $verified={!!success}
             />
             <InputIcon onClick={() => setShowPassword(!showPassword)}>
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
