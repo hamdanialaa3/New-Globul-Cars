@@ -625,7 +625,7 @@ const ProfilePage: React.FC = () => {
                   onClick={() => handleTabChange('settings')}
                 >
                   <Building2 size={13} />
-                  {language === 'bg' ? 'معلومات المشروع' : 'Business Info'}
+                  {t('profile.businessInfo')}
                 </QuickActionButton>
               )}
               
@@ -635,7 +635,7 @@ const ProfilePage: React.FC = () => {
                 onClick={() => setEditing(!editing)}
               >
                 <User size={13} />
-                {language === 'bg' ? 'المعلومات الشخصية' : 'Personal Info'}
+                {t('profile.personalInfo')}
               </QuickActionButton>
               
               {/* Add Car Button */}
@@ -643,7 +643,7 @@ const ProfilePage: React.FC = () => {
                 onClick={() => navigate('/add-car')}
               >
                 <Car size={13} />
-                {language === 'bg' ? 'إضافة سيارة' : 'Add Car'}
+                {t('profile.addCar')}
               </QuickActionButton>
             </QuickActionsContainer>
           </div>
