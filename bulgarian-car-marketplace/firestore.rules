@@ -40,7 +40,12 @@ service cloud.firestore {
       allow read: if isOwnerOrAdmin(userId);
       // الكتابة: للمستخدم نفسه فقط
       allow create: if isSignedIn() && request.auth.uid == userId;
-      allow update: if isOwnerOrAdmin(userId);
+      // 🎯 FIXED: Allow profileType changes (with validation)
+      allow update: if isOwnerOrAdmin(userId) && (
+        // If profileType is being changed, validate it's one of the allowed values
+        !('profileType' in request.resource.data) ||
+        request.resource.data.profileType in ['private', 'dealer', 'company']
+      );
       allow delete: if isSuperAdmin();
     }
     
