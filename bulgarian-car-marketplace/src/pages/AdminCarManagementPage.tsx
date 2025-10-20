@@ -3,7 +3,7 @@
 
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useAuth } from '../context/AuthProvider';
+import { useAuth } from '../contexts/AuthProvider';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 import carListingService from '../services/carListingService';

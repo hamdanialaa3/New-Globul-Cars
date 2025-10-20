@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useToast } from '../../components/Toast';
-import { useAuth } from '../../context/AuthProvider';  // FIXED: Correct path
+import { useAuth } from '../../contexts/AuthProvider';  // FIXED: Correct path
 import { CheckCircle, XCircle, File, User, Building2, AlertCircle, ExternalLink } from 'lucide-react';
 import verificationService from './VerificationService';
 import { VerificationRequest } from './types';

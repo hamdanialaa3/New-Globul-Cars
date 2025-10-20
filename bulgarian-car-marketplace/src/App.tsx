@@ -5,7 +5,7 @@ import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import { LanguageProvider } from './contexts/LanguageContext';
-import { AuthProvider } from './context/AuthProvider';
+import { AuthProvider } from './contexts/AuthProvider';
 import { ProfileTypeProvider } from './contexts/ProfileTypeContext';  // NEW: Profile Type System
 import { ToastProvider } from './components/Toast';
 import { bulgarianTheme, GlobalStyles } from './styles/theme';
@@ -94,6 +94,11 @@ const SitemapPage = React.lazy(() => import('./pages/SitemapPage'));
 const NotificationsPage = React.lazy(() => import('./pages/NotificationsPage'));
 const SavedSearchesPage = React.lazy(() => import('./pages/SavedSearchesPage'));
 const FavoritesPage = React.lazy(() => import('./pages/FavoritesPage'));
+const DealerPublicPage = React.lazy(() => import('./pages/DealerPublicPage'));  // NEW: Public Dealer Profiles
+
+// NEW: P2 Frontend Integration - Invoices & Commissions
+const InvoicesPage = React.lazy(() => import('./pages/InvoicesPage'));
+const CommissionsPage = React.lazy(() => import('./pages/CommissionsPage'));
 
 // Layout Component
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -236,6 +241,8 @@ const MainLayout: React.FC = () => (
       <Route path="/cars" element={<CarsPage />} />
       <Route path="/cars/:id" element={<CarDetailsPage />} />
       <Route path="/car/:id" element={<CarDetailsPage />} />
+      {/* Public Dealer Profile */}
+      <Route path="/dealer/:slug" element={<DealerPublicPage />} />
       {/* Unified Sell System - Mobile.de Style Only */}
       <Route path="/sell" element={<SellPage />} />
       {/* Redirect old routes to new system */}
@@ -408,6 +415,25 @@ const MainLayout: React.FC = () => (
           </ProtectedRoute>
         }
       />
+      
+      {/* NEW: Invoices & Commissions Pages - P2 Integration */}
+      <Route
+        path="/invoices"
+        element={
+          <ProtectedRoute>
+            <InvoicesPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/commissions"
+        element={
+          <ProtectedRoute>
+            <CommissionsPage />
+          </ProtectedRoute>
+        }
+      />
+      
       <Route
         path="/dashboard"
         element={

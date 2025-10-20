@@ -42,9 +42,12 @@ console.log('🚫 Firebase App Check is completely disabled to prevent authentic
 export const auth = getAuth(app);
 
 // Initialize Firestore with custom settings to prevent state errors
+// ⚡ OPTIMIZED: Cache enabled for better performance
 export const db = initializeFirestore(app, {
   cacheSizeBytes: CACHE_SIZE_UNLIMITED,
-  ignoreUndefinedProperties: true
+  ignoreUndefinedProperties: true,
+  experimentalAutoDetectLongPolling: true,  // Better connection handling
+  experimentalForceLongPolling: false        // Auto-detect for best performance
 });
 
 export const storage = getStorage(app);

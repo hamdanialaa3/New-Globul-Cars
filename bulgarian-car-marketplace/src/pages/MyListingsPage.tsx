@@ -4,7 +4,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { useAuth } from '../context/AuthProvider';
+import { useAuth } from '../contexts/AuthProvider';
 import { useLanguage } from '../contexts/LanguageContext';
 import carListingService from '../services/carListingService';
 import { CarListing } from '../types/CarListing';

@@ -6,7 +6,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { X, Mail, Send, CheckCircle, AlertCircle, Loader } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { useAuth } from '../../context/AuthProvider';
+import { useAuth } from '../../contexts/AuthProvider';
 import { EmailVerificationService } from '../../services/email-verification';
 
 // ==================== STYLED COMPONENTS ====================

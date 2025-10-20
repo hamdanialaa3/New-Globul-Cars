@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { useAuth } from '../../context/AuthProvider';
+import { useAuth } from '../../contexts/AuthProvider';
 import SellWorkflowService from '../../services/sellWorkflowService';
 import WorkflowPersistenceService from '../../services/workflowPersistenceService';
 import { ProfileStatsService } from '../../services/profile/profile-stats-service';

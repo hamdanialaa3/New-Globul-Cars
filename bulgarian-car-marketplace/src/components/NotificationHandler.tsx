@@ -5,7 +5,7 @@
 import { useEffect } from 'react';
 import { notificationService } from '../services/notification-service';
 import { useToast } from './Toast';
-import { useAuth } from '../context/AuthProvider';
+import { useAuth } from '../contexts/AuthProvider';
 
 const NotificationHandler: React.FC = () => {
   const { showToast } = useToast();

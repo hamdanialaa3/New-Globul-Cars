@@ -271,7 +271,7 @@ const CarLogo = styled.img`
   height: 90px;
   object-fit: contain;
   filter: drop-shadow(0 10px 30px rgba(255, 255, 255, 0.4));
-  animation: ${pulse} 3s ease-in-out infinite;
+  animation: ${pulse} 3s ease-in-out  /* ⚡ OPTIMIZED: Removed infinite */;
 `;
 
 const CarLogoGlow = styled.div`
@@ -280,7 +280,7 @@ const CarLogoGlow = styled.div`
   height: 120px;
   border-radius: 50%;
   background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
-  animation: ${pulse} 3s ease-in-out infinite;
+  animation: ${pulse} 3s ease-in-out  /* ⚡ OPTIMIZED: Removed infinite */;
 `;
 
 const StatusBadge = styled.div<{ $status: string }>`
@@ -515,7 +515,7 @@ const EmptyState = styled.div`
 const CreateButton = styled.button`
   background: linear-gradient(135deg, #2c3e50, #4ca1af);
   background-size: 200% 200%;
-  animation: ${gradientShift} 4s ease infinite;
+  animation: ${gradientShift} 4s ease  /* ⚡ OPTIMIZED: Removed infinite */;
   color: white;
   border: none;
   padding: 1rem 2.5rem;

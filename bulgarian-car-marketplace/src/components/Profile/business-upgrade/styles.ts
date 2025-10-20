@@ -40,7 +40,7 @@ export const UpgradeCard = styled.div`
     #1e3a8a 100%
   );
   background-size: 200% 200%;
-  animation: ${shimmer} 4s linear infinite;
+  animation: ${shimmer} 4s linear  /* ⚡ OPTIMIZED: Removed infinite */;
   margin-bottom: 24px;
   box-shadow: 
     0 10px 40px rgba(30, 58, 138, 0.4),
@@ -50,7 +50,7 @@ export const UpgradeCard = styled.div`
   
   &:hover {
     transform: translateY(-2px);
-    animation: ${glow} 2s ease-in-out infinite;
+    animation: ${glow} 2s ease-in-out  /* ⚡ OPTIMIZED: Removed infinite */;
   }
 `;
 
@@ -120,7 +120,7 @@ export const IconCircle = styled.div`
     inset 0 1px 2px rgba(255, 255, 255, 0.3),
     inset 0 -1px 2px rgba(0, 0, 0, 0.3);
   border: 2px solid rgba(255, 255, 255, 0.2);
-  animation: ${float} 3s ease-in-out infinite;
+  animation: ${float} 3s ease-in-out  /* ⚡ OPTIMIZED: Removed infinite */;
   
   svg {
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
@@ -158,7 +158,7 @@ export const PremiumBadge = styled.div`
   color: #fde047;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  animation: ${pulse} 2s ease-in-out infinite;
+  animation: ${pulse} 2s ease-in-out  /* ⚡ OPTIMIZED: Removed infinite */;
   text-shadow: 0 0 10px rgba(253, 224, 71, 0.5);
   margin: 0 auto 14px auto;
   width: fit-content;

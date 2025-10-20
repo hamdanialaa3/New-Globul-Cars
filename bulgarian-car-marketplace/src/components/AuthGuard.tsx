@@ -3,7 +3,7 @@
 
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import { useAuth } from '../context/AuthProvider';
+import { useAuth } from '../contexts/AuthProvider';
 import { useLanguage } from '../contexts/LanguageContext';
 import styled from 'styled-components';
 import { Lock, LogIn, Home } from 'lucide-react';

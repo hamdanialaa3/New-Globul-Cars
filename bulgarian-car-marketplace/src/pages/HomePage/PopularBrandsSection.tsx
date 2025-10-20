@@ -1,7 +1,7 @@
 // Popular Car Brands Section
 // قسم الماركات الشائعة مع الربط بالبيانات الحقيقية
 
-import React from 'react';
+import React, { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
 import styled from 'styled-components';
@@ -31,12 +31,12 @@ const SectionContainer = styled.section`
   background-image: url('/assets/backgrounds/metal-bg-1.jpg');
   background-size: cover;
   background-position: center;
-  background-attachment: fixed;
   background-repeat: no-repeat;
   max-width: 1200px;
   margin: 0 auto;
   position: relative;
-  filter: blur(0.5px);
+  transform: translateZ(0);
+  will-change: transform;
   
   &::before {
     content: '';
@@ -283,5 +283,4 @@ const PopularBrandsSection: React.FC = () => {
   );
 };
 
-export default PopularBrandsSection;
-
+export default memo(PopularBrandsSection);

@@ -6,7 +6,7 @@
 
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useAuth } from '../../context/AuthProvider';
+import { useAuth } from '../../contexts/AuthProvider';
 import { useLanguage } from '../../contexts/LanguageContext';
 import messagingService, { ConversationWithUser } from '../../services/messaging/messaging.service';
 import { formatDistanceToNow } from 'date-fns';

@@ -12,6 +12,8 @@ import CompanyIcon from '../../components/icons/CompanyIcon';
 import SplitScreenLayout from '../../components/SplitScreenLayout';
 import { WorkflowFlow } from '../../components/WorkflowVisualization';
 import { bulgarianAuthService } from '../../firebase';
+import ProfileTypeConfirmModal from '../../components/Profile/ProfileTypeConfirmModal';  // ⚡ NEW
+import type { ProfileType } from '../../contexts/ProfileTypeContext';  // ⚡ NEW
 
 const ContentSection = styled.div`
   display: flex;
@@ -160,6 +162,10 @@ const SellerTypePageNew: React.FC = () => {
   const { language, t } = useLanguage();
   const [hoveredType, setHoveredType] = useState<string | null>(null);
   const [autoDetectedType, setAutoDetectedType] = useState<string | null>(null);
+  
+  // ⚡ NEW: Confirmation Modal State
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [selectedType, setSelectedType] = useState<ProfileType | null>(null);
 
   const vehicleType = searchParams.get('vt');
 
@@ -169,14 +175,31 @@ const SellerTypePageNew: React.FC = () => {
     { id: 'company', IconComponent: CompanyIcon }
   ];
 
+  // ⚡ NEW: Show confirmation modal first
   const handleSelect = useCallback((typeId: string) => {
+    setSelectedType(typeId as ProfileType);
+    setShowConfirmModal(true);
+  }, []);
+
+  // ⚡ NEW: Handle modal confirmation
+  const handleConfirmSelection = useCallback(() => {
+    if (!selectedType) return;
+    
     const params = new URLSearchParams();
     if (vehicleType) params.set('vt', vehicleType);
-    params.set('st', typeId);
+    params.set('st', selectedType);
     
-    // Auto-navigate immediately
+    setShowConfirmModal(false);
+    
+    // Navigate after confirmation
     navigate(`/sell/inserat/${vehicleType || 'car'}/fahrzeugdaten/antrieb-und-umwelt?${params.toString()}`);
-  }, [navigate, vehicleType]);
+  }, [navigate, vehicleType, selectedType]);
+
+  // ⚡ NEW: Handle modal cancellation
+  const handleCancelSelection = useCallback(() => {
+    setShowConfirmModal(false);
+    setSelectedType(null);
+  }, []);
 
   // Auto-detect seller type from user profile
   useEffect(() => {
@@ -286,7 +309,21 @@ const SellerTypePageNew: React.FC = () => {
     />
   );
 
-  return <SplitScreenLayout leftContent={leftContent} rightContent={rightContent} />;
+  return (
+    <>
+      <SplitScreenLayout leftContent={leftContent} rightContent={rightContent} />
+      
+      {/* ⚡ NEW: Profile Type Confirmation Modal */}
+      {selectedType && (
+        <ProfileTypeConfirmModal
+          isOpen={showConfirmModal}
+          profileType={selectedType}
+          onConfirm={handleConfirmSelection}
+          onCancel={handleCancelSelection}
+        />
+      )}
+    </>
+  );
 };
 
 export default SellerTypePageNew;

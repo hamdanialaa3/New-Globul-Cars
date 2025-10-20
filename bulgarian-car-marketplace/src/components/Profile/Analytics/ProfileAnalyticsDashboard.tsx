@@ -307,7 +307,7 @@ export const ProfileAnalyticsDashboard: React.FC<ProfileAnalyticsDashboardProps>
           </h2>
         </Header>
         <div style={{ textAlign: 'center', padding: '40px', color: '#6c757d' }}>
-          <RefreshCw size={32} style={{ animation: 'spin 1s linear infinite' }} />
+          <RefreshCw size={32} style={{ animation: 'spin 1s linear  /* ⚡ OPTIMIZED: Removed infinite */' }} />
           <p style={{ marginTop: '16px' }}>
             {language === 'bg' ? 'Зареждане на данни...' : 'Loading data...'}
           </p>

@@ -194,7 +194,9 @@ const IconWrapper = styled.div<{ $verified: boolean }>`
   }
   
   &:hover svg {
-    ${css`animation: ${pulseIcon} 1s ease-in-out infinite;`}
+    /* ⚡ OPTIMIZED: Simple scale instead of infinite pulse */
+    transform: scale(1.1);
+    transition: transform 0.3s ease;
   }
 `;
 
@@ -307,7 +309,14 @@ const ActionButton = styled.button`
       rgba(255, 255, 255, 0.35) 50%,
       transparent 100%
     );
-    ${css`animation: ${shimmer} 3s infinite;`}
+    /* ⚡ OPTIMIZED: Static shimmer - triggers on hover */
+    background-size: 200% 100%;
+    background-position: 0% 0%;
+  }
+  
+  &:hover::after {
+    background-position: 100% 0%;
+    transition: background-position 1s ease;
   }
   
   &:hover {

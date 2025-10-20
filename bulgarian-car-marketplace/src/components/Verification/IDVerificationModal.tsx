@@ -6,7 +6,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { X, FileText, Camera, Upload, CheckCircle, AlertCircle } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { useAuth } from '../../context/AuthProvider';
+import { useAuth } from '../../contexts/AuthProvider';
 import { VerificationService } from '../../services/verification';
 import DocumentUpload from './DocumentUpload';
 

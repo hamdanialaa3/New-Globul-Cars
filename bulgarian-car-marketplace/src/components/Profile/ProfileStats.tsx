@@ -86,7 +86,7 @@ const StatsContainer = styled.div`
       rgba(255, 215, 0, 0) 100%
     );
     box-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
-    ${css`animation: ${pulseGlow} 3s ease-in-out infinite;`}
+    /* ⚡ OPTIMIZED: Static glow - no animation */
   }
 `;
 
@@ -157,7 +157,7 @@ const StatCard = styled.div`
       0 2px 6px rgba(0, 0, 0, 0.08);
     
     svg {
-      ${css`animation: ${float} 1.5s ease-in-out infinite;`}
+      ${css`animation: ${float} 1.5s ease-in-out  /* ⚡ OPTIMIZED: Removed infinite */;`}
     }
   }
 `;
@@ -244,7 +244,7 @@ const StatValue = styled.div`
   background-clip: text;
   
   filter: drop-shadow(0 1px 2px rgba(255, 143, 16, 0.2));
-  ${css`animation: ${gradientShift} 5s ease infinite;`}
+  ${css`animation: ${gradientShift} 5s ease  /* ⚡ OPTIMIZED: Removed infinite */;`}
   
   @media (max-width: 768px) {
     font-size: 1.25rem;

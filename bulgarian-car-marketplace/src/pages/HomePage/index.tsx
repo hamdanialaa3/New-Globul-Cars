@@ -3,6 +3,8 @@
 
 import React, { Suspense } from 'react';
 import styled from 'styled-components';
+import BusinessPromoBanner from '../../components/BusinessPromoBanner';
+import LazySection from '../../components/LazySection';
 
 // Lazy load all sections for better performance
 const HeroSection = React.lazy(() => import('./HeroSection'));
@@ -30,33 +32,50 @@ const LoadingFallback = styled.div`
 const HomePage: React.FC = () => {
   return (
     <HomeContainer>
+      {/* Business Promotion Banner - Below Header - Always visible */}
+      <BusinessPromoBanner />
+
+      {/* Hero Section - Always visible (above fold) */}
       <Suspense fallback={<LoadingFallback>Loading hero section...</LoadingFallback>}>
         <HeroSection />
       </Suspense>
 
-      <Suspense fallback={<LoadingFallback>Loading stats...</LoadingFallback>}>
-        <StatsSection />
-      </Suspense>
+      {/* ✅ LazySection: Load when user scrolls near */}
+      <LazySection rootMargin="200px" minHeight="300px">
+        <Suspense fallback={<LoadingFallback>Loading stats...</LoadingFallback>}>
+          <StatsSection />
+        </Suspense>
+      </LazySection>
 
-      <Suspense fallback={<LoadingFallback>Loading popular brands...</LoadingFallback>}>
-        <PopularBrandsSection />
-      </Suspense>
+      <LazySection rootMargin="200px" minHeight="500px">
+        <Suspense fallback={<LoadingFallback>Loading popular brands...</LoadingFallback>}>
+          <PopularBrandsSection />
+        </Suspense>
+      </LazySection>
 
-      <Suspense fallback={<LoadingFallback>Loading city cars...</LoadingFallback>}>
-        <CityCarsSection />
-      </Suspense>
+      <LazySection rootMargin="300px" minHeight="600px">
+        <Suspense fallback={<LoadingFallback>Loading city cars...</LoadingFallback>}>
+          <CityCarsSection />
+        </Suspense>
+      </LazySection>
 
-      <Suspense fallback={<LoadingFallback>Loading image gallery...</LoadingFallback>}>
-        <ImageGallerySection />
-      </Suspense>
+      <LazySection rootMargin="200px" minHeight="500px">
+        <Suspense fallback={<LoadingFallback>Loading image gallery...</LoadingFallback>}>
+          <ImageGallerySection />
+        </Suspense>
+      </LazySection>
 
-      <Suspense fallback={<LoadingFallback>Loading featured cars...</LoadingFallback>}>
-        <FeaturedCarsSection />
-      </Suspense>
+      <LazySection rootMargin="300px" minHeight="600px">
+        <Suspense fallback={<LoadingFallback>Loading featured cars...</LoadingFallback>}>
+          <FeaturedCarsSection />
+        </Suspense>
+      </LazySection>
 
-      <Suspense fallback={<LoadingFallback>Loading features...</LoadingFallback>}>
-        <FeaturesSection />
-      </Suspense>
+      <LazySection rootMargin="200px" minHeight="400px">
+        <Suspense fallback={<LoadingFallback>Loading features...</LoadingFallback>}>
+          <FeaturesSection />
+        </Suspense>
+      </LazySection>
     </HomeContainer>
   );
 };

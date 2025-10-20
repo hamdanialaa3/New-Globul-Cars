@@ -55,12 +55,13 @@ export const polarToCartesian = (
 };
 
 // Create SVG arc path for trust score (270° range)
+// ⚡ RESIZED: Updated for 90% of original gauge (220px → 198px)
 export const createTrustArcPath = (score: number) => {
   const startAngle = -225;
   const endAngle = startAngle + (270 * score) / 100;
-  const radius = 83;
-  const centerX = 110;
-  const centerY = 110;
+  const radius = 75;  // Changed from 83 to 75 (83 * 0.9 ≈ 75)
+  const centerX = 99;  // Changed from 110 to 99 (110 * 0.9)
+  const centerY = 99;  // Changed from 110 to 99 (110 * 0.9)
   
   const start = polarToCartesian(centerX, centerY, radius, endAngle);
   const end = polarToCartesian(centerX, centerY, radius, startAngle);

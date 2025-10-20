@@ -74,14 +74,12 @@ const GlassWrapper = styled.div`
   width: 100%;
   max-width: 480px;
   min-height: 550px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 2px solid rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.98);
+  border: 2px solid rgba(255, 255, 255, 0.8);
   border-radius: 24px;
-  backdrop-filter: blur(20px);
   box-shadow: 
     0 8px 32px rgba(0, 0, 0, 0.3),
-    0 0 60px rgba(255, 255, 255, 0.1),
-    inset 0 0 60px rgba(255, 255, 255, 0.05);
+    0 4px 16px rgba(255, 143, 16, 0.1);
   padding: 40px;
   z-index: 10;
   animation: ${fadeIn} 0.6s ease;
@@ -101,9 +99,8 @@ const Title = styled.h1`
   font-size: 42px;
   font-weight: 700;
   text-align: center;
-  color: #fff;
+  color: #2c3e50;
   margin-bottom: 12px;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   animation: ${slideIn} 0.6s ease;
 
   @media (max-width: 768px) {
@@ -117,7 +114,7 @@ const Title = styled.h1`
 
 const Subtitle = styled.p`
   text-align: center;
-  color: rgba(255, 255, 255, 0.9);
+  color: #6c757d;
   font-size: 15px;
   margin-bottom: 30px;
   animation: ${slideIn} 0.6s ease 0.1s backwards;

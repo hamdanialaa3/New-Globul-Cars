@@ -4,7 +4,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthProvider';  // FIXED: Correct path
+import { useAuth } from '../../contexts/AuthProvider';  // FIXED: Correct path
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useToast } from '../../components/Toast';
 import { FileText, CheckCircle, XCircle, AlertCircle, ArrowRight, Loader } from 'lucide-react';  // FIXED: Added Loader

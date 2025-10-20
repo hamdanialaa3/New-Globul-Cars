@@ -7,25 +7,8 @@ import styled, { keyframes, css } from 'styled-components';
 
 // ==================== ANIMATIONS ====================
 
-export const glow = keyframes`
-  0%, 100% { filter: drop-shadow(0 0 10px currentColor); }
-  50% { filter: drop-shadow(0 0 20px currentColor); }
-`;
-
-export const pulse = keyframes`
-  0%, 100% { transform: scale(1); opacity: 0.7; }
-  50% { transform: scale(1.07); opacity: 1; }
-`;
-
-export const shimmer = keyframes`
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
-`;
-
-export const rotate = keyframes`
-  from { transform: translate(-50%, -50%) rotate(0deg); }
-  to { transform: translate(-50%, -50%) rotate(360deg); }
-`;
+// ⚡ OPTIMIZED: Removed all infinite keyframes
+// Using static effects and hover interactions instead
 
 // ==================== STYLED COMPONENTS ====================
 
@@ -81,7 +64,7 @@ export const CompletionContainer = styled.div`
       rgba(255, 143, 16, 0.04) 40%,
       transparent 70%
     );
-    ${css`animation: ${rotate} 25s linear infinite;`}
+    /* ⚡ OPTIMIZED: Static radial gradient - no rotation */
     pointer-events: none;
   }
 `;
@@ -116,39 +99,27 @@ export const GaugeTitle = styled.h4`
   -webkit-text-fill-color: transparent;
   background-clip: text;
   
-  filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.6));
-  ${css`animation: ${shimmer} 4s linear infinite;`}
+  /* ⚡ OPTIMIZED: Static glow - no shimmer */
+  filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.6)) drop-shadow(0 0 4px rgba(255, 215, 0, 0.4));
+  transition: filter 0.3s ease;
+  
+  &:hover {
+    filter: drop-shadow(0 0 14px rgba(255, 215, 0, 0.8)) drop-shadow(0 0 6px rgba(255, 215, 0, 0.6));
+  }
 `;
 
 export const LEDRing = styled.div<{ $color: string }>`
-  position: absolute;
-  /* إصعاد بمقدار نصف حجمه (~100px) + حركة لليسار (~100px) */
-  top: calc(50% - 100px);
-  left: calc(50% - 100px);
-  transform: translate(-50%, -50%);
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  border: 2.5px solid ${props => props.$color};
-  
-  /* LED Multi-glow */
-  box-shadow: 
-    0 0 12px ${props => props.$color},
-    0 0 24px ${props => props.$color}80,
-    0 0 36px ${props => props.$color}40,
-    inset 0 0 12px ${props => props.$color}40;
-  
-  opacity: 0.4;
-  z-index: 1;
-  ${css`animation: ${pulse} 4s ease-in-out infinite;`}
+  /* ⚡ DELETED: User requested removal of LED rings */
+  display: none;
 `;
 
 export const GaugeOuter = styled.div`
   position: relative;
-  width: 240px;
-  height: 240px;
+  /* ⚡ RESIZED: 90% of original (240px → 216px) */
+  width: 216px;
+  height: 216px;
   border-radius: 50%;
-  padding: 20px;
+  padding: 18px;
   
   /* Dark Metallic Face */
   background: 
@@ -159,23 +130,23 @@ export const GaugeOuter = styled.div`
       rgba(10, 10, 10, 1) 100%
     );
   
-  /* Premium Bezel System */
+  /* Premium Bezel System - Scaled proportionally */
   box-shadow: 
     /* Outer aluminum rings */
-    0 0 0 7px rgba(70, 70, 70, 0.9),
-    0 0 0 9px rgba(110, 110, 110, 0.4),
-    0 0 0 11px rgba(140, 140, 140, 0.25),
+    0 0 0 6px rgba(70, 70, 70, 0.9),
+    0 0 0 8px rgba(110, 110, 110, 0.4),
+    0 0 0 10px rgba(140, 140, 140, 0.25),
     /* Orange-yellow glow rings */
-    0 0 0 13px rgba(255, 143, 16, 0.25),
-    0 0 0 15px rgba(255, 215, 0, 0.2),
+    0 0 0 12px rgba(255, 143, 16, 0.25),
+    0 0 0 14px rgba(255, 215, 0, 0.2),
     /* Inner depth */
-    inset 0 4px 24px rgba(0, 0, 0, 0.9),
-    inset 0 -4px 24px rgba(255, 143, 16, 0.08),
+    inset 0 4px 22px rgba(0, 0, 0, 0.9),
+    inset 0 -4px 22px rgba(255, 143, 16, 0.08),
     /* Outer shadow */
-    0 28px 56px rgba(0, 0, 0, 0.5);
+    0 25px 50px rgba(0, 0, 0, 0.5);
   
   /* Gradient border */
-  border: 1.5px solid rgba(255, 215, 0, 0.25);
+  border: 1px solid rgba(255, 215, 0, 0.25);
 `;
 
 export const GaugeSVG = styled.svg`
@@ -190,7 +161,8 @@ export const GaugeSVG = styled.svg`
 export const GaugeTrack = styled.circle`
   fill: none;
   stroke: rgba(255, 255, 255, 0.04);
-  stroke-width: 18;
+  /* ⚡ RESIZED: stroke-width 18 → 16.2 */
+  stroke-width: 16.2;
 `;
 
 export const GaugeTicks = styled.g``;
@@ -198,16 +170,23 @@ export const GaugeTicks = styled.g``;
 export const GaugeArc = styled.path<{ $percentage: number; $color: string }>`
   fill: none;
   stroke: ${props => props.$color};
-  stroke-width: 16;
+  /* ⚡ RESIZED: stroke-width 16 → 14.4 */
+  stroke-width: 14.4;
   stroke-linecap: round;
   
-  /* Enhanced Glow */
+  /* Enhanced Glow - Scaled */
+  /* ⚡ OPTIMIZED: Static glow instead of pulsing */
   filter: 
-    drop-shadow(0 0 8px ${props => props.$color})
-    drop-shadow(0 0 16px ${props => props.$color}80);
+    drop-shadow(0 0 9px ${props => props.$color})
+    drop-shadow(0 0 13px ${props => props.$color}80);
   
-  ${css`animation: ${glow} 2.5s ease-in-out infinite;`}
-  transition: stroke 0.6s ease;
+  transition: stroke 0.6s ease, filter 0.3s ease;
+  
+  &:hover {
+    filter: 
+      drop-shadow(0 0 13px ${props => props.$color})
+      drop-shadow(0 0 16px ${props => props.$color});
+  }
 `;
 
 export const GaugeCenter = styled.div`
@@ -226,9 +205,10 @@ export const DigitalDisplay = styled.div`
     rgba(12, 12, 12, 0.98) 100%
   );
   border: 2px solid rgba(255, 215, 0, 0.2);
-  border-radius: 12px;
-  padding: 18px 26px;
-  min-width: 145px;
+  /* ⚡ RESIZED: border-radius 12px → 11px, padding 18px 26px → 16px 23px, min-width 145px → 130px */
+  border-radius: 11px;
+  padding: 16px 23px;
+  min-width: 130px;
   
   /* Premium LCD Display Shadow */
   box-shadow: 
@@ -258,36 +238,40 @@ export const DigitalDisplay = styled.div`
 `;
 
 export const PercentageDisplay = styled.div<{ $color: string }>`
-  font-size: 3.8rem;
+  /* ⚡ RESIZED: font-size 3.8rem → 3.42rem */
+  font-size: 3.42rem;
   font-weight: 700;
   line-height: 1;
   font-family: 'Courier New', monospace;
   color: ${props => props.$color};
   
-  /* Enhanced Glow */
+  /* Enhanced Glow - Scaled */
   text-shadow: 
-    0 0 16px ${props => props.$color},
-    0 0 32px ${props => props.$color}80,
-    0 0 48px ${props => props.$color}40,
+    0 0 14px ${props => props.$color},
+    0 0 29px ${props => props.$color}80,
+    0 0 43px ${props => props.$color}40,
     0 2px 4px rgba(0, 0, 0, 0.9);
   
-  letter-spacing: -3px;
+  /* ⚡ RESIZED: letter-spacing -3px → -2.7px */
+  letter-spacing: -2.7px;
   filter: brightness(1.25);
   
   &::after {
     content: '%';
-    font-size: 2rem;
-    margin-left: 6px;
+    /* ⚡ RESIZED: font-size 2rem → 1.8rem, margin-left 6px → 5.4px */
+    font-size: 1.8rem;
+    margin-left: 5.4px;
     opacity: 0.85;
   }
 `;
 
 export const PercentageLabel = styled.div`
-  font-size: 0.7rem;
+  /* ⚡ RESIZED: font-size 0.7rem → 0.63rem, margin-top 8px → 7.2px, letter-spacing 2.5px → 2.25px */
+  font-size: 0.63rem;
   opacity: 0.6;
-  margin-top: 8px;
+  margin-top: 7.2px;
   text-transform: uppercase;
-  letter-spacing: 2.5px;
+  letter-spacing: 2.25px;
   font-weight: 600;
   
   /* Yellow-orange gradient */

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState , memo} from 'react';
 import styled from 'styled-components';
 import { 
   Grid, 
@@ -615,4 +615,4 @@ const SearchResults: React.FC<SearchResultsProps> = ({
   );
 };
 
-export default SearchResults;
+export default memo(SearchResults);

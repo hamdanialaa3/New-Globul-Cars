@@ -6,7 +6,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import { useAuth } from '../../context/AuthProvider';
+import { useAuth } from '../../contexts/AuthProvider';
 import { useLanguage } from '../../contexts/LanguageContext';
 import messagingService, { Message } from '../../services/messaging/messaging.service';
 import { format } from 'date-fns';

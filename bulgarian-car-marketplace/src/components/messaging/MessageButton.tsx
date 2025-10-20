@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from '../../hooks/useTranslation';
-import { useAuth } from '../../context/AuthProvider';
+import { useAuth } from '../../contexts/AuthProvider';
 import { messagingService } from '../../services/messaging/advanced-messaging-service';
 
 // Styled Components

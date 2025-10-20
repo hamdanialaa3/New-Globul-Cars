@@ -65,34 +65,33 @@ const ProfileCompletion: React.FC<ProfileCompletionProps> = ({
         </S.GaugeTitle>
         
         <S.GaugeOuter>
-          {/* LED Ring effect */}
-          <S.LEDRing $color={gaugeColor} />
+          {/* ⚡ DELETED: LED Ring - User requested removal */}
           
           {/* Glass reflection effect */}
           <S.GlassReflection />
           
-          {/* SVG Speedometer */}
-          <S.GaugeSVG width="240" height="240" viewBox="0 0 240 240">
-            {/* Background track */}
-            <S.GaugeTrack cx="120" cy="120" r="90" />
+          {/* SVG Speedometer - ⚡ RESIZED: 240×240 → 216×216 (90% of original) */}
+          <S.GaugeSVG width="216" height="216" viewBox="0 0 216 216">
+            {/* Background track - ⚡ RESIZED: center 120→108, radius 90→81 */}
+            <S.GaugeTrack cx="108" cy="108" r="81" />
             
-            {/* Tick marks (28 total) */}
+            {/* Tick marks (28 total) - ⚡ RESIZED: All coordinates scaled */}
             <S.GaugeTicks>
               {Array.from({ length: 28 }, (_, i) => {
                 const angle = -225 + (i * 270) / 27;
                 const isMajor = i % 3 === 0;
-                const innerRadius = isMajor ? 82 : 86;
-                const outerRadius = 90;
+                const innerRadius = isMajor ? 74 : 77;  // 82→74, 86→77
+                const outerRadius = 81;  // 90→81
                 const angleRad = (angle * Math.PI) / 180;
                 
                 return (
                   <S.TickMark
                     key={i}
                     $isMajor={isMajor}
-                    x1={120 + innerRadius * Math.cos(angleRad)}
-                    y1={120 + innerRadius * Math.sin(angleRad)}
-                    x2={120 + outerRadius * Math.cos(angleRad)}
-                    y2={120 + outerRadius * Math.sin(angleRad)}
+                    x1={108 + innerRadius * Math.cos(angleRad)}
+                    y1={108 + innerRadius * Math.sin(angleRad)}
+                    x2={108 + outerRadius * Math.cos(angleRad)}
+                    y2={108 + outerRadius * Math.sin(angleRad)}
                   />
                 );
               })}

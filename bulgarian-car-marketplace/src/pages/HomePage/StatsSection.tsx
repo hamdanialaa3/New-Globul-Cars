@@ -1,7 +1,7 @@
 // src/pages/HomePage/StatsSection.tsx
 // Stats section component for HomePage
 
-import React from 'react';
+import React, { memo } from 'react';
 import styled from 'styled-components';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { SectionContainer } from './styles';
@@ -10,11 +10,11 @@ const StatsSection = styled.section`
   background-image: url('/assets/backgrounds/metal-bg-1.jpg');
   background-size: cover;
   background-position: center;
-  background-attachment: fixed;
   background-repeat: no-repeat;
   padding: 3rem 0;
   position: relative;
-  filter: blur(0.5px);
+  transform: translateZ(0);
+  will-change: transform;
   
   &::before {
     content: '';
@@ -103,4 +103,4 @@ const StatsSectionComponent: React.FC = () => {
       </SectionContainer>
     </StatsSection>
   );
-};export default StatsSectionComponent;
+};export default memo(StatsSectionComponent);

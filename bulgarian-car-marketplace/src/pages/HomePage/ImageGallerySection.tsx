@@ -1,7 +1,7 @@
 // src/pages/HomePage/ImageGallerySection.tsx
 // Image gallery section component for HomePage with auto-rotating slideshow
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -192,8 +192,8 @@ const ImageCounter = styled.div`
   z-index: 10;
 `;
 
-// Gallery images list - all images from the gallery folder
-const GALLERY_IMAGES = [
+// ✅ Gallery image names only - no eager loading!
+const GALLERY_IMAGE_NAMES = [
   'car_inside (1).jpg',
   'car_inside (2).jpg',
   'car_inside (3).jpg',
@@ -253,29 +253,60 @@ const GALLERY_IMAGES = [
   'pexels-weickmann-32634336.jpg',
   'unnamed.jpg',
   'XXXXXX.jpg'
-].map(img => require(`../../assets/images/gallery/${img}`));
+];
 
 const ImageGallerySectionComponent: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentImage, setCurrentImage] = useState<string>('');
+  const [preloadedImages, setPreloadedImages] = useState<Map<number, string>>(new Map());
+
+  // ✅ Preload current, next, and previous images only
+  useEffect(() => {
+    const loadImages = async () => {
+      const imagesToLoad = [
+        currentIndex,
+        (currentIndex + 1) % GALLERY_IMAGE_NAMES.length,
+        (currentIndex - 1 + GALLERY_IMAGE_NAMES.length) % GALLERY_IMAGE_NAMES.length
+      ];
+
+      const newPreloaded = new Map(preloadedImages);
+      
+      for (const idx of imagesToLoad) {
+        if (!newPreloaded.has(idx)) {
+          try {
+            const imgModule = await import(`../../assets/images/gallery/${GALLERY_IMAGE_NAMES[idx]}`);
+            newPreloaded.set(idx, imgModule.default);
+          } catch (error) {
+            console.error(`Failed to load image ${GALLERY_IMAGE_NAMES[idx]}:`, error);
+          }
+        }
+      }
+
+      setPreloadedImages(newPreloaded);
+      setCurrentImage(newPreloaded.get(currentIndex) || '');
+    };
+
+    loadImages();
+  }, [currentIndex]);
 
   // Auto-rotate every 4 seconds
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % GALLERY_IMAGES.length);
-    }, 4000); // Change image every 4 seconds
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % GALLERY_IMAGE_NAMES.length);
+    }, 4000);
 
     return () => clearInterval(interval);
   }, []);
 
   const handlePrevious = () => {
     setCurrentIndex((prevIndex) => 
-      prevIndex === 0 ? GALLERY_IMAGES.length - 1 : prevIndex - 1
+      prevIndex === 0 ? GALLERY_IMAGE_NAMES.length - 1 : prevIndex - 1
     );
   };
 
   const handleNext = () => {
     setCurrentIndex((prevIndex) => 
-      (prevIndex + 1) % GALLERY_IMAGES.length
+      (prevIndex + 1) % GALLERY_IMAGE_NAMES.length
     );
   };
 
@@ -283,7 +314,7 @@ const ImageGallerySectionComponent: React.FC = () => {
     setCurrentIndex(index);
   };
 
-  if (GALLERY_IMAGES.length === 0) {
+  if (GALLERY_IMAGE_NAMES.length === 0) {
     return (
       <ImageGallerySection>
         <SectionContainer>
@@ -310,11 +341,13 @@ const ImageGallerySectionComponent: React.FC = () => {
         </SectionHeader>
 
         <SlideshowContainer>
-          <SlideImage 
-            src={GALLERY_IMAGES[currentIndex]} 
-            alt={`Gallery image ${currentIndex + 1}`}
-            key={currentIndex}
-          />
+          {currentImage && (
+            <SlideImage 
+              src={currentImage} 
+              alt={`Gallery image ${currentIndex + 1}`}
+              key={currentIndex}
+            />
+          )}
           
           <NavButton className="prev" onClick={handlePrevious}>
             <ChevronLeft size={24} />
@@ -325,18 +358,18 @@ const ImageGallerySectionComponent: React.FC = () => {
           </NavButton>
 
           <ImageCounter>
-            {currentIndex + 1} / {GALLERY_IMAGES.length}
+            {currentIndex + 1} / {GALLERY_IMAGE_NAMES.length}
           </ImageCounter>
 
           <DotsContainer>
-            {GALLERY_IMAGES.slice(0, 10).map((_, index) => (
+            {GALLERY_IMAGE_NAMES.slice(0, 10).map((_, index) => (
               <Dot
                 key={index}
                 $active={index === currentIndex}
                 onClick={() => handleDotClick(index)}
               />
             ))}
-            {GALLERY_IMAGES.length > 10 && <span style={{ color: 'white', fontSize: '12px' }}>...</span>}
+            {GALLERY_IMAGE_NAMES.length > 10 && <span style={{ color: 'white', fontSize: '12px' }}>...</span>}
           </DotsContainer>
         </SlideshowContainer>
       </SectionContainer>
@@ -344,4 +377,4 @@ const ImageGallerySectionComponent: React.FC = () => {
   );
 };
 
-export default ImageGallerySectionComponent;
+export default memo(ImageGallerySectionComponent);

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import styled, { keyframes } from 'styled-components';
 
 interface LoadingSpinnerProps {
@@ -54,4 +54,4 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   );
 };
 
-export default LoadingSpinner;
+export default memo(LoadingSpinner);

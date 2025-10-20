@@ -1,6 +1,7 @@
+// ⚡ OPTIMIZED CRACO Configuration for Production Build
 module.exports = {
   eslint: {
-    enable: false, // تعطيل ESLint تماماً لتجنب المشاكل
+    enable: false, // Disabled for faster builds
     mode: 'file',
   },
   babel: {
@@ -8,9 +9,9 @@ module.exports = {
       [
         'babel-plugin-styled-components',
         {
-          displayName: true,
+          displayName: process.env.NODE_ENV === 'development',  // ⚡ Only in dev
           fileName: false,
-          ssr: true,
+          ssr: false,  // ⚡ Not using SSR
           minify: true,
           transpileTemplateLiterals: true,
           pure: true,
@@ -20,10 +21,30 @@ module.exports = {
   },
   webpack: {
     configure: (webpackConfig) => {
-      // تعطيل ESLint webpack plugin تماماً
+      // ⚡ Remove ESLint plugin for faster builds
       webpackConfig.plugins = webpackConfig.plugins.filter(
         (plugin) => plugin.constructor.name !== 'ESLintWebpackPlugin'
       );
+
+      // ⚡ OPTIMIZED: Performance improvements
+      webpackConfig.optimization = {
+        ...webpackConfig.optimization,
+        splitChunks: {
+          chunks: 'all',
+          cacheGroups: {
+            vendor: {
+              test: /[\\/]node_modules[\\/]/,
+              name: 'vendors',
+              priority: 10,
+            },
+            common: {
+              minChunks: 2,
+              priority: 5,
+              reuseExistingChunk: true,
+            },
+          },
+        },
+      };
 
       // Ensure resolve exists
       webpackConfig.resolve = webpackConfig.resolve || {};

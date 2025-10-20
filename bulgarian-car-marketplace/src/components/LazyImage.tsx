@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect , memo} from 'react';
 import styled from 'styled-components';
 
 interface LazyImageProps {
@@ -174,4 +174,4 @@ const LazyImage: React.FC<LazyImageProps> = ({
   );
 };
 
-export default LazyImage;
+export default memo(LazyImage);

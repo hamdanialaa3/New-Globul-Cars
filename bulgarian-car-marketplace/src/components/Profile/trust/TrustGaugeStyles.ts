@@ -8,25 +8,8 @@ import { TrustLevel } from '../../../services/profile/trust-score-service';
 
 // ==================== ANIMATIONS ====================
 
-export const glow = keyframes`
-  0%, 100% { filter: drop-shadow(0 0 12px currentColor); }
-  50% { filter: drop-shadow(0 0 24px currentColor); }
-`;
-
-export const pulse = keyframes`
-  0%, 100% { transform: scale(1); opacity: 0.6; }
-  50% { transform: scale(1.06); opacity: 0.9; }
-`;
-
-export const shimmer = keyframes`
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
-`;
-
-export const rotate = keyframes`
-  from { transform: translate(-50%, -50%) rotate(0deg); }
-  to { transform: translate(-50%, -50%) rotate(360deg); }
-`;
+// ⚡ OPTIMIZED: Removed all infinite keyframes
+// Using static effects and hover transitions instead
 
 // ==================== STYLED COMPONENTS ====================
 
@@ -81,7 +64,7 @@ export const TrustContainer = styled.div`
       rgba(255, 143, 16, 0.08) 0%,
       transparent 60%
     );
-    ${css`animation: ${rotate} 20s linear infinite;`}
+    /* ⚡ OPTIMIZED: Static radial gradient - no rotation */
     pointer-events: none;
   }
 `;
@@ -118,35 +101,38 @@ export const GaugeTitle = styled.h4`
 
 export const GaugeOuter = styled.div`
   position: relative;
-  width: 220px;
-  height: 220px;
+  /* ⚡ RESIZED: 90% of original (220px → 198px) */
+  width: 198px;
+  height: 198px;
   border-radius: 50%;
-  padding: 20px;
+  padding: 18px;
   
   /* Dark Metallic Face */
   background: 
     radial-gradient(circle at 35% 35%,
-      rgba(40, 40, 40, 1) 0%,
-      rgba(20, 20, 20, 1) 50%,
+      rgba(50, 50, 50, 1) 0%,
+      rgba(30, 30, 30, 1) 40%,
+      rgba(15, 15, 15, 1) 70%,
       rgba(10, 10, 10, 1) 100%
     );
   
-  /* Layered Bezel */
+  /* Premium Bezel System - Scaled proportionally */
   box-shadow: 
-    /* Outer aluminum ring */
-    0 0 0 6px rgba(60, 60, 60, 0.8),
-    0 0 0 8px rgba(100, 100, 100, 0.3),
-    /* Orange-yellow glow ring */
-    0 0 0 10px rgba(255, 143, 16, 0.2),
-    0 0 0 12px rgba(255, 215, 0, 0.15),
-    /* Inner shadows */
-    inset 0 4px 20px rgba(0, 0, 0, 0.9),
-    inset 0 -4px 20px rgba(255, 143, 16, 0.05),
+    /* Outer aluminum rings */
+    0 0 0 5px rgba(70, 70, 70, 0.9),
+    0 0 0 7px rgba(110, 110, 110, 0.4),
+    0 0 0 9px rgba(140, 140, 140, 0.25),
+    /* Orange-yellow glow rings */
+    0 0 0 12px rgba(255, 143, 16, 0.25),
+    0 0 0 14px rgba(255, 215, 0, 0.2),
+    /* Inner depth */
+    inset 0 4px 22px rgba(0, 0, 0, 0.9),
+    inset 0 -4px 22px rgba(255, 143, 16, 0.08),
     /* Outer shadow */
-    0 25px 50px rgba(0, 0, 0, 0.5);
+    0 23px 45px rgba(0, 0, 0, 0.5);
   
-  /* Border with gradient */
-  border: 1px solid rgba(255, 215, 0, 0.2);
+  /* Gradient border */
+  border: 1px solid rgba(255, 215, 0, 0.25);
 `;
 
 export const GaugeSVG = styled.svg`
@@ -154,14 +140,16 @@ export const GaugeSVG = styled.svg`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  filter: drop-shadow(0 0 20px rgba(0, 0, 0, 0.6));
+  /* ⚡ RESIZED: filter scaled */
+  filter: drop-shadow(0 0 18px rgba(0, 0, 0, 0.6));
   z-index: 2;
 `;
 
 export const GaugeTrack = styled.circle`
   fill: none;
   stroke: rgba(255, 255, 255, 0.05);
-  stroke-width: 16;
+  /* ⚡ RESIZED: stroke-width 16 → 14.4 */
+  stroke-width: 14.4;
 `;
 
 export const GaugeTicks = styled.g``;
@@ -171,7 +159,8 @@ export const TickMark = styled.line<{ $isMajor: boolean }>`
     ? 'rgba(255, 215, 0, 0.6)'   /* Yellow for major ticks */
     : 'rgba(255, 255, 255, 0.2)'  /* White for minor ticks */
   };
-  stroke-width: ${props => props.$isMajor ? '3' : '1.5'};
+  /* ⚡ RESIZED: major 3→2.7, minor 1.5→1.35 */
+  stroke-width: ${props => props.$isMajor ? '2.7' : '1.35'};
   stroke-linecap: round;
   filter: ${props => props.$isMajor 
     ? 'drop-shadow(0 0 2px rgba(255, 215, 0, 0.5))'
@@ -182,18 +171,24 @@ export const TickMark = styled.line<{ $isMajor: boolean }>`
 export const GaugeArc = styled.path<{ $color: string }>`
   fill: none;
   stroke: ${props => props.$color};
-  stroke-width: 14;
+  /* ⚡ RESIZED: stroke-width 14 → 12.6 */
+  stroke-width: 12.6;
   stroke-linecap: round;
-  filter: drop-shadow(0 0 16px ${props => props.$color});
-  ${css`animation: ${glow} 3s ease-in-out infinite;`}
-  transition: stroke 0.5s ease;
+  /* ⚡ OPTIMIZED: Static glow instead of pulsing - Scaled */
+  filter: drop-shadow(0 0 9px ${props => props.$color}) drop-shadow(0 0 5px ${props => props.$color});
+  transition: stroke 0.5s ease, filter 0.3s ease;
+  
+  &:hover {
+    filter: drop-shadow(0 0 13px ${props => props.$color}) drop-shadow(0 0 7px ${props => props.$color});
+  }
 `;
 
 export const NumberLabel = styled.div<{ $angle: number }>`
   position: absolute;
   top: 50%;
   left: 50%;
-  font-size: 0.85rem;
+  /* ⚡ RESIZED: Font size scaled */
+  font-size: 0.34rem;
   font-weight: 700;
   font-family: 'Arial', sans-serif;
   
@@ -206,11 +201,12 @@ export const NumberLabel = styled.div<{ $angle: number }>`
   -webkit-text-fill-color: transparent;
   background-clip: text;
   
-  text-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+  text-shadow: 0 0 4px rgba(255, 215, 0, 0.4);
   transform: 
     translate(-50%, -50%)
     rotate(${props => props.$angle}deg)
-    translateY(-88px)
+    /* ⚡ RESIZED: translateY scaled (88px → 35px) */
+    translateY(-35px)
     rotate(${props => -props.$angle}deg);
   z-index: 3;
 `;
@@ -226,70 +222,113 @@ export const GaugeCenter = styled.div`
 
 export const DigitalDisplay = styled.div`
   background: linear-gradient(180deg, 
-    rgba(10, 10, 10, 0.95) 0%, 
-    rgba(20, 20, 20, 1) 50%, 
-    rgba(10, 10, 10, 0.95) 100%
+    rgba(12, 12, 12, 0.98) 0%, 
+    rgba(22, 22, 22, 1) 50%, 
+    rgba(12, 12, 12, 0.98) 100%
   );
-  border: 2px solid rgba(255, 215, 0, 0.15);
-  border-radius: 10px;
-  padding: 10px 16px;
-  min-width: 95px;
+  border: 2px solid rgba(255, 215, 0, 0.2);
+  /* ⚡ RESIZED: border-radius 10px → 9px, padding 10px 16px → 9px 14px, min-width 95px → 86px */
+  border-radius: 9px;
+  padding: 9px 14px;
+  min-width: 86px;
   
-  /* Premium Display Shadow */
+  /* Premium LCD Display Shadow */
   box-shadow: 
-    inset 0 2px 8px rgba(0, 0, 0, 0.9),
-    inset 0 -2px 8px rgba(255, 143, 16, 0.08),
-    0 4px 16px rgba(0, 0, 0, 0.6),
-    0 0 0 1px rgba(255, 215, 0, 0.1);
+    /* Inner glow */
+    inset 0 0 9px rgba(255, 215, 0, 0.15),
+    inset 0 2px 5px rgba(0, 0, 0, 0.9),
+    /* Outer shadow */
+    0 4px 9px rgba(0, 0, 0, 0.8),
+    0 0 14px rgba(255, 143, 16, 0.2);
   
-  /* Yellow bottom accent */
+  /* Yellow bottom glow */
   position: relative;
   
   &::after {
     content: '';
     position: absolute;
     bottom: 0;
-    left: 20%;
-    right: 20%;
-    height: 1px;
-    background: rgba(255, 215, 0, 0.6);
-    box-shadow: 0 0 4px rgba(255, 215, 0, 0.8);
+    left: 25%;
+    right: 25%;
+    height: 2px;
+    background: linear-gradient(90deg,
+      rgba(255, 215, 0, 0) 0%,
+      rgba(255, 215, 0, 0.8) 50%,
+      rgba(255, 215, 0, 0) 100%
+    );
+    box-shadow: 0 0 5px rgba(255, 215, 0, 0.9);
+    border-radius: 0 0 9px 9px;
   }
 `;
 
 export const ScoreDisplay = styled.div<{ $color: string }>`
-  font-size: 1.6rem;
+  /* ⚡ RESIZED: font-size 1.6rem → 1.44rem */
+  font-size: 1.44rem;
   font-weight: 700;
   line-height: 1;
   font-family: 'Courier New', monospace;
   color: ${props => props.$color};
+  
+  /* Enhanced Glow - Scaled */
   text-shadow: 
-    0 0 12px ${props => props.$color},
-    0 0 24px ${props => props.$color}80,
+    0 0 14px ${props => props.$color},
+    0 0 29px ${props => props.$color}80,
+    0 0 43px ${props => props.$color}40,
     0 2px 4px rgba(0, 0, 0, 0.9);
-  letter-spacing: -1px;
-  filter: brightness(1.3);
+  
+  /* ⚡ RESIZED: letter-spacing -2.7px */
+  letter-spacing: -2.7px;
+  filter: brightness(1.25);
 `;
 
-export const LevelLabel = styled.div<{ $color: string }>`
-  font-size: 0.7rem;
-  margin-bottom: 5px;
+export const LevelLabel = styled.div`
+  /* ⚡ RESIZED: font-size 0.7rem → 0.63rem, margin-bottom 5px → 4.5px, letter-spacing 1px → 0.9px */
+  font-size: 0.63rem;
+  opacity: 0.6;
+  margin-bottom: 4.5px;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  color: ${props => props.$color};
-  opacity: 0.9;
+  letter-spacing: 0.9px;
   font-weight: 600;
-  filter: drop-shadow(0 0 6px ${props => props.$color}80);
+  
+  /* Yellow-orange gradient */
+  background: linear-gradient(90deg,
+    rgba(255, 143, 16, 0.7) 0%,
+    rgba(255, 215, 0, 0.9) 50%,
+    rgba(255, 143, 16, 0.7) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 `;
 
 export const TrustText = styled.div`
+  /* ⚡ RESIZED: font-size 0.65rem → 0.585rem, letter-spacing 3px → 2.7px */
+  font-size: 0.585rem;
+  letter-spacing: 2.7px;
+  text-transform: uppercase;
+  opacity: 0.5;
+  font-weight: 600;
+  
+  /* Yellow-orange gradient */
+  background: linear-gradient(90deg,
+    rgba(255, 143, 16, 0.6) 0%,
+    rgba(255, 215, 0, 0.8) 50%,
+    rgba(255, 143, 16, 0.6) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+`;
+
+export const SpeedoText = styled.div`
   position: absolute;
   top: 75%;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 0.65rem;
+  /* ⚡ RESIZED: font-size scaled */
+  font-size: 0.585rem;
   font-weight: 700;
-  letter-spacing: 3px;
+  letter-spacing: 2.7px;
   text-transform: uppercase;
   
   /* Yellow-orange gradient */
@@ -398,7 +437,12 @@ export const LEDRing = styled.div<{ $color: string }>`
   
   opacity: 0.35;
   z-index: 1;
-  ${css`animation: ${pulse} 4s ease-in-out infinite;`}
+  /* ⚡ OPTIMIZED: Static overlay - no pulse */
+  transition: opacity 0.3s ease;
+  
+  &:hover {
+    opacity: 0.5;
+  }
 `;
 
 export const GlassReflection = styled.div`

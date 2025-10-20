@@ -1,7 +1,7 @@
 // src/pages/HomePage/HeroSection.tsx
 // Hero section component for HomePage
 
-import React from 'react';
+import React, { memo } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { useLanguage } from '../../contexts/LanguageContext';
@@ -11,7 +11,6 @@ const HeroSection = styled.section`
   background-image: url('/assets/backgrounds/metal-bg-1.jpg');
   background-size: cover;
   background-position: center;
-  background-attachment: fixed;
   background-repeat: no-repeat;
   color: #212529;
   padding: 3rem 0;
@@ -21,7 +20,8 @@ const HeroSection = styled.section`
   display: flex;
   align-items: center;
   justify-content: center;
-  filter: blur(0.5px);
+  transform: translateZ(0);
+  will-change: transform;
   
   &::before {
     content: '';
@@ -160,4 +160,4 @@ const HeroSectionComponent: React.FC = () => {
   );
 };
 
-export default HeroSectionComponent;
+export default memo(HeroSectionComponent);

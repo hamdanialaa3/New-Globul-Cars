@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import { Car, Truck, Bus, Bike, Caravan, CarFront } from 'lucide-react';
 import SplitScreenLayout from '../../components/SplitScreenLayout';
 import { WorkflowFlow } from '../../components/WorkflowVisualization';
-import { useAuth } from '../../context/AuthProvider';
+import { useAuth } from '../../contexts/AuthProvider';
 import N8nIntegrationService from '../../services/n8n-integration';
 
 const ContentSection = styled.div`

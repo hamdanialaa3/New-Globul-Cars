@@ -37,12 +37,13 @@ const AvatarContainer = styled.div<{ size: number }>`
 
 const LEDRing = styled.svg<{ progress: number; color: string }>`
   position: absolute;
-  top: -35px;  // Moved up 5px more (from -30px to -35px)
-  left: 10px;  // Moved left 5px more (from 15px to 10px)
-  width: 145px; // Fixed size 145px (same as image)
-  height: 145px; // Fixed size 145px (same as image)
+  top: -35px;
+  left: 10px;
+  width: 145px;
+  height: 145px;
   transform: rotate(-90deg);
   pointer-events: none;
+  will-change: transform;  /* ⚡ GPU acceleration */
   
   circle {
     fill: none;
@@ -54,29 +55,25 @@ const LEDRing = styled.svg<{ progress: number; color: string }>`
     
     &.progress {
       stroke: ${p => p.color};
-      stroke-width: 4;
+      stroke-width: 4.5;  /* ⚡ أعرض قليلاً للجمالية */
       stroke-dasharray: ${p => {
-        const radius = 50;  // percentage (viewBox is 0 0 100 100)
+        const radius = 50;
         const circumference = 2 * Math.PI * radius;
         const dashLength = (p.progress / 100) * circumference;
         return `${dashLength} ${circumference}`;
       }};
       stroke-linecap: round;
-      filter: drop-shadow(0 0 4px ${p => p.color});
-      transition: stroke-dasharray 0.5s ease;
-      animation: ledPulse 2s ease-in-out infinite;
+      /* ⚡ OPTIMIZED: Static glow instead of animated pulse */
+      filter: drop-shadow(0 0 6px ${p => p.color}40) drop-shadow(0 0 2px ${p => p.color});
+      transition: stroke-dasharray 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      /* ⚡ NO MORE INFINITE ANIMATION - only on hover */
     }
   }
   
-  @keyframes ledPulse {
-    0%, 100% { 
-      opacity: 1; 
-      filter: drop-shadow(0 0 4px ${p => p.color});
-    }
-    50% { 
-      opacity: 0.7; 
-      filter: drop-shadow(0 0 8px ${p => p.color});
-    }
+  /* ⚡ Gentle hover effect instead of constant animation */
+  &:hover circle.progress {
+    filter: drop-shadow(0 0 8px ${p => p.color}60) drop-shadow(0 0 3px ${p => p.color});
+    stroke-width: 5;
   }
 `;
 

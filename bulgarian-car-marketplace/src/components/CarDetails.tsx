@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { advancedMessagingService } from '../services/messaging/advanced-messaging-service';
 import MessageButton from './messaging/MessageButton';
-import { useAuth } from '../context/AuthProvider';
+import { useAuth } from '../contexts/AuthProvider';
 
 // Mock car data for demonstration
 const mockCarData = [

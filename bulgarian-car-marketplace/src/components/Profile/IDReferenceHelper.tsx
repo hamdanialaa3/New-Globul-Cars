@@ -100,7 +100,7 @@ const HighlightOverlay = styled.div<{ $active: boolean; $position: { top: string
   opacity: ${props => props.$active ? 1 : 0};
   transition: opacity 0.3s ease;
   pointer-events: none;
-  animation: ${props => props.$active ? 'pulse 2s infinite' : 'none'};
+  animation: ${props => props.$active ? 'pulse 2s  /* ⚡ OPTIMIZED: Removed infinite */' : 'none'};
   
   @keyframes pulse {
     0%, 100% { box-shadow: 0 0 0 0 rgba(255, 121, 0, 0.7); }

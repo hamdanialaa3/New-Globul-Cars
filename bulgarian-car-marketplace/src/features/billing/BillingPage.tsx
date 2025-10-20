@@ -3,7 +3,7 @@
 
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useAuth } from '../../context/AuthProvider';  // FIXED: Correct path
+import { useAuth } from '../../contexts/AuthProvider';  // FIXED: Correct path
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useToast } from '../../components/Toast';
 import { CreditCard, Download, Settings } from 'lucide-react';

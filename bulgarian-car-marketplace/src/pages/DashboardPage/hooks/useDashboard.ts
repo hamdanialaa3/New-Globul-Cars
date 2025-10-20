@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from '../../../hooks/useTranslation';
-import { useAuth } from '../../../context/AuthProvider';
+import { useAuth } from '../../../contexts/AuthProvider';
 import { dashboardService, DashboardStats, DashboardCar, DashboardMessage, DashboardNotification } from '../../../services/dashboardService';
 import { FormattedStat } from '../types';
 

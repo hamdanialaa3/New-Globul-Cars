@@ -1,7 +1,7 @@
 // Car Card Component - Modern Design
 // كارد عرض السيارة - تصميم حديث
 
-import React from 'react';
+import React, { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { Heart, MapPin, Calendar, Gauge, Fuel, Settings } from 'lucide-react';
@@ -277,5 +277,6 @@ const CarCard: React.FC<CarCardProps> = ({ car }) => {
   );
 };
 
-export default CarCard;
+// ⚡ OPTIMIZED: Memoized to prevent unnecessary re-renders
+export default memo(CarCard);
 

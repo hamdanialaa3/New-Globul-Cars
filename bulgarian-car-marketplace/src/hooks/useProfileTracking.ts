@@ -4,7 +4,7 @@
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
 
 import { useEffect, useRef } from 'react';
-import { useAuth } from '../context/AuthProvider';
+import { useAuth } from '../contexts/AuthProvider';
 import { profileAnalyticsService } from '../services/analytics/profile-analytics.service';
 
 /**

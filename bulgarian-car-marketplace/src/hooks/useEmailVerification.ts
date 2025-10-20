@@ -3,7 +3,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { EmailVerificationService } from '../services/email-verification';
-import { useAuth } from '../context/AuthProvider';
+import { useAuth } from '../contexts/AuthProvider';
 import { useTranslation } from './useTranslation';
 
 interface UseEmailVerificationResult {

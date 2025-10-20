@@ -7,7 +7,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { useAuth } from '../../context/AuthProvider';
+import { useAuth } from '../../contexts/AuthProvider';
 import reviewsService from '../../services/reviews/reviews.service';
 import RatingStars from './RatingStars';
 import { MessageCircle } from 'lucide-react';

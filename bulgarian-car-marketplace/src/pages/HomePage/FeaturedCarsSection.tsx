@@ -1,9 +1,10 @@
 // src/pages/HomePage/FeaturedCarsSection.tsx
 // Featured cars section component for HomePage
 
-import React, { lazy, Suspense } from 'react';
+import React, { Suspense, memo } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import FeaturedCars from '../../components/FeaturedCars';
 
 const FeaturedCarsSection = styled.section`
   background: linear-gradient(135deg, #fff5f5 0%, #ffeaea 100%);
@@ -98,18 +99,15 @@ const FeaturedCarsSectionComponent: React.FC = () => {
         </SectionHeader>
 
         <Suspense fallback={<LoadingFallback>Loading featured cars...</LoadingFallback>}>
-          {React.createElement(
-            lazy(() => import('../../components/FeaturedCars')),
-            {
-              limit: 6,
-              showFilters: false,
-              enablePagination: false
-            }
-          )}
+          <FeaturedCars 
+            limit={6}
+            showFilters={false}
+            enablePagination={false}
+          />
         </Suspense>
       </SectionContainer>
     </FeaturedCarsSection>
   );
 };
 
-export default FeaturedCarsSectionComponent;
+export default memo(FeaturedCarsSectionComponent);

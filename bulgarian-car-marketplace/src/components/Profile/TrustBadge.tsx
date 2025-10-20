@@ -45,34 +45,34 @@ const TrustBadgeComponent: React.FC<TrustBadgeProps> = ({
         </S.GaugeTitle>
         
         <S.GaugeOuter>
-          {/* LED Ring effect */}
-          <S.LEDRing $color={gaugeColor} />
+          {/* ⚡ REMOVED: LED Ring effect - User requested deletion */}
           
           {/* Glass reflection */}
           <S.GlassReflection />
           
-          {/* SVG Gauge */}
-          <S.GaugeSVG width="220" height="220" viewBox="0 0 220 220">
-            {/* Background track */}
-            <S.GaugeTrack cx="110" cy="110" r="83" />
+          {/* SVG Gauge - ⚡ RESIZED: 60% smaller (220 → 88) */}
+          <S.GaugeSVG width="88" height="88" viewBox="0 0 88 88">
+            {/* Background track - ⚡ RESIZED: radius scaled (83 → 33) */}
+            <S.GaugeTrack cx="44" cy="44" r="33" />
             
             {/* Tick marks */}
             <S.GaugeTicks>
               {Array.from({ length: 28 }, (_, i) => {
                 const angle = -225 + (i * 270) / 27;
                 const isMajor = i % 3 === 0;
-                const innerRadius = isMajor ? 76 : 80;
-                const outerRadius = 83;
+                /* ⚡ RESIZED: radius scaled proportionally */
+                const innerRadius = isMajor ? 30 : 32;
+                const outerRadius = 33;
                 const angleRad = (angle * Math.PI) / 180;
                 
                 return (
                   <S.TickMark
                     key={i}
                     $isMajor={isMajor}
-                    x1={110 + innerRadius * Math.cos(angleRad)}
-                    y1={110 + innerRadius * Math.sin(angleRad)}
-                    x2={110 + outerRadius * Math.cos(angleRad)}
-                    y2={110 + outerRadius * Math.sin(angleRad)}
+                    x1={44 + innerRadius * Math.cos(angleRad)}
+                    y1={44 + innerRadius * Math.sin(angleRad)}
+                    x2={44 + outerRadius * Math.cos(angleRad)}
+                    y2={44 + outerRadius * Math.sin(angleRad)}
                   />
                 );
               })}
@@ -98,7 +98,7 @@ const TrustBadgeComponent: React.FC<TrustBadgeProps> = ({
           {/* Center digital display */}
           <S.GaugeCenter>
             <S.DigitalDisplay>
-              <S.LevelLabel $color={gaugeColor}>
+              <S.LevelLabel>
                 {levelName}
               </S.LevelLabel>
               <S.ScoreDisplay $color={gaugeColor}>

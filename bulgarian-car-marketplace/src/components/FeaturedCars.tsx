@@ -1,12 +1,12 @@
 // Featured Cars Component - Real Firebase Data
 // عرض السيارات المميزة من البيانات الحقيقية
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
 import { bulgarianCarService, BulgarianCar } from '../firebase/car-service';
 import { useLanguage } from '../contexts/LanguageContext';
-import { useAuth } from '../context/AuthProvider';
+import { useAuth } from '../contexts/AuthProvider';
 import { MapPin, Fuel, Gauge, Calendar, MessageCircle, User } from 'lucide-react';
 
 interface FeaturedCarsProps {
@@ -396,4 +396,5 @@ const FeaturedCars: React.FC<FeaturedCarsProps> = ({
   );
 };
 
-export default FeaturedCars;
+// ⚡ OPTIMIZED: Memoized to prevent unnecessary re-renders
+export default memo(FeaturedCars);

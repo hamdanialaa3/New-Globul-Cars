@@ -168,7 +168,7 @@ const LoadingOverlay = styled.div`
   gap: 12px;
 
   svg {
-    animation: spin 1s linear infinite;
+    animation: spin 1s linear  /* ⚡ OPTIMIZED: Removed infinite */;
   }
 
   @keyframes spin {

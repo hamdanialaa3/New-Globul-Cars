@@ -1,7 +1,7 @@
 // src/components/ImageGallery.tsx
 // Image Gallery Component for Bulgarian Car Marketplace
 
-import React, { useState } from 'react';
+import React, { useState , memo} from 'react';
 import styled from 'styled-components';
 import { useTranslation } from '../hooks/useTranslation';
 
@@ -284,4 +284,4 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
   );
 };
 
-export default ImageGallery;
+export default memo(ImageGallery);

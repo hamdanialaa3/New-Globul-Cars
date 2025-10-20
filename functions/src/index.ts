@@ -1,6 +1,110 @@
 // functions/src/index.ts
 // Main entry point for Firebase Functions
 
+// Export verification functions
+export {
+  approveVerification,
+  rejectVerification,
+  verifyEIK,
+  onVerificationApproved
+} from './verification';
+
+// Export reviews functions
+export {
+  submitReview,
+  getReviews,
+  getMyReviews,
+  markHelpful,
+  unmarkHelpful,
+  reportReview,
+  respondToReview,
+  updateReviewResponse,
+  deleteReviewResponse,
+  updateReviewStatsOnWrite
+} from './reviews';
+
+// Export trust score functions
+export {
+  getTrustScore,
+  recalculateTrustScore,
+  onReviewStatsUpdated,
+  onVerificationUpdated,
+  onListingChanged,
+  onAnalyticsUpdated,
+} from './trustScore';
+
+// Export team management functions
+export {
+  inviteMember,
+  resendInvitation,
+  cancelInvitation,
+  acceptInvite,
+  declineInvite,
+  removeMember,
+  updateMember,
+  leaveTeam,
+} from './team';
+
+// Export messaging functions (Advanced P2.1)
+export {
+  createQuickReply,
+  getQuickReplies,
+  updateQuickReply,
+  deleteQuickReply,
+  useQuickReply,
+  getAutoResponderSettings,
+  updateAutoResponderSettings,
+  onNewMessage,
+  calculateLeadScore,
+  getLeads,
+  updateLeadStatus,
+  onConversationUpdate,
+  assignConversation,
+  getSharedInbox,
+  addInternalNote,
+  getInternalNotes,
+} from './messaging';
+
+// Export billing functions (P2.2)
+export {
+  generateInvoice,
+  getInvoices,
+  getInvoice,
+  updateInvoiceStatus,
+  sendInvoiceEmail,
+} from './billing';
+
+// Export commission functions (P2.3)
+export {
+  onSaleCompleted,
+  getCommissionPeriods,
+  getCommissionPeriod,
+  getAllCommissionPeriods,
+  getCommissionRate,
+  chargeMonthlyCommissions,
+  triggerCommissionCharging,
+  markCommissionPaid,
+  generateCommissionStatement,
+} from './commission';
+
+// Export subscription functions (basic)
+export {
+  createCheckoutSession,
+  stripeWebhook,
+  cancelSubscription
+} from './subscriptions/index';
+
+// Export analytics functions (real-time tracking)
+export {
+  trackEvent,
+  getUserAnalytics,
+  resetDailyCounters,
+  resetWeeklyCounters,
+  resetMonthlyCounters,
+  calculateResponseMetrics,
+  calculateConversionRates
+} from './analytics/index';
+
 // Export statistics and counter functions
 export {
   incrementCarViewCount,

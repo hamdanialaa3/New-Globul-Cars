@@ -1,11 +1,12 @@
 // City Cars Section - Main Component
 // قسم السيارات حسب المدن البلغارية
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../../contexts/LanguageContext';
 import { BULGARIAN_CITIES, BulgarianCity } from '../../../constants/bulgarianCities';
 import CityCarCountService from '../../../services/cityCarCountService';
+import { CityCarCountCache } from '../../../services/cityCarCountCache';
 import { convertCityCountsToRegionCounts } from '../../../services/cityRegionMapper';
 import GoogleMapSection from './GoogleMapSection';
 import BulgariaMapFallback from '../../../components/BulgariaMapFallback';
@@ -23,18 +24,36 @@ const CityCarsSection: React.FC = () => {
   const [cityCarCounts, setCityCarCounts] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
 
-  // Fetch REAL car counts for each city from Firebase
+  // Fetch REAL car counts for each city from Firebase with caching
   useEffect(() => {
     const fetchCityCounts = async () => {
       try {
         setLoading(true);
-        logger.info('Fetching city car counts from Firebase');
         
-        // Get all city counts from Firebase
+        // ✅ Try to get from cache first
+        const cachedCounts = CityCarCountCache.get();
+        if (cachedCounts) {
+          logger.info('City car counts loaded from cache', { 
+            totalCities: Object.keys(cachedCounts).length,
+            cacheAge: CityCarCountCache.getAge()
+          });
+          setCityCarCounts(cachedCounts);
+          setLoading(false);
+          return;
+        }
+        
+        // Cache miss - fetch from Firebase
+        logger.info('Cache miss - fetching city car counts from Firebase');
         const counts = await CityCarCountService.getAllCityCounts();
+        
+        // ✅ Save to cache
+        CityCarCountCache.set(counts);
         setCityCarCounts(counts);
         
-        logger.info('City car counts loaded successfully', { totalCities: Object.keys(counts).length, counts });
+        logger.info('City car counts loaded and cached', { 
+          totalCities: Object.keys(counts).length,
+          expiresIn: CityCarCountCache.getTimeUntilExpiry()
+        });
       } catch (error) {
         logger.error('Error fetching city car counts', error as Error);
         // Fallback to mock data if Firebase fails
@@ -98,4 +117,4 @@ const CityCarsSection: React.FC = () => {
   );
 };
 
-export default CityCarsSection;
+export default memo(CityCarsSection);

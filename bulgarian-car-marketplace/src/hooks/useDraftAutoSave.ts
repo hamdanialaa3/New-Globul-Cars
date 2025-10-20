@@ -2,7 +2,7 @@
 // Hook للحفظ التلقائي للمسودات
 
 import { useEffect, useRef, useState } from 'react';
-import { useAuth } from '../context/AuthProvider';
+import { useAuth } from '../contexts/AuthProvider';
 import { SellWorkflowData } from './useSellWorkflow';
 import DraftsService from '../services/drafts-service';
 import { toast } from 'react-toastify';

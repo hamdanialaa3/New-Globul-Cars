@@ -3,7 +3,7 @@ import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import { CarIcon } from '../components/icons/CarIcon';
 import { useLanguage } from '../contexts/LanguageContext';
-import { useAuth } from '../context/AuthProvider';
+import { useAuth } from '../contexts/AuthProvider';
 import { useCarViewTracking } from '../hooks/useProfileTracking';
 import carListingService from '../services/carListingService';
 import { CarListing } from '../types/CarListing';
@@ -348,6 +348,8 @@ const SectionIcon = styled.div`
   box-shadow: 0 2px 8px rgba(255, 121, 0, 0.25);
   position: relative;
   overflow: hidden;
+  transform: translateZ(0);
+  will-change: transform;
   
   &::before {
     content: '';
@@ -357,7 +359,7 @@ const SectionIcon = styled.div`
     width: 200%;
     height: 200%;
     background: conic-gradient(from 0deg, transparent, rgba(255, 255, 255, 0.3), transparent 30%);
-    animation: ${rotate} 3s linear infinite;
+    opacity: 0.6;
   }
 
   svg {
@@ -365,7 +367,6 @@ const SectionIcon = styled.div`
     z-index: 1;
     width: 18px;
     height: 18px;
-    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
   }
 `;
 
@@ -708,7 +709,7 @@ const LogoImage = styled.img`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.2));
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   z-index: 5;
 `;
 
@@ -722,11 +723,11 @@ const GlowRingVertical = styled.div`
   border: 4px solid transparent;
   border-top: 4px solid #FF7900;
   border-bottom: 4px solid #FF9533;
-  animation: ${rotateVertical} 3s linear infinite;
-  filter: blur(3px);
-  opacity: 0.8;
+  transform: translate(-50%, -50%);
+  opacity: 0.6;
   z-index: 4;
   pointer-events: none;
+  box-shadow: 0 0 8px rgba(255, 121, 0, 0.3);
 `;
 
 const GlowRingHorizontal = styled.div`
@@ -739,11 +740,11 @@ const GlowRingHorizontal = styled.div`
   border: 4px solid transparent;
   border-left: 4px solid #FF9533;
   border-right: 4px solid #FF7900;
-  animation: ${rotateHorizontal} 4s linear infinite reverse;
-  filter: blur(3px);
-  opacity: 0.7;
+  transform: translate(-50%, -50%) rotate(45deg);
+  opacity: 0.5;
   z-index: 4;
   pointer-events: none;
+  box-shadow: 0 0 8px rgba(255, 149, 51, 0.3);
 `;
 
 const LogoGlow = styled.div`
@@ -756,12 +757,7 @@ const LogoGlow = styled.div`
   background: radial-gradient(circle, rgba(255, 121, 0, 0.15), transparent 70%);
   transform: translate(-50%, -50%);
   z-index: 3;
-  animation: pulse 2s ease-in-out infinite;
-
-  @keyframes pulse {
-    0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
-    50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.05); }
-  }
+  opacity: 0.7;
 `;
 
 const LogoBrandName = styled.span`

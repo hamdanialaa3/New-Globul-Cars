@@ -259,6 +259,14 @@ const Header: React.FC = () => {
                             <Calculator size={18} />
                             <span>{t('header.financeCalculator')}</span>
                           </button>
+                          <button className="settings-item" onClick={() => handleSettingsItemClick('/invoices')}>
+                            <FileText size={18} />
+                            <span>{t('header.invoices')}</span>
+                          </button>
+                          <button className="settings-item" onClick={() => handleSettingsItemClick('/commissions')}>
+                            <TrendingUp size={18} />
+                            <span>{t('header.commissions')}</span>
+                          </button>
                         </div>
 
                         <div className="menu-divider"></div>

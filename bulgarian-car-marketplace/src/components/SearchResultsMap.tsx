@@ -1,7 +1,7 @@
 // Note: Using @react-google-maps/api Marker component which wraps google.maps.Marker
 // TODO: Migrate to AdvancedMarkerElement when @react-google-maps/api adds support
 
-import React, { useState } from 'react';
+import React, { useState , memo} from 'react';
 import { GoogleMap, LoadScript, Marker, InfoWindow } from '@react-google-maps/api';
 import styled from 'styled-components';
 import { BulgarianCar } from '../firebase';
@@ -237,7 +237,8 @@ const SearchResultsMap: React.FC<SearchResultsMapProps> = ({
   );
 };
 
-export default SearchResultsMap;
+export default memo(SearchResultsMap);
+
 
 
 

@@ -749,6 +749,8 @@ export const translations = {
       // Finance Section
       financeSection: 'Финанси',
       financeCalculator: 'Финансов калкулатор',
+      invoices: 'Фактури',
+      commissions: 'Комисионни',
       financialReports: 'Финансови отчети',
       insurance: 'Застраховка',
       
@@ -1537,6 +1539,8 @@ export const translations = {
       // Finance Section
       financeSection: 'Finance',
       financeCalculator: 'Finance Calculator',
+      invoices: 'Invoices',
+      commissions: 'Commissions',
       financialReports: 'Financial Reports',
       insurance: 'Insurance',
       

@@ -73,14 +73,12 @@ const GlassWrapper = styled.div`
   width: 100%;
   max-width: 480px;
   min-height: 600px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 2px solid rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.98);
+  border: 2px solid rgba(255, 255, 255, 0.8);
   border-radius: 24px;
-  backdrop-filter: blur(20px);
   box-shadow: 
     0 8px 32px rgba(0, 0, 0, 0.3),
-    0 0 60px rgba(255, 255, 255, 0.1),
-    inset 0 0 60px rgba(255, 255, 255, 0.05);
+    0 4px 16px rgba(255, 143, 16, 0.1);
   padding: 40px;
   z-index: 10;
   animation: ${fadeIn} 0.6s ease;
@@ -100,9 +98,8 @@ const Title = styled.h1`
   font-size: 42px;
   font-weight: 700;
   text-align: center;
-  color: #fff;
+  color: #2c3e50;
   margin-bottom: 12px;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   animation: ${slideIn} 0.6s ease;
 
   @media (max-width: 768px) {
@@ -116,7 +113,7 @@ const Title = styled.h1`
 
 const Subtitle = styled.p`
   text-align: center;
-  color: rgba(255, 255, 255, 0.9);
+  color: #6c757d;
   font-size: 15px;
   margin-bottom: 30px;
   animation: ${slideIn} 0.6s ease 0.1s backwards;
@@ -145,23 +142,23 @@ const InputBox = styled.div`
 const Input = styled.input`
   width: 100%;
   height: 52px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.6);
+  border: 2px solid rgba(208, 215, 222, 0.5);
   border-radius: 50px;
   font-size: 16px;
-  color: #fff;
+  color: #2c3e50;
   padding: 0 50px 0 20px;
   transition: all 0.3s ease;
 
   &::placeholder {
-    color: rgba(255, 255, 255, 0.7);
+    color: rgba(108, 117, 125, 0.7);
   }
 
   &:focus {
     outline: none;
-    border-color: rgba(255, 255, 255, 0.7);
-    background: rgba(255, 255, 255, 0.15);
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+    border-color: #FF8F10;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 0 20px rgba(255, 143, 16, 0.2);
   }
 
   @media (max-width: 480px) {

@@ -17,12 +17,13 @@ export const polarToCartesian = (
 };
 
 // Generate SVG arc path for gauge (270° arc)
+// ⚡ RESIZED: Updated for 90% of original gauge (240px → 216px)
 export const createArcPath = (percent: number) => {
   const startAngle = -225;
   const endAngle = startAngle + (270 * percent) / 100;
-  const radius = 90;
-  const centerX = 120;
-  const centerY = 120;
+  const radius = 81;  // Changed from 90 to 81 (90 * 0.9)
+  const centerX = 108;  // Changed from 120 to 108 (120 * 0.9)
+  const centerY = 108;  // Changed from 120 to 108 (120 * 0.9)
   
   const start = polarToCartesian(centerX, centerY, radius, endAngle);
   const end = polarToCartesian(centerX, centerY, radius, startAngle);

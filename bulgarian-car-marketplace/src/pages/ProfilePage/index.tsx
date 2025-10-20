@@ -822,7 +822,7 @@ const ProfilePage: React.FC = () => {
                 <div style={{ display: 'grid', gap: '12px' }}>
                   {user.businessPhone && (
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px', background: '#f9f9f9', borderRadius: '8px' }}>
-                      <Phone size={16} color="#FF7900" />
+                      <Phone size={16} color={theme.primary} />
                       <a href={`tel:${user.businessPhone}`} style={{ color: '#1a1a1a', textDecoration: 'none', fontWeight: '500' }}>
                         {user.businessPhone}
                       </a>
@@ -830,7 +830,7 @@ const ProfilePage: React.FC = () => {
                   )}
                   {user.businessEmail && (
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px', background: '#f9f9f9', borderRadius: '8px' }}>
-                      <MessageCircle size={16} color="#FF7900" />
+                      <MessageCircle size={16} color={theme.primary} />
                       <a href={`mailto:${user.businessEmail}`} style={{ color: '#1a1a1a', textDecoration: 'none', fontWeight: '500' }}>
                         {user.businessEmail}
                       </a>
@@ -838,7 +838,7 @@ const ProfilePage: React.FC = () => {
                   )}
                   {user.website && (
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px', background: '#f9f9f9', borderRadius: '8px' }}>
-                      <Building2 size={16} color="#FF7900" />
+                      <Building2 size={16} color={theme.primary} />
                       <a href={user.website} target="_blank" rel="noopener noreferrer" style={{ color: '#1a1a1a', textDecoration: 'none', fontWeight: '500' }}>
                         {user.website}
                       </a>
@@ -846,7 +846,7 @@ const ProfilePage: React.FC = () => {
                   )}
                   {user.businessAddress && (
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px', background: '#f9f9f9', borderRadius: '8px' }}>
-                      <Home size={16} color="#FF7900" />
+                      <Home size={16} color={theme.primary} />
                       <span style={{ color: '#1a1a1a', fontWeight: '500' }}>
                         {user.businessAddress}, {user.businessCity}
                       </span>
@@ -882,9 +882,9 @@ const ProfilePage: React.FC = () => {
                         style={{
                           flex: 1,
                           padding: '10px 16px',
-                          border: `2px solid ${formData.accountType === 'individual' ? '#FF7900' : '#ddd'}`,
-                          background: formData.accountType === 'individual' ? '#fff5e6' : 'white',
-                          color: formData.accountType === 'individual' ? '#FF7900' : '#666',
+                          border: `2px solid ${formData.accountType === 'individual' ? theme.primary : '#ddd'}`,
+                          background: formData.accountType === 'individual' ? `${theme.primary}10` : 'white',
+                          color: formData.accountType === 'individual' ? theme.primary : '#666',
                           borderRadius: '6px',
                           cursor: 'pointer',
                           fontSize: '0.85rem',
@@ -905,9 +905,9 @@ const ProfilePage: React.FC = () => {
                         style={{
                           flex: 1,
                           padding: '10px 16px',
-                          border: `2px solid ${formData.accountType === 'business' ? '#FF7900' : '#ddd'}`,
-                          background: formData.accountType === 'business' ? '#fff5e6' : 'white',
-                          color: formData.accountType === 'business' ? '#FF7900' : '#666',
+                          border: `2px solid ${formData.accountType === 'business' ? theme.primary : '#ddd'}`,
+                          background: formData.accountType === 'business' ? `${theme.primary}10` : 'white',
+                          color: formData.accountType === 'business' ? theme.primary : '#666',
                           borderRadius: '6px',
                           cursor: 'pointer',
                           fontSize: '0.85rem',
@@ -947,16 +947,16 @@ const ProfilePage: React.FC = () => {
                   </div>
 
                   {/* Required Fields */}
-                  <div style={{ marginBottom: '12px', padding: '10px', background: '#fff5e6', borderRadius: '6px', border: '2px solid #FF7900' }}>
-                    <h4 style={{ margin: '0 0 8px 0', color: '#FF7900', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem' }}>
-                      <IconWrapper $color="#FF7900" $size={16}><AlertCircle /></IconWrapper>
+                  <div style={{ marginBottom: '12px', padding: '10px', background: `${theme.primary}10`, borderRadius: '6px', border: `2px solid ${theme.primary}` }}>
+                    <h4 style={{ margin: '0 0 8px 0', color: theme.primary, display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem' }}>
+                      <IconWrapper $color={theme.primary} $size={16}><AlertCircle /></IconWrapper>
                       {language === 'bg' ? 'Задължителни полета' : 'Required Fields'}
                     </h4>
                     
                     {formData.accountType === 'individual' ? (
                       <S.FormGrid>
                         <S.FormGroup>
-                          <label style={{ color: '#FF7900', fontWeight: 'bold' }}>
+                          <label style={{ color: theme.primary, fontWeight: 'bold' }}>
                             {language === 'bg' ? 'Име' : 'First Name'} <span style={{ color: '#f44336' }}>*</span>
                           </label>
                           <input
@@ -968,12 +968,12 @@ const ProfilePage: React.FC = () => {
                             onBlur={() => setActiveField(undefined)}
                             placeholder="СЛАВИНА"
                             required
-                            style={{ borderColor: '#FF7900', borderWidth: '2px' }}
+                            style={{ borderColor: theme.primary, borderWidth: '2px' }}
                           />
                         </S.FormGroup>
 
                         <S.FormGroup>
-                          <label style={{ color: '#FF7900', fontWeight: 'bold' }}>
+                          <label style={{ color: theme.primary, fontWeight: 'bold' }}>
                             {language === 'bg' ? 'Фамилия' : 'Last Name'} <span style={{ color: '#f44336' }}>*</span>
                           </label>
                           <input
@@ -985,13 +985,13 @@ const ProfilePage: React.FC = () => {
                             onBlur={() => setActiveField(undefined)}
                             placeholder="ИВАНОВА"
                             required
-                            style={{ borderColor: '#FF7900', borderWidth: '2px' }}
+                            style={{ borderColor: theme.primary, borderWidth: '2px' }}
                           />
                         </S.FormGroup>
                       </S.FormGrid>
                     ) : (
                       <S.FormGroup>
-                        <label style={{ color: '#FF7900', fontWeight: 'bold' }}>
+                        <label style={{ color: theme.primary, fontWeight: 'bold' }}>
                           {language === 'bg' ? 'Име на фирмата' : 'Business Name'} <span style={{ color: '#f44336' }}>*</span>
                         </label>
                         <input

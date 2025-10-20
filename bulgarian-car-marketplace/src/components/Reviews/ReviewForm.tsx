@@ -6,7 +6,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Star, ThumbsUp, ThumbsDown, Send } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { useAuth } from '../../context/AuthProvider';
+import { useAuth } from '../../contexts/AuthProvider';
 import { reviewService } from '../../services/reviews';
 import type { SubmitReviewData } from '../../services/reviews';
 

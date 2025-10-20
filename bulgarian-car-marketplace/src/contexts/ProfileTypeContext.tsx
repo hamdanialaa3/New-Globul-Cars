@@ -2,7 +2,7 @@
 // Profile Type Context - Manages profile types (private/dealer/company) and their themes
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { useAuth } from '../context/AuthProvider';  // FIXED: Correct path
+import { useAuth } from '../contexts/AuthProvider';  // FIXED: Correct path
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
 

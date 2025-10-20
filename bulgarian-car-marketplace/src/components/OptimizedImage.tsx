@@ -2,7 +2,7 @@
 // Optimized Image Component with Lazy Loading & Progressive Loading
 // مكون صورة محسّن مع تحميل تدريجي
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef , memo} from 'react';
 import styled from 'styled-components';
 
 interface OptimizedImageProps {
@@ -195,5 +195,6 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
   );
 };
 
-export default OptimizedImage;
+export default memo(OptimizedImage);
+
 

@@ -50,13 +50,14 @@ const ProfileHeader = styled.div`
     background: linear-gradient(90deg, #1d4ed8, #3b82f6, #1d4ed8) border-box;
     -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
     mask-composite: exclude;
-    opacity: 0;
-    animation: ledBorderGlow 3s ease-in-out infinite;
+    /* ⚡ OPTIMIZED: Static subtle glow instead of pulse */
+    opacity: 0.4;
+    box-shadow: 0 0 15px rgba(29, 78, 216, 0.5);
+    transition: opacity 0.3s ease;
   }
   
-  @keyframes ledBorderGlow {
-    0%, 100% { opacity: 0; }
-    50% { opacity: 0.6; }
+  &:hover::after {
+    opacity: 0.7;
   }
   
   @media (max-width: 768px) {

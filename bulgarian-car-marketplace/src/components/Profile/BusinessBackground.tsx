@@ -55,7 +55,7 @@ const LEDStrip = styled.div`
     rgba(147, 197, 253, 0.2) 100%
   );
   background-size: 200% 100%;
-  animation: ledFlow 4s linear infinite;
+  animation: ledFlow 4s linear  /* ⚡ OPTIMIZED: Removed infinite */;
   box-shadow: 0 4px 20px rgba(59, 130, 246, 0.6);
   z-index: 9998;
   
@@ -68,7 +68,7 @@ const LEDStrip = styled.div`
 const LEDStripBottom = styled(LEDStrip)`
   top: auto;
   bottom: 0;
-  animation: ledFlowReverse 4s linear infinite;
+  animation: ledFlowReverse 4s linear  /* ⚡ OPTIMIZED: Removed infinite */;
   
   @keyframes ledFlowReverse {
     0% { background-position: 200% 0%; }

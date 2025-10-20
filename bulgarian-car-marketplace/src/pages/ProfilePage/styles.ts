@@ -277,14 +277,14 @@ export const ProfileAvatar = styled.div<{ $themeColor?: string }>`
 
 // ==================== PROFILE STATS ====================
 
-export const ProfileStats = styled.div`
+export const ProfileStats = styled.div<{ $themeColor?: string }>`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: ${({ theme }) => theme.spacing.md};
   margin-bottom: ${({ theme }) => theme.spacing['2xl']};
 `;
 
-export const StatItem = styled.div`
+export const StatItem = styled.div<{ $themeColor?: string }>`
   text-align: center;
   padding: ${({ theme }) => theme.spacing.lg};
   
@@ -295,13 +295,13 @@ export const StatItem = styled.div`
   );
   backdrop-filter: blur(10px) saturate(150%);
   border-radius: 12px;
-  border: 1px solid rgba(255, 143, 16, 0.2);
+  border: ${props => props.$themeColor ? `1px solid ${props.$themeColor}33` : '1px solid rgba(255, 143, 16, 0.2)'};
   box-shadow: 
-    0 4px 16px rgba(255, 143, 16, 0.1),
+    ${props => props.$themeColor ? `0 4px 16px ${props.$themeColor}1A` : '0 4px 16px rgba(255, 143, 16, 0.1)'},
     inset 0 1px 0 rgba(255, 255, 255, 0.8),
     inset 0 -1px 0 rgba(0, 0, 0, 0.05);
   
-  /* Thin Yellow Top Border */
+  /* Thin Top Border */
   position: relative;
   
   &::before {
@@ -311,11 +311,9 @@ export const StatItem = styled.div`
     left: 10%;
     right: 10%;
     height: 2px;
-    background: linear-gradient(90deg,
-      rgba(255, 215, 0, 0) 0%,
-      rgba(255, 215, 0, 0.9) 50%,
-      rgba(255, 215, 0, 0) 100%
-    );
+    background: ${props => props.$themeColor 
+      ? `linear-gradient(90deg, ${props.$themeColor}00 0%, ${props.$themeColor}E6 50%, ${props.$themeColor}00 100%)`
+      : 'linear-gradient(90deg, rgba(255, 215, 0, 0) 0%, rgba(255, 215, 0, 0.9) 50%, rgba(255, 215, 0, 0) 100%)'};
     border-radius: 2px 2px 0 0;
   }
   
@@ -323,9 +321,9 @@ export const StatItem = styled.div`
 
   &:hover {
     transform: translateY(-3px) scale(1.02);
-    border-color: rgba(255, 143, 16, 0.4);
+    border-color: ${props => props.$themeColor ? `${props.$themeColor}66` : 'rgba(255, 143, 16, 0.4)'};
     box-shadow: 
-      0 8px 24px rgba(255, 143, 16, 0.2),
+      ${props => props.$themeColor ? `0 8px 24px ${props.$themeColor}33` : '0 8px 24px rgba(255, 143, 16, 0.2)'},
       inset 0 1px 0 rgba(255, 255, 255, 0.9),
       inset 0 -1px 0 rgba(0, 0, 0, 0.08);
   }
@@ -333,13 +331,17 @@ export const StatItem = styled.div`
   .stat-number {
     font-size: ${({ theme }) => theme.typography.fontSize['3xl']};
     font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
-    background: linear-gradient(135deg, #FF8F10 0%, #FFAD33 50%, #FF7900 100%);
+    background: ${props => props.$themeColor 
+      ? `linear-gradient(135deg, ${props.$themeColor} 0%, ${props.$themeColor}CC 50%, ${props.$themeColor}E6 100%)`
+      : 'linear-gradient(135deg, #FF8F10 0%, #FFAD33 50%, #FF7900 100%)'};
     background-size: 200% auto;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     display: block;
-    filter: drop-shadow(0 1px 2px rgba(255, 143, 16, 0.3));
+    filter: ${props => props.$themeColor 
+      ? `drop-shadow(0 1px 2px ${props.$themeColor}4D)`
+      : 'drop-shadow(0 1px 2px rgba(255, 143, 16, 0.3))'};
     /* ⚡ OPTIMIZED: Static gradient - no animation */
   }
 
