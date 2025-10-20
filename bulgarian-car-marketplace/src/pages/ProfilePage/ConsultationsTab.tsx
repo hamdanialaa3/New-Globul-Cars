@@ -17,6 +17,7 @@ import {
   consultationsService, 
   Consultation 
 } from '../../services/social/consultations.service';
+import RequestConsultationModal from '../../components/Consultations/RequestConsultationModal';
 
 // ==================== STYLED COMPONENTS ====================
 
@@ -273,6 +274,7 @@ const ConsultationsTab: React.FC<ConsultationsTabProps> = ({
   const { language } = useLanguage();
   const [consultations, setConsultations] = useState<Consultation[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showRequestModal, setShowRequestModal] = useState(false);
   
   useEffect(() => {
     loadConsultations();
@@ -334,11 +336,18 @@ const ConsultationsTab: React.FC<ConsultationsTabProps> = ({
   return (
     <Container>
       {!isOwnProfile && (
-        <RequestButton>
+        <RequestButton onClick={() => setShowRequestModal(true)}>
           <MessageSquare size={20} />
           {t('request')}
         </RequestButton>
       )}
+      
+      <RequestConsultationModal
+        isOpen={showRequestModal}
+        expertId={userId}
+        onClose={() => setShowRequestModal(false)}
+        onSuccess={loadConsultations}
+      />
       
       <ConsultationsList>
         <h3>{t('yourConsultations')}</h3>

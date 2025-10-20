@@ -174,91 +174,6 @@ const UserEmail = styled.div`
   color: #6c757d;
 `;
 
-// ⚡ NEW: Profile Type Switcher Bar (below cover image)
-const ProfileTypeSwitcher = styled.div<{ $themeColor?: string }>`
-  display: flex;
-  gap: 8px;
-  padding: 10px 16px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 249, 250, 0.98) 100%);
-  border-radius: 20px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-  margin: -30px 24px 24px auto; /* على يمين الصفحة */
-  margin-right: 24px;
-  max-width: fit-content;
-  position: relative;
-  z-index: 10;
-  border: 1.5px solid ${props => props.$themeColor ? `${props.$themeColor}33` : 'rgba(255, 143, 16, 0.2)'};
-  backdrop-filter: blur(10px);
-  
-  @media (max-width: 768px) {
-    margin: -20px 16px 20px 16px;
-    padding: 8px 12px;
-    gap: 6px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-`;
-
-const ProfileTypeButton = styled.button<{ $active: boolean; $color: string }>`
-  flex: 0 0 auto;
-  padding: 6px 12px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  border: 1.5px solid ${props => props.$active ? props.$color : '#e0e0e0'};
-  background: ${props => props.$active 
-    ? `linear-gradient(135deg, ${props.$color} 0%, ${props.$color}E6 100%)` 
-    : 'white'};
-  color: ${props => props.$active ? 'white' : '#6c757d'};
-  border-radius: 16px;
-  cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  box-shadow: ${props => props.$active 
-    ? `0 2px 8px ${props.$color}35` 
-    : '0 1px 4px rgba(0, 0, 0, 0.04)'};
-  min-width: auto;
-  white-space: nowrap;
-  
-  /* ⚡ Anti-flickering */
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  transform: translateZ(0);
-  
-  svg {
-    width: 14px;
-    height: 14px;
-  }
-  
-  &:hover {
-    transform: translateZ(0) translateY(-1px);
-    border-color: ${props => props.$color};
-    background: ${props => props.$active 
-      ? `linear-gradient(135deg, ${props.$color}F0 0%, ${props.$color}CC 100%)` 
-      : `${props.$color}0D`};
-    color: ${props => props.$active ? 'white' : props.$color};
-    box-shadow: ${props => props.$active 
-      ? `0 4px 14px ${props.$color}50` 
-      : `0 2px 8px ${props.$color}18`};
-  }
-  
-  &:active {
-    transform: translateZ(0) translateY(0);
-  }
-  
-  svg {
-    flex-shrink: 0;
-  }
-  
-  @media (max-width: 768px) {
-    padding: 10px 16px;
-    font-size: 0.8rem;
-    gap: 6px;
-  }
-`;
-
 // Quick Action Buttons
 const QuickActionsContainer = styled.div`
   display: flex;
@@ -699,49 +614,9 @@ const ProfilePage: React.FC = () => {
         />
         )}
         
-        {/* ⚡ NEW: Profile Type Switcher Bar - Below Cover Image */}
+        {/* Quick Actions - Shown only on own profile */}
         {activeTab === 'profile' && isOwnProfile && (
-          <ProfileTypeSwitcher $themeColor={theme.primary}>
-            {/* Private Button */}
-            <ProfileTypeButton
-              $active={profileType === 'private'}
-              $color="#FF8F10"
-              onClick={() => {
-                setPendingProfileType('private');
-                setShowProfileTypeModal(true);
-              }}
-            >
-              <User size={14} />
-              {language === 'bg' ? 'Личен' : 'Private'}
-            </ProfileTypeButton>
-            
-            {/* Dealer Button */}
-            <ProfileTypeButton
-              $active={profileType === 'dealer'}
-              $color="#16a34a"
-              onClick={() => {
-                setPendingProfileType('dealer');
-                setShowProfileTypeModal(true);
-              }}
-            >
-              <Building2 size={14} />
-              {language === 'bg' ? 'Дилър' : 'Dealer'}
-            </ProfileTypeButton>
-            
-            {/* Company Button */}
-            <ProfileTypeButton
-              $active={profileType === 'company'}
-              $color="#1d4ed8"
-              onClick={() => {
-                setPendingProfileType('company');
-                setShowProfileTypeModal(true);
-              }}
-            >
-              <Building2 size={14} />
-              {language === 'bg' ? 'Компания' : 'Company'}
-            </ProfileTypeButton>
-            
-            {/* Quick Actions - No spacer needed with new compact design */}
+          <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '16px 24px' }}>
             <QuickActionsContainer>
               {/* Business Info Button - Only show for dealer/company profiles */}
               {profileType !== 'private' && (
@@ -771,7 +646,7 @@ const ProfilePage: React.FC = () => {
                 {language === 'bg' ? 'إضافة سيارة' : 'Add Car'}
               </QuickActionButton>
             </QuickActionsContainer>
-          </ProfileTypeSwitcher>
+          </div>
         )}
 
         {/* Compact Header for other tabs */}
@@ -1786,51 +1661,7 @@ const ProfilePage: React.FC = () => {
 
             {activeTab === 'settings' && (
               <AnimatedTabContent>
-                {/* Profile Type Switcher - Also in Settings for convenience */}
-                {isOwnProfile && (
-                  <div style={{ marginBottom: '24px' }}>
-                    <ProfileTypeSwitcher $themeColor={theme.primary}>
-                      {/* Private Button */}
-                      <ProfileTypeButton
-                        $active={profileType === 'private'}
-                        $color="#FF8F10"
-                        onClick={() => {
-                          setPendingProfileType('private');
-                          setShowProfileTypeModal(true);
-                        }}
-                      >
-                        <User size={18} />
-                        {language === 'bg' ? 'Личен' : 'Private'}
-                      </ProfileTypeButton>
-                      
-                      {/* Dealer Button */}
-                      <ProfileTypeButton
-                        $active={profileType === 'dealer'}
-                        $color="#16a34a"
-                        onClick={() => {
-                          setPendingProfileType('dealer');
-                          setShowProfileTypeModal(true);
-                        }}
-                      >
-                        <Building2 size={18} />
-                        {language === 'bg' ? 'Дилър' : 'Dealer'}
-                      </ProfileTypeButton>
-                      
-                      {/* Company Button */}
-                      <ProfileTypeButton
-                        $active={profileType === 'company'}
-                        $color="#1d4ed8"
-                        onClick={() => {
-                          setPendingProfileType('company');
-                          setShowProfileTypeModal(true);
-                        }}
-                      >
-                        <Building2 size={18} />
-                        {language === 'bg' ? 'Компания' : 'Company'}
-                      </ProfileTypeButton>
-                    </ProfileTypeSwitcher>
-                  </div>
-                )}
+                {/* Settings content directly without profile type switcher */}
                 
                 {/* Privacy Settings for all account types */}
                 <PrivacySettingsManager 
