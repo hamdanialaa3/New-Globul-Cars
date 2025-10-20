@@ -26,6 +26,8 @@ import {
 } from '../../components/Profile';
 import type { GarageCar } from '../../components/Profile';
 import { TrustLevel } from '../../services/profile/trust-score-service';
+// Import Campaigns Components
+import { CampaignsList } from '../../components/Profile/Campaigns';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db, auth } from '../../firebase/firebase-config';
 import { 
@@ -44,7 +46,8 @@ import {
   UserPlus,
   UserCheck,
   Users,
-  MessageCircle
+  MessageCircle,
+  Megaphone
 } from 'lucide-react';
 import * as S from './styles';
 import { TabNavigation, TabButton, SyncButton, FollowButton } from './TabNavigation.styles';
@@ -313,12 +316,12 @@ const ProfilePage: React.FC = () => {
   } = useProfile(targetUserId); // ✅ Pass targetUserId
 
   // Read tab from URL or default to 'profile'
-  const initialTab = (searchParams.get('tab') as 'profile' | 'myads' | 'analytics' | 'settings') || 'profile';
-  const [activeTab, setActiveTab] = React.useState<'profile' | 'myads' | 'analytics' | 'settings'>(initialTab);
+  const initialTab = (searchParams.get('tab') as 'profile' | 'myads' | 'campaigns' | 'analytics' | 'settings') || 'profile';
+  const [activeTab, setActiveTab] = React.useState<'profile' | 'myads' | 'campaigns' | 'analytics' | 'settings'>(initialTab);
   const [isTransitioning, setIsTransitioning] = React.useState(false);
   
   // Smooth tab switching with fade effect
-  const handleTabChange = (tab: 'profile' | 'myads' | 'analytics' | 'settings') => {
+  const handleTabChange = (tab: 'profile' | 'myads' | 'campaigns' | 'analytics' | 'settings') => {
     if (tab === activeTab) return;
     
     setIsTransitioning(true);
@@ -330,8 +333,8 @@ const ProfilePage: React.FC = () => {
   
   // Update activeTab when URL changes
   useEffect(() => {
-    const tabParam = searchParams.get('tab') as 'profile' | 'myads' | 'analytics' | 'settings';
-    if (tabParam && ['profile', 'myads', 'analytics', 'settings'].includes(tabParam)) {
+    const tabParam = searchParams.get('tab') as 'profile' | 'myads' | 'campaigns' | 'analytics' | 'settings';
+    if (tabParam && ['profile', 'myads', 'campaigns', 'analytics', 'settings'].includes(tabParam)) {
       setActiveTab(tabParam);
     }
   }, [searchParams]);
@@ -569,6 +572,14 @@ const ProfilePage: React.FC = () => {
               >
                 <Car size={18} />
                 {language === 'bg' ? 'Моите обяви' : 'My Ads'}
+              </TabButton>
+              <TabButton 
+                $active={activeTab === 'campaigns'}
+                $themeColor={theme.primary}
+                onClick={() => handleTabChange('campaigns')}
+              >
+                <Megaphone size={18} />
+                {language === 'bg' ? 'Реклами' : 'Campaigns'}
               </TabButton>
               <TabButton 
                 $active={activeTab === 'analytics'}
@@ -1654,6 +1665,12 @@ const ProfilePage: React.FC = () => {
                   }}
                   onAddNew={() => navigate('/sell')}
                 />
+              </AnimatedTabContent>
+            )}
+
+            {activeTab === 'campaigns' && (
+              <AnimatedTabContent>
+                <CampaignsList userId={user.uid} />
               </AnimatedTabContent>
             )}
 
