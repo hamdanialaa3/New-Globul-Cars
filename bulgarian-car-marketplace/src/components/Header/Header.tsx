@@ -128,9 +128,6 @@ const Header: React.FC = () => {
           <div className="central-actions">
             <LanguageToggle size="small" showText={false} className="action-bar-button" />
             
-            {/* Profile Type Switcher - Prominent Essential Element */}
-            <ProfileTypeSwitcher />
-            
             <button
               className="action-bar-button"
               onClick={() => navigate('/favorites')}
@@ -189,6 +186,14 @@ const Header: React.FC = () => {
                             <User size={16} />
                             <span>{t('header.myAccount')}</span>
                           </div>
+                          
+                          {/* Profile Type Switcher in Dropdown */}
+                          <div style={{ padding: '8px 12px' }}>
+                            <ProfileTypeSwitcher />
+                          </div>
+                          
+                          <div className="menu-divider" style={{ margin: '8px 0' }}></div>
+                          
                           <button className="settings-item" onClick={() => handleSettingsItemClick('/dashboard')}>
                             <LayoutDashboard size={18} />
                             <span>{t('header.overview')}</span>
