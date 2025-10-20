@@ -82,6 +82,10 @@ const Header: React.FC = () => {
     setIsMainNavOpen(false);
     navigate(path);
   };
+  
+  const toggleProfileType = () => {
+    setIsProfileTypeOpen(!isProfileTypeOpen);
+  };
 
   const toggleNotifications = () => {
     setIsNotificationsOpen(!isNotificationsOpen);
@@ -99,6 +103,9 @@ const Header: React.FC = () => {
       }
       if (mainNavRef.current && !mainNavRef.current.contains(event.target as Node)) {
         setIsMainNavOpen(false);
+      }
+      if (profileTypeRef.current && !profileTypeRef.current.contains(event.target as Node)) {
+        setIsProfileTypeOpen(false);
       }
       // Note: NotificationDropdown handles its own outside clicks
     };
@@ -439,9 +446,11 @@ const Header: React.FC = () => {
             
             {/* Profile Type Dropdown - NEW */}
             {user && (
-              <div className="main-nav-dropdown" style={{ marginLeft: 'auto' }}>
+              <div className="main-nav-dropdown" ref={profileTypeRef} style={{ marginLeft: 'auto' }}>
                 <button 
                   className="nav-link main-nav-trigger"
+                  onClick={toggleProfileType}
+                  aria-expanded={isProfileTypeOpen}
                   style={{ 
                     background: 'linear-gradient(135deg, #FF8F10 0%, #FFAA00 100%)',
                     color: 'white',
@@ -454,7 +463,7 @@ const Header: React.FC = () => {
                   <User size={16} />
                   <span>Profile Type</span>
                   <svg 
-                    className="arrow"
+                    className={`arrow ${isProfileTypeOpen ? 'rotate' : ''}`}
                     width="12" 
                     height="12" 
                     viewBox="0 0 12 12"
@@ -464,11 +473,13 @@ const Header: React.FC = () => {
                 </button>
 
                 {/* Profile Type Switcher Dropdown */}
-                <div className="main-nav-menu" style={{ right: 0, left: 'auto', minWidth: '200px' }}>
-                  <div style={{ padding: '12px' }}>
-                    <ProfileTypeSwitcher />
+                {isProfileTypeOpen && (
+                  <div className="main-nav-menu" style={{ right: 0, left: 'auto', minWidth: '200px' }}>
+                    <div style={{ padding: '12px' }}>
+                      <ProfileTypeSwitcher />
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             )}
           </div>
