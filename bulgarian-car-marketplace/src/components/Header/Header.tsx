@@ -187,13 +187,6 @@ const Header: React.FC = () => {
                             <span>{t('header.myAccount')}</span>
                           </div>
                           
-                          {/* Profile Type Switcher in Dropdown */}
-                          <div style={{ padding: '8px 12px' }}>
-                            <ProfileTypeSwitcher />
-                          </div>
-                          
-                          <div className="menu-divider" style={{ margin: '8px 0' }}></div>
-                          
                           <button className="settings-item" onClick={() => handleSettingsItemClick('/dashboard')}>
                             <LayoutDashboard size={18} />
                             <span>{t('header.overview')}</span>
@@ -441,6 +434,41 @@ const Header: React.FC = () => {
             <EnhancedNavLink href="/finance" className="nav-link" requireAuth={true}>
               {t('nav.finance')}
             </EnhancedNavLink>
+            
+            {/* Profile Type Dropdown - NEW */}
+            {user && (
+              <div className="main-nav-dropdown" style={{ marginLeft: 'auto' }}>
+                <button 
+                  className="nav-link main-nav-trigger"
+                  style={{ 
+                    background: 'linear-gradient(135deg, #FF8F10 0%, #FFAA00 100%)',
+                    color: 'white',
+                    fontWeight: '600',
+                    padding: '8px 16px',
+                    borderRadius: '8px',
+                    border: 'none'
+                  }}
+                >
+                  <User size={16} />
+                  <span>Profile Type</span>
+                  <svg 
+                    className="arrow"
+                    width="12" 
+                    height="12" 
+                    viewBox="0 0 12 12"
+                  >
+                    <path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="2"/>
+                  </svg>
+                </button>
+
+                {/* Profile Type Switcher Dropdown */}
+                <div className="main-nav-menu" style={{ right: 0, left: 'auto', minWidth: '200px' }}>
+                  <div style={{ padding: '12px' }}>
+                    <ProfileTypeSwitcher />
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </nav>

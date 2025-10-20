@@ -25,7 +25,7 @@ jobs:
       
       - name: Install dependencies
         working-directory: bulgarian-car-marketplace
-        run: npm ci
+        run: npm ci --legacy-peer-deps
       
       - name: Run lint (warnings allowed)
         working-directory: bulgarian-car-marketplace
@@ -56,7 +56,7 @@ jobs:
       
       - name: Install dependencies
         working-directory: bulgarian-car-marketplace
-        run: npm ci
+        run: npm ci --legacy-peer-deps
       
       - name: Run tests (failures allowed)
         working-directory: bulgarian-car-marketplace
@@ -84,7 +84,7 @@ jobs:
       
       - name: Install dependencies
         working-directory: bulgarian-car-marketplace
-        run: npm ci
+        run: npm ci --legacy-peer-deps
       
       - name: Build application
         working-directory: bulgarian-car-marketplace
