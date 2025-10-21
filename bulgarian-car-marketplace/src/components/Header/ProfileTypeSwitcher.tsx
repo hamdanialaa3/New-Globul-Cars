@@ -96,39 +96,45 @@ const ProfileTypeSwitcher: React.FC = () => {
 // Styled Components
 const SwitcherContainer = styled.div`
   display: flex;
-  gap: 6px;
-  align-items: center;
-  padding: 4px;
+  flex-direction: column; /* ✅ VERTICAL: Changed from horizontal to vertical */
+  gap: 8px; /* ✅ Increased gap for better spacing */
+  align-items: stretch; /* ✅ Full width buttons */
+  padding: 8px; /* ✅ Increased padding */
   background: rgba(255, 255, 255, 0.95);
-  border-radius: 20px;
+  border-radius: 12px; /* ✅ Adjusted radius */
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
   border: 1.5px solid rgba(0, 0, 0, 0.06);
   backdrop-filter: blur(10px);
+  min-width: 180px; /* ✅ Minimum width for better appearance */
   
   @media (max-width: 768px) {
-    gap: 4px;
-    padding: 3px;
+    gap: 6px;
+    padding: 6px;
+    min-width: 150px;
   }
 `;
 
 const TypeButton = styled.button<{ $active: boolean; $color: string }>`
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
-  font-size: 0.85rem;
+  justify-content: flex-start; /* ✅ Align to left for vertical list */
+  gap: 8px; /* ✅ Slightly increased gap */
+  padding: 10px 16px; /* ✅ Increased vertical padding */
+  font-size: 0.875rem; /* ✅ Slightly larger font */
   font-weight: 700;
   border: 2px solid ${props => props.$active ? props.$color : 'transparent'};
   background: ${props => props.$active 
     ? `linear-gradient(135deg, ${props.$color} 0%, ${props.$color}E6 100%)` 
     : 'transparent'};
   color: ${props => props.$active ? 'white' : '#6c757d'};
-  border-radius: 16px;
+  border-radius: 10px; /* ✅ Adjusted radius */
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   white-space: nowrap;
   position: relative;
   overflow: hidden;
+  width: 100%; /* ✅ Full width for vertical layout */
+  text-align: left; /* ✅ Left-aligned text */
   
   /* Glow effect for active button */
   ${props => props.$active && `
