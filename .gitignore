@@ -109,3 +109,7 @@ docs/build/
 
 # Emergency backup (keep this commented)
 # !important-backup.zip
+
+functions/lib/
+functions/**/*.js
+functions/**/*.js.map
