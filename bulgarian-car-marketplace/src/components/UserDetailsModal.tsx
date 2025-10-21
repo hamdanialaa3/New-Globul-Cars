@@ -1,21 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { 
   X, 
   User, 
-  Mail, 
-  Phone, 
-  MapPin, 
-  Calendar, 
   Car, 
   MessageSquare, 
-  Eye, 
-  Star,
   Activity,
-  TrendingUp,
-  Clock,
-  Shield,
-  CheckCircle
+  TrendingUp
 } from 'lucide-react';
 import { firebaseAuthUsersService } from '../services/firebase-auth-users-service';
 
@@ -181,33 +172,33 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({
 }) => {
   const [userCars, setUserCars] = useState<any[]>([]);
   const [userMessages, setUserMessages] = useState<any[]>([]);
-  const [userActivity, setUserActivity] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (isOpen && userId) {
-      loadUserDetails();
+  const loadUserDetails = useCallback(async () => {
+    if (!userId) {
+      return;
     }
-  }, [isOpen, userId]);
-
-  const loadUserDetails = async () => {
     setLoading(true);
     try {
-      const [cars, messages, activity] = await Promise.all([
+      const [cars, messages] = await Promise.all([
         firebaseAuthUsersService.getUserCars(userId),
-        firebaseAuthUsersService.getUserMessages(userId),
-        firebaseAuthUsersService.getUserActivity(userId)
+        firebaseAuthUsersService.getUserMessages(userId)
       ]);
       
       setUserCars(cars);
       setUserMessages(messages);
-      setUserActivity(activity);
     } catch (error) {
       console.error('Error loading user details:', error);
     } finally {
       setLoading(false);
     }
-  };
+  }, [userId]);
+
+  useEffect(() => {
+    if (isOpen) {
+      loadUserDetails();
+    }
+  }, [isOpen, loadUserDetails]);
 
   if (!isOpen) return null;
 

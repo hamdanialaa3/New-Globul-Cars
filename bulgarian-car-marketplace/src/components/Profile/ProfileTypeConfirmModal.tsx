@@ -151,12 +151,12 @@ const PROFILE_TERMS = {
   },
 };
 
-const ProfileTypeConfirmModal: React.FC<ProfileTypeConfirmModalProps> = ({
+const ProfileTypeConfirmModal = ({
   isOpen,
   profileType,
   onConfirm,
   onCancel,
-}) => {
+}: ProfileTypeConfirmModalProps): React.ReactPortal | null => {
   const { language } = useLanguage();
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   
