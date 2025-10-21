@@ -86,16 +86,20 @@ const LoadingFallback = styled.div`
 `;
 
 const FeaturedCarsSectionComponent: React.FC = () => {
+  const { language } = useLanguage();
+  
   return (
     <FeaturedCarsSection>
       <SectionContainer>
         <SectionHeader>
-          <h2>Featured Cars</h2>
+          <h2>{language === 'bg' ? 'Избрани автомобили' : 'Featured Cars'}</h2>
           <p>
-            Discover our handpicked selection of premium vehicles available in the Bulgarian marketplace.
+            {language === 'bg'
+              ? 'Открийте нашата селекция от премиум превозни средства, налични на българския пазар.'
+              : 'Discover our handpicked selection of premium vehicles available in the Bulgarian marketplace.'}
           </p>
           <ViewAllButton to="/cars">
-            View All Cars →
+            {language === 'bg' ? 'Виж всички автомобили →' : 'View All Cars →'}
           </ViewAllButton>
         </SectionHeader>
 

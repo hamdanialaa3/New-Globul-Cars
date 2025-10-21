@@ -1294,7 +1294,7 @@ export const LeafletBulgariaMap: React.FC<LeafletBulgariaMapProps> = ({
         <ShowMoreLegendButton onClick={() => setShowAllLegend(!showAllLegend)}>
           {showAllLegend ? (
             <>
-              ▲ {language === 'bg' ? 'إخفاء' : 'إخفاء'}
+              ▲ {language === 'bg' ? 'Скрий' : 'Hide'}
             </>
           ) : (
             <>
