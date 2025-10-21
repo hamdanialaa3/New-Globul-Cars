@@ -446,7 +446,7 @@ const Header: React.FC = () => {
             
             {/* Seller Type Dropdown */}
             {user && (
-              <div className="main-nav-dropdown" ref={profileTypeRef} style={{ marginLeft: 'auto' }}>
+              <div className="main-nav-dropdown" ref={profileTypeRef} style={{ marginLeft: 'auto', position: 'relative' }}>
                 <button 
                   className="nav-link main-nav-trigger"
                   onClick={toggleProfileType}
@@ -472,16 +472,22 @@ const Header: React.FC = () => {
                   </svg>
                 </button>
 
-                {/* Seller Type Switcher Dropdown - Under button */}
+                {/* Seller Type Switcher Dropdown */}
                 {isProfileTypeOpen && (
-                  <div className="main-nav-menu" style={{ 
-                    right: '0',  /* ✅ محاذاة من اليمين - الزر في اليمين */
-                    left: 'auto',  /* ✅ إلغاء المحاذاة اليسرى */
-                    minWidth: '200px'
+                  <div style={{ 
+                    position: 'absolute',
+                    top: '100%',
+                    right: '0',
+                    marginTop: '8px',
+                    background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+                    borderRadius: '16px',
+                    boxShadow: '0 12px 40px rgba(0, 0, 0, 0.15)',
+                    minWidth: '200px',
+                    zIndex: 10000,
+                    border: '2px solid rgba(255, 143, 16, 0.1)',
+                    padding: '12px'
                   }}>
-                    <div style={{ padding: '12px' }}>
-                      <ProfileTypeSwitcher />
-                    </div>
+                    <ProfileTypeSwitcher />
                   </div>
                 )}
               </div>
