@@ -3,7 +3,7 @@
 // 🎨 Premium Aluminum & Orange Theme with Glassmorphism
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
 
-import styled, { keyframes, css } from 'styled-components';
+import styled from 'styled-components';
 import { TrustLevel } from '../../../services/profile/trust-score-service';
 
 // ==================== ANIMATIONS ====================

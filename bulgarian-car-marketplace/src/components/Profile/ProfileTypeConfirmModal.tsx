@@ -151,12 +151,12 @@ const PROFILE_TERMS = {
   },
 };
 
-const ProfileTypeConfirmModal = ({
+const ProfileTypeConfirmModal: React.FC<ProfileTypeConfirmModalProps> = ({
   isOpen,
   profileType,
   onConfirm,
   onCancel,
-}: ProfileTypeConfirmModalProps): React.ReactPortal | null => {
+}) => {
   const { language } = useLanguage();
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   
@@ -182,7 +182,7 @@ const ProfileTypeConfirmModal = ({
     onConfirm();
   };
 
-  return (
+  const modalContent = (
     <Overlay onClick={onCancel}>
       <ModalContainer onClick={(e) => e.stopPropagation()}>
         <CloseButton onClick={onCancel}>
@@ -265,9 +265,10 @@ const ProfileTypeConfirmModal = ({
           </ConfirmButton>
         </Footer>
       </ModalContainer>
-    </Overlay>,
-    document.body
+    </Overlay>
   );
+  
+  return createPortal(modalContent, document.body);
 };
 
 // ==================== STYLED COMPONENTS ====================
