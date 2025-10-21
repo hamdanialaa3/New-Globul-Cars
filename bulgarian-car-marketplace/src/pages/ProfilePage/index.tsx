@@ -509,26 +509,26 @@ const ProfilePage: React.FC = () => {
   // Loading state
   if (loading) {
     return (
-      <S.ProfileContainer>
+      <S.ProfilePageContainer>
         <S.PageContainer>
           <div style={{ textAlign: 'center', padding: '4rem' }}>
             {t('common.loading')}
           </div>
         </S.PageContainer>
-      </S.ProfileContainer>
+      </S.ProfilePageContainer>
     );
   }
 
   // Not logged in state
   if (!user) {
     return (
-      <S.ProfileContainer>
+      <S.ProfilePageContainer>
         <S.PageContainer>
           <div style={{ textAlign: 'center', padding: '4rem' }}>
             {t('profile.notLoggedIn')}
           </div>
         </S.PageContainer>
-      </S.ProfileContainer>
+      </S.ProfilePageContainer>
     );
   }
 
@@ -536,7 +536,7 @@ const ProfilePage: React.FC = () => {
 
   return (
     <>
-    <S.ProfileContainer $isBusinessMode={isBusinessMode}>
+    <S.ProfilePageContainer $isBusinessMode={isBusinessMode}>
       {/* Business Background - Only for Business Accounts */}
       <BusinessBackground isBusinessAccount={isBusinessMode} />
       
@@ -1338,33 +1338,33 @@ const ProfilePage: React.FC = () => {
                       <S.NeumorphicFieldWrapper>
                         <S.NeumorphicFieldLabel $themeColor={theme.primary}>{language === 'bg' ? 'Име' : 'First Name'}</S.NeumorphicFieldLabel>
                         <S.NeumorphicInfoField>
-                          <S.NeumorphicFieldValue>{user.firstName || t('profile.notSet')}</S.NeumorphicFieldValue>
+                          <S.NeumorphicFieldValue>{user?.firstName || t('profile.notSet')}</S.NeumorphicFieldValue>
                         </S.NeumorphicInfoField>
                       </S.NeumorphicFieldWrapper>
                       <S.NeumorphicFieldWrapper>
                         <S.NeumorphicFieldLabel $themeColor={theme.primary}>{language === 'bg' ? 'Презиме' : 'Middle Name'}</S.NeumorphicFieldLabel>
                         <S.NeumorphicInfoField>
-                          <S.NeumorphicFieldValue>{user.middleName || t('profile.notSet')}</S.NeumorphicFieldValue>
+                          <S.NeumorphicFieldValue>{user?.middleName || t('profile.notSet')}</S.NeumorphicFieldValue>
                         </S.NeumorphicInfoField>
                       </S.NeumorphicFieldWrapper>
                       <S.NeumorphicFieldWrapper>
                         <S.NeumorphicFieldLabel $themeColor={theme.primary}>{language === 'bg' ? 'Фамилия' : 'Last Name'}</S.NeumorphicFieldLabel>
                         <S.NeumorphicInfoField>
-                          <S.NeumorphicFieldValue>{user.lastName || t('profile.notSet')}</S.NeumorphicFieldValue>
+                          <S.NeumorphicFieldValue>{user?.lastName || t('profile.notSet')}</S.NeumorphicFieldValue>
                         </S.NeumorphicInfoField>
                       </S.NeumorphicFieldWrapper>
                       <S.NeumorphicFieldWrapper>
                         <S.NeumorphicFieldLabel $themeColor={theme.primary}>{language === 'bg' ? 'Дата на раждане' : 'Date of Birth'}</S.NeumorphicFieldLabel>
                         <S.NeumorphicInfoField>
                           <S.NeumorphicFieldValue>
-                            {user.dateOfBirth ? new Date(user.dateOfBirth).toLocaleDateString('bg-BG') : t('profile.notSet')}
+                            {user?.dateOfBirth ? new Date(user.dateOfBirth).toLocaleDateString('bg-BG') : t('profile.notSet')}
                           </S.NeumorphicFieldValue>
                         </S.NeumorphicInfoField>
                       </S.NeumorphicFieldWrapper>
                       <S.NeumorphicFieldWrapper>
                         <S.NeumorphicFieldLabel $themeColor={theme.primary}>{language === 'bg' ? 'Място на раждане' : 'Place of Birth'}</S.NeumorphicFieldLabel>
                         <S.NeumorphicInfoField>
-                          <S.NeumorphicFieldValue>{user.placeOfBirth || t('profile.notSet')}</S.NeumorphicFieldValue>
+                          <S.NeumorphicFieldValue>{user?.placeOfBirth || t('profile.notSet')}</S.NeumorphicFieldValue>
                         </S.NeumorphicInfoField>
                       </S.NeumorphicFieldWrapper>
                     </S.NeumorphicInfoGrid>
@@ -1381,13 +1381,13 @@ const ProfilePage: React.FC = () => {
                       <S.NeumorphicFieldWrapper>
                         <S.NeumorphicFieldLabel $themeColor={theme.primary}>{language === 'bg' ? 'Телефон' : 'Phone'}</S.NeumorphicFieldLabel>
                         <S.NeumorphicInfoField>
-                          <S.NeumorphicFieldValue>{user.phoneNumber || t('profile.notSet')}</S.NeumorphicFieldValue>
+                          <S.NeumorphicFieldValue>{user?.phoneNumber || t('profile.notSet')}</S.NeumorphicFieldValue>
                         </S.NeumorphicInfoField>
                       </S.NeumorphicFieldWrapper>
                       <S.NeumorphicFieldWrapper>
                         <S.NeumorphicFieldLabel $themeColor={theme.primary}>{language === 'bg' ? 'Имейл' : 'Email'}</S.NeumorphicFieldLabel>
                         <S.NeumorphicInfoField>
-                          <S.NeumorphicFieldValue>{user.email || t('profile.notSet')}</S.NeumorphicFieldValue>
+                          <S.NeumorphicFieldValue>{user?.email || t('profile.notSet')}</S.NeumorphicFieldValue>
                         </S.NeumorphicInfoField>
                       </S.NeumorphicFieldWrapper>
                     </S.NeumorphicInfoGrid>
@@ -1403,21 +1403,21 @@ const ProfilePage: React.FC = () => {
                       <S.NeumorphicFieldWrapper>
                         <S.NeumorphicFieldLabel $themeColor={theme.primary}>{language === 'bg' ? 'Град' : 'City'}</S.NeumorphicFieldLabel>
                         <S.NeumorphicInfoField>
-                          <S.NeumorphicFieldValue>{user.location?.city || t('profile.notSet')}</S.NeumorphicFieldValue>
+                          <S.NeumorphicFieldValue>{user?.location?.city || t('profile.notSet')}</S.NeumorphicFieldValue>
                         </S.NeumorphicInfoField>
                       </S.NeumorphicFieldWrapper>
                       <S.NeumorphicFieldWrapper>
                         <S.NeumorphicFieldLabel $themeColor={theme.primary}>{language === 'bg' ? 'Пощенски код' : 'Postal Code'}</S.NeumorphicFieldLabel>
                         <S.NeumorphicInfoField>
-                          <S.NeumorphicFieldValue>{user.postalCode || t('profile.notSet')}</S.NeumorphicFieldValue>
+                          <S.NeumorphicFieldValue>{user?.postalCode || t('profile.notSet')}</S.NeumorphicFieldValue>
                         </S.NeumorphicInfoField>
                       </S.NeumorphicFieldWrapper>
                     </S.NeumorphicInfoGrid>
-                    {user.address && (
+                    {user?.address && (
                       <S.NeumorphicFieldWrapper style={{ marginTop: '16px' }}>
                         <S.NeumorphicFieldLabel $themeColor={theme.primary}>{language === 'bg' ? 'Адрес' : 'Address'}</S.NeumorphicFieldLabel>
                         <S.NeumorphicInfoField>
-                          <S.NeumorphicFieldValue>{user.address}</S.NeumorphicFieldValue>
+                          <S.NeumorphicFieldValue>{user?.address}</S.NeumorphicFieldValue>
                         </S.NeumorphicInfoField>
                       </S.NeumorphicFieldWrapper>
                     )}
@@ -1434,7 +1434,7 @@ const ProfilePage: React.FC = () => {
                         <S.NeumorphicFieldLabel $themeColor={theme.primary}>{t('profile.preferredLanguage')}</S.NeumorphicFieldLabel>
                         <S.NeumorphicInfoField>
                           <S.NeumorphicFieldValue>
-                            {user.preferredLanguage === 'bg' ? '🇧🇬 ' + t('languages.bulgarian') : '🇬🇧 ' + t('languages.english')}
+                            {user?.preferredLanguage === 'bg' ? '🇧🇬 ' + t('languages.bulgarian') : '🇬🇧 ' + t('languages.english')}
                           </S.NeumorphicFieldValue>
                         </S.NeumorphicInfoField>
                       </S.NeumorphicFieldWrapper>
@@ -1442,17 +1442,17 @@ const ProfilePage: React.FC = () => {
                         <S.NeumorphicFieldLabel $themeColor={theme.primary}>{t('profile.memberSince')}</S.NeumorphicFieldLabel>
                         <S.NeumorphicInfoField>
                           <S.NeumorphicFieldValue>
-                            {user.createdAt ? new Date(user.createdAt).toLocaleDateString('bg-BG') : t('profile.notSet')}
+                            {user?.createdAt ? new Date(user.createdAt).toLocaleDateString('bg-BG') : t('profile.notSet')}
                           </S.NeumorphicFieldValue>
                         </S.NeumorphicInfoField>
                       </S.NeumorphicFieldWrapper>
                     </S.NeumorphicInfoGrid>
                   </div>
 
-                  {user.bio && (
+                  {user?.bio && (
                     <div style={{ marginTop: '2rem' }}>
                       <strong>{t('profile.bio')}:</strong>
-                      <p style={{ marginTop: '0.5rem', color: '#666' }}>{user.bio}</p>
+                      <p style={{ marginTop: '0.5rem', color: '#666' }}>{user?.bio}</p>
                     </div>
                   )}
                 </div>
@@ -1461,13 +1461,13 @@ const ProfilePage: React.FC = () => {
             )}
 
             {/* ❌ HIDDEN: Verification Panel - Now in Settings tab only */}
-            {false && (
+            {false && user && (
             <S.ContentSection $themeColor={theme.primary}>
               <VerificationPanel
-                emailVerified={user.emailVerified || user.verification?.email?.verified || false}
-                phoneVerified={user.verification?.phone?.verified || false}
-                idVerified={user.verification?.identity?.verified || false}
-                businessVerified={user.verification?.business?.verified || false}
+                emailVerified={user?.emailVerified || user?.verification?.email?.verified || false}
+                phoneVerified={user?.verification?.phone?.verified || false}
+                idVerified={user?.verification?.identity?.verified || false}
+                businessVerified={user?.verification?.business?.verified || false}
                 themeColor={theme.primary}
               />
             </S.ContentSection>
@@ -1696,7 +1696,7 @@ const ProfilePage: React.FC = () => {
           />
         )}
       </S.PageContainer>
-    </S.ProfileContainer>
+    </S.ProfilePageContainer>
     
     {/* ⚡ NEW: Profile Type Confirmation Modal */}
     {pendingProfileType && (
