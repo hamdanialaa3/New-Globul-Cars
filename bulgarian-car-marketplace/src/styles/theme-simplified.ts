@@ -40,8 +40,8 @@ export const bulgarianColors = {
 // Simplified Typography
 export const bulgarianTypography = {
   fontFamily: {
-    primary: "'Roboto', sans-serif",
-    accent: "'Montserrat', sans-serif"
+    primary: "'Martica', 'Arial', sans-serif",
+    accent: "'Martica', 'Arial', sans-serif"
   },
   fontSize: {
     sm: '0.875rem',
@@ -89,10 +89,13 @@ export const bulgarianShadows = {
 
 // Simplified Global Styles - Clean and Maintainable
 export const GlobalStyles = createGlobalStyle`
+  @import url('https://fonts.cdnfonts.com/css/martica');
+
   * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'Martica', 'Arial', sans-serif;
   }
 
   html {
@@ -101,7 +104,7 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   body {
-    font-family: ${bulgarianTypography.fontFamily.primary};
+    font-family: 'Martica', 'Arial', sans-serif;
     color: ${bulgarianColors.text.primary};
     background-color: ${bulgarianColors.background.default};
     min-height: 100vh;
@@ -110,7 +113,7 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: ${bulgarianTypography.fontFamily.accent};
+    font-family: 'Martica', 'Arial', sans-serif;
     font-weight: ${bulgarianTypography.fontWeight.bold};
     line-height: ${bulgarianTypography.lineHeight.normal};
     margin-bottom: ${bulgarianSpacing.md};
@@ -135,11 +138,16 @@ export const GlobalStyles = createGlobalStyle`
     text-decoration: none;
     transition: color 0.2s ease-in-out;
     font-weight: ${bulgarianTypography.fontWeight.medium};
+    font-family: 'Martica', 'Arial', sans-serif;
 
     &:hover {
       color: ${bulgarianColors.primary.dark};
       text-decoration: underline;
     }
+  }
+
+  li, ul, ol, label, input, select, textarea, button, small, strong, em, span, div {
+    font-family: 'Martica', 'Arial', sans-serif;
   }
 
   /* Clean Button Styles */

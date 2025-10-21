@@ -174,10 +174,16 @@ const Header: React.FC = () => {
                       {user.displayName || user.email?.split('@')[0]}
                     </span>
                   </button>
-                  {/* ❌ REMOVED: Settings button per user request */}
+                  <button
+                    className="settings-button"
+                    onClick={toggleSettings}
+                    title={t('nav.settings')}
+                  >
+                    <Settings size={20} />
+                  </button>
 
-                  {/* Settings Dropdown - Hidden (removed button) */}
-                  {false && isSettingsOpen && (
+                  {/* Settings Dropdown */}
+                  {isSettingsOpen && (
                     <div className="settings-dropdown">
                       <div className="settings-header">
                         <span>{t('header.loggedAs')} {user.displayName || user.email?.split('@')[0]}</span>

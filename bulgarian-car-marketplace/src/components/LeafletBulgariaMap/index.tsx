@@ -701,7 +701,7 @@ const LeafletContainer = styled.div`
     border: 1px solid rgba(59, 130, 246, 0.3) !important;
     border-radius: 12px !important;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3) !important;
-    font-family: 'Inter', sans-serif !important;
+  font-family: 'Inter', sans-serif !important;
   }
   
   .car-tooltip::before {
