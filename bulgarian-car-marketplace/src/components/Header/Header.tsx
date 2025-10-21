@@ -472,9 +472,14 @@ const Header: React.FC = () => {
                   </svg>
                 </button>
 
-                {/* Seller Type Switcher Dropdown - Aligned with button */}
+                {/* Seller Type Switcher Dropdown - Directly under button */}
                 {isProfileTypeOpen && (
-                  <div className="main-nav-menu" style={{ right: '0', left: 'auto', minWidth: '200px' }}>
+                  <div className="main-nav-menu" style={{ 
+                    right: 'auto', 
+                    left: '0', 
+                    minWidth: '200px',
+                    marginTop: '4px'
+                  }}>
                     <div style={{ padding: '12px' }}>
                       <ProfileTypeSwitcher />
                     </div>

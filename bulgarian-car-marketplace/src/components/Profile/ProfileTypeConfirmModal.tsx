@@ -294,9 +294,9 @@ const Overlay = styled.div`
 const ModalContainer = styled.div`
   background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
   border-radius: 24px;
-  max-width: 750px;
+  max-width: 850px; /* ✅ Increased from 750px for better readability */
   width: 95%;
-  max-height: 85vh;
+  max-height: 90vh; /* ✅ Increased from 85vh for more content space */
   overflow-y: auto;
   position: relative;
   box-shadow: 
@@ -347,14 +347,14 @@ const CloseButton = styled.button`
 
 const Header = styled.div`
   text-align: center;
-  padding: 40px 40px 30px;
+  padding: 40px 50px 35px; /* ✅ Increased padding for spacious feel */
   border-bottom: 2px solid rgba(255, 143, 16, 0.1);
 `;
 
 const IconWrapper = styled.div`
-  width: 80px;
-  height: 80px;
-  margin: 0 auto 20px;
+  width: 90px; /* ✅ Increased from 80px */
+  height: 90px; /* ✅ Increased from 80px */
+  margin: 0 auto 24px; /* ✅ More space below icon */
   background: linear-gradient(135deg, #FF8F10 0%, #FFDF00 100%);
   border-radius: 50%;
   display: flex;
@@ -365,20 +365,21 @@ const IconWrapper = styled.div`
 `;
 
 const Title = styled.h2`
-  font-size: 1.75rem;
+  font-size: 2rem; /* ✅ Increased from 1.75rem for better visibility */
   font-weight: 700;
   color: #212529;
-  margin: 0 0 10px 0;
+  margin: 0 0 12px 0; /* ✅ More space below title */
 `;
 
 const Description = styled.p`
-  font-size: 1rem;
+  font-size: 1.125rem; /* ✅ Increased from 1rem */
   color: #6c757d;
   margin: 0;
+  line-height: 1.7; /* ✅ Added line-height */
 `;
 
 const Content = styled.div`
-  padding: 30px 40px;
+  padding: 35px 50px; /* ✅ Increased from 30px 40px */
 
   @media (max-width: 768px) {
     padding: 20px;
@@ -390,16 +391,18 @@ const Section = styled.div`
 `;
 
 const SectionTitle = styled.h3`
-  font-size: 1.1rem;
-  font-weight: 600;
+  font-size: 1.25rem; /* ✅ Increased from 1.1rem */
+  font-weight: 700; /* ✅ Increased from 600 */
   color: #212529;
-  margin: 0 0 15px 0;
+  margin: 0 0 18px 0; /* ✅ Increased margin */
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px; /* ✅ Increased gap */
 
   svg {
     color: #FF8F10;
+    width: 22px; /* ✅ Larger icon */
+    height: 22px;
   }
 `;
 
@@ -410,14 +413,26 @@ const List = styled.ul`
 `;
 
 const ListItem = styled.li`
-  padding: 8px 0;
+  padding: 12px 0; /* ✅ Increased from 8px */
+  padding-left: 32px; /* ✅ Added left padding */
   color: #495057;
-  font-size: 0.95rem;
-  line-height: 1.6;
+  font-size: 1.05rem; /* ✅ Increased from 0.95rem */
+  line-height: 1.7; /* ✅ Increased from 1.6 */
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  position: relative; /* ✅ For bullet positioning */
 
   &:last-child {
     border-bottom: none;
+  }
+  
+  /* ✅ Better bullet points */
+  &::before {
+    content: '•';
+    position: absolute;
+    left: 12px;
+    color: #FF8F10;
+    font-size: 1.2rem;
+    font-weight: bold;
   }
 `;
 
