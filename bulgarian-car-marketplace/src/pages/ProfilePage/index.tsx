@@ -880,10 +880,6 @@ const ProfilePage: React.FC = () => {
                 </div>
               </S.ContentSection>
             )}
-
-
-
-              {editing && isOwnProfile ? (
                 <form onSubmit={(e) => { e.preventDefault(); handleSaveProfile(); }}>
                   {/* Account Type Selector */}
                   <div style={{ marginBottom: '16px', padding: '12px', background: '#f9f9f9', borderRadius: '8px', border: '2px solid #e0e0e0' }}>

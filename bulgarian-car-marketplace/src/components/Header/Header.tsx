@@ -175,6 +175,61 @@ const Header: React.FC = () => {
               onToggle={toggleNotifications}
               onClose={closeNotifications}
             />
+            
+            {/* Seller Type Dropdown - Always visible */}
+            {user && (
+              <div className="main-nav-dropdown" ref={profileTypeRef} style={{ position: 'relative', marginLeft: '8px' }}>
+                <button 
+                  className="action-bar-button"
+                  onClick={toggleProfileType}
+                  aria-expanded={isProfileTypeOpen}
+                  style={{ 
+                    background: 'linear-gradient(135deg, #FF8F10 0%, #FFAA00 100%)',
+                    color: 'white',
+                    fontWeight: '600',
+                    padding: '8px 12px',
+                    borderRadius: '8px',
+                    border: 'none',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    fontSize: '0.875rem',
+                    cursor: 'pointer'
+                  }}
+                  title={language === 'bg' ? 'Тип продавач' : 'Seller Type'}
+                >
+                  <User size={16} />
+                  <span style={{ whiteSpace: 'nowrap' }}>{language === 'bg' ? 'Тип' : 'Type'}</span>
+                  <svg 
+                    className={`arrow ${isProfileTypeOpen ? 'rotate' : ''}`}
+                    width="10" 
+                    height="10" 
+                    viewBox="0 0 12 12"
+                    style={{ marginLeft: '-2px' }}
+                  >
+                    <path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="2"/>
+                  </svg>
+                </button>
+
+                {isProfileTypeOpen && (
+                  <div style={{ 
+                    position: 'absolute',
+                    top: '100%',
+                    right: '0',
+                    marginTop: '8px',
+                    background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+                    borderRadius: '16px',
+                    boxShadow: '0 12px 40px rgba(0, 0, 0, 0.15)',
+                    minWidth: '200px',
+                    zIndex: 10000,
+                    border: '2px solid rgba(255, 143, 16, 0.1)',
+                    padding: '12px'
+                  }}>
+                    <ProfileTypeSwitcher />
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Right Section */}
