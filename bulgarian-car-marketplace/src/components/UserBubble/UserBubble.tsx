@@ -3,13 +3,12 @@
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
 import React, { useState } from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { 
   MessageCircle, 
   UserPlus, 
   UserCheck,
-  Star,
   CheckCircle
 } from 'lucide-react';
 
@@ -106,7 +105,9 @@ const BubbleAvatar = styled.div<{
   color: white;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   
-  ${p => p.$isOnline && `animation: ${onlinePulse} 2s ease-in-out infinite;`}
+  ${p => p.$isOnline && css`
+    animation: ${onlinePulse} 2s ease-in-out infinite;
+  `}
   
   &::before {
     content: '${p => !p.$imageUrl ? p.$initial : ''}';

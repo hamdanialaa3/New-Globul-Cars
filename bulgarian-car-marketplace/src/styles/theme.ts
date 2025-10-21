@@ -249,8 +249,6 @@ export const bulgarianTheme: DefaultTheme = {
 
 // Global Styles - ????? ?????? ??????
 export const GlobalStyles = createGlobalStyle`
-  @import url('https://fonts.cdnfonts.com/css/martica');
-
   * {
     margin: 0;
     padding: 0;

@@ -743,18 +743,18 @@ const ProfilePage: React.FC = () => {
               {isOwnProfile ? (
                 <>
                   {/* Own Profile Actions - Edit Profile removed as it's now in Quick Actions */}
-                  <S.ActionButton variant="secondary" onClick={() => navigate('/users')} $themeColor={theme.primary}>
+                  <S.ActionButton $variant="secondary" onClick={() => navigate('/users')} $themeColor={theme.primary}>
                     <Users size={18} />
                     {language === 'bg' ? 'Директория' : 'Browse Users'}
                   </S.ActionButton>
-                  <S.ActionButton variant="danger" onClick={handleLogout}>
+                  <S.ActionButton $variant="danger" onClick={handleLogout}>
                     {t('profile.logout')}
                   </S.ActionButton>
                 </>
               ) : (
                 <>
                   {/* Viewing Another User's Profile */}
-                  <S.ActionButton variant="primary" onClick={async () => {
+                  <S.ActionButton $variant="primary" onClick={async () => {
                     if (!user?.uid || !targetUserId) return;
                     try {
                       // Import messaging service
@@ -785,11 +785,11 @@ const ProfilePage: React.FC = () => {
                       : (language === 'bg' ? 'Последвай' : 'Follow')
                     }
                   </FollowButton>
-                  <S.ActionButton variant="secondary" onClick={() => navigate('/users')}>
+                  <S.ActionButton $variant="secondary" onClick={() => navigate('/users')}>
                     <Users size={18} />
                     {language === 'bg' ? 'Обратно към директорията' : 'Back to Directory'}
                   </S.ActionButton>
-                  <S.ActionButton variant="secondary" onClick={() => {
+                  <S.ActionButton $variant="secondary" onClick={() => {
                     // Scroll to reviews section
                     const reviewsSection = document.querySelector('[data-section="reviews"]');
                     if (reviewsSection) {
@@ -799,7 +799,7 @@ const ProfilePage: React.FC = () => {
                     <MessageCircle size={18} />
                     {language === 'bg' ? 'Напиши отзив' : 'Write Review'}
                   </S.ActionButton>
-                  <S.ActionButton variant="secondary" onClick={() => navigate('/')}>
+                  <S.ActionButton $variant="secondary" onClick={() => navigate('/')}>
                     <Home size={18} />
                     {language === 'bg' ? 'Начало' : 'Home'}
                   </S.ActionButton>
