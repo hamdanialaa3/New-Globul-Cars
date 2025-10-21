@@ -1299,7 +1299,7 @@ export const LeafletBulgariaMap: React.FC<LeafletBulgariaMapProps> = ({
           ) : (
             <>
               ▼ {language === 'bg' 
-                ? `عرض جميع المحافظات (${bulgariaData.features.length - 6} أخرى)` 
+                ? `Покажи всички области (${bulgariaData.features.length - 6} още)` 
                 : `Show All Regions (${bulgariaData.features.length - 6} more)`}
             </>
           )}

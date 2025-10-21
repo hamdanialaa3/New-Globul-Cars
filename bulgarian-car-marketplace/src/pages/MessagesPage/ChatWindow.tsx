@@ -300,8 +300,6 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
         receiverName: recipientName || 'User',
         content,
         messageType: 'text',
-        type: 'text',
-        status: 'sent',
         isRead: false
       });
     } catch (error) {

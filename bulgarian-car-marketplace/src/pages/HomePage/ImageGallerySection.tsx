@@ -5,6 +5,7 @@ import React, { useState, useEffect, memo } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 const ImageGallerySection = styled.section`
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
@@ -314,13 +315,15 @@ const ImageGallerySectionComponent: React.FC = () => {
     setCurrentIndex(index);
   };
 
+  const { language } = useLanguage();
+  
   if (GALLERY_IMAGE_NAMES.length === 0) {
     return (
       <ImageGallerySection>
         <SectionContainer>
           <SectionHeader>
-            <h2>Image Gallery</h2>
-            <p>No images available at the moment.</p>
+            <h2>{language === 'bg' ? 'Галерия със снимки' : 'Image Gallery'}</h2>
+            <p>{language === 'bg' ? 'В момента няма налични изображения.' : 'No images available at the moment.'}</p>
           </SectionHeader>
         </SectionContainer>
       </ImageGallerySection>
@@ -331,12 +334,14 @@ const ImageGallerySectionComponent: React.FC = () => {
     <ImageGallerySection>
       <SectionContainer>
         <SectionHeader>
-          <h2>Image Gallery</h2>
+          <h2>{language === 'bg' ? 'Галерия със снимки' : 'Image Gallery'}</h2>
           <p>
-            Explore our comprehensive collection of high-quality images showcasing our brand identity and visual assets.
+            {language === 'bg' 
+              ? 'Разгледайте нашата обширна колекция от високо качество изображения, показващи нашата идентичност и визуални активи.'
+              : 'Explore our comprehensive collection of high-quality images showcasing our brand identity and visual assets.'}
           </p>
           <ViewGalleryButton to="/image-gallery">
-            View Full Gallery →
+            {language === 'bg' ? 'Виж цялата галерия →' : 'View Full Gallery →'}
           </ViewGalleryButton>
         </SectionHeader>
 

@@ -5,6 +5,7 @@ import React, { Suspense, memo } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import FeaturedCars from '../../components/FeaturedCars';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 const FeaturedCarsSection = styled.section`
   background: linear-gradient(135deg, #fff5f5 0%, #ffeaea 100%);
