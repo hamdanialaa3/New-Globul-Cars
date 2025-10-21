@@ -1027,11 +1027,11 @@ const ProfilePage: React.FC = () => {
                   <div style={{
                     textAlign: 'center',
                     padding: '80px 20px',
-                    background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.05) 100%)',
-                    borderRadius: '16px',
-                    border: '2px solid rgba(239, 68, 68, 0.2)'
-                  }}>
-                    <Car size={64} color="#ef4444" style={{ marginBottom: '20px' }} />
+                  background: 'linear-gradient(135deg, rgba(220, 53, 69, 0.15) 0%, rgba(200, 35, 51, 0.10) 100%)',
+                  borderRadius: '16px',
+                  border: '2px solid rgba(220, 53, 69, 0.3)'
+                }}>
+                  <Car size={64} color="#dc3545" style={{ marginBottom: '20px' }} />
                     <h3 style={{ fontSize: '1.5rem', color: '#dc2626', marginBottom: '12px' }}>
                       {language === 'bg' ? '🔒 Достъп отказан' : '🔒 Access Denied'}
                     </h3>
@@ -1764,11 +1764,11 @@ const ProfilePage: React.FC = () => {
                   <div style={{
                     textAlign: 'center',
                     padding: '80px 20px',
-                    background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.05) 100%)',
-                    borderRadius: '16px',
-                    border: '2px solid rgba(239, 68, 68, 0.2)'
-                  }}>
-                    <Shield size={64} color="#ef4444" style={{ marginBottom: '20px' }} />
+                  background: 'linear-gradient(135deg, rgba(220, 53, 69, 0.15) 0%, rgba(200, 35, 51, 0.10) 100%)',
+                  borderRadius: '16px',
+                  border: '2px solid rgba(220, 53, 69, 0.3)'
+                }}>
+                  <Shield size={64} color="#dc3545" style={{ marginBottom: '20px' }} />
                     <h3 style={{ fontSize: '1.5rem', color: '#dc2626', marginBottom: '12px' }}>
                       {language === 'bg' ? '🔒 Достъп отказан' : '🔒 Access Denied'}
                     </h3>
