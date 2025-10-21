@@ -3,6 +3,7 @@
 // ⚡ Shows requirements and limits for each profile type
 
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import styled, { keyframes } from 'styled-components';
 import { X, AlertCircle, Check, User, Building2, Store } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
@@ -264,7 +265,8 @@ const ProfileTypeConfirmModal: React.FC<ProfileTypeConfirmModalProps> = ({
           </ConfirmButton>
         </Footer>
       </ModalContainer>
-    </Overlay>
+    </Overlay>,
+    document.body
   );
 };
 
@@ -273,12 +275,12 @@ const ProfileTypeConfirmModal: React.FC<ProfileTypeConfirmModalProps> = ({
 const Overlay = styled.div`
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(12px);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 10000;
+  z-index: 999999;
   padding: 20px;
   animation: fadeIn 0.3s ease;
 
@@ -291,9 +293,9 @@ const Overlay = styled.div`
 const ModalContainer = styled.div`
   background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
   border-radius: 24px;
-  max-width: 650px;
-  width: 100%;
-  max-height: 90vh;
+  max-width: 750px;
+  width: 95%;
+  max-height: 85vh;
   overflow-y: auto;
   position: relative;
   box-shadow: 

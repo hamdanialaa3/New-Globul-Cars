@@ -210,7 +210,7 @@ export const LEDProgressAvatar: React.FC<LEDProgressAvatarProps> = ({
     }
     // Generate default SVG avatar
     const initial = user?.firstName?.[0] || user?.businessName?.[0] || '?';
-    return `data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120"%3E%3Crect fill="%23f0f0f0" width="120" height="120"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="48" fill="%23999"%3E${initial}%3C/text%3E%3C/svg%3E`;
+  return `data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120"%3E%3Crect fill="%23f0f0f0" width="120" height="120"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="Martica" font-size="48" fill="%23999"%3E${initial}%3C/text%3E%3C/svg%3E`;
   };
 
   const photoURL = getPhotoURL();
@@ -253,7 +253,7 @@ export const LEDProgressAvatar: React.FC<LEDProgressAvatarProps> = ({
         onError={(e) => {
           // ⚡ FIXED: Generate SVG placeholder with initials
           const initial = user?.firstName?.[0] || user?.businessName?.[0] || '?';
-          (e.target as HTMLImageElement).src = `data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120"%3E%3Crect fill="%23${profileType === 'dealer' ? '16a34a' : profileType === 'company' ? '1d4ed8' : 'FF8F10'}" width="120" height="120"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="56" font-weight="bold" fill="white"%3E${initial}%3C/text%3E%3C/svg%3E`;
+          (e.target as HTMLImageElement).src = `data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120"%3E%3Crect fill="%23${profileType === 'dealer' ? '16a34a' : profileType === 'company' ? '1d4ed8' : 'FF8F10'}" width="120" height="120"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="Martica" font-size="56" font-weight="bold" fill="white"%3E${initial}%3C/text%3E%3C/svg%3E`;
         }}
         loading="eager"
       />

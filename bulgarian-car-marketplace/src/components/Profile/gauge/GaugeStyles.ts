@@ -3,7 +3,7 @@
 // 🎨 Premium Dark Aluminum Design with Orange-Yellow Theme
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
 
-import styled, { keyframes, css } from 'styled-components';
+import styled from 'styled-components';
 
 // ==================== ANIMATIONS ====================
 
@@ -242,7 +242,7 @@ export const PercentageDisplay = styled.div<{ $color: string }>`
   font-size: 3.42rem;
   font-weight: 700;
   line-height: 1;
-  font-family: 'Courier New', monospace;
+  font-family: 'Martica', 'Arial', sans-serif;
   color: ${props => props.$color};
   
   /* Enhanced Glow - Scaled */
@@ -409,7 +409,7 @@ export const NumberLabel = styled.div<{ $angle: number; $value: number }>`
   left: 50%;
   font-size: 0.9rem;
   font-weight: 700;
-  font-family: 'Arial', sans-serif;
+  font-family: 'Martica', 'Arial', sans-serif;
   
   /* Yellow-orange gradient for numbers */
   background: linear-gradient(135deg,

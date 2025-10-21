@@ -190,7 +190,7 @@ export const NumberLabel = styled.div<{ $angle: number }>`
   /* ⚡ RESIZED: Font size scaled */
   font-size: 0.34rem;
   font-weight: 700;
-  font-family: 'Arial', sans-serif;
+  font-family: 'Martica', 'Arial', sans-serif;
   
   /* Yellow gradient for numbers */
   background: linear-gradient(135deg,
@@ -266,7 +266,7 @@ export const ScoreDisplay = styled.div<{ $color: string }>`
   font-size: 1.44rem;
   font-weight: 700;
   line-height: 1;
-  font-family: 'Courier New', monospace;
+  font-family: 'Martica', 'Arial', sans-serif;
   color: ${props => props.$color};
   
   /* Enhanced Glow - Scaled */
