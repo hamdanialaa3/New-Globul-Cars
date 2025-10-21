@@ -597,8 +597,8 @@ const ProfilePage: React.FC = () => {
           )}
         </TabNavigation>
         
-        {/* Cover Image - Only show in Profile tab */}
-        {activeTab === 'profile' && (
+        {/* Cover Image - 🔒 SECURITY: Only editable for own profile */}
+        {activeTab === 'profile' && isOwnProfile && (
           <CoverImageUploader
           currentImageUrl={user.coverImage?.url}
           themeColor={theme.primary}
@@ -606,6 +606,11 @@ const ProfilePage: React.FC = () => {
             if (process.env.NODE_ENV === 'development') {
               console.log('Cover uploaded:', url);
             }
+            // Update user state
+            setUser(prev => prev ? { 
+              ...prev, 
+              coverImage: { url, uploadedAt: new Date() } 
+            } : null);
           }}
           onUploadError={(error) => {
             if (process.env.NODE_ENV === 'development') {
@@ -613,6 +618,22 @@ const ProfilePage: React.FC = () => {
             }
           }}
         />
+        )}
+        
+        {/* Cover Image Display - 🔒 SECURITY: Read-only for viewing others */}
+        {activeTab === 'profile' && !isOwnProfile && user.coverImage?.url && (
+          <div style={{
+            width: '100%',
+            height: '300px',
+            borderRadius: '16px',
+            overflow: 'hidden',
+            marginBottom: '60px',
+            backgroundImage: `url(${user.coverImage.url})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            border: `2px solid ${theme.primary}4D`,
+            boxShadow: `0 8px 28px ${theme.primary}33`
+          }} />
         )}
         
         {/* ❌ REMOVED: Quick Actions buttons (Add Listing, Edit Profile, Settings) per user request */}
@@ -1599,82 +1620,167 @@ const ProfilePage: React.FC = () => {
           <FullWidthContent key={`tab-${activeTab}`}>
             {activeTab === 'myads' && (
               <AnimatedTabContent>
-                <GarageSection
-                  cars={((userCars || []) as any[]).map(car => ({
-                    ...car,
-                    currency: 'EUR' as const,
-                    createdAt: car.createdAt || new Date(),
-                    title: car.title || `${car.make} ${car.model}`
-                  }))}
-                  onEdit={(carId) => navigate(`/car/${carId}?edit=true`)}
-                  onDelete={(carId) => {
-                    if (window.confirm(language === 'bg' ? 'Сигурни ли сте?' : 'Are you sure?')) {
-                      loadUserCars?.();
-                    }
-                  }}
-                  onAddNew={() => navigate('/sell')}
-                />
+                {/* 🔒 SECURITY: My Ads only accessible for own profile */}
+                {isOwnProfile ? (
+                  <GarageSection
+                    cars={((userCars || []) as any[]).map(car => ({
+                      ...car,
+                      currency: 'EUR' as const,
+                      createdAt: car.createdAt || new Date(),
+                      title: car.title || `${car.make} ${car.model}`
+                    }))}
+                    onEdit={(carId) => navigate(`/car/${carId}?edit=true`)}
+                    onDelete={(carId) => {
+                      if (window.confirm(language === 'bg' ? 'Сигурни ли сте?' : 'Are you sure?')) {
+                        loadUserCars?.();
+                      }
+                    }}
+                    onAddNew={() => navigate('/sell')}
+                  />
+                ) : (
+                  <div style={{
+                    textAlign: 'center',
+                    padding: '80px 20px',
+                    background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.05) 100%)',
+                    borderRadius: '16px',
+                    border: '2px solid rgba(239, 68, 68, 0.2)'
+                  }}>
+                    <Car size={64} color="#ef4444" style={{ marginBottom: '20px' }} />
+                    <h3 style={{ fontSize: '1.5rem', color: '#dc2626', marginBottom: '12px' }}>
+                      {language === 'bg' ? '🔒 Достъп отказан' : '🔒 Access Denied'}
+                    </h3>
+                    <p style={{ fontSize: '1rem', color: '#6c757d' }}>
+                      {language === 'bg' 
+                        ? 'Не можете да видите обявите на друг потребител' 
+                        : 'You cannot view another user\'s listings'}
+                    </p>
+                  </div>
+                )}
               </AnimatedTabContent>
             )}
 
             {activeTab === 'campaigns' && (
               <AnimatedTabContent>
-                <CampaignsList userId={user.uid} />
+                {/* 🔒 SECURITY: Campaigns only accessible for own profile */}
+                {isOwnProfile ? (
+                  <CampaignsList userId={user.uid} />
+                ) : (
+                  <div style={{
+                    textAlign: 'center',
+                    padding: '80px 20px',
+                    background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.05) 100%)',
+                    borderRadius: '16px',
+                    border: '2px solid rgba(239, 68, 68, 0.2)'
+                  }}>
+                    <BarChart3 size={64} color="#ef4444" style={{ marginBottom: '20px' }} />
+                    <h3 style={{ fontSize: '1.5rem', color: '#dc2626', marginBottom: '12px' }}>
+                      {language === 'bg' ? '🔒 Достъп отказан' : '🔒 Access Denied'}
+                    </h3>
+                    <p style={{ fontSize: '1rem', color: '#6c757d' }}>
+                      {language === 'bg' 
+                        ? 'Не можете да видите рекламите на друг потребител' 
+                        : 'You cannot view another user\'s campaigns'}
+                    </p>
+                  </div>
+                )}
               </AnimatedTabContent>
             )}
 
             {activeTab === 'analytics' && (
               <AnimatedTabContent>
-                <ProfileAnalyticsDashboard userId={user.uid} />
+                {/* 🔒 SECURITY: Analytics only accessible for own profile */}
+                {isOwnProfile ? (
+                  <ProfileAnalyticsDashboard userId={user.uid} />
+                ) : (
+                  <div style={{
+                    textAlign: 'center',
+                    padding: '80px 20px',
+                    background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.05) 100%)',
+                    borderRadius: '16px',
+                    border: '2px solid rgba(239, 68, 68, 0.2)'
+                  }}>
+                    <BarChart3 size={64} color="#ef4444" style={{ marginBottom: '20px' }} />
+                    <h3 style={{ fontSize: '1.5rem', color: '#dc2626', marginBottom: '12px' }}>
+                      {language === 'bg' ? '🔒 Достъп отказان' : '🔒 Access Denied'}
+                    </h3>
+                    <p style={{ fontSize: '1rem', color: '#6c757d' }}>
+                      {language === 'bg' 
+                        ? 'Не можете да видите статистиката на друг потребител' 
+                        : 'You cannot view another user\'s analytics'}
+                    </p>
+                  </div>
+                )}
               </AnimatedTabContent>
             )}
 
             {activeTab === 'settings' && (
               <AnimatedTabContent>
-                {/* Settings content directly without profile type switcher */}
-                
-                {/* Privacy Settings for all account types */}
-                <PrivacySettingsManager 
-                  userId={user.uid} 
-                  accountType={profileType === 'dealer' ? 'dealership' : 'individual'} 
-                />
-                
-                {/* Dealership Information Form - Show for all with message */}
-                <div style={{ marginTop: '24px' }}>
-                  {profileType !== 'dealer' && (
-                    <div style={{ 
-                      background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
-                      border: '2px solid #f59e0b',
-                      borderRadius: '12px',
-                      padding: '20px',
-                      marginBottom: '24px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '12px'
-                    }}>
-                      <AlertCircle size={24} color="#f59e0b" />
-                      <div>
-                        <div style={{ fontWeight: 'bold', marginBottom: '4px', color: '#92400e' }}>
-                          {language === 'bg' ? 'Информация за автокъщи' : 'Dealership Information'}
+                {/* 🔒 SECURITY: Settings tab only accessible for own profile */}
+                {isOwnProfile ? (
+                  <>
+                    {/* Privacy Settings for all account types */}
+                    <PrivacySettingsManager 
+                      userId={user.uid} 
+                      accountType={profileType === 'dealer' ? 'dealership' : 'individual'} 
+                    />
+                    
+                    {/* Dealership Information Form - Show for all with message */}
+                    <div style={{ marginTop: '24px' }}>
+                      {profileType !== 'dealer' && (
+                        <div style={{ 
+                          background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
+                          border: '2px solid #f59e0b',
+                          borderRadius: '12px',
+                          padding: '20px',
+                          marginBottom: '24px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '12px'
+                        }}>
+                          <AlertCircle size={24} color="#f59e0b" />
+                          <div>
+                            <div style={{ fontWeight: 'bold', marginBottom: '4px', color: '#92400e' }}>
+                              {language === 'bg' ? 'Информация за автокъщи' : 'Dealership Information'}
+                            </div>
+                            <div style={{ fontSize: '14px', color: '#78350f' }}>
+                              {language === 'bg' 
+                                ? 'За да попълните информация за вашата автокъща, моля превключете типа на профила си на "Дилър" от бутоните по-горе.' 
+                                : 'To fill in your dealership information, please switch your profile type to "Dealer" using the buttons above.'}
+                            </div>
+                          </div>
                         </div>
-                        <div style={{ fontSize: '14px', color: '#78350f' }}>
-                          {language === 'bg' 
-                            ? 'За да попълните информация за вашата автокъща, моля превключете типа на профила си на "Дилър" от бутоните по-горе.' 
-                            : 'To fill in your dealership information, please switch your profile type to "Dealer" using the buttons above.'}
-                        </div>
-                      </div>
+                      )}
+                      
+                      {profileType === 'dealer' && (
+                        <DealershipInfoForm userId={user.uid} />
+                      )}
                     </div>
-                  )}
-                  
-                  {profileType === 'dealer' && (
-                    <DealershipInfoForm userId={user.uid} />
-                  )}
-                </div>
-                
-                {/* Legacy Privacy Settings (can be removed later) */}
-                <div style={{ marginTop: '24px' }}>
-                <PrivacySettings userId={user.uid} />
-                </div>
+                    
+                    {/* Legacy Privacy Settings (can be removed later) */}
+                    <div style={{ marginTop: '24px' }}>
+                    <PrivacySettings userId={user.uid} />
+                    </div>
+                  </>
+                ) : (
+                  /* 🔒 SECURITY: Block settings access for other users */
+                  <div style={{
+                    textAlign: 'center',
+                    padding: '80px 20px',
+                    background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.05) 100%)',
+                    borderRadius: '16px',
+                    border: '2px solid rgba(239, 68, 68, 0.2)'
+                  }}>
+                    <Shield size={64} color="#ef4444" style={{ marginBottom: '20px' }} />
+                    <h3 style={{ fontSize: '1.5rem', color: '#dc2626', marginBottom: '12px' }}>
+                      {language === 'bg' ? '🔒 Достъп отказан' : '🔒 Access Denied'}
+                    </h3>
+                    <p style={{ fontSize: '1rem', color: '#6c757d' }}>
+                      {language === 'bg' 
+                        ? 'Не можете да видите настройките на друг потребител' 
+                        : 'You cannot view another user\'s settings'}
+                    </p>
+                  </div>
+                )}
               </AnimatedTabContent>
             )}
             
