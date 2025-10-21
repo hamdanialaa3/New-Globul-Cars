@@ -8,17 +8,51 @@ import { getStorage, FirebaseStorage, connectStorageEmulator } from 'firebase/st
 import { getFunctions, Functions, connectFunctionsEmulator } from 'firebase/functions';
 import { getAnalytics, Analytics } from 'firebase/analytics';
 
-// Google Cloud Services Imports
-import { BigQuery } from '@google-cloud/bigquery';
-import { SessionsClient } from '@google-cloud/dialogflow';
-import { ImageAnnotatorClient } from '@google-cloud/vision';
-import { SpeechClient } from '@google-cloud/speech';
-import { TextToSpeechClient } from '@google-cloud/text-to-speech';
-import { v2 as Translate } from '@google-cloud/translate';
-import { RecaptchaEnterpriseServiceClient } from '@google-cloud/recaptcha-enterprise';
-import { KeyManagementServiceClient } from '@google-cloud/kms';
-import { PubSub } from '@google-cloud/pubsub';
-import { CloudTasksClient } from '@google-cloud/tasks';
+// Google Cloud Services - Server-only (guarded imports)
+// These packages are Node.js-only and will fail in browser environments
+let BigQuery: any = null;
+let SessionsClient: any = null;
+let ImageAnnotatorClient: any = null;
+let SpeechClient: any = null;
+let TextToSpeechClient: any = null;
+let Translate: any = null;
+let RecaptchaEnterpriseServiceClient: any = null;
+let KeyManagementServiceClient: any = null;
+let PubSub: any = null;
+let CloudTasksClient: any = null;
+
+if (typeof window === 'undefined') {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  // @ts-ignore
+  BigQuery = require('@google-cloud/bigquery').BigQuery;
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  // @ts-ignore
+  SessionsClient = require('@google-cloud/dialogflow').SessionsClient;
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  // @ts-ignore
+  ImageAnnotatorClient = require('@google-cloud/vision').ImageAnnotatorClient;
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  // @ts-ignore
+  SpeechClient = require('@google-cloud/speech').SpeechClient;
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  // @ts-ignore
+  TextToSpeechClient = require('@google-cloud/text-to-speech').TextToSpeechClient;
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  // @ts-ignore
+  Translate = require('@google-cloud/translate').v2;
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  // @ts-ignore
+  RecaptchaEnterpriseServiceClient = require('@google-cloud/recaptcha-enterprise').RecaptchaEnterpriseServiceClient;
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  // @ts-ignore
+  KeyManagementServiceClient = require('@google-cloud/kms').KeyManagementServiceClient;
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  // @ts-ignore
+  PubSub = require('@google-cloud/pubsub').PubSub;
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  // @ts-ignore
+  CloudTasksClient = require('@google-cloud/tasks').CloudTasksClient;
+}
 
 // Firebase configuration for Bulgarian Car Marketplace
 const firebaseConfig = {
@@ -60,36 +94,67 @@ export { analytics };
 const projectId = process.env.GCLOUD_PROJECT_ID || 'your-gcp-project-id';
 
 // BigQuery
-export const bigquery = new BigQuery({ projectId });
+if (!BigQuery) {
+  console.warn('BigQuery is server-only and must be called from a backend/Cloud Function');
+}
+export const bigquery = BigQuery ? new BigQuery({ projectId }) : null;
 
 // Dialogflow
-export const dialogflowClient = new SessionsClient();
+if (!SessionsClient) {
+  console.warn('Dialogflow SessionsClient is server-only and must be called from a backend/Cloud Function');
+}
+export const dialogflowClient = SessionsClient ? new SessionsClient() : null;
 
 // Google Maps
 // const mapsApiKey = process.env.GOOGLE_MAPS_API_KEY || 'your-google-maps-api-key';
 export const mapsLoader = null; // Temporarily disabled
 
 // Vision AI
-export const visionClient = new ImageAnnotatorClient();
+if (!ImageAnnotatorClient) {
+  console.warn('Vision AI is server-only and must be called from a backend/Cloud Function');
+}
+export const visionClient = ImageAnnotatorClient ? new ImageAnnotatorClient() : null;
 
 // Speech Services
-export const speechClient = new SpeechClient();
-export const ttsClient = new TextToSpeechClient();
+if (!SpeechClient) {
+  console.warn('Speech Client is server-only and must be called from a backend/Cloud Function');
+}
+export const speechClient = SpeechClient ? new SpeechClient() : null;
+
+if (!TextToSpeechClient) {
+  console.warn('Text-to-Speech Client is server-only and must be called from a backend/Cloud Function');
+}
+export const ttsClient = TextToSpeechClient ? new TextToSpeechClient() : null;
 
 // Translation
-export const translateClient = new Translate.Translate({ projectId });
+if (!Translate) {
+  console.warn('Translation Client is server-only and must be called from a backend/Cloud Function');
+}
+export const translateClient = Translate ? new Translate.Translate({ projectId }) : null;
 
 // Recaptcha
-export const recaptchaClient = new RecaptchaEnterpriseServiceClient();
+if (!RecaptchaEnterpriseServiceClient) {
+  console.warn('Recaptcha Enterprise Client is server-only and must be called from a backend/Cloud Function');
+}
+export const recaptchaClient = RecaptchaEnterpriseServiceClient ? new RecaptchaEnterpriseServiceClient() : null;
 
 // KMS
-export const kmsClient = new KeyManagementServiceClient();
+if (!KeyManagementServiceClient) {
+  console.warn('KMS Client is server-only and must be called from a backend/Cloud Function');
+}
+export const kmsClient = KeyManagementServiceClient ? new KeyManagementServiceClient() : null;
 
 // Pub/Sub
-export const pubsubClient = new PubSub({ projectId });
+if (!PubSub) {
+  console.warn('Pub/Sub Client is server-only and must be called from a backend/Cloud Function');
+}
+export const pubsubClient = PubSub ? new PubSub({ projectId }) : null;
 
 // Cloud Tasks
-export const cloudTasksClient: CloudTasksClient = new CloudTasksClient();
+if (!CloudTasksClient) {
+  console.warn('Cloud Tasks Client is server-only and must be called from a backend/Cloud Function');
+}
+export const cloudTasksClient: CloudTasksClient | null = CloudTasksClient ? new CloudTasksClient() : null;
 
 // Bulgarian Firebase Utilities Class
 export class BulgarianFirebaseUtils {
