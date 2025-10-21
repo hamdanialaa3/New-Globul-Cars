@@ -36,7 +36,8 @@ import {
   ChevronDown,
   Key,
   ShieldCheck,
-  Monitor
+  Monitor,
+  Calendar
 } from 'lucide-react';
 import EnhancedNavLink from '../EnhancedNavLink';
 import LanguageToggle from '../LanguageToggle/LanguageToggle';
@@ -159,6 +160,14 @@ const Header: React.FC = () => {
               title={t('nav.messages')}
             >
               <MessageCircle size={20} />
+            </button>
+            
+            <button
+              className="action-bar-button"
+              onClick={() => navigate('/events')}
+              title={t('nav.events') || 'Events'}
+            >
+              <Calendar size={20} />
             </button>
             
             <NotificationDropdown

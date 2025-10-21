@@ -2,16 +2,23 @@
   "compilerOptions": {
     "module": "commonjs",
     "noImplicitReturns": true,
-    "noUnusedLocals": true,
+    "noUnusedLocals": false,
     "outDir": "lib",
     "sourceMap": true,
-    "strict": true,
+  "strict": false,
     "target": "es2017",
     "esModuleInterop": true,
     "skipLibCheck": true
   },
   "compileOnSave": true,
   "include": [
-    "src"
+    "src/index.ts",
+    "src/stories-functions.ts",
+    "src/messaging-functions.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "lib",
+    "../bulgarian-car-marketplace/**"
   ]
 }

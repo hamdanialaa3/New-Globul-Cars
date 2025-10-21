@@ -60,6 +60,8 @@ const BillingPage = React.lazy(() => import('./features/billing/BillingPage')); 
 const AnalyticsDashboard = React.lazy(() => import('./features/analytics/AnalyticsDashboard'));  // NEW: Analytics System
 const TeamManagement = React.lazy(() => import('./features/team/TeamManagement'));  // NEW: Team Management
 const UsersDirectoryPage = React.lazy(() => import('./pages/UsersDirectoryPage')); // Bubbles View
+// NEW: Social Platform Pages
+const EventsPage = React.lazy(() => import('./pages/EventsPage'));  // NEW: Events Page
 // Glass Morphism Premium Auth Pages
 const LoginPage = React.lazy(() => import('./pages/LoginPage/LoginPageGlassFixed'));
 const RegisterPage = React.lazy(() => import('./pages/RegisterPage/RegisterPageGlassFixed'));
@@ -384,6 +386,17 @@ const MainLayout: React.FC = () => (
       <Route path="/team" element={<TeamManagement />} />  {/* NEW: Team Management */}
       <Route path="/users" element={<UsersDirectoryPage />} />
       <Route path="/messages" element={<MessagesPage />} />
+      
+      {/* NEW: Social Platform Routes */}
+      <Route
+        path="/events"
+        element={
+          <ProtectedRoute>
+            <EventsPage />
+          </ProtectedRoute>
+        }
+      />
+      
       <Route path="/admin-login" element={<AdminLoginPage />} />
       <Route
         path="/admin"

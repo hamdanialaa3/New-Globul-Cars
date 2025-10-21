@@ -20,6 +20,7 @@ import { db } from '../firebase/firebase-config';
 
 export interface Message {
   id: string;
+  conversationId?: string; // ✅ Added for chat rooms
   senderId: string;
   senderName: string;
   receiverId: string;
@@ -28,6 +29,8 @@ export interface Message {
   carTitle?: string;
   content: string;
   messageType: 'text' | 'image' | 'offer' | 'question';
+  type?: 'text' | 'image' | 'file' | 'voice'; // ✅ Added for ConversationList compatibility
+  status?: 'sent' | 'delivered' | 'read'; // ✅ Added for ChatWindow compatibility
   isRead: boolean;
   createdAt: Date;
   updatedAt: Date;

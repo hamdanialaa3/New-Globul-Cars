@@ -183,7 +183,7 @@ const MessageComposer: React.FC<MessageComposerProps> = ({
   const [message, setMessage] = useState('');
   const [attachments, setAttachments] = useState<File[]>([]);
   const [isTyping, setIsTyping] = useState(false);
-  const typingTimeoutRef = useRef<NodeJS.Timeout>();
+  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   
   // ==================== HANDLERS ====================
   
@@ -296,7 +296,7 @@ const MessageComposer: React.FC<MessageComposerProps> = ({
             value={message}
             onChange={handleMessageChange}
             onKeyPress={handleKeyPress}
-            placeholder={t('messages.typeMessage', { name: recipientName })}
+            placeholder={t('messages.typeMessage')}
             rows={1}
           />
         </InputWrapper>

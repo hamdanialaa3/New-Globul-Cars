@@ -1357,7 +1357,7 @@ const ProfilePage: React.FC = () => {
                         <S.NeumorphicFieldLabel $themeColor={theme.primary}>{language === 'bg' ? 'Дата на раждане' : 'Date of Birth'}</S.NeumorphicFieldLabel>
                         <S.NeumorphicInfoField>
                           <S.NeumorphicFieldValue>
-                            {user?.dateOfBirth ? new Date(user.dateOfBirth).toLocaleDateString('bg-BG') : t('profile.notSet')}
+                            {user?.dateOfBirth ? new Date(user?.dateOfBirth || '').toLocaleDateString('bg-BG') : t('profile.notSet')}
                           </S.NeumorphicFieldValue>
                         </S.NeumorphicInfoField>
                       </S.NeumorphicFieldWrapper>
@@ -1442,7 +1442,7 @@ const ProfilePage: React.FC = () => {
                         <S.NeumorphicFieldLabel $themeColor={theme.primary}>{t('profile.memberSince')}</S.NeumorphicFieldLabel>
                         <S.NeumorphicInfoField>
                           <S.NeumorphicFieldValue>
-                            {user?.createdAt ? new Date(user.createdAt).toLocaleDateString('bg-BG') : t('profile.notSet')}
+                            {user?.createdAt ? new Date(user?.createdAt || '').toLocaleDateString('bg-BG') : t('profile.notSet')}
                           </S.NeumorphicFieldValue>
                         </S.NeumorphicInfoField>
                       </S.NeumorphicFieldWrapper>
@@ -1702,7 +1702,7 @@ const ProfilePage: React.FC = () => {
     {pendingProfileType && (
       <ProfileTypeConfirmModal
         isOpen={showProfileTypeModal}
-        profileType={pendingProfileType}
+        newType={pendingProfileType}
         onConfirm={handleConfirmProfileType}
         onCancel={handleCancelProfileType}
       />
