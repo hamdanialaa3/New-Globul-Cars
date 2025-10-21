@@ -881,17 +881,7 @@ const ProfilePage: React.FC = () => {
               </S.ContentSection>
             )}
 
-            {/* ❌ HIDDEN: Personal Information - Now in Settings tab only */}
-            {false && (
-            <S.ContentSection $themeColor={theme.primary} $isBusinessMode={isBusinessMode}>
-              <S.SectionHeader>
-                <h2>{t('profile.personalInfo')}</h2>
-                {!editing && isOwnProfile && (
-                  <button className="edit-btn" onClick={() => setEditing(true)}>
-                    {t('profile.edit')}
-                  </button>
-                )}
-              </S.SectionHeader>
+
 
               {editing && isOwnProfile ? (
                 <form onSubmit={(e) => { e.preventDefault(); handleSaveProfile(); }}>

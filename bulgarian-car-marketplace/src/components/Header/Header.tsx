@@ -460,55 +460,6 @@ const Header: React.FC = () => {
             <EnhancedNavLink href="/finance" className="nav-link" requireAuth={true}>
               {t('nav.finance')}
             </EnhancedNavLink>
-            
-            {/* Seller Type Dropdown */}
-            {user && (
-              <div className="main-nav-dropdown" ref={profileTypeRef} style={{ marginLeft: 'auto', position: 'relative' }}>
-                <button 
-                  className="nav-link main-nav-trigger"
-                  onClick={toggleProfileType}
-                  aria-expanded={isProfileTypeOpen}
-                  style={{ 
-                    background: 'linear-gradient(135deg, #FF8F10 0%, #FFAA00 100%)',
-                    color: 'white',
-                    fontWeight: '600',
-                    padding: '8px 16px',
-                    borderRadius: '8px',
-                    border: 'none'
-                  }}
-                >
-                  <User size={16} />
-                  <span>{language === 'bg' ? 'Тип продавач' : 'Seller Type'}</span>
-                  <svg 
-                    className={`arrow ${isProfileTypeOpen ? 'rotate' : ''}`}
-                    width="12" 
-                    height="12" 
-                    viewBox="0 0 12 12"
-                  >
-                    <path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="2"/>
-                  </svg>
-                </button>
-
-                {/* Seller Type Switcher Dropdown */}
-                {isProfileTypeOpen && (
-                  <div style={{ 
-                    position: 'absolute',
-                    top: '100%',
-                    right: '0',
-                    marginTop: '8px',
-                    background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
-                    borderRadius: '16px',
-                    boxShadow: '0 12px 40px rgba(0, 0, 0, 0.15)',
-                    minWidth: '200px',
-                    zIndex: 10000,
-                    border: '2px solid rgba(255, 143, 16, 0.1)',
-                    padding: '12px'
-                  }}>
-                    <ProfileTypeSwitcher />
-                  </div>
-                )}
-              </div>
-            )}
           </div>
         </div>
       </nav>
