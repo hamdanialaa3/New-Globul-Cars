@@ -61,7 +61,7 @@ const AnalyticsDashboard = React.lazy(() => import('./features/analytics/Analyti
 const TeamManagement = React.lazy(() => import('./features/team/TeamManagement'));  // NEW: Team Management
 const UsersDirectoryPage = React.lazy(() => import('./pages/UsersDirectoryPage')); // Bubbles View
 // NEW: Social Platform Pages
-const EventsPage = React.lazy(() => import('./pages/EventsPage'));  // NEW: Events Page
+const EventsPage = React.lazy(() => import('./pages/EventsPage'));  // NEW: Events Page with BG/EN translations
 // Glass Morphism Premium Auth Pages
 const LoginPage = React.lazy(() => import('./pages/LoginPage/LoginPageGlassFixed'));
 const RegisterPage = React.lazy(() => import('./pages/RegisterPage/RegisterPageGlassFixed'));
