@@ -177,8 +177,8 @@ const Header: React.FC = () => {
               onClose={closeNotifications}
             />
             
-            {/* Seller Type Dropdown - Always visible */}
-            {user && (
+            {/* Seller Type Dropdown - Only visible on Profile page */}
+            {user && location.pathname === '/profile' && (
               <div className="main-nav-dropdown" ref={profileTypeRef} style={{ position: 'relative', marginLeft: '8px' }}>
                 <button 
                   className="action-bar-button"
