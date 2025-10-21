@@ -182,13 +182,16 @@ const ProfileTypeConfirmModal: React.FC<ProfileTypeConfirmModalProps> = ({
     onConfirm();
   };
 
+  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Only close if clicking directly on the dark overlay background
+    // NOT when clicking on the modal container or its children
+    if (e.target === e.currentTarget) {
+      onCancel();
+    }
+  };
+
   const modalContent = (
-    <Overlay onClick={(e) => {
-      // Only close if clicking directly on overlay, not on children
-      if (e.target === e.currentTarget) {
-        onCancel();
-      }
-    }}>
+    <Overlay onClick={handleOverlayClick}>
       <ModalContainer onClick={(e) => e.stopPropagation()}>
         <CloseButton onClick={onCancel}>
           <X size={24} />
