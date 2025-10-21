@@ -21,6 +21,7 @@ import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 // import AnalyticsTracker from './components/AnalyticsTracker';
 import NotFoundPage from './components/NotFoundPage';
 import FacebookPixel from './components/FacebookPixel';
+import FloatingAddButton from './components/FloatingAddButton';
 // Removed problematic imports
 // import useAuthRedirectHandler from './hooks/useAuthRedirectHandler';
 
@@ -236,6 +237,7 @@ const App: React.FC = () => {
 
 const MainLayout: React.FC = () => (
   <Layout>
+    <FloatingAddButton />
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/cars" element={<CarsPage />} />
