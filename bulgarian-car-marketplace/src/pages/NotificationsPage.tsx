@@ -45,12 +45,14 @@ const NotificationsPage: React.FC = () => {
     try {
       setLoading(true);
       // Simulate loading notifications from Firebase
+      const { language } = useLanguage();
+      
       const mockNotifications: Notification[] = [
         {
           id: '1',
           type: 'message',
-          title: 'New Message',
-          message: 'You have a new message about your BMW X5 listing',
+          title: language === 'bg' ? 'Ново съобщение' : 'New Message',
+          message: language === 'bg' ? 'Имате ново съобщение за вашата обява BMW X5' : 'You have a new message about your BMW X5 listing',
           timestamp: new Date(Date.now() - 1000 * 60 * 30), // 30 minutes ago
           read: false,
           actionUrl: '/messages'
@@ -58,8 +60,8 @@ const NotificationsPage: React.FC = () => {
         {
           id: '2',
           type: 'search',
-          title: 'Search Alert',
-          message: 'New cars matching your search for "Audi A4" under 20000 EUR',
+          title: language === 'bg' ? 'Търсене' : 'Search Alert',
+          message: language === 'bg' ? 'Нови автомобили, отговарящи на вашето търсене за "Audi A4" под 20000 EUR' : 'New cars matching your search for "Audi A4" under 20000 EUR',
           timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 hours ago
           read: true,
           actionUrl: '/cars?search=Audi%20A4&maxPrice=20000'
@@ -67,8 +69,8 @@ const NotificationsPage: React.FC = () => {
         {
           id: '3',
           type: 'login',
-          title: 'Security Alert',
-          message: 'New login from Chrome on Windows',
+          title: language === 'bg' ? 'Сигурност' : 'Security Alert',
+          message: language === 'bg' ? 'Нов вход от Chrome на Windows' : 'New login from Chrome on Windows',
           timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 day ago
           read: true,
           actionUrl: '/profile/security'
@@ -76,8 +78,8 @@ const NotificationsPage: React.FC = () => {
         {
           id: '4',
           type: 'car',
-          title: 'Car Update',
-          message: 'Your Mercedes C-Class listing has been viewed 25 times today',
+          title: language === 'bg' ? 'Обновление на автомобил' : 'Car Update',
+          message: language === 'bg' ? 'Вашата обява Mercedes C-Class е видяна 25 пъти днес' : 'Your Mercedes C-Class listing has been viewed 25 times today',
           timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2), // 2 days ago
           read: false,
           actionUrl: '/my-listings'
@@ -85,8 +87,8 @@ const NotificationsPage: React.FC = () => {
         {
           id: '5',
           type: 'system',
-          title: 'System Maintenance',
-          message: 'Scheduled maintenance completed. All services are back online.',
+          title: language === 'bg' ? 'Поддръжка на системата' : 'System Maintenance',
+          message: language === 'bg' ? 'Планираната поддръжка приключи. Всички услуги са отново онлайн.' : 'Scheduled maintenance completed. All services are back online.',
           timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3), // 3 days ago
           read: true
         }

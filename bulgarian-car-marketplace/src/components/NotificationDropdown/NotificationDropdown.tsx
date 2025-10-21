@@ -75,8 +75,8 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
         {
           id: '1',
           type: 'message',
-          title: 'New Message',
-          message: 'You have a new message about your BMW X5 listing',
+          title: t('language') === 'bg' ? 'Ново съобщение' : 'New Message',
+          message: t('language') === 'bg' ? 'Имате ново съобщение за вашата обява BMW X5' : 'You have a new message about your BMW X5 listing',
           timestamp: new Date(Date.now() - 1000 * 60 * 30),
           read: false,
           actionUrl: '/messages'
@@ -84,8 +84,8 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
         {
           id: '2',
           type: 'search',
-          title: 'Search Alert',
-          message: 'New cars matching your search for "Audi A4"',
+          title: t('language') === 'bg' ? 'Търсене' : 'Search Alert',
+          message: t('language') === 'bg' ? 'Нови автомобили, съответстващи на вашето търсене за "Audi A4"' : 'New cars matching your search for "Audi A4"',
           timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2),
           read: true,
           actionUrl: '/cars?search=Audi%20A4'
@@ -93,8 +93,8 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
         {
           id: '3',
           type: 'login',
-          title: 'Security Alert',
-          message: 'New login from Chrome on Windows',
+          title: t('language') === 'bg' ? 'Сигурност' : 'Security Alert',
+          message: t('language') === 'bg' ? 'Нов вход от Chrome на Windows' : 'New login from Chrome on Windows',
           timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24),
           read: true,
           actionUrl: '/profile/security'
