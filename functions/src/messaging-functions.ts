@@ -34,6 +34,11 @@ export const onNewMessage = functions.firestore
       
       const recipient = recipientDoc.data();
       
+      if (!recipient) {
+        console.log('Recipient data is undefined');
+        return null;
+      }
+      
       const notificationRef = db.collection('notifications').doc();
       await notificationRef.set({
         userId: message.recipientId,

@@ -194,3 +194,11 @@ export const moderateContent = functions.firestore
     
     return null;
   });
+
+// ==================== EXPORT NEW CLOUD FUNCTIONS ====================
+
+// Stories Functions
+export * from './stories-functions';
+
+// Messaging Functions
+export * from './messaging-functions';

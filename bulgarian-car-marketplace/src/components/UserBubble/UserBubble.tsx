@@ -45,6 +45,12 @@ const BubbleContainer = styled.div`
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   transform: translateZ(0);
+  z-index: 1; /* ✅ Base z-index */
+  
+  /* ✅ FIX: Bring hovered bubble to front */
+  &:hover {
+    z-index: 999; /* ✅ CRITICAL: Hover card appears ABOVE all other users */
+  }
 `;
 
 const BubbleWrapper = styled.div<{ $isOnline: boolean }>`
@@ -180,11 +186,11 @@ const QuickActions = styled.div`
   top: -12px;
   right: -12px;
   display: flex;
-  gap: 4px;
+  gap: 6px; /* ✅ More spacing */
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s ease;
-  z-index: 10;
+  z-index: 50; /* ✅ Above avatar but below hover card */
 `;
 
 const QuickActionButton = styled.button<{ $variant?: 'primary' | 'secondary' }>`
@@ -219,18 +225,23 @@ const HoverCard = styled.div`
   top: 100%;
   left: 50%;
   transform: translateX(-50%) translateY(16px);
-  width: 280px;
+  width: 300px; /* ✅ Wider for better readability */
   background: white;
   border-radius: 16px;
-  padding: 20px;
+  padding: 24px; /* ✅ More padding */
   box-shadow: 
-    0 0 0 1px rgba(0, 0, 0, 0.08),
-    0 8px 32px rgba(0, 0, 0, 0.2);
+    0 0 0 1px rgba(255, 143, 16, 0.12), /* ✅ Orange subtle border */
+    0 12px 48px rgba(0, 0, 0, 0.25), /* ✅ Stronger shadow */
+    0 0 80px rgba(255, 143, 16, 0.15); /* ✅ Orange glow */
   opacity: 0;
   visibility: hidden;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 100;
+  z-index: 9999; /* ✅ CRITICAL FIX: Very high z-index to appear above everything */
   pointer-events: none;
+  
+  /* ✅ Glassmorphism effect */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   
   &::before {
     content: '';
@@ -240,9 +251,10 @@ const HoverCard = styled.div`
     transform: translateX(-50%);
     width: 0;
     height: 0;
-    border-left: 8px solid transparent;
-    border-right: 8px solid transparent;
-    border-bottom: 8px solid white;
+    border-left: 10px solid transparent; /* ✅ Larger arrow */
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid white;
+    filter: drop-shadow(0 -2px 4px rgba(0, 0, 0, 0.1)); /* ✅ Arrow shadow */
   }
 `;
 

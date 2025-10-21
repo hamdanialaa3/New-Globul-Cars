@@ -14,7 +14,11 @@ import {
   ArrowUpDown,
   Grid3x3,
   Circle,
-  List
+  List,
+  UserPlus,
+  UserCheck,
+  MessageCircle,
+  CheckCircle
 } from 'lucide-react';
 import { collection, getDocs, query, limit } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
@@ -260,14 +264,229 @@ const EmptyState = styled.div`
   }
 `;
 
-// Old Grid view (fallback)
+// ✅ IMPROVED: Professional Grid view
 const UsersGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 20px;
+  gap: 24px; /* ✅ More spacing */
   
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
+    gap: 16px;
+  }
+`;
+
+// ✅ NEW: Professional List View
+const UsersList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+`;
+
+const ListItem = styled.div`
+  background: white;
+  border-radius: 12px;
+  padding: 20px 24px;
+  border: 1.5px solid rgba(255, 143, 16, 0.12);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  position: relative; /* ✅ For z-index stacking */
+  z-index: 1; /* ✅ Base z-index */
+  
+  &:hover {
+    transform: translateX(8px);
+    border-color: rgba(255, 143, 16, 0.4);
+    box-shadow: 0 6px 24px rgba(255, 143, 16, 0.18);
+    z-index: 10; /* ✅ Bring to front on hover */
+  }
+  
+  @media (max-width: 768px) {
+    padding: 16px;
+    gap: 12px;
+  }
+`;
+
+const ListAvatar = styled.div<{ $imageUrl?: string; $initial: string; $borderColor: string }>`
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: ${props => props.$imageUrl 
+    ? `url(${props.$imageUrl})` 
+    : 'linear-gradient(135deg, #FF8F10 0%, #FF7900 50%, #FF6600 100%)'
+  };
+  background-size: cover;
+  background-position: center;
+  border: 3px solid ${p => p.$borderColor};
+  box-shadow: 0 4px 12px rgba(255, 143, 16, 0.25);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: 800;
+  color: white;
+  position: relative;
+  
+  &::before {
+    content: '${p => !p.$imageUrl ? p.$initial : ''}';
+  }
+`;
+
+const ListUserInfo = styled.div`
+  flex: 1;
+  min-width: 0;
+`;
+
+const ListUserName = styled.h3`
+  margin: 0 0 6px 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #212529;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  
+  .badge {
+    font-size: 0.7rem;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-weight: 600;
+    background: linear-gradient(135deg, #FF8F10 0%, #FF7900 100%);
+    color: white;
+    box-shadow: 0 2px 6px rgba(255, 143, 16, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .verified-icon {
+    color: #1976D2;
+  }
+`;
+
+const ListUserMeta = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  font-size: 0.9rem;
+  color: #6c757d;
+  margin-top: 4px;
+  
+  .meta-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    
+    svg {
+      color: #FF7900;
+      flex-shrink: 0;
+    }
+  }
+`;
+
+const ListUserStats = styled.div`
+  display: flex;
+  gap: 24px;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, rgba(255, 143, 16, 0.08) 0%, rgba(255, 215, 0, 0.05) 100%);
+  border-radius: 10px;
+  margin-top: 12px;
+  
+  .stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    
+    .value {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: #FF7900;
+      line-height: 1;
+    }
+    
+    .label {
+      font-size: 0.7rem;
+      color: #6c757d;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    gap: 12px;
+    padding: 10px 12px;
+  }
+`;
+
+const ListActions = styled.div`
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 8px;
+  }
+`;
+
+const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary' }>`
+  padding: 10px 18px;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  
+  ${p => p.$variant === 'primary' 
+    ? `
+      background: linear-gradient(135deg, #FF7900 0%, #FF9533 100%);
+      color: white;
+      box-shadow: 0 2px 8px rgba(255, 121, 0, 0.25);
+      
+      &:hover {
+        background: linear-gradient(135deg, #e66d00 0%, #e68429 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255, 121, 0, 0.35);
+      }
+      
+      &:active {
+        transform: translateY(0);
+      }
+    `
+    : `
+      background: white;
+      color: #495057;
+      border: 1.5px solid #dee2e6;
+      
+      &:hover {
+        background: #f8f9fa;
+        border-color: #FF7900;
+        color: #FF7900;
+      }
+    `
+  }
+  
+  svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+  
+  @media (max-width: 768px) {
+    padding: 8px 14px;
+    font-size: 0.8rem;
   }
 `;
 
@@ -704,7 +923,102 @@ const UsersDirectoryPage: React.FC = () => {
             ))}
           </UsersGrid>
         ) : (
-          <div>List view - coming soon</div>
+          <UsersList>
+            {filteredUsers.map((user) => {
+              const borderColor = user.profileType === 'dealer' ? '#16a34a' 
+                                : user.profileType === 'company' ? '#1d4ed8' 
+                                : '#FF8F10';
+              const isVerified = user.verification?.emailVerified || user.verification?.phoneVerified;
+              
+              return (
+                <ListItem key={user.uid} onClick={() => window.location.href = `/profile?userId=${user.uid}`}>
+                  <ListAvatar 
+                    $imageUrl={user.profileImage?.url}
+                    $initial={user.displayName?.[0]?.toUpperCase() || '?'}
+                    $borderColor={borderColor}
+                  />
+                  
+                  <ListUserInfo>
+                    <ListUserName>
+                      {user.displayName || 'User'}
+                      {isVerified && (
+                        <CheckCircle size={18} className="verified-icon" />
+                      )}
+                      {user.accountType === 'business' && (
+                        <span className="badge">
+                          {user.profileType === 'dealer' ? (language === 'bg' ? 'Дилър' : 'Dealer')
+                           : user.profileType === 'company' ? (language === 'bg' ? 'Компания' : 'Company')
+                           : t('business')}
+                        </span>
+                      )}
+                    </ListUserName>
+                    
+                    <ListUserMeta>
+                      {user.businessInfo?.companyName && (
+                        <div className="meta-item">
+                          <Building2 size={16} />
+                          <span>{user.businessInfo.companyName}</span>
+                        </div>
+                      )}
+                      {user.location && (
+                        <div className="meta-item">
+                          <MapPin size={16} />
+                          <span>{language === 'bg' ? user.location.region || user.location.city : user.location.city || user.location.region}</span>
+                        </div>
+                      )}
+                    </ListUserMeta>
+                    
+                    <ListUserStats>
+                      <div className="stat">
+                        <div className="value">{user.stats?.followers || 0}</div>
+                        <div className="label">{language === 'bg' ? 'Последователи' : 'Followers'}</div>
+                      </div>
+                      <div className="stat">
+                        <div className="value">{user.stats?.listings || 0}</div>
+                        <div className="label">{language === 'bg' ? 'Обяви' : 'Listings'}</div>
+                      </div>
+                      <div className="stat">
+                        <div className="value">{user.verification?.trustScore || 0}</div>
+                        <div className="label">{language === 'bg' ? 'Доверие' : 'Trust'}</div>
+                      </div>
+                    </ListUserStats>
+                  </ListUserInfo>
+                  
+                  <ListActions>
+                    <ActionButton 
+                      $variant="primary" 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleMessage(user.uid);
+                      }}
+                    >
+                      <MessageCircle size={16} />
+                      {language === 'bg' ? 'Съобщение' : 'Message'}
+                    </ActionButton>
+                    <ActionButton 
+                      $variant={followingUsers.has(user.uid) ? 'secondary' : 'primary'}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleFollow(user.uid);
+                      }}
+                    >
+                      {followingUsers.has(user.uid) ? (
+                        <>
+                          <UserCheck size={16} />
+                          {language === 'bg' ? 'Следвам' : 'Following'}
+                        </>
+                      ) : (
+                        <>
+                          <UserPlus size={16} />
+                          {language === 'bg' ? 'Последвай' : 'Follow'}
+                        </>
+                      )}
+                    </ActionButton>
+                  </ListActions>
+                </ListItem>
+              );
+            })}
+          </UsersList>
         )}
       </Container>
     </PageContainer>

@@ -141,6 +141,11 @@ export const onStoryViewed = functions.firestore
       
       const story = storyDoc.data();
       
+      if (!story) {
+        console.log('Story data is undefined');
+        return null;
+      }
+      
       if (view.viewerId !== story.authorId) {
         const notificationRef = db.collection('notifications').doc();
         await notificationRef.set({
