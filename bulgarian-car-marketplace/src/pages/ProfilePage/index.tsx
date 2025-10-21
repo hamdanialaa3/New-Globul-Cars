@@ -656,7 +656,7 @@ const ProfilePage: React.FC = () => {
               <div style={{ color: '#666', fontSize: '0.85rem', marginBottom: '10px' }}>
                 {user.email}
               </div>
-            </div>
+                  </div>
             {/* Profile Image Uploader (no ring) */}
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
               <ProfileImageUploader
@@ -667,7 +667,7 @@ const ProfilePage: React.FC = () => {
             </div>
             {/* ✨ NEW: Verification Badges */}
             <div style={{ 
-              display: 'flex',
+                        display: 'flex',
               flexWrap: 'wrap', 
               gap: '8px', 
               marginTop: '12px',
@@ -683,7 +683,7 @@ const ProfilePage: React.FC = () => {
                 status={user?.phoneNumber ? 'verified' : 'unverified'} 
                 profileType={profileType}
               />
-            </div>
+                  </div>
               
               {/* Seller Rating (for sellers only) */}
               {!isOwnProfile && user.accountType === 'business' && (
@@ -1298,10 +1298,10 @@ const ProfilePage: React.FC = () => {
                     </h4>
                     <S.FormGroup>
                       <label>{language === 'bg' ? 'Предпочитан език' : 'Preferred Language'}</label>
-                        <select name="preferredLanguage" value={formData.preferredLanguage} onChange={handleInputChange}>
+                      <select name="preferredLanguage" value={formData.preferredLanguage} onChange={handleInputChange}>
                           <option value="bg">{t('languages.bulgarian')}</option>
                           <option value="en">{t('languages.english')}</option>
-                        </select>
+                      </select>
                     </S.FormGroup>
                   </div>
 
@@ -1335,25 +1335,25 @@ const ProfilePage: React.FC = () => {
                     </h4>
                     <S.NeumorphicInfoGrid>
                       <S.NeumorphicFieldWrapper>
-                        <S.NeumorphicFieldLabel>{language === 'bg' ? 'Име' : 'First Name'}</S.NeumorphicFieldLabel>
+                        <S.NeumorphicFieldLabel $themeColor={theme.primary}>{language === 'bg' ? 'Име' : 'First Name'}</S.NeumorphicFieldLabel>
                         <S.NeumorphicInfoField>
                           <S.NeumorphicFieldValue>{user.firstName || t('profile.notSet')}</S.NeumorphicFieldValue>
                         </S.NeumorphicInfoField>
                       </S.NeumorphicFieldWrapper>
                       <S.NeumorphicFieldWrapper>
-                        <S.NeumorphicFieldLabel>{language === 'bg' ? 'Презиме' : 'Middle Name'}</S.NeumorphicFieldLabel>
+                        <S.NeumorphicFieldLabel $themeColor={theme.primary}>{language === 'bg' ? 'Презиме' : 'Middle Name'}</S.NeumorphicFieldLabel>
                         <S.NeumorphicInfoField>
                           <S.NeumorphicFieldValue>{user.middleName || t('profile.notSet')}</S.NeumorphicFieldValue>
                         </S.NeumorphicInfoField>
                       </S.NeumorphicFieldWrapper>
                       <S.NeumorphicFieldWrapper>
-                        <S.NeumorphicFieldLabel>{language === 'bg' ? 'Фамилия' : 'Last Name'}</S.NeumorphicFieldLabel>
+                        <S.NeumorphicFieldLabel $themeColor={theme.primary}>{language === 'bg' ? 'Фамилия' : 'Last Name'}</S.NeumorphicFieldLabel>
                         <S.NeumorphicInfoField>
                           <S.NeumorphicFieldValue>{user.lastName || t('profile.notSet')}</S.NeumorphicFieldValue>
                         </S.NeumorphicInfoField>
                       </S.NeumorphicFieldWrapper>
                       <S.NeumorphicFieldWrapper>
-                        <S.NeumorphicFieldLabel>{language === 'bg' ? 'Дата на раждане' : 'Date of Birth'}</S.NeumorphicFieldLabel>
+                        <S.NeumorphicFieldLabel $themeColor={theme.primary}>{language === 'bg' ? 'Дата на раждане' : 'Date of Birth'}</S.NeumorphicFieldLabel>
                         <S.NeumorphicInfoField>
                           <S.NeumorphicFieldValue>
                             {user.dateOfBirth ? new Date(user.dateOfBirth).toLocaleDateString('bg-BG') : t('profile.notSet')}
@@ -1361,7 +1361,7 @@ const ProfilePage: React.FC = () => {
                         </S.NeumorphicInfoField>
                       </S.NeumorphicFieldWrapper>
                       <S.NeumorphicFieldWrapper>
-                        <S.NeumorphicFieldLabel>{language === 'bg' ? 'Място на раждане' : 'Place of Birth'}</S.NeumorphicFieldLabel>
+                        <S.NeumorphicFieldLabel $themeColor={theme.primary}>{language === 'bg' ? 'Място на раждане' : 'Place of Birth'}</S.NeumorphicFieldLabel>
                         <S.NeumorphicInfoField>
                           <S.NeumorphicFieldValue>{user.placeOfBirth || t('profile.notSet')}</S.NeumorphicFieldValue>
                         </S.NeumorphicInfoField>
@@ -1378,13 +1378,13 @@ const ProfilePage: React.FC = () => {
                     </h4>
                     <S.NeumorphicInfoGrid>
                       <S.NeumorphicFieldWrapper>
-                        <S.NeumorphicFieldLabel>{language === 'bg' ? 'Телефон' : 'Phone'}</S.NeumorphicFieldLabel>
+                        <S.NeumorphicFieldLabel $themeColor={theme.primary}>{language === 'bg' ? 'Телефон' : 'Phone'}</S.NeumorphicFieldLabel>
                         <S.NeumorphicInfoField>
                           <S.NeumorphicFieldValue>{user.phoneNumber || t('profile.notSet')}</S.NeumorphicFieldValue>
                         </S.NeumorphicInfoField>
                       </S.NeumorphicFieldWrapper>
                       <S.NeumorphicFieldWrapper>
-                        <S.NeumorphicFieldLabel>{language === 'bg' ? 'Имейл' : 'Email'}</S.NeumorphicFieldLabel>
+                        <S.NeumorphicFieldLabel $themeColor={theme.primary}>{language === 'bg' ? 'Имейл' : 'Email'}</S.NeumorphicFieldLabel>
                         <S.NeumorphicInfoField>
                           <S.NeumorphicFieldValue>{user.email || t('profile.notSet')}</S.NeumorphicFieldValue>
                         </S.NeumorphicInfoField>
@@ -1400,13 +1400,13 @@ const ProfilePage: React.FC = () => {
                     </h4>
                     <S.NeumorphicInfoGrid>
                       <S.NeumorphicFieldWrapper>
-                        <S.NeumorphicFieldLabel>{language === 'bg' ? 'Град' : 'City'}</S.NeumorphicFieldLabel>
+                        <S.NeumorphicFieldLabel $themeColor={theme.primary}>{language === 'bg' ? 'Град' : 'City'}</S.NeumorphicFieldLabel>
                         <S.NeumorphicInfoField>
                           <S.NeumorphicFieldValue>{user.location?.city || t('profile.notSet')}</S.NeumorphicFieldValue>
                         </S.NeumorphicInfoField>
                       </S.NeumorphicFieldWrapper>
                       <S.NeumorphicFieldWrapper>
-                        <S.NeumorphicFieldLabel>{language === 'bg' ? 'Пощенски код' : 'Postal Code'}</S.NeumorphicFieldLabel>
+                        <S.NeumorphicFieldLabel $themeColor={theme.primary}>{language === 'bg' ? 'Пощенски код' : 'Postal Code'}</S.NeumorphicFieldLabel>
                         <S.NeumorphicInfoField>
                           <S.NeumorphicFieldValue>{user.postalCode || t('profile.notSet')}</S.NeumorphicFieldValue>
                         </S.NeumorphicInfoField>
@@ -1414,7 +1414,7 @@ const ProfilePage: React.FC = () => {
                     </S.NeumorphicInfoGrid>
                     {user.address && (
                       <S.NeumorphicFieldWrapper style={{ marginTop: '16px' }}>
-                        <S.NeumorphicFieldLabel>{language === 'bg' ? 'Адрес' : 'Address'}</S.NeumorphicFieldLabel>
+                        <S.NeumorphicFieldLabel $themeColor={theme.primary}>{language === 'bg' ? 'Адрес' : 'Address'}</S.NeumorphicFieldLabel>
                         <S.NeumorphicInfoField>
                           <S.NeumorphicFieldValue>{user.address}</S.NeumorphicFieldValue>
                         </S.NeumorphicInfoField>
@@ -1430,7 +1430,7 @@ const ProfilePage: React.FC = () => {
                     </h4>
                     <S.NeumorphicInfoGrid>
                       <S.NeumorphicFieldWrapper>
-                        <S.NeumorphicFieldLabel>{t('profile.preferredLanguage')}</S.NeumorphicFieldLabel>
+                        <S.NeumorphicFieldLabel $themeColor={theme.primary}>{t('profile.preferredLanguage')}</S.NeumorphicFieldLabel>
                         <S.NeumorphicInfoField>
                           <S.NeumorphicFieldValue>
                             {user.preferredLanguage === 'bg' ? '🇧🇬 ' + t('languages.bulgarian') : '🇬🇧 ' + t('languages.english')}
@@ -1438,7 +1438,7 @@ const ProfilePage: React.FC = () => {
                         </S.NeumorphicInfoField>
                       </S.NeumorphicFieldWrapper>
                       <S.NeumorphicFieldWrapper>
-                        <S.NeumorphicFieldLabel>{t('profile.memberSince')}</S.NeumorphicFieldLabel>
+                        <S.NeumorphicFieldLabel $themeColor={theme.primary}>{t('profile.memberSince')}</S.NeumorphicFieldLabel>
                         <S.NeumorphicInfoField>
                           <S.NeumorphicFieldValue>
                             {user.createdAt ? new Date(user.createdAt).toLocaleDateString('bg-BG') : t('profile.notSet')}

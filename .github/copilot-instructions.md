@@ -1,0 +1,23 @@
+# Copilot Instructions for New-Globul-Cars
+- Primary app lives in `bulgarian-car-marketplace/`; entry `src/index.tsx` mounts `<App />` created with Create React App.
+- `App.tsx` composes providers in strict order: `ThemeProvider` ➜ `GlobalStyles` ➜ `LanguageProvider` ➜ `AuthProvider` ➜ `ProfileTypeProvider` ➜ `ToastProvider` ➜ `GoogleReCaptchaProvider` ➜ `Router`. Keep that stack intact when adding shells or portals.
+- Styling is centralized in `src/styles/theme.ts` (`bulgarianTheme`, `GlobalStyles`). New styled components should consume `theme` tokens for spacing, typography, and colors and inherit the `'Martica', 'Arial', sans-serif` font stack.
+- Layout primitives (Header, Footer, SkipNavigation) are shared via the `Layout` wrapper in `App.tsx`. New routes should follow the existing `React.lazy` + `<Suspense>` pattern and use `FullScreenLayout` when they intentionally omit chrome.
+- Localization lives in `src/contexts/LanguageContext.tsx` and `src/locales/translations.ts`. Always access copy through `useLanguage().t('namespace.key')` and supply both `bg` and `en` keys.
+- Authentication state, profile type, and notifications are served by contexts in `src/contexts/` and the `ToastProvider`. Reuse those hooks (`useAuth`, `useProfileType`, etc.) instead of duplicating state.
+- Feature logic is encapsulated under `src/services/`. Services wrap Firebase, Supabase, Leaflet, Google APIs, caching, and messaging. Prefer consuming or extending an existing service instead of adding fetch logic inside components.
+- Firebase initialization sits in `src/firebase/`. Environment variables required by Firebase, reCAPTCHA, and analytics follow the `REACT_APP_*` names listed in the root `README.md`.
+- Complex profile UI lives in `src/pages/ProfilePage/` with co-located `styles.ts` exporting `S.*` styled helpers. Extend those modules rather than sprinkling inline style objects.
+- Map visualizations (e.g., `components/LeafletBulgariaMap`) depend on Leaflet CSS and theme overrides (see `.leaflet-tooltip` in `GlobalStyles`). Keep map-specific styles in component-level styled blocks.
+- Analytics dashboards and admin tooling reside in `src/features/`. Follow the existing folder-by-feature convention and colocate supporting hooks/services under that feature when sensible.
+- Data contracts/types live in `src/types/` and `src/services/**/types.ts`. Import these types instead of redefining shapes when touching services or pages that rely on them.
+- Reuse utility layers: `src/utils/performance-monitoring` for web vitals, `services/logger-service.ts` for logging, and caching helpers such as `firebase-cache.service.ts`.
+- CRA scripts remain standard: `npm start` (dev), `npm run build`, `npm test`. `npm run test:ci` runs coverage; `npm run lint` is a no-op, so rely on TypeScript/CI errors instead.
+- CRACO (`craco.config.js`) injects polyfills and disables ESLint during builds. Use `craco` aware imports (e.g., `process/browser`) only through provided shims.
+- Image optimization helpers live under `scripts/` (`optimize-images.js`) and are triggered via `npm run build:optimized`.
+- Socket.io and real-time messaging helpers in `src/services/socket-service.ts` and `realtimeMessaging.ts` expect the caller to manage teardown; follow existing cleanup patterns when subscribing to streams.
+- Tests use Testing Library/React 19; place new tests alongside components or under `src/services/__tests__` and run with `npm test -- --watchAll=false` in automation.
+- The assets tree (`src/assets/`, top-level `assets/`) contains CDN-ready images and videos; prefer referencing optimized copies there.
+- When adding copy or documentation, mirror the bilingual docs practice (there are AR/BG summaries in project root) and keep font/typography consistent with recent Martica-wide changes.
+- Commit hooks (`husky`, `lint-staged`) expect prettier/eslint locally; run `npx lint-staged` manually if you skip Husky.
+- External integrations (Firebase, Google Maps, hCaptcha, Supabase) often have staging toggles in their service files. Check for feature flags or mock implementations before wiring new calls.

@@ -1211,7 +1211,7 @@ export const NeumorphicFieldWrapper = styled.div`
 `;
 
 // ✨ UPGRADED: Label now floats OUTSIDE and ABOVE the field - COMPACT
-export const NeumorphicFieldLabel = styled.div`
+export const NeumorphicFieldLabel = styled.div<{ $themeColor?: string }>`
   position: absolute;
   top: -10px; /* 🎯 Closer to field */
   left: 14px; /* 🎯 Better alignment */
@@ -1219,7 +1219,7 @@ export const NeumorphicFieldLabel = styled.div`
   
   font-size: 0.65rem; /* 🎯 Smaller for compact design */
   font-weight: 700;
-  color: #FF8F10;
+  color: ${props => props.$themeColor || '#FF8F10'}; /* 🎨 DYNAMIC: Changes with profile type */
   text-transform: uppercase;
   letter-spacing: 1px; /* 🎯 Tighter spacing */
   
