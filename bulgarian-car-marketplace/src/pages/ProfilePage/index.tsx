@@ -1329,8 +1329,8 @@ const ProfilePage: React.FC = () => {
                 <div>
                   {/* Personal Info */}
                   <div style={{ marginBottom: '24px' }}>
-                    <h4 style={{ margin: '0 0 16px 0', paddingBottom: '8px', borderBottom: '2px solid rgba(255, 143, 16, 0.3)', fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '8px', color: '#FF8F10', fontWeight: '700' }}>
-                      <IconWrapper $color="#FF8F10" $size={18}><UserCircle /></IconWrapper>
+                    <h4 style={{ margin: '0 0 16px 0', paddingBottom: '8px', borderBottom: `2px solid ${theme.primary}4D`, fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '8px', color: theme.primary, fontWeight: '700' }}>
+                      <IconWrapper $color={theme.primary} $size={18}><UserCircle /></IconWrapper>
                       {language === 'bg' ? 'Лична информация' : 'Personal Information'}
                     </h4>
                     <S.NeumorphicInfoGrid>
@@ -1372,8 +1372,8 @@ const ProfilePage: React.FC = () => {
 
                   {/* Contact */}
                   <div style={{ marginBottom: '24px' }}>
-                    <h4 style={{ margin: '0 0 16px 0', paddingBottom: '8px', borderBottom: '2px solid rgba(255, 143, 16, 0.3)', fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '8px', color: '#FF8F10', fontWeight: '700' }}>
-                      <IconWrapper $color="#FF8F10" $size={18}><Phone /></IconWrapper>
+                    <h4 style={{ margin: '0 0 16px 0', paddingBottom: '8px', borderBottom: `2px solid ${theme.primary}4D`, fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '8px', color: theme.primary, fontWeight: '700' }}>
+                      <IconWrapper $color={theme.primary} $size={18}><Phone /></IconWrapper>
                       {language === 'bg' ? 'Контактна информация' : 'Contact Information'}
                     </h4>
                     <S.NeumorphicInfoGrid>
@@ -1394,8 +1394,8 @@ const ProfilePage: React.FC = () => {
 
                   {/* Address */}
                   <div style={{ marginBottom: '24px' }}>
-                    <h4 style={{ margin: '0 0 16px 0', paddingBottom: '8px', borderBottom: '2px solid rgba(255, 143, 16, 0.3)', fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '8px', color: '#FF8F10', fontWeight: '700' }}>
-                      <IconWrapper $color="#FF8F10" $size={18}><Home /></IconWrapper>
+                    <h4 style={{ margin: '0 0 16px 0', paddingBottom: '8px', borderBottom: `2px solid ${theme.primary}4D`, fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '8px', color: theme.primary, fontWeight: '700' }}>
+                      <IconWrapper $color={theme.primary} $size={18}><Home /></IconWrapper>
                       {language === 'bg' ? 'Адресна информация' : 'Address Information'}
                     </h4>
                     <S.NeumorphicInfoGrid>
@@ -1424,8 +1424,8 @@ const ProfilePage: React.FC = () => {
 
                   {/* Other */}
                   <div style={{ marginBottom: '24px' }}>
-                    <h4 style={{ margin: '0 0 16px 0', paddingBottom: '8px', borderBottom: '2px solid rgba(255, 143, 16, 0.3)', fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '8px', color: '#FF8F10', fontWeight: '700' }}>
-                      <IconWrapper $color="#FF8F10" $size={18}><SettingsIcon /></IconWrapper>
+                    <h4 style={{ margin: '0 0 16px 0', paddingBottom: '8px', borderBottom: `2px solid ${theme.primary}4D`, fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '8px', color: theme.primary, fontWeight: '700' }}>
+                      <IconWrapper $color={theme.primary} $size={18}><SettingsIcon /></IconWrapper>
                       {language === 'bg' ? 'Други' : 'Other'}
                     </h4>
                     <S.NeumorphicInfoGrid>
