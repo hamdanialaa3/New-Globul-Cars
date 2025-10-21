@@ -5,7 +5,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Check, CheckCheck, Download, Image as ImageIcon } from 'lucide-react';
-import type { Message } from '../../services/messaging';
+import type { Message } from '../../services/realtimeMessaging';
 
 // ==================== STYLED COMPONENTS ====================
 

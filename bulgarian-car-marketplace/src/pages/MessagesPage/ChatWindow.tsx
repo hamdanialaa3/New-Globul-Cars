@@ -289,10 +289,17 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
     if (!user || !content.trim()) return;
     
     try {
+      // Generate conversationId (consistent ordering of user IDs)
+      const conversationId = [user.uid, recipientId].sort().join('_');
+      
       await realtimeMessagingService.sendMessage({
+        conversationId,
         senderId: user.uid,
+        senderName: user.displayName || user.email || 'User',
         receiverId: recipientId,
+        receiverName: recipientName || 'User',
         content,
+        messageType: 'text',
         type: 'text',
         status: 'sent',
         isRead: false
@@ -300,7 +307,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
     } catch (error) {
       console.error('Failed to send message:', error);
     }
-  }, [user, recipientId]);
+  }, [user, recipientId, recipientName]);
   
   const handleTyping = useCallback((isTyping: boolean) => {
     if (!user) return;

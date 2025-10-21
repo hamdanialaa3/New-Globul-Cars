@@ -20,7 +20,7 @@ import { db } from '../firebase/firebase-config';
 
 export interface Message {
   id: string;
-  conversationId?: string; // ✅ Added for chat rooms
+  conversationId: string; // ✅ Required for chat rooms
   senderId: string;
   senderName: string;
   receiverId: string;
