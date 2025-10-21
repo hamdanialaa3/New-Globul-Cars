@@ -30,7 +30,7 @@ interface Notification {
 
 const NotificationsPage: React.FC = () => {
   const { user } = useAuth();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'unread' | 'messages' | 'system'>('all');
@@ -39,13 +39,12 @@ const NotificationsPage: React.FC = () => {
     if (user) {
       loadNotifications();
     }
-  }, [user, filter]);
+  }, [user, filter, language]);
 
   const loadNotifications = async () => {
     try {
       setLoading(true);
       // Simulate loading notifications from Firebase
-      const { language } = useLanguage();
       
       const mockNotifications: Notification[] = [
         {
