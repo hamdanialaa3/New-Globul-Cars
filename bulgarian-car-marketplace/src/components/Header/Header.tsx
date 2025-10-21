@@ -98,13 +98,21 @@ const Header: React.FC = () => {
   // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (settingsRef.current && !settingsRef.current.contains(event.target as Node)) {
+      const target = event.target as Node;
+      
+      // ✅ FIX: Don't close profile type dropdown if clicking on modal
+      // Check if click is on modal overlay or modal content
+      const isModalClick = (target as HTMLElement).closest('[data-modal="profile-type-confirm"]') 
+        || (target as HTMLElement).getAttribute('data-modal') === 'profile-type-confirm';
+      
+      if (settingsRef.current && !settingsRef.current.contains(target)) {
         setIsSettingsOpen(false);
       }
-      if (mainNavRef.current && !mainNavRef.current.contains(event.target as Node)) {
+      if (mainNavRef.current && !mainNavRef.current.contains(target)) {
         setIsMainNavOpen(false);
       }
-      if (profileTypeRef.current && !profileTypeRef.current.contains(event.target as Node)) {
+      // ✅ Only close profile type dropdown if NOT clicking on modal
+      if (profileTypeRef.current && !profileTypeRef.current.contains(target) && !isModalClick) {
         setIsProfileTypeOpen(false);
       }
       // Note: NotificationDropdown handles its own outside clicks

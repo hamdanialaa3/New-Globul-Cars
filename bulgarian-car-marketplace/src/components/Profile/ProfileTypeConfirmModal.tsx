@@ -191,8 +191,8 @@ const ProfileTypeConfirmModal: React.FC<ProfileTypeConfirmModalProps> = ({
   };
 
   const modalContent = (
-    <Overlay onClick={handleOverlayClick}>
-      <ModalContainer onClick={(e) => e.stopPropagation()}>
+    <Overlay onClick={handleOverlayClick} data-modal="profile-type-confirm">
+      <ModalContainer onClick={(e) => e.stopPropagation()} data-modal="profile-type-confirm">
         <CloseButton onClick={onCancel}>
           <X size={24} />
         </CloseButton>
