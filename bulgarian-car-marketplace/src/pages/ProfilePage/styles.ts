@@ -1276,29 +1276,7 @@ export const NeumorphicInfoField = styled.div`
     pointer-events: none;
   }
   
-  /* Orange accent line - refined and sleeker */
-  &::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 20%;
-    transform: translateY(-50%);
-    width: 2px; /* Thinner than 3px */
-    height: 50%; /* Shorter than 60% */
-    background: linear-gradient(
-      180deg,
-      rgba(255, 143, 16, 0) 0%,
-      rgba(255, 143, 16, 0.8) 20%,
-      rgba(255, 143, 16, 1) 50%,
-      rgba(255, 107, 0, 1) 80%,
-      rgba(255, 107, 0, 0) 100%
-    );
-    border-radius: 0 2px 2px 0;
-    box-shadow: 
-      0 0 8px rgba(255, 143, 16, 0.4),
-      0 0 12px rgba(255, 143, 16, 0.2);
-    animation: ${pulseOrange} 3s ease-in-out infinite;
-  }
+  /* ❌ REMOVED: Orange accent line - for cleaner look */
   
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Faster transition */
   
