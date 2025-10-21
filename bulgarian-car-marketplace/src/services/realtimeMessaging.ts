@@ -28,12 +28,26 @@ export interface Message {
   carId?: string;
   carTitle?: string;
   content: string;
+  text?: string; // ✅ Alias for content (backward compatibility)
   messageType: 'text' | 'image' | 'offer' | 'question';
-  type?: 'text' | 'image' | 'file' | 'voice'; // ✅ Added for ConversationList compatibility
-  status?: 'sent' | 'delivered' | 'read'; // ✅ Added for ChatWindow compatibility
+  type?: 'text' | 'image' | 'file' | 'voice' | 'system'; // ✅ Extended types
+  status?: 'sending' | 'sent' | 'delivered' | 'read'; // ✅ Added 'sending' state
+  attachments?: MessageAttachment[]; // ✅ Added for advanced messaging
   isRead: boolean;
   createdAt: Date;
   updatedAt: Date;
+  readAt?: Date;
+  editedAt?: Date;
+  replyTo?: string;
+}
+
+export interface MessageAttachment {
+  id: string;
+  type: 'image' | 'document' | 'video';
+  url: string;
+  name: string;
+  size: number;
+  thumbnailUrl?: string;
 }
 
 export interface ChatRoom {

@@ -336,7 +336,11 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
     if (!newMessage.trim()) return;
 
     try {
+      // Generate conversationId (consistent ordering)
+      const conversationId = [currentUserId, otherUserId].sort().join('_');
+      
       await realtimeMessagingService.sendMessage({
+        conversationId,
         senderId: currentUserId,
         senderName: currentUserName,
         receiverId: otherUserId,
@@ -345,6 +349,8 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
         carTitle,
         content: newMessage.trim(),
         messageType: 'text',
+        type: 'text',
+        status: 'sent',
         isRead: false
       });
 

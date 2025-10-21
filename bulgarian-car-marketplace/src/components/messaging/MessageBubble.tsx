@@ -144,8 +144,8 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
   return (
     <BubbleContainer $isOwn={isOwn}>
       <Bubble $isOwn={isOwn}>
-        {message.text && (
-          <MessageText>{message.text}</MessageText>
+        {(message.text || message.content) && (
+          <MessageText>{message.text || message.content}</MessageText>
         )}
 
         {message.attachments && message.attachments.length > 0 && (
