@@ -150,6 +150,10 @@ export const GlobalStyles = createGlobalStyle`
     font-family: 'Martica', 'Arial', sans-serif;
   }
 
+  .leaflet-tooltip {
+    font-family: 'Martica', 'Arial', sans-serif !important;
+  }
+
   /* Clean Button Styles */
   button {
     font-family: inherit;

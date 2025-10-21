@@ -5,31 +5,51 @@ import styled from 'styled-components';
 import { User, Building2 } from 'lucide-react';
 import { useProfileType } from '../../contexts/ProfileTypeContext';
 import { useLanguage } from '../../contexts/LanguageContext';
+import ProfileTypeConfirmModal from '../Profile/ProfileTypeConfirmModal';
+import type { ProfileType } from '../../contexts/ProfileTypeContext';
 
 const ProfileTypeSwitcher: React.FC = () => {
   const { profileType, switchProfileType, theme } = useProfileType();
   const { t } = useLanguage();
   const [isLoading, setIsLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [pendingType, setPendingType] = useState<ProfileType | null>(null);
 
-  const handleSwitch = async (newType: 'private' | 'dealer' | 'company') => {
+  const handleTypeClick = (newType: ProfileType) => {
     if (newType === profileType || isLoading) return;
+    
+    // Open confirmation modal
+    setPendingType(newType);
+    setShowModal(true);
+  };
+  
+  const handleConfirm = async () => {
+    if (!pendingType) return;
     
     setIsLoading(true);
     try {
-      await switchProfileType(newType);
+      await switchProfileType(pendingType);
+      setShowModal(false);
+      setPendingType(null);
     } catch (error) {
       console.error('Error switching profile type:', error);
     } finally {
       setIsLoading(false);
     }
   };
+  
+  const handleCancel = () => {
+    setShowModal(false);
+    setPendingType(null);
+  };
 
   return (
+    <>
     <SwitcherContainer>
       <TypeButton
         $active={profileType === 'private'}
         $color="#FF8F10"
-        onClick={() => handleSwitch('private')}
+        onClick={() => handleTypeClick('private')}
         disabled={isLoading}
         title={t('profileTypes.private')}
       >
@@ -40,7 +60,7 @@ const ProfileTypeSwitcher: React.FC = () => {
       <TypeButton
         $active={profileType === 'dealer'}
         $color="#16a34a"
-        onClick={() => handleSwitch('dealer')}
+        onClick={() => handleTypeClick('dealer')}
         disabled={isLoading}
         title={t('profileTypes.dealer')}
       >
@@ -51,7 +71,7 @@ const ProfileTypeSwitcher: React.FC = () => {
       <TypeButton
         $active={profileType === 'company'}
         $color="#1d4ed8"
-        onClick={() => handleSwitch('company')}
+        onClick={() => handleTypeClick('company')}
         disabled={isLoading}
         title={t('profileTypes.company')}
       >
@@ -59,6 +79,17 @@ const ProfileTypeSwitcher: React.FC = () => {
         <span>{t('profileTypes.company')}</span>
       </TypeButton>
     </SwitcherContainer>
+    
+    {/* Confirmation Modal */}
+    {pendingType && (
+      <ProfileTypeConfirmModal
+        isOpen={showModal}
+        profileType={pendingType}
+        onConfirm={handleConfirm}
+        onCancel={handleCancel}
+      />
+    )}
+    </>
   );
 };
 

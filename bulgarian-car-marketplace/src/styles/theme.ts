@@ -314,6 +314,10 @@ export const GlobalStyles = createGlobalStyle`
     font-family: 'Martica', 'Arial', sans-serif;
   }
 
+  .leaflet-tooltip {
+    font-family: 'Martica', 'Arial', sans-serif !important;
+  }
+
   /* (Comment removed - was in Arabic)
   button {
     font-family: inherit;
