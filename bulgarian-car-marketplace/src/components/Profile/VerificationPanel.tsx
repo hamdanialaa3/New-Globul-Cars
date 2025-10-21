@@ -101,21 +101,21 @@ const VerificationItem = styled.div<{ $verified: boolean; $themeColor?: string }
   position: relative;
   overflow: hidden;
   
-  /* 🎨 IMPROVED: Verified = Bright Green, Unverified = Soft Red */
+  /* 🎨 IMPROVED: Verified = Bright Green, Unverified = Bright Red */
   background: ${props => props.$verified 
     ? 'linear-gradient(135deg, rgba(34, 197, 94, 0.18) 0%, rgba(22, 163, 74, 0.12) 100%)' /* ✅ Bright green glow */
-    : 'linear-gradient(135deg, rgba(239, 68, 68, 0.10) 0%, rgba(220, 38, 38, 0.06) 100%)' /* ❌ Soft red fade */
+    : 'linear-gradient(135deg, rgba(220, 53, 69, 0.15) 0%, rgba(200, 35, 51, 0.10) 100%)' /* ❌ Bright red fade */
   };
   backdrop-filter: blur(8px);
   
   border: 1.5px solid ${props => props.$verified 
     ? 'rgba(34, 197, 94, 0.4)' /* ✅ Bright green border */
-    : 'rgba(239, 68, 68, 0.25)' /* ❌ Soft red border */
+    : 'rgba(220, 53, 69, 0.4)' /* ❌ Bright red border */
   };
   
   box-shadow: ${props => props.$verified
     ? '0 4px 16px rgba(34, 197, 94, 0.15), 0 0 20px rgba(34, 197, 94, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.5)' /* ✅ Green glow */
-    : '0 3px 10px rgba(239, 68, 68, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.5)' /* ❌ Subtle red shadow */
+    : '0 3px 10px rgba(220, 53, 69, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.5)' /* ❌ Bright red shadow */
   };
   
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -123,18 +123,18 @@ const VerificationItem = styled.div<{ $verified: boolean; $themeColor?: string }
   /* 🎨 Left accent stripe - Green for verified, Red for unverified */
   border-left: 4px solid ${props => props.$verified 
     ? 'rgba(34, 197, 94, 0.8)' /* ✅ Bright green stripe */
-    : 'rgba(239, 68, 68, 0.5)' /* ❌ Red stripe */
+    : 'rgba(220, 53, 69, 0.7)' /* ❌ Bright red stripe */
   };
   
   &:hover {
     transform: translateX(6px) translateY(-2px);
     border-color: ${props => props.$verified 
       ? 'rgba(34, 197, 94, 0.6)' /* ✅ Brighter green on hover */
-      : 'rgba(239, 68, 68, 0.35)' /* ❌ Brighter red on hover */
+      : 'rgba(220, 53, 69, 0.5)' /* ❌ Brighter red on hover */
     };
     box-shadow: ${props => props.$verified
       ? '0 6px 24px rgba(34, 197, 94, 0.25), 0 0 30px rgba(34, 197, 94, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.6)' /* ✅ Enhanced green glow */
-      : '0 6px 18px rgba(239, 68, 68, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.6)' /* ❌ Subtle red glow */
+      : '0 6px 18px rgba(220, 53, 69, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.6)' /* ❌ Bright red glow */
     };
   }
 `;
@@ -156,10 +156,10 @@ const IconWrapper = styled.div<{ $verified: boolean; $themeColor?: string }>`
   flex-shrink: 0;
   position: relative;
   
-  /* 🎨 IMPROVED: Bright Green for verified, Soft Red for unverified */
+  /* 🎨 IMPROVED: Bright Green for verified, Bright Red for unverified */
   background: ${props => props.$verified 
     ? 'linear-gradient(135deg, rgba(34, 197, 94, 1) 0%, rgba(22, 163, 74, 1) 100%)' /* ✅ Bright vibrant green */
-    : 'linear-gradient(135deg, rgba(239, 68, 68, 0.85) 0%, rgba(220, 38, 38, 0.9) 100%)' /* ❌ Soft faded red */
+    : 'linear-gradient(135deg, rgba(220, 53, 69, 1) 0%, rgba(200, 35, 51, 1) 100%)' /* ❌ Bright red */
   };
   
   color: white;
@@ -167,11 +167,11 @@ const IconWrapper = styled.div<{ $verified: boolean; $themeColor?: string }>`
   box-shadow: 
     0 4px 14px ${props => props.$verified 
       ? 'rgba(34, 197, 94, 0.5)' /* ✅ Bright green glow */
-      : 'rgba(239, 68, 68, 0.25)' /* ❌ Soft red shadow */
+      : 'rgba(220, 53, 69, 0.4)' /* ❌ Bright red shadow */
     },
     ${props => props.$verified
       ? '0 0 20px rgba(34, 197, 94, 0.3)' /* ✅ Extra green LED glow */
-      : '0 0 8px rgba(239, 68, 68, 0.15)' /* ❌ Minimal red glow */
+      : '0 0 16px rgba(220, 53, 69, 0.3)' /* ❌ Bright red glow */
     },
     inset 0 1px 0 rgba(255, 255, 255, 0.3);
   
@@ -198,7 +198,7 @@ const ItemText = styled.div<{ $verified: boolean }>`
     font-weight: 700;
     color: ${props => props.$verified 
       ? '#22c55e' /* ✅ Bright green text for verified */
-      : '#ef4444' /* ❌ Red text for unverified */
+      : '#dc3545' /* ❌ Bright red text for unverified */
     };
     letter-spacing: 0.2px;
     text-shadow: ${props => props.$verified
@@ -212,7 +212,7 @@ const ItemText = styled.div<{ $verified: boolean }>`
     font-size: 0.8rem;
     color: ${props => props.$verified 
       ? '#16a34a' /* ✅ Dark green for verified description */
-      : '#dc2626' /* ❌ Dark red for unverified description */
+      : '#c82333' /* ❌ Bright dark red for unverified description */
     };
     font-weight: 500;
   }
@@ -259,12 +259,13 @@ const StatusBadge = styled.div<{ $status: 'verified' | 'pending' | 'unverified' 
       case 'unverified':
         return `
           background: linear-gradient(135deg,
-            rgba(239, 68, 68, 0.8) 0%,
-            rgba(220, 38, 38, 0.85) 100%
+            rgba(220, 53, 69, 1) 0%,
+            rgba(200, 35, 51, 1) 100%
           );
           color: white;
-          border: 1px solid rgba(239, 68, 68, 0.4);
-          box-shadow: 0 2px 8px rgba(239, 68, 68, 0.15);
+          border: 1px solid rgba(220, 53, 69, 0.5);
+          box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3),
+                      inset 0 1px 0 rgba(255, 255, 255, 0.2);
         `;
     }
   }}
@@ -284,10 +285,10 @@ const ActionButton = styled.button<{ $themeColor?: string }>`
   position: relative;
   overflow: hidden;
   
-  /* 🎨 IMPROVED: Red button for unverified items */
+  /* 🎨 IMPROVED: Bright Red button for unverified items */
   background: linear-gradient(135deg, 
-    rgba(239, 68, 68, 0.9) 0%, 
-    rgba(220, 38, 38, 0.95) 100%
+    rgba(220, 53, 69, 1) 0%, 
+    rgba(200, 35, 51, 1) 100%
   );
   background-size: 200% auto;
   color: white;
