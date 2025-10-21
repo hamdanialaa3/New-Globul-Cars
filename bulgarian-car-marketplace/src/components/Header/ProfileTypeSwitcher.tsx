@@ -9,7 +9,7 @@ import ProfileTypeConfirmModal from '../Profile/ProfileTypeConfirmModal';
 import type { ProfileType } from '../../contexts/ProfileTypeContext';
 
 const ProfileTypeSwitcher: React.FC = () => {
-  const { profileType, switchProfileType, theme } = useProfileType();
+  const { profileType, switchProfileType } = useProfileType();
   const { t } = useLanguage();
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -84,7 +84,7 @@ const ProfileTypeSwitcher: React.FC = () => {
     {pendingType && (
       <ProfileTypeConfirmModal
         isOpen={showModal}
-        profileType={pendingType}
+        newType={pendingType}
         onConfirm={handleConfirm}
         onCancel={handleCancel}
       />

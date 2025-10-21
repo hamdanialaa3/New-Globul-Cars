@@ -57,8 +57,10 @@ const baseButtonStyles = css`
 `;
 
 // Styled Components
-export const ProfilePageContainer = styled.div`
-  padding: 2rem;
+export const ProfilePageContainer = styled.div<{ $isBusinessMode?: boolean }>`
+  position: relative;
+  padding-top: 2rem;
+  padding-bottom: 4rem;
   background: ${({ theme }) => theme.colors.background.default};
   color: ${({ theme }) => theme.colors.text.primary};
   animation: ${fadeIn} 0.5s ease-out;
@@ -206,6 +208,146 @@ export const SectionTitle = styled.h2`
   padding-bottom: 0.5rem;
   border-bottom: 2px solid ${({ theme }) => theme.colors.primary.main};
   display: inline-block;
+`;
+
+export const ProfileSidebar = styled.aside<{ $isBusinessMode: boolean; $themeColor: string }>`
+  background: ${({ theme }) => theme.colors.background.paper};
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid ${({ theme }) => theme.colors.grey[200]};
+  align-self: start;
+  position: sticky;
+  top: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: ${({ theme }) => theme.shadows.md};
+`;
+
+export const ProfileActions = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+`;
+
+export const ContentSection = styled.section<{ $themeColor?: string; $isBusinessMode?: boolean }>`
+  background: ${({ theme }) => theme.colors.background.paper};
+  padding: 2rem;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  border: 1px solid ${({ theme }) => theme.colors.grey[200]};
+  box-shadow: ${({ theme }) => theme.shadows.base};
+`;
+
+export const SectionHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.grey[200]};
+
+  h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: ${({ theme }) => theme.colors.text.primary};
+  }
+`;
+
+export const FormGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+`;
+
+export const FormGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: ${({ theme }) => theme.colors.text.secondary};
+  }
+
+  input, select, textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 8px;
+    border: 1px solid ${({ theme }) => theme.colors.grey[300]};
+    background-color: ${({ theme }) => theme.colors.background.default};
+    font-family: 'Martica', 'Arial', sans-serif;
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+
+    &:focus {
+      outline: none;
+      border-color: ${({ theme }) => theme.colors.primary.main};
+      box-shadow: 0 0 0 3px ${({ theme }) => theme.colors.primary.main}30;
+    }
+  }
+`;
+
+export const FormActions = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+`;
+
+export const SaveButton = styled(ActionButton).attrs({ $variant: 'primary' })``;
+
+export const CancelButton = styled(ActionButton).attrs({ $variant: 'secondary' })``;
+
+export const NeumorphicInfoGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+`;
+
+export const NeumorphicFieldWrapper = styled.div`
+  position: relative;
+`;
+
+export const NeumorphicFieldLabel = styled.label<{$themeColor?: string}>`
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: ${({ theme, $themeColor }) => $themeColor || theme.colors.primary.main};
+  margin-bottom: 0.5rem;
+  display: block;
+`;
+
+export const NeumorphicInfoField = styled.div`
+  background: ${({ theme }) => theme.colors.grey[100]};
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  box-shadow: inset 5px 5px 10px ${({ theme }) => theme.colors.grey[200]},
+              inset -5px -5px 10px #ffffff;
+`;
+
+export const NeumorphicFieldValue = styled.span`
+  font-size: 1rem;
+  color: ${({ theme }) => theme.colors.text.primary};
+`;
+
+export const PageContainer = styled.div`
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 0 2rem;
+`;
+
+export const ProfileGrid = styled.div`
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 2rem;
+  align-items: start;
+
+  @media (max-width: 960px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 export const CarGrid = styled.div`

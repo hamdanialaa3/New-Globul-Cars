@@ -317,7 +317,7 @@ const SellerTypePageNew: React.FC = () => {
       {selectedType && (
         <ProfileTypeConfirmModal
           isOpen={showConfirmModal}
-          profileType={selectedType}
+          newType={selectedType}
           onConfirm={handleConfirmSelection}
           onCancel={handleCancelSelection}
         />

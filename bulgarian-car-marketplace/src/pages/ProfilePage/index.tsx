@@ -860,7 +860,8 @@ const ProfilePage: React.FC = () => {
               </S.ContentSection>
             )}
 
-            {/* Personal Information */}
+            {/* ❌ HIDDEN: Personal Information - Now in Settings tab only */}
+            {false && (
             <S.ContentSection $themeColor={theme.primary} $isBusinessMode={isBusinessMode}>
               <S.SectionHeader>
                 <h2>{t('profile.personalInfo')}</h2>
@@ -1457,8 +1458,10 @@ const ProfilePage: React.FC = () => {
                 </div>
               )}
             </S.ContentSection>
+            )}
 
-            {/* Verification Panel */}
+            {/* ❌ HIDDEN: Verification Panel - Now in Settings tab only */}
+            {false && (
             <S.ContentSection $themeColor={theme.primary}>
               <VerificationPanel
                 emailVerified={user.emailVerified || user.verification?.email?.verified || false}
@@ -1468,6 +1471,7 @@ const ProfilePage: React.FC = () => {
                 themeColor={theme.primary}
               />
             </S.ContentSection>
+            )}
 
             {/* Photo Gallery */}
             {isOwnProfile && (

@@ -11,7 +11,7 @@ import type { ProfileType } from '../../contexts/ProfileTypeContext';
 
 interface ProfileTypeConfirmModalProps {
   isOpen: boolean;
-  profileType: ProfileType;
+  newType: ProfileType;
   onConfirm: () => void;
   onCancel: () => void;
 }
@@ -153,7 +153,7 @@ const PROFILE_TERMS = {
 
 const ProfileTypeConfirmModal: React.FC<ProfileTypeConfirmModalProps> = ({
   isOpen,
-  profileType,
+  newType,
   onConfirm,
   onCancel,
 }) => {
@@ -162,7 +162,7 @@ const ProfileTypeConfirmModal: React.FC<ProfileTypeConfirmModalProps> = ({
   
   if (!isOpen) return null;
 
-  const terms = PROFILE_TERMS[profileType];
+  const terms = PROFILE_TERMS[newType];
   const Icon = terms.icon;
   const isBulgarian = language === 'bg';
 
