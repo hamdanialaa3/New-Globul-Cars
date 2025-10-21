@@ -17,9 +17,10 @@ export const TabNavigation = styled.div<{ $themeColor?: string }>`
   display: flex;
   gap: 8px;
   margin-bottom: 20px;
-  padding: 8px;
+  padding: 12px;
   position: relative;
   border-radius: 18px;
+  min-height: 70px;
   
   /* 🎨 Premium Metallic Aluminum Base */
   background: linear-gradient(135deg,
@@ -116,9 +117,9 @@ export const TabNavigation = styled.div<{ $themeColor?: string }>`
 export const TabButton = styled.button<{ $active: boolean; $themeColor?: string }>`
   flex: 1;
   min-width: 90px;
-  padding: 8px 14px;
+  padding: 12px 16px;
   font-weight: 600;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   letter-spacing: 0.3px;
   cursor: pointer;
   display: flex;
@@ -126,6 +127,7 @@ export const TabButton = styled.button<{ $active: boolean; $themeColor?: string 
   justify-content: center;
   gap: 8px;
   border-radius: 14px;
+  min-height: 48px;
   position: relative;
   overflow: hidden;
   z-index: 2;

@@ -104,7 +104,7 @@ const InfoCard = styled.div`
 
 const InfoTitle = styled.h3`
   color: #ffd700;
-  font-size: 18px;
+  font-size: 1.1rem;
   font-weight: 600;
   margin: 0 0 15px 0;
   display: flex;
@@ -118,17 +118,22 @@ const InfoItem = styled.div`
   gap: 10px;
   margin-bottom: 10px;
   color: #ffd700;
-  font-size: 14px;
+  font-size: 0.85rem;
 `;
 
 const InfoLabel = styled.span`
   font-weight: 600;
   color: #ffed4e;
   min-width: 120px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 `;
 
 const InfoValue = styled.span`
   color: #ffd700;
+  font-size: 0.9rem;
+  font-weight: 500;
 `;
 
 const StatsGrid = styled.div`

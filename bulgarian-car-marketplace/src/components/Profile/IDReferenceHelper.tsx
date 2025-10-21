@@ -136,7 +136,7 @@ const FieldMappingItem = styled.div<{ $active: boolean }>`
   
   .field-value {
     color: #666;
-    font-family: monospace;
+    font-family: 'Martica', 'Arial', sans-serif;
     font-size: 0.65rem;
   }
 `;
