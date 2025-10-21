@@ -21,6 +21,14 @@ const HomeContainer = styled.div`
   background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
 `;
 
+const SectionSpacer = styled.div`
+  height: 40px; /* ✅ مسافة بسيطة بين الأقسام */
+  
+  @media (max-width: 768px) {
+    height: 24px; /* أصغر على الموبايل */
+  }
+`;
+
 const LoadingFallback = styled.div`
   display: flex;
   justify-content: center;
@@ -41,6 +49,8 @@ const HomePage: React.FC = () => {
         <HeroSection />
       </Suspense>
 
+      <SectionSpacer />
+
       {/* ✅ LazySection: Load when user scrolls near */}
       <LazySection rootMargin="200px" minHeight="300px">
         <Suspense fallback={<LoadingFallback>Loading stats...</LoadingFallback>}>
@@ -48,11 +58,15 @@ const HomePage: React.FC = () => {
         </Suspense>
       </LazySection>
 
+      <SectionSpacer />
+
       <LazySection rootMargin="200px" minHeight="500px">
         <Suspense fallback={<LoadingFallback>Loading popular brands...</LoadingFallback>}>
           <PopularBrandsSection />
         </Suspense>
       </LazySection>
+
+      <SectionSpacer />
 
       <LazySection rootMargin="300px" minHeight="600px">
         <Suspense fallback={<LoadingFallback>Loading city cars...</LoadingFallback>}>
@@ -60,11 +74,15 @@ const HomePage: React.FC = () => {
         </Suspense>
       </LazySection>
 
+      <SectionSpacer />
+
       <LazySection rootMargin="200px" minHeight="500px">
         <Suspense fallback={<LoadingFallback>Loading image gallery...</LoadingFallback>}>
           <ImageGallerySection />
         </Suspense>
       </LazySection>
+
+      <SectionSpacer />
 
       <LazySection rootMargin="300px" minHeight="600px">
         <Suspense fallback={<LoadingFallback>Loading featured cars...</LoadingFallback>}>
@@ -72,11 +90,15 @@ const HomePage: React.FC = () => {
         </Suspense>
       </LazySection>
 
+      <SectionSpacer />
+
       <LazySection rootMargin="300px" minHeight="800px">
         <Suspense fallback={<LoadingFallback>Loading community feed...</LoadingFallback>}>
           <CommunityFeedSection />
         </Suspense>
       </LazySection>
+
+      <SectionSpacer />
 
       <LazySection rootMargin="200px" minHeight="400px">
         <Suspense fallback={<LoadingFallback>Loading features...</LoadingFallback>}>
