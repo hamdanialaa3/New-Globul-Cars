@@ -472,13 +472,12 @@ const Header: React.FC = () => {
                   </svg>
                 </button>
 
-                {/* Seller Type Switcher Dropdown - Directly under button */}
+                {/* Seller Type Switcher Dropdown - Under button */}
                 {isProfileTypeOpen && (
                   <div className="main-nav-menu" style={{ 
-                    right: 'auto', 
-                    left: '0', 
-                    minWidth: '200px',
-                    marginTop: '4px'
+                    right: '0',  /* ✅ محاذاة من اليمين - الزر في اليمين */
+                    left: 'auto',  /* ✅ إلغاء المحاذاة اليسرى */
+                    minWidth: '200px'
                   }}>
                     <div style={{ padding: '12px' }}>
                       <ProfileTypeSwitcher />
