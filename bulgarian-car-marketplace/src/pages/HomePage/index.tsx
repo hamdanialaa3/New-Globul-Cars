@@ -22,10 +22,18 @@ const HomeContainer = styled.div`
 `;
 
 const SectionSpacer = styled.div`
-  height: 40px; /* ✅ مسافة بسيطة بين الأقسام */
+  height: 20px; /* ✅ مسافة أصغر بنسبة 50% */
   
   @media (max-width: 768px) {
-    height: 24px; /* أصغر على الموبايل */
+    height: 12px; /* أصغر على الموبايل */
+  }
+`;
+
+const LargeSpacer = styled.div`
+  height: 40px; /* ✅ مسافة أكبر حول Business Banner */
+  
+  @media (max-width: 768px) {
+    height: 24px;
   }
 `;
 
@@ -41,8 +49,12 @@ const LoadingFallback = styled.div`
 const HomePage: React.FC = () => {
   return (
     <HomeContainer>
+      <LargeSpacer />
+      
       {/* Business Promotion Banner - Below Header - Always visible */}
       <BusinessPromoBanner />
+      
+      <LargeSpacer />
 
       {/* Hero Section - Always visible (above fold) */}
       <Suspense fallback={<LoadingFallback>Loading hero section...</LoadingFallback>}>
