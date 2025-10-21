@@ -101,49 +101,40 @@ const VerificationItem = styled.div<{ $verified: boolean; $themeColor?: string }
   position: relative;
   overflow: hidden;
   
-  /* Glassmorphic background */
+  /* 🎨 IMPROVED: Verified = Bright Green, Unverified = Soft Red */
   background: ${props => props.$verified 
-    ? 'linear-gradient(135deg, rgba(76, 175, 80, 0.12) 0%, rgba(67, 160, 71, 0.08) 100%)'
-    : props.$themeColor 
-      ? `linear-gradient(135deg, ${props.$themeColor}14 0%, ${props.$themeColor}0D 100%)`
-      : 'linear-gradient(135deg, rgba(255, 143, 16, 0.08) 0%, rgba(255, 215, 0, 0.05) 100%)'
+    ? 'linear-gradient(135deg, rgba(34, 197, 94, 0.18) 0%, rgba(22, 163, 74, 0.12) 100%)' /* ✅ Bright green glow */
+    : 'linear-gradient(135deg, rgba(239, 68, 68, 0.10) 0%, rgba(220, 38, 38, 0.06) 100%)' /* ❌ Soft red fade */
   };
   backdrop-filter: blur(8px);
   
   border: 1.5px solid ${props => props.$verified 
-    ? 'rgba(76, 175, 80, 0.3)'
-    : props.$themeColor
-      ? `${props.$themeColor}40`
-      : 'rgba(255, 143, 16, 0.25)'
+    ? 'rgba(34, 197, 94, 0.4)' /* ✅ Bright green border */
+    : 'rgba(239, 68, 68, 0.25)' /* ❌ Soft red border */
   };
   
   box-shadow: ${props => props.$verified
-    ? '0 3px 10px rgba(76, 175, 80, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.5)'
-    : props.$themeColor
-      ? `0 3px 10px ${props.$themeColor}14, inset 0 1px 0 rgba(255, 255, 255, 0.5)`
-      : '0 3px 10px rgba(255, 143, 16, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.5)'
+    ? '0 4px 16px rgba(34, 197, 94, 0.15), 0 0 20px rgba(34, 197, 94, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.5)' /* ✅ Green glow */
+    : '0 3px 10px rgba(239, 68, 68, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.5)' /* ❌ Subtle red shadow */
   };
   
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   
-  /* Left accent - verified uses yellow, unverified uses theme */
-  ${props => props.$verified && `
-    border-left: 3px solid rgba(255, 215, 0, 0.7);
-  `}
+  /* 🎨 Left accent stripe - Green for verified, Red for unverified */
+  border-left: 4px solid ${props => props.$verified 
+    ? 'rgba(34, 197, 94, 0.8)' /* ✅ Bright green stripe */
+    : 'rgba(239, 68, 68, 0.5)' /* ❌ Red stripe */
+  };
   
   &:hover {
     transform: translateX(6px) translateY(-2px);
     border-color: ${props => props.$verified 
-      ? 'rgba(76, 175, 80, 0.5)'
-      : props.$themeColor
-        ? `${props.$themeColor}66`
-        : 'rgba(255, 143, 16, 0.4)'
+      ? 'rgba(34, 197, 94, 0.6)' /* ✅ Brighter green on hover */
+      : 'rgba(239, 68, 68, 0.35)' /* ❌ Brighter red on hover */
     };
     box-shadow: ${props => props.$verified
-      ? '0 6px 18px rgba(76, 175, 80, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.6)'
-      : props.$themeColor
-        ? `0 6px 18px ${props.$themeColor}26, inset 0 1px 0 rgba(255, 255, 255, 0.6)`
-        : '0 6px 18px rgba(255, 143, 16, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.6)'
+      ? '0 6px 24px rgba(34, 197, 94, 0.25), 0 0 30px rgba(34, 197, 94, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.6)' /* ✅ Enhanced green glow */
+      : '0 6px 18px rgba(239, 68, 68, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.6)' /* ❌ Subtle red glow */
     };
   }
 `;
@@ -165,40 +156,28 @@ const IconWrapper = styled.div<{ $verified: boolean; $themeColor?: string }>`
   flex-shrink: 0;
   position: relative;
   
-  /* Gradient background */
+  /* 🎨 IMPROVED: Bright Green for verified, Soft Red for unverified */
   background: ${props => props.$verified 
-    ? 'linear-gradient(135deg, rgba(76, 175, 80, 0.95) 0%, rgba(67, 160, 71, 1) 100%)'
-    : props.$themeColor
-      ? `linear-gradient(135deg, ${props.$themeColor}F2 0%, ${props.$themeColor} 100%)`
-      : 'linear-gradient(135deg, rgba(255, 159, 42, 0.95) 0%, rgba(255, 143, 16, 1) 100%)'
+    ? 'linear-gradient(135deg, rgba(34, 197, 94, 1) 0%, rgba(22, 163, 74, 1) 100%)' /* ✅ Bright vibrant green */
+    : 'linear-gradient(135deg, rgba(239, 68, 68, 0.85) 0%, rgba(220, 38, 38, 0.9) 100%)' /* ❌ Soft faded red */
   };
   
   color: white;
   
   box-shadow: 
     0 4px 14px ${props => props.$verified 
-      ? 'rgba(76, 175, 80, 0.35)'
-      : props.$themeColor
-        ? `${props.$themeColor}59`
-        : 'rgba(255, 143, 16, 0.35)'
+      ? 'rgba(34, 197, 94, 0.5)' /* ✅ Bright green glow */
+      : 'rgba(239, 68, 68, 0.25)' /* ❌ Soft red shadow */
+    },
+    ${props => props.$verified
+      ? '0 0 20px rgba(34, 197, 94, 0.3)' /* ✅ Extra green LED glow */
+      : '0 0 8px rgba(239, 68, 68, 0.15)' /* ❌ Minimal red glow */
     },
     inset 0 1px 0 rgba(255, 255, 255, 0.3);
   
   transition: all 0.3s ease;
   
-  /* Bottom accent for unverified */
-  ${props => !props.$verified && `
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 25%;
-      right: 25%;
-      height: 2px;
-      background: rgba(255, 215, 0, 0.8);
-      box-shadow: 0 0 4px rgba(255, 215, 0, 0.6);
-    }
-  `}
+  /* ❌ REMOVED: Bottom accent - cleaner look */
   
   svg {
     filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
@@ -212,19 +191,29 @@ const IconWrapper = styled.div<{ $verified: boolean; $themeColor?: string }>`
   }
 `;
 
-const ItemText = styled.div`
+const ItemText = styled.div<{ $verified: boolean }>`
   h4 {
     margin: 0 0 5px 0;
     font-size: 1rem;
     font-weight: 700;
-    color: #212529;
+    color: ${props => props.$verified 
+      ? '#22c55e' /* ✅ Bright green text for verified */
+      : '#ef4444' /* ❌ Red text for unverified */
+    };
     letter-spacing: 0.2px;
+    text-shadow: ${props => props.$verified
+      ? '0 0 10px rgba(34, 197, 94, 0.3)' /* ✅ Green glow */
+      : 'none' /* ❌ No glow for unverified */
+    };
   }
   
   p {
     margin: 0;
     font-size: 0.8rem;
-    color: #6c757d;
+    color: ${props => props.$verified 
+      ? '#16a34a' /* ✅ Dark green for verified description */
+      : '#dc2626' /* ❌ Dark red for unverified description */
+    };
     font-weight: 500;
   }
 `;
@@ -244,14 +233,16 @@ const StatusBadge = styled.div<{ $status: 'verified' | 'pending' | 'unverified' 
       case 'verified':
         return `
           background: linear-gradient(135deg,
-            rgba(76, 175, 80, 0.95) 0%,
-            rgba(67, 160, 71, 1) 100%
+            rgba(34, 197, 94, 1) 0%,
+            rgba(22, 163, 74, 1) 100%
           );
           color: white;
-          border: 1px solid rgba(255, 215, 0, 0.4);
+          border: 1px solid rgba(34, 197, 94, 0.5);
           box-shadow: 
-            0 4px 12px rgba(76, 175, 80, 0.3),
+            0 4px 16px rgba(34, 197, 94, 0.4),
+            0 0 20px rgba(34, 197, 94, 0.3),
             inset 0 1px 0 rgba(255, 255, 255, 0.3);
+          text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
         `;
       case 'pending':
         return `
@@ -268,12 +259,12 @@ const StatusBadge = styled.div<{ $status: 'verified' | 'pending' | 'unverified' 
       case 'unverified':
         return `
           background: linear-gradient(135deg,
-            rgba(224, 224, 224, 0.8) 0%,
-            rgba(189, 189, 189, 0.9) 100%
+            rgba(239, 68, 68, 0.8) 0%,
+            rgba(220, 38, 38, 0.85) 100%
           );
-          color: #666;
-          border: 1px solid rgba(200, 200, 200, 0.5);
-          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+          color: white;
+          border: 1px solid rgba(239, 68, 68, 0.4);
+          box-shadow: 0 2px 8px rgba(239, 68, 68, 0.15);
         `;
     }
   }}
@@ -293,18 +284,17 @@ const ActionButton = styled.button<{ $themeColor?: string }>`
   position: relative;
   overflow: hidden;
   
-  /* Theme glassmorphic button */
-  background: ${props => props.$themeColor
-    ? `linear-gradient(135deg, ${props.$themeColor}F2 0%, ${props.$themeColor} 100%)`
-    : 'linear-gradient(135deg, rgba(255, 159, 42, 0.95) 0%, rgba(255, 143, 16, 1) 100%)'};
+  /* 🎨 IMPROVED: Red button for unverified items */
+  background: linear-gradient(135deg, 
+    rgba(239, 68, 68, 0.9) 0%, 
+    rgba(220, 38, 38, 0.95) 100%
+  );
   background-size: 200% auto;
   color: white;
-  border: 1px solid rgba(255, 215, 0, 0.5);
+  border: 1px solid rgba(239, 68, 68, 0.5);
   
   box-shadow: 
-    ${props => props.$themeColor
-      ? `0 4px 14px ${props.$themeColor}59`
-      : '0 4px 14px rgba(255, 143, 16, 0.35)'},
+    0 3px 12px rgba(239, 68, 68, 0.25),
     inset 0 1px 0 rgba(255, 255, 255, 0.35);
   
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -327,27 +317,26 @@ const ActionButton = styled.button<{ $themeColor?: string }>`
     background-position: 0% 0%;
   }
   
-  &:hover::after {
+  &:hover::before {
     background-position: 100% 0%;
     transition: background-position 1s ease;
   }
   
   &:hover {
-    background: ${props => props.$themeColor
-      ? `linear-gradient(135deg, ${props.$themeColor} 0%, ${props.$themeColor}E6 100%)`
-      : 'linear-gradient(135deg, rgba(255, 175, 64, 1) 0%, rgba(255, 159, 42, 1) 100%)'};
+    background: linear-gradient(135deg, 
+      rgba(248, 113, 113, 1) 0%, 
+      rgba(239, 68, 68, 1) 100%
+    );
     transform: translateY(-2px);
     box-shadow: 
-      ${props => props.$themeColor
-        ? `0 6px 20px ${props.$themeColor}73`
-        : '0 6px 20px rgba(255, 143, 16, 0.45)'},
+      0 6px 20px rgba(239, 68, 68, 0.35),
       inset 0 1px 0 rgba(255, 255, 255, 0.4);
   }
   
   &:active {
     transform: translateY(0);
     box-shadow: 
-      0 2px 8px rgba(255, 143, 16, 0.3),
+      0 2px 8px rgba(239, 68, 68, 0.3),
       inset 0 1px 0 rgba(255, 255, 255, 0.25);
   }
 `;
@@ -442,7 +431,7 @@ const VerificationPanel: React.FC<VerificationPanelProps> = ({
                 <IconWrapper $verified={item.verified} $themeColor={themeColor}>
                   {item.icon}
                 </IconWrapper>
-                <ItemText>
+                <ItemText $verified={item.verified}>
                   <h4>{item.title}</h4>
                   <p>{item.description}</p>
                 </ItemText>
