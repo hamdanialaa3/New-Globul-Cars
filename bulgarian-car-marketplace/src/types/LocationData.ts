@@ -31,25 +31,12 @@ export interface LocationData {
 }
 
 /**
- * Legacy Location Fields (for backward compatibility)
- * حقول الموقع القديمة (للتوافق مع النظام القديم)
- * 
- * These fields are kept for backward compatibility
- * but should not be used in new code.
- */
-interface LegacyLocationFields {
-  location?: string;  // @deprecated Use locationData.cityId instead
-  city: string;       // @deprecated Use locationData.cityId instead
-  region: string;     // @deprecated Use locationData.region instead
-}
-
-/**
  * Complete Location Interface
  * الواجهة الكاملة للموقع
  * 
- * Combines new unified structure with legacy fields
+ * Uses only the unified location structure
  */
-interface CompleteLocation extends LegacyLocationFields {
+export interface CompleteLocation {
   locationData: LocationData;
 }
 
@@ -185,4 +172,3 @@ export function isWithinRadius(
  * Export all types
  */
 export default LocationData;
-export type { LegacyLocationFields, CompleteLocation };

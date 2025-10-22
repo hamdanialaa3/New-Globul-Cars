@@ -9,6 +9,7 @@ import { AuthProvider } from './contexts/AuthProvider';
 import { ProfileTypeProvider } from './contexts/ProfileTypeContext';  // NEW: Profile Type System
 import { ToastProvider } from './components/Toast';
 import { bulgarianTheme, GlobalStyles } from './styles/theme';
+import './styles/mobile-responsive.css';
 import ErrorBoundary from './components/ErrorBoundary';
 import { SkipNavigation } from './components/Accessibility';
 import Header from './components/Header/Header';

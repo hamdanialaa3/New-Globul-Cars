@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '../../../hooks/useTranslation';
 import { useAuth } from '../../../hooks/useAuth';
 import { SocialAuthService } from '../../../firebase/social-auth-service';
-import { FirebaseDebug } from '../../../utils/firebase-debug';
 import { LoginFormData, LoginState, LoginActions, UseLoginReturn } from '../types';
 
 export const useLogin = (): UseLoginReturn => {
@@ -36,12 +35,6 @@ export const useLogin = (): UseLoginReturn => {
   useEffect(() => {
     if (user) {
       navigate('/dashboard');
-    }
-
-    // Run Firebase debug on development
-    if (process.env.NODE_ENV === 'development') {
-      console.log('Running Firebase Debug...');
-      FirebaseDebug.runDiagnostic();
     }
   }, [user, navigate]);
 

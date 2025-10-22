@@ -37,7 +37,6 @@ class CarListingService {
       });
       return docRef.id;
     } catch (error) {
-      console.error('[SERVICE] Error creating car listing:', error);
       throw new Error('Failed to create car listing');
     }
   }
