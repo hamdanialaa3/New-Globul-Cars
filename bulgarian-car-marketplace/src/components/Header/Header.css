@@ -1284,45 +1284,64 @@
     border: 2px solid #FFDF00 !important;
   }
 
-  /* ═══ ROW 2: ACTION ICONS (Below Header) ═══ */
+  /* ═══ ROW 2: ACTION ICONS (2 Rows on Mobile) ═══ */
   .header-nav {
-    padding: 6px 0;
-    background: rgba(0, 0, 0, 0.8);
+    padding: 8px 0;
+    background: rgba(0, 0, 0, 0.9);
   }
 
   .nav-container {
-    padding: 0 10px;
+    padding: 0 8px;
   }
 
   .central-actions {
     display: flex !important;
-    justify-content: space-evenly;
+    flex-wrap: wrap; /* ✅ Allow wrapping to 2 rows */
+    justify-content: center;
     align-items: center;
-    gap: 4px;
+    gap: 6px;
     width: 100%;
-    padding: 6px 0;
+    padding: 4px 0;
   }
 
   .action-bar-button {
-    flex: 1;
-    max-width: 60px;
-    padding: 8px;
-    min-width: 44px;
+    /* ✅ Fixed width for consistent 2-row layout */
+    width: calc((100% - 30px) / 4); /* 4 buttons per row with gaps */
+    max-width: 85px;
+    padding: 10px 6px;
+    min-width: 70px;
     min-height: 44px;
-    border-radius: 10px;
+    border-radius: 12px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2px;
+    justify-content: center;
+    gap: 4px;
+    background: rgba(255, 255, 255, 0.05);
+    transition: all 0.2s ease;
+  }
+
+  .action-bar-button:hover,
+  .action-bar-button:active {
+    background: rgba(255, 223, 0, 0.15);
+    transform: scale(1.05);
   }
 
   .action-bar-button svg {
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
   }
 
   .action-bar-button span {
-    display: none !important;
+    display: block !important; /* ✅ Show text labels */
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    color: rgba(255, 255, 255, 0.9);
   }
 
   /* ═══ HIDE DESKTOP ELEMENTS ═══ */
