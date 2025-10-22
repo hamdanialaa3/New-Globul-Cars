@@ -139,7 +139,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
 
     const unsubscribe = messagingService.subscribeToConversations(
       currentUser.uid,
-      (updatedConversations) => {
+      (updatedConversations: ConversationWithUser[]) => {
         setConversations(updatedConversations);
         setLoading(false);
       }
