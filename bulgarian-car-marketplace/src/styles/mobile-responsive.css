@@ -4,6 +4,33 @@
    ═══════════════════════════════════════════════════════════════════ */
 
 /* ═══════════════════════════════════════════════════════════════════
+   HEADER VISIBILITY CONTROL - Desktop vs Mobile
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ✅ Desktop (>768px): Show desktop header ONLY */
+.desktop-header-only {
+  display: block;
+}
+
+/* ✅ Mobile (≤768px): Show mobile header ONLY */
+@media (max-width: 768px) {
+  /* Hide desktop header */
+  .desktop-header-only {
+    display: none !important;
+  }
+  
+  /* Show mobile header */
+  .mobile-header-fixed {
+    display: block !important;
+  }
+  
+  /* Adjust body/main content for fixed mobile header */
+  body {
+    padding-top: 60px; /* Height of mobile header */
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
    TABLET OPTIMIZATION (769px - 1024px)
    ═══════════════════════════════════════════════════════════════════ */
 
