@@ -77,10 +77,14 @@ class PostsFeedService {
   
   private async getFollowingIds(userId: string): Promise<string[]> {
     try {
+      // ✅ FIX: Use follows collection instead of subcollection
       const followingSnapshot = await getDocs(
-        collection(db, 'users', userId, 'following')
+        query(
+          collection(db, 'follows'),
+          where('followerId', '==', userId)
+        )
       );
-      return followingSnapshot.docs.map(doc => doc.id);
+      return followingSnapshot.docs.map(doc => doc.data().followingId || doc.id);
     } catch (error) {
       console.error('Error getting following:', error);
       return [];
