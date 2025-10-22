@@ -136,12 +136,16 @@
   bottom: 0;
   background: rgba(0, 0, 0, 0);
   z-index: 1100;
+  opacity: 0;
+  visibility: hidden; /* ✅ FIX: Hidden by default */
   pointer-events: none;
-  transition: background 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .mobile-menu-overlay.active {
   background: rgba(0, 0, 0, 0.7);
+  opacity: 1; /* ✅ FIX: Visible when active */
+  visibility: visible; /* ✅ FIX: Show overlay */
   pointer-events: auto;
 }
 
@@ -149,20 +153,22 @@
 .mobile-menu-drawer {
   position: fixed;
   top: 0;
-  left: -320px; /* Hidden by default */
+  left: 0; /* ✅ FIX: Always at left position */
   width: 320px;
   max-width: 85vw;
   height: 100%;
   background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1e 100%);
   box-shadow: 4px 0 24px rgba(0, 0, 0, 0.5);
   overflow-y: auto;
-  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateX(-100%); /* ✅ FIX: Hidden by transform */
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   flex-direction: column;
+  z-index: 1101; /* ✅ Above overlay */
 }
 
 .mobile-menu-drawer.active {
-  left: 0; /* Slide in */
+  transform: translateX(0); /* ✅ FIX: Slide in by transform */
 }
 
 /* ═══ MENU HEADER ═══ */
