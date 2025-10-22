@@ -1172,195 +1172,22 @@
     z-index: 1000;
   }
 
-  /* ═══ ROW 1: MENU + LOGO + USER ═══ */
-  .header-top {
-    padding: 6px 0;
-  }
-
-  .header-container {
-    display: flex;
-    align-items: center;
-    padding: 0 10px;
-    gap: 8px;
-    min-height: 56px;
-  }
-
-  /* 1. Menu Toggle (Far Left) */
-  .menu-toggle {
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-    padding: 10px;
-    min-width: 44px;
-    min-height: 44px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    order: 1;
-  }
-
-  .menu-toggle svg {
-    width: 22px;
-    height: 22px;
-    color: #FFDF00;
-  }
-
-  /* 2. Logo (After Menu) */
-  .logo-section {
-    order: 2;
-    flex: 1;
-    max-width: 180px;
-  }
-
-  .logo-icon {
-    width: 40px !important;
-    height: 40px !important;
-  }
-
-  .logo-text {
-    font-size: 1rem;
-  }
-
-  /* 3. User/Auth Buttons (Far Right) */
-  .user-section {
-    order: 3;
-    display: flex !important;
-  }
-
-  .user-section-content {
-    display: flex;
-    align-items: center;
-  }
-
-  .user-button {
-    display: flex !important;
-    align-items: center;
-    gap: 4px;
-    padding: 8px 12px !important;
-    min-height: 44px !important;
-    border-radius: 10px !important;
-    font-size: 0.8rem !important;
-    background: linear-gradient(135deg, #FFDF00 0%, #FFC700 100%) !important;
-    color: #000000 !important;
-    border: 2px solid #FFDF00 !important;
-    font-weight: 700 !important;
-    white-space: nowrap !important;
-  }
-
-  .user-button svg {
-    width: 16px !important;
-    height: 16px !important;
-  }
-
-  .user-name {
-    max-width: 80px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  /* Auth buttons */
-  .auth-buttons {
-    display: flex !important;
-    gap: 6px;
-  }
-
-  .login-button,
-  .register-button {
-    padding: 8px 14px !important;
-    min-height: 44px !important;
-    font-size: 0.85rem !important;
-    border-radius: 10px !important;
-    font-weight: 700 !important;
-  }
-
-  .login-button {
-    background: transparent !important;
-    color: #FFDF00 !important;
-    border: 2px solid #FFDF00 !important;
-  }
-
-  .register-button {
-    background: linear-gradient(135deg, #FFDF00 0%, #FFC700 100%) !important;
-    color: #000000 !important;
-    border: 2px solid #FFDF00 !important;
-  }
-
-  /* ═══ ROW 2: ACTION ICONS (2 Rows on Mobile) ═══ */
-  .header-nav {
-    padding: 8px 0;
-    background: rgba(0, 0, 0, 0.9);
-  }
-
-  .nav-container {
-    padding: 0 8px;
-  }
-
-  .central-actions {
-    display: flex !important;
-    flex-wrap: wrap; /* ✅ Allow wrapping to 2 rows */
-    justify-content: center;
-    align-items: center;
-    gap: 6px;
-    width: 100%;
-    padding: 4px 0;
-  }
-
+  /* ✅ HIDE ALL DESKTOP HEADER ELEMENTS */
+  .header-top,
+  .header-container,
+  .header-nav,
+  .nav-container,
+  .logo-section,
+  .central-actions,
+  .header-actions,
+  .user-section,
+  .auth-buttons,
+  .menu-toggle,
   .action-bar-button {
-    /* ✅ Fixed width for consistent 2-row layout */
-    width: calc((100% - 30px) / 4); /* 4 buttons per row with gaps */
-    max-width: 85px;
-    padding: 10px 6px;
-    min-width: 70px;
-    min-height: 44px;
-    border-radius: 12px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    background: rgba(255, 255, 255, 0.05);
-    transition: all 0.2s ease;
+    display: none !important; /* ✅ Hide everything from desktop header */
   }
 
-  .action-bar-button:hover,
-  .action-bar-button:active {
-    background: rgba(255, 223, 0, 0.15);
-    transform: scale(1.05);
-  }
-
-  .action-bar-button svg {
-    width: 22px;
-    height: 22px;
-  }
-
-  .action-bar-button span {
-    display: block !important; /* ✅ Show text labels */
-    font-size: 0.65rem;
-    font-weight: 600;
-    text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 100%;
-    color: rgba(255, 255, 255, 0.9);
-  }
-
-  /* ═══ HIDE DESKTOP ELEMENTS ═══ */
-  .search-section {
-    display: none !important;
-  }
-
-  .header-actions {
-    display: none !important;
-  }
-
-  .quick-actions {
-    display: none !important;
-  }
-
-  /* Nav links hidden on mobile */
-  .nav-links {
-    display: none !important;
-  }
+  /* ✅ ALL DESKTOP ELEMENTS HIDDEN - MobileHeader takes over */
 
   /* Mobile menu styling - FULL SCREEN */
   .mobile-menu {
