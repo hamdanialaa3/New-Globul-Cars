@@ -352,7 +352,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
         type: 'text',
         status: 'sent',
         isRead: false
-      });
+      } as Omit<Message, 'id' | 'createdAt' | 'updatedAt'>);
 
       setNewMessage('');
       setIsTyping(false);

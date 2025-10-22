@@ -301,7 +301,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
         content,
         messageType: 'text',
         isRead: false
-      });
+      } as Omit<Message, 'id' | 'createdAt' | 'updatedAt'>);
     } catch (error) {
       console.error('Failed to send message:', error);
     }
