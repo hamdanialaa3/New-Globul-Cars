@@ -1159,7 +1159,10 @@
   }
 }
 
-/* Mobile (max-width: 768px) - OPTIMIZED FOR PHONES */
+/* ═══════════════════════════════════════════════════════════════════
+   MOBILE REDESIGN - CLEAN & ORGANIZED
+   ═══════════════════════════════════════════════════════════════════ */
+
 @media (max-width: 768px) {
   .mobile-de-header {
     position: fixed;
@@ -1169,15 +1172,44 @@
     z-index: 1000;
   }
 
-  .header-container {
-    padding: 0 10px;
-    gap: 6px;
-    min-height: 65px;
+  /* ═══ HEADER TOP ROW ═══ */
+  .header-top {
+    padding: 8px 0;
   }
 
+  .header-container {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    grid-template-areas: "menu logo actions user";
+    align-items: center;
+    padding: 0 12px;
+    gap: 10px;
+    min-height: 60px;
+  }
+
+  /* ═══ 1. MENU TOGGLE (Far Left) ═══ */
+  .menu-toggle {
+    grid-area: menu;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    min-width: 44px;
+    min-height: 44px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+  }
+
+  .menu-toggle svg {
+    width: 24px;
+    height: 24px;
+    color: #FFDF00;
+  }
+
+  /* ═══ 2. LOGO (After Menu) ═══ */
   .logo-section {
+    grid-area: logo;
     flex: 0 0 auto;
-    margin-right: 8px;
   }
 
   .logo-icon {
@@ -1189,13 +1221,13 @@
     font-size: 1.05rem;
   }
 
-  /* Central actions - MOVED TO RIGHT, proper spacing */
+  /* ═══ 3. ACTION BUTTONS (Center-Right) ═══ */
   .central-actions {
-    gap: 6px;
-    margin-left: auto;
-    flex-wrap: nowrap;
-    display: flex;
+    grid-area: actions;
+    display: flex !important;
     align-items: center;
+    gap: 4px;
+    justify-content: flex-end;
   }
 
   .action-bar-button {
@@ -1210,49 +1242,33 @@
     height: 20px;
   }
 
-  /* Hide text in buttons, show only icons */
   .action-bar-button span {
     display: none !important;
   }
 
-  /* Search section hidden on mobile */
-  .search-section {
-    display: none;
-  }
-
-  /* Header actions */
-  .header-actions {
-    gap: 6px;
-  }
-
-  /* Quick actions hidden on mobile */
-  .quick-actions {
-    display: none;
-  }
-
-  /* User section - SHOW ON MOBILE */
+  /* ═══ 4. USER/AUTH BUTTONS (Far Right) ═══ */
   .user-section {
+    grid-area: user;
     display: flex !important;
-    order: 10;
   }
 
   .user-section-content {
     display: flex;
     align-items: center;
-    gap: 8px;
   }
 
   .user-button {
     display: flex !important;
     align-items: center;
     gap: 6px;
-    padding: 8px 12px !important;
+    padding: 8px 14px !important;
     min-height: 44px !important;
     border-radius: 10px !important;
-    font-size: 0.9rem !important;
+    font-size: 0.85rem !important;
     background: linear-gradient(135deg, #FFDF00 0%, #FFC700 100%) !important;
     color: #000000 !important;
-    border: 2px solid rgba(255, 223, 0, 0.5) !important;
+    border: 2px solid #FFDF00 !important;
+    font-weight: 600 !important;
   }
 
   .user-button svg {
@@ -1260,18 +1276,20 @@
     height: 18px !important;
   }
 
-  /* Auth buttons - SHOW ON MOBILE */
+  /* Auth buttons */
   .auth-buttons {
     display: flex !important;
-    gap: 6px;
+    gap: 4px;
   }
 
   .login-button,
   .register-button {
-    padding: 8px 14px !important;
+    padding: 8px 12px !important;
     min-height: 44px !important;
-    font-size: 0.9rem !important;
+    font-size: 0.85rem !important;
     border-radius: 10px !important;
+    font-weight: 600 !important;
+    white-space: nowrap !important;
   }
 
   .login-button {
@@ -1286,21 +1304,17 @@
     border: 2px solid #FFDF00 !important;
   }
 
-  /* Menu toggle visible */
-  .menu-toggle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px;
-    min-width: 44px;
-    min-height: 44px;
-    order: -1;
-    margin-right: 6px;
+  /* ═══ HIDE DESKTOP ELEMENTS ═══ */
+  .search-section {
+    display: none;
   }
 
-  .menu-toggle svg {
-    width: 22px;
-    height: 22px;
+  .header-actions {
+    display: none;
+  }
+
+  .quick-actions {
+    display: none;
   }
 
   /* Nav links hidden on mobile */
