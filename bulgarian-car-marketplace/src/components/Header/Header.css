@@ -1160,7 +1160,7 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   MOBILE REDESIGN - CLEAN & ORGANIZED
+   MOBILE REDESIGN - SIMPLE & CLEAN (2 ROWS)
    ═══════════════════════════════════════════════════════════════════ */
 
 @media (max-width: 768px) {
@@ -1172,24 +1172,21 @@
     z-index: 1000;
   }
 
-  /* ═══ HEADER TOP ROW ═══ */
+  /* ═══ ROW 1: MENU + LOGO + USER ═══ */
   .header-top {
-    padding: 8px 0;
+    padding: 6px 0;
   }
 
   .header-container {
-    display: grid;
-    grid-template-columns: auto 1fr auto auto;
-    grid-template-areas: "menu logo actions user";
+    display: flex;
     align-items: center;
-    padding: 0 12px;
-    gap: 10px;
-    min-height: 60px;
+    padding: 0 10px;
+    gap: 8px;
+    min-height: 56px;
   }
 
-  /* ═══ 1. MENU TOGGLE (Far Left) ═══ */
+  /* 1. Menu Toggle (Far Left) */
   .menu-toggle {
-    grid-area: menu;
     display: flex !important;
     align-items: center;
     justify-content: center;
@@ -1198,57 +1195,34 @@
     min-height: 44px;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
+    order: 1;
   }
 
   .menu-toggle svg {
-    width: 24px;
-    height: 24px;
+    width: 22px;
+    height: 22px;
     color: #FFDF00;
   }
 
-  /* ═══ 2. LOGO (After Menu) ═══ */
+  /* 2. Logo (After Menu) */
   .logo-section {
-    grid-area: logo;
-    flex: 0 0 auto;
+    order: 2;
+    flex: 1;
+    max-width: 180px;
   }
 
   .logo-icon {
-    width: 45px !important;
-    height: 45px !important;
+    width: 40px !important;
+    height: 40px !important;
   }
 
   .logo-text {
-    font-size: 1.05rem;
+    font-size: 1rem;
   }
 
-  /* ═══ 3. ACTION BUTTONS (Center-Right) ═══ */
-  .central-actions {
-    grid-area: actions;
-    display: flex !important;
-    align-items: center;
-    gap: 4px;
-    justify-content: flex-end;
-  }
-
-  .action-bar-button {
-    padding: 10px;
-    min-width: 44px;
-    min-height: 44px;
-    border-radius: 10px;
-  }
-
-  .action-bar-button svg {
-    width: 20px;
-    height: 20px;
-  }
-
-  .action-bar-button span {
-    display: none !important;
-  }
-
-  /* ═══ 4. USER/AUTH BUTTONS (Far Right) ═══ */
+  /* 3. User/Auth Buttons (Far Right) */
   .user-section {
-    grid-area: user;
+    order: 3;
     display: flex !important;
   }
 
@@ -1260,36 +1234,42 @@
   .user-button {
     display: flex !important;
     align-items: center;
-    gap: 6px;
-    padding: 8px 14px !important;
+    gap: 4px;
+    padding: 8px 12px !important;
     min-height: 44px !important;
     border-radius: 10px !important;
-    font-size: 0.85rem !important;
+    font-size: 0.8rem !important;
     background: linear-gradient(135deg, #FFDF00 0%, #FFC700 100%) !important;
     color: #000000 !important;
     border: 2px solid #FFDF00 !important;
-    font-weight: 600 !important;
+    font-weight: 700 !important;
+    white-space: nowrap !important;
   }
 
   .user-button svg {
-    width: 18px !important;
-    height: 18px !important;
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  .user-name {
+    max-width: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   /* Auth buttons */
   .auth-buttons {
     display: flex !important;
-    gap: 4px;
+    gap: 6px;
   }
 
   .login-button,
   .register-button {
-    padding: 8px 12px !important;
+    padding: 8px 14px !important;
     min-height: 44px !important;
     font-size: 0.85rem !important;
     border-radius: 10px !important;
-    font-weight: 600 !important;
-    white-space: nowrap !important;
+    font-weight: 700 !important;
   }
 
   .login-button {
@@ -1304,17 +1284,58 @@
     border: 2px solid #FFDF00 !important;
   }
 
+  /* ═══ ROW 2: ACTION ICONS (Below Header) ═══ */
+  .header-nav {
+    padding: 6px 0;
+    background: rgba(0, 0, 0, 0.8);
+  }
+
+  .nav-container {
+    padding: 0 10px;
+  }
+
+  .central-actions {
+    display: flex !important;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 4px;
+    width: 100%;
+    padding: 6px 0;
+  }
+
+  .action-bar-button {
+    flex: 1;
+    max-width: 60px;
+    padding: 8px;
+    min-width: 44px;
+    min-height: 44px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .action-bar-button svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .action-bar-button span {
+    display: none !important;
+  }
+
   /* ═══ HIDE DESKTOP ELEMENTS ═══ */
   .search-section {
-    display: none;
+    display: none !important;
   }
 
   .header-actions {
-    display: none;
+    display: none !important;
   }
 
   .quick-actions {
-    display: none;
+    display: none !important;
   }
 
   /* Nav links hidden on mobile */
