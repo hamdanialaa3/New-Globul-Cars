@@ -9,7 +9,7 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 60px;
+  height: 70px; /* ✅ FIX: Increased from 60px to 70px */
   background: linear-gradient(135deg, #000000 0%, #1a1a2e 100%);
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
   z-index: 1000;
@@ -27,8 +27,8 @@
   align-items: center;
   justify-content: space-between;
   height: 100%;
-  padding: 0 12px;
-  gap: 12px;
+  padding: 0 14px; /* ✅ Slightly more padding */
+  gap: 14px;
 }
 
 /* ═══ 1. HAMBURGER MENU BUTTON ═══ */
@@ -104,14 +104,14 @@
 }
 
 .mobile-login-btn {
-  padding: 10px 20px;
-  height: 44px;
+  padding: 8px 16px; /* ✅ FIX: Reduced from 10px 20px */
+  height: 38px; /* ✅ FIX: Reduced from 44px to 38px */
   background: linear-gradient(135deg, #FFDF00 0%, #FFC700 100%);
   border: none;
-  border-radius: 22px;
+  border-radius: 19px; /* ✅ Adjusted for new height */
   color: #000000;
-  font-size: 0.9rem;
-  font-weight: 700;
+  font-size: 0.85rem; /* ✅ FIX: Reduced from 0.9rem */
+  font-weight: 600; /* ✅ FIX: Reduced from 700 */
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(255, 223, 0, 0.3);

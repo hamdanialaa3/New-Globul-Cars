@@ -20,9 +20,9 @@ const HomeContainer = styled.div`
   min-height: 100vh;
   background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
 
-  /* ✅ Mobile: Add space below fixed header (2 rows) */
+  /* ✅ Mobile: Add space below fixed header */
   @media (max-width: 768px) {
-    padding-top: 140px; /* Header Row 1 (56px) + Row 2 (68px) + Spacing (16px) */
+    padding-top: 90px; /* ✅ Mobile Header (70px) + Spacing (20px) */
   }
 `;
 
