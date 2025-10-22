@@ -13,6 +13,7 @@ import './styles/mobile-responsive.css';
 import ErrorBoundary from './components/ErrorBoundary';
 import { SkipNavigation } from './components/Accessibility';
 import Header from './components/Header/Header';
+import MobileHeader from './components/Header/MobileHeader'; // ✅ NEW: Mobile-only header
 import Footer from './components/Footer/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
@@ -114,7 +115,12 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       background: '#f8fafc'
     }}>
       <header role="banner">
-        <Header />
+        {/* ✅ Desktop Header - Hidden on mobile */}
+        <div className="desktop-header-only">
+          <Header />
+        </div>
+        {/* ✅ Mobile Header - Visible only on mobile */}
+        <MobileHeader />
       </header>
       <main
         id="main-content"
