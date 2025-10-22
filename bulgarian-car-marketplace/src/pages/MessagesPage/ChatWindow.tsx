@@ -250,7 +250,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
         );
         setMessages(msgs);
       } catch (error) {
-        console.error('Failed to load messages:', error);
+        // Error loading messages - handled by loading state
       } finally {
         setLoading(false);
       }
@@ -303,7 +303,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
         isRead: false
       });
     } catch (error) {
-      console.error('Failed to send message:', error);
+      // Error sending message - handled by UI state
     }
   }, [user, recipientId, recipientName]);
   

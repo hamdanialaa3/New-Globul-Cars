@@ -370,6 +370,22 @@ service cloud.firestore {
       allow delete: if false;
     }
     
+    // TYPING INDICATORS COLLECTION
+    match /typing/{indicatorId} {
+      // Read: Receiver can see typing indicators
+      allow read: if isSignedIn() && 
+                     resource.data.receiverId == request.auth.uid;
+      // Create: Sender can create typing indicator
+      allow create: if isSignedIn() && 
+                       request.resource.data.userId == request.auth.uid;
+      // Update: User can update their own typing status
+      allow update: if isSignedIn() && 
+                       resource.data.userId == request.auth.uid;
+      // Delete: Auto-cleanup or user can delete own
+      allow delete: if isSignedIn() && 
+                       resource.data.userId == request.auth.uid;
+    }
+    
     // STORIES COLLECTION
     match /stories/{storyId} {
       allow read: if isSignedIn();
