@@ -28,15 +28,10 @@ import './MobileHeader.css';
 
 const MobileHeader: React.FC = () => {
   const { user, logout } = useAuth();
-  const { language, setLanguage, t } = useLanguage();
+  const { language, toggleLanguage, t } = useLanguage(); // ✅ FIX: Now toggleLanguage exists in context
   const navigate = useNavigate();
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  // ✅ Toggle language function
-  const toggleLanguage = () => {
-    setLanguage(language === 'bg' ? 'en' : 'bg');
-  };
 
   // Close menu on route change
   useEffect(() => {

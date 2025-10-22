@@ -7,6 +7,7 @@ export type Language = 'bg' | 'en';
 interface LanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
+  toggleLanguage: () => void; // ✅ FIX: Added toggleLanguage
   t: (key: string) => string;
 }
 
@@ -74,6 +75,12 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
     console.log(`🌐 Language changed to: ${lang.toUpperCase()}`);
   };
 
+  // ✅ FIX: Toggle language function
+  const toggleLanguage = () => {
+    const newLang: Language = language === 'bg' ? 'en' : 'bg';
+    setLanguage(newLang);
+  };
+
   // Effect to set initial document language
   useEffect(() => {
     document.documentElement.lang = language === 'bg' ? 'bg-BG' : 'en-US';
@@ -83,6 +90,7 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
   const value: LanguageContextType = {
     language,
     setLanguage,
+    toggleLanguage, // ✅ FIX: Added to context value
     t
   };
 
