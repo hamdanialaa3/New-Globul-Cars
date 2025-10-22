@@ -1069,28 +1069,61 @@ export const LeafletBulgariaMap: React.FC<LeafletBulgariaMapProps> = ({
     fetchRealCarCounts();
   }, []);
 
+  // ✅ FIX 1: Initialize map ONCE on mount
   useEffect(() => {
     if (!mapRef.current || mapInstance.current) return;
 
-    // Initialize map - Fixed on Bulgaria
-    mapInstance.current = L.map(mapRef.current, {
-      center: [42.7, 25.4], // Center of Bulgaria
-      zoom: 7,
-      zoomControl: false, // Disable zoom controls
-      attributionControl: false,
-      dragging: false, // Disable dragging
-      doubleClickZoom: false, // Disable double click zoom
-      scrollWheelZoom: false, // Disable scroll zoom
-      boxZoom: false, // Disable box zoom
-      keyboard: false, // Disable keyboard navigation
-      touchZoom: false, // Disable touch zoom
-    });
+    try {
+      // Initialize map - Fixed on Bulgaria
+      mapInstance.current = L.map(mapRef.current, {
+        center: [42.7, 25.4], // Center of Bulgaria
+        zoom: 7,
+        zoomControl: false, // Disable zoom controls
+        attributionControl: false,
+        dragging: false, // Disable dragging
+        doubleClickZoom: false, // Disable double click zoom
+        scrollWheelZoom: false, // Disable scroll zoom
+        boxZoom: false, // Disable box zoom
+        keyboard: false, // Disable keyboard navigation
+        touchZoom: false, // Disable touch zoom
+      });
 
-    // Add tile layer
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors',
-      maxZoom: 18,
-    }).addTo(mapInstance.current);
+      // Add tile layer
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors',
+        maxZoom: 18,
+      }).addTo(mapInstance.current);
+    } catch (error) {
+      console.error('Error initializing map:', error);
+    }
+
+    // Cleanup: Remove map on unmount
+    return () => {
+      if (mapInstance.current) {
+        try {
+          mapInstance.current.remove();
+          mapInstance.current = null;
+          geoJsonLayer.current = null;
+        } catch (error) {
+          console.error('Error removing map:', error);
+        }
+      }
+    };
+  }, []); // ✅ Empty dependencies - create ONCE
+
+  // ✅ FIX 2: Update map data when carCounts or language changes
+  useEffect(() => {
+    if (!mapInstance.current || !mapRef.current) return;
+
+    // Remove old GeoJSON layer if exists
+    if (geoJsonLayer.current) {
+      try {
+        mapInstance.current.removeLayer(geoJsonLayer.current);
+        geoJsonLayer.current = null;
+      } catch (error) {
+        console.error('Error removing old layer:', error);
+      }
+    }
 
     // Style function for regions - No internal borders, only outer Bulgaria border
     const getStyle = (feature: any, isHovered: boolean = false) => {
@@ -1190,17 +1223,14 @@ export const LeafletBulgariaMap: React.FC<LeafletBulgariaMapProps> = ({
     }).addTo(mapInstance.current);
 
     // Fit map to bounds
-    if (geoJsonLayer.current) {
-      mapInstance.current.fitBounds(geoJsonLayer.current.getBounds(), { padding: [20, 20] });
-    }
-
-    return () => {
-      if (mapInstance.current) {
-        mapInstance.current.remove();
-        mapInstance.current = null;
+    if (geoJsonLayer.current && mapInstance.current) {
+      try {
+        mapInstance.current.fitBounds(geoJsonLayer.current.getBounds(), { padding: [20, 20] });
+      } catch (error) {
+        console.error('Error fitting bounds:', error);
       }
-    };
-  }, [carCounts, language, onCityClick, navigate]);
+    }
+  }, [carCounts, language, onCityClick, navigate]); // ✅ Update data only, don't recreate map
 
 
   const handleCloseSidebar = () => {
