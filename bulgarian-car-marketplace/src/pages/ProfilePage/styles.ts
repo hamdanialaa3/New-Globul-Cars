@@ -36,6 +36,11 @@ const baseButtonStyles = css`
   transition: all 0.3s ease;
   text-decoration: none;
   white-space: nowrap;
+  position: relative;
+  z-index: 1;
+  pointer-events: auto;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 
   &:disabled {
     opacity: 0.6;
@@ -44,6 +49,7 @@ const baseButtonStyles = css`
 
   svg {
     transition: transform 0.3s ease;
+    pointer-events: none;
   }
 
   &:hover:not(:disabled) {
@@ -53,6 +59,11 @@ const baseButtonStyles = css`
     svg {
       transform: scale(1.1);
     }
+  }
+  
+  &:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   }
 `;
 
@@ -230,6 +241,9 @@ export const ProfileActions = styled.div`
   flex-direction: column;
   gap: 0.75rem;
   width: 100%;
+  position: relative;
+  z-index: 1;
+  pointer-events: auto;
 `;
 
 export const ContentSection = styled.section<{ $themeColor?: string; $isBusinessMode?: boolean }>`
