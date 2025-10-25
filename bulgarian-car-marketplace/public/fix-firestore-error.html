@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🔧 إصلاح خطأ Firestore</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+    h1 {
+      color: #667eea;
+      font-size: 2rem;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .error-box {
+      background: #fee;
+      border: 2px solid #f00;
+      border-radius: 10px;
+      padding: 20px;
+      margin: 20px 0;
+      direction: ltr;
+      text-align: left;
+    }
+    .error-box h3 {
+      color: #c00;
+      margin-bottom: 10px;
+    }
+    .error-box code {
+      background: #fdd;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+    .solution-box {
+      background: #efe;
+      border: 2px solid #0a0;
+      border-radius: 10px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+    .solution-box h3 {
+      color: #060;
+      margin-bottom: 10px;
+    }
+    .steps {
+      list-style: arabic-indic;
+      padding-right: 30px;
+      line-height: 2;
+    }
+    button {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      margin: 10px 0;
+      transition: all 0.3s;
+    }
+    button:hover {
+      background: #5a67d8;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+    }
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    .status {
+      background: #f7fafc;
+      border-radius: 10px;
+      padding: 20px;
+      margin: 20px 0;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      max-height: 300px;
+      overflow-y: auto;
+      direction: ltr;
+      text-align: left;
+    }
+    .status div {
+      padding: 5px 0;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .success { color: #0a0; font-weight: bold; }
+    .error { color: #c00; }
+    .info { color: #00a; }
+    .warning { color: #f80; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔧 إصلاح خطأ Firestore</h1>
+    
+    <div class="error-box">
+      <h3>❌ الخطأ الحالي:</h3>
+      <code>Cannot use 'in' operator to search for 'nullValue' in null</code>
+      <p style="margin-top: 10px; color: #666;">
+        هذا الخطأ يحدث عندما يحاول Firestore query البحث عن <code>null</code> value
+      </p>
+    </div>
+
+    <div class="solution-box">
+      <h3>✅ الحل:</h3>
+      <p><strong>السبب:</strong> المتصفح يستخدم JavaScript القديم من الـ cache</p>
+      <p><strong>الإصلاح:</strong> تم في الكود، لكن يجب تحديث المتصفح</p>
+    </div>
+
+    <h2 style="color: #333; margin: 30px 0 15px; text-align: center;">🔥 تنظيف شامل (3 خطوات فقط)</h2>
+
+    <div class="status" id="status">
+      <div class="info">⏳ جاهز للبدء...</div>
+    </div>
+
+    <button onclick="step1()">الخطوة 1️⃣: مسح Service Workers</button>
+    <button onclick="step2()" id="btn2" disabled>الخطوة 2️⃣: مسح جميع Caches</button>
+    <button onclick="step3()" id="btn3" disabled>الخطوة 3️⃣: Reload الصفحة</button>
+
+    <div style="margin-top: 30px; padding: 20px; background: #f7fafc; border-radius: 10px;">
+      <h3 style="color: #333; margin-bottom: 15px;">📋 البدائل:</h3>
+      <a href="https://mobilebg.eu/profile" style="display: block; padding: 15px; margin: 10px 0; background: #667eea; color: white; text-decoration: none; border-radius: 10px; text-align: center; font-weight: 600;">
+        🌐 استخدم Production (يعمل 100%)
+      </a>
+      <p style="color: #666; text-align: center; margin-top: 10px; font-size: 0.9rem;">
+        Production لا يحتوي على هذا الخطأ - تم إصلاحه ونشره
+      </p>
+    </div>
+  </div>
+
+  <script>
+    const statusDiv = document.getElementById('status');
+    const btn2 = document.getElementById('btn2');
+    const btn3 = document.getElementById('btn3');
+    
+    function log(message, type = 'info') {
+      const div = document.createElement('div');
+      div.className = type;
+      div.textContent = message;
+      statusDiv.appendChild(div);
+      statusDiv.scrollTop = statusDiv.scrollHeight;
+    }
+    
+    async function step1() {
+      statusDiv.innerHTML = '';
+      log('🚀 الخطوة 1: مسح Service Workers...', 'info');
+      
+      try {
+        if ('serviceWorker' in navigator) {
+          const registrations = await navigator.serviceWorker.getRegistrations();
+          
+          if (registrations.length === 0) {
+            log('ℹ️  لا توجد Service Workers - هذا جيد!', 'success');
+          } else {
+            for (const registration of registrations) {
+              await registration.unregister();
+              log(`✅ تم حذف: ${registration.scope}`, 'success');
+            }
+          }
+          
+          log('', 'info');
+          log('✅ الخطوة 1 مكتملة!', 'success');
+          log('➡️  اضغط الخطوة 2', 'info');
+          btn2.disabled = false;
+        } else {
+          log('ℹ️  Service Workers غير مدعومة في هذا المتصفح', 'warning');
+          btn2.disabled = false;
+        }
+      } catch (error) {
+        log(`❌ خطأ: ${error.message}`, 'error');
+      }
+    }
+    
+    async function step2() {
+      log('', 'info');
+      log('🚀 الخطوة 2: مسح جميع Caches...', 'info');
+      
+      try {
+        if ('caches' in window) {
+          const cacheNames = await caches.keys();
+          
+          if (cacheNames.length === 0) {
+            log('ℹ️  لا توجد Caches - هذا جيد!', 'success');
+          } else {
+            log(`🗑️  وجدت ${cacheNames.length} cache...`, 'info');
+            for (const cacheName of cacheNames) {
+              await caches.delete(cacheName);
+              log(`✅ تم حذف: ${cacheName}`, 'success');
+            }
+          }
+          
+          // Clear localStorage
+          log('', 'info');
+          log('🗑️  مسح localStorage...', 'info');
+          const lsCount = localStorage.length;
+          localStorage.clear();
+          log(`✅ تم مسح ${lsCount} عنصر`, 'success');
+          
+          // Clear sessionStorage
+          log('🗑️  مسح sessionStorage...', 'info');
+          const ssCount = sessionStorage.length;
+          sessionStorage.clear();
+          log(`✅ تم مسح ${ssCount} عنصر`, 'success');
+          
+          log('', 'info');
+          log('✅ الخطوة 2 مكتملة!', 'success');
+          log('➡️  اضغط الخطوة 3 للانتهاء', 'info');
+          btn3.disabled = false;
+        } else {
+          log('ℹ️  Cache API غير مدعومة', 'warning');
+          btn3.disabled = false;
+        }
+      } catch (error) {
+        log(`❌ خطأ: ${error.message}`, 'error');
+      }
+    }
+    
+    async function step3() {
+      log('', 'info');
+      log('🚀 الخطوة 3: إعادة تحميل الصفحة...', 'info');
+      log('', 'info');
+      log('✅✅✅ تم التنظيف بنجاح! ✅✅✅', 'success');
+      log('', 'info');
+      log('⏳ سيتم تحميل /profile بعد 3 ثواني...', 'info');
+      
+      setTimeout(() => {
+        window.location.href = '/profile';
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
+
