@@ -77,6 +77,17 @@ export const ProfilePageContainer = styled.div<{ $isBusinessMode?: boolean }>`
   animation: ${fadeIn} 0.5s ease-out;
   max-width: 1200px;
   margin: 0 auto;
+  
+  /* MOBILE - Clean background (Instagram/Facebook) */
+  @media (max-width: 768px) {
+    padding-top: 0;
+    padding-bottom: 80px;  /* Space for bottom nav */
+    background: #f0f2f5;  /* Instagram gray background */
+  }
+  
+  @media (max-width: 480px) {
+    padding-bottom: 70px;
+  }
 `;
 
 export const ProfileHeader = styled.header`
@@ -435,6 +446,12 @@ export const FollowButton = styled.button<{ $following: boolean }>`
 
 export const ProfileContent = styled.main`
   margin-top: 2rem;
+  
+  /* MOBILE - Full-width content */
+  @media (max-width: 768px) {
+    margin-top: 0;
+    width: 100%;
+  }
 `;
 
 export const SectionTitle = styled.h2`
@@ -444,6 +461,21 @@ export const SectionTitle = styled.h2`
   padding-bottom: 0.5rem;
   border-bottom: 2px solid ${({ theme }) => theme.colors.primary.main};
   display: inline-block;
+  
+  /* MOBILE - Smaller section titles */
+  @media (max-width: 768px) {
+    font-size: 1.125rem;  /* 18px */
+    font-weight: 700;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #FF8F10;
+    width: 100%;  /* Full-width underline */
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 1rem;  /* 16px */
+    margin-bottom: 10px;
+  }
 `;
 
 export const ProfileSidebar = styled.aside<{ $isBusinessMode: boolean; $themeColor: string }>`
@@ -459,6 +491,11 @@ export const ProfileSidebar = styled.aside<{ $isBusinessMode: boolean; $themeCol
   align-items: center;
   gap: 1rem;
   box-shadow: ${({ theme }) => theme.shadows.md};
+  
+  /* MOBILE - Hidden (content in main area) */
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
 
 export const ProfileActions = styled.div`
@@ -478,6 +515,34 @@ export const ContentSection = styled.section<{ $themeColor?: string; $isBusiness
   margin-bottom: 2rem;
   border: 1px solid ${({ theme }) => theme.colors.grey[200]};
   box-shadow: ${({ theme }) => theme.shadows.base};
+  
+  /* MOBILE - Card-based design (Airbnb/Facebook) */
+  @media (max-width: 768px) {
+    padding: 16px;
+    border-radius: 0;  /* Full-width cards */
+    margin-bottom: 8px;  /* Tight spacing between cards */
+    border: none;
+    border-top: 1px solid #e4e6eb;
+    border-bottom: 1px solid #e4e6eb;
+    box-shadow: none;
+    
+    /* First section - rounded top */
+    &:first-of-type {
+      border-radius: 0;
+      margin-top: 8px;
+    }
+    
+    /* Last section - rounded bottom */
+    &:last-of-type {
+      border-radius: 0;
+      margin-bottom: 16px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    padding: 12px;
+    margin-bottom: 6px;
+  }
 `;
 
 export const SectionHeader = styled.div`
@@ -526,12 +591,56 @@ export const SectionHeader = styled.div`
       pointer-events: none;
     }
   }
+  
+  /* MOBILE - Compact section header */
+  @media (max-width: 768px) {
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e4e6eb;
+    
+    h2 {
+      font-size: 1.125rem;  /* 18px */
+      font-weight: 700;
+    }
+    
+    .edit-btn {
+      padding: 6px 12px;
+      font-size: 0.8125rem;  /* 13px */
+      border-radius: 6px;
+      min-height: 32px;
+      
+      &:active {
+        transform: scale(0.95);
+      }
+    }
+  }
+  
+  @media (max-width: 480px) {
+    h2 {
+      font-size: 1rem;  /* 16px */
+    }
+    
+    .edit-btn {
+      padding: 6px 10px;
+      font-size: 0.75rem;  /* 12px */
+    }
+  }
 `;
 
 export const FormGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1.5rem;
+  
+  /* MOBILE - Single column forms (easier input) */
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  @media (max-width: 480px) {
+    gap: 12px;
+  }
 `;
 
 export const FormGroup = styled.div`
@@ -561,6 +670,62 @@ export const FormGroup = styled.div`
       box-shadow: 0 0 0 3px ${({ theme }) => theme.colors.primary.main}30;
     }
   }
+  
+  /* MOBILE - Touch-optimized forms (Facebook/Google best practices) */
+  @media (max-width: 768px) {
+    gap: 6px;
+    
+    label {
+      font-size: 0.875rem;  /* 14px */
+      font-weight: 600;
+    }
+    
+    input, select, textarea {
+      padding: 12px 16px;
+      font-size: 16px;  /* Prevent iOS zoom */
+      min-height: 48px;  /* Touch target */
+      border-radius: 8px;
+      border: 1px solid #dbdbdb;
+      background: white;
+      
+      /* Better touch feedback */
+      -webkit-tap-highlight-color: transparent;
+      
+      &:focus {
+        border-color: #FF8F10;
+        box-shadow: 0 0 0 2px rgba(255, 143, 16, 0.2);
+      }
+      
+      &::placeholder {
+        color: #8e8e8e;
+        font-size: 15px;
+      }
+    }
+    
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+    
+    select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 36px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    label {
+      font-size: 0.8125rem;  /* 13px */
+    }
+    
+    input, select, textarea {
+      padding: 10px 14px;
+      min-height: 46px;
+    }
+  }
 `;
 
 export const FormActions = styled.div`
@@ -568,6 +733,32 @@ export const FormActions = styled.div`
   justify-content: flex-end;
   gap: 1rem;
   margin-top: 2rem;
+  
+  /* MOBILE - Sticky bottom actions (WhatsApp/Telegram pattern) */
+  @media (max-width: 768px) {
+    position: sticky;
+    bottom: 70px;  /* Above bottom nav */
+    left: 0;
+    right: 0;
+    margin: 0 -16px;  /* Full-width */
+    padding: 12px 16px;
+    background: white;
+    border-top: 1px solid #e4e6eb;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.06);
+    z-index: 8;
+    justify-content: stretch;
+    gap: 8px;
+    
+    button {
+      flex: 1;  /* Equal width buttons */
+      margin: 0;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    bottom: 60px;
+    padding: 10px 12px;
+  }
 `;
 
 export const SaveButton = styled(ActionButton).attrs({ $variant: 'primary' })``;
@@ -609,6 +800,12 @@ export const PageContainer = styled.div`
   max-width: 1600px;
   margin: 0 auto;
   padding: 0 2rem;
+  
+  /* MOBILE - No horizontal padding (full-width) */
+  @media (max-width: 768px) {
+    padding: 0;
+    max-width: 100%;
+  }
 `;
 
 export const ProfileGrid = styled.div`
@@ -620,12 +817,42 @@ export const ProfileGrid = styled.div`
   @media (max-width: 960px) {
     grid-template-columns: 1fr;
   }
+  
+  /* MOBILE - Single column, no sidebar */
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 0;
+    
+    /* Hide sidebar on mobile */
+    > aside {
+      display: none;
+    }
+  }
 `;
 
 export const CarGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1.5rem;
+  
+  /* MOBILE - Instagram-style grid */
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);  /* 2 columns like Instagram */
+    gap: 2px;  /* Minimal gap (Instagram pattern) */
+    margin: 0 -16px;  /* Edge-to-edge */
+  }
+  
+  @media (max-width: 480px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+  }
+  
+  /* Very small screens - single column */
+  @media (max-width: 380px) {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin: 0;
+  }
 `;
 
 export const CarCard = styled.div`
@@ -640,22 +867,80 @@ export const CarCard = styled.div`
     transform: translateY(-5px);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
   }
+  
+  /* MOBILE - Compact card (Instagram gallery style) */
+  @media (max-width: 768px) {
+    border-radius: 0;
+    box-shadow: none;
+    border: none;
+    
+    /* Remove hover on mobile */
+    &:hover {
+      transform: none;
+      box-shadow: none;
+    }
+    
+    /* Touch feedback */
+    &:active {
+      opacity: 0.9;
+    }
+  }
 `;
 
 export const CarImage = styled.img`
   width: 100%;
   height: 200px;
   object-fit: cover;
+  
+  /* MOBILE - Square images (Instagram pattern) */
+  @media (max-width: 768px) {
+    height: 0;
+    padding-bottom: 100%;  /* 1:1 aspect ratio (square) */
+    position: relative;
+    
+    /* Make image fill square */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
 `;
 
 export const CarInfo = styled.div`
   padding: 1rem;
+  
+  /* MOBILE - Minimal info (Instagram pattern) */
+  @media (max-width: 768px) {
+    padding: 8px;
+    position: relative;
+  }
+  
+  @media (max-width: 480px) {
+    padding: 6px;
+  }
 `;
 
 export const CarName = styled.h3`
   font-size: 1.2rem;
   font-weight: 600;
   margin: 0;
+  
+  /* MOBILE - Compact text */
+  @media (max-width: 768px) {
+    font-size: 0.875rem;  /* 14px */
+    font-weight: 600;
+    line-height: 1.3;
+    
+    /* Single line with ellipsis */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 0.8125rem;  /* 13px */
+  }
 `;
 
 export const CarPrice = styled.p`
@@ -663,11 +948,28 @@ export const CarPrice = styled.p`
   font-weight: 700;
   color: ${({ theme }) => theme.colors.primary.main};
   margin: 0.5rem 0;
+  
+  /* MOBILE - Prominent price */
+  @media (max-width: 768px) {
+    font-size: 0.9375rem;  /* 15px */
+    font-weight: 700;
+    margin: 4px 0 0;
+    color: #FF8F10;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 0.875rem;  /* 14px */
+  }
 `;
 
 export const CarDetails = styled.p`
   font-size: 0.9rem;
   color: ${({ theme }) => theme.colors.text.secondary};
+  
+  /* MOBILE - Hide details for compact view */
+  @media (max-width: 768px) {
+    display: none;  /* Show only in detail view */
+  }
 `;
 
 export const ProfileTypeBadge = styled.span<{ type: ProfileType }>`
