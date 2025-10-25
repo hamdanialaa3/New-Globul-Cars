@@ -21,6 +21,7 @@ export const TabNavigation = styled.div<{ $themeColor?: string }>`
   position: relative;
   border-radius: 18px;
   min-height: 70px;
+  flex-wrap: nowrap;
   
   /* 🎨 Premium Metallic Aluminum Base */
   background: linear-gradient(135deg,
@@ -55,6 +56,8 @@ export const TabNavigation = styled.div<{ $themeColor?: string }>`
   
   overflow-x: auto;
   overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
   
   /* Hide scrollbar but keep functionality */
   scrollbar-width: thin;
@@ -294,26 +297,43 @@ export const TabButton = styled.button<{ $active: boolean; $themeColor?: string 
   }
   
   @media (max-width: 768px) {
-    min-width: 100px;
-    padding: 12px 16px;
-    font-size: 0.85rem;
-    gap: 8px;
+    min-width: fit-content;
+    padding: 10px 14px;
+    font-size: 0.75rem;
+    gap: 6px;
+    white-space: nowrap;
+    flex-shrink: 0;
   
   svg {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
     }
   }
   
   @media (max-width: 480px) {
-    min-width: auto;
-    padding: 10px 12px;
-    font-size: 0.8rem;
-    gap: 6px;
+    min-width: fit-content;
+    padding: 8px 10px;
+    font-size: 0.7rem;
+    gap: 4px;
+    white-space: nowrap;
+    flex-shrink: 0;
     
     svg {
-      width: 16px;
-      height: 16px;
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+    }
+  }
+  
+  @media (max-width: 380px) {
+    padding: 6px 8px;
+    font-size: 0.65rem;
+    gap: 3px;
+    
+    svg {
+      width: 12px;
+      height: 12px;
     }
   }
 `;
