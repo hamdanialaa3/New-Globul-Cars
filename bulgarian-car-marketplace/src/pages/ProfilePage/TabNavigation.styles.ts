@@ -23,6 +23,14 @@ export const TabNavigation = styled.div<{ $themeColor?: string }>`
   min-height: 70px;
   flex-wrap: nowrap;
   
+  /* 📱 Mobile: صفين (3+3) */
+  @media (max-width: 1024px) {
+    flex-wrap: wrap;
+    min-height: auto;
+    gap: 10px;
+    padding: 14px;
+  }
+  
   /* 🎨 Premium Metallic Aluminum Base */
   background: linear-gradient(135deg,
     rgba(245, 247, 250, 0.95) 0%,
@@ -76,6 +84,12 @@ export const TabNavigation = styled.div<{ $themeColor?: string }>`
       ? `linear-gradient(90deg, ${props.$themeColor} 0%, ${props.$themeColor}CC 100%)` 
       : 'linear-gradient(90deg, #FF8F10 0%, #FFDF00 100%)'};
     border-radius: 4px;
+  }
+  
+  /* 📱 في الموبايل: إخفاء scrollbar (لأننا نستخدم صفين) */
+  @media (max-width: 1024px) {
+    overflow-x: visible;
+    overflow-y: visible;
   }
 
   /* 🎨 DYNAMIC: Animated Accent Stripe at Bottom with Theme Color */
@@ -134,6 +148,14 @@ export const TabButton = styled.button<{ $active: boolean; $themeColor?: string 
   position: relative;
   overflow: hidden;
   z-index: 2;
+  white-space: nowrap;
+  
+  /* 📱 Tablet & Mobile: 3 أزرار في كل صف */
+  @media (max-width: 1024px) {
+    flex: 0 0 calc(33.333% - 7px);
+    min-width: 0;
+    max-width: calc(33.333% - 7px);
+  }
   
   /* 🎨 DYNAMIC: ACTIVE STATE with Theme Color */
   ${({ $active, $themeColor }) => $active ? css`
@@ -296,40 +318,36 @@ export const TabButton = styled.button<{ $active: boolean; $themeColor?: string 
     transform: translateY(-2px);
   }
   
+  /* 📱 تحسينات للموبايل - الأزرار في صفين */
   @media (max-width: 768px) {
-    min-width: fit-content;
-    padding: 10px 14px;
+    padding: 10px 8px;
     font-size: 0.75rem;
-    gap: 6px;
-    white-space: nowrap;
-    flex-shrink: 0;
+    gap: 4px;
+    min-height: 44px;
   
-  svg {
-    width: 16px;
-    height: 16px;
-    flex-shrink: 0;
+    svg {
+      width: 16px;
+      height: 16px;
     }
   }
   
   @media (max-width: 480px) {
-    min-width: fit-content;
-    padding: 8px 10px;
+    padding: 8px 6px;
     font-size: 0.7rem;
-    gap: 4px;
-    white-space: nowrap;
-    flex-shrink: 0;
+    gap: 3px;
+    min-height: 40px;
     
     svg {
       width: 14px;
       height: 14px;
-      flex-shrink: 0;
     }
   }
   
   @media (max-width: 380px) {
-    padding: 6px 8px;
+    padding: 6px 4px;
     font-size: 0.65rem;
-    gap: 3px;
+    gap: 2px;
+    min-height: 36px;
     
     svg {
       width: 12px;
