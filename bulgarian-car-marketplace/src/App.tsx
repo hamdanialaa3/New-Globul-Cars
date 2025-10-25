@@ -116,6 +116,20 @@ const DealerPublicPage = React.lazy(() => import('./pages/DealerPublicPage'));  
 const InvoicesPage = React.lazy(() => import('./pages/InvoicesPage'));
 const CommissionsPage = React.lazy(() => import('./pages/CommissionsPage'));
 
+// NEW: Payment & Checkout Pages
+const CheckoutPage = React.lazy(() => import('./pages/CheckoutPage'));
+const PaymentSuccessPage = React.lazy(() => import('./pages/PaymentSuccessPage'));
+const BillingSuccessPage = React.lazy(() => import('./pages/BillingSuccessPage'));
+const BillingCanceledPage = React.lazy(() => import('./pages/BillingCanceledPage'));
+
+// NEW: Dealer Pages
+const DealerRegistrationPage = React.lazy(() => import('./pages/DealerRegistrationPage'));
+const DealerDashboardPage = React.lazy(() => import('./pages/DealerDashboardPage'));
+
+// NEW: Admin & Development Pages
+const AdminCarManagementPage = React.lazy(() => import('./pages/AdminCarManagementPage'));
+const IconShowcasePage = React.lazy(() => import('./pages/IconShowcasePage'));
+
 // Layout Component
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
@@ -263,8 +277,19 @@ const MainLayout: React.FC = () => {
       <Route path="/cars" element={<CarsPage />} />
       <Route path="/cars/:id" element={<CarDetailsPage />} />
       <Route path="/car/:id" element={<CarDetailsPage />} />
-      {/* Public Dealer Profile */}
+      
+      {/* Dealer Routes */}
       <Route path="/dealer/:slug" element={<DealerPublicPage />} />
+      <Route path="/dealer-registration" element={<DealerRegistrationPage />} />
+      <Route
+        path="/dealer-dashboard"
+        element={
+          <ProtectedRoute>
+            <DealerDashboardPage />
+          </ProtectedRoute>
+        }
+      />
+      
       {/* Unified Sell System - Mobile.de Style Only */}
       <Route path="/sell" element={<SellPage />} />
       {/* Redirect old routes to new system */}
@@ -423,6 +448,41 @@ const MainLayout: React.FC = () => {
       <Route path="/profile/*" element={<ProfileRouter />} />  {/* Profile with nested routes: /, /my-ads, /campaigns, /analytics, /settings, /consultations */}
       <Route path="/verification" element={<VerificationPage />} />  {/* NEW: Verification System */}
       <Route path="/billing" element={<BillingPage />} />  {/* NEW: Billing System */}
+      
+      {/* NEW: Payment & Checkout Routes */}
+      <Route
+        path="/checkout/:carId"
+        element={
+          <ProtectedRoute>
+            <CheckoutPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/payment-success/:transactionId"
+        element={
+          <ProtectedRoute>
+            <PaymentSuccessPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/billing/success"
+        element={
+          <ProtectedRoute>
+            <BillingSuccessPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/billing/canceled"
+        element={
+          <ProtectedRoute>
+            <BillingCanceledPage />
+          </ProtectedRoute>
+        }
+      />
+      
       <Route path="/analytics" element={<AnalyticsDashboard />} />  {/* NEW: Analytics System */}
       <Route path="/team" element={<TeamManagement />} />  {/* NEW: Team Management */}
       <Route path="/users" element={<UsersDirectoryPage />} />
@@ -445,6 +505,14 @@ const MainLayout: React.FC = () => {
           <ProtectedRoute>
             <AdminPage />
           </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin-car-management"
+        element={
+          <AdminRoute>
+            <AdminCarManagementPage />
+          </AdminRoute>
         }
       />
       <Route
@@ -518,6 +586,9 @@ const MainLayout: React.FC = () => {
 
       {/* Effects Test Page */}
       <Route path="/effects-test" element={<EffectsTest />} />
+
+      {/* Icon Showcase Page */}
+      <Route path="/icon-showcase" element={<IconShowcasePage />} />
 
       {/* N8N Integration Test Page */}
       <Route path="/n8n-test" element={<N8nTestPage />} />
