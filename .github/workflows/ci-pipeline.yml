@@ -189,24 +189,36 @@ jobs:
           fi
       
       # Upload build logs for debugging (always, even on failure)
+      # Using retention-days: 3 to save storage quota
       - name: Upload build logs
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: build-logs
+          name: build-logs-${{ github.run_number }}
           path: |
             bulgarian-car-marketplace/build.log
             bulgarian-car-marketplace/install.log
-          retention-days: 7
+          retention-days: 3
+          if-no-files-found: warn
       
       # Upload build artifacts only if build succeeded
+      # Compress to save storage quota
+      - name: Compress build artifacts
+        if: steps.build.outcome == 'success'
+        working-directory: bulgarian-car-marketplace
+        run: |
+          echo "📦 Compressing build artifacts..."
+          tar -czf build.tar.gz build/
+          ls -lh build.tar.gz
+      
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         if: steps.build.outcome == 'success'
         with:
-          name: build
-          path: bulgarian-car-marketplace/build/
+          name: build-${{ github.run_number }}
+          path: bulgarian-car-marketplace/build.tar.gz
           retention-days: 1
+          if-no-files-found: error
       
       # Fail the job if build failed
       - name: Check build status
@@ -237,8 +249,15 @@ jobs:
       - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
-          name: build
-          path: bulgarian-car-marketplace/build
+          name: build-${{ github.run_number }}
+          path: bulgarian-car-marketplace
+      
+      - name: Extract build artifacts
+        working-directory: bulgarian-car-marketplace
+        run: |
+          tar -xzf build.tar.gz
+          rm build.tar.gz
+          ls -la build/
       
       - name: Deploy to Firebase Staging
         working-directory: bulgarian-car-marketplace
@@ -268,8 +287,15 @@ jobs:
       - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
-          name: build
-          path: bulgarian-car-marketplace/build
+          name: build-${{ github.run_number }}
+          path: bulgarian-car-marketplace
+      
+      - name: Extract build artifacts
+        working-directory: bulgarian-car-marketplace
+        run: |
+          tar -xzf build.tar.gz
+          rm build.tar.gz
+          ls -la build/
       
       - name: Deploy to Firebase Production
         working-directory: bulgarian-car-marketplace
