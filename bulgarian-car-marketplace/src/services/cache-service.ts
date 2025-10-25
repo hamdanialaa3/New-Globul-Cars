@@ -2,6 +2,8 @@
 // Professional Cache Service for Bulgarian Car Marketplace
 // (Comment removed - was in Arabic)
 
+import { serviceLogger } from './logger-wrapper';
+
 export interface CacheConfig {
   ttl: number; // Time to live in milliseconds
   maxSize: number; // Maximum number of entries
@@ -428,7 +430,7 @@ export class CacheService {
       const data = this.exportData();
       localStorage.setItem(`cache_${this.config.namespace}`, JSON.stringify(data));
     } catch (error) {
-      console.warn('Failed to save cache to persistence:', error);
+      serviceLogger.warn('Failed to save cache to persistence', { namespace: this.config.namespace, error });
     }
   }
 
@@ -443,7 +445,7 @@ export class CacheService {
         this.importData(JSON.parse(data));
       }
     } catch (error) {
-      console.warn('Failed to load cache from persistence:', error);
+      serviceLogger.warn('Failed to load cache from persistence', { namespace: this.config.namespace, error });
     }
   }
 }

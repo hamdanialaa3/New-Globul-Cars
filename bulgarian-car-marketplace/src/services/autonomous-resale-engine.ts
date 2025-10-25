@@ -1,5 +1,6 @@
 import { collection, doc, setDoc, updateDoc, getDoc, query, where, getDocs, orderBy, limit, Timestamp } from 'firebase/firestore';
 import { getFirestore } from 'firebase/firestore';
+import { serviceLogger } from './logger-wrapper';
 
 export interface MarketAnalysis {
   vin: string;
@@ -170,7 +171,7 @@ export class AutonomousResaleEngine {
       return analysis;
 
     } catch (error) {
-      console.error('[SERVICE] :', error);
+      serviceLogger.error('Market analysis failed', error as Error, { vin });
       throw new Error('فشل في تحليل السوق');
     }
   }
@@ -227,7 +228,7 @@ export class AutonomousResaleEngine {
 return saleStrategy.strategyId;
 
     } catch (error) {
-      console.error('[SERVICE] :', error);
+      serviceLogger.error('Sale strategy creation failed', error as Error, { vin, userId, strategy });
       throw new Error('فشل في إنشاء استراتيجية البيع');
     }
   }
@@ -292,7 +293,7 @@ return saleStrategy.strategyId;
         await this.notifyUserOfOffer(strategy.userId, offerData, decision);
       }
 } catch (error) {
-      console.error('[SERVICE] :', error);
+      serviceLogger.error('Purchase offer processing failed', error as Error, { strategyId });
       throw new Error('فشل في معالجة عرض الشراء');
     }
   }
@@ -325,7 +326,7 @@ return saleStrategy.strategyId;
       };
 
     } catch (error) {
-      console.error('[SERVICE] :', error);
+      serviceLogger.error('Recommendation retrieval failed', error as Error, { vin });
       throw new Error('فشل في الحصول على التوصية');
     }
   }
@@ -370,7 +371,7 @@ return saleStrategy.strategyId;
       return comparables.sort((a, b) => b.similarity - a.similarity).slice(0, 5);
 
     } catch (error) {
-      console.error('[SERVICE] :', error);
+      serviceLogger.error('Market comparables search failed', error as Error);
       return [];
     }
   }
@@ -514,7 +515,7 @@ return saleStrategy.strategyId;
       return 'stable';
 
     } catch (error) {
-      console.error('[SERVICE] :', error);
+      serviceLogger.error('Market trend analysis failed', error as Error, { make, model });
       return 'stable';
     }
   }
@@ -608,7 +609,7 @@ return saleStrategy.strategyId;
       });
 
     } catch (error) {
-      console.error('[SERVICE] :', error);
+      serviceLogger.error('User notification failed', error as Error, { userId, offerId: offer.offerId });
     }
   }
 

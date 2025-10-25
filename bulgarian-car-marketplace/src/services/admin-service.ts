@@ -1,6 +1,7 @@
 // Admin Service for managing users and system permissions
 import { doc, getDoc, setDoc, updateDoc, collection, query, where, getDocs, deleteDoc } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
+import { serviceLogger } from './logger-wrapper';
 
 export interface AdminPermissions {
   userId: string;
@@ -51,7 +52,7 @@ export class AdminService {
       const adminData = adminDoc.data() as AdminPermissions;
       return adminData.isActive && (adminData.role === 'admin' || adminData.role === 'super_admin');
     } catch (error) {
-      console.error('Error checking admin status:', error);
+      serviceLogger.error('Error checking admin status', error as Error, { userId });
       return false;
     }
   }
@@ -65,7 +66,7 @@ export class AdminService {
       const adminData = adminDoc.data() as AdminPermissions;
       return adminData.isActive && adminData.role === 'super_admin';
     } catch (error) {
-      console.error('Error checking super admin status:', error);
+      serviceLogger.error('Error checking super admin status', error as Error, { userId });
       return false;
     }
   }
@@ -79,7 +80,7 @@ export class AdminService {
       const adminData = adminDoc.data() as AdminPermissions;
       return adminData.isActive && adminData.permissions.includes(permission);
     } catch (error) {
-      console.error('Error checking permission:', error);
+      serviceLogger.error('Error checking permission', error as Error, { userId, permission });
       return false;
     }
   }
@@ -111,9 +112,9 @@ export class AdminService {
         updatedAt: new Date()
       });
 
-      console.log(`✅ Admin permissions granted to user ${userId}`);
+      serviceLogger.info('Admin permissions granted to user', { userId, role, grantedBy });
     } catch (error) {
-      console.error('Error granting admin permissions:', error);
+      serviceLogger.error('Error granting admin permissions', error as Error, { userId, role, grantedBy });
       throw error;
     }
   }
@@ -134,9 +135,9 @@ export class AdminService {
         updatedAt: new Date()
       });
 
-      console.log(`✅ Admin permissions revoked from user ${userId}`);
+      serviceLogger.info('Admin permissions revoked from user', { userId, revokedBy });
     } catch (error) {
-      console.error('Error revoking admin permissions:', error);
+      serviceLogger.error('Error revoking admin permissions', error as Error, { userId, revokedBy });
       throw error;
     }
   }
@@ -177,7 +178,7 @@ export class AdminService {
       
       return adminUsers;
     } catch (error) {
-      console.error('Error getting admin users:', error);
+      serviceLogger.error('Error getting admin users', error as Error);
       throw error;
     }
   }
@@ -190,7 +191,7 @@ export class AdminService {
       
       return adminDoc.data() as AdminPermissions;
     } catch (error) {
-      console.error('Error getting user permissions:', error);
+      serviceLogger.error('Error getting user permissions', error as Error, { userId });
       return null;
     }
   }
@@ -284,10 +285,10 @@ export class AdminService {
 
       await setDoc(doc(db, 'users', adminUserId), adminUser);
       
-      console.log('✅ System admin user created:', adminUserId);
+      serviceLogger.info('System admin user created', { adminUserId, email });
       return adminUserId;
     } catch (error) {
-      console.error('Error creating system admin:', error);
+      serviceLogger.error('Error creating system admin', error as Error, { email });
       throw error;
     }
   }
@@ -330,7 +331,7 @@ export class AdminService {
 
       return stats;
     } catch (error) {
-      console.error('Error getting system stats:', error);
+      serviceLogger.error('Error getting system stats', error as Error);
       throw error;
     }
   }

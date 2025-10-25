@@ -18,6 +18,7 @@ import {
   deleteField
 } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
+import { serviceLogger } from '../logger-wrapper';
 
 // ==================== TYPES ====================
 
@@ -73,7 +74,7 @@ class PostsEngagementService {
         return true;
       }
     } catch (error) {
-      console.error('Error toggling like:', error);
+      serviceLogger.error('Error toggling like', error as Error, { postId, userId });
       throw error;
     }
   }
@@ -123,7 +124,7 @@ class PostsEngagementService {
       
       return commentRef.id;
     } catch (error) {
-      console.error('Error adding comment:', error);
+      serviceLogger.error('Error adding comment', error as Error, { postId, userId });
       throw new Error('Failed to add comment');
     }
   }
@@ -143,7 +144,7 @@ class PostsEngagementService {
         ...doc.data()
       } as PostComment));
     } catch (error) {
-      console.error('Error getting comments:', error);
+      serviceLogger.error('Error getting comments', error as Error, { postId, limitCount });
       return [];
     }
   }
@@ -154,7 +155,7 @@ class PostsEngagementService {
         'engagement.views': increment(1)
       });
     } catch (error) {
-      console.error('Error incrementing views:', error);
+      serviceLogger.error('Error incrementing views', error as Error, { postId });
     }
   }
   
@@ -172,7 +173,7 @@ class PostsEngagementService {
         createdAt: serverTimestamp()
       });
     } catch (error) {
-      console.error('Error sharing post:', error);
+      serviceLogger.error('Error sharing post', error as Error, { postId, userId });
     }
   }
   
@@ -187,7 +188,7 @@ class PostsEngagementService {
         savedAt: serverTimestamp()
       });
     } catch (error) {
-      console.error('Error saving post:', error);
+      serviceLogger.error('Error saving post', error as Error, { postId, userId });
     }
   }
   
@@ -200,7 +201,7 @@ class PostsEngagementService {
         createdAt: serverTimestamp()
       });
     } catch (error) {
-      console.error('Error sending notification:', error);
+      serviceLogger.error('Error sending notification', error as Error, { toUserId, type: data.type });
     }
   }
 }

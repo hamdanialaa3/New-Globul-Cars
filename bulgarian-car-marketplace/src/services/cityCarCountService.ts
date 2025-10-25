@@ -4,6 +4,7 @@
 import { collection, query, where, getDocs, getCountFromServer } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
 import { BULGARIAN_CITIES } from '../constants/bulgarianCities';
+import { serviceLogger } from './logger-wrapper';
 
 interface CityCount {
   count: number;
@@ -22,7 +23,7 @@ export class CityCarCountService {
     // Check cache first
     const cached = this.cache[cityId];
     if (cached && Date.now() - cached.timestamp < this.CACHE_DURATION) {
-      console.log(`✅ Cache hit for ${cityId}: ${cached.count}`);
+      serviceLogger.debug('Cache hit for city', { cityId, count: cached.count });
       return cached.count;
     }
 
@@ -45,10 +46,10 @@ export class CityCarCountService {
         timestamp: Date.now()
       };
 
-      console.log(`✅ Total cars in ${cityId}: ${count}`);
+      serviceLogger.info('Total cars in city', { cityId, count });
       return count;
     } catch (error) {
-      console.error(`❌ Error fetching count for ${cityId}:`, error);
+      serviceLogger.error('Error fetching count for city', error as Error, { cityId });
       
       // Return cached value if exists, otherwise 0
       return cached?.count || 0;
@@ -67,7 +68,7 @@ export class CityCarCountService {
         const count = await this.getCarsCountByCity(city.id);
         counts[city.id] = count;
       } catch (error) {
-        console.error(`Error for city ${city.id}:`, error);
+        serviceLogger.error('Error for city', error as Error, { cityId: city.id });
         counts[city.id] = 0;
       }
     });

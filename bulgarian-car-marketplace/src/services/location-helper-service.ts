@@ -3,6 +3,7 @@
 
 import { BULGARIAN_CITIES } from '../constants/bulgarianCities';
 import { BULGARIA_REGIONS } from '../data/bulgaria-locations';
+import { serviceLogger } from './logger-wrapper';
 
 export interface UnifiedLocation {
   cityId: string;
@@ -70,7 +71,7 @@ export class LocationHelperService {
     
     // ✅ FIXED: If city not in main list, create a custom entry
     if (!cityData) {
-      console.warn('⚠️ City not in main list, using custom entry:', input.city);
+      serviceLogger.warn('City not in main list, using custom entry', { city: input.city });
       
       // Try to find region data
       const regionInput = input.region || '';
@@ -112,7 +113,7 @@ export class LocationHelperService {
       address: input.address || input.location || ''
     };
     
-    console.log('✅ Unified location:', unified);
+    serviceLogger.debug('Unified location', { cityId: unified.cityId, regionId: unified.regionId });
     return unified;
   }
   

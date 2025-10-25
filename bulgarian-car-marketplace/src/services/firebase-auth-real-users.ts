@@ -2,6 +2,7 @@
 // This calls Cloud Functions that read from the actual Firebase Auth system
 
 import { getFunctions, httpsCallable } from 'firebase/functions';
+import { serviceLogger } from './logger-wrapper';
 
 interface AuthUser {
   uid: string;
@@ -44,7 +45,7 @@ class FirebaseAuthRealUsers {
    */
   async getRealAuthUsersCount(): Promise<number> {
     try {
-      console.log('📞 Calling Cloud Function: getAuthUsersCount (from Firebase Auth)');
+      serviceLogger.debug('Calling Cloud Function: getAuthUsersCount');
       
       const getAuthUsers = httpsCallable<{}, AuthUsersResponse>(
         this.functions, 
@@ -54,27 +55,29 @@ class FirebaseAuthRealUsers {
       const result = await getAuthUsers();
       const data = result.data;
       
-      console.log(`✅ REAL users from Firebase Auth: ${data.totalUsers}`);
-      console.log(`📊 Source: ${data.source}`);
-      console.log(`👥 Sample users:`, data.users.slice(0, 5));
+      serviceLogger.info('REAL users from Firebase Auth', { 
+        totalUsers: data.totalUsers, 
+        source: data.source,
+        sampleUsers: data.users.slice(0, 5).length
+      });
       
       return data.totalUsers;
       
     } catch (error: any) {
-      console.error('❌ Error getting real auth users:', error);
+      serviceLogger.error('Error getting real auth users', error as Error);
       
       // If function not deployed, use Firestore count instead
       if (error.code === 'functions/not-found') {
-        console.warn('⚠️ Cloud Function not deployed yet. Using Firestore as temporary fallback...');
+        serviceLogger.warn('Cloud Function not deployed - using Firestore fallback');
         try {
           const { collection, getDocs } = await import('firebase/firestore');
           const { db } = await import('../firebase/firebase-config');
           const usersSnapshot = await getDocs(collection(db, 'users'));
           const count = usersSnapshot.size;
-          console.log(`📊 Firestore users count: ${count}`);
+          serviceLogger.debug('Firestore users count', { count });
           return count;
         } catch (firestoreError) {
-          console.error('Failed to get from Firestore too:', firestoreError);
+          serviceLogger.error('Failed to get from Firestore', firestoreError as Error);
           return 0;
         }
       }
@@ -88,7 +91,7 @@ class FirebaseAuthRealUsers {
    */
   async getActiveAuthUsers(): Promise<number> {
     try {
-      console.log('📞 Calling Cloud Function: getActiveAuthUsers');
+      serviceLogger.debug('Calling Cloud Function: getActiveAuthUsers');
       
       const getActiveUsers = httpsCallable<{}, ActiveUsersResponse>(
         this.functions, 
@@ -98,12 +101,12 @@ class FirebaseAuthRealUsers {
       const result = await getActiveUsers();
       const data = result.data;
       
-      console.log(`✅ Active users (${data.period}): ${data.activeUsers}`);
+      serviceLogger.info('Active users from Firebase Auth', { activeUsers: data.activeUsers, period: data.period });
       
       return data.activeUsers;
       
     } catch (error: any) {
-      console.error('❌ Error getting active auth users:', error);
+      serviceLogger.error('Error getting active auth users', error as Error);
       
       if (error.code === 'functions/not-found') {
         return 0;
@@ -118,7 +121,7 @@ class FirebaseAuthRealUsers {
    */
   async getAuthUsersList(): Promise<AuthUser[]> {
     try {
-      console.log('📞 Getting auth users list...');
+      serviceLogger.debug('Getting auth users list from Cloud Function');
       
       const getAuthUsers = httpsCallable<{}, AuthUsersResponse>(
         this.functions, 
@@ -126,15 +129,15 @@ class FirebaseAuthRealUsers {
       );
       
       const result = await getAuthUsers();
-      console.log(`✅ Got ${result.data.users.length} users from Cloud Function`);
+      serviceLogger.info('Got users from Cloud Function', { count: result.data.users.length });
       return result.data.users;
       
     } catch (error: any) {
-      console.error('❌ Error getting auth users list:', error);
+      serviceLogger.error('Error getting auth users list', error as Error);
       
       // If Cloud Function not deployed, get from Firestore as fallback
       if (error.code === 'functions/not-found') {
-        console.warn('⚠️ Cloud Function not ready. Reading from Firestore...');
+        serviceLogger.warn('Cloud Function not ready - reading from Firestore');
         try {
           const { collection, getDocs } = await import('firebase/firestore');
           const { db } = await import('../firebase/firebase-config');
@@ -156,10 +159,10 @@ class FirebaseAuthRealUsers {
             };
           });
           
-          console.log(`✅ Got ${users.length} users from Firestore fallback`);
+          serviceLogger.info('Got users from Firestore fallback', { count: users.length });
           return users;
         } catch (firestoreError) {
-          console.error('Failed to get from Firestore:', firestoreError);
+          serviceLogger.error('Failed to get from Firestore', firestoreError as Error);
           return [];
         }
       }
@@ -174,8 +177,7 @@ class FirebaseAuthRealUsers {
    */
   async syncAuthToFirestore(): Promise<SyncResponse> {
     try {
-      console.log('📞 Calling Cloud Function: syncAuthToFirestore');
-      console.log('⏳ This may take a while for many users...');
+      serviceLogger.debug('Calling Cloud Function: syncAuthToFirestore (may take a while)');
       
       const syncUsers = httpsCallable<{}, SyncResponse>(
         this.functions, 
@@ -185,17 +187,15 @@ class FirebaseAuthRealUsers {
       const result = await syncUsers();
       const data = result.data;
       
-      console.log(`✅ ${data.message}`);
+      serviceLogger.info('Sync completed', { message: data.message });
       
       return data;
       
     } catch (error: any) {
-      console.error('❌ Error syncing users:', error);
+      serviceLogger.error('Error syncing users', error as Error);
       throw error;
     }
-  }
-  
-  /**
+  }  /**
    * Get comprehensive user analytics
    */
   async getUserAnalytics(): Promise<{
@@ -228,7 +228,7 @@ class FirebaseAuthRealUsers {
       };
       
     } catch (error) {
-      console.error('Error getting user analytics:', error);
+      serviceLogger.error('Error getting user analytics', error as Error);
       return {
         total: 0,
         active: 0,
@@ -243,4 +243,3 @@ class FirebaseAuthRealUsers {
 }
 
 export const firebaseAuthRealUsers = new FirebaseAuthRealUsers();
-

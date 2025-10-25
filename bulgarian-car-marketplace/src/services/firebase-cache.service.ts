@@ -2,6 +2,8 @@
 // Firebase Query Caching Service
 // خدمة التخزين المؤقت لـ Firebase
 
+import { serviceLogger } from './logger-wrapper';
+
 interface CacheEntry<T> {
   data: T;
   timestamp: number;
@@ -72,24 +74,24 @@ class FirebaseCacheService {
     // Check if cache is valid
     if (cached && Date.now() - cached.timestamp < duration) {
       this.hits++;
-      console.log(`✓ [Firebase Cache] HIT for "${key}" (${this.getHitRate()}% hit rate)`);
+      serviceLogger.debug('Firebase Cache HIT', { key, hitRate: this.getHitRate() });
       return cached.data as T;
     }
 
     // Cache miss - fetch new data
     this.misses++;
-    console.log(`✗ [Firebase Cache] MISS for "${key}" - fetching... (${this.getHitRate()}% hit rate)`);
+    serviceLogger.debug('Firebase Cache MISS - fetching', { key, hitRate: this.getHitRate() });
     
     try {
       const data = await fetcher();
       this.set(key, data);
       return data;
     } catch (error) {
-      console.error(`[Firebase Cache] Error fetching "${key}":`, error);
+      serviceLogger.error('Firebase Cache error fetching', error as Error, { key });
       
       // If we have stale cache, return it as fallback
       if (cached) {
-        console.warn(`[Firebase Cache] Using stale cache for "${key}"`);
+        serviceLogger.warn('Using stale cache', { key });
         return cached.data as T;
       }
       
@@ -119,7 +121,7 @@ class FirebaseCacheService {
   invalidate(key: string): void {
     const deleted = this.cache.delete(key);
     if (deleted) {
-      console.log(`[Firebase Cache] Invalidated "${key}"`);
+      serviceLogger.debug('Firebase Cache invalidated', { key });
     }
   }
 
@@ -135,7 +137,7 @@ class FirebaseCacheService {
         count++;
       }
     }
-    console.log(`[Firebase Cache] Invalidated ${count} entries matching pattern: ${pattern}`);
+    serviceLogger.debug('Firebase Cache invalidated by pattern', { count, pattern: pattern.toString() });
   }
 
   /**
@@ -146,7 +148,7 @@ class FirebaseCacheService {
     this.cache.clear();
     this.hits = 0;
     this.misses = 0;
-    console.log(`[Firebase Cache] Cleared ${size} entries`);
+    serviceLogger.debug('Firebase Cache cleared', { size });
   }
 
   /**
@@ -165,7 +167,7 @@ class FirebaseCacheService {
 
     if (oldestKey) {
       this.cache.delete(oldestKey);
-      console.log(`[Firebase Cache] Evicted oldest entry: "${oldestKey}"`);
+      serviceLogger.debug('Firebase Cache evicted oldest entry', { key: oldestKey });
     }
   }
 
@@ -199,9 +201,9 @@ class FirebaseCacheService {
     try {
       const data = await fetcher();
       this.set(key, data);
-      console.log(`[Firebase Cache] Prefetched "${key}"`);
+      serviceLogger.debug('Firebase Cache prefetched', { key });
     } catch (error) {
-      console.error(`[Firebase Cache] Prefetch failed for "${key}":`, error);
+      serviceLogger.error('Firebase Cache prefetch failed', error as Error, { key });
     }
   }
 

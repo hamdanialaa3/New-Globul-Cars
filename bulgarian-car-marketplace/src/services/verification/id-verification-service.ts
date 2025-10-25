@@ -16,6 +16,7 @@ import {
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage, auth } from '../../firebase/firebase-config';
 import { trustScoreService } from '../profile/trust-score-service';
+import { serviceLogger } from '../logger-wrapper';
 
 // ==================== INTERFACES ====================
 
@@ -72,7 +73,7 @@ export class IDVerificationService {
       this.validateIDFiles(frontImage, backImage, selfieImage);
 
       // 2. Upload documents to encrypted storage
-      console.log('📤 Uploading ID documents...');
+      serviceLogger.info('Uploading ID documents', { userId });
       
       const frontUrl = await this.uploadDocument(userId, frontImage, 'id_front.jpg');
       const backUrl = await this.uploadDocument(userId, backImage, 'id_back.jpg');
@@ -99,7 +100,7 @@ export class IDVerificationService {
         updatedAt: serverTimestamp()
       });
 
-      console.log('✅ ID verification request submitted');
+      serviceLogger.info('ID verification request submitted', { userId, requestId: requestRef.id });
 
       return {
         success: true,
@@ -108,7 +109,7 @@ export class IDVerificationService {
       };
 
     } catch (error: any) {
-      console.error('❌ ID submission failed:', error);
+      serviceLogger.error('ID submission failed', error as Error, { userId });
       return {
         success: false,
         message: error.message || 'Грешка при изпращане / Submission failed'
@@ -137,7 +138,7 @@ export class IDVerificationService {
       } as any));
 
     } catch (error) {
-      console.error('❌ Error fetching requests:', error);
+      serviceLogger.error('Error fetching requests', error as Error, { userId });
       return [];
     }
   }
@@ -153,7 +154,7 @@ export class IDVerificationService {
       
       return status || 'none';
     } catch (error) {
-      console.error('❌ Error checking status:', error);
+      serviceLogger.error('Error checking status', error as Error, { userId });
       return 'error';
     }
   }
@@ -196,11 +197,11 @@ export class IDVerificationService {
       // Recalculate trust score
       await trustScoreService.calculateTrustScore(userId);
 
-      console.log('✅ ID verification approved');
+      serviceLogger.info('ID verification approved', { requestId, userId, adminId });
       return true;
 
     } catch (error) {
-      console.error('❌ Approval failed:', error);
+      serviceLogger.error('Approval failed', error as Error, { requestId, adminId });
       return false;
     }
   }

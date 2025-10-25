@@ -18,6 +18,7 @@ import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage
 import { db, storage } from '../firebase/firebase-config';
 import { CarListing, CarListingFilters, CarListingSearchResult } from '../types/CarListing';
 import { ProfileStatsService } from './profile/profile-stats-service';
+import { serviceLogger } from './logger-wrapper';
 
 class CarListingService {
   private collectionName = 'cars'; // ✅ Unified with sellWorkflowService
@@ -50,7 +51,7 @@ class CarListingService {
         updatedAt: serverTimestamp()
       });
     } catch (error) {
-      console.error('[SERVICE] Error updating car listing:', error);
+      serviceLogger.error('Failed to update car listing', error as Error, { listingId: id });
       throw new Error('Failed to update car listing');
     }
   }
@@ -61,7 +62,7 @@ class CarListingService {
       const docRef = doc(db, this.collectionName, id);
       await deleteDoc(docRef);
     } catch (error) {
-      console.error('[SERVICE] Error deleting car listing:', error);
+      serviceLogger.error('Failed to delete car listing', error as Error, { listingId: id });
       throw new Error('Failed to delete car listing');
     }
   }
@@ -84,7 +85,7 @@ class CarListingService {
       }
       return null;
     } catch (error) {
-      console.error('[SERVICE] Error getting car listing:', error);
+      serviceLogger.error('Failed to get car listing', error as Error, { listingId: id });
       throw new Error('Failed to get car listing');
     }
   }
@@ -92,16 +93,16 @@ class CarListingService {
   // Get all car listings with filters
   async getListings(filters: CarListingFilters = {}): Promise<CarListingSearchResult> {
     try {
-      console.log('🔥 [SERVICE] getListings called with filters:', filters);
+      serviceLogger.debug('getListings called', { filters });
       let q = query(collection(db, this.collectionName));
 
       // Apply filters
       if (filters.vehicleType) {
-        console.log('  📌 Adding vehicleType filter:', filters.vehicleType);
+        serviceLogger.debug('Adding vehicleType filter', { vehicleType: filters.vehicleType });
         q = query(q, where('vehicleType', '==', filters.vehicleType));
       }
       if (filters.make) {
-        console.log('  📌 Adding make filter:', filters.make);
+        serviceLogger.debug('Adding make filter', { make: filters.make });
         q = query(q, where('make', '==', filters.make));
       }
       if (filters.model) {
@@ -187,9 +188,9 @@ class CarListingService {
         q = query(q, limit(limitCount));
       }
 
-      console.log('🔥 [SERVICE] Executing Firebase query...');
+      serviceLogger.debug('Executing Firebase query for car listings');
       const querySnapshot = await getDocs(q);
-      console.log('🔥 [SERVICE] Query returned:', querySnapshot.size, 'documents');
+      serviceLogger.debug('Query returned documents', { count: querySnapshot.size });
       
       const listings: CarListing[] = [];
       
@@ -204,7 +205,7 @@ class CarListingService {
         } as CarListing);
       });
       
-      console.log('🔥 [SERVICE] Processed listings:', listings.length);
+      serviceLogger.debug('Processed listings', { count: listings.length });
 
       // ✅ Client-side sorting if we couldn't use orderBy in Firebase
       if (hasFiltersThatNeedIndex && listings.length > 0) {
@@ -238,7 +239,7 @@ class CarListingService {
           return aStr.localeCompare(bStr);
         });
         
-        console.log(`✅ Client-side sorted ${listings.length} listings by ${sortBy} ${sortOrder}`);
+        serviceLogger.debug('Client-side sorted listings', { count: listings.length, sortBy, sortOrder });
       }
 
       const total = listings.length; // This is simplified - in production, you'd want to get the total count separately
@@ -254,11 +255,11 @@ class CarListingService {
         hasPrev: page > 1
       };
     } catch (error: any) {
-      console.error('[SERVICE] Error getting car listings:', error);
+      serviceLogger.error('Failed to get car listings', error as Error, { filters });
       
       // If index error, retry without orderBy
       if (error.message?.includes('index') || error.code === 'failed-precondition') {
-        console.log('⚠️ Index not ready yet - retrying without orderBy...');
+        serviceLogger.info('Index not ready - retrying without orderBy');
         
         // Remove orderBy from query by clearing sort params
         const newFilters = { ...filters };
@@ -285,7 +286,7 @@ class CarListingService {
       const urls = await Promise.all(uploadPromises);
       return urls;
     } catch (error) {
-      console.error('[SERVICE] Error uploading images:', error);
+      serviceLogger.error('Failed to upload car listing images', error as Error, { listingId });
       throw new Error('Failed to upload images');
     }
   }
@@ -300,7 +301,7 @@ class CarListingService {
 
       await Promise.all(deletePromises);
     } catch (error) {
-      console.error('[SERVICE] Error deleting images:', error);
+      serviceLogger.error('Failed to delete car listing images', error as Error, { listingId });
       throw new Error('Failed to delete images');
     }
   }
@@ -319,7 +320,7 @@ class CarListingService {
         });
       }
     } catch (error) {
-      console.error('[SERVICE] Error incrementing views:', error);
+      serviceLogger.error('Failed to increment car listing views', error as Error, { listingId: id });
       throw new Error('Failed to increment views');
     }
   }
@@ -344,7 +345,7 @@ class CarListingService {
       }
       return false;
     } catch (error) {
-      console.error('[SERVICE] Error toggling favorite:', error);
+      serviceLogger.error('Failed to toggle favorite for car listing', error as Error, { userId, listingId });
       throw new Error('Failed to toggle favorite');
     }
   }
@@ -374,7 +375,7 @@ class CarListingService {
 
       return listings;
     } catch (error) {
-      console.error('[SERVICE] Error getting listings by seller:', error);
+      serviceLogger.error('Failed to get car listings by seller', error as Error, { sellerEmail });
       throw new Error('Failed to get listings by seller');
     }
   }
@@ -445,7 +446,7 @@ class CarListingService {
         hasPrev: false
       };
     } catch (error) {
-      console.error('[SERVICE] Error searching car listings:', error);
+      serviceLogger.error('Failed to search car listings', error as Error, { searchTerm, filters });
       throw new Error('Failed to search car listings');
     }
   }
@@ -460,7 +461,7 @@ class CarListingService {
         expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days from now
       });
     } catch (error) {
-      console.error('[SERVICE] Error publishing listing:', error);
+      serviceLogger.error('Failed to publish car listing', error as Error, { listingId: id });
       throw new Error('Failed to publish listing');
     }
   }
@@ -490,14 +491,14 @@ class CarListingService {
       if (sellerId) {
         try {
           await ProfileStatsService.getInstance().incrementCarsSold(sellerId);
-          console.log('📊 Stats updated: Cars sold +1');
+          serviceLogger.info('Stats updated: Cars sold +1', { sellerId });
         } catch (statsError) {
-          console.error('⚠️ Failed to update stats:', statsError);
+          serviceLogger.error('Failed to update stats', statsError as Error, { sellerId });
           // Continue anyway - don't block the main flow
         }
       }
     } catch (error) {
-      console.error('[SERVICE] Error marking listing as sold:', error);
+      serviceLogger.error('Failed to mark car listing as sold', error as Error, { listingId: id });
       throw new Error('Failed to mark listing as sold');
     }
   }
@@ -529,7 +530,7 @@ class CarListingService {
 
       return listings;
     } catch (error) {
-      console.error('[SERVICE] Error getting featured listings:', error);
+      serviceLogger.error('Failed to get featured car listings', error as Error, { limitCount });
       throw new Error('Failed to get featured listings');
     }
   }
@@ -561,7 +562,7 @@ class CarListingService {
 
       return listings;
     } catch (error) {
-      console.error('[SERVICE] Error getting urgent listings:', error);
+      serviceLogger.error('Failed to get urgent car listings', error as Error, { limitCount });
       throw new Error('Failed to get urgent listings');
     }
   }

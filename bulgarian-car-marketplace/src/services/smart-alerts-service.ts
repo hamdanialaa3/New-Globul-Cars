@@ -3,6 +3,7 @@
 
 import { collection, addDoc, query, where, orderBy, limit, getDocs, updateDoc, doc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
+import { serviceLogger } from './logger-wrapper';
 
 export interface Alert {
   id?: string;
@@ -78,7 +79,7 @@ class SmartAlertsService {
       }
 
     } catch (error) {
-      console.error('Error checking system health:', error);
+      serviceLogger.error('Error checking system health', error as Error);
     }
 
     return alerts;
@@ -101,7 +102,7 @@ class SmartAlertsService {
         timestamp: doc.data().timestamp?.toDate() || new Date()
       } as Alert));
     } catch (error) {
-      console.error('Error getting active alerts:', error);
+      serviceLogger.error('Error getting active alerts', error as Error);
       return [];
     }
   }
@@ -114,7 +115,7 @@ class SmartAlertsService {
         resolved: false
       });
     } catch (error) {
-      console.error('Error creating alert:', error);
+      serviceLogger.error('Error creating alert', error as Error, { severity: alert.severity, category: alert.category });
     }
   }
 
@@ -126,7 +127,7 @@ class SmartAlertsService {
         resolvedAt: serverTimestamp()
       });
     } catch (error) {
-      console.error('Error resolving alert:', error);
+      serviceLogger.error('Error resolving alert', error as Error, { alertId });
     }
   }
 
@@ -151,7 +152,7 @@ class SmartAlertsService {
         resolvedAt: doc.data().resolvedAt?.toDate()
       } as Alert));
     } catch (error) {
-      console.error('Error getting alert history:', error);
+      serviceLogger.error('Error getting alert history', error as Error, { days });
       return [];
     }
   }

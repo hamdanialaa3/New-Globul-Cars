@@ -14,6 +14,7 @@ import {
   Timestamp
 } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
+import { serviceLogger } from './logger-wrapper';
 
 // Audit Logging Interfaces
 export interface AuditLog {
@@ -124,7 +125,7 @@ class AuditLoggingService {
       
       await setDoc(logRef, auditLog);
     } catch (error) {
-      console.error('Error logging user action:', error);
+      serviceLogger.error('Error logging user action', error as Error, { userId, action, resource });
     }
   }
 
@@ -157,7 +158,7 @@ class AuditLoggingService {
         await this.sendSecurityAlert(securityEvent);
       }
     } catch (error) {
-      console.error('Error logging security event:', error);
+      serviceLogger.error('Error logging security event', error as Error, { eventType, severity });
     }
   }
 
@@ -226,7 +227,7 @@ class AuditLoggingService {
         hasMore: logs.length >= limitCount
       };
     } catch (error) {
-      console.error('Error getting audit logs:', error);
+      serviceLogger.error('Error getting audit logs', error as Error, { page, limitCount, filters });
       return { logs: [], total: 0, hasMore: false };
     }
   }
@@ -282,7 +283,7 @@ class AuditLoggingService {
         hasMore: events.length >= limitCount
       };
     } catch (error) {
-      console.error('Error getting security events:', error);
+      serviceLogger.error('Error getting security events', error as Error, { page, limitCount, filters });
       return { events: [], total: 0, hasMore: false };
     }
   }
@@ -302,7 +303,7 @@ class AuditLoggingService {
         resolution
       });
     } catch (error) {
-      console.error('Error resolving security event:', error);
+      serviceLogger.error('Error resolving security event', error as Error, { eventId, resolvedBy });
       throw error;
     }
   }
@@ -326,7 +327,7 @@ class AuditLoggingService {
         timestamp: doc.data().timestamp?.toDate() || new Date()
       } as SystemMetrics));
     } catch (error) {
-      console.error('Error getting system metrics:', error);
+      serviceLogger.error('Error getting system metrics', error as Error);
       return [];
     }
   }
@@ -342,7 +343,7 @@ class AuditLoggingService {
       
       await setDoc(metricsRef, systemMetrics);
     } catch (error) {
-      console.error('Error recording system metrics:', error);
+      serviceLogger.error('Error recording system metrics', error as Error);
     }
   }
 
@@ -432,7 +433,7 @@ class AuditLoggingService {
         topResources
       };
     } catch (error) {
-      console.error('Error getting audit statistics:', error);
+      serviceLogger.error('Error getting audit statistics', error as Error);
       return {
         totalActions: 0,
         successfulActions: 0,
@@ -471,7 +472,7 @@ class AuditLoggingService {
         return csvContent;
       }
     } catch (error) {
-      console.error('Error exporting audit logs:', error);
+      serviceLogger.error('Error exporting audit logs', error as Error, { format });
       throw error;
     }
   }
@@ -497,7 +498,11 @@ class AuditLoggingService {
 
   private async sendSecurityAlert(event: Omit<SecurityEvent, 'id'>): Promise<void> {
     // In production, send email/SMS alerts
-    console.warn('🚨 CRITICAL SECURITY EVENT:', event);
+    serviceLogger.warn('Critical security event detected', { 
+      eventType: event.eventType, 
+      severity: event.severity,
+      userId: event.userId 
+    });
   }
 }
 

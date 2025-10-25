@@ -5,6 +5,7 @@
  */
 
 import { getFunctions, httpsCallable } from 'firebase/functions';
+import { serviceLogger } from '../logger-wrapper';
 
 interface PaymentIntent {
   success: boolean;
@@ -60,7 +61,7 @@ class StripeService {
       return result.data;
 
     } catch (error: any) {
-      console.error('Error creating Stripe account:', error);
+      serviceLogger.error('Error creating Stripe account', error as Error, { email, businessType });
       throw new Error(error.message || 'Failed to create Stripe account');
     }
   }
@@ -79,7 +80,7 @@ class StripeService {
       return result.data;
 
     } catch (error: any) {
-      console.error('Error getting account status:', error);
+      serviceLogger.error('Error getting account status', error as Error);
       throw new Error(error.message || 'Failed to get account status');
     }
   }
@@ -108,7 +109,7 @@ class StripeService {
       return result.data;
 
     } catch (error: any) {
-      console.error('Error creating payment intent:', error);
+      serviceLogger.error('Error creating payment intent', error as Error, { carId, amount, buyerId });
       throw new Error(error.message || 'Failed to create payment');
     }
   }
@@ -127,7 +128,7 @@ class StripeService {
       return result.data;
 
     } catch (error: any) {
-      console.error('Error confirming payment:', error);
+      serviceLogger.error('Error confirming payment', error as Error, { paymentId });
       throw new Error(error.message || 'Failed to confirm payment');
     }
   }

@@ -43,7 +43,9 @@ export async function canAddListing(userId: string): Promise<boolean> {
     
     return activeCount < limit;
   } catch (error) {
-    console.error('Error checking listing limit:', error);
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Error checking listing limit:', error);
+    }
     return false;
   }
 }
@@ -72,7 +74,9 @@ export async function getRemainingListings(userId: string): Promise<number> {
     
     return Math.max(0, limit - activeCount);
   } catch (error) {
-    console.error('Error getting remaining listings:', error);
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Error getting remaining listings:', error);
+    }
     return 0;
   }
 }

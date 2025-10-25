@@ -1,5 +1,6 @@
 // Image Optimization Service
 // خدمة تحسين وضغط الصور قبل الرفع
+import { serviceLogger } from './logger-wrapper';
 
 export interface ImageOptimizationOptions {
   maxWidth?: number;
@@ -28,11 +29,11 @@ export class ImageOptimizationService {
 
       reader.onload = (e) => {
         const img = new Image();
-        
+
         img.onload = () => {
           // Calculate new dimensions
-          let { width, height } = img;
-          
+          let { width, height } = img as any;
+
           if (width > maxWidth || height > maxHeight) {
             const ratio = Math.min(maxWidth / width, maxHeight / height);
             width = Math.round(width * ratio);
@@ -68,7 +69,12 @@ export class ImageOptimizationService {
                 { type: format }
               );
 
-              console.log(`✅ Image optimized: ${(file.size / 1024).toFixed(2)}KB → ${(optimizedFile.size / 1024).toFixed(2)}KB`);
+              serviceLogger.info('Image optimized', {
+                originalSizeKB: Math.round(file.size / 1024),
+                optimizedSizeKB: Math.round(optimizedFile.size / 1024),
+                fileName: file.name
+              });
+
               resolve(optimizedFile);
             },
             format,
@@ -99,16 +105,16 @@ export class ImageOptimizationService {
     options: ImageOptimizationOptions = {}
   ): Promise<File[]> {
     try {
-      console.log(`🔄 Optimizing ${files.length} images...`);
-      
+      serviceLogger.info('Optimizing images', { count: files.length });
+
       const optimizedImages = await Promise.all(
         files.map(file => this.optimizeImage(file, options))
       );
 
-      console.log(`✅ All images optimized successfully`);
+      serviceLogger.info('All images optimized successfully', { count: files.length });
       return optimizedImages;
     } catch (error) {
-      console.error('❌ Error optimizing images:', error);
+      serviceLogger.error('Error optimizing images', error as Error, { count: files.length });
       throw error;
     }
   }
@@ -190,7 +196,7 @@ export class ImageOptimizationService {
 
       reader.onload = (e) => {
         const img = new Image();
-        
+
         img.onload = () => {
           resolve({ width: img.width, height: img.height });
         };
@@ -238,11 +244,11 @@ export class ImageOptimizationService {
     const bstr = atob(arr[1]);
     let n = bstr.length;
     const u8arr = new Uint8Array(n);
-    
+
     while (n--) {
       u8arr[n] = bstr.charCodeAt(n);
     }
-    
+
     return new File([u8arr], filename, { type: mime });
   }
 }

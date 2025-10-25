@@ -9,6 +9,7 @@ import {
   getDoc
 } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
+import { serviceLogger } from './logger-wrapper';
 
 // Firebase Authentication Users Service
 // This service fetches real user data from Firebase Authentication and Firestore
@@ -27,13 +28,13 @@ class FirebaseAuthUsersService {
   // Get real users from Firebase Authentication via Firestore
   public async getRealFirebaseUsers(): Promise<any[]> {
     try {
-      console.log('🔄 Fetching real Firebase users...');
+      serviceLogger.debug('Fetching real Firebase users');
       
       // Try to get users from Firestore first
       const usersSnapshot = await getDocs(collection(db, 'users'));
       
       if (usersSnapshot.docs.length > 0) {
-        console.log('✅ Found real users in Firestore:', usersSnapshot.docs.length);
+        serviceLogger.info('Found real users in Firestore', { count: usersSnapshot.docs.length });
         return usersSnapshot.docs.map(doc => {
           const data = doc.data();
           return {
@@ -65,7 +66,7 @@ class FirebaseAuthUsersService {
       }
 
       // If no users in Firestore, create realistic mock data based on Firebase Auth
-      console.log('📊 No users in Firestore, creating realistic mock data for Firebase Auth users');
+      serviceLogger.info('No users in Firestore - creating mock data for Firebase Auth users');
       
       return [
         {
@@ -131,7 +132,7 @@ class FirebaseAuthUsersService {
       ];
 
     } catch (error) {
-      console.error('Error fetching Firebase users:', error);
+      serviceLogger.error('Error fetching Firebase users', error as Error);
       throw error;
     }
   }
@@ -152,7 +153,7 @@ class FirebaseAuthUsersService {
         createdAt: doc.data().createdAt?.toDate() || new Date()
       }));
     } catch (error) {
-      console.error('Error fetching user cars:', error);
+      serviceLogger.error('Error fetching user cars', error as Error, { userId });
       return [];
     }
   }
@@ -173,7 +174,7 @@ class FirebaseAuthUsersService {
         createdAt: doc.data().createdAt?.toDate() || new Date()
       }));
     } catch (error) {
-      console.error('Error fetching user messages:', error);
+      serviceLogger.error('Error fetching user messages', error as Error, { userId });
       return [];
     }
   }
@@ -196,7 +197,7 @@ class FirebaseAuthUsersService {
         timestamp: doc.data().timestamp?.toDate() || new Date()
       }));
     } catch (error) {
-      console.error('Error fetching user activity:', error);
+      serviceLogger.error('Error fetching user activity', error as Error, { userId });
       return [];
     }
   }
@@ -219,7 +220,7 @@ class FirebaseAuthUsersService {
       
       return null;
     } catch (error) {
-      console.error('Error fetching user profile:', error);
+      serviceLogger.error('Error fetching user profile', error as Error, { userId });
       return null;
     }
   }

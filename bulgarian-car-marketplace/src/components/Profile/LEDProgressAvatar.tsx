@@ -225,25 +225,27 @@ export const LEDProgressAvatar: React.FC<LEDProgressAvatarProps> = ({
       role={onClick ? 'button' : undefined}
       aria-label={onClick ? 'Change profile picture' : 'Profile picture'}
     >
-      {/* LED Progress Ring */}
-      <LEDRing progress={progress} color={ringColor} size={avatarSize}>
-        {/* Background circle (gray) */}
-        <circle
-          className="background"
-          cx="50%"
-          cy="50%"
-          r="46"
-          vectorEffect="non-scaling-stroke"
-        />
-        {/* Progress circle (colored) */}
-        <circle
-          className="progress"
-          cx="50%"
-          cy="50%"
-          r="46"
-          vectorEffect="non-scaling-stroke"
-        />
-      </LEDRing>
+      {/* LED Progress Ring - Only show when showProgress is true */}
+      {showProgress && (
+        <LEDRing progress={progress} color={ringColor} size={avatarSize}>
+          {/* Background circle (gray) */}
+          <circle
+            className="background"
+            cx="50%"
+            cy="50%"
+            r="46"
+            vectorEffect="non-scaling-stroke"
+          />
+          {/* Progress circle (colored) */}
+          <circle
+            className="progress"
+            cx="50%"
+            cy="50%"
+            r="46"
+            vectorEffect="non-scaling-stroke"
+          />
+        </LEDRing>
+      )}
       
       {/* Avatar Image */}
       <AvatarImage 

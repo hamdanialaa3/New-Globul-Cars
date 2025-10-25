@@ -5,6 +5,7 @@
  */
 
 import { CarListing } from '../../types/CarListing';
+import { serviceLogger } from '../logger-wrapper';
 
 interface AlgoliaConfig {
   appId: string;
@@ -63,7 +64,7 @@ class AlgoliaSearchService {
   ): Promise<SearchResult> {
     // Check if Algolia is configured
     if (!this.isConfigured()) {
-      console.warn('Algolia not configured, falling back to Firestore');
+      serviceLogger.warn('Algolia not configured, falling back to Firestore');
       return this.fallbackToFirestore(query, filters, page, hitsPerPage);
     }
 
@@ -116,7 +117,7 @@ class AlgoliaSearchService {
       return this.fallbackToFirestore(query, filters, page, hitsPerPage);
 
     } catch (error) {
-      console.error('Algolia search error:', error);
+      serviceLogger.error('Algolia search error', error as Error, { query, filters });
       return this.fallbackToFirestore(query, filters, page, hitsPerPage);
     }
   }
@@ -131,7 +132,7 @@ class AlgoliaSearchService {
     page: number,
     hitsPerPage: number
   ): Promise<SearchResult> {
-    console.log('Using Firestore fallback for search');
+    serviceLogger.debug('Using Firestore fallback for search', { query, filters });
     
     // This is a simplified fallback
     // In production, use the existing carListingService
@@ -174,7 +175,7 @@ class AlgoliaSearchService {
       return [];
 
     } catch (error) {
-      console.error('Error getting suggestions:', error);
+      serviceLogger.error('Error getting suggestions', error as Error, { query });
       return [];
     }
   }
@@ -205,7 +206,7 @@ class AlgoliaSearchService {
       return {};
 
     } catch (error) {
-      console.error('Error getting facets:', error);
+      serviceLogger.error('Error getting facets', error as Error, { attribute });
       return {};
     }
   }

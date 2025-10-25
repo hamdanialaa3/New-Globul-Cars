@@ -1,5 +1,6 @@
 import { collection, doc, setDoc, updateDoc, getDoc, query, where, getDocs, Timestamp, orderBy } from 'firebase/firestore';
 import { getFirestore } from 'firebase/firestore';
+import { serviceLogger } from './logger-wrapper';
 
 export interface MaintenanceAlert {
   id: string;
@@ -92,7 +93,7 @@ export class ProactiveMaintenanceService {
       return alertId;
 
     } catch (error) {
-      console.error('[SERVICE] :', error);
+      serviceLogger.error('Failed to create maintenance alert', error as Error, { userId: alertData.userId, vin: alertData.vin });
       throw new Error('فشل في إنشاء تنبيه الصيانة');
     }
   }
@@ -113,7 +114,7 @@ export class ProactiveMaintenanceService {
       return alertsSnapshot.docs.map(doc => doc.data() as MaintenanceAlert);
 
     } catch (error) {
-      console.error('[SERVICE] :', error);
+      serviceLogger.error('Failed to get user maintenance alerts', error as Error, { userId });
       return [];
     }
   }
@@ -140,7 +141,7 @@ export class ProactiveMaintenanceService {
       });
 
     } catch (error) {
-      console.error('[SERVICE] :', error);
+      serviceLogger.error('Failed to submit service offer', error as Error, { alertId, centerId: offer.centerId });
       throw new Error('فشل في إرسال عرض الخدمة');
     }
   }
@@ -195,7 +196,7 @@ export class ProactiveMaintenanceService {
       return requestId;
 
     } catch (error) {
-      console.error('[SERVICE] :', error);
+      serviceLogger.error('Failed to accept service offer', error as Error, { alertId, centerId });
       throw new Error('فشل في قبول عرض الخدمة');
     }
   }
@@ -215,7 +216,7 @@ export class ProactiveMaintenanceService {
       return requestsSnapshot.docs.map(doc => doc.data() as MaintenanceRequest);
 
     } catch (error) {
-      console.error('[SERVICE] :', error);
+      serviceLogger.error('Failed to get user maintenance requests', error as Error, { userId });
       return [];
     }
   }
@@ -233,7 +234,7 @@ export class ProactiveMaintenanceService {
       });
 
     } catch (error) {
-      console.error('[SERVICE] :', error);
+      serviceLogger.error('Failed to update maintenance request', error as Error, { requestId });
       throw new Error('فشل في تحديث طلب الصيانة');
     }
   }
@@ -252,7 +253,7 @@ export class ProactiveMaintenanceService {
 }
 
     } catch (error) {
-      console.error('[SERVICE] :', error);
+      serviceLogger.error('Failed to notify service centers', error as Error, { alertId: alert.id, vin: alert.vin });
     }
   }
 

@@ -1,6 +1,7 @@
 // Mock subscription service for development when CORS is blocking
 import { functions } from '../firebase/firebase-config';
 import { httpsCallable } from 'firebase/functions';
+import { serviceLogger } from './logger-wrapper';
 
 // Mock data for development
 const MOCK_SUBSCRIPTION = {
@@ -25,7 +26,7 @@ export const getB2BSubscription = async () => {
     const result = await getSubscription();
     return result.data;
   } catch (error: any) {
-    console.warn('Cloud Function call failed:', error?.message);
+    serviceLogger.warn('Cloud Function call failed: getB2BSubscription', { message: error?.message });
     
     // If it's a CORS error in development, return mock data
     if (isDevelopment && (
@@ -46,7 +47,7 @@ export const createB2BSubscription = async (data: any) => {
     const result = await createSubscription(data);
     return result.data;
   } catch (error: any) {
-    console.warn('Cloud Function call failed:', error?.message);
+    serviceLogger.warn('Cloud Function call failed: createB2BSubscription', { message: error?.message });
     
     if (isDevelopment && (
       error?.message?.includes('CORS') || 
@@ -71,7 +72,7 @@ export const cancelB2BSubscription = async () => {
     const result = await cancelSubscription();
     return result.data;
   } catch (error: any) {
-    console.warn('Cloud Function call failed:', error?.message);
+    serviceLogger.warn('Cloud Function call failed: cancelB2BSubscription', { message: error?.message });
     
     if (isDevelopment && (
       error?.message?.includes('CORS') || 
@@ -94,7 +95,7 @@ export const upgradeB2BSubscription = async (data: any) => {
     const result = await upgradeSubscription(data);
     return result.data;
   } catch (error: any) {
-    console.warn('Cloud Function call failed:', error?.message);
+    serviceLogger.warn('Cloud Function call failed: upgradeB2BSubscription', { message: error?.message });
     
     if (isDevelopment && (
       error?.message?.includes('CORS') || 

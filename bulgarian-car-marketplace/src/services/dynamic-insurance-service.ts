@@ -1,5 +1,6 @@
 import { collection, doc, setDoc, updateDoc, getDoc, query, where, getDocs, Timestamp } from 'firebase/firestore';
 import { getFirestore } from 'firebase/firestore';
+import { serviceLogger } from './logger-wrapper';
 
 export interface DrivingBehavior {
   userId: string;
@@ -100,7 +101,7 @@ export class DynamicInsuranceService {
       await this.updateRiskScore(behavior.userId, behavior.vin);
 
     } catch (error) {
-      console.error('[SERVICE] :', error);
+      serviceLogger.error('Failed to record driving behavior', error as Error, { userId: behavior.userId, vin: behavior.vin });
       throw new Error('فشل في تسجيل سلوك القيادة');
     }
   }
@@ -140,7 +141,7 @@ export class DynamicInsuranceService {
       await this.adjustInsurancePremium(userId, vin, riskScore);
 
     } catch (error) {
-      console.error('[SERVICE] :', error);
+      serviceLogger.error('Failed to update risk score', error as Error, { userId, vin });
     }
   }
 
@@ -242,7 +243,7 @@ export class DynamicInsuranceService {
 }
 
     } catch (error) {
-      console.error('[SERVICE] :', error);
+      serviceLogger.error('Failed to adjust insurance premium', error as Error, { userId, vin, overallScore: riskScore.overallScore });
     }
   }
 
@@ -260,7 +261,7 @@ export class DynamicInsuranceService {
 
       return null;
     } catch (error) {
-      console.error('[SERVICE] :', error);
+      serviceLogger.error('Failed to get risk score', error as Error, { userId, vin });
       return null;
     }
   }
@@ -285,7 +286,7 @@ export class DynamicInsuranceService {
 
       return null;
     } catch (error) {
-      console.error('[SERVICE] :', error);
+      serviceLogger.error('Failed to get active policy', error as Error, { userId, vin });
       return null;
     }
   }
@@ -315,7 +316,7 @@ export class DynamicInsuranceService {
       return claimId;
 
     } catch (error) {
-      console.error('[SERVICE] :', error);
+      serviceLogger.error('Failed to file insurance claim', error as Error, { userId: claimData.userId, vin: claimData.vin });
       throw new Error('فشل في تقديم مطالبة التأمين');
     }
   }
@@ -334,7 +335,7 @@ export class DynamicInsuranceService {
       return claimsSnapshot.docs.map(doc => doc.data() as InsuranceClaim);
 
     } catch (error) {
-      console.error('[SERVICE] :', error);
+      serviceLogger.error('Failed to get user insurance claims', error as Error, { userId });
       return [];
     }
   }
@@ -346,7 +347,7 @@ export class DynamicInsuranceService {
     try {
       // (Comment removed - was in Arabic)
 } catch (error) {
-      console.error('[SERVICE] :', error);
+      serviceLogger.error('Failed to notify insurance provider', error as Error, { claimId: claim.claimId });
     }
   }
 
@@ -395,7 +396,7 @@ export class DynamicInsuranceService {
 
       const claimId = await this.fileInsuranceClaim(claimData);
 } catch (error) {
-      console.error('[SERVICE] :', error);
+      serviceLogger.error('Failed to process accident claim', error as Error, { vin, severity });
     }
   }
 }

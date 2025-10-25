@@ -15,6 +15,7 @@ import {
 import { db } from '../firebase/firebase-config';
 import { SearchData } from '../pages/AdvancedSearchPage/types';
 import { CarListing } from '../types/CarListing';
+import { serviceLogger } from './logger-wrapper';
 
 class AdvancedSearchService {
   private collectionName = 'cars'; // ✅ Same as sellWorkflowService
@@ -323,7 +324,7 @@ class AdvancedSearchService {
    */
   async searchCars(searchData: SearchData): Promise<CarListing[]> {
     try {
-      console.log('🔍 Advanced search started with filters:', searchData);
+      serviceLogger.debug('Advanced search started', { searchData });
       
       // Build and execute Firestore query
       const q = this.buildQuery(searchData);
@@ -342,16 +343,16 @@ class AdvancedSearchService {
         } as CarListing);
       });
       
-      console.log(`✅ Found ${cars.length} cars from Firestore`);
+      serviceLogger.debug('Cars found from Firestore', { count: cars.length });
       
       // Apply client-side filters for complex conditions
       const filteredCars = this.applyClientFilters(cars, searchData);
       
-      console.log(`✅ After client-side filters: ${filteredCars.length} cars`);
+      serviceLogger.debug('After client-side filters', { count: filteredCars.length });
       
       return filteredCars;
     } catch (error) {
-      console.error('❌ Error in advanced search:', error);
+      serviceLogger.error('Error in advanced search', error as Error, { searchData });
       throw error;
     }
   }
@@ -403,7 +404,7 @@ class AdvancedSearchService {
         topMakes
       };
     } catch (error) {
-      console.error('❌ Error getting search stats:', error);
+      serviceLogger.error('Error getting search stats', error as Error);
       throw error;
     }
   }

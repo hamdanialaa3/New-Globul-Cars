@@ -98,7 +98,9 @@ export class SitemapGenerator {
         };
       });
     } catch (error) {
-      console.error('[SITEMAP] Error fetching car listings:', error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('[SITEMAP] Error fetching car listings:', error);
+      }
       return [];
     }
   }
@@ -118,7 +120,9 @@ export class SitemapGenerator {
         priority: 0.6
       }));
     } catch (error) {
-      console.error('[SITEMAP] Error fetching vendors:', error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('[SITEMAP] Error fetching vendors:', error);
+      }
       return [];
     }
   }

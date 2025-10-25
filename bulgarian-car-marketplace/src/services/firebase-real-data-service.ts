@@ -12,6 +12,7 @@ import {
 import { db } from '../firebase/firebase-config';
 import { firebaseAuthUsersService } from './firebase-auth-users-service';
 import { firebaseAuthRealUsers } from './firebase-auth-real-users';
+import { serviceLogger } from './logger-wrapper';
 
 // Firebase Real Data Service for Super Admin Dashboard
 class FirebaseRealDataService {
@@ -29,27 +30,27 @@ class FirebaseRealDataService {
   // Get real users count from Firebase Authentication (NOT Firestore!)
   public async getRealUsersCount(): Promise<number> {
     try {
-      console.log('🔄 Fetching REAL users count from Firebase Authentication...');
+      serviceLogger.debug('Fetching REAL users count from Firebase Authentication');
       
       // Try to get from Firebase Auth first (the REAL source!)
       try {
         const authUsersCount = await firebaseAuthRealUsers.getRealAuthUsersCount();
-        console.log(`✅ REAL users from Firebase Auth: ${authUsersCount}`);
+        serviceLogger.info('REAL users from Firebase Auth', { count: authUsersCount });
         return authUsersCount;
       } catch (authError) {
-        console.warn('⚠️ Could not get from Firebase Auth, falling back to Firestore');
+        serviceLogger.warn('Could not get from Firebase Auth - falling back to Firestore');
       }
       
       // Fallback: Get from Firestore users collection
       const usersSnapshot = await getDocs(collection(db, 'users'));
       const firestoreUsers = usersSnapshot.docs.length;
       
-      console.log(`📊 Firestore users found: ${firestoreUsers}`);
-      console.log('⚠️ Note: This may be less than Firebase Auth users if sync not run');
+      serviceLogger.info('Firestore users found', { count: firestoreUsers });
+      serviceLogger.warn('Note: This may be less than Firebase Auth users if sync not run');
       
       return firestoreUsers;
     } catch (error) {
-      console.error('❌ Error getting users count:', error);
+      serviceLogger.error('Error getting users count', error as Error);
       return 0; // Return 0 instead of throwing
     }
   }
@@ -60,10 +61,10 @@ class FirebaseRealDataService {
       // Try to get from Firebase Auth first
       try {
         const activeAuthUsers = await firebaseAuthRealUsers.getActiveAuthUsers();
-        console.log(`✅ Active users from Firebase Auth: ${activeAuthUsers}`);
+        serviceLogger.info('Active users from Firebase Auth', { count: activeAuthUsers });
         return activeAuthUsers;
       } catch (authError) {
-        console.warn('⚠️ Could not get active users from Auth, using Firestore');
+        serviceLogger.warn('Could not get active users from Auth - using Firestore');
       }
       
       // Fallback: Get from Firestore
@@ -78,7 +79,7 @@ class FirebaseRealDataService {
       const snapshot = await getDocs(q);
       return snapshot.docs.length;
     } catch (error) {
-      console.error('Error getting active users count:', error);
+      serviceLogger.error('Error getting active users count', error as Error);
       return 0;
     }
   }
@@ -89,7 +90,7 @@ class FirebaseRealDataService {
       const carsSnapshot = await getDocs(collection(db, 'cars'));
       return carsSnapshot.docs.length;
     } catch (error) {
-      console.error('Error getting cars count:', error);
+      serviceLogger.error('Error getting cars count', error as Error);
       throw error; // Don't use mock data - throw the real error
     }
   }
@@ -105,7 +106,7 @@ class FirebaseRealDataService {
       const snapshot = await getDocs(q);
       return snapshot.docs.length;
     } catch (error) {
-      console.error('Error getting active cars count:', error);
+      serviceLogger.error('Error getting active cars count', error as Error);
       throw error; // Don't use mock data - throw the real error
     }
   }
@@ -116,7 +117,7 @@ class FirebaseRealDataService {
       const messagesSnapshot = await getDocs(collection(db, 'messages'));
       return messagesSnapshot.docs.length;
     } catch (error) {
-      console.error('Error getting messages count:', error);
+      serviceLogger.error('Error getting messages count', error as Error);
       throw error; // Don't use mock data - throw the real error
     }
   }
@@ -127,7 +128,7 @@ class FirebaseRealDataService {
       const viewsSnapshot = await getDocs(collection(db, 'views'));
       return viewsSnapshot.docs.length;
     } catch (error) {
-      console.error('Error getting views count:', error);
+      serviceLogger.error('Error getting views count', error as Error);
       throw error; // Don't use mock data - throw the real error
     }
   }
@@ -147,7 +148,7 @@ class FirebaseRealDataService {
       
       return totalRevenue;
     } catch (error) {
-      console.error('Error getting revenue:', error);
+      serviceLogger.error('Error getting revenue', error as Error);
       throw error; // Don't use mock data - throw the real error
     }
   }
@@ -155,7 +156,7 @@ class FirebaseRealDataService {
   // Get real user activity data
   public async getRealUserActivity(): Promise<any[]> {
     try {
-      console.log('🔄 Fetching real user activity...');
+      serviceLogger.debug('Fetching real user activity');
       
       // Use the new Firebase Auth Users Service
       const realUsers = await firebaseAuthUsersService.getRealFirebaseUsers();
@@ -175,7 +176,7 @@ class FirebaseRealDataService {
       }));
       
     } catch (error) {
-      console.error('Error getting user activity:', error);
+      serviceLogger.error('Error getting user activity', error as Error);
       // Return fallback data
       return [
         {
@@ -240,7 +241,7 @@ class FirebaseRealDataService {
         lastUpdated: new Date()
       };
     } catch (error) {
-      console.error('Error getting analytics:', error);
+      serviceLogger.error('Error getting analytics', error as Error);
       return {
         totalUsers: 0,
         activeUsers: 0,

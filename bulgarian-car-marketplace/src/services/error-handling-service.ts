@@ -1,6 +1,8 @@
 // src/services/error-handling-service.ts
 // Unified Error Handling Service for Bulgarian Car Marketplace
 
+import { serviceLogger } from './logger-wrapper';
+
 export interface ErrorDetails {
   code: string;
   message: string;
@@ -314,9 +316,9 @@ export class ErrorHandlingService {
 
   private sendToMonitoringService(errorDetails: ErrorDetails): void {
     // TODO: Integrate with Sentry or other monitoring service
-    console.log('[MONITORING] Sending critical error to monitoring service:', errorDetails);
+    serviceLogger.info('Sending critical error to monitoring service', errorDetails);
     
-    // For now, just log to console
+    // For now, just log
     // In production, this would send to Sentry, DataDog, etc.
   }
 }

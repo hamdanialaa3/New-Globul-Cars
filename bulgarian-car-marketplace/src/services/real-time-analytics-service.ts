@@ -14,6 +14,7 @@ import {
   startAfter
 } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
+import { serviceLogger } from './logger-wrapper';
 
 // Real-time Analytics Interfaces
 export interface RealTimeAnalytics {
@@ -104,7 +105,7 @@ class RealTimeAnalyticsService {
           getDocs(collection(db, 'user_activity')).catch(() => ({ docs: [] }))
         ]);
       } catch (error) {
-        console.warn('Firebase connection failed, using mock data:', error);
+        serviceLogger.warn('Firebase connection failed, using mock data', error as Error);
         // Return mock data if Firebase fails
         return this.getMockAnalytics();
       }
@@ -241,7 +242,7 @@ class RealTimeAnalyticsService {
 
       return analytics;
     } catch (error) {
-      console.error('Error getting real-time analytics:', error);
+      serviceLogger.error('Error getting real-time analytics', error as Error);
       throw error;
     }
   }
@@ -272,7 +273,7 @@ class RealTimeAnalyticsService {
         };
       });
     } catch (error) {
-      console.error('Error getting user activity:', error);
+      serviceLogger.error('Error getting user activity', error as Error);
       // Return mock data if Firebase fails
       return this.getMockUserActivity();
     }
@@ -303,7 +304,7 @@ class RealTimeAnalyticsService {
         flaggedMessages: flaggedMessagesSnapshot.docs.length
       };
     } catch (error) {
-      console.error('Error getting content moderation data:', error);
+      serviceLogger.error('Error getting content moderation data', error as Error);
       // Return mock data if Firebase fails
       return this.getMockContentModeration();
     }
@@ -318,7 +319,7 @@ class RealTimeAnalyticsService {
           const analytics = await this.getRealTimeAnalytics();
           callback(analytics);
         } catch (error) {
-          console.error('Error in analytics subscription:', error);
+          serviceLogger.error('Error in analytics subscription', error as Error);
         }
       }
     );
@@ -375,7 +376,7 @@ class RealTimeAnalyticsService {
         };
       });
     } catch (error) {
-      console.error('Error getting system performance:', error);
+      serviceLogger.error('Error getting system performance', error as Error);
       return [];
     }
   }
@@ -392,7 +393,7 @@ class RealTimeAnalyticsService {
         userAgent: navigator.userAgent
       });
     } catch (error) {
-      console.error('Error recording page view:', error);
+      serviceLogger.error('Error recording page view', error as Error, { page, userId });
     }
   }
 
@@ -415,7 +416,7 @@ class RealTimeAnalyticsService {
         browser: this.getBrowserName()
       });
     } catch (error) {
-      console.error('Error recording user activity:', error);
+      serviceLogger.error('Error recording user activity', error as Error, { userId, activity });
     }
   }
 

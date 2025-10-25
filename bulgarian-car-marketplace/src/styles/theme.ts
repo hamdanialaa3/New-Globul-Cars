@@ -420,14 +420,14 @@ export const GlobalStyles = createGlobalStyle`
   /* Responsive container adjustments */
   @media (max-width: 768px) {
     .page-container {
-      padding: 0 0.5rem;
+      padding: 0; /* ❌ REMOVED: No padding - was causing yellow transparent frame */
       max-width: 100%;
     }
   }
 
   @media (max-width: 480px) {
     .page-container {
-      padding: 0 0.25rem;
+      padding: 0; /* ❌ REMOVED: No padding - was causing yellow transparent frame */
     }
   }
 

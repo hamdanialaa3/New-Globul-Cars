@@ -1,6 +1,8 @@
 // City Car Count Caching Service
 // localStorage caching للـ city counts لتقليل Firestore reads بنسبة 99%
 
+import { serviceLogger } from './logger-wrapper';
+
 interface CachedData {
   data: Record<string, number>;
   timestamp: number;
@@ -28,7 +30,7 @@ export class CityCarCountCache {
 
       return data;
     } catch (error) {
-      console.error('Error reading city car count cache:', error);
+      serviceLogger.error('Error reading city car count cache', error as Error);
       this.clear();
       return null;
     }
@@ -45,7 +47,7 @@ export class CityCarCountCache {
       };
       localStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
     } catch (error) {
-      console.error('Error setting city car count cache:', error);
+      serviceLogger.error('Error setting city car count cache', error as Error);
       // If quota exceeded, clear cache and try again
       if (error instanceof DOMException && error.name === 'QuotaExceededError') {
         this.clear();
@@ -60,7 +62,7 @@ export class CityCarCountCache {
     try {
       localStorage.removeItem(CACHE_KEY);
     } catch (error) {
-      console.error('Error clearing city car count cache:', error);
+      serviceLogger.error('Error clearing city car count cache', error as Error);
     }
   }
 

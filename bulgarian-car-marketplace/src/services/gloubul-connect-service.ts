@@ -1,6 +1,7 @@
 import { collection, doc, setDoc, updateDoc, getDoc, query, where, getDocs, Timestamp } from 'firebase/firestore';
 import { getFirestore } from 'firebase/firestore';
 import { GeoPoint } from 'firebase/firestore';
+import { serviceLogger } from './logger-wrapper';
 
 export interface GloubulConnectDevice {
   deviceId: string;
@@ -81,7 +82,7 @@ export class GloubulConnectService {
       await this.initializeDigitalTwin(deviceData.vin, deviceData.userId);
 
     } catch (error) {
-      console.error('[SERVICE] :', error);
+      serviceLogger.error('GloubulConnectService.registerDevice failed', error as unknown as Error, { deviceId: deviceData.deviceId });
       throw new Error('فشل في تسجيل جهاز Gloubul Connect');
     }
   }
@@ -102,7 +103,7 @@ export class GloubulConnectService {
       await this.updateDeviceStatus(liveData.deviceId, 'active');
 
     } catch (error) {
-      console.error('[SERVICE] :', error);
+      serviceLogger.error('GloubulConnectService.updateLiveData failed', error as unknown as Error, { vin: liveData.vin });
       throw new Error('فشل في تحديث بيانات السيارة');
     }
   }
@@ -249,7 +250,7 @@ export class GloubulConnectService {
 
       return null;
     } catch (error) {
-      console.error('[SERVICE] :', error);
+      serviceLogger.error('GloubulConnectService.getDigitalTwin failed', error as unknown as Error, { vin });
       return null;
     }
   }
@@ -267,7 +268,7 @@ export class GloubulConnectService {
       const devicesSnapshot = await getDocs(devicesQuery);
       return devicesSnapshot.docs.map(doc => doc.data() as GloubulConnectDevice);
     } catch (error) {
-      console.error('[SERVICE] :', error);
+      serviceLogger.error('GloubulConnectService.getUserDevices failed', error as unknown as Error, { userId });
       return [];
     }
   }
@@ -301,7 +302,7 @@ export class GloubulConnectService {
 
       // (Comment removed - was in Arabic)
 } catch (error) {
-      console.error('[SERVICE] :', error);
+      serviceLogger.error('GloubulConnectService.sendEmergencyAlert failed', error as unknown as Error, { vin });
     }
   }
 }

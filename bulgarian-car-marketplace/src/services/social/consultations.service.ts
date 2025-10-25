@@ -18,6 +18,7 @@ import {
   Timestamp
 } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
+import { serviceLogger } from '../logger-wrapper';
 
 // ==================== TYPES ====================
 
@@ -128,7 +129,7 @@ class ConsultationsService {
       
       return consultationRef.id;
     } catch (error) {
-      console.error('Error requesting consultation:', error);
+      serviceLogger.error('Error requesting consultation', error as Error, { requesterId, category: data.category });
       throw new Error('Failed to create consultation');
     }
   }
@@ -174,7 +175,7 @@ class ConsultationsService {
       
       return messageRef.id;
     } catch (error) {
-      console.error('Error sending message:', error);
+      serviceLogger.error('Error sending message', error as Error, { consultationId, senderId });
       throw new Error('Failed to send message');
     }
   }
@@ -193,7 +194,7 @@ class ConsultationsService {
         ...doc.data()
       } as ConsultationMessage));
     } catch (error) {
-      console.error('Error getting messages:', error);
+      serviceLogger.error('Error getting messages', error as Error, { consultationId, limitCount });
       return [];
     }
   }
@@ -213,7 +214,7 @@ class ConsultationsService {
         ...doc.data()
       } as Consultation));
     } catch (error) {
-      console.error('Error getting user consultations:', error);
+      serviceLogger.error('Error getting user consultations', error as Error, { userId });
       return [];
     }
   }
@@ -233,7 +234,7 @@ class ConsultationsService {
         ...doc.data()
       } as Consultation));
     } catch (error) {
-      console.error('Error getting expert consultations:', error);
+      serviceLogger.error('Error getting expert consultations', error as Error, { expertId });
       return [];
     }
   }
@@ -262,7 +263,7 @@ class ConsultationsService {
         await this.updateExpertStats(expertId, rating);
       }
     } catch (error) {
-      console.error('Error completing consultation:', error);
+      serviceLogger.error('Error completing consultation', error as Error, { consultationId, rating });
       throw new Error('Failed to complete consultation');
     }
   }
@@ -306,7 +307,7 @@ class ConsultationsService {
         createdAt: serverTimestamp()
       });
     } catch (error) {
-      console.error('Error sending notification:', error);
+      serviceLogger.error('Error sending notification', error as Error, { toUserId, type: data.type });
     }
   }
 }

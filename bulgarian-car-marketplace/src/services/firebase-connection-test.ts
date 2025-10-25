@@ -11,6 +11,7 @@ import {
   serverTimestamp
 } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
+import { serviceLogger } from './logger-wrapper';
 
 // Firebase Connection Test Service
 // This service tests the real connection to Firebase and Firestore
@@ -34,14 +35,13 @@ class FirebaseConnectionTestService {
     error?: string;
   }> {
     try {
-      console.log('🔄 Testing Firebase connection...');
+      serviceLogger.info('Testing Firebase connection');
       
       // Test 1: Get users from Firestore
       const usersSnapshot = await getDocs(collection(db, 'users'));
       const usersCount = usersSnapshot.docs.length;
       
-      console.log('✅ Firebase connection successful!');
-      console.log(`📊 Found ${usersCount} users in Firestore`);
+      serviceLogger.info('Firebase connection successful', { usersCount });
       
       // Test 2: Get user details
       const users = usersSnapshot.docs.map(doc => {
@@ -67,7 +67,7 @@ class FirebaseConnectionTestService {
       };
       
     } catch (error: any) {
-      console.error('❌ Firebase connection failed:', error);
+      serviceLogger.error('Firebase connection failed', error as Error);
       
       // Return mock data if connection fails
       const mockUsers = [
@@ -111,7 +111,7 @@ class FirebaseConnectionTestService {
     error?: string;
   }> {
     try {
-      console.log('🔄 Testing Firestore write operation...');
+      serviceLogger.info('Testing Firestore write operation');
       
       // Create a test document
       const testDoc = {
@@ -123,8 +123,7 @@ class FirebaseConnectionTestService {
       
       const docRef = await addDoc(collection(db, 'connectionTests'), testDoc);
       
-      console.log('✅ Firestore write operation successful!');
-      console.log(`📝 Created test document: ${docRef.id}`);
+      serviceLogger.info('Firestore write operation successful', { documentId: docRef.id });
       
       return {
         success: true,
@@ -137,7 +136,7 @@ class FirebaseConnectionTestService {
       };
       
     } catch (error: any) {
-      console.error('❌ Firestore write operation failed:', error);
+      serviceLogger.error('Firestore write operation failed', error as Error);
       return {
         success: false,
         message: 'Firestore write operation failed',
@@ -154,7 +153,7 @@ class FirebaseConnectionTestService {
     error?: string;
   }> {
     try {
-      console.log('🔄 Fetching real users data...');
+      serviceLogger.info('Fetching real users data');
       
       const usersSnapshot = await getDocs(collection(db, 'users'));
       const users = usersSnapshot.docs.map(doc => {
@@ -181,8 +180,7 @@ class FirebaseConnectionTestService {
         };
       });
       
-      console.log('✅ Real users data fetched successfully!');
-      console.log(`📊 Found ${users.length} real users`);
+      serviceLogger.info('Real users data fetched successfully', { usersCount: users.length });
       
       return {
         success: true,
@@ -195,7 +193,7 @@ class FirebaseConnectionTestService {
       };
       
     } catch (error: any) {
-      console.error('❌ Failed to fetch real users data:', error);
+      serviceLogger.error('Failed to fetch real users data', error as Error);
       return {
         success: false,
         message: 'Failed to fetch real users data',
@@ -212,7 +210,7 @@ class FirebaseConnectionTestService {
     error?: string;
   }> {
     try {
-      console.log('🔄 Testing real-time updates...');
+      serviceLogger.info('Testing real-time updates');
       
       // Get current timestamp
       const now = new Date();
@@ -227,8 +225,7 @@ class FirebaseConnectionTestService {
       const recentUsersSnapshot = await getDocs(recentUsersQuery);
       const recentUsers = recentUsersSnapshot.docs.length;
       
-      console.log('✅ Real-time updates test successful!');
-      console.log(`📊 Found ${recentUsers} users active in the last hour`);
+      serviceLogger.info('Real-time updates test successful', { recentUsers });
       
       return {
         success: true,
@@ -240,7 +237,7 @@ class FirebaseConnectionTestService {
       };
       
     } catch (error: any) {
-      console.error('❌ Real-time updates test failed:', error);
+      serviceLogger.error('Real-time updates test failed', error as Error);
       return {
         success: false,
         message: 'Real-time updates test failed',
@@ -257,7 +254,7 @@ class FirebaseConnectionTestService {
     error?: string;
   }> {
     try {
-      console.log('🚀 Running complete Firebase test suite...');
+      serviceLogger.info('Running complete Firebase test suite');
       
       const results = [];
       
@@ -278,9 +275,12 @@ class FirebaseConnectionTestService {
       results.push({ test: 'Real-time Updates', ...realTimeTest });
       
       const allTestsPassed = results.every(result => result.success);
+      const passedCount = results.filter(r => r.success).length;
       
-      console.log('✅ Complete Firebase test suite finished!');
-      console.log(`📊 Results: ${results.filter(r => r.success).length}/${results.length} tests passed`);
+      serviceLogger.info('Complete Firebase test suite finished', { 
+        passed: passedCount, 
+        total: results.length 
+      });
       
       return {
         success: allTestsPassed,
@@ -292,7 +292,7 @@ class FirebaseConnectionTestService {
       };
       
     } catch (error: any) {
-      console.error('❌ Complete Firebase test suite failed:', error);
+      serviceLogger.error('Complete Firebase test suite failed', error as Error);
       return {
         success: false,
         message: 'Complete Firebase test suite failed',

@@ -5,6 +5,7 @@
 import { User } from 'firebase/auth';
 import { doc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
+import { serviceLogger } from '../logger-wrapper';
 
 interface GoogleProfileData {
   id: string;
@@ -36,14 +37,14 @@ class GoogleProfileSyncService {
   async syncGoogleProfile(user: User): Promise<void> {
     try {
       if (process.env.NODE_ENV === 'development') {
-        console.log('🔄 Starting Google profile sync for user:', user.uid);
+        serviceLogger.info('Starting Google profile sync for user', { uid: user.uid });
       }
       
       // Get Google profile data
       const googleData = await this.getGoogleProfileData(user);
       
       if (!googleData) {
-        console.warn('⚠️ No Google profile data available');
+        serviceLogger.warn('No Google profile data available', { uid: user.uid });
         return;
       }
 
@@ -88,10 +89,10 @@ class GoogleProfileSyncService {
       });
 
       if (process.env.NODE_ENV === 'development') {
-        console.log('✅ Google profile synced successfully');
+        serviceLogger.info('Google profile synced successfully', { uid: user.uid });
       }
     } catch (error) {
-      console.error('❌ Google profile sync error:', error);
+      serviceLogger.error('Google profile sync error', error as Error, { uid: user.uid });
       throw error;
     }
   }
@@ -119,7 +120,7 @@ class GoogleProfileSyncService {
       const data: GoogleProfileData = await response.json();
       return data;
     } catch (error) {
-      console.error('Error fetching Google profile data:', error);
+      serviceLogger.error('Error fetching Google profile data', error as Error);
       return null;
     }
   }
@@ -142,7 +143,7 @@ class GoogleProfileSyncService {
       // Sync every 7 days
       return daysSinceSync > 7;
     } catch (error) {
-      console.error('Error checking sync status:', error);
+      serviceLogger.error('Error checking sync status', error as Error, { userId });
       return false;
     }
   }

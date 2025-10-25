@@ -18,6 +18,7 @@ import {
 } from 'firebase/firestore';
 import { ref, deleteObject, listAll } from 'firebase/storage';
 import { db, storage } from '../../firebase/firebase-config';
+import { serviceLogger } from '../logger-wrapper';
 
 interface DeleteResult {
   success: boolean;
@@ -45,9 +46,7 @@ class CarDeleteService {
     const errors: string[] = [];
     
     try {
-      if (process.env.NODE_ENV === 'development') {
-        console.log('🗑️ Starting car deletion process for:', carId);
-      }
+      serviceLogger.info('Starting car deletion process', { carId, userId });
 
       // 1. Verify ownership
       const carDoc = await getDoc(doc(db, 'cars', carId));
@@ -70,7 +69,7 @@ class CarDeleteService {
       try {
         await this.deleteCarImages(carId, carData.images || []);
       } catch (error) {
-        console.error('Error deleting images:', error);
+        serviceLogger.error('Error deleting images', error as Error, { carId });
         errors.push('Images deletion failed');
       }
 
@@ -78,7 +77,7 @@ class CarDeleteService {
       try {
         await this.deleteCarMessages(carId);
       } catch (error) {
-        console.error('Error deleting messages:', error);
+        serviceLogger.error('Error deleting messages', error as Error, { carId });
         errors.push('Messages deletion failed');
       }
 
@@ -86,7 +85,7 @@ class CarDeleteService {
       try {
         await this.removeFromFavorites(carId);
       } catch (error) {
-        console.error('Error removing favorites:', error);
+        serviceLogger.error('Error removing favorites', error as Error, { carId });
         errors.push('Favorites removal failed');
       }
 
@@ -94,7 +93,7 @@ class CarDeleteService {
       try {
         await this.deleteCarAnalytics(carId);
       } catch (error) {
-        console.error('Error deleting analytics:', error);
+        serviceLogger.error('Error deleting analytics', error as Error, { carId });
         errors.push('Analytics deletion failed');
       }
 
@@ -105,7 +104,7 @@ class CarDeleteService {
           'stats.carsListed': increment(-1)
         });
       } catch (error) {
-        console.error('Error updating user stats:', error);
+        serviceLogger.error('Error updating user stats', error as Error, { userId, carId });
         errors.push('Stats update failed');
       }
 
@@ -125,16 +124,14 @@ class CarDeleteService {
           ip: await this.getClientIP()
         });
       } catch (error) {
-        console.error('Error creating audit log:', error);
+        serviceLogger.error('Error creating audit log', error as Error, { carId, userId });
         errors.push('Audit log failed');
       }
 
       // 8. Finally, delete the car document
       await deleteDoc(doc(db, 'cars', carId));
 
-      if (process.env.NODE_ENV === 'development') {
-        console.log('✅ Car deleted successfully:', carId);
-      }
+      serviceLogger.info('Car deleted successfully', { carId, userId });
 
       return {
         success: true,
@@ -143,7 +140,7 @@ class CarDeleteService {
       };
 
     } catch (error) {
-      console.error('❌ Car deletion error:', error);
+      serviceLogger.error('Car deletion error', error as Error, { carId, userId });
       return {
         success: false,
         message: 'Грешка при изтриване / Deletion error',
@@ -177,7 +174,7 @@ class CarDeleteService {
         deletePromises.push(deleteObject(item));
       }
     } catch (error) {
-      console.error('Error listing car images:', error);
+      serviceLogger.error('Error listing car images', error as Error, { carId });
     }
 
     await Promise.allSettled(deletePromises);

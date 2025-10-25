@@ -3,6 +3,7 @@
 
 import { collection, query, where, getDocs, getCountFromServer } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
+import { serviceLogger } from './logger-wrapper';
 
 interface RegionCount {
   count: number;
@@ -20,12 +21,12 @@ export class RegionCarCountService {
     // Check cache first
     const cached = this.cache[regionId];
     if (cached && Date.now() - cached.timestamp < this.CACHE_DURATION) {
-      console.log(`✅ Cache hit for region ${regionId}: ${cached.count} cars`);
+      serviceLogger.debug('Cache hit for region', { regionId, count: cached.count });
       return cached.count;
     }
 
     try {
-      console.log(`🔍 Fetching car count for region: ${regionId}`);
+      serviceLogger.debug('Fetching car count for region', { regionId });
       
       // Query cars collection where region matches
       const q = query(
@@ -44,14 +45,14 @@ export class RegionCarCountService {
         timestamp: Date.now()
       };
 
-      console.log(`✅ Fetched count for region ${regionId}: ${count} cars`);
+      serviceLogger.info('Fetched count for region', { regionId, count });
       return count;
     } catch (error) {
-      console.error(`❌ Error fetching count for region ${regionId}:`, error);
+      serviceLogger.error('Error fetching count for region', error as Error, { regionId });
       
       // Return cached value if exists, otherwise 0
       if (cached) {
-        console.log(`⚠️ Using stale cache for ${regionId}: ${cached.count}`);
+        serviceLogger.warn('Using stale cache for region', { regionId, count: cached.count });
         return cached.count;
       }
       return 0;
@@ -62,7 +63,7 @@ export class RegionCarCountService {
    * Get car counts for all Bulgarian regions (28 regions)
    */
   static async getAllRegionCounts(regionIds: string[]): Promise<Record<string, number>> {
-    console.log(`🗺️ Fetching car counts for ${regionIds.length} regions...`);
+    serviceLogger.info('Fetching car counts for all regions', { regionCount: regionIds.length });
     const counts: Record<string, number> = {};
 
     // Fetch all counts in parallel for better performance
@@ -71,7 +72,7 @@ export class RegionCarCountService {
         const count = await this.getCarsCountByRegion(regionId);
         counts[regionId] = count;
       } catch (error) {
-        console.error(`❌ Error for region ${regionId}:`, error);
+        serviceLogger.error('Error for region', error as Error, { regionId });
         counts[regionId] = 0;
       }
     });
@@ -79,7 +80,7 @@ export class RegionCarCountService {
     await Promise.allSettled(promises); // Use allSettled to not fail if one fails
     
     const totalCars = Object.values(counts).reduce((sum, count) => sum + count, 0);
-    console.log(`✅ Total cars across all regions: ${totalCars}`);
+    serviceLogger.info('Total cars across all regions', { totalCars, regionCount: regionIds.length });
     
     return counts;
   }
@@ -89,7 +90,7 @@ export class RegionCarCountService {
    */
   static clearCacheForRegion(regionId: string) {
     delete this.cache[regionId];
-    console.log(`🗑️ Cleared cache for region: ${regionId}`);
+    serviceLogger.debug('Cleared cache for region', { regionId });
   }
 
   /**
@@ -97,7 +98,7 @@ export class RegionCarCountService {
    */
   static clearAllCache() {
     this.cache = {};
-    console.log(`🗑️ Cleared all region cache`);
+    serviceLogger.debug('Cleared all region cache', {});
   }
 
   /**

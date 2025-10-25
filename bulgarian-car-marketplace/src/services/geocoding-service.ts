@@ -1,6 +1,8 @@
 // Geocoding Service for Bulgarian Car Marketplace
 // Convert addresses to coordinates using Google Maps Geocoding API
 
+import { serviceLogger } from './logger-wrapper';
+
 export interface GeocodeResult {
   latitude: number;
   longitude: number;
@@ -31,7 +33,7 @@ export class GeocodingService {
    */
   async geocodeAddress(address: string): Promise<GeocodeResult | null> {
     if (!this.apiKey || this.apiKey === 'YOUR_GOOGLE_MAPS_API_KEY') {
-      console.warn('Google Maps API key not configured');
+      serviceLogger.warn('Google Maps API key not configured', {});
       return null;
     }
 
@@ -66,10 +68,10 @@ export class GeocodingService {
         };
       }
 
-      console.warn('Geocoding failed:', data.status);
+      serviceLogger.warn('Geocoding failed', { status: data.status, address });
       return null;
     } catch (error) {
-      console.error('[SERVICE] Geocoding error:', error);
+      serviceLogger.error('Geocoding error', error as Error, { address });
       return null;
     }
   }
@@ -79,7 +81,7 @@ export class GeocodingService {
    */
   async reverseGeocode(lat: number, lng: number): Promise<ReverseGeocodeResult | null> {
     if (!this.apiKey || this.apiKey === 'YOUR_GOOGLE_MAPS_API_KEY') {
-      console.warn('Google Maps API key not configured');
+      serviceLogger.warn('Google Maps API key not configured', {});
       return null;
     }
 
@@ -103,10 +105,10 @@ export class GeocodingService {
         };
       }
 
-      console.warn('Reverse geocoding failed:', data.status);
+      serviceLogger.warn('Reverse geocoding failed', { status: data.status, lat, lng });
       return null;
     } catch (error) {
-      console.error('[SERVICE] Reverse geocoding error:', error);
+      serviceLogger.error('Reverse geocoding error', error as Error, { lat, lng });
       return null;
     }
   }
@@ -143,7 +145,7 @@ export class GeocodingService {
   async getCurrentLocation(): Promise<{ lat: number; lng: number } | null> {
     return new Promise((resolve) => {
       if (!navigator.geolocation) {
-        console.warn('Geolocation is not supported by this browser');
+        serviceLogger.warn('Geolocation not supported by browser', {});
         resolve(null);
         return;
       }
@@ -156,7 +158,7 @@ export class GeocodingService {
           });
         },
         (error) => {
-          console.warn('Error getting location:', error.message);
+          serviceLogger.warn('Error getting location', { error: error.message });
           resolve(null);
         }
       );
@@ -227,6 +229,13 @@ export class GeocodingService {
 
 // Export singleton instance
 export const geocodingService = new GeocodingService();
+
+
+
+
+
+
+
 
 
 

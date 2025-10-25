@@ -4,6 +4,7 @@
 
 import { httpsCallable } from 'firebase/functions';
 import { functions } from '../firebase/firebase-config';
+import { serviceLogger } from './logger-wrapper';
 
 // ==================== TYPES ====================
 
@@ -46,7 +47,7 @@ export const getCommissionPeriods = async (params?: {
     const result = await getCommissionPeriodsFn(params || {});
     return result.data as any;
   } catch (error: any) {
-    console.error('Error getting commission periods:', error);
+    serviceLogger.error('Error getting commission periods', error as Error, { params });
     return { success: false, error: error.message };
   }
 };
@@ -63,7 +64,7 @@ export const getCommissionPeriod = async (
     const result = await getCommissionPeriodFn({ period });
     return result.data as any;
   } catch (error: any) {
-    console.error('Error getting commission period:', error);
+    serviceLogger.error('Error getting commission period', error as Error, { period });
     return { success: false, error: error.message };
   }
 };
@@ -86,7 +87,7 @@ export const getAllCommissionPeriods = async (params?: {
     const result = await getAllCommissionPeriodsFn(params || {});
     return result.data as any;
   } catch (error: any) {
-    console.error('Error getting all commission periods:', error);
+    serviceLogger.error('Error getting all commission periods', error as Error, { params });
     return { success: false, error: error.message };
   }
 };
@@ -102,7 +103,7 @@ export const getCommissionRate = async (): Promise<{
     const result = await getCommissionRateFn();
     return result.data as any;
   } catch (error: any) {
-    console.error('Error getting commission rate:', error);
+    serviceLogger.error('Error getting commission rate', error as Error);
     return { success: false, error: error.message };
   }
 };
@@ -120,7 +121,7 @@ export const triggerCommissionCharging = async (
     const result = await triggerCommissionChargingFn({ period });
     return result.data as any;
   } catch (error: any) {
-    console.error('Error triggering commission charging:', error);
+    serviceLogger.error('Error triggering commission charging', error as Error, { period });
     return { success: false, error: error.message };
   }
 };
@@ -138,7 +139,7 @@ export const markCommissionPaid = async (
     const result = await markCommissionPaidFn({ period, userId, notes });
     return result.data as any;
   } catch (error: any) {
-    console.error('Error marking commission paid:', error);
+    serviceLogger.error('Error marking commission paid', error as Error, { period, userId });
     return { success: false, error: error.message };
   }
 };
@@ -156,7 +157,7 @@ export const generateCommissionStatement = async (
     const result = await generateCommissionStatementFn({ period, userId });
     return result.data as any;
   } catch (error: any) {
-    console.error('Error generating commission statement:', error);
+    serviceLogger.error('Error generating commission statement', error as Error, { period, userId });
     return { success: false, error: error.message };
   }
 };

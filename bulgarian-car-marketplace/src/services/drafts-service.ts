@@ -18,6 +18,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
 import { SellWorkflowData } from '../hooks/useSellWorkflow';
+import { serviceLogger } from './logger-wrapper';
 
 export interface Draft {
   id: string;
@@ -65,10 +66,10 @@ export class DraftsService {
         draftData
       );
 
-      console.log('✅ Draft created:', docRef.id);
+      serviceLogger.info('Draft created', { draftId: docRef.id, userId });
       return docRef.id;
     } catch (error) {
-      console.error('❌ Error creating draft:', error);
+      serviceLogger.error('Error creating draft', error as Error, { userId });
       throw error;
     }
   }
@@ -92,9 +93,9 @@ export class DraftsService {
         updatedAt: serverTimestamp()
       });
 
-      console.log('✅ Draft updated:', draftId);
+      serviceLogger.info('Draft updated', { draftId, currentStep });
     } catch (error) {
-      console.error('❌ Error updating draft:', error);
+      serviceLogger.error('Error updating draft', error as Error, { draftId });
       throw error;
     }
   }
@@ -118,7 +119,7 @@ export class DraftsService {
         ...doc.data()
       } as Draft));
     } catch (error) {
-      console.error('❌ Error getting drafts:', error);
+      serviceLogger.error('Error getting user drafts', error as Error, { userId });
       return [];
     }
   }
@@ -139,7 +140,7 @@ export class DraftsService {
       
       return null;
     } catch (error) {
-      console.error('❌ Error getting draft:', error);
+      serviceLogger.error('Error getting draft', error as Error, { draftId });
       return null;
     }
   }
@@ -150,9 +151,9 @@ export class DraftsService {
   static async deleteDraft(draftId: string): Promise<void> {
     try {
       await deleteDoc(doc(db, this.collectionName, draftId));
-      console.log('✅ Draft deleted:', draftId);
+      serviceLogger.info('Draft deleted', { draftId });
     } catch (error) {
-      console.error('❌ Error deleting draft:', error);
+      serviceLogger.error('Error deleting draft', error as Error, { draftId });
       throw error;
     }
   }
@@ -180,7 +181,7 @@ export class DraftsService {
         return newDraftId;
       }
     } catch (error) {
-      console.error('❌ Auto-save failed:', error);
+      serviceLogger.error('Auto-save draft failed', error as Error, { userId, draftId });
       return draftId || '';
     }
   }
@@ -203,10 +204,10 @@ export class DraftsService {
       
       await Promise.all(deletePromises);
       
-      console.log(`✅ Cleaned up ${snapshot.size} expired drafts`);
+      serviceLogger.info('Cleaned up expired drafts', { count: snapshot.size });
       return snapshot.size;
     } catch (error) {
-      console.error('❌ Error cleaning up drafts:', error);
+      serviceLogger.error('Error cleaning up expired drafts', error as Error);
       return 0;
     }
   }

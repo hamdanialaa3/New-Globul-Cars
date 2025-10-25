@@ -16,6 +16,7 @@ import {
   setDoc
 } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
+import { serviceLogger } from './logger-wrapper';
 
 // Types
 export interface FavoriteCarData {
@@ -64,7 +65,7 @@ class FavoritesService {
       // Check if already exists
       const exists = await this.isFavorite(userId, favoriteData.carId);
       if (exists) {
-        console.log('[Favorites] Car already in favorites');
+        serviceLogger.info('Car already in favorites', { userId, carId: favoriteData.carId });
         return favoriteData.carId;
       }
 
@@ -86,10 +87,10 @@ class FavoritesService {
       };
 
       const docRef = await addDoc(favoritesRef, newFavorite);
-      console.log('[Favorites] Car added to favorites:', docRef.id);
+      serviceLogger.info('Car added to favorites', { userId, carId: favoriteData.carId, favoriteId: docRef.id });
       return docRef.id;
     } catch (error) {
-      console.error('[Favorites] Error adding favorite:', error);
+      serviceLogger.error('Error adding favorite', error as Error, { userId, carId: favoriteData.carId });
       throw error;
     }
   }
@@ -111,10 +112,10 @@ class FavoritesService {
       if (!querySnapshot.empty) {
         const favoriteDoc = querySnapshot.docs[0];
         await deleteDoc(doc(db, this.collectionName, favoriteDoc.id));
-        console.log('[Favorites] Favorite removed successfully');
+        serviceLogger.info('Favorite removed successfully', { userId, carId, favoriteId: favoriteDoc.id });
       }
     } catch (error) {
-      console.error('[Favorites] Error removing favorite:', error);
+      serviceLogger.error('Error removing favorite', error as Error, { userId, carId });
       throw error;
     }
   }
@@ -134,7 +135,7 @@ class FavoritesService {
       const querySnapshot = await getDocs(q);
       return !querySnapshot.empty;
     } catch (error) {
-      console.error('[Favorites] Error checking favorite:', error);
+      serviceLogger.error('Error checking favorite', error as Error, { userId, carId });
       return false;
     }
   }
@@ -161,10 +162,10 @@ class FavoritesService {
         } as FavoriteCar);
       });
 
-      console.log(`[Favorites] Retrieved ${favorites.length} favorites for user`);
+      serviceLogger.info('Retrieved favorites for user', { userId, count: favorites.length });
       return favorites;
     } catch (error) {
-      console.error('[Favorites] Error getting favorites:', error);
+      serviceLogger.error('Error getting favorites', error as Error, { userId });
       throw error;
     }
   }
@@ -177,7 +178,7 @@ class FavoritesService {
       const favorites = await this.getUserFavorites(userId);
       return favorites.length;
     } catch (error) {
-      console.error('[Favorites] Error getting count:', error);
+      serviceLogger.error('Error getting favorites count', error as Error, { userId });
       return 0;
     }
   }
@@ -204,7 +205,7 @@ class FavoritesService {
         return true;
       }
     } catch (error) {
-      console.error('[Favorites] Error toggling favorite:', error);
+      serviceLogger.error('Error toggling favorite', error as Error, { userId, carId });
       throw error;
     }
   }
@@ -232,10 +233,10 @@ class FavoritesService {
           priceHistory
         }, { merge: true });
 
-        console.log('[Favorites] Price updated:', favoriteId);
+        serviceLogger.info('Price updated', { favoriteId, newPrice });
       }
     } catch (error) {
-      console.error('[Favorites] Error updating price:', error);
+      serviceLogger.error('Error updating price', error as Error, { favoriteId, newPrice });
       throw error;
     }
   }
@@ -247,9 +248,9 @@ class FavoritesService {
     try {
       const favoriteRef = doc(db, this.collectionName, favoriteId);
       await setDoc(favoriteRef, { notes: note }, { merge: true });
-      console.log('[Favorites] Note added');
+      serviceLogger.info('Note added to favorite', { favoriteId });
     } catch (error) {
-      console.error('[Favorites] Error adding note:', error);
+      serviceLogger.error('Error adding note', error as Error, { favoriteId });
       throw error;
     }
   }
@@ -261,9 +262,9 @@ class FavoritesService {
     try {
       const favoriteRef = doc(db, this.collectionName, favoriteId);
       await setDoc(favoriteRef, { tags }, { merge: true });
-      console.log('[Favorites] Tags added');
+      serviceLogger.info('Tags added to favorite', { favoriteId, tagsCount: tags.length });
     } catch (error) {
-      console.error('[Favorites] Error adding tags:', error);
+      serviceLogger.error('Error adding tags', error as Error, { favoriteId });
       throw error;
     }
   }
@@ -278,9 +279,9 @@ class FavoritesService {
     try {
       const favoriteRef = doc(db, this.collectionName, favoriteId);
       await setDoc(favoriteRef, { notifyOnPriceChange: enabled }, { merge: true });
-      console.log('[Favorites] Price notifications toggled');
+      serviceLogger.info('Price notifications toggled', { favoriteId, enabled });
     } catch (error) {
-      console.error('[Favorites] Error toggling notifications:', error);
+      serviceLogger.error('Error toggling notifications', error as Error, { favoriteId, enabled });
       throw error;
     }
   }
@@ -298,7 +299,7 @@ class FavoritesService {
         return currentPrice < originalPrice;
       });
     } catch (error) {
-      console.error('[Favorites] Error getting price drops:', error);
+      serviceLogger.error('Error getting price drops', error as Error, { userId });
       return [];
     }
   }

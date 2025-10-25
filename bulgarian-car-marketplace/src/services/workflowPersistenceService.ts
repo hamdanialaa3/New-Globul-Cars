@@ -2,6 +2,7 @@
 // خدمة حفظ حالة workflow في localStorage
 
 import ImageOptimizationService from './imageOptimizationService';
+import { serviceLogger } from './logger-wrapper';
 
 const STORAGE_KEY = 'globul_sell_workflow_state';
 const IMAGES_KEY = 'globul_sell_workflow_images';
@@ -28,9 +29,9 @@ export class WorkflowPersistenceService {
       };
 
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      console.log('💾 Workflow state saved');
+      serviceLogger.info('Workflow state saved', { currentStep });
     } catch (error) {
-      console.error('❌ Error saving workflow state:', error);
+      serviceLogger.error('Error saving workflow state', error as Error, { currentStep });
     }
   }
 
@@ -46,15 +47,15 @@ export class WorkflowPersistenceService {
 
       // Check if expired
       if (Date.now() - state.lastUpdated > EXPIRY_TIME) {
-        console.log('⏰ Workflow state expired, clearing...');
+        serviceLogger.info('Workflow state expired, clearing');
         this.clearState();
         return null;
       }
 
-      console.log('✅ Workflow state loaded');
+      serviceLogger.info('Workflow state loaded', { currentStep: state.currentStep });
       return state;
     } catch (error) {
-      console.error('❌ Error loading workflow state:', error);
+      serviceLogger.error('Error loading workflow state', error as Error);
       return null;
     }
   }
@@ -65,7 +66,7 @@ export class WorkflowPersistenceService {
   static clearState(): void {
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem(IMAGES_KEY);
-    console.log('🗑️ Workflow state cleared');
+    serviceLogger.info('Workflow state cleared');
   }
 
   /**
@@ -73,16 +74,16 @@ export class WorkflowPersistenceService {
    */
   static async saveImages(files: File[]): Promise<void> {
     try {
-      console.log(`💾 Saving ${files.length} images to localStorage...`);
+      serviceLogger.info('Saving images to localStorage', { count: files.length });
       
       const base64Images = await Promise.all(
         files.map(file => ImageOptimizationService.imageToBase64(file))
       );
 
       localStorage.setItem(IMAGES_KEY, JSON.stringify(base64Images));
-      console.log('✅ Images saved');
+      serviceLogger.info('Images saved successfully', { count: files.length });
     } catch (error) {
-      console.error('❌ Error saving images:', error);
+      serviceLogger.error('Error saving images', error as Error, { count: files.length });
       throw error;
     }
   }
@@ -97,7 +98,7 @@ export class WorkflowPersistenceService {
 
       return JSON.parse(saved);
     } catch (error) {
-      console.error('❌ Error loading images:', error);
+      serviceLogger.error('Error loading images', error as Error);
       return [];
     }
   }
@@ -113,7 +114,7 @@ export class WorkflowPersistenceService {
         ImageOptimizationService.base64ToFile(base64, `car-image-${index}.jpg`)
       );
     } catch (error) {
-      console.error('❌ Error converting images to files:', error);
+      serviceLogger.error('Error converting images to files', error as Error);
       return [];
     }
   }

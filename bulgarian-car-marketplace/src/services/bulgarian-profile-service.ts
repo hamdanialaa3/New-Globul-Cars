@@ -28,6 +28,7 @@ import {
 } from 'firebase/auth';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import { auth, db, storage } from '../firebase/firebase-config';
+import { serviceLogger } from './logger-wrapper';
 import { BulgarianUserProfile } from '../firebase/social-auth-service';
 
 // Extended interfaces for Bulgarian market
@@ -211,7 +212,7 @@ export class BulgarianProfileService {
 
       return completeProfile;
     } catch (error) {
-      console.error('[SERVICE] Error creating complete profile:', error);
+      serviceLogger.error('[SERVICE] Error creating complete profile', error as Error, { userId });
       throw new Error('Failed to create user profile');
     }
   }
@@ -249,7 +250,7 @@ export class BulgarianProfileService {
         });
       }
     } catch (error) {
-      console.error('[SERVICE] Error updating user profile:', error);
+      serviceLogger.error('[SERVICE] Error updating user profile', error as Error, { userId });
       throw error;
     }
   }
@@ -280,7 +281,7 @@ export class BulgarianProfileService {
       
       return downloadURL;
     } catch (error) {
-      console.error('[SERVICE] Error uploading profile picture:', error);
+      serviceLogger.error('[SERVICE] Error uploading profile picture', error as Error, { userId, fileName: file.name });
       throw new Error('Failed to upload profile picture');
     }
   }
@@ -310,7 +311,7 @@ export class BulgarianProfileService {
         updatedAt: serverTimestamp()
       });
     } catch (error) {
-      console.error('[SERVICE] Error setting up dealer profile:', error);
+      serviceLogger.error('[SERVICE] Error setting up dealer profile', error as Error, { userId, companyName: dealerData.companyName });
       throw error;
     }
   }
@@ -362,7 +363,7 @@ export class BulgarianProfileService {
         });
       }
     } catch (error) {
-      console.error('[SERVICE] Error tracking user activity:', error);
+      serviceLogger.error('[SERVICE] Error tracking user activity', error as Error, { userId, activityType: activity.type });
       // Don't throw error for tracking failures
     }
   }
@@ -384,7 +385,7 @@ export class BulgarianProfileService {
       // For now, return the structure
       return [];
     } catch (error) {
-      console.error('[SERVICE] Error getting user favorites:', error);
+      serviceLogger.error('[SERVICE] Error getting user favorites', error as Error, { userId });
       return [];
     }
   }
@@ -400,7 +401,7 @@ export class BulgarianProfileService {
         updatedAt: serverTimestamp()
       });
     } catch (error) {
-      console.error('[SERVICE] Error updating preferences:', error);
+      serviceLogger.error('[SERVICE] Error updating preferences', error as Error, { userId });
       throw new Error('Failed to update preferences');
     }
   }
@@ -418,7 +419,7 @@ export class BulgarianProfileService {
         callback(null);
       }
     }, (error) => {
-      console.error('[SERVICE] Error in real-time profile listener:', error);
+      serviceLogger.error('[SERVICE] Error in real-time profile listener', error as Error, { userId });
       callback(null);
     });
   }
@@ -437,7 +438,7 @@ export class BulgarianProfileService {
       
       return null;
     } catch (error) {
-      console.error('[SERVICE] Error getting user profile:', error);
+      serviceLogger.error('[SERVICE] Error getting user profile', error as Error, { userId });
       throw new Error('Failed to get user profile');
     }
   }
@@ -477,7 +478,7 @@ export class BulgarianProfileService {
       }
       
     } catch (error) {
-      console.error('[SERVICE] Error deleting user profile:', error);
+      serviceLogger.error('[SERVICE] Error deleting user profile', error as Error, { userId });
       throw new Error('Failed to delete user profile');
     }
   }
@@ -523,7 +524,7 @@ export class BulgarianProfileService {
       });
       
     } catch (error) {
-      console.error('[SERVICE] Error updating email:', error);
+      serviceLogger.error('[SERVICE] Error updating email', error as Error, { newEmail });
       throw error;
     }
   }
@@ -548,7 +549,7 @@ export class BulgarianProfileService {
       await updatePassword(auth.currentUser, newPassword);
       
     } catch (error) {
-      console.error('[SERVICE] Error updating password:', error);
+      serviceLogger.error('[SERVICE] Error updating password', error as Error);
       throw error;
     }
   }

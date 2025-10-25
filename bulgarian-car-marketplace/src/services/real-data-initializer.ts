@@ -7,6 +7,7 @@ import {
   writeBatch
 } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
+import { serviceLogger } from './logger-wrapper';
 
 // Real Data Initializer Service
 class RealDataInitializer {
@@ -112,9 +113,9 @@ class RealDataInitializer {
       }
 
       await batch.commit();
-      console.log('✅ Real users data initialized');
+      serviceLogger.info('Real users data initialized');
     } catch (error) {
-      console.error('Error initializing real users:', error);
+      serviceLogger.error('Error initializing real users', error as Error);
     }
   }
 
@@ -213,9 +214,9 @@ class RealDataInitializer {
       }
 
       await batch.commit();
-      console.log('✅ Real cars data initialized');
+      serviceLogger.info('Real cars data initialized');
     } catch (error) {
-      console.error('Error initializing real cars:', error);
+      serviceLogger.error('Error initializing real cars', error as Error);
     }
   }
 
@@ -266,9 +267,9 @@ class RealDataInitializer {
       }
 
       await batch.commit();
-      console.log('✅ Real messages data initialized');
+      serviceLogger.info('Real messages data initialized');
     } catch (error) {
-      console.error('Error initializing real messages:', error);
+      serviceLogger.error('Error initializing real messages', error as Error);
     }
   }
 
@@ -316,9 +317,9 @@ class RealDataInitializer {
       }
 
       await batch.commit();
-      console.log('✅ Real views data initialized');
+      serviceLogger.info('Real views data initialized');
     } catch (error) {
-      console.error('Error initializing real views:', error);
+      serviceLogger.error('Error initializing real views', error as Error);
     }
   }
 
@@ -375,16 +376,16 @@ class RealDataInitializer {
       }
 
       await batch.commit();
-      console.log('✅ Real user activity data initialized');
+      serviceLogger.info('Real user activity data initialized');
     } catch (error) {
-      console.error('Error initializing real user activity:', error);
+      serviceLogger.error('Error initializing real user activity', error as Error);
     }
   }
 
   // Initialize all real data
   public async initializeAllRealData(): Promise<void> {
     try {
-      console.log('🚀 Initializing real data...');
+      serviceLogger.info('Initializing real data');
       
       await Promise.all([
         this.initializeRealUsers(),
@@ -394,9 +395,9 @@ class RealDataInitializer {
         this.initializeRealUserActivity()
       ]);
       
-      console.log('✅ All real data initialized successfully!');
+      serviceLogger.info('All real data initialized successfully');
     } catch (error) {
-      console.error('Error initializing all real data:', error);
+      serviceLogger.error('Error initializing all real data', error as Error);
     }
   }
 }

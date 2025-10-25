@@ -8,6 +8,8 @@ import LazySection from '../../components/LazySection';
 
 // Lazy load all sections for better performance
 const HeroSection = React.lazy(() => import('./HeroSection'));
+const SmartFeedSection = React.lazy(() => import('./SmartFeedSection'));
+const CarCarousel3D = React.lazy(() => import('../../components/CarCarousel3D'));
 const StatsSection = React.lazy(() => import('./StatsSection'));
 const PopularBrandsSection = React.lazy(() => import('./PopularBrandsSection'));
 const CityCarsSection = React.lazy(() => import('./CityCarsSection'));
@@ -20,9 +22,9 @@ const HomeContainer = styled.div`
   min-height: 100vh;
   background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
 
-  /* ✅ Mobile: Add space below fixed header */
+  /* ✅ Mobile: NO padding-top needed - body already handles it */
   @media (max-width: 768px) {
-    padding-top: 90px; /* ✅ Mobile Header (70px) + Spacing (20px) */
+    padding-top: 0; /* ✅ MOBILE: Removed to prevent double padding */
   }
 `;
 
@@ -65,6 +67,24 @@ const HomePage: React.FC = () => {
       <Suspense fallback={<LoadingFallback>Loading hero section...</LoadingFallback>}>
         <HeroSection />
       </Suspense>
+
+      <SectionSpacer />
+
+      {/* Smart Feed Section - AI-Powered Community Feed (THIRD SECTION) */}
+      <LazySection rootMargin="300px" minHeight="800px">
+        <Suspense fallback={<LoadingFallback>Loading community feed...</LoadingFallback>}>
+          <SmartFeedSection />
+        </Suspense>
+      </LazySection>
+
+      <SectionSpacer />
+
+      {/* 3D Car Carousel - Safety & Buying Guide */}
+      <LazySection rootMargin="300px" minHeight="700px">
+        <Suspense fallback={<LoadingFallback>Loading 3D carousel...</LoadingFallback>}>
+          <CarCarousel3D />
+        </Suspense>
+      </LazySection>
 
       <SectionSpacer />
 

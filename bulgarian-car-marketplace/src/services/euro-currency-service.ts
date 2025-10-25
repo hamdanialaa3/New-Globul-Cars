@@ -13,6 +13,7 @@ import {
   writeBatch
 } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
+import { serviceLogger } from './logger-wrapper';
 
 // Euro Currency Interfaces
 export interface CurrencyConfig {
@@ -186,7 +187,7 @@ class EuroCurrencyService {
         id: doc.id
       } as CommissionStructure));
     } catch (error) {
-      console.error('Error getting commission structures:', error);
+      serviceLogger.error('Error getting commission structures', error as Error);
       return [];
     }
   }
@@ -213,7 +214,7 @@ class EuroCurrencyService {
 
       return newStructure;
     } catch (error) {
-      console.error('Error creating commission structure:', error);
+      serviceLogger.error('Error creating commission structure', error as Error, { createdBy });
       throw error;
     }
   }
@@ -238,7 +239,7 @@ class EuroCurrencyService {
 
       return newTransaction;
     } catch (error) {
-      console.error('Error recording transaction:', error);
+      serviceLogger.error('Error recording financial transaction', error as Error, { transaction });
       throw error;
     }
   }
@@ -275,7 +276,7 @@ class EuroCurrencyService {
         completedAt: doc.data().completedAt?.toDate()
       } as FinancialTransaction));
     } catch (error) {
-      console.error('Error getting financial transactions:', error);
+      serviceLogger.error('Error getting financial transactions', error as Error, { userId, type, status });
       return [];
     }
   }
@@ -332,7 +333,7 @@ class EuroCurrencyService {
         currency: 'EUR'
       };
     } catch (error) {
-      console.error('Error getting financial summary:', error);
+      serviceLogger.error('Error getting financial summary', error as Error, { userId, dateFrom, dateTo });
       return {
         totalRevenue: 0,
         totalCommission: 0,
@@ -393,9 +394,9 @@ class EuroCurrencyService {
       }
       
       await batch.commit();
-      console.log('✅ Default commission structures initialized');
+      serviceLogger.info('Default commission structures initialized');
     } catch (error) {
-      console.error('Error initializing commission structures:', error);
+      serviceLogger.error('Error initializing commission structures', error as Error);
       throw error;
     }
   }
@@ -422,7 +423,7 @@ class EuroCurrencyService {
         isActive: data.isActive || true
       };
     } catch (error) {
-      console.error('Error getting currency config:', error);
+      serviceLogger.error('Error getting currency config', error as Error);
       return null;
     }
   }
@@ -449,7 +450,7 @@ class EuroCurrencyService {
         updatedAt: serverTimestamp()
       });
     } catch (error) {
-      console.error('Error updating currency config:', error);
+      serviceLogger.error('Error updating currency config', error as Error, { updatedBy });
       throw error;
     }
   }

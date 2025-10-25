@@ -7,6 +7,7 @@
 import { getMessaging, getToken, onMessage, Messaging } from 'firebase/messaging';
 import { doc, setDoc, deleteDoc, collection } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
+import { serviceLogger } from '../logger-wrapper';
 
 class FCMService {
   private messaging: Messaging | null = null;
@@ -19,10 +20,10 @@ class FCMService {
     try {
       if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
         this.messaging = getMessaging();
-        console.log('Firebase Messaging initialized');
+        serviceLogger.info('Firebase Messaging initialized');
       }
     } catch (error) {
-      console.error('Error initializing Firebase Messaging:', error);
+      serviceLogger.error('Error initializing Firebase Messaging', error as Error);
     }
   }
 
@@ -32,21 +33,21 @@ class FCMService {
   async requestPermission(): Promise<boolean> {
     try {
       if (!('Notification' in window)) {
-        console.log('This browser does not support notifications');
+        serviceLogger.warn('This browser does not support notifications');
         return false;
       }
 
       const permission = await Notification.requestPermission();
       
       if (permission === 'granted') {
-        console.log('Notification permission granted');
+        serviceLogger.info('Notification permission granted');
         return true;
       } else {
-        console.log('Notification permission denied');
+        serviceLogger.info('Notification permission denied');
         return false;
       }
     } catch (error) {
-      console.error('Error requesting notification permission:', error);
+      serviceLogger.error('Error requesting notification permission', error as Error);
       return false;
     }
   }
@@ -65,14 +66,14 @@ class FCMService {
       }
 
       if (!this.vapidKey) {
-        console.error('VAPID key not configured');
+        serviceLogger.error('VAPID key not configured');
         return null;
       }
 
       const permission = await this.requestPermission();
       
       if (!permission) {
-        console.log('Permission not granted for notifications');
+        serviceLogger.info('Permission not granted for notifications');
         return null;
       }
 
@@ -81,15 +82,15 @@ class FCMService {
       });
 
       if (token) {
-        console.log('FCM token obtained:', token.substring(0, 20) + '...');
+        serviceLogger.info('FCM token obtained', { userId, tokenPreview: token.substring(0, 20) });
         await this.saveTokenToFirestore(userId, token);
         return token;
       } else {
-        console.log('No registration token available');
+        serviceLogger.warn('No registration token available', { userId });
         return null;
       }
     } catch (error) {
-      console.error('Error getting FCM token:', error);
+      serviceLogger.error('Error getting FCM token', error as Error, { userId });
       return null;
     }
   }
@@ -111,9 +112,9 @@ class FCMService {
         }
       });
 
-      console.log('FCM token saved to Firestore');
+      serviceLogger.info('FCM token saved to Firestore', { userId });
     } catch (error) {
-      console.error('Error saving FCM token:', error);
+      serviceLogger.error('Error saving FCM token', error as Error, { userId });
       throw error;
     }
   }
@@ -125,9 +126,9 @@ class FCMService {
     try {
       const tokenRef = doc(db, 'users', userId, 'fcmTokens', token);
       await deleteDoc(tokenRef);
-      console.log('FCM token deleted from Firestore');
+      serviceLogger.info('FCM token deleted from Firestore', { userId });
     } catch (error) {
-      console.error('Error deleting FCM token:', error);
+      serviceLogger.error('Error deleting FCM token', error as Error, { userId });
       throw error;
     }
   }
@@ -141,12 +142,12 @@ class FCMService {
     }
 
     if (!this.messaging) {
-      console.error('Firebase Messaging not initialized');
+      serviceLogger.error('Firebase Messaging not initialized');
       return () => {};
     }
 
     const unsubscribe = onMessage(this.messaging, (payload) => {
-      console.log('Foreground message received:', payload);
+      serviceLogger.debug('Foreground message received', { notificationTitle: payload?.notification?.title });
       callback(payload);
     });
 

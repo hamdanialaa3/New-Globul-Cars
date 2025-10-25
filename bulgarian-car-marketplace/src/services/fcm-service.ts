@@ -11,6 +11,7 @@ import {
 } from 'firebase/messaging';
 import { initializeApp } from 'firebase/app';
 import { BULGARIAN_CONFIG } from '../config/bulgarian-config';
+import { serviceLogger } from './logger-wrapper';
 
 // Firebase configuration
 const firebaseConfig = {
@@ -53,7 +54,7 @@ class FCMService {
     try {
       // Skip initialization in test environment or when window is not available
       if (typeof window === 'undefined' || process.env.NODE_ENV === 'test') {
-        console.warn('FCM initialization skipped in test environment');
+        serviceLogger.warn('FCM initialization skipped in test environment', {});
         return;
       }
 
@@ -63,7 +64,7 @@ class FCMService {
         this.messaging = getMessaging(app);
       }
     } catch (error) {
-      console.error('[SERVICE] Failed to initialize FCM:', error);
+      serviceLogger.error('Failed to initialize FCM', error as Error, {});
     }
   }
 
@@ -76,7 +77,7 @@ class FCMService {
       }
 
       if (!('Notification' in window)) {
-        console.warn('This browser does not support notifications');
+        serviceLogger.warn('Browser does not support notifications', {});
         return false;
       }
 
@@ -88,7 +89,7 @@ return true;
 return false;
       }
     } catch (error) {
-      console.error('[SERVICE] Error requesting notification permission:', error);
+      serviceLogger.error('Error requesting notification permission', error as Error, {});
       return false;
     }
   }
@@ -97,12 +98,12 @@ return false;
   async getFCMToken(): Promise<string | null> {
     try {
       if (!this.messaging) {
-        console.error('[SERVICE] FCM not initialized');
+        serviceLogger.error('FCM not initialized', new Error('FCM not initialized'), {});
         return null;
       }
 
       if (!this.vapidKey) {
-        console.error('[SERVICE] VAPID key not configured');
+        serviceLogger.error('VAPID key not configured', new Error('VAPID key missing'), {});
         return null;
       }
 
@@ -116,7 +117,7 @@ return token;
 return null;
       }
     } catch (error) {
-      console.error('[SERVICE] Error getting FCM token:', error);
+      serviceLogger.error('Error getting FCM token', error as Error, {});
       return null;
     }
   }
@@ -124,7 +125,7 @@ return null;
   // Listen for incoming messages
   setupMessageListener() {
     if (!this.messaging) {
-      console.error('[SERVICE] FCM not initialized');
+      serviceLogger.error('FCM not initialized', new Error('FCM not initialized'), {});
       return;
     }
 
@@ -259,7 +260,7 @@ const notification: PushNotification = {
     try {
       localStorage.setItem('globul-cars-notifications', JSON.stringify(this.notifications));
     } catch (error) {
-      console.error('[SERVICE] Error saving notifications:', error);
+      serviceLogger.error('Error saving notifications', error as Error, {});
     }
   }
 
@@ -275,7 +276,7 @@ const notification: PushNotification = {
         }));
       }
     } catch (error) {
-      console.error('[SERVICE] Error loading notifications:', error);
+      serviceLogger.error('Error loading notifications', error as Error, {});
     }
   }
 

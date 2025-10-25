@@ -9,6 +9,7 @@ import {
   Timestamp
 } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
+import { serviceLogger } from './logger-wrapper';
 
 // Live Firebase Counters Service
 // This service fetches real-time data from Firebase project
@@ -27,13 +28,13 @@ class LiveFirebaseCountersService {
   // Get real-time analytics from Firebase
   public async getLiveAnalytics(): Promise<any> {
     try {
-      console.log('🔄 Fetching live Firebase analytics...');
+        serviceLogger.info('Fetching live Firebase analytics');
       
       // Get users count from Firestore
       const usersSnapshot = await getDocs(collection(db, 'users'));
       const totalUsers = usersSnapshot.docs.length;
       
-      console.log('📊 Real Firestore users found:', totalUsers);
+        serviceLogger.debug('Real Firestore users found', { totalUsers });
       
       // Get active users (last 24 hours)
       const now = new Date();
@@ -113,7 +114,7 @@ class LiveFirebaseCountersService {
       };
       
     } catch (error) {
-      console.error('Error fetching live analytics:', error);
+        serviceLogger.error('Error fetching live analytics', error as unknown as Error);
       // Return fallback data based on Firebase Console
       return {
         totalUsers: 2,
@@ -164,7 +165,7 @@ class LiveFirebaseCountersService {
         };
       });
     } catch (error) {
-      console.error('Error fetching live user activity:', error);
+        serviceLogger.error('Error fetching live user activity', error as unknown as Error);
       return [];
     }
   }
@@ -193,7 +194,7 @@ class LiveFirebaseCountersService {
         }
       };
     } catch (error) {
-      console.error('Error fetching live system metrics:', error);
+        serviceLogger.error('Error fetching live system metrics', error as unknown as Error);
       return {
         uptime: 99.9,
         responseTime: 120,

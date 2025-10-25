@@ -2,6 +2,7 @@
 // Performance Optimization Service for Bulgarian Car Marketplace
 
 import { monitoring } from './monitoring-service';
+import { serviceLogger } from './logger-wrapper';
 
 export interface PerformanceConfig {
   enableLazyLoading: boolean;
@@ -54,8 +55,10 @@ export class PerformanceService {
   public setCache<T>(key: string, data: T, ttl: number = this.DEFAULT_CACHE_TTL): void {
     // Remove oldest entries if cache is full
     if (this.cache.size >= this.MAX_CACHE_SIZE) {
-      const oldestKey = this.cache.keys().next().value;
-      this.cache.delete(oldestKey);
+      const oldestKey = this.cache.keys().next().value as string | undefined;
+      if (oldestKey) {
+        this.cache.delete(oldestKey);
+      }
     }
 
     this.cache.set(key, {
@@ -195,11 +198,11 @@ export class PerformanceService {
             img.removeAttribute('data-src');
             
             // Track lazy loading
-            monitoring.trackEvent('image_lazy_loaded', {
-              originalSrc: src,
-              optimizedSrc,
-              loadTime: performance.now()
-            });
+                  monitoring.trackEvent('image_lazy_loaded', {
+                    originalSrc: src,
+                    optimizedSrc,
+                    loadTime: performance.now()
+                  });
           }
           
           observer.unobserve(img);
@@ -228,7 +231,7 @@ export class PerformanceService {
     
     document.head.appendChild(link);
     
-    monitoring.trackEvent('resource_prefetched', { url, type });
+  monitoring.trackEvent('resource_prefetched', { url, type });
   }
 
   /**
@@ -248,7 +251,7 @@ export class PerformanceService {
     
     document.head.appendChild(link);
     
-    monitoring.trackEvent('resource_preloaded', { url, type });
+  monitoring.trackEvent('resource_preloaded', { url, type });
   }
 
   /**
@@ -276,7 +279,7 @@ export class PerformanceService {
       // CompressionStream is not widely supported yet, use alternative
       // For now, just return the data as-is
       // TODO: Implement compression using a library like pako or lz-string
-      console.warn('[PERFORMANCE] CompressionStream not supported, returning original data');
+  serviceLogger.warn('[PERFORMANCE] CompressionStream not supported, returning original data', { src: 'compressData' });
       return data;
       
       /* Original code - commented out until browser support improves
@@ -314,7 +317,7 @@ export class PerformanceService {
       return btoa(String.fromCharCode(...compressed));
       */
     } catch (error) {
-      console.warn('[PERFORMANCE] Compression failed, returning original data:', error);
+  serviceLogger.warn('[PERFORMANCE] Compression failed, returning original data', error as Error);
       return data;
     }
   }
@@ -331,7 +334,7 @@ export class PerformanceService {
       // DecompressionStream is not widely supported yet, use alternative
       // For now, just return the data as-is
       // TODO: Implement decompression using a library like pako or lz-string
-      console.warn('[PERFORMANCE] DecompressionStream not supported, returning original data');
+  serviceLogger.warn('[PERFORMANCE] DecompressionStream not supported, returning original data', { src: 'decompressData' });
       return compressedData;
       
       /* Original code - commented out until browser support improves
@@ -371,7 +374,7 @@ export class PerformanceService {
       return decoder.decode(decompressed);
       */
     } catch (error) {
-      console.warn('[PERFORMANCE] Decompression failed, returning original data:', error);
+  serviceLogger.warn('[PERFORMANCE] Decompression failed, returning original data', error as Error);
       return compressedData;
     }
   }
@@ -394,7 +397,7 @@ export class PerformanceService {
     monitoring.recordMetric(`render_${componentName}`, duration, 'ms');
     
     if (duration > 16) { // More than one frame (60fps)
-      console.warn(`[PERFORMANCE] Slow render detected for ${componentName}: ${duration.toFixed(2)}ms`);
+      serviceLogger.warn('Slow render detected', { componentName, duration: duration.toFixed(2) });
     }
   }
 
@@ -469,7 +472,7 @@ export class PerformanceService {
       monitoring.recordMetric('time_to_interactive', this.performanceMetrics.timeToInteractive, 'ms');
       
     } catch (error) {
-      console.warn('[PERFORMANCE] Failed to calculate performance metrics:', error);
+      serviceLogger.warn('Failed to calculate performance metrics', error as Error);
     }
   }
 

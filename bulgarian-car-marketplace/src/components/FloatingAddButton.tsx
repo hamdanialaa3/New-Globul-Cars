@@ -23,7 +23,7 @@ const pulse = keyframes`
 
 const FloatingButton = styled.button`
   position: fixed;
-  bottom: 32px;
+  bottom: 160px; /* 32px + (64px × 2) = رفع بمقدار حجم الزر × 2 */
   right: 32px;
   z-index: 999;
   
@@ -71,12 +71,17 @@ const FloatingButton = styled.button`
     animation: ${pulse} 0.6s ease-out;
   }
   
-  /* Mobile responsive */
+  /* Mobile responsive - العرض الطولي والعرضي */
   @media (max-width: 768px) {
-    bottom: 24px;
+    bottom: 136px; /* 24px + (56px × 2) = رفع بمقدار حجم الزر × 2 */
     right: 24px;
     width: 56px;
     height: 56px;
+  }
+  
+  /* Landscape mode - الوضع العرضي للموبايل */
+  @media (max-width: 768px) and (orientation: landscape) {
+    bottom: 136px; /* نفس الارتفاع في الوضع العرضي */
   }
 `;
 

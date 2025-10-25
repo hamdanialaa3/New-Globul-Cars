@@ -1,6 +1,8 @@
 // Super Admin - Project Analysis Service
 // Analyzes project structure, files, sizes, and code metrics
 
+import { serviceLogger } from './logger-wrapper';
+
 interface FileStats {
   path: string;
   size: number;
@@ -88,7 +90,7 @@ class ProjectAnalysisService {
 
       return metrics;
     } catch (error) {
-      console.error('Error analyzing project:', error);
+      serviceLogger.error('Error analyzing project', error as Error);
       throw error;
     }
   }
@@ -117,7 +119,7 @@ class ProjectAnalysisService {
         ]
       };
     } catch (error) {
-      console.error('Error getting dependencies:', error);
+      serviceLogger.error('Error getting dependencies', error as Error);
       throw error;
     }
   }
@@ -132,7 +134,7 @@ class ProjectAnalysisService {
         cssSize: 5376
       };
     } catch (error) {
-      console.error('Error getting build info:', error);
+      serviceLogger.error('Error getting build info', error as Error);
       throw error;
     }
   }

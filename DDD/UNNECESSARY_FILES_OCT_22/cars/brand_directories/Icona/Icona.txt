@@ -1,9 +1,0 @@
-Icona Car Models and Generations:
-
-2013:
-- Icona Vulcano
-  Power: 326 hp, 708 horsepower, 950 horsepower
-  Drivetrain: RWD
-  Top Speed: Top speed: 350 km/h (est)INTERNAL COMBUSTION ENGINE Type: 12 cylinder-V 65°Displacement: 5998 cm3Material: Full alloyLudrification: Dry SumpValvetrain: 48 valve, DOHCFuel system: Port IniectionPower: 790 HP @ 8300 rpmTorque: 650 Nm @ 5500 rpmELECTRIC MOTOR Type: Brushless Nominal Voltage: 450 VdcMacimum Torque: 200 Nm @ 0-3000 rpmMacimum Power: 160 HP @ 3000-10000 rpmMac rpm: 18000TRASMISSION Type: AMT with torque infillConfiguration: 6-SpeedH-COMPETIZIONE Total power: 870 HP0-100 km/h: 2
-
-

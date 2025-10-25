@@ -5,6 +5,7 @@
 import { doc, getDoc, updateDoc, increment, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
 import { trustScoreService } from './trust-score-service';
+import { serviceLogger } from '../logger-wrapper';
 
 // ==================== INTERFACES ====================
 
@@ -46,9 +47,9 @@ export class ProfileStatsService {
         updatedAt: serverTimestamp()
       });
 
-      console.log('✅ Cars listed count incremented');
+      serviceLogger.info('Cars listed count incremented', { userId });
     } catch (error) {
-      console.error('❌ Error incrementing cars listed:', error);
+      serviceLogger.error('Error incrementing cars listed', error as Error, { userId });
       throw error;
     }
   }
@@ -68,9 +69,9 @@ export class ProfileStatsService {
       // Check for Top Seller badge (10+ sales)
       await this.checkTopSellerBadge(userId);
 
-      console.log('✅ Cars sold count incremented');
+      serviceLogger.info('Cars sold count incremented', { userId });
     } catch (error) {
-      console.error('❌ Error incrementing cars sold:', error);
+      serviceLogger.error('Error incrementing cars sold', error as Error, { userId });
       throw error;
     }
   }
@@ -106,9 +107,9 @@ export class ProfileStatsService {
         await trustScoreService.awardBadge(userId, 'QUICK_RESPONDER');
       }
 
-      console.log(`✅ Response time updated: ${newAvg} minutes`);
+      serviceLogger.info('Response time updated', { userId, responseTimeMinutes: newAvg });
     } catch (error) {
-      console.error('❌ Error updating response time:', error);
+      serviceLogger.error('Error updating response time', error as Error, { userId });
       throw error;
     }
   }
@@ -124,7 +125,7 @@ export class ProfileStatsService {
         updatedAt: serverTimestamp()
       });
     } catch (error) {
-      console.error('❌ Error incrementing views:', error);
+      serviceLogger.error('Error incrementing views', error as Error, { userId });
       throw error;
     }
   }
@@ -146,9 +147,9 @@ export class ProfileStatsService {
         updatedAt: serverTimestamp()
       });
 
-      console.log(`✅ Response rate updated: ${rate}%`);
+      serviceLogger.info('Response rate updated', { userId, rate });
     } catch (error) {
-      console.error('❌ Error updating response rate:', error);
+      serviceLogger.error('Error updating response rate', error as Error, { userId });
       throw error;
     }
   }
@@ -163,7 +164,7 @@ export class ProfileStatsService {
         'stats.lastActive': serverTimestamp()
       });
     } catch (error) {
-      console.error('❌ Error updating last active:', error);
+      serviceLogger.warn('Error updating last active', { userId, error: (error as Error).message });
       // Don't throw - this is non-critical
     }
   }
@@ -230,7 +231,7 @@ export class ProfileStatsService {
         await trustScoreService.awardBadge(userId, 'TOP_SELLER');
       }
     } catch (error) {
-      console.error('Error checking Top Seller badge:', error);
+      serviceLogger.warn('Error checking Top Seller badge', { userId, error: (error as Error).message });
       // Don't throw - badge awarding is non-critical
     }
   }

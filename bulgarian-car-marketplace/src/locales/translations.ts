@@ -148,7 +148,144 @@ export const translations = {
         },
         infoTitle: 'Защо е важно да изберете правилния тип продавач?',
         infoText: 'Типът продавач определя какви документи ще бъдат необходими, какви такси ще се прилагат и какви права и задължения ще имате като продавач.'
-      }
+      },
+      vehicleData: {
+        title: 'Данни за превозното средство',
+        subtitle: 'Въведете основна информация за автомобила',
+        make: 'Марка',
+        selectMake: 'Изберете марка',
+        makeHint: 'Изберете марка и модел. Ако моделът липсва, въведете го ръчно.',
+        model: 'Модел',
+        selectModel: 'Изберете модел',
+        year: 'Година',
+        mileage: 'Пробег (км)',
+        fuel: 'Гориво',
+        transmission: 'Скоростна кутия'
+      },
+        equipment: {
+          title: 'Оборудване',
+          subtitle: 'Изберете категории за добавяне на оборудване',
+          infoTitle: 'Защо да добавите оборудване?',
+          infoText: 'Пълният списък с оборудване прави обявата ви по-атрактивна и увеличава шансовете за продажба.',
+          skip: 'Пропусни този стъпка',
+          safety: {
+            title: 'Безопасност',
+            description: 'Системи за безопасност и асистиране',
+            features: {
+              0: 'ABS, ESP, ASR',
+              1: 'Въздушни възглавници',
+              2: 'Системи за паркиране'
+            }
+          },
+          comfort: {
+            title: 'Комфорт',
+            description: 'Удобства и комфорт за пътуване',
+            features: {
+              0: 'Климатик / Климатрон',
+              1: 'Подгрев на седалки',
+              2: 'Електрически стъкла'
+            }
+          },
+          infotainment: {
+            title: 'Инфотейнмънт',
+            description: 'Мултимедия и свързаност',
+            features: {
+              0: 'Навигация',
+              1: 'Bluetooth / Android Auto',
+              2: 'Аудио система'
+            }
+          },
+          extras: {
+            title: 'Екстри',
+            description: 'Допълнително оборудване',
+            features: {
+              0: 'Джанти от леки сплави',
+              1: 'Панорамен покрив',
+              2: 'Кожен салон'
+            }
+          }
+        },
+          images: {
+            title: 'Снимки',
+            subtitle: 'Добавете снимки на автомобила',
+            infoTitle: 'Съвети за добри снимки',
+            infoText: 'Качествените снимки увеличават интереса към обявата. Направете снимки от различни ъгли при добро осветление.',
+            addPhotos: 'Добави снимки',
+            maxPhotos: 'Максимум 20 снимки',
+            photos: 'снимки',
+            skipPhotos: 'Пропусни снимките',
+            uploading: 'Качване...'
+          },
+            pricing: {
+              title: 'Цена',
+              subtitle: 'Определете цена на автомобила',
+              price: 'Цена',
+              negotiable: 'Цената подлежи на договаряне',
+              vatDeductible: 'ДДС се приспада',
+              infoTitle: 'Съвет за ценообразуване',
+              infoText: 'Проучете пазара за подобни автомобили, за да определите реалистична цена. Адекватната цена увеличава шансовете за бърза продажба.'
+            },
+              contact: {
+                title: 'Контактна информация',
+                subtitle: 'Как купувачите могат да се свържат с вас',
+                name: 'Име',
+                namePlaceholder: 'Вашето име',
+                phone: 'Телефон',
+                email: 'Имейл',
+                city: 'Град',
+                cityPlaceholder: 'Изберете град',
+                zipCode: 'Пощенски код',
+                infoTitle: 'Защитата на вашите данни',
+                infoText: 'Вашите контактни данни са защитени и ще бъдат показани само на заинтересовани купувачи.',
+                preview: 'Преглед на обявата'
+              },
+              preview: {
+                title: 'Преглед преди публикуване',
+                sections: {
+                  vehicle: 'Превозно средство',
+                  images: 'Снимки',
+                  pricing: 'Цена',
+                  contact: 'Контакт'
+                },
+                make: 'Марка',
+                model: 'Модел',
+                year: 'Година',
+                mileage: 'Пробег',
+                fuel: 'Гориво',
+                transmission: 'Скоростна кутия',
+                price: 'Цена',
+                negotiable: 'Договаряне',
+                vat: 'ДДС',
+                included: 'Включено',
+                notIncluded: 'Не е включено',
+                yes: 'Да',
+                no: 'Не',
+                sellerName: 'Име на продавач',
+                phone: 'Телефон',
+                email: 'Имейл',
+                region: 'Регион',
+                city: 'Град',
+                zip: 'Пощенски код',
+                noImages: 'Няма добавени снимки',
+                actions: {
+                  editImages: 'Редактирай снимките',
+                  continue: 'Продължи'
+                }
+              },
+              submission: {
+                submitting: 'Публикуване...',
+                pleaseWait: 'Моля изчакайте, докато публикуваме вашата обява',
+                success: 'Публикувано успешно!',
+                successMessage: 'Вашата обява е публикувана и вече е видима за купувачите',
+                error: 'Грешка при публикуване',
+                errorMessage: 'Възникна грешка при публикуване на обявата. Моля опитайте отново.',
+                viewListing: 'Виж обявата',
+                createNew: 'Създай нова обява',
+                retry: 'Опитай отново',
+                goBack: 'Назад'
+              },
+      select: 'Изберете',
+      selectSellerType: 'Изберете тип продавач'
     },
     nav: { 
       home: 'Начало', 
@@ -811,6 +948,121 @@ export const translations = {
       
       // Actions
       logout: 'Изход'
+    },
+    
+    // Social Feed System
+    feed: {
+      title: 'Новини от общността',
+      subtitle: 'Споделете истории, открийте коли, свържете се с ентусиасти',
+      createPost: 'Създай публикация',
+      createPlaceholder: 'Какво мислите',
+      addPhoto: 'Снимка',
+      addVideo: 'Видео',
+      addCar: 'Автомобил',
+      post: 'Публикувай',
+      posting: 'Публикуване...',
+      
+      // Post Types
+      postTypes: {
+        text: 'Текстова публикация',
+        carShowcase: 'Показване на автомобил',
+        tip: 'Съвет',
+        question: 'Въпрос',
+        review: 'Ревю'
+      },
+      
+      // Reactions
+      reactions: {
+        like: 'Харесва',
+        love: 'Обичам',
+        haha: 'Смешно',
+        wow: 'Уау',
+        sad: 'Тъжно',
+        angry: 'Ядосан',
+        support: 'Подкрепа'
+      },
+      
+      // Actions
+      comment: 'Коментар',
+      share: 'Сподели',
+      save: 'Запази',
+      
+      // Empty States
+      noPosts: 'Все още няма публикации',
+      noPostsDesc: 'Бъдете първият, който споделя нещо!',
+      endOfFeed: 'Видяхте всички публикации',
+      loginToPost: 'Влезте, за да създадете публикации'
+    },
+    
+    // Help & Support Section
+    help: {
+      title: 'Помощ и Поддръжка',
+      subtitle: 'Намерете отговори на вашите въпроси',
+      search: {
+        placeholder: 'Търсете в помощните статии...'
+      },
+      categories: {
+        title: 'Категории',
+        general: 'Общи въпроси',
+        buying: 'Купуване',
+        selling: 'Продажба',
+        account: 'Акаунт',
+        payment: 'Плащане',
+        safety: 'Сигурност'
+      },
+      faq: {
+        title: 'Често задавани въпроси',
+        general: {
+          q1: 'Как да започна да използвам платформата?',
+          a1: 'Просто се регистрирайте с вашия имейл или използвайте Google/Facebook за бърза регистрация.',
+          q2: 'Безплатна ли е платформата?',
+          a2: 'Да, можете да разглеждате коли безплатно. Публикуването на обяви има различни планове.',
+          q3: 'Как мога да се свържа с поддръжката?',
+          a3: 'Използвайте чата на живо, изпратете имейл или ни се обадете по телефона.'
+        },
+        buying: {
+          q1: 'Как да търся кола?',
+          a1: 'Използвайте разширеното търсене с филтри по марка, модел, цена, година и локация.',
+          q2: 'Как да се свържа с продавача?',
+          a2: 'Кликнете на бутона "Съобщение" в обявата на колата за директен чат.',
+          q3: 'Мога ли да запазя любими коли?',
+          a3: 'Да, кликнете на иконката сърце за да добавите кола в любими.'
+        },
+        selling: {
+          q1: 'Как да продам колата си?',
+          a1: 'Кликнете "Продай кола" и следвайте 7-те лесни стъпки за създаване на обява.',
+          q2: 'Колко струва да публикувам обява?',
+          a2: 'Имаме различни планове - от безплатни до премиум с допълнителни функции.',
+          q3: 'Колко време остава активна обявата?',
+          a3: 'Обявите остават активни 30-90 дни в зависимост от избрания план.'
+        },
+        account: {
+          q1: 'Как да променя профила си?',
+          a1: 'Отидете в "Профил" и кликнете "Редактирай" за да обновите информацията си.',
+          q2: 'Как да променя паролата си?',
+          a2: 'Отидете в Настройки > Сигурност и изберете "Промени парола".'
+        },
+        payment: {
+          q1: 'Какви методи за плащане приемате?',
+          a1: 'Приемаме кредитни карти, дебитни карти и банков превод чрез Stripe.',
+          q2: 'Безопасно ли е плащането?',
+          a2: 'Да, всички плащания се обработват сигурно чрез Stripe с SSL криптиране.'
+        },
+        safety: {
+          q1: 'Как да се предпазя от измами?',
+          a1: 'Винаги проверявайте документите на колата, среща с продавача лично и избягвайте предплащания.',
+          q2: 'Какво правите за сигурността на данните?',
+          a2: 'Използваме Firebase Authentication и криптиране на данните за пълна защита.'
+        }
+      },
+      contact: {
+        title: 'Свържете се с нас',
+        subtitle: 'Екипът ни е винаги готов да помогне',
+        chat: 'Чат на живо',
+        email: 'Имейл поддръжка',
+        phone: 'Телефон',
+        docs: 'Документация'
+      }
     }
   },
   en: {
@@ -950,7 +1202,144 @@ export const translations = {
         },
         infoTitle: 'Why is it important to choose the right seller type?',
         infoText: 'The seller type determines what documents will be required, what fees will apply, and what rights and obligations you will have as a seller.'
-      }
+      },
+      vehicleData: {
+        title: 'Vehicle Data',
+        subtitle: 'Enter basic information about the vehicle',
+        make: 'Make',
+        selectMake: 'Select make',
+        makeHint: 'Choose make and model. If the model is missing, enter it manually.',
+        model: 'Model',
+        selectModel: 'Select model',
+        year: 'Year',
+        mileage: 'Mileage (km)',
+        fuel: 'Fuel',
+        transmission: 'Transmission'
+      },
+        equipment: {
+          title: 'Equipment',
+          subtitle: 'Select categories to add equipment',
+          infoTitle: 'Why add equipment?',
+          infoText: 'A complete list of equipment makes your listing more attractive and increases your chances of selling.',
+          skip: 'Skip this step',
+          safety: {
+            title: 'Safety',
+            description: 'Safety and assistance systems',
+            features: {
+              0: 'ABS, ESP, ASR',
+              1: 'Airbags',
+              2: 'Parking systems'
+            }
+          },
+          comfort: {
+            title: 'Comfort',
+            description: 'Amenities and travel comfort',
+            features: {
+              0: 'Air conditioning / Climate control',
+              1: 'Heated seats',
+              2: 'Electric windows'
+            }
+          },
+          infotainment: {
+            title: 'Infotainment',
+            description: 'Multimedia and connectivity',
+            features: {
+              0: 'Navigation',
+              1: 'Bluetooth / Android Auto',
+              2: 'Audio system'
+            }
+          },
+          extras: {
+            title: 'Extras',
+            description: 'Additional equipment',
+            features: {
+              0: 'Alloy wheels',
+              1: 'Panoramic roof',
+              2: 'Leather interior'
+            }
+          }
+        },
+          images: {
+            title: 'Photos',
+            subtitle: 'Add photos of the vehicle',
+            infoTitle: 'Tips for good photos',
+            infoText: 'Quality photos increase interest in your listing. Take photos from different angles in good lighting.',
+            addPhotos: 'Add photos',
+            maxPhotos: 'Maximum 20 photos',
+            photos: 'photos',
+            skipPhotos: 'Skip photos',
+            uploading: 'Uploading...'
+          },
+            pricing: {
+              title: 'Price',
+              subtitle: 'Set the vehicle price',
+              price: 'Price',
+              negotiable: 'Price is negotiable',
+              vatDeductible: 'VAT deductible',
+              infoTitle: 'Pricing tip',
+              infoText: 'Research the market for similar vehicles to determine a realistic price. Fair pricing increases the chances of a quick sale.'
+            },
+              contact: {
+                title: 'Contact Information',
+                subtitle: 'How buyers can reach you',
+                name: 'Name',
+                namePlaceholder: 'Your name',
+                phone: 'Phone',
+                email: 'Email',
+                city: 'City',
+                cityPlaceholder: 'Select city',
+                zipCode: 'Zip Code',
+                infoTitle: 'Protecting your data',
+                infoText: 'Your contact information is protected and will only be shown to interested buyers.',
+                preview: 'Preview Listing'
+              },
+              preview: {
+                title: 'Review before publishing',
+                sections: {
+                  vehicle: 'Vehicle',
+                  images: 'Images',
+                  pricing: 'Pricing',
+                  contact: 'Contact'
+                },
+                make: 'Make',
+                model: 'Model',
+                year: 'Year',
+                mileage: 'Mileage',
+                fuel: 'Fuel',
+                transmission: 'Transmission',
+                price: 'Price',
+                negotiable: 'Negotiable',
+                vat: 'VAT',
+                included: 'Included',
+                notIncluded: 'Not included',
+                yes: 'Yes',
+                no: 'No',
+                sellerName: 'Seller name',
+                phone: 'Phone',
+                email: 'Email',
+                region: 'Region',
+                city: 'City',
+                zip: 'ZIP code',
+                noImages: 'No images added',
+                actions: {
+                  editImages: 'Edit images',
+                  continue: 'Continue'
+                }
+              },
+              submission: {
+                submitting: 'Publishing...',
+                pleaseWait: 'Please wait while we publish your listing',
+                success: 'Published successfully!',
+                successMessage: 'Your listing is now published and visible to buyers',
+                error: 'Publication error',
+                errorMessage: 'An error occurred while publishing your listing. Please try again.',
+                viewListing: 'View listing',
+                createNew: 'Create new listing',
+                retry: 'Try again',
+                goBack: 'Go back'
+              },
+      select: 'Select',
+      selectSellerType: 'Select seller type'
     },
     nav: { 
       home: 'Home', 
@@ -1608,6 +1997,121 @@ export const translations = {
       
       // Actions
       logout: 'Logout'
+    },
+    
+    // Social Feed System
+    feed: {
+      title: 'Community Feed',
+      subtitle: 'Share stories, discover cars, connect with enthusiasts',
+      createPost: 'Create Post',
+      createPlaceholder: 'What\'s on your mind',
+      addPhoto: 'Photo',
+      addVideo: 'Video',
+      addCar: 'Car',
+      post: 'Post',
+      posting: 'Posting...',
+      
+      // Post Types
+      postTypes: {
+        text: 'Text Post',
+        carShowcase: 'Car Showcase',
+        tip: 'Tip',
+        question: 'Question',
+        review: 'Review'
+      },
+      
+      // Reactions
+      reactions: {
+        like: 'Like',
+        love: 'Love',
+        haha: 'Haha',
+        wow: 'Wow',
+        sad: 'Sad',
+        angry: 'Angry',
+        support: 'Support'
+      },
+      
+      // Actions
+      comment: 'Comment',
+      share: 'Share',
+      save: 'Save',
+      
+      // Empty States
+      noPosts: 'No posts yet',
+      noPostsDesc: 'Be the first to share something!',
+      endOfFeed: 'You\'ve seen all posts',
+      loginToPost: 'Log in to create posts'
+    },
+    
+    // Help & Support Section
+    help: {
+      title: 'Help & Support',
+      subtitle: 'Find answers to your questions',
+      search: {
+        placeholder: 'Search help articles...'
+      },
+      categories: {
+        title: 'Categories',
+        general: 'General Questions',
+        buying: 'Buying',
+        selling: 'Selling',
+        account: 'Account',
+        payment: 'Payment',
+        safety: 'Safety'
+      },
+      faq: {
+        title: 'Frequently Asked Questions',
+        general: {
+          q1: 'How do I get started with the platform?',
+          a1: 'Simply register with your email or use Google/Facebook for quick signup.',
+          q2: 'Is the platform free?',
+          a2: 'Yes, browsing cars is free. Posting listings has different plan options.',
+          q3: 'How can I contact support?',
+          a3: 'Use live chat, send an email, or call us by phone.'
+        },
+        buying: {
+          q1: 'How do I search for a car?',
+          a1: 'Use advanced search with filters by make, model, price, year, and location.',
+          q2: 'How do I contact the seller?',
+          a2: 'Click the "Message" button on the car listing for direct chat.',
+          q3: 'Can I save favorite cars?',
+          a3: 'Yes, click the heart icon to add a car to favorites.'
+        },
+        selling: {
+          q1: 'How do I sell my car?',
+          a1: 'Click "Sell Car" and follow the 7 easy steps to create a listing.',
+          q2: 'How much does it cost to post a listing?',
+          a2: 'We have different plans - from free to premium with extra features.',
+          q3: 'How long does the listing stay active?',
+          a3: 'Listings stay active 30-90 days depending on your chosen plan.'
+        },
+        account: {
+          q1: 'How do I edit my profile?',
+          a1: 'Go to "Profile" and click "Edit" to update your information.',
+          q2: 'How do I change my password?',
+          a2: 'Go to Settings > Security and select "Change Password".'
+        },
+        payment: {
+          q1: 'What payment methods do you accept?',
+          a1: 'We accept credit cards, debit cards, and bank transfer via Stripe.',
+          q2: 'Is payment secure?',
+          a2: 'Yes, all payments are processed securely via Stripe with SSL encryption.'
+        },
+        safety: {
+          q1: 'How do I avoid scams?',
+          a1: 'Always verify car documents, meet seller in person, and avoid upfront payments.',
+          q2: 'What do you do for data security?',
+          a2: 'We use Firebase Authentication and data encryption for complete protection.'
+        }
+      },
+      contact: {
+        title: 'Contact Us',
+        subtitle: 'Our team is always ready to help',
+        chat: 'Live Chat',
+        email: 'Email Support',
+        phone: 'Phone',
+        docs: 'Documentation'
+      }
     }
   }
 } as const;

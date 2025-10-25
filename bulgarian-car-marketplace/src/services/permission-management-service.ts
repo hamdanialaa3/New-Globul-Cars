@@ -13,6 +13,7 @@ import {
   writeBatch
 } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
+import { serviceLogger } from './logger-wrapper';
 
 // Permission Management Interfaces
 export interface PermissionCategory {
@@ -416,9 +417,9 @@ class PermissionManagementService {
       }
       
       await batch.commit();
-      console.log('✅ Default permissions and roles initialized');
+      serviceLogger.info('Default permissions and roles initialized', { categoriesCount: categories.length, permissionsCount: permissions.length, rolesCount: roles.length });
     } catch (error) {
-      console.error('Error initializing default permissions:', error);
+      serviceLogger.error('Error initializing default permissions', error as Error, {});
       throw error;
     }
   }
@@ -430,7 +431,7 @@ class PermissionManagementService {
       const snapshot = await getDocs(q);
       return snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id } as PermissionCategory));
     } catch (error) {
-      console.error('Error getting permission categories:', error);
+      serviceLogger.error('Error getting permission categories', error as Error, {});
       return [];
     }
   }
@@ -442,7 +443,7 @@ class PermissionManagementService {
       const snapshot = await getDocs(q);
       return snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id } as PermissionTemplate));
     } catch (error) {
-      console.error('Error getting permission templates:', error);
+      serviceLogger.error('Error getting permission templates', error as Error, {});
       return [];
     }
   }
@@ -458,7 +459,7 @@ class PermissionManagementService {
       const snapshot = await getDocs(q);
       return snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id } as PermissionTemplate));
     } catch (error) {
-      console.error('Error getting permissions by category:', error);
+      serviceLogger.error('Error getting permissions by category', error as Error, { categoryId });
       return [];
     }
   }
@@ -470,7 +471,7 @@ class PermissionManagementService {
       const snapshot = await getDocs(q);
       return snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id } as RoleTemplate));
     } catch (error) {
-      console.error('Error getting role templates:', error);
+      serviceLogger.error('Error getting role templates', error as Error, {});
       return [];
     }
   }
@@ -495,7 +496,7 @@ class PermissionManagementService {
       await setDoc(roleRef, newRole);
       return newRole;
     } catch (error) {
-      console.error('Error creating custom role:', error);
+      serviceLogger.error('Error creating custom role', error as Error, { createdBy });
       throw error;
     }
   }
@@ -514,7 +515,7 @@ class PermissionManagementService {
         lastModifiedBy: updatedBy
       });
     } catch (error) {
-      console.error('Error updating role:', error);
+      serviceLogger.error('Error updating role', error as Error, { roleId, updatedBy });
       throw error;
     }
   }
@@ -525,7 +526,7 @@ class PermissionManagementService {
       const roleRef = doc(db, 'role_templates', roleId);
       await deleteDoc(roleRef);
     } catch (error) {
-      console.error('Error deleting role:', error);
+      serviceLogger.error('Error deleting role', error as Error, { roleId });
       throw error;
     }
   }
@@ -552,7 +553,7 @@ class PermissionManagementService {
       
       await setDoc(userPermissionRef, userPermission);
     } catch (error) {
-      console.error('Error granting permission to user:', error);
+      serviceLogger.error('Error granting permission to user', error as Error, { userId, permissionId, grantedBy });
       throw error;
     }
   }
@@ -563,7 +564,7 @@ class PermissionManagementService {
       const userPermissionRef = doc(db, 'user_permissions', `${userId}_${permissionId}`);
       await deleteDoc(userPermissionRef);
     } catch (error) {
-      console.error('Error revoking permission from user:', error);
+      serviceLogger.error('Error revoking permission from user', error as Error, { userId, permissionId });
       throw error;
     }
   }
@@ -615,7 +616,7 @@ class PermissionManagementService {
       
       return false;
     } catch (error) {
-      console.error('Error checking user permission:', error);
+      serviceLogger.error('Error checking user permission', error as Error, { userId, resource, action });
       return false;
     }
   }
@@ -661,7 +662,7 @@ class PermissionManagementService {
       // Remove duplicates
       return [...new Set(effectivePermissions)];
     } catch (error) {
-      console.error('Error getting user effective permissions:', error);
+      serviceLogger.error('Error getting user effective permissions', error as Error, { userId });
       return [];
     }
   }

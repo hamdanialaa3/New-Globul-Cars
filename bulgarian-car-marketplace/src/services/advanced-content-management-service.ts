@@ -14,6 +14,7 @@ import {
   writeBatch
 } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
+import { serviceLogger } from './logger-wrapper';
 
 export interface ContentReport {
   id: string;
@@ -88,7 +89,7 @@ export class AdvancedContentManagementService {
         timestamp: doc.data().timestamp?.toDate() || new Date()
       } as ContentReport));
     } catch (error) {
-      console.error('Error getting pending reports:', error);
+      serviceLogger.error('Error getting pending reports', error as Error, { limitCount });
       return [];
     }
   }
@@ -110,7 +111,7 @@ export class AdvancedContentManagementService {
         timestamp: doc.data().timestamp?.toDate() || new Date()
       } as ContentReport));
     } catch (error) {
-      console.error('Error getting all reports:', error);
+      serviceLogger.error('Error getting all reports', error as Error, { limitCount });
       return [];
     }
   }
@@ -143,7 +144,7 @@ export class AdvancedContentManagementService {
         }
       }
     } catch (error) {
-      console.error('Error reviewing report:', error);
+      serviceLogger.error('Error reviewing report', error as Error, { reportId, action, moderatorId });
       throw error;
     }
   }
@@ -185,7 +186,7 @@ export class AdvancedContentManagementService {
 
       await batch.commit();
     } catch (error) {
-      console.error('Error applying content action:', error);
+      serviceLogger.error('Error applying content action', error as Error, { contentId, contentType, action, moderatorId });
       throw error;
     }
   }
@@ -235,7 +236,7 @@ export class AdvancedContentManagementService {
 
       await batch.commit();
     } catch (error) {
-      console.error('Error permanently deleting content:', error);
+      serviceLogger.error('Error permanently deleting content', error as Error, { contentId, contentType, moderatorId });
       throw error;
     }
   }
@@ -256,7 +257,7 @@ export class AdvancedContentManagementService {
         restoreReason: reason
       });
     } catch (error) {
-      console.error('Error restoring content:', error);
+      serviceLogger.error('Error restoring content', error as Error, { contentId, contentType, moderatorId });
       throw error;
     }
   }
@@ -287,7 +288,7 @@ export class AdvancedContentManagementService {
         moderationActions: moderation.length
       };
     } catch (error) {
-      console.error('Error getting content stats:', error);
+      serviceLogger.error('Error getting content stats', error as Error);
       return {
         totalContent: 0,
         activeContent: 0,
@@ -331,7 +332,7 @@ export class AdvancedContentManagementService {
 
       return results;
     } catch (error) {
-      console.error('Error searching content:', error);
+      serviceLogger.error('Error searching content', error as Error, { searchQuery, contentType, status });
       return [];
     }
   }
@@ -353,7 +354,7 @@ export class AdvancedContentManagementService {
         timestamp: doc.data().timestamp?.toDate() || new Date()
       }));
     } catch (error) {
-      console.error('Error getting moderation history:', error);
+      serviceLogger.error('Error getting moderation history', error as Error, { contentId });
       return [];
     }
   }
@@ -387,7 +388,7 @@ export class AdvancedContentManagementService {
         return csvContent;
       }
     } catch (error) {
-      console.error('Error exporting content data:', error);
+      serviceLogger.error('Error exporting content data', error as Error, { contentType, format });
       throw error;
     }
   }
@@ -410,7 +411,7 @@ export class AdvancedContentManagementService {
 
       return backupRef.id;
     } catch (error) {
-      console.error('Error creating backup:', error);
+      serviceLogger.error('Error creating backup', error as Error, { backupName });
       throw error;
     }
   }

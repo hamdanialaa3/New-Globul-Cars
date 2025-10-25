@@ -3,6 +3,7 @@
 
 import { collection, addDoc, query, where, orderBy, limit, getDocs, serverTimestamp, Timestamp } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
+import { serviceLogger } from './logger-wrapper';
 
 interface PageView {
   path: string;
@@ -70,7 +71,7 @@ class VisitorAnalyticsService {
 
       await addDoc(collection(db, 'page_views'), pageView);
     } catch (error) {
-      console.error('Error tracking page view:', error);
+      serviceLogger.error('Error tracking page view', error as Error, { path, userId });
     }
   }
 
@@ -87,7 +88,7 @@ class VisitorAnalyticsService {
       
       return sessions.size;
     } catch (error) {
-      console.error('Error getting real-time visitors:', error);
+      serviceLogger.error('Error getting real-time visitors', error as Error);
       return 0;
     }
   }
@@ -133,7 +134,7 @@ class VisitorAnalyticsService {
         trafficSources
       };
     } catch (error) {
-      console.error('Error getting visitor metrics:', error);
+      serviceLogger.error('Error getting visitor metrics', error as Error);
       return this.getDefaultMetrics();
     }
   }

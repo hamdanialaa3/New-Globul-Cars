@@ -17,7 +17,9 @@ export function cityIdToLocationData(
   const city = getCityById(cityId);
   
   if (!city) {
-    console.error(`[locationHelpers] City not found: ${cityId}`);
+    if (process.env.NODE_ENV === 'development') {
+      console.error(`[locationHelpers] City not found: ${cityId}`);
+    }
     return null;
   }
   
@@ -64,7 +66,9 @@ export function legacyLocationToLocationData(
   }
   
   if (!cityData) {
-    console.error(`[locationHelpers] Could not find city: ${city} or ${location}`);
+    if (process.env.NODE_ENV === 'development') {
+      console.error(`[locationHelpers] Could not find city: ${city} or ${location}`);
+    }
     // Return Sofia as fallback
     cityData = getCityById('sofia-grad')!;
   }

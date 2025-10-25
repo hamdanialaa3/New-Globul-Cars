@@ -34,6 +34,7 @@ export { default as ProfileTypeConfirmModal } from './ProfileTypeConfirmModal'; 
 export { default as BusinessBackground } from './BusinessBackground';
 export { GarageSectionPro as GarageSection } from './GarageSection_Pro';
 export { FollowButton } from './FollowButton';
+export { default as CommunityFeedWidget } from './CommunityFeedWidget';
 
 // Export types
 export type { GarageCar } from './GarageSection_Pro';

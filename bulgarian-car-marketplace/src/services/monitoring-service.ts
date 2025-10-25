@@ -3,6 +3,7 @@
 
 import { errorHandler } from './error-handling-service';
 import { rateLimiter } from './rate-limiting-service';
+import { serviceLogger } from './logger-wrapper';
 
 export interface AnalyticsEvent {
   eventName: string;
@@ -77,8 +78,8 @@ export class MonitoringService {
       this.analyticsEvents = this.analyticsEvents.slice(-this.MAX_EVENTS);
     }
 
-    // Log for debugging
-    console.log('[ANALYTICS]', event);
+  // Log for debugging
+  serviceLogger.debug('Analytics event tracked', { eventName: event.eventName, userId: event.userId });
 
     // TODO: Send to analytics service (Google Analytics, Mixpanel, etc.)
     this.sendToAnalyticsService(event);
@@ -182,7 +183,7 @@ export class MonitoringService {
       this.performanceMetrics = this.performanceMetrics.slice(-this.MAX_METRICS);
     }
 
-    console.log('[PERFORMANCE]', metric);
+  serviceLogger.debug('Performance metric recorded', { name: metric.name, value: metric.value, unit: metric.unit });
   }
 
   /**
@@ -450,7 +451,7 @@ export class MonitoringService {
         entryTypes: ['navigation', 'measure', 'paint']
       });
     } catch (error) {
-      console.warn('[MONITORING] Performance Observer not supported:', error);
+      serviceLogger.warn('Performance Observer not supported', error as Error);
     }
 
     // Monitor page load performance
@@ -525,8 +526,8 @@ export class MonitoringService {
 
   private sendToAnalyticsService(event: AnalyticsEvent): void {
     // TODO: Send to Google Analytics, Mixpanel, or other analytics service
-    // For now, just log to console
-    console.log('[ANALYTICS_SERVICE]', event);
+    // For now, just log with serviceLogger
+    serviceLogger.debug('Analytics service event', { eventName: event.eventName, userId: event.userId });
   }
 }
 

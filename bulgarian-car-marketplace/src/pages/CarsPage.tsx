@@ -4,7 +4,7 @@
 // ⚡ Performance Optimized with Firebase Caching + useMemo
 
 import * as React from 'react';
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -12,9 +12,12 @@ import { BULGARIAN_CITIES } from '../constants/bulgarianCities';
 import carListingService from '../services/carListingService';
 import { CarIcon } from '../components/icons/CarIcon';
 import { CarListing } from '../types/CarListing';
-import CarCard from '../components/CarCard';
 import { logger } from '../services/logger-service';
 import { firebaseCache, cacheKeys } from '../services/firebase-cache.service';
+import { CarCardMobileOptimized } from '../components/CarCard/CarCardMobileOptimized';
+import { ResponsiveGrid } from '../components/layout/ResponsiveGrid';
+import { useIsMobile } from '../hooks/useBreakpoint';
+import { MobileFilterDrawer, MobileFilterButton, FilterValues } from '../components/filters';
 
 // Styled Components
 const CarsContainer = styled.div`
@@ -79,20 +82,12 @@ const CityBadge = styled.div`
   box-shadow: 0 4px 15px rgba(255, 143, 16, 0.3);
 `;
 
-const CarsGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 2rem;
-  margin: 2rem 0;
+const CarsGridWrapper = styled.div`
+  margin-top: 32px;
 
   @media (max-width: 768px) {
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.5rem;
-  }
-
-  @media (max-width: 480px) {
-    grid-template-columns: 1fr;
-    gap: 1rem;
+    margin-top: 24px;
+    margin-bottom: 80px; /* Space for floating filter button */
   }
 `;
 
@@ -122,14 +117,6 @@ const EmptyState = styled.div`
   }
 `;
 
-const ResultsCount = styled.div`
-  text-align: center;
-  font-size: 1.1rem;
-  color: ${({ theme }) => theme.colors.text.secondary};
-  margin: 1rem 0;
-  font-weight: 500;
-`;
-
 // Cars Page Component
 const CarsPage: React.FC = () => {
   const { t, language } = useLanguage();
@@ -137,6 +124,8 @@ const CarsPage: React.FC = () => {
   const [cars, setCars] = useState<CarListing[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showFilters, setShowFilters] = useState(false);
+  const isMobile = useIsMobile();
   
   // Get filters from URL
   const cityId = searchParams.get('city');
@@ -237,6 +226,44 @@ const CarsPage: React.FC = () => {
       : count === 1 ? 'car' : 'cars';
   }, [cars.length, language]);
 
+  // Extract current filters from URL
+  const currentFilters = useMemo<FilterValues>(() => {
+    const makeParam = searchParams.get('make');
+    const regionParam = searchParams.get('city'); // Actually region
+    
+    return {
+      make: makeParam || undefined,
+      region: regionParam || undefined,
+      // Add more URL params as needed
+    };
+  }, [searchParams]);
+
+  // Count active filters
+  const activeFiltersCount = useMemo(() => {
+    return Object.values(currentFilters).filter(Boolean).length;
+  }, [currentFilters]);
+
+  // Handle filter apply
+  const handleApplyFilters = (filters: FilterValues) => {
+    const newParams = new URLSearchParams();
+    
+    // Add filters to URL params
+    if (filters.make) newParams.set('make', filters.make);
+    if (filters.region) newParams.set('city', filters.region); // Keep 'city' param name for compatibility
+    if (filters.model) newParams.set('model', filters.model);
+    if (filters.priceMin) newParams.set('priceMin', filters.priceMin);
+    if (filters.priceMax) newParams.set('priceMax', filters.priceMax);
+    if (filters.yearMin) newParams.set('yearMin', filters.yearMin);
+    if (filters.yearMax) newParams.set('yearMax', filters.yearMax);
+    if (filters.mileageMin) newParams.set('mileageMin', filters.mileageMin);
+    if (filters.mileageMax) newParams.set('mileageMax', filters.mileageMax);
+    if (filters.fuelType) newParams.set('fuelType', filters.fuelType);
+    if (filters.transmission) newParams.set('transmission', filters.transmission);
+    if (filters.bodyType) newParams.set('bodyType', filters.bodyType);
+
+    setSearchParams(newParams);
+  };
+
   return (
     <CarsContainer>
       <PageContainer>
@@ -318,12 +345,40 @@ const CarsPage: React.FC = () => {
 
         {/* Cars Grid */}
         {!loading && cars.length > 0 && (
-          <CarsGrid>
-            {cars.map(car => (
-              <CarCard key={car.id} car={car} />
-            ))}
-          </CarsGrid>
+          <CarsGridWrapper>
+            <ResponsiveGrid
+              columns={{
+                xs: 1,    // 1 column on mobile
+                sm: 2,    // 2 columns on small tablets
+                md: 2,    // 2 columns on tablets
+                lg: 3,    // 3 columns on desktop
+                xl: 4     // 4 columns on large desktop
+              }}
+              gap={20}
+            >
+              {cars.map(car => (
+                <CarCardMobileOptimized key={car.id} car={car} />
+              ))}
+            </ResponsiveGrid>
+          </CarsGridWrapper>
         )}
+
+        {/* Mobile Filter Button */}
+        {isMobile && (
+          <MobileFilterButton
+            onClick={() => setShowFilters(true)}
+            activeFiltersCount={activeFiltersCount}
+          />
+        )}
+
+        {/* Mobile Filter Drawer */}
+        <MobileFilterDrawer
+          isOpen={showFilters}
+          onClose={() => setShowFilters(false)}
+          onApply={handleApplyFilters}
+          initialFilters={currentFilters}
+          language={language}
+        />
 
       </PageContainer>
     </CarsContainer>

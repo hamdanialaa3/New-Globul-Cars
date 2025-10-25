@@ -20,6 +20,7 @@ import {
   Timestamp
 } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
+import { serviceLogger } from '../logger-wrapper';
 
 interface FollowData {
   followedAt: Timestamp;
@@ -52,14 +53,14 @@ class FollowService {
     try {
       // Prevent self-follow
       if (followerId === followingId) {
-        console.warn('Cannot follow yourself');
+        serviceLogger.warn('Cannot follow yourself', { followerId });
         return false;
       }
 
       // Check if already following
       const isFollowing = await this.isFollowing(followerId, followingId);
       if (isFollowing) {
-        console.warn('Already following this user');
+        serviceLogger.warn('Already following this user', { followerId, followingId });
         return false;
       }
 
@@ -92,13 +93,11 @@ class FollowService {
       // Send notification
       await this.sendFollowNotification(followerId, followingId);
 
-      if (process.env.NODE_ENV === 'development') {
-        console.log('✅ User followed:', followingId);
-      }
+      serviceLogger.info('User followed', { followerId, followingId });
 
       return true;
     } catch (error) {
-      console.error('❌ Follow user error:', error);
+      serviceLogger.error('Follow user error', error as Error, { followerId, followingId });
       return false;
     }
   }
@@ -127,13 +126,11 @@ class FollowService {
 
       await batch.commit();
 
-      if (process.env.NODE_ENV === 'development') {
-        console.log('✅ User unfollowed:', followingId);
-      }
+      serviceLogger.info('User unfollowed', { followerId, followingId });
 
       return true;
     } catch (error) {
-      console.error('❌ Unfollow user error:', error);
+      serviceLogger.error('Unfollow user error', error as Error, { followerId, followingId });
       return false;
     }
   }
@@ -148,7 +145,7 @@ class FollowService {
       );
       return followDoc.exists();
     } catch (error) {
-      console.error('Error checking follow status:', error);
+      serviceLogger.error('Error checking follow status', error as Error, { followerId, followingId });
       return false;
     }
   }
@@ -167,7 +164,7 @@ class FollowService {
       const snapshot = await getDocs(followersQuery);
       return snapshot.docs.map(doc => doc.id);
     } catch (error) {
-      console.error('Error getting followers:', error);
+      serviceLogger.error('Error getting followers', error as Error, { userId, limitCount });
       return [];
     }
   }
@@ -186,7 +183,7 @@ class FollowService {
       const snapshot = await getDocs(followingQuery);
       return snapshot.docs.map(doc => doc.id);
     } catch (error) {
-      console.error('Error getting following:', error);
+      serviceLogger.error('Error getting following', error as Error, { userId, limitCount });
       return [];
     }
   }
@@ -211,7 +208,7 @@ class FollowService {
         mutualFollows
       };
     } catch (error) {
-      console.error('Error getting follow stats:', error);
+      serviceLogger.error('Error getting follow stats', error as Error, { userId });
       return {
         followers: 0,
         following: 0,
@@ -233,7 +230,7 @@ class FollowService {
       const followers1Set = new Set(followers1);
       return followers2.filter(id => followers1Set.has(id));
     } catch (error) {
-      console.error('Error getting mutual followers:', error);
+      serviceLogger.error('Error getting mutual followers', error as Error, { userId1, userId2 });
       return [];
     }
   }
@@ -262,7 +259,7 @@ class FollowService {
       await batch.commit();
       return true;
     } catch (error) {
-      console.error('Error removing follower:', error);
+      serviceLogger.error('Error removing follower', error as Error, { userId, followerId });
       return false;
     }
   }
@@ -290,7 +287,7 @@ class FollowService {
         createdAt: serverTimestamp()
       });
     } catch (error) {
-      console.error('Error sending notification:', error);
+      serviceLogger.error('Error sending notification', error as Error, { followerId, followingId });
     }
   }
 }

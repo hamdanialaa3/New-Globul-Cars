@@ -1,6 +1,8 @@
 // src/services/rate-limiting-service.ts
 // Rate Limiting Service for Bulgarian Car Marketplace
 
+import { serviceLogger } from './logger-wrapper';
+
 export interface RateLimitConfig {
   windowMs: number; // Time window in milliseconds
   maxRequests: number; // Maximum requests per window
@@ -354,7 +356,7 @@ export class RateLimitingService {
     });
 
     if (expiredKeys.length > 0) {
-      console.log(`[RATE_LIMITING] Cleaned up ${expiredKeys.length} expired rate limit entries`);
+      serviceLogger.info('Cleaned up expired rate limit entries', { count: expiredKeys.length });
     }
   }
 

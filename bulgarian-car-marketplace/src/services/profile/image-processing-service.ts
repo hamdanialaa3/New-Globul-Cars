@@ -10,6 +10,7 @@ import {
 } from 'firebase/storage';
 import { storage } from '../../firebase/firebase-config';
 import imageCompression from 'browser-image-compression';
+import { serviceLogger } from '../logger-wrapper';
 
 // ==================== INTERFACES ====================
 
@@ -101,7 +102,7 @@ export class ImageProcessingService {
     await uploadBytes(storageRef, file);
     const url = await getDownloadURL(storageRef);
     
-    console.log(`✅ Image uploaded: ${path}`);
+    serviceLogger.info('Image uploaded', { userId, path });
     return url;
   }
 
@@ -113,9 +114,9 @@ export class ImageProcessingService {
     try {
       const storageRef = ref(storage, `users/${userId}/${path}`);
       await deleteObject(storageRef);
-      console.log(`✅ Image deleted: ${path}`);
+      serviceLogger.info('Image deleted', { userId, path });
     } catch (error) {
-      console.error('❌ Error deleting image:', error);
+      serviceLogger.error('Error deleting image', error as Error, { userId, path });
       throw new Error('Failed to delete image');
     }
   }
@@ -156,7 +157,7 @@ export class ImageProcessingService {
     }
     
     // No aspect ratio check - any rectangle image is OK!
-    console.log('✓ Image validation passed');
+    serviceLogger.debug('Image validation passed', { fileSize: file.size, fileType: file.type });
   }
 
   /**

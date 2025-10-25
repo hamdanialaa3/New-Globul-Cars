@@ -1,6 +1,7 @@
 // Unique Owner Service - نظام الحماية الفريد للمالك الوحيد
 import { doc, getDoc, setDoc, updateDoc, serverTimestamp, collection } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
+import { serviceLogger } from './logger-wrapper';
 
 export interface UniqueOwnerSession {
   email: string;
@@ -96,7 +97,7 @@ export class UniqueOwnerService {
       this.currentSession = session;
       return true;
     } catch (error) {
-      console.error('Error validating session:', error);
+      serviceLogger.error('Error validating session', error as Error);
       await this.logout();
       return false;
     }
@@ -152,11 +153,11 @@ export class UniqueOwnerService {
           timestamp: serverTimestamp()
         });
       } catch (firestoreError) {
-        console.warn('Could not save to Firestore:', firestoreError);
+        serviceLogger.warn('Could not save to Firestore', { action, error: firestoreError });
       }
 
     } catch (error) {
-      console.error('Error logging security event:', error);
+      serviceLogger.error('Error logging security event', error as Error, { action });
     }
   }
 
@@ -165,7 +166,7 @@ export class UniqueOwnerService {
     try {
       return JSON.parse(localStorage.getItem('securityLogs') || '[]');
     } catch (error) {
-      console.error('Error getting security logs:', error);
+      serviceLogger.error('Error getting security logs', error as Error);
       return [];
     }
   }

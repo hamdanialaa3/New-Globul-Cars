@@ -135,7 +135,7 @@ export const GaugeOuter = styled.div`
   border: 1px solid rgba(255, 215, 0, 0.25);
 `;
 
-export const GaugeSVG = styled.svg`
+export const GaugeSVG = styled('svg')`
   position: absolute;
   top: 50%;
   left: 50%;
@@ -145,16 +145,16 @@ export const GaugeSVG = styled.svg`
   z-index: 2;
 `;
 
-export const GaugeTrack = styled.circle`
+export const GaugeTrack = styled('circle')`
   fill: none;
   stroke: rgba(255, 255, 255, 0.05);
   /* ⚡ RESIZED: stroke-width 16 → 14.4 */
   stroke-width: 14.4;
 `;
 
-export const GaugeTicks = styled.g``;
+export const GaugeTicks = styled('g')``;
 
-export const TickMark = styled.line<{ $isMajor: boolean }>`
+export const TickMark = styled('line')<{ $isMajor: boolean }>`
   stroke: ${props => props.$isMajor 
     ? 'rgba(255, 215, 0, 0.6)'   /* Yellow for major ticks */
     : 'rgba(255, 255, 255, 0.2)'  /* White for minor ticks */
@@ -168,7 +168,7 @@ export const TickMark = styled.line<{ $isMajor: boolean }>`
   };
 `;
 
-export const GaugeArc = styled.path<{ $color: string }>`
+export const GaugeArc = styled('path')<{ $color: string }>`
   fill: none;
   stroke: ${props => props.$color};
   /* ⚡ RESIZED: stroke-width 14 → 12.6 */

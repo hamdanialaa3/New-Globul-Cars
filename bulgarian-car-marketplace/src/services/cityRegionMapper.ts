@@ -4,6 +4,7 @@
  */
 
 import { BULGARIAN_CITIES } from '../constants/bulgarianCities';
+import { serviceLogger } from './logger-wrapper';
 
 // Map of major cities to their region IDs
 export const CITY_TO_REGION_MAP: Record<string, string> = {
@@ -74,7 +75,7 @@ export const convertCityCountsToRegionCounts = (
       regionCounts[regionId] = (regionCounts[regionId] || 0) + count;
     } else {
       // If city is not mapped, try to map it to Sofia as default
-      console.warn(`City ${cityId} not mapped to any region, adding to Sofia`);
+      serviceLogger.warn('City not mapped to any region, adding to Sofia', { cityId });
       regionCounts['sofia'] = (regionCounts['sofia'] || 0) + count;
     }
   });

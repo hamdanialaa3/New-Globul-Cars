@@ -13,6 +13,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
 import { CarListing } from '../types/CarListing';
+import { serviceLogger } from './logger-wrapper';
 
 export interface DashboardStats {
   totalListings: number;
@@ -109,7 +110,7 @@ class DashboardService {
         weeklyViews
       };
     } catch (error) {
-      console.error('[SERVICE] Error fetching dashboard stats:', error);
+      serviceLogger.error('[SERVICE] Error fetching dashboard stats', error as Error, { userId });
       throw error;
     }
   }
@@ -146,14 +147,14 @@ class DashboardService {
     } catch (error) {
       const code = (error as { code?: string })?.code;
       if (code === 'permission-denied') {
-        console.warn('[DashboardService] permission denied for recent cars – returning empty list (check Firestore rules)');
+        serviceLogger.warn('[DashboardService] Permission denied for recent cars - check Firestore rules');
         return [];
       }
       if (code === 'failed-precondition') {
-        console.warn('[DashboardService] recent cars index building in progress – returning empty list temporarily');
+        serviceLogger.warn('[DashboardService] Recent cars index building in progress');
         return [];
       }
-      console.error('[SERVICE] Error fetching recent cars:', error);
+      serviceLogger.error('[SERVICE] Error fetching recent cars', error as Error, { userId });
       return [];
     }
   }
@@ -201,14 +202,14 @@ class DashboardService {
     } catch (error) {
       const code = (error as { code?: string })?.code;
       if (code === 'permission-denied') {
-        console.warn('[DashboardService] permission denied for recent messages – returning empty list (check Firestore rules)');
+        serviceLogger.warn('[DashboardService] Permission denied for recent messages - check Firestore rules');
         return [];
       }
       if (code === 'failed-precondition') {
-        console.warn('[DashboardService] recent messages index building – returning empty list temporarily');
+        serviceLogger.warn('[DashboardService] Recent messages index building');
         return [];
       }
-      console.error('[SERVICE] Error fetching recent messages:', error);
+      serviceLogger.error('[SERVICE] Error fetching recent messages', error as Error, { userId });
       return [];
     }
   }
@@ -240,14 +241,14 @@ class DashboardService {
     } catch (error) {
       const code = (error as { code?: string })?.code;
       if (code === 'permission-denied') {
-        console.warn('[DashboardService] permission denied for notifications – returning empty list (check Firestore rules)');
+        serviceLogger.warn('[DashboardService] Permission denied for notifications - check Firestore rules');
         return [];
       }
       if (code === 'failed-precondition') {
-        console.warn('[DashboardService] notifications index building – returning empty list temporarily');
+        serviceLogger.warn('[DashboardService] Notifications index building');
         return [];
       }
-      console.error('[SERVICE] Error fetching notifications:', error);
+      serviceLogger.error('[SERVICE] Error fetching notifications', error as Error, { userId });
       return [];
     }
   }
@@ -290,14 +291,14 @@ class DashboardService {
       } catch (err: any) {
         const code = err?.code;
         if (code === 'failed-precondition') {
-          console.warn('[DashboardService] Firestore indexes still building – retrying listener attachment shortly');
+          serviceLogger.warn('[DashboardService] Firestore indexes still building - retrying listener attachment');
           return false;
         }
         if (code === 'permission-denied') {
-          console.warn('[DashboardService] permission denied during preflight – listeners will retry (check rules)');
+          serviceLogger.warn('[DashboardService] Permission denied during preflight - check rules');
           return false;
         }
-        console.error('[SERVICE] [DashboardService] unexpected preflight error, will retry:', err);
+        serviceLogger.error('[SERVICE] [DashboardService] Unexpected preflight error', err as Error);
         return false;
       }
     };
@@ -327,7 +328,7 @@ class DashboardService {
         const stats = await this.calculateStatsFromCars(cars);
         onStatsUpdate(stats);
       }, (err) => {
-        console.warn('[DashboardService] cars snapshot error:', err);
+        serviceLogger.warn('[DashboardService] Cars snapshot error', { error: err });
       });
 
       const messagesUnsub = onSnapshot(messagesQueryRef, async (snapshot) => {
@@ -354,7 +355,7 @@ class DashboardService {
         );
         onMessagesUpdate(messages);
       }, (err) => {
-        console.warn('[DashboardService] messages snapshot error:', err);
+        serviceLogger.warn('[DashboardService] Messages snapshot error', { error: err });
       });
 
       const notificationsUnsub = onSnapshot(notificationsQueryRef, (snapshot) => {
@@ -372,7 +373,7 @@ class DashboardService {
         });
         onNotificationsUpdate(notifications);
       }, (err) => {
-        console.warn('[DashboardService] notifications snapshot error:', err);
+        serviceLogger.warn('[DashboardService] Notifications snapshot error', { error: err });
       });
 
       this.unsubscribeFunctions = [carsUnsub, messagesUnsub, notificationsUnsub];
@@ -435,7 +436,7 @@ class DashboardService {
       const messageRef = doc(db, 'messages', messageId);
       await updateDoc(messageRef, { isRead: true });
     } catch (error) {
-      console.error('[SERVICE] Error marking message as read:', error);
+      serviceLogger.error('[SERVICE] Error marking message as read', error as Error, { messageId });
       throw error;
     }
   }
@@ -446,7 +447,7 @@ class DashboardService {
       const notificationRef = doc(db, 'notifications', notificationId);
       await updateDoc(notificationRef, { isRead: true });
     } catch (error) {
-      console.error('[SERVICE] Error marking notification as read:', error);
+      serviceLogger.error('[SERVICE] Error marking notification as read', error as Error, { notificationId });
       throw error;
     }
   }

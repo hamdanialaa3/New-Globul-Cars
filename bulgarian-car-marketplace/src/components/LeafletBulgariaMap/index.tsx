@@ -709,10 +709,10 @@ const LeafletContainer = styled.div`
   }
 `;
 
-const Sidebar = styled.div<{ isOpen: boolean }>`
+const Sidebar = styled.div<{ $isOpen: boolean }>`
   position: fixed;
   top: 0;
-  right: ${props => props.isOpen ? '0' : '-400px'};
+  right: ${props => props.$isOpen ? '0' : '-400px'};
   width: 380px;
   height: 100vh;
   background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
@@ -852,15 +852,15 @@ const StatsContainer = styled.div`
   margin-top: 40px;
 `;
 
-const StatCard = styled.div<{ index: number }>`
+const StatCard = styled.div<{ $index: number }>`
   background: linear-gradient(135deg, 
     ${props => {
       const colors = ['#3b82f6', '#8b5cf6', '#06b6d4', '#10b981', '#f59e0b', '#ec4899', '#14b8a6', '#f97316'];
-      return colors[props.index % colors.length];
+      return colors[props.$index % colors.length];
     }} 0%, 
     ${props => {
       const colors = ['#1d4ed8', '#7c3aed', '#0891b2', '#059669', '#d97706', '#db2777', '#0f766e', '#ea580c'];
-      return colors[props.index % colors.length];
+      return colors[props.$index % colors.length];
     }} 100%
   );
   padding: 28px;
@@ -938,16 +938,16 @@ const ShowMoreLegendButton = styled.button`
   }
 `;
 
-const LegendItem = styled.div<{ color: string; isHovered: boolean }>`
+const LegendItem = styled.div<{ color: string; $isHovered: boolean }>`
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 8px 16px;
-  background: ${props => props.isHovered ? 'rgba(59, 130, 246, 0.15)' : 'rgba(51, 65, 85, 0.6)'};
+  background: ${props => props.$isHovered ? 'rgba(59, 130, 246, 0.15)' : 'rgba(51, 65, 85, 0.6)'};
   border-radius: 12px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
-  border: 1px solid ${props => props.isHovered ? '#3b82f6' : 'transparent'};
+  border: 1px solid ${props => props.$isHovered ? '#3b82f6' : 'transparent'};
 
   &:hover {
     transform: translateY(-2px);
@@ -1252,7 +1252,7 @@ export const LeafletBulgariaMap: React.FC<LeafletBulgariaMapProps> = ({
       <LeafletContainer ref={mapRef} />
 
       {/* Sidebar */}
-      <Sidebar isOpen={sidebarOpen}>
+      <Sidebar $isOpen={sidebarOpen}>
         <CloseButton onClick={handleCloseSidebar}>
           ×
         </CloseButton>
@@ -1279,15 +1279,15 @@ export const LeafletBulgariaMap: React.FC<LeafletBulgariaMapProps> = ({
 
       {/* Statistics */}
       <StatsContainer>
-        <StatCard index={0}>
+        <StatCard $index={0}>
           <h3>{totalCars.toLocaleString()}</h3>
           <p>{language === 'bg' ? 'Общо автомобили' : 'Total Cars'}</p>
         </StatCard>
-        <StatCard index={1}>
+        <StatCard $index={1}>
           <h3>{Object.keys(bulgariaData.features).length}</h3>
           <p>{language === 'bg' ? 'Области' : 'Regions'}</p>
         </StatCard>
-        <StatCard index={2}>
+        <StatCard $index={2}>
           <h3>{Object.keys(carCounts).length}</h3>
           <p>{language === 'bg' ? 'Активни области' : 'Active Regions'}</p>
         </StatCard>
@@ -1301,7 +1301,7 @@ export const LeafletBulgariaMap: React.FC<LeafletBulgariaMapProps> = ({
           <LegendItem
             key={feature.properties.id}
             color="#3b82f6"
-            isHovered={hoveredRegion === feature.properties.id}
+            $isHovered={hoveredRegion === feature.properties.id}
             onClick={() => {
               // Navigate to cars page filtered by this region
               if (onCityClick) {

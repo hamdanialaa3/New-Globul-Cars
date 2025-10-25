@@ -3,6 +3,7 @@
 
 import { errorHandler } from './error-handling-service';
 import { rateLimiter } from './rate-limiting-service';
+import { serviceLogger } from './logger-wrapper';
 
 export interface SecurityConfig {
   enableCSRFProtection: boolean;
@@ -132,7 +133,7 @@ export class SecurityService {
    */
   public blockIP(ip: string): void {
     this.blockedIPs.add(ip);
-    console.warn(`[SECURITY] Blocked IP: ${ip}`);
+    serviceLogger.warn('Blocked IP', { ip });
   }
 
   /**

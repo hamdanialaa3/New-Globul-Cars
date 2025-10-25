@@ -4,6 +4,7 @@
 
 import { doc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
+import { serviceLogger } from '../logger-wrapper';
 
 // ==================== ENUMS & INTERFACES ====================
 
@@ -139,11 +140,11 @@ export class TrustScoreService {
       // Update in Firestore
       await this.updateTrustScore(userId, score);
 
-      console.log(`✅ Trust score calculated: ${score}/100`);
+      serviceLogger.info('Trust score calculated', { userId, score });
       return score;
 
     } catch (error) {
-      console.error('❌ Error calculating trust score:', error);
+      serviceLogger.error('Error calculating trust score', error as Error, { userId });
       throw error;
     }
   }
@@ -159,7 +160,7 @@ export class TrustScoreService {
 
       // Check if already has badge
       if (currentBadges.some(b => b.id === badgeId)) {
-        console.log(`ℹ️ User already has badge: ${badgeId}`);
+        serviceLogger.debug('User already has badge', { userId, badgeId });
         return;
       }
 
@@ -169,9 +170,9 @@ export class TrustScoreService {
         updatedAt: serverTimestamp()
       });
 
-      console.log(`✅ Badge awarded: ${badge.name}`);
+      serviceLogger.info('Badge awarded', { userId, badgeId, badgeName: badge.name });
     } catch (error) {
-      console.error('❌ Error awarding badge:', error);
+      serviceLogger.error('Error awarding badge', error as Error, { userId, badgeId });
       throw error;
     }
   }

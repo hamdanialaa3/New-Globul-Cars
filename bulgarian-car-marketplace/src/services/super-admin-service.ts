@@ -14,6 +14,7 @@ import {
   writeBatch
 } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
+import { serviceLogger } from './logger-wrapper';
 
 export interface SuperAdminUser {
   uid: string;
@@ -175,7 +176,7 @@ export class SuperAdminService {
       return analytics;
 
     } catch (error) {
-      console.error('Error fetching real-time analytics:', error);
+      serviceLogger.error('Error fetching real-time analytics', error as Error);
       throw error;
     }
   }
@@ -203,7 +204,7 @@ export class SuperAdminService {
         };
       });
     } catch (error) {
-      console.error('Error fetching user activity:', error);
+      serviceLogger.error('Error fetching user activity', error as Error);
       throw error;
     }
   }
@@ -222,7 +223,7 @@ export class SuperAdminService {
       // تسجيل العملية
       await this.logAdminAction('ban_user', { userId, reason });
     } catch (error) {
-      console.error('Error banning user:', error);
+      serviceLogger.error('Error banning user', error as Error, { userId, reason });
       throw error;
     }
   }
@@ -239,7 +240,7 @@ export class SuperAdminService {
 
       await this.logAdminAction('unban_user', { userId });
     } catch (error) {
-      console.error('Error unbanning user:', error);
+      serviceLogger.error('Error unbanning user', error as Error, { userId });
       throw error;
     }
   }
@@ -266,7 +267,7 @@ export class SuperAdminService {
       await batch.commit();
       await this.logAdminAction('delete_user', { userId });
     } catch (error) {
-      console.error('Error deleting user:', error);
+      serviceLogger.error('Error deleting user', error as Error, { userId });
       throw error;
     }
   }
@@ -277,7 +278,7 @@ export class SuperAdminService {
       await deleteDoc(doc(db, 'cars', carId));
       await this.logAdminAction('delete_car', { carId, reason });
     } catch (error) {
-      console.error('Error deleting car:', error);
+      serviceLogger.error('Error deleting car', error as Error, { carId, reason });
       throw error;
     }
   }
@@ -294,7 +295,7 @@ export class SuperAdminService {
         status: 'pending'
       });
     } catch (error) {
-      console.error('Error flagging content:', error);
+      serviceLogger.error('Error flagging content', error as Error, { contentId, type, reason });
       throw error;
     }
   }
@@ -318,7 +319,7 @@ export class SuperAdminService {
         flaggedMessages: flaggedMessages.size
       };
     } catch (error) {
-      console.error('Error fetching content moderation data:', error);
+      serviceLogger.error('Error fetching content moderation data', error as Error);
       throw error;
     }
   }
@@ -334,7 +335,7 @@ export class SuperAdminService {
         timestamp: serverTimestamp()
       });
     } catch (error) {
-      console.error('Error logging admin action:', error);
+      serviceLogger.error('Error logging admin action', error as Error, { action, details });
     }
   }
 

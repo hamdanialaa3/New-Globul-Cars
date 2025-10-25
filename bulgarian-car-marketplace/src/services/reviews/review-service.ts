@@ -19,6 +19,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
 import { trustScoreService } from '../profile/trust-score-service';
+import { serviceLogger } from '../logger-wrapper';
 
 // ==================== INTERFACES ====================
 
@@ -141,7 +142,7 @@ export class ReviewService {
       // 5. Update trust score (badges will be checked there)
       await trustScoreService.calculateTrustScore(data.sellerId);
 
-      console.log('✅ Review submitted:', docRef.id);
+      serviceLogger.info('Review submitted', { reviewId: docRef.id, sellerId: data.sellerId, buyerId: data.buyerId });
 
       return {
         success: true,
@@ -150,7 +151,7 @@ export class ReviewService {
       };
 
     } catch (error: any) {
-      console.error('❌ Submit review failed:', error);
+      serviceLogger.error('Submit review failed', error as Error, { sellerId: data?.sellerId, buyerId: data?.buyerId });
       return {
         success: false,
         message: error.message || 'Грешка при изпращане / Submission failed'
@@ -183,7 +184,7 @@ export class ReviewService {
       } as Review));
 
     } catch (error) {
-      console.error('❌ Error fetching reviews:', error);
+      serviceLogger.error('Error fetching reviews', error as Error, { sellerId });
       return [];
     }
   }
@@ -241,7 +242,7 @@ export class ReviewService {
       };
 
     } catch (error) {
-      console.error('❌ Error calculating stats:', error);
+      serviceLogger.error('Error calculating stats', error as Error, { sellerId });
       return {
         totalReviews: 0,
         averageRating: 0,
@@ -273,7 +274,7 @@ export class ReviewService {
 
       return true;
     } catch (error) {
-      console.error('❌ Error marking helpful:', error);
+      serviceLogger.error('Error marking helpful', error as Error, { reviewId });
       return false;
     }
   }
@@ -320,7 +321,7 @@ export class ReviewService {
       const snapshot = await getDocs(q);
       return !snapshot.empty;
     } catch (error) {
-      console.error('❌ Error checking existing review:', error);
+      serviceLogger.error('Error checking existing review', error as Error, { buyerId, sellerId });
       return false;
     }
   }
@@ -340,9 +341,9 @@ export class ReviewService {
         updatedAt: serverTimestamp()
       });
 
-      console.log('✅ Seller stats updated');
+      serviceLogger.info('Seller stats updated', { sellerId });
     } catch (error) {
-      console.error('❌ Error updating seller stats:', error);
+      serviceLogger.error('Error updating seller stats', error as Error, { sellerId });
     }
   }
 }

@@ -2,6 +2,7 @@
 // (Comment removed - was in Arabic)
 
 import { io, Socket } from 'socket.io-client';
+import { serviceLogger } from './logger-wrapper';
 
 // Socket.io configuration
 const SOCKET_URL = process.env.REACT_APP_SOCKET_URL || 'http://localhost:3001';
@@ -40,11 +41,11 @@ this.reconnectAttempts = 0;
 });
 
     this.socket.on('connect_error', (error) => {
-      console.error('[SERVICE] Socket connection error:', error);
+      serviceLogger.error('Socket connection error', error as Error);
       this.reconnectAttempts++;
 
       if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-        console.error('[SERVICE] Max reconnection attempts reached');
+        serviceLogger.error('Max reconnection attempts reached', new Error('Socket reconnection failed'));
       }
     });
 

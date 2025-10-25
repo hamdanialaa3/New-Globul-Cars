@@ -108,7 +108,9 @@ export const initializeFacebookSDK = async (): Promise<void> => {
   const appId = process.env.REACT_APP_FACEBOOK_APP_ID;
   
   if (!appId) {
-    console.warn('Facebook App ID not configured');
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('Facebook App ID not configured');
+    }
     return;
   }
 
@@ -121,7 +123,9 @@ export const initializeFacebookSDK = async (): Promise<void> => {
       autoLogAppEvents: true
     });
     
-    console.log('Facebook SDK initialized successfully');
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Facebook SDK initialized successfully');
+    }
   } catch (error) {
     console.error('Failed to initialize Facebook SDK:', error);
   }

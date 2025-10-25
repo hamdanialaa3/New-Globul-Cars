@@ -14,6 +14,7 @@ import ErrorBoundary from './components/ErrorBoundary';
 import { SkipNavigation } from './components/Accessibility';
 import Header from './components/Header/Header';
 import MobileHeader from './components/Header/MobileHeader'; // ✅ NEW: Mobile-only header
+import { MobileBottomNav } from './components/layout'; // ✅ NEW: Mobile bottom navigation
 import Footer from './components/Footer/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
@@ -24,6 +25,7 @@ import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 import NotFoundPage from './components/NotFoundPage';
 import FacebookPixel from './components/FacebookPixel';
 import FloatingAddButton from './components/FloatingAddButton';
+import { useIsMobile } from './hooks/useBreakpoint';
 // Removed problematic imports
 // import useAuthRedirectHandler from './hooks/useAuthRedirectHandler';
 
@@ -37,7 +39,14 @@ const SellPage = React.lazy(() => import('./pages/SellPageNew'));
 const VehicleStartPage = React.lazy(() => import('./pages/sell/VehicleStartPageNew'));
 const SellerTypePageNew = React.lazy(() => import('./pages/sell/SellerTypePageNew'));
 const VehicleDataPageNew = React.lazy(() => import('./pages/sell/VehicleData'));
+const MobileVehicleDataPage = React.lazy(() => import('./pages/sell/MobileVehicleDataPageClean'));
 const EquipmentMainPage = React.lazy(() => import('./pages/sell/EquipmentMainPage'));
+const MobileEquipmentMainPage = React.lazy(() => import('./pages/sell/MobileEquipmentMainPage'));
+const MobileImagesPage = React.lazy(() => import('./pages/sell/MobileImagesPage'));
+const MobilePricingPage = React.lazy(() => import('./pages/sell/MobilePricingPage'));
+const MobileContactPage = React.lazy(() => import('./pages/sell/MobileContactPage'));
+const MobilePreviewPage = React.lazy(() => import('./pages/sell/MobilePreviewPage'));
+const MobileSubmissionPage = React.lazy(() => import('./pages/sell/MobileSubmissionPage'));
 const SafetyEquipmentPage = React.lazy(() => import('./pages/sell/Equipment/SafetyPage'));
 const ComfortEquipmentPage = React.lazy(() => import('./pages/sell/Equipment/ComfortPage'));
 const InfotainmentEquipmentPage = React.lazy(() => import('./pages/sell/Equipment/InfotainmentPage'));
@@ -49,13 +58,13 @@ const ContactNamePage = React.lazy(() => import('./pages/sell/ContactNamePage'))
 const ContactAddressPage = React.lazy(() => import('./pages/sell/ContactAddressPage'));
 const ContactPhonePage = React.lazy(() => import('./pages/sell/ContactPhonePage'));
 const UnifiedContactPage = React.lazy(() => import('./pages/sell/UnifiedContactPage'));
-const MessagingPage = React.lazy(() => import('./pages/MessagingPage'));
+
 const MessagesPage = React.lazy(() => import('./pages/MessagesPage'));
 const AdminPage = React.lazy(() => import('./pages/AdminPage'));
 const AdminLoginPage = React.lazy(() => import('./pages/AdminLoginPage'));
 const SuperAdminLogin = React.lazy(() => import('./pages/SuperAdminLogin'));
 const SuperAdminDashboard = React.lazy(() => import('./pages/SuperAdminDashboardNew'));
-const ProfilePage = React.lazy(() => import('./pages/ProfilePage'));
+
 const ProfileRouter = React.lazy(() => import('./pages/ProfilePage/ProfileRouter'));  // NEW: Profile Type Router
 const VerificationPage = React.lazy(() => import('./features/verification/VerificationPage'));  // NEW: Verification System
 const BillingPage = React.lazy(() => import('./features/billing/BillingPage'));  // NEW: Billing System
@@ -64,6 +73,8 @@ const TeamManagement = React.lazy(() => import('./features/team/TeamManagement')
 const UsersDirectoryPage = React.lazy(() => import('./pages/UsersDirectoryPage')); // Bubbles View
 // NEW: Social Platform Pages
 const EventsPage = React.lazy(() => import('./pages/EventsPage'));  // NEW: Events Page with BG/EN translations
+const CreatePostPage = React.lazy(() => import('./pages/CreatePostPage')); // NEW: Create Post Page
+const OAuthCallback = React.lazy(() => import('./pages/OAuthCallback')); // NEW: OAuth Callback Handler
 // Glass Morphism Premium Auth Pages
 const LoginPage = React.lazy(() => import('./pages/LoginPage/LoginPageGlassFixed'));
 const RegisterPage = React.lazy(() => import('./pages/RegisterPage/RegisterPageGlassFixed'));
@@ -112,22 +123,25 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       minHeight: '100vh',
       display: 'flex',
       flexDirection: 'column',
-      background: '#f8fafc'
+      background: '#ffffff' // ✅ CHANGED: White background instead of beige/yellow #f8fafc
     }}>
       <header role="banner">
         {/* ✅ Desktop Header - Hidden on mobile */}
         <div className="desktop-header-only">
           <Header />
         </div>
-        {/* ✅ Mobile Header - Visible only on mobile */}
-        <MobileHeader />
+        {/* ✅ Mobile Header - Visible only on mobile/tablet portrait */}
+        <div className="mobile-header-only">
+          <MobileHeader />
+        </div>
       </header>
       <main
         id="main-content"
         role="main"
         style={{
           flex: 1,
-          padding: '0 1rem'
+          padding: '0', // ❌ REMOVED: No padding on mobile - causes yellow transparent frame
+          paddingBottom: '80px' // ✅ Space for mobile bottom nav
         }}
         tabIndex={-1}
       >
@@ -138,6 +152,8 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       <footer role="contentinfo">
         <Footer />
       </footer>
+      {/* ✅ Mobile Bottom Navigation - Visible only on mobile */}
+      <MobileBottomNav />
     </div>
   );
 };
@@ -158,30 +174,16 @@ const FullScreenLayout: React.FC<{ children: React.ReactNode }> = ({ children })
   );
 };
 
-// Loading component for lazy loaded pages
-const PageLoader: React.FC = () => (
-  <div style={{
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    minHeight: '50vh',
-    flexDirection: 'column',
-    gap: '1rem'
-  }}>
-    <div className="loading-spinner" />
-    <p>Loading...</p>
-  </div>
-);
+// Loading fallback is provided inline where needed (simple spinner)
 
 // App Component
 const App: React.FC = () => {
   const recaptchaKey = process.env.REACT_APP_RECAPTCHA_SITE_KEY;
 
-  if (!recaptchaKey) {
-    // In a real app, you might want to show an error page or have a fallback.
-    console.error("reCAPTCHA Site Key is not defined in environment variables.");
-    // For this example, we'll render the app without reCAPTCHA protection.
-    // A better approach would be to prevent the app from running without it.
+  // Note: reCAPTCHA is optional for development
+  // In production, consider adding the key to .env
+  if (!recaptchaKey && process.env.NODE_ENV === 'production') {
+    console.warn('⚠️ reCAPTCHA Site Key is not configured');
   }
 
   return (
@@ -217,6 +219,13 @@ const App: React.FC = () => {
                         </FullScreenLayout>
                       } />
                       
+                      {/* OAuth Callback - Full Screen (no header/footer) */}
+                      <Route path="/oauth/callback" element={
+                        <FullScreenLayout>
+                          <OAuthCallback />
+                        </FullScreenLayout>
+                      } />
+                      
                       {/* Super Admin Routes - Full Screen (no header/footer) */}
                       <Route path="/super-admin-login" element={
                         <FullScreenLayout>
@@ -244,7 +253,9 @@ const App: React.FC = () => {
   );
 };
 
-const MainLayout: React.FC = () => (
+const MainLayout: React.FC = () => {
+  const isMobile = useIsMobile();
+  return (
   <Layout>
     <FloatingAddButton />
     <Routes>
@@ -259,6 +270,9 @@ const MainLayout: React.FC = () => (
       {/* Redirect old routes to new system */}
       <Route path="/sell-car" element={<SellPage />} />
       <Route path="/add-car" element={<SellPage />} />
+      
+      {/* Social Feed - Create Post */}
+      <Route path="/create-post" element={<CreatePostPage />} />
       {/* Mobile.de-style sell workflow */}
       <Route
         path="/sell/auto"
@@ -280,7 +294,7 @@ const MainLayout: React.FC = () => (
         path="/sell/inserat/:vehicleType/fahrzeugdaten/antrieb-und-umwelt"
         element={
           <AuthGuard requireAuth={true}>
-            <VehicleDataPageNew />
+            {isMobile ? <MobileVehicleDataPage /> : <VehicleDataPageNew />}
           </AuthGuard>
         }
       />
@@ -299,7 +313,7 @@ const MainLayout: React.FC = () => (
         path="/sell/inserat/:vehicleType/ausstattung"
         element={
           <AuthGuard requireAuth={true}>
-            <EquipmentMainPage />
+              {isMobile ? <MobileEquipmentMainPage /> : <EquipmentMainPage />}
           </AuthGuard>
         }
       />
@@ -339,7 +353,7 @@ const MainLayout: React.FC = () => (
         path="/sell/inserat/:vehicleType/details/bilder"
         element={
           <AuthGuard requireAuth={true}>
-            <ImagesPage />
+              {isMobile ? <MobileImagesPage /> : <ImagesPage />}
           </AuthGuard>
         }
       />
@@ -347,7 +361,7 @@ const MainLayout: React.FC = () => (
         path="/sell/inserat/:vehicleType/details/preis"
         element={
           <AuthGuard requireAuth={true}>
-            <PricingPage />
+              {isMobile ? <MobilePricingPage /> : <PricingPage />}
           </AuthGuard>
         }
       />
@@ -356,7 +370,27 @@ const MainLayout: React.FC = () => (
         path="/sell/inserat/:vehicleType/contact"
         element={
           <AuthGuard requireAuth={true}>
-            <UnifiedContactPage />
+              {isMobile ? <MobileContactPage /> : <UnifiedContactPage />}
+          </AuthGuard>
+        }
+      />
+
+      {/* Preview / Summary step before submission */}
+      <Route
+        path="/sell/inserat/:vehicleType/preview"
+        element={
+          <AuthGuard requireAuth={true}>
+              {isMobile ? <MobilePreviewPage /> : <MobilePreviewPage />}
+          </AuthGuard>
+        }
+      />
+
+      {/* Final submission step */}
+      <Route
+        path="/sell/inserat/:vehicleType/submission"
+        element={
+          <AuthGuard requireAuth={true}>
+              {isMobile ? <MobileSubmissionPage /> : <MobileSubmissionPage />}
           </AuthGuard>
         }
       />
@@ -617,6 +651,7 @@ const MainLayout: React.FC = () => (
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   </Layout>
-);
+  );
+};
 
 export default App;

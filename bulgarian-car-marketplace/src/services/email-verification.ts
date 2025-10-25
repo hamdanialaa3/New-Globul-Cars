@@ -9,6 +9,7 @@ import {
   User
 } from 'firebase/auth';
 import { auth } from '../firebase/firebase-config';
+import { serviceLogger } from './logger-wrapper';
 
 export interface EmailVerificationResult {
   success: boolean;
@@ -82,7 +83,7 @@ export class EmailVerificationService {
       };
 
     } catch (error: any) {
-      console.error('[SERVICE] Email verification error:', error);
+      serviceLogger.error('Email verification error', error as Error, { email: user?.email });
       
       let errorMessage: string;
       
@@ -143,7 +144,7 @@ export class EmailVerificationService {
       };
 
     } catch (error: any) {
-      console.error('[SERVICE] Email verification with code error:', error);
+      serviceLogger.error('Email verification with code error', error as Error, { actionCode });
       
       let errorMessage: string;
       
@@ -185,7 +186,7 @@ export class EmailVerificationService {
         previousEmail: info.data.previousEmail || undefined
       };
     } catch (error: any) {
-      console.error('[SERVICE] Get action code info error:', error);
+      serviceLogger.error('Get action code info error', error as Error, { actionCode });
       return null;
     }
   }
@@ -220,7 +221,7 @@ export class EmailVerificationService {
       };
 
     } catch (error: any) {
-      console.error('[SERVICE] Email update verification error:', error);
+      serviceLogger.error('Email update verification error', error as Error, { newEmail });
       
       let errorMessage: string;
       
@@ -280,7 +281,7 @@ export class EmailVerificationService {
     try {
       await user.reload();
     } catch (error) {
-      console.error('[SERVICE] Error reloading user:', error);
+      serviceLogger.error('Error reloading user', error as Error, { email: user?.email });
     }
   }
 }

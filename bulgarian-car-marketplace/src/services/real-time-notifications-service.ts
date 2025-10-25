@@ -14,6 +14,7 @@ import {
   getDocs
 } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
+import { serviceLogger } from './logger-wrapper';
 
 export interface Notification {
   id: string;
@@ -86,7 +87,7 @@ export class RealTimeNotificationsService {
 
       return notificationRef.id;
     } catch (error) {
-      console.error('Error creating notification:', error);
+      serviceLogger.error('Error creating notification', error as Error, { type: notification.type });
       throw error;
     }
   }
@@ -174,7 +175,7 @@ export class RealTimeNotificationsService {
         timestamp: doc.data().timestamp?.toDate() || new Date()
       } as Notification));
     } catch (error) {
-      console.error('Error getting notifications:', error);
+      serviceLogger.error('Error getting notifications', error as Error, { limitCount });
       return [];
     }
   }
@@ -216,7 +217,7 @@ export class RealTimeNotificationsService {
       const notificationRef = doc(db, 'admin_notifications', notificationId);
       await updateDoc(notificationRef, { read: true });
     } catch (error) {
-      console.error('Error marking notification as read:', error);
+      serviceLogger.error('Error marking notification as read', error as Error, { notificationId });
     }
   }
 
@@ -226,7 +227,7 @@ export class RealTimeNotificationsService {
       const notificationRef = doc(db, 'admin_notifications', notificationId);
       await deleteDoc(notificationRef);
     } catch (error) {
-      console.error('Error deleting notification:', error);
+      serviceLogger.error('Error deleting notification', error as Error, { notificationId });
     }
   }
 
@@ -240,7 +241,7 @@ export class RealTimeNotificationsService {
       const deletePromises = snapshot.docs.map(doc => deleteDoc(doc.ref));
       await Promise.all(deletePromises);
     } catch (error) {
-      console.error('Error clearing read notifications:', error);
+      serviceLogger.error('Error clearing read notifications', error as Error);
     }
   }
 
@@ -269,12 +270,12 @@ export class RealTimeNotificationsService {
 
     // إرسال إشعار البريد الإلكتروني (محاكاة)
     if (this.settings.emailNotifications) {
-      console.log('📧 Email notification sent:', notification.title);
+      serviceLogger.info('Email notification sent', { title: notification.title, type: notification.type });
     }
 
     // إرسال إشعار SMS (محاكاة)
     if (this.settings.smsNotifications) {
-      console.log('📱 SMS notification sent:', notification.title);
+      serviceLogger.info('SMS notification sent', { title: notification.title, type: notification.type });
     }
   }
 
@@ -318,7 +319,7 @@ export class RealTimeNotificationsService {
 
       return stats;
     } catch (error) {
-      console.error('Error getting notification stats:', error);
+      serviceLogger.error('Error getting notification stats', error as Error);
       return {
         total: 0,
         unread: 0,

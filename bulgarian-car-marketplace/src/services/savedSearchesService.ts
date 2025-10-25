@@ -16,6 +16,7 @@ import {
   getDoc
 } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
+import { serviceLogger } from './logger-wrapper';
 
 // Types
 export interface SavedSearchFilters {
@@ -95,10 +96,10 @@ class SavedSearchesService {
       };
 
       const docRef = await addDoc(searchesRef, newSearch);
-      console.log('[SavedSearches] Search saved successfully:', docRef.id);
+      serviceLogger.info('Search saved successfully', { userId, searchId: docRef.id, name: searchData.name });
       return docRef.id;
     } catch (error) {
-      console.error('[SavedSearches] Error saving search:', error);
+      serviceLogger.error('Error saving search', error as Error, { userId, name: searchData.name });
       throw error;
     }
   }
@@ -125,10 +126,10 @@ class SavedSearchesService {
         } as SavedSearch);
       });
 
-      console.log(`[SavedSearches] Retrieved ${searches.length} searches for user ${userId}`);
+      serviceLogger.info('Retrieved saved searches', { userId, count: searches.length });
       return searches;
     } catch (error) {
-      console.error('[SavedSearches] Error getting searches:', error);
+      serviceLogger.error('Error getting searches', error as Error, { userId });
       throw error;
     }
   }
@@ -150,7 +151,7 @@ class SavedSearchesService {
 
       return null;
     } catch (error) {
-      console.error('[SavedSearches] Error getting search:', error);
+      serviceLogger.error('Error getting search', error as Error, { searchId });
       throw error;
     }
   }
@@ -170,9 +171,9 @@ class SavedSearchesService {
         updatedAt: serverTimestamp()
       });
 
-      console.log('[SavedSearches] Search updated successfully:', searchId);
+      serviceLogger.info('Search updated successfully', { searchId });
     } catch (error) {
-      console.error('[SavedSearches] Error updating search:', error);
+      serviceLogger.error('Error updating search', error as Error, { searchId });
       throw error;
     }
   }
@@ -190,9 +191,9 @@ class SavedSearchesService {
         updatedAt: serverTimestamp()
       });
 
-      console.log('[SavedSearches] Results count updated:', searchId, count);
+      serviceLogger.info('Results count updated', { searchId, count });
     } catch (error) {
-      console.error('[SavedSearches] Error updating results count:', error);
+      serviceLogger.error('Error updating results count', error as Error, { searchId, count });
       throw error;
     }
   }
@@ -209,9 +210,9 @@ class SavedSearchesService {
         updatedAt: serverTimestamp()
       });
 
-      console.log('[SavedSearches] Notifications toggled:', searchId, enabled);
+      serviceLogger.info('Notifications toggled', { searchId, enabled });
     } catch (error) {
-      console.error('[SavedSearches] Error toggling notifications:', error);
+      serviceLogger.error('Error toggling notifications', error as Error, { searchId, enabled });
       throw error;
     }
   }
@@ -224,9 +225,9 @@ class SavedSearchesService {
       const searchRef = doc(db, this.collectionName, searchId);
       await deleteDoc(searchRef);
       
-      console.log('[SavedSearches] Search deleted successfully:', searchId);
+      serviceLogger.info('Search deleted successfully', { searchId });
     } catch (error) {
-      console.error('[SavedSearches] Error deleting search:', error);
+      serviceLogger.error('Error deleting search', error as Error, { searchId });
       throw error;
     }
   }
@@ -239,7 +240,7 @@ class SavedSearchesService {
       const searches = await this.getUserSearches(userId);
       return searches.length >= maxLimit;
     } catch (error) {
-      console.error('[SavedSearches] Error checking limit:', error);
+      serviceLogger.error('Error checking limit', error as Error, { userId, maxLimit });
       return false;
     }
   }
@@ -264,7 +265,7 @@ class SavedSearchesService {
 
       return await this.saveSearch(originalSearch.userId, duplicatedSearch);
     } catch (error) {
-      console.error('[SavedSearches] Error duplicating search:', error);
+      serviceLogger.error('Error duplicating search', error as Error, { searchId });
       throw error;
     }
   }

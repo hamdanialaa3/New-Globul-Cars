@@ -12,6 +12,8 @@
  * 7. Maps Embed API - Static maps
  */
 
+import { serviceLogger } from './logger-wrapper';
+
 const API_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY || 'AIzaSyDvULqHtzVQFWshx2fO755CMELUaMcm5_4';
 
 export interface DistanceResult {
@@ -83,7 +85,7 @@ class GoogleMapsEnhancedService {
       }
 
       if (!this.distanceMatrixService) {
-        console.error('Distance Matrix Service not initialized');
+        serviceLogger.error('Distance Matrix Service not initialized', undefined, { origin, destination });
         resolve(null);
         return;
       }
@@ -108,7 +110,7 @@ class GoogleMapsEnhancedService {
             resolve(null);
           }
         } else {
-          console.error('Distance Matrix API error:', status);
+          serviceLogger.error('Distance Matrix API error', undefined, { status });
           resolve(null);
         }
       });
@@ -128,7 +130,7 @@ class GoogleMapsEnhancedService {
       }
 
       if (!this.directionsService) {
-        console.error('Directions Service not initialized');
+        serviceLogger.error('Directions Service not initialized', undefined, { origin, destination });
         resolve(null);
         return;
       }
@@ -146,7 +148,7 @@ class GoogleMapsEnhancedService {
             status,
           });
         } else {
-          console.error('Directions API error:', status);
+          serviceLogger.error('Directions API error', undefined, { status });
           resolve(null);
         }
       });
@@ -184,7 +186,7 @@ class GoogleMapsEnhancedService {
 
       return null;
     } catch (error) {
-      console.error('Time Zone API error:', error);
+      serviceLogger.error('Time Zone API error', error as Error, { lat, lng });
       return null;
     }
   }
@@ -211,6 +213,7 @@ class GoogleMapsEnhancedService {
           if (status === google.maps.places.PlacesServiceStatus.OK && predictions) {
             resolve(predictions as PlaceAutocomplete[]);
           } else {
+            serviceLogger.warn('Places Autocomplete returned no predictions or non-OK status', { status, input, countryCode });
             resolve([]);
           }
         }
@@ -228,6 +231,7 @@ class GoogleMapsEnhancedService {
       }
 
       if (!this.geocoder) {
+        serviceLogger.warn('Geocoder not initialized', { address });
         resolve(null);
         return;
       }
@@ -240,6 +244,7 @@ class GoogleMapsEnhancedService {
             lng: location.lng(),
           });
         } else {
+          serviceLogger.warn('Geocode failed or returned no results', { address, status });
           resolve(null);
         }
       });
@@ -293,7 +298,7 @@ class GoogleMapsEnhancedService {
   async getUserLocation(): Promise<{ lat: number; lng: number } | null> {
     return new Promise((resolve) => {
       if (!navigator.geolocation) {
-        console.error('Geolocation is not supported');
+        serviceLogger.warn('Geolocation is not supported by the browser');
         resolve(null);
         return;
       }
@@ -306,7 +311,7 @@ class GoogleMapsEnhancedService {
           });
         },
         (error) => {
-          console.error('Error getting location:', error);
+          serviceLogger.error('Error getting location', error as unknown as Error);
           resolve(null);
         },
         {
@@ -351,5 +356,6 @@ class GoogleMapsEnhancedService {
   }
 }
 
-export default new GoogleMapsEnhancedService();
+const googleMapsEnhancedServiceInstance = new GoogleMapsEnhancedService();
+export default googleMapsEnhancedServiceInstance;
 

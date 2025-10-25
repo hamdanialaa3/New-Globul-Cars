@@ -1,6 +1,8 @@
 // src/services/n8n-integration.ts
 // N8N Integration Service for Globul Cars
 
+import { serviceLogger } from './logger-wrapper';
+
 export class N8nIntegrationService {
   private static readonly N8N_BASE_URL = process.env.REACT_APP_N8N_URL || 'https://globul-cars-bg.app.n8n.cloud';
   private static readonly WEBHOOK_BASE = process.env.REACT_APP_N8N_WEBHOOK_BASE || `${this.N8N_BASE_URL}/webhook`;
@@ -26,7 +28,7 @@ export class N8nIntegrationService {
   private static async sendWebhook(url: string, data: any): Promise<any> {
     // Skip if n8n is disabled
     if (!this.N8N_ENABLED) {
-      console.log('N8N is disabled, skipping webhook:', url);
+      serviceLogger.debug('N8N is disabled, skipping webhook', { url });
       return null;
     }
 
@@ -49,7 +51,7 @@ export class N8nIntegrationService {
 
       return await response.json();
     } catch (error) {
-      console.error('N8N webhook error:', error);
+      serviceLogger.error('N8N webhook error', error as Error, { url });
       // Don't break the main flow if n8n is down
       return null;
     }

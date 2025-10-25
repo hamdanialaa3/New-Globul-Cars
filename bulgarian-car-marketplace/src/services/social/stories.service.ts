@@ -21,6 +21,7 @@ import {
 } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import { db, storage } from '../../firebase/firebase-config';
+import { serviceLogger } from '../logger-wrapper';
 
 // ==================== INTERFACES ====================
 
@@ -121,7 +122,7 @@ class StoriesService {
       
       return storyRef.id;
     } catch (error) {
-      console.error('[SERVICE] Error creating story:', error);
+      serviceLogger.error('Error creating story', error as Error, { userId });
       throw new Error('Failed to create story');
     }
   }
@@ -153,7 +154,7 @@ class StoriesService {
         expiresAt: doc.data().expiresAt.toDate()
       } as Story));
     } catch (error) {
-      console.error('[SERVICE] Error getting stories:', error);
+      serviceLogger.error('Error getting stories', error as Error, { userId });
       throw new Error('Failed to load stories');
     }
   }
@@ -176,7 +177,7 @@ class StoriesService {
         viewedAt: serverTimestamp()
       });
     } catch (error) {
-      console.error('[SERVICE] Error recording view:', error);
+      serviceLogger.error('Error recording view', error as Error, { storyId, viewerId });
     }
   }
 

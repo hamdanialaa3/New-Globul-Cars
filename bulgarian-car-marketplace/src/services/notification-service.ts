@@ -6,6 +6,7 @@ import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 import firebaseApp, { db } from '../firebase/firebase-config';
 import { doc, setDoc, collection } from 'firebase/firestore';
 import { bulgarianAuthService } from '../firebase';
+import { serviceLogger } from './logger-wrapper';
 
 class NotificationService {
   private messaging = getMessaging(firebaseApp);
@@ -17,12 +18,12 @@ class NotificationService {
    */
   async requestPermissionAndSaveToken(): Promise<string | null> {
     // Silent fail if VAPID key is not configured (not critical for MVP)
-    if (!this.vapidKey) {
-      if (process.env.NODE_ENV === 'development') {
-        console.info('💡 FCM notifications disabled: VAPID key not configured in .env');
-      }
-      return null;
-    }
+        if (!this.vapidKey) {
+          if (process.env.NODE_ENV === 'development') {
+            serviceLogger.info('FCM notifications disabled: VAPID key not configured', { envVar: 'REACT_APP_FIREBASE_VAPID_KEY' });
+          }
+          return null;
+        }
     
     try {
       const currentUser = await bulgarianAuthService.getCurrentUserProfile();
@@ -53,9 +54,9 @@ class NotificationService {
             }
           }, { merge: true });
           
-          if (process.env.NODE_ENV === 'development') {
-            console.log('✅ FCM token saved');
-          }
+              if (process.env.NODE_ENV === 'development') {
+                serviceLogger.info('FCM token saved', { uid: currentUser.uid });
+              }
           return fcmToken;
         }
       }
@@ -63,7 +64,7 @@ class NotificationService {
     } catch (error) {
       // Silent fail in production, log in development
       if (process.env.NODE_ENV === 'development') {
-        console.warn('⚠️ FCM setup incomplete (non-critical):', (error as Error).message);
+              serviceLogger.warn('FCM setup incomplete (non-critical)', error as Error);
       }
       return null;
     }
@@ -76,7 +77,7 @@ class NotificationService {
    */
   onForegroundMessage(callback: (payload: any) => void) {
     return onMessage(this.messaging, (payload) => {
-      console.log('Message received in foreground:', payload);
+      serviceLogger.info('Message received in foreground', { payload });
       callback(payload);
     });
   }

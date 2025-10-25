@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
+import { serviceLogger } from './logger-wrapper';
 
 // Interface for car data from text files
 export interface CarDataFromFile {
@@ -57,24 +58,25 @@ export class CarDataService {
   private loadAllBrandData(): void {
     try {
       if (!fs.existsSync(this.brandDirectoriesPath)) {
-        console.warn('Brand directories not found:', this.brandDirectoriesPath);
+        serviceLogger.warn('Brand directories not found', { path: this.brandDirectoriesPath });
         return;
       }
 
       const brandDirs = fs.readdirSync(this.brandDirectoriesPath)
         .filter(item => fs.statSync(path.join(this.brandDirectoriesPath, item)).isDirectory());
-for (const brandDir of brandDirs) {
+
+      for (const brandDir of brandDirs) {
         try {
           const brandData = this.loadBrandData(brandDir);
           if (brandData) {
             this.brandsData.set(brandDir.toLowerCase(), brandData);
           }
         } catch (error) {
-          console.error(`Error loading brand ${brandDir}:`, error);
+          serviceLogger.error('Error loading brand', error as Error, { brandDir });
         }
       }
-} catch (error) {
-      console.error('[SERVICE] Error loading brand data:', error);
+    } catch (error) {
+      serviceLogger.error('[SERVICE] Error loading brand data', error as Error);
     }
   }
 
@@ -119,7 +121,7 @@ for (const brandDir of brandDirs) {
         years
       };
     } catch (error) {
-      console.error(`Error parsing ${txtFile}:`, error);
+      serviceLogger.error('Error parsing file', error as Error, { txtFile, brandDir });
       return null;
     }
   }

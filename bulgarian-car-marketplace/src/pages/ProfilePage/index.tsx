@@ -47,7 +47,8 @@ import {
   UserCheck,
   Users,
   MessageCircle,
-  Megaphone
+  Megaphone,
+  ArrowDown
 } from 'lucide-react';
 import * as S from './styles';
 import { TabNavigation, TabButton, SyncButton, FollowButton } from './TabNavigation.styles';
@@ -66,6 +67,8 @@ import VerificationBadge from '../../components/Profile/VerificationBadge';
 import ConsultationsTab from './ConsultationsTab';
 import { useToast } from '../../components/Toast';
 import ProfileImageUploader from '../../components/Profile/ProfileImageUploader';
+import CommunityFeedWidget from '../../components/Profile/CommunityFeedWidget';
+import SocialMediaSettings from '../../components/Profile/SocialMedia/SocialMediaSettings';
 
 // ==================== ANIMATIONS ====================
 // ⚡ OPTIMIZED: Simplified animations - run once on mount, not infinite
@@ -100,6 +103,18 @@ const tabFadeIn = keyframes`
   }
 `;
 
+// Highlight pulse animation (for scrolling to section)
+const highlightPulse = keyframes`
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(255, 165, 0, 0);
+    background: transparent;
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(255, 165, 0, 0.3);
+    background: rgba(255, 165, 0, 0.1);
+  }
+`;
+
 // Profile image morph (gentle, runs once)
 const profileImageMorph = keyframes`
   from {
@@ -113,6 +128,15 @@ const profileImageMorph = keyframes`
 `;
 
 // ==================== STYLED COMPONENTS ====================
+
+// Add global style for highlight-pulse animation
+const GlobalStyle = styled.div`
+  .highlight-pulse {
+    animation: ${highlightPulse} 2s ease-in-out;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+  }
+`;
 
 // Compact Header for non-Profile tabs
 const CompactHeader = styled.div<{ $themeColor?: string }>`
@@ -768,6 +792,226 @@ const ProfilePage: React.FC = () => {
                     <Users size={18} />
                     {language === 'bg' ? 'Директория' : 'Browse Users'}
                   </S.ActionButton>
+                  
+                  {/* Social Media Links */}
+                  <div style={{
+                    marginTop: '16px',
+                    paddingTop: '16px',
+                    borderTop: '1px solid #e0e0e0',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '8px'
+                  }}>
+                    <div style={{
+                      fontSize: '0.75rem',
+                      fontWeight: '600',
+                      color: '#666',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.5px',
+                      marginBottom: '4px'
+                    }}>
+                      {language === 'bg' ? 'Последвайте ни' : 'Follow Us'}
+                    </div>
+                    
+                    <div style={{
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(3, 1fr)',
+                      gap: '8px'
+                    }}>
+                      {/* Instagram */}
+                      <a
+                        href="https://www.instagram.com/globulnet/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          padding: '10px',
+                          background: 'linear-gradient(135deg, #833AB4 0%, #FD1D1D 50%, #F77737 100%)',
+                          borderRadius: '8px',
+                          color: 'white',
+                          textDecoration: 'none',
+                          transition: 'all 0.3s ease',
+                          boxShadow: '0 2px 8px rgba(131, 58, 180, 0.3)'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.transform = 'translateY(-2px)';
+                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(131, 58, 180, 0.5)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.transform = 'translateY(0)';
+                          e.currentTarget.style.boxShadow = '0 2px 8px rgba(131, 58, 180, 0.3)';
+                        }}
+                        title="Instagram @globulnet"
+                      >
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                        </svg>
+                      </a>
+                      
+                      {/* TikTok */}
+                      <a
+                        href="https://www.tiktok.com/@globulnet"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          padding: '10px',
+                          background: '#000000',
+                          borderRadius: '8px',
+                          color: 'white',
+                          textDecoration: 'none',
+                          transition: 'all 0.3s ease',
+                          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.transform = 'translateY(-2px)';
+                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.5)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.transform = 'translateY(0)';
+                          e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.3)';
+                        }}
+                        title="TikTok @globulnet"
+                      >
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+                        </svg>
+                      </a>
+                      
+                      {/* Facebook */}
+                      <a
+                        href="https://www.facebook.com/profile.php?id=109254638332601"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          padding: '10px',
+                          background: '#1877F2',
+                          borderRadius: '8px',
+                          color: 'white',
+                          textDecoration: 'none',
+                          transition: 'all 0.3s ease',
+                          boxShadow: '0 2px 8px rgba(24, 119, 242, 0.3)'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.transform = 'translateY(-2px)';
+                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(24, 119, 242, 0.5)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.transform = 'translateY(0)';
+                          e.currentTarget.style.boxShadow = '0 2px 8px rgba(24, 119, 242, 0.3)';
+                        }}
+                        title="Facebook"
+                      >
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                        </svg>
+                      </a>
+                      
+                      {/* Twitter/X */}
+                      <a
+                        href="https://twitter.com/globulnet"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          padding: '10px',
+                          background: '#000000',
+                          borderRadius: '8px',
+                          color: 'white',
+                          textDecoration: 'none',
+                          transition: 'all 0.3s ease',
+                          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.transform = 'translateY(-2px)';
+                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.5)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.transform = 'translateY(0)';
+                          e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.3)';
+                        }}
+                        title="X (Twitter)"
+                      >
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                        </svg>
+                      </a>
+                      
+                      {/* LinkedIn */}
+                      <a
+                        href="https://www.linkedin.com/company/globulnet"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          padding: '10px',
+                          background: '#0A66C2',
+                          borderRadius: '8px',
+                          color: 'white',
+                          textDecoration: 'none',
+                          transition: 'all 0.3s ease',
+                          boxShadow: '0 2px 8px rgba(10, 102, 194, 0.3)'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.transform = 'translateY(-2px)';
+                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(10, 102, 194, 0.5)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.transform = 'translateY(0)';
+                          e.currentTarget.style.boxShadow = '0 2px 8px rgba(10, 102, 194, 0.3)';
+                        }}
+                        title="LinkedIn"
+                      >
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                        </svg>
+                      </a>
+                      
+                      {/* YouTube */}
+                      <a
+                        href="https://www.youtube.com/@globulnet"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          padding: '10px',
+                          background: '#FF0000',
+                          borderRadius: '8px',
+                          color: 'white',
+                          textDecoration: 'none',
+                          transition: 'all 0.3s ease',
+                          boxShadow: '0 2px 8px rgba(255, 0, 0, 0.3)'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.transform = 'translateY(-2px)';
+                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(255, 0, 0, 0.5)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.transform = 'translateY(0)';
+                          e.currentTarget.style.boxShadow = '0 2px 8px rgba(255, 0, 0, 0.3)';
+                        }}
+                        title="YouTube"
+                      >
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                        </svg>
+                      </a>
+                    </div>
+                  </div>
+                  
                   <S.ActionButton $variant="danger" onClick={handleLogout}>
                     {t('profile.logout')}
                   </S.ActionButton>
@@ -836,6 +1080,13 @@ const ProfilePage: React.FC = () => {
               <S.ContentSection $themeColor={theme.primary} $isBusinessMode={isBusinessMode}>
                 <ProfileDashboard />
             </S.ContentSection>
+            )}
+            
+            {/* Community Feed Widget - Latest Posts */}
+            {isOwnProfile && (
+              <div style={{ marginTop: '24px' }}>
+                <CommunityFeedWidget userId={user.uid} />
+              </div>
             )}
             
             {/* Contact Information - For other users (sellers) */}
@@ -909,9 +1160,9 @@ const ProfilePage: React.FC = () => {
                   }
                 }}
               />
-            </S.ContentSection>
+              </S.ContentSection>
             )}
-            
+
             {/* User's Cars - For other users (sellers) */}
             {!isOwnProfile && user?.uid && user.accountType === 'business' && userCars && userCars.length > 0 && (
               <S.ContentSection $themeColor={theme.primary}>
@@ -1106,477 +1357,644 @@ const ProfilePage: React.FC = () => {
                   <>
                     {/* ✅ Personal Information Section */}
                     <S.ContentSection $themeColor={theme.primary} $isBusinessMode={isBusinessMode}>
-                      <S.SectionHeader>
-                        <h2>{t('profile.personalInfo')}</h2>
+              <S.SectionHeader>
+                <h2>{t('profile.personalInfo')}</h2>
                         {!editing && (
-                          <button className="edit-btn" onClick={() => setEditing(true)}>
-                            {t('profile.edit')}
-                          </button>
-                        )}
-                      </S.SectionHeader>
+                  <button className="edit-btn" onClick={() => setEditing(true)}>
+                    {t('profile.edit')}
+                  </button>
+                )}
+              </S.SectionHeader>
 
                       {editing ? (
-                        <form onSubmit={(e) => { e.preventDefault(); handleSaveProfile(); }}>
-                          {/* Account Type Selector */}
-                          <div style={{ marginBottom: '16px', padding: '12px', background: '#f9f9f9', borderRadius: '8px', border: '2px solid #e0e0e0' }}>
-                            <h4 style={{ margin: '0 0 10px 0', color: '#333', fontSize: '0.85rem', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                              <IconWrapper $color="#666" $size={16}><RefreshCw /></IconWrapper>
-                              {language === 'bg' ? 'Тип на акаунта' : 'Account Type'}
-                            </h4>
-                            <div style={{ display: 'flex', gap: '12px', marginBottom: showAccountTypeWarning ? '12px' : '0' }}>
-                              <button
-                                type="button"
-                                onClick={() => handleAccountTypeChange('individual')}
-                                style={{
-                                  flex: 1,
-                                  padding: '10px 16px',
-                                  border: `2px solid ${formData.accountType === 'individual' ? theme.primary : '#ddd'}`,
-                                  background: formData.accountType === 'individual' ? `${theme.primary}10` : 'white',
-                                  color: formData.accountType === 'individual' ? theme.primary : '#666',
-                                  borderRadius: '6px',
-                                  cursor: 'pointer',
-                                  fontSize: '0.85rem',
-                                  fontWeight: '600',
-                                  transition: 'all 0.2s',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  gap: '8px'
-                                }}
-                              >
-                                <User size={18} />
-                                {language === 'bg' ? 'Личен' : 'Individual'}
-                              </button>
-                              <button
-                                type="button"
+                <form onSubmit={(e) => { e.preventDefault(); handleSaveProfile(); }}>
+                  {/* Account Type Selector */}
+                  <div style={{ marginBottom: '16px', padding: '12px', background: '#f9f9f9', borderRadius: '8px', border: '2px solid #e0e0e0' }}>
+                    <h4 style={{ margin: '0 0 10px 0', color: '#333', fontSize: '0.85rem', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <IconWrapper $color="#666" $size={16}><RefreshCw /></IconWrapper>
+                      {language === 'bg' ? 'Тип на акаунта' : 'Account Type'}
+                    </h4>
+                    <div style={{ display: 'flex', gap: '12px', marginBottom: showAccountTypeWarning ? '12px' : '0' }}>
+                              {/* ✅ PRIORITY: Business comes FIRST */}
+                      <button
+                        type="button"
                                 onClick={() => handleAccountTypeChange('business')}
-                                style={{
-                                  flex: 1,
-                                  padding: '10px 16px',
+                        style={{
+                          flex: 1,
+                          padding: '10px 16px',
                                   border: `2px solid ${formData.accountType === 'business' ? theme.primary : '#ddd'}`,
                                   background: formData.accountType === 'business' ? `${theme.primary}10` : 'white',
                                   color: formData.accountType === 'business' ? theme.primary : '#666',
-                                  borderRadius: '6px',
-                                  cursor: 'pointer',
-                                  fontSize: '0.85rem',
-                                  fontWeight: '600',
-                                  transition: 'all 0.2s',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  gap: '8px'
-                                }}
-                              >
+                          borderRadius: '6px',
+                          cursor: 'pointer',
+                          fontSize: '0.85rem',
+                          fontWeight: '600',
+                          transition: 'all 0.2s',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '8px'
+                        }}
+                      >
                                 <Building2 size={18} />
                                 {language === 'bg' ? 'Бизнес' : 'Business'}
-                              </button>
-                            </div>
-                            {showAccountTypeWarning && (
-                              <div style={{ 
-                                padding: '8px 12px', 
-                                background: '#fff3cd', 
-                                border: '1px solid #ffc107', 
-                                borderRadius: '4px',
-                                fontSize: '0.75rem',
-                                color: '#856404',
-                                animation: 'fadeIn 0.3s ease-in',
-                                display: 'flex',
-                                alignItems: 'flex-start',
-                                gap: '8px'
-                              }}>
-                                <AlertCircle size={16} style={{ flexShrink: 0, marginTop: '1px' }} />
-                                <span>
-                                  {language === 'bg' 
+                      </button>
+                      <button
+                        type="button"
+                                onClick={() => handleAccountTypeChange('individual')}
+                        style={{
+                          flex: 1,
+                          padding: '10px 16px',
+                                  border: `2px solid ${formData.accountType === 'individual' ? theme.primary : '#ddd'}`,
+                                  background: formData.accountType === 'individual' ? `${theme.primary}10` : 'white',
+                                  color: formData.accountType === 'individual' ? theme.primary : '#666',
+                          borderRadius: '6px',
+                          cursor: 'pointer',
+                          fontSize: '0.85rem',
+                          fontWeight: '600',
+                          transition: 'all 0.2s',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '8px'
+                        }}
+                      >
+                                <User size={18} />
+                                {language === 'bg' ? 'Личен' : 'Individual'}
+                      </button>
+                    </div>
+                    {showAccountTypeWarning && (
+                      <div style={{ 
+                        padding: '8px 12px', 
+                        background: '#fff3cd', 
+                        border: '1px solid #ffc107', 
+                        borderRadius: '4px',
+                        fontSize: '0.75rem',
+                        color: '#856404',
+                        animation: 'fadeIn 0.3s ease-in',
+                        display: 'flex',
+                        alignItems: 'flex-start',
+                        gap: '8px'
+                      }}>
+                        <AlertCircle size={16} style={{ flexShrink: 0, marginTop: '1px' }} />
+                        <span>
+                          {language === 'bg' 
                                     ? 'За بизнес акаунت трябва да предоставите валидна информация за фирмата съгласно българското законодателство.'
-                                    : 'For a business account, you must provide valid company information according to Bulgarian legislation.'}
-                                </span>
-                              </div>
-                            )}
-                          </div>
+                            : 'For a business account, you must provide valid company information according to Bulgarian legislation.'}
+                        </span>
+                      </div>
+                    )}
+                  </div>
 
-                          {/* Required Fields */}
+                  {/* Required Fields */}
                           <div style={{ marginBottom: '12px', padding: '10px', background: `${theme.primary}10`, borderRadius: '6px', border: `2px solid ${theme.primary}` }}>
                             <h4 style={{ margin: '0 0 8px 0', color: theme.primary, display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem' }}>
                               <IconWrapper $color={theme.primary} $size={16}><AlertCircle /></IconWrapper>
-                              {language === 'bg' ? 'Задължителни полета' : 'Required Fields'}
-                            </h4>
-                            
-                            {formData.accountType === 'individual' ? (
-                              <S.FormGrid>
-                                <S.FormGroup>
+                      {language === 'bg' ? 'Задължителни полета' : 'Required Fields'}
+                    </h4>
+                    
+                    {formData.accountType === 'individual' ? (
+                      <S.FormGrid>
+                        <S.FormGroup>
                                   <label style={{ color: theme.primary, fontWeight: 'bold' }}>
-                                    {language === 'bg' ? 'Име' : 'First Name'} <span style={{ color: '#f44336' }}>*</span>
-                                  </label>
-                                  <input
-                                    type="text"
-                                    name="firstName"
-                                    value={formData.firstName}
-                                    onChange={handleInputChange}
-                                    onFocus={() => setActiveField('firstName')}
-                                    onBlur={() => setActiveField(undefined)}
-                                    placeholder="СЛАВИНА"
-                                    required
+                            {language === 'bg' ? 'Име' : 'First Name'} <span style={{ color: '#f44336' }}>*</span>
+                          </label>
+                          <input
+                            type="text"
+                            name="firstName"
+                            value={formData.firstName}
+                            onChange={handleInputChange}
+                            onFocus={() => setActiveField('firstName')}
+                            onBlur={() => setActiveField(undefined)}
+                            placeholder="СЛАВИНА"
+                            required
                                     style={{ borderColor: theme.primary, borderWidth: '2px' }}
-                                  />
-                                </S.FormGroup>
+                          />
+                        </S.FormGroup>
 
-                                <S.FormGroup>
+                        <S.FormGroup>
                                   <label style={{ color: theme.primary, fontWeight: 'bold' }}>
-                                    {language === 'bg' ? 'Фамилия' : 'Last Name'} <span style={{ color: '#f44336' }}>*</span>
-                                  </label>
-                                  <input
-                                    type="text"
-                                    name="lastName"
-                                    value={formData.lastName}
-                                    onChange={handleInputChange}
-                                    onFocus={() => setActiveField('lastName')}
-                                    onBlur={() => setActiveField(undefined)}
-                                    placeholder="ИВАНОВА"
-                                    required
+                            {language === 'bg' ? 'Фамилия' : 'Last Name'} <span style={{ color: '#f44336' }}>*</span>
+                          </label>
+                          <input
+                            type="text"
+                            name="lastName"
+                            value={formData.lastName}
+                            onChange={handleInputChange}
+                            onFocus={() => setActiveField('lastName')}
+                            onBlur={() => setActiveField(undefined)}
+                            placeholder="ИВАНОВА"
+                            required
                                     style={{ borderColor: theme.primary, borderWidth: '2px' }}
-                                  />
-                                </S.FormGroup>
-                              </S.FormGrid>
-                            ) : (
-                              <S.FormGroup>
+                          />
+                        </S.FormGroup>
+                      </S.FormGrid>
+                    ) : (
+                      <S.FormGroup>
                                 <label style={{ color: theme.primary, fontWeight: 'bold' }}>
-                                  {language === 'bg' ? 'Име на фирмата' : 'Business Name'} <span style={{ color: '#f44336' }}>*</span>
-                                </label>
-                                <input
-                                  type="text"
-                                  name="businessName"
-                                  value={formData.businessName}
-                                  onChange={handleInputChange}
-                                  placeholder={language === 'bg' ? 'Автомобили България ЕООД' : 'Cars Bulgaria Ltd'}
-                                  required
-                                  style={{ borderColor: '#FF7900', borderWidth: '2px' }}
-                                />
-                              </S.FormGroup>
-                            )}
-                          </div>
+                          {language === 'bg' ? 'Име на фирмата' : 'Business Name'} <span style={{ color: '#f44336' }}>*</span>
+                        </label>
+                        <input
+                          type="text"
+                          name="businessName"
+                          value={formData.businessName}
+                          onChange={handleInputChange}
+                          placeholder={language === 'bg' ? 'Автомобили България ЕООД' : 'Cars Bulgaria Ltd'}
+                          required
+                          style={{ borderColor: '#FF7900', borderWidth: '2px' }}
+                        />
+                      </S.FormGroup>
+                    )}
+                  </div>
 
-                          {/* Business Information - Only for Business Accounts */}
-                          {formData.accountType === 'business' && (
-                            <div style={{ marginBottom: '12px' }}>
-                              <h4 style={{ margin: '0 0 8px 0', color: '#666', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                <IconWrapper $color="#666" $size={14}><Building2 /></IconWrapper>
-                                {language === 'bg' ? 'Информация за фирмата' : 'Business Information'}
-                              </h4>
-                              <S.FormGrid>
-                                <S.FormGroup>
-                                  <label>{language === 'bg' ? 'Тип на бизнеса' : 'Business Type'} <span style={{ color: '#f44336' }}>*</span></label>
-                                  <select 
-                                    name="businessType" 
-                                    value={formData.businessType} 
-                                    onChange={handleInputChange}
-                                    required
-                                    style={{ borderColor: '#FF7900' }}
-                                  >
+                  {/* Business Information - Only for Business Accounts */}
+                  {formData.accountType === 'business' && (
+                    <div style={{ marginBottom: '12px' }}>
+                      <h4 style={{ margin: '0 0 8px 0', color: '#666', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <IconWrapper $color="#666" $size={14}><Building2 /></IconWrapper>
+                        {language === 'bg' ? 'Информация за фирмата' : 'Business Information'}
+                      </h4>
+                      <S.FormGrid>
+                        <S.FormGroup>
+                          <label>{language === 'bg' ? 'Тип на бизнеса' : 'Business Type'} <span style={{ color: '#f44336' }}>*</span></label>
+                          <select 
+                            name="businessType" 
+                            value={formData.businessType} 
+                            onChange={handleInputChange}
+                            required
+                            style={{ borderColor: '#FF7900' }}
+                          >
                                     <option value="dealership">{language === 'bg' ? 'Автосалон / Дилър' : 'Car Dealership'}</option>
                                     <option value="trader">{language === 'bg' ? 'Търговец' : 'Trader'}</option>
                                     <option value="company">{language === 'bg' ? 'Компания' : 'Company'}</option>
-                                  </select>
-                                </S.FormGroup>
+                          </select>
+                        </S.FormGroup>
 
-                                <S.FormGroup>
-                                  <label>{language === 'bg' ? 'БУЛСТАТ / ЕИК' : 'Bulstat / UIC'}</label>
-                                  <input
-                                    type="text"
-                                    name="bulstat"
-                                    value={formData.bulstat}
-                                    onChange={handleInputChange}
-                                    placeholder="123456789"
-                                    maxLength={13}
-                                  />
-                                </S.FormGroup>
+                        <S.FormGroup>
+                          <label>{language === 'bg' ? 'БУЛСТАТ / ЕИК' : 'Bulstat / UIC'}</label>
+                          <input
+                            type="text"
+                            name="bulstat"
+                            value={formData.bulstat}
+                            onChange={handleInputChange}
+                            placeholder="123456789"
+                            maxLength={13}
+                          />
+                        </S.FormGroup>
 
-                                <S.FormGroup>
-                                  <label>{language === 'bg' ? 'ДДС номер' : 'VAT Number'}</label>
-                                  <input
-                                    type="text"
-                                    name="vatNumber"
-                                    value={formData.vatNumber}
-                                    onChange={handleInputChange}
-                                    placeholder="BG123456789"
-                                  />
-                                </S.FormGroup>
+                        <S.FormGroup>
+                          <label>{language === 'bg' ? 'ДДС номер' : 'VAT Number'}</label>
+                          <input
+                            type="text"
+                            name="vatNumber"
+                            value={formData.vatNumber}
+                            onChange={handleInputChange}
+                            placeholder="BG123456789"
+                          />
+                        </S.FormGroup>
 
-                                <S.FormGroup>
-                                  <label>{language === 'bg' ? 'Търговски регистър' : 'Registration Number'}</label>
-                                  <input
-                                    type="text"
-                                    name="registrationNumber"
-                                    value={formData.registrationNumber}
-                                    onChange={handleInputChange}
-                                    placeholder="20XXXXXXXX"
-                                  />
-                                </S.FormGroup>
+                        <S.FormGroup>
+                          <label>{language === 'bg' ? 'Търговски регистър' : 'Registration Number'}</label>
+                          <input
+                            type="text"
+                            name="registrationNumber"
+                            value={formData.registrationNumber}
+                            onChange={handleInputChange}
+                            placeholder="20XXXXXXXX"
+                          />
+                        </S.FormGroup>
 
-                                <S.FormGroup>
-                                  <label>{language === 'bg' ? 'Уебсайт' : 'Website'}</label>
-                                  <input
-                                    type="url"
-                                    name="website"
-                                    value={formData.website}
-                                    onChange={handleInputChange}
-                                    placeholder="https://example.com"
-                                  />
-                                </S.FormGroup>
+                        <S.FormGroup>
+                          <label>{language === 'bg' ? 'Уебсайт' : 'Website'}</label>
+                          <input
+                            type="url"
+                            name="website"
+                            value={formData.website}
+                            onChange={handleInputChange}
+                            placeholder="https://example.com"
+                          />
+                        </S.FormGroup>
 
-                                <S.FormGroup>
-                                  <label>{language === 'bg' ? 'Телефон на фирмата' : 'Business Phone'}</label>
-                                  <input
-                                    type="tel"
-                                    name="businessPhone"
-                                    value={formData.businessPhone}
-                                    onChange={handleInputChange}
-                                    placeholder="+359 2 XXX XXXX"
-                                  />
-                                </S.FormGroup>
+                        <S.FormGroup>
+                          <label>{language === 'bg' ? 'Телефон на фирмата' : 'Business Phone'}</label>
+                          <input
+                            type="tel"
+                            name="businessPhone"
+                            value={formData.businessPhone}
+                            onChange={handleInputChange}
+                            placeholder="+359 2 XXX XXXX"
+                          />
+                        </S.FormGroup>
 
-                                <S.FormGroup>
+                        <S.FormGroup>
                                   <label>{language === 'bg' ? 'Имейл на فирмата' : 'Business Email'}</label>
-                                  <input
-                                    type="email"
-                                    name="businessEmail"
-                                    value={formData.businessEmail}
-                                    onChange={handleInputChange}
-                                    placeholder="info@company.bg"
-                                  />
-                                </S.FormGroup>
+                          <input
+                            type="email"
+                            name="businessEmail"
+                            value={formData.businessEmail}
+                            onChange={handleInputChange}
+                            placeholder="info@company.bg"
+                          />
+                        </S.FormGroup>
 
-                                <S.FormGroup>
-                                  <label>{language === 'bg' ? 'Работно време' : 'Working Hours'}</label>
-                                  <input
-                                    type="text"
-                                    name="workingHours"
-                                    value={formData.workingHours}
-                                    onChange={handleInputChange}
-                                    placeholder={language === 'bg' ? 'Пон-Пет: 9:00-18:00' : 'Mon-Fri: 9:00-18:00'}
-                                  />
-                                </S.FormGroup>
+                        <S.FormGroup>
+                          <label>{language === 'bg' ? 'Работно време' : 'Working Hours'}</label>
+                          <input
+                            type="text"
+                            name="workingHours"
+                            value={formData.workingHours}
+                            onChange={handleInputChange}
+                            placeholder={language === 'bg' ? 'Пон-Пет: 9:00-18:00' : 'Mon-Fri: 9:00-18:00'}
+                          />
+                        </S.FormGroup>
 
-                                <S.FormGroup>
-                                  <label>{language === 'bg' ? 'Град' : 'City'}</label>
-                                  <input
-                                    type="text"
-                                    name="businessCity"
-                                    value={formData.businessCity}
-                                    onChange={handleInputChange}
-                                    placeholder={language === 'bg' ? 'София' : 'Sofia'}
-                                  />
-                                </S.FormGroup>
+                        <S.FormGroup>
+                          <label>{language === 'bg' ? 'Град' : 'City'}</label>
+                          <input
+                            type="text"
+                            name="businessCity"
+                            value={formData.businessCity}
+                            onChange={handleInputChange}
+                            placeholder={language === 'bg' ? 'София' : 'Sofia'}
+                          />
+                        </S.FormGroup>
 
-                                <S.FormGroup>
-                                  <label>{language === 'bg' ? 'Пощенски код' : 'Postal Code'}</label>
-                                  <input
-                                    type="text"
-                                    name="businessPostalCode"
-                                    value={formData.businessPostalCode}
-                                    onChange={handleInputChange}
-                                    placeholder="1000"
-                                  />
-                                </S.FormGroup>
-                              </S.FormGrid>
+                        <S.FormGroup>
+                          <label>{language === 'bg' ? 'Пощенски код' : 'Postal Code'}</label>
+                          <input
+                            type="text"
+                            name="businessPostalCode"
+                            value={formData.businessPostalCode}
+                            onChange={handleInputChange}
+                            placeholder="1000"
+                          />
+                        </S.FormGroup>
+                      </S.FormGrid>
 
-                              <S.FormGroup style={{ marginTop: '8px' }}>
+                      <S.FormGroup style={{ marginTop: '8px' }}>
                                 <label>{language === 'bg' ? 'Адрес на فирмата' : 'Business Address'}</label>
-                                <input
-                                  type="text"
-                                  name="businessAddress"
-                                  value={formData.businessAddress}
-                                  onChange={handleInputChange}
-                                  placeholder={language === 'bg' ? 'бул. Цариградско шосе 100' : 'Tsarigradsko Shose Blvd 100'}
-                                />
-                              </S.FormGroup>
+                        <input
+                          type="text"
+                          name="businessAddress"
+                          value={formData.businessAddress}
+                          onChange={handleInputChange}
+                          placeholder={language === 'bg' ? 'бул. Цариградско шосе 100' : 'Tsarigradsko Shose Blvd 100'}
+                        />
+                      </S.FormGroup>
 
-                              <S.FormGroup style={{ marginTop: '8px' }}>
-                                <label>{language === 'bg' ? 'Описание на бизнеса' : 'Business Description'}</label>
-                                <textarea
-                                  name="businessDescription"
-                                  value={formData.businessDescription}
-                                  onChange={handleInputChange}
-                                  placeholder={language === 'bg' 
-                                    ? 'Опишете вашия бизнес, услуги и специализация...'
-                                    : 'Describe your business, services and specialization...'}
-                                  rows={3}
-                                />
-                              </S.FormGroup>
-                            </div>
-                          )}
+                      <S.FormGroup style={{ marginTop: '8px' }}>
+                        <label>{language === 'bg' ? 'Описание на бизнеса' : 'Business Description'}</label>
+                        <textarea
+                          name="businessDescription"
+                          value={formData.businessDescription}
+                          onChange={handleInputChange}
+                          placeholder={language === 'bg' 
+                            ? 'Опишете вашия бизнес, услуги и специализация...'
+                            : 'Describe your business, services and specialization...'}
+                          rows={3}
+                        />
+                      </S.FormGroup>
+                    </div>
+                  )}
 
-                          {/* Personal Information from ID - Only for Individual */}
-                          {formData.accountType === 'individual' && (
-                          <div style={{ marginBottom: '12px' }}>
-                            <h4 style={{ margin: '0 0 8px 0', color: '#666', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                              <IconWrapper $color="#666" $size={14}><UserCircle /></IconWrapper>
-                              {language === 'bg' ? 'Лична информация (от лична карта)' : 'Personal Information (from ID card)'}
-                            </h4>
-                          <S.FormGrid>
-                            <S.FormGroup>
-                                <label>{language === 'bg' ? 'Презиме (Бащино име)' : 'Middle Name (Father\'s Name)'}</label>
-                              <input
-                                type="text"
-                                  name="middleName"
-                                  value={formData.middleName}
-                                  onChange={handleInputChange}
-                                  onFocus={() => setActiveField('middleName')}
-                                  onBlur={() => setActiveField(undefined)}
-                                  placeholder="ГЕОРГИЕВА"
-                                />
-                              </S.FormGroup>
+                  {/* Personal Information from ID - Only for Individual */}
+                  {formData.accountType === 'individual' && (
+                  <div style={{ marginBottom: '12px' }}>
+                    <h4 style={{ margin: '0 0 8px 0', color: '#666', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <IconWrapper $color="#666" $size={14}><UserCircle /></IconWrapper>
+                      {language === 'bg' ? 'Лична информация (от лична карта)' : 'Personal Information (from ID card)'}
+                    </h4>
+                  <S.FormGrid>
+                    <S.FormGroup>
+                        <label>{language === 'bg' ? 'Презиме (Бащино име)' : 'Middle Name (Father\'s Name)'}</label>
+                      <input
+                        type="text"
+                          name="middleName"
+                          value={formData.middleName}
+                          onChange={handleInputChange}
+                          onFocus={() => setActiveField('middleName')}
+                          onBlur={() => setActiveField(undefined)}
+                          placeholder="ГЕОРГИЕВА"
+                        />
+                      </S.FormGroup>
 
-                              <S.FormGroup>
-                                <label>{language === 'bg' ? 'Дата на раждане' : 'Date of Birth'}</label>
-                                <input
-                                  type="date"
-                                  name="dateOfBirth"
-                                  value={formData.dateOfBirth}
-                                onChange={handleInputChange}
-                                  onFocus={() => setActiveField('dateOfBirth')}
-                                  onBlur={() => setActiveField(undefined)}
-                                  placeholder="01.08.1995"
-                              />
-                            </S.FormGroup>
+                      <S.FormGroup>
+                        <label>{language === 'bg' ? 'Дата на раждане' : 'Date of Birth'}</label>
+                        <input
+                          type="date"
+                          name="dateOfBirth"
+                          value={formData.dateOfBirth}
+                        onChange={handleInputChange}
+                          onFocus={() => setActiveField('dateOfBirth')}
+                          onBlur={() => setActiveField(undefined)}
+                          placeholder="01.08.1995"
+                      />
+                    </S.FormGroup>
 
-                            <S.FormGroup>
-                                <label>{language === 'bg' ? 'Място на раждане' : 'Place of Birth'}</label>
-                                <input
-                                  type="text"
-                                  name="placeOfBirth"
-                                  value={formData.placeOfBirth}
-                                  onChange={handleInputChange}
-                                  onFocus={() => setActiveField('birthPlace')}
-                                  onBlur={() => setActiveField(undefined)}
-                                  placeholder="СОФИЯ/SOFIA"
-                                />
-                              </S.FormGroup>
-                            </S.FormGrid>
-                          </div>
-                          )}
+                    <S.FormGroup>
+                        <label>{language === 'bg' ? 'Място на раждане' : 'Place of Birth'}</label>
+                        <input
+                          type="text"
+                          name="placeOfBirth"
+                          value={formData.placeOfBirth}
+                          onChange={handleInputChange}
+                          onFocus={() => setActiveField('birthPlace')}
+                          onBlur={() => setActiveField(undefined)}
+                          placeholder="СОФИЯ/SOFIA"
+                        />
+                      </S.FormGroup>
+                    </S.FormGrid>
+                  </div>
+                  )}
 
-                          {/* Contact Information */}
-                          <div style={{ marginBottom: '12px' }}>
-                            <h4 style={{ margin: '0 0 8px 0', color: '#666', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                              <IconWrapper $color="#666" $size={14}><Phone /></IconWrapper>
-                              {language === 'bg' ? 'Контактна информация' : 'Contact Information'}
-                            </h4>
-                            <S.FormGrid>
-                              <S.FormGroup>
-                                <label>{language === 'bg' ? 'Телефон' : 'Phone Number'}</label>
-                              <input
-                                type="tel"
-                                name="phoneNumber"
-                                value={formData.phoneNumber}
-                                onChange={handleInputChange}
-                                placeholder="+359 88 123 4567"
-                              />
-                            </S.FormGroup>
+                  {/* Contact Information */}
+                  <div style={{ marginBottom: '12px' }}>
+                    <h4 style={{ margin: '0 0 8px 0', color: '#666', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <IconWrapper $color="#666" $size={14}><Phone /></IconWrapper>
+                      {language === 'bg' ? 'Контактна информация' : 'Contact Information'}
+                    </h4>
+                    <S.FormGrid>
+                      <S.FormGroup>
+                        <label>{language === 'bg' ? 'Телефон' : 'Phone Number'}</label>
+                      <input
+                        type="tel"
+                        name="phoneNumber"
+                        value={formData.phoneNumber}
+                        onChange={handleInputChange}
+                        placeholder="+359 88 123 4567"
+                      />
+                    </S.FormGroup>
 
-                            <S.FormGroup>
-                                <label>{language === 'bg' ? 'Имейл' : 'Email'}</label>
-                                <input
-                                  type="email"
-                                  name="email"
-                                  value={formData.email}
-                                  onChange={handleInputChange}
-                                  placeholder="example@email.com"
-                                  disabled
-                                  style={{ background: '#f0f0f0', cursor: 'not-allowed' }}
-                                />
-                              </S.FormGroup>
-                            </S.FormGrid>
-                          </div>
+                    <S.FormGroup>
+                        <label>{language === 'bg' ? 'Имейл' : 'Email'}</label>
+                        <input
+                          type="email"
+                          name="email"
+                          value={formData.email}
+                          onChange={handleInputChange}
+                          placeholder="example@email.com"
+                          disabled
+                          style={{ background: '#f0f0f0', cursor: 'not-allowed' }}
+                        />
+                      </S.FormGroup>
+                    </S.FormGrid>
+                  </div>
 
-                          {/* Address Information */}
-                          <div style={{ marginBottom: '12px' }}>
-                            <h4 style={{ margin: '0 0 8px 0', color: '#666', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                              <IconWrapper $color="#666" $size={14}><Home /></IconWrapper>
-                              {language === 'bg' ? 'Адресна информация' : 'Address Information'}
-                            </h4>
-                            <S.FormGrid>
-                              <S.FormGroup>
-                                <label>{language === 'bg' ? 'Град' : 'City'}</label>
-                              <input
-                                type="text"
-                                name="city"
-                                value={formData.city}
-                                onChange={handleInputChange}
-                                  onFocus={() => setActiveField('city')}
-                                  onBlur={() => setActiveField(undefined)}
-                                  placeholder="СОФИЯ/SOFIA"
-                              />
-                            </S.FormGroup>
+                  {/* Address Information */}
+                  <div style={{ marginBottom: '12px' }}>
+                    <h4 style={{ margin: '0 0 8px 0', color: '#666', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <IconWrapper $color="#666" $size={14}><Home /></IconWrapper>
+                      {language === 'bg' ? 'Адресна информация' : 'Address Information'}
+                    </h4>
+                    <S.FormGrid>
+                      <S.FormGroup>
+                        <label>{language === 'bg' ? 'Град' : 'City'}</label>
+                      <input
+                        type="text"
+                        name="city"
+                        value={formData.city}
+                        onChange={handleInputChange}
+                          onFocus={() => setActiveField('city')}
+                          onBlur={() => setActiveField(undefined)}
+                          placeholder="СОФИЯ/SOFIA"
+                      />
+                    </S.FormGroup>
 
-                              <S.FormGroup>
-                                <label>{language === 'bg' ? 'Пощенски код' : 'Postal Code'}</label>
-                                <input
-                                  type="text"
-                                  name="postalCode"
-                                  value={formData.postalCode}
-                                  onChange={handleInputChange}
-                                  placeholder="1000"
-                                />
-                              </S.FormGroup>
-                            </S.FormGrid>
+                      <S.FormGroup>
+                        <label>{language === 'bg' ? 'Пощенски код' : 'Postal Code'}</label>
+                        <input
+                          type="text"
+                          name="postalCode"
+                          value={formData.postalCode}
+                          onChange={handleInputChange}
+                          placeholder="1000"
+                        />
+                      </S.FormGroup>
+                    </S.FormGrid>
 
-                            <S.FormGroup>
-                              <label>{language === 'bg' ? 'Постоянен адрес' : 'Permanent Address'}</label>
-                              <input
-                                type="text"
-                                name="address"
-                                value={formData.address}
-                                onChange={handleInputChange}
-                                onFocus={() => setActiveField('address')}
-                                onBlur={() => setActiveField(undefined)}
-                                placeholder="бул.КНЯГИНЯ МАРИЯ ЛУИЗА 48 ет.5 ап.26"
-                              />
-                            </S.FormGroup>
-                          </div>
+                    <S.FormGroup>
+                      <label>{language === 'bg' ? 'Постоянен адрес' : 'Permanent Address'}</label>
+                      <input
+                        type="text"
+                        name="address"
+                        value={formData.address}
+                        onChange={handleInputChange}
+                        onFocus={() => setActiveField('address')}
+                        onBlur={() => setActiveField(undefined)}
+                        placeholder="бул.КНЯГИНЯ МАРИЯ ЛУИЗА 48 ет.5 ап.26"
+                      />
+                    </S.FormGroup>
+                  </div>
 
-                          {/* Other */}
-                          <div style={{ marginBottom: '12px' }}>
-                            <h4 style={{ margin: '0 0 8px 0', color: '#666', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                              <IconWrapper $color="#666" $size={14}><SettingsIcon /></IconWrapper>
-                              {language === 'bg' ? 'Други настройки' : 'Other Settings'}
-                            </h4>
-                            <S.FormGroup>
-                              <label>{language === 'bg' ? 'Предпочитан език' : 'Preferred Language'}</label>
-                              <select name="preferredLanguage" value={formData.preferredLanguage} onChange={handleInputChange}>
+                  {/* Other */}
+                  <div style={{ marginBottom: '12px' }}>
+                    <h4 style={{ margin: '0 0 8px 0', color: '#666', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <IconWrapper $color="#666" $size={14}><SettingsIcon /></IconWrapper>
+                      {language === 'bg' ? 'Други настройки' : 'Other Settings'}
+                    </h4>
+                    <S.FormGroup>
+                      <label>{language === 'bg' ? 'Предпочитан език' : 'Preferred Language'}</label>
+                      <select name="preferredLanguage" value={formData.preferredLanguage} onChange={handleInputChange}>
                                   <option value="bg">{t('languages.bulgarian')}</option>
                                   <option value="en">{t('languages.english')}</option>
-                              </select>
-                            </S.FormGroup>
-                          </div>
+                      </select>
+                    </S.FormGroup>
+                  </div>
 
-                          <S.FormGroup>
-                            <label>{t('profile.bio')}</label>
-                            <textarea
-                              name="bio"
-                              value={formData.bio}
-                              onChange={handleInputChange}
-                              placeholder={t('profile.bioPlaceholder')}
-                              rows={4}
-                            />
-                          </S.FormGroup>
+                  <S.FormGroup>
+                    <label>{t('profile.bio')}</label>
+                    <textarea
+                      name="bio"
+                      value={formData.bio}
+                      onChange={handleInputChange}
+                      placeholder={t('profile.bioPlaceholder')}
+                      rows={4}
+                    />
+                  </S.FormGroup>
 
-                          <S.FormActions>
-                            <S.CancelButton type="button" onClick={handleCancelEdit}>
-                              {t('common.cancel')}
-                            </S.CancelButton>
-                            <S.SaveButton type="submit">
-                              {t('profile.saveChanges')}
-                            </S.SaveButton>
-                          </S.FormActions>
-                        </form>
-                      ) : (
-                        <div>
-                          {/* Personal Info */}
+                  <S.FormActions>
+                    <S.CancelButton type="button" onClick={handleCancelEdit}>
+                      {t('common.cancel')}
+                    </S.CancelButton>
+                    <S.SaveButton type="submit">
+                      {t('profile.saveChanges')}
+                    </S.SaveButton>
+                  </S.FormActions>
+                </form>
+              ) : (
+                <div>
+                  {/* Personal Info */}
                           <div style={{ marginBottom: '24px' }}>
                             <h4 style={{ margin: '0 0 16px 0', paddingBottom: '8px', borderBottom: `2px solid ${theme.primary}4D`, fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '8px', color: theme.primary, fontWeight: '700' }}>
                               <IconWrapper $color={theme.primary} $size={18}><UserCircle /></IconWrapper>
-                              {language === 'bg' ? 'Лична информация' : 'Personal Information'}
-                            </h4>
+                      {language === 'bg' ? 'Лична информация' : 'Personal Information'}
+                    </h4>
+                            
+                            {/* Account Type - Show only for Dealer/Company */}
+                            {(profileType === 'dealer' || profileType === 'company') && (
+                              <S.NeumorphicFieldWrapper style={{ marginBottom: '20px', gridColumn: '1 / -1' }}>
+                                <S.NeumorphicFieldLabel $themeColor={theme.primary}>
+                                  {language === 'bg' ? 'Тип акаунт' : 'Account Type'}
+                                </S.NeumorphicFieldLabel>
+                                <div style={{ 
+                                  display: 'flex', 
+                                  flexDirection: 'column', 
+                                  gap: '12px',
+                                  marginTop: '8px',
+                                  padding: '16px',
+                                  background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 249, 250, 0.9) 100%)',
+                                  borderRadius: '12px',
+                                  border: `2px solid ${theme.primary}33`
+                                }}>
+                                  {/* Business Option (Priority) - Clickable when active */}
+                                  <div 
+                                    style={{
+                                      padding: '16px',
+                                      background: user?.accountType === 'business' 
+                                        ? `linear-gradient(135deg, ${theme.primary}15 0%, ${theme.primary}08 100%)`
+                                        : 'transparent',
+                                      borderRadius: '10px',
+                                      border: `2px solid ${user?.accountType === 'business' ? theme.primary : '#dee2e6'}`,
+                                      cursor: user?.accountType === 'business' ? 'pointer' : 'default',
+                                      transition: 'all 0.3s ease',
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      gap: '12px',
+                                      opacity: user?.accountType === 'business' ? 1 : 0.6,
+                                      position: 'relative'
+                                    }}
+                                    onClick={() => {
+                                      if (user?.accountType === 'business') {
+                                        // Scroll to Dealership Info section
+                                        const dealershipSection = document.querySelector('[data-section="dealership-info"]');
+                                        if (dealershipSection) {
+                                          dealershipSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                          // Highlight the section briefly
+                                          dealershipSection.classList.add('highlight-pulse');
+                                          setTimeout(() => {
+                                            dealershipSection.classList.remove('highlight-pulse');
+                                          }, 2000);
+                                        }
+                                      }
+                                    }}
+                                    onMouseEnter={(e) => {
+                                      if (user?.accountType === 'business') {
+                                        e.currentTarget.style.transform = 'translateX(4px)';
+                                        e.currentTarget.style.boxShadow = `0 4px 12px ${theme.primary}30`;
+                                      }
+                                    }}
+                                    onMouseLeave={(e) => {
+                                      if (user?.accountType === 'business') {
+                                        e.currentTarget.style.transform = 'translateX(0)';
+                                        e.currentTarget.style.boxShadow = 'none';
+                                      }
+                                    }}
+                                  >
+                                    <div style={{
+                                      width: '20px',
+                                      height: '20px',
+                                      borderRadius: '50%',
+                                      border: `2px solid ${user?.accountType === 'business' ? theme.primary : '#dee2e6'}`,
+                                      background: user?.accountType === 'business' ? theme.primary : 'white',
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      justifyContent: 'center',
+                                      flexShrink: 0
+                                    }}>
+                                      {user?.accountType === 'business' && (
+                                        <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'white' }} />
+                                      )}
+                      </div>
+                                    <div style={{ flex: 1 }}>
+                                      <div style={{ 
+                                        fontWeight: '700', 
+                                        fontSize: '1rem',
+                                        color: user?.accountType === 'business' ? theme.primary : '#495057',
+                                        marginBottom: '4px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '8px'
+                                      }}>
+                                        <Building2 size={18} />
+                                        {language === 'bg' ? 'Бизнес' : 'Business'}
+                      </div>
+                                      <div style={{ fontSize: '0.875rem', color: '#6c757d' }}>
+                                        {language === 'bg' 
+                                          ? 'Профил за фирмена дейност с разширени възможности'
+                                          : 'Business profile with advanced features'}
+                                      </div>
+                                      {user?.accountType === 'business' && (
+                                        <div style={{ 
+                                          fontSize: '0.75rem', 
+                                          color: theme.primary, 
+                                          marginTop: '8px',
+                                          fontWeight: '600',
+                                          display: 'flex',
+                                          alignItems: 'center',
+                                          gap: '6px'
+                                        }}>
+                                          <ArrowDown size={14} />
+                                          {language === 'bg' 
+                                            ? 'Кликнете за преглед на бизнес информацията'
+                                            : 'Click to view business information'}
+                                        </div>
+                                      )}
+                                    </div>
+                                  </div>
+
+                                  {/* Individual Option */}
+                                  <div style={{
+                                    padding: '16px',
+                                    background: user?.accountType === 'individual' || !user?.accountType
+                                      ? `linear-gradient(135deg, ${theme.primary}15 0%, ${theme.primary}08 100%)`
+                                      : 'transparent',
+                                    borderRadius: '10px',
+                                    border: `2px solid ${user?.accountType === 'individual' || !user?.accountType ? theme.primary : '#dee2e6'}`,
+                                    cursor: 'default',
+                                    transition: 'all 0.3s ease',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '12px'
+                                  }}>
+                                    <div style={{
+                                      width: '20px',
+                                      height: '20px',
+                                      borderRadius: '50%',
+                                      border: `2px solid ${user?.accountType === 'individual' || !user?.accountType ? theme.primary : '#dee2e6'}`,
+                                      background: user?.accountType === 'individual' || !user?.accountType ? theme.primary : 'white',
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      justifyContent: 'center',
+                                      flexShrink: 0
+                                    }}>
+                                      {(user?.accountType === 'individual' || !user?.accountType) && (
+                                        <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'white' }} />
+                                      )}
+                  </div>
+                                    <div style={{ flex: 1 }}>
+                                      <div style={{ 
+                                        fontWeight: '700', 
+                                        fontSize: '1rem',
+                                        color: user?.accountType === 'individual' || !user?.accountType ? theme.primary : '#495057',
+                                        marginBottom: '4px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '8px'
+                                      }}>
+                                        <User size={18} />
+                                        {language === 'bg' ? 'Индивидуален' : 'Individual'}
+                                      </div>
+                                      <div style={{ fontSize: '0.875rem', color: '#6c757d' }}>
+                                        {language === 'bg' 
+                                          ? 'Профил за лично използване'
+                                          : 'Profile for personal use'}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </S.NeumorphicFieldWrapper>
+                            )}
+                            
                             <S.NeumorphicInfoGrid>
                               <S.NeumorphicFieldWrapper>
                                 <S.NeumorphicFieldLabel $themeColor={theme.primary}>{language === 'bg' ? 'Име' : 'First Name'}</S.NeumorphicFieldLabel>
@@ -1613,12 +2031,12 @@ const ProfilePage: React.FC = () => {
                             </S.NeumorphicInfoGrid>
                           </div>
 
-                          {/* Contact */}
+                  {/* Contact */}
                           <div style={{ marginBottom: '24px' }}>
                             <h4 style={{ margin: '0 0 16px 0', paddingBottom: '8px', borderBottom: `2px solid ${theme.primary}4D`, fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '8px', color: theme.primary, fontWeight: '700' }}>
                               <IconWrapper $color={theme.primary} $size={18}><Phone /></IconWrapper>
-                              {language === 'bg' ? 'Контактна информация' : 'Contact Information'}
-                            </h4>
+                      {language === 'bg' ? 'Контактна информация' : 'Contact Information'}
+                    </h4>
                             <S.NeumorphicInfoGrid>
                               <S.NeumorphicFieldWrapper>
                                 <S.NeumorphicFieldLabel $themeColor={theme.primary}>{language === 'bg' ? 'Телефон' : 'Phone'}</S.NeumorphicFieldLabel>
@@ -1633,14 +2051,14 @@ const ProfilePage: React.FC = () => {
                                 </S.NeumorphicInfoField>
                               </S.NeumorphicFieldWrapper>
                             </S.NeumorphicInfoGrid>
-                          </div>
+                  </div>
 
-                          {/* Address */}
+                  {/* Address */}
                           <div style={{ marginBottom: '24px' }}>
                             <h4 style={{ margin: '0 0 16px 0', paddingBottom: '8px', borderBottom: `2px solid ${theme.primary}4D`, fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '8px', color: theme.primary, fontWeight: '700' }}>
                               <IconWrapper $color={theme.primary} $size={18}><Home /></IconWrapper>
-                              {language === 'bg' ? 'Адресна информация' : 'Address Information'}
-                            </h4>
+                      {language === 'bg' ? 'Адресна информация' : 'Address Information'}
+                    </h4>
                             <S.NeumorphicInfoGrid>
                               <S.NeumorphicFieldWrapper>
                                 <S.NeumorphicFieldLabel $themeColor={theme.primary}>{language === 'bg' ? 'Град' : 'City'}</S.NeumorphicFieldLabel>
@@ -1662,15 +2080,15 @@ const ProfilePage: React.FC = () => {
                                   <S.NeumorphicFieldValue>{user?.address}</S.NeumorphicFieldValue>
                                 </S.NeumorphicInfoField>
                               </S.NeumorphicFieldWrapper>
-                            )}
-                          </div>
+                    )}
+                  </div>
 
-                          {/* Other */}
+                  {/* Other */}
                           <div style={{ marginBottom: '24px' }}>
                             <h4 style={{ margin: '0 0 16px 0', paddingBottom: '8px', borderBottom: `2px solid ${theme.primary}4D`, fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '8px', color: theme.primary, fontWeight: '700' }}>
                               <IconWrapper $color={theme.primary} $size={18}><SettingsIcon /></IconWrapper>
-                              {language === 'bg' ? 'Други' : 'Other'}
-                            </h4>
+                      {language === 'bg' ? 'Други' : 'Other'}
+                    </h4>
                             <S.NeumorphicInfoGrid>
                               <S.NeumorphicFieldWrapper>
                                 <S.NeumorphicFieldLabel $themeColor={theme.primary}>{t('profile.preferredLanguage')}</S.NeumorphicFieldLabel>
@@ -1689,41 +2107,41 @@ const ProfilePage: React.FC = () => {
                                 </S.NeumorphicInfoField>
                               </S.NeumorphicFieldWrapper>
                             </S.NeumorphicInfoGrid>
-                          </div>
+                  </div>
 
                           {user?.bio && (
-                            <div style={{ marginTop: '2rem' }}>
-                              <strong>{t('profile.bio')}:</strong>
+                    <div style={{ marginTop: '2rem' }}>
+                      <strong>{t('profile.bio')}:</strong>
                               <p style={{ marginTop: '0.5rem', color: '#666' }}>{user?.bio}</p>
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    </S.ContentSection>
+                    </div>
+                  )}
+                </div>
+              )}
+            </S.ContentSection>
 
                     {/* ✅ Verification Panel */}
                     {user && (
                     <S.ContentSection $themeColor={theme.primary} style={{ marginTop: '24px' }}>
-                      <VerificationPanel
+              <VerificationPanel
                         emailVerified={user?.emailVerified || user?.verification?.email?.verified || false}
                         phoneVerified={user?.verification?.phone?.verified || false}
                         idVerified={user?.verification?.identity?.verified || false}
                         businessVerified={user?.verification?.business?.verified || false}
                         themeColor={theme.primary}
-                      />
-                    </S.ContentSection>
+              />
+            </S.ContentSection>
                     )}
 
                     {/* Privacy Settings for all account types */}
                     <div style={{ marginTop: '24px' }}>
                     <PrivacySettingsManager 
-                      userId={user.uid} 
+                  userId={user.uid}
                       accountType={profileType === 'dealer' ? 'dealership' : 'individual'} 
                     />
                     </div>
                     
                     {/* Dealership Information Form - Show for all with message */}
-                    <div style={{ marginTop: '24px' }}>
+                    <div style={{ marginTop: '24px' }} data-section="dealership-info">
                       {profileType !== 'dealer' && (
                         <div style={{ 
                           background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
@@ -1739,14 +2157,14 @@ const ProfilePage: React.FC = () => {
                           <div>
                             <div style={{ fontWeight: 'bold', marginBottom: '4px', color: '#92400e' }}>
                               {language === 'bg' ? 'Информация за автокъщи' : 'Dealership Information'}
-                            </div>
+                        </div>
                             <div style={{ fontSize: '14px', color: '#78350f' }}>
                               {language === 'bg' 
                                 ? 'За да попълните информация за вашата автокъща, моля превключете типа на профила си على "Дилър" от бутоните по-горе.' 
                                 : 'To fill in your dealership information, please switch your profile type to "Dealer" using the buttons above.'}
-                            </div>
-                          </div>
                         </div>
+                        </div>
+                      </div>
                       )}
                       
                       {profileType === 'dealer' && (
@@ -1757,6 +2175,11 @@ const ProfilePage: React.FC = () => {
                     {/* Legacy Privacy Settings (can be removed later) */}
                     <div style={{ marginTop: '24px' }}>
                     <PrivacySettings userId={user.uid} />
+                    </div>
+                    
+                    {/* Social Media Accounts Integration */}
+                    <div style={{ marginTop: '32px' }}>
+                      <SocialMediaSettings />
                     </div>
                   </>
                 ) : (
@@ -1781,7 +2204,7 @@ const ProfilePage: React.FC = () => {
                 )}
               </AnimatedTabContent>
             )}
-            
+
             {activeTab === 'consultations' && (
               <AnimatedTabContent>
                 <ConsultationsTab 

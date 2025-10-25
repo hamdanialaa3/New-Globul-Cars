@@ -15,6 +15,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
 import { firebaseAuthRealUsers } from './firebase-auth-real-users';
+import { serviceLogger } from './logger-wrapper';
 
 // User Management Interfaces
 export interface UserRole {
@@ -142,11 +143,13 @@ class AdvancedUserManagementService {
     roleIds: string[], 
     createdBy: string
   ): Promise<AdvancedUser> {
+    let newUser: AdvancedUser | undefined;
+    
     try {
       const userRef = doc(collection(db, 'users'));
       const userId = userRef.id;
       
-      const newUser: AdvancedUser = {
+      newUser = {
         uid: userId,
         email: userData.email || '',
         displayName: userData.displayName || '',
@@ -203,7 +206,7 @@ class AdvancedUserManagementService {
       
       return newUser;
     } catch (error) {
-      console.error('Error creating user:', error);
+      serviceLogger.error('Error creating user', error as Error, { userId: newUser?.uid });
       throw error;
     }
   }
@@ -220,12 +223,12 @@ class AdvancedUserManagementService {
     }
   ): Promise<{ users: AdvancedUser[]; total: number; hasMore: boolean }> {
     try {
-      console.log('🔄 Getting users from Firebase...');
+      serviceLogger.debug('Getting users from Firebase', { page, limitCount, filters });
       
       // Try to get users from Firebase Auth first (REAL data!)
       try {
         const authUsers = await firebaseAuthRealUsers.getAuthUsersList();
-        console.log(`✅ Got ${authUsers.length} REAL users from Firebase Auth`);
+        serviceLogger.info('Got REAL users from Firebase Auth', { count: authUsers.length });
         
         // Convert Firebase Auth users to AdvancedUser format
         const convertedUsers: AdvancedUser[] = authUsers.map(authUser => ({
@@ -301,7 +304,7 @@ class AdvancedUserManagementService {
         };
         
       } catch (authError) {
-        console.warn('⚠️ Could not get from Firebase Auth, falling back to Firestore');
+        serviceLogger.warn('Could not get from Firebase Auth - falling back to Firestore', { error: authError });
       }
       
       // Fallback: Get from Firestore
@@ -341,7 +344,7 @@ class AdvancedUserManagementService {
         hasMore: filteredUsers.length >= limitCount
       };
     } catch (error) {
-      console.error('Error getting users:', error);
+      serviceLogger.error('Error getting users', error as Error, { page, limitCount, filters });
       return { users: [], total: 0, hasMore: false };
     }
   }
@@ -366,7 +369,7 @@ class AdvancedUserManagementService {
       await this.logUserActivity(userId, 'USER_UPDATED', 'user', userId, 
         `User updated by ${modifiedBy}`, true);
     } catch (error) {
-      console.error('Error updating user:', error);
+      serviceLogger.error('Error updating user', error as Error, { userId, modifiedBy });
       throw error;
     }
   }
@@ -388,7 +391,7 @@ class AdvancedUserManagementService {
       await this.logUserActivity(userId, 'ROLES_ASSIGNED', 'user', userId, 
         `Roles assigned by ${assignedBy}: ${roleIds.join(', ')}`, true);
     } catch (error) {
-      console.error('Error assigning roles:', error);
+      serviceLogger.error('Error assigning roles', error as Error, { userId, roleIds, assignedBy });
       throw error;
     }
   }
@@ -417,7 +420,7 @@ class AdvancedUserManagementService {
       
       return newRole;
     } catch (error) {
-      console.error('Error creating role:', error);
+      serviceLogger.error('Error creating role', error as Error, { roleName: roleData.name, createdBy });
       throw error;
     }
   }
@@ -429,7 +432,7 @@ class AdvancedUserManagementService {
       const snapshot = await getDocs(q);
       return snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id } as UserRole));
     } catch (error) {
-      console.error('Error getting roles:', error);
+      serviceLogger.error('Error getting roles', error as Error);
       return [];
     }
   }
@@ -467,7 +470,7 @@ class AdvancedUserManagementService {
       
       return uniquePermissions;
     } catch (error) {
-      console.error('Error getting user permissions:', error);
+      serviceLogger.error('Error getting user permissions', error as Error, { userId });
       return [];
     }
   }
@@ -487,7 +490,7 @@ class AdvancedUserManagementService {
         permission.level === level
       );
     } catch (error) {
-      console.error('Error checking permission:', error);
+      serviceLogger.error('Error checking permission', error as Error, { userId, resource, action, level });
       return false;
     }
   }
@@ -510,7 +513,7 @@ class AdvancedUserManagementService {
       await this.logUserActivity(userId, 'STATUS_CHANGED', 'user', userId, 
         `Status changed to ${status} by ${changedBy}. Reason: ${reason}`, true);
     } catch (error) {
-      console.error('Error changing user status:', error);
+      serviceLogger.error('Error changing user status', error as Error, { userId, status, reason, changedBy });
       throw error;
     }
   }
@@ -531,7 +534,7 @@ class AdvancedUserManagementService {
       const snapshot = await getDocs(q);
       return snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id } as UserActivityLog));
     } catch (error) {
-      console.error('Error getting user activity logs:', error);
+      serviceLogger.error('Error getting user activity logs', error as Error, { userId, limitCount });
       return [];
     }
   }
@@ -561,7 +564,7 @@ class AdvancedUserManagementService {
       
       await setDoc(logRef, logEntry);
     } catch (error) {
-      console.error('Error logging user activity:', error);
+      serviceLogger.error('Error logging user activity', error as Error, { userId, action, resource });
     }
   }
 
@@ -595,7 +598,7 @@ class AdvancedUserManagementService {
         totalPermissions: 0 // Calculate from roles
       };
     } catch (error) {
-      console.error('Error getting system stats:', error);
+      serviceLogger.error('Error getting system stats', error as Error);
       return {
         totalUsers: 0,
         activeUsers: 0,

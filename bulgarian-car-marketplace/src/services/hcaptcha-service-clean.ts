@@ -1,6 +1,8 @@
 // hCaptcha Service - Free Alternative to Google reCAPTCHA
 // (Comment removed - was in Arabic)
 
+import { serviceLogger } from './logger-wrapper';
+
 export interface CaptchaResult {
   success: boolean;
   token?: string;
@@ -41,7 +43,7 @@ export class BulgarianCaptchaService {
       const secretKey = process.env.REACT_APP_HCAPTCHA_SECRET_KEY || '';
 
       if (!secretKey) {
-        console.warn('hCaptcha secret key not configured');
+        serviceLogger.warn('hCaptcha secret key not configured');
         return { success: false, error: 'Secret key not configured' };
       }
 
@@ -64,7 +66,7 @@ export class BulgarianCaptchaService {
         error: data.success ? undefined : data['error-codes']?.join(', ') || 'Verification failed'
       };
     } catch (error) {
-      console.error('[SERVICE] Captcha verification error:', error);
+      serviceLogger.error('Captcha verification error', error as Error);
       return {
         success: false,
         error: 'Network error during verification'

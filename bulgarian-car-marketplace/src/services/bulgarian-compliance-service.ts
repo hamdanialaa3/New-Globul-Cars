@@ -13,6 +13,7 @@ import {
   writeBatch
 } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
+import { serviceLogger } from './logger-wrapper';
 
 // Bulgarian Compliance Interfaces
 export interface BulgarianCompliance {
@@ -219,9 +220,9 @@ class BulgarianComplianceService {
       }
       
       await batch.commit();
-      console.log('✅ Bulgarian compliance requirements initialized');
+      serviceLogger.info('Bulgarian compliance requirements initialized');
     } catch (error) {
-      console.error('Error initializing compliance requirements:', error);
+      serviceLogger.error('Error initializing compliance requirements', error as Error);
       throw error;
     }
   }
@@ -239,7 +240,7 @@ class BulgarianComplianceService {
         updatedAt: doc.data().updatedAt?.toDate() || new Date()
       } as BulgarianCompliance));
     } catch (error) {
-      console.error('Error getting compliance status:', error);
+      serviceLogger.error('Error getting compliance status', error as Error);
       return [];
     }
   }
@@ -279,7 +280,7 @@ class BulgarianComplianceService {
         completedBy
       );
     } catch (error) {
-      console.error('Error updating compliance requirement:', error);
+      serviceLogger.error('Error updating compliance requirement', error as Error, { requirementId, isCompleted });
       throw error;
     }
   }
@@ -310,7 +311,7 @@ class BulgarianComplianceService {
         complianceStatus: data.complianceStatus || 'pending'
       };
     } catch (error) {
-      console.error('Error getting financial compliance:', error);
+      serviceLogger.error('Error getting financial compliance', error as Error);
       return null;
     }
   }
@@ -349,7 +350,7 @@ class BulgarianComplianceService {
         updatedBy
       );
     } catch (error) {
-      console.error('Error updating financial compliance:', error);
+      serviceLogger.error('Error updating financial compliance', error as Error);
       throw error;
     }
   }
@@ -381,7 +382,7 @@ class BulgarianComplianceService {
         nextReview: data.nextReview?.toDate() || new Date()
       };
     } catch (error) {
-      console.error('Error getting data protection compliance:', error);
+      serviceLogger.error('Error getting data protection compliance', error as Error);
       return null;
     }
   }
@@ -421,7 +422,7 @@ class BulgarianComplianceService {
         updatedBy
       );
     } catch (error) {
-      console.error('Error updating data protection compliance:', error);
+      serviceLogger.error('Error updating data protection compliance', error as Error);
       throw error;
     }
   }
@@ -457,7 +458,7 @@ class BulgarianComplianceService {
         documents: data.documents || []
       };
     } catch (error) {
-      console.error('Error getting business registration:', error);
+      serviceLogger.error('Error getting business registration', error as Error);
       return null;
     }
   }
@@ -501,7 +502,7 @@ class BulgarianComplianceService {
         updatedBy
       );
     } catch (error) {
-      console.error('Error updating business registration:', error);
+      serviceLogger.error('Error updating business registration', error as Error);
       throw error;
     }
   }
@@ -566,7 +567,7 @@ class BulgarianComplianceService {
         recommendations
       };
     } catch (error) {
-      console.error('Error generating compliance report:', error);
+      serviceLogger.error('Error generating compliance report', error as Error);
       throw error;
     }
   }
@@ -582,7 +583,7 @@ class BulgarianComplianceService {
         completedAt: doc.data().completedAt?.toDate()
       } as ComplianceRequirement));
     } catch (error) {
-      console.error('Error getting compliance requirements:', error);
+      serviceLogger.error('Error getting compliance requirements', error as Error);
       return [];
     }
   }
@@ -606,7 +607,7 @@ class BulgarianComplianceService {
         userAgent: navigator.userAgent
       });
     } catch (error) {
-      console.error('Error logging compliance action:', error);
+      serviceLogger.error('Error logging compliance action', error as Error, { action, resourceId });
     }
   }
 }

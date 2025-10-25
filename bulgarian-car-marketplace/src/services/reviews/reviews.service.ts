@@ -20,6 +20,7 @@ import {
   limit
 } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
+import { serviceLogger } from '../logger-wrapper';
 
 export interface Review {
   id: string;
@@ -100,11 +101,11 @@ class ReviewsService {
         createdAt: serverTimestamp()
       });
 
-      console.log('Review created:', reviewDoc.id);
+      serviceLogger.info('Review created', { reviewId: reviewDoc.id, sellerId, carId });
       return reviewDoc.id;
 
     } catch (error) {
-      console.error('Error creating review:', error);
+      serviceLogger.error('Error creating review', error as Error, { sellerId, carId, reviewerId });
       throw error;
     }
   }
@@ -133,7 +134,7 @@ class ReviewsService {
       } as Review));
 
     } catch (error) {
-      console.error('Error getting seller reviews:', error);
+      serviceLogger.error('Error getting seller reviews', error as Error, { sellerId });
       throw error;
     }
   }
@@ -164,7 +165,7 @@ class ReviewsService {
       };
 
     } catch (error) {
-      console.error('Error getting seller rating:', error);
+      serviceLogger.error('Error getting seller rating', error as Error, { sellerId });
       throw error;
     }
   }
@@ -194,7 +195,7 @@ class ReviewsService {
       } as Review));
 
     } catch (error) {
-      console.error('Error checking existing review:', error);
+      serviceLogger.error('Error checking existing review', error as Error, { sellerId, reviewerId, carId });
       throw error;
     }
   }
@@ -220,10 +221,10 @@ class ReviewsService {
         updatedAt: serverTimestamp()
       });
 
-      console.log('Review updated:', reviewId);
+      serviceLogger.info('Review updated', { reviewId });
 
     } catch (error) {
-      console.error('Error updating review:', error);
+      serviceLogger.error('Error updating review', error as Error, { reviewId });
       throw error;
     }
   }
@@ -236,10 +237,10 @@ class ReviewsService {
       const reviewRef = doc(db, 'reviews', reviewId);
       await deleteDoc(reviewRef);
 
-      console.log('Review deleted:', reviewId);
+      serviceLogger.info('Review deleted', { reviewId });
 
     } catch (error) {
-      console.error('Error deleting review:', error);
+      serviceLogger.error('Error deleting review', error as Error, { reviewId });
       throw error;
     }
   }
@@ -264,7 +265,7 @@ class ReviewsService {
       } as Review));
 
     } catch (error) {
-      console.error('Error getting user reviews:', error);
+      serviceLogger.error('Error getting user reviews', error as Error, { reviewerId });
       throw error;
     }
   }

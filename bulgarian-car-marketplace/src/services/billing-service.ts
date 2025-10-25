@@ -4,6 +4,7 @@
 
 import { httpsCallable } from 'firebase/functions';
 import { functions } from '../firebase/firebase-config';
+import { serviceLogger } from './logger-wrapper';
 
 // ==================== TYPES ====================
 
@@ -79,7 +80,7 @@ export const generateInvoice = async (data: {
     const result = await generateInvoiceFn(data);
     return result.data as any;
   } catch (error: any) {
-    console.error('Error generating invoice:', error);
+    serviceLogger.error('Error generating invoice', error as Error);
     return { success: false, error: error.message };
   }
 };
@@ -100,7 +101,7 @@ export const getInvoices = async (params?: {
     const result = await getInvoicesFn(params || {});
     return result.data as any;
   } catch (error: any) {
-    console.error('Error getting invoices:', error);
+    serviceLogger.error('Error getting invoices', error as Error, { params });
     return { success: false, error: error.message };
   }
 };
@@ -117,7 +118,7 @@ export const getInvoice = async (
     const result = await getInvoiceFn({ invoiceId });
     return result.data as any;
   } catch (error: any) {
-    console.error('Error getting invoice:', error);
+    serviceLogger.error('Error getting invoice', error as Error, { invoiceId });
     return { success: false, error: error.message };
   }
 };
@@ -135,7 +136,7 @@ export const updateInvoiceStatus = async (
     const result = await updateInvoiceStatusFn({ invoiceId, status, notes });
     return result.data as any;
   } catch (error: any) {
-    console.error('Error updating invoice status:', error);
+    serviceLogger.error('Error updating invoice status', error as Error, { invoiceId, status });
     return { success: false, error: error.message };
   }
 };
@@ -152,7 +153,7 @@ export const sendInvoiceEmail = async (
     const result = await sendInvoiceEmailFn({ invoiceId, recipientEmail });
     return result.data as any;
   } catch (error: any) {
-    console.error('Error sending invoice email:', error);
+    serviceLogger.error('Error sending invoice email', error as Error, { invoiceId, recipientEmail });
     return { success: false, error: error.message };
   }
 };

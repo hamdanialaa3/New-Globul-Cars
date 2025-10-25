@@ -4,6 +4,7 @@
 
 import { doc, getDoc, updateDoc, serverTimestamp, collection, query, where, orderBy, limit, startAfter, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
+import { serviceLogger } from '../logger-wrapper';
 
 // ==================== INTERFACES ====================
 
@@ -214,7 +215,7 @@ export class RatingService {
 
       return badges;
     } catch (error) {
-      console.error('❌ Error checking rating badges:', error);
+      serviceLogger.error('Error checking rating badges', error as Error, { sellerId });
       return [];
     }
   }
@@ -264,7 +265,7 @@ export class RatingService {
         lastDoc: newLastDoc
       };
     } catch (error) {
-      console.error('Error getting car ratings:', error);
+      serviceLogger.error('Error getting car ratings', error as Error, { carId });
       return { ratings: [], hasMore: false };
     }
   }
@@ -278,7 +279,7 @@ export class RatingService {
         updatedAt: serverTimestamp()
       });
     } catch (error) {
-      console.error('Error updating rating helpful:', error);
+      serviceLogger.error('Error updating rating helpful', error as Error, { ratingId });
       throw error;
     }
   }
@@ -305,7 +306,7 @@ export class RatingService {
         ratingDistribution
       };
     } catch (error) {
-      console.error('Error getting rating summary:', error);
+      serviceLogger.error('Error getting rating summary', error as Error, { carId });
       return {
         averageRating: 0,
         totalRatings: 0,
@@ -331,7 +332,7 @@ export class RatingService {
         createdAt: doc.data().createdAt?.toDate() || new Date()
       } as CarRating));
     } catch (error) {
-      console.error('Error getting user ratings:', error);
+      serviceLogger.error('Error getting user ratings', error as Error, { userId });
       return [];
     }
   }

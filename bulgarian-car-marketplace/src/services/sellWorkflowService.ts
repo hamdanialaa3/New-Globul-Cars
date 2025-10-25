@@ -15,6 +15,7 @@ import { BULGARIAN_CITIES } from '../constants/bulgarianCities';
 import { CarListing } from '../types/CarListing';
 import LocationHelperService from './location-helper-service';
 import { logger } from './logger-service';
+import { serviceLogger } from './logger-wrapper';
 
 // Extended location structure for new system
 export interface EnhancedLocation {
@@ -229,11 +230,11 @@ export class SellWorkflowService {
       });
 
       const imageUrls = await Promise.all(uploadPromises);
-      console.log(`✅ Uploaded ${imageUrls.length} images for car ${carId}`);
+      serviceLogger.info('Uploaded car images', { carId, imageCount: imageUrls.length });
       
       return imageUrls;
     } catch (error) {
-      console.error('❌ Error uploading car images:', error);
+      serviceLogger.error('Error uploading car images', error as Error, { carId, imageCount: imageFiles.length });
       throw new Error('Failed to upload car images');
     }
   }
@@ -247,8 +248,8 @@ export class SellWorkflowService {
     imageFiles?: File[]
   ): Promise<string> {
     try {
-      console.log('🚀 Starting car listing creation...');
-      console.log('Workflow data:', workflowData);
+      serviceLogger.info('Starting car listing creation', { userId, hasMake: !!workflowData.make, hasModel: !!workflowData.model });
+      serviceLogger.debug('Workflow data received', { make: workflowData.make, model: workflowData.model, year: workflowData.year });
 
       // Validate required fields
       if (!workflowData.make || !workflowData.model || !workflowData.year) {
@@ -279,7 +280,7 @@ export class SellWorkflowService {
       });
 
       const carId = docRef.id;
-      console.log(`✅ Car listing created with ID: ${carId}`);
+      serviceLogger.info('Car listing created with ID', { carId, userId, make: carData.make, model: carData.model });
 
       // Upload images if provided
       if (imageFiles && imageFiles.length > 0) {
@@ -291,7 +292,7 @@ export class SellWorkflowService {
           updatedAt: serverTimestamp()
         });
 
-        console.log(`✅ Images uploaded and linked to car ${carId}`);
+        serviceLogger.info('Images uploaded and linked to car', { carId, imageCount: imageUrls.length });
       }
 
       // Clear cache for the region
@@ -300,10 +301,10 @@ export class SellWorkflowService {
         CityCarCountService.clearCacheForCity(carData.region);
       }
 
-      console.log('🎉 Car listing creation completed successfully!');
+      serviceLogger.info('Car listing creation completed successfully', { carId, userId });
       return carId;
     } catch (error) {
-      console.error('❌ Error creating car listing:', error);
+      serviceLogger.error('Error creating car listing', error as Error, { userId });
       throw error;
     }
   }
@@ -323,9 +324,9 @@ export class SellWorkflowService {
         updatedAt: serverTimestamp()
       });
 
-      console.log(`✅ Car listing ${carId} updated successfully`);
+      serviceLogger.info('Car listing updated successfully', { carId });
     } catch (error) {
-      console.error('❌ Error updating car listing:', error);
+      serviceLogger.error('Error updating car listing', error as Error, { carId });
       throw new Error('Failed to update car listing');
     }
   }

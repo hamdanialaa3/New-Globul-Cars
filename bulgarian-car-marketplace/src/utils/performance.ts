@@ -71,7 +71,10 @@ export function measureRenderTime(componentName: string, callback: () => void) {
   const startTime = performance.now();
   callback();
   const endTime = performance.now();
-  console.log(`⚡ ${componentName} rendered in ${(endTime - startTime).toFixed(2)}ms`);
+  
+  if (process.env.NODE_ENV === 'development') {
+    console.log(`⚡ ${componentName} rendered in ${(endTime - startTime).toFixed(2)}ms`);
+  }
 }
 
 /**

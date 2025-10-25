@@ -4,6 +4,7 @@
 import { ref, uploadBytesResumable, getDownloadURL, UploadTask } from 'firebase/storage';
 import { storage } from '../firebase/firebase-config';
 import imageCompression from 'browser-image-compression';
+import { serviceLogger } from './logger-wrapper';
 
 export interface UploadProgress {
   fileName: string;
@@ -50,11 +51,11 @@ export class ImageUploadService {
       });
 
       const reduction = ((1 - compressed.size / file.size) * 100).toFixed(1);
-      console.log(`✅ Compressed: ${file.name} - ${reduction}% reduction`);
+      serviceLogger.info('Image compressed successfully', { fileName: file.name, reductionPercent: reduction });
 
       return compressed;
     } catch (error) {
-      console.warn('Compression failed, using original:', error);
+      serviceLogger.warn('Compression failed, using original', { fileName: file.name, error: (error as Error).message });
       return file;
     }
   }
@@ -94,7 +95,7 @@ export class ImageUploadService {
         onComplete?.(url);
         return url;
       } catch (error) {
-        console.error(`Upload attempt ${attempt}/${maxRetries} failed:`, error);
+        serviceLogger.error('Upload attempt failed', error as Error, { fileName: file.name, attempt, maxRetries });
 
         if (attempt === maxRetries) {
           const finalError = new Error(
@@ -108,7 +109,7 @@ export class ImageUploadService {
         const delay = 1000 * Math.pow(2, attempt - 1);
         await new Promise(resolve => setTimeout(resolve, delay));
 
-        console.log(`Retrying upload (${attempt + 1}/${maxRetries})...`);
+        serviceLogger.info('Retrying upload', { fileName: file.name, attempt: attempt + 1, maxRetries });
       }
     }
 
@@ -217,7 +218,7 @@ export class ImageUploadService {
     }
 
     if (errors.length > 0) {
-      console.warn(`${errors.length} images failed to upload:`, errors);
+      serviceLogger.warn('Some images failed to upload', { failedCount: errors.length, totalCount: files.length });
     }
 
     return urls;
@@ -231,7 +232,7 @@ export class ImageUploadService {
     if (task) {
       task.cancel();
       this.uploadTasks.delete(fileName);
-      console.log('Upload cancelled:', fileName);
+      serviceLogger.info('Upload cancelled', { fileName });
     }
   }
 
@@ -241,7 +242,7 @@ export class ImageUploadService {
   static cancelAllUploads(): void {
     this.uploadTasks.forEach((task, fileName) => {
       task.cancel();
-      console.log('Upload cancelled:', fileName);
+      serviceLogger.info('Upload cancelled', { fileName });
     });
     this.uploadTasks.clear();
   }
