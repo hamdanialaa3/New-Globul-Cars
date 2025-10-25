@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🔥 Emergency Cache Clear</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .container {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      max-width: 600px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+    h1 {
+      color: #667eea;
+      font-size: 2rem;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .status {
+      background: #f7fafc;
+      border-radius: 10px;
+      padding: 20px;
+      margin: 20px 0;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .status div {
+      padding: 5px 0;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .status div:last-child {
+      border-bottom: none;
+    }
+    .success { color: #48bb78; }
+    .error { color: #f56565; }
+    .info { color: #4299e1; }
+    button {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 20px;
+      transition: all 0.3s;
+    }
+    button:hover {
+      background: #5a67d8;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+    }
+    button:disabled {
+      background: #cbd5e0;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .link {
+      display: inline-block;
+      margin-top: 20px;
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 600;
+      text-align: center;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔥 Emergency Cache Clear</h1>
+    <p style="text-align: center; color: #718096; margin-bottom: 20px;">
+      This will completely clear all caches, service workers, and storage
+    </p>
+    
+    <div class="status" id="status">
+      <div class="info">⏳ Ready to start...</div>
+    </div>
+    
+    <button id="clearBtn" onclick="clearEverything()">
+      🗑️ Clear Everything Now
+    </button>
+    
+    <a href="https://mobilebg.eu/profile" class="link" id="homeLink" style="display: none;">
+      ✅ Done! Click here to go to Profile →
+    </a>
+  </div>
+
+  <script>
+    const statusDiv = document.getElementById('status');
+    const clearBtn = document.getElementById('clearBtn');
+    const homeLink = document.getElementById('homeLink');
+    
+    function log(message, type = 'info') {
+      const div = document.createElement('div');
+      div.className = type;
+      div.textContent = message;
+      statusDiv.appendChild(div);
+      statusDiv.scrollTop = statusDiv.scrollHeight;
+    }
+    
+    async function clearEverything() {
+      clearBtn.disabled = true;
+      statusDiv.innerHTML = '';
+      
+      log('🚀 Starting emergency clear...', 'info');
+      
+      try {
+        // 1. Clear Service Workers
+        log('1️⃣ Clearing Service Workers...', 'info');
+        if ('serviceWorker' in navigator) {
+          const registrations = await navigator.serviceWorker.getRegistrations();
+          for (const registration of registrations) {
+            await registration.unregister();
+            log(`  ✅ Unregistered: ${registration.scope}`, 'success');
+          }
+        }
+        
+        // 2. Clear Caches
+        log('2️⃣ Clearing Cache Storage...', 'info');
+        if ('caches' in window) {
+          const cacheNames = await caches.keys();
+          for (const cacheName of cacheNames) {
+            await caches.delete(cacheName);
+            log(`  ✅ Deleted cache: ${cacheName}`, 'success');
+          }
+        }
+        
+        // 3. Clear localStorage
+        log('3️⃣ Clearing localStorage...', 'info');
+        const lsCount = localStorage.length;
+        localStorage.clear();
+        log(`  ✅ Cleared ${lsCount} items`, 'success');
+        
+        // 4. Clear sessionStorage
+        log('4️⃣ Clearing sessionStorage...', 'info');
+        const ssCount = sessionStorage.length;
+        sessionStorage.clear();
+        log(`  ✅ Cleared ${ssCount} items`, 'success');
+        
+        // 5. Clear IndexedDB
+        log('5️⃣ Clearing IndexedDB...', 'info');
+        if ('indexedDB' in window) {
+          const dbs = await indexedDB.databases();
+          for (const db of dbs) {
+            if (db.name) {
+              indexedDB.deleteDatabase(db.name);
+              log(`  ✅ Deleted DB: ${db.name}`, 'success');
+            }
+          }
+        }
+        
+        // 6. Clear Cookies (for this domain)
+        log('6️⃣ Clearing Cookies...', 'info');
+        const cookies = document.cookie.split(';');
+        for (const cookie of cookies) {
+          const name = cookie.split('=')[0].trim();
+          document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+        }
+        log(`  ✅ Cleared ${cookies.length} cookies`, 'success');
+        
+        log('', 'info');
+        log('✅ ✅ ✅ ALL CACHES CLEARED! ✅ ✅ ✅', 'success');
+        log('', 'info');
+        log('📋 Next steps:', 'info');
+        log('1. Close this tab', 'info');
+        log('2. Close ALL browser tabs for this site', 'info');
+        log('3. Restart your browser', 'info');
+        log('4. Open: https://mobilebg.eu/profile', 'success');
+        log('', 'info');
+        log('Or click the link below now:', 'info');
+        
+        homeLink.style.display = 'block';
+        
+        // Auto-redirect after 3 seconds
+        let countdown = 3;
+        const countdownInterval = setInterval(() => {
+          homeLink.textContent = `✅ Redirecting in ${countdown}... (or click here)`;
+          countdown--;
+          if (countdown < 0) {
+            clearInterval(countdownInterval);
+            window.location.href = 'https://mobilebg.eu/profile';
+          }
+        }, 1000);
+        
+      } catch (error) {
+        log(`❌ Error: ${error.message}`, 'error');
+        clearBtn.disabled = false;
+      }
+    }
+  </script>
+</body>
+</html>
+
