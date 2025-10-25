@@ -29,9 +29,17 @@ const AvatarContainer = styled.div<{ size: number }>`
   margin: 0 auto;
   cursor: ${p => p.onClick ? 'pointer' : 'default'};
   transition: transform 0.3s ease;
+  z-index: ${p => p.onClick ? '5' : '1'};
+  pointer-events: ${p => p.onClick ? 'auto' : 'none'};
+  touch-action: ${p => p.onClick ? 'manipulation' : 'auto'};
+  -webkit-tap-highlight-color: transparent;
   
   &:hover {
     transform: ${p => p.onClick ? 'scale(1.05)' : 'none'};
+  }
+
+  &:active {
+    transform: ${p => p.onClick ? 'scale(1.02)' : 'none'};
   }
 `;
 

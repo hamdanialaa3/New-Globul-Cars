@@ -87,6 +87,14 @@ const UploadButton = styled.button<{ $themeColor?: string }>`
   color: ${props => props.$themeColor || '#FF7900'};
   transition: all 0.3s ease;
   box-shadow: ${props => props.$themeColor ? `0 2px 6px ${props.$themeColor}26` : '0 2px 6px rgba(255, 143, 16, 0.15)'};
+  z-index: 10;
+  pointer-events: auto;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+
+  svg {
+    pointer-events: none;
+  }
 
   &:hover {
     background: white;

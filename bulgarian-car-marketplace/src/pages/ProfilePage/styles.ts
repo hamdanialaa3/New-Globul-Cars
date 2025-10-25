@@ -268,6 +268,39 @@ export const SectionHeader = styled.div`
     font-size: 1.5rem;
     color: ${({ theme }) => theme.colors.text.primary};
   }
+
+  .edit-btn {
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #FF8F10 0%, #FF7900 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(255, 143, 16, 0.3);
+    z-index: 1;
+    pointer-events: auto;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    white-space: nowrap;
+
+    &:hover {
+      background: linear-gradient(135deg, #ff9e2a 0%, #ff8c1a 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(255, 143, 16, 0.4);
+    }
+
+    &:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 4px rgba(255, 143, 16, 0.2);
+    }
+
+    svg {
+      pointer-events: none;
+    }
+  }
 `;
 
 export const FormGrid = styled.div`

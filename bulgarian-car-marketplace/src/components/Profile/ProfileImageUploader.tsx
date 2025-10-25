@@ -87,10 +87,18 @@ const UploadButton = styled.button`
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 2px 8px rgba(255, 121, 0, 0.3);
+  z-index: 10;
+  pointer-events: auto;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 
   &:hover {
     background: #ff8c1a;
     transform: scale(1.1);
+  }
+
+  &:active {
+    transform: scale(1.05);
   }
 
   &:disabled {
@@ -100,6 +108,7 @@ const UploadButton = styled.button`
 
   svg {
     color: white;
+    pointer-events: none;
   }
 `;
 
@@ -118,14 +127,23 @@ const DeleteButton = styled.button`
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 2px 8px rgba(239, 83, 80, 0.3);
+  z-index: 11;
+  pointer-events: auto;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 
   &:hover {
     background: #e53935;
     transform: scale(1.1);
   }
 
+  &:active {
+    transform: scale(1.05);
+  }
+
   svg {
     color: white;
+    pointer-events: none;
   }
 `;
 
