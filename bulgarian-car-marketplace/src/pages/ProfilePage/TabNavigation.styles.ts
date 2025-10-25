@@ -1,6 +1,7 @@
 // src/pages/ProfilePage/TabNavigation.styles.ts
 // 🎨 Premium Tab Navigation with Glassmorphism & Metallic Effects
 import styled, { keyframes, css } from 'styled-components';
+import { NavLink } from 'react-router-dom';
 
 // 🎨 NEW: Theme Color Prop Interface
 interface ThemedProps {
@@ -561,5 +562,112 @@ export const FollowButton = styled.button<{ $following: boolean }>`
     /* ⚡ OPTIMIZED: Simple transform instead of infinite float */
     transform: translateY(-2px);
     transition: transform 0.3s ease;
+  }
+`;
+
+// ==================== TAB NAV LINK (for React Router) ====================
+export const TabNavLink = styled(NavLink)<{ $themeColor?: string }>`
+  flex: 1;
+  min-width: 90px;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+  text-decoration: none;
+  color: inherit;
+  
+  /* 📱 Tablet & Mobile: 3 أزرار في كل صف */
+  @media (max-width: 1024px) {
+    flex: 0 0 calc(33.333% - 7px);
+    min-width: 0;
+    max-width: calc(33.333% - 7px);
+  }
+  
+  /* 📱 تحسينات للموبايل - الأزرار في صفين */
+  @media (max-width: 768px) {
+    padding: 10px 8px;
+    font-size: 0.75rem;
+    gap: 4px;
+    min-height: 44px;
+    flex-shrink: 0;
+  }
+  
+  @media (max-width: 480px) {
+    padding: 9px 6px;
+    font-size: 0.7rem;
+    gap: 3px;
+    min-height: 42px;
+  }
+  
+  @media (max-width: 380px) {
+    padding: 8px 4px;
+    font-size: 0.65rem;
+    gap: 2px;
+    min-height: 40px;
+  }
+  
+  /* Inactive state (default) */
+  background: linear-gradient(135deg,
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(248, 250, 252, 0.85) 100%
+  );
+  box-shadow: 
+    inset 0 2px 4px rgba(255, 255, 255, 0.8),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.05),
+    0 2px 8px rgba(0, 0, 0, 0.03);
+  color: #4a5568;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Active state */
+  &.active {
+    background: ${props => props.$themeColor ? 
+      `linear-gradient(135deg, ${props.$themeColor}20 0%, ${props.$themeColor}10 100%)` :
+      'linear-gradient(135deg, rgba(255, 143, 16, 0.12) 0%, rgba(255, 185, 0, 0.06) 100%)'
+    };
+    box-shadow: 
+      inset 0 2px 6px ${props => props.$themeColor ? `${props.$themeColor}15` : 'rgba(255, 143, 16, 0.08)'},
+      inset 0 -2px 4px rgba(255, 255, 255, 0.6),
+      0 0 0 2px ${props => props.$themeColor ? `${props.$themeColor}40` : 'rgba(255, 143, 16, 0.25)'},
+      0 4px 12px ${props => props.$themeColor ? `${props.$themeColor}20` : 'rgba(255, 143, 16, 0.12)'};
+    color: ${props => props.$themeColor || '#FF8F10'};
+    font-weight: 600;
+    transform: translateY(-1px);
+  }
+  
+  /* Hover */
+  &:hover:not(.active) {
+    background: linear-gradient(135deg,
+      rgba(255, 255, 255, 0.95) 0%,
+      rgba(252, 254, 255, 0.9) 100%
+    );
+    box-shadow: 
+      inset 0 2px 5px rgba(255, 255, 255, 0.9),
+      inset 0 -2px 4px rgba(0, 0, 0, 0.03),
+      0 4px 12px rgba(0, 0, 0, 0.06);
+    transform: translateY(-1px);
+  }
+  
+  /* Touch & Click */
+  pointer-events: auto;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  z-index: 1;
+  
+  &:active {
+    transform: translateY(0);
+  }
+  
+  svg {
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
   }
 `;

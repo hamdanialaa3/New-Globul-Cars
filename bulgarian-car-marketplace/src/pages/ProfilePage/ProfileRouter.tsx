@@ -1,39 +1,52 @@
 // src/pages/ProfilePage/ProfileRouter.tsx
-// Profile Router - Renders ProfilePage with full functionality
-// ProfilePage now handles dynamic theming and LED avatars automatically
+// Profile Router - Handles routing for all profile sub-pages
 
 import React from 'react';
-import ProfilePage from './index';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import ProfilePageWrapper from './ProfilePageWrapper';
+import ProfileOverview from './ProfileOverview';
+import ProfileMyAds from './ProfileMyAds';
+import ProfileCampaigns from './ProfileCampaigns';
+import ProfileAnalytics from './ProfileAnalytics';
+import ProfileSettings from './ProfileSettings';
+import ProfileConsultations from './ProfileConsultations';
 
 /**
  * Profile Router Component
  * 
- * Simple wrapper that renders the main ProfilePage component.
- * ProfilePage now includes ALL features with dynamic adaptation:
+ * Routes:
+ * - /profile → Profile Overview (default)
+ * - /profile/my-ads → My Ads/Garage
+ * - /profile/campaigns → Advertising Campaigns
+ * - /profile/analytics → Analytics Dashboard
+ * - /profile/settings → Privacy & Settings
+ * - /profile/consultations → Expert Consultations
  * 
- * ✅ LED Progress Ring Avatars:
- *    - Private: Orange #FF8F10, circular 120px
- *    - Dealer: Green #16a34a, circular 180px
- *    - Company: Blue #1d4ed8, square 180px with LED border
- * 
- * ✅ Dynamic Theming from ProfileTypeContext
- * ✅ All Original Features:
- *    - Tabs: Profile, My Ads, Analytics, Settings
- *    - Cover Image + Profile Image
- *    - Trust Badge + Profile Completion
- *    - Statistics + Verification Panel
- *    - Photo Gallery + Reviews
- *    - Follow/Unfollow + Google Sync
- *    - Complete Edit Forms
- *    - GarageSection + Analytics Dashboard
- *    - Privacy Settings
- * 
- * ✅ Permissions & Plan-based Access Control
- * ✅ View other users' profiles via ?userId=xxx
- * ✅ Business/Company special fields and layouts
+ * ✅ Each tab is now a separate route for better navigation
+ * ✅ Direct links work perfectly
+ * ✅ Browser back/forward buttons work
+ * ✅ SEO-friendly URLs
  */
 export const ProfileRouter: React.FC = () => {
-  return <ProfilePage />;
+  return (
+    <Routes>
+      {/* Main profile page with nested routes */}
+      <Route path="/" element={<ProfilePageWrapper />}>
+        {/* Default: Overview */}
+        <Route index element={<ProfileOverview />} />
+        
+        {/* Tab Routes */}
+        <Route path="my-ads" element={<ProfileMyAds />} />
+        <Route path="campaigns" element={<ProfileCampaigns />} />
+        <Route path="analytics" element={<ProfileAnalytics />} />
+        <Route path="settings" element={<ProfileSettings />} />
+        <Route path="consultations" element={<ProfileConsultations />} />
+        
+        {/* Fallback: Redirect to overview */}
+        <Route path="*" element={<Navigate to="/profile" replace />} />
+      </Route>
+    </Routes>
+  );
 };
 
 export default ProfileRouter;

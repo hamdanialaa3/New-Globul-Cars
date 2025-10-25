@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useSearchParams, useNavigate, NavLink, Outlet, useLocation } from 'react-router-dom';
 import { useTranslation } from '../../hooks/useTranslation';
 import { useLanguage } from '../../contexts/LanguageContext';
 import LazyImage from '../../components/LazyImage';
@@ -51,7 +51,7 @@ import {
   ArrowDown
 } from 'lucide-react';
 import * as S from './styles';
-import { TabNavigation, TabButton, SyncButton, FollowButton } from './TabNavigation.styles';
+import { TabNavigation, TabButton, TabNavLink, SyncButton, FollowButton } from './TabNavigation.styles';
 import styled, { keyframes, css } from 'styled-components';
 // Import new services - moved to top
 import { googleProfileSyncService } from '../../services/google/google-profile-sync.service';
@@ -327,29 +327,11 @@ const ProfilePage: React.FC = () => {
     loadUserCars
   } = useProfile(targetUserId); // ✅ Pass targetUserId
 
-  // Read tab from URL or default to 'profile'
-  const initialTab = (searchParams.get('tab') as 'profile' | 'myads' | 'campaigns' | 'analytics' | 'settings' | 'consultations') || 'profile';
-  const [activeTab, setActiveTab] = React.useState<'profile' | 'myads' | 'campaigns' | 'analytics' | 'settings' | 'consultations'>(initialTab);
-  const [isTransitioning, setIsTransitioning] = React.useState(false);
+  // Get current location to check active route
+  const location = useLocation();
   
-  // Smooth tab switching with fade effect
-  const handleTabChange = (tab: 'profile' | 'myads' | 'campaigns' | 'analytics' | 'settings' | 'consultations') => {
-    if (tab === activeTab) return;
-    
-    setIsTransitioning(true);
-    setTimeout(() => {
-      setActiveTab(tab);
-      setIsTransitioning(false);
-    }, 150); // Short fade out
-  };
-  
-  // Update activeTab when URL changes
-  useEffect(() => {
-    const tabParam = searchParams.get('tab') as 'profile' | 'myads' | 'campaigns' | 'analytics' | 'settings' | 'consultations';
-    if (tabParam && ['profile', 'myads', 'campaigns', 'analytics', 'settings', 'consultations'].includes(tabParam)) {
-      setActiveTab(tabParam);
-    }
-  }, [searchParams]);
+  // Check if we're on the main profile page (for cover image display)
+  const isMainProfilePage = location.pathname === '/profile' || location.pathname === '/profile/';
   
   // Track active field for ID helper
   const [activeField, setActiveField] = React.useState<string | undefined>(undefined);
@@ -565,64 +547,59 @@ const ProfilePage: React.FC = () => {
       <BusinessBackground isBusinessAccount={isBusinessMode} />
       
       <S.PageContainer>
-        {/* Tab Navigation - 🎨 DYNAMIC Theme Colors */}
+        {/* Tab Navigation - 🎨 DYNAMIC Theme Colors with React Router NavLinks */}
         <TabNavigation $themeColor={theme.primary}>
-          <TabButton 
-            $active={activeTab === 'profile'}
+          <TabNavLink 
+            to="/profile"
+            end
             $themeColor={theme.primary}
-            onClick={() => handleTabChange('profile')}
           >
             <UserCircle size={16} />
             {language === 'bg' ? 'Профил' : 'Profile'}
-          </TabButton>
+          </TabNavLink>
           {isOwnProfile && (
             <>
-              <TabButton 
-                $active={activeTab === 'myads'}
+              <TabNavLink 
+                to="/profile/my-ads"
                 $themeColor={theme.primary}
-                onClick={() => handleTabChange('myads')}
               >
                 <Car size={16} />
                 {language === 'bg' ? 'Моите обяви' : 'My Ads'}
-              </TabButton>
-              <TabButton 
-                $active={activeTab === 'campaigns'}
+              </TabNavLink>
+              <TabNavLink 
+                to="/profile/campaigns"
                 $themeColor={theme.primary}
-                onClick={() => handleTabChange('campaigns')}
               >
                 <Megaphone size={16} />
                 {language === 'bg' ? 'Реклами' : 'Campaigns'}
-              </TabButton>
-              <TabButton 
-                $active={activeTab === 'analytics'}
+              </TabNavLink>
+              <TabNavLink 
+                to="/profile/analytics"
                 $themeColor={theme.primary}
-                onClick={() => handleTabChange('analytics')}
               >
                 <BarChart3 size={16} />
                 {language === 'bg' ? 'Статистика' : 'Analytics'}
-              </TabButton>
-              <TabButton 
-                $active={activeTab === 'settings'}
+              </TabNavLink>
+              <TabNavLink 
+                to="/profile/settings"
                 $themeColor={theme.primary}
-                onClick={() => handleTabChange('settings')}
               >
                 <Shield size={16} />
                 {language === 'bg' ? 'Настройки' : 'Settings'}
-              </TabButton>
-              <TabButton 
-                $active={activeTab === 'consultations'}
+              </TabNavLink>
+              <TabNavLink 
+                to="/profile/consultations"
                 $themeColor={theme.primary}
-                onClick={() => handleTabChange('consultations')}
               >
                 <MessageCircle size={18} />
                 {language === 'bg' ? 'Консултации' : 'Consultations'}
-              </TabButton>
+              </TabNavLink>
             </>
           )}
         </TabNavigation>
         
         {/* Cover Image - 🔒 SECURITY: Only editable for own profile */}
-        {activeTab === 'profile' && isOwnProfile && (
+        {isMainProfilePage && isOwnProfile && (
           <CoverImageUploader
           currentImageUrl={user.coverImage?.url}
           themeColor={theme.primary}

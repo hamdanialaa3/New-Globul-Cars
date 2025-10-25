@@ -420,7 +420,7 @@ const MainLayout: React.FC = () => {
           </AuthGuard>
         }
       />
-      <Route path="/profile" element={<ProfileRouter />} />  {/* FIXED: Use new ProfileRouter instead of old ProfilePage */}
+      <Route path="/profile/*" element={<ProfileRouter />} />  {/* Profile with nested routes: /, /my-ads, /campaigns, /analytics, /settings, /consultations */}
       <Route path="/verification" element={<VerificationPage />} />  {/* NEW: Verification System */}
       <Route path="/billing" element={<BillingPage />} />  {/* NEW: Billing System */}
       <Route path="/analytics" element={<AnalyticsDashboard />} />  {/* NEW: Analytics System */}
