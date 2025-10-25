@@ -87,6 +87,27 @@ export const ProfileHeader = styled.header`
   padding-bottom: 2rem;
   border-bottom: 1px solid ${({ theme }) => theme.colors.grey[200]};
   flex-wrap: wrap;
+  
+  /* MOBILE OPTIMIZATION - Instagram/LinkedIn inspired */
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    margin-bottom: 1rem;
+    padding-bottom: 0;
+    border-bottom: none;
+    
+    /* Card-based layout (Airbnb pattern) */
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+  
+  @media (max-width: 480px) {
+    border-radius: 12px;
+    margin-bottom: 0.75rem;
+  }
 `;
 
 export const ProfileImage = styled.img`
@@ -96,10 +117,45 @@ export const ProfileImage = styled.img`
   border: 4px solid ${({ theme }) => theme.colors.primary.main};
   object-fit: cover;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  
+  /* MOBILE - Instagram style: Smaller avatar, white border */
+  @media (max-width: 768px) {
+    width: 88px;  /* Instagram standard */
+    height: 88px;
+    border: 4px solid white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    margin: -44px auto 0;  /* Overlap cover image */
+    display: block;
+    position: relative;
+    z-index: 2;
+  }
+  
+  @media (max-width: 480px) {
+    width: 80px;
+    height: 80px;
+    margin-top: -40px;
+  }
+  
+  @media (max-width: 380px) {
+    width: 72px;
+    height: 72px;
+    margin-top: -36px;
+    border-width: 3px;
+  }
 `;
 
 export const ProfileInfo = styled.div`
   flex-grow: 1;
+  
+  /* MOBILE - Centered layout (Instagram pattern) */
+  @media (max-width: 768px) {
+    text-align: center;
+    padding: 16px 20px 0;
+  }
+  
+  @media (max-width: 480px) {
+    padding: 12px 16px 0;
+  }
 `;
 
 export const ProfileName = styled.h1`
@@ -110,6 +166,23 @@ export const ProfileName = styled.h1`
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  
+  /* MOBILE - Professional typography (LinkedIn/Airbnb) */
+  @media (max-width: 768px) {
+    font-size: 1.375rem;  /* 22px - readable on mobile */
+    font-weight: 700;
+    justify-content: center;
+    line-height: 1.3;
+    margin-bottom: 4px;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 1.25rem;  /* 20px */
+  }
+  
+  @media (max-width: 380px) {
+    font-size: 1.125rem;  /* 18px - minimum for h1 */
+  }
 `;
 
 export const ProfileBio = styled.p`
@@ -117,12 +190,49 @@ export const ProfileBio = styled.p`
   color: ${({ theme }) => theme.colors.text.secondary};
   margin-top: 0.5rem;
   max-width: 600px;
+  
+  /* MOBILE - Compact bio (Instagram pattern) */
+  @media (max-width: 768px) {
+    font-size: 0.875rem;  /* 14px */
+    line-height: 1.4;
+    margin: 6px auto 0;
+    max-width: none;
+    
+    /* Limit to 3 lines with ellipsis */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 0.8125rem;  /* 13px */
+    -webkit-line-clamp: 2;  /* 2 lines on small screens */
+  }
 `;
 
 export const StatsContainer = styled.div`
   display: flex;
   gap: 1.5rem;
   margin-top: 1rem;
+  
+  /* MOBILE - Grid layout (Instagram pattern) */
+  @media (max-width: 768px) {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    margin: 16px 0 0;
+    padding: 16px 0;
+    border-top: 1px solid #e4e6eb;
+    border-bottom: 1px solid #e4e6eb;
+    background: rgba(0, 0, 0, 0.01);
+  }
+  
+  @media (max-width: 480px) {
+    margin: 12px 0 0;
+    padding: 12px 0;
+  }
 `;
 
 export const Stat = styled(Link)`
@@ -139,6 +249,57 @@ export const Stat = styled(Link)`
     font-weight: 400;
     color: ${({ theme }) => theme.colors.text.secondary};
   }
+  
+  /* MOBILE - Instagram-style stat display */
+  @media (max-width: 768px) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 0 8px;
+    font-size: 0.875rem;
+    gap: 2px;
+    
+    /* Number on top */
+    &::before {
+      content: attr(data-count);
+      font-size: 1.125rem;  /* 18px - prominent */
+      font-weight: 700;
+      color: ${({ theme }) => theme.colors.text.primary};
+      display: block;
+      line-height: 1.2;
+    }
+    
+    /* Label below */
+    span {
+      font-size: 0.75rem;  /* 12px */
+      font-weight: 400;
+      color: ${({ theme }) => theme.colors.text.secondary};
+      line-height: 1.2;
+    }
+    
+    /* Tap feedback */
+    -webkit-tap-highlight-color: transparent;
+    transition: all 0.2s ease;
+    
+    &:active {
+      transform: scale(0.95);
+      background: rgba(0, 0, 0, 0.02);
+      border-radius: 8px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    padding: 0 6px;
+    
+    &::before {
+      font-size: 1rem;  /* 16px */
+    }
+    
+    span {
+      font-size: 0.6875rem;  /* 11px */
+    }
+  }
 `;
 
 export const ActionsContainer = styled.div`
@@ -146,6 +307,25 @@ export const ActionsContainer = styled.div`
   gap: 1rem;
   margin-top: 1.5rem;
   flex-wrap: wrap;
+  
+  /* MOBILE - Full-width buttons (Facebook/Instagram pattern) */
+  @media (max-width: 768px) {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin: 16px 20px;
+    padding: 0;
+  }
+  
+  @media (max-width: 480px) {
+    margin: 12px 16px;
+    gap: 6px;
+  }
+  
+  @media (max-width: 380px) {
+    grid-template-columns: 1fr;  /* Stack on very small screens */
+    margin: 12px 12px;
+  }
 `;
 
 export const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary' | 'danger'; $themeColor?: string }>`
@@ -165,6 +345,21 @@ export const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary' |
             background-color: ${mainColor};
             filter: brightness(1.1);
           }
+          
+          /* MOBILE - Stop animation, optimize for touch */
+          @media (max-width: 768px) {
+            animation: none;
+            padding: 10px 16px;
+            font-size: 0.875rem;  /* 14px */
+            font-weight: 600;
+            border-radius: 8px;  /* Less rounded on mobile */
+            min-height: 44px;  /* Touch target */
+            
+            &:active {
+              transform: scale(0.98);
+              filter: brightness(0.95);
+            }
+          }
         `;
       case 'danger':
         return css`
@@ -175,6 +370,19 @@ export const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary' |
           &:hover:not(:disabled) {
             background-color: ${theme.colors.error.dark};
             filter: brightness(1.1);
+          }
+          
+          @media (max-width: 768px) {
+            padding: 10px 16px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            border-radius: 8px;
+            min-height: 44px;
+            
+            &:active {
+              transform: scale(0.98);
+              filter: brightness(0.95);
+            }
           }
         `;
       case 'secondary':
@@ -188,6 +396,23 @@ export const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary' |
             background-color: ${theme.colors.grey[100]};
             border-color: ${theme.colors.primary.main};
             color: ${theme.colors.primary.main};
+          }
+          
+          /* MOBILE - Filled background (easier to tap) */
+          @media (max-width: 768px) {
+            background-color: #f0f2f5;  /* Instagram gray */
+            border: 1px solid #dbdbdb;
+            color: ${theme.colors.text.primary};
+            padding: 10px 16px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            border-radius: 8px;
+            min-height: 44px;
+            
+            &:active {
+              transform: scale(0.98);
+              background-color: #e4e6eb;
+            }
           }
         `;
     }
