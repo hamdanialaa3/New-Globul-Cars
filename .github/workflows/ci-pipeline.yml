@@ -88,8 +88,11 @@ jobs:
     name: Build Application
     runs-on: ubuntu-latest
     needs: [lint, test]
+    timeout-minutes: 20
     env:
-      NODE_OPTIONS: --max_old_space_size=4096
+      NODE_OPTIONS: --max_old_space_size=6144
+      CI: false
+      GENERATE_SOURCEMAP: false
     
     steps:
       - name: Checkout code
@@ -99,35 +102,118 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: bulgarian-car-marketplace/package-lock.json
       
+      # 🔍 Diagnostic: Display system info
+      - name: Display system info
+        run: |
+          echo "Node version: $(node --version)"
+          echo "NPM version: $(npm --version)"
+          echo "Memory limit: $NODE_OPTIONS"
+          df -h
+          free -h || echo "free command not available"
+      
+      # Enhanced cache with multiple restore keys
       - name: Cache node modules
         uses: actions/cache@v3
         with:
-          path: bulgarian-car-marketplace/node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('bulgarian-car-marketplace/package-lock.json') }}
+          path: |
+            bulgarian-car-marketplace/node_modules
+            ~/.npm
+          key: ${{ runner.os }}-node-18-${{ hashFiles('bulgarian-car-marketplace/package-lock.json') }}
           restore-keys: |
+            ${{ runner.os }}-node-18-
             ${{ runner.os }}-node-
       
+      # 🔍 Diagnostic: Check lockfile
+      - name: Verify package-lock.json exists
+        working-directory: bulgarian-car-marketplace
+        run: |
+          if [ ! -f "package-lock.json" ]; then
+            echo "⚠️ Warning: package-lock.json not found!"
+            echo "Creating lockfile from package.json..."
+            npm install --package-lock-only --legacy-peer-deps
+          else
+            echo "✅ package-lock.json found"
+          fi
+      
+      # Install with better error handling
       - name: Install dependencies
         working-directory: bulgarian-car-marketplace
-        run: npm ci --legacy-peer-deps
+        run: |
+          echo "📦 Installing dependencies..."
+          npm ci --legacy-peer-deps --prefer-offline --no-audit 2>&1 | tee install.log || {
+            echo "⚠️ npm ci failed, trying npm install..."
+            npm install --legacy-peer-deps --prefer-offline --no-audit
+          }
       
+      # 🔍 Diagnostic: Verify critical files before build
+      - name: Verify project structure
+        working-directory: bulgarian-car-marketplace
+        run: |
+          echo "📁 Checking project structure..."
+          ls -la
+          echo "📁 Checking src directory..."
+          ls -la src/ | head -20
+          echo "📁 Checking public directory..."
+          ls -la public/ | head -20
+          echo "✅ Project structure verified"
+      
+      # Build with detailed logging and error capture
       - name: Build application
         id: build
         working-directory: bulgarian-car-marketplace
-        run: npm run build
-        env:
-          CI: false
-          GENERATE_SOURCEMAP: false
+        run: |
+          echo "🔨 Starting build process..."
+          echo "Memory: $NODE_OPTIONS"
+          npm run build 2>&1 | tee build.log
+        continue-on-error: true
       
-      # Only upload build artifacts (not node_modules) with 1-day retention to save storage
+      # 🔍 Diagnostic: Check build output
+      - name: Verify build output
+        if: always()
+        working-directory: bulgarian-car-marketplace
+        run: |
+          if [ -d "build" ]; then
+            echo "✅ Build directory created"
+            echo "📊 Build size:"
+            du -sh build/
+            echo "📁 Build contents:"
+            ls -lah build/
+            echo "📁 Build static contents:"
+            ls -lah build/static/ || echo "No static directory"
+          else
+            echo "❌ Build directory not found!"
+            exit 1
+          fi
+      
+      # Upload build logs for debugging (always, even on failure)
+      - name: Upload build logs
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: build-logs
+          path: |
+            bulgarian-car-marketplace/build.log
+            bulgarian-car-marketplace/install.log
+          retention-days: 7
+      
+      # Upload build artifacts only if build succeeded
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
+        if: steps.build.outcome == 'success'
         with:
           name: build
-          path: bulgarian-car-marketplace/build/**
+          path: bulgarian-car-marketplace/build/
           retention-days: 1
-        if: success() && hashFiles('bulgarian-car-marketplace/build/**') != ''
+      
+      # Fail the job if build failed
+      - name: Check build status
+        if: steps.build.outcome != 'success'
+        run: |
+          echo "❌ Build failed! Check build-logs artifact for details."
+          exit 1
 
   # Job 4: Deploy to Staging
   deploy-staging:
