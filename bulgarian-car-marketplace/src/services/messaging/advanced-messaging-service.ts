@@ -458,18 +458,23 @@ export class AdvancedMessagingService {
   async markMessagesAsRead(conversationId: string, userId: string): Promise<void> {
     try {
       const messagesRef = collection(db, 'messages');
+      // Note: We can't use where('readAt', '==', null) directly in Firestore
+      // Instead, we query by conversationId and receiverId, then filter unread messages
       const q = query(
         messagesRef,
         where('conversationId', '==', conversationId),
-        where('receiverId', '==', userId),
-        where('readAt', '==', null)
+        where('receiverId', '==', userId)
       );
 
       const snapshot = await getDocs(q);
       const batch = writeBatch(db);
       
+      // Only update messages that haven't been read yet
       snapshot.docs.forEach((doc) => {
-        batch.update(doc.ref, { readAt: serverTimestamp() });
+        const data = doc.data();
+        if (!data.readAt) {
+          batch.update(doc.ref, { readAt: serverTimestamp() });
+        }
       });
 
       await batch.commit();

@@ -11,7 +11,7 @@ import * as S from './styles';
  */
 const ProfileOverview: React.FC = () => {
   const { language } = useLanguage();
-  const { profileData, isOwnProfile } = useProfile();
+  const { user, isOwnProfile } = useProfile();
 
   return (
     <S.ContentSection>
