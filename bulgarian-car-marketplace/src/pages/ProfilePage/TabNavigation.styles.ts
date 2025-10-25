@@ -24,12 +24,32 @@ export const TabNavigation = styled.div<{ $themeColor?: string }>`
   min-height: 70px;
   flex-wrap: nowrap;
   
-  /* 📱 Mobile: صفين (3+3) */
+  /* TABLET & MOBILE: 2 rows × 3 columns layout (LinkedIn inspired) */
   @media (max-width: 1024px) {
     flex-wrap: wrap;
     min-height: auto;
     gap: 10px;
     padding: 14px;
+    justify-content: space-between;
+  }
+  
+  /* MOBILE: Optimized spacing (Facebook/Instagram pattern) */
+  @media (max-width: 768px) {
+    gap: 8px;
+    padding: 12px;
+    border-radius: 16px;
+    
+    /* Sticky behavior like Instagram */
+    position: sticky;
+    top: 56px;  /* Below mobile header */
+    z-index: 9;
+    
+    /* Better shadow for elevation */
+    box-shadow:
+      0 2px 0 rgba(255, 255, 255, 0.8) inset,
+      0 -1px 0 rgba(0, 0, 0, 0.05) inset,
+      0 4px 12px rgba(0, 0, 0, 0.08),  /* More pronounced */
+      0 2px 8px rgba(0, 0, 0, 0.04);
   }
   
   /* 🎨 Premium Metallic Aluminum Base */
@@ -319,40 +339,52 @@ export const TabButton = styled.button<{ $active: boolean; $themeColor?: string 
     transform: translateY(-2px);
   }
   
-  /* 📱 تحسينات للموبايل - الأزرار في صفين */
+  /* MOBILE OPTIMIZATION - Inspired by Facebook & Instagram */
   @media (max-width: 768px) {
-    padding: 10px 8px;
-    font-size: 0.75rem;
-    gap: 4px;
-    min-height: 44px;
+    padding: 12px 10px;
+    font-size: 0.8125rem;  /* 13px - readable */
+    gap: 6px;
+    min-height: 48px;  /* Touch-friendly (Facebook standard) */
+    border-radius: 10px;
+    
+    /* Better tap feedback */
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
   
+    svg {
+      width: 18px;  /* Instagram size */
+      height: 18px;
+    }
+    
+    /* Optimize text for mobile */
+    span {
+      display: block;
+      line-height: 1.2;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    padding: 10px 8px;
+    font-size: 0.75rem;  /* 12px */
+    gap: 4px;
+    min-height: 46px;  /* Still touch-friendly */
+    
     svg {
       width: 16px;
       height: 16px;
     }
   }
   
-  @media (max-width: 480px) {
-    padding: 8px 6px;
-    font-size: 0.7rem;
+  /* Small phones only */
+  @media (max-width: 380px) {
+    padding: 9px 6px;
+    font-size: 0.6875rem;  /* 11px - minimum readable */
     gap: 3px;
-    min-height: 40px;
+    min-height: 44px;  /* Minimum touch target (Apple HIG) */
     
     svg {
       width: 14px;
       height: 14px;
-    }
-  }
-  
-  @media (max-width: 380px) {
-    padding: 6px 4px;
-    font-size: 0.65rem;
-    gap: 2px;
-    min-height: 36px;
-    
-    svg {
-      width: 12px;
-      height: 12px;
     }
   }
 `;
@@ -592,27 +624,52 @@ export const TabNavLink = styled(NavLink)<{ $themeColor?: string }>`
     max-width: calc(33.333% - 7px);
   }
   
-  /* 📱 تحسينات للموبايل - الأزرار في صفين */
+  /* MOBILE OPTIMIZATION - Professional UX (Airbnb/LinkedIn inspired) */
   @media (max-width: 768px) {
-    padding: 10px 8px;
-    font-size: 0.75rem;
-    gap: 4px;
-    min-height: 44px;
+    padding: 12px 10px;
+    font-size: 0.8125rem;  /* 13px - optimal readability */
+    gap: 6px;
+    min-height: 48px;  /* Touch target standard */
     flex-shrink: 0;
+    border-radius: 10px;
+    
+    /* Enhanced tap feedback (iOS/Android native feel) */
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    
+    /* Smoother transitions */
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
   }
   
   @media (max-width: 480px) {
-    padding: 9px 6px;
-    font-size: 0.7rem;
-    gap: 3px;
-    min-height: 42px;
+    padding: 10px 8px;
+    font-size: 0.75rem;  /* 12px */
+    gap: 4px;
+    min-height: 46px;
+    
+    svg {
+      width: 16px;
+      height: 16px;
+    }
   }
   
+  /* Small screens - maintain usability */
   @media (max-width: 380px) {
-    padding: 8px 4px;
-    font-size: 0.65rem;
-    gap: 2px;
-    min-height: 40px;
+    padding: 9px 6px;
+    font-size: 0.6875rem;  /* 11px - minimum readable */
+    gap: 3px;
+    min-height: 44px;  /* Apple HIG minimum */
+    
+    svg {
+      width: 14px;
+      height: 14px;
+    }
   }
   
   /* Inactive state (default) */
@@ -670,4 +727,30 @@ export const TabNavLink = styled(NavLink)<{ $themeColor?: string }>`
     transition: transform 0.3s ease;
     flex-shrink: 0;
   }
+  
+  /* MOBILE: Active state enhancement */
+  @media (max-width: 768px) {
+    &.active {
+      /* Stronger active indicator (Facebook pattern) */
+      box-shadow: 
+        inset 0 3px 8px ${props => props.$themeColor ? `${props.$themeColor}20` : 'rgba(255, 143, 16, 0.12)'},
+        inset 0 -2px 4px rgba(255, 255, 255, 0.7),
+        0 0 0 2.5px ${props => props.$themeColor ? `${props.$themeColor}50` : 'rgba(255, 143, 16, 0.3)'},
+        0 6px 16px ${props => props.$themeColor ? `${props.$themeColor}25` : 'rgba(255, 143, 16, 0.15)'};
+      
+      transform: translateY(-2px);
+      
+      /* Active state icon animation */
+      svg {
+        transform: scale(1.05);
+      }
+    }
+    
+    /* Hover on touch devices (light touch) */
+    &:active:not(.active) {
+      transform: scale(0.97);
+      background: rgba(0, 0, 0, 0.02);
+    }
+  }
 `;
+
