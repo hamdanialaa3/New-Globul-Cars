@@ -1,12 +1,7 @@
 // src/pages/ProfilePage/TabNavigation.styles.ts
-// 🎨 Premium Tab Navigation with Glassmorphism & Metallic Effects
-import styled, { keyframes, css } from 'styled-components';
+// Premium Tab Navigation with Glassmorphism & Metallic Effects
+import styled, { css } from 'styled-components';
 import { NavLink } from 'react-router-dom';
-
-// 🎨 NEW: Theme Color Prop Interface
-interface ThemedProps {
-  $themeColor?: string;
-}
 
 // ==================== ANIMATIONS ====================
 // ⚡ OPTIMIZED: Removed all infinite animations
@@ -50,6 +45,13 @@ export const TabNavigation = styled.div<{ $themeColor?: string }>`
       0 -1px 0 rgba(0, 0, 0, 0.05) inset,
       0 4px 12px rgba(0, 0, 0, 0.08),  /* More pronounced */
       0 2px 8px rgba(0, 0, 0, 0.04);
+    
+    /* Solid background to prevent content showing through */
+    background: linear-gradient(135deg,
+      rgba(245, 247, 250, 1) 0%,
+      rgba(233, 237, 242, 1) 50%,
+      rgba(245, 247, 250, 1) 100%
+    );
   }
   
   /* 🎨 Premium Metallic Aluminum Base */

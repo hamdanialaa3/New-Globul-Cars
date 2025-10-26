@@ -526,10 +526,14 @@ export const ContentSection = styled.section<{ $themeColor?: string; $isBusiness
     border-bottom: 1px solid #e4e6eb;
     box-shadow: none;
     
-    /* First section - rounded top */
+    /* CRITICAL FIX: Space for sticky TabNavigation */
+    /* TabNavigation is ~130px tall (2 rows × 48px + padding) */
+    margin-top: 140px;  /* Clear space above sticky tabs */
+    
+    /* First section - clear spacing */
     &:first-of-type {
       border-radius: 0;
-      margin-top: 8px;
+      margin-top: 140px;  /* Ensure first content visible */
     }
     
     /* Last section - rounded bottom */
@@ -542,6 +546,19 @@ export const ContentSection = styled.section<{ $themeColor?: string; $isBusiness
   @media (max-width: 480px) {
     padding: 12px;
     margin-bottom: 6px;
+    margin-top: 135px;  /* Slightly less for smaller tabs */
+    
+    &:first-of-type {
+      margin-top: 135px;
+    }
+  }
+  
+  @media (max-width: 380px) {
+    margin-top: 130px;
+    
+    &:first-of-type {
+      margin-top: 130px;
+    }
   }
 `;
 
