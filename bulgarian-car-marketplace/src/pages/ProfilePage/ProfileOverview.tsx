@@ -2,12 +2,12 @@ import React from 'react';
 import { useProfile } from './hooks/useProfile';
 import { useLanguage } from '../../contexts/LanguageContext';
 import ProfileDashboard from '../../components/Profile/ProfileDashboard';
-import { GarageSection } from '../../components/Profile';
-import type { GarageCar } from '../../components/Profile';
+import UserPostsFeed from '../../components/Profile/UserPostsFeed';
 import * as S from './styles';
 
 /**
  * Profile Overview Tab - Main profile information
+ * ⚡ NOW SHOWS: User's posts (like Facebook/Instagram)
  */
 const ProfileOverview: React.FC = () => {
   const { language } = useLanguage();
@@ -22,16 +22,14 @@ const ProfileOverview: React.FC = () => {
       {/* Profile Dashboard with Stats */}
       <ProfileDashboard />
       
-      {/* User's Cars Preview (if any) */}
-      {isOwnProfile && (
-        <div style={{ marginTop: '2rem' }}>
-          <h3 style={{ fontSize: '1.2rem', marginBottom: '1rem', color: '#666' }}>
-            {language === 'bg' ? 'Моите последни обяви' : 'My Recent Listings'}
-          </h3>
-          {/* Show only first 3 cars */}
-          <GarageSection limit={3} />
-        </div>
-      )}
+      {/* ⚡ NEW: User's Posts Feed (replaced cars!) */}
+      <div style={{ marginTop: '2rem' }}>
+        <UserPostsFeed 
+          userId={user?.uid}
+          limit={10}
+          showTitle={true}
+        />
+      </div>
     </S.ContentSection>
   );
 };
