@@ -4,6 +4,7 @@
 import { useEffect, useState } from 'react';
 import { getRedirectResult, User } from 'firebase/auth';
 import { auth } from '../firebase/firebase-config';
+import { logger } from '../services/logger-service';
 import { SocialAuthService } from '../firebase/social-auth-service';
 
 interface AuthRedirectState {
@@ -22,17 +23,21 @@ export const useAuthRedirectHandler = () => {
   useEffect(() => {
     const handleRedirectResult = async () => {
       try {
-        console.log('🔄 Checking for OAuth redirect result...');
+        if (process.env.NODE_ENV === 'development') {
+          logger.debug('Checking for OAuth redirect result...');
+        }
         
         const result = await getRedirectResult(auth);
         
         if (result && result.user) {
-          console.log('✅ OAuth redirect successful:', {
-            provider: result.providerId,
-            email: result.user.email,
-            displayName: result.user.displayName,
-            uid: result.user.uid
-          });
+          if (process.env.NODE_ENV === 'development') {
+            logger.debug('OAuth redirect successful', {
+              provider: result.providerId,
+              email: result.user.email,
+              displayName: result.user.displayName,
+              uid: result.user.uid
+            });
+          }
           
           // Sync user to Firestore
           await SocialAuthService.createOrUpdateBulgarianProfile(result.user);
@@ -44,7 +49,9 @@ export const useAuthRedirectHandler = () => {
           });
           
           // Optionally show success message
-          console.log('🎉 Sign-in completed successfully!');
+          if (process.env.NODE_ENV === 'development') {
+            logger.debug('Sign-in completed successfully');
+          }
           
         } else {
           // No redirect result
@@ -56,7 +63,7 @@ export const useAuthRedirectHandler = () => {
         }
         
       } catch (error: any) {
-        console.error('❌ OAuth redirect error:', error);
+        logger.error('OAuth redirect error', error as Error);
         
         let errorMessage = 'حدث خطأ أثناء تسجيل الدخول. يرجى المحاولة مرة أخرى.';
         

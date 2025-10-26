@@ -1,6 +1,8 @@
 // Facebook SDK Loader Utility
 // Loads and initializes Facebook JavaScript SDK
 
+import { logger } from '../services/logger-service';
+
 interface FacebookSDKConfig {
   appId: string;
   version?: string;
@@ -109,7 +111,7 @@ export const initializeFacebookSDK = async (): Promise<void> => {
   
   if (!appId) {
     if (process.env.NODE_ENV === 'development') {
-      console.warn('Facebook App ID not configured');
+      logger.warn('Facebook App ID not configured');
     }
     return;
   }
@@ -124,10 +126,10 @@ export const initializeFacebookSDK = async (): Promise<void> => {
     });
     
     if (process.env.NODE_ENV === 'development') {
-      console.log('Facebook SDK initialized successfully');
+      logger.debug('Facebook SDK initialized successfully');
     }
   } catch (error) {
-    console.error('Failed to initialize Facebook SDK:', error);
+    logger.error('Failed to initialize Facebook SDK', error as Error);
   }
 };
 

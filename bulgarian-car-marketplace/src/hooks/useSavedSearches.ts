@@ -9,6 +9,7 @@ import savedSearchesService, {
   SavedSearchFilters
 } from '../services/savedSearchesService';
 import { toast } from 'react-toastify';
+import { logger } from '../services/logger-service';
 
 export const useSavedSearches = () => {
   const { user } = useAuth();
@@ -30,7 +31,7 @@ export const useSavedSearches = () => {
       const userSearches = await savedSearchesService.getUserSearches(user.uid);
       setSearches(userSearches);
     } catch (err) {
-      console.error('[useSavedSearches] Error loading searches:', err);
+      logger.error('[useSavedSearches] Error loading searches', err as Error, { userId: user?.uid });
       setError('Failed to load saved searches');
       toast.error('Failed to load saved searches');
     } finally {
@@ -67,7 +68,7 @@ export const useSavedSearches = () => {
       await loadSearches();
       return true;
     } catch (err) {
-      console.error('[useSavedSearches] Error saving search:', err);
+      logger.error('[useSavedSearches] Error saving search', err as Error, { userId: user?.uid, name: searchData.name });
       toast.error('Failed to save search');
       return false;
     }
@@ -83,7 +84,7 @@ export const useSavedSearches = () => {
       setSearches(prev => prev.filter(s => s.id !== searchId));
       return true;
     } catch (err) {
-      console.error('[useSavedSearches] Error deleting search:', err);
+      logger.error('[useSavedSearches] Error deleting search', err as Error, { searchId });
       toast.error('Failed to delete search');
       return false;
     }
@@ -102,7 +103,7 @@ export const useSavedSearches = () => {
       await loadSearches();
       return true;
     } catch (err) {
-      console.error('[useSavedSearches] Error updating search:', err);
+      logger.error('[useSavedSearches] Error updating search', err as Error, { searchId });
       toast.error('Failed to update search');
       return false;
     }
@@ -124,7 +125,7 @@ export const useSavedSearches = () => {
       toast.success(enabled ? 'Notifications enabled' : 'Notifications disabled');
       return true;
     } catch (err) {
-      console.error('[useSavedSearches] Error toggling notifications:', err);
+      logger.error('[useSavedSearches] Error toggling notifications', err as Error, { searchId, enabled });
       toast.error('Failed to update notifications');
       return false;
     }
@@ -143,7 +144,7 @@ export const useSavedSearches = () => {
       await loadSearches();
       return true;
     } catch (err) {
-      console.error('[useSavedSearches] Error duplicating search:', err);
+      logger.error('[useSavedSearches] Error duplicating search', err as Error, { searchId });
       toast.error('Failed to duplicate search');
       return false;
     }
@@ -162,7 +163,7 @@ export const useSavedSearches = () => {
         s.id === searchId ? { ...s, resultsCount: count } : s
       ));
     } catch (err) {
-      console.error('[useSavedSearches] Error updating results count:', err);
+      logger.error('[useSavedSearches] Error updating results count', err as Error, { searchId, count });
     }
   }, []);
 

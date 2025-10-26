@@ -3,6 +3,7 @@
 
 import { getToken, AppCheckTokenResult } from 'firebase/app-check';
 import { appCheck } from './firebase-config';
+import { logger } from '../services/logger-service';
 
 export class BulgarianAppCheckService {
   /**
@@ -11,14 +12,14 @@ export class BulgarianAppCheckService {
   static async getToken(): Promise<string | null> {
     try {
       if (!appCheck) {
-        console.warn('App Check not initialized');
+        logger.warn('App Check not initialized');
         return null;
       }
 
       const tokenResult: AppCheckTokenResult = await getToken(appCheck, false);
       return tokenResult.token;
     } catch (error) {
-      console.error('Error getting App Check token:', error);
+      logger.error('Error getting App Check token', error as Error);
       return null;
     }
   }
@@ -29,14 +30,14 @@ export class BulgarianAppCheckService {
   static async getFreshToken(): Promise<string | null> {
     try {
       if (!appCheck) {
-        console.warn('App Check not initialized');
+        logger.warn('App Check not initialized');
         return null;
       }
 
       const tokenResult: AppCheckTokenResult = await getToken(appCheck, true);
       return tokenResult.token;
     } catch (error) {
-      console.error('Error getting fresh App Check token:', error);
+      logger.error('Error getting fresh App Check token', error as Error);
       return null;
     }
   }

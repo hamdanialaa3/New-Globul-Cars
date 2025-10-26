@@ -2,6 +2,7 @@
 // Main App Component for Bulgarian Car Marketplace with Global Translation System
 
 import React, { Suspense } from 'react';
+import { logger } from './services/logger-service';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import { LanguageProvider } from './contexts/LanguageContext';
@@ -197,7 +198,7 @@ const App: React.FC = () => {
   // Note: reCAPTCHA is optional for development
   // In production, consider adding the key to .env
   if (!recaptchaKey && process.env.NODE_ENV === 'production') {
-    console.warn('⚠️ reCAPTCHA Site Key is not configured');
+    logger.warn('reCAPTCHA Site Key is not configured');
   }
 
   return (

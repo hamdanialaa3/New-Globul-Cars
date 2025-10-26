@@ -3,6 +3,7 @@
 
 import { db } from '../firebase/firebase-config';
 import { collection, getDocs, query, where } from 'firebase/firestore';
+import { logger } from '../services/logger-service';
 
 export interface SitemapUrl {
   loc: string;
@@ -99,7 +100,7 @@ export class SitemapGenerator {
       });
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
-        console.error('[SITEMAP] Error fetching car listings:', error);
+        logger.error('[SITEMAP] Error fetching car listings', error as Error);
       }
       return [];
     }
@@ -121,7 +122,7 @@ export class SitemapGenerator {
       }));
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
-        console.error('[SITEMAP] Error fetching vendors:', error);
+        logger.error('[SITEMAP] Error fetching vendors', error as Error);
       }
       return [];
     }

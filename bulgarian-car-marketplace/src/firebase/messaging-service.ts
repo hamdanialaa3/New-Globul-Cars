@@ -429,7 +429,8 @@ export class BulgarianMessagingService {
         });
       }
     } catch (error) {
-      console.error('Error updating chat room:', error);
+      const { logger } = await import('../services/logger-service');
+      logger.error('Error updating chat room', error as Error);
     }
   }
 
@@ -449,14 +450,20 @@ export class BulgarianMessagingService {
         await updateDoc(chatRoomRef, updateData);
       }
     } catch (error) {
-      console.error('Error updating unread count:', error);
+      const { logger } = await import('../services/logger-service');
+      logger.error('Error updating unread count', error as Error);
     }
   }
 
   private async sendMessageNotification(recipientId: string, message: Omit<BulgarianMessage, 'id'>): Promise<void> {
     // This would integrate with Firebase Cloud Messaging for push notifications
     // For now, we'll just log it
-    console.log(`Notification sent to ${recipientId}: New message from ${message.senderName}`);
+    try {
+      const { logger } = await import('../services/logger-service');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Notification sent', { recipientId, senderName: message.senderName });
+      }
+    } catch {}
   }
 
   private generateChatRoomId(carId: string, userId1: string, userId2: string): string {

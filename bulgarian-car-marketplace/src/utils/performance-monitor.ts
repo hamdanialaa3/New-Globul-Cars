@@ -2,6 +2,8 @@
 // Performance Monitoring Utilities - أدوات مراقبة الأداء
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
 
+import { logger } from '../services/logger-service';
+
 // ==================== INTERFACES ====================
 
 export interface PerformanceMetric {
@@ -22,7 +24,6 @@ export interface PerformanceReport {
 }
 
 // ==================== SERVICE CLASS ====================
-import { logger } from '../services/logger-service';
 
 export class PerformanceMonitor {
   private static instance: PerformanceMonitor;

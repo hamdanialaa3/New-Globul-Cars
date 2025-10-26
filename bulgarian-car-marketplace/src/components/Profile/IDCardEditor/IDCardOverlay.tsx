@@ -176,8 +176,8 @@ const IDCardOverlay: React.FC<IDCardOverlayProps> = ({
 
   const fields = activeTab === 'front' ? FRONT_FIELDS : BACK_FIELDS;
   const backgroundImage = activeTab === 'front'
-    ? '/assets/ID_front (1).jpg'
-    : '/assets/ID_Back.jpg';
+    ? '/assets/ID_front (1).png'
+    : '/assets/ID_Back.png';
 
   return (
     <Modal onClick={onClose}>
