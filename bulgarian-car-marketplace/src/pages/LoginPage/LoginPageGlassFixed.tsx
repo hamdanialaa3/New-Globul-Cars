@@ -127,6 +127,11 @@ const Subtitle = styled.p`
 
 const Form = styled.form`
   width: 100%;
+  
+  /* CRITICAL FIX: Ensure form and children are interactive */
+  position: relative;
+  z-index: 1;
+  pointer-events: auto;
 `;
 
 const InputBox = styled.div`
@@ -245,11 +250,23 @@ const SubmitButton = styled.button`
   justify-content: center;
   gap: 10px;
   animation: ${slideIn} 0.6s ease 0.4s backwards;
+  
+  /* CRITICAL FIX: Ensure button is clickable (same as MobileHeader fix!) */
+  position: relative;
+  z-index: 10;
+  pointer-events: auto !important;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
 
   &:hover:not(:disabled) {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(255, 143, 16, 0.4);
     background: linear-gradient(135deg, #ff7900 0%, #e66d00 100%);
+  }
+  
+  &:active:not(:disabled) {
+    transform: translateY(0) scale(0.98);
   }
 
   &:disabled {
@@ -264,6 +281,7 @@ const SubmitButton = styled.button`
   @media (max-width: 480px) {
     height: 48px;
     font-size: 15px;
+    min-height: 48px;
   }
 `;
 
@@ -303,6 +321,11 @@ const SocialButtons = styled.div`
   gap: 12px;
   margin-bottom: 20px;
   animation: ${slideIn} 0.6s ease 0.6s backwards;
+  
+  /* CRITICAL FIX: Ensure all social buttons are interactive */
+  position: relative;
+  z-index: 1;
+  pointer-events: auto;
 
   @media (max-width: 480px) {
     grid-template-columns: 1fr;
@@ -349,10 +372,18 @@ const GuestButton = styled(SocialButton)`
   border-color: #FF8F10;
   color: #ff7900;
   font-weight: 600;
+  
+  /* CRITICAL FIX: Ensure guest button is clickable */
+  z-index: 11;
 
   &:hover:not(:disabled) {
     background: rgba(255, 143, 16, 0.2);
     border-color: #ff7900;
+  }
+  
+  &:active:not(:disabled) {
+    transform: scale(0.98);
+    background: rgba(255, 143, 16, 0.25);
   }
 `;
 
