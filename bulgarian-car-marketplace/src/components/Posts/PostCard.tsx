@@ -2,7 +2,7 @@
 // Post Card Component - Display individual post
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthProvider';
@@ -11,10 +11,14 @@ import {
   MessageCircle, 
   Share2, 
   Bookmark,
-  MoreHorizontal
+  MoreHorizontal,
+  MapPin
 } from 'lucide-react';
 import { postsEngagementService } from '../../services/social/posts-engagement.service';
 import { Post } from '../../services/social/posts.service';
+
+// Google Maps API Key
+const GOOGLE_MAPS_API_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY || 'AIzaSyDvULqHtzVQFWshx2fO755CMELUaMcm5_4';
 
 // ==================== STYLED COMPONENTS ====================
 
@@ -151,7 +155,61 @@ const PostMedia = styled.div`
     height: auto;
     display: block;
     object-fit: cover;
+    loading="lazy";
+    decoding="async";
   }
+`;
+
+// ⚡ NEW: Map Container for text-only posts
+const PostMapContainer = styled.div`
+  position: relative;
+  margin: 16px 0;
+  border-radius: 12px;
+  overflow: hidden;
+  height: 300px;
+  border: 2px solid #e9ecef;
+`;
+
+const TextOverMap = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.8) 70%, transparent 100%);
+  padding: 20px;
+  z-index: 1;
+  
+  .text {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #212529;
+    font-weight: 500;
+    margin-bottom: 8px;
+    max-height: 120px;
+    overflow-y: auto;
+  }
+  
+  .location-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(255, 121, 0, 0.1);
+    color: #FF7900;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
+`;
+
+const MapElement = styled.div`
+  width: 100%;
+  height: 100%;
 `;
 
 const PostActions = styled.div`
@@ -188,7 +246,78 @@ const ActionButton = styled.button<{ $active?: boolean }>`
   }
 `;
 
-// ==================== COMPONENT ====================
+// ==================== LOCATION MAP COMPONENT ====================
+
+interface LocationMapProps {
+  location: {
+    displayName: string;
+    coordinates: {
+      latitude: number;
+      longitude: number;
+    };
+  };
+  text: string;
+}
+
+const LocationMap: React.FC<LocationMapProps> = ({ location, text }) => {
+  const mapRef = useRef<HTMLDivElement>(null);
+  const googleMapRef = useRef<google.maps.Map | null>(null);
+
+  useEffect(() => {
+    if (!mapRef.current || typeof google === 'undefined') return;
+
+    const { latitude, longitude } = location.coordinates;
+
+    const map = new google.maps.Map(mapRef.current, {
+      center: { lat: latitude, lng: longitude },
+      zoom: 14,
+      disableDefaultUI: true,
+      zoomControl: false,
+      mapTypeControl: false,
+      streetViewControl: false,
+      fullscreenControl: false,
+      gestureHandling: 'cooperative',
+      styles: [
+        {
+          featureType: 'poi',
+          elementType: 'labels',
+          stylers: [{ visibility: 'off' }]
+        }
+      ]
+    });
+
+    new google.maps.Marker({
+      position: { lat: latitude, lng: longitude },
+      map: map,
+      animation: google.maps.Animation.DROP,
+      icon: {
+        path: google.maps.SymbolPath.CIRCLE,
+        fillColor: '#FF7900',
+        fillOpacity: 1,
+        strokeColor: '#ffffff',
+        strokeWeight: 3,
+        scale: 12
+      }
+    });
+
+    googleMapRef.current = map;
+  }, [location]);
+
+  return (
+    <PostMapContainer>
+      <TextOverMap>
+        <div className="text">{text}</div>
+        <div className="location-tag">
+          <MapPin />
+          {location.displayName}
+        </div>
+      </TextOverMap>
+      <MapElement ref={mapRef} />
+    </PostMapContainer>
+  );
+};
+
+// ==================== POST CARD COMPONENT ====================
 
 interface PostCardProps {
   post: Post;
@@ -258,11 +387,25 @@ export const PostCard: React.FC<PostCardProps> = ({
       </PostHeader>
       
       <PostContent>
-        <div className="text">{post.content.text}</div>
+        {/* ⚡ NEW: Show text over map for text-only posts with location */}
+        {post.location && 
+         (!post.content.media || post.content.media.urls.length === 0) ? (
+          <LocationMap 
+            location={post.location} 
+            text={post.content.text}
+          />
+        ) : (
+          <div className="text">{post.content.text}</div>
+        )}
         
         {post.content.media && post.content.media.urls.length > 0 && (
           <PostMedia>
-            <img src={post.content.media.urls[0]} alt="Post media" />
+            <img 
+              src={post.content.media.urls[0]} 
+              alt="Post media"
+              loading="lazy"
+              decoding="async"
+            />
           </PostMedia>
         )}
         

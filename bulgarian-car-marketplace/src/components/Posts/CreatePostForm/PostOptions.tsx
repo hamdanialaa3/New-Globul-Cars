@@ -4,25 +4,17 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useLanguage } from '../../../contexts/LanguageContext';
-import { Globe, Users, Lock, MapPin } from 'lucide-react';
+import { Globe, Users, Lock } from 'lucide-react';
+import LocationPicker, { DetailedLocation } from './LocationPicker';
 
 type Visibility = 'public' | 'followers' | 'private';
 
 interface PostOptionsProps {
   visibility: Visibility;
   onVisibilityChange: (v: Visibility) => void;
-  location: { city: string; region: string };
-  onLocationChange: (l: { city: string; region: string }) => void;
+  location: DetailedLocation | null;
+  onLocationChange: (l: DetailedLocation | null) => void;
 }
-
-const BULGARIAN_CITIES = [
-  'Sofia', 'Plovdiv', 'Varna', 'Burgas', 'Ruse', 'Stara Zagora',
-  'Pleven', 'Sliven', 'Dobrich', 'Shumen', 'Pernik', 'Yambol',
-  'Pazardzhik', 'Haskovo', 'Blagoevgrad', 'Veliko Tarnovo',
-  'Vidin', 'Vratsa', 'Gabrovo', 'Asenovgrad', 'Kyustendil',
-  'Kardzhali', 'Dupnitsa', 'Silistra', 'Samokov', 'Petrich',
-  'Razgrad', 'Gorna Oryahovitsa'
-];
 
 const PostOptions: React.FC<PostOptionsProps> = ({
   visibility,
@@ -60,20 +52,12 @@ const PostOptions: React.FC<PostOptionsProps> = ({
 
       <Section>
         <SectionLabel>
-          <MapPin size={16} />
           {language === 'bg' ? 'Местоположение (по избор):' : 'Location (optional):'}
         </SectionLabel>
-        <LocationSelect
-          value={location.city}
-          onChange={(e) => onLocationChange({ ...location, city: e.target.value })}
-        >
-          <option value="">
-            {language === 'bg' ? '-- Изберете град --' : '-- Select City --'}
-          </option>
-          {BULGARIAN_CITIES.map(city => (
-            <option key={city} value={city}>{city}</option>
-          ))}
-        </LocationSelect>
+        <LocationPicker
+          value={location}
+          onChange={onLocationChange}
+        />
       </Section>
     </Container>
   );
@@ -128,22 +112,6 @@ const VisibilityButton = styled.button<{ $active: boolean }>`
   
   &:hover {
     background: ${p => p.$active ? '#FF7900' : '#e9ecef'};
-  }
-`;
-
-const LocationSelect = styled.select`
-  padding: 8px 10px;
-  border: 1px solid #e9ecef;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: border-color 0.2s;
-  background: #fafafa;
-  
-  &:focus {
-    outline: none;
-    border-color: #FF8F10;
-    background: white;
   }
 `;
 

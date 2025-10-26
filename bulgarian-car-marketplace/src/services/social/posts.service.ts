@@ -25,6 +25,20 @@ import { db, storage } from '../../firebase/firebase-config';
 
 // ==================== TYPES ====================
 
+export interface DetailedLocation {
+  displayName: string;
+  address: string;
+  city: string;
+  region: string;
+  country: string;
+  postalCode?: string;
+  coordinates: {
+    latitude: number;
+    longitude: number;
+  };
+  placeId?: string;
+}
+
 export interface CreatePostData {
   type: 'text' | 'car_showcase' | 'tip' | 'question' | 'review';
   content: {
@@ -38,10 +52,7 @@ export interface CreatePostData {
     hashtags?: string[];
   };
   visibility: 'public' | 'followers' | 'private';
-  location?: {
-    city: string;
-    region: string;
-  };
+  location?: DetailedLocation;
 }
 
 export interface Post {
@@ -65,7 +76,7 @@ export interface Post {
     hashtags?: string[];
   };
   visibility: string;
-  location?: any;
+  location?: DetailedLocation;
   engagement: {
     views: number;
     likes: number;

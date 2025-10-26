@@ -22,6 +22,7 @@ import MediaUploader from './MediaUploader';
 import CarSelector from './CarSelector';
 import PostOptions from './PostOptions';
 import CrossPostSelector from './CrossPostSelector';
+import { DetailedLocation } from './LocationPicker';
 import { X } from 'lucide-react';
 import { SocialPlatform } from '../../../types/social-media.types';
 import socialMediaService from '../../../services/social/social-media.service';
@@ -43,7 +44,7 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onClose, onPostCreated 
   const [mediaFiles, setMediaFiles] = useState<File[]>([]);
   const [selectedCar, setSelectedCar] = useState<any | null>(null);
   const [visibility, setVisibility] = useState<Visibility>('public');
-  const [location, setLocation] = useState({ city: '', region: '' });
+  const [location, setLocation] = useState<DetailedLocation | null>(null);
   const [loading, setLoading] = useState(false);
   const [hashtags, setHashtags] = useState<string[]>([]);
   const [crossPostPlatforms, setCrossPostPlatforms] = useState<SocialPlatform[]>([]);
@@ -99,7 +100,7 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onClose, onPostCreated 
           hashtags: hashtags.length > 0 ? hashtags : undefined
         },
         visibility,
-        location: location.city ? location : undefined
+        location: location || undefined
       };
 
       // Create post with userId and postData
