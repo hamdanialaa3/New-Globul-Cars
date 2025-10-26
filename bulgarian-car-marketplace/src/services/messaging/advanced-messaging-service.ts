@@ -173,21 +173,25 @@ export class AdvancedMessagingService {
    */
   async markAsRead(conversationId: string, userId: string): Promise<void> {
     try {
+      // CRITICAL FIX: Cannot use where('status', '!=', 'read') - causes nullValue error
+      // Solution: Query without status filter, then filter client-side
       const q = query(
         collection(db, 'messages'),
         where('conversationId', '==', conversationId),
-        where('receiverId', '==', userId),
-        where('status', '!=', 'read')
+        where('receiverId', '==', userId)
       );
 
       const snapshot = await getDocs(q);
       
-      const updates = snapshot.docs.map(doc =>
-        updateDoc(doc.ref, {
-          status: 'read',
-          readAt: serverTimestamp()
-        })
-      );
+      // Filter unread messages client-side
+      const updates = snapshot.docs
+        .filter(doc => doc.data().status !== 'read')  // Client-side filter
+        .map(doc =>
+          updateDoc(doc.ref, {
+            status: 'read',
+            readAt: serverTimestamp()
+          })
+        );
 
       await Promise.all(updates);
 
