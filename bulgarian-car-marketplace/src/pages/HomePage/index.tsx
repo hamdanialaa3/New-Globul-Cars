@@ -91,14 +91,23 @@ const HomePage: React.FC = () => {
       
       <LargeSpacer />
 
-      {/* ⚡ FIRST: Community Feed - Create Post Section (أولاً تحت الهيدر) */}
+      {/* ⚡ FIRST: Smart Feed - Create Post Section (أولاً تحت الهيدر) */}
       <Suspense fallback={<LoadingFallback>Loading community feed...</LoadingFallback>}>
         <SmartFeedSection />
       </Suspense>
 
       <SectionSpacer />
 
-      {/* Hero Section - بعد Community Feed (ثانياً) */}
+      {/* ✅ SECOND: Community Feed - عرض المنشورات (ثانياً تحت Create Post) */}
+      <LazySection rootMargin="200px" minHeight="800px">
+        <Suspense fallback={<LoadingFallback>Loading posts feed...</LoadingFallback>}>
+          <CommunityFeedSection />
+        </Suspense>
+      </LazySection>
+
+      <SectionSpacer />
+
+      {/* Hero Section - (ثالثاً) */}
       <Suspense fallback={<LoadingFallback>Loading hero section...</LoadingFallback>}>
         <HeroSection />
       </Suspense>
@@ -166,15 +175,6 @@ const HomePage: React.FC = () => {
 
       <SectionSpacer />
 
-      {/* ⚡ REMOVED: CommunityFeedSection duplicate (already shown at top!) */}
-      {/*
-      <LazySection rootMargin="300px" minHeight="800px">
-        <Suspense fallback={<LoadingFallback>Loading community feed...</LoadingFallback>}>
-          <CommunityFeedSection />
-        </Suspense>
-      </LazySection>
-      <SectionSpacer />
-      */}
 
       {/* Features - Light component */}
       <LazySection rootMargin="600px" minHeight="400px">
