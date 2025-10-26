@@ -63,11 +63,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           }
           
           // User will be set by onAuthStateChanged above
-          // Show success message to user
+          // Show success message and navigate
           if (typeof window !== 'undefined') {
             const successMessage = `تم تسجيل الدخول بنجاح! مرحباً ${result.user.displayName || result.user.email}`;
-            // You can show a toast notification here if you have a toast system
             console.log('🎉', successMessage);
+            
+            // CRITICAL FIX: Navigate after successful OAuth redirect (Mobile fix!)
+            setTimeout(() => {
+              const currentPath = window.location.pathname;
+              console.log('🔄 Current path after OAuth:', currentPath);
+              
+              // If still on login/register page, redirect to dashboard
+              if (currentPath === '/login' || currentPath === '/register') {
+                console.log('🚀 Navigating to /dashboard after OAuth redirect');
+                window.location.href = '/dashboard';  // Full page navigation to ensure state updates
+              }
+            }, 800);  // 800ms delay to ensure auth state is fully set
           }
         } else {
           console.log('ℹ️ No redirect result found (normal on direct page loads)');
