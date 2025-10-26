@@ -91,20 +91,19 @@ const HomePage: React.FC = () => {
       
       <LargeSpacer />
 
-      {/* Hero Section - Always visible (above fold) */}
+      {/* ⚡ FIRST: Community Feed - Create Post Section (أولاً تحت الهيدر) */}
+      <Suspense fallback={<LoadingFallback>Loading community feed...</LoadingFallback>}>
+        <SmartFeedSection />
+      </Suspense>
+
+      <SectionSpacer />
+
+      {/* Hero Section - بعد Community Feed (ثانياً) */}
       <Suspense fallback={<LoadingFallback>Loading hero section...</LoadingFallback>}>
         <HeroSection />
       </Suspense>
 
       <SectionSpacer />
-
-      {/* ⚡ PERFORMANCE: Increased rootMargin for slower loading */}
-      {/* Smart Feed Section - AI-Powered Community Feed (THIRD SECTION) */}
-      <LazySection rootMargin="600px" minHeight="800px">
-        <Suspense fallback={<LoadingFallback>Loading community feed...</LoadingFallback>}>
-          <SmartFeedSection />
-        </Suspense>
-      </LazySection>
 
       <SectionSpacer />
 
