@@ -121,6 +121,21 @@ export const ProfileHeader = styled.header`
   }
 `;
 
+export const ProfileImageContainer = styled.div`
+  position: relative;
+  flex-shrink: 0;
+  
+  /* MOBILE - Centered, overlapping cover */
+  @media (max-width: 768px) {
+    margin: -44px auto 16px;
+    z-index: 2;
+  }
+  
+  @media (max-width: 480px) {
+    margin-top: -40px;
+  }
+`;
+
 export const ProfileImage = styled.img`
   width: 150px;
   height: 150px;
@@ -135,23 +150,67 @@ export const ProfileImage = styled.img`
     height: 88px;
     border: 4px solid white;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    margin: -44px auto 0;  /* Overlap cover image */
-    display: block;
-    position: relative;
-    z-index: 2;
   }
   
   @media (max-width: 480px) {
     width: 80px;
     height: 80px;
-    margin-top: -40px;
   }
   
   @media (max-width: 380px) {
     width: 72px;
     height: 72px;
-    margin-top: -36px;
     border-width: 3px;
+  }
+`;
+
+export const ProfileDetails = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 12px;
+  
+  @media (max-width: 768px) {
+    justify-content: center;
+    gap: 12px;
+    margin-top: 8px;
+  }
+`;
+
+export const DetailItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+  color: #6c757d;
+  
+  svg {
+    color: #FF7900;
+    flex-shrink: 0;
+  }
+  
+  @media (max-width: 768px) {
+    font-size: 0.85rem;
+  }
+`;
+
+export const VerifiedBadge = styled.span`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: linear-gradient(135deg, #1d9bf0, #0c8ce9);
+  color: white;
+  border-radius: 50%;
+  font-size: 14px;
+  font-weight: 700;
+  flex-shrink: 0;
+  
+  @media (max-width: 768px) {
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
   }
 `;
 
