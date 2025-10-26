@@ -347,12 +347,25 @@ const SocialButton = styled.button`
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
+  
+  /* CRITICAL FIX: Ensure social buttons are clickable (same fix as mobile menu!) */
+  position: relative;
+  z-index: 10;
+  pointer-events: auto !important;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
 
   &:hover:not(:disabled) {
     background: rgba(255, 143, 16, 0.1);
     border-color: #FF8F10;
     color: #ff7900;
     transform: translateY(-2px);
+  }
+  
+  &:active:not(:disabled) {
+    transform: translateY(0) scale(0.98);
+    background: rgba(255, 143, 16, 0.15);
   }
 
   &:disabled {
@@ -363,6 +376,7 @@ const SocialButton = styled.button`
   @media (max-width: 480px) {
     font-size: 14px;
     padding: 12px;
+    min-height: 52px;
   }
 `;
 
