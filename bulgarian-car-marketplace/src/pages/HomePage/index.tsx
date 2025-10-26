@@ -98,8 +98,9 @@ const HomePage: React.FC = () => {
 
       <SectionSpacer />
 
+      {/* ⚡ PERFORMANCE: Increased rootMargin for slower loading */}
       {/* Smart Feed Section - AI-Powered Community Feed (THIRD SECTION) */}
-      <LazySection rootMargin="300px" minHeight="800px">
+      <LazySection rootMargin="600px" minHeight="800px">
         <Suspense fallback={<LoadingFallback>Loading community feed...</LoadingFallback>}>
           <SmartFeedSection />
         </Suspense>
@@ -107,17 +108,20 @@ const HomePage: React.FC = () => {
 
       <SectionSpacer />
 
-      {/* 3D Car Carousel - Safety & Buying Guide */}
+      {/* ⚡ REMOVED: 3D Car Carousel (heavy component - removed for performance) */}
+      {/* 
       <LazySection rootMargin="300px" minHeight="700px">
         <Suspense fallback={<LoadingFallback>Loading 3D carousel...</LoadingFallback>}>
           <CarCarousel3D />
         </Suspense>
       </LazySection>
-
       <SectionSpacer />
+      */}
 
-      {/* ✅ LazySection: Load when user scrolls near */}
-      <LazySection rootMargin="200px" minHeight="300px">
+      {/* ⚡ PERFORMANCE OPTIMIZED: Increased rootMargin = loads later = faster initial load */}
+      
+      {/* Stats - Light component, can load sooner */}
+      <LazySection rootMargin="400px" minHeight="300px">
         <Suspense fallback={<LoadingFallback>Loading stats...</LoadingFallback>}>
           <StatsSection />
         </Suspense>
@@ -125,7 +129,8 @@ const HomePage: React.FC = () => {
 
       <SectionSpacer />
 
-      <LazySection rootMargin="200px" minHeight="500px">
+      {/* Popular Brands - Medium weight */}
+      <LazySection rootMargin="600px" minHeight="500px">
         <Suspense fallback={<LoadingFallback>Loading popular brands...</LoadingFallback>}>
           <PopularBrandsSection />
         </Suspense>
@@ -133,23 +138,28 @@ const HomePage: React.FC = () => {
 
       <SectionSpacer />
 
+      {/* ⚡ REMOVED: CityCarsSection (heavy with Google Maps - removed for performance) */}
+      {/*
       <LazySection rootMargin="300px" minHeight="600px">
         <Suspense fallback={<LoadingFallback>Loading city cars...</LoadingFallback>}>
           <CityCarsSection />
         </Suspense>
       </LazySection>
-
       <SectionSpacer />
+      */}
 
+      {/* ⚡ REMOVED: ImageGallerySection (40+ large images - removed for performance) */}
+      {/*
       <LazySection rootMargin="200px" minHeight="500px">
         <Suspense fallback={<LoadingFallback>Loading image gallery...</LoadingFallback>}>
           <ImageGallerySection />
         </Suspense>
       </LazySection>
-
       <SectionSpacer />
+      */}
 
-      <LazySection rootMargin="300px" minHeight="600px">
+      {/* Featured Cars - Important, but load late */}
+      <LazySection rootMargin="800px" minHeight="600px">
         <Suspense fallback={<LoadingFallback>Loading featured cars...</LoadingFallback>}>
           <FeaturedCarsSection />
         </Suspense>
@@ -157,15 +167,18 @@ const HomePage: React.FC = () => {
 
       <SectionSpacer />
 
+      {/* ⚡ REMOVED: CommunityFeedSection duplicate (already shown at top!) */}
+      {/*
       <LazySection rootMargin="300px" minHeight="800px">
         <Suspense fallback={<LoadingFallback>Loading community feed...</LoadingFallback>}>
           <CommunityFeedSection />
         </Suspense>
       </LazySection>
-
       <SectionSpacer />
+      */}
 
-      <LazySection rootMargin="200px" minHeight="400px">
+      {/* Features - Light component */}
+      <LazySection rootMargin="600px" minHeight="400px">
         <Suspense fallback={<LoadingFallback>Loading features...</LoadingFallback>}>
           <FeaturesSection />
         </Suspense>
