@@ -34,7 +34,7 @@ export const useLogin = (): UseLoginReturn => {
   // Redirect if user is already logged in
   useEffect(() => {
     if (user) {
-      navigate('/dashboard');
+      navigate('/profile');  // Changed from /dashboard to /profile
     }
   }, [user, navigate]);
 
@@ -94,7 +94,7 @@ export const useLogin = (): UseLoginReturn => {
       if (result && result.user) {
         setSuccess(t('auth.loginSuccess', 'Login successful! Redirecting...'));
         setTimeout(() => {
-          navigate('/dashboard');
+          navigate('/profile');  // Changed from /dashboard to /profile
         }, 1000);
       } else {
         setError(t('auth.loginFailed', 'Login failed. Please try again.'));
@@ -120,7 +120,7 @@ export const useLogin = (): UseLoginReturn => {
       console.log('✅ Google login successful:', result.user);
       setSuccess(t('auth.loginSuccess', 'تم تسجيل الدخول بنجاح! جاري التوجيه...'));
       setTimeout(() => {
-        navigate('/dashboard');
+        navigate('/profile');  // Changed from /dashboard to /profile
       }, 1000);
     } catch (err: any) {
       console.error('❌ Google login error:', err);
@@ -163,7 +163,7 @@ export const useLogin = (): UseLoginReturn => {
       console.log('✅ Facebook login successful:', result.user);
       setSuccess(t('auth.loginSuccess', 'تم تسجيل الدخول بنجاح! جاري التوجيه...'));
       setTimeout(() => {
-        navigate('/dashboard');
+        navigate('/profile');  // Changed from /dashboard to /profile
       }, 1000);
     } catch (err: any) {
       console.error('❌ Facebook login error:', err);
@@ -185,7 +185,7 @@ export const useLogin = (): UseLoginReturn => {
       console.log('✅ Apple login successful:', result.user);
       setSuccess(t('auth.loginSuccess', 'تم تسجيل الدخول بنجاح! جاري التوجيه...'));
       setTimeout(() => {
-        navigate('/dashboard');
+        navigate('/profile');  // Changed from /dashboard to /profile
       }, 1000);
     } catch (err: any) {
       console.error('❌ Apple login error:', err);
@@ -213,7 +213,7 @@ export const useLogin = (): UseLoginReturn => {
       console.log('✅ Anonymous login successful:', result.user);
       setSuccess(t('auth.loginSuccess', 'تم الدخول كضيف بنجاح! جاري التوجيه...'));
       setTimeout(() => {
-        navigate('/dashboard');
+        navigate('/profile');  // Changed from /dashboard to /profile
       }, 1000);
     } catch (err: any) {
       console.error('❌ Anonymous login error:', err);

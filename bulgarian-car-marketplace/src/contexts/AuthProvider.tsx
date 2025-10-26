@@ -73,10 +73,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
               const currentPath = window.location.pathname;
               console.log('🔄 Current path after OAuth:', currentPath);
               
-              // If still on login/register page, redirect to dashboard
+              // If still on login/register page, redirect to profile
               if (currentPath === '/login' || currentPath === '/register') {
-                console.log('🚀 Navigating to /dashboard after OAuth redirect');
-                window.location.href = '/dashboard';  // Full page navigation to ensure state updates
+                console.log('🚀 Navigating to /profile after OAuth redirect');
+                window.location.href = '/profile';  // Changed from /dashboard to /profile
               }
             }, 800);  // 800ms delay to ensure auth state is fully set
           }
