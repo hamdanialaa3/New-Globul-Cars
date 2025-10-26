@@ -65,6 +65,12 @@ export const FormBody = styled.div`
   display: flex;
   flex-direction: column;
   gap: 14px;
+  position: relative;  /* ⚡ Fix: Establish stacking context */
+  
+  /* ⚡ Fix: Ensure children respect z-index */
+  > * {
+    position: relative;
+  }
   
   &::-webkit-scrollbar {
     width: 8px;

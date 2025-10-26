@@ -176,17 +176,32 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onClose, onPostCreated 
       </FormHeader>
 
       <FormBody>
-        <PostTypeSelector
-          selected={postType}
-          onChange={setPostType}
-        />
+        {/* ⚡ Post Type Selector - MUST be first and visible! */}
+        <div style={{ 
+          position: 'relative', 
+          zIndex: 100,
+          marginBottom: '12px',
+          flexShrink: 0
+        }}>
+          <PostTypeSelector
+            selected={postType}
+            onChange={setPostType}
+          />
+        </div>
 
-        <TextEditor
-          value={text}
-          onChange={setText}
-          placeholder={t.placeholder}
-          maxLength={5000}
-        />
+        {/* ⚡ Text Editor - BELOW type selector */}
+        <div style={{ 
+          position: 'relative', 
+          zIndex: 1,
+          flex: 1
+        }}>
+          <TextEditor
+            value={text}
+            onChange={setText}
+            placeholder={t.placeholder}
+            maxLength={5000}
+          />
+        </div>
 
         <MediaUploader
           files={mediaFiles}
