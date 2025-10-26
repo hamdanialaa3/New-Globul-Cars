@@ -1,17 +1,36 @@
 import React from 'react';
+import styled from 'styled-components';
 import { useProfile } from './hooks/useProfile';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { useNavigate } from 'react-router-dom';
 import ProfileDashboard from '../../components/Profile/ProfileDashboard';
 import UserPostsFeed from '../../components/Profile/UserPostsFeed';
+import { 
+  User, 
+  Briefcase, 
+  MapPin, 
+  Mail, 
+  Phone, 
+  Globe, 
+  Calendar,
+  Building2,
+  FileText,
+  Edit
+} from 'lucide-react';
 import * as S from './styles';
 
 /**
  * Profile Overview Tab - Main profile information
- * ⚡ NOW SHOWS: User's posts (like Facebook/Instagram)
+ * ⚡ NOW SHOWS: Personal info + Business info + Posts
  */
 const ProfileOverview: React.FC = () => {
   const { language } = useLanguage();
   const { user, isOwnProfile } = useProfile();
+  const navigate = useNavigate();
+
+  const isBusinessAccount = user?.accountType === 'business' || 
+                           user?.accountType === 'dealer' || 
+                           user?.accountType === 'company';
 
   return (
     <S.ContentSection>
@@ -22,7 +41,170 @@ const ProfileOverview: React.FC = () => {
       {/* Profile Dashboard with Stats */}
       <ProfileDashboard />
       
-      {/* ⚡ NEW: User's Posts Feed (replaced cars!) */}
+      {/* ⚡ Personal Information Section */}
+      <InfoSection>
+        <SectionHeader>
+          <SectionTitle>
+            <User size={20} />
+            {language === 'bg' ? 'Лична информация' : 'Personal Information'}
+          </SectionTitle>
+          {isOwnProfile && (
+            <EditButton onClick={() => navigate('/profile/settings')}>
+              <Edit size={16} />
+              {language === 'bg' ? 'Редактирай' : 'Edit'}
+            </EditButton>
+          )}
+        </SectionHeader>
+        
+        <InfoGrid>
+          {user?.firstName && (
+            <InfoItem>
+              <InfoLabel>{language === 'bg' ? 'Име:' : 'First Name:'}</InfoLabel>
+              <InfoValue>{user.firstName}</InfoValue>
+            </InfoItem>
+          )}
+          {user?.lastName && (
+            <InfoItem>
+              <InfoLabel>{language === 'bg' ? 'Фамилия:' : 'Last Name:'}</InfoLabel>
+              <InfoValue>{user.lastName}</InfoValue>
+            </InfoItem>
+          )}
+          {user?.email && isOwnProfile && (
+            <InfoItem>
+              <InfoLabel>
+                <Mail size={14} />
+                {language === 'bg' ? 'Имейл:' : 'Email:'}
+              </InfoLabel>
+              <InfoValue>{user.email}</InfoValue>
+            </InfoItem>
+          )}
+          {user?.phoneNumber && isOwnProfile && (
+            <InfoItem>
+              <InfoLabel>
+                <Phone size={14} />
+                {language === 'bg' ? 'Телефон:' : 'Phone:'}
+              </InfoLabel>
+              <InfoValue>{user.phoneNumber}</InfoValue>
+            </InfoItem>
+          )}
+          {user?.location?.city && (
+            <InfoItem>
+              <InfoLabel>
+                <MapPin size={14} />
+                {language === 'bg' ? 'Град:' : 'City:'}
+              </InfoLabel>
+              <InfoValue>{user.location.city}</InfoValue>
+            </InfoItem>
+          )}
+          {user?.dateOfBirth && isOwnProfile && (
+            <InfoItem>
+              <InfoLabel>
+                <Calendar size={14} />
+                {language === 'bg' ? 'Дата на раждане:' : 'Date of Birth:'}
+              </InfoLabel>
+              <InfoValue>{new Date(user.dateOfBirth).toLocaleDateString(language === 'bg' ? 'bg-BG' : 'en-US')}</InfoValue>
+            </InfoItem>
+          )}
+        </InfoGrid>
+      </InfoSection>
+      
+      {/* ⚡ Business Information Section (if business account) */}
+      {isBusinessAccount && (
+        <InfoSection>
+          <SectionHeader>
+            <SectionTitle>
+              <Briefcase size={20} />
+              {language === 'bg' ? 'Информация за бизнеса' : 'Business Information'}
+            </SectionTitle>
+            {isOwnProfile && (
+              <EditButton onClick={() => navigate('/profile/settings')}>
+                <Edit size={16} />
+                {language === 'bg' ? 'Редактирай' : 'Edit'}
+              </EditButton>
+            )}
+          </SectionHeader>
+          
+          <InfoGrid>
+            {user?.businessName && (
+              <InfoItem>
+                <InfoLabel>
+                  <Building2 size={14} />
+                  {language === 'bg' ? 'Име на фирмата:' : 'Business Name:'}
+                </InfoLabel>
+                <InfoValue>{user.businessName}</InfoValue>
+              </InfoItem>
+            )}
+            {user?.bulstat && (
+              <InfoItem>
+                <InfoLabel>
+                  <FileText size={14} />
+                  {language === 'bg' ? 'БУЛСТАТ:' : 'BULSTAT:'}
+                </InfoLabel>
+                <InfoValue>{user.bulstat}</InfoValue>
+              </InfoItem>
+            )}
+            {user?.vatNumber && (
+              <InfoItem>
+                <InfoLabel>
+                  <FileText size={14} />
+                  {language === 'bg' ? 'ДДС номер:' : 'VAT Number:'}
+                </InfoLabel>
+                <InfoValue>{user.vatNumber}</InfoValue>
+              </InfoItem>
+            )}
+            {user?.businessAddress && (
+              <InfoItem>
+                <InfoLabel>
+                  <MapPin size={14} />
+                  {language === 'bg' ? 'Адрес:' : 'Address:'}
+                </InfoLabel>
+                <InfoValue>{user.businessAddress}</InfoValue>
+              </InfoItem>
+            )}
+            {user?.businessPhone && (
+              <InfoItem>
+                <InfoLabel>
+                  <Phone size={14} />
+                  {language === 'bg' ? 'Телефон:' : 'Phone:'}
+                </InfoLabel>
+                <InfoValue>{user.businessPhone}</InfoValue>
+              </InfoItem>
+            )}
+            {user?.businessEmail && (
+              <InfoItem>
+                <InfoLabel>
+                  <Mail size={14} />
+                  {language === 'bg' ? 'Имейл:' : 'Email:'}
+                </InfoLabel>
+                <InfoValue>{user.businessEmail}</InfoValue>
+              </InfoItem>
+            )}
+            {user?.website && (
+              <InfoItem>
+                <InfoLabel>
+                  <Globe size={14} />
+                  {language === 'bg' ? 'Уебсайт:' : 'Website:'}
+                </InfoLabel>
+                <InfoValue>
+                  <a href={user.website} target="_blank" rel="noopener noreferrer" style={{ color: '#FF7900' }}>
+                    {user.website}
+                  </a>
+                </InfoValue>
+              </InfoItem>
+            )}
+            {user?.businessDescription && (
+              <InfoItem style={{ gridColumn: '1 / -1' }}>
+                <InfoLabel>
+                  {language === 'bg' ? 'Описание:' : 'Description:'}
+                </InfoLabel>
+                <InfoValue>{user.businessDescription}</InfoValue>
+              </InfoItem>
+            )}
+          </InfoGrid>
+        </InfoSection>
+      )}
+      
+      {/* ⚡ User's Posts Feed */}
       <div style={{ marginTop: '2rem' }}>
         <UserPostsFeed 
           userId={user?.uid}
@@ -33,6 +215,127 @@ const ProfileOverview: React.FC = () => {
     </S.ContentSection>
   );
 };
+
+// Styled Components
+const InfoSection = styled.section`
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  margin-top: 24px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e9ecef;
+  
+  @media (max-width: 768px) {
+    padding: 20px;
+    margin-top: 16px;
+    border-radius: 12px;
+  }
+`;
+
+const SectionHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #f0f2f5;
+`;
+
+const SectionTitle = styled.h3`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #212529;
+  margin: 0;
+  
+  svg {
+    color: #FF7900;
+    flex-shrink: 0;
+  }
+  
+  @media (max-width: 768px) {
+    font-size: 1.1rem;
+  }
+`;
+
+const EditButton = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  color: #495057;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  
+  svg {
+    flex-shrink: 0;
+  }
+  
+  &:hover {
+    background: #e9ecef;
+    border-color: #FF7900;
+    color: #FF7900;
+  }
+  
+  @media (max-width: 480px) {
+    padding: 6px 12px;
+    font-size: 0.8125rem;
+  }
+`;
+
+const InfoGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+`;
+
+const InfoItem = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+`;
+
+const InfoLabel = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6c757d;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  
+  svg {
+    color: #FF7900;
+    flex-shrink: 0;
+  }
+`;
+
+const InfoValue = styled.div`
+  font-size: 0.95rem;
+  color: #212529;
+  font-weight: 500;
+  
+  a {
+    text-decoration: none;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+`;
 
 export default ProfileOverview;
 

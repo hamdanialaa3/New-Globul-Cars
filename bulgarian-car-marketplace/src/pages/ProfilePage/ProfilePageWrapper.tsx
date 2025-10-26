@@ -52,8 +52,19 @@ const ProfilePageWrapper: React.FC = () => {
   
   const [syncing, setSyncing] = React.useState(false);
   
+  // ⚡ FIX: Follow state MUST be before early return!
+  const [isFollowing, setIsFollowing] = React.useState(false);
+  const [followLoading, setFollowLoading] = React.useState(false);
+  
   // Business mode check
   const isBusinessMode = user?.accountType === 'business' || user?.accountType === 'dealer' || user?.accountType === 'company';
+  
+  // ⚡ FIX: Check if following - MUST be before early return!
+  React.useEffect(() => {
+    if (user && !isOwnProfile && targetUserId) {
+      followService.isFollowing(user.uid, targetUserId).then(setIsFollowing);
+    }
+  }, [user, isOwnProfile, targetUserId]);
   
   // Google Sync Handler
   const handleGoogleSync = async () => {
@@ -80,17 +91,6 @@ const ProfilePageWrapper: React.FC = () => {
       </div>
     );
   }
-  
-  // Follow state
-  const [isFollowing, setIsFollowing] = React.useState(false);
-  const [followLoading, setFollowLoading] = React.useState(false);
-  
-  // Check if following
-  React.useEffect(() => {
-    if (user && !isOwnProfile && targetUserId) {
-      followService.isFollowing(user.uid, targetUserId).then(setIsFollowing);
-    }
-  }, [user, isOwnProfile, targetUserId]);
   
   // Handle follow/unfollow
   const handleFollow = async () => {
