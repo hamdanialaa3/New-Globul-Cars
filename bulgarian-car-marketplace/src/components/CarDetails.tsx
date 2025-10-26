@@ -418,6 +418,8 @@ const CarDetails: React.FC = () => {
         <MainImage
           src={car.images?.[currentImageIndex] || '/placeholder-car.jpg'}
           alt={`${car.make} ${car.model}`}
+          loading={currentImageIndex === 0 ? "eager" : "lazy"}  // ⚡ First image eager, rest lazy
+          decoding="async"  // ⚡ Non-blocking decode
         />
         {car.images && car.images.length > 1 && (
           <ThumbnailGrid>
@@ -428,6 +430,8 @@ const CarDetails: React.FC = () => {
                 alt={`Thumbnail ${index + 1}`}
                 className={currentImageIndex === index ? 'active' : ''}
                 onClick={() => setCurrentImageIndex(index)}
+                loading="lazy"  // ⚡ Lazy load thumbnails
+                decoding="async"  // ⚡ Async decode
               />
             ))}
           </ThumbnailGrid>

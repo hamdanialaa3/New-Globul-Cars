@@ -9,6 +9,14 @@ export interface ImageOptimizationOptions {
   format?: 'image/jpeg' | 'image/webp' | 'image/png';
 }
 
+// ⚡ WebP Configuration - 30% smaller than JPEG!
+export const WEBP_CONFIG = {
+  format: 'image/webp' as const,
+  quality: 0.80, // 80% quality for WebP (equivalent to 85% JPEG)
+  maxWidth: 1920,
+  maxHeight: 1080
+};
+
 export class ImageOptimizationService {
   /**
    * Optimize and compress image
@@ -18,10 +26,10 @@ export class ImageOptimizationService {
     options: ImageOptimizationOptions = {}
   ): Promise<File> {
     const {
-      maxWidth = 1920,
-      maxHeight = 1080,
-      quality = 0.85,
-      format = 'image/jpeg'
+      maxWidth = WEBP_CONFIG.maxWidth,
+      maxHeight = WEBP_CONFIG.maxHeight,
+      quality = WEBP_CONFIG.quality,
+      format = WEBP_CONFIG.format  // ⚡ Default to WebP (30% smaller!)
     } = options;
 
     return new Promise((resolve, reject) => {
@@ -63,15 +71,19 @@ export class ImageOptimizationService {
               }
 
               // Create optimized file
+              const extension = format === 'image/webp' ? '.webp' : format === 'image/png' ? '.png' : '.jpg';
               const optimizedFile = new File(
                 [blob],
-                file.name.replace(/\.[^/.]+$/, '') + '.jpg',
+                file.name.replace(/\.[^/.]+$/, '') + extension,
                 { type: format }
               );
 
+              const reduction = ((1 - optimizedFile.size / file.size) * 100).toFixed(1);
               serviceLogger.info('Image optimized', {
                 originalSizeKB: Math.round(file.size / 1024),
                 optimizedSizeKB: Math.round(optimizedFile.size / 1024),
+                reductionPercent: reduction + '%',
+                format: format,
                 fileName: file.name
               });
 
@@ -183,7 +195,7 @@ export class ImageOptimizationService {
       maxWidth: size,
       maxHeight: size,
       quality: 0.7,
-      format: 'image/jpeg'
+      format: 'image/webp'  // ⚡ WebP for thumbnails (smaller & faster!)
     });
   }
 

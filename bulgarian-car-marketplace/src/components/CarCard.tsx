@@ -45,6 +45,11 @@ const CarImage = styled.img`
   ${Card}:hover & {
     transform: scale(1.05);
   }
+  
+  /* ⚡ Enable native lazy loading for performance! */
+  &[loading="lazy"] {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  }
 `;
 
 const ImagePlaceholder = styled.div`
@@ -228,7 +233,12 @@ const CarCard: React.FC<CarCardProps> = ({ car }) => {
       {/* Image */}
       <ImageContainer>
         {getMainImage() ? (
-          <CarImage src={getMainImage()!} alt={`${car.make} ${car.model}`} />
+          <CarImage 
+            src={getMainImage()!} 
+            alt={`${car.make} ${car.model}`}
+            loading="lazy"  // ⚡ Native lazy loading - loads only when visible!
+            decoding="async"  // ⚡ Async decoding - non-blocking!
+          />
         ) : (
           <ImagePlaceholder>
             <CarIcon size={60} color="#FF7900" />

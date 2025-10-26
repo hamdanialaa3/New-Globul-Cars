@@ -308,6 +308,8 @@ const FeaturedCars: React.FC<FeaturedCarsProps> = ({
                 <CarImage 
                   src={car.images[0]} 
                   alt={`${car.make} ${car.model}`}
+                  loading="lazy"  // ⚡ Lazy load featured car images
+                  decoding="async"  // ⚡ Async decode
                   onError={(e) => {
                     (e.target as HTMLImageElement).src = '/placeholder-car.jpg';
                   }}
