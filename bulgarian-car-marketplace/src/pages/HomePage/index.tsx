@@ -22,25 +22,41 @@ const HomeContainer = styled.div`
   min-height: 100vh;
   background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
 
-  /* ✅ Mobile: NO padding-top needed - body already handles it */
+  /* MOBILE OPTIMIZATION - Clean background (Instagram/Facebook) */
   @media (max-width: 768px) {
-    padding-top: 0; /* ✅ MOBILE: Removed to prevent double padding */
+    padding-top: 0;
+    background: #f0f2f5;  /* Instagram gray - cleaner on mobile */
+    padding-bottom: 70px;  /* Space for bottom nav */
+  }
+  
+  @media (max-width: 480px) {
+    padding-bottom: 60px;
   }
 `;
 
 const SectionSpacer = styled.div`
-  height: 20px; /* ✅ مسافة أصغر بنسبة 50% */
+  height: 20px;
   
+  /* MOBILE - Tighter spacing (Facebook pattern) */
   @media (max-width: 768px) {
-    height: 12px; /* أصغر على الموبايل */
+    height: 8px;  /* Tight spacing between sections */
+  }
+  
+  @media (max-width: 480px) {
+    height: 6px;
   }
 `;
 
 const LargeSpacer = styled.div`
-  height: 40px; /* ✅ مسافة أكبر حول Business Banner */
+  height: 40px;
   
+  /* MOBILE - Compact spacing (Airbnb pattern) */
   @media (max-width: 768px) {
-    height: 24px;
+    height: 16px;  /* Tighter for mobile */
+  }
+  
+  @media (max-width: 480px) {
+    height: 12px;
   }
 `;
 
@@ -51,6 +67,18 @@ const LoadingFallback = styled.div`
   min-height: 200px;
   font-size: 1.1rem;
   color: #6c757d;
+  
+  /* MOBILE - Compact loading state */
+  @media (max-width: 768px) {
+    min-height: 120px;
+    font-size: 0.9375rem;  /* 15px */
+    padding: 16px;
+  }
+  
+  @media (max-width: 480px) {
+    min-height: 100px;
+    font-size: 0.875rem;  /* 14px */
+  }
 `;
 
 const HomePage: React.FC = () => {

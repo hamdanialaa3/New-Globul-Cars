@@ -34,9 +34,25 @@ const HeroSection = styled.section`
     z-index: 0;
   }
   
-  @media (max-width: 600px) {
-    padding: 2rem 0;
-    min-height: 35vh;
+  /* MOBILE OPTIMIZATION - Airbnb/Booking.com inspired */
+  @media (max-width: 768px) {
+    padding: 2rem 1rem;
+    min-height: 50vh;  /* More prominent on mobile */
+    background-position: center center;
+    
+    &::before {
+      background: rgba(255, 255, 255, 0.75);  /* Lighter for better text contrast */
+    }
+  }
+  
+  @media (max-width: 480px) {
+    padding: 1.5rem 1rem;
+    min-height: 45vh;
+  }
+  
+  @media (max-width: 380px) {
+    padding: 1.25rem 0.75rem;
+    min-height: 40vh;
   }
 `;
 
@@ -56,12 +72,23 @@ const HeroTitle = styled.h1`
   line-height: 1.3;
   color: #212529;
 
-  @media (max-width: 960px) {
-    font-size: 1.75rem;
+  /* MOBILE - Professional typography (Airbnb/Booking.com) */
+  @media (max-width: 768px) {
+    font-size: 1.75rem;  /* 28px */
+    font-weight: 800;  /* Bolder for impact */
+    line-height: 1.2;
+    margin-bottom: 12px;
+    padding: 0 16px;
   }
   
-  @media (max-width: 600px) {
-    font-size: 1.5rem;
+  @media (max-width: 480px) {
+    font-size: 1.5rem;  /* 24px */
+    line-height: 1.25;
+    padding: 0 12px;
+  }
+  
+  @media (max-width: 380px) {
+    font-size: 1.375rem;  /* 22px */
   }
 `;
 
@@ -74,8 +101,24 @@ const HeroSubtitle = styled.p`
   margin-left: auto;
   margin-right: auto;
   
-  @media (max-width: 600px) {
-    font-size: 0.9rem;
+  /* MOBILE - Compact subtitle (LinkedIn pattern) */
+  @media (max-width: 768px) {
+    font-size: 0.9375rem;  /* 15px */
+    line-height: 1.5;
+    margin-bottom: 20px;
+    padding: 0 20px;
+    
+    /* Limit to 3 lines */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 0.875rem;  /* 14px */
+    -webkit-line-clamp: 2;  /* 2 lines on small screens */
+    padding: 0 16px;
   }
 `;
 
@@ -84,6 +127,20 @@ const HeroButtons = styled.div`
   gap: ${({ theme }) => theme.spacing.lg};
   justify-content: center;
   flex-wrap: wrap;
+  
+  /* MOBILE - Full-width stacked buttons (Facebook/Instagram) */
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 12px;
+    padding: 0 20px;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  
+  @media (max-width: 480px) {
+    padding: 0 16px;
+    gap: 10px;
+  }
 `;
 
 const HeroButton = styled(Link)`
@@ -113,6 +170,42 @@ const HeroButton = styled(Link)`
       background: #FF8F10;
       color: #000000;
     }
+  }
+  
+  /* MOBILE - Full-width touch-optimized (Facebook/Instagram CTA) */
+  @media (max-width: 768px) {
+    display: block;
+    width: 100%;
+    padding: 14px 24px;
+    font-size: 1rem;  /* 16px - clear */
+    font-weight: 700;
+    min-height: 52px;  /* Larger for hero CTAs */
+    border-radius: 12px;  /* More rounded */
+    text-align: center;
+    
+    /* Better touch feedback */
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    
+    &:active {
+      transform: scale(0.98);
+    }
+    
+    &.secondary {
+      background: white;
+      border: 2px solid #FF8F10;
+      color: #FF8F10;
+      
+      &:active {
+        background: rgba(255, 143, 16, 0.05);
+      }
+    }
+  }
+  
+  @media (max-width: 480px) {
+    padding: 12px 20px;
+    font-size: 0.9375rem;  /* 15px */
+    min-height: 50px;
   }
 `;
 
