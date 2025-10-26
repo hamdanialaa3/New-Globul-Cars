@@ -9,6 +9,7 @@ import { getFunctions } from 'firebase/functions';
 import { getAnalytics, Analytics } from 'firebase/analytics';
 // import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check'; // Disabled to prevent auth errors
 import { BULGARIAN_CONFIG } from '../config/bulgarian-config';
+import { logger } from '../services/logger-service';
 
 // Type declaration for reCAPTCHA
 declare global {
@@ -35,7 +36,9 @@ const app = initializeApp(firebaseConfig);
 
 // Initialize App Check - COMPLETELY DISABLED to prevent auth errors
 let appCheck: any = null;
-console.log('🚫 Firebase App Check is completely disabled to prevent authentication errors');
+if (process.env.NODE_ENV === 'development') {
+  logger.debug('Firebase App Check is disabled to prevent authentication errors');
+}
 // DO NOT initialize App Check as it causes auth/firebase-app-check-token-is-invalid errors
 
 // Initialize Firebase services
@@ -60,7 +63,7 @@ const analytics: Analytics | null = (typeof window !== 'undefined' && process.en
       try {
         return getAnalytics(app);
       } catch (error) {
-        console.warn('Analytics initialization failed:', error);
+        logger.warn('Analytics initialization failed', { error: (error as Error)?.message });
         return null;
       }
     })()

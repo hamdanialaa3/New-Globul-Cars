@@ -1,21 +1,14 @@
 import { 
   collection, 
-  doc, 
   getDocs, 
-  getDoc,
-  setDoc, 
-  updateDoc,
-  deleteDoc,
   query, 
   where, 
   orderBy, 
   limit,
-  onSnapshot,
-  serverTimestamp,
-  writeBatch,
-  Timestamp
+  onSnapshot
 } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
+import { logger } from './logger-service';
 
 // Advanced Real Data Service for 100% real data
 class AdvancedRealDataService {
@@ -33,7 +26,7 @@ class AdvancedRealDataService {
   // Get real-time analytics with 100% real Firebase data
   public async getRealTimeAnalytics(): Promise<any> {
     try {
-      console.log('🔄 Fetching real analytics data...');
+      logger.debug('Fetching real analytics data...');
       
       // Get all collections in parallel
       const [
@@ -170,11 +163,16 @@ class AdvancedRealDataService {
         lastUpdated: new Date()
       };
 
-      console.log('✅ Real analytics data fetched successfully:', realAnalytics);
+      logger.info('Real analytics data fetched successfully', {
+        totalUsers: realAnalytics.totalUsers,
+        totalCars: realAnalytics.totalCars,
+        totalMessages: realAnalytics.totalMessages,
+        totalViews: realAnalytics.totalViews
+      });
       return realAnalytics;
 
     } catch (error) {
-      console.error('Error fetching real analytics:', error);
+      logger.error('Error fetching real analytics', error as Error);
       throw error;
     }
   }
@@ -182,7 +180,7 @@ class AdvancedRealDataService {
   // Get real user activity
   public async getRealUserActivity(): Promise<any[]> {
     try {
-      console.log('🔄 Fetching real user activity...');
+      logger.debug('Fetching real user activity...');
       
       const q = query(
         collection(db, 'user_activity'),
@@ -207,11 +205,11 @@ class AdvancedRealDataService {
         };
       });
 
-      console.log('✅ Real user activity fetched successfully:', activities.length, 'activities');
+      logger.info('Real user activity fetched successfully', { count: activities.length });
       return activities;
 
     } catch (error) {
-      console.error('Error fetching real user activity:', error);
+      logger.error('Error fetching real user activity', error as Error);
       throw error;
     }
   }
@@ -219,7 +217,7 @@ class AdvancedRealDataService {
   // Get real content moderation data
   public async getRealContentModeration(): Promise<any> {
     try {
-      console.log('🔄 Fetching real content moderation...');
+      logger.debug('Fetching real content moderation...');
       
       const [
         reportedCarsSnapshot,
@@ -243,11 +241,11 @@ class AdvancedRealDataService {
         flaggedMessages: flaggedMessagesSnapshot.docs.length
       };
 
-      console.log('✅ Real content moderation fetched successfully:', moderation);
+      logger.info('Real content moderation fetched successfully', moderation);
       return moderation;
 
     } catch (error) {
-      console.error('Error fetching real content moderation:', error);
+      logger.error('Error fetching real content moderation', error as Error);
       throw error;
     }
   }
@@ -255,7 +253,7 @@ class AdvancedRealDataService {
   // Get real users list
   public async getRealUsers(): Promise<any[]> {
     try {
-      console.log('🔄 Fetching real users...');
+      logger.debug('Fetching real users...');
       
       const snapshot = await getDocs(collection(db, 'users'));
       const users = snapshot.docs.map(doc => {
@@ -278,11 +276,11 @@ class AdvancedRealDataService {
         };
       });
 
-      console.log('✅ Real users fetched successfully:', users.length, 'users');
+      logger.info('Real users fetched successfully', { count: users.length });
       return users;
 
     } catch (error) {
-      console.error('Error fetching real users:', error);
+      logger.error('Error fetching real users', error as Error);
       throw error;
     }
   }
@@ -290,7 +288,7 @@ class AdvancedRealDataService {
   // Get real cars list
   public async getRealCars(): Promise<any[]> {
     try {
-      console.log('🔄 Fetching real cars...');
+      logger.debug('Fetching real cars...');
       
       const snapshot = await getDocs(collection(db, 'cars'));
       const cars = snapshot.docs.map(doc => {
@@ -317,11 +315,11 @@ class AdvancedRealDataService {
         };
       });
 
-      console.log('✅ Real cars fetched successfully:', cars.length, 'cars');
+      logger.info('Real cars fetched successfully', { count: cars.length });
       return cars;
 
     } catch (error) {
-      console.error('Error fetching real cars:', error);
+      logger.error('Error fetching real cars', error as Error);
       throw error;
     }
   }
@@ -329,7 +327,7 @@ class AdvancedRealDataService {
   // Get real messages list
   public async getRealMessages(): Promise<any[]> {
     try {
-      console.log('🔄 Fetching real messages...');
+      logger.debug('Fetching real messages...');
       
       const snapshot = await getDocs(collection(db, 'messages'));
       const messages = snapshot.docs.map(doc => {
@@ -346,11 +344,11 @@ class AdvancedRealDataService {
         };
       });
 
-      console.log('✅ Real messages fetched successfully:', messages.length, 'messages');
+      logger.info('Real messages fetched successfully', { count: messages.length });
       return messages;
 
     } catch (error) {
-      console.error('Error fetching real messages:', error);
+      logger.error('Error fetching real messages', error as Error);
       throw error;
     }
   }
@@ -371,7 +369,7 @@ class AdvancedRealDataService {
   // Get real-time statistics with live updates
   public async getLiveStatistics(): Promise<any> {
     try {
-      console.log('🔄 Fetching live statistics...');
+      logger.debug('Fetching live statistics...');
       
       const [usersSnapshot, carsSnapshot, messagesSnapshot] = await Promise.all([
         getDocs(collection(db, 'users')),
@@ -417,11 +415,11 @@ class AdvancedRealDataService {
         lastUpdated: new Date()
       };
 
-      console.log('✅ Live statistics fetched successfully:', liveStats);
+      logger.info('Live statistics fetched successfully', liveStats);
       return liveStats;
 
     } catch (error) {
-      console.error('Error fetching live statistics:', error);
+      logger.error('Error fetching live statistics', error as Error);
       throw error;
     }
   }
@@ -429,7 +427,7 @@ class AdvancedRealDataService {
   // Get user engagement metrics
   public async getUserEngagementMetrics(): Promise<any> {
     try {
-      console.log('🔄 Fetching user engagement metrics...');
+      logger.debug('Fetching user engagement metrics...');
       
       const [usersSnapshot, userActivitySnapshot] = await Promise.all([
         getDocs(collection(db, 'users')),
@@ -468,11 +466,14 @@ class AdvancedRealDataService {
         }, {} as Record<string, number>)
       };
 
-      console.log('✅ User engagement metrics fetched successfully:', engagementMetrics);
+      logger.info('User engagement metrics fetched successfully', {
+        averageLoginCount: engagementMetrics.averageLoginCount,
+        mostActiveUsersCount: engagementMetrics.mostActiveUsers.length
+      });
       return engagementMetrics;
 
     } catch (error) {
-      console.error('Error fetching user engagement metrics:', error);
+      logger.error('Error fetching user engagement metrics', error as Error);
       throw error;
     }
   }
@@ -480,7 +481,7 @@ class AdvancedRealDataService {
   // Get revenue analytics
   public async getRevenueAnalytics(): Promise<any> {
     try {
-      console.log('🔄 Fetching revenue analytics...');
+      logger.debug('Fetching revenue analytics...');
       
       const carsSnapshot = await getDocs(collection(db, 'cars'));
       const cars = carsSnapshot.docs.map(doc => doc.data());
@@ -515,11 +516,14 @@ class AdvancedRealDataService {
         conversionRate: cars.length > 0 ? (cars.filter(car => car.isSold).length / cars.length) * 100 : 0
       };
 
-      console.log('✅ Revenue analytics fetched successfully:', revenueAnalytics);
+      logger.info('Revenue analytics fetched successfully', {
+        totalRevenue: revenueAnalytics.totalRevenue,
+        totalCarsSold: revenueAnalytics.totalCarsSold
+      });
       return revenueAnalytics;
 
     } catch (error) {
-      console.error('Error fetching revenue analytics:', error);
+      logger.error('Error fetching revenue analytics', error as Error);
       throw error;
     }
   }

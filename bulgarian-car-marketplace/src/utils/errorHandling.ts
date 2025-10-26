@@ -1,6 +1,8 @@
 // src/utils/errorHandling.ts
 // Error handling utilities for Bulgarian Car Marketplace
 
+import { logger } from '../services/logger-service';
+
 export interface AppError {
   code: string;
   message: string;
@@ -174,7 +176,7 @@ export class BulgarianErrorHandler {
 
     // Log to console in development
     if (process.env.NODE_ENV === 'development') {
-      console.error('App Error:', error);
+      logger.error('App Error', undefined, { error });
     }
 
     // In production, send to monitoring service
@@ -189,9 +191,9 @@ export class BulgarianErrorHandler {
     // Example: Google Analytics, Sentry, LogRocket, etc.
     try {
       // You can implement actual monitoring service here
-      console.log('Sending error to monitoring service:', error);
+      logger.info('Sending error to monitoring service', { error });
     } catch (monitoringError) {
-      console.error('Failed to send error to monitoring service:', monitoringError);
+      logger.error('Failed to send error to monitoring service', monitoringError as Error);
     }
   }
 

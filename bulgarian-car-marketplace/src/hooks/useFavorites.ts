@@ -9,6 +9,7 @@ import favoritesService, {
   FavoriteCarData
 } from '../services/favoritesService';
 import { toast } from 'react-toastify';
+import { logger } from '../services/logger-service';
 
 export const useFavorites = () => {
   const { user } = useAuth();
@@ -31,7 +32,7 @@ export const useFavorites = () => {
       const userFavorites = await favoritesService.getUserFavorites(user.uid);
       setFavorites(userFavorites);
     } catch (err) {
-      console.error('[useFavorites] Error loading favorites:', err);
+      logger.error('[useFavorites] Error loading favorites', err as Error, { userId: user?.uid });
       setError('Failed to load favorites');
     } finally {
       setLoading(false);
@@ -81,7 +82,7 @@ export const useFavorites = () => {
       await loadFavorites();
       return isNowFavorite;
     } catch (err) {
-      console.error('[useFavorites] Error toggling favorite:', err);
+      logger.error('[useFavorites] Error toggling favorite', err as Error, { userId: user?.uid, carId });
       toast.error('Failed to update favorites');
       return false;
     }
@@ -99,7 +100,7 @@ export const useFavorites = () => {
       setFavorites(prev => prev.filter(f => f.carId !== carId));
       return true;
     } catch (err) {
-      console.error('[useFavorites] Error removing favorite:', err);
+      logger.error('[useFavorites] Error removing favorite', err as Error, { userId: user?.uid, carId });
       toast.error('Failed to remove favorite');
       return false;
     }
@@ -116,7 +117,7 @@ export const useFavorites = () => {
       await loadFavorites();
       return true;
     } catch (err) {
-      console.error('[useFavorites] Error adding note:', err);
+      logger.error('[useFavorites] Error adding note', err as Error, { favoriteId });
       toast.error('Failed to add note');
       return false;
     }
@@ -129,7 +130,7 @@ export const useFavorites = () => {
     try {
       return await favoritesService.getFavoritesWithPriceDrops(user.uid);
     } catch (err) {
-      console.error('[useFavorites] Error getting price drops:', err);
+      logger.error('[useFavorites] Error getting price drops', err as Error, { userId: user?.uid });
       return [];
     }
   }, [user?.uid]);

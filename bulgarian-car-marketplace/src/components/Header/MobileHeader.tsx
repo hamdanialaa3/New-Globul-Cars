@@ -7,6 +7,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
+import { logger } from '../../services/logger-service';
 import { useAuth } from '../../contexts/AuthProvider';
 import { useLanguage } from '../../contexts/LanguageContext';
 
@@ -617,17 +618,19 @@ const MobileHeader: React.FC = () => {
   }, [isMenuOpen]);
 
   const handleMenuItemClick = (path: string) => () => {
-    console.log('🔍 MOBILE MENU CLICK - Path:', path);
-    console.log('🔍 Current location:', location.pathname);
-    console.log('🔍 Timestamp:', new Date().toISOString());
+    if (process.env.NODE_ENV === 'development') {
+      logger.debug('MOBILE MENU CLICK', { path, current: location.pathname, ts: new Date().toISOString() });
+    }
     
     // Ensure navigation happens
     try {
       navigate(path);
       setIsMenuOpen(false);
-      console.log('✅ Navigation successful to:', path);
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Navigation successful', { path });
+      }
     } catch (error) {
-      console.error('❌ Navigation failed:', error);
+      logger.error('Navigation failed', error as Error, { path });
     }
   };
 
@@ -637,7 +640,7 @@ const MobileHeader: React.FC = () => {
       setIsMenuOpen(false);
       navigate('/');
     } catch (error) {
-      console.error('Logout error:', error);
+      logger.error('Logout error', error as Error);
     }
   };
 

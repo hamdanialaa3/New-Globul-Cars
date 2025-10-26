@@ -30,6 +30,7 @@ import type {
   DealershipServices,
   DealershipCertifications
 } from '../../types/dealership.types';
+import { logger } from '../logger-service';
 
 class DealershipService {
   /**
@@ -55,7 +56,7 @@ class DealershipService {
       
       await setDoc(dealershipRef, dataToSave, { merge: true });
     } catch (error) {
-      console.error('Error saving dealership info:', error);
+      logger.error('Error saving dealership info', error as Error, { userId });
       throw new Error('Failed to save dealership information');
     }
   }
@@ -90,7 +91,7 @@ class DealershipService {
         })) || []
       } as DealershipInfo;
     } catch (error) {
-      console.error('Error getting dealership info:', error);
+      logger.error('Error getting dealership info', error as Error, { userId });
       return null;
     }
   }
@@ -139,7 +140,7 @@ class DealershipService {
       
       return newDocument;
     } catch (error) {
-      console.error('Error uploading document:', error);
+      logger.error('Error uploading document', error as Error, { userId, documentType, documentName });
       throw new Error('Failed to upload document');
     }
   }
@@ -175,7 +176,7 @@ class DealershipService {
         updatedAt: serverTimestamp()
       });
     } catch (error) {
-      console.error('Error deleting document:', error);
+      logger.error('Error deleting document', error as Error, { userId, documentId });
       throw new Error('Failed to delete document');
     }
   }
@@ -219,7 +220,7 @@ class DealershipService {
       
       return newMedia;
     } catch (error) {
-      console.error('Error uploading media:', error);
+      logger.error('Error uploading media', error as Error, { userId, mediaType, caption });
       throw new Error('Failed to upload media');
     }
   }
@@ -254,7 +255,7 @@ class DealershipService {
         updatedAt: serverTimestamp()
       });
     } catch (error) {
-      console.error('Error deleting media:', error);
+      logger.error('Error deleting media', error as Error, { userId, mediaId });
       throw new Error('Failed to delete media');
     }
   }
@@ -273,7 +274,7 @@ class DealershipService {
         updatedAt: serverTimestamp()
       });
     } catch (error) {
-      console.error('Error updating working hours:', error);
+      logger.error('Error updating working hours', error as Error, { userId });
       throw new Error('Failed to update working hours');
     }
   }
@@ -292,7 +293,7 @@ class DealershipService {
         updatedAt: serverTimestamp()
       });
     } catch (error) {
-      console.error('Error updating services:', error);
+      logger.error('Error updating services', error as Error, { userId });
       throw new Error('Failed to update services');
     }
   }
@@ -311,7 +312,7 @@ class DealershipService {
         updatedAt: serverTimestamp()
       });
     } catch (error) {
-      console.error('Error updating certifications:', error);
+      logger.error('Error updating certifications', error as Error, { userId });
       throw new Error('Failed to update certifications');
     }
   }
@@ -330,7 +331,7 @@ class DealershipService {
         updatedAt: serverTimestamp()
       });
     } catch (error) {
-      console.error('Error saving privacy settings:', error);
+      logger.error('Error saving privacy settings', error as Error, { userId });
       throw new Error('Failed to save privacy settings');
     }
   }
@@ -349,7 +350,7 @@ class DealershipService {
       
       return userSnap.data().privacySettings || null;
     } catch (error) {
-      console.error('Error getting privacy settings:', error);
+      logger.error('Error getting privacy settings', error as Error, { userId });
       return null;
     }
   }
@@ -365,7 +366,7 @@ class DealershipService {
         updatedAt: serverTimestamp()
       });
     } catch (error) {
-      console.error('Error updating total cars:', error);
+      logger.error('Error updating total cars', error as Error, { userId, count });
     }
   }
 
@@ -385,7 +386,7 @@ class DealershipService {
         updatedAt: serverTimestamp()
       });
     } catch (error) {
-      console.error('Error verifying dealership:', error);
+      logger.error('Error verifying dealership', error as Error, { userId, adminId });
       throw new Error('Failed to verify dealership');
     }
   }
@@ -424,7 +425,7 @@ class DealershipService {
         updatedAt: serverTimestamp()
       });
     } catch (error) {
-      console.error('Error verifying document:', error);
+      logger.error('Error verifying document', error as Error, { userId, documentId, adminId });
       throw new Error('Failed to verify document');
     }
   }
@@ -463,7 +464,7 @@ class DealershipService {
         updatedAt: doc.data().updatedAt?.toDate() || new Date()
       } as DealershipInfo));
     } catch (error) {
-      console.error('Error searching dealerships:', error);
+      logger.error('Error searching dealerships', error as Error, { criteria });
       return [];
     }
   }

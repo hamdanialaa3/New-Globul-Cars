@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Settings, Database, LogOut } from 'lucide-react';
 import { firebaseRealDataService } from '../../services/firebase-real-data-service';
 import { realDataInitializer } from '../../services/real-data-initializer';
+import { logger } from '../../services/logger-service';
 
 interface AdminHeaderProps {
   session: any;
@@ -106,7 +107,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ session, onLogout }) => {
       await realDataInitializer.initializeAllRealData();
       window.location.reload();
     } catch (error) {
-      console.error('Error initializing real data:', error);
+      logger.error('Error initializing real data', error as Error);
     }
   };
 

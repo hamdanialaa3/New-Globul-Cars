@@ -10,6 +10,7 @@ import {
   RefreshCw
 } from 'lucide-react';
 import { smartAlertsService, Alert } from '../../services/smart-alerts-service';
+import { logger } from '../../services/logger-service';
 
 const PanelContainer = styled.div`
   background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
@@ -203,7 +204,7 @@ const RealTimeAlertsPanel: React.FC = () => {
       
       setAlerts(uniqueAlerts);
     } catch (error) {
-      console.error('Failed to load alerts:', error);
+      logger.error('Failed to load alerts', error as Error);
     } finally {
       setLoading(false);
     }
@@ -222,7 +223,7 @@ const RealTimeAlertsPanel: React.FC = () => {
       await smartAlertsService.resolveAlert(alertId);
       await loadAlerts();
     } catch (error) {
-      console.error('Failed to resolve alert:', error);
+      logger.error('Failed to resolve alert', error as Error, { alertId });
     }
   };
 
