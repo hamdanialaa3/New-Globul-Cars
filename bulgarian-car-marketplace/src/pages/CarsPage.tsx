@@ -23,6 +23,16 @@ import { MobileFilterDrawer, MobileFilterButton, FilterValues } from '../compone
 const CarsContainer = styled.div`
   min-height: 100vh;
   padding: ${({ theme }) => theme.spacing['2xl']} 0;
+  
+  /* MOBILE - Clean layout (Instagram/Facebook) */
+  @media (max-width: 768px) {
+    padding: 16px 0 80px;  /* Space for bottom nav */
+    background: #f0f2f5;  /* Instagram gray */
+  }
+  
+  @media (max-width: 480px) {
+    padding: 12px 0 70px;
+  }
 `;
 
 const PageContainer = styled.div`
@@ -30,12 +40,10 @@ const PageContainer = styled.div`
   margin: 0 auto;
   padding: 0 ${({ theme }) => theme.spacing.md};
 
+  /* MOBILE - Full-width (Instagram pattern) */
   @media (max-width: 768px) {
-    padding: 0 ${({ theme }) => theme.spacing.sm};
-  }
-
-  @media (max-width: 480px) {
-    padding: 0 ${({ theme }) => theme.spacing.xs};
+    padding: 0;  /* Full-width for mobile */
+    max-width: 100%;
   }
 `;
 
@@ -44,7 +52,9 @@ const PageHeader = styled.div`
   margin-bottom: ${({ theme }) => theme.spacing['3xl']};
 
   @media (max-width: 768px) {
-    margin-bottom: ${({ theme }) => theme.spacing['2xl']};
+    margin-bottom: 20px;
+    padding: 16px 20px;
+    background: white;
   }
 
   h1 {
@@ -52,12 +62,15 @@ const PageHeader = styled.div`
     font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
     color: ${({ theme }) => theme.colors.text.primary};
 
+    /* MOBILE - Compact header (Airbnb) */
     @media (max-width: 768px) {
-      font-size: ${({ theme }) => theme.typography.fontSize['3xl']};
+      font-size: 1.5rem;  /* 24px */
+      font-weight: 700;
+      margin-bottom: 8px;
     }
 
     @media (max-width: 480px) {
-      font-size: ${({ theme }) => theme.typography.fontSize['2xl']};
+      font-size: 1.375rem;  /* 22px */
     }
   }
 
@@ -65,6 +78,15 @@ const PageHeader = styled.div`
     font-size: ${({ theme }) => theme.typography.fontSize.xl};
     color: ${({ theme }) => theme.colors.text.secondary};
     margin-bottom: ${({ theme }) => theme.spacing.md};
+    
+    @media (max-width: 768px) {
+      font-size: 0.875rem;  /* 14px */
+      margin-bottom: 0;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
   }
 `;
 
@@ -85,9 +107,15 @@ const CityBadge = styled.div`
 const CarsGridWrapper = styled.div`
   margin-top: 32px;
 
+  /* MOBILE - Instagram-style grid wrapper */
   @media (max-width: 768px) {
-    margin-top: 24px;
-    margin-bottom: 80px; /* Space for floating filter button */
+    margin-top: 8px;
+    margin-bottom: 90px;  /* Space for floating filter button */
+    padding: 0;  /* Full-width grid */
+  }
+  
+  @media (max-width: 480px) {
+    margin-bottom: 80px;
   }
 `;
 
