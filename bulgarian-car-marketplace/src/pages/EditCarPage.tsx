@@ -9,6 +9,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import carListingService from '../services/carListingService';
 import SellWorkflowService from '../services/sellWorkflowService';
 import { CarListing } from '../types/CarListing';
+import { logger } from '../services/logger-service';
 
 const PageContainer = styled.div`
   min-height: 100vh;
@@ -107,7 +108,7 @@ const EditCarPage: React.FC = () => {
       prepareEditWorkflow(carData);
       
     } catch (err) {
-      console.error('Error loading car data:', err);
+      logger.error('Error loading car data for edit', err as Error, { carId, userId: currentUser?.uid });
       setError(language === 'bg' 
         ? 'Грешка при зареждане на данните' 
         : 'Error loading data');
@@ -193,7 +194,7 @@ const EditCarPage: React.FC = () => {
           reader.readAsDataURL(urlOrFile);
         });
       } catch (error) {
-        console.error('Error converting image to base64:', error);
+        logger.error('Error converting image to base64', error as Error);
         return '';
       }
     });

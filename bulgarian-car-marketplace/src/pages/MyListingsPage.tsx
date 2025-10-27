@@ -10,6 +10,7 @@ import carListingService from '../services/carListingService';
 import { CarListing } from '../types/CarListing';
 import { CarIcon } from '../components/icons/CarIcon';
 import CarCard from '../components/CarCard';
+import { logger } from '../services/logger-service';
 
 const PageContainer = styled.div`
   min-height: 100vh;
@@ -243,14 +244,18 @@ const MyListingsPage: React.FC = () => {
     try {
       setLoading(true);
       setError(null);
-      console.log('🔄 Loading user listings...');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Loading user listings', { email: user.email });
+      }
 
       const userListings = await carListingService.getListingsBySeller(user.email || '');
       setListings(userListings);
 
-      console.log(`✅ Loaded ${userListings.length} listings`);
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Loaded user listings successfully', { count: userListings.length });
+      }
     } catch (err: any) {
-      console.error('❌ Error loading listings:', err);
+      logger.error('Error loading user listings', err as Error, { email: user.email });
       setError(err.message || 'Failed to load listings');
     } finally {
       setLoading(false);
@@ -295,7 +300,7 @@ const MyListingsPage: React.FC = () => {
       loadListings();
       alert(language === 'bg' ? 'Обявата е изтрита успешно!' : 'Listing deleted successfully!');
     } catch (err) {
-      console.error('Error deleting listing:', err);
+      logger.error('Error deleting listing', err as Error, { carId });
       alert(language === 'bg' ? 'Грешка при изтриване' : 'Error deleting listing');
     }
   };

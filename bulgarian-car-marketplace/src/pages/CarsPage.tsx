@@ -171,7 +171,9 @@ const CarsPage: React.FC = () => {
         const regionParam = searchParams.get('city'); // 'city' param is actually region!
         const makeParam = searchParams.get('make');
         
-        console.log('🔍 URL params:', { regionParam, makeParam });
+          if (process.env.NODE_ENV === 'development') {
+            logger.debug('URL params for cars page', { regionParam, makeParam });
+          }
         logger.info('Loading cars with filters', { region: regionParam, make: makeParam });
 
         // Build filters object
@@ -184,17 +186,23 @@ const CarsPage: React.FC = () => {
         // Add region filter if provided
         if (regionParam) {
           filters.cityId = regionParam; // Will be used as region in service
-          console.log('🎯 Filtering by region:', regionParam);
+            if (process.env.NODE_ENV === 'development') {
+              logger.debug('Filtering by region', { region: regionParam });
+            }
         }
 
         // Add make (brand) filter if provided
         if (makeParam) {
           filters.make = makeParam;
-          console.log('🎯 Filtering by make:', makeParam);
+            if (process.env.NODE_ENV === 'development') {
+              logger.debug('Filtering by make', { make: makeParam });
+            }
         }
 
         if (!regionParam && !makeParam) {
-          console.log('📋 No filters - loading all cars');
+            if (process.env.NODE_ENV === 'development') {
+              logger.debug('No filters - loading all cars');
+            }
         }
 
         // ⚡ Fetch cars with caching (5 minute cache)
@@ -206,31 +214,42 @@ const CarsPage: React.FC = () => {
               ? cacheKeys.carsByMake(makeParam)
               : cacheKeys.activeCars();
 
-        console.log('🔥 Using cache key:', cacheKey);
+          if (process.env.NODE_ENV === 'development') {
+            logger.debug('Using cache key for cars', { cacheKey });
+          }
         
         const result = await firebaseCache.getOrFetch(
           cacheKey,
           async () => {
-            console.log('📡 Fetching from Firebase (cache miss)...');
+              if (process.env.NODE_ENV === 'development') {
+                logger.debug('Fetching cars from Firebase (cache miss)', { cacheKey });
+              }
             return await carListingService.getListings(filters);
           },
           { duration: 5 * 60 * 1000 } // 5 minutes
         );
         
-        console.log('📦 Result:', {
-          total: result.listings.length,
-          filters: { region: regionParam, make: makeParam },
-          cacheStats: firebaseCache.getStats()
-        });
+          if (process.env.NODE_ENV === 'development') {
+            logger.debug('Cars fetch result', {
+              total: result.listings.length,
+              filters: { region: regionParam, make: makeParam },
+              cacheStats: firebaseCache.getStats()
+            });
+          }
         
         setCars(result.listings);
-        console.log(`✅ Loaded ${result.listings.length} cars:`, 
-          regionParam ? `from region: ${regionParam}` : '',
-          makeParam ? `make: ${makeParam}` : '',
-          !regionParam && !makeParam ? 'all cars' : ''
-        );
+          if (process.env.NODE_ENV === 'development') {
+            logger.debug('Loaded cars successfully', { 
+              count: result.listings.length,
+              region: regionParam || 'all',
+              make: makeParam || 'all'
+            });
+          }
       } catch (err: any) {
-        console.error('❌ Error loading cars:', err);
+          logger.error('Error loading cars', err as Error, { 
+            region: searchParams.get('city'), 
+            make: searchParams.get('make')
+          });
         setError(err.message || 'Failed to load cars');
       } finally {
         setLoading(false);

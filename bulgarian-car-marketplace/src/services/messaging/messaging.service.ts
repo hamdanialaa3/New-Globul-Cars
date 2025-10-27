@@ -22,6 +22,7 @@ import {
   Unsubscribe
 } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
+import { logger } from '../logger-service';
 
 export interface Message {
   id: string;
@@ -92,12 +93,14 @@ class MessagingService {
           }
         });
         
-        console.log('Created new conversation:', conversationId);
+        if (process.env.NODE_ENV === 'development') {
+          logger.debug('Created new conversation', { conversationId });
+        }
       }
       
       return conversationId;
     } catch (error) {
-      console.error('Error getting/creating conversation:', error);
+      logger.error('Error getting/creating conversation', error as Error);
       throw error;
     }
   }
@@ -149,11 +152,13 @@ class MessagingService {
         [`unreadCount.${recipientId}`]: (conversationData.unreadCount?.[recipientId] || 0) + 1
       });
       
-      console.log('Message sent:', messageDoc.id);
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Message sent', { messageId: messageDoc.id, conversationId });
+      }
       return messageDoc.id;
       
     } catch (error) {
-      console.error('Error sending message:', error);
+      logger.error('Error sending message', error as Error);
       throw error;
     }
   }
@@ -179,7 +184,7 @@ class MessagingService {
       });
       
     } catch (error) {
-      console.error('Error marking message as read:', error);
+      logger.error('Error marking message as read', error as Error);
       throw error;
     }
   }
@@ -215,7 +220,7 @@ class MessagingService {
       await Promise.all(updatePromises);
       
     } catch (error) {
-      console.error('Error marking conversation as read:', error);
+      logger.error('Error marking conversation as read', error as Error);
       throw error;
     }
   }
@@ -246,7 +251,7 @@ class MessagingService {
         onMessagesUpdate(messages);
       },
       (error) => {
-        console.error('Error listening to messages:', error);
+        logger.error('Error listening to messages', error as Error);
       }
     );
   }
@@ -303,7 +308,7 @@ class MessagingService {
       return validConversations as ConversationWithUser[];
       
     } catch (error) {
-      console.error('Error getting user conversations:', error);
+      logger.error('Error getting user conversations', error as Error);
       throw error;
     }
   }
@@ -359,7 +364,7 @@ class MessagingService {
         onConversationsUpdate(validConversations as ConversationWithUser[]);
       },
       (error) => {
-        console.error('Error listening to conversations:', error);
+        logger.error('Error listening to conversations', error as Error);
       }
     );
   }
@@ -382,10 +387,12 @@ class MessagingService {
       const conversationRef = doc(db, 'conversations', conversationId);
       await deleteDoc(conversationRef);
       
-      console.log('Conversation deleted:', conversationId);
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Conversation deleted', { conversationId });
+      }
       
     } catch (error) {
-      console.error('Error deleting conversation:', error);
+      logger.error('Error deleting conversation', error as Error);
       throw error;
     }
   }

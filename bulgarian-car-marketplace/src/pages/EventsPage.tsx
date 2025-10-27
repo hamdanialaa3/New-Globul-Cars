@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
+import { logger } from '../services/logger-service';
 import {
   Calendar,
   MapPin,
@@ -144,7 +145,7 @@ const EventsPage: React.FC = () => {
 
       setEvents(mockEvents);
     } catch (error) {
-      console.error('Error loading events:', error);
+      logger.error('Error loading events', error as Error);
     } finally {
       setLoading(false);
     }

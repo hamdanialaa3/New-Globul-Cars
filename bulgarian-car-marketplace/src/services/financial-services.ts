@@ -5,7 +5,6 @@
 import {
   collection,
   addDoc,
-  updateDoc,
   doc,
   getDoc,
   getDocs,
@@ -17,6 +16,7 @@ import {
 } from 'firebase/firestore';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { db } from '../firebase/firebase-config';
+import { logger } from './logger-service';
 import {
   ServiceLead,
   FinanceLeadData,
@@ -57,7 +57,7 @@ export class BulgarianFinancialServices {
 
       return docRef.id;
     } catch (error) {
-      console.error('[SERVICE] Error submitting finance lead:', error);
+      logger.error('[SERVICE] Error submitting finance lead', error as Error);
       throw new Error('Грешка при изпращане на заявката за финансиране');
     }
   }
@@ -91,7 +91,7 @@ export class BulgarianFinancialServices {
 
       return docRef.id;
     } catch (error) {
-      console.error('[SERVICE] Error submitting insurance quote:', error);
+      logger.error('[SERVICE] Error submitting insurance quote', error as Error);
       throw new Error('Грешка при изпращане на заявката за застраховка');
     }
   }
@@ -112,7 +112,7 @@ export class BulgarianFinancialServices {
         ...doc.data()
       } as ServiceLead));
     } catch (error) {
-      console.error('[SERVICE] Error getting user service leads:', error);
+      logger.error('[SERVICE] Error getting user service leads', error as Error);
       throw new Error('Грешка при зареждане на заявките');
     }
   }
@@ -131,7 +131,7 @@ export class BulgarianFinancialServices {
       }
       return null;
     } catch (error) {
-      console.error('[SERVICE] Error getting service lead:', error);
+      logger.error('[SERVICE] Error getting service lead', error as Error);
       return null;
     }
   }

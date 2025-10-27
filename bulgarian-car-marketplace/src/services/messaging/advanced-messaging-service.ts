@@ -12,13 +12,13 @@ import {
   orderBy,
   onSnapshot,
   serverTimestamp,
-  Timestamp,
   getDocs,
   limit,
   writeBatch
 } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '../../firebase/firebase-config';
+import { logger } from '../logger-service';
 
 // ==================== INTERFACES ====================
 
@@ -117,11 +117,13 @@ export class AdvancedMessagingService {
       // Update conversation
       await this.updateConversation(conversationId, senderId, text);
 
-      console.log('✅ Message sent:', docRef.id);
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Message sent', { messageId: docRef.id, conversationId });
+      }
       return docRef.id;
 
     } catch (error) {
-      console.error('❌ Send message failed:', error);
+      logger.error('Send message failed', error as Error);
       throw error;
     }
   }
@@ -158,11 +160,13 @@ export class AdvancedMessagingService {
       // 3. Update conversation
       await this.updateConversation(conversationId, senderId, text || '📎 Attachment');
 
-      console.log('✅ Message with attachments sent');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Message with attachments sent', { messageId: docRef.id });
+      }
       return docRef.id;
 
     } catch (error) {
-      console.error('❌ Send with attachments failed:', error);
+      logger.error('Send with attachments failed', error as Error);
       throw error;
     }
   }
@@ -200,9 +204,11 @@ export class AdvancedMessagingService {
         [`unreadCount.${userId}`]: 0
       });
 
-      console.log('✅ Messages marked as read');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Messages marked as read', { conversationId, userId });
+      }
     } catch (error) {
-      console.error('❌ Mark as read failed:', error);
+      logger.error('Mark as read failed', error as Error);
     }
   }
 
@@ -236,7 +242,7 @@ export class AdvancedMessagingService {
         this.typingTimeouts.set(timeoutKey, timeout);
       }
     } catch (error) {
-      console.error('❌ Set typing failed:', error);
+      logger.error('Set typing failed', error as Error);
     }
   }
 
@@ -320,7 +326,7 @@ export class AdvancedMessagingService {
         updatedAt: serverTimestamp()
       });
     } catch (error) {
-      console.error('❌ Update conversation failed:', error);
+      logger.error('Update conversation failed', error as Error);
     }
   }
 
@@ -367,7 +373,7 @@ export class AdvancedMessagingService {
         ...doc.data()
       } as Conversation));
     } catch (error) {
-      console.error('Error getting user conversations:', error);
+      logger.error('Error getting user conversations', error as Error);
       return [];
     }
   }
@@ -424,7 +430,7 @@ export class AdvancedMessagingService {
         readAt: doc.data().readAt?.toDate()
       } as Message));
     } catch (error) {
-      console.error('Error getting conversation:', error);
+      logger.error('Error getting conversation', error as Error);
       return [];
     }
   }
@@ -483,7 +489,7 @@ export class AdvancedMessagingService {
 
       await batch.commit();
     } catch (error) {
-      console.error('Error marking messages as read:', error);
+      logger.error('Error marking messages as read', error as Error);
     }
   }
 }
