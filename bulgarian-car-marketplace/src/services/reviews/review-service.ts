@@ -49,6 +49,12 @@ export interface Review {
     createdAt: Date;
     userId: string;
   };
+  
+  // Backward compatibility (populated from buyerId lookup)
+  reviewerId?: string;      // Same as buyerId
+  reviewerName?: string;    // Fetched from users/{buyerId}
+  reviewerPhoto?: string;   // Fetched from users/{buyerId}
+  verified?: boolean;       // Same as verifiedPurchase
 }
 
 export interface ReviewStats {
@@ -97,6 +103,36 @@ export class ReviewService {
   }
 
   // ==================== PUBLIC METHODS ====================
+
+  /**
+   * Create review (simple wrapper for backward compatibility)
+   * إنشاء مراجعة (wrapper بسيط للتوافق)
+   */
+  async createReview(
+    carId: string,
+    sellerId: string,
+    reviewerId: string,
+    rating: number,
+    comment: string
+  ): Promise<string> {
+    const result = await this.submitReview({
+      sellerId,
+      buyerId: reviewerId,
+      carId,
+      rating: rating as 1 | 2 | 3 | 4 | 5,
+      title: comment.substring(0, 50), // Use first 50 chars as title
+      comment,
+      wouldRecommend: rating >= 4,
+      transactionType: 'inquiry',
+      verifiedPurchase: false
+    });
+    
+    if (!result.success) {
+      throw new Error(result.message);
+    }
+    
+    return result.reviewId || '';
+  }
 
   /**
    * Submit a new review
@@ -175,13 +211,44 @@ export class ReviewService {
 
       const snapshot = await getDocs(q);
       
-      return snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        createdAt: doc.data().createdAt?.toDate() || new Date(),
-        updatedAt: doc.data().updatedAt?.toDate() || new Date(),
-        moderatedAt: doc.data().moderatedAt?.toDate()
-      } as Review));
+      // Fetch reviewer data for each review
+      const reviews = await Promise.all(
+        snapshot.docs.map(async (docSnap) => {
+          const data = docSnap.data();
+          const buyerId = data.buyerId;
+          
+          // Fetch reviewer info from users collection
+          let reviewerName = 'User';
+          let reviewerPhoto: string | undefined = undefined;
+          
+          try {
+            const userDoc = await getDoc(doc(db, 'users', buyerId));
+            if (userDoc.exists()) {
+              const userData = userDoc.data();
+              reviewerName = userData.displayName || userData.businessName || 'User';
+              reviewerPhoto = userData.photoURL || userData.profileImage?.url;
+            }
+          } catch (err) {
+            // Fallback to default if user fetch fails
+            serviceLogger.warn('Could not fetch reviewer data', { buyerId });
+          }
+          
+          return {
+            id: docSnap.id,
+            ...data,
+            // Backward compatibility fields
+            reviewerId: buyerId,
+            reviewerName,
+            reviewerPhoto,
+            verified: data.verifiedPurchase || false,
+            createdAt: data.createdAt?.toDate() || new Date(),
+            updatedAt: data.updatedAt?.toDate() || new Date(),
+            moderatedAt: data.moderatedAt?.toDate()
+          } as Review;
+        })
+      );
+      
+      return reviews;
 
     } catch (error) {
       serviceLogger.error('Error fetching reviews', error as Error, { sellerId });
