@@ -181,6 +181,8 @@ const UnifiedEquipmentPage: React.FC = () => {
             <S.Tab
               key={category}
               $isActive={activeTab === category}
+              $hasSelection={count > 0}
+              $isEmpty={count === 0}
               onClick={() => setActiveTab(category)}
             >
               {getCategoryIcon(category)}
