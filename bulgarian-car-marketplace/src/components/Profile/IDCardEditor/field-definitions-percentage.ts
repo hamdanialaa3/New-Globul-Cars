@@ -40,8 +40,8 @@ export const FRONT_FIELDS_PERCENT: PercentageFieldDefinition[] = [
     labelEN: 'Document number',
     example: 'AA0000000',
     position: { 
-      xPercent: 44.96,  // +1.5% (3 chars right)
-      yPercent: 17.64,  // +3% (1 field down)
+      xPercent: 46.46,  // +3% total (6 chars right)
+      yPercent: 19.14,  // +4.5% total (1.5 fields down)
       widthPercent: 22.87,
       heightPercent: 5.51
     },
@@ -56,8 +56,8 @@ export const FRONT_FIELDS_PERCENT: PercentageFieldDefinition[] = [
     labelEN: 'Personal No.',
     example: '9508010133',
     position: { 
-      xPercent: 44.96,  // +1.5%
-      yPercent: 24.16,  // +3%
+      xPercent: 46.46,
+      yPercent: 25.66,
       widthPercent: 22.87,
       heightPercent: 5.51
     },
@@ -73,8 +73,8 @@ export const FRONT_FIELDS_PERCENT: PercentageFieldDefinition[] = [
     labelEN: 'Surname',
     example: 'ИВАНОВА',
     position: { 
-      xPercent: 44.96,  // +1.5%
-      yPercent: 31.41,  // +3%
+      xPercent: 46.46,
+      yPercent: 32.91,
       widthPercent: 16.47,
       heightPercent: 5.51
     },
@@ -88,8 +88,8 @@ export const FRONT_FIELDS_PERCENT: PercentageFieldDefinition[] = [
     labelEN: 'Name',
     example: 'СЛАВИНА',
     position: { 
-      xPercent: 62.80,  // +1.5%
-      yPercent: 31.41,  // +3%
+      xPercent: 64.30,
+      yPercent: 32.91,
       widthPercent: 16.47,
       heightPercent: 5.51
     },
@@ -103,8 +103,8 @@ export const FRONT_FIELDS_PERCENT: PercentageFieldDefinition[] = [
     labelEN: "Father's name",
     example: 'ГЕОРГИЕВА',
     position: { 
-      xPercent: 80.64,  // +1.5%
-      yPercent: 31.41,  // +3%
+      xPercent: 82.14,
+      yPercent: 32.91,
       widthPercent: 16.47,
       heightPercent: 5.51
     },
@@ -118,8 +118,8 @@ export const FRONT_FIELDS_PERCENT: PercentageFieldDefinition[] = [
     labelEN: 'Surname',
     example: 'IVANOVA',
     position: { 
-      xPercent: 44.96,  // +1.5%
-      yPercent: 37.93,  // +3%
+      xPercent: 46.46,
+      yPercent: 39.43,
       widthPercent: 16.47,
       heightPercent: 5.51
     },
@@ -133,8 +133,8 @@ export const FRONT_FIELDS_PERCENT: PercentageFieldDefinition[] = [
     labelEN: 'Name',
     example: 'SLAVINA',
     position: { 
-      xPercent: 62.80,  // +1.5%
-      yPercent: 37.93,  // +3%
+      xPercent: 64.30,
+      yPercent: 39.43,
       widthPercent: 16.47,
       heightPercent: 5.51
     },
@@ -148,8 +148,8 @@ export const FRONT_FIELDS_PERCENT: PercentageFieldDefinition[] = [
     labelEN: "Father's name",
     example: 'GEORGIEVA',
     position: { 
-      xPercent: 80.64,  // +1.5%
-      yPercent: 37.93,  // +3%
+      xPercent: 82.14,
+      yPercent: 39.43,
       widthPercent: 16.47,
       heightPercent: 5.51
     },
@@ -163,8 +163,8 @@ export const FRONT_FIELDS_PERCENT: PercentageFieldDefinition[] = [
     labelEN: 'Nationality',
     example: 'БЪЛГАРИЯ / BGR',
     position: { 
-      xPercent: 44.96,  // +1.5%
-      yPercent: 44.45,  // +3%
+      xPercent: 46.46,
+      yPercent: 45.95,
       widthPercent: 22.87,
       heightPercent: 5.51
     },
@@ -178,8 +178,8 @@ export const FRONT_FIELDS_PERCENT: PercentageFieldDefinition[] = [
     labelEN: 'Date of birth',
     example: '01.08.1995',
     position: { 
-      xPercent: 44.96,  // +1.5%
-      yPercent: 50.97,  // +3%
+      xPercent: 46.46,
+      yPercent: 52.47,
       widthPercent: 17.38,
       heightPercent: 5.51
     },
@@ -193,8 +193,8 @@ export const FRONT_FIELDS_PERCENT: PercentageFieldDefinition[] = [
     labelEN: 'Sex',
     example: 'Ж / F',
     position: { 
-      xPercent: 44.96,  // +1.5%
-      yPercent: 57.49,  // +3%
+      xPercent: 46.46,
+      yPercent: 58.99,
       widthPercent: 8.23,
       heightPercent: 5.51
     },
@@ -211,8 +211,8 @@ export const FRONT_FIELDS_PERCENT: PercentageFieldDefinition[] = [
     labelEN: 'Height',
     example: '168',
     position: { 
-      xPercent: 55.48,  // +1.5%
-      yPercent: 57.49,  // +3%
+      xPercent: 56.98,
+      yPercent: 58.99,
       widthPercent: 9.15,
       heightPercent: 5.51
     },
@@ -227,8 +227,8 @@ export const FRONT_FIELDS_PERCENT: PercentageFieldDefinition[] = [
     labelEN: 'Date of expiry',
     example: '17.06.2034',
     position: { 
-      xPercent: 44.96,  // +1.5%
-      yPercent: 64.01,  // +3%
+      xPercent: 46.46,
+      yPercent: 65.51,
       widthPercent: 17.38,
       heightPercent: 5.51
     },
@@ -241,8 +241,8 @@ export const FRONT_FIELDS_PERCENT: PercentageFieldDefinition[] = [
     labelEN: 'Authority',
     example: 'MBP/Mol BGR',
     position: { 
-      xPercent: 44.96,  // +1.5%
-      yPercent: 70.54,  // +3%
+      xPercent: 46.46,
+      yPercent: 72.04,
       widthPercent: 29.28,
       heightPercent: 5.51
     },
@@ -262,8 +262,8 @@ export const BACK_FIELDS_PERCENT: PercentageFieldDefinition[] = [
     labelEN: 'Place of birth',
     example: 'СОФИЯ/SOFIA',
     position: { 
-      xPercent: 7.45,   // +1.5%
-      yPercent: 18.22,  // +3%
+      xPercent: 8.95,   // +3% total
+      yPercent: 19.72,  // +4.5% total
       widthPercent: 34.77,
       heightPercent: 5.51
     },
@@ -276,8 +276,8 @@ export const BACK_FIELDS_PERCENT: PercentageFieldDefinition[] = [
     labelEN: 'Region',
     example: 'обл.СОФИЯ',
     position: { 
-      xPercent: 7.45,   // +1.5%
-      yPercent: 27.64,  // +3%
+      xPercent: 8.95,
+      yPercent: 29.14,
       widthPercent: 41.17,
       heightPercent: 4.64
     },
@@ -289,8 +289,8 @@ export const BACK_FIELDS_PERCENT: PercentageFieldDefinition[] = [
     labelEN: 'Municipality',
     example: 'общ.СТОЛИЧНА гр.СОФИЯ/SOFIA',
     position: { 
-      xPercent: 7.45,   // +1.5%
-      yPercent: 33.43,  // +3%
+      xPercent: 8.95,
+      yPercent: 34.93,
       widthPercent: 41.17,
       heightPercent: 4.64
     },
@@ -302,8 +302,8 @@ export const BACK_FIELDS_PERCENT: PercentageFieldDefinition[] = [
     labelEN: 'Street',
     example: 'бул.КНЯГИНЯ МАРИЯ ЛУИЗА 48 em.5 an.26',
     position: { 
-      xPercent: 7.45,   // +1.5%
-      yPercent: 39.23,  // +3%
+      xPercent: 8.95,
+      yPercent: 40.73,
       widthPercent: 47.12,
       heightPercent: 4.64
     },
@@ -315,8 +315,8 @@ export const BACK_FIELDS_PERCENT: PercentageFieldDefinition[] = [
     labelEN: 'Height',
     example: '168',
     position: { 
-      xPercent: 7.45,   // +1.5%
-      yPercent: 48.65,  // +3%
+      xPercent: 8.95,
+      yPercent: 50.15,
       widthPercent: 11.89,
       heightPercent: 4.64
     },
@@ -332,8 +332,8 @@ export const BACK_FIELDS_PERCENT: PercentageFieldDefinition[] = [
     labelEN: 'Color of eyes',
     example: 'КАФЯВИ/BROWN',
     position: { 
-      xPercent: 25.29,  // +1.5%
-      yPercent: 48.65,  // +3%
+      xPercent: 26.79,
+      yPercent: 50.15,
       widthPercent: 17.38,
       heightPercent: 4.64
     },
@@ -351,8 +351,8 @@ export const BACK_FIELDS_PERCENT: PercentageFieldDefinition[] = [
     labelEN: 'Authority',
     example: 'MBP/Mol BGR',
     position: { 
-      xPercent: 7.45,   // +1.5%
-      yPercent: 58.07,  // +3%
+      xPercent: 8.95,
+      yPercent: 59.57,
       widthPercent: 23.79,
       heightPercent: 4.64
     },
@@ -365,8 +365,8 @@ export const BACK_FIELDS_PERCENT: PercentageFieldDefinition[] = [
     labelEN: 'Date of issue',
     example: '17.06.2024',
     position: { 
-      xPercent: 36.73,  // +1.5%
-      yPercent: 58.07,  // +3%
+      xPercent: 38.23,
+      yPercent: 59.57,
       widthPercent: 17.38,
       heightPercent: 4.64
     },
