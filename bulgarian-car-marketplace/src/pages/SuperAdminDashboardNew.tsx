@@ -30,6 +30,7 @@ import PermissionManagement from '../components/PermissionManagement';
 import AuditLogging from '../components/AuditLogging';
 import UserDetailsModal from '../components/UserDetailsModal';
 import FacebookAdminPanel from '../components/SuperAdmin/FacebookAdminPanel';
+import { logger } from '../services/logger-service';
 
 // Styled Components
 const DashboardContainer = styled.div`
@@ -87,7 +88,9 @@ const SuperAdminDashboard: React.FC = () => {
 
         // Load real Firebase data
         try {
-          console.log('🔄 Loading real Firebase data...');
+          if (process.env.NODE_ENV === 'development') {
+            logger.debug('Loading real Firebase data...');
+          }
           const realAnalytics = await firebaseRealDataService.getRealAnalytics();
           setAnalytics({
             totalUsers: realAnalytics.totalUsers,
@@ -137,9 +140,11 @@ const SuperAdminDashboard: React.FC = () => {
           const realUserActivity = await firebaseRealDataService.getRealUserActivity();
           setUserActivity(realUserActivity);
 
-          console.log('✅ Real Firebase data loaded successfully');
+          if (process.env.NODE_ENV === 'development') {
+            logger.debug('Real Firebase data loaded successfully');
+          }
         } catch (error) {
-          console.warn('⚠️ Failed to load real Firebase data, using fallback data');
+          logger.warn('Failed to load real Firebase data, using fallback data');
           // Fallback data
           setAnalytics({
             totalUsers: 2,
@@ -163,12 +168,12 @@ const SuperAdminDashboard: React.FC = () => {
           const moderationData = await advancedRealDataService.getRealContentModeration();
           setContentModeration(moderationData);
         } catch (error) {
-          console.warn('⚠️ Failed to load content moderation data');
+          logger.warn('Failed to load content moderation data');
           setContentModeration(null);
         }
 
       } catch (error) {
-        console.error('❌ Error initializing dashboard:', error);
+        logger.error('Error initializing super admin dashboard', error as Error);
         setError('Failed to initialize dashboard');
       } finally {
         setLoading(false);
@@ -189,7 +194,9 @@ const SuperAdminDashboard: React.FC = () => {
           });
         }
       } catch (error) {
-        console.log('Stats not available yet');
+        if (process.env.NODE_ENV === 'development') {
+          logger.debug('Stats not available yet');
+        }
       }
     };
 
@@ -208,7 +215,7 @@ const SuperAdminDashboard: React.FC = () => {
         await uniqueOwnerService.logout();
         navigate('/super-admin-login');
       } catch (error) {
-        console.error('Error during logout:', error);
+        logger.error('Error during super admin logout', error as Error);
       }
     }
   };
