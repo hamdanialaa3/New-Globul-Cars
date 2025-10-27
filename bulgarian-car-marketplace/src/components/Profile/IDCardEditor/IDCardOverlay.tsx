@@ -5,9 +5,8 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useLanguage } from '../../../contexts/LanguageContext';
 import { X, Check, RefreshCw, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
-import { FRONT_FIELDS, BACK_FIELDS, PHOTO_ZONE, SIGNATURE_ZONE } from './field-definitions';
 import { IDCardData, ValidationResult } from './types';
-import OverlayInput from './OverlayInput';
+import ResponsiveOverlay from './ResponsiveOverlay';
 import EGNValidator from '../../../services/verification/egn-validator';
 
 interface IDCardOverlayProps {
@@ -115,27 +114,23 @@ const IDCardOverlay: React.FC<IDCardOverlayProps> = ({
     const newErrors: Record<string, string> = {};
     
     // Check required fields
-    const allFields = activeTab === 'front' ? FRONT_FIELDS : BACK_FIELDS;
+    const requiredFields = [
+      'documentNumber', 'personalNumber', 'lastNameBG', 'firstNameBG', 'middleNameBG',
+      'lastNameEN', 'firstNameEN', 'middleNameEN', 'dateOfBirth', 'expiryDate'
+    ];
     
-    allFields.forEach(field => {
-      if (field.required && !formData[field.id]) {
-        newErrors[field.id] = language === 'bg' ? 'Задължително поле' : 'Required field';
-      }
-      
-      // Validate EGN
-      if (field.id === 'personalNumber' && formData.personalNumber) {
-        if (!EGNValidator.validateEGN(formData.personalNumber)) {
-          newErrors[field.id] = language === 'bg' ? 'Невалиден ЕГН' : 'Invalid EGN';
-        }
-      }
-      
-      // Validate pattern
-      if (field.pattern && formData[field.id]) {
-        if (!field.pattern.test(formData[field.id] as string)) {
-          newErrors[field.id] = language === 'bg' ? 'Невалиден формат' : 'Invalid format';
-        }
+    requiredFields.forEach(fieldId => {
+      if (!formData[fieldId]) {
+        newErrors[fieldId] = language === 'bg' ? 'Задължително поле' : 'Required field';
       }
     });
+    
+    // Validate EGN
+    if (formData.personalNumber) {
+      if (!EGNValidator.validateEGN(formData.personalNumber)) {
+        newErrors.personalNumber = language === 'bg' ? 'Невалиден ЕГН' : 'Invalid EGN';
+      }
+    }
     
     setErrors(newErrors);
     
@@ -174,7 +169,6 @@ const IDCardOverlay: React.FC<IDCardOverlayProps> = ({
     }
   };
 
-  const fields = activeTab === 'front' ? FRONT_FIELDS : BACK_FIELDS;
   const backgroundImage = activeTab === 'front'
     ? '/assets/ID_front (1).png'
     : '/assets/ID_Back.png';
@@ -211,32 +205,19 @@ const IDCardOverlay: React.FC<IDCardOverlayProps> = ({
         {/* Instructions */}
         <Instructions>
           {language === 'bg'
-            ? 'Попълнете данните си точно както са изписани на личната ви карта'
-            : 'Fill in your information exactly as it appears on your ID card'}
+            ? 'Попълнете данните си точно както са изписани на личната ви карта. النظام يتكيف تلقائياً مع حجم شاشتك!'
+            : 'Fill in your information exactly as it appears on your ID card. System auto-adapts to your screen!'}
         </Instructions>
 
-        {/* ID Card Canvas with Overlays */}
+        {/* ⚡ NEW: Responsive Overlay with Percentage-based positioning */}
         <CardCanvas>
-          {/* Background: ID Card Image (semi-transparent) */}
-          <CardBackground 
-            src={backgroundImage} 
-            alt={activeTab === 'front' ? 'ID Front' : 'ID Back'}
+          <ResponsiveOverlay
+            backgroundImage={backgroundImage}
+            formData={formData}
+            onChange={handleFieldChange}
+            errors={errors}
+            side={activeTab}
           />
-          
-          {/* Overlay Inputs */}
-          <OverlayContainer>
-            {fields.map(field => (
-              <OverlayInput
-                key={field.id}
-                field={field}
-                value={formData[field.id]}
-                onChange={handleFieldChange}
-                scale={1}
-                isValid={!errors[field.id]}
-                error={errors[field.id]}
-              />
-            ))}
-          </OverlayContainer>
         </CardCanvas>
 
         {/* Auto-fill Bar (front side only) */}

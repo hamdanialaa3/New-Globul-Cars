@@ -4,7 +4,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import { FRONT_FIELDS_PERCENT, percentToPixels } from './field-definitions-percentage';
+import { FRONT_FIELDS_PERCENT, BACK_FIELDS_PERCENT, percentToPixels } from './field-definitions-percentage';
 import OverlayInput from './OverlayInput';
 
 interface ResponsiveOverlayProps {
@@ -12,18 +12,23 @@ interface ResponsiveOverlayProps {
   formData: any;
   onChange: (fieldId: string, value: any) => void;
   errors: Record<string, string>;
+  side: 'front' | 'back';
 }
 
 const ResponsiveOverlay: React.FC<ResponsiveOverlayProps> = ({
   backgroundImage,
   formData,
   onChange,
-  errors
+  errors,
+  side
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
   const [imageDimensions, setImageDimensions] = useState({ width: 1093, height: 690 });
   const [scale, setScale] = useState(1);
+
+  // Select fields based on side
+  const fields = side === 'front' ? FRONT_FIELDS_PERCENT : BACK_FIELDS_PERCENT;
 
   // Calculate image dimensions and scale when loaded or window resizes
   useEffect(() => {
@@ -41,7 +46,7 @@ const ResponsiveOverlay: React.FC<ResponsiveOverlayProps> = ({
         const scaleY = displayHeight / 690;   // Original height
         const avgScale = (scaleX + scaleY) / 2;
         
-        console.log('📐 Image scale calculated:', {
+        console.log(`📐 ${side.toUpperCase()} side - Image scale:`, {
           displayWidth,
           displayHeight,
           scaleX: scaleX.toFixed(3),
@@ -67,6 +72,9 @@ const ResponsiveOverlay: React.FC<ResponsiveOverlayProps> = ({
     // Update on window resize
     window.addEventListener('resize', updateDimensions);
     
+    // Small delay to ensure layout is complete
+    setTimeout(updateDimensions, 100);
+    
     // Cleanup
     return () => {
       window.removeEventListener('resize', updateDimensions);
@@ -74,7 +82,7 @@ const ResponsiveOverlay: React.FC<ResponsiveOverlayProps> = ({
         img.removeEventListener('load', updateDimensions);
       }
     };
-  }, [backgroundImage]);
+  }, [backgroundImage, side]);
 
   return (
     <Container ref={containerRef}>
@@ -82,12 +90,12 @@ const ResponsiveOverlay: React.FC<ResponsiveOverlayProps> = ({
       <BackgroundImage 
         ref={imageRef}
         src={backgroundImage} 
-        alt="ID Card"
+        alt={`ID Card ${side}`}
       />
       
       {/* Overlay Fields */}
       <OverlayContainer>
-        {FRONT_FIELDS_PERCENT.map((field) => {
+        {fields.map((field) => {
           // Convert percentage to pixels based on actual image size
           const pixelPosition = percentToPixels(
             field.position,
@@ -118,13 +126,29 @@ const ResponsiveOverlay: React.FC<ResponsiveOverlayProps> = ({
       {/* Debug Info (removable in production) */}
       {process.env.NODE_ENV === 'development' && (
         <DebugInfo>
-          Scale: {scale.toFixed(3)} | 
-          Image: {imageDimensions.width}×{imageDimensions.height}
+          {side.toUpperCase()} | Scale: {scale.toFixed(3)} | 
+          Image: {imageDimensions.width.toFixed(0)}×{imageDimensions.height.toFixed(0)}
         </DebugInfo>
       )}
     </Container>
   );
 };
+
+/**
+ * Convert percentage position to pixels based on actual container size
+ */
+export function percentToPixels(
+  percentPos: PercentageFieldDefinition['position'],
+  containerWidth: number,
+  containerHeight: number
+): { x: number; y: number; width: number; height: number } {
+  return {
+    x: (percentPos.xPercent / 100) * containerWidth,
+    y: (percentPos.yPercent / 100) * containerHeight,
+    width: (percentPos.widthPercent / 100) * containerWidth,
+    height: (percentPos.heightPercent / 100) * containerHeight
+  };
+}
 
 // Styled Components
 const Container = styled.div`

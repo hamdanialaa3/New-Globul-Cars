@@ -252,6 +252,129 @@ export const FRONT_FIELDS_PERCENT: PercentageFieldDefinition[] = [
 ];
 
 /**
+ * BACK SIDE FIELDS (Percentage-based)
+ * Base: ID_Back.png (1093×690px - same as front)
+ */
+export const BACK_FIELDS_PERCENT: PercentageFieldDefinition[] = [
+  {
+    id: 'placeOfBirth',
+    label: 'Място на раждане',
+    labelEN: 'Place of birth',
+    example: 'СОФИЯ/SOFIA',
+    position: { 
+      xPercent: 5.95,   // 65/1093
+      yPercent: 15.22,  // 105/690
+      widthPercent: 34.77,  // 380/1093
+      heightPercent: 5.51   // 38/690
+    },
+    inputType: 'text',
+    required: true
+  },
+  {
+    id: 'addressOblast',
+    label: 'Област',
+    labelEN: 'Region',
+    example: 'обл.СОФИЯ',
+    position: { 
+      xPercent: 5.95,
+      yPercent: 24.64,  // 170/690
+      widthPercent: 41.17,  // 450/1093
+      heightPercent: 4.64   // 32/690
+    },
+    inputType: 'text'
+  },
+  {
+    id: 'addressMunicipality',
+    label: 'Община',
+    labelEN: 'Municipality',
+    example: 'общ.СТОЛИЧНА гр.СОФИЯ/SOFIA',
+    position: { 
+      xPercent: 5.95,
+      yPercent: 30.43,  // 210/690
+      widthPercent: 41.17,
+      heightPercent: 4.64
+    },
+    inputType: 'text'
+  },
+  {
+    id: 'addressStreet',
+    label: 'Улица',
+    labelEN: 'Street',
+    example: 'бул.КНЯГИНЯ МАРИЯ ЛУИЗА 48 em.5 an.26',
+    position: { 
+      xPercent: 5.95,
+      yPercent: 36.23,  // 250/690
+      widthPercent: 47.12,  // 515/1093
+      heightPercent: 4.64
+    },
+    inputType: 'text'
+  },
+  {
+    id: 'height',
+    label: 'Ръст',
+    labelEN: 'Height',
+    example: '168',
+    position: { 
+      xPercent: 5.95,
+      yPercent: 45.65,  // 315/690
+      widthPercent: 11.89,  // 130/1093
+      heightPercent: 4.64
+    },
+    inputType: 'number',
+    min: 140,
+    max: 220,
+    suffix: 'cm',
+    autoFillFrom: 'height'
+  },
+  {
+    id: 'eyeColor',
+    label: 'Цвят на очите',
+    labelEN: 'Color of eyes',
+    example: 'КАФЯВИ/BROWN',
+    position: { 
+      xPercent: 23.79,  // 260/1093
+      yPercent: 45.65,
+      widthPercent: 17.38,  // 190/1093
+      heightPercent: 4.64
+    },
+    inputType: 'select',
+    options: [
+      { value: 'BROWN', label: 'КАФЯВИ/BROWN' },
+      { value: 'BLUE', label: 'СИН/BLUE' },
+      { value: 'GREEN', label: 'ЗЕЛЕН/GREEN' },
+      { value: 'GREY', label: 'СИВ/GREY' }
+    ]
+  },
+  {
+    id: 'issuingAuthority',
+    label: 'Издаден от',
+    labelEN: 'Authority',
+    example: 'MBP/Mol BGR',
+    position: { 
+      xPercent: 5.95,
+      yPercent: 55.07,  // 380/690
+      widthPercent: 23.79,  // 260/1093
+      heightPercent: 4.64
+    },
+    inputType: 'text',
+    autoFillFrom: 'issuingAuthority'
+  },
+  {
+    id: 'issueDate',
+    label: 'Дата на издаване',
+    labelEN: 'Date of issue',
+    example: '17.06.2024',
+    position: { 
+      xPercent: 35.23,  // 385/1093
+      yPercent: 55.07,
+      widthPercent: 17.38,  // 190/1093
+      heightPercent: 4.64
+    },
+    inputType: 'date-bulgarian'
+  }
+];
+
+/**
  * Convert percentage position to pixels based on actual container size
  */
 export function percentToPixels(
