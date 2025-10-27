@@ -209,16 +209,280 @@ const IDCardOverlay: React.FC<IDCardOverlayProps> = ({
             : 'Fill in your information exactly as it appears on your ID card. System auto-adapts to your screen!'}
         </Instructions>
 
-        {/* ⚡ NEW: Responsive Overlay with Percentage-based positioning */}
-        <CardCanvas>
-          <ResponsiveOverlay
-            backgroundImage={backgroundImage}
-            formData={formData}
-            onChange={handleFieldChange}
-            errors={errors}
-            side={activeTab}
-          />
-        </CardCanvas>
+        {/* ⚡ NEW: Two-Column Layout - Form on Left, Image on Right */}
+        <TwoColumnLayout>
+          {/* LEFT COLUMN: Form Fields */}
+          <FormColumn>
+            <FormScrollArea>
+              {activeTab === 'front' ? (
+                <>
+                  <FormSection>
+                    <SectionTitle>📄 {language === 'bg' ? 'Документ' : 'Document'}</SectionTitle>
+                    <FormField>
+                      <Label>№ на документа / Document Number</Label>
+                      <Input
+                        value={formData.documentNumber}
+                        onChange={(e) => handleFieldChange('documentNumber', e.target.value)}
+                        placeholder="AA0000000"
+                        $hasError={!!errors.documentNumber}
+                      />
+                      {errors.documentNumber && <ErrorText>{errors.documentNumber}</ErrorText>}
+                    </FormField>
+                    
+                    <FormField>
+                      <Label>ЕГН / Personal Number</Label>
+                      <Input
+                        value={formData.personalNumber}
+                        onChange={(e) => handleFieldChange('personalNumber', e.target.value)}
+                        placeholder="9508010133"
+                        maxLength={10}
+                        $hasError={!!errors.personalNumber}
+                      />
+                      {errors.personalNumber && <ErrorText>{errors.personalNumber}</ErrorText>}
+                    </FormField>
+                  </FormSection>
+
+                  <FormSection>
+                    <SectionTitle>👤 {language === 'bg' ? 'Имена (кирилица)' : 'Names (Cyrillic)'}</SectionTitle>
+                    <FormRow>
+                      <FormField>
+                        <Label>Фамилия / Surname</Label>
+                        <Input
+                          value={formData.lastNameBG}
+                          onChange={(e) => handleFieldChange('lastNameBG', e.target.value)}
+                          placeholder="ИВАНОВА"
+                          $hasError={!!errors.lastNameBG}
+                        />
+                      </FormField>
+                      <FormField>
+                        <Label>Име / Name</Label>
+                        <Input
+                          value={formData.firstNameBG}
+                          onChange={(e) => handleFieldChange('firstNameBG', e.target.value)}
+                          placeholder="СЛАВИНА"
+                          $hasError={!!errors.firstNameBG}
+                        />
+                      </FormField>
+                      <FormField>
+                        <Label>Презиме / Father's Name</Label>
+                        <Input
+                          value={formData.middleNameBG}
+                          onChange={(e) => handleFieldChange('middleNameBG', e.target.value)}
+                          placeholder="ГЕОРГИЕВА"
+                          $hasError={!!errors.middleNameBG}
+                        />
+                      </FormField>
+                    </FormRow>
+                  </FormSection>
+
+                  <FormSection>
+                    <SectionTitle>🔤 {language === 'bg' ? 'Имена (латиница)' : 'Names (Latin)'}</SectionTitle>
+                    <FormRow>
+                      <FormField>
+                        <Label>Surname</Label>
+                        <Input
+                          value={formData.lastNameEN}
+                          onChange={(e) => handleFieldChange('lastNameEN', e.target.value)}
+                          placeholder="IVANOVA"
+                          $hasError={!!errors.lastNameEN}
+                        />
+                      </FormField>
+                      <FormField>
+                        <Label>Name</Label>
+                        <Input
+                          value={formData.firstNameEN}
+                          onChange={(e) => handleFieldChange('firstNameEN', e.target.value)}
+                          placeholder="SLAVINA"
+                          $hasError={!!errors.firstNameEN}
+                        />
+                      </FormField>
+                      <FormField>
+                        <Label>Father's Name</Label>
+                        <Input
+                          value={formData.middleNameEN}
+                          onChange={(e) => handleFieldChange('middleNameEN', e.target.value)}
+                          placeholder="GEORGIEVA"
+                          $hasError={!!errors.middleNameEN}
+                        />
+                      </FormField>
+                    </FormRow>
+                  </FormSection>
+
+                  <FormSection>
+                    <SectionTitle>ℹ️ {language === 'bg' ? 'Лични данни' : 'Personal Info'}</SectionTitle>
+                    <FormField>
+                      <Label>Гражданство / Nationality</Label>
+                      <Input
+                        value={formData.nationality}
+                        onChange={(e) => handleFieldChange('nationality', e.target.value)}
+                        placeholder="БЪЛГАРИЯ / BGR"
+                        readOnly
+                      />
+                    </FormField>
+                    
+                    <FormRow>
+                      <FormField>
+                        <Label>Дата на раждане / Date of Birth</Label>
+                        <Input
+                          value={formData.dateOfBirth}
+                          onChange={(e) => handleFieldChange('dateOfBirth', e.target.value)}
+                          placeholder="01.08.1995"
+                          $hasError={!!errors.dateOfBirth}
+                        />
+                      </FormField>
+                      <FormField>
+                        <Label>Пол / Sex</Label>
+                        <Select
+                          value={formData.sex}
+                          onChange={(e) => handleFieldChange('sex', e.target.value)}
+                        >
+                          <option value="">-</option>
+                          <option value="M">М / M</option>
+                          <option value="F">Ж / F</option>
+                        </Select>
+                      </FormField>
+                      <FormField>
+                        <Label>Ръст / Height (cm)</Label>
+                        <Input
+                          type="number"
+                          value={formData.height}
+                          onChange={(e) => handleFieldChange('height', e.target.value)}
+                          placeholder="168"
+                          min="140"
+                          max="220"
+                        />
+                      </FormField>
+                    </FormRow>
+                  </FormSection>
+
+                  <FormSection>
+                    <SectionTitle>📅 {language === 'bg' ? 'Валидност' : 'Validity'}</SectionTitle>
+                    <FormRow>
+                      <FormField>
+                        <Label>Валидност / Date of Expiry</Label>
+                        <Input
+                          value={formData.expiryDate}
+                          onChange={(e) => handleFieldChange('expiryDate', e.target.value)}
+                          placeholder="17.06.2034"
+                          $hasError={!!errors.expiryDate}
+                        />
+                      </FormField>
+                      <FormField>
+                        <Label>Издаден от / Authority</Label>
+                        <Input
+                          value={formData.issuingAuthority}
+                          onChange={(e) => handleFieldChange('issuingAuthority', e.target.value)}
+                          placeholder="MBP/Mol BGR"
+                        />
+                      </FormField>
+                    </FormRow>
+                  </FormSection>
+                </>
+              ) : (
+                <>
+                  <FormSection>
+                    <SectionTitle>🏠 {language === 'bg' ? 'Адрес' : 'Address'}</SectionTitle>
+                    <FormField>
+                      <Label>Място на раждане / Place of Birth</Label>
+                      <Input
+                        value={formData.placeOfBirth}
+                        onChange={(e) => handleFieldChange('placeOfBirth', e.target.value)}
+                        placeholder="СОФИЯ/SOFIA"
+                      />
+                    </FormField>
+                    
+                    <FormField>
+                      <Label>Област / Region</Label>
+                      <Input
+                        value={formData.addressOblast}
+                        onChange={(e) => handleFieldChange('addressOblast', e.target.value)}
+                        placeholder="обл.СОФИЯ"
+                      />
+                    </FormField>
+                    
+                    <FormField>
+                      <Label>Община / Municipality</Label>
+                      <Input
+                        value={formData.addressMunicipality}
+                        onChange={(e) => handleFieldChange('addressMunicipality', e.target.value)}
+                        placeholder="общ.СТОЛИЧНА гр.СОФИЯ/SOFIA"
+                      />
+                    </FormField>
+                    
+                    <FormField>
+                      <Label>Улица / Street</Label>
+                      <Input
+                        value={formData.addressStreet}
+                        onChange={(e) => handleFieldChange('addressStreet', e.target.value)}
+                        placeholder="бул.КНЯГИНЯ МАРИЯ ЛУИЗА 48 em.5 an.26"
+                      />
+                    </FormField>
+                  </FormSection>
+
+                  <FormSection>
+                    <SectionTitle>👁️ {language === 'bg' ? 'Физически характеристики' : 'Physical Features'}</SectionTitle>
+                    <FormRow>
+                      <FormField>
+                        <Label>Ръст / Height (cm)</Label>
+                        <Input
+                          type="number"
+                          value={formData.height}
+                          onChange={(e) => handleFieldChange('height', e.target.value)}
+                          placeholder="168"
+                          min="140"
+                          max="220"
+                        />
+                      </FormField>
+                      <FormField>
+                        <Label>Цвят на очите / Eye Color</Label>
+                        <Select
+                          value={formData.eyeColor}
+                          onChange={(e) => handleFieldChange('eyeColor', e.target.value)}
+                        >
+                          <option value="">-</option>
+                          <option value="BROWN">КАФЯВИ/BROWN</option>
+                          <option value="BLUE">СИН/BLUE</option>
+                          <option value="GREEN">ЗЕЛЕН/GREEN</option>
+                          <option value="GREY">СИВ/GREY</option>
+                        </Select>
+                      </FormField>
+                    </FormRow>
+                  </FormSection>
+
+                  <FormSection>
+                    <SectionTitle>📄 {language === 'bg' ? 'Издаване' : 'Issuance'}</SectionTitle>
+                    <FormRow>
+                      <FormField>
+                        <Label>Издаден от / Authority</Label>
+                        <Input
+                          value={formData.issuingAuthority}
+                          onChange={(e) => handleFieldChange('issuingAuthority', e.target.value)}
+                          placeholder="MBP/Mol BGR"
+                        />
+                      </FormField>
+                      <FormField>
+                        <Label>Дата на издаване / Date of Issue</Label>
+                        <Input
+                          value={formData.issueDate}
+                          onChange={(e) => handleFieldChange('issueDate', e.target.value)}
+                          placeholder="17.06.2024"
+                        />
+                      </FormField>
+                    </FormRow>
+                  </FormSection>
+                </>
+              )}
+            </FormScrollArea>
+          </FormColumn>
+
+          {/* RIGHT COLUMN: Reference Image */}
+          <ImageColumn>
+            <ImageLabel>
+              📸 {language === 'bg' ? 'مرجع للمقارنة' : 'Reference for Comparison'}
+            </ImageLabel>
+            <ReferenceImage src={backgroundImage} alt="ID Card Reference" />
+          </ImageColumn>
+        </TwoColumnLayout>
 
         {/* Auto-fill Bar (front side only) */}
         {activeTab === 'front' && (
@@ -309,7 +573,7 @@ const ModalContent = styled.div`
   border-radius: 20px;
   
   width: 100%;
-  max-width: 1000px;
+  max-width: 1400px;  /* ⬆️ Increased for two-column layout */
   max-height: 95vh;
   
   display: flex;
@@ -328,6 +592,10 @@ const ModalContent = styled.div`
       opacity: 1;
       transform: translateY(0) scale(1);
     }
+  }
+  
+  @media (max-width: 1200px) {
+    max-width: 95%;
   }
   
   @media (max-width: 768px) {
@@ -672,6 +940,167 @@ const SaveButton = styled.button`
   &:active {
     transform: translateY(0);
   }
+`;
+
+// NEW: Two-Column Layout Styles
+const TwoColumnLayout = styled.div`
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  overflow: hidden;
+  background: #f8f9fa;
+  padding: 20px;
+  
+  @media (max-width: 968px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const FormColumn = styled.div`
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+`;
+
+const FormScrollArea = styled.div`
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: #FF7900;
+    border-radius: 4px;
+  }
+`;
+
+const FormSection = styled.div`
+  margin-bottom: 24px;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+`;
+
+const SectionTitle = styled.h3`
+  font-size: 1rem;
+  font-weight: 700;
+  color: #212529;
+  margin: 0 0 12px 0;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #f0f2f5;
+`;
+
+const FormRow = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+`;
+
+const FormField = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+`;
+
+const Label = styled.label`
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #495057;
+`;
+
+const Input = styled.input<{ $hasError?: boolean }>`
+  padding: 10px 12px;
+  border: 2px solid ${props => props.$hasError ? '#dc3545' : '#dee2e6'};
+  border-radius: 8px;
+  font-size: 0.95rem;
+  color: #212529;
+  background: ${props => props.$hasError ? '#fff5f5' : '#ffffff'};
+  transition: all 0.2s;
+  
+  &:focus {
+    outline: none;
+    border-color: ${props => props.$hasError ? '#dc3545' : '#FF7900'};
+    box-shadow: 0 0 0 3px ${props => props.$hasError ? 'rgba(220, 53, 69, 0.1)' : 'rgba(255, 121, 0, 0.1)'};
+  }
+  
+  &::placeholder {
+    color: #adb5bd;
+  }
+  
+  &:read-only {
+    background: #e9ecef;
+    cursor: not-allowed;
+  }
+`;
+
+const Select = styled.select`
+  padding: 10px 12px;
+  border: 2px solid #dee2e6;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  color: #212529;
+  background: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s;
+  
+  &:focus {
+    outline: none;
+    border-color: #FF7900;
+    box-shadow: 0 0 0 3px rgba(255, 121, 0, 0.1);
+  }
+`;
+
+const ErrorText = styled.span`
+  font-size: 0.8rem;
+  color: #dc3545;
+  font-weight: 500;
+`;
+
+const ImageColumn = styled.div`
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  overflow-y: auto;
+  
+  @media (max-width: 968px) {
+    display: none;
+  }
+`;
+
+const ImageLabel = styled.div`
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #6c757d;
+  margin-bottom: 16px;
+  text-align: center;
+  padding: 8px 16px;
+  background: #f8f9fa;
+  border-radius: 8px;
+`;
+
+const ReferenceImage = styled.img`
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 `;
 
 export default IDCardOverlay;
