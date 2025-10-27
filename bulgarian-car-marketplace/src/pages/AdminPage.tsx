@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { logger } from '../services/logger-service';
 import styled from 'styled-components';
 
 // Styled Components
@@ -159,7 +160,7 @@ const AdminPage: React.FC = () => {
           setAdminUser(adminData);
         }
       } catch (err) {
-        console.error('Error checking admin status:', err);
+        logger.error('Error checking admin status', err as Error);
       } finally {
         setLoading(false);
       }

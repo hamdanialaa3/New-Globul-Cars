@@ -134,22 +134,6 @@ const ResponsiveOverlay: React.FC<ResponsiveOverlayProps> = ({
   );
 };
 
-/**
- * Convert percentage position to pixels based on actual container size
- */
-export function percentToPixels(
-  percentPos: PercentageFieldDefinition['position'],
-  containerWidth: number,
-  containerHeight: number
-): { x: number; y: number; width: number; height: number } {
-  return {
-    x: (percentPos.xPercent / 100) * containerWidth,
-    y: (percentPos.yPercent / 100) * containerHeight,
-    width: (percentPos.widthPercent / 100) * containerWidth,
-    height: (percentPos.heightPercent / 100) * containerHeight
-  };
-}
-
 // Styled Components
 const Container = styled.div`
   position: relative;
