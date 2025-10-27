@@ -1,0 +1,29 @@
+# Firebase Extension: Algolia Search (algolia/firestore-algolia-search)
+# Fill values, then install with:
+# npx firebase-tools ext:install algolia/firestore-algolia-search --project fire-new-globul --params extensions/algolia-firestore-search.params.local
+
+# Firestore database
+DATABASE_ID=(default)
+
+# Cloud Functions region
+LOCATION=europe-west1
+
+# Firestore collection to index
+COLLECTION_PATH=cars
+
+# Comma-separated fields to index (flatten nested paths with dots if needed)
+INDEXABLE_FIELDS=title,make,model,year,price,mileage,fuelType,transmission,locationData.cityName.bg,locationData.cityName.en,locationData.coordinates.lat,locationData.coordinates.lng,keywords,description,sellerType,verified,createdAt
+
+# Full reindex on install
+FULL_INDEX=true
+
+# Force data sync now
+FORCE_DATA_SYNC=false
+
+# Algolia settings
+ALGOLIA_INDEX_NAME=cars_production
+ALGOLIA_APP_ID=CHANGE_ME_APP_ID
+ALGOLIA_API_KEY=CHANGE_ME_ADMIN_API_KEY
+
+# Optional custom transform Cloud Function name
+TRANSFORM_FUNCTION_NAME=
