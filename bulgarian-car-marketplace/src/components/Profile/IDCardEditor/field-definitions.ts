@@ -16,7 +16,7 @@ export const FRONT_FIELDS: FieldDefinition[] = [
     label: '№ на документа',
     labelEN: 'Document number',
     example: 'AA0000000',
-    position: { x: 450, y: 120, width: 250, height: 38 },
+    position: { x: 475, y: 101, width: 250, height: 38 },
     inputType: 'text',
     maxLength: 9,
     pattern: /^[A-Z]{2}\d{7}$/,
@@ -27,7 +27,7 @@ export const FRONT_FIELDS: FieldDefinition[] = [
     label: 'ЕГН',
     labelEN: 'Personal No.',
     example: '9508010133',
-    position: { x: 450, y: 165, width: 250, height: 38 },
+    position: { x: 475, y: 146, width: 250, height: 38 },
     inputType: 'text',
     maxLength: 10,
     pattern: /^\d{10}$/,
@@ -39,7 +39,7 @@ export const FRONT_FIELDS: FieldDefinition[] = [
     label: 'Фамилия',
     labelEN: 'Surname',
     example: 'ИВАНОВА',
-    position: { x: 450, y: 215, width: 180, height: 38 },
+    position: { x: 475, y: 196, width: 180, height: 38 },
     inputType: 'text',
     maxLength: 50,
     required: true
@@ -49,7 +49,7 @@ export const FRONT_FIELDS: FieldDefinition[] = [
     label: 'Име',
     labelEN: 'Name',
     example: 'СЛАВИНА',
-    position: { x: 645, y: 215, width: 180, height: 38 },
+    position: { x: 670, y: 196, width: 180, height: 38 },
     inputType: 'text',
     maxLength: 50,
     required: true
@@ -59,7 +59,7 @@ export const FRONT_FIELDS: FieldDefinition[] = [
     label: 'Презиме',
     labelEN: "Father's name",
     example: 'ГЕОРГИЕВА',
-    position: { x: 840, y: 215, width: 180, height: 38 },
+    position: { x: 865, y: 196, width: 180, height: 38 },
     inputType: 'text',
     maxLength: 50,
     required: true
@@ -69,7 +69,7 @@ export const FRONT_FIELDS: FieldDefinition[] = [
     label: 'Surname (Latin)',
     labelEN: 'Surname',
     example: 'IVANOVA',
-    position: { x: 450, y: 260, width: 180, height: 38 },
+    position: { x: 475, y: 241, width: 180, height: 38 },
     inputType: 'text',
     maxLength: 50,
     required: true
@@ -79,7 +79,7 @@ export const FRONT_FIELDS: FieldDefinition[] = [
     label: 'Name (Latin)',
     labelEN: 'Name',
     example: 'SLAVINA',
-    position: { x: 645, y: 260, width: 180, height: 38 },
+    position: { x: 670, y: 241, width: 180, height: 38 },
     inputType: 'text',
     maxLength: 50,
     required: true
@@ -89,7 +89,7 @@ export const FRONT_FIELDS: FieldDefinition[] = [
     label: "Father's name (Latin)",
     labelEN: "Father's name",
     example: 'GEORGIEVA',
-    position: { x: 840, y: 260, width: 180, height: 38 },
+    position: { x: 865, y: 241, width: 180, height: 38 },
     inputType: 'text',
     maxLength: 50,
     required: true
@@ -99,7 +99,7 @@ export const FRONT_FIELDS: FieldDefinition[] = [
     label: 'Гражданство',
     labelEN: 'Nationality',
     example: 'БЪЛГАРИЯ / BGR',
-    position: { x: 450, y: 305, width: 250, height: 38 },
+    position: { x: 475, y: 286, width: 250, height: 38 },
     inputType: 'text',
     maxLength: 50,
     readOnly: true
@@ -109,7 +109,7 @@ export const FRONT_FIELDS: FieldDefinition[] = [
     label: 'Дата на раждане',
     labelEN: 'Date of birth',
     example: '01.08.1995',
-    position: { x: 450, y: 350, width: 190, height: 38 },
+    position: { x: 475, y: 331, width: 190, height: 38 },
     inputType: 'date-bulgarian',
     required: true,
     autoFillFrom: 'personalNumber'
@@ -119,7 +119,7 @@ export const FRONT_FIELDS: FieldDefinition[] = [
     label: 'Пол',
     labelEN: 'Sex',
     example: 'Ж / F',
-    position: { x: 450, y: 395, width: 90, height: 38 },
+    position: { x: 475, y: 376, width: 90, height: 38 },
     inputType: 'select',
     options: [
       { value: 'M', label: 'М / M' },
@@ -132,7 +132,7 @@ export const FRONT_FIELDS: FieldDefinition[] = [
     label: 'Ръст',
     labelEN: 'Height',
     example: '168',
-    position: { x: 565, y: 395, width: 100, height: 38 },
+    position: { x: 590, y: 376, width: 100, height: 38 },
     inputType: 'number',
     min: 140,
     max: 220,
@@ -143,7 +143,7 @@ export const FRONT_FIELDS: FieldDefinition[] = [
     label: 'Валидност',
     labelEN: 'Date of expiry',
     example: '17.06.2034',
-    position: { x: 450, y: 440, width: 190, height: 38 },
+    position: { x: 475, y: 421, width: 190, height: 38 },
     inputType: 'date-bulgarian',
     required: true
   },
@@ -152,7 +152,7 @@ export const FRONT_FIELDS: FieldDefinition[] = [
     label: 'Издаден от',
     labelEN: 'Authority',
     example: 'MBP/Mol BGR',
-    position: { x: 450, y: 485, width: 320, height: 38 },
+    position: { x: 475, y: 466, width: 320, height: 38 },
     inputType: 'text',
     maxLength: 100
   }
@@ -254,11 +254,11 @@ export const PHOTO_ZONE = {
 
 /**
  * Signature zone on front side
- * ⚡ CORRECTED - moved right and up
+ * ⚡ CORRECTED - moved right and up (adjusted)
  */
 export const SIGNATURE_ZONE = {
   label: 'Подпис',
   labelEN: 'Signature',
-  position: { x: 450, y: 545, width: 385, height: 65 }
+  position: { x: 475, y: 526, width: 385, height: 65 }
 };
 
