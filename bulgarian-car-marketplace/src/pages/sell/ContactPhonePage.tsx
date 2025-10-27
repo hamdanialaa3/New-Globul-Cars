@@ -156,6 +156,19 @@ const Button = styled.button<{ variant?: 'primary' | 'secondary' | 'warning' }>`
             color: #495057;
           }
         `;
+      case 'warning':
+        return `
+          background: linear-gradient(135deg, #ffc107, #ff9800);
+          color: #000;
+          font-weight: 700;
+          box-shadow: 0 10px 20px rgba(255, 193, 7, 0.3);
+          
+          &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(255, 193, 7, 0.4);
+            background: linear-gradient(135deg, #ffb300, #ff8f00);
+          }
+        `;
       default:
         return `
           background: #6c757d;
