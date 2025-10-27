@@ -122,7 +122,7 @@ const NavigationButtons = styled.div`
   border-top: 1px solid #ecf0f1;
 `;
 
-const Button = styled.button<{ variant?: 'primary' | 'secondary' }>`
+const Button = styled.button<{ variant?: 'primary' | 'secondary' | 'warning' }>`
   padding: 1rem 2rem;
   border: none;
   border-radius: 50px;
@@ -246,6 +246,8 @@ const ContactPhonePage: React.FC = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showForcePublish, setShowForcePublish] = useState(false);
+  const [missingFields, setMissingFields] = useState<string[]>([]);
 
   // Extract parameters from URL
   const vehicleType = searchParams.get('vt');
@@ -368,10 +370,21 @@ const ContactPhonePage: React.FC = () => {
         additionalInfo: contact.additionalInfo
       };
 
-      // Validate data
-      const validation = SellWorkflowService.validateWorkflowData(workflowData);
-      if (!validation.isValid) {
-        setError(`Липсва задължителна информация: ${validation.missingFields.join(', ')}`);
+      // ⚡ FLEXIBLE VALIDATION: Validate data (non-strict by default)
+      const validation = SellWorkflowService.validateWorkflowData(workflowData, false);
+      
+      // If critical fields are missing, block publication
+      if (validation.criticalMissing) {
+        setError(`❌ Критична информация липсва: ${validation.missingFields.join(', ')}`);
+        setIsSubmitting(false);
+        return;
+      }
+      
+      // If non-critical fields are missing, show warning with option to proceed
+      if (!validation.isValid && !showForcePublish) {
+        setMissingFields(validation.missingFields);
+        setError(`⚠️ Препоръчителни полета липсват: ${validation.missingFields.join(', ')}`);
+        setShowForcePublish(true);
         setIsSubmitting(false);
         return;
       }
@@ -477,9 +490,19 @@ const ContactPhonePage: React.FC = () => {
         </SummaryCard>
 
         {error && (
-          <ErrorCard>
-            <strong>⚠️ Грешка</strong><br/>
+          <ErrorCard $hasWarning={showForcePublish}>
+            <strong>{showForcePublish ? '⚠️ Предупреждение' : '⚠️ Грешка'}</strong><br/>
             {error}
+            {missingFields.length > 0 && (
+              <MissingFieldsList>
+                <strong>Липсващи полета:</strong>
+                <ul>
+                  {missingFields.map((field, index) => (
+                    <li key={index}>{field}</li>
+                  ))}
+                </ul>
+              </MissingFieldsList>
+            )}
           </ErrorCard>
         )}
 
@@ -488,9 +511,15 @@ const ContactPhonePage: React.FC = () => {
             ← Назад
           </Button>
 
-          <Button variant="primary" onClick={handleFinish} disabled={isSubmitting}>
-            {isSubmitting ? '⏳ Публикуване...' : '✅ Публикувай обявата'}
-          </Button>
+          {showForcePublish ? (
+            <Button variant="warning" onClick={handleFinish} disabled={isSubmitting}>
+              {isSubmitting ? '⏳ Публикуване...' : '⚠️ Публикувай на всяка цена'}
+            </Button>
+          ) : (
+            <Button variant="primary" onClick={handleFinish} disabled={isSubmitting}>
+              {isSubmitting ? '⏳ Публикуване...' : '✅ Публикувай обявата'}
+            </Button>
+          )}
         </NavigationButtons>
 
         <InfoCard>
