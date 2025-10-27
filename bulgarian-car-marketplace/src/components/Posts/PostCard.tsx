@@ -18,7 +18,7 @@ import { postsEngagementService } from '../../services/social/posts-engagement.s
 import { Post } from '../../services/social/posts.service';
 
 // Google Maps API Key
-const GOOGLE_MAPS_API_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY || 'AIzaSyDvULqHtzVQFWshx2fO755CMELUaMcm5_4';
+const GOOGLE_MAPS_API_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY || 'AIzaSyAUYM_qygK5pUrlXtdDLmEi-_Kh9SyvRmk';
 
 // ==================== STYLED COMPONENTS ====================
 

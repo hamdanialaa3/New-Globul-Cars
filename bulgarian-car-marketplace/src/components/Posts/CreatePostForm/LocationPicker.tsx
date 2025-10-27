@@ -33,7 +33,7 @@ interface LocationPickerProps {
 }
 
 // Google Maps API Key (from .env)
-const GOOGLE_MAPS_API_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY || 'AIzaSyDvULqHtzVQFWshx2fO755CMELUaMcm5_4';
+const GOOGLE_MAPS_API_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY || 'AIzaSyAUYM_qygK5pUrlXtdDLmEi-_Kh9SyvRmk';
 
 const LocationPicker: React.FC<LocationPickerProps> = ({ value, onChange }) => {
   const { language } = useLanguage();

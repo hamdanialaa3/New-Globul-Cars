@@ -59,8 +59,4 @@ try {
 }
 
 Write-Host "Active Firebase project set to: $ProjectId" -ForegroundColor Green
-
-# Optional: quick verification
-& pwsh -NoProfile -Command "npx firebase-tools projects:list | Select-String -Pattern $ProjectId -SimpleMatch | ForEach-Object { $_.Line }"
-
 Write-Host "Done. You can now run deploy/emulators scripts from the repo root." -ForegroundColor Green
