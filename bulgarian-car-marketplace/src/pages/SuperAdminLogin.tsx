@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { Shield, Lock, Eye, EyeOff, CheckCircle, AlertCircle } from 'lucide-react';
 import { uniqueOwnerService } from '../services/unique-owner-service';
+import { logger } from '../services/logger-service';
 
 // Styled Components
 const LoginContainer = styled.div`
@@ -250,7 +251,7 @@ const SuperAdminLogin: React.FC = () => {
         setLoading(false);
       }
     } catch (error) {
-      console.error('Authentication error:', error);
+      logger.error('Super admin authentication error', error as Error, { email });
       setMessage({ type: 'error', text: 'Authentication failed. Please try again.' });
       setLoading(false);
     }
