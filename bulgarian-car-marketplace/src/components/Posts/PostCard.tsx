@@ -160,7 +160,7 @@ const PostMedia = styled.div`
   }
 `;
 
-// ⚡ NEW: Map Container for text-only posts
+  // NEW: Map Container for text-only posts
 const PostMapContainer = styled.div`
   position: relative;
   margin: 16px 0;
@@ -265,6 +265,9 @@ const LocationMap: React.FC<LocationMapProps> = ({ location, text }) => {
 
   useEffect(() => {
     if (!mapRef.current || typeof google === 'undefined') return;
+
+    // Guard: Check if coordinates exist before destructuring
+    if (!location?.coordinates) return;
 
     const { latitude, longitude } = location.coordinates;
 
@@ -387,8 +390,8 @@ export const PostCard: React.FC<PostCardProps> = ({
       </PostHeader>
       
       <PostContent>
-        {/* ⚡ NEW: Show text over map for text-only posts with location */}
-        {post.location && 
+        {/* NEW: Show text over map for text-only posts with location */}
+        {post.location?.coordinates && 
          (!post.content.media || post.content.media.urls.length === 0) ? (
           <LocationMap 
             location={post.location} 

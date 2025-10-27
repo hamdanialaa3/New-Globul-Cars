@@ -6,8 +6,10 @@ import PrivacySettingsManager from '../../components/Profile/Privacy/PrivacySett
 import DealershipInfoForm from '../../components/Profile/Dealership/DealershipInfoForm';
 import SocialMediaSettings from '../../components/Profile/SocialMedia/SocialMediaSettings';
 import IDCardOverlay from '../../components/Profile/IDCardEditor/IDCardOverlay';
+import BusinessInformationForm from '../../components/Profile/BusinessInfo/BusinessInformationForm';
 import { IDCardData } from '../../components/Profile/IDCardEditor/types';
 import { useProfile } from './hooks/useProfile';
+import { useProfileType } from '../../contexts/ProfileTypeContext';
 import idVerificationService from '../../services/verification/id-verification.service';
 import * as S from './styles';
 
@@ -17,6 +19,7 @@ import * as S from './styles';
 const ProfileSettings: React.FC = () => {
   const { language } = useLanguage();
   const { user, profileData } = useProfile();
+  const { profileType, isDealer, isCompany } = useProfileType();
   const [showIDEditor, setShowIDEditor] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -188,13 +191,20 @@ const ProfileSettings: React.FC = () => {
         <PrivacySettingsManager />
       </div>
       
+      {/* ⚡ NEW: Business Information (for Dealer & Company) */}
+      {(isDealer || isCompany) && (
+        <div style={{ marginBottom: '2rem' }}>
+          <BusinessInformationForm userId={user?.uid || ''} />
+        </div>
+      )}
+      
       {/* Dealership Info (if dealer/company) */}
       {(profileData?.accountType === 'dealer' || profileData?.accountType === 'company') && (
         <div style={{ marginBottom: '2rem' }}>
           <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem', color: '#666' }}>
-            {language === 'bg' ? 'Информация за бизнеса' : 'Business Information'}
+            {language === 'bg' ? 'Информация за автокъща' : 'Dealership Information'}
           </h3>
-          <DealershipInfoForm />
+          <DealershipInfoForm userId={user?.uid || ''} />
         </div>
       )}
       
