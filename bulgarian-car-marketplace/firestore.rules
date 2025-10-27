@@ -37,15 +37,38 @@ service cloud.firestore {
     // Users collection - الحسابات
     match /users/{userId} {
       // القراءة: للمستخدم نفسه أو الأدمن
+      // ⚠️ Sensitive data (idCard) only readable by owner
       allow read: if isOwnerOrAdmin(userId);
+      
       // الكتابة: للمستخدم نفسه فقط
       allow create: if isSignedIn() && request.auth.uid == userId;
-      // 🎯 FIXED: Allow profileType changes (with validation)
+      
+      // 🎯 UPDATE with validation
       allow update: if isOwnerOrAdmin(userId) && (
-        // If profileType is being changed, validate it's one of the allowed values
-        !('profileType' in request.resource.data) ||
-        request.resource.data.profileType in ['private', 'dealer', 'company']
+        // ProfileType validation
+        (!('profileType' in request.resource.data) ||
+         request.resource.data.profileType in ['private', 'dealer', 'company']) &&
+        
+        // ID Card validation (if updating)
+        (!('idCard' in request.resource.data) || (
+          // Only owner can update their ID
+          isOwner(userId) &&
+          // Document number format validation
+          request.resource.data.idCard.documentNumber.matches('[A-Z]{2}[0-9]{7}') &&
+          // Personal number (EGN) must be 10 digits
+          request.resource.data.idCard.personalNumber.matches('[0-9]{10}') &&
+          // Must mark as verified
+          request.resource.data.idCard.verified == true
+        )) &&
+        
+        // Verification data validation
+        (!('verification' in request.resource.data) || (
+          request.resource.data.verification.idVerified is bool &&
+          request.resource.data.verification.trustScore >= 0 &&
+          request.resource.data.verification.trustScore <= 100
+        ))
       );
+      
       allow delete: if isSuperAdmin();
     }
     

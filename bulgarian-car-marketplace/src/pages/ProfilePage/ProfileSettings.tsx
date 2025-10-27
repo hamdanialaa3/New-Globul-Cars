@@ -1,15 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { CreditCard, Edit } from 'lucide-react';
+import { CreditCard, Edit, CheckCircle, AlertCircle, Loader } from 'lucide-react';
 import PrivacySettingsManager from '../../components/Profile/Privacy/PrivacySettingsManager';
 import DealershipInfoForm from '../../components/Profile/Dealership/DealershipInfoForm';
 import SocialMediaSettings from '../../components/Profile/SocialMedia/SocialMediaSettings';
 import IDCardOverlay from '../../components/Profile/IDCardEditor/IDCardOverlay';
 import { IDCardData } from '../../components/Profile/IDCardEditor/types';
 import { useProfile } from './hooks/useProfile';
-import { doc, updateDoc } from 'firebase/firestore';
-import { db } from '../../firebase/firebase-config';
+import idVerificationService from '../../services/verification/id-verification.service';
 import * as S from './styles';
 
 /**
@@ -20,62 +19,94 @@ const ProfileSettings: React.FC = () => {
   const { user, profileData } = useProfile();
   const [showIDEditor, setShowIDEditor] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [initialIDData, setInitialIDData] = useState<Partial<IDCardData> | null>(null);
+  const [loadingIDData, setLoadingIDData] = useState(false);
 
-  // Handle ID card save
-  const handleIDCardSave = async (data: IDCardData) => {
+  // Load existing ID data when opening editor
+  useEffect(() => {
+    if (showIDEditor && user?.uid) {
+      loadIDData();
+    }
+  }, [showIDEditor, user?.uid]);
+
+  // Load ID card data from Firestore
+  const loadIDData = async () => {
     if (!user?.uid) return;
     
+    setLoadingIDData(true);
+    try {
+      const data = await idVerificationService.getIDCardData(user.uid);
+      if (data) {
+        setInitialIDData(data);
+      } else {
+        // Use profile data as fallback
+        setInitialIDData({
+          firstNameEN: (user as any)?.firstName,
+          middleNameEN: (user as any)?.middleName,
+          lastNameEN: (user as any)?.lastName,
+          firstNameBG: (user as any)?.firstNameBG,
+          middleNameBG: (user as any)?.middleNameBG,
+          lastNameBG: (user as any)?.lastNameBG,
+          dateOfBirth: (user as any)?.dateOfBirth,
+          sex: (user as any)?.sex,
+          height: (user as any)?.height,
+          personalNumber: (user as any)?.idCard?.personalNumber
+        });
+      }
+    } catch (error) {
+      console.error('Error loading ID data:', error);
+    } finally {
+      setLoadingIDData(false);
+    }
+  };
+
+  // Handle ID card save with validation
+  const handleIDCardSave = async (data: IDCardData) => {
+    if (!user?.uid) {
+      setSaveError(language === 'bg' 
+        ? 'Не сте влезли в системата' 
+        : 'User not authenticated');
+      return;
+    }
+    
     setSaving(true);
+    setSaveError(null);
+    setSaveSuccess(false);
     
     try {
-      // Update user profile with ID data
-      await updateDoc(doc(db, 'users', user.uid), {
-        // Names
-        firstName: data.firstNameEN,
-        middleName: data.middleNameEN,
-        lastName: data.lastNameEN,
-        firstNameBG: data.firstNameBG,
-        middleNameBG: data.middleNameBG,
-        lastNameBG: data.lastNameBG,
-        
-        // Personal details
-        dateOfBirth: data.dateOfBirth,
-        sex: data.sex,
-        height: data.height,
-        eyeColor: data.eyeColor,
-        placeOfBirth: data.placeOfBirth,
-        
-        // Document info (encrypted in real system!)
-        idCard: {
-          documentNumber: data.documentNumber,
-          personalNumber: data.personalNumber,  // EGN
-          expiryDate: data.expiryDate,
-          issueDate: data.issueDate,
-          issuingAuthority: data.issuingAuthority
-        },
-        
-        // Address
-        address: `${data.addressStreet}, ${data.addressMunicipality}`,
-        addressOblast: data.addressOblast,
-        
-        // Verification
-        'verification.idVerified': true,
-        'verification.idVerifiedAt': new Date(),
-        'verification.trustScore': (user as any).verification?.trustScore + 50 || 50,
-        
-        updatedAt: new Date()
-      });
+      // Use the verification service
+      const result = await idVerificationService.saveIDCardData(user.uid, data);
       
-      setShowIDEditor(false);
-      alert(language === 'bg'
-        ? '✅ Данните от личната карта са запазени успешно!'
-        : '✅ ID card data saved successfully!');
+      if (result.success) {
+        setSaveSuccess(true);
+        setShowIDEditor(false);
+        
+        // Show success message with trust score gain
+        const message = language === 'bg'
+          ? `✅ Данните са запазени успешно!\n🎉 Trust Score: +${result.trustScoreGain} точки`
+          : `✅ Data saved successfully!\n🎉 Trust Score: +${result.trustScoreGain} points`;
+        
+        alert(message);
+        
+        // Reset success state after 3 seconds
+        setTimeout(() => setSaveSuccess(false), 3000);
+        
+      } else {
+        setSaveError(result.error || 'Unknown error');
+        alert(language === 'bg'
+          ? `❌ Грешка: ${result.error}`
+          : `❌ Error: ${result.error}`);
+      }
         
     } catch (error) {
       console.error('Error saving ID data:', error);
+      const errorMsg = (error as Error).message;
+      setSaveError(errorMsg);
       alert(language === 'bg'
-        ? '❌ Грешка при запазване на данните'
-        : '❌ Error saving data');
+        ? `❌ Грешка при запазване: ${errorMsg}`
+        : `❌ Error saving data: ${errorMsg}`);
     } finally {
       setSaving(false);
     }
@@ -94,9 +125,21 @@ const ProfileSettings: React.FC = () => {
             <CreditCard size={20} />
             {language === 'bg' ? 'Лична карта' : 'ID Card'}
           </SectionTitle>
-          <EditIDButton onClick={() => setShowIDEditor(true)}>
-            <Edit size={16} />
-            {language === 'bg' ? 'Редактирай с лична карта' : 'Edit with ID Card'}
+          <EditIDButton 
+            onClick={() => setShowIDEditor(true)}
+            disabled={saving}
+          >
+            {saving ? (
+              <>
+                <Loader size={16} className="spin" />
+                {language === 'bg' ? 'Запазване...' : 'Saving...'}
+              </>
+            ) : (
+              <>
+                <Edit size={16} />
+                {language === 'bg' ? 'Редактирай с лична карта' : 'Edit with ID Card'}
+              </>
+            )}
           </EditIDButton>
         </SectionHeader>
         
@@ -106,9 +149,33 @@ const ProfileSettings: React.FC = () => {
             : 'Fill your data directly over your ID card image. System will automatically extract information from your personal number (EGN).'}
         </IDCardDescription>
         
+        {/* Status Messages */}
+        {saveSuccess && (
+          <StatusMessage type="success">
+            <CheckCircle size={18} />
+            {language === 'bg' 
+              ? 'Данните са запазени успешно!' 
+              : 'Data saved successfully!'}
+          </StatusMessage>
+        )}
+        
+        {saveError && (
+          <StatusMessage type="error">
+            <AlertCircle size={18} />
+            {saveError}
+          </StatusMessage>
+        )}
+        
+        {/* Verification Badge */}
         {(user as any)?.verification?.idVerified && (
           <VerifiedBadge>
-            ✓ {language === 'bg' ? 'Потвърдено' : 'Verified'}
+            <CheckCircle size={16} />
+            {language === 'bg' ? 'Потвърдено' : 'Verified'}
+            {(user as any)?.verification?.trustScore && (
+              <TrustScore>
+                Trust Score: {(user as any).verification.trustScore}/100
+              </TrustScore>
+            )}
           </VerifiedBadge>
         )}
       </IDCardSection>
@@ -141,22 +208,24 @@ const ProfileSettings: React.FC = () => {
       
       {/* ID Card Editor Modal */}
       {showIDEditor && (
-        <IDCardOverlay
-          initialData={{
-            firstNameEN: (user as any)?.firstName,
-            middleNameEN: (user as any)?.middleName,
-            lastNameEN: (user as any)?.lastName,
-            firstNameBG: (user as any)?.firstNameBG,
-            middleNameBG: (user as any)?.middleNameBG,
-            lastNameBG: (user as any)?.lastNameBG,
-            dateOfBirth: (user as any)?.dateOfBirth,
-            sex: (user as any)?.sex,
-            height: (user as any)?.height,
-            personalNumber: (user as any)?.idCard?.personalNumber
-          }}
-          onSave={handleIDCardSave}
-          onClose={() => setShowIDEditor(false)}
-        />
+        <>
+          {loadingIDData ? (
+            <LoadingOverlay>
+              <Loader size={40} className="spin" />
+              <p>{language === 'bg' ? 'Зареждане на данни...' : 'Loading data...'}</p>
+            </LoadingOverlay>
+          ) : (
+            <IDCardOverlay
+              initialData={initialIDData || {}}
+              onSave={handleIDCardSave}
+              onClose={() => {
+                setShowIDEditor(false);
+                setSaveError(null);
+                setSaveSuccess(false);
+              }}
+            />
+          )}
+        </>
       )}
     </S.ContentSection>
   );
@@ -215,13 +284,27 @@ const EditIDButton = styled.button`
   
   transition: transform 0.2s;
   
-  &:hover {
+  &:hover:not(:disabled) {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(255, 121, 0, 0.3);
   }
   
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
   svg {
     flex-shrink: 0;
+  }
+  
+  .spin {
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
   }
   
   @media (max-width: 480px) {
@@ -240,9 +323,10 @@ const IDCardDescription = styled.p`
 const VerifiedBadge = styled.div`
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+  flex-wrap: wrap;
   
-  padding: 8px 16px;
+  padding: 10px 16px;
   background: linear-gradient(135deg, #16a34a, #22c55e);
   color: white;
   border-radius: 20px;
@@ -251,6 +335,86 @@ const VerifiedBadge = styled.div`
   font-weight: 600;
   
   box-shadow: 0 2px 8px rgba(22, 163, 74, 0.2);
+  
+  svg {
+    flex-shrink: 0;
+  }
+`;
+
+const TrustScore = styled.span`
+  padding: 4px 10px;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+`;
+
+const StatusMessage = styled.div<{ type: 'success' | 'error' }>`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  
+  padding: 12px 16px;
+  margin: 12px 0;
+  border-radius: 10px;
+  
+  background: ${props => props.type === 'success' 
+    ? 'linear-gradient(135deg, #d1fae5, #a7f3d0)' 
+    : 'linear-gradient(135deg, #fee2e2, #fecaca)'};
+  
+  color: ${props => props.type === 'success' ? '#065f46' : '#991b1b'};
+  
+  font-size: 0.9rem;
+  font-weight: 600;
+  
+  border: 2px solid ${props => props.type === 'success' ? '#10b981' : '#ef4444'};
+  
+  animation: slideIn 0.3s ease;
+  
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  svg {
+    flex-shrink: 0;
+  }
+`;
+
+const LoadingOverlay = styled.div`
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  
+  z-index: 10001; /* Above IDCardOverlay */
+  
+  .spin {
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  
+  p {
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
 `;
 
 export default ProfileSettings;
