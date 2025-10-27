@@ -19,10 +19,11 @@ import {
   Edit
 } from 'lucide-react';
 import * as S from './styles';
+import { H2, Label } from '../../components/Typography';
 
 /**
  * Profile Overview Tab - Main profile information
- * ⚡ NOW SHOWS: Personal info + Business info + Posts
+ * NOW SHOWS: Personal info + Business info + Posts
  */
 const ProfileOverview: React.FC = () => {
   const { language } = useLanguage();
@@ -39,14 +40,12 @@ const ProfileOverview: React.FC = () => {
 
   return (
     <S.ContentSection>
-      <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem', color: '#333' }}>
-        {language === 'bg' ? 'Преглед на профила' : 'Profile Overview'}
-      </h2>
+      <H2>{language === 'bg' ? 'Преглед на профила' : 'Profile Overview'}</H2>
       
       {/* Profile Dashboard with Stats */}
       <ProfileDashboard />
       
-      {/* ⚡ Personal Information Section */}
+      {/* Personal Information Section */}
       <InfoSection>
         <SectionHeader>
           <SectionTitle>
@@ -64,13 +63,13 @@ const ProfileOverview: React.FC = () => {
         <InfoGrid>
           {user?.firstName && (
             <InfoItem>
-              <InfoLabel>{language === 'bg' ? 'Име:' : 'First Name:'}</InfoLabel>
+              <Label as="span">{language === 'bg' ? 'Име:' : 'First Name:'}</Label>
               <InfoValue>{user.firstName}</InfoValue>
             </InfoItem>
           )}
           {user?.lastName && (
             <InfoItem>
-              <InfoLabel>{language === 'bg' ? 'Фамилия:' : 'Last Name:'}</InfoLabel>
+              <Label as="span">{language === 'bg' ? 'Фамилия:' : 'Last Name:'}</Label>
               <InfoValue>{user.lastName}</InfoValue>
             </InfoItem>
           )}
@@ -78,7 +77,7 @@ const ProfileOverview: React.FC = () => {
             <InfoItem>
               <InfoLabel>
                 <Mail size={14} />
-                {language === 'bg' ? 'Имейл:' : 'Email:'}
+                <Label as="span">{language === 'bg' ? 'Имейл:' : 'Email:'}</Label>
               </InfoLabel>
               <InfoValue>{user.email}</InfoValue>
             </InfoItem>
@@ -87,7 +86,7 @@ const ProfileOverview: React.FC = () => {
             <InfoItem>
               <InfoLabel>
                 <Phone size={14} />
-                {language === 'bg' ? 'Телефон:' : 'Phone:'}
+                <Label as="span">{language === 'bg' ? 'Телефон:' : 'Phone:'}</Label>
               </InfoLabel>
               <InfoValue>{user.phoneNumber}</InfoValue>
             </InfoItem>
@@ -96,7 +95,7 @@ const ProfileOverview: React.FC = () => {
             <InfoItem>
               <InfoLabel>
                 <MapPin size={14} />
-                {language === 'bg' ? 'Град:' : 'City:'}
+                <Label as="span">{language === 'bg' ? 'Град:' : 'City:'}</Label>
               </InfoLabel>
               <InfoValue>{user.location.city}</InfoValue>
             </InfoItem>

@@ -1141,8 +1141,8 @@ const ProfilePage: React.FC = () => {
                       }
                     } catch (error) {
                       logger.error('Failed to save gallery', error as Error, { userId: user.uid });
-                    }
-                  }}
+                  }
+                }}
               />
               </S.ContentSection>
             )}

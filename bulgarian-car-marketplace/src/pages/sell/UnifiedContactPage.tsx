@@ -68,6 +68,8 @@ const UnifiedContactPage: React.FC = () => {
   const [availableCities, setAvailableCities] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [showForcePublish, setShowForcePublish] = useState(false);
+  const [missingFields, setMissingFields] = useState<string[]>([]);
   
   // 🆕 New state for enhancements
   const [showReview, setShowReview] = useState(false);
@@ -289,6 +291,25 @@ const UnifiedContactPage: React.FC = () => {
           ? 'Моля влезте в профила си' 
           : 'Please log in to your account');
       }
+      
+      // ⚡ FLEXIBLE VALIDATION: Check critical fields only
+      const validation = SellWorkflowService.validateWorkflowData(workflowData, false);
+      
+      // If critical fields are missing, block publication
+      if (validation.criticalMissing) {
+        setError(`❌ ${language === 'bg' ? 'Критична информация липсва' : 'Critical information missing'}: ${validation.missingFields.join(', ')}`);
+        setIsSubmitting(false);
+        return;
+      }
+      
+      // If non-critical fields are missing, show warning with option to proceed
+      if (!validation.isValid && !showForcePublish) {
+        setMissingFields(validation.missingFields);
+        setError(`⚠️ ${language === 'bg' ? 'Препоръчителни полета липсват' : 'Recommended fields are missing'}: ${validation.missingFields.join(', ')}`);
+        setShowForcePublish(true);
+        setIsSubmitting(false);
+        return;
+      }
 
       // ✅ Load images from localStorage and convert to Files
       let imageFiles: File[] = [];
@@ -431,12 +452,9 @@ const UnifiedContactPage: React.FC = () => {
     { id: 'publish', label: language === 'bg' ? 'Публикуване' : 'Publish', icon: undefined, isCompleted: false }
   ];
 
-  const isFormValid = 
-    contactData.sellerName &&
-    contactData.sellerEmail &&
-    contactData.sellerPhone &&
-    contactData.region &&
-    contactData.city;
+  // ⚡ FLEXIBLE VALIDATION: Allow publishing with partial data
+  const isFormValid = contactData.sellerName && contactData.sellerEmail && contactData.sellerPhone;
+  const hasLocation = contactData.region && contactData.city;
 
   const leftContent = (
     <S.ContentSection>
@@ -746,11 +764,21 @@ const UnifiedContactPage: React.FC = () => {
         </S.SummaryRow>
       </S.SummaryCard>
 
-      {/* Error Display */}
+      {/* Error Display with Missing Fields List */}
       {error && (
-        <S.ErrorCard>
-          <S.ErrorIcon>⚠️</S.ErrorIcon>
+        <S.ErrorCard $hasWarning={showForcePublish}>
+          <S.ErrorIcon>{showForcePublish ? '⚠️' : '❌'}</S.ErrorIcon>
           <S.ErrorText>{error}</S.ErrorText>
+          {missingFields.length > 0 && (
+            <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid rgba(0, 0, 0, 0.1)' }}>
+              <strong>{language === 'bg' ? 'Липсващи полета:' : 'Missing fields:'}</strong>
+              <ul style={{ margin: '0.5rem 0 0 1.5rem', padding: 0 }}>
+                {missingFields.map((field, index) => (
+                  <li key={index}>{field}</li>
+                ))}
+              </ul>
+            </div>
+          )}
         </S.ErrorCard>
       )}
 

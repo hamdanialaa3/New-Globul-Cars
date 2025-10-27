@@ -384,7 +384,8 @@ const PricingPage: React.FC = () => {
       params.set('paymentMethods', pricing.paymentMethods.join(','));
     }
 
-    navigate(`/sell/inserat/${vehicleType || 'pkw'}/kontakt/name?${params.toString()}`);
+    // ✅ Use unified contact page
+    navigate(`/sell/inserat/${vehicleType || 'pkw'}/contact?${params.toString()}`);
   };
 
   return (

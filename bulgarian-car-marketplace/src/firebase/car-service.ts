@@ -891,35 +891,30 @@ export class BulgarianCarService {
 
   // Private helper methods
   private validateCarData(carData: Omit<BulgarianCar, 'id' | 'createdAt' | 'updatedAt' | 'views' | 'favorites'>): void {
+    // ⚡ MINIMAL VALIDATION - Only critical fields required
+    
+    // 1. Make & Model (CRITICAL)
     if (!carData.make || !carData.model) {
       throw new Error('Марка и модел на автомобила са задължителни');
     }
 
+    // 2. Year validation (CRITICAL)
     if (carData.year < 1900 || carData.year > new Date().getFullYear() + 1) {
       throw new Error('Невалидна година на производство');
     }
 
+    // 3. Price validation (CRITICAL)
     this.validatePrice(carData.price);
 
-    if (carData.mileage < 0) {
+    // 4. Mileage validation (soft)
+    if (carData.mileage && carData.mileage < 0) {
       throw new Error('Километражът не може да бъде отрицателен');
     }
 
-    if (!carData.location.city || !carData.location.region) {
-      throw new Error('Град и област са задължителни');
-    }
-
-    if (!BulgarianFirebaseUtils.validateBulgarianPostalCode(carData.location.postalCode)) {
-      throw new Error('Невалиден пощенски код');
-    }
-
-    if (!carData.title || carData.title.length < 10) {
-      throw new Error('Заглавието трябва да бъде поне 10 символа');
-    }
-
-    if (!carData.description || carData.description.length < 50) {
-      throw new Error('Описанието трябва да бъде поне 50 символа');
-    }
+    // ✅ Location is now OPTIONAL (removed required check)
+    // ✅ Title is now OPTIONAL (removed required check)
+    // ✅ Description is now OPTIONAL (removed required check)
+    // ✅ Postal code validation removed (not critical)
   }
 
   private validatePrice(price: number): void {

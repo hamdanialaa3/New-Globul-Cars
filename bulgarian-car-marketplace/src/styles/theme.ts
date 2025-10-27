@@ -118,38 +118,80 @@ export const bulgarianColors = {
   }
 };
 
-// Bulgarian Typography - ???? mobile.de (????? ????????)
+// Bulgarian Typography - Enhanced for Readability
 export const bulgarianTypography = {
   fontFamily: {
     primary: "'Martica', 'Arial', sans-serif",
     secondary: "'Martica', 'Arial', sans-serif",
-    accent: "'Martica', 'Arial', sans-serif"
+    accent: "'Martica', 'Arial', sans-serif",
+    mono: "'Courier New', 'Courier', monospace"
   },
+  
+  // Font Sizes - Perfect Hierarchy for Eye Comfort
   fontSize: {
-    xs: '0.75rem',    // 12px
-    sm: '0.875rem',   // 14px
-    base: '1rem',     // 16px
-    lg: '1.125rem',   // 18px
-    xl: '1.25rem',    // 20px
-    '2xl': '1.5rem',  // 24px
-    '3xl': '1.875rem', // 30px
-    '4xl': '2.25rem', // 36px
-    '5xl': '3rem',    // 48px
-    '6xl': '3.75rem'  // 60px
+    // Micro Text
+    xs: '0.75rem',      // 12px - Captions, legal text
+    sm: '0.875rem',     // 14px - Secondary info, meta data
+    
+    // Body Text - Optimized for Reading
+    base: '1rem',       // 16px - Default body text (WCAG AAA)
+    md: '1.0625rem',    // 17px - Enhanced readability
+    lg: '1.125rem',     // 18px - Featured text
+    
+    // Headings - Clear Hierarchy
+    xl: '1.25rem',      // 20px - H5, Card Titles
+    '2xl': '1.5rem',    // 24px - H4, Section Titles
+    '3xl': '1.875rem',  // 30px - H3, Major Sections
+    '4xl': '2.25rem',   // 36px - H2, Page Subtitles
+    '5xl': '3rem',      // 48px - H1, Page Titles
+    '6xl': '3.75rem',   // 60px - Hero Titles
+    
+    // UI Elements
+    button: {
+      sm: '0.8125rem',  // 13px - Small buttons
+      md: '0.875rem',   // 14px - Normal buttons
+      lg: '1rem',       // 16px - Large buttons
+    },
+    
+    input: {
+      sm: '0.875rem',   // 14px - Compact inputs
+      md: '1rem',       // 16px - Standard inputs (prevents iOS zoom)
+      lg: '1.125rem',   // 18px - Large inputs
+    },
+    
+    label: {
+      sm: '0.75rem',    // 12px - Small labels
+      md: '0.875rem',   // 14px - Standard labels
+    }
   },
+  
   fontWeight: {
     light: 300,
     normal: 400,
     medium: 500,
     semibold: 600,
     bold: 700,
-    extrabold: 800
+    extrabold: 800,
+    black: 900
   },
+  
+  // Line Heights - Optimized for Readability
   lineHeight: {
-    tight: 1.25,
-    normal: 1.5,
-    relaxed: 1.75,
-    loose: 2
+    tight: 1.2,      // Headings, buttons
+    snug: 1.375,     // Card titles
+    normal: 1.5,     // Body text (WCAG recommended)
+    relaxed: 1.75,   // Long-form content
+    loose: 2         // Spacious layouts
+  },
+  
+  // Letter Spacing - Fine-tuned
+  letterSpacing: {
+    tighter: '-0.05em',
+    tight: '-0.025em',
+    normal: '0',
+    wide: '0.025em',
+    wider: '0.05em',
+    widest: '0.1em'
   }
 };
 
