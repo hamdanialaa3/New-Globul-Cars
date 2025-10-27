@@ -8,7 +8,7 @@ export type Language = 'bg' | 'en';
 interface LanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
-  toggleLanguage: () => void; // ✅ FIX: Added toggleLanguage
+  toggleLanguage: () => void; // FIX: Added toggleLanguage
   t: (key: string) => string;
 }
 
@@ -80,7 +80,7 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
     }
   };
 
-  // ✅ FIX: Toggle language function
+  // FIX: Toggle language function
   const toggleLanguage = () => {
     const newLang: Language = language === 'bg' ? 'en' : 'bg';
     setLanguage(newLang);
@@ -95,7 +95,7 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
   const value: LanguageContextType = {
     language,
     setLanguage,
-    toggleLanguage, // ✅ FIX: Added to context value
+    toggleLanguage, // FIX: Added to context value
     t
   };
 

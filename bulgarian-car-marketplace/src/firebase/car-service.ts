@@ -776,7 +776,7 @@ export class BulgarianCarService {
         lastViewedAt: Timestamp.fromDate(new Date())
       });
     } catch (error: any) {
-      console.error('Error marking car as viewed:', error);
+      logger.error('Error marking car as viewed', error as Error, { carId });
     }
   }
 
@@ -877,8 +877,11 @@ export class BulgarianCarService {
     } catch (error: any) {
       // Gracefully degrade on permission issues for public featured cars
       if (error && (error.code === 'permission-denied' || error.code === 'failed-precondition')) {
-        if (process.env.NODE_ENV !== 'production') {
-          console.warn('getPopularCars permission issue, returning empty list:', error);
+        if (process.env.NODE_ENV === 'development') {
+          logger.warn('getPopularCars permission issue, returning empty list', { 
+            error: error.message,
+            code: error.code 
+          });
         }
         return [];
       }

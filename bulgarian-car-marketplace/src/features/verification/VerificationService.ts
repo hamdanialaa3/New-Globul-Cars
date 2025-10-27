@@ -15,6 +15,7 @@ import {
 } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '../../firebase/firebase-config';
+import { logger } from '../../services/logger-service';
 import { 
   VerificationDocument, 
   VerificationRequest, 
@@ -160,7 +161,11 @@ class VerificationService {
 
       return document;
     } catch (error) {
-      console.error('Error uploading document:', error);
+      logger.error('Error uploading verification document', error as Error, { 
+        userId, 
+        documentType, 
+        fileName: file.name 
+      });
       throw error;
     }
   }
@@ -213,9 +218,18 @@ class VerificationService {
       // TODO: Send email notification to admin
       // TODO: Send confirmation email to user
 
-      console.log('✅ Verification request submitted');
+      if (process.env.NODE_ENV === 'development') {
+        logger.info('Verification request submitted', { 
+          userId, 
+          targetProfileType, 
+          documentsCount: documents.length 
+        });
+      }
     } catch (error) {
-      console.error('Error submitting verification:', error);
+      logger.error('Error submitting verification request', error as Error, { 
+        userId, 
+        targetProfileType 
+      });
       throw error;
     }
   }
@@ -246,7 +260,7 @@ class VerificationService {
         notes: verification.notes
       };
     } catch (error) {
-      console.error('Error getting verification status:', error);
+      logger.error('Error getting verification status', error as Error, { userId });
       throw error;
     }
   }
@@ -273,9 +287,15 @@ class VerificationService {
       // TODO: Send approval email to user
       // TODO: Log action in adminLogs
 
-      console.log(`✅ User ${userId} approved as ${targetProfileType}`);
+      if (process.env.NODE_ENV === 'development') {
+        logger.info('Verification approved', { userId, targetProfileType, adminId });
+      }
     } catch (error) {
-      console.error('Error approving verification:', error);
+      logger.error('Error approving verification', error as Error, { 
+        userId, 
+        targetProfileType, 
+        adminId 
+      });
       throw error;
     }
   }
@@ -301,9 +321,14 @@ class VerificationService {
       // TODO: Send rejection email to user with reason
       // TODO: Log action in adminLogs
 
-      console.log(`❌ User ${userId} verification rejected`);
+      if (process.env.NODE_ENV === 'development') {
+        logger.info('Verification rejected', { userId, adminId, reason });
+      }
     } catch (error) {
-      console.error('Error rejecting verification:', error);
+      logger.error('Error rejecting verification', error as Error, { 
+        userId, 
+        adminId 
+      });
       throw error;
     }
   }
@@ -325,7 +350,7 @@ class VerificationService {
         submittedAt: doc.data().submittedAt?.toDate() || new Date()
       })) as VerificationRequest[];
     } catch (error) {
-      console.error('Error getting pending verifications:', error);
+      logger.error('Error getting pending verifications', error as Error);
       throw error;
     }
   }
