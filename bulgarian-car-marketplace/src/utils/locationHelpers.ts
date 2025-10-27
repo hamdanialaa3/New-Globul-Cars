@@ -302,7 +302,7 @@ function toRad(degrees: number): number {
 /**
  * Export all utilities
  */
-export default {
+const locationUtils = {
   cityIdToLocationData,
   legacyLocationToLocationData,
   getAllCitiesAsLocationData,
@@ -316,3 +316,5 @@ export default {
   isSameCity,
   getNearestCities
 };
+
+export default locationUtils;

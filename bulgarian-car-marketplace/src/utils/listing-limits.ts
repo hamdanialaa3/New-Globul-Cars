@@ -4,6 +4,7 @@
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
 import type { PlanTier } from '../features/billing/types';
+import { logger } from '../services/logger-service';
 
 // Plan Limits Configuration
 const PLAN_LIMITS: Record<PlanTier, number> = {
@@ -44,7 +45,7 @@ export async function canAddListing(userId: string): Promise<boolean> {
     return activeCount < limit;
   } catch (error) {
     if (process.env.NODE_ENV === 'development') {
-      console.error('Error checking listing limit:', error);
+      logger.error('Error checking listing limit', error as Error);
     }
     return false;
   }
@@ -75,7 +76,7 @@ export async function getRemainingListings(userId: string): Promise<number> {
     return Math.max(0, limit - activeCount);
   } catch (error) {
     if (process.env.NODE_ENV === 'development') {
-      console.error('Error getting remaining listings:', error);
+      logger.error('Error getting remaining listings', error as Error);
     }
     return 0;
   }

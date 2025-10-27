@@ -15,7 +15,6 @@ import {
   RecaptchaVerifier,
   ConfirmationResult,
 
-  linkWithCredential,
   User,
   UserCredential,
   linkWithPopup,
@@ -26,6 +25,7 @@ import {
 } from 'firebase/auth';
 import { doc, setDoc, getDoc, updateDoc, serverTimestamp, collection, query, where, getDocs } from 'firebase/firestore';
 import { auth, db } from './firebase-config';
+import { logger } from '../services/logger-service';
 
 // Enhanced Bulgarian User Profile Interface
 export interface BulgarianUserProfile {
@@ -147,12 +147,14 @@ export class SocialAuthService {
       const result = await signInWithEmailAndPassword(auth, email, password);
       
       // AUTO-SYNC: Update user profile in Firestore
-      console.log('✅ Email/Password login successful, syncing to Firestore...');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Email/Password login successful, syncing to Firestore...');
+      }
       await this.createOrUpdateBulgarianProfile(result.user);
       
       return result;
     } catch (error: any) {
-      console.error('Email/Password sign-in error:', error);
+      logger.error('Email/Password sign-in error', error as Error);
       throw new Error(this.getErrorMessage(error.code, 'Email/Password'));
     }
   }
@@ -165,12 +167,14 @@ export class SocialAuthService {
       const result = await createUserWithEmailAndPassword(auth, email, password);
       
       // AUTO-SYNC: Create user profile in Firestore
-      console.log('✅ Email/Password registration successful, creating Firestore profile...');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Email/Password registration successful, creating Firestore profile...');
+      }
       await this.createOrUpdateBulgarianProfile(result.user);
       
       return result;
     } catch (error: any) {
-      console.error('Email/Password registration error:', error);
+      logger.error('Email/Password registration error', error as Error);
       throw new Error(this.getErrorMessage(error.code, 'Email/Password'));
     }
   }
@@ -180,16 +184,20 @@ export class SocialAuthService {
    */
   static async signInWithGoogle(): Promise<UserCredential> {
     try {
-      console.log('🔐 Starting Google sign-in process...');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Starting Google sign-in process...');
+      }
       
       // Debug current configuration
-      console.log('🔧 Debug Info:', {
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Google Sign-in Debug Info', {
         authDomain: auth.app.options.authDomain,
         projectId: auth.app.options.projectId,
         appName: auth.app.name,
         currentUrl: window.location.href,
         protocol: window.location.protocol
       });
+      }
       
       // Check if we're in a secure context
       if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost') {
@@ -197,19 +205,23 @@ export class SocialAuthService {
       }
       
       // First try popup, with fallback to redirect
-      console.log('📱 Attempting popup sign-in...');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Attempting popup sign-in...');
+      }
       let result: UserCredential;
       
       try {
         result = await signInWithPopup(auth, googleProvider);
       } catch (popupError: any) {
-        console.warn('⚠️ Popup failed, trying redirect method:', popupError.code);
+        logger.warn('Popup failed, trying redirect method', { code: popupError.code });
         
         if (popupError.code === 'auth/popup-blocked' || 
             popupError.code === 'auth/popup-closed-by-user' ||
             popupError.code === 'auth/cancelled-popup-request') {
           
-          console.log('🔄 Switching to redirect sign-in...');
+          if (process.env.NODE_ENV === 'development') {
+            logger.debug('Switching to redirect sign-in...');
+          }
           await signInWithRedirect(auth, googleProvider);
           
           // After redirect, this won't execute, but we handle it in App.tsx
@@ -220,47 +232,46 @@ export class SocialAuthService {
         throw popupError; // Re-throw other errors
       }
       
-      console.log('✅ Google sign-in successful:', {
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Google sign-in successful', {
         email: result.user.email,
         displayName: result.user.displayName,
         uid: result.user.uid
-      });
+        });
+      }
       
       // AUTO-SYNC: Create/Update user profile in Firestore
-      console.log('📝 Syncing Google user to Firestore...');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Syncing Google user to Firestore...');
+      }
       await this.createOrUpdateBulgarianProfile(result.user);
-      console.log('✅ Google user synced to Firestore');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Google user synced to Firestore');
+      }
       
       return result;
     } catch (error: any) {
       // Enhanced error logging
-      console.group('❌ Google Sign-in Error Analysis');
-      console.error('Error details:', {
+      logger.error('Google Sign-in Error', error as Error, {
         code: error.code,
-        message: error.message,
         credential: error.credential,
-        customData: error.customData,
-        stack: error.stack
+        customData: error.customData
       });
       
       // Check common configuration issues
       if (!process.env.REACT_APP_FIREBASE_API_KEY) {
-        console.error('🚨 Missing REACT_APP_FIREBASE_API_KEY');
+        logger.error('Missing REACT_APP_FIREBASE_API_KEY');
       }
       if (!process.env.REACT_APP_FIREBASE_AUTH_DOMAIN) {
-        console.error('🚨 Missing REACT_APP_FIREBASE_AUTH_DOMAIN');
+        logger.error('Missing REACT_APP_FIREBASE_AUTH_DOMAIN');
       }
-      
-      console.log('🌐 Current environment:', {
-        nodeEnv: process.env.NODE_ENV,
-        host: window.location.host,
-        protocol: window.location.protocol
-      });
-      console.groupEnd();
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Environment', { nodeEnv: process.env.NODE_ENV, host: window.location.host, protocol: window.location.protocol });
+      }
 
       // Handle specific error cases with user-friendly messages
       if (error.code === 'auth/popup-blocked') {
-        console.warn('🚫 Popup blocked, automatically switching to redirect method...');
+        logger.warn('Popup blocked, automatically switching to redirect method...');
         throw new Error('النوافذ المنبثقة محظورة. يرجى السماح بالنوافذ المنبثقة في إعدادات المتصفح وإعادة المحاولة.');
       }
       
@@ -273,7 +284,7 @@ export class SocialAuthService {
       }
       
       if (error.code === 'auth/unauthorized-domain') {
-        console.error('🚨 Domain Authorization Issue:', {
+        logger.error('Domain Authorization Issue', undefined, {
           currentDomain: window.location.hostname,
           authDomain: auth.app.options.authDomain,
           suggestion: 'Add this domain to Firebase Console > Authentication > Settings > Authorized domains'
@@ -282,12 +293,12 @@ export class SocialAuthService {
       }
       
       if (error.code === 'auth/operation-not-allowed') {
-        console.error('🚨 Google Sign-in Disabled:', 'Enable Google provider in Firebase Console > Authentication > Sign-in method');
+        logger.error('Google Sign-in Disabled');
         throw new Error('تسجيل الدخول مع Google غير مفعل حالياً. يرجى الاتصال بالدعم الفني.');
       }
       
       if (error.code === 'auth/invalid-api-key') {
-        console.error('🚨 Invalid API Key:', process.env.REACT_APP_FIREBASE_API_KEY?.slice(0, 10) + '...');
+        logger.error('Invalid API Key');
         throw new Error('خطأ في تكوين Firebase. يرجى الاتصال بالدعم الفني.');
       }
       
@@ -297,7 +308,7 @@ export class SocialAuthService {
 
       // Special handling for internal-error
       if (error.code === 'auth/internal-error') {
-        console.error('🚨 Firebase Internal Error Detected:', {
+        logger.error('Firebase Internal Error Detected', undefined, {
           code: error.code,
           message: error.message,
           possibleCauses: [
@@ -317,8 +328,7 @@ export class SocialAuthService {
         });
         throw new Error('خطأ داخلي في Firebase. يرجى زيارة صفحة التشخيص: /debug/internal-error');
       }
-
-      console.error('🔥 Unhandled Google sign-in error:', error);
+      logger.error('Unhandled Google sign-in error', error as Error);
       throw new Error(`خطأ في تسجيل الدخول مع Google: ${error.message || 'خطأ غير معروف'}`);
     }
   }
@@ -328,25 +338,33 @@ export class SocialAuthService {
    */
   static async signInWithFacebook(): Promise<UserCredential> {
     try {
-      console.log('🔵 Starting Facebook sign-in process...');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Starting Facebook sign-in process...');
+      }
       
       // Use popup only (more reliable than redirect for Facebook)
       const result = await signInWithPopup(auth, facebookProvider);
       
-      console.log('✅ Facebook sign-in successful:', {
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Facebook sign-in successful', {
         email: result.user.email,
         displayName: result.user.displayName,
         uid: result.user.uid
-      });
+        });
+      }
       
       // AUTO-SYNC: Create/Update user profile in Firestore
-      console.log('📝 Syncing Facebook user to Firestore...');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Syncing Facebook user to Firestore...');
+      }
       await this.createOrUpdateBulgarianProfile(result.user);
-      console.log('✅ Facebook user synced to Firestore');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Facebook user synced to Firestore');
+      }
       
       return result;
     } catch (error: any) {
-      console.error('Facebook sign-in error:', error);
+      logger.error('Facebook sign-in error', error as Error);
 
       // Handle popup blocked error with user-friendly message
       if (error.code === 'auth/popup-blocked') {
@@ -387,32 +405,42 @@ export class SocialAuthService {
    */
   static async signInWithApple(): Promise<UserCredential> {
     try {
-      console.log('🍎 Starting Apple sign-in process...');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Starting Apple sign-in process...');
+      }
       
       // First try popup
       const result = await signInWithPopup(auth, appleProvider);
       
-      console.log('✅ Apple sign-in successful:', {
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Apple sign-in successful', {
         email: result.user.email,
         displayName: result.user.displayName,
         uid: result.user.uid
-      });
+        });
+      }
       
       // AUTO-SYNC: Create/Update user profile in Firestore
-      console.log('📝 Syncing Apple user to Firestore...');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Syncing Apple user to Firestore...');
+      }
       await this.createOrUpdateBulgarianProfile(result.user);
-      console.log('✅ Apple user synced to Firestore');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Apple user synced to Firestore');
+      }
       
       return result;
     } catch (error: any) {
-      console.warn('Apple popup failed, trying redirect:', error.code);
+      logger.warn('Apple popup failed, trying redirect', { code: error.code });
 
       // If popup is blocked, try redirect
       if (error.code === 'auth/popup-blocked' ||
           error.code === 'auth/popup-closed-by-user' ||
           error.code === 'auth/cancelled-popup-request') {
 
-        console.log('Popup blocked, using redirect method...');
+        if (process.env.NODE_ENV === 'development') {
+          logger.debug('Popup blocked, using redirect method...');
+        }
         await signInWithRedirect(auth, appleProvider);
 
         // This will redirect the user, so we return a promise that never resolves
@@ -423,7 +451,7 @@ export class SocialAuthService {
         });
       }
 
-      console.error('Apple sign-in error:', error);
+  logger.error('Apple sign-in error', error as Error);
       
       // Handle specific Apple errors
       if (error.code === 'auth/operation-not-allowed') {
@@ -447,14 +475,16 @@ export class SocialAuthService {
       const result = await signInWithPopup(auth, microsoftProvider);
       return result;
     } catch (error: any) {
-      console.warn('Microsoft popup failed, trying redirect:', error.code);
+      logger.warn('Microsoft popup failed, trying redirect', { code: error.code });
 
       // If popup is blocked, try redirect
       if (error.code === 'auth/popup-blocked' ||
           error.code === 'auth/popup-closed-by-user' ||
           error.code === 'auth/cancelled-popup-request') {
 
-        console.log('Popup blocked, using redirect method...');
+        if (process.env.NODE_ENV === 'development') {
+          logger.debug('Popup blocked, using redirect method...');
+        }
         await signInWithRedirect(auth, microsoftProvider);
 
         // This will redirect the user, so we return a promise that never resolves
@@ -465,7 +495,7 @@ export class SocialAuthService {
         });
       }
 
-      console.error('Microsoft sign-in error:', error);
+  logger.error('Microsoft sign-in error', error as Error);
       throw new Error(this.getErrorMessage(error.code, 'Microsoft'));
     }
   }
@@ -479,14 +509,16 @@ export class SocialAuthService {
       const result = await signInWithPopup(auth, samsungProvider);
       return result;
     } catch (error: any) {
-      console.warn('Samsung popup failed, trying redirect:', error.code);
+      logger.warn('Samsung popup failed, trying redirect', { code: error.code });
 
       // If popup is blocked, try redirect
       if (error.code === 'auth/popup-blocked' ||
           error.code === 'auth/popup-closed-by-user' ||
           error.code === 'auth/cancelled-popup-request') {
 
-        console.log('Popup blocked, using redirect method...');
+        if (process.env.NODE_ENV === 'development') {
+          logger.debug('Popup blocked, using redirect method...');
+        }
         await signInWithRedirect(auth, samsungProvider);
 
         // This will redirect the user, so we return a promise that never resolves
@@ -497,7 +529,7 @@ export class SocialAuthService {
         });
       }
 
-      console.error('Samsung sign-in error:', error);
+  logger.error('Samsung sign-in error', error as Error);
       throw new Error(this.getErrorMessage(error.code, 'Samsung'));
     }
   }
@@ -509,7 +541,7 @@ export class SocialAuthService {
     try {
       await signInWithRedirect(auth, googleProvider);
     } catch (error: any) {
-      console.error('Google redirect sign-in error:', error);
+      logger.error('Google redirect sign-in error', error as Error);
       throw new Error(this.getErrorMessage(error.code, 'Google'));
     }
   }
@@ -521,7 +553,7 @@ export class SocialAuthService {
     try {
       await signInWithRedirect(auth, facebookProvider);
     } catch (error: any) {
-      console.error('Facebook redirect sign-in error:', error);
+      logger.error('Facebook redirect sign-in error', error as Error);
       throw new Error(this.getErrorMessage(error.code, 'Facebook'));
     }
   }
@@ -533,7 +565,7 @@ export class SocialAuthService {
     try {
       await signInWithRedirect(auth, appleProvider);
     } catch (error: any) {
-      console.error('Apple redirect sign-in error:', error);
+      logger.error('Apple redirect sign-in error', error as Error);
       throw new Error(this.getErrorMessage(error.code, 'Apple'));
     }
   }
@@ -545,7 +577,7 @@ export class SocialAuthService {
     try {
       await signInWithRedirect(auth, microsoftProvider);
     } catch (error: any) {
-      console.error('Microsoft redirect sign-in error:', error);
+      logger.error('Microsoft redirect sign-in error', error as Error);
       throw new Error(this.getErrorMessage(error.code, 'Microsoft'));
     }
   }
@@ -557,7 +589,7 @@ export class SocialAuthService {
     try {
       await signInWithRedirect(auth, samsungProvider);
     } catch (error: any) {
-      console.error('Samsung redirect sign-in error:', error);
+      logger.error('Samsung redirect sign-in error', error as Error);
       throw new Error(this.getErrorMessage(error.code, 'Samsung'));
     }
   }
@@ -570,7 +602,7 @@ export class SocialAuthService {
       const result = await getRedirectResult(auth);
       return result;
     } catch (error: any) {
-      console.error('Redirect result error:', error);
+      logger.error('Redirect result error', error as Error);
       throw new Error(this.getErrorMessage(error.code, 'Redirect'));
     }
   }
@@ -728,7 +760,7 @@ export class SocialAuthService {
       
       return result;
     } catch (error: any) {
-      console.error(`Error linking ${providerType} provider:`, error);
+      logger.error(`Error linking ${providerType} provider`, error as Error);
       throw new Error(this.getErrorMessage(error.code, providerType));
     }
   }
@@ -749,7 +781,7 @@ export class SocialAuthService {
       
       return result;
     } catch (error: any) {
-      console.error(`Error unlinking provider ${providerId}:`, error);
+      logger.error(`Error unlinking provider ${providerId}`, error as Error);
       throw new Error(this.getErrorMessage(error.code, 'unlink'));
     }
   }
@@ -781,7 +813,7 @@ export class SocialAuthService {
       const result = await reauthenticateWithPopup(auth.currentUser, provider);
       return result;
     } catch (error: any) {
-      console.error(`Error reauthenticating with ${providerType}:`, error);
+      logger.error(`Error reauthenticating with ${providerType}`, error as Error);
       throw new Error(this.getErrorMessage(error.code, providerType));
     }
   }
@@ -803,7 +835,7 @@ export class SocialAuthService {
       // Also update Firestore profile
       await this.createOrUpdateBulgarianProfile(auth.currentUser, updates);
     } catch (error: any) {
-      console.error('Error updating profile:', error);
+      logger.error('Error updating profile', error as Error);
       throw new Error(this.getErrorMessage(error.code, 'update-profile'));
     }
   }
@@ -828,7 +860,7 @@ export class SocialAuthService {
       // Delete Firebase Auth user
       await deleteUser(auth.currentUser);
     } catch (error: any) {
-      console.error('Error deleting user account:', error);
+      logger.error('Error deleting user account', error as Error);
       throw new Error(this.getErrorMessage(error.code, 'delete-account'));
     }
   }
@@ -847,7 +879,7 @@ export class SocialAuthService {
       
       return null;
     } catch (error: any) {
-      console.error('Error fetching user profile:', error);
+      logger.error('Error fetching user profile', error as Error);
       throw new Error('Failed to fetch user profile');
     }
   }
@@ -863,7 +895,7 @@ export class SocialAuthService {
         updatedAt: serverTimestamp()
       });
     } catch (error: any) {
-      console.error('Error updating Bulgarian profile:', error);
+      logger.error('Error updating Bulgarian profile', error as Error);
       throw new Error('Failed to update profile');
     }
   }
@@ -901,7 +933,7 @@ export class SocialAuthService {
       
       return users.slice(0, criteria.limit || 50);
     } catch (error: any) {
-      console.error('Error searching users:', error);
+      logger.error('Error searching users', error as Error);
       throw new Error('Failed to search users');
     }
   }
@@ -930,37 +962,46 @@ export class SocialAuthService {
    */
   static async signInAnonymously(): Promise<UserCredential> {
     try {
-      console.log('👤 Starting anonymous sign-in...');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Starting anonymous sign-in...');
+      }
       
       // Check if anonymous auth is enabled
-      console.log('🔧 Checking anonymous auth configuration...');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Checking anonymous auth configuration...');
+      }
       
       const result = await signInAnonymously(auth);
       
-      console.log('✅ Anonymous sign-in successful:', {
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Anonymous sign-in successful', {
         uid: result.user.uid,
         isAnonymous: result.user.isAnonymous
-      });
+        });
+      }
       
       // AUTO-SYNC: Create/Update anonymous user profile in Firestore
-      console.log('📝 Syncing anonymous user to Firestore...');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Syncing anonymous user to Firestore...');
+      }
       await this.createOrUpdateBulgarianProfile(result.user, {
         displayName: 'Guest User',
         profileVisibility: 'private'
       });
-      console.log('✅ Anonymous user synced to Firestore');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Anonymous user synced to Firestore');
+      }
       
       return result;
     } catch (error: any) {
-      console.group('❌ Anonymous Sign-in Error Analysis');
-      console.error('Error details:', error);
+      logger.error('Anonymous Sign-in Error', error as Error);
       
       if (error.code === 'auth/operation-not-allowed') {
-        console.error('🚨 Anonymous auth disabled in Firebase Console');
-        console.log('🔧 Fix: Enable Anonymous sign-in in Firebase Console > Authentication > Sign-in method');
+        logger.error('Anonymous auth disabled in Firebase Console');
+        if (process.env.NODE_ENV === 'development') {
+          logger.info('Fix: Enable Anonymous sign-in in Firebase Console > Authentication > Sign-in method');
+        }
       }
-      
-      console.groupEnd();
       throw new Error(`خطأ في الدخول كضيف: ${error.message || 'يرجى التحقق من إعدادات Firebase'}`);
     }
   }
@@ -973,16 +1014,18 @@ export class SocialAuthService {
       const recaptchaVerifier = new RecaptchaVerifier(auth, containerId, {
         size: 'normal',
         callback: (response: any) => {
-          console.log('✅ reCAPTCHA verified');
+          if (process.env.NODE_ENV === 'development') {
+            logger.debug('reCAPTCHA verified');
+          }
         },
         'expired-callback': () => {
-          console.warn('⚠️ reCAPTCHA expired');
+          logger.warn('reCAPTCHA expired');
         }
       });
       
       return recaptchaVerifier;
     } catch (error: any) {
-      console.error('reCAPTCHA setup error:', error);
+      logger.error('reCAPTCHA setup error', error as Error);
       throw new Error('Failed to setup reCAPTCHA verifier');
     }
   }
@@ -995,17 +1038,21 @@ export class SocialAuthService {
     recaptchaVerifier: RecaptchaVerifier
   ): Promise<ConfirmationResult> {
     try {
-      console.log('📱 Sending verification code to:', phoneNumber);
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Sending verification code', { phoneNumber });
+      }
       
       // Ensure phone number starts with country code
       const formattedPhone = phoneNumber.startsWith('+') ? phoneNumber : `+359${phoneNumber}`;
       
       const confirmationResult = await signInWithPhoneNumber(auth, formattedPhone, recaptchaVerifier);
       
-      console.log('✅ Verification code sent successfully');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Verification code sent successfully');
+      }
       return confirmationResult;
     } catch (error: any) {
-      console.error('Phone verification code error:', error);
+      logger.error('Phone verification code error', error as Error);
       throw new Error(this.getErrorMessage(error.code, 'Phone'));
     }
   }
@@ -1018,22 +1065,30 @@ export class SocialAuthService {
     code: string
   ): Promise<UserCredential> {
     try {
-      console.log('🔐 Verifying phone code...');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Verifying phone code...');
+      }
       const result = await confirmationResult.confirm(code);
       
-      console.log('✅ Phone verification successful:', {
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Phone verification successful', {
         uid: result.user.uid,
         phoneNumber: result.user.phoneNumber
-      });
+        });
+      }
       
       // AUTO-SYNC: Create/Update user profile in Firestore
-      console.log('📝 Syncing phone user to Firestore...');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Syncing phone user to Firestore...');
+      }
       await this.createOrUpdateBulgarianProfile(result.user);
-      console.log('✅ Phone user synced to Firestore');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Phone user synced to Firestore');
+      }
       
       return result;
     } catch (error: any) {
-      console.error('Phone code verification error:', error);
+      logger.error('Phone code verification error', error as Error);
       throw new Error(this.getErrorMessage(error.code, 'Phone Verification'));
     }
   }
@@ -1051,7 +1106,7 @@ export class SocialAuthService {
       const confirmationResult = await signInWithPhoneNumber(auth, formattedPhone, recaptchaVerifier);
       return confirmationResult;
     } catch (error: any) {
-      console.error('Link phone number error:', error);
+      logger.error('Link phone number error', error as Error);
       throw new Error(this.getErrorMessage(error.code, 'Phone Linking'));
     }
   }
@@ -1065,7 +1120,9 @@ export class SocialAuthService {
     }
 
     try {
-      console.log('🔄 Converting anonymous account to permanent...');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Converting anonymous account to permanent...');
+      }
       
       // Create email credential - we'll use a different approach
       // Since EmailAuthProvider is not imported, we'll create new account instead of linking
@@ -1089,10 +1146,12 @@ export class SocialAuthService {
         });
       }
       
-      console.log('✅ Anonymous account converted successfully');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Anonymous account converted successfully');
+      }
       return newUserCredential;
     } catch (error: any) {
-      console.error('Convert anonymous account error:', error);
+      logger.error('Convert anonymous account error', error as Error);
       throw new Error(this.getErrorMessage(error.code, 'Account Conversion'));
     }
   }

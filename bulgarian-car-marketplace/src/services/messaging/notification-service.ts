@@ -5,6 +5,7 @@
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 import { doc, updateDoc, arrayUnion, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
+import { logger } from '../logger-service';
 
 // ==================== INTERFACES ====================
 
@@ -35,7 +36,7 @@ export class NotificationService {
         this.messaging = getMessaging();
       }
     } catch (error) {
-      console.warn('⚠️ Push notifications not available:', error);
+      logger.warn('Push notifications not available', error as Error);
     }
   }
 
@@ -71,7 +72,9 @@ export class NotificationService {
         // Save token to user profile
         await this.saveToken(userId, token);
 
-        console.log('✅ Notification permission granted');
+        if (process.env.NODE_ENV === 'development') {
+          logger.debug('Notification permission granted');
+        }
         
         return {
           granted: true,
@@ -84,7 +87,7 @@ export class NotificationService {
         };
       }
     } catch (error: any) {
-      console.error('❌ Request permission failed:', error);
+      logger.error('Request permission failed', error as Error);
       return {
         granted: false,
         error: error.message
@@ -99,16 +102,16 @@ export class NotificationService {
   async showNotification(notification: PushNotification): Promise<void> {
     try {
       if (!('Notification' in window)) {
-        console.warn('⚠️ Notifications not supported');
+        logger.warn('Notifications not supported');
         return;
       }
 
       if (Notification.permission !== 'granted') {
-        console.warn('⚠️ No notification permission');
+        logger.warn('No notification permission');
         return;
       }
 
-      const n = new Notification(notification.title, {
+      const options: NotificationOptions & { vibrate?: number[] } = {
         body: notification.body,
         icon: notification.icon || '/logo192.png',
         badge: notification.badge,
@@ -116,7 +119,9 @@ export class NotificationService {
         tag: 'bulgarian-cars',
         vibrate: [200, 100, 200],
         requireInteraction: false
-      });
+      };
+
+      const n = new Notification(notification.title, options);
 
       if (notification.onClick) {
         n.onclick = notification.onClick;
@@ -126,7 +131,7 @@ export class NotificationService {
       setTimeout(() => n.close(), 5000);
 
     } catch (error) {
-      console.error('❌ Show notification failed:', error);
+      logger.error('Show notification failed', error as Error);
     }
   }
 
@@ -142,7 +147,9 @@ export class NotificationService {
     }
 
     return onMessage(this.messaging, (payload) => {
-      console.log('📩 Foreground message received:', payload);
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Foreground message received', payload as any);
+      }
       
       // Show notification
       if (payload.notification) {
@@ -198,9 +205,11 @@ export class NotificationService {
         updatedAt: serverTimestamp()
       });
       
-      console.log('✅ FCM token saved');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('FCM token saved');
+      }
     } catch (error) {
-      console.error('❌ Save token failed:', error);
+      logger.error('Save token failed', error as Error);
     }
   }
 }

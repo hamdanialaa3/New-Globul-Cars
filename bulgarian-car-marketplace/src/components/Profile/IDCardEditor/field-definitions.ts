@@ -149,7 +149,7 @@ export const FRONT_FIELDS: FieldDefinition[] = [
   },
   {
     id: 'issuingAuthority',
-    label: 'Издаден من',
+    label: 'Издаден от',
     labelEN: 'Authority',
     example: 'MBP/Mol BGR',
     position: { x: 450, y: 485, width: 320, height: 38 },
