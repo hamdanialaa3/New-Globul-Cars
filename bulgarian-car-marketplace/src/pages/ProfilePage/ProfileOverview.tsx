@@ -509,5 +509,18 @@ const InfoValue = styled.div`
   }
 `;
 
+const VerifiedBadge = styled.div`
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+  color: #065f46;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  border: 1px solid #6ee7b7;
+`;
+
 export default ProfileOverview;
 
