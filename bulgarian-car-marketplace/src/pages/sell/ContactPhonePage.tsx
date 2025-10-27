@@ -215,14 +215,29 @@ const SummaryText = styled.p`
   line-height: 1.6;
 `;
 
-const ErrorCard = styled.div`
-  background: #fee;
-  border: 2px solid #fcc;
+const ErrorCard = styled.div<{ $hasWarning?: boolean }>`
+  background: ${props => props.$hasWarning ? '#fff3cd' : '#fee'};
+  border: 2px solid ${props => props.$hasWarning ? '#ffc107' : '#fcc'};
   border-radius: 15px;
   padding: 1.5rem;
   margin: 2rem 0;
-  color: #c00;
-  text-align: center;
+  color: ${props => props.$hasWarning ? '#856404' : '#c00'};
+  text-align: left;
+`;
+
+const MissingFieldsList = styled.div`
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  
+  ul {
+    margin: 0.5rem 0 0 1.5rem;
+    padding: 0;
+    
+    li {
+      margin: 0.25rem 0;
+    }
+  }
 `;
 
 const SuccessCard = styled.div`
