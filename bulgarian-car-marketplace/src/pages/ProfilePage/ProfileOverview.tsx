@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { useProfile } from './hooks/useProfile';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { useProfileType } from '../../contexts/ProfileTypeContext';
 import { useNavigate } from 'react-router-dom';
 import ProfileDashboard from '../../components/Profile/ProfileDashboard';
 import UserPostsFeed from '../../components/Profile/UserPostsFeed';
@@ -26,11 +27,15 @@ import * as S from './styles';
 const ProfileOverview: React.FC = () => {
   const { language } = useLanguage();
   const { user, isOwnProfile } = useProfile();
+  const { isDealer, isCompany } = useProfileType();
   const navigate = useNavigate();
 
   const isBusinessAccount = user?.accountType === 'business' || 
                            user?.accountType === 'dealer' || 
                            user?.accountType === 'company';
+  
+  // Check if user has business info from BusinessInformationForm
+  const hasBusinessInfo = user?.businessInfo;
 
   return (
     <S.ContentSection>
@@ -107,6 +112,173 @@ const ProfileOverview: React.FC = () => {
           )}
         </InfoGrid>
       </InfoSection>
+      
+      {/* ⚡ NEW: Work Information Section (Dealer & Company only) */}
+      {(isDealer || isCompany) && hasBusinessInfo && (
+        <InfoSection>
+          <SectionHeader>
+            <SectionTitle>
+              <Building2 size={20} />
+              {language === 'bg' ? 'Информация за работа' : 'Work Information'}
+            </SectionTitle>
+            {isOwnProfile && (
+              <EditButton onClick={() => navigate('/profile/settings')}>
+                <Edit size={16} />
+                {language === 'bg' ? 'Редактирай' : 'Edit'}
+              </EditButton>
+            )}
+          </SectionHeader>
+          
+          <InfoGrid>
+            {hasBusinessInfo.legalForm && (
+              <InfoItem>
+                <InfoLabel>
+                  <FileText size={14} />
+                  {language === 'bg' ? 'Правна форма:' : 'Legal Form:'}
+                </InfoLabel>
+                <InfoValue>
+                  {hasBusinessInfo.legalForm === 'EOOD' && 'ЕООД - Еднолично дружество с ограничена отговорност'}
+                  {hasBusinessInfo.legalForm === 'OOD' && 'ООД - Дружество с ограничена отговорност'}
+                  {hasBusinessInfo.legalForm === 'AD' && 'АД - Акционерно дружество'}
+                  {hasBusinessInfo.legalForm === 'ET' && 'ЕТ - Едноличен търговец'}
+                  {hasBusinessInfo.legalForm === 'EAD' && 'ЕАД - Еднолично акционерно дружество'}
+                </InfoValue>
+              </InfoItem>
+            )}
+            
+            {hasBusinessInfo.registeredNameBG && (
+              <InfoItem>
+                <InfoLabel>
+                  <Building2 size={14} />
+                  {language === 'bg' ? 'Регистрирано име:' : 'Registered Name:'}
+                </InfoLabel>
+                <InfoValue>{hasBusinessInfo.registeredNameBG}</InfoValue>
+              </InfoItem>
+            )}
+            
+            {hasBusinessInfo.registrationNumber && (
+              <InfoItem>
+                <InfoLabel>
+                  <FileText size={14} />
+                  {language === 'bg' ? 'ЕИК:' : 'Registration Number:'}
+                </InfoLabel>
+                <InfoValue>{hasBusinessInfo.registrationNumber}</InfoValue>
+              </InfoItem>
+            )}
+            
+            {hasBusinessInfo.vatNumber && (
+              <InfoItem>
+                <InfoLabel>
+                  <FileText size={14} />
+                  {language === 'bg' ? 'ДДС номер:' : 'VAT Number:'}
+                </InfoLabel>
+                <InfoValue>{hasBusinessInfo.vatNumber}</InfoValue>
+              </InfoItem>
+            )}
+            
+            {hasBusinessInfo.bulstat && (
+              <InfoItem>
+                <InfoLabel>
+                  <FileText size={14} />
+                  {language === 'bg' ? 'Булстат:' : 'Bulstat:'}
+                </InfoLabel>
+                <InfoValue>{hasBusinessInfo.bulstat}</InfoValue>
+              </InfoItem>
+            )}
+            
+            {hasBusinessInfo.uik && (
+              <InfoItem>
+                <InfoLabel>
+                  <FileText size={14} />
+                  {language === 'bg' ? 'УИК:' : 'Unique ID:'}
+                </InfoLabel>
+                <InfoValue>{hasBusinessInfo.uik}</InfoValue>
+              </InfoItem>
+            )}
+            
+            {hasBusinessInfo.registeredAddress && (
+              <>
+                {hasBusinessInfo.registeredAddress.city && (
+                  <InfoItem>
+                    <InfoLabel>
+                      <MapPin size={14} />
+                      {language === 'bg' ? 'Град:' : 'City:'}
+                    </InfoLabel>
+                    <InfoValue>{hasBusinessInfo.registeredAddress.city}</InfoValue>
+                  </InfoItem>
+                )}
+                
+                {(hasBusinessInfo.registeredAddress.street || hasBusinessInfo.registeredAddress.number) && (
+                  <InfoItem>
+                    <InfoLabel>
+                      <MapPin size={14} />
+                      {language === 'bg' ? 'Адрес:' : 'Address:'}
+                    </InfoLabel>
+                    <InfoValue>
+                      {hasBusinessInfo.registeredAddress.street} {hasBusinessInfo.registeredAddress.number}
+                    </InfoValue>
+                  </InfoItem>
+                )}
+              </>
+            )}
+            
+            {hasBusinessInfo.contactEmail && (
+              <InfoItem>
+                <InfoLabel>
+                  <Mail size={14} />
+                  {language === 'bg' ? 'Имейл:' : 'Email:'}
+                </InfoLabel>
+                <InfoValue>{hasBusinessInfo.contactEmail}</InfoValue>
+              </InfoItem>
+            )}
+            
+            {hasBusinessInfo.contactPhone && (
+              <InfoItem>
+                <InfoLabel>
+                  <Phone size={14} />
+                  {language === 'bg' ? 'Телефон:' : 'Phone:'}
+                </InfoLabel>
+                <InfoValue>{hasBusinessInfo.contactPhone}</InfoValue>
+              </InfoItem>
+            )}
+            
+            {hasBusinessInfo.website && (
+              <InfoItem>
+                <InfoLabel>
+                  <Globe size={14} />
+                  {language === 'bg' ? 'Уебсайт:' : 'Website:'}
+                </InfoLabel>
+                <InfoValue>
+                  <a href={hasBusinessInfo.website} target="_blank" rel="noopener noreferrer" style={{ color: '#FF7900' }}>
+                    {hasBusinessInfo.website}
+                  </a>
+                </InfoValue>
+              </InfoItem>
+            )}
+            
+            {hasBusinessInfo.manager && (hasBusinessInfo.manager.firstName || hasBusinessInfo.manager.lastName) && (
+              <InfoItem>
+                <InfoLabel>
+                  <User size={14} />
+                  {language === 'bg' ? 'Управител:' : 'Manager:'}
+                </InfoLabel>
+                <InfoValue>
+                  {hasBusinessInfo.manager.firstName} {hasBusinessInfo.manager.lastName}
+                  {hasBusinessInfo.manager.position && ` - ${hasBusinessInfo.manager.position}`}
+                </InfoValue>
+              </InfoItem>
+            )}
+            
+            {hasBusinessInfo.verified && (
+              <InfoItem style={{ gridColumn: '1 / -1' }}>
+                <VerifiedBadge>
+                  ✓ {language === 'bg' ? 'Потвърдена информация' : 'Verified Information'}
+                </VerifiedBadge>
+              </InfoItem>
+            )}
+          </InfoGrid>
+        </InfoSection>
+      )}
       
       {/* ⚡ Business Information Section (if business account) */}
       {isBusinessAccount && (
