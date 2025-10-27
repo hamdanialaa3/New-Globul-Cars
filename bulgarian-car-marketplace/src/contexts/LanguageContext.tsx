@@ -1,6 +1,7 @@
 // Global Language Context for Smart Translation System
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { translations } from '../locales/translations';
+import { logger } from '../services/logger-service';
 
 export type Language = 'bg' | 'en';
 
@@ -39,24 +40,26 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
           for (const fk of keys) {
             if (fallbackValue && typeof fallbackValue === 'object' && fk in fallbackValue) {
               fallbackValue = fallbackValue[fk];
-            } else {
-              // If both languages fail, return the key itself as last resort
-              console.warn(`Translation missing for key: ${key}`);
-              return key;
+          } else {
+            // If both languages fail, return the key itself as last resort
+            if (process.env.NODE_ENV === 'development') {
+              logger.warn('Translation missing for key', { key });
             }
+            return key;
           }
-          return fallbackValue;
         }
+        return fallbackValue;
       }
-      
-      return typeof value === 'string' ? value : key;
-    } catch (error) {
-      console.warn(`Translation error for key: ${key}`, error);
-      return key;
     }
-  };
-
-  // Smart language setter that persists to localStorage and triggers global update
+    
+    return typeof value === 'string' ? value : key;
+  } catch (error) {
+    if (process.env.NODE_ENV === 'development') {
+      logger.warn('Translation error for key', { key, error: (error as Error).message });
+    }
+    return key;
+  }
+};  // Smart language setter that persists to localStorage and triggers global update
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
     localStorage.setItem('globul-cars-language', lang);
@@ -72,7 +75,9 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
     // Update document direction (both Bulgarian and English are LTR)
     document.documentElement.dir = 'ltr';
     
-    console.log(`🌐 Language changed to: ${lang.toUpperCase()}`);
+    if (process.env.NODE_ENV === 'development') {
+      logger.info('Language changed', { language: lang.toUpperCase() });
+    }
   };
 
   // ✅ FIX: Toggle language function

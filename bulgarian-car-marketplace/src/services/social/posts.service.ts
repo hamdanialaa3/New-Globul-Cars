@@ -22,6 +22,7 @@ import {
 } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '../../firebase/firebase-config';
+import { logger } from '../logger-service';
 
 // ==================== TYPES ====================
 
@@ -149,10 +150,12 @@ class PostsService {
         'stats.posts': increment(1)
       });
       
-      console.log('Post created:', postRef.id);
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Post created', { postId: postRef.id });
+      }
       return postRef.id;
     } catch (error) {
-      console.error('Error creating post:', error);
+      logger.error('Error creating post', error as Error, { userId });
       throw new Error('Failed to create post');
     }
   }
@@ -187,7 +190,7 @@ class PostsService {
         ...doc.data()
       } as Post));
     } catch (error) {
-      console.error('Error getting public posts:', error);
+      logger.error('Error getting public posts', error as Error);
       return [];
     }
   }
@@ -208,7 +211,7 @@ class PostsService {
         ...doc.data()
       } as Post));
     } catch (error) {
-      console.error('Error getting user posts:', error);
+      logger.error('Error getting user posts', error as Error, { userId });
       return [];
     }
   }
@@ -223,7 +226,7 @@ class PostsService {
         ...postDoc.data()
       } as Post;
     } catch (error) {
-      console.error('Error getting post:', error);
+      logger.error('Error getting post', error as Error, { postId });
       return null;
     }
   }
@@ -249,7 +252,7 @@ class PostsService {
       
       return true;
     } catch (error) {
-      console.error('Error deleting post:', error);
+      logger.error('Error deleting post', error as Error, { postId, userId });
       return false;
     }
   }

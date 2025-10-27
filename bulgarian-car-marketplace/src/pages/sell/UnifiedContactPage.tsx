@@ -19,6 +19,7 @@ import useDraftAutoSave from '../../hooks/useDraftAutoSave';
 import { useSellWorkflow } from '../../hooks/useSellWorkflow';
 import useWorkflowStep from '../../hooks/useWorkflowStep';
 import ImageUploadService from '../../services/image-upload-service';
+import { logger } from '../../services/logger-service';
 
 const CONTACT_METHODS = [
   { id: 'phone', iconComponent: 'PhoneIcon', labelBg: 'Телефон', labelEn: 'Phone' },
@@ -277,7 +278,9 @@ const UnifiedContactPage: React.FC = () => {
         images: images || '0'
       };
 
-      console.log('📝 Creating car listing with workflow data:', workflowData);
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Creating car listing with workflow data', { workflowData });
+      }
 
       // Get current user ID
       const userId = currentUser?.uid;
@@ -293,7 +296,9 @@ const UnifiedContactPage: React.FC = () => {
         const savedImagesJson = localStorage.getItem('globul_sell_workflow_images');
         if (savedImagesJson) {
           const base64Images = JSON.parse(savedImagesJson) as string[];
-          console.log(`📸 Found ${base64Images.length} images in localStorage`);
+          if (process.env.NODE_ENV === 'development') {
+            logger.debug(`Found ${base64Images.length} images in localStorage`);
+          }
           
           // Convert base64 to File objects
           imageFiles = await Promise.all(
@@ -304,10 +309,12 @@ const UnifiedContactPage: React.FC = () => {
             })
           );
           
-          console.log(`✅ Converted ${imageFiles.length} images to File objects`);
+          if (process.env.NODE_ENV === 'development') {
+            logger.debug(`Converted ${imageFiles.length} images to File objects`);
+          }
         }
       } catch (error) {
-        console.error('⚠️ Error loading images from localStorage:', error);
+        logger.error('Error loading images from localStorage', error as Error);
         // Continue without images - don't block listing creation
       }
 
@@ -318,7 +325,9 @@ const UnifiedContactPage: React.FC = () => {
         throw new Error('Failed to create listing');
       }
 
-      console.log('✅ Car listing created:', carId);
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Car listing created', { carId });
+      }
 
       // 🆕 Upload images with progress tracking (if available)
       if (imageFiles && imageFiles.length > 0) {
@@ -333,12 +342,14 @@ const UnifiedContactPage: React.FC = () => {
               setUploadProgress(progress);
             },
             (fileName, error) => {
-              console.error(`Upload failed for ${fileName}:`, error);
+              logger.error(`Upload failed for ${fileName}`, error);
               setUploadErrors(prev => [...prev, `${fileName}: ${error.message}`]);
             }
           );
 
-          console.log(`✅ Uploaded ${imageUrls.length} images`);
+          if (process.env.NODE_ENV === 'development') {
+            logger.debug(`Uploaded ${imageUrls.length} images`);
+          }
 
           // Update car document with image URLs
           if (imageUrls.length > 0) {
@@ -347,7 +358,7 @@ const UnifiedContactPage: React.FC = () => {
             });
           }
         } catch (uploadError) {
-          console.error('Image upload failed:', uploadError);
+          logger.error('Image upload failed', uploadError as Error, { carId });
           toast.warning(
             language === 'bg'
               ? '⚠️ Някои снимки не са качени, но обявата е създадена. Можете да добавите снимки по-късно.'
@@ -370,7 +381,7 @@ const UnifiedContactPage: React.FC = () => {
         const N8nService = await import('../../services/n8n-integration');
         await N8nService.default.onCarPublished(currentUser.uid, carId, workflowData as any);
       } catch (n8nError) {
-        console.warn('N8N webhook failed (non-critical):', n8nError);
+        logger.warn('N8N webhook failed (non-critical)', { error: n8nError, carId });
       }
 
       // 🆕 Clear all workflow data
@@ -388,7 +399,9 @@ const UnifiedContactPage: React.FC = () => {
         }
       );
 
-      console.log('🎉 Car listing published successfully!');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Car listing published successfully', { carId });
+      }
 
       // Navigate with delay
       setTimeout(() => {
@@ -396,7 +409,10 @@ const UnifiedContactPage: React.FC = () => {
       }, 1000);
 
     } catch (error: any) {
-      console.error('❌ Error creating listing:', error);
+      logger.error('Error creating listing', error as Error, { 
+        userId: currentUser?.uid,
+        errorMessage: error.message 
+      });
       setError(error.message || (language === 'bg' 
         ? 'Възникна грешка при създаване на обявата' 
         : 'Error creating listing'));

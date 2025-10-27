@@ -8,6 +8,7 @@ import { Plus, X, Image as ImageIcon, Loader } from 'lucide-react';
 // import { useLanguage } from '../../contexts/LanguageContext'; // Unused
 import { useTranslation } from '../../hooks/useTranslation';
 import { ProfileService } from '../../services/profile';
+import { logger } from '../../services/logger-service';
 
 // ==================== STYLED COMPONENTS ====================
 
@@ -183,9 +184,11 @@ const ProfileGallery: React.FC<ProfileGalleryProps> = ({
       setGallery(newGallery);
       onUpdate?.(newGallery);
 
-      console.log('✅ Gallery image uploaded');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Gallery image uploaded', { userId, galleryLength: newGallery.length });
+      }
     } catch (error) {
-      console.error('❌ Gallery upload failed:', error);
+      logger.error('Gallery upload failed', error as Error, { userId, fileName: file.name });
       alert('Upload failed');
     } finally {
       setUploading(null);
@@ -212,9 +215,11 @@ const ProfileGallery: React.FC<ProfileGalleryProps> = ({
       setGallery(newGallery);
       onUpdate?.(newGallery);
 
-      console.log('✅ Gallery image deleted');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Gallery image deleted', { userId, index });
+      }
     } catch (error) {
-      console.error('❌ Delete failed:', error);
+      logger.error('Gallery image delete failed', error as Error, { userId, index, url });
     }
   };
 

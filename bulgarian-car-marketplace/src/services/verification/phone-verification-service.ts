@@ -12,6 +12,7 @@ import {
 import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, db } from '../../firebase/firebase-config';
 import { trustScoreService } from '../profile/trust-score-service';
+import { logger } from '../logger-service';
 
 // ==================== INTERFACES ====================
 
@@ -57,10 +58,12 @@ export class PhoneVerificationService {
     this.recaptchaVerifier = new RecaptchaVerifier(auth, containerId, {
       size: 'invisible',
       callback: () => {
-        console.log('✅ reCAPTCHA solved');
+        if (process.env.NODE_ENV === 'development') {
+          logger.debug('reCAPTCHA solved');
+        }
       },
       'expired-callback': () => {
-        console.warn('⚠️ reCAPTCHA expired');
+        logger.warn('reCAPTCHA expired');
       }
     });
   }
@@ -87,7 +90,9 @@ export class PhoneVerificationService {
       }
 
       // 3. Send SMS
-      console.log('📱 Sending SMS to:', formattedPhone);
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Sending SMS', { phoneNumber: formattedPhone });
+      }
       
       this.confirmationResult = await signInWithPhoneNumber(
         auth,
@@ -95,7 +100,9 @@ export class PhoneVerificationService {
         this.recaptchaVerifier!
       );
 
-      console.log('✅ SMS sent successfully');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('SMS sent successfully', { phoneNumber: formattedPhone });
+      }
 
       return {
         success: true,
@@ -104,7 +111,7 @@ export class PhoneVerificationService {
       };
 
     } catch (error: any) {
-      console.error('❌ SMS send failed:', error);
+      logger.error('SMS send failed', error as Error, { phoneNumber });
       return {
         success: false,
         message: this.getErrorMessage(error.code)
@@ -126,7 +133,9 @@ export class PhoneVerificationService {
       }
 
       // 1. Verify code
-      console.log('🔐 Verifying code...');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Verifying OTP code');
+      }
       const result = await this.confirmationResult.confirm(code);
 
       // 2. Update user verification status in Firestore
@@ -144,7 +153,9 @@ export class PhoneVerificationService {
       // 4. Recalculate trust score
       await trustScoreService.calculateTrustScore(userId);
 
-      console.log('✅ Phone verified successfully');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Phone verified successfully', { userId, phoneNumber: result.user.phoneNumber });
+      }
 
       return {
         success: true,
@@ -153,7 +164,7 @@ export class PhoneVerificationService {
       };
 
     } catch (error: any) {
-      console.error('❌ Verification failed:', error);
+      logger.error('Phone verification failed', error as Error, { code });
       return {
         success: false,
         message: this.getErrorMessage(error.code)

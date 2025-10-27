@@ -11,6 +11,7 @@ import personalizationService from '../../services/social/algorithms/personaliza
 import PostCard from '../../components/Posts/PostCard';
 import { Post } from '../../services/social/posts.service';
 import { Image, Video, Car, Sparkles, Clock, Heart, MessageCircle, TrendingUp, User as UserIcon } from 'lucide-react';
+import { logger } from '../../services/logger-service';
 
 type FeedMode = 'smart' | 'newest' | 'most_liked' | 'most_comments' | 'trending';
 
@@ -108,7 +109,7 @@ const SmartFeedSection: React.FC = () => {
 
       setPosts(prev => pageNum === 1 ? newPosts : [...prev, ...newPosts]);
     } catch (error) {
-      console.error('Failed to load feed:', error);
+      logger.error('Failed to load feed', error as Error, { feedMode, page: pageNum, userId: user?.uid });
     } finally {
       setLoading(false);
       setLoadingMore(false);

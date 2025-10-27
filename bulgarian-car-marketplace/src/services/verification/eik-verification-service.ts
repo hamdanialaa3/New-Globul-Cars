@@ -4,6 +4,7 @@
 
 import { httpsCallable } from 'firebase/functions';
 import { functions } from '../../firebase/firebase-config';
+import { logger } from '../logger-service';
 
 // ==================== TYPES ====================
 
@@ -40,7 +41,7 @@ export const verifyEIK = async (
     const result = await verifyEIKFn({ eik, businessName });
     return result.data as any;
   } catch (error: any) {
-    console.error('Error verifying EIK:', error);
+    logger.error('Error verifying EIK', error as Error, { eik, businessName });
     return {
       valid: false,
       eik: eik,

@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
+import { logger } from '../../services/logger-service';
 import {
   Bell,
   MessageCircle,
@@ -103,7 +104,7 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
 
       setNotifications(mockNotifications);
     } catch (error) {
-      console.error('Error loading notifications:', error);
+      logger.error('Error loading notifications (dropdown)', error as Error);
     } finally {
       setLoading(false);
     }

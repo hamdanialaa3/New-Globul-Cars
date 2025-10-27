@@ -18,6 +18,7 @@ import {
   sendEmailVerification,
   UserCredential
 } from 'firebase/auth';
+import { logger } from '../services/logger-service';
 import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
 import { auth, db, BulgarianFirebaseUtils } from './firebase-config';
 import { BULGARIAN_CONFIG } from '../config/bulgarian-config';
@@ -472,7 +473,7 @@ export class BulgarianAuthService {
       }
       return null;
     } catch (error: unknown) {
-      console.error('Error fetching user profile by ID:', error);
+      logger.error('Error fetching user profile by ID', error as Error, { userId });
       throw this.handleAuthError(error);
     }
   }
@@ -577,7 +578,7 @@ export class BulgarianAuthService {
         });
       }
     } catch (error) {
-      console.error('Error updating last login:', error);
+      logger.error('Error updating last login', error as Error, { uid });
       // Don't throw error to prevent breaking the auth flow
     }
   }

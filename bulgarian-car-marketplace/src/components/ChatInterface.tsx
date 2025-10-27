@@ -2,6 +2,7 @@
 // Chat Interface Component for Bulgarian Car Marketplace
 
 import React, { useState, useEffect, useRef } from 'react';
+import { logger } from '../services/logger-service';
 import styled from 'styled-components';
 import { useTranslation } from '../hooks/useTranslation';
 import { realtimeMessagingService, Message, TypingIndicator } from '../services/realtimeMessaging';
@@ -273,12 +274,12 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
     const loadMessages = async () => {
       try {
         const chatMessages = await realtimeMessagingService.getMessages(
-          currentUserId,
+              currentUserId,
           otherUserId
         );
         setMessages(chatMessages);
       } catch (error) {
-        console.error('Failed to load messages:', error);
+            logger.error('Failed to load messages', error as Error, { currentUserId, otherUserId });
       }
     };
 
@@ -364,7 +365,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
         false
       );
     } catch (error) {
-      console.error('Failed to send message:', error);
+          logger.error('Failed to send message', error as Error, { currentUserId, otherUserId, carId });
     }
   };
 

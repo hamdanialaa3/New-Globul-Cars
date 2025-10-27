@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import { UserPlus, UserCheck } from 'lucide-react';
 import { followService } from '../../services/social/follow.service';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { logger } from '../../services/logger-service';
 
 const Button = styled.button<{ $following: boolean }>`
   padding: 10px 20px;
@@ -57,7 +58,7 @@ export const FollowButton: React.FC<FollowButtonProps> = ({
       const isFollowing = await followService.isFollowing(currentUserId, targetUserId);
       setFollowing(isFollowing);
     } catch (error) {
-      console.error('Error checking follow status:', error);
+      logger.error('Error checking follow status', error as Error, { currentUserId, targetUserId });
     }
   };
 
@@ -77,7 +78,7 @@ export const FollowButton: React.FC<FollowButtonProps> = ({
         onFollowChange?.(true);
       }
     } catch (error) {
-      console.error('Follow error:', error);
+      logger.error('Follow operation error', error as Error, { currentUserId, targetUserId, following });
     } finally {
       setLoading(false);
     }

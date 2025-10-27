@@ -5,6 +5,7 @@ import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '../../../firebase/firebase-config';
 import { Post } from '../posts.service';
 import { CachedFeed, isExpired } from '../../../types/social-feed.types';
+import { logger } from '../../logger-service';
 
 class FeedCacheService {
   // Cache TTLs
@@ -45,7 +46,7 @@ class FeedCacheService {
 
       return null;
     } catch (error) {
-      console.error('Error getting cached feed:', error);
+      logger.error('Error getting cached feed', error as Error, { userId });
       return null;
     }
   }
@@ -118,7 +119,7 @@ class FeedCacheService {
       
       store.put(cacheData, userId);
     } catch (error) {
-      console.error('Error saving to IndexedDB:', error);
+      logger.error('Error saving to IndexedDB', error as Error, { userId });
     }
   }
 
@@ -151,7 +152,7 @@ class FeedCacheService {
 
       await setDoc(doc(db, 'feedCache', userId), cacheData);
     } catch (error) {
-      console.error('Error saving to Firestore cache:', error);
+      logger.error('Error saving to Firestore cache', error as Error, { userId });
     }
   }
 
@@ -165,7 +166,7 @@ class FeedCacheService {
       const store = transaction.objectStore(this.idbStore);
       store.delete(userId);
     } catch (error) {
-      console.error('Error invalidating IDB cache:', error);
+      logger.error('Error invalidating IDB cache', error as Error, { userId });
     }
   }
 

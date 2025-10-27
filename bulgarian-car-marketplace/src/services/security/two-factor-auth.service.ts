@@ -12,6 +12,7 @@ import {
 } from 'firebase/auth';
 import { doc, updateDoc, serverTimestamp, getDoc } from 'firebase/firestore';
 import { auth, db } from '../../firebase/firebase-config';
+import { logger } from '../logger-service';
 
 interface TwoFactorSetup {
   success: boolean;
@@ -49,7 +50,9 @@ class TwoFactorAuthService {
     this.recaptchaVerifier = new RecaptchaVerifier(auth, containerId, {
       'size': 'invisible',
       'callback': () => {
-        console.log('reCAPTCHA solved');
+        if (process.env.NODE_ENV === 'development') {
+          logger.debug('reCAPTCHA solved');
+        }
       }
     });
   }
@@ -76,7 +79,7 @@ class TwoFactorAuthService {
       );
 
       if (process.env.NODE_ENV === 'development') {
-        console.log('📱 OTP sent to:', formattedPhone);
+        logger.debug('OTP sent to phone', { formattedPhone });
       }
 
       return {
@@ -85,7 +88,7 @@ class TwoFactorAuthService {
         verificationId: this.confirmationResult.verificationId
       };
     } catch (error: any) {
-      console.error('❌ Send OTP error:', error);
+      logger.error('Send OTP error', error as Error, { errorCode: error.code });
       return {
         success: false,
         message: this.getErrorMessage(error.code)
@@ -115,7 +118,7 @@ class TwoFactorAuthService {
       });
 
       if (process.env.NODE_ENV === 'development') {
-        console.log('✅ 2FA enabled for user:', userId);
+        logger.debug('2FA enabled for user', { userId });
       }
 
       return {
@@ -123,7 +126,7 @@ class TwoFactorAuthService {
         message: 'Двуфакторната автентикация е активирана / 2FA enabled'
       };
     } catch (error: any) {
-      console.error('❌ Verify OTP error:', error);
+      logger.error('Verify OTP error', error as Error, { userId });
       return {
         success: false,
         message: 'Невалиден код / Invalid code'

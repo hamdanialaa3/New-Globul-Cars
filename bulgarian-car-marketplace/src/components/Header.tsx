@@ -12,6 +12,7 @@ import NotificationBell from './NotificationBell';
 import TopBrandsMenu from './TopBrands/TopBrandsMenu';
 // Replace 3D logo with official image logo
 import { Settings, User, LogOut, LogIn, UserPlus, Type, MessageCircle } from 'lucide-react';
+import { logger } from '../services/logger-service';
 
 // Styled Components - Mobile.de Style with Metallic Bottom Section
 const HeaderContainer = styled.header`
@@ -306,6 +307,8 @@ const SettingsButton = styled.button`
   }
 `;
 
+ 
+
 // Header Component
 const Header: React.FC = () => {
   const { t, language, setLanguage } = useTranslation();
@@ -327,7 +330,7 @@ const Header: React.FC = () => {
         const currentUser = await bulgarianAuthService.getCurrentUserProfile();
         setUser(currentUser);
       } catch (error) {
-        console.error('Auth check failed:', error);
+        logger.error('Auth check failed', error as Error);
         setUser(null);
       }
     };
@@ -342,7 +345,7 @@ const Header: React.FC = () => {
       setUser(null);
       navigate('/');
     } catch (error) {
-      console.error('Logout error:', error);
+      logger.error('Logout error', error as Error);
     }
   };
 

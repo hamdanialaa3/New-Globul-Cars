@@ -6,8 +6,9 @@ import LazyImage from '../../components/LazyImage';
 import { useProfile } from './hooks/useProfile';
 import { useProfileTracking } from '../../hooks/useProfileTracking';
 import { bulgarianAuthService } from '../../firebase';
-import { useProfileType } from '../../contexts/ProfileTypeContext'; // NEW: Profile Type Context
-import type { ProfileType } from '../../contexts/ProfileTypeContext';  // ⚡ Type import
+import { useProfileType } from '../../contexts/ProfileTypeContext';
+import type { ProfileType } from '../../contexts/ProfileTypeContext';
+import { logger } from '../../services/logger-service';
 // NEW: Profile Type-Specific Components
 import PrivateProfile from './components/PrivateProfile';
 import DealerProfile from './components/DealerProfile';
@@ -390,7 +391,7 @@ const ProfilePage: React.FC = () => {
         toast.success(language === 'bg' ? 'Последвахте' : 'Following');
       }
     } catch (error) {
-      console.error('Follow error:', error);
+      logger.error('Follow error', error as Error, { targetUserId });
       toast.error(language === 'bg' ? 'Грешка' : 'Error');
     } finally {
       setFollowLoading(false);
@@ -414,24 +415,28 @@ const ProfilePage: React.FC = () => {
     const currentUser = auth.currentUser;
     
     if (!pendingProfileType || !currentUser?.uid) {
-      console.error('❌ Cannot update profile type: missing data', { 
+      logger.error('Cannot update profile type: missing data', new Error('Missing profile type or user'), { 
         pendingProfileType, 
-        currentUser: currentUser?.uid,
-        user: user?.uid 
+        currentUserId: currentUser?.uid,
+        userId: user?.uid 
       });
       toast.error(language === 'bg' ? 'Моля влезте в профила си' : 'Please login to your profile');
       return;
     }
     
     try {
-      console.log('🔄 Updating profile type...', { uid: currentUser.uid, newType: pendingProfileType });
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Updating profile type', { uid: currentUser.uid, newType: pendingProfileType });
+      }
       
       // Update profileType in Firestore using currentUser.uid
       await updateDoc(doc(db, 'users', currentUser.uid), {
         profileType: pendingProfileType
       });
       
-      console.log('✅ Profile type updated successfully');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Profile type updated successfully');
+      }
       
       // Show success message based on type
       const messages = {
@@ -451,7 +456,10 @@ const ProfilePage: React.FC = () => {
         window.location.reload();
       }, 1000);
     } catch (error) {
-      console.error('Error updating profile type:', error);
+      logger.error('Error updating profile type', error as Error, { 
+        userId: currentUser.uid, 
+        pendingProfileType 
+      });
       toast.error(language === 'bg' ? 'Грешка при промяна на типа профил' : 'Error updating profile type');
     }
   };
@@ -475,7 +483,7 @@ const ProfilePage: React.FC = () => {
         window.location.reload();
       }
     } catch (error) {
-      console.error('Sync error:', error);
+      logger.error('Sync error', error as Error);
       toast.error(language === 'bg' ? 'Грешка при синхронизация' : 'Sync error');
     } finally {
       setSyncing(false);
@@ -503,11 +511,11 @@ const ProfilePage: React.FC = () => {
       } else {
         toast.error(result.message);
         if (result.errors && result.errors.length > 0) {
-          console.warn('Delete warnings:', result.errors);
+          logger.warn('Delete warnings', { errors: result.errors, carId });
         }
       }
     } catch (error) {
-      console.error('Delete error:', error);
+      logger.error('Delete error', error as Error, { carId, userId: user.uid });
       toast.error(language === 'bg' ? 'Грешка при изтриване' : 'Delete error');
     }
   };
@@ -605,7 +613,7 @@ const ProfilePage: React.FC = () => {
           themeColor={theme.primary}
           onUploadSuccess={(url) => {
             if (process.env.NODE_ENV === 'development') {
-              console.log('Cover uploaded:', url);
+              logger.debug('Cover uploaded', { url });
             }
             // Update user state
             setUser(prev => prev ? { 
@@ -614,9 +622,7 @@ const ProfilePage: React.FC = () => {
             } : null);
           }}
           onUploadError={(error) => {
-            if (process.env.NODE_ENV === 'development') {
-              console.error('Cover error:', error);
-            }
+            logger.error('Cover error', error as Error);
           }}
         />
         )}
@@ -1009,7 +1015,10 @@ const ProfilePage: React.FC = () => {
                       // Navigate to messages page with this conversation
                       navigate(`/messages?conversation=${conversationId}`);
                     } catch (error) {
-                      console.error('Error creating conversation:', error);
+                      logger.error('Error creating conversation', error as Error, { 
+                        userId: user?.uid, 
+                        targetUserId 
+                      });
                       toast.error(language === 'bg' ? 'Грешка при създаване на разговор' : 'Error creating conversation');
                     }
                   }}>
@@ -1128,14 +1137,12 @@ const ProfilePage: React.FC = () => {
                       // Update local user state
                       setUser(prev => prev ? { ...prev, gallery: galleryData } : null);
                       if (process.env.NODE_ENV === 'development') {
-                        console.log('✅ Gallery updated and saved');
+                        logger.debug('Gallery updated and saved');
                       }
                     } catch (error) {
-                      if (process.env.NODE_ENV === 'development') {
-                      console.error('❌ Failed to save gallery:', error);
+                      logger.error('Failed to save gallery', error as Error, { userId: user.uid });
                     }
-                  }
-                }}
+                  }}
               />
               </S.ContentSection>
             )}

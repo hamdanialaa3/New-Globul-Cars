@@ -4,6 +4,7 @@ import { useTranslation } from '../../../hooks/useTranslation';
 import { useAuth } from '../../../hooks/useAuth';
 import { SocialAuthService } from '../../../firebase/social-auth-service';
 import { LoginFormData, LoginState, LoginActions, UseLoginReturn } from '../types';
+import { logger } from '../../../services/logger-service';
 
 export const useLogin = (): UseLoginReturn => {
   const { t } = useTranslation();
@@ -113,36 +114,27 @@ export const useLogin = (): UseLoginReturn => {
     setSuccess('');
 
     try {
-      // Enhanced error handling and diagnosis
-      console.log('🔐 Initiating Google login...');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Initiating Google login');
+      }
       
       const result = await SocialAuthService.signInWithGoogle();
-      console.log('✅ Google login successful:', result.user);
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Google login successful', { userId: result.user.uid });
+      }
       setSuccess(t('auth.loginSuccess', 'تم تسجيل الدخول بنجاح! جاري التوجيه...'));
       setTimeout(() => {
         navigate('/profile');  // Changed from /dashboard to /profile
       }, 1000);
     } catch (err: any) {
-      console.error('❌ Google login error:', err);
-
-      // Enhanced diagnostic info
-      console.group('🔍 Google Login Detailed Diagnosis');
-      console.log('Error object:', err);
-      console.log('Error code:', err?.code);
-      console.log('Error message:', err?.message);
-      console.log('Current URL:', window.location.href);
-      console.log('Protocol:', window.location.protocol);
-      console.log('Host:', window.location.host);
-      console.log('User agent:', navigator.userAgent);
-      
-      // Check environment variables
-      console.log('Environment check:', {
-        apiKey: process.env.REACT_APP_FIREBASE_API_KEY ? '✅ Set' : '❌ Missing',
-        authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN ? '✅ Set' : '❌ Missing',
-        projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID ? '✅ Set' : '❌ Missing'
+      logger.error('Google login error', err as Error, {
+        errorCode: err?.code,
+        currentURL: window.location.href,
+        protocol: window.location.protocol,
+        host: window.location.host,
+        hasApiKey: !!process.env.REACT_APP_FIREBASE_API_KEY,
+        hasAuthDomain: !!process.env.REACT_APP_FIREBASE_AUTH_DOMAIN
       });
-      
-      console.groupEnd();
 
       // User-friendly error message
       const userMessage = err?.message || 'حدث خطأ أثناء تسجيل الدخول مع Google. يرجى المحاولة مرة أخرى.';
@@ -158,15 +150,19 @@ export const useLogin = (): UseLoginReturn => {
     setSuccess('');
 
     try {
-      console.log('🔵 Initiating Facebook login...');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Initiating Facebook login');
+      }
       const result = await SocialAuthService.signInWithFacebook();
-      console.log('✅ Facebook login successful:', result.user);
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Facebook login successful', { userId: result.user.uid });
+      }
       setSuccess(t('auth.loginSuccess', 'تم تسجيل الدخول بنجاح! جاري التوجيه...'));
       setTimeout(() => {
         navigate('/profile');  // Changed from /dashboard to /profile
       }, 1000);
     } catch (err: any) {
-      console.error('❌ Facebook login error:', err);
+      logger.error('Facebook login error', err as Error, { errorCode: err?.code });
       const userMessage = err?.message || 'حدث خطأ أثناء تسجيل الدخول مع Facebook. يرجى المحاولة مرة أخرى.';
       setError(userMessage);
     } finally {
@@ -180,9 +176,13 @@ export const useLogin = (): UseLoginReturn => {
     setSuccess('');
 
     try {
-      console.log('🍎 Initiating Apple login...');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Initiating Apple login');
+      }
       const result = await SocialAuthService.signInWithApple();
-      console.log('✅ Apple login successful:', result.user);
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Apple login successful', { userId: result.user.uid });
+      }
       setSuccess(t('auth.loginSuccess', 'تم تسجيل الدخول بنجاح! جاري التوجيه...'));
       setTimeout(() => {
         navigate('/profile');  // Changed from /dashboard to /profile

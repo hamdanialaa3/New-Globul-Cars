@@ -9,6 +9,7 @@ import { Car } from 'lucide-react';
 import { BulgarianCity, getCityName } from '../../../constants/bulgarianCities';
 import { useLanguage } from '../../../contexts/LanguageContext';
 import styled from 'styled-components';
+import { logger } from '../../../services/logger-service';
 
 const MapContainer = styled.div`
   position: relative;
@@ -163,7 +164,7 @@ const GoogleMapSection: React.FC<GoogleMapSectionProps> = ({
   };
 
   if (loadError) {
-    console.error('Google Maps Error:', loadError);
+    logger.error('Google Maps loading error', loadError as Error);
     return (
       <MapContainer>
         <LoadingOverlay style={{ flexDirection: 'column', gap: '1rem', padding: '2rem' }}>

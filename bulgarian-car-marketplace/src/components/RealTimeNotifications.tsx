@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { logger } from '../services/logger-service';
 import styled from 'styled-components';
 import { 
   Bell, 
@@ -287,7 +288,7 @@ const RealTimeNotifications: React.FC<RealTimeNotificationsProps> = ({ onNotific
         setNotifications(notificationsData);
         setStats(statsData);
       } catch (error) {
-        console.error('Error loading notifications:', error);
+        logger.error('Error loading notifications (realtime)', error as Error);
       } finally {
         setLoading(false);
       }
@@ -310,7 +311,7 @@ const RealTimeNotifications: React.FC<RealTimeNotificationsProps> = ({ onNotific
         prev.map(n => n.id === notificationId ? { ...n, read: true } : n)
       );
     } catch (error) {
-      console.error('Error marking notification as read:', error);
+      logger.error('Error marking notification as read (realtime)', error as Error, { notificationId });
     }
   };
 
@@ -319,7 +320,7 @@ const RealTimeNotifications: React.FC<RealTimeNotificationsProps> = ({ onNotific
       await realTimeNotificationsService.deleteNotification(notificationId);
       setNotifications(prev => prev.filter(n => n.id !== notificationId));
     } catch (error) {
-      console.error('Error deleting notification:', error);
+      logger.error('Error deleting notification (realtime)', error as Error, { notificationId });
     }
   };
 
@@ -328,7 +329,7 @@ const RealTimeNotifications: React.FC<RealTimeNotificationsProps> = ({ onNotific
       await realTimeNotificationsService.clearReadNotifications();
       setNotifications(prev => prev.filter(n => !n.read));
     } catch (error) {
-      console.error('Error clearing read notifications:', error);
+      logger.error('Error clearing read notifications (realtime)', error as Error);
     }
   };
 

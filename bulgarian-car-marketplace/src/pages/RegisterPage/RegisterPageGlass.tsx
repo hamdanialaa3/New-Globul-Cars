@@ -26,6 +26,7 @@ import { SocialAuthService } from '../../firebase/social-auth-service';
 import PhoneAuthModal from '../../components/PhoneAuthModal';
 import BackgroundSlideshow from '../../components/BackgroundSlideshow';
 import { useAuth } from '../../hooks/useAuth';
+import { logger } from '../../services/logger-service';
 
 // Premium background images array
 const backgroundImages = [
@@ -480,13 +481,17 @@ const RegisterPageGlass: React.FC = () => {
     setSuccess('');
     
     try {
-      console.log('🔵 Starting Google registration...');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Starting Google registration');
+      }
       const result = await SocialAuthService.signInWithGoogle();
-      console.log('✅ Google registration successful:', result.user.email);
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Google registration successful', { email: result.user.email });
+      }
       setSuccess(language === 'bg' ? 'Успешна регистрация с Google!' : 'Google registration successful!');
       setTimeout(() => navigate('/dashboard'), 1500);
     } catch (err: any) {
-      console.error('❌ Google registration error:', err);
+      logger.error('Google registration error', err as Error);
       
       if (err.message === 'REDIRECT_INITIATED') {
         return;
@@ -504,13 +509,17 @@ const RegisterPageGlass: React.FC = () => {
     setSuccess('');
     
     try {
-      console.log('🔵 Starting Facebook registration...');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Starting Facebook registration');
+      }
       const result = await SocialAuthService.signInWithFacebook();
-      console.log('✅ Facebook registration successful:', result.user.email);
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Facebook registration successful', { email: result.user.email });
+      }
       setSuccess(language === 'bg' ? 'Успешна регистрация с Facebook!' : 'Facebook registration successful!');
       setTimeout(() => navigate('/dashboard'), 1500);
     } catch (err: any) {
-      console.error('❌ Facebook registration error:', err);
+      logger.error('Facebook registration error', err as Error);
       setError(err.message || (language === 'bg' ? 'Грешка при регистрация с Facebook' : 'Facebook registration failed'));
     } finally {
       setLoading(false);
@@ -523,13 +532,17 @@ const RegisterPageGlass: React.FC = () => {
     setSuccess('');
     
     try {
-      console.log('🍎 Starting Apple registration...');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Starting Apple registration');
+      }
       const result = await SocialAuthService.signInWithApple();
-      console.log('✅ Apple registration successful:', result.user.email);
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Apple registration successful', { email: result.user.email });
+      }
       setSuccess(language === 'bg' ? 'Успешна регистрация с Apple!' : 'Apple registration successful!');
       setTimeout(() => navigate('/dashboard'), 1500);
     } catch (err: any) {
-      console.error('❌ Apple registration error:', err);
+      logger.error('Apple registration error', err as Error);
       setError(err.message || (language === 'bg' ? 'Грешка при регистрация с Apple' : 'Apple registration failed'));
     } finally {
       setLoading(false);
@@ -542,13 +555,17 @@ const RegisterPageGlass: React.FC = () => {
     setSuccess('');
     
     try {
-      console.log('👤 Starting anonymous sign-in...');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Starting anonymous sign-in');
+      }
       const result = await SocialAuthService.signInAnonymously();
-      console.log('✅ Anonymous sign-in successful:', result.user.uid);
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Anonymous sign-in successful', { uid: result.user.uid });
+      }
       setSuccess(language === 'bg' ? 'Влезли сте като гост!' : 'Signed in as guest!');
       setTimeout(() => navigate('/dashboard'), 1500);
     } catch (err: any) {
-      console.error('❌ Anonymous sign-in error:', err);
+      logger.error('Anonymous sign-in error', err as Error);
       setError(err.message || (language === 'bg' ? 'Грешка при влизане като гост' : 'Anonymous sign-in failed'));
     } finally {
       setLoading(false);

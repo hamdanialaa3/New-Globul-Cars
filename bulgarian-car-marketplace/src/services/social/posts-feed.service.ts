@@ -12,6 +12,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
 import { Post } from './posts.service';
+import { logger } from '../logger-service';
 
 class PostsFeedService {
   
@@ -40,7 +41,7 @@ class PostsFeedService {
       
       return posts;
     } catch (error) {
-      console.error('Error getting feed posts:', error);
+      logger.error('Error getting feed posts', error as Error, { userId, limitCount });
       return [];
     }
   }
@@ -86,7 +87,7 @@ class PostsFeedService {
       );
       return followingSnapshot.docs.map(doc => doc.data().followingId || doc.id);
     } catch (error) {
-      console.error('Error getting following:', error);
+      logger.error('Error getting following', error as Error, { userId });
       return [];
     }
   }
@@ -107,7 +108,7 @@ class PostsFeedService {
         ...doc.data()
       } as Post));
     } catch (error) {
-      console.error('Error getting public feed:', error);
+      logger.error('Error getting public feed', error as Error, { limitCount });
       return [];
     }
   }

@@ -15,6 +15,7 @@ import {
   Timestamp
 } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
+import { logger } from '../logger-service';
 
 // ==================== INTERFACES ====================
 

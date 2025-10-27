@@ -18,6 +18,7 @@ import {
   dataToInterests,
   getPriceRange
 } from '../../../types/social-feed.types';
+import { logger } from '../../logger-service';
 
 class PersonalizationService {
   private readonly DECAY_RATE = 0.95;
@@ -35,7 +36,7 @@ class PersonalizationService {
       const data = interestsDoc.data() as UserInterestsData;
       return dataToInterests(data);
     } catch (error) {
-      console.error('Error getting user interests:', error);
+      logger.error('Error getting user interests', error as Error, { userId });
       return this.createDefaultInterests();
     }
   }

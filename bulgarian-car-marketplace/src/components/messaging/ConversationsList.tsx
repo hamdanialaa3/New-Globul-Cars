@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { logger } from '../../services/logger-service';
 import styled from 'styled-components';
 import { useTranslation } from '../../hooks/useTranslation';
 import { useAuth } from '../../contexts/AuthProvider';
@@ -252,7 +253,7 @@ const ConversationsList: React.FC<ConversationsListProps> = ({
         const userConversations = await advancedMessagingService.getUserConversations(user.uid);
         setConversations(userConversations);
       } catch (err) {
-        console.error('Error loading conversations:', err);
+        logger.error('Error loading conversations', err as Error, { userId: user?.uid });
         setError('Failed to load conversations');
       } finally {
         setLoading(false);

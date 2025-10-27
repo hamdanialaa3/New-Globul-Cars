@@ -26,6 +26,7 @@ import {
 } from 'firebase/storage';
 import { cacheService } from '../services/cache-service';
 import { db, storage, BulgarianFirebaseUtils } from './firebase-config';
+import { logger } from '../services/logger-service';
 
 // Car Condition Types
 export type CarCondition = 'new' | 'used' | 'damaged';
@@ -762,7 +763,7 @@ export class BulgarianCarService {
       const deletePromises = imagesList.items.map((itemRef) => deleteObject(itemRef));
       await Promise.all(deletePromises);
     } catch (error: any) {
-      console.error('Error deleting car images:', error);
+      logger.error('Error deleting car images', error as Error, { carId });
     }
   }
 

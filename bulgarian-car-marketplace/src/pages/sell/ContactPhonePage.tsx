@@ -5,6 +5,7 @@ import { useAuth } from '../../contexts/AuthProvider';
 import SellWorkflowService from '../../services/sellWorkflowService';
 import WorkflowPersistenceService from '../../services/workflowPersistenceService';
 import { ProfileStatsService } from '../../services/profile/profile-stats-service';
+import { logger } from '../../services/logger-service';
 
 const ContactPhoneContainer = styled.div`
   min-height: 100vh;
@@ -377,7 +378,9 @@ const ContactPhonePage: React.FC = () => {
 
       // Get saved images from localStorage
       const savedImages = WorkflowPersistenceService.getImagesAsFiles();
-      console.log(`📸 Found ${savedImages.length} saved images`);
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug(`Found ${savedImages.length} saved images`);
+      }
 
       // Create car listing with images
       const carId = await SellWorkflowService.createCarListing(
@@ -386,14 +389,18 @@ const ContactPhonePage: React.FC = () => {
         savedImages.length > 0 ? savedImages : undefined
       );
 
-      console.log('✅ Обявата е създадена успешно!', carId);
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Car listing created successfully', { carId });
+      }
 
       // ✅ Increment cars listed stat
       try {
         await ProfileStatsService.getInstance().incrementCarsListed(user.uid);
-        console.log('📊 Stats updated: Cars listed +1');
+        if (process.env.NODE_ENV === 'development') {
+          logger.debug('Stats updated: Cars listed +1');
+        }
       } catch (statsError) {
-        console.error('⚠️ Failed to update stats:', statsError);
+        logger.error('Failed to update stats', statsError as Error, { userId: user.uid });
         // Continue anyway - don't block the main flow
       }
 
@@ -406,7 +413,10 @@ const ContactPhonePage: React.FC = () => {
       // Redirect to my listings page
       navigate('/my-listings');
     } catch (error: any) {
-      console.error('❌ Error creating car listing:', error);
+      logger.error('Error creating car listing', error as Error, { 
+        userId: user?.uid,
+        errorMessage: error.message 
+      });
       setError(error.message || 'Възникна грешка при създаване на обявата. Моля, опитайте отново.');
       setIsSubmitting(false);
     }

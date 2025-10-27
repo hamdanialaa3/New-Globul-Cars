@@ -4,6 +4,7 @@
 
 import { doc, getDoc, updateDoc, arrayUnion } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
+import { logger } from '../logger-service';
 
 // ==================== BADGE DEFINITIONS ====================
 
@@ -131,7 +132,7 @@ class ExpertBadgesService {
       
       return newBadges;
     } catch (error) {
-      console.error('Error checking badges:', error);
+      logger.error('Error checking expert badges', error as Error, { expertId });
       return [];
     }
   }
