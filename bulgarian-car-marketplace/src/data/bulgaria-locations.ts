@@ -160,10 +160,20 @@ export const POPULAR_CITIES = [
   'Шумен'
 ];
 
-// Helper function to get cities by region
-export const getCitiesByRegion = (regionName: string): string[] => {
+// Helper function to get cities by region with translation support
+export const getCitiesByRegion = (regionName: string, language: 'bg' | 'en' = 'bg'): { name: string; nameEn?: string }[] => {
   const region = BULGARIA_REGIONS.find(r => r.name === regionName || r.nameEn === regionName);
-  return region ? region.cities : [];
+  if (!region) return [];
+  
+  // If we have translations for cities, return them, otherwise return names
+  if (region.citiesEn && language === 'en') {
+    return region.cities.map((city, idx) => ({
+      name: city,
+      nameEn: region.citiesEn![idx]
+    }));
+  }
+  
+  return region.cities.map(city => ({ name: city }));
 };
 
 // Helper function to get all cities

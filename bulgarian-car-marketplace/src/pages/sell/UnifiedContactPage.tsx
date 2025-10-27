@@ -18,6 +18,7 @@ import KeyboardShortcutsHelper from '../../components/KeyboardShortcutsHelper';
 import useDraftAutoSave from '../../hooks/useDraftAutoSave';
 import { useSellWorkflow } from '../../hooks/useSellWorkflow';
 import useWorkflowStep from '../../hooks/useWorkflowStep';
+import WorkflowPersistenceService from '../../services/workflowPersistenceService';
 import ImageUploadService from '../../services/image-upload-service';
 import { logger } from '../../services/logger-service';
 
@@ -65,7 +66,9 @@ const UnifiedContactPage: React.FC = () => {
     notes: ''
   });
 
-  const [availableCities, setAvailableCities] = useState<string[]>([]);
+  const [availableCities, setAvailableCities] = useState<Array<{name: string; nameEn?: string}>>([]);
+  const [showOtherCityInput, setShowOtherCityInput] = useState(false);
+  const [otherCityValue, setOtherCityValue] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [showForcePublish, setShowForcePublish] = useState(false);
@@ -106,14 +109,42 @@ const UnifiedContactPage: React.FC = () => {
   const priceType = searchParams.get('priceType');
   const negotiable = searchParams.get('negotiable');
 
+  // Load saved contact data from localStorage on mount
+  useEffect(() => {
+    const savedData = WorkflowPersistenceService.loadWorkflowData();
+    if (savedData) {
+      setContactData(prev => ({
+        ...prev,
+        ...savedData,
+        sellerName: savedData.sellerName || prev.sellerName,
+        sellerEmail: savedData.sellerEmail || prev.sellerEmail,
+        sellerPhone: savedData.sellerPhone || prev.sellerPhone,
+        region: savedData.region || prev.region,
+        city: savedData.city || prev.city,
+        // If city is custom (not in list), show input
+        ...(savedData.city && !availableCities.some(c => c.name === savedData.city) 
+          ? { city: savedData.city, showOtherCity: true, otherCityValue: savedData.city }
+          : {})
+      }));
+    }
+  }, []);
+  
+  // Auto-save contact data to localStorage whenever it changes
+  useEffect(() => {
+    WorkflowPersistenceService.saveWorkflowData({
+      ...contactData,
+      ...workflowData
+    });
+  }, [contactData]);
+
   // Load user profile data
   useEffect(() => {
     const loadUserData = async () => {
-      if (currentUser) {
+      if (currentUser && !contactData.sellerName) {
         setContactData(prev => ({
           ...prev,
-          sellerName: currentUser.displayName || '',
-          sellerEmail: currentUser.email || ''
+          sellerName: currentUser.displayName || prev.sellerName,
+          sellerEmail: currentUser.email || prev.sellerEmail
         }));
       }
     };
@@ -123,16 +154,37 @@ const UnifiedContactPage: React.FC = () => {
   // Update cities when region changes
   useEffect(() => {
     if (contactData.region) {
-      const cities = getCitiesByRegion(contactData.region);
+      const cities = getCitiesByRegion(contactData.region, language);
       setAvailableCities(cities);
       // Reset city if not in new region
-      if (!cities.includes(contactData.city)) {
+      const cityNames = cities.map(c => c.name);
+      if (!cityNames.includes(contactData.city)) {
         setContactData(prev => ({ ...prev, city: '' }));
+        setShowOtherCityInput(false);
+        setOtherCityValue('');
       }
     } else {
       setAvailableCities([]);
+      setShowOtherCityInput(false);
     }
-  }, [contactData.region]);
+  }, [contactData.region, language]);
+  
+  // Handle city selection
+  const handleCityChange = (value: string) => {
+    if (value === 'OTHER') {
+      setShowOtherCityInput(true);
+      setContactData(prev => ({ ...prev, city: '' }));
+    } else {
+      setShowOtherCityInput(false);
+      setContactData(prev => ({ ...prev, city: value }));
+    }
+  };
+  
+  // Handle other city input
+  const handleOtherCityChange = (value: string) => {
+    setOtherCityValue(value);
+    setContactData(prev => ({ ...prev, city: value }));
+  };
 
   const handleInputChange = (field: string, value: string) => {
     setContactData(prev => ({ ...prev, [field]: value }));
@@ -597,17 +649,35 @@ const UnifiedContactPage: React.FC = () => {
               {language === 'bg' ? 'Град' : 'City'}
             </S.Label>
             <S.Select
-              value={contactData.city}
-              onChange={(e) => handleInputChange('city', e.target.value)}
+              value={showOtherCityInput ? 'OTHER' : contactData.city}
+              onChange={(e) => handleCityChange(e.target.value)}
               disabled={!contactData.region}
             >
               <option value="">
                 {language === 'bg' ? 'Изберете град' : 'Select city'}
               </option>
               {availableCities.map(city => (
-                <option key={city} value={city}>{city}</option>
+                <option key={city.name} value={city.name}>
+                  {language === 'bg' ? city.name : (city.nameEn || city.name)}
+                </option>
               ))}
+              <option value="OTHER" style={{ 
+                color: '#005ca9', 
+                fontWeight: 'bold',
+                backgroundColor: '#f0f9ff'
+              }}>
+                {language === 'bg' ? '▼ Друго' : '▼ Other'}
+              </option>
             </S.Select>
+            {showOtherCityInput && (
+              <S.Input
+                type="text"
+                value={otherCityValue}
+                onChange={(e) => handleOtherCityChange(e.target.value)}
+                placeholder={language === 'bg' ? 'Въведете град' : 'Enter city name'}
+                style={{ marginTop: '0.5rem' }}
+              />
+            )}
           </S.FormGroup>
 
           <S.FormGroup>
