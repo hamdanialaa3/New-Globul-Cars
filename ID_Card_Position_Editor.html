@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔧 ID Card Field Position Editor | محرر مواقع الحقول</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: white;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .controls {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .control-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        select, button {
+            padding: 12px 20px;
+            border-radius: 8px;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        select {
+            background: white;
+            color: #333;
+        }
+
+        button {
+            background: #ff6b35;
+            color: white;
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(255, 107, 53, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .workspace {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .image-container {
+            position: relative;
+            width: 100%;
+            max-width: 1093px;
+            margin: 0 auto;
+            border: 3px solid #667eea;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #f0f0f0;
+        }
+
+        #idCardImage {
+            width: 100%;
+            height: auto;
+            display: block;
+            opacity: 0.7;
+            user-select: none;
+        }
+
+        .field-marker {
+            position: absolute;
+            background: rgba(255, 107, 53, 0.3);
+            border: 2px solid #ff6b35;
+            border-radius: 6px;
+            cursor: move;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
+            color: #ff6b35;
+            transition: all 0.2s ease;
+            z-index: 100;
+        }
+
+        .field-marker:hover {
+            background: rgba(255, 107, 53, 0.5);
+            border-color: #ff0000;
+            transform: scale(1.05);
+            z-index: 200;
+        }
+
+        .field-marker.dragging {
+            background: rgba(255, 107, 53, 0.7);
+            cursor: grabbing;
+            z-index: 300;
+            transform: scale(1.1);
+        }
+
+        .output {
+            margin-top: 20px;
+            background: #1a1a1a;
+            color: #0f0;
+            padding: 20px;
+            border-radius: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                repeating-linear-gradient(0deg, rgba(0, 255, 255, 0.15) 0px, transparent 1px, transparent 10%, rgba(0, 255, 255, 0.15) calc(10% + 1px)),
+                repeating-linear-gradient(90deg, rgba(0, 255, 255, 0.15) 0px, transparent 1px, transparent 10%, rgba(0, 255, 255, 0.15) calc(10% + 1px));
+            pointer-events: none;
+            z-index: 50;
+            display: none;
+        }
+
+        .grid.active {
+            display: block;
+        }
+
+        .instructions {
+            background: rgba(52, 152, 219, 0.2);
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            color: #333;
+        }
+
+        .instructions strong {
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+
+        .instructions ul {
+            padding-right: 20px;
+        }
+
+        .instructions li {
+            margin: 5px 0;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            color: white;
+        }
+
+        .stat-card .value {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-card .label {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔧 ID Card Field Position Editor</h1>
+        <p>محرر احترافي لمواقع حقول الهوية البلغارية | اسحب الحقول وانسخ النسب المئوية</p>
+    </div>
+
+    <div class="controls">
+        <div class="control-group">
+            <label>الوجه:</label>
+            <select id="sideSelector">
+                <option value="front">الأمامي (Front)</option>
+                <option value="back">الخلفي (Back)</option>
+            </select>
+        </div>
+        <button onclick="toggleGrid()">🔲 Toggle Grid</button>
+        <button onclick="copyAllPositions()" style="background: #27ae60;">📋 Copy All Positions</button>
+        <button onclick="resetPositions()" style="background: #e74c3c;">🔄 Reset All</button>
+    </div>
+
+    <div class="workspace">
+        <div class="instructions">
+            <strong>📖 التعليمات / Instructions:</strong>
+            <ul>
+                <li>🖱️ اسحب أي حقل لتحريكه | Drag any field to move it</li>
+                <li>📊 شاهد النسب المئوية تتحدث مباشرة | See percentages update live</li>
+                <li>📋 انسخ كل المواقع بضغطة زر | Copy all positions with one click</li>
+                <li>🔲 فعّل الشبكة للمساعدة في الضبط | Enable grid for precise positioning</li>
+            </ul>
+        </div>
+
+        <div class="image-container" id="imageContainer">
+            <img id="idCardImage" src="" alt="ID Card">
+            <div class="grid" id="grid"></div>
+        </div>
+
+        <div class="stats" id="stats"></div>
+
+        <div class="output" id="output">
+            <strong>📊 Output will appear here...</strong>
+        </div>
+    </div>
+
+    <script>
+        // Original field definitions (from your file)
+        const FRONT_FIELDS_ORIGINAL = [
+            { id: 'documentNumber', xPercent: 46.46, yPercent: 19.14, widthPercent: 22.87, heightPercent: 5.51 },
+            { id: 'personalNumber', xPercent: 46.46, yPercent: 25.66, widthPercent: 22.87, heightPercent: 5.51 },
+            { id: 'lastNameBG', xPercent: 46.46, yPercent: 32.91, widthPercent: 16.47, heightPercent: 5.51 },
+            { id: 'firstNameBG', xPercent: 64.30, yPercent: 32.91, widthPercent: 16.47, heightPercent: 5.51 },
+            { id: 'middleNameBG', xPercent: 82.14, yPercent: 32.91, widthPercent: 16.47, heightPercent: 5.51 },
+            { id: 'lastNameEN', xPercent: 46.46, yPercent: 39.43, widthPercent: 16.47, heightPercent: 5.51 },
+            { id: 'firstNameEN', xPercent: 64.30, yPercent: 39.43, widthPercent: 16.47, heightPercent: 5.51 },
+            { id: 'middleNameEN', xPercent: 82.14, yPercent: 39.43, widthPercent: 16.47, heightPercent: 5.51 },
+            { id: 'nationality', xPercent: 46.46, yPercent: 45.95, widthPercent: 22.87, heightPercent: 5.51 },
+            { id: 'dateOfBirth', xPercent: 46.46, yPercent: 52.47, widthPercent: 17.38, heightPercent: 5.51 },
+            { id: 'sex', xPercent: 46.46, yPercent: 58.99, widthPercent: 8.23, heightPercent: 5.51 },
+            { id: 'height', xPercent: 56.98, yPercent: 58.99, widthPercent: 9.15, heightPercent: 5.51 },
+            { id: 'expiryDate', xPercent: 46.46, yPercent: 65.51, widthPercent: 17.38, heightPercent: 5.51 },
+            { id: 'issuingAuthority', xPercent: 46.46, yPercent: 72.04, widthPercent: 29.28, heightPercent: 5.51 }
+        ];
+
+        const BACK_FIELDS_ORIGINAL = [
+            { id: 'placeOfBirth', xPercent: 8.95, yPercent: 19.72, widthPercent: 34.77, heightPercent: 5.51 },
+            { id: 'addressOblast', xPercent: 8.95, yPercent: 29.14, widthPercent: 41.17, heightPercent: 4.64 },
+            { id: 'addressMunicipality', xPercent: 8.95, yPercent: 34.93, widthPercent: 41.17, heightPercent: 4.64 },
+            { id: 'addressStreet', xPercent: 8.95, yPercent: 40.73, widthPercent: 47.12, heightPercent: 4.64 },
+            { id: 'height', xPercent: 8.95, yPercent: 50.15, widthPercent: 11.89, heightPercent: 4.64 },
+            { id: 'eyeColor', xPercent: 26.79, yPercent: 50.15, widthPercent: 17.38, heightPercent: 4.64 },
+            { id: 'issuingAuthority', xPercent: 8.95, yPercent: 59.57, widthPercent: 23.79, heightPercent: 4.64 },
+            { id: 'issueDate', xPercent: 38.23, yPercent: 59.57, widthPercent: 17.38, heightPercent: 4.64 }
+        ];
+
+        // Current working positions
+        let currentPositions = JSON.parse(JSON.stringify(FRONT_FIELDS_ORIGINAL));
+        let currentSide = 'front';
+        let draggedElement = null;
+        let dragOffset = { x: 0, y: 0 };
+
+        // Initialize
+        document.getElementById('sideSelector').addEventListener('change', (e) => {
+            currentSide = e.target.value;
+            loadSide(currentSide);
+        });
+
+        function loadSide(side) {
+            const img = document.getElementById('idCardImage');
+            const container = document.getElementById('imageContainer');
+            
+            // Set image source
+            if (side === 'front') {
+                img.src = 'assets/images/ID_front (1).png';
+                currentPositions = JSON.parse(JSON.stringify(FRONT_FIELDS_ORIGINAL));
+            } else {
+                img.src = 'assets/images/ID_Back.png';
+                currentPositions = JSON.parse(JSON.stringify(BACK_FIELDS_ORIGINAL));
+            }
+            
+            // Wait for image to load
+            img.onload = () => {
+                renderFields();
+                updateStats();
+            };
+        }
+
+        function renderFields() {
+            const container = document.getElementById('imageContainer');
+            const img = document.getElementById('idCardImage');
+            
+            // Remove existing markers
+            const oldMarkers = container.querySelectorAll('.field-marker');
+            oldMarkers.forEach(m => m.remove());
+            
+            // Get image dimensions
+            const imgWidth = img.offsetWidth;
+            const imgHeight = img.offsetHeight;
+            
+            // Create markers
+            currentPositions.forEach((field, index) => {
+                const marker = document.createElement('div');
+                marker.className = 'field-marker';
+                marker.dataset.index = index;
+                marker.textContent = field.id;
+                marker.style.left = (field.xPercent / 100 * imgWidth) + 'px';
+                marker.style.top = (field.yPercent / 100 * imgHeight) + 'px';
+                marker.style.width = (field.widthPercent / 100 * imgWidth) + 'px';
+                marker.style.height = (field.heightPercent / 100 * imgHeight) + 'px';
+                
+                // Drag events
+                marker.addEventListener('mousedown', startDrag);
+                
+                container.appendChild(marker);
+            });
+        }
+
+        function startDrag(e) {
+            draggedElement = e.target;
+            const rect = draggedElement.getBoundingClientRect();
+            const containerRect = document.getElementById('imageContainer').getBoundingClientRect();
+            
+            dragOffset.x = e.clientX - rect.left;
+            dragOffset.y = e.clientY - rect.top;
+            
+            draggedElement.classList.add('dragging');
+            
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('mouseup', stopDrag);
+        }
+
+        function drag(e) {
+            if (!draggedElement) return;
+            
+            const container = document.getElementById('imageContainer');
+            const img = document.getElementById('idCardImage');
+            const containerRect = container.getBoundingClientRect();
+            
+            let x = e.clientX - containerRect.left - dragOffset.x;
+            let y = e.clientY - containerRect.top - dragOffset.y;
+            
+            // Constrain to container
+            x = Math.max(0, Math.min(x, img.offsetWidth - draggedElement.offsetWidth));
+            y = Math.max(0, Math.min(y, img.offsetHeight - draggedElement.offsetHeight));
+            
+            draggedElement.style.left = x + 'px';
+            draggedElement.style.top = y + 'px';
+            
+            // Update position
+            const index = parseInt(draggedElement.dataset.index);
+            const xPercent = (x / img.offsetWidth) * 100;
+            const yPercent = (y / img.offsetHeight) * 100;
+            
+            currentPositions[index].xPercent = xPercent;
+            currentPositions[index].yPercent = yPercent;
+            
+            updateOutput();
+            updateStats();
+        }
+
+        function stopDrag() {
+            if (draggedElement) {
+                draggedElement.classList.remove('dragging');
+                draggedElement = null;
+            }
+            document.removeEventListener('mousemove', drag);
+            document.removeEventListener('mouseup', stopDrag);
+        }
+
+        function updateOutput() {
+            const output = currentPositions.map(field => 
+                `  {\n    id: '${field.id}',\n    xPercent: ${field.xPercent.toFixed(2)},\n    yPercent: ${field.yPercent.toFixed(2)},\n    widthPercent: ${field.widthPercent.toFixed(2)},\n    heightPercent: ${field.heightPercent.toFixed(2)}\n  }`
+            ).join(',\n');
+            
+            document.getElementById('output').innerHTML = `<strong>📊 ${currentSide === 'front' ? 'FRONT' : 'BACK'}_FIELDS_PERCENT:</strong>\n[\n${output}\n]`;
+        }
+
+        function updateStats() {
+            const statsHTML = `
+                <div class="stat-card">
+                    <div class="value">${currentPositions.length}</div>
+                    <div class="label">Total Fields</div>
+                </div>
+                <div class="stat-card">
+                    <div class="value">${currentSide === 'front' ? 'Front' : 'Back'}</div>
+                    <div class="label">Current Side</div>
+                </div>
+                <div class="stat-card">
+                    <div class="value">${document.getElementById('idCardImage').offsetWidth}px</div>
+                    <div class="label">Image Width</div>
+                </div>
+            `;
+            document.getElementById('stats').innerHTML = statsHTML;
+        }
+
+        function copyAllPositions() {
+            const output = currentPositions.map(field => 
+                `  {\n    id: '${field.id}',\n    position: { \n      xPercent: ${field.xPercent.toFixed(2)},\n      yPercent: ${field.yPercent.toFixed(2)},\n      widthPercent: ${field.widthPercent.toFixed(2)},\n      heightPercent: ${field.heightPercent.toFixed(2)}\n    }\n  }`
+            ).join(',\n');
+            
+            const fullOutput = `export const ${currentSide === 'front' ? 'FRONT' : 'BACK'}_FIELDS_PERCENT = [\n${output}\n];`;
+            
+            navigator.clipboard.writeText(fullOutput).then(() => {
+                alert('✅ All positions copied to clipboard!');
+            });
+        }
+
+        function resetPositions() {
+            if (confirm('Reset all fields to original positions?')) {
+                loadSide(currentSide);
+            }
+        }
+
+        function toggleGrid() {
+            document.getElementById('grid').classList.toggle('active');
+        }
+
+        // Window resize handler
+        window.addEventListener('resize', () => {
+            if (document.getElementById('idCardImage').complete) {
+                renderFields();
+            }
+        });
+
+        // Initialize on load
+        loadSide('front');
+    </script>
+</body>
+</html>
+
