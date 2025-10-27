@@ -179,10 +179,20 @@ const StaticMapEmbed: React.FC<StaticMapEmbedProps> = ({
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"
           title={`Map of ${location.city}`}
+          onError={() => {
+            console.error('Google Maps iframe failed to load');
+            setLoading(false);
+          }}
         />
       ) : (
         <LoadingState>
-          {language === 'bg' ? '❌ Неуспешно зареждане на картата' : '❌ Failed to load map'}
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: '1.2rem', marginBottom: '0.5rem' }}>⚠️</div>
+            <div>{language === 'bg' ? 'Грешка при зареждане на картата' : 'Error loading map'}</div>
+            <div style={{ fontSize: '0.8rem', marginTop: '0.5rem', opacity: 0.7 }}>
+              {language === 'bg' ? 'Проверете настройките на Google Maps API' : 'Check Google Maps API settings'}
+            </div>
+          </div>
         </LoadingState>
       )}
     </Container>

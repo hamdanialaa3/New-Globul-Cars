@@ -16,6 +16,11 @@ import { serviceLogger } from './logger-wrapper';
 
 const API_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY || 'AIzaSyDvULqHtzVQFWshx2fO755CMELUaMcm5_4';
 
+// Validate API key
+if (!API_KEY || API_KEY === 'YOUR_GOOGLE_MAPS_API_KEY') {
+  console.warn('⚠️ Google Maps API key not configured properly');
+}
+
 export interface DistanceResult {
   distance: {
     text: string;  // e.g. "15.3 km"
