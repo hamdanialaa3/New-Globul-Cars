@@ -15,6 +15,7 @@ import { CarListing } from '../types/CarListing';
 import { logger } from '../services/logger-service';
 import { firebaseCache, cacheKeys } from '../services/firebase-cache.service';
 import { CarCardMobileOptimized } from '../components/CarCard/CarCardMobileOptimized';
+import CarCardGermanStyle from '../components/CarCard/CarCardGermanStyle';
 import { ResponsiveGrid } from '../components/layout/ResponsiveGrid';
 import { useIsMobile } from '../hooks/useBreakpoint';
 import { MobileFilterDrawer, MobileFilterButton, FilterValues } from '../components/filters';
@@ -397,14 +398,14 @@ const CarsPage: React.FC = () => {
               columns={{
                 xs: 1,    // 1 column on mobile
                 sm: 2,    // 2 columns on small tablets
-                md: 2,    // 2 columns on tablets
-                lg: 3,    // 3 columns on desktop
+                md: 3,    // 3 columns on tablets
+                lg: 4,    // 4 columns on desktop
                 xl: 4     // 4 columns on large desktop
               }}
               gap={20}
             >
               {cars.map(car => (
-                <CarCardMobileOptimized key={car.id} car={car} />
+                <CarCardGermanStyle key={car.id} car={car} />
               ))}
             </ResponsiveGrid>
           </CarsGridWrapper>

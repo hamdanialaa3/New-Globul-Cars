@@ -6,11 +6,16 @@
 
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
+import algoliasearch from 'algoliasearch';
 
 /**
  * Note: Algolia client initialization
- * Requires: npm install algoliasearch
- * Config: firebase functions:config:set algolia.app_id="XXX" algolia.api_key="XXX"
+ * Requires: npm install algoliasearch (within functions/)
+ * Config options (choose one):
+ *  A) Firebase Functions config:
+ *     firebase functions:config:set algolia.app_id="<APP_ID>" algolia.api_key="<ADMIN_KEY>" algolia.index="cars_bg"
+ *  B) Environment variables (emulator/local):
+ *     ALGOLIA_APP_ID, ALGOLIA_ADMIN_API_KEY, ALGOLIA_INDEX_NAME
  */
 
 interface CarIndexObject {
@@ -49,34 +54,26 @@ export const syncCarToAlgolia = functions.firestore
     const carId = context.params.carId;
     
     try {
-      // Initialize Algolia client
-      // Note: In production, uncomment and configure
-      /*
-      const algoliasearch = require('algoliasearch');
-      const client = algoliasearch(
-        functions.config().algolia.app_id,
-        functions.config().algolia.api_key
-      );
-      const index = client.initIndex('cars');
-      */
+      const index = getAlgoliaIndex();
+      if (!index) {
+        console.warn('Algolia not configured. Skipping sync for car:', carId);
+        return null;
+      }
       
       // Handle deletion
       if (!change.after.exists) {
         console.log(`Car ${carId} deleted, removing from Algolia index`);
-        // await index.deleteObject(carId);
-        
-        // For now, just log (Algolia not configured yet)
-        console.log(`Would delete from Algolia: ${carId}`);
+        await index.deleteObject(carId);
         return null;
       }
       
       // Get car data
-      const carData = change.after.data();
+  const carData = change.after.data() as FirebaseFirestore.DocumentData | undefined;
       
       // Skip if not active (don't index inactive cars)
-      if (carData.status !== 'active') {
-        console.log(`Car ${carId} not active, skipping Algolia sync`);
-        // await index.deleteObject(carId); // Remove from index if exists
+      if (!carData || carData.status !== 'active') {
+        console.log(`Car ${carId} not active, ensuring removal from Algolia`);
+        await index.deleteObject(carId); // Remove from index if exists
         return null;
       }
       
@@ -142,11 +139,8 @@ export const syncCarToAlgolia = functions.firestore
         region: indexObject.region
       });
       
-      // Save to Algolia
-      // await index.saveObject(indexObject);
-      
-      // For now, just log the object (Algolia not configured yet)
-      console.log(`Would save to Algolia:`, JSON.stringify(indexObject).substring(0, 200));
+  // Save to Algolia
+  await index.saveObject(indexObject);
       
       return { success: true, carId, action: 'indexed' };
       
@@ -171,6 +165,13 @@ export const reindexAllCars = functions.https.onCall(
     }
     
     try {
+      const index = getAlgoliaIndex();
+      if (!index) {
+        throw new functions.https.HttpsError(
+          'failed-precondition',
+          'Algolia is not configured (missing app_id/api_key/index).'
+        );
+      }
       // Get all active cars
       const carsSnapshot = await admin.firestore()
         .collection('cars')
@@ -179,14 +180,47 @@ export const reindexAllCars = functions.https.onCall(
       
       console.log(`Found ${carsSnapshot.size} active cars to reindex`);
       
-      // In production, would batch index to Algolia here
-      // const objects = carsSnapshot.docs.map(doc => ({ objectID: doc.id, ...doc.data() }));
-      // await index.saveObjects(objects);
-      
+      const objects: CarIndexObject[] = carsSnapshot.docs.map(doc => {
+        const carData = doc.data() as any;
+        return {
+          objectID: doc.id,
+          make: carData.make || '',
+          model: carData.model || '',
+          year: carData.year || 0,
+          price: carData.price || 0,
+          mileage: carData.mileage || 0,
+          fuelType: carData.fuelType || '',
+          transmission: carData.transmission || '',
+          vehicleType: carData.vehicleType || '',
+          bodyType: carData.bodyType || '',
+          color: carData.color || '',
+          city: carData.location?.city || '',
+          region: carData.location?.region || carData.region || '',
+          sellerId: carData.sellerId || '',
+          sellerName: carData.sellerName || 'Unknown',
+          sellerRating: carData.sellerRating || 0,
+          description: carData.description || '',
+          features: carData.features || [],
+          condition: carData.condition || '',
+          status: carData.status || '',
+          views: carData.views || 0,
+          createdAt: carData.createdAt?.toMillis?.() || Date.now(),
+          updatedAt: carData.updatedAt?.toMillis?.() || Date.now()
+        };
+      });
+
+      // Batch in chunks to avoid payload limits
+      const chunkSize = 1000;
+      for (let i = 0; i < objects.length; i += chunkSize) {
+        const chunk = objects.slice(i, i + chunkSize);
+        await index.saveObjects(chunk);
+        console.log(`Indexed ${Math.min(i + chunkSize, objects.length)} / ${objects.length}`);
+      }
+
       return {
         success: true,
         totalCars: carsSnapshot.size,
-        message: `Would reindex ${carsSnapshot.size} cars to Algolia`
+        message: `Reindexed ${carsSnapshot.size} cars to Algolia`
       };
       
     } catch (error: any) {
@@ -199,4 +233,28 @@ export const reindexAllCars = functions.https.onCall(
     }
   }
 );
+
+/**
+ * Helper: Initialize Algolia index using Functions config or env vars
+ */
+function getAlgoliaIndex(): any | null {
+  try {
+    // Prefer Functions config
+    const cfg = functions.config && (functions.config() as any);
+    const appId: string = cfg?.algolia?.app_id || process.env.ALGOLIA_APP_ID || process.env.ALGOLIA_APPID || '';
+    const adminKey: string = cfg?.algolia?.api_key || process.env.ALGOLIA_ADMIN_API_KEY || process.env.ALGOLIA_API_KEY || '';
+    const indexName: string = cfg?.algolia?.index || process.env.ALGOLIA_INDEX_NAME || 'cars_bg';
+
+    if (!appId || !adminKey) {
+      console.warn('Algolia credentials missing');
+      return null;
+    }
+
+  const client = (algoliasearch as any)(appId, adminKey);
+    return client.initIndex(indexName);
+  } catch (e) {
+    console.warn('Failed to initialize Algolia client', e);
+    return null;
+  }
+}
 

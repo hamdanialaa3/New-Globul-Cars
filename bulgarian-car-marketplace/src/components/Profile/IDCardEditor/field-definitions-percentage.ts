@@ -3,6 +3,7 @@
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
 import { FieldDefinition } from './types';
+import { GENDERS, NATIONALITIES, DOCUMENT_TYPES } from '../../../data/dropdown-options';
 
 /**
  * ⚡ PROFESSIONAL APPROACH: Percentage-based positioning

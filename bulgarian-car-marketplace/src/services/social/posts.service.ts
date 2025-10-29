@@ -154,9 +154,19 @@ class PostsService {
         logger.debug('Post created', { postId: postRef.id });
       }
       return postRef.id;
-    } catch (error) {
+    } catch (error: any) {
       logger.error('Error creating post', error as Error, { userId });
-      throw new Error('Failed to create post');
+      
+      // Pass through the actual error for better debugging
+      if (error.code === 'permission-denied') {
+        throw new Error('Permission denied: Unable to create post. Please check Firestore rules.');
+      } else if (error.code === 'storage/unauthorized') {
+        throw new Error('Storage permission denied: Unable to upload media files.');
+      } else if (error.message) {
+        throw new Error(`Failed to create post: ${error.message}`);
+      } else {
+        throw new Error('Failed to create post: Unknown error');
+      }
     }
   }
   

@@ -8,14 +8,13 @@ import LazySection from '../../components/LazySection';
 
 // Lazy load all sections for better performance
 const HeroSection = React.lazy(() => import('./HeroSection'));
-const SmartFeedSection = React.lazy(() => import('./SmartFeedSection'));
+const CollapsibleSocialFeed = React.lazy(() => import('./CollapsibleSocialFeed'));
 const CarCarousel3D = React.lazy(() => import('../../components/CarCarousel3D'));
 const StatsSection = React.lazy(() => import('./StatsSection'));
 const PopularBrandsSection = React.lazy(() => import('./PopularBrandsSection'));
 const CityCarsSection = React.lazy(() => import('./CityCarsSection'));
 const ImageGallerySection = React.lazy(() => import('./ImageGallerySection'));
 const FeaturedCarsSection = React.lazy(() => import('./FeaturedCarsSection'));
-const CommunityFeedSection = React.lazy(() => import('./CommunityFeedSection'));
 const FeaturesSection = React.lazy(() => import('./FeaturesSection'));
 
 const HomeContainer = styled.div`
@@ -91,19 +90,10 @@ const HomePage: React.FC = () => {
       
       <LargeSpacer />
 
-      {/* ⚡ FIRST: Smart Feed - Create Post Section (أولاً تحت الهيدر) */}
-      <Suspense fallback={<LoadingFallback>Loading community feed...</LoadingFallback>}>
-        <SmartFeedSection />
+      {/* ⚡ NEW: Collapsible Social Feed - Contains SmartFeedSection + CommunityFeedSection */}
+      <Suspense fallback={<LoadingFallback>Loading social feed...</LoadingFallback>}>
+        <CollapsibleSocialFeed />
       </Suspense>
-
-      <SectionSpacer />
-
-      {/* ✅ SECOND: Community Feed - عرض المنشورات (ثانياً تحت Create Post) */}
-      <LazySection rootMargin="200px" minHeight="800px">
-        <Suspense fallback={<LoadingFallback>Loading posts feed...</LoadingFallback>}>
-          <CommunityFeedSection />
-        </Suspense>
-      </LazySection>
 
       <SectionSpacer />
 

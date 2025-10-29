@@ -93,3 +93,22 @@ export interface SectionState {
 }
 
 export type SectionName = keyof SectionState;
+
+// Sort options for search results
+export type SortOption = 
+  | 'createdAt_desc'  // Newest first (default)
+  | 'price_asc'       // Price: Low to High
+  | 'price_desc'      // Price: High to Low
+  | 'year_desc'       // Year: Newest first
+  | 'mileage_asc';    // Mileage: Low to High
+
+// View mode for search results
+export type ViewMode = 'list' | 'map';
+
+// Search results metadata
+export interface SearchResultsMeta {
+  totalResults: number;
+  processingTime: number;
+  page: number;
+  totalPages: number;
+}

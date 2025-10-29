@@ -308,13 +308,17 @@ const SmartFeedSection: React.FC = () => {
 
         {!loading && posts.length === 0 && (
           <EmptyState>
-            <EmptyTitle>{t.noPostsTitle}</EmptyTitle>
-            <EmptyDescription>{t.noPostsDesc}</EmptyDescription>
-            {user && (
-              <CreateFirstButton onClick={() => navigate('/create-post')}>
-                {t.createFirst}
-              </CreateFirstButton>
-            )}
+            <EmptyContent>
+              <EmptyText>
+                <EmptyTitle>{t.noPostsTitle}</EmptyTitle>
+                <EmptyDescription>{t.noPostsDesc}</EmptyDescription>
+              </EmptyText>
+              {user && (
+                <CreateFirstButton onClick={() => navigate('/create-post')}>
+                  {t.createFirst}
+                </CreateFirstButton>
+              )}
+            </EmptyContent>
           </EmptyState>
         )}
       </FeedContainer>
@@ -349,35 +353,50 @@ const FeedHeader = styled.div`
 const FilterBar = styled.div`
   display: flex;
   justify-content: center;
-  gap: 12px;
+  gap: 8px;
   margin-bottom: 32px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding: 8px 0;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  
+  /* Hide scrollbar */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 `;
 
 const FilterButton = styled.button<{ $active: boolean }>`
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 10px 20px;
-  border-radius: 24px;
-  border: 2px solid ${p => p.$active ? '#FF7900' : '#e9ecef'};
-  background: ${p => p.$active ? '#FF7900' : 'white'};
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid ${p => p.$active ? '#FF7900' : 'transparent'};
+  background: ${p => p.$active ? '#FF7900' : 'rgba(255, 255, 255, 0.6)'};
   color: ${p => p.$active ? 'white' : '#666'};
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
   white-space: nowrap;
+  flex-shrink: 0;
+  min-width: fit-content;
   
   svg {
     flex-shrink: 0;
   }
   
   &:hover {
-    background: ${p => p.$active ? '#E66D00' : 'rgba(255, 121, 0, 0.05)'};
+    background: ${p => p.$active ? '#E66D00' : 'rgba(255, 121, 0, 0.1)'};
     border-color: #FF7900;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 121, 0, 0.2);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(255, 121, 0, 0.15);
   }
   
   &:active {
@@ -385,8 +404,8 @@ const FilterButton = styled.button<{ $active: boolean }>`
   }
   
   @media (max-width: 768px) {
-    padding: 8px 16px;
-    font-size: 0.85rem;
+    padding: 6px 12px;
+    font-size: 0.8rem;
     
     span {
       display: none;
@@ -496,9 +515,14 @@ const LoginPrompt = styled.button`
 `;
 
 const PostsGrid = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
 `;
 
 const LoadingSpinner = styled.div`
@@ -536,36 +560,65 @@ const EndOfFeed = styled.div`
 `;
 
 const EmptyState = styled.div`
-  text-align: center;
-  padding: 60px 20px;
+  padding: 40px 20px;
+`;
+
+const EmptyContent = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e9ecef;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+  }
+`;
+
+const EmptyText = styled.div`
+  flex: 1;
 `;
 
 const EmptyTitle = styled.h3`
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   color: #212529;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
+  font-weight: 600;
 `;
 
 const EmptyDescription = styled.p`
-  font-size: 1rem;
+  font-size: 0.95rem;
   color: #6c757d;
-  margin-bottom: 24px;
+  margin: 0;
+  line-height: 1.5;
 `;
 
 const CreateFirstButton = styled.button`
   padding: 12px 24px;
-  background: #FF7900;
+  background: linear-gradient(135deg, #FF7900, #FF8F10);
   color: white;
   border: none;
   border-radius: 12px;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s;
+  box-shadow: 0 4px 12px rgba(255, 121, 0, 0.3);
+  flex-shrink: 0;
   
   &:hover {
-    background: #FF8F10;
+    background: linear-gradient(135deg, #E66D00, #FF7900);
     transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(255, 121, 0, 0.4);
+  }
+  
+  &:active {
+    transform: translateY(0);
   }
 `;
 

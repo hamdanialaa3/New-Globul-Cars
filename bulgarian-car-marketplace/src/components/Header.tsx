@@ -377,8 +377,16 @@ const Header: React.FC = () => {
       <UpperHeader>
         <UpperHeaderContent>
           {/* Logo */}
-          <Logo to="/" aria-label="Globul Cars Home">
-            <img src="/official-logo.png" alt="Globul Cars" loading="eager" decoding="async" />
+          <Logo to="/" aria-label="MOBILE-EU Home">
+            <img 
+              src="/mobile-eu-logo.png" 
+              alt="MOBILE-EU" 
+              loading="eager" 
+              decoding="async"
+              onError={(e) => {
+                e.currentTarget.src = '/logo.png';
+              }}
+            />
           </Logo>
 
           {/* Essential Navigation - Key links only */}

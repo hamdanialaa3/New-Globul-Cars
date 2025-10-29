@@ -4,7 +4,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { BulgarianUser } from '../../../firebase/auth-service';
-import { LEDProgressAvatar } from '../../../components/Profile/LEDProgressAvatar';
+import SimpleProfileAvatar from '../../../components/Profile/SimpleProfileAvatar';
 import { ProfileCar } from '../types';
 import { useLanguage } from '../../../contexts/LanguageContext';
 import { User, Mail, Phone, MapPin, MessageCircle, Star } from 'lucide-react';
@@ -253,9 +253,9 @@ export const PrivateProfile: React.FC<PrivateProfileProps> = ({
       {/* Header with Avatar */}
       <ProfileHeader>
         <AvatarSection>
-          <LEDProgressAvatar
+          <SimpleProfileAvatar
             user={user}
-            profileType="private"
+            size={120}
             onClick={isOwnProfile ? onEdit : undefined}
           />
         </AvatarSection>

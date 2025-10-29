@@ -8,6 +8,10 @@ import { X, Check, RefreshCw, ChevronLeft, ChevronRight, Sparkles } from 'lucide
 import { IDCardData, ValidationResult } from './types';
 import ResponsiveOverlay from './ResponsiveOverlay';
 import EGNValidator from '../../../services/verification/egn-validator';
+import DatePickerBulgarian from '../../shared/DatePickerBulgarian';
+import NumberInputBulgarian from '../../shared/NumberInputBulgarian';
+import SelectWithOther from '../../shared/SelectWithOther';
+import { BULGARIA_REGIONS } from '../../../data/bulgaria-locations';
 
 interface IDCardOverlayProps {
   initialData?: Partial<IDCardData>;
@@ -120,7 +124,7 @@ const IDCardOverlay: React.FC<IDCardOverlayProps> = ({
     ];
     
     requiredFields.forEach(fieldId => {
-      if (!formData[fieldId]) {
+      if (!formData[fieldId as keyof IDCardData]) {
         newErrors[fieldId] = language === 'bg' ? 'Задължително поле' : 'Required field';
       }
     });
@@ -342,14 +346,14 @@ const IDCardOverlay: React.FC<IDCardOverlayProps> = ({
                         </Select>
                       </FormField>
                       <FormField>
-                        <Label>Ръст / Height (cm)</Label>
-                        <Input
-                          type="number"
+                        <NumberInputBulgarian
                           value={formData.height}
-                          onChange={(e) => handleFieldChange('height', e.target.value)}
+                          onChange={(value) => handleFieldChange('height', value)}
+                          label="Ръст / Height (cm)"
                           placeholder="168"
-                          min="140"
-                          max="220"
+                          min={140}
+                          max={220}
+                          suffix="cm"
                         />
                       </FormField>
                     </FormRow>
@@ -359,12 +363,13 @@ const IDCardOverlay: React.FC<IDCardOverlayProps> = ({
                     <SectionTitle>📅 {language === 'bg' ? 'Валидност' : 'Validity'}</SectionTitle>
                     <FormRow>
                       <FormField>
-                        <Label>Валидност / Date of Expiry</Label>
-                        <Input
+                        <DatePickerBulgarian
                           value={formData.expiryDate}
-                          onChange={(e) => handleFieldChange('expiryDate', e.target.value)}
+                          onChange={(value) => handleFieldChange('expiryDate', value)}
+                          label="Валидност / Date of Expiry"
                           placeholder="17.06.2034"
-                          $hasError={!!errors.expiryDate}
+                          error={!!errors.expiryDate}
+                          minDate={new Date().toLocaleDateString('bg-BG').split('/').reverse().join('.')}
                         />
                       </FormField>
                       <FormField>
@@ -392,11 +397,17 @@ const IDCardOverlay: React.FC<IDCardOverlayProps> = ({
                     </FormField>
                     
                     <FormField>
-                      <Label>Област / Region</Label>
-                      <Input
+                      <SelectWithOther
+                        options={BULGARIA_REGIONS.map(region => ({
+                          value: region.name,
+                          label: region.name,
+                          labelEn: region.nameEn
+                        }))}
                         value={formData.addressOblast}
-                        onChange={(e) => handleFieldChange('addressOblast', e.target.value)}
-                        placeholder="обл.СОФИЯ"
+                        onChange={(value) => handleFieldChange('addressOblast', value)}
+                        label="Област / Region"
+                        placeholder={language === 'bg' ? 'Изберете област' : 'Select region'}
+                        showOther={true}
                       />
                     </FormField>
                     
@@ -423,14 +434,14 @@ const IDCardOverlay: React.FC<IDCardOverlayProps> = ({
                     <SectionTitle>👁️ {language === 'bg' ? 'Физически характеристики' : 'Physical Features'}</SectionTitle>
                     <FormRow>
                       <FormField>
-                        <Label>Ръст / Height (cm)</Label>
-                        <Input
-                          type="number"
+                        <NumberInputBulgarian
                           value={formData.height}
-                          onChange={(e) => handleFieldChange('height', e.target.value)}
+                          onChange={(value) => handleFieldChange('height', value)}
+                          label="Ръст / Height (cm)"
                           placeholder="168"
-                          min="140"
-                          max="220"
+                          min={140}
+                          max={220}
+                          suffix="cm"
                         />
                       </FormField>
                       <FormField>
@@ -461,11 +472,12 @@ const IDCardOverlay: React.FC<IDCardOverlayProps> = ({
                         />
                       </FormField>
                       <FormField>
-                        <Label>Дата на издаване / Date of Issue</Label>
-                        <Input
+                        <DatePickerBulgarian
                           value={formData.issueDate}
-                          onChange={(e) => handleFieldChange('issueDate', e.target.value)}
+                          onChange={(value) => handleFieldChange('issueDate', value)}
+                          label="Дата на издаване / Date of Issue"
                           placeholder="17.06.2024"
+                          maxDate={new Date().toLocaleDateString('bg-BG').split('/').reverse().join('.')}
                         />
                       </FormField>
                     </FormRow>

@@ -20,7 +20,7 @@ import {
 } from 'lucide-react';
 import * as S from './styles';
 import { TabNavigation, TabNavLink, SyncButton, FollowButton } from './TabNavigation.styles';
-import { CoverImageUploader, BusinessBackground, LEDProgressAvatar } from '../../components/Profile';
+import { CoverImageUploader, BusinessBackground, SimpleProfileAvatar } from '../../components/Profile';
 import { googleProfileSyncService } from '../../services/google/google-profile-sync.service';
 import { followService } from '../../services/social/follow.service';
 
@@ -174,11 +174,10 @@ const ProfilePageWrapper: React.FC = () => {
         {/* ⚡ NEW: Profile Header with Avatar - Only on main /profile page */}
         {window.location.pathname === '/profile' && (
           <S.ProfileHeader>
-            {/* Profile Image (LED Avatar) */}
+            {/* Profile Image (Simple Avatar - No LED Ring) */}
             <S.ProfileImageContainer>
-              <LEDProgressAvatar
+              <SimpleProfileAvatar
                 user={user}
-                profileType={profileType}
                 size={120}
                 onClick={isOwnProfile ? () => navigate('/profile/settings') : undefined}
               />

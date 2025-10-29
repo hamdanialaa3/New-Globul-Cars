@@ -173,7 +173,7 @@ class IDVerificationService {
     
     // Height validation
     if (data.height) {
-      const h = parseInt(data.height);
+      const h = parseInt(data.height || '0');
       if (isNaN(h) || h < 140 || h > 220) {
         warnings.push('Height seems unusual (140-220 cm expected)');
       }
@@ -238,7 +238,7 @@ class IDVerificationService {
         lastNameBG: data.lastNameBG,
         dateOfBirth: data.dateOfBirth,
         sex: data.sex,
-        height: data.height,
+        height: data.height?.toString(),
         eyeColor: data.eyeColor,
         placeOfBirth: data.placeOfBirth,
         addressOblast: data.addressOblast,

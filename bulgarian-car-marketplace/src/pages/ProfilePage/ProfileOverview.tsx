@@ -6,6 +6,7 @@ import { useProfileType } from '../../contexts/ProfileTypeContext';
 import { useNavigate } from 'react-router-dom';
 import ProfileDashboard from '../../components/Profile/ProfileDashboard';
 import UserPostsFeed from '../../components/Profile/UserPostsFeed';
+import CreatePostWidget from '../../components/Profile/CreatePostWidget';
 import { 
   User, 
   Briefcase, 
@@ -375,8 +376,15 @@ const ProfileOverview: React.FC = () => {
         </InfoSection>
       )}
       
+      {/* ⚡ Create Post Widget - Only for own profile */}
+      {isOwnProfile && (
+        <div style={{ marginTop: '2rem' }}>
+          <CreatePostWidget user={user} />
+        </div>
+      )}
+
       {/* ⚡ User's Posts Feed */}
-      <div style={{ marginTop: '2rem' }}>
+      <div style={{ marginTop: isOwnProfile ? '0' : '2rem' }}>
         <UserPostsFeed 
           userId={user?.uid}
           limit={10}

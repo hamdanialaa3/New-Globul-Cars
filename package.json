@@ -17,7 +17,8 @@
     "format": "prettier --write .",
     "clean": "rm -rf dist node_modules/.cache",
     "setup": "npm install && firebase init",
-    "docs": "typedoc --out docs src"
+    "docs": "typedoc --out docs src",
+    "algolia:backfill": "node --loader ts-node/esm scripts/algolia-backfill.ts"
   },
   "keywords": [
     "firebase",
@@ -64,7 +65,9 @@
     "@types/google.maps": "^3.58.1",
     "axios": "^1.12.2",
     "cheerio": "^1.1.2",
-    "dotenv": "^17.2.2",
+  "dotenv": "^17.2.2",
+  "algoliasearch": "^4.24.0",
+  "firebase-admin": "^12.6.0",
     "firebase": "^12.2.1",
     "googleapis": "^160.0.0",
     "mysql2": "^3.15.0"

@@ -136,6 +136,34 @@ service cloud.firestore {
       allow read: if isOwnerOrAdmin(userId);
       allow write: if false; // Only via Cloud Functions
     }
+    
+    // Posts collection - المنشورات (Social Feed)
+    match /posts/{postId} {
+      // القراءة: الجميع يمكنهم قراءة المنشورات العامة
+      allow read: if resource.data.visibility == 'public' || 
+                     resource.data.visibility == 'followers' ||
+                     isOwnerOrAdmin(resource.data.authorId) ||
+                     isAdmin();
+      
+      // القراءة للقوائم والاستعلامات
+      allow list: if true;
+      
+      // الإنشاء: أي مستخدم مسجل يمكنه إنشاء منشور
+      allow create: if isSignedIn() && request.auth.uid == request.resource.data.authorId;
+      
+      // التحديث: للمالك فقط أو الأدمن
+      allow update: if isOwnerOrAdmin(resource.data.authorId);
+      
+      // الحذف: للمالك فقط أو الأدمن
+      allow delete: if isOwnerOrAdmin(resource.data.authorId);
+      
+      // Comments sub-collection - التعليقات
+      match /comments/{commentId} {
+        allow read: if true;
+        allow create: if isSignedIn();
+        allow update, delete: if isOwnerOrAdmin(resource.data.userId);
+      }
+    }
 
   }
 }

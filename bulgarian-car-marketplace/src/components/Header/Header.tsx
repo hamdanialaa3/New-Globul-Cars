@@ -133,12 +133,15 @@ const Header: React.FC = () => {
           {/* Logo Section */}
           <div className="logo-section" onClick={() => navigate('/')}>
             <img 
-              src="/globul-logo.png" 
-              alt="Globul Cars Logo" 
+              src="/mobile-eu-logo.png" 
+              alt="MOBILE-EU Logo" 
               className="logo-icon"
               style={{ width: '75px', height: '75px', objectFit: 'contain' }}
+              onError={(e) => {
+                e.currentTarget.src = '/logo.png';
+              }}
             />
-            <span className="logo-text">Globul Cars</span>
+            <span className="logo-text">MOBILE-EU</span>
           </div>
 
           {/* Search Bar Removed */}

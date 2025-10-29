@@ -18,12 +18,12 @@ const Footer: React.FC = () => {
           <div className="footer-section">
             <div className="footer-brand">
               <img 
-                src="/globul-logo.png" 
-                alt="Globul Cars Logo" 
+                src="/mobile-eu-logo.png" 
+                alt="MOBILE-EU Logo" 
                 className="footer-logo"
                 style={{ width: '50px', height: '50px', objectFit: 'contain' }}
               />
-              <h3 className="footer-title">Globul</h3>
+              <h3 className="footer-title">MOBILE-EU</h3>
             </div>
             <p className="footer-description">
               {t('footer.description')}
@@ -83,7 +83,7 @@ const Footer: React.FC = () => {
                 <span className="contact-icon">
                   <Mail size={18} color="#FF8F10" />
                 </span>
-                <span>info@globulcars.bg</span>
+                <span>info@mobilebg.eu</span>
               </div>
               <div className="contact-item">
                 <a 
@@ -106,7 +106,7 @@ const Footer: React.FC = () => {
         <div className="footer-bottom">
           <div className="footer-bottom-content">
             <p className="copyright">
-              © {currentYear} Globul. {t('footer.rights')}
+              © {currentYear} MOBILE-EU. {t('footer.rights')}
             </p>
             <div className="footer-bottom-links">
               <a href="/privacy-policy">{t('footer.privacy')}</a>

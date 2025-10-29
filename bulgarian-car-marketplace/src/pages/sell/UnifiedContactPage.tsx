@@ -9,6 +9,8 @@ import SplitScreenLayout from '../../components/SplitScreenLayout';
 import { WorkflowFlow } from '../../components/WorkflowVisualization';
 import SellWorkflowService from '../../services/sellWorkflowService';
 import { BULGARIA_REGIONS, getCitiesByRegion } from '../../data/bulgaria-locations';
+import SelectWithOther from '../../components/shared/SelectWithOther';
+import { CURRENCIES, PRICE_TYPES, AVAILABLE_HOURS } from '../../data/dropdown-options';
 import * as S from './UnifiedContactStyles';
 import { toast } from 'react-toastify';
 import { ErrorMessages, getErrorMessage } from '../../constants/ErrorMessages';
@@ -111,7 +113,8 @@ const UnifiedContactPage: React.FC = () => {
 
   // Load saved contact data from localStorage on mount
   useEffect(() => {
-    const savedData = WorkflowPersistenceService.loadWorkflowData();
+    const savedState = WorkflowPersistenceService.loadState();
+    const savedData = savedState?.data;
     if (savedData) {
       setContactData(prev => ({
         ...prev,
@@ -131,10 +134,10 @@ const UnifiedContactPage: React.FC = () => {
   
   // Auto-save contact data to localStorage whenever it changes
   useEffect(() => {
-    WorkflowPersistenceService.saveWorkflowData({
+    WorkflowPersistenceService.saveState({
       ...contactData,
       ...workflowData
-    });
+    }, 'contact');
   }, [contactData]);
 
   // Load user profile data
@@ -629,55 +632,38 @@ const UnifiedContactPage: React.FC = () => {
             <S.Label $required>
               {language === 'bg' ? 'Област' : 'Region'}
             </S.Label>
-            <S.Select
+            <SelectWithOther
+              options={BULGARIA_REGIONS.map(region => ({
+                value: region.name,
+                label: region.name,
+                labelEn: region.nameEn
+              }))}
               value={contactData.region}
-              onChange={(e) => handleInputChange('region', e.target.value)}
-            >
-              <option value="">
-                {language === 'bg' ? 'Изберете област' : 'Select region'}
-              </option>
-              {BULGARIA_REGIONS.map(region => (
-                <option key={region.name} value={region.name}>
-                  {language === 'bg' ? region.name : region.nameEn}
-                </option>
-              ))}
-            </S.Select>
+              onChange={(value) => handleInputChange('region', value)}
+              placeholder={language === 'bg' ? 'Изберете област' : 'Select region'}
+              label={language === 'bg' ? 'Област' : 'Region'}
+              required
+            />
           </S.FormGroup>
 
           <S.FormGroup>
             <S.Label $required>
               {language === 'bg' ? 'Град' : 'City'}
             </S.Label>
-            <S.Select
-              value={showOtherCityInput ? 'OTHER' : contactData.city}
-              onChange={(e) => handleCityChange(e.target.value)}
+            <SelectWithOther
+              options={availableCities.map(city => ({
+                value: city.name,
+                label: city.name,
+                labelEn: city.nameEn || city.name
+              }))}
+              value={contactData.city}
+              onChange={(value) => handleInputChange('city', value)}
+              placeholder={language === 'bg' ? 'Изберете град' : 'Select city'}
+              label={language === 'bg' ? 'Град' : 'City'}
+              required
               disabled={!contactData.region}
-            >
-              <option value="">
-                {language === 'bg' ? 'Изберете град' : 'Select city'}
-              </option>
-              {availableCities.map(city => (
-                <option key={city.name} value={city.name}>
-                  {language === 'bg' ? city.name : (city.nameEn || city.name)}
-                </option>
-              ))}
-              <option value="OTHER" style={{ 
-                color: '#005ca9', 
-                fontWeight: 'bold',
-                backgroundColor: '#f0f9ff'
-              }}>
-                {language === 'bg' ? '▼ Друго' : '▼ Other'}
-              </option>
-            </S.Select>
-            {showOtherCityInput && (
-              <S.Input
-                type="text"
-                value={otherCityValue}
-                onChange={(e) => handleOtherCityChange(e.target.value)}
-                placeholder={language === 'bg' ? 'Въведете град' : 'Enter city name'}
-                style={{ marginTop: '0.5rem' }}
-              />
-            )}
+              otherPlaceholder={language === 'bg' ? 'Въведете град' : 'Enter city name'}
+            />
           </S.FormGroup>
 
           <S.FormGroup>
@@ -759,13 +745,17 @@ const UnifiedContactPage: React.FC = () => {
           <S.Label>
             {language === 'bg' ? 'Работно време' : 'Available Hours'}
           </S.Label>
-          <S.Input
-            type="text"
+          <SelectWithOther
+            options={AVAILABLE_HOURS}
             value={contactData.availableHours}
-            onChange={(e) => handleInputChange('availableHours', e.target.value)}
+            onChange={(value) => handleInputChange('availableHours', value)}
             placeholder={language === 'bg' 
-              ? 'Понеделник - Петък: 9:00 - 18:00' 
-              : 'Monday - Friday: 9:00 AM - 6:00 PM'}
+              ? 'Изберете работно време' 
+              : 'Select available hours'}
+            showOther={true}
+            otherPlaceholder={language === 'bg' 
+              ? 'Въведете работно време' 
+              : 'Enter available hours'}
           />
         </S.FormGroup>
 

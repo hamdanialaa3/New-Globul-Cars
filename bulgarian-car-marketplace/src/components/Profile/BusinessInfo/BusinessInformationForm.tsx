@@ -19,6 +19,8 @@ import { useLanguage } from '../../../contexts/LanguageContext';
 import { useProfileType } from '../../../contexts/ProfileTypeContext';
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../../../firebase/firebase-config';
+import SelectWithOther from '../../shared/SelectWithOther';
+import { LEGAL_FORMS, NATIONALITIES } from '../../../data/dropdown-options';
 
 interface BusinessInfoFormProps {
   userId: string;
@@ -279,17 +281,14 @@ const BusinessInformationForm: React.FC<BusinessInfoFormProps> = ({ userId }) =>
         <FormGrid>
           <FormGroup>
             <Label>{t.legalForm} *</Label>
-            <Select
+            <SelectWithOther
+              options={LEGAL_FORMS}
               value={businessInfo.legalForm || ''}
-              onChange={(e) => handleInputChange('legalForm', e.target.value)}
-            >
-              <option value="">-- {language === 'bg' ? 'Изберете' : 'Select'} --</option>
-              <option value="EOOD">{t.legalForms.EOOD}</option>
-              <option value="OOD">{t.legalForms.OOD}</option>
-              <option value="AD">{t.legalForms.AD}</option>
-              <option value="ET">{t.legalForms.ET}</option>
-              <option value="EAD">{t.legalForms.EAD}</option>
-            </Select>
+              onChange={(value) => handleInputChange('legalForm', value)}
+              placeholder={language === 'bg' ? 'Изберете' : 'Select'}
+              label={t.legalForm}
+              required
+            />
           </FormGroup>
 
           <FormGroup style={{ gridColumn: '1 / -1' }}>

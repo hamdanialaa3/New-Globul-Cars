@@ -246,7 +246,7 @@ const AboutPage: React.FC = () => {
     <AboutContainer>
       <Container>
         <HeroSection>
-          <h1>{t('about.title', 'About Globul Cars')}</h1>
+          <h1>{t('about.title', 'About MOBILE-EU')}</h1>
           <p>
             {t('about.subtitle', 'Your trusted partner in finding the perfect car in Bulgaria. We connect buyers and sellers with quality vehicles and exceptional service.')}
           </p>
@@ -289,7 +289,7 @@ const AboutPage: React.FC = () => {
             {t('about.mission.title', 'Our Mission')}
           </h2>
           <p>
-            {t('about.mission.text', 'At Globul Cars, we believe that finding the perfect car should be simple, transparent, and enjoyable. Our mission is to revolutionize the car buying and selling experience in Bulgaria by providing a platform that prioritizes trust, quality, and customer satisfaction.')}
+            {t('about.mission.text', 'At MOBILE-EU, we believe that finding the perfect car should be simple, transparent, and enjoyable. Our mission is to revolutionize the car buying and selling experience in Bulgaria by providing a platform that prioritizes trust, quality, and customer satisfaction.')}
           </p>
         </ContentSection>
 

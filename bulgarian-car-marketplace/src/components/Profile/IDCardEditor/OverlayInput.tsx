@@ -4,6 +4,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { FieldDefinition } from './types';
+import SelectWithOther from '../../shared/SelectWithOther';
+import { GENDERS, NATIONALITIES, DOCUMENT_TYPES } from '../../../data/dropdown-options';
 
 interface OverlayInputProps {
   field: FieldDefinition;
@@ -13,6 +15,20 @@ interface OverlayInputProps {
   isValid?: boolean;
   error?: string;
 }
+
+// Helper function to get select options based on field ID
+const getSelectOptions = (fieldId: string) => {
+  switch (fieldId) {
+    case 'gender':
+      return GENDERS;
+    case 'nationality':
+      return NATIONALITIES;
+    case 'documentType':
+      return DOCUMENT_TYPES;
+    default:
+      return [];
+  }
+};
 
 const OverlayInput: React.FC<OverlayInputProps> = ({
   field,
@@ -49,20 +65,13 @@ const OverlayInput: React.FC<OverlayInputProps> = ({
       title={error || field.label}
     >
       {field.inputType === 'select' ? (
-        <StyledSelect
+        <SelectWithOther
+          options={getSelectOptions(field.id)}
           value={value || ''}
-          onChange={handleChange}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
-          $scale={scale}
-        >
-          <option value="">--</option>
-          {field.options?.map(opt => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </StyledSelect>
+          onChange={(newValue: string) => handleChange({ target: { value: newValue } } as any)}
+          placeholder="--"
+          showOther={true}
+        />
       ) : field.inputType === 'number' ? (
         <StyledInput
           type="number"

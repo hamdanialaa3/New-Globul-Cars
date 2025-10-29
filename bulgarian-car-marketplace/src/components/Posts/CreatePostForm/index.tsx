@@ -75,7 +75,7 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onClose, onPostCreated 
   const canSubmit = (): boolean => {
     if (text.trim().length < 10) return false;
     if (text.length > 5000) return false;
-    if (mediaFiles.length > 10) return false;
+    if (mediaFiles.length > 5) return false;
     return true;
   };
 
@@ -141,11 +141,26 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onClose, onPostCreated 
       
       alert(message + crossMsg);
 
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error creating post:', error);
-      alert(language === 'bg'
+      
+      let errorMessage = language === 'bg'
         ? 'Грешка при създаване на публикацията'
-        : 'Error creating post');
+        : 'Error creating post';
+      
+      if (error.code === 'permission-denied') {
+        errorMessage = language === 'bg'
+          ? 'Нямате права да създадете публикация. Моля влезте отново.'
+          : 'Permission denied. Please log in again.';
+      } else if (error.code === 'storage/unauthorized') {
+        errorMessage = language === 'bg'
+          ? 'Нямате права да качите файлове'
+          : 'Unauthorized to upload files';
+      } else if (error.message) {
+        errorMessage += `: ${error.message}`;
+      }
+      
+      alert(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -206,8 +221,8 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onClose, onPostCreated 
         <MediaUploader
           files={mediaFiles}
           onChange={setMediaFiles}
-          maxFiles={10}
-          maxSize={5 * 1024 * 1024}
+          maxFiles={5}
+          maxSize={10 * 1024 * 1024}
         />
 
         {postType === 'car_showcase' && (

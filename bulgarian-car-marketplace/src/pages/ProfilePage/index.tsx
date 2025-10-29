@@ -4,6 +4,10 @@ import { useTranslation } from '../../hooks/useTranslation';
 import { useLanguage } from '../../contexts/LanguageContext';
 import LazyImage from '../../components/LazyImage';
 import { useProfile } from './hooks/useProfile';
+import DatePickerBulgarian from '../../components/shared/DatePickerBulgarian';
+import NumberInputBulgarian from '../../components/shared/NumberInputBulgarian';
+import SelectWithOther from '../../components/shared/SelectWithOther';
+import { BULGARIA_REGIONS } from '../../data/bulgaria-locations';
 import { useProfileTracking } from '../../hooks/useProfileTracking';
 import { bulgarianAuthService } from '../../firebase';
 import { useProfileType } from '../../contexts/ProfileTypeContext';
@@ -568,7 +572,7 @@ const ProfilePage: React.FC = () => {
           {isOwnProfile && (
             <>
               <TabNavLink 
-                to="/profile/my-ads"
+                to="/my-listings"
                 $themeColor={theme.primary}
               >
                 <Car size={16} />
@@ -1663,17 +1667,14 @@ const ProfilePage: React.FC = () => {
                       </S.FormGroup>
 
                       <S.FormGroup>
-                        <label>{language === 'bg' ? 'Дата на раждане' : 'Date of Birth'}</label>
-                        <input
-                          type="date"
-                          name="dateOfBirth"
-                          value={formData.dateOfBirth}
-                        onChange={handleInputChange}
-                          onFocus={() => setActiveField('dateOfBirth')}
-                          onBlur={() => setActiveField(undefined)}
+                        <DatePickerBulgarian
+                          value={formData.dateOfBirth || ''}
+                          onChange={(value) => handleInputChange({ target: { name: 'dateOfBirth', value } } as any)}
+                          label={language === 'bg' ? 'Дата на раждане' : 'Date of Birth'}
                           placeholder="01.08.1995"
-                      />
-                    </S.FormGroup>
+                          maxDate={new Date().toLocaleDateString('bg-BG').split('/').reverse().join('.')}
+                        />
+                      </S.FormGroup>
 
                     <S.FormGroup>
                         <label>{language === 'bg' ? 'Място на раждане' : 'Place of Birth'}</label>

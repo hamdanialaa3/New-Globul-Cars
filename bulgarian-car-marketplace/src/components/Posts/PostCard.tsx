@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { postsEngagementService } from '../../services/social/posts-engagement.service';
 import { Post } from '../../services/social/posts.service';
+import ImageGallery from './ImageGallery';
 
 // Google Maps API Key
 const GOOGLE_MAPS_API_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY || 'AIzaSyAUYM_qygK5pUrlXtdDLmEi-_Kh9SyvRmk';
@@ -144,21 +145,7 @@ const PostContent = styled.div`
   }
 `;
 
-const PostMedia = styled.div`
-  margin: 16px 0;
-  border-radius: 12px;
-  overflow: hidden;
-  max-height: 500px;
-  
-  img {
-    width: 100%;
-    height: auto;
-    display: block;
-    object-fit: cover;
-    loading="lazy";
-    decoding="async";
-  }
-`;
+// Removed: PostMedia is now handled by ImageGallery component
 
   // NEW: Map Container for text-only posts
 const PostMapContainer = styled.div`
@@ -390,26 +377,24 @@ export const PostCard: React.FC<PostCardProps> = ({
       </PostHeader>
       
       <PostContent>
-        {/* NEW: Show text over map for text-only posts with location */}
-        {post.location?.coordinates && 
-         (!post.content.media || post.content.media.urls.length === 0) ? (
-          <LocationMap 
-            location={post.location} 
-            text={post.content.text}
-          />
-        ) : (
+        {/* Show text (without map) if post has images */}
+        {post.content.media && post.content.media.urls.length > 0 ? (
           <div className="text">{post.content.text}</div>
+        ) : (
+          /* Show text over map ONLY for text-only posts with location */
+          post.location?.coordinates ? (
+            <LocationMap 
+              location={post.location} 
+              text={post.content.text}
+            />
+          ) : (
+            <div className="text">{post.content.text}</div>
+          )
         )}
         
+        {/* Smart Image Gallery - supports 1-5 images */}
         {post.content.media && post.content.media.urls.length > 0 && (
-          <PostMedia>
-            <img 
-              src={post.content.media.urls[0]} 
-              alt="Post media"
-              loading="lazy"
-              decoding="async"
-            />
-          </PostMedia>
+          <ImageGallery images={post.content.media.urls} />
         )}
         
         {post.content.hashtags && post.content.hashtags.length > 0 && (

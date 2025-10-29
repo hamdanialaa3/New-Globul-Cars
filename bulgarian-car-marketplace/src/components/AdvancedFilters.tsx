@@ -6,6 +6,16 @@ import styled from 'styled-components';
 import { Filter, X, ChevronDown, ChevronUp } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { BULGARIAN_CITIES } from '../constants/bulgarianCities';
+import SelectWithOther from './shared/SelectWithOther';
+import { 
+  CAR_BRANDS, 
+  CAR_YEARS, 
+  FUEL_TYPES, 
+  TRANSMISSION_TYPES, 
+  SELLER_TYPES,
+  PRICE_RANGES,
+  MILEAGE_RANGES
+} from '../data/dropdown-options';
 
 interface FilterOptions {
   city?: string;
@@ -225,59 +235,53 @@ const AdvancedFilters: React.FC<AdvancedFiltersProps> = ({
           {/* City */}
           <FilterGroup>
             <Label>{language === 'bg' ? 'Град' : 'City'}</Label>
-            <Select
+            <SelectWithOther
+              options={BULGARIAN_CITIES.map(city => ({
+                value: city.id,
+                label: city.nameBg,
+                labelEn: city.nameEn
+              }))}
               value={filters.city || ''}
-              onChange={(e) => handleFilterChange('city', e.target.value)}
-            >
-              <option value="">{language === 'bg' ? 'Всички градове' : 'All cities'}</option>
-              {BULGARIAN_CITIES.map(city => (
-                <option key={city.id} value={city.id}>
-                  {language === 'bg' ? city.nameBg : city.nameEn}
-                </option>
-              ))}
-            </Select>
+              onChange={(value) => handleFilterChange('city', value)}
+              placeholder={language === 'bg' ? 'Всички градове' : 'All cities'}
+              showOther={true}
+            />
           </FilterGroup>
 
           {/* Make */}
           <FilterGroup>
             <Label>{language === 'bg' ? 'Марка' : 'Make'}</Label>
-            <Select
+            <SelectWithOther
+              options={CAR_BRANDS}
               value={filters.make || ''}
-              onChange={(e) => handleFilterChange('make', e.target.value)}
-            >
-              <option value="">{language === 'bg' ? 'Всички марки' : 'All makes'}</option>
-              {makes.map(make => (
-                <option key={make} value={make}>{make}</option>
-              ))}
-            </Select>
+              onChange={(value) => handleFilterChange('make', value)}
+              placeholder={language === 'bg' ? 'Всички марки' : 'All makes'}
+              showOther={true}
+            />
           </FilterGroup>
 
           {/* Fuel Type */}
           <FilterGroup>
             <Label>{language === 'bg' ? 'Гориво' : 'Fuel Type'}</Label>
-            <Select
+            <SelectWithOther
+              options={FUEL_TYPES}
               value={filters.fuelType || ''}
-              onChange={(e) => handleFilterChange('fuelType', e.target.value)}
-            >
-              <option value="">{language === 'bg' ? 'Всички' : 'All'}</option>
-              {fuelTypes.map(fuel => (
-                <option key={fuel} value={fuel}>{fuel}</option>
-              ))}
-            </Select>
+              onChange={(value) => handleFilterChange('fuelType', value)}
+              placeholder={language === 'bg' ? 'Всички' : 'All'}
+              showOther={true}
+            />
           </FilterGroup>
 
           {/* Transmission */}
           <FilterGroup>
             <Label>{language === 'bg' ? 'Скоростна кутия' : 'Transmission'}</Label>
-            <Select
+            <SelectWithOther
+              options={TRANSMISSION_TYPES}
               value={filters.transmission || ''}
-              onChange={(e) => handleFilterChange('transmission', e.target.value)}
-            >
-              <option value="">{language === 'bg' ? 'Всички' : 'All'}</option>
-              {transmissions.map(trans => (
-                <option key={trans} value={trans}>{trans}</option>
-              ))}
-            </Select>
+              onChange={(value) => handleFilterChange('transmission', value)}
+              placeholder={language === 'bg' ? 'Всички' : 'All'}
+              showOther={true}
+            />
           </FilterGroup>
 
           {/* Year Range */}
@@ -351,15 +355,13 @@ const AdvancedFilters: React.FC<AdvancedFiltersProps> = ({
           {/* Seller Type */}
           <FilterGroup>
             <Label>{language === 'bg' ? 'Тип продавач' : 'Seller Type'}</Label>
-            <Select
+            <SelectWithOther
+              options={SELLER_TYPES}
               value={filters.sellerType || ''}
-              onChange={(e) => handleFilterChange('sellerType', e.target.value)}
-            >
-              <option value="">{language === 'bg' ? 'Всички' : 'All'}</option>
-              <option value="private">{language === 'bg' ? 'Частен' : 'Private'}</option>
-              <option value="dealer">{language === 'bg' ? 'Търговец' : 'Dealer'}</option>
-              <option value="company">{language === 'bg' ? 'Компания' : 'Company'}</option>
-            </Select>
+              onChange={(value) => handleFilterChange('sellerType', value)}
+              placeholder={language === 'bg' ? 'Всички' : 'All'}
+              showOther={true}
+            />
           </FilterGroup>
         </FiltersGrid>
 
