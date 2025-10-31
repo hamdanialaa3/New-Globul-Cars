@@ -17,6 +17,7 @@ import { Post } from '../posts.service';
 import postScoringService from './post-scoring.service';
 import personalizationService from './personalization.service';
 import { ScoredPost, deduplicatePosts } from '../../../types/social-feed.types';
+import { logger } from '../../logger-service';
 
 class FeedAlgorithmService {
   // Main function: Get personalized feed
@@ -48,7 +49,7 @@ class FeedAlgorithmService {
 
       return diversified.slice(start, end);
     } catch (error) {
-      console.error('Error getting personalized feed:', error);
+      logger.error('Error getting personalized feed', error as Error, { userId, page, pageSize });
       return [];
     }
   }
@@ -193,7 +194,7 @@ class FeedAlgorithmService {
             rank: index
           };
         } catch (error) {
-          console.error(`Error scoring post ${post.id}:`, error);
+          logger.error('Error scoring post', error as Error, { postId: post.id, userId });
           return {
             post,
             score: {
@@ -334,7 +335,7 @@ class FeedAlgorithmService {
         .sort((a, b) => (b.engagement.likes || 0) - (a.engagement.likes || 0))
         .slice(0, limitCount);
     } catch (error) {
-      console.error('Error getting most liked posts:', error);
+      logger.error('Error getting most liked posts', error as Error, { limitCount });
       return [];
     }
   }
@@ -357,7 +358,7 @@ class FeedAlgorithmService {
         .sort((a, b) => (b.engagement.comments || 0) - (a.engagement.comments || 0))
         .slice(0, limitCount);
     } catch (error) {
-      console.error('Error getting most commented posts:', error);
+      logger.error('Error getting most commented posts', error as Error, { limitCount });
       return [];
     }
   }

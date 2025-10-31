@@ -8,8 +8,9 @@ export const FormContainer = styled.div`
   border-radius: 16px;
   max-width: 700px;
   width: 100%;
-  max-height: 95vh;
-  height: 95vh;
+  max-height: 80vh;
+  height: auto;
+  min-height: 500px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -17,8 +18,8 @@ export const FormContainer = styled.div`
   
   @media (max-width: 768px) {
     max-width: 100%;
-    max-height: 100vh;
-    height: 100vh;
+    max-height: 95vh;
+    height: 95vh;
     border-radius: 0;
   }
 `;
@@ -65,6 +66,12 @@ export const FormBody = styled.div`
   display: flex;
   flex-direction: column;
   gap: 14px;
+  position: relative;  /* ⚡ Fix: Establish stacking context */
+  
+  /* ⚡ Fix: Ensure children respect z-index */
+  > * {
+    position: relative;
+  }
   
   &::-webkit-scrollbar {
     width: 8px;

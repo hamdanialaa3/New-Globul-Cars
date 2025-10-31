@@ -17,6 +17,7 @@ import {
 import { db } from '../../firebase/firebase-config';
 import { campaignService } from './campaign.service';
 import { budgetService } from './budget.service';
+import { logger } from '../logger-service';
 
 interface ImpressionData {
   campaignId: string;
@@ -82,7 +83,9 @@ class ImpressionService {
         this.costPerImpression
       );
       if (!canSpend) {
-        console.log('Daily budget exhausted for campaign:', data.campaignId);
+        if (process.env.NODE_ENV === 'development') {
+          logger.debug('Daily budget exhausted for campaign', { campaignId: data.campaignId });
+        }
         return false;
       }
 
@@ -121,7 +124,7 @@ class ImpressionService {
 
       return true;
     } catch (error) {
-      console.error('Error recording impression:', error);
+      logger.error('Error recording impression', error as Error);
       return false;
     }
   }
@@ -143,7 +146,9 @@ class ImpressionService {
         this.costPerClick
       );
       if (!canSpend) {
-        console.log('Daily budget exhausted for campaign:', data.campaignId);
+        if (process.env.NODE_ENV === 'development') {
+          logger.debug('Daily budget exhausted for campaign', { campaignId: data.campaignId });
+        }
         return false;
       }
 
@@ -182,7 +187,7 @@ class ImpressionService {
 
       return true;
     } catch (error) {
-      console.error('Error recording click:', error);
+      logger.error('Error recording click', error as Error);
       return false;
     }
   }
@@ -211,7 +216,7 @@ class ImpressionService {
         ...doc.data()
       } as Impression));
     } catch (error) {
-      console.error('Error getting impressions:', error);
+      logger.error('Error getting impressions', error as Error);
       return [];
     }
   }
@@ -240,7 +245,7 @@ class ImpressionService {
         ...doc.data()
       } as Impression));
     } catch (error) {
-      console.error('Error getting clicks:', error);
+      logger.error('Error getting clicks', error as Error);
       return [];
     }
   }
@@ -307,7 +312,7 @@ class ImpressionService {
 
       return analytics;
     } catch (error) {
-      console.error('Error getting impression analytics:', error);
+      logger.error('Error getting impression analytics', error as Error);
       throw error;
     }
   }

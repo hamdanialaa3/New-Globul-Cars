@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from '../../hooks/useTranslation';
 import { useAuth } from '../../contexts/AuthProvider';
+import { logger } from '../../services/logger-service';
 import { advancedMessagingService, Message, Conversation } from '../../services/messaging/advanced-messaging-service';
 
 // Facebook Messenger Style Components
@@ -303,7 +304,7 @@ const ConversationView: React.FC<ConversationViewProps> = ({
         );
         setMessages(conversationMessages);
       } catch (error) {
-        console.error('Error loading messages:', error);
+        logger.error('Error loading conversation messages', error as Error, { conversationId: conversation.id, userId: user?.uid });
       } finally {
         setLoading(false);
       }
@@ -361,7 +362,7 @@ const ConversationView: React.FC<ConversationViewProps> = ({
       );
       setNewMessage('');
     } catch (error) {
-      console.error('Error sending message:', error);
+        logger.error('Error sending conversation message', error as Error, { conversationId: conversation.id, userId: user?.uid });
     } finally {
       setSending(false);
     }

@@ -9,6 +9,8 @@ import SplitScreenLayout from '../../components/SplitScreenLayout';
 import { WorkflowFlow } from '../../components/WorkflowVisualization';
 import SellWorkflowService from '../../services/sellWorkflowService';
 import { BULGARIA_REGIONS, getCitiesByRegion } from '../../data/bulgaria-locations';
+import SelectWithOther from '../../components/shared/SelectWithOther';
+import { CURRENCIES, PRICE_TYPES, AVAILABLE_HOURS } from '../../data/dropdown-options';
 import * as S from './UnifiedContactStyles';
 import { toast } from 'react-toastify';
 import { ErrorMessages, getErrorMessage } from '../../constants/ErrorMessages';
@@ -18,7 +20,9 @@ import KeyboardShortcutsHelper from '../../components/KeyboardShortcutsHelper';
 import useDraftAutoSave from '../../hooks/useDraftAutoSave';
 import { useSellWorkflow } from '../../hooks/useSellWorkflow';
 import useWorkflowStep from '../../hooks/useWorkflowStep';
+import WorkflowPersistenceService from '../../services/workflowPersistenceService';
 import ImageUploadService from '../../services/image-upload-service';
+import { logger } from '../../services/logger-service';
 
 const CONTACT_METHODS = [
   { id: 'phone', iconComponent: 'PhoneIcon', labelBg: 'Телефон', labelEn: 'Phone' },
@@ -64,9 +68,13 @@ const UnifiedContactPage: React.FC = () => {
     notes: ''
   });
 
-  const [availableCities, setAvailableCities] = useState<string[]>([]);
+  const [availableCities, setAvailableCities] = useState<Array<{name: string; nameEn?: string}>>([]);
+  const [showOtherCityInput, setShowOtherCityInput] = useState(false);
+  const [otherCityValue, setOtherCityValue] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [showForcePublish, setShowForcePublish] = useState(false);
+  const [missingFields, setMissingFields] = useState<string[]>([]);
   
   // 🆕 New state for enhancements
   const [showReview, setShowReview] = useState(false);
@@ -103,14 +111,43 @@ const UnifiedContactPage: React.FC = () => {
   const priceType = searchParams.get('priceType');
   const negotiable = searchParams.get('negotiable');
 
+  // Load saved contact data from localStorage on mount
+  useEffect(() => {
+    const savedState = WorkflowPersistenceService.loadState();
+    const savedData = savedState?.data;
+    if (savedData) {
+      setContactData(prev => ({
+        ...prev,
+        ...savedData,
+        sellerName: savedData.sellerName || prev.sellerName,
+        sellerEmail: savedData.sellerEmail || prev.sellerEmail,
+        sellerPhone: savedData.sellerPhone || prev.sellerPhone,
+        region: savedData.region || prev.region,
+        city: savedData.city || prev.city,
+        // If city is custom (not in list), show input
+        ...(savedData.city && !availableCities.some(c => c.name === savedData.city) 
+          ? { city: savedData.city, showOtherCity: true, otherCityValue: savedData.city }
+          : {})
+      }));
+    }
+  }, []);
+  
+  // Auto-save contact data to localStorage whenever it changes
+  useEffect(() => {
+    WorkflowPersistenceService.saveState({
+      ...contactData,
+      ...workflowData
+    }, 'contact');
+  }, [contactData]);
+
   // Load user profile data
   useEffect(() => {
     const loadUserData = async () => {
-      if (currentUser) {
+      if (currentUser && !contactData.sellerName) {
         setContactData(prev => ({
           ...prev,
-          sellerName: currentUser.displayName || '',
-          sellerEmail: currentUser.email || ''
+          sellerName: currentUser.displayName || prev.sellerName,
+          sellerEmail: currentUser.email || prev.sellerEmail
         }));
       }
     };
@@ -120,16 +157,37 @@ const UnifiedContactPage: React.FC = () => {
   // Update cities when region changes
   useEffect(() => {
     if (contactData.region) {
-      const cities = getCitiesByRegion(contactData.region);
+      const cities = getCitiesByRegion(contactData.region, language);
       setAvailableCities(cities);
       // Reset city if not in new region
-      if (!cities.includes(contactData.city)) {
+      const cityNames = cities.map(c => c.name);
+      if (!cityNames.includes(contactData.city)) {
         setContactData(prev => ({ ...prev, city: '' }));
+        setShowOtherCityInput(false);
+        setOtherCityValue('');
       }
     } else {
       setAvailableCities([]);
+      setShowOtherCityInput(false);
     }
-  }, [contactData.region]);
+  }, [contactData.region, language]);
+  
+  // Handle city selection
+  const handleCityChange = (value: string) => {
+    if (value === 'OTHER') {
+      setShowOtherCityInput(true);
+      setContactData(prev => ({ ...prev, city: '' }));
+    } else {
+      setShowOtherCityInput(false);
+      setContactData(prev => ({ ...prev, city: value }));
+    }
+  };
+  
+  // Handle other city input
+  const handleOtherCityChange = (value: string) => {
+    setOtherCityValue(value);
+    setContactData(prev => ({ ...prev, city: value }));
+  };
 
   const handleInputChange = (field: string, value: string) => {
     setContactData(prev => ({ ...prev, [field]: value }));
@@ -277,7 +335,9 @@ const UnifiedContactPage: React.FC = () => {
         images: images || '0'
       };
 
-      console.log('📝 Creating car listing with workflow data:', workflowData);
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Creating car listing with workflow data', { workflowData });
+      }
 
       // Get current user ID
       const userId = currentUser?.uid;
@@ -286,6 +346,25 @@ const UnifiedContactPage: React.FC = () => {
           ? 'Моля влезте в профила си' 
           : 'Please log in to your account');
       }
+      
+      // ⚡ FLEXIBLE VALIDATION: Check critical fields only
+      const validation = SellWorkflowService.validateWorkflowData(workflowData, false);
+      
+      // If critical fields are missing, block publication
+      if (validation.criticalMissing) {
+        setError(`❌ ${language === 'bg' ? 'Критична информация липсва' : 'Critical information missing'}: ${validation.missingFields.join(', ')}`);
+        setIsSubmitting(false);
+        return;
+      }
+      
+      // If non-critical fields are missing, show warning with option to proceed
+      if (!validation.isValid && !showForcePublish) {
+        setMissingFields(validation.missingFields);
+        setError(`⚠️ ${language === 'bg' ? 'Препоръчителни полета липсват' : 'Recommended fields are missing'}: ${validation.missingFields.join(', ')}`);
+        setShowForcePublish(true);
+        setIsSubmitting(false);
+        return;
+      }
 
       // ✅ Load images from localStorage and convert to Files
       let imageFiles: File[] = [];
@@ -293,7 +372,9 @@ const UnifiedContactPage: React.FC = () => {
         const savedImagesJson = localStorage.getItem('globul_sell_workflow_images');
         if (savedImagesJson) {
           const base64Images = JSON.parse(savedImagesJson) as string[];
-          console.log(`📸 Found ${base64Images.length} images in localStorage`);
+          if (process.env.NODE_ENV === 'development') {
+            logger.debug(`Found ${base64Images.length} images in localStorage`);
+          }
           
           // Convert base64 to File objects
           imageFiles = await Promise.all(
@@ -304,10 +385,12 @@ const UnifiedContactPage: React.FC = () => {
             })
           );
           
-          console.log(`✅ Converted ${imageFiles.length} images to File objects`);
+          if (process.env.NODE_ENV === 'development') {
+            logger.debug(`Converted ${imageFiles.length} images to File objects`);
+          }
         }
       } catch (error) {
-        console.error('⚠️ Error loading images from localStorage:', error);
+        logger.error('Error loading images from localStorage', error as Error);
         // Continue without images - don't block listing creation
       }
 
@@ -318,7 +401,9 @@ const UnifiedContactPage: React.FC = () => {
         throw new Error('Failed to create listing');
       }
 
-      console.log('✅ Car listing created:', carId);
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Car listing created', { carId });
+      }
 
       // 🆕 Upload images with progress tracking (if available)
       if (imageFiles && imageFiles.length > 0) {
@@ -333,12 +418,14 @@ const UnifiedContactPage: React.FC = () => {
               setUploadProgress(progress);
             },
             (fileName, error) => {
-              console.error(`Upload failed for ${fileName}:`, error);
+              logger.error(`Upload failed for ${fileName}`, error);
               setUploadErrors(prev => [...prev, `${fileName}: ${error.message}`]);
             }
           );
 
-          console.log(`✅ Uploaded ${imageUrls.length} images`);
+          if (process.env.NODE_ENV === 'development') {
+            logger.debug(`Uploaded ${imageUrls.length} images`);
+          }
 
           // Update car document with image URLs
           if (imageUrls.length > 0) {
@@ -347,7 +434,7 @@ const UnifiedContactPage: React.FC = () => {
             });
           }
         } catch (uploadError) {
-          console.error('Image upload failed:', uploadError);
+          logger.error('Image upload failed', uploadError as Error, { carId });
           toast.warning(
             language === 'bg'
               ? '⚠️ Някои снимки не са качени, но обявата е създадена. Можете да добавите снимки по-късно.'
@@ -370,7 +457,7 @@ const UnifiedContactPage: React.FC = () => {
         const N8nService = await import('../../services/n8n-integration');
         await N8nService.default.onCarPublished(currentUser.uid, carId, workflowData as any);
       } catch (n8nError) {
-        console.warn('N8N webhook failed (non-critical):', n8nError);
+        logger.warn('N8N webhook failed (non-critical)', { error: n8nError, carId });
       }
 
       // 🆕 Clear all workflow data
@@ -388,7 +475,9 @@ const UnifiedContactPage: React.FC = () => {
         }
       );
 
-      console.log('🎉 Car listing published successfully!');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Car listing published successfully', { carId });
+      }
 
       // Navigate with delay
       setTimeout(() => {
@@ -396,7 +485,10 @@ const UnifiedContactPage: React.FC = () => {
       }, 1000);
 
     } catch (error: any) {
-      console.error('❌ Error creating listing:', error);
+      logger.error('Error creating listing', error as Error, { 
+        userId: currentUser?.uid,
+        errorMessage: error.message 
+      });
       setError(error.message || (language === 'bg' 
         ? 'Възникна грешка при създаване на обявата' 
         : 'Error creating listing'));
@@ -415,12 +507,9 @@ const UnifiedContactPage: React.FC = () => {
     { id: 'publish', label: language === 'bg' ? 'Публикуване' : 'Publish', icon: undefined, isCompleted: false }
   ];
 
-  const isFormValid = 
-    contactData.sellerName &&
-    contactData.sellerEmail &&
-    contactData.sellerPhone &&
-    contactData.region &&
-    contactData.city;
+  // ⚡ FLEXIBLE VALIDATION: Allow publishing with partial data
+  const isFormValid = contactData.sellerName && contactData.sellerEmail && contactData.sellerPhone;
+  const hasLocation = contactData.region && contactData.city;
 
   const leftContent = (
     <S.ContentSection>
@@ -543,37 +632,38 @@ const UnifiedContactPage: React.FC = () => {
             <S.Label $required>
               {language === 'bg' ? 'Област' : 'Region'}
             </S.Label>
-            <S.Select
+            <SelectWithOther
+              options={BULGARIA_REGIONS.map(region => ({
+                value: region.name,
+                label: region.name,
+                labelEn: region.nameEn
+              }))}
               value={contactData.region}
-              onChange={(e) => handleInputChange('region', e.target.value)}
-            >
-              <option value="">
-                {language === 'bg' ? 'Изберете област' : 'Select region'}
-              </option>
-              {BULGARIA_REGIONS.map(region => (
-                <option key={region.name} value={region.name}>
-                  {language === 'bg' ? region.name : region.nameEn}
-                </option>
-              ))}
-            </S.Select>
+              onChange={(value) => handleInputChange('region', value)}
+              placeholder={language === 'bg' ? 'Изберете област' : 'Select region'}
+              label={language === 'bg' ? 'Област' : 'Region'}
+              required
+            />
           </S.FormGroup>
 
           <S.FormGroup>
             <S.Label $required>
               {language === 'bg' ? 'Град' : 'City'}
             </S.Label>
-            <S.Select
+            <SelectWithOther
+              options={availableCities.map(city => ({
+                value: city.name,
+                label: city.name,
+                labelEn: city.nameEn || city.name
+              }))}
               value={contactData.city}
-              onChange={(e) => handleInputChange('city', e.target.value)}
+              onChange={(value) => handleInputChange('city', value)}
+              placeholder={language === 'bg' ? 'Изберете град' : 'Select city'}
+              label={language === 'bg' ? 'Град' : 'City'}
+              required
               disabled={!contactData.region}
-            >
-              <option value="">
-                {language === 'bg' ? 'Изберете град' : 'Select city'}
-              </option>
-              {availableCities.map(city => (
-                <option key={city} value={city}>{city}</option>
-              ))}
-            </S.Select>
+              otherPlaceholder={language === 'bg' ? 'Въведете град' : 'Enter city name'}
+            />
           </S.FormGroup>
 
           <S.FormGroup>
@@ -655,13 +745,17 @@ const UnifiedContactPage: React.FC = () => {
           <S.Label>
             {language === 'bg' ? 'Работно време' : 'Available Hours'}
           </S.Label>
-          <S.Input
-            type="text"
+          <SelectWithOther
+            options={AVAILABLE_HOURS}
             value={contactData.availableHours}
-            onChange={(e) => handleInputChange('availableHours', e.target.value)}
+            onChange={(value) => handleInputChange('availableHours', value)}
             placeholder={language === 'bg' 
-              ? 'Понеделник - Петък: 9:00 - 18:00' 
-              : 'Monday - Friday: 9:00 AM - 6:00 PM'}
+              ? 'Изберете работно време' 
+              : 'Select available hours'}
+            showOther={true}
+            otherPlaceholder={language === 'bg' 
+              ? 'Въведете работно време' 
+              : 'Enter available hours'}
           />
         </S.FormGroup>
 
@@ -730,11 +824,21 @@ const UnifiedContactPage: React.FC = () => {
         </S.SummaryRow>
       </S.SummaryCard>
 
-      {/* Error Display */}
+      {/* Error Display with Missing Fields List */}
       {error && (
-        <S.ErrorCard>
-          <S.ErrorIcon>⚠️</S.ErrorIcon>
+        <S.ErrorCard $hasWarning={showForcePublish}>
+          <S.ErrorIcon>{showForcePublish ? '⚠️' : '❌'}</S.ErrorIcon>
           <S.ErrorText>{error}</S.ErrorText>
+          {missingFields.length > 0 && (
+            <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid rgba(0, 0, 0, 0.1)' }}>
+              <strong>{language === 'bg' ? 'Липсващи полета:' : 'Missing fields:'}</strong>
+              <ul style={{ margin: '0.5rem 0 0 1.5rem', padding: 0 }}>
+                {missingFields.map((field, index) => (
+                  <li key={index}>{field}</li>
+                ))}
+              </ul>
+            </div>
+          )}
         </S.ErrorCard>
       )}
 

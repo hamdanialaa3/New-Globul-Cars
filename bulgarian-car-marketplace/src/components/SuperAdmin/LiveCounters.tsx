@@ -19,6 +19,7 @@ import {
   AlertTriangle
 } from 'lucide-react';
 import { liveFirebaseCountersService } from '../../services/live-firebase-counters-service';
+import { logger } from '../../services/logger-service';
 
 interface LiveCountersProps {
   stats: {
@@ -200,7 +201,7 @@ const LiveCounters: React.FC<LiveCountersProps> = ({ stats = { totalCars: 0, tot
         const data = await liveFirebaseCountersService.getLiveAnalytics();
         setCounters(data);
       } catch (error) {
-        console.error("Error fetching live counters:", error);
+        logger.error('Error fetching live counters', error as Error);
       }
     };
 

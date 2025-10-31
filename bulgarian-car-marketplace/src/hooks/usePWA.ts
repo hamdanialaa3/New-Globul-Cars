@@ -3,6 +3,7 @@
 // Custom hook for PWA functionality
 
 import { useState, useEffect } from 'react';
+import { logger } from '../services/logger-service';
 
 interface BeforeInstallPromptEvent extends Event {
   readonly platforms: string[];
@@ -39,7 +40,9 @@ export const usePWA = () => {
             scope: '/',
           });
 
-          console.log('Service Worker registered successfully:', registration);
+          if (process.env.NODE_ENV === 'development') {
+            logger.debug('Service Worker registered successfully');
+          }
 
           setPwaState(prev => ({
             ...prev,
@@ -56,15 +59,17 @@ export const usePWA = () => {
 
           const handleWorkerStateChange = () => {
             if (registration.installing?.state === 'installed' && navigator.serviceWorker.controller) {
-              // New content is available, notify user
-              console.log('New content is available and will be used when all tabs for this page are closed.');
+              // New content is available, notify user (dev only)
+              if (process.env.NODE_ENV === 'development') {
+                logger.debug('New content is available and will be used when all tabs are closed.');
+              }
             }
           };
 
           registration.addEventListener('updatefound', handleUpdateFound);
 
         } catch (error) {
-          console.error('Service Worker registration failed:', error);
+          logger.error('Service Worker registration failed', error as Error);
         }
       }
     };
@@ -76,7 +81,9 @@ export const usePWA = () => {
   useEffect(() => {
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
-      console.log('Install prompt event fired');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Install prompt event fired');
+      }
 
       setPwaState(prev => ({
         ...prev,
@@ -86,7 +93,9 @@ export const usePWA = () => {
     };
 
     const handleAppInstalled = () => {
-      console.log('App was installed');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('App was installed');
+      }
       setPwaState(prev => ({
         ...prev,
         isInstalled: true,
@@ -132,7 +141,9 @@ export const usePWA = () => {
   // Install the app
   const installApp = async () => {
     if (!pwaState.deferredPrompt) {
-      console.log('No install prompt available');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('No install prompt available');
+      }
       return false;
     }
 
@@ -140,7 +151,9 @@ export const usePWA = () => {
       await pwaState.deferredPrompt.prompt();
       const { outcome } = await pwaState.deferredPrompt.userChoice;
 
-      console.log('Install outcome:', outcome);
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Install outcome', { outcome });
+      }
 
       setPwaState(prev => ({
         ...prev,
@@ -150,7 +163,7 @@ export const usePWA = () => {
 
       return outcome === 'accepted';
     } catch (error) {
-      console.error('Install failed:', error);
+      logger.error('Install failed', error as Error);
       return false;
     }
   };
@@ -163,10 +176,12 @@ export const usePWA = () => {
 
     try {
       await pwaState.registration.update();
-      console.log('Service Worker updated');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Service Worker updated');
+      }
       return true;
     } catch (error) {
-      console.error('Service Worker update failed:', error);
+      logger.error('Service Worker update failed', error as Error);
       return false;
     }
   };

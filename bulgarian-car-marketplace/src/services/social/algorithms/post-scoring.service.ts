@@ -15,6 +15,7 @@ import {
 import { db } from '../../../firebase/firebase-config';
 import { Post } from '../posts.service';
 import { PostScore, ScoreBreakdown, getAgeInHours } from '../../../types/social-feed.types';
+import { logger } from '../../logger-service';
 
 class PostScoringService {
   private readonly CACHE_TTL = 300000; // 5 minutes
@@ -81,7 +82,7 @@ class PostScoringService {
 
       return score;
     } catch (error) {
-      console.error('Error calculating post score:', error);
+      logger.error('Error calculating post score', error as Error, { postId });
       throw error;
     }
   }
@@ -292,7 +293,7 @@ class PostScoringService {
           const score = await this.calculatePostScore(postId);
           scores.set(postId, score);
         } catch (error) {
-          console.error(`Failed to score post ${postId}:`, error);
+          logger.error('Failed to score post', error as Error, { postId });
         }
       })
     );

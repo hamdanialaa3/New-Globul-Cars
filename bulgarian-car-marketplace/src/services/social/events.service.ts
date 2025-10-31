@@ -24,6 +24,7 @@ import {
 } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '../../firebase/firebase-config';
+import { logger } from '../logger-service';
 
 // ==================== INTERFACES ====================
 
@@ -163,7 +164,7 @@ class EventsService {
       
       return eventRef.id;
     } catch (error) {
-      console.error('[SERVICE] Error creating event:', error);
+      logger.error('Error creating event', error as Error, { userId });
       throw new Error('Failed to create event');
     }
   }
@@ -197,7 +198,7 @@ class EventsService {
       
       return snapshot.docs.map(doc => this.convertToEvent(doc));
     } catch (error) {
-      console.error('[SERVICE] Error getting events:', error);
+      logger.error('Error getting events', error as Error, { cityFilter, limitCount });
       throw new Error('Failed to load events');
     }
   }
@@ -298,7 +299,7 @@ class EventsService {
         createdAt: doc.data().createdAt.toDate()
       } as EventRSVP));
     } catch (error) {
-      console.error('[SERVICE] Error getting attendees:', error);
+      logger.error('Error getting event attendees', error as Error, { eventId });
       throw new Error('Failed to load attendees');
     }
   }

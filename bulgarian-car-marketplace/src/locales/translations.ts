@@ -614,7 +614,22 @@ export const translations = {
       
       // Missing location translations
       city: 'Град',
-      onlyDeliveryOffers: 'Само оферти с доставка'
+      onlyDeliveryOffers: 'Само оферти с доставка',
+      
+      // New: Search results and sorting
+      results: 'резултата',
+      sortBy: 'Подреди по',
+      sortNewestFirst: 'Най-нови първо',
+      sortPriceLowHigh: 'Цена: Ниска към висока',
+      sortPriceHighLow: 'Цена: Висока към ниска',
+      sortYearNewest: 'Година: Най-нови първо',
+      sortMileageLow: 'Пробег: Най-малък първо',
+      
+      // New: View modes
+      listView: 'Списък',
+      mapView: 'Карта',
+      viewDetails: 'Виж детайли',
+      noResultsOnMap: 'Няма резултати за показване на картата'
     },
     messaging: {
       title: 'Съобщения',
@@ -1663,7 +1678,22 @@ export const translations = {
       
       // Missing location translations
       city: 'City',
-      onlyDeliveryOffers: 'Only Delivery Offers'
+      onlyDeliveryOffers: 'Only Delivery Offers',
+      
+      // New: Search results and sorting
+      results: 'results',
+      sortBy: 'Sort by',
+      sortNewestFirst: 'Newest first',
+      sortPriceLowHigh: 'Price: Low to High',
+      sortPriceHighLow: 'Price: High to Low',
+      sortYearNewest: 'Year: Newest first',
+      sortMileageLow: 'Mileage: Lowest first',
+      
+      // New: View modes
+      listView: 'List View',
+      mapView: 'Map View',
+      viewDetails: 'View Details',
+      noResultsOnMap: 'No results to show on map'
     },
     messaging: {
       title: 'Messages',

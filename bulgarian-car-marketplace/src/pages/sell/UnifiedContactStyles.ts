@@ -635,14 +635,15 @@ export const SummaryValue = styled.span`
 
 // ==================== ERROR CARD ====================
 
-export const ErrorCard = styled.div`
-  background: #fee;
-  border: 2px solid #e74c3c;
+export const ErrorCard = styled.div<{ $hasWarning?: boolean }>`
+  background: ${props => props.$hasWarning ? '#fff3cd' : '#fee'};
+  border: 2px solid ${props => props.$hasWarning ? '#ffc107' : '#e74c3c'};
   border-radius: 10px;
   padding: 1rem;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.75rem;
+  color: ${props => props.$hasWarning ? '#856404' : '#c00'};
 `;
 
 export const ErrorIcon = styled.span`
@@ -665,7 +666,7 @@ export const NavigationButtons = styled.div`
   border-top: 1px solid #ecf0f1;
 `;
 
-export const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
+export const Button = styled.button<{ $variant?: 'primary' | 'secondary' | 'warning' }>`
   padding: 0.255rem 0.6rem; /* حجم المربع */
   border: none;
   border-radius: 50px;
@@ -675,27 +676,53 @@ export const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
   transition: all 0.3s ease;
   min-width: 39px;
 
-  ${props => props.$variant === 'primary' 
-    ? `
-      background: linear-gradient(135deg, #ff8f10, #005ca9);
-      color: white;
-      box-shadow: 0 6px 16px rgba(255, 143, 16, 0.3);
-      
-      &:hover:not(:disabled) {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 20px rgba(255, 143, 16, 0.4);
-      }
-    `
-    : `
-      background: #f8f9fa;
-      color: #6c757d;
-      border: 2px solid #e9ecef;
-      
-      &:hover {
-        background: #e9ecef;
-      }
-    `
-  }
+  ${props => {
+    if (props.$variant === 'primary') {
+      return `
+        background: linear-gradient(135deg, #ff8f10, #005ca9);
+        color: white;
+        box-shadow: 0 6px 16px rgba(255, 143, 16, 0.3);
+        
+        &:hover:not(:disabled) {
+          transform: translateY(-2px);
+          box-shadow: 0 10px 20px rgba(255, 143, 16, 0.4);
+        }
+      `;
+    } else if (props.$variant === 'secondary') {
+      return `
+        background: #f8f9fa;
+        color: #6c757d;
+        border: 2px solid #e9ecef;
+        
+        &:hover {
+          background: #e9ecef;
+        }
+      `;
+    } else if (props.$variant === 'warning') {
+      return `
+        background: linear-gradient(135deg, #ffc107, #ff9800);
+        color: #000;
+        font-weight: 700;
+        box-shadow: 0 6px 16px rgba(255, 193, 7, 0.3);
+        
+        &:hover:not(:disabled) {
+          transform: translateY(-2px);
+          box-shadow: 0 10px 20px rgba(255, 193, 7, 0.4);
+          background: linear-gradient(135deg, #ffb300, #ff8f00);
+        }
+      `;
+    } else {
+      return `
+        background: #f8f9fa;
+        color: #6c757d;
+        border: 2px solid #e9ecef;
+        
+        &:hover {
+          background: #e9ecef;
+        }
+      `;
+    }
+  }}
 
   &:disabled {
     opacity: 0.5;

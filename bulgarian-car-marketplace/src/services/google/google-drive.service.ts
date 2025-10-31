@@ -2,6 +2,8 @@
 // Google Drive Documents Management Service
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
 
+import { logger } from '../logger-service';
+
 export type DocumentType = 'id_card' | 'driving_license' | 'business_license' | 'car_document' | 'invoice' | 'insurance' | 'other';
 
 export interface UploadedDocument {
@@ -50,10 +52,12 @@ class GoogleDriveService {
             });
 
             this.initialized = true;
-            console.log('✅ Google Drive API initialized');
+            if (process.env.NODE_ENV === 'development') {
+              logger.debug('Google Drive API initialized');
+            }
             resolve();
           } catch (error) {
-            console.error('❌ Google Drive init error:', error);
+            logger.error('Google Drive init error', error as Error);
             reject(error);
           }
         });
@@ -126,7 +130,7 @@ class GoogleDriveService {
       const data = await response.json();
       
       if (process.env.NODE_ENV === 'development') {
-        console.log('✅ Document uploaded:', data.name);
+        logger.debug('Document uploaded', { name: data.name, id: data.id });
       }
 
       return {
@@ -139,7 +143,7 @@ class GoogleDriveService {
         type
       };
     } catch (error) {
-      console.error('❌ Upload error:', error);
+      logger.error('Upload error', error as Error);
       throw error;
     }
   }
@@ -179,7 +183,7 @@ class GoogleDriveService {
         type: file.properties?.type as DocumentType || 'other'
       }));
     } catch (error) {
-      console.error('❌ List documents error:', error);
+      logger.error('List documents error', error as Error);
       return [];
     }
   }
@@ -196,10 +200,10 @@ class GoogleDriveService {
       });
       
       if (process.env.NODE_ENV === 'development') {
-        console.log('✅ Document deleted:', fileId);
+        logger.debug('Document deleted', { fileId });
       }
     } catch (error) {
-      console.error('❌ Delete error:', error);
+      logger.error('Delete error', error as Error);
       throw error;
     }
   }
@@ -227,7 +231,7 @@ class GoogleDriveService {
 
       return await response.blob();
     } catch (error) {
-      console.error('❌ Download error:', error);
+      logger.error('Download error', error as Error);
       throw error;
     }
   }
@@ -263,7 +267,7 @@ class GoogleDriveService {
       this.folderId = createResponse.result.id;
       return this.folderId!;
     } catch (error) {
-      console.error('❌ Folder error:', error);
+      logger.error('Folder error', error as Error);
       throw error;
     }
   }

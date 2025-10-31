@@ -13,6 +13,7 @@ import {
 import { db } from '../../../firebase/firebase-config';
 import { Post } from '../posts.service';
 import { ContentFeatures, RecommendationResult, getPriceRange } from '../../../types/social-feed.types';
+import { logger } from '../../logger-service';
 
 class ContentFilteringService {
   // Extract features from post

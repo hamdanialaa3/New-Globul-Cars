@@ -2,6 +2,7 @@
 // Custom Hook for Push Notifications Management
 
 import { useState, useEffect } from 'react';
+import { logger } from '../services/logger-service';
 import { fcmService, PushNotification } from '../services/fcm-service';
 
 export const useNotifications = () => {
@@ -14,12 +15,12 @@ export const useNotifications = () => {
     const initializeFCM = async () => {
       try {
         const token = await fcmService.initialize();
-        if (token) {
-          console.log('FCM initialized successfully');
+        if (token && process.env.NODE_ENV === 'development') {
+          logger.debug('FCM initialized successfully');
         }
         setIsInitialized(true);
       } catch (error) {
-        console.error('Failed to initialize FCM:', error);
+        logger.error('Failed to initialize FCM', error as Error);
         setIsInitialized(true); // Still mark as initialized to avoid infinite loading
       }
     };

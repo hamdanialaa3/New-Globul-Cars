@@ -9,9 +9,10 @@ import {
   Activity,
   Zap,
   AlertTriangle,
-  RefreshCw
+  
 } from 'lucide-react';
 import { firebaseConnectionTestService } from '../../services/firebase-connection-test';
+import { logger } from '../../services/logger-service';
 
 const TestContainer = styled.div`
   background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
@@ -164,18 +165,18 @@ const FirebaseConnectionTest: React.FC = () => {
   const runConnectionTest = async () => {
     setLoading(true);
     try {
-      console.log('🔄 Starting Firebase connection test...');
+      logger.info('Starting Firebase connection test...');
       
       const result = await firebaseConnectionTestService.runCompleteTest();
       
       setTestResults(result.results);
       setLastTestTime(new Date());
       
-      console.log('✅ Firebase connection test completed!');
-      console.log('📊 Results:', result);
+      logger.info('Firebase connection test completed');
+      logger.debug('Firebase connection test results', { result });
       
     } catch (error) {
-      console.error('❌ Firebase connection test failed:', error);
+      logger.error('Firebase connection test failed', error as Error);
     } finally {
       setLoading(false);
     }
@@ -184,7 +185,7 @@ const FirebaseConnectionTest: React.FC = () => {
   const runQuickTest = async () => {
     setLoading(true);
     try {
-      console.log('🔄 Running quick Firebase test...');
+      logger.info('Running quick Firebase test...');
       
       const result = await firebaseConnectionTestService.testConnection();
       
@@ -192,7 +193,7 @@ const FirebaseConnectionTest: React.FC = () => {
       setLastTestTime(new Date());
       
     } catch (error) {
-      console.error('❌ Quick Firebase test failed:', error);
+      logger.error('Quick Firebase test failed', error as Error);
     } finally {
       setLoading(false);
     }
@@ -201,7 +202,7 @@ const FirebaseConnectionTest: React.FC = () => {
   const runUsersTest = async () => {
     setLoading(true);
     try {
-      console.log('🔄 Testing real users data...');
+      logger.info('Testing real users data...');
       
       const result = await firebaseConnectionTestService.getRealUsersData();
       
@@ -209,7 +210,7 @@ const FirebaseConnectionTest: React.FC = () => {
       setLastTestTime(new Date());
       
     } catch (error) {
-      console.error('❌ Real users test failed:', error);
+      logger.error('Real users test failed', error as Error);
     } finally {
       setLoading(false);
     }

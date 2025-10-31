@@ -11,6 +11,7 @@ import {
 } from 'firebase/auth';
 import { doc, setDoc, getDoc, updateDoc, serverTimestamp, collection, query, where, getDocs } from 'firebase/firestore';
 import { auth, db } from '../../firebase/firebase-config';
+import { logger } from '../logger-service';
 
 interface GitHubUserData {
   login: string;
@@ -60,7 +61,7 @@ class GitHubAuthService {
       provider.addScope('read:user');
 
       if (process.env.NODE_ENV === 'development') {
-        console.log('🔐 Starting GitHub sign-in...');
+        logger.debug('Starting GitHub sign-in');
       }
 
       // Try popup first
@@ -77,7 +78,7 @@ class GitHubAuthService {
         throw popupError;
       }
     } catch (error) {
-      console.error('❌ GitHub sign-in error:', error);
+      logger.error('GitHub sign-in error', error as Error);
       throw error;
     }
   }
@@ -107,7 +108,7 @@ class GitHubAuthService {
       const token = credential?.accessToken;
 
       if (!token) {
-        console.warn('⚠️ No GitHub access token');
+        logger.warn('No GitHub access token', { userId: result.user.uid });
         return;
       }
 
@@ -115,7 +116,7 @@ class GitHubAuthService {
       const githubData = await this.getGitHubProfileData(token);
 
       if (!githubData) {
-        console.warn('⚠️ No GitHub profile data');
+        logger.warn('No GitHub profile data', { userId: result.user.uid });
         return;
       }
 
@@ -141,10 +142,10 @@ class GitHubAuthService {
       }, { merge: true });
 
       if (process.env.NODE_ENV === 'development') {
-        console.log('✅ GitHub profile synced:', githubData.login);
+        logger.debug('GitHub profile synced', { username: githubData.login, userId: result.user.uid });
       }
     } catch (error) {
-      console.error('❌ GitHub sync error:', error);
+      logger.error('GitHub sync error', error as Error, { userId: result.user.uid });
     }
   }
 
@@ -166,7 +167,7 @@ class GitHubAuthService {
 
       return await response.json();
     } catch (error) {
-      console.error('Error fetching GitHub data:', error);
+      logger.error('Error fetching GitHub data', error as Error);
       return null;
     }
   }
@@ -191,12 +192,12 @@ class GitHubAuthService {
       });
 
       if (process.env.NODE_ENV === 'development') {
-        console.log('✅ API key generated for user:', userId);
+        logger.debug('API key generated', { userId });
       }
 
       return apiKey;
     } catch (error) {
-      console.error('❌ Generate API key error:', error);
+      logger.error('Generate API key error', error as Error, { userId });
       throw error;
     }
   }
@@ -232,7 +233,7 @@ class GitHubAuthService {
 
       return true;
     } catch (error) {
-      console.error('Error validating API key:', error);
+      logger.error('Error validating API key', error as Error, { apiKey: apiKey.substring(0, 10) + '...' });
       return false;
     }
   }
@@ -255,7 +256,7 @@ class GitHubAuthService {
 
       return true;
     } catch (error) {
-      console.error('Error revoking API key:', error);
+      logger.error('Error revoking API key', error as Error, { userId, apiKey: apiKey.substring(0, 10) + '...' });
       return false;
     }
   }
@@ -282,7 +283,7 @@ class GitHubAuthService {
         permissions: doc.data().permissions
       }));
     } catch (error) {
-      console.error('Error getting API keys:', error);
+      logger.error('Error getting API keys', error as Error, { userId });
       return [];
     }
   }

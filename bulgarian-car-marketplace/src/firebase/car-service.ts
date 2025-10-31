@@ -26,6 +26,7 @@ import {
 } from 'firebase/storage';
 import { cacheService } from '../services/cache-service';
 import { db, storage, BulgarianFirebaseUtils } from './firebase-config';
+import { logger } from '../services/logger-service';
 
 // Car Condition Types
 export type CarCondition = 'new' | 'used' | 'damaged';
@@ -762,7 +763,7 @@ export class BulgarianCarService {
       const deletePromises = imagesList.items.map((itemRef) => deleteObject(itemRef));
       await Promise.all(deletePromises);
     } catch (error: any) {
-      console.error('Error deleting car images:', error);
+      logger.error('Error deleting car images', error as Error, { carId });
     }
   }
 
@@ -775,7 +776,7 @@ export class BulgarianCarService {
         lastViewedAt: Timestamp.fromDate(new Date())
       });
     } catch (error: any) {
-      console.error('Error marking car as viewed:', error);
+      logger.error('Error marking car as viewed', error as Error, { carId });
     }
   }
 
@@ -876,8 +877,11 @@ export class BulgarianCarService {
     } catch (error: any) {
       // Gracefully degrade on permission issues for public featured cars
       if (error && (error.code === 'permission-denied' || error.code === 'failed-precondition')) {
-        if (process.env.NODE_ENV !== 'production') {
-          console.warn('getPopularCars permission issue, returning empty list:', error);
+        if (process.env.NODE_ENV === 'development') {
+          logger.warn('getPopularCars permission issue, returning empty list', { 
+            error: error.message,
+            code: error.code 
+          });
         }
         return [];
       }
@@ -887,35 +891,30 @@ export class BulgarianCarService {
 
   // Private helper methods
   private validateCarData(carData: Omit<BulgarianCar, 'id' | 'createdAt' | 'updatedAt' | 'views' | 'favorites'>): void {
+    // ⚡ MINIMAL VALIDATION - Only critical fields required
+    
+    // 1. Make & Model (CRITICAL)
     if (!carData.make || !carData.model) {
       throw new Error('Марка и модел на автомобила са задължителни');
     }
 
+    // 2. Year validation (CRITICAL)
     if (carData.year < 1900 || carData.year > new Date().getFullYear() + 1) {
       throw new Error('Невалидна година на производство');
     }
 
+    // 3. Price validation (CRITICAL)
     this.validatePrice(carData.price);
 
-    if (carData.mileage < 0) {
+    // 4. Mileage validation (soft)
+    if (carData.mileage && carData.mileage < 0) {
       throw new Error('Километражът не може да бъде отрицателен');
     }
 
-    if (!carData.location.city || !carData.location.region) {
-      throw new Error('Град и област са задължителни');
-    }
-
-    if (!BulgarianFirebaseUtils.validateBulgarianPostalCode(carData.location.postalCode)) {
-      throw new Error('Невалиден пощенски код');
-    }
-
-    if (!carData.title || carData.title.length < 10) {
-      throw new Error('Заглавието трябва да бъде поне 10 символа');
-    }
-
-    if (!carData.description || carData.description.length < 50) {
-      throw new Error('Описанието трябва да бъде поне 50 символа');
-    }
+    // ✅ Location is now OPTIONAL (removed required check)
+    // ✅ Title is now OPTIONAL (removed required check)
+    // ✅ Description is now OPTIONAL (removed required check)
+    // ✅ Postal code validation removed (not critical)
   }
 
   private validatePrice(price: number): void {

@@ -2,6 +2,7 @@
 // Admin Dashboard Page for Bulgarian Car Marketplace
 
 import React, { useState, useEffect } from 'react';
+import { logger } from '../services/logger-service';
 import styled from 'styled-components';
 import { useTranslation } from '../hooks/useTranslation';
 import { db } from '../firebase';
@@ -359,7 +360,7 @@ const AdminDashboard: React.FC = () => {
       });
 
     } catch (error) {
-      console.error('Error loading admin data:', error);
+      logger.error('Error loading admin data', error as Error);
     } finally {
       setLoading(false);
     }
@@ -372,7 +373,7 @@ const AdminDashboard: React.FC = () => {
         user.id === userId ? { ...user, status: newStatus } : user
       ));
     } catch (error) {
-      console.error('Error updating user status:', error);
+      logger.error('Error updating user status', error as Error, { userId, newStatus });
     }
   };
 
@@ -383,7 +384,7 @@ const AdminDashboard: React.FC = () => {
         car.id === carId ? { ...car, status: newStatus } : car
       ));
     } catch (error) {
-      console.error('Error updating car status:', error);
+      logger.error('Error updating car status', error as Error, { carId, newStatus });
     }
   };
 
@@ -393,7 +394,7 @@ const AdminDashboard: React.FC = () => {
         await deleteDoc(doc(db, 'users', userId));
         setUsers(users.filter(user => user.id !== userId));
       } catch (error) {
-        console.error('Error deleting user:', error);
+        logger.error('Error deleting user', error as Error, { userId });
       }
     }
   };
@@ -404,7 +405,7 @@ const AdminDashboard: React.FC = () => {
         await deleteDoc(doc(db, 'cars', carId));
         setCars(cars.filter(car => car.id !== carId));
       } catch (error) {
-        console.error('Error deleting car:', error);
+        logger.error('Error deleting car', error as Error, { carId });
       }
     }
   };

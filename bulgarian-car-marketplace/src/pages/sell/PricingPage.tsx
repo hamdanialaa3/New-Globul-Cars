@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
+import SelectWithOther from '../../components/shared/SelectWithOther';
+import { CURRENCIES, PRICE_TYPES } from '../../data/dropdown-options';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 const PricingContainer = styled.div`
   min-height: 100vh;
@@ -274,6 +277,7 @@ const InfoText = styled.p`
 const PricingPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { language } = useLanguage();
   const [pricing, setPricing] = useState({
     price: '',
     currency: 'EUR',
@@ -384,7 +388,8 @@ const PricingPage: React.FC = () => {
       params.set('paymentMethods', pricing.paymentMethods.join(','));
     }
 
-    navigate(`/sell/inserat/${vehicleType || 'pkw'}/kontakt/name?${params.toString()}`);
+    // ✅ Use unified contact page
+    navigate(`/sell/inserat/${vehicleType || 'pkw'}/contact?${params.toString()}`);
   };
 
   return (
@@ -413,26 +418,24 @@ const PricingPage: React.FC = () => {
 
             <FormGroup>
               <Label>Валута</Label>
-              <Select
+              <SelectWithOther
+                options={CURRENCIES}
                 value={pricing.currency}
-                onChange={(e) => handleInputChange('currency', e.target.value)}
-              >
-                <option value="EUR">EUR (€)</option>
-                <option value="BGN">BGN (лв)</option>
-                <option value="USD">USD ($)</option>
-              </Select>
+                onChange={(value) => handleInputChange('currency', value)}
+                placeholder={language === 'bg' ? 'Изберете валута' : 'Select currency'}
+                label={language === 'bg' ? 'Валута' : 'Currency'}
+              />
             </FormGroup>
 
             <FormGroup>
               <Label>Тип цена</Label>
-              <Select
+              <SelectWithOther
+                options={PRICE_TYPES}
                 value={pricing.priceType}
-                onChange={(e) => handleInputChange('priceType', e.target.value)}
-              >
-                {priceTypes.map(type => (
-                  <option key={type.value} value={type.value}>{type.label}</option>
-                ))}
-              </Select>
+                onChange={(value) => handleInputChange('priceType', value)}
+                placeholder={language === 'bg' ? 'Изберете тип цена' : 'Select price type'}
+                label={language === 'bg' ? 'Тип цена' : 'Price Type'}
+              />
             </FormGroup>
           </FormGrid>
 

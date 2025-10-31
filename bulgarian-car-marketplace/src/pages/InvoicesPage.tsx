@@ -14,6 +14,7 @@ import {
   getInvoiceStatusColor,
   getInvoiceStatusText,
 } from '../services/billing-service';
+import { logger } from '../services/logger-service';
 
 // ==================== STYLED COMPONENTS ====================
 
@@ -276,7 +277,7 @@ const InvoicesPage: React.FC = () => {
         setInvoices(result.invoices);
       }
     } catch (error) {
-      console.error('Error loading invoices:', error);
+      logger.error('Error loading invoices', error as Error);
     } finally {
       setLoading(false);
     }
@@ -289,7 +290,7 @@ const InvoicesPage: React.FC = () => {
         await loadInvoices();
       }
     } catch (error) {
-      console.error('Error updating invoice status:', error);
+      logger.error('Error updating invoice status', error as Error, { invoiceId, newStatus });
     }
   };
 
@@ -301,7 +302,7 @@ const InvoicesPage: React.FC = () => {
         await loadInvoices();
       }
     } catch (error) {
-      console.error('Error sending invoice email:', error);
+      logger.error('Error sending invoice email', error as Error, { invoiceId });
       alert(language === 'bg' ? 'Грешка при изпращане на фактура' : 'Error sending invoice');
     }
   };

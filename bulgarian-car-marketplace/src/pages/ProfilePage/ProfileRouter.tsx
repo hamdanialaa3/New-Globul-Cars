@@ -9,6 +9,7 @@ import ProfileMyAds from './ProfileMyAds';
 import ProfileCampaigns from './ProfileCampaigns';
 import ProfileAnalytics from './ProfileAnalytics';
 import ProfileSettings from './ProfileSettings';
+import ProfileSettingsNew from './ProfileSettingsNew';
 import ProfileConsultations from './ProfileConsultations';
 
 /**
@@ -36,10 +37,12 @@ export const ProfileRouter: React.FC = () => {
         <Route index element={<ProfileOverview />} />
         
         {/* Tab Routes */}
-        <Route path="my-ads" element={<ProfileMyAds />} />
+        {/* Redirect legacy my-ads to centralized listings page */}
+        <Route path="my-ads" element={<Navigate to="/my-listings" replace />} />
         <Route path="campaigns" element={<ProfileCampaigns />} />
         <Route path="analytics" element={<ProfileAnalytics />} />
-        <Route path="settings" element={<ProfileSettings />} />
+        <Route path="settings" element={<ProfileSettingsNew />} />
+        <Route path="settings-old" element={<ProfileSettings />} />
         <Route path="consultations" element={<ProfileConsultations />} />
         
         {/* Fallback: Redirect to overview */}

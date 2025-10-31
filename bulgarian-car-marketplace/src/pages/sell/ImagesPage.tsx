@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import ImageOptimizationService from '../../services/imageOptimizationService';
 import WorkflowPersistenceService from '../../services/workflowPersistenceService';
+import { logger } from '../../services/logger-service';
 
 const ImagesContainer = styled.div`
   min-height: 100vh;
@@ -277,7 +278,9 @@ const ImagesPage: React.FC = () => {
     const savedImages = WorkflowPersistenceService.getImagesAsFiles();
     if (savedImages.length > 0) {
       setImages(savedImages);
-      console.log(`✅ Loaded ${savedImages.length} saved images`);
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug(`Loaded ${savedImages.length} saved images`);
+      }
     }
   }, []);
 
@@ -339,7 +342,9 @@ const ImagesPage: React.FC = () => {
 
     try {
       setIsOptimizing(true);
-      console.log('🔄 Optimizing images...');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Optimizing images', { count: imageFiles.length });
+      }
       
       // Optimize images
       const optimizedImages = await ImageOptimizationService.optimizeImages(imageFiles, {
@@ -353,9 +358,11 @@ const ImagesPage: React.FC = () => {
       // Save to localStorage
       await WorkflowPersistenceService.saveImages([...images, ...optimizedImages]);
       
-      console.log('✅ Images optimized and saved');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Images optimized and saved');
+      }
     } catch (error) {
-      console.error('❌ Error processing images:', error);
+      logger.error('Error processing images', error as Error);
       alert('Възникна грешка при обработка на снимките.');
     } finally {
       setIsOptimizing(false);
@@ -418,7 +425,9 @@ const ImagesPage: React.FC = () => {
     try {
       // Save images to localStorage
       await WorkflowPersistenceService.saveImages(images);
-      console.log('💾 Images saved to localStorage');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Images saved to localStorage', { count: images.length });
+      }
 
       // Build URL with parameters
       const params = new URLSearchParams();
@@ -438,7 +447,7 @@ const ImagesPage: React.FC = () => {
 
       navigate(`/sell/inserat/${vehicleType || 'pkw'}/details/preis?${params.toString()}`);
     } catch (error) {
-      console.error('❌ Error saving images:', error);
+      logger.error('Error saving images', error as Error);
       alert('Възникна грешка при запазване на снимките.');
     }
   };

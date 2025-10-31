@@ -104,8 +104,9 @@ service cloud.firestore {
       // List: Everyone can list active cars (for search/browse)
       allow list: if true;
       
-      // Create: Only sellers and admins can create car listings
-      allow create: if (isSeller() || isAdmin()) &&
+      // Create: Any authenticated user can create car listings
+      // FIXED: Allow all authenticated users to sell (not just sellers with custom claims)
+      allow create: if isSignedIn() &&
                        request.resource.data.sellerId == request.auth.uid &&
                        request.resource.data.sellerEmail == request.auth.token.email &&
                        request.resource.data.make is string &&

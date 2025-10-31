@@ -7,6 +7,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
+import { logger } from '../../services/logger-service';
 import { useAuth } from '../../contexts/AuthProvider';
 import { useLanguage } from '../../contexts/LanguageContext';
 
@@ -235,11 +236,22 @@ const MenuContent = styled.div`
   flex: 1;
   overflow-y: auto;
   padding: 8px 0;
+  
+  /* CRITICAL FIX: Ensure all buttons are interactive */
+  position: relative;
+  z-index: 1;
+  pointer-events: auto;
+  -webkit-overflow-scrolling: touch;
 `;
 
 const MenuSection = styled.div`
   padding: 12px 0;
   border-bottom: 1px solid #e0e0e0;
+  
+  /* CRITICAL FIX: Prevent overlapping */
+  position: relative;
+  z-index: auto;
+  pointer-events: auto;
 
   &:last-child {
     border-bottom: none;
@@ -277,6 +289,17 @@ const MenuItem = styled.button<{ $variant?: 'primary' | 'danger' }>`
   font-weight: ${props => props.$variant ? 600 : 500};
   border-radius: ${props => props.$variant ? '8px' : '0'};
   margin: ${props => props.$variant ? '4px 16px' : '0'};
+  
+  /* CRITICAL FIX: Ensure buttons are clickable and don't overlap */
+  position: relative;
+  z-index: 1;
+  pointer-events: auto !important;
+  
+  /* Better touch targets (Apple HIG) */
+  min-height: 52px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
 
   &:hover {
     background: ${props => 
@@ -288,6 +311,11 @@ const MenuItem = styled.button<{ $variant?: 'primary' | 'danger' }>`
 
   &:active {
     transform: scale(0.98);
+    background: ${props => 
+      props.$variant === 'primary' ? '#1557b0' :
+      props.$variant === 'danger' ? '#c82333' :
+      'rgba(0, 0, 0, 0.08)'
+    };
   }
 
   svg {
@@ -590,9 +618,20 @@ const MobileHeader: React.FC = () => {
   }, [isMenuOpen]);
 
   const handleMenuItemClick = (path: string) => () => {
-    console.log('Clicking button for path:', path);
-    navigate(path);
-    setIsMenuOpen(false);
+    if (process.env.NODE_ENV === 'development') {
+      logger.debug('MOBILE MENU CLICK', { path, current: location.pathname, ts: new Date().toISOString() });
+    }
+    
+    // Ensure navigation happens
+    try {
+      navigate(path);
+      setIsMenuOpen(false);
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Navigation successful', { path });
+      }
+    } catch (error) {
+      logger.error('Navigation failed', error as Error, { path });
+    }
   };
 
   const handleLogout = async () => {
@@ -601,7 +640,7 @@ const MobileHeader: React.FC = () => {
       setIsMenuOpen(false);
       navigate('/');
     } catch (error) {
-      console.error('Logout error:', error);
+      logger.error('Logout error', error as Error);
     }
   };
 

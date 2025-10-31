@@ -14,6 +14,7 @@ import {
   limit
 } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
+import { logger } from '../logger-service';
 
 // ==================== INTERFACES ====================
 
@@ -132,7 +133,7 @@ class RecommendationsService {
       recommendations.sort((a, b) => b.score - a.score);
       return recommendations.slice(0, limitCount);
     } catch (error) {
-      console.error('[RECOMMENDATIONS] Error getting user recommendations:', error);
+      logger.error('[RECOMMENDATIONS] Error getting user recommendations', error as Error, { userId, limitCount });
       return [];
     }
   }
@@ -201,7 +202,7 @@ class RecommendationsService {
       recommendations.sort((a, b) => b.score - a.score);
       return recommendations.slice(0, limitCount);
     } catch (error) {
-      console.error('[RECOMMENDATIONS] Error getting post recommendations:', error);
+      logger.error('[RECOMMENDATIONS] Error getting post recommendations', error as Error, { userId, limitCount });
       return [];
     }
   }
@@ -291,7 +292,7 @@ class RecommendationsService {
       recommendations.sort((a, b) => b.score - a.score);
       return recommendations.slice(0, limitCount);
     } catch (error) {
-      console.error('[RECOMMENDATIONS] Error getting car recommendations:', error);
+      logger.error('[RECOMMENDATIONS] Error getting car recommendations', error as Error, { userId, limitCount });
       return [];
     }
   }

@@ -2,6 +2,8 @@
 // Performance Monitoring Utilities - أدوات مراقبة الأداء
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
 
+import { logger } from '../services/logger-service';
+
 // ==================== INTERFACES ====================
 
 export interface PerformanceMetric {
@@ -60,7 +62,9 @@ export class PerformanceMonitor {
       this.metrics.shift();
     }
 
-    console.log(`📊 Performance: ${name} = ${value}${unit}`);
+    if (process.env.NODE_ENV === 'development') {
+      logger.debug('Performance metric', { name, value, unit });
+    }
   }
 
   /**
@@ -111,13 +115,14 @@ export class PerformanceMonitor {
    */
   logReport(): void {
     const report = this.getReport();
-    
-    console.group('📊 Performance Report');
-    console.log('Average Load Time:', report.summary.averageLoadTime, 'ms');
-    console.log('Total Requests:', report.summary.totalRequests);
-    console.log('Memory Used:', report.summary.memoryUsed, 'MB');
-    console.log('Timestamp:', report.summary.timestamp);
-    console.groupEnd();
+    if (process.env.NODE_ENV === 'development') {
+      logger.info('Performance Report', {
+        averageLoadTimeMs: report.summary.averageLoadTime,
+        totalRequests: report.summary.totalRequests,
+        memoryUsedMB: report.summary.memoryUsed,
+        timestamp: report.summary.timestamp
+      });
+    }
   }
 
   // ==================== PRIVATE METHODS ====================

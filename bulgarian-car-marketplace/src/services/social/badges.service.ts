@@ -16,6 +16,7 @@ import {
   increment
 } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
+import { logger } from '../logger-service';
 
 // ==================== BADGE DEFINITIONS ====================
 
@@ -304,7 +305,7 @@ class BadgesService {
         rank
       };
     } catch (error) {
-      console.error('[BADGES] Error getting user progression:', error);
+      logger.error('Error getting user progression', error as Error, { userId });
       throw error;
     }
   }
@@ -376,7 +377,7 @@ class BadgesService {
         unlockedAt: new Date()
       } as UserBadge;
     } catch (error) {
-      console.error('[BADGES] Error awarding badge:', error);
+      logger.error('Error awarding badge', error as Error, { userId, badgeId: badge.id });
       return null;
     }
   }

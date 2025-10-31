@@ -9,6 +9,8 @@ import SplitScreenLayout from '../../../components/SplitScreenLayout';
 import { WorkflowFlow } from '../../../components/WorkflowVisualization';
 import { VehicleFormData, FUEL_TYPES, TRANSMISSION_TYPES, COLORS, DOOR_OPTIONS, SEAT_OPTIONS } from './types';
 import { getAllBrands, getModelsForBrand, getVariantsForModel, modelHasVariants, isFeaturedBrand } from '../../../services/carBrandsService';
+import SelectWithOther from '../../../components/shared/SelectWithOther';
+import { CAR_YEARS } from '../../../data/dropdown-options';
 import { Star, Zap } from 'lucide-react';
 import * as S from './styles';
 import Tooltip, { CarSellingTooltips } from '../../../components/Tooltip';
@@ -21,7 +23,7 @@ import KeyboardShortcutsHelper from '../../../components/KeyboardShortcutsHelper
 const VehicleDataPageNew: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { language, t } = useLanguage();
+  const { language } = useLanguage();
 
   const vehicleType = searchParams.get('vt');
   const sellerType = searchParams.get('st');
@@ -137,16 +139,17 @@ const VehicleDataPageNew: React.FC = () => {
     navigate(`/sell/inserat/${vehicleType || 'car'}/equipment?${params.toString()}`);
   };
 
-  const workflowSteps = [
-    { id: 'vehicle', label: language === 'bg' ? 'Тип' : 'Type', icon: undefined, isCompleted: true },
-    { id: 'seller', label: language === 'bg' ? 'Продавач' : 'Seller', icon: undefined, isCompleted: true },
-    { id: 'data', label: language === 'bg' ? 'Данни' : 'Data', icon: undefined, isCompleted: false },
-    { id: 'equipment', label: language === 'bg' ? 'Оборудване' : 'Equipment', icon: undefined, isCompleted: false },
-    { id: 'images', label: language === 'bg' ? 'Снимки' : 'Images', icon: undefined, isCompleted: false },
-    { id: 'pricing', label: language === 'bg' ? 'Цена' : 'Price', icon: undefined, isCompleted: false },
-    { id: 'contact', label: language === 'bg' ? 'Контакт' : 'Contact', icon: undefined, isCompleted: false },
-    { id: 'publish', label: language === 'bg' ? 'Публикуване' : 'Publish', icon: undefined, isCompleted: false }
-  ];
+  // Workflow steps for visualization (currently not used in UI)
+  // const workflowSteps = [
+  //   { id: 'vehicle', label: language === 'bg' ? 'Тип' : 'Type', icon: undefined, isCompleted: true },
+  //   { id: 'seller', label: language === 'bg' ? 'Продавач' : 'Seller', icon: undefined, isCompleted: true },
+  //   { id: 'data', label: language === 'bg' ? 'Данни' : 'Data', icon: undefined, isCompleted: false },
+  //   { id: 'equipment', label: language === 'bg' ? 'Оборудване' : 'Equipment', icon: undefined, isCompleted: false },
+  //   { id: 'images', label: language === 'bg' ? 'Снимки' : 'Images', icon: undefined, isCompleted: false },
+  //   { id: 'pricing', label: language === 'bg' ? 'Цена' : 'Price', icon: undefined, isCompleted: false },
+  //   { id: 'contact', label: language === 'bg' ? 'Контакт' : 'Contact', icon: undefined, isCompleted: false },
+  //   { id: 'publish', label: language === 'bg' ? 'Публикуване' : 'Publish', icon: undefined, isCompleted: false }
+  // ];
 
   const leftContent = (
     <S.ContentSection>
@@ -227,13 +230,13 @@ const VehicleDataPageNew: React.FC = () => {
               {' '}
               <Tooltip content={CarSellingTooltips[language].year} />
             </S.Label>
-            <S.Input
-              type="number"
+            <SelectWithOther
+              options={CAR_YEARS}
               value={formData.year}
-              onChange={(e) => handleInputChange('year', e.target.value)}
-              placeholder="2020"
-              min="1900"
-              max={new Date().getFullYear() + 1}
+              onChange={(value) => handleInputChange('year', value)}
+              placeholder={language === 'bg' ? 'Изберете година' : 'Select year'}
+              showOther={true}
+              otherPlaceholder={language === 'bg' ? 'Въведете година' : 'Enter year'}
             />
           </S.FormGroup>
         </S.FormGrid>

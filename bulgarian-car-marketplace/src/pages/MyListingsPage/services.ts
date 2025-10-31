@@ -14,6 +14,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
 import { MyListing, MyListingsStats } from './types';
+import { logger } from '../../services/logger-service';
 
 class MyListingsService {
   private collectionName = 'cars';
@@ -44,7 +45,7 @@ class MyListingsService {
 
       return listings;
     } catch (error) {
-      console.error('[MyListingsService] Error fetching user listings:', error);
+      logger.error('[MyListingsService] Error fetching user listings', error as Error, { userId });
       throw new Error('Failed to fetch user listings');
     }
   }
@@ -66,7 +67,7 @@ class MyListingsService {
 
       return stats;
     } catch (error) {
-      console.error('[MyListingsService] Error fetching user stats:', error);
+      logger.error('[MyListingsService] Error fetching user stats', error as Error, { userId });
       throw new Error('Failed to fetch user statistics');
     }
   }
@@ -82,7 +83,7 @@ class MyListingsService {
         updatedAt: serverTimestamp()
       });
     } catch (error) {
-      console.error('[MyListingsService] Error updating listing status:', error);
+      logger.error('[MyListingsService] Error updating listing status', error as Error, { listingId, status });
       throw new Error('Failed to update listing status');
     }
   }
@@ -98,7 +99,7 @@ class MyListingsService {
         updatedAt: serverTimestamp()
       });
     } catch (error) {
-      console.error('[MyListingsService] Error toggling featured status:', error);
+      logger.error('[MyListingsService] Error toggling featured status', error as Error, { listingId, featured });
       throw new Error('Failed to toggle featured status');
     }
   }
@@ -111,7 +112,7 @@ class MyListingsService {
       const listingRef = doc(db, this.collectionName, listingId);
       await deleteDoc(listingRef);
     } catch (error) {
-      console.error('[MyListingsService] Error deleting listing:', error);
+      logger.error('[MyListingsService] Error deleting listing', error as Error, { listingId });
       throw new Error('Failed to delete listing');
     }
   }
@@ -138,7 +139,7 @@ class MyListingsService {
         updatedAt: data.updatedAt?.toDate() || new Date(),
       } as MyListing;
     } catch (error) {
-      console.error('[MyListingsService] Error fetching listing by ID:', error);
+      logger.error('[MyListingsService] Error fetching listing by ID', error as Error, { listingId });
       throw new Error('Failed to fetch listing');
     }
   }
@@ -158,7 +159,7 @@ class MyListingsService {
         });
       }
     } catch (error) {
-      console.error('[MyListingsService] Error incrementing views:', error);
+      logger.error('[MyListingsService] Error incrementing views', error as Error, { listingId });
       // Don't throw error for view increment failures
     }
   }
@@ -178,7 +179,7 @@ class MyListingsService {
         });
       }
     } catch (error) {
-      console.error('[MyListingsService] Error incrementing inquiries:', error);
+      logger.error('[MyListingsService] Error incrementing inquiries', error as Error, { listingId });
       // Don't throw error for inquiry increment failures
     }
   }

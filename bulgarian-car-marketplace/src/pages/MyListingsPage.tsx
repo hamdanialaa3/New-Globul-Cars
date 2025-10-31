@@ -9,7 +9,8 @@ import { useLanguage } from '../contexts/LanguageContext';
 import carListingService from '../services/carListingService';
 import { CarListing } from '../types/CarListing';
 import { CarIcon } from '../components/icons/CarIcon';
-import CarCard from '../components/CarCard';
+import CarCardGermanStyle from '../components/CarCard/CarCardGermanStyle';
+import { logger } from '../services/logger-service';
 
 const PageContainer = styled.div`
   min-height: 100vh;
@@ -97,18 +98,20 @@ const StatLabel = styled.div`
 
 const CarsGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 2rem;
+  gap: 20px;
   margin: 2rem 0;
+  grid-template-columns: 1fr; /* xs */
 
-  @media (max-width: 768px) {
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.5rem;
+  @media (min-width: 600px) { /* sm */
+    grid-template-columns: repeat(2, 1fr);
   }
 
-  @media (max-width: 480px) {
-    grid-template-columns: 1fr;
-    gap: 1rem;
+  @media (min-width: 900px) { /* md */
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (min-width: 1200px) { /* lg/xl */
+    grid-template-columns: repeat(4, 1fr);
   }
 `;
 
@@ -243,14 +246,18 @@ const MyListingsPage: React.FC = () => {
     try {
       setLoading(true);
       setError(null);
-      console.log('🔄 Loading user listings...');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Loading user listings', { email: user.email });
+      }
 
       const userListings = await carListingService.getListingsBySeller(user.email || '');
       setListings(userListings);
 
-      console.log(`✅ Loaded ${userListings.length} listings`);
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Loaded user listings successfully', { count: userListings.length });
+      }
     } catch (err: any) {
-      console.error('❌ Error loading listings:', err);
+      logger.error('Error loading user listings', err as Error, { email: user.email });
       setError(err.message || 'Failed to load listings');
     } finally {
       setLoading(false);
@@ -295,7 +302,7 @@ const MyListingsPage: React.FC = () => {
       loadListings();
       alert(language === 'bg' ? 'Обявата е изтрита успешно!' : 'Listing deleted successfully!');
     } catch (err) {
-      console.error('Error deleting listing:', err);
+      logger.error('Error deleting listing', err as Error, { carId });
       alert(language === 'bg' ? 'Грешка при изтриване' : 'Error deleting listing');
     }
   };
@@ -417,7 +424,7 @@ const MyListingsPage: React.FC = () => {
                       🗑️ {language === 'bg' ? 'Изтрий' : 'Delete'}
                     </ActionButton>
                   </ActionButtons>
-                  <CarCard car={listing} />
+                  <CarCardGermanStyle car={listing} />
                 </ListingCardWrapper>
               ))}
             </CarsGrid>

@@ -8,6 +8,7 @@ import { validateProfileData } from '../../../utils/validation';
 import { doc, onSnapshot, getDoc } from 'firebase/firestore';
 import { db, auth } from '../../../firebase/firebase-config';
 import carListingService from '../../../services/carListingService';
+import { logger } from '../../../services/logger-service';
 import {
   ProfileFormData,
   ProfileCar,
@@ -76,11 +77,13 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
             displayName: userData.displayName || prev?.displayName
           } as BulgarianUser));
           
-          console.log('🔄 Real-time update received');
+          if (process.env.NODE_ENV === 'development') {
+            logger.debug('Real-time update received');
+          }
         }
       },
       (error) => {
-        console.error('Real-time listener error:', error);
+        logger.error('Real-time listener error', error as Error);
       }
     );
 
@@ -102,11 +105,15 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
       if (targetUserId && !viewingOwnProfile) {
         // Viewing another user's profile
         currentUser = await bulgarianAuthService.getUserProfileById(targetUserId);
-        console.log('👤 Loading target user profile:', targetUserId);
+        if (process.env.NODE_ENV === 'development') {
+          logger.debug('Loading target user profile', { targetUserId });
+        }
       } else {
         // Viewing own profile
         currentUser = await bulgarianAuthService.getCurrentUserProfile();
-        console.log('👤 Loading own profile');
+        if (process.env.NODE_ENV === 'development') {
+          logger.debug('Loading own profile');
+        }
       }
 
       if (currentUser) {
@@ -168,7 +175,7 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
         toast.error(t('profile.load_user_error'));
       }
     } catch (error) {
-      console.error('Error loading user data:', error);
+      logger.error('Error loading user data', error as Error);
       toast.error(t('profile.load_user_error_generic'));
     } finally {
       setLoading(false);
@@ -249,7 +256,7 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
       setEditing(false);
       await loadUserData(); // Reload data
     } catch (error: any) {
-      console.error('Error updating profile:', error);
+      logger.error('Error updating profile', error as Error);
       toast.error(
         error.message || 'Failed to update profile / Грешка при обновяване на профила',
         'Error / Грешка'
@@ -299,7 +306,7 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
       // Redirect to home page
       window.location.href = '/';
     } catch (error) {
-      console.error('Error signing out:', error);
+      logger.error('Error signing out', error as Error);
     }
   };
 

@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { logger } from '../../services/logger-service';
 
 const ImageGallerySection = styled.section`
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
@@ -278,7 +279,7 @@ const ImageGallerySectionComponent: React.FC = () => {
             const imgModule = await import(`../../assets/images/gallery/${GALLERY_IMAGE_NAMES[idx]}`);
             newPreloaded.set(idx, imgModule.default);
           } catch (error) {
-            console.error(`Failed to load image ${GALLERY_IMAGE_NAMES[idx]}:`, error);
+            logger.error('Failed to load gallery image', error as Error, { imageName: GALLERY_IMAGE_NAMES[idx], index: idx });
           }
         }
       }

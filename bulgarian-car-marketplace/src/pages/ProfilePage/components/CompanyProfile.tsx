@@ -4,7 +4,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { BulgarianUser } from '../../../firebase/auth-service';
-import { LEDProgressAvatar } from '../../../components/Profile/LEDProgressAvatar';
+import SimpleProfileAvatar from '../../../components/Profile/SimpleProfileAvatar';
 import { ProfileCar } from '../types';
 import { useLanguage } from '../../../contexts/LanguageContext';
 import { Building2, Mail, Phone, MapPin, MessageCircle, Star, Users, BarChart3, Shield } from 'lucide-react';
@@ -334,9 +334,9 @@ export const CompanyProfile: React.FC<CompanyProfileProps> = ({
       {/* Header with Avatar */}
       <ProfileHeader>
         <AvatarSection>
-          <LEDProgressAvatar
+          <SimpleProfileAvatar
             user={user}
-            profileType="company"
+            size={120}
             onClick={isOwnProfile ? onEdit : undefined}
           />
         </AvatarSection>

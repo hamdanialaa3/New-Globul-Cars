@@ -3,6 +3,7 @@
 // Connected to Backend P2.3 Commission System
 
 import React, { useState, useEffect } from 'react';
+import { logger } from '../services/logger-service';
 import styled from 'styled-components';
 import {
   getCommissionPeriods,
@@ -305,7 +306,7 @@ const CommissionsPage: React.FC = () => {
         setPeriods(periodsResult.periods);
       }
     } catch (error) {
-      console.error('Error loading commission data:', error);
+      logger.error('Error loading commission data', error as Error);
     } finally {
       setLoading(false);
     }

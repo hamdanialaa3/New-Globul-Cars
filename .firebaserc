@@ -13,5 +13,16 @@
       }
     }
   },
-  "etags": {}
+  "etags": {
+    "fire-new-globul": {
+      "extensionInstances": {
+        "delete-user-data": "5f12205d5f111d5195b660d4b9cfb64d89cfbddf248be33166d8c61c9e8b6305",
+        "firestore-algolia-search": "cdd46bdbaea3c6921b529deebdfc22c4566d0086d06744ecd5decc63f1fd83eb",
+        "firestore-bigquery-export": "325c2f812ca427c3bd8d7ab142c9f4eed214d99c2366aeac2e9d03a4477017bf",
+        "firestore-geocode-address": "5e0144c9017b3b7d4bb1d4050e4f719bd749b79eea621d70ec4d580528c38394",
+        "firestore-user-document": "0d930e165e2cc76f73430ba5de35b70b630301e9665f3b0786921a6a1e360f43",
+        "storage-resize-images": "6bf2cc45f9b8f4de0266082348530c9a768ea798dea13609f46ae212c1f38c15"
+      }
+    }
+  }
 }

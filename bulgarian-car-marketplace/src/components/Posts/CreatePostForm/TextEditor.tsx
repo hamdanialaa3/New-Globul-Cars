@@ -43,6 +43,8 @@ const TextEditor: React.FC<TextEditorProps> = ({
 
 const EditorContainer = styled.div`
   position: relative;
+  z-index: 1;  /* ⚡ Fix: Lower than PostTypeSelector */
+  margin-top: 8px;  /* ⚡ Add spacing from buttons above */
 `;
 
 const Textarea = styled.textarea`

@@ -2,6 +2,7 @@
 // صفحة فحص السيارات في قاعدة البيانات
 
 import React, { useState, useEffect } from 'react';
+import { logger } from '../services/logger-service';
 import styled from 'styled-components';
 import { collection, getDocs, query, limit } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
@@ -139,7 +140,7 @@ const DebugCarsPage: React.FC = () => {
       });
 
     } catch (error) {
-      console.error('Error fetching cars:', error);
+      logger.error('Error fetching cars (debug page)', error as Error);
       alert('Error fetching cars! Check console.');
     } finally {
       setLoading(false);
@@ -179,7 +180,7 @@ const DebugCarsPage: React.FC = () => {
       });
 
     } catch (error) {
-      console.error('Error fetching all cars:', error);
+      logger.error('Error fetching all cars (debug page)', error as Error);
       alert('Error fetching all cars! Check console.');
     } finally {
       setLoading(false);

@@ -2,6 +2,7 @@
 // (Comment removed - was in Arabic)
 
 import React, { useState } from 'react';
+import { logger } from '../services/logger-service';
 import styled from 'styled-components';
 import { SocialAuthService } from '../firebase/social-auth-service';
 
@@ -81,11 +82,13 @@ const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({ onSuccess, onEr
     try {
       const result = await SocialAuthService.signInWithGoogle();
       
-      console.log('✅ تم تسجيل الدخول بنجاح:', result.user.email);
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Google sign-in success', { email: result.user.email });
+      }
       onSuccess?.(result.user);
       
     } catch (error: any) {
-      console.error('❌ خطأ في تسجيل الدخول:', error);
+      logger.error('Google sign-in error', error as Error);
       
       if (error.message === 'REDIRECT_INITIATED') {
         setRedirecting(true);

@@ -10,6 +10,7 @@ import { TrendingUp } from 'lucide-react';
 import { postsFeedService } from '../../services/social/posts-feed.service';
 import { Post } from '../../services/social/posts.service';
 import PostCard from '../../components/Posts/PostCard';
+import { logger } from '../../services/logger-service';
 
 // ==================== STYLED COMPONENTS ====================
 
@@ -119,18 +120,22 @@ const CommunityFeedSection: React.FC = () => {
       
       setPosts(feedPosts);
     } catch (error) {
-      console.error('Error loading posts:', error);
+      logger.error('Error loading posts', error as Error, { userId: user?.uid });
     } finally {
       setLoading(false);
     }
   };
   
   const handleLike = (postId: string) => {
-    console.log('Post liked:', postId);
+    if (process.env.NODE_ENV === 'development') {
+      logger.debug('Post liked', { postId });
+    }
   };
   
   const handleComment = (postId: string) => {
-    console.log('Navigate to post:', postId);
+    if (process.env.NODE_ENV === 'development') {
+      logger.debug('Navigate to post', { postId });
+    }
   };
   
   const t = (key: string) => {

@@ -72,13 +72,48 @@ export const TabsContainer = styled.div`
   }
 `;
 
-export const Tab = styled.button<{ $isActive: boolean }>`
+export const Tab = styled.button<{ $isActive: boolean; $hasSelection: boolean; $isEmpty: boolean }>`
   position: relative;
   background: ${props => props.$isActive 
     ? 'linear-gradient(135deg, #ff8f10, #005ca9)' 
     : 'rgba(255, 143, 16, 0.05)'
   };
-  border: 2px solid ${props => props.$isActive ? '#ff8f10' : 'rgba(255, 143, 16, 0.2)'};
+  
+  /* ⚡ LED PULSING BORDER - Green when selected, Red when empty */
+  border: 2px solid ${props => {
+    if (props.$isEmpty && !props.$isActive) return '#ff0000';
+    if (props.$hasSelection && !props.$isActive) return '#00ff00';
+    return 'transparent';
+  }};
+  
+  animation: ${props => {
+    if (props.$isEmpty && !props.$isActive) return 'ledPulseRed 1.5s ease-in-out infinite';
+    if (props.$hasSelection && !props.$isActive) return 'ledPulseGreen 1.5s ease-in-out infinite';
+    return 'none';
+  }};
+  
+  @keyframes ledPulseRed {
+    0%, 100% {
+      border-color: #ff0000;
+      box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+    }
+    50% {
+      border-color: #ff3333;
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.6);
+    }
+  }
+  
+  @keyframes ledPulseGreen {
+    0%, 100% {
+      border-color: #00ff00;
+      box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+    }
+    50% {
+      border-color: #33ff33;
+      box-shadow: 0 0 20px rgba(0, 255, 0, 0.6);
+    }
+  }
+  
   border-radius: 12px;
   padding: 1rem 0.5rem; /* تقليل padding الأفقي */
   cursor: pointer;

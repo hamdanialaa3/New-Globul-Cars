@@ -13,10 +13,10 @@ import {
   doc,
   increment,
   Timestamp,
-  orderBy,
-  limit
+  
 } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
+import { logger } from '../logger-service';
 
 interface CarView {
   carId: string;
@@ -27,14 +27,7 @@ interface CarView {
   duration?: number; // How long they viewed (seconds)
 }
 
-interface CarInquiry {
-  carId: string;
-  fromUserId: string;
-  toUserId: string;
-  message: string;
-  createdAt: Timestamp;
-  status: 'pending' | 'replied' | 'archived';
-}
+// Note: Inquiry details persisted in car_inquiries collection; typed inline when queried
 
 interface CarPerformance {
   views: number;
@@ -81,10 +74,10 @@ class CarAnalyticsService {
       });
 
       if (process.env.NODE_ENV === 'development') {
-        console.log('📊 Car view tracked:', carId);
+        logger.debug('Car view tracked', { carId });
       }
     } catch (error) {
-      console.error('❌ Track view error:', error);
+      logger.error('Track view error', error as Error, { carId, userId });
     }
   }
 
@@ -114,10 +107,10 @@ class CarAnalyticsService {
       });
 
       if (process.env.NODE_ENV === 'development') {
-        console.log('💬 Car inquiry tracked:', carId);
+        logger.debug('Car inquiry tracked', { carId, fromUserId, toUserId });
       }
     } catch (error) {
-      console.error('❌ Track inquiry error:', error);
+      logger.error('Track inquiry error', error as Error, { carId, fromUserId, toUserId });
     }
   }
 
@@ -131,10 +124,10 @@ class CarAnalyticsService {
       });
 
       if (process.env.NODE_ENV === 'development') {
-        console.log('⭐ Car favorite tracked:', carId, added ? 'added' : 'removed');
+        logger.debug('Car favorite tracked', { carId, action: added ? 'added' : 'removed' });
       }
     } catch (error) {
-      console.error('❌ Track favorite error:', error);
+      logger.error('Track favorite error', error as Error, { carId, userId, added });
     }
   }
 
@@ -186,7 +179,7 @@ class CarAnalyticsService {
         viewsByDay: this.groupByDay(views)
       };
     } catch (error) {
-      console.error('❌ Get performance error:', error);
+      logger.error('Get car performance error', error as Error, { carId, days });
       return {
         views: 0,
         uniqueViews: 0,
@@ -209,24 +202,22 @@ class CarAnalyticsService {
     totalFavorites: number;
     avgResponseTime: number;
   }> {
+    let result = {
+      totalViews: 0,
+      totalInquiries: 0,
+      totalFavorites: 0,
+      avgResponseTime: 0
+    };
+
     try {
       // This would aggregate all cars owned by the user
-      // For now, return placeholder data
-      return {
-        totalViews: 0,
-        totalInquiries: 0,
-        totalFavorites: 0,
-        avgResponseTime: 0
-      };
+      // For now, keep default placeholder data in result
+      // TODO: Implement actual aggregation across user's cars
     } catch (error) {
-      console.error('❌ Get user analytics error:', error);
-      return {
-        totalViews: 0,
-        totalInquiries: 0,
-        totalFavorites: 0,
-        avgResponseTime: 0
-      };
+      logger.error('Get user analytics error', error as Error, { userId });
     }
+
+    return result;
   }
 
   /**

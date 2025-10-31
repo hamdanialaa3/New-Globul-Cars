@@ -11,6 +11,7 @@ import { ProfileService } from '../../services/profile';
 import { useAuth } from '../../hooks/useAuth';
 import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
+import { logger } from '../../services/logger-service';
 
 // ==================== STYLED COMPONENTS ====================
 
@@ -252,12 +253,16 @@ const CoverImageUploader: React.FC<CoverImageUploaderProps> = ({
       setProgress(20);
 
       // 2. Process (optimize for 1200×400)
-      console.log('🖼️ Processing cover image...');
-      const processed = await ProfileService.image.processCoverImage(file);
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Processing cover image', { userId: user.uid, fileSize: file.size });
+      }
+      await ProfileService.image.processCoverImage(file);
       setProgress(40);
 
       // 3. Upload
-      console.log('☁️ Uploading to Firebase...');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Uploading cover image to Firebase', { userId: user.uid });
+      }
       const url = await ProfileService.image.uploadImage(
         user.uid,
         file,
@@ -266,7 +271,9 @@ const CoverImageUploader: React.FC<CoverImageUploaderProps> = ({
       setProgress(70);
 
       // 4. Update Firestore
-      console.log('💾 Updating Firestore...');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Updating cover image in Firestore', { userId: user.uid });
+      }
       await updateDoc(doc(db, 'users', user.uid), {
         'coverImage.url': url,
         'coverImage.uploadedAt': serverTimestamp(),
@@ -277,10 +284,12 @@ const CoverImageUploader: React.FC<CoverImageUploaderProps> = ({
       // Success!
       setImageUrl(url);
       onUploadSuccess?.(url);
-      console.log('✅ Cover image uploaded!');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Cover image uploaded successfully', { userId: user.uid, url });
+      }
 
     } catch (err: any) {
-      console.error('❌ Upload failed:', err);
+      logger.error('Cover image upload failed', err as Error, { userId: user.uid, fileName: file?.name });
       const errorMsg = err.message || 'Upload failed';
       setError(errorMsg);
       onUploadError?.(errorMsg);
@@ -313,10 +322,12 @@ const CoverImageUploader: React.FC<CoverImageUploaderProps> = ({
       });
 
       setImageUrl(undefined);
-      console.log('✅ Cover image deleted');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Cover image deleted', { userId: user.uid });
+      }
 
     } catch (err: any) {
-      console.error('❌ Delete failed:', err);
+      logger.error('Failed to delete cover image', err as Error, { userId: user.uid });
       setError(err.message);
     } finally {
       setUploading(false);

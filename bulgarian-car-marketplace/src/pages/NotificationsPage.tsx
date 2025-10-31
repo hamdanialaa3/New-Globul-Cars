@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { useLanguage } from '../contexts/LanguageContext';
+import { logger } from '../services/logger-service';
 import {
   Bell,
   MessageCircle,
@@ -95,7 +96,7 @@ const NotificationsPage: React.FC = () => {
 
       setNotifications(mockNotifications);
     } catch (error) {
-      console.error('Error loading notifications:', error);
+      logger.error('Error loading notifications', error as Error, { userId: user?.uid });
     } finally {
       setLoading(false);
     }

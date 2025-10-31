@@ -2,6 +2,7 @@
 // Main App Component for Bulgarian Car Marketplace with Global Translation System
 
 import React, { Suspense } from 'react';
+import { logger } from './services/logger-service';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import { LanguageProvider } from './contexts/LanguageContext';
@@ -99,6 +100,7 @@ const MigrationPage = React.lazy(() => import('./pages/MigrationPage'));
 const DebugCarsPage = React.lazy(() => import('./pages/DebugCarsPage'));
 const EditCarPage = React.lazy(() => import('./pages/EditCarPage'));
 const N8nTestPage = React.lazy(() => import('./pages/N8nTestPage'));
+const TestDropdownsPage = React.lazy(() => import('./pages/TestDropdownsPage'));
 const B2BAnalyticsPortal = React.lazy(() => import('./pages/B2BAnalyticsPortal'));
 const DigitalTwinPage = React.lazy(() => import('./pages/DigitalTwinPage'));
 const SubscriptionPage = React.lazy(() => import('./pages/SubscriptionPage'));
@@ -201,7 +203,7 @@ const App: React.FC = () => {
   // Note: reCAPTCHA is optional for development
   // In production, consider adding the key to .env
   if (!recaptchaKey && process.env.NODE_ENV === 'production') {
-    console.warn('⚠️ reCAPTCHA Site Key is not configured');
+    logger.warn('reCAPTCHA Site Key is not configured');
   }
 
   return (
@@ -600,6 +602,9 @@ const MainLayout: React.FC = () => {
 
       {/* N8N Integration Test Page */}
       <Route path="/n8n-test" element={<N8nTestPage />} />
+
+      {/* Dropdowns Test Page */}
+      <Route path="/test-dropdowns" element={<TestDropdownsPage />} />
 
       {/* Advanced Features */}
       <Route

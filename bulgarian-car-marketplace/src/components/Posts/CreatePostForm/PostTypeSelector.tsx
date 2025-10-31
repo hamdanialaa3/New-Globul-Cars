@@ -45,6 +45,8 @@ const Container = styled.div`
   gap: 6px;
   overflow-x: auto;
   padding: 4px 0;
+  position: relative;
+  z-index: 10;  /* ⚡ Fix: Ensure buttons appear above other elements */
   
   &::-webkit-scrollbar {
     height: 4px;
@@ -71,6 +73,8 @@ const TypeButton = styled.button<{ $active: boolean }>`
   transition: all 0.2s;
   white-space: nowrap;
   flex-shrink: 0;
+  position: relative;
+  z-index: 1;  /* ⚡ Fix: Ensure button is clickable */
   
   svg {
     flex-shrink: 0;
@@ -78,6 +82,7 @@ const TypeButton = styled.button<{ $active: boolean }>`
   
   &:hover {
     background: ${p => p.$active ? '#FF7900' : '#e9ecef'};
+    z-index: 2;  /* ⚡ Raise on hover */
   }
 `;
 

@@ -4,6 +4,7 @@
 
 import { httpsCallable } from 'firebase/functions';
 import { functions } from '../../firebase/firebase-config';
+import { logger } from '../logger-service';
 
 // ==================== TYPES ====================
 
@@ -87,7 +88,7 @@ export const createQuickReply = async (data: {
     const result = await createQuickReplyFn(data);
     return result.data as any;
   } catch (error: any) {
-    console.error('Error creating quick reply:', error);
+    logger.error('Error creating quick reply', error, { category: data.category, language: data.language });
     return { success: false, error: error.message };
   }
 };
@@ -101,7 +102,7 @@ export const getQuickReplies = async (params?: {
     const result = await getQuickRepliesFn(params || {});
     return result.data as any;
   } catch (error: any) {
-    console.error('Error getting quick replies:', error);
+    logger.error('Error getting quick replies', error, params);
     return { success: false, error: error.message };
   }
 };
@@ -119,7 +120,7 @@ export const updateQuickReply = async (
     const result = await updateQuickReplyFn({ templateId, ...data });
     return result.data as any;
   } catch (error: any) {
-    console.error('Error updating quick reply:', error);
+    logger.error('Error updating quick reply', error, { templateId });
     return { success: false, error: error.message };
   }
 };
@@ -130,7 +131,7 @@ export const deleteQuickReply = async (templateId: string): Promise<{ success: b
     const result = await deleteQuickReplyFn({ templateId });
     return result.data as any;
   } catch (error: any) {
-    console.error('Error deleting quick reply:', error);
+    logger.error('Error deleting quick reply', error, { templateId });
     return { success: false, error: error.message };
   }
 };
@@ -144,7 +145,7 @@ export const useQuickReply = async (
     const result = await useQuickReplyFn({ templateId, conversationId });
     return result.data as any;
   } catch (error: any) {
-    console.error('Error using quick reply:', error);
+    logger.error('Error using quick reply', error, { templateId, conversationId });
     return { success: false, error: error.message };
   }
 };
@@ -161,7 +162,7 @@ export const getAutoResponderSettings = async (): Promise<{
     const result = await getAutoResponderSettingsFn();
     return result.data as any;
   } catch (error: any) {
-    console.error('Error getting auto responder settings:', error);
+    logger.error('Error getting auto responder settings', error);
     return { success: false, error: error.message };
   }
 };
@@ -174,7 +175,7 @@ export const updateAutoResponderSettings = async (
     const result = await updateAutoResponderSettingsFn(settings);
     return result.data as any;
   } catch (error: any) {
-    console.error('Error updating auto responder settings:', error);
+    logger.error('Error updating auto responder settings', error);
     return { success: false, error: error.message };
   }
 };
@@ -189,7 +190,7 @@ export const calculateLeadScore = async (
     const result = await calculateLeadScoreFn({ conversationId });
     return result.data as any;
   } catch (error: any) {
-    console.error('Error calculating lead score:', error);
+    logger.error('Error calculating lead score', error, { conversationId });
     return { success: false, error: error.message };
   }
 };
@@ -204,7 +205,7 @@ export const getLeads = async (params?: {
     const result = await getLeadsFn(params || {});
     return result.data as any;
   } catch (error: any) {
-    console.error('Error getting leads:', error);
+    logger.error('Error getting leads', error, params);
     return { success: false, error: error.message };
   }
 };
@@ -219,7 +220,7 @@ export const updateLeadStatus = async (
     const result = await updateLeadStatusFn({ leadId, status, notes });
     return result.data as any;
   } catch (error: any) {
-    console.error('Error updating lead status:', error);
+    logger.error('Error updating lead status', error, { leadId, status });
     return { success: false, error: error.message };
   }
 };
@@ -235,7 +236,7 @@ export const assignConversation = async (
     const result = await assignConversationFn({ conversationId, assignToUserId });
     return result.data as any;
   } catch (error: any) {
-    console.error('Error assigning conversation:', error);
+    logger.error('Error assigning conversation', error, { conversationId, assignToUserId });
     return { success: false, error: error.message };
   }
 };
@@ -253,7 +254,7 @@ export const getSharedInbox = async (params?: {
     const result = await getSharedInboxFn(params || {});
     return result.data as any;
   } catch (error: any) {
-    console.error('Error getting shared inbox:', error);
+    logger.error('Error getting shared inbox', error, params);
     return { success: false, error: error.message };
   }
 };
@@ -267,7 +268,7 @@ export const addInternalNote = async (
     const result = await addInternalNoteFn({ conversationId, note });
     return result.data as any;
   } catch (error: any) {
-    console.error('Error adding internal note:', error);
+    logger.error('Error adding internal note', error, { conversationId });
     return { success: false, error: error.message };
   }
 };
@@ -280,7 +281,7 @@ export const getInternalNotes = async (
     const result = await getInternalNotesFn({ conversationId });
     return result.data as any;
   } catch (error: any) {
-    console.error('Error getting internal notes:', error);
+    logger.error('Error getting internal notes', error, { conversationId });
     return { success: false, error: error.message };
   }
 };

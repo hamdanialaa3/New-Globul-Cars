@@ -1,6 +1,7 @@
 // N8N Test Page - صفحة اختبار n8n
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { logger } from '../services/logger-service';
 import N8nIntegrationService from '../services/n8n-integration';
 
 const Container = styled.div`
@@ -243,10 +244,12 @@ const N8nTestPage: React.FC = () => {
         </TestButton>
         <TestButton onClick={() => {
           Object.keys(testResults).forEach(key => {
-            if (testResults[key].status === 'success') {
-              console.log(`✅ ${key}:`, testResults[key].data);
-            } else {
-              console.error(`❌ ${key}:`, testResults[key].data);
+            if (process.env.NODE_ENV === 'development') {
+              if (testResults[key].status === 'success') {
+                logger.debug('n8n test success', { key, data: testResults[key].data });
+              } else {
+                logger.error('n8n test failure', new Error('Test failed'), { key, data: testResults[key].data });
+              }
             }
           });
         }}>

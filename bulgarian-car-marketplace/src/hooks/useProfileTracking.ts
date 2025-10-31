@@ -6,6 +6,7 @@
 import { useEffect, useRef } from 'react';
 import { useAuth } from '../contexts/AuthProvider';
 import { profileAnalyticsService } from '../services/analytics/profile-analytics.service';
+import { logger } from '../services/logger-service';
 
 /**
  * Hook to automatically track profile views
@@ -25,7 +26,9 @@ export const useProfileTracking = (profileUserId: string | undefined) => {
         
         // Don't track if viewing own profile
         if (currentUser?.uid === profileUserId) {
-          console.log('⏭️ Skipping tracking (own profile)');
+          if (process.env.NODE_ENV === 'development') {
+            logger.debug('Skipping tracking (own profile)');
+          }
           return;
         }
         
@@ -33,9 +36,11 @@ export const useProfileTracking = (profileUserId: string | undefined) => {
         await profileAnalyticsService.trackProfileView(profileUserId, visitorId);
         hasTracked.current = true;
         
-        console.log('✅ Profile view tracked automatically');
+        if (process.env.NODE_ENV === 'development') {
+          logger.debug('Profile view tracked automatically');
+        }
       } catch (error) {
-        console.error('❌ Error auto-tracking profile view:', error);
+        logger.error('Error auto-tracking profile view', error as Error, { profileUserId });
       }
     };
 
@@ -67,10 +72,11 @@ export const useCarViewTracking = (carId: string | undefined, ownerId: string | 
         
         await profileAnalyticsService.trackCarView(carId, ownerId, visitorId);
         hasTracked.current = true;
-        
-        console.log('✅ Car view tracked automatically');
+        if (process.env.NODE_ENV === 'development') {
+          logger.debug('Car view tracked automatically', { carId, ownerId });
+        }
       } catch (error) {
-        console.error('❌ Error auto-tracking car view:', error);
+        logger.error('Error auto-tracking car view', error as Error, { carId, ownerId });
       }
     };
 

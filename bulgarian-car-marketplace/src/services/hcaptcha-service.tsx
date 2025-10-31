@@ -3,6 +3,7 @@
 
 import HCaptcha from '@hcaptcha/react-hcaptcha';
 import React, { forwardRef, useImperativeHandle, useRef } from 'react';
+import { logger } from './logger-service';
 
 export interface CaptchaResult {
   success: boolean;
@@ -44,7 +45,7 @@ export class BulgarianCaptchaService {
       const secretKey = process.env.REACT_APP_HCAPTCHA_SECRET_KEY || '';
 
       if (!secretKey) {
-        console.warn('hCaptcha secret key not configured');
+        logger.warn('hCaptcha secret key not configured');
         return { success: false, error: 'Secret key not configured' };
       }
 
@@ -67,7 +68,7 @@ export class BulgarianCaptchaService {
         error: data.success ? undefined : data['error-codes']?.join(', ') || 'Verification failed'
       };
     } catch (error) {
-      console.error('[SERVICE] Captcha verification error:', error);
+      logger.error('[SERVICE] Captcha verification error', error as Error);
       return {
         success: false,
         error: 'Network error during verification'
@@ -158,7 +159,7 @@ export const HCaptchaComponent = forwardRef<any, HCaptchaComponentProps>(
 onVerify(token);
         }}
         onError={(error) => {
-          console.error('[SERVICE] Captcha error:', error);
+          logger.error('[SERVICE] Captcha error', new Error(String(error)));
           onError?.(error);
         }}
         onExpire={() => {

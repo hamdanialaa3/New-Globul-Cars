@@ -6,6 +6,7 @@ import { useAuth } from '../contexts/AuthProvider';
 import { SellWorkflowData } from './useSellWorkflow';
 import DraftsService from '../services/drafts-service';
 import { toast } from 'react-toastify';
+import { logger } from '../services/logger-service';
 
 interface UseDraftAutoSaveOptions {
   enabled?: boolean;
@@ -55,7 +56,7 @@ export const useDraftAutoSave = (
    */
   const saveDraft = async (showToast = false): Promise<string | null> => {
     if (!currentUser) {
-      console.warn('No user logged in, cannot save draft');
+      logger.warn('No user logged in, cannot save draft');
       return null;
     }
 
@@ -85,7 +86,7 @@ export const useDraftAutoSave = (
 
       return null;
     } catch (error) {
-      console.error('Failed to save draft:', error);
+      logger.error('Failed to save draft', error as Error, { userId: currentUser.uid, draftId });
       
       if (showToast) {
         toast.error('Failed to save draft', {
@@ -115,7 +116,7 @@ export const useDraftAutoSave = (
         autoClose: 2000
       });
     } catch (error) {
-      console.error('Failed to delete draft:', error);
+      logger.error('Failed to delete draft', error as Error, { draftId });
       toast.error('Failed to delete draft');
     }
   };

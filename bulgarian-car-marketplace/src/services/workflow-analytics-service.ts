@@ -3,6 +3,7 @@
 
 import { collection, addDoc, serverTimestamp, query, where, getDocs, Timestamp } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
+import { logger } from './logger-service';
 
 export interface WorkflowEvent {
   userId?: string;
@@ -85,10 +86,12 @@ export class WorkflowAnalyticsService {
         timestamp: serverTimestamp()
       });
 
-      console.log('📊 Analytics event logged:', { step, stepName, action });
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Analytics event logged', { step, stepName, action });
+      }
     } catch (error) {
       // Don't break the main flow if analytics fails
-      console.warn('Analytics logging failed:', error);
+      logger.warn('Analytics logging failed', { error: (error as Error).message, step, stepName, action });
     }
   }
 
@@ -230,7 +233,7 @@ export class WorkflowAnalyticsService {
         stepStats
       };
     } catch (error) {
-      console.error('Error getting funnel stats:', error);
+      logger.error('Error getting funnel stats', error as Error);
       throw error;
     }
   }

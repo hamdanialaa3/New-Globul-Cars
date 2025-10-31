@@ -11,6 +11,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
 import { measureAsync } from '../../utils/performance-monitor';
+import { logger } from '../../services/logger-service';
 
 // ==================== STYLED COMPONENTS ====================
 
@@ -238,21 +239,27 @@ const ProfileImageUploader: React.FC<ProfileImageUploaderProps> = ({
       setProgress(20);
 
       // 2. Process image (compression + variants)
-      console.log('🖼️ Processing image...');
-      const processed = await measureAsync('processProfileImage', async () => {
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Processing profile image', { userId: user.uid, fileSize: file.size });
+      }
+      await measureAsync('processProfileImage', async () => {
         return await ProfileService.image.processProfileImage(file);
       });
       setProgress(40);
 
       // 3. Upload to Firebase Storage
-      console.log('☁️ Uploading to Firebase...');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Uploading profile image to Firebase', { userId: user.uid });
+      }
       const url = await measureAsync('uploadProfileImage', async () => {
         return await ProfileService.image.uploadImage(user.uid, file, 'profile/avatar.jpg');
       });
       setProgress(70);
 
       // 4. Update Firestore
-      console.log('💾 Updating Firestore...');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Updating user profile in Firestore', { userId: user.uid });
+      }
       await updateDoc(doc(db, 'users', user.uid), {
         'profileImage.url': url,
         'profileImage.uploadedAt': serverTimestamp(),
@@ -261,17 +268,21 @@ const ProfileImageUploader: React.FC<ProfileImageUploaderProps> = ({
       setProgress(90);
 
       // 5. Recalculate trust score
-      console.log('🎯 Calculating trust score...');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Calculating trust score', { userId: user.uid });
+      }
       await ProfileService.trust.calculateTrustScore(user.uid);
       setProgress(100);
 
       // Success!
       setImageUrl(url);
       onUploadSuccess?.(url);
-      console.log('✅ Profile image uploaded successfully!');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Profile image uploaded successfully', { userId: user.uid, url });
+      }
 
     } catch (err: any) {
-      console.error('❌ Upload failed:', err);
+      logger.error('Profile image upload failed', err as Error, { userId: user.uid, fileName: file?.name });
       setError(err.message || 'Upload failed');
       onUploadError?.(err.message);
     } finally {

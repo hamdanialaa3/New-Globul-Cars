@@ -5,6 +5,7 @@
 import { doc, updateDoc, increment, serverTimestamp, query, collection, where, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
 import { campaignService, CampaignStatus } from './campaign.service';
+import { logger } from '../logger-service';
 
 interface BudgetUpdate {
   campaignId: string;
@@ -40,14 +41,18 @@ class BudgetService {
       if (remainingBudget < update.amount) {
         // Pause campaign if budget exhausted
         await campaignService.updateCampaignStatus(update.campaignId, CampaignStatus.PAUSED);
-        console.log(`Campaign ${update.campaignId} paused - budget exhausted`);
+        if (process.env.NODE_ENV === 'development') {
+          logger.debug(`Campaign ${update.campaignId} paused - budget exhausted`);
+        }
         return false;
       }
 
       // Check daily budget
       const canSpendToday = await this.checkDailyBudget(update.campaignId, update.amount);
       if (!canSpendToday) {
-        console.log(`Campaign ${update.campaignId} reached daily budget limit`);
+        if (process.env.NODE_ENV === 'development') {
+          logger.debug(`Campaign ${update.campaignId} reached daily budget limit`);
+        }
         return false;
       }
 
@@ -63,7 +68,7 @@ class BudgetService {
 
       return true;
     } catch (error) {
-      console.error('Error deducting budget:', error);
+      logger.error('Error deducting budget', error as Error);
       throw error;
     }
   }
@@ -88,7 +93,7 @@ class BudgetService {
 
       return totalTodaySpending <= campaign.dailyBudget;
     } catch (error) {
-      console.error('Error checking daily budget:', error);
+      logger.error('Error checking daily budget', error as Error);
       return false;
     }
   }
@@ -113,7 +118,7 @@ class BudgetService {
       const data = doc.data() as DailySpending;
       return data.spent || 0;
     } catch (error) {
-      console.error('Error getting today spending:', error);
+      logger.error('Error getting today spending', error as Error);
       return 0;
     }
   }
@@ -165,7 +170,7 @@ class BudgetService {
         await updateDoc(docRef, updates);
       }
     } catch (error) {
-      console.error('Error recording daily spending:', error);
+      logger.error('Error recording daily spending', error as Error);
     }
   }
 
@@ -214,7 +219,7 @@ class BudgetService {
         daysRemaining
       };
     } catch (error) {
-      console.error('Error getting budget status:', error);
+      logger.error('Error getting budget status', error as Error);
       return null;
     }
   }
@@ -238,7 +243,7 @@ class BudgetService {
       const snapshot = await getDocs(q);
       return snapshot.docs.map(doc => doc.data() as DailySpending);
     } catch (error) {
-      console.error('Error getting spending history:', error);
+      logger.error('Error getting spending history', error as Error);
       return [];
     }
   }
@@ -258,18 +263,22 @@ class BudgetService {
           // Check if campaign expired
           if (now > endDate) {
             await campaignService.updateCampaignStatus(campaign.id, CampaignStatus.COMPLETED);
-            console.log(`Campaign ${campaign.id} completed - duration ended`);
+            if (process.env.NODE_ENV === 'development') {
+              logger.debug(`Campaign ${campaign.id} completed - duration ended`);
+            }
           }
           
           // Check if budget exhausted
           if (campaign.spent >= campaign.budget) {
             await campaignService.updateCampaignStatus(campaign.id, CampaignStatus.PAUSED);
-            console.log(`Campaign ${campaign.id} paused - budget exhausted`);
+            if (process.env.NODE_ENV === 'development') {
+              logger.debug(`Campaign ${campaign.id} paused - budget exhausted`);
+            }
           }
         }
       }
     } catch (error) {
-      console.error('Error checking expired campaigns:', error);
+      logger.error('Error checking expired campaigns', error as Error);
     }
   }
 

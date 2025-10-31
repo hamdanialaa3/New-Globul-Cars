@@ -7,7 +7,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useLanguage } from '../../contexts/LanguageContext';
-import reviewsService, { Review } from '../../services/reviews/reviews.service';
+import { reviewService as reviewsService, Review } from '../../services/reviews/review-service';
 import { Star, User } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { bg } from 'date-fns/locale/bg';
@@ -205,7 +205,7 @@ const ReviewsList: React.FC<ReviewsListProps> = ({ sellerId }) => {
         <ReviewCard key={review.id}>
           <ReviewHeader>
             <Avatar $imageUrl={review.reviewerPhoto}>
-              {!review.reviewerPhoto && getInitials(review.reviewerName)}
+              {!review.reviewerPhoto && getInitials(review.reviewerName || 'User')}
             </Avatar>
             
             <ReviewerInfo>

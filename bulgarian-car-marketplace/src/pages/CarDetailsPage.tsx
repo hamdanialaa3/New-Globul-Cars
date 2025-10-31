@@ -10,6 +10,7 @@ import { CarListing } from '../types/CarListing';
 import { BULGARIA_REGIONS, getCitiesByRegion } from '../data/bulgaria-locations';
 import DistanceIndicator from '../components/DistanceIndicator';
 import StaticMapEmbed from '../components/StaticMapEmbed';
+import { logger } from '../services/logger-service';
 
 // ==================== Styled Components ====================
 
@@ -964,7 +965,7 @@ const CarDetailsPage: React.FC = () => {
           setEditedCar(carData);
         }
       } catch (error) {
-        console.error('Error loading car:', error);
+          logger.error('Error loading car details', error as Error, { carId });
       } finally {
         setLoading(false);
       }
@@ -1004,7 +1005,7 @@ const CarDetailsPage: React.FC = () => {
       setIsEditMode(false);
       alert(language === 'bg' ? 'Промените са запазени!' : 'Changes saved successfully!');
     } catch (error) {
-      console.error('Error saving:', error);
+        logger.error('Error saving car changes', error as Error, { carId });
       alert(language === 'bg' ? 'Грешка при запазване' : 'Error saving changes');
     } finally {
       setSaving(false);

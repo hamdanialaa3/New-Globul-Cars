@@ -5,6 +5,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { useAuth } from '../contexts/AuthProvider';  // FIXED: Correct path
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
+import { logger } from '../services/logger-service';
 
 // Profile Type
 export type ProfileType = 'private' | 'dealer' | 'company';
@@ -207,7 +208,7 @@ export const ProfileTypeProvider: React.FC<ProfileTypeProviderProps> = ({ childr
         setPlanTier('free');
       }
     } catch (error) {
-      console.error('Error loading profile type:', error);
+      logger.error('Error loading profile type', error as Error, { userId: currentUser?.uid });
       setProfileType('private');
       setPlanTier('free');
     } finally {
@@ -228,7 +229,11 @@ export const ProfileTypeProvider: React.FC<ProfileTypeProviderProps> = ({ childr
       
       setProfileType(newType);
     } catch (error) {
-      console.error('Error switching profile type:', error);
+      logger.error('Error switching profile type', error as Error, { 
+        userId: currentUser.uid, 
+        newType, 
+        currentType: profileType 
+      });
       throw error;
     }
   };

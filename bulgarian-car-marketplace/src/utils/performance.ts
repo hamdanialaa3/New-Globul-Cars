@@ -67,13 +67,14 @@ export function isInViewport(element: HTMLElement): boolean {
 /**
  * Measure component render time
  */
+import { logger } from '../services/logger-service';
 export function measureRenderTime(componentName: string, callback: () => void) {
   const startTime = performance.now();
   callback();
   const endTime = performance.now();
   
   if (process.env.NODE_ENV === 'development') {
-    console.log(`⚡ ${componentName} rendered in ${(endTime - startTime).toFixed(2)}ms`);
+    logger.debug('Component rendered', { componentName, ms: Number((endTime - startTime).toFixed(2)) });
   }
 }
 

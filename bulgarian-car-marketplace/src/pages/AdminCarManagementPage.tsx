@@ -11,6 +11,7 @@ import CityCarCountService from '../services/cityCarCountService';
 import { CarListing } from '../types/CarListing';
 import { Search, Filter, Trash2, Eye, CheckCircle, XCircle } from 'lucide-react';
 import { CarIcon } from '../components/icons/CarIcon';
+import { logger } from '../services/logger-service';
 
 const PageContainer = styled.div`
   min-height: 100vh;
@@ -238,7 +239,7 @@ const AdminCarManagementPage: React.FC = () => {
       const result = await carListingService.getListings({ limit: 1000 });
       setCars(result.listings);
     } catch (error) {
-      console.error('Error loading cars:', error);
+      logger.error('Error loading cars (admin)', error as Error);
     } finally {
       setLoading(false);
     }
@@ -256,7 +257,7 @@ const AdminCarManagementPage: React.FC = () => {
         draft: listings.filter(c => c.status === 'draft').length
       });
     } catch (error) {
-      console.error('Error loading stats:', error);
+      logger.error('Error loading admin stats', error as Error);
     }
   };
 
@@ -272,7 +273,7 @@ const AdminCarManagementPage: React.FC = () => {
       // Clear cache
       CityCarCountService.clearAllCache();
     } catch (error) {
-      console.error('Error deleting car:', error);
+      logger.error('Error deleting car (admin)', error as Error, { id });
       alert('Error deleting car');
     }
   };
@@ -291,7 +292,7 @@ const AdminCarManagementPage: React.FC = () => {
       // Clear cache
       CityCarCountService.clearAllCache();
     } catch (error) {
-      console.error('Error updating status:', error);
+      logger.error('Error updating car status (admin)', error as Error, { id, newStatus });
     }
   };
 

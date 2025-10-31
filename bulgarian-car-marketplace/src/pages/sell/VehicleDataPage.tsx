@@ -1,6 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
+import SelectWithOther from '../../components/shared/SelectWithOther';
+import { 
+  CAR_BRANDS, 
+  CAR_YEARS, 
+  FUEL_TYPES, 
+  TRANSMISSION_TYPES, 
+  CAR_COLORS, 
+  DOOR_COUNTS, 
+  SEAT_COUNTS 
+} from '../../data/dropdown-options';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 const VehicleDataContainer = styled.div`
   min-height: 100vh;
@@ -236,6 +247,7 @@ const InfoText = styled.p`
 const VehicleDataPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { language } = useLanguage();
   const [formData, setFormData] = useState({
     make: '',
     model: '',
@@ -340,16 +352,14 @@ const VehicleDataPage: React.FC = () => {
           <FormGrid>
             <FormGroup>
               <Label>Марка *</Label>
-              <Select
+              <SelectWithOther
+                options={CAR_BRANDS}
                 value={formData.make}
-                onChange={(e) => handleInputChange('make', e.target.value)}
+                onChange={(value) => handleInputChange('make', value)}
+                placeholder={language === 'bg' ? 'Изберете марка' : 'Select make'}
+                label={language === 'bg' ? 'Марка' : 'Make'}
                 required
-              >
-                <option value="">Изберете марка</option>
-                {makes.map(make => (
-                  <option key={make} value={make}>{make}</option>
-                ))}
-              </Select>
+              />
             </FormGroup>
 
             <FormGroup>
@@ -390,30 +400,26 @@ const VehicleDataPage: React.FC = () => {
 
             <FormGroup>
               <Label>Тип гориво *</Label>
-              <Select
+              <SelectWithOther
+                options={FUEL_TYPES}
                 value={formData.fuelType}
-                onChange={(e) => handleInputChange('fuelType', e.target.value)}
+                onChange={(value) => handleInputChange('fuelType', value)}
+                placeholder={language === 'bg' ? 'Изберете тип гориво' : 'Select fuel type'}
+                label={language === 'bg' ? 'Тип гориво' : 'Fuel Type'}
                 required
-              >
-                <option value="">Изберете тип гориво</option>
-                {fuelTypes.map(fuel => (
-                  <option key={fuel} value={fuel}>{fuel}</option>
-                ))}
-              </Select>
+              />
             </FormGroup>
 
             <FormGroup>
               <Label>Скоростна кутия *</Label>
-              <Select
+              <SelectWithOther
+                options={TRANSMISSION_TYPES}
                 value={formData.transmission}
-                onChange={(e) => handleInputChange('transmission', e.target.value)}
+                onChange={(value) => handleInputChange('transmission', value)}
+                placeholder={language === 'bg' ? 'Изберете скоростна кутия' : 'Select transmission'}
+                label={language === 'bg' ? 'Скоростна кутия' : 'Transmission'}
                 required
-              >
-                <option value="">Изберете скоростна кутия</option>
-                {transmissions.map(trans => (
-                  <option key={trans} value={trans}>{trans}</option>
-                ))}
-              </Select>
+              />
             </FormGroup>
 
             <FormGroup>
@@ -441,45 +447,35 @@ const VehicleDataPage: React.FC = () => {
 
             <FormGroup>
               <Label>Цвят</Label>
-              <Select
+              <SelectWithOther
+                options={CAR_COLORS}
                 value={formData.color}
-                onChange={(e) => handleInputChange('color', e.target.value)}
-              >
-                <option value="">Изберете цвят</option>
-                {colors.map(color => (
-                  <option key={color} value={color}>{color}</option>
-                ))}
-              </Select>
+                onChange={(value) => handleInputChange('color', value)}
+                placeholder={language === 'bg' ? 'Изберете цвят' : 'Select color'}
+                label={language === 'bg' ? 'Цвят' : 'Color'}
+              />
             </FormGroup>
 
             <FormGroup>
               <Label>Брой врати</Label>
-              <Select
+              <SelectWithOther
+                options={DOOR_COUNTS}
                 value={formData.doors}
-                onChange={(e) => handleInputChange('doors', e.target.value)}
-              >
-                <option value="">Изберете брой врати</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-              </Select>
+                onChange={(value) => handleInputChange('doors', value)}
+                placeholder={language === 'bg' ? 'Изберете брой врати' : 'Select door count'}
+                label={language === 'bg' ? 'Брой врати' : 'Door Count'}
+              />
             </FormGroup>
 
             <FormGroup>
               <Label>Брой места</Label>
-              <Select
+              <SelectWithOther
+                options={SEAT_COUNTS}
                 value={formData.seats}
-                onChange={(e) => handleInputChange('seats', e.target.value)}
-              >
-                <option value="">Изберете брой места</option>
-                <option value="2">2</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-                <option value="9">9</option>
-              </Select>
+                onChange={(value) => handleInputChange('seats', value)}
+                placeholder={language === 'bg' ? 'Изберете брой места' : 'Select seat count'}
+                label={language === 'bg' ? 'Брой места' : 'Seat Count'}
+              />
             </FormGroup>
 
             <FormGroup>

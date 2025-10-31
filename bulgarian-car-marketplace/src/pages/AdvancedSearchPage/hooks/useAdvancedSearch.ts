@@ -4,8 +4,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '../../../hooks/useTranslation';
-import { SearchData, SectionState, SectionName } from '../types';
-import advancedSearchService from '../../../services/advancedSearchService';
+import { SearchData, SectionState, SectionName, SortOption, ViewMode, SearchResultsMeta } from '../types';
+import { CarListing } from '../../../types/CarListing';
+import algoliaSearchService from '../../../services/algoliaSearchService';
 
 const createInitialSearchData = (): SearchData => ({
   // Basic Data
@@ -105,6 +106,19 @@ export const useAdvancedSearch = () => {
   // Search Form State
   const [searchData, setSearchData] = useState<SearchData>(createInitialSearchData());
   const [isSearching, setIsSearching] = useState(false);
+  
+  // Search Results State
+  const [searchResults, setSearchResults] = useState<CarListing[]>([]);
+  const [resultsMeta, setResultsMeta] = useState<SearchResultsMeta>({
+    totalResults: 0,
+    processingTime: 0,
+    page: 0,
+    totalPages: 0
+  });
+
+  // UI State
+  const [sortBy, setSortBy] = useState<SortOption>('createdAt_desc');
+  const [viewMode, setViewMode] = useState<ViewMode>('list');
 
   // Section collapse/expand state - Mobile.de style sections
   const [sectionsOpen, setSectionsOpen] = useState<SectionState>(createInitialSectionState());
@@ -156,12 +170,24 @@ export const useAdvancedSearch = () => {
     setIsSearching(true);
 
     try {
-      console.log('🔍 Starting advanced search with filters:', searchData);
+      console.log('🔍 Starting Algolia search with filters:', searchData);
       
-      // ✅ Use the new advanced search service
-      const results = await advancedSearchService.searchCars(searchData);
+      // Use Algolia search service with sorting
+      const response = await algoliaSearchService.searchCars(searchData, { 
+        sortBy,
+        page: 0,
+        hitsPerPage: 100 
+      });
       
-      console.log(`✅ Search completed: ${results.length} cars found`);
+      setSearchResults(response.cars);
+      setResultsMeta({
+        totalResults: response.totalResults,
+        processingTime: response.processingTime,
+        page: response.page,
+        totalPages: response.totalPages
+      });
+      
+      console.log(`✅ Algolia search completed: ${response.totalResults} cars found in ${response.processingTime}ms`);
 
       // Navigate to results page with search params
       const searchParams = new URLSearchParams();
@@ -170,10 +196,13 @@ export const useAdvancedSearch = () => {
         else if (typeof value === 'boolean' && value) searchParams.set(key, 'true');
         else if (Array.isArray(value) && value.length > 0) searchParams.set(key, value.join(','));
       });
+      
+      // Add sort parameter
+      searchParams.set('sort', sortBy);
 
       navigate(`/cars?${searchParams.toString()}`);
     } catch (error) {
-      console.error('❌ Search error:', error);
+      console.error('❌ Algolia search error:', error);
       alert('حدث خطأ أثناء البحث. يرجى المحاولة مرة أخرى.');
     } finally {
       setIsSearching(false);
@@ -221,6 +250,10 @@ export const useAdvancedSearch = () => {
     searchData,
     isSearching,
     sectionsOpen,
+    searchResults,
+    resultsMeta,
+    sortBy,
+    viewMode,
 
     // Actions
     toggleSection,
@@ -228,6 +261,8 @@ export const useAdvancedSearch = () => {
     handleInputChange,
     handleSearch,
     handleReset,
+    setSortBy,
+    setViewMode,
 
     // Data
     carMakes,

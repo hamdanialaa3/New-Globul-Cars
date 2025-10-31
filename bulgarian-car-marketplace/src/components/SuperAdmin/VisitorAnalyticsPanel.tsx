@@ -5,12 +5,12 @@ import {
   Globe,
   Smartphone,
   Monitor,
-  Tablet,
   TrendingUp,
   Eye,
   ExternalLink
 } from 'lucide-react';
 import { visitorAnalyticsService, VisitorMetrics } from '../../services/visitor-analytics-service';
+import { logger } from '../../services/logger-service';
 
 const PanelContainer = styled.div`
   background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
@@ -172,7 +172,7 @@ const VisitorAnalyticsPanel: React.FC = () => {
         const data = await visitorAnalyticsService.getVisitorMetrics();
         setMetrics(data);
       } catch (error) {
-        console.error('Failed to load visitor metrics:', error);
+        logger.error('Failed to load visitor metrics', error as Error);
       } finally {
         setLoading(false);
       }

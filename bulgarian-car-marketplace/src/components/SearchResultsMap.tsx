@@ -144,7 +144,7 @@ const SearchResultsMap: React.FC<SearchResultsMapProps> = ({
   if (!apiKey || apiKey === 'YOUR_GOOGLE_MAPS_API_KEY') {
     return (
       <ErrorMessage>
-        <strong>⚠️ Google Maps API Key غير مكوّن</strong>
+              <strong>Google Maps API Key غير مكوّن</strong>
         <p>يرجى إضافة REACT_APP_GOOGLE_MAPS_API_KEY في ملف .env</p>
       </ErrorMessage>
     );
@@ -153,7 +153,7 @@ const SearchResultsMap: React.FC<SearchResultsMapProps> = ({
   if (carsWithLocations.length === 0) {
     return (
       <ErrorMessage>
-        <strong>📍 لا توجد سيارات بمواقع محددة</strong>
+              <strong>لا توجد سيارات بمواقع محددة</strong>
         <p>لا يمكن عرض الخريطة لأن السيارات لا تحتوي على إحداثيات</p>
       </ErrorMessage>
     );
@@ -174,7 +174,7 @@ const SearchResultsMap: React.FC<SearchResultsMapProps> = ({
   return (
     <>
       <ResultsCount>
-        📍 {carsWithLocations.length} سيارة معروضة على الخريطة
+         {carsWithLocations.length} سيارة معروضة على الخريطة
       </ResultsCount>
       
       <MapContainer>
@@ -187,8 +187,8 @@ const SearchResultsMap: React.FC<SearchResultsMapProps> = ({
           >
             {carsWithLocations.map((car) => {
               const position = {
-                lat: car.location.coordinates!.latitude,
-                lng: car.location.coordinates!.longitude
+                      lat: car.location.coordinates?.latitude || 0,
+                      lng: car.location.coordinates?.longitude || 0
               };
 
               return (
@@ -217,12 +217,12 @@ const SearchResultsMap: React.FC<SearchResultsMapProps> = ({
                   <h3>{selectedCar.title}</h3>
                   <div className="price">€{selectedCar.price.toLocaleString()}</div>
                   <div className="details">
-                    <span>📅 {selectedCar.year}</span>
-                    <span>🛣️ {selectedCar.mileage.toLocaleString()} km</span>
-                    <span>⚡ {selectedCar.power} HP</span>
+                     <span>{selectedCar.year}</span>
+                     <span>{selectedCar.mileage.toLocaleString()} km</span>
+                     <span>{selectedCar.power} HP</span>
                   </div>
                   <div className="location">
-                    📍 {selectedCar.location.city}, {selectedCar.location.region}
+                     {selectedCar.location.city}, {selectedCar.location.region}
                   </div>
                   <button className="view-button">
                     عرض التفاصيل

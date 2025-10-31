@@ -2,6 +2,7 @@
 // Hook لإدارة حالة workflow بيع السيارة عبر جميع الخطوات
 
 import { useState, useEffect, useCallback } from 'react';
+import { logger } from '../services/logger-service';
 
 export interface SellWorkflowData {
   // Vehicle Type & Seller
@@ -74,7 +75,7 @@ export const useSellWorkflow = () => {
       try {
         setWorkflowData(JSON.parse(saved));
       } catch (error) {
-        console.error('Error loading workflow data:', error);
+        logger.error('Error loading workflow data', error as Error);
       }
     }
   }, []);

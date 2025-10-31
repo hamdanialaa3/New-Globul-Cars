@@ -26,10 +26,10 @@ import {
 import { useToast } from '../../Toast';
 
 interface DealershipInfoFormProps {
-  userId: string;
+  userId?: string;
 }
 
-const DealershipInfoForm: React.FC<DealershipInfoFormProps> = ({ userId }) => {
+const DealershipInfoForm: React.FC<DealershipInfoFormProps> = ({ userId = '' }) => {
   const { language } = useLanguage();
   const { showToast } = useToast();
   const [loading, setLoading] = useState(true);

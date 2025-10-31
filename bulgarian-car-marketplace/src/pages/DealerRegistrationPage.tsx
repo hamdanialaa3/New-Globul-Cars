@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAuth } from '../hooks/useAuth';
 import { useLanguage } from '../contexts/LanguageContext';
+import { logger } from '../services/logger-service';
 import { BulgarianProfileService, DealerProfile } from '../services/bulgarian-profile-service';
 import { Check, Upload, Building, FileText, CreditCard, Send } from 'lucide-react';
 
@@ -245,7 +246,7 @@ const DealerRegistrationPage: React.FC = () => {
       
       navigate('/dashboard');
     } catch (error) {
-      console.error('Error submitting dealer application:', error);
+      logger.error('Error submitting dealer application', error as Error);
       alert(language === 'bg'
         ? 'Грешка при изпращане на заявката. Моля, опитайте отново.'
         : 'Error submitting application. Please try again.');

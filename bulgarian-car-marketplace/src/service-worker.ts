@@ -156,9 +156,16 @@ async function syncMessages(): Promise<void> {
   try {
     // Get pending messages from IndexedDB
     // Send them to server
-    console.log('[SW] Syncing messages...');
+    // Using app logger avoids direct console usage
+    try {
+      const { logger } = await import('./services/logger-service');
+      logger.info('[SW] Syncing messages...');
+    } catch {}
   } catch (error) {
-    console.error('[SW] Error syncing messages:', error);
+    try {
+      const { logger } = await import('./services/logger-service');
+      logger.error('[SW] Error syncing messages', error as Error);
+    } catch {}
   }
 }
 
@@ -166,9 +173,15 @@ async function syncFavorites(): Promise<void> {
   try {
     // Get pending favorites from IndexedDB
     // Send them to server
-    console.log('[SW] Syncing favorites...');
+    try {
+      const { logger } = await import('./services/logger-service');
+      logger.info('[SW] Syncing favorites...');
+    } catch {}
   } catch (error) {
-    console.error('[SW] Error syncing favorites:', error);
+    try {
+      const { logger } = await import('./services/logger-service');
+      logger.error('[SW] Error syncing favorites', error as Error);
+    } catch {}
   }
 }
 

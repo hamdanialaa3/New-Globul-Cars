@@ -3,6 +3,7 @@
 
 import { LocationData, createLocationData } from '../types/LocationData';
 import { BULGARIAN_CITIES, getCityById } from '../constants/bulgarianCities';
+import { logger } from '../services/logger-service';
 
 /**
  * Convert city ID to LocationData
@@ -18,7 +19,7 @@ export function cityIdToLocationData(
   
   if (!city) {
     if (process.env.NODE_ENV === 'development') {
-      console.error(`[locationHelpers] City not found: ${cityId}`);
+      logger.error('[locationHelpers] City not found', undefined, { cityId });
     }
     return null;
   }
@@ -67,7 +68,7 @@ export function legacyLocationToLocationData(
   
   if (!cityData) {
     if (process.env.NODE_ENV === 'development') {
-      console.error(`[locationHelpers] Could not find city: ${city} or ${location}`);
+      logger.error('[locationHelpers] Could not find city', undefined, { city, location });
     }
     // Return Sofia as fallback
     cityData = getCityById('sofia-grad')!;
@@ -301,7 +302,7 @@ function toRad(degrees: number): number {
 /**
  * Export all utilities
  */
-export default {
+const locationUtils = {
   cityIdToLocationData,
   legacyLocationToLocationData,
   getAllCitiesAsLocationData,
@@ -315,3 +316,5 @@ export default {
   isSameCity,
   getNearestCities
 };
+
+export default locationUtils;

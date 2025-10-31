@@ -125,5 +125,13 @@
       "firebase-debug.*.log",
       "functions"
     ]
+  },
+  "extensions": {
+    "delete-user-data": "firebase/delete-user-data@0.1.25",
+    "firestore-algolia-search": "algolia/firestore-algolia-search@1.2.10",
+    "firestore-bigquery-export": "firebase/firestore-bigquery-export@0.2.6",
+    "firestore-geocode-address": "googlemapsplatform/firestore-geocode-address@0.1.3",
+    "firestore-user-document": "rowy/firestore-user-document@0.0.6",
+    "storage-resize-images": "firebase/storage-resize-images@0.2.10"
   }
 }

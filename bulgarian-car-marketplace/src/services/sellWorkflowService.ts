@@ -333,37 +333,57 @@ export class SellWorkflowService {
 
   /**
    * Validate workflow data completeness
+   * ⚡ FLEXIBLE: Allows publishing with missing fields
    */
-  static validateWorkflowData(workflowData: any): {
+  static validateWorkflowData(workflowData: any, strict: boolean = false): {
     isValid: boolean;
     missingFields: string[];
+    criticalMissing: boolean;
   } {
-    const requiredFields = [
+    // CRITICAL fields (absolutely required)
+    const criticalFields = [
       { key: 'make', label: 'Make (Марка)' },
       { key: 'model', label: 'Model (Модел)' },
       { key: 'year', label: 'Year (Година)' },
-      { key: 'price', label: 'Price (Цена)' },
+      { key: 'price', label: 'Price (Цена)' }
+    ];
+    
+    // RECOMMENDED fields (not blocking)
+    const recommendedFields = [
       { key: 'sellerName', label: 'Seller Name (Име)' },
       { key: 'sellerEmail', label: 'Seller Email (Имейл)' },
       { key: 'sellerPhone', label: 'Seller Phone (Телефон)' }
     ];
 
     const missingFields: string[] = [];
+    let criticalMissing = false;
 
-    for (const field of requiredFields) {
+    // Check critical fields
+    for (const field of criticalFields) {
       if (!workflowData[field.key]) {
         missingFields.push(field.label);
+        criticalMissing = true;
       }
     }
-
-    // Check location
-    if (!workflowData.region && !workflowData.city) {
-      missingFields.push('Location (Местоположение)');
+    
+    // Check recommended fields (only if strict mode)
+    if (strict) {
+      for (const field of recommendedFields) {
+        if (!workflowData[field.key]) {
+          missingFields.push(field.label);
+        }
+      }
+      
+      // Check location (only in strict mode)
+      if (!workflowData.region && !workflowData.city) {
+        missingFields.push('Location (Местоположение)');
+      }
     }
 
     return {
       isValid: missingFields.length === 0,
-      missingFields
+      missingFields,
+      criticalMissing
     };
   }
 

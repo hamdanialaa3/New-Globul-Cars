@@ -5,7 +5,7 @@ import { BulgarianCar } from '../firebase';
 
 // Generate meta tags for car pages
 export const generateCarMetaTags = (car: BulgarianCar) => {
-  const title = `${car.make} ${car.model} ${car.year} - ${car.price}€ | Globul Cars`;
+  const title = `${car.make} ${car.model} ${car.year} - ${car.price}€ | MOBILE-EU`;
   const description = `${car.make} ${car.model} ${car.year} година, ${car.mileage.toLocaleString('bg-BG')} км, ${car.fuelType}, ${car.transmission}. Цена: ${car.price}€. ${car.location.city}, ${car.location.region}, България.`;
 
   return {
@@ -109,14 +109,14 @@ export const generateOrganizationStructuredData = () => {
   return {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: 'Globul Cars',
+    name: 'MOBILE-EU',
     description: 'Bulgaria\'s largest car marketplace - buy and sell cars with confidence',
     url: window.location.origin,
-    logo: `${window.location.origin}/logo.png`,
+    logo: `${window.location.origin}/mobile-eu-logo.png`,
     sameAs: [
-      'https://www.facebook.com/globulcars',
-      'https://www.instagram.com/globulcars',
-      'https://www.linkedin.com/company/globulcars'
+      'https://www.facebook.com/mobilebgeu',
+      'https://www.instagram.com/mobilebgeu',
+      'https://www.linkedin.com/company/mobilebgeu'
     ],
     contactPoint: {
       '@type': 'ContactPoint',

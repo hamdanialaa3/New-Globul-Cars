@@ -18,6 +18,7 @@ import {
   Timestamp
 } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
+import { logger } from '../logger-service';
 
 // ==================== TYPES ====================
 
@@ -78,9 +79,11 @@ class ProfileAnalyticsService {
       // Update metrics
       await this.updateMetrics(targetUserId, 'profileViews', 1);
       
-      console.log('✅ Profile view tracked:', targetUserId);
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Profile view tracked', { targetUserId });
+      }
     } catch (error) {
-      console.error('❌ Error tracking profile view:', error);
+      logger.error('Error tracking profile view', error as Error, { targetUserId, visitorId });
     }
   }
 
@@ -102,9 +105,11 @@ class ProfileAnalyticsService {
 
       await this.updateMetrics(ownerId, 'carViews', 1);
       
-      console.log('✅ Car view tracked:', carId);
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Car view tracked', { carId, ownerId });
+      }
     } catch (error) {
-      console.error('❌ Error tracking car view:', error);
+      logger.error('Error tracking car view', error as Error, { carId, ownerId, visitorId });
     }
   }
 
@@ -126,9 +131,11 @@ class ProfileAnalyticsService {
 
       await this.updateMetrics(targetUserId, 'inquiries', 1);
       
-      console.log('✅ Inquiry tracked');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Inquiry tracked', { targetUserId, fromUserId, carId });
+      }
     } catch (error) {
-      console.error('❌ Error tracking inquiry:', error);
+      logger.error('Error tracking inquiry', error as Error, { targetUserId, fromUserId, carId });
     }
   }
 
@@ -151,9 +158,11 @@ class ProfileAnalyticsService {
 
       await this.updateMetrics(ownerId, 'favorites', action === 'add' ? 1 : -1);
       
-      console.log(`✅ Favorite ${action} tracked`);
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Favorite action tracked', { carId, ownerId, userId, action });
+      }
     } catch (error) {
-      console.error('❌ Error tracking favorite:', error);
+      logger.error('Error tracking favorite', error as Error, { carId, ownerId, userId, action });
     }
   }
 
@@ -177,9 +186,11 @@ class ProfileAnalyticsService {
       // Update average response time
       await this.updateResponseTime(userId, responseTimeHours);
       
-      console.log('✅ Response tracked:', responseTimeHours, 'hours');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Response tracked', { userId, responseTimeHours });
+      }
     } catch (error) {
-      console.error('❌ Error tracking response:', error);
+      logger.error('Error tracking response', error as Error, { userId, inquiryTime, responseTime });
     }
   }
 
@@ -195,7 +206,7 @@ class ProfileAnalyticsService {
         lastUpdated: serverTimestamp()
       }, { merge: true });
     } catch (error) {
-      console.error('❌ Error updating metrics:', error);
+      logger.error('Error updating metrics', error as Error, { userId, metric, value });
     }
   }
 
@@ -227,7 +238,7 @@ class ProfileAnalyticsService {
         });
       }
     } catch (error) {
-      console.error('❌ Error updating response time:', error);
+      logger.error('Error updating response time', error as Error, { userId, newResponseTime });
     }
   }
 
@@ -301,7 +312,7 @@ class ProfileAnalyticsService {
       };
       
     } catch (error) {
-      console.error('❌ Error getting analytics:', error);
+      logger.error('Error getting profile analytics', error as Error, { userId, period });
       return this.getEmptyAnalytics();
     }
   }
@@ -437,7 +448,7 @@ class ProfileAnalyticsService {
         responseTimeChange: 0 // Will calculate if needed
       };
     } catch (error) {
-      console.error('❌ Error calculating changes:', error);
+      logger.error('Error calculating profile changes', error as Error, { userId, periodDays });
       return {
         viewsChange: 0,
         visitorsChange: 0,

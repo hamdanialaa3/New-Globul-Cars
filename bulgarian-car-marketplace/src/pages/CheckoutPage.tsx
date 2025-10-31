@@ -8,6 +8,7 @@ import { useAuth } from '../hooks/useAuth';
 import { useLanguage } from '../contexts/LanguageContext';
 import { paymentService } from '../services/payment-service';
 import { ArrowLeft, CreditCard, Lock, Check } from 'lucide-react';
+import { logger } from '../services/logger-service';
 
 const Container = styled.div`
   max-width: 1200px;
@@ -169,7 +170,7 @@ const CheckoutPage: React.FC = () => {
         images: ['https://via.placeholder.com/400x300']
       });
     } catch (error) {
-      console.error('Error loading car:', error);
+      logger.error('Error loading checkout car details', error as Error, { carId });
     }
   };
 
@@ -200,7 +201,7 @@ const CheckoutPage: React.FC = () => {
         alert(result.error || 'Payment failed');
       }
     } catch (error) {
-      console.error('Payment error:', error);
+      logger.error('Payment error', error as Error, { carId, userId: user?.uid });
       alert('Payment failed. Please try again.');
     } finally {
       setLoading(false);

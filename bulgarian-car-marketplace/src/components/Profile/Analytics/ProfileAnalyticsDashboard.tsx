@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import { useLanguage } from '../../../contexts/LanguageContext';
 import { profileAnalyticsService } from '../../../services/analytics/profile-analytics.service';
 import type { ProfileAnalytics } from '../../../services/analytics/profile-analytics.service';
+import { logger } from '../../../services/logger-service';
 import { 
   TrendingUp, 
   Eye, 
@@ -217,15 +218,19 @@ export const ProfileAnalyticsDashboard: React.FC<ProfileAnalyticsDashboardProps>
   const loadAnalytics = async () => {
     try {
       setLoading(true);
-      console.log('📊 Loading REAL analytics for user:', userId, 'period:', period);
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Loading REAL analytics', { userId, period });
+      }
       
       // ✅ Get REAL data from Firebase
       const realData = await profileAnalyticsService.getAnalytics(userId, period);
       
-      console.log('✅ REAL Analytics loaded:', realData);
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('REAL Analytics loaded', { userId, period, hasData: !!realData });
+      }
       setAnalytics(realData);
     } catch (error) {
-      console.error('❌ Error loading analytics:', error);
+      logger.error('Error loading analytics', error as Error, { userId, period });
       setAnalytics(null);
     } finally {
       setLoading(false);

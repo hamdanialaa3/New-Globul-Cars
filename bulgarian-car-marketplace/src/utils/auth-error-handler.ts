@@ -1,5 +1,6 @@
 // Firebase Authentication Error Handler - Enhanced Debug Version
 // src/utils/auth-error-handler.ts
+import { logger } from '../services/logger-service';
 
 export class AuthErrorHandler {
   static diagnoseError(error: any): {
@@ -8,7 +9,7 @@ export class AuthErrorHandler {
     technicalDetails: string;
     suggestedFix: string;
   } {
-    console.error('🚨 Authentication Error Details:', error);
+  logger.error('Authentication error details', error as Error);
     
     const errorCode = error?.code || 'unknown';
     const errorMessage = error?.message || 'Unknown error';
@@ -81,17 +82,17 @@ export class AuthErrorHandler {
   }
   
   static logDetailedError(error: any, context: string): void {
-    console.group(`🚨 Authentication Error in ${context}`);
-    console.error('Full error object:', error);
-    console.log('Error code:', error?.code);
-    console.log('Error message:', error?.message);
-    console.log('Current URL:', window.location.href);
-    console.log('User agent:', navigator.userAgent);
-    console.log('Firebase config:', {
-      apiKey: process.env.REACT_APP_FIREBASE_API_KEY?.slice(0, 10) + '...',
-      authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-      projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID
+    logger.error(`Authentication error in ${context}`, error as Error);
+    logger.debug('Auth error context', {
+      code: error?.code,
+      message: error?.message,
+      url: typeof window !== 'undefined' ? window.location.href : undefined,
+      userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : undefined,
+      firebaseConfig: {
+        apiKey: process.env.REACT_APP_FIREBASE_API_KEY ? (process.env.REACT_APP_FIREBASE_API_KEY.slice(0, 10) + '...') : undefined,
+        authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+        projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID
+      }
     });
-    console.groupEnd();
   }
 }

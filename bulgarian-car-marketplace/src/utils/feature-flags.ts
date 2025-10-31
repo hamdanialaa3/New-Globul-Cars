@@ -1,4 +1,5 @@
 // Feature Flags ??????? ????? - ?? ???? ???????
+import { logger } from '../services/logger-service';
 export const FEATURE_FLAGS = {
   // (Comment removed - was in Arabic)
   ENABLE_NEW_ADVANCED_SEARCH: false,
@@ -23,6 +24,6 @@ export const isFeatureEnabled = (feature: keyof typeof FEATURE_FLAGS): boolean =
 // (Comment removed - was in Arabic)
 export const warnIfFeatureDisabled = (feature: keyof typeof FEATURE_FLAGS, message: string) => {
   if (!isFeatureEnabled(feature)) {
-    console.warn(`⚠️ Feature "${feature}" is disabled: ${message}`);
+    logger.warn(`Feature "${feature}" is disabled: ${message}`);
   }
 };

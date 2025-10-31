@@ -2,6 +2,7 @@
 // صفحة مسوداتي - عرض وإدارة المسودات المحفوظة
 
 import React, { useEffect, useState } from 'react';
+import { logger } from '../services/logger-service';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthProvider';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -224,7 +225,7 @@ const MyDraftsPage: React.FC = () => {
       const userDrafts = await DraftsService.getUserDrafts(currentUser.uid);
       setDrafts(userDrafts);
     } catch (error) {
-      console.error('Error loading drafts:', error);
+        logger.error('Error loading drafts', error as Error, { userId: currentUser?.uid });
       toast.error('Failed to load drafts');
     } finally {
       setLoading(false);
@@ -264,7 +265,7 @@ const MyDraftsPage: React.FC = () => {
       setDrafts(prev => prev.filter(d => d.id !== draftId));
       toast.success(language === 'bg' ? 'Черновата е изтрита' : 'Draft deleted');
     } catch (error) {
-      console.error('Error deleting draft:', error);
+      logger.error('Error deleting draft', error as Error, { draftId });
       toast.error('Failed to delete draft');
     }
   };

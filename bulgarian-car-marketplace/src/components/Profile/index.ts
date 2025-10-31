@@ -20,6 +20,7 @@ export { default as ProfileImageUploader } from './ProfileImageUploader';
 export { default as CoverImageUploader } from './CoverImageUploader';
 export { default as TrustBadge } from './TrustBadge';
 export { LEDProgressAvatar } from './LEDProgressAvatar';  // NEW: LED Progress System
+export { default as SimpleProfileAvatar } from './SimpleProfileAvatar';  // Simple avatar without LED ring
 export { default as ImageCropper } from './ImageCropper';
 export { default as ProfileGallery } from './ProfileGallery';
 export { default as VerificationPanel } from './VerificationPanel';
@@ -35,6 +36,7 @@ export { default as BusinessBackground } from './BusinessBackground';
 export { GarageSectionPro as GarageSection } from './GarageSection_Pro';
 export { FollowButton } from './FollowButton';
 export { default as CommunityFeedWidget } from './CommunityFeedWidget';
+export { default as UserPostsFeed } from './UserPostsFeed';  // ⚡ NEW: User Posts Feed
 
 // Export types
 export type { GarageCar } from './GarageSection_Pro';

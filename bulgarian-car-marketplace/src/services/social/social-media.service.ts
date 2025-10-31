@@ -14,6 +14,7 @@ import {
   Timestamp
 } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
+import { logger } from '../logger-service';
 import { 
   SocialMediaAccount, 
   SocialPlatform, 
@@ -36,7 +37,7 @@ class SocialMediaService {
       const snapshot = await getDocs(q);
       return snapshot.docs.map(doc => doc.data() as SocialMediaAccount);
     } catch (error) {
-      console.error('Error getting connected accounts:', error);
+      logger.error('Error getting connected accounts', error as Error, { userId });
       return [];
     }
   }
@@ -134,13 +135,19 @@ class SocialMediaService {
     const platform = sessionStorage.getItem('oauth_platform') as SocialPlatform;
 
     if (state !== storedState) {
-      console.error('State mismatch - possible CSRF attack');
+      logger.error('State mismatch - possible CSRF attack', new Error('OAuth state mismatch'), {
+        receivedState: state,
+        expectedState: storedState,
+        platform
+      });
       return;
     }
 
     // Exchange code for token (backend should handle this)
     // For now, mark as connected
-    console.log(`OAuth success for ${platform}`);
+    if (process.env.NODE_ENV === 'development') {
+      logger.debug(`OAuth success for ${platform}`, { code });
+    }
     
     // Clean up
     sessionStorage.removeItem('oauth_state');
@@ -167,9 +174,11 @@ class SocialMediaService {
         redirectUri
       });
 
-      console.log('Token exchange successful:', result.data);
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Token exchange successful', { platform, data: result.data });
+      }
     } catch (error: any) {
-      console.error('Token exchange failed:', error);
+      logger.error('Token exchange failed', error as Error, { platform });
       throw new Error(error.message || 'Failed to exchange token');
     }
   }
@@ -190,7 +199,7 @@ class SocialMediaService {
         updatedAt: Date.now()
       });
     } catch (error) {
-      console.error('Error saving account:', error);
+      logger.error('Error saving account', error as Error, { userId, platform: account.platform });
       throw error;
     }
   }
@@ -206,7 +215,7 @@ class SocialMediaService {
 
       await deleteDoc(accountRef);
     } catch (error) {
-      console.error('Error disconnecting account:', error);
+      logger.error('Error disconnecting account', error as Error, { userId, platform });
       throw error;
     }
   }
@@ -238,7 +247,7 @@ class SocialMediaService {
         // Update last used
         await this.updateLastUsed(userId, platform);
       } catch (error) {
-        console.error(`Error posting to ${platform}:`, error);
+        logger.error(`Error posting to ${platform}`, error as Error, { userId, platform });
         results[platform] = false;
       }
     }
@@ -256,10 +265,12 @@ class SocialMediaService {
     // This should be handled by backend/Cloud Functions for security
     // Frontend just marks intention, backend does actual posting
     
-    console.log(`[Cross-post] ${platform}:`, {
-      content: content.substring(0, 50) + '...',
-      mediaCount: mediaUrls.length
-    });
+    if (process.env.NODE_ENV === 'development') {
+      logger.debug(`[Cross-post] ${platform}`, {
+        content: content.substring(0, 50) + '...',
+        mediaCount: mediaUrls.length
+      });
+    }
 
     // Backend endpoint would be:
     // POST /api/social/cross-post
@@ -279,7 +290,7 @@ class SocialMediaService {
         lastUsed: Date.now()
       }, { merge: true });
     } catch (error) {
-      console.error('Error updating last used:', error);
+      logger.error('Error updating last used', error as Error, { userId, platform });
     }
   }
 }

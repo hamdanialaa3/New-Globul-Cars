@@ -13,12 +13,16 @@ import {
   Shield, 
   MessageCircle,
   Users,
-  RefreshCw
+  RefreshCw,
+  MapPin,
+  Mail,
+  Phone as PhoneIcon
 } from 'lucide-react';
 import * as S from './styles';
 import { TabNavigation, TabNavLink, SyncButton, FollowButton } from './TabNavigation.styles';
-import { CoverImageUploader, BusinessBackground } from '../../components/Profile';
+import { CoverImageUploader, BusinessBackground, SimpleProfileAvatar } from '../../components/Profile';
 import { googleProfileSyncService } from '../../services/google/google-profile-sync.service';
+import { followService } from '../../services/social/follow.service';
 
 /**
  * Profile Page Wrapper
@@ -48,8 +52,19 @@ const ProfilePageWrapper: React.FC = () => {
   
   const [syncing, setSyncing] = React.useState(false);
   
+  // ⚡ FIX: Follow state MUST be before early return!
+  const [isFollowing, setIsFollowing] = React.useState(false);
+  const [followLoading, setFollowLoading] = React.useState(false);
+  
   // Business mode check
   const isBusinessMode = user?.accountType === 'business' || user?.accountType === 'dealer' || user?.accountType === 'company';
+  
+  // ⚡ FIX: Check if following - MUST be before early return!
+  React.useEffect(() => {
+    if (user && !isOwnProfile && targetUserId) {
+      followService.isFollowing(user.uid, targetUserId).then(setIsFollowing);
+    }
+  }, [user, isOwnProfile, targetUserId]);
   
   // Google Sync Handler
   const handleGoogleSync = async () => {
@@ -76,6 +91,31 @@ const ProfilePageWrapper: React.FC = () => {
       </div>
     );
   }
+  
+  // Handle follow/unfollow
+  const handleFollow = async () => {
+    if (!user || !targetUserId) return;
+    setFollowLoading(true);
+    try {
+      if (isFollowing) {
+        await followService.unfollowUser(user.uid, targetUserId);
+        setIsFollowing(false);
+      } else {
+        await followService.followUser(user.uid, targetUserId);
+        setIsFollowing(true);
+      }
+    } catch (error) {
+      console.error('Follow error:', error);
+    } finally {
+      setFollowLoading(false);
+    }
+  };
+  
+  // Handle message
+  const handleMessage = () => {
+    if (!targetUserId) return;
+    navigate(`/messages?userId=${targetUserId}`);
+  };
   
   return (
     <S.ProfilePageContainer $isBusinessMode={isBusinessMode}>
@@ -115,7 +155,7 @@ const ProfilePageWrapper: React.FC = () => {
         </TabNavigation>
         
         {/* Cover Image - Only on main /profile page */}
-        {window.location.pathname === '/profile' && isOwnProfile && (
+        {window.location.pathname === '/profile' && (
           <CoverImageUploader
             currentImageUrl={user.coverImage?.url}
             themeColor={theme.primary}
@@ -129,6 +169,112 @@ const ProfilePageWrapper: React.FC = () => {
               console.error('Cover error:', error);
             }}
           />
+        )}
+        
+        {/* ⚡ NEW: Profile Header with Avatar - Only on main /profile page */}
+        {window.location.pathname === '/profile' && (
+          <S.ProfileHeader>
+            {/* Profile Image (Simple Avatar - No LED Ring) */}
+            <S.ProfileImageContainer>
+              <SimpleProfileAvatar
+                user={user}
+                size={120}
+                onClick={isOwnProfile ? () => navigate('/profile/settings') : undefined}
+              />
+            </S.ProfileImageContainer>
+            
+            {/* User Info */}
+            <S.ProfileInfo>
+              <S.ProfileName>
+                {user.displayName || `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'User'}
+                {user.verification?.emailVerified && (
+                  <S.VerifiedBadge>✓</S.VerifiedBadge>
+                )}
+              </S.ProfileName>
+              
+              {user.bio && (
+                <S.ProfileBio>{user.bio}</S.ProfileBio>
+              )}
+              
+              {/* Contact Info */}
+              <S.ProfileDetails>
+                {user.location?.city && (
+                  <S.DetailItem>
+                    <MapPin size={14} />
+                    {user.location.city}
+                  </S.DetailItem>
+                )}
+                {user.email && isOwnProfile && (
+                  <S.DetailItem>
+                    <Mail size={14} />
+                    {user.email}
+                  </S.DetailItem>
+                )}
+                {user.phoneNumber && isOwnProfile && (
+                  <S.DetailItem>
+                    <PhoneIcon size={14} />
+                    {user.phoneNumber}
+                  </S.DetailItem>
+                )}
+              </S.ProfileDetails>
+              
+              {/* Stats */}
+              <S.StatsContainer>
+                <S.Stat data-count={user.stats?.posts || 0}>
+                  <span>{language === 'bg' ? 'Публикации' : 'Posts'}</span>
+                </S.Stat>
+                <S.Stat data-count={user.stats?.followers || 0}>
+                  <span>{language === 'bg' ? 'Последователи' : 'Followers'}</span>
+                </S.Stat>
+                <S.Stat data-count={user.stats?.following || 0}>
+                  <span>{language === 'bg' ? 'Следвани' : 'Following'}</span>
+                </S.Stat>
+              </S.StatsContainer>
+              
+              {/* Action Buttons */}
+              <S.ActionsContainer>
+                {isOwnProfile ? (
+                  <>
+                    <S.ActionButton 
+                      variant="primary" 
+                      onClick={() => navigate('/profile/settings')}
+                    >
+                      {language === 'bg' ? 'Редактирай профил' : 'Edit Profile'}
+                    </S.ActionButton>
+                    <S.ActionButton 
+                      variant="secondary"
+                      onClick={handleGoogleSync}
+                      disabled={syncing}
+                    >
+                      <RefreshCw size={16} className={syncing ? 'spinning' : ''} />
+                      {syncing 
+                        ? (language === 'bg' ? 'Синхронизиране...' : 'Syncing...') 
+                        : (language === 'bg' ? 'Синхронизирай' : 'Sync')}
+                    </S.ActionButton>
+                  </>
+                ) : (
+                  <>
+                    <S.ActionButton 
+                      variant="primary"
+                      onClick={handleFollow}
+                      disabled={followLoading}
+                    >
+                      {isFollowing 
+                        ? (language === 'bg' ? 'Не следвай' : 'Unfollow')
+                        : (language === 'bg' ? 'Следвай' : 'Follow')}
+                    </S.ActionButton>
+                    <S.ActionButton 
+                      variant="secondary"
+                      onClick={handleMessage}
+                    >
+                      <MessageCircle size={16} />
+                      {language === 'bg' ? 'Съобщение' : 'Message'}
+                    </S.ActionButton>
+                  </>
+                )}
+              </S.ActionsContainer>
+            </S.ProfileInfo>
+          </S.ProfileHeader>
         )}
         
         {/* Content Area - React Router will render child routes here */}

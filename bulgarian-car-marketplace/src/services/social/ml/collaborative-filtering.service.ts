@@ -12,6 +12,7 @@ import {
 import { db } from '../../../firebase/firebase-config';
 import { Post } from '../posts.service';
 import { SimilarUser, RecommendationResult, deduplicatePosts } from '../../../types/social-feed.types';
+import { logger } from '../../logger-service';
 
 class CollaborativeFilteringService {
   // Find similar users based on engagement patterns
@@ -57,7 +58,7 @@ class CollaborativeFilteringService {
         .sort((a, b) => b.similarity - a.similarity)
         .slice(0, limitCount);
     } catch (error) {
-      console.error('Error finding similar users:', error);
+      logger.error('Error finding similar users', error as Error, { userId, limitCount });
       return [];
     }
   }
@@ -123,7 +124,7 @@ class CollaborativeFilteringService {
       });
 
     } catch (error) {
-      console.error('Error getting engagement vector:', error);
+      logger.error('Error getting engagement vector', error as Error, { userId });
     }
 
     return vector;

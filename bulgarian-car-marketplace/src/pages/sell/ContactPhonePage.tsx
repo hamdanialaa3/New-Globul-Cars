@@ -5,6 +5,7 @@ import { useAuth } from '../../contexts/AuthProvider';
 import SellWorkflowService from '../../services/sellWorkflowService';
 import WorkflowPersistenceService from '../../services/workflowPersistenceService';
 import { ProfileStatsService } from '../../services/profile/profile-stats-service';
+import { logger } from '../../services/logger-service';
 
 const ContactPhoneContainer = styled.div`
   min-height: 100vh;
@@ -121,7 +122,7 @@ const NavigationButtons = styled.div`
   border-top: 1px solid #ecf0f1;
 `;
 
-const Button = styled.button<{ variant?: 'primary' | 'secondary' }>`
+const Button = styled.button<{ variant?: 'primary' | 'secondary' | 'warning' }>`
   padding: 1rem 2rem;
   border: none;
   border-radius: 50px;
@@ -153,6 +154,19 @@ const Button = styled.button<{ variant?: 'primary' | 'secondary' }>`
           &:hover {
             background: #e9ecef;
             color: #495057;
+          }
+        `;
+      case 'warning':
+        return `
+          background: linear-gradient(135deg, #ffc107, #ff9800);
+          color: #000;
+          font-weight: 700;
+          box-shadow: 0 10px 20px rgba(255, 193, 7, 0.3);
+          
+          &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(255, 193, 7, 0.4);
+            background: linear-gradient(135deg, #ffb300, #ff8f00);
           }
         `;
       default:
@@ -214,14 +228,29 @@ const SummaryText = styled.p`
   line-height: 1.6;
 `;
 
-const ErrorCard = styled.div`
-  background: #fee;
-  border: 2px solid #fcc;
+const ErrorCard = styled.div<{ $hasWarning?: boolean }>`
+  background: ${props => props.$hasWarning ? '#fff3cd' : '#fee'};
+  border: 2px solid ${props => props.$hasWarning ? '#ffc107' : '#fcc'};
   border-radius: 15px;
   padding: 1.5rem;
   margin: 2rem 0;
-  color: #c00;
-  text-align: center;
+  color: ${props => props.$hasWarning ? '#856404' : '#c00'};
+  text-align: left;
+`;
+
+const MissingFieldsList = styled.div`
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  
+  ul {
+    margin: 0.5rem 0 0 1.5rem;
+    padding: 0;
+    
+    li {
+      margin: 0.25rem 0;
+    }
+  }
 `;
 
 const SuccessCard = styled.div`
@@ -245,6 +274,8 @@ const ContactPhonePage: React.FC = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showForcePublish, setShowForcePublish] = useState(false);
+  const [missingFields, setMissingFields] = useState<string[]>([]);
 
   // Extract parameters from URL
   const vehicleType = searchParams.get('vt');
@@ -367,17 +398,30 @@ const ContactPhonePage: React.FC = () => {
         additionalInfo: contact.additionalInfo
       };
 
-      // Validate data
-      const validation = SellWorkflowService.validateWorkflowData(workflowData);
-      if (!validation.isValid) {
-        setError(`Липсва задължителна информация: ${validation.missingFields.join(', ')}`);
+      // ⚡ FLEXIBLE VALIDATION: Validate data (non-strict by default)
+      const validation = SellWorkflowService.validateWorkflowData(workflowData, false);
+      
+      // If critical fields are missing, block publication
+      if (validation.criticalMissing) {
+        setError(`❌ Критична информация липсва: ${validation.missingFields.join(', ')}`);
+        setIsSubmitting(false);
+        return;
+      }
+      
+      // If non-critical fields are missing, show warning with option to proceed
+      if (!validation.isValid && !showForcePublish) {
+        setMissingFields(validation.missingFields);
+        setError(`⚠️ Препоръчителни полета липсват: ${validation.missingFields.join(', ')}`);
+        setShowForcePublish(true);
         setIsSubmitting(false);
         return;
       }
 
       // Get saved images from localStorage
       const savedImages = WorkflowPersistenceService.getImagesAsFiles();
-      console.log(`📸 Found ${savedImages.length} saved images`);
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug(`Found ${savedImages.length} saved images`);
+      }
 
       // Create car listing with images
       const carId = await SellWorkflowService.createCarListing(
@@ -386,14 +430,18 @@ const ContactPhonePage: React.FC = () => {
         savedImages.length > 0 ? savedImages : undefined
       );
 
-      console.log('✅ Обявата е създадена успешно!', carId);
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Car listing created successfully', { carId });
+      }
 
       // ✅ Increment cars listed stat
       try {
         await ProfileStatsService.getInstance().incrementCarsListed(user.uid);
-        console.log('📊 Stats updated: Cars listed +1');
+        if (process.env.NODE_ENV === 'development') {
+          logger.debug('Stats updated: Cars listed +1');
+        }
       } catch (statsError) {
-        console.error('⚠️ Failed to update stats:', statsError);
+        logger.error('Failed to update stats', statsError as Error, { userId: user.uid });
         // Continue anyway - don't block the main flow
       }
 
@@ -406,7 +454,10 @@ const ContactPhonePage: React.FC = () => {
       // Redirect to my listings page
       navigate('/my-listings');
     } catch (error: any) {
-      console.error('❌ Error creating car listing:', error);
+      logger.error('Error creating car listing', error as Error, { 
+        userId: user?.uid,
+        errorMessage: error.message 
+      });
       setError(error.message || 'Възникна грешка при създаване на обявата. Моля, опитайте отново.');
       setIsSubmitting(false);
     }
@@ -467,9 +518,19 @@ const ContactPhonePage: React.FC = () => {
         </SummaryCard>
 
         {error && (
-          <ErrorCard>
-            <strong>⚠️ Грешка</strong><br/>
+          <ErrorCard $hasWarning={showForcePublish}>
+            <strong>{showForcePublish ? '⚠️ Предупреждение' : '⚠️ Грешка'}</strong><br/>
             {error}
+            {missingFields.length > 0 && (
+              <MissingFieldsList>
+                <strong>Липсващи полета:</strong>
+                <ul>
+                  {missingFields.map((field, index) => (
+                    <li key={index}>{field}</li>
+                  ))}
+                </ul>
+              </MissingFieldsList>
+            )}
           </ErrorCard>
         )}
 
@@ -478,9 +539,15 @@ const ContactPhonePage: React.FC = () => {
             ← Назад
           </Button>
 
-          <Button variant="primary" onClick={handleFinish} disabled={isSubmitting}>
-            {isSubmitting ? '⏳ Публикуване...' : '✅ Публикувай обявата'}
-          </Button>
+          {showForcePublish ? (
+            <Button variant="warning" onClick={handleFinish} disabled={isSubmitting}>
+              {isSubmitting ? '⏳ Публикуване...' : '⚠️ Публикувай на всяка цена'}
+            </Button>
+          ) : (
+            <Button variant="primary" onClick={handleFinish} disabled={isSubmitting}>
+              {isSubmitting ? '⏳ Публикуване...' : '✅ Публикувай обявата'}
+            </Button>
+          )}
         </NavigationButtons>
 
         <InfoCard>

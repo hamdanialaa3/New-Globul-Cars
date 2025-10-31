@@ -12,6 +12,7 @@ import {
   PieChart as PieChartIcon
 } from 'lucide-react';
 import { projectAnalysisService, ProjectMetrics } from '../../services/project-analysis-service';
+import { logger } from '../../services/logger-service';
 
 const PanelContainer = styled.div`
   background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
@@ -184,7 +185,7 @@ const ProjectInfoPanel: React.FC = () => {
         const data = await projectAnalysisService.getProjectMetrics();
         setMetrics(data);
       } catch (error) {
-        console.error('Failed to load project metrics:', error);
+        logger.error('Failed to load project metrics', error as Error);
       } finally {
         setLoading(false);
       }

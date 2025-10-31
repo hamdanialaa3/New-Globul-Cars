@@ -3,6 +3,7 @@
 
 import { analytics } from './firebase-config';
 import { logEvent, setUserProperties, setUserId } from 'firebase/analytics';
+import { logger } from '../services/logger-service';
 
 export class BulgarianAnalyticsService {
   // Track page views
@@ -17,7 +18,7 @@ export class BulgarianAnalyticsService {
         custom_page: pageName
       });
     } catch (error) {
-      console.warn('Analytics page view tracking failed:', error);
+      logger.warn('Analytics page view tracking failed', { error: (error as Error)?.message });
     }
   }
 
@@ -36,7 +37,7 @@ export class BulgarianAnalyticsService {
         });
       }
     } catch (error) {
-      console.warn('Analytics auth event tracking failed:', error);
+      logger.warn('Analytics auth event tracking failed', { error: (error as Error)?.message });
     }
   }
 
@@ -59,7 +60,7 @@ export class BulgarianAnalyticsService {
 
       logEvent(analytics, 'car_interaction', eventData);
     } catch (error) {
-      console.warn('Analytics car event tracking failed:', error);
+      logger.warn('Analytics car event tracking failed', { error: (error as Error)?.message });
     }
   }
 
@@ -72,7 +73,7 @@ export class BulgarianAnalyticsService {
         custom_event: `message_${event}`
       });
     } catch (error) {
-      console.warn('Analytics message event tracking failed:', error);
+      logger.warn('Analytics message event tracking failed', { error: (error as Error)?.message });
     }
   }
 
@@ -86,7 +87,7 @@ export class BulgarianAnalyticsService {
         custom_filters: filters ? JSON.stringify(filters) : undefined
       });
     } catch (error) {
-      console.warn('Analytics search event tracking failed:', error);
+      logger.warn('Analytics search event tracking failed', { error: (error as Error)?.message });
     }
   }
 
@@ -100,7 +101,7 @@ export class BulgarianAnalyticsService {
         ...details
       });
     } catch (error) {
-      console.warn('Analytics engagement tracking failed:', error);
+      logger.warn('Analytics engagement tracking failed', { error: (error as Error)?.message });
     }
   }
 
@@ -115,7 +116,7 @@ export class BulgarianAnalyticsService {
         custom_context: context ? JSON.stringify(context) : undefined
       });
     } catch (error) {
-      console.warn('Analytics error tracking failed:', error);
+      logger.warn('Analytics error tracking failed', { error: (error as Error)?.message });
     }
   }
 
@@ -133,7 +134,7 @@ export class BulgarianAnalyticsService {
         ...properties
       });
     } catch (error) {
-      console.warn('Analytics user properties setting failed:', error);
+      logger.warn('Analytics user properties setting failed', { error: (error as Error)?.message });
     }
   }
 
@@ -148,7 +149,7 @@ export class BulgarianAnalyticsService {
         custom_context: context ? JSON.stringify(context) : undefined
       });
     } catch (error) {
-      console.warn('Analytics performance tracking failed:', error);
+      logger.warn('Analytics performance tracking failed', { error: (error as Error)?.message });
     }
   }
 
@@ -162,7 +163,7 @@ export class BulgarianAnalyticsService {
         metric_value: value || 1
       });
     } catch (error) {
-      console.warn('Analytics business metric tracking failed:', error);
+      logger.warn('Analytics business metric tracking failed', { error: (error as Error)?.message });
     }
   }
 
@@ -176,7 +177,7 @@ export class BulgarianAnalyticsService {
         value: value
       });
     } catch (error) {
-      console.warn('Analytics conversion tracking failed:', error);
+      logger.warn('Analytics conversion tracking failed', { error: (error as Error)?.message });
     }
   }
 }
