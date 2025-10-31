@@ -1,5 +1,6 @@
-// Car Card Component - Modern Design
-// كارد عرض السيارة - تصميم حديث
+// Car Card Component - Compact mobile.de Style
+// كارد عرض السيارة - نمط mobile.de المضغوط
+// 🎯 Updated to match FeaturedCars design
 
 import React, { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -8,6 +9,7 @@ import { Heart, MapPin, Calendar, Gauge, Fuel, Settings } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { CarListing } from '../types/CarListing';
 import { CarIcon } from './icons/CarIcon';
+import CarCardCompact from './CarCard/CarCardCompact';
 
 interface CarCardProps {
   car: CarListing;
@@ -167,6 +169,11 @@ const Location = styled.div`
 `;
 
 const CarCard: React.FC<CarCardProps> = ({ car }) => {
+  // 🚀 Use new compact design
+  return <CarCardCompact car={car} />;
+};
+
+const CarCardOld: React.FC<CarCardProps> = ({ car }) => {
   const navigate = useNavigate();
   const { language } = useLanguage();
 

@@ -1,21 +1,35 @@
-// Advanced Search Service
+// Advanced Search Service - REFACTORED
 // خدمة البحث المتقدم المتكاملة مع Firebase
-// Comprehensive search service integrated with Firebase Firestore
+// 🎯 100% Real - Comprehensive Firestore Integration
+// ⚡ Optimized with Caching + Pagination
 
 import { 
   collection, 
   query, 
   where, 
   orderBy, 
-  limit,
+  limit as firestoreLimit,
   getDocs,
+  getCountFromServer,
   Query,
   DocumentData
 } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
 import { SearchData } from '../pages/AdvancedSearchPage/types';
 import { CarListing } from '../types/CarListing';
+import { BulgarianCar } from '../firebase/car-service';
 import { serviceLogger } from './logger-wrapper';
+import { homePageCache } from './homepage-cache.service';
+import { searchHistoryService } from './search/search-history.service';
+
+interface AdvancedSearchResult {
+  cars: (CarListing | BulgarianCar)[];
+  totalCount: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+  processingTime: number;
+}
 
 class AdvancedSearchService {
   private collectionName = 'cars'; // ✅ Same as sellWorkflowService
@@ -407,6 +421,91 @@ class AdvancedSearchService {
       serviceLogger.error('Error getting search stats', error as Error);
       throw error;
     }
+  }
+
+  /**
+   * ⚡ NEW: Enhanced search with caching and pagination
+   * بحث محسّن مع التخزين المؤقت والترقيم
+   */
+  async searchWithPagination(
+    searchData: SearchData,
+    userId?: string,
+    page: number = 1,
+    pageSize: number = 20
+  ): Promise<AdvancedSearchResult> {
+    const startTime = Date.now();
+    
+    try {
+      // 1. Generate cache key
+      const cacheKey = `advanced_search_${JSON.stringify(searchData)}_all`;
+      
+      // 2. Get cached results or fetch new
+      const allCars = await homePageCache.getOrFetch(
+        cacheKey,
+        async () => {
+          return await this.searchCars(searchData);
+        },
+        5 * 60 * 1000 // 5 minutes
+      );
+      
+      // 3. Calculate pagination
+      const totalCount = allCars.length;
+      const totalPages = Math.ceil(totalCount / pageSize);
+      const start = (page - 1) * pageSize;
+      const end = start + pageSize;
+      const paginatedCars = allCars.slice(start, end);
+      
+      // 4. Save to search history
+      if (userId) {
+        await searchHistoryService.saveSearch(
+          userId,
+          this.generateSearchQuery(searchData),
+          searchData,
+          totalCount
+        );
+      }
+      
+      const processingTime = Date.now() - startTime;
+      
+      serviceLogger.info('Advanced search completed', {
+        totalCount,
+        page,
+        pageSize,
+        totalPages,
+        processingTime
+      });
+      
+      return {
+        cars: paginatedCars,
+        totalCount,
+        page,
+        pageSize,
+        totalPages,
+        processingTime
+      };
+      
+    } catch (error) {
+      serviceLogger.error('Advanced search with pagination failed', error as Error);
+      throw error;
+    }
+  }
+
+  /**
+   * Generate human-readable search query
+   */
+  private generateSearchQuery(searchData: SearchData): string {
+    const parts: string[] = [];
+    
+    if (searchData.make) parts.push(searchData.make);
+    if (searchData.model) parts.push(searchData.model);
+    if (searchData.priceFrom || searchData.priceTo) {
+      parts.push(`€${searchData.priceFrom || '0'}-${searchData.priceTo || '∞'}`);
+    }
+    if (searchData.firstRegistrationFrom || searchData.firstRegistrationTo) {
+      parts.push(`${searchData.firstRegistrationFrom || ''}-${searchData.firstRegistrationTo || ''}`);
+    }
+    
+    return parts.join(' ') || 'All cars';
   }
 }
 

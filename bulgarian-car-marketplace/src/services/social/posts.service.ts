@@ -20,8 +20,9 @@ import {
   Timestamp,
   DocumentSnapshot
 } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { ref, uploadBytes, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 import { db, storage } from '../../firebase/firebase-config';
+import { ImageUploadService } from '../image-upload-service';
 
 // ==================== TYPES ====================
 
@@ -86,7 +87,11 @@ export interface Post {
 class PostsService {
   private collectionName = 'posts';
   
-  async createPost(userId: string, postData: CreatePostData): Promise<string> {
+  async createPost(
+    userId: string, 
+    postData: CreatePostData,
+    onUploadProgress?: (fileName: string, progress: number) => void
+  ): Promise<string> {
     try {
       const userDoc = await getDoc(doc(db, 'users', userId));
       if (!userDoc.exists()) throw new Error('User not found');
@@ -95,7 +100,13 @@ class PostsService {
       
       let mediaUrls: string[] = [];
       if (postData.content.media && postData.content.media.length > 0) {
-        mediaUrls = await this.uploadPostMedia(userId, postData.content.media);
+        console.log(`📤 Uploading ${postData.content.media.length} files...`);
+        mediaUrls = await this.uploadPostMedia(
+          userId, 
+          postData.content.media,
+          onUploadProgress
+        );
+        console.log(`✅ All files uploaded successfully!`);
       }
       
       const postRef = await addDoc(collection(db, this.collectionName), {
@@ -146,15 +157,71 @@ class PostsService {
     }
   }
   
-  private async uploadPostMedia(userId: string, files: File[]): Promise<string[]> {
+  /**
+   * Upload post media with compression and optimization
+   * رفع وسائط المنشورات مع الضغط والتحسين
+   */
+  private async uploadPostMedia(
+    userId: string, 
+    files: File[],
+    onProgress?: (fileName: string, progress: number) => void
+  ): Promise<string[]> {
     const uploadPromises = files.map(async (file, index) => {
       const timestamp = Date.now();
-      const ext = file.name.split('.').pop();
+      const ext = file.name.split('.').pop()?.toLowerCase();
       const fileName = `${userId}_${timestamp}_${index}.${ext}`;
-      const storageRef = ref(storage, `posts/${userId}/${fileName}`);
+      const filePath = `posts/${userId}/${fileName}`;
       
-      await uploadBytes(storageRef, file);
-      return await getDownloadURL(storageRef);
+      try {
+        // Check if it's an image and compress it
+        if (file.type.startsWith('image/')) {
+          // Compress image with optimal settings for social posts
+          const url = await ImageUploadService.uploadSingleImage(
+            file,
+            filePath,
+            {
+              maxSizeMB: 2, // 2MB max for posts (higher quality than profile pics)
+              maxWidthOrHeight: 2048, // Full HD+ quality
+              onProgress: (progress) => {
+                if (onProgress) {
+                  onProgress(file.name, progress.progress);
+                }
+              }
+            }
+          );
+          
+          console.log(`✅ Image uploaded: ${file.name} -> ${url}`);
+          return url;
+        } else {
+          // For videos or other files, upload directly with progress
+          const storageRef = ref(storage, filePath);
+          const uploadTask = uploadBytesResumable(storageRef, file);
+          
+          return new Promise<string>((resolve, reject) => {
+            uploadTask.on(
+              'state_changed',
+              (snapshot) => {
+                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                if (onProgress) {
+                  onProgress(file.name, progress);
+                }
+              },
+              (error) => {
+                console.error(`❌ Upload failed: ${file.name}`, error);
+                reject(error);
+              },
+              async () => {
+                const url = await getDownloadURL(uploadTask.snapshot.ref);
+                console.log(`✅ File uploaded: ${file.name} -> ${url}`);
+                resolve(url);
+              }
+            );
+          });
+        }
+      } catch (error) {
+        console.error(`❌ Error uploading ${file.name}:`, error);
+        throw new Error(`Failed to upload ${file.name}`);
+      }
     });
     
     return await Promise.all(uploadPromises);

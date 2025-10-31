@@ -98,7 +98,7 @@ export class SocialTokenProvider {
     try {
       const { functionsModule, httpsCallable } = await loadFunctions();
       if (functionsModule && httpsCallable) {
-        const regionFn = (window as any)?.socialRegion || 'us-central1';
+        const regionFn = (window as any)?.socialRegion || 'europe-west1';
         const app = (await import('firebase/app')).getApps?.()[0];
         if (app) {
           const f = functionsModule.getFunctions(app, regionFn);

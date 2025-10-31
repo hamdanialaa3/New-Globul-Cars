@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { Shield, Lock, Eye, EyeOff, CheckCircle, AlertCircle } from 'lucide-react';
 import { uniqueOwnerService } from '../services/unique-owner-service';
+import { auth } from '../firebase/firebase-config';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 // Styled Components
 const LoginContainer = styled.div`
@@ -227,28 +229,34 @@ const SuperAdminLogin: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{type: 'success' | 'error', text: string} | null>(null);
 
-  const SUPER_ADMIN_EMAIL = 'alaa.hamdani@yahoo.com';
-  const SUPER_ADMIN_PASSWORD = 'Alaa1983';
-
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setMessage(null);
 
     try {
+      // Step 1: Validate unique owner session (local gate)
       const isAuthenticated = await uniqueOwnerService.authenticateUniqueOwner(email, password);
-      
-      if (isAuthenticated) {
-        setMessage({ type: 'success', text: 'Unique Owner access granted! Redirecting to dashboard...' });
-        
-        // توجيه إلى لوحة التحكم
-        setTimeout(() => {
-          navigate('/super-admin');
-        }, 2000);
-      } else {
+      if (!isAuthenticated) {
         setMessage({ type: 'error', text: 'Invalid credentials. Only the unique owner can access this system.' });
         setLoading(false);
+        return;
       }
+
+      // Step 2: Sign in to Firebase Auth (required for 100% REAL data)
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+      } catch (authErr) {
+        console.error('Firebase Auth sign-in failed:', authErr);
+        setMessage({ type: 'error', text: 'Firebase sign-in failed. Please ensure the owner account exists in Firebase Auth and the password is correct.' });
+        setLoading(false);
+        return;
+      }
+
+      setMessage({ type: 'success', text: 'Owner authenticated. Redirecting to Super Admin dashboard…' });
+      setTimeout(() => {
+        navigate('/super-admin');
+      }, 1000);
     } catch (error) {
       console.error('Authentication error:', error);
       setMessage({ type: 'error', text: 'Authentication failed. Please try again.' });

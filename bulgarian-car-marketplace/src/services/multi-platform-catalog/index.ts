@@ -67,7 +67,7 @@ class MultiPlatformCatalogService {
   }
   
   static getFeedURL(platform: string): string {
-    const baseURL = 'https://us-central1-fire-new-globul.cloudfunctions.net';
+    const baseURL = 'https://europe-west1-fire-new-globul.cloudfunctions.net';
     return `${baseURL}/${platform}CatalogFeed`;
   }
 }

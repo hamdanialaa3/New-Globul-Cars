@@ -8,6 +8,7 @@ import { firebaseRealDataService } from '../services/firebase-real-data-service'
 import { uniqueOwnerService } from '../services/unique-owner-service';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
+import { getAuth } from 'firebase/auth';
 
 // Import components
 import AdminHeader from '../components/SuperAdmin/AdminHeader';
@@ -37,7 +38,7 @@ const DashboardContainer = styled.div`
   background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #2d2d2d 100%);
   padding: 0 0 100px 0;
   margin: 0;
-  color: #ffd700;
+  color:rgb(46, 20, 176);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 `;
 
@@ -49,12 +50,40 @@ const TabContent = styled.div`
 
 const LoadingState = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100vh;
   color: #ffd700;
   font-size: 24px;
   font-weight: 600;
+  gap: 20px;
+`;
+
+const LoadingMessage = styled.div`
+  font-size: 16px;
+  color: #aaa;
+  max-width: 600px;
+  text-align: center;
+  line-height: 1.6;
+`;
+
+const LoginButton = styled.button`
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border: none;
+  padding: 12px 32px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+  }
 `;
 
 const SuperAdminDashboard: React.FC = () => {
@@ -69,117 +98,146 @@ const SuperAdminDashboard: React.FC = () => {
   const [session, setSession] = useState<any>(null);
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
+  const [isOwnerAuthed, setIsOwnerAuthed] = useState(false);
 
   useEffect(() => {
+    let cancelled = false;
+    let hasNavigated = false;
+    
     const initializeDashboard = async () => {
       try {
+        if (cancelled) return;
         setLoading(true);
         
         // Check session
         const storedSession = localStorage.getItem('superAdminSession');
         if (!storedSession) {
-          navigate('/super-admin-login');
+          if (!cancelled && !hasNavigated) {
+            hasNavigated = true;
+            navigate('/super-admin-login', { replace: true });
+          }
           return;
         }
 
         const sessionData = JSON.parse(storedSession);
+        if (cancelled) return;
         setSession(sessionData);
 
-        // Load real Firebase data
+        // Load real Firebase data (only when signed into Firebase as the unique owner)
         try {
-          console.log('🔄 Loading real Firebase data...');
-          const realAnalytics = await firebaseRealDataService.getRealAnalytics();
-          setAnalytics({
-            totalUsers: realAnalytics.totalUsers,
-            activeUsers: realAnalytics.activeUsers,
-            totalCars: realAnalytics.totalCars,
-            activeCars: realAnalytics.activeCars,
-            totalMessages: realAnalytics.totalMessages,
-            totalViews: realAnalytics.totalViews,
-            revenue: realAnalytics.revenue,
-            topCountries: [
-              { country: 'Bulgaria', count: Math.floor(realAnalytics.totalUsers * 0.8) },
-              { country: 'Romania', count: Math.floor(realAnalytics.totalUsers * 0.1) },
-              { country: 'Greece', count: Math.floor(realAnalytics.totalUsers * 0.05) }
-            ],
-            topCities: [
-              { city: 'Sofia', count: Math.floor(realAnalytics.totalUsers * 0.4) },
-              { city: 'Plovdiv', count: Math.floor(realAnalytics.totalUsers * 0.2) },
-              { city: 'Varna', count: Math.floor(realAnalytics.totalUsers * 0.15) }
-            ],
-            userGrowth: [
-              { date: '2024-01', count: Math.floor(realAnalytics.totalUsers * 0.1) },
-              { date: '2024-02', count: Math.floor(realAnalytics.totalUsers * 0.2) },
-              { date: '2024-03', count: Math.floor(realAnalytics.totalUsers * 0.3) },
-              { date: '2024-04', count: Math.floor(realAnalytics.totalUsers * 0.4) },
-              { date: '2024-05', count: Math.floor(realAnalytics.totalUsers * 0.5) },
-              { date: '2024-06', count: Math.floor(realAnalytics.totalUsers * 0.6) },
-              { date: '2024-07', count: Math.floor(realAnalytics.totalUsers * 0.7) },
-              { date: '2024-08', count: Math.floor(realAnalytics.totalUsers * 0.8) },
-              { date: '2024-09', count: Math.floor(realAnalytics.totalUsers * 0.9) },
-              { date: '2024-10', count: realAnalytics.totalUsers }
-            ],
-            carListings: [
-              { date: '2024-01', count: Math.floor(realAnalytics.totalCars * 0.1) },
-              { date: '2024-02', count: Math.floor(realAnalytics.totalCars * 0.2) },
-              { date: '2024-03', count: Math.floor(realAnalytics.totalCars * 0.3) },
-              { date: '2024-04', count: Math.floor(realAnalytics.totalCars * 0.4) },
-              { date: '2024-05', count: Math.floor(realAnalytics.totalCars * 0.5) },
-              { date: '2024-06', count: Math.floor(realAnalytics.totalCars * 0.6) },
-              { date: '2024-07', count: Math.floor(realAnalytics.totalCars * 0.7) },
-              { date: '2024-08', count: Math.floor(realAnalytics.totalCars * 0.8) },
-              { date: '2024-09', count: Math.floor(realAnalytics.totalCars * 0.9) },
-              { date: '2024-10', count: realAnalytics.totalCars }
-            ],
-            lastUpdated: realAnalytics.lastUpdated
-          });
+          const auth = getAuth();
+          const currentUser = auth.currentUser;
 
-          const realUserActivity = await firebaseRealDataService.getRealUserActivity();
-          setUserActivity(realUserActivity);
+          if (!currentUser || currentUser.email !== 'alaa.hamdani@yahoo.com') {
+            console.warn('⚠️ Not signed into Firebase as the unique owner.');
+            if (!cancelled && !hasNavigated) {
+              hasNavigated = true;
+              setIsOwnerAuthed(false);
+              navigate('/super-admin-login', { replace: true });
+            }
+            return;
+          } else {
+            if (cancelled) return;
+            setIsOwnerAuthed(true);
+            console.log('🔄 Loading real Firebase data...');
+            const realAnalytics = await firebaseRealDataService.getRealAnalytics();
+            
+            if (cancelled) return;
+            setAnalytics({
+              totalUsers: realAnalytics.totalUsers,
+              activeUsers: realAnalytics.activeUsers,
+              totalCars: realAnalytics.totalCars,
+              activeCars: realAnalytics.activeCars,
+              totalMessages: realAnalytics.totalMessages,
+              totalViews: realAnalytics.totalViews,
+              revenue: realAnalytics.revenue,
+              topCountries: [
+                { country: 'Bulgaria', count: Math.floor((realAnalytics.totalUsers || 0) * 0.8) },
+                { country: 'Romania', count: Math.floor((realAnalytics.totalUsers || 0) * 0.1) },
+                { country: 'Greece', count: Math.floor((realAnalytics.totalUsers || 0) * 0.05) }
+              ],
+              topCities: [
+                { city: 'Sofia', count: Math.floor((realAnalytics.totalUsers || 0) * 0.4) },
+                { city: 'Plovdiv', count: Math.floor((realAnalytics.totalUsers || 0) * 0.2) },
+                { city: 'Varna', count: Math.floor((realAnalytics.totalUsers || 0) * 0.15) }
+              ],
+              userGrowth: [
+                { date: '2024-01', count: Math.floor((realAnalytics.totalUsers || 0) * 0.1) },
+                { date: '2024-02', count: Math.floor((realAnalytics.totalUsers || 0) * 0.2) },
+                { date: '2024-03', count: Math.floor((realAnalytics.totalUsers || 0) * 0.3) },
+                { date: '2024-04', count: Math.floor((realAnalytics.totalUsers || 0) * 0.4) },
+                { date: '2024-05', count: Math.floor((realAnalytics.totalUsers || 0) * 0.5) },
+                { date: '2024-06', count: Math.floor((realAnalytics.totalUsers || 0) * 0.6) },
+                { date: '2024-07', count: Math.floor((realAnalytics.totalUsers || 0) * 0.7) },
+                { date: '2024-08', count: Math.floor((realAnalytics.totalUsers || 0) * 0.8) },
+                { date: '2024-09', count: Math.floor((realAnalytics.totalUsers || 0) * 0.9) },
+                { date: '2024-10', count: realAnalytics.totalUsers || 0 }
+              ],
+              carListings: [
+                { date: '2024-01', count: Math.floor((realAnalytics.totalCars || 0) * 0.1) },
+                { date: '2024-02', count: Math.floor((realAnalytics.totalCars || 0) * 0.2) },
+                { date: '2024-03', count: Math.floor((realAnalytics.totalCars || 0) * 0.3) },
+                { date: '2024-04', count: Math.floor((realAnalytics.totalCars || 0) * 0.4) },
+                { date: '2024-05', count: Math.floor((realAnalytics.totalCars || 0) * 0.5) },
+                { date: '2024-06', count: Math.floor((realAnalytics.totalCars || 0) * 0.6) },
+                { date: '2024-07', count: Math.floor((realAnalytics.totalCars || 0) * 0.7) },
+                { date: '2024-08', count: Math.floor((realAnalytics.totalCars || 0) * 0.8) },
+                { date: '2024-09', count: Math.floor((realAnalytics.totalCars || 0) * 0.9) },
+                { date: '2024-10', count: realAnalytics.totalCars || 0 }
+              ],
+              lastUpdated: realAnalytics.lastUpdated
+            });
+            
+            if (cancelled) return;
+            const realUserActivity = await firebaseRealDataService.getRealUserActivity();
+            
+            if (cancelled) return;
+            setUserActivity(realUserActivity);
 
-          console.log('✅ Real Firebase data loaded successfully');
+            console.log('✅ Real Firebase data loaded successfully');
+          }
         } catch (error) {
-          console.warn('⚠️ Failed to load real Firebase data, using fallback data');
-          // Fallback data
-          setAnalytics({
-            totalUsers: 2,
-            activeUsers: 1,
-            totalCars: 0,
-            activeCars: 0,
-            totalMessages: 0,
-            totalViews: 0,
-            revenue: 0,
-            topCountries: [{ country: 'Bulgaria', count: 2 }],
-            topCities: [{ city: 'Sofia', count: 1 }, { city: 'Plovdiv', count: 1 }],
-            userGrowth: [],
-            carListings: [],
-            lastUpdated: new Date()
-          });
-          setUserActivity([]);
+          console.warn('⚠️ Failed to load real Firebase data.');
+          if (!cancelled) {
+            navigate('/super-admin-login');
+          }
+          return;
         }
 
         // Load content moderation data
         try {
+          if (cancelled) return;
           const moderationData = await advancedRealDataService.getRealContentModeration();
+          
+          if (cancelled) return;
           setContentModeration(moderationData);
         } catch (error) {
           console.warn('⚠️ Failed to load content moderation data');
-          setContentModeration(null);
+          if (!cancelled) {
+            setContentModeration(null);
+          }
         }
 
       } catch (error) {
         console.error('❌ Error initializing dashboard:', error);
-        setError('Failed to initialize dashboard');
+        if (!cancelled) {
+          setError('Failed to initialize dashboard');
+        }
       } finally {
-        setLoading(false);
+        if (!cancelled) {
+          setLoading(false);
+        }
       }
     };
 
     // Load market stats (using getDoc to avoid conflicts)
     const loadMarketStats = async () => {
       try {
+        if (cancelled) return;
         const statsDocRef = doc(db, 'market', 'stats');
         const statsDoc = await getDoc(statsDocRef);
+        
+        if (cancelled) return;
         if (statsDoc.exists()) {
           const data = statsDoc.data();
           setMarketStats({
@@ -197,10 +255,18 @@ const SuperAdminDashboard: React.FC = () => {
     loadMarketStats();
     
     // Refresh stats every 30 seconds
-    const statsInterval = setInterval(loadMarketStats, 30000);
+    const statsInterval = setInterval(() => {
+      if (!cancelled) {
+        loadMarketStats();
+      }
+    }, 30000);
 
-    return () => clearInterval(statsInterval);
-  }, [navigate]);
+    return () => {
+      cancelled = true;
+      clearInterval(statsInterval);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Empty dependency array - runs only once, navigate is stable
 
   const handleLogout = async () => {
     if (window.confirm('Are you sure you want to logout from the Super Admin dashboard?')) {
@@ -230,7 +296,12 @@ const SuperAdminDashboard: React.FC = () => {
   if (loading) {
     return (
       <DashboardContainer>
-        <LoadingState>Loading Super Admin Dashboard...</LoadingState>
+        <LoadingState>
+          <div>🔄 Checking Authentication...</div>
+          <LoadingMessage>
+            Verifying Super Admin credentials. Please wait...
+          </LoadingMessage>
+        </LoadingState>
       </DashboardContainer>
     );
   }
@@ -238,7 +309,15 @@ const SuperAdminDashboard: React.FC = () => {
   if (error) {
     return (
       <DashboardContainer>
-        <LoadingState>Error: {error}</LoadingState>
+        <LoadingState>
+          <div>❌ Error: {error}</div>
+          <LoadingMessage>
+            Unable to load dashboard. Please try logging in again.
+          </LoadingMessage>
+          <LoginButton onClick={() => navigate('/super-admin-login')}>
+            Go to Login
+          </LoginButton>
+        </LoadingState>
       </DashboardContainer>
     );
   }
@@ -247,11 +326,12 @@ const SuperAdminDashboard: React.FC = () => {
     <DashboardContainer>
       <AdminHeader session={session} onLogout={handleLogout} />
       
+      {/* Quick Links Navigation - All Project Pages (moved to top, below header) */}
+      <QuickLinksNavigation />
+      
       <AdminNavigation activeTab={activeTab} onTabChange={setActiveTab} />
 
-      {/* Quick Links Navigation - All Project Pages */}
-      <QuickLinksNavigation />
-
+      {/* Tab Content appears directly after navigation */}
       <TabContent>
         {activeTab === 'overview' && (
           <>
@@ -260,9 +340,13 @@ const SuperAdminDashboard: React.FC = () => {
               userActivity={userActivity} 
               onUserClick={handleUserClick} 
             />
-            <LiveCounters stats={marketStats} />
-            <RealTimeAlertsPanel />
-            <FirebaseConnectionTest />
+            {isOwnerAuthed && (
+              <>
+                <LiveCounters stats={marketStats} />
+                <RealTimeAlertsPanel />
+                <FirebaseConnectionTest />
+              </>
+            )}
           </>
         )}
 
@@ -321,8 +405,71 @@ const SuperAdminDashboard: React.FC = () => {
         userId={selectedUser?.uid || ''}
         userData={selectedUser}
       />
+
+      {/* Super Admin Footer - Owner Only */}
+      <SuperAdminFooter>
+        <FooterStatsGrid>
+          <FooterStat>
+            <StatLabel>إجمالي الزيارات</StatLabel>
+            <StatValue>{analytics?.totalViews ?? 0}</StatValue>
+          </FooterStat>
+          <FooterStat>
+            <StatLabel>عدد المستخدمين</StatLabel>
+            <StatValue>{analytics?.totalUsers ?? 0}</StatValue>
+          </FooterStat>
+          <FooterStat>
+            <StatLabel>عدد السيارات</StatLabel>
+            <StatValue>{analytics?.totalCars ?? 0}</StatValue>
+          </FooterStat>
+          <FooterStat>
+            <StatLabel>آخر تحديث</StatLabel>
+            <StatValue>{analytics?.lastUpdated ? new Date(analytics.lastUpdated).toLocaleString('ar-EG') : '-'}</StatValue>
+          </FooterStat>
+        </FooterStatsGrid>
+        <FooterNote>هذه المعلومات خاصة بالمالك (Super Admin) ولا تظهر للمستخدمين العاديين.</FooterNote>
+      </SuperAdminFooter>
     </DashboardContainer>
-  );
+);
 };
+
+// Styled footer for Super Admin only
+const SuperAdminFooter = styled.footer`
+  background: linear-gradient(90deg, #232526 0%, #414345 100%);
+  color: #ffd700;
+  padding: 32px 0 16px 0;
+  margin-top: 40px;
+  border-top: 2px solid #ffd700;
+  text-align: center;
+`;
+
+const FooterStatsGrid = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 48px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+`;
+
+const FooterStat = styled.div`
+  min-width: 120px;
+`;
+
+const StatLabel = styled.div`
+  font-size: 15px;
+  color: #aaa;
+  margin-bottom: 4px;
+`;
+
+const StatValue = styled.div`
+  font-size: 22px;
+  font-weight: bold;
+  color: #ffd700;
+`;
+
+const FooterNote = styled.div`
+  font-size: 13px;
+  color: #888;
+  margin-top: 8px;
+`;
 
 export default SuperAdminDashboard;

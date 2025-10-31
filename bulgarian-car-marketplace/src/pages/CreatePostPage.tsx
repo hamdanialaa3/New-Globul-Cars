@@ -9,8 +9,23 @@ import CreatePostForm from '../components/Posts/CreatePostForm';
 const CreatePostPage: React.FC = () => {
   const navigate = useNavigate();
 
-  const handlePostCreated = (post: any) => {
-    navigate('/', { state: { newPost: post } });
+  const handlePostCreated = (postId: string) => {
+    // Navigate to home page with scroll to feed section
+    navigate('/', { 
+      state: { 
+        newPostId: postId,
+        scrollToFeed: true 
+      },
+      replace: true // Replace history to prevent going back to create post
+    });
+    
+    // Scroll to feed section after navigation
+    setTimeout(() => {
+      const feedSection = document.querySelector('[class*="FeedSection"]');
+      if (feedSection) {
+        feedSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 300);
   };
 
   const handleClose = () => {

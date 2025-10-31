@@ -36,9 +36,7 @@ const CityGrid: React.FC<CityGridProps> = ({
       <S.GridContainer>
         {Array.from({ length: initialDisplayCount }).map((_, index) => (
           <S.LoadingCard key={index}>
-            <S.LoadingText />
-            <S.LoadingText style={{ width: '60%' }} />
-            <S.LoadingText style={{ width: '40%', marginTop: '1rem' }} />
+            <S.LoadingCircle />
           </S.LoadingCard>
         ))}
       </S.GridContainer>
@@ -67,45 +65,49 @@ const CityGrid: React.FC<CityGridProps> = ({
               onClick={() => onCityClick(city.id)}
               role="button"
               aria-label={`View cars in ${cityName}`}
+              title={`${cityName} - ${carCount} ${t('home.cityCars.carsAvailable')}`}
             >
+              {/* أيقونة المدينة */}
+              <S.CityIcon>
+                <MapPin size={28} color="#005ca9" />
+              </S.CityIcon>
+
+              {/* اسم المدينة */}
               <S.CityName>
-                <S.CityIcon>
-                  <MapPin size={24} color="#005ca9" />
-                </S.CityIcon>
                 {cityName}
               </S.CityName>
 
-              {/* ✅ Show car count notification only if > 0 */}
+              {/* عدد السيارات */}
               {carCount > 0 && (
                 <S.CarCount>
-                  <Car size={18} />
+                  <Car size={14} />
                   <S.CarCountNumber>{carCount}</S.CarCountNumber>
-                  <span>{t('home.cityCars.carsAvailable')}</span>
                 </S.CarCount>
               )}
 
-              <S.ViewCarsButton>
-                {t('home.cityCars.viewCars')}
-              </S.ViewCarsButton>
-
+              {/* شارة العاصمة */}
               {city.isCapital && (
                 <div
                   style={{
                     position: 'absolute',
-                    top: '0.75rem',
-                    right: '0.75rem',
+                    top: '8px',
+                    right: '8px',
                     background: 'linear-gradient(135deg, #ffd700, #ffed4e)',
-                    padding: '0.375rem 0.75rem',
-                    borderRadius: '6px',
-                    fontSize: '0.75rem',
+                    width: '24px',
+                    height: '24px',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '0.875rem',
                     fontWeight: 'bold',
                     color: '#7d6608',
-                    boxShadow: '0 2px 6px rgba(255, 215, 0, 0.4)',
-                    textShadow: '0 1px 1px rgba(255, 255, 255, 0.5)',
-                    border: '1px solid rgba(255, 215, 0, 0.3)'
+                    boxShadow: '0 2px 6px rgba(255, 215, 0, 0.5)',
+                    border: '2px solid rgba(255, 215, 0, 0.4)'
                   }}
+                  title={language === 'bg' ? 'Столица' : 'Capital'}
                 >
-                  ★ {language === 'bg' ? 'Столица' : 'Capital'}
+                  ★
                 </div>
               )}
             </S.CityCard>

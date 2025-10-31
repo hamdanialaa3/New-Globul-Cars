@@ -14,7 +14,15 @@ import {
   FormBody,
   FormFooter,
   SubmitButton,
-  CharacterCount
+  CharacterCount,
+  UploadProgressContainer,
+  ProgressBar,
+  ProgressFill,
+  ProgressText,
+  FileProgressItem,
+  FileProgressBar,
+  FileProgressFill,
+  FileProgressText
 } from './styles';
 import PostTypeSelector from './PostTypeSelector';
 import TextEditor from './TextEditor';
@@ -48,6 +56,8 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onClose, onPostCreated 
   const [hashtags, setHashtags] = useState<string[]>([]);
   const [crossPostPlatforms, setCrossPostPlatforms] = useState<SocialPlatform[]>([]);
   const [connectedAccounts, setConnectedAccounts] = useState<SocialPlatform[]>([]);
+  const [uploadProgress, setUploadProgress] = useState<Record<string, number>>({});
+  const [overallProgress, setOverallProgress] = useState(0);
 
   // Auto-detect hashtags
   useEffect(() => {
@@ -83,6 +93,8 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onClose, onPostCreated 
     if (!user || !canSubmit()) return;
 
     setLoading(true);
+    setUploadProgress({});
+    setOverallProgress(0);
 
     try {
       // Prepare post data (media upload handled by createPost)
@@ -102,8 +114,27 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onClose, onPostCreated 
         location: location.city ? location : undefined
       };
 
-      // Create post with userId and postData
-      const newPostId = await postsService.createPost(user.uid, postData);
+      // Create post with userId, postData, and upload progress callback
+      const newPostId = await postsService.createPost(
+        user.uid, 
+        postData,
+        (fileName: string, progress: number) => {
+          // Update individual file progress
+          setUploadProgress(prev => ({
+            ...prev,
+            [fileName]: progress
+          }));
+          
+          // Calculate overall progress
+          setUploadProgress(currentProgress => {
+            const progressValues = Object.values(currentProgress);
+            const total = progressValues.reduce((sum, val) => sum + val, 0);
+            const average = progressValues.length > 0 ? total / progressValues.length : 0;
+            setOverallProgress(Math.round(average));
+            return currentProgress;
+          });
+        }
+      );
 
       // Cross-post to selected platforms (async, don't wait)
       if (crossPostPlatforms.length > 0) {
@@ -120,25 +151,26 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onClose, onPostCreated 
         });
       }
 
-      // Success
-      if (onPostCreated) {
-        onPostCreated(newPostId);
-      }
-
-      onClose();
-
-      // Show success message
+      // Success - show message
       const message = language === 'bg' 
-        ? 'Публикацията е създадена успешно!' 
-        : 'Post created successfully!';
+        ? 'Публикацията е създадена успешно! 🎉' 
+        : 'Post created successfully! 🎉';
       
       const crossMsg = crossPostPlatforms.length > 0
         ? (language === 'bg' 
-          ? ` (Споделяне в ${crossPostPlatforms.length} мрежи...)` 
-          : ` (Sharing to ${crossPostPlatforms.length} platforms...)`)
+          ? `\n(Споделяне в ${crossPostPlatforms.length} мрежи...)` 
+          : `\n(Sharing to ${crossPostPlatforms.length} platforms...)`)
         : '';
       
       alert(message + crossMsg);
+
+      // Close modal first
+      onClose();
+
+      // Callback with post ID for navigation
+      if (onPostCreated) {
+        onPostCreated(newPostId);
+      }
 
     } catch (error) {
       console.error('Error creating post:', error);
@@ -208,6 +240,30 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onClose, onPostCreated 
           location={location}
           onLocationChange={setLocation}
         />
+
+        {/* Upload Progress Bar */}
+        {loading && mediaFiles.length > 0 && (
+          <UploadProgressContainer>
+            <ProgressBar>
+              <ProgressFill style={{ width: `${overallProgress}%` }} />
+            </ProgressBar>
+            <ProgressText>
+              {language === 'bg' 
+                ? `Качване... ${overallProgress}%` 
+                : `Uploading... ${overallProgress}%`}
+            </ProgressText>
+            {Object.entries(uploadProgress).map(([fileName, progress]) => (
+              <FileProgressItem key={fileName}>
+                <FileProgressBar>
+                  <FileProgressFill style={{ width: `${progress}%` }} />
+                </FileProgressBar>
+                <FileProgressText>
+                  {fileName}: {Math.round(progress)}%
+                </FileProgressText>
+              </FileProgressItem>
+            ))}
+          </UploadProgressContainer>
+        )}
       </FormBody>
 
       <FormFooter>

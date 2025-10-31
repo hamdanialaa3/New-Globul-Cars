@@ -71,6 +71,10 @@ const BillingPage = React.lazy(() => import('./features/billing/BillingPage')); 
 const AnalyticsDashboard = React.lazy(() => import('./features/analytics/AnalyticsDashboard'));  // NEW: Analytics System
 const TeamManagement = React.lazy(() => import('./features/team/TeamManagement'));  // NEW: Team Management
 const UsersDirectoryPage = React.lazy(() => import('./pages/UsersDirectoryPage')); // Bubbles View
+// ⚡ NEW: Browse Pages (All Users, All Posts, All Cars)
+const AllUsersPage = React.lazy(() => import('./pages/AllUsersPage'));
+const AllPostsPage = React.lazy(() => import('./pages/AllPostsPage'));
+const AllCarsPage = React.lazy(() => import('./pages/AllCarsPage'));
 // NEW: Social Platform Pages
 const EventsPage = React.lazy(() => import('./pages/EventsPage'));  // NEW: Events Page with BG/EN translations
 const CreatePostPage = React.lazy(() => import('./pages/CreatePostPage')); // NEW: Create Post Page
@@ -486,6 +490,10 @@ const MainLayout: React.FC = () => {
       <Route path="/analytics" element={<AnalyticsDashboard />} />  {/* NEW: Analytics System */}
       <Route path="/team" element={<TeamManagement />} />  {/* NEW: Team Management */}
       <Route path="/users" element={<UsersDirectoryPage />} />
+      {/* ⚡ NEW: Browse Pages */}
+      <Route path="/all-users" element={<AllUsersPage />} />
+      <Route path="/all-posts" element={<AllPostsPage />} />
+      <Route path="/all-cars" element={<AllCarsPage />} />
       <Route path="/messages" element={<MessagesPage />} />
       
       {/* NEW: Social Platform Routes */}

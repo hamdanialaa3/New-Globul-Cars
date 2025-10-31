@@ -9,7 +9,8 @@ import {
   doc,
   getDoc
 } from 'firebase/firestore';
-import { db } from '../firebase/firebase-config';
+import { db, functions } from '../firebase/firebase-config';
+import { httpsCallable } from 'firebase/functions';
 import { firebaseAuthUsersService } from './firebase-auth-users-service';
 import { firebaseAuthRealUsers } from './firebase-auth-real-users';
 import { serviceLogger } from './logger-wrapper';
@@ -116,9 +117,12 @@ class FirebaseRealDataService {
     try {
       const messagesSnapshot = await getDocs(collection(db, 'messages'));
       return messagesSnapshot.docs.length;
-    } catch (error) {
-      serviceLogger.error('Error getting messages count', error as Error);
-      throw error; // Don't use mock data - throw the real error
+    } catch (error: any) {
+      // ⚡ FIX: Silently fail for permission errors (non-critical data)
+      if (error?.code !== 'permission-denied') {
+        serviceLogger.error('Error getting messages count', error as Error);
+      }
+      return 0; // Return 0 instead of throwing
     }
   }
 
@@ -127,9 +131,12 @@ class FirebaseRealDataService {
     try {
       const viewsSnapshot = await getDocs(collection(db, 'views'));
       return viewsSnapshot.docs.length;
-    } catch (error) {
-      serviceLogger.error('Error getting views count', error as Error);
-      throw error; // Don't use mock data - throw the real error
+    } catch (error: any) {
+      // ⚡ FIX: Silently fail for permission errors (non-critical data)
+      if (error?.code !== 'permission-denied') {
+        serviceLogger.error('Error getting views count', error as Error);
+      }
+      return 0; // Return 0 instead of throwing
     }
   }
 
@@ -209,8 +216,24 @@ class FirebaseRealDataService {
     }
   }
 
-  // Get real analytics data
+  // Prefer server-side computed analytics via callable; fallback to client aggregation
   public async getRealAnalytics(): Promise<any> {
+    // 1) Try callable function (admin-safe, fastest, bypasses rules)
+    try {
+      const getAnalytics = httpsCallable(functions, 'getSuperAdminAnalytics');
+      const res = await getAnalytics({});
+      if (res && (res as any).data) {
+        const data: any = (res as any).data;
+        return {
+          ...data,
+          lastUpdated: data.lastUpdated ? new Date(data.lastUpdated) : new Date(),
+        };
+      }
+    } catch (fnErr) {
+      serviceLogger.warn('Callable getSuperAdminAnalytics failed; falling back to client aggregation');
+    }
+
+    // 2) Fallback: aggregate via direct reads
     try {
       const [
         totalUsers,

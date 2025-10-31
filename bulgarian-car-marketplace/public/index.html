@@ -22,7 +22,12 @@
     <link href="https://fonts.cdnfonts.com/css/martica" rel="stylesheet">
     
     <!-- Google Maps API with Places library and Bulgarian language -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAUYM_qygK5pUrlXtdDLmEi-_Kh9SyvRmk&libraries=places&language=bg"></script>
+    <!-- Load Google Maps JS API with loading=async parameter for best performance -->
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAUYM_qygK5pUrlXtdDLmEi-_Kh9SyvRmk&libraries=places&language=bg&loading=async"
+      async
+      defer
+    ></script>
     
     <!--
       Notice the use of %PUBLIC_URL% in the tags above.

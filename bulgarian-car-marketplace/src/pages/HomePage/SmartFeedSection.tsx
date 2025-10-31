@@ -11,6 +11,7 @@ import personalizationService from '../../services/social/algorithms/personaliza
 import PostCard from '../../components/Posts/PostCard';
 import { Post } from '../../services/social/posts.service';
 import { Image, Video, Car, Sparkles, Clock, Heart, MessageCircle, TrendingUp, User as UserIcon } from 'lucide-react';
+import { homePageCache, CACHE_KEYS } from '../../services/homepage-cache.service';
 
 type FeedMode = 'smart' | 'newest' | 'most_liked' | 'most_comments' | 'trending';
 
@@ -34,18 +35,26 @@ const SmartFeedSection: React.FC = () => {
     loadFeed(1);
   }, [user, feedMode]);
 
-  // Infinite scroll observer
+  // ⚡ OPTIMIZED: Infinite scroll observer with debouncing
   useEffect(() => {
+    let debounceTimer: NodeJS.Timeout | null = null;
+    
     const options = {
       root: null,
-      rootMargin: '200px',
+      rootMargin: '100px', // ⚡ Reduced from 200px to 100px
       threshold: 0.1
     };
 
     observerRef.current = new IntersectionObserver(
       async ([entry]) => {
         if (entry.isIntersecting && hasMore && !loadingMore) {
-          await loadMore();
+          // ⚡ Debounce: Wait 500ms before loading more
+          if (debounceTimer) {
+            clearTimeout(debounceTimer);
+          }
+          debounceTimer = setTimeout(async () => {
+            await loadMore();
+          }, 500);
         }
       },
       options
@@ -55,7 +64,12 @@ const SmartFeedSection: React.FC = () => {
       observerRef.current.observe(sentinelRef.current);
     }
 
-    return () => observerRef.current?.disconnect();
+    return () => {
+      observerRef.current?.disconnect();
+      if (debounceTimer) {
+        clearTimeout(debounceTimer);
+      }
+    };
   }, [hasMore, loadingMore, page]);
 
   // Load feed function
@@ -69,40 +83,47 @@ const SmartFeedSection: React.FC = () => {
     try {
       let newPosts: Post[] = [];
 
-      // Get posts based on feed mode
-      switch (feedMode) {
-        case 'smart':
-          // AI-powered personalized feed with intelligent scoring
-          newPosts = user
-            ? await feedAlgorithmService.getPersonalizedFeed(user.uid, pageNum, 10)
-            : await feedAlgorithmService.getPublicFeed(pageNum, 10);
-          break;
+      // ⚡ OPTIMIZED: Reduced from 10 posts to 5 for faster initial load
+      const postsPerPage = pageNum === 1 ? 5 : 10; // First page: 5 posts, next pages: 10 posts
+      
+      // ⚡ OPTIMIZED: Cache feed data for 3 minutes (shorter than other data)
+      const cacheKey = CACHE_KEYS.SMART_FEED(user?.uid || 'guest', feedMode, pageNum);
+      
+      newPosts = await homePageCache.getOrFetch(
+        cacheKey,
+        async () => {
+          // Get posts based on feed mode
+          switch (feedMode) {
+            case 'smart':
+              // AI-powered personalized feed with intelligent scoring
+              return user
+                ? await feedAlgorithmService.getPersonalizedFeed(user.uid, pageNum, postsPerPage)
+                : await feedAlgorithmService.getPublicFeed(pageNum, postsPerPage);
 
-        case 'newest':
-          // Sort by creation date (newest first)
-          newPosts = await feedAlgorithmService.getNewestPosts(pageNum, 10);
-          break;
+            case 'newest':
+              // Sort by creation date (newest first)
+              return await feedAlgorithmService.getNewestPosts(pageNum, postsPerPage);
 
-        case 'most_liked':
-          // Sort by likes count
-          newPosts = await feedAlgorithmService.getMostLikedPosts(10);
-          break;
+            case 'most_liked':
+              // Sort by likes count
+              return await feedAlgorithmService.getMostLikedPosts(postsPerPage);
 
-        case 'most_comments':
-          // Sort by comments count
-          newPosts = await feedAlgorithmService.getMostCommentedPosts(10);
-          break;
+            case 'most_comments':
+              // Sort by comments count
+              return await feedAlgorithmService.getMostCommentedPosts(postsPerPage);
 
-        case 'trending':
-          // Trending = high engagement in last 24h
-          newPosts = await feedAlgorithmService.getTrendingPosts(10);
-          break;
+            case 'trending':
+              // Trending = high engagement in last 24h
+              return await feedAlgorithmService.getTrendingPosts(postsPerPage);
 
-        default:
-          newPosts = await feedAlgorithmService.getPublicFeed(pageNum, 10);
-      }
+            default:
+              return await feedAlgorithmService.getPublicFeed(pageNum, postsPerPage);
+          }
+        },
+        3 * 60 * 1000 // 3 minutes cache for social feed
+      );
 
-      if (newPosts.length < 10) {
+      if (newPosts.length < postsPerPage) {
         setHasMore(false);
       }
 

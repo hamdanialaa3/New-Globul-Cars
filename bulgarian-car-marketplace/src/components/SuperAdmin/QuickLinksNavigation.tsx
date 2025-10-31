@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
 import { 
   Home, Car, User, Settings, Shield, BarChart3, 
   MessageSquare, Heart, Search, Bell, Bookmark,
@@ -22,8 +21,10 @@ const NavigationContainer = styled.div`
   border: 2px solid #ffd700;
   border-radius: 15px;
   margin: 20px;
+  margin-top: 40px;
   padding: 20px;
   box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+  /* Removed order: 999 to allow natural flow to bottom */
 `;
 
 const Title = styled.h2`
@@ -232,7 +233,6 @@ interface Category {
 }
 
 const QuickLinksNavigation: React.FC = () => {
-  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [openCategories, setOpenCategories] = useState<string[]>(['main', 'user', 'admin']);
 
@@ -346,7 +346,7 @@ const QuickLinksNavigation: React.FC = () => {
   };
 
   const handleNavigate = (path: string) => {
-    navigate(path);
+      window.open(path, '_blank');
   };
 
   const filteredCategories = categories.map(category => ({

@@ -8,16 +8,20 @@ import { useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useAuth } from '../contexts/AuthProvider';
 import { BULGARIAN_CITIES } from '../constants/bulgarianCities';
 import carListingService from '../services/carListingService';
 import { CarIcon } from '../components/icons/CarIcon';
 import { CarListing } from '../types/CarListing';
 import { logger } from '../services/logger-service';
 import { firebaseCache, cacheKeys } from '../services/firebase-cache.service';
-import { CarCardMobileOptimized } from '../components/CarCard/CarCardMobileOptimized';
+import CarCardCompact from '../components/CarCard/CarCardCompact';
 import { ResponsiveGrid } from '../components/layout/ResponsiveGrid';
 import { useIsMobile } from '../hooks/useBreakpoint';
 import { MobileFilterDrawer, MobileFilterButton, FilterValues } from '../components/filters';
+import { smartSearchService } from '../services/search/smart-search.service';
+import { searchHistoryService } from '../services/search/search-history.service';
+import { Search, X, Clock, TrendingUp } from 'lucide-react';
 
 // Styled Components
 const CarsContainer = styled.div`
@@ -145,9 +149,149 @@ const EmptyState = styled.div`
   }
 `;
 
+// ⚡ NEW: Smart Search Bar Styles
+const SearchBarContainer = styled.div`
+  max-width: 800px;
+  margin: 0 auto 2rem;
+  position: relative;
+  
+  @media (max-width: 768px) {
+    margin-bottom: 1.5rem;
+    padding: 0 1rem;
+  }
+`;
+
+const SearchInputWrapper = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: white;
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  
+  &:focus-within {
+    border-color: #005ca9;
+    box-shadow: 0 4px 12px rgba(0, 92, 169, 0.15);
+  }
+`;
+
+const SearchInput = styled.input`
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  padding: 0.25rem 0.5rem;
+  
+  &::placeholder {
+    color: #adb5bd;
+  }
+`;
+
+const SearchIconButton = styled.button`
+  background: linear-gradient(135deg, #005ca9, #0066cc);
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 92, 169, 0.3);
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+`;
+
+const ClearButton = styled.button`
+  background: none;
+  border: none;
+  padding: 0.25rem;
+  color: #6c757d;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s;
+  
+  &:hover {
+    color: #495057;
+  }
+`;
+
+const SuggestionsDropdown = styled.div`
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  max-height: 400px;
+  overflow-y: auto;
+  z-index: 100;
+`;
+
+const SuggestionSection = styled.div`
+  padding: 0.75rem 0;
+  
+  &:not(:last-child) {
+    border-bottom: 1px solid #f1f3f5;
+  }
+`;
+
+const SuggestionHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6c757d;
+  text-transform: uppercase;
+  
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+`;
+
+const SuggestionItem = styled.button`
+  width: 100%;
+  text-align: left;
+  padding: 0.75rem 1rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #212529;
+  transition: background 0.15s;
+  
+  &:hover {
+    background: #f8f9fa;
+  }
+  
+  &:active {
+    background: #e9ecef;
+  }
+`;
+
 // Cars Page Component
 const CarsPage: React.FC = () => {
   const { t, language } = useLanguage();
+  const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const [cars, setCars] = useState<CarListing[]>([]);
   const [loading, setLoading] = useState(true);
@@ -155,10 +299,76 @@ const CarsPage: React.FC = () => {
   const [showFilters, setShowFilters] = useState(false);
   const isMobile = useIsMobile();
   
+  // ⚡ NEW: Smart Search State
+  const [searchQuery, setSearchQuery] = useState('');
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [recentSearches, setRecentSearches] = useState<string[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  
   // Get filters from URL
   const cityId = searchParams.get('city');
   const makeParam = searchParams.get('make');
   const cityData = cityId ? BULGARIAN_CITIES.find(c => c.id === cityId) : null;
+
+  // ⚡ NEW: Load recent searches on mount
+  useEffect(() => {
+    if (user) {
+      searchHistoryService.getRecentSearches(user.uid, 5).then(history => {
+        setRecentSearches(history.map(h => h.query));
+      });
+    }
+  }, [user]);
+
+  // ⚡ NEW: Get suggestions with debouncing
+  useEffect(() => {
+    if (searchQuery.length < 2) {
+      setSuggestions([]);
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      const sugg = await smartSearchService.getSuggestions(searchQuery, user?.uid, 8);
+      setSuggestions(sugg);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery, user]);
+
+  // ⚡ NEW: Handle smart search
+  const handleSmartSearch = async () => {
+    if (!searchQuery.trim()) return;
+    
+    setIsSearching(true);
+    setLoading(true);
+    setShowSuggestions(false);
+    
+    try {
+      const result = await smartSearchService.search(searchQuery, user?.uid, 1, 100);
+      setCars(result.cars as CarListing[]);
+      logger.info('Smart search completed', { 
+        query: searchQuery, 
+        results: result.totalCount,
+        personalized: result.isPersonalized 
+      });
+    } catch (err) {
+      logger.error('Smart search failed', err as Error);
+      setError('Search failed');
+    } finally {
+      setIsSearching(false);
+      setLoading(false);
+    }
+  };
+
+  // ⚡ NEW: Handle suggestion click
+  const handleSuggestionClick = (suggestion: string) => {
+    setSearchQuery(suggestion);
+    setShowSuggestions(false);
+    // Auto-trigger search
+    setTimeout(() => {
+      handleSmartSearch();
+    }, 100);
+  };
 
   // Load cars from Firebase with caching ⚡
   useEffect(() => {
@@ -328,7 +538,82 @@ const CarsPage: React.FC = () => {
           )}
         </PageHeader>
 
-        {/* No search or filters - just show cars! */}
+        {/* ⚡ NEW: Smart Search Bar */}
+        <SearchBarContainer>
+          <SearchInputWrapper>
+            <Search size={20} color="#6c757d" style={{ marginRight: '0.5rem' }} />
+            <SearchInput
+              type="text"
+              placeholder={language === 'bg' 
+                ? 'Търси BMW 2020, Diesel, София...' 
+                : 'Search BMW 2020, Diesel, Sofia...'}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onFocus={() => setShowSuggestions(true)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  handleSmartSearch();
+                }
+              }}
+            />
+            {searchQuery && (
+              <ClearButton onClick={() => {
+                setSearchQuery('');
+                setSuggestions([]);
+              }}>
+                <X size={18} />
+              </ClearButton>
+            )}
+            <SearchIconButton
+              onClick={handleSmartSearch}
+              disabled={!searchQuery.trim() || isSearching}
+            >
+              <Search size={16} />
+              {language === 'bg' ? 'Търси' : 'Search'}
+            </SearchIconButton>
+          </SearchInputWrapper>
+
+          {/* Suggestions Dropdown */}
+          {showSuggestions && (suggestions.length > 0 || recentSearches.length > 0) && (
+            <SuggestionsDropdown>
+              {/* Recent Searches */}
+              {recentSearches.length > 0 && (
+                <SuggestionSection>
+                  <SuggestionHeader>
+                    <Clock />
+                    {language === 'bg' ? 'Последни търсения' : 'Recent Searches'}
+                  </SuggestionHeader>
+                  {recentSearches.map((search, index) => (
+                    <SuggestionItem
+                      key={`recent-${index}`}
+                      onClick={() => handleSuggestionClick(search)}
+                    >
+                      {search}
+                    </SuggestionItem>
+                  ))}
+                </SuggestionSection>
+              )}
+
+              {/* Suggestions */}
+              {suggestions.length > 0 && (
+                <SuggestionSection>
+                  <SuggestionHeader>
+                    <TrendingUp />
+                    {language === 'bg' ? 'Предложения' : 'Suggestions'}
+                  </SuggestionHeader>
+                  {suggestions.map((suggestion, index) => (
+                    <SuggestionItem
+                      key={`suggestion-${index}`}
+                      onClick={() => handleSuggestionClick(suggestion)}
+                    >
+                      {suggestion}
+                    </SuggestionItem>
+                  ))}
+                </SuggestionSection>
+              )}
+            </SuggestionsDropdown>
+          )}
+        </SearchBarContainer>
 
         {/* Loading State */}
         {loading && (
@@ -385,7 +670,7 @@ const CarsPage: React.FC = () => {
               gap={20}
             >
               {cars.map(car => (
-                <CarCardMobileOptimized key={car.id} car={car} />
+                <CarCardCompact key={car.id} car={car} />
               ))}
             </ResponsiveGrid>
           </CarsGridWrapper>

@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import { useAdvancedSearch } from './hooks/useAdvancedSearch';
 import { useSavedSearches } from '../../hooks/useSavedSearches';
+import { useAuth } from '../../contexts/AuthProvider';
 import { SearchData } from './types';
+import advancedSearchService from '../../services/advancedSearchService';
+import CarCardCompact from '../../components/CarCard/CarCardCompact';
+import { CarListing } from '../../types/CarListing';
 import {
   SearchContainer,
   Container,
@@ -26,6 +30,7 @@ import { OfferDetailsSection } from './components/OfferDetailsSection';
 import { LocationSection } from './components/LocationSection';
 
 const AdvancedSearchPage: React.FC = () => {
+  const { user } = useAuth();
   const {
     searchData,
     isSearching,
@@ -33,8 +38,8 @@ const AdvancedSearchPage: React.FC = () => {
     toggleSection,
     handleCheckboxToggle,
     handleInputChange,
-    handleSearch,
-    handleReset,
+    handleSearch: originalHandleSearch,
+    handleReset: originalHandleReset,
     carMakes,
     fuelTypes,
     exteriorColors,
@@ -47,6 +52,13 @@ const AdvancedSearchPage: React.FC = () => {
   } = useAdvancedSearch();
 
   const { saveSearch, getSearchSummary } = useSavedSearches();
+  
+  // ⚡ NEW: Search results state
+  const [searchResults, setSearchResults] = useState<CarListing[]>([]);
+  const [totalResults, setTotalResults] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [searching, setSearching] = useState(false);
 
   const convertToSavedSearchFilters = (data: SearchData): any => {
     return {
@@ -71,6 +83,68 @@ const AdvancedSearchPage: React.FC = () => {
   };
 
   const [showSaveModal, setShowSaveModal] = useState(false);
+
+  // ⚡ NEW: Enhanced search handler with caching
+  const handleSearch = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    
+    setSearching(true);
+    setCurrentPage(1);
+    
+    try {
+      const result = await advancedSearchService.searchWithPagination(
+        searchData,
+        user?.uid,
+        1,
+        20
+      );
+      
+      setSearchResults(result.cars as CarListing[]);
+      setTotalResults(result.totalCount);
+      setTotalPages(result.totalPages);
+      
+      console.log(`✅ Advanced search: ${result.totalCount} results in ${result.processingTime}ms`);
+      
+    } catch (error) {
+      console.error('Advanced search failed:', error);
+      setSearchResults([]);
+      setTotalResults(0);
+    } finally {
+      setSearching(false);
+    }
+  };
+
+  // ⚡ NEW: Handle pagination
+  const handlePageChange = async (page: number) => {
+    setCurrentPage(page);
+    setSearching(true);
+    
+    try {
+      const result = await advancedSearchService.searchWithPagination(
+        searchData,
+        user?.uid,
+        page,
+        20
+      );
+      
+      setSearchResults(result.cars as CarListing[]);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      
+    } catch (error) {
+      console.error('Pagination failed:', error);
+    } finally {
+      setSearching(false);
+    }
+  };
+
+  // ⚡ NEW: Reset handler
+  const handleReset = () => {
+    originalHandleReset();
+    setSearchResults([]);
+    setTotalResults(0);
+    setCurrentPage(1);
+    setTotalPages(0);
+  };
 
   const handleSaveSearch = async (name: string) => {
     const filters: any = convertToSavedSearchFilters(searchData);
@@ -188,15 +262,69 @@ const AdvancedSearchPage: React.FC = () => {
             onReset={handleReset}
             onSaveClick={() => setShowSaveModal(true)}
             onSearch={handleSearch}
-            isSearching={isSearching}
+            isSearching={searching}
           />
         </SearchForm>
 
-        {/* Results Summary Placeholder */}
-        <ResultsSummary>
-          <h4>{t('advancedSearch.searchResults')}</h4>
-          <p>{t('advancedSearch.applyFiltersAbove')}</p>
-        </ResultsSummary>
+        {/* ⚡ NEW: Search Results */}
+        {totalResults > 0 && (
+          <ResultsSummary style={{ marginBottom: '2rem' }}>
+            <h4>
+              {totalResults} {totalResults === 1 ? 'car found' : 'cars found'}
+            </h4>
+            <p>Page {currentPage} of {totalPages}</p>
+          </ResultsSummary>
+        )}
+
+        {/* Results Grid */}
+        {searchResults.length > 0 && (
+          <div style={{ 
+            display: 'grid', 
+            gridTemplateColumns: 'repeat(4, 1fr)', 
+            gap: '1.5rem',
+            marginTop: '2rem'
+          }}>
+            {searchResults.map(car => (
+              <CarCardCompact key={car.id} car={car} />
+            ))}
+          </div>
+        )}
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'center', 
+            gap: '0.5rem', 
+            marginTop: '2rem' 
+          }}>
+            {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => i + 1).map(page => (
+              <button
+                key={page}
+                onClick={() => handlePageChange(page)}
+                style={{
+                  padding: '0.5rem 1rem',
+                  border: page === currentPage ? '2px solid #005ca9' : '1px solid #e9ecef',
+                  background: page === currentPage ? '#005ca9' : 'white',
+                  color: page === currentPage ? 'white' : '#495057',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  fontWeight: page === currentPage ? 600 : 400
+                }}
+              >
+                {page}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Empty Results */}
+        {!searching && searchResults.length === 0 && totalResults === 0 && (
+          <ResultsSummary>
+            <h4>{t('advancedSearch.searchResults')}</h4>
+            <p>{t('advancedSearch.applyFiltersAbove')}</p>
+          </ResultsSummary>
+        )}
       </Container>
 
       {/* Save Search Modal */}
