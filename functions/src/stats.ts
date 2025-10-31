@@ -5,6 +5,7 @@
 
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
+import { verifySuperAdmin } from './auth/set-super-admin-claim';
 
 // Initialize admin SDK if not already initialized
 if (admin.apps.length === 0) {
@@ -13,6 +14,81 @@ if (admin.apps.length === 0) {
 
 const db = admin.firestore();
 const statsRef = db.collection('market').doc('stats');
+
+/**
+ * Callable: Return full Super Admin analytics with Admin privileges
+ * Uses custom claim check for better security
+ */
+export const getSuperAdminAnalytics = functions.region('europe-west1').https.onCall(async (data, context) => {
+  // Verify super admin using custom claim (or email fallback)
+  const isSuperAdmin = await verifySuperAdmin(context);
+  if (!isSuperAdmin) {
+    throw new functions.https.HttpsError('permission-denied', 'Super Admin access required');
+  }
+
+  try {
+    // Users (Auth)
+    let totalUsers = 0;
+    let activeUsers = 0;
+    const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    let nextPageToken: string | undefined = undefined;
+    do {
+      const res = await admin.auth().listUsers(1000, nextPageToken);
+      for (const u of res.users) {
+        if (u.email === 'alaa.hamdani@yahoo.com') continue; // exclude owner from counts if desired
+        totalUsers++;
+        const last = u.metadata.lastSignInTime ? new Date(u.metadata.lastSignInTime) : null;
+        if (last && last > oneDayAgo) activeUsers++;
+      }
+      nextPageToken = res.pageToken;
+    } while (nextPageToken);
+
+    // Firestore counts (admin privileges bypass rules)
+    const carsSnap = await db.collection('cars').get();
+    const totalCars = carsSnap.size;
+    const activeCars = (await db.collection('cars').where('isActive', '==', true).get()).size;
+
+    // Messages top-level (may not exist in some envs)
+    let totalMessages = 0;
+    try {
+      totalMessages = (await db.collection('messages').get()).size;
+    } catch {}
+
+    // Views top-level (may not exist) and market stats doc
+    let totalViews = 0;
+    try {
+      totalViews = (await db.collection('views').get()).size;
+    } catch {}
+    try {
+      const statsDoc = await statsRef.get();
+      const v = statsDoc.exists ? (statsDoc.data()?.totalViews || 0) : 0;
+      totalViews = Math.max(totalViews, v);
+    } catch {}
+
+    // Revenue (simple: 5% of sold cars)
+    let revenue = 0;
+    try {
+      carsSnap.forEach(doc => {
+        const d = doc.data() as any;
+        if (d?.isSold && typeof d.price === 'number') revenue += d.price * 0.05;
+      });
+    } catch {}
+
+    return {
+      totalUsers,
+      activeUsers,
+      totalCars,
+      activeCars,
+      totalMessages,
+      totalViews,
+      revenue,
+      lastUpdated: new Date().toISOString(),
+    };
+  } catch (err: any) {
+    console.error('getSuperAdminAnalytics error', err);
+    throw new functions.https.HttpsError('internal', err?.message || 'Failed to compute analytics');
+  }
+});
 
 /**
  * Increments the view count for a car and the total market views.

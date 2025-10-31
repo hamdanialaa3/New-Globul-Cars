@@ -6,8 +6,14 @@ import * as admin from 'firebase-admin';
 // Initialize Firebase Admin
 admin.initializeApp();
 
-// Export Cloud Functions
+// Social / OAuth
 export { exchangeOAuthToken } from './social-media/oauth-handler';
 
-// Export other functions (if they exist)
-// export { someOtherFunction } from './some-other-module';
+// Admin/auth counts and sync
+export { getAuthUsersCount, getActiveAuthUsers, syncAuthToFirestore } from './get-auth-users-count';
+
+// Super Admin claim management
+export { setSuperAdminClaim } from './auth/set-super-admin-claim';
+
+// Marketplace stats bundle (includes new Super Admin analytics)
+export { getSuperAdminAnalytics } from './stats';
