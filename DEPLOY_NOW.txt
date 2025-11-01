@@ -1,0 +1,25 @@
+========================================
+  DEPLOY الآن - Nov 1, 2025
+========================================
+
+✅ Git Push: نجح (bdb02be2)
+⏳ Build: جاري...
+⏳ Deploy: في الانتظار
+
+========================================
+  الأوامر (نسخ ولصق):
+========================================
+
+cd "C:\Users\hamda\Desktop\New Globul Cars\bulgarian-car-marketplace"
+npm run build
+cd ..
+firebase deploy --only hosting
+
+========================================
+  أو استخدم هذا الأمر المباشر:
+========================================
+
+cd "C:\Users\hamda\Desktop\New Globul Cars" && cd bulgarian-car-marketplace && npm run build && cd .. && firebase deploy --only hosting
+
+========================================
+
