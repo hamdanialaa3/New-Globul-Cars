@@ -173,6 +173,7 @@ const ProfileSettings: React.FC = () => {
     switch (platform) {
       case 'facebook': return <Facebook {...iconProps} />;
       case 'twitter': return <Twitter {...iconProps} />;
+      // eslint-disable-next-line react/jsx-no-undef
       case 'tiktok': return <TikTokIcon {...iconProps} />;
       case 'linkedin': return <Linkedin {...iconProps} />;
       case 'youtube': return <Youtube {...iconProps} />;
