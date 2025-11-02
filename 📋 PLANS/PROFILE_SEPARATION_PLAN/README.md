@@ -37,6 +37,40 @@
 
 #### 3. التحليل والتغييرات
 **[ANALYSIS_AND_CHANGES_SUMMARY.md](./ANALYSIS_AND_CHANGES_SUMMARY.md)**
+### 🧭 العمليات (Runbooks)
+
+1. **[ROLLOUT_OPERATOR_CHECKLIST.md](./ROLLOUT_OPERATOR_CHECKLIST.md)**
+   - خطة تشغيلية لتفعيل الميزات تدريجياً مع مراقبة وتنبيهات وخطة تراجع
+   - استخدام Remote Config: 10% → 50% → 100%
+
+2. **[MIGRATION_RUNBOOK_DEALERSHIP.md](./MIGRATION_RUNBOOK_DEALERSHIP.md)**
+   - خطوات عملية لترحيل `users.dealerInfo` إلى `dealerships/{uid}`
+   - تصميم الدفعيات، قياسات المراقبة، وخطة تراجع مستهدفة
+
+### 🧠 استراتيجيات وتنفيذ
+
+- **[IMPLEMENTATION_STRATEGY.md](./IMPLEMENTATION_STRATEGY.md)** — ربط المراحل بالأعلام والمخرجات
+- **[PRE_IMPLEMENTATION_CONTRACTS.md](./PRE_IMPLEMENTATION_CONTRACTS.md)** — العقود الحرجة (capability matrix, validateSwitch, tests)
+- **[MIGRATION_EXECUTION_PLAN.md](./MIGRATION_EXECUTION_PLAN.md)** — خطة تنفيذ الترحيل خطوة بخطوة
+- **[GRADUAL_MIGRATION_PLAN.md](./GRADUAL_MIGRATION_PLAN.md)** — تشغيل متوازي وقراءة/كتابة مزدوجة
+- **[CONTINGENCY_PLAN.md](./CONTINGENCY_PLAN.md)** — خطة الطوارئ والتراجع الآمن
+
+### 📊 مراقبة ونجاح
+
+- **[MONITORING_AND_ANALYTICS.md](./MONITORING_AND_ANALYTICS.md)** — لوحات، مقاييس، تنبيهات
+- **[SUCCESS_METRICS.md](./SUCCESS_METRICS.md)** — مقاييس النجاح وأهدافها
+
+### ⚙️ جودة ومخاطر
+
+- **[RISK_MITIGATION_DETAILED.md](./RISK_MITIGATION_DETAILED.md)** — إدارة المخاطر التفصيلية
+- **[TECHNICAL_DECISION_RECORD.md](./TECHNICAL_DECISION_RECORD.md)** — سجل القرارات الفنية
+
+### 👥 تسليم وتجربة
+
+- **[PROJECT_HANDOVER_GUIDE.md](./PROJECT_HANDOVER_GUIDE.md)** — دليل التسليم والتشغيل
+- **[USER_EXPERIENCE_ENHANCEMENTS.md](./USER_EXPERIENCE_ENHANCEMENTS.md)** — تحسينات UX المقترحة
+- **[PERFORMANCE_OPTIMIZATION.md](./PERFORMANCE_OPTIMIZATION.md)** — تحسينات الأداء
+
 - شرح التعديلات المقترحة
 - الأسباب وراء التغييرات
 - المخاطر والحلول
