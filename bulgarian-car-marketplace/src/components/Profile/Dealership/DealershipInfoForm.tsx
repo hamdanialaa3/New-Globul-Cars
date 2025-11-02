@@ -1,6 +1,7 @@
 /**
  * Dealership Information Form
  * Complete form for dealership/showroom profile information
+ * Phase 3: Updated to use DealershipRepository
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -13,7 +14,8 @@ import {
   Check
 } from 'lucide-react';
 import { useLanguage } from '../../../contexts/LanguageContext';
-import { dealershipService } from '../../../services/dealership/dealership.service';
+// ✅ NEW: Use DealershipRepository instead of old service
+import { DealershipRepository } from '../../../repositories/DealershipRepository';
 import { 
   DEFAULT_WORKING_HOURS, 
   DEFAULT_SERVICES, 
@@ -45,7 +47,8 @@ const DealershipInfoForm: React.FC<DealershipInfoFormProps> = ({ userId = '' }) 
   const loadDealershipInfo = useCallback(async () => {
     try {
       setLoading(true);
-      const info = await dealershipService.getDealershipInfo(userId);
+      // ✅ NEW: Use DealershipRepository
+      const info = await DealershipRepository.getById(userId);
       if (info) {
         setDealershipInfo(info);
       }
@@ -87,7 +90,8 @@ const DealershipInfoForm: React.FC<DealershipInfoFormProps> = ({ userId = '' }) 
         return;
       }
       
-      await dealershipService.saveDealershipInfo(userId, dealershipInfo);
+      // ✅ NEW: Use DealershipRepository with user sync
+      await DealershipRepository.updateWithUserSync(userId, dealershipInfo as any);
       showToast('success', language === 'bg' ? 'Информацията е запазена' : 'Information saved successfully');
     } catch (error) {
       console.error('Error saving dealership info:', error);
