@@ -1,554 +1,224 @@
 rules_version = '2';
-
-/**
- * Firestore Security Rules for Globul Cars Bulgarian Marketplace
- * PRODUCTION VERSION with RBAC using Custom Claims
- * Location: Bulgaria | Languages: BG, EN | Currency: EUR
- * 
- * Key improvements:
- * - Uses Custom Claims for role checking (no extra reads)
- * - Implements proper RBAC (buyer, seller, admin)
- * - Optimized for performance and cost
- * - Production-ready security
- */
-
 service cloud.firestore {
   match /databases/{database}/documents {
     
     // ==================== HELPER FUNCTIONS ====================
     
-    /**
-     * Check if user is authenticated
-     */
-    function isSignedIn() {
+    // Check if user is authenticated
+    function isAuthenticated() {
       return request.auth != null;
     }
     
-    /**
-     * Check if user is a buyer (default role)
-     * Uses Custom Claims - no database read required
-     */
-    function isBuyer() {
-      return isSignedIn() && request.auth.token.role == 'buyer';
-    }
-    
-    /**
-     * Check if user is a seller
-     * Uses Custom Claims - no database read required
-     */
-    function isSeller() {
-      return isSignedIn() && request.auth.token.seller == true;
-    }
-    
-    /**
-     * Check if user is an admin
-     * Uses Custom Claims - no database read required
-     */
-    function isAdmin() {
-      return isSignedIn() && request.auth.token.admin == true;
-    }
-    
-    /**
-     * Check if user is the owner of a resource
-     */
+    // Check if user owns the document
     function isOwner(userId) {
-      return isSignedIn() && request.auth.uid == userId;
+      return isAuthenticated() && request.auth.uid == userId;
     }
     
-    /**
-     * Check if user is owner OR admin
-     */
-    function isOwnerOrAdmin(userId) {
-      return isOwner(userId) || isAdmin();
+    // Check if user is admin
+    function isAdmin() {
+      return isAuthenticated() && 
+             exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+    }
+    
+    // Validate profile type (Phase 0 Day 4)
+    function isValidProfileType(profileType) {
+      return profileType in ['private', 'dealer', 'company'];
+    }
+    
+    // Validate plan tier (Phase 0 Day 4)
+    function isValidPlanTier(tier) {
+      return tier in [
+        'free', 'premium',
+        'dealer_basic', 'dealer_pro', 'dealer_enterprise',
+        'company_starter', 'company_pro', 'company_enterprise'
+      ];
+    }
+    
+    // Check if plan tier matches profile type (Phase 0 Day 4)
+    function planTierMatchesProfileType(profileType, planTier) {
+      return (profileType == 'private' && planTier in ['free', 'premium']) ||
+             (profileType == 'dealer' && planTier in ['dealer_basic', 'dealer_pro', 'dealer_enterprise']) ||
+             (profileType == 'company' && planTier in ['company_starter', 'company_pro', 'company_enterprise']);
+    }
+    
+    // Validate dealer profile requirements (Phase 0 Day 4)
+    function hasDealerRequirements(data) {
+      return data.dealershipRef is string && 
+             data.dealershipRef.matches('dealerships/.*') &&
+             data.dealerSnapshot is map;
+    }
+    
+    // Validate company profile requirements (Phase 0 Day 4)
+    function hasCompanyRequirements(data) {
+      return data.companyRef is string && 
+             data.companyRef.matches('companies/.*') &&
+             data.companySnapshot is map;
     }
     
     // ==================== USERS COLLECTION ====================
     
     match /users/{userId} {
-      // Read: Any authenticated user can read any profile (for Users Directory)
-      allow get: if isSignedIn();
+      // Allow read if:
+      // - User is authenticated (can read own profile)
+      // - Profile is public
+      allow read: if isAuthenticated();
       
-      // List: Authenticated users can browse users directory
-      allow list: if isSignedIn();
+      // Allow create if:
+      // - User is creating their own profile
+      // - Required fields are present
+      allow create: if isAuthenticated() && 
+                       request.auth.uid == userId &&
+                       request.resource.data.email is string &&
+                       request.resource.data.displayName is string &&
+                       isValidProfileType(request.resource.data.profileType) &&
+                       request.resource.data.profileType == 'private'; // New users default to private
       
-      // Create: User can create their own profile on signup
-      allow create: if isOwner(userId) && 
-                       request.resource.data.uid == userId &&
-                       request.resource.data.email == request.auth.token.email;
+      // Allow update if:
+      // - User owns the profile OR is admin
+      // - Profile type changes are validated (Phase 0 Day 4)
+      allow update: if (isOwner(userId) || isAdmin()) &&
+                       // Validate profileType if being changed
+                       (!('profileType' in request.resource.data) || 
+                        (isValidProfileType(request.resource.data.profileType) &&
+                         validateProfileTypeChange(
+                           resource.data.get('profileType', 'private'),
+                           request.resource.data.profileType,
+                           request.resource.data
+                         )));
       
-      // Update: User can update their own profile, admins can update any
-      // 🎯 FIXED: Allow profileType changes (with validation)
-      allow update: if isOwnerOrAdmin(userId) && (
-        // If profileType is being changed, validate it's one of the allowed values
-        !('profileType' in request.resource.data) ||
-        request.resource.data.profileType in ['private', 'dealer', 'company']
-      );
-      
-      // Delete: Only admins can delete users
+      // Allow delete only by admin
       allow delete: if isAdmin();
       
-      // FCM Tokens subcollection
-      match /fcmTokens/{token} {
-        allow read, write: if isOwner(userId);
+      // Validate profile type change (Phase 0 Day 4)
+      function validateProfileTypeChange(oldType, newType, newData) {
+        return newType == oldType || // No change
+               (newType == 'private') || // Downgrade to private always allowed
+               (newType == 'dealer' && hasDealerRequirements(newData)) || // Upgrade to dealer with requirements
+               (newType == 'company' && hasCompanyRequirements(newData)); // Upgrade to company with requirements
       }
+    }
+    
+    // ==================== DEALERSHIPS COLLECTION ====================
+    
+    match /dealerships/{dealershipId} {
+      // Allow read if authenticated
+      allow read: if isAuthenticated();
+      
+      // Allow create/update if:
+      // - User owns the dealership OR is admin
+      // - User's profile is 'dealer' type
+      allow create, update: if (isOwner(dealershipId) || isAdmin()) &&
+                               // Verify user is dealer type
+                               get(/databases/$(database)/documents/users/$(dealershipId)).data.profileType == 'dealer';
+      
+      // Allow delete only by admin
+      allow delete: if isAdmin();
+    }
+    
+    // ==================== COMPANIES COLLECTION ====================
+    
+    match /companies/{companyId} {
+      // Allow read if authenticated
+      allow read: if isAuthenticated();
+      
+      // Allow create/update if:
+      // - User owns the company OR is admin
+      // - User's profile is 'company' type
+      allow create, update: if (isOwner(companyId) || isAdmin()) &&
+                               // Verify user is company type
+                               get(/databases/$(database)/documents/users/$(companyId)).data.profileType == 'company';
+      
+      // Allow delete only by admin
+      allow delete: if isAdmin();
     }
     
     // ==================== CARS COLLECTION ====================
     
     match /cars/{carId} {
-      // Read: Everyone can read active cars
-      allow get: if resource.data.status == 'active' || 
-                    isOwner(resource.data.sellerId) ||
-                    isAdmin();
+      // Allow read to all authenticated users
+      allow read: if isAuthenticated();
       
-      // List: Everyone can list active cars (for search/browse)
-      allow list: if true;
-      
-      // Create: Any authenticated user can create car listings
-      // FIXED: Allow all authenticated users to sell (not just sellers with custom claims)
-      allow create: if isSignedIn() &&
+      // Allow create if authenticated and listing limit not exceeded
+      allow create: if isAuthenticated() &&
                        request.resource.data.sellerId == request.auth.uid &&
-                       request.resource.data.sellerEmail == request.auth.token.email &&
-                       request.resource.data.make is string &&
-                       request.resource.data.model is string &&
-                       request.resource.data.year is number &&
-                       request.resource.data.price is number &&
-                       request.resource.data.price > 0 &&
-                       request.resource.data.currency == 'EUR';
+                       // Check listing limits based on plan tier
+                       canAddListing(request.auth.uid);
       
-      // Update: Owner or admin can update
-      allow update: if isOwner(resource.data.sellerId) || isAdmin();
+      // Allow update/delete if owner or admin
+      allow update, delete: if isOwner(resource.data.sellerId) || isAdmin();
       
-      // Delete: Owner or admin can delete
-      allow delete: if isOwner(resource.data.sellerId) || isAdmin();
+      // Check if user can add more listings (Phase 0 Day 4)
+      function canAddListing(userId) {
+        let userDoc = get(/databases/$(database)/documents/users/$(userId));
+        let activeListings = userDoc.data.get('stats', {}).get('activeListings', 0);
+        let planTier = userDoc.data.get('plan', {}).get('tier', 'free');
+        
+        // Listing limits by plan tier
+        return (planTier == 'free' && activeListings < 3) ||
+               (planTier == 'premium' && activeListings < 10) ||
+               (planTier == 'dealer_basic' && activeListings < 50) ||
+               (planTier == 'dealer_pro' && activeListings < 150) ||
+               (planTier in ['dealer_enterprise', 'company_pro', 'company_enterprise']) || // Unlimited
+               (planTier == 'company_starter' && activeListings < 100);
+      }
     }
     
-    // ==================== SELLERS COLLECTION ====================
-    // Stores aggregated seller metrics and stats
+    // ==================== POSTS COLLECTION ====================
     
-    match /sellers/{sellerId} {
-      // Read: Seller can read their own stats, everyone can read for public profile
-      allow get: if true; // Public stats for transparency
-      allow list: if isSignedIn();
+    match /posts/{postId} {
+      // Allow read to all authenticated users
+      allow read: if isAuthenticated();
       
-      // Write: Only via Cloud Functions
-      allow create, update: if false;
-      allow delete: if isAdmin();
-    }
-
-    // ==================== REVIEWS COLLECTION ====================
-    
-    match /reviews/{reviewId} {
-      // Read: Everyone can read reviews
-      allow read: if true;
+      // Allow create if authenticated
+      allow create: if isAuthenticated() &&
+                       request.resource.data.userId == request.auth.uid;
       
-      // Create: Any authenticated user can create a review
-      allow create: if isSignedIn() &&
-                       request.resource.data.reviewerId == request.auth.uid &&
-                       request.resource.data.rating >= 1 &&
-                       request.resource.data.rating <= 5;
-      
-      // Update: Owner can update their review, admin can update any
-      allow update: if isOwner(resource.data.reviewerId) || isAdmin();
-      
-      // Delete: Owner can delete their review, admin can delete any
-      allow delete: if isOwner(resource.data.reviewerId) || isAdmin();
+      // Allow update/delete if owner or admin
+      allow update, delete: if isOwner(resource.data.userId) || isAdmin();
     }
     
-    // ==================== CONVERSATIONS COLLECTION ====================
-    // P2P messaging between users
+    // ==================== MESSAGES COLLECTION ====================
     
     match /conversations/{conversationId} {
-      // Helper to check if user is a member of the conversation
-      function isMember() {
-        return isSignedIn() && request.auth.uid in resource.data.members;
-      }
+      // Allow read if user is participant
+      allow read: if isAuthenticated() &&
+                     request.auth.uid in resource.data.participants;
       
-      // Read: Only members can read conversation metadata
-      allow read: if isMember();
+      // Allow create if user is one of the participants
+      allow create: if isAuthenticated() &&
+                       request.auth.uid in request.resource.data.participants;
       
-      // Create: Any two users can create a conversation
-      allow create: if isSignedIn() && 
-                       request.auth.uid in request.resource.data.members &&
-                       request.resource.data.members.size() == 2;
-      
-      // Update: Members can update conversation metadata (lastMessage, etc.)
-      allow update: if isMember();
-      
-      // Delete: Admin only
-      allow delete: if isAdmin();
+      // Allow update if user is participant (for read status, etc.)
+      allow update: if isAuthenticated() &&
+                       request.auth.uid in resource.data.participants;
       
       // Messages subcollection
-    match /messages/{messageId} {
-        // Read: Members of parent conversation can read messages
-        allow read: if isMember();
+      match /messages/{messageId} {
+        allow read: if isAuthenticated() &&
+                       request.auth.uid in get(/databases/$(database)/documents/conversations/$(conversationId)).data.participants;
         
-        // Create: Members can send messages
-        allow create: if isMember() && 
-                       request.resource.data.senderId == request.auth.uid;
-      
-        // Update: Sender can update their own message (e.g., mark as edited)
-        allow update: if isOwner(resource.data.senderId);
-        
-        // Delete: Admin only
-        allow delete: if isAdmin();
+        allow create: if isAuthenticated() &&
+                         request.resource.data.senderId == request.auth.uid &&
+                         request.auth.uid in get(/databases/$(database)/documents/conversations/$(conversationId)).data.participants;
       }
     }
     
-    // ==================== FAVORITES COLLECTION ====================
+    // ==================== ANALYTICS COLLECTION ====================
     
-    match /favorites/{userId} {
-      // Favorites stored as user document with carIds array
-      allow read, write: if isOwnerOrAdmin(userId);
-    }
-    
-    // ==================== FOLLOWS COLLECTION ====================
-    // User follow/following relationships
-    
-    match /follows/{followId} {
-      // Read: Anyone can read follow relationships (for follower counts)
-      allow read: if isSignedIn();
+    match /analytics/{userId} {
+      // Only owner or admin can read analytics
+      allow read: if isOwner(userId) || isAdmin();
       
-      // Create: User can follow others
-      allow create: if isSignedIn() && 
-                       request.resource.data.followerId == request.auth.uid;
-      
-      // Delete: User can unfollow (delete their own follow docs)
-      allow delete: if isSignedIn() && 
-                       resource.data.followerId == request.auth.uid;
-      
-      // Admin full access
-      allow read, write: if isAdmin();
-    }
-    
-    // ==================== ANALYTICS EVENTS COLLECTION ====================
-    // For tracking profile views, car views, etc.
-    
-    match /analytics_events/{eventId} {
-      // Create: Anyone can create events (for tracking)
-      allow create: if true;
-      
-      // Read: User can read their own events (targetUserId)
-      allow read: if isSignedIn() && 
-                     resource.data.targetUserId == request.auth.uid;
-      
-      // Admin can read/write all
-      allow read, write: if isAdmin();
-    }
-    
-    // ==================== PROFILE METRICS COLLECTION ====================
-    // Aggregated profile analytics
-    
-    match /profile_metrics/{userId} {
-      // Read: Owner can read their own metrics
-      allow read: if isOwnerOrAdmin(userId);
-      
-      // Write: Anyone can write (for system updates via functions)
-      allow write: if true;
-      
-      // Admin full access
-      allow read, write: if isAdmin();
-    }
-    
-    // ==================== NOTIFICATIONS COLLECTION ====================
-    
-    match /notifications/{userId} {
-      // Read: Owner can read their notifications
-      allow read: if isOwnerOrAdmin(userId);
-      
-      // Write: Only via Cloud Functions
-      allow write: if false;
-      
-      // Admin full access
-      allow read, write: if isAdmin();
-    }
-    
-    // ==================== ADMIN LOGS COLLECTION ====================
-    
-    match /admin_logs/{logId} {
-      // Read/Write: Admin only
-      allow read, write: if isAdmin();
-    }
-
-    // ==================== STATS COLLECTION ====================
-    // Public statistics and counters
-    
-    match /stats/{document=**} {
-      // Read: Public
-      allow read: if true;
-      
-      // Write: Only via Cloud Functions
-      allow write: if false;
-    }
-    
-    // ==================== SAVED SEARCHES COLLECTION ====================
-    
-    match /savedSearches/{userId} {
-      allow read, write: if isOwnerOrAdmin(userId);
-    }
-    
-    // ==================== AD CAMPAIGNS COLLECTIONS ====================
-    
-    // Campaigns Collection
-    match /campaigns/{campaignId} {
-      // Read: Any authenticated user can read campaigns (for display)
-      allow get: if isSignedIn();
-      
-      // List: Owner can list their own campaigns
-      allow list: if isSignedIn() && 
-                     resource.data.userId == request.auth.uid;
-      
-      // Create: Authenticated users can create campaigns
-      // Validation: budget >= 10 EUR, owner must be creator
-      allow create: if isSignedIn() && 
-                       request.resource.data.userId == request.auth.uid &&
-                       request.resource.data.budget >= 10 &&
-                       request.resource.data.dailyBudget > 0 &&
-                       request.resource.data.duration >= 1 &&
-                       request.resource.data.status in ['draft', 'active', 'paused'];
-      
-      // Update: Owner can update their own campaigns (status, budget)
-      // Cannot change userId or decrease spent budget
-      allow update: if isOwnerOrAdmin(request.resource.data.userId) &&
-                       request.resource.data.userId == resource.data.userId &&
-                       request.resource.data.spent >= resource.data.spent;
-      
-      // Delete: Owner or admin can delete
-      allow delete: if isOwnerOrAdmin(resource.data.userId);
-    }
-    
-    // Impressions Collection (subcollection under campaigns)
-    match /campaigns/{campaignId}/impressions/{impressionId} {
-      // Read: Campaign owner can read impressions
-      allow read: if isSignedIn() && 
-                     get(/databases/$(database)/documents/campaigns/$(campaignId)).data.userId == request.auth.uid;
-      
-      // Write: Only via Cloud Functions (system writes)
-      allow write: if false;
-    }
-    
-    // Daily Spending Collection (tracking daily budget usage)
-    match /daily_spending/{spendingId} {
-      // Read: Campaign owner can read their spending
-      allow read: if isSignedIn();
-      
-      // Write: Only via Cloud Functions (system writes)
-      allow write: if false;
-    }
-    
-    // ==================== SOCIAL PLATFORM COLLECTIONS ====================
-    
-    // POSTS COLLECTION
-    match /posts/{postId} {
-      // Allow reading posts based on visibility
-      // Note: For queries to work, we allow list but filter is done by query itself
-      allow read: if true; // Public access for reading (queries filter by visibility)
-      
-      allow create: if isSignedIn() && 
-                       request.resource.data.authorId == request.auth.uid &&
-                       request.resource.data.status in ['draft', 'published'];
-      
-      allow update: if isSignedIn() && 
-                       (resource.data.authorId == request.auth.uid || isAdmin());
-                       
-      allow delete: if isSignedIn() && 
-                       (resource.data.authorId == request.auth.uid || isAdmin());
-    }
-    
-    // POST SCORES COLLECTION (for caching calculated scores)
-    match /postScores/{postId} {
-      allow read: if true; // Public read for score calculations
-      allow write: if true; // Allow system to write scores (temporary - should be Cloud Function)
-    }
-    
-    // REACTIONS COLLECTION
-    match /reactions/{reactionId} {
-      allow read: if true; // Public read for counting
-      allow create: if isSignedIn();
-      allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
-    }
-    
-    // COMMENTS COLLECTION
-    match /comments/{commentId} {
-      allow read: if true; // Public read
-      allow create: if isSignedIn() && 
-                       request.resource.data.authorId == request.auth.uid;
-      allow update: if isSignedIn() && resource.data.authorId == request.auth.uid;
-      allow delete: if isSignedIn() && 
-                       (resource.data.authorId == request.auth.uid || isAdmin());
-    }
-    
-    // MESSAGES COLLECTION
-    match /messages/{messageId} {
-      allow read: if isSignedIn() && 
-                     (resource.data.senderId == request.auth.uid || 
-                      resource.data.recipientId == request.auth.uid);
-      allow create: if isSignedIn() && 
-                       request.resource.data.senderId == request.auth.uid;
-      allow update: if isSignedIn() && 
-                       (resource.data.senderId == request.auth.uid || 
-                        resource.data.recipientId == request.auth.uid);
-      allow delete: if isOwner(resource.data.senderId) || isAdmin();
-    }
-    
-    // CHAT ROOMS COLLECTION
-    match /chatRooms/{roomId} {
-      allow read: if isSignedIn() && 
-                     request.auth.uid in resource.data.participants;
-      allow create: if isSignedIn() && 
-                       request.auth.uid in request.resource.data.participants;
-      allow update: if isSignedIn() && 
-                       request.auth.uid in resource.data.participants;
-      allow delete: if false;
-    }
-    
-    // TYPING INDICATORS COLLECTION
-    match /typing/{indicatorId} {
-      // Read: Receiver can see typing indicators
-      allow read: if isSignedIn() && 
-                     resource.data.receiverId == request.auth.uid;
-      // Create: Sender can create typing indicator
-      allow create: if isSignedIn() && 
-                       request.resource.data.userId == request.auth.uid;
-      // Update: User can update their own typing status
-      allow update: if isSignedIn() && 
-                       resource.data.userId == request.auth.uid;
-      // Delete: Auto-cleanup or user can delete own
-      allow delete: if isSignedIn() && 
-                       resource.data.userId == request.auth.uid;
-    }
-    
-    // STORIES COLLECTION
-    match /stories/{storyId} {
-      allow read: if isSignedIn();
-      allow create: if isSignedIn() && 
-                       request.resource.data.authorId == request.auth.uid &&
-                       request.resource.data.expiresAt > request.time;
-      allow update: if isOwner(resource.data.authorId);
-      allow delete: if isOwnerOrAdmin(resource.data.authorId) ||
-                       resource.data.expiresAt < request.time;
-      
-      match /views/{viewId} {
-        allow read: if isOwner(get(/databases/$(database)/documents/stories/$(storyId)).data.authorId);
-        allow create: if isSignedIn();
-        allow update, delete: if false;
-      }
-    }
-    
-    // EVENTS COLLECTION
-    match /events/{eventId} {
-      allow read: if isSignedIn();
-      allow create: if isSignedIn() && 
-                       request.resource.data.organizerId == request.auth.uid;
-      allow update: if isOwnerOrAdmin(resource.data.organizerId);
-      allow delete: if isOwnerOrAdmin(resource.data.organizerId);
-    }
-    
-    // EVENT RSVPs COLLECTION
-    match /eventRSVPs/{rsvpId} {
-      allow read: if isSignedIn();
-      allow create: if isSignedIn() && 
-                       request.resource.data.userId == request.auth.uid;
-      allow update: if isOwner(resource.data.userId);
-      allow delete: if isOwner(resource.data.userId) || isAdmin();
-    }
-    
-    // CONSULTATIONS COLLECTION
-    match /consultations/{consultationId} {
-      allow read: if isSignedIn() && 
-                     (resource.data.clientId == request.auth.uid || 
-                      resource.data.expertId == request.auth.uid ||
-                      resource.data.visibility == 'public');
-      allow create: if isSignedIn() && 
-                       request.resource.data.clientId == request.auth.uid;
-      allow update: if isSignedIn() && 
-                       (resource.data.clientId == request.auth.uid || 
-                        resource.data.expertId == request.auth.uid);
-      allow delete: if isOwner(resource.data.clientId) || isAdmin();
-    }
-    
-    // FOLLOWS COLLECTION
-    match /follows/{followId} {
-      allow read: if isSignedIn();
-      allow create: if isSignedIn() && 
-                       request.resource.data.followerId == request.auth.uid;
-      allow delete: if isOwner(resource.data.followerId) || isAdmin();
-    }
-    
-    // NOTIFICATIONS COLLECTION
-    match /notifications/{notificationId} {
-      allow read: if isOwner(resource.data.userId);
-      allow create: if isSignedIn();
-      allow update: if isOwner(resource.data.userId);
-      allow delete: if isOwner(resource.data.userId) || isAdmin();
-    }
-    
-    // USER BADGES COLLECTION
-    match /userBadges/{badgeId} {
-      allow read: if isSignedIn();
-      allow create: if false; // Only created by Cloud Functions
-      allow update, delete: if isAdmin();
-    }
-    
-    // ANALYTICS COLLECTION
-    match /analytics/{document=**} {
-      allow read: if isSignedIn(); // ⚡ FIX: Allow all signed-in users to read analytics
-      allow write: if false; // Only written by Cloud Functions
-    }
-    
-    // VIEWS COLLECTION (for tracking)
-    match /views/{viewId} {
-      allow read: if isSignedIn();
-      allow create: if isSignedIn();
-      allow update, delete: if false;
-    }
-    
-    // MARKET STATS COLLECTION
-    match /market/{document=**} {
-      allow read: if true; // Public stats
+      // System can write (Cloud Functions)
       allow write: if false; // Only Cloud Functions
     }
     
-    // SEARCH HISTORY COLLECTION
-    match /searchHistory/{historyId} {
-      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
-      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
-      allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
-      allow update: if false;
-    }
-    
-    // VIEWED CARS COLLECTION  
-    match /viewedCars/{viewId} {
-      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
-      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
-      allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
-      allow update: if false;
-    }
-    
-    // REPORTS & MODERATION
-    match /reports/{reportId} {
-      allow read: if isAdmin();
-      allow create: if isSignedIn() && 
-                       request.resource.data.reporterId == request.auth.uid;
-      allow update, delete: if isAdmin();
-    }
-    
-    // SOCIAL MEDIA ACCOUNTS COLLECTION
-    match /socialMediaAccounts/{accountId} {
-      allow read: if isSignedIn() && 
-                     accountId.matches('^' + request.auth.uid + '_.*$');
-      allow create, update: if isSignedIn() && 
-                              accountId.matches('^' + request.auth.uid + '_.*$');
-      allow delete: if isSignedIn() && 
-                       accountId.matches('^' + request.auth.uid + '_.*$');
-    }
-    
     // ==================== DEFAULT DENY ====================
-    // Deny all other operations by default
     
+    // Deny all other access by default
     match /{document=**} {
       allow read, write: if false;
     }
   }
 }
-

@@ -212,17 +212,122 @@ export const ProfileTypeProvider: React.FC<ProfileTypeProviderProps> = ({ childr
   };
 
   // Switch profile type (for upgrade flow)
+  // Phase 0 Day 4: Added validation
   const switchProfileType = async (newType: ProfileType) => {
     if (!currentUser) {
       throw new Error('User must be logged in to switch profile type');
     }
 
+    // ✅ NEW: Validation before switching
     try {
+      // 1. Get current user data
+      const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
+      if (!userDoc.exists()) {
+        throw new Error('User document not found');
+      }
+
+      const userData = userDoc.data();
+
+      // 2. Validate dealer/company requirements
+      if (newType === 'dealer') {
+        // Check if dealershipRef exists
+        if (!userData.dealershipRef) {
+          throw new Error(
+            'Cannot switch to dealer profile: Missing dealershipRef. ' +
+            'Please complete dealership setup first.'
+          );
+        }
+
+        // Verify dealership document exists
+        const dealershipDoc = await getDoc(doc(db, userData.dealershipRef));
+        if (!dealershipDoc.exists()) {
+          throw new Error(
+            'Cannot switch to dealer profile: Dealership document not found. ' +
+            'Please contact support.'
+          );
+        }
+      }
+
+      if (newType === 'company') {
+        // Check if companyRef exists
+        if (!userData.companyRef) {
+          throw new Error(
+            'Cannot switch to company profile: Missing companyRef. ' +
+            'Please complete company setup first.'
+          );
+        }
+
+        // Verify company document exists
+        const companyDoc = await getDoc(doc(db, userData.companyRef));
+        if (!companyDoc.exists()) {
+          throw new Error(
+            'Cannot switch to company profile: Company document not found. ' +
+            'Please contact support.'
+          );
+        }
+      }
+
+      // 3. Check active listings limit
+      const activeListings = userData.stats?.activeListings || 0;
+      const newPermissions = getPermissions(newType, planTier);
+      
+      if (newPermissions.maxListings !== -1 && activeListings > newPermissions.maxListings) {
+        throw new Error(
+          `Cannot switch to ${newType} profile: You have ${activeListings} active listings, ` +
+          `but the new profile type only allows ${newPermissions.maxListings}. ` +
+          `Please deactivate some listings first.`
+        );
+      }
+
+      // 4. Validate plan tier compatibility
+      const validPlanTiers: Record<ProfileType, PlanTier[]> = {
+        private: ['free', 'premium'],
+        dealer: ['dealer_basic', 'dealer_pro', 'dealer_enterprise'],
+        company: ['company_starter', 'company_pro', 'company_enterprise']
+      };
+
+      const currentTier = userData.plan?.tier || 'free';
+      if (!validPlanTiers[newType].includes(currentTier as PlanTier)) {
+        logger.warn('Plan tier incompatible with new profile type', {
+          userId: currentUser.uid,
+          newType,
+          currentTier
+        });
+        // Auto-assign default tier for new profile type
+        const defaultTier = validPlanTiers[newType][0];
+        await updateDoc(doc(db, 'users', currentUser.uid), {
+          profileType: newType,
+          'plan.tier': defaultTier,
+          updatedAt: new Date()
+        });
+        
+        setProfileType(newType);
+        setPlanTier(defaultTier);
+        
+        logger.info('Profile type switched with tier adjustment', {
+          userId: currentUser.uid,
+          newType,
+          oldTier: currentTier,
+          newTier: defaultTier
+        });
+        
+        return;
+      }
+
+      // 5. All validations passed - switch profile type
       await updateDoc(doc(db, 'users', currentUser.uid), {
-        profileType: newType
+        profileType: newType,
+        updatedAt: new Date()
       });
       
       setProfileType(newType);
+      
+      logger.info('Profile type switched successfully', {
+        userId: currentUser.uid,
+        oldType: profileType,
+        newType
+      });
+      
     } catch (error) {
       logger.error('Error switching profile type', error as Error, { 
         userId: currentUser.uid, 
