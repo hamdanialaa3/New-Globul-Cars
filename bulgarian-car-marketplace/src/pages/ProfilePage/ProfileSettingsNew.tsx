@@ -1,12 +1,14 @@
 // Profile Settings Page - Mobile.de Style
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 // Professional settings page with verification and account management
+// ✨ Phase 5: UI Integration - NEW COMPONENTS INTEGRATED ✨
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useAuth } from '../../contexts/AuthProvider';
 import { useProfile } from './hooks/useProfile';
+import { useProfileType } from '../../contexts/ProfileTypeContext';
 import { 
   CustomerNumberBadge,
   LoginDataCard,
@@ -27,17 +29,38 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import customerNumberService from '../../services/customer-number.service';
 
+// ✨ NEW: Phase 5 Components
+import { ProfileTypeSwitcher } from '../../components/Profile/ProfileTypeSwitcher';
+import { DealershipProfileForm } from '../../components/Profile/Forms/DealershipProfileForm';
+import { CompanyProfileForm } from '../../components/Profile/Forms/CompanyProfileForm';
+import { VerificationUploader } from '../../components/Profile/VerificationUploader';
+import { useCompleteProfile } from '../../hooks/useCompleteProfile';
+import { isDealerProfile, isCompanyProfile } from '../../types/user/bulgarian-user.types';
+
 const ProfileSettingsNew: React.FC = () => {
   const { language } = useLanguage();
   const { currentUser } = useAuth();
   const { user } = useProfile();
+  const { profileType, theme } = useProfileType();
   const navigate = useNavigate();
+
+  // ✨ NEW: Use complete profile hook for dealer/company data
+  const { 
+    user: completeUser, 
+    dealership, 
+    company,
+    reload: reloadProfile 
+  } = useCompleteProfile(currentUser?.uid);
 
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [showPhoneModal, setShowPhoneModal] = useState(false);
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [showIDEditor, setShowIDEditor] = useState(false);
   const [idCardData, setIdCardData] = useState<Partial<IDCardData> | null>(null);
+  
+  // ✨ NEW: State for showing profile type-specific forms
+  const [showDealerForm, setShowDealerForm] = useState(false);
+  const [showCompanyForm, setShowCompanyForm] = useState(false);
 
   const handleChangePassword = () => {
     setShowPasswordModal(true);
@@ -149,6 +172,19 @@ const ProfileSettingsNew: React.FC = () => {
 
       <CustomerNumberBadge userId={currentUser.uid} />
 
+      {/* ✨ NEW: Profile Type Switcher */}
+      <SectionSpacer />
+      <ProfileTypeSwitcher 
+        currentUid={currentUser.uid}
+        onSwitchComplete={() => {
+          reloadProfile();
+          toast.success(language === 'bg' 
+            ? 'Типът на профила е променен успешно!' 
+            : 'Profile type changed successfully!');
+        }}
+      />
+
+      <SectionSpacer />
       <ProfilePhotoCard 
         userId={currentUser.uid}
         currentPhotoUrl={user?.profileImage?.url}
@@ -174,6 +210,96 @@ const ProfileSettingsNew: React.FC = () => {
         phoneVerified={(user as any)?.phoneVerified || false}
         onVerifyPhone={!(user as any)?.phoneVerified ? handleVerifyPhone : undefined}
       />
+
+      {/* ✨ NEW: Dealership Profile Form (for dealers only) */}
+      {completeUser && isDealerProfile(completeUser) && (
+        <>
+          <SectionSpacer />
+          <SectionCard>
+            <SectionHeader>
+              <SectionTitle>
+                {language === 'bg' ? '🏢 Информация за автокъща' : '🏢 Dealership Information'}
+              </SectionTitle>
+              <ToggleButton onClick={() => setShowDealerForm(!showDealerForm)}>
+                {showDealerForm 
+                  ? (language === 'bg' ? 'Скрий' : 'Hide')
+                  : (language === 'bg' ? 'Покажи' : 'Show')}
+              </ToggleButton>
+            </SectionHeader>
+            
+            {showDealerForm && (
+              <DealershipProfileForm
+                uid={currentUser.uid}
+                initialData={dealership}
+                themeColor={theme.primaryColor}
+                onSave={(data) => {
+                  toast.success(language === 'bg' 
+                    ? 'Информацията е запазена!' 
+                    : 'Information saved!');
+                  reloadProfile();
+                  setShowDealerForm(false);
+                }}
+                onCancel={() => setShowDealerForm(false)}
+              />
+            )}
+          </SectionCard>
+        </>
+      )}
+
+      {/* ✨ NEW: Company Profile Form (for companies only) */}
+      {completeUser && isCompanyProfile(completeUser) && (
+        <>
+          <SectionSpacer />
+          <SectionCard>
+            <SectionHeader>
+              <SectionTitle>
+                {language === 'bg' ? '🏛️ Информация за фирма' : '🏛️ Company Information'}
+              </SectionTitle>
+              <ToggleButton onClick={() => setShowCompanyForm(!showCompanyForm)}>
+                {showCompanyForm 
+                  ? (language === 'bg' ? 'Скрий' : 'Hide')
+                  : (language === 'bg' ? 'Покажи' : 'Show')}
+              </ToggleButton>
+            </SectionHeader>
+            
+            {showCompanyForm && (
+              <CompanyProfileForm
+                uid={currentUser.uid}
+                initialData={company}
+                themeColor={theme.primaryColor}
+                onSave={(data) => {
+                  toast.success(language === 'bg' 
+                    ? 'Информацията е запазена!' 
+                    : 'Information saved!');
+                  reloadProfile();
+                  setShowCompanyForm(false);
+                }}
+                onCancel={() => setShowCompanyForm(false)}
+              />
+            )}
+          </SectionCard>
+        </>
+      )}
+
+      {/* ✨ NEW: Verification Document Uploader */}
+      <SectionSpacer />
+      <SectionCard>
+        <SectionHeader>
+          <SectionTitle>
+            {language === 'bg' ? '📄 Документи за верификация' : '📄 Verification Documents'}
+          </SectionTitle>
+        </SectionHeader>
+        <VerificationUploader
+          uid={currentUser.uid}
+          profileType={profileType}
+          onUploadComplete={() => {
+            toast.success(language === 'bg' 
+              ? 'Документът е качен успешно!' 
+              : 'Document uploaded successfully!');
+            reloadProfile();
+          }}
+        />
+      </SectionCard>
 
       <DocumentsCard invoices={(user as any)?.invoices || []} />
 
@@ -237,6 +363,54 @@ const LoadingMessage = styled.div`
   padding: 60px 20px;
   font-size: 1.125rem;
   color: #6c757d;
+`;
+
+// ✨ NEW: Styled components for Phase 5 integration
+const SectionSpacer = styled.div`
+  height: 32px;
+`;
+
+const SectionCard = styled.div`
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+`;
+
+const SectionHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+`;
+
+const SectionTitle = styled.h2`
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #212529;
+  margin: 0;
+`;
+
+const ToggleButton = styled.button`
+  background: #FF7900;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #e66d00;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
 `;
 
 export default ProfileSettingsNew;
