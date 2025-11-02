@@ -6,7 +6,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { BulgarianUser } from '../../firebase/auth-service';
+// ✅ NEW: Import from canonical types
+import type { BulgarianUser } from '../../types/user/bulgarian-user.types';
 import { Image, Video, Car, User } from 'lucide-react';
 
 interface CreatePostWidgetProps {

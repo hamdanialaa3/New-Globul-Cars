@@ -1,5 +1,6 @@
 // src/services/bulgarian-profile-service.ts
 // Comprehensive Bulgarian User Profile Service
+// Phase -1: Updated to use canonical types
 
 import { 
   doc, 
@@ -29,7 +30,9 @@ import {
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import { auth, db, storage } from '../firebase/firebase-config';
 import { serviceLogger } from './logger-wrapper';
-import { BulgarianUserProfile } from '../firebase/social-auth-service';
+
+// ✅ NEW: Import from canonical types file
+import type { BulgarianUser, DealerProfile as DealerUserProfile } from '../types/user/bulgarian-user.types';
 
 // Extended interfaces for Bulgarian market
 export interface DealerProfile {

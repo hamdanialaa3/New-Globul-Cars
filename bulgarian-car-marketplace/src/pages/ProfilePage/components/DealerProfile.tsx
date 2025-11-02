@@ -3,7 +3,8 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { BulgarianUser } from '../../../firebase/auth-service';
+// ✅ NEW: Import from canonical types
+import type { BulgarianUser } from '../../../types/user/bulgarian-user.types';
 import SimpleProfileAvatar from '../../../components/Profile/SimpleProfileAvatar';
 import { ProfileCar } from '../types';
 import { useLanguage } from '../../../contexts/LanguageContext';

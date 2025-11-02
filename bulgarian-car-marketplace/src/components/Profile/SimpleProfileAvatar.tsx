@@ -5,7 +5,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { User } from 'lucide-react';
-import { BulgarianUser } from '../../firebase/auth-service';
+// ✅ NEW: Import from canonical types
+import type { BulgarianUser } from '../../types/user/bulgarian-user.types';
 
 interface SimpleProfileAvatarProps {
   user: BulgarianUser | null;

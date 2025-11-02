@@ -7,7 +7,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useTranslation } from '../hooks/useTranslation';
 import { bulgarianAuthService } from '../firebase';
-import { BulgarianUser } from '../firebase/auth-service';
+// ✅ NEW: Import from canonical types
+import type { BulgarianUser } from '../types/user/bulgarian-user.types';
 import NotificationBell from './NotificationBell';
 import TopBrandsMenu from './TopBrands/TopBrandsMenu';
 // Replace 3D logo with official image logo

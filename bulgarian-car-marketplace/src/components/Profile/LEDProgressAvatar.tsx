@@ -4,7 +4,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { calculateProfileCompletion, getProgressColor, getProgressMessage } from '../../utils/profile-completion';
-import { BulgarianUser } from '../../firebase/auth-service';
+// ✅ NEW: Import from canonical types
+import type { BulgarianUser } from '../../types/user/bulgarian-user.types';
 import { useLanguage } from '../../contexts/LanguageContext';
 
 // Profile Type

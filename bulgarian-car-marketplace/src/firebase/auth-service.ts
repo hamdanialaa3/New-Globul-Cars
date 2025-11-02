@@ -1,5 +1,6 @@
 // src/firebase/auth-service.ts
 // Bulgarian Authentication Service for Car Marketplace
+// Phase -1: Updated to use canonical types
 
 import {
   createUserWithEmailAndPassword,
@@ -24,8 +25,20 @@ import { auth, db, BulgarianFirebaseUtils } from './firebase-config';
 import { BULGARIAN_CONFIG } from '../config/bulgarian-config';
 import { TrustLevel, Badge } from '../services/profile/trust-score-service';
 
-// Bulgarian User Interface - Extended for Profile System
-export interface BulgarianUser {
+// ✅ NEW: Import from canonical types file
+import type { BulgarianUser as CanonicalBulgarianUser } from '../types/user/bulgarian-user.types';
+
+// Re-export for backward compatibility
+export type { CanonicalBulgarianUser as BulgarianUser };
+
+/**
+ * @deprecated Local BulgarianUser definition is deprecated
+ * Use BulgarianUser from '../types/user/bulgarian-user.types' instead
+ * This interface is kept only for migration period (will be removed in Phase 4)
+ * 
+ * OLD definition below - please use canonical type above
+ */
+export interface BulgarianUserLegacy {
   uid: string;
   email: string;
   displayName: string;

@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '../../../hooks/useTranslation';
-import { bulgarianAuthService, BulgarianUser } from '../../../firebase';
+import { bulgarianAuthService } from '../../../firebase';
+// ✅ NEW: Import from canonical types
+import type { BulgarianUser } from '../../../types/user/bulgarian-user.types';
 import { bulgarianCarService, BulgarianCar } from '../../../firebase/car-service';
 import { useToast } from '../../../components/Toast';
 import { useProfileType } from '../../../contexts/ProfileTypeContext';  // NEW: Profile Type System

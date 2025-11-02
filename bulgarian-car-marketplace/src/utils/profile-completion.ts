@@ -1,10 +1,9 @@
 // src/utils/profile-completion.ts
 // Profile Completion Calculator - Calculates profile completion percentage
+// Phase -1: Updated to use canonical types
 
-import { BulgarianUser } from '../firebase/auth-service';
-
-// Profile Type
-type ProfileType = 'private' | 'dealer' | 'company';
+// ✅ NEW: Import from canonical types
+import type { BulgarianUser, ProfileType } from '../types/user/bulgarian-user.types';
 
 /**
  * Calculates profile completion percentage based on profile type

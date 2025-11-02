@@ -1,5 +1,6 @@
 // src/firebase/social-auth-service.ts
 // Enhanced Social Authentication Service for Bulgarian Car Marketplace
+// Phase -1: Updated to use canonical types
 
 import { 
   GoogleAuthProvider, 
@@ -27,88 +28,15 @@ import { doc, setDoc, getDoc, updateDoc, serverTimestamp, collection, query, whe
 import { auth, db } from './firebase-config';
 import { logger } from '../services/logger-service';
 
-// Enhanced Bulgarian User Profile Interface
-export interface BulgarianUserProfile {
-  uid: string;
-  email: string | null;
-  displayName: string | null;
-  firstName?: string;
-  lastName?: string;
-  photoURL: string | null;
-  phoneNumber: string | null;
-  emailVerified: boolean;
-  
-  // Bulgarian specific fields
-  location: {
-    city?: string;
-    region?: string;
-    country: string; // Always 'Bulgaria'
-  };
-  preferredLanguage: 'bg' | 'en';
-  currency: 'EUR';
-  phoneCountryCode: '+359';
-  
-  // User preferences
-  isDealer: boolean;
-  dealerInfo?: {
-    companyName: string;
-    licenseNumber: string;
-    address: {
-      street: string;
-      city: string;
-      postalCode: string;
-      region: string;
-    };
-    contactInfo?: {
-      phone: string;
-      email: string;
-      website?: string;
-    };
-    businessHours?: any;
-    specializations?: string[];
-    rating?: {
-      average: number;
-      totalReviews: number;
-    };
-    verificationStatus?: 'pending' | 'verified' | 'rejected';
-  };
-  
-  // Social providers
-  linkedProviders: Array<{
-    providerId: string;
-    displayName: string | null;
-    email: string | null;
-    photoURL: string | null;
-    linkedAt: Date;
-  }>;
-  
-  // Activity tracking
-  lastLoginAt: Date;
-  createdAt: Date;
-  updatedAt: Date;
-  
-  // Preferences
-  notifications: {
-    email: boolean;
-    sms: boolean;
-    push: boolean;
-    marketing: boolean;
-  };
-  
-  // Car marketplace specific
-  favoriteCarBrands: string[];
-  searchHistory: Array<{
-    query: string;
-    timestamp: Date;
-  }>;
-  viewedCars: string[];
-  inquiredCars: string[];
-  
-  // Privacy settings
-  profileVisibility: 'public' | 'dealers' | 'private';
-  showPhone: boolean;
-  showEmail: boolean;
-}
+// ✅ NEW: Import from canonical types file
+import type { BulgarianUser } from '../types/user/bulgarian-user.types';
+
+/**
+ * @deprecated Use BulgarianUser from '../types/user/bulgarian-user.types' instead
+ * This type alias is kept for backward compatibility during migration
+ * Will be removed in Phase 4
+ */
+export type BulgarianUserProfile = BulgarianUser;
 
 // Provider configurations
 const googleProvider = new GoogleAuthProvider();

@@ -1,5 +1,6 @@
 // src/contexts/ProfileTypeContext.tsx
 // Profile Type Context - Manages profile types (private/dealer/company) and their themes
+// Phase -1: Updated to use canonical types
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useAuth } from '../contexts/AuthProvider';  // FIXED: Correct path
@@ -7,8 +8,14 @@ import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
 import { logger } from '../services/logger-service';
 
-// Profile Type
-export type ProfileType = 'private' | 'dealer' | 'company';
+// ✅ NEW: Import from canonical types file
+import type { 
+  ProfileType, 
+  PlanTier,
+  BulgarianUser,
+  DealerProfile,
+  CompanyProfile 
+} from '../types/user/bulgarian-user.types';
 
 // Theme Colors by Profile Type
 export interface ProfileTheme {
@@ -18,7 +25,7 @@ export interface ProfileTheme {
   gradient: string;
 }
 
-// Permissions by Profile Type
+// Extended Permissions for Context (includes UI-specific permissions)
 export interface ProfilePermissions {
   canAddListings: boolean;
   maxListings: number;  // -1 for unlimited
@@ -32,18 +39,6 @@ export interface ProfilePermissions {
   canImportCSV: boolean;
   canUseAPI: boolean;
 }
-
-// Plan Tier
-export type PlanTier = 
-  | 'free' 
-  | 'premium' 
-  | 'dealer_basic' 
-  | 'dealer_pro' 
-  | 'dealer_enterprise' 
-  | 'company_starter' 
-  | 'company_pro' 
-  | 'company_enterprise' 
-  | 'custom';
 
 // Context State
 interface ProfileTypeContextState {

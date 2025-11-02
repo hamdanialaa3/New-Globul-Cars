@@ -1,7 +1,14 @@
 // src/types/firestore-models.ts
 // Firestore data models for Bulgarian Car Marketplace
+// Phase -1: Updated to use canonical BulgarianUser type
 
 import { Timestamp } from 'firebase/firestore';
+
+// ✅ NEW: Import canonical types
+import type { BulgarianUser } from './user/bulgarian-user.types';
+
+// Re-export for backward compatibility
+export type { BulgarianUser };
 
 // Base interfaces
 export interface BaseDocument {
@@ -10,23 +17,14 @@ export interface BaseDocument {
   updatedAt: Timestamp;
 }
 
-// User interfaces (extending existing BulgarianUser)
-export interface BulgarianUser extends BaseDocument {
-  uid: string;
-  email: string;
-  displayName: string;
-  phoneNumber?: string;
-  location: string; // Bulgarian cities
-  preferredLanguage: 'bg' | 'en';
-  currency: 'EUR';
-  isDealer?: boolean;
-  dealerInfo?: DealerInfo;
-  profileComplete: boolean;
-  lastLogin: Timestamp;
-  accountStatus: 'active' | 'suspended' | 'banned';
-}
+/**
+ * @deprecated Use BulgarianUser from './user/bulgarian-user.types' instead
+ * This is kept only for migration period (will be removed in Phase 4)
+ * 
+ * OLD definition removed - now using canonical type above
+ */
 
-// Dealer specific information
+// Dealer specific information (for dealerships collection)
 export interface DealerInfo {
   companyName: string;
   licenseNumber: string;
