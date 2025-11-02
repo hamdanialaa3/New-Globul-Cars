@@ -291,8 +291,14 @@ export class BulgarianProfileService {
 
   /**
    * Create or update dealer profile
+   * 
+   * @deprecated Use dealershipService.saveDealershipInfo() instead
+   * This method will be removed in Phase 2A (Week 4)
+   * 
+   * Migration: Use dealershipService.saveDealershipInfo(userId, dealerData)
    */
   static async setupDealerProfile(userId: string, dealerData: DealerProfile): Promise<void> {
+    console.warn(`⚠️ [DEPRECATED] setupDealerProfile() called for user ${userId}. Use dealershipService instead.`);
     try {
       // Validate dealer data
       if (!dealerData.companyName || !dealerData.licenseNumber) {
