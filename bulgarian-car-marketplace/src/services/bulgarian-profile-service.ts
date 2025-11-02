@@ -297,30 +297,76 @@ export class BulgarianProfileService {
    * 
    * Migration: Use dealershipService.saveDealershipInfo(userId, dealerData)
    */
+  /**
+   * ✅ P2: FIXED - Now uses new dealershipService instead of legacy writes
+   * 
+   * @deprecated Use dealershipService.saveDealershipInfo() directly
+   * This method will be removed after all consumers migrate to new structure
+   * 
+   * Migration: 
+   * OLD: bulgarianProfileService.setupDealerProfile(uid, dealerData)
+   * NEW: dealershipService.saveDealershipInfo(uid, dealershipData)
+   */
   static async setupDealerProfile(userId: string, dealerData: DealerProfile): Promise<void> {
-    console.warn(`⚠️ [DEPRECATED] setupDealerProfile() called for user ${userId}. Use dealershipService instead.`);
+    console.warn(`⚠️ [DEPRECATED] setupDealerProfile() called for user ${userId}. Redirecting to dealershipService...`);
+    
     try {
       // Validate dealer data
       if (!dealerData.companyName || !dealerData.licenseNumber) {
         throw new Error('Company name and license number are required');
       }
 
-      // Update user profile to mark as dealer
+      // ✅ NEW: Use dealershipService instead of direct writes
+      // This ensures data goes to dealerships/{uid} not dealers/{uid}
+      const { default: dealershipService } = await import('./dealership.service');
+      
+      // Convert legacy DealerProfile to new DealershipInfo format
+      const dealershipInfo = {
+        nameBG: dealerData.companyName,
+        nameEN: dealerData.companyName, // Use same if not provided
+        contact: {
+          email: dealerData.email || '',
+          phone: dealerData.phone || '',
+          website: dealerData.website || '',
+        },
+        address: {
+          street: dealerData.address || '',
+          city: dealerData.city || '',
+          region: dealerData.region || '',
+          country: 'Bulgaria' as const,
+          postalCode: dealerData.postalCode || ''
+        },
+        eik: dealerData.licenseNumber,
+        status: 'pending' as const,
+        // ... other required fields with defaults
+      };
+
+      // Save to dealerships/{uid} collection
+      await dealershipService.saveDealershipInfo(userId, dealershipInfo);
+
+      // ✅ NEW: Update user with dealershipRef and snapshot (NOT legacy fields)
       await this.updateUserProfile(userId, {
-        isDealer: true,
-        dealerInfo: dealerData
+        profileType: 'dealer',
+        dealershipRef: `dealerships/${userId}`,
+        dealerSnapshot: {
+          nameBG: dealershipInfo.nameBG,
+          nameEN: dealershipInfo.nameEN,
+          logo: '',
+          status: 'pending'
+        },
+        // ❌ REMOVED: No more isDealer or dealerInfo writes
       });
 
-      // Create separate dealer document for advanced queries
-      const dealerRef = doc(db, 'dealers', userId);
-      await setDoc(dealerRef, {
-        userId,
-        ...dealerData,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp()
+      serviceLogger.info('[SERVICE] Dealer profile setup complete (using new structure)', { 
+        userId, 
+        dealershipRef: `dealerships/${userId}` 
       });
+
     } catch (error) {
-      serviceLogger.error('[SERVICE] Error setting up dealer profile', error as Error, { userId, companyName: dealerData.companyName });
+      serviceLogger.error('[SERVICE] Error setting up dealer profile', error as Error, { 
+        userId, 
+        companyName: dealerData.companyName 
+      });
       throw error;
     }
   }

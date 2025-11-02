@@ -1,0 +1,44 @@
+{
+  "conditions": [],
+  "parameters": {
+    "RC_PROFILE_SWITCH_GUARD_ENABLED": {
+      "defaultValue": {
+        "value": "true"
+      },
+      "description": "Enable validation guards when switching profile types (dealer/company requirements check)",
+      "valueType": "BOOLEAN"
+    },
+    "RC_DEALERSHIP_MIGRATION_ENABLED": {
+      "defaultValue": {
+        "value": "false"
+      },
+      "description": "Enable dealership data migration from legacy structure to new dealerships collection",
+      "valueType": "BOOLEAN"
+    },
+    "RC_PROFILE_TYPE_RESTRICTIONS": {
+      "defaultValue": {
+        "value": "{\"private\":{\"maxListings\":3},\"dealer\":{\"maxListings\":50},\"company\":{\"maxListings\":100}}"
+      },
+      "description": "Profile type restrictions and limits (JSON format)",
+      "valueType": "JSON"
+    },
+    "RC_MAINTENANCE_MODE": {
+      "defaultValue": {
+        "value": "false"
+      },
+      "description": "Enable maintenance mode to prevent profile changes during system updates",
+      "valueType": "BOOLEAN"
+    }
+  },
+  "version": {
+    "versionNumber": "1",
+    "updateTime": "2025-11-02T00:00:00Z",
+    "updateUser": {
+      "email": "admin@mobilebg.eu"
+    },
+    "description": "Initial Remote Config template for Profile Type System",
+    "updateOrigin": "ADMIN_SDK_NODE",
+    "updateType": "INCREMENTAL_UPDATE"
+  }
+}
+

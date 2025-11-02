@@ -58,49 +58,52 @@ async function migrateDealers(batchSize: number = 100, dryRun: boolean = false):
   console.log('╚════════════════════════════════════════════════╝\n');
 
   try {
-    // Find users with dealerInfo but no dealershipRef
+    // ✅ P3: FIXED - Use safe pagination instead of unsupported where('dealerInfo', '!=', null)
     const usersRef = collection(db, 'users');
+    
+    // Fetch users in batches (without unsupported where clause)
     const q = query(
       usersRef,
-      where('dealerInfo', '!=', null),
+      orderBy('createdAt'), // ✅ Use indexed field
       limit(batchSize)
     );
 
     const snapshot = await getDocs(q);
-    stats.totalProcessed = snapshot.size;
+    
+    // ✅ Filter client-side for users with dealerInfo
+    const dealerDocs = snapshot.docs.filter(doc => {
+      const data = doc.data();
+      return data.dealerInfo != null && !data.dealershipRef;
+    });
+    
+    stats.totalProcessed = dealerDocs.length;
 
     console.log(`📊 Found ${stats.totalProcessed} dealers to migrate\n`);
 
     if (dryRun) {
       console.log('🔍 DRY RUN MODE - No changes will be made\n');
       
-      snapshot.forEach(docSnap => {
+      dealerDocs.forEach(docSnap => {
         const data = docSnap.data();
         console.log(`Would migrate: ${docSnap.id} (${data.displayName || data.email})`);
-        
-        if (data.dealershipRef) {
-          stats.skippedCount++;
-          console.log(`  ⏭️  Already has dealershipRef - SKIP\n`);
-        } else {
-          console.log(`  ✅ Will create: dealerships/${docSnap.id}`);
-          console.log(`  ✅ Will update user with dealershipRef\n`);
-        }
+        console.log(`  ✅ Will create: dealerships/${docSnap.id}`);
+        console.log(`  ✅ Will update user with dealershipRef\n`);
       });
 
       stats.endTime = new Date();
       return stats;
     }
 
-    // Process in batches
+    // Process in batches (use filtered dealerDocs)
     const batch = writeBatch(db);
     let batchCount = 0;
 
-    for (const docSnap of snapshot.docs) {
+    for (const docSnap of dealerDocs) {
       const uid = docSnap.id;
       const userData = docSnap.data();
 
       try {
-        // Skip if already migrated
+        // Note: dealerDocs already filtered, but keep check for safety
         if (userData.dealershipRef) {
           stats.skippedCount++;
           console.log(`⏭️  ${uid}: Already migrated - SKIP`);

@@ -863,6 +863,48 @@ export const translations = {
       clearCache: 'Изчисти кеша',
       cacheCleared: 'Кешът е изчистен успешно!'
     },
+    
+    // ✅ P1: Profile Type System - Translation Keys (Bulgarian)
+    profile: {
+      switch: {
+        errors: {
+          missingDealerRef: 'Не може да се превключи към профил на търговец: Липсва информация за автокъща. Моля, първо попълнете настройките на автокъщата.',
+          missingCompanyRef: 'Не може да се превключи към фирмен профил: Липсва информация за фирма. Моля, първо попълнете настройките на фирмата.',
+          dealershipNotFound: 'Не може да се превключи към профил на търговец: Документът на автокъщата не е намерен. Моля, свържете се с поддръжката.',
+          companyNotFound: 'Не може да се превключи към фирмен профил: Документът на фирмата не е намерен. Моля, свържете се с поддръжката.',
+          listingLimitExceeded: 'Не може да се превключи тип профил: Имате {{activeListings}} активни обяви, но новият тип профил позволява само {{maxListings}}. Моля, първо деактивирайте някои обяви.',
+          incompatiblePlan: 'Не може да се превключи към {{profileType}} профил: Текущият ниво на плана "{{currentTier}}" не е съвместим. Системата автоматично ще коригира вашия план.',
+          generic: 'Грешка при превключване на тип профил. Моля, опитайте отново или се свържете с поддръжката.'
+        },
+        success: {
+          switched: 'Типът на профила е превключен успешно към {{profileType}}!',
+          planAdjusted: 'Вашият план е коригиран към {{newTier}}, за да съответства на новия тип профил.'
+        },
+        confirm: {
+          title: 'Превключване на тип профил?',
+          message: 'Сигурни ли сте, че искате да превключите от {{currentType}} към {{newType}}?',
+          requirements: 'Изисквания:',
+          benefits: 'Предимства:'
+        }
+      },
+      validation: {
+        invalidPlanTier: 'Невалиден ниво на план за тип профил {{profileType}}',
+        businessVerificationRequired: 'Изисква се бизнес верификация за да превключите към този тип профил',
+        phoneVerificationRequired: 'Изисква се верификация на телефон',
+        emailVerificationRequired: 'Изисква се верификация на имейл'
+      },
+      migration: {
+        inProgress: 'Миграция в ход...',
+        completed: 'Миграцията на профила завърши успешно',
+        failed: 'Миграцията на профила неуспешна'
+      }
+    },
+    
+    profileTypes: {
+      private: 'Частен',
+      dealer: 'Търговец',
+      company: 'Фирма'
+    },
     emailVerification: {
       invalidLink: 'Невалиден линк за потвърждение',
       successTitle: 'Потвърждение успешно!',
@@ -1926,6 +1968,48 @@ export const translations = {
       darkMode: 'Dark Mode',
       clearCache: 'Clear Cache',
       cacheCleared: 'Cache cleared successfully!'
+    },
+    
+    // ✅ P1: Profile Type System - Translation Keys
+    profile: {
+      switch: {
+        errors: {
+          missingDealerRef: 'Cannot switch to dealer profile: Missing dealership information. Please complete dealership setup first.',
+          missingCompanyRef: 'Cannot switch to company profile: Missing company information. Please complete company setup first.',
+          dealershipNotFound: 'Cannot switch to dealer profile: Dealership document not found. Please contact support.',
+          companyNotFound: 'Cannot switch to company profile: Company document not found. Please contact support.',
+          listingLimitExceeded: 'Cannot switch profile type: You have {{activeListings}} active listings, but the new profile type only allows {{maxListings}}. Please deactivate some listings first.',
+          incompatiblePlan: 'Cannot switch to {{profileType}} profile: Current plan tier "{{currentTier}}" is not compatible. The system will automatically adjust your plan.',
+          generic: 'Error switching profile type. Please try again or contact support.'
+        },
+        success: {
+          switched: 'Profile type switched successfully to {{profileType}}!',
+          planAdjusted: 'Your plan has been adjusted to {{newTier}} to match your new profile type.'
+        },
+        confirm: {
+          title: 'Switch Profile Type?',
+          message: 'Are you sure you want to switch from {{currentType}} to {{newType}}?',
+          requirements: 'Requirements:',
+          benefits: 'Benefits:'
+        }
+      },
+      validation: {
+        invalidPlanTier: 'Invalid plan tier for profile type {{profileType}}',
+        businessVerificationRequired: 'Business verification is required to switch to this profile type',
+        phoneVerificationRequired: 'Phone verification is required',
+        emailVerificationRequired: 'Email verification is required'
+      },
+      migration: {
+        inProgress: 'Migration in progress...',
+        completed: 'Profile migration completed successfully',
+        failed: 'Profile migration failed'
+      }
+    },
+    
+    profileTypes: {
+      private: 'Private',
+      dealer: 'Dealer',
+      company: 'Company'
     },
     emailVerification: {
       invalidLink: 'Invalid verification link',

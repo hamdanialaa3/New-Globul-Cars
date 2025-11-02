@@ -233,12 +233,45 @@ const DealerRegistrationPage: React.FC = () => {
     }
   };
 
+  /**
+   * ✅ P2: FIXED - Now uses dealershipService directly instead of deprecated setupDealerProfile
+   */
   const handleSubmit = async () => {
     if (!user) return;
 
     setLoading(true);
     try {
-      await BulgarianProfileService.setupDealerProfile(user.uid, dealerData as DealerProfile);
+      // ✅ NEW: Use dealershipService directly (no more legacy writes)
+      const dealershipService = (await import('../services/dealership.service')).default;
+      
+      // Convert form data to DealershipInfo format
+      const dealershipInfo = {
+        nameBG: dealerData.companyName || '',
+        nameEN: dealerData.companyName || '', // Use same if not provided
+        contact: {
+          email: dealerData.email || user.email || '',
+          phone: dealerData.phone || '',
+          website: dealerData.website || '',
+        },
+        address: {
+          street: dealerData.address || '',
+          city: dealerData.city || '',
+          region: dealerData.region || '',
+          country: 'Bulgaria' as const,
+          postalCode: dealerData.postalCode || ''
+        },
+        eik: dealerData.licenseNumber || '',
+        status: 'pending' as const,
+        workingHours: [], // Can be added later
+        services: [], // Can be added later
+        certifications: [], // Can be added later
+      };
+
+      // Save dealership info (goes to dealerships/{uid})
+      await dealershipService.saveDealershipInfo(user.uid, dealershipInfo);
+      
+      // ✅ Note: dealershipService.saveDealershipInfo already updates user profile
+      // with dealershipRef and dealerSnapshot, so no need for separate user update
       
       alert(language === 'bg' 
         ? 'Заявката ви е изпратена успешно! Ще бъдете уведомени след одобрение.'
