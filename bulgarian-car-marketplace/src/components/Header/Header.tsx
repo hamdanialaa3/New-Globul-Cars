@@ -12,6 +12,7 @@ import {
   Car,
   Heart,
   MessageCircle,
+  MessageSquare,
   Bell,
   LayoutDashboard,
   BarChart3,
@@ -164,6 +165,14 @@ const Header: React.FC = () => {
               title={t('nav.messages')}
             >
               <MessageCircle size={20} />
+            </button>
+            
+            <button
+              className="action-bar-button"
+              onClick={() => navigate('/social-media')}
+              title="Social Media"
+            >
+              <MessageSquare size={20} />
             </button>
             
             <button

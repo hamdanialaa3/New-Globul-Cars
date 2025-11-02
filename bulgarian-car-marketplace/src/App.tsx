@@ -80,6 +80,7 @@ const AllCarsPage = React.lazy(() => import('./pages/AllCarsPage'));
 const EventsPage = React.lazy(() => import('./pages/EventsPage'));  // NEW: Events Page with BG/EN translations
 const CreatePostPage = React.lazy(() => import('./pages/CreatePostPage')); // NEW: Create Post Page
 const OAuthCallback = React.lazy(() => import('./pages/OAuthCallback')); // NEW: OAuth Callback Handler
+const SocialMediaPage = React.lazy(() => import('./pages/SocialMediaPage')); // NEW: Social Media Page - السوشيال ميديا
 // Glass Morphism Premium Auth Pages
 const LoginPage = React.lazy(() => import('./pages/LoginPage/LoginPageGlassFixed'));
 const RegisterPage = React.lazy(() => import('./pages/RegisterPage/RegisterPageGlassFixed'));
@@ -496,6 +497,11 @@ const MainLayout: React.FC = () => {
       <Route path="/all-users" element={<AllUsersPage />} />
       <Route path="/all-posts" element={<AllPostsPage />} />
       <Route path="/all-cars" element={<AllCarsPage />} />
+      
+      {/* NEW: Social Media Page - السوشيال ميديا */}
+      <Route path="/social-media" element={<SocialMediaPage />} />
+      <Route path="/social" element={<SocialMediaPage />} />
+      
       <Route path="/messages" element={<MessagesPage />} />
       
       {/* NEW: Social Platform Routes */}

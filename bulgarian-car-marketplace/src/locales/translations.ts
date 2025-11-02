@@ -297,6 +297,7 @@ export const translations = {
       logout: 'Изход',
       favorites: 'Любими',
       messages: 'Съобщения',
+      socialMedia: 'Социални медии',
       notifications: 'Известия',
       events: 'Събития',
       myAccount: 'Моят профил',
@@ -315,6 +316,29 @@ export const translations = {
       topBrands: 'Топ марки',
       searchCars: 'Търси коли'
     },
+
+    socialMedia: {
+      title: 'السوشيال ميديا',
+      subtitle: 'شارك تجاربك وقصصك مع مجتمع عشاق السيارات',
+      createPost: 'إنشاء منشور',
+      filters: {
+        all: 'الكل',
+        trending: 'الأكثر رواجاً',
+        recent: 'الأحدث'
+      },
+      stats: {
+        totalPosts: 'إجمالي المنشورات',
+        activeUsers: 'المستخدمين النشطين',
+        totalLikes: 'إجمالي الإعجابات'
+      },
+      empty: {
+        title: 'لا توجد منشورات بعد',
+        subtitle: 'كن أول من يشارك في مجتمعنا!',
+        cta: 'إنشاء أول منشور'
+      },
+      loading: 'جاري تحميل المنشورات...'
+    },
+
     profileTypes: {
       private: 'Личен',
       dealer: 'Дилър',
@@ -1426,6 +1450,29 @@ export const translations = {
       topBrands: 'Top Brands',
       searchCars: 'Search Cars'
     },
+
+    socialMedia: {
+      title: 'Social Media',
+      subtitle: 'Share your experiences and stories with the car enthusiasts community',
+      createPost: 'Create Post',
+      filters: {
+        all: 'All',
+        trending: 'Trending',
+        recent: 'Recent'
+      },
+      stats: {
+        totalPosts: 'Total Posts',
+        activeUsers: 'Active Users',
+        totalLikes: 'Total Likes'
+      },
+      empty: {
+        title: 'No posts yet',
+        subtitle: 'Be the first to share in our community!',
+        cta: 'Create First Post'
+      },
+      loading: 'Loading posts...'
+    },
+
     profileTypes: {
       private: 'Private',
       dealer: 'Dealer',
