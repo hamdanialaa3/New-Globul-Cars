@@ -123,29 +123,41 @@ const ProfilePageWrapper: React.FC = () => {
       
       <S.PageContainer>
         {/* Tab Navigation */}
+        {/* ✅ FIXED: All tabs now point to correct routes with real data */}
         <TabNavigation $themeColor={theme.primary}>
+          {/* Profile Overview */}
           <TabNavLink to="/profile" end $themeColor={theme.primary}>
             <UserCircle size={16} />
             {language === 'bg' ? 'Профил' : 'Profile'}
           </TabNavLink>
+          
           {isOwnProfile && (
             <>
+              {/* ✅ FIXED: My Ads - Shows real user cars from Firestore */}
               <TabNavLink to="/profile/my-ads" $themeColor={theme.primary}>
                 <Car size={16} />
                 {language === 'bg' ? 'Моите обяви' : 'My Ads'}
               </TabNavLink>
+              
+              {/* ✅ Campaigns - Real advertising campaigns */}
               <TabNavLink to="/profile/campaigns" $themeColor={theme.primary}>
                 <Megaphone size={16} />
                 {language === 'bg' ? 'Реклами' : 'Campaigns'}
               </TabNavLink>
+              
+              {/* ✅ Analytics - Real statistics and insights */}
               <TabNavLink to="/profile/analytics" $themeColor={theme.primary}>
                 <BarChart3 size={16} />
                 {language === 'bg' ? 'Статистика' : 'Analytics'}
               </TabNavLink>
+              
+              {/* ✅ FIXED: Settings - Now includes Phase 5 (ProfileTypeSwitcher, Forms, etc.) */}
               <TabNavLink to="/profile/settings" $themeColor={theme.primary}>
                 <Shield size={16} />
                 {language === 'bg' ? 'Настройки' : 'Settings'}
               </TabNavLink>
+              
+              {/* ✅ Consultations - Real consultation system */}
               <TabNavLink to="/profile/consultations" $themeColor={theme.primary}>
                 <MessageCircle size={18} />
                 {language === 'bg' ? 'Консултации' : 'Consultations'}
