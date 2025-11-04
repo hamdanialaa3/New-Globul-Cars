@@ -154,7 +154,7 @@ export const syncCarToAlgolia = functions.firestore
  * Bulk re-index all active cars to Algolia
  * Callable function for admin use
  */
-export const reindexAllCars = functions.https.onCall(
+export const reindexAllCars = functions.region('europe-west1').https.onCall(
   async (data, context) => {
     // Check admin
     if (!context.auth || !context.auth.token.admin) {

@@ -349,7 +349,7 @@ function deriveOpsForPurpose(purpose: string): string[] {
   }
 }
 
-export const getSocialAccessToken = onCall({ cors: true }, async (request): Promise<TokenResponse> => {
+export const getSocialAccessToken = onCall({ cors: true, region: 'europe-west1' }, async (request): Promise<TokenResponse> => {
   const platform = request.data?.platform;
   if (!platform) {
     throw new Error('platform is required');
@@ -379,7 +379,7 @@ export const getSocialAccessToken = onCall({ cors: true }, async (request): Prom
 });
 
 // (Future) HTTP function variant for non-Firebase callers
-export const fetchSocialAccessToken = onRequest({ cors: true }, async (req, res) => {
+export const fetchSocialAccessToken = onRequest({ cors: true, region: 'europe-west1' }, async (req, res) => {
   if (req.method !== 'GET') {
     res.status(405).json({ error: 'Method Not Allowed' });
     return;
@@ -410,7 +410,7 @@ export const fetchSocialAccessToken = onRequest({ cors: true }, async (req, res)
 });
 
 // Lightweight metrics callable for observability (no tokens returned)
-export const getSocialTokenMetrics = onCall({ cors: true }, async (request) => {
+export const getSocialTokenMetrics = onCall({ cors: true, region: 'europe-west1' }, async (request) => {
   const isEmulator = process.env.FUNCTIONS_EMULATOR === 'true';
   if (!request.auth && !isEmulator) {
     throw new Error('Authentication required');

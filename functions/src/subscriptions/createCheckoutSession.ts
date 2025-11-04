@@ -32,7 +32,7 @@ export const createCheckoutSession = onCall<{
   planId: string;
   successUrl?: string;
   cancelUrl?: string;
-}>(async (request) => {
+}>({ region: 'europe-west1' }, async (request) => {
   const { userId, planId, successUrl, cancelUrl } = request.data;
 
   // 1. Check authentication
