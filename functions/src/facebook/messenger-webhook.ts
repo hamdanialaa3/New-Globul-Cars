@@ -149,7 +149,7 @@ async function processPostback(event: MessengerEvent): Promise<void> {
  * Messenger Webhook Handler
  */
 export const messengerWebhook = onRequest(
-  { cors: true },
+  { cors: true, region: 'europe-west1' },
   async (request, response) => {
     try {
       // Webhook verification (GET request)

@@ -130,7 +130,7 @@ function generateConfirmationCode(userId: string): string {
  * Called by Facebook when user requests data deletion
  */
 export const handleFacebookDataDeletion = onRequest(
-  { cors: true },
+  { cors: true, region: 'europe-west1' },
   async (request, response) => {
     try {
       // Only accept POST requests

@@ -27,7 +27,7 @@ interface TokenResponse {
  * Exchange OAuth authorization code for access token
  * Called from frontend after OAuth redirect
  */
-export const exchangeOAuthToken = functions.https.onCall(
+export const exchangeOAuthToken = functions.region('europe-west1').https.onCall(
   async (data: TokenExchangeRequest, context) => {
     // Verify authentication
     if (!context.auth) {
