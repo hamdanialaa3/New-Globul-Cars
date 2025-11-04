@@ -36,6 +36,7 @@ const HomePage = React.lazy(() => import('./pages/HomePage'));
 const CarsPage = React.lazy(() => import('./pages/CarsPage'));
 const CarDetailsPage = React.lazy(() => import('./pages/CarDetailsPage'));
 const SellPage = React.lazy(() => import('./pages/SellPageNew'));
+const SocialFeedPage = React.lazy(() => import('./pages/SocialFeedPage'));
 
 // Mobile.de-style sell workflow pages (الوحيد المستخدم)
 const VehicleStartPage = React.lazy(() => import('./pages/sell/VehicleStartPageNew'));
@@ -281,6 +282,7 @@ const MainLayout: React.FC = () => {
     <FloatingAddButton />
     <Routes>
       <Route path="/" element={<HomePage />} />
+      <Route path="/social" element={<SocialFeedPage />} />
       <Route path="/cars" element={<CarsPage />} />
       <Route path="/cars/:id" element={<CarDetailsPage />} />
       <Route path="/car/:id" element={<CarDetailsPage />} />
