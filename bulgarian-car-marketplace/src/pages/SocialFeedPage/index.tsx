@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { LeftSidebar } from './components/LeftSidebar';
 import { RightSidebar } from './components/RightSidebar';
 import { useAuth } from '../../contexts/AuthProvider';
-import { collection, getDocs, query, where, orderBy, limit as firestoreLimit, onSnapshot } from 'firebase/firestore';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { collection, query, where, orderBy, limit as firestoreLimit, onSnapshot } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
 
 interface Post {
@@ -36,119 +37,154 @@ interface Post {
 const SocialFeedPage: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [showSocialPosts, setShowSocialPosts] = useState(true);
   const [mainHeaderVisible, setMainHeaderVisible] = useState(false);
-  const [activeFilter, setActiveFilter] = useState('Smart');
+  const [activeFilter, setActiveFilter] = useState('smart');
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const filters = ['Smart', 'Newest', 'Most Liked', 'Most Comments', 'Trending'];
+  const filters = ['smart', 'newest', 'mostLiked', 'mostComments', 'trending'];
 
   // Auto-hide main header on mount
   useEffect(() => {
-    const header = document.querySelector('header');
+    const header = document.querySelector('header') as HTMLElement;
+    const mainContent = document.querySelector('[data-main-content]') as HTMLElement;
+    const leftSidebar = document.querySelector('[data-left-sidebar]') as HTMLElement;
+    const rightSidebar = document.querySelector('[data-right-sidebar]') as HTMLElement;
+    
     if (header) {
       header.style.transform = 'translateY(-100%)';
       header.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+    }
+    
+    // Adjust content position when header is hidden
+    if (mainContent) {
+      mainContent.style.paddingTop = '20px';
+      mainContent.style.transition = 'padding-top 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+    }
+    if (leftSidebar) {
+      leftSidebar.style.paddingTop = '8px';
+      leftSidebar.style.transition = 'padding-top 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+    }
+    if (rightSidebar) {
+      rightSidebar.style.paddingTop = '8px';
+      rightSidebar.style.transition = 'padding-top 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
     }
 
     return () => {
       if (header) {
         header.style.transform = 'translateY(0)';
       }
+      if (mainContent) {
+        mainContent.style.paddingTop = '80px';
+      }
+      if (leftSidebar) {
+        leftSidebar.style.paddingTop = '60px';
+      }
+      if (rightSidebar) {
+        rightSidebar.style.paddingTop = '60px';
+      }
     };
   }, []);
 
   // Toggle main header visibility manually
   useEffect(() => {
-    const header = document.querySelector('header');
+    const header = document.querySelector('header') as HTMLElement;
+    const mainContent = document.querySelector('[data-main-content]') as HTMLElement;
+    const leftSidebar = document.querySelector('[data-left-sidebar]') as HTMLElement;
+    const rightSidebar = document.querySelector('[data-right-sidebar]') as HTMLElement;
+    
     if (header) {
       if (mainHeaderVisible) {
         header.style.transform = 'translateY(0)';
         header.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+        
+        // Move content down when header is visible
+        if (mainContent) {
+          mainContent.style.paddingTop = '80px';
+        }
+        if (leftSidebar) {
+          leftSidebar.style.paddingTop = '60px';
+        }
+        if (rightSidebar) {
+          rightSidebar.style.paddingTop = '60px';
+        }
       } else {
         header.style.transform = 'translateY(-100%)';
         header.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+        
+        // Move content up when header is hidden
+        if (mainContent) {
+          mainContent.style.paddingTop = '20px';
+        }
+        if (leftSidebar) {
+          leftSidebar.style.paddingTop = '8px';
+        }
+        if (rightSidebar) {
+          rightSidebar.style.paddingTop = '8px';
+        }
       }
     }
   }, [mainHeaderVisible]);
 
   useEffect(() => {
-    const loadPosts = async () => {
-      try {
-        setLoading(true);
-        
-        let postsQuery;
-        
-        switch (activeFilter) {
-          case 'Newest':
-            postsQuery = query(
-              collection(db, 'posts'),
-              where('status', '==', 'published'),
-              where('visibility', '==', 'public'),
-              orderBy('createdAt', 'desc'),
-              firestoreLimit(20)
-            );
-            break;
-          case 'Most Liked':
-            postsQuery = query(
-              collection(db, 'posts'),
-              where('status', '==', 'published'),
-              where('visibility', '==', 'public'),
-              orderBy('engagement.likes', 'desc'),
-              firestoreLimit(20)
-            );
-            break;
-          case 'Most Comments':
-            postsQuery = query(
-              collection(db, 'posts'),
-              where('status', '==', 'published'),
-              where('visibility', '==', 'public'),
-              orderBy('engagement.comments', 'desc'),
-              firestoreLimit(20)
-            );
-            break;
-          default:
-            postsQuery = query(
-              collection(db, 'posts'),
-              where('status', '==', 'published'),
-              where('visibility', '==', 'public'),
-              orderBy('createdAt', 'desc'),
-              firestoreLimit(20)
-            );
-        }
-
-        const snapshot = await getDocs(postsQuery);
-        const postsData = snapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        })) as Post[];
-
-        setPosts(postsData);
-      } catch (error) {
-        console.error('Error loading posts:', error);
-        setPosts([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadPosts();
+    setLoading(true);
+    
+    let postsQuery;
+    
+    switch (activeFilter) {
+      case 'newest':
+        postsQuery = query(
+          collection(db, 'posts'),
+          where('status', '==', 'published'),
+          where('visibility', '==', 'public'),
+          orderBy('createdAt', 'desc'),
+          firestoreLimit(10)
+        );
+        break;
+      case 'mostLiked':
+        postsQuery = query(
+          collection(db, 'posts'),
+          where('status', '==', 'published'),
+          where('visibility', '==', 'public'),
+          orderBy('engagement.likes', 'desc'),
+          firestoreLimit(10)
+        );
+        break;
+      case 'mostComments':
+        postsQuery = query(
+          collection(db, 'posts'),
+          where('status', '==', 'published'),
+          where('visibility', '==', 'public'),
+          orderBy('engagement.comments', 'desc'),
+          firestoreLimit(10)
+        );
+        break;
+      default:
+        postsQuery = query(
+          collection(db, 'posts'),
+          where('status', '==', 'published'),
+          where('visibility', '==', 'public'),
+          orderBy('createdAt', 'desc'),
+          firestoreLimit(10)
+        );
+    }
 
     const unsubscribe = onSnapshot(
-      query(
-        collection(db, 'posts'),
-        where('status', '==', 'published'),
-        where('visibility', '==', 'public'),
-        orderBy('createdAt', 'desc'),
-        firestoreLimit(20)
-      ),
+      postsQuery,
       (snapshot) => {
         const postsData = snapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data()
         })) as Post[];
         setPosts(postsData);
+        setLoading(false);
+      },
+      (error) => {
+        console.error('Error loading posts:', error);
+        setPosts([]);
+        setLoading(false);
       }
     );
 
@@ -178,11 +214,11 @@ const SocialFeedPage: React.FC = () => {
 
   return (
     <PageContainer>
-      <LeftSidebarContainer>
+      <LeftSidebarContainer data-left-sidebar>
         <LeftSidebar />
       </LeftSidebarContainer>
 
-      <MainContent>
+      <MainContent data-main-content>
         <MainHeaderToggleButton 
           onClick={() => setMainHeaderVisible(!mainHeaderVisible)}
           $visible={mainHeaderVisible}
@@ -193,19 +229,19 @@ const SocialFeedPage: React.FC = () => {
 
         <PageHeader>
           <TitleSection>
-            <MainTitle>Social Media & Community</MainTitle>
-            <Subtitle>Share, discover, and connect with the car community</Subtitle>
+            <MainTitle>{t('social.title')}</MainTitle>
+            <Subtitle>{t('social.subtitle')}</Subtitle>
           </TitleSection>
           <ToggleButton onClick={() => setShowSocialPosts(!showSocialPosts)}>
-            {showSocialPosts ? 'Hide' : 'Show'} social posts
+            {showSocialPosts ? t('social.hideButton') : t('social.showButton')}
           </ToggleButton>
         </PageHeader>
 
         {showSocialPosts && (
           <ContentArea>
             <FeedHeader>
-              <FeedTitle>Community Feed</FeedTitle>
-              <FeedSubtitle>Share your stories, discover new cars, and connect with fellow enthusiasts</FeedSubtitle>
+              <FeedTitle>{t('social.communityFeed')}</FeedTitle>
+              <FeedSubtitle>{t('social.feedSubtitle')}</FeedSubtitle>
             </FeedHeader>
 
             <FilterBar>
@@ -215,35 +251,38 @@ const SocialFeedPage: React.FC = () => {
                   active={activeFilter === filter}
                   onClick={() => setActiveFilter(filter)}
                 >
-                  {filter}
+                  {t(`social.filters.${filter}`)}
                 </FilterButton>
               ))}
             </FilterBar>
 
             <CreatePostBox onClick={handleCreatePost}>
               <Avatar src={user?.photoURL || 'https://i.pravatar.cc/150?img=1'} alt="User" />
-              <PostInput placeholder={`What's on your mind, ${user?.displayName || 'Guest'}?`} readOnly />
+              <PostInput 
+                placeholder={t('social.createPost.placeholder').replace('{name}', user?.displayName || 'Guest')} 
+                readOnly 
+              />
             </CreatePostBox>
 
             <ActionButtons>
               <ActionBtn onClick={handleCreatePost}>
                 <PhotoIcon />
-                <span>Photo</span>
+                <span>{t('social.createPost.photo')}</span>
               </ActionBtn>
               <ActionBtn onClick={handleCreatePost}>
                 <VideoIcon />
-                <span>Video</span>
+                <span>{t('social.createPost.video')}</span>
               </ActionBtn>
               <ActionBtn onClick={handleCreatePost}>
                 <CarIcon />
-                <span>Car</span>
+                <span>{t('social.createPost.car')}</span>
               </ActionBtn>
             </ActionButtons>
 
             {loading ? (
               <LoadingState>
                 <LoadingSpinner />
-                <LoadingText>Loading posts...</LoadingText>
+                <LoadingText>{t('social.loading')}</LoadingText>
               </LoadingState>
             ) : posts.length > 0 ? (
               <PostsList>
@@ -275,20 +314,20 @@ const SocialFeedPage: React.FC = () => {
 
                     <PostStats>
                       <StatsLeft>
-                        {post.engagement.likes > 0 && <span>{post.engagement.likes} likes</span>}
+                        {post.engagement.likes > 0 && <span>{post.engagement.likes} {t('social.post.likes')}</span>}
                       </StatsLeft>
                       <StatsRight>
-                        {post.engagement.comments > 0 && <span>{post.engagement.comments} comments</span>}
-                        {post.engagement.shares > 0 && <span>{post.engagement.shares} shares</span>}
+                        {post.engagement.comments > 0 && <span>{post.engagement.comments} {t('social.post.comments')}</span>}
+                        {post.engagement.shares > 0 && <span>{post.engagement.shares} {t('social.post.shares')}</span>}
                       </StatsRight>
                     </PostStats>
 
                     <PostDivider />
 
                     <PostActions>
-                      <PostAction>👍 Like</PostAction>
-                      <PostAction>💬 Comment</PostAction>
-                      <PostAction>↗️ Share</PostAction>
+                      <PostAction>👍 {t('social.post.like')}</PostAction>
+                      <PostAction>💬 {t('social.post.comment')}</PostAction>
+                      <PostAction>↗️ {t('social.post.share')}</PostAction>
                     </PostActions>
                   </PostCard>
                 ))}
@@ -296,21 +335,21 @@ const SocialFeedPage: React.FC = () => {
             ) : (
               <EmptyState>
                 <EmptyIcon>📭</EmptyIcon>
-                <EmptyTitle>No posts yet</EmptyTitle>
-                <EmptyText>Be the first to share something interesting!</EmptyText>
-                <CreateButton onClick={handleCreatePost}>Create First Post</CreateButton>
+                <EmptyTitle>{t('social.emptyState.title')}</EmptyTitle>
+                <EmptyText>{t('social.emptyState.description')}</EmptyText>
+                <CreateButton onClick={handleCreatePost}>{t('social.emptyState.createButton')}</CreateButton>
               </EmptyState>
             )}
 
             <FeedFooter>
-              <FooterTitle>Community Feed</FooterTitle>
-              <FooterText>Latest stories, tips, and insights from the car community</FooterText>
+              <FooterTitle>{t('social.footer.title')}</FooterTitle>
+              <FooterText>{t('social.footer.description')}</FooterText>
             </FeedFooter>
           </ContentArea>
         )}
       </MainContent>
 
-      <RightSidebarContainer>
+      <RightSidebarContainer data-right-sidebar>
         <RightSidebar />
       </RightSidebarContainer>
     </PageContainer>
@@ -334,11 +373,13 @@ const PageContainer = styled.div`
 
 const LeftSidebarContainer = styled.aside`
   position: sticky;
-  top: 70px;
-  height: calc(100vh - 70px);
+  top: 80px;
+  height: calc(100vh - 80px);
   overflow-y: auto;
   overflow-x: hidden;
   padding: 8px 0;
+  padding-top: 8px;
+  transition: padding-top 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   
   &::-webkit-scrollbar {
     width: 6px;
@@ -362,26 +403,26 @@ const MainContent = styled.main`
   max-width: 720px;
   margin: 0 auto;
   width: 100%;
-  padding: 20px 16px;
+  padding: 20px 16px 20px 16px;
   position: relative;
+  transition: padding-top 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 
   @media (max-width: 768px) {
-    padding: 10px 8px;
+    padding: 20px 8px 10px 8px;
   }
 `;
 
 const MainHeaderToggleButton = styled.button<{ $visible: boolean }>`
   position: fixed;
   top: 20px;
-  left: 50%;
+  left: calc(50% + 200px);
   transform: translateX(-50%);
   width: 50px;
   height: 50px;
   border-radius: 50%;
   border: none;
-  background: ${props => props.$visible 
-    ? 'linear-gradient(135deg, #2c3e50 0%, #34495e 100%)' 
-    : 'linear-gradient(135deg, #1877f2 0%, #0d65d9 100%)'};
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -389,36 +430,29 @@ const MainHeaderToggleButton = styled.button<{ $visible: boolean }>`
   transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   z-index: 1000;
   
-  /* LED Glow Effect */
-  box-shadow: ${props => props.$visible 
-    ? `0 0 20px rgba(44, 62, 80, 0.3),
-       0 0 40px rgba(44, 62, 80, 0.2),
-       0 0 60px rgba(44, 62, 80, 0.1),
-       0 4px 12px rgba(0, 0, 0, 0.2)`
-    : `0 0 20px rgba(24, 119, 242, 0.6),
-       0 0 40px rgba(24, 119, 242, 0.4),
-       0 0 60px rgba(24, 119, 242, 0.2),
-       0 0 80px rgba(24, 119, 242, 0.1),
-       0 4px 16px rgba(24, 119, 242, 0.3)`};
+  /* LED Glow Effect - Simplified for performance */
+  box-shadow: 
+    0 0 20px rgba(242, 206, 24, 0.5),
+    0 0 40px rgba(24, 119, 242, 0.3),
+    0 4px 12px rgba(24, 119, 242, 0.2),
+    inset 0 0 15px rgba(24, 119, 242, 0.15);
   
-  animation: ${props => props.$visible ? 'none' : 'pulse 2s ease-in-out infinite'};
+  animation: pulse 3s ease-in-out infinite;
 
   @keyframes pulse {
     0%, 100% {
       box-shadow: 
-        0 0 20px rgba(24, 119, 242, 0.6),
-        0 0 40px rgba(24, 119, 242, 0.4),
-        0 0 60px rgba(24, 119, 242, 0.2),
-        0 0 80px rgba(24, 119, 242, 0.1),
-        0 4px 16px rgba(24, 119, 242, 0.3);
+        0 0 20px rgba(242, 198, 24, 0.5),
+        0 0 40px rgba(24, 119, 242, 0.3),
+        0 4px 12px rgba(24, 119, 242, 0.2),
+        inset 0 0 15px rgba(24, 119, 242, 0.15);
     }
     50% {
       box-shadow: 
-        0 0 30px rgba(24, 119, 242, 0.8),
-        0 0 60px rgba(24, 119, 242, 0.6),
-        0 0 90px rgba(24, 119, 242, 0.4),
-        0 0 120px rgba(24, 119, 242, 0.2),
-        0 6px 20px rgba(24, 119, 242, 0.4);
+        0 0 30px rgba(217, 242, 24, 0.7),
+        0 0 50px rgba(24, 119, 242, 0.4),
+        0 6px 16px rgba(24, 119, 242, 0.3),
+        inset 0 0 20px rgba(24, 119, 242, 0.25);
     }
   }
 
@@ -431,15 +465,13 @@ const MainHeaderToggleButton = styled.button<{ $visible: boolean }>`
     width: 70%;
     height: 70%;
     border-radius: 50%;
-    background: ${props => props.$visible 
-      ? 'radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%)' 
-      : 'radial-gradient(circle, rgba(255,255,255,0.5) 0%, transparent 70%)'};
+    background: radial-gradient(circle, rgba(255,255,255,0.6) 0%, transparent 70%);
     transform: translate(-50%, -50%);
-    opacity: ${props => props.$visible ? '0.5' : '1'};
+    opacity: 1;
     transition: opacity 0.3s;
   }
 
-  /* Outer Ring */
+  /* Outer Ring - Disabled for performance */
   &::after {
     content: '';
     position: absolute;
@@ -448,31 +480,21 @@ const MainHeaderToggleButton = styled.button<{ $visible: boolean }>`
     right: -4px;
     bottom: -4px;
     border-radius: 50%;
-    background: ${props => props.$visible 
-      ? 'transparent' 
-      : 'conic-gradient(from 0deg, transparent, rgba(24, 119, 242, 0.3), transparent)'};
-    animation: ${props => props.$visible ? 'none' : 'rotate 3s linear infinite'};
+    background: transparent;
     z-index: -1;
   }
 
-  @keyframes rotate {
-    to { transform: rotate(360deg); }
-  }
-
   &:hover {
-    background: ${props => props.$visible 
-      ? 'linear-gradient(135deg, #34495e 0%, #2c3e50 100%)' 
-      : 'linear-gradient(135deg, #0d65d9 0%, #0a4fb8 100%)'};
+    background: rgba(24, 119, 242, 0.25);
+    backdrop-filter: blur(15px);
     transform: translateX(-50%) scale(1.15) translateY(-4px);
-    box-shadow: ${props => props.$visible 
-      ? `0 0 25px rgba(44, 62, 80, 0.5),
-         0 0 50px rgba(44, 62, 80, 0.3),
-         0 6px 20px rgba(0, 0, 0, 0.3)`
-      : `0 0 30px rgba(24, 119, 242, 0.8),
-         0 0 60px rgba(24, 119, 242, 0.6),
-         0 0 90px rgba(24, 119, 242, 0.4),
-         0 0 120px rgba(24, 119, 242, 0.3),
-         0 6px 24px rgba(24, 119, 242, 0.5)`};
+    box-shadow: 
+      0 0 30px rgba(137, 242, 24, 0.9),
+      0 0 60px rgba(24, 119, 242, 0.7),
+      0 0 90px rgba(24, 119, 242, 0.5),
+      0 0 120px rgba(24, 119, 242, 0.3),
+      0 6px 24px rgba(24, 119, 242, 0.5),
+      inset 0 0 30px rgba(24, 119, 242, 0.5);
   }
 
   &:active {
@@ -484,6 +506,7 @@ const MainHeaderToggleButton = styled.button<{ $visible: boolean }>`
     width: 44px;
     height: 44px;
     top: 15px;
+    left: calc(50% + 100px);
   }
 `;
 
@@ -497,17 +520,20 @@ const ArrowIcon = styled.span<{ $expanded: boolean }>`
   filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
   z-index: 1;
   position: relative;
-  text-shadow: ${props => props.$expanded 
-    ? '0 0 10px rgba(255,255,255,0.5)' 
-    : '0 0 10px rgba(255,255,255,0.8), 0 0 20px rgba(255,255,255,0.5)'};
+  text-shadow: 
+    0 0 10px rgba(255,255,255,0.9),
+    0 0 20px rgba(24, 119, 242, 0.8),
+    0 0 30px rgba(24, 119, 242, 0.6);
 `;
 
 const RightSidebarContainer = styled.aside`
   position: sticky;
-  top: 70px;
-  height: calc(100vh - 70px);
+  top: 80px;
+  height: calc(100vh - 80px);
   overflow-y: auto;
   overflow-x: hidden;
+  padding-top: 8px;
+  transition: padding-top 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   
   &::-webkit-scrollbar {
     width: 6px;

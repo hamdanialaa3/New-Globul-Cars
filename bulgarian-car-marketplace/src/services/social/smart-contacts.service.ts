@@ -27,16 +27,22 @@ class SmartContactsService {
     return SmartContactsService.instance;
   }
 
-  // Get smart contacts with intelligent ranking
+  // Get smart contacts with intelligent ranking (OPTIMIZED)
   public async getSmartContacts(
     currentUserId: string,
     limitCount: number = 20
   ): Promise<SmartContact[]> {
     try {
-      logger.info('Fetching smart contacts', { userId: currentUserId, limit: limitCount });
+      logger.info('Fetching smart contacts (optimized)', { userId: currentUserId, limit: limitCount });
 
-      // Fetch all users from Firestore
-      const usersSnapshot = await getDocs(collection(db, 'users'));
+      // OPTIMIZATION: Fetch only active users (limit to 50 instead of ALL)
+      const usersQuery = query(
+        collection(db, 'users'),
+        orderBy('lastActivity', 'desc'),
+        firestoreLimit(50)
+      );
+      
+      const usersSnapshot = await getDocs(usersQuery);
       const allUsers = usersSnapshot.docs
         .map(doc => {
           const data = doc.data();
@@ -48,45 +54,56 @@ class SmartContactsService {
             location: data.location || { city: 'Unknown', country: 'Bulgaria' },
             interests: data.interests || this.extractInterestsFromProfile(data),
             lastActivity: data.lastActivity?.toDate ? data.lastActivity.toDate() : new Date(data.lastActivity || Date.now()),
-            mutualFriends: 0, // Will be calculated
-            relevanceScore: 0, // Will be calculated
+            mutualFriends: 0,
+            relevanceScore: 0,
           };
         })
-        .filter(user => user.id !== currentUserId); // Exclude current user
+        .filter(user => user.id !== currentUserId);
 
-      // Get current user data for comparison
-      const currentUser = await this.getUserData(currentUserId);
-
-      // Calculate relevance scores using smart algorithms
+      // Quick scoring (simplified for performance)
       const rankedUsers = allUsers.map(user => ({
         ...user,
-        relevanceScore: this.calculateRelevanceScore(user, currentUser),
+        relevanceScore: this.calculateQuickScore(user),
       }));
 
-      // Sort by relevance score (highest first) and online status
+      // Sort by online status first, then score
       rankedUsers.sort((a, b) => {
-        // Online users first
         if (a.isOnline !== b.isOnline) {
           return b.isOnline ? 1 : -1;
         }
-        // Then by relevance score
         return b.relevanceScore - a.relevanceScore;
       });
 
-      // Return top N contacts
       const topContacts = rankedUsers.slice(0, limitCount);
 
-      logger.info('Smart contacts fetched successfully', {
-        total: allUsers.length,
+      logger.info('Smart contacts fetched (optimized)', {
+        fetched: allUsers.length,
         returned: topContacts.length,
       });
 
       return topContacts;
     } catch (error) {
       logger.error('Error fetching smart contacts', error as Error);
-      // Return empty array instead of throwing
       return [];
     }
+  }
+
+  // Simplified quick scoring for performance
+  private calculateQuickScore(contact: SmartContact): number {
+    let score = 0;
+
+    // Online bonus
+    if (contact.isOnline) score += 50;
+
+    // Recent activity
+    if (contact.lastActivity) {
+      const hoursSinceActivity = (Date.now() - contact.lastActivity.getTime()) / (1000 * 60 * 60);
+      if (hoursSinceActivity < 1) score += 30;
+      else if (hoursSinceActivity < 24) score += 15;
+      else if (hoursSinceActivity < 168) score += 5;
+    }
+
+    return score;
   }
 
   // Calculate relevance score based on multiple factors

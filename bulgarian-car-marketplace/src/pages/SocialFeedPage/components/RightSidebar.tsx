@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { smartContactsService } from '../../../services/social/smart-contacts.service';
 import { useAuth } from '../../../contexts/AuthProvider';
+import { useLanguage } from '../../../contexts/LanguageContext';
 
 interface SmartContact {
   id: string;
@@ -22,6 +23,7 @@ const GROUP_CONVERSATIONS = [
 
 export const RightSidebar: React.FC = () => {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [contacts, setContacts] = useState<SmartContact[]>([]);
   const [loading, setLoading] = useState(true);
   const [onlineCount, setOnlineCount] = useState(0);
@@ -32,10 +34,10 @@ export const RightSidebar: React.FC = () => {
         setLoading(true);
         
         // Get smart contacts (ranked by intelligent algorithm)
-        // Smart ranking based on: Location, Interests, Recent Activity, Online Status
+        // Smart ranking based on: Recent Activity, Online Status
         const smartContacts = await smartContactsService.getSmartContacts(
           user?.uid || 'anonymous',
-          20 // Increased to 20 contacts for better display
+          12 // Optimized: 12 contacts for better performance
         );
         
         setContacts(smartContacts);
@@ -53,8 +55,8 @@ export const RightSidebar: React.FC = () => {
 
     loadContacts();
 
-    // Refresh contacts every 1 minute for better real-time feel
-    const interval = setInterval(loadContacts, 60000);
+    // Refresh contacts every 5 minutes (optimized for performance)
+    const interval = setInterval(loadContacts, 300000);
     return () => clearInterval(interval);
   }, [user]);
 
@@ -65,7 +67,7 @@ export const RightSidebar: React.FC = () => {
   return (
     <Container>
       <SectionHeader>
-        <Title>Sponsored</Title>
+        <Title>{t('social.sidebar.sponsored')}</Title>
       </SectionHeader>
 
       <AdCard>
@@ -88,8 +90,8 @@ export const RightSidebar: React.FC = () => {
 
       <SectionHeader>
         <Title>
-          Contacts
-          {onlineCount > 0 && <OnlineIndicator>({onlineCount} online)</OnlineIndicator>}
+          {t('social.sidebar.contacts')}
+          {onlineCount > 0 && <OnlineIndicator>({onlineCount} {t('social.sidebar.online')})</OnlineIndicator>}
         </Title>
         <IconGroup>
           <IconButton title="Video call">📹</IconButton>
@@ -101,7 +103,7 @@ export const RightSidebar: React.FC = () => {
       {loading ? (
         <LoadingState>
           <LoadingSpinner />
-          <LoadingText>Loading contacts...</LoadingText>
+          <LoadingText>{t('notifications.loading')}</LoadingText>
         </LoadingState>
       ) : (
         <>
@@ -125,7 +127,7 @@ export const RightSidebar: React.FC = () => {
           {onlineContacts.length > 0 && (
             <>
               <SubSectionTitle>
-                Online ({onlineContacts.length})
+                {t('social.sidebar.online')} ({onlineContacts.length})
               </SubSectionTitle>
               {onlineContacts.map((contact, idx) => (
                 <Contact key={contact.id}>
@@ -156,9 +158,9 @@ export const RightSidebar: React.FC = () => {
             <>
               {onlineContacts.length > 0 && <MiniDivider />}
               <SubSectionTitle>
-                Offline ({offlineContacts.length})
+                {t('social.sidebar.offline')} ({offlineContacts.length})
               </SubSectionTitle>
-              {offlineContacts.slice(0, 8).map((contact) => (
+              {offlineContacts.slice(0, 5).map((contact) => (
                 <Contact key={contact.id} $offline>
                   <AvatarContainer>
                     <Avatar src={contact.photoURL || `https://i.pravatar.cc/150?u=${contact.id}`} />
@@ -182,8 +184,8 @@ export const RightSidebar: React.FC = () => {
           {contacts.length === 0 && (
             <EmptyContacts>
               <EmptyIcon>👥</EmptyIcon>
-              <EmptyText>No contacts available</EmptyText>
-              <EmptySubText>Users will appear here as they join</EmptySubText>
+              <EmptyText>{t('social.sidebar.noContacts')}</EmptyText>
+              <EmptySubText>{t('social.sidebar.contactsWillAppear')}</EmptySubText>
             </EmptyContacts>
           )}
         </>

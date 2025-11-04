@@ -810,6 +810,67 @@ export const translations = {
       messages: 'Съобщения',
       system: 'Система'
     },
+    social: {
+      title: 'Социални мрежи и общност',
+      subtitle: 'Споделяйте, откривайте и се свързвайте с автомобилната общност',
+      hideButton: 'Скрий публикации',
+      showButton: 'Покажи публикации',
+      communityFeed: 'Обществена емисия',
+      feedSubtitle: 'Споделете вашите истории, открийте нови коли и се свържете с ентусиасти',
+      filters: {
+        smart: 'Умно',
+        newest: 'Най-нови',
+        mostLiked: 'Най-харесвани',
+        mostComments: 'Най-коментирани',
+        trending: 'В тренд'
+      },
+      createPost: {
+        placeholder: 'Какво мислиш, {name}?',
+        photo: 'Снимка',
+        video: 'Видео',
+        car: 'Кола'
+      },
+      emptyState: {
+        title: 'Все още няма публикации',
+        description: 'Бъдете първият, който споделя нещо интересно!',
+        createButton: 'Създай първа публикация'
+      },
+      footer: {
+        title: 'Обществена емисия',
+        description: 'Последни истории, съвети и прозрения от автомобилната общност'
+      },
+      post: {
+        like: 'Харесай',
+        comment: 'Коментирай',
+        share: 'Сподели',
+        likes: 'харесвания',
+        comments: 'коментара',
+        shares: 'споделяния'
+      },
+      loading: 'Зареждане на публикации...',
+      sidebar: {
+        yourProfile: 'Вашият профил',
+        friends: 'Приятели',
+        saved: 'Запазени',
+        savedSearches: 'Запазени търсения',
+        allPosts: 'Всички публикации',
+        marketplace: 'Marketplace',
+        newsFeed: 'Новини',
+        dealers: 'Дилъри',
+        events: 'Събития',
+        gallery: 'Галерия',
+        messages: 'Съобщения',
+        notifications: 'Известия',
+        shortcuts: 'Вашите пряки пътища',
+        seeMore: 'Виж повече',
+        sponsored: 'Спонсорирано',
+        contacts: 'Контакти',
+        online: 'онлайн',
+        offline: 'Офлайн',
+        noContacts: 'Няма налични контакти',
+        contactsWillAppear: 'Потребителите ще се появят тук, когато се присъединят'
+      }
+    },
     fullThemeDemo: {
       title: 'Демо на пълна тема', overview: 'Преглед', primaryTheme: 'Основна тема', testPrimary: 'Тествай основна', secondaryTheme: 'Вторична тема', testSecondary: 'Тествай вторична', accentTheme: 'Акцентна тема', testAccent: 'Тествай акцент', neutralTheme: 'Неутрална тема', testNeutral: 'Тествай неутрална',
       typography: 'Типография', headings: 'Заглавия', testHeadings: 'Тествай заглавия', bodyText: 'Основен текст', testBodyText: 'Тествай текст', captions: 'Надписи', testCaptions: 'Тествай надписи', links: 'Връзки', testLinks: 'Тествай връзки',
@@ -1873,6 +1934,67 @@ export const translations = {
       unread: 'Unread',
       messages: 'Messages',
       system: 'System'
+    },
+    social: {
+      title: 'Social Media & Community',
+      subtitle: 'Share, discover, and connect with the car community',
+      hideButton: 'Hide social posts',
+      showButton: 'Show social posts',
+      communityFeed: 'Community Feed',
+      feedSubtitle: 'Share your stories, discover new cars, and connect with fellow enthusiasts',
+      filters: {
+        smart: 'Smart',
+        newest: 'Newest',
+        mostLiked: 'Most Liked',
+        mostComments: 'Most Comments',
+        trending: 'Trending'
+      },
+      createPost: {
+        placeholder: "What's on your mind, {name}?",
+        photo: 'Photo',
+        video: 'Video',
+        car: 'Car'
+      },
+      emptyState: {
+        title: 'No posts yet',
+        description: 'Be the first to share something interesting!',
+        createButton: 'Create First Post'
+      },
+      footer: {
+        title: 'Community Feed',
+        description: 'Latest stories, tips, and insights from the car community'
+      },
+      post: {
+        like: 'Like',
+        comment: 'Comment',
+        share: 'Share',
+        likes: 'likes',
+        comments: 'comments',
+        shares: 'shares'
+      },
+      loading: 'Loading posts...',
+      sidebar: {
+        yourProfile: 'Your Profile',
+        friends: 'Friends',
+        saved: 'Saved',
+        savedSearches: 'Saved Searches',
+        allPosts: 'All Posts',
+        marketplace: 'Marketplace',
+        newsFeed: 'News Feed',
+        dealers: 'Dealers',
+        events: 'Events',
+        gallery: 'Gallery',
+        messages: 'Messages',
+        notifications: 'Notifications',
+        shortcuts: 'Your shortcuts',
+        seeMore: 'See more',
+        sponsored: 'Sponsored',
+        contacts: 'Contacts',
+        online: 'online',
+        offline: 'Offline',
+        noContacts: 'No contacts available',
+        contactsWillAppear: 'Users will appear here as they join'
+      }
     },
     fullThemeDemo: {
       title: 'Full Theme Demo Page', overview: 'Overview', primaryTheme: 'Primary Theme', testPrimary: 'Test Primary', secondaryTheme: 'Secondary Theme', testSecondary: 'Test Secondary', accentTheme: 'Accent Theme', testAccent: 'Test Accent', neutralTheme: 'Neutral Theme', testNeutral: 'Test Neutral',
