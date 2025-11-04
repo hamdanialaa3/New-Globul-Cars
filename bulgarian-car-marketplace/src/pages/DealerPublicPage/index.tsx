@@ -157,7 +157,7 @@ const DealerPublicPage: React.FC = () => {
   // SEO metadata
   const pageTitle = `${dealer.businessName || dealer.displayName} - Bulgarian Car Marketplace`;
   const pageDescription = dealer.description || `Browse cars from ${dealer.businessName || dealer.displayName}`;
-  const pageImage = dealer.photoURL || '/default-dealer.png';
+  const pageImage = dealer.photoURL || '/mobile-eu-logo.png';
 
   return (
     <>
@@ -177,7 +177,7 @@ const DealerPublicPage: React.FC = () => {
       <Container>
         {/* Hero Section */}
         <HeroSection>
-          <ProfileImage src={dealer.photoURL || '/default-dealer.png'} alt={dealer.displayName} />
+          <ProfileImage src={dealer.photoURL || '/mobile-eu-logo.png'} alt={dealer.displayName} />
           <ProfileInfo>
             <NameContainer>
               <h1>{dealer.businessName || dealer.displayName}</h1>
