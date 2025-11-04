@@ -142,7 +142,7 @@ export const getVehicleHistoryReport = onCall({
 /**
  * Get Cached Vehicle History Report
  */
-export const getCachedVehicleHistory = onCall(async (request) => {
+export const getCachedVehicleHistory = onCall({ region: 'europe-west1' }, async (request) => {
   if (!request.auth) {
     throw new Error('Authentication required');
   }

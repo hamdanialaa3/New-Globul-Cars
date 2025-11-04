@@ -2,7 +2,7 @@
   "name": "bulgarian-car-marketplace",
   "version": "0.1.0",
   "private": true,
-  "homepage": ".",
+  "homepage": "/",
   "dependencies": {
     "@hcaptcha/react-hcaptcha": "^1.12.1",
     "@react-google-maps/api": "^2.20.7",
