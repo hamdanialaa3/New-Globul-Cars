@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '../../../hooks/useTranslation';
 import { useAuth } from '../../../hooks/useAuth';
 import { SocialAuthService } from '../../../firebase/social-auth-service';
-import { BulgarianProfileService } from '../../../services/bulgarian-profile-service';
+import { userService } from '@/services/user/canonical-user.service';
 import { RegisterFormData, ValidationErrors } from '../types';
 
 export const useEnhancedRegister = () => {

@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import { useAuth } from '../hooks/useAuth';
 import { useLanguage } from '../contexts/LanguageContext';
 import { logger } from '../services/logger-service';
-import { BulgarianProfileService } from '../services/bulgarian-profile-service';
+import { userService } from '@/services/user/canonical-user.service';
 import type { DealershipInfo } from '../types/dealership/dealership.types';
 import { dealershipService } from '../services/dealership/dealership.service';
 import { UserRepository } from '../repositories/UserRepository';
