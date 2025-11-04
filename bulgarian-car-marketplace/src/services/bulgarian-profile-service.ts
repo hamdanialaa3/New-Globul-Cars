@@ -33,46 +33,14 @@ import { serviceLogger } from './logger-wrapper';
 
 // ✅ NEW: Import from canonical types file
 import type { BulgarianUser, DealerProfile as DealerUserProfile } from '../types/user/bulgarian-user.types';
+import type { DealershipInfo } from '../types/dealership/dealership.types';
 
-// Extended interfaces for Bulgarian market
-export interface DealerProfile {
-  companyName: string;
-  licenseNumber: string;
-  vatNumber?: string;
-  address: {
-    street: string;
-    city: string;
-    postalCode: string;
-    region: string;
-  };
-  contactInfo: {
-    phone: string;
-    email: string;
-    website?: string;
-    fax?: string;
-  };
-  businessHours: {
-    monday: { open: string; close: string; closed: boolean };
-    tuesday: { open: string; close: string; closed: boolean };
-    wednesday: { open: string; close: string; closed: boolean };
-    thursday: { open: string; close: string; closed: boolean };
-    friday: { open: string; close: string; closed: boolean };
-    saturday: { open: string; close: string; closed: boolean };
-    sunday: { open: string; close: string; closed: boolean };
-  };
-  specializations: string[]; // e.g., ['luxury', 'electric', 'commercial']
-  certifications: string[];
-  rating: {
-    average: number;
-    totalReviews: number;
-  };
-  verificationStatus: 'pending' | 'verified' | 'rejected';
-  verificationDocuments: {
-    businessLicense: string;
-    vatCertificate?: string;
-    insuranceCertificate?: string;
-  };
-}
+/**
+ * @deprecated Use DealershipInfo from '../types/dealership/dealership.types' instead
+ * This interface is kept only for backward compatibility
+ * Will be removed in Phase 4 (Week 8)
+ */
+export type DealerProfile = DealershipInfo;
 
 export interface UserPreferences {
   language: 'bg' | 'en';
@@ -173,9 +141,15 @@ export class BulgarianProfileService {
         currency: 'EUR',
         phoneCountryCode: '+359',
         
-        // User type
-        isDealer: profileData.isDealer || false,
-        dealerInfo: dealerData,
+        // ✅ FIXED: Use profileType instead of isDealer
+        profileType: profileData.profileType || (dealerData ? 'dealer' : 'private'),
+        dealershipRef: dealerData ? `dealerships/${userId}` : undefined,
+        dealerSnapshot: dealerData ? {
+          nameBG: dealerData.dealershipNameBG || dealerData.companyName || '',
+          nameEN: dealerData.dealershipNameEN || '',
+          logo: dealerData.logo,
+          status: 'pending'
+        } : undefined,
         
         // Social providers
         linkedProviders: profileData.linkedProviders || [],
@@ -292,35 +266,38 @@ export class BulgarianProfileService {
   /**
    * Create or update dealer profile
    * 
-   * @deprecated Use dealershipService.saveDealershipInfo() instead
-   * This method will be removed in Phase 2A (Week 4)
+   * @deprecated Use DealershipRepository.createOrUpdate() instead
+   * This method will be removed in Phase 4 (Week 8)
    * 
-   * Migration: Use dealershipService.saveDealershipInfo(userId, dealerData)
+   * Migration: import { DealershipRepository } from '@/repositories/DealershipRepository'
+   *            await DealershipRepository.createOrUpdate(userId, dealershipData)
    */
-  static async setupDealerProfile(userId: string, dealerData: DealerProfile): Promise<void> {
-    console.warn(`⚠️ [DEPRECATED] setupDealerProfile() called for user ${userId}. Use dealershipService instead.`);
+  static async setupDealerProfile(userId: string, dealerData: DealershipInfo): Promise<void> {
+    serviceLogger.warn('[DEPRECATED] setupDealerProfile() called. Use DealershipRepository instead', { userId });
+    
     try {
-      // Validate dealer data
-      if (!dealerData.companyName || !dealerData.licenseNumber) {
-        throw new Error('Company name and license number are required');
-      }
-
-      // Update user profile to mark as dealer
-      await this.updateUserProfile(userId, {
-        isDealer: true,
-        dealerInfo: dealerData
-      });
-
-      // Create separate dealer document for advanced queries
-      const dealerRef = doc(db, 'dealers', userId);
-      await setDoc(dealerRef, {
-        userId,
+      // ✅ FIXED: Now writes to 'dealerships' collection (not 'dealers')
+      const dealershipRef = doc(db, 'dealerships', userId);
+      await setDoc(dealershipRef, {
+        uid: userId,
         ...dealerData,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp()
+      }, { merge: true });
+
+      // Update user profile with new structure
+      await this.updateUserProfile(userId, {
+        profileType: 'dealer' as any,
+        dealershipRef: `dealerships/${userId}` as any,
+        dealerSnapshot: {
+          nameBG: (dealerData as any).dealershipNameBG || (dealerData as any).companyName || '',
+          nameEN: (dealerData as any).dealershipNameEN || (dealerData as any).companyName || '',
+          logo: (dealerData as any).logo,
+          status: 'pending'
+        } as any
       });
     } catch (error) {
-      serviceLogger.error('[SERVICE] Error setting up dealer profile', error as Error, { userId, companyName: dealerData.companyName });
+      serviceLogger.error('[SERVICE] Error setting up dealer profile', error as Error, { userId });
       throw error;
     }
   }

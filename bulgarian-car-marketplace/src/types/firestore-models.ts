@@ -24,19 +24,14 @@ export interface BaseDocument {
  * OLD definition removed - now using canonical type above
  */
 
-// Dealer specific information (for dealerships collection)
-export interface DealerInfo {
-  companyName: string;
-  licenseNumber: string;
-  taxNumber: string;
-  address: BulgarianAddress;
-  verified: boolean;
-  verificationDate?: Timestamp;
-  specializations: string[]; // e.g., ['BMW', 'Mercedes', 'SUV']
-  serviceArea: string[]; // Bulgarian cities/regions
-  rating: number;
-  totalReviews: number;
-}
+import type { DealershipInfo } from './dealership/dealership.types';
+
+/**
+ * @deprecated Use DealershipInfo from './dealership/dealership.types' instead
+ * This type is kept only for backward compatibility
+ * Will be removed in Phase 4 (Week 8)
+ */
+export type DealerInfo = DealershipInfo;
 
 // Bulgarian address structure
 export interface BulgarianAddress {

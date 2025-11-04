@@ -1,0 +1,49 @@
+{
+  "extends": [
+    "react-app",
+    "react-app/jest"
+  ],
+  "rules": {
+    // ✅ Enforce proper useEffect cleanup
+    "react-hooks/exhaustive-deps": "warn",
+    
+    // ✅ No console statements in production
+    "no-console": ["warn", {
+      "allow": ["warn", "error"]
+    }],
+    
+    // ✅ Prefer const over let
+    "prefer-const": "warn",
+    
+    // ✅ No unused vars
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": ["warn", {
+      "argsIgnorePattern": "^_",
+      "varsIgnorePattern": "^_"
+    }],
+    
+    // ✅ No any type (except where explicitly allowed)
+    "@typescript-eslint/no-explicit-any": "warn",
+    
+    // ✅ Proper async/await usage
+    "require-await": "warn",
+    "no-return-await": "warn",
+    
+    // ✅ Proper error handling
+    "no-throw-literal": "warn",
+    
+    // ✅ Import order
+    "import/order": ["warn", {
+      "groups": [
+        "builtin",
+        "external",
+        "internal",
+        "parent",
+        "sibling",
+        "index"
+      ],
+      "newlines-between": "never"
+    }]
+  }
+}
+

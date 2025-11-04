@@ -12,6 +12,7 @@ import { ToastProvider } from './components/Toast';
 import { bulgarianTheme, GlobalStyles } from './styles/theme';
 import './styles/mobile-responsive.css';
 import ErrorBoundary from './components/ErrorBoundary';
+import RouteErrorBoundary from './components/ErrorBoundary/RouteErrorBoundary';
 import { SkipNavigation } from './components/Accessibility';
 import Header from './components/Header/Header';
 import MobileHeader from './components/Header/MobileHeader'; // ✅ NEW: Mobile-only header

@@ -210,19 +210,14 @@ export const ProfileAnalyticsDashboard: React.FC<ProfileAnalyticsDashboardProps>
   const [analytics, setAnalytics] = useState<ProfileAnalytics | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    loadAnalytics();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId, period]);
-
-  const loadAnalytics = async () => {
+  // ✅ FIXED: Added useCallback with proper dependencies
+  const loadAnalytics = React.useCallback(async () => {
     try {
       setLoading(true);
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Loading REAL analytics', { userId, period });
       }
       
-      // ✅ Get REAL data from Firebase
       const realData = await profileAnalyticsService.getAnalytics(userId, period);
       
       if (process.env.NODE_ENV === 'development') {
@@ -235,7 +230,11 @@ export const ProfileAnalyticsDashboard: React.FC<ProfileAnalyticsDashboardProps>
     } finally {
       setLoading(false);
     }
-  };
+  }, [userId, period]);
+
+  useEffect(() => {
+    loadAnalytics();
+  }, [loadAnalytics]);
 
   const t = (key: string) => {
     const translations: Record<string, Record<string, any>> = {

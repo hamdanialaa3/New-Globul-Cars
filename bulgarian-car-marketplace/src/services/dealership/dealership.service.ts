@@ -43,7 +43,8 @@ class DealershipService {
     try {
       const dealershipRef = doc(db, 'dealerships', userId);
       
-      const dataToSave: any = {
+      // ✅ FIXED: Type-safe (removed 'any')
+      const dataToSave: Partial<DealershipInfo> & { updatedAt: any; createdAt?: any } = {
         ...dealershipData,
         updatedAt: serverTimestamp()
       };

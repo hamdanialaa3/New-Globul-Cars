@@ -1,0 +1,7 @@
+// Add to dependencies:
+{
+  "zod": "^3.22.4"
+}
+
+// Run: npm install zod
+

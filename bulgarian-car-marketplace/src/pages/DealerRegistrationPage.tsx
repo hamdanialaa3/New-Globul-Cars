@@ -7,7 +7,13 @@ import styled from 'styled-components';
 import { useAuth } from '../hooks/useAuth';
 import { useLanguage } from '../contexts/LanguageContext';
 import { logger } from '../services/logger-service';
-import { BulgarianProfileService, DealerProfile } from '../services/bulgarian-profile-service';
+import { BulgarianProfileService } from '../services/bulgarian-profile-service';
+import type { DealershipInfo } from '../types/dealership/dealership.types';
+import { dealershipService } from '../services/dealership/dealership.service';
+import { UserRepository } from '../repositories/UserRepository';
+
+// Type alias for compatibility
+type DealerProfile = DealershipInfo;
 import { Check, Upload, Building, FileText, CreditCard, Send } from 'lucide-react';
 
 const Container = styled.div`
@@ -238,7 +244,23 @@ const DealerRegistrationPage: React.FC = () => {
 
     setLoading(true);
     try {
-      await BulgarianProfileService.setupDealerProfile(user.uid, dealerData as DealerProfile);
+      // ✅ FIXED: Use modern approach instead of deprecated setupDealerProfile
+      const dealershipService = new DealershipService();
+      
+      // 1. Save dealership data
+      await dealershipService.saveDealershipInfo(user.uid, dealerData as DealerProfile);
+      
+      // 2. Update user profile to dealer type
+      await UserRepository.update(user.uid, {
+        profileType: 'dealer' as any,
+        dealershipRef: `dealerships/${user.uid}` as any,
+        dealerSnapshot: {
+          nameBG: dealerData.dealershipNameBG || dealerData.companyName || '',
+          nameEN: dealerData.dealershipNameEN || '',
+          logo: dealerData.logo,
+          status: 'pending'
+        } as any
+      });
       
       alert(language === 'bg' 
         ? 'Заявката ви е изпратена успешно! Ще бъдете уведомени след одобрение.'

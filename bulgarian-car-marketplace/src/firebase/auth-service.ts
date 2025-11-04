@@ -25,11 +25,8 @@ import { auth, db, BulgarianFirebaseUtils } from './firebase-config';
 import { BULGARIAN_CONFIG } from '../config/bulgarian-config';
 import { TrustLevel, Badge } from '../services/profile/trust-score-service';
 
-// ✅ NEW: Import from canonical types file
-import type { BulgarianUser as CanonicalBulgarianUser } from '../types/user/bulgarian-user.types';
-
-// Re-export for backward compatibility
-export type { CanonicalBulgarianUser as BulgarianUser };
+// ✅ Import and re-export from canonical source
+export type { BulgarianUser } from '../types/user/bulgarian-user.types';
 
 /**
  * @deprecated Local BulgarianUser definition is deprecated
@@ -603,8 +600,9 @@ export class BulgarianAuthService {
       displayName: user.displayName || '',
       photoURL: user.photoURL || undefined,
       preferredLanguage: 'bg',
+      profileType: 'private',
+      planTier: 'free',
       profile: {
-        isDealer: false,
         preferredCurrency: BULGARIAN_CONFIG.currency,
         timezone: BULGARIAN_CONFIG.timezone
       },

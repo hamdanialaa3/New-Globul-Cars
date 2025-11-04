@@ -7,6 +7,8 @@ import { useAuth } from '../contexts/AuthProvider';  // FIXED: Correct path
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
 import { logger } from '../services/logger-service';
+import { UserRepository } from '../repositories/UserRepository';
+import { PermissionsService } from '../services/profile/PermissionsService';
 
 // ✅ NEW: Import from canonical types file
 import type { 
@@ -218,15 +220,13 @@ export const ProfileTypeProvider: React.FC<ProfileTypeProviderProps> = ({ childr
       throw new Error('User must be logged in to switch profile type');
     }
 
-    // ✅ NEW: Validation before switching
+    // ✅ REFACTORED: Validation before switching (using Repository)
     try {
       // 1. Get current user data
-      const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
-      if (!userDoc.exists()) {
+      const userData = await UserRepository.getById(currentUser.uid);
+      if (!userData) {
         throw new Error('User document not found');
       }
-
-      const userData = userDoc.data();
 
       // 2. Validate dealer/company requirements
       if (newType === 'dealer') {
@@ -350,7 +350,8 @@ export const ProfileTypeProvider: React.FC<ProfileTypeProviderProps> = ({ childr
 
   // Compute derived values
   const theme = THEMES[profileType];
-  const permissions = getPermissions(profileType, planTier);
+  // ✅ FIXED: Use centralized PermissionsService
+  const permissions = PermissionsService.getPermissions(profileType, planTier);
   const isPrivate = profileType === 'private';
   const isDealer = profileType === 'dealer';
   const isCompany = profileType === 'company';

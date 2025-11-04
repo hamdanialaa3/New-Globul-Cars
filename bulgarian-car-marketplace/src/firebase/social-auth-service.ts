@@ -28,15 +28,8 @@ import { doc, setDoc, getDoc, updateDoc, serverTimestamp, collection, query, whe
 import { auth, db } from './firebase-config';
 import { logger } from '../services/logger-service';
 
-// ✅ NEW: Import from canonical types file
-import type { BulgarianUser } from '../types/user/bulgarian-user.types';
-
-/**
- * @deprecated Use BulgarianUser from '../types/user/bulgarian-user.types' instead
- * This type alias is kept for backward compatibility during migration
- * Will be removed in Phase 4
- */
-export type BulgarianUserProfile = BulgarianUser;
+// ✅ Import and re-export from canonical source
+export type { BulgarianUser } from '../types/user/bulgarian-user.types';
 
 // Provider configurations
 const googleProvider = new GoogleAuthProvider();
@@ -613,8 +606,9 @@ export class SocialAuthService {
         currency: 'EUR',
         phoneCountryCode: '+359',
         
-        // User type
-        isDealer: false,
+        // Profile Type (NEW)
+        profileType: 'private' as any,
+        planTier: 'free' as any,
         
         // Social providers
         linkedProviders: linkedProviders,

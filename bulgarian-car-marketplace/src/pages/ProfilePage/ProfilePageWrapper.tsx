@@ -59,11 +59,23 @@ const ProfilePageWrapper: React.FC = () => {
   // Business mode check
   const isBusinessMode = user?.accountType === 'business' || user?.accountType === 'dealer' || user?.accountType === 'company';
   
-  // ⚡ FIX: Check if following - MUST be before early return!
+  // ⚡ FIX: Check if following - with cleanup for promise
   React.useEffect(() => {
-    if (user && !isOwnProfile && targetUserId) {
-      followService.isFollowing(user.uid, targetUserId).then(setIsFollowing);
-    }
+    if (!user || isOwnProfile || !targetUserId) return;
+    
+    let cancelled = false;
+    
+    followService.isFollowing(user.uid, targetUserId)
+      .then(result => {
+        if (!cancelled) setIsFollowing(result);
+      })
+      .catch(error => {
+        if (!cancelled) {
+          logger.error('Error checking follow status', error as Error, { userId: user.uid, targetUserId });
+        }
+      });
+    
+    return () => { cancelled = true; };
   }, [user, isOwnProfile, targetUserId]);
   
   // Google Sync Handler
