@@ -28,7 +28,7 @@ const COMPANY_INFO = {
   vat: 'BG123456789', // Replace with real VAT number
   mol: 'Иван Иванов', // Replace with real MOL
   phone: '+359 888 123 456',
-  email: 'invoice@globul.net',
+  email: 'invoice@mobilebg.eu',
   bank: 'Банка ДСК',
   iban: 'BG80BNBG96611020345678', // Replace with real IBAN
   bic: 'BNBGBGSD',

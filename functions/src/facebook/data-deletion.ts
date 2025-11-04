@@ -187,7 +187,7 @@ export const handleFacebookDataDeletion = onRequest(
       
       // Return confirmation to Facebook
       response.status(200).json({
-        url: `https://globul.net/data-deletion?confirmation=${confirmationCode}`,
+        url: `https://mobilebg.eu/data-deletion?confirmation=${confirmationCode}`,
         confirmation_code: confirmationCode
       });
       

@@ -123,7 +123,7 @@ const N8nTestPage: React.FC = () => {
   const testSellStarted = async () => {
     return await N8nIntegrationService.onSellStarted('test-user-123', {
       displayName: 'Test User',
-      email: 'test@globul.net',
+      email: 'test@mobilebg.eu',
       language: 'bg'
     });
   };

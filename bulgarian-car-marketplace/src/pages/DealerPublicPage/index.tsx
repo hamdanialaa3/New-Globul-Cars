@@ -157,7 +157,7 @@ const DealerPublicPage: React.FC = () => {
   // SEO metadata
   const pageTitle = `${dealer.businessName || dealer.displayName} - Bulgarian Car Marketplace`;
   const pageDescription = dealer.description || `Browse cars from ${dealer.businessName || dealer.displayName}`;
-  const pageImage = dealer.photoURL || 'https://globul.net/default-dealer.jpg';
+  const pageImage = dealer.photoURL || '/default-dealer.png';
 
   return (
     <>

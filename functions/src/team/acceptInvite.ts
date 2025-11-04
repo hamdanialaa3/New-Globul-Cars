@@ -308,7 +308,7 @@ async function sendWelcomeEmail(userId: string, businessId: string) {
         data: {
           memberName: userData.displayName,
           businessName: businessData.businessName || businessData.displayName,
-          dashboardUrl: 'https://globul.net/dashboard',
+          dashboardUrl: 'https://mobilebg.eu/dashboard',
         },
       },
     });
