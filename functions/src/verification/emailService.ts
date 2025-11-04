@@ -101,7 +101,7 @@ export async function sendApprovalEmail(data: ApprovalEmailData): Promise<void> 
  * Send rejection email notification
  */
 export async function sendRejectionEmail(data: RejectionEmailData): Promise<void> {
-  const { userEmail, displayName, profileType, reason, businessName } = data;
+  const { userEmail, displayName, profileType, reason } = data;
 
   const profileTypeText = profileType === 'dealer' ? 'Дилър' : 'Фирма';
   const profileTypeEn = profileType === 'dealer' ? 'Dealer' : 'Company';
