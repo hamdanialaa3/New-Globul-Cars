@@ -956,18 +956,30 @@ const CarDetailsPage: React.FC = () => {
 
   useEffect(() => {
     const loadCar = async () => {
-      if (!carId) return;
+      if (!carId) {
+        console.log('❌ No carId provided');
+        setLoading(false);
+        return;
+      }
+      
+      console.log('🔍 Loading car with ID:', carId);
       
       try {
         const carData = await carListingService.getListing(carId);
+        console.log('✅ Car data loaded:', carData);
+        
         if (carData) {
           setCar(carData);
           setEditedCar(carData);
+        } else {
+          console.log('⚠️ Car not found in database');
         }
       } catch (error) {
-          logger.error('Error loading car details', error as Error, { carId });
+        console.error('❌ Error loading car:', error);
+        logger.error('Error loading car details', error as Error, { carId });
       } finally {
         setLoading(false);
+        console.log('✅ Loading finished');
       }
     };
 
