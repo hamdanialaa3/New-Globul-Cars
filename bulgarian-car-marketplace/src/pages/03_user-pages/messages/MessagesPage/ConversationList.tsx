@@ -5,10 +5,10 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { ChatRoom } from '../../../../services/realtimeMessaging';
+import { ChatRoom } from '@/services/realtimeMessaging';
 import { formatDistanceToNow } from 'date-fns';
 import { bg, enUS } from 'date-fns/locale';
-import { useLanguage } from '../../../../contexts/LanguageContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { Check, CheckCheck } from 'lucide-react';
 
 // ==================== STYLED COMPONENTS ====================

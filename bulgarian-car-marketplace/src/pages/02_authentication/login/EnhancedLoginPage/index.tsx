@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useTranslation } from '../../../../hooks/useTranslation';
+import { useTranslation } from '@/hooks/useTranslation';
 import {
   Eye,
   EyeOff,
@@ -14,7 +14,7 @@ import {
   Globe
 } from 'lucide-react';
 import { useLogin } from './hooks/useLogin';
-import { SocialAuthService } from '../../../../firebase/social-auth-service';
+import { SocialAuthService } from '@/firebase/social-auth-service';
 import {
   LoginContainer,
   LoginCard,

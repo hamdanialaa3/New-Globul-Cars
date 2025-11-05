@@ -24,9 +24,9 @@ import {
   deleteObject,
   listAll
 } from 'firebase/storage';
-import { cacheService } from '../services/cache-service';
+import { cacheService } from '@/services/cache-service';
 import { db, storage, BulgarianFirebaseUtils } from './firebase-config';
-import { logger } from '../services/logger-service';
+import { logger } from '@/services/logger-service';
 
 // Car Condition Types
 export type CarCondition = 'new' | 'used' | 'damaged';

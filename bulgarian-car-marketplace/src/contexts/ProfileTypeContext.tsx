@@ -3,12 +3,12 @@
 // Phase -1: Updated to use canonical types
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { useAuth } from '../contexts/AuthProvider';  // FIXED: Correct path
+import { useAuth } from '@/contexts/AuthProvider';  // FIXED: Correct path
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
-import { db } from '../firebase/firebase-config';
-import { logger } from '../services/logger-service';
+import { db } from '@/firebase/firebase-config';
+import { logger } from '@/services/logger-service';
 import { UserRepository } from '../repositories/UserRepository';
-import { PermissionsService } from '../services/profile/PermissionsService';
+import { PermissionsService } from '@/services/profile/PermissionsService';
 
 // ✅ NEW: Import from canonical types file
 import type { 
@@ -17,7 +17,7 @@ import type {
   BulgarianUser,
   DealerProfile,
   CompanyProfile 
-} from '../types/user/bulgarian-user.types';
+} from '@/types/user/bulgarian-user.types';
 
 // Theme Colors by Profile Type
 export interface ProfileTheme {

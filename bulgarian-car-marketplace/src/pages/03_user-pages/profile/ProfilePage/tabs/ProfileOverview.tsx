@@ -4,12 +4,12 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import type { BulgarianUser } from '../../../../../types/user/bulgarian-user.types';
-import type { ProfileTheme } from '../../../../../contexts/ProfileTypeContext';
-import ProfileDashboard from '../../../../../components/Profile/ProfileDashboard';
-import PrivateProfile from '../../../../../components/PrivateProfile';
-import DealerProfile from '../../../../../components/DealerProfile';
-import CompanyProfile from '../../../../../components/CompanyProfile';
+import type { BulgarianUser } from '@/types/user/bulgarian-user.types';
+import type { ProfileTheme } from '@/contexts/ProfileTypeContext';
+import ProfileDashboard from '@/components/Profile/ProfileDashboard';
+import PrivateProfile from '@/components/PrivateProfile';
+import DealerProfile from '@/components/DealerProfile';
+import CompanyProfile from '@/components/CompanyProfile';
 import type { ProfileCar } from '../types';
 
 interface ProfileOverviewProps {

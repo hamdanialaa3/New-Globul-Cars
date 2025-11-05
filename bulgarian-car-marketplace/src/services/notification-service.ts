@@ -3,7 +3,7 @@
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
-import firebaseApp, { db } from '../firebase/firebase-config';
+import firebaseApp, { db } from '@/firebase/firebase-config';
 import { doc, setDoc, collection } from 'firebase/firestore';
 import { bulgarianAuthService } from '../firebase';
 import { serviceLogger } from './logger-wrapper';

@@ -3,9 +3,9 @@
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
 import { useEffect } from 'react';
-import { notificationService } from '../services/notification-service';
+import { notificationService } from '@/services/notification-service';
 import { useToast } from './Toast';
-import { useAuth } from '../contexts/AuthProvider';
+import { useAuth } from '@/contexts/AuthProvider';
 
 const NotificationHandler: React.FC = () => {
   const { showToast } = useToast();

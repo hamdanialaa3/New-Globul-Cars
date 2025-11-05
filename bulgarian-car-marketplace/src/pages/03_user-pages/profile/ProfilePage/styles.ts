@@ -1,6 +1,6 @@
 import styled, { css, keyframes } from 'styled-components';
 import { Link } from 'react-router-dom';
-import type { ProfileType } from '../../../../contexts/ProfileTypeContext';
+import type { ProfileType } from '@/contexts/ProfileTypeContext';
 
 // Keyframes for animations
 const fadeIn = keyframes`

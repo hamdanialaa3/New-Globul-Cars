@@ -3,7 +3,7 @@
  * Maps Bulgarian cities to their regions for the Premium Bulgaria Map
  */
 
-import { BULGARIAN_CITIES } from '../constants/bulgarianCities';
+import { BULGARIAN_CITIES } from '@/constants/bulgarianCities';
 import { serviceLogger } from './logger-wrapper';
 
 // Map of major cities to their region IDs

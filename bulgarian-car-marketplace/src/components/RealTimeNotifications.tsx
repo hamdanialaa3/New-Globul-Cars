@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { logger } from '../services/logger-service';
+import { logger } from '@/services/logger-service';
 import styled from 'styled-components';
 import { 
   Bell, 
@@ -13,7 +13,7 @@ import {
   Volume2,
   VolumeX
 } from 'lucide-react';
-import { realTimeNotificationsService, Notification } from '../services/real-time-notifications-service';
+import { realTimeNotificationsService, Notification } from '@/services/real-time-notifications-service';
 
 // Styled Components
 const NotificationsContainer = styled.div`

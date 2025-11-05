@@ -2,7 +2,7 @@
 // Hook لإدارة حالة workflow بيع السيارة عبر جميع الخطوات
 
 import { useState, useEffect, useCallback } from 'react';
-import { logger } from '../services/logger-service';
+import { logger } from '@/services/logger-service';
 
 export interface SellWorkflowData {
   // Vehicle Type & Seller

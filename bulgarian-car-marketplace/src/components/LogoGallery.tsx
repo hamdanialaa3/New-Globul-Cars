@@ -5,12 +5,12 @@ import React from 'react';
 import './LogoGallery.css';
 
 // Import logos
-import mainLogo from '../assets/logos/Copilot_20250926_020323.png';
-import logo1 from '../assets/logos/1 (1).png';
-import logo2 from '../assets/logos/Copilot_20250926_030243.png';
-import logo3 from '../assets/logos/Copilot_20250926_021333.png';
-import logo4 from '../assets/logos/Copilot_20250926_020825.png';
-import logo5 from '../assets/logos/Copilot_20250926_020259.png';
+import mainLogo from '@/assets/logos/Copilot_20250926_020323.png';
+import logo1 from '@/assets/logos/1 (1).png';
+import logo2 from '@/assets/logos/Copilot_20250926_030243.png';
+import logo3 from '@/assets/logos/Copilot_20250926_021333.png';
+import logo4 from '@/assets/logos/Copilot_20250926_020825.png';
+import logo5 from '@/assets/logos/Copilot_20250926_020259.png';
 
 interface LogoGalleryProps {
   variant?: 'hero' | 'footer' | 'sidebar' | 'header' | 'showcase';

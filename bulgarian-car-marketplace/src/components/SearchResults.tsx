@@ -9,7 +9,7 @@ import {
   MapPin,
   Calendar
 } from 'lucide-react';
-import { useLanguage } from '../contexts/LanguageContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import LazyImage from './LazyImage';
 
 interface SearchResult {

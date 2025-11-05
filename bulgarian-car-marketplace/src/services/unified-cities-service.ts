@@ -1,7 +1,7 @@
 // Unified Cities Service
 // خدمة المدن الموحدة - مصدر واحد للحقيقة
 
-import { BULGARIAN_CITIES } from '../constants/bulgarianCities';
+import { BULGARIAN_CITIES } from '@/constants/bulgarianCities';
 
 export interface CityOption {
   value: string;

@@ -3,7 +3,7 @@
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
 
 import { collection, getDocs, updateDoc, doc, query, where } from 'firebase/firestore';
-import { db } from '../firebase/firebase-config';
+import { db } from '@/firebase/firebase-config';
 
 /**
  * هذا السكريبت يصلح البيانات القديمة التي قد تكون:

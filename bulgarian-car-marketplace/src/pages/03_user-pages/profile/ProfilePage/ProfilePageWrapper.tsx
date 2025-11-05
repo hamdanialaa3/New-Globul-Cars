@@ -1,9 +1,9 @@
 import React from 'react';
 import { Outlet, useNavigate, useParams } from 'react-router-dom';
-import { useTranslation } from '../../../../hooks/useTranslation';
-import { useLanguage } from '../../../../contexts/LanguageContext';
+import { useTranslation } from '@/hooks/useTranslation';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { useProfile } from './hooks/useProfile';
-import { useProfileType } from '../../../../contexts/ProfileTypeContext';
+import { useProfileType } from '@/contexts/ProfileTypeContext';
 import { 
   UserCircle, 
   Car, 
@@ -19,9 +19,9 @@ import {
 } from 'lucide-react';
 import * as S from './styles';
 import { TabNavigation, TabNavLink, SyncButton, FollowButton } from './TabNavigation.styles';
-import { CoverImageUploader, BusinessBackground, SimpleProfileAvatar } from '../../../../components/Profile';
-import { googleProfileSyncService } from '../../../../services/google/google-profile-sync.service';
-import { followService } from '../../../../services/social/follow.service';
+import { CoverImageUploader, BusinessBackground, SimpleProfileAvatar } from '@/components/Profile';
+import { googleProfileSyncService } from '@/services/google/google-profile-sync.service';
+import { followService } from '@/services/social/follow.service';
 
 /**
  * Profile Page Wrapper

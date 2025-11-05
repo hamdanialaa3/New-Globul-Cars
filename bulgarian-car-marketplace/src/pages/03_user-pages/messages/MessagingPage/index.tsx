@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useTranslation } from '../../../../hooks/useTranslation';
-import ConversationsList from '../../../../components/messaging/ConversationsList';
-import ConversationView from '../../../../components/messaging/ConversationView';
-import { Conversation } from '../../../../services/messaging/advanced-messaging-service';
+import { useTranslation } from '@/hooks/useTranslation';
+import ConversationsList from '@/components/messaging/ConversationsList';
+import ConversationView from '@/components/messaging/ConversationView';
+import { Conversation } from '@/services/messaging/advanced-messaging-service';
 
 // Facebook Messenger Style Components
 const MessagingContainer = styled.div`

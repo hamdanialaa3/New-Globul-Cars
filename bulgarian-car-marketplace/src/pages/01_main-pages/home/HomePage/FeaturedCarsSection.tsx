@@ -4,8 +4,8 @@
 import React, { Suspense, memo } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import FeaturedCars from '../../../../components/FeaturedCars';
-import { useLanguage } from '../../../../contexts/LanguageContext';
+import FeaturedCars from '@/components/FeaturedCars';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { Search, SlidersHorizontal } from 'lucide-react';
 
 const FeaturedCarsSection = styled.section`

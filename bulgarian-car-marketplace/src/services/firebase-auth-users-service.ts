@@ -8,7 +8,7 @@ import {
   doc,
   getDoc
 } from 'firebase/firestore';
-import { db } from '../firebase/firebase-config';
+import { db } from '@/firebase/firebase-config';
 import { serviceLogger } from './logger-wrapper';
 
 // Firebase Authentication Users Service

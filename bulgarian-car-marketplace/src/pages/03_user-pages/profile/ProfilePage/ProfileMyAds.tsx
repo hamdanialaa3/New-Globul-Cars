@@ -1,7 +1,7 @@
 import React from 'react';
-import { useLanguage } from '../../../../contexts/LanguageContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
-import { GarageSection } from '../../../../components/Profile';
+import { GarageSection } from '@/components/Profile';
 import { useProfile } from './hooks/useProfile';
 import * as S from './styles';
 

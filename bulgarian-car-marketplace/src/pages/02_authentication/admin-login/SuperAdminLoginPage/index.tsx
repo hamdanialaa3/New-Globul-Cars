@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { Shield, Lock, Eye, EyeOff, CheckCircle, AlertCircle } from 'lucide-react';
-import { uniqueOwnerService } from '../../../../services/unique-owner-service';
-import { auth } from '../../../../firebase/firebase-config';
+import { uniqueOwnerService } from '@/services/unique-owner-service';
+import { auth } from '@/firebase/firebase-config';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 
 // Styled Components

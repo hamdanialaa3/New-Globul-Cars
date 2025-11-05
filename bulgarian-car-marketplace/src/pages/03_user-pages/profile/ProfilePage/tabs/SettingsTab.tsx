@@ -4,11 +4,11 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import PrivacySettingsManager from '../../../../../components/Profile/Privacy/PrivacySettingsManager';
-import DealershipInfoForm from '../../../../../components/Profile/Dealership/DealershipInfoForm';
-import type { BulgarianUser } from '../../../../../types/user/bulgarian-user.types';
-import type { ProfileTheme } from '../../../../../contexts/ProfileTypeContext';
-import { isDealerProfile, isCompanyProfile } from '../../../../../types/user/bulgarian-user.types';
+import PrivacySettingsManager from '@/components/Profile/Privacy/PrivacySettingsManager';
+import DealershipInfoForm from '@/components/Profile/Dealership/DealershipInfoForm';
+import type { BulgarianUser } from '@/types/user/bulgarian-user.types';
+import type { ProfileTheme } from '@/contexts/ProfileTypeContext';
+import { isDealerProfile, isCompanyProfile } from '@/types/user/bulgarian-user.types';
 
 interface SettingsTabProps {
   user: BulgarianUser | null;

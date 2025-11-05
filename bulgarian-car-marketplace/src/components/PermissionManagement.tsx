@@ -25,8 +25,8 @@ import {
   PermissionCategory, 
   PermissionTemplate, 
   RoleTemplate 
-} from '../services/permission-management-service';
-import { auditLoggingService } from '../services/audit-logging-service';
+} from '@/services/permission-management-service';
+import { auditLoggingService } from '@/services/audit-logging-service';
 
 // Styled Components
 const PermissionContainer = styled.div`

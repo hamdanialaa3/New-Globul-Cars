@@ -28,7 +28,11 @@
       "@/types/*": ["types/*"],
       "@/hooks/*": ["hooks/*"],
       "@/pages/*": ["pages/*"],
-      "@/firebase/*": ["firebase/*"]
+      "@/firebase/*": ["firebase/*"],
+      "@/data/*": ["data/*"],
+      "@/constants/*": ["constants/*"],
+      "@/features/*": ["features/*"],
+      "@/assets/*": ["assets/*"]
     }
   },
   "include": [

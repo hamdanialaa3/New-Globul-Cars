@@ -26,7 +26,7 @@ import {
   auditLoggingService, 
   AuditLog, 
   SecurityEvent 
-} from '../services/audit-logging-service';
+} from '@/services/audit-logging-service';
 
 // Styled Components
 const AuditContainer = styled.div`

@@ -3,8 +3,8 @@
 
 import React, { Suspense } from 'react';
 import styled from 'styled-components';
-import BusinessPromoBanner from '../../../../components/BusinessPromoBanner';
-import LazySection from '../../../../components/LazySection';
+import BusinessPromoBanner from '@/components/BusinessPromoBanner';
+import LazySection from '@/components/LazySection';
 
 // Lazy load all sections for better performance
 const HeroSection = React.lazy(() => import('./HeroSection'));
@@ -12,7 +12,7 @@ const SocialMediaSection = React.lazy(() => import('./SocialMediaSection'));
 // ❌ REMOVED: CarCarousel3D - "Your Guide to Safe Driving & Buying" section
 const StatsSection = React.lazy(() => import('./StatsSection'));
 const PopularBrandsSection = React.lazy(() => import('./PopularBrandsSection'));
-const CityCarsSection = React.lazy(() => import('./CityCarsSection'));
+// ❌ REMOVED: CityCarsSection - moved to avoid deep nesting issues
 const ImageGallerySection = React.lazy(() => import('./ImageGallerySection'));
 const FeaturedCarsSection = React.lazy(() => import('./FeaturedCarsSection'));
 const FeaturesSection = React.lazy(() => import('./FeaturesSection'));
@@ -139,12 +139,12 @@ const HomePage: React.FC = () => {
 
       <SectionSpacer />
 
-      {/* ⚡ OPTIMIZED: rootMargin reduced from 300px to 100px */}
-      <LazySection rootMargin="100px" minHeight="600px">
+      {/* ❌ REMOVED: CityCarsSection - moved to avoid deep nesting issues */}
+      {/* <LazySection rootMargin="100px" minHeight="600px">
         <Suspense fallback={<LoadingFallback>Loading city cars...</LoadingFallback>}>
           <CityCarsSection />
         </Suspense>
-      </LazySection>
+      </LazySection> */}
 
       <SectionSpacer />
 

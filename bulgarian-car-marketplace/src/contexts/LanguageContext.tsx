@@ -1,7 +1,7 @@
 // Global Language Context for Smart Translation System
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { translations } from '../locales/translations';
-import { logger } from '../services/logger-service';
+import { logger } from '@/services/logger-service';
 
 export type Language = 'bg' | 'en';
 

@@ -25,7 +25,7 @@ import {
   advancedContentManagementService, 
   ContentReport, 
   ContentStats 
-} from '../services/advanced-content-management-service';
+} from '@/services/advanced-content-management-service';
 
 // Styled Components
 const ContentManagementContainer = styled.div`

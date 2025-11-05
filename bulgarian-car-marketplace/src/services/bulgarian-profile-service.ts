@@ -28,15 +28,15 @@ import {
   reauthenticateWithCredential
 } from 'firebase/auth';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
-import { auth, db, storage } from '../firebase/firebase-config';
+import { auth, db, storage } from '@/firebase/firebase-config';
 import { serviceLogger } from './logger-wrapper';
 
 // ✅ NEW: Import from canonical types file
-import type { BulgarianUser, DealerProfile as DealerUserProfile } from '../types/user/bulgarian-user.types';
-import type { DealershipInfo } from '../types/dealership/dealership.types';
+import type { BulgarianUser, DealerProfile as DealerUserProfile } from '@/types/user/bulgarian-user.types';
+import type { DealershipInfo } from '@/types/dealership/dealership.types';
 
 /**
- * @deprecated Use DealershipInfo from '../types/dealership/dealership.types' instead
+ * @deprecated Use DealershipInfo from '@/types/dealership/dealership.types' instead
  * This interface is kept only for backward compatibility
  * Will be removed in Phase 4 (Week 8)
  */

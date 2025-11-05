@@ -8,7 +8,7 @@ import {
   Smartphone,
   MapPin
 } from 'lucide-react';
-import { advancedRealDataService } from '../services/advanced-real-data-service';
+import { advancedRealDataService } from '@/services/advanced-real-data-service';
 
 // Styled Components
 const ChartsContainer = styled.div`

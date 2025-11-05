@@ -1,5 +1,5 @@
 // ✅ NEW: Import from canonical types
-import type { BulgarianUser } from '../../../../types/user/bulgarian-user.types';
+import type { BulgarianUser } from '@/types/user/bulgarian-user.types';
 
 // Account Type
 export type AccountType = 'individual' | 'business';

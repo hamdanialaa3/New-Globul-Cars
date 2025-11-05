@@ -15,8 +15,8 @@ import {
   Timestamp
 } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
-import { db, storage } from '../firebase/firebase-config';
-import { CarListing, CarListingFilters, CarListingSearchResult } from '../types/CarListing';
+import { db, storage } from '@/firebase/firebase-config';
+import { CarListing, CarListingFilters, CarListingSearchResult } from '@/types/CarListing';
 import { ProfileStatsService } from './profile/profile-stats-service';
 import { serviceLogger } from './logger-wrapper';
 

@@ -4,7 +4,7 @@
 
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useLanguage } from '../../../../contexts/LanguageContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { 
   MessageSquare, 
   Star, 
@@ -16,8 +16,8 @@ import {
 import { 
   consultationsService, 
   Consultation 
-} from '../../../../services/social/consultations.service';
-import RequestConsultationModal from '../../../../components/Consultations/RequestConsultationModal';
+} from '@/services/social/consultations.service';
+import RequestConsultationModal from '@/components/Consultations/RequestConsultationModal';
 
 // ==================== STYLED COMPONENTS ====================
 

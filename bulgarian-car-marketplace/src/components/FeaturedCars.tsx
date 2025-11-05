@@ -4,11 +4,11 @@
 import React, { useState, useEffect, memo } from 'react';
 import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
-import { bulgarianCarService, BulgarianCar } from '../firebase/car-service';
-import { useLanguage } from '../contexts/LanguageContext';
-import { useAuth } from '../contexts/AuthProvider';
+import { bulgarianCarService, BulgarianCar } from '@/firebase/car-service';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '@/contexts/AuthProvider';
 import { MapPin, Fuel, Gauge, Calendar, MessageCircle, User } from 'lucide-react';
-import { homePageCache, CACHE_KEYS } from '../services/homepage-cache.service';
+import { homePageCache, CACHE_KEYS } from '@/services/homepage-cache.service';
 
 interface FeaturedCarsProps {
   limit?: number;

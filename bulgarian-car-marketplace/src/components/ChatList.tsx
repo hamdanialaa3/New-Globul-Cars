@@ -3,8 +3,8 @@
 
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useTranslation } from '../hooks/useTranslation';
-import { realtimeMessagingService, ChatRoom } from '../services/realtimeMessaging';
+import { useTranslation } from '@/hooks/useTranslation';
+import { realtimeMessagingService, ChatRoom } from '@/services/realtimeMessaging';
 
 interface ChatListProps {
   currentUserId: string;

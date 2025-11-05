@@ -13,7 +13,7 @@ import {
   serverTimestamp,
   getDocs
 } from 'firebase/firestore';
-import { db } from '../firebase/firebase-config';
+import { db } from '@/firebase/firebase-config';
 import { serviceLogger } from './logger-wrapper';
 
 export interface Notification {

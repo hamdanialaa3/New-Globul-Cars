@@ -5,7 +5,7 @@
  * Provides consistent toast notifications with logging
  */
 
-import { logger } from '../services/logger-service';
+import { logger } from '@/services/logger-service';
 
 export interface ToastManager {
   success: (message: string, title?: string) => void;

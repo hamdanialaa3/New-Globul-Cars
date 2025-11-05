@@ -25,9 +25,9 @@ import {
   advancedUserManagementService, 
   AdvancedUser, 
   UserRole 
-} from '../services/advanced-user-management-service';
-import { permissionManagementService, PermissionCategory, RoleTemplate } from '../services/permission-management-service';
-import { auditLoggingService } from '../services/audit-logging-service';
+} from '@/services/advanced-user-management-service';
+import { permissionManagementService, PermissionCategory, RoleTemplate } from '@/services/permission-management-service';
+import { auditLoggingService } from '@/services/audit-logging-service';
 
 // Styled Components
 const UserManagementContainer = styled.div`

@@ -13,8 +13,8 @@ import {
   Target,
   Gift
 } from 'lucide-react';
-import { useLanguage } from '../contexts/LanguageContext';
-import BusinessIcon from '../assets/icons/business-card.svg';
+import { useLanguage } from '@/contexts/LanguageContext';
+import BusinessIcon from '@/assets/icons/business-card.svg';
 import styled, { keyframes } from 'styled-components';
 
 // ==================== ANIMATIONS ====================

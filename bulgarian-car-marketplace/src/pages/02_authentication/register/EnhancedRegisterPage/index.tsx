@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useTranslation } from '../../../../hooks/useTranslation';
-import SocialLogin from '../../../../components/SocialLogin';
+import { useTranslation } from '@/hooks/useTranslation';
+import SocialLogin from '@/components/SocialLogin';
 import { useEnhancedRegister } from './hooks/useEnhancedRegister';
 import {
   RegisterContainer,

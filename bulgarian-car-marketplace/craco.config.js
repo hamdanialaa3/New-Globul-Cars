@@ -45,8 +45,10 @@ module.exports = {
       };
 
       // Map `node:` scheme imports to browser-friendly shims
+      const pathModule = require('path');
       webpackConfig.resolve.alias = {
         ...(webpackConfig.resolve.alias || {}),
+        '@': pathModule.resolve(__dirname, 'src'),  // ✅ Path alias support
         'node:url': require.resolve('url/'),
         'node:util': require.resolve('util/'),
         'node:buffer': require.resolve('buffer/'),

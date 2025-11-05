@@ -1,6 +1,6 @@
 // Firebase Authentication Error Handler - Enhanced Debug Version
 // src/utils/auth-error-handler.ts
-import { logger } from '../services/logger-service';
+import { logger } from '@/services/logger-service';
 
 export class AuthErrorHandler {
   static diagnoseError(error: any): {

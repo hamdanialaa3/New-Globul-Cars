@@ -10,10 +10,10 @@
 
 import { useState } from 'react';
 import { DealershipRepository } from '../repositories/DealershipRepository';
-import { useToast } from '../components/Toast';
-import { logger } from '../services/logger-service';
-import type { DealershipInfo, DealershipInfoUpdate } from '../types/dealership/dealership.types';
-import { isValidEIK, validateWorkingHours } from '../types/dealership/dealership.types';
+import { useToast } from '@/components/Toast';
+import { logger } from '@/services/logger-service';
+import type { DealershipInfo, DealershipInfoUpdate } from '@/types/dealership/dealership.types';
+import { isValidEIK, validateWorkingHours } from '@/types/dealership/dealership.types';
 
 export interface UseDealershipFormReturn {
   formData: Partial<DealershipInfo>;

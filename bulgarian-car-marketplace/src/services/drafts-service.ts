@@ -16,8 +16,8 @@ import {
   serverTimestamp,
   Timestamp
 } from 'firebase/firestore';
-import { db } from '../firebase/firebase-config';
-import { SellWorkflowData } from '../hooks/useSellWorkflow';
+import { db } from '@/firebase/firebase-config';
+import { SellWorkflowData } from '@/hooks/useSellWorkflow';
 import { serviceLogger } from './logger-wrapper';
 
 export interface Draft {

@@ -1,6 +1,6 @@
 import React from 'react';
-import { useLanguage } from '../../../../contexts/LanguageContext';
-import { CampaignsList } from '../../../../components/Profile/Campaigns';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { CampaignsList } from '@/components/Profile/Campaigns';
 import * as S from './styles';
 
 /**

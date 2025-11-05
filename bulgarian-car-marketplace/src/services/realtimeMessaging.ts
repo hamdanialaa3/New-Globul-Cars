@@ -16,7 +16,7 @@ import {
   Timestamp,
   Unsubscribe
 } from 'firebase/firestore';
-import { db } from '../firebase/firebase-config';
+import { db } from '@/firebase/firebase-config';
 
 export interface Message {
   id: string;

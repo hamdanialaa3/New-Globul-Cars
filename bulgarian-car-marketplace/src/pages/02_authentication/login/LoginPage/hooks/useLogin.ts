@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from '../../../../../hooks/useTranslation';
-import { useAuth } from '../../../../../hooks/useAuth';
-import { SocialAuthService } from '../../../../../firebase/social-auth-service';
+import { useTranslation } from '@/hooks/useTranslation';
+import { useAuth } from '@/hooks/useAuth';
+import { SocialAuthService } from '@/firebase/social-auth-service';
 import { LoginFormData, LoginState, LoginActions, UseLoginReturn } from '../types';
-import { logger } from '../../../../../services/logger-service';
+import { logger } from '@/services/logger-service';
 
 export const useLogin = (): UseLoginReturn => {
   const { t } = useTranslation();

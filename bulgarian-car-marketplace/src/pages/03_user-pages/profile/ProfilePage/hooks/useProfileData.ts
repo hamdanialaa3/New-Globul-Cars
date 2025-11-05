@@ -4,9 +4,9 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { doc, onSnapshot, getDoc } from 'firebase/firestore';
-import { db, auth } from '../../../../../firebase/firebase-config';
-import { logger } from '../../../../../services/logger-service';
-import type { BulgarianUser } from '../../../../../types/user/bulgarian-user.types';
+import { db, auth } from '@/firebase/firebase-config';
+import { logger } from '@/services/logger-service';
+import type { BulgarianUser } from '@/types/user/bulgarian-user.types';
 
 export interface UseProfileDataReturn {
   user: BulgarianUser | null;

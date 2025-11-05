@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useTranslation } from '../hooks/useTranslation';
-import { AdvancedSearchParams } from '../types/CarData';
+import { useTranslation } from '@/hooks/useTranslation';
+import { AdvancedSearchParams } from '@/types/CarData';
 
 interface SearchFilterSectionProps {
   searchParams: AdvancedSearchParams;

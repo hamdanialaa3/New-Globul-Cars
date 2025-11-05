@@ -4,13 +4,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { useAuth } from '../../../hooks/useAuth';
-import { useLanguage } from '../../../contexts/LanguageContext';
-import { logger } from '../../../services/logger-service';
+import { useAuth } from '../../hooks/useAuth';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { logger } from '../../services/logger-service';
 import { userService } from '@/services/user/canonical-user.service';
-import type { DealershipInfo } from '../../../types/dealership/dealership.types';
-import { dealershipService } from '../../../services/dealership/dealership.service';
-import { UserRepository } from '../../../repositories/UserRepository';
+import type { DealershipInfo } from '../../types/dealership/dealership.types';
+import { dealershipService } from '../../services/dealership/dealership.service';
+import { UserRepository } from '../../repositories/UserRepository';
 
 // Type alias for compatibility
 type DealerProfile = DealershipInfo;

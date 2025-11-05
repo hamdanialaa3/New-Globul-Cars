@@ -4,9 +4,9 @@
 import React, { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { useLanguage } from '../../../../contexts/LanguageContext';
-import { ResponsiveButton } from '../../../../components/ui';
-import { ResponsiveContainer } from '../../../../components/layout';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { ResponsiveButton } from '@/components/ui';
+import { ResponsiveContainer } from '@/components/layout';
 
 const HeroWrapper = styled.section`
   background: linear-gradient(135deg, 

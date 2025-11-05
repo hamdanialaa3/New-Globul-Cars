@@ -3,8 +3,8 @@
 
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useTranslation } from '../hooks/useTranslation';
-import { bulgarianRatingService, RatingSummary } from '../services/reviews/rating-service';
+import { useTranslation } from '@/hooks/useTranslation';
+import { bulgarianRatingService, RatingSummary } from '@/services/reviews/rating-service';
 import RatingDisplay from './RatingDisplay';
 import RatingList from './RatingList';
 import AddRatingForm from './AddRatingForm';

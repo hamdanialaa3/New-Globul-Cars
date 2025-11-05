@@ -4,9 +4,9 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { GarageSection } from '../../../../../components/Profile';
+import { GarageSection } from '@/components/Profile';
 import type { ProfileCar } from '../types';
-import type { ProfileTheme } from '../../../../../contexts/ProfileTypeContext';
+import type { ProfileTheme } from '@/contexts/ProfileTypeContext';
 
 interface MyAdsTabProps {
   userCars: ProfileCar[];

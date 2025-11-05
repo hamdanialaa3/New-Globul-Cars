@@ -3,7 +3,7 @@
 // Auto-loads in Bulgarian language
 
 import { useEffect } from 'react';
-import { useLanguage } from '../contexts/LanguageContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface FacebookMessengerWidgetProps {
   pageId?: string;

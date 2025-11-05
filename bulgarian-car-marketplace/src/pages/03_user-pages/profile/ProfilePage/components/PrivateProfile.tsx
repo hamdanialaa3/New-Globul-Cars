@@ -4,10 +4,10 @@
 import React from 'react';
 import styled from 'styled-components';
 // ✅ NEW: Import from canonical types
-import type { BulgarianUser } from '../../../../../types/user/bulgarian-user.types';
-import SimpleProfileAvatar from '../../../../../components/Profile/SimpleProfileAvatar';
+import type { BulgarianUser } from '@/types/user/bulgarian-user.types';
+import SimpleProfileAvatar from '@/components/Profile/SimpleProfileAvatar';
 import { ProfileCar } from '../types';
-import { useLanguage } from '../../../../../contexts/LanguageContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { User, Mail, Phone, MapPin, MessageCircle, Star } from 'lucide-react';
 
 // Props

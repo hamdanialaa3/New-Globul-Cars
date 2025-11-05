@@ -6,8 +6,8 @@ import React, { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { Heart, MapPin, Calendar, Gauge, Fuel, Settings } from 'lucide-react';
-import { useLanguage } from '../contexts/LanguageContext';
-import { CarListing } from '../types/CarListing';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { CarListing } from '@/types/CarListing';
 import { CarIcon } from './icons/CarIcon';
 import CarCardCompact from './CarCard/CarCardCompact';
 

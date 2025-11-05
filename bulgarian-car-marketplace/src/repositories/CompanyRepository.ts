@@ -25,13 +25,13 @@ import {
   runTransaction,
   writeBatch
 } from 'firebase/firestore';
-import { db } from '../firebase/firebase-config';
-import { logger } from '../services/logger-service';
+import { db } from '@/firebase/firebase-config';
+import { logger } from '@/services/logger-service';
 import type {
   CompanyInfo,
   CompanyInfoCreate,
   CompanyInfoUpdate
-} from '../types/company/company.types';
+} from '@/types/company/company.types';
 
 export class CompanyRepository {
   private static readonly COLLECTION = 'companies';

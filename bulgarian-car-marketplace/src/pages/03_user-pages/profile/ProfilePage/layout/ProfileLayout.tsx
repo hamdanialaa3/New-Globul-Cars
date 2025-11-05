@@ -4,7 +4,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import type { ProfileTheme } from '../../../../../contexts/ProfileTypeContext';
+import type { ProfileTheme } from '@/contexts/ProfileTypeContext';
 
 interface ProfileLayoutProps {
   children: React.ReactNode;

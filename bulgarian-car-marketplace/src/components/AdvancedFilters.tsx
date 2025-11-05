@@ -4,8 +4,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Filter, X, ChevronDown, ChevronUp } from 'lucide-react';
-import { useLanguage } from '../contexts/LanguageContext';
-import { BULGARIAN_CITIES } from '../constants/bulgarianCities';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { BULGARIAN_CITIES } from '@/constants/bulgarianCities';
 import SelectWithOther from './shared/SelectWithOther';
 import { 
   CAR_BRANDS, 
@@ -15,7 +15,7 @@ import {
   SELLER_TYPES,
   PRICE_RANGES,
   MILEAGE_RANGES
-} from '../data/dropdown-options';
+} from '@/data/dropdown-options';
 
 interface FilterOptions {
   city?: string;

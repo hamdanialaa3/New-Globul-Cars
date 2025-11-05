@@ -3,7 +3,7 @@
 
 import React, { useState , memo} from 'react';
 import styled from 'styled-components';
-import { useTranslation } from '../hooks/useTranslation';
+import { useTranslation } from '@/hooks/useTranslation';
 
 interface ImageGalleryProps {
   images: string[];

@@ -1,16 +1,16 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useTranslation } from '../../../../../hooks/useTranslation';
-import { bulgarianAuthService } from '../../../../../firebase';
+import { useTranslation } from '@/hooks/useTranslation';
+import { bulgarianAuthService } from '@/firebase';
 // ✅ NEW: Import from canonical types
-import type { BulgarianUser } from '../../../../../types/user/bulgarian-user.types';
-import { bulgarianCarService, BulgarianCar } from '../../../../../firebase/car-service';
-import { useToast } from '../../../../../components/Toast';
-import { useProfileType } from '../../../../../contexts/ProfileTypeContext';  // NEW: Profile Type System
-import { validateProfileData } from '../../../../../utils/validation';
+import type { BulgarianUser } from '@/types/user/bulgarian-user.types';
+import { bulgarianCarService, BulgarianCar } from '@/firebase/car-service';
+import { useToast } from '@/components/Toast';
+import { useProfileType } from '@/contexts/ProfileTypeContext';  // NEW: Profile Type System
+import { validateProfileData } from '@/utils/validation';
 import { doc, onSnapshot, getDoc } from 'firebase/firestore';
-import { db, auth } from '../../../../../firebase/firebase-config';
-import carListingService from '../../../../../services/carListingService';
-import { logger } from '../../../../../services/logger-service';
+import { db, auth } from '@/firebase/firebase-config';
+import carListingService from '@/services/carListingService';
+import { logger } from '@/services/logger-service';
 import {
   ProfileFormData,
   ProfileCar,

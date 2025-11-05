@@ -12,10 +12,10 @@ import {
   getDocs,
   limit as firestoreLimit 
 } from 'firebase/firestore';
-import { db } from '../../../../firebase/firebase-config';  /* ⚡ FIXED */
+import { db } from '@/firebase/firebase-config';  /* ⚡ FIXED */
 import { httpsCallable } from 'firebase/functions';
-import { functions } from '../../../../firebase/firebase-config';  /* ⚡ FIXED */
-import { useLanguage } from '../../../../contexts/LanguageContext';
+import { functions } from '@/firebase/firebase-config';  /* ⚡ FIXED */
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface VerificationDocument {
   type: 'eik' | 'license' | 'vat' | 'insurance' | 'id';

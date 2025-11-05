@@ -3,8 +3,8 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { bulgarianFinancialServices } from '../services/financial-services';
-import { InsuranceQuoteData } from '../types/firestore-models';
+import { bulgarianFinancialServices } from '@/services/financial-services';
+import { InsuranceQuoteData } from '@/types/firestore-models';
 
 const ModalOverlay = styled.div`
   position: fixed;

@@ -1,36 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { RealTimeAnalytics, UserActivity, ContentModeration } from '../../../../services/super-admin-service';
-import { realDataInitializer } from '../../../../services/real-data-initializer';
-import { advancedRealDataService } from '../../../../services/advanced-real-data-service';
-import { firebaseRealDataService } from '../../../../services/firebase-real-data-service';
-import { uniqueOwnerService } from '../../../../services/unique-owner-service';
+import { RealTimeAnalytics, UserActivity, ContentModeration } from '@/services/super-admin-service';
+import { realDataInitializer } from '@/services/real-data-initializer';
+import { advancedRealDataService } from '@/services/advanced-real-data-service';
+import { firebaseRealDataService } from '@/services/firebase-real-data-service';
+import { uniqueOwnerService } from '@/services/unique-owner-service';
 import { doc, getDoc } from 'firebase/firestore';
-import { db } from '../../../../firebase/firebase-config';
+import { db } from '@/firebase/firebase-config';
 import { getAuth } from 'firebase/auth';
+import { usersReportService } from '@/services/reports/users-report-service';
+import { carsReportService } from '@/services/reports/cars-report-service';
+import { Download, FileSpreadsheet, FileJson } from 'lucide-react';
 
 // Import components
-import AdminHeader from '../../../../components/SuperAdmin/AdminHeader';
-import AdminNavigation from '../../../../components/SuperAdmin/AdminNavigation';
-import QuickLinksNavigation from '../../../../components/SuperAdmin/QuickLinksNavigation';
-import AdminOverview from '../../../../components/SuperAdmin/AdminOverview';
-import LiveCounters from '../../../../components/SuperAdmin/LiveCounters';
-import FirebaseConnectionTest from '../../../../components/SuperAdmin/FirebaseConnectionTest';
-import ProjectInfoPanel from '../../../../components/SuperAdmin/ProjectInfoPanel';
-import RealTimeAlertsPanel from '../../../../components/SuperAdmin/RealTimeAlertsPanel';
-import VisitorAnalyticsPanel from '../../../../components/SuperAdmin/VisitorAnalyticsPanel';
-import RealDataDisplay from '../../../../components/RealDataDisplay';
-import AdvancedCharts from '../../../../components/AdvancedCharts';
-import RealDataManager from '../../../../components/RealDataManager';
-import AdvancedAnalytics from '../../../../components/AdvancedAnalytics';
-import RealTimeNotifications from '../../../../components/RealTimeNotifications';
-import AdvancedContentManagement from '../../../../components/AdvancedContentManagement';
-import AdvancedUserManagement from '../../../../components/AdvancedUserManagement';
-import PermissionManagement from '../../../../components/PermissionManagement';
-import AuditLogging from '../../../../components/AuditLogging';
-import UserDetailsModal from '../../../../components/UserDetailsModal';
-import FacebookAdminPanel from '../../../../components/SuperAdmin/FacebookAdminPanel';
+import AdminHeader from '@/components/SuperAdmin/AdminHeader';
+import AdminNavigation from '@/components/SuperAdmin/AdminNavigation';
+import QuickLinksNavigation from '@/components/SuperAdmin/QuickLinksNavigation';
+import AdminOverview from '@/components/SuperAdmin/AdminOverview';
+import LiveCounters from '@/components/SuperAdmin/LiveCounters';
+import FirebaseConnectionTest from '@/components/SuperAdmin/FirebaseConnectionTest';
+import ProjectInfoPanel from '@/components/SuperAdmin/ProjectInfoPanel';
+import RealTimeAlertsPanel from '@/components/SuperAdmin/RealTimeAlertsPanel';
+import VisitorAnalyticsPanel from '@/components/SuperAdmin/VisitorAnalyticsPanel';
+import RealDataDisplay from '@/components/RealDataDisplay';
+import AdvancedCharts from '@/components/AdvancedCharts';
+import RealDataManager from '@/components/RealDataManager';
+import AdvancedAnalytics from '@/components/AdvancedAnalytics';
+import RealTimeNotifications from '@/components/RealTimeNotifications';
+import AdvancedContentManagement from '@/components/AdvancedContentManagement';
+import AdvancedUserManagement from '@/components/AdvancedUserManagement';
+import PermissionManagement from '@/components/PermissionManagement';
+import AuditLogging from '@/components/AuditLogging';
+import UserDetailsModal from '@/components/UserDetailsModal';
+import FacebookAdminPanel from '@/components/SuperAdmin/FacebookAdminPanel';
 
 // Styled Components
 const DashboardContainer = styled.div`
@@ -408,6 +411,172 @@ const SuperAdminDashboard: React.FC = () => {
 
       {/* Super Admin Footer - Owner Only */}
       <SuperAdminFooter>
+        {/* Reports Export Section */}
+        <ReportsSection>
+          <ReportsTitle>📊 تصدير التقارير</ReportsTitle>
+          <ReportsGrid>
+            {/* تقرير جميع المستخدمين */}
+            <ReportCard>
+              <ReportIcon>👥</ReportIcon>
+              <ReportName>جميع المستخدمين</ReportName>
+              <ReportButtons>
+                <ExportBtn onClick={async () => {
+                  const users = await usersReportService.getAllUsers();
+                  const csv = await usersReportService.exportToCSV(users);
+                  usersReportService.downloadReport(csv, 'all-users', 'csv');
+                }}>
+                  <FileSpreadsheet size={16} />
+                  CSV
+                </ExportBtn>
+                <ExportBtn onClick={async () => {
+                  const users = await usersReportService.getAllUsers();
+                  const excel = await usersReportService.exportToExcel(users);
+                  usersReportService.downloadReport(excel, 'all-users', 'xls');
+                }}>
+                  <FileSpreadsheet size={16} />
+                  Excel
+                </ExportBtn>
+                <ExportBtn onClick={async () => {
+                  const users = await usersReportService.getAllUsers();
+                  const json = await usersReportService.exportToJSON(users);
+                  usersReportService.downloadReport(json, 'all-users', 'json');
+                }}>
+                  <FileJson size={16} />
+                  JSON
+                </ExportBtn>
+              </ReportButtons>
+            </ReportCard>
+
+            {/* تقرير المعارض */}
+            <ReportCard>
+              <ReportIcon>🏢</ReportIcon>
+              <ReportName>المعارض</ReportName>
+              <ReportButtons>
+                <ExportBtn onClick={async () => {
+                  const dealers = await usersReportService.getAllUsers({ profileType: 'dealer' });
+                  const csv = await usersReportService.exportToCSV(dealers);
+                  usersReportService.downloadReport(csv, 'dealers', 'csv');
+                }}>
+                  <FileSpreadsheet size={16} />
+                  CSV
+                </ExportBtn>
+                <ExportBtn onClick={async () => {
+                  const dealers = await usersReportService.getAllUsers({ profileType: 'dealer' });
+                  const excel = await usersReportService.exportToExcel(dealers);
+                  usersReportService.downloadReport(excel, 'dealers', 'xls');
+                }}>
+                  <FileSpreadsheet size={16} />
+                  Excel
+                </ExportBtn>
+              </ReportButtons>
+            </ReportCard>
+
+            {/* تقرير جميع السيارات */}
+            <ReportCard>
+              <ReportIcon>🚗</ReportIcon>
+              <ReportName>جميع السيارات</ReportName>
+              <ReportButtons>
+                <ExportBtn onClick={async () => {
+                  const cars = await carsReportService.getAllCars();
+                  const csv = await carsReportService.exportToCSV(cars);
+                  carsReportService.downloadReport(csv, 'all-cars', 'csv');
+                }}>
+                  <FileSpreadsheet size={16} />
+                  CSV
+                </ExportBtn>
+                <ExportBtn onClick={async () => {
+                  const cars = await carsReportService.getAllCars();
+                  const excel = await carsReportService.exportToExcel(cars);
+                  carsReportService.downloadReport(excel, 'all-cars', 'xls');
+                }}>
+                  <FileSpreadsheet size={16} />
+                  Excel
+                </ExportBtn>
+                <ExportBtn onClick={async () => {
+                  const cars = await carsReportService.getAllCars();
+                  const json = await carsReportService.exportToJSON(cars);
+                  carsReportService.downloadReport(json, 'all-cars', 'json');
+                }}>
+                  <FileJson size={16} />
+                  JSON
+                </ExportBtn>
+              </ReportButtons>
+            </ReportCard>
+
+            {/* تقرير سيارات صوفيا */}
+            <ReportCard>
+              <ReportIcon>🏙️</ReportIcon>
+              <ReportName>سيارات صوفيا</ReportName>
+              <ReportButtons>
+                <ExportBtn onClick={async () => {
+                  const cars = await carsReportService.getAllCars({ city: 'София' });
+                  const csv = await carsReportService.exportToCSV(cars);
+                  carsReportService.downloadReport(csv, 'sofia-cars', 'csv');
+                }}>
+                  <FileSpreadsheet size={16} />
+                  CSV
+                </ExportBtn>
+                <ExportBtn onClick={async () => {
+                  const cars = await carsReportService.getAllCars({ city: 'София' });
+                  const excel = await carsReportService.exportToExcel(cars);
+                  carsReportService.downloadReport(excel, 'sofia-cars', 'xls');
+                }}>
+                  <FileSpreadsheet size={16} />
+                  Excel
+                </ExportBtn>
+              </ReportButtons>
+            </ReportCard>
+
+            {/* تقرير السيارات النشطة */}
+            <ReportCard>
+              <ReportIcon>✅</ReportIcon>
+              <ReportName>السيارات النشطة</ReportName>
+              <ReportButtons>
+                <ExportBtn onClick={async () => {
+                  const cars = await carsReportService.getAllCars({ status: 'active' });
+                  const csv = await carsReportService.exportToCSV(cars);
+                  carsReportService.downloadReport(csv, 'active-cars', 'csv');
+                }}>
+                  <FileSpreadsheet size={16} />
+                  CSV
+                </ExportBtn>
+                <ExportBtn onClick={async () => {
+                  const cars = await carsReportService.getAllCars({ status: 'active' });
+                  const excel = await carsReportService.exportToExcel(cars);
+                  carsReportService.downloadReport(excel, 'active-cars', 'xls');
+                }}>
+                  <FileSpreadsheet size={16} />
+                  Excel
+                </ExportBtn>
+              </ReportButtons>
+            </ReportCard>
+
+            {/* تقرير المستخدمين المتحققين */}
+            <ReportCard>
+              <ReportIcon>✓</ReportIcon>
+              <ReportName>المستخدمين المتحققين</ReportName>
+              <ReportButtons>
+                <ExportBtn onClick={async () => {
+                  const users = await usersReportService.getAllUsers({ verifiedOnly: true });
+                  const csv = await usersReportService.exportToCSV(users);
+                  usersReportService.downloadReport(csv, 'verified-users', 'csv');
+                }}>
+                  <FileSpreadsheet size={16} />
+                  CSV
+                </ExportBtn>
+                <ExportBtn onClick={async () => {
+                  const users = await usersReportService.getAllUsers({ verifiedOnly: true });
+                  const excel = await usersReportService.exportToExcel(users);
+                  usersReportService.downloadReport(excel, 'verified-users', 'xls');
+                }}>
+                  <FileSpreadsheet size={16} />
+                  Excel
+                </ExportBtn>
+              </ReportButtons>
+            </ReportCard>
+          </ReportsGrid>
+        </ReportsSection>
+
         <FooterStatsGrid>
           <FooterStat>
             <StatLabel>إجمالي الزيارات</StatLabel>
@@ -470,6 +639,88 @@ const FooterNote = styled.div`
   font-size: 13px;
   color: #888;
   margin-top: 8px;
+`;
+
+// Reports Section Styles
+const ReportsSection = styled.div`
+  padding: 2rem 1rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+`;
+
+const ReportsTitle = styled.h3`
+  font-size: 1.5rem;
+  color: #ffd700;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+`;
+
+const ReportsGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+`;
+
+const ReportCard = styled.div`
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  border-radius: 12px;
+  padding: 1.25rem;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    border-color: rgba(255, 215, 0, 0.5);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(255, 215, 0, 0.2);
+  }
+`;
+
+const ReportIcon = styled.div`
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 0.75rem;
+`;
+
+const ReportName = styled.div`
+  font-size: 1rem;
+  color: #fff;
+  text-align: center;
+  margin-bottom: 1rem;
+  font-weight: 500;
+`;
+
+const ReportButtons = styled.div`
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+`;
+
+const ExportBtn = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
 `;
 
 export default SuperAdminDashboard;

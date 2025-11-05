@@ -4,15 +4,15 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
-import { useAuth } from '../../../../contexts/AuthProvider';
-import { useLanguage } from '../../../../contexts/LanguageContext';
+import { useAuth } from '@/contexts/AuthProvider';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { 
   User, Eye, MessageSquare, Search, Heart, ShoppingCart, 
   Package, CreditCard, Car, FileText, Settings, 
   Shield, Bell, Edit, Users, List
 } from 'lucide-react';
 import { collection, query, where, getDocs } from 'firebase/firestore';
-import { db } from '../../../../firebase/firebase-config';
+import { db } from '@/firebase/firebase-config';
 
 interface SidebarCounts {
   messages: number;

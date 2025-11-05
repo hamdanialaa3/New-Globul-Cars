@@ -3,10 +3,10 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { LeftSidebar } from './components/LeftSidebar';
 import { RightSidebar } from './components/RightSidebar';
-import { useAuth } from '../../../../contexts/AuthProvider';
-import { useLanguage } from '../../../../contexts/LanguageContext';
+import { useAuth } from '@/contexts/AuthProvider';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { collection, query, where, orderBy, limit as firestoreLimit, onSnapshot } from 'firebase/firestore';
-import { db } from '../../../../firebase/firebase-config';
+import { db } from '@/firebase/firebase-config';
 
 interface Post {
   id: string;

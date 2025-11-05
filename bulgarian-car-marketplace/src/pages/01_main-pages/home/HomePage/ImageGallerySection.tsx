@@ -5,8 +5,8 @@ import React, { useState, useEffect, memo } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { useLanguage } from '../../../../contexts/LanguageContext';
-import { logger } from '../../../../services/logger-service';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { logger } from '@/services/logger-service';
 
 const ImageGallerySection = styled.section`
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);

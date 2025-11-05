@@ -18,7 +18,7 @@ import {
   BarChart3,
   PieChart
 } from 'lucide-react';
-import { advancedRealDataService } from '../services/advanced-real-data-service';
+import { advancedRealDataService } from '@/services/advanced-real-data-service';
 
 // Styled Components
 const RealDataContainer = styled.div`

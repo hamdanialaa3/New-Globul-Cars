@@ -5,15 +5,15 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { useTranslation } from '../hooks/useTranslation';
+import { useTranslation } from '@/hooks/useTranslation';
 import { bulgarianAuthService } from '../firebase';
 // ✅ NEW: Import from canonical types
-import type { BulgarianUser } from '../types/user/bulgarian-user.types';
+import type { BulgarianUser } from '@/types/user/bulgarian-user.types';
 import NotificationBell from './NotificationBell';
 import TopBrandsMenu from './TopBrands/TopBrandsMenu';
 // Replace 3D logo with official image logo
 import { Settings, User, LogOut, LogIn, UserPlus, Type, MessageCircle } from 'lucide-react';
-import { logger } from '../services/logger-service';
+import { logger } from '@/services/logger-service';
 
 // Styled Components - Mobile.de Style with Metallic Bottom Section
 const HeaderContainer = styled.header`

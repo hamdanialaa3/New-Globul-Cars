@@ -2,10 +2,10 @@
 // Chat Interface Component for Bulgarian Car Marketplace
 
 import React, { useState, useEffect, useRef } from 'react';
-import { logger } from '../services/logger-service';
+import { logger } from '@/services/logger-service';
 import styled from 'styled-components';
-import { useTranslation } from '../hooks/useTranslation';
-import { realtimeMessagingService, Message, TypingIndicator } from '../services/realtimeMessaging';
+import { useTranslation } from '@/hooks/useTranslation';
+import { realtimeMessagingService, Message, TypingIndicator } from '@/services/realtimeMessaging';
 
 interface ChatInterfaceProps {
   currentUserId: string;

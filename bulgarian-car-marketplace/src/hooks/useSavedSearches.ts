@@ -7,9 +7,9 @@ import savedSearchesService, {
   SavedSearch,
   SavedSearchInput,
   SavedSearchFilters
-} from '../services/savedSearchesService';
+} from '@/services/savedSearchesService';
 import { toast } from 'react-toastify';
-import { logger } from '../services/logger-service';
+import { logger } from '@/services/logger-service';
 
 export const useSavedSearches = () => {
   const { user } = useAuth();

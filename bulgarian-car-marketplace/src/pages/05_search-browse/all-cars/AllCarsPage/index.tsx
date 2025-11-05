@@ -3,13 +3,13 @@
 
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useLanguage } from '../../../../contexts/LanguageContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { collection, query, getDocs, orderBy, where } from 'firebase/firestore';
-import { db } from '../../../../firebase/firebase-config';
-import CarCardCompact from '../../../../components/CarCard/CarCardCompact';
-import { CarListing } from '../../../../types/CarListing';
+import { db } from '@/firebase/firebase-config';
+import CarCardCompact from '@/components/CarCard/CarCardCompact';
+import { CarListing } from '@/types/CarListing';
 import { Car, Search, Filter, X } from 'lucide-react';
-import { ResponsiveGrid } from '../../../../components/layout/ResponsiveGrid';
+import { ResponsiveGrid } from '@/components/layout/ResponsiveGrid';
 
 const AllCarsPage: React.FC = () => {
   const { language } = useLanguage();

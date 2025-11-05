@@ -9,7 +9,7 @@ import {
   doc,
   getDoc
 } from 'firebase/firestore';
-import { db, functions } from '../firebase/firebase-config';
+import { db, functions } from '@/firebase/firebase-config';
 import { httpsCallable } from 'firebase/functions';
 import { firebaseAuthUsersService } from './firebase-auth-users-service';
 import { firebaseAuthRealUsers } from './firebase-auth-real-users';

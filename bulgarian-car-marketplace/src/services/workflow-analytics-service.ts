@@ -2,7 +2,7 @@
 // خدمة تحليلات سير العمل - تتبع سلوك المستخدم في عملية البيع
 
 import { collection, addDoc, serverTimestamp, query, where, getDocs, Timestamp } from 'firebase/firestore';
-import { db } from '../firebase/firebase-config';
+import { db } from '@/firebase/firebase-config';
 import { logger } from './logger-service';
 
 export interface WorkflowEvent {

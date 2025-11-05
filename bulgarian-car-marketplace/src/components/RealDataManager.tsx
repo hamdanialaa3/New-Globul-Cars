@@ -13,9 +13,9 @@ import {
   MessageSquare,
   Eye
 } from 'lucide-react';
-import { advancedRealDataService } from '../services/advanced-real-data-service';
-import { realDataInitializer } from '../services/real-data-initializer';
-import { firebaseDebugService } from '../services/firebase-debug-service';
+import { advancedRealDataService } from '@/services/advanced-real-data-service';
+import { realDataInitializer } from '@/services/real-data-initializer';
+import { firebaseDebugService } from '@/services/firebase-debug-service';
 
 // Styled Components
 const ManagerContainer = styled.div`

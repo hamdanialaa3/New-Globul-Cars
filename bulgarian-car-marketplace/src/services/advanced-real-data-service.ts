@@ -7,7 +7,7 @@ import {
   limit,
   onSnapshot
 } from 'firebase/firestore';
-import { db } from '../firebase/firebase-config';
+import { db } from '@/firebase/firebase-config';
 import { logger } from './logger-service';
 
 // Advanced Real Data Service for 100% real data

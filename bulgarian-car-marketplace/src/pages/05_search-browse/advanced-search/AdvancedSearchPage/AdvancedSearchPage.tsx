@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useAdvancedSearch } from './hooks/useAdvancedSearch';
-import { useSavedSearches } from '../../../../hooks/useSavedSearches';
-import { useAuth } from '../../../../contexts/AuthProvider';
+import { useSavedSearches } from '@/hooks/useSavedSearches';
+import { useAuth } from '@/contexts/AuthProvider';
 import { SearchData } from './types';
-import advancedSearchService from '../../../../services/advancedSearchService';
-import CarCardCompact from '../../../../components/CarCard/CarCardCompact';
-import { CarListing } from '../../../../types/CarListing';
+import advancedSearchService from '@/services/advancedSearchService';
+import CarCardCompact from '@/components/CarCard/CarCardCompact';
+import { CarListing } from '@/types/CarListing';
 import {
   SearchContainer,
   Container,

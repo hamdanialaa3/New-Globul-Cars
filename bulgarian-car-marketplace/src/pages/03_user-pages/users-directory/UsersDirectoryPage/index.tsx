@@ -4,8 +4,8 @@
 
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useLanguage } from '../../../../contexts/LanguageContext';
-import { useAuth } from '../../../../contexts/AuthProvider';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '@/contexts/AuthProvider';
 import { 
   Users, 
   Search, 
@@ -24,11 +24,11 @@ import {
   TrendingUp
 } from 'lucide-react';
 import { collection, getDocs, query, limit, orderBy, startAfter } from 'firebase/firestore';
-import { db } from '../../../../firebase/firebase-config';
-import { BULGARIA_REGIONS } from '../../../../data/bulgaria-locations';
-import { followService } from '../../../../services/social/follow.service';
-import { BubblesGrid } from '../../../../components/UserBubble/BubblesGrid';
-import { OnlineUsersRow } from '../../../../components/UserBubble/OnlineUsersRow';
+import { db } from '@/firebase/firebase-config';
+import { BULGARIA_REGIONS } from '@/data/bulgaria-locations';
+import { followService } from '@/services/social/follow.service';
+import { BubblesGrid } from '@/components/UserBubble/BubblesGrid';
+import { OnlineUsersRow } from '@/components/UserBubble/OnlineUsersRow';
 
 // ==================== TYPES ====================
 

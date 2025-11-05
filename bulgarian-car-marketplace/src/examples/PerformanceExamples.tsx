@@ -3,8 +3,8 @@
 // أمثلة على التحسينات المطبقة
 
 import React, { useMemo, useCallback, useState } from 'react';
-import { OptimizedImage } from '../components/OptimizedImage';
-import { firebaseCache, cacheKeys } from '../services/firebase-cache.service';
+import { OptimizedImage } from '@/components/OptimizedImage';
+import { firebaseCache, cacheKeys } from '@/services/firebase-cache.service';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../firebase';
 

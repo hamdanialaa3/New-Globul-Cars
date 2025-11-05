@@ -9,7 +9,7 @@ import { getFunctions } from 'firebase/functions';
 import { getAnalytics, Analytics } from 'firebase/analytics';
 // import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check'; // Disabled to prevent auth errors
 import { BULGARIAN_CONFIG } from '../config/bulgarian-config';
-import { logger } from '../services/logger-service';
+import { logger } from '@/services/logger-service';
 
 // Type declaration for reCAPTCHA
 declare global {

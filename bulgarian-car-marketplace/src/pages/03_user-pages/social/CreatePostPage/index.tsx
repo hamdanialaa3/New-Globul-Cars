@@ -4,7 +4,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import CreatePostForm from '../../../../components/Posts/CreatePostForm';
+import CreatePostForm from '@/components/Posts/CreatePostForm';
 
 const CreatePostPage: React.FC = () => {
   const navigate = useNavigate();

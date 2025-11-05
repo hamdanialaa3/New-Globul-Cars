@@ -4,9 +4,9 @@
 
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useAuth } from '../../../../contexts/AuthProvider';
-import { useLanguage } from '../../../../contexts/LanguageContext';
-import { useProfileType } from '../../../../contexts/ProfileTypeContext'; // ⚡ FIX: Use ProfileType Context
+import { useAuth } from '@/contexts/AuthProvider';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useProfileType } from '@/contexts/ProfileTypeContext'; // ⚡ FIX: Use ProfileType Context
 import SettingsSidebar from './SettingsSidebar'; // ⚡ NEW: Sidebar
 import { 
   Settings, Shield, Eye, EyeOff, Save, Mail, Phone, 
@@ -16,12 +16,12 @@ import {
   RefreshCw
 } from 'lucide-react';
 import { useProfile } from './hooks/useProfile';
-import { dealershipService } from '../../../../services/dealership/dealership.service';
-import { DEFAULT_PRIVACY_SETTINGS } from '../../../../types/dealership.types';
-import type { PrivacySettings } from '../../../../types/dealership.types';
-import { useToast } from '../../../../components/Toast';
-import socialMediaService from '../../../../services/social/social-media.service';
-import { PLATFORM_CONFIGS, SocialMediaAccount, SocialPlatform } from '../../../../types/social-media.types';
+import { dealershipService } from '@/services/dealership/dealership.service';
+import { DEFAULT_PRIVACY_SETTINGS } from '@/types/dealership.types';
+import type { PrivacySettings } from '@/types/dealership.types';
+import { useToast } from '@/components/Toast';
+import socialMediaService from '@/services/social/social-media.service';
+import { PLATFORM_CONFIGS, SocialMediaAccount, SocialPlatform } from '@/types/social-media.types';
 
 // TikTok Icon (custom SVG)
 const TikTokIcon: React.FC<{ size?: number; color?: string }> = ({ size = 20, color = 'currentColor' }) => (

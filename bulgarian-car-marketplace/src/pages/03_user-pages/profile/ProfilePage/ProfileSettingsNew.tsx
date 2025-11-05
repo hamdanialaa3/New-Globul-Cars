@@ -4,8 +4,8 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useLanguage } from '../../../../contexts/LanguageContext';
-import { useAuth } from '../../../../contexts/AuthProvider';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '@/contexts/AuthProvider';
 import { useProfile } from './hooks/useProfile';
 import { 
   CustomerNumberBadge,
@@ -14,18 +14,18 @@ import {
   DocumentsCard,
   DangerZoneCard,
   IDCardVerificationCard
-} from '../../../../components/Profile/ProfileCards';
-import ProfilePhotoCard from '../../../../components/Profile/ProfileCards/ProfilePhotoCard';
-import PasswordChangeModal from '../../../../components/Profile/Modals/PasswordChangeModal';
-import PhoneVerificationModal from '../../../../components/Profile/Modals/PhoneVerificationModal';
-import EmailVerificationModal from '../../../../components/Profile/Modals/EmailVerificationModal';
-import IDCardOverlay from '../../../../components/Profile/IDCardEditor/IDCardOverlay';
-import { IDCardData } from '../../../../components/Profile/IDCardEditor/types';
-import idVerificationService from '../../../../services/verification/id-verification.service';
+} from '@/components/Profile/ProfileCards';
+import ProfilePhotoCard from '@/components/Profile/ProfileCards/ProfilePhotoCard';
+import PasswordChangeModal from '@/components/Profile/Modals/PasswordChangeModal';
+import PhoneVerificationModal from '@/components/Profile/Modals/PhoneVerificationModal';
+import EmailVerificationModal from '@/components/Profile/Modals/EmailVerificationModal';
+import IDCardOverlay from '@/components/Profile/IDCardEditor/IDCardOverlay';
+import { IDCardData } from '@/components/Profile/IDCardEditor/types';
+import idVerificationService from '@/services/verification/id-verification.service';
 import { deleteUser } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import customerNumberService from '../../../../services/customer-number.service';
+import customerNumberService from '@/services/customer-number.service';
 
 const ProfileSettingsNew: React.FC = () => {
   const { language } = useLanguage();
