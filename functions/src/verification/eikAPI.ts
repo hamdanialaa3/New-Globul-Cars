@@ -2,6 +2,7 @@
 // EIK/BULSTAT API Integration with Bulgarian Trade Registry
 
 import axios from 'axios';
+import { logger } from 'firebase-functions';
 
 /**
  * EIK/BULSTAT verification response
@@ -60,11 +61,11 @@ export async function verifyEIKViaAPI(eik: string): Promise<EIKVerificationResul
     // });
 
     // For now, return mock data with indication
-    console.log(`⚠️  EIK API not configured. Using mock verification for EIK: ${cleanEIK}`);
+    logger.warn(`⚠️  EIK API not configured. Using mock verification for EIK: ${cleanEIK}`);
     return getMockEIKVerification(cleanEIK);
 
   } catch (error: any) {
-    console.error('Error verifying EIK via API:', error);
+    logger.error('Error verifying EIK via API:', error);
     return {
       success: false,
       eik,
@@ -178,12 +179,12 @@ export async function queryPublicRegistry(eik: string): Promise<EIKVerificationR
 
     // In production, you would scrape or use API
     // For now, return mock data
-    console.log(`⚠️  Public registry scraping not implemented. Using mock for EIK: ${eik}`);
+    logger.warn(`⚠️  Public registry scraping not implemented. Using mock for EIK: ${eik}`);
     
     return getMockEIKVerification(eik);
 
   } catch (error: any) {
-    console.error('Error querying public registry:', error);
+    logger.error('Error querying public registry:', error);
     return {
       success: false,
       eik,
@@ -205,7 +206,7 @@ export async function verifyEIKMultiSource(eik: string): Promise<EIKVerification
   }
 
   // Fallback to public registry
-  console.log('API verification failed, trying public registry...');
+  logger.info('API verification failed, trying public registry...');
   result = await queryPublicRegistry(eik);
 
   return result;
@@ -224,7 +225,7 @@ export async function verifyEIKWithCache(eik: string): Promise<EIKVerificationRe
   // Check cache
   const cached = verificationCache.get(cleanEIK);
   if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
-    console.log(`✅ Using cached verification for EIK: ${cleanEIK}`);
+    logger.info(`✅ Using cached verification for EIK: ${cleanEIK}`);
     return { ...cached.result, source: 'mock' }; // Indicate it's cached
   }
 
