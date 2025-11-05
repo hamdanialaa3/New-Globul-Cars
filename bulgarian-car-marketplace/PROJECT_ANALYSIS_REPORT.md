@@ -451,18 +451,30 @@ stripePriceId: 'price_ZZZZZZZZZZ',
 **التاريخ:** 5 نوفمبر 2025
 
 **الملفات المحذوفة:**
-- ✅ `src/services/messaging/notification-service.ts` (مكرر - غير مستخدم)
+- ✅ `src/services/messaging/notification-service.ts` (219 lines - مكرر غير مستخدم)
   - **السبب:** النسخة في `src/services/notification-service.ts` هي المستخدمة فعلياً
   - **Commit:** `5fd8a2e6` - "fix: remove duplicate notification-service file"
   
-- ✅ `src/components/Header.tsx` (مكرر - غير مستخدم)
+- ✅ `src/components/Header.tsx` (478 lines - مكرر غير مستخدم)
   - **السبب:** النسخة في `src/components/Header/Header.tsx` هي المستخدمة في App.tsx
   - **Commit:** `a8cbbb88` - "fix: remove duplicate Header.tsx file"
 
+- ✅ `src/components/Footer.tsx` (251 lines - مكرر غير مستخدم)
+  - **السبب:** النسخة في `src/components/Footer/Footer.tsx` هي المستخدمة في App.tsx
+  - **Commit:** `6a1ec218` - "fix: remove duplicate Footer.tsx and ImageGallery.tsx files"
+
+- ✅ `src/components/ImageGallery.tsx` (288 lines - مكرر غير مستخدم)
+  - **السبب:** النسخة في `src/components/Posts/ImageGallery.tsx` هي المستخدمة في PostCard.tsx
+  - **Commit:** `6a1ec218` - "fix: remove duplicate Footer.tsx and ImageGallery.tsx files"
+
+- ✅ `src/context/AuthContext.tsx` (14 lines - مكرر غير مستخدم)
+  - **السبب:** النسخة في `src/contexts/AuthContext.tsx` هي المستخدمة
+  - **Commit:** `59047748` - "fix: remove more duplicates and replace console with logger"
+
 **النتيجة:**
-- تقليل 2 من 15 ملف مكرر
-- توفير مساحة وتقليل الارتباك
-- المتبقي: 13 ملف مكرر
+- تقليل 5 من 15 ملف مكرر (33% إنجاز ✅)
+- توفير 1,250 سطر من الكود المكرر
+- المتبقي: 10 ملفات مكررة (معظمها index.tsx المقصودة)
 
 #### 2. تحسين Type Safety ✅
 **التاريخ:** 5 نوفمبر 2025
@@ -492,26 +504,76 @@ stripePriceId: 'price_ZZZZZZZZZZ',
     - `notifyEmergencyServices(vin: string, location: EmergencyLocation)`
     - `triggerMaintenanceAlert(vin: string, maintenanceData: MaintenanceData)`
 
+- ✅ `functions/src/analytics/trackEvent.ts`
+  - أضيفت interface:
+    ```typescript
+    interface EventMetadata {
+      listingId?: string;
+      sellerId?: string;
+      profileId?: string;
+      receiverId?: string;
+      query?: string;
+      filters?: Record<string, any>;
+      deviceType?: string;
+      [key: string]: any;
+    }
+    ```
+  - استبدال `any` في 7 أماكن:
+    - `handleListingView(viewerId: string, metadata: EventMetadata)`
+    - `handleProfileView(viewerId: string, metadata: EventMetadata)`
+    - `handleInquirySent(senderId: string, metadata: EventMetadata)`
+    - `handleFavoriteAdded(userId: string, metadata: EventMetadata)`
+    - `handleSearch(userId: string, metadata: EventMetadata)`
+    - `handleContactClick(userId: string, metadata: EventMetadata)`
+    - eventData object (استبدال `as any` في timestamp)
+  - **Commit:** `392e6bf5` - "fix: improve type safety in analytics trackEvent"
+
 **النتيجة:**
-- تقليل 3 من 20+ حالة استخدام `any`
-- تحسين type safety
+- تقليل 11 من 20+ حالة استخدام `any` (55% إنجاز ✅✅)
+- تحسين type safety بشكل كبير
 - أفضل IntelliSense في VSCode
-- المتبقي: ~17 حالة `any`
+- المتبقي: ~9 حالات `any` (معظمها في catch blocks)
 
 #### 3. استبدال console.* بـ logger ✅
 **التاريخ:** 5 نوفمبر 2025
 
 **الملفات المحدثة:**
-- ✅ `functions/src/stories-functions.ts`
-  - استبدال 6 حالات:
-    - `console.log` → `logger.info` (3 حالات)
-    - `console.error` → `logger.error` (2 حالات)
-    - إضافة `import { logger } from 'firebase-functions';`
+- ✅ `functions/src/stories-functions.ts` - 6 حالات
+  - `console.log` → `logger.info` (3 حالات)
+  - `console.error` → `logger.error` (2 حالات)
+  - **Commit:** `2f315b4e` - "fix: replace console.* with logger and improve type safety"
+
+- ✅ `functions/src/vision.ts` - 7 حالات
+  - `console.log` → `logger.info` (5 حالات)
+  - `console.warn` → `logger.warn` (1 حالة)
+  - `console.error` → `logger.error` (1 حالة)
+  - **Commit:** `59047748` - "fix: remove more duplicates and replace console with logger"
+
+- ✅ `functions/src/verification/eikAPI.ts` - 6 حالات
+  - `console.log` → `logger.warn` (2 حالات - تحذيرات API)
+  - `console.log` → `logger.info` (2 حالات)
+  - `console.error` → `logger.error` (2 حالات)
+  - **Commit:** `59047748` - "fix: remove more duplicates and replace console with logger"
+
+- ✅ `functions/src/social-tokens.ts` - 8 حالات
+  - `console.warn` → `logger.warn` (2 حالات)
+  - `console.log` → `logger.info` (6 حالات)
+  - **Commit:** `acdea31a` - "fix: replace console with logger in social-tokens.ts (8 instances)"
 
 **النتيجة:**
-- تقليل 6 من 50+ حالة console.*
-- نظام logging موحد ومهني
-- المتبقي: ~44 حالة console.*
+- تقليل 27 من 50+ حالة console.* (54% إنجاز ✅✅)
+- نظام logging موحد ومهني عبر Firebase Functions
+- تحسين تتبع الأخطاء والأحداث
+- المتبقي: ~23 حالة console.* (في ملفات reviews، social-media، إلخ)
+
+**Commits الإجمالية:**
+1. `5fd8a2e6` - fix: remove duplicate notification-service file
+2. `a8cbbb88` - fix: remove duplicate Header.tsx file
+3. `2f315b4e` - fix: replace console.* with logger and improve type safety (stories-functions)
+4. `6a1ec218` - fix: remove duplicate Footer.tsx and ImageGallery.tsx files
+5. `59047748` - fix: remove more duplicates and replace console with logger (vision, eikAPI)
+6. `acdea31a` - fix: replace console with logger in social-tokens.ts (8 instances)
+7. `392e6bf5` - fix: improve type safety in analytics trackEvent (replace 5 any with EventMetadata)
 
 **Commit:** `2f315b4e` - "fix: replace console.* with logger and improve type safety"
 
