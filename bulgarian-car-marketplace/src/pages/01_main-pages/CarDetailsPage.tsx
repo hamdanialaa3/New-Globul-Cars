@@ -1069,6 +1069,85 @@ const CarDetailsPage: React.FC = () => {
     }).format(price);
   };
 
+  // Contact Method Handlers
+  const handleContactClick = (method: string) => {
+    if (isEditMode) return; // في وضع التعديل، لا تفتح الروابط
+    
+    const phone = car.sellerPhone || '';
+    const email = car.sellerEmail || '';
+    const cleanPhone = phone.replace(/\D/g, ''); // إزالة كل شيء ما عدا الأرقام
+    
+    switch(method) {
+      case 'phone':
+        if (phone) {
+          window.location.href = `tel:${phone}`;
+        } else {
+          alert(language === 'bg' ? 'Няма наличен телефонен номер' : 'No phone number available');
+        }
+        break;
+        
+      case 'email':
+        if (email) {
+          window.location.href = `mailto:${email}?subject=${encodeURIComponent(`Inquiry about ${car.make} ${car.model} ${car.year}`)}`;
+        } else {
+          alert(language === 'bg' ? 'Няма наличен имейл адрес' : 'No email address available');
+        }
+        break;
+        
+      case 'whatsapp':
+        if (phone) {
+          const message = encodeURIComponent(`Hello! I'm interested in your ${car.make} ${car.model} ${car.year}`);
+          window.open(`https://wa.me/${cleanPhone}?text=${message}`, '_blank');
+        } else {
+          alert(language === 'bg' ? 'Няма наличен телефонен номер за WhatsApp' : 'No phone number available for WhatsApp');
+        }
+        break;
+        
+      case 'viber':
+        if (phone) {
+          window.open(`viber://chat?number=${cleanPhone}`, '_blank');
+        } else {
+          alert(language === 'bg' ? 'Няма наличен телефонен номер за Viber' : 'No phone number available for Viber');
+        }
+        break;
+        
+      case 'telegram':
+        if (phone) {
+          window.open(`https://t.me/${cleanPhone}`, '_blank');
+        } else {
+          alert(language === 'bg' ? 'Няма наличен телефонен номер за Telegram' : 'No phone number available for Telegram');
+        }
+        break;
+        
+      case 'facebook':
+        // Facebook Messenger يحتاج معرف Facebook، سنفتح صفحة Messenger
+        if (email || phone) {
+          window.open('https://www.messenger.com/', '_blank');
+          setTimeout(() => {
+            alert(language === 'bg' 
+              ? `Свържете се чрез Messenger: ${email || phone}` 
+              : `Contact via Messenger: ${email || phone}`
+            );
+          }, 500);
+        } else {
+          alert(language === 'bg' ? 'Няма налична информация за контакт' : 'No contact information available');
+        }
+        break;
+        
+      case 'sms':
+        if (phone) {
+          const smsBody = encodeURIComponent(`Hi, I'm interested in your ${car.make} ${car.model} ${car.year}`);
+          window.location.href = `sms:${phone}${/iPhone|iPad|iPod/.test(navigator.userAgent) ? '&' : '?'}body=${smsBody}`;
+        } else {
+          alert(language === 'bg' ? 'Няма наличен телефонен номер за SMS' : 'No phone number available for SMS');
+        }
+        break;
+        
+      default:
+        break;
+    }
+  };
+
   if (loading) {
     return <LoadingContainer>{language === 'bg' ? 'Зареждане...' : 'Loading...'}</LoadingContainer>;
   }
@@ -1878,12 +1957,23 @@ const CarDetailsPage: React.FC = () => {
             { key: 'sms', label: 'SMS', Icon: SMSIcon }
           ].map(contact => {
             const fieldKey = `contact${contact.key.charAt(0).toUpperCase() + contact.key.slice(1)}` as keyof CarListing;
-            const isActive = Boolean(editedCar[fieldKey]);
+            const isActive = isEditMode ? Boolean(editedCar[fieldKey]) : Boolean(car[fieldKey]);
+            
             return (
               <ContactItem 
                 key={contact.key} 
                 $isActive={isActive}
-                onClick={() => isEditMode && handleInputChange(fieldKey, !isActive)}
+                onClick={() => {
+                  if (isEditMode) {
+                    handleInputChange(fieldKey, !isActive);
+                  } else if (isActive) {
+                    handleContactClick(contact.key);
+                  }
+                }}
+                style={{ 
+                  cursor: isEditMode ? 'pointer' : (isActive ? 'pointer' : 'not-allowed'),
+                  opacity: isActive ? 1 : 0.5
+                }}
               >
                 <ContactIcon $isActive={isActive}>
                   <contact.Icon />
