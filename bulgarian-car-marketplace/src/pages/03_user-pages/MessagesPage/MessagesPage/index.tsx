@@ -5,9 +5,9 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
-import { useAuth } from '../../contexts/AuthProvider';
-import { useLanguage } from '../../contexts/LanguageContext';
-import { realtimeMessagingService, ChatRoom } from '../../services/realtimeMessaging';
+import { useAuth } from '../../../../../contexts/AuthProvider';
+import { useLanguage } from '../../../../../contexts/LanguageContext';
+import { realtimeMessagingService, ChatRoom } from '../../../../../services/realtimeMessaging';
 import ConversationList from './ConversationList';
 import ChatWindow from './ChatWindow';
 import { MessageCircle, Search, Users } from 'lucide-react';

@@ -4,8 +4,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useLanguage } from '../../contexts/LanguageContext';
-import { bulgarianCarService } from '../../firebase/car-service';
+import { useLanguage } from '../../../../../contexts/LanguageContext';
+import { bulgarianCarService } from '../../../../../firebase/car-service';
 import brandsData from '../../data/car-brands-complete.json';
 import { BrandWithStats } from './types';
 import { calculateBrandStats, categorizeBrands } from './utils';

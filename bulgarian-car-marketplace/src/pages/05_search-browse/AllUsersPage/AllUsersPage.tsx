@@ -4,9 +4,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { useLanguage } from '../contexts/LanguageContext';
+import { useLanguage } from '../../../../../contexts/LanguageContext';
 import { collection, query, getDocs, orderBy, where } from 'firebase/firestore';
-import { db } from '../firebase/firebase-config';
+import { db } from '../../../../../firebase/firebase-config';
 import { Users, Search, Filter, X } from 'lucide-react';
 import CarCardCompact from '../components/CarCard/CarCardCompact';
 

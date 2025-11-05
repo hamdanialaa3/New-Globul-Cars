@@ -4,8 +4,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { useFavorites } from '../hooks/useFavorites';
-import { useLanguage } from '../contexts/LanguageContext';
+import { useFavorites } from '../../../../../hooks/useFavorites';
+import { useLanguage } from '../../../../../contexts/LanguageContext';
 import {
   Heart,
   Grid,
