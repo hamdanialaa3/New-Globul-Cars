@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import { CarIcon } from '@/components/icons/CarIcon';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthProvider';
@@ -321,20 +321,6 @@ const CancelButtonEnhanced = styled.button`
   &:hover::before {
     left: 100%;
   }
-`;
-
-const rotate = keyframes`
-  100% { transform: rotate(360deg); }
-`;
-
-const rotateVertical = keyframes`
-  0% { transform: translate(-50%, -50%) rotate(0deg); }
-  100% { transform: translate(-50%, -50%) rotate(360deg); }
-`;
-
-const rotateHorizontal = keyframes`
-  0% { transform: translate(-50%, -50%) rotate(0deg); }
-  100% { transform: translate(-50%, -50%) rotate(360deg); }
 `;
 
 const SectionIcon = styled.div`
@@ -945,10 +931,8 @@ const CarDetailsPage: React.FC = () => {
   const [showOtherColor, setShowOtherColor] = useState(false);
   const [showOtherDoors, setShowOtherDoors] = useState(false);
   const [showOtherSeats, setShowOtherSeats] = useState(false);
-  const [showOtherRegion, setShowOtherRegion] = useState(false);
   
   // State for Bulgarian regions and cities
-  const [selectedRegion, setSelectedRegion] = useState<string>('');
   const [availableCities, setAvailableCities] = useState<string[]>([]);
   
   // State for image gallery
@@ -997,10 +981,23 @@ const CarDetailsPage: React.FC = () => {
   useEffect(() => {
     if (editedCar.region) {
       const cities = getCitiesByRegion(editedCar.region);
-      setAvailableCities(cities);
-      setSelectedRegion(editedCar.region);
+      const cityNames = cities.map(city => typeof city === 'string' ? city : city.name);
+      setAvailableCities(cityNames);
     }
   }, [editedCar.region]);
+  
+  // Cleanup URLs on unmount
+  useEffect(() => {
+    return () => {
+      photoUrls.forEach(url => {
+        try {
+          URL.revokeObjectURL(url);
+        } catch (e) {
+          // URL already revoked
+        }
+      });
+    };
+  }, [photoUrls]);
 
   const handleEdit = () => {
     setIsEditMode(true);
@@ -1140,14 +1137,14 @@ const CarDetailsPage: React.FC = () => {
               </GalleryTitle>
               
               <MainImageContainer>
-                <MainImage 
-                  src={
-                    typeof car.images[selectedImageIndex] === 'string' 
-                      ? car.images[selectedImageIndex] as unknown as string
-                      : URL.createObjectURL(car.images[selectedImageIndex])
-                  } 
-                  alt={`${car.make} ${car.model} - Photo ${selectedImageIndex + 1}`} 
-                />
+              <MainImage 
+                src={
+                  typeof car.images[selectedImageIndex] === 'string' 
+                    ? String(car.images[selectedImageIndex])
+                    : URL.createObjectURL(car.images[selectedImageIndex])
+                } 
+                alt={`${car.make} ${car.model} - Photo ${selectedImageIndex + 1}`} 
+              />
                 <ImageCount>{selectedImageIndex + 1} / {car.images.length}</ImageCount>
               </MainImageContainer>
 
@@ -1159,7 +1156,7 @@ const CarDetailsPage: React.FC = () => {
                     onClick={() => setSelectedImageIndex(index)}
                   >
                     <ThumbnailImage 
-                      src={typeof image === 'string' ? image as unknown as string : URL.createObjectURL(image)} 
+                      src={typeof image === 'string' ? String(image) : URL.createObjectURL(image)} 
                       alt={`Thumbnail ${index + 1}`} 
                     />
                   </ThumbnailItem>
@@ -1191,6 +1188,7 @@ const CarDetailsPage: React.FC = () => {
               <>
                 <EditableSelect
                   value={showOtherMake ? 'Other' : (editedCar.make || '')}
+                  aria-label={language === 'bg' ? 'Изберете марка' : 'Select make'}
                   onChange={(e) => {
                     if (e.target.value === 'Other') {
                       setShowOtherMake(true);
@@ -1243,6 +1241,7 @@ const CarDetailsPage: React.FC = () => {
               <>
                 <EditableSelect
                   value={showOtherModel ? 'Other' : (editedCar.model || '')}
+                  aria-label={language === 'bg' ? 'Изберете модел' : 'Select model'}
                   onChange={(e) => {
                     if (e.target.value === 'Other') {
                       setShowOtherModel(true);
@@ -1311,6 +1310,7 @@ const CarDetailsPage: React.FC = () => {
               <>
                 <EditableSelect
                   value={showOtherFuelType ? 'Other' : (editedCar.fuelType || '')}
+                  aria-label={language === 'bg' ? 'Изберете гориво' : 'Select fuel type'}
                   onChange={(e) => {
                     if (e.target.value === 'Other') {
                       setShowOtherFuelType(true);
@@ -1348,6 +1348,7 @@ const CarDetailsPage: React.FC = () => {
               <>
                 <EditableSelect
                   value={showOtherTransmission ? 'Other' : (editedCar.transmission || '')}
+                  aria-label={language === 'bg' ? 'Изберете трансмисия' : 'Select transmission'}
                   onChange={(e) => {
                     if (e.target.value === 'Other') {
                       setShowOtherTransmission(true);
@@ -1396,6 +1397,7 @@ const CarDetailsPage: React.FC = () => {
               <>
                 <EditableSelect
                   value={showOtherColor ? 'Other' : (editedCar.color || '')}
+                  aria-label={language === 'bg' ? 'Изберете цвят' : 'Select color'}
                   onChange={(e) => {
                     if (e.target.value === 'Other') {
                       setShowOtherColor(true);
@@ -1438,6 +1440,7 @@ const CarDetailsPage: React.FC = () => {
               <>
                 <EditableSelect
                   value={showOtherDoors ? 'Other' : (editedCar.doors?.toString() || '')}
+                  aria-label={language === 'bg' ? 'Изберете брой врати' : 'Select doors'}
                   onChange={(e) => {
                     if (e.target.value === 'Other') {
                       setShowOtherDoors(true);
@@ -1474,6 +1477,7 @@ const CarDetailsPage: React.FC = () => {
               <>
                 <EditableSelect
                   value={showOtherSeats ? 'Other' : (editedCar.seats?.toString() || '')}
+                  aria-label={language === 'bg' ? 'Изберете брой места' : 'Select seats'}
                   onChange={(e) => {
                     if (e.target.value === 'Other') {
                       setShowOtherSeats(true);
@@ -1785,15 +1789,16 @@ const CarDetailsPage: React.FC = () => {
           {isEditMode ? (
             <EditableSelect
               value={editedCar.region || ''}
+              aria-label={language === 'bg' ? 'Изберете регион' : 'Select region'}
               onChange={(e) => {
                 const regionName = e.target.value;
                 handleInputChange('region', regionName);
-                setSelectedRegion(regionName);
                 
                 // Update available cities based on selected region
                 if (regionName) {
                   const cities = getCitiesByRegion(regionName);
-                  setAvailableCities(cities);
+                  const cityNames = cities.map(city => typeof city === 'string' ? city : city.name);
+                  setAvailableCities(cityNames);
                   // Clear city selection when region changes
                   handleInputChange('city', '');
                 } else {
@@ -1819,6 +1824,7 @@ const CarDetailsPage: React.FC = () => {
             availableCities.length > 0 ? (
               <EditableSelect
                 value={editedCar.city || ''}
+                aria-label={language === 'bg' ? 'Изберете град' : 'Select city'}
                 onChange={(e) => handleInputChange('city', e.target.value)}
               >
                 <option value="">{language === 'bg' ? 'Изберете град' : 'Select city'}</option>
