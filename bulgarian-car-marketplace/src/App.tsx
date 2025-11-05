@@ -32,11 +32,11 @@ import { useIsMobile } from './hooks/useBreakpoint';
 // import useAuthRedirectHandler from './hooks/useAuthRedirectHandler';
 
 // Lazy load pages for better performance
-const HomePage = React.lazy(() => import('./pages/HomePage'));
+const HomePage = React.lazy(() => import('./pages/01_main-pages/home/HomePage'));
 const CarsPage = React.lazy(() => import('./pages/CarsPage'));
 const CarDetailsPage = React.lazy(() => import('./pages/CarDetailsPage'));
 const SellPage = React.lazy(() => import('./pages/SellPageNew'));
-const SocialFeedPage = React.lazy(() => import('./pages/SocialFeedPage'));
+const SocialFeedPage = React.lazy(() => import('./pages/03_user-pages/social/SocialFeedPage'));
 
 // Mobile.de-style sell workflow pages (الوحيد المستخدم)
 const VehicleStartPage = React.lazy(() => import('./pages/sell/VehicleStartPageNew'));
@@ -63,30 +63,30 @@ const ContactPhonePage = React.lazy(() => import('./pages/sell/ContactPhonePage'
 const UnifiedContactPage = React.lazy(() => import('./pages/sell/UnifiedContactPage'));
 
 const MessagesPage = React.lazy(() => import('./pages/MessagesPage'));
-const AdminPage = React.lazy(() => import('./pages/AdminPage'));
-const AdminLoginPage = React.lazy(() => import('./pages/AdminLoginPage'));
+const AdminPage = React.lazy(() => import('./pages/06_admin/regular-admin/AdminPage'));
+const AdminLoginPage = React.lazy(() => import('./pages/02_authentication/admin-login/AdminLoginPage'));
 const AdminDataFix = React.lazy(() => import('./pages/AdminDataFix'));
-const SuperAdminLogin = React.lazy(() => import('./pages/SuperAdminLogin'));
-const SuperAdminDashboard = React.lazy(() => import('./pages/SuperAdminDashboardNew'));
+const SuperAdminLogin = React.lazy(() => import('./pages/02_authentication/admin-login/SuperAdminLoginPage'));
+const SuperAdminDashboard = React.lazy(() => import('./pages/06_admin/super-admin/SuperAdminDashboard'));
 
-const ProfileRouter = React.lazy(() => import('./pages/ProfilePage/ProfileRouter'));  // NEW: Profile Type Router
+const ProfileRouter = React.lazy(() => import('./pages/03_user-pages/profile/ProfilePage/ProfileRouter'));  // NEW: Profile Type Router
 const VerificationPage = React.lazy(() => import('./features/verification/VerificationPage'));  // NEW: Verification System
 const BillingPage = React.lazy(() => import('./features/billing/BillingPage'));  // NEW: Billing System
 const AnalyticsDashboard = React.lazy(() => import('./features/analytics/AnalyticsDashboard'));  // NEW: Analytics System
 const TeamManagement = React.lazy(() => import('./features/team/TeamManagement'));  // NEW: Team Management
-const UsersDirectoryPage = React.lazy(() => import('./pages/UsersDirectoryPage')); // Bubbles View
+const UsersDirectoryPage = React.lazy(() => import('./pages/03_user-pages/users-directory/UsersDirectoryPage')); // Bubbles View
 // ⚡ NEW: Browse Pages (All Users, All Posts, All Cars)
 const AllUsersPage = React.lazy(() => import('./pages/AllUsersPage'));
-const AllPostsPage = React.lazy(() => import('./pages/AllPostsPage'));
+const AllPostsPage = React.lazy(() => import('./pages/03_user-pages/social/AllPostsPage'));
 const AllCarsPage = React.lazy(() => import('./pages/AllCarsPage'));
 // NEW: Social Platform Pages
 const EventsPage = React.lazy(() => import('./pages/EventsPage'));  // NEW: Events Page with BG/EN translations
-const CreatePostPage = React.lazy(() => import('./pages/CreatePostPage')); // NEW: Create Post Page
-const OAuthCallback = React.lazy(() => import('./pages/OAuthCallback')); // NEW: OAuth Callback Handler
+const CreatePostPage = React.lazy(() => import('./pages/03_user-pages/social/CreatePostPage')); // NEW: Create Post Page
+const OAuthCallback = React.lazy(() => import('./pages/02_authentication/oauth/OAuthCallbackPage/OAuthCallback')); // NEW: OAuth Callback Handler
 // Glass Morphism Premium Auth Pages
-const LoginPage = React.lazy(() => import('./pages/LoginPage/LoginPageGlassFixed'));
-const RegisterPage = React.lazy(() => import('./pages/RegisterPage/RegisterPageGlassFixed'));
-const EmailVerificationPage = React.lazy(() => import('./pages/EmailVerificationPage'));
+const LoginPage = React.lazy(() => import('./pages/02_authentication/login/LoginPage/LoginPage/LoginPageGlassFixed'));
+const RegisterPage = React.lazy(() => import('./pages/02_authentication/register/RegisterPage/RegisterPage/RegisterPageGlassFixed'));
+const EmailVerificationPage = React.lazy(() => import('./pages/02_authentication/verification/EmailVerificationPage'));
 const DashboardPage = React.lazy(() => import('./pages/DashboardPage'));
 const AdminDashboard = React.lazy(() => import('./components/AdminDashboard'));
 const ThemeTest = React.lazy(() => import('./components/ThemeTest'));
@@ -96,8 +96,8 @@ const EffectsTest = React.lazy(() => import('./components/EffectsTest'));
 const PrivacyPolicyPage = React.lazy(() => import('./pages/10_legal/privacy-policy/PrivacyPolicyPage'));
 const TermsOfServicePage = React.lazy(() => import('./pages/10_legal/terms-of-service/TermsOfServicePage'));
 const DataDeletionPage = React.lazy(() => import('./pages/10_legal/data-deletion/DataDeletionPage'));
-const AdvancedSearchPage = React.lazy(() => import('./pages/AdvancedSearchPage'));
-const MyListingsPage = React.lazy(() => import('./pages/MyListingsPage'));
+const AdvancedSearchPage = React.lazy(() => import('./pages/05_search-browse/advanced-search/AdvancedSearchPage'));
+const MyListingsPage = React.lazy(() => import('./pages/03_user-pages/my-listings/MyListingsPage'));
 const MyDraftsPage = React.lazy(() => import('./pages/MyDraftsPage'));
 const MigrationPage = React.lazy(() => import('./pages/MigrationPage'));
 const DebugCarsPage = React.lazy(() => import('./pages/DebugCarsPage'));
@@ -107,13 +107,13 @@ const TestDropdownsPage = React.lazy(() => import('./pages/TestDropdownsPage'));
 const B2BAnalyticsPortal = React.lazy(() => import('./pages/B2BAnalyticsPortal'));
 const DigitalTwinPage = React.lazy(() => import('./pages/DigitalTwinPage'));
 const SubscriptionPage = React.lazy(() => import('./pages/SubscriptionPage'));
-const AboutPage = React.lazy(() => import('./pages/AboutPage'));
+const AboutPage = React.lazy(() => import('./pages/01_main-pages/about/AboutPage'));
 const BrandGalleryPage = React.lazy(() => import('./pages/BrandGalleryPage'));
 const TopBrandsPage = React.lazy(() => import('./pages/TopBrandsPage'));
 const DealersPage = React.lazy(() => import('./pages/DealersPage'));
 const FinancePage = React.lazy(() => import('./pages/FinancePage'));
-const ContactPage = React.lazy(() => import('./pages/ContactPage'));
-const HelpPage = React.lazy(() => import('./pages/HelpPage'));
+const ContactPage = React.lazy(() => import('./pages/01_main-pages/contact/ContactPage'));
+const HelpPage = React.lazy(() => import('./pages/01_main-pages/help/HelpPage'));
 const CookiePolicyPage = React.lazy(() => import('./pages/10_legal/cookie-policy/CookiePolicyPage'));
 const SitemapPage = React.lazy(() => import('./pages/10_legal/sitemap/SitemapPage'));
 const NotificationsPage = React.lazy(() => import('./pages/NotificationsPage'));
