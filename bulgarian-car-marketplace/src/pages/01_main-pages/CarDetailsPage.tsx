@@ -1957,7 +1957,39 @@ const CarDetailsPage: React.FC = () => {
             { key: 'sms', label: 'SMS', Icon: SMSIcon }
           ].map(contact => {
             const fieldKey = `contact${contact.key.charAt(0).toUpperCase() + contact.key.slice(1)}` as keyof CarListing;
-            const isActive = isEditMode ? Boolean(editedCar[fieldKey]) : Boolean(car[fieldKey]);
+            
+            // في Edit Mode: استخدم الحقول المخصصة
+            // في View Mode: فحص وجود البيانات الفعلية
+            let isActive = false;
+            let canClick = false;
+            
+            if (isEditMode) {
+              isActive = Boolean(editedCar[fieldKey]);
+              canClick = true;
+            } else {
+              // في View Mode: فحص وجود البيانات حسب نوع الزر
+              const hasPhone = Boolean(car.sellerPhone);
+              const hasEmail = Boolean(car.sellerEmail);
+              
+              switch(contact.key) {
+                case 'phone':
+                case 'whatsapp':
+                case 'viber':
+                case 'telegram':
+                case 'sms':
+                  isActive = hasPhone;
+                  canClick = hasPhone;
+                  break;
+                case 'email':
+                  isActive = hasEmail;
+                  canClick = hasEmail;
+                  break;
+                case 'facebook':
+                  isActive = hasPhone || hasEmail;
+                  canClick = hasPhone || hasEmail;
+                  break;
+              }
+            }
             
             return (
               <ContactItem 
@@ -1965,14 +1997,14 @@ const CarDetailsPage: React.FC = () => {
                 $isActive={isActive}
                 onClick={() => {
                   if (isEditMode) {
-                    handleInputChange(fieldKey, !isActive);
-                  } else if (isActive) {
+                    handleInputChange(fieldKey, !Boolean(editedCar[fieldKey]));
+                  } else if (canClick) {
                     handleContactClick(contact.key);
                   }
                 }}
                 style={{ 
-                  cursor: isEditMode ? 'pointer' : (isActive ? 'pointer' : 'not-allowed'),
-                  opacity: isActive ? 1 : 0.5
+                  cursor: canClick ? 'pointer' : 'not-allowed',
+                  opacity: isActive ? 1 : 0.4
                 }}
               >
                 <ContactIcon $isActive={isActive}>
