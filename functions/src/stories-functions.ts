@@ -5,6 +5,7 @@
 
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
+import { logger } from 'firebase-functions';
 
 const db = admin.firestore();
 
@@ -26,7 +27,7 @@ export const cleanupExpiredStories = functions.pubsub
         .get();
       
       if (expiredStoriesSnapshot.empty) {
-        console.log('No expired stories to clean up');
+        logger.info('No expired stories to clean up');
         return null;
       }
       
@@ -51,10 +52,10 @@ export const cleanupExpiredStories = functions.pubsub
         await batch.commit();
       }
       
-      console.log(`Cleaned up ${expiredStoriesSnapshot.size} expired stories`);
+      logger.info(`Cleaned up ${expiredStoriesSnapshot.size} expired stories`);
       return null;
     } catch (error) {
-      console.error('Error cleaning up expired stories:', error);
+      logger.error('Error cleaning up expired stories:', error);
       throw error;
     }
   });
@@ -78,7 +79,7 @@ export const onStoryCreated = functions.firestore
         .get();
       
       if (followersSnapshot.empty) {
-        console.log('No followers to notify');
+        logger.info('No followers to notify');
         return null;
       }
       
@@ -111,10 +112,10 @@ export const onStoryCreated = functions.firestore
         await batch.commit();
       }
       
-      console.log(`Sent notifications to ${followersSnapshot.size} followers`);
+      logger.info(`Sent notifications to ${followersSnapshot.size} followers`);
       return null;
     } catch (error) {
-      console.error('Error in onStoryCreated:', error);
+      logger.error('Error in onStoryCreated:', error);
       return null;
     }
   });
