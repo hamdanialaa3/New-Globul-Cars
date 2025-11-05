@@ -8,6 +8,7 @@ import { onCall, onRequest } from 'firebase-functions/v2/https';
 import { onSchedule } from 'firebase-functions/v2/scheduler';
 import * as crypto from 'crypto';
 import * as admin from 'firebase-admin';
+import { logger } from 'firebase-functions';
 
 // Initialize admin if not already (safe idempotent)
 try { if (!admin.apps.length) { admin.initializeApp(); } } catch { /* noop */ }
@@ -23,7 +24,7 @@ async function getSecretManager() {
   const sm: any = await import('@google-cloud/secret-manager');
   secretManagerClient = new sm.SecretManagerServiceClient();
     } catch (e) {
-      console.warn('[social-tokens] Secret Manager unavailable, continuing with env tokens');
+      logger.warn('[social-tokens] Secret Manager unavailable, continuing with env tokens');
       return null;
     }
   }
@@ -432,7 +433,7 @@ export const rotateSocialPlatformTokens = onSchedule('every 24 hours', async (ev
   const enable = process.env.ENABLE_HMAC_ROTATION === '1' && ENABLE_EPHEMERAL;
   if (!enable) {
     metrics.rotationsSkipped++;
-    console.log('Token rotation skipped:', { rotated: false, skipped: true, details: { reason: 'rotation-disabled-or-ephemeral-off' } });
+    logger.info('Token rotation skipped:', { rotated: false, skipped: true, details: { reason: 'rotation-disabled-or-ephemeral-off' } });
     return;
   }
 
@@ -454,7 +455,7 @@ export const rotateSocialPlatformTokens = onSchedule('every 24 hours', async (ev
   if (manifest.graceUntil && now < manifest.graceUntil) {
     details.skippedReason = 'grace-active';
     metrics.rotationsSkipped++;
-    console.log('Rotation skipped (grace active):', { rotated: false, skipped: true, details });
+    logger.info('Rotation skipped (grace active):', { rotated: false, skipped: true, details });
     return;
   }
 
@@ -485,7 +486,7 @@ export const rotateSocialPlatformTokens = onSchedule('every 24 hours', async (ev
   metrics.rotations++;
 
   details.after = { currentGeneration: newManifest.currentGeneration, previousGeneration: newManifest.previousGeneration, graceUntil };
-  console.log('Token rotation completed:', { rotated: true, details });
+  logger.info('Token rotation completed:', { rotated: true, details });
 });
 
 // Snapshot metrics to (future) BigQuery / Firestore (stub only)
@@ -501,20 +502,20 @@ export const snapshotSocialTokenMetrics = onSchedule('every 5 minutes', async ()
   const enableStore = process.env.ENABLE_METRICS_SNAPSHOT_STORE === '1';
   const useFirestore = process.env.METRICS_STORE === 'firestore';
   if (!enableStore) {
-    console.log('Metrics snapshot disabled:', { stored: false, transport: 'none', size: Object.keys(snapshot).length, generation: manifest.currentGeneration, previousGeneration: manifest.previousGeneration });
+    logger.info('Metrics snapshot disabled:', { stored: false, transport: 'none', size: Object.keys(snapshot).length, generation: manifest.currentGeneration, previousGeneration: manifest.previousGeneration });
     return;
   }
   try {
     if (useFirestore) {
       await admin.firestore().collection('social_token_metrics').add(snapshot);
       metrics.snapshotStored++;
-      console.log('Metrics snapshot stored in Firestore:', { stored: true, transport: 'firestore', size: Object.keys(snapshot).length, generation: manifest.currentGeneration, previousGeneration: manifest.previousGeneration });
+      logger.info('Metrics snapshot stored in Firestore:', { stored: true, transport: 'firestore', size: Object.keys(snapshot).length, generation: manifest.currentGeneration, previousGeneration: manifest.previousGeneration });
       return;
     }
     // Placeholder for future BigQuery integration
-    console.log('Metrics snapshot completed:', { stored: false, transport: 'bigquery', size: Object.keys(snapshot).length, generation: manifest.currentGeneration, previousGeneration: manifest.previousGeneration });
+    logger.info('Metrics snapshot completed:', { stored: false, transport: 'bigquery', size: Object.keys(snapshot).length, generation: manifest.currentGeneration, previousGeneration: manifest.previousGeneration });
   } catch (e) {
     metrics.snapshotFailures++;
-    console.log('Metrics snapshot failed:', { stored: false, transport: useFirestore ? 'firestore' : 'none', size: Object.keys(snapshot).length, generation: manifest.currentGeneration, previousGeneration: manifest.previousGeneration });
+    logger.warn('Metrics snapshot failed:', { stored: false, transport: useFirestore ? 'firestore' : 'none', size: Object.keys(snapshot).length, generation: manifest.currentGeneration, previousGeneration: manifest.previousGeneration });
   }
 });
