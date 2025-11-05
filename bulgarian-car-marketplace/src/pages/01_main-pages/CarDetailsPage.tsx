@@ -919,7 +919,7 @@ const SMSIcon = () => (
 
 // ==================== Component ====================
 const CarDetailsPage: React.FC = () => {
-  const { carId } = useParams<{ carId: string }>();
+  const { id: carId } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { language } = useLanguage();
