@@ -2,11 +2,22 @@
 // Cloud Function: Track analytics events
 
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
-import { getFirestore, FieldValue } from 'firebase-admin/firestore';
+import { getFirestore, FieldValue, Timestamp } from 'firebase-admin/firestore';
 import * as logger from 'firebase-functions/logger';
 import { AnalyticsEvent, TrackEventRequest } from './types';
 
 const db = getFirestore();
+
+interface EventMetadata {
+  listingId?: string;
+  sellerId?: string;
+  profileId?: string;
+  receiverId?: string;
+  query?: string;
+  filters?: Record<string, any>;
+  deviceType?: string;
+  [key: string]: any;
+}
 
 /**
  * Track Analytics Event
@@ -38,10 +49,10 @@ export const trackEvent = onCall<TrackEventRequest>(async (request) => {
 
   try {
     // 1. Create event record
-    const eventData: Partial<AnalyticsEvent> = {
+    const eventData = {
       userId,
-      eventType: eventType as any,
-      timestamp: FieldValue.serverTimestamp() as any,
+      eventType,
+      timestamp: FieldValue.serverTimestamp() as unknown as Timestamp,
       metadata: {
         ...metadata,
         deviceType: request.rawRequest.headers['user-agent']?.includes('Mobile') ? 'mobile' : 'desktop',
@@ -93,7 +104,7 @@ export const trackEvent = onCall<TrackEventRequest>(async (request) => {
 /**
  * Handle listing view event
  */
-async function handleListingView(viewerId: string, metadata: any) {
+async function handleListingView(viewerId: string, metadata: EventMetadata) {
   const { listingId, sellerId } = metadata;
 
   if (!listingId || !sellerId) {
@@ -137,7 +148,7 @@ async function handleListingView(viewerId: string, metadata: any) {
 /**
  * Handle profile view event
  */
-async function handleProfileView(viewerId: string, metadata: any) {
+async function handleProfileView(viewerId: string, metadata: EventMetadata) {
   const { profileUserId } = metadata;
 
   if (!profileUserId) {
@@ -167,7 +178,7 @@ async function handleProfileView(viewerId: string, metadata: any) {
 /**
  * Handle inquiry sent event
  */
-async function handleInquirySent(senderId: string, metadata: any) {
+async function handleInquirySent(senderId: string, metadata: EventMetadata) {
   const { listingId, sellerId } = metadata;
 
   if (!sellerId) {
@@ -206,7 +217,7 @@ async function handleInquirySent(senderId: string, metadata: any) {
 /**
  * Handle favorite added event
  */
-async function handleFavoriteAdded(userId: string, metadata: any) {
+async function handleFavoriteAdded(userId: string, metadata: EventMetadata) {
   const { listingId, sellerId } = metadata;
 
   if (!sellerId) {
@@ -244,7 +255,7 @@ async function handleFavoriteAdded(userId: string, metadata: any) {
 /**
  * Handle search event
  */
-async function handleSearch(userId: string, metadata: any) {
+async function handleSearch(userId: string, metadata: EventMetadata) {
   // Log search for analytics (can be used for trending searches)
   logger.info('Search event', { userId, searchTerm: metadata.searchTerm });
 }
@@ -252,7 +263,7 @@ async function handleSearch(userId: string, metadata: any) {
 /**
  * Handle contact click event
  */
-async function handleContactClick(userId: string, metadata: any) {
+async function handleContactClick(userId: string, metadata: EventMetadata) {
   const { sellerId } = metadata;
 
   if (!sellerId) {
