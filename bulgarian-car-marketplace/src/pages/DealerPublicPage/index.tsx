@@ -6,7 +6,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import styled from 'styled-components';
 import { getFunctions, httpsCallable } from 'firebase/functions';
-import { getFirestore, doc, getDoc, collection, query, where, getDocs, limit } from 'firebase/firestore';
+import { doc, getDoc, collection, query, where, getDocs, limit } from 'firebase/firestore';
+import { db } from '../../firebase/firebase-config';
 import ReviewStars from '../../features/reviews/ReviewStars';
 import ContactForm from './ContactForm';
 
@@ -43,7 +44,6 @@ const DealerPublicPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const functions = getFunctions();
-  const db = getFirestore();
 
   const [dealer, setDealer] = useState<DealerProfile | null>(null);
   const [listings, setListings] = useState<Listing[]>([]);
@@ -68,9 +68,9 @@ const DealerPublicPage: React.FC = () => {
 
       setListings(listingsData);
     } catch (err) {
-      console.error('Error loading listings:', err);
+      console.error('Error loading dealer listings:', err);
     }
-  }, [db]);
+  }, []);
 
   const loadReviews = React.useCallback(async (dealerId: string) => {
     try {
@@ -130,7 +130,7 @@ const DealerPublicPage: React.FC = () => {
       setError(err.message);
       setLoading(false);
     }
-  }, [slug, db, loadListings, loadReviews]);
+  }, [slug, loadListings, loadReviews]);
 
   useEffect(() => {
     loadDealerData();

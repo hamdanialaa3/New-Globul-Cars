@@ -97,23 +97,17 @@
     "storage": {
       "port": 9199
     },
+    "hosting": {
+      "port": 5000
+    },
     "ui": {
       "enabled": true,
       "port": 4000
     },
-    "singleProjectMode": true,
-    "hosting": {
-      "port": 5000
-    },
-    "dataconnect": {
-      "dataDir": "dataconnect/.dataconnect/pgliteData"
-    }
+    "singleProjectMode": true
   },
   "remoteconfig": {
     "template": "remoteconfig.template.json"
-  },
-  "dataconnect": {
-    "source": "dataconnect"
   },
   "apphosting": {
     "backendId": "my-web-globul",

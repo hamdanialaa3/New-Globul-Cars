@@ -435,7 +435,7 @@ export const UserBubble: React.FC<UserBubbleProps> = ({
     if (onClick) {
       onClick();
     } else {
-      navigate(`/profile?userId=${user.uid}`);
+      navigate(`/profile/${user.uid}`);
     }
   };
   

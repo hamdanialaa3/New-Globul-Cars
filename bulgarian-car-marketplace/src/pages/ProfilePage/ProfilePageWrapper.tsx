@@ -1,10 +1,9 @@
 import React from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from '../../hooks/useTranslation';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useProfile } from './hooks/useProfile';
 import { useProfileType } from '../../contexts/ProfileTypeContext';
-import { useSearchParams } from 'react-router-dom';
 import { 
   UserCircle, 
   Car, 
@@ -37,11 +36,11 @@ const ProfilePageWrapper: React.FC = () => {
   const { t } = useTranslation();
   const { language } = useLanguage();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const params = useParams<{ userId?: string }>();
   const { profileType, theme } = useProfileType();
   
-  // Get target user ID from URL
-  const targetUserId = searchParams.get('userId') || undefined;
+  // Get target user ID from URL route parameter
+  const targetUserId = params.userId;
   
   const {
     user,

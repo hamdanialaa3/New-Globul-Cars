@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useSearchParams, useNavigate, NavLink, Outlet, useLocation } from 'react-router-dom';
+import { useParams, useNavigate, NavLink, Outlet, useLocation } from 'react-router-dom';
 import { useTranslation } from '../../hooks/useTranslation';
 import { useLanguage } from '../../contexts/LanguageContext';
 import LazyImage from '../../components/LazyImage';
@@ -307,14 +307,14 @@ const ProfilePage: React.FC = () => {
   const { t } = useTranslation();
   const { language } = useLanguage();
   const toast = useToast();
-  const [searchParams] = useSearchParams();
+  const params = useParams<{ userId?: string }>();
   const navigate = useNavigate();
   
   // 🎨 NEW: Profile Type Context for Dynamic Theming
   const { profileType, theme, permissions, planTier } = useProfileType();
 
-  // ✅ NEW: Read userId from URL to view another user's profile
-  const targetUserId = searchParams.get('userId') || undefined;
+  // ✅ NEW: Read userId from URL route parameter to view another user's profile
+  const targetUserId = params.userId;
 
   const {
     user,

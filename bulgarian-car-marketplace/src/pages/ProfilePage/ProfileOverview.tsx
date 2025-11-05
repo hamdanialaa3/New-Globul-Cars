@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import ProfileDashboard from '../../components/Profile/ProfileDashboard';
 import UserPostsFeed from '../../components/Profile/UserPostsFeed';
 import CreatePostWidget from '../../components/Profile/CreatePostWidget';
+import { GarageCarousel } from '../../components/Profile/GarageCarousel';
 import { 
   User, 
   Briefcase, 
@@ -28,7 +29,7 @@ import { H2, Label } from '../../components/Typography';
  */
 const ProfileOverview: React.FC = () => {
   const { language } = useLanguage();
-  const { user, isOwnProfile } = useProfile();
+  const { user, userCars, isOwnProfile } = useProfile();
   const { isDealer, isCompany } = useProfileType();
   const navigate = useNavigate();
 
@@ -374,6 +375,26 @@ const ProfileOverview: React.FC = () => {
             )}
           </InfoGrid>
         </InfoSection>
+      )}
+      
+      {/* ⚡ Garage Carousel - Shows user's cars in circular cards */}
+      {userCars && userCars.length > 0 && (
+        <GarageCarousel
+          cars={userCars.map(car => ({
+            id: car.id,
+            make: car.make || '',
+            model: car.model || '',
+            year: car.year || 2000,
+            price: car.price || 0,
+            mainImage: car.mainImage || car.imageUrl,
+            imageUrl: car.imageUrl,
+            status: (car.status as any) || 'active',
+            views: car.views
+          }))}
+          userId={user?.uid}
+          isOwnProfile={isOwnProfile}
+          onAddNew={isOwnProfile ? () => navigate('/sell') : undefined}
+        />
       )}
       
       {/* ⚡ Create Post Widget - Only for own profile */}

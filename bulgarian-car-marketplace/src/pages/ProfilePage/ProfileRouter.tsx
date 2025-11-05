@@ -37,8 +37,7 @@ export const ProfileRouter: React.FC = () => {
         <Route index element={<ProfileOverview />} />
         
         {/* Tab Routes */}
-        {/* Redirect legacy my-ads to centralized listings page */}
-        <Route path="my-ads" element={<Navigate to="/my-listings" replace />} />
+        <Route path="my-ads" element={<ProfileMyAds />} />
         <Route path="campaigns" element={<ProfileCampaigns />} />
         <Route path="analytics" element={<ProfileAnalytics />} />
         <Route path="settings" element={<ProfileSettingsNew />} />

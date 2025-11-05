@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import styled from 'styled-components';
 import { smartContactsService } from '../../../services/social/smart-contacts.service';
 import { useAuth } from '../../../contexts/AuthProvider';
@@ -21,7 +21,7 @@ const GROUP_CONVERSATIONS = [
   { name: 'Sofia Cars Group', avatar: 'https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=100', unread: 0 },
 ];
 
-export const RightSidebar: React.FC = () => {
+const RightSidebarComponent: React.FC = () => {
   const { user } = useAuth();
   const { t } = useLanguage();
   const [contacts, setContacts] = useState<SmartContact[]>([]);
@@ -60,9 +60,16 @@ export const RightSidebar: React.FC = () => {
     return () => clearInterval(interval);
   }, [user]);
 
-  // Separate online and offline contacts
-  const onlineContacts = contacts.filter(c => c.isOnline);
-  const offlineContacts = contacts.filter(c => !c.isOnline);
+  // Separate online and offline contacts (with memoization)
+  const onlineContacts = useMemo(
+    () => contacts.filter(c => c.isOnline),
+    [contacts]
+  );
+  
+  const offlineContacts = useMemo(
+    () => contacts.filter(c => !c.isOnline),
+    [contacts]
+  );
 
   return (
     <Container>
@@ -71,7 +78,11 @@ export const RightSidebar: React.FC = () => {
       </SectionHeader>
 
       <AdCard>
-        <AdImage src="https://images.unsplash.com/photo-1555215695-3004980ad54e?w=300" />
+        <AdImage 
+          src="https://images.unsplash.com/photo-1555215695-3004980ad54e?w=300" 
+          loading="lazy"
+          decoding="async"
+        />
         <AdContent>
           <AdTitle>BMW X5 2024 - Special Offer</AdTitle>
           <AdLink>bmw.bg</AdLink>
@@ -79,7 +90,11 @@ export const RightSidebar: React.FC = () => {
       </AdCard>
 
       <AdCard>
-        <AdImage src="https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=300" />
+        <AdImage 
+          src="https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=300" 
+          loading="lazy"
+          decoding="async"
+        />
         <AdContent>
           <AdTitle>Mercedes E-Class - Test Drive</AdTitle>
           <AdLink>mercedes-benz.bg</AdLink>
@@ -111,7 +126,11 @@ export const RightSidebar: React.FC = () => {
           {GROUP_CONVERSATIONS.map((group, idx) => (
             <Contact key={`group-${idx}`}>
               <AvatarContainer>
-                <Avatar src={group.avatar} />
+                <Avatar 
+                  src={group.avatar} 
+                  loading="lazy"
+                  decoding="async"
+                />
                 {group.unread > 0 && <UnreadBadge>{group.unread}</UnreadBadge>}
               </AvatarContainer>
               <ContactInfo>
@@ -132,7 +151,11 @@ export const RightSidebar: React.FC = () => {
               {onlineContacts.map((contact, idx) => (
                 <Contact key={contact.id}>
                   <AvatarContainer>
-                    <Avatar src={contact.photoURL || `https://i.pravatar.cc/150?u=${contact.id}`} />
+                    <Avatar 
+                      src={contact.photoURL || `https://i.pravatar.cc/150?u=${contact.id}`} 
+                      loading="lazy"
+                      decoding="async"
+                    />
                     <OnlineDot />
                   </AvatarContainer>
                   <ContactInfo>
@@ -163,7 +186,11 @@ export const RightSidebar: React.FC = () => {
               {offlineContacts.slice(0, 5).map((contact) => (
                 <Contact key={contact.id} $offline>
                   <AvatarContainer>
-                    <Avatar src={contact.photoURL || `https://i.pravatar.cc/150?u=${contact.id}`} />
+                    <Avatar 
+                      src={contact.photoURL || `https://i.pravatar.cc/150?u=${contact.id}`} 
+                      loading="lazy"
+                      decoding="async"
+                    />
                   </AvatarContainer>
                   <ContactInfo>
                     <Name $offline>{contact.displayName}</Name>
@@ -439,3 +466,6 @@ const EmptySubText = styled.div`
   font-size: 12px;
   color: #65676b;
 `;
+
+// Export with React.memo for performance optimization
+export const RightSidebar = React.memo(RightSidebarComponent);

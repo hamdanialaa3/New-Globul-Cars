@@ -66,29 +66,31 @@ const PostOptions: React.FC<PostOptionsProps> = ({
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding-top: 10px;
-  border-top: 1px solid #e9ecef;
+  gap: 16px;
+  padding: 16px;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e9ecef;
 `;
 
 const Section = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 10px;
 `;
 
 const SectionLabel = styled.label`
   display: flex;
   align-items: center;
   gap: 5px;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: 600;
-  color: #666;
+  color: #495057;
 `;
 
 const VisibilityButtons = styled.div`
   display: flex;
-  gap: 6px;
+  gap: 8px;
 `;
 
 const VisibilityButton = styled.button<{ $active: boolean }>`
@@ -96,22 +98,30 @@ const VisibilityButton = styled.button<{ $active: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
-  padding: 7px 10px;
-  background: ${p => p.$active ? '#FF8F10' : '#f8f9fa'};
+  gap: 6px;
+  padding: 10px 12px;
+  background: ${p => p.$active ? 'linear-gradient(135deg, #FF7900, #FF8F10)' : 'white'};
   color: ${p => p.$active ? 'white' : '#495057'};
-  border: 1px solid ${p => p.$active ? '#FF7900' : '#e9ecef'};
-  border-radius: 6px;
-  font-size: 0.8rem;
+  border: 2px solid ${p => p.$active ? '#FF7900' : '#e9ecef'};
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: ${p => p.$active ? 600 : 500};
   cursor: pointer;
   transition: all 0.2s;
+  box-shadow: ${p => p.$active ? '0 2px 8px rgba(255, 121, 0, 0.2)' : 'none'};
   
   svg {
     flex-shrink: 0;
   }
   
   &:hover {
-    background: ${p => p.$active ? '#FF7900' : '#e9ecef'};
+    background: ${p => p.$active ? 'linear-gradient(135deg, #FF6800, #FF7900)' : '#f8f9fa'};
+    border-color: ${p => p.$active ? '#FF6800' : '#FF8F10'};
+    transform: translateY(-1px);
+  }
+  
+  &:active {
+    transform: translateY(0);
   }
 `;
 

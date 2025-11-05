@@ -5,7 +5,6 @@ import React, { Suspense } from 'react';
 import styled from 'styled-components';
 import BusinessPromoBanner from '../../components/BusinessPromoBanner';
 import LazySection from '../../components/LazySection';
-import { CommunityFeedWidget } from '../../components/CommunityFeedWidget';
 
 // Lazy load all sections for better performance
 const HeroSection = React.lazy(() => import('./HeroSection'));
@@ -112,15 +111,6 @@ const HomePage: React.FC = () => {
       <LazySection rootMargin="100px" minHeight="200px">
         <Suspense fallback={<LoadingFallback>Loading social media...</LoadingFallback>}>
           <SocialMediaSection />
-        </Suspense>
-      </LazySection>
-
-      <SectionSpacer />
-
-      {/* 💬 Community Feed Widget - NEW: Social feed integration */}
-      <LazySection rootMargin="100px" minHeight="300px">
-        <Suspense fallback={<LoadingFallback>Loading community feed...</LoadingFallback>}>
-          <CommunityFeedWidget />
         </Suspense>
       </LazySection>
 

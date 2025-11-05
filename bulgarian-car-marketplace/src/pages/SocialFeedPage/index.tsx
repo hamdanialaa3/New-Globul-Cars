@@ -46,19 +46,19 @@ const SocialFeedPage: React.FC = () => {
 
   const filters = ['smart', 'newest', 'mostLiked', 'mostComments', 'trending'];
 
-  // Auto-hide main header on mount
+  // Auto-hide header-top on mount (keep header-nav visible)
   useEffect(() => {
-    const header = document.querySelector('header') as HTMLElement;
+    const headerTop = document.querySelector('.header-top') as HTMLElement;
     const mainContent = document.querySelector('[data-main-content]') as HTMLElement;
     const leftSidebar = document.querySelector('[data-left-sidebar]') as HTMLElement;
     const rightSidebar = document.querySelector('[data-right-sidebar]') as HTMLElement;
     
-    if (header) {
-      header.style.transform = 'translateY(-100%)';
-      header.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+    if (headerTop) {
+      headerTop.style.transform = 'translateY(-100%)';
+      headerTop.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
     }
     
-    // Adjust content position when header is hidden
+    // Adjust content position when header-top is hidden
     if (mainContent) {
       mainContent.style.paddingTop = '20px';
       mainContent.style.transition = 'padding-top 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
@@ -73,8 +73,8 @@ const SocialFeedPage: React.FC = () => {
     }
 
     return () => {
-      if (header) {
-        header.style.transform = 'translateY(0)';
+      if (headerTop) {
+        headerTop.style.transform = 'translateY(0)';
       }
       if (mainContent) {
         mainContent.style.paddingTop = '80px';
@@ -88,19 +88,19 @@ const SocialFeedPage: React.FC = () => {
     };
   }, []);
 
-  // Toggle main header visibility manually
+  // Toggle header-top visibility manually (keep header-nav visible)
   useEffect(() => {
-    const header = document.querySelector('header') as HTMLElement;
+    const headerTop = document.querySelector('.header-top') as HTMLElement;
     const mainContent = document.querySelector('[data-main-content]') as HTMLElement;
     const leftSidebar = document.querySelector('[data-left-sidebar]') as HTMLElement;
     const rightSidebar = document.querySelector('[data-right-sidebar]') as HTMLElement;
     
-    if (header) {
+    if (headerTop) {
       if (mainHeaderVisible) {
-        header.style.transform = 'translateY(0)';
-        header.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+        headerTop.style.transform = 'translateY(0)';
+        headerTop.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
         
-        // Move content down when header is visible
+        // Move content down when header-top is visible
         if (mainContent) {
           mainContent.style.paddingTop = '80px';
         }
@@ -111,10 +111,10 @@ const SocialFeedPage: React.FC = () => {
           rightSidebar.style.paddingTop = '60px';
         }
       } else {
-        header.style.transform = 'translateY(-100%)';
-        header.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+        headerTop.style.transform = 'translateY(-100%)';
+        headerTop.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
         
-        // Move content up when header is hidden
+        // Move content up when header-top is hidden
         if (mainContent) {
           mainContent.style.paddingTop = '20px';
         }
@@ -417,8 +417,8 @@ const MainHeaderToggleButton = styled.button<{ $visible: boolean }>`
   top: 20px;
   left: calc(50% + 200px);
   transform: translateX(-50%);
-  width: 50px;
-  height: 50px;
+  width: 35px;
+  height: 35px;
   border-radius: 50%;
   border: none;
   background: rgba(255, 255, 255, 0.15);
@@ -430,29 +430,16 @@ const MainHeaderToggleButton = styled.button<{ $visible: boolean }>`
   transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   z-index: 1000;
   
-  /* LED Glow Effect - Simplified for performance */
-  box-shadow: 
-    0 0 20px rgba(242, 206, 24, 0.5),
-    0 0 40px rgba(24, 119, 242, 0.3),
-    0 4px 12px rgba(24, 119, 242, 0.2),
-    inset 0 0 15px rgba(24, 119, 242, 0.15);
+  /* LED Glow Effect - Optimized (single layer) */
+  box-shadow: 0 0 15px rgba(242, 206, 24, 0.4);
   
-  animation: pulse 3s ease-in-out infinite;
-
-  @keyframes pulse {
+  /* Animation only on hover for better performance */
+  @keyframes pulseGlow {
     0%, 100% {
-      box-shadow: 
-        0 0 20px rgba(242, 198, 24, 0.5),
-        0 0 40px rgba(24, 119, 242, 0.3),
-        0 4px 12px rgba(24, 119, 242, 0.2),
-        inset 0 0 15px rgba(24, 119, 242, 0.15);
+      box-shadow: 0 0 15px rgba(242, 206, 24, 0.4);
     }
     50% {
-      box-shadow: 
-        0 0 30px rgba(217, 242, 24, 0.7),
-        0 0 50px rgba(24, 119, 242, 0.4),
-        0 6px 16px rgba(24, 119, 242, 0.3),
-        inset 0 0 20px rgba(24, 119, 242, 0.25);
+      box-shadow: 0 0 25px rgba(242, 206, 24, 0.6);
     }
   }
 
@@ -485,16 +472,10 @@ const MainHeaderToggleButton = styled.button<{ $visible: boolean }>`
   }
 
   &:hover {
-    background: rgba(24, 119, 242, 0.25);
+    background: rgba(162, 242, 24, 0.25);
     backdrop-filter: blur(15px);
     transform: translateX(-50%) scale(1.15) translateY(-4px);
-    box-shadow: 
-      0 0 30px rgba(137, 242, 24, 0.9),
-      0 0 60px rgba(24, 119, 242, 0.7),
-      0 0 90px rgba(24, 119, 242, 0.5),
-      0 0 120px rgba(24, 119, 242, 0.3),
-      0 6px 24px rgba(24, 119, 242, 0.5),
-      inset 0 0 30px rgba(24, 119, 242, 0.5);
+    animation: pulseGlow 0.8s ease-in-out;
   }
 
   &:active {
@@ -503,15 +484,15 @@ const MainHeaderToggleButton = styled.button<{ $visible: boolean }>`
   }
 
   @media (max-width: 768px) {
-    width: 44px;
-    height: 44px;
+    width: 32px;
+    height: 32px;
     top: 15px;
     left: calc(50% + 100px);
   }
 `;
 
 const ArrowIcon = styled.span<{ $expanded: boolean }>`
-  font-size: 22px;
+  font-size: 16px;
   font-weight: bold;
   color: white;
   transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -521,9 +502,9 @@ const ArrowIcon = styled.span<{ $expanded: boolean }>`
   z-index: 1;
   position: relative;
   text-shadow: 
-    0 0 10px rgba(255,255,255,0.9),
-    0 0 20px rgba(24, 119, 242, 0.8),
-    0 0 30px rgba(24, 119, 242, 0.6);
+    0 0 8px rgba(255,255,255,0.9),
+    0 0 15px rgba(133, 242, 24, 0.8),
+    0 0 22px rgba(242, 242, 24, 0.6);
 `;
 
 const RightSidebarContainer = styled.aside`
@@ -732,7 +713,7 @@ const LoadingSpinner = styled.div`
   width: 40px;
   height: 40px;
   border: 4px solid #e4e6eb;
-  border-top-color: #1877f2;
+  border-top-color:rgb(155, 242, 24);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 
@@ -927,7 +908,7 @@ const EmptyText = styled.p`
 
 const CreateButton = styled.button`
   padding: 10px 24px;
-  background: #1877f2;
+  background:rgb(97, 242, 24);
   border: none;
   border-radius: 6px;
   color: white;
@@ -937,14 +918,14 @@ const CreateButton = styled.button`
   transition: background 0.2s;
 
   &:hover {
-    background: #166fe5;
+    background:rgb(125, 229, 22);
   }
 `;
 
 const FeedFooter = styled.div`
   text-align: center;
   padding-top: 20px;
-  border-top: 1px solid #e4e6eb;
+  border-top: 1px solidrgb(234, 235, 228);
   margin-top: 20px;
 `;
 
@@ -957,7 +938,7 @@ const FooterTitle = styled.h3`
 
 const FooterText = styled.p`
   font-size: 12px;
-  color: #65676b;
+  color:rgb(107, 107, 101);
   margin: 0;
 `;
 

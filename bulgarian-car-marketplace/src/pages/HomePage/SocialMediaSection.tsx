@@ -9,7 +9,6 @@ import { ChevronDown, ChevronUp, MessageSquare, Users, TrendingUp } from 'lucide
 
 // Lazy load the feed sections
 const SmartFeedSection = React.lazy(() => import('./SmartFeedSection'));
-const CommunityFeedSection = React.lazy(() => import('./CommunityFeedSection'));
 
 const SocialMediaSection: React.FC = () => {
   const { language } = useLanguage();
@@ -104,12 +103,6 @@ const SocialMediaSection: React.FC = () => {
             <Suspense fallback={<LoadingState>Loading social feed...</LoadingState>}>
               {/* Smart Feed Section with create post */}
               <SmartFeedSection />
-              
-              {/* Separator */}
-              <SectionSeparator />
-              
-              {/* Community Feed Section with latest stories */}
-              <CommunityFeedSection />
             </Suspense>
           )}
         </ContentInner>
@@ -350,18 +343,6 @@ const LoadingState = styled.div`
   padding: 60px 20px;
   color: #6c757d;
   font-size: 1.1rem;
-`;
-
-const SectionSeparator = styled.div`
-  height: 2px;
-  background: linear-gradient(90deg, transparent, #FF8F10, transparent);
-  margin: 40px auto;
-  max-width: 600px;
-  border-radius: 2px;
-  
-  @media (max-width: 768px) {
-    margin: 24px auto;
-  }
 `;
 
 export default SocialMediaSection;

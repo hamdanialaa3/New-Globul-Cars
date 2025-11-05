@@ -18,9 +18,12 @@ import {
   UserPlus,
   UserCheck,
   MessageCircle,
-  CheckCircle
+  CheckCircle,
+  Award,
+  Shield,
+  TrendingUp
 } from 'lucide-react';
-import { collection, getDocs, query, limit } from 'firebase/firestore';
+import { collection, getDocs, query, limit, orderBy, startAfter } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
 import { BULGARIA_REGIONS } from '../../data/bulgaria-locations';
 import { followService } from '../../services/social/follow.service';
@@ -581,6 +584,115 @@ const UserLocation = styled.div`
   }
 `;
 
+// ⚡ NEW: Load More Styled Components
+const LoadMoreContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  padding: 40px 20px;
+`;
+
+const LoadMoreButton = styled.button`
+  padding: 14px 32px;
+  background: linear-gradient(135deg, #FF8F10 0%, #FF7900 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(255, 143, 16, 0.25);
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(255, 143, 16, 0.35);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background: #ccc;
+  }
+`;
+
+const EndMessage = styled.div`
+  text-align: center;
+  padding: 30px 20px;
+  font-size: 0.95rem;
+  color: #6c757d;
+  font-weight: 500;
+`;
+
+// ⚡ NEW: Quick Stats Dashboard
+const QuickStatsBar = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+`;
+
+const StatCard = styled.div<{ $highlight?: boolean }>`
+  background: ${p => p.$highlight ? 'linear-gradient(135deg, #e7f3ff 0%, #ffffff 100%)' : 'white'};
+  border: ${p => p.$highlight ? '2px solid #1877f2' : '1px solid #e0e0e0'};
+  border-radius: 12px;
+  padding: 20px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    border-color: #FF7900;
+  }
+`;
+
+const StatHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  
+  svg {
+    color: #FF7900;
+  }
+`;
+
+const StatBigNumber = styled.div<{ $color?: string }>`
+  font-size: 32px;
+  font-weight: 700;
+  color: ${p => p.$color || '#212529'};
+  line-height: 1;
+  margin-bottom: 6px;
+`;
+
+const StatLabel = styled.div`
+  font-size: 0.875rem;
+  color: #6c757d;
+  font-weight: 500;
+`;
+
+const StatSubtext = styled.div`
+  font-size: 0.75rem;
+  color: #95a5a6;
+  margin-top: 4px;
+`;
+
+const OnlinePulse = styled.div`
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #31a24c;
+  animation: pulse 2s infinite;
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(1.2); }
+  }
+`;
+
 // ==================== COMPONENT ====================
 
 const UsersDirectoryPage: React.FC = () => {
@@ -591,6 +703,11 @@ const UsersDirectoryPage: React.FC = () => {
   const [filteredUsers, setFilteredUsers] = useState<UserProfile[]>([]);
   const [onlineUsers, setOnlineUsers] = useState<UserProfile[]>([]);
   const [loading, setLoading] = useState(true);
+  
+  // ⚡ NEW: Pagination State
+  const [lastDoc, setLastDoc] = useState<any>(null);
+  const [hasMore, setHasMore] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   
   const [searchTerm, setSearchTerm] = useState('');
   const [accountTypeFilter, setAccountTypeFilter] = useState<'all' | 'individual' | 'business'>('all');
@@ -611,11 +728,16 @@ const UsersDirectoryPage: React.FC = () => {
     applyFilters();
   }, [users, searchTerm, accountTypeFilter, regionFilter, sortBy]);
   
+  // ⚡ UPDATED: Load initial users (30 max)
   const loadUsers = async () => {
     try {
       setLoading(true);
       const usersRef = collection(db, 'users');
-      const usersQuery = query(usersRef, limit(100));
+      const usersQuery = query(
+        usersRef,
+        orderBy('createdAt', 'desc'),
+        limit(30) // Changed from 100 to 30
+      );
       const snapshot = await getDocs(usersQuery);
       
       const loadedUsers = snapshot.docs.map(doc => ({
@@ -624,6 +746,8 @@ const UsersDirectoryPage: React.FC = () => {
       } as UserProfile));
       
       setUsers(loadedUsers);
+      setLastDoc(snapshot.docs[snapshot.docs.length - 1]);
+      setHasMore(snapshot.docs.length === 30);
       
       const online = loadedUsers.filter(u => u.isOnline).slice(0, 20);
       setOnlineUsers(online);
@@ -633,6 +757,38 @@ const UsersDirectoryPage: React.FC = () => {
       console.error('Error loading users:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // ⚡ NEW: Load more users (pagination)
+  const loadMore = async () => {
+    if (!hasMore || loadingMore || !lastDoc) return;
+    
+    try {
+      setLoadingMore(true);
+      const usersRef = collection(db, 'users');
+      const usersQuery = query(
+        usersRef,
+        orderBy('createdAt', 'desc'),
+        startAfter(lastDoc),
+        limit(30)
+      );
+      const snapshot = await getDocs(usersQuery);
+      
+      const newUsers = snapshot.docs.map(doc => ({
+        uid: doc.id,
+        ...doc.data()
+      } as UserProfile));
+      
+      setUsers(prev => [...prev, ...newUsers]);
+      setLastDoc(snapshot.docs[snapshot.docs.length - 1]);
+      setHasMore(snapshot.docs.length === 30);
+      
+      console.log('Loaded more users:', newUsers.length);
+    } catch (error) {
+      console.error('Error loading more users:', error);
+    } finally {
+      setLoadingMore(false);
     }
   };
   
@@ -774,6 +930,55 @@ const UsersDirectoryPage: React.FC = () => {
           <h1>{t('title')}</h1>
           <p>{t('subtitle')}</p>
         </Header>
+
+        {/* ⚡ NEW: Quick Stats Dashboard */}
+        <QuickStatsBar>
+          <StatCard>
+            <StatHeader>
+              <Users size={24} />
+              <TrendingUp size={16} color="#31a24c" />
+            </StatHeader>
+            <StatBigNumber>{filteredUsers.length}</StatBigNumber>
+            <StatLabel>{language === 'bg' ? 'Общо потребители' : 'Total Users'}</StatLabel>
+            <StatSubtext>{language === 'bg' ? 'В текущия филтър' : 'In current filter'}</StatSubtext>
+          </StatCard>
+
+          <StatCard $highlight>
+            <StatHeader>
+              <Circle size={24} fill="#31a24c" />
+              <OnlinePulse />
+            </StatHeader>
+            <StatBigNumber $color="#31a24c">
+              {filteredUsers.filter(u => u.isOnline).length}
+            </StatBigNumber>
+            <StatLabel>{language === 'bg' ? 'Онлайн сега' : 'Online Now'}</StatLabel>
+            <StatSubtext>{language === 'bg' ? 'Активни потребители' : 'Active users'}</StatSubtext>
+          </StatCard>
+
+          <StatCard>
+            <StatHeader>
+              <Shield size={24} />
+            </StatHeader>
+            <StatBigNumber>
+              {filteredUsers.filter(u => u.verification?.emailVerified).length}
+            </StatBigNumber>
+            <StatLabel>{language === 'bg' ? 'Потвърдени' : 'Verified'}</StatLabel>
+            <StatSubtext>
+              {Math.round((filteredUsers.filter(u => u.verification?.emailVerified).length / (filteredUsers.length || 1)) * 100)}%
+            </StatSubtext>
+          </StatCard>
+
+          <StatCard>
+            <StatHeader>
+              <Award size={24} />
+            </StatHeader>
+            <StatBigNumber>
+              {Math.round(filteredUsers.reduce((sum, u) => sum + (u.verification?.trustScore || 0), 0) / (filteredUsers.length || 1))}
+            </StatBigNumber>
+            <StatLabel>{language === 'bg' ? 'Средна доверителност' : 'Avg Trust'}</StatLabel>
+            <StatSubtext>Trust Score</StatSubtext>
+          </StatCard>
+        </QuickStatsBar>
         
         <ControlsBar>
           <ViewModeSelector>
@@ -895,7 +1100,7 @@ const UsersDirectoryPage: React.FC = () => {
         ) : viewMode === 'grid' ? (
           <UsersGrid>
             {filteredUsers.map((user) => (
-              <UserCard key={user.uid} onClick={() => window.location.href = `/profile?userId=${user.uid}`}>
+              <UserCard key={user.uid} onClick={() => window.location.href = `/profile/${user.uid}`}>
                 <UserHeader>
                   <Avatar 
                     $imageUrl={user.profileImage?.url}
@@ -931,7 +1136,7 @@ const UsersDirectoryPage: React.FC = () => {
               const isVerified = user.verification?.emailVerified || user.verification?.phoneVerified;
               
               return (
-                <ListItem key={user.uid} onClick={() => window.location.href = `/profile?userId=${user.uid}`}>
+                <ListItem key={user.uid} onClick={() => window.location.href = `/profile/${user.uid}`}>
                   <ListAvatar 
                     $imageUrl={user.profileImage?.url}
                     $initial={user.displayName?.[0]?.toUpperCase() || '?'}
@@ -1019,6 +1224,27 @@ const UsersDirectoryPage: React.FC = () => {
               );
             })}
           </UsersList>
+        )}
+
+        {/* ⚡ NEW: Load More Button */}
+        {!loading && filteredUsers.length > 0 && hasMore && (
+          <LoadMoreContainer>
+            <LoadMoreButton onClick={loadMore} disabled={loadingMore}>
+              {loadingMore ? (
+                language === 'bg' ? 'Зареждане...' : 'Loading...'
+              ) : (
+                language === 'bg' ? 'Зареди още' : 'Load More'
+              )}
+            </LoadMoreButton>
+          </LoadMoreContainer>
+        )}
+
+        {!loading && !hasMore && filteredUsers.length > 0 && (
+          <EndMessage>
+            {language === 'bg' 
+              ? `Показани всички ${filteredUsers.length} потребители` 
+              : `Showing all ${filteredUsers.length} users`}
+          </EndMessage>
         )}
       </Container>
     </PageContainer>

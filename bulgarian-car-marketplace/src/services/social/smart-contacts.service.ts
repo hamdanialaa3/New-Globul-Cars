@@ -19,6 +19,11 @@ interface SmartContact {
 
 class SmartContactsService {
   private static instance: SmartContactsService;
+  
+  // Cache for online users count
+  private onlineCountCache: number = 0;
+  private onlineCountCacheTime: number = 0;
+  private readonly CACHE_DURATION = 60000; // 1 minute
 
   public static getInstance(): SmartContactsService {
     if (!SmartContactsService.instance) {
@@ -35,11 +40,11 @@ class SmartContactsService {
     try {
       logger.info('Fetching smart contacts (optimized)', { userId: currentUserId, limit: limitCount });
 
-      // OPTIMIZATION: Fetch only active users (limit to 50 instead of ALL)
+      // OPTIMIZATION: Fetch only 15 active users (reduced from 50)
       const usersQuery = query(
         collection(db, 'users'),
         orderBy('lastActivity', 'desc'),
-        firestoreLimit(50)
+        firestoreLimit(15)
       );
       
       const usersSnapshot = await getDocs(usersQuery);
@@ -194,16 +199,33 @@ class SmartContactsService {
     return interests;
   }
 
-  // Get online users count
+  // Get online users count (with caching)
   public async getOnlineUsersCount(): Promise<number> {
     try {
+      // Return cached value if still valid
+      const now = Date.now();
+      if (now - this.onlineCountCacheTime < this.CACHE_DURATION) {
+        logger.info('Returning cached online count', { count: this.onlineCountCache });
+        return this.onlineCountCache;
+      }
+
+      // Fetch new count with limit
       const usersSnapshot = await getDocs(
-        query(collection(db, 'users'), where('isOnline', '==', true))
+        query(
+          collection(db, 'users'), 
+          where('isOnline', '==', true),
+          firestoreLimit(100) // Add limit to prevent excessive reads
+        )
       );
-      return usersSnapshot.docs.length;
+      
+      this.onlineCountCache = usersSnapshot.docs.length;
+      this.onlineCountCacheTime = now;
+      
+      logger.info('Fetched new online count', { count: this.onlineCountCache });
+      return this.onlineCountCache;
     } catch (error) {
       logger.error('Error fetching online users count', error as Error);
-      return 0;
+      return this.onlineCountCache || 0;
     }
   }
 

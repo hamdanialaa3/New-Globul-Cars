@@ -3,6 +3,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../../firebase/firebase-config';
 import { useAuth } from '../../contexts/AuthProvider';  /* ⚡ FIXED */
 import { useLanguage } from '../../contexts/LanguageContext';
 import VerificationReview from './VerificationReview';
@@ -37,7 +39,6 @@ const AdminPage: React.FC = () => {
 
       try {
         // Check if user is admin in Firestore
-        const db = getFirestore();
         const adminDoc = await getDoc(doc(db, 'admins', currentUser.uid));
 
         if (!adminDoc.exists()) {
@@ -190,8 +191,5 @@ const AdminPage: React.FC = () => {
     </div>
   );
 };
-
-// Import Firestore functions
-import { getFirestore, doc, getDoc } from 'firebase/firestore';
 
 export default AdminPage;

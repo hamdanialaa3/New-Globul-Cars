@@ -346,7 +346,7 @@ export const PostCard: React.FC<PostCardProps> = ({
   };
   
   const handleAuthorClick = () => {
-    navigate(`/profile?userId=${post.authorId}`);
+    navigate(`/profile/${post.authorId}`);
   };
   
   const initial = post.authorInfo.displayName?.[0]?.toUpperCase() || '?';

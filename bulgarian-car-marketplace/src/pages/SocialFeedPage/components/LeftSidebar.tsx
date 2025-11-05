@@ -26,7 +26,7 @@ const SHORTCUTS = [
   { nameKey: 'Dealer Dashboard', image: 'https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=100', link: '/dealer-dashboard' },
 ];
 
-export const LeftSidebar: React.FC = () => {
+const LeftSidebarComponent: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { t } = useLanguage();
@@ -46,7 +46,11 @@ export const LeftSidebar: React.FC = () => {
   return (
     <Container>
       <MenuItem onClick={() => user ? navigate('/profile') : navigate('/login')}>
-        <Avatar src={user?.photoURL || 'https://i.pravatar.cc/150?img=1'} />
+        <Avatar 
+          src={user?.photoURL || 'https://i.pravatar.cc/150?img=1'} 
+          loading="lazy"
+          decoding="async"
+        />
         <Label>{user?.displayName || 'Guest User'}</Label>
       </MenuItem>
 
@@ -65,7 +69,11 @@ export const LeftSidebar: React.FC = () => {
 
       {SHORTCUTS.map((shortcut, idx) => (
         <MenuItem key={idx} onClick={() => handleShortcutClick(shortcut)}>
-          <GroupIcon src={shortcut.image} />
+          <GroupIcon 
+            src={shortcut.image} 
+            loading="lazy"
+            decoding="async"
+          />
           <Label>{shortcut.nameKey}</Label>
         </MenuItem>
       ))}
@@ -159,3 +167,6 @@ const ShowMore = styled.div`
     background: #e4e6eb;
   }
 `;
+
+// Export with React.memo for performance optimization
+export const LeftSidebar = React.memo(LeftSidebarComponent);

@@ -65,6 +65,7 @@ const UnifiedContactPage = React.lazy(() => import('./pages/sell/UnifiedContactP
 const MessagesPage = React.lazy(() => import('./pages/MessagesPage'));
 const AdminPage = React.lazy(() => import('./pages/AdminPage'));
 const AdminLoginPage = React.lazy(() => import('./pages/AdminLoginPage'));
+const AdminDataFix = React.lazy(() => import('./pages/AdminDataFix'));
 const SuperAdminLogin = React.lazy(() => import('./pages/SuperAdminLogin'));
 const SuperAdminDashboard = React.lazy(() => import('./pages/SuperAdminDashboardNew'));
 
@@ -454,7 +455,8 @@ const MainLayout: React.FC = () => {
           </AuthGuard>
         }
       />
-      <Route path="/profile/*" element={<ProfileRouter />} />  {/* Profile with nested routes: /, /my-ads, /campaigns, /analytics, /settings, /consultations */}
+      <Route path="/profile" element={<ProfileRouter />} />  {/* Own profile */}
+      <Route path="/profile/:userId/*" element={<ProfileRouter />} />  {/* Other user's profile with nested routes */}
       <Route path="/verification" element={<VerificationPage />} />  {/* NEW: Verification System */}
       <Route path="/billing" element={<BillingPage />} />  {/* NEW: Billing System */}
       
@@ -525,6 +527,14 @@ const MainLayout: React.FC = () => {
         element={
           <AdminRoute>
             <AdminCarManagementPage />
+          </AdminRoute>
+        }
+      />
+      <Route
+        path="/admin/data-fix"
+        element={
+          <AdminRoute>
+            <AdminDataFix />
           </AdminRoute>
         }
       />
