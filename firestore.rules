@@ -214,6 +214,46 @@ service cloud.firestore {
       allow write: if false; // Only Cloud Functions
     }
     
+    // ==================== STRIPE PAYMENTS EXTENSION ====================
+    // Rules for invertase/firestore-stripe-payments extension
+    
+    // Customer data (subscriptions, payments, checkout sessions)
+    match /customers/{uid} {
+      // Users can only read their own customer data
+      allow read: if isOwner(uid);
+
+      // Checkout sessions - users can create and read their own sessions
+      match /checkout_sessions/{id} {
+        allow read, write: if isOwner(uid);
+      }
+      
+      // Subscriptions - users can only read their own subscriptions
+      match /subscriptions/{id} {
+        allow read: if isOwner(uid);
+      }
+      
+      // Payments - users can only read their own payment records
+      match /payments/{id} {
+        allow read: if isOwner(uid);
+      }
+    }
+
+    // Products and prices - publicly readable for all users
+    match /products/{id} {
+      allow read: if true;
+      allow write: if false; // Only Stripe webhook can write
+
+      match /prices/{id} {
+        allow read: if true;
+        allow write: if false; // Only Stripe webhook can write
+      }
+
+      match /tax_rates/{id} {
+        allow read: if true;
+        allow write: if false; // Only Stripe webhook can write
+      }
+    }
+    
     // ==================== DEFAULT DENY ====================
     
     // Deny all other access by default
