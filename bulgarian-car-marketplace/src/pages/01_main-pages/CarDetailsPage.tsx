@@ -359,8 +359,8 @@ const SectionIcon = styled.div`
 
 // Contact Method Icons - Professional 3D Style
 const ContactIcon = styled.div<{ $isActive: boolean }>`
-  width: 60px;
-  height: 60px;
+  width: 48px;
+  height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -370,52 +370,57 @@ const ContactIcon = styled.div<{ $isActive: boolean }>`
   filter: ${props => props.$isActive ? 'none' : 'grayscale(70%)'};
 
   &:hover {
-    transform: translateY(-8px) scale(1.15);
+    transform: translateY(-6px) scale(1.15);
   }
 
   img, svg {
-    width: 50px;
-    height: 50px;
+    width: 42px;
+    height: 42px;
     position: relative;
     z-index: 1;
     opacity: ${props => props.$isActive ? '1' : '0.6'};
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     object-fit: contain;
-    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15))
-            drop-shadow(0 2px 4px rgba(0, 0, 0, 0.12))
-            drop-shadow(0 8px 16px rgba(0, 0, 0, 0.1));
+    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.15))
+            drop-shadow(0 1px 3px rgba(0, 0, 0, 0.12))
+            drop-shadow(0 6px 12px rgba(0, 0, 0, 0.1));
   }
 
   &:hover img,
   &:hover svg {
-    filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.25))
-            drop-shadow(0 4px 8px rgba(0, 0, 0, 0.18))
-            drop-shadow(0 12px 24px rgba(255, 121, 0, 0.2));
+    filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.25))
+            drop-shadow(0 3px 6px rgba(0, 0, 0, 0.18))
+            drop-shadow(0 10px 20px rgba(255, 121, 0, 0.2));
     transform: scale(1.1);
   }
 `;
 
 const ContactLabel = styled.span<{ $isActive: boolean }>`
-  font-size: 0.875rem;
-  font-weight: 700;
+  font-size: 0.688rem;
+  font-weight: 600;
   color: ${props => props.$isActive ? '#2c3e50' : '#6c757d'};
   transition: all 0.3s ease;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-top: 0.5rem;
+  text-align: center;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 `;
 
 const ContactItem = styled.div<{ $isActive: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.75rem;
-  padding: 1.5rem 1rem;
-  border-radius: 16px;
+  gap: 0.5rem;
+  padding: 0.75rem 0.5rem;
+  border-radius: 12px;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   cursor: pointer;
   position: relative;
   background: transparent;
+  min-width: 80px;
+  max-width: 100px;
 
   &:hover {
     transform: translateY(-5px);
@@ -1924,7 +1929,15 @@ const CarDetailsPage: React.FC = () => {
           {language === 'bg' ? 'Предпочитан начин на контакт' : 'Preferred Contact Method'}
         </SectionTitle>
         
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1.5rem', marginTop: '1.5rem' }}>
+        <div style={{ 
+          display: 'flex', 
+          flexWrap: 'wrap',
+          justifyContent: 'center', 
+          alignItems: 'center',
+          gap: '1rem', 
+          marginTop: '1.5rem',
+          padding: '1rem 0'
+        }}>
           {[
             { key: 'phone', label: 'Phone', Icon: PhoneIcon },
             { key: 'email', label: 'Email', Icon: EmailIcon },
