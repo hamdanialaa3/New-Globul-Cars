@@ -1488,14 +1488,15 @@ const CarDetailsPage: React.FC = () => {
             {isEditMode ? (
               <>
                 <EditableSelect
-                  value={showOtherDoors ? 'Other' : (editedCar.doors?.toString() || '')}
+                  value={showOtherDoors ? 'Other' : (editedCar.numberOfDoors?.toString() || editedCar.doors?.toString() || '')}
                   aria-label={language === 'bg' ? 'Изберете брой врати' : 'Select doors'}
                   onChange={(e) => {
                     if (e.target.value === 'Other') {
                       setShowOtherDoors(true);
                     } else {
                       setShowOtherDoors(false);
-                      handleInputChange('doors', e.target.value);
+                      handleInputChange('numberOfDoors', parseInt(e.target.value));
+                      handleInputChange('doors', parseInt(e.target.value)); // backward compatibility
                     }
                   }}
                 >
@@ -1508,15 +1509,18 @@ const CarDetailsPage: React.FC = () => {
                 </EditableSelect>
                 {showOtherDoors && (
                   <EditableInput
-                    value={editedCar.doors || ''}
-                    onChange={(e) => handleInputChange('doors', e.target.value)}
+                    value={editedCar.numberOfDoors || editedCar.doors || ''}
+                    onChange={(e) => {
+                      handleInputChange('numberOfDoors', parseInt(e.target.value));
+                      handleInputChange('doors', parseInt(e.target.value)); // backward compatibility
+                    }}
                     placeholder={language === 'bg' ? 'Въведете брой врати' : 'Enter doors'}
                     style={{ marginTop: '0.5rem' }}
                   />
                 )}
               </>
             ) : (
-              <DetailValue>{car.doors || 'N/A'}</DetailValue>
+              <DetailValue>{car.numberOfDoors || car.doors || 'N/A'}</DetailValue>
             )}
           </DetailRow>
           
@@ -1525,14 +1529,15 @@ const CarDetailsPage: React.FC = () => {
             {isEditMode ? (
               <>
                 <EditableSelect
-                  value={showOtherSeats ? 'Other' : (editedCar.seats?.toString() || '')}
+                  value={showOtherSeats ? 'Other' : (editedCar.numberOfSeats?.toString() || editedCar.seats?.toString() || '')}
                   aria-label={language === 'bg' ? 'Изберете брой места' : 'Select seats'}
                   onChange={(e) => {
                     if (e.target.value === 'Other') {
                       setShowOtherSeats(true);
                     } else {
                       setShowOtherSeats(false);
-                      handleInputChange('seats', e.target.value);
+                      handleInputChange('numberOfSeats', parseInt(e.target.value));
+                      handleInputChange('seats', parseInt(e.target.value)); // backward compatibility
                     }
                   }}
                 >
@@ -1546,15 +1551,18 @@ const CarDetailsPage: React.FC = () => {
                 </EditableSelect>
                 {showOtherSeats && (
                   <EditableInput
-                    value={editedCar.seats || ''}
-                    onChange={(e) => handleInputChange('seats', e.target.value)}
+                    value={editedCar.numberOfSeats || editedCar.seats || ''}
+                    onChange={(e) => {
+                      handleInputChange('numberOfSeats', parseInt(e.target.value));
+                      handleInputChange('seats', parseInt(e.target.value)); // backward compatibility
+                    }}
                     placeholder={language === 'bg' ? 'Въведете брой места' : 'Enter seats'}
                     style={{ marginTop: '0.5rem' }}
                   />
                 )}
               </>
             ) : (
-              <DetailValue>{car.seats || 'N/A'}</DetailValue>
+              <DetailValue>{car.numberOfSeats || car.seats || 'N/A'}</DetailValue>
             )}
           </DetailRow>
         </DetailsSection>
