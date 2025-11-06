@@ -5,6 +5,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { logger } from '@/services/logger-service';
 import SplitScreenLayout from '@/components/SplitScreenLayout';
 import { WorkflowFlow } from '@/components/WorkflowVisualization';
 import { Upload, X, Image as ImageIcon } from 'lucide-react';
@@ -58,13 +59,13 @@ const ImagesPageNew: React.FC = () => {
 
       const base64Images = await Promise.all(imagePromises);
       localStorage.setItem('globul_sell_workflow_images', JSON.stringify(base64Images));
-      console.log('💾 Images saved successfully:', selectedFiles.length);
+      logger.info('Images saved successfully', { count: selectedFiles.length, vehicleType });
 
       const params = new URLSearchParams(searchParams.toString());
       params.set('images', selectedFiles.length.toString());
       navigate(`/sell/inserat/${vehicleType || 'car'}/details/preis?${params.toString()}`);
     } catch (error) {
-      console.error('❌ Error saving images:', error);
+      logger.error('Error saving images', error as Error, { vehicleType });
       alert(language === 'bg' 
         ? 'Възникна грешка при запазване на снимките. Моля, опитайте отново.' 
         : 'Error saving images. Please try again.');

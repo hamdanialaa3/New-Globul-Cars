@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthProvider';
 import WorkflowPersistenceService from '@/services/workflowPersistenceService';
+import { logger } from '@/services/logger-service';
 import { S } from './MobileSubmissionPage.styles';
 
 type SubmissionState = 'submitting' | 'success' | 'error';
@@ -45,15 +46,19 @@ const MobileSubmissionPage: React.FC = () => {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      // Log for debugging (remove in production)
-      console.log('Listing submitted:', { listingData, imageCount: images.length });
+      // Log submission
+      logger.info('Listing submitted successfully', { 
+        userId: user?.uid,
+        vehicleType,
+        imageCount: images.length 
+      });
       
       // Clear workflow state after successful submission
       WorkflowPersistenceService.clearState();
       
       setState('success');
     } catch (err) {
-      console.error('Submission error:', err);
+      logger.error('Submission error', err as Error, { userId: user?.uid, vehicleType });
       setError(err instanceof Error ? err.message : 'Unknown error');
       setState('error');
     }

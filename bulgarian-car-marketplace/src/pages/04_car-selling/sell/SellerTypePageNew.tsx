@@ -4,6 +4,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { logger } from '@/services/logger-service';
 import styled from 'styled-components';
 import { Check } from 'lucide-react';
 import PersonIcon from '@/components/icons/PersonIcon';
@@ -226,7 +227,7 @@ const SellerTypePageNew: React.FC = () => {
           }
         }
       } catch (error) {
-        console.error('Error detecting seller type:', error);
+        logger.error('Error detecting seller type', error as Error);
       }
     };
 

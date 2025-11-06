@@ -4,6 +4,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { logger } from '@/services/logger-service';
 import styled from 'styled-components';
 import { Car, Truck, Bus, Bike, Caravan, CarFront } from 'lucide-react';
 import SplitScreenLayout from '@/components/SplitScreenLayout';
@@ -172,7 +173,7 @@ const VehicleStartPageNew: React.FC = () => {
       try {
         await N8nIntegrationService.onVehicleTypeSelected(user.uid, typeId);
       } catch (error) {
-        console.warn('N8N trigger failed (non-critical):', error);
+        logger.warn('N8N trigger failed (non-critical)', { userId: user.uid, typeId, error });
       }
     }
     
