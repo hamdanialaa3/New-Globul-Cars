@@ -24,11 +24,109 @@ const Container = styled.div`
 
 const Header = styled.div`
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  gap: 1rem;
   margin-bottom: 2rem;
   padding-bottom: 1rem;
   border-bottom: 2px solid #f0f0f0;
+`;
+
+const TopBar = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+`;
+
+const InfoBar = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  border: 1px solid #d0d7de;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+`;
+
+const SellerInfo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+`;
+
+const SellerAvatar = styled.div`
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FF7900, #FF9533);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.25rem;
+  font-weight: 700;
+  box-shadow: 0 3px 10px rgba(255, 121, 0, 0.3);
+`;
+
+const SellerDetails = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+`;
+
+const SellerName = styled.div`
+  font-size: 1rem;
+  font-weight: 700;
+  color: #2c3e50;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
+const SellerPhone = styled.a`
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #FF7900;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  transition: all 0.3s ease;
+
+  &:hover {
+    color: #e66a00;
+    text-decoration: underline;
+  }
+
+  svg {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+  }
+`;
+
+const VehicleInfo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.25rem;
+  background: linear-gradient(135deg, rgba(255, 121, 0, 0.08), rgba(255, 149, 51, 0.08));
+  border: 1px solid rgba(255, 138, 26, 0.3);
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(255, 121, 0, 0.15);
+`;
+
+const VehicleBrand = styled.div`
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #2c3e50;
+`;
+
+const VehicleModel = styled.div`
+  font-size: 0.938rem;
+  font-weight: 600;
+  color: #6c757d;
 `;
 
 const BackButton = styled.button`
@@ -1150,37 +1248,65 @@ const CarDetailsPage: React.FC = () => {
   return (
     <Container>
       <Header>
-        <BackButton onClick={() => navigate(-1)}>
-          ← {language === 'bg' ? 'Назад' : 'Back'}
-        </BackButton>
-        <CarTitle>
-          {isEditMode ? editedCar.make : car.make} {isEditMode ? editedCar.model : car.model} {isEditMode ? editedCar.year : car.year}
-        </CarTitle>
-        {!isEditMode && isOwner ? (
-          <EditButton onClick={handleEdit}>
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginRight: '8px', display: 'inline-block', verticalAlign: 'middle' }}>
-              <path d="M0 14.25V18h3.75L14.81 6.94l-3.75-3.75L0 14.25zM17.71 4.04a.996.996 0 000-1.41L15.37.29a.996.996 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="white"/>
-            </svg>
-            {language === 'bg' ? 'Редактирай' : 'Edit'}
-          </EditButton>
-        ) : null}
-        
-        {isEditMode && isOwner && (
-          <div style={{ display: 'flex', gap: '1rem' }}>
-            <SaveButtonEnhanced onClick={handleSave} disabled={saving}>
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginRight: '8px', display: 'inline-block', verticalAlign: 'middle' }}>
-                <path d="M15.833 3.333H4.167C3.247 3.333 2.5 4.08 2.5 5v10c0 .92.747 1.667 1.667 1.667h11.666c.92 0 1.667-.747 1.667-1.667V5c0-.92-.747-1.667-1.667-1.667zM10 14.167c-1.15 0-2.083-.933-2.083-2.084C7.917 10.933 8.85 10 10 10c1.15 0 2.083.933 2.083 2.083 0 1.151-.933 2.084-2.083 2.084zM12.5 7.5h-7.5V5h7.5v2.5z" fill="white"/>
+        <TopBar>
+          <BackButton onClick={() => navigate(-1)}>
+            ← {language === 'bg' ? 'Назад' : 'Back'}
+          </BackButton>
+          
+          {!isEditMode && isOwner ? (
+            <EditButton onClick={handleEdit}>
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginRight: '8px', display: 'inline-block', verticalAlign: 'middle' }}>
+                <path d="M0 14.25V18h3.75L14.81 6.94l-3.75-3.75L0 14.25zM17.71 4.04a.996.996 0 000-1.41L15.37.29a.996.996 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="white"/>
               </svg>
-              {saving ? (language === 'bg' ? 'Запазване...' : 'Saving...') : (language === 'bg' ? 'Запази' : 'Save')}
-            </SaveButtonEnhanced>
-            <CancelButtonEnhanced onClick={handleCancel}>
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginRight: '8px', display: 'inline-block', verticalAlign: 'middle' }}>
-                <path d="M15 5.41L13.59 4 10 7.59 6.41 4 5 5.41 8.59 9 5 12.59 6.41 14 10 10.41 13.59 14 15 12.59 11.41 9 15 5.41z" fill="white"/>
-              </svg>
-              {language === 'bg' ? 'Отказ' : 'Cancel'}
-            </CancelButtonEnhanced>
-          </div>
-        )}
+              {language === 'bg' ? 'Редактирай' : 'Edit'}
+            </EditButton>
+          ) : null}
+          
+          {isEditMode && isOwner && (
+            <div style={{ display: 'flex', gap: '1rem' }}>
+              <SaveButtonEnhanced onClick={handleSave} disabled={saving}>
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginRight: '8px', display: 'inline-block', verticalAlign: 'middle' }}>
+                  <path d="M15.833 3.333H4.167C3.247 3.333 2.5 4.08 2.5 5v10c0 .92.747 1.667 1.667 1.667h11.666c.92 0 1.667-.747 1.667-1.667V5c0-.92-.747-1.667-1.667-1.667zM10 14.167c-1.15 0-2.083-.933-2.083-2.084C7.917 10.933 8.85 10 10 10c1.15 0 2.083.933 2.083 2.083 0 1.151-.933 2.084-2.083 2.084zM12.5 7.5h-7.5V5h7.5v2.5z" fill="white"/>
+                </svg>
+                {saving ? (language === 'bg' ? 'Запазване...' : 'Saving...') : (language === 'bg' ? 'Запази' : 'Save')}
+              </SaveButtonEnhanced>
+              <CancelButtonEnhanced onClick={handleCancel}>
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginRight: '8px', display: 'inline-block', verticalAlign: 'middle' }}>
+                  <path d="M15 5.41L13.59 4 10 7.59 6.41 4 5 5.41 8.59 9 5 12.59 6.41 14 10 10.41 13.59 14 15 12.59 11.41 9 15 5.41z" fill="white"/>
+                </svg>
+                {language === 'bg' ? 'Отказ' : 'Cancel'}
+              </CancelButtonEnhanced>
+            </div>
+          )}
+        </TopBar>
+
+        <InfoBar>
+          <SellerInfo>
+            <SellerAvatar>
+              {car.sellerName ? car.sellerName.charAt(0).toUpperCase() : '?'}
+            </SellerAvatar>
+            <SellerDetails>
+              <SellerName>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="#2c3e50">
+                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                </svg>
+                {car.sellerName || (language === 'bg' ? 'Неизвестен' : 'Unknown')}
+              </SellerName>
+              <SellerPhone href={`tel:${car.sellerPhone}`}>
+                <svg viewBox="0 0 24 24">
+                  <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+                </svg>
+                {car.sellerPhone || (language === 'bg' ? 'Без телефон' : 'No phone')}
+              </SellerPhone>
+            </SellerDetails>
+          </SellerInfo>
+
+          <VehicleInfo>
+            <VehicleBrand>{car.make}</VehicleBrand>
+            <div style={{ color: '#d0d7de', fontSize: '1.25rem', fontWeight: '300' }}>•</div>
+            <VehicleModel>{car.model}</VehicleModel>
+          </VehicleInfo>
+        </InfoBar>
       </Header>
 
       <MainContent>
