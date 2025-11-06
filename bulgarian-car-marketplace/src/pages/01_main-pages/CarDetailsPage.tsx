@@ -893,6 +893,13 @@ const CarDetailsPage: React.FC = () => {
   // 🎯 Auto-track car views (REAL ANALYTICS!)
   useCarViewTracking(carId, car?.sellerId);
   const [editedCar, setEditedCar] = useState<Partial<CarListing>>({});
+  
+  // 🔒 Check if current user is the owner
+  const isOwner = currentUser && car && (
+    currentUser.uid === car.sellerId || 
+    currentUser.uid === (car as any).userId ||
+    currentUser.uid === (car as any).ownerId
+  );
   const [saving, setSaving] = useState(false);
   const [photos, setPhotos] = useState<File[]>([]);
   const [photoUrls, setPhotoUrls] = useState<string[]>([]);
@@ -947,10 +954,19 @@ const CarDetailsPage: React.FC = () => {
 
   useEffect(() => {
     const editParam = searchParams.get('edit');
-    if (editParam === 'true' && currentUser) {
-      setIsEditMode(true);
+    // ✅ Only allow edit mode if user is the owner
+    if (editParam === 'true' && currentUser && car) {
+      const isCarOwner = currentUser.uid === car.sellerId || 
+                         currentUser.uid === (car as any).userId ||
+                         currentUser.uid === (car as any).ownerId;
+      if (isCarOwner) {
+        setIsEditMode(true);
+      } else {
+        // Redirect to view mode if not owner
+        navigate(`/cars/${carId}`, { replace: true });
+      }
     }
-  }, [searchParams, currentUser]);
+  }, [searchParams, currentUser, car, carId, navigate]);
 
   // Load cities when car data is loaded or region changes
   useEffect(() => {
@@ -1140,14 +1156,16 @@ const CarDetailsPage: React.FC = () => {
         <CarTitle>
           {isEditMode ? editedCar.make : car.make} {isEditMode ? editedCar.model : car.model} {isEditMode ? editedCar.year : car.year}
         </CarTitle>
-        {!isEditMode ? (
+        {!isEditMode && isOwner ? (
           <EditButton onClick={handleEdit}>
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginRight: '8px', display: 'inline-block', verticalAlign: 'middle' }}>
               <path d="M0 14.25V18h3.75L14.81 6.94l-3.75-3.75L0 14.25zM17.71 4.04a.996.996 0 000-1.41L15.37.29a.996.996 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="white"/>
             </svg>
             {language === 'bg' ? 'Редактирай' : 'Edit'}
           </EditButton>
-        ) : (
+        ) : null}
+        
+        {isEditMode && isOwner && (
           <div style={{ display: 'flex', gap: '1rem' }}>
             <SaveButtonEnhanced onClick={handleSave} disabled={saving}>
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginRight: '8px', display: 'inline-block', verticalAlign: 'middle' }}>
