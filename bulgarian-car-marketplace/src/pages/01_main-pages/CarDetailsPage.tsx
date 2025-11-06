@@ -357,116 +357,71 @@ const SectionIcon = styled.div`
   }
 `;
 
-// Contact Method Icons with Real SVG
+// Contact Method Icons - Professional 3D Style
 const ContactIcon = styled.div<{ $isActive: boolean }>`
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
+  width: 60px;
+  height: 60px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   position: relative;
-  overflow: hidden;
-  background: ${props => props.$isActive 
-    ? 'linear-gradient(135deg, #FF7900, #FF9533)' 
-    : 'linear-gradient(135deg, #f5f7fa, #e8ecf1)'
-  };
-  border: 1px solid ${props => props.$isActive ? '#FF8A1A' : '#d0d7de'};
-  box-shadow: ${props => props.$isActive 
-    ? '0 4px 12px rgba(255, 121, 0, 0.3), 0 0 0 2px rgba(255, 121, 0, 0.1)' 
-    : '0 2px 6px rgba(0, 0, 0, 0.08)'
-  };
   cursor: pointer;
+  filter: ${props => props.$isActive ? 'none' : 'grayscale(70%)'};
 
   &:hover {
-    transform: translateY(-2px) scale(1.03);
-    box-shadow: ${props => props.$isActive 
-      ? '0 6px 18px rgba(255, 121, 0, 0.4), 0 0 0 3px rgba(255, 121, 0, 0.15)' 
-      : '0 4px 12px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(255, 121, 0, 0.15)'
-    };
-  }
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-    transition: left 0.5s ease;
-  }
-
-  &:hover::before {
-    left: 100%;
+    transform: translateY(-8px) scale(1.15);
   }
 
   img {
-    width: 28px;
-    height: 28px;
+    width: 50px;
+    height: 50px;
     position: relative;
     z-index: 1;
-    opacity: ${props => props.$isActive ? '1' : '0.5'};
-    transition: all 0.3s ease;
+    opacity: ${props => props.$isActive ? '1' : '0.6'};
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     object-fit: contain;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15))
+            drop-shadow(0 2px 4px rgba(0, 0, 0, 0.12))
+            drop-shadow(0 8px 16px rgba(0, 0, 0, 0.1));
+  }
+
+  &:hover img {
+    filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.25))
+            drop-shadow(0 4px 8px rgba(0, 0, 0, 0.18))
+            drop-shadow(0 12px 24px rgba(255, 121, 0, 0.2));
+    transform: scale(1.1);
   }
 `;
 
 const ContactLabel = styled.span<{ $isActive: boolean }>`
-  font-size: 0.813rem;
-  font-weight: 600;
-  color: ${props => props.$isActive ? '#FF7900' : '#495057'};
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: ${props => props.$isActive ? '#2c3e50' : '#6c757d'};
   transition: all 0.3s ease;
-  text-shadow: ${props => props.$isActive ? '0 0 6px rgba(255, 121, 0, 0.25)' : 'none'};
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 0.5rem;
 `;
 
 const ContactItem = styled.div<{ $isActive: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
-  padding: 1rem 0.75rem;
-  border-radius: 10px;
-  transition: all 0.3s ease;
+  gap: 0.75rem;
+  padding: 1.5rem 1rem;
+  border-radius: 16px;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   cursor: pointer;
   position: relative;
-  background: ${props => props.$isActive 
-    ? 'linear-gradient(135deg, rgba(255, 121, 0, 0.06), rgba(255, 149, 51, 0.06))' 
-    : 'linear-gradient(135deg, #ffffff, #fafbfc)'
-  };
-  border: 1px solid ${props => props.$isActive ? '#FF8A1A' : '#d0d7de'};
-  box-shadow: ${props => props.$isActive 
-    ? '0 4px 12px rgba(255, 121, 0, 0.18)' 
-    : '0 2px 6px rgba(0, 0, 0, 0.06)'
-  };
+  background: transparent;
 
   &:hover {
-    transform: translateY(-3px);
-    box-shadow: ${props => props.$isActive 
-      ? '0 6px 18px rgba(255, 121, 0, 0.25)' 
-      : '0 4px 12px rgba(0, 0, 0, 0.1)'
-    };
+    transform: translateY(-5px);
   }
 
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border-radius: 10px;
-    background: ${props => props.$isActive 
-      ? 'linear-gradient(45deg, rgba(255, 121, 0, 0.08), transparent, rgba(255, 121, 0, 0.08))' 
-      : 'transparent'
-    };
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-
-  &:hover::before {
-    opacity: 1;
+  &:hover ${ContactLabel} {
+    color: ${props => props.$isActive ? '#FF7900' : '#495057'};
   }
 `;
 
