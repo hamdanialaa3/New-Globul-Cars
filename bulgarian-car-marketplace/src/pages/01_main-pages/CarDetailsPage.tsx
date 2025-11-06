@@ -1305,6 +1305,8 @@ const CarDetailsPage: React.FC = () => {
             <VehicleBrand>{car.make}</VehicleBrand>
             <div style={{ color: '#d0d7de', fontSize: '1.25rem', fontWeight: '300' }}>•</div>
             <VehicleModel>{car.model}</VehicleModel>
+            <div style={{ color: '#d0d7de', fontSize: '1.25rem', fontWeight: '300' }}>•</div>
+            <VehicleModel>{car.year}</VehicleModel>
           </VehicleInfo>
         </InfoBar>
       </Header>

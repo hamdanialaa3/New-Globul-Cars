@@ -12,7 +12,7 @@ import DealerIcon from '@/components/icons/DealerIcon';
 import CompanyIcon from '@/components/icons/CompanyIcon';
 import SplitScreenLayout from '@/components/SplitScreenLayout';
 import { WorkflowFlow } from '@/components/WorkflowVisualization';
-import { bulgarianAuthService } from '@/firebase/firebase-config';
+import { bulgarianAuthService } from '@/firebase';
 import ProfileTypeConfirmModal from '@/components/Profile/ProfileTypeConfirmModal';
 
 // Type definition for ProfileType
