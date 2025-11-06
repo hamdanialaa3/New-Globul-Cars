@@ -403,12 +403,13 @@ const ContactIcon = styled.div<{ $isActive: boolean }>`
   }
 
   img {
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
     position: relative;
     z-index: 1;
-    filter: ${props => props.$isActive ? 'brightness(0) invert(1)' : 'brightness(0.5)'};
+    opacity: ${props => props.$isActive ? '1' : '0.5'};
     transition: all 0.3s ease;
+    object-fit: contain;
   }
 `;
 
@@ -865,7 +866,6 @@ const PhoneIcon = () => (
   <img 
     src="/assets/bottom/call.png" 
     alt="Phone"
-    style={{ width: '100%', height: '100%', objectFit: 'contain' }}
   />
 );
 
@@ -873,7 +873,6 @@ const EmailIcon = () => (
   <img 
     src="/assets/bottom/email.png" 
     alt="Email"
-    style={{ width: '100%', height: '100%', objectFit: 'contain' }}
   />
 );
 
@@ -881,7 +880,6 @@ const WhatsAppIcon = () => (
   <img 
     src="/assets/bottom/whatsapp.png" 
     alt="WhatsApp"
-    style={{ width: '100%', height: '100%', objectFit: 'contain' }}
   />
 );
 
@@ -889,7 +887,6 @@ const ViberIcon = () => (
   <img 
     src="/assets/bottom/viber.png" 
     alt="Viber"
-    style={{ width: '100%', height: '100%', objectFit: 'contain' }}
   />
 );
 
@@ -897,7 +894,6 @@ const TelegramIcon = () => (
   <img 
     src="/assets/bottom/telegram.png" 
     alt="Telegram"
-    style={{ width: '100%', height: '100%', objectFit: 'contain' }}
   />
 );
 
@@ -905,7 +901,6 @@ const FacebookMessengerIcon = () => (
   <img 
     src="/assets/bottom/massenger.png" 
     alt="Messenger"
-    style={{ width: '100%', height: '100%', objectFit: 'contain' }}
   />
 );
 
@@ -913,7 +908,6 @@ const SMSIcon = () => (
   <img 
     src="/assets/bottom/SMS.png" 
     alt="SMS"
-    style={{ width: '100%', height: '100%', objectFit: 'contain' }}
   />
 );
 
