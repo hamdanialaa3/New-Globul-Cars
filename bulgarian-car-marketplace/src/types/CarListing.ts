@@ -23,7 +23,7 @@ export interface CarListing {
   sellerName: string;
   sellerEmail: string;
   sellerPhone: string;
-  sellerId?: string;  // User ID of the seller
+    sellerId: string;  // User ID of the seller - REQUIRED for security rules
   companyName?: string;
   companyAddress?: string;
   companyWebsite?: string;

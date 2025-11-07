@@ -17,3 +17,19 @@ export { setSuperAdminClaim } from './auth/set-super-admin-claim';
 
 // Marketplace stats bundle (includes new Super Admin analytics)
 export { getSuperAdminAnalytics } from './stats';
+
+// Monitoring (Task 6)
+export { 
+  monitoringAlertWebhook, 
+  getMonitoringStats, 
+  acknowledgeAlert 
+} from './monitoring/alert-webhook';
+
+// Backup System (Task 8)
+export { 
+  manualBackup, 
+  dailyBackup, 
+  weeklyBackupCleanup, 
+  listBackups, 
+  restoreBackup 
+} from './backup/backup-functions';

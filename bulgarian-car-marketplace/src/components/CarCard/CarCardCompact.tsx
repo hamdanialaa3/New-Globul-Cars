@@ -65,28 +65,28 @@ const PriceRow = styled.div`
 `;
 
 const PriceAmount = styled.div`
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #000;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #0a0a0a;
 `;
 
 const PriceCurrency = styled.span`
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: #000;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0a0a0a;
 `;
 
 const MonthlyLabel = styled.div`
-  font-size: 0.75rem;
-  color: #6c757d;
-  font-weight: 400;
+  font-size: 0.8125rem;
+  color: #4a4a4a;
+  font-weight: 600;
   line-height: 1.2;
 `;
 
 const VatLabel = styled.div`
-  font-size: 0.6875rem;
-  color: #6c757d;
-  font-weight: 400;
+  font-size: 0.75rem;
+  color: #5a5a5a;
+  font-weight: 500;
   margin-top: 1px;
   line-height: 1.2;
 `;
@@ -114,9 +114,9 @@ const CarInfo = styled.div`
 `;
 
 const CarTitle = styled.h3`
-  font-size: 0.875rem;
+  font-size: 1rem;
   font-weight: 700;
-  color: #000;
+  color: #0a0a0a;
   margin: 0 0 8px 0;
   line-height: 1.2;
   overflow: hidden;
@@ -129,18 +129,20 @@ const CarSpecs = styled.div`
   flex-direction: column;
   gap: 4px;
   margin-bottom: 8px;
-  font-size: 0.75rem;
-  color: #333;
+  font-size: 0.8125rem;
+  color: #1a1a1a;
+  font-weight: 600;
   line-height: 1.3;
 `;
 
 const SpecLine = styled.div`
-  color: #666;
-  font-size: 0.75rem;
+  color: #2a2a2a;
+  font-size: 0.8125rem;
+  font-weight: 600;
   
   &:first-child {
-    color: #333;
-    font-weight: 500;
+    color: #0a0a0a;
+    font-weight: 700;
   }
 `;
 
@@ -148,27 +150,31 @@ const SpecGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 4px 10px;
-  font-size: 0.75rem;
-  color: #666;
+  font-size: 0.8125rem;
+  color: #2a2a2a;
+  font-weight: 600;
 `;
 
 const SpecItem = styled.div`
-  color: #666;
+  color: #2a2a2a;
+  font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 `;
 
 const LeasingInfo = styled.div`
-  font-size: 0.75rem;
-  color: #666;
+  font-size: 0.8125rem;
+  color: #4a4a4a;
+  font-weight: 500;
   margin-bottom: 8px;
   line-height: 1.3;
 `;
 
 const CarLocation = styled.div`
-  font-size: 0.75rem;
-  color: #666;
+  font-size: 0.8125rem;
+  color: #404040;
+  font-weight: 600;
   padding-top: 6px;
   border-top: 1px solid #e9ecef;
   margin-top: 6px;

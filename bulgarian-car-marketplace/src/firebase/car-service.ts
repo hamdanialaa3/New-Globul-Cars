@@ -25,7 +25,7 @@ import {
   listAll
 } from 'firebase/storage';
 import { cacheService } from '@/services/cache-service';
-import { db, storage, BulgarianFirebaseUtils } from './firebase-config';
+import { db, storage, BulgarianFirebaseUtils, auth } from './firebase-config';
 import { logger } from '@/services/logger-service';
 
 // Car Condition Types
@@ -243,12 +243,21 @@ export class BulgarianCarService {
   // Create a new car listing
   async createCarListing(carData: Omit<BulgarianCar, 'id' | 'createdAt' | 'updatedAt' | 'views' | 'favorites'>): Promise<string> {
     try {
+      // Enforce authentication and ownership
+      const currentUser = auth.currentUser;
+      if (!currentUser?.uid) {
+        throw new Error('Not authenticated: cannot create car listing');
+      }
+
       // Validate car data
       this.validateCarData(carData);
 
-      // Create car object
+      // Create car object and enforce seller linkage
       const car: Omit<BulgarianCar, 'id'> = {
         ...carData,
+        sellerId: currentUser.uid,
+        ownerEmail: carData.ownerEmail || currentUser.email || '',
+        ownerName: carData.ownerName || currentUser.displayName || '',
         views: 0,
         favorites: 0,
         createdAt: new Date(),

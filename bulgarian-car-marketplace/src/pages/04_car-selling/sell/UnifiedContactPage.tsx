@@ -68,6 +68,14 @@ const UnifiedContactPage: React.FC = () => {
     notes: ''
   });
 
+  // 💰 NEW: Pricing State (merged from Pricing Page)
+  const [pricingData, setPricingData] = useState({
+    price: searchParams.get('price') || '',
+    currency: searchParams.get('currency') || 'BGN',
+    priceType: searchParams.get('priceType') || 'fixed',
+    negotiable: searchParams.get('negotiable') === 'true'
+  });
+
   const [availableCities, setAvailableCities] = useState<Array<{name: string; nameEn?: string}>>([]);
   const [showOtherCityInput, setShowOtherCityInput] = useState(false);
   const [otherCityValue, setOtherCityValue] = useState('');
@@ -193,6 +201,11 @@ const UnifiedContactPage: React.FC = () => {
     setContactData(prev => ({ ...prev, [field]: value }));
   };
 
+  // 💰 NEW: Handle pricing input changes
+  const handlePricingChange = (field: string, value: string | boolean) => {
+    setPricingData(prev => ({ ...prev, [field]: value }));
+  };
+
   const toggleContactMethod = (methodId: string) => {
     setContactData(prev => ({
       ...prev,
@@ -227,14 +240,14 @@ const UnifiedContactPage: React.FC = () => {
       return false;
     }
 
-    // Price validation
-    if (!price) {
+    // Price validation (using pricingData state now)
+    if (!pricingData.price) {
       toast.error(getErrorMessage('PRICE_REQUIRED', language as 'bg' | 'en'));
       logError('PRICE_REQUIRED');
       return false;
     }
 
-    const priceNum = parseFloat(price);
+    const priceNum = parseFloat(pricingData.price);
     if (priceNum < 100) {
       toast.error(getErrorMessage('PRICE_TOO_LOW', language as 'bg' | 'en'));
       return false;
@@ -305,10 +318,10 @@ const UnifiedContactPage: React.FC = () => {
         color: color || '',
         
         // Pricing (from URL params)
-        price: price,
-        currency: currency || 'EUR',
-        priceType: priceType || 'fixed',
-        negotiable: negotiable === 'true',
+        price: pricingData.price,
+        currency: pricingData.currency || 'EUR',
+        priceType: pricingData.priceType || 'fixed',
+        negotiable: pricingData.negotiable,
         
         // Equipment (from URL params - already comma-separated strings)
         safety: safety || '',
@@ -449,7 +462,7 @@ const UnifiedContactPage: React.FC = () => {
         carId,
         make,
         model: finalModel,
-        price: price ? parseFloat(price) : 0
+        price: pricingData.price ? parseFloat(pricingData.price) : 0
       });
 
       // 🌐 N8N Integration
@@ -565,6 +578,71 @@ const UnifiedContactPage: React.FC = () => {
       />
 
       {/* Section 1: Personal Info */}
+      {/* 💰 NEW: Section 0: Pricing Information (Merged from Pricing Page) */}
+      <S.SectionCard>
+        <S.SectionTitle>
+          {language === 'bg' ? '💰 Ценова информация' : '💰 Pricing Information'}
+        </S.SectionTitle>
+
+        <S.CompactGrid>
+          <S.FormGroup>
+            <S.Label $required>
+              {language === 'bg' ? 'Цена' : 'Price'}
+            </S.Label>
+            <S.Input
+              type="number"
+              value={pricingData.price}
+              onChange={(e) => handlePricingChange('price', e.target.value)}
+              placeholder={language === 'bg' ? 'Въведете цена' : 'Enter price'}
+              required
+              min="100"
+              max="1000000"
+            />
+          </S.FormGroup>
+
+          <S.FormGroup>
+            <S.Label $required>
+              {language === 'bg' ? 'Валута' : 'Currency'}
+            </S.Label>
+            <SelectWithOther
+              options={CURRENCIES}
+              value={pricingData.currency}
+              onChange={(value) => handlePricingChange('currency', value)}
+              placeholder={language === 'bg' ? 'Изберете валута' : 'Select currency'}
+              label={language === 'bg' ? 'Валута' : 'Currency'}
+              required
+            />
+          </S.FormGroup>
+
+          <S.FormGroup>
+            <S.Label $required>
+              {language === 'bg' ? 'Тип цена' : 'Price Type'}
+            </S.Label>
+            <SelectWithOther
+              options={PRICE_TYPES}
+              value={pricingData.priceType}
+              onChange={(value) => handlePricingChange('priceType', value)}
+              placeholder={language === 'bg' ? 'Изберете тип цена' : 'Select price type'}
+              label={language === 'bg' ? 'Тип цена' : 'Price Type'}
+              required
+            />
+          </S.FormGroup>
+
+          <S.FormGroup>
+            <S.Label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <input
+                type="checkbox"
+                checked={pricingData.negotiable}
+                onChange={(e) => handlePricingChange('negotiable', e.target.checked)}
+                style={{ width: 'auto', cursor: 'pointer' }}
+              />
+              {language === 'bg' ? 'Договаряне възможно' : 'Negotiable'}
+            </S.Label>
+          </S.FormGroup>
+        </S.CompactGrid>
+      </S.SectionCard>
+
+      {/* Section 1: Personal Information */}
       <S.SectionCard>
         <S.SectionTitle>
           {language === 'bg' ? '👤 Лична информация' : '👤 Personal Information'}
@@ -805,7 +883,7 @@ const UnifiedContactPage: React.FC = () => {
             {language === 'bg' ? 'Цена:' : 'Price:'}
           </S.SummaryLabel>
           <S.SummaryValue>
-            {parseFloat(price || '0').toLocaleString()} {currency}
+            {parseFloat(pricingData.price || '0').toLocaleString()} {pricingData.currency}
           </S.SummaryValue>
         </S.SummaryRow>
 

@@ -12,6 +12,7 @@ import PostCard from '@/components/Posts/PostCard';
 import { Post } from '@/services/social/posts.service';
 import { Image, Video, Car, Sparkles, Clock, Heart, MessageCircle, TrendingUp, User as UserIcon } from 'lucide-react';
 import { homePageCache, CACHE_KEYS } from '@/services/homepage-cache.service';
+import { NewPostsBanner } from '@/components/Feed/NewPostsBanner';
 
 type FeedMode = 'smart' | 'newest' | 'most_liked' | 'most_comments' | 'trending';
 
@@ -31,49 +32,7 @@ const SmartFeedSection: React.FC = () => {
   const observerRef = useRef<IntersectionObserver | null>(null);
 
   // Load initial feed
-  useEffect(() => {
-    loadFeed(1);
-  }, [user, feedMode]);
-
-  // ⚡ OPTIMIZED: Infinite scroll observer with debouncing
-  useEffect(() => {
-    let debounceTimer: NodeJS.Timeout | null = null;
-    
-    const options = {
-      root: null,
-      rootMargin: '100px', // ⚡ Reduced from 200px to 100px
-      threshold: 0.1
-    };
-
-    observerRef.current = new IntersectionObserver(
-      async ([entry]) => {
-        if (entry.isIntersecting && hasMore && !loadingMore) {
-          // ⚡ Debounce: Wait 500ms before loading more
-          if (debounceTimer) {
-            clearTimeout(debounceTimer);
-          }
-          debounceTimer = setTimeout(async () => {
-            await loadMore();
-          }, 500);
-        }
-      },
-      options
-    );
-
-    if (sentinelRef.current) {
-      observerRef.current.observe(sentinelRef.current);
-    }
-
-    return () => {
-      observerRef.current?.disconnect();
-      if (debounceTimer) {
-        clearTimeout(debounceTimer);
-      }
-    };
-  }, [hasMore, loadingMore, page]);
-
-  // Load feed function
-  const loadFeed = async (pageNum: number) => {
+  const loadFeed = useCallback(async (pageNum: number) => {
     if (pageNum > 1) {
       setLoadingMore(true);
     } else {
@@ -134,7 +93,49 @@ const SmartFeedSection: React.FC = () => {
       setLoading(false);
       setLoadingMore(false);
     }
-  };
+  }, [user, feedMode]);
+
+  // Load initial feed
+  useEffect(() => {
+    loadFeed(1);
+  }, [loadFeed]);
+
+  // ⚡ OPTIMIZED: Infinite scroll observer with debouncing
+  useEffect(() => {
+    let debounceTimer: NodeJS.Timeout | null = null;
+    
+    const options = {
+      root: null,
+      rootMargin: '100px', // ⚡ Reduced from 200px to 100px
+      threshold: 0.1
+    };
+
+    observerRef.current = new IntersectionObserver(
+      async ([entry]) => {
+        if (entry.isIntersecting && hasMore && !loadingMore) {
+          // ⚡ Debounce: Wait 500ms before loading more
+          if (debounceTimer) {
+            clearTimeout(debounceTimer);
+          }
+          debounceTimer = setTimeout(async () => {
+            await loadMore();
+          }, 500);
+        }
+      },
+      options
+    );
+
+    if (sentinelRef.current) {
+      observerRef.current.observe(sentinelRef.current);
+    }
+
+    return () => {
+      observerRef.current?.disconnect();
+      if (debounceTimer) {
+        clearTimeout(debounceTimer);
+      }
+    };
+  }, [hasMore, loadingMore, page]);
 
   // Load more posts
   const loadMore = useCallback(async () => {
@@ -180,6 +181,13 @@ const SmartFeedSection: React.FC = () => {
       );
     }
   }, [user, posts]);
+
+  // New Posts Banner integration
+  const handleRefresh = useCallback(() => {
+    setPage(1);
+    setPosts([]);
+    loadFeed(1);
+  }, [loadFeed]);
 
   const text = {
     bg: {
@@ -336,6 +344,13 @@ const SmartFeedSection: React.FC = () => {
               </CreateFirstButton>
             )}
           </EmptyState>
+        )}
+
+        {/* New Posts Banner - Only visible to logged-in users */}
+        {user && posts.length > 0 && (
+          <NewPostsBanner 
+            onRefresh={handleRefresh}
+          />
         )}
       </FeedContainer>
     </FeedSection>

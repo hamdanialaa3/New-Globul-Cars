@@ -445,7 +445,7 @@ const ImagesPage: React.FC = () => {
       if (extras) params.set('extras', extras);
       params.set('images', images.length.toString());
 
-      navigate(`/sell/inserat/${vehicleType || 'pkw'}/details/preis?${params.toString()}`);
+      navigate(`/sell/inserat/${vehicleType || 'pkw'}/details/kontaktinformationen?${params.toString()}`);
     } catch (error) {
       logger.error('Error saving images', error as Error);
       alert('Възникна грешка при запазване на снимките.');

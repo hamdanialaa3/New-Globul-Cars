@@ -411,6 +411,90 @@ const SuperAdminDashboard: React.FC = () => {
 
       {/* Super Admin Footer - Owner Only */}
       <SuperAdminFooter>
+        {/* Firebase Quick Links Section */}
+        <FirebaseLinksSection>
+          <SectionTitle>🔥 روابط Firebase السريعة</SectionTitle>
+          <LinksGrid>
+            <LinkCard onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/firestore/databases/-default-/data', '_blank')}>
+              <LinkIcon>📊</LinkIcon>
+              <LinkName>Firestore Database</LinkName>
+              <LinkDesc>عرض وإدارة البيانات</LinkDesc>
+            </LinkCard>
+            
+            <LinkCard onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/storage', '_blank')}>
+              <LinkIcon>🖼️</LinkIcon>
+              <LinkName>Storage</LinkName>
+              <LinkDesc>الصور والملفات</LinkDesc>
+            </LinkCard>
+            
+            <LinkCard onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/authentication/users', '_blank')}>
+              <LinkIcon>👥</LinkIcon>
+              <LinkName>Authentication</LinkName>
+              <LinkDesc>المستخدمين المسجلين</LinkDesc>
+            </LinkCard>
+            
+            <LinkCard onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/functions', '_blank')}>
+              <LinkIcon>⚡</LinkIcon>
+              <LinkName>Cloud Functions</LinkName>
+              <LinkDesc>الوظائف السحابية</LinkDesc>
+            </LinkCard>
+            
+            <LinkCard onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/hosting', '_blank')}>
+              <LinkIcon>🌐</LinkIcon>
+              <LinkName>Hosting</LinkName>
+              <LinkDesc>استضافة الموقع</LinkDesc>
+            </LinkCard>
+            
+            <LinkCard onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/analytics', '_blank')}>
+              <LinkIcon>📈</LinkIcon>
+              <LinkName>Analytics</LinkName>
+              <LinkDesc>إحصائيات الاستخدام</LinkDesc>
+            </LinkCard>
+          </LinksGrid>
+        </FirebaseLinksSection>
+
+        {/* AI Management Section */}
+        <AIManagementSection>
+          <SectionTitle>🤖 إدارة الذكاء الاصطناعي</SectionTitle>
+          <LinksGrid>
+            <LinkCard onClick={() => navigate('/ai-dashboard')}>
+              <LinkIcon>📊</LinkIcon>
+              <LinkName>AI Dashboard</LinkName>
+              <LinkDesc>لوحة تحكم الذكاء الاصطناعي</LinkDesc>
+            </LinkCard>
+            
+            <LinkCard onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/firestore/databases/-default-/data/~2Fai_quotas', '_blank')}>
+              <LinkIcon>💳</LinkIcon>
+              <LinkName>AI Quotas</LinkName>
+              <LinkDesc>حصص المستخدمين</LinkDesc>
+            </LinkCard>
+            
+            <LinkCard onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/firestore/databases/-default-/data/~2Fai_usage_logs', '_blank')}>
+              <LinkIcon>📝</LinkIcon>
+              <LinkName>Usage Logs</LinkName>
+              <LinkDesc>سجل الاستخدام</LinkDesc>
+            </LinkCard>
+            
+            <LinkCard onClick={() => window.open('https://makersuite.google.com/app/apikey', '_blank')}>
+              <LinkIcon>🔑</LinkIcon>
+              <LinkName>Gemini API Keys</LinkName>
+              <LinkDesc>مفاتيح API</LinkDesc>
+            </LinkCard>
+            
+            <LinkCard onClick={() => window.open('https://console.cloud.google.com/apis/api/generativelanguage.googleapis.com', '_blank')}>
+              <LinkIcon>⚙️</LinkIcon>
+              <LinkName>API Settings</LinkName>
+              <LinkDesc>إعدادات API</LinkDesc>
+            </LinkCard>
+            
+            <LinkCard onClick={() => window.open('https://console.cloud.google.com/billing', '_blank')}>
+              <LinkIcon>💰</LinkIcon>
+              <LinkName>Billing</LinkName>
+              <LinkDesc>الفوترة والتكاليف</LinkDesc>
+            </LinkCard>
+          </LinksGrid>
+        </AIManagementSection>
+
         {/* Reports Export Section */}
         <ReportsSection>
           <ReportsTitle>📊 تصدير التقارير</ReportsTitle>
@@ -574,6 +658,30 @@ const SuperAdminDashboard: React.FC = () => {
                 </ExportBtn>
               </ReportButtons>
             </ReportCard>
+
+            {/* تقرير حصص AI */}
+            <ReportCard>
+              <ReportIcon>🤖</ReportIcon>
+              <ReportName>حصص الذكاء الاصطناعي</ReportName>
+              <ReportButtons>
+                <ExportBtn onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/firestore/databases/-default-/data/~2Fai_quotas', '_blank')}>
+                  <FileSpreadsheet size={16} />
+                  View
+                </ExportBtn>
+              </ReportButtons>
+            </ReportCard>
+
+            {/* تقرير استخدام AI */}
+            <ReportCard>
+              <ReportIcon>📊</ReportIcon>
+              <ReportName>سجل استخدام AI</ReportName>
+              <ReportButtons>
+                <ExportBtn onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/firestore/databases/-default-/data/~2Fai_usage_logs', '_blank')}>
+                  <FileSpreadsheet size={16} />
+                  View
+                </ExportBtn>
+              </ReportButtons>
+            </ReportCard>
           </ReportsGrid>
         </ReportsSection>
 
@@ -642,6 +750,73 @@ const FooterNote = styled.div`
 `;
 
 // Reports Section Styles
+// Firebase Links Section Styles
+const FirebaseLinksSection = styled.div`
+  padding: 2rem 1rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+`;
+
+const SectionTitle = styled.h3`
+  font-size: 1.5rem;
+  color: #ffd700;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+`;
+
+const LinksGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+`;
+
+const LinkCard = styled.div`
+  background: linear-gradient(135deg, rgba(255, 107, 53, 0.1) 0%, rgba(247, 147, 30, 0.05) 100%);
+  border: 2px solid rgba(255, 107, 53, 0.3);
+  border-radius: 12px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  
+  &:hover {
+    border-color: rgba(255, 107, 53, 0.8);
+    transform: translateY(-6px);
+    box-shadow: 0 12px 32px rgba(255, 107, 53, 0.3);
+    background: linear-gradient(135deg, rgba(255, 107, 53, 0.2) 0%, rgba(247, 147, 30, 0.1) 100%);
+  }
+  
+  &:active {
+    transform: translateY(-2px);
+  }
+`;
+
+const LinkIcon = styled.div`
+  font-size: 2.5rem;
+  margin-bottom: 0.75rem;
+`;
+
+const LinkName = styled.div`
+  font-size: 1.1rem;
+  color: #ffd700;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+`;
+
+const LinkDesc = styled.div`
+  font-size: 0.9rem;
+  color: #aaa;
+`;
+
+const AIManagementSection = styled.div`
+  padding: 2rem 1rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid rgba(102, 126, 234, 0.3);
+`;
+
 const ReportsSection = styled.div`
   padding: 2rem 1rem;
   margin-bottom: 2rem;

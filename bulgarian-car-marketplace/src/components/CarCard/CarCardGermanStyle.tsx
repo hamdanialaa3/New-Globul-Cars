@@ -65,10 +65,10 @@ const CardContent = styled.div`
 `;
 
 const CarTitle = styled.h3`
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 20px;
+  font-weight: 700;
   margin: 0 0 8px 0;
-  color: #1a1a1a;
+  color: #0a0a0a;
   line-height: 1.3;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -81,15 +81,16 @@ const PriceSection = styled.div`
 `;
 
 const MonthlyPrice = styled.div`
-  font-size: 20px;
-  font-weight: 700;
-  color: #1a1a1a;
+  font-size: 24px;
+  font-weight: 800;
+  color: #0a0a0a;
   margin-bottom: 4px;
 `;
 
 const PriceDetails = styled.div`
-  font-size: 12px;
-  color: #666;
+  font-size: 13px;
+  color: #4a4a4a;
+  font-weight: 500;
   line-height: 1.4;
 `;
 
@@ -101,8 +102,9 @@ const SpecsRow = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  font-size: 13px;
-  color: #666;
+  font-size: 14px;
+  color: #2a2a2a;
+  font-weight: 600;
   line-height: 1.4;
 `;
 
@@ -117,8 +119,9 @@ const LocationSection = styled.div`
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 13px;
-  color: #666;
+  font-size: 14px;
+  color: #404040;
+  font-weight: 600;
   margin-top: 8px;
   padding-top: 8px;
   border-top: 1px solid #f0f0f0;

@@ -63,7 +63,7 @@ const ImagesPageNew: React.FC = () => {
 
       const params = new URLSearchParams(searchParams.toString());
       params.set('images', selectedFiles.length.toString());
-      navigate(`/sell/inserat/${vehicleType || 'car'}/details/preis?${params.toString()}`);
+      navigate(`/sell/inserat/${vehicleType || 'car'}/details/kontaktinformationen?${params.toString()}`);
     } catch (error) {
       logger.error('Error saving images', error as Error, { vehicleType });
       alert(language === 'bg' 

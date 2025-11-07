@@ -18,12 +18,15 @@ const Footer: React.FC = () => {
           <div className="footer-section">
             <div className="footer-brand">
               <img 
-                src="/mobile-eu-logo.png" 
-                alt="MOBILE-EU Logo" 
-                className="footer-logo"
-                style={{ width: '50px', height: '50px', objectFit: 'contain' }}
+                src="/assets/images/logos/Copilot_20250926_020825.png" 
+                alt="GLOBUL AUTO Logo" 
+                className="footer-logo footer-logo-enhanced"
+                style={{ width: '60px', height: '60px', objectFit: 'contain' }}
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = '/mobile-eu-logo.png';
+                }}
               />
-              <h3 className="footer-title">MOBILE-EU</h3>
+              <h3 className="footer-title">GLOBUL AUTO</h3>
             </div>
             <p className="footer-description">
               {t('footer.description')}
@@ -69,19 +72,19 @@ const Footer: React.FC = () => {
             <div className="contact-info">
               <div className="contact-item">
                 <span className="contact-icon">
-                  <MapPin size={18} color="#FF8F10" />
+                  <MapPin size={18} color="#0066cc" />
                 </span>
                 <span>{t('footer.address')}</span>
               </div>
               <div className="contact-item">
                 <span className="contact-icon">
-                  <Phone size={18} color="#FF8F10" />
+                  <Phone size={18} color="#0066cc" />
                 </span>
                 <span>+359 2 123 4567</span>
               </div>
               <div className="contact-item">
                 <span className="contact-icon">
-                  <Mail size={18} color="#FF8F10" />
+                  <Mail size={18} color="#0066cc" />
                 </span>
                 <span>info@mobilebg.eu</span>
               </div>

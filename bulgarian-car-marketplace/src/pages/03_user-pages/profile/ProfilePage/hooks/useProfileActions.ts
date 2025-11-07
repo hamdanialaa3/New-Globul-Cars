@@ -6,7 +6,7 @@ import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { db, auth } from '@/firebase/firebase-config';
-import { bulgarianAuthService } from '../../../../firebase';
+import { bulgarianAuthService } from '@/firebase/index';
 import { logger } from '@/services/logger-service';
 import { useToast } from '@/components/Toast';
 import type { BulgarianUser } from '@/types/user/bulgarian-user.types';

@@ -276,7 +276,7 @@ const MenuItem = styled.button<{ $variant?: 'primary' | 'danger' }>`
   border: none;
   background: ${props => 
     props.$variant === 'primary' ? '#1a73e8' :
-    props.$variant === 'danger' ? '#dc3545' :
+    props.$variant === 'danger' ? '#6c757d' :
     'transparent'
   };
   color: ${props => 
@@ -304,7 +304,7 @@ const MenuItem = styled.button<{ $variant?: 'primary' | 'danger' }>`
   &:hover {
     background: ${props => 
       props.$variant === 'primary' ? '#1557b0' :
-      props.$variant === 'danger' ? '#c82333' :
+      props.$variant === 'danger' ? '#dc3545' :
       'rgba(0, 0, 0, 0.04)'
     };
   }
@@ -313,7 +313,7 @@ const MenuItem = styled.button<{ $variant?: 'primary' | 'danger' }>`
     transform: scale(0.98);
     background: ${props => 
       props.$variant === 'primary' ? '#1557b0' :
-      props.$variant === 'danger' ? '#c82333' :
+      props.$variant === 'danger' ? '#bd2130' :
       'rgba(0, 0, 0, 0.08)'
     };
   }

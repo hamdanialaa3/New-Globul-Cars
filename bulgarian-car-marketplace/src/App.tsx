@@ -8,9 +8,12 @@ import { ThemeProvider } from 'styled-components';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { AuthProvider } from './contexts/AuthProvider';
 import { ProfileTypeProvider } from './contexts/ProfileTypeContext';  // NEW: Profile Type System
+import { ThemeProvider as CustomThemeProvider } from './contexts/ThemeContext';  // NEW: Dark/Light Mode System
 import { ToastProvider } from './components/Toast';
 import { bulgarianTheme, GlobalStyles } from './styles/theme';
 import './styles/mobile-responsive.css';
+import './styles/typography-improved.css';
+import './styles/premium-effects.css';
 import ErrorBoundary from './components/ErrorBoundary';
 import RouteErrorBoundary from './components/ErrorBoundary/RouteErrorBoundary';
 import { SkipNavigation } from './components/Accessibility';
@@ -142,11 +145,10 @@ const IconShowcasePage = React.lazy(() => import('./pages/11_testing-dev/IconSho
 // Layout Component
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
-    <div style={{
+    <div className="main-layout" style={{
       minHeight: '100vh',
       display: 'flex',
-      flexDirection: 'column',
-      background: '#ffffff' // ✅ CHANGED: White background instead of beige/yellow #f8fafc
+      flexDirection: 'column'
     }}>
       <header role="banner">
         {/* ✅ Desktop Header - Hidden on mobile */}
@@ -214,11 +216,12 @@ const App: React.FC = () => {
       <GlobalStyles />
       <ErrorBoundary>
         <LanguageProvider>
-          <AuthProvider>
-            <ProfileTypeProvider>
-            <ToastProvider>
-              <GoogleReCaptchaProvider reCaptchaKey={recaptchaKey || "dummy-key"}>
-                <Router>
+          <CustomThemeProvider>
+            <AuthProvider>
+              <ProfileTypeProvider>
+              <ToastProvider>
+                <GoogleReCaptchaProvider reCaptchaKey={recaptchaKey || "dummy-key"}>
+                  <Router>
                   <FacebookPixel />
                   {/* <FacebookMessengerWidget /> - Temporarily disabled */}
                   <SkipNavigation />
@@ -270,6 +273,7 @@ const App: React.FC = () => {
             </ToastProvider>
             </ProfileTypeProvider>
           </AuthProvider>
+          </CustomThemeProvider>
         </LanguageProvider>
       </ErrorBoundary>
     </ThemeProvider>
@@ -455,7 +459,7 @@ const MainLayout: React.FC = () => {
           </AuthGuard>
         }
       />
-      <Route path="/profile" element={<ProfileRouter />} />  {/* Own profile */}
+      <Route path="/profile/*" element={<ProfileRouter />} />  {/* Own profile with nested routes */}
       <Route path="/profile/:userId/*" element={<ProfileRouter />} />  {/* Other user's profile with nested routes */}
       <Route path="/verification" element={<VerificationPage />} />  {/* NEW: Verification System */}
       <Route path="/billing" element={<BillingPage />} />  {/* NEW: Billing System */}

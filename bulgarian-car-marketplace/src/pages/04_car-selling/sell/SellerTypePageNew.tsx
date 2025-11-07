@@ -25,13 +25,14 @@ const ContentSection = styled.div`
 `;
 
 const HeaderCard = styled.div`
-  background: white;
+  background: var(--bg-card);
   border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-lg);
   padding: 2.5rem;
-  border: 1px solid rgba(255, 143, 16, 0.1);
+  border: 1px solid var(--border-primary);
   position: relative;
   overflow: hidden;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 
   &::before {
     content: '';
@@ -40,21 +41,22 @@ const HeaderCard = styled.div`
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(90deg, #ff8f10, #005ca9);
+    background: var(--gradient-primary);
   }
 `;
 
 const Title = styled.h1`
-  font-size: 1.75rem; /* 28px - Global Standard */
+  font-size: 1.75rem;
   font-weight: 700;
-  color: #2c3e50;
+  color: var(--text-heading);
   margin: 0 0 0.75rem 0;
-  background: linear-gradient(135deg, #ff8f10, #005ca9);
+  background: var(--gradient-primary);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   letter-spacing: -0.5px;
   line-height: 1.2;
+  transition: color 0.3s ease;
   
   @media (max-width: 768px) {
     font-size: 1.5rem;
@@ -62,20 +64,22 @@ const Title = styled.h1`
 `;
 
 const Subtitle = styled.p`
-  font-size: 1rem; /* 16px */
-  color: #7f8c8d;
+  font-size: 1rem;
+  color: var(--text-secondary);
   margin: 0;
   line-height: 1.6;
+  transition: color 0.3s ease;
 `;
 
 const SellerGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1.25rem;
-  background: white;
+  background: var(--bg-card);
   padding: 1.5rem;
   border-radius: 15px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-md);
+  transition: background-color 0.3s ease;
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
@@ -84,20 +88,20 @@ const SellerGrid = styled.div`
 
 const SellerOption = styled.div<{ $isHovered: boolean }>`
   background: ${props => props.$isHovered 
-    ? 'linear-gradient(135deg, #ff8f10, #005ca9)' 
-    : 'rgba(255, 143, 16, 0.05)'
+    ? 'var(--gradient-primary)' 
+    : 'var(--bg-hover)'
   };
-  border: 2px solid ${props => props.$isHovered ? '#ff8f10' : 'rgba(255, 143, 16, 0.2)'};
+  border: 2px solid ${props => props.$isHovered ? 'var(--accent-primary)' : 'var(--border-secondary)'};
   border-radius: 12px;
   padding: 1.5rem;
   text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  color: ${props => props.$isHovered ? 'white' : '#2c3e50'};
+  color: ${props => props.$isHovered ? 'var(--text-inverse)' : 'var(--text-primary)'};
 
   &:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(255, 143, 16, 0.2);
+    box-shadow: var(--shadow-xl);
   }
 `;
 
@@ -111,13 +115,15 @@ const IconWrapper = styled.div<{ $isHovered: boolean }>`
   border-radius: 50%;
   background: ${props => props.$isHovered 
     ? 'rgba(255, 255, 255, 0.2)' 
-    : 'rgba(255, 143, 16, 0.15)'
+    : 'var(--bg-hover)'
   };
+  transition: background-color 0.3s ease;
 
   svg {
     width: 28px;
     height: 28px;
-    color: ${props => props.$isHovered ? 'white' : '#ff8f10'};
+    color: ${props => props.$isHovered ? 'var(--text-inverse)' : 'var(--accent-primary)'};
+    transition: color 0.3s ease;
   }
 `;
 

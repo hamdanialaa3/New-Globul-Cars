@@ -3,20 +3,16 @@
 // Phase -1: Updated to use canonical types
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { useAuth } from '@/contexts/AuthProvider';  // FIXED: Correct path
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { useAuth } from '@/contexts/AuthProvider';
+import { doc, getDoc, updateDoc, onSnapshot } from 'firebase/firestore';
 import { db } from '@/firebase/firebase-config';
 import { logger } from '@/services/logger-service';
 import { UserRepository } from '../repositories/UserRepository';
-import { PermissionsService } from '@/services/profile/PermissionsService';
 
 // ✅ NEW: Import from canonical types file
 import type { 
   ProfileType, 
-  PlanTier,
-  BulgarianUser,
-  DealerProfile,
-  CompanyProfile 
+  PlanTier
 } from '@/types/user/bulgarian-user.types';
 
 // Theme Colors by Profile Type
@@ -95,8 +91,7 @@ function getPermissions(profileType: ProfileType, planTier: PlanTier): ProfilePe
     dealer_enterprise: -1,  // unlimited
     company_starter: 100,
     company_pro: -1,
-    company_enterprise: -1,
-    custom: -1
+    company_enterprise: -1
   };
 
   const maxListings = PLAN_LIMITS[planTier] || 3;
@@ -230,39 +225,39 @@ export const ProfileTypeProvider: React.FC<ProfileTypeProviderProps> = ({ childr
 
       // 2. Validate dealer/company requirements
       if (newType === 'dealer') {
-        // Check if dealershipRef exists
-        if (!userData.dealershipRef) {
+        // Type narrowing - only dealer profiles have dealershipRef
+        if (userData.profileType === 'dealer' && userData.dealershipRef) {
+          // Verify dealership document exists
+          const dealershipDoc = await getDoc(doc(db, userData.dealershipRef as string));
+          if (!dealershipDoc.exists()) {
+            throw new Error(
+              'Cannot switch to dealer profile: Dealership document not found. ' +
+              'Please contact support.'
+            );
+          }
+        } else if (newType === 'dealer') {
           throw new Error(
             'Cannot switch to dealer profile: Missing dealershipRef. ' +
             'Please complete dealership setup first.'
           );
         }
-
-        // Verify dealership document exists
-        const dealershipDoc = await getDoc(doc(db, userData.dealershipRef));
-        if (!dealershipDoc.exists()) {
-          throw new Error(
-            'Cannot switch to dealer profile: Dealership document not found. ' +
-            'Please contact support.'
-          );
-        }
       }
 
       if (newType === 'company') {
-        // Check if companyRef exists
-        if (!userData.companyRef) {
+        // Type narrowing - only company profiles have companyRef
+        if (userData.profileType === 'company' && userData.companyRef) {
+          // Verify company document exists
+          const companyDoc = await getDoc(doc(db, userData.companyRef as string));
+          if (!companyDoc.exists()) {
+            throw new Error(
+              'Cannot switch to company profile: Company document not found. ' +
+              'Please contact support.'
+            );
+          }
+        } else if (newType === 'company') {
           throw new Error(
             'Cannot switch to company profile: Missing companyRef. ' +
             'Please complete company setup first.'
-          );
-        }
-
-        // Verify company document exists
-        const companyDoc = await getDoc(doc(db, userData.companyRef));
-        if (!companyDoc.exists()) {
-          throw new Error(
-            'Cannot switch to company profile: Company document not found. ' +
-            'Please contact support.'
           );
         }
       }
@@ -286,7 +281,8 @@ export const ProfileTypeProvider: React.FC<ProfileTypeProviderProps> = ({ childr
         company: ['company_starter', 'company_pro', 'company_enterprise']
       };
 
-      const currentTier = userData.plan?.tier || 'free';
+      // Type-safe plan tier access
+      const currentTier = userData.planTier || 'free';
       if (!validPlanTiers[newType].includes(currentTier as PlanTier)) {
         logger.warn('Plan tier incompatible with new profile type', {
           userId: currentUser.uid,
@@ -297,7 +293,7 @@ export const ProfileTypeProvider: React.FC<ProfileTypeProviderProps> = ({ childr
         const defaultTier = validPlanTiers[newType][0];
         await updateDoc(doc(db, 'users', currentUser.uid), {
           profileType: newType,
-          'plan.tier': defaultTier,
+          planTier: defaultTier,
           updatedAt: new Date()
         });
         
@@ -345,13 +341,54 @@ export const ProfileTypeProvider: React.FC<ProfileTypeProviderProps> = ({ childr
 
   // Load on mount and when user changes
   useEffect(() => {
-    loadProfileType();
-  }, [currentUser?.uid]);
+    if (!currentUser) {
+      setProfileType('private');
+      setPlanTier('free');
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+
+    // Real-time listener for user profile changes
+    const unsubscribe = onSnapshot(
+      doc(db, 'users', currentUser.uid),
+      (userDoc) => {
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          
+          // Get profileType (default to 'private' if not set)
+          const type = userData.profileType || 'private';
+          setProfileType(type);
+
+          // Get plan tier (default to 'free' if not set)
+          const tier = userData.plan?.tier || 'free';
+          setPlanTier(tier);
+        } else {
+          // User document doesn't exist yet - set defaults
+          setProfileType('private');
+          setPlanTier('free');
+        }
+        setLoading(false);
+      },
+      (error) => {
+        logger.error('Error listening to profile type changes', error as Error, { 
+          userId: currentUser?.uid 
+        });
+        setProfileType('private');
+        setPlanTier('free');
+        setLoading(false);
+      }
+    );
+
+    // ✅ CRITICAL: Cleanup listener on unmount or user change
+    return () => unsubscribe();
+  }, [currentUser]);
 
   // Compute derived values
   const theme = THEMES[profileType];
-  // ✅ FIXED: Use centralized PermissionsService
-  const permissions = PermissionsService.getPermissions(profileType, planTier);
+  // Get permissions (use local function for consistency)
+  const permissions = getPermissions(profileType, planTier);
   const isPrivate = profileType === 'private';
   const isDealer = profileType === 'dealer';
   const isCompany = profileType === 'company';

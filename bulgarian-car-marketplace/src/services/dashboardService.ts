@@ -451,6 +451,162 @@ class DashboardService {
       throw error;
     }
   }
+
+  /**
+   * Attaches all dashboard real-time listeners (cars, messages, notifications).
+   *
+   * @returns {() => void} Cleanup function to remove all listeners. MUST be called on component unmount to avoid memory leaks.
+   *
+   * Usage:
+   *   const cleanup = dashboardService.attachListeners(...);
+   *   useEffect(() => { ...; return cleanup; }, []);
+   */
+  attachListeners(
+    userId: string,
+    onStatsUpdate: (stats: DashboardStats) => void,
+    onCarsUpdate: (cars: DashboardCar[]) => void,
+    onMessagesUpdate: (messages: DashboardMessage[]) => void,
+    onNotificationsUpdate: (notifications: DashboardNotification[]) => void
+  ): () => void {
+    // Preflight: wait for indexes to be ready before attaching realtime listeners (reduces console spam)
+    const carsQueryRef = query(
+      collection(db, 'cars'),
+      where('sellerId', '==', userId),
+      orderBy('updatedAt', 'desc')
+    );
+    const messagesQueryRef = query(
+      collection(db, 'messages'),
+      where('receiverId', '==', userId),
+      orderBy('timestamp', 'desc'),
+      limit(5)
+    );
+    const notificationsQueryRef = query(
+      collection(db, 'notifications'),
+      where('userId', '==', userId),
+      orderBy('timestamp', 'desc'),
+      limit(5)
+    );
+
+    const preflightCheck = async () => {
+      try {
+        await Promise.all([
+          getDocs(carsQueryRef),
+          getDocs(messagesQueryRef),
+          getDocs(notificationsQueryRef)
+        ]);
+        return true;
+      } catch (err: any) {
+        const code = err?.code;
+        if (code === 'failed-precondition') {
+          serviceLogger.warn('[DashboardService] Firestore indexes still building - retrying listener attachment');
+          return false;
+        }
+        if (code === 'permission-denied') {
+          serviceLogger.warn('[DashboardService] Permission denied during preflight - check rules');
+          return false;
+        }
+        serviceLogger.error('[SERVICE] [DashboardService] Unexpected preflight error', err as Error);
+        return false;
+      }
+    };
+
+    let cancelled = false;
+    const attachListeners = () => {
+      if (cancelled) return;
+      const carsUnsub = onSnapshot(carsQueryRef, async (snapshot) => {
+        const cars = snapshot.docs.map(doc => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            title: data.title || `${data.make} ${data.model}`,
+            make: data.make || '',
+            model: data.model || '',
+            year: data.year || 0,
+            price: data.price || 0,
+            status: data.status || 'draft',
+            views: data.views || 0,
+            inquiries: data.inquiries || 0,
+            createdAt: data.createdAt?.toDate() || new Date(),
+            updatedAt: data.updatedAt?.toDate() || new Date(),
+            imageUrl: data.images?.[0] || undefined
+          };
+        });
+        onCarsUpdate(cars);
+        const stats = await this.calculateStatsFromCars(cars);
+        onStatsUpdate(stats);
+      }, (err) => {
+        serviceLogger.warn('[DashboardService] Cars snapshot error', { error: err });
+      });
+
+      const messagesUnsub = onSnapshot(messagesQueryRef, async (snapshot) => {
+        const messages = await Promise.all(
+          snapshot.docs.map(async (messageDoc) => {
+            const data = messageDoc.data();
+            const senderRef = doc(db, 'users', data.senderId);
+            const senderDoc = await getDoc(senderRef);
+            const senderData = senderDoc.data();
+            const carRef = doc(db, 'cars', data.carId);
+            const carDoc = await getDoc(carRef);
+            const carData = carDoc.data();
+            return {
+              id: messageDoc.id,
+              senderId: data.senderId,
+              senderName: senderData?.displayName || senderData?.email || 'Unknown',
+              carId: data.carId,
+              carTitle: carData?.title || `${carData?.make} ${carData?.model}` || 'Unknown Car',
+              message: data.text || '',
+              timestamp: data.timestamp?.toDate() || new Date(),
+              isRead: data.isRead || false
+            };
+          })
+        );
+        onMessagesUpdate(messages);
+      }, (err) => {
+        serviceLogger.warn('[DashboardService] Messages snapshot error', { error: err });
+      });
+
+      const notificationsUnsub = onSnapshot(notificationsQueryRef, (snapshot) => {
+        const notifications = snapshot.docs.map(doc => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            type: data.type || 'system',
+            title: data.title || 'Notification',
+            message: data.message || '',
+            timestamp: data.timestamp?.toDate() || new Date(),
+            isRead: data.isRead || false,
+            carId: data.carId || undefined
+          };
+        });
+        onNotificationsUpdate(notifications);
+      }, (err) => {
+        serviceLogger.warn('[DashboardService] Notifications snapshot error', { error: err });
+      });
+
+      this.unsubscribeFunctions = [carsUnsub, messagesUnsub, notificationsUnsub];
+    };
+
+    // Retry loop with exponential-ish backoff (fixed step + cap)
+    let attempt = 0;
+    const tryAttach = async () => {
+      if (cancelled) return;
+      const ready = await preflightCheck();
+      if (ready) {
+        attachListeners();
+      } else {
+        attempt++;
+        const delay = Math.min(5000, 1000 + attempt * 1000);
+        setTimeout(tryAttach, delay);
+      }
+    };
+    tryAttach();
+
+    return () => {
+      cancelled = true;
+      this.unsubscribeFunctions.forEach(u => u && u());
+      this.unsubscribeFunctions = [];
+    };
+  }
 }
 
 export const dashboardService = new DashboardService();

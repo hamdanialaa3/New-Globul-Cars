@@ -15,8 +15,8 @@ import {
   Youtube, Link as LinkIcon, Unlink, CheckCircle, AlertCircle,
   RefreshCw
 } from 'lucide-react';
-import { useProfile } from './hooks/useProfile';
-import { dealershipService } from '@/services/dealership/dealership.service';
+// useProfile removed - not used in this component
+import { dealershipService } from '@/services/dealership/dealership-adapter.service';
 import { DEFAULT_PRIVACY_SETTINGS } from '@/types/dealership.types';
 import type { PrivacySettings } from '@/types/dealership.types';
 import { useToast } from '@/components/Toast';

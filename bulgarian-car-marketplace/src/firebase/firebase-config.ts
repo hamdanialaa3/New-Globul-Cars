@@ -7,6 +7,7 @@ import { initializeFirestore, CACHE_SIZE_UNLIMITED } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 import { getFunctions } from 'firebase/functions';
 import { getAnalytics, Analytics } from 'firebase/analytics';
+import { getDatabase } from 'firebase/database'; // Real-time Database
 // import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check'; // Disabled to prevent auth errors
 import { BULGARIAN_CONFIG } from '../config/bulgarian-config';
 import { logger } from '@/services/logger-service';
@@ -56,6 +57,8 @@ export const db = initializeFirestore(app, {
 export const storage = getStorage(app);
 // Use same region as deployed Cloud Functions to avoid us-central1 mismatches
 export const functions = getFunctions(app, 'europe-west1');
+// Initialize Firebase Realtime Database for live updates
+export const realtimeDb = getDatabase(app);
 export { appCheck };
 
 // Initialize Analytics (only in production and if measurement ID is provided)

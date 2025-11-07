@@ -15,8 +15,9 @@ import { useLanguage } from '@/contexts/LanguageContext';
 
 const VehicleDataContainer = styled.div`
   min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: var(--bg-primary);
   padding: 2rem 0;
+  transition: background-color 0.3s ease;
 `;
 
 const ContentWrapper = styled.div`
@@ -26,38 +27,48 @@ const ContentWrapper = styled.div`
 `;
 
 const HeaderCard = styled.div`
-  background: white;
+  background: var(--bg-card);
   border-radius: 20px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-xl);
   padding: 3rem;
   margin-bottom: 2rem;
   text-align: center;
+  transition: background-color 0.3s ease;
 `;
 
 const Title = styled.h1`
   font-size: 2.5rem;
   font-weight: 700;
-  color: #2c3e50;
+  color: var(--text-heading);
   margin: 0 0 1rem 0;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: var(--gradient-primary);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  transition: color 0.3s ease;
 `;
 
 const Subtitle = styled.p`
   font-size: 1.2rem;
-  color: #7f8c8d;
+  color: var(--text-secondary);
+  transition: color 0.3s ease;
   margin: 0 0 2rem 0;
   line-height: 1.6;
 `;
 
 const FormCard = styled.div`
-  background: white;
+  background: var(--bg-card);
   border-radius: 20px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-xl);
   padding: 3rem;
   margin-bottom: 2rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid var(--border-primary);
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-2xl);
+  }
 `;
 
 const FormGrid = styled.div`
@@ -74,9 +85,10 @@ const FormGroup = styled.div`
 
 const Label = styled.label`
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--text-heading);
   margin-bottom: 0.5rem;
   font-size: 1rem;
+  transition: color 0.3s ease;
 `;
 
 const Input = styled.input`

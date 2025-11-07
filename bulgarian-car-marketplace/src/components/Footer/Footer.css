@@ -1,10 +1,11 @@
 /* Smart Footer Styles with Translation Support */
 .main-footer {
-  background: #000000 !important; /* أسود تماماً */
-  color: #FFDF00; /* أصفر ألمنيوم */
+  background: var(--footer-bg) !important;
+  color: var(--accent-primary);
   padding: 3rem 0 1rem;
   margin-top: auto;
   border-radius: 8px 8px 0 0;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 .footer-container {
@@ -38,25 +39,50 @@
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
+/* Enhanced Footer Logo with Ultra-Fine Glow */
+.footer-logo-enhanced {
+  filter: 
+    drop-shadow(0 0 0.5px rgba(3, 233, 244, 1))
+    drop-shadow(0 0 1px rgba(3, 233, 244, 0.8))
+    drop-shadow(0 0 2px rgba(3, 233, 244, 0.6))
+    drop-shadow(0 0 4px rgba(3, 233, 244, 0.4))
+    brightness(1.3)
+    contrast(1.4)
+    saturate(1.3);
+  transition: all 0.3s ease;
+}
+
+.footer-logo-enhanced:hover {
+  filter: 
+    drop-shadow(0 0 1px rgba(3, 233, 244, 1))
+    drop-shadow(0 0 3px rgba(3, 233, 244, 0.9))
+    drop-shadow(0 0 6px rgba(3, 233, 244, 0.7))
+    brightness(1.4)
+    contrast(1.5);
+  transform: scale(1.08);
+}
+
 .footer-title {
-  font-size: 1.5rem; /* 24px - Balanced size */
-  color: #FF8F10 !important; /* برتقالي ألمنيوم */
+  font-size: 1.5rem;
+  color: var(--accent-primary) !important;
   font-weight: 700;
   line-height: 1.2;
   margin: 0;
+  transition: color 0.3s ease;
 }
 
 .footer-subtitle {
-  color: #FF8F10 !important; /* برتقالي ألمنيوم - العناوين */
+  color: var(--accent-primary) !important;
   font-size: 1.125rem; /* 18px - Clear hierarchy */
   font-weight: 600;
   line-height: 1.3;
 }
 
 .footer-description {
-  color: #FFDF00 !important; /* أصفر ألمنيوم - النصوص */
-  font-size: 0.938rem; /* 15px - Comfortable reading */
+  color: #005cb8 !important; /* أزرق - النصوص */
+  font-size: 0.938rem;
   line-height: 1.6;
+  font-weight: 500;
   margin-bottom: 1.5rem;
 }
 
@@ -72,17 +98,18 @@
 }
 
 .stat-number {
-  font-size: 1.25rem; /* 20px - Prominent but balanced */
+  font-size: 1.25rem;
   font-weight: 700;
   line-height: 1.2;
-  color: #FF8F10 !important; /* برتقالي ألمنيوم - الأرقام */
+  color: #0066cc !important; /* أزرق - الأرقام */
 }
 
 .stat-label {
-  font-size: 0.75rem; /* 12px - Clear labels */
+  font-size: 0.75rem;
   line-height: 1.4;
-  color: #FFDF00 !important; /* أصفر ألمنيوم */
+  color: #003d7a !important; /* نيلي - العناوين */
   text-align: center;
+  font-weight: 600;
 }
 
 .footer-links {
@@ -95,9 +122,10 @@
 }
 
 .footer-links a {
-  color: #FFDF00 !important; /* أصفر ألمنيوم - الروابط */
+  color: #005cb8 !important; /* أزرق - الروابط */
   text-decoration: none;
-  font-size: 0.875rem; /* 14px - Readable links */
+  font-size: 0.875rem;
+  font-weight: 600;
   line-height: 1.8;
   transition: all 0.3s ease;
   position: relative;
@@ -110,12 +138,12 @@
   height: 2px;
   bottom: -3px;
   left: 0;
-  background: #FF8F10; /* برتقالي ألمنيوم */
+  background: #0066cc;
   transition: width 0.3s ease;
 }
 
 .footer-links a:hover {
-  color: #FF8F10 !important; /* برتقالي ألمنيوم عند الـ hover */
+  color: #0066cc !important; /* أزرق عند الـ hover */
   transform: translateX(5px);
 }
 
@@ -133,7 +161,8 @@
   display: flex;
   align-items: center;
   gap: 0.8rem;
-  color: #FFDF00 !important; /* أصفر ألمنيوم - معلومات الاتصال */
+  color: #005cb8 !important; /* أزرق - معلومات الاتصال */
+  font-weight: 500;
 }
 
 .contact-icon {
@@ -149,7 +178,7 @@
 }
 
 .footer-bottom {
-  border-top: 1px solid #FF8F10; /* برتقالي ألمنيوم - الخط الفاصل */
+  border-top: 1px solid #0066cc; /* أزرق - الخط الفاصل */
   padding-top: 1.5rem;
 }
 
@@ -162,9 +191,10 @@
 }
 
 .copyright {
-  color: #FFDF00 !important; /* أصفر ألمنيوم */
-  font-size: 0.813rem; /* 13px - Subtle copyright */
+  color: #003d7a !important; /* نيلي - copyright */
+  font-size: 0.813rem;
   line-height: 1.5;
+  font-weight: 600;
 }
 
 .footer-bottom-links {
@@ -173,15 +203,16 @@
 }
 
 .footer-bottom-links a {
-  color: #FFDF00 !important; /* أصفر ألمنيوم */
+  color: #005cb8 !important; /* أزرق - الروابط */
   text-decoration: none;
-  font-size: 0.813rem; /* 13px - Subtle links */
+  font-size: 0.813rem;
+  font-weight: 600;
   line-height: 1.5;
   transition: color 0.3s ease;
 }
 
 .footer-bottom-links a:hover {
-  color: #FF8F10 !important; /* برتقالي ألمنيوم عند الـ hover */
+  color: #0066cc !important; /* أزرق عند الـ hover */
 }
 
 .language-info {
@@ -190,11 +221,13 @@
 }
 
 .current-language {
-  color: #FF8F10 !important; /* برتقالي ألمنيوم */
+  color: #0066cc !important; /* أزرق - اللغة */
   font-weight: 600;
-  font-size: 0.813rem; /* 13px - Clear badge */
+  font-size: 0.813rem;
   line-height: 1.4;
   padding: 0.3rem 0.8rem;
+  display: flex;
+  align-items: center;
   background: rgba(255, 143, 16, 0.1);
   border-radius: 15px;
   border: 1px solid rgba(255, 143, 16, 0.3);

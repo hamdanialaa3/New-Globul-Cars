@@ -9,8 +9,11 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { Search, SlidersHorizontal } from 'lucide-react';
 
 const FeaturedCarsSection = styled.section`
-  background: linear-gradient(135deg, #fff5f5 0%, #ffeaea 100%);
-  padding: 1.5rem 0 2rem 0; /* ⚡ OPTIMIZED: Reduced from 4rem to 1.5rem/2rem */
+  background: 
+    linear-gradient(rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.88)),
+    url('/assets/images/pexels-pixabay-259234.jpg') center center / cover no-repeat,
+    url('/assets/images/Pic/pexels-pixabay-248747.jpg') center center / cover no-repeat;
+  padding: 1.5rem 0 2rem 0;
   position: relative;
   z-index: 1;
 `;
@@ -19,6 +22,8 @@ const SectionContainer = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 1rem;
+  position: relative;
+  z-index: 1;
 `;
 
 const SectionHeader = styled.div`

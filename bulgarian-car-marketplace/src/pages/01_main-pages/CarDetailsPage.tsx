@@ -8,6 +8,7 @@ import { useCarViewTracking } from '@/hooks/useProfileTracking';
 import carListingService from '@/services/carListingService';
 import { CarListing } from '@/types/CarListing';
 import { BULGARIA_REGIONS, getCitiesByRegion } from '@/data/bulgaria-locations';
+import { getAllMakes, getModelsByMake, hasModels } from '@/data/car-makes-models';
 import DistanceIndicator from '@/components/DistanceIndicator';
 import StaticMapEmbed from '@/components/StaticMapEmbed';
 import { logger } from '@/services/logger-service';
@@ -78,7 +79,7 @@ const SellerDetails = styled.div`
 const SellerName = styled.div`
   font-size: 1rem;
   font-weight: 700;
-  color: #2c3e50;
+  color: #0a0a0a;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -120,18 +121,18 @@ const VehicleInfo = styled.div`
 const VehicleBrand = styled.div`
   font-size: 1.125rem;
   font-weight: 700;
-  color: #2c3e50;
+  color: #0a0a0a;
 `;
 
 const VehicleModel = styled.div`
   font-size: 0.938rem;
   font-weight: 600;
-  color: #6c757d;
+  color: #2a2a2a;
 `;
 
 const BackButton = styled.button`
   background: linear-gradient(135deg, #a8b3c0, #c5ccd4);
-  color: #2c3e50;
+  color: #0a0a0a;
   border: 1px solid #d0d7de;
   padding: 0.5rem 1rem;
   border-radius: 6px;
@@ -170,9 +171,8 @@ const EditButton = styled.button`
 const CarTitle = styled.h1`
   font-size: 1.5rem;
   font-weight: 700;
-  color: #2c3e50;
+  color: #0a0a0a;
   margin: 0;
-  text-align: center;
   flex: 1;
 `;
 
@@ -262,23 +262,37 @@ const DetailValue = styled.div`
 const PriceSection = styled.div`
   background: linear-gradient(135deg, #FF7900 0%, #FF9533 100%);
   color: white;
-  padding: 1.25rem;
+  padding: 0.625rem 1rem;
   border-radius: 8px;
-  text-align: center;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 4px 15px rgba(255, 121, 0, 0.25);
+  display: inline-block;
+  margin: 0.5rem 0 1rem 0;
+  box-shadow: 0 3px 10px rgba(255, 121, 0, 0.25);
   border: 1px solid rgba(255, 138, 26, 0.5);
 `;
 
 const Price = styled.div`
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 800;
+  display: inline;
+  letter-spacing: -0.3px;
 `;
 
-const PriceLabel = styled.div`
-  font-size: 1rem;
+const PriceLabel = styled.span`
+  font-size: 0.75rem;
   opacity: 0.9;
+  font-weight: 500;
+  margin-left: 0.5rem;
+`;
+
+const LocationMapContainer = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin: 1.5rem 0;
+  
+  @media (max-width: 968px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 const EquipmentSection = styled.div`
@@ -457,75 +471,82 @@ const SectionIcon = styled.div`
 
 // Contact Method Icons - Professional 3D Style
 const ContactIcon = styled.div<{ $isActive: boolean }>`
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   position: relative;
-  cursor: pointer;
-  filter: ${props => props.$isActive ? 'none' : 'grayscale(70%)'};
+  cursor: ${props => props.$isActive ? 'pointer' : 'not-allowed'};
+  filter: ${props => props.$isActive ? 'none' : 'grayscale(100%)'};
+  background: ${props => props.$isActive ? 'transparent' : 'rgba(220, 220, 220, 0.4)'};
+  border-radius: 12px;
 
   &:hover {
-    transform: translateY(-6px) scale(1.15);
+    transform: ${props => props.$isActive ? 'translateY(-6px) scale(1.15)' : 'none'};
   }
 
   img, svg {
-    width: 42px;
-    height: 42px;
+    width: 44px;
+    height: 44px;
     position: relative;
     z-index: 1;
-    opacity: ${props => props.$isActive ? '1' : '0.6'};
+    opacity: ${props => props.$isActive ? '1' : '0.3'};
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     object-fit: contain;
-    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.15))
-            drop-shadow(0 1px 3px rgba(0, 0, 0, 0.12))
-            drop-shadow(0 6px 12px rgba(0, 0, 0, 0.1));
+    filter: ${props => props.$isActive 
+      ? 'drop-shadow(0 3px 6px rgba(0, 0, 0, 0.15)) drop-shadow(0 1px 3px rgba(0, 0, 0, 0.12)) drop-shadow(0 6px 12px rgba(0, 0, 0, 0.1))'
+      : 'none'
+    };
   }
 
   &:hover img,
   &:hover svg {
-    filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.25))
-            drop-shadow(0 3px 6px rgba(0, 0, 0, 0.18))
-            drop-shadow(0 10px 20px rgba(255, 121, 0, 0.2));
-    transform: scale(1.1);
+    filter: ${props => props.$isActive 
+      ? 'drop-shadow(0 6px 12px rgba(0, 0, 0, 0.25)) drop-shadow(0 3px 6px rgba(0, 0, 0, 0.18)) drop-shadow(0 10px 20px rgba(255, 121, 0, 0.2))'
+      : 'none'
+    };
+    transform: ${props => props.$isActive ? 'scale(1.1)' : 'none'};
   }
 `;
 
 const ContactLabel = styled.span<{ $isActive: boolean }>`
-  font-size: 0.688rem;
-  font-weight: 600;
-  color: ${props => props.$isActive ? '#2c3e50' : '#6c757d'};
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: ${props => props.$isActive ? '#2c3e50' : '#b8b8b8'};
   transition: all 0.3s ease;
   text-align: center;
-  line-height: 1.2;
+  line-height: 1.3;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
+  letter-spacing: 0.3px;
 `;
 
 const ContactItem = styled.div<{ $isActive: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 0.5rem;
-  border-radius: 12px;
+  gap: 0.65rem;
+  padding: 0.9rem 0.65rem;
+  border-radius: 14px;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   cursor: pointer;
   position: relative;
-  background: transparent;
-  min-width: 80px;
-  max-width: 100px;
+  background: ${props => props.$isActive ? 'transparent' : 'rgba(248, 248, 248, 0.6)'};
+  min-width: 92px;
+  max-width: 115px;
+  border: 2px solid ${props => props.$isActive ? 'transparent' : '#e5e5e5'};
 
   &:hover {
-    transform: translateY(-5px);
+    transform: ${props => props.$isActive ? 'translateY(-5px)' : 'none'};
+    background: ${props => props.$isActive ? 'rgba(255, 121, 0, 0.05)' : 'rgba(248, 248, 248, 0.6)'};
   }
 
   &:hover ${ContactLabel} {
-    color: ${props => props.$isActive ? '#FF7900' : '#495057'};
+    color: ${props => props.$isActive ? '#FF7900' : '#b8b8b8'};
   }
 `;
 
@@ -624,23 +645,23 @@ const LoadingContainer = styled.div`
 const PhotoUploadSection = styled.div`
   background: linear-gradient(135deg, #f5f7fa, #e8ecf1);
   border: 1px solid #d0d7de;
-  border-radius: 8px;
-  padding: 1.25rem;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-radius: 6px;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
 `;
 
 const PhotoUploadTitle = styled.h3`
-  font-size: 1rem;
+  font-size: 0.813rem;
   font-weight: 600;
   color: #2c3e50;
-  margin: 0 0 0.5rem 0;
+  margin: 0;
 `;
 
 const PhotoUploadArea = styled.div<{ $isDragOver: boolean }>`
   border: 2px dashed ${props => props.$isDragOver ? '#FF7900' : '#d0d7de'};
-  border-radius: 8px;
-  padding: 2rem;
+  border-radius: 6px;
+  padding: 0.75rem;
   text-align: center;
   background: ${props => props.$isDragOver ? 'rgba(255, 121, 0, 0.05)' : 'white'};
   transition: all 0.3s ease;
@@ -653,15 +674,20 @@ const PhotoUploadArea = styled.div<{ $isDragOver: boolean }>`
 `;
 
 const UploadIcon = styled.div`
-  font-size: 3rem;
+  font-size: 2rem;
   color: #FF7900;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
+  
+  svg {
+    width: 40px;
+    height: 40px;
+  }
 `;
 
 const UploadText = styled.div`
-  font-size: 1rem;
-  font-weight: 600;
-  color: #2c3e50;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #495057;
   margin-bottom: 0.5rem;
 `;
 
@@ -669,14 +695,14 @@ const ChoosePhotosButton = styled.button`
   background: linear-gradient(135deg, #FF7900, #FF9533);
   color: white;
   border: 1px solid #FF8A1A;
-  padding: 0.5rem 1.25rem;
-  border-radius: 6px;
-  font-size: 0.875rem;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(255, 121, 0, 0.25);
-  margin-top: 1rem;
+  box-shadow: 0 2px 6px rgba(255, 121, 0, 0.2);
+  margin-top: 0.25rem;
 
   &:hover {
     background: linear-gradient(135deg, #e66a00, #e68429);
@@ -760,52 +786,6 @@ const LogoImage = styled.img`
   z-index: 5;
 `;
 
-const GlowRingVertical = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 140px;
-  height: 140px;
-  border-radius: 50%;
-  border: 4px solid transparent;
-  border-top: 4px solid #FF7900;
-  border-bottom: 4px solid #FF9533;
-  transform: translate(-50%, -50%);
-  opacity: 0.6;
-  z-index: 4;
-  pointer-events: none;
-  box-shadow: 0 0 8px rgba(255, 121, 0, 0.3);
-`;
-
-const GlowRingHorizontal = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 145px;
-  height: 145px;
-  border-radius: 50%;
-  border: 4px solid transparent;
-  border-left: 4px solid #FF9533;
-  border-right: 4px solid #FF7900;
-  transform: translate(-50%, -50%) rotate(45deg);
-  opacity: 0.5;
-  z-index: 4;
-  pointer-events: none;
-  box-shadow: 0 0 8px rgba(255, 149, 51, 0.3);
-`;
-
-const LogoGlow = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 130px;
-  height: 130px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 121, 0, 0.15), transparent 70%);
-  transform: translate(-50%, -50%);
-  z-index: 3;
-  opacity: 0.7;
-`;
 
 const LogoBrandName = styled.span`
   position: absolute;
@@ -1015,6 +995,9 @@ const CarDetailsPage: React.FC = () => {
   // State for Bulgarian regions and cities
   const [availableCities, setAvailableCities] = useState<string[]>([]);
   
+  // State for car models based on selected make
+  const [availableModels, setAvailableModels] = useState<string[]>([]);
+  
   // State for image gallery
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
@@ -1075,6 +1058,21 @@ const CarDetailsPage: React.FC = () => {
     }
   }, [editedCar.region]);
   
+  // Load models when make changes
+  useEffect(() => {
+    if (editedCar.make) {
+      const models = getModelsByMake(editedCar.make);
+      setAvailableModels(models);
+      
+      // If current model is not in the new models list, clear it
+      if (editedCar.model && !models.includes(editedCar.model)) {
+        setEditedCar(prev => ({ ...prev, model: '' }));
+      }
+    } else {
+      setAvailableModels([]);
+    }
+  }, [editedCar.make]);
+  
   // Cleanup URLs on unmount
   useEffect(() => {
     return () => {
@@ -1098,12 +1096,31 @@ const CarDetailsPage: React.FC = () => {
     
     setSaving(true);
     try {
-      await carListingService.updateListing(carId, editedCar);
-      setCar(editedCar as CarListing);
+      // Step 1: Upload new photos to Firebase Storage
+      let uploadedUrls: string[] = [];
+      if (photos.length > 0) {
+        uploadedUrls = await carListingService.uploadImages(carId, photos);
+      }
+
+      // Step 2: Merge existing images with new ones
+      const existingImages = car?.images || [];
+      const updatedImages = [...existingImages, ...uploadedUrls];
+
+      // Step 3: Save all changes
+      const updatedCarData = {
+        ...editedCar,
+        images: updatedImages
+      };
+
+      await carListingService.updateListing(carId, updatedCarData);
+      setCar(updatedCarData as CarListing);
       setIsEditMode(false);
-      alert(language === 'bg' ? 'Промените са запазени!' : 'Changes saved successfully!');
+      setPhotos([]);
+      setPhotoUrls([]);
+      
+      alert(language === 'bg' ? 'Промените са запазени успешно!' : 'Changes saved successfully!');
     } catch (error) {
-        logger.error('Error saving car changes', error as Error, { carId });
+      logger.error('Error saving car changes', error as Error, { carId });
       alert(language === 'bg' ? 'Грешка при запазване' : 'Error saving changes');
     } finally {
       setSaving(false);
@@ -1113,6 +1130,8 @@ const CarDetailsPage: React.FC = () => {
   const handleCancel = () => {
     setIsEditMode(false);
     setEditedCar(car || {});
+    setPhotos([]);
+    setPhotoUrls([]);
   };
 
   const handleInputChange = (field: keyof CarListing, value: any) => {
@@ -1149,6 +1168,33 @@ const CarDetailsPage: React.FC = () => {
     const newUrls = photoUrls.filter((_, i) => i !== index);
     setPhotos(newPhotos);
     setPhotoUrls(newUrls);
+  };
+
+  // 🗑️ Delete existing image from car.images
+  const deleteExistingImage = async (imageUrl: string) => {
+    if (!window.confirm(language === 'bg' 
+      ? 'Сигурни ли сте, че искате да изтриете тази снимка?' 
+      : 'Are you sure you want to delete this image?'
+    )) {
+      return;
+    }
+
+    try {
+      // Remove from Firebase Storage
+      await carListingService.deleteImages(carId, [imageUrl]);
+      
+      // Update car.images array
+      const updatedImages = (car?.images || []).filter(img => img !== imageUrl);
+      await carListingService.updateListing(carId, { images: updatedImages });
+      
+      // Update local state
+      setCar({ ...car, images: updatedImages } as CarListing);
+      
+      alert(language === 'bg' ? 'Снимката е изтрита!' : 'Image deleted successfully!');
+    } catch (error) {
+      logger.error('Error deleting existing image', error as Error, { carId, imageUrl });
+      alert(language === 'bg' ? 'Грешка при изтриване' : 'Error deleting image');
+    }
   };
 
   const formatPrice = (price: number) => {
@@ -1287,7 +1333,7 @@ const CarDetailsPage: React.FC = () => {
             </SellerAvatar>
             <SellerDetails>
               <SellerName>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="#2c3e50">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="#0a0a0a">
                   <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
                 </svg>
                 {car.sellerName || (language === 'bg' ? 'Неизвестен' : 'Unknown')}
@@ -1309,15 +1355,20 @@ const CarDetailsPage: React.FC = () => {
             <VehicleModel>{car.year}</VehicleModel>
           </VehicleInfo>
         </InfoBar>
+        
+        {/* Price under title */}
+        {!isEditMode && car.price && (
+          <PriceSection>
+            <Price>€{car.price.toLocaleString()}</Price>
+            <PriceLabel>{language === 'bg' ? '(EUR)' : '(EUR)'}</PriceLabel>
+          </PriceSection>
+        )}
       </Header>
 
       <MainContent>
         <ImageSection>
           {car.make && (
             <LogoContainer>
-              <LogoGlow />
-              <GlowRingVertical />
-              <GlowRingHorizontal />
               <LogoImage 
                 src={`/assets/images/professional_car_logos/${car.make}.png`}
                 alt={car.make}
@@ -1359,6 +1410,17 @@ const CarDetailsPage: React.FC = () => {
                       src={typeof image === 'string' ? String(image) : URL.createObjectURL(image)} 
                       alt={`Thumbnail ${index + 1}`} 
                     />
+                    {isEditMode && isOwner && (
+                      <PhotoRemoveButton 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          deleteExistingImage(typeof image === 'string' ? image : '');
+                        }}
+                        title={language === 'bg' ? 'Изтрий снимка' : 'Delete image'}
+                      >
+                        ×
+                      </PhotoRemoveButton>
+                    )}
                   </ThumbnailItem>
                 ))}
               </ThumbnailGrid>
@@ -1374,6 +1436,77 @@ const CarDetailsPage: React.FC = () => {
                 {language === 'bg' ? 'Няма налични снимки' : 'No photos available'}
               </p>
             </div>
+          )}
+
+          {/* 📸 Photo Upload Section - Compact Version */}
+          {isEditMode && isOwner && (
+            <PhotoUploadSection style={{ marginTop: '1rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                <PhotoUploadTitle>
+                  {language === 'bg' ? 'Добави снимки' : 'Add Photos'}
+                </PhotoUploadTitle>
+                <span style={{ fontSize: '0.688rem', color: '#6c757d', fontWeight: 500 }}>
+                  {car?.images?.length || 0} + {photos.length} / 20
+                </span>
+              </div>
+              
+              <PhotoUploadArea
+                $isDragOver={isDragOver}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                onClick={() => document.getElementById('photo-upload-main')?.click()}
+              >
+                <UploadIcon>
+                  <svg width="40" height="40" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="32" cy="32" r="30" fill="url(#camera-gradient-compact)" opacity="0.2"/>
+                    <path d="M23 18L26 14H38L41 18H50C51.1 18 52 18.9 52 20V46C52 47.1 51.1 48 50 48H14C12.9 48 12 47.1 12 46V20C12 18.9 12.9 18 14 18H23Z" fill="url(#camera-body-compact)"/>
+                    <circle cx="32" cy="32" r="8" fill="url(#lens-gradient-compact)"/>
+                    <circle cx="32" cy="32" r="5" fill="white" opacity="0.3"/>
+                    <defs>
+                      <linearGradient id="camera-gradient-compact" x1="2" y1="2" x2="62" y2="62" gradientUnits="userSpaceOnUse">
+                        <stop stopColor="#FF7900"/>
+                        <stop offset="1" stopColor="#FF9500"/>
+                      </linearGradient>
+                      <linearGradient id="camera-body-compact" x1="12" y1="14" x2="52" y2="48" gradientUnits="userSpaceOnUse">
+                        <stop stopColor="#FF7900"/>
+                        <stop offset="1" stopColor="#FF9500"/>
+                      </linearGradient>
+                      <linearGradient id="lens-gradient-compact" x1="24" y1="24" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+                        <stop stopColor="#2c3e50"/>
+                        <stop offset="1" stopColor="#34495e"/>
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                </UploadIcon>
+                <UploadText>
+                  {language === 'bg' ? 'Drag & Drop или кликнете' : 'Drag & Drop or click'}
+                </UploadText>
+                <ChoosePhotosButton type="button">
+                  {language === 'bg' ? 'Избери' : 'Choose'}
+                </ChoosePhotosButton>
+                <HiddenFileInput
+                  id="photo-upload-main"
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={(e) => handleFileSelect(e.target.files)}
+                />
+              </PhotoUploadArea>
+
+              {photoUrls.length > 0 && (
+                <PhotoGrid>
+                  {photoUrls.map((url, index) => (
+                    <PhotoItem key={index}>
+                      <PhotoImg src={url} alt={`Photo ${index + 1}`} />
+                      <PhotoRemoveButton onClick={() => removePhoto(index)}>
+                        ×
+                      </PhotoRemoveButton>
+                    </PhotoItem>
+                  ))}
+                </PhotoGrid>
+              )}
+            </PhotoUploadSection>
           )}
         </ImageSection>
 
@@ -1392,6 +1525,7 @@ const CarDetailsPage: React.FC = () => {
                   onChange={(e) => {
                     if (e.target.value === 'Other') {
                       setShowOtherMake(true);
+                      handleInputChange('make', '');
                     } else {
                       setShowOtherMake(false);
                       handleInputChange('make', e.target.value);
@@ -1399,26 +1533,9 @@ const CarDetailsPage: React.FC = () => {
                   }}
                 >
                   <option value="">{language === 'bg' ? 'Изберете марка' : 'Select make'}</option>
-                  <option value="Volkswagen">Volkswagen</option>
-                  <option value="BMW">BMW</option>
-                  <option value="Mercedes-Benz">Mercedes-Benz</option>
-                  <option value="Audi">Audi</option>
-                  <option value="Toyota">Toyota</option>
-                  <option value="Honda">Honda</option>
-                  <option value="Ford">Ford</option>
-                  <option value="Opel">Opel</option>
-                  <option value="Renault">Renault</option>
-                  <option value="Peugeot">Peugeot</option>
-                  <option value="Citroen">Citroen</option>
-                  <option value="Skoda">Skoda</option>
-                  <option value="SEAT">SEAT</option>
-                  <option value="Hyundai">Hyundai</option>
-                  <option value="Kia">Kia</option>
-                  <option value="Nissan">Nissan</option>
-                  <option value="Mazda">Mazda</option>
-                  <option value="Volvo">Volvo</option>
-                  <option value="Fiat">Fiat</option>
-                  <option value="Alfa Romeo">Alfa Romeo</option>
+                  {getAllMakes().filter(make => make !== 'Other').map(make => (
+                    <option key={make} value={make}>{make}</option>
+                  ))}
                   <option className="other-option" value="Other">{language === 'bg' ? '▼ Друго' : '▼ Other'}</option>
                 </EditableSelect>
                 {showOtherMake && (
@@ -1442,25 +1559,29 @@ const CarDetailsPage: React.FC = () => {
                 <EditableSelect
                   value={showOtherModel ? 'Other' : (editedCar.model || '')}
                   aria-label={language === 'bg' ? 'Изберете модел' : 'Select model'}
+                  disabled={!editedCar.make || availableModels.length === 0}
                   onChange={(e) => {
                     if (e.target.value === 'Other') {
                       setShowOtherModel(true);
+                      handleInputChange('model', '');
                     } else {
                       setShowOtherModel(false);
                       handleInputChange('model', e.target.value);
                     }
                   }}
                 >
-                  <option value="">{language === 'bg' ? 'Изберете модел' : 'Select model'}</option>
-                  <option value="Golf">Golf</option>
-                  <option value="Passat">Passat</option>
-                  <option value="Polo">Polo</option>
-                  <option value="Tiguan">Tiguan</option>
-                  <option value="Touareg">Touareg</option>
-                  <option value="Jetta">Jetta</option>
-                  <option value="ID.3">ID.3</option>
-                  <option value="ID.4">ID.4</option>
-                  <option className="other-option" value="Other">{language === 'bg' ? '▼ Друго' : '▼ Other'}</option>
+                  <option value="">
+                    {!editedCar.make 
+                      ? (language === 'bg' ? 'Първо изберете марка' : 'Select make first')
+                      : (language === 'bg' ? 'Изберете модел' : 'Select model')
+                    }
+                  </option>
+                  {availableModels.map(model => (
+                    <option key={model} value={model}>{model}</option>
+                  ))}
+                  {availableModels.length > 0 && (
+                    <option className="other-option" value="Other">{language === 'bg' ? '▼ Друго' : '▼ Other'}</option>
+                  )}
                 </EditableSelect>
                 {showOtherModel && (
                   <EditableInput
@@ -1719,13 +1840,14 @@ const CarDetailsPage: React.FC = () => {
         </DetailsSection>
       </MainContent>
 
-      <PriceSection>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
-          <h3 style={{ color: 'white', margin: 0, fontSize: '1.5rem' }}>
-            {language === 'bg' ? 'Цена (EUR)*' : 'Price (EUR)*'}
-          </h3>
-        </div>
-        {isEditMode ? (
+      {/* Price Section - Only for Edit Mode */}
+      {isEditMode && (
+        <PriceSection>
+          <div style={{ marginBottom: '0.5rem', textAlign: 'center' }}>
+            <h3 style={{ color: 'white', margin: 0, fontSize: '1.125rem', fontWeight: '700' }}>
+              {language === 'bg' ? 'Цена (EUR)*' : 'Price (EUR)*'}
+            </h3>
+          </div>
           <div>
             <EditableInput
               type="number"
@@ -1752,16 +1874,8 @@ const CarDetailsPage: React.FC = () => {
               </label>
             </div>
           </div>
-        ) : (
-          <>
-            <Price>{formatPrice(car.price)}</Price>
-            <PriceLabel>
-              {language === 'bg' ? 'Цена' : 'Price'}
-              {car.negotiable && ` (${language === 'bg' ? 'Договорна' : 'Negotiable'})`}
-            </PriceLabel>
-          </>
-        )}
-      </PriceSection>
+        </PriceSection>
+      )}
 
       <EquipmentSection>
         <SectionTitle>
@@ -2096,35 +2210,43 @@ const CarDetailsPage: React.FC = () => {
             const fieldKey = `contact${contact.key.charAt(0).toUpperCase() + contact.key.slice(1)}` as keyof CarListing;
             
             // في Edit Mode: استخدم الحقول المخصصة
-            // في View Mode: فحص وجود البيانات الفعلية
+            // في View Mode: استخدم القيم المحفوظة في قاعدة البيانات
             let isActive = false;
             let canClick = false;
             
             if (isEditMode) {
+              // وضع التعديل: نعتمد على editedCar
               isActive = Boolean(editedCar[fieldKey]);
               canClick = true;
             } else {
-              // في View Mode: فحص وجود البيانات حسب نوع الزر
+              // وضع العرض: نعتمد على القيم المحفوظة في car
+              isActive = Boolean(car[fieldKey]);
+              canClick = isActive;
+              
+              // التأكد من وجود البيانات المطلوبة أيضاً
               const hasPhone = Boolean(car.sellerPhone);
               const hasEmail = Boolean(car.sellerEmail);
               
-              switch(contact.key) {
-                case 'phone':
-                case 'whatsapp':
-                case 'viber':
-                case 'telegram':
-                case 'sms':
-                  isActive = hasPhone;
-                  canClick = hasPhone;
-                  break;
-                case 'email':
-                  isActive = hasEmail;
-                  canClick = hasEmail;
-                  break;
-                case 'facebook':
-                  isActive = hasPhone || hasEmail;
-                  canClick = hasPhone || hasEmail;
-                  break;
+              // إذا كان الزر مفعّل لكن لا توجد بيانات، اجعله غير نشط
+              if (isActive) {
+                switch(contact.key) {
+                  case 'phone':
+                  case 'whatsapp':
+                  case 'viber':
+                  case 'telegram':
+                  case 'sms':
+                    isActive = hasPhone;
+                    canClick = hasPhone;
+                    break;
+                  case 'email':
+                    isActive = hasEmail;
+                    canClick = hasEmail;
+                    break;
+                  case 'facebook':
+                    isActive = hasPhone || hasEmail;
+                    canClick = hasPhone || hasEmail;
+                    break;
+                }
               }
             }
             
@@ -2132,16 +2254,20 @@ const CarDetailsPage: React.FC = () => {
               <ContactItem 
                 key={contact.key} 
                 $isActive={isActive}
-                onClick={() => {
+                onClick={(e) => {
+                  if (!isActive && !isEditMode) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return;
+                  }
                   if (isEditMode) {
                     handleInputChange(fieldKey, !Boolean(editedCar[fieldKey]));
                   } else if (canClick) {
                     handleContactClick(contact.key);
                   }
                 }}
-                style={{ 
-                  cursor: canClick ? 'pointer' : 'not-allowed',
-                  opacity: isActive ? 1 : 0.4
+                style={{
+                  pointerEvents: isEditMode || isActive ? 'auto' : 'none'
                 }}
               >
                 <ContactIcon $isActive={isActive}>
@@ -2156,86 +2282,9 @@ const CarDetailsPage: React.FC = () => {
         </div>
       </EquipmentSection>
 
-      {isEditMode && (
-        <PhotoUploadSection>
-          <PhotoUploadTitle>
-            {language === 'bg' ? 'Снимки на превозното средство' : 'Vehicle Photos'}
-          </PhotoUploadTitle>
-          <p style={{ fontSize: '0.813rem', color: '#6c757d', margin: '0 0 1rem 0' }}>
-            {language === 'bg' ? 'Качете до 20 снимки на вашето превозно средство' : 'Upload up to 20 photos of your vehicle'}
-          </p>
-          
-          <PhotoUploadArea
-            $isDragOver={isDragOver}
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            onDrop={handleDrop}
-            onClick={() => document.getElementById('photo-upload')?.click()}
-          >
-            <UploadIcon>
-              <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="32" cy="32" r="30" fill="url(#camera-gradient)" opacity="0.2"/>
-                <path d="M23 18L26 14H38L41 18H50C51.1 18 52 18.9 52 20V46C52 47.1 51.1 48 50 48H14C12.9 48 12 47.1 12 46V20C12 18.9 12.9 18 14 18H23Z" fill="url(#camera-body)"/>
-                <circle cx="32" cy="32" r="8" fill="url(#lens-gradient)"/>
-                <circle cx="32" cy="32" r="5" fill="white" opacity="0.3"/>
-                <circle cx="45" cy="23" r="2" fill="#28a745"/>
-                <defs>
-                  <linearGradient id="camera-gradient" x1="2" y1="2" x2="62" y2="62" gradientUnits="userSpaceOnUse">
-                    <stop stopColor="#FF7900"/>
-                    <stop offset="1" stopColor="#FF9500"/>
-                  </linearGradient>
-                  <linearGradient id="camera-body" x1="12" y1="14" x2="52" y2="48" gradientUnits="userSpaceOnUse">
-                    <stop stopColor="#FF7900"/>
-                    <stop offset="1" stopColor="#FF9500"/>
-                  </linearGradient>
-                  <linearGradient id="lens-gradient" x1="24" y1="24" x2="40" y2="40" gradientUnits="userSpaceOnUse">
-                    <stop stopColor="#2c3e50"/>
-                    <stop offset="1" stopColor="#34495e"/>
-                  </linearGradient>
-                </defs>
-              </svg>
-            </UploadIcon>
-            <UploadText>
-              {language === 'bg' ? 'Плъзнете снимки тук или кликнете за избор' : 'Drag photos here or click to select'}
-            </UploadText>
-            <ChoosePhotosButton type="button">
-              {language === 'bg' ? 'Изберете снимки' : 'Choose Photos'}
-            </ChoosePhotosButton>
-            <HiddenFileInput
-              id="photo-upload"
-              type="file"
-              multiple
-              accept="image/*"
-              onChange={(e) => handleFileSelect(e.target.files)}
-            />
-          </PhotoUploadArea>
-
-          {photoUrls.length > 0 && (
-            <PhotoGrid>
-              {photoUrls.map((url, index) => (
-                <PhotoItem key={index}>
-                  <PhotoImg src={url} alt={`Photo ${index + 1}`} />
-                  <PhotoRemoveButton onClick={() => removePhoto(index)}>
-                    ×
-                  </PhotoRemoveButton>
-                </PhotoItem>
-              ))}
-            </PhotoGrid>
-          )}
-        </PhotoUploadSection>
-      )}
-
       {/* Distance & Directions - Only in view mode */}
       {!isEditMode && car && car.city && (
-        <>
-          <DistanceIndicator
-            carLocation={{
-              city: car.city,
-              region: car.region,
-              coordinates: car.coordinates
-            }}
-          />
-
+        <LocationMapContainer>
           <StaticMapEmbed
             location={{
               city: car.city,
@@ -2244,7 +2293,15 @@ const CarDetailsPage: React.FC = () => {
             }}
             zoom={14}
           />
-        </>
+          
+          <DistanceIndicator
+            carLocation={{
+              city: car.city,
+              region: car.region,
+              coordinates: car.coordinates
+            }}
+          />
+        </LocationMapContainer>
       )}
     </Container>
   );

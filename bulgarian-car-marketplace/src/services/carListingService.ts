@@ -10,12 +10,11 @@ import {
   where, 
   orderBy, 
   limit, 
-  startAfter,
   serverTimestamp,
-  Timestamp
+  
 } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
-import { db, storage } from '@/firebase/firebase-config';
+import { db, storage, auth } from '@/firebase/firebase-config';
 import { CarListing, CarListingFilters, CarListingSearchResult } from '@/types/CarListing';
 import { ProfileStatsService } from './profile/profile-stats-service';
 import { serviceLogger } from './logger-wrapper';
@@ -26,8 +25,20 @@ class CarListingService {
   // Create a new car listing
   async createListing(listing: Omit<CarListing, 'id' | 'createdAt' | 'updatedAt'>): Promise<string> {
     try {
+      // Enforce ownership: sellerId must be the authenticated user's uid
+      const currentUser = auth.currentUser;
+      if (!currentUser?.uid) {
+        throw new Error('Not authenticated: cannot create listing without a user');
+      }
+
+      // Preserve legacy sellerEmail if provided; prefer auth email when available
+      const sellerEmail = (listing as any).sellerEmail || currentUser.email || '';
+
       const docRef = await addDoc(collection(db, this.collectionName), {
         ...listing,
+        // Ownership fields (align with Firestore rules)
+        sellerId: currentUser.uid,
+        sellerEmail,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
         status: 'draft',
@@ -380,6 +391,69 @@ class CarListingService {
     }
   }
 
+  /**
+   * Get listings by sellerId (preferred, aligns with security rules)
+   * Fallbacks: also returns listings where legacy userId/ownerId equals sellerId
+   */
+  async getListingsBySellerId(sellerId: string): Promise<CarListing[]> {
+    try {
+      // Primary: sellerId (without orderBy to avoid index requirement)
+      const primaryQ = query(
+        collection(db, this.collectionName),
+        where('sellerId', '==', sellerId)
+      );
+
+      const results: CarListing[] = [];
+      const primarySnap = await getDocs(primaryQ);
+      primarySnap.forEach((docSnap) => {
+        const data = docSnap.data();
+        results.push({
+          id: docSnap.id,
+          ...data,
+          createdAt: data.createdAt?.toDate(),
+          updatedAt: data.updatedAt?.toDate(),
+          expiresAt: data.expiresAt?.toDate()
+        } as CarListing);
+      });
+
+      // If no modern records found, try legacy fields (userId/ownerId)
+      if (results.length === 0) {
+        const legacyIds = ['userId', 'ownerId'] as const;
+        for (const legacyField of legacyIds) {
+          const legacyQ = query(
+            collection(db, this.collectionName),
+            where(legacyField as any, '==', sellerId)
+          );
+          const legacySnap = await getDocs(legacyQ);
+          legacySnap.forEach((docSnap) => {
+            const data = docSnap.data();
+            results.push({
+              id: docSnap.id,
+              ...data,
+              createdAt: data.createdAt?.toDate(),
+              updatedAt: data.updatedAt?.toDate(),
+              expiresAt: data.expiresAt?.toDate()
+            } as CarListing);
+          });
+
+          if (results.length > 0) break;
+        }
+      }
+
+      // Sort on client-side by createdAt descending
+      results.sort((a, b) => {
+        const aTime = a.createdAt instanceof Date ? a.createdAt.getTime() : 0;
+        const bTime = b.createdAt instanceof Date ? b.createdAt.getTime() : 0;
+        return bTime - aTime;
+      });
+
+      return results;
+    } catch (error) {
+      serviceLogger.error('Failed to get car listings by sellerId', error as Error, { sellerId });
+      throw new Error('Failed to get listings by sellerId');
+    }
+  }
+
   // Search listings by text
   async searchListings(searchTerm: string, filters: CarListingFilters = {}): Promise<CarListingSearchResult> {
     try {
@@ -567,5 +641,6 @@ class CarListingService {
     }
   }
 }
-
-export default new CarListingService();
+const carListingService = new CarListingService();
+export { carListingService };
+export default carListingService;

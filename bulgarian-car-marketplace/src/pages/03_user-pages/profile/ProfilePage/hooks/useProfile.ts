@@ -1,13 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/hooks/useTranslation';
-import { bulgarianAuthService } from '@/firebase';
+import { bulgarianAuthService } from '@/firebase/index';
 // ✅ NEW: Import from canonical types
 import type { BulgarianUser } from '@/types/user/bulgarian-user.types';
-import { bulgarianCarService, BulgarianCar } from '@/firebase/car-service';
+// Removed unused car-service imports
 import { useToast } from '@/components/Toast';
 import { useProfileType } from '@/contexts/ProfileTypeContext';  // NEW: Profile Type System
 import { validateProfileData } from '@/utils/validation';
-import { doc, onSnapshot, getDoc } from 'firebase/firestore';
+import { doc, onSnapshot } from 'firebase/firestore';
 import { db, auth } from '@/firebase/firebase-config';
 import carListingService from '@/services/carListingService';
 import { logger } from '@/services/logger-service';
@@ -57,42 +57,7 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
     preferredLanguage: 'bg'
   });
 
-  // Load user data on mount or when targetUserId changes
-  useEffect(() => {
-    loadUserData();
-  }, [targetUserId]); // Re-load when targetUserId changes
-
-  // Real-time updates listener
-  useEffect(() => {
-    if (!user?.uid) return;
-
-    const unsubscribe = onSnapshot(
-      doc(db, 'users', user.uid),
-      (snapshot) => {
-        if (snapshot.exists()) {
-          const userData = snapshot.data();
-          setUser(prev => ({
-            ...prev,
-            ...userData,
-            uid: user.uid,
-            email: user.email,
-            displayName: userData.displayName || prev?.displayName
-          } as BulgarianUser));
-          
-          if (process.env.NODE_ENV === 'development') {
-            logger.debug('Real-time update received');
-          }
-        }
-      },
-      (error) => {
-        logger.error('Real-time listener error', error as Error);
-      }
-    );
-
-    return () => unsubscribe();
-  }, [user?.uid, user?.email]);
-
-  // Load user data function
+  // Load user data function (defined before effects to satisfy hook dependency ordering)
   const loadUserData = useCallback(async () => {
     try {
       setLoading(true);
@@ -149,8 +114,11 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
           preferredLanguage: currentUser.preferredLanguage || 'bg'
         });
 
-        // Load user's cars من carListingService
-        const userListings = await carListingService.getListingsBySeller(currentUser.email || '');
+        // Load user's cars (prefer sellerId/uid; fallback to email for legacy data)
+        let userListings = await carListingService.getListingsBySellerId(currentUser.uid);
+        if (!userListings || userListings.length === 0) {
+          userListings = await carListingService.getListingsBySeller(currentUser.email || '');
+        }
         
         const carsForProfile = userListings.map(car => ({
           id: car.id || '',
@@ -182,7 +150,43 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
     } finally {
       setLoading(false);
     }
-  }, [t, toast]);
+  }, [t, toast, targetUserId]);
+
+  // Load user data on mount or when targetUserId changes
+  useEffect(() => {
+    loadUserData();
+  }, [loadUserData, targetUserId]); // Re-load when targetUserId or loader changes
+
+  // Real-time updates listener
+  useEffect(() => {
+    if (!user?.uid) return;
+
+    const unsubscribe = onSnapshot(
+      doc(db, 'users', user.uid),
+      (snapshot) => {
+        if (snapshot.exists()) {
+          const userData = snapshot.data();
+          setUser(prev => ({
+            ...prev,
+            ...userData,
+            uid: user.uid,
+            email: user.email,
+            displayName: userData.displayName || prev?.displayName
+          } as BulgarianUser));
+          
+          if (process.env.NODE_ENV === 'development') {
+            logger.debug('Real-time update received');
+          }
+        }
+      },
+      (error) => {
+        logger.error('Real-time listener error', error as Error);
+      }
+    );
+
+    return () => unsubscribe();
+  }, [user?.uid, user?.email]);
+  
 
   // Handle form input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -207,18 +211,31 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
       }
 
       // Prepare update data with all fields
-      const updateData: any = {
+        const updateData: any = {
         uid: user.uid,
         displayName: formData.accountType === 'business' 
           ? formData.businessName 
           : `${formData.firstName} ${formData.lastName}`.trim(),
         phoneNumber: formData.phoneNumber || '',
         bio: formData.bio || '',
-        location: {
-          city: formData.city || '',
-          region: '',
-          postalCode: formData.postalCode || ''
-        },
+          // Write new unified locationData while preserving legacy fields for backward compatibility
+          locationData: {
+            cityId: '',
+            cityName: {
+              bg: formData.city || '',
+              en: formData.city || ''
+            },
+            coordinates: { lat: 0, lng: 0 },
+            region: '',
+            postalCode: formData.postalCode || '',
+            address: formData.address || ''
+          },
+          // Legacy fields (to be removed after migration)
+          location: {
+            city: formData.city || '',
+            region: '',
+            postalCode: formData.postalCode || ''
+          },
         preferredLanguage: formData.preferredLanguage as 'bg' | 'en',
         
         // Account type

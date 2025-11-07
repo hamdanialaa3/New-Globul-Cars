@@ -17,9 +17,9 @@ import {
 import { postsEngagementService } from '../../services/social/posts-engagement.service';
 import { Post } from '../../services/social/posts.service';
 import ImageGallery from './ImageGallery';
-
-// Google Maps API Key
-const GOOGLE_MAPS_API_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY || 'AIzaSyAUYM_qygK5pUrlXtdDLmEi-_Kh9SyvRmk';
+import { PostComments } from './PostComments';
+import { CommentForm } from './CommentForm';
+import { realtimeFeedService } from '../../services/social/realtime-feed.service';
 
 // ==================== STYLED COMPONENTS ====================
 
@@ -233,6 +233,14 @@ const ActionButton = styled.button<{ $active?: boolean }>`
   }
 `;
 
+const CommentsSection = styled.div`
+  border-top: 1px solid #e9ecef;
+  padding-top: 16px;
+  margin-top: 16px;
+  max-height: 600px;
+  overflow-y: auto;
+`;
+
 // ==================== LOCATION MAP COMPONENT ====================
 
 interface LocationMapProps {
@@ -324,6 +332,36 @@ export const PostCard: React.FC<PostCardProps> = ({
   const { user } = useAuth();
   const [liked, setLiked] = useState(post.reactions?.[user?.uid || ''] === 'like');
   const [likes, setLikes] = useState(post.engagement.likes);
+  const [showComments, setShowComments] = useState(false);
+  const [commentCount, setCommentCount] = useState(post.engagement.comments);
+  
+  // Real-time subscriptions
+  useEffect(() => {
+    // Subscribe to reactions
+    const unsubReactions = realtimeFeedService.subscribeToReactions(
+      post.id,
+      () => {
+        // Reload post data or increment counter
+        onLike?.(post.id);
+      }
+    );
+
+    // Subscribe to comments
+    const unsubComments = realtimeFeedService.subscribeToComments(
+      post.id,
+      () => {
+        // Update comment count
+        setCommentCount(prev => prev + 1);
+        onComment?.(post.id);
+      }
+    );
+
+    // Cleanup on unmount
+    return () => {
+      unsubReactions();
+      unsubComments();
+    };
+  }, [post.id, onLike, onComment]);
   
   const handleLike = async () => {
     if (!user) {
@@ -342,6 +380,7 @@ export const PostCard: React.FC<PostCardProps> = ({
   };
   
   const handleComment = () => {
+    setShowComments(!showComments);
     onComment?.(post.id);
   };
   
@@ -420,7 +459,7 @@ export const PostCard: React.FC<PostCardProps> = ({
         
         <ActionButton onClick={handleComment}>
           <MessageCircle size={18} />
-          {post.engagement.comments}
+          {commentCount}
         </ActionButton>
         
         <ActionButton>
@@ -432,6 +471,25 @@ export const PostCard: React.FC<PostCardProps> = ({
           <Bookmark size={18} />
         </ActionButton>
       </PostActions>
+      
+      {/* Comments Section */}
+      {showComments && (
+        <CommentsSection>
+          <CommentForm
+            postId={post.id}
+            onCommentAdded={() => {
+              setCommentCount(prev => prev + 1);
+              onComment?.(post.id);
+            }}
+          />
+          <PostComments 
+            postId={post.id}
+            onCommentAdded={() => {
+              setCommentCount(prev => prev + 1);
+            }}
+          />
+        </CommentsSection>
+      )}
     </Card>
   );
 };

@@ -19,24 +19,9 @@ const Container = styled.div`
   padding: 2rem;
   max-width: 1600px;
   margin: 0 auto;
-  background-image: url('/assets/backgrounds/metal-bg-5.jpg');
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  background-repeat: no-repeat;
+  background: var(--bg-primary);
   position: relative;
-  filter: blur(0.5px);
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(248, 249, 250, 0.72);
-    z-index: 0;
-  }
+  transition: background-color 0.3s ease;
 
   @media (max-width: 1200px) {
     grid-template-columns: 1fr 350px;

@@ -305,11 +305,12 @@ export const GlobalStyles = createGlobalStyle`
 
   body {
     font-family: 'Martica', 'Arial', sans-serif;
-    color: ${bulgarianColors.text.primary};
-    background-color: ${bulgarianColors.background.default};  // أبيض (mobile.de style)
+    color: var(--text-primary);
+    background-color: var(--bg-primary);
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 
 
@@ -319,7 +320,8 @@ export const GlobalStyles = createGlobalStyle`
     font-weight: ${bulgarianTypography.fontWeight.bold};
     line-height: ${bulgarianTypography.lineHeight.tight};
     margin-bottom: ${bulgarianSpacing.md};
-    color: ${bulgarianColors.text.primary};
+    color: var(--text-primary);
+    transition: color 0.3s ease;
   }
 
 
@@ -334,7 +336,8 @@ export const GlobalStyles = createGlobalStyle`
   p {
     margin-bottom: ${bulgarianSpacing.md};
     line-height: ${bulgarianTypography.lineHeight.relaxed};
-    color: ${bulgarianColors.text.primary};
+    color: var(--text-primary);
+    transition: color 0.3s ease;
   }
 
   a {
@@ -383,13 +386,14 @@ export const GlobalStyles = createGlobalStyle`
 
   /* (Comment removed - was in Arabic)
   .card, .container, .paper {
-    background: ${bulgarianColors.background.paper};
-    border: 1px solid #E0E0E0;  // حدود رمادية فاتحة
-    border-radius: ${bulgarianBorderRadius.sm};  // حواف بسيطة
-    box-shadow: ${bulgarianShadows.sm};  // ظل بسيط
+    background: var(--bg-card);
+    border: 1px solid var(--border-primary);
+    border-radius: ${bulgarianBorderRadius.sm};
+    box-shadow: var(--shadow-sm);
     padding: ${bulgarianSpacing.lg};
     margin-bottom: ${bulgarianSpacing.lg};
-    color: ${bulgarianColors.text.primary};
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
   }
 
   /* (Comment removed - was in Arabic)
@@ -397,11 +401,11 @@ export const GlobalStyles = createGlobalStyle`
     font-family: inherit;
     font-size: inherit;
     padding: ${bulgarianSpacing.sm};
-    border: 1px solid ${bulgarianColors.grey[300]};
+    border: 1px solid var(--border-secondary);
     border-radius: ${bulgarianBorderRadius.md};
-    background: ${bulgarianColors.background.paper};
-    color: ${bulgarianColors.text.primary};
-    transition: border-color 0.2s ease-in-out;
+    background: var(--bg-card);
+    color: var(--text-primary);
+    transition: border-color 0.2s ease-in-out, background-color 0.3s ease, color 0.3s ease;
 
     &:focus {
       outline: none;
@@ -457,6 +461,8 @@ export const GlobalStyles = createGlobalStyle`
     padding: 0 1rem;
     width: 100%;
     box-sizing: border-box;
+    background-color: var(--bg-primary);
+    transition: background-color 0.3s ease;
   }
 
   /* Responsive container adjustments */
@@ -475,8 +481,9 @@ export const GlobalStyles = createGlobalStyle`
 
   /* Main content area styling */
   main {
-    background: ${bulgarianColors.background.default};
+    background: var(--bg-primary);
     flex: 1;
+    transition: background-color 0.3s ease;
   }
 
   /* Ensure header and footer take full width */

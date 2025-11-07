@@ -43,6 +43,7 @@ import EnhancedNavLink from '../EnhancedNavLink';
 import LanguageToggle from '../LanguageToggle/LanguageToggle';
 import NotificationDropdown from '../NotificationDropdown/NotificationDropdown';
 import ProfileTypeSwitcher from './ProfileTypeSwitcher';
+import CyberToggle from '../CyberToggle/CyberToggle';
 import './Header.css';
 
 const Header: React.FC = () => {
@@ -133,15 +134,15 @@ const Header: React.FC = () => {
           {/* Logo Section */}
           <div className="logo-section" onClick={() => navigate('/')}>
             <img 
-              src="/mobile-eu-logo.png" 
-              alt="MOBILE-EU Logo" 
-              className="logo-icon"
+              src="/assets/images/logos/Copilot_20250926_020825.png" 
+              alt="GLOBUL AUTO Logo" 
+              className="logo-icon logo-enhanced"
               style={{ width: '75px', height: '75px', objectFit: 'contain' }}
               onError={(e) => {
-                e.currentTarget.src = '/logo.png';
+                e.currentTarget.src = '/mobile-eu-logo.png';
               }}
             />
-            <span className="logo-text">MOBILE-EU</span>
+            <span className="logo-text">GLOBUL AUTO</span>
           </div>
 
           {/* Search Bar Removed */}
@@ -149,6 +150,9 @@ const Header: React.FC = () => {
           {/* Central Action Buttons */}
           <div className="central-actions">
             <LanguageToggle size="small" showText={false} className="action-bar-button" />
+            
+            {/* Dark/Light Mode Toggle */}
+            <CyberToggle />
             
             <button
               className="action-bar-button"

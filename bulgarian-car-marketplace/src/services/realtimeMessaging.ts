@@ -418,5 +418,10 @@ export class RealtimeMessagingService {
   }
 }
 
+/**
+ * IMPORTANT: Always call the returned unsubscribe function when using any real-time listener.
+ * For user-level listeners, use the provided bulk cleanup helper to remove all listeners for a user on logout/unmount.
+ */
+
 // Export singleton instance
 export const realtimeMessagingService = RealtimeMessagingService.getInstance();

@@ -19,8 +19,10 @@ interface FeaturedCarsProps {
 const FeaturedCarsContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 1.5rem;
+  gap: 1.2rem;
   margin-top: 2rem;
+  transform: scale(0.8);
+  transform-origin: top center;
   
   @media (max-width: 1400px) {
     grid-template-columns: repeat(3, 1fr);
@@ -28,29 +30,33 @@ const FeaturedCarsContainer = styled.div`
   
   @media (max-width: 1024px) {
     grid-template-columns: repeat(2, 1fr);
+    transform: scale(0.85);
   }
   
   @media (max-width: 600px) {
     grid-template-columns: 1fr;
+    transform: scale(0.9);
   }
 `;
 
 const CarCard = styled(Link)`
-  background: white;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   overflow: hidden;
   transition: all 0.3s ease;
   text-decoration: none;
   color: inherit;
-  border: 1px solid #e0e0e0;
+  border: 1px solid rgba(224, 224, 224, 0.6);
   display: flex;
   flex-direction: column;
 
   &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 20px rgba(255, 143, 16, 0.15);
-    border-color: #FF8F10;
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 12px 24px rgba(0, 61, 122, 0.25);
+    border-color: #003d7a;
+    background: rgba(255, 255, 255, 1);
   }
 `;
 

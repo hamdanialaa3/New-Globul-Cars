@@ -52,10 +52,11 @@ export class SellWorkflowService {
     const cityName = workflowData.city; // e.g., "Аксаково" (decorative only)
     const postalCode = workflowData.postalCode; // decorative only
     
-    // Find region in BULGARIAN_CITIES
+    // Find region in BULGARIAN_CITIES (case-insensitive, flexible matching)
+    const normalizeString = (str: string) => str?.toLowerCase().trim().replace(/\s+/g, ' ');
     const regionData = BULGARIAN_CITIES.find(
-      c => c.nameBg === regionName || 
-           c.nameEn === regionName || 
+      c => normalizeString(c.nameBg) === normalizeString(regionName) || 
+           normalizeString(c.nameEn) === normalizeString(regionName) || 
            c.id === regionName?.toLowerCase().replace(/\s+/g, '-')
     );
     
