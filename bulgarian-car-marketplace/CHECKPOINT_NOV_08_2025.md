@@ -20,23 +20,42 @@ Pending wiring items (not yet completed in this checkpoint):
 
 ### ⚡ Critical Bug Fixes (Nov 8, 2025)
 **Firestore Null Value Errors** - Fixed "Cannot use 'in' operator to search for 'nullValue' in null" runtime errors:
+
+**Phase 1: Social Feed Services**
 - `posts-feed.service.ts`: Added null guards to `getFeedPosts()` and `getFollowingIds()`
 - `posts.service.ts`: Added null guard to `getUserPosts()`
+- `CommunityFeedSection.tsx`: Changed condition from `if (user)` to `if (user?.uid)`
+
+**Phase 2: Dashboard Service**
 - `dashboardService.ts`: Added null guards to all methods:
   * `getDashboardStats()` - returns empty stats object
   * `getRecentCars()` - returns empty array
   * `getRecentMessages()` - returns empty array
   * `getNotifications()` - returns empty array
   * `subscribeToDashboardUpdates()` - returns no-op unsubscribe function
-- `CommunityFeedSection.tsx`: Changed condition from `if (user)` to `if (user?.uid)`
 
-**Root Cause**: Firestore queries were receiving `null` or `undefined` userId values during authentication state transitions (initial page load, logout, etc.)
+**Phase 3: Real-time Messaging Services**
+- `realtimeMessaging.ts`: Added null guards to 3 real-time listeners:
+  * `listenToMessages()` - returns no-op unsubscribe
+  * `listenToChatRooms()` - returns no-op unsubscribe
+  * `listenToTypingIndicators()` - returns no-op unsubscribe
+- `advanced-messaging-service.ts`: Added null guard to:
+  * `subscribeToUserConversations()` - returns no-op unsubscribe
 
-**Impact**: App now gracefully handles auth transitions without throwing runtime errors. Services return empty/default values when userId is unavailable, preventing UI crashes.
+**Root Cause**: Firestore queries were receiving `null` or `undefined` userId values during authentication state transitions (initial page load, logout, etc.). The Firestore SDK's internal `__PRIVATE_canonifyValue` function attempts to serialize query values immediately upon query construction, causing runtime errors before the query is executed.
+
+**Solution Pattern**: 
+1. Changed all userId parameters from `string` to `string | null | undefined`
+2. Added null guards at the START of each function, BEFORE constructing queries
+3. Return empty/default values ([], {}, no-op functions) when userId unavailable
+4. Added warning logs for debugging
+
+**Impact**: App now gracefully handles auth transitions without throwing runtime errors. Services return empty/default values when userId is unavailable, preventing UI crashes and console errors.
 
 **Commits**:
 - `b5ad76f7` - Fix Firestore null value errors in social feed queries
 - `c53b30f0` - Fix dashboard service null userId errors
+- `89489fad` - Fix realtimeMessaging and advanced-messaging null userId errors
 
 ### Experimental / Non‑profile Additions (Optional)
 The following IoT scaffolding files exist but are **not yet integrated** with navigation:
