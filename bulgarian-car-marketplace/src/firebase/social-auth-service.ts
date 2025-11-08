@@ -934,7 +934,7 @@ export class SocialAuthService {
   static setupRecaptchaVerifier(containerId: string): RecaptchaVerifier {
     try {
       const recaptchaVerifier = new RecaptchaVerifier(auth, containerId, {
-        size: 'normal',
+        size: 'invisible',
         callback: (response: any) => {
           if (process.env.NODE_ENV === 'development') {
             logger.debug('reCAPTCHA verified');

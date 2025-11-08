@@ -15,7 +15,7 @@ import './styles/mobile-responsive.css';
 import './styles/typography-improved.css';
 import './styles/premium-effects.css';
 import ErrorBoundary from './components/ErrorBoundary';
-import RouteErrorBoundary from './components/ErrorBoundary/RouteErrorBoundary';
+// import RouteErrorBoundary from './components/ErrorBoundary/RouteErrorBoundary';
 import { SkipNavigation } from './components/Accessibility';
 import Header from './components/Header/Header';
 import MobileHeader from './components/Header/MobileHeader'; // ✅ NEW: Mobile-only header
@@ -459,8 +459,8 @@ const MainLayout: React.FC = () => {
           </AuthGuard>
         }
       />
-      <Route path="/profile/*" element={<ProfileRouter />} />  {/* Own profile with nested routes */}
-      <Route path="/profile/:userId/*" element={<ProfileRouter />} />  {/* Other user's profile with nested routes */}
+  {/* Profile routes - single entry; nested router handles both index and :userId */}
+  <Route path="/profile/*" element={<ProfileRouter />} />
       <Route path="/verification" element={<VerificationPage />} />  {/* NEW: Verification System */}
       <Route path="/billing" element={<BillingPage />} />  {/* NEW: Billing System */}
       

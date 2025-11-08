@@ -1,5 +1,5 @@
-// ProfileSettings.tsx - mobile.de Style (Simple & Clean)
-// ✅ SIMPLE DESIGN - Exactly like mobile.de screenshot
+// ProfileSettingsMobileDe.tsx - EXACT MOBILE.DE DESIGN
+// 🔥 THIS IS THE MOBILE.DE VERSION - COMPLETELY DIFFERENT DESIGN
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
@@ -10,24 +10,22 @@ import PasswordChangeModal from '@/components/Profile/Modals/PasswordChangeModal
 import PhoneVerificationModal from '@/components/Profile/Modals/PhoneVerificationModal';
 import EmailVerificationModal from '@/components/Profile/Modals/EmailVerificationModal';
 import { 
-  User, 
-  Mail, 
-  Phone, 
-  MapPin, 
-  FileText,
+  User,
   Camera,
   CheckCircle,
   AlertCircle,
   Info
 } from 'lucide-react';
 
-// ==================== SIMPLE STYLED COMPONENTS ====================
+// ==================== MOBILE.DE DESIGN SYSTEM ====================
+
+// (DebugBanner removed after verification)
 
 const PageContainer = styled.div`
-  max-width: 900px;
+  max-width: 1140px;
   margin: 0 auto;
-  padding: 40px 24px;
-  background: #f5f5f5;
+  padding: 80px 24px 80px;
+  background: #f7f7f7;
   min-height: 100vh;
 `;
 
@@ -254,7 +252,7 @@ const InfoMessage = styled.div`
 
 // ==================== COMPONENT ====================
 
-const ProfileSettings: React.FC = () => {
+const ProfileSettingsMobileDe: React.FC = () => {
   const { language } = useLanguage();
   const { currentUser } = useAuth();
   const { user } = useProfile();
@@ -263,8 +261,7 @@ const ProfileSettings: React.FC = () => {
   const [showPhoneModal, setShowPhoneModal] = useState(false);
   const [showEmailModal, setShowEmailModal] = useState(false);
 
-  // ✅ VERIFICATION: Log to console
-  console.log('✅ SIMPLE DESIGN LOADED - ProfileSettings.tsx - November 8, 2025');
+  // (console debug removed after verification)
 
   const customerNumber = currentUser?.uid ? currentUser.uid.substring(0, 8).toUpperCase() : '00000000';
 
@@ -327,7 +324,7 @@ const ProfileSettings: React.FC = () => {
   const text = getText();
 
   return (
-    <PageContainer>
+      <PageContainer>
       {/* Page Title */}
       <PageTitle>{text.pageTitle}</PageTitle>
       <CustomerNumber>
@@ -424,7 +421,7 @@ const ProfileSettings: React.FC = () => {
             <CardValue>
               {user?.phoneNumber || text.notSet}
               {user?.phoneNumber && (
-                user?.verification?.phoneVerified ? (
+                (user?.verification?.phone || user?.verification?.phoneVerified) ? (
                   <Badge $type="success">
                     <CheckCircle size={14} />
                     {text.confirmed}
@@ -444,14 +441,25 @@ const ProfileSettings: React.FC = () => {
         </Card>
 
         {/* Phone Verification Alert */}
-        {user?.phoneNumber && !user?.verification?.phoneVerified && (
+  {user?.phoneNumber && !(user?.verification?.phone || user?.verification?.phoneVerified) && (
           <AlertBox $type="warning">
             <AlertCircle size={20} />
             <p>
               {text.activateFunctions}{' '}
-              <a onClick={() => setShowPhoneModal(true)}>
+              <button 
+                onClick={() => setShowPhoneModal(true)}
+                style={{ 
+                  background: 'none', 
+                  border: 'none', 
+                  color: '#ff7900', 
+                  textDecoration: 'underline', 
+                  cursor: 'pointer',
+                  padding: 0,
+                  font: 'inherit'
+                }}
+              >
                 {text.confirmPhoneNow}
-              </a>
+              </button>
             </p>
           </AlertBox>
         )}
@@ -503,4 +511,4 @@ const ProfileSettings: React.FC = () => {
   );
 };
 
-export default ProfileSettings;
+export default ProfileSettingsMobileDe;

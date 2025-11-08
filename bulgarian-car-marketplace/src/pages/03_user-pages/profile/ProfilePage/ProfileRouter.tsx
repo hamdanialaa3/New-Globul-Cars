@@ -10,6 +10,7 @@ import ProfileCampaigns from './ProfileCampaigns';
 import ProfileAnalytics from './ProfileAnalytics';
 import ProfileSettings from './ProfileSettings';
 import ProfileSettingsNew from './ProfileSettingsNew';
+import ProfileSettingsMobileDe from './ProfileSettingsMobileDe';
 import ProfileConsultations from './ProfileConsultations';
 
 /**
@@ -32,20 +33,22 @@ export const ProfileRouter: React.FC = () => {
   return (
     <Routes>
       {/* Main profile page with nested routes */}
-      <Route path="/" element={<ProfilePageWrapper />}>
+      {/* IMPORTANT: use empty path so routes are relative to /profile base */}
+      <Route path="" element={<ProfilePageWrapper />}>
         {/* Default: Overview */}
         <Route index element={<ProfileOverview />} />
         
-        {/* Tab Routes */}
+        {/* Tab Routes - Must come BEFORE :userId route */}
         <Route path="my-ads" element={<ProfileMyAds />} />
         <Route path="campaigns" element={<ProfileCampaigns />} />
         <Route path="analytics" element={<ProfileAnalytics />} />
-        <Route path="settings" element={<ProfileSettingsNew />} />
+        <Route path="settings" element={<ProfileSettingsMobileDe />} />
         <Route path="settings-old" element={<ProfileSettings />} />
+        <Route path="settings-new" element={<ProfileSettingsNew />} />
         <Route path="consultations" element={<ProfileConsultations />} />
         
-        {/* Fallback: Redirect to overview */}
-        <Route path="*" element={<Navigate to="/profile" replace />} />
+        {/* User profile view - Must come AFTER specific routes */}
+        <Route path=":userId" element={<ProfileOverview />} />
       </Route>
     </Routes>
   );

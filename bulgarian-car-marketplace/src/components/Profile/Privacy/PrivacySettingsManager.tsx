@@ -9,12 +9,12 @@ import { useToast } from '../../Toast';
 
 interface PrivacySettingsManagerProps {
   userId: string;
-  accountType: 'individual' | 'dealership';
+  accountType?: 'individual' | 'dealership';
 }
 
 const PrivacySettingsManager: React.FC<PrivacySettingsManagerProps> = ({ 
   userId, 
-  accountType 
+  accountType = 'individual'
 }) => {
   const { language } = useLanguage();
   const { showToast } = useToast();

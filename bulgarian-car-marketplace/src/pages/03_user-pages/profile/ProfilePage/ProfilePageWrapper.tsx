@@ -59,8 +59,11 @@ const ProfilePageWrapper: React.FC = () => {
   const isBusinessMode = user?.accountType === 'business' || user?.accountType === 'dealer' || user?.accountType === 'company';
   
   // ⚡ FIX: Check if following - with cleanup for promise
+  // Only check if targetUserId is a valid user ID (not a route like 'settings', 'my-ads', etc.)
   React.useEffect(() => {
-    if (!user || isOwnProfile || !targetUserId) return;
+    // Skip if no user, viewing own profile, no targetUserId, or targetUserId is a route name
+    const isRouteName = targetUserId && ['settings', 'my-ads', 'campaigns', 'analytics', 'consultations'].includes(targetUserId);
+    if (!user || isOwnProfile || !targetUserId || isRouteName) return;
     
     let cancelled = false;
     
@@ -182,110 +185,9 @@ const ProfilePageWrapper: React.FC = () => {
           />
         )}
         
-        {/* ⚡ NEW: Profile Header with Avatar - Only on main /profile page */}
-        {window.location.pathname === '/profile' && (
-          <S.ProfileHeader>
-            {/* Profile Image (Simple Avatar - No LED Ring) */}
-            <S.ProfileImageContainer>
-              <SimpleProfileAvatar
-                user={user}
-                size={120}
-                onClick={isOwnProfile ? () => navigate('/profile/settings') : undefined}
-              />
-            </S.ProfileImageContainer>
-            
-            {/* User Info */}
-            <S.ProfileInfo>
-              <S.ProfileName>
-                {user.displayName || `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'User'}
-                {user.verification?.emailVerified && (
-                  <S.VerifiedBadge>✓</S.VerifiedBadge>
-                )}
-              </S.ProfileName>
-              
-              {user.bio && (
-                <S.ProfileBio>{user.bio}</S.ProfileBio>
-              )}
-              
-              {/* Contact Info */}
-              <S.ProfileDetails>
-                {user.location?.city && (
-                  <S.DetailItem>
-                    <MapPin size={14} />
-                    {user.location.city}
-                  </S.DetailItem>
-                )}
-                {user.email && isOwnProfile && (
-                  <S.DetailItem>
-                    <Mail size={14} />
-                    {user.email}
-                  </S.DetailItem>
-                )}
-                {user.phoneNumber && isOwnProfile && (
-                  <S.DetailItem>
-                    <PhoneIcon size={14} />
-                    {user.phoneNumber}
-                  </S.DetailItem>
-                )}
-              </S.ProfileDetails>
-              
-              {/* Stats */}
-              <S.StatsContainer>
-                <S.Stat data-count={user.stats?.posts || 0}>
-                  <span>{language === 'bg' ? 'Публикации' : 'Posts'}</span>
-                </S.Stat>
-                <S.Stat data-count={user.stats?.followers || 0}>
-                  <span>{language === 'bg' ? 'Последователи' : 'Followers'}</span>
-                </S.Stat>
-                <S.Stat data-count={user.stats?.following || 0}>
-                  <span>{language === 'bg' ? 'Следвани' : 'Following'}</span>
-                </S.Stat>
-              </S.StatsContainer>
-              
-              {/* Action Buttons */}
-              <S.ActionsContainer>
-                {isOwnProfile ? (
-                  <>
-                    <S.ActionButton 
-                      variant="primary" 
-                      onClick={() => navigate('/profile/settings')}
-                    >
-                      {language === 'bg' ? 'Редактирай профил' : 'Edit Profile'}
-                    </S.ActionButton>
-                    <S.ActionButton 
-                      variant="secondary"
-                      onClick={handleGoogleSync}
-                      disabled={syncing}
-                    >
-                      <RefreshCw size={16} className={syncing ? 'spinning' : ''} />
-                      {syncing 
-                        ? (language === 'bg' ? 'Синхронизиране...' : 'Syncing...') 
-                        : (language === 'bg' ? 'Синхронизирай' : 'Sync')}
-                    </S.ActionButton>
-                  </>
-                ) : (
-                  <>
-                    <S.ActionButton 
-                      variant="primary"
-                      onClick={handleFollow}
-                      disabled={followLoading}
-                    >
-                      {isFollowing 
-                        ? (language === 'bg' ? 'Не следвай' : 'Unfollow')
-                        : (language === 'bg' ? 'Следвай' : 'Follow')}
-                    </S.ActionButton>
-                    <S.ActionButton 
-                      variant="secondary"
-                      onClick={handleMessage}
-                    >
-                      <MessageCircle size={16} />
-                      {language === 'bg' ? 'Съобщение' : 'Message'}
-                    </S.ActionButton>
-                  </>
-                )}
-              </S.ActionsContainer>
-            </S.ProfileInfo>
-          </S.ProfileHeader>
+        {/* ⚡ HIDDEN: Old Profile Header - Will be merged into ProfileDashboard */}
+        {false && window.location.pathname === '/profile' && (
+          <div style={{ display: 'none' }}></div>
         )}
         
         {/* Content Area - React Router will render child routes here */}

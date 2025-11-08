@@ -62,14 +62,18 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
     try {
       setLoading(true);
 
+      // Check if targetUserId is a route name (not a real user ID)
+      const routeNames = ['settings', 'my-ads', 'campaigns', 'analytics', 'consultations'];
+      const isRouteName = targetUserId && routeNames.includes(targetUserId);
+
       // Determine if viewing own profile or another user's profile
       const currentUserAuth = auth.currentUser;
-      const viewingOwnProfile = !targetUserId || targetUserId === currentUserAuth?.uid;
+      const viewingOwnProfile = !targetUserId || isRouteName || targetUserId === currentUserAuth?.uid;
       setIsOwnProfile(viewingOwnProfile);
 
       // Get user profile (either current user or target user)
       let currentUser: BulgarianUser | null;
-      if (targetUserId && !viewingOwnProfile) {
+      if (targetUserId && !viewingOwnProfile && !isRouteName) {
         // Viewing another user's profile
         currentUser = await bulgarianAuthService.getUserProfileById(targetUserId);
         if (process.env.NODE_ENV === 'development') {
@@ -155,7 +159,7 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
   // Load user data on mount or when targetUserId changes
   useEffect(() => {
     loadUserData();
-  }, [loadUserData, targetUserId]); // Re-load when targetUserId or loader changes
+  }, [loadUserData]); // loadUserData already has targetUserId in its dependencies
 
   // Real-time updates listener
   useEffect(() => {

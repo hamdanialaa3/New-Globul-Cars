@@ -179,7 +179,7 @@ const CarCircle = styled.div<{ $imageUrl?: string }>`
   justify-content: center;
   margin: 0 auto 12px;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   
   &::before {
     content: '';
@@ -202,13 +202,15 @@ const CarCircle = styled.div<{ $imageUrl?: string }>`
 
 const StatusDot = styled.div<{ $status: string }>`
   position: absolute;
-  top: 8px;
-  right: 8px;
-  width: 16px;
-  height: 16px;
+  top: 0;
+  right: 0;
+  transform: translate(50%, -50%);
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   border: 3px solid white;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.35);
+  z-index: 3;
   
   ${props => {
     switch (props.$status) {
@@ -324,28 +326,32 @@ const AddCarButton = styled.button`
 const ScrollButton = styled.button<{ $direction: 'left' | 'right' }>`
   position: absolute;
   top: 50%;
-  ${props => props.$direction === 'left' ? 'left: -12px;' : 'right: -12px;'}
+  ${props => props.$direction === 'left' ? 'left: 8px;' : 'right: 8px;'}
   transform: translateY(-50%);
-  width: 36px;
-  height: 36px;
-  background: white;
+  width: 48px;
+  height: 48px;
+  background: rgba(255, 255, 255, 0.95);
   border: 2px solid #FF7900;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
   z-index: 10;
   
   svg {
     color: #FF7900;
+    width: 28px;
+    height: 28px;
+    transition: all 0.3s ease;
   }
   
   &:hover {
     background: #FF7900;
     transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 6px 20px rgba(255, 121, 0, 0.4);
     
     svg {
       color: white;
@@ -357,7 +363,13 @@ const ScrollButton = styled.button<{ $direction: 'left' | 'right' }>`
   }
   
   @media (max-width: 768px) {
-    display: none;
+    width: 40px;
+    height: 40px;
+    
+    svg {
+      width: 24px;
+      height: 24px;
+    }
   }
 `;
 
@@ -460,13 +472,13 @@ export const GarageCarousel: React.FC<GarageCarouselProps> = ({
       </CarouselHeader>
       
       <CarouselWrapper>
-        {cars.length > 5 && (
+        {cars.length > 0 && (
           <>
             <ScrollButton $direction="left" onClick={() => scroll('left')}>
-              <ChevronLeft size={20} />
+              <ChevronLeft size={28} />
             </ScrollButton>
             <ScrollButton $direction="right" onClick={() => scroll('right')}>
-              <ChevronRight size={20} />
+              <ChevronRight size={28} />
             </ScrollButton>
           </>
         )}

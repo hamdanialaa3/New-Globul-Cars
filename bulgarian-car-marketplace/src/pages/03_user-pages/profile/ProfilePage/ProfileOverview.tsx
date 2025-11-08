@@ -9,19 +9,17 @@ import UserPostsFeed from '@/components/Profile/UserPostsFeed';
 import CreatePostWidget from '@/components/Profile/CreatePostWidget';
 import { GarageCarousel } from '@/components/Profile/GarageCarousel';
 import { 
-  User, 
   Briefcase, 
   MapPin, 
   Mail, 
   Phone, 
   Globe, 
-  Calendar,
   Building2,
   FileText,
   Edit
 } from 'lucide-react';
 import * as S from './styles';
-import { H2, Label } from '@/components/Typography';
+import { H2 } from '@/components/Typography';
 
 /**
  * Profile Overview Tab - Main profile information
@@ -47,72 +45,7 @@ const ProfileOverview: React.FC = () => {
       {/* Profile Dashboard with Stats */}
       <ProfileDashboard />
       
-      {/* Personal Information Section */}
-      <InfoSection>
-        <SectionHeader>
-          <SectionTitle>
-            <User size={20} />
-            {language === 'bg' ? 'Лична информация' : 'Personal Information'}
-          </SectionTitle>
-          {isOwnProfile && (
-            <EditButton onClick={() => navigate('/profile/settings')}>
-              <Edit size={16} />
-              {language === 'bg' ? 'Редактирай' : 'Edit'}
-            </EditButton>
-          )}
-        </SectionHeader>
-        
-        <InfoGrid>
-          {user?.firstName && (
-            <InfoItem>
-              <Label as="span">{language === 'bg' ? 'Име:' : 'First Name:'}</Label>
-              <InfoValue>{user.firstName}</InfoValue>
-            </InfoItem>
-          )}
-          {user?.lastName && (
-            <InfoItem>
-              <Label as="span">{language === 'bg' ? 'Фамилия:' : 'Last Name:'}</Label>
-              <InfoValue>{user.lastName}</InfoValue>
-            </InfoItem>
-          )}
-          {user?.email && isOwnProfile && (
-            <InfoItem>
-              <InfoLabel>
-                <Mail size={14} />
-                <Label as="span">{language === 'bg' ? 'Имейл:' : 'Email:'}</Label>
-              </InfoLabel>
-              <InfoValue>{user.email}</InfoValue>
-            </InfoItem>
-          )}
-          {user?.phoneNumber && isOwnProfile && (
-            <InfoItem>
-              <InfoLabel>
-                <Phone size={14} />
-                <Label as="span">{language === 'bg' ? 'Телефон:' : 'Phone:'}</Label>
-              </InfoLabel>
-              <InfoValue>{user.phoneNumber}</InfoValue>
-            </InfoItem>
-          )}
-          {user?.location?.city && (
-            <InfoItem>
-              <InfoLabel>
-                <MapPin size={14} />
-                <Label as="span">{language === 'bg' ? 'Град:' : 'City:'}</Label>
-              </InfoLabel>
-              <InfoValue>{user.location.city}</InfoValue>
-            </InfoItem>
-          )}
-          {user?.dateOfBirth && isOwnProfile && (
-            <InfoItem>
-              <InfoLabel>
-                <Calendar size={14} />
-                {language === 'bg' ? 'Дата на раждане:' : 'Date of Birth:'}
-              </InfoLabel>
-              <InfoValue>{new Date(user.dateOfBirth).toLocaleDateString(language === 'bg' ? 'bg-BG' : 'en-US')}</InfoValue>
-            </InfoItem>
-          )}
-        </InfoGrid>
-      </InfoSection>
+      {/* ❌ REMOVED: Personal Information Section - Now in ProfileDashboard */}
       
       {/* ⚡ NEW: Work Information Section (Dealer & Company only) */}
       {(isDealer || isCompany) && hasBusinessInfo && (

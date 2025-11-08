@@ -121,6 +121,18 @@ export const ProfileHeader = styled.header`
   }
 `;
 
+export const ProfileLeftSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-shrink: 0;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 16px;
+  }
+`;
+
 export const ProfileImageContainer = styled.div`
   position: relative;
   flex-shrink: 0;
@@ -133,6 +145,53 @@ export const ProfileImageContainer = styled.div`
   
   @media (max-width: 480px) {
     margin-top: -40px;
+  }
+`;
+
+export const CompletionBadge = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, rgba(255, 121, 0, 0.1) 0%, rgba(255, 143, 16, 0.1) 100%);
+  border: 2px solid rgba(255, 143, 16, 0.3);
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(255, 121, 0, 0.15);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(255, 121, 0, 0.25);
+    border-color: rgba(255, 143, 16, 0.5);
+  }
+  
+  @media (max-width: 768px) {
+    padding: 12px 16px;
+  }
+`;
+
+export const CompletionPercentage = styled.div`
+  font-size: 2rem;
+  font-weight: 700;
+  color: #FF7900;
+  line-height: 1;
+  margin-bottom: 4px;
+  
+  @media (max-width: 768px) {
+    font-size: 1.75rem;
+  }
+`;
+
+export const CompletionLabel = styled.div`
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6c757d;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  
+  @media (max-width: 768px) {
+    font-size: 0.7rem;
   }
 `;
 
@@ -632,12 +691,14 @@ export const SectionHeader = styled.div`
   h2 {
     margin: 0;
     font-size: 1.5rem;
+    color: #000000;
+    text-shadow: 0 0 10px rgba(76, 175, 80, 0.6), 0 0 20px rgba(76, 175, 80, 0.4);
     color: ${({ theme }) => theme.colors.text.primary};
   }
 
   .edit-btn {
     padding: 8px 16px;
-    background: linear-gradient(135deg, #FF8F10 0%, #FF7900 100%);
+    background: linear-gradient(135deg,rgb(16, 255, 100) 0%,rgb(0, 255, 26) 100%);
     color: white;
     border: none;
     border-radius: 8px;
@@ -645,7 +706,7 @@ export const SectionHeader = styled.div`
     font-size: 0.875rem;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 6px rgba(255, 143, 16, 0.3);
+    box-shadow: 0 2px 6px rgba(16, 255, 56, 0.3);
     z-index: 1;
     pointer-events: auto;
     touch-action: manipulation;
@@ -653,14 +714,14 @@ export const SectionHeader = styled.div`
     white-space: nowrap;
 
     &:hover {
-      background: linear-gradient(135deg, #ff9e2a 0%, #ff8c1a 100%);
+      background: linear-gradient(135deg,rgb(42, 255, 42) 0%,rgb(26, 255, 102) 100%);
       transform: translateY(-2px);
-      box-shadow: 0 4px 10px rgba(255, 143, 16, 0.4);
+      box-shadow: 0 4px 10px rgba(16, 255, 68, 0.4);
     }
 
     &:active {
       transform: translateY(0);
-      box-shadow: 0 2px 4px rgba(255, 143, 16, 0.2);
+      box-shadow: 0 2px 4px rgba(16, 255, 64, 0.2);
     }
 
     svg {
