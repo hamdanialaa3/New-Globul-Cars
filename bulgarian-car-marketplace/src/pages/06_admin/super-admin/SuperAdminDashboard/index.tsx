@@ -495,6 +495,60 @@ const SuperAdminDashboard: React.FC = () => {
           </LinksGrid>
         </AIManagementSection>
 
+        {/* IoT Management Section */}
+        <IoTManagementSection>
+          <SectionTitle>🌐 إدارة إنترنت الأشياء (IoT)</SectionTitle>
+          <LinksGrid>
+            <LinkCard onClick={() => navigate('/iot-dashboard')}>
+              <LinkIcon>📊</LinkIcon>
+              <LinkName>IoT Dashboard</LinkName>
+              <LinkDesc>لوحة تحكم أجهزة IoT</LinkDesc>
+            </LinkCard>
+            
+            <LinkCard onClick={() => navigate('/car-tracking')}>
+              <LinkIcon>🗺️</LinkIcon>
+              <LinkName>Car Tracking</LinkName>
+              <LinkDesc>تتبع السيارات المباشر</LinkDesc>
+            </LinkCard>
+            
+            <LinkCard onClick={() => navigate('/iot-analytics')}>
+              <LinkIcon>📈</LinkIcon>
+              <LinkName>IoT Analytics</LinkName>
+              <LinkDesc>تحليلات بيانات IoT</LinkDesc>
+            </LinkCard>
+            
+            <LinkCard onClick={() => window.open('https://700633997329-ggu6enoq.us-east-1.console.aws.amazon.com/iot/home?region=us-east-1#/connectdevice', '_blank')}>
+              <LinkIcon>🔗</LinkIcon>
+              <LinkName>AWS IoT Console</LinkName>
+              <LinkDesc>وحدة تحكم AWS IoT</LinkDesc>
+            </LinkCard>
+            
+            <LinkCard onClick={() => window.open('https://700633997329-ggu6enoq.us-east-1.console.aws.amazon.com/dynamodb/home?region=us-east-1#tables:', '_blank')}>
+              <LinkIcon>🗄️</LinkIcon>
+              <LinkName>DynamoDB Tables</LinkName>
+              <LinkDesc>جداول بيانات IoT</LinkDesc>
+            </LinkCard>
+            
+            <LinkCard onClick={() => window.open('https://700633997329-ggu6enoq.us-east-1.console.aws.amazon.com/cloudwatch/home?region=us-east-1', '_blank')}>
+              <LinkIcon>📊</LinkIcon>
+              <LinkName>CloudWatch</LinkName>
+              <LinkDesc>مراقبة الأداء</LinkDesc>
+            </LinkCard>
+            
+            <LinkCard onClick={() => navigate('/admin/integration-status')}>
+              <LinkIcon>🔗</LinkIcon>
+              <LinkName>Integration Status</LinkName>
+              <LinkDesc>حالة تكامل الخدمات السحابية</LinkDesc>
+            </LinkCard>
+            
+            <LinkCard onClick={() => navigate('/admin/setup')}>
+              <LinkIcon>⚙️</LinkIcon>
+              <LinkName>Quick Setup</LinkName>
+              <LinkDesc>إعداد سريع للخدمات</LinkDesc>
+            </LinkCard>
+          </LinksGrid>
+        </IoTManagementSection>
+
         {/* Reports Export Section */}
         <ReportsSection>
           <ReportsTitle>📊 تصدير التقارير</ReportsTitle>
@@ -815,6 +869,12 @@ const AIManagementSection = styled.div`
   padding: 2rem 1rem;
   margin-bottom: 2rem;
   border-bottom: 1px solid rgba(102, 126, 234, 0.3);
+`;
+
+const IoTManagementSection = styled.div`
+  padding: 2rem 1rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid rgba(0, 255, 127, 0.3);
 `;
 
 const ReportsSection = styled.div`

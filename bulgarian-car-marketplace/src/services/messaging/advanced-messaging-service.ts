@@ -380,9 +380,15 @@ export class AdvancedMessagingService {
 
   // Subscribe to user conversations
   subscribeToUserConversations(
-    userId: string,
+    userId: string | null | undefined,
     callback: (conversations: Conversation[]) => void
   ): () => void {
+    // ✅ FIX: Guard against null/undefined userId BEFORE constructing query
+    if (!userId) {
+      console.warn('subscribeToUserConversations called with null/undefined userId - returning no-op unsubscribe');
+      return () => {}; // Return no-op unsubscribe function
+    }
+
     const conversationsRef = collection(db, 'conversations');
     const q = query(
       conversationsRef,

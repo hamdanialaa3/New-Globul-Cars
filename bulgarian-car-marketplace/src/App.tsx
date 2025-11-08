@@ -142,6 +142,15 @@ const DealerDashboardPage = React.lazy(() => import('./pages/09_dealer-company/D
 const AdminCarManagementPage = React.lazy(() => import('./pages/06_admin/regular-admin/AdminCarManagementPage'));
 const IconShowcasePage = React.lazy(() => import('./pages/11_testing-dev/IconShowcasePage'));
 
+// NEW: IoT Pages
+const IoTDashboardPage = React.lazy(() => import('./pages/03_user-pages/IoTDashboardPage'));
+const CarTrackingPage = React.lazy(() => import('./pages/03_user-pages/CarTrackingPage'));
+const IoTAnalyticsPage = React.lazy(() => import('./pages/03_user-pages/IoTAnalyticsPage'));
+
+// NEW: Integration & Setup Pages
+const IntegrationStatusDashboard = React.lazy(() => import('./components/admin/IntegrationStatusDashboard'));
+const QuickSetupPage = React.lazy(() => import('./pages/06_admin/QuickSetupPage'));
+
 // Layout Component
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
@@ -616,6 +625,50 @@ const MainLayout: React.FC = () => {
 
       {/* Icon Showcase Page */}
       <Route path="/icon-showcase" element={<IconShowcasePage />} />
+
+      {/* IoT Pages */}
+      <Route
+        path="/iot-dashboard"
+        element={
+          <ProtectedRoute>
+            <IoTDashboardPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/car-tracking"
+        element={
+          <ProtectedRoute>
+            <CarTrackingPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/iot-analytics"
+        element={
+          <ProtectedRoute>
+            <IoTAnalyticsPage />
+          </ProtectedRoute>
+        }
+      />
+      
+      {/* Integration & Setup Pages */}
+      <Route
+        path="/admin/integration-status"
+        element={
+          <ProtectedRoute>
+            <IntegrationStatusDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/setup"
+        element={
+          <ProtectedRoute>
+            <QuickSetupPage />
+          </ProtectedRoute>
+        }
+      />
 
       {/* N8N Integration Test Page */}
       <Route path="/n8n-test" element={<N8nTestPage />} />

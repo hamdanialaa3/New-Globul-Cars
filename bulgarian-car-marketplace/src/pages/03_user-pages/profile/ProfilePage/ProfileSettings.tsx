@@ -1,3 +1,17 @@
+/**
+ * @deprecated This file is deprecated as of November 8, 2025
+ * 
+ * Use ProfileSettingsMobileDe.tsx instead for the active settings page.
+ * 
+ * This file is kept for legacy access via /profile/settings-old route only.
+ * All new development should be done in ProfileSettingsMobileDe.tsx.
+ * 
+ * Route mapping:
+ * - /profile/settings → ProfileSettingsMobileDe.tsx (ACTIVE)
+ * - /profile/settings-old → ProfileSettings.tsx (THIS FILE - DEPRECATED)
+ * - /profile/settings-new → ProfileSettingsNew.tsx (DEPRECATED)
+ */
+
 // ProfileSettings.tsx - mobile.de Style (Simple & Clean)
 // ✅ SIMPLE DESIGN - Exactly like mobile.de screenshot
 

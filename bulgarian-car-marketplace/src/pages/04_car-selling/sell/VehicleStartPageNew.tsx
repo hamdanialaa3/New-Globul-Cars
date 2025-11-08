@@ -10,6 +10,8 @@ import { Car, Truck, Bus, Bike, Caravan, CarFront } from 'lucide-react';
 import SplitScreenLayout from '@/components/SplitScreenLayout';
 import { WorkflowFlow } from '@/components/WorkflowVisualization';
 import { useAuth } from '@/contexts/AuthProvider';
+import { useProfileType } from '@/contexts/ProfileTypeContext';
+import { toast } from 'react-toastify';
 import N8nIntegrationService from '@/services/n8n-integration';
 
 const ContentSection = styled.div`
@@ -153,6 +155,7 @@ const VehicleStartPageNew: React.FC = () => {
   const navigate = useNavigate();
   const { language, t } = useLanguage();
   const { user } = useAuth();
+  const { permissions, profileType } = useProfileType();
   const [hoveredType, setHoveredType] = useState<string | null>(null);
 
   const vehicleTypes = [
@@ -165,6 +168,30 @@ const VehicleStartPageNew: React.FC = () => {
   ];
 
   const handleSelect = async (typeId: string) => {
+    // Check monthly listing limits before proceeding
+    const activeListings = (user as any)?.stats?.activeListings || 0;
+    const maxListings = permissions.maxListings;
+
+    // Enforce limit only if not unlimited (-1)
+    if (maxListings !== -1 && activeListings >= maxListings) {
+      const profileTypeNames = {
+        private: language === 'bg' ? 'личен' : 'personal',
+        dealer: language === 'bg' ? 'търговец' : 'dealer',
+        company: language === 'bg' ? 'компания' : 'company'
+      };
+
+      toast.error(
+        language === 'bg'
+          ? `Достигнахте лимита от ${maxListings} активни обяви за ${profileTypeNames[profileType]} акаунт. Моля надстройте плана си за да добавите повече обяви.`
+          : `You've reached the limit of ${maxListings} active listings for ${profileTypeNames[profileType]} account. Please upgrade your plan to add more listings.`,
+        {
+          autoClose: 6000,
+          position: 'top-center'
+        }
+      );
+      return; // Prevent navigation
+    }
+
     const params = new URLSearchParams();
     params.set('vt', typeId);
     

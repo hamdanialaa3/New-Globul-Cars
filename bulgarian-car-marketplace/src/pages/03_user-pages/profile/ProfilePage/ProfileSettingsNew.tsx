@@ -1,3 +1,17 @@
+/**
+ * @deprecated This file is deprecated as of November 8, 2025
+ * 
+ * Use ProfileSettingsMobileDe.tsx instead for the active settings page.
+ * 
+ * This file is kept for legacy access via /profile/settings-new route only.
+ * All new development should be done in ProfileSettingsMobileDe.tsx.
+ * 
+ * Route mapping:
+ * - /profile/settings → ProfileSettingsMobileDe.tsx (ACTIVE)
+ * - /profile/settings-old → ProfileSettings.tsx (DEPRECATED)
+ * - /profile/settings-new → ProfileSettingsNew.tsx (THIS FILE - DEPRECATED)
+ */
+
 // Profile Settings Page - Mobile.de Style
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 // Professional settings page with verification and account management

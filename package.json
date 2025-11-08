@@ -47,6 +47,9 @@
     "npm": ">=8.0.0"
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.927.0",
+    "@aws-sdk/client-iot": "^3.927.0",
+    "@aws-sdk/client-iot-data-plane": "^3.927.0",
     "@azure/msal-node": "^3.7.4",
     "@dataconnect/generated": "file:src/dataconnect-generated",
     "@genkit-ai/firebase": "^1.0.4",
@@ -63,12 +66,12 @@
     "@googlemaps/js-api-loader": "^1.16.10",
     "@octokit/rest": "^22.0.0",
     "@types/google.maps": "^3.58.1",
+    "algoliasearch": "^4.24.0",
     "axios": "^1.12.2",
     "cheerio": "^1.1.2",
-  "dotenv": "^17.2.2",
-  "algoliasearch": "^4.24.0",
-  "firebase-admin": "^12.6.0",
+    "dotenv": "^17.2.2",
     "firebase": "^12.2.1",
+    "firebase-admin": "^12.6.0",
     "googleapis": "^160.0.0",
     "mysql2": "^3.15.0"
   },

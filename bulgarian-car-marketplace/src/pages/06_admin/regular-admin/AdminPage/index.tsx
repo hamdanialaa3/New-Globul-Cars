@@ -24,7 +24,7 @@ const AdminPage: React.FC = () => {
   const { t } = useLanguage();
   const navigate = useNavigate();
   
-  const [activeTab, setActiveTab] = useState<'verification' | 'users' | 'reports' | 'settings'>('verification');
+  const [activeTab, setActiveTab] = useState<'verification' | 'users' | 'reports' | 'settings' | 'integration' | 'setup'>('verification');
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [adminData, setAdminData] = useState<AdminUser | null>(null);
   const [loading, setLoading] = useState(true);
@@ -160,6 +160,42 @@ const AdminPage: React.FC = () => {
             </button>
 
             <button
+              onClick={() => setActiveTab('integration')}
+              className={`
+                py-4 px-1 border-b-2 font-medium text-sm transition-colors
+                ${activeTab === 'integration'
+                  ? 'border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }
+              `}
+            >
+              <span className="flex items-center">
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" />
+                </svg>
+                {t('admin.integration', 'Integration')}
+              </span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('setup')}
+              className={`
+                py-4 px-1 border-b-2 font-medium text-sm transition-colors
+                ${activeTab === 'setup'
+                  ? 'border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }
+              `}
+            >
+              <span className="flex items-center">
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                {t('admin.setup', 'Quick Setup')}
+              </span>
+            </button>
+
+            <button
               onClick={() => setActiveTab('settings')}
               className={`
                 py-4 px-1 border-b-2 font-medium text-sm transition-colors
@@ -186,6 +222,30 @@ const AdminPage: React.FC = () => {
         {activeTab === 'verification' && <VerificationReview />}
         {activeTab === 'users' && <UsersManagement />}
         {activeTab === 'reports' && <ReportsView />}
+        {activeTab === 'integration' && (
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-xl font-semibold mb-4">Integration Status</h2>
+            <p className="text-gray-600 mb-4">Monitor and manage cloud service integrations.</p>
+            <button 
+              onClick={() => window.open('/admin/integration-status', '_blank')}
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            >
+              Open Integration Dashboard
+            </button>
+          </div>
+        )}
+        {activeTab === 'setup' && (
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-xl font-semibold mb-4">Quick Setup</h2>
+            <p className="text-gray-600 mb-4">Configure API keys and service settings.</p>
+            <button 
+              onClick={() => window.open('/admin/setup', '_blank')}
+              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+            >
+              Open Setup Page
+            </button>
+          </div>
+        )}
         {activeTab === 'settings' && <SettingsPanel />}
       </main>
     </div>

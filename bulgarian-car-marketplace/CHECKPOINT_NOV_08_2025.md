@@ -64,6 +64,7 @@ If these are not part of approved scope they can be removed safely (no current i
 5. Consider a single settings layout component to host all modals uniformly.
 
 ## Suggested Next Steps
+
 | Priority | Task |
 |----------|------|
 | High | Render 3 modals conditionally in `ProfileSettingsMobileDe.tsx` |

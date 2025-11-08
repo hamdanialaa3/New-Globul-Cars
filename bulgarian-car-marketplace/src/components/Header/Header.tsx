@@ -184,8 +184,8 @@ const Header: React.FC = () => {
               onClose={closeNotifications}
             />
             
-            {/* Seller Type Dropdown - Only visible on Profile page */}
-            {user && location.pathname === '/profile' && (
+            {/* Profile Management Button - Only visible on Profile routes */}
+            {user && location.pathname.startsWith('/profile') && (
               <div className="main-nav-dropdown" ref={profileTypeRef} style={{ position: 'relative', marginLeft: '8px' }}>
                 <button 
                   className="action-bar-button"
@@ -204,10 +204,10 @@ const Header: React.FC = () => {
                     fontSize: '0.875rem',
                     cursor: 'pointer'
                   }}
-                  title={language === 'bg' ? 'Тип продавач' : 'Seller Type'}
+                  title={language === 'bg' ? 'Управление на профила' : 'Profile Management'}
                 >
-                  <User size={16} />
-                  <span style={{ whiteSpace: 'nowrap' }}>{language === 'bg' ? 'Тип' : 'Type'}</span>
+                  <UserCog size={16} />
+                  <span style={{ whiteSpace: 'nowrap' }}>{language === 'bg' ? 'Управление' : 'Manage'}</span>
                   <svg 
                     className={`arrow ${isProfileTypeOpen ? 'rotate' : ''}`}
                     width="10" 

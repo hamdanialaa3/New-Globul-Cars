@@ -20,7 +20,9 @@ import {
   Mail,
   FileText,
   Cookie,
-  Info
+  Info,
+  Wifi,
+  Zap
 } from 'lucide-react';
 
 // Styled Components
@@ -310,6 +312,24 @@ const SitemapPage: React.FC = () => {
                   {t('sitemap.features.subscription', 'Subscription')}
                 </SitemapLink>
               </LinkItem>
+              <LinkItem>
+                <SitemapLink to="/iot-dashboard">
+                  <Settings className="icon" size={20} />
+                  {t('sitemap.features.iot', 'IoT Dashboard')}
+                </SitemapLink>
+              </LinkItem>
+              <LinkItem>
+                <SitemapLink to="/car-tracking">
+                  <Car className="icon" size={20} />
+                  {t('sitemap.features.tracking', 'Car Tracking')}
+                </SitemapLink>
+              </LinkItem>
+              <LinkItem>
+                <SitemapLink to="/iot-analytics">
+                  <BarChart3 className="icon" size={20} />
+                  {t('sitemap.features.iotAnalytics', 'IoT Analytics')}
+                </SitemapLink>
+              </LinkItem>
             </LinkList>
           </SitemapSection>
 
@@ -375,6 +395,39 @@ const SitemapPage: React.FC = () => {
 
           <SitemapSection>
             <h2>
+              <Shield size={24} />
+              {t('sitemap.admin.title', 'Admin & Management')}
+            </h2>
+            <LinkList>
+              <LinkItem>
+                <SitemapLink to="/admin">
+                  <Settings className="icon" size={20} />
+                  {t('sitemap.admin.dashboard', 'Admin Dashboard')}
+                </SitemapLink>
+              </LinkItem>
+              <LinkItem>
+                <SitemapLink to="/admin/integration-status">
+                  <Wifi className="icon" size={20} />
+                  {t('sitemap.admin.integration', 'Integration Status')}
+                </SitemapLink>
+              </LinkItem>
+              <LinkItem>
+                <SitemapLink to="/admin/setup">
+                  <Zap className="icon" size={20} />
+                  {t('sitemap.admin.setup', 'Quick Setup')}
+                </SitemapLink>
+              </LinkItem>
+              <LinkItem>
+                <SitemapLink to="/super-admin">
+                  <Shield className="icon" size={20} />
+                  {t('sitemap.admin.superAdmin', 'Super Admin')}
+                </SitemapLink>
+              </LinkItem>
+            </LinkList>
+          </SitemapSection>
+
+          <SitemapSection>
+            <h2>
               <Car size={24} />
               {t('sitemap.categories.title', 'Car Categories')}
             </h2>
@@ -427,7 +480,7 @@ const SitemapPage: React.FC = () => {
           
           <div className="stats">
             <div className="stat-item">
-              <div className="number">50+</div>
+              <div className="number">60+</div>
               <div className="label">{t('sitemap.stats.pages', 'Pages')}</div>
             </div>
             <div className="stat-item">

@@ -171,9 +171,15 @@ export class RealtimeMessagingService {
 
   // Listen to new messages in real-time
   listenToMessages(
-    userId: string,
+    userId: string | null | undefined,
     callback: (messages: Message[]) => void
   ): Unsubscribe {
+    // ✅ FIX: Guard against null/undefined userId BEFORE constructing query
+    if (!userId) {
+      logger.warn('listenToMessages called with null/undefined userId - returning no-op unsubscribe');
+      return () => {}; // Return no-op unsubscribe function
+    }
+
     const q = query(
       collection(db, 'messages'),
       where('receiverId', '==', userId),
@@ -236,9 +242,15 @@ export class RealtimeMessagingService {
 
   // Listen to chat rooms in real-time
   listenToChatRooms(
-    userId: string,
+    userId: string | null | undefined,
     callback: (chatRooms: ChatRoom[]) => void
   ): Unsubscribe {
+    // ✅ FIX: Guard against null/undefined userId BEFORE constructing query
+    if (!userId) {
+      logger.warn('listenToChatRooms called with null/undefined userId - returning no-op unsubscribe');
+      return () => {}; // Return no-op unsubscribe function
+    }
+
     const q = query(
       collection(db, 'chatRooms'),
       where('participants', 'array-contains', userId),
@@ -294,9 +306,15 @@ export class RealtimeMessagingService {
 
   // Listen to typing indicators
   listenToTypingIndicators(
-    userId: string,
+    userId: string | null | undefined,
     callback: (indicators: TypingIndicator[]) => void
   ): Unsubscribe {
+    // ✅ FIX: Guard against null/undefined userId BEFORE constructing query
+    if (!userId) {
+      logger.warn('listenToTypingIndicators called with null/undefined userId - returning no-op unsubscribe');
+      return () => {}; // Return no-op unsubscribe function
+    }
+
     const q = query(
       collection(db, 'typing'),
       where('receiverId', '==', userId),
