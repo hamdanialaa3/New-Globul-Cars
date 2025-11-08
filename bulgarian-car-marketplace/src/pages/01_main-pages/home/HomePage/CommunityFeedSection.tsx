@@ -105,14 +105,16 @@ const CommunityFeedSection: React.FC = () => {
   
   useEffect(() => {
     loadPosts();
-  }, [user]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.uid]);
   
   const loadPosts = async () => {
     try {
       setLoading(true);
       
       let feedPosts: Post[];
-      if (user) {
+      // ✅ FIX: Guard against null user or uid
+      if (user?.uid) {
         feedPosts = await postsFeedService.getFeedPosts(user.uid, 10);
       } else {
         feedPosts = await postsFeedService.getPublicFeed(10);
