@@ -65,7 +65,21 @@ class DashboardService {
   private unsubscribeFunctions: Unsubscribe[] = [];
 
   // Get dashboard statistics
-  async getDashboardStats(userId: string): Promise<DashboardStats> {
+  async getDashboardStats(userId: string | null | undefined): Promise<DashboardStats> {
+    // ✅ FIX: Guard against null/undefined userId
+    if (!userId) {
+      serviceLogger.warn('[DashboardService] getDashboardStats called with null/undefined userId');
+      return {
+        totalListings: 0,
+        activeListings: 0,
+        soldListings: 0,
+        pendingListings: 0,
+        totalViews: 0,
+        potentialSales: 0,
+        weeklyViews: 0
+      };
+    }
+
     try {
       // Get user's cars
       const carsQuery = query(
@@ -116,7 +130,13 @@ class DashboardService {
   }
 
   // Get recent cars
-  async getRecentCars(userId: string, limitCount: number = 5): Promise<DashboardCar[]> {
+  async getRecentCars(userId: string | null | undefined, limitCount: number = 5): Promise<DashboardCar[]> {
+    // ✅ FIX: Guard against null/undefined userId
+    if (!userId) {
+      serviceLogger.warn('[DashboardService] getRecentCars called with null/undefined userId');
+      return [];
+    }
+
     try {
       const carsQuery = query(
         collection(db, 'cars'),
@@ -160,7 +180,13 @@ class DashboardService {
   }
 
   // Get recent messages
-  async getRecentMessages(userId: string, limitCount: number = 5): Promise<DashboardMessage[]> {
+  async getRecentMessages(userId: string | null | undefined, limitCount: number = 5): Promise<DashboardMessage[]> {
+    // ✅ FIX: Guard against null/undefined userId
+    if (!userId) {
+      serviceLogger.warn('[DashboardService] getRecentMessages called with null/undefined userId');
+      return [];
+    }
+
     try {
       const messagesQuery = query(
         collection(db, 'messages'),
@@ -215,7 +241,13 @@ class DashboardService {
   }
 
   // Get notifications
-  async getNotifications(userId: string, limitCount: number = 5): Promise<DashboardNotification[]> {
+  async getNotifications(userId: string | null | undefined, limitCount: number = 5): Promise<DashboardNotification[]> {
+    // ✅ FIX: Guard against null/undefined userId
+    if (!userId) {
+      serviceLogger.warn('[DashboardService] getNotifications called with null/undefined userId');
+      return [];
+    }
+
     try {
       const notificationsQuery = query(
         collection(db, 'notifications'),
@@ -255,12 +287,18 @@ class DashboardService {
 
   // Real-time updates
   subscribeToDashboardUpdates(
-    userId: string,
+    userId: string | null | undefined,
     onStatsUpdate: (stats: DashboardStats) => void,
     onCarsUpdate: (cars: DashboardCar[]) => void,
     onMessagesUpdate: (messages: DashboardMessage[]) => void,
     onNotificationsUpdate: (notifications: DashboardNotification[]) => void
   ): () => void {
+    // ✅ FIX: Guard against null/undefined userId
+    if (!userId) {
+      serviceLogger.warn('[DashboardService] subscribeToDashboardUpdates called with null/undefined userId');
+      return () => {}; // Return empty unsubscribe function
+    }
+
     // Preflight: wait for indexes to be ready before attaching realtime listeners (reduces console spam)
     const carsQueryRef = query(
       collection(db, 'cars'),
