@@ -4,12 +4,12 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useProfile } from './hooks/useProfile';
 import { useProfileType } from '@/contexts/ProfileTypeContext';
-import { 
-  UserCircle, 
-  Car, 
-  Megaphone, 
-  BarChart3, 
-  Shield, 
+import {
+  UserCircle,
+  Car,
+  Megaphone,
+  BarChart3,
+  Shield,
   MessageCircle,
   Users,
   RefreshCw,
@@ -22,6 +22,7 @@ import { TabNavigation, TabNavLink, SyncButton, FollowButton } from './TabNaviga
 import { CoverImageUploader, BusinessBackground, SimpleProfileAvatar } from '@/components/Profile';
 import { googleProfileSyncService } from '@/services/google/google-profile-sync.service';
 import { followService } from '@/services/social/follow.service';
+import { logger } from '@/services/logger-service';
 
 /**
  * Profile Page Wrapper
@@ -44,10 +45,24 @@ const ProfilePageWrapper: React.FC = () => {
   
   const {
     user,
+    target,
+    viewer,
+    userCars,
     loading,
+    error,
     isOwnProfile,
-    setUser
+    setUser,
+    refresh
   } = useProfile(targetUserId);
+
+  const activeProfile = target ?? user;
+
+  const basePath = React.useMemo(() => {
+    if (isOwnProfile || !activeProfile?.uid) {
+      return '/profile';
+    }
+    return `/profile/${activeProfile.uid}`;
+  }, [activeProfile?.uid, isOwnProfile]);
   
   const [syncing, setSyncing] = React.useState(false);
   
@@ -56,39 +71,37 @@ const ProfilePageWrapper: React.FC = () => {
   const [followLoading, setFollowLoading] = React.useState(false);
   
   // Business mode check
-  const isBusinessMode = user?.accountType === 'business' || user?.accountType === 'dealer' || user?.accountType === 'company';
+  const isBusinessMode = activeProfile?.accountType === 'business' || activeProfile?.accountType === 'dealer' || activeProfile?.accountType === 'company';
   
   // ⚡ FIX: Check if following - with cleanup for promise
   // Only check if targetUserId is a valid user ID (not a route like 'settings', 'my-ads', etc.)
   React.useEffect(() => {
-    // Skip if no user, viewing own profile, no targetUserId, or targetUserId is a route name
-    const isRouteName = targetUserId && ['settings', 'my-ads', 'campaigns', 'analytics', 'consultations'].includes(targetUserId);
-    if (!user || isOwnProfile || !targetUserId || isRouteName) return;
-    
+    if (!viewer || !activeProfile || viewer.uid === activeProfile.uid) return;
+ 
     let cancelled = false;
-    
-    followService.isFollowing(user.uid, targetUserId)
+ 
+    followService.isFollowing(viewer.uid, activeProfile.uid)
       .then(result => {
         if (!cancelled) setIsFollowing(result);
       })
       .catch(error => {
         if (!cancelled) {
-          logger.error('Error checking follow status', error as Error, { userId: user.uid, targetUserId });
+          logger.error('Error checking follow status', error as Error, { viewerId: viewer.uid, targetId: activeProfile.uid });
         }
       });
-    
+ 
     return () => { cancelled = true; };
-  }, [user, isOwnProfile, targetUserId]);
+  }, [viewer, activeProfile]);
   
   // Google Sync Handler
   const handleGoogleSync = async () => {
-    if (!user) return;
+    if (!viewer || !isOwnProfile) return;
     setSyncing(true);
     try {
-      const updated = await googleProfileSyncService.syncProfileData(user.uid);
+      const updated = await googleProfileSyncService.syncProfileData(viewer.uid);
       if (updated) {
         setUser(prev => prev ? { ...prev, ...updated } : null);
-        alert(language === 'bg' ? 'Профилът е синхронизиран!' : 'Profile synced!');
+        await refresh();
       }
     } catch (error) {
       console.error('Sync error:', error);
@@ -98,24 +111,36 @@ const ProfilePageWrapper: React.FC = () => {
     }
   };
   
-  if (loading || !user) {
+  if (loading) {
     return (
       <div style={{ padding: '40px', textAlign: 'center' }}>
         {language === 'bg' ? 'Зареждане...' : 'Loading...'}
       </div>
     );
   }
+
+  if (error && !activeProfile) {
+    return (
+      <div style={{ padding: '40px', textAlign: 'center' }}>
+        {error}
+      </div>
+    );
+  }
+
+  if (!activeProfile) {
+    return null;
+  }
   
   // Handle follow/unfollow
   const handleFollow = async () => {
-    if (!user || !targetUserId) return;
+    if (!viewer || !activeProfile || viewer.uid === activeProfile.uid) return;
     setFollowLoading(true);
     try {
       if (isFollowing) {
-        await followService.unfollowUser(user.uid, targetUserId);
+        await followService.unfollowUser(viewer.uid, activeProfile.uid);
         setIsFollowing(false);
       } else {
-        await followService.followUser(user.uid, targetUserId);
+        await followService.followUser(viewer.uid, activeProfile.uid);
         setIsFollowing(true);
       }
     } catch (error) {
@@ -127,8 +152,8 @@ const ProfilePageWrapper: React.FC = () => {
   
   // Handle message
   const handleMessage = () => {
-    if (!targetUserId) return;
-    navigate(`/messages?userId=${targetUserId}`);
+    if (!activeProfile?.uid) return;
+    navigate(`/messages?userId=${activeProfile.uid}`);
   };
   
   return (
@@ -138,29 +163,29 @@ const ProfilePageWrapper: React.FC = () => {
       <S.PageContainer>
         {/* Tab Navigation */}
         <TabNavigation $themeColor={theme.primary}>
-          <TabNavLink to="/profile" end $themeColor={theme.primary}>
+          <TabNavLink to={basePath} end $themeColor={theme.primary}>
             <UserCircle size={16} />
             {language === 'bg' ? 'Профил' : 'Profile'}
           </TabNavLink>
           {isOwnProfile && (
             <>
-              <TabNavLink to="/profile/my-ads" $themeColor={theme.primary}>
+              <TabNavLink to={`${basePath}/my-ads`} $themeColor={theme.primary}>
                 <Car size={16} />
                 {language === 'bg' ? 'Моите обяви' : 'My Ads'}
               </TabNavLink>
-              <TabNavLink to="/profile/campaigns" $themeColor={theme.primary}>
+              <TabNavLink to={`${basePath}/campaigns`} $themeColor={theme.primary}>
                 <Megaphone size={16} />
                 {language === 'bg' ? 'Реклами' : 'Campaigns'}
               </TabNavLink>
-              <TabNavLink to="/profile/analytics" $themeColor={theme.primary}>
+              <TabNavLink to={`${basePath}/analytics`} $themeColor={theme.primary}>
                 <BarChart3 size={16} />
                 {language === 'bg' ? 'Статистика' : 'Analytics'}
               </TabNavLink>
-              <TabNavLink to="/profile/settings" $themeColor={theme.primary}>
+              <TabNavLink to={`${basePath}/settings`} $themeColor={theme.primary}>
                 <Shield size={16} />
                 {language === 'bg' ? 'Настройки' : 'Settings'}
               </TabNavLink>
-              <TabNavLink to="/profile/consultations" $themeColor={theme.primary}>
+              <TabNavLink to={`${basePath}/consultations`} $themeColor={theme.primary}>
                 <MessageCircle size={18} />
                 {language === 'bg' ? 'Консултации' : 'Consultations'}
               </TabNavLink>
@@ -169,9 +194,9 @@ const ProfilePageWrapper: React.FC = () => {
         </TabNavigation>
         
         {/* Cover Image - Only on main /profile page */}
-        {window.location.pathname === '/profile' && (
+        {window.location.pathname.replace(/\/$/, '') === basePath.replace(/\/$/, '') && isOwnProfile && (
           <CoverImageUploader
-            currentImageUrl={user.coverImage?.url}
+            currentImageUrl={activeProfile.coverImage?.url}
             themeColor={theme.primary}
             onUploadSuccess={(url) => {
               setUser(prev => prev ? { 
@@ -191,7 +216,7 @@ const ProfilePageWrapper: React.FC = () => {
         )}
         
         {/* Content Area - React Router will render child routes here */}
-        <Outlet />
+        <Outlet context={{ user: activeProfile, viewer, isOwnProfile, theme, userCars }} />
       </S.PageContainer>
     </S.ProfilePageContainer>
   );

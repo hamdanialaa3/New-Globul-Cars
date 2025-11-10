@@ -78,12 +78,21 @@ export interface ProfileCar {
 
 // Profile State Interface
 export interface ProfileState {
+  /**
+   * Target profile currently being viewed.
+   * For backwards compatibility, this is also exposed as `user`.
+   */
   user: BulgarianUser | null;
+  /**
+   * Authenticated viewer profile (may be null when not signed in).
+   */
+  viewer: BulgarianUser | null;
   userCars: ProfileCar[];
   loading: boolean;
   editing: boolean;
   formData: ProfileFormData;
   isOwnProfile: boolean; // NEW: to determine if viewing own profile
+  error?: string | null;
 }
 
 // Profile Actions Interface
@@ -100,6 +109,14 @@ export interface ProfileActions {
 // Combined Profile Hook Return Type
 export interface UseProfileReturn extends ProfileState, ProfileActions {
   loadUserCars?: () => void;
+  /**
+   * Alias for the target profile to make the API explicit during the migration.
+   */
+  target: BulgarianUser | null;
+  /**
+   * Force data reload (viewer + target).
+   */
+  refresh: () => Promise<void>;
   
   // NEW: Profile Type System
   profileType?: 'private' | 'dealer' | 'company';

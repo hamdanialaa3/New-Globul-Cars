@@ -9,35 +9,24 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 // Styled Components
 const LoginContainer = styled.div`
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--bg-primary);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
   position: relative;
   overflow: hidden;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
-    opacity: 0.3;
-  }
 `;
 
 const LoginCard = styled.div`
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--bg-card);
   backdrop-filter: blur(20px);
   border-radius: 24px;
   padding: 48px;
   width: 100%;
   max-width: 480px;
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border);
   position: relative;
   z-index: 1;
 `;
@@ -50,27 +39,24 @@ const LoginHeader = styled.div`
 const LoginIcon = styled.div`
   width: 80px;
   height: 80px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: var(--accent-primary);
   border-radius: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto 24px;
-  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+  box-shadow: var(--shadow-md);
 `;
 
 const LoginTitle = styled.h1`
-  color: #1c1e21;
+  color: var(--text-primary);
   font-size: 32px;
   font-weight: 800;
   margin: 0 0 8px 0;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
 `;
 
 const LoginSubtitle = styled.p`
-  color: #65676b;
+  color: var(--text-secondary);
   font-size: 16px;
   margin: 0;
   font-weight: 500;
@@ -82,7 +68,7 @@ const FormGroup = styled.div`
 
 const Label = styled.label`
   display: block;
-  color: #1c1e21;
+  color: var(--text-primary);
   font-size: 14px;
   font-weight: 600;
   margin-bottom: 8px;
@@ -165,15 +151,15 @@ const MessageContainer = styled.div<{ $type: 'success' | 'error' }>`
 `;
 
 const AdminInfo = styled.div`
-  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  background: var(--bg-secondary);
   border-radius: 16px;
   padding: 24px;
   margin-top: 24px;
-  border: 1px solid #dee2e6;
+  border: 1px solid var(--border);
 `;
 
 const AdminInfoTitle = styled.h3`
-  color: #1c1e21;
+  color: var(--text-primary);
   font-size: 18px;
   font-weight: 700;
   margin: 0 0 16px 0;
@@ -204,12 +190,12 @@ const AdminInfoLabel = styled.span`
 
 const AdminInfoValue = styled.span`
   font-size: 14px;
-  color: #1c1e21;
+  color: var(--text-primary);
   font-weight: 600;
 `;
 
 const SecurityBadge = styled.div`
-  background: linear-gradient(135deg, #28a745, #20c997);
+  background: var(--success);
   color: white;
   padding: 8px 16px;
   border-radius: 20px;

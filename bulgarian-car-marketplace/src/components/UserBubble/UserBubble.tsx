@@ -61,11 +61,6 @@ const BubbleWrapper = styled.div<{ $isOnline: boolean }>`
   &:hover {
     transform: translateY(-4px) scale(1.05);
     
-    .quick-actions {
-      opacity: 1;
-      pointer-events: all;
-    }
-    
     .hover-card {
       opacity: 1;
       visibility: visible;
@@ -181,44 +176,7 @@ const UserRole = styled.div<{ $type: string }>`
   margin-top: 2px;
 `;
 
-const QuickActions = styled.div`
-  position: absolute;
-  top: -12px;
-  right: -12px;
-  display: flex;
-  gap: 6px; /* ✅ More spacing */
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-  z-index: 50; /* ✅ Above avatar but below hover card */
-`;
 
-const QuickActionButton = styled.button<{ $variant?: 'primary' | 'secondary' }>`
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: none;
-  background: ${p => p.$variant === 'primary' 
-    ? 'linear-gradient(135deg, #FF7900 0%, #FF9533 100%)' 
-    : 'white'};
-  color: ${p => p.$variant === 'primary' ? 'white' : '#6c757d'};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  transition: all 0.2s ease;
-  
-  &:hover {
-    transform: scale(1.15);
-    box-shadow: 0 4px 12px rgba(255, 121, 0, 0.3);
-  }
-  
-  svg {
-    width: 16px;
-    height: 16px;
-  }
-`;
 
 const HoverCard = styled.div`
   position: absolute;
@@ -472,26 +430,6 @@ export const UserBubble: React.FC<UserBubbleProps> = ({
           <VerifiedBadge title="Verified User">
             <CheckCircle size={12} color="white" />
           </VerifiedBadge>
-        )}
-        
-        {size !== 'small' && (
-          <QuickActions className="quick-actions">
-            <QuickActionButton 
-              $variant={isFollowing ? 'secondary' : 'primary'}
-              onClick={handleFollow}
-              title={isFollowing ? 'Unfollow' : 'Follow'}
-            >
-              {isFollowing ? <UserCheck size={16} /> : <UserPlus size={16} />}
-            </QuickActionButton>
-            
-            <QuickActionButton 
-              $variant="secondary"
-              onClick={handleMessage}
-              title="Send Message"
-            >
-              <MessageCircle size={16} />
-            </QuickActionButton>
-          </QuickActions>
         )}
         
         {showHoverCard && showCard && (

@@ -4,7 +4,7 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import ProfilePageWrapper from './ProfilePageWrapper';
-import ProfileOverview from './ProfileOverview';
+import { ProfileOverview } from './tabs/ProfileOverview';
 import ProfileMyAds from './ProfileMyAds';
 import ProfileCampaigns from './ProfileCampaigns';
 import ProfileAnalytics from './ProfileAnalytics';

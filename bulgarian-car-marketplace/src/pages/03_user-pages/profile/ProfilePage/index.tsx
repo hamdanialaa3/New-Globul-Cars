@@ -149,16 +149,17 @@ const CompactHeader = styled.div<{ $themeColor?: string }>`
   align-items: center;
   gap: 16px;
   padding: 20px 24px;
-  background: linear-gradient(135deg, white 0%, #fafafa 100%);
+  background: var(--bg-card);
   border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-md);
   margin-bottom: 24px;
   ${css`animation: ${slideInFromLeft} 0.4s cubic-bezier(0.4, 0, 0.2, 1);`}
-  border: 1px solid ${props => props.$themeColor ? `${props.$themeColor}1A` : 'rgba(255, 121, 0, 0.1)'};
+  border: 1px solid var(--border-primary);
+  transition: all 0.3s ease;
   
   &:hover {
-    box-shadow: 0 6px 16px ${props => props.$themeColor ? `${props.$themeColor}26` : 'rgba(255, 121, 0, 0.15)'};
-    border-color: ${props => props.$themeColor ? `${props.$themeColor}4D` : 'rgba(255, 121, 0, 0.3)'};
+    box-shadow: var(--shadow-lg);
+    border-color: var(--border-secondary);
   }
 `;
 
@@ -167,9 +168,9 @@ const ProfileImageSmall = styled.img<{ $themeColor?: string }>`
   height: 60px;
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid ${props => props.$themeColor || '#FF7900'};
-  box-shadow: 0 4px 12px ${props => props.$themeColor ? `${props.$themeColor}66` : 'rgba(255, 121, 0, 0.4)'};
-  background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
+  border: 3px solid var(--accent-primary);
+  box-shadow: var(--shadow-md);
+  background: var(--bg-secondary);
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   
   /* ⚡ FIXED: Prevent flickering */
@@ -178,8 +179,8 @@ const ProfileImageSmall = styled.img<{ $themeColor?: string }>`
   transform: translateZ(0);
   
   &:hover {
-    transform: translateZ(0) scale(1.05);  /* ⚡ Simplified hover */
-    box-shadow: 0 6px 16px ${props => props.$themeColor ? `${props.$themeColor}99` : 'rgba(255, 121, 0, 0.5)'};
+    transform: translateZ(0) scale(1.05);
+    box-shadow: var(--shadow-lg);
   }
 `;
 
@@ -191,17 +192,13 @@ const UserInfo = styled.div`
 const UserName = styled.div`
   font-size: 0.75rem;
   font-weight: 700;
-  color: #212529;
+  color: var(--text-primary);
   margin-bottom: 4px;
-  background: linear-gradient(135deg, #212529 0%, #495057 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 `;
 
 const UserEmail = styled.div`
   font-size: 0.7rem;
-  color: #6c757d;
+  color: var(--text-secondary);
 `;
 
 // Quick Action Buttons
@@ -222,16 +219,16 @@ const QuickActionButton = styled.button<{ $variant?: 'primary' | 'secondary' | '
   font-size: 0.75rem;
   font-weight: 600;
   border: 1.5px solid ${props => {
-    if (props.$variant === 'success') return '#16a34a';
-    if (props.$variant === 'primary') return '#3b82f6';
-    return '#9ca3af';
+    if (props.$variant === 'success') return 'var(--success)';
+    if (props.$variant === 'primary') return 'var(--accent-primary)';
+    return 'var(--border-primary)';
   }};
   background: ${props => {
-    if (props.$variant === 'success') return 'linear-gradient(135deg, #16a34a 0%, #15803d 100%)';
-    if (props.$variant === 'primary') return 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)';
-    return 'white';
+    if (props.$variant === 'success') return 'var(--success)';
+    if (props.$variant === 'primary') return 'var(--accent-primary)';
+    return 'var(--bg-card)';
   }};
-  color: ${props => props.$variant ? 'white' : '#4b5563'};
+  color: ${props => props.$variant ? 'var(--text-inverse)' : 'var(--text-primary)'};
   border-radius: 16px;
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
@@ -300,6 +297,43 @@ const IconWrapper = styled.span<{ $color?: string; $size?: number }>`
   svg {
     width: ${props => props.$size || 18}px;
     height: ${props => props.$size || 18}px;
+  }
+`;
+
+// ==================== INFO ROW COMPONENT ====================
+// Reusable row component for contact information with icon + text/link
+const InfoRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border-radius: 6px;
+  transition: background 0.2s ease;
+  
+  &:hover {
+    background: var(--bg-secondary);
+  }
+  
+  .info-icon {
+    color: var(--accent-primary);
+    flex-shrink: 0;
+  }
+  
+  .info-link {
+    color: var(--text-primary);
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.2s ease;
+    
+    &:hover {
+      color: var(--accent-primary);
+      text-decoration: underline;
+    }
+  }
+  
+  .info-text {
+    color: var(--text-primary);
+    font-size: 0.95rem;
   }
 `;
 
@@ -560,21 +594,13 @@ const ProfilePage: React.FC = () => {
       
       <S.PageContainer>
         {/* Tab Navigation - 🎨 DYNAMIC Theme Colors with React Router NavLinks */}
+        {isOwnProfile && (
         <TabNavigation $themeColor={theme.primary}>
+          {/* Profile tab removed - not needed in navigation */}
           <TabNavLink 
-            to="/profile"
-            end
+            to="/my-listings"
             $themeColor={theme.primary}
           >
-            <UserCircle size={16} />
-            {language === 'bg' ? 'Профил' : 'Profile'}
-          </TabNavLink>
-          {isOwnProfile && (
-            <>
-              <TabNavLink 
-                to="/my-listings"
-                $themeColor={theme.primary}
-              >
                 <Car size={16} />
                 {language === 'bg' ? 'Моите обяви' : 'My Ads'}
               </TabNavLink>
@@ -599,16 +625,15 @@ const ProfilePage: React.FC = () => {
                 <Shield size={16} />
                 {language === 'bg' ? 'Настройки' : 'Settings'}
               </TabNavLink>
-              <TabNavLink 
-                to="/profile/consultations"
-                $themeColor={theme.primary}
-              >
-                <MessageCircle size={18} />
-                {language === 'bg' ? 'Консултации' : 'Consultations'}
-              </TabNavLink>
-            </>
-          )}
+          <TabNavLink 
+            to="/profile/consultations"
+            $themeColor={theme.primary}
+          >
+            <MessageCircle size={18} />
+            {language === 'bg' ? 'Консултации' : 'Consultations'}
+          </TabNavLink>
         </TabNavigation>
+        )}
         
         {/* Cover Image - 🔒 SECURITY: Only editable for own profile */}
         {isMainProfilePage && isOwnProfile && (
@@ -631,52 +656,8 @@ const ProfilePage: React.FC = () => {
         />
         )}
         
-        {/* Cover Image Display - 🔒 SECURITY: Read-only for viewing others */}
-        {activeTab === 'profile' && !isOwnProfile && user.coverImage?.url && (
-          <div style={{
-            width: '100%',
-            height: '300px',
-            borderRadius: '16px',
-            overflow: 'hidden',
-            marginBottom: '60px',
-            backgroundImage: `url(${user.coverImage.url})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            border: `2px solid ${theme.primary}4D`,
-            boxShadow: `0 8px 28px ${theme.primary}33`
-          }} />
-        )}
-        
-        {/* ❌ REMOVED: Quick Actions buttons (Add Listing, Edit Profile, Settings) per user request */}
-
-        {/* Compact Header for other tabs */}
-        {activeTab !== 'profile' && (
-          <CompactHeader $themeColor={theme.primary}>
-            <div style={{ 
-              width: '60px', 
-              height: '60px', 
-              flexShrink: 0,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}>
-              {/* ⚡ FIXED: Use proper size instead of scale() to prevent flickering */}
-              <LEDProgressAvatar
-                user={user}
-                profileType={profileType}
-                size={60}  // Direct size - no scaling!
-                showProgress={false}  // Hide progress text in compact mode
-              />
-            </div>
-            <UserInfo>
-              <UserName>{user.displayName || t('profile.anonymous')}</UserName>
-              <UserEmail>{user.email}</UserEmail>
-            </UserInfo>
-          </CompactHeader>
-        )}
-
-        {/* Profile Grid - Only for Profile tab */}
-        {activeTab === 'profile' && !isTransitioning && (
+        {/* Profile Grid */}
+        {location.pathname.includes('/profile') && (
           <AnimatedProfileGrid key="profile-tab">
             {/* Profile Sidebar - 🎨 DYNAMIC Theme Colors */}
             <S.ProfileSidebar $isBusinessMode={isBusinessMode} $themeColor={theme.primary}>
@@ -685,7 +666,7 @@ const ProfilePage: React.FC = () => {
               <div style={{ fontSize: '1.1rem', fontWeight: 'bold', marginBottom: '4px' }}>
                 {user.displayName || t('profile.anonymous')}
               </div>
-              <div style={{ color: '#666', fontSize: '0.85rem', marginBottom: '10px' }}>
+              <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginBottom: '10px' }}>
                 {user.email}
               </div>
                   </div>
@@ -730,7 +711,7 @@ const ProfilePage: React.FC = () => {
               )}
               
               {/* Followers/Following Count */}
-              <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', fontSize: '0.75rem', color: '#666', marginBottom: '10px' }}>
+              <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '10px' }}>
                 <div>
                   <strong>{user.stats?.followers || 0}</strong> {language === 'bg' ? 'Последователи' : 'Followers'}
                 </div>
@@ -784,7 +765,7 @@ const ProfilePage: React.FC = () => {
                   <div style={{
                     marginTop: '16px',
                     paddingTop: '16px',
-                    borderTop: '1px solid #e0e0e0',
+                    borderTop: '1px solid var(--border)',
                     display: 'flex',
                     flexDirection: 'column',
                     gap: '8px'
@@ -792,7 +773,7 @@ const ProfilePage: React.FC = () => {
                     <div style={{
                       fontSize: '0.75rem',
                       fontWeight: '600',
-                      color: '#666',
+                      color: 'var(--text-secondary)',
                       textTransform: 'uppercase',
                       letterSpacing: '0.5px',
                       marginBottom: '4px'
@@ -807,6 +788,7 @@ const ProfilePage: React.FC = () => {
                     }}>
                       {/* Instagram */}
                       <a
+                        key="instagram"
                         href="https://www.instagram.com/globulnet/"
                         target="_blank"
                         rel="noopener noreferrer"
@@ -815,20 +797,13 @@ const ProfilePage: React.FC = () => {
                           alignItems: 'center',
                           justifyContent: 'center',
                           padding: '10px',
-                          background: 'linear-gradient(135deg, #833AB4 0%, #FD1D1D 50%, #F77737 100%)',
+                          background: 'var(--bg-secondary)',
                           borderRadius: '8px',
-                          color: 'white',
+                          color: 'var(--text-primary)',
                           textDecoration: 'none',
-                          transition: 'all 0.3s ease',
-                          boxShadow: '0 2px 8px rgba(131, 58, 180, 0.3)'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.transform = 'translateY(-2px)';
-                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(131, 58, 180, 0.5)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.transform = 'translateY(0)';
-                          e.currentTarget.style.boxShadow = '0 2px 8px rgba(131, 58, 180, 0.3)';
+                          transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                          boxShadow: 'var(--shadow-sm)',
+                          border: '1px solid var(--border)'
                         }}
                         title="Instagram @globulnet"
                       >
@@ -839,6 +814,7 @@ const ProfilePage: React.FC = () => {
                       
                       {/* TikTok */}
                       <a
+                        key="tiktok"
                         href="https://www.tiktok.com/@globulnet"
                         target="_blank"
                         rel="noopener noreferrer"
@@ -847,20 +823,13 @@ const ProfilePage: React.FC = () => {
                           alignItems: 'center',
                           justifyContent: 'center',
                           padding: '10px',
-                          background: '#000000',
+                          background: 'var(--bg-secondary)',
                           borderRadius: '8px',
-                          color: 'white',
+                          color: 'var(--text-primary)',
                           textDecoration: 'none',
-                          transition: 'all 0.3s ease',
-                          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.transform = 'translateY(-2px)';
-                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.5)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.transform = 'translateY(0)';
-                          e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.3)';
+                          transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                          boxShadow: 'var(--shadow-sm)',
+                          border: '1px solid var(--border)'
                         }}
                         title="TikTok @globulnet"
                       >
@@ -871,6 +840,7 @@ const ProfilePage: React.FC = () => {
                       
                       {/* Facebook */}
                       <a
+                        key="facebook"
                         href="https://www.facebook.com/profile.php?id=109254638332601"
                         target="_blank"
                         rel="noopener noreferrer"
@@ -879,20 +849,13 @@ const ProfilePage: React.FC = () => {
                           alignItems: 'center',
                           justifyContent: 'center',
                           padding: '10px',
-                          background: '#1877F2',
+                          background: 'var(--bg-secondary)',
                           borderRadius: '8px',
-                          color: 'white',
+                          color: 'var(--text-primary)',
                           textDecoration: 'none',
-                          transition: 'all 0.3s ease',
-                          boxShadow: '0 2px 8px rgba(24, 119, 242, 0.3)'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.transform = 'translateY(-2px)';
-                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(24, 119, 242, 0.5)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.transform = 'translateY(0)';
-                          e.currentTarget.style.boxShadow = '0 2px 8px rgba(24, 119, 242, 0.3)';
+                          transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                          boxShadow: 'var(--shadow-sm)',
+                          border: '1px solid var(--border)'
                         }}
                         title="Facebook"
                       >
@@ -903,6 +866,7 @@ const ProfilePage: React.FC = () => {
                       
                       {/* Twitter/X */}
                       <a
+                        key="twitter"
                         href="https://twitter.com/globulnet"
                         target="_blank"
                         rel="noopener noreferrer"
@@ -911,20 +875,13 @@ const ProfilePage: React.FC = () => {
                           alignItems: 'center',
                           justifyContent: 'center',
                           padding: '10px',
-                          background: '#000000',
+                          background: 'var(--bg-secondary)',
                           borderRadius: '8px',
-                          color: 'white',
+                          color: 'var(--text-primary)',
                           textDecoration: 'none',
-                          transition: 'all 0.3s ease',
-                          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.transform = 'translateY(-2px)';
-                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.5)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.transform = 'translateY(0)';
-                          e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.3)';
+                          transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                          boxShadow: 'var(--shadow-sm)',
+                          border: '1px solid var(--border)'
                         }}
                         title="X (Twitter)"
                       >
@@ -935,6 +892,7 @@ const ProfilePage: React.FC = () => {
                       
                       {/* LinkedIn */}
                       <a
+                        key="linkedin"
                         href="https://www.linkedin.com/company/globulnet"
                         target="_blank"
                         rel="noopener noreferrer"
@@ -943,20 +901,13 @@ const ProfilePage: React.FC = () => {
                           alignItems: 'center',
                           justifyContent: 'center',
                           padding: '10px',
-                          background: '#0A66C2',
+                          background: 'var(--bg-secondary)',
                           borderRadius: '8px',
-                          color: 'white',
+                          color: 'var(--text-primary)',
                           textDecoration: 'none',
-                          transition: 'all 0.3s ease',
-                          boxShadow: '0 2px 8px rgba(10, 102, 194, 0.3)'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.transform = 'translateY(-2px)';
-                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(10, 102, 194, 0.5)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.transform = 'translateY(0)';
-                          e.currentTarget.style.boxShadow = '0 2px 8px rgba(10, 102, 194, 0.3)';
+                          transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                          boxShadow: 'var(--shadow-sm)',
+                          border: '1px solid var(--border)'
                         }}
                         title="LinkedIn"
                       >
@@ -967,6 +918,7 @@ const ProfilePage: React.FC = () => {
                       
                       {/* YouTube */}
                       <a
+                        key="youtube"
                         href="https://www.youtube.com/@globulnet"
                         target="_blank"
                         rel="noopener noreferrer"
@@ -975,20 +927,13 @@ const ProfilePage: React.FC = () => {
                           alignItems: 'center',
                           justifyContent: 'center',
                           padding: '10px',
-                          background: '#FF0000',
+                          background: 'var(--bg-secondary)',
                           borderRadius: '8px',
-                          color: 'white',
+                          color: 'var(--text-primary)',
                           textDecoration: 'none',
-                          transition: 'all 0.3s ease',
-                          boxShadow: '0 2px 8px rgba(255, 0, 0, 0.3)'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.transform = 'translateY(-2px)';
-                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(255, 0, 0, 0.5)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.transform = 'translateY(0)';
-                          e.currentTarget.style.boxShadow = '0 2px 8px rgba(255, 0, 0, 0.3)';
+                          transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                          boxShadow: 'var(--shadow-sm)',
+                          border: '1px solid var(--border)'
                         }}
                         title="YouTube"
                       >
@@ -1068,7 +1013,7 @@ const ProfilePage: React.FC = () => {
             {/* 🎯 UNIFIED: ProfileDashboard shows completion + stats + actions */}
             {isOwnProfile && (
               <S.ContentSection $themeColor={theme.primary} $isBusinessMode={isBusinessMode}>
-                <ProfileDashboard />
+                <ProfileDashboard user={user} />
             </S.ContentSection>
             )}
             
@@ -1087,36 +1032,36 @@ const ProfilePage: React.FC = () => {
                 </S.SectionHeader>
                 <div style={{ display: 'grid', gap: '12px' }}>
                   {user.businessPhone && (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px', background: '#f9f9f9', borderRadius: '8px' }}>
-                      <Phone size={16} color={theme.primary} />
-                      <a href={`tel:${user.businessPhone}`} style={{ color: '#1a1a1a', textDecoration: 'none', fontWeight: '500' }}>
+                    <InfoRow>
+                      <Phone size={16} className="info-icon" />
+                      <a href={`tel:${user.businessPhone}`} className="info-link">
                         {user.businessPhone}
                       </a>
-                    </div>
+                    </InfoRow>
                   )}
                   {user.businessEmail && (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px', background: '#f9f9f9', borderRadius: '8px' }}>
-                      <MessageCircle size={16} color={theme.primary} />
-                      <a href={`mailto:${user.businessEmail}`} style={{ color: '#1a1a1a', textDecoration: 'none', fontWeight: '500' }}>
+                    <InfoRow>
+                      <MessageCircle size={16} className="info-icon" />
+                      <a href={`mailto:${user.businessEmail}`} className="info-link">
                         {user.businessEmail}
                       </a>
-                    </div>
+                    </InfoRow>
                   )}
                   {user.website && (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px', background: '#f9f9f9', borderRadius: '8px' }}>
-                      <Building2 size={16} color={theme.primary} />
-                      <a href={user.website} target="_blank" rel="noopener noreferrer" style={{ color: '#1a1a1a', textDecoration: 'none', fontWeight: '500' }}>
+                    <InfoRow>
+                      <Building2 size={16} className="info-icon" />
+                      <a href={user.website} target="_blank" rel="noopener noreferrer" className="info-link">
                         {user.website}
                       </a>
-                    </div>
+                    </InfoRow>
                   )}
                   {user.businessAddress && (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px', background: '#f9f9f9', borderRadius: '8px' }}>
-                      <Home size={16} color={theme.primary} />
-                      <span style={{ color: '#1a1a1a', fontWeight: '500' }}>
+                    <InfoRow>
+                      <Home size={16} className="info-icon" />
+                      <span className="info-text">
                         {user.businessAddress}, {user.businessCity}
                       </span>
-                    </div>
+                    </InfoRow>
                   )}
                 </div>
               </S.ContentSection>
@@ -1156,30 +1101,30 @@ const ProfilePage: React.FC = () => {
               <S.ContentSection $themeColor={theme.primary}>
                 <S.SectionHeader>
                   <h2>{language === 'bg' ? 'Активни обяви' : 'Active Listings'}</h2>
-                  <span style={{ fontSize: '0.9rem', color: '#666' }}>
+                  <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
                     {userCars.length} {language === 'bg' ? 'автомобила' : 'cars'}
                   </span>
                 </S.SectionHeader>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '16px' }}>
                   {userCars.slice(0, 6).map(car => (
                     <div 
-                      key={car.id}
+                      key={car.id || `car-${Math.random()}`}
                       onClick={() => navigate(`/car/${car.id}`)}
                       style={{
-                        background: 'white',
+                        background: 'var(--bg-card)',
                         borderRadius: '8px',
                         overflow: 'hidden',
                         cursor: 'pointer',
-                        border: '1px solid #e0e0e0',
+                        border: '1px solid var(--border)',
                         transition: 'transform 0.2s, box-shadow 0.2s'
                       }}
                       onMouseEnter={(e) => {
                         e.currentTarget.style.transform = 'translateY(-4px)';
-                        e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
+                        e.currentTarget.style.boxShadow = 'var(--shadow-md)';
                       }}
                       onMouseLeave={(e) => {
                         e.currentTarget.style.transform = 'translateY(0)';
-                        e.currentTarget.style.boxShadow = 'none';
+                        e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
                       }}
                     >
                       <img 
@@ -1191,10 +1136,10 @@ const ProfilePage: React.FC = () => {
                         <div style={{ fontWeight: '600', marginBottom: '4px', fontSize: '0.95rem' }}>
                           {car.make} {car.model}
                         </div>
-                        <div style={{ color: '#666', fontSize: '0.85rem', marginBottom: '8px' }}>
+                        <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginBottom: '8px' }}>
                           {car.year} • {car.mileage?.toLocaleString()} km
                         </div>
-                        <div style={{ color: '#FF7900', fontWeight: '700', fontSize: '1.1rem' }}>
+                        <div style={{ color: 'var(--accent-primary)', fontWeight: '700', fontSize: '1.1rem' }}>
                           {car.price?.toLocaleString()} €
                         </div>
                       </div>
@@ -1241,9 +1186,9 @@ const ProfilePage: React.FC = () => {
         )}
 
         {/* Content for other tabs - Full width without sidebar */}
-        {activeTab !== 'profile' && !isTransitioning && (
-          <FullWidthContent key={`tab-${activeTab}`}>
-            {activeTab === 'myads' && (
+        {!location.pathname.includes('/profile') && (
+          <FullWidthContent>
+            {location.pathname.includes('/my-listings') && (
               <AnimatedTabContent>
                 {/* 🔒 SECURITY: My Ads only accessible for own profile */}
                 {isOwnProfile ? (
@@ -1284,7 +1229,7 @@ const ProfilePage: React.FC = () => {
               </AnimatedTabContent>
             )}
 
-            {activeTab === 'campaigns' && (
+            {location.pathname.includes('/campaigns') && (
               <AnimatedTabContent>
                 {/* 🔒 SECURITY: Campaigns only accessible for own profile */}
                 {isOwnProfile ? (
@@ -1311,7 +1256,7 @@ const ProfilePage: React.FC = () => {
               </AnimatedTabContent>
             )}
 
-            {activeTab === 'analytics' && (
+            {location.pathname.includes('/analytics') && (
               <AnimatedTabContent>
                 {/* 🔒 SECURITY: Analytics only accessible for own profile */}
                 {isOwnProfile ? (
@@ -1338,7 +1283,7 @@ const ProfilePage: React.FC = () => {
               </AnimatedTabContent>
             )}
 
-            {activeTab === 'settings' && (
+            {location.pathname.includes('/settings') && (
               <AnimatedTabContent>
                 {/* 🔒 SECURITY: Settings tab only accessible for own profile */}
                 {isOwnProfile ? (
@@ -1357,9 +1302,9 @@ const ProfilePage: React.FC = () => {
                       {editing ? (
                 <form onSubmit={(e) => { e.preventDefault(); handleSaveProfile(); }}>
                   {/* Account Type Selector */}
-                  <div style={{ marginBottom: '16px', padding: '12px', background: '#f9f9f9', borderRadius: '8px', border: '2px solid #e0e0e0' }}>
-                    <h4 style={{ margin: '0 0 10px 0', color: '#333', fontSize: '0.85rem', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <IconWrapper $color="#666" $size={16}><RefreshCw /></IconWrapper>
+                  <div style={{ marginBottom: '16px', padding: '12px', background: 'var(--bg-secondary)', borderRadius: '8px', border: '2px solid var(--border)' }}>
+                    <h4 style={{ margin: '0 0 10px 0', color: 'var(--text-primary)', fontSize: '0.85rem', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <IconWrapper $color="var(--text-secondary)" $size={16}><RefreshCw /></IconWrapper>
                       {language === 'bg' ? 'Тип на акаунта' : 'Account Type'}
                     </h4>
                     <div style={{ display: 'flex', gap: '12px', marginBottom: showAccountTypeWarning ? '12px' : '0' }}>
@@ -1370,9 +1315,9 @@ const ProfilePage: React.FC = () => {
                         style={{
                           flex: 1,
                           padding: '10px 16px',
-                                  border: `2px solid ${formData.accountType === 'business' ? theme.primary : '#ddd'}`,
-                                  background: formData.accountType === 'business' ? `${theme.primary}10` : 'white',
-                                  color: formData.accountType === 'business' ? theme.primary : '#666',
+                                  border: `2px solid ${formData.accountType === 'business' ? theme.primary : 'var(--border)'}`,
+                                  background: formData.accountType === 'business' ? `${theme.primary}10` : 'var(--bg-card)',
+                                  color: formData.accountType === 'business' ? theme.primary : 'var(--text-secondary)',
                           borderRadius: '6px',
                           cursor: 'pointer',
                           fontSize: '0.85rem',
@@ -1393,9 +1338,9 @@ const ProfilePage: React.FC = () => {
                         style={{
                           flex: 1,
                           padding: '10px 16px',
-                                  border: `2px solid ${formData.accountType === 'individual' ? theme.primary : '#ddd'}`,
-                                  background: formData.accountType === 'individual' ? `${theme.primary}10` : 'white',
-                                  color: formData.accountType === 'individual' ? theme.primary : '#666',
+                                  border: `2px solid ${formData.accountType === 'individual' ? theme.primary : 'var(--border)'}`,
+                                  background: formData.accountType === 'individual' ? `${theme.primary}10` : 'var(--bg-card)',
+                                  color: formData.accountType === 'individual' ? theme.primary : 'var(--text-secondary)',
                           borderRadius: '6px',
                           cursor: 'pointer',
                           fontSize: '0.85rem',
@@ -1414,11 +1359,11 @@ const ProfilePage: React.FC = () => {
                     {showAccountTypeWarning && (
                       <div style={{ 
                         padding: '8px 12px', 
-                        background: '#fff3cd', 
-                        border: '1px solid #ffc107', 
+                        background: 'var(--bg-secondary)', 
+                        border: '1px solid var(--border)', 
                         borderRadius: '4px',
                         fontSize: '0.75rem',
-                        color: '#856404',
+                        color: 'var(--text-secondary)',
                         animation: 'fadeIn 0.3s ease-in',
                         display: 'flex',
                         alignItems: 'flex-start',
@@ -1498,8 +1443,8 @@ const ProfilePage: React.FC = () => {
                   {/* Business Information - Only for Business Accounts */}
                   {formData.accountType === 'business' && (
                     <div style={{ marginBottom: '12px' }}>
-                      <h4 style={{ margin: '0 0 8px 0', color: '#666', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        <IconWrapper $color="#666" $size={14}><Building2 /></IconWrapper>
+                      <h4 style={{ margin: '0 0 8px 0', color: 'var(--text-secondary)', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <IconWrapper $color="var(--text-secondary)" $size={14}><Building2 /></IconWrapper>
                         {language === 'bg' ? 'Информация за фирмата' : 'Business Information'}
                       </h4>
                       <S.FormGrid>
@@ -1648,8 +1593,8 @@ const ProfilePage: React.FC = () => {
                   {/* Personal Information from ID - Only for Individual */}
                   {formData.accountType === 'individual' && (
                   <div style={{ marginBottom: '12px' }}>
-                    <h4 style={{ margin: '0 0 8px 0', color: '#666', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <IconWrapper $color="#666" $size={14}><UserCircle /></IconWrapper>
+                    <h4 style={{ margin: '0 0 8px 0', color: 'var(--text-secondary)', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <IconWrapper $color="var(--text-secondary)" $size={14}><UserCircle /></IconWrapper>
                       {language === 'bg' ? 'Лична информация (от лична карта)' : 'Personal Information (from ID card)'}
                     </h4>
                   <S.FormGrid>
@@ -1694,8 +1639,8 @@ const ProfilePage: React.FC = () => {
 
                   {/* Contact Information */}
                   <div style={{ marginBottom: '12px' }}>
-                    <h4 style={{ margin: '0 0 8px 0', color: '#666', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <IconWrapper $color="#666" $size={14}><Phone /></IconWrapper>
+                    <h4 style={{ margin: '0 0 8px 0', color: 'var(--text-secondary)', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <IconWrapper $color="var(--text-secondary)" $size={14}><Phone /></IconWrapper>
                       {language === 'bg' ? 'Контактна информация' : 'Contact Information'}
                     </h4>
                     <S.FormGrid>
@@ -1727,8 +1672,8 @@ const ProfilePage: React.FC = () => {
 
                   {/* Address Information */}
                   <div style={{ marginBottom: '12px' }}>
-                    <h4 style={{ margin: '0 0 8px 0', color: '#666', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <IconWrapper $color="#666" $size={14}><Home /></IconWrapper>
+                    <h4 style={{ margin: '0 0 8px 0', color: 'var(--text-secondary)', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <IconWrapper $color="var(--text-secondary)" $size={14}><Home /></IconWrapper>
                       {language === 'bg' ? 'Адресна информация' : 'Address Information'}
                     </h4>
                     <S.FormGrid>
@@ -1773,8 +1718,8 @@ const ProfilePage: React.FC = () => {
 
                   {/* Other */}
                   <div style={{ marginBottom: '12px' }}>
-                    <h4 style={{ margin: '0 0 8px 0', color: '#666', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <IconWrapper $color="#666" $size={14}><SettingsIcon /></IconWrapper>
+                    <h4 style={{ margin: '0 0 8px 0', color: 'var(--text-secondary)', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <IconWrapper $color="var(--text-secondary)" $size={14}><SettingsIcon /></IconWrapper>
                       {language === 'bg' ? 'Други настройки' : 'Other Settings'}
                     </h4>
                     <S.FormGroup>
@@ -2097,7 +2042,7 @@ const ProfilePage: React.FC = () => {
                           {user?.bio && (
                     <div style={{ marginTop: '2rem' }}>
                       <strong>{t('profile.bio')}:</strong>
-                              <p style={{ marginTop: '0.5rem', color: '#666' }}>{user?.bio}</p>
+                              <p style={{ marginTop: '0.5rem', color: 'var(--text-secondary)' }}>{user?.bio}</p>
                     </div>
                   )}
                 </div>
@@ -2190,7 +2135,7 @@ const ProfilePage: React.FC = () => {
               </AnimatedTabContent>
             )}
 
-            {activeTab === 'consultations' && (
+            {location.pathname.includes('/consultations') && (
               <AnimatedTabContent>
                 <ConsultationsTab 
                   userId={targetUserId || user?.uid || ''}

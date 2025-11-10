@@ -13,18 +13,18 @@
   "categories": ["shopping", "business", "lifestyle"],
   "icons": [
     {
-      "src": "favicon.ico",
+      "src": "Logo1.png",
       "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
+      "type": "image/png"
     },
     {
-      "src": "logo-new.png",
+      "src": "Logo1.png",
       "type": "image/png",
       "sizes": "192x192",
       "purpose": "any maskable"
     },
     {
-      "src": "logo-new.png",
+      "src": "Logo1.png",
       "type": "image/png",
       "sizes": "512x512",
       "purpose": "any maskable"
@@ -38,7 +38,7 @@
       "url": "/sell-car",
       "icons": [
         {
-          "src": "logo192.png",
+          "src": "Logo1.png",
           "sizes": "192x192"
         }
       ]
@@ -50,7 +50,7 @@
       "url": "/messages",
       "icons": [
         {
-          "src": "logo192.png",
+          "src": "Logo1.png",
           "sizes": "192x192"
         }
       ]
@@ -62,7 +62,7 @@
       "url": "/dashboard",
       "icons": [
         {
-          "src": "logo192.png",
+          "src": "Logo1.png",
           "sizes": "192x192"
         }
       ]

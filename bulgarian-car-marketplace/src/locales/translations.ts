@@ -1026,6 +1026,114 @@ export const translations = {
       logout: 'Изход'
     },
     
+    // 🆕 Comprehensive Settings Section
+    settings: {
+      title: 'Настройки',
+      
+      // Section Titles
+      account: 'Настройки на акаунта',
+      privacy: 'Поверителност',
+      notifications: 'Известия',
+      appearance: 'Изглед и дисплей',
+      security: 'Сигурност и вход',
+      carPreferences: 'Предпочитания за коли',
+      business: 'Бизнес информация',
+      dealerInfo: 'Информация за дилъра',
+      companyInfo: 'Информация за компанията',
+      dataExport: 'Данни и експорт',
+      
+      // Save Actions
+      saveSuccess: 'Настройките са запазени успешно',
+      saveError: 'Грешка при запазване на настройките',
+      
+      // Account Settings
+      displayName: 'Име за показване',
+      displayNamePlaceholder: 'Въведете вашето име',
+      email: 'Имейл адрес',
+      emailHelp: 'Използва се за вход и известия',
+      phone: 'Телефонен номер',
+      bio: 'Биография',
+      bioPlaceholder: 'Разкажете на другите за себе си...',
+      bioHelp: 'Кратко описание, видимо във вашия профил',
+      language: 'Език',
+      
+      // Privacy Settings
+      profileVisibility: 'Видимост на профила',
+      public: 'Публичен',
+      publicHelp: 'Всеки може да вижда вашия профил',
+      registered: 'Само регистрирани потребители',
+      registeredHelp: 'Само влезли потребители могат да виждат',
+      private: 'Личен',
+      privateHelp: 'Само вие можете да виждате вашия профил',
+      showPhone: 'Покажи телефонен номер',
+      showPhoneHelp: 'Видим в обявите ви',
+      showEmail: 'Покажи имейл адрес',
+      showEmailHelp: 'Видим във вашия профил',
+      showLastSeen: 'Покажи последно видян',
+      showLastSeenHelp: 'Позволете на другите да знаят кога сте били активни последно',
+      allowMessages: 'Разреши съобщения',
+      allowMessagesHelp: 'Купувачите могат да се свържат с вас директно',
+      allowCallbacks: 'Разреши обратни обаждания',
+      showActivity: 'Покажи статус на активност',
+      showActivityHelp: 'Покажи вашия онлайн/офлайн статус',
+      
+      // Notification Settings
+      channels: 'Канали за известия',
+      emailNotifications: 'Имейл известия',
+      emailNotificationsHelp: 'Получавайте актуализации по имейл',
+      smsNotifications: 'SMS известия',
+      smsNotificationsHelp: 'Получавайте SMS за важни актуализации',
+      pushNotifications: 'Push известия',
+      pushNotificationsHelp: 'Браузърни push известия',
+      notificationTypes: 'Какво да се известява',
+      newMessages: 'Нови съобщения',
+      priceAlerts: 'Сигнали за намаление на цена',
+      favoriteUpdates: 'Актуализации на любими коли',
+      newListings: 'Нови обяви, съвпадащи с критерии',
+      promotions: 'Промоции и оферти',
+      newsletter: 'Бюлетин',
+      marketing: 'Маркетингови известия',
+      
+      // Appearance Settings
+      theme: 'Тема',
+      light: 'Светла',
+      dark: 'Тъмна',
+      auto: 'Автоматична',
+      currency: 'Валута',
+      currencyHelp: 'Валута за показване на цени (само EUR в България)',
+      dateFormat: 'Формат на дата',
+      compactView: 'Компактен изглед',
+      compactViewHelp: 'Покажи повече съдържание на екрана',
+      
+      // Security Settings
+      twoFactor: 'Двуфакторна автентикация',
+      twoFactorHelp: 'Добави допълнителна сигурност към акаунта си',
+      loginAlerts: 'Сигнали за вход',
+      loginAlertsHelp: 'Получавай известие при нови входове',
+      sessionTimeout: 'Време на изчакване на сесия',
+      sessionTimeoutHelp: 'Автоматично излизане след неактивност',
+      minutes: 'минути',
+      hour: 'час',
+      hours: 'часа',
+      logoutAllDevices: 'Излез от всички устройства',
+      
+      // Car Preferences
+      priceRange: 'Предпочитан ценови диапазон (EUR)',
+      searchRadius: 'Радиус на търсене (km)',
+      searchRadiusHelp: 'Радиус по подразбиране за търсения базирани на местоположение',
+      
+      // Data & Export
+      downloadData: 'Изтегли твоите данни',
+      downloadDataHelp: 'Получи копие на всички твои данни включително обяви, съобщения и активност',
+      exportData: 'Заяви експорт на данни',
+      exportStarted: 'Експортът на данни е стартиран. Скоро ще получите имейл.',
+      deleteAccount: 'Изтрий акаунт',
+      deleteAccountWarning: 'Изтрий окончателно акаунта си и всички свързани данни. Това действие не може да бъде отменено.',
+      deleteMyAccount: 'Изтрий моя акаунт',
+      deleteAccountConfirm: 'Сигурни ли сте, че искате да изтриете акаунта си? Това действие не може да бъде отменено.',
+      deleteAccountContact: 'Моля, свържете се с поддръжката, за да изтриете акаунта си.'
+    },
+    
     // Social Feed System
     feed: {
       title: 'Новини от общността',
@@ -2149,6 +2257,115 @@ export const translations = {
       
       // Actions
       logout: 'Logout'
+    },
+    
+    // 🆕 Comprehensive Settings Section (English)
+    settings: {
+      title: 'Settings',
+      
+      // Section Titles
+      account: 'Account Settings',
+      privacy: 'Privacy',
+      notifications: 'Notifications',
+      appearance: 'Appearance & Display',
+      security: 'Security & Login',
+      carPreferences: 'Car Preferences',
+      business: 'Business Information',
+      dealerInfo: 'Dealership Information',
+      companyInfo: 'Company Information',
+      dataExport: 'Data & Export',
+      
+      // Save Actions
+      saveSuccess: 'Settings saved successfully',
+      saveError: 'Error saving settings',
+      
+      // Account Settings
+      displayName: 'Display Name',
+      displayNamePlaceholder: 'Enter your display name',
+      email: 'Email Address',
+      emailHelp: 'Used for login and notifications',
+      phone: 'Phone Number',
+      bio: 'Bio',
+      bioPlaceholder: 'Tell others about yourself...',
+      bioHelp: 'Brief description visible on your profile',
+      language: 'Language',
+      
+      // Privacy Settings
+      profileVisibility: 'Profile Visibility',
+      public: 'Public',
+      publicHelp: 'Anyone can see your profile',
+      registered: 'Registered Users Only',
+      registeredHelp: 'Only logged-in users can see',
+      private: 'Private',
+      privateHelp: 'Only you can see your profile',
+      showPhone: 'Show Phone Number',
+      showPhoneHelp: 'Visible on your listings',
+      showEmail: 'Show Email Address',
+      showEmailHelp: 'Visible on your profile',
+      showLastSeen: 'Show Last Seen',
+      showLastSeenHelp: 'Let others know when you were last active',
+      allowMessages: 'Allow Messages',
+      allowMessagesHelp: 'Buyers can contact you directly',
+      allowCallbacks: 'Allow Callbacks',
+      showActivity: 'Show Activity Status',
+      showActivityHelp: 'Display your online/offline status',
+      
+      // Notification Settings
+      channels: 'Notification Channels',
+      emailNotifications: 'Email Notifications',
+      emailNotificationsHelp: 'Receive updates via email',
+      smsNotifications: 'SMS Notifications',
+      smsNotificationsHelp: 'Receive SMS for important updates',
+      pushNotifications: 'Push Notifications',
+      pushNotificationsHelp: 'Browser push notifications',
+      notificationTypes: 'What to Notify',
+      newMessages: 'New Messages',
+      priceAlerts: 'Price Drop Alerts',
+      favoriteUpdates: 'Favorite Car Updates',
+      newListings: 'New Listings Matching Criteria',
+      promotions: 'Promotions & Deals',
+      newsletter: 'Newsletter',
+      marketing: 'Marketing Communications',
+      
+      // Appearance Settings
+      theme: 'Theme',
+      light: 'Light',
+      dark: 'Dark',
+      auto: 'Auto',
+      currency: 'Currency',
+      currencyHelp: 'Price display currency (EUR only in Bulgaria)',
+      dateFormat: 'Date Format',
+      compactView: 'Compact View',
+      compactViewHelp: 'Show more content on screen',
+      
+      // Security Settings
+      twoFactor: 'Two-Factor Authentication',
+      twoFactorHelp: 'Add extra security to your account',
+      loginAlerts: 'Login Alerts',
+      loginAlertsHelp: 'Get notified of new logins',
+      sessionTimeout: 'Session Timeout',
+      sessionTimeoutHelp: 'Auto-logout after inactivity',
+      minutes: 'minutes',
+      hour: 'hour',
+      hours: 'hours',
+      changePassword: 'Change Password',
+      logoutAllDevices: 'Logout from All Devices',
+      
+      // Car Preferences
+      priceRange: 'Preferred Price Range (EUR)',
+      searchRadius: 'Search Radius (km)',
+      searchRadiusHelp: 'Default radius for location-based searches',
+      
+      // Data & Export
+      downloadData: 'Download Your Data',
+      downloadDataHelp: 'Get a copy of all your data including listings, messages, and activity',
+      exportData: 'Request Data Export',
+      exportStarted: 'Data export started. You will receive an email shortly.',
+      deleteAccount: 'Delete Account',
+      deleteAccountWarning: 'Permanently delete your account and all associated data. This action cannot be undone.',
+      deleteMyAccount: 'Delete My Account',
+      deleteAccountConfirm: 'Are you sure you want to delete your account? This action cannot be undone.',
+      deleteAccountContact: 'Please contact support to delete your account.'
     },
     
     // Social Feed System

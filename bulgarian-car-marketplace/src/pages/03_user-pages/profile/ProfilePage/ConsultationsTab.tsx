@@ -26,12 +26,18 @@ const Container = styled.div`
 `;
 
 const ExpertCard = styled.div`
-  background: linear-gradient(135deg, #fff9f0 0%, #fffbf5 100%);
+  background: var(--bg-card);
   border-radius: 16px;
   padding: 24px;
   margin-bottom: 24px;
-  border: 2px solid rgba(255, 215, 0, 0.2);
-  box-shadow: 0 4px 16px rgba(255, 143, 16, 0.08);
+  border: 2px solid var(--border-primary);
+  box-shadow: var(--shadow-md);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    box-shadow: var(--shadow-lg);
+    border-color: var(--border-secondary);
+  }
 `;
 
 const ExpertHeader = styled.div`
@@ -41,20 +47,20 @@ const ExpertHeader = styled.div`
   margin-bottom: 20px;
   
   svg {
-    color: #FF7900;
+    color: var(--accent-primary);
   }
   
   h3 {
     margin: 0 0 4px 0;
     font-size: 1.3rem;
     font-weight: 700;
-    color: #212529;
+    color: var(--text-primary);
   }
   
   p {
     margin: 0;
     font-size: 0.9rem;
-    color: #6c757d;
+    color: var(--text-secondary);
   }
 `;
 
@@ -75,13 +81,13 @@ const StatBox = styled.div`
   .value {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #FF7900;
+    color: var(--accent-primary);
     margin-bottom: 4px;
   }
   
   .label {
     font-size: 0.75rem;
-    color: #6c757d;
+    color: var(--text-secondary);
     text-transform: uppercase;
   }
 `;
@@ -90,8 +96,8 @@ const RequestButton = styled.button`
   width: 100%;
   padding: 16px;
   border: none;
-  background: linear-gradient(135deg, #FF7900 0%, #FF9533 100%);
-  color: white;
+  background: var(--accent-primary);
+  color: var(--text-inverse);
   border-radius: 12px;
   font-size: 1rem;
   font-weight: 600;
@@ -102,11 +108,12 @@ const RequestButton = styled.button`
   gap: 10px;
   margin-bottom: 24px;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(255, 121, 0, 0.3);
+  box-shadow: var(--shadow-md);
   
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(255, 121, 0, 0.4);
+    box-shadow: var(--shadow-lg);
+    opacity: 0.9;
   }
 `;
 
@@ -114,23 +121,23 @@ const ConsultationsList = styled.div`
   h3 {
     font-size: 1.2rem;
     font-weight: 700;
-    color: #212529;
+    color: var(--text-primary);
     margin: 0 0 20px 0;
   }
 `;
 
 const ConsultationCard = styled.div`
-  background: white;
+  background: var(--bg-card);
   border-radius: 12px;
   padding: 20px;
   margin-bottom: 16px;
-  border: 1px solid #e9ecef;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--border-primary);
+  box-shadow: var(--shadow-sm);
   transition: all 0.3s ease;
   
   &:hover {
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-    border-color: #FF8F10;
+    box-shadow: var(--shadow-md);
+    border-color: var(--accent-primary);
   }
 `;
 
@@ -282,6 +289,14 @@ const ConsultationsTab: React.FC<ConsultationsTabProps> = ({
   
   const loadConsultations = async () => {
     try {
+      // ✅ CRITICAL FIX: Guard against null/undefined userId
+      if (!userId || typeof userId !== 'string' || userId.trim() === '') {
+        console.warn('[ConsultationsTab] loadConsultations called with invalid userId', { userId });
+        setConsultations([]);
+        setLoading(false);
+        return;
+      }
+
       setLoading(true);
       
       const [userConsults, expertConsults] = await Promise.all([

@@ -116,11 +116,18 @@ const FavoriteCard = styled.div<{ view: 'grid' | 'list' }>`
 const CarImage = styled.div<{ view: 'grid' | 'list'; image: string }>`
   width: ${props => props.view === 'list' ? '300px' : '100%'};
   height: ${props => props.view === 'list' ? '200px' : '220px'};
-  background-image: url(${props => props.image});
-  background-size: cover;
-  background-position: center;
+  background: var(--bg-secondary);
   position: relative;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 `;
 
 const PriceDropBadge = styled.div`

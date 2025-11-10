@@ -45,7 +45,8 @@ const SectionContainer = styled.section`
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(248, 249, 250, 0.7);
+    background: var(--bg-primary);
+    opacity: 0.8;
     z-index: 0;
   }
   
@@ -68,7 +69,7 @@ const SectionHeader = styled.div`
 const SectionTitle = styled.h2`
   font-size: 1.75rem;
   font-weight: 700;
-  color: #212529;
+  color: var(--text-primary);
   margin-bottom: 0.75rem;
   line-height: 1.3;
   
@@ -83,7 +84,7 @@ const SectionTitle = styled.h2`
 
 const SectionSubtitle = styled.p`
   font-size: 0.95rem;
-  color: #6c757d;
+  color: var(--text-secondary);
   max-width: 600px;
   margin: 0 auto;
   line-height: 1.6;
@@ -111,8 +112,8 @@ const BrandsGrid = styled.div`
 `;
 
 const BrandCard = styled.button`
-  background: white;
-  border: 2px solid #e0e0e0;
+  background: var(--bg-card);
+  border: 2px solid var(--border);
   border-radius: 16px;
   padding: 1.5rem 1rem;
   cursor: pointer;
@@ -132,19 +133,19 @@ const BrandCard = styled.button`
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, rgba(255, 143, 16, 0.1) 0%, rgba(255, 223, 0, 0.05) 100%);
+    background: var(--accent-orange);
     opacity: 0;
     transition: opacity 0.3s ease;
   }
   
   &:hover::before {
-    opacity: 1;
+    opacity: 0.1;
   }
   
   &:hover {
     transform: translateY(-8px);
-    box-shadow: 0 12px 40px rgba(255, 143, 16, 0.3);
-    border-color: #FF8F10;
+    box-shadow: var(--shadow-lg);
+    border-color: var(--accent-orange);
   }
   
   &:active {
@@ -177,7 +178,7 @@ const LogoContainer = styled.div`
 const BrandName = styled.div`
   font-size: 0.875rem;
   font-weight: 600;
-  color: #212529;
+  color: var(--text-primary);
   text-align: center;
   position: relative;
   z-index: 1;
@@ -191,7 +192,7 @@ const BrandName = styled.div`
 // ✅ Removed CarCount component - no need to display car counts
 
 const ViewMoreButton = styled.button`
-  background: linear-gradient(135deg, #FF8F10 0%, #FFDF00 100%);
+  background: var(--accent-orange);
   color: #000000;
   border: none;
   border-radius: 8px;
@@ -202,11 +203,12 @@ const ViewMoreButton = styled.button`
   transition: all 0.3s ease;
   margin: 0 auto;
   display: block;
-  box-shadow: 0 4px 12px rgba(255, 143, 16, 0.3);
+  box-shadow: var(--shadow-md);
   
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(255, 143, 16, 0.4);
+    box-shadow: var(--shadow-lg);
+    opacity: 0.9;
   }
   
   &:active {

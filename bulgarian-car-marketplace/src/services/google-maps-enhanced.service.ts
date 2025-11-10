@@ -14,7 +14,7 @@
 
 import { serviceLogger } from './logger-wrapper';
 
-const API_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY || 'AIzaSyAUYM_qygK5pUrlXtdDLmEi-_Kh9SyvRmk';
+const API_KEY = process.env.REACT_APP_GOOGLE_BROWSER_KEY || process.env.REACT_APP_GOOGLE_MAPS_API_KEY || 'AIzaSyAchmKCk8ipzv0dDwbQ2xU1Pa6o4CQsEu8';
 
 // Validate API key
 if (!API_KEY || API_KEY === 'YOUR_GOOGLE_MAPS_API_KEY') {

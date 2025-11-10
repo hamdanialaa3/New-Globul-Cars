@@ -22,7 +22,8 @@ const FeaturesSection = styled.section`
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(230, 243, 255, 0.72);
+    background: var(--bg-primary);
+    opacity: 0.8;
     z-index: 0;
   }
   
@@ -44,14 +45,14 @@ const SectionHeader = styled.div`
   h2 {
     font-size: 1.75rem;
     font-weight: 700;
-    color: #212529;
+    color: var(--text-primary);
     margin-bottom: 0.75rem;
     line-height: 1.3;
   }
 
   p {
     font-size: 0.95rem;
-    color: #6c757d;
+    color: var(--text-secondary);
     line-height: 1.6;
     max-width: 600px;
     margin: 0 auto;
@@ -97,23 +98,23 @@ const FeaturesGrid = styled.div`
 `;
 
 const FeatureCard = styled.div`
-  background: white;
+  background: var(--bg-card);
   padding: 1.5rem;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-sm);
   text-align: center;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--border);
 
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 20px rgba(255, 143, 16, 0.15);
-    border-color: #FF8F10;
+    box-shadow: var(--shadow-lg);
+    border-color: var(--accent-orange);
   }
 
   .icon {
     font-size: 2rem;
-    color: #FF8F10;
+    color: var(--accent-orange);
     margin-bottom: 1rem;
     font-weight: 600;
   }
@@ -121,13 +122,13 @@ const FeatureCard = styled.div`
   h3 {
     font-size: 1.125rem;
     font-weight: 600;
-    color: #212529;
+    color: var(--text-primary);
     margin-bottom: 0.75rem;
     line-height: 1.4;
   }
 
   p {
-    color: #6c757d;
+    color: var(--text-secondary);
     line-height: 1.6;
     font-size: 0.875rem;
   }

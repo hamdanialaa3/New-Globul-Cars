@@ -11,7 +11,7 @@ import { db } from '@/firebase/firebase-config';
 import { getAuth } from 'firebase/auth';
 import { usersReportService } from '@/services/reports/users-report-service';
 import { carsReportService } from '@/services/reports/cars-report-service';
-import { Download, FileSpreadsheet, FileJson } from 'lucide-react';
+import { Download, FileSpreadsheet, FileJson, Users } from 'lucide-react';
 
 // Import components
 import AdminHeader from '@/components/SuperAdmin/AdminHeader';
@@ -71,6 +71,24 @@ const LoadingMessage = styled.div`
   line-height: 1.6;
 `;
 
+const ActionButton = styled.button`
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border: none;
+  padding: 12px 32px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+  }
+`;
+
 const LoginButton = styled.button`
   background: linear-gradient(135deg, #667eea, #764ba2);
   color: white;
@@ -106,6 +124,7 @@ const SuperAdminDashboard: React.FC = () => {
   useEffect(() => {
     let cancelled = false;
     let hasNavigated = false;
+    let hasWarned = false;
     
     const initializeDashboard = async () => {
       try {
@@ -132,7 +151,10 @@ const SuperAdminDashboard: React.FC = () => {
           const currentUser = auth.currentUser;
 
           if (!currentUser || currentUser.email !== 'alaa.hamdani@yahoo.com') {
-            console.warn('⚠️ Not signed into Firebase as the unique owner.');
+            if (!hasWarned) {
+              console.warn('⚠️ Not signed into Firebase as the unique owner.');
+              hasWarned = true;
+            }
             if (!cancelled && !hasNavigated) {
               hasNavigated = true;
               setIsOwnerAuthed(false);
@@ -377,7 +399,30 @@ const SuperAdminDashboard: React.FC = () => {
         )}
 
         {activeTab === 'users' && (
-          <AdvancedUserManagement />
+          <div style={{ textAlign: 'center', padding: '2rem' }}>
+            <h2 style={{ color: '#ffd700', marginBottom: '1rem' }}>إدارة المستخدمين المتقدمة</h2>
+            <p style={{ color: '#aaa', marginBottom: '2rem' }}>تحكم كامل في جميع المستخدمين والمشتركين والمدراء</p>
+            <ActionButton 
+              onClick={() => navigate('/super-admin/users')}
+              style={{ 
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                color: 'white',
+                padding: '1rem 2rem',
+                fontSize: '1.1rem',
+                fontWeight: '600',
+                border: 'none',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem'
+              }}
+            >
+              <Users size={20} />
+              فتح صفحة إدارة المستخدمين
+            </ActionButton>
+          </div>
         )}
 
         {activeTab === 'permissions' && (
@@ -461,6 +506,12 @@ const SuperAdminDashboard: React.FC = () => {
               <LinkIcon>📊</LinkIcon>
               <LinkName>AI Dashboard</LinkName>
               <LinkDesc>لوحة تحكم الذكاء الاصطناعي</LinkDesc>
+            </LinkCard>
+            
+            <LinkCard onClick={() => navigate('/admin/ai-quotas')}>
+              <LinkIcon>⚙️</LinkIcon>
+              <LinkName>AI Quotas Manager</LinkName>
+              <LinkDesc>إدارة حصص المستخدمين</LinkDesc>
             </LinkCard>
             
             <LinkCard onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/firestore/databases/-default-/data/~2Fai_quotas', '_blank')}>

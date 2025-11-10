@@ -1,14 +1,12 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from '@/hooks/useTranslation';
 import { bulgarianAuthService } from '@/firebase/index';
-// ✅ NEW: Import from canonical types
 import type { BulgarianUser } from '@/types/user/bulgarian-user.types';
-// Removed unused car-service imports
 import { useToast } from '@/components/Toast';
-import { useProfileType } from '@/contexts/ProfileTypeContext';  // NEW: Profile Type System
+import { useProfileType } from '@/contexts/ProfileTypeContext';
 import { validateProfileData } from '@/utils/validation';
 import { doc, onSnapshot } from 'firebase/firestore';
-import { db, auth } from '@/firebase/firebase-config';
+import { auth, db } from '@/firebase/firebase-config';
 import carListingService from '@/services/carListingService';
 import { logger } from '@/services/logger-service';
 import {
@@ -17,182 +15,206 @@ import {
   UseProfileReturn
 } from '../types';
 
+const DEFAULT_STATS = {
+  totalListings: 0,
+  activeListings: 0,
+  totalViews: 0,
+  totalMessages: 0,
+  trustScore: 0
+};
+
+const DEFAULT_VERIFICATION = {
+  email: false,
+  phone: false,
+  id: false,
+  business: false
+};
+
+const RESERVED_ROUTES = ['settings', 'my-ads', 'campaigns', 'analytics', 'consultations'];
+
+const normalizeUser = (raw: BulgarianUser | null): BulgarianUser | null => {
+  if (!raw) return null;
+  return {
+    ...raw,
+    profileType: raw.profileType ?? 'private',
+    planTier: raw.planTier ?? 'free',
+    stats: { ...DEFAULT_STATS, ...raw.stats },
+    verification: { ...DEFAULT_VERIFICATION, ...raw.verification }
+  };
+};
+
+const buildFormData = (profile: BulgarianUser | null): ProfileFormData => ({
+  accountType: (profile as any)?.accountType || 'individual',
+  firstName: (profile as any)?.firstName || '',
+  lastName: (profile as any)?.lastName || '',
+  middleName: (profile as any)?.middleName || '',
+  dateOfBirth: (profile as any)?.dateOfBirth || '',
+  placeOfBirth: (profile as any)?.placeOfBirth || '',
+  businessName: (profile as any)?.businessName || '',
+  bulstat: (profile as any)?.bulstat || '',
+  vatNumber: (profile as any)?.vatNumber || '',
+  businessType: (profile as any)?.businessType || 'dealership',
+  registrationNumber: (profile as any)?.registrationNumber || '',
+  businessAddress: (profile as any)?.businessAddress || '',
+  businessCity: (profile as any)?.businessCity || '',
+  businessPostalCode: (profile as any)?.businessPostalCode || '',
+  website: (profile as any)?.website || '',
+  businessPhone: (profile as any)?.businessPhone || '',
+  businessEmail: (profile as any)?.businessEmail || '',
+  workingHours: (profile as any)?.workingHours || '',
+  businessDescription: (profile as any)?.businessDescription || '',
+  phoneNumber: profile?.phoneNumber || '',
+  email: profile?.email || '',
+  address: (profile as any)?.address || '',
+  city: profile?.location?.city || (profile as any)?.city || '',
+  postalCode: (profile as any)?.postalCode || '',
+  bio: profile?.bio || '',
+  preferredLanguage: profile?.preferredLanguage || 'bg'
+});
+
+const mapListingsToCars = (listings: any[]): ProfileCar[] =>
+  listings.map(car => ({
+    id: car.id || '',
+    title: `${car.make} ${car.model}`,
+    make: car.make || '',
+    model: car.model || '',
+    year: car.year || 0,
+    price: car.price || 0,
+    imageUrl: (car.images && car.images.length > 0)
+      ? (typeof car.images[0] === 'string' ? car.images[0] : '')
+      : '',
+    mainImage: (car.images && car.images.length > 0)
+      ? (typeof car.images[0] === 'string' ? car.images[0] : '')
+      : '',
+    mileage: car.mileage,
+    fuelType: car.fuelType,
+    status: (car.status as 'active' | 'sold' | 'pending' | 'draft') || 'active',
+    viewCount: car.views || 0,
+    views: car.views || 0,
+    inquiries: 0
+  }));
+
 export const useProfile = (targetUserId?: string): UseProfileReturn => {
   const { t } = useTranslation();
   const toast = useToast();
-  const { profileType, theme, permissions, planTier } = useProfileType();  // NEW: Get profile type context
+  const { profileType, theme, permissions, planTier } = useProfileType();
 
-  // State management
-  const [user, setUser] = useState<BulgarianUser | null>(null);
+  const [viewer, setViewer] = useState<BulgarianUser | null>(null);
+  const [target, setTarget] = useState<BulgarianUser | null>(null);
   const [userCars, setUserCars] = useState<ProfileCar[]>([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
-  const [isOwnProfile, setIsOwnProfile] = useState(true); // NEW: track if viewing own profile
-  const [formData, setFormData] = useState<ProfileFormData>({
-    accountType: 'individual',
-    firstName: '',
-    lastName: '',
-    middleName: '',
-    dateOfBirth: '',
-    placeOfBirth: '',
-    businessName: '',
-    bulstat: '',
-    vatNumber: '',
-    businessType: 'dealership',
-    registrationNumber: '',
-    businessAddress: '',
-    businessCity: '',
-    businessPostalCode: '',
-    website: '',
-    businessPhone: '',
-    businessEmail: '',
-    workingHours: '',
-    businessDescription: '',
-    phoneNumber: '',
-    email: '',
-    address: '',
-    city: '',
-    postalCode: '',
-    bio: '',
-    preferredLanguage: 'bg'
-  });
+  const [isOwnProfile, setIsOwnProfile] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [formData, setFormData] = useState<ProfileFormData>(buildFormData(null));
 
-  // Load user data function (defined before effects to satisfy hook dependency ordering)
+  const effectiveTargetId = useMemo(() => {
+    if (!targetUserId || RESERVED_ROUTES.includes(targetUserId)) {
+      return undefined;
+    }
+    return targetUserId;
+  }, [targetUserId]);
+
+  const loadCarsForProfile = useCallback(async (profile: BulgarianUser | null) => {
+    if (!profile) {
+      setUserCars([]);
+      return;
+    }
+
+    let listings = await carListingService.getListingsBySellerId(profile.uid);
+    if (!listings || listings.length === 0) {
+      listings = await carListingService.getListingsBySeller(profile.email || '');
+    }
+
+    setUserCars(mapListingsToCars(listings));
+  }, []);
+
   const loadUserData = useCallback(async () => {
     try {
       setLoading(true);
+      setError(null);
 
-      // Check if targetUserId is a route name (not a real user ID)
-      const routeNames = ['settings', 'my-ads', 'campaigns', 'analytics', 'consultations'];
-      const isRouteName = targetUserId && routeNames.includes(targetUserId);
+      const authUser = auth.currentUser;
+      const viewingOwn = !effectiveTargetId || effectiveTargetId === authUser?.uid;
+      setIsOwnProfile(viewingOwn);
 
-      // Determine if viewing own profile or another user's profile
-      const currentUserAuth = auth.currentUser;
-      const viewingOwnProfile = !targetUserId || isRouteName || targetUserId === currentUserAuth?.uid;
-      setIsOwnProfile(viewingOwnProfile);
-
-      // Get user profile (either current user or target user)
-      let currentUser: BulgarianUser | null;
-      if (targetUserId && !viewingOwnProfile && !isRouteName) {
-        // Viewing another user's profile
-        currentUser = await bulgarianAuthService.getUserProfileById(targetUserId);
-        if (process.env.NODE_ENV === 'development') {
-          logger.debug('Loading target user profile', { targetUserId });
-        }
-      } else {
-        // Viewing own profile
-        currentUser = await bulgarianAuthService.getCurrentUserProfile();
-        if (process.env.NODE_ENV === 'development') {
-          logger.debug('Loading own profile');
-        }
-      }
-
-      if (currentUser) {
-        setUser(currentUser);
-        setFormData({
-          accountType: (currentUser as any).accountType || 'individual',
-          firstName: (currentUser as any).firstName || '',
-          lastName: (currentUser as any).lastName || '',
-          middleName: (currentUser as any).middleName || '',
-          dateOfBirth: (currentUser as any).dateOfBirth || '',
-          placeOfBirth: (currentUser as any).placeOfBirth || '',
-          businessName: (currentUser as any).businessName || '',
-          bulstat: (currentUser as any).bulstat || '',
-          vatNumber: (currentUser as any).vatNumber || '',
-          businessType: (currentUser as any).businessType || 'dealership',
-          registrationNumber: (currentUser as any).registrationNumber || '',
-          businessAddress: (currentUser as any).businessAddress || '',
-          businessCity: (currentUser as any).businessCity || '',
-          businessPostalCode: (currentUser as any).businessPostalCode || '',
-          website: (currentUser as any).website || '',
-          businessPhone: (currentUser as any).businessPhone || '',
-          businessEmail: (currentUser as any).businessEmail || '',
-          workingHours: (currentUser as any).workingHours || '',
-          businessDescription: (currentUser as any).businessDescription || '',
-          phoneNumber: currentUser.phoneNumber || '',
-          email: currentUser.email || '',
-          address: (currentUser as any).address || '',
-          city: (currentUser as any).city || '',
-          postalCode: (currentUser as any).postalCode || '',
-          bio: (currentUser as any).bio || '',
-          preferredLanguage: currentUser.preferredLanguage || 'bg'
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('useProfile: loading profiles', {
+          targetUserId,
+          effectiveTargetId,
+          viewerId: authUser?.uid,
+          viewingOwn
         });
-
-        // Load user's cars (prefer sellerId/uid; fallback to email for legacy data)
-        let userListings = await carListingService.getListingsBySellerId(currentUser.uid);
-        if (!userListings || userListings.length === 0) {
-          userListings = await carListingService.getListingsBySeller(currentUser.email || '');
-        }
-        
-        const carsForProfile = userListings.map(car => ({
-          id: car.id || '',
-          title: `${car.make} ${car.model}`,
-          make: car.make || '',
-          model: car.model || '',
-          year: car.year || 0,
-          price: car.price || 0,
-          imageUrl: (car.images && car.images.length > 0) ? 
-            (typeof car.images[0] === 'string' ? car.images[0] : '') : '',
-          mainImage: (car.images && car.images.length > 0) ? 
-            (typeof car.images[0] === 'string' ? car.images[0] : '') : '',
-          mileage: car.mileage,
-          fuelType: car.fuelType,
-          status: (car.status as 'active' | 'sold' | 'pending' | 'draft') || 'active',
-          viewCount: car.views || 0,
-          views: car.views || 0,
-          inquiries: 0,
-        }));
-        
-        setUserCars(carsForProfile);
-
-      } else {
-        toast.error(t('profile.load_user_error'));
       }
-    } catch (error) {
-      logger.error('Error loading user data', error as Error);
-      toast.error(t('profile.load_user_error_generic'));
+
+      const viewerPromise = authUser
+        ? bulgarianAuthService.getCurrentUserProfile()
+        : Promise.resolve(null);
+      const targetPromise = viewingOwn
+        ? viewerPromise
+        : bulgarianAuthService.getUserProfileById(effectiveTargetId!);
+
+      const [viewerRaw, targetRaw] = await Promise.all([viewerPromise, targetPromise]);
+      const normalizedViewer = normalizeUser(viewerRaw);
+      const normalizedTarget = normalizeUser(targetRaw ?? viewerRaw ?? null);
+
+      setViewer(normalizedViewer);
+      setTarget(normalizedTarget);
+      setFormData(buildFormData(normalizedTarget));
+      await loadCarsForProfile(normalizedTarget);
+
+      if (!normalizedTarget) {
+        const message = t('profile.load_user_error');
+        setError(message);
+        toast.error(message);
+      }
+    } catch (err) {
+      logger.error('Error loading user profile', err as Error, { targetUserId, effectiveTargetId });
+      const message = t('profile.load_user_error_generic');
+      setError(message);
+      toast.error(message);
     } finally {
       setLoading(false);
     }
-  }, [t, toast, targetUserId]);
+  }, [effectiveTargetId, loadCarsForProfile, t, targetUserId, toast]);
 
-  // Load user data on mount or when targetUserId changes
   useEffect(() => {
     loadUserData();
-  }, [loadUserData]); // loadUserData already has targetUserId in its dependencies
+  }, [loadUserData]);
 
-  // Real-time updates listener
   useEffect(() => {
-    if (!user?.uid) return;
+    if (!target?.uid || !isOwnProfile) {
+      return;
+    }
+
+    const userId = target.uid;
+    if (typeof userId !== 'string' || userId.trim() === '') {
+      console.warn('[useProfile] invalid userId for realtime listener', { userId });
+      return;
+    }
 
     const unsubscribe = onSnapshot(
-      doc(db, 'users', user.uid),
-      (snapshot) => {
-        if (snapshot.exists()) {
-          const userData = snapshot.data();
-          setUser(prev => ({
-            ...prev,
-            ...userData,
-            uid: user.uid,
-            email: user.email,
-            displayName: userData.displayName || prev?.displayName
-          } as BulgarianUser));
-          
-          if (process.env.NODE_ENV === 'development') {
-            logger.debug('Real-time update received');
-          }
-        }
+      doc(db, 'users', userId),
+      snapshot => {
+        if (!snapshot.exists()) return;
+        const data = snapshot.data();
+        setTarget(prev => {
+          const merged = normalizeUser({
+            ...(prev ?? { uid: userId }),
+            ...data,
+            uid: userId,
+            email: data.email || prev?.email || ''
+          } as BulgarianUser);
+          setFormData(buildFormData(merged));
+          return merged;
+        });
       },
-      (error) => {
-        logger.error('Real-time listener error', error as Error);
-      }
+      err => logger.error('Real-time listener error', err as Error, { userId })
     );
 
     return () => unsubscribe();
-  }, [user?.uid, user?.email]);
-  
+  }, [target?.uid]);
 
-  // Handle form input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -201,12 +223,10 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
     }));
   };
 
-  // Save profile changes
   const handleSaveProfile = async () => {
     try {
-      if (!user) return;
+      if (!target) return;
 
-      // Validate profile data
       const validation = validateProfileData(formData, formData.accountType);
       if (!validation.valid) {
         const errorMessages = Object.values(validation.errors).join('\n');
@@ -214,46 +234,37 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
         return;
       }
 
-      // Prepare update data with all fields
-        const updateData: any = {
-        uid: user.uid,
-        displayName: formData.accountType === 'business' 
-          ? formData.businessName 
+      const updateData: any = {
+        uid: target.uid,
+        displayName: formData.accountType === 'business'
+          ? formData.businessName
           : `${formData.firstName} ${formData.lastName}`.trim(),
         phoneNumber: formData.phoneNumber || '',
         bio: formData.bio || '',
-          // Write new unified locationData while preserving legacy fields for backward compatibility
-          locationData: {
-            cityId: '',
-            cityName: {
-              bg: formData.city || '',
-              en: formData.city || ''
-            },
-            coordinates: { lat: 0, lng: 0 },
-            region: '',
-            postalCode: formData.postalCode || '',
-            address: formData.address || ''
+        locationData: {
+          cityId: '',
+          cityName: {
+            bg: formData.city || '',
+            en: formData.city || ''
           },
-          // Legacy fields (to be removed after migration)
-          location: {
-            city: formData.city || '',
-            region: '',
-            postalCode: formData.postalCode || ''
-          },
+          coordinates: { lat: 0, lng: 0 },
+          region: '',
+          postalCode: formData.postalCode || '',
+          address: formData.address || ''
+        },
+        location: {
+          city: formData.city || '',
+          region: '',
+          postalCode: formData.postalCode || ''
+        },
         preferredLanguage: formData.preferredLanguage as 'bg' | 'en',
-        
-        // Account type
         accountType: formData.accountType,
-        
-        // Individual fields
         firstName: formData.firstName || '',
         lastName: formData.lastName || '',
         middleName: formData.middleName || '',
         dateOfBirth: formData.dateOfBirth || '',
         placeOfBirth: formData.placeOfBirth || '',
         address: formData.address || '',
-        
-        // Business fields (saved regardless, but only used if business)
         businessName: formData.businessName || '',
         bulstat: formData.bulstat || '',
         vatNumber: formData.vatNumber || '',
@@ -275,87 +286,55 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
         'Profile updated successfully! / Профилът е обновен успешно!',
         'Success / Успех'
       );
-      
       setEditing(false);
-      await loadUserData(); // Reload data
-    } catch (error: any) {
-      logger.error('Error updating profile', error as Error);
+      await loadUserData();
+    } catch (err: any) {
+      logger.error('Error updating profile', err as Error);
       toast.error(
-        error.message || 'Failed to update profile / Грешка при обновяване на профила',
+        err?.message || 'Failed to update profile / Грешка при обновяване на профила',
         'Error / Грешка'
       );
     }
   };
 
-  // Cancel editing
   const handleCancelEdit = () => {
-    if (user) {
-      setFormData({
-        accountType: (user as any).accountType || 'individual',
-        firstName: (user as any).firstName || '',
-        lastName: (user as any).lastName || '',
-        middleName: (user as any).middleName || '',
-        dateOfBirth: (user as any).dateOfBirth || '',
-        placeOfBirth: (user as any).placeOfBirth || '',
-        businessName: (user as any).businessName || '',
-        bulstat: (user as any).bulstat || '',
-        vatNumber: (user as any).vatNumber || '',
-        businessType: (user as any).businessType || 'dealership',
-        registrationNumber: (user as any).registrationNumber || '',
-        businessAddress: (user as any).businessAddress || '',
-        businessCity: (user as any).businessCity || '',
-        businessPostalCode: (user as any).businessPostalCode || '',
-        website: (user as any).website || '',
-        businessPhone: (user as any).businessPhone || '',
-        businessEmail: (user as any).businessEmail || '',
-        workingHours: (user as any).workingHours || '',
-        businessDescription: (user as any).businessDescription || '',
-        phoneNumber: user.phoneNumber || '',
-        email: user.email || '',
-        address: (user as any).address || '',
-        city: user.location?.city || '',
-        postalCode: (user as any).postalCode || '',
-        bio: user.bio || '',
-        preferredLanguage: user.preferredLanguage || 'bg'
-      });
-    }
+    setFormData(buildFormData(target));
     setEditing(false);
   };
 
-  // Handle logout
   const handleLogout = async () => {
     try {
       await bulgarianAuthService.signOut();
-      // Redirect to home page
       window.location.href = '/';
-    } catch (error) {
-      logger.error('Error signing out', error as Error);
+    } catch (err) {
+      logger.error('Error signing out', err as Error);
     }
   };
 
   return {
-    // State
-    user,
+    user: target,
+    target,
+    viewer,
     userCars,
     loading,
     editing,
     formData,
-    isOwnProfile, // NEW: expose isOwnProfile state
+    isOwnProfile,
+    error,
 
-    // NEW: Profile Type System
     profileType,
     theme,
     permissions,
     planTier,
 
-    // Actions
     loadUserData,
+    refresh: loadUserData,
     handleInputChange,
     handleSaveProfile,
     handleCancelEdit,
     handleLogout,
     setEditing,
-    setUser,
-    loadUserCars: loadUserData // Expose reload function for external use
+    setUser: setTarget,
+    loadUserCars: loadUserData
   };
 };

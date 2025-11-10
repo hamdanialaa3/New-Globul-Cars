@@ -12,9 +12,9 @@ class GeminiChatService {
   private isInitialized = false;
 
   constructor() {
-    const apiKey = process.env.REACT_APP_GEMINI_KEY;
+    const apiKey = process.env.REACT_APP_GOOGLE_GENERATIVE_AI_KEY || process.env.REACT_APP_GEMINI_KEY;
     if (!apiKey) {
-      logger.warn('Gemini API key not found');
+      logger.warn('Google Generative AI key not found');
       return;
     }
     

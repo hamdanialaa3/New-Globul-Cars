@@ -525,10 +525,15 @@ const getMissingFields = (user: UserData | null, profileType: ProfileType): stri
 
 // ==================== MAIN COMPONENT ====================
 
-const ProfileDashboard: React.FC = () => {
+interface ProfileDashboardProps {
+  user?: any;
+}
+
+const ProfileDashboard: React.FC<ProfileDashboardProps> = ({ user: propUser }) => {
   const { profileType, theme } = useProfileType();
-  const { user } = useAuth();
+  const { user: authUser } = useAuth();
   const { language } = useLanguage();
+  const user = propUser || authUser;
   const navigate = useNavigate();
   const [completionPercentage, setCompletionPercentage] = useState(0);
   const [syncing, setSyncing] = useState(false);

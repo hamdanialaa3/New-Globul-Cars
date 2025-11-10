@@ -1,6 +1,7 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
-import mainLogo from '@/assets/logos/Copilot_20250926_020825.png';
+
+const mainLogo = '/logo.png';
 
 // (Comment removed - was in Arabic)
 const glowRotation = keyframes`

@@ -72,17 +72,18 @@ export const ProfilePageContainer = styled.div<{ $isBusinessMode?: boolean }>`
   position: relative;
   padding-top: 2rem;
   padding-bottom: 4rem;
-  background: ${({ theme }) => theme.colors.background.default};
-  color: ${({ theme }) => theme.colors.text.primary};
+  background: var(--bg-primary);
+  color: var(--text-primary);
   animation: ${fadeIn} 0.5s ease-out;
   max-width: 1200px;
   margin: 0 auto;
+  transition: background-color 0.3s ease, color 0.3s ease;
   
   /* MOBILE - Clean background (Instagram/Facebook) */
   @media (max-width: 768px) {
     padding-top: 0;
     padding-bottom: 80px;  /* Space for bottom nav */
-    background: #f0f2f5;  /* Instagram gray background */
+    background: var(--bg-primary);
   }
   
   @media (max-width: 480px) {
@@ -96,7 +97,7 @@ export const ProfileHeader = styled.header`
   gap: 2rem;
   margin-bottom: 2rem;
   padding-bottom: 2rem;
-  border-bottom: 1px solid ${({ theme }) => theme.colors.grey[200]};
+  border-bottom: 1px solid var(--border-primary);
   flex-wrap: wrap;
   
   /* MOBILE OPTIMIZATION - Instagram/LinkedIn inspired */
@@ -109,10 +110,10 @@ export const ProfileHeader = styled.header`
     border-bottom: none;
     
     /* Card-based layout (Airbnb pattern) */
-    background: white;
+    background: var(--bg-card);
     border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    box-shadow: var(--shadow-sm);
   }
   
   @media (max-width: 480px) {
@@ -154,16 +155,16 @@ export const CompletionBadge = styled.div`
   align-items: center;
   justify-content: center;
   padding: 16px 20px;
-  background: linear-gradient(135deg, rgba(255, 121, 0, 0.1) 0%, rgba(255, 143, 16, 0.1) 100%);
-  border: 2px solid rgba(255, 143, 16, 0.3);
+  background: var(--bg-secondary);
+  border: 2px solid var(--border-primary);
   border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(255, 121, 0, 0.15);
+  box-shadow: var(--shadow-sm);
   transition: all 0.3s ease;
   
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(255, 121, 0, 0.25);
-    border-color: rgba(255, 143, 16, 0.5);
+    box-shadow: var(--shadow-md);
+    border-color: var(--border-secondary);
   }
   
   @media (max-width: 768px) {
@@ -174,7 +175,7 @@ export const CompletionBadge = styled.div`
 export const CompletionPercentage = styled.div`
   font-size: 2rem;
   font-weight: 700;
-  color: #FF7900;
+  color: var(--accent-primary);
   line-height: 1;
   margin-bottom: 4px;
   
@@ -186,7 +187,7 @@ export const CompletionPercentage = styled.div`
 export const CompletionLabel = styled.div`
   font-size: 0.75rem;
   font-weight: 600;
-  color: #6c757d;
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   

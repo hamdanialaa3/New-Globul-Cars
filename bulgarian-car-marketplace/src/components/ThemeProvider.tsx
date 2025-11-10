@@ -305,8 +305,8 @@ const darkTheme: Theme = {
       contrastText: '#000000',
     },
     background: {
-      default: '#111827',
-      paper: '#1f2937',
+      default: '#1a1d2e',
+      paper: '#252936',
       overlay: 'rgba(0, 0, 0, 0.7)',
     },
     text: {

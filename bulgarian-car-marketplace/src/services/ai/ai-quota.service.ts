@@ -153,6 +153,8 @@ class AIQuotaService {
   // Upgrade user tier
   async upgradeTier(userId: string, newTier: AITier): Promise<void> {
     try {
+      // Get or create quota first
+      const quota = await this.getUserQuota(userId);
       const config = AI_TIER_CONFIGS[newTier];
       const quotaRef = doc(db, this.COLLECTION, userId);
 

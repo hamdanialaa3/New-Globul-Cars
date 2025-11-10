@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useProfile } from './hooks/useProfile';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useProfileType } from '@/contexts/ProfileTypeContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import ProfileDashboard from '@/components/Profile/ProfileDashboard';
 import UserPostsFeed from '@/components/Profile/UserPostsFeed';
 import CreatePostWidget from '@/components/Profile/CreatePostWidget';
@@ -27,7 +27,8 @@ import { H2 } from '@/components/Typography';
  */
 const ProfileOverview: React.FC = () => {
   const { language } = useLanguage();
-  const { user, userCars, isOwnProfile } = useProfile();
+  const params = useParams<{ userId?: string }>();
+  const { user, userCars, isOwnProfile } = useProfile(params.userId);
   const { isDealer, isCompany } = useProfileType();
   const navigate = useNavigate();
 
@@ -42,8 +43,8 @@ const ProfileOverview: React.FC = () => {
     <S.ContentSection>
       <H2>{language === 'bg' ? 'Преглед на профила' : 'Profile Overview'}</H2>
       
-      {/* Profile Dashboard with Stats */}
-      <ProfileDashboard />
+      {/* Profile Dashboard with Stats - Only show for own profile */}
+      {isOwnProfile && <ProfileDashboard user={user} />}
       
       {/* ❌ REMOVED: Personal Information Section - Now in ProfileDashboard */}
       
@@ -475,12 +476,13 @@ const VerifiedBadge = styled.div`
   align-items: center;
   gap: 8px;
   padding: 10px 16px;
-  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-  color: #065f46;
+  background: var(--success);
+  color: var(--text-inverse);
   border-radius: 8px;
   font-weight: 600;
   font-size: 0.875rem;
-  border: 1px solid #6ee7b7;
+  border: 1px solid var(--success);
+  opacity: 0.9;
 `;
 
 export default ProfileOverview;

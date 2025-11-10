@@ -104,6 +104,12 @@ export class DraftsService {
    * Get user's drafts
    */
   static async getUserDrafts(userId: string): Promise<Draft[]> {
+    // ✅ CRITICAL FIX: Guard against null/undefined userId
+    if (!userId || typeof userId !== 'string' || userId.trim() === '') {
+      serviceLogger.warn('getUserDrafts called with invalid userId', { userId });
+      return [];
+    }
+
     try {
       const q = query(
         collection(db, this.collectionName),

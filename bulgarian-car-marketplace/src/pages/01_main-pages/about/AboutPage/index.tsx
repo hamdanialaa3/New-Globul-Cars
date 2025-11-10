@@ -46,8 +46,8 @@ const HeroSection = styled.section`
     left: 0;
     right: 0;
     bottom: 0;
-    background: url('/hero-background.jpg') center/cover;
-    opacity: 0.1;
+    background: var(--gradient-primary);
+    opacity: 0.2;
     z-index: 0;
   }
 

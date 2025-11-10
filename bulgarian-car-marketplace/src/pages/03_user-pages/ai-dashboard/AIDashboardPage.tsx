@@ -29,6 +29,18 @@ export const AIDashboardPage: React.FC = () => {
       setStats(data);
     } catch (error) {
       logger.error('Failed to load AI dashboard', error as Error);
+      // Set default stats if error
+      setStats({
+        tier: 'free',
+        totalCost: 0,
+        currentUsage: {
+          imageAnalysis: '0/10',
+          priceSuggestions: '0/5',
+          chatMessages: '0/20',
+          profileAnalysis: '0/3'
+        },
+        lastReset: new Date().toISOString().split('T')[0]
+      });
     } finally {
       setLoading(false);
     }

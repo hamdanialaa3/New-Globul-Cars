@@ -9,7 +9,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { logger } from '@/services/logger-service';
 
 const ImageGallerySection = styled.section`
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  background: var(--bg-secondary);
   padding: 4rem 0;
   position: relative;
   z-index: 1;
@@ -28,13 +28,13 @@ const SectionHeader = styled.div`
   h2 {
     font-size: 1.75rem;
     font-weight: bold;
-    color: #005ca9;
+    color: var(--accent-primary);
     margin-bottom: 0.5rem;
   }
 
   p {
     font-size: 0.95rem;
-    color: #6c757d;
+    color: var(--text-secondary);
     margin-bottom: 2rem;
     max-width: 600px;
     margin: 0 auto 2rem;
@@ -66,18 +66,18 @@ const SectionHeader = styled.div`
 
 const ViewGalleryButton = styled(Link)`
   display: inline-block;
-  background: #005ca9;
+  background: var(--accent-primary);
   color: white;
   padding: 0.75rem 1.5rem;
   border-radius: 0.5rem;
   text-decoration: none;
   font-weight: bold;
   transition: all 0.3s ease;
-  border: 2px solid #005ca9;
+  border: 2px solid var(--accent-primary);
 
   &:hover {
-    background: white;
-    color: #005ca9;
+    background: var(--bg-card);
+    color: var(--accent-primary);
   }
 `;
 
@@ -87,7 +87,7 @@ const SlideshowContainer = styled.div`
   margin: 0 auto;
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 10px 40px rgba(0, 92, 169, 0.2);
+  box-shadow: var(--shadow-lg);
 `;
 
 const SlideImage = styled.img`
@@ -115,11 +115,11 @@ const NavButton = styled.button`
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(0, 92, 169, 0.8);
+  background: var(--accent-primary);
   color: white;
   border: none;
-  width: 50px;
-  height: 50px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -127,10 +127,18 @@ const NavButton = styled.button`
   cursor: pointer;
   transition: all 0.3s ease;
   z-index: 10;
+  box-shadow: var(--shadow-md);
+
+  svg {
+    width: 28px;
+    height: 28px;
+    stroke-width: 2.5;
+  }
 
   &:hover {
-    background: rgba(0, 92, 169, 1);
+    background: var(--accent-primary);
     transform: translateY(-50%) scale(1.1);
+    box-shadow: var(--shadow-lg);
   }
 
   &.prev {
@@ -144,6 +152,11 @@ const NavButton = styled.button`
   @media (max-width: 768px) {
     width: 40px;
     height: 40px;
+
+    svg {
+      width: 24px;
+      height: 24px;
+    }
 
     &.prev {
       left: 10px;
@@ -166,17 +179,19 @@ const DotsContainer = styled.div`
 `;
 
 const Dot = styled.button<{ $active: boolean }>`
-  width: 12px;
-  height: 12px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
-  border: 2px solid white;
-  background: ${({ $active }) => ($active ? 'white' : 'rgba(255, 255, 255, 0.3)')};
+  border: 2px solid var(--bg-card);
+  background: ${({ $active }) => ($active ? 'var(--bg-card)' : 'var(--bg-card)')};
+  opacity: ${({ $active }) => ($active ? '1' : '0.4')};
   cursor: pointer;
   transition: all 0.3s ease;
+  padding: 0;
 
   &:hover {
-    background: white;
-    transform: scale(1.2);
+    opacity: 1;
+    transform: scale(1.3);
   }
 `;
 
@@ -184,13 +199,14 @@ const ImageCounter = styled.div`
   position: absolute;
   top: 20px;
   right: 20px;
-  background: rgba(0, 0, 0, 0.6);
-  color: white;
+  background: var(--bg-primary);
+  color: var(--text-primary);
   padding: 8px 16px;
   border-radius: 20px;
   font-size: 14px;
   font-weight: 600;
   backdrop-filter: blur(10px);
+  opacity: 0.9;
   z-index: 10;
 `;
 

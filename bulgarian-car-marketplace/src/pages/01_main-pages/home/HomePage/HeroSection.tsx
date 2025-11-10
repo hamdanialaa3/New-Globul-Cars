@@ -12,7 +12,7 @@ const HeroSection = styled.section`
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  color: #212529;
+  color: var(--text-primary);
   padding: 3rem 0;
   text-align: center;
   position: relative;
@@ -30,7 +30,8 @@ const HeroSection = styled.section`
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(255, 255, 255, 0.65);
+    background: var(--bg-primary);
+    opacity: 0.65;
     z-index: 0;
   }
   
@@ -41,7 +42,7 @@ const HeroSection = styled.section`
     background-position: center center;
     
     &::before {
-      background: rgba(255, 255, 255, 0.75);  /* Lighter for better text contrast */
+      opacity: 0.75;  /* Lighter for better text contrast */
     }
   }
   
@@ -70,7 +71,7 @@ const HeroTitle = styled.h1`
   font-weight: 700;
   margin-bottom: 1rem;
   line-height: 1.3;
-  color: #212529;
+  color: var(--text-primary);
 
   /* MOBILE - Professional typography (Airbnb/Booking.com) */
   @media (max-width: 768px) {
@@ -96,7 +97,7 @@ const HeroSubtitle = styled.p`
   font-size: 1rem;
   margin-bottom: 2rem;
   line-height: 1.6;
-  color: #6c757d;
+  color: var(--text-secondary);
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
@@ -146,28 +147,28 @@ const HeroButtons = styled.div`
 const HeroButton = styled(Link)`
   display: inline-block;
   padding: 0.875rem 2rem;
-  background: #FF8F10;
+  background: var(--accent-orange);
   color: #000000;
   text-decoration: none;
   font-weight: 600;
   font-size: 1rem;
   border-radius: 8px;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(255, 143, 16, 0.3);
+  box-shadow: var(--shadow-md);
 
   &:hover {
-    background: #FFDF00;
+    opacity: 0.9;
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(255, 223, 0, 0.4);
+    box-shadow: var(--shadow-lg);
   }
 
   &.secondary {
     background: transparent;
-    border: 2px solid #FF8F10;
-    color: #FF8F10;
+    border: 2px solid var(--accent-orange);
+    color: var(--accent-orange);
 
     &:hover {
-      background: #FF8F10;
+      background: var(--accent-orange);
       color: #000000;
     }
   }
@@ -192,12 +193,13 @@ const HeroButton = styled(Link)`
     }
     
     &.secondary {
-      background: white;
-      border: 2px solid #FF8F10;
-      color: #FF8F10;
+      background: var(--bg-card);
+      border: 2px solid var(--accent-orange);
+      color: var(--accent-orange);
       
       &:active {
-        background: rgba(255, 143, 16, 0.05);
+        background: var(--accent-orange);
+        opacity: 0.1;
       }
     }
   }

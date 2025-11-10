@@ -180,6 +180,14 @@ export const ProfileTypeProvider: React.FC<ProfileTypeProviderProps> = ({ childr
       setLoading(false);
       return;
     }
+    
+    if (!db) {
+      logger.error('Firestore is not available for loadProfileType');
+      setProfileType('private');
+      setPlanTier('free');
+      setLoading(false);
+      return;
+    }
 
     try {
       const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
@@ -213,6 +221,10 @@ export const ProfileTypeProvider: React.FC<ProfileTypeProviderProps> = ({ childr
   const switchProfileType = async (newType: ProfileType) => {
     if (!currentUser) {
       throw new Error('User must be logged in to switch profile type');
+    }
+    
+    if (!db) {
+      throw new Error('Firestore is not available');
     }
 
     // ✅ REFACTORED: Validation before switching (using Repository)
@@ -336,12 +348,34 @@ export const ProfileTypeProvider: React.FC<ProfileTypeProviderProps> = ({ childr
 
   // Refresh profile type (call after external updates)
   const refreshProfileType = async () => {
-    await loadProfileType();
+    try {
+      await loadProfileType();
+    } catch (error) {
+      logger.error('Error refreshing profile type', error as Error, { 
+        userId: currentUser?.uid 
+      });
+      // Set defaults on error
+      setProfileType('private');
+      setPlanTier('free');
+      setLoading(false);
+    }
   };
 
   // Load on mount and when user changes
   useEffect(() => {
-    if (!currentUser) {
+    let unsubscribe: (() => void) | null = null;
+    
+    // ✅ CRITICAL FIX: Guard against null/undefined BEFORE any Firestore operations
+    if (!currentUser?.uid) {
+      setProfileType('private');
+      setPlanTier('free');
+      setLoading(false);
+      return;
+    }
+    
+    // ✅ CRITICAL: Check if Firestore is available
+    if (!db) {
+      logger.error('Firestore is not initialized');
       setProfileType('private');
       setPlanTier('free');
       setLoading(false);
@@ -350,40 +384,69 @@ export const ProfileTypeProvider: React.FC<ProfileTypeProviderProps> = ({ childr
 
     setLoading(true);
 
-    // Real-time listener for user profile changes
-    const unsubscribe = onSnapshot(
-      doc(db, 'users', currentUser.uid),
-      (userDoc) => {
-        if (userDoc.exists()) {
-          const userData = userDoc.data();
-          
-          // Get profileType (default to 'private' if not set)
-          const type = userData.profileType || 'private';
-          setProfileType(type);
+    try {
+      // Real-time listener for user profile changes
+      unsubscribe = onSnapshot(
+        doc(db, 'users', currentUser.uid),
+        (userDoc) => {
+          try {
+            if (userDoc.exists()) {
+              const userData = userDoc.data();
+              
+              // Get profileType (default to 'private' if not set)
+              const type = userData.profileType || 'private';
+              setProfileType(type);
 
-          // Get plan tier (default to 'free' if not set)
-          const tier = userData.plan?.tier || 'free';
-          setPlanTier(tier);
-        } else {
-          // User document doesn't exist yet - set defaults
+              // Get plan tier (default to 'free' if not set)
+              const tier = userData.plan?.tier || userData.planTier || 'free';
+              setPlanTier(tier);
+            } else {
+              // User document doesn't exist yet - set defaults
+              setProfileType('private');
+              setPlanTier('free');
+            }
+            setLoading(false);
+          } catch (docError) {
+            logger.error('Error processing user document', docError as Error, { 
+              userId: currentUser?.uid 
+            });
+            setProfileType('private');
+            setPlanTier('free');
+            setLoading(false);
+          }
+        },
+        (error) => {
+          logger.error('Error listening to profile type changes', error as Error, { 
+            userId: currentUser?.uid 
+          });
           setProfileType('private');
           setPlanTier('free');
+          setLoading(false);
         }
-        setLoading(false);
-      },
-      (error) => {
-        logger.error('Error listening to profile type changes', error as Error, { 
-          userId: currentUser?.uid 
-        });
-        setProfileType('private');
-        setPlanTier('free');
-        setLoading(false);
-      }
-    );
+      );
+    } catch (setupError) {
+      logger.error('Error setting up profile listener', setupError as Error, { 
+        userId: currentUser?.uid 
+      });
+      setProfileType('private');
+      setPlanTier('free');
+      setLoading(false);
+    }
 
     // ✅ CRITICAL: Cleanup listener on unmount or user change
-    return () => unsubscribe();
-  }, [currentUser]);
+    return () => {
+      if (unsubscribe) {
+        try {
+          unsubscribe();
+        } catch (cleanupError) {
+          logger.warn('Error cleaning up profile listener', { 
+            error: (cleanupError as Error).message,
+            userId: currentUser?.uid 
+          });
+        }
+      }
+    };
+  }, [currentUser?.uid]); // ✅ FIX: Only depend on currentUser.uid, not the entire currentUser object
 
   // Compute derived values
   const theme = THEMES[profileType];

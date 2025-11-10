@@ -113,8 +113,11 @@ class LiveFirebaseCountersService {
         deployedBy: 'globul.net.m@gmail.com'
       };
       
-    } catch (error) {
+    } catch (error: any) {
+      // Silently handle permission errors
+      if (error?.code !== 'permission-denied') {
         serviceLogger.error('Error fetching live analytics', error as unknown as Error);
+      }
       // Return fallback data based on Firebase Console
       return {
         totalUsers: 2,

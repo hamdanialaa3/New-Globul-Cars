@@ -245,7 +245,13 @@ export class SuperAdminService {
     }
   }
 
-  public async deleteUser(userId: string): Promise<void> {
+  public async deleteUser(userId: string | null | undefined): Promise<void> {
+    // ✅ FIX: Guard against null/undefined userId BEFORE constructing queries
+    if (!userId) {
+      serviceLogger.warn('[SuperAdminService] deleteUser called with null/undefined userId');
+      throw new Error('Invalid userId provided for deletion');
+    }
+
     try {
       const batch = writeBatch(db);
       

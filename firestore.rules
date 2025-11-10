@@ -97,6 +97,18 @@ service cloud.firestore {
                (newType == 'dealer' && hasDealerRequirements(newData)) || // Upgrade to dealer with requirements
                (newType == 'company' && hasCompanyRequirements(newData)); // Upgrade to company with requirements
       }
+      
+      // Followers subcollection
+      match /followers/{followerId} {
+        allow read: if isAuthenticated();
+        allow write: if isAuthenticated();
+      }
+      
+      // Following subcollection
+      match /following/{followingId} {
+        allow read: if isAuthenticated();
+        allow write: if isAuthenticated();
+      }
     }
     
     // ==================== DEALERSHIPS COLLECTION ====================

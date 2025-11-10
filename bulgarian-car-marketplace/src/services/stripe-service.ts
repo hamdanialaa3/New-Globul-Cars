@@ -285,8 +285,9 @@ export class StripeService {
     const auth = getAuth();
     const user = auth.currentUser;
 
-    if (!user) {
-      throw new Error('User must be authenticated to subscribe to subscriptions');
+    if (!user || !user.uid) {
+      console.warn('[StripeService] subscribeToSubscriptions called with null/undefined user or user.uid - returning no-op unsubscribe');
+      return () => {};
     }
 
     const subscriptionsQuery = query(

@@ -19,12 +19,12 @@ const FeaturesSection = React.lazy(() => import('./FeaturesSection'));
 
 const HomeContainer = styled.div`
   min-height: 100vh;
-  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  background: var(--bg-secondary);
 
   /* MOBILE OPTIMIZATION - Clean background (Instagram/Facebook) */
   @media (max-width: 768px) {
     padding-top: 0;
-    background: #f0f2f5;  /* Instagram gray - cleaner on mobile */
+    background: var(--bg-secondary);  /* Instagram gray - cleaner on mobile */
     padding-bottom: 70px;  /* Space for bottom nav */
   }
   
@@ -65,7 +65,7 @@ const LoadingFallback = styled.div`
   align-items: center;
   min-height: 200px;
   font-size: 1.1rem;
-  color: #6c757d;
+  color: var(--text-secondary);
   
   /* MOBILE - Compact loading state */
   @media (max-width: 768px) {

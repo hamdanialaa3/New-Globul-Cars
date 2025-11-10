@@ -201,6 +201,12 @@ class ConsultationsService {
   
   async getUserConsultations(userId: string): Promise<Consultation[]> {
     try {
+      // ✅ CRITICAL FIX: Guard against null/undefined userId
+      if (!userId || typeof userId !== 'string' || userId.trim() === '') {
+        serviceLogger.warn('getUserConsultations called with invalid userId', { userId });
+        return [];
+      }
+
       const q = query(
         collection(db, 'consultations'),
         where('requesterId', '==', userId),
@@ -221,6 +227,12 @@ class ConsultationsService {
   
   async getExpertConsultations(expertId: string): Promise<Consultation[]> {
     try {
+      // ✅ CRITICAL FIX: Guard against null/undefined expertId
+      if (!expertId || typeof expertId !== 'string' || expertId.trim() === '') {
+        serviceLogger.warn('getExpertConsultations called with invalid expertId', { expertId });
+        return [];
+      }
+
       const q = query(
         collection(db, 'consultations'),
         where('expertId', '==', expertId),

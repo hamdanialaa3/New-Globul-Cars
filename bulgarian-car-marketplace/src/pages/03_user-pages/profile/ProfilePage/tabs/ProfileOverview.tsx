@@ -3,6 +3,7 @@
 // Phase 0 Day 2: Extracted from index.tsx
 
 import React from 'react';
+import { useOutletContext } from 'react-router-dom';
 import styled from 'styled-components';
 import type { BulgarianUser } from '@/types/user/bulgarian-user.types';
 import type { ProfileTheme } from '@/contexts/ProfileTypeContext';
@@ -10,6 +11,7 @@ import ProfileDashboard from '@/components/Profile/ProfileDashboard';
 import PrivateProfile from '@/components/PrivateProfile';
 import DealerProfile from '@/components/DealerProfile';
 import CompanyProfile from '@/components/CompanyProfile';
+import { PublicProfileView } from './PublicProfileView';
 import type { ProfileCar } from '../types';
 
 interface ProfileOverviewProps {
@@ -26,13 +28,10 @@ const OverviewContainer = styled.div`
   gap: 24px;
 `;
 
-export const ProfileOverview: React.FC<ProfileOverviewProps> = ({
-  user,
-  userCars,
-  theme,
-  isOwnProfile,
-  onEditClick
-}) => {
+export const ProfileOverview: React.FC<ProfileOverviewProps> = (props) => {
+  const outletContext = useOutletContext<any>();
+  const { user, userCars, theme, isOwnProfile } = props.user ? props : outletContext;
+  const { onEditClick } = props;
   if (!user) {
     return (
       <OverviewContainer>
@@ -43,10 +42,19 @@ export const ProfileOverview: React.FC<ProfileOverviewProps> = ({
     );
   }
 
+  // If viewing another user's profile, show PublicProfileView
+  if (!isOwnProfile) {
+    return (
+      <OverviewContainer>
+        <PublicProfileView user={user} />
+      </OverviewContainer>
+    );
+  }
+
   // Show ProfileDashboard only for own profile
   const showDashboard = isOwnProfile;
 
-  // Render profile based on type
+  // Render profile based on type (for own profile)
   const renderProfile = () => {
     switch (user.profileType) {
       case 'dealer':

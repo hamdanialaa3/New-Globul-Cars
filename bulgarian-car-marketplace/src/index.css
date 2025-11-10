@@ -70,21 +70,21 @@ html[data-theme="light"],
 /* Dark Theme - الوضع الليلي */
 html[data-theme="dark"],
 .dark-theme {
-  /* Background Colors - Gray gradient to dark gray */
-  --bg-primary: #2a2d35;
+  /* Background Colors - Dark backgrounds */
+  --bg-primary: #1a1d2e;
   --bg-secondary: #1f2229;
-  --bg-tertiary: #353944;
-  --bg-card: #2f333d;
-  --bg-hover: #3a3f4b;
+  --bg-tertiary: #252936;
+  --bg-card: #252936;
+  --bg-hover: #2d3142;
   
   /* Header/Footer specific - Dark gray */
   --header-bg: #1f2229;
   --footer-bg: #1f2229;
   
-  /* Text Colors - Light grays/whites */
-  --text-primary: #e8eaed;
-  --text-secondary: #b0b3b8;
-  --text-tertiary: #8e9297;
+  /* Text Colors - Bright whites for readability */
+  --text-primary: #ffffff;
+  --text-secondary: #e0e0e0;
+  --text-tertiary: #b0b0b0;
   --text-inverse: #1a1d2e;
   
   /* Accent Colors - Blue/Cyan in Dark Mode */

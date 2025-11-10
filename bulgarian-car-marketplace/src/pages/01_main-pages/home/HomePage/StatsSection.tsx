@@ -23,7 +23,8 @@ const StatsSection = styled.section`
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(255, 255, 255, 0.68);
+    background: var(--bg-primary);
+    opacity: 0.75;
     z-index: 0;
   }
   
@@ -53,14 +54,14 @@ const StatItem = styled.div`
   h3 {
     font-size: 2rem;
     font-weight: 700;
-    color: #FF8F10;
+    color: var(--accent-orange);
     margin-bottom: 0.5rem;
     line-height: 1.2;
   }
 
   p {
     font-size: 0.875rem;
-    color: #6c757d;
+    color: var(--text-secondary);
     font-weight: 500;
     line-height: 1.5;
   }

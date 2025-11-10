@@ -44,6 +44,7 @@ import LanguageToggle from '../LanguageToggle/LanguageToggle';
 import NotificationDropdown from '../NotificationDropdown/NotificationDropdown';
 import ProfileTypeSwitcher from './ProfileTypeSwitcher';
 import CyberToggle from '../CyberToggle/CyberToggle';
+import WheelHeaderLoader from '../Loaders/WheelHeaderLoader';
 import './Header.css';
 
 const Header: React.FC = () => {
@@ -60,6 +61,9 @@ const Header: React.FC = () => {
   const [accountSettingsOpen, setAccountSettingsOpen] = useState(false);
   const [securityOpen, setSecurityOpen] = useState(false);
   const [helpSupportOpen, setHelpSupportOpen] = useState(false);
+  const [showTransitionLoader, setShowTransitionLoader] = useState(false);
+  const transitionShowTimer = useRef<number | null>(null);
+  const transitionHideTimer = useRef<number | null>(null);
   const settingsRef = useRef<HTMLDivElement>(null);
   const mainNavRef = useRef<HTMLDivElement>(null);
   const profileTypeRef = useRef<HTMLDivElement>(null);
@@ -127,19 +131,47 @@ const Header: React.FC = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (transitionShowTimer.current) {
+      clearTimeout(transitionShowTimer.current);
+    }
+    if (transitionHideTimer.current) {
+      clearTimeout(transitionHideTimer.current);
+    }
+
+    transitionShowTimer.current = window.setTimeout(() => {
+      setShowTransitionLoader(true);
+      transitionHideTimer.current = window.setTimeout(() => {
+        setShowTransitionLoader(false);
+      }, 900);
+    }, 140);
+
+    return () => {
+      if (transitionShowTimer.current) {
+        clearTimeout(transitionShowTimer.current);
+      }
+      if (transitionHideTimer.current) {
+        clearTimeout(transitionHideTimer.current);
+      }
+    };
+  }, [location.pathname, location.search]);
+
   return (
     <header className="mobile-de-header">
       <div className="header-top">
+        <div className={`header-loader-slot ${showTransitionLoader ? 'visible' : ''}`}>
+          <WheelHeaderLoader />
+        </div>
         <div className="header-container">
           {/* Logo Section */}
-          <div className="logo-section" onClick={() => navigate('/')}>
+          <div className="logo-section" onClick={() => navigate('/') }>
             <img 
-              src="/assets/images/logos/Copilot_20250926_020825.png" 
+              src="/Logo1.png" 
               alt="GLOBUL AUTO Logo" 
-              className="logo-icon logo-enhanced"
-              style={{ width: '75px', height: '75px', objectFit: 'contain' }}
+              className="logo-icon"
+              style={{ width: '60px', height: '60px', objectFit: 'contain' }}
               onError={(e) => {
-                e.currentTarget.src = '/mobile-eu-logo.png';
+                e.currentTarget.src = '/Logo1.png';
               }}
             />
             <span className="logo-text">GLOBUL AUTO</span>

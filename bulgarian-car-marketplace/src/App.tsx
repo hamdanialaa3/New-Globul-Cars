@@ -71,6 +71,7 @@ const AdminLoginPage = React.lazy(() => import('./pages/02_authentication/admin-
 const AdminDataFix = React.lazy(() => import('./pages/06_admin/regular-admin/AdminDataFix'));
 const SuperAdminLogin = React.lazy(() => import('./pages/02_authentication/admin-login/SuperAdminLoginPage'));
 const SuperAdminDashboard = React.lazy(() => import('./pages/06_admin/super-admin/SuperAdminDashboard'));
+const SuperAdminUsersPage = React.lazy(() => import('./pages/06_admin/super-admin/SuperAdminUsersPage'));
 
 const ProfileRouter = React.lazy(() => import('./pages/03_user-pages/profile/ProfilePage/ProfileRouter'));  // NEW: Profile Type Router
 const VerificationPage = React.lazy(() => import('./features/verification/VerificationPage'));  // NEW: Verification System
@@ -78,8 +79,7 @@ const BillingPage = React.lazy(() => import('./features/billing/BillingPage')); 
 const AnalyticsDashboard = React.lazy(() => import('./features/analytics/AnalyticsDashboard'));  // NEW: Analytics System
 const TeamManagement = React.lazy(() => import('./features/team/TeamManagement'));  // NEW: Team Management
 const UsersDirectoryPage = React.lazy(() => import('./pages/03_user-pages/users-directory/UsersDirectoryPage')); // Bubbles View
-// ⚡ NEW: Browse Pages (All Users, All Posts, All Cars)
-const AllUsersPage = React.lazy(() => import('./pages/05_search-browse/all-users/AllUsersPage'));
+// ⚡ NEW: Browse Pages (All Posts, All Cars)
 const AllPostsPage = React.lazy(() => import('./pages/03_user-pages/social/AllPostsPage'));
 const AllCarsPage = React.lazy(() => import('./pages/05_search-browse/all-cars/AllCarsPage'));
 // NEW: Social Platform Pages
@@ -147,9 +147,14 @@ const IoTDashboardPage = React.lazy(() => import('./pages/03_user-pages/IoTDashb
 const CarTrackingPage = React.lazy(() => import('./pages/03_user-pages/CarTrackingPage'));
 const IoTAnalyticsPage = React.lazy(() => import('./pages/03_user-pages/IoTAnalyticsPage'));
 
+// NEW: AI Dashboard
+const AIDashboardPage = React.lazy(() => import('./pages/03_user-pages/ai-dashboard/AIDashboardPage'));
+const AIQuotaManager = React.lazy(() => import('./pages/06_admin/AIQuotaManager'));
+
 // NEW: Integration & Setup Pages
 const IntegrationStatusDashboard = React.lazy(() => import('./components/admin/IntegrationStatusDashboard'));
 const QuickSetupPage = React.lazy(() => import('./pages/06_admin/QuickSetupPage'));
+const CloudServicesManager = React.lazy(() => import('./pages/06_admin/CloudServicesManager'));
 
 // Layout Component
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -270,6 +275,11 @@ const App: React.FC = () => {
                       <Route path="/super-admin" element={
                         <FullScreenLayout>
                           <SuperAdminDashboard />
+                        </FullScreenLayout>
+                      } />
+                      <Route path="/super-admin/users" element={
+                        <FullScreenLayout>
+                          <SuperAdminUsersPage />
                         </FullScreenLayout>
                       } />
                       
@@ -510,8 +520,9 @@ const MainLayout: React.FC = () => {
       <Route path="/analytics" element={<AnalyticsDashboard />} />  {/* NEW: Analytics System */}
       <Route path="/team" element={<TeamManagement />} />  {/* NEW: Team Management */}
       <Route path="/users" element={<UsersDirectoryPage />} />
+      {/* Redirect /all-users to /users */}
+      <Route path="/all-users" element={<UsersDirectoryPage />} />
       {/* ⚡ NEW: Browse Pages */}
-      <Route path="/all-users" element={<AllUsersPage />} />
       <Route path="/all-posts" element={<AllPostsPage />} />
       <Route path="/all-cars" element={<AllCarsPage />} />
       <Route path="/messages" element={<MessagesPage />} />
@@ -652,6 +663,24 @@ const MainLayout: React.FC = () => {
         }
       />
       
+      {/* AI Dashboard */}
+      <Route
+        path="/ai-dashboard"
+        element={
+          <ProtectedRoute>
+            <AIDashboardPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/ai-quotas"
+        element={
+          <ProtectedRoute>
+            <AIQuotaManager />
+          </ProtectedRoute>
+        }
+      />
+      
       {/* Integration & Setup Pages */}
       <Route
         path="/admin/integration-status"
@@ -666,6 +695,14 @@ const MainLayout: React.FC = () => {
         element={
           <ProtectedRoute>
             <QuickSetupPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/cloud-services"
+        element={
+          <ProtectedRoute>
+            <CloudServicesManager />
           </ProtectedRoute>
         }
       />

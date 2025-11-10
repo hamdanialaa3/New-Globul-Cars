@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { GarageSection } from '@/components/Profile';
 import { useProfile } from './hooks/useProfile';
 import * as S from './styles';
@@ -11,7 +11,8 @@ import * as S from './styles';
 const ProfileMyAds: React.FC = () => {
   const { language } = useLanguage();
   const navigate = useNavigate();
-  const { userCars, isOwnProfile, loadUserCars } = useProfile();
+  const params = useParams<{ userId?: string }>();
+  const { userCars, isOwnProfile, loadUserCars } = useProfile(params.userId);
 
   return (
     <S.ContentSection style={{ padding: 0 }}>

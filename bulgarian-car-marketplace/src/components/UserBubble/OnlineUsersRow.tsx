@@ -13,6 +13,7 @@ const Container = styled.div`
   border-radius: 16px;
   padding: 20px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  overflow: visible; /* ✅ Allow hover card to escape */
 `;
 
 const Header = styled.div`
@@ -62,8 +63,10 @@ const ScrollContainer = styled.div`
   display: flex;
   gap: 20px;
   overflow-x: auto;
-  overflow-y: hidden;
+  overflow-y: visible; /* ✅ Allow hover card to show below */
   padding: 8px 0;
+  padding-bottom: 320px; /* ✅ Space for hover card */
+  margin-bottom: -320px; /* ✅ Collapse extra space */
   scrollbar-width: none;
   
   &::-webkit-scrollbar {
@@ -77,7 +80,7 @@ const ScrollContainer = styled.div`
     position: absolute;
     right: 0;
     top: 0;
-    bottom: 0;
+    bottom: 320px; /* ✅ Don't cover hover card area */
     width: 40px;
     background: linear-gradient(90deg, transparent, white);
     pointer-events: none;

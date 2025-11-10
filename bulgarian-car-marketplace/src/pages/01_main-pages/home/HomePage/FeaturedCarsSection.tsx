@@ -9,10 +9,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { Search, SlidersHorizontal } from 'lucide-react';
 
 const FeaturedCarsSection = styled.section`
-  background: 
-    linear-gradient(rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.88)),
-    url('/assets/images/pexels-pixabay-259234.jpg') center center / cover no-repeat,
-    url('/assets/images/Pic/pexels-pixabay-248747.jpg') center center / cover no-repeat;
+  background: var(--bg-primary);
   padding: 1.5rem 0 2rem 0;
   position: relative;
   z-index: 1;
@@ -33,13 +30,13 @@ const SectionHeader = styled.div`
   h2 {
     font-size: 1.5rem; /* ⚡ OPTIMIZED: Reduced from 1.75rem */
     font-weight: bold;
-    color: #005ca9;
+    color: var(--accent-primary);
     margin-bottom: 0.375rem; /* ⚡ OPTIMIZED: Reduced from 0.5rem */
   }
 
   p {
     font-size: 0.875rem; /* ⚡ OPTIMIZED: Reduced from 0.95rem */
-    color: #6c757d;
+    color: var(--text-secondary);
     margin-bottom: 1rem; /* ⚡ OPTIMIZED: Reduced from 2rem */
     max-width: 600px;
     margin: 0 auto 1rem; /* ⚡ OPTIMIZED: Reduced from 2rem */
@@ -100,13 +97,13 @@ const SearchButton = styled(Link)<{ $variant?: 'primary' | 'secondary' }>`
   font-weight: 600;
   font-size: 0.875rem;
   transition: all 0.2s ease;
-  border: 2px solid ${props => props.$variant === 'primary' ? '#005ca9' : '#FF8F10'};
-  background: ${props => props.$variant === 'primary' ? '#005ca9' : '#FF8F10'};
+  border: 2px solid ${props => props.$variant === 'primary' ? 'var(--accent-primary)' : 'var(--accent-orange)'};
+  background: ${props => props.$variant === 'primary' ? 'var(--accent-primary)' : 'var(--accent-orange)'};
   color: white;
-  box-shadow: 0 2px 8px ${props => 
+  box-shadow: ${props => 
     props.$variant === 'primary' 
-      ? 'rgba(0, 92, 169, 0.2)' 
-      : 'rgba(255, 143, 16, 0.2)'};
+      ? 'var(--shadow-sm)' 
+      : 'var(--shadow-sm)'};
 
   svg {
     width: 18px;
@@ -115,10 +112,10 @@ const SearchButton = styled(Link)<{ $variant?: 'primary' | 'secondary' }>`
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px ${props => 
+    box-shadow: ${props => 
       props.$variant === 'primary' 
-        ? 'rgba(0, 92, 169, 0.3)' 
-        : 'rgba(255, 143, 16, 0.3)'};
+        ? 'var(--shadow-md)' 
+        : 'var(--shadow-md)'};
   }
 
   &:active {
@@ -133,7 +130,7 @@ const SearchButton = styled(Link)<{ $variant?: 'primary' | 'secondary' }>`
 
 const ViewAllButton = styled(Link)`
   display: inline-block;
-  background: #005ca9;
+  background: var(--accent-primary);
   color: white;
   padding: 0.625rem 1.25rem;
   border-radius: 0.5rem;
@@ -141,11 +138,11 @@ const ViewAllButton = styled(Link)`
   font-weight: 600;
   font-size: 0.875rem;
   transition: all 0.2s ease;
-  border: 2px solid #005ca9;
+  border: 2px solid var(--accent-primary);
 
   &:hover {
-    background: white;
-    color: #005ca9;
+    background: var(--bg-card);
+    color: var(--accent-primary);
   }
 `;
 

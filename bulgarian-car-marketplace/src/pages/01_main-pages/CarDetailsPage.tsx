@@ -12,6 +12,7 @@ import { getAllMakes, getModelsByMake, hasModels } from '@/data/car-makes-models
 import DistanceIndicator from '@/components/DistanceIndicator';
 import StaticMapEmbed from '@/components/StaticMapEmbed';
 import { logger } from '@/services/logger-service';
+import CarDetailsModernView from './components/CarDetailsModernView';
 
 // ==================== Styled Components ====================
 
@@ -1289,6 +1290,19 @@ const CarDetailsPage: React.FC = () => {
 
   if (!car) {
     return <LoadingContainer>{language === 'bg' ? 'Автомобилът не е намерен' : 'Car not found'}</LoadingContainer>;
+  }
+
+  if (!isEditMode) {
+    return (
+      <CarDetailsModernView
+        car={car}
+        language={(language as 'bg' | 'en')}
+        onBack={() => navigate(-1)}
+        onEdit={isOwner ? handleEdit : undefined}
+        isOwner={Boolean(isOwner)}
+        onContact={handleContactClick}
+      />
+    );
   }
 
   return (
