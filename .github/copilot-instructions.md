@@ -1,5 +1,15 @@
 # Copilot Instructions for New-Globul-Cars
 
+> **📖 ما هو هذا الملف؟ | What is this file?**
+> 
+> **English:** This file contains comprehensive instructions for GitHub Copilot AI to understand our codebase architecture, conventions, and best practices. It helps Copilot provide context-aware code suggestions that follow our project standards.
+>
+> **العربية:** يحتوي هذا الملف على تعليمات شاملة لـ GitHub Copilot AI لفهم بنية الكود والاتفاقيات وأفضل الممارسات. يساعد Copilot في تقديم اقتراحات كود متوافقة مع السياق وتتبع معايير مشروعنا.
+>
+> **For more details, see:** `.github/README.md`
+
+---
+
 ## Architecture Overview
 
 **Monorepo Structure:**
