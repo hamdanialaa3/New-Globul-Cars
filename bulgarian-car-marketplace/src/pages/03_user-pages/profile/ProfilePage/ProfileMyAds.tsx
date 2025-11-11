@@ -23,7 +23,12 @@ const ProfileMyAds: React.FC = () => {
           currency: 'EUR' as const,
           createdAt: car.createdAt || new Date(),
           title: car.title || `${car.make} ${car.model}`,
-          status: car.status || 'active'
+          status: car.status || 'active',
+          // ⚡ NEW: Mobile.de style data
+          horsepower: car.horsepower || car.power,
+          transmission: car.transmission || car.gearbox,
+          fuelConsumption: car.fuelConsumption || car.consumption,
+          co2Emissions: car.co2Emissions || car.emissions
         }))}
         onEdit={isOwnProfile ? (carId) => navigate(`/car/${carId}?edit=true`) : undefined}
         onDelete={isOwnProfile ? async (carId) => {

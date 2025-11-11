@@ -4,10 +4,16 @@
 
 import React, { useState } from 'react';
 import { useNavigate, useSearchParams, useParams } from 'react-router-dom';
+import styled from 'styled-components';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { MobileContainer, MobileStack } from '@/components/ui/mobile-index';
 import { MobileHeader } from '@/components/layout/MobileHeader';
 import { S } from './MobileContactPage.styles';
+import { SellProgressBar } from '@/components/SellWorkflow';
+
+const ProgressWrapper = styled.div`
+  padding: 0.75rem 1rem 0;
+`;
 
 const MobileContactPage: React.FC = () => {
   const { t } = useLanguage();
@@ -44,6 +50,9 @@ const MobileContactPage: React.FC = () => {
   return (
     <S.PageWrapper>
       <MobileHeader />
+      <ProgressWrapper>
+        <SellProgressBar currentStep="contact" />
+      </ProgressWrapper>
 
       <S.ContentWrapper>
         <MobileContainer maxWidth="md">

@@ -43,7 +43,6 @@ const SocialFeedPage = React.lazy(() => import('./pages/03_user-pages/social/Soc
 
 // Mobile.de-style sell workflow pages (الوحيد المستخدم)
 const VehicleStartPage = React.lazy(() => import('./pages/04_car-selling/sell/VehicleStartPageNew'));
-const SellerTypePageNew = React.lazy(() => import('./pages/04_car-selling/sell/SellerTypePageNew'));
 const VehicleDataPageNew = React.lazy(() => import('./pages/04_car-selling/sell/VehicleData'));
 const MobileVehicleDataPage = React.lazy(() => import('./pages/04_car-selling/sell/MobileVehicleDataPageClean'));
 const EquipmentMainPage = React.lazy(() => import('./pages/04_car-selling/sell/EquipmentMainPage'));
@@ -337,14 +336,6 @@ const MainLayout: React.FC = () => {
         element={
           <AuthGuard requireAuth={true}>
             <VehicleStartPage />
-          </AuthGuard>
-        }
-      />
-      <Route
-        path="/sell/inserat/:vehicleType/verkaeufertyp"
-        element={
-          <AuthGuard requireAuth={true}>
-            <SellerTypePageNew />
           </AuthGuard>
         }
       />

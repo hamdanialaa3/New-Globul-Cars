@@ -12,8 +12,13 @@ import { geminiVisionService } from '@/services/ai/gemini-vision.service';
 import { useAuth } from '@/contexts/AuthProvider';
 import { useToast } from '@/components/Toast';
 import styled from 'styled-components';
+import { SellProgressBar } from '@/components/SellWorkflow';
 
 const MAX_IMAGES = 20;
+
+const ProgressWrapper = styled.div`
+  padding: 0.75rem 1rem 0;
+`;
 
 interface ImageFile {
   id: string;
@@ -120,12 +125,12 @@ const MobileImagesPage: React.FC = () => {
     await new Promise(resolve => setTimeout(resolve, 1000));
     
     const params = new URLSearchParams(searchParams.toString());
-     navigate(`/sell/inserat/${vehicleType}/details/kontaktinformationen?${params.toString()}`);
+    navigate(`/sell/inserat/${vehicleType}/details/preis?${params.toString()}`);
   };
 
   const handleSkip = () => {
     const params = new URLSearchParams(searchParams.toString());
-     navigate(`/sell/inserat/${vehicleType}/details/kontaktinformationen?${params.toString()}`);
+    navigate(`/sell/inserat/${vehicleType}/details/preis?${params.toString()}`);
   };
 
   const canContinue = images.length > 0;
@@ -133,6 +138,9 @@ const MobileImagesPage: React.FC = () => {
   return (
     <S.PageWrapper>
       <MobileHeader />
+      <ProgressWrapper>
+        <SellProgressBar currentStep="images" />
+      </ProgressWrapper>
 
       <S.ContentWrapper>
         <MobileContainer maxWidth="md">

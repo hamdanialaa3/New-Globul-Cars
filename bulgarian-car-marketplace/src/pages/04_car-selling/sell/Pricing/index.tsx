@@ -8,6 +8,7 @@ import SplitScreenLayout from '@/components/SplitScreenLayout';
 import { WorkflowFlow } from '@/components/WorkflowVisualization';
 import { Euro, TrendingUp, Info } from 'lucide-react';
 import * as S from './styles';
+import { SellWorkflowLayout } from '@/components/SellWorkflow';
 
 const PricingPageNew: React.FC = () => {
   const navigate = useNavigate();
@@ -120,9 +121,13 @@ const PricingPageNew: React.FC = () => {
     </S.ContentSection>
   );
 
-  const rightContent = <WorkflowFlow currentStepIndex={5} totalSteps={8} carBrand={make || undefined} language={language} />;
+  const rightContent = <WorkflowFlow currentStepIndex={4} totalSteps={8} carBrand={make || undefined} language={language} />;
 
-  return <SplitScreenLayout leftContent={leftContent} rightContent={rightContent} />;
+  return (
+    <SellWorkflowLayout currentStep="pricing">
+      <SplitScreenLayout leftContent={leftContent} rightContent={rightContent} />
+    </SellWorkflowLayout>
+  );
 };
 
 export default PricingPageNew;

@@ -1,7 +1,7 @@
 // Vehicle Start Page with Workflow - Auto Continue
 // صفحة اختيار نوع السيارة مع الأتمتة - انتقال تلقائي
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { logger } from '@/services/logger-service';
@@ -13,6 +13,8 @@ import { useAuth } from '@/contexts/AuthProvider';
 import { useProfileType } from '@/contexts/ProfileTypeContext';
 import { toast } from 'react-toastify';
 import N8nIntegrationService from '@/services/n8n-integration';
+import { SellWorkflowLayout } from '@/components/SellWorkflow';
+import SellWorkflowStepStateService from '@/services/sellWorkflowStepState';
 
 const ContentSection = styled.div`
   display: flex;
@@ -158,6 +160,10 @@ const VehicleStartPageNew: React.FC = () => {
   const { permissions, profileType } = useProfileType();
   const [hoveredType, setHoveredType] = useState<string | null>(null);
 
+  useEffect(() => {
+    SellWorkflowStepStateService.markPending('vehicle-selection');
+  }, []);
+
   const vehicleTypes = [
     { id: 'car', IconComponent: Car },
     { id: 'suv', IconComponent: CarFront },
@@ -194,6 +200,9 @@ const VehicleStartPageNew: React.FC = () => {
 
     const params = new URLSearchParams();
     params.set('vt', typeId);
+    if (profileType) {
+      params.set('st', profileType);
+    }
     
     // N8N Integration: Trigger vehicle type selection
     if (user?.uid) {
@@ -204,20 +213,11 @@ const VehicleStartPageNew: React.FC = () => {
       }
     }
     
-    // Auto-navigate immediately
-    navigate(`/sell/inserat/${typeId}/verkaeufertyp?${params.toString()}`);
-  };
+    SellWorkflowStepStateService.markCompleted('vehicle-selection');
 
-  const workflowSteps = [
-    { id: 'vehicle', label: language === 'bg' ? 'Тип' : 'Type', icon: undefined, isCompleted: false },
-    { id: 'seller', label: language === 'bg' ? 'Продавач' : 'Seller', icon: undefined, isCompleted: false },
-    { id: 'data', label: language === 'bg' ? 'Данни' : 'Data', icon: undefined, isCompleted: false },
-    { id: 'equipment', label: language === 'bg' ? 'Оборудване' : 'Equipment', icon: undefined, isCompleted: false },
-    { id: 'images', label: language === 'bg' ? 'Снимки' : 'Images', icon: undefined, isCompleted: false },
-    { id: 'pricing', label: language === 'bg' ? 'Цена' : 'Price', icon: undefined, isCompleted: false },
-    { id: 'contact', label: language === 'bg' ? 'Контакт' : 'Contact', icon: undefined, isCompleted: false },
-    { id: 'publish', label: language === 'bg' ? 'Публикуване' : 'Publish', icon: undefined, isCompleted: false }
-  ];
+    // Auto-navigate immediately
+    navigate(`/sell/inserat/${typeId}/fahrzeugdaten/antrieb-und-umwelt?${params.toString()}`);
+  };
 
   const leftContent = (
     <ContentSection>
@@ -267,7 +267,11 @@ const VehicleStartPageNew: React.FC = () => {
     />
   );
 
-  return <SplitScreenLayout leftContent={leftContent} rightContent={rightContent} />;
+  return (
+    <SellWorkflowLayout currentStep="vehicle-selection">
+      <SplitScreenLayout leftContent={leftContent} rightContent={rightContent} />
+    </SellWorkflowLayout>
+  );
 };
 
 export default VehicleStartPageNew;

@@ -3,6 +3,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearchParams, useParams } from 'react-router-dom';
+import styled from 'styled-components';
 
 import { useLanguage } from '@/contexts/LanguageContext';
 import { MobileContainer, MobileStack } from '@/components/ui/mobile-index';
@@ -21,6 +22,13 @@ const Hint = S.Hint;
 const StickyFooter = S.StickyFooter;
 const PrimaryButton = S.PrimaryButton;
 
+import { SellProgressBar } from '@/components/SellWorkflow';
+import { useProfileType } from '@/contexts/ProfileTypeContext';
+
+const ProgressWrapper = styled.div`
+  padding: 0.75rem 1rem 0;
+`;
+
 // Types
 interface VehicleForm {
   make: string;
@@ -36,6 +44,7 @@ export const MobileVehicleDataPageClean: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { vehicleType = 'car' } = useParams<{ vehicleType: string }>();
+  const { profileType } = useProfileType();
 
   const [form, setForm] = useState<VehicleForm>({
     make: '',
@@ -85,7 +94,7 @@ export const MobileVehicleDataPageClean: React.FC = () => {
     if (!canContinue) return;
     const params = new URLSearchParams();
     params.set('vt', vehicleType);
-    const st = searchParams.get('st');
+    const st = searchParams.get('st') || profileType;
     if (st) params.set('st', st);
     params.set('mk', form.make);
     if (form.model) params.set('md', form.model);
@@ -99,6 +108,9 @@ export const MobileVehicleDataPageClean: React.FC = () => {
   return (
     <S.PageWrapper>
       <MobileHeader />
+      <ProgressWrapper>
+        <SellProgressBar currentStep="vehicle-data" />
+      </ProgressWrapper>
 
       <S.ContentWrapper>
         <MobileContainer maxWidth="md">

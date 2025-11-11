@@ -19,14 +19,18 @@ import { getErrorMessage } from '../../../../constants/ErrorMessages';
 import useDraftAutoSave from '@/hooks/useDraftAutoSave';
 import useWorkflowStep from '@/hooks/useWorkflowStep';
 import KeyboardShortcutsHelper from '@/components/KeyboardShortcutsHelper';
+import { SellWorkflowLayout } from '@/components/SellWorkflow';
+import { useProfileType } from '@/contexts/ProfileTypeContext';
+import SellWorkflowStepStateService from '@/services/sellWorkflowStepState';
 
 const VehicleDataPageNew: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { language } = useLanguage();
+  const { profileType } = useProfileType();
 
   const vehicleType = searchParams.get('vt');
-  const sellerType = searchParams.get('st');
+  const sellerType = searchParams.get('st') || profileType;
 
   const [formData, setFormData] = useState<VehicleFormData>({
     make: '',
@@ -50,6 +54,18 @@ const VehicleDataPageNew: React.FC = () => {
   const [availableModels, setAvailableModels] = useState<string[]>([]);
   const [availableVariants, setAvailableVariants] = useState<string[]>([]);
   const [showVariants, setShowVariants] = useState<boolean>(false);
+  useEffect(() => {
+    SellWorkflowStepStateService.markPending('vehicle-data');
+  }, []);
+
+  useEffect(() => {
+    if (formData.make && formData.year) {
+      SellWorkflowStepStateService.markCompleted('vehicle-data');
+    } else {
+      SellWorkflowStepStateService.markPending('vehicle-data');
+    }
+  }, [formData.make, formData.year]);
+
 
   // Update available models when brand changes
   useEffect(() => {
@@ -518,7 +534,7 @@ const VehicleDataPageNew: React.FC = () => {
 
   const rightContent = (
     <WorkflowFlow
-      currentStepIndex={2}
+      currentStepIndex={1}
       totalSteps={8}
       carBrand={formData.make || undefined}
       language={language}
@@ -526,7 +542,7 @@ const VehicleDataPageNew: React.FC = () => {
   );
 
   return (
-    <>
+    <SellWorkflowLayout currentStep="vehicle-data">
       <SplitScreenLayout leftContent={leftContent} rightContent={rightContent} />
       
       {/* 🆕 Keyboard Shortcuts */}
@@ -555,7 +571,7 @@ const VehicleDataPageNew: React.FC = () => {
           💾 {getErrorMessage('AUTO_SAVED', language as 'bg' | 'en')}
         </div>
       )}
-    </>
+    </SellWorkflowLayout>
   );
 };
 

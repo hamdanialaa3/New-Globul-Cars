@@ -10,6 +10,7 @@ import SplitScreenLayout from '@/components/SplitScreenLayout';
 import { WorkflowFlow } from '@/components/WorkflowVisualization';
 import { Upload, X, Image as ImageIcon } from 'lucide-react';
 import * as S from './styles';
+import { SellWorkflowLayout } from '@/components/SellWorkflow';
 
 const ImagesPageNew: React.FC = () => {
   const navigate = useNavigate();
@@ -63,7 +64,7 @@ const ImagesPageNew: React.FC = () => {
 
       const params = new URLSearchParams(searchParams.toString());
       params.set('images', selectedFiles.length.toString());
-      navigate(`/sell/inserat/${vehicleType || 'car'}/details/kontaktinformationen?${params.toString()}`);
+      navigate(`/sell/inserat/${vehicleType || 'car'}/details/preis?${params.toString()}`);
     } catch (error) {
       logger.error('Error saving images', error as Error, { vehicleType });
       alert(language === 'bg' 
@@ -173,9 +174,13 @@ const ImagesPageNew: React.FC = () => {
     </S.ContentSection>
   );
 
-  const rightContent = <WorkflowFlow currentStepIndex={4} totalSteps={8} carBrand={make || undefined} language={language} />;
+  const rightContent = <WorkflowFlow currentStepIndex={3} totalSteps={8} carBrand={make || undefined} language={language} />;
 
-  return <SplitScreenLayout leftContent={leftContent} rightContent={rightContent} />;
+  return (
+    <SellWorkflowLayout currentStep="images">
+      <SplitScreenLayout leftContent={leftContent} rightContent={rightContent} />
+    </SellWorkflowLayout>
+  );
 };
 
 export default ImagesPageNew;

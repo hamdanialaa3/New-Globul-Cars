@@ -34,6 +34,10 @@ export interface GarageCar {
   mainImage?: string;
   mileage?: number;
   fuelType?: string;
+  horsepower?: number;  // ⚡ NEW: For mobile.de style
+  transmission?: string;  // ⚡ NEW: Automatic/Manual
+  fuelConsumption?: number;  // ⚡ NEW: l/100km
+  co2Emissions?: number;  // ⚡ NEW: g CO₂/km
   status: 'active' | 'sold' | 'draft' | 'pending';
   views?: number;
   inquiries?: number;
@@ -52,16 +56,16 @@ interface GarageSectionProps {
 
 const GarageContainer = styled.div`
   width: 100%;
-  background: var(--bg-card);
+  background: red !important;
   border-radius: 16px;
   box-shadow: var(--shadow-lg);
   overflow: hidden;
-  border: 1px solid var(--border);
+  border: 10px solid red !important;
 `;
 
 const GarageHeader = styled.div`
   padding: 24px;
-  background: linear-gradient(135deg, var(--accent-orange) 0%, var(--accent-primary) 100%);
+  background: red !important;
   color: white;
   position: relative;
   overflow: hidden;
@@ -251,11 +255,11 @@ const GarageGrid = styled.div`
 `;
 
 const CarCardStyled = styled.div`
-  background: var(--bg-card);
+  background: red !important;
   border-radius: 16px;
   overflow: hidden;
   box-shadow: var(--shadow-md);
-  border: 1px solid var(--border);
+  border: 5px solid yellow !important;
   transition: all 0.3s ease;
   cursor: pointer;
   
@@ -333,39 +337,59 @@ const StatusBadge = styled.div<{ $status: string }>`
 `;
 
 const CarContent = styled.div`
-  padding: 16px;
+  padding: 20px;
   background: var(--bg-card);
 `;
 
 const CarTitle = styled.h3`
-  margin: 0 0 8px 0;
-  font-size: 1.1rem;
+  margin: 0 0 12px 0;
+  font-size: 1.15rem;
   font-weight: 700;
-  color: var(--text-primary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  color: red !important;
+  line-height: 1.3;
 `;
 
 const CarPrice = styled.div`
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   font-weight: 800;
-  color: var(--accent-orange);
-  margin-bottom: 12px;
+  color: red !important;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  
+  .price-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: white !important;
+    background: red !important;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
 `;
 
 const CarDetails = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
-  margin-bottom: 12px;
-  font-size: 0.85rem;
-  color: var(--text-secondary);
+  gap: 16px;
+  margin: 16px 0;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  font-weight: 500;
   
   .detail-item {
     display: flex;
     align-items: center;
     gap: 4px;
+    padding: 0;
+    
+    &:not(:last-child)::after {
+      content: '';
+      width: 1px;
+      height: 14px;
+      background: var(--border);
+      margin-left: 16px;
+    }
   }
 `;
 
@@ -624,27 +648,66 @@ export const GarageSection: React.FC<GarageSectionProps> = ({
               </CarImage>
               
               <CarContent>
+                {/* Title */}
                 <CarTitle>{car.title}</CarTitle>
-                <CarPrice>€{car.price.toLocaleString()}</CarPrice>
                 
-                <CarDetails>
-                  <div className="detail-item">
-                    <Clock size={14} />
-                    {car.year}
+                {/* Price */}
+                <CarPrice>
+                  €{car.price.toLocaleString()}
+                  <span className="price-label">Fair price</span>
+                </CarPrice>
+                
+                {/* Fuel Type Badge */}
+                {car.fuelType && (
+                  <div style={{ 
+                    display: 'inline-block',
+                    padding: '4px 12px',
+                    background: 'var(--bg-secondary)',
+                    borderRadius: '6px',
+                    fontSize: '0.85rem',
+                    fontWeight: '500',
+                    marginBottom: '12px',
+                    color: 'var(--text-primary)'
+                  }}>
+                    {car.fuelType}
                   </div>
-                  {car.mileage && (
+                )}
+                
+                {/* Specs - Mobile.de style */}
+                <CarDetails>
+                  {car.horsepower && (
                     <div className="detail-item">
-                      <TrendingUp size={14} />
-                      {car.mileage.toLocaleString()} km
+                      {car.horsepower} hp
                     </div>
                   )}
-                  {car.fuelType && (
+                  {car.transmission && (
                     <div className="detail-item">
-                      ⛽ {car.fuelType}
+                      {car.transmission}
+                    </div>
+                  )}
+                  {car.mileage !== undefined && (
+                    <div className="detail-item">
+                      {car.mileage.toLocaleString()} km
                     </div>
                   )}
                 </CarDetails>
                 
+                {/* Consumption & Emissions */}
+                {(car.fuelConsumption || car.co2Emissions) && (
+                  <div style={{
+                    fontSize: '0.8rem',
+                    color: 'var(--text-secondary)',
+                    marginTop: '8px',
+                    paddingTop: '8px',
+                    borderTop: '1px solid var(--border)'
+                  }}>
+                    {car.fuelConsumption && `${car.fuelConsumption} l/100km (comb.)`}
+                    {car.fuelConsumption && car.co2Emissions && ' • '}
+                    {car.co2Emissions && `${car.co2Emissions} g CO₂/km (comb.)`}
+                  </div>
+                )}
+                
+                {/* Stats */}
                 <CarStats>
                   <div className="stat">
                     <Eye size={14} />
@@ -656,6 +719,7 @@ export const GarageSection: React.FC<GarageSectionProps> = ({
                   </div>
                 </CarStats>
                 
+                {/* Action Buttons */}
                 <CarActions>
                   <ActionButton 
                     $variant="primary" 

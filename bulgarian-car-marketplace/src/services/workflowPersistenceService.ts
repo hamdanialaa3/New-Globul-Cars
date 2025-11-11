@@ -3,6 +3,7 @@
 
 import ImageOptimizationService from './imageOptimizationService';
 import { serviceLogger } from './logger-wrapper';
+import SellWorkflowStepStateService from './sellWorkflowStepState';
 
 const STORAGE_KEY = 'globul_sell_workflow_state';
 const IMAGES_KEY = 'globul_sell_workflow_images';
@@ -66,6 +67,7 @@ export class WorkflowPersistenceService {
   static clearState(): void {
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem(IMAGES_KEY);
+    SellWorkflowStepStateService.reset();
     serviceLogger.info('Workflow state cleared');
   }
 

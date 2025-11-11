@@ -12,6 +12,7 @@ import {
   Sparkles, Moon, Circle, KeyRound, Car 
 } from 'lucide-react';
 import * as S from './UnifiedEquipmentStyles';
+import { SellWorkflowLayout } from '@/components/SellWorkflow';
 
 // Equipment Categories
 const EQUIPMENT_CATEGORIES = {
@@ -252,9 +253,13 @@ const UnifiedEquipmentPage: React.FC = () => {
     </S.ContentSection>
   );
 
-  const rightContent = <WorkflowFlow currentStepIndex={3} totalSteps={8} carBrand={make || undefined} language={language} />;
+  const rightContent = <WorkflowFlow currentStepIndex={2} totalSteps={8} carBrand={make || undefined} language={language} />;
 
-  return <SplitScreenLayout leftContent={leftContent} rightContent={rightContent} />;
+  return (
+    <SellWorkflowLayout currentStep="equipment">
+      <SplitScreenLayout leftContent={leftContent} rightContent={rightContent} />
+    </SellWorkflowLayout>
+  );
 };
 
 export default UnifiedEquipmentPage;

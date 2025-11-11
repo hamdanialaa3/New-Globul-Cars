@@ -1,11 +1,17 @@
 // Mobile Submission Page - Final step in sell workflow
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import styled from 'styled-components';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthProvider';
 import WorkflowPersistenceService from '@/services/workflowPersistenceService';
 import { logger } from '@/services/logger-service';
 import { S } from './MobileSubmissionPage.styles';
+import { SellProgressBar } from '@/components/SellWorkflow';
+
+const ProgressWrapper = styled.div`
+  padding: 0.75rem 1rem 0;
+`;
 
 type SubmissionState = 'submitting' | 'success' | 'error';
 
@@ -87,51 +93,56 @@ const MobileSubmissionPage: React.FC = () => {
   };
 
   return (
-    <S.Container>
-      <S.Content>
-        {state === 'submitting' && (
-          <>
-            <S.LoadingSpinner />
-            <S.Title>{t('sell.submission.submitting')}</S.Title>
-            <S.Message>{t('sell.submission.pleaseWait')}</S.Message>
-          </>
-        )}
+    <>
+      <ProgressWrapper>
+        <SellProgressBar currentStep="publish" />
+      </ProgressWrapper>
+      <S.Container>
+        <S.Content>
+          {state === 'submitting' && (
+            <>
+              <S.LoadingSpinner />
+              <S.Title>{t('sell.submission.submitting')}</S.Title>
+              <S.Message>{t('sell.submission.pleaseWait')}</S.Message>
+            </>
+          )}
 
-        {state === 'success' && (
-          <>
-            <S.SuccessIcon>✓</S.SuccessIcon>
-            <S.Title>{t('sell.submission.success')}</S.Title>
-            <S.Message>{t('sell.submission.successMessage')}</S.Message>
-            <S.Actions>
-              <S.PrimaryButton onClick={handleViewListing}>
-                {t('sell.submission.viewListing')}
-              </S.PrimaryButton>
-              <S.SecondaryButton onClick={handleCreateNew}>
-                {t('sell.submission.createNew')}
-              </S.SecondaryButton>
-            </S.Actions>
-          </>
-        )}
+          {state === 'success' && (
+            <>
+              <S.SuccessIcon>✓</S.SuccessIcon>
+              <S.Title>{t('sell.submission.success')}</S.Title>
+              <S.Message>{t('sell.submission.successMessage')}</S.Message>
+              <S.Actions>
+                <S.PrimaryButton onClick={handleViewListing}>
+                  {t('sell.submission.viewListing')}
+                </S.PrimaryButton>
+                <S.SecondaryButton onClick={handleCreateNew}>
+                  {t('sell.submission.createNew')}
+                </S.SecondaryButton>
+              </S.Actions>
+            </>
+          )}
 
-        {state === 'error' && (
-          <>
-            <S.ErrorIcon>✕</S.ErrorIcon>
-            <S.Title>{t('sell.submission.error')}</S.Title>
-            <S.Message>
-              {error || t('sell.submission.errorMessage')}
-            </S.Message>
-            <S.Actions>
-              <S.PrimaryButton onClick={handleRetry}>
-                {t('sell.submission.retry')}
-              </S.PrimaryButton>
-              <S.SecondaryButton onClick={handleGoBack}>
-                {t('sell.submission.goBack')}
-              </S.SecondaryButton>
-            </S.Actions>
-          </>
-        )}
-      </S.Content>
-    </S.Container>
+          {state === 'error' && (
+            <>
+              <S.ErrorIcon>✕</S.ErrorIcon>
+              <S.Title>{t('sell.submission.error')}</S.Title>
+              <S.Message>
+                {error || t('sell.submission.errorMessage')}
+              </S.Message>
+              <S.Actions>
+                <S.PrimaryButton onClick={handleRetry}>
+                  {t('sell.submission.retry')}
+                </S.PrimaryButton>
+                <S.SecondaryButton onClick={handleGoBack}>
+                  {t('sell.submission.goBack')}
+                </S.SecondaryButton>
+              </S.Actions>
+            </>
+          )}
+        </S.Content>
+      </S.Container>
+    </>
   );
 };
 

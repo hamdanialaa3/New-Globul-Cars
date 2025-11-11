@@ -23,6 +23,7 @@ import useWorkflowStep from '@/hooks/useWorkflowStep';
 import WorkflowPersistenceService from '@/services/workflowPersistenceService';
 import ImageUploadService from '@/services/image-upload-service';
 import { logger } from '@/services/logger-service';
+import { SellWorkflowLayout } from '@/components/SellWorkflow';
 
 const CONTACT_METHODS = [
   { id: 'phone', iconComponent: 'PhoneIcon', labelBg: 'Телефон', labelEn: 'Phone' },
@@ -945,10 +946,10 @@ const UnifiedContactPage: React.FC = () => {
     </S.ContentSection>
   );
 
-  const rightContent = <WorkflowFlow currentStepIndex={6} totalSteps={8} carBrand={make || undefined} language={language} />;
+  const rightContent = <WorkflowFlow currentStepIndex={5} totalSteps={8} carBrand={make || undefined} language={language} />;
 
   return (
-    <>
+    <SellWorkflowLayout currentStep="contact">
       <SplitScreenLayout leftContent={leftContent} rightContent={rightContent} />
       
       {/* 🆕 Image Upload Progress Modal */}
@@ -990,7 +991,7 @@ const UnifiedContactPage: React.FC = () => {
           💾 {getErrorMessage('AUTO_SAVED', language as 'bg' | 'en')}
         </div>
       )}
-    </>
+    </SellWorkflowLayout>
   );
 };
 

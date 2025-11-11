@@ -1,9 +1,15 @@
 // Mobile Preview Page - Summary before submission
 import React, { useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import styled from 'styled-components';
 import { S } from './MobilePreviewPage.styles';
 import WorkflowPersistenceService from '@/services/workflowPersistenceService';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { SellProgressBar } from '@/components/SellWorkflow';
+
+const ProgressWrapper = styled.div`
+  padding: 0.75rem 1rem 0;
+`;
 
 const MobilePreviewPage: React.FC = () => {
   const navigate = useNavigate();
@@ -52,48 +58,53 @@ const MobilePreviewPage: React.FC = () => {
   );
 
   return (
-    <S.Container>
-      <S.Header>
-        <S.Title>{t('sell.preview.title')}</S.Title>
-      </S.Header>
+    <>
+      <ProgressWrapper>
+        <SellProgressBar currentStep="preview" />
+      </ProgressWrapper>
+      <S.Container>
+        <S.Header>
+          <S.Title>{t('sell.preview.title')}</S.Title>
+        </S.Header>
 
-      <S.Card>
-        <S.CardTitle>{t('sell.preview.sections.vehicle')}</S.CardTitle>
-        {renderRows(vehicleRows)}
-      </S.Card>
+        <S.Card>
+          <S.CardTitle>{t('sell.preview.sections.vehicle')}</S.CardTitle>
+          {renderRows(vehicleRows)}
+        </S.Card>
 
-      <S.Card>
-        <S.CardTitle>{t('sell.preview.sections.images')}</S.CardTitle>
-        <S.ImagesGrid>
-          {images && images.length > 0 ? (
-            images.slice(0, 9).map((src, i) => (
-              <S.Thumb key={i} src={src} alt={`image-${i}`} />
-            ))
-          ) : (
-            <S.Label>{t('sell.preview.noImages')}</S.Label>
-          )}
-        </S.ImagesGrid>
-      </S.Card>
+        <S.Card>
+          <S.CardTitle>{t('sell.preview.sections.images')}</S.CardTitle>
+          <S.ImagesGrid>
+            {images && images.length > 0 ? (
+              images.slice(0, 9).map((src, i) => (
+                <S.Thumb key={i} src={src} alt={`image-${i}`} />
+              ))
+            ) : (
+              <S.Label>{t('sell.preview.noImages')}</S.Label>
+            )}
+          </S.ImagesGrid>
+        </S.Card>
 
-      <S.Card>
-        <S.CardTitle>{t('sell.preview.sections.pricing')}</S.CardTitle>
-        {renderRows(pricingRows)}
-      </S.Card>
+        <S.Card>
+          <S.CardTitle>{t('sell.preview.sections.pricing')}</S.CardTitle>
+          {renderRows(pricingRows)}
+        </S.Card>
 
-      <S.Card>
-        <S.CardTitle>{t('sell.preview.sections.contact')}</S.CardTitle>
-        {renderRows(contactRows)}
-      </S.Card>
+        <S.Card>
+          <S.CardTitle>{t('sell.preview.sections.contact')}</S.CardTitle>
+          {renderRows(contactRows)}
+        </S.Card>
 
-      <S.Actions>
-        <S.Button onClick={() => goTo('/sell/inserat/:vehicleType/details/bilder')}>
-          {t('sell.preview.actions.editImages')}
-        </S.Button>
-        <S.PrimaryButton onClick={() => goTo('/sell/inserat/:vehicleType/submission')}>
-          {t('sell.preview.actions.continue')}
-        </S.PrimaryButton>
-      </S.Actions>
-    </S.Container>
+        <S.Actions>
+          <S.Button onClick={() => goTo('/sell/inserat/:vehicleType/details/bilder')}>
+            {t('sell.preview.actions.editImages')}
+          </S.Button>
+          <S.PrimaryButton onClick={() => goTo('/sell/inserat/:vehicleType/submission')}>
+            {t('sell.preview.actions.continue')}
+          </S.PrimaryButton>
+        </S.Actions>
+      </S.Container>
+    </>
   );
 };
 
