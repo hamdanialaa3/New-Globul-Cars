@@ -41,6 +41,37 @@ class NotificationService {
     }
   }
 
+  async requestPermissionAndSaveToken(userId?: string) {
+    try {
+      const permission = await Notification.requestPermission();
+      
+      if (permission === 'granted') {
+        console.log('✅ Notification permission granted');
+        const token = await this.getToken();
+        
+        if (token && userId) {
+          await this.saveToken(userId, token);
+        }
+        
+        return token;
+      } else {
+        console.log('❌ Notification permission denied');
+        return null;
+      }
+    } catch (error) {
+      console.error('❌ Request permission and save token failed:', error);
+      return null;
+    }
+  }
+
+  onForegroundMessage(callback: (payload: any) => void) {
+    if (!this.messaging) {
+      this.messaging = getMessaging();
+    }
+    
+    return onMessage(this.messaging, callback);
+  }
+
   async saveToken(userId: string, token: string) {
     try {
       await setDoc(doc(db, 'userTokens', userId), {

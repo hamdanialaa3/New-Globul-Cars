@@ -61,7 +61,7 @@ const GarageContainer = styled.div`
 
 const GarageHeader = styled.div`
   padding: 24px;
-  background: linear-gradient(135deg, #FF7900 0%, #ff8c1a 100%);
+  background: linear-gradient(135deg, var(--accent-orange) 0%, var(--accent-primary) 100%);
   color: white;
   position: relative;
   overflow: hidden;
@@ -142,7 +142,7 @@ const HeaderTitle = styled.div`
 const AddButton = styled.button`
   padding: 12px 24px;
   background: white;
-  color: #FF7900;
+  color: var(--accent-orange);
   border: none;
   border-radius: 12px;
   font-weight: 600;
@@ -152,11 +152,11 @@ const AddButton = styled.button`
   align-items: center;
   gap: 8px;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-md);
   
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--shadow-lg);
     background: #fff;
   }
   
@@ -441,7 +441,7 @@ const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary' | 'dange
 const EmptyGarage = styled.div`
   padding: 60px 24px;
   text-align: center;
-  color: #6c757d;
+  color: var(--text-secondary);
   
   .empty-icon {
     font-size: 4rem;
@@ -553,7 +553,7 @@ export const GarageSection: React.FC<GarageSectionProps> = ({
       {cars.length > 0 && (
         <GarageControls>
           <ControlGroup>
-            <Filter size={18} style={{ color: '#6c757d' }} />
+            <Filter size={18} style={{ color: 'var(--text-secondary)' }} />
             <FilterButton 
               $active={filterStatus === 'all'} 
               onClick={() => setFilterStatus('all')}
@@ -581,7 +581,7 @@ export const GarageSection: React.FC<GarageSectionProps> = ({
           </ControlGroup>
           
           <ControlGroup>
-            <SortDesc size={18} style={{ color: '#6c757d' }} />
+            <SortDesc size={18} style={{ color: 'var(--text-secondary)' }} />
             <select 
               value={sortBy} 
               onChange={(e) => setSortBy(e.target.value as any)}

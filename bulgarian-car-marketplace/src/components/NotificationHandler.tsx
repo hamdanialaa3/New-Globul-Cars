@@ -15,7 +15,7 @@ const NotificationHandler: React.FC = () => {
     // Only initialize notifications if a user is logged in
     if (user) {
       // 1. Request permission and save the token
-      notificationService.requestPermissionAndSaveToken();
+      notificationService.requestPermissionAndSaveToken(user.uid);
 
       // 2. Listen for foreground messages
       const unsubscribe = notificationService.onForegroundMessage((payload) => {
