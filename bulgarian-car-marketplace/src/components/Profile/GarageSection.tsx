@@ -52,11 +52,11 @@ interface GarageSectionProps {
 
 const GarageContainer = styled.div`
   width: 100%;
-  background: white;
+  background: var(--bg-card);
   border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-lg);
   overflow: hidden;
-  border: 1px solid rgba(255, 121, 0, 0.1);
+  border: 1px solid var(--border);
 `;
 
 const GarageHeader = styled.div`
@@ -167,8 +167,8 @@ const AddButton = styled.button`
 
 const GarageStats = styled.div`
   padding: 20px 24px;
-  background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
-  border-bottom: 1px solid #e9ecef;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 16px;
@@ -177,37 +177,37 @@ const GarageStats = styled.div`
 const StatCard = styled.div`
   text-align: center;
   padding: 12px;
-  background: white;
+  background: var(--bg-card);
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  border: 1px solid #e9ecef;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
   transition: all 0.3s ease;
   
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 121, 0, 0.15);
-    border-color: rgba(255, 121, 0, 0.3);
+    box-shadow: var(--shadow-md);
+    border-color: var(--accent-orange);
   }
   
   .stat-number {
     font-size: 1.75rem;
     font-weight: 700;
-    color: #FF7900;
+    color: var(--accent-orange);
     margin-bottom: 4px;
     display: block;
   }
   
   .stat-label {
     font-size: 0.8rem;
-    color: #6c757d;
+    color: var(--text-secondary);
     font-weight: 500;
   }
 `;
 
 const GarageControls = styled.div`
   padding: 16px 24px;
-  background: white;
-  border-bottom: 1px solid #e9ecef;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -223,9 +223,9 @@ const ControlGroup = styled.div`
 
 const FilterButton = styled.button<{ $active?: boolean }>`
   padding: 8px 16px;
-  background: ${props => props.$active ? '#FF7900' : 'white'};
-  color: ${props => props.$active ? 'white' : '#6c757d'};
-  border: 1px solid ${props => props.$active ? '#FF7900' : '#dee2e6'};
+  background: ${props => props.$active ? 'var(--accent-orange)' : 'var(--bg-card)'};
+  color: ${props => props.$active ? 'white' : 'var(--text-secondary)'};
+  border: 1px solid ${props => props.$active ? 'var(--accent-orange)' : 'var(--border)'};
   border-radius: 8px;
   font-size: 0.85rem;
   font-weight: 500;
@@ -233,8 +233,8 @@ const FilterButton = styled.button<{ $active?: boolean }>`
   transition: all 0.2s ease;
   
   &:hover {
-    background: ${props => props.$active ? '#e66d00' : '#f8f9fa'};
-    border-color: #FF7900;
+    background: ${props => props.$active ? 'var(--accent-primary)' : 'var(--bg-secondary)'};
+    border-color: var(--accent-orange);
   }
 `;
 
@@ -251,25 +251,25 @@ const GarageGrid = styled.div`
 `;
 
 const CarCardStyled = styled.div`
-  background: white;
+  background: var(--bg-card);
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-  border: 1px solid #e9ecef;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
   transition: all 0.3s ease;
   cursor: pointer;
   
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(255, 121, 0, 0.15);
-    border-color: #FF7900;
+    box-shadow: var(--shadow-lg);
+    border-color: var(--accent-orange);
   }
 `;
 
 const CarImage = styled.div`
   width: 100%;
   height: 200px;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  background: var(--bg-secondary);
   position: relative;
   overflow: hidden;
   
@@ -286,7 +286,7 @@ const CarImage = styled.div`
     align-items: center;
     justify-content: center;
     font-size: 3rem;
-    color: #dee2e6;
+    color: var(--border);
   }
 `;
 
@@ -334,13 +334,14 @@ const StatusBadge = styled.div<{ $status: string }>`
 
 const CarContent = styled.div`
   padding: 16px;
+  background: var(--bg-card);
 `;
 
 const CarTitle = styled.h3`
   margin: 0 0 8px 0;
   font-size: 1.1rem;
   font-weight: 700;
-  color: #212529;
+  color: var(--text-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -348,8 +349,8 @@ const CarTitle = styled.h3`
 
 const CarPrice = styled.div`
   font-size: 1.5rem;
-  font-weight: 700;
-  color: #FF7900;
+  font-weight: 800;
+  color: var(--accent-orange);
   margin-bottom: 12px;
 `;
 
@@ -359,7 +360,7 @@ const CarDetails = styled.div`
   gap: 12px;
   margin-bottom: 12px;
   font-size: 0.85rem;
-  color: #6c757d;
+  color: var(--text-secondary);
   
   .detail-item {
     display: flex;
@@ -372,9 +373,9 @@ const CarStats = styled.div`
   display: flex;
   gap: 16px;
   padding-top: 12px;
-  border-top: 1px solid #e9ecef;
+  border-top: 1px solid var(--border);
   font-size: 0.8rem;
-  color: #6c757d;
+  color: var(--text-secondary);
   
   .stat {
     display: flex;
@@ -407,10 +408,10 @@ const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary' | 'dange
     switch (props.$variant) {
       case 'primary':
         return `
-          background: #FF7900;
+          background: var(--accent-orange);
           color: white;
           &:hover {
-            background: #e66d00;
+            background: var(--accent-primary);
             transform: translateY(-1px);
           }
         `;
@@ -425,12 +426,12 @@ const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary' | 'dange
         `;
       default:
         return `
-          background: #f8f9fa;
-          color: #495057;
-          border: 1px solid #dee2e6;
+          background: var(--bg-secondary);
+          color: var(--text-primary);
+          border: 1px solid var(--border);
           &:hover {
-            background: #e9ecef;
-            border-color: #adb5bd;
+            background: var(--bg-card);
+            border-color: var(--accent-orange);
           }
         `;
     }
@@ -451,13 +452,13 @@ const EmptyGarage = styled.div`
   h3 {
     margin: 0 0 12px 0;
     font-size: 1.5rem;
-    color: #495057;
+    color: var(--text-primary);
   }
   
   p {
     margin: 0 0 24px 0;
     font-size: 1rem;
-    color: #6c757d;
+    color: var(--text-secondary);
   }
 `;
 

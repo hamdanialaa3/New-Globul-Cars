@@ -148,8 +148,13 @@ service cloud.firestore {
     // ==================== CARS COLLECTION ====================
     
     match /cars/{carId} {
-      // Allow read to all authenticated users
-      allow read: if isAuthenticated();
+      // Allow public read for published/active listings, and full read for authenticated users
+      // Public visibility: isActive == true and not isSold
+      allow read: if isAuthenticated() ||
+                   (
+                     resource.data.get('isActive', false) == true &&
+                     !(resource.data.get('isSold', false) == true)
+                   );
       
       // Allow create if authenticated and listing limit not exceeded
         // Validates:

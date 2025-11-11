@@ -1,5 +1,3 @@
-// Layout Components
-export { ResponsiveContainer } from './ResponsiveContainer';
-export { ResponsiveGrid } from './ResponsiveGrid';
-export { MobileHeader } from './MobileHeader';
+export { Container } from './Container';
+export { Grid } from './Grid';
 export { MobileBottomNav } from './MobileBottomNav';

@@ -278,7 +278,11 @@ const FeaturedCars: React.FC<FeaturedCarsProps> = ({
         CACHE_KEYS.FEATURED_CARS(limit),
         async () => {
           return await bulgarianCarService.searchCars(
-            {}, // No filters, get all cars
+            { 
+              isActive: true
+              // Note: isSold filter removed - most cars don't have this field set
+              // Will be filtered on client side if needed
+            },
             'createdAt',
             'desc',
             limit
@@ -286,7 +290,9 @@ const FeaturedCars: React.FC<FeaturedCarsProps> = ({
         }
       );
       
-      setCars(result.cars);
+      // Client-side filter: exclude sold cars (if isSold is explicitly true)
+      const availableCars = result.cars.filter(car => car.isSold !== true);
+      setCars(availableCars);
     } catch (error) {
       console.error('Error loading featured cars:', error);
       setCars([]);

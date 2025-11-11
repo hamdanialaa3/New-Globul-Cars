@@ -1,85 +1,191 @@
-// src/services/notification-service.ts
-// Service for handling Firebase Cloud Messaging (FCM)
-// Location: Bulgaria | Languages: BG/EN | Currency: EUR
-
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
-import firebaseApp, { db } from '@/firebase/firebase-config';
-import { doc, setDoc, collection } from 'firebase/firestore';
-import { bulgarianAuthService } from '../firebase';
-import { serviceLogger } from './logger-wrapper';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { db } from '../firebase/firebase-config';
 
 class NotificationService {
-  private messaging = getMessaging(firebaseApp);
-  private readonly vapidKey = process.env.REACT_APP_FIREBASE_VAPID_KEY;
+  private messaging: any;
 
-  /**
-   * Requests permission to show notifications and saves the token
-   * Supports multiple devices per user via fcmTokens subcollection
-   */
-  async requestPermissionAndSaveToken(): Promise<string | null> {
-    // Silent fail if VAPID key is not configured (not critical for MVP)
-        if (!this.vapidKey) {
-          if (process.env.NODE_ENV === 'development') {
-            serviceLogger.info('FCM notifications disabled: VAPID key not configured', { envVar: 'REACT_APP_FIREBASE_VAPID_KEY' });
-          }
-          return null;
-        }
-    
+  async initialize() {
     try {
-      const currentUser = await bulgarianAuthService.getCurrentUserProfile();
-      if (!currentUser) {
-        return null; // Silent fail if not logged in
-      }
-
-      const permission = await Notification.requestPermission();
-      if (permission === 'granted') {
-        const fcmToken = await getToken(this.messaging, {
-          vapidKey: this.vapidKey
-        });
-
-        if (fcmToken) {
-          // Save token to fcmTokens subcollection (supports multiple devices)
-          const tokenRef = doc(
-            collection(db, 'users', currentUser.uid, 'fcmTokens'),
-            fcmToken
-          );
-          
-          await setDoc(tokenRef, {
-            token: fcmToken,
-            createdAt: new Date(),
-            lastUsed: new Date(),
-            deviceInfo: {
-              userAgent: navigator.userAgent,
-              platform: navigator.platform
-            }
-          }, { merge: true });
-          
-              if (process.env.NODE_ENV === 'development') {
-                serviceLogger.info('FCM token saved', { uid: currentUser.uid });
-              }
-          return fcmToken;
-        }
-      }
-      return null;
+      this.messaging = getMessaging();
+      await this.requestPermission();
+      this.listenForMessages();
     } catch (error) {
-      // Silent fail in production, log in development
-      if (process.env.NODE_ENV === 'development') {
-              serviceLogger.warn('FCM setup incomplete (non-critical)', error as Error);
-      }
+      console.error('❌ Notification init failed:', error);
+    }
+  }
+
+  async requestPermission() {
+    const permission = await Notification.requestPermission();
+    
+    if (permission === 'granted') {
+      console.log('✅ Notification permission granted');
+      const token = await this.getToken();
+      return token;
+    } else {
+      console.log('❌ Notification permission denied');
       return null;
     }
   }
 
-  /**
-   * Listens for incoming messages when the app is in the foreground.
-   * @param callback A function to be called when a message is received.
-   * @returns Unsubscribe function.
-   */
-  onForegroundMessage(callback: (payload: any) => void) {
-    return onMessage(this.messaging, (payload) => {
-      serviceLogger.info('Message received in foreground', { payload });
-      callback(payload);
+  async getToken() {
+    try {
+      const token = await getToken(this.messaging, {
+        vapidKey: 'YOUR_VAPID_KEY' // سنضيفه لاحقاً
+      });
+      console.log('🔑 FCM Token:', token);
+      return token;
+    } catch (error) {
+      console.error('❌ Token error:', error);
+      return null;
+    }
+  }
+
+  async saveToken(userId: string, token: string) {
+    try {
+      await setDoc(doc(db, 'userTokens', userId), {
+        token,
+        updatedAt: new Date(),
+        platform: 'web'
+      });
+      console.log('✅ Token saved');
+    } catch (error) {
+      console.error('❌ Token save failed:', error);
+    }
+  }
+
+  listenForMessages() {
+    onMessage(this.messaging, (payload) => {
+      console.log('📬 Foreground Message:', payload);
+      this.showNotification(payload);
     });
+  }
+
+  showNotification(payload: any) {
+    const { title, body, icon } = payload.notification;
+    
+    if ('Notification' in window && Notification.permission === 'granted') {
+      new Notification(title, {
+        body,
+        icon: icon || '/Logo1.png',
+        badge: '/Logo1.png',
+        vibrate: [200, 100, 200],
+        tag: payload.data?.type || 'default'
+      });
+    }
+  }
+
+  // Notification Templates
+  async sendNewCarNotification(userId: string, carData: any) {
+    return this.sendNotification(userId, {
+      title: '🚗 سيارة جديدة!',
+      body: `${carData.brand} ${carData.model} - ${carData.price}€`,
+      type: 'new_car',
+      data: { carId: carData.id }
+    });
+  }
+
+  async sendPriceDropNotification(userId: string, carData: any, oldPrice: number) {
+    return this.sendNotification(userId, {
+      title: '💰 السعر انخفض!',
+      body: `${carData.brand} ${carData.model} من ${oldPrice}€ إلى ${carData.price}€`,
+      type: 'price_drop',
+      data: { carId: carData.id }
+    });
+  }
+
+  async sendMessageNotification(userId: string, senderName: string) {
+    return this.sendNotification(userId, {
+      title: '💬 رسالة جديدة',
+      body: `رسالة من ${senderName}`,
+      type: 'message',
+      data: { type: 'message' }
+    });
+  }
+
+  async sendFavoriteCarAvailableNotification(userId: string, carData: any) {
+    return this.sendNotification(userId, {
+      title: '⭐ السيارة المفضلة متاحة!',
+      body: `${carData.brand} ${carData.model} متاحة الآن`,
+      type: 'favorite_available',
+      data: { carId: carData.id }
+    });
+  }
+
+  async sendViewNotification(sellerId: string, carData: any, viewCount: number) {
+    return this.sendNotification(sellerId, {
+      title: '👀 مشاهدات جديدة',
+      body: `إعلانك ${carData.brand} ${carData.model} حصل على ${viewCount} مشاهدة`,
+      type: 'views',
+      data: { carId: carData.id }
+    });
+  }
+
+  async sendInquiryNotification(sellerId: string, carData: any) {
+    return this.sendNotification(sellerId, {
+      title: '❓ استفسار جديد',
+      body: `شخص مهتم بـ ${carData.brand} ${carData.model}`,
+      type: 'inquiry',
+      data: { carId: carData.id }
+    });
+  }
+
+  async sendOfferNotification(sellerId: string, carData: any, offerPrice: number) {
+    return this.sendNotification(sellerId, {
+      title: '💵 عرض سعر جديد',
+      body: `عرض ${offerPrice}€ على ${carData.brand} ${carData.model}`,
+      type: 'offer',
+      data: { carId: carData.id }
+    });
+  }
+
+  async sendVerificationNotification(userId: string, status: string) {
+    return this.sendNotification(userId, {
+      title: status === 'approved' ? '✅ تم التحقق' : '⏳ قيد المراجعة',
+      body: status === 'approved' ? 'حسابك تم التحقق منه بنجاح' : 'طلب التحقق قيد المراجعة',
+      type: 'verification',
+      data: { status }
+    });
+  }
+
+  async sendReminderNotification(userId: string, message: string) {
+    return this.sendNotification(userId, {
+      title: '⏰ تذكير',
+      body: message,
+      type: 'reminder',
+      data: {}
+    });
+  }
+
+  async sendPromotionNotification(userId: string, promotion: any) {
+    return this.sendNotification(userId, {
+      title: '🎉 عرض خاص',
+      body: promotion.message,
+      type: 'promotion',
+      data: { promotionId: promotion.id }
+    });
+  }
+
+  private async sendNotification(userId: string, notification: any) {
+    try {
+      const tokenDoc = await getDoc(doc(db, 'userTokens', userId));
+      
+      if (!tokenDoc.exists()) {
+        console.log('❌ No token for user:', userId);
+        return;
+      }
+
+      const token = tokenDoc.data().token;
+      
+      // هنا سنستخدم Firebase Cloud Functions لإرسال الإشعار
+      // سيتم إضافته في الخطوة التالية
+      console.log('📤 Sending notification to:', userId, notification);
+      
+      return { success: true };
+    } catch (error) {
+      console.error('❌ Send notification failed:', error);
+      return { success: false, error };
+    }
   }
 }
 
