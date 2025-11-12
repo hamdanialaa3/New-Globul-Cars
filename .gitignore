@@ -51,6 +51,7 @@ emulator-data/
 # Google Cloud
 secrets/
 service-account.json
+serviceAccountKey.json
 *.pem
 
 # Database
