@@ -23,8 +23,8 @@ root.render(
   </React.StrictMode>
 );
 
-// PWA Service Worker Registration
-if ('serviceWorker' in navigator) {
+// PWA Service Worker Registration (production only)
+if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/service-worker.js')
       .then(registration => {
@@ -33,6 +33,11 @@ if ('serviceWorker' in navigator) {
       .catch(error => {
         console.log('❌ PWA: Service Worker registration failed:', error);
       });
+  });
+} else if ('serviceWorker' in navigator && process.env.NODE_ENV === 'development') {
+  // Unregister any existing service workers in development
+  navigator.serviceWorker.getRegistrations().then(registrations => {
+    registrations.forEach(registration => registration.unregister());
   });
 }
 
