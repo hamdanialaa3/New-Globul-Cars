@@ -110,6 +110,23 @@ docs/build/
 # Emergency backup (keep this commented)
 # !important-backup.zip
 
+# Build artifacts for subprojects
 functions/lib/
 functions/**/*.js
 functions/**/*.js.map
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Data Connect cache
+dataconnect/.dataconnect/pgliteData/
+dataconnect/.dataconnect/schema/schema.gql.json
+
+# AI model artifacts
+ai-valuation-model/__pycache__/
+ai-valuation-model/*.pyc
+ai-valuation-model/models/
+ai-valuation-model/checkpoints/
