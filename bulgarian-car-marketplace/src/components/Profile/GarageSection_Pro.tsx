@@ -12,7 +12,6 @@ import {
   Eye, 
   Heart, 
   MapPin, 
-  Calendar, 
   Activity,
   TrendingUp,
   Plus
@@ -34,6 +33,13 @@ export interface GarageCar {
   mileage?: number;
   fuelType?: string;
   transmission?: string;
+  horsepower?: number;  // ⚡ NEW: Mobile.de style
+  power?: number;  // Alternative field name
+  gearbox?: string;  // Alternative field name for transmission
+  fuelConsumption?: number;  // ⚡ NEW: l/100km
+  consumption?: number;  // Alternative field name
+  co2Emissions?: number;  // ⚡ NEW: g CO₂/km
+  emissions?: number;  // Alternative field name
   status: 'active' | 'sold' | 'draft' | 'pending';
   views?: number;
   favorites?: number;
@@ -78,11 +84,12 @@ const gradientShift = keyframes`
 const GarageContainer = styled.div`
   width: 100%;
   animation: ${fadeIn} 0.6s ease-out;
+  background: var(--bg-primary);
 `;
 
 const Header = styled.div`
   padding: 2rem;
-  background: linear-gradient(135deg, #2c3e50 0%, #4ca1af 100%);
+  background: linear-gradient(135deg, var(--accent-orange) 0%, var(--accent-primary) 100%);
   border-radius: 20px 20px 0 0;
   color: white;
   display: flex;
@@ -211,10 +218,10 @@ const StatLabel = styled.div`
 
 const CarsGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1.5rem;
   padding: 2rem;
-  background: white;
+  background: var(--bg-primary);
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
@@ -223,17 +230,19 @@ const CarsGrid = styled.div`
 `;
 
 const CarCard = styled.div`
-  background: white;
-  border-radius: 20px;
+  background: var(--bg-card);
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   animation: ${fadeIn} 0.5s ease-out;
 
   &:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--accent-orange);
   }
 `;
 
@@ -307,67 +316,62 @@ const StatusBadge = styled.div<{ $status: string }>`
 `;
 
 const CardContent = styled.div`
-  padding: 1rem;
+  padding: 1.25rem;
+  background: var(--bg-card);
 `;
 
 const CarTitle = styled.h3`
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   font-weight: 700;
-  color: #2c3e50;
-  margin: 0 0 0.5rem 0;
+  color: var(--text-primary);
+  margin: 0 0 12px 0;
   line-height: 1.3;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 `;
 
 const Price = styled.div`
-  font-size: 1.4rem;
+  font-size: 1.75rem;
   font-weight: 800;
-  background: linear-gradient(135deg, #2c3e50, #4ca1af);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin-bottom: 0.8rem;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
   letter-spacing: -0.5px;
   line-height: 1.2;
 `;
 
 const DetailsGrid = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.6rem;
-  margin-bottom: 0.8rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 16px 0;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  font-weight: 500;
 `;
 
 const DetailItem = styled.div`
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  font-size: 0.85rem;
-  color: #34495e;
+  gap: 4px;
+  font-size: 0.95rem;
+  color: var(--text-primary);
   font-weight: 500;
-  padding: 0.5rem;
-  background: rgba(44, 62, 80, 0.05);
-  border-radius: 8px;
-  transition: all 0.3s ease;
 
-  &:hover {
-    background: rgba(44, 62, 80, 0.1);
-    transform: translateX(3px);
+  &:not(:last-child)::after {
+    content: '';
+    width: 1px;
+    height: 14px;
+    background: var(--border);
+    margin-left: 16px;
   }
 
   svg {
-    width: 16px;
-    height: 16px;
-    color: #2c3e50;
-    flex-shrink: 0;
+    display: none; /* Hide icons for mobile.de style */
   }
 
   span {
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
 `;
 
@@ -701,21 +705,63 @@ export const GarageSectionPro: React.FC<GarageSectionProps> = ({
 
                 {/* Content */}
                 <CardContent>
+                  {/* Title */}
                   <CarTitle>{car.make} {car.model}</CarTitle>
+                  
+                  {/* Price */}
                   <Price>
                     {car.price.toLocaleString('bg-BG')} {car.currency || 'EUR'}
                   </Price>
+                  
+                  {/* Fuel Type Badge */}
+                  {car.fuelType && (
+                    <div style={{ 
+                      display: 'inline-block',
+                      padding: '4px 12px',
+                      background: 'var(--bg-secondary)',
+                      borderRadius: '6px',
+                      fontSize: '0.85rem',
+                      fontWeight: '500',
+                      marginBottom: '12px',
+                      color: 'var(--text-primary)'
+                    }}>
+                      {car.fuelType}
+                    </div>
+                  )}
 
+                  {/* Specs - Mobile.de style */}
                   <DetailsGrid>
-                    <DetailItem>
-                      <Calendar />
-                      <span>{car.year}</span>
-                    </DetailItem>
-                    <DetailItem>
-                      <Activity />
-                      <span>{car.mileage?.toLocaleString('bg-BG')} км</span>
-                    </DetailItem>
+                    {(car.horsepower || car.power) && (
+                      <DetailItem>
+                        <span>{car.horsepower || car.power} hp</span>
+                      </DetailItem>
+                    )}
+                    {(car.transmission || car.gearbox) && (
+                      <DetailItem>
+                        <span>{car.transmission || car.gearbox}</span>
+                      </DetailItem>
+                    )}
+                    {car.mileage !== undefined && (
+                      <DetailItem>
+                        <span>{car.mileage.toLocaleString('bg-BG')} km</span>
+                      </DetailItem>
+                    )}
                   </DetailsGrid>
+                  
+                  {/* Consumption & Emissions */}
+                  {((car.fuelConsumption || car.consumption) || (car.co2Emissions || car.emissions)) && (
+                    <div style={{
+                      fontSize: '0.8rem',
+                      color: 'var(--text-secondary)',
+                      marginTop: '8px',
+                      paddingTop: '8px',
+                      borderTop: '1px solid var(--border)'
+                    }}>
+                      {(car.fuelConsumption || car.consumption) && `${car.fuelConsumption || car.consumption} l/100km (comb.)`}
+                      {(car.fuelConsumption || car.consumption) && (car.co2Emissions || car.emissions) && ' • '}
+                      {(car.co2Emissions || car.emissions) && `${car.co2Emissions || car.emissions} g CO₂/km (comb.)`}
+                    </div>
+                  )}
 
                   {/* Mini Stats */}
                   <StatsRow>

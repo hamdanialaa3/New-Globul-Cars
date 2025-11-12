@@ -10,9 +10,9 @@ import {
   Timestamp
 } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { db, storage } from '../firebase/firebase-config';
-import { BULGARIAN_CITIES } from '../constants/bulgarianCities';
-import { CarListing } from '../types/CarListing';
+import { db, storage } from '@/firebase/firebase-config';
+import { BULGARIAN_CITIES } from '@/constants/bulgarianCities';
+import { CarListing } from '@/types/CarListing';
 import LocationHelperService from './location-helper-service';
 import { logger } from './logger-service';
 import { serviceLogger } from './logger-wrapper';
@@ -52,10 +52,11 @@ export class SellWorkflowService {
     const cityName = workflowData.city; // e.g., "Аксаково" (decorative only)
     const postalCode = workflowData.postalCode; // decorative only
     
-    // Find region in BULGARIAN_CITIES
+    // Find region in BULGARIAN_CITIES (case-insensitive, flexible matching)
+    const normalizeString = (str: string) => str?.toLowerCase().trim().replace(/\s+/g, ' ');
     const regionData = BULGARIAN_CITIES.find(
-      c => c.nameBg === regionName || 
-           c.nameEn === regionName || 
+      c => normalizeString(c.nameBg) === normalizeString(regionName) || 
+           normalizeString(c.nameEn) === normalizeString(regionName) || 
            c.id === regionName?.toLowerCase().replace(/\s+/g, '-')
     );
     
@@ -203,6 +204,8 @@ export class SellWorkflowService {
       
       // System Fields
       status: 'active' as const,
+      isActive: true,  // ✅ CRITICAL FIX: Add isActive for visibility
+      isSold: false,   // ✅ CRITICAL FIX: Add isSold flag
       views: 0,
       favorites: 0,
       isFeatured: false,
@@ -294,6 +297,13 @@ export class SellWorkflowService {
 
         serviceLogger.info('Images uploaded and linked to car', { carId, imageCount: imageUrls.length });
       }
+
+      // ✅ CRITICAL FIX: Invalidate homepage cache
+      const { homePageCache, CACHE_KEYS } = await import('./homepage-cache.service');
+      homePageCache.invalidate(CACHE_KEYS.FEATURED_CARS(4));
+      homePageCache.invalidate(CACHE_KEYS.FEATURED_CARS(8));
+      homePageCache.invalidate(CACHE_KEYS.FEATURED_CARS(10));
+      serviceLogger.info('Homepage cache invalidated after car creation', { carId });
 
       // Clear cache for the region
       const { CityCarCountService } = await import('./cityCarCountService');

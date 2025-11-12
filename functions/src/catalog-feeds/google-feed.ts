@@ -5,7 +5,7 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 
-export const googleMerchantFeed = functions.https.onRequest(async (req, res) => {
+export const googleMerchantFeed = functions.region('europe-west1').https.onRequest(async (req, res) => {
   try {
     res.set('Access-Control-Allow-Origin', '*');
     res.set('Content-Type', 'application/xml; charset=utf-8');

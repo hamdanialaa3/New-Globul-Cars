@@ -14,10 +14,10 @@ import {
   Query,
   DocumentData
 } from 'firebase/firestore';
-import { db } from '../firebase/firebase-config';
+import { db } from '@/firebase/firebase-config';
 import { SearchData } from '../pages/AdvancedSearchPage/types';
-import { CarListing } from '../types/CarListing';
-import { BulgarianCar } from '../firebase/car-service';
+import { CarListing } from '@/types/CarListing';
+import { unifiedCarService } from '@/services/car';
 import { serviceLogger } from './logger-wrapper';
 import { homePageCache } from './homepage-cache.service';
 import { searchHistoryService } from './search/search-history.service';

@@ -1,5 +1,5 @@
 // Feature Flags ??????? ????? - ?? ???? ???????
-import { logger } from '../services/logger-service';
+import { logger } from '@/services/logger-service';
 export const FEATURE_FLAGS = {
   // (Comment removed - was in Arabic)
   ENABLE_NEW_ADVANCED_SEARCH: false,

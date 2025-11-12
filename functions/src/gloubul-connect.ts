@@ -171,10 +171,29 @@ async function validateDevice(token: string, deviceId: string): Promise<boolean>
   }
 }
 
+// ==================== TYPES ====================
+interface EmergencyLocation {
+  latitude: number;
+  longitude: number;
+  accuracy?: number;
+  timestamp?: number;
+}
+
+interface MaintenanceData {
+  type: string;
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  description: string;
+  estimatedCost?: number;
+  recommendedAction?: string;
+  dueDate?: Date;
+}
+
+// ==================== HELPER FUNCTIONS ====================
+
 /**
  * إرسال إشعار طوارئ للمستخدم
  */
-async function sendEmergencyNotification(vin: string, location: any) {
+async function sendEmergencyNotification(vin: string, location: EmergencyLocation) {
   // محاكاة إرسال إشعار - في الإنتاج سيتم ربطه بخدمة FCM
   logger.info(`إرسال إشعار طوارئ للسيارة ${vin} في الموقع: ${location.latitude}, ${location.longitude}`);
 }
@@ -182,7 +201,7 @@ async function sendEmergencyNotification(vin: string, location: any) {
 /**
  * إخطار خدمات الطوارئ
  */
-async function notifyEmergencyServices(vin: string, location: any) {
+async function notifyEmergencyServices(vin: string, location: EmergencyLocation) {
   // محاكاة إخطار خدمات الطوارئ - في الإنتاج سيتم ربطه بـ API الطوارئ البلغاري
   logger.warn(`إخطار خدمات الطوارئ البلغارية: حادث للسيارة ${vin}`);
 }
@@ -190,7 +209,7 @@ async function notifyEmergencyServices(vin: string, location: any) {
 /**
  * إطلاق تنبيه صيانة
  */
-async function triggerMaintenanceAlert(vin: string, maintenanceData: any) {
+async function triggerMaintenanceAlert(vin: string, maintenanceData: MaintenanceData) {
   try {
     const db = getFirestore();
     const alertRef = doc(collection(db, 'maintenanceAlerts'));

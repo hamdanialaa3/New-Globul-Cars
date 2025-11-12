@@ -23,6 +23,7 @@ import {
 import { ref, uploadBytes, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 import { db, storage } from '../../firebase/firebase-config';
 import { ImageUploadService } from '../image-upload-service';
+import { logger } from '../logger-service';
 
 // ==================== TYPES ====================
 
@@ -248,8 +249,14 @@ class PostsService {
     }
   }
   
-  async getUserPosts(userId: string, limitCount: number = 20): Promise<Post[]> {
+  async getUserPosts(userId: string | null | undefined, limitCount: number = 20): Promise<Post[]> {
     try {
+      // ✅ FIX: Guard against null/undefined userId
+      if (!userId) {
+        logger.warn('getUserPosts called with null/undefined userId');
+        return [];
+      }
+
       const q = query(
         collection(db, this.collectionName),
         where('authorId', '==', userId),

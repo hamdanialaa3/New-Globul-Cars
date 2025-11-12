@@ -1,13 +1,7 @@
-export interface CarMake {
+// Car Data Types
+export interface CarBodyStyle {
   id: string;
   name: string;
-  models: CarModel[];
-}
-
-export interface CarModel {
-  id: string;
-  name: string;
-  generations: CarGeneration[];
 }
 
 export interface CarGeneration {
@@ -17,9 +11,14 @@ export interface CarGeneration {
   bodyStyles: CarBodyStyle[];
 }
 
-export interface CarBodyStyle {
+export interface CarModel {
   id: string;
   name: string;
+  generations: CarGeneration[];
 }
 
-
+export interface CarMake {
+  id: string;
+  name: string;
+  models: CarModel[];
+}

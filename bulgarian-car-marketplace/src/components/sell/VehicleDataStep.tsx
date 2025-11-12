@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { CarListing } from '../../types/CarListing';
+import { getAllMakes, getModelsByMake } from '@/data/car-makes-models';
 
 interface VehicleDataStepProps {
   data: Partial<CarListing>;
@@ -153,13 +154,19 @@ const VehicleDataStep: React.FC<VehicleDataStepProps> = ({ data, onDataChange })
     description: data.description || ''
   });
 
-  const makes = [
-    'Audi', 'BMW', 'Mercedes-Benz', 'Volkswagen', 'Opel', 'Ford', 'Peugeot', 
-    'Renault', 'Citroën', 'Fiat', 'Toyota', 'Honda', 'Nissan', 'Hyundai', 
-    'Kia', 'Mazda', 'Subaru', 'Mitsubishi', 'Suzuki', 'Skoda', 'Seat', 
-    'Alfa Romeo', 'Lancia', 'Ferrari', 'Lamborghini', 'Porsche', 'Jaguar', 
-    'Land Rover', 'Mini', 'Smart', 'Dacia', 'Lada', 'UAZ', 'GAZ', 'Other'
-  ];
+  const [availableModels, setAvailableModels] = useState<string[]>([]);
+  
+  // Load models when make changes
+  useEffect(() => {
+    if (formData.make) {
+      const models = getModelsByMake(formData.make);
+      setAvailableModels(models);
+    } else {
+      setAvailableModels([]);
+    }
+  }, [formData.make]);
+
+  const makes = getAllMakes();
 
   const fuelTypes = [
     'Бензин', 'Дизел', 'Хибрид', 'Електрически', 'Газ (LPG)', 'Газ (CNG)', 'Етанол'
@@ -219,13 +226,31 @@ const VehicleDataStep: React.FC<VehicleDataStepProps> = ({ data, onDataChange })
 
         <FormGroup>
           <Label>Модел *</Label>
-          <Input
-            type="text"
-            value={formData.model}
-            onChange={(e) => handleInputChange('model', e.target.value)}
-            placeholder="Например: X3, A4, Golf"
-            required
-          />
+          {availableModels.length > 0 ? (
+            <Select
+              value={formData.model}
+              onChange={(e) => handleInputChange('model', e.target.value)}
+              disabled={!formData.make}
+              required
+            >
+              <option value="">
+                {!formData.make ? 'Първо изберете марка' : 'Изберете модел'}
+              </option>
+              {availableModels.map(model => (
+                <option key={model} value={model}>{model}</option>
+              ))}
+              <option value="Other">Друго</option>
+            </Select>
+          ) : (
+            <Input
+              type="text"
+              value={formData.model}
+              onChange={(e) => handleInputChange('model', e.target.value)}
+              placeholder={formData.make ? "Въведете модел" : "Първо изберете марка"}
+              disabled={!formData.make}
+              required
+            />
+          )}
         </FormGroup>
 
         <FormGroup>

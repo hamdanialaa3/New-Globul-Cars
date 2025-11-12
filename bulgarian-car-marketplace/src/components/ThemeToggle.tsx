@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Sun, Moon, Monitor } from 'lucide-react';
 import { useTheme } from './ThemeProvider';
-import { useTranslation } from '../hooks/useTranslation';
+import { useTranslation } from '@/hooks/useTranslation';
 
 interface ThemeToggleProps {
   variant?: 'button' | 'switch' | 'select';

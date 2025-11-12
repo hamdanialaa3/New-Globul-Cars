@@ -2,6 +2,7 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import * as vision from '@google-cloud/vision';
+import { logger } from 'firebase-functions';
 
 // Initialize Admin SDK and Vision Client if not already initialized
 if (admin.apps.length === 0) {
@@ -23,19 +24,19 @@ export const analyzeCarImage = functions.region('europe-west1').storage
 
     // Exit if this is not an image or not in the 'cars' folder.
     if (!contentType?.startsWith('image/') || !filePath?.startsWith('cars/')) {
-      console.log('This is not an image or not in the cars folder. Skipping analysis.');
+      logger.info('This is not an image or not in the cars folder. Skipping analysis.');
       return null;
     }
 
     // Extract the carId from the file path.
     const parts = filePath.split('/');
     if (parts.length < 3) {
-        console.log(`File path ${filePath} is not valid for car image analysis. Skipping.`);
+        logger.info(`File path ${filePath} is not valid for car image analysis. Skipping.`);
         return null;
     }
     const carId = parts[1];
 
-    console.log(`Analyzing image for carId: ${carId}, path: ${filePath}`);
+    logger.info(`Analyzing image for carId: ${carId}, path: ${filePath}`);
 
     const gcsUri = `gs://${bucketName}/${filePath}`;
 
@@ -49,12 +50,12 @@ export const analyzeCarImage = functions.region('europe-west1').storage
       const isRacy = safeSearch?.racy === 'VERY_LIKELY' || safeSearch?.racy === 'LIKELY';
 
       const isSafe = !isAdult && !isViolent && !isRacy;
-      console.log(`Safe Search results: isSafe=${isSafe}`);
+      logger.info(`Safe Search results: isSafe=${isSafe}`);
 
       // 2. Label Detection
       const [labelResult] = await visionClient.labelDetection(gcsUri);
       const labels = labelResult.labelAnnotations?.map(label => label.description).filter(Boolean) as string[];
-      console.log(`Labels detected: ${labels.join(', ')}`);
+      logger.info(`Labels detected: ${labels.join(', ')}`);
 
       // 3. Update Firestore
       const carDocRef = db.collection('cars').doc(carId);
@@ -69,16 +70,16 @@ export const analyzeCarImage = functions.region('europe-west1').storage
       // If the image is not safe, flag the car for review.
       if (!isSafe) {
         updateData['status'] = 'needs_review';
-        console.warn(`Image for car ${carId} flagged as unsafe.`);
+        logger.warn(`Image for car ${carId} flagged as unsafe.`);
       }
 
       await carDocRef.set(updateData, { merge: true });
-      console.log(`Successfully updated car ${carId} with image analysis results.`);
+      logger.info(`Successfully updated car ${carId} with image analysis results.`);
 
       return null;
 
     } catch (error) {
-      console.error(`Failed to analyze image ${filePath}.`, error);
+      logger.error(`Failed to analyze image ${filePath}.`, error);
       return null;
     }
   });

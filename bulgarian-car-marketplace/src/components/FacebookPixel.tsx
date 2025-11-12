@@ -23,7 +23,7 @@ const FacebookPixel: React.FC<FacebookPixelProps> = ({ pixelId }) => {
 
   useEffect(() => {
     if (!defaultPixelId) {
-      console.warn('Facebook Pixel ID not configured');
+      // Silently return if not configured (no warning in production)
       return;
     }
 

@@ -4,8 +4,8 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Phone, X, Check, Loader, AlertCircle } from 'lucide-react';
-import { useTranslation } from '../hooks/useTranslation';
-import { SocialAuthService } from '../firebase/social-auth-service';
+import { useTranslation } from '@/hooks/useTranslation';
+import { SocialAuthService } from '@/firebase/social-auth-service';
 import { RecaptchaVerifier, ConfirmationResult } from 'firebase/auth';
 
 interface PhoneAuthModalProps {

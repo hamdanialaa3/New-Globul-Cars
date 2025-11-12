@@ -2,9 +2,9 @@
 // Listing Limits - Enforce plan caps
 
 import { doc, getDoc } from 'firebase/firestore';
-import { db } from '../firebase/firebase-config';
-import type { PlanTier } from '../features/billing/types';
-import { logger } from '../services/logger-service';
+import { db } from '@/firebase/firebase-config';
+import type { PlanTier } from '@/features/billing/types';
+import { logger } from '@/services/logger-service';
 
 // Plan Limits Configuration
 const PLAN_LIMITS: Record<PlanTier, number> = {

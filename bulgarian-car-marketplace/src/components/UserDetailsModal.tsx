@@ -8,7 +8,7 @@ import {
   Activity,
   TrendingUp
 } from 'lucide-react';
-import { firebaseAuthUsersService } from '../services/firebase-auth-users-service';
+import { firebaseAuthUsersService } from '@/services/firebase-auth-users-service';
 
 interface UserDetailsModalProps {
   isOpen: boolean;

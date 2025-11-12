@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { advancedMessagingService } from '../services/messaging/advanced-messaging-service';
+import { advancedMessagingService } from '@/services/messaging/advanced-messaging-service';
 import MessageButton from './messaging/MessageButton';
-import { useAuth } from '../contexts/AuthProvider';
+import { useAuth } from '@/contexts/AuthProvider';
 
 // Mock car data for demonstration
 const mockCarData = [

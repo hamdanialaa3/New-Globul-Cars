@@ -28,15 +28,15 @@ import {
   reauthenticateWithCredential
 } from 'firebase/auth';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
-import { auth, db, storage } from '../firebase/firebase-config';
+import { auth, db, storage } from '@/firebase/firebase-config';
 import { serviceLogger } from './logger-wrapper';
 
 // ✅ NEW: Import from canonical types file
-import type { BulgarianUser, DealerProfile as DealerUserProfile } from '../types/user/bulgarian-user.types';
-import type { DealershipInfo } from '../types/dealership/dealership.types';
+import type { BulgarianUser, DealerProfile as DealerUserProfile } from '@/types/user/bulgarian-user.types';
+import type { DealershipInfo } from '@/types/dealership/dealership.types';
 
 /**
- * @deprecated Use DealershipInfo from '../types/dealership/dealership.types' instead
+ * @deprecated Use DealershipInfo from '@/types/dealership/dealership.types' instead
  * This interface is kept only for backward compatibility
  * Will be removed in Phase 4 (Week 8)
  */
@@ -395,7 +395,14 @@ export class BulgarianProfileService {
   /**
    * Get user profile with real-time updates
    */
-  static getUserProfileRealtime(userId: string, callback: (profile: BulgarianUserProfile | null) => void): () => void {
+  static getUserProfileRealtime(userId: string | null | undefined, callback: (profile: BulgarianUserProfile | null) => void): () => void {
+    // ✅ FIX: Guard against null/undefined userId BEFORE constructing query
+    if (!userId) {
+      serviceLogger.warn('[SERVICE] getUserProfileRealtime called with null/undefined userId - returning no-op unsubscribe');
+      callback(null);
+      return () => {}; // Return no-op unsubscribe function
+    }
+
     const userRef = doc(db, 'users', userId);
     
     return onSnapshot(userRef, (doc) => {
@@ -433,6 +440,12 @@ export class BulgarianProfileService {
    * Delete user profile and all associated data
    */
   static async deleteUserProfile(userId: string): Promise<void> {
+    // ✅ CRITICAL FIX: Guard against null/undefined userId
+    if (!userId || typeof userId !== 'string' || userId.trim() === '') {
+      console.warn('[BulgarianProfileService] deleteUserProfile called with invalid userId', { userId });
+      throw new Error('Invalid userId provided to deleteUserProfile');
+    }
+
     try {
       // Delete main profile
       await deleteDoc(doc(db, 'users', userId));

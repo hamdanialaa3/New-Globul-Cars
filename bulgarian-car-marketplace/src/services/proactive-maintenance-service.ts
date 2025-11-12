@@ -1,5 +1,5 @@
 import { collection, doc, setDoc, updateDoc, getDoc, query, where, getDocs, Timestamp, orderBy } from 'firebase/firestore';
-import { getFirestore } from 'firebase/firestore';
+import { db } from '@/firebase/firebase-config';
 import { serviceLogger } from './logger-wrapper';
 
 export interface MaintenanceAlert {
@@ -67,7 +67,6 @@ export interface MaintenancePart {
 }
 
 export class ProactiveMaintenanceService {
-  private db = getFirestore();
   private readonly BULGARIAN_TIMEZONE = 'Europe/Sofia';
 
   /**
@@ -76,7 +75,7 @@ export class ProactiveMaintenanceService {
   async createMaintenanceAlert(alertData: Omit<MaintenanceAlert, 'id' | 'createdAt' | 'expiresAt'>): Promise<string> {
     try {
       const alertId = `alert_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      const alertRef = doc(this.db, 'maintenanceAlerts', alertId);
+      const alertRef = doc(db, 'maintenanceAlerts', alertId);
 
       const alert: MaintenanceAlert = {
         ...alertData,
@@ -104,7 +103,7 @@ export class ProactiveMaintenanceService {
   async getUserMaintenanceAlerts(userId: string): Promise<MaintenanceAlert[]> {
     try {
       const alertsQuery = query(
-        collection(this.db, 'maintenanceAlerts'),
+        collection(db, 'maintenanceAlerts'),
         where('userId', '==', userId),
         where('status', '==', 'active'),
         orderBy('createdAt', 'desc')
@@ -122,9 +121,9 @@ export class ProactiveMaintenanceService {
   /**
    * (Comment removed - was in Arabic)
    */
-  async submitServiceOffer(alertId: string, offer: ServiceCenterOffer): Promise<void> {
+  async addServiceCenterOffer(alertId: string, offer: ServiceCenterOffer): Promise<void> {
     try {
-      const alertRef = doc(this.db, 'maintenanceAlerts', alertId);
+      const alertRef = doc(db, 'maintenanceAlerts', alertId);
       const alertDoc = await getDoc(alertRef);
 
       if (!alertDoc.exists()) {
@@ -151,7 +150,7 @@ export class ProactiveMaintenanceService {
    */
   async acceptServiceOffer(alertId: string, centerId: string, scheduledDate: Date): Promise<string> {
     try {
-      const alertRef = doc(this.db, 'maintenanceAlerts', alertId);
+      const alertRef = doc(db, 'maintenanceAlerts', alertId);
       const alertDoc = await getDoc(alertRef);
 
       if (!alertDoc.exists()) {
@@ -167,7 +166,7 @@ export class ProactiveMaintenanceService {
 
       // (Comment removed - was in Arabic)
       const requestId = `request_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      const requestRef = doc(this.db, 'maintenanceRequests', requestId);
+      const requestRef = doc(db, 'maintenanceRequests', requestId);
 
       const request: MaintenanceRequest = {
         id: requestId,
@@ -207,7 +206,7 @@ export class ProactiveMaintenanceService {
   async getUserMaintenanceRequests(userId: string): Promise<MaintenanceRequest[]> {
     try {
       const requestsQuery = query(
-        collection(this.db, 'maintenanceRequests'),
+        collection(db, 'maintenanceRequests'),
         where('userId', '==', userId),
         orderBy('createdAt', 'desc')
       );
@@ -226,7 +225,7 @@ export class ProactiveMaintenanceService {
    */
   async updateMaintenanceRequest(requestId: string, updates: Partial<MaintenanceRequest>): Promise<void> {
     try {
-      const requestRef = doc(this.db, 'maintenanceRequests', requestId);
+      const requestRef = doc(db, 'maintenanceRequests', requestId);
 
       await updateDoc(requestRef, {
         ...updates,

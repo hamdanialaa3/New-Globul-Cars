@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { Search, TrendingUp, Clock, Star, Filter } from 'lucide-react';
-import { useTranslation } from '../hooks/useTranslation';
+import { useTranslation } from '@/hooks/useTranslation';
 
 interface SearchSuggestion {
   id: string;

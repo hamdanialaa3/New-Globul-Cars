@@ -13,7 +13,7 @@ import {
   serverTimestamp,
   writeBatch
 } from 'firebase/firestore';
-import { db } from '../firebase/firebase-config';
+import { db } from '@/firebase/firebase-config';
 import { firebaseAuthRealUsers } from './firebase-auth-real-users';
 import { serviceLogger } from './logger-wrapper';
 

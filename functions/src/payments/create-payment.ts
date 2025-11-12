@@ -35,7 +35,7 @@ const PLATFORM_FEE_PERCENT = 5; // 5% commission
  * Create payment intent for car purchase
  * Uses Stripe Connect to split payment between seller and platform
  */
-export const createCarPaymentIntent = functions.https.onCall(
+export const createCarPaymentIntent = functions.region('europe-west1').https.onCall(
   async (data: CreatePaymentRequest, context) => {
     // Check authentication
     if (!context.auth) {
@@ -200,7 +200,7 @@ export const createCarPaymentIntent = functions.https.onCall(
  * Confirm payment and mark car as sold
  * Called after successful payment
  */
-export const confirmCarPayment = functions.https.onCall(
+export const confirmCarPayment = functions.region('europe-west1').https.onCall(
   async (data: { paymentId: string }, context) => {
     if (!context.auth) {
       throw new functions.https.HttpsError(

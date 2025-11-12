@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { MapPin, Fuel, Zap, AlertTriangle, CheckCircle, Clock, Gauge, Battery } from 'lucide-react';
-import { gloubulConnectService, DigitalTwin } from '../services/gloubul-connect-service';
+import { gloubulConnectService, DigitalTwin } from '@/services/gloubul-connect-service';
 
 interface DigitalTwinDashboardProps {
   vin: string;

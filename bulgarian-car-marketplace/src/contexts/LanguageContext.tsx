@@ -1,7 +1,7 @@
 // Global Language Context for Smart Translation System
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { translations } from '../locales/translations';
-import { logger } from '../services/logger-service';
+import { logger } from '@/services/logger-service';
 
 export type Language = 'bg' | 'en';
 
@@ -19,10 +19,10 @@ interface LanguageProviderProps {
 }
 
 export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) => {
-  // Get saved language from localStorage or default to Bulgarian
   const [language, setLanguageState] = useState<Language>(() => {
     const saved = localStorage.getItem('globul-cars-language');
-    return (saved as Language) || 'bg';
+    if (saved === 'bg' || saved === 'en') return saved;
+    return 'bg';
   });
 
   // Smart translation function with nested object support
@@ -80,10 +80,8 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
     }
   };
 
-  // FIX: Toggle language function
   const toggleLanguage = () => {
-    const newLang: Language = language === 'bg' ? 'en' : 'bg';
-    setLanguage(newLang);
+    setLanguage(language === 'bg' ? 'en' : 'bg');
   };
 
   // Effect to set initial document language

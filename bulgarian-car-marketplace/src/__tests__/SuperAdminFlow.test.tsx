@@ -6,8 +6,11 @@ import '@testing-library/jest-dom';
 
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import SuperAdminLogin from '../pages/SuperAdminLogin';
-import SuperAdminDashboard from '../pages/SuperAdminDashboardNew';
+// Existing SuperAdminDashboard moved to pages/06_admin/super-admin/SuperAdminDashboard
+import SuperAdminDashboard from '../pages/06_admin/super-admin/SuperAdminDashboard';
+// SuperAdminLogin moved to pages/02_authentication/admin-login/SuperAdminLoginPage
+import SuperAdminLogin from '../pages/02_authentication/admin-login/SuperAdminLoginPage';
+
 // Project firebase entry is src/firebase/index.ts per repo docs
 import { auth } from '../firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
@@ -30,7 +33,7 @@ jest.mock('react-router-dom', () => {
 });
 
 // Mock complex dashboard component to avoid styled-components environment issues in Jest
-jest.mock('../pages/SuperAdminDashboardNew', () => {
+jest.mock('../pages/06_admin/super-admin/SuperAdminDashboard', () => {
   const React = require('react');
   function MockDashboard() {
     const { firebaseRealDataService } = require('../services/firebase-real-data-service');
@@ -46,6 +49,7 @@ jest.mock('../pages/SuperAdminDashboardNew', () => {
       // Trigger data loading calls on mount so tests can assert
       firebaseRealDataService.getRealAnalytics();
       firebaseRealDataService.getRealUserActivity();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     return React.createElement('div', null, 'MockDashboard');
   }
@@ -53,7 +57,7 @@ jest.mock('../pages/SuperAdminDashboardNew', () => {
 });
 
 // Mock login page to a minimal form to focus on flow assertions
-jest.mock('../pages/SuperAdminLogin', () => {
+jest.mock('../pages/02_authentication/admin-login/SuperAdminLoginPage', () => {
   const React = require('react');
   const { uniqueOwnerService } = require('../services/unique-owner-service');
   const { signInWithEmailAndPassword } = require('firebase/auth');

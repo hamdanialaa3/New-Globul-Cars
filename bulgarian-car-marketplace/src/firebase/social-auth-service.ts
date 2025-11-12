@@ -26,10 +26,10 @@ import {
 } from 'firebase/auth';
 import { doc, setDoc, getDoc, updateDoc, serverTimestamp, collection, query, where, getDocs } from 'firebase/firestore';
 import { auth, db } from './firebase-config';
-import { logger } from '../services/logger-service';
+import { logger } from '@/services/logger-service';
 
 // ✅ Import and re-export from canonical source
-export type { BulgarianUser } from '../types/user/bulgarian-user.types';
+export type { BulgarianUser } from '@/types/user/bulgarian-user.types';
 
 // Provider configurations
 const googleProvider = new GoogleAuthProvider();
@@ -934,7 +934,7 @@ export class SocialAuthService {
   static setupRecaptchaVerifier(containerId: string): RecaptchaVerifier {
     try {
       const recaptchaVerifier = new RecaptchaVerifier(auth, containerId, {
-        size: 'normal',
+        size: 'invisible',
         callback: (response: any) => {
           if (process.env.NODE_ENV === 'development') {
             logger.debug('reCAPTCHA verified');

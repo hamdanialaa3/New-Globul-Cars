@@ -7,9 +7,10 @@ import { initializeFirestore, CACHE_SIZE_UNLIMITED } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 import { getFunctions } from 'firebase/functions';
 import { getAnalytics, Analytics } from 'firebase/analytics';
+import { getDatabase } from 'firebase/database'; // Real-time Database
 // import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check'; // Disabled to prevent auth errors
 import { BULGARIAN_CONFIG } from '../config/bulgarian-config';
-import { logger } from '../services/logger-service';
+import { logger } from '@/services/logger-service';
 
 // Type declaration for reCAPTCHA
 declare global {
@@ -22,7 +23,7 @@ declare global {
 // Project ID: fire-new-globul
 // Project Number: 973379297533
 const firebaseConfig = {
-  apiKey: process.env.REACT_APP_FIREBASE_API_KEY || "AIzaSyAchmKCk8ipzv0dDwbQ2xU1Pa6o4CQsEu8",
+  apiKey: process.env.REACT_APP_GOOGLE_FIREBASE_WEB_KEY || "AIzaSyAUYM_qygK5pUrlXtdDLmEi-_Kh9SyvRmk",
   authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN || "fire-new-globul.firebaseapp.com",
   projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID || "fire-new-globul",
   storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET || "fire-new-globul.firebasestorage.app",
@@ -32,7 +33,14 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
+let app: any;
+try {
+  app = initializeApp(firebaseConfig);
+  logger.info('Firebase app initialized successfully', { projectId: firebaseConfig.projectId });
+} catch (error) {
+  logger.error('Failed to initialize Firebase app', error as Error);
+  throw error;
+}
 
 // Initialize App Check - COMPLETELY DISABLED to prevent auth errors
 let appCheck: any = null;
@@ -42,20 +50,38 @@ if (process.env.NODE_ENV === 'development') {
 // DO NOT initialize App Check as it causes auth/firebase-app-check-token-is-invalid errors
 
 // Initialize Firebase services
-export const auth = getAuth(app);
+let auth: any;
+try {
+  auth = getAuth(app);
+  logger.info('Firebase Auth initialized successfully');
+} catch (error) {
+  logger.error('Failed to initialize Firebase Auth', error as Error);
+  throw error;
+}
+export { auth };
 
 // Initialize Firestore with custom settings to prevent state errors
 // OPTIMIZED: Cache enabled for better performance
-export const db = initializeFirestore(app, {
-  cacheSizeBytes: CACHE_SIZE_UNLIMITED,
-  ignoreUndefinedProperties: true,
-  experimentalAutoDetectLongPolling: true,  // Better connection handling
-  experimentalForceLongPolling: false        // Auto-detect for best performance
-});
+let db: any;
+try {
+  db = initializeFirestore(app, {
+    cacheSizeBytes: CACHE_SIZE_UNLIMITED,
+    ignoreUndefinedProperties: true,
+    experimentalAutoDetectLongPolling: true,  // Better connection handling
+    experimentalForceLongPolling: false        // Auto-detect for best performance
+  });
+  logger.info('Firestore initialized successfully');
+} catch (error) {
+  logger.error('Failed to initialize Firestore', error as Error);
+  throw error;
+}
+export { db };
 
 export const storage = getStorage(app);
 // Use same region as deployed Cloud Functions to avoid us-central1 mismatches
 export const functions = getFunctions(app, 'europe-west1');
+// Initialize Firebase Realtime Database for live updates
+export const realtimeDb = getDatabase(app);
 export { appCheck };
 
 // Initialize Analytics (only in production and if measurement ID is provided)

@@ -4,9 +4,8 @@
 
 import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
-import { Image, Upload, X, Loader } from 'lucide-react';
-// import { useLanguage } from '../../contexts/LanguageContext'; // Unused
-import { useTranslation } from '../../hooks/useTranslation';
+import { Image, Upload, Loader, Camera, Move, Trash2 } from 'lucide-react';
+import { useLanguage } from '../../contexts/LanguageContext';
 import { ProfileService } from '../../services/profile';
 import { useAuth } from '../../hooks/useAuth';
 import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
@@ -71,42 +70,44 @@ const Placeholder = styled.div`
   }
 `;
 
-const UploadButton = styled.button<{ $themeColor?: string }>`
+const EditButton = styled.button<{ $themeColor?: string }>`
   position: absolute;
-  bottom: 16px;
-  right: 16px;
-  padding: 8px 16px;
-  background: rgba(255, 255, 255, 0.95);
-  border: ${props => props.$themeColor ? `1px solid ${props.$themeColor}66` : '1px solid rgba(255, 215, 0, 0.4)'};
-  border-radius: 8px;
+  bottom: 20px;
+  left: 20px;
+  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.98);
+  border: none;
+  border-radius: 12px;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 10px;
   cursor: pointer;
   font-weight: 500;
-  font-size: 0.82rem;
-  color: ${props => props.$themeColor || '#FF7900'};
+  font-size: 0.9rem;
+  color: #2c3e50;
   transition: all 0.3s ease;
-  box-shadow: ${props => props.$themeColor ? `0 2px 6px ${props.$themeColor}26` : '0 2px 6px rgba(255, 143, 16, 0.15)'};
-  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 15;
   pointer-events: auto;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
 
   svg {
+    width: 20px;
+    height: 20px;
+    color: #6c757d;
     pointer-events: none;
   }
 
   &:hover {
     background: white;
-    border-color: ${props => props.$themeColor ? `${props.$themeColor}99` : 'rgba(255, 143, 16, 0.6)'};
     transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
   }
 
   &:active {
     transform: translateY(0);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
   }
 
   &:disabled {
@@ -114,44 +115,78 @@ const UploadButton = styled.button<{ $themeColor?: string }>`
     cursor: not-allowed;
     transform: none;
   }
-  
-  svg {
-    width: 16px;
-    height: 16px;
-  }
 `;
 
-const DeleteButton = styled.button`
+const DropdownMenu = styled.div<{ $isOpen: boolean }>`
   position: absolute;
-  top: 16px;
-  right: 16px;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background: rgba(239, 83, 80, 0.95);
+  bottom: 70px;
+  left: 20px;
+  background: rgba(255, 255, 255, 0.98);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  min-width: 240px;
+  opacity: ${props => props.$isOpen ? 1 : 0};
+  visibility: ${props => props.$isOpen ? 'visible' : 'hidden'};
+  transform: ${props => props.$isOpen ? 'translateY(0)' : 'translateY(10px)'};
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 20;
+  pointer-events: ${props => props.$isOpen ? 'auto' : 'none'};
+  overflow: hidden;
+`;
+
+const MenuOption = styled.button`
+  width: 100%;
+  padding: 14px 18px;
+  background: transparent;
   border: none;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  gap: 12px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(239, 83, 80, 0.3);
+  font-size: 0.9rem;
+  color: #2c3e50;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  text-align: left;
+  direction: ltr;
+
+  svg {
+    width: 20px;
+    height: 20px;
+    color: #6c757d;
+    flex-shrink: 0;
+    order: -1; /* Icon always on the left */
+  }
+
+  span {
+    flex: 1;
+    text-align: right; /* Text aligned to the right for Arabic look */
+  }
 
   &:hover {
-    background: #ef5350;
-    transform: scale(1.1);
-    box-shadow: 0 4px 12px rgba(239, 83, 80, 0.4);
+    background: rgba(44, 62, 80, 0.05);
   }
-  
+
   &:active {
-    transform: scale(1);
-    box-shadow: 0 1px 4px rgba(239, 83, 80, 0.3);
+    background: rgba(44, 62, 80, 0.1);
   }
-  
-  svg {
-    width: 16px;
-    height: 16px;
-    color: white;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &.danger {
+    color: #e74c3c;
+    
+    svg {
+      color: #e74c3c;
+    }
+    
+    &:hover {
+      background: rgba(231, 76, 60, 0.08);
+    }
   }
 `;
 
@@ -222,7 +257,7 @@ const CoverImageUploader: React.FC<CoverImageUploaderProps> = ({
   onUploadError,
   themeColor = '#FF7900'
 }) => {
-  const { t } = useTranslation();
+  const { language } = useLanguage();
   const { user } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -230,6 +265,8 @@ const CoverImageUploader: React.FC<CoverImageUploaderProps> = ({
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isRepositioning, setIsRepositioning] = useState(false);
 
   // Handle file selection
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -340,13 +377,91 @@ const CoverImageUploader: React.FC<CoverImageUploaderProps> = ({
     fileInputRef.current?.click();
   };
 
+  // Toggle menu
+  const toggleMenu = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  // Handle choose from library (same as upload)
+  const handleChoosePhoto = () => {
+    setIsMenuOpen(false);
+    handleClick();
+  };
+
+  // Handle upload photo
+  const handleUploadPhoto = () => {
+    setIsMenuOpen(false);
+    handleClick();
+  };
+
+  // Handle reposition
+  const handleReposition = () => {
+    setIsMenuOpen(false);
+    setIsRepositioning(!isRepositioning);
+    // TODO: Implement drag/reposition functionality
+    alert(language === 'bg' 
+      ? 'Функцията за репозициониране скоро ще бъде достъпна' 
+      : 'Reposition feature coming soon');
+  };
+
+  // Handle remove
+  const handleRemove = () => {
+    setIsMenuOpen(false);
+    handleDelete();
+  };
+
+  // Close menu when clicking outside
+  React.useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (isMenuOpen) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    if (isMenuOpen) {
+      document.addEventListener('click', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [isMenuOpen]);
+
+  // Get menu text based on language
+  const getMenuText = () => {
+    if (language === 'bg') {
+      return {
+        editButton: 'Редактирай корицата',
+        choosePhoto: 'Избери снимка за корица',
+        uploadPhoto: 'Качи снимка',
+        reposition: 'Репозициониране',
+        remove: 'Премахни',
+        addCover: 'Добави корица',
+        uploading: 'Качване...'
+      };
+    } else {
+      return {
+        editButton: 'Edit Cover Photo',
+        choosePhoto: 'Choose Cover Photo',
+        uploadPhoto: 'Upload Photo',
+        reposition: 'Reposition',
+        remove: 'Remove',
+        addCover: 'Add Cover Image',
+        uploading: 'Uploading...'
+      };
+    }
+  };
+
+  const menuText = getMenuText();
+
   return (
     <CoverContainer $themeColor={themeColor}>
-      <CoverImage $imageUrl={imageUrl} onClick={handleClick}>
-        {!imageUrl && (
+      <CoverImage $imageUrl={imageUrl}>
+        {!imageUrl && !uploading && (
           <Placeholder>
             <Image size={64} />
-            <span>Add Cover Image</span>
+            <span>{menuText.addCover}</span>
           </Placeholder>
         )}
 
@@ -355,7 +470,7 @@ const CoverImageUploader: React.FC<CoverImageUploaderProps> = ({
             <Loader size={48} />
             <ProgressText>{progress}%</ProgressText>
             <ProgressSubtext>
-              Uploading...
+              {menuText.uploading}
             </ProgressSubtext>
           </LoadingOverlay>
         )}
@@ -370,16 +485,38 @@ const CoverImageUploader: React.FC<CoverImageUploaderProps> = ({
       />
 
       {!uploading && (
-        <UploadButton onClick={handleClick} disabled={uploading} $themeColor={themeColor}>
-          <Upload size={18} />
-          {imageUrl ? t('profile.changeCover') : t('profile.uploadCover')}
-        </UploadButton>
-      )}
+        <>
+          <EditButton onClick={toggleMenu} disabled={uploading} $themeColor={themeColor}>
+            <Camera size={20} />
+            <span>{menuText.editButton}</span>
+          </EditButton>
 
-      {imageUrl && !uploading && (
-        <DeleteButton onClick={handleDelete}>
-          <X size={18} />
-        </DeleteButton>
+          <DropdownMenu $isOpen={isMenuOpen} onClick={(e) => e.stopPropagation()}>
+            <MenuOption onClick={handleChoosePhoto}>
+              <Image size={20} />
+              <span>{menuText.choosePhoto}</span>
+            </MenuOption>
+            
+            <MenuOption onClick={handleUploadPhoto}>
+              <Upload size={20} />
+              <span>{menuText.uploadPhoto}</span>
+            </MenuOption>
+            
+            {imageUrl && (
+              <>
+                <MenuOption onClick={handleReposition}>
+                  <Move size={20} />
+                  <span>{menuText.reposition}</span>
+                </MenuOption>
+                
+                <MenuOption className="danger" onClick={handleRemove}>
+                  <Trash2 size={20} />
+                  <span>{menuText.remove}</span>
+                </MenuOption>
+              </>
+            )}
+          </DropdownMenu>
+        </>
       )}
 
       {error && <ErrorBanner>{error}</ErrorBanner>}

@@ -1,5 +1,5 @@
-import { collection, doc, setDoc, updateDoc, getDoc, query, where, getDocs, Timestamp } from 'firebase/firestore';
-import { getFirestore } from 'firebase/firestore';
+import { collection, doc, setDoc, updateDoc, getDoc, query, where, getDocs, Timestamp, orderBy, limit } from 'firebase/firestore';
+import { db } from '@/firebase/firebase-config';
 import { serviceLogger } from './logger-wrapper';
 
 export interface DrivingBehavior {
@@ -81,7 +81,6 @@ export interface InsuranceClaim {
 }
 
 export class DynamicInsuranceService {
-  private db = getFirestore();
   private readonly BULGARIAN_TIMEZONE = 'Europe/Sofia';
 
   /**
@@ -89,7 +88,7 @@ export class DynamicInsuranceService {
    */
   async recordDrivingBehavior(behavior: Omit<DrivingBehavior, 'date'>): Promise<void> {
     try {
-      const behaviorRef = doc(collection(this.db, 'drivingBehavior'));
+      const behaviorRef = doc(collection(db, 'drivingBehavior'));
       const behaviorData: DrivingBehavior = {
         ...behavior,
         date: Timestamp.now()
@@ -116,7 +115,7 @@ export class DynamicInsuranceService {
       threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
 
       const behaviorQuery = query(
-        collection(this.db, 'drivingBehavior'),
+        collection(db, 'drivingBehavior'),
         where('userId', '==', userId),
         where('vin', '==', vin),
         where('date', '>=', Timestamp.fromDate(threeMonthsAgo))
@@ -134,7 +133,7 @@ export class DynamicInsuranceService {
       const riskScore = await this.calculateRiskScore(avgBehavior);
 
       // (Comment removed - was in Arabic)
-      const riskRef = doc(this.db, 'riskScores', `${userId}_${vin}`);
+      const riskRef = doc(db, 'riskScores', `${userId}_${vin}`);
       await setDoc(riskRef, riskScore);
 
       // (Comment removed - was in Arabic)
@@ -215,7 +214,7 @@ export class DynamicInsuranceService {
   private async adjustInsurancePremium(userId: string, vin: string, riskScore: RiskScore): Promise<void> {
     try {
       const policyQuery = query(
-        collection(this.db, 'insurancePolicies'),
+        collection(db, 'insurancePolicies'),
         where('userId', '==', userId),
         where('vin', '==', vin),
         where('status', '==', 'active')
@@ -252,7 +251,7 @@ export class DynamicInsuranceService {
    */
   async getRiskScore(userId: string, vin: string): Promise<RiskScore | null> {
     try {
-      const riskRef = doc(this.db, 'riskScores', `${userId}_${vin}`);
+      const riskRef = doc(db, 'riskScores', `${userId}_${vin}`);
       const riskDoc = await getDoc(riskRef);
 
       if (riskDoc.exists()) {
@@ -272,7 +271,7 @@ export class DynamicInsuranceService {
   async getActivePolicy(userId: string, vin: string): Promise<DynamicInsurancePolicy | null> {
     try {
       const policyQuery = query(
-        collection(this.db, 'insurancePolicies'),
+        collection(db, 'insurancePolicies'),
         where('userId', '==', userId),
         where('vin', '==', vin),
         where('status', '==', 'active')
@@ -297,7 +296,7 @@ export class DynamicInsuranceService {
   async fileInsuranceClaim(claimData: Omit<InsuranceClaim, 'claimId' | 'reportDate' | 'status'>): Promise<string> {
     try {
       const claimId = `claim_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      const claimRef = doc(this.db, 'insuranceClaims', claimId);
+      const claimRef = doc(db, 'insuranceClaims', claimId);
 
       const claim: InsuranceClaim = {
         ...claimData,
@@ -327,7 +326,7 @@ export class DynamicInsuranceService {
   async getUserInsuranceClaims(userId: string): Promise<InsuranceClaim[]> {
     try {
       const claimsQuery = query(
-        collection(this.db, 'insuranceClaims'),
+        collection(db, 'insuranceClaims'),
         where('userId', '==', userId)
       );
 
@@ -358,7 +357,7 @@ export class DynamicInsuranceService {
     try {
       // (Comment removed - was in Arabic)
       const twinQuery = query(
-        collection(this.db, 'digitalTwins'),
+        collection(db, 'digitalTwins'),
         where('vin', '==', vin)
       );
 

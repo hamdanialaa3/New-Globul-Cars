@@ -1,8 +1,5 @@
 {
   "projects": {
-    "default": "fire-new-globul",
-    "old": "studio-448742006-a3493"
-  },
-  "targets": {},
-  "etags": {}
+    "default": "fire-new-globul"
+  }
 }

@@ -19,14 +19,15 @@ const SimpleProfileAvatar: React.FC<SimpleProfileAvatarProps> = ({
   size = 120,
   onClick
 }) => {
-  const profileImageUrl = user?.profileImage?.url;
+  const profileImageUrl = user?.photoURL; // canonical field from BaseProfile
+  const isCompany = user?.profileType === 'company'; // square for premium/company
 
   return (
     <AvatarContainer size={size} onClick={onClick} $clickable={!!onClick}>
       {profileImageUrl ? (
-        <AvatarImage src={profileImageUrl} alt={user?.displayName || 'Profile'} />
+        <AvatarImage $square={isCompany} src={profileImageUrl} alt={user?.displayName || 'Profile'} />
       ) : (
-        <PlaceholderAvatar>
+        <PlaceholderAvatar $square={isCompany}>
           <User size={size * 0.4} />
         </PlaceholderAvatar>
       )}
@@ -56,11 +57,11 @@ const AvatarContainer = styled.div<{ size: number; $clickable: boolean }>`
   }
 `;
 
-const AvatarImage = styled.img`
+const AvatarImage = styled.img<{ $square: boolean }>`
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 50%;
+  border-radius: ${p => p.$square ? '12px' : '50%'};
   border: 3px solid #fff;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   background: #f0f0f0;
@@ -70,10 +71,10 @@ const AvatarImage = styled.img`
   }
 `;
 
-const PlaceholderAvatar = styled.div`
+const PlaceholderAvatar = styled.div<{ $square: boolean }>`
   width: 100%;
   height: 100%;
-  border-radius: 50%;
+  border-radius: ${p => p.$square ? '12px' : '50%'};
   border: 3px solid #fff;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);

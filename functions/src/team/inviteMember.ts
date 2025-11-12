@@ -195,7 +195,7 @@ export const inviteMember = onCall<InviteMemberRequest>(async (request) => {
  */
 async function sendInvitationEmail(invitationId: string, invitation: any) {
   try {
-    const invitationLink = `https://globul.net/team/accept-invite/${invitationId}`;
+  const invitationLink = `https://mobilebg.eu/team/accept-invite/${invitationId}`;
 
     await db.collection('mail').add({
       to: [invitation.email],

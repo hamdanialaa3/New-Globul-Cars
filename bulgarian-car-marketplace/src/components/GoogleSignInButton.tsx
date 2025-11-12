@@ -2,9 +2,9 @@
 // (Comment removed - was in Arabic)
 
 import React, { useState } from 'react';
-import { logger } from '../services/logger-service';
+import { logger } from '@/services/logger-service';
 import styled from 'styled-components';
-import { SocialAuthService } from '../firebase/social-auth-service';
+import { SocialAuthService } from '@/firebase/social-auth-service';
 
 const Button = styled.button`
   background: #4285f4;

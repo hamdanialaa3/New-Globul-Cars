@@ -18,7 +18,22 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "baseUrl": "src",
+    "paths": {
+      "@/services/*": ["services/*"],
+      "@/components/*": ["components/*"],
+      "@/contexts/*": ["contexts/*"],
+      "@/utils/*": ["utils/*"],
+      "@/types/*": ["types/*"],
+      "@/hooks/*": ["hooks/*"],
+      "@/pages/*": ["pages/*"],
+      "@/firebase/*": ["firebase/*"],
+      "@/data/*": ["data/*"],
+      "@/constants/*": ["constants/*"],
+      "@/features/*": ["features/*"],
+      "@/assets/*": ["assets/*"]
+    }
   },
   "include": [
     "src",

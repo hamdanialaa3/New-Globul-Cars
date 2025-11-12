@@ -97,6 +97,18 @@ service cloud.firestore {
                (newType == 'dealer' && hasDealerRequirements(newData)) || // Upgrade to dealer with requirements
                (newType == 'company' && hasCompanyRequirements(newData)); // Upgrade to company with requirements
       }
+      
+      // Followers subcollection
+      match /followers/{followerId} {
+        allow read: if isAuthenticated();
+        allow write: if isAuthenticated();
+      }
+      
+      // Following subcollection
+      match /following/{followingId} {
+        allow read: if isAuthenticated();
+        allow write: if isAuthenticated();
+      }
     }
     
     // ==================== DEALERSHIPS COLLECTION ====================
@@ -115,7 +127,7 @@ service cloud.firestore {
       // Allow delete only by admin
       allow delete: if isAdmin();
     }
-    
+
     // ==================== COMPANIES COLLECTION ====================
     
     match /companies/{companyId} {
@@ -136,12 +148,24 @@ service cloud.firestore {
     // ==================== CARS COLLECTION ====================
     
     match /cars/{carId} {
-      // Allow read to all authenticated users
-      allow read: if isAuthenticated();
+      // Allow public read for published/active listings, and full read for authenticated users
+      // Public visibility: isActive == true and not isSold
+      allow read: if isAuthenticated() ||
+                   (
+                     resource.data.get('isActive', false) == true &&
+                     !(resource.data.get('isSold', false) == true)
+                   );
       
       // Allow create if authenticated and listing limit not exceeded
+        // Validates:
+        // 1. sellerId field exists and is string
+        // 2. sellerId matches authenticated user
+        // 3. sellerEmail matches authenticated user's email
+        // 4. Listing limits based on plan tier
       allow create: if isAuthenticated() &&
+                         request.resource.data.sellerId is string &&
                        request.resource.data.sellerId == request.auth.uid &&
+                         request.resource.data.sellerEmail == request.auth.token.email &&
                        // Check listing limits based on plan tier
                        canAddListing(request.auth.uid);
       
@@ -212,6 +236,46 @@ service cloud.firestore {
       
       // System can write (Cloud Functions)
       allow write: if false; // Only Cloud Functions
+    }
+    
+    // ==================== STRIPE PAYMENTS EXTENSION ====================
+    // Rules for invertase/firestore-stripe-payments extension
+    
+    // Customer data (subscriptions, payments, checkout sessions)
+    match /customers/{uid} {
+      // Users can only read their own customer data
+      allow read: if isOwner(uid);
+
+      // Checkout sessions - users can create and read their own sessions
+      match /checkout_sessions/{id} {
+        allow read, write: if isOwner(uid);
+      }
+      
+      // Subscriptions - users can only read their own subscriptions
+      match /subscriptions/{id} {
+        allow read: if isOwner(uid);
+      }
+      
+      // Payments - users can only read their own payment records
+      match /payments/{id} {
+        allow read: if isOwner(uid);
+      }
+    }
+
+    // Products and prices - publicly readable for all users
+    match /products/{id} {
+      allow read: if true;
+      allow write: if false; // Only Stripe webhook can write
+
+      match /prices/{id} {
+        allow read: if true;
+        allow write: if false; // Only Stripe webhook can write
+      }
+
+      match /tax_rates/{id} {
+        allow read: if true;
+        allow write: if false; // Only Stripe webhook can write
+      }
     }
     
     // ==================== DEFAULT DENY ====================

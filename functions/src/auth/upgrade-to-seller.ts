@@ -27,7 +27,7 @@ interface UpgradeToSellerRequest {
  * Callable function to upgrade user from buyer to seller
  * Requires authentication and acceptance of terms
  */
-export const upgradeToSeller = functions.https.onCall(
+export const upgradeToSeller = functions.region('europe-west1').https.onCall(
   async (data: UpgradeToSellerRequest, context) => {
     // 1. Check authentication
     if (!context.auth) {

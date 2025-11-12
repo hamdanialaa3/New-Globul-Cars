@@ -179,7 +179,7 @@ async function sendAdminFlagEmail(
 ) {
   try {
     await db.collection('mail').add({
-      to: ['admin@globul.net'], // Replace with actual admin email
+      to: ['admin@mobilebg.eu'], // Replace with actual admin email
       template: {
         name: 'review-flagged',
         data: {
@@ -189,7 +189,7 @@ async function sendAdminFlagEmail(
           rating: reviewData?.overallRating,
           comment: reviewData?.comment,
           reportCount,
-          adminUrl: `https://globul.net/admin/reviews/${reviewId}`,
+          adminUrl: `https://mobilebg.eu/admin/reviews/${reviewId}`,
         },
       },
     });

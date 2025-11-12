@@ -38,7 +38,7 @@ const getInvoiceSubscription = (invoice: any): string | null => {
  * Configure in Stripe Dashboard:
  * https://dashboard.stripe.com/test/webhooks
  */
-export const stripeWebhook = onRequest(async (request, response) => {
+export const stripeWebhook = onRequest({ region: 'europe-west1' }, async (request, response) => {
   const sig = request.headers['stripe-signature'] as string;
 
   if (!sig) {

@@ -2,7 +2,7 @@
 // Hook لإدارة حالة workflow بيع السيارة عبر جميع الخطوات
 
 import { useState, useEffect, useCallback } from 'react';
-import { logger } from '../services/logger-service';
+import { logger } from '@/services/logger-service';
 
 export interface SellWorkflowData {
   // Vehicle Type & Seller
@@ -105,7 +105,7 @@ export const useSellWorkflow = () => {
       case 'vehicleType':
         return !!workflowData.vehicleType;
       case 'sellerType':
-        return !!workflowData.sellerType;
+        return true;
       case 'vehicleData':
         return !!(workflowData.make && workflowData.model && workflowData.year);
       case 'equipment':
@@ -124,7 +124,6 @@ export const useSellWorkflow = () => {
   const getCompletionPercentage = useCallback((): number => {
     const steps = [
       'vehicleType',
-      'sellerType',
       'vehicleData',
       'equipment',
       'images',

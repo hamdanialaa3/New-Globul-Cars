@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { TrendingUp, Eye, Car, MessageSquare, AlertCircle, Plus, Edit, Settings as SettingsIcon } from 'lucide-react';
+import { TrendingUp, Eye, Car, MessageSquare, AlertCircle, Plus, Edit, Settings as SettingsIcon, RefreshCw, MapPin, Mail, Phone as PhoneIcon, Users } from 'lucide-react';
 import { useProfileType, type ProfileTheme } from '../../contexts/ProfileTypeContext';
 import { useAuth } from '../../contexts/AuthProvider';
 import { useNavigate } from 'react-router-dom';
+import { useLanguage } from '../../contexts/LanguageContext';
 import type { ProfileType } from '../../contexts/ProfileTypeContext';
+import { SimpleProfileAvatar } from './index';
+import { googleProfileSyncService } from '../../services/google/google-profile-sync.service';
 
 // ==================== TYPES ====================
 
@@ -42,8 +45,8 @@ const CompletionCard = styled.div<{ $theme: ProfileTheme }>`
     -6px -6px 12px rgba(255, 255, 255, 0.08);
   
   display: flex;
-  align-items: center;
-  gap: 24px;
+  flex-direction: column;
+  gap: 16px;
   
   border-left: 4px solid ${props => props.$theme.primary};
   
@@ -55,6 +58,222 @@ const CompletionCard = styled.div<{ $theme: ProfileTheme }>`
       8px 8px 16px rgba(0, 0, 0, 0.5),
       -8px -8px 16px rgba(255, 255, 255, 0.1);
   }
+`;
+
+const ProfileHeaderSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+`;
+
+const ProfileLeftSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 12px;
+  }
+`;
+
+const CompletionBadge = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, rgba(255, 121, 0, 0.15) 0%, rgba(255, 143, 16, 0.15) 100%);
+  border: 2px solid rgba(255, 143, 16, 0.4);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(255, 121, 0, 0.2);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(255, 121, 0, 0.3);
+    border-color: rgba(255, 143, 16, 0.6);
+  }
+`;
+
+const CompletionPercentage = styled.div`
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #FF7900;
+  line-height: 1;
+  margin-bottom: 2px;
+`;
+
+const CompletionLabel = styled.div`
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+`;
+
+const ProfileInfoSection = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+`;
+
+const ProfileName = styled.h2`
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  line-height: 1.2;
+  
+  @media (max-width: 768px) {
+    justify-content: center;
+  }
+`;
+
+const VerifiedBadge = styled.span`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: #4CAF50;
+  color: white;
+  border-radius: 50%;
+  font-size: 14px;
+  font-weight: 700;
+`;
+
+const ProfileEmail = styled.div`
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.85rem;
+  line-height: 1.3;
+`;
+
+const ProfileDetails = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  
+  @media (max-width: 768px) {
+    justify-content: center;
+  }
+`;
+
+const DetailItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+  
+  svg {
+    color: #FF7900;
+    flex-shrink: 0;
+    width: 14px;
+    height: 14px;
+  }
+`;
+
+const StatsRow = styled.div`
+  display: flex;
+  gap: 24px;
+  
+  @media (max-width: 768px) {
+    justify-content: center;
+  }
+`;
+
+const StatItem = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+`;
+
+const StatNumber = styled.div`
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #FF7900;
+  line-height: 1;
+`;
+
+const StatLabel = styled.div`
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+`;
+
+const ActionsRow = styled.div`
+  display: flex;
+  gap: 8px;
+  
+  @media (max-width: 768px) {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+`;
+
+const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary' }>`
+  padding: 8px 16px;
+  background: ${props => props.$variant === 'primary' 
+    ? 'linear-gradient(135deg, #FF7900 0%, #FF8F10 100%)' 
+    : 'rgba(255, 255, 255, 0.1)'};
+  color: white;
+  border: ${props => props.$variant === 'primary' 
+    ? 'none' 
+    : '1px solid rgba(255, 255, 255, 0.2)'};
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+  
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 121, 0, 0.3);
+    background: ${props => props.$variant === 'primary' 
+      ? 'linear-gradient(135deg, #e66d00 0%, #e67f00 100%)' 
+      : 'rgba(255, 255, 255, 0.15)'};
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  svg.spinning {
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+`;
+
+const CompletionDetailsSection = styled.div`
+  padding-top: 16px;
 `;
 
 const CardHeader = styled.div`
@@ -171,13 +390,6 @@ const StatValue = styled.div`
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-`;
-
-const StatLabel = styled.div`
-  font-size: 0.7rem; /* 🎯 Reduced from 0.85rem */
-  color: rgba(255, 255, 255, 0.7);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
 `;
 
 const QuickActionsBar = styled.div<{ $theme: ProfileTheme }>`
@@ -313,11 +525,18 @@ const getMissingFields = (user: UserData | null, profileType: ProfileType): stri
 
 // ==================== MAIN COMPONENT ====================
 
-const ProfileDashboard: React.FC = () => {
+interface ProfileDashboardProps {
+  user?: any;
+}
+
+const ProfileDashboard: React.FC<ProfileDashboardProps> = ({ user: propUser }) => {
   const { profileType, theme } = useProfileType();
-  const { user } = useAuth();
+  const { user: authUser } = useAuth();
+  const { language } = useLanguage();
+  const user = propUser || authUser;
   const navigate = useNavigate();
   const [completionPercentage, setCompletionPercentage] = useState(0);
+  const [syncing, setSyncing] = useState(false);
   
   useEffect(() => {
     if (user) {
@@ -330,18 +549,120 @@ const ProfileDashboard: React.FC = () => {
   // Convert user for display with type assertion
   const userData: UserData | null = user ? (user as any as UserData) : null;
   
+  // Google Sync Handler
+  const handleGoogleSync = async () => {
+    if (!user) return;
+    setSyncing(true);
+    try {
+      const updated = await googleProfileSyncService.syncProfileData(user.uid);
+      if (updated) {
+        alert(language === 'bg' ? 'Профилът е синхронизиран!' : 'Profile synced!');
+      }
+    } catch (error) {
+      console.error('Sync error:', error);
+      alert(language === 'bg' ? 'Грешка при синхронизация' : 'Sync error');
+    } finally {
+      setSyncing(false);
+    }
+  };
+  
   return (
     <DashboardContainer>
-      {/* Profile Completion Progress */}
+      {/* ⚡ NEW: Merged Profile Header + Completion Card */}
       <CompletionCard $theme={theme}>
-        <ProgressRingContainer>
-          <ProgressRing
-            percentage={completionPercentage}
-            color={theme.primary}
-          />
-        </ProgressRingContainer>
+        {/* Profile Header Section */}
+        <ProfileHeaderSection>
+          <ProfileLeftSection>
+            {/* Profile Image */}
+            <div>
+              <SimpleProfileAvatar
+                user={user}
+                size={100}
+                onClick={() => navigate('/profile/settings')}
+              />
+            </div>
+            
+            {/* Completion Badge */}
+            <CompletionBadge>
+              <CompletionPercentage>
+                {completionPercentage}%
+              </CompletionPercentage>
+              <CompletionLabel>
+                {language === 'bg' ? 'Завършен' : 'Complete'}
+              </CompletionLabel>
+            </CompletionBadge>
+          </ProfileLeftSection>
+          
+          {/* Profile Info */}
+          <ProfileInfoSection>
+            <ProfileName>
+              {user?.displayName || `${user?.firstName || ''} ${user?.lastName || ''}`.trim() || 'User'}
+              {user?.verification?.emailVerified && (
+                <VerifiedBadge>✓</VerifiedBadge>
+              )}
+            </ProfileName>
+            
+            {user?.email && (
+              <ProfileEmail>{user.email}</ProfileEmail>
+            )}
+            
+            {/* Contact Details */}
+            <ProfileDetails>
+              {user?.location?.city && (
+                <DetailItem>
+                  <MapPin size={14} />
+                  {user.location.city}
+                </DetailItem>
+              )}
+              {user?.phoneNumber && (
+                <DetailItem>
+                  <PhoneIcon size={14} />
+                  {user.phoneNumber}
+                </DetailItem>
+              )}
+            </ProfileDetails>
+            
+            {/* Stats */}
+            <StatsRow>
+              <StatItem>
+                <StatNumber>{user?.stats?.posts || 0}</StatNumber>
+                <StatLabel>{language === 'bg' ? 'Публикации' : 'Posts'}</StatLabel>
+              </StatItem>
+              <StatItem>
+                <StatNumber>{user?.stats?.followers || 0}</StatNumber>
+                <StatLabel>{language === 'bg' ? 'Последователи' : 'Followers'}</StatLabel>
+              </StatItem>
+              <StatItem>
+                <StatNumber>{user?.stats?.following || 0}</StatNumber>
+                <StatLabel>{language === 'bg' ? 'Следвани' : 'Following'}</StatLabel>
+              </StatItem>
+            </StatsRow>
+            
+            {/* Action Buttons */}
+            <ActionsRow>
+              <ActionButton 
+                $variant="primary" 
+                onClick={() => navigate('/profile/settings')}
+              >
+                <Edit size={16} />
+                {language === 'bg' ? 'Редактирай профил' : 'Edit Profile'}
+              </ActionButton>
+              <ActionButton 
+                $variant="secondary"
+                onClick={handleGoogleSync}
+                disabled={syncing}
+              >
+                <RefreshCw size={16} className={syncing ? 'spinning' : ''} />
+                {syncing 
+                  ? (language === 'bg' ? 'Синхронизиране...' : 'Syncing...') 
+                  : (language === 'bg' ? 'Синхронизирай' : 'Sync')}
+              </ActionButton>
+            </ActionsRow>
+          </ProfileInfoSection>
+        </ProfileHeaderSection>
         
-        <CompletionDetails>
+        {/* Completion Details Section */}
+        <CompletionDetailsSection>
           <CardHeader>
             <TrendingUp size={24} />
             <CardTitle>Profile Completion</CardTitle>
@@ -364,7 +685,7 @@ const ProfileDashboard: React.FC = () => {
               Profile Complete!
             </p>
           )}
-        </CompletionDetails>
+        </CompletionDetailsSection>
       </CompletionCard>
       
       {/* Activity Stats - 🎯 COMPACT: Single Row */}
@@ -393,8 +714,6 @@ const ProfileDashboard: React.FC = () => {
           </div>
         </StatCard>
       </StatsGrid>
-      
-      {/* ❌ REMOVED: Quick Actions (Add Listing, Edit Profile, Settings) per user request */}
     </DashboardContainer>
   );
 };

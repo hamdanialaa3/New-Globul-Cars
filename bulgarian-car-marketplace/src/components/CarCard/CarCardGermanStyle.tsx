@@ -13,16 +13,16 @@ interface CarCardProps {
 }
 
 const CardWrapper = styled.div`
-  background: white;
+  background: var(--bg-card);
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
   overflow: hidden;
   cursor: pointer;
   transition: all 0.3s ease;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--border);
   
   &:hover {
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--shadow-lg);
     transform: translateY(-2px);
   }
 `;
@@ -32,7 +32,7 @@ const ImageContainer = styled.div`
   width: 100%;
   height: 200px;
   overflow: hidden;
-  background: #f5f5f5;
+  background: var(--bg-secondary);
 `;
 
 const CarImage = styled.img`
@@ -65,10 +65,10 @@ const CardContent = styled.div`
 `;
 
 const CarTitle = styled.h3`
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 20px;
+  font-weight: 700;
   margin: 0 0 8px 0;
-  color: #1a1a1a;
+  color: var(--text-primary);
   line-height: 1.3;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -81,15 +81,16 @@ const PriceSection = styled.div`
 `;
 
 const MonthlyPrice = styled.div`
-  font-size: 20px;
-  font-weight: 700;
-  color: #1a1a1a;
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text-primary);
   margin-bottom: 4px;
 `;
 
 const PriceDetails = styled.div`
-  font-size: 12px;
-  color: #666;
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 500;
   line-height: 1.4;
 `;
 
@@ -101,33 +102,36 @@ const SpecsRow = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  font-size: 13px;
-  color: #666;
+  font-size: 14px;
+  color: var(--text-primary);
+  font-weight: 600;
   line-height: 1.4;
 `;
 
 const SpecItem = styled.span`
-  background: #f8f9fa;
+  background: var(--bg-secondary);
   padding: 2px 6px;
   border-radius: 4px;
   font-weight: 500;
+  color: var(--text-primary);
 `;
 
 const LocationSection = styled.div`
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 13px;
-  color: #666;
+  font-size: 14px;
+  color: var(--text-primary);
+  font-weight: 600;
   margin-top: 8px;
   padding-top: 8px;
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid var(--border);
 `;
 
 const LocationIcon = styled.div`
   width: 16px;
   height: 16px;
-  background: #666;
+  background: var(--text-secondary);
   border-radius: 50%;
   display: flex;
   align-items: center;

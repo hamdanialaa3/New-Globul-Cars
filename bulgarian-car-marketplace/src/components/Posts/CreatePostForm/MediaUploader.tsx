@@ -82,8 +82,12 @@ const Container = styled.div`
 
 const PreviewGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 8px;
+  padding: 12px;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e9ecef;
 `;
 
 const PreviewItem = styled.div`
@@ -132,22 +136,22 @@ const UploadButton = styled.button`
   align-items: center;
   justify-content: center;
   gap: 10px;
-  padding: 16px;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  padding: 14px;
+  background: white;
   border: 2px dashed #dee2e6;
-  border-radius: 10px;
+  border-radius: 12px;
   color: #6c757d;
   font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.2s;
   
   &:hover {
     border-color: #FF8F10;
     color: #FF7900;
-    background: linear-gradient(135deg, #fff5e6 0%, #ffe8cc 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 143, 16, 0.2);
+    background: #fff5e6;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(255, 143, 16, 0.15);
   }
 `;
 

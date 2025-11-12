@@ -3,8 +3,8 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { httpsCallable } from 'firebase/functions';
-import { functions } from '../firebase/firebase-config';
-import { useAuth } from '../hooks/useAuth';
+import { functions } from '@/firebase/firebase-config';
+import { useAuth } from '@/hooks/useAuth';
 import styled from 'styled-components';
 import { TrendingUp, Calculator, AlertCircle, CheckCircle } from 'lucide-react';
 

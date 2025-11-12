@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAuth } from '../contexts/AuthProvider';
+import { useAuth } from '@/contexts/AuthProvider';
 import { Lock } from 'lucide-react';
 import styled from 'styled-components';
 

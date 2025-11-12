@@ -9,9 +9,9 @@ import * as admin from 'firebase-admin';
  * Generate Facebook Product Feed (XML)
  * إنشاء ملف XML للمنتجات
  * 
- * URL: https://fire-new-globul.web.app/api/facebook-catalog.xml
+ * URL: https://mobilebg.eu/api/facebook-catalog.xml
  */
-export const facebookCatalogXML = functions.https.onRequest(async (req, res) => {
+export const facebookCatalogXML = functions.region('europe-west1').https.onRequest(async (req, res) => {
   try {
     // Set CORS headers
     res.set('Access-Control-Allow-Origin', '*');
@@ -94,9 +94,9 @@ export const facebookCatalogXML = functions.https.onRequest(async (req, res) => 
  * Generate Facebook Product Feed (CSV)
  * إنشاء ملف CSV للمنتجات
  * 
- * URL: https://fire-new-globul.web.app/api/facebook-catalog.csv
+ * URL: https://mobilebg.eu/api/facebook-catalog.csv
  */
-export const facebookCatalogCSV = functions.https.onRequest(async (req, res) => {
+export const facebookCatalogCSV = functions.region('europe-west1').https.onRequest(async (req, res) => {
   try {
     // Set CORS headers
     res.set('Access-Control-Allow-Origin', '*');

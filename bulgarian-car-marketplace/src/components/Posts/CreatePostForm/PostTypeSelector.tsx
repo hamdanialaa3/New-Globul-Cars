@@ -42,11 +42,12 @@ const PostTypeSelector: React.FC<PostTypeSelectorProps> = ({ selected, onChange 
 
 const Container = styled.div`
   display: flex;
-  gap: 6px;
-  overflow-x: auto;
-  padding: 4px 0;
-  position: relative;
-  z-index: 10;  /* ⚡ Fix: Ensure buttons appear above other elements */
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 12px;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e9ecef;
   
   &::-webkit-scrollbar {
     height: 4px;
@@ -61,28 +62,32 @@ const Container = styled.div`
 const TypeButton = styled.button<{ $active: boolean }>`
   display: flex;
   align-items: center;
-  gap: 5px;
-  padding: 6px 12px;
-  background: ${p => p.$active ? '#FF8F10' : '#f8f9fa'};
+  gap: 6px;
+  padding: 8px 14px;
+  background: ${p => p.$active ? 'linear-gradient(135deg, #FF7900, #FF8F10)' : 'white'};
   color: ${p => p.$active ? 'white' : '#495057'};
-  border: 1px solid ${p => p.$active ? '#FF7900' : '#e9ecef'};
-  border-radius: 6px;
-  font-size: 0.8rem;
+  border: 2px solid ${p => p.$active ? '#FF7900' : '#e9ecef'};
+  border-radius: 8px;
+  font-size: 0.85rem;
   font-weight: ${p => p.$active ? 600 : 500};
   cursor: pointer;
   transition: all 0.2s;
   white-space: nowrap;
   flex-shrink: 0;
-  position: relative;
-  z-index: 1;  /* ⚡ Fix: Ensure button is clickable */
+  box-shadow: ${p => p.$active ? '0 2px 8px rgba(255, 121, 0, 0.2)' : 'none'};
   
   svg {
     flex-shrink: 0;
   }
   
   &:hover {
-    background: ${p => p.$active ? '#FF7900' : '#e9ecef'};
-    z-index: 2;  /* ⚡ Raise on hover */
+    background: ${p => p.$active ? 'linear-gradient(135deg, #FF6800, #FF7900)' : '#f8f9fa'};
+    border-color: ${p => p.$active ? '#FF6800' : '#FF8F10'};
+    transform: translateY(-1px);
+  }
+  
+  &:active {
+    transform: translateY(0);
   }
 `;
 

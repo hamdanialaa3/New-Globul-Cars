@@ -4,11 +4,11 @@
 import React, { useState, useEffect, memo } from 'react';
 import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
-import { bulgarianCarService, BulgarianCar } from '../firebase/car-service';
-import { useLanguage } from '../contexts/LanguageContext';
-import { useAuth } from '../contexts/AuthProvider';
+import { unifiedCarService, UnifiedCar } from '@/services/car';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '@/contexts/AuthProvider';
 import { MapPin, Fuel, Gauge, Calendar, MessageCircle, User } from 'lucide-react';
-import { homePageCache, CACHE_KEYS } from '../services/homepage-cache.service';
+import { homePageCache, CACHE_KEYS } from '@/services/homepage-cache.service';
 
 interface FeaturedCarsProps {
   limit?: number;
@@ -19,8 +19,10 @@ interface FeaturedCarsProps {
 const FeaturedCarsContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 1.5rem;
+  gap: 1.2rem;
   margin-top: 2rem;
+  transform: scale(0.8);
+  transform-origin: top center;
   
   @media (max-width: 1400px) {
     grid-template-columns: repeat(3, 1fr);
@@ -28,29 +30,33 @@ const FeaturedCarsContainer = styled.div`
   
   @media (max-width: 1024px) {
     grid-template-columns: repeat(2, 1fr);
+    transform: scale(0.85);
   }
   
   @media (max-width: 600px) {
     grid-template-columns: 1fr;
+    transform: scale(0.9);
   }
 `;
 
 const CarCard = styled(Link)`
-  background: white;
+  background: var(--bg-card);
+  backdrop-filter: blur(10px);
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-md);
   overflow: hidden;
   transition: all 0.3s ease;
   text-decoration: none;
   color: inherit;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--border);
   display: flex;
   flex-direction: column;
 
   &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 20px rgba(255, 143, 16, 0.15);
-    border-color: #FF8F10;
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--accent-primary);
+    background: var(--bg-card);
   }
 `;
 
@@ -58,7 +64,7 @@ const CarImageWrapper = styled.div`
   height: 140px;
   position: relative;
   overflow: hidden;
-  background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+  background: var(--bg-secondary);
 `;
 
 const CarImage = styled.img`
@@ -74,7 +80,7 @@ const CarImage = styled.img`
 
 const PriceTag = styled.div`
   padding: 8px 10px 6px 10px;
-  background: white;
+  background: var(--bg-card);
 `;
 
 const PriceRow = styled.div`
@@ -87,25 +93,25 @@ const PriceRow = styled.div`
 const PriceAmount = styled.div`
   font-size: 1.25rem;
   font-weight: 700;
-  color: #000;
+  color: var(--text-primary);
 `;
 
 const PriceCurrency = styled.span`
   font-size: 0.875rem;
   font-weight: 600;
-  color: #000;
+  color: var(--text-primary);
 `;
 
 const MonthlyLabel = styled.div`
   font-size: 0.75rem;
-  color: #6c757d;
+  color: var(--text-secondary);
   font-weight: 400;
   line-height: 1.2;
 `;
 
 const VatLabel = styled.div`
   font-size: 0.6875rem;
-  color: #6c757d;
+  color: var(--text-secondary);
   font-weight: 400;
   margin-top: 1px;
   line-height: 1.2;
@@ -113,14 +119,14 @@ const VatLabel = styled.div`
 
 const OldPrice = styled.span`
   text-decoration: line-through;
-  color: #999;
+  color: var(--text-secondary);
   font-size: 0.875rem;
   margin-right: 6px;
 `;
 
 const GoodPriceBadge = styled.div`
   display: inline-block;
-  background: #00a651;
+  background: var(--success);
   color: white;
   padding: 3px 6px;
   border-radius: 3px;
@@ -136,7 +142,7 @@ const CarInfo = styled.div`
 const CarTitle = styled.h3`
   font-size: 0.875rem;
   font-weight: 700;
-  color: #000;
+  color: var(--text-primary);
   margin: 0 0 8px 0;
   line-height: 1.2;
   overflow: hidden;
@@ -150,16 +156,16 @@ const CarSpecs = styled.div`
   gap: 4px;
   margin-bottom: 8px;
   font-size: 0.75rem;
-  color: #333;
+  color: var(--text-primary);
   line-height: 1.3;
 `;
 
 const SpecLine = styled.div`
-  color: #666;
+  color: var(--text-secondary);
   font-size: 0.75rem;
   
   &:first-child {
-    color: #333;
+    color: var(--text-primary);
     font-weight: 500;
   }
 `;
@@ -169,11 +175,11 @@ const SpecGrid = styled.div`
   grid-template-columns: repeat(2, 1fr);
   gap: 4px 10px;
   font-size: 0.75rem;
-  color: #666;
+  color: var(--text-secondary);
 `;
 
 const SpecItem = styled.div`
-  color: #666;
+  color: var(--text-secondary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -181,16 +187,16 @@ const SpecItem = styled.div`
 
 const LeasingInfo = styled.div`
   font-size: 0.75rem;
-  color: #666;
+  color: var(--text-secondary);
   margin-bottom: 8px;
   line-height: 1.3;
 `;
 
 const CarLocation = styled.div`
   font-size: 0.75rem;
-  color: #666;
+  color: var(--text-secondary);
   padding-top: 6px;
-  border-top: 1px solid #e9ecef;
+  border-top: 1px solid var(--border);
   margin-top: 6px;
   line-height: 1.3;
 `;
@@ -202,18 +208,18 @@ const SellerInfo = styled.div`
 const EmptyState = styled.div`
   text-align: center;
   padding: 4rem 2rem;
-  background: white;
+  background: var(--bg-card);
   border-radius: 12px;
-  border: 2px dashed #e0e0e0;
+  border: 2px dashed var(--border);
   
   h3 {
     font-size: 1.5rem;
-    color: #6c757d;
+    color: var(--text-secondary);
     margin: 0 0 0.5rem 0;
   }
   
   p {
-    color: #adb5bd;
+    color: var(--text-secondary);
     margin: 0;
   }
 `;
@@ -221,7 +227,7 @@ const EmptyState = styled.div`
 const LoadingState = styled.div`
   text-align: center;
   padding: 4rem 2rem;
-  color: #6c757d;
+  color: var(--text-secondary);
 `;
 
 const ViewAllButton = styled(Link)`
@@ -255,7 +261,7 @@ const FeaturedCars: React.FC<FeaturedCarsProps> = ({
   const { language } = useLanguage();
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [cars, setCars] = useState<BulgarianCar[]>([]);
+  const [cars, setCars] = useState<UnifiedCar[]>([]);
   const [loading, setLoading] = useState(true);
   const [displayCount, setDisplayCount] = useState(limit); // ⚡ OPTIMIZED: Use limit as initial display count
 
@@ -268,19 +274,9 @@ const FeaturedCars: React.FC<FeaturedCarsProps> = ({
       setLoading(true);
       
       // ⚡ OPTIMIZED: Use cache for 5 minutes
-      const result = await homePageCache.getOrFetch(
-        CACHE_KEYS.FEATURED_CARS(limit),
-        async () => {
-          return await bulgarianCarService.searchCars(
-            {}, // No filters, get all cars
-            'createdAt',
-            'desc',
-            limit
-          );
-        }
-      );
-      
-      setCars(result.cars);
+      // Use unified service
+      const cars = await unifiedCarService.getFeaturedCars(limit);
+      setCars(cars);
     } catch (error) {
       console.error('Error loading featured cars:', error);
       setCars([]);

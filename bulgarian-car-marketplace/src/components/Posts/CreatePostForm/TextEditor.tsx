@@ -43,41 +43,41 @@ const TextEditor: React.FC<TextEditorProps> = ({
 
 const EditorContainer = styled.div`
   position: relative;
-  z-index: 1;  /* ⚡ Fix: Lower than PostTypeSelector */
-  margin-top: 8px;  /* ⚡ Add spacing from buttons above */
 `;
 
 const Textarea = styled.textarea`
   width: 100%;
-  min-height: 160px;
+  min-height: 120px;
   max-height: 300px;
-  padding: 14px;
-  border: 1px solid #e9ecef;
-  border-radius: 8px;
+  padding: 16px;
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
   font-size: 0.95rem;
   font-family: inherit;
   line-height: 1.6;
   resize: vertical;
   transition: all 0.2s;
-  background: #fafafa;
+  background: white;
   
   &:focus {
     outline: none;
     border-color: #FF8F10;
     background: white;
-    box-shadow: 0 0 0 3px rgba(255, 143, 16, 0.1);
+    box-shadow: 0 0 0 4px rgba(255, 143, 16, 0.1);
   }
   
   &::placeholder {
     color: #adb5bd;
+    font-size: 0.9rem;
   }
 `;
 
 const HashtagsHint = styled.div`
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   color: #6c757d;
-  margin-top: 6px;
-  padding-left: 2px;
+  margin-top: 8px;
+  padding-left: 4px;
+  font-style: italic;
 `;
 
 export default TextEditor;

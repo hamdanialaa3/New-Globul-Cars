@@ -1,7 +1,7 @@
 // src/utils/errorHandling.ts
 // Error handling utilities for Bulgarian Car Marketplace
 
-import { logger } from '../services/logger-service';
+import { logger } from '@/services/logger-service';
 
 export interface AppError {
   code: string;

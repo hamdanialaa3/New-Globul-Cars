@@ -1,5 +1,5 @@
 import { collection, doc, setDoc, updateDoc, getDoc, query, where, getDocs, orderBy, limit, Timestamp } from 'firebase/firestore';
-import { getFirestore } from 'firebase/firestore';
+import { db } from '@/firebase/firebase-config';
 import { serviceLogger } from './logger-wrapper';
 
 export interface MarketAnalysis {
@@ -94,7 +94,6 @@ export interface ResaleRecommendation {
 }
 
 export class AutonomousResaleEngine {
-  private db = getFirestore();
   private readonly BULGARIAN_MARKET_DATA = {
     // (Comment removed - was in Arabic)
     depreciation: {
@@ -126,7 +125,7 @@ export class AutonomousResaleEngine {
   async analyzeMarketValue(vin: string): Promise<MarketAnalysis> {
     try {
       // (Comment removed - was in Arabic)
-      const carDoc = await getDoc(doc(this.db, 'cars', vin));
+      const carDoc = await getDoc(doc(db, 'cars', vin));
       if (!carDoc.exists()) {
         throw new Error('السيارة غير موجودة');
       }
@@ -166,7 +165,7 @@ export class AutonomousResaleEngine {
       };
 
       // (Comment removed - was in Arabic)
-      await setDoc(doc(this.db, 'marketAnalysis', vin), analysis);
+      await setDoc(doc(db, 'marketAnalysis', vin), analysis);
 
       return analysis;
 
@@ -217,10 +216,10 @@ export class AutonomousResaleEngine {
         }
       };
 
-      await setDoc(doc(this.db, 'saleStrategies', saleStrategy.strategyId), saleStrategy);
+      await setDoc(doc(db, 'saleStrategies', saleStrategy.strategyId), saleStrategy);
 
       // (Comment removed - was in Arabic)
-      await updateDoc(doc(this.db, 'cars', vin), {
+      await updateDoc(doc(db, 'cars', vin), {
         saleStrategy: saleStrategy.strategyId,
         autonomousSale: true,
         lastMarketAnalysis: Timestamp.now()
@@ -239,7 +238,7 @@ return saleStrategy.strategyId;
   async processSaleOffer(strategyId: string, offer: Omit<SaleOffer, 'offerId' | 'timestamp'>): Promise<void> {
     try {
       // (Comment removed - was in Arabic)
-      const strategyDoc = await getDoc(doc(this.db, 'saleStrategies', strategyId));
+      const strategyDoc = await getDoc(doc(db, 'saleStrategies', strategyId));
       if (!strategyDoc.exists()) {
         throw new Error('استراتيجية البيع غير موجودة');
       }
@@ -261,10 +260,10 @@ return saleStrategy.strategyId;
       if (decision.counterOffer) {
         offerData.counterOffer = decision.counterOffer;
         offerData.status = 'counter_offered';
-      }
+      };
 
       // (Comment removed - was in Arabic)
-      await setDoc(doc(this.db, 'saleOffers', offerData.offerId), offerData);
+      await setDoc(doc(db, 'saleOffers', offerData.offerId), offerData);
 
       // (Comment removed - was in Arabic)
       strategy.currentOffers.push(offerData);
@@ -338,7 +337,7 @@ return saleStrategy.strategyId;
     try {
       // (Comment removed - was in Arabic)
       const comparableQuery = query(
-        collection(this.db, 'soldCars'),
+        collection(db, 'soldCars'),
         where('make', '==', car.make),
         where('model', '==', car.model),
         orderBy('saleDate', 'desc'),
@@ -493,7 +492,7 @@ return saleStrategy.strategyId;
       sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
 
       const trendQuery = query(
-        collection(this.db, 'soldCars'),
+        collection(db, 'soldCars'),
         where('make', '==', make),
         where('model', '==', model),
         where('saleDate', '>=', Timestamp.fromDate(sixMonthsAgo)),
@@ -598,7 +597,7 @@ return saleStrategy.strategyId;
    */
   private async notifyUserOfOffer(userId: string, offer: SaleOffer, decision: any): Promise<void> {
     try {
-      await setDoc(doc(collection(this.db, 'notifications')), {
+      await setDoc(doc(collection(db, 'notifications')), {
         userId,
         type: 'sale_offer',
         title: 'عرض شراء جديد',

@@ -164,6 +164,7 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ userId }) =>
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // ✅ FIX: Guard against null/undefined userId BEFORE constructing query
     if (!userId) return;
 
     const q = query(

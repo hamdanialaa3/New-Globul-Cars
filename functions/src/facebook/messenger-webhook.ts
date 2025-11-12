@@ -106,13 +106,13 @@ async function processMessage(event: MessengerEvent): Promise<void> {
       { content_type: 'text', title: 'Контакт', payload: 'CONTACT_INFO' }
     ];
   } else if (messageText.includes('цена') || messageText.includes('price')) {
-    responseText = 'Цените на автомобилите варират според марката, модела и състоянието. Посетете https://globul.net/cars за да видите актуалните оферти.';
+      responseText = 'Цените на автомобилите варират според марката, модела и състоянието. Посетете https://mobilebg.eu/cars за да видите актуалните оферти.';
   } else if (messageText.includes('търся') || messageText.includes('search')) {
-    responseText = 'Можете да търсите автомобили на https://globul.net/cars или да използвате нашето разширено търсене на https://globul.net/advanced-search';
+      responseText = 'Можете да търсите автомобили на https://mobilebg.eu/cars или да използвате нашето разширено търсене на https://mobilebg.eu/advanced-search';
   } else if (messageText.includes('контакт') || messageText.includes('contact')) {
     responseText = 'Свържете се с нас:\nТелефон: +359 2 123 4567\nИмейл: info@globulcars.bg\nАдрес: София, България';
   } else {
-    responseText = 'Благодаря за съобщението! Нашият екип ще ви отговори скоро. Можете да разгледате автомобилите на https://globul.net';
+      responseText = 'Благодаря за съобщението! Нашият екип ще ви отговори скоро. Можете да разгледате автомобилите на https://mobilebg.eu';
   }
   
   // Send response
@@ -130,16 +130,16 @@ async function processPostback(event: MessengerEvent): Promise<void> {
   
   switch (payload) {
     case 'SEARCH_CAR':
-      responseText = 'Разгледайте нашите автомобили: https://globul.net/cars\nИли използвайте разширеното търсене: https://globul.net/advanced-search';
+        responseText = 'Разгледайте нашите автомобили: https://mobilebg.eu/cars\nИли използвайте разширеното търсене: https://mobilebg.eu/advanced-search';
       break;
     case 'PRICE_INFO':
-      responseText = 'Цените започват от 5,000 EUR. Посетете https://globul.net/cars за пълен списък с цени.';
+        responseText = 'Цените започват от 5,000 EUR. Посетете https://mobilebg.eu/cars за пълен списък с цени.';
       break;
     case 'CONTACT_INFO':
       responseText = 'Контакти:\nТелефон: +359 2 123 4567\nИмейл: info@globulcars.bg\nРаботно време: Пон-Пет 9:00-18:00';
       break;
     default:
-      responseText = 'Благодаря! Посетете https://globul.net за повече информация.';
+        responseText = 'Благодаря! Посетете https://mobilebg.eu за повече информация.';
   }
   
   await sendMessage(senderId, responseText);
@@ -149,7 +149,7 @@ async function processPostback(event: MessengerEvent): Promise<void> {
  * Messenger Webhook Handler
  */
 export const messengerWebhook = onRequest(
-  { cors: true },
+  { cors: true, region: 'europe-west1' },
   async (request, response) => {
     try {
       // Webhook verification (GET request)

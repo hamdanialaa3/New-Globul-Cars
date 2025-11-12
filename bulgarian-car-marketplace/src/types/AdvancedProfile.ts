@@ -7,9 +7,9 @@ import {
   TrustLevel, 
   Badge, 
   VerificationStatus 
-} from '../services/profile/trust-score-service';
-import { ProfileImage } from '../services/profile/image-processing-service';
-import { ProfileStats } from '../services/profile/profile-stats-service';
+} from '@/services/profile/trust-score-service';
+import { ProfileImage } from '@/services/profile/image-processing-service';
+import { ProfileStats } from '@/services/profile/profile-stats-service';
 
 // ==================== MAIN PROFILE INTERFACE ====================
 

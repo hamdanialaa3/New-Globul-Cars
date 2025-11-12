@@ -3,7 +3,7 @@
 
 import { getToken, AppCheckTokenResult } from 'firebase/app-check';
 import { appCheck } from './firebase-config';
-import { logger } from '../services/logger-service';
+import { logger } from '@/services/logger-service';
 
 export class BulgarianAppCheckService {
   /**

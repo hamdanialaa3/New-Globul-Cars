@@ -2,6 +2,149 @@
 /* Global styles for Bulgarian Car Marketplace */
 /* الأنماط العامة لسوق السيارات البلغاري */
 
+/* ========================================
+   🌓 THEME VARIABLES - متغيرات الثيم
+   ======================================== */
+
+/* Light Theme - الوضع النهاري */
+:root,
+html[data-theme="light"],
+.light-theme {
+  /* Background Colors */
+  --bg-primary: #f5f5f5;
+  --bg-secondary: linear-gradient(135deg, #fef5e7 0%, #fbeee6 50%, #f5e6d3 100%);
+  --bg-tertiary: #fafafa;
+  --bg-card: #ffffff;
+  --bg-hover: #f0f0f0;
+  
+  /* Header/Footer specific - Creamy Beige gradient */
+  --header-bg: linear-gradient(135deg, #fef5e7 0%, #fbeee6 50%, #f5e6d3 100%);
+  --footer-bg: linear-gradient(135deg, #f5e6d3 0%, #fbeee6 50%, #fef5e7 100%);
+  
+  /* Text Colors */
+  --text-primary: #1a1a1a;
+  --text-secondary: #555555;
+  --text-tertiary: #808080;
+  --text-inverse: #ffffff;
+  
+  /* Accent Colors - Navy/Dark Blue in Light Mode */
+  --accent-primary: #003d7a;
+  --accent-secondary: #002d5c;
+  --accent-tertiary: #004d99;
+  --accent-hover: #002966;
+  --accent-active: #001f4d;
+  
+  /* Blue tones */
+  --yellow-primary: #005cb8;
+  --yellow-secondary: #0066cc;
+  --yellow-tertiary: #3399ff;
+  
+  /* Gradients - Navy/Blue tones */
+  --gradient-primary: linear-gradient(135deg, #003d7a 0%, #002d5c 100%);
+  --gradient-secondary: linear-gradient(135deg, #002d5c 0%, #001f4d 100%);
+  --gradient-accent: linear-gradient(135deg, #005cb8 0%, #004d99 50%, #003d7a 100%);
+  --gradient-warm: linear-gradient(135deg, #003d7a 0%, #004d99 50%, #005cb8 100%);
+  
+  /* Border Colors */
+  --border-primary: #e0e0e0;
+  --border-secondary: #d0d0d0;
+  --border-tertiary: #c0c0c0;
+  
+  /* Shadow Colors - Apple & Samsung Inspired */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.03);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
+  --shadow-xl: 0 20px 40px -10px rgba(0, 0, 0, 0.15), 0 15px 20px -10px rgba(0, 0, 0, 0.1);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 20px 30px -15px rgba(0, 0, 0, 0.15);
+  --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+  --shadow-primary: 0 10px 25px -5px rgba(0, 102, 204, 0.2), 0 8px 10px -6px rgba(0, 102, 204, 0.15);
+  --shadow-danger: 0 10px 25px -5px rgba(220, 38, 38, 0.2), 0 8px 10px -6px rgba(220, 38, 38, 0.15);
+  
+  /* Status Colors */
+  --success: #4caf50;
+  --warning: #ffc107;
+  --error: #f44336;
+  --info: #2196f3;
+}
+
+/* Dark Theme - الوضع الليلي */
+html[data-theme="dark"],
+.dark-theme {
+  /* Background Colors - Dark backgrounds */
+  --bg-primary: #1a1d2e;
+  --bg-secondary: #1f2229;
+  --bg-tertiary: #252936;
+  --bg-card: #252936;
+  --bg-hover: #2d3142;
+  
+  /* Header/Footer specific - Dark gray */
+  --header-bg: #1f2229;
+  --footer-bg: #1f2229;
+  
+  /* Text Colors - Bright whites for readability */
+  --text-primary: #ffffff;
+  --text-secondary: #e0e0e0;
+  --text-tertiary: #b0b0b0;
+  --text-inverse: #1a1d2e;
+  
+  /* Accent Colors - Blue/Cyan in Dark Mode */
+  --accent-primary: #03a9f4;
+  --accent-secondary: #0288d1;
+  --accent-tertiary: #4fc3f7;
+  --accent-hover: #0396db;
+  --accent-active: #0277bd;
+  
+  /* Green tones (replacing yellow) */
+  --yellow-primary: #4caf50;
+  --yellow-secondary: #66bb6a;
+  --yellow-tertiary: #81c784;
+  
+  /* Gradients - Blue/Green/Purple */
+  --gradient-primary: linear-gradient(135deg, #03a9f4 0%, #0288d1 100%);
+  --gradient-secondary: linear-gradient(135deg, #0288d1 0%, #7b1fa2 100%);
+  --gradient-accent: linear-gradient(135deg, #4caf50 0%, #03a9f4 50%, #7b1fa2 100%);
+  --gradient-warm: linear-gradient(135deg, #03a9f4 0%, #4caf50 50%, #7b1fa2 100%);
+  
+  /* Border Colors - Lighter in dark mode */
+  --border-primary: #3a3f55;
+  --border-secondary: #444a62;
+  --border-tertiary: #4e5570;
+  
+  /* Shadow Colors - Dark Mode */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 8px -2px rgba(0, 0, 0, 0.15), 0 2px 6px -2px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 30px -8px rgba(0, 0, 0, 0.2), 0 8px 15px -8px rgba(0, 0, 0, 0.15);
+  --shadow-xl: 0 20px 50px -15px rgba(0, 0, 0, 0.3), 0 15px 25px -15px rgba(0, 0, 0, 0.2);
+  --shadow-2xl: 0 30px 60px -15px rgba(0, 0, 0, 0.35), 0 25px 35px -20px rgba(0, 0, 0, 0.25);
+  --shadow-inner: inset 0 2px 6px 0 rgba(0, 0, 0, 0.1);
+  --shadow-primary: 0 10px 30px -8px rgba(59, 130, 246, 0.3), 0 8px 15px -8px rgba(59, 130, 246, 0.2);
+  --shadow-danger: 0 10px 30px -8px rgba(239, 68, 68, 0.3), 0 8px 15px -8px rgba(239, 68, 68, 0.2);
+  
+  /* Status Colors - Adjusted for dark mode */
+  --success: #66bb6a;
+  --warning: #ffa726;
+  --error: #ef5350;
+  --info: #42a5f5;
+}
+
+/* ========================================
+   Apply Theme Variables to Body
+   ======================================== */
+body {
+  margin: 0;
+  font-family: 'Martica', 'Arial', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.main-layout {
+  background-color: var(--bg-primary);
+  transition: background-color 0.3s ease;
+}
+
 /* Cross-browser CSS reset additions */
 html {
   -webkit-text-size-adjust: 100%;
@@ -19,13 +162,7 @@ html, body, #root {
   overflow-x: hidden;
 }
 
-body {
-  margin: 0;
-  font-family: 'Martica', 'Arial', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: #f5f5f5;
-}
+/* Removed - now in theme section above */
 
 /* Normalize form controls across browsers */
 button, input, select, textarea {
@@ -119,21 +256,25 @@ code {
 }
 
 .btn-primary {
-  background-color: #1976d2;
-  color: white;
+  background-color: var(--accent-primary);
+  color: var(--text-inverse);
+  transition: all 0.3s ease;
 }
 
 .btn-primary:hover {
-  background-color: #1565c0;
+  background-color: var(--accent-hover);
+  box-shadow: var(--shadow-md);
 }
 
 .btn-secondary {
-  background-color: #dc004e;
-  color: white;
+  background-color: var(--accent-secondary);
+  color: var(--text-inverse);
+  transition: all 0.3s ease;
 }
 
 .btn-secondary:hover {
-  background-color: #b0003a;
+  background-color: var(--accent-active);
+  box-shadow: var(--shadow-md);
 }
 
 /* Form styles */
@@ -169,11 +310,12 @@ code {
 
 /* Card styles */
 .card {
-  background: white;
+  background: var(--bg-card);
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
   padding: 20px;
   margin: 20px 0;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 /* Grid layouts */
@@ -287,30 +429,33 @@ code {
 
 /* Error and success states */
 .error {
-  color: #d32f2f;
-  background-color: #ffebee;
-  border: 1px solid #ffcdd2;
+  color: var(--error);
+  background-color: var(--bg-hover);
+  border: 1px solid var(--error);
   padding: 12px;
   border-radius: 4px;
   margin: 10px 0;
+  transition: all 0.3s ease;
 }
 
 .success {
-  color: #388e3c;
-  background-color: #e8f5e8;
-  border: 1px solid #c8e6c9;
+  color: var(--success);
+  background-color: var(--bg-hover);
+  border: 1px solid var(--success);
   padding: 12px;
   border-radius: 4px;
   margin: 10px 0;
+  transition: all 0.3s ease;
 }
 
 .warning {
-  color: #f57c00;
-  background-color: #fff3e0;
-  border: 1px solid #ffcc02;
+  color: var(--warning);
+  background-color: var(--bg-hover);
+  border: 1px solid var(--warning);
   padding: 12px;
   border-radius: 4px;
   margin: 10px 0;
+  transition: all 0.3s ease;
 }
 
 /* Loading states */
@@ -356,13 +501,13 @@ textarea:focus {
 /* High contrast mode support */
 @media (prefers-contrast: high) {
   .btn-primary {
-    background-color: #000;
-    color: #fff;
-    border: 2px solid #fff;
+    background-color: var(--text-primary);
+    color: var(--bg-primary);
+    border: 2px solid var(--text-primary);
   }
 
   .card {
-    border: 2px solid #000;
+    border: 2px solid var(--text-primary);
   }
 }
 

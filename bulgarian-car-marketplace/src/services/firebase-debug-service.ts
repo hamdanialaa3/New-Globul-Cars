@@ -1,5 +1,5 @@
 import { collection, getDocs, query, limit } from 'firebase/firestore';
-import { db } from '../firebase/firebase-config';
+import { db } from '@/firebase/firebase-config';
 import { serviceLogger } from './logger-wrapper';
 
 class FirebaseDebugService {

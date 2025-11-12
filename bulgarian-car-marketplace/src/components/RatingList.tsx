@@ -3,8 +3,8 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
-import { useTranslation } from '../hooks/useTranslation';
-import { bulgarianRatingService, CarRating } from '../services/reviews/rating-service';
+import { useTranslation } from '@/hooks/useTranslation';
+import { bulgarianRatingService, CarRating } from '@/services/reviews/rating-service';
 
 interface RatingListProps {
   carId: string;

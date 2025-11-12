@@ -6,11 +6,10 @@ import styled from 'styled-components';
 export const FormContainer = styled.div`
   background: white;
   border-radius: 16px;
-  max-width: 700px;
+  max-width: 600px;
   width: 100%;
-  max-height: 80vh;
+  max-height: 90vh;
   height: auto;
-  min-height: 500px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -62,29 +61,24 @@ export const CloseButton = styled.button`
 export const FormBody = styled.div`
   flex: 1;
   overflow-y: auto;
-  padding: 16px 20px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  position: relative;  /* ⚡ Fix: Establish stacking context */
-  
-  /* ⚡ Fix: Ensure children respect z-index */
-  > * {
-    position: relative;
-  }
+  gap: 16px;
+  position: relative;
+  background: #fafafa;
   
   &::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
   }
   
   &::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 4px;
+    background: transparent;
   }
   
   &::-webkit-scrollbar-thumb {
     background: #c1c1c1;
-    border-radius: 4px;
+    border-radius: 3px;
   }
   
   &::-webkit-scrollbar-thumb:hover {

@@ -17,10 +17,16 @@ import { logger } from '../logger-service';
 class PostsFeedService {
   
   async getFeedPosts(
-    userId: string,
+    userId: string | null | undefined,
     limitCount: number = 20
   ): Promise<Post[]> {
     try {
+      // ✅ FIX: Guard against null/undefined userId
+      if (!userId) {
+        logger.warn('getFeedPosts called with null/undefined userId, falling back to public feed');
+        return this.getPublicFeed(limitCount);
+      }
+
       const followingIds = await this.getFollowingIds(userId);
       
       const q = query(
@@ -78,6 +84,12 @@ class PostsFeedService {
   
   private async getFollowingIds(userId: string): Promise<string[]> {
     try {
+      // ✅ FIX: Guard against null/undefined userId
+      if (!userId) {
+        logger.warn('getFollowingIds called with null/undefined userId');
+        return [];
+      }
+
       // ✅ FIX: Use follows collection instead of subcollection
       const followingSnapshot = await getDocs(
         query(

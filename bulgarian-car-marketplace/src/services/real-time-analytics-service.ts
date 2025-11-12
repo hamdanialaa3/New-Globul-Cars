@@ -1,19 +1,22 @@
+/**
+ * IMPORTANT: Always call the returned unsubscribe function from any subscribe method to avoid memory leaks.
+ * Usage:
+ *   const cleanup = analyticsService.subscribeToAnalytics(...);
+ *   useEffect(() => { ...; return cleanup; }, []);
+ */
 import { 
   collection, 
   doc, 
   getDocs, 
-  getDoc, 
   setDoc,
   query, 
   where, 
   orderBy, 
   limit,
   onSnapshot,
-  serverTimestamp,
-  Timestamp,
-  startAfter
+  serverTimestamp
 } from 'firebase/firestore';
-import { db } from '../firebase/firebase-config';
+import { db } from '@/firebase/firebase-config';
 import { serviceLogger } from './logger-wrapper';
 
 // Real-time Analytics Interfaces

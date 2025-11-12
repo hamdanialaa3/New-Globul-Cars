@@ -307,7 +307,7 @@ export const VerificationUploader: React.FC<VerificationUploaderProps> = ({
           </SubmitButton>
         </>
       )}
-    </SwitcherContainer>
+    </UploaderContainer>
   );
 };
 

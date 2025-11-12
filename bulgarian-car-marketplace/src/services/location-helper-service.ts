@@ -1,8 +1,8 @@
 // Location Helper Service - Unified location handling
 // خدمة مساعدة الموقع - معالجة موحدة للموقع
 
-import { BULGARIAN_CITIES } from '../constants/bulgarianCities';
-import { BULGARIA_REGIONS } from '../data/bulgaria-locations';
+import { BULGARIAN_CITIES } from '@/constants/bulgarianCities';
+import { BULGARIA_REGIONS } from '@/data/bulgaria-locations';
 import { serviceLogger } from './logger-wrapper';
 
 export interface UnifiedLocation {

@@ -2,7 +2,7 @@
 // Invoice Generation System for Bulgarian Market
 
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
-import { getFirestore, Timestamp, FieldValue } from 'firebase-admin/firestore';
+import { getFirestore, Timestamp } from 'firebase-admin/firestore';
 import {
   GenerateInvoiceRequest,
   UpdateInvoiceStatusRequest,
@@ -28,7 +28,7 @@ const COMPANY_INFO = {
   vat: 'BG123456789', // Replace with real VAT number
   mol: 'Иван Иванов', // Replace with real MOL
   phone: '+359 888 123 456',
-  email: 'invoice@globul.net',
+  email: 'invoice@mobilebg.eu',
   bank: 'Банка ДСК',
   iban: 'BG80BNBG96611020345678', // Replace with real IBAN
   bic: 'BNBGBGSD',

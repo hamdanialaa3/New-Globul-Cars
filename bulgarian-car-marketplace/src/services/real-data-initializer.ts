@@ -6,7 +6,7 @@ import {
   serverTimestamp,
   writeBatch
 } from 'firebase/firestore';
-import { db } from '../firebase/firebase-config';
+import { db } from '@/firebase/firebase-config';
 import { serviceLogger } from './logger-wrapper';
 
 // Real Data Initializer Service

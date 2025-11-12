@@ -1,9 +1,9 @@
 // Location Helper Utilities for Bulgarian Car Marketplace
 // أدوات مساعدة للموقع - بلغاريا فقط
 
-import { LocationData, createLocationData } from '../types/LocationData';
-import { BULGARIAN_CITIES, getCityById } from '../constants/bulgarianCities';
-import { logger } from '../services/logger-service';
+import { LocationData, createLocationData } from '@/types/LocationData';
+import { BULGARIAN_CITIES, getCityById } from '@/constants/bulgarianCities';
+import { logger } from '@/services/logger-service';
 
 /**
  * Convert city ID to LocationData

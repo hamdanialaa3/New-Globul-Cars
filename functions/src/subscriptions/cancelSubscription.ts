@@ -28,7 +28,7 @@ const stripe = new Stripe(STRIPE_CONFIG.secretKey, {
 export const cancelSubscription = onCall<{
   userId: string;
   immediate?: boolean;
-}>(async (request) => {
+}>({ region: 'europe-west1' }, async (request) => {
   const { userId, immediate = false } = request.data;
 
   // 1. Check authentication

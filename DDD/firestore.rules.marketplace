@@ -1,0 +1,91 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && 
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    // Users collection
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow write: if isOwner(userId) || isAdmin();
+    }
+    
+    // Cars collection
+    match /cars/{carId} {
+      allow read: if true;
+      allow create: if isAuthenticated();
+      allow update, delete: if isAuthenticated() && 
+                               (resource.data.sellerId == request.auth.uid || isAdmin());
+    }
+    
+    // Messages collection
+    match /messages/{messageId} {
+      allow read: if isAuthenticated() && 
+                     (resource.data.senderId == request.auth.uid || 
+                      resource.data.recipientId == request.auth.uid);
+      allow create: if isAuthenticated();
+      allow update, delete: if isAuthenticated() && 
+                               (resource.data.senderId == request.auth.uid || 
+                                resource.data.recipientId == request.auth.uid);
+    }
+    
+    // AI Quotas collection - CRITICAL FOR AI FEATURES
+    match /ai_quotas/{userId} {
+      allow read, write, create, update, delete: if isAuthenticated();
+    }
+    
+    // AI Usage Logs collection
+    match /ai_usage_logs/{logId} {
+      allow read: if isAuthenticated() && 
+                     (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated();
+      allow update, delete: if isAdmin();
+    }
+    
+    // System alerts (admin only)
+    match /system_alerts/{alertId} {
+      allow read, write: if isAdmin();
+    }
+    
+    // Market stats (read-only for all)
+    match /market/{doc} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // Posts collection
+    match /user_posts/{userId}/posts/{postId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && request.auth.uid == userId;
+      allow update, delete: if isOwner(userId);
+    }
+    
+    // Follows collection
+    match /follows/{userId}/following/{followedId} {
+      allow read: if isAuthenticated();
+      allow create, delete: if isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    match /follows/{userId}/followers/{followerId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
+    }
+    
+    // Default deny all other collections
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

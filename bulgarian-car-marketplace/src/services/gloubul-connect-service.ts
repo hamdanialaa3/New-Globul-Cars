@@ -1,6 +1,5 @@
-import { collection, doc, setDoc, updateDoc, getDoc, query, where, getDocs, Timestamp } from 'firebase/firestore';
-import { getFirestore } from 'firebase/firestore';
-import { GeoPoint } from 'firebase/firestore';
+import { collection, doc, setDoc, updateDoc, getDoc, query, where, getDocs, Timestamp, GeoPoint } from 'firebase/firestore';
+import { db } from '@/firebase/firebase-config';
 import { serviceLogger } from './logger-wrapper';
 
 export interface GloubulConnectDevice {
@@ -61,7 +60,6 @@ export interface DigitalTwin {
 }
 
 export class GloubulConnectService {
-  private db = getFirestore();
   private readonly BULGARIAN_TIMEZONE = 'Europe/Sofia';
 
   /**
@@ -69,7 +67,7 @@ export class GloubulConnectService {
    */
   async registerDevice(deviceData: Omit<GloubulConnectDevice, 'lastSeen' | 'status'>): Promise<void> {
     try {
-      const deviceRef = doc(this.db, 'gloubulConnectDevices', deviceData.deviceId);
+      const deviceRef = doc(db, 'gloubulConnectDevices', deviceData.deviceId);
       const device: GloubulConnectDevice = {
         ...deviceData,
         lastSeen: Timestamp.now(),
@@ -93,7 +91,7 @@ export class GloubulConnectService {
   async updateLiveData(liveData: VehicleLiveData): Promise<void> {
     try {
       // (Comment removed - was in Arabic)
-      const liveDataRef = doc(collection(this.db, 'vehicleLiveData'));
+      const liveDataRef = doc(collection(db, 'vehicleLiveData'));
       await setDoc(liveDataRef, liveData);
 
       // (Comment removed - was in Arabic)
@@ -112,7 +110,7 @@ export class GloubulConnectService {
    * (Comment removed - was in Arabic)
    */
   private async initializeDigitalTwin(vin: string, userId: string): Promise<void> {
-    const twinRef = doc(this.db, 'digitalTwins', vin);
+    const twinRef = doc(db, 'digitalTwins', vin);
     const initialTwin: DigitalTwin = {
       vin,
       userId,
@@ -145,7 +143,7 @@ export class GloubulConnectService {
    * (Comment removed - was in Arabic)
    */
   private async updateDigitalTwin(liveData: VehicleLiveData): Promise<void> {
-    const twinRef = doc(this.db, 'digitalTwins', liveData.vin);
+    const twinRef = doc(db, 'digitalTwins', liveData.vin);
     const twinDoc = await getDoc(twinRef);
 
     if (!twinDoc.exists()) {
@@ -229,7 +227,7 @@ export class GloubulConnectService {
    * (Comment removed - was in Arabic)
    */
   private async updateDeviceStatus(deviceId: string, status: GloubulConnectDevice['status']): Promise<void> {
-    const deviceRef = doc(this.db, 'gloubulConnectDevices', deviceId);
+    const deviceRef = doc(db, 'gloubulConnectDevices', deviceId);
     await updateDoc(deviceRef, {
       status,
       lastSeen: Timestamp.now()
@@ -241,7 +239,7 @@ export class GloubulConnectService {
    */
   async getDigitalTwin(vin: string): Promise<DigitalTwin | null> {
     try {
-      const twinRef = doc(this.db, 'digitalTwins', vin);
+      const twinRef = doc(db, 'digitalTwins', vin);
       const twinDoc = await getDoc(twinRef);
 
       if (twinDoc.exists()) {
@@ -261,7 +259,7 @@ export class GloubulConnectService {
   async getUserDevices(userId: string): Promise<GloubulConnectDevice[]> {
     try {
       const devicesQuery = query(
-        collection(this.db, 'gloubulConnectDevices'),
+        collection(db, 'gloubulConnectDevices'),
         where('userId', '==', userId)
       );
 
@@ -291,7 +289,7 @@ export class GloubulConnectService {
    */
   async sendEmergencyAlert(vin: string, location: GeoPoint): Promise<void> {
     try {
-      const alertRef = doc(collection(this.db, 'emergencyAlerts'));
+      const alertRef = doc(collection(db, 'emergencyAlerts'));
       await setDoc(alertRef, {
         vin,
         location,

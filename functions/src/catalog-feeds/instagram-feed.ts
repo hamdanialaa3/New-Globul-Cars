@@ -5,7 +5,7 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 
-export const instagramShoppingFeed = functions.https.onRequest(async (req, res) => {
+export const instagramShoppingFeed = functions.region('europe-west1').https.onRequest(async (req, res) => {
   try {
     res.set('Access-Control-Allow-Origin', '*');
     res.set('Content-Type', 'text/csv; charset=utf-8');

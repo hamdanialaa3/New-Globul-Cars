@@ -2,19 +2,19 @@ import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { Eye, EyeOff, Shield, Lock, Unlock, Save } from 'lucide-react';
 import { useLanguage } from '../../../contexts/LanguageContext';
-import { dealershipService } from '../../../services/dealership/dealership.service';
+import { dealershipService } from '../../../services/dealership/dealership-adapter.service';
 import { DEFAULT_PRIVACY_SETTINGS } from '../../../types/dealership.types';
 import type { PrivacySettings } from '../../../types/dealership.types';
 import { useToast } from '../../Toast';
 
 interface PrivacySettingsManagerProps {
   userId: string;
-  accountType: 'individual' | 'dealership';
+  accountType?: 'individual' | 'dealership';
 }
 
 const PrivacySettingsManager: React.FC<PrivacySettingsManagerProps> = ({ 
   userId, 
-  accountType 
+  accountType = 'individual'
 }) => {
   const { language } = useLanguage();
   const { showToast } = useToast();

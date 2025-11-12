@@ -64,7 +64,7 @@ export async function sendApprovalEmail(data: ApprovalEmailData): Promise<void> 
             </ul>
 
             <div style="text-align: center; margin: 30px 0;">
-              <a href="https://globul.net/profile" 
+              <a href="https://mobilebg.eu/profile" 
                  style="background: #16a34a; color: white; padding: 15px 40px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">
                 Отидете към профила си
               </a>
@@ -101,7 +101,7 @@ export async function sendApprovalEmail(data: ApprovalEmailData): Promise<void> 
  * Send rejection email notification
  */
 export async function sendRejectionEmail(data: RejectionEmailData): Promise<void> {
-  const { userEmail, displayName, profileType, reason, businessName } = data;
+  const { userEmail, displayName, profileType, reason } = data;
 
   const profileTypeText = profileType === 'dealer' ? 'Дилър' : 'Фирма';
   const profileTypeEn = profileType === 'dealer' ? 'Dealer' : 'Company';
@@ -138,7 +138,7 @@ export async function sendRejectionEmail(data: RejectionEmailData): Promise<void
             </ul>
 
             <div style="text-align: center; margin: 30px 0;">
-              <a href="https://globul.net/profile" 
+              <a href="https://mobilebg.eu/profile" 
                  style="background: #dc2626; color: white; padding: 15px 40px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">
                 Опитайте отново
               </a>
@@ -226,7 +226,7 @@ export async function notifyAdminsNewRequest(data: {
             </div>
 
             <div style="text-align: center; margin: 30px 0;">
-              <a href="https://globul.net/admin/verification" 
+              <a href="https://mobilebg.eu/admin/verification" 
                  style="background: #1e40af; color: white; padding: 15px 40px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">
                 Прегледайте заявката
               </a>

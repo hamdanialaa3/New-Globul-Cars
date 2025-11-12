@@ -2,7 +2,7 @@
 // خدمة تحليلات سير العمل - تتبع سلوك المستخدم في عملية البيع
 
 import { collection, addDoc, serverTimestamp, query, where, getDocs, Timestamp } from 'firebase/firestore';
-import { db } from '../firebase/firebase-config';
+import { db } from '@/firebase/firebase-config';
 import { logger } from './logger-service';
 
 export interface WorkflowEvent {
@@ -89,9 +89,17 @@ export class WorkflowAnalyticsService {
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Analytics event logged', { step, stepName, action });
       }
-    } catch (error) {
-      // Don't break the main flow if analytics fails
-      logger.warn('Analytics logging failed', { error: (error as Error).message, step, stepName, action });
+    } catch (error: any) {
+      // Silently fail for permission errors - don't break the main flow
+      if (error?.code === 'permission-denied' || error?.message?.includes('permission')) {
+        // Analytics is optional, just log in dev mode
+        if (process.env.NODE_ENV === 'development') {
+          console.warn('Analytics disabled: Missing permissions');
+        }
+        return;
+      }
+      // Log other errors but don't throw
+      logger.warn('Analytics logging failed', { error: error?.message, step, stepName, action });
     }
   }
 

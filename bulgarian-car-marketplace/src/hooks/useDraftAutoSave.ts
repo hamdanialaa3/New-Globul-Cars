@@ -2,11 +2,11 @@
 // Hook للحفظ التلقائي للمسودات
 
 import { useEffect, useRef, useState } from 'react';
-import { useAuth } from '../contexts/AuthProvider';
+import { useAuth } from '@/contexts/AuthProvider';
 import { SellWorkflowData } from './useSellWorkflow';
-import DraftsService from '../services/drafts-service';
+import DraftsService from '@/services/drafts-service';
 import { toast } from 'react-toastify';
-import { logger } from '../services/logger-service';
+import { logger } from '@/services/logger-service';
 
 interface UseDraftAutoSaveOptions {
   enabled?: boolean;

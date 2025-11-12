@@ -21,9 +21,9 @@ import {
   DocumentSnapshot,
   Timestamp
 } from 'firebase/firestore';
-import { db } from '../firebase/firebase-config';
-import type { BulgarianUser } from '../types/user/bulgarian-user.types';
-import { logger } from '../services/logger-service';
+import { db } from '@/firebase/firebase-config';
+import type { BulgarianUser } from '@/types/user/bulgarian-user.types';
+import { logger } from '@/services/logger-service';
 
 export class UserRepository {
   private static readonly COLLECTION = 'users';

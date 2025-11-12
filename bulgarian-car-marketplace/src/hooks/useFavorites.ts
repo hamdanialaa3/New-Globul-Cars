@@ -7,9 +7,9 @@ import { useNavigate } from 'react-router-dom';
 import favoritesService, {
   FavoriteCar,
   FavoriteCarData
-} from '../services/favoritesService';
+} from '@/services/favoritesService';
 import { toast } from 'react-toastify';
-import { logger } from '../services/logger-service';
+import { logger } from '@/services/logger-service';
 
 export const useFavorites = () => {
   const { user } = useAuth();

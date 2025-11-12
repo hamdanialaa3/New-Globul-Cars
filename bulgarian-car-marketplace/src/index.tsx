@@ -23,7 +23,30 @@ root.render(
   </React.StrictMode>
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+// PWA Service Worker Registration (production only)
+if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(registration => {
+        console.log('✅ PWA: Service Worker registered');
+      })
+      .catch(error => {
+        console.log('❌ PWA: Service Worker registration failed:', error);
+      });
+  });
+} else if ('serviceWorker' in navigator && process.env.NODE_ENV === 'development') {
+  // Unregister any existing service workers in development
+  navigator.serviceWorker.getRegistrations().then(registrations => {
+    registrations.forEach(registration => registration.unregister());
+  });
+}
+
+// Install prompt
+let deferredPrompt: any;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  console.log('💡 PWA: Install prompt ready');
+});
+
 reportWebVitals();

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { CarDataFromFile, AdvancedSearchParams } from '../types/CarData';
+import { CarDataFromFile, AdvancedSearchParams } from '@/types/CarData';
 
 interface AnalyticsSystemProps {
   searchResults: CarDataFromFile[];

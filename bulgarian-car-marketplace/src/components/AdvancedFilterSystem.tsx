@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Filter, X, ChevronDown, ChevronUp, Search, Star, TrendingUp, Clock } from 'lucide-react';
-import { useTranslation } from '../hooks/useTranslation';
+import { useTranslation } from '@/hooks/useTranslation';
 import SearchableSelect from './SearchableSelect';
 import CheckboxGrid from './CheckboxGrid';
 import SearchTabs from './SearchTabs';

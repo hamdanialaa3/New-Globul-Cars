@@ -4,9 +4,9 @@
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
 
 import { useEffect, useRef } from 'react';
-import { useAuth } from '../contexts/AuthProvider';
-import { profileAnalyticsService } from '../services/analytics/profile-analytics.service';
-import { logger } from '../services/logger-service';
+import { useAuth } from '@/contexts/AuthProvider';
+import { profileAnalyticsService } from '@/services/analytics/profile-analytics.service';
+import { logger } from '@/services/logger-service';
 
 /**
  * Hook to automatically track profile views

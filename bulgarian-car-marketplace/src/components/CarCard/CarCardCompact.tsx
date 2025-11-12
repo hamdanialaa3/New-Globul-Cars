@@ -16,21 +16,21 @@ interface CarCardCompactProps {
 
 // Styled Components (Same as FeaturedCars)
 const CarCard = styled(Link)`
-  background: white;
+  background: var(--bg-card);
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-sm);
   overflow: hidden;
   transition: all 0.3s ease;
   text-decoration: none;
   color: inherit;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--border);
   display: flex;
   flex-direction: column;
 
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 20px rgba(255, 143, 16, 0.15);
-    border-color: #FF8F10;
+    box-shadow: var(--shadow-lg);
+    border-color: var(--accent-primary);
   }
 `;
 
@@ -38,7 +38,7 @@ const CarImageWrapper = styled.div`
   height: 140px;
   position: relative;
   overflow: hidden;
-  background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+  background: var(--bg-secondary);
 `;
 
 const CarImage = styled.img`
@@ -54,7 +54,7 @@ const CarImage = styled.img`
 
 const PriceTag = styled.div`
   padding: 8px 10px 6px 10px;
-  background: white;
+  background: var(--bg-card);
 `;
 
 const PriceRow = styled.div`
@@ -65,42 +65,42 @@ const PriceRow = styled.div`
 `;
 
 const PriceAmount = styled.div`
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #000;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-primary);
 `;
 
 const PriceCurrency = styled.span`
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: #000;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
 `;
 
 const MonthlyLabel = styled.div`
-  font-size: 0.75rem;
-  color: #6c757d;
-  font-weight: 400;
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  font-weight: 600;
   line-height: 1.2;
 `;
 
 const VatLabel = styled.div`
-  font-size: 0.6875rem;
-  color: #6c757d;
-  font-weight: 400;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: 500;
   margin-top: 1px;
   line-height: 1.2;
 `;
 
 const OldPrice = styled.span`
   text-decoration: line-through;
-  color: #999;
+  color: var(--text-secondary);
   font-size: 0.875rem;
   margin-right: 6px;
 `;
 
 const GoodPriceBadge = styled.div`
   display: inline-block;
-  background: #00a651;
+  background: var(--success);
   color: white;
   padding: 3px 6px;
   border-radius: 3px;
@@ -114,9 +114,9 @@ const CarInfo = styled.div`
 `;
 
 const CarTitle = styled.h3`
-  font-size: 0.875rem;
+  font-size: 1rem;
   font-weight: 700;
-  color: #000;
+  color: var(--text-primary);
   margin: 0 0 8px 0;
   line-height: 1.2;
   overflow: hidden;
@@ -129,18 +129,20 @@ const CarSpecs = styled.div`
   flex-direction: column;
   gap: 4px;
   margin-bottom: 8px;
-  font-size: 0.75rem;
-  color: #333;
+  font-size: 0.8125rem;
+  color: var(--text-primary);
+  font-weight: 600;
   line-height: 1.3;
 `;
 
 const SpecLine = styled.div`
-  color: #666;
-  font-size: 0.75rem;
+  color: var(--text-primary);
+  font-size: 0.8125rem;
+  font-weight: 600;
   
   &:first-child {
-    color: #333;
-    font-weight: 500;
+    color: var(--text-primary);
+    font-weight: 700;
   }
 `;
 
@@ -148,29 +150,33 @@ const SpecGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 4px 10px;
-  font-size: 0.75rem;
-  color: #666;
+  font-size: 0.8125rem;
+  color: var(--text-primary);
+  font-weight: 600;
 `;
 
 const SpecItem = styled.div`
-  color: #666;
+  color: var(--text-primary);
+  font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 `;
 
 const LeasingInfo = styled.div`
-  font-size: 0.75rem;
-  color: #666;
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  font-weight: 500;
   margin-bottom: 8px;
   line-height: 1.3;
 `;
 
 const CarLocation = styled.div`
-  font-size: 0.75rem;
-  color: #666;
+  font-size: 0.8125rem;
+  color: var(--text-primary);
+  font-weight: 600;
   padding-top: 6px;
-  border-top: 1px solid #e9ecef;
+  border-top: 1px solid var(--border);
   margin-top: 6px;
   line-height: 1.3;
 `;

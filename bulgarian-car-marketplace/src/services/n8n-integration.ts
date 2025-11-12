@@ -50,9 +50,16 @@ export class N8nIntegrationService {
       }
 
       return await response.json();
-    } catch (error) {
+    } catch (error: any) {
+      // Silently ignore CORS errors in development (localhost)
+      if (error?.message?.includes('CORS') || error?.message?.includes('Failed to fetch')) {
+        if (process.env.NODE_ENV === 'development') {
+          console.warn('N8N webhook blocked by CORS (expected in localhost)');
+        }
+        return null;
+      }
+      // Log other errors but don't break the main flow
       serviceLogger.error('N8N webhook error', error as Error, { url });
-      // Don't break the main flow if n8n is down
       return null;
     }
   }

@@ -43,6 +43,8 @@ import EnhancedNavLink from '../EnhancedNavLink';
 import LanguageToggle from '../LanguageToggle/LanguageToggle';
 import NotificationDropdown from '../NotificationDropdown/NotificationDropdown';
 import ProfileTypeSwitcher from './ProfileTypeSwitcher';
+import CyberToggle from '../CyberToggle/CyberToggle';
+import WheelHeaderLoader from '../Loaders/WheelHeaderLoader';
 import './Header.css';
 
 const Header: React.FC = () => {
@@ -59,6 +61,9 @@ const Header: React.FC = () => {
   const [accountSettingsOpen, setAccountSettingsOpen] = useState(false);
   const [securityOpen, setSecurityOpen] = useState(false);
   const [helpSupportOpen, setHelpSupportOpen] = useState(false);
+  const [showTransitionLoader, setShowTransitionLoader] = useState(false);
+  const transitionShowTimer = useRef<number | null>(null);
+  const transitionHideTimer = useRef<number | null>(null);
   const settingsRef = useRef<HTMLDivElement>(null);
   const mainNavRef = useRef<HTMLDivElement>(null);
   const profileTypeRef = useRef<HTMLDivElement>(null);
@@ -126,22 +131,50 @@ const Header: React.FC = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (transitionShowTimer.current) {
+      clearTimeout(transitionShowTimer.current);
+    }
+    if (transitionHideTimer.current) {
+      clearTimeout(transitionHideTimer.current);
+    }
+
+    transitionShowTimer.current = window.setTimeout(() => {
+      setShowTransitionLoader(true);
+      transitionHideTimer.current = window.setTimeout(() => {
+        setShowTransitionLoader(false);
+      }, 900);
+    }, 140);
+
+    return () => {
+      if (transitionShowTimer.current) {
+        clearTimeout(transitionShowTimer.current);
+      }
+      if (transitionHideTimer.current) {
+        clearTimeout(transitionHideTimer.current);
+      }
+    };
+  }, [location.pathname, location.search]);
+
   return (
     <header className="mobile-de-header">
       <div className="header-top">
+        <div className={`header-loader-slot ${showTransitionLoader ? 'visible' : ''}`}>
+          <WheelHeaderLoader />
+        </div>
         <div className="header-container">
           {/* Logo Section */}
-          <div className="logo-section" onClick={() => navigate('/')}>
+          <div className="logo-section" onClick={() => navigate('/') }>
             <img 
-              src="/mobile-eu-logo.png" 
-              alt="MOBILE-EU Logo" 
+              src="/Logo1.png" 
+              alt="GLOBUL AUTO Logo" 
               className="logo-icon"
-              style={{ width: '75px', height: '75px', objectFit: 'contain' }}
+              style={{ width: '60px', height: '60px', objectFit: 'contain' }}
               onError={(e) => {
-                e.currentTarget.src = '/logo.png';
+                e.currentTarget.src = '/Logo1.png';
               }}
             />
-            <span className="logo-text">MOBILE-EU</span>
+            <span className="logo-text">GLOBUL AUTO</span>
           </div>
 
           {/* Search Bar Removed */}
@@ -149,6 +182,9 @@ const Header: React.FC = () => {
           {/* Central Action Buttons */}
           <div className="central-actions">
             <LanguageToggle size="small" showText={false} className="action-bar-button" />
+            
+            {/* Dark/Light Mode Toggle */}
+            <CyberToggle />
             
             <button
               className="action-bar-button"
@@ -180,8 +216,8 @@ const Header: React.FC = () => {
               onClose={closeNotifications}
             />
             
-            {/* Seller Type Dropdown - Only visible on Profile page */}
-            {user && location.pathname === '/profile' && (
+            {/* Profile Management Button - Only visible on Profile routes */}
+            {user && location.pathname.startsWith('/profile') && (
               <div className="main-nav-dropdown" ref={profileTypeRef} style={{ position: 'relative', marginLeft: '8px' }}>
                 <button 
                   className="action-bar-button"
@@ -200,10 +236,10 @@ const Header: React.FC = () => {
                     fontSize: '0.875rem',
                     cursor: 'pointer'
                   }}
-                  title={language === 'bg' ? 'Тип продавач' : 'Seller Type'}
+                  title={language === 'bg' ? 'Управление на профила' : 'Profile Management'}
                 >
-                  <User size={16} />
-                  <span style={{ whiteSpace: 'nowrap' }}>{language === 'bg' ? 'Тип' : 'Type'}</span>
+                  <UserCog size={16} />
+                  <span style={{ whiteSpace: 'nowrap' }}>{language === 'bg' ? 'Управление' : 'Manage'}</span>
                   <svg 
                     className={`arrow ${isProfileTypeOpen ? 'rotate' : ''}`}
                     width="10" 

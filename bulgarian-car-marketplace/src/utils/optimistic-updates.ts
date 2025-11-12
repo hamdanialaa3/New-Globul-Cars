@@ -3,7 +3,7 @@
  * Phase 4 (A2): Helper functions for optimistic UI patterns
  */
 
-import { logger } from '../services/logger-service';
+import { logger } from '@/services/logger-service';
 
 export interface OptimisticOperation<T, R = void> {
   mutate: (data: T) => void;

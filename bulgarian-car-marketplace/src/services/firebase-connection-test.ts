@@ -10,7 +10,7 @@ import {
   addDoc,
   serverTimestamp
 } from 'firebase/firestore';
-import { db } from '../firebase/firebase-config';
+import { db } from '@/firebase/firebase-config';
 import { serviceLogger } from './logger-wrapper';
 
 // Firebase Connection Test Service
