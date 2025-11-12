@@ -2,7 +2,7 @@
 // صفحة رفع الصور مع الأتمتة
 // File Size: ~250 lines ✅
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { logger } from '@/services/logger-service';
@@ -11,6 +11,8 @@ import { WorkflowFlow } from '@/components/WorkflowVisualization';
 import { Upload, X, Image as ImageIcon } from 'lucide-react';
 import * as S from './styles';
 import { SellWorkflowLayout } from '@/components/SellWorkflow';
+import SellWorkflowStepStateService from '@/services/sellWorkflowStepState';
+import WorkflowPersistenceService from '@/services/workflowPersistenceService';
 
 const ImagesPageNew: React.FC = () => {
   const navigate = useNavigate();
@@ -21,6 +23,21 @@ const ImagesPageNew: React.FC = () => {
 
   const vehicleType = searchParams.get('vt');
   const make = searchParams.get('mk');
+  useEffect(() => {
+    SellWorkflowStepStateService.markPending('images');
+  }, []);
+
+  useEffect(() => {
+    const hasPersistedImages =
+      WorkflowPersistenceService.getImages().length > 0;
+
+    if (selectedFiles.length > 0 || hasPersistedImages) {
+      SellWorkflowStepStateService.markCompleted('images');
+    } else {
+      SellWorkflowStepStateService.markPending('images');
+    }
+  }, [selectedFiles.length]);
+
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {

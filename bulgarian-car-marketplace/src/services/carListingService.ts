@@ -61,6 +61,13 @@ class CarListingService {
         ...updates,
         updatedAt: serverTimestamp()
       });
+
+      // ✅ CRITICAL FIX: Invalidate cache after update
+      const { homePageCache, CACHE_KEYS } = await import('./homepage-cache.service');
+      homePageCache.invalidate(CACHE_KEYS.FEATURED_CARS(4));
+      homePageCache.invalidate(CACHE_KEYS.FEATURED_CARS(8));
+      homePageCache.invalidate(CACHE_KEYS.FEATURED_CARS(10));
+      serviceLogger.info('Cache invalidated after car update', { listingId: id });
     } catch (error) {
       serviceLogger.error('Failed to update car listing', error as Error, { listingId: id });
       throw new Error('Failed to update car listing');
@@ -72,6 +79,13 @@ class CarListingService {
     try {
       const docRef = doc(db, this.collectionName, id);
       await deleteDoc(docRef);
+
+      // ✅ CRITICAL FIX: Invalidate cache after delete
+      const { homePageCache, CACHE_KEYS } = await import('./homepage-cache.service');
+      homePageCache.invalidate(CACHE_KEYS.FEATURED_CARS(4));
+      homePageCache.invalidate(CACHE_KEYS.FEATURED_CARS(8));
+      homePageCache.invalidate(CACHE_KEYS.FEATURED_CARS(10));
+      serviceLogger.info('Cache invalidated after car deletion', { listingId: id });
     } catch (error) {
       serviceLogger.error('Failed to delete car listing', error as Error, { listingId: id });
       throw new Error('Failed to delete car listing');
@@ -396,6 +410,12 @@ class CarListingService {
    * Fallbacks: also returns listings where legacy userId/ownerId equals sellerId
    */
   async getListingsBySellerId(sellerId: string): Promise<CarListing[]> {
+    // ✅ CRITICAL FIX: Validate sellerId before query
+    if (!sellerId || typeof sellerId !== 'string' || sellerId.trim() === '') {
+      serviceLogger.warn('getListingsBySellerId: invalid sellerId', { sellerId });
+      return [];
+    }
+
     try {
       // Primary: sellerId (without orderBy to avoid index requirement)
       const primaryQ = query(

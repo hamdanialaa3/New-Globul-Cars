@@ -24,6 +24,7 @@ import WorkflowPersistenceService from '@/services/workflowPersistenceService';
 import ImageUploadService from '@/services/image-upload-service';
 import { logger } from '@/services/logger-service';
 import { SellWorkflowLayout } from '@/components/SellWorkflow';
+import SellWorkflowStepStateService from '@/services/sellWorkflowStepState';
 
 const CONTACT_METHODS = [
   { id: 'phone', iconComponent: 'PhoneIcon', labelBg: 'Телефон', labelEn: 'Phone' },
@@ -72,7 +73,7 @@ const UnifiedContactPage: React.FC = () => {
   // 💰 NEW: Pricing State (merged from Pricing Page)
   const [pricingData, setPricingData] = useState({
     price: searchParams.get('price') || '',
-    currency: searchParams.get('currency') || 'BGN',
+    currency: searchParams.get('currency') || 'EUR',
     priceType: searchParams.get('priceType') || 'fixed',
     negotiable: searchParams.get('negotiable') === 'true'
   });
@@ -91,6 +92,10 @@ const UnifiedContactPage: React.FC = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [totalImages, setTotalImages] = useState(0);
   const [uploadErrors, setUploadErrors] = useState<string[]>([]);
+  useEffect(() => {
+    SellWorkflowStepStateService.markPending('contact');
+  }, []);
+
   
   // 🆕 Hooks for new features
   const { workflowData, updateWorkflowData } = useSellWorkflow();
@@ -180,6 +185,18 @@ const UnifiedContactPage: React.FC = () => {
       setShowOtherCityInput(false);
     }
   }, [contactData.region, language]);
+
+  useEffect(() => {
+    if (
+      contactData.sellerName &&
+      contactData.sellerEmail &&
+      contactData.sellerPhone
+    ) {
+      SellWorkflowStepStateService.markCompleted('contact');
+    } else {
+      SellWorkflowStepStateService.markPending('contact');
+    }
+  }, [contactData.sellerName, contactData.sellerEmail, contactData.sellerPhone]);
   
   // Handle city selection
   const handleCityChange = (value: string) => {
@@ -884,7 +901,7 @@ const UnifiedContactPage: React.FC = () => {
             {language === 'bg' ? 'Цена:' : 'Price:'}
           </S.SummaryLabel>
           <S.SummaryValue>
-            {parseFloat(pricingData.price || '0').toLocaleString()} {pricingData.currency}
+            {parseFloat(pricingData.price || '0').toLocaleString()} EUR
           </S.SummaryValue>
         </S.SummaryRow>
 
@@ -909,7 +926,7 @@ const UnifiedContactPage: React.FC = () => {
           <S.ErrorIcon>{showForcePublish ? '⚠️' : '❌'}</S.ErrorIcon>
           <S.ErrorText>{error}</S.ErrorText>
           {missingFields.length > 0 && (
-            <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid rgba(0, 0, 0, 0.1)' }}>
+            <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid var(--border)' }}>
               <strong>{language === 'bg' ? 'Липсващи полета:' : 'Missing fields:'}</strong>
               <ul style={{ margin: '0.5rem 0 0 1.5rem', padding: 0 }}>
                 {missingFields.map((field, index) => (
@@ -975,21 +992,9 @@ const UnifiedContactPage: React.FC = () => {
       
       {/* 🆕 Auto-save indicator */}
       {isSaving && (
-        <div style={{
-          position: 'fixed',
-          bottom: '2rem',
-          right: '2rem',
-          background: 'rgba(16, 185, 129, 0.9)',
-          color: 'white',
-          padding: '0.75rem 1.25rem',
-          borderRadius: '8px',
-          fontSize: '0.875rem',
-          fontWeight: '600',
-          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-          zIndex: 998
-        }}>
+        <S.AutoSaveNotification>
           💾 {getErrorMessage('AUTO_SAVED', language as 'bg' | 'en')}
-        </div>
+        </S.AutoSaveNotification>
       )}
     </SellWorkflowLayout>
   );

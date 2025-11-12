@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { useAuth } from '@/contexts/AuthProvider';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
-import carListingService from '@/services/carListingService';
+import { unifiedCarService } from '@/services/car';
 import CityCarCountService from '@/services/cityCarCountService';
 import { CarListing } from '@/types/CarListing';
 import { Search, Filter, Trash2, Eye, CheckCircle, XCircle } from 'lucide-react';
@@ -267,7 +267,7 @@ const AdminCarManagementPage: React.FC = () => {
     }
 
     try {
-      await carListingService.deleteListing(id);
+      await unifiedCarService.deleteCar(id);
       loadCars();
       loadStats();
       // Clear cache

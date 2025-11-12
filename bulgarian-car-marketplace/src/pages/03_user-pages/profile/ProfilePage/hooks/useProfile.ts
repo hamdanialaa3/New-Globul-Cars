@@ -7,7 +7,7 @@ import { useProfileType } from '@/contexts/ProfileTypeContext';
 import { validateProfileData } from '@/utils/validation';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { auth, db } from '@/firebase/firebase-config';
-import carListingService from '@/services/carListingService';
+import { unifiedCarService } from '@/services/car';
 import { logger } from '@/services/logger-service';
 import {
   ProfileFormData,
@@ -116,17 +116,21 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
   }, [targetUserId]);
 
   const loadCarsForProfile = useCallback(async (profile: BulgarianUser | null) => {
-    if (!profile) {
+    // ✅ CRITICAL FIX: Stronger validation
+    if (!profile || !profile.uid || typeof profile.uid !== 'string' || profile.uid.trim() === '') {
+      logger.warn('loadCarsForProfile: invalid profile', { profile: profile?.uid });
       setUserCars([]);
       return;
     }
 
-    let listings = await carListingService.getListingsBySellerId(profile.uid);
-    if (!listings || listings.length === 0) {
-      listings = await carListingService.getListingsBySeller(profile.email || '');
+    try {
+      // Use unified service
+      const cars = await unifiedCarService.getUserCars(profile.uid);
+      setUserCars(mapListingsToCars(cars || []));
+    } catch (error) {
+      logger.error('Error loading cars for profile', error as Error, { userId: profile.uid });
+      setUserCars([]);
     }
-
-    setUserCars(mapListingsToCars(listings));
   }, []);
 
   const loadUserData = useCallback(async () => {

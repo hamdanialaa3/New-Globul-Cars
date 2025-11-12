@@ -10,11 +10,11 @@ export const ContentSection = styled.div`
 `;
 
 export const HeaderCard = styled.div`
-  background: white;
+  background: var(--bg-card);
   border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-lg);
   padding: 2.5rem;
-  border: 1px solid rgba(255, 143, 16, 0.1);
+  border: 1px solid var(--border);
   position: relative;
   overflow: hidden;
 
@@ -25,19 +25,15 @@ export const HeaderCard = styled.div`
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(90deg, #ff8f10, #005ca9);
+    background: var(--accent-primary);
   }
 `;
 
 export const Title = styled.h1`
   font-size: 1.75rem; /* 28px - Global Standard */
   font-weight: 700;
-  color: #2c3e50;
+  color: var(--text-primary);
   margin: 0 0 0.75rem 0;
-  background: linear-gradient(135deg, #ff8f10, #005ca9);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
   letter-spacing: -0.5px;
   line-height: 1.2;
   
@@ -48,27 +44,27 @@ export const Title = styled.h1`
 
 export const Subtitle = styled.p`
   font-size: 1rem; /* 16px - Comfortable reading */
-  color: #7f8c8d;
+  color: var(--text-secondary);
   margin: 0;
   line-height: 1.6;
 `;
 
 export const FormCard = styled.div`
-  background: white;
+  background: var(--bg-card);
   border-radius: 15px;
   padding: 2rem;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
-  border: 1px solid rgba(255, 143, 16, 0.05);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
 `;
 
 export const SectionTitle = styled.h3`
   font-size: 1.25rem; /* 20px - Clear hierarchy */
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--text-primary);
   margin: 0 0 1.25rem 0;
   padding-bottom: 0.75rem;
   line-height: 1.4;
-  border-bottom: 2px solid rgba(255, 143, 16, 0.2);
+  border-bottom: 2px solid var(--accent-primary);
 `;
 
 export const FormGrid = styled.div`
@@ -90,7 +86,7 @@ export const FormGroup = styled.div`
 export const Label = styled.label<{ $required?: boolean }>`
   font-size: 0.875rem; /* 14px - Standard label size */
   font-weight: 600;
-  color: #495057;
+  color: var(--text-primary);
   line-height: 1.4;
   display: flex;
   align-items: center;
@@ -99,7 +95,7 @@ export const Label = styled.label<{ $required?: boolean }>`
   ${props => props.$required && `
     &::after {
       content: '*';
-      color: #ff8f10;
+      color: var(--accent-orange);
       font-size: 1rem;
     }
   `}
@@ -108,28 +104,28 @@ export const Label = styled.label<{ $required?: boolean }>`
 export const Input = styled.input`
   width: 100%;
   padding: 0.75rem 1rem;
-  border: 2px solid #e9ecef;
+  border: 2px solid var(--border);
   border-radius: 10px;
   font-size: 1rem; /* 16px - Comfortable input text */
   line-height: 1.5;
   transition: all 0.3s ease;
-  background: white;
-  color: #2c3e50;
+  background: var(--bg-card);
+  color: var(--text-primary);
 
   &:focus {
     outline: none;
-    border-color: #ff8f10;
-    box-shadow: 0 0 0 3px rgba(255, 143, 16, 0.1);
+    border-color: var(--accent-orange);
+    box-shadow: 0 0 0 3px var(--focus-shadow);
   }
 
   &::placeholder {
-    color: #adb5bd;
+    color: var(--text-placeholder);
     font-size: 0.938rem;
   }
 
   &:disabled {
-    background: #f8f9fa;
-    color: #adb5bd;
+    background: var(--bg-disabled);
+    color: var(--text-disabled);
     cursor: not-allowed;
     opacity: 0.6;
   }
@@ -138,24 +134,24 @@ export const Input = styled.input`
 export const Select = styled.select`
   width: 100%;
   padding: 0.75rem 1rem;
-  border: 2px solid #e9ecef;
+  border: 2px solid var(--border);
   border-radius: 10px;
   font-size: 1rem; /* 16px - Standard select size */
   line-height: 1.5;
-  background: white;
-  color: #2c3e50;
+  background: var(--bg-card);
+  color: var(--text-primary);
   cursor: pointer;
   transition: all 0.3s ease;
 
   &:focus {
     outline: none;
-    border-color: #ff8f10;
-    box-shadow: 0 0 0 3px rgba(255, 143, 16, 0.1);
+    border-color: var(--accent-orange);
+    box-shadow: 0 0 0 3px var(--focus-shadow);
   }
 
   &:disabled {
-    background: #f8f9fa;
-    color: #adb5bd;
+    background: var(--bg-disabled);
+    color: var(--text-disabled);
     cursor: not-allowed;
     opacity: 0.6;
   }
@@ -185,23 +181,23 @@ export const BooleanOption = styled.button<{ $isSelected: boolean }>`
   
   ${props => props.$isSelected 
     ? `
-      background: #27ae60;
-      border-color: #27ae60;
-      color: white;
-      box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+      background: var(--success);
+      border-color: var(--success);
+      color: var(--text-on-accent);
+      box-shadow: var(--shadow-md);
     `
     : `
-      background: white;
-      border-color: #e74c3c;
-      color: #e74c3c;
+      background: var(--bg-card);
+      border-color: var(--error);
+      color: var(--error);
     `
   }
 
   &:hover {
     transform: translateY(-2px);
     box-shadow: ${props => props.$isSelected 
-      ? '0 6px 20px rgba(39, 174, 96, 0.4)' 
-      : '0 4px 15px rgba(231, 76, 60, 0.2)'
+      ? 'var(--shadow-lg)' 
+      : 'var(--shadow-md)'
     };
   }
 
@@ -216,7 +212,7 @@ export const NavigationButtons = styled.div`
   gap: 1rem;
   margin-top: 2rem;
   padding-top: 2rem;
-  border-top: 1px solid #ecf0f1;
+  border-top: 1px solid var(--border);
 `;
 
 export const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
@@ -232,22 +228,22 @@ export const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
 
   ${props => props.$variant === 'primary' 
     ? `
-      background: linear-gradient(135deg, #ff8f10, #005ca9);
-      color: white;
-      box-shadow: 0 8px 20px rgba(255, 143, 16, 0.3);
+      background: var(--accent-primary);
+      color: var(--text-on-accent);
+      box-shadow: var(--shadow-md);
       
       &:hover:not(:disabled) {
         transform: translateY(-2px);
-        box-shadow: 0 12px 25px rgba(255, 143, 16, 0.4);
+        box-shadow: var(--shadow-lg);
       }
     `
     : `
-      background: #f8f9fa;
-      color: #6c757d;
-      border: 2px solid #e9ecef;
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      border: 2px solid var(--border);
       
       &:hover {
-        background: #e9ecef;
+        background: var(--bg-hover);
       }
     `
   }
@@ -260,23 +256,23 @@ export const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
 `;
 
 export const RequiredNote = styled.div`
-  background: rgba(255, 143, 16, 0.1);
-  border-left: 4px solid #ff8f10;
+  background: var(--bg-accent);
+  border-left: 4px solid var(--accent-orange);
   padding: 1rem 1.5rem;
   border-radius: 10px;
   font-size: 0.85rem;
-  color: #2c3e50;
+  color: var(--text-primary);
   margin-top: 1rem;
 
   strong {
-    color: #ff8f10;
+    color: var(--accent-orange);
   }
 `;
 
 export const HintText = styled.small`
   display: block;
   margin-top: 0.5rem;
-  color: #6c757d;
+  color: var(--text-secondary);
   font-size: 0.75rem; /* 12px - Clear hints */
   line-height: 1.4;
   font-style: italic;
@@ -290,11 +286,11 @@ export const HistoryRow = styled.div`
   justify-content: space-between;
   padding: 1rem;
   border-radius: 10px;
-  background: rgba(255, 143, 16, 0.02);
+  background: var(--bg-secondary);
   transition: background 0.2s ease;
 
   &:hover {
-    background: rgba(255, 143, 16, 0.05);
+    background: var(--bg-hover);
   }
 `;
 
@@ -307,12 +303,12 @@ export const HistoryInfo = styled.div`
 export const HistoryLabel = styled.span`
   font-size: 0.95rem;
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--text-primary);
 `;
 
 export const HistoryHint = styled.span`
   font-size: 0.8rem;
-  color: #7f8c8d;
+  color: var(--text-secondary);
 `;
 
 export const CyberToggleWrapper = styled.div`
@@ -340,10 +336,10 @@ export const ToggleTrack = styled.span`
   left: 0;
   width: 100%;
   height: 100%;
-  background: #2c2f33;
+  background: var(--bg-secondary);
   border-radius: 15px;
   transition: background 0.4s ease-in-out;
-  box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.2), inset 0 1px 3px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow-sm);
 
   &::before {
     content: '';
@@ -352,15 +348,15 @@ export const ToggleTrack = styled.span`
     left: 2px;
     width: 26px;
     height: 26px;
-    background: #fff;
+    background: var(--bg-card);
     border-radius: 50%;
     transform: translateX(0);
     transition: transform 0.4s cubic-bezier(0.3, 1.5, 0.7, 1);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--shadow-sm);
   }
 
   ${CyberToggleCheckbox}:checked + ${CyberToggleLabel} & {
-    background: #03e9f4;
+    background: var(--accent-primary);
   }
 
   ${CyberToggleCheckbox}:checked + ${CyberToggleLabel} &::before {
@@ -375,7 +371,7 @@ export const ToggleThumbIcon = styled.span`
   transform: translateY(-50%);
   width: 12px;
   height: 12px;
-  background: #fff;
+  background: var(--bg-card);
   mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="%23000" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM175 175c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l47-47-47-47c-9.4-9.4-9.4-24.6 0-33.9z"/></svg>');
   mask-repeat: no-repeat;
   mask-position: center;
@@ -396,13 +392,13 @@ export const ToggleThumbDots = styled.span`
   transform: translate(-50%, -50%);
   width: 3px;
   height: 3px;
-  background: #fff;
+  background: var(--bg-card);
   border-radius: 50%;
   box-shadow: 
-    -7px 0 0 0 #fff,
-    7px 0 0 0 #fff,
-    0 -7px 0 0 #fff,
-    0 7px 0 0 #fff;
+    -7px 0 0 0 var(--bg-card),
+    7px 0 0 0 var(--bg-card),
+    0 -7px 0 0 var(--bg-card),
+    0 7px 0 0 var(--bg-card);
   transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out;
 
   ${CyberToggleCheckbox}:checked + ${CyberToggleLabel} & {
@@ -419,7 +415,7 @@ export const ToggleThumbHighlight = styled.span`
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.5), transparent);
+  background: var(--bg-accent);
   transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out;
   opacity: 0;
 
@@ -437,18 +433,18 @@ export const ToggleLabels = styled.span`
   display: flex;
   justify-content: space-between;
   width: 80%;
-  font-size: 0.625rem; /* 10px - Readable toggle labels */
+  font-size: 0.5rem; /* 8px - أصغر ليحتوي الكلمتين */
   font-weight: 700;
   letter-spacing: 0.5px;
   text-transform: uppercase;
   pointer-events: none;
-  color: #555;
+  color: var(--text-secondary);
 `;
 
 export const ToggleLabelOn = styled.span`
   opacity: 0;
   transition: opacity 0.4s ease-in-out;
-  color: #fff;
+  color: var(--text-on-accent);
 
   ${CyberToggleCheckbox}:checked + ${CyberToggleLabel} & {
     opacity: 1;
@@ -458,7 +454,7 @@ export const ToggleLabelOn = styled.span`
 export const ToggleLabelOff = styled.span`
   opacity: 1;
   transition: opacity 0.4s ease-in-out;
-  color: #fff;
+  color: var(--text-on-accent);
 
   ${CyberToggleCheckbox}:checked + ${CyberToggleLabel} & {
     opacity: 0;

@@ -204,6 +204,8 @@ export class SellWorkflowService {
       
       // System Fields
       status: 'active' as const,
+      isActive: true,  // ✅ CRITICAL FIX: Add isActive for visibility
+      isSold: false,   // ✅ CRITICAL FIX: Add isSold flag
       views: 0,
       favorites: 0,
       isFeatured: false,
@@ -295,6 +297,13 @@ export class SellWorkflowService {
 
         serviceLogger.info('Images uploaded and linked to car', { carId, imageCount: imageUrls.length });
       }
+
+      // ✅ CRITICAL FIX: Invalidate homepage cache
+      const { homePageCache, CACHE_KEYS } = await import('./homepage-cache.service');
+      homePageCache.invalidate(CACHE_KEYS.FEATURED_CARS(4));
+      homePageCache.invalidate(CACHE_KEYS.FEATURED_CARS(8));
+      homePageCache.invalidate(CACHE_KEYS.FEATURED_CARS(10));
+      serviceLogger.info('Homepage cache invalidated after car creation', { carId });
 
       // Clear cache for the region
       const { CityCarCountService } = await import('./cityCarCountService');

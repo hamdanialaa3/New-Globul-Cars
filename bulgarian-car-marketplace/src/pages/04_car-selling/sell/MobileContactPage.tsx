@@ -2,7 +2,7 @@
 // Purpose: Contact information collection for vehicle listing
 // Mobile-first; no emojis; <300 lines
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -10,6 +10,7 @@ import { MobileContainer, MobileStack } from '@/components/ui/mobile-index';
 import { MobileHeader } from '@/components/layout/MobileHeader';
 import { S } from './MobileContactPage.styles';
 import { SellProgressBar } from '@/components/SellWorkflow';
+import SellWorkflowStepStateService from '@/services/sellWorkflowStepState';
 
 const ProgressWrapper = styled.div`
   padding: 0.75rem 1rem 0;
@@ -29,6 +30,10 @@ const MobileContactPage: React.FC = () => {
     zipCode: ''
   });
 
+  useEffect(() => {
+    SellWorkflowStepStateService.markPending('contact');
+  }, []);
+
   const onChange = (field: keyof typeof form, value: string) => {
     setForm(prev => ({ ...prev, [field]: value }));
   };
@@ -46,6 +51,14 @@ const MobileContactPage: React.FC = () => {
   };
 
   const canContinue = !!(form.name && form.phone && form.email);
+
+  useEffect(() => {
+    if (form.name && form.phone && form.email) {
+      SellWorkflowStepStateService.markCompleted('contact');
+    } else {
+      SellWorkflowStepStateService.markPending('contact');
+    }
+  }, [form.name, form.phone, form.email]);
 
   return (
     <S.PageWrapper>

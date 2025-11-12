@@ -10,11 +10,11 @@ export const ContentSection = styled.div`
 `;
 
 export const HeaderCard = styled.div`
-  background: white;
+  background: var(--bg-card);
   border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-lg);
   padding: 2.5rem;
-  border: 1px solid rgba(255, 143, 16, 0.1);
+  border: 1px solid var(--border);
   position: relative;
   overflow: hidden;
 
@@ -25,19 +25,15 @@ export const HeaderCard = styled.div`
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(90deg, #ff8f10, #005ca9);
+    background: var(--accent-primary);
   }
 `;
 
 export const Title = styled.h1`
   font-size: 1.75rem; /* 28px - Global Standard */
   font-weight: 700;
-  color: #2c3e50;
+  color: var(--text-primary);
   margin: 0 0 0.75rem 0;
-  background: linear-gradient(135deg, #ff8f10, #005ca9);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
   letter-spacing: -0.5px;
   line-height: 1.2;
   
@@ -48,23 +44,23 @@ export const Title = styled.h1`
 
 export const Subtitle = styled.p`
   font-size: 1rem; /* 16px */
-  color: #7f8c8d;
+  color: var(--text-secondary);
   margin: 0;
   line-height: 1.6;
 `;
 
 export const FormCard = styled.div`
-  background: white;
+  background: var(--bg-card);
   border-radius: 15px;
   padding: 2.5rem;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
-  border: 1px solid rgba(255, 143, 16, 0.05);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
 `;
 
 export const Label = styled.label`
   display: block;
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--text-primary);
   margin-bottom: 1rem;
   font-size: 1.575rem; /* 150% من 1.05rem */
 `;
@@ -76,31 +72,31 @@ export const PriceInputWrapper = styled.div`
 
 export const PriceIcon = styled.div`
   position: absolute;
-  left: 1.25rem;
+  right: 1.25rem;
   top: 50%;
   transform: translateY(-50%);
-  color: #ff8f10;
+  color: var(--accent-orange);
   pointer-events: none;
 `;
 
 export const PriceInput = styled.input`
   width: 100%;
-  padding: 1.25rem 1.25rem 1.25rem 4rem;
-  border: 2px solid #e9ecef;
+  padding: 1.25rem 4rem 1.25rem 1.25rem;
+  border: 2px solid var(--border);
   border-radius: 15px;
   font-size: 1.5rem;
   font-weight: 700;
-  color: #2c3e50;
+  color: var(--text-primary);
   transition: all 0.3s ease;
 
   &:focus {
     outline: none;
-    border-color: #ff8f10;
-    box-shadow: 0 0 0 4px rgba(255, 143, 16, 0.1);
+    border-color: var(--accent-orange);
+    box-shadow: var(--focus-shadow);
   }
 
   &::placeholder {
-    color: #adb5bd;
+    color: var(--text-placeholder);
     font-weight: 400;
   }
 `;
@@ -110,13 +106,13 @@ export const CheckboxWrapper = styled.div`
   align-items: center;
   gap: 0.75rem;
   padding: 1.25rem;
-  background: rgba(255, 143, 16, 0.05);
+  background: var(--bg-accent);
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s ease;
 
   &:hover {
-    background: rgba(255, 143, 16, 0.1);
+    background: var(--bg-accent);
   }
 `;
 
@@ -124,12 +120,12 @@ export const Checkbox = styled.input`
   width: 22px;
   height: 22px;
   cursor: pointer;
-  accent-color: #ff8f10;
+  accent-color: var(--accent-orange);
 `;
 
 export const CheckboxLabel = styled.label`
   font-size: 0.95rem;
-  color: #2c3e50;
+  color: var(--text-primary);
   cursor: pointer;
   user-select: none;
   font-weight: 500;
@@ -138,8 +134,8 @@ export const CheckboxLabel = styled.label`
 export const InfoCard = styled.div`
   display: flex;
   gap: 1rem;
-  background: rgba(0, 92, 169, 0.05);
-  border-left: 4px solid #005ca9;
+  background: var(--bg-accent);
+  border-left: 4px solid var(--accent-primary);
   padding: 1.5rem;
   border-radius: 10px;
 `;
@@ -151,18 +147,18 @@ export const InfoIcon = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 92, 169, 0.15);
+  background: var(--bg-accent);
   border-radius: 50%;
-  color: #005ca9;
+  color: var(--accent-primary);
 `;
 
 export const InfoText = styled.div`
   font-size: 0.9rem;
-  color: #2c3e50;
+  color: var(--text-primary);
   line-height: 1.6;
 
   strong {
-    color: #005ca9;
+    color: var(--accent-primary);
   }
 `;
 
@@ -171,7 +167,7 @@ export const NavigationButtons = styled.div`
   justify-content: space-between;
   gap: 1rem;
   padding-top: 1.5rem;
-  border-top: 1px solid #ecf0f1;
+  border-top: 1px solid var(--border);
 `;
 
 export const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
@@ -186,22 +182,22 @@ export const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
 
   ${props => props.$variant === 'primary' 
     ? `
-      background: linear-gradient(135deg, #ff8f10, #005ca9);
-      color: white;
-      box-shadow: 0 8px 20px rgba(255, 143, 16, 0.3);
+      background: var(--accent-primary);
+      color: var(--text-on-accent);
+      box-shadow: var(--shadow-md);
       
       &:hover:not(:disabled) {
         transform: translateY(-2px);
-        box-shadow: 0 12px 25px rgba(255, 143, 16, 0.4);
+        box-shadow: var(--shadow-lg);
       }
     `
     : `
-      background: #f8f9fa;
-      color: #6c757d;
-      border: 2px solid #e9ecef;
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      border: 2px solid var(--border);
       
       &:hover {
-        background: #e9ecef;
+        background: var(--bg-accent);
       }
     `
   }

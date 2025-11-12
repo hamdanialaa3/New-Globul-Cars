@@ -1,11 +1,12 @@
 // Mobile Preview Page - Summary before submission
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { S } from './MobilePreviewPage.styles';
 import WorkflowPersistenceService from '@/services/workflowPersistenceService';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { SellProgressBar } from '@/components/SellWorkflow';
+import SellWorkflowStepStateService from '@/services/sellWorkflowStepState';
 
 const ProgressWrapper = styled.div`
   padding: 0.75rem 1rem 0;
@@ -18,7 +19,10 @@ const MobilePreviewPage: React.FC = () => {
 
   const state = useMemo(() => WorkflowPersistenceService.loadState(), []);
   const data = state?.data || {};
-  const images = state?.images || WorkflowPersistenceService.getImages();
+
+  useEffect(() => {
+    SellWorkflowStepStateService.markCompleted('preview');
+  }, []);
 
   const goTo = (path: string) => navigate(path.replace(':vehicleType', String(vehicleType || 'auto')));
 
@@ -70,19 +74,6 @@ const MobilePreviewPage: React.FC = () => {
         <S.Card>
           <S.CardTitle>{t('sell.preview.sections.vehicle')}</S.CardTitle>
           {renderRows(vehicleRows)}
-        </S.Card>
-
-        <S.Card>
-          <S.CardTitle>{t('sell.preview.sections.images')}</S.CardTitle>
-          <S.ImagesGrid>
-            {images && images.length > 0 ? (
-              images.slice(0, 9).map((src, i) => (
-                <S.Thumb key={i} src={src} alt={`image-${i}`} />
-              ))
-            ) : (
-              <S.Label>{t('sell.preview.noImages')}</S.Label>
-            )}
-          </S.ImagesGrid>
         </S.Card>
 
         <S.Card>

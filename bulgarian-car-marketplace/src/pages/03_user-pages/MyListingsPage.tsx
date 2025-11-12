@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAuth } from '@/contexts/AuthProvider';
 import { useLanguage } from '@/contexts/LanguageContext';
-import carListingService from '@/services/carListingService';
+import { unifiedCarService } from '@/services/car';
 import { CarListing } from '@/types/CarListing';
 import { CarIcon } from '@/components/icons/CarIcon';
 import CarCardGermanStyle from '@/components/CarCard/CarCardGermanStyle';
@@ -297,7 +297,7 @@ const MyListingsPage: React.FC = () => {
     }
 
     try {
-      await carListingService.deleteListing(carId);
+      await unifiedCarService.deleteCar(carId);
       // Refresh listings
       loadListings();
       alert(language === 'bg' ? 'Обявата е изтрита успешно!' : 'Listing deleted successfully!');

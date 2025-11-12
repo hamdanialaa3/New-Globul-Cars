@@ -2,7 +2,7 @@
 // Purpose: Photo upload for vehicle listing on mobile/tablet
 // Mobile-first; no emojis; <300 lines
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useNavigate, useSearchParams, useParams } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { MobileContainer, MobileStack } from '@/components/ui/mobile-index';
@@ -13,6 +13,8 @@ import { useAuth } from '@/contexts/AuthProvider';
 import { useToast } from '@/components/Toast';
 import styled from 'styled-components';
 import { SellProgressBar } from '@/components/SellWorkflow';
+import SellWorkflowStepStateService from '@/services/sellWorkflowStepState';
+import WorkflowPersistenceService from '@/services/workflowPersistenceService';
 
 const MAX_IMAGES = 20;
 
@@ -46,6 +48,10 @@ const MobileImagesPage: React.FC = () => {
   const [uploading, setUploading] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
   const [aiEnabled, setAiEnabled] = useState(true);
+
+  useEffect(() => {
+    SellWorkflowStepStateService.markPending('images');
+  }, []);
 
   const handleFileSelect = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -134,6 +140,17 @@ const MobileImagesPage: React.FC = () => {
   };
 
   const canContinue = images.length > 0;
+
+  useEffect(() => {
+    const hasPersistedImages =
+      WorkflowPersistenceService.getImages().length > 0;
+
+    if (images.length > 0 || hasPersistedImages) {
+      SellWorkflowStepStateService.markCompleted('images');
+    } else {
+      SellWorkflowStepStateService.markPending('images');
+    }
+  }, [images.length]);
 
   return (
     <S.PageWrapper>

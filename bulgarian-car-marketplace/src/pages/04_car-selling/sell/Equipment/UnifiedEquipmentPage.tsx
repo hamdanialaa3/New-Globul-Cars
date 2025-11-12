@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import * as S from './UnifiedEquipmentStyles';
 import { SellWorkflowLayout } from '@/components/SellWorkflow';
+import SellWorkflowStepStateService from '@/services/sellWorkflowStepState';
 
 // Equipment Categories
 const EQUIPMENT_CATEGORIES = {
@@ -120,16 +121,9 @@ const UnifiedEquipmentPage: React.FC = () => {
     navigate(`/sell/inserat/${vehicleType || 'car'}/details/bilder?${params.toString()}`);
   };
 
-  const workflowSteps = [
-    { id: 'vehicle', label: language === 'bg' ? 'Тип' : 'Type', icon: undefined, isCompleted: true },
-    { id: 'seller', label: language === 'bg' ? 'Продавач' : 'Seller', icon: undefined, isCompleted: true },
-    { id: 'data', label: language === 'bg' ? 'Данни' : 'Data', icon: undefined, isCompleted: true },
-    { id: 'equipment', label: language === 'bg' ? 'Оборудване' : 'Equipment', icon: undefined, isCompleted: false },
-    { id: 'images', label: language === 'bg' ? 'Снимки' : 'Images', icon: undefined, isCompleted: false },
-    { id: 'pricing', label: language === 'bg' ? 'Цена' : 'Price', icon: undefined, isCompleted: false },
-    { id: 'contact', label: language === 'bg' ? 'Контакт' : 'Contact', icon: undefined, isCompleted: false },
-    { id: 'publish', label: language === 'bg' ? 'Публикуване' : 'Publish', icon: undefined, isCompleted: false }
-  ];
+  useEffect(() => {
+    SellWorkflowStepStateService.markPending('equipment');
+  }, []);
 
   const categoryLabels: Record<EquipmentCategory, { bg: string; en: string }> = {
     safety: { bg: 'Безопасност', en: 'Safety' },
@@ -148,8 +142,15 @@ const UnifiedEquipmentPage: React.FC = () => {
     }
   };
 
-  // Count selected features
   const totalSelected = Object.values(selectedFeatures).flat().length;
+
+  useEffect(() => {
+    if (totalSelected > 0) {
+      SellWorkflowStepStateService.markCompleted('equipment');
+    } else {
+      SellWorkflowStepStateService.markPending('equipment');
+    }
+  }, [totalSelected]);
 
   const leftContent = (
     <S.ContentSection>

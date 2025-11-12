@@ -10,11 +10,11 @@ export const ContentSection = styled.div`
 `;
 
 export const HeaderCard = styled.div`
-  background: white;
+  background: var(--bg-card);
   border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-lg);
   padding: 2.5rem;
-  border: 1px solid rgba(255, 143, 16, 0.1);
+  border: 1px solid var(--border);
   position: relative;
   overflow: hidden;
 
@@ -25,19 +25,15 @@ export const HeaderCard = styled.div`
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(90deg, #ff8f10, #005ca9);
+    background: var(--accent-primary);
   }
 `;
 
 export const Title = styled.h1`
   font-size: 1.75rem; /* 28px - Global Standard */
   font-weight: 700;
-  color: #2c3e50;
+  color: var(--text-primary);
   margin: 0 0 0.75rem 0;
-  background: linear-gradient(135deg, #ff8f10, #005ca9);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
   letter-spacing: -0.5px;
   line-height: 1.2;
   
@@ -48,7 +44,7 @@ export const Title = styled.h1`
 
 export const Subtitle = styled.p`
   font-size: 1rem; /* 16px */
-  color: #7f8c8d;
+  color: var(--text-secondary);
   margin: 0;
   line-height: 1.6;
 `;
@@ -58,10 +54,10 @@ export const TabsContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 0.75rem;
-  background: white;
+  background: var(--bg-card);
   padding: 1rem;
   border-radius: 15px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-sm);
 
   @media (max-width: 768px) {
     grid-template-columns: repeat(2, 1fr);
@@ -75,14 +71,14 @@ export const TabsContainer = styled.div`
 export const Tab = styled.button<{ $isActive: boolean; $hasSelection: boolean; $isEmpty: boolean }>`
   position: relative;
   background: ${props => props.$isActive 
-    ? 'linear-gradient(135deg, #ff8f10, #005ca9)' 
-    : 'rgba(255, 143, 16, 0.05)'
+    ? 'var(--accent-primary)' 
+    : 'var(--bg-accent)'
   };
   
   /* ⚡ LED PULSING BORDER - Green when selected, Red when empty */
   border: 2px solid ${props => {
-    if (props.$isEmpty && !props.$isActive) return '#ff0000';
-    if (props.$hasSelection && !props.$isActive) return '#00ff00';
+    if (props.$isEmpty && !props.$isActive) return 'var(--error)';
+    if (props.$hasSelection && !props.$isActive) return 'var(--success)';
     return 'transparent';
   }};
   
@@ -94,23 +90,23 @@ export const Tab = styled.button<{ $isActive: boolean; $hasSelection: boolean; $
   
   @keyframes ledPulseRed {
     0%, 100% {
-      border-color: #ff0000;
-      box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+      border-color: var(--error);
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
     }
     50% {
-      border-color: #ff3333;
-      box-shadow: 0 0 20px rgba(255, 0, 0, 0.6);
+      border-color: #ff6b6b;
+      box-shadow: 0 0 20px rgba(239, 68, 68, 0.6);
     }
   }
   
   @keyframes ledPulseGreen {
     0%, 100% {
-      border-color: #00ff00;
-      box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+      border-color: var(--success);
+      box-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
     }
     50% {
-      border-color: #33ff33;
-      box-shadow: 0 0 20px rgba(0, 255, 0, 0.6);
+      border-color: #4ade80;
+      box-shadow: 0 0 20px rgba(34, 197, 94, 0.6);
     }
   }
   
@@ -127,7 +123,7 @@ export const Tab = styled.button<{ $isActive: boolean; $hasSelection: boolean; $
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(255, 143, 16, 0.2);
+    box-shadow: var(--shadow-md);
   }
 
   &:active {
@@ -278,8 +274,8 @@ export const TabLabel = styled.span`
 `;
 
 export const TabBadge = styled.span`
-  background: #27ae60;
-  color: white;
+  background: var(--success);
+  color: var(--text-on-accent);
   border-radius: 50%;
   width: 24px;
   height: 24px;
@@ -292,9 +288,9 @@ export const TabBadge = styled.span`
 
 // Features Container - No Scrollbar, All Visible
 export const FeaturesContainer = styled.div`
-  background: white;
+  background: var(--bg-card);
   border-radius: 15px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-sm);
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
@@ -309,11 +305,11 @@ export const FeatureRow = styled.div`
   justify-content: space-between;
   padding: 0.75rem 1rem;
   border-radius: 10px;
-  background: rgba(255, 143, 16, 0.02);
+  background: var(--bg-accent);
   transition: background 0.2s ease;
 
   &:hover {
-    background: rgba(255, 143, 16, 0.05);
+    background: var(--bg-disabled);
   }
 `;
 
@@ -330,14 +326,14 @@ export const FeatureIconWrapper = styled.div`
   width: 40px;
   height: 40px;
   border-radius: 10px;
-  background: rgba(255, 143, 16, 0.1);
-  color: #ff8f10;
+  background: var(--bg-accent);
+  color: var(--accent-primary);
 `;
 
 export const FeatureName = styled.span`
   font-size: 0.95rem;
   font-weight: 500;
-  color: #2c3e50;
+  color: var(--text-primary);
 `;
 
 // ==================== CYBER TOGGLE BUTTON ====================
@@ -464,18 +460,18 @@ export const ToggleLabels = styled.span`
   display: flex;
   justify-content: space-between;
   width: 80%;
-  font-size: 0.625rem; /* 10px */
+  font-size: 0.5rem; /* 8px - أصغر ليحتوي الكلمتين */
   font-weight: 700;
   letter-spacing: 0.5px;
   text-transform: uppercase;
   pointer-events: none;
-  color: #555;
+  color: var(--text-secondary);
 `;
 
 export const ToggleLabelOn = styled.span`
   opacity: 0;
   transition: opacity 0.4s ease-in-out;
-  color: #fff;
+  color: var(--text-on-accent);
 
   ${CyberToggleCheckbox}:checked + ${CyberToggleLabel} & {
     opacity: 1;
@@ -485,7 +481,7 @@ export const ToggleLabelOn = styled.span`
 export const ToggleLabelOff = styled.span`
   opacity: 1;
   transition: opacity 0.4s ease-in-out;
-  color: #fff;
+  color: var(--text-on-accent);
 
   ${CyberToggleCheckbox}:checked + ${CyberToggleLabel} & {
     opacity: 0;
@@ -495,12 +491,12 @@ export const ToggleLabelOff = styled.span`
 // ==================== INFO & NAVIGATION ====================
 
 export const InfoBox = styled.div`
-  background: rgba(255, 143, 16, 0.08);
-  border-left: 4px solid #ff8f10;
+  background: var(--bg-accent);
+  border-left: 4px solid var(--accent-primary);
   padding: 1.25rem 1.5rem;
   border-radius: 10px;
   font-size: 0.9rem;
-  color: #2c3e50;
+  color: var(--text-primary);
   line-height: 1.6;
 `;
 
@@ -509,7 +505,7 @@ export const NavigationButtons = styled.div`
   justify-content: space-between;
   gap: 1rem;
   padding-top: 1.5rem;
-  border-top: 1px solid #ecf0f1;
+  border-top: 1px solid var(--border);
 `;
 
 export const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
@@ -525,22 +521,22 @@ export const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
 
   ${props => props.$variant === 'primary' 
     ? `
-      background: linear-gradient(135deg, #ff8f10, #005ca9);
-      color: white;
-      box-shadow: 0 8px 20px rgba(255, 143, 16, 0.3);
+      background: var(--accent-primary);
+      color: var(--text-on-accent);
+      box-shadow: var(--shadow-md);
       
       &:hover:not(:disabled) {
         transform: translateY(-2px);
-        box-shadow: 0 12px 25px rgba(255, 143, 16, 0.4);
+        box-shadow: var(--shadow-lg);
       }
     `
     : `
-      background: #f8f9fa;
-      color: #6c757d;
-      border: 2px solid #e9ecef;
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      border: 2px solid var(--border);
       
       &:hover {
-        background: #e9ecef;
+        background: var(--bg-disabled);
       }
     `
   }

@@ -10,11 +10,11 @@ export const ContentSection = styled.div`
 `;
 
 export const HeaderCard = styled.div`
-  background: white;
+  background: var(--bg-card);
   border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-lg);
   padding: 2.5rem;
-  border: 1px solid rgba(255, 143, 16, 0.1);
+  border: 1px solid var(--border);
   position: relative;
   overflow: hidden;
 
@@ -25,19 +25,15 @@ export const HeaderCard = styled.div`
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(90deg, #ff8f10, #005ca9);
+    background: var(--accent-primary);
   }
 `;
 
 export const Title = styled.h1`
   font-size: 1.75rem; /* 28px - Global Standard */
   font-weight: 700;
-  color: #2c3e50;
+  color: var(--text-primary);
   margin: 0 0 0.75rem 0;
-  background: linear-gradient(135deg, #ff8f10, #005ca9);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
   letter-spacing: -0.5px;
   line-height: 1.2;
   
@@ -48,7 +44,7 @@ export const Title = styled.h1`
 
 export const Subtitle = styled.p`
   font-size: 1rem; /* 16px */
-  color: #7f8c8d;
+  color: var(--text-secondary);
   margin: 0;
   line-height: 1.6;
 `;
@@ -57,10 +53,10 @@ export const FeatureGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 1rem;
-  background: white;
+  background: var(--bg-card);
   padding: 1.5rem;
   border-radius: 15px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-md);
 
   @media (max-width: 768px) {
     grid-template-columns: repeat(2, 1fr);
@@ -74,10 +70,10 @@ export const FeatureGrid = styled.div`
 export const FeatureCard = styled.div<{ $isSelected: boolean }>`
   position: relative;
   background: ${props => props.$isSelected 
-    ? 'linear-gradient(135deg, #ff8f10, #005ca9)' 
-    : 'rgba(255, 143, 16, 0.05)'
+    ? 'var(--accent-primary)' 
+    : 'var(--bg-secondary)'
   };
-  border: 2px solid ${props => props.$isSelected ? '#ff8f10' : 'rgba(255, 143, 16, 0.2)'};
+  border: 2px solid ${props => props.$isSelected ? 'var(--accent-orange)' : 'var(--border)'};
   border-radius: 12px;
   padding: 1.25rem;
   text-align: center;
@@ -92,7 +88,7 @@ export const FeatureCard = styled.div<{ $isSelected: boolean }>`
 
   &:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(255, 143, 16, 0.25);
+    box-shadow: var(--shadow-lg);
   }
 
   &:active {
@@ -108,12 +104,12 @@ export const FeatureIcon = styled.div<{ $isSelected: boolean }>`
   height: 50px;
   border-radius: 50%;
   background: ${props => props.$isSelected 
-    ? 'rgba(255, 255, 255, 0.25)' 
-    : 'rgba(255, 143, 16, 0.15)'
+    ? 'var(--bg-accent)' 
+    : 'var(--bg-secondary)'
   };
 
   svg {
-    color: ${props => props.$isSelected ? 'white' : '#ff8f10'};
+    color: ${props => props.$isSelected ? 'var(--text-on-accent)' : 'var(--accent-orange)'};
   }
 `;
 
@@ -130,24 +126,24 @@ export const CheckMark = styled.div`
   right: 0.5rem;
   width: 24px;
   height: 24px;
-  background: #27ae60;
-  color: white;
+  background: var(--success);
+  color: var(--text-on-accent);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 0.8rem;
   font-weight: bold;
-  box-shadow: 0 2px 8px rgba(39, 174, 96, 0.4);
+  box-shadow: var(--shadow-md);
 `;
 
 export const InfoBox = styled.div`
-  background: rgba(255, 143, 16, 0.08);
-  border-left: 4px solid #ff8f10;
+  background: var(--bg-accent);
+  border-left: 4px solid var(--accent-orange);
   padding: 1.25rem 1.5rem;
   border-radius: 10px;
   font-size: 0.9rem;
-  color: #2c3e50;
+  color: var(--text-primary);
   line-height: 1.6;
 `;
 
@@ -156,7 +152,7 @@ export const NavigationButtons = styled.div`
   justify-content: space-between;
   gap: 1rem;
   padding-top: 1.5rem;
-  border-top: 1px solid #ecf0f1;
+  border-top: 1px solid var(--border);
 `;
 
 export const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
@@ -171,22 +167,22 @@ export const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
 
   ${props => props.$variant === 'primary' 
     ? `
-      background: linear-gradient(135deg, #ff8f10, #005ca9);
-      color: white;
-      box-shadow: 0 8px 20px rgba(255, 143, 16, 0.3);
+      background: var(--accent-primary);
+      color: var(--text-on-accent);
+      box-shadow: var(--shadow-md);
       
       &:hover:not(:disabled) {
         transform: translateY(-2px);
-        box-shadow: 0 12px 25px rgba(255, 143, 16, 0.4);
+        box-shadow: var(--shadow-lg);
       }
     `
     : `
-      background: #f8f9fa;
-      color: #6c757d;
-      border: 2px solid #e9ecef;
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      border: 2px solid var(--border);
       
       &:hover {
-        background: #e9ecef;
+        background: var(--bg-hover);
       }
     `
   }

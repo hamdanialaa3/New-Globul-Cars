@@ -10,11 +10,11 @@ export const ContentSection = styled.div`
 `;
 
 export const HeaderCard = styled.div`
-  background: white;
+  background: var(--bg-card);
   border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-lg);
   padding: 2.5rem;
-  border: 1px solid rgba(255, 143, 16, 0.1);
+  border: 1px solid var(--border);
   position: relative;
   overflow: hidden;
 
@@ -25,19 +25,15 @@ export const HeaderCard = styled.div`
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(90deg, #ff8f10, #005ca9);
+    background: var(--accent-primary);
   }
 `;
 
 export const Title = styled.h1`
   font-size: 1.75rem; /* 28px - Global Standard */
   font-weight: 700;
-  color: #2c3e50;
+  color: var(--text-primary);
   margin: 0 0 0.75rem 0;
-  background: linear-gradient(135deg, #ff8f10, #005ca9);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
   letter-spacing: -0.5px;
   line-height: 1.2;
   
@@ -48,7 +44,7 @@ export const Title = styled.h1`
 
 export const Subtitle = styled.p`
   font-size: 1rem; /* 16px */
-  color: #7f8c8d;
+  color: var(--text-secondary);
   margin: 0;
   line-height: 1.6;
 `;
@@ -64,13 +60,13 @@ export const UploadCard = styled.div<{ $isDragOver: boolean }>`
   position: relative;
 
   ${props => props.$isDragOver && `
-    background: rgba(255, 143, 16, 0.05);
+    background: var(--bg-accent);
     transform: scale(1.02);
   `}
 
   &:hover {
-    border-color: #ff8f10;
-    box-shadow: 0 8px 20px rgba(255, 143, 16, 0.1);
+    border-color: var(--accent-orange);
+    box-shadow: var(--shadow-md);
   }
 `;
 
@@ -81,14 +77,14 @@ export const UploadIcon = styled.div`
   margin: 0 auto 1.5rem;
   width: 80px;
   height: 80px;
-  background: rgba(255, 143, 16, 0.1);
+  background: var(--bg-accent);
   border-radius: 50%;
-  color: #ff8f10;
+  color: var(--accent-orange);
 `;
 
 export const UploadText = styled.p`
   font-size: 1.1rem;
-  color: #2c3e50;
+  color: var(--text-primary);
   margin: 0 0 1.5rem 0;
   font-weight: 500;
 `;
@@ -102,19 +98,19 @@ export const UploadButton = styled.button`
   align-items: center;
   gap: 0.75rem;
   padding: 1rem 2.5rem;
-  background: linear-gradient(135deg, #ff8f10, #005ca9);
-  color: white;
+  background: var(--accent-primary);
+  color: var(--text-on-accent);
   border: none;
   border-radius: 50px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 8px 20px rgba(255, 143, 16, 0.3);
+  box-shadow: var(--shadow-md);
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 12px 25px rgba(255, 143, 16, 0.4);
+    box-shadow: var(--shadow-lg);
   }
 `;
 
@@ -122,10 +118,11 @@ export const PreviewGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   gap: 1rem;
-  background: white;
+  background: var(--bg-card);
   padding: 1.5rem;
   border-radius: 15px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
 `;
 
 export const PreviewCard = styled.div`
@@ -133,13 +130,13 @@ export const PreviewCard = styled.div`
   aspect-ratio: 1;
   border-radius: 12px;
   overflow: hidden;
-  border: 2px solid rgba(255, 143, 16, 0.2);
+  border: 2px solid var(--border);
   transition: all 0.3s ease;
 
   &:hover {
     transform: scale(1.05);
-    box-shadow: 0 8px 20px rgba(255, 143, 16, 0.2);
-    border-color: #ff8f10;
+    box-shadow: var(--shadow-lg);
+    border-color: var(--accent-orange);
   }
 `;
 
@@ -155,7 +152,7 @@ export const RemoveButton = styled.button`
   right: 0.5rem;
   width: 28px;
   height: 28px;
-  background: rgba(231, 76, 60, 0.9);
+  background: var(--error);
   color: white;
   border: none;
   border-radius: 50%;
@@ -171,7 +168,7 @@ export const RemoveButton = styled.button`
   }
 
   &:hover {
-    background: #e74c3c;
+    background: var(--error);
     transform: scale(1.1);
   }
 `;
@@ -180,8 +177,8 @@ export const ImageNumber = styled.div`
   position: absolute;
   bottom: 0.5rem;
   left: 0.5rem;
-  background: rgba(255, 143, 16, 0.9);
-  color: white;
+  background: var(--accent-orange);
+  color: var(--text-on-accent);
   padding: 0.25rem 0.65rem;
   border-radius: 20px;
   font-size: 0.75rem;
@@ -189,12 +186,12 @@ export const ImageNumber = styled.div`
 `;
 
 export const InfoBox = styled.div`
-  background: rgba(255, 143, 16, 0.08);
-  border-left: 4px solid #ff8f10;
+  background: var(--bg-accent);
+  border-left: 4px solid var(--accent-orange);
   padding: 1.25rem 1.5rem;
   border-radius: 10px;
   font-size: 0.9rem;
-  color: #2c3e50;
+  color: var(--text-primary);
   line-height: 1.8;
 `;
 
@@ -203,7 +200,7 @@ export const NavigationButtons = styled.div`
   justify-content: space-between;
   gap: 1rem;
   padding-top: 1.5rem;
-  border-top: 1px solid #ecf0f1;
+  border-top: 1px solid var(--border);
 `;
 
 export const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
@@ -218,22 +215,22 @@ export const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
 
   ${props => props.$variant === 'primary' 
     ? `
-      background: linear-gradient(135deg, #ff8f10, #005ca9);
-      color: white;
-      box-shadow: 0 8px 20px rgba(255, 143, 16, 0.3);
+      background: var(--accent-primary);
+      color: var(--text-on-accent);
+      box-shadow: var(--shadow-md);
       
       &:hover:not(:disabled) {
         transform: translateY(-2px);
-        box-shadow: 0 12px 25px rgba(255, 143, 16, 0.4);
+        box-shadow: var(--shadow-lg);
       }
     `
     : `
-      background: #f8f9fa;
-      color: #6c757d;
-      border: 2px solid #e9ecef;
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      border: 2px solid var(--border);
       
       &:hover {
-        background: #e9ecef;
+        background: var(--bg-accent);
       }
     `
   }

@@ -2,7 +2,7 @@
 // صفحة اختيار نوع السيارة مع الأتمتة - انتقال تلقائي
 
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { logger } from '@/services/logger-service';
 import styled from 'styled-components';
@@ -23,34 +23,20 @@ const ContentSection = styled.div`
 `;
 
 const HeaderCard = styled.div`
-  background: white;
+  background: var(--bg-card);
   border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-md);
   padding: 2.5rem;
-  border: 1px solid rgba(255, 143, 16, 0.1);
+  border: 1px solid var(--border);
   position: relative;
   overflow: hidden;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, #ff8f10, #005ca9);
-  }
 `;
 
 const Title = styled.h1`
   font-size: 1.75rem; /* 28px - Global Standard */
   font-weight: 700;
-  color: #2c3e50;
+  color: var(--text-primary);
   margin: 0 0 0.75rem 0;
-  background: linear-gradient(135deg, #ff8f10, #005ca9);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
   letter-spacing: -0.5px;
   line-height: 1.2;
   
@@ -61,7 +47,7 @@ const Title = styled.h1`
 
 const Subtitle = styled.p`
   font-size: 1rem; /* 16px */
-  color: #7f8c8d;
+  color: var(--text-secondary);
   margin: 0;
   line-height: 1.6;
 `;
@@ -70,10 +56,11 @@ const VehicleGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
-  background: white;
+  background: var(--bg-card);
   padding: 1.5rem;
   border-radius: 15px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
 
   @media (max-width: 768px) {
     grid-template-columns: repeat(2, 1fr);
@@ -86,20 +73,20 @@ const VehicleGrid = styled.div`
 
 const VehicleOption = styled.div<{ $isHovered: boolean }>`
   background: ${props => props.$isHovered 
-    ? 'linear-gradient(135deg, #ff8f10, #005ca9)' 
-    : 'rgba(255, 143, 16, 0.05)'
+    ? 'var(--accent-primary)' 
+    : 'var(--bg-secondary)'
   };
-  border: 2px solid ${props => props.$isHovered ? '#ff8f10' : 'rgba(255, 143, 16, 0.2)'};
+  border: 2px solid ${props => props.$isHovered ? 'var(--accent-primary)' : 'var(--border)'};
   border-radius: 12px;
   padding: 1.5rem 1rem;
   text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  color: ${props => props.$isHovered ? 'white' : '#2c3e50'};
+  color: ${props => props.$isHovered ? 'var(--text-inverse)' : 'var(--text-primary)'};
 
   &:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(255, 143, 16, 0.2);
+    box-shadow: var(--shadow-md);
   }
 
   &:active {
@@ -117,13 +104,13 @@ const VehicleIconWrapper = styled.div<{ $isHovered: boolean }>`
   border-radius: 50%;
   background: ${props => props.$isHovered 
     ? 'rgba(255, 255, 255, 0.2)' 
-    : 'rgba(255, 143, 16, 0.15)'
+    : 'var(--bg-secondary)'
   };
 
   svg {
     width: 28px;
     height: 28px;
-    color: ${props => props.$isHovered ? 'white' : '#ff8f10'};
+    color: ${props => props.$isHovered ? 'var(--text-inverse)' : 'var(--accent-primary)'};
   }
 `;
 
@@ -140,14 +127,15 @@ const VehicleDesc = styled.div`
 `;
 
 const InfoCard = styled.div`
-  background: #f8f9fa;
+  background: var(--bg-secondary);
   border-radius: 15px;
   padding: 1.5rem;
-  border-left: 4px solid #ff8f10;
+  border-left: 4px solid var(--accent-primary);
+  border: 1px solid var(--border);
 `;
 
 const InfoText = styled.p`
-  color: #7f8c8d;
+  color: var(--text-secondary);
   line-height: 1.6;
   margin: 0;
   font-size: 0.9rem;
@@ -155,14 +143,19 @@ const InfoText = styled.p`
 
 const VehicleStartPageNew: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { language, t } = useLanguage();
   const { user } = useAuth();
   const { permissions, profileType } = useProfileType();
   const [hoveredType, setHoveredType] = useState<string | null>(null);
 
   useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (!params.has('vt')) {
+      SellWorkflowStepStateService.reset();
+    }
     SellWorkflowStepStateService.markPending('vehicle-selection');
-  }, []);
+  }, [location.search]);
 
   const vehicleTypes = [
     { id: 'car', IconComponent: Car },

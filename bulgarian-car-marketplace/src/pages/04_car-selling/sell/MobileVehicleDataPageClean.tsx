@@ -24,6 +24,7 @@ const PrimaryButton = S.PrimaryButton;
 
 import { SellProgressBar } from '@/components/SellWorkflow';
 import { useProfileType } from '@/contexts/ProfileTypeContext';
+import SellWorkflowStepStateService from '@/services/sellWorkflowStepState';
 
 const ProgressWrapper = styled.div`
   padding: 0.75rem 1rem 0;
@@ -54,6 +55,10 @@ export const MobileVehicleDataPageClean: React.FC = () => {
     fuelType: '',
     transmission: ''
   });
+
+  useEffect(() => {
+    SellWorkflowStepStateService.markPending('vehicle-data');
+  }, []);
 
   // Prefill from URL
   useEffect(() => {
@@ -87,6 +92,14 @@ export const MobileVehicleDataPageClean: React.FC = () => {
   };
 
   const canContinue = !!form.make && !!form.year;
+
+  useEffect(() => {
+    if (form.make && form.year) {
+      SellWorkflowStepStateService.markCompleted('vehicle-data');
+    } else {
+      SellWorkflowStepStateService.markPending('vehicle-data');
+    }
+  }, [form.make, form.year]);
 
 
 

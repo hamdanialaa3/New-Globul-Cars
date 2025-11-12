@@ -5,7 +5,7 @@ import { CarIcon } from '@/components/icons/CarIcon';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthProvider';
 import { useCarViewTracking } from '@/hooks/useProfileTracking';
-import carListingService from '@/services/carListingService';
+import { unifiedCarService } from '@/services/car';
 import { CarListing } from '@/types/CarListing';
 import { BULGARIA_REGIONS, getCitiesByRegion } from '@/data/bulgaria-locations';
 import DistanceIndicator from '@/components/DistanceIndicator';
@@ -1000,7 +1000,7 @@ const CarDetailsPage: React.FC = () => {
     
     setSaving(true);
     try {
-      await carListingService.updateListing(carId, editedCar);
+      await unifiedCarService.updateCar(carId, editedCar);
       setCar(editedCar as CarListing);
       setIsEditMode(false);
       alert(language === 'bg' ? 'Промените са запазени!' : 'Changes saved successfully!');

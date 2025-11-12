@@ -10,7 +10,7 @@ import styled from 'styled-components';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthProvider';
 import { BULGARIAN_CITIES } from '@/constants/bulgarianCities';
-import carListingService from '@/services/carListingService';
+import { unifiedCarService } from '@/services/car';
 import { CarIcon } from '@/components/icons/CarIcon';
 import { CarListing } from '@/types/CarListing';
 import { logger } from '@/services/logger-service';

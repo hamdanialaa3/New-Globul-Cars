@@ -225,13 +225,7 @@ const SellProgressBar: React.FC<SellProgressBarProps> = ({ currentStep }) => {
           const isActive = index === currentIndex;
           const label = language === 'bg' ? step.labels.bg : step.labels.en;
 
-          const previousStepsCompleted = SELL_WORKFLOW_STEP_ORDER.slice(
-            0,
-            index
-          ).every(stepId => statuses[stepId] === 'completed');
-
-          const isClickable =
-            !isActive && (index <= currentIndex || previousStepsCompleted);
+          const isClickable = !isActive;
 
           const connectorCompleted =
             index > 0 &&
@@ -247,6 +241,9 @@ const SellProgressBar: React.FC<SellProgressBarProps> = ({ currentStep }) => {
                   $clickable={isClickable}
                   onClick={() => handleStepClick(step.id, isClickable)}
                   aria-current={isActive ? 'step' : undefined}
+                  aria-disabled={!isClickable}
+                  title={label}
+                  disabled={!isClickable}
                 >
                   <StepCircle $status={status} $active={isActive}>
                     {index + 1}

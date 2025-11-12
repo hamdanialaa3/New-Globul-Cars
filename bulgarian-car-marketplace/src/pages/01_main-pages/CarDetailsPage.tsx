@@ -5,7 +5,7 @@ import { CarIcon } from '@/components/icons/CarIcon';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthProvider';
 import { useCarViewTracking } from '@/hooks/useProfileTracking';
-import carListingService from '@/services/carListingService';
+import { unifiedCarService } from '@/services/car';
 import { CarListing } from '@/types/CarListing';
 import { BULGARIA_REGIONS, getCitiesByRegion } from '@/data/bulgaria-locations';
 import { getAllMakes, getModelsByMake, hasModels } from '@/data/car-makes-models';
@@ -1113,7 +1113,7 @@ const CarDetailsPage: React.FC = () => {
         images: updatedImages
       };
 
-      await carListingService.updateListing(carId, updatedCarData);
+      await unifiedCarService.updateCar(carId, updatedCarData);
       setCar(updatedCarData as CarListing);
       setIsEditMode(false);
       setPhotos([]);
@@ -1186,7 +1186,7 @@ const CarDetailsPage: React.FC = () => {
       
       // Update car.images array
       const updatedImages = (car?.images || []).filter(img => img !== imageUrl);
-      await carListingService.updateListing(carId, { images: updatedImages });
+      await unifiedCarService.updateCar(carId, { images: updatedImages });
       
       // Update local state
       setCar({ ...car, images: updatedImages } as CarListing);

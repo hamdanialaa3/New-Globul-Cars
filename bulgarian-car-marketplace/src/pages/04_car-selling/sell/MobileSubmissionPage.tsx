@@ -8,6 +8,7 @@ import WorkflowPersistenceService from '@/services/workflowPersistenceService';
 import { logger } from '@/services/logger-service';
 import { S } from './MobileSubmissionPage.styles';
 import { SellProgressBar } from '@/components/SellWorkflow';
+import SellWorkflowStepStateService from '@/services/sellWorkflowStepState';
 
 const ProgressWrapper = styled.div`
   padding: 0.75rem 1rem 0;
@@ -26,6 +27,7 @@ const MobileSubmissionPage: React.FC = () => {
   const submitListing = async () => {
     try {
       setState('submitting');
+      SellWorkflowStepStateService.markPending('publish');
       
       // Load workflow data
       const workflowState = WorkflowPersistenceService.loadState();
@@ -63,6 +65,7 @@ const MobileSubmissionPage: React.FC = () => {
       WorkflowPersistenceService.clearState();
       
       setState('success');
+      SellWorkflowStepStateService.markCompleted('publish');
     } catch (err) {
       logger.error('Submission error', err as Error, { userId: user?.uid, vehicleType });
       setError(err instanceof Error ? err.message : 'Unknown error');

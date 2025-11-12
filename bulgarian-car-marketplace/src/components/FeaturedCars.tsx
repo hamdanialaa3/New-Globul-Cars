@@ -4,7 +4,7 @@
 import React, { useState, useEffect, memo } from 'react';
 import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
-import { bulgarianCarService, BulgarianCar } from '@/firebase/car-service';
+import { unifiedCarService, UnifiedCar } from '@/services/car';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthProvider';
 import { MapPin, Fuel, Gauge, Calendar, MessageCircle, User } from 'lucide-react';
@@ -261,7 +261,7 @@ const FeaturedCars: React.FC<FeaturedCarsProps> = ({
   const { language } = useLanguage();
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [cars, setCars] = useState<BulgarianCar[]>([]);
+  const [cars, setCars] = useState<UnifiedCar[]>([]);
   const [loading, setLoading] = useState(true);
   const [displayCount, setDisplayCount] = useState(limit); // ⚡ OPTIMIZED: Use limit as initial display count
 
@@ -274,25 +274,9 @@ const FeaturedCars: React.FC<FeaturedCarsProps> = ({
       setLoading(true);
       
       // ⚡ OPTIMIZED: Use cache for 5 minutes
-      const result = await homePageCache.getOrFetch(
-        CACHE_KEYS.FEATURED_CARS(limit),
-        async () => {
-          return await bulgarianCarService.searchCars(
-            { 
-              isActive: true
-              // Note: isSold filter removed - most cars don't have this field set
-              // Will be filtered on client side if needed
-            },
-            'createdAt',
-            'desc',
-            limit
-          );
-        }
-      );
-      
-      // Client-side filter: exclude sold cars (if isSold is explicitly true)
-      const availableCars = result.cars.filter(car => car.isSold !== true);
-      setCars(availableCars);
+      // Use unified service
+      const cars = await unifiedCarService.getFeaturedCars(limit);
+      setCars(cars);
     } catch (error) {
       console.error('Error loading featured cars:', error);
       setCars([]);

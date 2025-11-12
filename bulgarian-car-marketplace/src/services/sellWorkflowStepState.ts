@@ -15,8 +15,16 @@ const createDefaultStatusMap = (): StepStatusMap =>
 let stepStatuses: StepStatusMap = loadFromStorage();
 const listeners = new Set<(statuses: StepStatusMap) => void>();
 
+function hasStorage(): boolean {
+  return typeof window !== 'undefined' && typeof window.localStorage !== 'undefined';
+}
+
 function loadFromStorage(): StepStatusMap {
   try {
+    if (!hasStorage()) {
+      return createDefaultStatusMap();
+    }
+
     const saved = localStorage.getItem(STORAGE_KEY);
     if (!saved) {
       return createDefaultStatusMap();
@@ -35,17 +43,22 @@ function loadFromStorage(): StepStatusMap {
 }
 
 function persist() {
+  if (!hasStorage()) return;
   localStorage.setItem(STORAGE_KEY, JSON.stringify(stepStatuses));
 }
 
+function snapshotStatuses(): StepStatusMap {
+  return { ...stepStatuses };
+}
+
 function notify() {
-  const snapshot = getStatuses();
+  const snapshot = snapshotStatuses();
   listeners.forEach(listener => listener(snapshot));
 }
 
 export const SellWorkflowStepStateService = {
   getStatuses(): StepStatusMap {
-    return { ...stepStatuses };
+    return snapshotStatuses();
   },
 
   setStatus(stepId: SellWorkflowStepId, status: SellWorkflowStepStatus) {
@@ -71,7 +84,7 @@ export const SellWorkflowStepStateService = {
 
   subscribe(listener: (statuses: StepStatusMap) => void) {
     listeners.add(listener);
-    listener(getStatuses());
+    listener(snapshotStatuses());
 
     return () => {
       listeners.delete(listener);

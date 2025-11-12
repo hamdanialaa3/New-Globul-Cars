@@ -1,7 +1,7 @@
 // Pricing Page with Workflow
 // صفحة التسعير مع الأتمتة
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import SplitScreenLayout from '@/components/SplitScreenLayout';
@@ -9,6 +9,7 @@ import { WorkflowFlow } from '@/components/WorkflowVisualization';
 import { Euro, TrendingUp, Info } from 'lucide-react';
 import * as S from './styles';
 import { SellWorkflowLayout } from '@/components/SellWorkflow';
+import SellWorkflowStepStateService from '@/services/sellWorkflowStepState';
 
 const PricingPageNew: React.FC = () => {
   const navigate = useNavigate();
@@ -16,6 +17,18 @@ const PricingPageNew: React.FC = () => {
   const { language } = useLanguage();
   const [price, setPrice] = useState('');
   const [negotiable, setNegotiable] = useState(false);
+  useEffect(() => {
+    SellWorkflowStepStateService.markPending('pricing');
+  }, []);
+
+  useEffect(() => {
+    if (price) {
+      SellWorkflowStepStateService.markCompleted('pricing');
+    } else {
+      SellWorkflowStepStateService.markPending('pricing');
+    }
+  }, [price]);
+
 
   const vehicleType = searchParams.get('vt');
   const make = searchParams.get('mk');
