@@ -9,6 +9,10 @@ import { aiQuotaService } from '@/services/ai/ai-quota.service';
 import { AI_TIER_CONFIGS } from '@/config/ai-tiers.config';
 import { AIQuotaDisplay, AIPricingModal } from '@/components/AI';
 import { logger } from '@/services/logger-service';
+import ImageAnalysisAIIcon from '@/assets/icons/ai/image-analysis-ai.svg';
+import PriceSuggestionsAIIcon from '@/assets/icons/ai/price-suggestions-ai.svg';
+import ChatMessagesAIIcon from '@/assets/icons/ai/chat-messages-ai.svg';
+import ProfileAnalysisAIIcon from '@/assets/icons/ai/profile-analysis-ai.svg';
 
 export const AIDashboardPage: React.FC = () => {
   const { user } = useAuth();
@@ -97,22 +101,22 @@ export const AIDashboardPage: React.FC = () => {
           <SectionTitle>Daily Usage Limits</SectionTitle>
           <UsageGrid>
             <UsageCard>
-              <UsageIcon>🖼️</UsageIcon>
+              <UsageIcon src={ImageAnalysisAIIcon} alt="Image Analysis" />
               <UsageLabel>Image Analysis</UsageLabel>
               <UsageValue>{stats.currentUsage.imageAnalysis}</UsageValue>
             </UsageCard>
             <UsageCard>
-              <UsageIcon>💰</UsageIcon>
+              <UsageIcon src={PriceSuggestionsAIIcon} alt="Price Suggestions" />
               <UsageLabel>Price Suggestions</UsageLabel>
               <UsageValue>{stats.currentUsage.priceSuggestions}</UsageValue>
             </UsageCard>
             <UsageCard>
-              <UsageIcon>💬</UsageIcon>
+              <UsageIcon src={ChatMessagesAIIcon} alt="Chat Messages" />
               <UsageLabel>Chat Messages</UsageLabel>
               <UsageValue>{stats.currentUsage.chatMessages}</UsageValue>
             </UsageCard>
             <UsageCard>
-              <UsageIcon>📊</UsageIcon>
+              <UsageIcon src={ProfileAnalysisAIIcon} alt="Profile Analysis" />
               <UsageLabel>Profile Analysis</UsageLabel>
               <UsageValue>{stats.currentUsage.profileAnalysis}</UsageValue>
             </UsageCard>
@@ -292,8 +296,9 @@ const UsageCard = styled.div`
   border: 1px solid #e5e7eb;
 `;
 
-const UsageIcon = styled.div`
-  font-size: 32px;
+const UsageIcon = styled.img`
+  width: 48px;
+  height: 48px;
   margin-bottom: 8px;
 `;
 

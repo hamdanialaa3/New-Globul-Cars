@@ -3,137 +3,267 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { logger } from '@/services/logger-service';
+import WorkflowPersistenceService from '@/services/workflowPersistenceService';
+import { useAuth } from '@/contexts/AuthProvider';
+import DraftsService from '@/services/drafts-service';
+import { SELL_WORKFLOW_STEP_ORDER } from '@/constants/sellWorkflowSteps';
 
 export interface SellWorkflowData {
   // Vehicle Type & Seller
   vehicleType?: string;
   sellerType?: string;
-  
+
   // Basic Info
   make?: string;
   model?: string;
   year?: string;
   mileage?: string;
   condition?: string;
-  
+  generation?: string;
+  trim?: string;
+
   // Technical
   fuelType?: string;
   transmission?: string;
   power?: string;
   engineSize?: string;
   driveType?: string;
-  
-  // Equipment
-  safety?: string;
-  comfort?: string;
-  infotainment?: string;
-  extras?: string;
-  
+  emissionClass?: string;
+  previousOwners?: string;
+  hasAccidentHistory?: boolean;
+  hasServiceHistory?: boolean;
+
+  // Equipment (structured + legacy strings)
+  safety?: string | string[];
+  comfort?: string | string[];
+  infotainment?: string | string[];
+  extras?: string | string[];
+  safetyEquipment?: string[];
+  comfortEquipment?: string[];
+  infotainmentEquipment?: string[];
+  extrasEquipment?: string[];
+
   // Images
   images?: string;
+  imagesCount?: number;
   mainImage?: string;
-  
+
   // Pricing
   price?: string;
   currency?: string;
   priceType?: string;
-  negotiable?: string;
+  negotiable?: boolean | string;
   financing?: string;
   tradeIn?: string;
   warranty?: string;
   warrantyMonths?: string;
   paymentMethods?: string;
-  
+  vatDeductible?: boolean;
+
   // Contact
   sellerName?: string;
   sellerEmail?: string;
   sellerPhone?: string;
-  preferredContact?: string;
-  
+  additionalPhone?: string;
+  preferredContact?: string | string[];
+  availableHours?: string;
+
   // Location
-  location?: string;
   city?: string;
   region?: string;
+  location?: string;
   postalCode?: string;
-  
+
   // Additional
-  additionalPhone?: string;
-  availableHours?: string;
   additionalInfo?: string;
   description?: string;
+  notes?: string;
 }
 
-const STORAGE_KEY = 'globul_cars_sell_workflow';
+const STEP_INDEX_MAP: Record<string, number> = SELL_WORKFLOW_STEP_ORDER.reduce((map, id, index) => {
+  map[id] = index;
+  return map;
+}, {} as Record<string, number>);
+
+const loadInitialWorkflowData = (): SellWorkflowData => {
+  try {
+    const savedState = WorkflowPersistenceService.loadState();
+    if (savedState?.data) {
+      logger.info('Workflow data loaded from WorkflowPersistenceService', {
+        currentStep: savedState.currentStep
+      });
+      return savedState.data as SellWorkflowData;
+    }
+  } catch (error) {
+    logger.error('Error loading workflow data from WorkflowPersistenceService', error as Error);
+  }
+  return {};
+};
 
 export const useSellWorkflow = () => {
-  const [workflowData, setWorkflowData] = useState<SellWorkflowData>({});
+  const [workflowData, setWorkflowData] = useState<SellWorkflowData>(() => loadInitialWorkflowData());
+  const { currentUser } = useAuth();
+  const [remoteDraftId, setRemoteDraftId] = useState<string | null>(null);
+  const [remoteSyncAllowed, setRemoteSyncAllowed] = useState(true);
 
-  // Load from localStorage on mount
-  useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      try {
-        setWorkflowData(JSON.parse(saved));
-      } catch (error) {
-        logger.error('Error loading workflow data', error as Error);
+  const resolveStepIndex = useCallback(
+    (step: string | number | undefined) => {
+      if (typeof step === 'number' && !Number.isNaN(step)) {
+        return step;
       }
-    }
-  }, []);
+      if (!step) return 0;
+      return STEP_INDEX_MAP[step] ?? 0;
+    },
+    []
+  );
 
-  // Save to localStorage whenever data changes
-  useEffect(() => {
-    if (Object.keys(workflowData).length > 0) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(workflowData));
-    }
-  }, [workflowData]);
-
-  const updateWorkflowData = useCallback((updates: Partial<SellWorkflowData>) => {
-    setWorkflowData(prev => ({ ...prev, ...updates }));
-  }, []);
+  /**
+   * تحديث بيانات workflow مع حفظ فوري في WorkflowPersistenceService
+   */
+  const updateWorkflowData = useCallback(
+    (updates: Partial<SellWorkflowData>, currentStep: string = 'vehicle-data') => {
+      setWorkflowData(prev => {
+        const merged = { ...prev, ...updates };
+        WorkflowPersistenceService.saveState(merged, currentStep);
+        return merged;
+      });
+    },
+    []
+  );
 
   const clearWorkflowData = useCallback(() => {
     setWorkflowData({});
-    localStorage.removeItem(STORAGE_KEY);
+    WorkflowPersistenceService.clearState();
+    setRemoteDraftId(null);
   }, []);
 
-  const getWorkflowData = useCallback(() => {
-    return workflowData;
-  }, [workflowData]);
+  const getWorkflowData = useCallback(() => workflowData, [workflowData]);
 
-  const isStepComplete = useCallback((step: string): boolean => {
-    switch (step) {
-      case 'vehicleType':
-        return !!workflowData.vehicleType;
-      case 'sellerType':
-        return true;
-      case 'vehicleData':
-        return !!(workflowData.make && workflowData.model && workflowData.year);
-      case 'equipment':
-        return true; // Optional
-      case 'images':
-        return !!workflowData.images;
-      case 'pricing':
-        return !!workflowData.price;
-      case 'contact':
-        return !!(workflowData.sellerName && workflowData.city);
-      default:
-        return false;
-    }
-  }, [workflowData]);
+  const isStepComplete = useCallback(
+    (step: string): boolean => {
+      switch (step) {
+        case 'vehicle-selection':
+          return !!workflowData.vehicleType;
+        case 'vehicle-data':
+          return !!(workflowData.make && workflowData.year);
+        case 'equipment':
+          return !!(
+            (Array.isArray(workflowData.safetyEquipment) && workflowData.safetyEquipment.length) ||
+            (Array.isArray(workflowData.comfortEquipment) && workflowData.comfortEquipment.length) ||
+            (Array.isArray(workflowData.infotainmentEquipment) && workflowData.infotainmentEquipment.length) ||
+            (Array.isArray(workflowData.extrasEquipment) && workflowData.extrasEquipment.length)
+          );
+        case 'images':
+          return (workflowData.imagesCount || 0) > 0;
+        case 'pricing':
+          return !!workflowData.price;
+        case 'contact':
+          return !!workflowData.sellerName;
+        case 'preview':
+        case 'publish':
+          return false;
+        default:
+          return false;
+      }
+    },
+    [workflowData]
+  );
 
-  const getCompletionPercentage = useCallback((): number => {
-    const steps = [
-      'vehicleType',
-      'vehicleData',
-      'equipment',
-      'images',
-      'pricing',
-      'contact'
-    ];
-    
-    const completed = steps.filter(step => isStepComplete(step)).length;
-    return Math.round((completed / steps.length) * 100);
-  }, [isStepComplete]);
+  const getCompletionPercentage = useCallback(
+    (): number => WorkflowPersistenceService.getProgress(),
+    []
+  );
+
+  // Initial remote sync
+  useEffect(() => {
+    if (!currentUser || !remoteSyncAllowed) return;
+
+    let isMounted = true;
+
+    const syncFromRemote = async () => {
+      try {
+        const drafts = await DraftsService.getUserDrafts(currentUser.uid);
+        if (!isMounted || drafts.length === 0) return;
+
+        const latest = drafts[0];
+        setRemoteDraftId(latest.id);
+
+        const remoteUpdated =
+          (latest.updatedAt && 'toDate' in latest.updatedAt
+            ? latest.updatedAt.toDate().getTime()
+            : 0) || 0;
+
+        const localState = WorkflowPersistenceService.loadState();
+        const localUpdated = localState?.lastUpdated ?? 0;
+
+        if (remoteUpdated > localUpdated && latest.workflowData) {
+          setWorkflowData(latest.workflowData);
+          WorkflowPersistenceService.saveState(
+            latest.workflowData,
+            localState?.currentStep || 'unknown'
+          );
+          logger.info('Workflow data synced from remote draft', { draftId: latest.id });
+        } else if (
+          localUpdated > remoteUpdated &&
+          localState?.data &&
+          Object.keys(localState.data).length > 0
+        ) {
+          const savedId = await DraftsService.autoSaveDraft(
+            currentUser.uid,
+            latest.id,
+            localState.data as SellWorkflowData,
+            resolveStepIndex(localState.currentStep)
+          );
+          if (savedId && isMounted) {
+            setRemoteDraftId(savedId);
+          }
+        }
+      } catch (error) {
+        if ((error as any)?.code === 'permission-denied') {
+          logger.warn('Remote draft sync disabled due to permission error', error as Error);
+          setRemoteSyncAllowed(false);
+        } else {
+          logger.warn('Failed to sync workflow data from remote drafts', error as Error);
+        }
+      }
+    };
+
+    syncFromRemote();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [currentUser, resolveStepIndex, remoteSyncAllowed]);
+
+  // Push local changes to remote
+  useEffect(() => {
+    if (!currentUser || !remoteSyncAllowed || Object.keys(workflowData).length === 0) return;
+
+    const timeout = setTimeout(async () => {
+      try {
+        const localState = WorkflowPersistenceService.loadState();
+        const savedId = await DraftsService.autoSaveDraft(
+          currentUser.uid,
+          remoteDraftId,
+          workflowData,
+          resolveStepIndex(localState?.currentStep)
+        );
+
+        if (savedId && savedId !== remoteDraftId) {
+          setRemoteDraftId(savedId);
+        }
+      } catch (error) {
+        if ((error as any)?.code === 'permission-denied') {
+          logger.warn('Remote draft sync disabled due to permission error', error as Error);
+          setRemoteSyncAllowed(false);
+        } else {
+          logger.warn('Failed to sync workflow data to remote draft', error as Error);
+        }
+      }
+    }, 800);
+
+    return () => clearTimeout(timeout);
+  }, [workflowData, currentUser, remoteDraftId, resolveStepIndex, remoteSyncAllowed]);
 
   return {
     workflowData,
@@ -141,10 +271,10 @@ export const useSellWorkflow = () => {
     clearWorkflowData,
     getWorkflowData,
     isStepComplete,
-    getCompletionPercentage
+    getCompletionPercentage,
+    remoteDraftId,
+    remoteSyncAllowed
   };
 };
 
 export default useSellWorkflow;
-
-

@@ -49,6 +49,12 @@ export const Subtitle = styled.p`
   line-height: 1.6;
 `;
 
+export const BrandOrbitInline = styled.div`
+  align-self: flex-start;
+  max-width: 240px;
+  margin-top: 0.75rem;
+`;
+
 export const SectionCard = styled.div`
   background: var(--bg-card);
   border-radius: 12px;
@@ -194,225 +200,21 @@ export const ContactMethodInfo = styled.div`
   gap: 0.75rem;
 `;
 
-// Professional Contact Method Icons - CSS Only
-export const PhoneIcon = styled.div`
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  background: var(--accent-primary);
+export const ContactIconWrapper = styled.div`
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--bg-card-strong);
   display: flex;
   align-items: center;
   justify-content: center;
+  color: var(--accent-primary);
   flex-shrink: 0;
-  position: relative;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    width: 12px;
-    height: 12px;
-    border: 2px solid var(--text-on-accent);
-    border-radius: 2px;
-    transform: rotate(-25deg);
-  }
-  
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: 8px;
-    left: 10px;
-    width: 4px;
-    height: 8px;
-    border: 2px solid var(--text-on-accent);
-    border-top: none;
-    border-left: none;
-    border-radius: 0 0 3px 0;
-    transform: rotate(-25deg);
-  }
-`;
+  border: 1px solid var(--border);
 
-export const EmailIcon = styled.div`
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  background: var(--accent-primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  position: relative;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    width: 14px;
-    height: 10px;
-    border: 2px solid var(--text-on-accent);
-    border-radius: 2px;
-  }
-  
-  &::after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 5px 7px 0 7px;
-    border-color: var(--text-on-accent) transparent transparent transparent;
-    margin-top: -2px;
-  }
-`;
-
-export const WhatsAppIcon = styled.div`
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  background: var(--success);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  position: relative;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    width: 14px;
-    height: 14px;
-    border: 2px solid var(--text-on-accent);
-    border-radius: 50%;
-  }
-  
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: 7px;
-    left: 7px;
-    width: 4px;
-    height: 4px;
-    background: var(--text-on-accent);
-    clip-path: polygon(0 0, 100% 50%, 0 100%);
-  }
-`;
-
-export const ViberIcon = styled.div`
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  background: var(--accent-primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  position: relative;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    width: 10px;
-    height: 14px;
-    border: 2px solid var(--text-on-accent);
-    border-radius: 8px 8px 2px 2px;
-  }
-  
-  &::after {
-    content: '';
-    position: absolute;
-    top: 12px;
-    width: 4px;
-    height: 2px;
-    background: var(--text-on-accent);
-    box-shadow: 0 2px 0 0 var(--text-on-accent);
-  }
-`;
-
-export const TelegramIcon = styled.div`
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  background: var(--accent-primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  position: relative;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 6px 0 6px 10px;
-    border-color: transparent transparent transparent var(--text-on-accent);
-    transform: rotate(-35deg);
-    margin-left: 1px;
-  }
-`;
-
-export const MessengerIcon = styled.div`
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  background: var(--accent-primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  position: relative;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    width: 14px;
-    height: 14px;
-    border: 2px solid var(--text-on-accent);
-    border-radius: 50%;
-  }
-  
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: 8px;
-    right: 8px;
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 5px 0 0 5px;
-    border-color: transparent transparent transparent var(--text-on-accent);
-  }
-`;
-
-export const SMSIcon = styled.div`
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  background: var(--accent-primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  position: relative;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    width: 14px;
-    height: 10px;
-    border: 2px solid var(--text-on-accent);
-    border-radius: 2px;
-  }
-  
-  &::after {
-    content: '';
-    position: absolute;
-    top: 12px;
-    width: 6px;
-    height: 1px;
-    background: var(--text-on-accent);
-    box-shadow: 
-      0 -2px 0 0 var(--text-on-accent),
-      0 2px 0 0 var(--text-on-accent);
+  svg {
+    width: 18px;
+    height: 18px;
   }
 `;
 

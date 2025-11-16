@@ -1,7 +1,7 @@
 // Pricing Page with Workflow
 // صفحة التسعير مع الأتمتة
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import SplitScreenLayout from '@/components/SplitScreenLayout';
@@ -10,41 +10,36 @@ import { Euro, TrendingUp, Info } from 'lucide-react';
 import * as S from './styles';
 import { SellWorkflowLayout } from '@/components/SellWorkflow';
 import SellWorkflowStepStateService from '@/services/sellWorkflowStepState';
+import { usePricingForm } from './usePricingForm';
 
 const PricingPageNew: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { language } = useLanguage();
-  const [price, setPrice] = useState('');
-  const [negotiable, setNegotiable] = useState(false);
+  const { pricingData, handleFieldChange, canContinue, serialize } = usePricingForm();
   useEffect(() => {
     SellWorkflowStepStateService.markPending('pricing');
   }, []);
 
   useEffect(() => {
-    if (price) {
+    if (pricingData.price) {
       SellWorkflowStepStateService.markCompleted('pricing');
     } else {
       SellWorkflowStepStateService.markPending('pricing');
     }
-  }, [price]);
+  }, [pricingData.price]);
 
 
   const vehicleType = searchParams.get('vt');
   const make = searchParams.get('mk');
 
   const handleContinue = () => {
-    if (!price) {
+    if (!pricingData.price) {
       alert(language === 'bg' ? 'Моля, въведете цена!' : 'Please enter a price!');
       return;
     }
 
-    const params = new URLSearchParams(searchParams.toString());
-    params.set('price', price);
-    params.set('currency', 'EUR');
-    params.set('priceType', 'fixed');
-    if (negotiable) params.set('negotiable', 'true');
-    
+    const params = serialize();
     navigate(`/sell/inserat/${vehicleType || 'car'}/contact?${params.toString()}`);
   };
 
@@ -66,6 +61,16 @@ const PricingPageNew: React.FC = () => {
         <S.Subtitle>
           {language === 'bg' ? 'Определете цената на вашето превозно средство' : 'Set your vehicle price'}
         </S.Subtitle>
+
+        <S.BrandOrbitInline>
+          <WorkflowFlow
+            variant="inline"
+            currentStepIndex={4}
+            totalSteps={8}
+            carBrand={make || undefined}
+            language={language}
+          />
+        </S.BrandOrbitInline>
       </S.HeaderCard>
 
       {/* Top Navigation Buttons */}
@@ -73,7 +78,7 @@ const PricingPageNew: React.FC = () => {
         <S.Button type="button" $variant="secondary" onClick={() => navigate(-1)}>
           ← {language === 'bg' ? 'Назад' : 'Back'}
         </S.Button>
-        <S.Button type="button" $variant="primary" onClick={handleContinue} disabled={!price}>
+        <S.Button type="button" $variant="primary" onClick={handleContinue} disabled={!canContinue}>
           {language === 'bg' ? 'Продължи' : 'Continue'} →
         </S.Button>
       </S.NavigationButtons>
@@ -90,8 +95,8 @@ const PricingPageNew: React.FC = () => {
           </S.PriceIcon>
           <S.PriceInput
             type="number"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
+            value={pricingData.price}
+            onChange={(e) => handleFieldChange('price', e.target.value)}
             placeholder="15000"
             min="0"
           />
@@ -101,8 +106,8 @@ const PricingPageNew: React.FC = () => {
           <S.Checkbox
             type="checkbox"
             id="negotiable"
-            checked={negotiable}
-            onChange={(e) => setNegotiable(e.target.checked)}
+            checked={pricingData.negotiable}
+            onChange={(e) => handleFieldChange('negotiable', e.target.checked)}
           />
           <S.CheckboxLabel htmlFor="negotiable">
             {language === 'bg' ? 'Цената подлежи на договаряне' : 'Price is negotiable'}
@@ -127,18 +132,16 @@ const PricingPageNew: React.FC = () => {
         <S.Button type="button" $variant="secondary" onClick={() => navigate(-1)}>
           ← {language === 'bg' ? 'Назад' : 'Back'}
         </S.Button>
-        <S.Button type="button" $variant="primary" onClick={handleContinue} disabled={!price}>
+        <S.Button type="button" $variant="primary" onClick={handleContinue} disabled={!canContinue}>
           {language === 'bg' ? 'Продължи' : 'Continue'} →
         </S.Button>
       </S.NavigationButtons>
     </S.ContentSection>
   );
 
-  const rightContent = <WorkflowFlow currentStepIndex={4} totalSteps={8} carBrand={make || undefined} language={language} />;
-
   return (
     <SellWorkflowLayout currentStep="pricing">
-      <SplitScreenLayout leftContent={leftContent} rightContent={rightContent} />
+      <SplitScreenLayout leftContent={leftContent} />
     </SellWorkflowLayout>
   );
 };

@@ -24,7 +24,7 @@ export const S = {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    background: ${mobileColors.surface.background};
+    background: var(--bg-primary);
     ${mobileMixins.safeAreaPadding};
   `,
   Content: styled.div`
@@ -39,8 +39,8 @@ export const S = {
   LoadingSpinner: styled.div`
     width: 64px;
     height: 64px;
-    border: 4px solid ${mobileColors.neutral.gray200};
-    border-top-color: ${mobileColors.primary.main};
+    border: 4px solid var(--border-primary);
+    border-top-color: var(--accent-primary);
     border-radius: ${mobileBorderRadius.full};
     animation: spin 1s linear infinite;
     margin-bottom: ${mobileSpacing.lg};
@@ -53,33 +53,33 @@ export const S = {
     width: 80px;
     height: 80px;
     border-radius: ${mobileBorderRadius.full};
-    background: ${mobileColors.success.light};
+    background: var(--bg-success);
     ${mobileMixins.flexCenter};
     margin: 0 auto ${mobileSpacing.lg};
     font-size: 40px;
-    color: ${mobileColors.success.main};
+    color: var(--text-success);
   `,
   ErrorIcon: styled.div`
     width: 80px;
     height: 80px;
     border-radius: ${mobileBorderRadius.full};
-    background: ${mobileColors.error.light};
+    background: var(--bg-error);
     ${mobileMixins.flexCenter};
     margin: 0 auto ${mobileSpacing.lg};
     font-size: 40px;
-    color: ${mobileColors.error.main};
+    color: var(--text-error);
   `,
   Title: styled.h1`
     font-size: ${mobileTypography.h2.fontSize};
     line-height: ${mobileTypography.h2.lineHeight};
     font-weight: ${mobileTypography.h2.fontWeight};
-    color: ${mobileColors.neutral.gray900};
+    color: var(--text-primary);
     margin: 0 0 ${mobileSpacing.sm};
   `,
   Message: styled.p`
     font-size: ${mobileTypography.bodyLarge.fontSize};
     line-height: ${mobileTypography.bodyLarge.lineHeight};
-    color: ${mobileColors.neutral.gray600};
+    color: var(--text-secondary);
     margin: 0 0 ${mobileSpacing.xl};
   `,
   Actions: styled.div`
@@ -92,7 +92,7 @@ export const S = {
   PrimaryButton: styled.button`
     ${mobileMixins.touchTarget};
     ${buttonPattern}
-    background: ${mobileColors.primary.main};
+    background: var(--accent-primary);
     color: white;
     border: none;
     border-radius: ${mobileBorderRadius.lg};
@@ -100,21 +100,21 @@ export const S = {
     transition: ${mobileAnimations.transitions.default};
 
     &:active {
-      background: ${mobileColors.primary.dark};
+      background: var(--accent-secondary);
     }
   `,
   SecondaryButton: styled.button`
     ${mobileMixins.touchTarget};
     ${buttonPattern}
     background: transparent;
-    color: ${mobileColors.primary.main};
-    border: 2px solid ${mobileColors.primary.main};
+    color: var(--accent-primary);
+    border: 2px solid var(--accent-primary);
     border-radius: ${mobileBorderRadius.lg};
     font-weight: 600;
     transition: ${mobileAnimations.transitions.default};
 
     &:active {
-      background: ${mobileColors.primary.pale};
+      background: var(--accent-secondary);
     }
   `
 };

@@ -1,7 +1,7 @@
 // Mobile Vehicle Data Page (Clean)
 // Optimized for mobile and portrait tablets; no emojis; ≤300 lines
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useNavigate, useSearchParams, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -9,7 +9,12 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { MobileContainer, MobileStack } from '@/components/ui/mobile-index';
 import { MobileHeader } from '@/components/layout/MobileHeader';
 
-import { getAllBrands, getModelsForBrand } from '@/services/carBrandsService';
+import { CAR_YEARS } from '@/data/dropdown-options';
+
+import { SellProgressBar } from '@/components/SellWorkflow';
+import { useProfileType } from '@/contexts/ProfileTypeContext';
+import SellWorkflowStepStateService from '@/services/sellWorkflowStepState';
+import { useVehicleDataForm } from './VehicleData/useVehicleDataForm';
 
 // Layout wrappers moved to styles
 import { S } from './MobileVehicleDataPage.styles';
@@ -22,23 +27,9 @@ const Hint = S.Hint;
 const StickyFooter = S.StickyFooter;
 const PrimaryButton = S.PrimaryButton;
 
-import { SellProgressBar } from '@/components/SellWorkflow';
-import { useProfileType } from '@/contexts/ProfileTypeContext';
-import SellWorkflowStepStateService from '@/services/sellWorkflowStepState';
-
 const ProgressWrapper = styled.div`
   padding: 0.75rem 1rem 0;
 `;
-
-// Types
-interface VehicleForm {
-  make: string;
-  model: string;
-  year: string;
-  mileage: string;
-  fuelType: string;
-  transmission: string;
-}
 
 export const MobileVehicleDataPageClean: React.FC = () => {
   const { t, language } = useLanguage();
@@ -47,35 +38,21 @@ export const MobileVehicleDataPageClean: React.FC = () => {
   const { vehicleType = 'car' } = useParams<{ vehicleType: string }>();
   const { profileType } = useProfileType();
 
-  const [form, setForm] = useState<VehicleForm>({
-    make: '',
-    model: '',
-    year: '',
-    mileage: '',
-    fuelType: '',
-    transmission: ''
-  });
+  const {
+    formData,
+    availableBrands,
+    availableModels,
+    handleInputChange,
+    canContinue,
+    buildURLSearchParams
+  } = useVehicleDataForm();
 
   useEffect(() => {
     SellWorkflowStepStateService.markPending('vehicle-data');
   }, []);
 
-  // Prefill from URL
-  useEffect(() => {
-    const prefilled: Partial<VehicleForm> = {
-      make: searchParams.get('mk') || '',
-      model: searchParams.get('md') || '',
-      year: searchParams.get('fy') || '',
-      mileage: searchParams.get('mi') || '',
-      fuelType: searchParams.get('fm') || '',
-      transmission: searchParams.get('tr') || ''
-    };
-    setForm(prev => ({ ...prev, ...prefilled }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const brands = useMemo(() => getAllBrands(), []);
-  const models = useMemo(() => (form.make ? getModelsForBrand(form.make) : []), [form.make]);
+  const brands = useMemo(() => availableBrands, [availableBrands]);
+  const models = useMemo(() => availableModels, [availableModels]);
 
   const fuelTypes = useMemo(() => [
     'Бензин', 'Дизел', 'Хибрид', 'Електрически', 'Газ (LPG)', 'Газ (CNG)'
@@ -84,37 +61,22 @@ export const MobileVehicleDataPageClean: React.FC = () => {
     'Ръчна', 'Автоматична', 'Полуавтоматична', 'CVT', 'DSG'
   ], []);
 
-  const onChange = (field: keyof VehicleForm, value: string) => {
-    setForm(prev => ({ ...prev, [field]: value }));
-    if (field === 'make') {
-      setForm(prev => ({ ...prev, model: '' }));
-    }
-  };
-
-  const canContinue = !!form.make && !!form.year;
-
   useEffect(() => {
-    if (form.make && form.year) {
+    if (formData.make && formData.year) {
       SellWorkflowStepStateService.markCompleted('vehicle-data');
     } else {
       SellWorkflowStepStateService.markPending('vehicle-data');
     }
-  }, [form.make, form.year]);
+  }, [formData.make, formData.year]);
 
 
 
   const goNext = () => {
     if (!canContinue) return;
-    const params = new URLSearchParams();
+    const params = buildURLSearchParams();
     params.set('vt', vehicleType);
     const st = searchParams.get('st') || profileType;
     if (st) params.set('st', st);
-    params.set('mk', form.make);
-    if (form.model) params.set('md', form.model);
-    if (form.fuelType) params.set('fm', form.fuelType);
-    params.set('fy', form.year);
-    if (form.mileage) params.set('mi', form.mileage);
-    if (form.transmission) params.set('tr', form.transmission);
     navigate(`/sell/inserat/${vehicleType}/equipment?${params.toString()}`);
   };
 
@@ -145,8 +107,9 @@ export const MobileVehicleDataPageClean: React.FC = () => {
                   </Label>
                   <Select
                     id="make"
-                    value={form.make}
-                    onChange={(e) => onChange('make', e.target.value)}
+                    value={formData.make}
+                    onChange={(e) => handleInputChange('make', e.target.value)}
+                    title={t('sell.vehicleData.make')}
                   >
                     <option value="">{t('sell.vehicleData.selectMake')}</option>
                     {brands.map((b) => (
@@ -165,9 +128,10 @@ export const MobileVehicleDataPageClean: React.FC = () => {
                   {models.length > 0 ? (
                     <Select
                       id="model"
-                      value={form.model}
-                      onChange={(e) => onChange('model', e.target.value)}
-                      disabled={!form.make}
+                      value={formData.model}
+                      onChange={(e) => handleInputChange('model', e.target.value)}
+                      disabled={!formData.make}
+                      title={t('sell.vehicleData.model')}
                     >
                       <option value="">{t('sell.vehicleData.selectModel')}</option>
                       {models.map((m) => (
@@ -179,27 +143,30 @@ export const MobileVehicleDataPageClean: React.FC = () => {
                       id="model"
                       type="text"
                       placeholder={language === 'bg' ? 'Например: X5' : 'e.g. X5'}
-                      value={form.model}
-                      onChange={(e) => onChange('model', e.target.value)}
-                      disabled={!form.make}
+                      value={formData.model}
+                      onChange={(e) => handleInputChange('model', e.target.value)}
+                      disabled={!formData.make}
                     />
                   )}
                 </FieldGroup>
 
                 <FieldGroup>
-                  <Label htmlFor="year" $required>
+                  <Label htmlFor="vehicle-year" $required>
                     {t('sell.vehicleData.year')}
                   </Label>
-                  <Input
-                    id="year"
-                    type="number"
-                    placeholder="2020"
-                    value={form.year}
-                    onChange={(e) => onChange('year', e.target.value)}
-                    min={"1900"}
-                    max={(new Date().getFullYear() + 1).toString()}
-                    inputMode="numeric"
-                  />
+                  <Select
+                    id="vehicle-year"
+                    value={formData.year}
+                    onChange={(e) => handleInputChange('year', e.target.value)}
+                    title={t('sell.vehicleData.year')}
+                  >
+                    <option value="">{t('sell.select')}</option>
+                    {CAR_YEARS.map(option => (
+                      <option key={option.value} value={option.value}>
+                        {language === 'bg' ? option.label : option.labelEn || option.label}
+                      </option>
+                    ))}
+                  </Select>
                 </FieldGroup>
 
                 <FieldGroup>
@@ -210,8 +177,8 @@ export const MobileVehicleDataPageClean: React.FC = () => {
                     id="mileage"
                     type="number"
                     placeholder="45000"
-                    value={form.mileage}
-                    onChange={(e) => onChange('mileage', e.target.value)}
+                    value={formData.mileage}
+                    onChange={(e) => handleInputChange('mileage', e.target.value)}
                     min="0"
                     inputMode="numeric"
                   />
@@ -223,8 +190,9 @@ export const MobileVehicleDataPageClean: React.FC = () => {
                   </Label>
                   <Select
                     id="fuelType"
-                    value={form.fuelType}
-                    onChange={(e) => onChange('fuelType', e.target.value)}
+                    value={formData.fuelType}
+                    onChange={(e) => handleInputChange('fuelType', e.target.value)}
+                    title={t('sell.vehicleData.fuel')}
                   >
                     <option value="">{t('sell.select')}</option>
                     {fuelTypes.map(ft => (
@@ -239,8 +207,9 @@ export const MobileVehicleDataPageClean: React.FC = () => {
                   </Label>
                   <Select
                     id="transmission"
-                    value={form.transmission}
-                    onChange={(e) => onChange('transmission', e.target.value)}
+                    value={formData.transmission}
+                    onChange={(e) => handleInputChange('transmission', e.target.value)}
+                    title={t('sell.vehicleData.transmission')}
                   >
                     <option value="">{t('sell.select')}</option>
                     {transmissions.map(tr => (

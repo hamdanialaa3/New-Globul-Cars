@@ -9,6 +9,7 @@ import { logger } from '@/services/logger-service';
 import { S } from './MobileSubmissionPage.styles';
 import { SellProgressBar } from '@/components/SellWorkflow';
 import SellWorkflowStepStateService from '@/services/sellWorkflowStepState';
+import SellWorkflowService from '@/services/sellWorkflowService';
 
 const ProgressWrapper = styled.div`
   padding: 0.75rem 1rem 0;
@@ -38,27 +39,27 @@ const MobileSubmissionPage: React.FC = () => {
       const { data } = workflowState;
       const images = WorkflowPersistenceService.getImagesAsFiles();
 
-      // Prepare listing data
-      const listingData = {
-        ...data,
-        userId: user?.uid,
-        vehicleType: vehicleType || 'car',
-        status: 'active',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
+      // Validate required data
+      if (!user?.uid) {
+        throw new Error('User not authenticated');
+      }
 
-      // TODO: Replace with actual Firebase submission
-      // const carId = await carService.createCar(listingData, images);
+      if (!data.make || !data.year) {
+        throw new Error('Missing required vehicle information');
+      }
+
+      // Create the car listing using the actual service
+      const carId = await SellWorkflowService.createCarListing(data, user.uid, images);
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Log submission
-      logger.info('Listing submitted successfully', { 
-        userId: user?.uid,
+      // Log successful submission
+      logger.info('Car listing submitted successfully', { 
+        carId,
+        userId: user.uid,
         vehicleType,
-        imageCount: images.length 
+        imageCount: images.length,
+        make: data.make,
+        model: data.model,
+        year: data.year
       });
       
       // Clear workflow state after successful submission
@@ -67,8 +68,12 @@ const MobileSubmissionPage: React.FC = () => {
       setState('success');
       SellWorkflowStepStateService.markCompleted('publish');
     } catch (err) {
-      logger.error('Submission error', err as Error, { userId: user?.uid, vehicleType });
-      setError(err instanceof Error ? err.message : 'Unknown error');
+      logger.error('Submission error', err as Error, { 
+        userId: user?.uid, 
+        vehicleType,
+        error: err instanceof Error ? err.message : 'Unknown error'
+      });
+      setError(err instanceof Error ? err.message : 'Unknown error occurred during submission');
       setState('error');
     }
   };

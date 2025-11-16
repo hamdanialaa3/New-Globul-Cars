@@ -49,6 +49,12 @@ export const Subtitle = styled.p`
   line-height: 1.6;
 `;
 
+export const BrandOrbitInline = styled.div`
+  align-self: flex-start;
+  max-width: 240px;
+  margin: 1rem 0 1.5rem;
+`;
+
 export const FeatureGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));

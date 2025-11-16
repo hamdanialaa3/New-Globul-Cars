@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { CarListing } from '../../types/CarListing';
-import { getAllMakes, getModelsByMake } from '@/data/car-makes-models';
+import { brandsModelsDataService } from '@/services/brands-models-data.service';
 
 interface VehicleDataStepProps {
   data: Partial<CarListing>;
@@ -155,18 +155,31 @@ const VehicleDataStep: React.FC<VehicleDataStepProps> = ({ data, onDataChange })
   });
 
   const [availableModels, setAvailableModels] = useState<string[]>([]);
+  const [availableMakes, setAvailableMakes] = useState<string[]>([]);
   
+  // Load brands on mount
+  useEffect(() => {
+    brandsModelsDataService.getAllBrands()
+      .then(brands => setAvailableMakes(brands))
+      .catch(error => {
+        console.error('[VehicleDataStep] Failed to load brands:', error);
+        setAvailableMakes([]);
+      });
+  }, []);
+
   // Load models when make changes
   useEffect(() => {
     if (formData.make) {
-      const models = getModelsByMake(formData.make);
-      setAvailableModels(models);
+      brandsModelsDataService.getModelsForBrand(formData.make)
+        .then(models => setAvailableModels(models))
+        .catch(error => {
+          console.error('[VehicleDataStep] Failed to load models:', error);
+          setAvailableModels([]);
+        });
     } else {
       setAvailableModels([]);
     }
   }, [formData.make]);
-
-  const makes = getAllMakes();
 
   const fuelTypes = [
     'Бензин', 'Дизел', 'Хибрид', 'Електрически', 'Газ (LPG)', 'Газ (CNG)', 'Етанол'
@@ -218,7 +231,7 @@ const VehicleDataStep: React.FC<VehicleDataStepProps> = ({ data, onDataChange })
             required
           >
             <option value="">Изберете марка</option>
-            {makes.map(make => (
+            {availableMakes.map(make => (
               <option key={make} value={make}>{make}</option>
             ))}
           </Select>

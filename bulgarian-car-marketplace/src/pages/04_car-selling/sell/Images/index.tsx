@@ -13,80 +13,84 @@ import * as S from './styles';
 import { SellWorkflowLayout } from '@/components/SellWorkflow';
 import SellWorkflowStepStateService from '@/services/sellWorkflowStepState';
 import WorkflowPersistenceService from '@/services/workflowPersistenceService';
+import { useImagesWorkflow } from './useImagesWorkflow';
+import { toast } from 'react-toastify';
 
 const ImagesPageNew: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { language } = useLanguage();
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [isDragOver, setIsDragOver] = useState(false);
+  const { files, hasImages, addFiles, removeFile, saveImages } = useImagesWorkflow();
 
   const vehicleType = searchParams.get('vt');
   const make = searchParams.get('mk');
   useEffect(() => {
     SellWorkflowStepStateService.markPending('images');
-  }, []);
+    
+    // Check storage usage and warn if high
+    const storageUsage = WorkflowPersistenceService.getStorageUsage();
+    if (storageUsage.percentage > 80) {
+      logger.warn('High localStorage usage detected', storageUsage);
+      toast.warn(language === 'bg' 
+        ? 'تحذير: استخدام تخزين عالي. قد تواجه مشاكل في حفظ الصور.' 
+        : 'Warning: High storage usage. You may experience issues saving images.', {
+        autoClose: 10000
+      });
+    }
+  }, [language]);
 
   useEffect(() => {
     const hasPersistedImages =
       WorkflowPersistenceService.getImages().length > 0;
 
-    if (selectedFiles.length > 0 || hasPersistedImages) {
+    if (files.length > 0 || hasPersistedImages) {
       SellWorkflowStepStateService.markCompleted('images');
     } else {
       SellWorkflowStepStateService.markPending('images');
     }
-  }, [selectedFiles.length]);
+  }, [files.length]);
 
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      const files = Array.from(e.target.files);
-      setSelectedFiles(prev => [...prev, ...files].slice(0, 20));
+      addFiles(Array.from(e.target.files));
     }
   };
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragOver(false);
-    
-    const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
-    setSelectedFiles(prev => [...prev, ...files].slice(0, 20));
-  };
 
-  const removeFile = (index: number) => {
-    setSelectedFiles(prev => prev.filter((_, i) => i !== index));
+    const droppedFiles = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+    addFiles(droppedFiles);
   };
 
   const handleContinue = async () => {
-    if (selectedFiles.length === 0) {
-      alert(language === 'bg' ? 'Моля, качете поне една снимка!' : 'Please upload at least one photo!');
+    if (files.length === 0) {
+      toast.error(language === 'bg' 
+        ? 'Моля, качете поне една снимка!' 
+        : 'Please upload at least one photo!');
       return;
     }
 
     try {
-      // Save images to localStorage as base64
-      const imagePromises = selectedFiles.map(file => {
-        return new Promise<string>((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = () => resolve(reader.result as string);
-          reader.onerror = reject;
-          reader.readAsDataURL(file);
-        });
-      });
-
-      const base64Images = await Promise.all(imagePromises);
-      localStorage.setItem('globul_sell_workflow_images', JSON.stringify(base64Images));
-      logger.info('Images saved successfully', { count: selectedFiles.length, vehicleType });
+      await saveImages();
+      logger.info('Images saved successfully', { count: files.length, vehicleType });
 
       const params = new URLSearchParams(searchParams.toString());
-      params.set('images', selectedFiles.length.toString());
+      params.set('images', files.length.toString());
       navigate(`/sell/inserat/${vehicleType || 'car'}/details/preis?${params.toString()}`);
     } catch (error) {
       logger.error('Error saving images', error as Error, { vehicleType });
-      alert(language === 'bg' 
-        ? 'Възникна грешка при запазване на снимките. Моля, опитайте отново.' 
-        : 'Error saving images. Please try again.');
+      
+      // Show user-friendly error with retry option
+      toast.error(language === 'bg' 
+        ? 'Възникна грешка при запазване на снимките. Опитайте отново.' 
+        : 'Error saving images. Please try again.', {
+        autoClose: 5000,
+        onClick: () => handleContinue() // Allow retry on click
+      });
     }
   };
 
@@ -110,6 +114,16 @@ const ImagesPageNew: React.FC = () => {
             ? 'Качете до 20 снимки на вашето превозно средство' 
             : 'Upload up to 20 photos of your vehicle'}
         </S.Subtitle>
+
+        <S.BrandOrbitInline>
+          <WorkflowFlow
+            variant="inline"
+            currentStepIndex={3}
+            totalSteps={8}
+            carBrand={make || undefined}
+            language={language}
+          />
+        </S.BrandOrbitInline>
       </S.HeaderCard>
 
       {/* Top Navigation Buttons */}
@@ -156,9 +170,9 @@ const ImagesPageNew: React.FC = () => {
         />
       </S.UploadCard>
 
-      {selectedFiles.length > 0 && (
+      {files.length > 0 && (
         <S.PreviewGrid>
-          {selectedFiles.map((file, index) => (
+          {files.map((file, index) => (
             <S.PreviewCard key={index}>
               <S.PreviewImage src={URL.createObjectURL(file)} alt={`Preview ${index + 1}`} />
               <S.RemoveButton onClick={() => removeFile(index)}>
@@ -172,8 +186,8 @@ const ImagesPageNew: React.FC = () => {
 
       <S.InfoBox>
         📸 {language === 'bg' 
-          ? `${selectedFiles.length}/20 снимки избрани` 
-          : `${selectedFiles.length}/20 photos selected`}
+          ? `${files.length}/20 снимки избрани` 
+          : `${files.length}/20 photos selected`}
         <br />
         {language === 'bg' 
           ? 'Първата снимка ще бъде основната' 
@@ -191,11 +205,9 @@ const ImagesPageNew: React.FC = () => {
     </S.ContentSection>
   );
 
-  const rightContent = <WorkflowFlow currentStepIndex={3} totalSteps={8} carBrand={make || undefined} language={language} />;
-
   return (
     <SellWorkflowLayout currentStep="images">
-      <SplitScreenLayout leftContent={leftContent} rightContent={rightContent} />
+      <SplitScreenLayout leftContent={leftContent} />
     </SellWorkflowLayout>
   );
 };

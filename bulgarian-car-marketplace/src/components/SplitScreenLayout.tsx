@@ -6,14 +6,12 @@ import styled from 'styled-components';
 
 interface SplitScreenLayoutProps {
   leftContent: React.ReactNode;
-  rightContent: React.ReactNode;
-  leftWidth?: string; // Default: 60%
-  rightWidth?: string; // Default: 40%
+  rightContent?: React.ReactNode;
 }
 
-const Container = styled.div`
+const Container = styled.div<{ $hasRight: boolean }>`
   display: grid;
-  grid-template-columns: 1fr 400px;
+  grid-template-columns: ${({ $hasRight }) => ($hasRight ? '1fr 400px' : '1fr')};
   gap: 2rem;
   min-height: 100vh;
   padding: 2rem;
@@ -55,10 +53,12 @@ const SplitScreenLayout: React.FC<SplitScreenLayoutProps> = ({
   leftContent,
   rightContent
 }) => {
+  const hasRightContent = Boolean(rightContent);
+
   return (
-    <Container>
+    <Container $hasRight={hasRightContent}>
       <LeftPanel>{leftContent}</LeftPanel>
-      <RightPanel>{rightContent}</RightPanel>
+      {hasRightContent && <RightPanel>{rightContent}</RightPanel>}
     </Container>
   );
 };

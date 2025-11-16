@@ -3,7 +3,7 @@
 
 import React, { Suspense } from 'react';
 import { logger } from './services/logger-service';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { AuthProvider } from './contexts/AuthProvider';
@@ -26,10 +26,12 @@ import AdminRoute from './components/AdminRoute';
 import AuthGuard from './components/AuthGuard';
 import NotificationHandler from './components/NotificationHandler';
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
+import { FilterProvider } from '@/contexts/FilterContext';
 // import AnalyticsTracker from './components/AnalyticsTracker';
 import NotFoundPage from './components/NotFoundPage';
 import FacebookPixel from './components/FacebookPixel';
 import FloatingAddButton from './components/FloatingAddButton';
+import AssistantHead from './components/AI/AssistantHead';
 import { useIsMobile } from './hooks/useBreakpoint';
 // Removed problematic imports
 // import useAuthRedirectHandler from './hooks/useAuthRedirectHandler';
@@ -38,26 +40,25 @@ import { useIsMobile } from './hooks/useBreakpoint';
 const HomePage = React.lazy(() => import('./pages/01_main-pages/home/HomePage'));
 const CarsPage = React.lazy(() => import('./pages/01_main-pages/CarsPage'));
 const CarDetailsPage = React.lazy(() => import('./pages/01_main-pages/CarDetailsPage'));
-const SellPage = React.lazy(() => import('./pages/04_car-selling/SellPageNew'));
 const SocialFeedPage = React.lazy(() => import('./pages/03_user-pages/social/SocialFeedPage'));
 
 // Mobile.de-style sell workflow pages (الوحيد المستخدم)
 const VehicleStartPage = React.lazy(() => import('./pages/04_car-selling/sell/VehicleStartPageNew'));
-const VehicleDataPageNew = React.lazy(() => import('./pages/04_car-selling/sell/VehicleData'));
-const MobileVehicleDataPage = React.lazy(() => import('./pages/04_car-selling/sell/MobileVehicleDataPageClean'));
+const VehicleDataPageUnified = React.lazy(() => import('./pages/04_car-selling/sell/VehicleDataPageUnified'));
 const EquipmentMainPage = React.lazy(() => import('./pages/04_car-selling/sell/EquipmentMainPage'));
 const MobileEquipmentMainPage = React.lazy(() => import('./pages/04_car-selling/sell/MobileEquipmentMainPage'));
-const MobileImagesPage = React.lazy(() => import('./pages/04_car-selling/sell/MobileImagesPage'));
 const MobilePricingPage = React.lazy(() => import('./pages/04_car-selling/sell/MobilePricingPage'));
 const MobileContactPage = React.lazy(() => import('./pages/04_car-selling/sell/MobileContactPage'));
 const MobilePreviewPage = React.lazy(() => import('./pages/04_car-selling/sell/MobilePreviewPage'));
+const DesktopPreviewPage = React.lazy(() => import('./pages/04_car-selling/sell/DesktopPreviewPage'));
 const MobileSubmissionPage = React.lazy(() => import('./pages/04_car-selling/sell/MobileSubmissionPage'));
+const DesktopSubmissionPage = React.lazy(() => import('./pages/04_car-selling/sell/DesktopSubmissionPage'));
 const SafetyEquipmentPage = React.lazy(() => import('./pages/04_car-selling/sell/Equipment/SafetyPage'));
 const ComfortEquipmentPage = React.lazy(() => import('./pages/04_car-selling/sell/Equipment/ComfortPage'));
 const InfotainmentEquipmentPage = React.lazy(() => import('./pages/04_car-selling/sell/Equipment/InfotainmentPage'));
 const ExtrasEquipmentPage = React.lazy(() => import('./pages/04_car-selling/sell/Equipment/ExtrasPage'));
 const UnifiedEquipmentPage = React.lazy(() => import('./pages/04_car-selling/sell/Equipment/UnifiedEquipmentPage'));
-const ImagesPage = React.lazy(() => import('./pages/04_car-selling/sell/Images'));
+const ImagesPageUnified = React.lazy(() => import('./pages/04_car-selling/sell/ImagesPageUnified'));
 const PricingPage = React.lazy(() => import('./pages/04_car-selling/sell/Pricing'));
 const ContactNamePage = React.lazy(() => import('./pages/04_car-selling/sell/ContactNamePage'));
 const ContactAddressPage = React.lazy(() => import('./pages/04_car-selling/sell/ContactAddressPage'));
@@ -235,6 +236,8 @@ const App: React.FC = () => {
               <ToastProvider>
                 <GoogleReCaptchaProvider reCaptchaKey={recaptchaKey || "dummy-key"}>
                   <Router>
+                  {/* Unified filter context (search + listings). Nested to preserve critical provider order. */}
+                  <FilterProvider>
                   <FacebookPixel />
                   {/* <FacebookMessengerWidget /> - Temporarily disabled */}
                   <SkipNavigation />
@@ -286,6 +289,7 @@ const App: React.FC = () => {
                       <Route path="/*" element={<MainLayout />} />
                     </Routes>
                   </Suspense>
+                  </FilterProvider>
                 </Router>
               </GoogleReCaptchaProvider>
             </ToastProvider>
@@ -303,6 +307,7 @@ const MainLayout: React.FC = () => {
   return (
   <Layout>
     <FloatingAddButton />
+    <AssistantHead />
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/social" element={<SocialFeedPage />} />
@@ -322,11 +327,11 @@ const MainLayout: React.FC = () => {
         }
       />
       
-      {/* Unified Sell System - Mobile.de Style Only */}
-      <Route path="/sell" element={<SellPage />} />
+      {/* Unified Sell System - بدء التجربة مباشرة من /sell/auto */}
+      <Route path="/sell" element={<Navigate to="/sell/auto" replace />} />
       {/* Redirect old routes to new system */}
-      <Route path="/sell-car" element={<SellPage />} />
-      <Route path="/add-car" element={<SellPage />} />
+      <Route path="/sell-car" element={<Navigate to="/sell/auto" replace />} />
+      <Route path="/add-car" element={<Navigate to="/sell/auto" replace />} />
       
       {/* Social Feed - Create Post */}
       <Route path="/create-post" element={<CreatePostPage />} />
@@ -343,7 +348,7 @@ const MainLayout: React.FC = () => {
         path="/sell/inserat/:vehicleType/fahrzeugdaten/antrieb-und-umwelt"
         element={
           <AuthGuard requireAuth={true}>
-            {isMobile ? <MobileVehicleDataPage /> : <VehicleDataPageNew />}
+            <VehicleDataPageUnified />
           </AuthGuard>
         }
       />
@@ -402,7 +407,7 @@ const MainLayout: React.FC = () => {
         path="/sell/inserat/:vehicleType/details/bilder"
         element={
           <AuthGuard requireAuth={true}>
-              {isMobile ? <MobileImagesPage /> : <ImagesPage />}
+            <ImagesPageUnified />
           </AuthGuard>
         }
       />
@@ -429,7 +434,7 @@ const MainLayout: React.FC = () => {
         path="/sell/inserat/:vehicleType/preview"
         element={
           <AuthGuard requireAuth={true}>
-              {isMobile ? <MobilePreviewPage /> : <MobilePreviewPage />}
+              {isMobile ? <MobilePreviewPage /> : <DesktopPreviewPage />}
           </AuthGuard>
         }
       />
@@ -439,7 +444,7 @@ const MainLayout: React.FC = () => {
         path="/sell/inserat/:vehicleType/submission"
         element={
           <AuthGuard requireAuth={true}>
-              {isMobile ? <MobileSubmissionPage /> : <MobileSubmissionPage />}
+              {isMobile ? <MobileSubmissionPage /> : <DesktopSubmissionPage />}
           </AuthGuard>
         }
       />

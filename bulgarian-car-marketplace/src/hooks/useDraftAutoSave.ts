@@ -75,7 +75,7 @@ export const useDraftAutoSave = (
         setLastSaved(new Date());
 
         if (showToast) {
-          toast.success('💾 Draft saved!', {
+          toast.success('Draft saved', {
             position: 'bottom-right',
             autoClose: 2000
           });

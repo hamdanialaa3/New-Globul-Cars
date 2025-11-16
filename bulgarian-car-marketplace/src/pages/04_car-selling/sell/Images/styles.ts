@@ -49,9 +49,15 @@ export const Subtitle = styled.p`
   line-height: 1.6;
 `;
 
+export const BrandOrbitInline = styled.div`
+  align-self: flex-start;
+  max-width: 240px;
+  margin-top: 1rem;
+`;
+
 export const UploadCard = styled.div<{ $isDragOver: boolean }>`
-  background: white;
-  border: 3px dashed ${props => props.$isDragOver ? '#ff8f10' : 'rgba(255, 143, 16, 0.3)'};
+  background: var(--bg-card);
+  border: 3px dashed ${props => props.$isDragOver ? 'var(--accent-primary)' : 'var(--border-primary)'};
   border-radius: 20px;
   padding: 3rem 2rem;
   text-align: center;
@@ -65,7 +71,7 @@ export const UploadCard = styled.div<{ $isDragOver: boolean }>`
   `}
 
   &:hover {
-    border-color: var(--accent-orange);
+    border-color: var(--accent-primary);
     box-shadow: var(--shadow-md);
   }
 `;

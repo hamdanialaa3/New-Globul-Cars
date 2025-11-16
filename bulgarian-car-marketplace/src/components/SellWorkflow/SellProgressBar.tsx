@@ -2,11 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useLocation, useNavigate } from 'react-router-dom';
-import {
-  SELL_WORKFLOW_STEPS,
-  SELL_WORKFLOW_STEP_ORDER,
-  SellWorkflowStepId
-} from '@/constants/sellWorkflowSteps';
+import { SELL_WORKFLOW_STEP_GROUPS, SellWorkflowStepId } from '@/constants/sellWorkflowSteps';
 import SellWorkflowStepStateService, {
   SellWorkflowStepStatus
 } from '@/services/sellWorkflowStepState';
@@ -16,22 +12,36 @@ interface SellProgressBarProps {
 }
 
 const BarContainer = styled.nav`
-  background: #ffffff;
-  border-radius: 14px;
-  border: 1px solid rgba(255, 143, 16, 0.15);
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.05);
-  padding: 0.75rem 1rem;
+  position: relative;
+  background: linear-gradient(135deg, rgba(13, 17, 28, 0.9), rgba(15, 23, 42, 0.95));
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0.9rem 1.25rem;
   overflow: hidden;
+  box-shadow:
+    0 25px 40px rgba(2, 6, 23, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 8px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    pointer-events: none;
+    box-shadow: inset 0 0 45px rgba(255, 143, 16, 0.06);
+  }
 `;
 
 const StepsWrapper = styled.ol`
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
   list-style: none;
   margin: 0;
   padding: 0;
+  position: relative;
 `;
 
 const StepButton = styled.button<{
@@ -41,36 +51,66 @@ const StepButton = styled.button<{
 }>`
   display: flex;
   align-items: center;
-  gap: 0.35rem;
-  padding: 0.35rem 0.65rem;
-  border-radius: 999px;
-  border: 1px solid transparent;
-  background: rgba(248, 250, 252, 0.9);
+  gap: 0.6rem;
+  padding: 0.55rem 0.95rem;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(15, 23, 42, 0.75);
   cursor: ${({ $clickable }) => ($clickable ? 'pointer' : 'default')};
   transition: all 0.2s ease-in-out;
   white-space: nowrap;
   flex-shrink: 0;
+  position: relative;
+  min-width: 135px;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent);
+    opacity: 0.55;
+    pointer-events: none;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: -30%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.16), transparent 70%);
+    opacity: 0.35;
+    pointer-events: none;
+    mix-blend-mode: screen;
+  }
 
   ${({ $status, $active }) => {
     if ($active) {
       return css`
-        background: linear-gradient(135deg, rgba(255, 143, 16, 0.16), rgba(0, 92, 169, 0.16));
-        border-color: rgba(255, 143, 16, 0.35);
-        box-shadow: 0 8px 18px rgba(255, 143, 16, 0.18);
+        background: linear-gradient(135deg, rgba(255, 143, 16, 0.4), rgba(14, 165, 233, 0.45));
+        border-color: rgba(255, 143, 16, 0.5);
+        box-shadow:
+          0 18px 35px rgba(255, 143, 16, 0.45),
+          inset 0 1px 0 rgba(255, 255, 255, 0.35);
+        transform: translateY(-2px);
       `;
     }
 
     if ($status === 'completed') {
       return css`
-        background: rgba(16, 185, 129, 0.12);
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(6, 95, 70, 0.6));
         border-color: rgba(16, 185, 129, 0.45);
-        box-shadow: 0 0 12px rgba(16, 185, 129, 0.25);
+        box-shadow:
+          0 14px 28px rgba(16, 185, 129, 0.32),
+          inset 0 1px 0 rgba(255, 255, 255, 0.15);
       `;
     }
 
     return css`
-      background: rgba(252, 165, 165, 0.18);
-      border-color: rgba(248, 113, 113, 0.5);
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.9));
+      border-color: rgba(148, 163, 184, 0.4);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
     `;
   }}
 
@@ -79,8 +119,8 @@ const StepButton = styled.button<{
     !$active &&
     css`
       &:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 6px 14px rgba(148, 163, 184, 0.25);
+        transform: translateY(-2px);
+        box-shadow: 0 14px 28px rgba(148, 163, 184, 0.35);
       }
     `}
 `;
@@ -96,9 +136,10 @@ const StepCircle = styled.span<{
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.7rem;
+  font-size: 0.82rem;
   font-weight: 700;
   transition: all 0.2s ease-in-out;
+  position: relative;
 
   ${({ $status, $active }) => {
     if ($active) {
@@ -128,25 +169,45 @@ const StepLabel = styled.span<{
   $status: SellWorkflowStepStatus;
   $active: boolean;
 }>`
-  font-size: 0.72rem;
+  font-size: 0.9rem;
   font-weight: ${({ $active }) => ($active ? 700 : 600)};
   letter-spacing: -0.01em;
   transition: color 0.2s ease-in-out;
   color: ${({ $status, $active }) => {
-    if ($active) return '#0f172a';
-    if ($status === 'completed') return '#0f766e';
-    return '#b91c1c';
+    if ($active) return '#f1f5f9';
+    if ($status === 'completed') return '#d1fae5';
+    return '#e2e8f0';
   }};
 `;
 
+const StepCaption = styled.span`
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(248, 250, 252, 0.55);
+`;
+
+const StepContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  align-items: flex-start;
+`;
+
 const Connector = styled.li<{ $completed: boolean }>`
-  width: 38px;
-  height: 3px;
+  width: 40px;
+  height: 4px;
   border-radius: 999px;
   flex-shrink: 0;
   background: ${({ $completed }) =>
-    $completed ? 'rgba(16, 185, 129, 0.9)' : 'rgba(248, 113, 113, 0.45)'};
+    $completed
+      ? 'linear-gradient(90deg, rgba(16, 185, 129, 0.95), rgba(45, 212, 191, 0.85))'
+      : 'linear-gradient(90deg, rgba(71, 85, 105, 0.65), rgba(51, 65, 85, 0.4))'};
   transition: background 0.25s ease-in-out;
+  box-shadow: ${({ $completed }) =>
+    $completed
+      ? '0 8px 16px rgba(16, 185, 129, 0.35)'
+      : 'inset 0 0 6px rgba(15, 23, 42, 0.65)'};
 
   @media (max-width: 1280px) {
     width: 28px;
@@ -215,45 +276,62 @@ const SellProgressBar: React.FC<SellProgressBarProps> = ({ currentStep }) => {
     [navigate, vehicleType, search]
   );
 
-  const currentIndex = SELL_WORKFLOW_STEP_ORDER.indexOf(currentStep);
+  const stepGroups = useMemo(() => {
+    return SELL_WORKFLOW_STEP_GROUPS.map((group, index) => {
+      const groupStepStatuses = group.steps.map(stepId => statuses[stepId] ?? 'pending');
+      const isActive = group.steps.includes(currentStep);
+      const isCompleted = groupStepStatuses.every(status => status === 'completed');
+      const nextTargetStep =
+        group.steps.find(stepId => statuses[stepId] !== 'completed') ?? group.steps[0];
+      return {
+        group,
+        index,
+        isActive,
+        isCompleted,
+        targetStep: nextTargetStep
+      };
+    });
+  }, [statuses, currentStep]);
+
+  const prefix = language === 'bg' ? 'Етап' : 'Stage';
 
   return (
     <BarContainer aria-label="Sell workflow progress">
       <StepsWrapper>
-        {SELL_WORKFLOW_STEPS.map((step, index) => {
-          const status = statuses[step.id] ?? 'pending';
-          const isActive = index === currentIndex;
-          const label = language === 'bg' ? step.labels.bg : step.labels.en;
-
+        {stepGroups.map(({ group, index, isActive, isCompleted, targetStep }) => {
+          const label = language === 'bg' ? group.labels.bg : group.labels.en;
           const isClickable = !isActive;
-
-          const connectorCompleted =
-            index > 0 &&
-            statuses[SELL_WORKFLOW_STEP_ORDER[index - 1]] === 'completed';
+          const connectorCompleted = stepGroups[index].isCompleted;
+          const statusForStyles: SellWorkflowStepStatus = isCompleted ? 'completed' : 'pending';
 
           return (
-            <React.Fragment key={step.id}>
+            <React.Fragment key={group.id}>
               <li>
                 <StepButton
                   type="button"
-                  $status={status}
+                  $status={statusForStyles}
                   $active={isActive}
                   $clickable={isClickable}
-                  onClick={() => handleStepClick(step.id, isClickable)}
+                  onClick={() => handleStepClick(targetStep, isClickable)}
                   aria-current={isActive ? 'step' : undefined}
                   aria-disabled={!isClickable}
                   title={label}
                   disabled={!isClickable}
                 >
-                  <StepCircle $status={status} $active={isActive}>
+                  <StepCircle $status={statusForStyles} $active={isActive}>
                     {index + 1}
                   </StepCircle>
-                  <StepLabel $status={status} $active={isActive}>
-                    {label}
-                  </StepLabel>
+                  <StepContent>
+                    <StepCaption>
+                      {prefix} {index + 1}
+                    </StepCaption>
+                    <StepLabel $status={statusForStyles} $active={isActive}>
+                      {label}
+                    </StepLabel>
+                  </StepContent>
                 </StepButton>
               </li>
-              {index < SELL_WORKFLOW_STEPS.length - 1 && (
+              {index < stepGroups.length - 1 && (
                 <Connector $completed={connectorCompleted} />
               )}
             </React.Fragment>

@@ -2,6 +2,8 @@
 // قاعدة بيانات الموديلات والفئات
 // Advanced system with model variants for major brands
 // EU Market Focus - 25+ brands with 2000+ variants
+// @deprecated This file will be phased out in favor of structured JSON pipeline (car-brands-structured.json + BRAND_MODEL_VARIANTS normalization).
+//            Use services/carBrandsService merged model retrieval instead of direct imports.
 
 import GMC_MODELS_VARIANTS from './brandModels/GMC_models';
 import OPEL_MODELS_VARIANTS from './brandModels/Opel_models';

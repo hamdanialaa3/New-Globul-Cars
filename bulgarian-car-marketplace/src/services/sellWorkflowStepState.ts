@@ -61,6 +61,14 @@ export const SellWorkflowStepStateService = {
     return snapshotStatuses();
   },
 
+  getStatus(stepId: SellWorkflowStepId): SellWorkflowStepStatus {
+    return stepStatuses[stepId] ?? 'pending';
+  },
+
+  isCompleted(stepId: SellWorkflowStepId): boolean {
+    return this.getStatus(stepId) === 'completed';
+  },
+
   setStatus(stepId: SellWorkflowStepId, status: SellWorkflowStepStatus) {
     if (stepStatuses[stepId] === status) return;
     stepStatuses = { ...stepStatuses, [stepId]: status };

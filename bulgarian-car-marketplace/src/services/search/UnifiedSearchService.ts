@@ -14,6 +14,8 @@
  */
 
 import { logger } from '@/services/logger-service';
+import { runUnifiedQuery } from './queryOrchestrator';
+import { SearchData } from '@/pages/05_search-browse/advanced-search/AdvancedSearchPage/types';
 
 export interface SearchQuery {
   text?: string;
@@ -33,6 +35,8 @@ export interface SearchResult {
   total: number;
   page: number;
   hasMore: boolean;
+  source?: 'algolia' | 'firestore';
+  processingMs?: number;
 }
 
 export class UnifiedSearchService {
@@ -55,14 +59,26 @@ export class UnifiedSearchService {
   async searchCars(query: SearchQuery, page: number = 1): Promise<SearchResult> {
     try {
       logger.debug('Searching cars', { query, page });
-      
-      // Implementation will use Algolia + Firestore
-      // For now, return structure
+      const orchestratorFilters: Partial<SearchData> = {
+        make: query.make,
+        model: query.model,
+        priceFrom: query.priceFrom ? String(query.priceFrom) : undefined,
+        priceTo: query.priceTo ? String(query.priceTo) : undefined,
+        firstRegistrationFrom: query.yearFrom ? String(query.yearFrom) : undefined,
+        firstRegistrationTo: query.yearTo ? String(query.yearTo) : undefined,
+        city: query.city,
+        fuelType: query.fuelType,
+        transmission: query.transmission,
+        searchDescription: query.text
+      };
+      const res = await runUnifiedQuery(orchestratorFilters, { page: page - 1, hitsPerPage: 40 });
       return {
-        cars: [],
-        total: 0,
+        cars: res.cars,
+        total: res.total,
         page,
-        hasMore: false
+        hasMore: res.total > page * 40,
+        source: res.source,
+        processingMs: res.processingMs
       };
       
     } catch (error) {
@@ -76,7 +92,31 @@ export class UnifiedSearchService {
    */
   async advancedSearch(filters: any): Promise<SearchResult> {
     logger.debug('Advanced search', { filters });
-    return this.searchCars(filters);
+    const res = await runUnifiedQuery(filters, { page: 0, hitsPerPage: 40 });
+    return {
+      cars: res.cars,
+      total: res.total,
+      page: 1,
+      hasMore: res.total > 40,
+      source: res.source,
+      processingMs: res.processingMs
+    };
+  }
+  
+  /**
+   * Advanced search with pagination support and configurable page size
+   */
+  async advancedSearchPaged(filters: any, page: number = 1, hitsPerPage: number = 20): Promise<SearchResult> {
+    logger.debug('Advanced search (paged)', { filters, page, hitsPerPage });
+    const res = await runUnifiedQuery(filters, { page: Math.max(0, page - 1), hitsPerPage });
+    return {
+      cars: res.cars,
+      total: res.total,
+      page,
+      hasMore: res.total > page * hitsPerPage,
+      source: res.source,
+      processingMs: res.processingMs
+    };
   }
   
   /**

@@ -1,6 +1,9 @@
 // Car Logo Service
 // خدمة شعارات السيارات
 
+import { ALL_CAR_BRANDS } from './allCarBrands';
+import { brandToLogoFileKey, resolveCanonicalBrand } from './brand-normalization';
+
 /**
  * Get the logo URL for a car brand
  * @param brandName - The name of the car brand (e.g., "Toyota", "BMW", "Mercedes-Benz")
@@ -27,6 +30,9 @@ export const getCarLogoUrl = (brandName: string): string => {
  */
 export const normalizeBrandName = (brandName: string): string => {
   if (!brandName) return '';
+
+  // Prefer shared canonical resolver for consistency across app
+  const canonical = resolveCanonicalBrand(brandName);
 
   // Handle special cases
   const specialCases: Record<string, string> = {
@@ -56,7 +62,17 @@ export const normalizeBrandName = (brandName: string): string => {
     return specialCases[lowerBrand];
   }
 
-  // Capitalize first letter of each word
+  // Exact match against our canonical brand list (preserves official casing)
+  const canonicalMatch = ALL_CAR_BRANDS.find(
+    brand => brand.toLowerCase() === lowerBrand
+  );
+  if (canonicalMatch) {
+    return canonicalMatch;
+  }
+
+  // Use shared canonical if available, else fallback to capitalization
+  if (canonical) return brandToLogoFileKey(canonical);
+
   return brandName
     .split(' ')
     .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())

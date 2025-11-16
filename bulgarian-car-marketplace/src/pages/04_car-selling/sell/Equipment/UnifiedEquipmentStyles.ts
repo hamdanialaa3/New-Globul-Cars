@@ -49,6 +49,12 @@ export const Subtitle = styled.p`
   line-height: 1.6;
 `;
 
+export const BrandOrbitInline = styled.div`
+  align-self: flex-start;
+  max-width: 240px;
+  margin-top: 1rem;
+`;
+
 // Tabs
 export const TabsContainer = styled.div`
   display: grid;

@@ -2,7 +2,7 @@
 // Purpose: Price setting for vehicle listing on mobile/tablet
 // Mobile-first; no emojis; <300 lines
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate, useSearchParams, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -11,6 +11,7 @@ import { MobileHeader } from '@/components/layout/MobileHeader';
 import { S } from './MobilePricingPage.styles';
 import { SellProgressBar } from '@/components/SellWorkflow';
 import SellWorkflowStepStateService from '@/services/sellWorkflowStepState';
+import { usePricingForm } from './Pricing/usePricingForm';
 
 const ProgressWrapper = styled.div`
   padding: 0.75rem 1rem 0;
@@ -22,35 +23,30 @@ const MobilePricingPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const { vehicleType = 'car' } = useParams<{ vehicleType: string }>();
   
-  const [price, setPrice] = useState('');
-  const [negotiable, setNegotiable] = useState(true);
-  const [vatDeductible, setVatDeductible] = useState(false);
+  const { pricingData, handleFieldChange, canContinue, serialize } = usePricingForm();
 
   useEffect(() => {
     SellWorkflowStepStateService.markPending('pricing');
   }, []);
 
   const handleContinue = () => {
-    if (!price || parseFloat(price) <= 0) return;
+    if (!pricingData.price || parseFloat(pricingData.price) <= 0) return;
 
-    const params = new URLSearchParams(searchParams.toString());
-    params.set('price', price);
-    params.set('negotiable', negotiable.toString());
-    params.set('vatDeductible', vatDeductible.toString());
-    
-     navigate(`/sell/inserat/${vehicleType}/contact?${params.toString()}`);
+    const params = serialize();
+    navigate(`/sell/inserat/${vehicleType}/contact?${params.toString()}`);
   };
 
-  const canContinue = !!(price && parseFloat(price) > 0);
-  const formattedPrice = price ? parseFloat(price).toLocaleString(language === 'bg' ? 'bg-BG' : 'en-US') : '';
+  const formattedPrice = pricingData.price
+    ? parseFloat(pricingData.price).toLocaleString(language === 'bg' ? 'bg-BG' : 'en-US')
+    : '';
 
   useEffect(() => {
-    if (price && parseFloat(price) > 0) {
+    if (pricingData.price && parseFloat(pricingData.price) > 0) {
       SellWorkflowStepStateService.markCompleted('pricing');
     } else {
       SellWorkflowStepStateService.markPending('pricing');
     }
-  }, [price]);
+  }, [pricingData.price]);
 
   return (
     <S.PageWrapper>
@@ -77,8 +73,8 @@ const MobilePricingPage: React.FC = () => {
                     id="price"
                     type="number"
                     inputMode="decimal"
-                    value={price}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPrice(e.target.value)}
+                    value={pricingData.price}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFieldChange('price', e.target.value)}
                     placeholder="25000"
                     min="0"
                     step="100"
@@ -96,8 +92,8 @@ const MobilePricingPage: React.FC = () => {
                 <S.Checkbox
                   type="checkbox"
                   id="negotiable"
-                  checked={negotiable}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNegotiable(e.target.checked)}
+                  checked={pricingData.negotiable}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFieldChange('negotiable', e.target.checked)}
                 />
                 <S.CheckboxLabel htmlFor="negotiable">
                   {t('sell.pricing.negotiable')}
@@ -108,8 +104,8 @@ const MobilePricingPage: React.FC = () => {
                 <S.Checkbox
                   type="checkbox"
                   id="vat"
-                  checked={vatDeductible}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setVatDeductible(e.target.checked)}
+                  checked={pricingData.vatDeductible}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFieldChange('vatDeductible', e.target.checked)}
                 />
                 <S.CheckboxLabel htmlFor="vat">
                   {t('sell.pricing.vatDeductible')}

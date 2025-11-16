@@ -1,12 +1,14 @@
 // src/pages/AdvancedSearchPage/hooks/useAdvancedSearch.ts
 // Custom hook for Advanced Search Page state management
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '../../../../../hooks/useTranslation';
 import { SearchData, SectionState, SectionName, SortOption, ViewMode, SearchResultsMeta } from '../types';
 import { CarListing } from '../../../../../types/CarListing';
 import algoliaSearchService from '../../../../../services/algoliaSearchService';
+import { useFilters } from '@/contexts/FilterContext';
+import { brandsModelsDataService } from '@/services/brands-models-data.service';
 
 const createInitialSearchData = (): SearchData => ({
   // Basic Data
@@ -103,9 +105,28 @@ export const useAdvancedSearch = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  // Search Form State
+  const { filters, updateFilter } = useFilters();
+
+  // Search Form State (local UI state; core subset synced with FilterContext)
   const [searchData, setSearchData] = useState<SearchData>(createInitialSearchData());
   const [isSearching, setIsSearching] = useState(false);
+  
+  // ✅ NEW: Load brands dynamically from centralized service
+  const [carMakes, setCarMakes] = useState<string[]>([]);
+  
+  useEffect(() => {
+    // Load brands on mount
+    brandsModelsDataService.getAllBrands().then(brands => {
+      setCarMakes(brands);
+    }).catch(error => {
+      console.error('Failed to load car makes:', error);
+      // Fallback to popular brands
+      setCarMakes([
+        'Volkswagen', 'Mercedes-Benz', 'BMW', 'Audi', 'Opel', 'Toyota', 
+        'Ford', 'Peugeot', 'Honda', 'Renault'
+      ]);
+    });
+  }, []);
   
   // Search Results State
   const [searchResults, setSearchResults] = useState<CarListing[]>([]);
@@ -162,7 +183,42 @@ export const useAdvancedSearch = () => {
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
+
+    // Sync core filters to FilterContext
+    const coreMap: Record<string, (val: string) => void> = {
+      make: v => updateFilter('make', v),
+      model: v => updateFilter('model', v),
+      priceFrom: v => updateFilter('priceFrom', v),
+      priceTo: v => updateFilter('priceTo', v),
+      firstRegistrationFrom: v => updateFilter('yearFrom', v),
+      firstRegistrationTo: v => updateFilter('yearTo', v),
+      city: v => updateFilter('city', v),
+      fuelType: v => updateFilter('fuelType', v),
+      transmission: v => updateFilter('transmission', v),
+      searchDescription: v => updateFilter('text', v)
+    };
+    if (coreMap[name]) coreMap[name](type === 'checkbox' ? String(checked ? 'true' : '') : value);
   };
+
+  // Initial hydration from FilterContext (once)
+  useEffect(() => {
+    // Only apply if filters has data (avoid overwriting user input after first change)
+    if (!filters) return;
+    setSearchData(prev => ({
+      ...prev,
+      make: filters.make || prev.make,
+      model: filters.model || prev.model,
+      priceFrom: filters.priceFrom || prev.priceFrom,
+      priceTo: filters.priceTo || prev.priceTo,
+      firstRegistrationFrom: filters.yearFrom || prev.firstRegistrationFrom,
+      firstRegistrationTo: filters.yearTo || prev.firstRegistrationTo,
+      city: filters.city || prev.city,
+      fuelType: filters.fuelType || prev.fuelType,
+      transmission: filters.transmission || prev.transmission,
+      searchDescription: filters.text || prev.searchDescription
+    }));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Handle Form Submission
   const handleSearch = async (e: React.FormEvent) => {
@@ -173,7 +229,7 @@ export const useAdvancedSearch = () => {
       console.log('🔍 Starting Algolia search with filters:', searchData);
       
       // Use Algolia search service with sorting
-      const response = await algoliaSearchService.searchCars(searchData, { 
+      const response = await algoliaSearchService.searchCars(searchData, {
         sortBy,
         page: 0,
         hitsPerPage: 100 
@@ -214,13 +270,7 @@ export const useAdvancedSearch = () => {
     setSearchData(createInitialSearchData());
   };
 
-  // ✅ FIXED: Use popular brands (simpler and faster)
-  const carMakes = [
-    'BMW', 'Mercedes-Benz', 'Audi', 'Volkswagen', 'Toyota', 'Honda', 
-    'Ford', 'Opel', 'Renault', 'Peugeot', 'Citroën', 'Fiat', 'Seat',
-    'Škoda', 'Dacia', 'Suzuki', 'Mazda', 'Mitsubishi', 'Volvo', 'Lexus'
-  ];
-
+  // ✅ Data arrays loaded from service or constants
   const fuelTypes = [
     t('advancedSearch.gasolineFuel'), t('advancedSearch.dieselFuel'), t('advancedSearch.electricFuel'), t('advancedSearch.ethanolFuel'),
     t('advancedSearch.hybridDieselElectric'), t('advancedSearch.hybridGasolineElectric'),

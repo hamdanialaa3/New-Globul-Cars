@@ -1,304 +1,289 @@
-// src/pages/AdvancedSearchPage/styles.ts
-// Styled components for Advanced Search Page
-// Inspired by mobile.de design system
+// ملف أنماط صفحة البحث المتقدم - نظام ألوان مرن مع تحكم كامل بالحجم
+// جميع التعليقات بالعربي لسهولة الصيانة
 
 import styled from 'styled-components';
 
-// Mobile.de Exact Colors - Professional Design System
-export const colors = {
-  primary: {
-    orange: '#FF7900',      // Mobile.de main orange
-    orangeHover: '#E86900', // Orange hover state
-    orangeLight: '#FFF4ED', // Light orange background
-    blue: '#0066CC',        // Mobile.de blue
-    blueHover: '#0052A3',   // Blue hover state
-  },
-  neutral: {
-    white: '#FFFFFF',
-    grayBg: '#F8F9FA',      // Main background
-    grayLight: '#F1F3F4',   // Light gray
-    grayBorder: '#E1E5E9',  // Border color
-    grayText: '#5F6368',    // Secondary text
-    grayDark: '#3C4043',    // Primary text
-    black: '#000000',
-  },
-  text: {
-    primary: '#202124',     // Main text color
-    secondary: '#5F6368',   // Secondary text
-    link: '#1A73E8',        // Link color
-  }
+// 🎨 ألوان افتراضية قابلة لإعادة الاستخدام
+export const defaultColors = {
+  primary: '#ff6b00',
+  secondary: '#0f172a',
+  text: '#f5f6fa',
+  textSecondary: '#b5b8c4',
+  background: '#1b1f2a',
+  card: '#242936',
+  border: '#2f3544',
+  accent: '#ff4d4f',
+  muted: '#3c4152',
+  success: '#2fff00',
+  error: '#ff3b30'
 };
 
-// Mobile.de Exact Layout Container
-export const SearchContainer = styled.div`
+// 🧱 الحاوية الرئيسية
+export const SearchContainer = styled.div<{
+  bgColor?: string;
+  paddingY?: string;
+}>`
   min-height: 100vh;
-  background: var(--bg-primary);
-  padding: 24px 0;
+  background: ${({ bgColor }) => bgColor || defaultColors.background};
+  padding: ${({ paddingY }) => paddingY || '24px'} 0;
   direction: ltr;
+  --as-card: ${defaultColors.card};
+  --as-border: ${defaultColors.border};
+  --as-text: ${defaultColors.text};
+  --as-text-secondary: ${defaultColors.textSecondary};
+  --as-accent: ${defaultColors.accent};
 `;
 
-export const Container = styled.div`
-  max-width: 1200px;
+// 📦 حاوية المحتوى
+export const Container = styled.div<{ maxWidth?: string }>`
+  max-width: ${({ maxWidth }) => maxWidth || '1200px'};
   margin: 0 auto;
   padding: 0 16px;
   direction: ltr;
 `;
 
-// Mobile.de Header Style - Simple and Clean
-export const HeaderSection = styled.div`
+// 📰 رأس الصفحة
+export const HeaderSection = styled.div<{
+  titleSize?: string;
+  descSize?: string;
+  titleColor?: string;
+  descColor?: string;
+}>`
   margin-bottom: 24px;
   text-align: left;
 
   h1 {
-    font-size: 28px;
-    font-weight: 400;
-    color: var(--text-primary);
-    margin: 0 0 8px 0;
-    line-height: 1.2;
+    font-size: ${({ titleSize }) => titleSize || '1.4rem'};
+    color: ${({ titleColor }) => titleColor || defaultColors.text};
+    font-weight: 600;
+    margin: 0 0 8px;
   }
 
   p {
-    font-size: 14px;
-    color: var(--text-secondary);
+    font-size: ${({ descSize }) => descSize || '0.85rem'};
+    color: ${({ descColor }) => descColor || defaultColors.textSecondary};
     margin: 0;
-    line-height: 1.4;
   }
 `;
 
-// Mobile.de Form Container - Exact Style with Sections
-export const SearchForm = styled.form`
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  margin-bottom: 16px;
-  box-shadow: var(--shadow-sm);
-  width: 100%;
+// 🧾 نموذج البحث
+export const SearchForm = styled.form<{
+  cardColor?: string;
+  borderColor?: string;
+  radius?: string;
+}>`
+  background: ${({ cardColor }) => cardColor || 'var(--as-card)'};
+  border: 1px solid ${({ borderColor }) => borderColor || 'var(--as-border)'};
+  border-radius: ${({ radius }) => radius || '16px'};
+  margin-bottom: 20px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
   overflow: hidden;
 `;
 
-// Section Card - Mobile.de Style
 export const SectionCard = styled.div`
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--as-border);
 
   &:last-child {
     border-bottom: none;
   }
 `;
 
-// Section Header - Clickable Mobile.de Style
-export const SectionHeader = styled.div<{ $isOpen: boolean }>`
-  background: ${props => props.$isOpen ? 'var(--bg-secondary)' : 'var(--bg-card)'};
-  padding: 16px 20px;
+// ⬇️ رأس كل قسم
+export const SectionHeader = styled.div<{
+  $isOpen: boolean;
+  padding?: string;
+}>`
+  background: ${({ $isOpen }) => ($isOpen ? '#2b3142' : 'var(--as-card)')};
+  padding: ${({ padding }) => padding || '16px 20px'};
   cursor: pointer;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  transition: background-color 0.2s ease;
-  border: 1px solid var(--border);
+  transition: background 0.2s ease, border-color 0.2s ease;
+  border: 1px solid ${({ $isOpen }) => ($isOpen ? defaultColors.accent : 'var(--as-border)')};
 
   &:hover {
-    background: var(--bg-hover);
+    background: #2f3649;
   }
 `;
 
-// Section Content - Expandable
 export const SectionContent = styled.div<{ $isOpen: boolean }>`
-  max-height: ${props => props.$isOpen ? '2000px' : '0'};
+  max-height: ${({ $isOpen }) => ($isOpen ? '2200px' : '0')};
   overflow: hidden;
-  transition: max-height 0.3s ease;
-  background: var(--bg-card);
+  transition: max-height 0.35s ease;
+  background: var(--as-card);
 `;
 
-// Section Body - Padding for content
-export const SectionBody = styled.div`
-  padding: 20px;
+export const SectionBody = styled.div<{ padding?: string }>`
+  padding: ${({ padding }) => padding || '20px'};
 `;
 
-// Mobile.de Section Title Style
-export const SectionTitle = styled.h3`
-  font-size: 16px;
-  font-weight: 500;
-  color: var(--text-primary);
+export const SectionTitle = styled.h3<{
+  color?: string;
+  size?: string;
+}>`
+  font-size: ${({ size }) => size || '0.85rem'};
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: ${({ color }) => color || defaultColors.textSecondary};
   margin: 0;
-  padding: 0;
-  border: none;
 `;
 
-// Expand/Collapse Icon
-export const ExpandIcon = styled.span<{ $isOpen: boolean }>`
-  font-size: 14px;
-  color: var(--text-secondary);
+export const ExpandIcon = styled.span<{
+  $isOpen: boolean;
+  iconSize?: string;
+  iconColor?: string;
+}>`
+  font-size: ${({ iconSize }) => iconSize || '1rem'};
+  color: ${({ iconColor }) => iconColor || defaultColors.accent};
+  transform: ${({ $isOpen }) => ($isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
   transition: transform 0.2s ease;
-  transform: ${props => props.$isOpen ? 'rotate(180deg)' : 'rotate(0deg)'};
+  text-shadow: 0 0 8px ${({ iconColor }) => iconColor || defaultColors.accent};
 
   &::before {
     content: '▼';
   }
 `;
 
-// Mobile.de Grid Layout - Multi-column like original
-export const FormGrid = styled.div`
+// 🧮 شبكة الحقول
+export const FormGrid = styled.div<{ gap?: string }>`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 16px;
-  margin-bottom: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: ${({ gap }) => gap || '16px'};
+  margin-bottom: 20px;
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
   }
 `;
 
-// Mobile.de Form Group Style
-export const FormGroup = styled.div`
+export const FormGroup = styled.div<{
+  labelColor?: string;
+  labelSize?: string;
+}>`
   display: flex;
   flex-direction: column;
   gap: 6px;
 
   label {
-    font-weight: 400;
-    color: var(--text-primary);
-    font-size: 14px;
-    margin: 0;
-    line-height: 1.4;
+    font-size: ${({ labelSize }) => labelSize || '0.78rem'};
+    font-weight: 500;
+    color: ${({ labelColor }) => labelColor || defaultColors.textSecondary};
+    letter-spacing: 0.04em;
   }
 `;
 
-// Mobile.de Input Style - Exact Match
-export const SearchInput = styled.input`
-  padding: 12px 16px;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  font-size: 14px;
-  color: var(--text-primary);
-  transition: border-color 0.2s ease;
-  height: 44px;
-  line-height: 1.4;
+const baseFieldStyles = `
   width: 100%;
-  box-sizing: border-box;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--as-border);
+  color: var(--as-text);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+
+  &:focus {
+    outline: none;
+    border-color: ${defaultColors.accent};
+    box-shadow: 0 0 0 2px rgba(255, 77, 79, 0.15);
+  }
+`;
+
+export const SearchInput = styled.input<{
+  fontSize?: string;
+  height?: string;
+}>`
+  ${baseFieldStyles}
+  padding: 12px 16px;
+  font-size: ${({ fontSize }) => fontSize || '0.9rem'};
+  height: ${({ height }) => height || '44px'};
 
   &::placeholder {
-    color: var(--text-secondary);
-  }
-
-  &:focus {
-    outline: none;
-    border-color: var(--accent-primary);
-  }
-
-  &:hover {
-    border-color: var(--accent-primary);
+    color: var(--as-text-secondary);
   }
 `;
 
-// Mobile.de Select Style - Exact Match
-export const SearchSelect = styled.select`
+export const SearchSelect = styled.select<{
+  fontSize?: string;
+  height?: string;
+}>`
+  ${baseFieldStyles}
   padding: 12px 16px;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  font-size: 14px;
-  color: var(--text-primary);
+  font-size: ${({ fontSize }) => fontSize || '0.9rem'};
+  height: ${({ height }) => height || '44px'};
   cursor: pointer;
-  transition: border-color 0.2s ease;
-  height: 44px;
-  line-height: 1.4;
-  width: 100%;
-  box-sizing: border-box;
 
   option {
-    background: var(--bg-card);
-    color: var(--text-primary);
-    padding: 8px 16px;
-    font-size: 14px;
-  }
-
-  &:focus {
-    outline: none;
-    border-color: var(--accent-primary);
-  }
-
-  &:hover {
-    border-color: var(--accent-primary);
+    background: #1d212d;
+    color: var(--as-text);
   }
 `;
 
-// Mobile.de Checkbox Group Style
 export const CheckboxGroup = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 8px;
+  gap: 10px;
+  margin-top: 10px;
 `;
 
-export const CheckboxLabel = styled.label`
-  display: flex;
+export const CheckboxLabel = styled.label<{
+  textSize?: string;
+}>`
+  display: inline-flex;
   align-items: center;
   gap: 10px;
-  font-size: 14px;
-  color: var(--text-primary);
-  cursor: pointer;
   padding: 8px 12px;
-  border-radius: 6px;
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--as-border);
+  color: var(--as-text);
+  font-size: ${({ textSize }) => textSize || '0.8rem'};
+  cursor: pointer;
   transition: all 0.2s ease;
-  line-height: 1.4;
-  white-space: nowrap;
   user-select: none;
 
   &:hover {
-    background: var(--bg-hover);
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--as-accent);
   }
 
-  /* Hide the default checkbox */
-  input[type="checkbox"] {
+  input {
     display: none;
   }
 `;
 
-// Custom circular checkbox style
 export const CustomCheckbox = styled.div<{ checked: boolean }>`
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  border: 2px solid ${props => props.checked ? 'var(--success)' : 'var(--error)'};
-  background: ${props => props.checked ? 'var(--success)' : 'var(--bg-error)'};
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 1px solid ${({ checked }) => (checked ? defaultColors.success : defaultColors.muted)};
+  background: ${({ checked }) => (checked ? defaultColors.success : 'transparent')};
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
-  position: relative;
-  flex-shrink: 0;
 
-  /* Checkmark icon */
   &::after {
     content: '✓';
-    color: white;
     font-size: 12px;
-    font-weight: bold;
-    opacity: ${props => props.checked ? 1 : 0};
-    transform: ${props => props.checked ? 'scale(1)' : 'scale(0.3)'};
-    transition: all 0.2s ease;
-  }
-
-  /* Hover effect */
-  &:hover {
-    transform: scale(1.05);
-    box-shadow: var(--shadow-md);
+    color: #0f172a;
+    opacity: ${({ checked }) => (checked ? 1 : 0)};
+    transform: ${({ checked }) => (checked ? 'scale(1)' : 'scale(0.4)')};
+    transition: all 0.15s ease;
   }
 `;
 
-// Mobile.de Range Input Group Style
-export const RangeGroup = styled.div`
+export const RangeGroup = styled.div<{
+  labelColor?: string;
+  labelSize?: string;
+}>`
   display: flex;
   gap: 8px;
   align-items: center;
-  width: 100%;
 
   span {
-    color: var(--text-secondary);
-    font-size: 14px;
+    color: ${({ labelColor }) => labelColor || defaultColors.textSecondary};
+    font-size: ${({ labelSize }) => labelSize || '0.75rem'};
     white-space: nowrap;
-    padding: 0 4px;
   }
 
   input {
@@ -306,14 +291,13 @@ export const RangeGroup = styled.div`
   }
 `;
 
-// Mobile.de Action Section - Horizontal Layout
 export const ActionSection = styled.div`
   display: flex;
   gap: 12px;
   align-items: center;
   margin-top: 24px;
-  padding-top: 24px;
-  border-top: 1px solid var(--border);
+  padding-top: 20px;
+  border-top: 1px solid var(--as-border);
 
   @media (max-width: 768px) {
     flex-direction: column;
@@ -321,75 +305,60 @@ export const ActionSection = styled.div`
   }
 `;
 
-export const SearchButton = styled.button`
+export const SearchButton = styled.button<{
+  fontSize?: string;
+}>`
+  flex: 0 0 auto;
   padding: 12px 32px;
-  background: var(--accent-orange);
-  color: var(--text-on-accent);
+  border-radius: 12px;
   border: none;
-  border-radius: 4px;
-  font-weight: 500;
-  font-size: 16px;
+  background: linear-gradient(135deg, #ff6b00, #ff3d71);
+  color: white;
+  font-size: ${({ fontSize }) => fontSize || '0.95rem'};
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s ease;
-  height: 44px;
-  min-width: 120px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 
   &:hover {
-    background: var(--accent-orange-hover);
-  }
-
-  &:active {
-    background: var(--accent-orange-hover);
-  }
-
-  &:disabled {
-    background: var(--bg-disabled);
-    cursor: not-allowed;
+    transform: translateY(-1px);
+    box-shadow: 0 12px 24px rgba(255, 77, 79, 0.3);
   }
 `;
 
 export const ResetButton = styled.button`
   padding: 12px 24px;
-  background: var(--bg-secondary);
-  color: var(--text-secondary);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  font-weight: 400;
-  font-size: 14px;
+  border-radius: 12px;
+  border: 1px solid var(--as-border);
+  background: transparent;
+  color: var(--as-text-secondary);
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s ease;
-  height: 44px;
-  min-width: 100px;
+  transition: border-color 0.2s ease;
 
   &:hover {
-    background: var(--bg-hover);
-    border-color: var(--accent-primary);
+    border-color: var(--as-accent);
   }
 `;
 
-// Results Summary - Clean White Card
 export const ResultsSummary = styled.div`
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 2rem;
-  margin-top: 2rem;
-  text-align: left; /* Left align content */
-  direction: ltr; /* Left-to-right direction */
-  box-shadow: var(--shadow-sm);
+  background: var(--as-card);
+  border: 1px solid var(--as-border);
+  border-radius: 16px;
+  padding: 32px;
+  margin-top: 32px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
 
   h4 {
-    color: var(--accent-primary);
-    font-size: 1.3rem;
-    margin-bottom: 1rem;
-    text-align: left; /* Left align heading */
-    direction: ltr; /* Left-to-right direction */
+    color: var(--as-accent);
+    font-size: 1rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
   }
 
   p {
-    color: var(--text-secondary);
-    font-size: 1rem;
-    text-align: left; /* Left align paragraph */
-    direction: ltr; /* Left-to-right direction */
+    color: var(--as-text-secondary);
+    font-size: 0.85rem;
+    line-height: 1.5;
   }
 `;

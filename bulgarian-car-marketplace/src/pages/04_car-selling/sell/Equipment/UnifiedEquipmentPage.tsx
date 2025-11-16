@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import SplitScreenLayout from '@/components/SplitScreenLayout';
-import { WorkflowFlow } from '@/components/WorkflowVisualization';
+import BrandLogoSphere from '@/components/BrandLogoSphere';
 import { 
   Shield, Zap, AlertTriangle, Eye, Wind, Droplets, Armchair, Sun, 
   Fan, Snowflake, Radio, Bluetooth, Smartphone, Music, Wifi, Navigation,
@@ -14,6 +14,7 @@ import {
 import * as S from './UnifiedEquipmentStyles';
 import { SellWorkflowLayout } from '@/components/SellWorkflow';
 import SellWorkflowStepStateService from '@/services/sellWorkflowStepState';
+import { useEquipmentSelection } from './useEquipmentSelection';
 
 // Equipment Categories
 const EQUIPMENT_CATEGORIES = {
@@ -66,59 +67,33 @@ const UnifiedEquipmentPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const { language } = useLanguage();
 
-  const [selectedFeatures, setSelectedFeatures] = useState<Record<EquipmentCategory, string[]>>({
-    safety: [],
-    comfort: [],
-    infotainment: [],
-    extras: []
-  });
-
+  const {
+    selected: selectedFeatures,
+    toggleFeature,
+    totalSelected,
+    serialize
+  } = useEquipmentSelection();
   const [activeTab, setActiveTab] = useState<EquipmentCategory>('safety');
   const vehicleType = searchParams.get('vt');
   const make = searchParams.get('mk');
 
-  // Load existing selections from URL
-  useEffect(() => {
-    const categories: EquipmentCategory[] = ['safety', 'comfort', 'infotainment', 'extras'];
-    const newSelections: Record<EquipmentCategory, string[]> = {
-      safety: [],
-      comfort: [],
-      infotainment: [],
-      extras: []
-    };
-
-    categories.forEach(category => {
-      const param = searchParams.get(category);
-      if (param) {
-        newSelections[category] = param.split(',');
-      }
-    });
-
-    setSelectedFeatures(newSelections);
-  }, [searchParams]);
-
-  const toggleFeature = (category: EquipmentCategory, featureId: string) => {
-    setSelectedFeatures(prev => ({
-      ...prev,
-      [category]: prev[category].includes(featureId)
-        ? prev[category].filter(id => id !== featureId)
-        : [...prev[category], featureId]
-    }));
-  };
-
   const handleContinue = () => {
-    const params = new URLSearchParams(searchParams.toString());
-    
-    // Add all selected features to URL
-    Object.entries(selectedFeatures).forEach(([category, features]) => {
-      if (features.length > 0) {
-        params.set(category, features.join(','));
-      } else {
-        params.delete(category);
-      }
-    });
-
-    navigate(`/sell/inserat/${vehicleType || 'car'}/details/bilder?${params.toString()}`);
+    try {
+      // Save equipment selection to workflow
+      const equipmentData = {
+        equipment: selectedFeatures,
+        equipmentCount: totalSelected
+      };
+      
+      // Update workflow data
+      // Note: This assumes useEquipmentSelection handles persistence
+      
+      const params = serialize();
+      navigate(`/sell/inserat/${vehicleType || 'car'}/details/bilder?${params.toString()}`);
+    } catch (error) {
+      logger.error('Error saving equipment data', error as Error);
+      // Could show toast error here
+    }
   };
 
   useEffect(() => {
@@ -141,8 +116,6 @@ const UnifiedEquipmentPage: React.FC = () => {
       default: return null;
     }
   };
-
-  const totalSelected = Object.values(selectedFeatures).flat().length;
 
   useEffect(() => {
     if (totalSelected > 0) {
@@ -254,7 +227,12 @@ const UnifiedEquipmentPage: React.FC = () => {
     </S.ContentSection>
   );
 
-  const rightContent = <WorkflowFlow currentStepIndex={2} totalSteps={8} carBrand={make || undefined} language={language} />;
+  const rightContent = make ? (
+    <BrandLogoSphere 
+      make={make} 
+      ariaLabel={language === 'bg' ? 'Лого на марката' : 'Brand logo'}
+    />
+  ) : null;
 
   return (
     <SellWorkflowLayout currentStep="equipment">

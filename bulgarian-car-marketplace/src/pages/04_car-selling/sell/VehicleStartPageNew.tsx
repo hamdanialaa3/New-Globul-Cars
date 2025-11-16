@@ -8,7 +8,6 @@ import { logger } from '@/services/logger-service';
 import styled from 'styled-components';
 import { Car, Truck, Bus, Bike, Caravan, CarFront } from 'lucide-react';
 import SplitScreenLayout from '@/components/SplitScreenLayout';
-import { WorkflowFlow } from '@/components/WorkflowVisualization';
 import { useAuth } from '@/contexts/AuthProvider';
 import { useProfileType } from '@/contexts/ProfileTypeContext';
 import { toast } from 'react-toastify';
@@ -20,65 +19,40 @@ const ContentSection = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
 `;
 
-const HeaderCard = styled.div`
+const VehicleGridCard = styled.div`
   background: var(--bg-card);
-  border-radius: 20px;
-  box-shadow: var(--shadow-md);
   padding: 2.5rem;
+  border-radius: 20px;
   border: 1px solid var(--border);
-  position: relative;
-  overflow: hidden;
-`;
-
-const Title = styled.h1`
-  font-size: 1.75rem; /* 28px - Global Standard */
-  font-weight: 700;
-  color: var(--text-primary);
-  margin: 0 0 0.75rem 0;
-  letter-spacing: -0.5px;
-  line-height: 1.2;
-  
-  @media (max-width: 768px) {
-    font-size: 1.5rem;
-  }
-`;
-
-const Subtitle = styled.p`
-  font-size: 1rem; /* 16px */
-  color: var(--text-secondary);
-  margin: 0;
-  line-height: 1.6;
+  box-shadow: var(--shadow-md);
 `;
 
 const VehicleGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
-  background: var(--bg-card);
-  padding: 1.5rem;
-  border-radius: 15px;
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--border);
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.25rem;
 
   @media (max-width: 768px) {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  @media (max-width: 480px) {
+  @media (max-width: 520px) {
     grid-template-columns: 1fr;
   }
 `;
 
 const VehicleOption = styled.div<{ $isHovered: boolean }>`
-  background: ${props => props.$isHovered 
-    ? 'var(--accent-primary)' 
-    : 'var(--bg-secondary)'
-  };
+  background: ${props => props.$isHovered
+    ? 'var(--accent-primary)'
+    : 'var(--bg-secondary)'};
   border: 2px solid ${props => props.$isHovered ? 'var(--accent-primary)' : 'var(--border)'};
-  border-radius: 12px;
-  padding: 1.5rem 1rem;
+  border-radius: 16px;
+  padding: 1.75rem 1.25rem;
   text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -115,30 +89,15 @@ const VehicleIconWrapper = styled.div<{ $isHovered: boolean }>`
 `;
 
 const VehicleLabel = styled.div`
-  font-size: 1rem; /* 16px */
+  font-size: 1.1rem;
   font-weight: 600;
   line-height: 1.3;
 `;
 
 const VehicleDesc = styled.div`
-  font-size: 0.75rem;
-  opacity: 0.85;
-  margin-top: 0.25rem;
-`;
-
-const InfoCard = styled.div`
-  background: var(--bg-secondary);
-  border-radius: 15px;
-  padding: 1.5rem;
-  border-left: 4px solid var(--accent-primary);
-  border: 1px solid var(--border);
-`;
-
-const InfoText = styled.p`
-  color: var(--text-secondary);
-  line-height: 1.6;
-  margin: 0;
   font-size: 0.9rem;
+  opacity: 0.85;
+  margin-top: 0.35rem;
 `;
 
 const VehicleStartPageNew: React.FC = () => {
@@ -208,61 +167,46 @@ const VehicleStartPageNew: React.FC = () => {
     
     SellWorkflowStepStateService.markCompleted('vehicle-selection');
 
-    // Auto-navigate immediately
+    // Auto-navigate immediately to vehicle data step
     navigate(`/sell/inserat/${typeId}/fahrzeugdaten/antrieb-und-umwelt?${params.toString()}`);
   };
 
   const leftContent = (
     <ContentSection>
-      <HeaderCard>
-        <Title>{t('sell.start.chooseTypeTitle')}</Title>
-        <Subtitle>{t('sell.start.chooseTypeSubtitle')}</Subtitle>
-      </HeaderCard>
+      <VehicleGridCard>
+        <VehicleGrid>
+          {vehicleTypes.map((vehicle) => {
+            const IconComponent = vehicle.IconComponent;
+            const isHovered = hoveredType === vehicle.id;
 
-      <VehicleGrid>
-        {vehicleTypes.map((vehicle) => {
-          const IconComponent = vehicle.IconComponent;
-          const isHovered = hoveredType === vehicle.id;
-          
-          return (
-            <VehicleOption
-              key={vehicle.id}
-              $isHovered={isHovered}
-              onClick={() => handleSelect(vehicle.id)}
-              onMouseEnter={() => setHoveredType(vehicle.id)}
-              onMouseLeave={() => setHoveredType(null)}
-            >
-              <VehicleIconWrapper $isHovered={isHovered}>
-                <IconComponent />
-              </VehicleIconWrapper>
-              <VehicleLabel>
-                {t(`sell.start.vehicleTypes.${vehicle.id}.title`)}
-              </VehicleLabel>
-              <VehicleDesc>
-                {t(`sell.start.vehicleTypes.${vehicle.id}.desc`)}
-              </VehicleDesc>
-            </VehicleOption>
-          );
-        })}
-      </VehicleGrid>
-
-      <InfoCard>
-        <InfoText>{t('sell.start.processInfoText')}</InfoText>
-      </InfoCard>
+            return (
+              <VehicleOption
+                key={vehicle.id}
+                $isHovered={isHovered}
+                onClick={() => handleSelect(vehicle.id)}
+                onMouseEnter={() => setHoveredType(vehicle.id)}
+                onMouseLeave={() => setHoveredType(null)}
+              >
+                <VehicleIconWrapper $isHovered={isHovered}>
+                  <IconComponent />
+                </VehicleIconWrapper>
+                <VehicleLabel>
+                  {t(`sell.start.vehicleTypes.${vehicle.id}.title`)}
+                </VehicleLabel>
+                <VehicleDesc>
+                  {t(`sell.start.vehicleTypes.${vehicle.id}.desc`)}
+                </VehicleDesc>
+              </VehicleOption>
+            );
+          })}
+        </VehicleGrid>
+      </VehicleGridCard>
     </ContentSection>
-  );
-
-  const rightContent = (
-    <WorkflowFlow
-      currentStepIndex={0}
-      totalSteps={8}
-      language={language}
-    />
   );
 
   return (
     <SellWorkflowLayout currentStep="vehicle-selection">
-      <SplitScreenLayout leftContent={leftContent} rightContent={rightContent} />
+      <SplitScreenLayout leftContent={leftContent} />
     </SellWorkflowLayout>
   );
 };

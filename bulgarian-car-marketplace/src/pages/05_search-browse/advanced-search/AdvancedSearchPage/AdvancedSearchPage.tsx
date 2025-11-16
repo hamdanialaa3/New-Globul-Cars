@@ -3,7 +3,7 @@ import { useAdvancedSearch } from './hooks/useAdvancedSearch';
 import { useSavedSearches } from '@/hooks/useSavedSearches';
 import { useAuth } from '@/contexts/AuthProvider';
 import { SearchData } from './types';
-import advancedSearchService from '@/services/advancedSearchService';
+import { searchService } from '@/services/search/UnifiedSearchService';
 import CarCardCompact from '@/components/CarCard/CarCardCompact';
 import { CarListing } from '@/types/CarListing';
 import {
@@ -59,6 +59,9 @@ const AdvancedSearchPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [searching, setSearching] = useState(false);
+  const [lastSource, setLastSource] = useState<string>('');
+  const [lastMs, setLastMs] = useState<number | undefined>(undefined);
+  const showSearchDebug = process.env.REACT_APP_SHOW_SEARCH_DEBUG === 'true';
 
   const convertToSavedSearchFilters = (data: SearchData): any => {
     return {
@@ -92,18 +95,13 @@ const AdvancedSearchPage: React.FC = () => {
     setCurrentPage(1);
     
     try {
-      const result = await advancedSearchService.searchWithPagination(
-        searchData,
-        user?.uid,
-        1,
-        20
-      );
-      
+      const result = await searchService.advancedSearchPaged(searchData, 1, 20);
       setSearchResults(result.cars as CarListing[]);
-      setTotalResults(result.totalCount);
-      setTotalPages(result.totalPages);
-      
-      console.log(`✅ Advanced search: ${result.totalCount} results in ${result.processingTime}ms`);
+      setTotalResults(result.total);
+      setTotalPages(Math.max(1, Math.ceil(result.total / 20)));
+      setLastSource(result.source || '');
+      setLastMs(result.processingMs);
+      console.log(`✅ Advanced search: ${result.total} results via ${result.source}`);
       
     } catch (error) {
       console.error('Advanced search failed:', error);
@@ -120,14 +118,10 @@ const AdvancedSearchPage: React.FC = () => {
     setSearching(true);
     
     try {
-      const result = await advancedSearchService.searchWithPagination(
-        searchData,
-        user?.uid,
-        page,
-        20
-      );
-      
+      const result = await searchService.advancedSearchPaged(searchData, page, 20);
       setSearchResults(result.cars as CarListing[]);
+      setLastSource(result.source || '');
+      setLastMs(result.processingMs);
       window.scrollTo({ top: 0, behavior: 'smooth' });
       
     } catch (error) {
@@ -273,6 +267,11 @@ const AdvancedSearchPage: React.FC = () => {
               {totalResults} {totalResults === 1 ? 'car found' : 'cars found'}
             </h4>
             <p>Page {currentPage} of {totalPages}</p>
+            {showSearchDebug && (
+              <p style={{ fontSize: '0.85rem', color: '#6b7280' }}>
+                DEBUG: source={lastSource || 'n/a'}{lastMs !== undefined ? ` • ${lastMs}ms` : ''}
+              </p>
+            )}
           </ResultsSummary>
         )}
 

@@ -190,6 +190,9 @@ const PlanCard = styled.div<{ isActive: boolean; isPremium: boolean }>`
   background: ${p => p.isPremium ? 'linear-gradient(135deg, #fff5e6 0%, #ffe4cc 100%)' : 'white'};
   position: relative;
   transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
 
   &:hover {
     transform: translateY(-4px);
@@ -273,6 +276,7 @@ const ActionButton = styled.button<{ isPremium?: boolean }>`
   transition: all 0.2s;
   background: ${p => p.isPremium ? 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' : '#667eea'};
   color: white;
+  margin-top: auto;
 
   &:hover:not(:disabled) {
     transform: scale(1.02);

@@ -1,3 +1,34 @@
+/**
+ * ⚠️ DEPRECATED - DO NOT USE IN NEW CODE
+ * 
+ * This file is deprecated and will be removed in future versions.
+ * 
+ * **Migration Guide:**
+ * - Use `brandsModelsDataService` from '@/services/brands-models-data.service' instead
+ * - Or use migration helper from '@/services/brands-models-migration-helper'
+ * 
+ * **Why deprecated?**
+ * - Limited brand coverage (~30 brands vs 100+ in new system)
+ * - Hardcoded data (difficult to update)
+ * - No caching or performance optimization
+ * - No popular brands support
+ * - No bilingual support
+ * 
+ * **New API:**
+ * ```typescript
+ * import { brandsModelsDataService } from '@/services/brands-models-data.service';
+ * 
+ * // Instead of: getAllMakes()
+ * const brands = await brandsModelsDataService.getAllBrands();
+ * 
+ * // Instead of: getModelsByMake(make)
+ * const models = await brandsModelsDataService.getModelsForBrand(brand);
+ * ```
+ * 
+ * @deprecated Since Nov 16, 2025
+ * @see {@link brandsModelsDataService}
+ */
+
 // Car Makes and Models Data
 // Central data source for all car makes and their corresponding models
 

@@ -6,7 +6,7 @@ import React, { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import SplitScreenLayout from '@/components/SplitScreenLayout';
-import { WorkflowFlow } from '@/components/WorkflowVisualization';
+import BrandLogoSphere from '@/components/BrandLogoSphere';
 import { Shield, Zap, AlertTriangle, Eye } from 'lucide-react';
 import * as S from './styles';
 
@@ -121,14 +121,14 @@ const SafetyEquipmentPageNew: React.FC = () => {
     </S.ContentSection>
   );
 
-  const rightContent = (
-    <WorkflowFlow
-      currentStepIndex={3}
-      totalSteps={8}
-      carBrand={searchParams.get('mk') || undefined}
-      language={language}
+  const make = searchParams.get('mk');
+  
+  const rightContent = make ? (
+    <BrandLogoSphere 
+      make={make} 
+      ariaLabel={language === 'bg' ? 'Лого на марката' : 'Brand logo'}
     />
-  );
+  ) : null;
 
   return <SplitScreenLayout leftContent={leftContent} rightContent={rightContent} />;
 };

@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import SplitScreenLayout from '@/components/SplitScreenLayout';
-import { WorkflowFlow } from '@/components/WorkflowVisualization';
+import BrandLogoSphere from '@/components/BrandLogoSphere';
 import { Wind, Droplets, Armchair, Sun, Fan, Snowflake } from 'lucide-react';
 import * as S from './styles';
 
@@ -60,6 +60,16 @@ const ComfortEquipmentPageNew: React.FC = () => {
         <S.Subtitle>
           {language === 'bg' ? 'Изберете функциите за комфорт' : 'Select comfort features'}
         </S.Subtitle>
+
+        <S.BrandOrbitInline>
+          <WorkflowFlow
+            variant="inline"
+            currentStepIndex={3}
+            totalSteps={8}
+            carBrand={searchParams.get('mk') || undefined}
+            language={language}
+          />
+        </S.BrandOrbitInline>
       </S.HeaderCard>
 
       <S.FeatureGrid>
@@ -94,10 +104,7 @@ const ComfortEquipmentPageNew: React.FC = () => {
     </S.ContentSection>
   );
 
-  const make = searchParams.get('mk');
-  const rightContent = <WorkflowFlow currentStepIndex={3} totalSteps={8} carBrand={make || undefined} language={language} />;
-
-  return <SplitScreenLayout leftContent={leftContent} rightContent={rightContent} />;
+  return <SplitScreenLayout leftContent={leftContent} />;
 };
 
 export default ComfortEquipmentPageNew;

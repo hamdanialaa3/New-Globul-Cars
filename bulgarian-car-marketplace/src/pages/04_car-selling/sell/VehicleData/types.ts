@@ -4,6 +4,10 @@
 export interface VehicleFormData {
   // Required Fields - الحقول الإلزامية
   make: string;        // الماركة
+  /** Original user input for make before canonical normalization.
+   *  يحفظ الإدخال الأصلي قبل تحويله إلى الشكل القياسي
+   */
+  makeRaw?: string;
   year: string;        // السنة
   
   // Optional Fields - الحقول الاختيارية
@@ -19,9 +23,30 @@ export interface VehicleFormData {
   color: string;       // اللون
   previousOwners: string; // المالكون السابقون
   
+  // Location fields (updated to Bulgaria-specific structure)
+  saleProvince: string; // Област (Province)
+  saleCity: string;     // Град (City)
+  salePostalCode: string; // Пощенски код (Postal Code)
+  
+  // Deprecated fields (kept for backward compatibility, will be removed)
+  /** @deprecated Use saleProvince instead */
+  saleCountry?: string;
+  /** @deprecated Use saleCity + saleProvince instead */
+  saleLocation?: string;
+  
+  saleType: 'private' | 'commercial' | '';
+  saleTimeline: 'unknown' | 'soon' | 'months' | '';
+  roadworthy: boolean | null;
+  
   // Boolean Options - خيارات نعم/لا
   hasAccidentHistory: boolean; // تاريخ حوادث
   hasServiceHistory: boolean;  // تاريخ صيانة
+  // Free-text 'Other' fields
+  makeOther?: string;
+  modelOther?: string;
+  // Keep no 'other' for firstRegistration as months/years are fixed calendar values.
+  fuelTypeOther?: string;
+  colorOther?: string;
 }
 
 export const FUEL_TYPES = [

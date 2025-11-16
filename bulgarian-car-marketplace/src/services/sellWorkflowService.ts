@@ -54,22 +54,25 @@ export class SellWorkflowService {
     
     // Find region in BULGARIAN_CITIES (case-insensitive, flexible matching)
     const normalizeString = (str: string) => str?.toLowerCase().trim().replace(/\s+/g, ' ');
-    const regionData = BULGARIAN_CITIES.find(
+    const regionData = regionName
+      ? BULGARIAN_CITIES.find(
       c => normalizeString(c.nameBg) === normalizeString(regionName) || 
            normalizeString(c.nameEn) === normalizeString(regionName) || 
            c.id === regionName?.toLowerCase().replace(/\s+/g, '-')
-    );
+      )
+      : null;
     
-    if (!regionData) {
-      logger.error('Invalid region', new Error('Region not found'), { region: regionName });
-      throw new Error(`Invalid location: Region "${regionName}" not found in Bulgarian regions list`);
+    if (regionData) {
+      logger.info('Location processed successfully', { 
+        region: regionData.id, 
+        regionName: regionData.nameBg,
+        city: cityName 
+      });
+    } else if (regionName) {
+      logger.warn('Region not found in reference list, continuing without mapped region', {
+        region: regionName
+      });
     }
-    
-    logger.info('Location processed successfully', { 
-      region: regionData.id, 
-      regionName: regionData.nameBg,
-      city: cityName 
-    });
 
     // Parse arrays from comma-separated strings OR arrays
     const parseArray = (str: string | string[] | undefined): string[] => {
@@ -191,16 +194,16 @@ export class SellWorkflowService {
       videoUrl: workflowData.videoUrl || '',
       
       // Location - SIMPLE: Use region as primary field
-      region: regionData.id, // e.g., 'varna' - PRIMARY for filtering ✅
-      regionNameBg: regionData.nameBg, // e.g., 'Варна'
-      regionNameEn: regionData.nameEn, // e.g., 'Varna'
+      region: regionData?.id || '',
+      regionNameBg: regionData?.nameBg || '',
+      regionNameEn: regionData?.nameEn || '',
       
       // City and postal code (decorative only - not used for filtering)
       city: cityName || '', // e.g., 'Аксаково' - decorative ❌
       postalCode: postalCode || '',
       
       // Coordinates from region
-      coordinates: regionData.coordinates,
+      coordinates: regionData?.coordinates,
       
       // System Fields
       status: 'active' as const,
@@ -255,20 +258,8 @@ export class SellWorkflowService {
       serviceLogger.debug('Workflow data received', { make: workflowData.make, model: workflowData.model, year: workflowData.year });
 
       // Validate required fields
-      if (!workflowData.make || !workflowData.model || !workflowData.year) {
+      if (!workflowData.make || !workflowData.year) {
         throw new Error('Missing required vehicle information');
-      }
-      if (!workflowData.price) {
-        throw new Error('Missing price information');
-      }
-      if (!workflowData.sellerName || !workflowData.sellerEmail || !workflowData.sellerPhone) {
-        throw new Error('Missing seller contact information');
-      }
-      // Check location - can be either flat (region/city) or nested (location.region/location.city)
-      const hasLocation = (workflowData.region && workflowData.city) || 
-                          (workflowData.location?.region && workflowData.location?.city);
-      if (!hasLocation) {
-        throw new Error('Missing location information');
       }
 
       // Transform workflow data to structured car listing
@@ -350,14 +341,6 @@ export class SellWorkflowService {
     missingFields: string[];
     criticalMissing: boolean;
   } {
-    // CRITICAL fields (absolutely required)
-    const criticalFields = [
-      { key: 'make', label: 'Make (Марка)' },
-      { key: 'model', label: 'Model (Модел)' },
-      { key: 'year', label: 'Year (Година)' },
-      { key: 'price', label: 'Price (Цена)' }
-    ];
-    
     // RECOMMENDED fields (not blocking)
     const recommendedFields = [
       { key: 'sellerName', label: 'Seller Name (Име)' },
@@ -368,12 +351,32 @@ export class SellWorkflowService {
     const missingFields: string[] = [];
     let criticalMissing = false;
 
-    // Check critical fields
-    for (const field of criticalFields) {
-      if (!workflowData[field.key]) {
-        missingFields.push(field.label);
-        criticalMissing = true;
-      }
+    // Critical: make
+    if (!workflowData.make) {
+      missingFields.push('Make (Марка)');
+      criticalMissing = true;
+    }
+
+    // Critical: year
+    if (!workflowData.year) {
+      missingFields.push('Year (Година)');
+      criticalMissing = true;
+    }
+
+    // Critical: at least one image
+    const imagesCount =
+      workflowData.imagesCount ??
+      (Array.isArray(workflowData.images)
+        ? workflowData.images.length
+        : typeof workflowData.images === 'string'
+          ? parseInt(workflowData.images, 10)
+          : typeof workflowData.images === 'number'
+            ? workflowData.images
+            : 0);
+
+    if (!imagesCount || Number.isNaN(imagesCount) || imagesCount <= 0) {
+      missingFields.push('Images (Снимки)');
+      criticalMissing = true;
     }
     
     // Check recommended fields (only if strict mode)

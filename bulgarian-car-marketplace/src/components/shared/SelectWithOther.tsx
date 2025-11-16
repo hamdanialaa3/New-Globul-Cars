@@ -28,6 +28,8 @@ interface SelectWithOtherProps {
   otherLabel?: string;
   className?: string;
   style?: React.CSSProperties;
+  id?: string;
+  ariaLabel?: string;
 }
 
 const SelectWithOther: React.FC<SelectWithOtherProps> = ({
@@ -44,7 +46,9 @@ const SelectWithOther: React.FC<SelectWithOtherProps> = ({
   otherPlaceholder,
   otherLabel,
   className,
-  style
+  style,
+  id,
+  ariaLabel
 }) => {
   const { language } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
@@ -109,10 +113,13 @@ const SelectWithOther: React.FC<SelectWithOtherProps> = ({
     return language === 'bg' ? '▼ Друго' : '▼ Other';
   };
 
+  const placeholderText = getPlaceholder();
+  const accessibleLabel = ariaLabel || label || placeholderText;
+
   return (
     <Container className={className} style={style}>
       {label && (
-        <Label $required={required} $error={error}>
+        <Label htmlFor={id} $required={required} $error={error}>
           {label}
           {required && <RequiredMark> *</RequiredMark>}
         </Label>
@@ -120,13 +127,16 @@ const SelectWithOther: React.FC<SelectWithOtherProps> = ({
 
       <SelectContainer>
         <SelectButton
+          id={id}
+          aria-label={accessibleLabel}
+          title={accessibleLabel}
           $isOpen={isOpen}
           $error={error}
           $disabled={disabled}
           onClick={() => !disabled && setIsOpen(!isOpen)}
         >
           <SelectValue $isEmpty={!getDisplayValue()}>
-            {getDisplayValue() || getPlaceholder()}
+            {getDisplayValue() || placeholderText}
           </SelectValue>
           <ChevronIcon $isOpen={isOpen} />
         </SelectButton>

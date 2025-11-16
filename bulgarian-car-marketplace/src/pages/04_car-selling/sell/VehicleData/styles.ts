@@ -269,6 +269,16 @@ export const RequiredNote = styled.div`
   }
 `;
 
+export const BrandOrbitWrapper = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 1.5rem;
+
+  & > div {
+    max-width: 240px;
+  }
+`;
+
 export const HintText = styled.small`
   display: block;
   margin-top: 0.5rem;

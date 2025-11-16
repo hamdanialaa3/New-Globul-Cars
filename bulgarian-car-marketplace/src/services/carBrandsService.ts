@@ -4,8 +4,39 @@
 // With featured brands system for popular models in Bulgaria
 
 import { ALL_CAR_BRANDS } from './allCarBrands';
+// NOTE: Legacy variant/model data imports will be deprecated. Prefer structuredBrandsData + normalization pipeline.
+// @deprecated Direct usage planned for removal after Phase 2 (brandModels migration)
 import { getBaseModels, getModelVariants, hasVariantData } from './carModelsAndVariants';
 import { FEATURED_BRAND_NAMES, isFeaturedBrand, sortBrandsWithFeatured } from './featuredBrands';
+import structuredBrandsData from '../data/car-brands-structured.json';
+import { normalizeKey, resolveCanonicalBrand } from './brand-normalization';
+// Diagnostic: quick log to verify structured data load (will run once at module init)
+// Remove after confirming dropdown population works.
+// eslint-disable-next-line no-console
+console.log('[carBrandsService] structuredBrandsData keys loaded:', Object.keys(structuredBrandsData).slice(0, 10));
+// Expose for browser manual inspection
+if (typeof window !== 'undefined') {
+  (window as any)._structuredBrandKeys = Object.keys(structuredBrandsData);
+  (window as any)._structuredSampleAudi = (structuredBrandsData as any)['Audi'];
+}
+
+// Normalized index for structured data keys
+const STRUCTURED_BY_KEY: Record<string, string> = Object.keys(structuredBrandsData as any).reduce(
+  (acc, key) => {
+    acc[normalizeKey(key)] = key;
+    return acc;
+  }, {} as Record<string, string>
+);
+
+const getStructuredBrandDataByAny = (brand: string): StructuredBrandData | undefined => {
+  const direct = (structuredBrandsData as any)[brand] as StructuredBrandData | undefined;
+  if (direct) return direct;
+  const canonical = resolveCanonicalBrand(brand);
+  const byCanonical = (structuredBrandsData as any)[canonical] as StructuredBrandData | undefined;
+  if (byCanonical) return byCanonical;
+  const byKey = STRUCTURED_BY_KEY[normalizeKey(brand)] || STRUCTURED_BY_KEY[normalizeKey(canonical)];
+  return byKey ? ((structuredBrandsData as any)[byKey] as StructuredBrandData) : undefined;
+};
 
 export interface CarModel {
   name: string;
@@ -18,6 +49,14 @@ export interface CarModel {
 export interface CarBrand {
   name: string;
   models: string[]; // Unique model names
+}
+
+export interface StructuredBrandData {
+  name: string;
+  englishName: string;
+  country: string;
+  classes: string[];
+  models: { [className: string]: string[] };
 }
 
 // All 183 car brands from directory
@@ -194,21 +233,108 @@ export const getFeaturedBrands = (): string[] => {
 };
 
 /**
- * Get models for a specific brand
- * Returns base models if variant data exists, otherwise returns simple models
+ * Get classes (categories) for a specific brand
+ * Returns the hierarchical classes from structured data, or empty array if not available
  */
-export const getModelsForBrand = (brand: string): string[] => {
+export const getClassesForBrand = (brand: string): string[] => {
+  const brandData = getStructuredBrandDataByAny(brand);
+  if (brandData && brandData.classes) {
+    return brandData.classes;
+  }
+  return []; // Return empty array for brands without structured data
+};
+
+/**
+ * Get models for a specific brand and class
+ * Returns models from the structured hierarchical data, or empty array if not available
+ */
+export const getModelsForBrandAndClass = (brand: string, className: string): string[] => {
+  console.log('getModelsForBrandAndClass called with:', brand, className);
+  const brandData = getStructuredBrandDataByAny(brand);
+  console.log('brandData:', brandData);
+  if (brandData && brandData.models && brandData.models[className]) {
+    console.log('Found models:', brandData.models[className]);
+    return brandData.models[className];
+  }
+  console.log('No models found, returning empty array');
+  return []; // Return empty array for brands without structured data
+};
+
+/**
+ * Get all models for a brand (flattened from all classes)
+ * Used for backward compatibility - returns structured data if available, otherwise legacy data
+ */
+export const getAllModelsForBrand = (brand: string): string[] => {
+  console.log('getAllModelsForBrand called with:', brand);
+  const brandData = getStructuredBrandDataByAny(brand);
+  console.log('brandData:', brandData);
+  if (brandData && brandData.models) {
+    const allModels: string[] = [];
+    Object.values(brandData.models).forEach(models => {
+      allModels.push(...models);
+    });
+    const uniqueModels = [...new Set(allModels)]; // Remove duplicates
+    console.log('All models found:', uniqueModels);
+    return uniqueModels;
+  }
+
+  // Fallback to legacy system for brands without structured data
+  console.log('Falling back to legacy system');
+  return getModelsForBrandLegacy(brand);
+};
+
+/**
+ * Legacy getModelsForBrand function for brands without structured data
+ */
+const getModelsForBrandLegacy = (brand: string): string[] => {
   // Check if brand has detailed variant data
   if (hasVariantData(brand)) {
     return getBaseModels(brand);
   }
-  
-  // Return specific models if available
+
+  // Return specific models if available (legacy)
   if (BRAND_MODELS_MAP[brand]) {
     return BRAND_MODELS_MAP[brand];
   }
-  
+
   // Fallback: return empty array (user can type manually)
+  return [];
+};
+
+/**
+ * Get models for a specific brand
+ * Returns base models if variant data exists, otherwise returns simple models
+ * Now prioritizes structured data from cars_brands.md, with fallback to legacy system
+ */
+export const getModelsForBrand = (brand: string): string[] => {
+  // eslint-disable-next-line no-console
+  console.log(`[carBrandsService] getModelsForBrand called brand="${brand}"`);
+  // FIRST PRIORITY: Use structured data from cars_brands.md (NEW DATA SOURCE)
+  const allModels = getAllModelsForBrand(brand);
+  // eslint-disable-next-line no-console
+  console.log(`[carBrandsService] flattened models count for "${brand}":`, allModels.length);
+  let merged = allModels.slice();
+
+  // Merge in legacy sources without overshadowing
+  if (hasVariantData(brand)) {
+    const base = getBaseModels(brand);
+    merged = [...new Set([...merged, ...base])];
+  }
+  if (BRAND_MODELS_MAP[brand]) {
+    merged = [...new Set([...merged, ...BRAND_MODELS_MAP[brand]])];
+  }
+
+  if (merged.length > 0) {
+    console.log(`✅ Using merged models for ${brand}:`, merged.length, 'models');
+    return merged;
+  }
+
+  // FINAL LEGACY FALLBACKS
+  if (hasVariantData(brand)) return getBaseModels(brand);
+  if (BRAND_MODELS_MAP[brand]) return BRAND_MODELS_MAP[brand];
+
+  // Fallback: return empty array (user can type manually)
+  console.log(`❌ No models found for ${brand}`);
   return [];
 };
 
@@ -245,6 +371,8 @@ export const searchBrands = (query: string): string[] => {
  * Search models for a brand by query
  */
 export const searchModels = (brand: string, query: string): string[] => {
+  // eslint-disable-next-line no-console
+  console.log(`[carBrandsService] searchModels brand="${brand}" query="${query}"`);
   const models = getModelsForBrand(brand);
   if (!query) return models;
   
@@ -265,6 +393,8 @@ export const isValidBrand = (brand: string): boolean => {
  * Validate if a model exists for a brand
  */
 export const isValidModel = (brand: string, model: string): boolean => {
+  // eslint-disable-next-line no-console
+  console.log(`[carBrandsService] isValidModel brand="${brand}" model="${model}"`);
   const models = getModelsForBrand(brand);
   if (models.length === 0) return true; // Allow any model if no data
   return models.includes(model);
@@ -273,6 +403,9 @@ export const isValidModel = (brand: string, model: string): boolean => {
 const CarBrandsService = {
   getAllBrands,
   getFeaturedBrands,
+  getClassesForBrand,
+  getModelsForBrandAndClass,
+  getAllModelsForBrand,
   getModelsForBrand,
   getVariantsForModel,
   modelHasVariants,

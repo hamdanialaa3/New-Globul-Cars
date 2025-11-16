@@ -8,7 +8,6 @@ import { useAuth } from '@/contexts/AuthProvider';
 import SplitScreenLayout from '@/components/SplitScreenLayout';
 import { WorkflowFlow } from '@/components/WorkflowVisualization';
 import SellWorkflowService from '@/services/sellWorkflowService';
-import { BULGARIA_REGIONS, getCitiesByRegion } from '@/data/bulgaria-locations';
 import SelectWithOther from '@/components/shared/SelectWithOther';
 import { CURRENCIES, PRICE_TYPES, AVAILABLE_HOURS } from '@/data/dropdown-options';
 import * as S from './UnifiedContactStyles';
@@ -25,16 +24,9 @@ import ImageUploadService from '@/services/image-upload-service';
 import { logger } from '@/services/logger-service';
 import { SellWorkflowLayout } from '@/components/SellWorkflow';
 import SellWorkflowStepStateService from '@/services/sellWorkflowStepState';
-
-const CONTACT_METHODS = [
-  { id: 'phone', iconComponent: 'PhoneIcon', labelBg: 'Телефон', labelEn: 'Phone' },
-  { id: 'email', iconComponent: 'EmailIcon', labelBg: 'Имейл', labelEn: 'Email' },
-  { id: 'whatsapp', iconComponent: 'WhatsAppIcon', labelBg: 'WhatsApp', labelEn: 'WhatsApp' },
-  { id: 'viber', iconComponent: 'ViberIcon', labelBg: 'Viber', labelEn: 'Viber' },
-  { id: 'telegram', iconComponent: 'TelegramIcon', labelBg: 'Telegram', labelEn: 'Telegram' },
-  { id: 'messenger', iconComponent: 'MessengerIcon', labelBg: 'Facebook Messenger', labelEn: 'Facebook Messenger' },
-  { id: 'sms', iconComponent: 'SMSIcon', labelBg: 'SMS', labelEn: 'SMS' }
-];
+import { useContactForm } from './Contact/useContactForm';
+import { CONTACT_METHODS } from './Contact/contactConstants';
+import { ContactIcons } from '@/components/icons/contact/ContactMethodIcons';
 
 const UnifiedContactPage: React.FC = () => {
   const navigate = useNavigate();
@@ -42,45 +34,29 @@ const UnifiedContactPage: React.FC = () => {
   const { language } = useLanguage();
   const { currentUser } = useAuth();
 
-  // Helper function to get the appropriate icon component
-  const getContactIcon = (iconComponent: string) => {
-    switch (iconComponent) {
-      case 'PhoneIcon': return <S.PhoneIcon />;
-      case 'EmailIcon': return <S.EmailIcon />;
-      case 'WhatsAppIcon': return <S.WhatsAppIcon />;
-      case 'ViberIcon': return <S.ViberIcon />;
-      case 'TelegramIcon': return <S.TelegramIcon />;
-      case 'MessengerIcon': return <S.MessengerIcon />;
-      case 'SMSIcon': return <S.SMSIcon />;
-      default: return null;
-    }
-  };
-
-  const [contactData, setContactData] = useState({
-    sellerName: '',
-    sellerEmail: '',
-    sellerPhone: '',
-    preferredContact: [] as string[],
-    region: '',
-    city: '',
-    postalCode: '',
-    location: '',
-    additionalPhone: '',
-    availableHours: '',
-    notes: ''
-  });
-
-  // 💰 NEW: Pricing State (merged from Pricing Page)
-  const [pricingData, setPricingData] = useState({
-    price: searchParams.get('price') || '',
-    currency: searchParams.get('currency') || 'EUR',
-    priceType: searchParams.get('priceType') || 'fixed',
-    negotiable: searchParams.get('negotiable') === 'true'
-  });
-
-  const [availableCities, setAvailableCities] = useState<Array<{name: string; nameEn?: string}>>([]);
+  const {
+    contactData,
+    availableRegions,
+    availableCities,
+    handleFieldChange,
+    toggleContactMethod
+  } = useContactForm({ language: language as 'bg' | 'en', requireContactFields: false });
   const [showOtherCityInput, setShowOtherCityInput] = useState(false);
   const [otherCityValue, setOtherCityValue] = useState('');
+
+  const [pricingData, setPricingData] = useState(() => ({
+    price: searchParams.get('price') || workflowData.price || '',
+    currency: searchParams.get('currency') || workflowData.currency || 'EUR',
+    priceType:
+      searchParams.get('priceType') ||
+      (workflowData.priceType as string) ||
+      'fixed',
+    negotiable:
+      searchParams.get('negotiable') === 'true' ||
+      workflowData.negotiable === true ||
+      workflowData.negotiable === 'true'
+  }));
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [showForcePublish, setShowForcePublish] = useState(false);
@@ -98,7 +74,7 @@ const UnifiedContactPage: React.FC = () => {
 
   
   // 🆕 Hooks for new features
-  const { workflowData, updateWorkflowData } = useSellWorkflow();
+  const { workflowData, updateWorkflowData, clearWorkflowData } = useSellWorkflow();
   const { saveDraft, isSaving, getTimeSinceLastSave } = useDraftAutoSave(
     { ...workflowData, ...Object.fromEntries(searchParams) },
     { currentStep: 7, interval: 30000 }
@@ -125,73 +101,23 @@ const UnifiedContactPage: React.FC = () => {
   const priceType = searchParams.get('priceType');
   const negotiable = searchParams.get('negotiable');
 
-  // Load saved contact data from localStorage on mount
   useEffect(() => {
-    const savedState = WorkflowPersistenceService.loadState();
-    const savedData = savedState?.data;
-    if (savedData) {
-      setContactData(prev => ({
-        ...prev,
-        ...savedData,
-        sellerName: savedData.sellerName || prev.sellerName,
-        sellerEmail: savedData.sellerEmail || prev.sellerEmail,
-        sellerPhone: savedData.sellerPhone || prev.sellerPhone,
-        region: savedData.region || prev.region,
-        city: savedData.city || prev.city,
-        // If city is custom (not in list), show input
-        ...(savedData.city && !availableCities.some(c => c.name === savedData.city) 
-          ? { city: savedData.city, showOtherCity: true, otherCityValue: savedData.city }
-          : {})
-      }));
+    if (!currentUser) return;
+    if (!contactData.sellerName && currentUser.displayName) {
+      handleFieldChange('sellerName', currentUser.displayName);
     }
-  }, []);
-  
-  // Auto-save contact data to localStorage whenever it changes
-  useEffect(() => {
-    WorkflowPersistenceService.saveState({
-      ...contactData,
-      ...workflowData
-    }, 'contact');
-  }, [contactData]);
-
-  // Load user profile data
-  useEffect(() => {
-    const loadUserData = async () => {
-      if (currentUser && !contactData.sellerName) {
-        setContactData(prev => ({
-          ...prev,
-          sellerName: currentUser.displayName || prev.sellerName,
-          sellerEmail: currentUser.email || prev.sellerEmail
-        }));
-      }
-    };
-    loadUserData();
-  }, [currentUser]);
-
-  // Update cities when region changes
-  useEffect(() => {
-    if (contactData.region) {
-      const cities = getCitiesByRegion(contactData.region, language);
-      setAvailableCities(cities);
-      // Reset city if not in new region
-      const cityNames = cities.map(c => c.name);
-      if (!cityNames.includes(contactData.city)) {
-        setContactData(prev => ({ ...prev, city: '' }));
-        setShowOtherCityInput(false);
-        setOtherCityValue('');
-      }
-    } else {
-      setAvailableCities([]);
-      setShowOtherCityInput(false);
+    if (!contactData.sellerEmail && currentUser.email) {
+      handleFieldChange('sellerEmail', currentUser.email);
     }
-  }, [contactData.region, language]);
+  }, [currentUser, contactData.sellerName, contactData.sellerEmail, handleFieldChange]);
 
   useEffect(() => {
-    if (
-      contactData.sellerName &&
-      contactData.sellerEmail &&
-      contactData.sellerPhone
-    ) {
+    const hasPrimaryContact =
+      contactData.sellerName ||
+      contactData.sellerEmail ||
+      contactData.sellerPhone;
+
+    if (hasPrimaryContact) {
       SellWorkflowStepStateService.markCompleted('contact');
     } else {
       SellWorkflowStepStateService.markPending('contact');
@@ -202,103 +128,105 @@ const UnifiedContactPage: React.FC = () => {
   const handleCityChange = (value: string) => {
     if (value === 'OTHER') {
       setShowOtherCityInput(true);
-      setContactData(prev => ({ ...prev, city: '' }));
+      handleFieldChange('city', '');
     } else {
       setShowOtherCityInput(false);
-      setContactData(prev => ({ ...prev, city: value }));
+      handleFieldChange('city', value);
     }
   };
   
   // Handle other city input
   const handleOtherCityChange = (value: string) => {
     setOtherCityValue(value);
-    setContactData(prev => ({ ...prev, city: value }));
+    handleFieldChange('city', value);
   };
 
-  const handleInputChange = (field: string, value: string) => {
-    setContactData(prev => ({ ...prev, [field]: value }));
-  };
+  useEffect(() => {
+    if (contactData.city && !availableCities.some(city => city.name === contactData.city)) {
+      setShowOtherCityInput(true);
+      setOtherCityValue(contactData.city);
+    } else {
+      setShowOtherCityInput(false);
+      setOtherCityValue('');
+    }
+  }, [contactData.city, availableCities]);
 
-  // 💰 NEW: Handle pricing input changes
   const handlePricingChange = (field: string, value: string | boolean) => {
     setPricingData(prev => ({ ...prev, [field]: value }));
   };
 
-  const toggleContactMethod = (methodId: string) => {
-    setContactData(prev => ({
-      ...prev,
-      preferredContact: prev.preferredContact.includes(methodId)
-        ? prev.preferredContact.filter(m => m !== methodId)
-        : [...prev.preferredContact, methodId]
+  useEffect(() => {
+    setPricingData(prev => ({
+      price: prev.price || workflowData.price || '',
+      currency: prev.currency || workflowData.currency || 'EUR',
+      priceType:
+        prev.priceType ||
+        (workflowData.priceType as string) ||
+        'fixed',
+      negotiable:
+        typeof prev.negotiable === 'boolean'
+          ? prev.negotiable
+          : workflowData.negotiable === true ||
+            workflowData.negotiable === 'true'
     }));
-  };
+  }, [
+    workflowData.price,
+    workflowData.currency,
+    workflowData.priceType,
+    workflowData.negotiable
+  ]);
+
+  useEffect(() => {
+    updateWorkflowData(
+      {
+        price: pricingData.price,
+        currency: pricingData.currency,
+        priceType: pricingData.priceType,
+        negotiable: pricingData.negotiable
+      },
+      'pricing'
+    );
+  }, [pricingData, updateWorkflowData]);
 
   // 🆕 Enhanced validation with better error messages
   const validateForm = (): boolean => {
-    // Make validation
-    if (!make) {
+    const resolvedMake = workflowData.make || make;
+    const resolvedYear = workflowData.year || year;
+
+    if (!resolvedMake) {
       toast.error(getErrorMessage('MAKE_REQUIRED', language as 'bg' | 'en'));
       logError('MAKE_REQUIRED');
       return false;
     }
 
-    // Year validation
-    if (!year) {
+    if (!resolvedYear) {
       toast.error(getErrorMessage('YEAR_REQUIRED', language as 'bg' | 'en'));
       logError('YEAR_REQUIRED');
       return false;
     }
 
-    const yearNum = parseInt(year);
+    const yearNum = parseInt(resolvedYear, 10);
     const currentYear = new Date().getFullYear();
-    if (yearNum < 1900 || yearNum > currentYear + 1) {
+    if (Number.isNaN(yearNum) || yearNum < 1900 || yearNum > currentYear + 1) {
       toast.error(
-        getErrorMessage('YEAR_INVALID', language as 'bg' | 'en', { currentYear: currentYear.toString() })
+        getErrorMessage('YEAR_INVALID', language as 'bg' | 'en', {
+          currentYear: currentYear.toString()
+        })
       );
       return false;
     }
 
-    // Price validation (using pricingData state now)
-    if (!pricingData.price) {
-      toast.error(getErrorMessage('PRICE_REQUIRED', language as 'bg' | 'en'));
-      logError('PRICE_REQUIRED');
-      return false;
-    }
+    const totalImages =
+      workflowData.imagesCount ??
+      (images ? parseInt(images, 10) : 0);
 
-    const priceNum = parseFloat(pricingData.price);
-    if (priceNum < 100) {
-      toast.error(getErrorMessage('PRICE_TOO_LOW', language as 'bg' | 'en'));
-      return false;
-    }
-    if (priceNum > 1000000) {
-      toast.error(getErrorMessage('PRICE_TOO_HIGH', language as 'bg' | 'en'));
-      return false;
-    }
-
-    // Contact validation
-    if (!contactData.sellerName) {
-      toast.error(getErrorMessage('NAME_REQUIRED', language as 'bg' | 'en'));
-      return false;
-    }
-
-    if (!contactData.sellerEmail) {
-      toast.error(getErrorMessage('EMAIL_REQUIRED', language as 'bg' | 'en'));
-      return false;
-    }
-
-    if (!contactData.sellerPhone) {
-      toast.error(getErrorMessage('PHONE_REQUIRED', language as 'bg' | 'en'));
-      return false;
-    }
-
-    // Location validation
-    if (!contactData.region) {
-      toast.error(getErrorMessage('REGION_REQUIRED', language as 'bg' | 'en'));
-      return false;
-    }
-
-    if (!contactData.city) {
-      toast.error(getErrorMessage('CITY_REQUIRED', language as 'bg' | 'en'));
+    if (!totalImages || Number.isNaN(totalImages) || totalImages === 0) {
+      toast.error(
+        language === 'bg'
+          ? 'Добавете поне една снимка, за да публикувате.'
+          : 'Please add at least one image before publishing.'
+      );
+      logError('IMAGES_REQUIRED');
       return false;
     }
 
@@ -316,54 +244,44 @@ const UnifiedContactPage: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      // Model is optional - use "Unknown" if not provided
-      const finalModel = model || (language === 'bg' ? 'Неизвестен модел' : 'Unknown Model');
+      const fallbackModel = language === 'bg' ? 'Неизвестен модел' : 'Unknown Model';
+      const finalModel =
+        workflowData.model ||
+        model ||
+        fallbackModel;
 
-      // ✅ Build workflow data matching SellWorkflowService.transformWorkflowData structure
-      const workflowData = {
-        // Vehicle Type & Seller
-        vehicleType: vehicleType || 'car',
-        sellerType: sellerType || 'private',
-        
-        // Basic Vehicle Info (from URL params)
-        make: make,
+      const payload = {
+        ...workflowData,
+        vehicleType: workflowData.vehicleType || vehicleType || 'car',
+        sellerType: workflowData.sellerType || sellerType || 'private',
+        make: workflowData.make || make || '',
         model: finalModel,
-        year: year,
-        mileage: mileage || '0',
-        fuelType: fuelType || 'Petrol',
-        fm: fuelType || 'Petrol', // alternative key
-        transmission: transmission || 'Manual',
-        color: color || '',
-        
-        // Pricing (from URL params)
-        price: pricingData.price,
-        currency: pricingData.currency || 'EUR',
-        priceType: pricingData.priceType || 'fixed',
+        year: workflowData.year || year || '',
+        mileage: workflowData.mileage || mileage || '0',
+        fuelType: workflowData.fuelType || fuelType || '',
+        transmission: workflowData.transmission || transmission || '',
+        color: workflowData.color || color || '',
+        price: pricingData.price || workflowData.price || '',
+        currency: pricingData.currency || workflowData.currency || 'EUR',
+        priceType: pricingData.priceType || workflowData.priceType || 'fixed',
         negotiable: pricingData.negotiable,
-        
-        // Equipment (from URL params - already comma-separated strings)
-        safety: safety || '',
-        comfort: comfort || '',
-        infotainment: infotainment || '',
-        extras: extras || '',
-        
-        // Contact Information (from form)
-        sellerName: contactData.sellerName,
-        sellerEmail: contactData.sellerEmail,
-        sellerPhone: contactData.sellerPhone,
-        additionalPhone: contactData.additionalPhone || '',
-        preferredContact: contactData.preferredContact.join(','), // convert array to string
-        availableHours: contactData.availableHours || '',
-        additionalInfo: contactData.notes || '',
-        
-        // Location (from form)
-        region: contactData.region,
-        city: contactData.city,
-        postalCode: contactData.postalCode || '',
-        location: contactData.location || '',
-        
-        // Images (will be handled separately as File[])
-        images: images || '0'
+        safety: workflowData.safety || safety || '',
+        comfort: workflowData.comfort || comfort || '',
+        infotainment: workflowData.infotainment || infotainment || '',
+        extras: workflowData.extras || extras || '',
+        sellerName: contactData.sellerName || workflowData.sellerName || '',
+        sellerEmail: contactData.sellerEmail || workflowData.sellerEmail || '',
+        sellerPhone: contactData.sellerPhone || workflowData.sellerPhone || '',
+        additionalPhone: contactData.additionalPhone || workflowData.additionalPhone || '',
+        preferredContact: contactData.preferredContact.join(','),
+        availableHours: contactData.availableHours || workflowData.availableHours || '',
+        additionalInfo: contactData.notes || workflowData.additionalInfo || '',
+        region: contactData.region || workflowData.region || '',
+        city: contactData.city || workflowData.city || '',
+        postalCode: contactData.postalCode || workflowData.postalCode || '',
+        location: contactData.location || workflowData.location || '',
+        images: workflowData.images,
+        imagesCount: workflowData.imagesCount
       };
 
       if (process.env.NODE_ENV === 'development') {
@@ -379,11 +297,13 @@ const UnifiedContactPage: React.FC = () => {
       }
       
       // ⚡ FLEXIBLE VALIDATION: Check critical fields only
-      const validation = SellWorkflowService.validateWorkflowData(workflowData, false);
+      const validation = SellWorkflowService.validateWorkflowData(payload, false);
       
       // If critical fields are missing, block publication
       if (validation.criticalMissing) {
-        setError(`❌ ${language === 'bg' ? 'Критична информация липсва' : 'Critical information missing'}: ${validation.missingFields.join(', ')}`);
+        setError(
+          `${language === 'bg' ? 'Критична информация липсва' : 'Critical information missing'}: ${validation.missingFields.join(', ')}`
+        );
         setIsSubmitting(false);
         return;
       }
@@ -391,7 +311,9 @@ const UnifiedContactPage: React.FC = () => {
       // If non-critical fields are missing, show warning with option to proceed
       if (!validation.isValid && !showForcePublish) {
         setMissingFields(validation.missingFields);
-        setError(`⚠️ ${language === 'bg' ? 'Препоръчителни полета липсват' : 'Recommended fields are missing'}: ${validation.missingFields.join(', ')}`);
+        setError(
+          `${language === 'bg' ? 'Препоръчителни полета липсват' : 'Recommended fields are missing'}: ${validation.missingFields.join(', ')}`
+        );
         setShowForcePublish(true);
         setIsSubmitting(false);
         return;
@@ -400,33 +322,16 @@ const UnifiedContactPage: React.FC = () => {
       // ✅ Load images from localStorage and convert to Files
       let imageFiles: File[] = [];
       try {
-        const savedImagesJson = localStorage.getItem('globul_sell_workflow_images');
-        if (savedImagesJson) {
-          const base64Images = JSON.parse(savedImagesJson) as string[];
-          if (process.env.NODE_ENV === 'development') {
-            logger.debug(`Found ${base64Images.length} images in localStorage`);
-          }
-          
-          // Convert base64 to File objects
-          imageFiles = await Promise.all(
-            base64Images.map(async (base64, index) => {
-              const response = await fetch(base64);
-              const blob = await response.blob();
-              return new File([blob], `car_image_${index + 1}.jpg`, { type: 'image/jpeg' });
-            })
-          );
-          
-          if (process.env.NODE_ENV === 'development') {
-            logger.debug(`Converted ${imageFiles.length} images to File objects`);
-          }
+        imageFiles = WorkflowPersistenceService.getImagesAsFiles();
+        if (process.env.NODE_ENV === 'development') {
+          logger.debug(`Loaded ${imageFiles.length} images from persistence`);
         }
       } catch (error) {
-        logger.error('Error loading images from localStorage', error as Error);
-        // Continue without images - don't block listing creation
+        logger.error('Error loading images from WorkflowPersistenceService', error as Error);
       }
 
       // 🆕 Create listing first (without images)
-      const carId = await SellWorkflowService.createCarListing(workflowData, userId);
+      const carId = await SellWorkflowService.createCarListing(payload, userId);
 
       if (!carId) {
         throw new Error('Failed to create listing');
@@ -468,8 +373,8 @@ const UnifiedContactPage: React.FC = () => {
           logger.error('Image upload failed', uploadError as Error, { carId });
           toast.warning(
             language === 'bg'
-              ? '⚠️ Някои снимки не са качени, но обявата е създадена. Можете да добавите снимки по-късно.'
-              : '⚠️ Some images failed to upload, but listing was created. You can add images later.',
+              ? 'Някои снимки не са качени, но обявата е създадена. Можете да добавите снимки по-късно.'
+              : 'Some images failed to upload, but the listing was created. You can add images later.',
             { autoClose: 5000 }
           );
         }
@@ -478,23 +383,20 @@ const UnifiedContactPage: React.FC = () => {
       // 🆕 Mark step as completed in analytics
       await markComplete({
         carId,
-        make,
-        model: finalModel,
-        price: pricingData.price ? parseFloat(pricingData.price) : 0
+        make: payload.make,
+        model: payload.model,
+        price: payload.price ? parseFloat(payload.price) : 0
       });
 
       // 🌐 N8N Integration
       try {
         const N8nService = await import('@/services/n8n-integration');
-        await N8nService.default.onCarPublished(currentUser.uid, carId, workflowData as any);
+        await N8nService.default.onCarPublished(currentUser.uid, carId, payload as any);
       } catch (n8nError) {
         logger.warn('N8N webhook failed (non-critical)', { error: n8nError, carId });
       }
 
-      // 🆕 Clear all workflow data
-      localStorage.removeItem('sell_workflow_images');
-      localStorage.removeItem('sell_workflow_files');
-      localStorage.removeItem('globul_cars_sell_workflow');
+      clearWorkflowData();
       localStorage.removeItem('current_draft_id');
 
       // 🆕 Success message with toast
@@ -510,10 +412,9 @@ const UnifiedContactPage: React.FC = () => {
         logger.debug('Car listing published successfully', { carId });
       }
 
-      // Navigate with delay
       setTimeout(() => {
-        navigate(`/car-details/${carId}?published=true`);
-      }, 1000);
+        navigate('/profile/my-ads');
+      }, 800);
 
     } catch (error: any) {
       logger.error('Error creating listing', error as Error, { 
@@ -539,8 +440,7 @@ const UnifiedContactPage: React.FC = () => {
   ];
 
   // ⚡ FLEXIBLE VALIDATION: Allow publishing with partial data
-  const isFormValid = contactData.sellerName && contactData.sellerEmail && contactData.sellerPhone;
-  const hasLocation = contactData.region && contactData.city;
+  const isFormValid = true;
 
   const leftContent = (
     <S.ContentSection>
@@ -553,6 +453,16 @@ const UnifiedContactPage: React.FC = () => {
             ? 'Въведете данни за контакт и местоположение' 
             : 'Enter contact and location details'}
         </S.Subtitle>
+
+        <S.BrandOrbitInline>
+          <WorkflowFlow
+            variant="inline"
+            currentStepIndex={5}
+            totalSteps={8}
+            carBrand={make || workflowData.make || undefined}
+            language={language}
+          />
+        </S.BrandOrbitInline>
       </S.HeaderCard>
 
       {/* Top Navigation Buttons */}
@@ -562,7 +472,7 @@ const UnifiedContactPage: React.FC = () => {
           $variant="secondary"
           onClick={() => navigate(-1)}
         >
-          ← {language === 'bg' ? 'Назад' : 'Back'}
+          {language === 'bg' ? 'Назад' : 'Back'}
         </S.Button>
 
         <S.Button
@@ -571,35 +481,34 @@ const UnifiedContactPage: React.FC = () => {
           onClick={() => saveDraft(true)}
           disabled={isSaving}
         >
-          💾 {language === 'bg' ? 'Запази' : 'Save Draft'}
+          {language === 'bg' ? 'Запази' : 'Save Draft'}
         </S.Button>
 
         <S.Button
           type="button"
           $variant="primary"
           onClick={handlePublish}
-          disabled={!isFormValid || isSubmitting}
+          disabled={isSubmitting}
         >
           {isSubmitting 
             ? (language === 'bg' ? 'Публикуване...' : 'Publishing...')
             : (language === 'bg' ? 'Публикувай обявата' : 'Publish Listing')
-          } →
+          }
         </S.Button>
       </S.NavigationButtons>
 
       {/* 🆕 Review Summary before publishing */}
       <ReviewSummary
-        workflowData={Object.fromEntries(searchParams)}
-        imagesCount={parseInt(localStorage.getItem('sell_workflow_files_count') || '0')}
+        workflowData={workflowData as Record<string, unknown>}
+        imagesCount={workflowData.imagesCount || 0}
         language={language as 'bg' | 'en'}
         onEdit={() => navigate(-1)}
       />
 
       {/* Section 1: Personal Info */}
-      {/* 💰 NEW: Section 0: Pricing Information (Merged from Pricing Page) */}
       <S.SectionCard>
         <S.SectionTitle>
-          {language === 'bg' ? '💰 Ценова информация' : '💰 Pricing Information'}
+          {language === 'bg' ? 'Ценова информация' : 'Pricing Information'}
         </S.SectionTitle>
 
         <S.CompactGrid>
@@ -663,7 +572,7 @@ const UnifiedContactPage: React.FC = () => {
       {/* Section 1: Personal Information */}
       <S.SectionCard>
         <S.SectionTitle>
-          {language === 'bg' ? '👤 Лична информация' : '👤 Personal Information'}
+          {language === 'bg' ? 'Лична информация' : 'Personal Information'}
         </S.SectionTitle>
 
         <S.CompactGrid>
@@ -674,7 +583,7 @@ const UnifiedContactPage: React.FC = () => {
             <S.Input
               type="text"
               value={contactData.sellerName}
-              onChange={(e) => handleInputChange('sellerName', e.target.value)}
+            onChange={(e) => handleFieldChange('sellerName', e.target.value)}
               placeholder={language === 'bg' ? 'Вашето име' : 'Your name'}
             />
           </S.FormGroup>
@@ -686,7 +595,7 @@ const UnifiedContactPage: React.FC = () => {
             <S.Input
               type="email"
               value={contactData.sellerEmail}
-              onChange={(e) => handleInputChange('sellerEmail', e.target.value)}
+            onChange={(e) => handleFieldChange('sellerEmail', e.target.value)}
               placeholder={language === 'bg' ? 'вашият@имейл.com' : 'your@email.com'}
             />
           </S.FormGroup>
@@ -698,7 +607,7 @@ const UnifiedContactPage: React.FC = () => {
             <S.Input
               type="tel"
               value={contactData.sellerPhone}
-              onChange={(e) => handleInputChange('sellerPhone', e.target.value)}
+            onChange={(e) => handleFieldChange('sellerPhone', e.target.value)}
               placeholder="+359 888 123 456"
             />
           </S.FormGroup>
@@ -710,7 +619,7 @@ const UnifiedContactPage: React.FC = () => {
             <S.Input
               type="tel"
               value={contactData.additionalPhone}
-              onChange={(e) => handleInputChange('additionalPhone', e.target.value)}
+            onChange={(e) => handleFieldChange('additionalPhone', e.target.value)}
               placeholder={language === 'bg' ? '+359 888 654 321' : '+359 888 654 321'}
             />
           </S.FormGroup>
@@ -720,7 +629,7 @@ const UnifiedContactPage: React.FC = () => {
       {/* Section 2: Location */}
       <S.SectionCard>
         <S.SectionTitle>
-          {language === 'bg' ? '📍 Местоположение' : '📍 Location'}
+          {language === 'bg' ? 'Местоположение' : 'Location'}
         </S.SectionTitle>
 
         <S.CompactGrid>
@@ -729,13 +638,13 @@ const UnifiedContactPage: React.FC = () => {
               {language === 'bg' ? 'Област' : 'Region'}
             </S.Label>
             <SelectWithOther
-              options={BULGARIA_REGIONS.map(region => ({
+              options={availableRegions.map(region => ({
                 value: region.name,
                 label: region.name,
                 labelEn: region.nameEn
               }))}
               value={contactData.region}
-              onChange={(value) => handleInputChange('region', value)}
+            onChange={(value) => handleFieldChange('region', value)}
               placeholder={language === 'bg' ? 'Изберете област' : 'Select region'}
               label={language === 'bg' ? 'Област' : 'Region'}
               required
@@ -753,7 +662,7 @@ const UnifiedContactPage: React.FC = () => {
                 labelEn: city.nameEn || city.name
               }))}
               value={contactData.city}
-              onChange={(value) => handleInputChange('city', value)}
+            onChange={(value) => handleCityChange(value)}
               placeholder={language === 'bg' ? 'Изберете град' : 'Select city'}
               label={language === 'bg' ? 'Град' : 'City'}
               required
@@ -769,7 +678,7 @@ const UnifiedContactPage: React.FC = () => {
             <S.Input
               type="text"
               value={contactData.postalCode}
-              onChange={(e) => handleInputChange('postalCode', e.target.value)}
+            onChange={(e) => handleFieldChange('postalCode', e.target.value)}
               placeholder="1000"
             />
           </S.FormGroup>
@@ -781,7 +690,7 @@ const UnifiedContactPage: React.FC = () => {
             <S.Input
               type="text"
               value={contactData.location}
-              onChange={(e) => handleInputChange('location', e.target.value)}
+            onChange={(e) => handleFieldChange('location', e.target.value)}
               placeholder={language === 'bg' ? 'Улица, номер' : 'Street, number'}
             />
           </S.FormGroup>
@@ -797,11 +706,14 @@ const UnifiedContactPage: React.FC = () => {
         <S.ContactMethodsContainer>
           {CONTACT_METHODS.map(method => {
             const isSelected = contactData.preferredContact.includes(method.id);
-            
+            const IconComponent = ContactIcons[method.icon];
+
             return (
               <S.ContactMethodRow key={method.id}>
                 <S.ContactMethodInfo>
-                  {getContactIcon(method.iconComponent)}
+                  <S.ContactIconWrapper>
+                    <IconComponent size={18} />
+                  </S.ContactIconWrapper>
                   <S.ContactMethodLabel>
                     {language === 'bg' ? method.labelBg : method.labelEn}
                   </S.ContactMethodLabel>
@@ -834,7 +746,7 @@ const UnifiedContactPage: React.FC = () => {
       {/* Section 4: Additional Info */}
       <S.SectionCard>
         <S.SectionTitle>
-          {language === 'bg' ? '📝 Допълнително' : '📝 Additional'}
+          {language === 'bg' ? 'Допълнително' : 'Additional'}
         </S.SectionTitle>
 
         <S.FormGroup>
@@ -844,7 +756,7 @@ const UnifiedContactPage: React.FC = () => {
           <SelectWithOther
             options={AVAILABLE_HOURS}
             value={contactData.availableHours}
-            onChange={(value) => handleInputChange('availableHours', value)}
+            onChange={(value) => handleFieldChange('availableHours', value)}
             placeholder={language === 'bg' 
               ? 'Изберете работно време' 
               : 'Select available hours'}
@@ -861,7 +773,7 @@ const UnifiedContactPage: React.FC = () => {
           </S.Label>
           <S.TextArea
             value={contactData.notes}
-            onChange={(e) => handleInputChange('notes', e.target.value)}
+            onChange={(e) => handleFieldChange('notes', e.target.value)}
             placeholder={language === 'bg' 
               ? 'Допълнителна информация за купувачите...' 
               : 'Additional information for buyers...'}
@@ -923,7 +835,7 @@ const UnifiedContactPage: React.FC = () => {
       {/* Error Display with Missing Fields List */}
       {error && (
         <S.ErrorCard $hasWarning={showForcePublish}>
-          <S.ErrorIcon>{showForcePublish ? '⚠️' : '❌'}</S.ErrorIcon>
+          <S.ErrorIcon>{showForcePublish ? '!' : '×'}</S.ErrorIcon>
           <S.ErrorText>{error}</S.ErrorText>
           {missingFields.length > 0 && (
             <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid var(--border)' }}>
@@ -945,29 +857,27 @@ const UnifiedContactPage: React.FC = () => {
           $variant="secondary"
           onClick={() => navigate(-1)}
         >
-          ← {language === 'bg' ? 'Назад' : 'Back'}
+          {language === 'bg' ? 'Назад' : 'Back'}
         </S.Button>
 
         <S.Button
           type="button"
           $variant="primary"
           onClick={handlePublish}
-          disabled={!isFormValid || isSubmitting}
+          disabled={isSubmitting}
         >
           {isSubmitting 
             ? (language === 'bg' ? 'Публикуване...' : 'Publishing...')
             : (language === 'bg' ? 'Публикувай обявата' : 'Publish Listing')
-          } →
+          }
         </S.Button>
       </S.NavigationButtons>
     </S.ContentSection>
   );
 
-  const rightContent = <WorkflowFlow currentStepIndex={5} totalSteps={8} carBrand={make || undefined} language={language} />;
-
   return (
     <SellWorkflowLayout currentStep="contact">
-      <SplitScreenLayout leftContent={leftContent} rightContent={rightContent} />
+      <SplitScreenLayout leftContent={leftContent} />
       
       {/* 🆕 Image Upload Progress Modal */}
       <ImageUploadProgress
@@ -993,7 +903,7 @@ const UnifiedContactPage: React.FC = () => {
       {/* 🆕 Auto-save indicator */}
       {isSaving && (
         <S.AutoSaveNotification>
-          💾 {getErrorMessage('AUTO_SAVED', language as 'bg' | 'en')}
+          {getErrorMessage('AUTO_SAVED', language as 'bg' | 'en')}
         </S.AutoSaveNotification>
       )}
     </SellWorkflowLayout>

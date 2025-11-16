@@ -11,6 +11,8 @@ interface Circular3DProgressLEDEnhancedProps {
   currentStep: number;
   language?: 'bg' | 'en';
   carBrand?: string; // اسم ماركة السيارة لعرض الشعار
+  variant?: 'full' | 'compact';
+  className?: string;
 }
 
 // ==================== ANIMATIONS ====================
@@ -21,15 +23,6 @@ const rotate = keyframes`
   }
   100% {
     transform: rotate(360deg);
-  }
-`;
-
-const rotateReverse = keyframes`
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(-360deg);
   }
 `;
 
@@ -120,6 +113,13 @@ const Container = styled.div`
     background: radial-gradient(circle at 50% 0%, rgba(255, 143, 16, 0.05), transparent 70%);
     pointer-events: none;
   }
+`;
+
+const CompactContainer = styled.div`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
 `;
 
 const CircularWrapper = styled.div`
@@ -638,10 +638,13 @@ const Circular3DProgressLEDEnhanced: React.FC<Circular3DProgressLEDEnhancedProps
   totalSteps,
   currentStep,
   language = 'bg',
-  carBrand
+  carBrand,
+  variant = 'full',
+  className
 }) => {
   const [logoUrl, setLogoUrl] = useState<string>('');
   const [logoLoaded, setLogoLoaded] = useState(false);
+  const [activeBrand, setActiveBrand] = useState<string>('');
 
   const radius = 100;
   const progressColor = getProgressColor(progress);
@@ -652,22 +655,29 @@ const Circular3DProgressLEDEnhanced: React.FC<Circular3DProgressLEDEnhancedProps
 
   // Load car logo when brand changes
   useEffect(() => {
-    if (carBrand) {
-      const url = getCarLogoUrl(carBrand);
-      setLogoUrl(url);
-      
-      // Preload image
-      const img = new Image();
-      img.onload = () => setLogoLoaded(true);
-      img.onerror = () => {
-        setLogoUrl('/car-logos/mein_logo_rest.png');
-        setLogoLoaded(true);
-      };
-      img.src = url;
-    } else {
-      setLogoLoaded(false);
-      setLogoUrl('');
+    let isSubscribed = true;
+    if (!carBrand) {
+      // Keep previous logo; just mark not active brand
+      setActiveBrand('');
+      return () => { isSubscribed = false; };
     }
+    const url = getCarLogoUrl(carBrand);
+    const loader = new Image();
+    loader.onload = () => {
+      if (!isSubscribed) return;
+      setLogoUrl(url);
+      setLogoLoaded(true);
+      setActiveBrand(carBrand);
+    };
+    loader.onerror = () => {
+      if (!isSubscribed) return;
+      // Fall back but do NOT clear instantly to reduce flicker
+      setLogoUrl('/car-logos/mein_logo_rest.png');
+      setLogoLoaded(true);
+      setActiveBrand(carBrand);
+    };
+    loader.src = url;
+    return () => { isSubscribed = false; };
   }, [carBrand]);
 
   // Gears configuration
@@ -678,56 +688,48 @@ const Circular3DProgressLEDEnhanced: React.FC<Circular3DProgressLEDEnhancedProps
     { size: 'small', position: { top: '13px', left: '128px' }, rotation: 'counter', speed: 6, index: 3 },
   ] as const;
 
+  const circleContent = (
+    <CircularWrapper>
+      <SVGContainer>
+        <CircleGlow cx="110" cy="110" r={radius} />
+        <CircleBackground cx="110" cy="110" r={radius} />
+        <CircleProgress
+          cx="110"
+          cy="110"
+          r={radius}
+          $progress={progress}
+          $color={progressColor}
+        />
+      </SVGContainer>
+
+      <InnerCircle>
+        <GlassyOrbit $show={logoLoaded && !!activeBrand} />
+
+        <CenterContent>
+          {activeBrand && logoUrl && (
+            <CarLogoContainer $show={logoLoaded}>
+              <CarLogoImage 
+                src={logoUrl} 
+                alt={activeBrand}
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.src = '/car-logos/mein_logo_rest.png';
+                }}
+              />
+            </CarLogoContainer>
+          )}
+        </CenterContent>
+      </InnerCircle>
+    </CircularWrapper>
+  );
+
+  if (variant === 'compact') {
+    return <CompactContainer className={className}>{circleContent}</CompactContainer>;
+  }
+
   return (
-    <Container>
-      <CircularWrapper>
-        <SVGContainer>
-          {/* Glow background */}
-          <CircleGlow
-            cx="110"
-            cy="110"
-            r={radius}
-          />
-          
-          {/* Background circle */}
-          <CircleBackground
-            cx="110"
-            cy="110"
-            r={radius}
-          />
-          
-          {/* Progress circle */}
-          <CircleProgress
-            cx="110"
-            cy="110"
-            r={radius}
-            $progress={progress}
-            $color={progressColor}
-          />
-        </SVGContainer>
-
-        <InnerCircle>
-          {/* القرص الزجاجي الدوار - يظهر عند وجود شعار */}
-          <GlassyOrbit $show={logoLoaded && !!carBrand} />
-
-          <CenterContent>
-            {/* شعار السيارة في الوسط */}
-            {carBrand && logoUrl && (
-              <CarLogoContainer $show={logoLoaded}>
-                <CarLogoImage 
-                  src={logoUrl} 
-                  alt={carBrand}
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.src = '/car-logos/mein_logo_rest.png';
-                  }}
-                />
-              </CarLogoContainer>
-            )}
-          </CenterContent>
-        </InnerCircle>
-      </CircularWrapper>
-
+    <Container className={className}>
+      {circleContent}
       {/* النسبة المئوية تحت القرص */}
       <ProgressPercentage $color={progressColor}>
         {progress}<PercentSymbol>%</PercentSymbol>

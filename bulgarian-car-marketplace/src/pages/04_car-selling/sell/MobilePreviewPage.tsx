@@ -3,10 +3,10 @@ import React, { useEffect, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { S } from './MobilePreviewPage.styles';
-import WorkflowPersistenceService from '@/services/workflowPersistenceService';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { SellProgressBar } from '@/components/SellWorkflow';
 import SellWorkflowStepStateService from '@/services/sellWorkflowStepState';
+import { usePreviewSummary } from './Preview/usePreviewSummary';
 
 const ProgressWrapper = styled.div`
   padding: 0.75rem 1rem 0;
@@ -17,49 +17,80 @@ const MobilePreviewPage: React.FC = () => {
   const { t } = useLanguage();
   const { vehicleType } = useParams();
 
-  const state = useMemo(() => WorkflowPersistenceService.loadState(), []);
-  const data = state?.data || {};
+  const labels = useMemo(
+    () => ({
+      vehicle: {
+        make: t('sell.preview.make'),
+        model: t('sell.preview.model'),
+        year: t('sell.preview.year'),
+        mileage: t('sell.preview.mileage'),
+        fuel: t('sell.preview.fuel'),
+        transmission: t('sell.preview.transmission'),
+        color: t('sell.vehicleData.color')
+      },
+      pricing: {
+        price: t('sell.preview.price'),
+        negotiable: t('sell.preview.negotiable'),
+        vat: t('sell.preview.vat'),
+        yes: t('sell.preview.yes'),
+        no: t('sell.preview.no'),
+        included: t('sell.preview.included'),
+        notIncluded: t('sell.preview.notIncluded')
+      },
+      contact: {
+        sellerName: t('sell.preview.sellerName'),
+        phone: t('sell.preview.phone'),
+        email: t('sell.preview.email'),
+        region: t('sell.preview.region'),
+        city: t('sell.preview.city'),
+        zip: t('sell.preview.zip')
+      },
+      sections: {
+        vehicle: t('sell.preview.sections.vehicle'),
+        pricing: t('sell.preview.sections.pricing'),
+        contact: t('sell.preview.sections.contact'),
+        equipment: t('sell.preview.sections.equipment'),
+        images: t('sell.preview.sections.images')
+      }
+    }),
+    [t]
+  );
+
+  const summary = usePreviewSummary(labels);
 
   useEffect(() => {
     SellWorkflowStepStateService.markCompleted('preview');
   }, []);
 
-  const goTo = (path: string) => navigate(path.replace(':vehicleType', String(vehicleType || 'auto')));
+  const goTo = (path: string) =>
+    navigate(path.replace(':vehicleType', String(vehicleType || 'auto')));
 
-  const vehicleRows = [
-    { label: t('sell.preview.make'), value: data.make },
-    { label: t('sell.preview.model'), value: data.model },
-    { label: t('sell.preview.year'), value: data.year },
-    { label: t('sell.preview.mileage'), value: data.mileage },
-    { label: t('sell.preview.fuel'), value: data.fuel },
-    { label: t('sell.preview.transmission'), value: data.transmission }
-  ];
-
-  const pricingRows = [
-    { label: t('sell.preview.price'), value: data.price ? `${data.price} ${data.currency || '€'}` : undefined },
-    { label: t('sell.preview.negotiable'), value: data.negotiable ? t('sell.preview.yes') : t('sell.preview.no') },
-    { label: t('sell.preview.vat'), value: data.vatIncluded ? t('sell.preview.included') : t('sell.preview.notIncluded') }
-  ];
-
-  const contactRows = [
-    { label: t('sell.preview.sellerName'), value: data.sellerName },
-    { label: t('sell.preview.phone'), value: data.sellerPhone },
-    { label: t('sell.preview.email'), value: data.sellerEmail },
-    { label: t('sell.preview.region'), value: data.region },
-    { label: t('sell.preview.city'), value: data.city },
-    { label: t('sell.preview.zip'), value: data.zip }
-  ];
-
-  const renderRows = (rows: {label: string; value: any}[]) => (
+  const renderRows = (rows: { label: string; value?: string }[]) => (
     <>
-      {rows.filter(r => r.value !== undefined && r.value !== '').map((row, idx) => (
-        <S.Row key={idx}>
-          <S.Label>{row.label}</S.Label>
-          <S.Value>{String(row.value)}</S.Value>
-        </S.Row>
-      ))}
+      {rows
+        .filter(row => row.value)
+        .map((row, index) => (
+          <S.Row key={`${row.label}-${index}`}>
+            <S.Label>{row.label}</S.Label>
+            <S.Value>{row.value}</S.Value>
+          </S.Row>
+        ))}
     </>
   );
+
+  const renderEquipmentList = (items: string[], emptyLabel: string) => {
+    if (!items.length) {
+      return <S.EmptyState>{emptyLabel}</S.EmptyState>;
+    }
+
+    return (
+      <S.EquipmentList>
+        {items.map(item => (
+          <S.EquipmentTag key={item}>{item}</S.EquipmentTag>
+        ))}
+      </S.EquipmentList>
+    );
+  };
 
   return (
     <>
@@ -72,18 +103,63 @@ const MobilePreviewPage: React.FC = () => {
         </S.Header>
 
         <S.Card>
-          <S.CardTitle>{t('sell.preview.sections.vehicle')}</S.CardTitle>
-          {renderRows(vehicleRows)}
+          <S.CardTitle>{summary.vehicle.title}</S.CardTitle>
+          {renderRows(summary.vehicle.rows)}
         </S.Card>
 
         <S.Card>
-          <S.CardTitle>{t('sell.preview.sections.pricing')}</S.CardTitle>
-          {renderRows(pricingRows)}
+          <S.CardTitle>{summary.pricing.title}</S.CardTitle>
+          {renderRows(summary.pricing.rows)}
         </S.Card>
 
         <S.Card>
-          <S.CardTitle>{t('sell.preview.sections.contact')}</S.CardTitle>
-          {renderRows(contactRows)}
+          <S.CardTitle>{summary.contact.title}</S.CardTitle>
+          {renderRows(summary.contact.rows)}
+        </S.Card>
+
+        <S.Card>
+          <S.CardTitle>{labels.sections.equipment}</S.CardTitle>
+          <S.EquipmentGroup>
+            <S.EquipmentHeading>{t('sell.equipment.safety.title')}</S.EquipmentHeading>
+            {renderEquipmentList(
+              summary.equipment.safety,
+              t('sell.preview.noEquipment')
+            )}
+          </S.EquipmentGroup>
+          <S.EquipmentGroup>
+            <S.EquipmentHeading>{t('sell.equipment.comfort.title')}</S.EquipmentHeading>
+            {renderEquipmentList(
+              summary.equipment.comfort,
+              t('sell.preview.noEquipment')
+            )}
+          </S.EquipmentGroup>
+          <S.EquipmentGroup>
+            <S.EquipmentHeading>{t('sell.equipment.infotainment.title')}</S.EquipmentHeading>
+            {renderEquipmentList(
+              summary.equipment.infotainment,
+              t('sell.preview.noEquipment')
+            )}
+          </S.EquipmentGroup>
+          <S.EquipmentGroup>
+            <S.EquipmentHeading>{t('sell.equipment.extras.title')}</S.EquipmentHeading>
+            {renderEquipmentList(
+              summary.equipment.extras,
+              t('sell.preview.noEquipment')
+            )}
+          </S.EquipmentGroup>
+        </S.Card>
+
+        <S.Card>
+          <S.CardTitle>{labels.sections.images}</S.CardTitle>
+          {summary.images.length ? (
+            <S.ImagesGrid>
+              {summary.images.map((src, index) => (
+                <S.Thumb key={`${src}-${index}`} src={src} alt={`Preview ${index + 1}`} />
+              ))}
+            </S.ImagesGrid>
+          ) : (
+            <S.EmptyState>{t('sell.preview.noImages')}</S.EmptyState>
+          )}
         </S.Card>
 
         <S.Actions>

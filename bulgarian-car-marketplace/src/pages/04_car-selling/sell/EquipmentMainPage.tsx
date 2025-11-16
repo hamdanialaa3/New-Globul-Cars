@@ -4,105 +4,100 @@ import styled from 'styled-components';
 
 const EquipmentContainer = styled.div`
   min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: var(--bg-primary);
   padding: 2rem 0;
 `;
 
 const ContentWrapper = styled.div`
-  max-width: 1200px;
+  max-width: 800px;
   margin: 0 auto;
   padding: 0 1rem;
 `;
 
 const HeaderCard = styled.div`
-  background: white;
+  background: var(--bg-card);
   border-radius: 20px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-lg);
   padding: 3rem;
   margin-bottom: 2rem;
   text-align: center;
+  border: 1px solid var(--border);
 `;
 
 const Title = styled.h1`
   font-size: 2.5rem;
   font-weight: 700;
-  color: #2c3e50;
+  color: var(--text-primary);
   margin: 0 0 1rem 0;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 `;
 
 const Subtitle = styled.p`
   font-size: 1.2rem;
-  color: #7f8c8d;
+  color: var(--text-secondary);
   margin: 0 0 2rem 0;
   line-height: 1.6;
 `;
 
 const EquipmentGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
   margin: 2rem 0;
 `;
 
-const EquipmentCard = styled.div`
-  background: white;
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  padding: 2rem;
-  text-align: center;
+const EquipmentCard = styled.div<{ $isSelected: boolean }>`
+  background: var(--bg-card);
+  border: 2px solid ${props => props.$isSelected ? 'var(--success)' : 'var(--border)'};
+  border-radius: 12px;
+  padding: 1.5rem;
   cursor: pointer;
-  transition: all 0.3s ease;
-  border: 2px solid transparent;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 80px;
 
   &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-    border-color: #667eea;
+    border-color: var(--accent-primary);
+    background: var(--bg-accent);
   }
+`;
+
+const EquipmentLeft = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 `;
 
 const EquipmentIcon = styled.div`
-  font-size: 3rem;
-  margin-bottom: 1rem;
-  color: #667eea;
+  font-size: 2rem;
+`;
+
+const EquipmentContent = styled.div`
+  display: flex;
+  flex-direction: column;
 `;
 
 const EquipmentTitle = styled.h3`
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   font-weight: 600;
-  color: #2c3e50;
-  margin: 0 0 1rem 0;
+  color: var(--text-primary);
+  margin: 0;
 `;
 
 const EquipmentDescription = styled.p`
-  font-size: 1rem;
-  color: #7f8c8d;
-  line-height: 1.6;
-  margin: 0 0 1rem 0;
-`;
-
-const EquipmentFeatures = styled.ul`
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  text-align: left;
-`;
-
-const FeatureItem = styled.li`
-  padding: 0.3rem 0;
   font-size: 0.9rem;
-  color: #6c757d;
+  color: var(--text-secondary);
+  margin: 0.25rem 0 0 0;
+`;
 
-  &::before {
-    content: '•';
-    margin-right: 0.5rem;
-    color: #667eea;
-    font-weight: bold;
-  }
+const EquipmentIndicator = styled.div<{ $isSelected: boolean }>`
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: ${props => props.$isSelected ? 'var(--success)' : 'var(--error)'};
+  border: 2px solid var(--bg-card);
+  box-shadow: var(--shadow-sm);
 `;
 
 const NavigationButtons = styled.div`
@@ -111,7 +106,7 @@ const NavigationButtons = styled.div`
   align-items: center;
   margin-top: 3rem;
   padding-top: 2rem;
-  border-top: 1px solid #ecf0f1;
+  border-top: 1px solid var(--border);
 `;
 
 const Button = styled.button<{ variant?: 'primary' | 'secondary' }>`
@@ -121,40 +116,38 @@ const Button = styled.button<{ variant?: 'primary' | 'secondary' }>`
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   min-width: 150px;
 
   ${props => {
     switch (props.variant) {
       case 'primary':
         return `
-          background: linear-gradient(135deg, #667eea, #764ba2);
-          color: white;
-          box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+          background: var(--accent-primary);
+          color: var(--text-on-accent);
+          box-shadow: var(--shadow-md);
           
           &:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+            background: var(--accent-secondary);
           }
         `;
       case 'secondary':
         return `
-          background: #f8f9fa;
-          color: #6c757d;
-          border: 2px solid #e9ecef;
+          background: var(--bg-secondary);
+          color: var(--text-secondary);
+          border: 2px solid var(--border);
           
           &:hover {
-            background: #e9ecef;
-            color: #495057;
+            background: var(--bg-accent);
           }
         `;
       default:
         return `
-          background: #6c757d;
-          color: white;
+          background: var(--bg-secondary);
+          color: var(--text-primary);
           
           &:hover {
-            background: #5a6268;
+            background: var(--bg-accent);
           }
         `;
     }
@@ -168,21 +161,21 @@ const Button = styled.button<{ variant?: 'primary' | 'secondary' }>`
 `;
 
 const InfoCard = styled.div`
-  background: #f8f9fa;
+  background: var(--bg-accent);
   border-radius: 15px;
   padding: 2rem;
   margin: 2rem 0;
-  border-left: 4px solid #667eea;
+  border-left: 4px solid var(--accent-primary);
 `;
 
 const InfoTitle = styled.h4`
-  color: #2c3e50;
+  color: var(--text-primary);
   margin: 0 0 1rem 0;
   font-size: 1.2rem;
 `;
 
 const InfoText = styled.p`
-  color: #7f8c8d;
+  color: var(--text-secondary);
   line-height: 1.6;
   margin: 0;
 `;
@@ -200,6 +193,27 @@ const EquipmentMainPage: React.FC = () => {
   const year = searchParams.get('fy');
   const mileage = searchParams.get('mi');
   const condition = searchParams.get('i');
+
+  // Check if categories have selections
+  const safety = searchParams.get('safety');
+  const comfort = searchParams.get('comfort');
+  const infotainment = searchParams.get('infotainment');
+  const extras = searchParams.get('extras');
+
+  const isCategorySelected = (categoryId: string): boolean => {
+    switch (categoryId) {
+      case 'sicherheit':
+        return !!(safety && safety.trim() !== '');
+      case 'komfort':
+        return !!(comfort && comfort.trim() !== '');
+      case 'infotainment':
+        return !!(infotainment && infotainment.trim() !== '');
+      case 'extras':
+        return !!(extras && extras.trim() !== '');
+      default:
+        return false;
+    }
+  };
 
   const equipmentCategories = [
     {
@@ -320,15 +334,16 @@ const EquipmentMainPage: React.FC = () => {
             <EquipmentCard
               key={category.id}
               onClick={() => handleCategoryClick(category.id)}
+              $isSelected={isCategorySelected(category.id)}
             >
-              <EquipmentIcon>{category.icon}</EquipmentIcon>
-              <EquipmentTitle>{category.title}</EquipmentTitle>
-              <EquipmentDescription>{category.description}</EquipmentDescription>
-              <EquipmentFeatures>
-                {category.features.map((feature, index) => (
-                  <FeatureItem key={index}>{feature}</FeatureItem>
-                ))}
-              </EquipmentFeatures>
+              <EquipmentLeft>
+                <EquipmentIcon>{category.icon}</EquipmentIcon>
+                <EquipmentContent>
+                  <EquipmentTitle>{category.title}</EquipmentTitle>
+                  <EquipmentDescription>{category.description}</EquipmentDescription>
+                </EquipmentContent>
+              </EquipmentLeft>
+              <EquipmentIndicator $isSelected={isCategorySelected(category.id)} />
             </EquipmentCard>
           ))}
         </EquipmentGrid>
