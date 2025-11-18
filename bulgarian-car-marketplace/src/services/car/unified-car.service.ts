@@ -69,21 +69,29 @@ class UnifiedCarService {
    * Get featured cars for HomePage
    */
   async getFeaturedCars(limitCount: number = 4): Promise<UnifiedCar[]> {
-    return homePageCache.getOrFetch(
-      CACHE_KEYS.FEATURED_CARS(limitCount),
-      async () => {
-        const q = query(
-          collection(db, this.collectionName),
-          where('isActive', '==', true),
-          where('isSold', '==', false),
-          orderBy('createdAt', 'desc'),
-          limit(limitCount)
-        );
+    try {
+      // Try with filters first
+      let q = query(
+        collection(db, this.collectionName),
+        orderBy('createdAt', 'desc'),
+        limit(limitCount * 2) // Get more to filter client-side
+      );
 
-        const snapshot = await getDocs(q);
-        return snapshot.docs.map(doc => this.mapDocToCar(doc));
-      }
-    );
+      const snapshot = await getDocs(q);
+      let cars = snapshot.docs.map(doc => this.mapDocToCar(doc));
+      
+      // Filter client-side for compatibility with old data
+      cars = cars.filter(car => {
+        const isActive = car.isActive !== false; // Default to true if missing
+        const isSold = car.isSold === true; // Default to false if missing
+        return isActive && !isSold;
+      });
+      
+      return cars.slice(0, limitCount);
+    } catch (error) {
+      serviceLogger.error('Error getting featured cars', error as Error);
+      return [];
+    }
   }
 
   /**
@@ -93,13 +101,8 @@ class UnifiedCarService {
     try {
       let q = query(collection(db, this.collectionName));
 
-      // Apply filters
-      if (filters.isActive !== undefined) {
-        q = query(q, where('isActive', '==', filters.isActive));
-      }
-      if (filters.isSold !== undefined) {
-        q = query(q, where('isSold', '==', filters.isSold));
-      }
+      // Apply filters (skip isActive/isSold for compatibility)
+      // Will filter client-side instead
       if (filters.make) {
         q = query(q, where('make', '==', filters.make));
       }
@@ -116,12 +119,26 @@ class UnifiedCarService {
         q = query(q, where('region', '==', filters.region));
       }
 
-      q = query(q, limit(limitCount));
+      q = query(q, limit(limitCount * 2)); // Get more for client-side filtering
 
       const snapshot = await getDocs(q);
       let cars = snapshot.docs.map(doc => this.mapDocToCar(doc));
 
       // Client-side filters
+      if (filters.isActive !== undefined) {
+        cars = cars.filter(c => (c.isActive !== false) === filters.isActive);
+      } else {
+        // Default: show only active cars
+        cars = cars.filter(c => c.isActive !== false);
+      }
+      
+      if (filters.isSold !== undefined) {
+        cars = cars.filter(c => (c.isSold === true) === filters.isSold);
+      } else {
+        // Default: hide sold cars
+        cars = cars.filter(c => c.isSold !== true);
+      }
+      
       if (filters.minYear) {
         cars = cars.filter(c => c.year >= filters.minYear!);
       }
@@ -135,7 +152,7 @@ class UnifiedCarService {
         cars = cars.filter(c => c.price <= filters.maxPrice!);
       }
 
-      return cars;
+      return cars.slice(0, limitCount);
     } catch (error) {
       serviceLogger.error('Error searching cars', error as Error, { filters });
       return [];

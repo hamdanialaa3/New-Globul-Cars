@@ -6,6 +6,12 @@ class NotificationService {
   private messaging: any;
 
   async initialize() {
+    // Skip Firebase messaging in development to prevent errors
+    if (process.env.NODE_ENV === 'development') {
+      console.log('📱 Firebase messaging disabled in development mode');
+      return;
+    }
+
     try {
       this.messaging = getMessaging();
       await this.requestPermission();
@@ -16,8 +22,13 @@ class NotificationService {
   }
 
   async requestPermission() {
+    // Skip in development
+    if (process.env.NODE_ENV === 'development') {
+      return null;
+    }
+
     const permission = await Notification.requestPermission();
-    
+
     if (permission === 'granted') {
       console.log('✅ Notification permission granted');
       const token = await this.getToken();
@@ -29,12 +40,23 @@ class NotificationService {
   }
 
   async getToken() {
+    // Skip in development
+    if (process.env.NODE_ENV === 'development') {
+      return null;
+    }
+
     try {
-      const token = await getToken(this.messaging, {
-        vapidKey: 'YOUR_VAPID_KEY' // سنضيفه لاحقاً
-      });
-      console.log('🔑 FCM Token:', token);
-      return token;
+      // TODO: Add proper VAPID key from Firebase Console
+      // For now, return null to prevent errors
+      console.log('📱 FCM Token: Skipped in development');
+      return null;
+
+      // Uncomment when VAPID key is available:
+      // const token = await getToken(this.messaging, {
+      //   vapidKey: 'YOUR_ACTUAL_VAPID_KEY_FROM_FIREBASE_CONSOLE'
+      // });
+      // console.log('🔑 FCM Token:', token);
+      // return token;
     } catch (error) {
       console.error('❌ Token error:', error);
       return null;
@@ -42,6 +64,11 @@ class NotificationService {
   }
 
   async requestPermissionAndSaveToken(userId?: string) {
+    // Skip in development
+    if (process.env.NODE_ENV === 'development') {
+      return null;
+    }
+
     try {
       const permission = await Notification.requestPermission();
       

@@ -12,6 +12,12 @@ const NotificationHandler: React.FC = () => {
   const { user } = useAuth();
 
   useEffect(() => {
+    // Skip Firebase messaging in development to prevent errors
+    if (process.env.NODE_ENV === 'development') {
+      console.log('📱 Notifications disabled in development mode');
+      return;
+    }
+
     // Only initialize notifications if a user is logged in
     if (user) {
       // 1. Request permission and save the token
