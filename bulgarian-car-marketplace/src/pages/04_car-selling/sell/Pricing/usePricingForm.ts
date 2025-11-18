@@ -5,7 +5,7 @@ import useSellWorkflow from '@/hooks/useSellWorkflow';
 export interface PricingFormState {
   price: string;
   currency: string;
-  priceType: 'fixed' | 'negotiable' | 'leasing';
+  priceType: 'fixed' | 'negotiable' | 'installments';
   negotiable: boolean;
   vatDeductible: boolean;
 }

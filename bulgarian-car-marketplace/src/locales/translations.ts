@@ -304,7 +304,23 @@ export const translations = {
             maxPhotos: 'Максимум 20 снимки',
             photos: 'снимки',
             skipPhotos: 'Пропусни снимките',
-            uploading: 'Качване...'
+            uploading: 'Качване...',
+            uploadText: 'Плъзнете снимки тук или кликнете за избор',
+            uploadHint: 'Максимум 20 снимки • JPEG, PNG до 10MB всяка',
+            video: {
+              title: 'Видео',
+              subtitle: 'Добавете видео на автомобила (по избор)',
+              uploadText: 'Плъзнете видео тук или кликнете за избор',
+              uploadHint: 'Максимум 1 видео • MP4, MOV до 100MB',
+              remove: 'Премахни видео',
+              uploading: 'Качване на видео...'
+            },
+            model3d: {
+              title: '3D Модел',
+              subtitle: 'Интерактивен 3D модел на автомобила',
+              comingSoon: 'Скоро',
+              description: 'Тази функция ще бъде налична скоро. Ще можете да качите 3D модел на автомобила си за интерактивна визуализация.'
+            }
           },
             pricing: {
               title: 'Цена',
@@ -313,7 +329,10 @@ export const translations = {
               negotiable: 'Цената подлежи на договаряне',
               vatDeductible: 'ДДС се приспада',
               infoTitle: 'Съвет за ценообразуване',
-              infoText: 'Проучете пазара за подобни автомобили, за да определите реалистична цена. Адекватната цена увеличава шансовете за бърза продажба.'
+              infoText: 'Проучете пазара за подобни автомобили, за да определите реалистична цена. Адекватната цена увеличава шансовете за бърза продажба.',
+              fixedPrice: 'Фиксирана цена',
+              flexiblePrice: 'Гъвкава цена',
+              installments: 'Вноски'
             },
               contact: {
                 title: 'Контактна информация',
@@ -1633,7 +1652,23 @@ export const translations = {
             maxPhotos: 'Maximum 20 photos',
             photos: 'photos',
             skipPhotos: 'Skip photos',
-            uploading: 'Uploading...'
+            uploading: 'Uploading...',
+            uploadText: 'Drag photos here or click to select',
+            uploadHint: 'Maximum 20 photos • JPEG, PNG up to 10MB each',
+            video: {
+              title: 'Video',
+              subtitle: 'Add a video of the vehicle (optional)',
+              uploadText: 'Drag video here or click to select',
+              uploadHint: 'Maximum 1 video • MP4, MOV up to 100MB',
+              remove: 'Remove video',
+              uploading: 'Uploading video...'
+            },
+            model3d: {
+              title: '3D Model',
+              subtitle: 'Interactive 3D model of the vehicle',
+              comingSoon: 'Coming Soon',
+              description: 'This feature will be available soon. You will be able to upload a 3D model of your vehicle for interactive visualization.'
+            }
           },
             pricing: {
               title: 'Price',
@@ -1642,7 +1677,10 @@ export const translations = {
               negotiable: 'Price is negotiable',
               vatDeductible: 'VAT deductible',
               infoTitle: 'Pricing tip',
-              infoText: 'Research the market for similar vehicles to determine a realistic price. Fair pricing increases the chances of a quick sale.'
+              infoText: 'Research the market for similar vehicles to determine a realistic price. Fair pricing increases the chances of a quick sale.',
+              fixedPrice: 'Fixed Price',
+              flexiblePrice: 'Flexible Price',
+              installments: 'Installments'
             },
               contact: {
                 title: 'Contact Information',
