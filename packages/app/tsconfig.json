@@ -1,0 +1,34 @@
+{
+  "extends": "../../bulgarian-car-marketplace/tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "src",
+    "paths": {
+      "@globul-cars/core": ["../../core/src"],
+      "@globul-cars/ui": ["../../ui/src"],
+      "@globul-cars/auth": ["../../auth/src"],
+      "@globul-cars/cars": ["../../cars/src"],
+      "@globul-cars/profile": ["../../profile/src"],
+      "@globul-cars/messaging": ["../../messaging/src"],
+      "@globul-cars/social": ["../../social/src"],
+      "@globul-cars/admin": ["../../admin/src"],
+      "@globul-cars/payments": ["../../payments/src"],
+      "@globul-cars/iot": ["../../iot/src"],
+      "@globul-cars/services": ["../../services/src"],
+      "@/services/*": ["services/*"],
+      "@/components/*": ["components/*"],
+      "@/contexts/*": ["contexts/*"],
+      "@/utils/*": ["utils/*"],
+      "@/types/*": ["types/*"],
+      "@/hooks/*": ["hooks/*"],
+      "@/pages/*": ["pages/*"],
+      "@/firebase/*": ["firebase/*"],
+      "@/data/*": ["data/*"],
+      "@/constants/*": ["constants/*"],
+      "@/features/*": ["features/*"],
+      "@/assets/*": ["assets/*"]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "build"]
+}
+

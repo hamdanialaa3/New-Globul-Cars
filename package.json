@@ -1,24 +1,25 @@
 {
-  "name": "globul-cars-firebase",
+  "name": "globul-cars-monorepo",
   "version": "1.0.0",
-  "description": "Bulgarian Car Marketplace Firebase Services - Complete Firebase integration with Bulgarian localization",
-  "main": "index.ts",
-  "type": "module",
+  "description": "Bulgarian Car Marketplace - Modular Monorepo Architecture",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
-    "dev": "firebase emulators:start",
-    "build": "tsc",
-    "test": "npm run test:services",
-    "test:utils": "node --loader ts-node/esm test-utils.ts",
-    "test:firebase": "firebase emulators:exec --only firestore 'npm run test:services'",
-    "deploy": "firebase deploy",
-    "deploy:hosting": "firebase deploy --only hosting",
-    "deploy:functions": "firebase deploy --only functions",
-    "lint": "eslint . --ext .ts",
-    "format": "prettier --write .",
-    "clean": "rm -rf dist node_modules/.cache",
-    "setup": "npm install && firebase init",
-    "docs": "typedoc --out docs src",
-    "algolia:backfill": "node --loader ts-node/esm scripts/algolia-backfill.ts"
+    "dev": "npm run dev --workspace=@globul-cars/app",
+    "build": "npm run build --workspaces --if-present",
+    "build:app": "npm run build --workspace=@globul-cars/app",
+    "build:all": "npm run build --workspaces",
+    "test": "npm run test --workspaces --if-present",
+    "clean": "npm run clean --workspaces --if-present && rm -rf node_modules",
+    "install:all": "npm install",
+    "lint": "npm run lint --workspaces --if-present",
+    "type-check": "npm run type-check --workspaces --if-present",
+    "firebase:dev": "firebase emulators:start",
+    "firebase:deploy": "firebase deploy",
+    "firebase:deploy:hosting": "firebase deploy --only hosting",
+    "firebase:deploy:functions": "firebase deploy --only functions"
   },
   "keywords": [
     "firebase",
