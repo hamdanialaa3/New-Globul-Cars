@@ -15,20 +15,24 @@ import { useLanguage } from '../../contexts/LanguageContext';
 // STYLED COMPONENTS
 // ========================================
 
+const HEADER_BUTTON_SIZE = '56px';
+
 const HeaderContainer = styled.header`
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   height: 60px;
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--header-bg, rgba(255, 255, 255, 0.95));
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  border-bottom: 1px solid var(--border-primary, rgba(0, 0, 0, 0.08));
+  color: var(--text-primary);
   z-index: 1000;
   display: flex;
   align-items: center;
   padding: 0 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-sm, 0 2px 8px rgba(0, 0, 0, 0.04));
+  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 `;
 
 const HeaderContent = styled.div`
@@ -43,18 +47,18 @@ const MenuButton = styled.button<{ $isOpen: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
+  width: ${HEADER_BUTTON_SIZE};
+  height: ${HEADER_BUTTON_SIZE};
   border: none;
-  background: ${props => props.$isOpen ? '#1a73e8' : 'transparent'};
-  color: ${props => props.$isOpen ? '#fff' : '#333'};
+  background: ${props => props.$isOpen ? 'var(--accent-primary)' : 'transparent'};
+  color: ${props => props.$isOpen ? 'var(--text-inverse)' : 'var(--text-primary)'};
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
   padding: 0;
 
   &:hover {
-    background: ${props => props.$isOpen ? '#1557b0' : 'rgba(0, 0, 0, 0.05)'};
+    background: ${props => props.$isOpen ? 'var(--accent-hover)' : 'var(--bg-hover)'};
   }
 
   &:active {
@@ -62,8 +66,9 @@ const MenuButton = styled.button<{ $isOpen: boolean }>`
   }
 
   svg {
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
+    color: currentColor;
   }
 `;
 
@@ -73,10 +78,11 @@ const Logo = styled.div`
   justify-content: center;
   font-size: 20px;
   font-weight: 700;
-  color: #1a73e8;
+  color: var(--accent-primary);
   cursor: pointer;
   user-select: none;
   letter-spacing: 0.5px;
+  transition: color 0.3s ease;
 `;
 
 const UserSection = styled.div`
@@ -89,41 +95,53 @@ const UserButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: ${HEADER_BUTTON_SIZE};
+  height: ${HEADER_BUTTON_SIZE};
   border: none;
   background: transparent;
-  color: #333;
+  color: var(--text-primary);
   border-radius: 50%;
   cursor: pointer;
   transition: all 0.2s ease;
 
   &:hover {
-    background: rgba(0, 0, 0, 0.05);
+    background: var(--bg-hover);
   }
 
   &:active {
     transform: scale(0.95);
+  }
+
+  svg {
+    width: 32px;
+    height: 32px;
   }
 `;
 
 const LoginButton = styled.button`
-  padding: 8px 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: ${HEADER_BUTTON_SIZE};
+  padding: 0 20px;
+  height: ${HEADER_BUTTON_SIZE};
   border: none;
-  background: #1a73e8;
-  color: #fff;
-  border-radius: 20px;
-  font-size: 14px;
+  background: var(--accent-primary);
+  color: var(--text-inverse);
+  border-radius: 18px;
+  font-size: 15px;
   font-weight: 600;
+  line-height: 1;
   cursor: pointer;
   transition: all 0.2s ease;
 
   &:hover {
-    background: #1557b0;
+    background: var(--accent-hover);
   }
 
   &:active {
     transform: scale(0.95);
+    background: var(--accent-active);
   }
 `;
 
@@ -147,13 +165,14 @@ const MenuDrawer = styled.div<{ $isOpen: boolean }>`
   bottom: 0;
   width: 280px;
   max-width: 85vw;
-  background: #fff;
+  background: var(--bg-card, #fff);
+  color: var(--text-primary);
   z-index: 1001;
   transform: translateX(${props => props.$isOpen ? '0' : '-100%'});
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   flex-direction: column;
-  box-shadow: 2px 0 16px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md, 2px 0 16px rgba(0, 0, 0, 0.1));
 `;
 
 const MenuHeader = styled.div`
@@ -161,14 +180,15 @@ const MenuHeader = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 16px;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid var(--border-primary, #e0e0e0);
   min-height: 60px;
 `;
 
 const MenuLogo = styled.div`
   font-size: 18px;
   font-weight: 700;
-  color: #1a73e8;
+  color: var(--accent-primary);
+  transition: color 0.3s ease;
 `;
 
 const CloseButton = styled.button`
@@ -179,13 +199,13 @@ const CloseButton = styled.button`
   height: 36px;
   border: none;
   background: transparent;
-  color: #666;
+  color: var(--text-secondary);
   border-radius: 50%;
   cursor: pointer;
   transition: all 0.2s ease;
 
   &:hover {
-    background: rgba(0, 0, 0, 0.05);
+    background: var(--bg-hover);
   }
 `;
 
@@ -194,8 +214,8 @@ const UserInfo = styled.div`
   align-items: center;
   gap: 12px;
   padding: 20px 16px;
-  border-bottom: 1px solid #e0e0e0;
-  background: linear-gradient(135deg, #f5f7fa 0%, #fff 100%);
+  border-bottom: 1px solid var(--border-primary, #e0e0e0);
+  background: var(--bg-secondary, linear-gradient(135deg, #f5f7fa 0%, #fff 100%));
 `;
 
 const UserAvatar = styled.div`
@@ -205,8 +225,8 @@ const UserAvatar = styled.div`
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #1a73e8 0%, #1557b0 100%);
-  color: #fff;
+  background: var(--gradient-primary, linear-gradient(135deg, #1a73e8 0%, #1557b0 100%));
+  color: var(--text-inverse);
 `;
 
 const UserDetails = styled.div`
@@ -217,7 +237,7 @@ const UserDetails = styled.div`
 const UserName = styled.div`
   font-size: 15px;
   font-weight: 600;
-  color: #333;
+  color: var(--text-primary);
   margin-bottom: 2px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -226,7 +246,7 @@ const UserName = styled.div`
 
 const UserEmail = styled.div`
   font-size: 13px;
-  color: #666;
+  color: var(--text-secondary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -246,7 +266,7 @@ const MenuContent = styled.div`
 
 const MenuSection = styled.div`
   padding: 12px 0;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid var(--border-primary, #e0e0e0);
   
   /* CRITICAL FIX: Prevent overlapping */
   position: relative;
@@ -262,7 +282,7 @@ const SectionTitle = styled.div`
   padding: 8px 16px;
   font-size: 12px;
   font-weight: 600;
-  color: #999;
+  color: var(--text-tertiary, #999);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 `;
@@ -275,12 +295,12 @@ const MenuItem = styled.button<{ $variant?: 'primary' | 'danger' }>`
   padding: 12px 16px;
   border: none;
   background: ${props => 
-    props.$variant === 'primary' ? '#1a73e8' :
-    props.$variant === 'danger' ? '#6c757d' :
+    props.$variant === 'primary' ? 'var(--accent-primary)' :
+    props.$variant === 'danger' ? 'var(--error)' :
     'transparent'
   };
   color: ${props => 
-    props.$variant === 'primary' || props.$variant === 'danger' ? '#fff' : '#333'
+    props.$variant ? 'var(--text-inverse)' : 'var(--text-primary)'
   };
   text-align: left;
   cursor: pointer;
@@ -303,23 +323,26 @@ const MenuItem = styled.button<{ $variant?: 'primary' | 'danger' }>`
 
   &:hover {
     background: ${props => 
-      props.$variant === 'primary' ? '#1557b0' :
-      props.$variant === 'danger' ? '#dc3545' :
-      'rgba(0, 0, 0, 0.04)'
+      props.$variant === 'primary' ? 'var(--accent-hover)' :
+      props.$variant === 'danger' ? 'var(--error)' :
+      'var(--bg-hover)'
     };
+    filter: ${props => props.$variant ? 'brightness(0.95)' : 'none'};
   }
 
   &:active {
     transform: scale(0.98);
     background: ${props => 
-      props.$variant === 'primary' ? '#1557b0' :
-      props.$variant === 'danger' ? '#bd2130' :
-      'rgba(0, 0, 0, 0.08)'
+      props.$variant === 'primary' ? 'var(--accent-active)' :
+      props.$variant === 'danger' ? 'var(--error)' :
+      'var(--bg-hover)'
     };
+    filter: ${props => props.$variant ? 'brightness(0.9)' : 'none'};
   }
 
   svg {
     flex-shrink: 0;
+    color: currentColor;
   }
 `;
 
@@ -330,17 +353,18 @@ const MenuItemText = styled.span`
 const Badge = styled.span`
   padding: 2px 8px;
   border-radius: 12px;
-  background: rgba(0, 0, 0, 0.1);
+  background: var(--bg-hover, rgba(0, 0, 0, 0.1));
+  color: var(--text-primary);
   font-size: 11px;
   font-weight: 600;
 `;
 
 const MenuFooter = styled.div`
   padding: 16px;
-  border-top: 1px solid #e0e0e0;
+  border-top: 1px solid var(--border-primary, #e0e0e0);
   text-align: center;
   font-size: 12px;
-  color: #999;
+  color: var(--text-secondary);
 `;
 
 // ========================================

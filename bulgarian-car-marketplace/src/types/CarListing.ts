@@ -8,14 +8,23 @@ export interface CarListing {
   mileage: number;
   fuelType: string;
   transmission: string;
-  power?: number;
-  engineSize?: number;
+  power?: number; // in hp
+  powerKW?: number; // in kW (for search filters)
+  engineSize?: number; // Cubic Capacity in cm³
   color?: string;
+  exteriorColor?: string; // Alias for color
   doors?: string;
+  numberOfDoors?: number; // Numeric value for search (from/to)
   seats?: string;
+  numberOfSeats?: number; // Numeric value for search (from/to)
+  slidingDoor?: boolean;
   previousOwners?: string;
+  numberOfOwners?: number; // Numeric value for search
+  condition?: string; // Type and condition
   accidentHistory: boolean;
   serviceHistory: boolean;
+  fullServiceHistory?: boolean; // Full service history flag
+  roadworthy?: boolean; // Is car roadworthy
   description?: string;
 
   // Seller Information
@@ -41,10 +50,11 @@ export interface CarListing {
   // Technical Specifications
   engineType?: string;
   driveType?: string;
-  fuelConsumption?: number;
+  fuelConsumption?: number; // l/100km
   co2Emissions?: number;
   euroStandard?: string;
-  weight?: number;
+  weight?: number; // Weight in kg
+  weightKg?: number; // Weight in kg (alias)
   maxWeight?: number;
   length?: number;
   width?: number;
@@ -52,10 +62,17 @@ export interface CarListing {
   wheelbase?: number;
   groundClearance?: number;
   trunkVolume?: number;
-  fuelTankCapacity?: number;
+  fuelTankCapacity?: number; // Fuel Tank Volume in liters
+  fuelTankVolumeL?: number; // Fuel Tank Volume in liters (alias)
+  cylinders?: number;
   acceleration?: number;
   topSpeed?: number;
   features?: string[];
+  
+  // Emission & Environmental
+  emissionSticker?: string; // Emission sticker type
+  emissionClass?: string; // Emission class (Euro 4, 5, 6, etc.)
+  particulateFilter?: boolean; // Particulate filter installed
 
   // Equipment
   safetyEquipment?: string[];
@@ -64,6 +81,23 @@ export interface CarListing {
   exteriorEquipment?: string[];
   interiorEquipment?: string[];
   extras?: string[];
+  
+  // Exterior Features
+  trailerCoupling?: boolean; // Trailer Coupling (Yes/No)
+  towbar?: string; // Trailer coupling type: 'fixed' | 'detachable' | 'swiveling' | 'none'
+  trailerLoadBraked?: number; // Trailer Load Braked in kg
+  trailerLoadUnbraked?: number; // Trailer Load Unbraked in kg
+  noseWeight?: number; // Nose Weight in kg
+  parkingSensors?: string[]; // Parking Sensors (front, rear, 360, etc.)
+  parkingAssist?: string[]; // Alias for parkingSensors
+  cruiseControl?: string; // 'none' | 'cruise' | 'adaptive'
+  
+  // Interior Features
+  interiorColor?: string;
+  interiorMaterial?: string; // fabric, leather, alcantara, etc.
+  airbags?: string; // Airbags level/type
+  airConditioning?: string; // Air Conditioning type
+  climateControl?: string; // Alias for airConditioning
 
   // Images
   images?: File[];
@@ -72,6 +106,7 @@ export interface CarListing {
   price: number;
   currency: string;
   priceType: string;
+  paymentType?: string; // Payment type filter
   negotiable: boolean;
   financing: boolean;
   tradeIn: boolean;
@@ -80,12 +115,36 @@ export interface CarListing {
   additionalCosts?: string;
   paymentMethods: string[];
   pricingDescription?: string;
+  
+  // Registration & Inspection
+  firstRegistrationDate?: Date; // First Registration date
+  firstRegistration?: Date; // Alias
+  inspectionValidUntil?: Date; // HU Valid Until date
+  huValid?: Date; // Alias for inspectionValidUntil
 
   // Contact
   preferredContact: string[];
   availableHours?: string;
   additionalInfo?: string;
 
+  // Offer Details
+  adOnlineSince?: Date; // Ad Online Since date
+  adOnlineSinceDays?: number; // Days since ad was posted
+  hasVideo?: boolean; // Ads with Video
+  withVideo?: boolean; // Alias for hasVideo
+  videoUrl?: string; // Video URL if available
+  hasImages?: boolean; // Ads with Pictures (derived from images array)
+  discountOffer?: boolean; // Discount Offers available
+  nonSmoker?: boolean; // Non-smoker Vehicle
+  taxi?: boolean; // Used as taxi
+  vatReclaimable?: boolean; // VAT Reclaimable
+  vatDeductible?: boolean; // Alias for vatReclaimable
+  damagedVehicles?: string; // Damaged Vehicles description
+  isDamaged?: boolean; // Alias (true if damagedVehicles is set)
+  commercial?: boolean; // Commercial, Export/Import
+  approvedUsedProgramme?: string; // Approved Used Car Programme
+  dealerRating?: number; // Dealer Rating (0-5)
+  
   // System Fields
   createdAt?: Date;
   updatedAt?: Date;
@@ -95,6 +154,9 @@ export interface CarListing {
   isFeatured?: boolean;
   isUrgent?: boolean;
   expiresAt?: Date;
+  
+  // Search in Description
+  searchKeywords?: string; // Keywords for text search in description
 }
 
 export interface CarListingFormData extends Partial<CarListing> {

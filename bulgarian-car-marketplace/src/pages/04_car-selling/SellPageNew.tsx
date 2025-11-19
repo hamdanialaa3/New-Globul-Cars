@@ -98,44 +98,12 @@ const Subtitle = styled.p`
   font-size: 0.95rem;
   color: #3c4a5d;
   margin: 0 0 1.75rem 0;
-  line-height: 1.5;
-`;
 
-const SubtitleStrip = styled.span`
+const FormGrid = styled.div`
   display: inline-flex;
   align-items: center;
   padding: 0.4rem 0.85rem;
   border-radius: 999px;
-  background: rgba(255, 143, 16, 0.12);
-  border: 1px solid rgba(255, 143, 16, 0.35);
-  color: #d26b00;
-  font-weight: 600;
-`;
-
-const ButtonsContainer = styled.div`
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-`;
-
-const StartButton = styled.button`
-  background: linear-gradient(135deg, #ff8f10, #005ca9);
-  color: white;
-  border: none;
-  border-radius: 50px;
-  padding: 1rem 2.5rem;
-  font-size: 1.05rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 8px 20px rgba(255, 143, 16, 0.3);
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 25px rgba(255, 143, 16, 0.4);
   }
 `;
 
@@ -233,12 +201,6 @@ const ListingTitle = styled.h2`
   font-size: 1.5rem;
   color: #111c2f;
   margin: 0;
-`;
-
-const ListingDescription = styled.p`
-  margin: 0;
-  color: #49566c;
-  line-height: 1.5;
 `;
 
 const PopularBrandsHeader = styled.div`
@@ -390,37 +352,6 @@ const FieldHint = styled.span`
   color: #6e7c91;
 `;
 
-const InlineFields = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 0.75rem;
-`;
-
-const InputWrapper = styled.div<ValidationProps>`
-  display: flex;
-  align-items: center;
-  border: 1px solid rgba(15, 23, 42, 0.15);
-  border-radius: 14px;
-  background: ${({ $validation }) => getValidationBackground($validation)};
-  overflow: hidden;
-
-  input {
-    border: none;
-    flex: 1;
-    padding-right: 0;
-  }
-
-  &:focus-within {
-    border-color: #ff8f10;
-    box-shadow: 0 0 0 3px rgba(255, 143, 16, 0.15);
-  }
-`;
-
-const InputSuffix = styled.span`
-  padding: 0.85rem 1rem;
-  font-size: 0.9rem;
-  color: #5a6578;
-  font-weight: 600;
 `;
 
 const FormGrid = styled.div`
@@ -751,16 +682,6 @@ const SellPageNew: React.FC = () => {
     navigate('/sell/auto');
   }, [navigate, persistImmediately]);
 
-  const demandText = useMemo(() => {
-    const brand = formState.brand || 'Volkswagen';
-    const model = formState.model || 'Arteon';
-    return t('sell.listingSection.demandDefault')
-      .replace('{brand}', brand)
-      .replace('{model}', model);
-  }, [formState.brand, formState.model, t]);
-
-  const sellingChanceText = t('sell.listingSection.sellingChanceDefault');
-
   const brandOrbit = useMemo(
     () => (
       <WorkflowFlow
@@ -820,7 +741,6 @@ const SellPageNew: React.FC = () => {
       <ListingSection>
         <ListingHeader>
           <ListingTitle>{t('sell.listingSection.title')}</ListingTitle>
-          <ListingDescription>{t('sell.listingSection.description')}</ListingDescription>
         </ListingHeader>
 
         <PopularBrandsHeader>
@@ -1016,23 +936,6 @@ const SellPageNew: React.FC = () => {
             <FieldHint>{t('sell.vehicleData.mileageHint')}</FieldHint>
           </FieldGroup>
         </VerticalFieldStack>
-
-        <DemandGrid>
-          <DemandCard>
-            <DemandTitle>
-              <TrendingUp size={18} color="#047857" />
-              {t('sell.listingSection.demandTitle')}
-            </DemandTitle>
-            <DemandText>{demandText}</DemandText>
-          </DemandCard>
-          <DemandCard>
-            <DemandTitle>
-              <ShieldCheck size={18} color="#0f5ad1" />
-              {t('sell.listingSection.sellingChanceTitle')}
-            </DemandTitle>
-            <DemandText>{sellingChanceText}</DemandText>
-          </DemandCard>
-        </DemandGrid>
 
         <SectionTitle>{t('sell.listingSection.modelDetailsTitle')}</SectionTitle>
         <FormGrid>

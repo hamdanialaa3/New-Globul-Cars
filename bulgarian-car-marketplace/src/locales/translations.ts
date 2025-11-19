@@ -106,8 +106,11 @@ export const translations = {
         sellingChanceDefault: 'Повече от 52 000 частни продавачи продадоха автомобилите си успешно чрез mobile.de през последния месец.',
         furtherInfoTitle: 'Допълнителна информация',
         roadworthyQuestion: 'Превозното средство изправно и регистрирано ли е?',
+        selectRoadworthy: 'Изберете опция',
         saleTypeQuestion: 'Тип продажба',
+        selectSaleType: 'Изберете тип продажба',
         saleTimelineQuestion: 'Кога планирате да продадете?',
+        selectSaleTimeline: 'Изберете времеви период',
         saleLocationQuestion: 'Къде в България искате да продадете автомобила?',
         postalCodeLabel: 'Пощенски код',
         countryLabel: 'Държава',
@@ -133,6 +136,55 @@ export const translations = {
           yes: 'Да',
           no: 'Не'
         }
+      },
+      purchaseInformation: {
+        title: 'Информация за покупка',
+        whenPurchased: 'Кога купихте превозното средство?',
+        purchaseMonth: 'Месец на покупка',
+        purchaseYear: 'Година на покупка',
+        purchaseMileage: 'Пробег при покупка',
+        purchaseMileagePlaceholder: 'Пример: 55000',
+        annualMileage: 'Колко километра изминавате годишно?',
+        annualMileageOptions: {
+          '5000': 'Прибл. 5 000 км / година',
+          '10000': 'Прибл. 10 000 км / година',
+          '15000': 'Прибл. 15 000 км / година',
+          '20000': 'Прибл. 20 000 км / година',
+          '25000': 'Прибл. 25 000 км / година',
+          '30000': 'Прибл. 30 000 км / година',
+          '40000': 'Прибл. 40 000 км / година',
+          '50000': 'Прибл. 50 000+ км / година'
+        },
+        soleUser: 'Вие ли сте единственият потребител?',
+        soleUserOptions: {
+          yes: 'Да',
+          no: 'Не'
+        }
+      },
+      exteriorDetails: {
+        title: 'Външни детайли',
+        exteriorColor: 'Цвят на външната повърхност',
+        exteriorColorOptions: {
+          black: 'Черно',
+          white: 'Бяло',
+          gray: 'Сиво',
+          silver: 'Сребристо',
+          blue: 'Синьо',
+          red: 'Червено',
+          green: 'Зелено',
+          yellow: 'Жълто',
+          orange: 'Оранжево',
+          brown: 'Кафяво',
+          beige: 'Бежово',
+          gold: 'Златисто',
+          purple: 'Лилаво',
+          pink: 'Розово',
+          bronze: 'Бронзово',
+          champagne: 'Шампанско',
+          other: 'Друго'
+        },
+        trimLevel: 'Ниво на екипировка',
+        trimLevelPlaceholder: 'Пример: A7 45 TFSI S tronic quattro'
       },
       howItWorks: {
         title: 'Как работи?',
@@ -250,7 +302,39 @@ export const translations = {
         blue: 'Син',
         red: 'Червен',
         green: 'Зелен',
-        other: 'Друг'
+        other: 'Друг',
+        doors23: '2/3',
+        doors45: '4/5',
+        doors67: '6/7',
+        // Purchase Information
+        purchaseInfoTitle: 'Информация за покупка',
+        purchaseDateLabel: 'Кога купихте превозното средство?',
+        purchaseMonth: 'Месец на покупка',
+        purchaseYear: 'Година на покупка',
+        purchaseMileageLabel: 'Какъв беше пробегът му при покупката?',
+        purchaseMileagePlaceholder: 'Например: 55000',
+        annualMileageLabel: 'Колко километра изминавате годишно?',
+        selectAnnualMileage: 'Изберете годишен пробег',
+        approx: 'Приблизително',
+        soleUserLabel: 'Вие ли сте единственият потребител?',
+        selectOption: 'Изберете опция',
+        yes: 'Да',
+        no: 'Не',
+        // Exterior Details
+        exteriorDetailsTitle: 'Външни детайли',
+        exteriorColorLabel: 'Външен цвят',
+        metallicGray: 'Металик сив',
+        darkGray: 'Тъмносив',
+        darkBlue: 'Тъмносин',
+        yellow: 'Жълт',
+        orange: 'Оранжев',
+        brown: 'Кафяв',
+        beige: 'Бежов',
+        gold: 'Златен',
+        exteriorColorOther: 'Друг цвят (въведете)',
+        enterColorName: 'Въведете име на цвят',
+        trimLevelLabel: 'Ниво на оборудване',
+        trimLevelPlaceholder: 'Например: A7 45 TFSI S tronic quattro'
       },
         equipment: {
           title: 'Оборудване',
@@ -378,7 +462,8 @@ export const translations = {
                 noImages: 'Няма добавени снимки',
                 actions: {
                   editImages: 'Редактирай снимките',
-                  continue: 'Продължи'
+                  continue: 'Продължи',
+                  publish: 'Публикувай онлайн'
                 }
               },
               submission: {
@@ -1454,8 +1539,11 @@ export const translations = {
         sellingChanceDefault: 'More than 52,000 private sellers sold their cars successfully via mobile.de in the last month.',
         furtherInfoTitle: 'Further Information',
         roadworthyQuestion: 'Is your car roadworthy and registered?',
+        selectRoadworthy: 'Select option',
         saleTypeQuestion: 'Type of sale?',
+        selectSaleType: 'Select sale type',
         saleTimelineQuestion: 'When do you plan to sell?',
+        selectSaleTimeline: 'Select timeline',
         saleLocationQuestion: 'Where in Bulgaria would you like to sell your car?',
         postalCodeLabel: 'Postal code',
         countryLabel: 'Country',
@@ -1481,6 +1569,55 @@ export const translations = {
           yes: 'Yes',
           no: 'No'
         }
+      },
+      purchaseInformation: {
+        title: 'Purchase Information',
+        whenPurchased: 'When did you buy the vehicle?',
+        purchaseMonth: 'Purchase Month',
+        purchaseYear: 'Purchase Year',
+        purchaseMileage: 'Mileage when purchased',
+        purchaseMileagePlaceholder: 'Example: 55000',
+        annualMileage: 'How many kilometres do you drive a year?',
+        annualMileageOptions: {
+          '5000': 'Approx. 5,000 km / year',
+          '10000': 'Approx. 10,000 km / year',
+          '15000': 'Approx. 15,000 km / year',
+          '20000': 'Approx. 20,000 km / year',
+          '25000': 'Approx. 25,000 km / year',
+          '30000': 'Approx. 30,000 km / year',
+          '40000': 'Approx. 40,000 km / year',
+          '50000': 'Approx. 50,000+ km / year'
+        },
+        soleUser: 'Are you the sole user?',
+        soleUserOptions: {
+          yes: 'Yes',
+          no: 'No'
+        }
+      },
+      exteriorDetails: {
+        title: 'Exterior Details',
+        exteriorColor: 'Exterior Colour',
+        exteriorColorOptions: {
+          black: 'Black',
+          white: 'White',
+          gray: 'Gray',
+          silver: 'Silver',
+          blue: 'Blue',
+          red: 'Red',
+          green: 'Green',
+          yellow: 'Yellow',
+          orange: 'Orange',
+          brown: 'Brown',
+          beige: 'Beige',
+          gold: 'Gold',
+          purple: 'Purple',
+          pink: 'Pink',
+          bronze: 'Bronze',
+          champagne: 'Champagne',
+          other: 'Other'
+        },
+        trimLevel: 'Trim level',
+        trimLevelPlaceholder: 'Example: A7 45 TFSI S tronic quattro'
       },
       howItWorks: {
         title: 'How It Works?',
@@ -1598,7 +1735,39 @@ export const translations = {
         blue: 'Blue',
         red: 'Red',
         green: 'Green',
-        other: 'Other'
+        other: 'Other',
+        doors23: '2/3',
+        doors45: '4/5',
+        doors67: '6/7',
+        // Purchase Information
+        purchaseInfoTitle: 'Purchase Information',
+        purchaseDateLabel: 'When did you buy the vehicle?',
+        purchaseMonth: 'Purchase month',
+        purchaseYear: 'Purchase year',
+        purchaseMileageLabel: 'What was its mileage when purchased?',
+        purchaseMileagePlaceholder: 'Example: 55000',
+        annualMileageLabel: 'How many kilometres do you drive a year?',
+        selectAnnualMileage: 'Select annual mileage',
+        approx: 'Approx.',
+        soleUserLabel: 'Are you the sole user?',
+        selectOption: 'Select option',
+        yes: 'Yes',
+        no: 'No',
+        // Exterior Details
+        exteriorDetailsTitle: 'Exterior Details',
+        exteriorColorLabel: 'Exterior Colour',
+        metallicGray: 'Metallic Gray',
+        darkGray: 'Dark Gray',
+        darkBlue: 'Dark Blue',
+        yellow: 'Yellow',
+        orange: 'Orange',
+        brown: 'Brown',
+        beige: 'Beige',
+        gold: 'Gold',
+        exteriorColorOther: 'Other color (specify)',
+        enterColorName: 'Enter color name',
+        trimLevelLabel: 'Trim level',
+        trimLevelPlaceholder: 'Example: A7 45 TFSI S tronic quattro'
       },
         equipment: {
           title: 'Equipment',
@@ -1726,7 +1895,8 @@ export const translations = {
                 noImages: 'No images added',
                 actions: {
                   editImages: 'Edit images',
-                  continue: 'Continue'
+                  continue: 'Continue',
+                  publish: 'Publish Online'
                 }
               },
               submission: {

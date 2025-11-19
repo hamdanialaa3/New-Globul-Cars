@@ -23,6 +23,17 @@ export interface VehicleFormData {
   color: string;       // اللون
   previousOwners: string; // المالكون السابقون
   
+  // Purchase Information - معلومات الشراء
+  purchaseMonth: string;   // شهر الشراء
+  purchaseYear: string;    // سنة الشراء
+  purchaseMileage: string; // المسافة عند الشراء
+  annualMileage: string;   // المسافة السنوية
+  isSoleUser: boolean | null; // المستخدم الوحيد؟
+  
+  // Exterior Details - تفاصيل خارجية
+  exteriorColor: string;   // لون الهيكل الخارجي
+  trimLevel: string;       // مستوى التجهيز
+  
   // Location fields (updated to Bulgaria-specific structure)
   saleProvince: string; // Област (Province)
   saleCity: string;     // Град (City)
@@ -47,6 +58,8 @@ export interface VehicleFormData {
   // Keep no 'other' for firstRegistration as months/years are fixed calendar values.
   fuelTypeOther?: string;
   colorOther?: string;
+  exteriorColorOther?: string;
+  trimLevelOther?: string;
 }
 
 export const FUEL_TYPES = [
@@ -65,4 +78,16 @@ export const COLORS = [
 export const DOOR_OPTIONS = ['2', '3', '4', '5', '6+'];
 export const SEAT_OPTIONS = ['2', '4', '5', '6', '7', '8+'];
 export const OWNER_OPTIONS = ['1', '2', '3', '4', '5+'];
+
+// Annual Mileage Options - خيارات المسافة السنوية
+export const ANNUAL_MILEAGE_OPTIONS = [
+  '5000', '10000', '15000', '20000', '25000', '30000', '40000', '50000+'
+];
+
+// Common exterior colors - الألوان الخارجية الشائعة
+export const EXTERIOR_COLORS = [
+  'Black', 'White', 'Silver', 'Gray', 'Metallic Gray', 
+  'Dark Gray', 'Red', 'Blue', 'Dark Blue', 'Green',
+  'Yellow', 'Orange', 'Brown', 'Beige', 'Gold', 'Other'
+];
 

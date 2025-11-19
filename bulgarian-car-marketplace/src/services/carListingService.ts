@@ -22,6 +22,24 @@ import { serviceLogger } from './logger-wrapper';
 class CarListingService {
   private collectionName = 'cars'; // ✅ Unified with sellWorkflowService
 
+  /**
+   * Get the appropriate Firestore collection name based on vehicle type
+   * Returns the collection name where vehicles of this type should be stored
+   */
+  private getCollectionNameForVehicleType(vehicleType: string): string {
+    const typeMap: Record<string, string> = {
+      'car': 'passenger_cars',           // Passenger Car / Personal use
+      'suv': 'suvs',                      // SUV/Jeep / Off-road
+      'van': 'vans',                      // Van / Cargo/Combi
+      'motorcycle': 'motorcycles',        // Motorcycle / Two-wheeled
+      'truck': 'trucks',                  // Truck / Cargo
+      'bus': 'buses'                      // Bus / Passenger
+    };
+
+    // Default to 'cars' if type not found (backward compatibility)
+    return typeMap[vehicleType?.toLowerCase()] || 'cars';
+  }
+
   // Create a new car listing
   async createListing(listing: Omit<CarListing, 'id' | 'createdAt' | 'updatedAt'>): Promise<string> {
     try {
@@ -34,7 +52,10 @@ class CarListingService {
       // Preserve legacy sellerEmail if provided; prefer auth email when available
       const sellerEmail = (listing as any).sellerEmail || currentUser.email || '';
 
-      const docRef = await addDoc(collection(db, this.collectionName), {
+      // Get the appropriate collection name based on vehicle type
+      const collectionName = this.getCollectionNameForVehicleType(listing.vehicleType || 'car');
+
+      const docRef = await addDoc(collection(db, collectionName), {
         ...listing,
         // Ownership fields (align with Firestore rules)
         sellerId: currentUser.uid,

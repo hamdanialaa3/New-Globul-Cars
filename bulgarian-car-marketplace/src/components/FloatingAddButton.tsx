@@ -181,8 +181,8 @@ const SpeedDialItem = styled.button<{ $index: number; $show: boolean }>`
   
   svg {
     color: #FFD700;
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
   }
   
@@ -191,8 +191,8 @@ const SpeedDialItem = styled.button<{ $index: number; $show: boolean }>`
     height: 48px;
     
     svg {
-      width: 20px;
-      height: 20px;
+      width: 24px;
+      height: 24px;
     }
   }
 `;
@@ -288,7 +288,7 @@ const FloatingAddButton: React.FC = () => {
   
   const actions: SpeedDialAction[] = [
     {
-      icon: <Car size={24} />,
+      icon: <Car size={28} strokeWidth={2.5} />,
       label: { bg: 'Добави кола', en: 'Add Car' },
       onClick: () => {
         navigate('/sell');
@@ -296,7 +296,7 @@ const FloatingAddButton: React.FC = () => {
       }
     },
     {
-      icon: <Users size={24} />,
+      icon: <Users size={28} strokeWidth={2.5} />,
       label: { bg: 'Социална мрежа', en: 'Social Feed' },
       onClick: () => {
         navigate('/social');

@@ -35,13 +35,13 @@ export const usePreviewSummary = (labels: {
   const savedImages = useMemo(() => WorkflowPersistenceService.getImages(), []);
 
   const vehicleRows: SummaryRow[] = [
-    { label: labels.vehicle.make, value: workflowData.make },
-    { label: labels.vehicle.model, value: workflowData.model },
-    { label: labels.vehicle.year, value: workflowData.year },
-    { label: labels.vehicle.mileage, value: workflowData.mileage },
-    { label: labels.vehicle.fuel, value: workflowData.fuelType },
-    { label: labels.vehicle.transmission, value: workflowData.transmission },
-    { label: labels.vehicle.color, value: workflowData.color }
+    { label: labels.vehicle.make, value: workflowData.make || '—' },
+    { label: labels.vehicle.model, value: workflowData.model || '—' },
+    { label: labels.vehicle.year, value: workflowData.year || '—' },
+    { label: labels.vehicle.mileage, value: workflowData.mileage || '—' },
+    { label: labels.vehicle.fuel, value: workflowData.fuelType || '—' },
+    { label: labels.vehicle.transmission, value: workflowData.transmission || '—' },
+    { label: labels.vehicle.color, value: workflowData.color || '—' }
   ];
 
   const pricingRows: SummaryRow[] = [
@@ -49,25 +49,29 @@ export const usePreviewSummary = (labels: {
       label: labels.pricing.price,
       value: workflowData.price
         ? `${workflowData.price} ${workflowData.currency || 'EUR'}`
-        : undefined
+        : '—'
     },
     {
       label: labels.pricing.negotiable,
-      value: workflowData.negotiable ? labels.pricing.yes : labels.pricing.no
+      value: workflowData.negotiable !== undefined 
+        ? (workflowData.negotiable ? labels.pricing.yes : labels.pricing.no)
+        : '—'
     },
     {
       label: labels.pricing.vat,
-      value: workflowData.vatDeductible ? labels.pricing.included : labels.pricing.notIncluded
+      value: workflowData.vatDeductible !== undefined
+        ? (workflowData.vatDeductible ? labels.pricing.included : labels.pricing.notIncluded)
+        : '—'
     }
   ];
 
   const contactRows: SummaryRow[] = [
-    { label: labels.contact.sellerName, value: workflowData.sellerName },
-    { label: labels.contact.phone, value: workflowData.sellerPhone },
-    { label: labels.contact.email, value: workflowData.sellerEmail },
-    { label: labels.contact.region, value: workflowData.region },
-    { label: labels.contact.city, value: workflowData.city },
-    { label: labels.contact.zip, value: workflowData.postalCode }
+    { label: labels.contact.sellerName, value: workflowData.sellerName || '—' },
+    { label: labels.contact.phone, value: workflowData.sellerPhone || '—' },
+    { label: labels.contact.email, value: workflowData.sellerEmail || '—' },
+    { label: labels.contact.region, value: workflowData.region || '—' },
+    { label: labels.contact.city, value: workflowData.city || '—' },
+    { label: labels.contact.zip, value: workflowData.postalCode || '—' }
   ];
 
   const equipmentSummary = {

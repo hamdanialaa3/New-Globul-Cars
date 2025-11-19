@@ -33,6 +33,7 @@ import FacebookPixel from './components/FacebookPixel';
 import FloatingAddButton from './components/FloatingAddButton';
 import AssistantHead from './components/AI/AssistantHead';
 import { useIsMobile } from './hooks/useBreakpoint';
+import ProgressBar from './components/ProgressBar';
 // Removed problematic imports
 // import useAuthRedirectHandler from './hooks/useAuthRedirectHandler';
 
@@ -44,6 +45,7 @@ const SocialFeedPage = React.lazy(() => import('./pages/03_user-pages/social/Soc
 
 // Mobile.de-style sell workflow pages (الوحيد المستخدم)
 const VehicleStartPage = React.lazy(() => import('./pages/04_car-selling/sell/VehicleStartPageNew'));
+const MobileSellerTypePage = React.lazy(() => import('./pages/04_car-selling/sell/MobileSellerTypePage'));
 const VehicleDataPageUnified = React.lazy(() => import('./pages/04_car-selling/sell/VehicleDataPageUnified'));
 const EquipmentMainPage = React.lazy(() => import('./pages/04_car-selling/sell/EquipmentMainPage'));
 const MobileEquipmentMainPage = React.lazy(() => import('./pages/04_car-selling/sell/MobileEquipmentMainPage'));
@@ -122,7 +124,7 @@ const SitemapPage = React.lazy(() => import('./pages/10_legal/sitemap/SitemapPag
 const NotificationsPage = React.lazy(() => import('./pages/03_user-pages/notifications/NotificationsPage'));
 const SavedSearchesPage = React.lazy(() => import('./pages/03_user-pages/saved-searches/SavedSearchesPage'));
 const FavoritesPage = React.lazy(() => import('./pages/03_user-pages/favorites/FavoritesPage'));
-// const DealerPublicPage = React.lazy(() => import('./pages/09_dealer-company/DealerPublicPage'));  // NEW: Public Dealer Profiles - NOT MIGRATED YET
+const DealerPublicPage = React.lazy(() => import('./pages/09_dealer-company/DealerPublicPage'));  // NEW: Public Dealer Profiles
 
 // NEW: P2 Frontend Integration - Invoices & Commissions
 const InvoicesPage = React.lazy(() => import('./pages/08_payment-billing/InvoicesPage'));
@@ -242,7 +244,7 @@ const App: React.FC = () => {
                   {/* <FacebookMessengerWidget /> - Temporarily disabled */}
                   <SkipNavigation />
                   <NotificationHandler />
-                  <Suspense fallback={<div className="loading-spinner"></div>}>
+                  <Suspense fallback={<ProgressBar duration={2000} />}>
                     <Routes>
                       {/* Auth Routes - Full Screen (no header/footer) */}
                       <Route path="/login" element={
@@ -316,7 +318,7 @@ const MainLayout: React.FC = () => {
       <Route path="/car/:id" element={<CarDetailsPage />} />
       
       {/* Dealer Routes */}
-      {/* <Route path="/dealer/:slug" element={<DealerPublicPage />} /> */}  {/* NOT MIGRATED YET */}
+      <Route path="/dealer/:slug" element={<DealerPublicPage />} />
       <Route path="/dealer-registration" element={<DealerRegistrationPage />} />
       <Route
         path="/dealer-dashboard"
@@ -341,6 +343,14 @@ const MainLayout: React.FC = () => {
         element={
           <AuthGuard requireAuth={true}>
             <VehicleStartPage />
+          </AuthGuard>
+        }
+      />
+      <Route
+        path="/sell/inserat/:vehicleType/verkaeufertyp"
+        element={
+          <AuthGuard requireAuth={true}>
+            <MobileSellerTypePage />
           </AuthGuard>
         }
       />

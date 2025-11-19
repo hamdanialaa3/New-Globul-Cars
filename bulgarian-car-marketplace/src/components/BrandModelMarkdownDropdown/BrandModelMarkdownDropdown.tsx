@@ -23,12 +23,13 @@ const POPULAR_BRANDS_BG = [
 
 const Container = styled.section`
   background: var(--bg-card);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border);
   border-radius: 16px;
   padding: 1rem;
   display: grid;
   grid-template-columns: minmax(0, 1fr) 280px;
   gap: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 
   @media (max-width: 900px) {
     grid-template-columns: 1fr;
@@ -55,36 +56,106 @@ const Label = styled.label`
 
 const Select = styled.select`
   width: 100%;
-  border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 0.8rem 1rem;
-  background: var(--bg-primary);
-  color: var(--text-primary);
+  max-width: 450px;
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--border, #e2e8f0);
+  border-radius: 10px;
+  background: var(--bg-card, #ffffff);
+  color: var(--text-primary, #1e293b);
   font-size: 0.95rem;
+  line-height: 1.5;
+  height: auto;
+  min-height: 2.75rem;
+  cursor: pointer;
+  box-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.08),
+    0 4px 12px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
-  /* Style popular brands with bold text */
+  &:hover {
+    border-color: var(--accent-primary, #667eea);
+    box-shadow: 
+      0 4px 12px rgba(102, 126, 234, 0.15),
+      0 8px 24px rgba(102, 126, 234, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    transform: translateY(-1px);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--accent-primary, #667eea);
+    background: var(--bg-card, #ffffff);
+    box-shadow: 
+      0 0 0 4px rgba(102, 126, 234, 0.12),
+      0 8px 24px rgba(102, 126, 234, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 1);
+    transform: translateY(-2px);
+  }
+
+  /* Style popular brands with modern badge effect */
   option.popular-brand {
     font-weight: 700;
-    color: #FF8F10;
+    color: var(--accent-primary, #667eea);
+    background: var(--bg-card, #ffffff);
+    padding: 0.5rem;
+  }
+
+  option.other-option {
+    border-top: 2px solid var(--border, #e2e8f0);
+    font-weight: 600;
+    color: var(--text-secondary, #64748b);
+    background: var(--bg-accent, #f8fafc);
+  }
+
+  option {
+    padding: 0.5rem;
+    background: var(--bg-card, #ffffff);
+    color: var(--text-primary, #1e293b);
   }
 `;
 
 const Input = styled.input`
   width: 100%;
-  border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 0.8rem 1rem;
-  background: var(--bg-primary);
-  color: var(--text-primary);
+  max-width: 450px;
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--border, #e2e8f0);
+  border-radius: 10px;
+  background: var(--bg-card, #ffffff);
+  color: var(--text-primary, #1e293b);
   font-size: 0.95rem;
+  line-height: 1.5;
+  height: auto;
+  min-height: 2.75rem;
+  box-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.08),
+    0 4px 12px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   
   &::placeholder {
-    color: var(--text-muted);
+    color: var(--text-muted, #94a3b8);
+    font-weight: 400;
+  }
+  
+  &:hover {
+    border-color: var(--accent-primary, #667eea);
+    box-shadow: 
+      0 4px 12px rgba(102, 126, 234, 0.15),
+      0 8px 24px rgba(102, 126, 234, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    transform: translateY(-1px);
   }
   
   &:focus {
     outline: none;
-    border-color: #FF8F10;
+    border-color: var(--accent-primary, #667eea);
+    background: var(--bg-card, #ffffff);
+    box-shadow: 
+      0 0 0 4px rgba(102, 126, 234, 0.12),
+      0 8px 24px rgba(102, 126, 234, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 1);
+    transform: translateY(-2px);
   }
 `;
 
@@ -168,8 +239,9 @@ export const BrandModelMarkdownDropdown: React.FC<Props> = ({ brand, model, onBr
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [brandModels, setBrandModels] = useState<BrandModelsMap>({});
-  const [selectedBrand, setSelectedBrand] = useState<string>(brand || '');
-  const [selectedModel, setSelectedModel] = useState<string>(model || '');
+  // Always start with empty values - no auto-selection
+  const [selectedBrand, setSelectedBrand] = useState<string>('');
+  const [selectedModel, setSelectedModel] = useState<string>('');
   const [showOtherBrand, setShowOtherBrand] = useState(false);
   const [showOtherModel, setShowOtherModel] = useState(false);
   const [otherBrandValue, setOtherBrandValue] = useState('');
@@ -185,10 +257,18 @@ export const BrandModelMarkdownDropdown: React.FC<Props> = ({ brand, model, onBr
         const parsed = await brandsModelsDataService.loadBrandsModels();
         if (!isMounted) return;
         setBrandModels(parsed);
-        const initialBrand = brand || Object.keys(parsed).sort()[0] || '';
-        setSelectedBrand(initialBrand);
-        setSelectedModel(model || '');
-        if (!brand && onBrandChange) onBrandChange(initialBrand);
+        // Don't auto-select - always start with empty (Select brand / Select model)
+        // Only set values if explicitly provided via props
+        if (brand) {
+          setSelectedBrand(brand);
+        } else {
+          setSelectedBrand('');
+        }
+        if (model) {
+          setSelectedModel(model);
+        } else {
+          setSelectedModel('');
+        }
         setError(null);
       } catch (e: any) {
         if (!isMounted) return;
@@ -219,18 +299,34 @@ export const BrandModelMarkdownDropdown: React.FC<Props> = ({ brand, model, onBr
 
   const models = useMemo(() => (selectedBrand ? (brandModels[selectedBrand] || []) : []), [brandModels, selectedBrand]);
 
+  // Sync with external brand prop only if explicitly provided (not empty)
   useEffect(() => {
-    if (brand !== undefined && brand !== selectedBrand) {
-      setSelectedBrand(brand);
-      setShowOtherBrand(false);
+    if (brand !== undefined) {
+      if (brand && brand !== selectedBrand) {
+        setSelectedBrand(brand);
+        setShowOtherBrand(false);
+      } else if (!brand && selectedBrand) {
+        // Reset to empty if brand prop is cleared
+        setSelectedBrand('');
+        setSelectedModel('');
+        setShowOtherBrand(false);
+        setShowOtherModel(false);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [brand]);
 
+  // Sync with external model prop only if explicitly provided (not empty)
   useEffect(() => {
-    if (model !== undefined && model !== selectedModel) {
-      setSelectedModel(model);
-      setShowOtherModel(false);
+    if (model !== undefined) {
+      if (model && model !== selectedModel) {
+        setSelectedModel(model);
+        setShowOtherModel(false);
+      } else if (!model && selectedModel) {
+        // Reset to empty if model prop is cleared
+        setSelectedModel('');
+        setShowOtherModel(false);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [model]);
@@ -250,7 +346,6 @@ export const BrandModelMarkdownDropdown: React.FC<Props> = ({ brand, model, onBr
   return (
     <Container aria-label="Brand and model picker (markdown)">
       <FieldsColumn>
-        <Label>{titleText}</Label>
         <Field>
         <Label htmlFor="markdown-brand">{brandLabel}</Label>
         <Select
@@ -283,10 +378,10 @@ export const BrandModelMarkdownDropdown: React.FC<Props> = ({ brand, model, onBr
               value={b}
               className={POPULAR_BRANDS_BG.includes(b) ? 'popular-brand' : ''}
             >
-              {POPULAR_BRANDS_BG.includes(b) ? `⭐ ${b}` : b}
+              {b}
             </option>
           ))}
-          <option value="__OTHER__">📝 {otherText}</option>
+          <option value="__OTHER__" className="other-option">{otherText}</option>
         </Select>
         
         {showOtherBrand && (
@@ -336,7 +431,7 @@ export const BrandModelMarkdownDropdown: React.FC<Props> = ({ brand, model, onBr
           {models.map((m) => (
             <option key={m} value={m}>{m}</option>
           ))}
-          {(selectedBrand || showOtherBrand) && <option value="__OTHER__">📝 {otherText}</option>}
+          {(selectedBrand || showOtherBrand) && <option value="__OTHER__" className="other-option">{otherText}</option>}
         </Select>
         
         {showOtherModel && (
@@ -370,6 +465,16 @@ export const BrandModelMarkdownDropdown: React.FC<Props> = ({ brand, model, onBr
           <SphereInner>
             {selectedBrand && !showOtherBrand && <CarBrandLogo make={selectedBrand} size={96} showName={false} />}
             {showOtherBrand && otherBrandValue && <CarBrandLogo make={otherBrandValue} size={96} showName={false} />}
+            {!selectedBrand && !showOtherBrand && (
+              <div style={{ 
+                color: 'var(--text-muted)', 
+                fontSize: '0.9rem', 
+                textAlign: 'center',
+                padding: '1rem'
+              }}>
+                {language === 'bg' ? 'Изберете марка' : 'Select brand'}
+              </div>
+            )}
           </SphereInner>
         </GlassSphere>
       </SpherePanel>

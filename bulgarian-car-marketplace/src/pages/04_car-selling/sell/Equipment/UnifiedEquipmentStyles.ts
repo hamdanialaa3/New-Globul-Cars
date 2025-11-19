@@ -55,23 +55,101 @@ export const BrandOrbitInline = styled.div`
   margin-top: 1rem;
 `;
 
-// Tabs
-export const TabsContainer = styled.div`
+// Equipment Sections Container - Horizontal Grid
+export const EquipmentSectionsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 0.75rem;
-  background: var(--bg-card);
-  padding: 1rem;
-  border-radius: 15px;
-  box-shadow: var(--shadow-sm);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
 
-  @media (max-width: 768px) {
+  @media (max-width: 1200px) {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     grid-template-columns: 1fr;
   }
+`;
+
+// Equipment Section - Beautiful Card Design
+export const EquipmentSection = styled.div`
+  background: var(--bg-card);
+  border-radius: 20px;
+  box-shadow: var(--shadow-md);
+  padding: 1.5rem;
+  border: 2px solid var(--border);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--accent-primary);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+  }
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--accent-primary);
+
+    &::before {
+      transform: scaleX(1);
+    }
+  }
+`;
+
+export const SectionHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--border);
+`;
+
+export const SectionHeaderLeft = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+`;
+
+export const SectionTitle = styled.h2`
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+  line-height: 1.3;
+`;
+
+export const SectionBadge = styled.span`
+  background: var(--accent-primary);
+  color: var(--text-on-accent);
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  font-weight: bold;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(var(--accent-primary-rgb), 0.3);
+`;
+
+// Tabs (kept for backward compatibility but not used)
+export const TabsContainer = styled.div`
+  display: none; /* Hidden - no longer used */
 `;
 
 export const Tab = styled.button<{ $isActive: boolean; $hasSelection: boolean; $isEmpty: boolean }>`
@@ -292,17 +370,18 @@ export const TabBadge = styled.span`
   font-weight: bold;
 `;
 
-// Features Container - No Scrollbar, All Visible
+// Features Container - All visible, no scroll
 export const FeaturesContainer = styled.div`
-  background: var(--bg-card);
-  border-radius: 15px;
-  box-shadow: var(--shadow-sm);
-  padding: 1.5rem;
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  max-height: none; /* إزالة max-height */
-  overflow-y: visible; /* كل شيء ظاهر */
+  gap: 0.75rem;
+  flex: 1;
+  overflow-y: visible;
+  max-height: none;
 `;
 
 export const FeatureRow = styled.div`
@@ -342,14 +421,13 @@ export const FeatureName = styled.span`
   color: var(--text-primary);
 `;
 
-// ==================== CYBER TOGGLE BUTTON ====================
+// ==================== MODERN TOGGLE BUTTON (Neumorphism Style) ====================
 
 export const CyberToggleWrapper = styled.div`
   position: relative;
-  width: 60px;
-  height: 30px;
+  width: 50px;
+  height: 26px;
   user-select: none;
-  overflow: hidden;
 `;
 
 export const CyberToggleCheckbox = styled.input`
@@ -361,6 +439,7 @@ export const CyberToggleLabel = styled.label`
   width: 100%;
   height: 100%;
   cursor: pointer;
+  position: relative;
 `;
 
 export const ToggleTrack = styled.span`
@@ -369,129 +448,71 @@ export const ToggleTrack = styled.span`
   left: 0;
   width: 100%;
   height: 100%;
-  background: #2c2f33;
-  border-radius: 20px;
-  transition: background 0.4s ease-in-out;
-  box-shadow: inset 0 5px 10px rgba(0, 0, 0, 0.2), inset 0 2px 4px rgba(0, 0, 0, 0.4);
+  background: var(--bg-secondary);
+  border-radius: 13px;
+  transition: background 0.3s ease;
+  
+  /* Neumorphism effect - inset shadow */
+  box-shadow: 
+    inset 2px 2px 4px rgba(0, 0, 0, 0.1),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.1);
 
   &::before {
     content: '';
     position: absolute;
-    top: 3px;
-    left: 3px;
-    width: 26px;
-    height: 26px;
+    top: 2px;
+    left: 2px;
+    width: 22px;
+    height: 22px;
     background: #fff;
     border-radius: 50%;
     transform: translateX(0);
-    transition: transform 0.4s cubic-bezier(0.3, 1.5, 0.7, 1);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Neumorphism effect - raised button */
+    box-shadow: 
+      2px 2px 4px rgba(0, 0, 0, 0.2),
+      -1px -1px 2px rgba(255, 255, 255, 0.8);
   }
 
   ${CyberToggleCheckbox}:checked + ${CyberToggleLabel} & {
-    background: #03e9f4;
+    background: var(--accent-primary);
+    box-shadow: 
+      inset 2px 2px 4px rgba(0, 0, 0, 0.2),
+      inset -2px -2px 4px rgba(255, 255, 255, 0.1);
   }
 
   ${CyberToggleCheckbox}:checked + ${CyberToggleLabel} &::before {
-    transform: translateX(30px);
+    transform: translateX(24px);
+    box-shadow: 
+      2px 2px 4px rgba(0, 0, 0, 0.2),
+      -1px -1px 2px rgba(255, 255, 255, 0.8);
   }
 `;
 
+// Remove all other toggle elements (no longer needed)
 export const ToggleThumbIcon = styled.span`
-  position: absolute;
-  top: 50%;
-  left: 7px;
-  transform: translateY(-50%);
-  width: 12px;
-  height: 12px;
-  background: #fff;
-  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="%23000" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM175 175c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l47-47-47-47c-9.4-9.4-9.4-24.6 0-33.9z"/></svg>');
-  mask-repeat: no-repeat;
-  mask-position: center;
-  mask-size: cover;
-  transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out;
-  opacity: 0;
-
-  ${CyberToggleCheckbox}:checked + ${CyberToggleLabel} & {
-    transform: translateX(32px) translateY(-50%);
-    opacity: 1;
-  }
+  display: none;
 `;
 
 export const ToggleThumbDots = styled.span`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 3px;
-  height: 3px;
-  background: #fff;
-  border-radius: 50%;
-  box-shadow: 
-    -7px 0 0 0 #fff,
-    7px 0 0 0 #fff,
-    0 -7px 0 0 #fff,
-    0 7px 0 0 #fff;
-  transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out;
-
-  ${CyberToggleCheckbox}:checked + ${CyberToggleLabel} & {
-    transform: translate(30px, -50%);
-    opacity: 0;
-  }
+  display: none;
 `;
 
 export const ToggleThumbHighlight = styled.span`
-  position: absolute;
-  top: 50%;
-  left: 7px;
-  transform: translateY(-50%);
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.5), transparent);
-  transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out;
-  opacity: 0;
-
-  ${CyberToggleCheckbox}:checked + ${CyberToggleLabel} & {
-    transform: translateX(32px) translateY(-50%);
-    opacity: 1;
-  }
+  display: none;
 `;
 
 export const ToggleLabels = styled.span`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  justify-content: space-between;
-  width: 80%;
-  font-size: 0.5rem; /* 8px - أصغر ليحتوي الكلمتين */
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  pointer-events: none;
-  color: var(--text-secondary);
+  display: none;
 `;
 
 export const ToggleLabelOn = styled.span`
-  opacity: 0;
-  transition: opacity 0.4s ease-in-out;
-  color: var(--text-on-accent);
-
-  ${CyberToggleCheckbox}:checked + ${CyberToggleLabel} & {
-    opacity: 1;
-  }
+  display: none;
 `;
 
 export const ToggleLabelOff = styled.span`
-  opacity: 1;
-  transition: opacity 0.4s ease-in-out;
-  color: var(--text-on-accent);
-
-  ${CyberToggleCheckbox}:checked + ${CyberToggleLabel} & {
-    opacity: 0;
-  }
+  display: none;
 `;
 
 // ==================== INFO & NAVIGATION ====================

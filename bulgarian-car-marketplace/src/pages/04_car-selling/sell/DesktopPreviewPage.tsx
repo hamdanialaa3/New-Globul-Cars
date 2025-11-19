@@ -126,6 +126,37 @@ const Thumb = styled.img`
   border: 1px solid var(--border);
 `;
 
+const PublishTopButton = styled.button`
+  position: fixed;
+  top: 80px;
+  right: 2rem;
+  padding: 0.875rem 2rem;
+  background: var(--accent-primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+
+  &:hover {
+    background: var(--accent-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  }
+
+  @media (max-width: 768px) {
+    position: relative;
+    top: auto;
+    right: auto;
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+`;
+
 const Actions = styled.div`
   display: flex;
   justify-content: space-between;
@@ -222,14 +253,12 @@ const DesktopPreviewPage: React.FC = () => {
 
   const renderRows = (rows: { label: string; value?: string }[]) => (
     <>
-      {rows
-        .filter(row => row.value)
-        .map((row, index) => (
-          <Row key={`${row.label}-${index}`}>
-            <Label>{row.label}</Label>
-            <Value>{row.value}</Value>
-          </Row>
-        ))}
+      {rows.map((row, index) => (
+        <Row key={`${row.label}-${index}`}>
+          <Label>{row.label}</Label>
+          <Value>{row.value || '—'}</Value>
+        </Row>
+      ))}
     </>
   );
 
@@ -247,11 +276,18 @@ const DesktopPreviewPage: React.FC = () => {
     );
   };
 
+  const handlePublish = () => {
+    navigate(`/sell/inserat/${vehicleType || 'car'}/submission`);
+  };
+
   return (
     <>
       <ProgressWrapper>
         <SellProgressBar currentStep="preview" />
       </ProgressWrapper>
+      <PublishTopButton onClick={handlePublish}>
+        {t('sell.preview.actions.publish') || 'Publish Online'}
+      </PublishTopButton>
       <Container>
         <Header>
           <Title>{t('sell.preview.title')}</Title>

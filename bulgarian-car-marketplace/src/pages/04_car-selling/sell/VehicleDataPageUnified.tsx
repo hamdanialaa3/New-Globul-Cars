@@ -1,8 +1,8 @@
 // Unified Vehicle Data Page - Responsive Design
 // صفحة بيانات السيارة الموحدة - تصميم متجاوب
 /* eslint-disable jsx-a11y/control-has-associated-label */
-import React, { useCallback, useEffect, useMemo, useRef } from 'react';
-import { useNavigate, useParams, useLocation } from 'react-router-dom';
+import React, { useCallback, useEffect, useMemo } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import styled, { DefaultTheme } from 'styled-components';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { SellProgressBar } from '@/components/SellWorkflow';
@@ -10,10 +10,8 @@ import { SellProgressBar } from '@/components/SellWorkflow';
 import SellWorkflowStepStateService from '@/services/sellWorkflowStepState';
 import { useVehicleDataForm } from './VehicleData/useVehicleDataForm';
 import { useIsMobile } from '@/hooks/useBreakpoint';
-import { useAuth } from '@/contexts/AuthProvider';
 import BrandModelMarkdownDropdown from '@/components/BrandModelMarkdownDropdown/BrandModelMarkdownDropdown';
 import BulgariaLocationDropdown, { BulgariaLocationData } from '@/components/BulgariaLocationDropdown/BulgariaLocationDropdown';
-import { Info, ShieldCheck, TrendingUp } from 'lucide-react';
 // removed legacy structured brands import; new markdown-based dropdown is canonical
 
 // removed legacy popular brands; new markdown-based dropdown replaces this UI
@@ -22,14 +20,6 @@ const DOOR_CHIP_OPTIONS = [
   { value: '2', label: '2/3' },
   { value: '4', label: '4/5' },
   { value: '6', label: '6/7' }
-];
-
-const FUEL_CHIP_OPTIONS: Array<'lpg' | 'petrol' | 'diesel' | 'electric' | 'hybrid'> = [
-  'lpg',
-  'petrol',
-  'diesel',
-  'electric',
-  'hybrid'
 ];
 
 const ROADWORTHY_CHOICES: Array<'yes' | 'no'> = ['yes', 'no'];
@@ -58,13 +48,6 @@ type ValidationState = 'valid' | 'invalid';
 const validationBackground: Record<ValidationState, string> = {
   valid: 'rgba(34, 197, 94, 0.18)',
   invalid: 'rgba(239, 68, 68, 0.18)'
-};
-
-// Debug flag via query param: ?debug=sell
-// يظهر الـ overlay فقط عند إضافة ?debug=sell إلى رابط الصفحة
-const useSellDebugFlag = () => {
-  const location = useLocation();
-  return useMemo(() => new URLSearchParams(location.search).get('debug') === 'sell', [location.search]);
 };
 
 const getValidationBackground = (state?: ValidationState) =>
@@ -117,11 +100,13 @@ const MobileSelect = styled.select.attrs<{ title?: string; 'aria-label'?: string
   };
 })<ValidationProps>`
   width: 100%;
+  max-width: 450px;
   padding: ${props => themeTokens(props).mobileSpacing?.md || '1rem'};
-  border: 1px solid var(--border);
+  border: 2px solid var(--border, #e2e8f0);
   border-radius: ${props => themeTokens(props).mobileBorderRadius?.lg || '12px'};
+  min-height: 2.75rem;
   background: ${props => getValidationBackground(props.$validation)};
-  color: var(--text-primary);
+  color: var(--text-primary, #1e293b);
   font-size: ${props => themeTokens(props).mobileTypography?.body?.fontSize || '1rem'};
   cursor: pointer;
 
@@ -134,11 +119,13 @@ const MobileSelect = styled.select.attrs<{ title?: string; 'aria-label'?: string
 
 const MobileInput = styled.input<ValidationProps>`
   width: 100%;
+  max-width: 450px;
   padding: ${props => themeTokens(props).mobileSpacing?.md || '1rem'};
-  border: 1px solid var(--border);
+  border: 2px solid var(--border, #e2e8f0);
   border-radius: ${props => themeTokens(props).mobileBorderRadius?.lg || '12px'};
+  min-height: 2.75rem;
   background: ${props => getValidationBackground(props.$validation)};
-  color: var(--text-primary);
+  color: var(--text-primary, #1e293b);
   font-size: ${props => themeTokens(props).mobileTypography?.body?.fontSize || '1rem'};
 
   &:focus {
@@ -201,25 +188,20 @@ const DesktopContent = styled.div`
 
 const DesktopHeader = styled.div`
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
 `;
 
 const DesktopTitle = styled.h1`
-  font-size: 2.5rem;
+  font-size: 2.25rem;
   font-weight: 700;
-  color: var(--text-heading);
-  margin: 0 0 1rem 0;
-  background: var(--gradient-primary);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--text-primary);
+  margin: 0;
 `;
 
 const DesktopFormGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 2rem;
-  margin-bottom: 3rem;
 `;
 
 const DesktopFieldGroup = styled.div`
@@ -253,89 +235,9 @@ const InsightsTitle = styled.h2`
   margin: 0;
 `;
 
-const InsightsDescription = styled.p`
-  margin: 0;
-  color: var(--text-secondary);
-  line-height: 1.5;
-`;
-
-const PopularRow = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 1rem;
-`;
-
-const PopularLabel = styled.div`
-  font-weight: 600;
-  color: var(--text-primary);
-`;
-
-const PopularHint = styled.p`
-  margin: 0.3rem 0 0;
-  color: var(--text-muted);
-  font-size: 0.9rem;
-`;
-
-const ChipRow = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
-`;
-
-const ChipButton = styled.button<{ $active: boolean }>`
-  padding: 0.6rem 1.2rem;
-  border-radius: 999px;
-  border: 1px solid ${({ $active }) => ($active ? 'var(--accent-primary)' : 'rgba(255, 255, 255, 0.08)')};
-  background: ${({ $active }) => ($active ? 'rgba(255, 143, 16, 0.15)' : 'rgba(255, 255, 255, 0.04)')};
-  color: ${({ $active }) => ($active ? 'var(--accent-primary)' : 'var(--text-primary)')};
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-`;
-
-const OutlineButton = styled.button`
-  padding: 0.5rem 1.25rem;
-  border-radius: 999px;
-  border: 1px dashed rgba(255, 255, 255, 0.25);
-  background: transparent;
-  color: var(--text-primary);
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-`;
-
-const BrandSelectionRow = styled.div`
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr);
-  gap: 1.5rem;
-
-  @media (max-width: 992px) {
-    grid-template-columns: 1fr;
-  }
-`;
-
-const OrbitPanel = styled.div`
-  background: linear-gradient(140deg, rgba(12, 17, 32, 0.95), rgba(20, 32, 52, 0.9));
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  padding: 1rem;
+const InsightsGrid = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 0.4rem;
-`;
-
-const OrbitHint = styled.span`
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.85);
-  text-align: center;
-`;
-
-const InsightsGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 1rem;
 `;
 
@@ -371,28 +273,34 @@ const InsightSelect = styled.select.attrs<{ title?: string; 'aria-label'?: strin
   };
 })<ValidationProps>`
   width: 100%;
+  max-width: 450px;
   border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 2px solid var(--border, rgba(255, 255, 255, 0.08));
   padding: 0.8rem 1rem;
+  min-height: 2.75rem;
   background: ${({ $validation }) => getValidationBackground($validation)};
-  color: var(--text-primary);
+  color: var(--text-primary, #1e293b);
   font-size: 0.95rem;
 `;
 
 const InsightInput = styled.input<ValidationProps>`
   width: 100%;
+  max-width: 450px;
   border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 2px solid var(--border, rgba(255, 255, 255, 0.08));
   padding: 0.8rem 1rem;
+  min-height: 2.75rem;
   background: ${({ $validation }) => getValidationBackground($validation)};
-  color: var(--text-primary);
+  color: var(--text-primary, #1e293b);
   font-size: 0.95rem;
 `;
 
 const InputSuffixWrapper = styled.div<ValidationProps>`
   display: flex;
+  max-width: 450px;
   border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 2px solid var(--border, rgba(255, 255, 255, 0.08));
+  min-height: 2.75rem;
   overflow: hidden;
   background: ${({ $validation }) => getValidationBackground($validation)};
 `;
@@ -400,36 +308,7 @@ const InputSuffixWrapper = styled.div<ValidationProps>`
 const InputSuffix = styled.span`
   padding: 0.8rem 1rem;
   font-weight: 600;
-  color: var(--text-muted);
-`;
-
-const StatGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1rem;
-`;
-
-const StatCard = styled.div`
-  border-radius: 18px;
-  padding: 1.2rem 1.3rem;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.03);
-  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.25);
-`;
-
-const StatTitle = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 0.5rem;
-`;
-
-const StatText = styled.p`
-  margin: 0;
-  color: var(--text-secondary);
-  line-height: 1.4;
+  color: #dc2626;
 `;
 
 const SectionDivider = styled.hr`
@@ -484,70 +363,6 @@ const InsightToggleButton = styled.button<{ $active: boolean }>`
   cursor: pointer;
 `;
 
-const LocationGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 0.75rem;
-`;
-
-const SummaryGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1rem;
-`;
-
-const InsightSummaryCard = styled.div`
-  border-radius: 18px;
-  padding: 1.2rem;
-  background: linear-gradient(135deg, #08111f, #132035);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  color: white;
-`;
-
-const InsightSummaryTitle = styled.h4`
-  margin: 0;
-  font-size: 1rem;
-  font-weight: 600;
-`;
-
-const InsightSummaryText = styled.p`
-  margin: 0.4rem 0 0;
-  color: rgba(255, 255, 255, 0.8);
-  line-height: 1.4;
-`;
-
-const InsightsPrivacyNote = styled.p`
-  margin: 0;
-  font-size: 0.85rem;
-  color: var(--text-muted);
-`;
-
-const InfoNote = styled.p`
-  background: rgba(14, 116, 144, 0.08);
-  border: 1px solid rgba(14, 116, 144, 0.25);
-  padding: 0.85rem 1rem;
-  border-radius: 12px;
-  font-size: 0.9rem;
-  color: #0f3a4f;
-  display: flex;
-  gap: 0.45rem;
-  align-items: flex-start;
-`;
-
-const UserMetaLine = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  align-items: center;
-  font-size: 0.95rem;
-  color: var(--text-secondary);
-`;
-
-const LoggedInLabel = styled.span`
-  font-weight: 600;
-  color: var(--text-primary);
-`;
-
 const DesktopFieldTitle = styled.h3`
   font-size: 1.25rem;
   font-weight: 600;
@@ -571,11 +386,13 @@ const DesktopSelect = styled.select.attrs<{ title?: string; 'aria-label'?: strin
   };
 })<ValidationProps>`
   width: 100%;
+  max-width: 450px;
   padding: 0.875rem 1rem;
-  border: 1px solid var(--border);
+  border: 2px solid var(--border, #e2e8f0);
   border-radius: 8px;
+  min-height: 2.75rem;
   background: ${({ $validation }) => getValidationBackground($validation)};
-  color: var(--text-primary);
+  color: var(--text-primary, #1e293b);
   font-size: 1rem;
   cursor: pointer;
 
@@ -588,11 +405,13 @@ const DesktopSelect = styled.select.attrs<{ title?: string; 'aria-label'?: strin
 
 const DesktopInput = styled.input<ValidationProps>`
   width: 100%;
+  max-width: 450px;
   padding: 0.875rem 1rem;
-  border: 1px solid var(--border);
+  border: 2px solid var(--border, #e2e8f0);
   border-radius: 8px;
+  min-height: 2.75rem;
   background: ${({ $validation }) => getValidationBackground($validation)};
-  color: var(--text-primary);
+  color: var(--text-primary, #1e293b);
   font-size: 1rem;
 
   &:focus {
@@ -661,12 +480,10 @@ const ProgressWrapper = styled.div<{ $isMobile: boolean }>`
 `;
 
 const VehicleDataPage: React.FC = () => {
-  const showSellDebug = useSellDebugFlag();
   const isMobile = useIsMobile();
   const { t, language } = useLanguage();
   const navigate = useNavigate();
   const { vehicleType = 'car' } = useParams<{ vehicleType: string }>();
-  const { user } = useAuth();
 
   const {
     formData,
@@ -748,29 +565,11 @@ const VehicleDataPage: React.FC = () => {
   const saleTimelineChoice =
     (formData.saleTimeline as 'unknown' | 'soon' | 'months' | undefined) || 'unknown';
 
-  const demandText = useMemo(() => {
-    const template = t('sell.listingSection.demandDefault');
-    const brand = formData.make || 'Volkswagen';
-    const model = formData.model || 'Arteon';
-    return template.replace('{brand}', brand).replace('{model}', model);
-  }, [formData.make, formData.model, t]);
-
-  const sellingChanceText = t('sell.listingSection.sellingChanceDefault');
-
-  const userDisplayName = user?.displayName || user?.email || 'Guest';
-
   // removed legacy popular brand chip handler; new markdown section handles selection
 
   const handleDoorSelect = useCallback(
     (value: string) => {
       handleInputChange('doors', value);
-    },
-    [handleInputChange]
-  );
-
-  const handleFuelSelect = useCallback(
-    (value: string) => {
-      handleInputChange('fuelType', value);
     },
     [handleInputChange]
   );
@@ -864,7 +663,6 @@ const VehicleDataPage: React.FC = () => {
     <InsightsCard $isMobile={isMobileView}>
       <InsightsHeader>
         <InsightsTitle>{t('sell.listingSection.title')}</InsightsTitle>
-        <InsightsDescription>{t('sell.listingSection.description')}</InsightsDescription>
       </InsightsHeader>
 
       <VerticalFieldStack>
@@ -887,12 +685,6 @@ const VehicleDataPage: React.FC = () => {
               ))}
               {/* No 'Other' input for year (user requested full year list only) */}
             </InsightSelect>
-            {/* Secondary debug block (registration area) gated */}
-            {process.env.REACT_APP_SHOW_BRAND_DEBUG === 'true' && formData.make && (
-              <div style={{ marginTop: '0.4rem', fontSize: '0.7rem', color: '#888', lineHeight: '1.2' }}>
-                <strong>DEBUG:</strong> brand={formData.make} models={availableModels.length} first=[{availableModels.slice(0, 6).join(', ')}]
-              </div>
-            )}
             <InsightSelect
               value={registrationParts.month}
               onChange={event => handleRegistrationMonthChange(event.target.value)}
@@ -926,23 +718,6 @@ const VehicleDataPage: React.FC = () => {
           </InputSuffixWrapper>
         </InsightField>
       </VerticalFieldStack>
-
-      <StatGrid>
-        <StatCard>
-          <StatTitle>
-            <TrendingUp size={18} color="#0ea5e9" />
-            {t('sell.listingSection.demandTitle')}
-          </StatTitle>
-          <StatText>{demandText}</StatText>
-        </StatCard>
-        <StatCard>
-          <StatTitle>
-            <ShieldCheck size={18} color="#22c55e" />
-            {t('sell.listingSection.sellingChanceTitle')}
-          </StatTitle>
-          <StatText>{sellingChanceText}</StatText>
-        </StatCard>
-      </StatGrid>
 
       <SectionDivider />
 
@@ -1016,40 +791,139 @@ const VehicleDataPage: React.FC = () => {
         </ToggleRow>
       </InsightsGrid>
 
-      <ToggleRow>
-        <InsightLabel>{t('sell.listingSection.saleLocationQuestion')}</InsightLabel>
-        <BulgariaLocationDropdown
-          value={{
-            province: formData.saleProvince || '',
-            city: formData.saleCity || '',
-            postalCode: formData.salePostalCode || ''
-          }}
-          onChange={(location: BulgariaLocationData) => {
-            handleInputChange('saleProvince', location.province);
-            handleInputChange('saleCity', location.city);
-            handleInputChange('salePostalCode', location.postalCode);
-          }}
-        />
-      </ToggleRow>
+      <SectionDivider />
 
-      <InfoNote>
-        <Info size={18} />
-        {t('sell.listingSection.marketingNote')}
-      </InfoNote>
+      <SectionHeading>{t('sell.purchaseInformation.title')}</SectionHeading>
+      <InsightsGrid>
+        <InsightField>
+          <InsightLabel>{t('sell.purchaseInformation.whenPurchased')}</InsightLabel>
+          <InlineFields>
+            <InsightSelect
+              value={formData.purchaseMonth}
+              onChange={event => handleInputChange('purchaseMonth', event.target.value)}
+              aria-label={t('sell.purchaseInformation.purchaseMonth')}
+              title={t('sell.purchaseInformation.purchaseMonth')}
+            >
+              <option value="">{t('sell.purchaseInformation.purchaseMonth')}</option>
+              {FIRST_REGISTRATION_MONTHS.map(option => (
+                <option key={option.value} value={option.value}>
+                  {language === 'bg' ? option.labelBg : option.labelEn}
+                </option>
+              ))}
+            </InsightSelect>
+            <InsightSelect
+              value={formData.purchaseYear}
+              onChange={event => handleInputChange('purchaseYear', event.target.value)}
+              aria-label={t('sell.purchaseInformation.purchaseYear')}
+              title={t('sell.purchaseInformation.purchaseYear')}
+            >
+              <option value="">{t('sell.purchaseInformation.purchaseYear')}</option>
+              {yearOptions.map(option => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </InsightSelect>
+          </InlineFields>
+        </InsightField>
 
-      <UserMetaLine>
-        <LoggedInLabel>{t('sell.listingSection.loggedInAs')}:</LoggedInLabel> {userDisplayName}{' '}
-        <span>({t('sell.listingSection.changeAction')})</span>
-      </UserMetaLine>
+        <InsightField>
+          <InsightLabel>{t('sell.purchaseInformation.purchaseMileage')}</InsightLabel>
+          <InputSuffixWrapper>
+            <InsightInput
+              type="number"
+              value={formData.purchaseMileage}
+              placeholder={t('sell.purchaseInformation.purchaseMileagePlaceholder')}
+              onChange={event => handleInputChange('purchaseMileage', event.target.value)}
+            />
+            <InputSuffix>km</InputSuffix>
+          </InputSuffixWrapper>
+        </InsightField>
 
-      <SummaryGrid>
-        <InsightSummaryCard>
-          <InsightSummaryTitle>{t('sell.listingSection.summaryTitle')}</InsightSummaryTitle>
-          <InsightSummaryText>{t('sell.listingSection.summaryFootnote')}</InsightSummaryText>
-        </InsightSummaryCard>
-      </SummaryGrid>
+        <InsightField>
+          <InsightLabel>{t('sell.purchaseInformation.annualMileage')}</InsightLabel>
+          <InsightSelect
+            value={formData.annualMileage}
+            onChange={event => handleInputChange('annualMileage', event.target.value)}
+            aria-label={t('sell.purchaseInformation.annualMileage')}
+            title={t('sell.purchaseInformation.annualMileage')}
+          >
+            <option value="">{t('sell.purchaseInformation.annualMileage')}</option>
+            <option value="5000">{t('sell.purchaseInformation.annualMileageOptions.5000')}</option>
+            <option value="10000">{t('sell.purchaseInformation.annualMileageOptions.10000')}</option>
+            <option value="15000">{t('sell.purchaseInformation.annualMileageOptions.15000')}</option>
+            <option value="20000">{t('sell.purchaseInformation.annualMileageOptions.20000')}</option>
+            <option value="25000">{t('sell.purchaseInformation.annualMileageOptions.25000')}</option>
+            <option value="30000">{t('sell.purchaseInformation.annualMileageOptions.30000')}</option>
+            <option value="40000">{t('sell.purchaseInformation.annualMileageOptions.40000')}</option>
+            <option value="50000">{t('sell.purchaseInformation.annualMileageOptions.50000')}</option>
+          </InsightSelect>
+        </InsightField>
 
-      <InsightsPrivacyNote>{t('sell.listingSection.privacyNote')}</InsightsPrivacyNote>
+        <ToggleRow>
+          <InsightLabel>{t('sell.purchaseInformation.soleUser')}</InsightLabel>
+          <InsightToggleGroup>
+            <InsightToggleButton
+              type="button"
+              $active={formData.isSoleUser === true}
+              onClick={() => handleInputChange('isSoleUser', true)}
+            >
+              {t('sell.purchaseInformation.soleUserOptions.yes')}
+            </InsightToggleButton>
+            <InsightToggleButton
+              type="button"
+              $active={formData.isSoleUser === false}
+              onClick={() => handleInputChange('isSoleUser', false)}
+            >
+              {t('sell.purchaseInformation.soleUserOptions.no')}
+            </InsightToggleButton>
+          </InsightToggleGroup>
+        </ToggleRow>
+      </InsightsGrid>
+
+      <SectionDivider />
+
+      <SectionHeading>{t('sell.exteriorDetails.title')}</SectionHeading>
+      <InsightsGrid>
+        <InsightField>
+          <InsightLabel>{t('sell.exteriorDetails.exteriorColor')}</InsightLabel>
+          <InsightSelect
+            value={formData.exteriorColor}
+            onChange={event => handleInputChange('exteriorColor', event.target.value)}
+            aria-label={t('sell.exteriorDetails.exteriorColor')}
+            title={t('sell.exteriorDetails.exteriorColor')}
+          >
+            <option value="">{t('sell.exteriorDetails.exteriorColor')}</option>
+            <option value="black">{t('sell.exteriorDetails.exteriorColorOptions.black')}</option>
+            <option value="white">{t('sell.exteriorDetails.exteriorColorOptions.white')}</option>
+            <option value="gray">{t('sell.exteriorDetails.exteriorColorOptions.gray')}</option>
+            <option value="silver">{t('sell.exteriorDetails.exteriorColorOptions.silver')}</option>
+            <option value="blue">{t('sell.exteriorDetails.exteriorColorOptions.blue')}</option>
+            <option value="red">{t('sell.exteriorDetails.exteriorColorOptions.red')}</option>
+            <option value="green">{t('sell.exteriorDetails.exteriorColorOptions.green')}</option>
+            <option value="yellow">{t('sell.exteriorDetails.exteriorColorOptions.yellow')}</option>
+            <option value="orange">{t('sell.exteriorDetails.exteriorColorOptions.orange')}</option>
+            <option value="brown">{t('sell.exteriorDetails.exteriorColorOptions.brown')}</option>
+            <option value="beige">{t('sell.exteriorDetails.exteriorColorOptions.beige')}</option>
+            <option value="gold">{t('sell.exteriorDetails.exteriorColorOptions.gold')}</option>
+            <option value="purple">{t('sell.exteriorDetails.exteriorColorOptions.purple')}</option>
+            <option value="pink">{t('sell.exteriorDetails.exteriorColorOptions.pink')}</option>
+            <option value="bronze">{t('sell.exteriorDetails.exteriorColorOptions.bronze')}</option>
+            <option value="champagne">{t('sell.exteriorDetails.exteriorColorOptions.champagne')}</option>
+            <option value="other">{t('sell.exteriorDetails.exteriorColorOptions.other')}</option>
+          </InsightSelect>
+        </InsightField>
+
+        <InsightField>
+          <InsightLabel>{t('sell.exteriorDetails.trimLevel')}</InsightLabel>
+          <InsightInput
+            type="text"
+            value={formData.trimLevel}
+            placeholder={t('sell.exteriorDetails.trimLevelPlaceholder')}
+            onChange={event => handleInputChange('trimLevel', event.target.value)}
+          />
+        </InsightField>
+      </InsightsGrid>
     </InsightsCard>
   );
 
@@ -1170,6 +1044,23 @@ const VehicleDataPage: React.FC = () => {
                 />
               </div>
             )}
+          </MobileFieldGroup>
+
+          {/* Sale Location - Moved to end before footer */}
+          <MobileFieldGroup>
+            <MobileLabel>{t('sell.listingSection.saleLocationQuestion')}</MobileLabel>
+            <BulgariaLocationDropdown
+              value={{
+                province: formData.saleProvince || '',
+                city: formData.saleCity || '',
+                postalCode: formData.salePostalCode || ''
+              }}
+              onChange={(location: BulgariaLocationData) => {
+                handleInputChange('saleProvince', location.province);
+                handleInputChange('saleCity', location.city);
+                handleInputChange('salePostalCode', location.postalCode);
+              }}
+            />
           </MobileFieldGroup>
         </MobileContent>
 
@@ -1299,6 +1190,23 @@ const VehicleDataPage: React.FC = () => {
             )}
           </DesktopFieldGroup>
         </DesktopFormGrid>
+
+        {/* Sale Location - Moved to end before footer */}
+        <DesktopFieldGroup style={{ maxWidth: '600px', margin: '2rem auto 0' }}>
+          <DesktopLabel>{t('sell.listingSection.saleLocationQuestion')}</DesktopLabel>
+          <BulgariaLocationDropdown
+            value={{
+              province: formData.saleProvince || '',
+              city: formData.saleCity || '',
+              postalCode: formData.salePostalCode || ''
+            }}
+            onChange={(location: BulgariaLocationData) => {
+              handleInputChange('saleProvince', location.province);
+              handleInputChange('saleCity', location.city);
+              handleInputChange('salePostalCode', location.postalCode);
+            }}
+          />
+        </DesktopFieldGroup>
 
         <DesktopActions>
           <DesktopButton onClick={handleBack}>

@@ -1,10 +1,10 @@
 // src/pages/DealerPublicPage/ContactForm.tsx
 // Contact Form for Dealer Public Page
 
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { getFunctions, httpsCallable } from 'firebase/functions';
-import { AuthContext } from '../../contexts/AuthContext';
+import { useAuth } from '@/contexts';
 
 interface ContactFormProps {
   dealerId: string;
@@ -19,8 +19,7 @@ interface FormData {
 }
 
 const ContactForm: React.FC<ContactFormProps> = ({ dealerId, dealerName }) => {
-  const authContext = useContext(AuthContext);
-  const currentUser = authContext?.currentUser || null;
+  const { currentUser } = useAuth();
   const functions = getFunctions();
 
   const [formData, setFormData] = useState<FormData>({

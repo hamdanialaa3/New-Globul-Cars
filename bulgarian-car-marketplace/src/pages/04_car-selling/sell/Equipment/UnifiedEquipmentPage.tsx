@@ -1,7 +1,7 @@
 // Unified Equipment Page - All Features in One Place
 // صفحة موحدة للمعدات - كل الميزات في مكان واحد
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import SplitScreenLayout from '@/components/SplitScreenLayout';
@@ -15,6 +15,7 @@ import * as S from './UnifiedEquipmentStyles';
 import { SellWorkflowLayout } from '@/components/SellWorkflow';
 import SellWorkflowStepStateService from '@/services/sellWorkflowStepState';
 import { useEquipmentSelection } from './useEquipmentSelection';
+import { logger } from '@/services/logger-service';
 
 // Equipment Categories
 const EQUIPMENT_CATEGORIES = {
@@ -73,7 +74,6 @@ const UnifiedEquipmentPage: React.FC = () => {
     totalSelected,
     serialize
   } = useEquipmentSelection();
-  const [activeTab, setActiveTab] = useState<EquipmentCategory>('safety');
   const vehicleType = searchParams.get('vt');
   const make = searchParams.get('mk');
 
@@ -129,7 +129,7 @@ const UnifiedEquipmentPage: React.FC = () => {
     <S.ContentSection>
       <S.HeaderCard>
         <S.Title>
-          {language === 'bg' ? 'Оборудване на превозното средство' : 'Vehicle Equipment'}
+          {language === 'bg' ? 'Оборудване' : 'Equipment'}
         </S.Title>
         <S.Subtitle>
           {language === 'bg' 
@@ -148,67 +148,57 @@ const UnifiedEquipmentPage: React.FC = () => {
         </S.Button>
       </S.NavigationButtons>
 
-      {/* Tabs */}
-      <S.TabsContainer>
+      {/* All Equipment Sections - Horizontal Grid */}
+      <S.EquipmentSectionsGrid>
         {(Object.keys(EQUIPMENT_CATEGORIES) as EquipmentCategory[]).map(category => {
           const count = selectedFeatures[category].length;
           return (
-            <S.Tab
-              key={category}
-              $isActive={activeTab === category}
-              $hasSelection={count > 0}
-              $isEmpty={count === 0}
-              onClick={() => setActiveTab(category)}
-            >
-              {getCategoryIcon(category)}
-              <S.TabLabel>
-                {language === 'bg' ? categoryLabels[category].bg : categoryLabels[category].en}
-              </S.TabLabel>
-              {count > 0 && <S.TabBadge>{count}</S.TabBadge>}
-            </S.Tab>
+            <S.EquipmentSection key={category}>
+              <S.SectionHeader>
+                <S.SectionHeaderLeft>
+                  {getCategoryIcon(category)}
+                  <S.SectionTitle>
+                    {language === 'bg' ? categoryLabels[category].bg : categoryLabels[category].en}
+                  </S.SectionTitle>
+                </S.SectionHeaderLeft>
+                {count > 0 && <S.SectionBadge>{count}</S.SectionBadge>}
+              </S.SectionHeader>
+
+              <S.FeaturesContainer>
+                {EQUIPMENT_CATEGORIES[category].map((feature) => {
+                  const IconComponent = feature.icon;
+                  const isSelected = selectedFeatures[category].includes(feature.id);
+                  
+                  return (
+                    <S.FeatureRow key={feature.id}>
+                      <S.FeatureInfo>
+                        <S.FeatureIconWrapper>
+                          <IconComponent size={20} />
+                        </S.FeatureIconWrapper>
+                        <S.FeatureName>
+                          {language === 'bg' ? feature.bgLabel : feature.enLabel}
+                        </S.FeatureName>
+                      </S.FeatureInfo>
+
+                      <S.CyberToggleWrapper>
+                        <S.CyberToggleCheckbox
+                          type="checkbox"
+                          id={`feature-${category}-${feature.id}`}
+                          checked={isSelected}
+                          onChange={() => toggleFeature(category, feature.id)}
+                        />
+                        <S.CyberToggleLabel htmlFor={`feature-${category}-${feature.id}`}>
+                          <S.ToggleTrack />
+                        </S.CyberToggleLabel>
+                      </S.CyberToggleWrapper>
+                    </S.FeatureRow>
+                  );
+                })}
+              </S.FeaturesContainer>
+            </S.EquipmentSection>
           );
         })}
-      </S.TabsContainer>
-
-      {/* Features Grid */}
-      <S.FeaturesContainer>
-        {EQUIPMENT_CATEGORIES[activeTab].map((feature) => {
-          const IconComponent = feature.icon;
-          const isSelected = selectedFeatures[activeTab].includes(feature.id);
-          
-          return (
-            <S.FeatureRow key={feature.id}>
-              <S.FeatureInfo>
-                <S.FeatureIconWrapper>
-                  <IconComponent size={20} />
-                </S.FeatureIconWrapper>
-                <S.FeatureName>
-                  {language === 'bg' ? feature.bgLabel : feature.enLabel}
-                </S.FeatureName>
-              </S.FeatureInfo>
-
-              <S.CyberToggleWrapper>
-                <S.CyberToggleCheckbox
-                  type="checkbox"
-                  id={`feature-${feature.id}`}
-                  checked={isSelected}
-                  onChange={() => toggleFeature(activeTab, feature.id)}
-                />
-                <S.CyberToggleLabel htmlFor={`feature-${feature.id}`}>
-                  <S.ToggleTrack />
-                  <S.ToggleThumbIcon />
-                  <S.ToggleThumbDots />
-                  <S.ToggleThumbHighlight />
-                  <S.ToggleLabels>
-                    <S.ToggleLabelOn>ON</S.ToggleLabelOn>
-                    <S.ToggleLabelOff>OFF</S.ToggleLabelOff>
-                  </S.ToggleLabels>
-                </S.CyberToggleLabel>
-              </S.CyberToggleWrapper>
-            </S.FeatureRow>
-          );
-        })}
-      </S.FeaturesContainer>
+      </S.EquipmentSectionsGrid>
 
       <S.InfoBox>
         {language === 'bg' 

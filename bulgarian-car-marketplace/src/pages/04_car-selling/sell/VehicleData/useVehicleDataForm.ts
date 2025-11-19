@@ -9,6 +9,7 @@ import { resolveCanonicalBrand } from '@/services/brand-normalization';
 import structuredBrandsData from '@/data/car-brands-structured.json';
 import { VehicleFormData } from './types';
 import useSellWorkflow from '@/hooks/useSellWorkflow';
+import SellWorkflowStepStateService from '@/services/sellWorkflowStepState';
 
 const defaultForm: VehicleFormData = {
   make: '',
@@ -25,6 +26,17 @@ const defaultForm: VehicleFormData = {
   seats: '',
   color: '',
   previousOwners: '',
+  
+  // Purchase Information
+  purchaseMonth: '',
+  purchaseYear: '',
+  purchaseMileage: '',
+  annualMileage: '',
+  isSoleUser: null,
+  
+  // Exterior Details
+  exteriorColor: '',
+  trimLevel: '',
   
   // Location fields (Bulgaria-specific)
   saleProvince: '',
@@ -46,12 +58,14 @@ const defaultForm: VehicleFormData = {
   modelOther: '',
    // firstRegistrationYearOther and firstRegistrationMonthOther removed - no 'Other' for registration
   fuelTypeOther: '',
-  colorOther: ''
+  colorOther: '',
+  exteriorColorOther: '',
+  trimLevelOther: ''
 };
 
 export const useVehicleDataForm = () => {
-  const [searchParams] = useSearchParams();
-  const { workflowData, updateWorkflowData } = useSellWorkflow();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { workflowData, updateWorkflowData, clearWorkflowData } = useSellWorkflow();
 
 const initialValues = useMemo<VehicleFormData>(() => {
     const fromParams: Partial<VehicleFormData> = {
@@ -204,6 +218,27 @@ useEffect(() => {
     return params;
   }, [searchParams, formData]);
 
+  const resetForm = useCallback(() => {
+    // Clear workflow data
+    clearWorkflowData();
+    
+    // Reset step state
+    SellWorkflowStepStateService.reset();
+    
+    // Reset form data to default
+    setFormData(defaultForm);
+    
+    // Clear URL params
+    setSearchParams({});
+    
+    // Clear localStorage/sessionStorage
+    localStorage.removeItem('sell-workflow-state');
+    sessionStorage.removeItem('sell-workflow-state');
+    
+    // Reload page to ensure clean state
+    window.location.reload();
+  }, [clearWorkflowData, setSearchParams]);
+
   return {
     formData,
     availableBrands,
@@ -212,7 +247,8 @@ useEffect(() => {
     showVariants,
     handleInputChange,
     canContinue,
-    buildURLSearchParams
+    buildURLSearchParams,
+    resetForm
   };
 };
 

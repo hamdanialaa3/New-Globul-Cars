@@ -7,8 +7,8 @@ import { Helmet } from 'react-helmet-async';
 import styled from 'styled-components';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { doc, getDoc, collection, query, where, getDocs, limit } from 'firebase/firestore';
-import { db } from '../../firebase/firebase-config';
-import ReviewStars from '../../features/reviews/ReviewStars';
+import { db } from '@/firebase/firebase-config';
+import ReviewStars from '@/features/reviews/ReviewStars';
 import ContactForm from './ContactForm';
 
 interface DealerProfile {

@@ -38,6 +38,24 @@ export class SellWorkflowService {
   private static collectionName = 'cars';
 
   /**
+   * Get the appropriate Firestore collection name based on vehicle type
+   * Returns the collection name where vehicles of this type should be stored
+   */
+  static getCollectionNameForVehicleType(vehicleType: string): string {
+    const typeMap: Record<string, string> = {
+      'car': 'passenger_cars',           // Passenger Car / Personal use
+      'suv': 'suvs',                      // SUV/Jeep / Off-road
+      'van': 'vans',                      // Van / Cargo/Combi
+      'motorcycle': 'motorcycles',        // Motorcycle / Two-wheeled
+      'truck': 'trucks',                  // Truck / Cargo
+      'bus': 'buses'                      // Bus / Passenger
+    };
+
+    // Default to 'cars' if type not found (backward compatibility)
+    return typeMap[vehicleType?.toLowerCase()] || 'cars';
+  }
+
+  /**
    * Transform workflow data to structured car listing
    */
   private static transformWorkflowData(
@@ -99,50 +117,74 @@ export class SellWorkflowService {
       mileage: parseInt(workflowData.mileage || '0'),
       fuelType: workflowData.fuelType || workflowData.fm || '',
       transmission: workflowData.transmission || 'Manual',
-      power: workflowData.power ? parseInt(workflowData.power) : undefined,
-      engineSize: workflowData.engineSize ? parseFloat(workflowData.engineSize) : undefined,
+      power: workflowData.power ? parseInt(workflowData.power) : undefined, // in hp
+      powerKW: workflowData.powerKW ? parseFloat(workflowData.powerKW) : (workflowData.power ? parseFloat(workflowData.power) * 0.7457 : undefined), // Convert hp to kW if not provided
+      engineSize: workflowData.engineSize ? parseFloat(workflowData.engineSize) : undefined, // Cubic Capacity in cm³
       color: workflowData.color,
+      exteriorColor: workflowData.exteriorColor || workflowData.color,
       description: workflowData.description || '',
+      searchKeywords: workflowData.searchKeywords || workflowData.description || '', // For search in description
       
-      // ⭐ NEW: Vehicle Details
-      numberOfSeats: workflowData.seats ? parseInt(workflowData.seats) : undefined,
-      numberOfDoors: workflowData.doors ? parseInt(workflowData.doors) : undefined,
+      // ⭐ Vehicle Details
+      seats: workflowData.seats?.toString(),
+      numberOfSeats: workflowData.seats ? parseInt(workflowData.seats) : (workflowData.numberOfSeats ? parseInt(workflowData.numberOfSeats) : undefined),
+      doors: workflowData.doors?.toString(),
+      numberOfDoors: workflowData.doors ? parseInt(workflowData.doors) : (workflowData.numberOfDoors ? parseInt(workflowData.numberOfDoors) : undefined),
+      slidingDoor: workflowData.slidingDoor === 'true' || workflowData.slidingDoor === true,
       condition: workflowData.condition || 'used',
-      previousOwners: workflowData.previousOwners ? parseInt(workflowData.previousOwners) : undefined,
+      previousOwners: workflowData.previousOwners?.toString(),
+      numberOfOwners: workflowData.previousOwners ? parseInt(workflowData.previousOwners) : (workflowData.numberOfOwners ? parseInt(workflowData.numberOfOwners) : undefined),
       
-      // ⭐ NEW: Registration & Inspection
+      // ⭐ Registration & Inspection
       firstRegistrationDate: workflowData.firstRegistration 
+        ? new Date(workflowData.firstRegistration) 
+        : (workflowData.firstRegistrationDate ? new Date(workflowData.firstRegistrationDate) : undefined),
+      firstRegistration: workflowData.firstRegistration 
         ? new Date(workflowData.firstRegistration) 
         : undefined,
       inspectionValidUntil: workflowData.huValid 
         ? new Date(workflowData.huValid) 
+        : (workflowData.inspectionValidUntil ? new Date(workflowData.inspectionValidUntil) : undefined),
+      huValid: workflowData.huValid 
+        ? new Date(workflowData.huValid) 
         : undefined,
       
-      // ⭐ NEW: Technical Details
-      fuelTankVolume: workflowData.fuelTankVolume ? parseFloat(workflowData.fuelTankVolume) : undefined,
+      // ⭐ Technical Details
+      fuelTankCapacity: workflowData.fuelTankVolume ? parseFloat(workflowData.fuelTankVolume) : (workflowData.fuelTankCapacity ? parseFloat(workflowData.fuelTankCapacity) : undefined),
+      fuelTankVolumeL: workflowData.fuelTankVolume ? parseFloat(workflowData.fuelTankVolume) : undefined,
       cylinders: workflowData.cylinders ? parseInt(workflowData.cylinders) : undefined,
       driveType: workflowData.driveType || '',
       emissionSticker: workflowData.emissionSticker || '',
       emissionClass: workflowData.emissionClass || '',
-      particulateFilter: workflowData.particulateFilter === 'true',
+      particulateFilter: workflowData.particulateFilter === 'true' || workflowData.particulateFilter === true,
       weight: workflowData.weight ? parseFloat(workflowData.weight) : undefined,
-      fuelConsumption: workflowData.fuelConsumption ? parseFloat(workflowData.fuelConsumption) : undefined,
+      weightKg: workflowData.weight ? parseFloat(workflowData.weight) : (workflowData.weightKg ? parseFloat(workflowData.weightKg) : undefined),
+      fuelConsumption: workflowData.fuelConsumption ? parseFloat(workflowData.fuelConsumption) : undefined, // l/100km
       
-      // ⭐ NEW: Colors
+      // ⭐ Colors
       interiorColor: workflowData.interiorColor || '',
       interiorMaterial: workflowData.interiorMaterial || '',
       
-      // ⭐ NEW: Exterior Features
-      trailerCoupling: workflowData.trailerCoupling === 'true',
-      trailerLoadBraked: workflowData.trailerLoadBraked ? parseInt(workflowData.trailerLoadBraked) : undefined,
-      trailerLoadUnbraked: workflowData.trailerLoadUnbraked ? parseInt(workflowData.trailerLoadUnbraked) : undefined,
-      noseWeight: workflowData.noseWeight ? parseInt(workflowData.noseWeight) : undefined,
+      // ⭐ Exterior Features
+      trailerCoupling: workflowData.trailerCoupling === 'true' || workflowData.trailerCoupling === true || workflowData.towbar !== 'none',
+      towbar: workflowData.towbar || (workflowData.trailerCoupling === 'true' ? 'fixed' : 'none'),
+      trailerLoadBraked: workflowData.trailerLoadBraked ? parseInt(workflowData.trailerLoadBraked) : (workflowData.brakedTrailerLoadKg ? parseInt(workflowData.brakedTrailerLoadKg) : undefined),
+      trailerLoadUnbraked: workflowData.trailerLoadUnbraked ? parseInt(workflowData.trailerLoadUnbraked) : (workflowData.unbrakedTrailerLoadKg ? parseInt(workflowData.unbrakedTrailerLoadKg) : undefined),
+      noseWeight: workflowData.noseWeight ? parseInt(workflowData.noseWeight) : (workflowData.noseWeightKg ? parseInt(workflowData.noseWeightKg) : undefined),
+      parkingSensors: parseArray(workflowData.parkingSensors),
+      parkingAssist: parseArray(workflowData.parkingAssist || workflowData.parkingSensors),
       cruiseControl: workflowData.cruiseControl || '',
-      slidingDoor: workflowData.slidingDoor === 'true',
+      
+      // ⭐ Interior Features
+      airbags: workflowData.airbags || '',
+      airConditioning: workflowData.airConditioning || workflowData.climateControl || '',
+      climateControl: workflowData.climateControl || workflowData.airConditioning || '',
       
       // History
-      accidentHistory: workflowData.hasAccidentHistory === 'true',
-      serviceHistory: workflowData.hasServiceHistory === 'true',
+      accidentHistory: workflowData.hasAccidentHistory === 'true' || workflowData.accidentHistory === true,
+      serviceHistory: workflowData.hasServiceHistory === 'true' || workflowData.serviceHistory === true,
+      fullServiceHistory: workflowData.fullServiceHistory === 'true' || workflowData.fullServiceHistory === true,
+      roadworthy: workflowData.roadworthy !== 'false' && workflowData.roadworthy !== false && (workflowData.isRoadworthy !== false),
       
       // Equipment Arrays
       safetyEquipment: parseArray(workflowData.safety),
@@ -150,17 +192,11 @@ export class SellWorkflowService {
       infotainmentEquipment: parseArray(workflowData.infotainment),
       extras: parseArray(workflowData.extras),
       
-      // ⭐ NEW: Specific Equipment Arrays
-      parkingSensors: parseArray(workflowData.parkingSensors),
-      
-      // ⭐ NEW: Specific Equipment Fields
-      airbags: workflowData.airbags || '',
-      airConditioning: workflowData.airConditioning || '',
-      
       // Pricing
       price: parseFloat(workflowData.price || '0'),
       currency: workflowData.currency || 'EUR',
       priceType: workflowData.priceType || 'fixed',
+      paymentType: workflowData.paymentType || '',
       negotiable: workflowData.negotiable === 'true' || workflowData.negotiable === true,
       financing: workflowData.financing === 'true' || workflowData.financing === true,
       tradeIn: workflowData.tradeIn === 'true' || workflowData.tradeIn === true,
@@ -168,7 +204,8 @@ export class SellWorkflowService {
       warrantyMonths: workflowData.warrantyMonths ? parseInt(workflowData.warrantyMonths) : undefined,
       paymentMethods: parseArray(workflowData.paymentMethods),
       additionalCosts: workflowData.additionalCosts,
-      vatDeductible: workflowData.vatDeductible === 'true',
+      vatDeductible: workflowData.vatDeductible === 'true' || workflowData.vatDeductible === true,
+      vatReclaimable: workflowData.vatReclaimable === 'true' || workflowData.vatReclaimable === true || workflowData.vatDeductible === 'true',
       
       // Seller Information
       sellerType: workflowData.sellerType || 'private',
@@ -180,18 +217,21 @@ export class SellWorkflowService {
       availableHours: workflowData.availableHours,
       additionalInfo: workflowData.additionalInfo,
       
-      // ⭐ NEW: Dealer Info
+      // ⭐ Offer Details
       dealerRating: workflowData.dealerRating ? parseFloat(workflowData.dealerRating) : undefined,
-      
-      // ⭐ NEW: Vehicle Status
-      isDamaged: workflowData.isDamaged === 'true',
-      isRoadworthy: workflowData.isRoadworthy !== 'false',
-      nonSmoker: workflowData.nonSmoker === 'true',
-      taxi: workflowData.taxi === 'true',
-      
-      // ⭐ NEW: Media
-      hasVideo: workflowData.hasVideo === 'true',
+      adOnlineSince: workflowData.createdAt ? new Date(workflowData.createdAt) : new Date(), // Will be set to createdAt
+      adOnlineSinceDays: workflowData.adOnlineSinceDays ? parseInt(workflowData.adOnlineSinceDays) : undefined,
+      hasVideo: workflowData.hasVideo === 'true' || workflowData.hasVideo === true || !!workflowData.videoUrl,
+      withVideo: workflowData.hasVideo === 'true' || workflowData.hasVideo === true || !!workflowData.videoUrl,
       videoUrl: workflowData.videoUrl || '',
+      hasImages: !!(imageUrls && imageUrls.length > 0), // Derived from images array
+      discountOffer: workflowData.discountOffer === 'true' || workflowData.discountOffer === true,
+      nonSmoker: workflowData.nonSmoker === 'true' || workflowData.nonSmoker === true,
+      taxi: workflowData.taxi === 'true' || workflowData.taxi === true,
+      damagedVehicles: workflowData.damagedVehicles || (workflowData.isDamaged === 'true' ? 'Yes' : undefined),
+      isDamaged: workflowData.isDamaged === 'true' || workflowData.isDamaged === true || !!workflowData.damagedVehicles,
+      commercial: workflowData.commercial === 'true' || workflowData.commercial === true,
+      approvedUsedProgramme: workflowData.approvedUsedProgramme || '',
       
       // Location - SIMPLE: Use region as primary field
       region: regionData?.id || '',
@@ -221,7 +261,8 @@ export class SellWorkflowService {
    */
   static async uploadCarImages(
     carId: string,
-    imageFiles: File[]
+    imageFiles: File[],
+    vehicleType?: string
   ): Promise<string[]> {
     try {
       const uploadPromises = imageFiles.map(async (file, index) => {
@@ -265,23 +306,43 @@ export class SellWorkflowService {
       // Transform workflow data to structured car listing
       const carData = this.transformWorkflowData(workflowData, userId);
 
-      // Create the listing document
-      const docRef = await addDoc(collection(db, this.collectionName), {
+      // Get the appropriate collection name based on vehicle type
+      const collectionName = this.getCollectionNameForVehicleType(carData.vehicleType || 'car');
+      serviceLogger.info('Using collection for vehicle type', { 
+        vehicleType: carData.vehicleType, 
+        collectionName 
+      });
+
+      // Calculate adOnlineSinceDays from createdAt (will be 0 for new ads)
+      const now = new Date();
+      const adOnlineSince = carData.adOnlineSince || now;
+      
+      // Create the listing document in the appropriate collection
+      const docRef = await addDoc(collection(db, collectionName), {
         ...carData,
+        adOnlineSince: Timestamp.fromDate(adOnlineSince),
+        adOnlineSinceDays: carData.adOnlineSinceDays || 0, // Will be updated daily via cloud function if needed
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
         expiresAt: Timestamp.fromDate(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)) // 30 days
       });
 
       const carId = docRef.id;
-      serviceLogger.info('Car listing created with ID', { carId, userId, make: carData.make, model: carData.model });
+      serviceLogger.info('Car listing created with ID', { 
+        carId, 
+        userId, 
+        make: carData.make, 
+        model: carData.model,
+        vehicleType: carData.vehicleType,
+        collectionName 
+      });
 
       // Upload images if provided
       if (imageFiles && imageFiles.length > 0) {
-        const imageUrls = await this.uploadCarImages(carId, imageFiles);
+        const imageUrls = await this.uploadCarImages(carId, imageFiles, carData.vehicleType);
         
-        // Update the listing with image URLs
-        await updateDoc(doc(db, this.collectionName, carId), {
+        // Update the listing with image URLs in the correct collection
+        await updateDoc(doc(db, collectionName, carId), {
           images: imageUrls,
           updatedAt: serverTimestamp()
         });

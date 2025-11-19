@@ -64,7 +64,7 @@ const DropdownGroup = styled.div`
 const Label = styled.label<{ $required?: boolean }>`
   font-size: 14px;
   font-weight: 600;
-  color: ${props => props.theme.colors.text.primary};
+  color: var(--text-primary);
   display: flex;
   align-items: center;
   gap: 4px;
@@ -72,104 +72,142 @@ const Label = styled.label<{ $required?: boolean }>`
   ${props => props.$required && `
     &::after {
       content: '*';
-      color: ${props.theme.colors.error.main};
+      color: var(--error-color, #ef4444);
     }
   `}
 `;
 
 const Select = styled.select<{ $hasError?: boolean }>`
-  padding: 12px 16px;
-  font-size: 16px;
+  width: 100%;
+  max-width: 450px;
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  height: auto;
+  min-height: 2.75rem;
   font-family: 'Martica', Arial, sans-serif;
-  border: 2px solid ${props => 
-    props.$hasError 
-      ? props.theme.colors.error.main 
-      : props.theme.colors.grey[300]
-  };
-  border-radius: 8px;
-  background: ${props => props.theme.colors.background.paper};
-  color: ${props => props.theme.colors.text.primary};
+  border: 2px solid var(--border, #e2e8f0);
+  border-radius: 10px;
+  background: var(--bg-card, #ffffff);
+  color: var(--text-primary, #1e293b);
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.08),
+    0 4px 12px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
 
   &:hover {
-    border-color: ${props => props.theme.colors.primary.main};
+    border-color: var(--accent-primary, #667eea);
+    box-shadow: 
+      0 4px 12px rgba(102, 126, 234, 0.15),
+      0 8px 24px rgba(102, 126, 234, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
   }
 
   &:focus {
     outline: none;
-    border-color: ${props => props.theme.colors.primary.main};
-    box-shadow: 0 0 0 3px ${props => props.theme.colors.primary.light}33;
+    border-color: var(--accent-primary, #667eea);
+    box-shadow: 
+      0 0 0 4px rgba(102, 126, 234, 0.12),
+      0 8px 24px rgba(102, 126, 234, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
   }
 
   &:disabled {
-    background: ${props => props.theme.colors.grey[100]};
+    background: var(--bg-accent, #f8fafc);
     cursor: not-allowed;
     opacity: 0.6;
+    box-shadow: none;
   }
 
   option {
-    padding: 8px;
+    padding: 0.5rem;
+    background: var(--bg-card, #ffffff);
+    color: var(--text-primary, #1e293b);
   }
 
   /* Major provinces - bold and orange */
   option.major-province {
     font-weight: 700;
-    color: #FF8F10;
+    color: var(--accent-primary, #667eea);
   }
 
   option.other-option {
-    border-top: 2px solid ${props => props.theme.colors.grey[300]};
+    border-top: 2px solid var(--border, #e2e8f0);
     font-weight: 600;
-    color: ${props => props.theme.colors.secondary.main};
+    color: var(--text-secondary, #64748b);
   }
 `;
 
 const Input = styled.input<{ $hasError?: boolean }>`
-  padding: 12px 16px;
-  font-size: 16px;
+  width: 100%;
+  max-width: 450px;
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  height: auto;
+  min-height: 2.75rem;
   font-family: 'Martica', Arial, sans-serif;
-  border: 2px solid ${props => 
-    props.$hasError 
-      ? props.theme.colors.error.main 
-      : props.theme.colors.grey[300]
-  };
-  border-radius: 8px;
-  background: ${props => props.theme.colors.background.paper};
-  color: ${props => props.theme.colors.text.primary};
-  transition: all 0.3s ease;
+  border: 2px solid var(--border, #e2e8f0);
+  border-radius: 10px;
+  background: var(--bg-card, #ffffff);
+  color: var(--text-primary, #1e293b);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.08),
+    0 4px 12px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+
+  &::placeholder {
+    color: var(--text-muted, #94a3b8);
+  }
 
   &:hover {
-    border-color: ${props => props.theme.colors.primary.main};
+    border-color: var(--accent-primary, #667eea);
+    box-shadow: 
+      0 4px 12px rgba(102, 126, 234, 0.15),
+      0 8px 24px rgba(102, 126, 234, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
   }
 
   &:focus {
     outline: none;
-    border-color: ${props => props.theme.colors.primary.main};
-    box-shadow: 0 0 0 3px ${props => props.theme.colors.primary.light}33;
+    border-color: var(--accent-primary, #667eea);
+    box-shadow: 
+      0 0 0 4px rgba(102, 126, 234, 0.12),
+      0 8px 24px rgba(102, 126, 234, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
   }
 
   &:disabled {
-    background: ${props => props.theme.colors.grey[100]};
+    background: var(--bg-accent, #f8fafc);
     cursor: not-allowed;
     opacity: 0.6;
   }
+`;
+
+const ErrorMessage = styled.div`
 
   &::placeholder {
-    color: ${props => props.theme.colors.text.secondary};
+    color: var(--text-muted);
   }
 `;
 
 const ErrorText = styled.span`
   font-size: 12px;
-  color: ${props => props.theme.colors.error.main};
+  color: var(--error-color, #ef4444);
   margin-top: 4px;
 `;
 
 const LoadingText = styled.div`
   padding: 12px 16px;
   font-size: 14px;
-  color: ${props => props.theme.colors.text.secondary};
+  color: var(--text-secondary);
   text-align: center;
 `;
 
@@ -178,10 +216,10 @@ const PostalCodeDisplay = styled.div`
   font-size: 16px;
   font-weight: 600;
   font-family: 'Martica', Arial, sans-serif;
-  border: 2px solid ${props => props.theme.colors.grey[300]};
+  border: 2px solid var(--border);
   border-radius: 8px;
-  background: ${props => props.theme.colors.background.paper};
-  color: ${props => props.theme.colors.primary.main};
+  background: var(--bg-card);
+  color: var(--accent-primary);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -228,18 +266,19 @@ export const BulgariaLocationDropdown: React.FC<BulgariaLocationDropdownProps> =
     }
   }, [value.province, showManualProvince]);
 
-  // Auto-fill postal code when city selected
+  // Auto-fill postal code when city selected (only if postal code is empty)
   useEffect(() => {
-    if (value.city && cities.length > 0 && !showManualCity) {
+    if (value.city && cities.length > 0 && !showManualCity && !value.postalCode) {
       const selectedCity = cities.find(c => c.name === value.city || c.nameEn === value.city);
-      if (selectedCity && selectedCity.postalCode !== value.postalCode) {
+      if (selectedCity && selectedCity.postalCode) {
         onChange({
           ...value,
           postalCode: selectedCity.postalCode
         });
       }
     }
-  }, [value, value.city, cities, showManualCity, onChange]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value.city, cities, showManualCity]);
 
   /**
    * Load all provinces
@@ -458,7 +497,7 @@ export const BulgariaLocationDropdown: React.FC<BulgariaLocationDropdownProps> =
                   value={province}
                   className="major-province"
                 >
-                  ⭐ {province}
+                  {province}
                 </option>
               ))}
             
@@ -512,7 +551,7 @@ export const BulgariaLocationDropdown: React.FC<BulgariaLocationDropdownProps> =
                   value={city.name}
                   className={isMajor ? 'major-province' : ''}
                 >
-                  {isMajor ? '⭐ ' : ''}{displayName}
+                  {displayName}
                   {city.district ? ` (${city.district})` : ''}
                 </option>
               );
@@ -528,31 +567,19 @@ export const BulgariaLocationDropdown: React.FC<BulgariaLocationDropdownProps> =
         )}
       </DropdownGroup>
 
-      {/* Postal Code */}
+      {/* Postal Code - Always editable */}
       <DropdownGroup>
         <Label $required>{t2('postalCode')}</Label>
-        {showManualPostalCode ? (
-          <Input
-            type="text"
-            value={value.postalCode}
-            onChange={handleManualPostalCodeChange}
-            placeholder={t2('manualPostalCodePlaceholder')}
-            maxLength={4}
-            disabled={disabled}
-            $hasError={!!error}
-          />
-        ) : value.postalCode ? (
-          <PostalCodeDisplay>
-            {value.postalCode}
-          </PostalCodeDisplay>
-        ) : (
-          <Input
-            type="text"
-            value=""
-            placeholder={t2('manualPostalCodePlaceholder')}
-            disabled
-          />
-        )}
+        <Input
+          type="text"
+          inputMode="numeric"
+          value={value.postalCode}
+          onChange={handleManualPostalCodeChange}
+          placeholder={t2('manualPostalCodePlaceholder')}
+          maxLength={4}
+          disabled={disabled}
+          $hasError={!!error}
+        />
       </DropdownGroup>
 
       {error && <ErrorText>{error}</ErrorText>}

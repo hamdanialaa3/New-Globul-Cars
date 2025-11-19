@@ -42,6 +42,12 @@ const StepsWrapper = styled.ol`
   margin: 0;
   padding: 0;
   position: relative;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
 `;
 
 const StepButton = styled.button<{
@@ -123,6 +129,13 @@ const StepButton = styled.button<{
         box-shadow: 0 14px 28px rgba(148, 163, 184, 0.35);
       }
     `}
+
+  @media (max-width: 768px) {
+    width: 100%;
+    min-width: 0;
+    justify-content: flex-start;
+    padding: 0.65rem 0.9rem;
+  }
 `;
 
 const StepCircle = styled.span<{
@@ -192,6 +205,10 @@ const StepContent = styled.div`
   flex-direction: column;
   gap: 0.1rem;
   align-items: flex-start;
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 `;
 
 const Connector = styled.li<{ $completed: boolean }>`
@@ -214,7 +231,7 @@ const Connector = styled.li<{ $completed: boolean }>`
   }
 
   @media (max-width: 768px) {
-    width: 20px;
+    display: none;
   }
 `;
 

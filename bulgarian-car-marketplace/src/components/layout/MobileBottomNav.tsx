@@ -7,10 +7,10 @@ const NavWrapper = styled.nav`
   bottom: 0;
   left: 0;
   right: 0;
-  background: white;
-  border-top: 1px solid ${props => props.theme.colors.grey?.[200] || '#e5e7eb'};
+  background: var(--footer-bg, #ffffff);
+  border-top: 1px solid ${props => `var(--border-primary, ${props.theme.colors.grey?.[200] || '#e5e7eb'})`};
   z-index: 40;
-  box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-sm, 0 -1px 3px rgba(0, 0, 0, 0.05));
   
   /* Hide on desktop */
   @media (min-width: 768px) {
@@ -42,7 +42,7 @@ const NavItem = styled.button<{ $isActive: boolean }>`
   cursor: pointer;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
-  color: ${props => props.$isActive ? props.theme.colors.primary?.main || '#007bff' : props.theme.colors.text?.secondary || '#666'};
+  color: ${props => props.$isActive ? 'var(--accent-primary)' : 'var(--text-secondary)'};
   min-width: 60px;
   min-height: 60px;
   transition: all 0.2s ease;
@@ -50,13 +50,15 @@ const NavItem = styled.button<{ $isActive: boolean }>`
   
   &:active {
     transform: scale(0.95);
-    background: ${props => props.$isActive ? 'rgba(0, 123, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)'};
+    background: ${props => props.$isActive ? 'var(--accent-hover)' : 'var(--bg-hover)'};
+    color: ${props => props.$isActive ? 'var(--text-inverse)' : 'var(--text-primary)'};
   }
   
   svg {
     width: 24px;
     height: 24px;
     transition: all 0.2s ease;
+    color: currentColor;
   }
   
   ${props => props.$isActive && `
@@ -71,14 +73,15 @@ const NavLabel = styled.span<{ $isActive: boolean }>`
   font-weight: ${props => props.$isActive ? '600' : '400'};
   font-family: 'Martica', 'Arial', sans-serif;
   line-height: 1;
+  color: currentColor;
 `;
 
 const Badge = styled.span`
   position: absolute;
   top: 6px;
   right: 8px;
-  background: ${props => props.theme.colors.error || '#dc3545'};
-  color: white;
+  background: var(--error, ${props => props.theme.colors.error || '#dc3545'});
+  color: var(--text-inverse, #ffffff);
   font-size: 10px;
   font-weight: 600;
   min-width: 18px;

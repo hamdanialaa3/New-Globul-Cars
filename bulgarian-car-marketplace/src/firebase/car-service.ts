@@ -231,6 +231,24 @@ export interface CarSearchFilters {
 export class BulgarianCarService {
   private static instance: BulgarianCarService;
 
+  /**
+   * Get the appropriate Firestore collection name based on vehicle type
+   * Returns the collection name where vehicles of this type should be stored
+   */
+  static getCollectionNameForVehicleType(vehicleType: string): string {
+    const typeMap: Record<string, string> = {
+      'car': 'passenger_cars',           // Passenger Car / Personal use
+      'suv': 'suvs',                      // SUV/Jeep / Off-road
+      'van': 'vans',                      // Van / Cargo/Combi
+      'motorcycle': 'motorcycles',        // Motorcycle / Two-wheeled
+      'truck': 'trucks',                  // Truck / Cargo
+      'bus': 'buses'                      // Bus / Passenger
+    };
+
+    // Default to 'cars' if type not found (backward compatibility)
+    return typeMap[vehicleType?.toLowerCase()] || 'cars';
+  };
+
   private constructor() {}
 
   static getInstance(): BulgarianCarService {
@@ -264,8 +282,12 @@ export class BulgarianCarService {
         updatedAt: new Date()
       };
 
-      // Add to Firestore
-      const docRef = await addDoc(collection(db, 'cars'), {
+      // Get the appropriate collection name based on vehicle type
+      const vehicleType = (carData as any).vehicleType || 'car';
+      const collectionName = BulgarianCarService.getCollectionNameForVehicleType(vehicleType);
+
+      // Add to Firestore in the appropriate collection
+      const docRef = await addDoc(collection(db, collectionName), {
         ...car,
         createdAt: Timestamp.fromDate(car.createdAt),
         updatedAt: Timestamp.fromDate(car.updatedAt),
