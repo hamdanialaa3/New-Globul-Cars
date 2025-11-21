@@ -1,4 +1,2 @@
-// @globul-cars/payments
-export * from './pages';
-export * from './components';
-
+// Payments Package Exports
+export { default as SubscriptionPage } from './SubscriptionPage';

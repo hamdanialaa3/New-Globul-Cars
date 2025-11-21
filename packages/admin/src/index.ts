@@ -1,4 +1,2 @@
-// @globul-cars/admin
-export * from './pages';
-export * from './components';
-
+// Admin Package Exports
+export { default as AdminPage } from './AdminPage';

@@ -5,6 +5,8 @@ import React, { Suspense } from 'react';
 import styled from 'styled-components';
 import BusinessPromoBanner from '@/components/BusinessPromoBanner';
 import LazySection from '@/components/LazySection';
+import { AIChatbot } from '@/components/AI';
+import TrustStrip from './TrustStrip';
 
 // Lazy load all sections for better performance
 const HeroSection = React.lazy(() => import('./HeroSection'));
@@ -16,6 +18,10 @@ const PopularBrandsSection = React.lazy(() => import('./PopularBrandsSection'));
 const ImageGallerySection = React.lazy(() => import('./ImageGallerySection'));
 const FeaturedCarsSection = React.lazy(() => import('./FeaturedCarsSection'));
 const FeaturesSection = React.lazy(() => import('./FeaturesSection'));
+const DealerSpotlight = React.lazy(() => import('./DealerSpotlight'));
+const LifeMomentsBrowse = React.lazy(() => import('./LifeMomentsBrowse'));
+// LoyaltyBanner intentionally NOT lazy to avoid flash for unauthenticated users
+import LoyaltyBanner from './LoyaltyBanner';
 
 const HomeContainer = styled.div`
   min-height: 100vh;
@@ -83,9 +89,19 @@ const LoadingFallback = styled.div`
 const HomePage: React.FC = () => {
   return (
     <HomeContainer>
-      {/* ⚡ OPTIMIZED: Removed LargeSpacer before Featured Cars */}
-      
-      {/* ⚡ Featured Cars Section - MOVED TO TOP (below header) */}
+      {/* Hero Section - FIRST (above the fold) */}
+      <Suspense fallback={<LoadingFallback>Loading hero section...</LoadingFallback>}>
+        <HeroSection />
+      </Suspense>
+
+      <SectionSpacer />
+
+      {/* TrustStrip - immediate trust signals (not lazy to avoid CLS) */}
+      <TrustStrip />
+
+      <SectionSpacer />
+
+      {/* Featured Cars - high intent content */}
       <LazySection rootMargin="0px" minHeight="400px">
         <Suspense fallback={<LoadingFallback>Loading featured cars...</LoadingFallback>}>
           <FeaturedCarsSection />
@@ -93,18 +109,34 @@ const HomePage: React.FC = () => {
       </LazySection>
 
       <SectionSpacer />
-      
-      {/* Business Promotion Banner - Below Featured Cars */}
+
+      {/* Business Promotion Banner */}
       <BusinessPromoBanner />
-      
+
       <LargeSpacer />
 
-      {/* Hero Section - Always visible (above fold) */}
-      <Suspense fallback={<LoadingFallback>Loading hero section...</LoadingFallback>}>
-        <HeroSection />
-      </Suspense>
+      {/* Dealer Spotlight - verified professional partners */}
+      <LazySection rootMargin="80px" minHeight="320px">
+        <Suspense fallback={<LoadingFallback>Loading dealers...</LoadingFallback>}>
+          <DealerSpotlight />
+        </Suspense>
+      </LazySection>
 
       <SectionSpacer />
+
+      {/* Lifestyle Moments Browse */}
+      <LazySection rootMargin="80px" minHeight="320px">
+        <Suspense fallback={<LoadingFallback>Loading lifestyle moments...</LoadingFallback>}>
+          <LifeMomentsBrowse />
+        </Suspense>
+      </LazySection>
+
+      <SectionSpacer />
+
+      {/* Loyalty Banner - encourage signup (non-lazy) */}
+      <LoyaltyBanner />
+
+      <LargeSpacer />
 
       {/* 🌟 Social Media Section - Collapsible Community Feed (Smart Feed + Community Stories) */}
       {/* ⚡ OPTIMIZED: rootMargin reduced from 300px to 100px */}
@@ -163,6 +195,8 @@ const HomePage: React.FC = () => {
           <FeaturesSection />
         </Suspense>
       </LazySection>
+
+      {/* AI Chatbot removed: handled globally via RobotChatIcon */}
     </HomeContainer>
   );
 };

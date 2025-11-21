@@ -6,6 +6,12 @@ import * as admin from 'firebase-admin';
 // Initialize Firebase Admin
 admin.initializeApp();
 
+// ============================================
+// AI Functions (Artificial Intelligence)
+// وظائف الذكاء الاصطناعي
+// ============================================
+export * from './ai';
+
 // Social / OAuth
 export { exchangeOAuthToken } from './social-media/oauth-handler';
 

@@ -56,6 +56,50 @@ export interface PlaceAutocomplete {
 }
 
 class GoogleMapsEnhancedService {
+    /**
+     * Get count of places by type (e.g. car_dealer, car_repair, car_showroom) for a given location
+     */
+    async getPlacesCountByType(
+      location: { lat: number; lng: number },
+      type: 'car_dealer' | 'car_repair' | 'car_showroom',
+      radius: number = 12000, // Slightly reduced radius for performance
+      maxPages: number = 1 // Limit pagination to reduce latency & quota use
+    ): Promise<number> {
+      return new Promise((resolve) => {
+        if (!this.placesService) {
+          this.initialize();
+        }
+        if (!this.placesService) {
+          serviceLogger.error('Places Service not initialized', undefined, { location, type });
+          resolve(0);
+          return;
+        }
+        const request: google.maps.places.PlaceSearchRequest = {
+          location: new google.maps.LatLng(location.lat, location.lng),
+          radius,
+          type,
+        };
+        let total = 0;
+        let pagesFetched = 0;
+        const fetchNext = (pageToken?: string) => {
+          if (pageToken) request.pageToken = pageToken;
+          this.placesService!.nearbySearch(request, (results, status, pagination) => {
+            if (status === google.maps.places.PlacesServiceStatus.OK && results) {
+              total += results.length;
+              pagesFetched += 1;
+              if (pagination && pagination.hasNextPage && pagesFetched < maxPages) {
+                setTimeout(() => fetchNext(pagination.nextPage()), 800); // slight delay required
+              } else {
+                resolve(total);
+              }
+            } else {
+              resolve(total);
+            }
+          });
+        };
+        fetchNext();
+      });
+    }
   private geocoder: google.maps.Geocoder | null = null;
   private placesService: google.maps.places.PlacesService | null = null;
   private directionsService: google.maps.DirectionsService | null = null;

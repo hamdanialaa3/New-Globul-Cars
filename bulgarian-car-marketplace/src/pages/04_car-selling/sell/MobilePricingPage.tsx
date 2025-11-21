@@ -2,16 +2,18 @@
 // Purpose: Price setting for vehicle listing on mobile/tablet
 // Mobile-first; no emojis; <300 lines
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '@/contexts/AuthProvider';
 import { MobileContainer, MobileStack } from '@/components/ui/mobile-index';
 import { MobileHeader } from '@/components/layout/MobileHeader';
 import { S } from './MobilePricingPage.styles';
 import { SellProgressBar } from '@/components/SellWorkflow';
 import SellWorkflowStepStateService from '@/services/sellWorkflowStepState';
 import { usePricingForm } from './Pricing/usePricingForm';
+import { AIPriceSuggestion } from '@/components/AI';
 
 const ProgressWrapper = styled.div`
   padding: 0.75rem 1rem 0;
@@ -19,11 +21,23 @@ const ProgressWrapper = styled.div`
 
 const MobilePricingPage: React.FC = () => {
   const { t, language } = useLanguage();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { vehicleType = 'car' } = useParams<{ vehicleType: string }>();
+  const [showAIPricing, setShowAIPricing] = useState(false);
   
   const { pricingData, handleFieldChange, canContinue, serialize } = usePricingForm();
+
+  // Get car details from URL params for AI
+  const carDetails = {
+    make: searchParams.get('make') || '',
+    model: searchParams.get('model') || '',
+    year: parseInt(searchParams.get('year') || '2020'),
+    mileage: parseInt(searchParams.get('mileage') || '0'),
+    condition: searchParams.get('condition') || 'good',
+    location: searchParams.get('location') || 'Sofia'
+  };
 
   useEffect(() => {
     SellWorkflowStepStateService.markPending('pricing');
@@ -87,6 +101,15 @@ const MobilePricingPage: React.FC = () => {
                   </S.FormattedPrice>
                 )}
               </S.FieldGroup>
+
+              {carDetails.make && carDetails.model && (
+                <S.Card style={{ marginTop: '1rem', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: 'white' }}>
+                  <AIPriceSuggestion
+                    carDetails={carDetails}
+                    onPriceSelect={(price) => handleFieldChange('price', price.toString())}
+                  />
+                </S.Card>
+              )}
 
               <S.CheckboxGroup>
                 <S.Checkbox

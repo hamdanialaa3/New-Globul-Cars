@@ -19,14 +19,15 @@ const pulse = keyframes`
   50% { box-shadow: 0 0 0 20px rgba(255, 143, 16, 0); }
 `;
 
-const slideIn = keyframes`
+// Horizontal slide-in (left expansion)
+const slideInHorizontal = keyframes`
   from {
     opacity: 0;
-    transform: translateY(20px) scale(0.8);
+    transform: translateX(20px) scale(0.8);
   }
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateX(0) scale(1);
   }
 `;
 
@@ -43,8 +44,8 @@ const SpeedDialContainer = styled.div`
   right: 32px;
   z-index: 999;
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
+  flex-direction: row;
+  align-items: center;
   gap: 16px;
   
   @media (max-width: 768px) {
@@ -145,8 +146,8 @@ const MainIcon = styled.div<{ $isOpen: boolean }>`
 `;
 
 const SpeedDialItem = styled.button<{ $index: number; $show: boolean }>`
-  width: 56px;
-  height: 56px;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
   border: none;
   background: linear-gradient(135deg, 
@@ -163,20 +164,20 @@ const SpeedDialItem = styled.button<{ $index: number; $show: boolean }>`
   justify-content: center;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   opacity: ${props => props.$show ? 1 : 0};
-  transform: ${props => props.$show ? 'translateY(0) scale(1)' : 'translateY(20px) scale(0.8)'};
-  animation: ${props => props.$show ? slideIn : 'none'} 0.3s ease-out;
+  transform: ${props => props.$show ? 'translateX(0) scale(1)' : 'translateX(20px) scale(0.8)'};
+  animation: ${props => props.$show ? slideInHorizontal : 'none'} 0.3s ease-out;
   animation-delay: ${props => props.$index * 0.05}s;
   animation-fill-mode: backwards;
   
   &:hover {
-    transform: translateY(-2px) scale(1.1);
+    transform: translateX(0) scale(1.1);
     box-shadow: 
       0 8px 32px rgba(255, 143, 16, 0.4),
       inset 0 1px 0 rgba(255, 255, 255, 0.3);
   }
   
   &:active {
-    transform: translateY(0) scale(1.05);
+    transform: translateX(0) scale(1.05);
   }
   
   svg {
@@ -187,8 +188,8 @@ const SpeedDialItem = styled.button<{ $index: number; $show: boolean }>`
   }
   
   @media (max-width: 768px) {
-    width: 48px;
-    height: 48px;
+    width: 56px;
+    height: 56px;
     
     svg {
       width: 24px;
@@ -199,13 +200,15 @@ const SpeedDialItem = styled.button<{ $index: number; $show: boolean }>`
 
 const ItemLabel = styled.div<{ $show: boolean }>`
   position: absolute;
-  right: 72px;
-  padding: 8px 16px;
+  top: -44px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 6px 12px;
   background: rgba(33, 37, 41, 0.95);
   backdrop-filter: blur(8px);
   color: #ffffff;
   border-radius: 8px;
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   font-weight: 600;
   white-space: nowrap;
   opacity: ${props => props.$show ? 1 : 0};
@@ -216,14 +219,14 @@ const ItemLabel = styled.div<{ $show: boolean }>`
   &::after {
     content: '';
     position: absolute;
-    right: -6px;
-    top: 50%;
-    transform: translateY(-50%);
+    left: 50%;
+    bottom: -6px;
+    transform: translateX(-50%);
     width: 0;
     height: 0;
-    border-left: 6px solid rgba(33, 37, 41, 0.95);
-    border-top: 6px solid transparent;
-    border-bottom: 6px solid transparent;
+    border-top: 6px solid rgba(33, 37, 41, 0.95);
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
   }
   
   @media (max-width: 768px) {
@@ -267,7 +270,7 @@ const Tooltip = styled.div<{ $show: boolean }>`
   }
   
   @media (max-width: 768px) {
-    display: none; /* Hide tooltip on mobile */
+    display: none;
   }
 `;
 
@@ -300,6 +303,19 @@ const FloatingAddButton: React.FC = () => {
       label: { bg: 'Социална мрежа', en: 'Social Feed' },
       onClick: () => {
         navigate('/social');
+        setIsOpen(false);
+      }
+    },
+    {
+      icon: (
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+          <circle cx="12" cy="10" r="3"/>
+        </svg>
+      ),
+      label: { bg: 'Карта', en: 'Map' },
+      onClick: () => {
+        navigate('/map');
         setIsOpen(false);
       }
     }

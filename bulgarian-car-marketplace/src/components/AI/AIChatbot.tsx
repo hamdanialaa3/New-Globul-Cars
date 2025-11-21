@@ -3,24 +3,31 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
-import { geminiChatService } from '@/services/ai/gemini-chat.service';
+import { getFunctions, httpsCallable } from 'firebase/functions';
 import { AIChatMessage, AIChatContext } from '@/types/ai.types';
 import { useAuth } from '@/contexts/AuthProvider';
-import { useTranslation } from '@/hooks/useTranslation';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { logger } from '@/services/logger-service';
 
 interface Props {
   context?: AIChatContext;
   position?: 'bottom-right' | 'bottom-left';
+  hideButton?: boolean;
+  isOpen?: boolean;
+  onClose?: () => void;
 }
 
 export const AIChatbot: React.FC<Props> = ({ 
   context = {}, 
-  position = 'bottom-right' 
+  position = 'bottom-right',
+  hideButton = true,
+  isOpen: externalIsOpen,
+  onClose
 }) => {
   const { user } = useAuth();
-  const { language } = useTranslation();
-  const [isOpen, setIsOpen] = useState(false);
+  const { language, t } = useLanguage();
+  const [internalIsOpen, setInternalIsOpen] = useState(false);
+  const isOpen = externalIsOpen !== undefined ? externalIsOpen : internalIsOpen;
   const [messages, setMessages] = useState<AIChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -38,11 +45,8 @@ export const AIChatbot: React.FC<Props> = ({
 
   const addWelcomeMessage = () => {
     const welcomeMessages = {
-      bg: 'Здравейте! Как мога да ви помогна днес?',
-      en: 'Hello! How can I help you today?',
-      ar: 'مرحباً! كيف يمكنني مساعدتك اليوم؟',
-      ru: 'Здравствуйте! Как я могу вам помочь сегодня?',
-      tr: 'Merhaba! Bugün size nasıl yardımcı olabilirim?'
+      bg: 'Здравейте! Как мога да ви помогна днес? Попитайте ме за коли, цени или каквото и да е друго!',
+      en: 'Hello! How can I help you today? Ask me about cars, prices, or anything else!'
     };
 
     setMessages([{
@@ -70,20 +74,30 @@ export const AIChatbot: React.FC<Props> = ({
     setLoading(true);
 
     try {
+      const functions = getFunctions();
+      const geminiChatCallable = httpsCallable(functions, 'geminiChat');
+      
       const chatContext: AIChatContext = {
         ...context,
         language: language as any
       };
 
-      const response = await geminiChatService.chat(
-        input, 
-        chatContext,
-        user?.uid
-      );
+      const conversationHistory = messages.slice(-6).map(msg => ({
+        role: msg.role,
+        content: msg.content
+      }));
+
+      const result = await geminiChatCallable({
+        message: input,
+        context: chatContext,
+        conversationHistory
+      });
+
+      const responseData = result.data as { message: string; quotaRemaining?: number };
 
       const assistantMessage: AIChatMessage = {
         role: 'assistant',
-        content: response,
+        content: responseData.message,
         timestamp: Date.now()
       };
 
@@ -92,9 +106,14 @@ export const AIChatbot: React.FC<Props> = ({
     } catch (error: any) {
       logger.error('Chatbot error', error);
       
+      const errorMessages = {
+        bg: error.message || 'Съжалявам, възникна грешка. Моля, опитайте отново.',
+        en: error.message || 'Sorry, I encountered an error. Please try again.'
+      };
+      
       const errorMessage: AIChatMessage = {
         role: 'assistant',
-        content: error.message || 'Sorry, I encountered an error. Please try again.',
+        content: errorMessages[language as keyof typeof errorMessages] || errorMessages.en,
         timestamp: Date.now()
       };
       
@@ -113,22 +132,17 @@ export const AIChatbot: React.FC<Props> = ({
 
   return (
     <>
-      <ChatButton 
-        onClick={() => setIsOpen(!isOpen)}
-        position={position}
-        isOpen={isOpen}
-      >
-        {isOpen ? '✕' : '💬'}
-      </ChatButton>
-
       {isOpen && (
-        <ChatWindow position={position}>
+        <ChatWindow $position={position}>
           <ChatHeader>
             <HeaderTitle>
               <BotIcon>🤖</BotIcon>
-              <span>AI Assistant</span>
+              <span>{language === 'bg' ? 'AI Асистент' : 'AI Assistant'}</span>
             </HeaderTitle>
-            <CloseButton onClick={() => setIsOpen(false)}>✕</CloseButton>
+            <CloseButton onClick={() => {
+              if (onClose) onClose();
+              else setInternalIsOpen(false);
+            }}>✕</CloseButton>
           </ChatHeader>
 
           <MessagesContainer>
@@ -143,9 +157,9 @@ export const AIChatbot: React.FC<Props> = ({
               <Message role="assistant">
                 <MessageBubble role="assistant">
                   <TypingIndicator>
-                    <Dot delay={0} />
-                    <Dot delay={0.2} />
-                    <Dot delay={0.4} />
+                    <Dot $delay={0} />
+                    <Dot $delay={0.2} />
+                    <Dot $delay={0.4} />
                   </TypingIndicator>
                 </MessageBubble>
               </Message>
@@ -158,7 +172,7 @@ export const AIChatbot: React.FC<Props> = ({
               value={input}
               onChange={e => setInput(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="Type your message..."
+              placeholder={language === 'bg' ? 'Напишете вашето съобщение...' : 'Type your message...'}
               disabled={loading}
             />
             <SendButton onClick={handleSend} disabled={loading || !input.trim()}>
@@ -171,31 +185,9 @@ export const AIChatbot: React.FC<Props> = ({
   );
 };
 
-const ChatButton = styled.button<{ position: string; isOpen: boolean }>`
+const ChatWindow = styled.div<{ $position: string }>`
   position: fixed;
-  ${p => p.position === 'bottom-right' ? 'right: 24px;' : 'left: 24px;'}
-  bottom: 24px;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border: none;
-  color: white;
-  font-size: 28px;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-  z-index: 9999;
-  transition: all 0.3s;
-
-  &:hover {
-    transform: scale(1.1);
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
-  }
-`;
-
-const ChatWindow = styled.div<{ position: string }>`
-  position: fixed;
-  ${p => p.position === 'bottom-right' ? 'right: 24px;' : 'left: 24px;'}
+  ${p => p.$position === 'bottom-right' ? 'right: 24px;' : 'left: 24px;'}
   bottom: 100px;
   width: 380px;
   height: 550px;
@@ -280,13 +272,13 @@ const TypingIndicator = styled.div`
   padding: 4px 0;
 `;
 
-const Dot = styled.div<{ delay: number }>`
+const Dot = styled.div<{ $delay: number }>`
   width: 8px;
   height: 8px;
   border-radius: 50%;
   background: #667eea;
   animation: bounce 1.4s infinite ease-in-out;
-  animation-delay: ${p => p.delay}s;
+  animation-delay: ${p => p.$delay}s;
 
   @keyframes bounce {
     0%, 80%, 100% { transform: scale(0); }

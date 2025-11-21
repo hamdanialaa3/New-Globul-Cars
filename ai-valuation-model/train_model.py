@@ -29,6 +29,7 @@ def create_model_directory():
     """Create directory for saving models"""
     if not os.path.exists(MODEL_DIR):
         os.makedirs(MODEL_DIR)
+        print(f"✅ Created {MODEL_DIR} directory")
 
 def load_training_data():
     """Load training data from BigQuery or generate sample data"""

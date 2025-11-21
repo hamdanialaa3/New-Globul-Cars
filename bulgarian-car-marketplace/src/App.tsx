@@ -5,10 +5,12 @@ import React, { Suspense } from 'react';
 import { logger } from './services/logger-service';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
+// ⚠️ TEMPORARY: Using local imports until symlink is created
+// TODO: Change back to @globul-cars/core after symlink is created
 import { LanguageProvider } from './contexts/LanguageContext';
 import { AuthProvider } from './contexts/AuthProvider';
-import { ProfileTypeProvider } from './contexts/ProfileTypeContext';  // NEW: Profile Type System
-import { ThemeProvider as CustomThemeProvider } from './contexts/ThemeContext';  // NEW: Dark/Light Mode System
+import { ProfileTypeProvider } from './contexts/ProfileTypeContext';
+import { ThemeProvider as CustomThemeProvider } from './contexts/ThemeContext';
 import { ToastProvider } from './components/Toast';
 import { bulgarianTheme, GlobalStyles } from './styles/theme';
 import './styles/mobile-responsive.css';
@@ -26,12 +28,12 @@ import AdminRoute from './components/AdminRoute';
 import AuthGuard from './components/AuthGuard';
 import NotificationHandler from './components/NotificationHandler';
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
-import { FilterProvider } from '@/contexts/FilterContext';
+import { FilterProvider } from './contexts/FilterContext';
 // import AnalyticsTracker from './components/AnalyticsTracker';
 import NotFoundPage from './components/NotFoundPage';
 import FacebookPixel from './components/FacebookPixel';
 import FloatingAddButton from './components/FloatingAddButton';
-import AssistantHead from './components/AI/AssistantHead';
+import RobotChatIcon from './components/AI/RobotChatIcon';
 import { useIsMobile } from './hooks/useBreakpoint';
 import ProgressBar from './components/ProgressBar';
 // Removed problematic imports
@@ -116,6 +118,8 @@ const AboutPage = React.lazy(() => import('./pages/01_main-pages/about/AboutPage
 const BrandGalleryPage = React.lazy(() => import('./pages/05_search-browse/brand-gallery/BrandGalleryPage'));
 const TopBrandsPage = React.lazy(() => import('./pages/05_search-browse/top-brands/TopBrandsPage'));
 const DealersPage = React.lazy(() => import('./pages/05_search-browse/dealers/DealersPage'));
+// NEW: Map Analytics Page
+const MapAnalyticsPage = React.lazy(() => import('./pages/01_main-pages/map/MapPage'));
 const FinancePage = React.lazy(() => import('./pages/05_search-browse/finance/FinancePage'));
 const ContactPage = React.lazy(() => import('./pages/01_main-pages/contact/ContactPage'));
 const HelpPage = React.lazy(() => import('./pages/01_main-pages/help/HelpPage'));
@@ -309,7 +313,7 @@ const MainLayout: React.FC = () => {
   return (
   <Layout>
     <FloatingAddButton />
-    <AssistantHead />
+    <RobotChatIcon />
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/social" element={<SocialFeedPage />} />
@@ -813,6 +817,8 @@ const MainLayout: React.FC = () => {
 
       {/* Additional Pages */}
       <Route path="/about" element={<AboutPage />} />
+      {/* Bulgaria Map Analytics */}
+      <Route path="/map" element={<MapAnalyticsPage />} />
       <Route path="/top-brands" element={<TopBrandsPage />} />
       <Route
         path="/brand-gallery"

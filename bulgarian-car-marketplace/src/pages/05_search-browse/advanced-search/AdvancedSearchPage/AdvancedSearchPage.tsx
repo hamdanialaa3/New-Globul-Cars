@@ -4,6 +4,7 @@ import { useSavedSearches } from '@/hooks/useSavedSearches';
 import { useAuth } from '@/contexts/AuthProvider';
 import { SearchData } from './types';
 import { searchService } from '@/services/search/UnifiedSearchService';
+import { withAiTrace, AI_TRACE_NAMES } from '@/services/performance/ai-performance-traces';
 import CarCardCompact from '@/components/CarCard/CarCardCompact';
 import { CarListing } from '@/types/CarListing';
 import {
@@ -87,7 +88,7 @@ const AdvancedSearchPage: React.FC = () => {
 
   const [showSaveModal, setShowSaveModal] = useState(false);
 
-  // ⚡ NEW: Enhanced search handler with caching
+  // ⚡ NEW: Enhanced search handler with caching + AI Performance Trace
   const handleSearch = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     
@@ -95,7 +96,11 @@ const AdvancedSearchPage: React.FC = () => {
     setCurrentPage(1);
     
     try {
-      const result = await searchService.advancedSearchPaged(searchData, 1, 20);
+      const result = await withAiTrace(
+        'ai_search_advanced',
+        async () => await searchService.advancedSearchPaged(searchData, 1, 20),
+        (res) => ({ total_results: res.total, cache_hit: res.source === 'cache' ? 1 : 0 })
+      );
       setSearchResults(result.cars as CarListing[]);
       setTotalResults(result.total);
       setTotalPages(Math.max(1, Math.ceil(result.total / 20)));

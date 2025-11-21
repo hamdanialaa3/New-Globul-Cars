@@ -1,62 +1,27 @@
-// Gemini Chat Service - FREE + PAID AI Assistant
-// مجاني + مدفوع مع نظام الحصص
+// Gemini Chat Service - Uses Cloud Function for server-side calls
+// خدمة الدردشة Gemini - عبر دالة سحابية لزيادة الأمان وإدارة الحصص
 
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { AIChatContext, PriceSuggestion, ProfileAnalysis } from '@/types/ai.types';
 import { logger } from '../logger-service';
 import { aiQuotaService } from './ai-quota.service';
+import { functions } from '@/firebase/firebase-config';
+import { httpsCallable } from 'firebase/functions';
 
 class GeminiChatService {
-  private genAI: GoogleGenerativeAI;
-  private model: any;
-  private isInitialized = false;
-
-  constructor() {
-    const apiKey = process.env.REACT_APP_GOOGLE_GENERATIVE_AI_KEY || process.env.REACT_APP_GEMINI_KEY;
-    if (!apiKey) {
-      logger.warn('Google Generative AI key not found');
-      return;
-    }
-    
-    this.genAI = new GoogleGenerativeAI(apiKey);
-    this.model = this.genAI.getGenerativeModel({ model: "gemini-pro" });
-    this.isInitialized = true;
-  }
+  private isInitialized = true; // Using callables only
 
   async chat(message: string, context: AIChatContext = {}, userId?: string): Promise<string> {
-    if (!this.isInitialized) {
-      throw new Error('Gemini service not initialized');
-    }
-
-    // Check quota
-    if (userId) {
-      const quotaCheck = await aiQuotaService.canUseFeature(userId, 'chat');
-      if (!quotaCheck.allowed) {
-        throw new Error(quotaCheck.reason || 'Chat quota exceeded');
-      }
-    }
-
+    // Server-side quota checks happen in the callable
     try {
       const systemPrompt = this.buildSystemPrompt(context);
-      const fullPrompt = `${systemPrompt}\n\nUser: ${message}`;
-      
-      const result = await this.model.generateContent(fullPrompt);
-      const response = result.response.text();
-      
-      // Track usage
-      if (userId) {
-        await aiQuotaService.trackUsage(userId, 'chat', true, { messageLength: message.length });
-      }
-      
-      return response;
-      
+      const call = httpsCallable<any, { message: string; quotaRemaining: number }>(functions, 'geminiChat');
+      const res = await call({ message, context: { ...(context || {}), systemPrompt } });
+      const reply = res.data?.message ?? '';
+
+      return reply;
+
     } catch (error) {
-      logger.error('Gemini Chat error', error as Error);
-      
-      if (userId) {
-        await aiQuotaService.trackUsage(userId, 'chat', false);
-      }
-      
+      logger.error('Gemini Chat error (callable)', error as Error);
       throw error;
     }
   }
@@ -69,9 +34,7 @@ class GeminiChatService {
     condition: string;
     location: string;
   }, userId?: string): Promise<PriceSuggestion> {
-    if (!this.isInitialized) {
-      throw new Error('Gemini service not initialized');
-    }
+    // Server callable
 
     // Check quota
     if (userId) {
@@ -101,9 +64,9 @@ class GeminiChatService {
         }
       `;
       
-      const result = await this.model.generateContent(prompt);
-      const text = result.response.text();
-      const suggestion = this.extractJSON(text);
+      const call = httpsCallable<typeof carDetails, any>(functions, 'suggestPriceAI');
+      const res = await call(carDetails);
+      const suggestion = res.data;
       
       // Track usage
       if (userId) {
@@ -127,9 +90,7 @@ class GeminiChatService {
   }
 
   async analyzeProfile(profileData: any, userId?: string): Promise<ProfileAnalysis> {
-    if (!this.isInitialized) {
-      throw new Error('Gemini service not initialized');
-    }
+    // Server callable
 
     // Check quota
     if (userId) {
@@ -153,9 +114,9 @@ class GeminiChatService {
         }
       `;
       
-      const result = await this.model.generateContent(prompt);
-      const text = result.response.text();
-      const analysis = this.extractJSON(text);
+      const call = httpsCallable<{ profileData: any }, any>(functions, 'analyzeProfileAI');
+      const res = await call({ profileData });
+      const analysis = res.data;
       
       // Track usage
       if (userId) {

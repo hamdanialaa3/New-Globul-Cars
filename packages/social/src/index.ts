@@ -1,4 +1,2 @@
-// @globul-cars/social
-export * from './pages';
-export * from './components';
-
+// Social Package Exports
+export { default as SocialFeedPage } from './SocialFeedPage';

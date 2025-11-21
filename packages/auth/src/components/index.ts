@@ -1,3 +1,3 @@
-// Auth components exports
-// This will be populated as we move components
-
+// Auth Components Exports
+export { default as SocialLogin } from './SocialLogin';
+export type { default as SocialLoginProps } from './SocialLogin';

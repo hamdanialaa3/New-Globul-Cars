@@ -1,6 +1,3 @@
-// @globul-cars/ui
-// UI components exports
-
+// @globul-cars/ui - Main Export
 export * from './components';
 export * from './styles';
-

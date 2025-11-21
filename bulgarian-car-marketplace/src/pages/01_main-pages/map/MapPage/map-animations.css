@@ -1,0 +1,8 @@
+.fade-in-marker {
+  animation: fadeInScale 0.7s cubic-bezier(0.4,0.2,0.2,1) both;
+}
+@keyframes fadeInScale {
+  0% { opacity: 0; transform: scale(0.5); }
+  60% { opacity: 0.7; transform: scale(1.1); }
+  100% { opacity: 1; transform: scale(1); }
+}

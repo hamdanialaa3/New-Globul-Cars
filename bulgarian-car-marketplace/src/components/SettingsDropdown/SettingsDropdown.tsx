@@ -1,6 +1,7 @@
 // Settings Dropdown Component with Language and Theme Options
 import React, { useState, useRef, useEffect } from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { useNavigate } from 'react-router-dom';
 import './SettingsDropdown.css';
 
 interface SettingsDropdownProps {
@@ -11,6 +12,7 @@ const SettingsDropdown: React.FC<SettingsDropdownProps> = ({ className = '' }) =
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { language, setLanguage, t } = useLanguage();
+  const navigate = useNavigate();
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -110,6 +112,16 @@ const SettingsDropdown: React.FC<SettingsDropdownProps> = ({ className = '' }) =
               {t('settings.quickActions')}
             </div>
             <div className="settings-options">
+              <button
+                className="settings-option action-button"
+                onClick={() => {
+                  navigate('/map');
+                  setIsOpen(false);
+                }}
+              >
+                <span className="action-icon">🗺️</span>
+                <span>{language === 'bg' ? 'Карта на България' : 'Bulgaria Map'}</span>
+              </button>
               <button
                 className="settings-option action-button"
                 onClick={clearCache}

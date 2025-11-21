@@ -1,4 +1,2 @@
-// @globul-cars/messaging
-export * from './pages';
-export * from './components';
-
+// Messaging Package Exports
+export { default as MessagesPage } from './MessagesPage';

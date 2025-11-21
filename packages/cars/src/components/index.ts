@@ -1,3 +1,5 @@
-// Cars components exports
-// This will be populated as we move components
-
+// Cars Components Exports
+// TODO: Move car components here
+// - CarCard
+// - CarDetails
+// - CarSearchSystem

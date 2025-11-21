@@ -1,39 +1,45 @@
-// ⚡ SIMPLIFIED CRACO Configuration (for debugging)
+// Minimal CRACO configuration to avoid previous complex plugin errors
+const path = require('path');
 const webpack = require('webpack');
 
 module.exports = {
-  eslint: {
-    enable: false, // Disabled for faster builds
-  },
+  eslint: { enable: false },
   webpack: {
-    configure: (webpackConfig) => {
-      // ⚡ Disable minification to fix Terser errors
-      if (webpackConfig.mode === 'production') {
-        webpackConfig.optimization.minimize = false;
+    configure: (config) => {
+      // Disable minification in production to ease debugging
+      if (config.mode === 'production') {
+        config.optimization.minimize = false;
       }
+      // Remove ESLint & type checker plugins if present
+      config.plugins = (config.plugins || []).filter(p => {
+        const name = p.constructor?.name;
+        return name !== 'ESLintWebpackPlugin' && name !== 'ForkTsCheckerWebpackPlugin' && name !== 'ModuleScopePlugin';
+      });
 
-      // ⚡ Remove ESLint plugin for faster builds
-      webpackConfig.plugins = webpackConfig.plugins.filter(
-        (plugin) => plugin.constructor.name !== 'ESLintWebpackPlugin'
-      );
-
-      // ⚡ Remove TypeScript type checker
-      webpackConfig.plugins = webpackConfig.plugins.filter(
-        (plugin) => plugin.constructor.name !== 'ForkTsCheckerWebpackPlugin'
-      );
-
-      // Ensure resolve exists
-      webpackConfig.resolve = webpackConfig.resolve || {};
-
-      // Fallbacks for Node.js core modules in the browser (Webpack 5)
-      webpackConfig.resolve.fallback = {
-        ...(webpackConfig.resolve.fallback || {}),
+      // Basic aliases
+      config.resolve = config.resolve || {};
+      config.resolve.alias = {
+        ...(config.resolve.alias || {}),
+        '@': path.resolve(__dirname, 'src'),
+        // Polyfills / shims needed for packages expecting Node globals
+        'process/browser': require.resolve('process/browser'),
+        process: require.resolve('process/browser')
+      };
+      // Add extensions
+      config.resolve.extensions = [
+        ...(config.resolve.extensions || []),
+        '.ts', '.tsx', '.js', '.jsx'
+      ];
+      // Provide Node polyfills required by some libs
+      config.resolve.fallback = {
+        ...(config.resolve.fallback || {}),
         buffer: require.resolve('buffer/'),
         stream: require.resolve('stream-browserify'),
         url: require.resolve('url/'),
         util: require.resolve('util/'),
-        zlib: require.resolve('browserify-zlib'),
         crypto: require.resolve('crypto-browserify'),
+        zlib: require.resolve('browserify-zlib'),
+        process: require.resolve('process/browser'),
         http: false,
         https: false,
         fs: false,
@@ -44,32 +50,14 @@ module.exports = {
         querystring: false,
       };
 
-      // Map `node:` scheme imports to browser-friendly shims
-      const pathModule = require('path');
-      webpackConfig.resolve.alias = {
-        ...(webpackConfig.resolve.alias || {}),
-        '@': pathModule.resolve(__dirname, 'src'),  // ✅ Path alias support
-        'node:url': require.resolve('url/'),
-        'node:util': require.resolve('util/'),
-        'node:buffer': require.resolve('buffer/'),
-        'node:stream': require.resolve('stream-browserify'),
-        'node:zlib': require.resolve('browserify-zlib'),
-        'node:crypto': require.resolve('crypto-browserify'),
-        'node:process': require.resolve('process/browser'),
-        'process/browser': require.resolve('process/browser'),
-        process: require.resolve('process/browser'),
-      };
-
-      // Provide globals for process and Buffer
-      webpackConfig.plugins = [
-        ...(webpackConfig.plugins || []),
+      config.plugins.push(
         new webpack.ProvidePlugin({
           process: 'process/browser',
           Buffer: ['buffer', 'Buffer'],
-        }),
-      ];
+        })
+      );
 
-      return webpackConfig;
-    },
-  },
+      return config;
+    }
+  }
 };

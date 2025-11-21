@@ -41,7 +41,84 @@ export const translations = {
         viewCars: 'Виж коли',
         selectCity: 'Изберете регион',
         mapDescription: 'Кликнете на региона, за да видите автомобилите'
+      },
+      trustStrip: {
+        activeListings: 'активни обяви',
+        verifiedSellers: 'проверени продавачи',
+        successfulDeals: 'успешни сделки',
+        marketplacePulse: 'Пулс на пазара',
+        updated: 'обновено',
+        ctaBrowse: 'Разгледай пазара',
+        ctaSell: 'Продай автомобил'
+      },
+      dealerSpotlight: {
+        title: 'Акцентирани дилъри',
+        subtitle: 'Топ оценени професионални партньори',
+        viewAll: 'Всички дилъри',
+        rating: 'рейтинг',
+        listings: 'обяви',
+        verified: 'проверен'
+      },
+      lifeMomentsBrowse: {
+        title: 'Колата за вашия момент',
+        subtitle: 'Открийте автомобил според начина ви на живот',
+        moments: {
+          family: { title: 'Семейни пътувания' },
+          work: { title: 'За бизнес' },
+          adventure: { title: 'Приключения' },
+          eco: { title: 'Еко избор' },
+          city: { title: 'Градско шофиране' },
+          luxury: { title: 'Лукс' }
+        }
+      },
+      loyaltyBanner: {
+        title: 'Създайте профил и отключете предимства',
+        benefitsTitle: 'Предимства',
+        benefit1: 'Запазване на любими',
+        benefit2: 'Смарт известия за цени',
+        benefit3: 'AI оценка на оферти',
+        cta: 'Регистрация',
+        altCta: 'Вход'
       }
+    },
+    mapPage: {
+      title: 'Карта на България – Аналитика',
+      subtitle: 'Визуализация на активни потребители, автомобили и подробности по региони',
+      layerUsers: 'Потребители',
+      layerCars: 'Автомобили',
+      layerWorkshops: 'Авто сервизи',
+      layerShowrooms: 'Авто шоуруми',
+      layerDealers: 'Авто дилъри',
+      layerDetails: 'Подробности',
+      usersCountLabel: 'Потребители',
+      carsCountLabel: 'Коли',
+      workshopsCount: 'Брой автосервизи',
+      showroomsCount: 'Брой автокъщи',
+      dealersCount: 'Брой търговци',
+      region: 'Регион',
+      toggleUsers: 'Показвай потребители',
+      toggleCars: 'Показвай коли',
+      toggleWorkshops: 'Показвай сервизи',
+      toggleShowrooms: 'Показвай шоуруми',
+      toggleDealers: 'Показвай дилъри',
+      toggleDetails: 'Показвай подробности',
+      legendTitle: 'Легенда',
+      loading: 'Зареждане на данни за картата...',
+      lastUpdated: 'Последно обновяване',
+      detailsPanel: 'Подробности',
+      clickOnMap: 'Кликнете върху елемент на картата за повече информация',
+      city: 'Град',
+      type: 'Тип',
+      count: 'Брой',
+      carItem: 'Автомобил',
+      userItem: 'Потребител',
+      workshopItem: 'Автосервиз',
+      showroomItem: 'Автокъща',
+      dealerItem: 'Търговец',
+      location: 'Местоположение',
+      totalItems: 'Общо елементи',
+      item: 'елемент',
+      items: 'елементи'
     },
     cars: {
       title: 'Търси коли',
@@ -1119,6 +1196,26 @@ export const translations = {
       cacheCleared: 'Кешът е изчистен успешно!',
       continue: 'Продължи'
     },
+    ai: {
+      assistant: 'AI Асистент',
+      chat: {
+        title: 'AI Чат',
+        placeholder: 'Напишете вашето съобщение...',
+        send: 'Изпрати',
+        welcome: 'Здравейте! Как мога да ви помогна днес? Попитайте ме за коли, цени или каквото и да е друго!',
+        typing: 'AI пише...',
+        error: 'Съжалявам, възникна грешка. Моля, опитайте отново.',
+        quotaExceeded: 'Дневната ви квота за AI чат е изчерпана. Моля, опитайте утре или надградете плана си.',
+        openChat: 'Отвори AI чат',
+        closeChat: 'Затвори AI чат'
+      },
+      features: {
+        priceAnalysis: 'Анализ на цени',
+        marketTrends: 'Пазарни тенденции',
+        carRecommendations: 'Препоръки за коли',
+        sellingTips: 'Съвети за продажба'
+      }
+    },
     emailVerification: {
       invalidLink: 'Невалиден линк за потвърждение',
       successTitle: 'Потвърждение успешно!',
@@ -1474,7 +1571,84 @@ export const translations = {
         viewCars: 'View Cars',
         selectCity: 'Select a region',
         mapDescription: 'Click on a region to view its cars'
+      },
+      trustStrip: {
+        activeListings: 'active listings',
+        verifiedSellers: 'verified sellers',
+        successfulDeals: 'successful deals',
+        marketplacePulse: 'Marketplace Pulse',
+        updated: 'updated',
+        ctaBrowse: 'Browse Market',
+        ctaSell: 'Sell a Car'
+      },
+      dealerSpotlight: {
+        title: 'Dealer Spotlight',
+        subtitle: 'Top rated professional partners',
+        viewAll: 'All dealers',
+        rating: 'rating',
+        listings: 'listings',
+        verified: 'verified'
+      },
+      lifeMomentsBrowse: {
+        title: 'Car for Your Moment',
+        subtitle: 'Find a vehicle for your lifestyle',
+        moments: {
+          family: { title: 'Family Trips' },
+          work: { title: 'For Business' },
+          adventure: { title: 'Adventure' },
+          eco: { title: 'Eco Choice' },
+          city: { title: 'City Driving' },
+          luxury: { title: 'Luxury' }
+        }
+      },
+      loyaltyBanner: {
+        title: 'Create an account and unlock benefits',
+        benefitsTitle: 'Benefits',
+        benefit1: 'Save favourites',
+        benefit2: 'Smart price alerts',
+        benefit3: 'AI offer valuation',
+        cta: 'Sign Up',
+        altCta: 'Sign In'
       }
+    },
+    mapPage: {
+      title: 'Bulgaria Map – Analytics',
+      subtitle: 'Visualize active users, cars and regional details',
+      layerUsers: 'Users',
+      layerCars: 'Cars',
+      layerWorkshops: 'Car Repair Shops',
+      layerShowrooms: 'Showrooms',
+      layerDealers: 'Car Dealers',
+      layerDetails: 'Details',
+      usersCountLabel: 'Users',
+      carsCountLabel: 'Cars',
+      workshopsCount: 'Workshops Count',
+      showroomsCount: 'Showrooms Count',
+      dealersCount: 'Dealers Count',
+      region: 'Region',
+      toggleUsers: 'Show users',
+      toggleCars: 'Show cars',
+      toggleWorkshops: 'Show repair shops',
+      toggleShowrooms: 'Show showrooms',
+      toggleDealers: 'Show dealers',
+      toggleDetails: 'Show details',
+      legendTitle: 'Legend',
+      loading: 'Loading map data...',
+      lastUpdated: 'Last updated',
+      detailsPanel: 'Details',
+      clickOnMap: 'Click on a map element for more information',
+      city: 'City',
+      type: 'Type',
+      count: 'Count',
+      carItem: 'Car',
+      userItem: 'User',
+      workshopItem: 'Workshop',
+      showroomItem: 'Showroom',
+      dealerItem: 'Dealer',
+      location: 'Location',
+      totalItems: 'Total Items',
+      item: 'item',
+      items: 'items'
     },
     cars: {
       title: 'Browse Cars',
@@ -2546,6 +2720,26 @@ export const translations = {
       clearCache: 'Clear Cache',
       cacheCleared: 'Cache cleared successfully!',
       continue: 'Continue'
+    },
+    ai: {
+      assistant: 'AI Assistant',
+      chat: {
+        title: 'AI Chat',
+        placeholder: 'Type your message...',
+        send: 'Send',
+        welcome: 'Hello! How can I help you today? Ask me about cars, prices, or anything else!',
+        typing: 'AI is typing...',
+        error: 'Sorry, I encountered an error. Please try again.',
+        quotaExceeded: 'Your daily AI chat quota has been exceeded. Please try again tomorrow or upgrade your plan.',
+        openChat: 'Open AI Chat',
+        closeChat: 'Close AI Chat'
+      },
+      features: {
+        priceAnalysis: 'Price Analysis',
+        marketTrends: 'Market Trends',
+        carRecommendations: 'Car Recommendations',
+        sellingTips: 'Selling Tips'
+      }
     },
     emailVerification: {
       invalidLink: 'Invalid verification link',

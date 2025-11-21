@@ -12,6 +12,7 @@ import { getAllMakes, getModelsByMake, hasModels } from '@/data/car-makes-models
 import DistanceIndicator from '@/components/DistanceIndicator';
 import StaticMapEmbed from '@/components/StaticMapEmbed';
 import { logger } from '@/services/logger-service';
+import { startAiTrace, endAiTrace } from '@/services/performance/ai-performance-traces';
 import CarDetailsModernView from './components/CarDetailsModernView';
 
 // ==================== Styled Components ====================
@@ -1012,6 +1013,9 @@ const CarDetailsPage: React.FC = () => {
       
       console.log('🔍 Loading car with ID:', carId);
       
+      const trace = startAiTrace('car_details_load');
+      const startTime = performance.now();
+      
       try {
         const carData = await carListingService.getListing(carId);
         console.log('✅ Car data loaded:', carData);
@@ -1022,9 +1026,13 @@ const CarDetailsPage: React.FC = () => {
         } else {
           console.log('⚠️ Car not found in database');
         }
+        
+        const duration = performance.now() - startTime;
+        endAiTrace(trace, { load_duration_ms: duration, found: carData ? 1 : 0 });
       } catch (error) {
         console.error('❌ Error loading car:', error);
         logger.error('Error loading car details', error as Error, { carId });
+        endAiTrace(trace, { error: 1 });
       } finally {
         setLoading(false);
         console.log('✅ Loading finished');

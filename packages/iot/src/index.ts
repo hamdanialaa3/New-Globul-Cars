@@ -1,4 +1,2 @@
-// @globul-cars/iot
-export * from './pages';
-export * from './components';
-
+// IoT Package Exports
+export { default as IoTDashboardPage } from './IoTDashboardPage';

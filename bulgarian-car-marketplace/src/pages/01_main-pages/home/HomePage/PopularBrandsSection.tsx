@@ -94,17 +94,16 @@ const SectionSubtitle = styled.p`
   }
 `;
 
+// Original responsive grid (auto-fill) before size reduction / fixed columns
 const BrandsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 2rem;
   margin-bottom: 2rem;
-  
   @media (max-width: 768px) {
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     gap: 1.5rem;
   }
-  
   @media (max-width: 480px) {
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
@@ -125,7 +124,7 @@ const BrandCard = styled.button`
   position: relative;
   overflow: hidden;
   opacity: 1;
-  
+
   &::before {
     content: '';
     position: absolute;
@@ -137,20 +136,13 @@ const BrandCard = styled.button`
     opacity: 0;
     transition: opacity 0.3s ease;
   }
-  
-  &:hover::before {
-    opacity: 0.1;
-  }
-  
+  &:hover::before { opacity: 0.1; }
   &:hover {
     transform: translateY(-8px);
     box-shadow: var(--shadow-lg);
     border-color: var(--accent-orange);
   }
-  
-  &:active {
-    transform: translateY(-4px);
-  }
+  &:active { transform: translateY(-4px); }
 `;
 
 const LogoContainer = styled.div`
@@ -161,14 +153,12 @@ const LogoContainer = styled.div`
   justify-content: center;
   position: relative;
   z-index: 1;
-  
   img {
     max-width: 100%;
     max-height: 100%;
     object-fit: contain;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
   }
-  
   @media (max-width: 768px) {
     width: 60px;
     height: 60px;
@@ -183,10 +173,7 @@ const BrandName = styled.div`
   position: relative;
   z-index: 1;
   line-height: 1.4;
-  
-  @media (max-width: 600px) {
-    font-size: 0.8rem;
-  }
+  @media (max-width: 600px) { font-size: 0.8rem; }
 `;
 
 // ✅ Removed CarCount component - no need to display car counts
@@ -278,7 +265,8 @@ const PopularBrandsSection: React.FC = () => {
         })}
       </BrandsGrid>
 
-      <ViewMoreButton onClick={handleViewMore}>
+      {/* View more button slight reduction for visual harmony */}
+      <ViewMoreButton onClick={handleViewMore} style={{ transform: 'scale(0.9)', transformOrigin: 'center' }}>
         {language === 'bg' ? 'Виж Повече Марки' : 'More Brands'}
       </ViewMoreButton>
     </SectionContainer>

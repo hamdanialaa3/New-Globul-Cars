@@ -1,5 +1,5 @@
+// Core Package Main Export
 // @globul-cars/core
-// Core package exports
 
 // Contexts
 export * from './contexts';
@@ -16,3 +16,8 @@ export * from './constants';
 // Config
 export * from './config';
 
+// Locales
+export * from './locales';
+
+// Hooks
+export * from './hooks';

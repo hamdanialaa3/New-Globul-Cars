@@ -1,4 +1,8 @@
-// @globul-cars/profile
-export * from './pages';
-export * from './components';
+// Profile Package Exports
+export { default as ProfilePage } from './ProfilePage';
 
+// Profile Hooks
+export * from './hooks';
+
+// Profile Types
+export * from './types';

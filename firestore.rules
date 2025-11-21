@@ -186,6 +186,12 @@ service cloud.firestore {
                (planTier in ['dealer_enterprise', 'company_pro', 'company_enterprise']) || // Unlimited
                (planTier == 'company_starter' && activeListings < 100);
       }
+      
+      // AI processing logs subcollection (Cloud Functions only)
+      match /ai_logs/{logId} {
+        allow read: if isAdmin();
+        allow write: if false; // Only Cloud Functions
+      }
     }
     
     // ==================== POSTS COLLECTION ====================
