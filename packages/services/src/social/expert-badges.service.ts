@@ -1,9 +1,9 @@
-// src/services/social/expert-badges.service.ts
+﻿// src/services/social/expert-badges.service.ts
 // Expert Badges Service - Gamification system
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
 import { doc, getDoc, updateDoc, arrayUnion } from 'firebase/firestore';
-import { db } from '../../firebase/firebase-config';
+import { db } from '@globul-cars/services/firebase/firebase-config';
 import { logger } from '../logger-service';
 
 // ==================== BADGE DEFINITIONS ====================

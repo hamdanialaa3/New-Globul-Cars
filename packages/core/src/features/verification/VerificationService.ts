@@ -14,7 +14,7 @@ import {
   addDoc
 } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { db, storage } from '../../firebase/firebase-config';
+import { db, storage } from '@globul-cars/services/firebase/firebase-config';
 import { logger } from '@globul-cars/services';
 import { 
   VerificationDocument, 

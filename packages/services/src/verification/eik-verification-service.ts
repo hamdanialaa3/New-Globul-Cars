@@ -1,9 +1,9 @@
-// src/services/verification/eik-verification-service.ts
+﻿// src/services/verification/eik-verification-service.ts
 // Cloud Functions Integration for EIK Verification
 // Integration with Backend P2.4 Features
 
 import { httpsCallable } from 'firebase/functions';
-import { functions } from '../../firebase/firebase-config';
+import { functions } from '@globul-cars/services/firebase/firebase-config';
 import { logger } from '../logger-service';
 
 // ==================== TYPES ====================

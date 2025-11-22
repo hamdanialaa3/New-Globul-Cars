@@ -1,7 +1,7 @@
 ﻿import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './TopBrandsMenu.css';
-import brandsData from '../../data/car-brands-complete.json';
+import brandsData from '@globul-cars/core/constants/car-brands-complete.json';
 import { useTranslation } from '@globul-cars/coreuseTranslation';
 
 interface TopBrandsMenuProps {

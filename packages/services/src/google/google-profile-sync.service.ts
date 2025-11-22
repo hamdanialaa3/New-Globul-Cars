@@ -1,10 +1,10 @@
-// src/services/google/google-profile-sync.service.ts
+﻿// src/services/google/google-profile-sync.service.ts
 // Google Profile Auto-Sync Service
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
 
 import { User } from 'firebase/auth';
 import { doc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from '../../firebase/firebase-config';
+import { db } from '@globul-cars/services/firebase/firebase-config';
 import { serviceLogger } from '../logger-wrapper';
 
 interface GoogleProfileData {

@@ -1,4 +1,4 @@
-// src/services/messaging/advanced-messaging-service.ts
+﻿// src/services/messaging/advanced-messaging-service.ts
 // Advanced Messaging Service - خدمة المحادثات المتقدمة
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
 
@@ -17,7 +17,7 @@ import {
   writeBatch
 } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { db, storage } from '../../firebase/firebase-config';
+import { db, storage } from '@globul-cars/services/firebase/firebase-config';
 import { logger } from '../logger-service';
 
 // ==================== INTERFACES ====================

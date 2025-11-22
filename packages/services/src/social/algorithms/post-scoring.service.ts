@@ -12,7 +12,7 @@ import {
   getDocs,
   Timestamp
 } from 'firebase/firestore';
-import { db } from '../../../firebase/firebase-config';
+import { db } from '@globul-cars/services/firebase/firebase-config';
 import { Post } from '../posts.service';
 import { PostScore, ScoreBreakdown, getAgeInHours } from '@globul-cars/core/typessocial-feed.types';
 import { logger } from '../../logger-service';

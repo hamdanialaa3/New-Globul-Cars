@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { X, Lock, Eye, EyeOff } from 'lucide-react';
 import { useLanguage } from '@globul-cars/core/contextsLanguageContext';
 import { updatePassword, reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
-import { auth } from '../../../firebase/firebase-config';
+import { auth } from '@globul-cars/services/firebase/firebase-config';
 import { toast } from 'react-toastify';
 
 interface PasswordChangeModalProps {

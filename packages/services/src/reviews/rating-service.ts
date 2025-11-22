@@ -1,9 +1,9 @@
-// src/services/reviews/rating-service.ts
+﻿// src/services/reviews/rating-service.ts
 // Rating Service - خدمة التقييمات بالنجوم
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
 
 import { doc, getDoc, updateDoc, serverTimestamp, collection, query, where, orderBy, limit, startAfter, getDocs } from 'firebase/firestore';
-import { db } from '../../firebase/firebase-config';
+import { db } from '@globul-cars/services/firebase/firebase-config';
 import { serviceLogger } from '../logger-wrapper';
 
 // ==================== INTERFACES ====================

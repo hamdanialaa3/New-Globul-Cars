@@ -1,9 +1,9 @@
-// src/services/profile/trust-score-service.ts
+﻿// src/services/profile/trust-score-service.ts
 // Trust Score Service - نظام درجة الثقة
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
 
 import { doc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from '../../firebase/firebase-config';
+import { db } from '@globul-cars/services/firebase/firebase-config';
 import { serviceLogger } from '../logger-wrapper';
 
 // ==================== ENUMS & INTERFACES ====================

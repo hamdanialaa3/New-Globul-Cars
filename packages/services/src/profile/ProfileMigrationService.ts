@@ -22,7 +22,7 @@ import {
   serverTimestamp,
   deleteField
 } from 'firebase/firestore';
-import { db } from '../../firebase/firebase-config';
+import { db } from '@globul-cars/services/firebase/firebase-config';
 import { logger } from '../logger-service';
 import { DealershipRepository } from '../../repositories/DealershipRepository';
 import { CompanyRepository } from '../../repositories/CompanyRepository';

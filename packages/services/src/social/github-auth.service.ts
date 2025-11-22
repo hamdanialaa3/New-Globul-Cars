@@ -1,4 +1,4 @@
-// src/services/social/github-auth.service.ts
+﻿// src/services/social/github-auth.service.ts
 // GitHub OAuth Integration Service
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
 
@@ -10,7 +10,7 @@ import {
   UserCredential
 } from 'firebase/auth';
 import { doc, setDoc, getDoc, updateDoc, serverTimestamp, collection, query, where, getDocs } from 'firebase/firestore';
-import { auth, db } from '../../firebase/firebase-config';
+import { auth, db } from '@globul-cars/services/firebase/firebase-config';
 import { logger } from '../logger-service';
 
 interface GitHubUserData {

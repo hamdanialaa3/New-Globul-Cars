@@ -11,7 +11,7 @@ import EGNValidator from '@globul-cars/services/verification/egn-validator';
 import DatePickerBulgarian from '../../shared/DatePickerBulgarian';
 import NumberInputBulgarian from '../../shared/NumberInputBulgarian';
 import SelectWithOther from '../../shared/SelectWithOther';
-import { BULGARIA_REGIONS } from '../../../data/bulgaria-locations';
+import { BULGARIA_REGIONS } from '@globul-cars/core/constants/bulgaria-locations';
 
 interface IDCardOverlayProps {
   initialData?: Partial<IDCardData>;

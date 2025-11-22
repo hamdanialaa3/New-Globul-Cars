@@ -6,7 +6,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useLanguage } from '@globul-cars/core/contextsLanguageContext';
 import { doc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from '../../../firebase/firebase-config';
+import { db } from '@globul-cars/services/firebase/firebase-config';
 import { Shield, Eye, EyeOff, Lock, Users, Bell, Download, Trash2, AlertCircle } from 'lucide-react';
 import { deleteAccount } from '@globul-cars/services/security/delete-account.service';
 

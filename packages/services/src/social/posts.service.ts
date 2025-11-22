@@ -1,4 +1,4 @@
-// src/services/social/posts.service.ts
+﻿// src/services/social/posts.service.ts
 // Posts Service - Core CRUD operations
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
@@ -21,7 +21,7 @@ import {
   DocumentSnapshot
 } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
-import { db, storage } from '../../firebase/firebase-config';
+import { db, storage } from '@globul-cars/services/firebase/firebase-config';
 import { ImageUploadService } from '../image-upload-service';
 import { logger } from '../logger-service';
 

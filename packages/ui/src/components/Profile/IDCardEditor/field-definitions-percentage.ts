@@ -1,9 +1,9 @@
-// ID Card Field Definitions - PROFESSIONAL SOLUTION
+﻿// ID Card Field Definitions - PROFESSIONAL SOLUTION
 // Using PERCENTAGES instead of pixels - works on ALL screen sizes!
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
 import { FieldDefinition } from './types';
-import { GENDERS, NATIONALITIES, DOCUMENT_TYPES } from '../../../data/dropdown-options';
+import { GENDERS, NATIONALITIES, DOCUMENT_TYPES } from '@globul-cars/core/constants/dropdown-options';
 
 /**
  * ⚡ PROFESSIONAL APPROACH: Percentage-based positioning

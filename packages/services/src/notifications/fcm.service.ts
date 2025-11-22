@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Firebase Cloud Messaging Service
  * Handles FCM token registration and notification permissions
  * Location: Bulgaria | Languages: BG, EN | Currency: EUR
@@ -6,7 +6,7 @@
 
 import { getMessaging, getToken, onMessage, Messaging } from 'firebase/messaging';
 import { doc, setDoc, deleteDoc, collection } from 'firebase/firestore';
-import { db } from '../../firebase/firebase-config';
+import { db } from '@globul-cars/services/firebase/firebase-config';
 import { serviceLogger } from '../logger-wrapper';
 
 class FCMService {

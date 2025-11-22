@@ -3,7 +3,7 @@
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
 import { doc, updateDoc, getDoc, Timestamp } from 'firebase/firestore';
-import { db } from '../../firebase/firebase-config';
+import { db } from '@globul-cars/services/firebase/firebase-config';
 import { IDCardData } from '@globul-cars/ui/componentsProfile/IDCardEditor/types';
 import EGNValidator from './egn-validator';
 import { logger } from '../logger-service';

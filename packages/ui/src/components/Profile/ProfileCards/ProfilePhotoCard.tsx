@@ -7,7 +7,7 @@ import { Camera, User, Upload, Trash2 } from 'lucide-react';
 import { useLanguage } from '@globul-cars/core/contextsLanguageContext';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { doc, updateDoc } from 'firebase/firestore';
-import { storage, db } from '../../../firebase/firebase-config';
+import { storage, db } from '@globul-cars/services/firebase/firebase-config';
 import { toast } from 'react-toastify';
 
 interface ProfilePhotoCardProps {

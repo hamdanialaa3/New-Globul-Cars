@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Events Service - Car events and meetups system
  * Location: Bulgaria | Languages: BG/EN | Currency: EUR
  */
@@ -23,7 +23,7 @@ import {
   GeoPoint
 } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { db, storage } from '../../firebase/firebase-config';
+import { db, storage } from '@globul-cars/services/firebase/firebase-config';
 import { logger } from '../logger-service';
 
 // ==================== INTERFACES ====================

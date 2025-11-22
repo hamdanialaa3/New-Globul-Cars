@@ -1,4 +1,4 @@
-// src/services/verification/id-verification-service.ts
+﻿// src/services/verification/id-verification-service.ts
 // ID Verification Service - خدمة التحقق من الهوية
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
 
@@ -14,7 +14,7 @@ import {
   serverTimestamp 
 } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { db, storage, auth } from '../../firebase/firebase-config';
+import { db, storage, auth } from '@globul-cars/services/firebase/firebase-config';
 import { trustScoreService } from '../profile/trust-score-service';
 import { serviceLogger } from '../logger-wrapper';
 

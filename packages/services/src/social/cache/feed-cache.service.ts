@@ -2,7 +2,7 @@
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { db } from '../../../firebase/firebase-config';
+import { db } from '@globul-cars/services/firebase/firebase-config';
 import { Post } from '../posts.service';
 import { CachedFeed, isExpired } from '@globul-cars/core/typessocial-feed.types';
 import { logger } from '../../logger-service';

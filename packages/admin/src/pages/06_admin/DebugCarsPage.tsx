@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { logger } from '@globul-cars/services';
 import styled from 'styled-components';
 import { collection, getDocs, query, limit } from 'firebase/firestore';
-import { db } from '../../firebase/firebase-config';
+import { db } from '@globul-cars/services/firebase/firebase-config';
 
 const PageContainer = styled.div`
   min-height: 100vh;

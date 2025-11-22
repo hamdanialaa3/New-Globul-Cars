@@ -27,7 +27,7 @@ import {
   MILEAGE_RANGES,
   PRICE_RANGES,
   SORT_OPTIONS
-} from '../../data/dropdown-options';
+} from '@globul-cars/core/constants/dropdown-options';
 
 const TestPage: React.FC = () => {
   const { language } = useLanguage();

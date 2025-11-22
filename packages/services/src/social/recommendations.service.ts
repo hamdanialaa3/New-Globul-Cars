@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Recommendations Service - ML-based content recommendations
  * Location: Bulgaria | Languages: BG/EN | Currency: EUR
  */
@@ -13,7 +13,7 @@ import {
   orderBy,
   limit
 } from 'firebase/firestore';
-import { db } from '../../firebase/firebase-config';
+import { db } from '@globul-cars/services/firebase/firebase-config';
 import { logger } from '../logger-service';
 
 // ==================== INTERFACES ====================

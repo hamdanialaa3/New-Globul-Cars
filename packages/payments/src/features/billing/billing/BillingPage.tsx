@@ -1,0 +1,116 @@
+﻿// src/features/billing/BillingPage.tsx
+// Billing Page - Subscription Management
+
+import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
+import { useAuth } from '@globul-cars/core/contexts/AuthProvider';  // FIXED: Correct path
+import { useLanguage } from '@globul-cars/core/contexts/LanguageContext';
+import { useToast } from '@globul-cars/ui/components/Toast';
+import { CreditCard, Download, Settings } from 'lucide-react';
+import SubscriptionPlans from './SubscriptionPlans';
+import billingService from './BillingService';
+import { BillingInterval } from './types';
+
+const Container = styled.div`
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+`;
+
+const Header = styled.div`
+  text-align: center;
+  margin-bottom: 3rem;
+`;
+
+const Title = styled.h1`
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #1a1a1a;
+  margin-bottom: 0.5rem;
+`;
+
+const Subtitle = styled.p`
+  color: #6c757d;
+  font-size: 1.1rem;
+`;
+
+const CurrentPlanCard = styled.div`
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 3rem;
+`;
+
+/**
+ * Billing Page Component
+ * Manages subscriptions and billing
+ */
+export const BillingPage: React.FC = () => {
+  const { currentUser } = useAuth();
+  const { language } = useLanguage();
+  const toast = useToast();
+  const [currentPlan, setCurrentPlan] = useState<string>('free');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadCurrentPlan();
+  }, [currentUser]);
+
+  const loadCurrentPlan = async () => {
+    if (!currentUser) return;
+
+    try {
+      const subscription = await billingService.getCurrentSubscription(currentUser.uid);
+      setCurrentPlan(subscription?.planId || 'free');
+    } catch (error) {
+      console.error('Error loading plan:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSelectPlan = async (planId: string, interval: BillingInterval) => {
+    if (!currentUser) return;
+
+    try {
+      const { url } = await billingService.createCheckoutSession(currentUser.uid, planId as any, interval);
+      
+      toast.info(
+        language === 'bg' 
+          ? 'Пренасочване към Stripe Checkout (TODO: Stripe интеграция)'
+          : 'Redirecting to Stripe Checkout (TODO: Stripe integration)'
+      );
+      
+      // window.location.href = url;  // Uncomment when Stripe is configured
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to create checkout session');
+    }
+  };
+
+  if (loading) {
+    return <Container><div style={{ textAlign: 'center', padding: '4rem' }}>Loading...</div></Container>;
+  }
+
+  return (
+    <Container>
+      <Header>
+        <Title>
+          {language === 'bg' ? 'Планове и ценообразуване' : 'Plans & Pricing'}
+        </Title>
+        <Subtitle>
+          {language === 'bg' 
+            ? 'Изберете подходящия план за вашия бизнес'
+            : 'Choose the right plan for your business'}
+        </Subtitle>
+      </Header>
+
+      <SubscriptionPlans
+        currentPlan={currentPlan}
+        onSelectPlan={handleSelectPlan}
+      />
+    </Container>
+  );
+};
+
+export default BillingPage;
+

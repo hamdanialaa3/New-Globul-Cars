@@ -15,7 +15,7 @@ import {
   limit,
   getDocs
 } from 'firebase/firestore';
-import { db } from '../../../firebase/firebase-config';
+import { db } from '@globul-cars/services/firebase/firebase-config';
 
 class HybridRecommenderService {
   // Main hybrid recommendation function

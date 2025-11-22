@@ -379,7 +379,8 @@ export const translations = {
         blue: 'Син',
         red: 'Червен',
         green: 'Зелен',
-        other: 'Друг',
+        // renamed from 'other' to avoid duplicate key within vehicleData
+        otherColor: 'Друг',
         doors23: '2/3',
         doors45: '4/5',
         doors67: '6/7',
@@ -1407,6 +1408,7 @@ export const translations = {
       minutes: 'минути',
       hour: 'час',
       hours: 'часа',
+      changePassword: 'Промени парола',
       logoutAllDevices: 'Излез от всички устройства',
       
       // Car Preferences
@@ -1909,7 +1911,8 @@ export const translations = {
         blue: 'Blue',
         red: 'Red',
         green: 'Green',
-        other: 'Other',
+        // renamed from 'other' to avoid duplicate key within vehicleData
+        otherColor: 'Other',
         doors23: '2/3',
         doors45: '4/5',
         doors67: '6/7',

@@ -1,4 +1,4 @@
-// src/services/verification/phone-verification-service.ts
+﻿// src/services/verification/phone-verification-service.ts
 // Phone Verification Service - خدمة التحقق من الهاتف
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
 
@@ -10,7 +10,7 @@ import {
   linkWithCredential
 } from 'firebase/auth';
 import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
-import { auth, db } from '../../firebase/firebase-config';
+import { auth, db } from '@globul-cars/services/firebase/firebase-config';
 import { trustScoreService } from '../profile/trust-score-service';
 import { logger } from '../logger-service';
 

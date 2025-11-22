@@ -1,0 +1,41 @@
+﻿// ProfilePage/tabs/MyAdsTab.tsx
+// My Ads tab - shows user's car listings
+// Phase 0 Day 2: Extracted from index.tsx
+
+import React from 'react';
+import styled from 'styled-components';
+import { GarageSection } from '@globul-cars/uiProfile';
+import type { ProfileCar } from '../types';
+import type { ProfileTheme } from '@globul-cars/coreProfileTypeContext';
+
+interface MyAdsTabProps {
+  userCars: ProfileCar[];
+  theme: ProfileTheme;
+  isOwnProfile: boolean;
+}
+
+const FullWidthContent = styled.div`
+  width: 100%;
+  max-width: none;
+  margin: 0 -20px;
+  padding: 0;
+  
+  @media (max-width: 768px) {
+    margin: 0 -12px;
+  }
+`;
+
+export const MyAdsTab: React.FC<MyAdsTabProps> = ({ userCars, theme, isOwnProfile }) => {
+  return (
+    <FullWidthContent>
+      <GarageSection 
+        cars={userCars}
+        isOwnGarage={isOwnProfile}
+        themeColor={theme.primary}
+      />
+    </FullWidthContent>
+  );
+};
+
+export default MyAdsTab;
+

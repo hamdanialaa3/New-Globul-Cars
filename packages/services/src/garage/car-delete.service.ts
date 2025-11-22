@@ -1,4 +1,4 @@
-// src/services/garage/car-delete.service.ts
+﻿// src/services/garage/car-delete.service.ts
 // Complete Car Delete Service
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
 
@@ -17,7 +17,7 @@ import {
   setDoc
 } from 'firebase/firestore';
 import { ref, deleteObject, listAll } from 'firebase/storage';
-import { db, storage } from '../../firebase/firebase-config';
+import { db, storage } from '@globul-cars/services/firebase/firebase-config';
 import { serviceLogger } from '../logger-wrapper';
 
 interface DeleteResult {

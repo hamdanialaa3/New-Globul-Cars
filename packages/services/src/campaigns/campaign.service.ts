@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Campaign Service - نظام إدارة الحملات الإعلانية
  * Location: Bulgaria | Currency: EUR | Languages: BG/EN
  */
@@ -18,7 +18,7 @@ import {
   Timestamp,
   increment
 } from 'firebase/firestore';
-import { db } from '../../firebase/firebase-config';
+import { db } from '@globul-cars/services/firebase/firebase-config';
 
 // ==================== TYPES ====================
 

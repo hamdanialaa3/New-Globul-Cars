@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Stories Service - 24-hour ephemeral content
  * Location: Bulgaria | Languages: BG/EN | Currency: EUR
  */
@@ -20,7 +20,7 @@ import {
   Timestamp
 } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
-import { db, storage } from '../../firebase/firebase-config';
+import { db, storage } from '@globul-cars/services/firebase/firebase-config';
 import { serviceLogger } from '../logger-wrapper';
 import { logger } from '../logger-service';
 

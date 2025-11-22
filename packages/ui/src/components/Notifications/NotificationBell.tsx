@@ -6,7 +6,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { Bell } from 'lucide-react';
 import { collection, query, where, onSnapshot, updateDoc, doc, orderBy, limit } from 'firebase/firestore';
-import { db } from '../../firebase/firebase-config';
+import { db } from '@globul-cars/services/firebase/firebase-config';
 import { useLanguage } from '@globul-cars/core/contextsLanguageContext';
 
 const BellContainer = styled.div`

@@ -9,7 +9,7 @@ import { useLanguage } from '@globul-cars/core/contextsLanguageContext';
 import { ProfileService } from '@globul-cars/services/profile';
 import { useAuth } from '@globul-cars/coreuseAuth';
 import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from '../../firebase/firebase-config';
+import { db } from '@globul-cars/services/firebase/firebase-config';
 import { measureAsync } from '@globul-cars/core/utilsperformance-monitor';
 import { logger } from '@globul-cars/services';
 

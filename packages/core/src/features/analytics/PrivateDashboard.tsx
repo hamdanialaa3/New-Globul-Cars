@@ -7,7 +7,7 @@ import { Eye, MessageCircle, Heart, TrendingUp } from 'lucide-react';
 import { useLanguage } from '@globul-cars/core/contextsLanguageContext';
 import { useAuth } from '@globul-cars/core/contextsAuthProvider';  /* ⚡ FIXED: Correct import path */
 import { httpsCallable } from 'firebase/functions';
-import { functions } from '../../firebase/firebase-config';
+import { functions } from '@globul-cars/services/firebase/firebase-config';
 
 const Container = styled.div`
   max-width: 1200px;

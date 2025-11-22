@@ -1,11 +1,11 @@
-// Overlay Input - Positioned transparent input field
+﻿// Overlay Input - Positioned transparent input field
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { FieldDefinition } from './types';
 import SelectWithOther from '../../shared/SelectWithOther';
-import { GENDERS, NATIONALITIES, DOCUMENT_TYPES } from '../../../data/dropdown-options';
+import { GENDERS, NATIONALITIES, DOCUMENT_TYPES } from '@globul-cars/core/constants/dropdown-options';
 
 interface OverlayInputProps {
   field: FieldDefinition;

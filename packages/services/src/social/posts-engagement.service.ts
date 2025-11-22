@@ -1,4 +1,4 @@
-// src/services/social/posts-engagement.service.ts
+﻿// src/services/social/posts-engagement.service.ts
 // Posts Engagement Service - Like, Comment, Share
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
@@ -17,7 +17,7 @@ import {
   increment,
   deleteField
 } from 'firebase/firestore';
-import { db } from '../../firebase/firebase-config';
+import { db } from '@globul-cars/services/firebase/firebase-config';
 import { serviceLogger } from '../logger-wrapper';
 
 // ==================== TYPES ====================

@@ -1,4 +1,4 @@
-// Real-time Feed Service - Live Updates via Firebase Realtime Database
+﻿// Real-time Feed Service - Live Updates via Firebase Realtime Database
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
 import {
@@ -10,7 +10,7 @@ import {
   serverTimestamp,
   DataSnapshot
 } from 'firebase/database';
-import { realtimeDb } from '../../firebase/firebase-config';
+import { realtimeDb } from '@globul-cars/services/firebase/firebase-config';
 
 // ==================== TYPES ====================
 

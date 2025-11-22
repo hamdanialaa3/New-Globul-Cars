@@ -1,4 +1,4 @@
-// src/services/analytics/car-analytics.service.ts
+﻿// src/services/analytics/car-analytics.service.ts
 // Real Car Analytics Service
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
 
@@ -15,7 +15,7 @@ import {
   Timestamp,
   
 } from 'firebase/firestore';
-import { db } from '../../firebase/firebase-config';
+import { db } from '@globul-cars/services/firebase/firebase-config';
 import { logger } from '../logger-service';
 
 interface CarView {

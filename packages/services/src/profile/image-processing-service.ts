@@ -1,4 +1,4 @@
-// src/services/profile/image-processing-service.ts
+﻿// src/services/profile/image-processing-service.ts
 // Image Processing Service - معالجة الصور للبروفايل
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
 
@@ -8,7 +8,7 @@ import {
   getDownloadURL,
   deleteObject
 } from 'firebase/storage';
-import { storage } from '../../firebase/firebase-config';
+import { storage } from '@globul-cars/services/firebase/firebase-config';
 import imageCompression from 'browser-image-compression';
 import { serviceLogger } from '../logger-wrapper';
 

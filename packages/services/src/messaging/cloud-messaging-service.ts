@@ -1,9 +1,9 @@
-// src/services/messaging/cloud-messaging-service.ts
+﻿// src/services/messaging/cloud-messaging-service.ts
 // Cloud Functions Integration for Advanced Messaging
 // Integration with Backend P2.1 Features
 
 import { httpsCallable } from 'firebase/functions';
-import { functions } from '../../firebase/firebase-config';
+import { functions } from '@globul-cars/services/firebase/firebase-config';
 import { logger } from '../logger-service';
 
 // ==================== TYPES ====================

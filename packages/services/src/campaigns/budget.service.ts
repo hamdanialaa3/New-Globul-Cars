@@ -1,9 +1,9 @@
-/**
+﻿/**
  * Budget Service - إدارة ميزانيات الحملات
  */
 
 import { doc, updateDoc, increment, serverTimestamp, query, collection, where, getDocs } from 'firebase/firestore';
-import { db } from '../../firebase/firebase-config';
+import { db } from '@globul-cars/services/firebase/firebase-config';
 import { campaignService, CampaignStatus } from './campaign.service';
 import { logger } from '../logger-service';
 

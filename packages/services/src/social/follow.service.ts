@@ -1,4 +1,4 @@
-// src/services/social/follow.service.ts
+﻿// src/services/social/follow.service.ts
 // Follow System Service
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
 
@@ -19,7 +19,7 @@ import {
   serverTimestamp,
   Timestamp
 } from 'firebase/firestore';
-import { db } from '../../firebase/firebase-config';
+import { db } from '@globul-cars/services/firebase/firebase-config';
 import { serviceLogger } from '../logger-wrapper';
 
 interface FollowData {

@@ -18,9 +18,9 @@ import {
 import { useLanguage } from '@globul-cars/core/contextsLanguageContext';
 import { useProfileType } from '@globul-cars/core/contextsProfileTypeContext';
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
-import { db } from '../../../firebase/firebase-config';
+import { db } from '@globul-cars/services/firebase/firebase-config';
 import SelectWithOther from '../../shared/SelectWithOther';
-import { LEGAL_FORMS, NATIONALITIES } from '../../../data/dropdown-options';
+import { LEGAL_FORMS, NATIONALITIES } from '@globul-cars/core/constants/dropdown-options';
 
 interface BusinessInfoFormProps {
   userId: string;

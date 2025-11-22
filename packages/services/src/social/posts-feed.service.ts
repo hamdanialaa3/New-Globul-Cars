@@ -1,4 +1,4 @@
-// src/services/social/posts-feed.service.ts
+﻿// src/services/social/posts-feed.service.ts
 // Posts Feed Service - Feed generation with ranking algorithm
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
@@ -10,7 +10,7 @@ import {
   orderBy,
   limit
 } from 'firebase/firestore';
-import { db } from '../../firebase/firebase-config';
+import { db } from '@globul-cars/services/firebase/firebase-config';
 import { Post } from './posts.service';
 import { logger } from '../logger-service';
 

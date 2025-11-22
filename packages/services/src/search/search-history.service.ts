@@ -1,4 +1,4 @@
-// Search History Service - Track and Manage User Search History
+﻿// Search History Service - Track and Manage User Search History
 // خدمة تاريخ البحث - تتبع وإدارة تاريخ بحث المستخدم
 // 🎯 100% Real - Firestore Backend
 
@@ -15,7 +15,7 @@ import {
   deleteDoc,
   doc
 } from 'firebase/firestore';
-import { db } from '../../firebase/firebase-config';
+import { db } from '@globul-cars/services/firebase/firebase-config';
 import { serviceLogger } from '../logger-wrapper';
 
 interface SearchHistoryEntry {

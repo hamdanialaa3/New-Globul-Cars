@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { X, Mail, Send } from 'lucide-react';
 import { useLanguage } from '@globul-cars/core/contextsLanguageContext';
 import { sendEmailVerification } from 'firebase/auth';
-import { auth } from '../../../firebase/firebase-config';
+import { auth } from '@globul-cars/services/firebase/firebase-config';
 import { toast } from 'react-toastify';
 
 interface EmailVerificationModalProps {

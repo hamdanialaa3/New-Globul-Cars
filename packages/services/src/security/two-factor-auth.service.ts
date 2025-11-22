@@ -1,4 +1,4 @@
-// src/services/security/two-factor-auth.service.ts
+﻿// src/services/security/two-factor-auth.service.ts
 // Two-Factor Authentication Service
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
 
@@ -11,7 +11,7 @@ import {
   PhoneMultiFactorGenerator
 } from 'firebase/auth';
 import { doc, updateDoc, serverTimestamp, getDoc } from 'firebase/firestore';
-import { auth, db } from '../../firebase/firebase-config';
+import { auth, db } from '@globul-cars/services/firebase/firebase-config';
 import { logger } from '../logger-service';
 
 interface TwoFactorSetup {

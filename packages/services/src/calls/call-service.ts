@@ -1,4 +1,4 @@
-// src/services/calls/call-service.ts
+﻿// src/services/calls/call-service.ts
 // Call Service - خدمة المكالمات الصوتية والمرئية
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
 
@@ -14,7 +14,7 @@ import {
   limit,
   serverTimestamp
 } from 'firebase/firestore';
-import { db } from '../../firebase/firebase-config';
+import { db } from '@globul-cars/services/firebase/firebase-config';
 
 // ==================== INTERFACES ====================
 

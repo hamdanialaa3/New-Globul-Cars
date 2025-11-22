@@ -3,7 +3,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { httpsCallable } from 'firebase/functions';
-import { functions } from '../../firebase/firebase-config';
+import { functions } from '@globul-cars/services/firebase/firebase-config';
 import { useAuth } from '@globul-cars/coreuseAuth';
 import styled from 'styled-components';
 import {

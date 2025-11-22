@@ -1,4 +1,4 @@
-// src/services/security/delete-account.service.ts
+﻿// src/services/security/delete-account.service.ts
 // Real account deletion flow with optional re-authentication.
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
@@ -11,7 +11,7 @@ import {
   GoogleAuthProvider,
   Auth
 } from 'firebase/auth';
-import { auth as defaultAuth } from '../../firebase/firebase-config';
+import { auth as defaultAuth } from '@globul-cars/services/firebase/firebase-config';
 
 export type ReauthOptions =
   | { method: 'password'; email: string; password: string }

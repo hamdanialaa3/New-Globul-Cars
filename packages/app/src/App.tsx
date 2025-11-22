@@ -40,6 +40,8 @@ import ProgressBar from '@globul-cars/ui/components/ProgressBar';
 // import useAuthRedirectHandler from '@globul-cars/coreuseAuthRedirectHandler';
 
 // Lazy load pages for better performance
+// Architecture Diagram - Direct import (no lazy loading)
+import ArchitectureDiagramPage from './pages/ArchitectureDiagramPage';
 const HomePage = React.lazy(() => import('./pages/01_main-pages/home/HomePage'));
 const CarsPage = React.lazy(() => import('./pages/01_main-pages/CarsPage'));
 const CarDetailsPage = React.lazy(() => import('./pages/01_main-pages/CarDetailsPage'));
@@ -107,6 +109,8 @@ const AdvancedSearchPage = React.lazy(() => import('./pages/05_search-browse/adv
 const MyListingsPage = React.lazy(() => import('./pages/03_user-pages/my-listings/MyListingsPage'));
 const MyDraftsPage = React.lazy(() => import('./pages/03_user-pages/my-drafts/MyDraftsPage'));
 const MigrationPage = React.lazy(() => import('./pages/06_admin/MigrationPage'));
+// ArchitectureDiagramPage is imported above (line 44)
+const TestDiagramPage = React.lazy(() => import('./pages/TestDiagramPage'));
 const DebugCarsPage = React.lazy(() => import('./pages/06_admin/DebugCarsPage'));
 const EditCarPage = React.lazy(() => import('./pages/04_car-selling/EditCarPage'));
 const N8nTestPage = React.lazy(() => import('./pages/11_testing-dev/N8nTestPage'));
@@ -286,6 +290,20 @@ const App: React.FC = () => {
                       <Route path="/super-admin/users" element={
                         <FullScreenLayout>
                           <SuperAdminUsersPage />
+                        </FullScreenLayout>
+                      } />
+                      
+                      {/* Test Diagram Page - للاختبار */}
+                      <Route path="/test-diagram" element={
+                        <FullScreenLayout>
+                          <TestDiagramPage />
+                        </FullScreenLayout>
+                      } />
+                      
+                      {/* Architecture Diagram - Full Screen */}
+                      <Route path="/diagram" element={
+                        <FullScreenLayout>
+                          <ArchitectureDiagramPage />
                         </FullScreenLayout>
                       } />
                       

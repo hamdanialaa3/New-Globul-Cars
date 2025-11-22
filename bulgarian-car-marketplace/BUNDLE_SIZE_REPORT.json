@@ -1,0 +1,59 @@
+{
+  "timestamp": "2025-11-22T00:08:36.102Z",
+  "dependencies": {
+    "production": 47,
+    "development": 23,
+    "heavy": [
+      {
+        "name": "firebase",
+        "note": "Large (consider tree-shaking)"
+      },
+      {
+        "name": "socket.io-client",
+        "note": "Medium"
+      },
+      {
+        "name": "styled-components",
+        "note": "Medium"
+      }
+    ]
+  },
+  "buildStats": {
+    "totalSizeMB": "709.21",
+    "jsFiles": 206,
+    "topBundles": [
+      {
+        "name": "main.a239c43f.js",
+        "size": 4082617,
+        "sizeMB": "3.89"
+      },
+      {
+        "name": "90.d35136eb.chunk.js",
+        "size": 2469383,
+        "sizeMB": "2.35"
+      },
+      {
+        "name": "9006.566ca045.chunk.js",
+        "size": 1204761,
+        "sizeMB": "1.15"
+      },
+      {
+        "name": "4160.f88737b8.chunk.js",
+        "size": 953433,
+        "sizeMB": "0.91"
+      },
+      {
+        "name": "5116.b29031bb.chunk.js",
+        "size": 661571,
+        "sizeMB": "0.63"
+      }
+    ]
+  },
+  "recommendations": [
+    "Lazy load heavy components",
+    "Dynamic imports for Firebase",
+    "Code splitting by route",
+    "Review Firebase feature usage",
+    "Enable server compression"
+  ]
+}

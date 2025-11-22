@@ -1,9 +1,9 @@
-// src/services/profile/profile-stats-service.ts
+﻿// src/services/profile/profile-stats-service.ts
 // Profile Statistics Service - خدمة إحصائيات البروفايل
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
 
 import { doc, getDoc, updateDoc, increment, serverTimestamp } from 'firebase/firestore';
-import { db } from '../../firebase/firebase-config';
+import { db } from '@globul-cars/services/firebase/firebase-config';
 import { trustScoreService } from './trust-score-service';
 import { serviceLogger } from '../logger-wrapper';
 

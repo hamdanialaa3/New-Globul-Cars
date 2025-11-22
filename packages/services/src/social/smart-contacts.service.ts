@@ -1,5 +1,5 @@
-import { collection, getDocs, query, where, orderBy, limit as firestoreLimit } from 'firebase/firestore';
-import { db } from '../../firebase/firebase-config';
+﻿import { collection, getDocs, query, where, orderBy, limit as firestoreLimit } from 'firebase/firestore';
+import { db } from '@globul-cars/services/firebase/firebase-config';
 import { logger } from '../logger-service';
 
 interface SmartContact {

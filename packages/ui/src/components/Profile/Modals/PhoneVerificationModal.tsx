@@ -7,7 +7,7 @@ import { X, Phone, Send } from 'lucide-react';
 import { useLanguage } from '@globul-cars/core/contextsLanguageContext';
 import { toast } from 'react-toastify';
 import { doc, updateDoc } from 'firebase/firestore';
-import { db } from '../../../firebase/firebase-config';
+import { db } from '@globul-cars/services/firebase/firebase-config';
 
 interface PhoneVerificationModalProps {
   phoneNumber?: string;

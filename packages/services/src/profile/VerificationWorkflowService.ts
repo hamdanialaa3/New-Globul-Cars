@@ -18,7 +18,7 @@ import {
   runTransaction
 } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { db, storage } from '../../firebase/firebase-config';
+import { db, storage } from '@globul-cars/services/firebase/firebase-config';
 import { logger } from '../logger-service';
 import { DealershipRepository } from '../../repositories/DealershipRepository';
 import { CompanyRepository } from '../../repositories/CompanyRepository';

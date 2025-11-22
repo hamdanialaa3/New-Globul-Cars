@@ -5,7 +5,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from '@globul-cars/coreuseTranslation';
 import { httpsCallable } from 'firebase/functions';
-import { functions } from '../../firebase/firebase-config';
+import { functions } from '@globul-cars/services/firebase/firebase-config';
 import {
   RegionalPriceChart,
   MarketTrendsChart,

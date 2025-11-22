@@ -390,7 +390,7 @@ const UnifiedContactPage: React.FC = () => {
 
       // 🌐 N8N Integration
       try {
-        const N8nService = await import('@/services/n8n-integration');
+        const N8nService = await import('@globul-cars/servicesn8n-integration');
         await N8nService.default.onCarPublished(currentUser.uid, carId, payload as any);
       } catch (n8nError) {
         logger.warn('N8N webhook failed (non-critical)', { error: n8nError, carId });

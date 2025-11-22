@@ -1,8 +1,8 @@
-// src/services/reports/cars-report-service.ts
+﻿// src/services/reports/cars-report-service.ts
 // خدمة تصدير تقارير السيارات
 
 import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
-import { db } from '../../firebase/firebase-config';
+import { db } from '@globul-cars/services/firebase/firebase-config';
 import { serviceLogger } from '../logger-wrapper';
 
 export interface CarReportData {

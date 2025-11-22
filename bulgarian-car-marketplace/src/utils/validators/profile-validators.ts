@@ -22,9 +22,22 @@ export const DealershipInfoSchema = z.object({
   address: z.object({
     street: z.string().min(1, 'Street is required'),
     number: z.string().optional(),
-    city: z.string().min(1, 'City is required'),
-    postalCode: z.string().regex(/^\d{4}$/, 'Invalid postal code (4 digits)'),
-    region: z.string().min(1, 'Region is required')
+    postalCode: z.string().regex(/^\d{4}$/, 'Invalid postal code (4 digits)')
+  }),
+  
+  locationData: z.object({
+    cityId: z.string().min(1, 'City is required'),
+    cityName: z.object({
+      bg: z.string().min(1, 'Bulgarian city name is required'),
+      en: z.string().min(1, 'English city name is required')
+    }),
+    coordinates: z.object({
+      lat: z.number().min(41).max(44, 'Latitude must be within Bulgaria'),
+      lng: z.number().min(22).max(29, 'Longitude must be within Bulgaria')
+    }),
+    region: z.string().optional(),
+    postalCode: z.string().regex(/^\d{4}$/, 'Invalid postal code').optional(),
+    address: z.string().optional()
   }),
   
   primaryPhone: z.string().regex(/^\+?359\d{9}$/, 'Invalid Bulgarian phone number'),
@@ -49,9 +62,22 @@ export const CompanyInfoSchema = z.object({
   
   address: z.object({
     street: z.string().min(1),
-    city: z.string().min(1),
-    postalCode: z.string().regex(/^\d{4}$/),
-    region: z.string().min(1)
+    postalCode: z.string().regex(/^\d{4}$/)
+  }),
+  
+  locationData: z.object({
+    cityId: z.string().min(1),
+    cityName: z.object({
+      bg: z.string().min(1),
+      en: z.string().min(1)
+    }),
+    coordinates: z.object({
+      lat: z.number().min(41).max(44),
+      lng: z.number().min(22).max(29)
+    }),
+    region: z.string().optional(),
+    postalCode: z.string().regex(/^\d{4}$/).optional(),
+    address: z.string().optional()
   }),
   
   primaryPhone: z.string().regex(/^\+?359\d{9}$/),
@@ -65,9 +91,19 @@ export const PrivateProfileSchema = z.object({
   displayName: z.string().min(2).max(100),
   phoneNumber: z.string().regex(/^\+?359\d{9}$/).optional(),
   
-  location: z.object({
-    city: z.string().optional(),
-    region: z.string().optional()
+  locationData: z.object({
+    cityId: z.string(),
+    cityName: z.object({
+      bg: z.string(),
+      en: z.string()
+    }),
+    coordinates: z.object({
+      lat: z.number(),
+      lng: z.number()
+    }),
+    region: z.string().optional(),
+    postalCode: z.string().optional(),
+    address: z.string().optional()
   }).optional()
 });
 

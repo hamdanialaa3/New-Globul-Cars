@@ -1,4 +1,4 @@
-// src/services/analytics/profile-analytics.service.ts
+﻿// src/services/analytics/profile-analytics.service.ts
 // Real Profile Analytics Service with Firebase
 // 🎯 100% Real Data - No Mock!
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
@@ -17,7 +17,7 @@ import {
   serverTimestamp,
   Timestamp
 } from 'firebase/firestore';
-import { db } from '../../firebase/firebase-config';
+import { db } from '@globul-cars/services/firebase/firebase-config';
 import { logger } from '../logger-service';
 
 // ==================== TYPES ====================

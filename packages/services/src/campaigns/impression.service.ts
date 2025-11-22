@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Impression Service - تتبع عرض الإعلانات
  */
 
@@ -14,7 +14,7 @@ import {
   orderBy,
   limit
 } from 'firebase/firestore';
-import { db } from '../../firebase/firebase-config';
+import { db } from '@globul-cars/services/firebase/firebase-config';
 import { campaignService } from './campaign.service';
 import { budgetService } from './budget.service';
 import { logger } from '../logger-service';

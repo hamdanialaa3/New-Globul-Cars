@@ -1,8 +1,8 @@
-// src/services/reports/users-report-service.ts
+﻿// src/services/reports/users-report-service.ts
 // خدمة تصدير تقارير المستخدمين
 
 import { collection, query, where, getDocs, orderBy, Timestamp } from 'firebase/firestore';
-import { db } from '../../firebase/firebase-config';
+import { db } from '@globul-cars/services/firebase/firebase-config';
 import { serviceLogger } from '../logger-wrapper';
 
 export interface UserReportData {

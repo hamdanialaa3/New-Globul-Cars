@@ -22,7 +22,7 @@ import {
   arrayRemove,
   serverTimestamp
 } from 'firebase/firestore';
-import { storage, db } from '../../firebase/firebase-config';
+import { storage, db } from '@globul-cars/services/firebase/firebase-config';
 import { logger } from '../logger-service';
 import type { ProfileType } from '@globul-cars/core/typesuser/bulgarian-user.types';
 

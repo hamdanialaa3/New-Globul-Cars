@@ -13,9 +13,9 @@ import {
   DocumentData,
   Timestamp
 } from 'firebase/firestore';
-import { db } from '../../firebase/firebase-config';
+import { db } from '@globul-cars/services/firebase/firebase-config';
 import { CarListing } from '@globul-cars/core/typesCarListing';
-import { BulgarianCar } from '../../firebase/car-service';
+import { BulgarianCar } from '@globul-cars/services/firebase/car-service';
 import { serviceLogger } from '../logger-wrapper';
 import { homePageCache, CACHE_KEYS } from '../homepage-cache.service';
 import { searchHistoryService } from './search-history.service';

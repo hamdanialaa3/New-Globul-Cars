@@ -1,9 +1,9 @@
-// TikTok Shopping Feed Generator
+﻿// TikTok Shopping Feed Generator
 // Product feed for TikTok Shop - Bulgaria market
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
 import { collection, getDocs, query, where, orderBy, limit } from 'firebase/firestore';
-import { db } from '../../firebase/firebase-config';
+import { db } from '@globul-cars/services/firebase/firebase-config';
 
 interface TikTokProductItem {
   id: string;

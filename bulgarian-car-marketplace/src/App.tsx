@@ -40,6 +40,7 @@ import ProgressBar from './components/ProgressBar';
 // import useAuthRedirectHandler from './hooks/useAuthRedirectHandler';
 
 // Lazy load pages for better performance
+const ArchitectureDiagramPage = React.lazy(() => import('./pages/ArchitectureDiagramPage'));
 const HomePage = React.lazy(() => import('./pages/01_main-pages/home/HomePage'));
 const CarsPage = React.lazy(() => import('./pages/01_main-pages/CarsPage'));
 const CarDetailsPage = React.lazy(() => import('./pages/01_main-pages/CarDetailsPage'));
@@ -288,6 +289,12 @@ const App: React.FC = () => {
                       <Route path="/super-admin/users" element={
                         <FullScreenLayout>
                           <SuperAdminUsersPage />
+                        </FullScreenLayout>
+                      } />
+                      {/* Architecture Diagram - Full Screen */}
+                      <Route path="/diagram" element={
+                        <FullScreenLayout>
+                          <ArchitectureDiagramPage />
                         </FullScreenLayout>
                       } />
                       
