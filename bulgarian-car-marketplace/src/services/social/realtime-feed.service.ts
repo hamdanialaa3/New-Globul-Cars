@@ -11,6 +11,7 @@ import {
   DataSnapshot
 } from 'firebase/database';
 import { realtimeDb } from '../../firebase/firebase-config';
+import { logger } from '../logger-service';
 
 // ==================== TYPES ====================
 
@@ -78,7 +79,7 @@ class RealtimeFeedService {
         this.listeners.delete(listenerId);
       };
     } catch (error) {
-      console.error('Error subscribing to new posts:', error);
+      logger.error('Error subscribing to new posts', error as Error);
       return () => {};
     }
   }
@@ -110,7 +111,7 @@ class RealtimeFeedService {
         this.listeners.delete(listenerId);
       };
     } catch (error) {
-      console.error('Error subscribing to reactions:', error);
+      logger.error('Error subscribing to reactions', error as Error, { postId });
       return () => {};
     }
   }
@@ -142,7 +143,7 @@ class RealtimeFeedService {
         this.listeners.delete(listenerId);
       };
     } catch (error) {
-      console.error('Error subscribing to comments:', error);
+      logger.error('Error subscribing to comments', error as Error, { postId });
       return () => {};
     }
   }
@@ -164,7 +165,7 @@ class RealtimeFeedService {
         timestamp: serverTimestamp()
       });
     } catch (error) {
-      console.error('Error publishing post update:', error);
+      logger.error('Error publishing post update', error as Error, { type, postId });
       throw error;
     }
   }
@@ -188,7 +189,7 @@ class RealtimeFeedService {
         timestamp: serverTimestamp()
       });
     } catch (error) {
-      console.error('Error publishing reaction update:', error);
+      logger.error('Error publishing reaction update', error as Error, { postId, reactionType });
       throw error;
     }
   }
@@ -212,7 +213,7 @@ class RealtimeFeedService {
         timestamp: serverTimestamp()
       });
     } catch (error) {
-      console.error('Error publishing comment update:', error);
+      logger.error('Error publishing comment update', error as Error, { postId, commentId });
       throw error;
     }
   }
@@ -237,7 +238,7 @@ class RealtimeFeedService {
         }, { onlyOnce: true });
       });
     } catch (error) {
-      console.error('Error getting new posts count:', error);
+      logger.error('Error getting new posts count', error as Error);
       return 0;
     }
   }
@@ -271,7 +272,7 @@ class RealtimeFeedService {
         this.listeners.delete(listenerId);
       };
     } catch (error) {
-      console.error('Error subscribing to new posts count:', error);
+      logger.error('Error subscribing to new posts count', error as Error);
       return () => {};
     }
   }

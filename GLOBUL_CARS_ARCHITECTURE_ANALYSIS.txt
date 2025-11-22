@@ -1,0 +1,1217 @@
+═══════════════════════════════════════════════════════════════════════════════
+                    GLOBUL CARS - BULGARIAN CAR MARKETPLACE
+                    تحليل معماري شامل للمشروع - Architecture Analysis
+═══════════════════════════════════════════════════════════════════════════════
+
+📊 إحصائيات المشروع الأساسية
+═══════════════════════════════════════════════════════════════════════════════
+
+المجلد الرئيسي: bulgarian-car-marketplace/
+الحجم الإجمالي: ~3.74 GB (108,397 ملف)
+الملفات البرمجية: 968 ملف (TypeScript/TSX)
+  ├─ ملفات TypeScript (.ts): 426 ملف
+  ├─ ملفات React (.tsx): 540 ملف
+  ├─ ملفات CSS: 19 ملف
+  └─ ملفات أخرى: 3 ملفات JSON, 2 ملفات JS
+
+الهيكل الأساسي:
+  ├─ src/                    (المجلد الرئيسي للكود)
+  ├─ public/                 (الملفات العامة)
+  ├─ functions/              (Cloud Functions)
+  ├─ node_modules/           (التبعيات)
+  └─ build/                  (ملفات البناء)
+
+═══════════════════════════════════════════════════════════════════════════════
+🏗️ البنية المعمارية للمشروع
+═══════════════════════════════════════════════════════════════════════════════
+
+1. هيكل المجلدات الرئيسية (src/)
+───────────────────────────────────────────────────────────────────────────────
+
+src/
+├── components/          (80 مجلد مكون) - المكونات القابلة لإعادة الاستخدام
+├── pages/              (115 مجلد صفحة) - صفحات التطبيق
+├── services/           (214 ملف خدمة) - منطق الأعمال والخدمات
+├── hooks/              (23 Hook) - Custom React Hooks
+├── contexts/           (7 Contexts) - إدارة الحالة العامة
+├── types/              (10+ ملفات Types) - تعريفات TypeScript
+├── utils/              (30+ ملف) - أدوات مساعدة
+├── styles/             (9 ملفات) - الأنماط والثيمات
+├── firebase/           (7 ملفات) - تكامل Firebase
+├── features/           (4 ميزات) - Analytics, Billing, Reviews, Team, Verification
+├── repositories/       (3 مستودعات) - طبقة الوصول للبيانات
+├── constants/          (7 ملفات) - الثوابت والبيانات الثابتة
+├── data/               (6 ملفات) - البيانات الثابتة
+├── config/             (5 ملفات) - ملفات الإعدادات
+└── locales/            (3 ملفات) - ملفات الترجمة (BG/EN)
+
+═══════════════════════════════════════════════════════════════════════════════
+👤 نظام البروفايل - Profile System (القلب النابض للمشروع)
+═══════════════════════════════════════════════════════════════════════════════
+
+🎯 الأنواع الثلاثة للبروفايل:
+───────────────────────────────────────────────────────────────────────────────
+
+1. Private Profile (بروفايل الأفراد)
+   ├─ Plan Tiers: free, premium
+   ├─ Max Listings: 3 (free), 10 (premium)
+   ├─ Theme: Orange (#FF8F10)
+   └─ Features: Basic listing, messaging, favorites
+
+2. Dealer Profile (بروفايل الوكلاء)
+   ├─ Plan Tiers: dealer_basic, dealer_pro, dealer_enterprise
+   ├─ Max Listings: 50 (basic), 150 (pro), unlimited (enterprise)
+   ├─ Theme: Green (#16a34a)
+   ├─ Features: Analytics, campaigns, team management, bulk operations
+   └─ Reference: dealershipRef → dealerships/{uid}
+
+3. Company Profile (بروفايل الشركات)
+   ├─ Plan Tiers: company_starter, company_pro, company_enterprise
+   ├─ Max Listings: 100 (starter), unlimited (pro/enterprise)
+   ├─ Theme: Blue (#1d4ed8)
+   ├─ Features: Advanced analytics, API access, CSV import/export
+   └─ Reference: companyRef → companies/{uid}
+
+📂 الملفات الرئيسية لنظام البروفايل:
+───────────────────────────────────────────────────────────────────────────────
+
+⭐ الملفات الأكثر أهمية (Top 10):
+
+1. ProfileTypeContext.tsx
+   └─ المسار: src/contexts/ProfileTypeContext.tsx
+   └─ الوظيفة: إدارة نوع البروفايل، الثيم، الصلاحيات، التبديل بين الأنواع
+   └─ الحالة: ✅ نشط - القلب النابض للنظام
+
+2. bulgarian-user.types.ts
+   └─ المسار: src/types/user/bulgarian-user.types.ts
+   └─ الوظيفة: التعريفات الأساسية للأنواع الثلاثة (PrivateProfile, DealerProfile, CompanyProfile)
+   └─ الحالة: ✅ Canonical Types - المصدر الوحيد للتعريفات
+
+3. ProfileRouter.tsx
+   └─ المسار: src/pages/03_user-pages/profile/ProfilePage/ProfileRouter.tsx
+   └─ الوظيفة: نظام التوجيه للبروفايل حسب النوع
+   └─ الحالة: ✅ نشط
+
+4. ProfileSettings.tsx
+   └─ المسار: src/pages/03_user-pages/profile/ProfilePage/ProfileSettings.tsx
+   └─ الوظيفة: صفحة الإعدادات الرئيسية (المستخدمة على /profile/settings)
+   └─ الحالة: ✅ نشط
+
+5. useProfile.ts
+   └─ المسار: src/pages/03_user-pages/profile/ProfilePage/hooks/useProfile.ts
+   └─ الوظيفة: Hook رئيسي لجلب بيانات البروفايل مع Real-time updates
+   └─ الحالة: ✅ نشط
+
+6. ProfileService.ts
+   └─ المسار: src/services/profile/ProfileService.ts
+   └─ الوظيفة: الخدمة الأساسية لعمليات CRUD على البروفايل
+   └─ الحالة: ✅ نشط
+
+7. PrivateProfile.tsx
+   └─ المسار: src/pages/03_user-pages/profile/ProfilePage/components/PrivateProfile.tsx
+   └─ الوظيفة: عرض بروفايل الأفراد
+   └─ الحالة: ✅ نشط
+
+8. DealerProfile.tsx
+   └─ المسار: src/pages/03_user-pages/profile/ProfilePage/components/DealerProfile.tsx
+   └─ الوظيفة: عرض بروفايل الوكلاء
+   └─ الحالة: ✅ نشط
+
+9. CompanyProfile.tsx
+   └─ المسار: src/pages/03_user-pages/profile/ProfilePage/components/CompanyProfile.tsx
+   └─ الوظيفة: عرض بروفايل الشركات
+   └─ الحالة: ✅ نشط
+
+10. trust-score-service.ts
+    └─ المسار: src/services/profile/trust-score-service.ts
+    └─ الوظيفة: حساب Trust Score من: email(+10), phone(+15), id(+25), business(+20), completion(+10), reviews(+15), activity(+5)
+    └─ الحالة: ✅ نشط
+
+📑 صفحات البروفايل (Profile Pages):
+───────────────────────────────────────────────────────────────────────────────
+
+المسار الرئيسي: src/pages/03_user-pages/profile/ProfilePage/
+
+الملفات الرئيسية:
+├── ProfileRouter.tsx              ✅ نظام التوجيه الرئيسي
+├── ProfilePageWrapper.tsx         ✅ Layout wrapper
+├── ProfileOverview.tsx            ✅ صفحة Overview
+├── ProfileSettings.tsx            ✅ صفحة الإعدادات (المستخدمة)
+├── ProfileSettingsMobileDe.tsx   ⚠️ نسخة mobile.de (غير مستخدمة)
+├── ProfileSettingsNew.tsx       ⚠️ نسخة جديدة (غير مستخدمة)
+├── ProfileMyAds.tsx             ✅ صفحة "My Ads"
+├── ProfileCampaigns.tsx          ✅ صفحة "Campaigns"
+├── ProfileAnalytics.tsx          ✅ صفحة "Analytics"
+├── ProfileConsultations.tsx      ✅ صفحة "Consultations"
+├── ConsultationsTab.tsx          ✅ تبويب الاستشارات
+├── styles.ts                     ✅ الأنماط المشتركة (1146 سطر)
+├── types.ts                      ✅ Types خاصة بالبروفايل
+└── TabNavigation.styles.ts       ✅ أنماط التبويبات
+
+🧩 مكونات البروفايل (Profile Components):
+───────────────────────────────────────────────────────────────────────────────
+
+المسار: src/components/Profile/
+
+المكونات الرئيسية (82 مكون):
+├── ProfileDashboard.tsx          ✅ لوحة معلومات البروفايل
+├── LEDProgressAvatar.tsx         ✅ صورة البروفايل مع حلقة LED متحركة
+├── SimpleProfileAvatar.tsx       ✅ صورة بروفايل بسيطة
+├── ProfileImageUploader.tsx      ✅ رفع صورة البروفايل
+├── CoverImageUploader.tsx        ✅ رفع صورة الغلاف
+├── ProfileGallery.tsx            ✅ معرض صور البروفايل (9 صور)
+├── ProfileTypeSwitcher.tsx       ✅ تبديل نوع البروفايل
+├── ProfileTypeConfirmModal.tsx   ✅ Modal تأكيد تغيير النوع
+├── ProfileCompletion.tsx         ✅ نسبة إكمال البروفايل
+├── ProfileStats.tsx              ✅ إحصائيات البروفايل
+├── VerificationPanel.tsx         ✅ لوحة التحقق (Email, Phone, ID, Business)
+├── VerificationBadge.tsx         ✅ شارة التحقق
+├── VerificationUploader.tsx     ✅ رفع ملفات التحقق
+├── TrustBadge.tsx                ✅ شارة الثقة (Trust Score)
+├── IDReferenceHelper.tsx         ✅ مساعد البطاقة الشخصية البلغارية
+├── FollowButton.tsx              ✅ زر المتابعة
+├── GarageSection.tsx             ✅ قسم الكراج (عرض السيارات)
+├── GarageSection_Pro.tsx        ⚠️ نسخة Pro (مكررة)
+├── GarageCarousel.tsx            ✅ Carousel للسيارات
+├── CreatePostWidget.tsx          ✅ ويدجت إنشاء منشور
+├── UserPostsFeed.tsx             ✅ تغذية منشورات المستخدم
+├── CommunityFeedWidget.tsx       ✅ ويدجت المجتمع
+├── BusinessBackground.tsx        ✅ خلفية للحسابات التجارية
+├── BusinessUpgradeCard.tsx       ✅ بطاقة الترقية للأعمال
+├── AnimatedCard.tsx               ✅ بطاقة متحركة
+├── EmptyState.tsx                ✅ حالة فارغة
+├── LoadingSkeleton.tsx           ✅ Skeleton loading
+└── ImageCropper.tsx              ✅ قص الصور
+
+🔐 ID Card Editor (محرر البطاقة الشخصية):
+───────────────────────────────────────────────────────────────────────────────
+
+المسار: src/components/Profile/IDCardEditor/
+
+├── index.tsx                     ✅ الملف الرئيسي
+├── IDCardOverlay.tsx             ✅ Overlay التعديل
+├── ResponsiveOverlay.tsx         ✅ Overlay متجاوب
+├── OverlayInput.tsx              ✅ حقول الإدخال
+├── types.ts                      ✅ Types خاصة بالمحرر
+├── field-definitions.ts          ⚠️ تعريفات الحقول (قيم مطلقة)
+└── field-definitions-percentage.ts ✅ تعريفات الحقول (نسب مئوية)
+
+📇 Profile Cards (بطاقات البروفايل):
+───────────────────────────────────────────────────────────────────────────────
+
+المسار: src/components/Profile/ProfileCards/
+
+├── index.ts                      ✅ ملف التصدير
+├── ProfilePhotoCard.tsx          ✅ بطاقة الصورة
+├── LoginDataCard.tsx             ✅ بطاقة بيانات الدخول
+├── ContactDataCard.tsx           ✅ بطاقة بيانات الاتصال
+├── IDCardVerificationCard.tsx   ✅ بطاقة التحقق من الهوية
+├── DocumentsCard.tsx             ✅ بطاقة المستندات
+├── CustomerNumberBadge.tsx      ✅ شارة رقم العميل
+├── DangerZoneCard.tsx            ✅ منطقة الخطر (حذف الحساب)
+└── VerificationBadge.tsx        ⚠️ مكرر (موجود في المجلد الرئيسي)
+
+🪟 Modals (النوافذ المنبثقة):
+───────────────────────────────────────────────────────────────────────────────
+
+المسار: src/components/Profile/Modals/
+
+├── index.ts                      ✅ ملف التصدير
+├── PasswordChangeModal.tsx       ✅ تغيير كلمة المرور
+├── EmailVerificationModal.tsx   ✅ التحقق من البريد
+└── PhoneVerificationModal.tsx   ✅ التحقق من الهاتف
+
+🏢 Business & Dealership (الأعمال والوكالات):
+───────────────────────────────────────────────────────────────────────────────
+
+المسار: src/components/Profile/
+
+Business Info:
+├── BusinessInfo/index.ts
+└── BusinessInfo/BusinessInformationForm.tsx ✅ نموذج معلومات الأعمال
+
+Dealership:
+├── Dealership/index.ts
+└── Dealership/DealershipInfoForm.tsx ✅ نموذج معلومات الوكالة
+
+Forms:
+├── Forms/DealershipProfileForm.tsx ✅ نموذج بروفايل الوكالة
+└── Forms/CompanyProfileForm.tsx   ✅ نموذج بروفايل الشركة
+
+📊 Analytics (التحليلات):
+───────────────────────────────────────────────────────────────────────────────
+
+المسار: src/components/Profile/Analytics/
+├── ProfileAnalyticsDashboard.tsx ✅ لوحة التحليلات
+
+المسار: src/features/analytics/
+├── AnalyticsDashboard.tsx        ✅ لوحة رئيسية
+├── PrivateDashboard.tsx          ✅ لوحة Private
+├── DealerDashboard.tsx           ✅ لوحة Dealer
+└── CompanyDashboard.tsx          ✅ لوحة Company
+
+📢 Campaigns (الحملات الإعلانية):
+───────────────────────────────────────────────────────────────────────────────
+
+المسار: src/components/Profile/Campaigns/
+├── index.ts
+├── CampaignsList.tsx             ✅ قائمة الحملات
+├── CampaignCard.tsx              ✅ بطاقة حملة
+└── CreateCampaignModal.tsx      ✅ إنشاء حملة
+
+🔒 Privacy & Security (الخصوصية والأمان):
+───────────────────────────────────────────────────────────────────────────────
+
+المسار: src/components/Profile/
+├── Privacy/PrivacySettingsManager.tsx ✅ إدارة الخصوصية
+├── Security/PrivacySettings.tsx      ⚠️ إعدادات الأمان (مكرر)
+└── SocialMedia/SocialMediaSettings.tsx ✅ إعدادات السوشيال ميديا
+
+🛠️ Services - خدمات البروفايل:
+───────────────────────────────────────────────────────────────────────────────
+
+المسار: src/services/profile/
+
+الخدمات الرئيسية (85 خدمة):
+├── index.ts                      ✅ ملف التصدير
+├── README.md                     ✅ توثيق الخدمات
+├── ProfileService.ts             ✅ خدمة البروفايل الرئيسية
+├── UnifiedProfileService.ts      ✅ خدمة موحدة
+├── ProfileMediaService.ts        ✅ خدمة الوسائط (صور، فيديو)
+├── ProfileMigrationService.ts    ✅ خدمة الترحيل
+├── VerificationWorkflowService.ts ✅ خدمة سير عمل التحقق
+├── PermissionsService.ts         ✅ خدمة الصلاحيات
+├── trust-score-service.ts        ✅ خدمة Trust Score
+├── profile-stats-service.ts      ✅ خدمة إحصائيات البروفايل
+└── image-processing-service.ts   ✅ خدمة معالجة الصور
+
+Tests:
+├── tests_/trust-score-service.test.ts
+└── tests_/image-processing-service.test.ts
+
+🏢 Dealership Services (خدمات الوكالات):
+───────────────────────────────────────────────────────────────────────────────
+
+المسار: src/services/dealership/
+├── dealership.service.ts         ✅ خدمة الوكالة الرئيسية
+└── dealership-adapter.service.ts ✅ محول الوكالة
+
+🔐 Verification Services (خدمات التحقق):
+───────────────────────────────────────────────────────────────────────────────
+
+المسار: src/services/verification/
+├── index.ts
+├── id-verification.service.ts   ✅ التحقق من الهوية (جديد)
+├── id-verification-service.ts   ⚠️ التحقق من الهوية (قديم - مكرر)
+├── phone-verification-service.ts ✅ التحقق من الهاتف
+├── eik-verification-service.ts  ✅ التحقق من EIK (للشركات)
+└── egn-validator.ts             ✅ مُحقق EGN (للأفراد البلغاريين)
+
+👥 Social Services (خدمات اجتماعية):
+───────────────────────────────────────────────────────────────────────────────
+
+المسار: src/services/social/
+
+الخدمات الاجتماعية (23 خدمة):
+├── follow.service.ts             ✅ خدمة المتابعة
+├── posts.service.ts              ✅ خدمة المنشورات
+├── posts-feed.service.ts         ✅ تغذية المنشورات
+├── posts-engagement.service.ts   ✅ تفاعل المنشورات
+├── comments.service.ts           ✅ خدمة التعليقات
+├── consultations.service.ts      ✅ خدمة الاستشارات
+├── stories.service.ts            ✅ خدمة Stories
+├── events.service.ts             ✅ خدمة الأحداث
+├── badges.service.ts             ✅ خدمة الشارات
+├── expert-badges.service.ts      ✅ شارات الخبراء
+├── analytics.service.ts          ✅ تحليلات اجتماعية
+├── recommendations.service.ts    ✅ التوصيات
+├── smart-contacts.service.ts     ✅ جهات الاتصال الذكية
+├── social-media.service.ts      ✅ خدمة السوشيال ميديا
+├── github-auth.service.ts        ✅ مصادقة GitHub
+└── realtime-feed.service.ts     ✅ تغذية فورية
+
+Algorithms:
+├── algorithms/feed-algorithm.service.ts ✅ خوارزمية التغذية
+├── algorithms/post-scoring.service.ts    ✅ تسجيل المنشورات
+└── algorithms/personalization.service.ts  ✅ التخصيص
+
+ML (Machine Learning):
+├── ml/collaborative-filtering.service.ts ✅ Collaborative Filtering
+├── ml/content-filtering.service.ts       ✅ Content Filtering
+└── ml/hybrid-recommender.service.ts      ✅ Hybrid Recommender
+
+Cache:
+└── cache/feed-cache.service.ts          ✅ كاش متعدد الطبقات (Memory + IDB + Firestore)
+
+📊 Analytics Services (خدمات التحليلات):
+───────────────────────────────────────────────────────────────────────────────
+
+المسار: src/services/analytics/
+├── profile-analytics.service.ts ✅ تحليلات البروفايل
+├── car-analytics.service.ts     ✅ تحليلات السيارات
+└── UnifiedAnalyticsService.ts   ✅ خدمة تحليلات موحدة
+
+📢 Campaigns Services (خدمات الحملات):
+───────────────────────────────────────────────────────────────────────────────
+
+المسار: src/services/campaigns/
+├── index.ts
+├── campaign.service.ts          ✅ خدمة الحملات
+├── impression.service.ts        ✅ خدمة الانطباعات
+└── budget.service.ts            ✅ خدمة الميزانية
+
+⭐ Reviews Services (خدمات التقييمات):
+───────────────────────────────────────────────────────────────────────────────
+
+المسار: src/services/reviews/
+├── index.ts
+├── review-service.ts            ✅ خدمة التقييمات
+└── rating-service.ts            ✅ خدمة التصنيفات
+
+المسار: src/features/reviews/
+└── ReviewStars.tsx              ✅ نجوم التقييم
+
+🪝 Hooks خاصة بالبروفايل:
+───────────────────────────────────────────────────────────────────────────────
+
+المسار: src/pages/03_user-pages/profile/ProfilePage/hooks/
+├── useProfile.ts                ✅ Hook رئيسي لجلب بيانات البروفايل
+├── useProfileActions.ts         ✅ Hook للإجراءات (Follow, Message, etc.)
+└── useProfileData.ts            ✅ Hook لإدارة البيانات
+
+Hooks أخرى في: src/hooks/
+├── useCompleteProfile.ts        ✅ Hook لإكمال البروفايل
+├── useDealershipForm.ts          ✅ Hook لنموذج الوكالة
+├── useProfileTracking.ts        ✅ Hook لتتبع البروفايل
+└── useAuth.ts                   ✅ Hook للمصادقة
+
+📘 Types (الأنواع):
+───────────────────────────────────────────────────────────────────────────────
+
+User Types:
+└── types/user/bulgarian-user.types.ts ✅ الأنواع الرئيسية
+    ├── PrivateProfile - بروفايل خاص
+    ├── DealerProfile - بروفايل وكيل
+    ├── CompanyProfile - بروفايل شركة
+    └── BulgarianUser - Union type
+
+Dealership Types:
+├── types/dealership.types.ts           ⚠️ أنواع الوكالات (قديم)
+└── types/dealership/dealership.types.ts ✅ أنواع الوكالات (جديد)
+
+Company Types:
+└── types/company/company.types.ts    ✅ أنواع الشركات
+
+Profile Types:
+├── types/AdvancedProfile.ts           ✅ بروفايل متقدم
+└── types/firestore-models.ts         ✅ نماذج Firestore
+
+Social Types:
+├── types/social-feed.types.ts        ✅ أنواع التغذية الاجتماعية
+└── types/social-media.types.ts       ✅ أنواع السوشيال ميديا
+
+🎯 Contexts (السياقات):
+───────────────────────────────────────────────────────────────────────────────
+
+المسار: src/contexts/
+├── ProfileTypeContext.tsx            ⭐ مهم جداً - سياق نوع البروفايل
+├── AuthContext.tsx                   ✅ سياق المصادقة
+├── AuthProvider.tsx                  ✅ مزود المصادقة
+├── LanguageContext.tsx               ✅ سياق اللغة (BG/EN)
+├── ThemeContext.tsx                  ✅ سياق الثيم (Dark/Light)
+├── FilterContext.tsx                 ✅ سياق الفلاتر
+└── index.ts                          ✅ ملف التصدير
+
+🗄️ Repositories (المستودعات):
+───────────────────────────────────────────────────────────────────────────────
+
+المسار: src/repositories/
+├── index.ts
+├── UserRepository.ts                 ✅ مستودع المستخدمين
+├── DealershipRepository.ts             ✅ مستودع الوكالات
+└── CompanyRepository.ts               ✅ مستودع الشركات
+
+🔥 Firebase Services:
+───────────────────────────────────────────────────────────────────────────────
+
+المسار: src/firebase/
+├── auth-service.ts                   ✅ خدمة المصادقة
+├── social-auth-service.ts            ✅ مصادقة اجتماعية
+├── car-service.ts                    ✅ خدمة السيارات
+├── messaging-service.ts              ✅ خدمة الرسائل
+├── analytics-service.ts              ✅ خدمة التحليلات
+├── app-check-service.ts              ✅ App Check
+└── index.ts                          ✅ ملف رئيسي
+
+🛠️ Utils (أدوات مساعدة):
+───────────────────────────────────────────────────────────────────────────────
+
+├── utils/profile-completion.ts      ✅ حساب نسبة الإكمال
+├── utils/validators/profile-validators.ts ✅ محققات البروفايل
+├── utils/sentry.ts                   ✅ تتبع الأخطاء
+└── utils/google-analytics.ts         ✅ تحليلات Google
+
+🎭 Features (الميزات):
+───────────────────────────────────────────────────────────────────────────────
+
+المسار: src/features/
+
+Verification:
+├── verification/VerificationPage.tsx      ✅ صفحة التحقق
+├── verification/VerificationService.ts  ✅ خدمة التحقق
+├── verification/AdminApprovalQueue.tsx   ✅ قائمة الموافقة الإدارية
+├── verification/DocumentUpload.tsx       ✅ رفع المستندات
+└── verification/types.ts                 ✅ Types
+
+Billing:
+├── billing/BillingPage.tsx               ✅ صفحة الفواتير
+├── billing/BillingService.ts            ✅ خدمة الفواتير
+├── billing/StripeCheckout.tsx           ✅ Stripe Checkout
+├── billing/SubscriptionPlans.tsx         ✅ خطط الاشتراك
+└── billing/types.ts                     ✅ Types
+
+Team:
+└── team/TeamManagement.tsx               ✅ إدارة الفريق
+
+═══════════════════════════════════════════════════════════════════════════════
+📱 صفحات التطبيق الرئيسية (Main Pages)
+═══════════════════════════════════════════════════════════════════════════════
+
+المسار: src/pages/
+
+01_main-pages/ (الصفحات الرئيسية):
+├── home/HomePage/              ✅ الصفحة الرئيسية
+├── CarsPage.tsx                ✅ صفحة السيارات
+├── CarDetailsPage.tsx          ✅ صفحة تفاصيل السيارة
+├── about/AboutPage/            ✅ صفحة من نحن
+├── contact/ContactPage/         ✅ صفحة الاتصال
+├── help/HelpPage/              ✅ صفحة المساعدة
+└── map/MapPage/                ✅ صفحة الخريطة
+
+02_authentication/ (المصادقة):
+├── login/LoginPage/            ✅ صفحة تسجيل الدخول
+├── register/RegisterPage/      ✅ صفحة التسجيل
+├── verification/EmailVerificationPage/ ✅ التحقق من البريد
+├── admin-login/               ✅ تسجيل دخول الإدارة
+└── oauth/OAuthCallbackPage/    ✅ OAuth Callback
+
+03_user-pages/ (صفحات المستخدم):
+├── profile/ProfilePage/        ✅ صفحة البروفايل (القلب النابض)
+├── messages/MessagesPage/     ✅ صفحة الرسائل
+├── favorites/FavoritesPage/    ✅ صفحة المفضلة
+├── social/SocialFeedPage/      ✅ صفحة التغذية الاجتماعية
+├── dashboard/DashboardPage/    ✅ لوحة التحكم
+├── users-directory/UsersDirectoryPage/ ✅ دليل المستخدمين
+└── ai-dashboard/AIDashboardPage.tsx ✅ لوحة AI
+
+04_car-selling/ (بيع السيارات):
+├── sell/VehicleStartPageNew.tsx ✅ بدء بيع السيارة
+├── sell/MobileSellerTypePage.tsx ✅ نوع البائع (موبايل)
+├── sell/VehicleDataPageUnified.tsx ✅ بيانات السيارة
+├── sell/EquipmentMainPage.tsx  ✅ المعدات الرئيسية
+├── sell/MobilePricingPage.tsx  ✅ التسعير (موبايل)
+├── sell/MobileContactPage.tsx  ✅ الاتصال (موبايل)
+├── sell/MobilePreviewPage.tsx  ✅ المعاينة (موبايل)
+└── sell/MobileSubmissionPage.tsx ✅ الإرسال (موبايل)
+
+05_search-browse/ (البحث والتصفح):
+├── advanced-search/AdvancedSearchPage/ ✅ بحث متقدم
+├── all-cars/AllCarsPage/       ✅ جميع السيارات
+├── brand-gallery/BrandGalleryPage/ ✅ معرض العلامات
+├── dealers/DealersPage/        ✅ صفحة الوكلاء
+├── finance/FinancePage/        ✅ صفحة التمويل
+└── top-brands/TopBrandsPage/  ✅ أفضل العلامات
+
+06_admin/ (الإدارة):
+├── regular-admin/AdminPage/    ✅ صفحة الإدارة العادية
+├── super-admin/SuperAdminDashboard/ ✅ لوحة Super Admin
+└── AIQuotaManager.tsx          ✅ إدارة حصص AI
+
+07_advanced-features/ (ميزات متقدمة):
+├── EventsPage/                 ✅ صفحة الأحداث
+├── DigitalTwinPage.tsx         ✅ Digital Twin
+└── B2BAnalyticsPortal.tsx      ✅ بوابة تحليلات B2B
+
+08_payment-billing/ (الدفع والفواتير):
+├── CheckoutPage.tsx            ✅ صفحة الدفع
+├── PaymentSuccessPage.tsx     ✅ نجاح الدفع
+├── BillingSuccessPage/         ✅ نجاح الفوترة
+├── BillingCanceledPage/        ✅ إلغاء الفوترة
+├── InvoicesPage.tsx            ✅ صفحة الفواتير
+├── CommissionsPage.tsx         ✅ صفحة العمولات
+└── SubscriptionPage.tsx        ✅ صفحة الاشتراك
+
+09_dealer-company/ (الوكلاء والشركات):
+├── DealerRegistrationPage.tsx  ✅ تسجيل وكيل
+├── DealerPublicPage/           ✅ صفحة الوكيل العامة
+└── DealerDashboardPage.tsx     ✅ لوحة تحكم الوكيل
+
+10_legal/ (القانونية):
+├── privacy-policy/PrivacyPolicyPage/ ✅ سياسة الخصوصية
+├── terms-of-service/TermsOfServicePage/ ✅ شروط الخدمة
+├── cookie-policy/CookiePolicyPage/ ✅ سياسة الكوكيز
+├── data-deletion/DataDeletionPage/ ✅ حذف البيانات
+└── sitemap/SitemapPage/        ✅ خريطة الموقع
+
+11_testing-dev/ (الاختبار والتطوير):
+├── IconShowcasePage.tsx        ✅ عرض الأيقونات
+├── N8nTestPage.tsx             ✅ اختبار N8N
+└── TestDropdownsPage.tsx       ✅ اختبار القوائم المنسدلة
+
+═══════════════════════════════════════════════════════════════════════════════
+🧩 المكونات الرئيسية (Components)
+═══════════════════════════════════════════════════════════════════════════════
+
+المسار: src/components/ (80 مجلد مكون)
+
+المكونات الرئيسية:
+├── Header/                     ✅ الهيدر الرئيسي
+│   ├── Header.tsx              ✅ الهيدر (Desktop)
+│   ├── MobileHeader.tsx        ✅ الهيدر (Mobile)
+│   └── ProfileTypeSwitcher.tsx ✅ مبدل نوع البروفايل
+├── Footer/                     ✅ الفوتر
+├── CarCard/                    ✅ بطاقة السيارة
+├── CarSearchSystem/            ✅ نظام البحث عن السيارات
+├── AdvancedFilterSystem/       ✅ نظام الفلاتر المتقدم
+├── Profile/                    ✅ مكونات البروفايل (82 مكون)
+├── Forms/                      ✅ النماذج
+├── Loaders/                    ✅ مؤشرات التحميل
+├── ErrorBoundary/             ✅ معالج الأخطاء
+├── Toast/                     ✅ الإشعارات
+├── Notifications/             ✅ الإشعارات
+├── messaging/                 ✅ الرسائل
+├── AI/                        ✅ مكونات AI
+├── analytics/                 ✅ التحليلات
+├── admin/                     ✅ الإدارة
+└── ... (60+ مكون آخر)
+
+═══════════════════════════════════════════════════════════════════════════════
+🛠️ الخدمات (Services) - 214 ملف خدمة
+═══════════════════════════════════════════════════════════════════════════════
+
+المسار: src/services/
+
+الخدمات الرئيسية:
+├── profile/                    ✅ خدمات البروفايل (12 خدمة)
+├── social/                     ✅ خدمات اجتماعية (23 خدمة)
+├── car/                        ✅ خدمات السيارات
+├── messaging/                  ✅ خدمات الرسائل
+├── analytics/                  ✅ خدمات التحليلات
+├── campaigns/                  ✅ خدمات الحملات
+├── reviews/                    ✅ خدمات التقييمات
+├── verification/               ✅ خدمات التحقق
+├── dealership/                 ✅ خدمات الوكالات
+├── billing-service.ts          ✅ خدمة الفواتير
+├── payment-service.ts          ✅ خدمة الدفع
+├── stripe-service.ts           ✅ خدمة Stripe
+├── email-service.ts            ✅ خدمة البريد
+├── notification-service.ts     ✅ خدمة الإشعارات
+├── cache-service.ts            ✅ خدمة الكاش (LRU)
+├── firebase-cache.service.ts   ✅ كاش Firebase
+├── homepage-cache.service.ts  ✅ كاش الصفحة الرئيسية
+├── cityCarCountCache.ts        ✅ كاش عدد السيارات
+├── logger-service.ts           ✅ خدمة السجلات
+├── error-handling-service.ts   ✅ معالجة الأخطاء
+├── security-service.ts         ✅ خدمة الأمان
+├── performance-service.ts      ✅ خدمة الأداء
+├── monitoring-service.ts       ✅ خدمة المراقبة
+└── ... (180+ خدمة أخرى)
+
+═══════════════════════════════════════════════════════════════════════════════
+🔄 التدفق الرئيسي للنظام (Main Flow)
+═══════════════════════════════════════════════════════════════════════════════
+
+1. نقطة الدخول:
+   App.tsx
+   └─→ ProfileTypeContext (إدارة نوع البروفايل)
+       └─→ ProfileRouter (التوجيه حسب النوع)
+           └─→ الصفحات الفرعية
+
+2. نظام البروفايل:
+   ProfileTypeContext
+   ├─→ Private → PrivateProfile.tsx
+   ├─→ Dealer → DealerProfile.tsx
+   └─→ Company → CompanyProfile.tsx
+
+3. نظام Settings:
+   ProfileRouter
+   ├─→ /profile/settings → ProfileSettings.tsx ✅ (المستخدم)
+   ├─→ /profile/settings-mobile → ProfileSettingsMobileDe.tsx ⚠️ (غير مستخدم)
+   └─→ /profile/settings-new → ProfileSettingsNew.tsx ⚠️ (غير مستخدم)
+
+4. خدمات البروفايل:
+   ProfileService (رئيسي)
+   ├─→ UnifiedProfileService
+   ├─→ BulgarianProfileService
+   ├─→ TrustScoreService
+   ├─→ ProfileMediaService
+   ├─→ ProfileMigrationService
+   ├─→ VerificationWorkflowService
+   └─→ PermissionsService
+
+5. Types System:
+   bulgarian-user.types.ts (Canonical)
+   ├─→ PrivateProfile
+   ├─→ DealerProfile
+   ├─→ CompanyProfile
+   └─→ BulgarianUser (Union)
+
+═══════════════════════════════════════════════════════════════════════════════
+📊 إحصائيات شاملة
+═══════════════════════════════════════════════════════════════════════════════
+
+الملفات الإجمالية: 253 ملف متعلق بالبروفايل
+
+التوزيع حسب الفئة:
+┌─────────────────────┬────────┐
+│ الفئة               │ العدد  │
+├─────────────────────┼────────┤
+│ 📄 Pages            │   29   │
+│ 🧩 Components       │   82   │
+│ 🛠️ Services         │   85   │
+│ 📘 Types            │   10   │
+│ 🪝 Hooks            │    8   │
+│ 🎯 Contexts         │    4   │
+│ 🗄️ Repositories     │    4   │
+│ 🎭 Features         │   13   │
+│ 🔥 Firebase         │    3   │
+│ 🛠️ Utils            │    4   │
+│ 🧪 Tests            │    3   │
+│ 📖 Documentation    │    4   │
+│ 🔧 Scripts          │    1   │
+│ 🌐 Other            │    3   │
+└─────────────────────┴────────┘
+
+═══════════════════════════════════════════════════════════════════════════════
+⚠️ التكرارات المكتشفة (Duplications)
+═══════════════════════════════════════════════════════════════════════════════
+
+🔴 تكرارات حرجة (يجب حذفها):
+
+1. Settings Pages (3 نسخ!)
+   ├─ ProfileSettings.tsx              ✅ المستخدم
+   ├─ ProfileSettingsMobileDe.tsx     ⚠️ غير مستخدم
+   └─ ProfileSettingsNew.tsx          ⚠️ غير مستخدم
+
+2. ProfileOverview (نسختان)
+   ├─ ProfileOverview.tsx             ✅ الصفحة الرئيسية
+   └─ tabs/ProfileOverview.tsx        ⚠️ كنسخة تبويب
+
+3. ID Verification Service (نسختان)
+   ├─ id-verification.service.ts      ✅ جديد
+   └─ id-verification-service.ts      ⚠️ قديم
+
+4. Dealership Types (نسختان)
+   ├─ types/dealership.types.ts        ⚠️ قديم
+   └─ types/dealership/dealership.types.ts ✅ جديد
+
+5. Privacy Settings (نسختان)
+   ├─ Privacy/PrivacySettingsManager.tsx ✅
+   └─ Security/PrivacySettings.tsx    ⚠️ مكرر
+
+6. Garage Components (نسختان)
+   ├─ GarageSection.tsx               ✅ عادي
+   └─ GarageSection_Pro.tsx          ⚠️ Pro (يجب دمجه)
+
+7. Analytics Dashboards (5 نسخ!)
+   ├─ ProfileAnalyticsDashboard.tsx   ⚠️
+   ├─ AnalyticsDashboard.tsx          ✅
+   ├─ PrivateDashboard.tsx            ✅
+   ├─ DealerDashboard.tsx             ✅
+   └─ CompanyDashboard.tsx           ✅
+
+8. Trust & Gauge (مجلدان متشابهان)
+   ├─ trust/TrustGaugeStyles.ts       ⚠️
+   └─ gauge/GaugeStyles.ts            ⚠️ (يجب دمجهما)
+
+9. Field Definitions (نسختان)
+   ├─ field-definitions.ts            ⚠️ قيم مطلقة
+   └─ field-definitions-percentage.ts ✅ قيم نسبية (يستخدم)
+
+10. hCaptcha Service (نسختان)
+    ├─ hcaptcha-service.tsx           ⚠️ قديم
+    └─ hcaptcha-service-clean.ts     ✅ نظيف
+
+11. Verification Badge (نسختان)
+    ├─ VerificationBadge.tsx         ✅
+    └─ ProfileCards/VerificationBadge.tsx ⚠️ مكرر
+
+12. ProfilePage Index (ملف قديم ضخم)
+    └─ index.tsx (1711 سطر)          ⚠️ قديم جداً (تم تقسيمه)
+
+إجمالي الملفات المكررة: ~40 ملف
+نسبة التكرار: ~16% من إجمالي الملفات
+الحجم المهدور: تقريباً ~15,000 سطر كود مكررة
+
+═══════════════════════════════════════════════════════════════════════════════
+🎯 الميزات الرئيسية للمشروع
+═══════════════════════════════════════════════════════════════════════════════
+
+1. نظام البروفايل المتقدم:
+   ✅ 3 أنواع بروفايل (Private, Dealer, Company)
+   ✅ نظام Trust Score
+   ✅ نظام التحقق متعدد المستويات
+   ✅ نظام الصلاحيات الديناميكي
+   ✅ نظام الثيمات الديناميكي
+
+2. منصة السيارات:
+   ✅ إعلانات السيارات
+   ✅ بحث متقدم
+   ✅ فلاتر متقدمة
+   ✅ خرائط تفاعلية
+   ✅ تقييمات ومراجعات
+
+3. منصة اجتماعية:
+   ✅ تغذية اجتماعية
+   ✅ منشورات وتعليقات
+   ✅ استشارات الخبراء
+   ✅ Stories
+   ✅ Events
+
+4. نظام الرسائل:
+   ✅ رسائل فورية
+   ✅ إشعارات Push
+   ✅ WebSocket للرسائل المباشرة
+
+5. نظام الدفع:
+   ✅ Stripe Integration
+   ✅ خطط اشتراك متعددة
+   ✅ فواتير وعمولات
+
+6. نظام التحليلات:
+   ✅ تحليلات البروفايل
+   ✅ تحليلات السيارات
+   ✅ تحليلات اجتماعية
+   ✅ لوحات تحكم متقدمة
+
+7. نظام الإدارة:
+   ✅ Admin Dashboard
+   ✅ Super Admin
+   ✅ إدارة المستخدمين
+   ✅ إدارة المحتوى
+
+8. AI Features:
+   ✅ AI Car Valuation
+   ✅ AI Chat Assistant
+   ✅ AI Image Analysis
+   ✅ AI Quota Management
+
+9. IoT Integration:
+   ✅ Car Tracking
+   ✅ IoT Dashboard
+   ✅ Real-time Analytics
+
+10. Multi-language:
+    ✅ Bulgarian (BG)
+    ✅ English (EN)
+    ✅ نظام ترجمة موحد
+
+═══════════════════════════════════════════════════════════════════════════════
+🔧 التقنيات المستخدمة
+═══════════════════════════════════════════════════════════════════════════════
+
+Frontend:
+├── React 19.1.1
+├── TypeScript 4.9.5
+├── Styled Components 6.1.19
+├── React Router DOM 7.9.1
+├── D3.js 7.9.0 (للرسوم البيانية)
+└── Three.js 0.180.0 (للرسوم 3D)
+
+Backend:
+├── Firebase 12.3.0
+│   ├── Firestore (Database)
+│   ├── Authentication
+│   ├── Storage
+│   ├── Cloud Functions
+│   └── Hosting
+├── Firebase Admin 13.5.0
+└── Express 5.1.0
+
+Services:
+├── Algolia Search 4.25.2
+├── Stripe (Payment)
+├── Google Maps API
+├── Socket.io 4.8.1 (Real-time)
+└── hCaptcha (Security)
+
+State Management:
+├── React Context API
+├── Custom Hooks
+└── Local State
+
+Caching:
+├── Memory Cache (Map)
+├── IndexedDB
+├── localStorage
+└── Firestore Cache
+
+═══════════════════════════════════════════════════════════════════════════════
+📈 الأداء والتحسينات
+═══════════════════════════════════════════════════════════════════════════════
+
+1. Lazy Loading:
+   ✅ React.lazy() لجميع الصفحات
+   ✅ Code Splitting تلقائي
+   ✅ Dynamic Imports
+
+2. Caching:
+   ✅ 3-Layer Cache System (Memory + IDB + Firestore)
+   ✅ LRU Cache Algorithm
+   ✅ TTL-based Expiration
+
+3. Image Optimization:
+   ✅ Lazy Loading للصور
+   ✅ Image Compression
+   ✅ WebP Support
+   ✅ Responsive Images
+
+4. Bundle Optimization:
+   ✅ Tree Shaking
+   ✅ Minification
+   ✅ Source Maps
+   ✅ Bundle Analysis
+
+5. Performance Monitoring:
+   ✅ Performance Service
+   ✅ Real-time Analytics
+   ✅ Error Tracking (Sentry)
+   ✅ Google Analytics
+
+═══════════════════════════════════════════════════════════════════════════════
+🔐 الأمان والخصوصية
+═══════════════════════════════════════════════════════════════════════════════
+
+1. Authentication:
+   ✅ Firebase Auth
+   ✅ Social Login (Google, Facebook)
+   ✅ Email/Password
+   ✅ Phone Auth
+   ✅ 2FA Support
+
+2. Verification:
+   ✅ Email Verification
+   ✅ Phone Verification
+   ✅ ID Verification (Bulgarian EGN)
+   ✅ Business Verification (EIK)
+
+3. Security:
+   ✅ Firestore Security Rules
+   ✅ Storage Security Rules
+   ✅ Rate Limiting
+   ✅ hCaptcha
+   ✅ Input Validation
+   ✅ XSS Protection
+   ✅ CSRF Protection
+
+4. Privacy:
+   ✅ GDPR Compliance
+   ✅ Data Deletion
+   ✅ Privacy Settings
+   ✅ Cookie Policy
+
+═══════════════════════════════════════════════════════════════════════════════
+🌍 الترجمة والدولية (i18n)
+═══════════════════════════════════════════════════════════════════════════════
+
+نظام الترجمة الموحد:
+├── LanguageContext (إدارة اللغة)
+├── translations.ts (3,073 سطر - BG/EN)
+├── useLanguage Hook
+└── Dynamic Language Switching
+
+اللغات المدعومة:
+├── Bulgarian (BG) - اللغة الأساسية
+└── English (EN) - اللغة الثانوية
+
+التغطية:
+✅ جميع النصوص الظاهرة للمستخدم
+✅ رسائل الخطأ
+✅ النماذج
+✅ الإشعارات
+✅ صفحات المساعدة
+
+═══════════════════════════════════════════════════════════════════════════════
+📱 التصميم المتجاوب (Responsive Design)
+═══════════════════════════════════════════════════════════════════════════════
+
+1. Mobile-First Approach:
+   ✅ تصميم موبايل أولاً
+   ✅ Breakpoints متعددة
+   ✅ Touch-friendly UI
+
+2. Components:
+   ├── MobileHeader (هيدر موبايل منفصل)
+   ├── MobileBottomNav (تنقل سفلي)
+   ├── Responsive Layouts
+   └── Adaptive Components
+
+3. Styles:
+   ├── mobile-responsive.css
+   ├── mobile-design-system.ts
+   └── Typography System
+
+═══════════════════════════════════════════════════════════════════════════════
+🎨 نظام التصميم (Design System)
+═══════════════════════════════════════════════════════════════════════════════
+
+1. Themes:
+   ├── Light Theme
+   ├── Dark Theme
+   └── Profile Type Themes (Orange/Green/Blue)
+
+2. Colors:
+   ├── Private: Orange (#FF8F10)
+   ├── Dealer: Green (#16a34a)
+   └── Company: Blue (#1d4ed8)
+
+3. Typography:
+   ├── Font System
+   ├── Size Scale
+   └── Responsive Typography
+
+4. Components:
+   ├── Glassmorphism
+   ├── Neumorphism
+   └── Premium Effects
+
+═══════════════════════════════════════════════════════════════════════════════
+🚀 النشر والتوزيع (Deployment)
+═══════════════════════════════════════════════════════════════════════════════
+
+1. Hosting:
+   ├── Firebase Hosting
+   └── CDN Integration
+
+2. Functions:
+   ├── Firebase Cloud Functions
+   └── Serverless Architecture
+
+3. CI/CD:
+   ├── GitHub Actions (مخطط)
+   └── Automated Deployment
+
+═══════════════════════════════════════════════════════════════════════════════
+📝 التوثيق (Documentation)
+═══════════════════════════════════════════════════════════════════════════════
+
+الملفات التوثيقية:
+├── README.md (إن وجد)
+├── DOCUMENTATION_INDEX.md
+├── ARCHITECTURE_GUIDE.md
+└── ملفات README في المجلدات الفرعية
+
+═══════════════════════════════════════════════════════════════════════════════
+📊 تحليل حجم المشروع الشامل - Project Size Analysis
+═══════════════════════════════════════════════════════════════════════════════
+
+🎯 الأرقام الحالية (Current Statistics):
+───────────────────────────────────────────────────────────────────────────────
+
+إجمالي الملفات: 208,587 ملف
+إجمالي المجلدات: 27,967 مجلد
+الحجم الإجمالي: 10.5 GB (11,379,318,784 بايت)
+
+📈 التوزيع حسب النوع (Distribution by File Type):
+───────────────────────────────────────────────────────────────────────────────
+
+┌──────────────────┬──────────┬──────────┬────────────────────────────────────┐
+│ النوع            │ العدد    │ الحجم    │ ملاحظات                            │
+├──────────────────┼──────────┼──────────┼────────────────────────────────────┤
+│ .mp4 (فيديوهات)  │    77    │ 2.73 GB  │ ⚠️ حجم كبير - ملفات مكررة          │
+│ .pack (Git)      │    23    │ 1.52 GB  │ ✅ طبيعي - Git objects             │
+│ .jpg (صور)       │   726    │ 1.28 GB  │ ⚠️ كبير - يحتاج ضغط                │
+│ .js              │ 73,326   │ 0.69 GB  │ ✅ معظمها node_modules             │
+│ .ts              │ 57,202   │ 0.62 GB  │ ✅ كود TypeScript                   │
+│ .png             │  2,649   │ 0.46 GB  │ ⚠️ صور PNG - يمكن تحويلها لـ WebP  │
+│ .map             │ 20,479   │ 0.35 GB  │ ⚠️ Source maps - غير ضرورية        │
+│ .tsx             │   ~540   │  ~0.1 GB │ ✅ ملفات React                     │
+│ .json            │   ~500   │  ~0.05 GB│ ✅ ملفات إعدادات                   │
+│ .css             │    ~19   │  ~0.01 GB│ ✅ ملفات الأنماط                   │
+└──────────────────┴──────────┴──────────┴────────────────────────────────────┘
+
+📁 التوزيع حسب المجلدات (Distribution by Directories):
+───────────────────────────────────────────────────────────────────────────────
+
+┌──────────────────────────────────────┬──────────┬──────────────┬──────────────────┐
+│ المجلد                              │ الحجم    │ عدد الملفات  │ المشكلة         │
+├──────────────────────────────────────┼──────────┼──────────────┼──────────────────┤
+│ bulgarian-car-marketplace/           │ 3.74 GB  │  108,397     │ ⚠️ كبير جداً    │
+│ functions/                          │ 3.01 GB  │   24,926     │ ⚠️ كبير جداً    │
+│ assets/                             │ 0.62 GB  │      576     │ ✅ مقبول         │
+│ node_modules/                        │ ~0.86 GB │   66,624     │ ✅ طبيعي         │
+│ .git/                               │ 0.73 GB  │    6,189     │ ✅ طبيعي         │
+│ packages/                           │ ~0.5 GB  │   ~2,000     │ ✅ منظم          │
+│ docs/                               │ ~0.1 GB  │     ~250     │ ✅ مقبول         │
+│ build/                              │ ~0.69 GB │   ~5,000     │ ⚠️ يمكن تنظيفه  │
+│ public/                             │ ~0.54 GB │   ~1,500     │ ⚠️ يحتاج تحسين  │
+└──────────────────────────────────────┴──────────┴──────────────┴──────────────────┘
+
+⚠️ المشاكل المكتشفة (Critical Issues):
+───────────────────────────────────────────────────────────────────────────────
+
+1. ملفات فيديو كبيرة (2.73 GB) 🔴 حرج
+   ├─ 77 ملف MP4
+   ├─ ملفات مكررة في أماكن متعددة:
+   │  ├─ functions/New-Globul-Cars/functions/New-Globul-Cars/...
+   │  ├─ functions/New-Globul-Cars/bulgarian-car-marketplace/...
+   │  └─ functions/New-Globul-Cars/assets/...
+   └─ الحل: نقلها إلى Firebase Storage أو CDN، وحذف النسخ المكررة
+
+2. مجلد functions كبير (3.01 GB) 🔴 حرج
+   ├─ يحتوي على نسخ متداخلة من المشروع
+   ├─ مسارات مثل: functions/New-Globul-Cars/functions/New-Globul-Cars/...
+   └─ الحل: تنظيف الملفات المكررة والتداخل
+
+3. صور كبيرة (1.28 GB JPG + 0.46 GB PNG) 🟡 متوسط
+   ├─ 726 ملف JPG + 2,649 PNG
+   ├─ بعض الصور غير محسّنة
+   └─ الحل: ضغط الصور وتحويلها إلى WebP
+
+4. Source Maps (0.35 GB) 🟡 متوسط
+   ├─ 20,479 ملف .map
+   ├─ غير ضرورية في الإنتاج
+   └─ الحل: استثناءها من Git أو حذفها من الإنتاج
+
+5. مجلد build كبير (0.69 GB) 🟡 متوسط
+   ├─ ملفات الإنتاج المكررة
+   └─ الحل: تنظيف دوري أو استثناءه من Git
+
+6. مجلد public كبير (0.54 GB) 🟡 متوسط
+   ├─ يحتوي على صور وملفات ثقيلة
+   └─ الحل: نقل إلى CDN أو Firebase Storage
+
+📊 هل الحجم منطقي؟ (Is the Size Reasonable?)
+───────────────────────────────────────────────────────────────────────────────
+
+❌ لا، الحجم كبير نسبياً لمشروع React/TypeScript.
+
+الحجم المتوقع لمشروع React/TypeScript:
+├─ كود المصدر: 50-100 MB
+├─ node_modules: 200-500 MB
+├─ Assets: 100-500 MB (حسب المحتوى)
+└─ الإجمالي المتوقع: 500 MB - 1.5 GB
+
+المشروع الحالي: 10.5 GB
+├─ أكبر من المتوقع بحوالي 7-10 أضعاف
+├─ المشكلة الرئيسية: ملفات الفيديو المكررة (2.73 GB)
+├─ المشكلة الثانوية: مجلد functions متداخل (3.01 GB)
+└─ بعد التنظيف المتوقع: ~2-3 GB (حجم معقول)
+
+🎯 خطة التنظيف المقترحة (Cleanup Plan):
+───────────────────────────────────────────────────────────────────────────────
+
+المرحلة 1: حذف الملفات المكررة (Priority: 🔴 Critical)
+├─ حذف ملفات الفيديو المكررة (2.73 GB → ~0.5 GB)
+│  ├─ نقل الفيديوهات إلى Firebase Storage
+│  ├─ حذف النسخ المكررة من functions/
+│  └─ حذف النسخ المكررة من assets/
+├─ تنظيف مجلد functions من التداخل
+│  ├─ حذف functions/New-Globul-Cars/functions/New-Globul-Cars/...
+│  └─ إزالة النسخ المتداخلة
+└─ حذف Source Maps من Git (.gitignore)
+   └─ توفير متوقع: ~3.5 GB
+
+المرحلة 2: تحسين Assets (Priority: 🟡 Medium)
+├─ ضغط الصور وتحويلها إلى WebP
+│  ├─ JPG: 1.28 GB → ~0.3 GB (75% تقليل)
+│  └─ PNG: 0.46 GB → ~0.1 GB (80% تقليل)
+├─ نقل الفيديوهات إلى Firebase Storage
+│  └─ توفير: ~2.2 GB من Git repository
+└─ استخدام CDN للصور الكبيرة
+   └─ تحسين وقت التحميل
+
+المرحلة 3: تنظيف Git (Priority: 🟡 Medium)
+├─ Git LFS للفيديوهات الكبيرة
+│  └─ توفير: ~2 GB من repository size
+├─ .gitignore أفضل
+│  ├─ استثناء build/
+│  ├─ استثناء .map files
+│  └─ استثناء node_modules/
+└─ تنظيف التاريخ القديم (git gc)
+   └─ توفير: ~0.5 GB
+
+المرحلة 4: نظام كاش موحد (Priority: 🟢 Low)
+├─ كاش للصور (CDN + Browser Cache)
+│  └─ تقليل الطلبات المتكررة
+├─ كاش للبيانات (Memory + IndexedDB)
+│  └─ تحسين الأداء
+└─ كاش للاستعلامات (Firebase Cache)
+   └─ تقليل التكاليف
+
+📋 التوصيات (Recommendations):
+───────────────────────────────────────────────────────────────────────────────
+
+🔴 فوري (Immediate - هذا الأسبوع):
+├─ ✅ حذف ملفات الفيديو المكررة
+│  └─ توفير: ~2.2 GB
+├─ ✅ نقل الفيديوهات إلى Firebase Storage
+│  └─ توفير: ~2.7 GB من Git
+├─ ✅ تنظيف مجلد functions
+│  └─ توفير: ~2 GB
+└─ ✅ إضافة Source Maps إلى .gitignore
+   └─ توفير: ~0.35 GB
+
+🟡 قصير المدى (Short-term - هذا الشهر):
+├─ ✅ ضغط الصور وتحويلها إلى WebP
+│  └─ توفير: ~1.3 GB
+├─ ✅ إعداد نظام كاش موحد
+│  └─ تحسين الأداء
+└─ ✅ تحسين .gitignore
+   └─ منع الملفات غير الضرورية
+
+🟢 طويل المدى (Long-term - الأشهر القادمة):
+├─ ✅ استخدام CDN لجميع Assets
+│  └─ تحسين الأداء والتكاليف
+├─ ✅ Git LFS للملفات الكبيرة
+│  └─ تحسين Git performance
+└─ ✅ نظام تحسين تلقائي للصور
+   └─ تحسين تلقائي عند الرفع
+
+💰 التوفير المتوقع (Expected Savings):
+───────────────────────────────────────────────────────────────────────────────
+
+بعد التنظيف الكامل:
+├─ الحجم الحالي: 10.5 GB
+├─ الحجم المتوقع: ~2-3 GB
+├─ التوفير: ~7.5-8.5 GB (71-81%)
+└─ الوقت المتوقع للتنظيف: 2-3 أيام عمل
+
+الفوائد الإضافية:
+├─ ✅ تحسين سرعة Git operations
+├─ ✅ تقليل وقت CI/CD
+├─ ✅ تحسين أداء التطبيق
+├─ ✅ تقليل تكاليف Firebase Storage
+└─ ✅ تحسين تجربة المطورين
+
+═══════════════════════════════════════════════════════════════════════════════
+✅ الخلاصة
+═══════════════════════════════════════════════════════════════════════════════
+
+المشروع: Globul Cars - Bulgarian Car Marketplace
+الحجم الحالي: 10.5 GB (208,587 ملف، 27,967 مجلد)
+الحجم المتوقع بعد التنظيف: ~2-3 GB
+الملفات البرمجية: 968 ملف (TypeScript/TSX)
+الهيكل: Monorepo مع packages/ منظمة
+
+نقاط القوة:
+✅ بنية معمارية قوية ومنظمة
+✅ نظام بروفايل متقدم (3 أنواع)
+✅ منصة اجتماعية متكاملة
+✅ نظام كاش متعدد الطبقات
+✅ ترجمة كاملة (BG/EN)
+✅ تصميم متجاوب
+✅ أمان قوي
+
+نقاط التحسين:
+⚠️ حذف الملفات المكررة (~40 ملف)
+⚠️ توحيد نظام الكاش
+⚠️ تحسين حجم Bundle
+⚠️ تحسين الأداء
+
+═══════════════════════════════════════════════════════════════════════════════
+📅 تاريخ التحديث: نوفمبر 2025
+📝 الإصدار: 1.0.0
+👤 المطور: Globul Cars Team
+🌍 الموقع: Bulgaria (Sofia)
+═══════════════════════════════════════════════════════════════════════════════

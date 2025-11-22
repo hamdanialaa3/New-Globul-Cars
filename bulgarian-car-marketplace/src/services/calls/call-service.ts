@@ -15,6 +15,7 @@ import {
   serverTimestamp
 } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
+import { logger } from '../logger-service';
 
 // ==================== INTERFACES ====================
 
@@ -81,7 +82,7 @@ export class CallService {
         createdAt: serverTimestamp()
       });
 
-      console.log('✅ Call initiated:', docRef.id);
+      logger.info('Call initiated', { callId: docRef.id });
 
       return {
         success: true,
@@ -89,7 +90,7 @@ export class CallService {
       };
 
     } catch (error: any) {
-      console.error('❌ Initiate call failed:', error);
+      logger.error('Initiate call failed', error as Error);
       return {
         success: false,
         error: error.message
@@ -108,10 +109,10 @@ export class CallService {
         startTime: serverTimestamp()
       });
 
-      console.log('✅ Call answered');
+      logger.info('Call answered', { callId });
       return true;
     } catch (error) {
-      console.error('❌ Answer call failed:', error);
+      logger.error('Answer call failed', error as Error, { callId });
       return false;
     }
   }
@@ -137,10 +138,10 @@ export class CallService {
         quality: quality || null
       });
 
-      console.log('✅ Call ended');
+      logger.info('Call ended', { callId, duration });
       return true;
     } catch (error) {
-      console.error('❌ End call failed:', error);
+      logger.error('End call failed', error as Error, { callId });
       return false;
     }
   }
@@ -156,10 +157,10 @@ export class CallService {
         endTime: serverTimestamp()
       });
 
-      console.log('✅ Call declined');
+      logger.info('Call declined', { callId });
       return true;
     } catch (error) {
-      console.error('❌ Decline call failed:', error);
+      logger.error('Decline call failed', error as Error, { callId });
       return false;
     }
   }
@@ -202,7 +203,7 @@ export class CallService {
       };
 
     } catch (error) {
-      console.error('❌ Get call history failed:', error);
+      logger.error('Get call history failed', error as Error, { userId });
       return {
         calls: [],
         totalCalls: 0,
@@ -248,7 +249,7 @@ export class CallService {
       } as CallSession;
 
     } catch (error) {
-      console.error('❌ Get call failed:', error);
+      logger.error('Get call failed', error as Error, { callId });
       return null;
     }
   }

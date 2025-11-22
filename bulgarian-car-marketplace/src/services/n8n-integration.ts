@@ -2,6 +2,7 @@
 // N8N Integration Service for Globul Cars
 
 import { serviceLogger } from './logger-wrapper';
+import { logger } from './logger-service';
 
 export class N8nIntegrationService {
   private static readonly N8N_BASE_URL = process.env.REACT_APP_N8N_URL || 'https://globul-cars-bg.app.n8n.cloud';
@@ -54,7 +55,7 @@ export class N8nIntegrationService {
       // Silently ignore CORS errors in development (localhost)
       if (error?.message?.includes('CORS') || error?.message?.includes('Failed to fetch')) {
         if (process.env.NODE_ENV === 'development') {
-          console.warn('N8N webhook blocked by CORS (expected in localhost)');
+          logger.warn('N8N webhook blocked by CORS (expected in localhost)');
         }
         return null;
       }

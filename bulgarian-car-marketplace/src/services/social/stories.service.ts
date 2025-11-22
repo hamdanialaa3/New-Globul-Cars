@@ -212,7 +212,7 @@ class StoriesService {
         }
       }
     } catch (error) {
-      console.error('[SERVICE] Error adding reaction:', error);
+      logger.error('[SERVICE] Error adding reaction to story', error as Error, { storyId, userId, emoji });
       throw new Error('Failed to add reaction');
     }
   }
@@ -241,7 +241,7 @@ class StoriesService {
         deletedAt: serverTimestamp()
       });
     } catch (error) {
-      console.error('[SERVICE] Error deleting story:', error);
+      logger.error('[SERVICE] Error deleting story', error as Error, { storyId, userId });
       throw new Error('Failed to delete story');
     }
   }

@@ -101,13 +101,13 @@ class PostsService {
       
       let mediaUrls: string[] = [];
       if (postData.content.media && postData.content.media.length > 0) {
-        console.log(`📤 Uploading ${postData.content.media.length} files...`);
+        logger.info('Uploading post media files', { count: postData.content.media.length });
         mediaUrls = await this.uploadPostMedia(
           userId, 
           postData.content.media,
           onUploadProgress
         );
-        console.log(`✅ All files uploaded successfully!`);
+        logger.info('All post media files uploaded successfully', { count: mediaUrls.length });
       }
       
       const postRef = await addDoc(collection(db, this.collectionName), {
@@ -150,10 +150,10 @@ class PostsService {
         'stats.posts': increment(1)
       });
       
-      console.log('Post created:', postRef.id);
+      logger.info('Post created successfully', { postId: postRef.id, userId });
       return postRef.id;
     } catch (error) {
-      console.error('Error creating post:', error);
+      logger.error('Failed to create post', error as Error, { userId });
       throw new Error('Failed to create post');
     }
   }
@@ -191,7 +191,7 @@ class PostsService {
             }
           );
           
-          console.log(`✅ Image uploaded: ${file.name} -> ${url}`);
+          logger.debug('Image uploaded successfully', { fileName: file.name, url });
           return url;
         } else {
           // For videos or other files, upload directly with progress
@@ -208,19 +208,19 @@ class PostsService {
                 }
               },
               (error) => {
-                console.error(`❌ Upload failed: ${file.name}`, error);
+                logger.error('Upload failed for file', error, { fileName: file.name });
                 reject(error);
               },
               async () => {
                 const url = await getDownloadURL(uploadTask.snapshot.ref);
-                console.log(`✅ File uploaded: ${file.name} -> ${url}`);
+                logger.debug('File uploaded successfully', { fileName: file.name, url });
                 resolve(url);
               }
             );
           });
         }
       } catch (error) {
-        console.error(`❌ Error uploading ${file.name}:`, error);
+        logger.error('Error uploading file', error as Error, { fileName: file.name });
         throw new Error(`Failed to upload ${file.name}`);
       }
     });
@@ -244,7 +244,7 @@ class PostsService {
         ...doc.data()
       } as Post));
     } catch (error) {
-      console.error('Error getting public posts:', error);
+      logger.error('Error getting public posts', error as Error);
       return [];
     }
   }
@@ -271,7 +271,7 @@ class PostsService {
         ...doc.data()
       } as Post));
     } catch (error) {
-      console.error('Error getting user posts:', error);
+      logger.error('Error getting user posts', error as Error, { userId });
       return [];
     }
   }
@@ -286,7 +286,7 @@ class PostsService {
         ...postDoc.data()
       } as Post;
     } catch (error) {
-      console.error('Error getting post:', error);
+      logger.error('Error getting post', error as Error, { postId });
       return null;
     }
   }
@@ -312,7 +312,7 @@ class PostsService {
       
       return true;
     } catch (error) {
-      console.error('Error deleting post:', error);
+      logger.error('Error deleting post', error as Error, { postId, userId });
       return false;
     }
   }

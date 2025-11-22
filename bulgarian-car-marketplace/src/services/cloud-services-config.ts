@@ -1,6 +1,8 @@
 // Cloud Services Configuration
 // Manages AWS, Google Gemini AI, Security, and Payment integrations
 
+import { logger } from './logger-service';
+
 export interface ServiceConfig {
   id: string;
   name: string;
@@ -154,7 +156,7 @@ class CloudServicesConfigService {
           }
         });
       } catch (error) {
-        console.error('Failed to load services config:', error);
+        logger.error('Failed to load services config from localStorage', error as Error);
       }
     }
   }

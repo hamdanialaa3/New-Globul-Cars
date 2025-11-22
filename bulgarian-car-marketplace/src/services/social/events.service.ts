@@ -275,7 +275,7 @@ class EventsService {
         });
       }
     } catch (error) {
-      console.error('[SERVICE] Error RSVPing to event:', error);
+      logger.error('Error RSVPing to event', error as Error, { eventId, status });
       throw new Error('Failed to RSVP');
     }
   }
