@@ -4,6 +4,7 @@
 import { SearchData } from '@/pages/05_search-browse/advanced-search/AdvancedSearchPage/types';
 import { CarListing } from '@/types/CarListing';
 import { searchService } from '@/services/search/UnifiedSearchService';
+import { logger } from './logger-service';
 
 type AdvancedSearchResult = {
   cars: (CarListing | any)[];
@@ -17,7 +18,7 @@ type AdvancedSearchResult = {
 class AdvancedSearchServiceDeprecatedFacade {
   constructor() {
     if (typeof console !== 'undefined') {
-      console.warn('[DEPRECATED] advancedSearchService is replaced by searchService (UnifiedSearchService). Please update imports.');
+      logger.warn('[DEPRECATED] advancedSearchService is replaced by searchService (UnifiedSearchService). Please update imports.');
     }
   }
 

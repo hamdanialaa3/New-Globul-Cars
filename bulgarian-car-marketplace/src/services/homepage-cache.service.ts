@@ -2,6 +2,8 @@
 // خدمة التخزين المؤقت للصفحة الرئيسية - للأداء العالي
 // ⚡ Caches all homepage data for 5 minutes
 
+import { logger } from './logger-service';
+
 interface CacheEntry<T> {
   data: T;
   timestamp: number;
@@ -24,12 +26,14 @@ class HomePageCacheService {
     
     // Return cached if valid
     if (cached && Date.now() - cached.timestamp < cached.expiresIn) {
-      console.log(`✅ Cache HIT: ${key} (age: ${Math.round((Date.now() - cached.timestamp) / 1000)}s)`);
+      logger.debug(`Cache HIT: ${key}`, {
+        age: Math.round((Date.now() - cached.timestamp) / 1000)
+      });
       return cached.data;
     }
 
     // Fetch fresh data
-    console.log(`❌ Cache MISS: ${key} - Fetching fresh data...`);
+    logger.debug(`Cache MISS: ${key} - Fetching fresh data`);
     const data = await fetcher();
     
     // Store in cache
@@ -47,7 +51,7 @@ class HomePageCacheService {
    */
   invalidate(key: string): void {
     this.cache.delete(key);
-    console.log(`🗑️ Cache invalidated: ${key}`);
+    logger.info(`Cache invalidated`, { key });
   }
 
   /**
@@ -55,7 +59,7 @@ class HomePageCacheService {
    */
   invalidateAll(): void {
     this.cache.clear();
-    console.log('🗑️ All cache cleared');
+    logger.info('All cache cleared');
   }
 
   /**
@@ -82,12 +86,12 @@ class HomePageCacheService {
    * Preload critical data (optional)
    */
   async preload(loaders: Array<{ key: string; fetcher: () => Promise<any>; ttl?: number }>) {
-    console.log('🔄 Preloading cache...');
+    logger.info('Preloading cache...', { count: loaders.length });
     const promises = loaders.map(({ key, fetcher, ttl }) => 
       this.getOrFetch(key, fetcher, ttl)
     );
     await Promise.all(promises);
-    console.log('✅ Preload complete');
+    logger.info('Preload complete');
   }
 }
 

@@ -1,6 +1,7 @@
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
+import { logger } from './logger-service';
 
 class NotificationService {
   private messaging: any;
@@ -8,7 +9,7 @@ class NotificationService {
   async initialize() {
     // Skip Firebase messaging in development to prevent errors
     if (process.env.NODE_ENV === 'development') {
-      console.log('📱 Firebase messaging disabled in development mode');
+      logger.info('Firebase messaging disabled in development mode');
       return;
     }
 
@@ -17,7 +18,7 @@ class NotificationService {
       await this.requestPermission();
       this.listenForMessages();
     } catch (error) {
-      console.error('❌ Notification init failed:', error);
+      logger.error('Notification init failed', error as Error);
     }
   }
 
@@ -30,11 +31,11 @@ class NotificationService {
     const permission = await Notification.requestPermission();
 
     if (permission === 'granted') {
-      console.log('✅ Notification permission granted');
+      logger.info('Notification permission granted');
       const token = await this.getToken();
       return token;
     } else {
-      console.log('❌ Notification permission denied');
+      logger.info('Notification permission denied');
       return null;
     }
   }
@@ -48,17 +49,17 @@ class NotificationService {
     try {
       // TODO: Add proper VAPID key from Firebase Console
       // For now, return null to prevent errors
-      console.log('📱 FCM Token: Skipped in development');
+      logger.debug('FCM Token: Skipped in development');
       return null;
 
       // Uncomment when VAPID key is available:
       // const token = await getToken(this.messaging, {
       //   vapidKey: 'YOUR_ACTUAL_VAPID_KEY_FROM_FIREBASE_CONSOLE'
       // });
-      // console.log('🔑 FCM Token:', token);
+      // logger.info('FCM Token received', { tokenLength: token.length });
       // return token;
     } catch (error) {
-      console.error('❌ Token error:', error);
+      logger.error('Token error', error as Error);
       return null;
     }
   }
@@ -73,7 +74,7 @@ class NotificationService {
       const permission = await Notification.requestPermission();
       
       if (permission === 'granted') {
-        console.log('✅ Notification permission granted');
+        logger.info('Notification permission granted');
         const token = await this.getToken();
         
         if (token && userId) {
@@ -82,11 +83,11 @@ class NotificationService {
         
         return token;
       } else {
-        console.log('❌ Notification permission denied');
+        logger.info('Notification permission denied');
         return null;
       }
     } catch (error) {
-      console.error('❌ Request permission and save token failed:', error);
+      logger.error('Request permission and save token failed', error as Error);
       return null;
     }
   }

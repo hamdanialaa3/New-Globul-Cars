@@ -1,5 +1,6 @@
 import { CarDataFromFile, CarDataSummary, AdvancedSearchParams, AvailableFilterOptions } from '@/types/CarData';
 import { BULGARIAN_CITIES } from '@/constants/bulgarianCities';
+import { logger } from './logger-service';
 
 class AdvancedDataService {
   private carData: CarDataFromFile[] = [];
@@ -161,7 +162,9 @@ class AdvancedDataService {
 
       this.preprocessData();
     } catch (error) {
-      console.error('[SERVICE] Error loading car data, using mock data:', error);
+      logger.error('[SERVICE] Error loading car data, using mock data', error as Error, { 
+        mockDataCount: this.mockData.length 
+      });
       this.carData = this.mockData;
       this.summary = this.generateSummary();
       this.preprocessData();

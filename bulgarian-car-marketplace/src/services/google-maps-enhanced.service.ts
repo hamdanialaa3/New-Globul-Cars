@@ -13,12 +13,13 @@
  */
 
 import { serviceLogger } from './logger-wrapper';
+import { logger } from './logger-service';
 
 const API_KEY = process.env.REACT_APP_GOOGLE_BROWSER_KEY || process.env.REACT_APP_GOOGLE_MAPS_API_KEY || 'AIzaSyAchmKCk8ipzv0dDwbQ2xU1Pa6o4CQsEu8';
 
 // Validate API key
 if (!API_KEY || API_KEY === 'YOUR_GOOGLE_MAPS_API_KEY') {
-  console.warn('⚠️ Google Maps API key not configured properly');
+  logger.warn('Google Maps API key not configured properly');
 }
 
 export interface DistanceResult {

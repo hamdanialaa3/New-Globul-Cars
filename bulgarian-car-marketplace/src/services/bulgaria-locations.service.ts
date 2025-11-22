@@ -20,6 +20,8 @@
  * @date November 16, 2025
  */
 
+import { logger } from './logger-service';
+
 // ============================================
 // TYPES & INTERFACES
 // ============================================
@@ -187,7 +189,7 @@ class BulgariaLocationsService {
       }
     }
 
-    console.log('[BulgariaLocations] Parsed:', {
+    logger.info('[BulgariaLocations] Parsed locations data', {
       provinces: locationsMap.size,
       totalCities: Array.from(locationsMap.values()).reduce((sum, p) => sum + p.cities.length, 0)
     });
@@ -212,21 +214,26 @@ class BulgariaLocationsService {
     // Start new load
     this.loadPromise = (async () => {
       try {
-        console.log('[BulgariaLocations] Starting to fetch data from /data/bulgaria_locations_complete.md');
+        logger.info('[BulgariaLocations] Starting to fetch data from /data/bulgaria_locations_complete.md');
         const response = await fetch('/data/bulgaria_locations_complete.md');
-        console.log('[BulgariaLocations] Fetch response:', response.status, response.statusText);
+        logger.info('[BulgariaLocations] Fetch response received', {
+          status: response.status,
+          statusText: response.statusText
+        });
         
         if (!response.ok) {
           throw new Error(`Failed to fetch locations: ${response.statusText}`);
         }
         
         const markdown = await response.text();
-        console.log('[BulgariaLocations] Markdown loaded, length:', markdown.length);
+        logger.info('[BulgariaLocations] Markdown loaded successfully', {
+          length: markdown.length
+        });
         
         this.locationsCache = this.parseLocationsMarkdown(markdown);
         return this.locationsCache;
       } catch (error) {
-        console.error('[BulgariaLocations] Load failed:', error);
+        logger.error('[BulgariaLocations] Failed to load location data', error as Error);
         this.loadPromise = null;
         throw error;
       }
