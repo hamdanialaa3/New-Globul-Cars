@@ -16,7 +16,7 @@ interface CacheOptions {
 }
 
 /**
- * Firebase Cache Service
+ * Firebase Cache Service - Singleton Pattern
  * 
  * Provides intelligent caching for Firebase queries to reduce:
  * - API calls
@@ -31,7 +31,9 @@ interface CacheOptions {
  * 
  * Usage:
  * ```ts
- * const cars = await firebaseCache.getOrFetch(
+ * import { firebaseCacheService } from '@/services/firebase-cache.service';
+ * 
+ * const cars = await firebaseCacheService.getOrFetch(
  *   'cars-active',
  *   async () => {
  *     const snapshot = await getDocs(query(collection(db, 'cars')));
@@ -42,6 +44,7 @@ interface CacheOptions {
  * ```
  */
 class FirebaseCacheService {
+  private static instance: FirebaseCacheService | null = null;
   private cache = new Map<string, CacheEntry<any>>();
   private readonly DEFAULT_CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
   private readonly MAX_CACHE_SIZE = 100; // Maximum number of cached entries
@@ -49,6 +52,17 @@ class FirebaseCacheService {
   // Statistics
   private hits = 0;
   private misses = 0;
+
+  private constructor() {
+    serviceLogger.debug('FirebaseCacheService initialized');
+  }
+
+  public static getInstance(): FirebaseCacheService {
+    if (!FirebaseCacheService.instance) {
+      FirebaseCacheService.instance = new FirebaseCacheService();
+    }
+    return FirebaseCacheService.instance;
+  }
 
   /**
    * Get data from cache or fetch it
@@ -252,7 +266,13 @@ export const cacheKeys = {
   
   // Reviews
   sellerReviews: (sellerId: string) => `reviews-${sellerId}`,
+  
+  // Analytics
+  pageViews: (page: string) => `analytics-page-${page}`,
 };
 
-export default firebaseCache;
+// Export singleton instance for easy access
+export const firebaseCacheService = FirebaseCacheService.getInstance();
 
+// Also export class for direct usage if needed
+export { FirebaseCacheService };

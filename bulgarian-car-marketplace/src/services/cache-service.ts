@@ -35,7 +35,21 @@ export interface CacheStats {
 
 /**
  * Professional Cache Service with LRU eviction and compression
- * (Comment removed - was in Arabic)
+ * Provides advanced caching with LRU eviction, TTL, compression, and persistence
+ * 
+ * Usage:
+ * ```typescript
+ * import { createCacheService } from '@/services/cache-service';
+ * 
+ * const cache = createCacheService({
+ *   ttl: 5 * 60 * 1000, // 5 minutes
+ *   maxSize: 100,
+ *   namespace: 'cars'
+ * });
+ * 
+ * cache.set('car-123', carData);
+ * const car = cache.get('car-123');
+ * ```
  */
 export class CacheService {
   private config: Required<CacheConfig>;

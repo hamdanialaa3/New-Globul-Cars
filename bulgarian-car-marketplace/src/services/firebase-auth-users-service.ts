@@ -11,12 +11,22 @@ import {
 import { db } from '@/firebase/firebase-config';
 import { serviceLogger } from './logger-wrapper';
 
-// Firebase Authentication Users Service
-// This service fetches real user data from Firebase Authentication and Firestore
+/**
+ * Firebase Authentication Users Service - Singleton Pattern
+ * Fetches real user data from Firebase Authentication and Firestore
+ * 
+ * Usage:
+ * ```typescript
+ * import { firebaseAuthUsersService } from '@/services/firebase-auth-users-service';
+ * const users = await firebaseAuthUsersService.getRealFirebaseUsers();
+ * ```
+ */
 class FirebaseAuthUsersService {
-  private static instance: FirebaseAuthUsersService;
+  private static instance: FirebaseAuthUsersService | null = null;
 
-  private constructor() {}
+  private constructor() {
+    serviceLogger.debug('FirebaseAuthUsersService initialized');
+  }
 
   public static getInstance(): FirebaseAuthUsersService {
     if (!FirebaseAuthUsersService.instance) {

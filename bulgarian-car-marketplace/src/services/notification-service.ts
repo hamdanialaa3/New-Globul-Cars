@@ -3,8 +3,37 @@ import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
 import { logger } from './logger-service';
 
+/**
+ * Notification Service - Singleton Pattern
+ * Handles Firebase Cloud Messaging (FCM) notifications
+ * 
+ * Features:
+ * - Push notification permissions
+ * - FCM token management
+ * - Real-time message listening
+ * 
+ * Usage:
+ * ```typescript
+ * import { notificationService } from '@/services/notification-service';
+ * 
+ * await notificationService.initialize();
+ * const token = await notificationService.requestPermission();
+ * ```
+ */
 class NotificationService {
+  private static instance: NotificationService | null = null;
   private messaging: any;
+
+  private constructor() {
+    logger.debug('NotificationService created');
+  }
+
+  public static getInstance(): NotificationService {
+    if (!NotificationService.instance) {
+      NotificationService.instance = new NotificationService();
+    }
+    return NotificationService.instance;
+  }
 
   async initialize() {
     // Skip Firebase messaging in development to prevent errors
@@ -248,4 +277,8 @@ class NotificationService {
   }
 }
 
-export const notificationService = new NotificationService();
+// Export singleton instance for easy access
+export const notificationService = NotificationService.getInstance();
+
+// Also export class for type checking
+export default NotificationService;

@@ -5,9 +5,34 @@ import { analytics } from './firebase-config';
 import { logEvent, setUserProperties, setUserId } from 'firebase/analytics';
 import { logger } from '@/services/logger-service';
 
+/**
+ * Bulgarian Analytics Service - Singleton Pattern
+ * Firebase Analytics wrapper for tracking user behavior
+ * 
+ * Usage:
+ * ```typescript
+ * import { analyticsService } from '@/firebase/analytics-service';
+ * 
+ * analyticsService.trackPageView('home', 'Home Page');
+ * analyticsService.trackCarEvent('view_car', carData);
+ * ```
+ */
 export class BulgarianAnalyticsService {
+  private static instance: BulgarianAnalyticsService | null = null;
+
+  private constructor() {
+    logger.debug('BulgarianAnalyticsService initialized');
+  }
+
+  public static getInstance(): BulgarianAnalyticsService {
+    if (!BulgarianAnalyticsService.instance) {
+      BulgarianAnalyticsService.instance = new BulgarianAnalyticsService();
+    }
+    return BulgarianAnalyticsService.instance;
+  }
+
   // Track page views
-  static trackPageView(pageName: string, pageTitle?: string) {
+  trackPageView(pageName: string, pageTitle?: string) {
     if (!analytics) return;
 
     try {
@@ -23,7 +48,7 @@ export class BulgarianAnalyticsService {
   }
 
   // Track user authentication events
-  static trackAuthEvent(event: 'login' | 'register' | 'logout', method?: string) {
+  trackAuthEvent(event: 'login' | 'register' | 'logout', method?: string) {
     if (!analytics) return;
 
     try {
@@ -42,7 +67,7 @@ export class BulgarianAnalyticsService {
   }
 
   // Track car-related events
-  static trackCarEvent(event: 'view_car' | 'search_cars' | 'add_car' | 'edit_car' | 'delete_car', carData?: any) {
+  trackCarEvent(event: 'view_car' | 'search_cars' | 'add_car' | 'edit_car' | 'delete_car', carData?: any) {
     if (!analytics) return;
 
     try {
@@ -65,7 +90,7 @@ export class BulgarianAnalyticsService {
   }
 
   // Track messaging events
-  static trackMessageEvent(event: 'send_message' | 'view_messages' | 'start_conversation') {
+  trackMessageEvent(event: 'send_message' | 'view_messages' | 'start_conversation') {
     if (!analytics) return;
 
     try {
@@ -78,7 +103,7 @@ export class BulgarianAnalyticsService {
   }
 
   // Track search events
-  static trackSearchEvent(searchTerm: string, filters?: any) {
+  trackSearchEvent(searchTerm: string, filters?: any) {
     if (!analytics) return;
 
     try {
@@ -92,7 +117,7 @@ export class BulgarianAnalyticsService {
   }
 
   // Track user engagement
-  static trackEngagement(event: 'scroll' | 'time_spent' | 'click' | 'share', details?: any) {
+  trackEngagement(event: 'scroll' | 'time_spent' | 'click' | 'share', details?: any) {
     if (!analytics) return;
 
     try {
@@ -106,7 +131,7 @@ export class BulgarianAnalyticsService {
   }
 
   // Track errors
-  static trackError(errorType: string, errorMessage: string, context?: any) {
+  trackError(errorType: string, errorMessage: string, context?: any) {
     if (!analytics) return;
 
     try {
@@ -121,7 +146,7 @@ export class BulgarianAnalyticsService {
   }
 
   // Set user properties
-  static setUserProperties(userId: string, properties: Record<string, any>) {
+  setUserProperties(userId: string, properties: Record<string, any>) {
     if (!analytics) return;
 
     try {
@@ -139,7 +164,7 @@ export class BulgarianAnalyticsService {
   }
 
   // Track performance metrics
-  static trackPerformance(metric: string, value: number, context?: any) {
+  trackPerformance(metric: string, value: number, context?: any) {
     if (!analytics) return;
 
     try {
@@ -154,7 +179,7 @@ export class BulgarianAnalyticsService {
   }
 
   // Track business metrics
-  static trackBusinessMetric(metric: 'car_listed' | 'car_sold' | 'user_registered' | 'message_sent', value?: number) {
+  trackBusinessMetric(metric: 'car_listed' | 'car_sold' | 'user_registered' | 'message_sent', value?: number) {
     if (!analytics) return;
 
     try {
@@ -168,7 +193,7 @@ export class BulgarianAnalyticsService {
   }
 
   // Track conversion events
-  static trackConversion(event: 'signup_complete' | 'car_purchase' | 'contact_seller', value?: number) {
+  trackConversion(event: 'signup_complete' | 'car_purchase' | 'contact_seller', value?: number) {
     if (!analytics) return;
 
     try {
@@ -182,19 +207,23 @@ export class BulgarianAnalyticsService {
   }
 }
 
+// Export singleton instance for easy access
+export const analyticsService = BulgarianAnalyticsService.getInstance();
+
 // Analytics hooks for React components
 export const useAnalytics = () => {
+  const service = BulgarianAnalyticsService.getInstance();
   return {
-    trackPageView: BulgarianAnalyticsService.trackPageView,
-    trackAuthEvent: BulgarianAnalyticsService.trackAuthEvent,
-    trackCarEvent: BulgarianAnalyticsService.trackCarEvent,
-    trackMessageEvent: BulgarianAnalyticsService.trackMessageEvent,
-    trackSearchEvent: BulgarianAnalyticsService.trackSearchEvent,
-    trackEngagement: BulgarianAnalyticsService.trackEngagement,
-    trackError: BulgarianAnalyticsService.trackError,
-    setUserProperties: BulgarianAnalyticsService.setUserProperties,
-    trackPerformance: BulgarianAnalyticsService.trackPerformance,
-    trackBusinessMetric: BulgarianAnalyticsService.trackBusinessMetric,
-    trackConversion: BulgarianAnalyticsService.trackConversion,
+    trackPageView: service.trackPageView.bind(service),
+    trackAuthEvent: service.trackAuthEvent.bind(service),
+    trackCarEvent: service.trackCarEvent.bind(service),
+    trackMessageEvent: service.trackMessageEvent.bind(service),
+    trackSearchEvent: service.trackSearchEvent.bind(service),
+    trackEngagement: service.trackEngagement.bind(service),
+    trackError: service.trackError.bind(service),
+    setUserProperties: service.setUserProperties.bind(service),
+    trackPerformance: service.trackPerformance.bind(service),
+    trackBusinessMetric: service.trackBusinessMetric.bind(service),
+    trackConversion: service.trackConversion.bind(service),
   };
 };

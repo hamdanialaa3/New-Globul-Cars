@@ -37,15 +37,23 @@ interface LogEntry {
 }
 
 class LoggerService {
+  private static instance: LoggerService | null = null;
   private isDevelopment: boolean;
   private isProduction: boolean;
   private sessionId: string;
   private userId: string | null = null;
 
-  constructor() {
+  private constructor() {
     this.isDevelopment = process.env.NODE_ENV === 'development';
     this.isProduction = process.env.NODE_ENV === 'production';
     this.sessionId = this.generateSessionId();
+  }
+
+  public static getInstance(): LoggerService {
+    if (!LoggerService.instance) {
+      LoggerService.instance = new LoggerService();
+    }
+    return LoggerService.instance;
   }
 
   /**
@@ -319,8 +327,11 @@ class LoggerService {
   }
 }
 
-// Singleton instance
-export const logger = new LoggerService();
+// Export singleton instance (use getInstance for proper singleton)
+export const logger = LoggerService.getInstance();
+
+// Also export class for type checking
+export { LoggerService };
 
 // Default export
 export default logger;

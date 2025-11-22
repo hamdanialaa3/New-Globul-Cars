@@ -1,5 +1,21 @@
-// Socket.io Configuration - Free Real-time Messaging
-// (Comment removed - was in Arabic)
+/**
+ * Bulgarian Socket Service - Singleton Pattern
+ * Real-time messaging using Socket.io
+ * 
+ * Features:
+ * - Auto-reconnection with exponential backoff
+ * - Event-based real-time updates
+ * - Car, message, and user events
+ * 
+ * Usage:
+ * ```typescript
+ * import { socketService } from '@/services/socket-service';
+ * 
+ * socketService.onNewMessage((data) => {
+ *   console.log('New message:', data);
+ * });
+ * ```
+ */
 
 import { io, Socket } from 'socket.io-client';
 import { serviceLogger } from './logger-wrapper';
@@ -8,12 +24,20 @@ import { serviceLogger } from './logger-wrapper';
 const SOCKET_URL = process.env.REACT_APP_SOCKET_URL || 'http://localhost:3001';
 
 export class BulgarianSocketService {
+  private static instance: BulgarianSocketService | null = null;
   private socket: Socket | null = null;
   private reconnectAttempts = 0;
   private maxReconnectAttempts = 5;
 
-  constructor() {
+  private constructor() {
     this.initializeSocket();
+  }
+
+  public static getInstance(): BulgarianSocketService {
+    if (!BulgarianSocketService.instance) {
+      BulgarianSocketService.instance = new BulgarianSocketService();
+    }
+    return BulgarianSocketService.instance;
   }
 
   private initializeSocket() {
@@ -184,6 +208,13 @@ this.emit('user:offline', data);
   }
 
   // Reconnect
+}
+
+// Export singleton instance for easy access
+export const socketService = BulgarianSocketService.getInstance();
+
+// Also export class for type checking
+export default BulgarianSocketService;
   reconnect() {
     if (!this.socket || !this.socket.connected) {
       this.initializeSocket();
