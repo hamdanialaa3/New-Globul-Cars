@@ -16,7 +16,7 @@ import * as admin from 'firebase-admin';
  * 2. Select events: payment_intent.succeeded, payment_intent.payment_failed
  * 3. Copy webhook signing secret to Firebase config
  */
-export const handleStripeWebhook = functions.region('europe-west1').https.onRequest(
+export const handleStripeWebhook = functions.https.onRequest(
   async (req, res) => {
     // Only accept POST requests
     if (req.method !== 'POST') {

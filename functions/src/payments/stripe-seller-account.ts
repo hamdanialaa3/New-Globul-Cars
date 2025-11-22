@@ -33,7 +33,7 @@ interface AccountLinkRequest {
  * Create Stripe Connect Express account for a seller
  * Requires seller role
  */
-export const createStripeSellerAccount = functions.region('europe-west1').https.onCall(
+export const createStripeSellerAccount = functions.https.onCall(
   async (data: CreateAccountRequest, context) => {
     // Check authentication
     if (!context.auth) {
@@ -151,7 +151,7 @@ export const createStripeSellerAccount = functions.region('europe-west1').https.
  * Generate new account link for Stripe onboarding
  * Used when previous link expires or seller needs to complete onboarding
  */
-export const createStripeAccountLink = functions.region('europe-west1').https.onCall(
+export const createStripeAccountLink = functions.https.onCall(
   async (data: AccountLinkRequest, context) => {
     if (!context.auth || !context.auth.token.seller) {
       throw new functions.https.HttpsError(
@@ -199,7 +199,7 @@ export const createStripeAccountLink = functions.region('europe-west1').https.on
 /**
  * Get Stripe account status for a seller
  */
-export const getStripeAccountStatus = functions.region('europe-west1').https.onCall(
+export const getStripeAccountStatus = functions.https.onCall(
   async (data, context) => {
     if (!context.auth || !context.auth.token.seller) {
       throw new functions.https.HttpsError(

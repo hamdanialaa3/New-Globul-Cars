@@ -11,7 +11,7 @@ import * as admin from 'firebase-admin';
  * 
  * URL: https://mobilebg.eu/api/facebook-catalog.xml
  */
-export const facebookCatalogXML = functions.region('europe-west1').https.onRequest(async (req, res) => {
+export const facebookCatalogXML = functions.https.onRequest(async (req, res) => {
   try {
     // Set CORS headers
     res.set('Access-Control-Allow-Origin', '*');
@@ -96,7 +96,7 @@ export const facebookCatalogXML = functions.region('europe-west1').https.onReque
  * 
  * URL: https://mobilebg.eu/api/facebook-catalog.csv
  */
-export const facebookCatalogCSV = functions.region('europe-west1').https.onRequest(async (req, res) => {
+export const facebookCatalogCSV = functions.https.onRequest(async (req, res) => {
   try {
     // Set CORS headers
     res.set('Access-Control-Allow-Origin', '*');

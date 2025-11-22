@@ -7,7 +7,7 @@ const translateClient = new v2.Translate();
 /**
  * A callable function to translate a given text to a target language.
  */
-export const translateText = functions.region('europe-west1').https.onCall(async (data, context) => {
+export const translateText = functions.https.onCall(async (data, context) => {
   // 1. Authentication Check: Make sure the user is authenticated.
   if (!context.auth) {
     throw new functions.https.HttpsError(

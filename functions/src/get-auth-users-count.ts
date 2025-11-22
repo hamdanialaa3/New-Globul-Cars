@@ -8,7 +8,7 @@ import * as admin from 'firebase-admin';
  * Get the REAL total number of users from Firebase Authentication
  * This reads from the actual Auth system, not from Firestore
  */
-export const getAuthUsersCount = functions.region('europe-west1').https.onCall(async (data, context) => {
+export const getAuthUsersCount = functions.https.onCall(async (data, context) => {
   // Verify that caller is the unique owner
   if (!context.auth) {
     throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
@@ -70,7 +70,7 @@ export const getAuthUsersCount = functions.region('europe-west1').https.onCall(a
 /**
  * Get active users (logged in within last 24 hours)
  */
-export const getActiveAuthUsers = functions.region('europe-west1').https.onCall(async (data, context) => {
+export const getActiveAuthUsers = functions.https.onCall(async (data, context) => {
   // Verify authentication
   if (!context.auth || context.auth.token.email !== 'alaa.hamdani@yahoo.com') {
     throw new functions.https.HttpsError('permission-denied', 'Not authorized');
@@ -115,7 +115,7 @@ export const getActiveAuthUsers = functions.region('europe-west1').https.onCall(
  * Sync Firebase Auth users to Firestore
  * This creates/updates user documents in Firestore from Firebase Auth
  */
-export const syncAuthToFirestore = functions.region('europe-west1').https.onCall(async (data, context) => {
+export const syncAuthToFirestore = functions.https.onCall(async (data, context) => {
   // Verify authentication
   if (!context.auth || context.auth.token.email !== 'alaa.hamdani@yahoo.com') {
     throw new functions.https.HttpsError('permission-denied', 'Not authorized');

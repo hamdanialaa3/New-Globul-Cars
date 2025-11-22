@@ -35,7 +35,7 @@ async function isUserAdmin(uid: string): Promise<boolean> {
  * Callable function for admins to set user roles
  * Requires admin privileges
  */
-export const setUserRole = functions.region('europe-west1').https.onCall(
+export const setUserRole = functions.https.onCall(
   async (data: SetUserRoleRequest, context) => {
     // 1. Check authentication
     if (!context.auth) {
@@ -144,7 +144,7 @@ export const setUserRole = functions.region('europe-west1').https.onCall(
  * Callable function to get user's custom claims
  * Admins can check any user, regular users can check their own claims
  */
-export const getUserClaims = functions.region('europe-west1').https.onCall(
+export const getUserClaims = functions.https.onCall(
   async (data: GetUserClaimsRequest, context) => {
     if (!context.auth) {
       throw new functions.https.HttpsError(
@@ -202,7 +202,7 @@ export const getUserClaims = functions.region('europe-west1').https.onCall(
  * Callable function to list all users with their roles
  * Admin only
  */
-export const listUsersWithRoles = functions.region('europe-west1').https.onCall(
+export const listUsersWithRoles = functions.https.onCall(
   async (data, context) => {
     if (!context.auth) {
       throw new functions.https.HttpsError(

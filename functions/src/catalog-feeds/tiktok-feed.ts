@@ -5,7 +5,7 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 
-export const tiktokShoppingFeed = functions.region('europe-west1').https.onRequest(async (req, res) => {
+export const tiktokShoppingFeed = functions.https.onRequest(async (req, res) => {
   try {
     res.set('Access-Control-Allow-Origin', '*');
     res.set('Content-Type', 'application/json; charset=utf-8');

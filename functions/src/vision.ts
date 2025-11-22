@@ -15,7 +15,7 @@ const db = admin.firestore();
  * Triggered when a new image is uploaded to the 'cars' folder in Cloud Storage.
  * Analyzes the image for safe search content and relevant labels.
  */
-export const analyzeCarImage = functions.region('europe-west1').storage
+export const analyzeCarImage = functions.storage
   .object()
   .onFinalize(async (object) => {
     const filePath = object.name; // e.g., 'cars/carId/imageName.jpg'

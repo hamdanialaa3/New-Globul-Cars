@@ -27,7 +27,7 @@ interface TokenResponse {
  * Exchange OAuth authorization code for access token
  * Called from frontend after OAuth redirect
  */
-export const exchangeOAuthToken = functions.region('europe-west1').https.onCall(
+export const exchangeOAuthToken = functions.https.onCall(
   async (data: TokenExchangeRequest, context) => {
     // Verify authentication
     if (!context.auth) {
@@ -120,7 +120,7 @@ async function exchangeFacebookToken(code: string, redirectUri: string): Promise
     `code=${code}`;
 
   const tokenRes = await axios.get(tokenUrl);
-  const { access_token, expires_in } = tokenRes.data;
+  const { access_token, expires_in } = tokenRes.data as any;
 
   // Get user info
   const userRes = await axios.get(
@@ -130,10 +130,10 @@ async function exchangeFacebookToken(code: string, redirectUri: string): Promise
   return {
     accessToken: access_token,
     expiresIn: expires_in,
-    accountId: userRes.data.id,
-    accountName: userRes.data.name,
-    accountHandle: userRes.data.name.toLowerCase().replace(/\s+/g, ''),
-    profileImage: userRes.data.picture?.data?.url
+    accountId: (userRes.data as any).id,
+    accountName: (userRes.data as any).name,
+    accountHandle: (userRes.data as any).name.toLowerCase().replace(/\s+/g, ''),
+    profileImage: (userRes.data as any).picture?.data?.url
   };
 }
 
@@ -159,7 +159,7 @@ async function exchangeTwitterToken(code: string, redirectUri: string): Promise<
     }
   );
 
-  const { access_token, refresh_token, expires_in } = tokenRes.data;
+  const { access_token, refresh_token, expires_in } = tokenRes.data as any;
 
   // Get user info
   const userRes = await axios.get('https://api.twitter.com/2/users/me', {
@@ -170,9 +170,9 @@ async function exchangeTwitterToken(code: string, redirectUri: string): Promise<
     accessToken: access_token,
     refreshToken: refresh_token,
     expiresIn: expires_in,
-    accountId: userRes.data.data.id,
-    accountName: userRes.data.data.name,
-    accountHandle: userRes.data.data.username
+    accountId: (userRes.data as any).data.id,
+    accountName: (userRes.data as any).data.name,
+    accountHandle: (userRes.data as any).data.username
   };
 }
 
@@ -190,7 +190,7 @@ async function exchangeTikTokToken(code: string, redirectUri: string): Promise<T
     }
   );
 
-  const { access_token, expires_in, open_id } = tokenRes.data.data;
+  const { access_token, expires_in, open_id } = (tokenRes.data as any).data;
 
   // Get user info
   const userRes = await axios.get(
@@ -201,9 +201,9 @@ async function exchangeTikTokToken(code: string, redirectUri: string): Promise<T
     accessToken: access_token,
     expiresIn: expires_in,
     accountId: open_id,
-    accountName: userRes.data.data.display_name,
-    accountHandle: userRes.data.data.unique_id,
-    profileImage: userRes.data.data.avatar_url
+    accountName: (userRes.data as any).data.display_name,
+    accountHandle: (userRes.data as any).data.unique_id,
+    profileImage: (userRes.data as any).data.avatar_url
   };
 }
 
@@ -225,7 +225,7 @@ async function exchangeLinkedInToken(code: string, redirectUri: string): Promise
     }
   );
 
-  const { access_token, expires_in } = tokenRes.data;
+  const { access_token, expires_in } = tokenRes.data as any;
 
   // Get user info
   const userRes = await axios.get('https://api.linkedin.com/v2/me', {
@@ -235,9 +235,9 @@ async function exchangeLinkedInToken(code: string, redirectUri: string): Promise
   return {
     accessToken: access_token,
     expiresIn: expires_in,
-    accountId: userRes.data.id,
-    accountName: `${userRes.data.localizedFirstName} ${userRes.data.localizedLastName}`,
-    accountHandle: userRes.data.id
+    accountId: (userRes.data as any).id,
+    accountName: `${(userRes.data as any).localizedFirstName} ${(userRes.data as any).localizedLastName}`,
+    accountHandle: (userRes.data as any).id
   };
 }
 
@@ -256,7 +256,7 @@ async function exchangeYouTubeToken(code: string, redirectUri: string): Promise<
     }
   );
 
-  const { access_token, refresh_token, expires_in } = tokenRes.data;
+  const { access_token, refresh_token, expires_in } = tokenRes.data as any;
 
   // Get channel info
   const channelRes = await axios.get(
@@ -266,7 +266,7 @@ async function exchangeYouTubeToken(code: string, redirectUri: string): Promise<
     }
   );
 
-  const channel = channelRes.data.items[0];
+  const channel = (channelRes.data as any).items[0];
 
   return {
     accessToken: access_token,

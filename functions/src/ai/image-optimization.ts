@@ -17,7 +17,7 @@
 
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
-import * as sharp from 'sharp';
+import sharp from 'sharp';
 import * as path from 'path';
 import { logger } from '../utils/logger';
 
@@ -75,7 +75,7 @@ function getOptimizedPath(originalPath: string, size: string, format: string): s
  * Optimize single image variant
  */
 async function optimizeVariant(
-  bucket: admin.storage.Bucket,
+  bucket: any,
   originalPath: string,
   imageBuffer: Buffer,
   sizeName: string,
@@ -198,7 +198,7 @@ async function analyzeImageQuality(imageBuffer: Buffer): Promise<{
     }
 
     // Check format
-    if (metadata.format === 'gif' || metadata.format === 'bmp') {
+    if (metadata.format === 'gif' || (metadata.format as any) === 'bmp') {
       score -= 10;
       issues.push('Inefficient format (GIF/BMP)');
       recommendations.push('Use JPEG or PNG format');

@@ -10,7 +10,7 @@ import * as admin from 'firebase-admin';
  * Only run this ONCE to initialize owner privileges
  * After that, all checks use the custom claim instead of hardcoded email
  */
-export const setSuperAdminClaim = functions.region('europe-west1').https.onCall(async (data, context) => {
+export const setSuperAdminClaim = functions.https.onCall(async (data, context) => {
   // Initial authentication: only authenticated user can call this
   if (!context.auth) {
     throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');

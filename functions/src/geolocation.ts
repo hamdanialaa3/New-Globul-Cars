@@ -20,7 +20,7 @@ if (!GOOGLE_MAPS_API_KEY) {
 /**
  * Geocodes a car's address when it's created and updates the document with coordinates.
  */
-export const geocodeAddressOnCarCreate = functions.region('europe-west1').firestore
+export const geocodeAddressOnCarCreate = functions.firestore
   .document('cars/{carId}')
   .onCreate(async (snapshot, context) => {
     const carData = snapshot.data();

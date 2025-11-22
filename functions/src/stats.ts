@@ -19,7 +19,7 @@ const statsRef = db.collection('market').doc('stats');
  * Callable: Return full Super Admin analytics with Admin privileges
  * Uses custom claim check for better security
  */
-export const getSuperAdminAnalytics = functions.region('europe-west1').https.onCall(async (data, context) => {
+export const getSuperAdminAnalytics = functions.https.onCall(async (data, context) => {
   // Verify super admin using custom claim (or email fallback)
   const isSuperAdmin = await verifySuperAdmin(context);
   if (!isSuperAdmin) {
@@ -94,7 +94,7 @@ export const getSuperAdminAnalytics = functions.region('europe-west1').https.onC
  * Increments the view count for a car and the total market views.
  * This is a callable function invoked from the frontend.
  */
-export const incrementCarViewCount = functions.region('europe-west1').https.onCall(async (data, context) => {
+export const incrementCarViewCount = functions.https.onCall(async (data, context) => {
   const carId = data.carId;
   if (!carId) {
     throw new functions.https.HttpsError('invalid-argument', 'A "carId" must be provided.');
@@ -129,7 +129,7 @@ export const incrementCarViewCount = functions.region('europe-west1').https.onCa
  * Updates total car count when a new car document is created.
  * This is a Firestore trigger.
  */
-export const onCarCreate = functions.region('europe-west1').firestore
+export const onCarCreate = functions.firestore
   .document('cars/{carId}')
   .onCreate(async (snap, context) => {
     return statsRef.set({
@@ -141,7 +141,7 @@ export const onCarCreate = functions.region('europe-west1').firestore
  * Updates total car count when a car document is deleted.
  * This is a Firestore trigger.
  */
-export const onCarDelete = functions.region('europe-west1').firestore
+export const onCarDelete = functions.firestore
   .document('cars/{carId}')
   .onDelete(async (snap, context) => {
     return statsRef.set({
@@ -153,7 +153,7 @@ export const onCarDelete = functions.region('europe-west1').firestore
  * Updates total user count when a new user is created.
  * This is an Auth trigger.
  */
-export const onUserCreate = functions.region('europe-west1').auth
+export const onUserCreate = functions.auth
   .user()
   .onCreate(async (user) => {
     return statsRef.set({
@@ -165,7 +165,7 @@ export const onUserCreate = functions.region('europe-west1').auth
  * Updates total user count when a user is deleted.
  * This is an Auth trigger.
  */
-export const onUserDelete = functions.region('europe-west1').auth
+export const onUserDelete = functions.auth
   .user()
   .onDelete(async (user) => {
     return statsRef.set({

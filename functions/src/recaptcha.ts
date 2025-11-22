@@ -14,7 +14,7 @@ if (!GCP_PROJECT_ID || !RECAPTCHA_SITE_KEY) {
 /**
  * A callable function to verify a reCAPTCHA token from the client.
  */
-export const verifyRecaptchaToken = functions.region('europe-west1').https.onCall(async (data, context) => {
+export const verifyRecaptchaToken = functions.https.onCall(async (data, context) => {
   const { token, action } = data;
 
   if (!token || !action) {

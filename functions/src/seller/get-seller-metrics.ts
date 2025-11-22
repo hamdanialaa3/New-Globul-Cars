@@ -34,7 +34,7 @@ interface SellerMetrics {
  * Callable function to get seller dashboard metrics
  * Requires seller role
  */
-export const getSellerMetrics = functions.region('europe-west1').https.onCall(
+export const getSellerMetrics = functions.https.onCall(
   async (data, context) => {
     // Check authentication
     if (!context.auth) {

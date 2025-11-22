@@ -136,6 +136,7 @@ async function findPotentialDuplicates(carData: any): Promise<Array<{
   specsSimilarity: number;
   overallScore: number;
   reasons: string[];
+  fraudSuspicion?: boolean;
 }>> {
   const results: Array<any> = [];
 
@@ -184,7 +185,8 @@ async function findPotentialDuplicates(carData: any): Promise<Array<{
             titleSimilarity,
             specsSimilarity: specsMatch.score,
             overallScore,
-            reasons
+            reasons,
+            fraudSuspicion: false // Same seller, not fraud
           });
         }
       }
@@ -199,7 +201,7 @@ async function findPotentialDuplicates(carData: any): Promise<Array<{
         .limit(20)
         .get();
 
-      for (const doc of sameSeller.docs) {
+      for (const doc of sameCar.docs) {
         // Skip if already in results
         if (results.some(r => r.id === doc.id)) continue;
 
