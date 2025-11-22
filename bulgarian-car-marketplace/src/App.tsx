@@ -19,10 +19,10 @@ import './styles/premium-effects.css';
 import ErrorBoundary from './components/ErrorBoundary';
 // import RouteErrorBoundary from './components/ErrorBoundary/RouteErrorBoundary';
 import { SkipNavigation } from './components/Accessibility';
-import Header from './components/Header/Header';
-import MobileHeader from './components/Header/MobileHeader'; // ✅ NEW: Mobile-only header
-import { MobileBottomNav } from './components/layout'; // ✅ NEW: Mobile bottom navigation
-import Footer from './components/Footer/Footer';
+const Header = React.lazy(() => import('./components/Header/Header'));
+const MobileHeader = React.lazy(() => import('./components/Header/MobileHeader')); // ✅ NEW: Mobile-only header
+const MobileBottomNav = React.lazy(() => import('./components/layout').then(module => ({ default: module.MobileBottomNav }))); // ✅ NEW: Mobile bottom navigation
+const Footer = React.lazy(() => import('./components/Footer/Footer'));
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
 import AuthGuard from './components/AuthGuard';
@@ -30,12 +30,12 @@ import NotificationHandler from './components/NotificationHandler';
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 import { FilterProvider } from './contexts/FilterContext';
 // import AnalyticsTracker from './components/AnalyticsTracker';
-import NotFoundPage from './components/NotFoundPage';
-import FacebookPixel from './components/FacebookPixel';
-import FloatingAddButton from './components/FloatingAddButton';
-import RobotChatIcon from './components/AI/RobotChatIcon';
+const NotFoundPage = React.lazy(() => import('./components/NotFoundPage'));
+const FacebookPixel = React.lazy(() => import('./components/FacebookPixel'));
+const FloatingAddButton = React.lazy(() => import('./components/FloatingAddButton'));
+const RobotChatIcon = React.lazy(() => import('./components/AI/RobotChatIcon'));
 import { useIsMobile } from './hooks/useBreakpoint';
-import ProgressBar from './components/ProgressBar';
+const ProgressBar = React.lazy(() => import('./components/ProgressBar'));
 // Removed problematic imports
 // import useAuthRedirectHandler from './hooks/useAuthRedirectHandler';
 
@@ -174,11 +174,15 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       <header role="banner">
         {/* ✅ Desktop Header - Hidden on mobile */}
         <div className="desktop-header-only">
-          <Header />
+          <Suspense fallback={<div style={{ height: '70px' }} />}>
+            <Header />
+          </Suspense>
         </div>
         {/* ✅ Mobile Header - Visible only on mobile/tablet portrait */}
         <div className="mobile-header-only">
-          <MobileHeader />
+          <Suspense fallback={<div style={{ height: '60px' }} />}>
+            <MobileHeader />
+          </Suspense>
         </div>
       </header>
       <main
@@ -196,10 +200,14 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         </div>
       </main>
       <footer role="contentinfo">
-        <Footer />
+        <Suspense fallback={<div style={{ height: '300px' }} />}>
+          <Footer />
+        </Suspense>
       </footer>
       {/* ✅ Mobile Bottom Navigation - Visible only on mobile */}
-      <MobileBottomNav />
+      <Suspense fallback={<div style={{ height: '60px' }} />}>
+        <MobileBottomNav />
+      </Suspense>
     </div>
   );
 };
@@ -245,11 +253,17 @@ const App: React.FC = () => {
                   <Router>
                   {/* Unified filter context (search + listings). Nested to preserve critical provider order. */}
                   <FilterProvider>
-                  <FacebookPixel />
+                  <Suspense fallback={<div style={{ height: '0' }} />}>
+                    <FacebookPixel />
+                  </Suspense>
                   {/* <FacebookMessengerWidget /> - Temporarily disabled */}
                   <SkipNavigation />
                   <NotificationHandler />
-                  <Suspense fallback={<ProgressBar duration={2000} />}>
+                  <Suspense fallback={
+                    <Suspense fallback={<div>Loading...</div>}>
+                      <ProgressBar duration={2000} />
+                    </Suspense>
+                  }>
                     <Routes>
                       {/* Auth Routes - Full Screen (no header/footer) */}
                       <Route path="/login" element={
@@ -319,8 +333,12 @@ const MainLayout: React.FC = () => {
   const isMobile = useIsMobile();
   return (
   <Layout>
-    <FloatingAddButton />
-    <RobotChatIcon />
+    <Suspense fallback={null}>
+      <FloatingAddButton />
+    </Suspense>
+    <Suspense fallback={null}>
+      <RobotChatIcon />
+    </Suspense>
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/social" element={<SocialFeedPage />} />
@@ -858,7 +876,11 @@ const MainLayout: React.FC = () => {
       <Route path="/sitemap" element={<SitemapPage />} />
 
       {/* 404 Page - Already wrapped in Layout by MainLayout */}
-      <Route path="*" element={<NotFoundPage />} />
+      <Route path="*" element={
+        <Suspense fallback={<div>Loading...</div>}>
+          <NotFoundPage />
+        </Suspense>
+      } />
     </Routes>
   </Layout>
   );
