@@ -24,7 +24,7 @@ import {
   type LegalForm,
   type VehicleType,
   type CarCategory
-} from '../../../types/dealership.types';
+} from '../../../types/dealership/dealership.types';
 import { useToast } from '../../Toast';
 
 interface DealershipInfoFormProps {

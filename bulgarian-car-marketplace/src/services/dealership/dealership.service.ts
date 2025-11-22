@@ -29,7 +29,7 @@ import type {
   WorkingHours,
   DealershipServices,
   DealershipCertifications
-} from '../../types/dealership.types';
+} from '../../types/dealership/dealership.types';
 import { logger } from '../logger-service';
 
 class DealershipService {

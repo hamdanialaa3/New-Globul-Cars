@@ -9,7 +9,6 @@ import ProfileMyAds from './ProfileMyAds';
 import ProfileCampaigns from './ProfileCampaigns';
 import ProfileAnalytics from './ProfileAnalytics';
 import ProfileSettings from './ProfileSettings';
-import ProfileSettingsNew from './ProfileSettingsNew';
 import ProfileSettingsMobileDe from './ProfileSettingsMobileDe';
 import ProfileConsultations from './ProfileConsultations';
 
@@ -44,7 +43,6 @@ export const ProfileRouter: React.FC = () => {
         <Route path="analytics" element={<ProfileAnalytics />} />
         <Route path="settings" element={<ProfileSettingsMobileDe />} />
         <Route path="settings-old" element={<ProfileSettings />} />
-        <Route path="settings-new" element={<ProfileSettingsNew />} />
         <Route path="consultations" element={<ProfileConsultations />} />
         
         {/* User profile view - Must come AFTER specific routes */}

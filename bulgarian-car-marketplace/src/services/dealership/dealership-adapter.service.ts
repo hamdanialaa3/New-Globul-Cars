@@ -15,7 +15,7 @@
 
 import { UnifiedProfileService } from '../profile/UnifiedProfileService';
 // Use LEGACY type to match old service interface
-import type { DealershipInfo as LegacyDealershipInfo, PrivacySettings } from '@/types/dealership.types';
+import type { DealershipInfo as LegacyDealershipInfo, PrivacySettings } from '@/types/dealership/dealership.types';
 import { doc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/firebase/firebase-config';
 import { logger } from '../logger-service';
