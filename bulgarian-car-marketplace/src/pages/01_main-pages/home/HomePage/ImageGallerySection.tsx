@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { logger } from '@/services/logger-service';
+// Force recompile to clear stale warnings
 
 const ImageGallerySection = styled.section`
   background: var(--bg-secondary);
@@ -276,35 +277,13 @@ const GALLERY_IMAGE_NAMES = [
 const ImageGallerySectionComponent: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentImage, setCurrentImage] = useState<string>('');
-  const [preloadedImages, setPreloadedImages] = useState<Map<number, string>>(new Map());
 
-  // ✅ Preload current, next, and previous images only
+  // Use direct paths from public folder instead of dynamic imports
+  const imageUrls = GALLERY_IMAGE_NAMES.map(name => `/assets/images/Pic/${name}`);
+
+  // ✅ Set current image directly (no preloading needed for public assets)
   useEffect(() => {
-    const loadImages = async () => {
-      const imagesToLoad = [
-        currentIndex,
-        (currentIndex + 1) % GALLERY_IMAGE_NAMES.length,
-        (currentIndex - 1 + GALLERY_IMAGE_NAMES.length) % GALLERY_IMAGE_NAMES.length
-      ];
-
-      const newPreloaded = new Map(preloadedImages);
-      
-      for (const idx of imagesToLoad) {
-        if (!newPreloaded.has(idx)) {
-          try {
-            const imgModule = await import(`../../../../assets/images/gallery/${GALLERY_IMAGE_NAMES[idx]}`);
-            newPreloaded.set(idx, imgModule.default);
-          } catch (error) {
-            logger.error('Failed to load gallery image', error as Error, { imageName: GALLERY_IMAGE_NAMES[idx], index: idx });
-          }
-        }
-      }
-
-      setPreloadedImages(newPreloaded);
-      setCurrentImage(newPreloaded.get(currentIndex) || '');
-    };
-
-    loadImages();
+    setCurrentImage(imageUrls[currentIndex] || '');
   }, [currentIndex]);
 
   // Auto-rotate every 4 seconds
@@ -317,13 +296,13 @@ const ImageGallerySectionComponent: React.FC = () => {
   }, []);
 
   const handlePrevious = () => {
-    setCurrentIndex((prevIndex) => 
+    setCurrentIndex((prevIndex) =>
       prevIndex === 0 ? GALLERY_IMAGE_NAMES.length - 1 : prevIndex - 1
     );
   };
 
   const handleNext = () => {
-    setCurrentIndex((prevIndex) => 
+    setCurrentIndex((prevIndex) =>
       (prevIndex + 1) % GALLERY_IMAGE_NAMES.length
     );
   };
@@ -333,7 +312,7 @@ const ImageGallerySectionComponent: React.FC = () => {
   };
 
   const { language } = useLanguage();
-  
+
   if (GALLERY_IMAGE_NAMES.length === 0) {
     return (
       <ImageGallerySection>
@@ -353,7 +332,7 @@ const ImageGallerySectionComponent: React.FC = () => {
         <SectionHeader>
           <h2>{language === 'bg' ? 'Галерия със снимки' : 'Image Gallery'}</h2>
           <p>
-            {language === 'bg' 
+            {language === 'bg'
               ? 'Разгледайте нашата обширна колекция от високо качество изображения, показващи нашата идентичност и визуални активи.'
               : 'Explore our comprehensive collection of high-quality images showcasing our brand identity and visual assets.'}
           </p>
@@ -364,17 +343,17 @@ const ImageGallerySectionComponent: React.FC = () => {
 
         <SlideshowContainer>
           {currentImage && (
-            <SlideImage 
-              src={currentImage} 
+            <SlideImage
+              src={currentImage}
               alt={`Gallery image ${currentIndex + 1}`}
               key={currentIndex}
             />
           )}
-          
+
           <NavButton className="prev" onClick={handlePrevious}>
             <ChevronLeft size={24} />
           </NavButton>
-          
+
           <NavButton className="next" onClick={handleNext}>
             <ChevronRight size={24} />
           </NavButton>

@@ -1,6 +1,7 @@
 // Minimal CRACO configuration to avoid previous complex plugin errors
 const path = require('path');
 const webpack = require('webpack');
+const { InjectManifest } = require('workbox-webpack-plugin');
 
 module.exports = {
   eslint: { enable: false },
@@ -10,10 +11,15 @@ module.exports = {
       if (config.mode === 'production') {
         config.optimization.minimize = false;
       }
-      // Remove ESLint & type checker plugins if present
+      
+      // CRITICAL: Remove CRA's default Workbox plugin to prevent conflict
       config.plugins = (config.plugins || []).filter(p => {
         const name = p.constructor?.name;
-        return name !== 'ESLintWebpackPlugin' && name !== 'ForkTsCheckerWebpackPlugin' && name !== 'ModuleScopePlugin';
+        return name !== 'ESLintWebpackPlugin' 
+          && name !== 'ForkTsCheckerWebpackPlugin' 
+          && name !== 'ModuleScopePlugin'
+          && name !== 'GenerateSW'  // Remove CRA's default SW plugin
+          && name !== 'InjectManifest'; // Remove any existing InjectManifest
       });
 
       // Basic aliases
@@ -56,6 +62,18 @@ module.exports = {
           Buffer: ['buffer', 'Buffer'],
         })
       );
+
+      // Add our custom Workbox with runtime caching (production only)
+      if (config.mode === 'production') {
+        config.plugins.push(
+          new InjectManifest({
+            swSrc: path.resolve(__dirname, 'src/sw-custom.js'),
+            swDest: 'service-worker.js',
+            maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
+            exclude: [/\.map$/, /asset-manifest\.json$/, /LICENSE/],
+          })
+        );
+      }
 
       return config;
     }

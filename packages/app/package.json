@@ -5,27 +5,30 @@
   "private": true,
   "scripts": {
     "start": "craco start",
+    "dev": "craco start",
     "build": "craco build",
     "test": "craco test",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@globul-cars/admin": "*",
+    "@globul-cars/auth": "*",
+    "@globul-cars/cars": "*",
+    "@globul-cars/core": "*",
+    "@globul-cars/iot": "*",
+    "@globul-cars/messaging": "*",
+    "@globul-cars/payments": "*",
+    "@globul-cars/profile": "*",
+    "@globul-cars/services": "*",
+    "@globul-cars/social": "*",
+    "@globul-cars/ui": "*",
+    "@types/d3": "^7.4.3",
+    "d3": "^7.9.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-router-dom": "^7.9.1",
-    "react-scripts": "5.0.1",
-    "styled-components": "^6.1.19",
-    "@globul-cars/core": "*",
-    "@globul-cars/ui": "*",
-    "@globul-cars/auth": "*",
-    "@globul-cars/cars": "*",
-    "@globul-cars/profile": "*",
-    "@globul-cars/messaging": "*",
-    "@globul-cars/social": "*",
-    "@globul-cars/admin": "*",
-    "@globul-cars/payments": "*",
-    "@globul-cars/iot": "*",
-    "@globul-cars/services": "*"
+    "react-scripts": "^5.0.1",
+    "styled-components": "^6.1.19"
   },
   "devDependencies": {
     "@craco/craco": "^7.1.0",
@@ -34,4 +37,3 @@
     "typescript": "^4.9.5"
   }
 }
-

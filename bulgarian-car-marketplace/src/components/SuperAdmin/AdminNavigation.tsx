@@ -1,16 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
-import { 
-  BarChart3, 
-  Users, 
-  Shield, 
-  FileText, 
-  Bell, 
+import {
+  BarChart3,
+  Users,
+  Shield,
+  FileText,
+  Bell,
   Settings,
   Database,
   Activity,
   Facebook,
-  FolderOpen
+  FolderOpen,
+  Network
 } from 'lucide-react';
 
 interface AdminNavigationProps {
@@ -87,6 +88,7 @@ const AdminNavigation: React.FC<AdminNavigationProps> = ({ activeTab, onTabChang
   const tabs = [
     { id: 'overview', label: 'Overview', icon: BarChart3 },
     { id: 'project', label: 'Project', icon: FolderOpen },
+    { id: 'architecture', label: 'Architecture', icon: Network },
     { id: 'facebook', label: 'Facebook', icon: Facebook },
     { id: 'realdata', label: 'Real Data', icon: Database },
     { id: 'charts', label: 'Charts', icon: Activity },

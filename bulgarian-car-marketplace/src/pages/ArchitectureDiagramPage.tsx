@@ -3,6 +3,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 // @ts-ignore - d3 types may not be available
 import * as d3 from 'd3';
 import Header from '../components/Header/Header';
@@ -11,8 +12,8 @@ import { useTheme } from '../contexts/ThemeContext';
 const Container = styled.div<{ isDark: boolean }>`
   width: 100%;
   min-height: 100vh;
-  background: ${props => props.isDark 
-    ? '#1a1d29' 
+  background: ${props => props.isDark
+    ? '#1a1d29'
     : '#f5f5f5'};
   padding: 0;
   padding-top: 80px;
@@ -28,93 +29,6 @@ const Content = styled.div<{ isDark: boolean }>`
   padding: 0;
   border: none;
   position: relative;
-`;
-
-const PageHeader = styled.div<{ isDark: boolean }>`
-  text-align: center;
-  margin-bottom: 30px;
-  padding-bottom: 20px;
-  border-bottom: 3px solid ${props => props.isDark ? '#667eea' : '#667eea'};
-`;
-
-const Title = styled.h1<{ isDark: boolean }>`
-  color: ${props => props.isDark ? '#ffffff' : '#667eea'};
-  font-size: 2.5em;
-  margin-bottom: 10px;
-  text-shadow: ${props => props.isDark ? '0 2px 10px rgba(102, 126, 234, 0.3)' : 'none'};
-`;
-
-const Subtitle = styled.p<{ isDark: boolean }>`
-  color: ${props => props.isDark ? '#b0b0b0' : '#666'};
-  font-size: 1.1em;
-`;
-
-const Stats = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
-  margin-bottom: 30px;
-`;
-
-const StatCard = styled.div<{ isDark: boolean }>`
-  background: ${props => props.isDark 
-    ? 'linear-gradient(135deg, #2d3748 0%, #1a202c 100%)' 
-    : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'};
-  color: white;
-  padding: 20px;
-  border-radius: 10px;
-  text-align: center;
-  border: ${props => props.isDark ? '1px solid rgba(102, 126, 234, 0.3)' : 'none'};
-  
-  h3 {
-    font-size: 2em;
-    margin-bottom: 5px;
-    color: white;
-  }
-  
-  p {
-    opacity: 0.9;
-    color: white;
-  }
-`;
-
-const Controls = styled.div`
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  margin-bottom: 30px;
-  flex-wrap: wrap;
-`;
-
-const Button = styled.button<{ active?: boolean; isDark?: boolean }>`
-  padding: 12px 24px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 600;
-  transition: all 0.3s;
-  background: ${props => {
-    if (props.isDark) {
-      return props.active ? '#667eea' : '#4a5568';
-    }
-    return props.active ? '#764ba2' : '#667eea';
-  }};
-  color: white;
-  border: ${props => props.isDark ? '1px solid rgba(255,255,255,0.1)' : 'none'};
-  
-  &:hover {
-    background: ${props => {
-      if (props.isDark) {
-        return props.active ? '#5568d3' : '#5a67d8';
-      }
-      return props.active ? '#653a8f' : '#5568d3';
-    }};
-    transform: translateY(-2px);
-    box-shadow: ${props => props.isDark 
-      ? '0 5px 15px rgba(102, 126, 234, 0.5)' 
-      : '0 5px 15px rgba(102, 126, 234, 0.4)'};
-  }
 `;
 
 const DiagramContainer = styled.div<{ isDark: boolean }>`
@@ -134,640 +48,666 @@ const DiagramContainer = styled.div<{ isDark: boolean }>`
 
 const InfoPanel = styled.div<{ show: boolean; isDark: boolean }>`
   position: fixed;
-  top: 20px;
+  top: 100px;
   left: 20px;
   width: 350px;
-  background: ${props => props.isDark ? '#1e1e2e' : 'white'};
-  border-radius: 10px;
-  box-shadow: ${props => props.isDark 
-    ? '0 10px 30px rgba(0,0,0,0.5)' 
+  background: ${props => props.isDark ? 'rgba(30, 30, 46, 0.95)' : 'rgba(255, 255, 255, 0.95)'};
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  box-shadow: ${props => props.isDark
+    ? '0 10px 30px rgba(0,0,0,0.5)'
     : '0 10px 30px rgba(0,0,0,0.2)'};
-  padding: 20px;
-  max-height: 90vh;
+  padding: 24px;
+  max-height: 80vh;
   overflow-y: auto;
   display: ${props => props.show ? 'block' : 'none'};
   z-index: 1000;
-  border: ${props => props.isDark ? '1px solid rgba(255,255,255,0.1)' : 'none'};
+  border: 1px solid ${props => props.isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)'};
+  transition: all 0.3s ease;
   
   h3 {
-    color: ${props => props.isDark ? '#ffffff' : '#667eea'};
+    color: ${props => props.isDark ? '#ffffff' : '#1a1d29'};
     margin-bottom: 15px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid ${props => props.isDark ? '#667eea' : '#667eea'};
+    padding-bottom: 15px;
+    border-bottom: 1px solid ${props => props.isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'};
+    font-size: 1.5rem;
   }
   
-  .detail {
-    margin-bottom: 15px;
-    padding: 10px;
-    background: ${props => props.isDark ? '#2d3748' : '#f8f9fa'};
-    border-radius: 5px;
+  .description {
+    color: ${props => props.isDark ? '#b0b0b0' : '#666'};
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+  
+  .detail-group {
+    margin-top: 15px;
+  }
+  
+  .detail-title {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: ${props => props.isDark ? '#667eea' : '#667eea'};
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+
+  .detail-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid ${props => props.isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'};
     color: ${props => props.isDark ? '#e0e0e0' : '#333'};
+    font-size: 0.95rem;
     
-    strong {
-      color: ${props => props.isDark ? '#667eea' : '#667eea'};
-      display: block;
-      margin-bottom: 5px;
+    &:last-child {
+      border-bottom: none;
+    }
+    
+    span:first-child {
+      font-weight: 500;
+    }
+    
+    span:last-child {
+      opacity: 0.8;
+    }
+  }
+
+  .action-btn {
+    margin-top: 20px;
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: transform 0.2s;
+    
+    &:hover {
+      transform: translateY(-2px);
     }
   }
 `;
 
 const Legend = styled.div<{ isDark: boolean }>`
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
   display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
-  margin-top: 20px;
+  flex-direction: column;
+  gap: 10px;
   padding: 20px;
-  background: ${props => props.isDark ? '#2d3748' : '#f8f9fa'};
-  border-radius: 10px;
-  border: ${props => props.isDark ? '1px solid rgba(255,255,255,0.1)' : 'none'};
+  background: ${props => props.isDark ? 'rgba(45, 55, 72, 0.9)' : 'rgba(248, 249, 250, 0.9)'};
+  backdrop-filter: blur(5px);
+  border-radius: 12px;
+  border: 1px solid ${props => props.isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)'};
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  z-index: 100;
 `;
 
 const LegendItem = styled.div<{ isDark: boolean }>`
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   color: ${props => props.isDark ? '#e0e0e0' : '#333'};
+  font-size: 0.9rem;
+  font-weight: 500;
 `;
 
 const LegendColor = styled.div<{ color: string; isDark: boolean }>`
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
   border-radius: 4px;
   background: ${props => props.color};
-  border: 2px solid ${props => props.isDark ? 'rgba(255,255,255,0.3)' : '#333'};
+  box-shadow: ${props => props.isDark ? '0 2px 4px rgba(0,0,0,0.4)' : '0 2px 4px rgba(0,0,0,0.2)'};
+  border: 1px solid ${props => props.isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.1)'};
 `;
 
-// Architecture Data
+// Architecture Data with Layout Info
 const architecture = {
   nodes: [
-    {
-      id: "core",
-      name: "Core",
-      type: "core",
-      description: "Core functionality and shared utilities",
-      details: {
-        "Hooks": "23 hooks",
-        "Utils": "34 utilities",
-        "Types": "20 type definitions",
-        "Contexts": "6 contexts",
-        "Constants": "Static data",
-        "Locales": "Translations (BG/EN)",
-        "Features": "Analytics, Reviews, Team, Verification"
-      },
-      dependencies: [],
-      dependents: ["services", "ui", "app", "auth", "cars", "profile", "admin", "social", "messaging", "payments", "iot", "firebase", "functions", "ai-valuation", "external-apis", "storage", "database", "realtime"]
-    },
-    {
-      id: "services",
-      name: "Services",
-      type: "services",
-      description: "Business logic and API services",
-      details: {
-        "Firebase": "Firestore, Auth, Storage",
-        "Car Services": "CRUD, Search, Featured",
-        "User Services": "Profile, Auth, Verification",
-        "Messaging": "Real-time messaging",
-        "Analytics": "Tracking & Analytics",
-        "Payment": "Stripe integration",
-        "Social": "Social features",
-        "Admin": "Admin operations",
-        "Total": "216+ service files"
-      },
-      dependencies: ["core", "firebase", "database", "storage"],
-      dependents: ["app", "auth", "cars", "profile", "admin", "social", "messaging", "payments"]
-    },
-    {
-      id: "ui",
-      name: "UI Components",
-      type: "ui",
-      description: "Reusable UI components",
-      details: {
-        "Components": "388 component files",
-        "Layout": "Header, Footer, Layouts",
-        "Forms": "Input, Select, DatePicker",
-        "Car Components": "CarCard, CarSearch",
-        "Profile Components": "Profile, Dealer, Company",
-        "Admin Components": "Admin Dashboard",
-        "HomePage": "TrustStrip, LiveCounter, etc."
-      },
-      dependencies: ["core"],
-      dependents: ["app", "auth", "cars", "profile", "admin", "social"]
-    },
-    {
-      id: "app",
-      name: "App",
-      type: "app",
-      description: "Main application and routing",
-      details: {
-        "App.tsx": "Main app component",
-        "Routes": "All route definitions",
-        "Pages": "Home, About, Contact, Help",
-        "Sell Workflow": "Car selling pages",
-        "Legal": "Privacy, Terms, Data Deletion"
-      },
-      dependencies: ["core", "services", "ui", "firebase", "external-apis"],
-      dependents: []
-    },
-    {
-      id: "auth",
-      name: "Auth",
-      type: "auth",
-      description: "Authentication pages",
-      details: {
-        "Login": "Glass morphism login",
-        "Register": "Registration flow",
-        "Email Verification": "Email verification",
-        "OAuth": "Social login callbacks",
-        "Admin Login": "Admin authentication"
-      },
-      dependencies: ["core", "services", "ui", "firebase", "ai-valuation", "external-apis"],
-      dependents: []
-    },
-    {
-      id: "cars",
-      name: "Cars",
-      type: "cars",
-      description: "Car-related pages",
-      details: {
-        "CarsPage": "Car listings",
-        "CarDetailsPage": "Car details & edit",
-        "AdvancedSearch": "Advanced search",
-        "AllCarsPage": "Browse all cars",
-        "Hooks": "useCarSearch"
-      },
-      dependencies: ["core", "services", "ui", "firebase", "storage"],
-      dependents: []
-    },
-    {
-      id: "profile",
-      name: "Profile",
-      type: "profile",
-      description: "User profile pages",
-      details: {
-        "ProfilePage": "Main profile page",
-        "Types": "Private, Dealer, Company",
-        "Tabs": "Overview, Ads, Campaigns, Analytics, Settings",
-        "Consultations": "Expert consultations"
-      },
-      dependencies: ["core", "services", "ui"],
-      dependents: []
-    },
-    {
-      id: "admin",
-      name: "Admin",
-      type: "admin",
-      description: "Admin dashboard and pages",
-      details: {
-        "AdminPage": "Main admin dashboard",
-        "User Management": "User operations",
-        "Content Management": "Content moderation",
-        "Analytics": "Admin analytics"
-      },
-      dependencies: ["core", "services", "ui", "firebase", "storage", "realtime"],
-      dependents: []
-    },
-    {
-      id: "social",
-      name: "Social",
-      type: "social",
-      description: "Social features",
-      details: {
-        "SocialFeedPage": "Main feed",
-        "AllPostsPage": "Browse posts",
-        "CreatePostPage": "Create posts",
-        "Events": "Events management"
-      },
-      dependencies: ["core", "services", "ui", "firebase", "realtime", "functions"],
-      dependents: []
-    },
-    {
-      id: "messaging",
-      name: "Messaging",
-      type: "messaging",
-      description: "Messaging system",
-      details: {
-        "MessagesPage": "Main messages page",
-        "Real-time": "WebSocket messaging",
-        "Notifications": "Push notifications"
-      },
-      dependencies: ["core", "services", "ui", "external-apis", "functions"],
-      dependents: []
-    },
-    {
-      id: "payments",
-      name: "Payments",
-      type: "payments",
-      description: "Payment and billing",
-      details: {
-        "BillingPage": "Subscription management",
-        "StripeCheckout": "Payment processing",
-        "SubscriptionPlans": "Plan selection",
-        "BillingService": "Billing operations"
-      },
-      dependencies: ["core", "services", "ui"],
-      dependents: []
-    },
-    {
-      id: "iot",
-      name: "IoT",
-      type: "iot",
-      description: "IoT dashboard",
-      details: {
-        "IoTDashboardPage": "IoT analytics",
-        "Car Tracking": "Vehicle tracking",
-        "Real-time Data": "Live data streams"
-      },
-      dependencies: ["core", "services", "ui"],
-      dependents: []
-    },
+    // Column 1: Infrastructure & Data
     {
       id: "firebase",
-      name: "Firebase",
+      name: "Firebase Core",
       type: "backend",
-      description: "Firebase backend services",
-      details: {
-        "Firestore": "NoSQL database",
-        "Auth": "Authentication",
-        "Storage": "File storage",
-        "Functions": "Cloud Functions",
-        "Hosting": "Static hosting"
-      },
-      dependencies: [],
-      dependents: ["services", "auth", "cars", "profile", "messaging", "social"]
+      column: 0,
+      row: 0,
+      description: "Backend Infrastructure",
+      details: { "Services": "Auth, Firestore, Storage", "Region": "europe-west1" },
+      path: null,
+      dependencies: []
+    },
+    {
+      id: "database",
+      name: "Firestore DB",
+      type: "backend",
+      column: 0,
+      row: 1,
+      description: "NoSQL Database",
+      details: { "Collections": "Users, Cars, Messages", "Indexes": "Optimized" },
+      path: null,
+      dependencies: ["firebase"]
+    },
+    {
+      id: "storage",
+      name: "Cloud Storage",
+      type: "backend",
+      column: 0,
+      row: 2,
+      description: "Asset Storage",
+      details: { "Buckets": "Images, Documents", "CDN": "Global Edge" },
+      path: null,
+      dependencies: ["firebase"]
     },
     {
       id: "functions",
       name: "Cloud Functions",
       type: "backend",
-      description: "Firebase Cloud Functions",
-      details: {
-        "Node.js": "Backend runtime",
-        "API Endpoints": "REST APIs",
-        "Webhooks": "External integrations",
-        "Scheduled": "Cron jobs",
-        "Triggers": "Event handlers"
-      },
-      dependencies: ["firebase"],
-      dependents: ["services", "payments", "messaging"]
+      column: 0,
+      row: 3,
+      description: "Serverless Logic",
+      details: { "Runtime": "Node.js 18", "Triggers": "HTTP, Firestore" },
+      path: null,
+      dependencies: ["firebase", "ai-valuation"]
     },
     {
       id: "ai-valuation",
-      name: "AI Valuation",
+      name: "AI Engine",
       type: "ai",
-      description: "AI car valuation model",
-      details: {
-        "Python": "XGBoost model",
-        "Vertex AI": "Google AI platform",
-        "ML Pipeline": "Training & inference",
-        "Price Prediction": "Car value estimation"
-      },
-      dependencies: [],
-      dependents: ["services", "cars"]
+      column: 0,
+      row: 4,
+      description: "Price Prediction Model",
+      details: { "Model": "XGBoost", "Platform": "Vertex AI" },
+      path: null,
+      dependencies: ["database", "storage"]
     },
     {
       id: "external-apis",
       name: "External APIs",
       type: "external",
-      description: "Third-party integrations",
-      details: {
-        "Stripe": "Payment processing",
-        "Google Maps": "Location services",
-        "Algolia": "Search engine",
-        "Facebook": "Social login",
-        "Google OAuth": "Authentication",
-        "SMS/Email": "Notifications"
-      },
-      dependencies: [],
-      dependents: ["services", "auth", "payments", "cars"]
+      column: 0,
+      row: 5,
+      description: "Third-party Services",
+      details: { "Stripe": "Payments", "Google Maps": "Location" },
+      path: null,
+      dependencies: []
     },
     {
-      id: "storage",
-      name: "Storage",
-      type: "backend",
-      description: "File storage system",
-      details: {
-        "Firebase Storage": "Image uploads",
-        "CDN": "Content delivery",
-        "Optimization": "Image compression",
-        "Caching": "Asset caching"
-      },
-      dependencies: ["firebase"],
-      dependents: ["services", "cars", "profile", "social"]
+      id: "mobilebg",
+      name: "MobileBG.eu",
+      type: "external-data",
+      column: 0,
+      row: 6,
+      description: "External Car Data Source",
+      details: { "Domain": "mobilebg.eu", "Type": "Web Scraping", "Data": "Car Listings" },
+      path: null,
+      dependencies: []
+    },
+
+    // Column 2: Core & Base
+    {
+      id: "core",
+      name: "Core System",
+      type: "core",
+      column: 1,
+      row: 2,
+      description: "Foundation Layer",
+      details: { "Hooks": "23+", "Contexts": "Auth, Theme" },
+      path: null,
+      dependencies: []
+    },
+
+    // Column 3: Services
+    {
+      id: "services",
+      name: "Service Layer",
+      type: "services",
+      column: 2,
+      row: 2,
+      description: "Business Logic",
+      details: { "Modules": "Auth, Car, User", "API": "Internal" },
+      path: null,
+      dependencies: ["core", "firebase", "database", "storage", "functions", "ai-valuation", "external-apis", "mobilebg"]
+    },
+
+    // Column 4: UI Components
+    {
+      id: "ui",
+      name: "UI Library",
+      type: "ui",
+      column: 3,
+      row: 2,
+      description: "Design System",
+      details: { "Components": "380+", "Theme": "Styled Components" },
+      path: "/icon-showcase",
+      dependencies: ["core"]
+    },
+
+    // Column 5: Features (The "Meat" of the app)
+    {
+      id: "auth",
+      name: "Authentication",
+      type: "auth",
+      column: 4,
+      row: 0,
+      description: "Identity Management",
+      details: { "Pages": "Login, Register", "Security": "OAuth 2.0" },
+      path: "/login",
+      dependencies: ["services", "ui"]
     },
     {
-      id: "database",
-      name: "Database",
-      type: "backend",
-      description: "Data persistence layer",
-      details: {
-        "Firestore": "NoSQL database",
-        "Collections": "Users, Cars, Messages",
-        "Indexes": "Query optimization",
-        "Security Rules": "Access control"
-      },
-      dependencies: ["firebase"],
-      dependents: ["services"]
+      id: "cars",
+      name: "Car Marketplace",
+      type: "cars",
+      column: 4,
+      row: 1,
+      description: "Vehicle Listings",
+      details: { "Features": "Search, Filter, Details", "Route": "/cars" },
+      path: "/cars",
+      dependencies: ["services", "ui"]
     },
     {
-      id: "realtime",
-      name: "Real-time",
-      type: "backend",
-      description: "Real-time communication",
-      details: {
-        "WebSocket": "Live connections",
-        "Firestore Listeners": "Real-time updates",
-        "Presence": "User status",
-        "Notifications": "Push notifications"
-      },
-      dependencies: ["firebase", "database"],
-      dependents: ["messaging", "social", "cars"]
+      id: "profile",
+      name: "User Profiles",
+      type: "profile",
+      column: 4,
+      row: 2,
+      description: "User Management",
+      details: { "Types": "Private, Dealer", "Route": "/profile" },
+      path: "/profile",
+      dependencies: ["services", "ui"]
+    },
+    {
+      id: "social",
+      name: "Social Network",
+      type: "social",
+      column: 4,
+      row: 3,
+      description: "Community Features",
+      details: { "Features": "Feed, Posts, Events", "Route": "/social" },
+      path: "/social",
+      dependencies: ["services", "ui"]
+    },
+    {
+      id: "messaging",
+      name: "Messaging",
+      type: "messaging",
+      column: 4,
+      row: 4,
+      description: "Chat System",
+      details: { "Tech": "WebSocket", "Route": "/messages" },
+      path: "/messages",
+      dependencies: ["services", "ui"]
+    },
+    {
+      id: "payments",
+      name: "Billing & Pay",
+      type: "payments",
+      column: 4,
+      row: 5,
+      description: "Financial System",
+      details: { "Provider": "Stripe", "Route": "/billing" },
+      path: "/billing",
+      dependencies: ["services", "ui"]
+    },
+    {
+      id: "iot",
+      name: "IoT Hub",
+      type: "iot",
+      column: 4,
+      row: 6,
+      description: "Device Connectivity",
+      details: { "Data": "Telemetry", "Route": "/iot-dashboard" },
+      path: "/iot-dashboard",
+      dependencies: ["services", "ui"]
+    },
+    {
+      id: "admin",
+      name: "Admin Portal",
+      type: "admin",
+      column: 4,
+      row: 7,
+      description: "System Administration",
+      details: { "Access": "RBAC", "Route": "/admin" },
+      path: "/admin",
+      dependencies: ["services", "ui"]
+    },
+    {
+      id: "super-admin",
+      name: "Super Admin",
+      type: "super-admin",
+      column: 4,
+      row: 8,
+      description: "Master Control Panel",
+      details: { "Access": "Owner Only", "Route": "/super-admin", "Features": "Full System Control" },
+      path: "/super-admin",
+      dependencies: ["services", "ui", "firebase", "database", "storage", "functions", "ai-valuation", "external-apis", "mobilebg"]
+    },
+
+    // Column 6: App Orchestrator
+    {
+      id: "app",
+      name: "App Root",
+      type: "app",
+      column: 5,
+      row: 3, // Centered vertically relative to features
+      description: "Application Shell",
+      details: { "Router": "React Router", "Layout": "Main" },
+      path: "/",
+      dependencies: ["auth", "cars", "profile", "social", "messaging", "payments", "iot", "admin", "super-admin"]
     }
   ]
 };
 
 const ArchitectureDiagramPage: React.FC = () => {
   const { isDark } = useTheme();
+  const navigate = useNavigate();
   const svgRef = useRef<SVGSVGElement>(null);
   const [selectedNode, setSelectedNode] = useState<any>(null);
-  const [viewType, setViewType] = useState<string>('all');
 
   useEffect(() => {
     if (!svgRef.current) return;
 
-    console.log('🎨 Rendering diagram with CIRCLES (not rectangles)');
-    
-    const width = svgRef.current?.clientWidth || 1600;
-    const height = svgRef.current?.clientHeight || 800;
+    const width = svgRef.current.clientWidth || 1600;
+    const height = svgRef.current.clientHeight || 900;
     const svg = d3.select(svgRef.current);
 
-    // Clear previous content
+    // Clear previous
     svg.selectAll("*").remove();
 
-    // Create defs element for gradients, filters, and markers
+    // Definitions
     const defs = svg.append("defs");
 
-    // Add arrow marker
-    defs.append("marker")
-      .attr("id", "arrowhead")
-      .attr("refX", 6)
-      .attr("refY", 3)
-      .attr("markerWidth", 10)
-      .attr("markerHeight", 10)
-      .attr("orient", "auto")
-      .append("path")
-      .attr("d", "M 0,0 L 0,6 L 9,3 z")
-      .attr("fill", isDark ? "#667eea" : "#999");
+    // Gradients
+    const gradients = [
+      { id: "grad-core", colors: ["#ff6b6b", "#ee5253"] },
+      { id: "grad-services", colors: ["#4ecdc4", "#22a6b3"] },
+      { id: "grad-ui", colors: ["#feca57", "#ff9f43"] },
+      { id: "grad-app", colors: ["#5f27cd", "#341f97"] },
+      { id: "grad-feature", colors: ["#54a0ff", "#2e86de"] },
+      { id: "grad-backend", colors: ["#576574", "#222f3e"] },
+      { id: "grad-ai", colors: ["#ff9ff3", "#f368e0"] },
+      { id: "grad-super-admin", colors: ["#ffd700", "#ffed4e"] },
+      { id: "grad-external-data", colors: ["#ff6348", "#ff4757"] },
+    ];
 
-    // Filter nodes based on view type
-    let filteredNodes = architecture.nodes;
-    if (viewType === "core") {
-      filteredNodes = architecture.nodes.filter(n => ["core", "services", "ui"].includes(n.id));
-    } else if (viewType === "features") {
-      filteredNodes = architecture.nodes.filter(n => ["profile", "admin", "social", "messaging", "payments", "iot"].includes(n.id));
-    } else if (viewType === "dependencies") {
-      filteredNodes = architecture.nodes.filter(n => n.dependencies.length > 0);
-    }
+    gradients.forEach(g => {
+      const grad = defs.append("linearGradient")
+        .attr("id", g.id)
+        .attr("x1", "0%")
+        .attr("y1", "0%")
+        .attr("x2", "100%")
+        .attr("y2", "100%");
+      grad.append("stop").attr("offset", "0%").style("stop-color", g.colors[0]);
+      grad.append("stop").attr("offset", "100%").style("stop-color", g.colors[1]);
+    });
 
-    // Create links
+    // Glow Filter
+    const filter = defs.append("filter")
+      .attr("id", "glow")
+      .attr("x", "-50%")
+      .attr("y", "-50%")
+      .attr("width", "200%")
+      .attr("height", "200%");
+    filter.append("feGaussianBlur").attr("stdDeviation", "3").attr("result", "coloredBlur");
+    const feMerge = filter.append("feMerge");
+    feMerge.append("feMergeNode").attr("in", "coloredBlur");
+    feMerge.append("feMergeNode").attr("in", "SourceGraphic");
+
+    // Layout Calculation
+    const columns = 6;
+    const colWidth = width / columns;
+    const nodes = architecture.nodes.map(node => {
+      // Calculate Y based on row index and total rows in that column
+      // To center them, we need to know max rows in this column or just use fixed spacing
+      // Let's use fixed spacing for now, centered vertically
+      const nodesInCol = architecture.nodes.filter(n => n.column === node.column).length;
+      const rowHeight = height / (nodesInCol + 1);
+
+      // Re-calculate row index to be sequential for this column to center properly
+      const sortedColNodes = architecture.nodes
+        .filter(n => n.column === node.column)
+        .sort((a, b) => a.row - b.row);
+      const relativeRow = sortedColNodes.findIndex(n => n.id === node.id);
+
+      return {
+        ...node,
+        x: (node.column * colWidth) + (colWidth / 2),
+        y: (relativeRow + 1) * (height / (nodesInCol + 1))
+      };
+    });
+
+    // Links
     const links: any[] = [];
-    filteredNodes.forEach(node => {
-      node.dependencies.forEach(dep => {
-        if (filteredNodes.find(n => n.id === dep)) {
-          links.push({ source: dep, target: node.id });
+    nodes.forEach(node => {
+      node.dependencies.forEach(depId => {
+        const target = nodes.find(n => n.id === depId);
+        if (target) {
+          // Dependency means Node depends on Target. 
+          // Flow usually goes from Dependency -> Node (Data flows from DB to Service)
+          // So Source = Target (Provider), Target = Node (Consumer)
+          links.push({ source: target, target: node, type: "dependency" });
         }
       });
     });
 
-    // Create force simulation with n8n-style spacing
-    const simulation = (d3 as any).forceSimulation(filteredNodes)
-      .force("link", (d3 as any).forceLink(links).id((d: any) => d.id).distance(200))
-      .force("charge", (d3 as any).forceManyBody().strength(-600))
-      .force("center", (d3 as any).forceCenter(width / 2, height / 2))
-      .force("collision", (d3 as any).forceCollide().radius(80));
+    // Draw Links
+    const linkGroup = svg.append("g").attr("class", "links");
 
-    // Create n8n-style curved links
-    const link = svg.append("g")
-      .selectAll("path")
+    linkGroup.selectAll("path")
       .data(links)
       .enter().append("path")
-      .attr("class", "link")
-      .attr("fill", "none")
-      .attr("stroke", isDark ? "rgba(255,255,255,0.3)" : "rgba(0,0,0,0.2)")
-      .attr("stroke-width", 2)
-      .attr("marker-end", "url(#arrowhead)")
       .attr("d", (d: any) => {
-        const dx = (d.target.x - d.source.x);
-        const dy = (d.target.y - d.source.y);
+        const dx = d.target.x - d.source.x;
+        const dy = d.target.y - d.source.y;
         const dr = Math.sqrt(dx * dx + dy * dy);
-        return `M${d.source.x},${d.source.y}A${dr},${dr} 0 0,1 ${d.target.x},${d.target.y}`;
-      });
+        // Curvy lines
+        return `M${d.source.x},${d.source.y}C${d.source.x + dx / 2},${d.source.y} ${d.target.x - dx / 2},${d.target.y} ${d.target.x},${d.target.y}`;
+      })
+      .attr("fill", "none")
+      .attr("stroke", isDark ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.15)")
+      .attr("stroke-width", 2)
+      .attr("opacity", isDark ? 0.6 : 0.4);
 
-    // n8n-style color mapping
-    const colorMap: { [key: string]: { bg: string; border: string; text: string } } = {
-      core: { bg: "#ff6b6b", border: "#ff5252", text: "#ffffff" },
-      services: { bg: "#4ecdc4", border: "#26a69a", text: "#ffffff" },
-      ui: { bg: "#ffd93d", border: "#f9ca24", text: "#2c3e50" },
-      app: { bg: "#6c5ce7", border: "#5f3dc4", text: "#ffffff" },
-      auth: { bg: "#00b894", border: "#00a085", text: "#ffffff" },
-      cars: { bg: "#fd79a8", border: "#e84393", text: "#ffffff" },
-      profile: { bg: "#fdcb6e", border: "#e17055", text: "#2c3e50" },
-      admin: { bg: "#74b9ff", border: "#0984e3", text: "#ffffff" },
-      social: { bg: "#a29bfe", border: "#6c5ce7", text: "#ffffff" },
-      messaging: { bg: "#55efc4", border: "#00b894", text: "#2c3e50" },
-      payments: { bg: "#ffeaa7", border: "#fdcb6e", text: "#2c3e50" },
-      iot: { bg: "#81ecec", border: "#00cec9", text: "#2c3e50" },
-      backend: { bg: isDark ? "#2d3436" : "#636e72", border: isDark ? "#1a1a1a" : "#2d3436", text: "#ffffff" },
-      ai: { bg: "#e17055", border: "#d63031", text: "#ffffff" },
-      external: { bg: "#00b894", border: "#00a085", text: "#ffffff" }
+    // Animated Flow Particles
+    const particleGroup = svg.append("g").attr("class", "particles");
+
+    // Color map for flows
+    const flowColors: { [key: string]: string } = {
+      core: "#ff6b6b",
+      services: "#4ecdc4",
+      ui: "#feca57",
+      app: "#5f27cd",
+      auth: "#00b894",
+      cars: "#54a0ff",
+      profile: "#fdcb6e",
+      social: "#a29bfe",
+      messaging: "#55efc4",
+      payments: "#ffeaa7",
+      iot: "#81ecec",
+      backend: "#576574",
+      ai: "#ff9ff3",
+      external: "#00d2d3",
+      "external-data": "#ff6348",
+      "super-admin": "#ffd700",
+      admin: "#74b9ff"
     };
 
-    // Create shadow filter for n8n-style nodes
-    const shadowFilter = defs.append("filter")
-      .attr("id", "node-shadow")
-      .attr("x", "-50%")
-      .attr("y", "-50%")
-      .attr("width", "200%")
-      .attr("height", "200%");
-    
-    shadowFilter.append("feGaussianBlur")
-      .attr("in", "SourceAlpha")
-      .attr("stdDeviation", 3)
-      .attr("result", "blur");
-    
-    shadowFilter.append("feOffset")
-      .attr("in", "blur")
-      .attr("dx", 0)
-      .attr("dy", 2)
-      .attr("result", "offsetBlur");
-    
-    const feComponentTransfer = shadowFilter.append("feComponentTransfer")
-      .attr("in", "offsetBlur");
-    feComponentTransfer.append("feFuncA")
-      .attr("type", "linear")
-      .attr("slope", 0.3);
-    
-    const feMerge = shadowFilter.append("feMerge");
-    feMerge.append("feMergeNode");
-    feMerge.append("feMergeNode")
-      .attr("in", "SourceGraphic");
+    links.forEach((link, i) => {
+      const path = linkGroup.select(`path:nth-child(${i + 1})`).node() as SVGPathElement;
+      if (!path) return;
 
-    // Create nodes as n8n-style rectangles
-    console.log(`📊 Creating ${filteredNodes.length} nodes as n8n-style RECTANGLES`);
-    
-    // Node dimensions
-    const nodeWidth = 140;
-    const nodeHeight = 60;
-    const nodeRadius = 8;
-    
-    const node = svg.append("g")
-      .selectAll("g")
-      .data(filteredNodes)
+      const l = path.getTotalLength();
+      const sourceColor = flowColors[link.source.type] || (isDark ? "#667eea" : "#764ba2");
+      const targetColor = flowColors[link.target.type] || (isDark ? "#667eea" : "#764ba2");
+
+      // 1. Forward Flow Particle (Source -> Target)
+      const particleForward = particleGroup.append("circle")
+        .attr("r", 4)
+        .attr("fill", sourceColor)
+        .attr("filter", "url(#glow)");
+
+      function animateForward() {
+        particleForward.transition()
+          .duration(2000 + Math.random() * 1000)
+          .ease(d3.easeLinear)
+          .attrTween("transform", function () {
+            return function (t) {
+              const p = path.getPointAtLength(t * l);
+              return `translate(${p.x},${p.y})`;
+            };
+          })
+          .attrTween("r", function () {
+            return function (t) {
+              // Pulse effect: grow and shrink
+              return 3 + Math.sin(t * Math.PI * 2) * 1.5;
+            };
+          })
+          .on("end", animateForward);
+      }
+      animateForward();
+
+      // 2. Return Flow Particle (Target -> Source) - "The Return Flash"
+      const particleBackward = particleGroup.append("circle")
+        .attr("r", 3)
+        .attr("fill", targetColor)
+        .attr("opacity", 0.6)
+        .attr("filter", "url(#glow)");
+
+      function animateBackward() {
+        particleBackward.transition()
+          .delay(1000) // Offset start time
+          .duration(2500 + Math.random() * 1000)
+          .ease(d3.easeLinear)
+          .attrTween("transform", function () {
+            return function (t) {
+              // Move backwards (1 - t)
+              const p = path.getPointAtLength((1 - t) * l);
+              return `translate(${p.x},${p.y})`;
+            };
+          })
+          .on("end", animateBackward);
+      }
+      animateBackward();
+    });
+
+    const nodeGroup = svg.append("g").attr("class", "nodes");
+
+    // Node Rects Dimensions
+    const nodeWidth = 160;
+    const nodeHeight = 70;
+
+    const node = nodeGroup.selectAll("g")
+      .data(nodes)
       .enter().append("g")
-      .attr("class", (d: any) => `node ${d.type}`)
-      .call(drag(simulation) as any)
-      .on("click", (event, d: any) => {
-        event.stopPropagation();
+      .attr("transform", (d: any) => `translate(${d.x - nodeWidth / 2},${d.y - nodeHeight / 2})`)
+      .style("cursor", "pointer")
+      .on("click", (e, d) => {
+        e.stopPropagation();
         setSelectedNode(d);
       })
-      .on("mouseover", function(event, d: any) {
-        const nodeGroup = d3.select(this);
-        nodeGroup.select("rect")
-          .transition()
-          .duration(200)
-          .attr("filter", "url(#node-glow)")
-          .attr("transform", "scale(1.05)");
-        nodeGroup.select("text")
-          .transition()
-          .duration(200)
-          .attr("font-weight", "800");
+      .on("mouseover", function () {
+        d3.select(this).transition().duration(200).attr("transform", (d: any) => `translate(${d.x - nodeWidth / 2},${d.y - nodeHeight / 2}) scale(1.05)`);
       })
-      .on("mouseout", function(event, d: any) {
-        const nodeGroup = d3.select(this);
-        nodeGroup.select("rect")
-          .transition()
-          .duration(200)
-          .attr("filter", "url(#node-shadow)")
-          .attr("transform", "scale(1)");
-        nodeGroup.select("text")
-          .transition()
-          .duration(200)
-          .attr("font-weight", "600");
-      })
-      .style("cursor", "pointer");
+      .on("mouseout", function () {
+        d3.select(this).transition().duration(200).attr("transform", (d: any) => `translate(${d.x - nodeWidth / 2},${d.y - nodeHeight / 2}) scale(1)`);
+      });
 
-    // Add glow filter for hover effect
-    const glowFilter = defs.append("filter")
-      .attr("id", "node-glow")
-      .attr("x", "-50%")
-      .attr("y", "-50%")
-      .attr("width", "200%")
-      .attr("height", "200%");
-    
-    glowFilter.append("feGaussianBlur")
-      .attr("stdDeviation", 4)
-      .attr("result", "coloredBlur");
-    
-    const glowMerge = glowFilter.append("feMerge");
-    glowMerge.append("feMergeNode")
-      .attr("in", "coloredBlur");
-    glowMerge.append("feMergeNode")
-      .attr("in", "SourceGraphic");
+    // Node Rects
 
-    // Create n8n-style rectangle node
     node.append("rect")
       .attr("width", nodeWidth)
       .attr("height", nodeHeight)
-      .attr("rx", nodeRadius)
-      .attr("ry", nodeRadius)
-      .attr("x", -nodeWidth / 2)
-      .attr("y", -nodeHeight / 2)
+      .attr("rx", 12)
+      .attr("ry", 12)
       .attr("fill", (d: any) => {
-        const colors = colorMap[d.type] || colorMap.core;
-        return colors.bg;
+        if (d.type === 'core') return "url(#grad-core)";
+        if (d.type === 'services') return "url(#grad-services)";
+        if (d.type === 'ui') return "url(#grad-ui)";
+        if (d.type === 'app') return "url(#grad-app)";
+        if (d.type === 'backend' || d.type === 'external') return "url(#grad-backend)";
+        if (d.type === 'ai') return "url(#grad-ai)";
+        if (d.type === 'external-data') return "url(#grad-external-data)";
+        if (d.type === 'super-admin') return "url(#grad-super-admin)";
+        if (d.type === 'admin') return "#74b9ff";
+        return "url(#grad-feature)";
       })
-      .attr("stroke", (d: any) => {
-        const colors = colorMap[d.type] || colorMap.core;
-        return colors.border;
-      })
-      .attr("stroke-width", 2)
-      .attr("filter", "url(#node-shadow)")
-      .attr("opacity", 0.95);
+      .attr("stroke", isDark ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.1)")
+      .attr("stroke-width", 1)
+      .attr("filter", "url(#glow)")
+      .style("opacity", 0.9);
 
-    // Add text label
+    // Node Icons/Text
     node.append("text")
       .text((d: any) => d.name)
-      .attr("text-anchor", "middle")
+      .attr("x", nodeWidth / 2)
+      .attr("y", nodeHeight / 2)
       .attr("dy", 5)
-      .attr("font-size", "13px")
-      .attr("font-weight", "600")
-      .attr("font-family", "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif")
-      .attr("fill", (d: any) => {
-        const colors = colorMap[d.type] || colorMap.core;
-        return colors.text;
-      })
-      .attr("pointer-events", "none");
+      .attr("text-anchor", "middle")
+      .attr("fill", "white")
+      .attr("font-weight", "bold")
+      .attr("font-size", "14px")
+      .style("pointer-events", "none")
+      .style("text-shadow", "0 2px 4px rgba(0,0,0,0.3)");
 
-    // Update positions
-    simulation.on("tick", () => {
-      link.attr("d", (d: any) => {
-        const dx = (d.target.x - d.source.x);
-        const dy = (d.target.y - d.source.y);
-        const dr = Math.sqrt(dx * dx + dy * dy);
-        return `M${d.source.x},${d.source.y}A${dr},${dr} 0 0,1 ${d.target.x},${d.target.y}`;
-      });
+    // Node Type Label (Small)
+    node.append("text")
+      .text((d: any) => d.type.toUpperCase())
+      .attr("x", nodeWidth / 2)
+      .attr("y", 15)
+      .attr("text-anchor", "middle")
+      .attr("fill", "rgba(255,255,255,0.7)")
+      .attr("font-size", "9px")
+      .attr("letter-spacing", "1px")
+      .style("pointer-events", "none");
 
-      node.attr("transform", (d: any) => `translate(${d.x || 0},${d.y || 0})`);
-    });
-
-    // Drag function
-    function drag(simulation: any) {
-      function dragstarted(event: any) {
-        if (!event.active) simulation.alphaTarget(0.3).restart();
-        event.subject.fx = event.subject.x;
-        event.subject.fy = event.subject.y;
-      }
-
-      function dragged(event: any) {
-        event.subject.fx = event.x;
-        event.subject.fy = event.y;
-      }
-
-      function dragended(event: any) {
-        if (!event.active) simulation.alphaTarget(0);
-        event.subject.fx = null;
-        event.subject.fy = null;
-      }
-
-      return (d3 as any).drag()
-        .on("start", dragstarted)
-        .on("drag", dragged)
-        .on("end", dragended);
-    }
-
-    return () => {
-      simulation.stop();
-    };
-  }, [viewType, isDark]);
-
-  const showView = (type: string) => {
-    setViewType(type);
-  };
-
-  const resetView = () => {
-    setViewType('all');
-    setSelectedNode(null);
-  };
+  }, [isDark]);
 
   return (
     <>
       <Header />
-      <Container isDark={isDark}>
+      <Container isDark={isDark} onClick={() => setSelectedNode(null)}>
         <Content isDark={isDark}>
           <DiagramContainer isDark={isDark}>
             <svg ref={svgRef} width="100%" height="100%" />
           </DiagramContainer>
 
+          <InfoPanel show={!!selectedNode} isDark={isDark} onClick={(e) => e.stopPropagation()}>
+            {selectedNode && (
+              <>
+                <h3>{selectedNode.name}</h3>
+                <p className="description">{selectedNode.description}</p>
+
+                <div className="detail-group">
+                  <div className="detail-title">Details</div>
+                  {Object.entries(selectedNode.details).map(([key, value]: [string, any]) => (
+                    <div key={key} className="detail-item">
+                      <span>{key}</span>
+                      <span>{value}</span>
+                    </div>
+                  ))}
+                </div>
+
+                {selectedNode.path && (
+                  <button
+                    className="action-btn"
+                    onClick={() => navigate(selectedNode.path)}
+                  >
+                    Go to {selectedNode.name}
+                  </button>
+                )}
+              </>
+            )}
+          </InfoPanel>
+
           <Legend isDark={isDark}>
+            <LegendItem isDark={isDark}>
+              <LegendColor color="#576574" isDark={isDark} />
+              <span>Infrastructure</span>
+            </LegendItem>
             <LegendItem isDark={isDark}>
               <LegendColor color="#ff6b6b" isDark={isDark} />
               <span>Core</span>
@@ -777,81 +717,26 @@ const ArchitectureDiagramPage: React.FC = () => {
               <span>Services</span>
             </LegendItem>
             <LegendItem isDark={isDark}>
-              <LegendColor color="#ffe66d" isDark={isDark} />
-              <span>UI</span>
+              <LegendColor color="#feca57" isDark={isDark} />
+              <span>UI Components</span>
             </LegendItem>
             <LegendItem isDark={isDark}>
-              <LegendColor color="#95e1d3" isDark={isDark} />
-              <span>App</span>
+              <LegendColor color="#54a0ff" isDark={isDark} />
+              <span>Features</span>
             </LegendItem>
             <LegendItem isDark={isDark}>
-              <LegendColor color="#a8e6cf" isDark={isDark} />
-              <span>Auth</span>
+              <LegendColor color="#5f27cd" isDark={isDark} />
+              <span>App Root</span>
             </LegendItem>
             <LegendItem isDark={isDark}>
-              <LegendColor color="#ffd3a5" isDark={isDark} />
-              <span>Cars</span>
+              <LegendColor color="#ffd700" isDark={isDark} />
+              <span>Super Admin</span>
             </LegendItem>
             <LegendItem isDark={isDark}>
-              <LegendColor color="#fd79a8" isDark={isDark} />
-              <span>Profile</span>
-            </LegendItem>
-            <LegendItem isDark={isDark}>
-              <LegendColor color="#fdcb6e" isDark={isDark} />
-              <span>Admin</span>
-            </LegendItem>
-            <LegendItem isDark={isDark}>
-              <LegendColor color="#74b9ff" isDark={isDark} />
-              <span>Social</span>
-            </LegendItem>
-            <LegendItem isDark={isDark}>
-              <LegendColor color="#a29bfe" isDark={isDark} />
-              <span>Messaging</span>
-            </LegendItem>
-            <LegendItem isDark={isDark}>
-              <LegendColor color="#55efc4" isDark={isDark} />
-              <span>Payments & IoT</span>
-            </LegendItem>
-            <LegendItem isDark={isDark}>
-              <LegendColor color="#2d3436" isDark={isDark} />
-              <span>Backend Services</span>
-            </LegendItem>
-            <LegendItem isDark={isDark}>
-              <LegendColor color="#e17055" isDark={isDark} />
-              <span>AI Services</span>
-            </LegendItem>
-            <LegendItem isDark={isDark}>
-              <LegendColor color="#00b894" isDark={isDark} />
-              <span>External APIs</span>
+              <LegendColor color="#ff6348" isDark={isDark} />
+              <span>External Data</span>
             </LegendItem>
           </Legend>
-
-          {selectedNode && (
-            <InfoPanel show={!!selectedNode} isDark={isDark} onClick={(e) => e.stopPropagation()}>
-            <h3>{selectedNode.name} Package</h3>
-            <div className="detail">
-              <strong>Description:</strong>
-              <p>{selectedNode.description}</p>
-            </div>
-            <div className="detail">
-              <strong>Details:</strong>
-              {Object.entries(selectedNode.details).map(([key, value]) => (
-                <p key={key}><strong>{key}:</strong> {value as string}</p>
-              ))}
-            </div>
-            <div className="detail">
-              <strong>Dependencies:</strong>
-              <p>{selectedNode.dependencies.length > 0 ? selectedNode.dependencies.join(", ") : "None"}</p>
-            </div>
-            <div className="detail">
-              <strong>Used By:</strong>
-              <p>{selectedNode.dependents.length > 0 ? selectedNode.dependents.join(", ") : "None"}</p>
-            </div>
-            <Button isDark={isDark} onClick={() => setSelectedNode(null)} style={{ marginTop: '10px', width: '100%' }}>
-              إغلاق | Close
-            </Button>
-          </InfoPanel>
-        )}
         </Content>
       </Container>
     </>

@@ -4,43 +4,39 @@
 import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 
-// Static imports for gallery images (since require.context doesn't work in this setup)
-import image1 from '@/assets/images/gallery/carpic.jpg';
-import image2 from '@/assets/images/gallery/car_inside (1).jpg';
-import image3 from '@/assets/images/gallery/car_inside (2).jpg';
-import image4 from '@/assets/images/gallery/car_inside (3).jpg';
-import image5 from '@/assets/images/gallery/car_inside (4).jpg';
-import image6 from '@/assets/images/gallery/car_inside (5).jpg';
-import image7 from '@/assets/images/gallery/car_inside (6).jpg';
-import image8 from '@/assets/images/gallery/car_inside (7).jpg';
-import image9 from '@/assets/images/gallery/car_inside (8).jpg';
-import image10 from '@/assets/images/gallery/car_inside (9).jpg';
-import image11 from '@/assets/images/gallery/car_inside (10).jpg';
-import image12 from '@/assets/images/gallery/car_inside (11).jpg';
-import image13 from '@/assets/images/gallery/car_inside (12).jpg';
-import image14 from '@/assets/images/gallery/car_inside (13).jpg';
-import image15 from '@/assets/images/gallery/car_inside (14).jpg';
-import image16 from '@/assets/images/gallery/car_inside (15).jpg';
-import image17 from '@/assets/images/gallery/car_inside (16).jpg';
-import image18 from '@/assets/images/gallery/car_inside (17).jpg';
-import image19 from '@/assets/images/gallery/car_inside (18).jpg';
-import image20 from '@/assets/images/gallery/car_inside (19).jpg';
-import image21 from '@/assets/images/gallery/car_inside (20).jpg';
-import image22 from '@/assets/images/gallery/car_inside (21).jpg';
-import image23 from '@/assets/images/gallery/CX0008a_25-3.webp';
-import image24 from '@/assets/images/gallery/pexels-aboodi-18435540.jpg';
-import image25 from '@/assets/images/gallery/pexels-albinberlin-919073.jpg';
-import image26 from '@/assets/images/gallery/pexels-alexgtacar-745150-1592384.jpg';
-import image27 from '@/assets/images/gallery/pexels-apvibes-28355547.jpg';
-import image28 from '@/assets/images/gallery/pexels-axp-photography-500641970-19573775.jpg';
-import image29 from '@/assets/images/gallery/pexels-bertellifotografia-799443.jpg';
-import image30 from '@/assets/images/gallery/pexels-boris-dahm-2150922402-31729752.jpg';
-
-// Array of all gallery images
+// Use public folder images (no imports needed - direct paths)
+// Array of all gallery images from public/assets/images/Pic/
 const images = [
-  image1, image2, image3, image4, image5, image6, image7, image8, image9, image10,
-  image11, image12, image13, image14, image15, image16, image17, image18, image19, image20,
-  image21, image22, image23, image24, image25, image26, image27, image28, image29, image30
+  '/assets/images/Pic/car_inside (1).jpg',
+  '/assets/images/Pic/car_inside (2).jpg',
+  '/assets/images/Pic/car_inside (3).jpg',
+  '/assets/images/Pic/car_inside (4).jpg',
+  '/assets/images/Pic/car_inside (5).jpg',
+  '/assets/images/Pic/car_inside (6).jpg',
+  '/assets/images/Pic/car_inside (7).jpg',
+  '/assets/images/Pic/car_inside (8).jpg',
+  '/assets/images/Pic/car_inside (9).jpg',
+  '/assets/images/Pic/car_inside (10).jpg',
+  '/assets/images/Pic/car_inside (11).jpg',
+  '/assets/images/Pic/car_inside (12).jpg',
+  '/assets/images/Pic/car_inside (13).jpg',
+  '/assets/images/Pic/car_inside (14).jpg',
+  '/assets/images/Pic/car_inside (15).jpg',
+  '/assets/images/Pic/car_inside (16).jpg',
+  '/assets/images/Pic/car_inside (17).jpg',
+  '/assets/images/Pic/car_inside (18).jpg',
+  '/assets/images/Pic/car_inside (19).jpg',
+  '/assets/images/Pic/car_inside (20).jpg',
+  '/assets/images/Pic/pexels-aboodi-18435540.jpg',
+  '/assets/images/Pic/pexels-alexgtacar-745150-1592384.jpg',
+  '/assets/images/Pic/pexels-bertellifotografia-799443.jpg',
+  '/assets/images/Pic/pexels-boris-dahm-2150922402-31729752.jpg',
+  '/assets/images/Pic/pexels-bylukemiller-29566896.jpg',
+  '/assets/images/Pic/pexels-bylukemiller-29566897.jpg',
+  '/assets/images/Pic/pexels-bylukemiller-29566898.jpg',
+  '/assets/images/Pic/pexels-peely-712618.jpg',
+  '/assets/images/Pic/pexels-james-collington-2147687246-30772805.jpg',
+  '/assets/images/Pic/pexels-tomfisk-10034071.jpg',
 ];
 
 interface CircularImageGalleryProps {

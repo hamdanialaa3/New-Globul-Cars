@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { logger } from '../../services/logger-service';
 import styled from 'styled-components';
+import { Network, Zap, Database, Globe } from 'lucide-react';
 
 // Styled Components
 const AdminContainer = styled.div`
@@ -58,11 +60,12 @@ const StatLabel = styled.div`
   font-weight: 500;
 `;
 
-const AdminUsersSection = styled.div`
+const Section = styled.div`
   background: white;
   border-radius: 12px;
   padding: 30px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
 `;
 
 const SectionTitle = styled.h2`
@@ -70,6 +73,9 @@ const SectionTitle = styled.h2`
   font-size: 24px;
   font-weight: 600;
   margin: 0 0 20px 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
 `;
 
 const AdminUserCard = styled.div`
@@ -97,6 +103,105 @@ const UserRole = styled.div`
   color: #4267B2;
   font-size: 14px;
   font-weight: 500;
+`;
+
+const ArchitectureSection = styled.div`
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+  margin-bottom: 30px;
+  color: white;
+`;
+
+const ArchitectureHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 16px;
+`;
+
+const ArchitectureTitle = styled.h2`
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+`;
+
+const ViewDiagramButton = styled.button`
+  background: white;
+  color: #667eea;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  }
+`;
+
+const ArchitectureDescription = styled.p`
+  font-size: 16px;
+  line-height: 1.8;
+  margin-bottom: 24px;
+  opacity: 0.95;
+`;
+
+const FeaturesGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+`;
+
+const FeatureCard = styled.div`
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  padding: 20px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-4px);
+  }
+`;
+
+const FeatureIcon = styled.div`
+  width: 48px;
+  height: 48px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+`;
+
+const FeatureTitle = styled.h4`
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+`;
+
+const FeatureDesc = styled.p`
+  font-size: 14px;
+  margin: 0;
+  opacity: 0.9;
+  line-height: 1.5;
 `;
 
 const AccessDeniedContainer = styled.div`
@@ -146,6 +251,7 @@ const LoginButton = styled.a`
 `;
 
 const AdminPage: React.FC = () => {
+  const navigate = useNavigate();
   const [adminUser, setAdminUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -154,7 +260,7 @@ const AdminPage: React.FC = () => {
       try {
         // Check localStorage for admin session
         const storedAdmin = localStorage.getItem('adminUser');
-        
+
         if (storedAdmin) {
           const adminData = JSON.parse(storedAdmin);
           setAdminUser(adminData);
@@ -223,14 +329,76 @@ const AdminPage: React.FC = () => {
         </StatCard>
       </StatsGrid>
 
-      <AdminUsersSection>
+      {/* Architecture Diagram Section */}
+      <ArchitectureSection>
+        <ArchitectureHeader>
+          <ArchitectureTitle>
+            <Network size={32} />
+            System Architecture Diagram
+          </ArchitectureTitle>
+          <ViewDiagramButton onClick={() => navigate('/diagram')}>
+            <Network size={20} />
+            View Interactive Diagram
+          </ViewDiagramButton>
+        </ArchitectureHeader>
+
+        <ArchitectureDescription>
+          Explore the complete technical architecture of the New Globul Cars platform.
+          This interactive diagram visualizes all system components, their connections,
+          and real-time data flow with animated particles showing live communication between modules.
+        </ArchitectureDescription>
+
+        <FeaturesGrid>
+          <FeatureCard>
+            <FeatureIcon>
+              <Network size={24} />
+            </FeatureIcon>
+            <FeatureTitle>Interactive Nodes</FeatureTitle>
+            <FeatureDesc>
+              Click any component to see detailed information and navigate to that section
+            </FeatureDesc>
+          </FeatureCard>
+
+          <FeatureCard>
+            <FeatureIcon>
+              <Zap size={24} />
+            </FeatureIcon>
+            <FeatureTitle>Live Data Flow</FeatureTitle>
+            <FeatureDesc>
+              Animated particles show real-time data movement between system components
+            </FeatureDesc>
+          </FeatureCard>
+
+          <FeatureCard>
+            <FeatureIcon>
+              <Database size={24} />
+            </FeatureIcon>
+            <FeatureTitle>Full System View</FeatureTitle>
+            <FeatureDesc>
+              See all infrastructure, services, UI, features, and external integrations
+            </FeatureDesc>
+          </FeatureCard>
+
+          <FeatureCard>
+            <FeatureIcon>
+              <Globe size={24} />
+            </FeatureIcon>
+            <FeatureTitle>External Sources</FeatureTitle>
+            <FeatureDesc>
+              View connections to MobileBG.eu, Firebase, AI Engine, and third-party APIs
+            </FeatureDesc>
+          </FeatureCard>
+        </FeaturesGrid>
+      </ArchitectureSection>
+
+      <Section>
         <SectionTitle>👥 Admin Users</SectionTitle>
         <AdminUserCard>
           <UserName>{adminUser.name}</UserName>
           <UserEmail>{adminUser.email}</UserEmail>
           <UserRole>Super Administrator - Full Access</UserRole>
         </AdminUserCard>
-      </AdminUsersSection>
+      </Section>
     </AdminContainer>
   );
 };

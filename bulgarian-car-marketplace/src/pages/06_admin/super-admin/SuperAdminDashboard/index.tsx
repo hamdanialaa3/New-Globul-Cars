@@ -12,6 +12,7 @@ import { getAuth } from 'firebase/auth';
 import { usersReportService } from '@/services/reports/users-report-service';
 import { carsReportService } from '@/services/reports/cars-report-service';
 import { Download, FileSpreadsheet, FileJson, Users } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 // Import components
 import AdminHeader from '@/components/SuperAdmin/AdminHeader';
@@ -34,6 +35,7 @@ import PermissionManagement from '@/components/PermissionManagement';
 import AuditLogging from '@/components/AuditLogging';
 import UserDetailsModal from '@/components/UserDetailsModal';
 import FacebookAdminPanel from '@/components/SuperAdmin/FacebookAdminPanel';
+import ArchitecturePanel from '@/components/SuperAdmin/ArchitecturePanel';
 
 // Styled Components
 const DashboardContainer = styled.div`
@@ -109,6 +111,7 @@ const LoginButton = styled.button`
 
 const SuperAdminDashboard: React.FC = () => {
   const navigate = useNavigate();
+  const { language } = useLanguage();
   const [activeTab, setActiveTab] = useState('overview');
   const [analytics, setAnalytics] = useState<RealTimeAnalytics | null>(null);
   const [userActivity, setUserActivity] = useState<UserActivity[]>([]);
@@ -125,12 +128,12 @@ const SuperAdminDashboard: React.FC = () => {
     let cancelled = false;
     let hasNavigated = false;
     let hasWarned = false;
-    
+
     const initializeDashboard = async () => {
       try {
         if (cancelled) return;
         setLoading(true);
-        
+
         // Check session
         const storedSession = localStorage.getItem('superAdminSession');
         if (!storedSession) {
@@ -166,7 +169,7 @@ const SuperAdminDashboard: React.FC = () => {
             setIsOwnerAuthed(true);
             console.log('🔄 Loading real Firebase data...');
             const realAnalytics = await firebaseRealDataService.getRealAnalytics();
-            
+
             if (cancelled) return;
             setAnalytics({
               totalUsers: realAnalytics.totalUsers,
@@ -212,10 +215,10 @@ const SuperAdminDashboard: React.FC = () => {
               ],
               lastUpdated: realAnalytics.lastUpdated
             });
-            
+
             if (cancelled) return;
             const realUserActivity = await firebaseRealDataService.getRealUserActivity();
-            
+
             if (cancelled) return;
             setUserActivity(realUserActivity);
 
@@ -233,7 +236,7 @@ const SuperAdminDashboard: React.FC = () => {
         try {
           if (cancelled) return;
           const moderationData = await advancedRealDataService.getRealContentModeration();
-          
+
           if (cancelled) return;
           setContentModeration(moderationData);
         } catch (error) {
@@ -261,7 +264,7 @@ const SuperAdminDashboard: React.FC = () => {
         if (cancelled) return;
         const statsDocRef = doc(db, 'market', 'stats');
         const statsDoc = await getDoc(statsDocRef);
-        
+
         if (cancelled) return;
         if (statsDoc.exists()) {
           const data = statsDoc.data();
@@ -278,7 +281,7 @@ const SuperAdminDashboard: React.FC = () => {
 
     initializeDashboard();
     loadMarketStats();
-    
+
     // Refresh stats every 30 seconds
     const statsInterval = setInterval(() => {
       if (!cancelled) {
@@ -350,20 +353,20 @@ const SuperAdminDashboard: React.FC = () => {
   return (
     <DashboardContainer>
       <AdminHeader session={session} onLogout={handleLogout} />
-      
+
       {/* Quick Links Navigation - All Project Pages (moved to top, below header) */}
       <QuickLinksNavigation />
-      
+
       <AdminNavigation activeTab={activeTab} onTabChange={setActiveTab} />
 
       {/* Tab Content appears directly after navigation */}
       <TabContent>
         {activeTab === 'overview' && (
           <>
-            <AdminOverview 
-              analytics={analytics} 
-              userActivity={userActivity} 
-              onUserClick={handleUserClick} 
+            <AdminOverview
+              analytics={analytics}
+              userActivity={userActivity}
+              onUserClick={handleUserClick}
             />
             {isOwnerAuthed && (
               <>
@@ -402,9 +405,9 @@ const SuperAdminDashboard: React.FC = () => {
           <div style={{ textAlign: 'center', padding: '2rem' }}>
             <h2 style={{ color: '#ffd700', marginBottom: '1rem' }}>إدارة المستخدمين المتقدمة</h2>
             <p style={{ color: '#aaa', marginBottom: '2rem' }}>تحكم كامل في جميع المستخدمين والمشتركين والمدراء</p>
-            <ActionButton 
+            <ActionButton
               onClick={() => navigate('/super-admin/users')}
-              style={{ 
+              style={{
                 background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                 color: 'white',
                 padding: '1rem 2rem',
@@ -441,6 +444,10 @@ const SuperAdminDashboard: React.FC = () => {
           <ProjectInfoPanel />
         )}
 
+        {activeTab === 'architecture' && (
+          <ArchitecturePanel language={language} />
+        )}
+
         {activeTab === 'facebook' && (
           <FacebookAdminPanel language="bg" />
         )}
@@ -465,31 +472,31 @@ const SuperAdminDashboard: React.FC = () => {
               <LinkName>Firestore Database</LinkName>
               <LinkDesc>عرض وإدارة البيانات</LinkDesc>
             </LinkCard>
-            
+
             <LinkCard onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/storage', '_blank')}>
               <LinkIcon>🖼️</LinkIcon>
               <LinkName>Storage</LinkName>
               <LinkDesc>الصور والملفات</LinkDesc>
             </LinkCard>
-            
+
             <LinkCard onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/authentication/users', '_blank')}>
               <LinkIcon>👥</LinkIcon>
               <LinkName>Authentication</LinkName>
               <LinkDesc>المستخدمين المسجلين</LinkDesc>
             </LinkCard>
-            
+
             <LinkCard onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/functions', '_blank')}>
               <LinkIcon>⚡</LinkIcon>
               <LinkName>Cloud Functions</LinkName>
               <LinkDesc>الوظائف السحابية</LinkDesc>
             </LinkCard>
-            
+
             <LinkCard onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/hosting', '_blank')}>
               <LinkIcon>🌐</LinkIcon>
               <LinkName>Hosting</LinkName>
               <LinkDesc>استضافة الموقع</LinkDesc>
             </LinkCard>
-            
+
             <LinkCard onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/analytics', '_blank')}>
               <LinkIcon>📈</LinkIcon>
               <LinkName>Analytics</LinkName>
@@ -507,37 +514,37 @@ const SuperAdminDashboard: React.FC = () => {
               <LinkName>AI Dashboard</LinkName>
               <LinkDesc>لوحة تحكم الذكاء الاصطناعي</LinkDesc>
             </LinkCard>
-            
+
             <LinkCard onClick={() => navigate('/admin/ai-quotas')}>
               <LinkIcon>⚙️</LinkIcon>
               <LinkName>AI Quotas Manager</LinkName>
               <LinkDesc>إدارة حصص المستخدمين</LinkDesc>
             </LinkCard>
-            
+
             <LinkCard onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/firestore/databases/-default-/data/~2Fai_quotas', '_blank')}>
               <LinkIcon>💳</LinkIcon>
               <LinkName>AI Quotas</LinkName>
               <LinkDesc>حصص المستخدمين</LinkDesc>
             </LinkCard>
-            
+
             <LinkCard onClick={() => window.open('https://console.firebase.google.com/project/fire-new-globul/firestore/databases/-default-/data/~2Fai_usage_logs', '_blank')}>
               <LinkIcon>📝</LinkIcon>
               <LinkName>Usage Logs</LinkName>
               <LinkDesc>سجل الاستخدام</LinkDesc>
             </LinkCard>
-            
+
             <LinkCard onClick={() => window.open('https://makersuite.google.com/app/apikey', '_blank')}>
               <LinkIcon>🔑</LinkIcon>
               <LinkName>Gemini API Keys</LinkName>
               <LinkDesc>مفاتيح API</LinkDesc>
             </LinkCard>
-            
+
             <LinkCard onClick={() => window.open('https://console.cloud.google.com/apis/api/generativelanguage.googleapis.com', '_blank')}>
               <LinkIcon>⚙️</LinkIcon>
               <LinkName>API Settings</LinkName>
               <LinkDesc>إعدادات API</LinkDesc>
             </LinkCard>
-            
+
             <LinkCard onClick={() => window.open('https://console.cloud.google.com/billing', '_blank')}>
               <LinkIcon>💰</LinkIcon>
               <LinkName>Billing</LinkName>
@@ -555,43 +562,43 @@ const SuperAdminDashboard: React.FC = () => {
               <LinkName>IoT Dashboard</LinkName>
               <LinkDesc>لوحة تحكم أجهزة IoT</LinkDesc>
             </LinkCard>
-            
+
             <LinkCard onClick={() => navigate('/car-tracking')}>
               <LinkIcon>🗺️</LinkIcon>
               <LinkName>Car Tracking</LinkName>
               <LinkDesc>تتبع السيارات المباشر</LinkDesc>
             </LinkCard>
-            
+
             <LinkCard onClick={() => navigate('/iot-analytics')}>
               <LinkIcon>📈</LinkIcon>
               <LinkName>IoT Analytics</LinkName>
               <LinkDesc>تحليلات بيانات IoT</LinkDesc>
             </LinkCard>
-            
+
             <LinkCard onClick={() => window.open('https://700633997329-ggu6enoq.us-east-1.console.aws.amazon.com/iot/home?region=us-east-1#/connectdevice', '_blank')}>
               <LinkIcon>🔗</LinkIcon>
               <LinkName>AWS IoT Console</LinkName>
               <LinkDesc>وحدة تحكم AWS IoT</LinkDesc>
             </LinkCard>
-            
+
             <LinkCard onClick={() => window.open('https://700633997329-ggu6enoq.us-east-1.console.aws.amazon.com/dynamodb/home?region=us-east-1#tables:', '_blank')}>
               <LinkIcon>🗄️</LinkIcon>
               <LinkName>DynamoDB Tables</LinkName>
               <LinkDesc>جداول بيانات IoT</LinkDesc>
             </LinkCard>
-            
+
             <LinkCard onClick={() => window.open('https://700633997329-ggu6enoq.us-east-1.console.aws.amazon.com/cloudwatch/home?region=us-east-1', '_blank')}>
               <LinkIcon>📊</LinkIcon>
               <LinkName>CloudWatch</LinkName>
               <LinkDesc>مراقبة الأداء</LinkDesc>
             </LinkCard>
-            
+
             <LinkCard onClick={() => navigate('/admin/integration-status')}>
               <LinkIcon>🔗</LinkIcon>
               <LinkName>Integration Status</LinkName>
               <LinkDesc>حالة تكامل الخدمات السحابية</LinkDesc>
             </LinkCard>
-            
+
             <LinkCard onClick={() => navigate('/admin/setup')}>
               <LinkIcon>⚙️</LinkIcon>
               <LinkName>Quick Setup</LinkName>
@@ -811,7 +818,7 @@ const SuperAdminDashboard: React.FC = () => {
         <FooterNote>هذه المعلومات خاصة بالمالك (Super Admin) ولا تظهر للمستخدمين العاديين.</FooterNote>
       </SuperAdminFooter>
     </DashboardContainer>
-);
+  );
 };
 
 // Styled footer for Super Admin only
