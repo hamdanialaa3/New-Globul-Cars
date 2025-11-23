@@ -9,6 +9,7 @@ import reportWebVitals from './reportWebVitals';
 import { initPerformanceMonitoring } from './utils/performance-monitoring';
 import { logger } from './services/logger-service';
 import { registerServiceWorker } from './utils/serviceWorkerRegistration';
+import webVitalsTracker from './utils/webVitals';
 
 // Import Firebase configuration
 import './firebase/firebase-config';

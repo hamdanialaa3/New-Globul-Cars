@@ -34,6 +34,7 @@ const NotFoundPage = React.lazy(() => import('./components/NotFoundPage'));
 const FacebookPixel = React.lazy(() => import('./components/FacebookPixel'));
 const FloatingAddButton = React.lazy(() => import('./components/FloatingAddButton'));
 const RobotChatIcon = React.lazy(() => import('./components/AI/RobotChatIcon'));
+const PerformanceDashboard = React.lazy(() => import('./components/PerformanceDashboard'));
 import { useIsMobile } from './hooks/useBreakpoint';
 const ProgressBar = React.lazy(() => import('./components/ProgressBar'));
 // Removed problematic imports
@@ -882,6 +883,13 @@ const MainLayout: React.FC = () => {
         </Suspense>
       } />
     </Routes>
+    
+    {/* Performance Dashboard - Development/Testing Only */}
+    {process.env.NODE_ENV === 'development' && (
+      <Suspense fallback={null}>
+        <PerformanceDashboard />
+      </Suspense>
+    )}
   </Layout>
   );
 };

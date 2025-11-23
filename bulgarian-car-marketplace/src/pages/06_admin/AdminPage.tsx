@@ -4,113 +4,115 @@ import { logger } from '../../services/logger-service';
 import styled from 'styled-components';
 import { Network, Zap, Database, Globe } from 'lucide-react';
 
-// Styled Components
+// Styled Components - Compact 60% Size
 const AdminContainer = styled.div`
   min-height: 100vh;
   background: #f0f2f5;
-  padding: 20px;
+  padding: 12px;
+  max-width: 1400px;
+  margin: 0 auto;
 `;
 
 const AdminHeader = styled.div`
   background: white;
-  border-radius: 12px;
-  padding: 30px;
-  margin-bottom: 30px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 18px;
+  margin-bottom: 18px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
 `;
 
 const AdminTitle = styled.h1`
   color: #1c1e21;
-  font-size: 32px;
+  font-size: 22px;
   font-weight: 700;
-  margin: 0 0 8px 0;
+  margin: 0 0 4px 0;
 `;
 
 const AdminSubtitle = styled.p`
   color: #65676b;
-  font-size: 16px;
+  font-size: 13px;
   margin: 0;
 `;
 
 const StatsGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-  margin-bottom: 30px;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
 `;
 
 const StatCard = styled.div`
   background: white;
-  border-radius: 12px;
-  padding: 24px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 14px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
   text-align: center;
 `;
 
 const StatValue = styled.div`
-  font-size: 36px;
+  font-size: 24px;
   font-weight: 700;
   color: #4267B2;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 `;
 
 const StatLabel = styled.div`
   color: #65676b;
-  font-size: 16px;
+  font-size: 12px;
   font-weight: 500;
 `;
 
 const Section = styled.div`
   background: white;
-  border-radius: 12px;
-  padding: 30px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  margin-bottom: 30px;
+  border-radius: 8px;
+  padding: 18px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 18px;
 `;
 
 const SectionTitle = styled.h2`
   color: #1c1e21;
-  font-size: 24px;
+  font-size: 16px;
   font-weight: 600;
-  margin: 0 0 20px 0;
+  margin: 0 0 12px 0;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
 `;
 
 const AdminUserCard = styled.div`
   background: #f8f9fa;
-  border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 16px;
-  border-left: 4px solid #4267B2;
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-left: 3px solid #4267B2;
 `;
 
 const UserName = styled.div`
-  font-size: 18px;
+  font-size: 14px;
   font-weight: 600;
   color: #1c1e21;
-  margin-bottom: 4px;
+  margin-bottom: 3px;
 `;
 
 const UserEmail = styled.div`
   color: #65676b;
-  font-size: 14px;
-  margin-bottom: 8px;
+  font-size: 12px;
+  margin-bottom: 4px;
 `;
 
 const UserRole = styled.div`
   color: #4267B2;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
 `;
 
 const ArchitectureSection = styled.div`
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 12px;
-  padding: 30px;
-  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
-  margin-bottom: 30px;
+  border-radius: 8px;
+  padding: 18px;
+  box-shadow: 0 2px 12px rgba(102, 126, 234, 0.3);
+  margin-bottom: 18px;
   color: white;
 `;
 
@@ -118,90 +120,95 @@ const ArchitectureHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 10px;
 `;
 
 const ArchitectureTitle = styled.h2`
-  font-size: 28px;
+  font-size: 18px;
   font-weight: 700;
   margin: 0;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
 `;
 
 const ViewDiagramButton = styled.button`
   background: white;
   color: #667eea;
   border: none;
-  padding: 12px 28px;
-  border-radius: 8px;
-  font-size: 16px;
+  padding: 8px 18px;
+  border-radius: 6px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   }
 `;
 
 const ArchitectureDescription = styled.p`
-  font-size: 16px;
-  line-height: 1.8;
-  margin-bottom: 24px;
+  font-size: 13px;
+  line-height: 1.6;
+  margin-bottom: 14px;
   opacity: 0.95;
 `;
 
 const FeaturesGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
-  margin-top: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+  margin-top: 12px;
 `;
 
 const FeatureCard = styled.div`
   background: rgba(255, 255, 255, 0.15);
-  border-radius: 10px;
-  padding: 20px;
+  border-radius: 6px;
+  padding: 12px;
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
   transition: all 0.3s ease;
 
   &:hover {
     background: rgba(255, 255, 255, 0.25);
-    transform: translateY(-4px);
+    transform: translateY(-2px);
   }
 `;
 
 const FeatureIcon = styled.div`
-  width: 48px;
-  height: 48px;
+  width: 32px;
+  height: 32px;
   background: rgba(255, 255, 255, 0.3);
-  border-radius: 12px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
+  
+  svg {
+    width: 18px;
+    height: 18px;
+  }
 `;
 
 const FeatureTitle = styled.h4`
-  font-size: 16px;
+  font-size: 13px;
   font-weight: 600;
-  margin: 0 0 8px 0;
+  margin: 0 0 4px 0;
 `;
 
 const FeatureDesc = styled.p`
-  font-size: 14px;
+  font-size: 11px;
   margin: 0;
   opacity: 0.9;
-  line-height: 1.5;
+  line-height: 1.4;
 `;
 
 const AccessDeniedContainer = styled.div`
@@ -258,7 +265,6 @@ const AdminPage: React.FC = () => {
   useEffect(() => {
     const checkAdminStatus = () => {
       try {
-        // Check localStorage for admin session
         const storedAdmin = localStorage.getItem('adminUser');
 
         if (storedAdmin) {
@@ -329,15 +335,14 @@ const AdminPage: React.FC = () => {
         </StatCard>
       </StatsGrid>
 
-      {/* Architecture Diagram Section */}
       <ArchitectureSection>
         <ArchitectureHeader>
           <ArchitectureTitle>
-            <Network size={32} />
+            <Network size={20} />
             System Architecture Diagram
           </ArchitectureTitle>
           <ViewDiagramButton onClick={() => navigate('/diagram')}>
-            <Network size={20} />
+            <Network size={16} />
             View Interactive Diagram
           </ViewDiagramButton>
         </ArchitectureHeader>
@@ -351,7 +356,7 @@ const AdminPage: React.FC = () => {
         <FeaturesGrid>
           <FeatureCard>
             <FeatureIcon>
-              <Network size={24} />
+              <Network />
             </FeatureIcon>
             <FeatureTitle>Interactive Nodes</FeatureTitle>
             <FeatureDesc>
@@ -361,7 +366,7 @@ const AdminPage: React.FC = () => {
 
           <FeatureCard>
             <FeatureIcon>
-              <Zap size={24} />
+              <Zap />
             </FeatureIcon>
             <FeatureTitle>Live Data Flow</FeatureTitle>
             <FeatureDesc>
@@ -371,7 +376,7 @@ const AdminPage: React.FC = () => {
 
           <FeatureCard>
             <FeatureIcon>
-              <Database size={24} />
+              <Database />
             </FeatureIcon>
             <FeatureTitle>Full System View</FeatureTitle>
             <FeatureDesc>
@@ -381,7 +386,7 @@ const AdminPage: React.FC = () => {
 
           <FeatureCard>
             <FeatureIcon>
-              <Globe size={24} />
+              <Globe />
             </FeatureIcon>
             <FeatureTitle>External Sources</FeatureTitle>
             <FeatureDesc>
