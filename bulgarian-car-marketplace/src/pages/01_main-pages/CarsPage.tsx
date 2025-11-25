@@ -526,14 +526,14 @@ const CarsPage: React.FC = () => {
           {/* Brand/Make Badge */}
           {makeParam && !cityData && (
             <CityBadge>
-              🚗 {makeParam} · {cars.length} {carsCountText}
+              {makeParam} · {cars.length} {carsCountText}
             </CityBadge>
           )}
           
           {/* Combined Badge (Region + Brand) */}
           {cityData && makeParam && (
             <CityBadge>
-              📍 {cityDisplayName} · 🚗 {makeParam} · {cars.length} {carsCountText}
+              📍 {cityDisplayName} · {makeParam} · {cars.length} {carsCountText}
             </CityBadge>
           )}
         </PageHeader>

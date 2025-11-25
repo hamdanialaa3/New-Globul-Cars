@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import { MapPin, Navigation, Sliders, Car, TrendingUp } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import googleMapsService from '../../services/google-maps-enhanced.service';
-import carListingService from '../../services/carListingService';
+import { unifiedCarService } from '../../services/car';
 
 const Container = styled.div`
   background: white;
@@ -259,8 +259,7 @@ const NearbyCarsFinder: React.FC = () => {
       setUserLocation(userLoc);
 
       // Get all cars
-      const result = await carListingService.getListings({ limit: 1000 });
-      const allCars = result.listings;
+      const allCars = await unifiedCarService.searchCars({}, 1000);
       setTotalCars(allCars.length);
 
       // Filter cars by distance

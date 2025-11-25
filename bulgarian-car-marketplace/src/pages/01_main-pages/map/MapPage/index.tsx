@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import RegionCarCountService from '@/services/regionCarCountService';
+import GlobulCarLogo from '@/components/icons/GlobulCarLogo';
 import { fetchCarsByCity, fetchUsersByCity, cityIdToCoordinates, CarEntity, UserEntity } from '@/services/map-entities.service';
 import { BULGARIAN_CITIES } from '@/constants/bulgarianCities';
 import 'leaflet/dist/leaflet.css';
@@ -700,7 +701,9 @@ const MapAnalyticsPage: React.FC = () => {
                     return (
                       <ItemCard key={idx} onClick={() => navigate(`/car/${item.data.id}`)}>
                         <CardHeader>
-                          <CardIcon>🚗</CardIcon>
+                          <CardIcon>
+                            <GlobulCarLogo size={24} />
+                          </CardIcon>
                           <CardTitle>{t('mapPage.carItem')}</CardTitle>
                           <CardBadge>ID: {item.data.id.slice(0, 8)}</CardBadge>
                         </CardHeader>

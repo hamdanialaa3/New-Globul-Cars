@@ -36,14 +36,9 @@ const TopBrandsPage: React.FC = () => {
         
         try {
           // Fetch cars and count by brand
-          const allCars = await bulgarianCarService.searchCars(
-            {}, 
-            'createdAt', 
-            'desc', 
-            1000
-          );
+          const allCars = await unifiedCarService.searchCars({}, 1000);
           
-          allCars.cars.forEach(car => {
+          allCars.forEach(car => {
             const make = car.make;
             brandCounts[make] = (brandCounts[make] || 0) + 1;
           });

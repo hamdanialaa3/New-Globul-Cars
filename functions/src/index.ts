@@ -39,3 +39,9 @@ export {
   listBackups, 
   restoreBackup 
 } from './backup/backup-functions';
+
+// Saved Search Alert Functions (scheduling + trigger)
+export { savedSearchAlertScheduler, savedSearchOnCreate } from './search/saved-search-alert';
+
+// Profile Metrics Aggregation (daily scheduled + on-demand)
+export { dailyProfileMetricsAggregation, triggerProfileMetricsAggregation } from './profile/daily-metrics-aggregation';

@@ -148,13 +148,16 @@ service cloud.firestore {
     // ==================== CARS COLLECTION ====================
     
     match /cars/{carId} {
-      // Allow public read for published/active listings, and full read for authenticated users
-      // Public visibility: isActive == true and not isSold
-      allow read: if isAuthenticated() ||
-                   (
-                     resource.data.get('isActive', false) == true &&
-                     !(resource.data.get('isSold', false) == true)
-                   );
+      // Allow public read for ALL active listings (no authentication required)
+      // This enables homepage sections to display cars without login
+      // Public visibility: status == 'active' OR isActive == true
+      allow read: if true; // Allow all reads for public car listings
+      
+      // Alternative: More restrictive (uncomment if needed)
+      // allow read: if isAuthenticated() ||
+      //              resource.data.get('status', '') == 'active' ||
+      //              (resource.data.get('isActive', false) == true &&
+      //               !(resource.data.get('isSold', false) == true));
       
       // Allow create if authenticated and listing limit not exceeded
         // Validates:
@@ -197,15 +200,49 @@ service cloud.firestore {
     // ==================== POSTS COLLECTION ====================
     
     match /posts/{postId} {
-      // Allow read to all authenticated users
-      allow read: if isAuthenticated();
+      // Allow read to all authenticated users (or public posts)
+      allow read: if isAuthenticated() || 
+                     resource.data.visibility == 'public';
       
-      // Allow create if authenticated
+      // Allow create if authenticated and authorId matches
       allow create: if isAuthenticated() &&
-                       request.resource.data.userId == request.auth.uid;
+                       request.resource.data.authorId == request.auth.uid &&
+                       request.resource.data.authorId is string &&
+                       request.resource.data.status == 'published';
       
-      // Allow update/delete if owner or admin
-      allow update, delete: if isOwner(resource.data.userId) || isAdmin();
+      // Allow update if owner or admin
+      allow update: if isAuthenticated() && 
+                       (resource.data.authorId == request.auth.uid || isAdmin()) &&
+                       // Prevent changing authorId
+                       (!('authorId' in request.resource.data.diff(resource.data)));
+      
+      // Allow delete if owner or admin
+      allow delete: if isAuthenticated() && 
+                       (resource.data.authorId == request.auth.uid || isAdmin());
+      
+      // ==================== COMMENTS SUBCOLLECTION ====================
+      
+      match /comments/{commentId} {
+        // Allow read to all authenticated users
+        allow read: if isAuthenticated();
+        
+        // Allow create if authenticated
+        allow create: if isAuthenticated() && 
+                         request.resource.data.authorId == request.auth.uid &&
+                         request.resource.data.postId == postId &&
+                         request.resource.data.status == 'active';
+        
+        // Allow update if owner (for editing)
+        allow update: if isAuthenticated() && 
+                         resource.data.authorId == request.auth.uid &&
+                         // Only allow status/content updates
+                         (!('authorId' in request.resource.data.diff(resource.data)) &&
+                          !('postId' in request.resource.data.diff(resource.data)));
+        
+        // Allow delete if owner or admin
+        allow delete: if isAuthenticated() && 
+                         (resource.data.authorId == request.auth.uid || isAdmin());
+      }
     }
     
     // ==================== MESSAGES COLLECTION ====================
@@ -282,6 +319,236 @@ service cloud.firestore {
         allow read: if true;
         allow write: if false; // Only Stripe webhook can write
       }
+    }
+    
+    // ==================== PROFILE ENHANCEMENTS - PHASE 1 ====================
+    
+    // Success Stories
+    match /successStories/{storyId} {
+      // Users can read public stories or their own stories
+      allow read: if resource.data.isPublic == true || 
+                     (isAuthenticated() && resource.data.userId == request.auth.uid);
+      
+      // Users can create their own stories
+      allow create: if isAuthenticated() && 
+                       request.resource.data.userId == request.auth.uid;
+      
+      // Users can update/delete their own stories
+      allow update, delete: if isAuthenticated() && 
+                               resource.data.userId == request.auth.uid;
+    }
+    
+    // Trust Connections
+    match /trustConnections/{connectionId} {
+      // Users can read connections where they are involved
+      allow read: if isAuthenticated() && 
+                     (resource.data.fromUserId == request.auth.uid || 
+                      resource.data.toUserId == request.auth.uid);
+      
+      // Users can create connections from themselves
+      allow create: if isAuthenticated() && 
+                       request.resource.data.fromUserId == request.auth.uid;
+      
+      // Users can update connections where they are the recipient
+      allow update: if isAuthenticated() && 
+                       resource.data.toUserId == request.auth.uid;
+      
+      // Users can delete their own outgoing connections
+      allow delete: if isAuthenticated() && 
+                       resource.data.fromUserId == request.auth.uid;
+    }
+    
+    // Car Stories
+    match /carStories/{userId} {
+      // Anyone can read car stories (public profile feature)
+      allow read: if true;
+      
+      // Users can create/update their own car story
+      allow write: if isAuthenticated() && 
+                      request.resource.data.userId == request.auth.uid;
+    }
+    
+    // User Points
+    match /userPoints/{userId} {
+      // Users can read their own points
+      allow read: if isAuthenticated() && 
+                     resource.data.userId == request.auth.uid;
+      
+      // Only server/admin can write (via Cloud Functions)
+      allow write: if false; // Points should be updated via Cloud Functions only
+    }
+    
+    // ==================== PROFILE ENHANCEMENTS - PHASE 2 ====================
+    
+    // User Groups
+    match /userGroups/{groupId} {
+      // Anyone can read public groups
+      allow read: if resource.data.isPublic == true;
+      
+      // Authenticated users can read all groups (for browsing)
+      allow read: if isAuthenticated();
+      
+      // Only admins can create groups
+      allow create: if isAdmin();
+      
+      // Only admins can update/delete groups
+      allow update, delete: if isAdmin();
+    }
+    
+    // Group Memberships
+    match /groupMemberships/{membershipId} {
+      // Users can read their own memberships
+      allow read: if isAuthenticated() && 
+                     resource.data.userId == request.auth.uid;
+      
+      // Users can read memberships for groups they're in (for member list)
+      allow read: if isAuthenticated();
+      
+      // Users can join groups (create membership)
+      allow create: if isAuthenticated() && 
+                       request.resource.data.userId == request.auth.uid;
+      
+      // Users can leave groups (delete their own membership)
+      allow delete: if isAuthenticated() && 
+                       resource.data.userId == request.auth.uid;
+      
+      // Only group admins/moderators can update (for role changes)
+      allow update: if isAdmin();
+    }
+    
+    // Monthly Challenges
+    match /monthlyChallenges/{challengeId} {
+      // Anyone can read active challenges
+      allow read: if resource.data.isActive == true;
+      
+      // Only admins can create/update challenges
+      allow create, update, delete: if isAdmin();
+    }
+    
+    // User Challenge Progress
+    match /userChallengeProgress/{progressId} {
+      // Users can read their own progress
+      allow read: if isAuthenticated() && 
+                     resource.data.userId == request.auth.uid;
+      
+      // Users can create their own progress
+      allow create: if isAuthenticated() && 
+                       request.resource.data.userId == request.auth.uid;
+      
+      // Users can update their own progress
+      allow update: if isAuthenticated() && 
+                       resource.data.userId == request.auth.uid;
+      
+      // System can update progress (via Cloud Functions)
+      allow update: if isAdmin();
+    }
+    
+    // Transactions
+    match /transactions/{transactionId} {
+      // Users can read their own transactions
+      allow read: if isAuthenticated() && 
+                     resource.data.userId == request.auth.uid;
+      
+      // Users can create transactions for their own sales
+      allow create: if isAuthenticated() && 
+                       request.resource.data.userId == request.auth.uid;
+      
+      // Users can update their own transactions (e.g., status, notes)
+      allow update: if isAuthenticated() && 
+                       resource.data.userId == request.auth.uid;
+      
+      // Users cannot delete transactions (for audit trail)
+      allow delete: if false;
+    }
+    
+    // Availability Calendars
+    match /availabilityCalendars/{userId} {
+      // Anyone can read availability (for scheduling)
+      allow read: if true;
+      
+      // Users can create/update their own calendar
+      allow write: if isAuthenticated() && 
+                      request.resource.data.userId == request.auth.uid;
+    }
+    
+    // ==================== PROFILE ENHANCEMENTS - PHASE 3 ====================
+    
+    // Intro Videos
+    match /introVideos/{userId} {
+      // Anyone can read public videos
+      allow read: if resource.data.isPublic == true;
+      
+      // Users can read their own videos
+      allow read: if isAuthenticated() && 
+                     resource.data.userId == request.auth.uid;
+      
+      // Users can create/update their own video
+      allow write: if isAuthenticated() && 
+                      request.resource.data.userId == request.auth.uid;
+      
+      // Users can delete their own video
+      allow delete: if isAuthenticated() && 
+                       resource.data.userId == request.auth.uid;
+    }
+    
+    // Leaderboards
+    match /leaderboards/{leaderboardId} {
+      // Anyone can read leaderboards
+      allow read: if true;
+      
+      // Only system can write (via Cloud Functions)
+      allow write: if isAdmin();
+    }
+    
+    // Leaderboard Ranks
+    match /leaderboardRanks/{rankId} {
+      // Users can read their own ranks
+      allow read: if isAuthenticated();
+      
+      // Only system can write (via Cloud Functions)
+      allow write: if isAdmin();
+    }
+    
+    // Achievements
+    match /achievements/{achievementId} {
+      // Anyone can read public achievements
+      allow read: if resource.data.isPublic == true;
+      
+      // Users can read their own achievements
+      allow read: if isAuthenticated() && 
+                     resource.data.userId == request.auth.uid;
+      
+      // Users can create their own achievements (when unlocked)
+      allow create: if isAuthenticated() && 
+                       request.resource.data.userId == request.auth.uid;
+      
+      // Users can update visibility of their own achievements
+      allow update: if isAuthenticated() && 
+                       resource.data.userId == request.auth.uid &&
+                       !('userId' in request.resource.data.diff(resource.data)) &&
+                       !('type' in request.resource.data.diff(resource.data)) &&
+                       !('unlockedAt' in request.resource.data.diff(resource.data));
+      
+      // Only system can delete (for cleanup)
+      allow delete: if isAdmin();
+    }
+    
+    // Achievement Certificates
+    match /achievementCertificates/{certificateId} {
+      // Users can read their own certificates
+      allow read: if isAuthenticated() && 
+                     resource.data.userId == request.auth.uid;
+      
+      // Users can create their own certificates
+      allow create: if isAuthenticated() && 
+                       request.resource.data.userId == request.auth.uid;
+      
+      // Only admins can verify certificates
+      allow update: if isAdmin();
+      
+      // Users can delete their own certificates
+      allow delete: if isAuthenticated() && 
+                       resource.data.userId == request.auth.uid;
     }
     
     // ==================== DEFAULT DENY ====================

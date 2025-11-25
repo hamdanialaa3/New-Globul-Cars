@@ -13,6 +13,7 @@ import { usersReportService } from '@/services/reports/users-report-service';
 import { carsReportService } from '@/services/reports/cars-report-service';
 import { Download, FileSpreadsheet, FileJson, Users } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import GlobulCarLogo from '@/components/icons/GlobulCarLogo';
 
 // Import components
 import AdminHeader from '@/components/SuperAdmin/AdminHeader';
@@ -669,7 +670,9 @@ const SuperAdminDashboard: React.FC = () => {
 
             {/* تقرير جميع السيارات */}
             <ReportCard>
-              <ReportIcon>🚗</ReportIcon>
+              <ReportIcon>
+                <GlobulCarLogo size={32} />
+              </ReportIcon>
               <ReportName>جميع السيارات</ReportName>
               <ReportButtons>
                 <ExportBtn onClick={async () => {

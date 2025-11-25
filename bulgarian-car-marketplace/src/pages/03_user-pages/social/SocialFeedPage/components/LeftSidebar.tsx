@@ -10,7 +10,7 @@ const MENU_ITEMS = [
   { icon: '💾', key: 'saved', link: '/favorites', requireAuth: true },
   { icon: '🔍', key: 'savedSearches', link: '/saved-searches', requireAuth: true },
   { icon: '💬', key: 'allPosts', link: '/all-posts', requireAuth: false },
-  { icon: '🚗', key: 'marketplace', link: '/cars', requireAuth: false },
+  { icon: 'marketplace', key: 'marketplace', link: '/cars', requireAuth: false },
   { icon: '📰', key: 'newsFeed', link: '/', requireAuth: false },
   { icon: '💼', key: 'dealers', link: '/dealers', requireAuth: false },
   { icon: '📅', key: 'events', link: '/events', requireAuth: false },

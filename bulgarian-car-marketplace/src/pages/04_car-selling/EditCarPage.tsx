@@ -6,7 +6,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAuth } from '../../contexts/AuthProvider';
 import { useLanguage } from '../../contexts/LanguageContext';
-import carListingService from '../../services/carListingService';
+import { unifiedCarService } from '../../services/car';
 import SellWorkflowService from '../../services/sellWorkflowService';
 import { CarListing } from '../../types/CarListing';
 import { logger } from '../../services/logger-service';
@@ -70,7 +70,7 @@ const EditCarPage: React.FC = () => {
   
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [car, setCar] = useState<CarListing | null>(null);
+  const [car, setCar] = useState<any>(null); // UnifiedCar or CarListing
 
   useEffect(() => {
     loadCarData();
@@ -85,7 +85,7 @@ const EditCarPage: React.FC = () => {
 
     try {
       setLoading(true);
-      const carData = await carListingService.getListing(carId);
+      const carData = await unifiedCarService.getCarById(carId);
       
       if (!carData) {
         setError(language === 'bg' ? 'Обявата не е намерена' : 'Listing not found');
@@ -102,10 +102,31 @@ const EditCarPage: React.FC = () => {
         return;
       }
 
-      setCar(carData);
+      // Convert UnifiedCar to CarListing format for compatibility
+      const carListingData: CarListing = {
+        ...carData,
+        vehicleType: carData.vehicleType || 'car',
+        sellerType: carData.sellerType || 'private',
+        sellerName: carData.ownerName || carData.sellerName || '',
+        sellerEmail: carData.sellerEmail || '',
+        sellerPhone: carData.sellerPhone || '',
+        city: carData.city || '',
+        region: carData.region || '',
+        status: carData.status || 'active',
+        accidentHistory: carData.accidentHistory || false,
+        serviceHistory: carData.serviceHistory || false,
+        negotiable: carData.negotiable || false,
+        financing: carData.financing || false,
+        tradeIn: carData.tradeIn || false,
+        warranty: carData.warranty || false,
+        paymentMethods: carData.paymentMethods || [],
+        preferredContact: carData.preferredContact || []
+      };
+      
+      setCar(carListingData);
       
       // Prepare workflow data and redirect to edit workflow
-      prepareEditWorkflow(carData);
+      prepareEditWorkflow(carListingData);
       
     } catch (err) {
       logger.error('Error loading car data for edit', err as Error, { carId, userId: currentUser?.uid });

@@ -265,7 +265,7 @@ const HeroSectionMobileOptimized: React.FC<HeroSectionProps> = ({ className }) =
           
           <QuickFilters>
             <FilterChip onClick={() => handleQuickFilter('type=sedan')}>
-              🚗 Sedans
+              Sedans
             </FilterChip>
             <FilterChip onClick={() => handleQuickFilter('type=suv')}>
               🚙 SUVs

@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { advancedMessagingService } from '@/services/messaging/advanced-messaging-service';
 import MessageButton from './messaging/MessageButton';
 import { useAuth } from '@/contexts/AuthProvider';
+import { addToBrowsingHistory } from '@/pages/01_main-pages/home/HomePage/RecentBrowsingSection';
 
 // Mock car data for demonstration
 const mockCarData = [
@@ -26,6 +27,7 @@ const mockCarData = [
     features: ['Климатроник', 'Навигация', 'Камера за обратно виждане', 'LED фарове'],
     images: ['/placeholder-car.jpg'],
     seller: {
+      id: 'seller1',
       name: 'Автокъща София',
       phone: '+359 2 123 4567'
     }
@@ -49,6 +51,7 @@ const mockCarData = [
     features: ['Панорамен покрив', 'Масажни седалки', '360° камера', 'Адаптивен круиз контрол'],
     images: ['/placeholder-car.jpg'],
     seller: {
+      id: 'seller2',
       name: 'Мерцедес Център',
       phone: '+359 32 654 321'
     }
@@ -328,6 +331,10 @@ const CarDetails: React.FC = () => {
       const foundCar = mockCarData.find((c: any) => c.id === parseInt(id));
       if (foundCar) {
         setCar(foundCar);
+        // Add to browsing history
+        // Map mock data to UnifiedCar structure if needed, or ensure addToBrowsingHistory handles it
+        // For now assuming it's compatible or we cast it
+        addToBrowsingHistory(foundCar as any);
       }
     }
   }, [id]);
@@ -346,7 +353,7 @@ const CarDetails: React.FC = () => {
       // Create or get conversation for this car
       const conversationId = `car_${car.id}`;
       const receiverId = car.sellerId || 'unknown';
-      
+
       await advancedMessagingService.sendMessage(
         conversationId,
         user.uid,

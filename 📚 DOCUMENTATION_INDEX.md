@@ -250,3 +250,37 @@
 **📚 استمتع بالقراءة!**
 
 **آخر تحديث:** ${new Date().toLocaleString('ar-EG')}
+
+---
+
+## 🔄 مستندات الدومين الجديدة
+
+### **Firestore Schema / بنية قاعدة البيانات**
+📄 `docs/firestore-profile-domain.md`
+- ✅ Collections & indexes
+- ✅ أمان و صلاحيات (RBAC)
+- ✅ بنية saved searches و posts
+
+### **RBAC / صلاحيات الأدوار**
+📄 `src/constants/rbac.ts`
+- ✅ قائمة الصلاحيات الأساسية
+- ✅ دوال فحص الصلاحيات
+
+### **Saved Searches / البحث المحفوظ**
+- الخدمة: `src/services/search/saved-searches.service.ts`
+- Cloud Function: `functions/src/search/saved-search-alert.ts`
+- الهدف: تنبيهات دورية عند ظهور سيارات مطابقة
+
+### **Profile Dashboard / لوحة معلومات البروفايل**
+- المكون: `src/components/ProfileDashboard/ProfileDashboard.tsx`
+- يعرض: الثقة، الشارات، الإعلانات، معدل التحويل، البحث المحفوظ
+
+### **Posts Feature / ميزة المنشورات**
+- الخدمة: `src/features/posts/PostService.ts`
+- العرض: `src/features/posts/PostsFeedPage.tsx`
+- البطاقات: `src/features/posts/PostCard.tsx`
+
+### **Indexes Recommendations / توصيات الفهارس**
+📄 `firestore.indexes.recommendations.json`
+- ✅ فهارس مركبة مقترحة لتحسين الاستعلامات
+

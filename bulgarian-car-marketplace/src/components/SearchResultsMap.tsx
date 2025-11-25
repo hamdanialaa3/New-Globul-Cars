@@ -4,7 +4,7 @@
 import React, { useState , memo} from 'react';
 import { GoogleMap, LoadScript, Marker, InfoWindow } from '@react-google-maps/api';
 import styled from 'styled-components';
-import { BulgarianCar } from '../firebase';
+import { UnifiedCar } from '../services/car/unified-car.service';
 
 const MapContainer = styled.div`
   width: 100%;
@@ -96,7 +96,7 @@ const ResultsCount = styled.div`
 `;
 
 interface SearchResultsMapProps {
-  cars: BulgarianCar[];
+  cars: UnifiedCar[];
   onCarClick?: (carId: string) => void;
   center?: { lat: number; lng: number };
   zoom?: number;
@@ -108,7 +108,7 @@ const SearchResultsMap: React.FC<SearchResultsMapProps> = ({
   center,
   zoom = 7
 }) => {
-  const [selectedCar, setSelectedCar] = useState<BulgarianCar | null>(null);
+  const [selectedCar, setSelectedCar] = useState<UnifiedCar | null>(null);
 
   // Default center (Sofia, Bulgaria)
   const defaultCenter = center || { lat: 42.6977, lng: 23.3219 };

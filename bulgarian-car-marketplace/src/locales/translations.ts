@@ -1541,6 +1541,53 @@ export const translations = {
         phone: 'Телефон',
         docs: 'Документация'
       }
+    },
+    profileDashboard: {
+      title: 'Табло на профила',
+      overview: 'Общ преглед',
+      trustScore: 'Индекс доверие',
+      badges: 'Значки',
+      activeListings: 'Активни обяви',
+      totalListings: 'Всички обяви',
+      sold: 'Продадени',
+      views30d: 'Прегледи (30 дни)',
+      messages30d: 'Съобщения (30 дни)',
+      favorites: 'Любими',
+      avgResponse: 'Средно време за отговор',
+      responseRate: 'процент отговори',
+      reviews: 'Отзиви',
+      avgRating: 'Среден рейтинг',
+      conversion: 'Конверсия',
+      savedSearches: 'Запазени търсения',
+      profileType: 'Тип профил',
+      accountAge: 'Възраст на акаунта',
+      lastUpdated: 'Последна актуализация',
+      realtimeOn: 'На живо ✓',
+      realtimeOff: 'На живо',
+      loading: 'Зареждане...',
+      error: 'Грешка при зареждане',
+      loadError: 'Неуспешно зареждане',
+      noProfile: 'Няма профил',
+      resetSession: 'Нулирай сесията',
+      viewFullStats: 'Пълна статистика',
+      improveTrust: 'Подобри доверието'
+    },
+    savedSearches: {
+      title: 'Запазени търсения',
+      createNew: 'Ново търсене',
+      criteria: 'Критерии',
+      make: 'Марка',
+      model: 'Модел',
+      priceMax: 'Макс цена',
+      yearRange: 'Година (мин/макс)',
+      fuelTypes: 'Гориво',
+      transmission: 'Скоростна кутия',
+      region: 'Регион',
+      channels: 'Канали',
+      enabled: 'Активирано',
+      disabled: 'Деактивирано',
+      matchesFound: 'Намерени съвпадения',
+      noneYet: 'Все още няма съвпадения'
     }
   },
   en: {
@@ -2089,7 +2136,74 @@ export const translations = {
                 goBack: 'Go back'
               },
       select: 'Select',
-      selectSellerType: 'Select seller type'
+      selectSellerType: 'Select seller type',
+      retry: 'Retry',
+      refresh: 'Refresh',
+      minutes: 'minutes',
+      days: 'days'
+    },
+    profileType: {
+      private: 'Частен',
+      dealer: 'Търговец',
+      company: 'Фирма'
+    },
+    funnel: {
+      title: 'Конверсионен фуния',
+      views: 'Прегледи',
+      messages: 'Съобщения',
+      published: 'Публикувани',
+      conversionRate: 'конверсия',
+      totalSessions: 'Общо сесии',
+      favorites: 'Любими',
+      workflowConversion: 'Конверсия на процеса'
+    },
+    common: {
+      retry: 'Опитай отново',
+      refresh: 'Опресни',
+      minutes: 'минути',
+      days: 'дни'
+    }
+  },
+  en: {
+    home: {
+      hero: {
+        title: 'The Best Place to Buy and Sell Cars in Bulgaria',
+        subtitle: 'Find your perfect car from thousands of verified listings or sell yours quickly and easily.',
+        browseCars: 'Browse Cars',
+        sellCar: 'Sell Car'
+      },
+      stats: {
+        cars: 'cars',
+        satisfiedCustomers: 'satisfied customers',
+        dealers: 'dealers',
+        satisfaction: 'satisfaction'
+      },
+      featured: {
+        title: 'Featured Cars',
+        subtitle: 'Discover the best deals, selected just for you',
+        viewAll: 'View All'
+      }
+    },
+    profileType: {
+      private: 'Private',
+      dealer: 'Dealer',
+      company: 'Company'
+    },
+    funnel: {
+      title: 'Conversion Funnel',
+      views: 'Views',
+      messages: 'Messages',
+      published: 'Published',
+      conversionRate: 'conversion',
+      totalSessions: 'Total Sessions',
+      favorites: 'Favorites',
+      workflowConversion: 'Workflow Conversion'
+    },
+    common: {
+      retry: 'Retry',
+      refresh: 'Refresh',
+      minutes: 'minutes',
+      days: 'days'
     },
     nav: { 
       home: 'Home', 
@@ -3068,6 +3182,53 @@ export const translations = {
         phone: 'Phone',
         docs: 'Documentation'
       }
+    },
+    profileDashboard: {
+      title: 'Profile Dashboard',
+      overview: 'Overview',
+      trustScore: 'Trust Score',
+      badges: 'Badges',
+      activeListings: 'Active Listings',
+      totalListings: 'Total Listings',
+      sold: 'Sold',
+      views30d: 'Views (30d)',
+      messages30d: 'Messages (30d)',
+      favorites: 'Favorites',
+      avgResponse: 'Avg Response Time',
+      responseRate: 'response rate',
+      reviews: 'Reviews',
+      avgRating: 'Average Rating',
+      conversion: 'Conversion',
+      savedSearches: 'Saved Searches',
+      profileType: 'Profile Type',
+      accountAge: 'Account Age',
+      lastUpdated: 'Last Updated',
+      realtimeOn: 'Live ✓',
+      realtimeOff: 'Live',
+      loading: 'Loading...',
+      error: 'Error loading',
+      loadError: 'Failed to load',
+      noProfile: 'No profile',
+      resetSession: 'Reset Session',
+      viewFullStats: 'View Full Stats',
+      improveTrust: 'Improve Trust'
+    },
+    savedSearches: {
+      title: 'Saved Searches',
+      createNew: 'New Search',
+      criteria: 'Criteria',
+      make: 'Make',
+      model: 'Model',
+      priceMax: 'Max Price',
+      yearRange: 'Year (min/max)',
+      fuelTypes: 'Fuel Types',
+      transmission: 'Transmission',
+      region: 'Region',
+      channels: 'Channels',
+      enabled: 'Enabled',
+      disabled: 'Disabled',
+      matchesFound: 'Matches Found',
+      noneYet: 'No matches yet'
     }
   }
 } as const;

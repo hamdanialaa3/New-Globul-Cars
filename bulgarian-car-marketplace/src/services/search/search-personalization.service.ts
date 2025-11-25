@@ -14,7 +14,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
 import { CarListing } from '../../types/CarListing';
-import { BulgarianCar } from '../../firebase/car-service';
+import { UnifiedCar } from '../car/unified-car.service';
 import { serviceLogger } from '../logger-wrapper';
 
 interface UserPreferences {
@@ -34,9 +34,9 @@ class SearchPersonalizationService {
    * تخصيص نتائج البحث بناءً على سلوك المستخدم
    */
   async personalizeResults(
-    cars: (CarListing | BulgarianCar)[],
+    cars: (CarListing | UnifiedCar)[],
     userId: string
-  ): Promise<(CarListing | BulgarianCar)[]> {
+  ): Promise<(CarListing | UnifiedCar)[]> {
     try {
       // 1. Get user preferences
       const preferences = await this.getUserPreferences(userId);

@@ -59,6 +59,7 @@
     "build:optimized": "npm run build && node scripts/optimize-images.js",
     "test": "craco test",
     "test:ci": "craco test --watchAll=false --passWithNoTests --coverage",
+    "test:profile-stats": "node scripts/pretest-profile-stats.js && craco test --testPathPattern=profile-stats.service.adapter.test.js --watchAll=false",
     "lint": "echo 'Linting disabled - using build for type checking'",
     "eject": "react-scripts eject",
     "deploy": "npm run build && firebase deploy --only hosting",
@@ -73,11 +74,6 @@
       "react-app/jest"
     ]
   },
-  "jest": {
-    "moduleNameMapper": {
-      "^@/(.*)$": "<rootDir>/src/$1"
-    }
-  },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
       "eslint --fix",
@@ -88,6 +84,9 @@
     ]
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.28.5",
+    "@babel/preset-react": "^7.28.5",
+    "@babel/preset-typescript": "^7.28.5",
     "@craco/craco": "^7.1.0",
     "@types/react-icons": "^2.2.7",
     "@typescript-eslint/eslint-plugin": "^5.62.0",

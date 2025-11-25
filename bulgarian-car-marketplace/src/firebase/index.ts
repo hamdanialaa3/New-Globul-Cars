@@ -20,15 +20,17 @@ export {
 } from './messaging-service';
 
 // Export car service
-export {
-  BulgarianCarService,
-  bulgarianCarService,
-  type BulgarianCar,
-  type CarCondition,
-  type FuelType,
-  type TransmissionType,
-  type CarSearchFilters
-} from './car-service';
+// ⚠️ DEPRECATED: car-service.ts has been moved to deprecated/services/
+// Use UnifiedCarService from '@/services/car' instead
+// export {
+//   BulgarianCarService,
+//   bulgarianCarService,
+//   type BulgarianCar,
+//   type CarCondition,
+//   type FuelType,
+//   type TransmissionType,
+//   type CarSearchFilters
+// } from './car-service';
 
 // Re-export Firebase SDK for convenience
 export {

@@ -9,14 +9,19 @@ import { AIChatbot } from '@globul-cars/ui/componentsAI';
 
 // Lazy load all sections for better performance
 const HeroSection = React.lazy(() => import('./HeroSection'));
+const PopularBrandsSection = React.lazy(() => import('./PopularBrandsSection'));
 const FeaturedCarsSection = React.lazy(() => import('./FeaturedCarsSection'));
+const LifeMomentsBrowse = React.lazy(() => import('@globul-cars/ui/components/HomePage/LifeMomentsBrowse'));
+const SocialMediaSection = React.lazy(() => import('./SocialMediaSection'));
+
+// Other sections
+const VehicleClassificationsSection = React.lazy(() => import('./VehicleClassificationsSection'));
+const MostDemandedCategoriesSection = React.lazy(() => import('./MostDemandedCategoriesSection'));
+const RecentBrowsingSection = React.lazy(() => import('./RecentBrowsingSection'));
 const AIAnalyticsTeaser = React.lazy(() => import('@globul-cars/ui/components/HomePage/AIAnalyticsTeaser'));
 const SmartSellStrip = React.lazy(() => import('@globul-cars/ui/components/HomePage/SmartSellStrip'));
 const DealerSpotlight = React.lazy(() => import('@globul-cars/ui/components/HomePage/DealerSpotlight'));
-const LifeMomentsBrowse = React.lazy(() => import('@globul-cars/ui/components/HomePage/LifeMomentsBrowse'));
-const SocialMediaSection = React.lazy(() => import('./SocialMediaSection'));
 const StatsSection = React.lazy(() => import('./StatsSection'));
-const PopularBrandsSection = React.lazy(() => import('./PopularBrandsSection'));
 const ImageGallerySection = React.lazy(() => import('./ImageGallerySection'));
 const FeaturesSection = React.lazy(() => import('./FeaturesSection'));
 const LoyaltyBanner = React.lazy(() => import('@globul-cars/ui/components/HomePage/LoyaltyBanner'));
@@ -87,14 +92,23 @@ const LoadingFallback = styled.div`
 const HomePage: React.FC = () => {
   return (
     <HomeContainer>
-      {/* 1. Hero Section - FIRST (Above-the-Fold with TrustStrip + Live Counter) */}
+      {/* 1. Hero Section - FIRST (Above-the-Fold) */}
       <Suspense fallback={<LoadingFallback>Loading hero section...</LoadingFallback>}>
         <HeroSection />
       </Suspense>
 
       <SectionSpacer />
 
-      {/* 2. Featured Cars Section - WITH Scarcity Tags */}
+      {/* 2. Popular Brands Section - MOVED TO TOP */}
+      <LazySection rootMargin="0px" minHeight="500px">
+        <Suspense fallback={<LoadingFallback>Loading popular brands...</LoadingFallback>}>
+          <PopularBrandsSection />
+        </Suspense>
+      </LazySection>
+
+      <SectionSpacer />
+
+      {/* 3. Featured Cars Section */}
       <LazySection rootMargin="0px" minHeight="400px">
         <Suspense fallback={<LoadingFallback>Loading featured cars...</LoadingFallback>}>
           <FeaturedCarsSection />
@@ -102,13 +116,58 @@ const HomePage: React.FC = () => {
       </LazySection>
 
       <SectionSpacer />
-      
-      {/* 3. Business Promotion Banner */}
-      <BusinessPromoBanner />
-      
+
+      {/* 4. Life Moments Browse - Car for Your Moment */}
+      <LazySection rootMargin="50px" minHeight="300px">
+        <Suspense fallback={<LoadingFallback>Loading life moments...</LoadingFallback>}>
+          <LifeMomentsBrowse />
+        </Suspense>
+      </LazySection>
+
+      <SectionSpacer />
+
+      {/* 5. Social Media & Community */}
+      <LazySection rootMargin="50px" minHeight="200px">
+        <Suspense fallback={<LoadingFallback>Loading social media...</LoadingFallback>}>
+          <SocialMediaSection />
+        </Suspense>
+      </LazySection>
+
       <LargeSpacer />
 
-      {/* 4. AI & Analytics Teaser - NEW */}
+      {/* 6. Vehicle Classifications Section */}
+      <LazySection rootMargin="100px" minHeight="500px">
+        <Suspense fallback={<LoadingFallback>Loading vehicle classifications...</LoadingFallback>}>
+          <VehicleClassificationsSection />
+        </Suspense>
+      </LazySection>
+
+      <SectionSpacer />
+
+      {/* 7. Most Demanded Categories Section */}
+      <LazySection rootMargin="100px" minHeight="600px">
+        <Suspense fallback={<LoadingFallback>Loading demanded categories...</LoadingFallback>}>
+          <MostDemandedCategoriesSection />
+        </Suspense>
+      </LazySection>
+
+      <SectionSpacer />
+
+      {/* 8. Recent Browsing Section */}
+      <LazySection rootMargin="100px" minHeight="500px">
+        <Suspense fallback={<LoadingFallback>Loading browsing history...</LoadingFallback>}>
+          <RecentBrowsingSection />
+        </Suspense>
+      </LazySection>
+
+      <LargeSpacer />
+
+      {/* 9. Business Promotion Banner */}
+      <BusinessPromoBanner />
+
+      <LargeSpacer />
+
+      {/* 10. AI & Analytics Teaser */}
       <LazySection rootMargin="100px" minHeight="400px">
         <Suspense fallback={<LoadingFallback>Loading AI features...</LoadingFallback>}>
           <AIAnalyticsTeaser />
@@ -117,7 +176,7 @@ const HomePage: React.FC = () => {
 
       <SectionSpacer />
 
-      {/* 5. Smart Sell Strip - NEW */}
+      {/* 11. Smart Sell Strip */}
       <LazySection rootMargin="100px" minHeight="300px">
         <Suspense fallback={<LoadingFallback>Loading sell workflow...</LoadingFallback>}>
           <SmartSellStrip />
@@ -126,7 +185,7 @@ const HomePage: React.FC = () => {
 
       <SectionSpacer />
 
-      {/* 6. Dealer Spotlight - NEW */}
+      {/* 12. Dealer Spotlight */}
       <LazySection rootMargin="100px" minHeight="400px">
         <Suspense fallback={<LoadingFallback>Loading dealers...</LoadingFallback>}>
           <DealerSpotlight />
@@ -135,34 +194,7 @@ const HomePage: React.FC = () => {
 
       <SectionSpacer />
 
-      {/* 7. Life Moments Browse - NEW */}
-      <LazySection rootMargin="100px" minHeight="300px">
-        <Suspense fallback={<LoadingFallback>Loading life moments...</LoadingFallback>}>
-          <LifeMomentsBrowse />
-        </Suspense>
-      </LazySection>
-
-      <SectionSpacer />
-
-      {/* 8. Community Feed - ENHANCED with Hot Topics */}
-      <LazySection rootMargin="100px" minHeight="200px">
-        <Suspense fallback={<LoadingFallback>Loading social media...</LoadingFallback>}>
-          <SocialMediaSection />
-        </Suspense>
-      </LazySection>
-
-      <SectionSpacer />
-
-      {/* 9. Popular Brands Section */}
-      <LazySection rootMargin="50px" minHeight="500px">
-        <Suspense fallback={<LoadingFallback>Loading popular brands...</LoadingFallback>}>
-          <PopularBrandsSection />
-        </Suspense>
-      </LazySection>
-
-      <SectionSpacer />
-
-      {/* 10. Stats Section */}
+      {/* 13. Stats Section */}
       <LazySection rootMargin="50px" minHeight="300px">
         <Suspense fallback={<LoadingFallback>Loading stats...</LoadingFallback>}>
           <StatsSection />
@@ -171,7 +203,7 @@ const HomePage: React.FC = () => {
 
       <SectionSpacer />
 
-      {/* 11. Image Gallery Section */}
+      {/* 14. Image Gallery Section */}
       <LazySection rootMargin="50px" minHeight="500px">
         <Suspense fallback={<LoadingFallback>Loading image gallery...</LoadingFallback>}>
           <ImageGallerySection />
@@ -180,7 +212,7 @@ const HomePage: React.FC = () => {
 
       <SectionSpacer />
 
-      {/* 12. Features Section */}
+      {/* 15. Features Section */}
       <LazySection rootMargin="50px" minHeight="400px">
         <Suspense fallback={<LoadingFallback>Loading features...</LoadingFallback>}>
           <FeaturesSection />
@@ -189,7 +221,7 @@ const HomePage: React.FC = () => {
 
       <SectionSpacer />
 
-      {/* 13. Loyalty Banner - NEW (Final CTA) */}
+      {/* 16. Loyalty Banner - Final CTA */}
       <LazySection rootMargin="100px" minHeight="300px">
         <Suspense fallback={<LoadingFallback>Loading loyalty banner...</LoadingFallback>}>
           <LoyaltyBanner />
@@ -197,7 +229,7 @@ const HomePage: React.FC = () => {
       </LazySection>
 
       {/* AI Chatbot - Always available */}
-      <AIChatbot 
+      <AIChatbot
         position="bottom-right"
         context={{ page: 'home', userType: 'buyer' }}
       />

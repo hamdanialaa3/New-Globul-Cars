@@ -252,6 +252,47 @@ export class WorkflowAnalyticsService {
   static clearSession(): void {
     this.sessionId = '';
   }
+
+  /**
+   * Get aggregate listing KPIs for a profile (views/messages/favorites 7d & 30d)
+   * Lightweight aggregation; assumes listingMetrics has ownerProfileId.
+   */
+  static async getListingKpis(ownerProfileId: string): Promise<{ views7d: number; messages7d: number; favorites7d: number; views30d: number; messages30d: number; conversionRate30d: number }>{
+    try {
+      const metricsSnap = await getDocs(query(collection(db, 'listingMetrics'), where('ownerProfileId', '==', ownerProfileId)));
+      let v7 = 0, m7 = 0, f7 = 0, v30 = 0, m30 = 0;
+      metricsSnap.forEach(d => {
+        const m = d.data() as any;
+        v7 += m.views7d || 0;
+        m7 += m.messages7d || 0;
+        f7 += m.favorites7d || 0;
+        v30 += m.views30d || m.views7d || 0;
+        m30 += m.messages30d || m.messages7d || 0;
+      });
+      const conversionRate30d = v30 > 0 ? (m30 / v30) * 100 : 0;
+      return { views7d: v7, messages7d: m7, favorites7d: f7, views30d: v30, messages30d: m30, conversionRate30d };
+    } catch (e) {
+      logger.warn('getListingKpis failed', { error: (e as Error).message });
+      return { views7d: 0, messages7d: 0, favorites7d: 0, views30d: 0, messages30d: 0, conversionRate30d: 0 };
+    }
+  }
+
+  /**
+   * Compute simplified conversion summary for sell workflow (sessions vs completed publish step)
+   */
+  static async getConversionSummary(): Promise<{ sessions: number; published: number; conversionRate: number }>{
+    try {
+      const snap = await getDocs(query(collection(db, this.collectionName)));
+      const events = snap.docs.map(d => d.data() as WorkflowEvent);
+      const sessions = new Set(events.map(e => e.sessionId));
+      const publishedSessions = new Set(events.filter(e => e.action === 'completed' && e.step === 7).map(e => e.sessionId));
+      const conversionRate = sessions.size > 0 ? (publishedSessions.size / sessions.size) * 100 : 0;
+      return { sessions: sessions.size, published: publishedSessions.size, conversionRate };
+    } catch (e) {
+      logger.warn('getConversionSummary failed', { error: (e as Error).message });
+      return { sessions: 0, published: 0, conversionRate: 0 };
+    }
+  }
 }
 
 export default WorkflowAnalyticsService;

@@ -10,7 +10,7 @@ import { ThemeProvider } from 'styled-components';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { AuthProvider } from './contexts/AuthProvider';
 import { ProfileTypeProvider } from './contexts/ProfileTypeContext';
-import { ThemeProvider as CustomThemeProvider } from './contexts/ThemeContext';
+import { ThemeProvider as CustomThemeProvider, useTheme } from './contexts/ThemeContext';
 import { ToastProvider } from './components/Toast';
 import { bulgarianTheme, GlobalStyles } from './styles/theme';
 import './styles/mobile-responsive.css';
@@ -166,11 +166,17 @@ const CloudServicesManager = React.lazy(() => import('./pages/06_admin/CloudServ
 
 // Layout Component
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  // Get theme from context
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+  
   return (
     <div className="main-layout" style={{
       minHeight: '100vh',
       display: 'flex',
-      flexDirection: 'column'
+      flexDirection: 'column',
+      backgroundColor: isDark ? '#0f172a' : '#f5f5f8',
+      transition: 'background-color 0.3s ease'
     }}>
       <header role="banner">
         {/* ✅ Desktop Header - Hidden on mobile */}
@@ -192,11 +198,16 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         style={{
           flex: 1,
           padding: '0', // ❌ REMOVED: No padding on mobile - causes yellow transparent frame
-          paddingBottom: '80px' // ✅ Space for mobile bottom nav
+          paddingBottom: '80px', // ✅ Space for mobile bottom nav
+          backgroundColor: isDark ? '#0f172a' : '#f5f5f8',
+          transition: 'background-color 0.3s ease'
         }}
         tabIndex={-1}
       >
-        <div className="page-container">
+        <div className="page-container" style={{
+          backgroundColor: isDark ? '#0f172a' : 'transparent',
+          transition: 'background-color 0.3s ease'
+        }}>
           {children}
         </div>
       </main>

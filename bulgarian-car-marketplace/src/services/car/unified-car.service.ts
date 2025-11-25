@@ -232,6 +232,16 @@ class UnifiedCarService {
       this.invalidateCache();
 
       serviceLogger.info('Car created', { carId: docRef.id, userId: currentUser.uid });
+      
+      // Award points for creating listing
+      try {
+        const { pointsAutomationService } = await import('../profile/points-automation.service');
+        await pointsAutomationService.onListingCreated(currentUser.uid, docRef.id);
+      } catch (error) {
+        // Don't fail car creation if points fail
+        serviceLogger.error('Failed to award points for listing creation', error as Error);
+      }
+      
       return docRef.id;
     } catch (error) {
       serviceLogger.error('Error creating car', error as Error);
@@ -245,6 +255,25 @@ class UnifiedCarService {
   async updateCar(carId: string, updates: Partial<UnifiedCar>): Promise<void> {
     try {
       const docRef = doc(db, this.collectionName, carId);
+      
+      // Check if car is being marked as sold
+      const wasSold = updates.isSold === true || updates.status === 'sold';
+      let isFirstSale = false;
+      
+      if (wasSold) {
+        // Get current car data to check if it was already sold
+        const carSnap = await getDoc(docRef);
+        const currentCar = carSnap.data();
+        const wasAlreadySold = currentCar?.isSold === true || currentCar?.status === 'sold';
+        
+        if (!wasAlreadySold && currentCar?.sellerId) {
+          // Check if this is the first sale
+          const userCars = await this.getUserCars(currentCar.sellerId);
+          const soldCars = userCars.filter(c => c.isSold === true || c.status === 'sold');
+          isFirstSale = soldCars.length === 0;
+        }
+      }
+      
       await updateDoc(docRef, {
         ...updates,
         updatedAt: serverTimestamp()
@@ -254,6 +283,21 @@ class UnifiedCarService {
       this.invalidateCache();
 
       serviceLogger.info('Car updated', { carId });
+      
+      // Award points if car was sold
+      if (wasSold) {
+        try {
+          const carSnap = await getDoc(docRef);
+          const carData = carSnap.data();
+          if (carData?.sellerId) {
+            const { pointsAutomationService } = await import('../profile/points-automation.service');
+            await pointsAutomationService.onCarSold(carData.sellerId, carId, isFirstSale);
+          }
+        } catch (error) {
+          // Don't fail car update if points fail
+          serviceLogger.error('Failed to award points for car sale', error as Error);
+        }
+      }
     } catch (error) {
       serviceLogger.error('Error updating car', error as Error, { carId });
       throw error;

@@ -71,7 +71,7 @@ const HeroTitle = styled.h1`
   font-weight: 700;
   margin-bottom: 1rem;
   line-height: 1.3;
-  color: var(--text-primary);
+  color: #FF0000; /* ⚠️ TEST: RED COLOR TO VERIFY CHANGES WORK */
 
   /* MOBILE - Professional typography (Airbnb/Booking.com) */
   @media (max-width: 768px) {
@@ -264,7 +264,7 @@ const HeroSectionComponent: React.FC = () => {
     <HeroSection style={{ position: 'relative', zIndex: 1, minHeight: '750px', paddingBottom: '80px' }}>
       <HeroContent>
         <HeroTitle>
-          {language === 'bg' 
+          {language === 'bg'
             ? 'Лесно търсене. Намерете повече от кола.'
             : 'Easy search. Find more than a car.'}
         </HeroTitle>

@@ -71,7 +71,7 @@ const HeroTitle = styled.h1`
   font-weight: 700;
   margin-bottom: 1rem;
   line-height: 1.3;
-  color: var(--text-primary);
+  color: #FF0000; /* ⚠️ TEST: RED COLOR - CORRECT FOLDER */
 
   /* MOBILE - Professional typography (Airbnb/Booking.com) */
   @media (max-width: 768px) {

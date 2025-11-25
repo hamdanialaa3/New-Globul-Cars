@@ -1,0 +1,1948 @@
+/**
+ * Car Details Page - German Marketplace Style
+ * Based on the provided reference image (Fiat 500e listing)
+ * 
+ * Features:
+ * - Large main image with thumbnails
+ * - Price and financing information
+ * - Quick info icons
+ * - Battery information (for electric cars)
+ * - Technical data table
+ * - Features list
+ * - Seller information with ratings
+ * - Map location
+ * - Additional services
+ */
+
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import { 
+  Calendar, 
+  Gauge, 
+  Battery, 
+  Key, 
+  CheckCircle, 
+  FileText,
+  Star,
+  MapPin,
+  Phone,
+  Mail,
+  MessageCircle,
+  Share2,
+  Bookmark,
+  Edit,
+  ArrowLeft,
+  ChevronLeft,
+  ChevronRight
+} from 'lucide-react';
+import { CarListing } from '@/types/CarListing';
+import StaticMapEmbed from '@/components/StaticMapEmbed';
+import GlobulCarLogo from '@/components/icons/GlobulCarLogo';
+import { useTheme } from '@/contexts/ThemeContext';
+
+interface CarDetailsGermanStyleProps {
+  car: CarListing;
+  language: 'bg' | 'en';
+  onBack: () => void;
+  onEdit?: () => void;
+  isOwner: boolean;
+  onContact: (method: string) => void;
+}
+
+const translations = {
+  bg: {
+    back: 'Назад',
+    edit: 'Редактирай',
+    netPrice: 'Нето',
+    grossPrice: 'Бруто',
+    financingFrom: 'Финансиране от',
+    inquireNow: 'Запитване сега',
+    firstRegistration: 'Първа регистрация',
+    mileage: 'Пробег',
+    power: 'Мощност',
+    fuelType: 'Гориво',
+    previousOwners: 'Предишен собственик',
+    accidentFree: 'Без аварии',
+    serviceHistory: 'Сервизна книжка',
+    batteryCapacity: 'Капацитет на батерията',
+    range: 'Обхват (WLTP)',
+    chargeTimeAC: 'Време за зареждане (AC)',
+    chargeTimeDC: 'Време за зареждане (DC)',
+    batteryWarranty: 'Гаранция на батерията',
+    technicalData: 'Технически данни',
+    vehicleCondition: 'Състояние на превозното средство',
+    category: 'Категория',
+    transmission: 'Скоростна кутия',
+    driveType: 'Задвижване',
+    doors: 'Брой врати',
+    seats: 'Брой места',
+    color: 'Цвят',
+    interior: 'Интериор',
+    consumption: 'Разход (WLTP)',
+    co2Emissions: 'CO₂ емисии',
+    co2Efficiency: 'CO₂ ефективност',
+    emissionClass: 'Клас на емисиите',
+    manufacturerWarranty: 'Гаранция от производителя',
+    warranty: 'Гаранция',
+    vehicleNumber: 'Номер на превозното средство',
+    modelYear: 'Моделна година',
+    tires: 'Гуми',
+    rimSize: 'Размер на джантите',
+    numberOfKeys: 'Брой ключове',
+    chargingCable: 'Кабел за зареждане',
+    acChargingPower: 'Мощност на зареждане AC',
+    dcChargingPower: 'Мощност на зареждане DC',
+    rangeUnit: 'км',
+    features: 'Оборудване',
+    showAll: 'Покажи всички',
+    comfort: 'Комфорт',
+    entertainment: 'Развлечение/Медия',
+    safety: 'Безопасност',
+    other: 'Друго',
+    vehicleDescription: 'Описание на превозното средство от продавача',
+    aboutDealer: 'За този дилър',
+    reviews: 'Оценки',
+    allVehicles: 'Всички превозни средства',
+    openingHours: 'Работно време',
+    location: 'Локация',
+    additionalServices: 'Допълнителни услуги',
+    financing: 'Финансиране',
+    leasing: 'Лизинг',
+    tradeIn: 'Прием в замяна',
+    registrationService: 'Услуга за регистрация',
+    contactDealer: 'Свържи се с дилъра',
+    save: 'Запази',
+    share: 'Сподели',
+    update: 'Актуализирай',
+    km: 'км',
+    kw: 'кВт',
+    hp: 'кс',
+    months: 'месеца',
+    hours: 'ч',
+    minutes: 'мин',
+    notSpecified: 'Не е посочено',
+  },
+  en: {
+    back: 'Back',
+    edit: 'Edit',
+    netPrice: 'Net',
+    grossPrice: 'Gross',
+    financingFrom: 'Financing from',
+    inquireNow: 'Inquire now',
+    firstRegistration: 'First registration',
+    mileage: 'Mileage',
+    power: 'Power',
+    fuelType: 'Fuel type',
+    previousOwners: 'Previous owner',
+    accidentFree: 'Accident-free',
+    serviceHistory: 'Service history',
+    batteryCapacity: 'Battery capacity',
+    range: 'Range (WLTP)',
+    chargeTimeAC: 'Charging time (AC)',
+    chargeTimeDC: 'Charging time (DC)',
+    batteryWarranty: 'Battery warranty',
+    technicalData: 'Technical data',
+    vehicleCondition: 'Vehicle condition',
+    category: 'Category',
+    transmission: 'Transmission',
+    driveType: 'Drive type',
+    doors: 'Number of doors',
+    seats: 'Number of seats',
+    color: 'Color',
+    interior: 'Interior',
+    consumption: 'Consumption (WLTP)',
+    co2Emissions: 'CO₂ emissions',
+    co2Efficiency: 'CO₂ efficiency',
+    emissionClass: 'Emission class',
+    manufacturerWarranty: 'Manufacturer warranty',
+    warranty: 'Warranty',
+    vehicleNumber: 'Vehicle number',
+    modelYear: 'Model year',
+    tires: 'Tires',
+    rimSize: 'Rim size',
+    numberOfKeys: 'Number of keys',
+    chargingCable: 'Charging cable',
+    acChargingPower: 'AC charging power',
+    dcChargingPower: 'DC charging power',
+    rangeUnit: 'km',
+    features: 'Features',
+    showAll: 'Show all',
+    comfort: 'Comfort',
+    entertainment: 'Entertainment/Media',
+    safety: 'Safety',
+    other: 'Other',
+    vehicleDescription: 'Vehicle description according to seller',
+    aboutDealer: 'About this dealer',
+    reviews: 'Reviews',
+    allVehicles: 'All vehicles',
+    openingHours: 'Opening hours',
+    location: 'Location',
+    additionalServices: 'Additional services',
+    financing: 'Financing',
+    leasing: 'Leasing',
+    tradeIn: 'Trade-in',
+    registrationService: 'Registration service',
+    contactDealer: 'Contact dealer',
+    save: 'Save',
+    share: 'Share',
+    update: 'Update',
+    km: 'km',
+    kw: 'kW',
+    hp: 'hp',
+    months: 'months',
+    hours: 'h',
+    minutes: 'min',
+    notSpecified: 'Not specified',
+  },
+} as const;
+
+// ==================== Styled Components ====================
+
+const PageWrapper = styled.div<{ $isDark: boolean }>`
+  background: ${props => props.$isDark ? '#0f172a' : '#f5f5f8'};
+  min-height: 100vh;
+  padding: 0;
+  transition: background 0.3s ease;
+`;
+
+const TopBar = styled.div<{ $isDark: boolean }>`
+  background: ${props => props.$isDark ? '#1e293b' : '#fff'};
+  border-bottom: 1px solid ${props => props.$isDark ? '#334155' : '#e4e6eb'};
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: ${props => props.$isDark ? '0 1px 3px rgba(0, 0, 0, 0.3)' : '0 1px 3px rgba(0, 0, 0, 0.05)'};
+  transition: all 0.3s ease;
+
+  @media (max-width: 768px) {
+    padding: 0.75rem 1rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+`;
+
+const TopBarLeft = styled.div<{ $isDark: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: ${props => props.$isDark ? '#1e293b' : 'transparent'};
+  transition: background 0.3s ease;
+`;
+
+const BackButton = styled.button<{ $isDark: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  color: ${props => props.$isDark ? '#cbd5e1' : '#65676b'};
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: all 0.2s;
+
+  &:hover {
+    background: ${props => props.$isDark ? '#334155' : '#f0f2f5'};
+    color: ${props => props.$isDark ? '#f1f5f9' : '#111827'};
+  }
+`;
+
+const EditButton = styled.button<{ $isDark: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: ${props => props.$isDark ? '#2563eb' : '#1877f2'};
+  border: none;
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 10px 20px;
+  border-radius: 8px;
+  transition: all 0.2s;
+  box-shadow: ${props => props.$isDark 
+    ? '0 2px 4px rgba(37, 99, 235, 0.4)' 
+    : '0 2px 4px rgba(24, 119, 242, 0.2)'};
+
+  &:hover {
+    background: ${props => props.$isDark ? '#1d4ed8' : '#166fe5'};
+    transform: translateY(-1px);
+    box-shadow: ${props => props.$isDark 
+      ? '0 4px 8px rgba(37, 99, 235, 0.5)' 
+      : '0 4px 8px rgba(24, 119, 242, 0.3)'};
+  }
+`;
+
+const Container = styled.div<{ $isDark: boolean }>`
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: ${props => props.$isDark ? '#0f172a' : 'transparent'};
+  transition: background 0.3s ease;
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
+`;
+
+const MainSection = styled.div<{ $isDark: boolean }>`
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  background: ${props => props.$isDark ? '#0f172a' : 'transparent'};
+  transition: background 0.3s ease;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const LeftColumn = styled.div<{ $isDark: boolean }>`
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  background: ${props => props.$isDark ? '#0f172a' : 'transparent'};
+  transition: background 0.3s ease;
+`;
+
+const RightColumn = styled.div<{ $isDark: boolean }>`
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  background: ${props => props.$isDark ? '#0f172a' : 'transparent'};
+  transition: background 0.3s ease;
+`;
+
+const Card = styled.div<{ $isDark: boolean }>`
+  background: ${props => props.$isDark ? '#1e293b' : '#fff'};
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: ${props => props.$isDark ? '0 1px 2px rgba(0, 0, 0, 0.3)' : '0 1px 2px rgba(0, 0, 0, 0.1)'};
+  border: ${props => props.$isDark ? '1px solid #334155' : 'none'};
+  overflow: hidden;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  transition: all 0.3s ease;
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+    border-radius: 8px;
+  }
+`;
+
+const ImageSection = styled(Card)<{ $isDark: boolean }>`
+  padding: 0;
+  overflow: hidden;
+  background: ${props => props.$isDark ? '#1e293b' : '#fff'};
+  border: ${props => props.$isDark ? '1px solid #334155' : 'none'};
+`;
+
+const MainImageContainer = styled.div<{ $isDark: boolean }>`
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: ${props => props.$isDark ? '#0f172a' : '#000'};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.3s ease;
+`;
+
+const MainImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+`;
+
+const ImageNavButton = styled.button<{ $position: 'left' | 'right'; $isDark: boolean }>`
+  position: absolute;
+  ${props => props.$position}: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: ${props => props.$isDark 
+    ? 'rgba(30, 41, 59, 0.9)' 
+    : 'rgba(255, 255, 255, 0.9)'};
+  border: ${props => props.$isDark ? '1px solid #475569' : 'none'};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  z-index: 10;
+  box-shadow: ${props => props.$isDark 
+    ? '0 2px 8px rgba(0, 0, 0, 0.4)' 
+    : '0 2px 8px rgba(0, 0, 0, 0.15)'};
+
+  &:hover {
+    background: ${props => props.$isDark ? '#1e293b' : 'white'};
+    transform: translateY(-50%) scale(1.1);
+    border-color: ${props => props.$isDark ? '#64748b' : 'transparent'};
+    box-shadow: ${props => props.$isDark 
+      ? '0 4px 12px rgba(0, 0, 0, 0.5)' 
+      : '0 4px 12px rgba(0, 0, 0, 0.2)'};
+  }
+
+  svg {
+    color: ${props => props.$isDark ? '#f1f5f9' : '#050505'};
+  }
+`;
+
+const ThumbnailGrid = styled.div<{ $isDark: boolean }>`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 4px;
+  padding: 8px;
+  background: ${props => props.$isDark ? '#0f172a' : '#f8f9fa'};
+  transition: background 0.3s ease;
+`;
+
+const Thumbnail = styled.div<{ $isActive: boolean; $isDark: boolean }>`
+  aspect-ratio: 1;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid ${props => {
+    if (props.$isActive) {
+      return props.$isDark ? '#60a5fa' : '#1877f2';
+    }
+    return 'transparent';
+  }};
+  opacity: ${props => props.$isActive ? 1 : 0.7};
+  transition: all 0.2s;
+  background: ${props => props.$isDark ? '#1e293b' : '#f8f9fa'};
+
+  &:hover {
+    opacity: 1;
+    transform: scale(1.05);
+    border-color: ${props => {
+      if (props.$isActive) {
+        return props.$isDark ? '#60a5fa' : '#1877f2';
+      }
+      return props.$isDark ? '#475569' : '#cbd5e1';
+    }};
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+`;
+
+const DealerLogos = styled.div<{ $isDark: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-top: 1px solid ${props => props.$isDark ? '#334155' : '#e4e6eb'};
+  background: ${props => props.$isDark ? '#0f172a' : '#f8f9fa'};
+  transition: all 0.3s ease;
+`;
+
+const DealerLogo = styled.div<{ $isDark: boolean }>`
+  font-size: 14px;
+  font-weight: 600;
+  color: ${props => props.$isDark ? '#cbd5e1' : '#65676b'};
+  transition: color 0.3s ease;
+`;
+
+const CarBrandLogos = styled.div`
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+`;
+
+const BrandLogo = styled.div<{ $isDark: boolean }>`
+  font-size: 12px;
+  font-weight: 600;
+  color: ${props => props.$isDark ? '#60a5fa' : '#1877f2'};
+  padding: 4px 8px;
+  background: ${props => props.$isDark ? 'rgba(37, 99, 235, 0.2)' : '#e7f3ff'};
+  border-radius: 4px;
+  transition: all 0.3s ease;
+`;
+
+const TitleSection = styled(Card)<{ $isDark: boolean }>`
+  padding: 1.5rem;
+  background: ${props => props.$isDark ? '#1e293b' : '#fff'};
+  border: ${props => props.$isDark ? '1px solid #334155' : 'none'};
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
+`;
+
+const CarTitle = styled.h1<{ $isDark: boolean }>`
+  font-size: 24px;
+  font-weight: 700;
+  color: ${props => props.$isDark ? '#f1f5f9' : '#050505'};
+  margin: 0 0 1rem 0;
+  line-height: 1.3;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  transition: color 0.3s ease;
+
+  @media (max-width: 768px) {
+    font-size: 20px;
+    margin: 0 0 0.75rem 0;
+  }
+`;
+
+const PriceSection = styled.div`
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+
+  @media (max-width: 768px) {
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+`;
+
+const NetPrice = styled.div<{ $isDark: boolean }>`
+  font-size: 28px;
+  font-weight: 700;
+  color: ${props => props.$isDark ? '#f1f5f9' : '#050505'};
+  line-height: 1.2;
+  white-space: nowrap;
+  transition: color 0.3s ease;
+
+  @media (max-width: 768px) {
+    font-size: 24px;
+  }
+`;
+
+const GrossPrice = styled.div<{ $isDark: boolean }>`
+  font-size: 16px;
+  color: ${props => props.$isDark ? '#94a3b8' : '#65676b'};
+  font-weight: 500;
+  line-height: 1.4;
+  white-space: nowrap;
+  transition: color 0.3s ease;
+
+  @media (max-width: 768px) {
+    font-size: 14px;
+  }
+`;
+
+const FinancingOffer = styled.div<{ $isDark: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  padding: 12px;
+  background: ${props => props.$isDark ? 'rgba(37, 99, 235, 0.2)' : '#e7f3ff'};
+  border-radius: 8px;
+  flex-wrap: wrap;
+  border: ${props => props.$isDark ? '1px solid rgba(37, 99, 235, 0.3)' : 'none'};
+  transition: all 0.3s ease;
+
+  @media (max-width: 768px) {
+    padding: 10px;
+    margin-bottom: 0.75rem;
+    gap: 0.375rem;
+  }
+`;
+
+const FinancingText = styled.div<{ $isDark: boolean }>`
+  font-size: 15px;
+  font-weight: 600;
+  color: ${props => props.$isDark ? '#60a5fa' : '#1877f2'};
+  line-height: 1.4;
+  word-wrap: break-word;
+  transition: color 0.3s ease;
+
+  @media (max-width: 768px) {
+    font-size: 14px;
+  }
+`;
+
+const KeyDataGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+  }
+`;
+
+const KeyDataItem = styled.div<{ $isDark: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 14px;
+  color: ${props => props.$isDark ? '#94a3b8' : '#65676b'};
+  line-height: 1.4;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  transition: color 0.3s ease;
+
+  @media (max-width: 768px) {
+    font-size: 13px;
+    gap: 0.375rem;
+  }
+
+  svg {
+    flex-shrink: 0;
+    color: ${props => props.$isDark ? '#60a5fa' : '#1877f2'};
+  }
+`;
+
+const QuickInfoIcons = styled.div<{ $isDark: boolean }>`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  padding: 1rem 0;
+  border-top: 1px solid ${props => props.$isDark ? '#334155' : '#e4e6eb'};
+  border-bottom: 1px solid ${props => props.$isDark ? '#334155' : '#e4e6eb'};
+  margin: 1rem 0;
+  transition: all 0.3s ease;
+
+  @media (max-width: 768px) {
+    gap: 1rem;
+    padding: 0.75rem 0;
+    margin: 0.75rem 0;
+  }
+`;
+
+const QuickInfoItem = styled.div<{ $isDark: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 14px;
+  color: ${props => props.$isDark ? '#f1f5f9' : '#050505'};
+  font-weight: 500;
+  line-height: 1.4;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  flex-shrink: 0;
+  transition: color 0.3s ease;
+
+  @media (max-width: 768px) {
+    font-size: 13px;
+    gap: 0.375rem;
+  }
+
+  svg {
+    flex-shrink: 0;
+    color: ${props => props.$isDark ? '#60a5fa' : '#1877f2'};
+  }
+`;
+
+const IconWrapper = styled.div<{ $isDark: boolean }>`
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: ${props => props.$isDark ? '#60a5fa' : '#1877f2'};
+  transition: color 0.3s ease;
+`;
+
+const ActionButtons = styled.div`
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+
+  @media (max-width: 768px) {
+    gap: 0.375rem;
+    margin-top: 0.75rem;
+  }
+`;
+
+const PrimaryButton = styled.button<{ $isDark: boolean }>`
+  flex: 1;
+  background: ${props => props.$isDark ? '#2563eb' : '#1877f2'};
+  color: white;
+  border: none;
+  padding: 14px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-shadow: ${props => props.$isDark 
+    ? '0 2px 4px rgba(37, 99, 235, 0.4)' 
+    : '0 2px 4px rgba(24, 119, 242, 0.2)'};
+
+  @media (max-width: 768px) {
+    padding: 12px 16px;
+    font-size: 14px;
+    flex: 1 1 100%;
+  }
+
+  &:hover {
+    background: ${props => props.$isDark ? '#1d4ed8' : '#166fe5'};
+    transform: translateY(-1px);
+    box-shadow: ${props => props.$isDark 
+      ? '0 4px 8px rgba(37, 99, 235, 0.5)' 
+      : '0 4px 8px rgba(24, 119, 242, 0.3)'};
+  }
+`;
+
+const SecondaryButton = styled.button<{ $isDark: boolean }>`
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  border: 1px solid ${props => props.$isDark ? '#334155' : '#e4e6eb'};
+  background: ${props => props.$isDark ? '#1e293b' : 'white'};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+
+  @media (max-width: 768px) {
+    width: 44px;
+    height: 44px;
+  }
+
+  &:hover {
+    background: ${props => props.$isDark ? '#334155' : '#f0f2f5'};
+    border-color: ${props => props.$isDark ? '#475569' : '#cbd5e1'};
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+    color: ${props => props.$isDark ? '#cbd5e1' : '#050505'};
+
+    @media (max-width: 768px) {
+      width: 18px;
+      height: 18px;
+    }
+  }
+`;
+
+const BatteryInfoSection = styled(Card)<{ $isDark: boolean }>`
+  background: ${props => props.$isDark 
+    ? 'linear-gradient(135deg, rgba(37, 99, 235, 0.2) 0%, rgba(37, 99, 235, 0.1) 100%)' 
+    : 'linear-gradient(135deg, #e7f3ff 0%, #f0f8ff 100%)'};
+  border: 1px solid ${props => props.$isDark ? 'rgba(37, 99, 235, 0.3)' : '#b3d9ff'};
+  transition: all 0.3s ease;
+`;
+
+const BatteryTitle = styled.h3<{ $isDark: boolean }>`
+  font-size: 18px;
+  font-weight: 700;
+  color: ${props => props.$isDark ? '#f1f5f9' : '#050505'};
+  margin: 0 0 1rem 0;
+  line-height: 1.3;
+  transition: color 0.3s ease;
+
+  @media (max-width: 768px) {
+    font-size: 16px;
+    margin: 0 0 0.75rem 0;
+  }
+`;
+
+const BatteryGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+`;
+
+const BatteryItem = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+`;
+
+const BatteryLabel = styled.div<{ $isDark: boolean }>`
+  font-size: 13px;
+  color: ${props => props.$isDark ? '#94a3b8' : '#65676b'};
+  font-weight: 500;
+  line-height: 1.4;
+  word-wrap: break-word;
+  transition: color 0.3s ease;
+
+  @media (max-width: 768px) {
+    font-size: 12px;
+  }
+`;
+
+const BatteryValue = styled.div<{ $isDark: boolean }>`
+  font-size: 16px;
+  font-weight: 700;
+  color: ${props => props.$isDark ? '#f1f5f9' : '#050505'};
+  line-height: 1.4;
+  word-wrap: break-word;
+  transition: color 0.3s ease;
+
+  @media (max-width: 768px) {
+    font-size: 15px;
+  }
+`;
+
+const TechnicalDataTable = styled.table<{ $isDark: boolean }>`
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+`;
+
+const TableRow = styled.tr<{ $isDark: boolean }>`
+  border-bottom: 1px solid ${props => props.$isDark ? '#334155' : '#e4e6eb'};
+  transition: border-color 0.3s ease;
+
+  &:last-child {
+    border-bottom: none;
+  }
+`;
+
+const TableLabel = styled.td<{ $isDark: boolean }>`
+  padding: 12px 0;
+  font-size: 14px;
+  color: ${props => props.$isDark ? '#94a3b8' : '#65676b'};
+  font-weight: 500;
+  width: 50%;
+  line-height: 1.5;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  vertical-align: top;
+  transition: color 0.3s ease;
+
+  @media (max-width: 768px) {
+    font-size: 13px;
+    padding: 10px 0;
+    width: 45%;
+  }
+`;
+
+const TableValue = styled.td<{ $isDark: boolean }>`
+  padding: 12px 0;
+  font-size: 14px;
+  color: ${props => props.$isDark ? '#f1f5f9' : '#050505'};
+  font-weight: 600;
+  text-align: right;
+  line-height: 1.5;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  vertical-align: top;
+  transition: color 0.3s ease;
+
+  @media (max-width: 768px) {
+    font-size: 13px;
+    padding: 10px 0;
+    width: 55%;
+  }
+`;
+
+const FeaturesSection = styled(Card)<{ $isDark: boolean }>`
+  background: ${props => props.$isDark ? '#1e293b' : '#fff'};
+  border: ${props => props.$isDark ? '1px solid #334155' : 'none'};
+`;
+
+const FeaturesTitle = styled.h3<{ $isDark: boolean }>`
+  font-size: 18px;
+  font-weight: 700;
+  color: ${props => props.$isDark ? '#f1f5f9' : '#050505'};
+  margin: 0 0 1rem 0;
+  line-height: 1.3;
+  transition: color 0.3s ease;
+
+  @media (max-width: 768px) {
+    font-size: 16px;
+    margin: 0 0 0.75rem 0;
+  }
+`;
+
+const FeaturesCategory = styled.div`
+  margin-bottom: 1.5rem;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+`;
+
+const CategoryTitle = styled.h4<{ $isDark: boolean }>`
+  font-size: 15px;
+  font-weight: 600;
+  color: ${props => props.$isDark ? '#e2e8f0' : '#050505'};
+  margin: 0 0 0.75rem 0;
+  line-height: 1.3;
+  transition: color 0.3s ease;
+
+  @media (max-width: 768px) {
+    font-size: 14px;
+    margin: 0 0 0.5rem 0;
+  }
+`;
+
+const FeaturesList = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.5rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 0.375rem;
+  }
+`;
+
+const FeatureItem = styled.div<{ $isDark: boolean }>`
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 14px;
+  color: ${props => props.$isDark ? '#e2e8f0' : '#050505'};
+  line-height: 1.5;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  transition: color 0.3s ease;
+
+  @media (max-width: 768px) {
+    font-size: 13px;
+    gap: 0.375rem;
+  }
+
+  svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: ${props => props.$isDark ? '#22c55e' : '#22c55e'};
+  }
+`;
+
+const CheckIcon = styled(CheckCircle)`
+  width: 18px;
+  height: 18px;
+  color: #22c55e;
+  flex-shrink: 0;
+`;
+
+const DescriptionSection = styled(Card)<{ $isDark: boolean }>`
+  background: ${props => props.$isDark ? '#1e293b' : '#fff'};
+  border: ${props => props.$isDark ? '1px solid #334155' : 'none'};
+`;
+
+const DescriptionTitle = styled.h3<{ $isDark: boolean }>`
+  font-size: 18px;
+  font-weight: 700;
+  color: ${props => props.$isDark ? '#f1f5f9' : '#050505'};
+  margin: 0 0 1rem 0;
+  line-height: 1.3;
+  transition: color 0.3s ease;
+
+  @media (max-width: 768px) {
+    font-size: 16px;
+    margin: 0 0 0.75rem 0;
+  }
+`;
+
+const DescriptionText = styled.div<{ $isDark: boolean }>`
+  font-size: 15px;
+  line-height: 1.6;
+  color: ${props => props.$isDark ? '#e2e8f0' : '#050505'};
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  transition: color 0.3s ease;
+
+  @media (max-width: 768px) {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+`;
+
+const DealerSection = styled(Card)<{ $isDark: boolean }>`
+  background: ${props => props.$isDark ? '#1e293b' : '#fff'};
+  border: ${props => props.$isDark ? '1px solid #334155' : 'none'};
+`;
+
+const DealerHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+`;
+
+const DealerInfo = styled.div`
+  flex: 1;
+`;
+
+const DealerName = styled.h3<{ $isDark: boolean }>`
+  font-size: 18px;
+  font-weight: 700;
+  color: ${props => props.$isDark ? '#f1f5f9' : '#050505'};
+  margin: 0 0 0.5rem 0;
+  line-height: 1.3;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  transition: color 0.3s ease;
+
+  @media (max-width: 768px) {
+    font-size: 16px;
+    margin: 0 0 0.375rem 0;
+  }
+`;
+
+const DealerRating = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+`;
+
+const RatingStars = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+`;
+
+const StarIcon = styled(Star)`
+  width: 18px;
+  height: 18px;
+  fill: #fbbf24;
+  color: #fbbf24;
+`;
+
+const RatingValue = styled.span<{ $isDark: boolean }>`
+  font-size: 16px;
+  font-weight: 700;
+  color: ${props => props.$isDark ? '#f1f5f9' : '#050505'};
+  line-height: 1.4;
+  white-space: nowrap;
+  transition: color 0.3s ease;
+
+  @media (max-width: 768px) {
+    font-size: 15px;
+  }
+`;
+
+const RatingCount = styled.span<{ $isDark: boolean }>`
+  font-size: 14px;
+  color: ${props => props.$isDark ? '#94a3b8' : '#65676b'};
+  margin-left: 0.5rem;
+  line-height: 1.4;
+  white-space: nowrap;
+  transition: color 0.3s ease;
+
+  @media (max-width: 768px) {
+    font-size: 13px;
+    margin-left: 0.375rem;
+  }
+`;
+
+const DealerButtons = styled.div`
+  display: flex;
+  gap: 0.5rem;
+`;
+
+const DealerButton = styled.button<{ $isDark: boolean }>`
+  padding: 8px 16px;
+  border: 1px solid ${props => props.$isDark ? '#334155' : '#e4e6eb'};
+  background: ${props => props.$isDark ? '#1e293b' : 'white'};
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: ${props => props.$isDark ? '#f1f5f9' : '#050505'};
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  line-height: 1.4;
+
+  @media (max-width: 768px) {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+
+  &:hover {
+    background: ${props => props.$isDark ? '#334155' : '#f0f2f5'};
+    border-color: ${props => props.$isDark ? '#475569' : '#cbd5e1'};
+  }
+`;
+
+const DealerContact = styled.div<{ $isDark: boolean }>`
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid ${props => props.$isDark ? '#334155' : '#e4e6eb'};
+  transition: border-color 0.3s ease;
+`;
+
+const ContactItem = styled.div<{ $isDark: boolean }>`
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 14px;
+  color: ${props => props.$isDark ? '#e2e8f0' : '#050505'};
+  line-height: 1.5;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  transition: color 0.3s ease;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 13px;
+    gap: 0.375rem;
+    margin-bottom: 0.5rem;
+  }
+
+  svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: ${props => props.$isDark ? '#60a5fa' : '#1877f2'};
+  }
+
+  a {
+    word-break: break-all;
+    overflow-wrap: break-word;
+    color: ${props => props.$isDark ? '#60a5fa' : '#1877f2'};
+    text-decoration: none;
+    transition: color 0.3s ease;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+`;
+
+const OpeningHours = styled.div<{ $isDark: boolean }>`
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid ${props => props.$isDark ? '#334155' : '#e4e6eb'};
+  transition: border-color 0.3s ease;
+`;
+
+const HoursTitle = styled.h4<{ $isDark: boolean }>`
+  font-size: 15px;
+  font-weight: 600;
+  color: ${props => props.$isDark ? '#e2e8f0' : '#050505'};
+  margin: 0 0 0.5rem 0;
+  line-height: 1.3;
+  transition: color 0.3s ease;
+
+  @media (max-width: 768px) {
+    font-size: 14px;
+    margin: 0 0 0.375rem 0;
+  }
+`;
+
+const HoursItem = styled.div<{ $isDark: boolean }>`
+  font-size: 14px;
+  color: ${props => props.$isDark ? '#94a3b8' : '#65676b'};
+  margin-bottom: 0.25rem;
+  line-height: 1.5;
+  word-wrap: break-word;
+  transition: color 0.3s ease;
+
+  @media (max-width: 768px) {
+    font-size: 13px;
+    margin-bottom: 0.2rem;
+  }
+`;
+
+const FinancingSection = styled.div<{ $isDark: boolean }>`
+  margin-top: 1rem;
+  padding: 1rem;
+  background: ${props => props.$isDark ? 'rgba(37, 99, 235, 0.15)' : '#f0f8ff'};
+  border-radius: 8px;
+  border: 1px solid ${props => props.$isDark ? 'rgba(37, 99, 235, 0.3)' : '#b3d9ff'};
+  transition: all 0.3s ease;
+`;
+
+const FinancingTitle = styled.div<{ $isDark: boolean }>`
+  font-size: 15px;
+  font-weight: 600;
+  color: ${props => props.$isDark ? '#e2e8f0' : '#050505'};
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+  word-wrap: break-word;
+  transition: color 0.3s ease;
+
+  @media (max-width: 768px) {
+    font-size: 14px;
+    margin-bottom: 0.375rem;
+  }
+`;
+
+const FinancingButton = styled.button<{ $isDark: boolean }>`
+  width: 100%;
+  background: ${props => props.$isDark ? '#7c3aed' : '#8b5cf6'};
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.4;
+  box-shadow: ${props => props.$isDark 
+    ? '0 2px 4px rgba(124, 58, 237, 0.4)' 
+    : '0 2px 4px rgba(139, 92, 246, 0.2)'};
+
+  @media (max-width: 768px) {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  &:hover {
+    background: ${props => props.$isDark ? '#6d28d9' : '#7c3aed'};
+    box-shadow: ${props => props.$isDark 
+      ? '0 4px 8px rgba(124, 58, 237, 0.5)' 
+      : '0 4px 8px rgba(139, 92, 246, 0.3)'};
+  }
+`;
+
+const MapSection = styled(Card)<{ $isDark: boolean }>`
+  background: ${props => props.$isDark ? '#1e293b' : '#fff'};
+  border: ${props => props.$isDark ? '1px solid #334155' : 'none'};
+`;
+
+const MapTitle = styled.h3<{ $isDark: boolean }>`
+  font-size: 18px;
+  font-weight: 700;
+  color: ${props => props.$isDark ? '#f1f5f9' : '#050505'};
+  margin: 0 0 1rem 0;
+  line-height: 1.3;
+  transition: color 0.3s ease;
+
+  @media (max-width: 768px) {
+    font-size: 16px;
+    margin: 0 0 0.75rem 0;
+  }
+`;
+
+const ServicesSection = styled(Card)<{ $isDark: boolean }>`
+  background: ${props => props.$isDark ? '#1e293b' : '#fff'};
+  border: ${props => props.$isDark ? '1px solid #334155' : 'none'};
+`;
+
+const ServicesTitle = styled.h3<{ $isDark: boolean }>`
+  font-size: 18px;
+  font-weight: 700;
+  color: ${props => props.$isDark ? '#f1f5f9' : '#050505'};
+  margin: 0 0 1rem 0;
+  line-height: 1.3;
+  transition: color 0.3s ease;
+
+  @media (max-width: 768px) {
+    font-size: 16px;
+    margin: 0 0 0.75rem 0;
+  }
+`;
+
+const ServicesGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+`;
+
+const ServiceCheckbox = styled.label<{ $isDark: boolean }>`
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 14px;
+  color: ${props => props.$isDark ? '#e2e8f0' : '#050505'};
+  cursor: pointer;
+  line-height: 1.5;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  transition: color 0.3s ease;
+
+  @media (max-width: 768px) {
+    font-size: 13px;
+    gap: 0.375rem;
+  }
+
+  input[type="checkbox"] {
+    flex-shrink: 0;
+    margin-top: 2px;
+    accent-color: ${props => props.$isDark ? '#60a5fa' : '#1877f2'};
+  }
+`;
+
+const UpdateButton = styled.button<{ $isDark: boolean }>`
+  margin-top: 1rem;
+  width: 100%;
+  padding: 10px;
+  background: ${props => props.$isDark ? '#334155' : '#f0f2f5'};
+  border: 1px solid ${props => props.$isDark ? '#475569' : '#e4e6eb'};
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: ${props => props.$isDark ? '#f1f5f9' : '#050505'};
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.4;
+
+  @media (max-width: 768px) {
+    padding: 8px;
+    font-size: 13px;
+    margin-top: 0.75rem;
+  }
+
+  &:hover {
+    background: ${props => props.$isDark ? '#475569' : '#e4e6eb'};
+    border-color: ${props => props.$isDark ? '#64748b' : '#cbd5e1'};
+  }
+`;
+
+// ==================== Component ====================
+
+const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
+  car,
+  language,
+  onBack,
+  onEdit,
+  isOwner,
+  onContact
+}) => {
+  const t = translations[language];
+  const { isDark } = useTheme();
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [showAllFeatures, setShowAllFeatures] = useState(false);
+
+  const images = car.images || [];
+  const hasImages = images.length > 0;
+
+  // Helper function to get location string
+  const getLocationString = () => {
+    if (car.companyAddress) return car.companyAddress;
+    if (typeof car.location === 'string') return car.location;
+    if (car.location && typeof car.location === 'object') {
+      // Handle location object
+      if (language === 'bg' && car.location.cityNameBg) {
+        return `${car.location.cityNameBg}${car.location.regionNameBg ? `, ${car.location.regionNameBg}` : ''}`;
+      }
+      if (car.location.cityNameEn) {
+        return `${car.location.cityNameEn}${car.location.regionNameEn ? `, ${car.location.regionNameEn}` : ''}`;
+      }
+      if (car.location.address) return car.location.address;
+    }
+    // Fallback to city and region
+    const city = typeof car.city === 'string' ? car.city : (car.location?.cityNameBg || car.location?.cityNameEn || '');
+    const region = typeof car.region === 'string' ? car.region : (car.location?.regionNameBg || car.location?.regionNameEn || '');
+    if (city || region) {
+      return `${city}${region ? `, ${region}` : ''}`;
+    }
+    return language === 'bg' ? 'България' : 'Bulgaria';
+  };
+
+  // Helper function to get city string
+  const getCityString = () => {
+    if (typeof car.city === 'string') return car.city;
+    if (car.location && typeof car.location === 'object') {
+      return language === 'bg' ? (car.location.cityNameBg || car.location.cityNameEn || '') : (car.location.cityNameEn || car.location.cityNameBg || '');
+    }
+    return '';
+  };
+
+  // Helper function to get region string
+  const getRegionString = () => {
+    if (typeof car.region === 'string') return car.region;
+    if (car.location && typeof car.location === 'object') {
+      return language === 'bg' ? (car.location.regionNameBg || car.location.regionNameEn || '') : (car.location.regionNameEn || car.location.regionNameBg || '');
+    }
+    return '';
+  };
+
+  // Helper function to get coordinates
+  const getCoordinates = () => {
+    if (car.coordinates) return car.coordinates;
+    if (car.location && typeof car.location === 'object' && car.location.coordinates) {
+      return car.location.coordinates;
+    }
+    return undefined;
+  };
+
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('bg-BG', {
+      style: 'currency',
+      currency: 'EUR',
+      maximumFractionDigits: 0
+    }).format(price);
+  };
+
+  const calculateGrossPrice = (netPrice: number) => {
+    // VAT in Bulgaria is 20%
+    return netPrice * 1.20;
+  };
+
+  const formatDate = (date: string | number | undefined) => {
+    if (!date) return t.notSpecified;
+    if (typeof date === 'number') {
+      const d = new Date(date);
+      return d.toLocaleDateString('bg-BG', { month: '2-digit', year: 'numeric' });
+    }
+    return date;
+  };
+
+  const formatMileage = (mileage: number) => {
+    return `${mileage.toLocaleString('bg-BG')} ${t.km}`;
+  };
+
+  const getFuelTypeLabel = (fuelType: string) => {
+    const fuelMap: Record<string, { bg: string; en: string }> = {
+      'electric': { bg: 'Електрически', en: 'Electric' },
+      'petrol': { bg: 'Бензин', en: 'Petrol' },
+      'diesel': { bg: 'Дизел', en: 'Diesel' },
+      'hybrid': { bg: 'Хибрид', en: 'Hybrid' },
+      'lpg': { bg: 'Газ', en: 'LPG' },
+    };
+    const normalized = fuelType.toLowerCase().replace(/\s+/g, '');
+    return fuelMap[normalized]?.[language] || fuelType;
+  };
+
+  const getTransmissionLabel = (transmission: string) => {
+    const transMap: Record<string, { bg: string; en: string }> = {
+      'automatic': { bg: 'Автоматична', en: 'Automatic' },
+      'manual': { bg: 'Ръчна', en: 'Manual' },
+      'semiautomatic': { bg: 'Полуавтоматична', en: 'Semi-automatic' },
+    };
+    const normalized = transmission.toLowerCase().replace(/\s+/g, '');
+    return transMap[normalized]?.[language] || transmission;
+  };
+
+  const getDriveTypeLabel = (driveType: string) => {
+    const driveMap: Record<string, { bg: string; en: string }> = {
+      'frontwheeldrive': { bg: 'Предно', en: 'Front-wheel' },
+      'rearwheeldrive': { bg: 'Задно', en: 'Rear-wheel' },
+      'allwheeldrive': { bg: '4x4', en: 'All-wheel' },
+    };
+    const normalized = driveType?.toLowerCase().replace(/\s+/g, '') || '';
+    return driveMap[normalized]?.[language] || driveType || t.notSpecified;
+  };
+
+  const nextImage = () => {
+    if (hasImages) {
+      setSelectedImageIndex((prev) => (prev + 1) % images.length);
+    }
+  };
+
+  const prevImage = () => {
+    if (hasImages) {
+      setSelectedImageIndex((prev) => (prev - 1 + images.length) % images.length);
+    }
+  };
+
+  const isElectric = car.fuelType?.toLowerCase().includes('electric') || 
+                    car.fuelType?.toLowerCase().includes('електрически');
+
+  // Categorize features
+  const categorizeFeatures = () => {
+    const features = car.features || [];
+    const comfort: string[] = [];
+    const entertainment: string[] = [];
+    const safety: string[] = [];
+    const other: string[] = [];
+
+    features.forEach(feature => {
+      const lower = feature.toLowerCase();
+      if (lower.includes('climate') || lower.includes('heating') || lower.includes('seat') || 
+          lower.includes('parking') || lower.includes('sensor') || lower.includes('light')) {
+        comfort.push(feature);
+      } else if (lower.includes('radio') || lower.includes('bluetooth') || lower.includes('navigation') || 
+                 lower.includes('carplay') || lower.includes('android') || lower.includes('usb')) {
+        entertainment.push(feature);
+      } else if (lower.includes('airbag') || lower.includes('abs') || lower.includes('esp') || 
+                 lower.includes('safety') || lower.includes('emergency')) {
+        safety.push(feature);
+      } else {
+        other.push(feature);
+      }
+    });
+
+    return { comfort, entertainment, safety, other };
+  };
+
+  const { comfort, entertainment, safety, other } = categorizeFeatures();
+  const displayedFeatures = showAllFeatures 
+    ? { comfort, entertainment, safety, other }
+    : {
+        comfort: comfort.slice(0, 10),
+        entertainment: entertainment.slice(0, 10),
+        safety: safety.slice(0, 10),
+        other: other.slice(0, 10)
+      };
+
+  return (
+    <PageWrapper $isDark={isDark}>
+      <TopBar $isDark={isDark}>
+        <TopBarLeft $isDark={isDark}>
+          <BackButton $isDark={isDark} onClick={onBack}>
+            <ArrowLeft size={18} />
+            {t.back}
+          </BackButton>
+        </TopBarLeft>
+        {isOwner && onEdit && (
+          <EditButton $isDark={isDark} onClick={onEdit}>
+            <Edit size={18} />
+            {t.edit}
+          </EditButton>
+        )}
+      </TopBar>
+
+      <Container $isDark={isDark}>
+        <MainSection $isDark={isDark}>
+          <LeftColumn $isDark={isDark}>
+            {/* Image Gallery */}
+            <ImageSection $isDark={isDark}>
+              {hasImages ? (
+                <>
+                  <MainImageContainer $isDark={isDark}>
+                    <MainImage 
+                      src={typeof images[selectedImageIndex] === 'string' 
+                        ? String(images[selectedImageIndex])
+                        : URL.createObjectURL(images[selectedImageIndex])}
+                      alt={`${car.make} ${car.model}`}
+                    />
+                    {images.length > 1 && (
+                      <>
+                        <ImageNavButton $position="left" $isDark={isDark} onClick={prevImage}>
+                          <ChevronLeft size={24} />
+                        </ImageNavButton>
+                        <ImageNavButton $position="right" $isDark={isDark} onClick={nextImage}>
+                          <ChevronRight size={24} />
+                        </ImageNavButton>
+                      </>
+                    )}
+                  </MainImageContainer>
+                  <ThumbnailGrid $isDark={isDark}>
+                    {images.map((image, index) => (
+                      <Thumbnail
+                        key={index}
+                        $isActive={index === selectedImageIndex}
+                        $isDark={isDark}
+                        onClick={() => setSelectedImageIndex(index)}
+                      >
+                        <img 
+                          src={typeof image === 'string' ? String(image) : URL.createObjectURL(image)}
+                          alt={`Thumbnail ${index + 1}`}
+                        />
+                      </Thumbnail>
+                    ))}
+                  </ThumbnailGrid>
+                </>
+              ) : (
+                <MainImageContainer $isDark={isDark}>
+                  <GlobulCarLogo size={120} />
+                </MainImageContainer>
+              )}
+
+              <DealerLogos $isDark={isDark}>
+                <DealerLogo $isDark={isDark}>{car.sellerName || car.companyName || 'Dealer'}</DealerLogo>
+                <CarBrandLogos>
+                  <BrandLogo $isDark={isDark}>{car.make}</BrandLogo>
+                </CarBrandLogos>
+              </DealerLogos>
+            </ImageSection>
+
+            {/* Title and Price */}
+            <TitleSection $isDark={isDark}>
+              <CarTitle $isDark={isDark}>{car.make} {car.model} {car.year}</CarTitle>
+              
+              <PriceSection>
+                <NetPrice $isDark={isDark}>{t.netPrice}: {formatPrice(car.price)}</NetPrice>
+                <GrossPrice $isDark={isDark}>{t.grossPrice} {formatPrice(calculateGrossPrice(car.price))}</GrossPrice>
+              </PriceSection>
+
+              <FinancingOffer $isDark={isDark}>
+                <FinancingText $isDark={isDark}>
+                  {t.financingFrom} €124 {language === 'bg' ? 'месечно' : 'monthly'}
+                </FinancingText>
+              </FinancingOffer>
+
+              <KeyDataGrid>
+                <KeyDataItem $isDark={isDark}>
+                  <Calendar size={18} />
+                  {t.firstRegistration}: {formatDate(car.year?.toString())}
+                </KeyDataItem>
+                <KeyDataItem $isDark={isDark}>
+                  <Gauge size={18} />
+                  {formatMileage(car.mileage)}
+                </KeyDataItem>
+                <KeyDataItem $isDark={isDark}>
+                  <Battery size={18} />
+                  {car.powerKW ? `${car.powerKW} ${t.kw} (${car.power || Math.round(car.powerKW * 1.36)} ${t.hp})` : `${car.power || 0} ${t.hp}`}
+                </KeyDataItem>
+                <KeyDataItem $isDark={isDark}>
+                  <Battery size={18} />
+                  {getFuelTypeLabel(car.fuelType || '')}
+                </KeyDataItem>
+              </KeyDataGrid>
+
+              <QuickInfoIcons $isDark={isDark}>
+                <QuickInfoItem $isDark={isDark}>
+                  <IconWrapper $isDark={isDark}><Calendar size={18} /></IconWrapper>
+                  {t.firstRegistration} {formatDate(car.year?.toString())}
+                </QuickInfoItem>
+                <QuickInfoItem $isDark={isDark}>
+                  <IconWrapper $isDark={isDark}><Gauge size={18} /></IconWrapper>
+                  {formatMileage(car.mileage)}
+                </QuickInfoItem>
+                <QuickInfoItem $isDark={isDark}>
+                  <IconWrapper $isDark={isDark}><Battery size={18} /></IconWrapper>
+                  {getFuelTypeLabel(car.fuelType || '')}
+                </QuickInfoItem>
+                <QuickInfoItem $isDark={isDark}>
+                  <IconWrapper $isDark={isDark}><Key size={18} /></IconWrapper>
+                  {car.previousOwners || car.numberOfOwners || 1} {language === 'bg' ? 'предишен собственик' : 'previous owner'}
+                </QuickInfoItem>
+                {car.accidentHistory === false && (
+                  <QuickInfoItem $isDark={isDark}>
+                    <IconWrapper $isDark={isDark}><CheckCircle size={18} /></IconWrapper>
+                    {t.accidentFree}
+                  </QuickInfoItem>
+                )}
+                {car.serviceHistory && (
+                  <QuickInfoItem $isDark={isDark}>
+                    <IconWrapper $isDark={isDark}><FileText size={18} /></IconWrapper>
+                    {t.serviceHistory}
+                  </QuickInfoItem>
+                )}
+              </QuickInfoIcons>
+
+              <ActionButtons>
+                <PrimaryButton $isDark={isDark} onClick={() => onContact('phone')}>
+                  {t.contactDealer}
+                </PrimaryButton>
+                <SecondaryButton $isDark={isDark} onClick={() => onContact('phone')} title={t.phone}>
+                  <Phone size={20} />
+                </SecondaryButton>
+                <SecondaryButton $isDark={isDark} onClick={() => onContact('email')} title={t.email}>
+                  <Mail size={20} />
+                </SecondaryButton>
+                <SecondaryButton $isDark={isDark} onClick={() => onContact('whatsapp')} title="WhatsApp">
+                  <MessageCircle size={20} />
+                </SecondaryButton>
+                <SecondaryButton $isDark={isDark} title={t.share}>
+                  <Share2 size={20} />
+                </SecondaryButton>
+                <SecondaryButton $isDark={isDark} title={t.save}>
+                  <Bookmark size={20} />
+                </SecondaryButton>
+              </ActionButtons>
+            </TitleSection>
+
+            {/* Battery Information (for electric cars) */}
+            {isElectric && (
+              <BatteryInfoSection $isDark={isDark}>
+                <BatteryTitle $isDark={isDark}>{t.batteryCapacity}</BatteryTitle>
+                <BatteryGrid>
+                  <BatteryItem>
+                    <BatteryLabel $isDark={isDark}>{t.batteryCapacity}</BatteryLabel>
+                    <BatteryValue $isDark={isDark}>37 kWh</BatteryValue>
+                  </BatteryItem>
+                  <BatteryItem>
+                    <BatteryLabel $isDark={isDark}>{t.range}</BatteryLabel>
+                    <BatteryValue $isDark={isDark}>321 {t.rangeUnit}</BatteryValue>
+                  </BatteryItem>
+                  <BatteryItem>
+                    <BatteryLabel $isDark={isDark}>{t.chargeTimeAC}</BatteryLabel>
+                    <BatteryValue $isDark={isDark}>4{t.hours} 15{t.minutes}</BatteryValue>
+                  </BatteryItem>
+                  <BatteryItem>
+                    <BatteryLabel $isDark={isDark}>{t.chargeTimeDC}</BatteryLabel>
+                    <BatteryValue $isDark={isDark}>35 {t.minutes}</BatteryValue>
+                  </BatteryItem>
+                </BatteryGrid>
+                <div style={{ marginTop: '1rem', fontSize: '13px', color: isDark ? '#94a3b8' : '#65676b' }}>
+                  {t.batteryWarranty}
+                </div>
+              </BatteryInfoSection>
+            )}
+
+            {/* Technical Data */}
+            <Card $isDark={isDark}>
+              <FeaturesTitle $isDark={isDark}>{t.technicalData}</FeaturesTitle>
+              <TechnicalDataTable $isDark={isDark}>
+                <tbody>
+                  <TableRow $isDark={isDark}>
+                    <TableLabel $isDark={isDark}>{t.vehicleCondition}</TableLabel>
+                    <TableValue $isDark={isDark}>{car.accidentHistory === false ? (language === 'bg' ? 'Без аварии' : 'Accident-free') : t.notSpecified}</TableValue>
+                  </TableRow>
+                  <TableRow $isDark={isDark}>
+                    <TableLabel $isDark={isDark}>{t.category}</TableLabel>
+                    <TableValue $isDark={isDark}>{car.vehicleType || t.notSpecified}</TableValue>
+                  </TableRow>
+                  <TableRow $isDark={isDark}>
+                    <TableLabel $isDark={isDark}>{language === 'bg' ? 'Предишни собственици' : 'Previous owners'}</TableLabel>
+                    <TableValue $isDark={isDark}>{car.previousOwners || car.numberOfOwners || 1}</TableValue>
+                  </TableRow>
+                  <TableRow $isDark={isDark}>
+                    <TableLabel $isDark={isDark}>{t.firstRegistration}</TableLabel>
+                    <TableValue $isDark={isDark}>{formatDate(car.year?.toString())}</TableValue>
+                  </TableRow>
+                  <TableRow $isDark={isDark}>
+                    <TableLabel $isDark={isDark}>{t.mileage}</TableLabel>
+                    <TableValue $isDark={isDark}>{formatMileage(car.mileage)}</TableValue>
+                  </TableRow>
+                  <TableRow $isDark={isDark}>
+                    <TableLabel $isDark={isDark}>{t.power}</TableLabel>
+                    <TableValue $isDark={isDark}>{car.powerKW ? `${car.powerKW} ${t.kw} (${car.power || Math.round(car.powerKW * 1.36)} ${t.hp})` : `${car.power || 0} ${t.hp}`}</TableValue>
+                  </TableRow>
+                  <TableRow $isDark={isDark}>
+                    <TableLabel $isDark={isDark}>{t.fuelType}</TableLabel>
+                    <TableValue $isDark={isDark}>{getFuelTypeLabel(car.fuelType || '')}</TableValue>
+                  </TableRow>
+                  <TableRow $isDark={isDark}>
+                    <TableLabel $isDark={isDark}>{t.transmission}</TableLabel>
+                    <TableValue $isDark={isDark}>{getTransmissionLabel(car.transmission || '')}</TableValue>
+                  </TableRow>
+                  <TableRow $isDark={isDark}>
+                    <TableLabel $isDark={isDark}>{t.driveType}</TableLabel>
+                    <TableValue $isDark={isDark}>{getDriveTypeLabel(car.driveType || '')}</TableValue>
+                  </TableRow>
+                  <TableRow $isDark={isDark}>
+                    <TableLabel $isDark={isDark}>{t.doors}</TableLabel>
+                    <TableValue $isDark={isDark}>{car.doors || car.numberOfDoors || t.notSpecified}</TableValue>
+                  </TableRow>
+                  <TableRow $isDark={isDark}>
+                    <TableLabel $isDark={isDark}>{t.seats}</TableLabel>
+                    <TableValue $isDark={isDark}>{car.seats || car.numberOfSeats || t.notSpecified}</TableValue>
+                  </TableRow>
+                  <TableRow $isDark={isDark}>
+                    <TableLabel $isDark={isDark}>{t.color}</TableLabel>
+                    <TableValue $isDark={isDark}>{car.color || car.exteriorColor || t.notSpecified}</TableValue>
+                  </TableRow>
+                  {car.fuelConsumption && (
+                    <TableRow $isDark={isDark}>
+                      <TableLabel $isDark={isDark}>{t.consumption}</TableLabel>
+                      <TableValue $isDark={isDark}>{car.fuelConsumption} {isElectric ? 'kWh/100 km' : 'l/100 km'}</TableValue>
+                    </TableRow>
+                  )}
+                  {car.co2Emissions !== undefined && (
+                    <TableRow $isDark={isDark}>
+                      <TableLabel $isDark={isDark}>{t.co2Emissions}</TableLabel>
+                      <TableValue $isDark={isDark}>{car.co2Emissions} g/km</TableValue>
+                    </TableRow>
+                  )}
+                  {car.euroStandard && (
+                    <TableRow $isDark={isDark}>
+                      <TableLabel $isDark={isDark}>{t.emissionClass}</TableLabel>
+                      <TableValue $isDark={isDark}>{car.euroStandard}</TableValue>
+                    </TableRow>
+                  )}
+                </tbody>
+              </TechnicalDataTable>
+              <UpdateButton $isDark={isDark}>{t.update}</UpdateButton>
+            </Card>
+
+            {/* Features */}
+            {(comfort.length > 0 || entertainment.length > 0 || safety.length > 0 || other.length > 0) && (
+              <FeaturesSection $isDark={isDark}>
+                <FeaturesTitle $isDark={isDark}>{t.features}</FeaturesTitle>
+                
+                {displayedFeatures.comfort.length > 0 && (
+                  <FeaturesCategory>
+                    <CategoryTitle $isDark={isDark}>{t.comfort}</CategoryTitle>
+                    <FeaturesList>
+                      {displayedFeatures.comfort.map((feature, idx) => (
+                        <FeatureItem key={idx} $isDark={isDark}>
+                          <CheckIcon size={18} />
+                          {feature}
+                        </FeatureItem>
+                      ))}
+                    </FeaturesList>
+                  </FeaturesCategory>
+                )}
+
+                {displayedFeatures.entertainment.length > 0 && (
+                  <FeaturesCategory>
+                    <CategoryTitle $isDark={isDark}>{t.entertainment}</CategoryTitle>
+                    <FeaturesList>
+                      {displayedFeatures.entertainment.map((feature, idx) => (
+                        <FeatureItem key={idx} $isDark={isDark}>
+                          <CheckIcon size={18} />
+                          {feature}
+                        </FeatureItem>
+                      ))}
+                    </FeaturesList>
+                  </FeaturesCategory>
+                )}
+
+                {displayedFeatures.safety.length > 0 && (
+                  <FeaturesCategory>
+                    <CategoryTitle $isDark={isDark}>{t.safety}</CategoryTitle>
+                    <FeaturesList>
+                      {displayedFeatures.safety.map((feature, idx) => (
+                        <FeatureItem key={idx} $isDark={isDark}>
+                          <CheckIcon size={18} />
+                          {feature}
+                        </FeatureItem>
+                      ))}
+                    </FeaturesList>
+                  </FeaturesCategory>
+                )}
+
+                {displayedFeatures.other.length > 0 && (
+                  <FeaturesCategory>
+                    <CategoryTitle $isDark={isDark}>{t.other}</CategoryTitle>
+                    <FeaturesList>
+                      {displayedFeatures.other.map((feature, idx) => (
+                        <FeatureItem key={idx} $isDark={isDark}>
+                          <CheckIcon size={18} />
+                          {feature}
+                        </FeatureItem>
+                      ))}
+                    </FeaturesList>
+                  </FeaturesCategory>
+                )}
+
+                {(comfort.length > 10 || entertainment.length > 10 || safety.length > 10 || other.length > 10) && !showAllFeatures && (
+                  <UpdateButton $isDark={isDark} onClick={() => setShowAllFeatures(true)}>
+                    {t.showAll}
+                  </UpdateButton>
+                )}
+              </FeaturesSection>
+            )}
+
+            {/* Description */}
+            {car.description && (
+              <DescriptionSection $isDark={isDark}>
+                <DescriptionTitle $isDark={isDark}>{t.vehicleDescription}</DescriptionTitle>
+                <DescriptionText $isDark={isDark}>{car.description}</DescriptionText>
+              </DescriptionSection>
+            )}
+          </LeftColumn>
+
+          <RightColumn $isDark={isDark}>
+            {/* Dealer Information */}
+            <DealerSection $isDark={isDark}>
+              <DealerHeader>
+                <DealerInfo>
+                  <DealerRating>
+                    <RatingStars>
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <StarIcon key={star} size={18} />
+                      ))}
+                    </RatingStars>
+                    <RatingValue $isDark={isDark}>4.7</RatingValue>
+                    <RatingCount $isDark={isDark}>(119 {t.reviews})</RatingCount>
+                  </DealerRating>
+                  <DealerName $isDark={isDark}>{car.sellerName || car.companyName || 'Dealer'}</DealerName>
+                </DealerInfo>
+                <DealerButtons>
+                  <DealerButton $isDark={isDark}>{t.reviews}</DealerButton>
+                  <DealerButton $isDark={isDark}>{t.allVehicles}</DealerButton>
+                </DealerButtons>
+              </DealerHeader>
+
+              <DealerContact $isDark={isDark}>
+                <ContactItem $isDark={isDark}>
+                  <MapPin size={16} />
+                  {getLocationString()}
+                </ContactItem>
+                <ContactItem $isDark={isDark}>
+                  <Phone size={16} />
+                  <a href={`tel:${car.sellerPhone}`} style={{ color: 'inherit', textDecoration: 'none' }}>
+                    {car.sellerPhone || t.notSpecified}
+                  </a>
+                </ContactItem>
+                <ContactItem $isDark={isDark}>
+                  <Mail size={16} />
+                  <a href={`mailto:${car.sellerEmail}`} style={{ color: 'inherit', textDecoration: 'none' }}>
+                    {car.sellerEmail || t.notSpecified}
+                  </a>
+                </ContactItem>
+                {car.companyWebsite && (
+                  <ContactItem $isDark={isDark}>
+                    <span>🌐</span>
+                    <a href={car.companyWebsite} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>
+                      {car.companyWebsite}
+                    </a>
+                  </ContactItem>
+                )}
+              </DealerContact>
+
+              <OpeningHours $isDark={isDark}>
+                <HoursTitle $isDark={isDark}>{t.openingHours}</HoursTitle>
+                <HoursItem $isDark={isDark}>Mo-Fr: 09:00 - 18:00 {language === 'bg' ? 'ч' : 'h'}</HoursItem>
+                <HoursItem $isDark={isDark}>Sa: 09:00 - 13:00 {language === 'bg' ? 'ч' : 'h'}</HoursItem>
+                <HoursItem $isDark={isDark}>{language === 'bg' ? 'Не: Затворено' : 'Sun: Closed'}</HoursItem>
+              </OpeningHours>
+
+              <FinancingSection $isDark={isDark}>
+                <FinancingTitle $isDark={isDark}>
+                  {language === 'bg' ? 'Интересувате ли се от финансиране?' : 'Interested in financing?'}
+                </FinancingTitle>
+                <FinancingButton $isDark={isDark}>{t.inquireNow}</FinancingButton>
+              </FinancingSection>
+            </DealerSection>
+
+            {/* Location Map */}
+            {(getCoordinates() || getCityString()) && (
+              <MapSection $isDark={isDark}>
+                <MapTitle $isDark={isDark}>{t.location}</MapTitle>
+                <StaticMapEmbed
+                  location={{
+                    city: getCityString() || 'България',
+                    region: getRegionString() || '',
+                    coordinates: getCoordinates()
+                  }}
+                />
+              </MapSection>
+            )}
+
+            {/* Additional Services */}
+            <ServicesSection $isDark={isDark}>
+              <ServicesTitle $isDark={isDark}>{t.additionalServices}</ServicesTitle>
+              <ServicesGrid>
+                <ServiceCheckbox $isDark={isDark}>
+                  <input type="checkbox" defaultChecked />
+                  <span>{t.financing}</span>
+                </ServiceCheckbox>
+                <ServiceCheckbox $isDark={isDark}>
+                  <input type="checkbox" defaultChecked />
+                  <span>{t.leasing}</span>
+                </ServiceCheckbox>
+                <ServiceCheckbox $isDark={isDark}>
+                  <input type="checkbox" />
+                  <span>{t.tradeIn}</span>
+                </ServiceCheckbox>
+                <ServiceCheckbox $isDark={isDark}>
+                  <input type="checkbox" />
+                  <span>{t.registrationService}</span>
+                </ServiceCheckbox>
+              </ServicesGrid>
+              <FinancingButton $isDark={isDark} style={{ marginTop: '1rem' }}>{t.inquireNow}</FinancingButton>
+            </ServicesSection>
+          </RightColumn>
+        </MainSection>
+      </Container>
+    </PageWrapper>
+  );
+};
+
+export default CarDetailsGermanStyle;
+

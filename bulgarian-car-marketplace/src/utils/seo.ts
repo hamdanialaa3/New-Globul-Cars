@@ -1,10 +1,10 @@
 // src/utils/seo.ts
 // SEO utilities for Bulgarian Car Marketplace
 
-import { BulgarianCar } from '../firebase';
+import { UnifiedCar } from '../services/car/unified-car.service';
 
 // Generate meta tags for car pages
-export const generateCarMetaTags = (car: BulgarianCar) => {
+export const generateCarMetaTags = (car: UnifiedCar) => {
   const title = `${car.make} ${car.model} ${car.year} - ${car.price}€ | MOBILE-EU`;
   const description = `${car.make} ${car.model} ${car.year} година, ${car.mileage.toLocaleString('bg-BG')} км, ${car.fuelType}, ${car.transmission}. Цена: ${car.price}€. ${car.location.city}, ${car.location.region}, България.`;
 
@@ -29,7 +29,7 @@ export const generateCarMetaTags = (car: BulgarianCar) => {
 };
 
 // Generate structured data (JSON-LD) for cars
-export const generateCarStructuredData = (car: BulgarianCar) => {
+export const generateCarStructuredData = (car: UnifiedCar) => {
   return {
     '@context': 'https://schema.org',
     '@type': 'Car',
@@ -216,8 +216,7 @@ export const addStructuredData = (data: object) => {
 };
 
 // Generate sitemap URLs
-// Generate sitemap URLs
-export const generateSitemapUrls = (cars: BulgarianCar[]) => {
+export const generateSitemapUrls = (cars: UnifiedCar[]) => {
   const baseUrl = window.location.origin;
 
   interface SitemapUrl {

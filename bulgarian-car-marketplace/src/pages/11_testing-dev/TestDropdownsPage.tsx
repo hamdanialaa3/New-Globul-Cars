@@ -39,7 +39,7 @@ const TestPage: React.FC = () => {
 
   const testSections = [
     {
-      title: language === 'bg' ? '🚗 بيانات المركبة' : '🚗 Vehicle Data',
+      title: language === 'bg' ? 'بيانات المركبة' : 'Vehicle Data',
       fields: [
         { key: 'vehicleType', label: language === 'bg' ? 'نوع المركبة' : 'Vehicle Type', options: VEHICLE_TYPES },
         { key: 'make', label: language === 'bg' ? 'الماركة' : 'Make', options: CAR_BRANDS },

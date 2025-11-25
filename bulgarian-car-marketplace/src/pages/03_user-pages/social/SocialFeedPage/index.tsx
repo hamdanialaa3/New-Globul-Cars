@@ -1,48 +1,32 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { LeftSidebar } from './components/LeftSidebar';
 import { RightSidebar } from './components/RightSidebar';
 import { useAuth } from '@/contexts/AuthProvider';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { collection, query, where, orderBy, limit as firestoreLimit, onSnapshot } from 'firebase/firestore';
-import { db } from '@/firebase/firebase-config';
+import { useTheme } from '@/contexts/ThemeContext';
+import { smartFeedService } from '@/services/social/smart-feed.service';
+import { EnhancedFeedItemCard } from '@/components/SocialFeed/EnhancedFeedItemCard';
+import type { FeedItem } from '@/services/social/smart-feed.service';
 
-interface Post {
-  id: string;
-  authorId: string;
-  authorInfo: {
-    displayName: string;
-    profileImage?: string;
-    profileType: string;
-    isVerified: boolean;
-  };
-  type: string;
-  content: {
-    text: string;
-    media?: {
-      type: string;
-      urls: string[];
-    };
-  };
-  engagement: {
-    likes: number;
-    comments: number;
-    shares: number;
-    views: number;
-  };
-  createdAt: any;
-}
+// Using FeedItem from smart-feed.service instead of Post
 
 const SocialFeedPage: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const { theme } = useTheme();
   const [showSocialPosts, setShowSocialPosts] = useState(true);
   const [mainHeaderVisible, setMainHeaderVisible] = useState(false);
   const [activeFilter, setActiveFilter] = useState('smart');
-  const [posts, setPosts] = useState<Post[]>([]);
+  const [feedItems, setFeedItems] = useState<FeedItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
+  const feedContainerRef = useRef<HTMLDivElement>(null);
 
   const filters = ['smart', 'newest', 'mostLiked', 'mostComments', 'trending'];
 
@@ -128,68 +112,138 @@ const SocialFeedPage: React.FC = () => {
     }
   }, [mainHeaderVisible]);
 
-  useEffect(() => {
-    setLoading(true);
-    
-    let postsQuery;
-    
-    switch (activeFilter) {
-      case 'newest':
-        postsQuery = query(
-          collection(db, 'posts'),
-          where('status', '==', 'published'),
-          where('visibility', '==', 'public'),
-          orderBy('createdAt', 'desc'),
-          firestoreLimit(10)
-        );
-        break;
-      case 'mostLiked':
-        postsQuery = query(
-          collection(db, 'posts'),
-          where('status', '==', 'published'),
-          where('visibility', '==', 'public'),
-          orderBy('engagement.likes', 'desc'),
-          firestoreLimit(10)
-        );
-        break;
-      case 'mostComments':
-        postsQuery = query(
-          collection(db, 'posts'),
-          where('status', '==', 'published'),
-          where('visibility', '==', 'public'),
-          orderBy('engagement.comments', 'desc'),
-          firestoreLimit(10)
-        );
-        break;
-      default:
-        postsQuery = query(
-          collection(db, 'posts'),
-          where('status', '==', 'published'),
-          where('visibility', '==', 'public'),
-          orderBy('createdAt', 'desc'),
-          firestoreLimit(10)
-        );
+  const loadFeed = useCallback(async (isRefresh = false, append = false) => {
+    if (isRefresh) {
+      setRefreshing(true);
+    } else if (append) {
+      setLoadingMore(true);
+    } else {
+      setLoading(true);
     }
+    
+    setError(null);
+    
+    try {
+      // Get smart feed
+      let items = await smartFeedService.getSmartFeed({
+        limitCount: append ? 20 : 50,
+        userId: user?.uid
+      });
 
-    const unsubscribe = onSnapshot(
-      postsQuery,
-      (snapshot) => {
-        const postsData = snapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        })) as Post[];
-        setPosts(postsData);
-        setLoading(false);
-      },
-      (error) => {
-        console.error('Error loading posts:', error);
-        setPosts([]);
-        setLoading(false);
+      // Apply filters
+      if (activeFilter === 'newest') {
+        items = items.sort((a, b) => {
+          const aTime = a.createdAt instanceof Date 
+            ? a.createdAt.getTime() 
+            : a.createdAt.toMillis ? a.createdAt.toMillis() : 0;
+          const bTime = b.createdAt instanceof Date 
+            ? b.createdAt.getTime() 
+            : b.createdAt.toMillis ? b.createdAt.toMillis() : 0;
+          return bTime - aTime;
+        });
+      } else if (activeFilter === 'mostLiked') {
+        items = items.sort((a, b) => b.engagement.likes - a.engagement.likes);
+      } else if (activeFilter === 'mostComments') {
+        items = items.sort((a, b) => b.engagement.comments - a.engagement.comments);
+      } else if (activeFilter === 'trending') {
+        // Trending = high engagement in last 24h + smart score
+        const now = Date.now();
+        const oneDayAgo = now - 24 * 60 * 60 * 1000;
+        items = items.filter(item => {
+          const itemTime = item.createdAt instanceof Date 
+            ? item.createdAt.getTime() 
+            : item.createdAt.toMillis ? item.createdAt.toMillis() : 0;
+          return itemTime > oneDayAgo;
+        }).sort((a, b) => {
+          const aScore = a.score + (a.engagement.likes * 2) + (a.engagement.comments * 3);
+          const bScore = b.score + (b.engagement.likes * 2) + (b.engagement.comments * 3);
+          return bScore - aScore;
+        });
       }
-    );
+      // 'smart' filter uses default smart score sorting (already sorted)
 
-    return () => unsubscribe();
-  }, [activeFilter]);
+      // Enrich with user data
+      items = await smartFeedService.enrichFeedItems(items);
+
+      if (append) {
+        setFeedItems(prev => {
+          const existingIds = new Set(prev.map(i => `${i.type}-${i.id}`));
+          const newItems = items.filter(i => !existingIds.has(`${i.type}-${i.id}`));
+          return [...prev, ...newItems];
+        });
+        setHasMore(items.length >= 20);
+      } else {
+        setFeedItems(items);
+        setHasMore(items.length >= 50);
+      }
+    } catch (error) {
+      console.error('Error loading feed:', error);
+      setError(language === 'bg' 
+        ? 'Грешка при зареждане на фийда' 
+        : 'Error loading feed');
+      if (!append) {
+        setFeedItems([]);
+      }
+    } finally {
+      setLoading(false);
+      setLoadingMore(false);
+      setRefreshing(false);
+    }
+  }, [activeFilter, user?.uid, language]);
+
+  useEffect(() => {
+    loadFeed();
+  }, [activeFilter, user?.uid]);
+
+  // Infinite scroll
+  useEffect(() => {
+    const container = feedContainerRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      const { scrollTop, scrollHeight, clientHeight } = container;
+      const isNearBottom = scrollTop + clientHeight >= scrollHeight - 200;
+
+      if (isNearBottom && hasMore && !loadingMore && !loading) {
+        loadFeed(false, true);
+      }
+    };
+
+    container.addEventListener('scroll', handleScroll);
+    return () => container.removeEventListener('scroll', handleScroll);
+  }, [hasMore, loadingMore, loading, loadFeed]);
+
+  // Pull to refresh
+  useEffect(() => {
+    const container = feedContainerRef.current;
+    if (!container) return;
+
+    let startY = 0;
+    let isPulling = false;
+
+    const handleTouchStart = (e: TouchEvent) => {
+      startY = e.touches[0].clientY;
+      isPulling = container.scrollTop === 0;
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (!isPulling) return;
+      const currentY = e.touches[0].clientY;
+      const pullDistance = currentY - startY;
+
+      if (pullDistance > 50 && !refreshing) {
+        loadFeed(true);
+      }
+    };
+
+    container.addEventListener('touchstart', handleTouchStart);
+    container.addEventListener('touchmove', handleTouchMove);
+    
+    return () => {
+      container.removeEventListener('touchstart', handleTouchStart);
+      container.removeEventListener('touchmove', handleTouchMove);
+    };
+  }, [refreshing, loadFeed]);
 
   const handleCreatePost = () => {
     if (!user) {
@@ -199,18 +253,7 @@ const SocialFeedPage: React.FC = () => {
     navigate('/create-post');
   };
 
-  const formatTimestamp = (timestamp: any) => {
-    if (!timestamp) return 'Just now';
-    const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
-    const now = new Date();
-    const diff = Math.floor((now.getTime() - date.getTime()) / 1000);
-
-    if (diff < 60) return 'Just now';
-    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
-    if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
-    if (diff < 604800) return `${Math.floor(diff / 86400)}d ago`;
-    return date.toLocaleDateString();
-  };
+  // formatTimestamp moved to FeedItemCard component
 
   return (
     <PageContainer>
@@ -238,7 +281,7 @@ const SocialFeedPage: React.FC = () => {
         </PageHeader>
 
         {showSocialPosts && (
-          <ContentArea>
+          <ContentArea ref={feedContainerRef}>
             <FeedHeader>
               <FeedTitle>{t('social.communityFeed')}</FeedTitle>
               <FeedSubtitle>{t('social.feedSubtitle')}</FeedSubtitle>
@@ -279,59 +322,50 @@ const SocialFeedPage: React.FC = () => {
               </ActionBtn>
             </ActionButtons>
 
-            {loading ? (
+            {error && (
+              <ErrorState>
+                <ErrorIcon>⚠️</ErrorIcon>
+                <ErrorText>{error}</ErrorText>
+                <RetryButton onClick={() => loadFeed()}>
+                  {language === 'bg' ? 'Опитай отново' : 'Retry'}
+                </RetryButton>
+              </ErrorState>
+            )}
+            
+            {loading && !refreshing ? (
               <LoadingState>
                 <LoadingSpinner />
                 <LoadingText>{t('social.loading')}</LoadingText>
               </LoadingState>
-            ) : posts.length > 0 ? (
-              <PostsList>
-                {posts.map((post) => (
-                  <PostCard key={post.id}>
-                    <PostHeader>
-                      <AuthorInfo>
-                        <AuthorAvatar src={post.authorInfo.profileImage || `https://i.pravatar.cc/150?u=${post.authorId}`} />
-                        <AuthorDetails>
-                          <AuthorName>
-                            {post.authorInfo.displayName}
-                            {post.authorInfo.isVerified && <VerifiedBadge>✓</VerifiedBadge>}
-                          </AuthorName>
-                          <PostTime>{formatTimestamp(post.createdAt)}</PostTime>
-                        </AuthorDetails>
-                      </AuthorInfo>
-                      <MoreButton>⋯</MoreButton>
-                    </PostHeader>
-
-                    <PostContent>{post.content.text}</PostContent>
-
-                    {post.content.media && post.content.media.urls && post.content.media.urls.length > 0 && (
-                      <PostImages>
-                        {post.content.media.urls.map((url, idx) => (
-                          <PostImage key={idx} src={url} alt="" />
-                        ))}
-                      </PostImages>
-                    )}
-
-                    <PostStats>
-                      <StatsLeft>
-                        {post.engagement.likes > 0 && <span>{post.engagement.likes} {t('social.post.likes')}</span>}
-                      </StatsLeft>
-                      <StatsRight>
-                        {post.engagement.comments > 0 && <span>{post.engagement.comments} {t('social.post.comments')}</span>}
-                        {post.engagement.shares > 0 && <span>{post.engagement.shares} {t('social.post.shares')}</span>}
-                      </StatsRight>
-                    </PostStats>
-
-                    <PostDivider />
-
-                    <PostActions>
-                      <PostAction>👍 {t('social.post.like')}</PostAction>
-                      <PostAction>💬 {t('social.post.comment')}</PostAction>
-                      <PostAction>↗️ {t('social.post.share')}</PostAction>
-                    </PostActions>
-                  </PostCard>
-                ))}
-              </PostsList>
+            ) : feedItems.length > 0 ? (
+              <>
+                <PostsList>
+                  {feedItems.map((item) => (
+                    <EnhancedFeedItemCard 
+                      key={`${item.type}-${item.id}`} 
+                      item={item}
+                      onUpdate={(updatedItem) => {
+                        setFeedItems(prev => 
+                          prev.map(i => i.id === updatedItem.id ? updatedItem : i)
+                        );
+                      }}
+                    />
+                  ))}
+                </PostsList>
+                
+                {loadingMore && (
+                  <LoadingMoreState>
+                    <LoadingSpinner />
+                    <LoadingText>{language === 'bg' ? 'Зареждане...' : 'Loading more...'}</LoadingText>
+                  </LoadingMoreState>
+                )}
+                
+                {!hasMore && feedItems.length > 0 && (
+                  <EndOfFeed>
+                    {language === 'bg' ? 'Това е всичко!' : "That's all!"}
+                  </EndOfFeed>
+                )}
+              </>
             ) : (
               <EmptyState>
                 <EmptyIcon>📭</EmptyIcon>
@@ -940,6 +974,60 @@ const FooterText = styled.p`
   font-size: 12px;
   color:rgb(107, 107, 101);
   margin: 0;
+`;
+
+const ErrorState = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+`;
+
+const ErrorIcon = styled.div`
+  font-size: 48px;
+  margin-bottom: 12px;
+`;
+
+const ErrorText = styled.p`
+  font-size: 15px;
+  color: #ef4444;
+  margin: 0 0 16px 0;
+  font-weight: 600;
+`;
+
+const RetryButton = styled.button`
+  padding: 10px 24px;
+  background: #3b82f6;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover {
+    background: #2563eb;
+  }
+`;
+
+const LoadingMoreState = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  gap: 12px;
+`;
+
+const EndOfFeed = styled.div`
+  text-align: center;
+  padding: 24px;
+  color: #94a3b8;
+  font-size: 14px;
+  font-weight: 600;
 `;
 
 const PhotoIcon = () => (

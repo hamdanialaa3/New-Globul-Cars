@@ -3,6 +3,7 @@
 
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
+import GlobulCarLogo from '@/components/icons/GlobulCarLogo';
 
 // Simple, direct data structure - no complex services
 const BRANDS_DATA = {
@@ -152,7 +153,9 @@ export const BrandModelSelector: React.FC<BrandModelSelectorProps> = ({
             <LogoImage src={logoUrl} alt={selectedBrand} />
           ) : (
             <LogoPlaceholder>
-              <PlaceholderIcon>🚗</PlaceholderIcon>
+              <PlaceholderIcon>
+                <GlobulCarLogo size={48} />
+              </PlaceholderIcon>
             </LogoPlaceholder>
           )}
         </LogoDisplay>

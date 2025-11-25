@@ -1,0 +1,256 @@
+// ProfileStatsService Unit Tests
+// Comprehensive testing of caching, aggregation, error handling
+// Mocks Firestore queries and validates business logic
+
+// CRITICAL: Mocks must be defined BEFORE imports
+const mockGetDocs = jest.fn();
+const mockOnSnapshot = jest.fn();
+
+jest.mock('../../../firebase/firebase-config');
+jest.mock('../../logger-service');
+jest.mock('../../search/saved-searches.service');
+
+jest.mock('firebase/firestore', () => ({
+  collection: jest.fn(),
+  getDocs: jest.fn((...args) => mockGetDocs(...args)),
+  query: jest.fn((...args) => args),
+  where: jest.fn((field, op, value) => ({ field, op, value })),
+  onSnapshot: jest.fn((...args) => mockOnSnapshot(...args)),
+  Timestamp: {
+    fromDate: jest.fn((d) => ({ toDate: () => d, seconds: d.getTime() / 1000, nanoseconds: 0 }))
+  }
+}));
+
+import { profileStatsService } from '../profile-stats.service';
+import { logger } from '../../logger-service';
+import { savedSearchesService } from '../../search/saved-searches.service';
+
+describe('ProfileStatsService', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    profileStatsService.clearAllCache();
+  });
+
+  describe('Cache Management', () => {
+    it('should cache stats after first fetch', async () => {
+      const mockProfileId = 'profile123';
+      
+      // Mock Firestore responses
+      mockGetDocs.mockResolvedValue({
+        docs: [{ data: () => ({ trustScore: 85, badges: ['verified'] }), id: 'prof1' }],
+        size: 0
+      });
+
+      (savedSearchesService.list).mockResolvedValue([]);
+
+      // First call - should hit Firestore
+      await profileStatsService.getStats(mockProfileId);
+      expect(mockGetDocs).toHaveBeenCalled();
+
+      mockGetDocs.mockClear();
+
+      // Second call - should use cache
+      const stats = await profileStatsService.getStats(mockProfileId);
+      expect(mockGetDocs).not.toHaveBeenCalled();
+      expect(stats).toBeDefined();
+      expect(stats.trustScore).toBe(85);
+    });
+
+    it('should skip cache when skipCache=true', async () => {
+      const mockProfileId = 'profile456';
+      
+      mockGetDocs.mockResolvedValue({
+        docs: [{ data: () => ({ trustScore: 90, badges: [] }), id: 'prof2' }],
+        size: 0
+      });
+
+      (savedSearchesService.list).mockResolvedValue([]);
+
+      // First call
+      await profileStatsService.getStats(mockProfileId);
+      expect(mockGetDocs).toHaveBeenCalled();
+
+      mockGetDocs.mockClear();
+
+      // Second call with skipCache=true should still query Firestore
+      await profileStatsService.getStats(mockProfileId, { skipCache: true });
+      expect(mockGetDocs).toHaveBeenCalled();
+    });
+
+    it('should expire cache after TTL', async () => {
+      const mockProfileId = 'profile789';
+      
+      mockGetDocs.mockResolvedValue({
+        docs: [{ data: () => ({ trustScore: 75, badges: ['fast-responder'] }), id: 'prof3' }],
+        size: 0
+      });
+
+      (savedSearchesService.list).mockResolvedValue([]);
+
+      // First call
+      await profileStatsService.getStats(mockProfileId);
+      expect(mockGetDocs).toHaveBeenCalledTimes(1);
+
+      // Immediately after - should use cache
+      await profileStatsService.getStats(mockProfileId);
+      expect(mockGetDocs).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('Stats Aggregation', () => {
+    it('should correctly aggregate listing counts', async () => {
+      mockGetDocs.mockImplementation((args) => {
+        // First call: profiles
+        if (!mockGetDocs.mock.calls.length || mockGetDocs.mock.calls.length === 1) {
+          return Promise.resolve({
+            docs: [{ data: () => ({ userId: 'user123', trustScore: 88, badges: ['verified', 'top-seller'] }), id: 'profile1' }],
+            size: 1
+          });
+        }
+        
+        // Second call: listings
+        if (mockGetDocs.mock.calls.length === 2) {
+          return Promise.resolve({
+            docs: [
+              { data: () => ({ status: 'published' }), id: 'listing1' },
+              { data: () => ({ status: 'published' }), id: 'listing2' },
+              { data: () => ({ status: 'sold' }), id: 'listing3' },
+            ],
+            size: 3
+          });
+        }
+        
+        // Metrics, Reviews, etc.
+        return Promise.resolve({ docs: [], size: 0 });
+      });
+
+      (savedSearchesService.list).mockResolvedValue([]);
+
+      const stats = await profileStatsService.getStats('profile1');
+      
+      expect(stats.activeListings).toBe(2);
+      expect(stats.soldListings).toBe(1);
+      expect(stats.totalListings).toBe(3);
+    });
+
+    it('should handle partial data gracefully', async () => {
+      const mockProfileId = 'profile_incomplete';
+      
+      mockGetDocs.mockResolvedValue({
+        docs: [],
+        size: 0
+      });
+
+      (savedSearchesService.list).mockResolvedValue([]);
+
+      const stats = await profileStatsService.getStats(mockProfileId);
+      
+      expect(stats.activeListings).toBe(0);
+      expect(stats.soldListings).toBe(0);
+      expect(stats.reviewCount).toBe(0);
+    });
+  });
+
+  describe('Real-time Stats', () => {
+    it('should set up real-time listener when realTime=true', async () => {
+      const mockProfileId = 'profile_realtime';
+      const mockCallback = jest.fn();
+
+      (savedSearchesService.list).mockResolvedValue([]);
+
+      // Setup mock onSnapshot behavior
+      mockOnSnapshot.mockImplementation((query, callback) => {
+        // Simulate initial snapshot
+        callback({ docs: [{ data: () => ({ trustScore: 95 }), id: 'prof1' }], size: 1 });
+        return jest.fn(); // Return unsubscribe function
+      });
+
+      const unsubscribe = await profileStatsService.getStats(mockProfileId, { realTime: true, onUpdate: mockCallback });
+
+      expect(mockOnSnapshot).toHaveBeenCalled();
+      expect(mockCallback).toHaveBeenCalled();
+      expect(typeof unsubscribe).toBe('function');
+    });
+  });
+
+  describe('Error Handling', () => {
+    it('should handle Firestore errors gracefully', async () => {
+      const mockProfileId = 'profile_error';
+      
+      mockGetDocs.mockRejectedValue(new Error('Firestore connection failed'));
+      (savedSearchesService.list).mockResolvedValue([]);
+
+      await expect(profileStatsService.getStats(mockProfileId)).rejects.toThrow();
+      expect(logger.error).toHaveBeenCalled();
+    });
+
+    it('should log errors without breaking', async () => {
+      const mockProfileId = 'profile_log_test';
+      
+      mockGetDocs.mockRejectedValue(new Error('Test error'));
+      (savedSearchesService.list).mockResolvedValue([]);
+
+      try {
+        await profileStatsService.getStats(mockProfileId);
+      } catch (e) {
+        expect(logger.error).toHaveBeenCalledWith(
+          expect.stringContaining('Error fetching profile stats'),
+          expect.any(Object)
+        );
+      }
+    });
+  });
+
+  describe('Cache Clearing', () => {
+    it('should clear all cache when clearAllCache called', async () => {
+      const mockProfileId = 'profile_clear';
+      
+      mockGetDocs.mockResolvedValue({
+        docs: [{ data: () => ({ trustScore: 80 }), id: 'prof1' }],
+        size: 1
+      });
+
+      (savedSearchesService.list).mockResolvedValue([]);
+
+      // First call - cache populated
+      await profileStatsService.getStats(mockProfileId);
+      mockGetDocs.mockClear();
+
+      // Clear cache
+      profileStatsService.clearAllCache();
+
+      // Second call - should hit Firestore again
+      await profileStatsService.getStats(mockProfileId);
+      expect(mockGetDocs).toHaveBeenCalled();
+    });
+
+    it('should clear specific profile cache', async () => {
+      const profileId1 = 'profile1';
+      const profileId2 = 'profile2';
+      
+      mockGetDocs.mockResolvedValue({
+        docs: [{ data: () => ({ trustScore: 85 }), id: 'prof1' }],
+        size: 1
+      });
+
+      (savedSearchesService.list).mockResolvedValue([]);
+
+      // Cache both profiles
+      await profileStatsService.getStats(profileId1);
+      await profileStatsService.getStats(profileId2);
+      
+      mockGetDocs.mockClear();
+
+      // Clear only profileId1
+      profileStatsService.clearCache(profileId1);
+
+      // profileId1 should re-fetch, profileId2 should use cache
+      await profileStatsService.getStats(profileId1);
+      expect(mockGetDocs).toHaveBeenCalledTimes(1);
+
+      mockGetDocs.mockClear();
+      await profileStatsService.getStats(profileId2);
+      expect(mockGetDocs).not.toHaveBeenCalled(); // Uses cache
+    });
+  });
+});

@@ -184,7 +184,7 @@ const DealerPublicPage: React.FC = () => {
               {dealer.isVerified && <VerifiedBadge>✓ Verified</VerifiedBadge>}
             </NameContainer>
 
-            <ProfileType>{dealer.profileType === 'dealer' ? '🚗 Dealer' : '🏢 Company'}</ProfileType>
+            <ProfileType>{dealer.profileType === 'dealer' ? 'Dealer' : '🏢 Company'}</ProfileType>
 
             {dealer.location && <Location>📍 {dealer.location}</Location>}
 
@@ -207,7 +207,7 @@ const DealerPublicPage: React.FC = () => {
         {/* Active Listings */}
         <Section>
           <SectionTitle>
-            <h2>🚗 Active Listings ({listings.length})</h2>
+            <h2>Active Listings ({listings.length})</h2>
           </SectionTitle>
 
           {listings.length > 0 ? (

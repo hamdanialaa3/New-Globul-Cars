@@ -3,200 +3,151 @@
 
 import React, { Suspense } from 'react';
 import styled from 'styled-components';
-import BusinessPromoBanner from '@/components/BusinessPromoBanner';
-import LazySection from '@/components/LazySection';
-import { AIChatbot } from '@/components/AI';
-import TrustStrip from './TrustStrip';
+import HeroSection from './HeroSection';
+import VehicleClassificationsSection from './VehicleClassificationsSection';
+import MostDemandedCategoriesSection from './MostDemandedCategoriesSection';
+import RecentBrowsingSection from './RecentBrowsingSection';
 
-// Lazy load all sections for better performance
-const HeroSection = React.lazy(() => import('./HeroSection'));
-const SocialMediaSection = React.lazy(() => import('./SocialMediaSection'));
-// ❌ REMOVED: CarCarousel3D - "Your Guide to Safe Driving & Buying" section
-const StatsSection = React.lazy(() => import('./StatsSection'));
+// Lazy loaded components - Local imports where available
 const PopularBrandsSection = React.lazy(() => import('./PopularBrandsSection'));
-// ❌ REMOVED: CityCarsSection - moved to avoid deep nesting issues
-const ImageGallerySection = React.lazy(() => import('./ImageGallerySection'));
 const FeaturedCarsSection = React.lazy(() => import('./FeaturedCarsSection'));
-const FeaturesSection = React.lazy(() => import('./FeaturesSection'));
-const DealerSpotlight = React.lazy(() => import('./DealerSpotlight'));
 const LifeMomentsBrowse = React.lazy(() => import('./LifeMomentsBrowse'));
-// LoyaltyBanner intentionally NOT lazy to avoid flash for unauthenticated users
-import LoyaltyBanner from './LoyaltyBanner';
+const SocialMediaSection = React.lazy(() => import('./SocialMediaSection'));
+const DealerSpotlight = React.lazy(() => import('./DealerSpotlight'));
+const LoyaltyBanner = React.lazy(() => import('./LoyaltyBanner'));
 
-const HomeContainer = styled.div`
+// Components created in this folder
+const AIAnalyticsTeaser = React.lazy(() => import('./AIAnalyticsTeaser'));
+const SmartSellStrip = React.lazy(() => import('./SmartSellStrip'));
+
+// Global components
+// AIChatbot uses named export, so we map it to default for React.lazy
+const AIChatbot = React.lazy(() => import('@/components/AI/AIChatbot').then(module => ({ default: module.AIChatbot })));
+const LazySection = React.lazy(() => import('@/components/LazySection'));
+
+// Styled Components
+const HomeContainer = styled.main`
+  width: 100%;
   min-height: 100vh;
-  background: var(--bg-secondary);
-
-  /* MOBILE OPTIMIZATION - Clean background (Instagram/Facebook) */
-  @media (max-width: 768px) {
-    padding-top: 0;
-    background: var(--bg-secondary);  /* Instagram gray - cleaner on mobile */
-    padding-bottom: 70px;  /* Space for bottom nav */
-  }
-  
-  @media (max-width: 480px) {
-    padding-bottom: 60px;
-  }
+  background-color: #f8fafc;
+  overflow-x: hidden;
 `;
 
 const SectionSpacer = styled.div`
-  height: 20px;
-  
-  /* MOBILE - Tighter spacing (Facebook pattern) */
-  @media (max-width: 768px) {
-    height: 8px;  /* Tight spacing between sections */
-  }
-  
-  @media (max-width: 480px) {
-    height: 6px;
-  }
-`;
-
-const LargeSpacer = styled.div`
   height: 40px;
-  
-  /* MOBILE - Compact spacing (Airbnb pattern) */
   @media (max-width: 768px) {
-    height: 16px;  /* Tighter for mobile */
-  }
-  
-  @media (max-width: 480px) {
-    height: 12px;
+    height: 24px;
   }
 `;
 
 const LoadingFallback = styled.div`
+  height: 400px;
   display: flex;
-  justify-content: center;
   align-items: center;
-  min-height: 200px;
-  font-size: 1.1rem;
-  color: var(--text-secondary);
-  
-  /* MOBILE - Compact loading state */
-  @media (max-width: 768px) {
-    min-height: 120px;
-    font-size: 0.9375rem;  /* 15px */
-    padding: 16px;
-  }
-  
-  @media (max-width: 480px) {
-    min-height: 100px;
-    font-size: 0.875rem;  /* 14px */
-  }
+  justify-content: center;
+  color: #94a3b8;
+  background: #f1f5f9;
+  border-radius: 8px;
+  margin: 20px;
 `;
 
 const HomePage: React.FC = () => {
   return (
     <HomeContainer>
-      {/* Hero Section - FIRST (above the fold) */}
-      <Suspense fallback={<LoadingFallback>Loading hero section...</LoadingFallback>}>
-        <HeroSection />
-      </Suspense>
+      {/* 1. Hero Section - Critical (No Lazy Load) */}
+      <HeroSection />
 
       <SectionSpacer />
 
-      {/* TrustStrip - immediate trust signals (not lazy to avoid CLS) */}
-      <TrustStrip />
-
-      <SectionSpacer />
-
-      {/* Featured Cars - high intent content */}
-      <LazySection rootMargin="0px" minHeight="400px">
-        <Suspense fallback={<LoadingFallback>Loading featured cars...</LoadingFallback>}>
-          <FeaturedCarsSection />
-        </Suspense>
-      </LazySection>
-
-      <SectionSpacer />
-
-      {/* Business Promotion Banner */}
-      <BusinessPromoBanner />
-
-      <LargeSpacer />
-
-      {/* Dealer Spotlight - verified professional partners */}
-      <LazySection rootMargin="80px" minHeight="320px">
-        <Suspense fallback={<LoadingFallback>Loading dealers...</LoadingFallback>}>
-          <DealerSpotlight />
-        </Suspense>
-      </LazySection>
-
-      <SectionSpacer />
-
-      {/* Lifestyle Moments Browse */}
-      <LazySection rootMargin="80px" minHeight="320px">
-        <Suspense fallback={<LoadingFallback>Loading lifestyle moments...</LoadingFallback>}>
-          <LifeMomentsBrowse />
-        </Suspense>
-      </LazySection>
-
-      <SectionSpacer />
-
-      {/* Loyalty Banner - encourage signup (non-lazy) */}
-      <LoyaltyBanner />
-
-      <LargeSpacer />
-
-      {/* 🌟 Social Media Section - Collapsible Community Feed (Smart Feed + Community Stories) */}
-      {/* ⚡ OPTIMIZED: rootMargin reduced from 300px to 100px */}
-      <LazySection rootMargin="100px" minHeight="200px">
-        <Suspense fallback={<LoadingFallback>Loading social media...</LoadingFallback>}>
-          <SocialMediaSection />
-        </Suspense>
-      </LazySection>
-
-      <SectionSpacer />
-
-      {/* ❌ REMOVED: 3D Car Carousel - "Your Guide to Safe Driving & Buying" section */}
-
-      <SectionSpacer />
-
-      {/* ✅ LazySection: Load when user scrolls near */}
-      {/* ⚡ OPTIMIZED: rootMargin reduced from 200px to 50px */}
-      <LazySection rootMargin="50px" minHeight="300px">
-        <Suspense fallback={<LoadingFallback>Loading stats...</LoadingFallback>}>
-          <StatsSection />
-        </Suspense>
-      </LazySection>
-
-      <SectionSpacer />
-
-      {/* ⚡ OPTIMIZED: rootMargin reduced from 200px to 50px */}
-      <LazySection rootMargin="50px" minHeight="500px">
-        <Suspense fallback={<LoadingFallback>Loading popular brands...</LoadingFallback>}>
+      {/* 2. Popular Brands Section - MOVED TO TOP */}
+      <LazySection rootMargin="0px" minHeight="500px">
+        <Suspense fallback={<LoadingFallback>Зареждане на марки...</LoadingFallback>}>
           <PopularBrandsSection />
         </Suspense>
       </LazySection>
 
       <SectionSpacer />
 
-      {/* ❌ REMOVED: CityCarsSection - moved to avoid deep nesting issues */}
-      {/* <LazySection rootMargin="100px" minHeight="600px">
-        <Suspense fallback={<LoadingFallback>Loading city cars...</LoadingFallback>}>
-          <CityCarsSection />
-        </Suspense>
-      </LazySection> */}
-
-      <SectionSpacer />
-
-      {/* ⚡ OPTIMIZED: rootMargin reduced from 200px to 50px */}
-      <LazySection rootMargin="50px" minHeight="500px">
-        <Suspense fallback={<LoadingFallback>Loading image gallery...</LoadingFallback>}>
-          <ImageGallerySection />
+      {/* 3. Featured Cars Section - MOVED TO TOP */}
+      <LazySection rootMargin="0px" minHeight="600px">
+        <Suspense fallback={<LoadingFallback>Зареждане на автомобили...</LoadingFallback>}>
+          <FeaturedCarsSection />
         </Suspense>
       </LazySection>
 
       <SectionSpacer />
 
-      {/* ⚡ OPTIMIZED: rootMargin reduced from 200px to 50px */}
-      <LazySection rootMargin="50px" minHeight="400px">
-        <Suspense fallback={<LoadingFallback>Loading features...</LoadingFallback>}>
-          <FeaturesSection />
+      {/* 4. Life Moments Browse - MOVED TO TOP */}
+      <LazySection rootMargin="0px" minHeight="400px">
+        <Suspense fallback={<LoadingFallback>Зареждане...</LoadingFallback>}>
+          <LifeMomentsBrowse />
         </Suspense>
       </LazySection>
 
-      {/* AI Chatbot removed: handled globally via RobotChatIcon */}
+      <SectionSpacer />
+
+      {/* 5. Social Media & Community - MOVED TO TOP */}
+      <LazySection rootMargin="0px" minHeight="300px">
+        <Suspense fallback={<LoadingFallback>Зареждане на общност...</LoadingFallback>}>
+          <SocialMediaSection />
+        </Suspense>
+      </LazySection>
+
+      <SectionSpacer />
+
+      {/* 6. NEW: Vehicle Classifications (Smart Section) */}
+      <VehicleClassificationsSection />
+
+      <SectionSpacer />
+
+      {/* 7. NEW: Most Demanded Categories (AI Section) */}
+      <MostDemandedCategoriesSection />
+
+      <SectionSpacer />
+
+      {/* 8. AI Analytics Teaser */}
+      <LazySection rootMargin="200px">
+        <Suspense fallback={null}>
+          <AIAnalyticsTeaser />
+        </Suspense>
+      </LazySection>
+
+      <SectionSpacer />
+
+      {/* 9. Smart Sell Strip */}
+      <LazySection rootMargin="100px">
+        <Suspense fallback={null}>
+          <SmartSellStrip />
+        </Suspense>
+      </LazySection>
+
+      <SectionSpacer />
+
+      {/* 10. Dealer Spotlight */}
+      <LazySection rootMargin="200px">
+        <Suspense fallback={null}>
+          <DealerSpotlight />
+        </Suspense>
+      </LazySection>
+
+      <SectionSpacer />
+
+      {/* 11. NEW: Recent Browsing History (Personalized) */}
+      <RecentBrowsingSection />
+
+      <SectionSpacer />
+
+      {/* 12. Loyalty Banner */}
+      <LazySection rootMargin="100px">
+        <Suspense fallback={null}>
+          <LoyaltyBanner />
+        </Suspense>
+      </LazySection>
+
+      {/* Floating AI Chatbot */}
+      <Suspense fallback={null}>
+        <AIChatbot />
+      </Suspense>
     </HomeContainer>
   );
 };

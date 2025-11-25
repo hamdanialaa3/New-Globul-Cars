@@ -27,6 +27,10 @@ module.exports = {
       config.resolve.alias = {
         ...(config.resolve.alias || {}),
         '@': path.resolve(__dirname, 'src'),
+        '@globul-cars/core': path.resolve(__dirname, '../packages/core/src'),
+        '@globul-cars/core/*': path.resolve(__dirname, '../packages/core/src/*'),
+        '@globul-cars/services': path.resolve(__dirname, '../packages/services/src'),
+        '@globul-cars/services/*': path.resolve(__dirname, '../packages/services/src/*'),
         // Polyfills / shims needed for packages expecting Node globals
         'process/browser': require.resolve('process/browser'),
         process: require.resolve('process/browser')

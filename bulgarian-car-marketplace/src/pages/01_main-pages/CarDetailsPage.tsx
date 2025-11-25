@@ -6,6 +6,9 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthProvider';
 import { useCarViewTracking } from '@/hooks/useProfileTracking';
 import { unifiedCarService } from '@/services/car';
+import { imageUploadService } from '@/services/car/image-upload.service';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '@/firebase/firebase-config';
 import { CarListing } from '@/types/CarListing';
 import { BULGARIA_REGIONS, getCitiesByRegion } from '@/data/bulgaria-locations';
 import { getAllMakes, getModelsByMake, hasModels } from '@/data/car-makes-models';
@@ -13,7 +16,7 @@ import DistanceIndicator from '@/components/DistanceIndicator';
 import StaticMapEmbed from '@/components/StaticMapEmbed';
 import { logger } from '@/services/logger-service';
 import { startAiTrace, endAiTrace } from '@/services/performance/ai-performance-traces';
-import CarDetailsModernView from './components/CarDetailsModernView';
+import CarDetailsGermanStyle from './components/CarDetailsGermanStyle';
 
 // ==================== Styled Components ====================
 
@@ -1017,7 +1020,71 @@ const CarDetailsPage: React.FC = () => {
       const startTime = performance.now();
       
       try {
-        const carData = await carListingService.getListing(carId);
+        // Try unifiedCarService first
+        let carData: CarListing | null = null;
+        
+        try {
+          const unifiedCar = await unifiedCarService.getCarById(carId);
+          if (unifiedCar) {
+            // Convert UnifiedCar to CarListing format
+            carData = {
+              ...unifiedCar,
+              vehicleType: (unifiedCar as any).vehicleType || 'car',
+              sellerType: unifiedCar.sellerType || 'private',
+              sellerName: (unifiedCar as any).sellerName || '',
+              sellerEmail: (unifiedCar as any).sellerEmail || '',
+              sellerPhone: (unifiedCar as any).sellerPhone || '',
+              city: (unifiedCar as any).city || '',
+              region: (unifiedCar as any).region || '',
+              accidentHistory: (unifiedCar as any).accidentHistory || false,
+              serviceHistory: (unifiedCar as any).serviceHistory || false,
+            } as CarListing;
+          }
+        } catch (unifiedError) {
+          console.log('⚠️ unifiedCarService failed, trying direct Firestore query...', unifiedError);
+        }
+        
+        // Fallback: Direct Firestore query if unifiedCarService fails or returns null
+        if (!carData) {
+          console.log('⚠️ Trying direct Firestore query for car:', carId);
+          const carRef = doc(db, 'cars', carId);
+          const carSnap = await getDoc(carRef);
+          
+          if (carSnap.exists()) {
+            const data = carSnap.data();
+            console.log('✅ Found car in Firestore:', data);
+            carData = {
+              id: carSnap.id,
+              ...data,
+              createdAt: data.createdAt?.toDate?.() || data.createdAt,
+              updatedAt: data.updatedAt?.toDate?.() || data.updatedAt,
+            } as CarListing;
+          } else {
+            console.log('❌ Car not found in Firestore collection "cars" with ID:', carId);
+            // Try alternative collections
+            const alternativeCollections = ['listings', 'vehicles', 'car_listings'];
+            for (const collectionName of alternativeCollections) {
+              try {
+                const altRef = doc(db, collectionName, carId);
+                const altSnap = await getDoc(altRef);
+                if (altSnap.exists()) {
+                  console.log(`✅ Found car in collection "${collectionName}"`);
+                  const data = altSnap.data();
+                  carData = {
+                    id: altSnap.id,
+                    ...data,
+                    createdAt: data.createdAt?.toDate?.() || data.createdAt,
+                    updatedAt: data.updatedAt?.toDate?.() || data.updatedAt,
+                  } as CarListing;
+                  break;
+                }
+              } catch (altError) {
+                console.log(`⚠️ Error checking collection "${collectionName}":`, altError);
+              }
+            }
+          }
+        }
+        
         console.log('✅ Car data loaded:', carData);
         
         if (carData) {
@@ -1108,7 +1175,7 @@ const CarDetailsPage: React.FC = () => {
       // Step 1: Upload new photos to Firebase Storage
       let uploadedUrls: string[] = [];
       if (photos.length > 0) {
-        uploadedUrls = await carListingService.uploadImages(carId, photos);
+        uploadedUrls = await imageUploadService.uploadImages(carId, photos);
       }
 
       // Step 2: Merge existing images with new ones
@@ -1190,7 +1257,7 @@ const CarDetailsPage: React.FC = () => {
 
     try {
       // Remove from Firebase Storage
-      await carListingService.deleteImages(carId, [imageUrl]);
+      await imageUploadService.deleteImages(carId, [imageUrl]);
       
       // Update car.images array
       const updatedImages = (car?.images || []).filter(img => img !== imageUrl);
@@ -1297,12 +1364,40 @@ const CarDetailsPage: React.FC = () => {
   }
 
   if (!car) {
-    return <LoadingContainer>{language === 'bg' ? 'Автомобилът не е намерен' : 'Car not found'}</LoadingContainer>;
+    return (
+      <LoadingContainer>
+        <div style={{ textAlign: 'center', padding: '2rem' }}>
+          <h2 style={{ marginBottom: '1rem', color: '#ef4444' }}>
+            {language === 'bg' ? 'Автомобилът не е намерен' : 'Car not found'}
+          </h2>
+          <p style={{ marginBottom: '1rem', color: '#6b7280' }}>
+            {language === 'bg' 
+              ? `ID: ${carId}` 
+              : `ID: ${carId}`}
+          </p>
+          <button 
+            onClick={() => navigate(-1)}
+            style={{
+              padding: '10px 20px',
+              background: '#1877f2',
+              color: 'white',
+              border: 'none',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              fontSize: '15px',
+              fontWeight: 600
+            }}
+          >
+            {language === 'bg' ? 'Назад' : 'Back'}
+          </button>
+        </div>
+      </LoadingContainer>
+    );
   }
 
   if (!isEditMode) {
     return (
-      <CarDetailsModernView
+      <CarDetailsGermanStyle
         car={car}
         language={(language as 'bg' | 'en')}
         onBack={() => navigate(-1)}
