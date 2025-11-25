@@ -32,7 +32,7 @@ export const bulgarianColors = {
     contrastText: '#FFFFFF'
   },
   error: {
-    main: '#F44336',
+    main: '#f43636ff',
     contrastText: '#FFFFFF'
   }
 };

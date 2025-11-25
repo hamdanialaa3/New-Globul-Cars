@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { CarIcon } from '@/components/icons/CarIcon';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthProvider';
+import { useTheme } from '@/contexts/ThemeContext';
 import { useCarViewTracking } from '@/hooks/useProfileTracking';
 import { unifiedCarService } from '@/services/car';
 import { imageUploadService } from '@/services/car/image-upload.service';
@@ -24,8 +25,9 @@ const Container = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
-  background: #fff;
+  background: var(--bg-primary);
   min-height: 100vh;
+  transition: background-color 0.3s ease;
 `;
 
 const Header = styled.div`
@@ -34,7 +36,8 @@ const Header = styled.div`
   gap: 1rem;
   margin-bottom: 2rem;
   padding-bottom: 1rem;
-  border-bottom: 2px solid #f0f0f0;
+  border-bottom: 2px solid var(--border-primary);
+  transition: border-color 0.3s ease;
 `;
 
 const TopBar = styled.div`
@@ -49,10 +52,11 @@ const InfoBar = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 1rem 1.5rem;
-  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-  border: 1px solid #d0d7de;
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
   border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-card);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 `;
 
 const SellerInfo = styled.div`
@@ -65,14 +69,15 @@ const SellerAvatar = styled.div`
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #FF7900, #FF9533);
+  background: var(--accent-primary);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: var(--btn-primary-text);
   font-size: 1.25rem;
   font-weight: 700;
-  box-shadow: 0 3px 10px rgba(255, 121, 0, 0.3);
+  box-shadow: var(--shadow-button);
+  transition: background-color 0.3s ease;
 `;
 
 const SellerDetails = styled.div`
@@ -84,16 +89,17 @@ const SellerDetails = styled.div`
 const SellerName = styled.div`
   font-size: 1rem;
   font-weight: 700;
-  color: #0a0a0a;
+  color: var(--text-primary);
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  transition: color 0.3s ease;
 `;
 
 const SellerPhone = styled.a`
   font-size: 0.875rem;
   font-weight: 600;
-  color: #FF7900;
+  color: var(--accent-primary);
   text-decoration: none;
   display: flex;
   align-items: center;
@@ -101,7 +107,7 @@ const SellerPhone = styled.a`
   transition: all 0.3s ease;
 
   &:hover {
-    color: #e66a00;
+    color: var(--accent-secondary);
     text-decoration: underline;
   }
 
@@ -117,68 +123,102 @@ const VehicleInfo = styled.div`
   align-items: center;
   gap: 0.75rem;
   padding: 0.75rem 1.25rem;
-  background: linear-gradient(135deg, rgba(255, 121, 0, 0.08), rgba(255, 149, 51, 0.08));
-  border: 1px solid rgba(255, 138, 26, 0.3);
+  background: var(--bg-accent);
+  border: 1px solid var(--border-accent);
   border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(255, 121, 0, 0.15);
+  box-shadow: var(--shadow-sm);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 `;
 
 const VehicleBrand = styled.div`
   font-size: 1.125rem;
   font-weight: 700;
-  color: #0a0a0a;
+  color: var(--text-primary);
+  transition: color 0.3s ease;
 `;
 
 const VehicleModel = styled.div`
   font-size: 0.938rem;
   font-weight: 600;
-  color: #2a2a2a;
+  color: var(--text-secondary);
+  transition: color 0.3s ease;
 `;
 
 const BackButton = styled.button`
-  background: linear-gradient(135deg, #a8b3c0, #c5ccd4);
-  color: #0a0a0a;
-  border: 1px solid #d0d7de;
+  background: var(--btn-secondary-bg);
+  color: var(--btn-secondary-text);
+  border: 1px solid var(--btn-secondary-border);
   padding: 0.5rem 1rem;
   border-radius: 6px;
   cursor: pointer;
   font-size: 0.875rem;
   font-weight: 600;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
 
   &:hover {
-    background: linear-gradient(135deg, #959fac, #b0b9c3);
+    background: var(--btn-secondary-hover);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--shadow-md);
+  }
+`;
+
+const ThemeToggleButton = styled.button`
+  position: fixed;
+  top: 100px;
+  right: 20px;
+  z-index: 1000;
+  background: var(--accent-primary);
+  color: var(--btn-primary-text);
+  border: none;
+  padding: 12px 20px;
+  border-radius: 50px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: var(--shadow-button);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  &:hover {
+    background: var(--accent-secondary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+
+  &:active {
+    transform: translateY(0);
   }
 `;
 
 const EditButton = styled.button`
-  background: linear-gradient(135deg, #FF7900, #FF9533);
-  color: white;
-  border: 1px solid #FF8A1A;
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  border: 1px solid var(--btn-primary-bg);
   padding: 0.5rem 1rem;
   border-radius: 6px;
   cursor: pointer;
   font-size: 0.875rem;
   font-weight: 600;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(255, 121, 0, 0.25);
+  box-shadow: var(--shadow-button);
 
   &:hover {
-    background: linear-gradient(135deg, #e66a00, #e68429);
+    background: var(--btn-primary-hover);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(255, 121, 0, 0.35);
+    box-shadow: var(--shadow-md);
   }
 `;
 
 const CarTitle = styled.h1`
   font-size: 1.5rem;
   font-weight: 700;
-  color: #0a0a0a;
+  color: var(--text-primary);
   margin: 0;
   flex: 1;
+  transition: color 0.3s ease;
 `;
 
 const MainContent = styled.div`
@@ -193,48 +233,53 @@ const MainContent = styled.div`
 `;
 
 const ImageSection = styled.div`
-  background: #f8f9fa;
+  background: var(--bg-card);
   border-radius: 12px;
   padding: 1.5rem;
   text-align: center;
+  transition: background-color 0.3s ease;
 `;
 
 const ImagePlaceholder = styled.div`
   width: 100%;
   height: 300px;
-  background: #e9ecef;
+  background: var(--bg-hover);
   border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 1rem;
+  transition: background-color 0.3s ease;
 `;
 
 const DetailsSection = styled.div`
-  background: linear-gradient(135deg, #f5f7fa, #e8ecf1);
-  border: 1px solid #d0d7de;
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
   border-radius: 8px;
   padding: 1.25rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-card);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 `;
 
 const SectionTitle = styled.h2`
   font-size: 1rem;
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--text-primary);
   margin-bottom: 0.75rem;
   padding-bottom: 0.4rem;
-  border-bottom: 2px solid rgba(255, 121, 0, 0.25);
+  border-bottom: 2px solid var(--border-accent);
   text-transform: none;
   letter-spacing: 0.3px;
+  transition: color 0.3s ease, border-color 0.3s ease;
 `;
 
 const DetailRow = styled.div`
   display: flex;
   flex-direction: column;
   padding: 0.5rem 0;
-  border-bottom: 1px solid rgba(208, 215, 222, 0.3);
+  border-bottom: 1px solid var(--border-light);
   gap: 0.375rem;
+  transition: border-color 0.3s ease;
 
   &:last-child {
     border-bottom: none;
@@ -243,36 +288,48 @@ const DetailRow = styled.div`
 
 const DetailLabel = styled.label`
   font-weight: 500;
-  color: #6c757d;
+  color: var(--text-tertiary);
   font-size: 0.688rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-bottom: 0;
   display: block;
+  transition: color 0.3s ease;
 `;
 
 const DetailValue = styled.div`
-  color: #495057;
+  color: var(--text-secondary);
   font-size: 0.813rem;
   font-weight: 500;
   padding: 0.4rem 0.625rem;
-  background: rgba(248, 249, 250, 0.5);
-  border: 1px solid rgba(208, 215, 222, 0.5);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
   border-radius: 5px;
   min-height: 34px;
   display: flex;
   align-items: center;
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 `;
 
 const PriceSection = styled.div`
-  background: linear-gradient(135deg, #FF7900 0%, #FF9533 100%);
-  color: white;
+  background: var(--accent-primary);
+  color: var(--btn-primary-text);
   padding: 0.625rem 1rem;
   border-radius: 8px;
   display: inline-block;
   margin: 0.5rem 0 1rem 0;
-  box-shadow: 0 3px 10px rgba(255, 121, 0, 0.25);
-  border: 1px solid rgba(255, 138, 26, 0.5);
+  box-shadow: var(--shadow-button);
+  border: 1px solid var(--accent-secondary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  
+  h3, label, input[type="number"] {
+    color: var(--btn-primary-text) !important;
+  }
+  
+  input[type="number"] {
+    background: rgba(255, 255, 255, 0.2) !important;
+    border: 2px solid rgba(255, 255, 255, 0.3) !important;
+  }
 `;
 
 const Price = styled.div`
@@ -301,32 +358,33 @@ const LocationMapContainer = styled.div`
 `;
 
 const EquipmentSection = styled.div`
-  background: linear-gradient(135deg, #f5f7fa, #e8ecf1);
-  border: 1px solid #d0d7de;
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
   border-radius: 8px;
   padding: 1.25rem;
   margin-bottom: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-card);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 `;
 
 const EditableInput = styled.input`
   width: 100%;
   padding: 0.4rem 0.625rem;
-  border: 1px solid #d0d7de;
+  border: 1px solid var(--border-primary);
   border-radius: 5px;
   font-size: 0.813rem;
   transition: all 0.3s ease;
-  background: white;
-  color: #495057;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
 
   &:focus {
     outline: none;
-    border-color: #FF7900;
-    box-shadow: 0 0 0 2px rgba(255, 121, 0, 0.1);
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 2px var(--bg-accent);
   }
 
   &::placeholder {
-    color: #adb5bd;
+    color: var(--text-muted);
     font-size: 0.75rem;
   }
 `;
@@ -334,18 +392,18 @@ const EditableInput = styled.input`
 const EditableSelect = styled.select`
   width: 100%;
   padding: 0.4rem 0.625rem;
-  border: 1px solid #d0d7de;
+  border: 1px solid var(--border-primary);
   border-radius: 5px;
   font-size: 0.813rem;
   transition: all 0.3s ease;
-  background: white;
+  background: var(--bg-secondary);
   cursor: pointer;
-  color: #495057;
+  color: var(--text-primary);
 
   &:focus {
     outline: none;
-    border-color: #FF7900;
-    box-shadow: 0 0 0 2px rgba(255, 121, 0, 0.1);
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 2px var(--bg-accent);
   }
 
   option {
@@ -355,29 +413,29 @@ const EditableSelect = styled.select`
 
   option.other-option {
     font-weight: 700;
-    color: #2c3e50;
-    background: rgba(255, 121, 0, 0.05);
+    color: var(--text-primary);
+    background: var(--bg-accent);
   }
 `;
 
 const SaveButtonEnhanced = styled.button`
-  background: linear-gradient(135deg, #28a745, #20c997);
-  color: white;
-  border: 1px solid #1e7e34;
+  background: var(--success);
+  color: var(--btn-primary-text);
+  border: 1px solid var(--success);
   padding: 0.5rem 1.25rem;
   border-radius: 6px;
   font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(40, 167, 69, 0.25);
+  box-shadow: var(--shadow-sm);
   position: relative;
   overflow: hidden;
 
   &:hover {
-    background: linear-gradient(135deg, #218838, #1ea085);
+    filter: brightness(1.1);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.35);
+    box-shadow: var(--shadow-md);
   }
 
   &:active {
@@ -401,23 +459,23 @@ const SaveButtonEnhanced = styled.button`
 `;
 
 const CancelButtonEnhanced = styled.button`
-  background: linear-gradient(135deg, #a8b3c0, #c5ccd4);
-  color: #2c3e50;
-  border: 1px solid #d0d7de;
+  background: var(--btn-secondary-bg);
+  color: var(--btn-secondary-text);
+  border: 1px solid var(--btn-secondary-border);
   padding: 0.5rem 1.25rem;
   border-radius: 6px;
   font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
   position: relative;
   overflow: hidden;
 
   &:hover {
-    background: linear-gradient(135deg, #959fac, #b0b9c3);
+    background: var(--btn-secondary-hover);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--shadow-md);
   }
 
   &:active {
@@ -447,13 +505,14 @@ const SectionIcon = styled.div`
   width: 32px;
   height: 32px;
   border-radius: 8px;
-  background: linear-gradient(135deg, #FF7900, #FF9533);
+  background: var(--accent-primary);
   margin-right: 0.625rem;
-  box-shadow: 0 2px 8px rgba(255, 121, 0, 0.25);
+  box-shadow: var(--shadow-button);
   position: relative;
   overflow: hidden;
   transform: translateZ(0);
   will-change: transform;
+  transition: background-color 0.3s ease;
   
   &::before {
     content: '';
@@ -519,7 +578,7 @@ const ContactIcon = styled.div<{ $isActive: boolean }>`
 const ContactLabel = styled.span<{ $isActive: boolean }>`
   font-size: 0.875rem;
   font-weight: 700;
-  color: ${props => props.$isActive ? '#2c3e50' : '#b8b8b8'};
+  color: ${props => props.$isActive ? 'var(--text-primary)' : 'var(--text-muted)'};
   transition: all 0.3s ease;
   text-align: center;
   line-height: 1.3;
@@ -540,102 +599,83 @@ const ContactItem = styled.div<{ $isActive: boolean }>`
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   cursor: pointer;
   position: relative;
-  background: ${props => props.$isActive ? 'transparent' : 'rgba(248, 248, 248, 0.6)'};
+  background: ${props => props.$isActive ? 'transparent' : 'var(--bg-secondary)'};
   min-width: 92px;
   max-width: 115px;
-  border: 2px solid ${props => props.$isActive ? 'transparent' : '#e5e5e5'};
+  border: 2px solid ${props => props.$isActive ? 'transparent' : 'var(--border-primary)'};
 
   &:hover {
     transform: ${props => props.$isActive ? 'translateY(-5px)' : 'none'};
-    background: ${props => props.$isActive ? 'rgba(255, 121, 0, 0.05)' : 'rgba(248, 248, 248, 0.6)'};
+    background: ${props => props.$isActive ? 'var(--bg-accent)' : 'var(--bg-secondary)'};
   }
 
   &:hover ${ContactLabel} {
-    color: ${props => props.$isActive ? '#FF7900' : '#b8b8b8'};
+    color: ${props => props.$isActive ? 'var(--accent-primary)' : 'var(--text-muted)'};
   }
 `;
 
-// Neomorphism Toggle Switch - 50% smaller
+// Icon Toggle Button - Clear Visual Feedback
 const ToggleSwitchContainer = styled.div<{ $isOn: boolean }>`
   position: relative;
-  width: 40px;
-  height: 20px;
-  background: #3e3e3e;
-  border-radius: 10px;
-  box-shadow: 
-    5px 5px 10px rgba(0, 0, 0, 0.4), 
-    -5px -5px 10px rgba(255, 255, 255, 0.1);
+  width: 32px;
+  height: 32px;
+  background: ${props => props.$isOn ? 'var(--success)' : 'var(--bg-card)'};
+  border: 2px solid ${props => props.$isOn ? 'var(--success)' : 'var(--border-primary)'};
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  transition: all 0.4s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: ${props => props.$isOn 
+    ? '0 2px 8px rgba(34, 197, 94, 0.3)'
+    : 'var(--shadow-sm)'
+  };
 
   &:hover {
-    box-shadow: 
-      6px 6px 12px rgba(0, 0, 0, 0.5), 
-      -6px -6px 12px rgba(255, 255, 255, 0.12);
+    transform: scale(1.1);
+    box-shadow: ${props => props.$isOn 
+      ? '0 4px 12px rgba(34, 197, 94, 0.4)'
+      : 'var(--shadow-md)'
+    };
+    border-color: ${props => props.$isOn ? 'var(--success)' : 'var(--accent-primary)'};
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &::before {
+    content: ${props => props.$isOn ? "'✓'" : "'✗'"};
+    font-size: 16px;
+    font-weight: bold;
+    color: ${props => props.$isOn ? 'var(--btn-primary-text)' : 'var(--text-tertiary)'};
+    transition: all 0.3s ease;
   }
 `;
 
 const ToggleSwitchInner = styled.div<{ $isOn: boolean }>`
-  position: absolute;
-  top: 1.5px;
-  left: 1.5px;
-  width: calc(100% - 3px);
-  height: calc(100% - 3px);
-  background-color: #3e3e3e;
-  border-radius: 8.5px;
-  box-shadow: 
-    inset 2.5px 2.5px 5px rgba(0, 0, 0, 0.4), 
-    inset -2.5px -2.5px 5px rgba(255, 255, 255, 0.1);
-  transition: background-color 0.4s ease;
+  display: none; /* Not needed in icon design */
 `;
 
 const ToggleSwitchKnobContainer = styled.div<{ $isOn: boolean }>`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 50%;
-  height: 100%;
-  overflow: hidden;
-  transition: transform 0.4s ease;
-  transform: ${props => props.$isOn ? 'translateX(100%)' : 'translateX(0)'};
+  display: none; /* Not needed in icon design */
 `;
 
 const ToggleSwitchKnob = styled.div<{ $isOn: boolean }>`
-  position: relative;
-  width: 17px;
-  height: 17px;
-  top: 1.5px;
-  left: 1.5px;
-  background-color: #3e3e3e;
-  border-radius: 50%;
-  box-shadow: 
-    2.5px 2.5px 5px rgba(0, 0, 0, 0.5), 
-    -2.5px -2.5px 5px rgba(255, 255, 255, 0.1);
-  transition: background-color 0.4s ease;
+  display: none; /* Not needed in icon design */
 `;
 
 const ToggleSwitchNeon = styled.div<{ $isOn: boolean }>`
-  display: block;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  box-shadow: ${props => props.$isOn
-    ? '0 0 5px #0f0, 0 0 10px #0f0, 0 0 15px #0f0, 0 0 20px #0f0'
-    : '0 0 5px #ff8c00, 0 0 10px #ff8c00'
-  };
-  background: ${props => props.$isOn ? '#0f0' : '#ff8c00'};
-  transition: all 0.4s ease;
+  display: none; /* Not needed in icon design */
 `;
 
 const ToggleLabel = styled.span`
   font-size: 0.75rem;
   font-weight: 600;
-  color: #6c757d;
+  color: var(--text-tertiary);
   margin-left: 0.5rem;
+  transition: color 0.3s ease;
 `;
 
 const LoadingContainer = styled.div`
@@ -644,44 +684,48 @@ const LoadingContainer = styled.div`
   align-items: center;
   min-height: 400px;
   font-size: 1.25rem;
-  color: #6c757d;
+  color: var(--text-tertiary);
+  transition: color 0.3s ease;
 `;
 
 const PhotoUploadSection = styled.div`
-  background: linear-gradient(135deg, #f5f7fa, #e8ecf1);
-  border: 1px solid #d0d7de;
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
   border-radius: 6px;
   padding: 0.75rem;
   margin-bottom: 1rem;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-sm);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 `;
 
 const PhotoUploadTitle = styled.h3`
   font-size: 0.813rem;
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--text-primary);
   margin: 0;
+  transition: color 0.3s ease;
 `;
 
 const PhotoUploadArea = styled.div<{ $isDragOver: boolean }>`
-  border: 2px dashed ${props => props.$isDragOver ? '#FF7900' : '#d0d7de'};
+  border: 2px dashed ${props => props.$isDragOver ? 'var(--accent-primary)' : 'var(--border-primary)'};
   border-radius: 6px;
   padding: 0.75rem;
   text-align: center;
-  background: ${props => props.$isDragOver ? 'rgba(255, 121, 0, 0.05)' : 'white'};
+  background: ${props => props.$isDragOver ? 'var(--bg-accent)' : 'var(--bg-secondary)'};
   transition: all 0.3s ease;
   cursor: pointer;
 
   &:hover {
-    border-color: #FF7900;
-    background: rgba(255, 121, 0, 0.05);
+    border-color: var(--accent-primary);
+    background: var(--bg-accent);
   }
 `;
 
 const UploadIcon = styled.div`
   font-size: 2rem;
-  color: #FF7900;
+  color: var(--accent-primary);
   margin-bottom: 0.5rem;
+  transition: color 0.3s ease;
   
   svg {
     width: 40px;
@@ -692,27 +736,28 @@ const UploadIcon = styled.div`
 const UploadText = styled.div`
   font-size: 0.75rem;
   font-weight: 500;
-  color: #495057;
+  color: var(--text-secondary);
   margin-bottom: 0.5rem;
+  transition: color 0.3s ease;
 `;
 
 const ChoosePhotosButton = styled.button`
-  background: linear-gradient(135deg, #FF7900, #FF9533);
-  color: white;
-  border: 1px solid #FF8A1A;
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  border: 1px solid var(--btn-primary-bg);
   padding: 0.5rem 1rem;
   border-radius: 5px;
   font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 6px rgba(255, 121, 0, 0.2);
+  box-shadow: var(--shadow-button);
   margin-top: 0.25rem;
 
   &:hover {
-    background: linear-gradient(135deg, #e66a00, #e68429);
+    background: var(--btn-primary-hover);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(255, 121, 0, 0.35);
+    box-shadow: var(--shadow-md);
   }
 `;
 
@@ -728,11 +773,11 @@ const PhotoItem = styled.div`
   aspect-ratio: 1;
   border-radius: 8px;
   overflow: hidden;
-  border: 1px solid #d0d7de;
+  border: 1px solid var(--border-primary);
   transition: all 0.3s ease;
 
   &:hover {
-    border-color: #FF7900;
+    border-color: var(--accent-primary);
     transform: scale(1.02);
   }
 `;
@@ -747,8 +792,8 @@ const PhotoRemoveButton = styled.button`
   position: absolute;
   top: 5px;
   right: 5px;
-  background: rgba(220, 53, 69, 0.9);
-  color: white;
+  background: var(--error);
+  color: var(--btn-primary-text);
   border: none;
   border-radius: 50%;
   width: 24px;
@@ -761,7 +806,7 @@ const PhotoRemoveButton = styled.button`
   transition: all 0.3s ease;
 
   &:hover {
-    background: #c82333;
+    filter: brightness(0.9);
     transform: scale(1.1);
   }
 `;
@@ -799,26 +844,29 @@ const LogoBrandName = styled.span`
   transform: translateX(-50%);
   font-size: 1rem;
   font-weight: 700;
-  color: #2c3e50;
+  color: var(--text-primary);
   letter-spacing: 1px;
   text-transform: uppercase;
   z-index: 3;
+  transition: color 0.3s ease;
 `;
 
 const GalleryContainer = styled.div`
   margin-top: 2.5rem;
   padding-top: 1.5rem;
-  border-top: 2px solid rgba(208, 215, 222, 0.3);
+  border-top: 2px solid var(--border-light);
+  transition: border-color 0.3s ease;
 `;
 
 const GalleryTitle = styled.h3`
   font-size: 0.938rem;
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--text-primary);
   margin: 0 0 1rem 0;
   text-align: center;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  transition: color 0.3s ease;
 `;
 
 const MainImageContainer = styled.div`
@@ -828,9 +876,10 @@ const MainImageContainer = styled.div`
   border-radius: 12px;
   overflow: hidden;
   margin-bottom: 1rem;
-  background: #f8f9fa;
-  border: 2px solid #d0d7de;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background: var(--bg-card);
+  border: 2px solid var(--border-primary);
+  box-shadow: var(--shadow-md);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 `;
 
 const MainImage = styled.img`
@@ -856,14 +905,14 @@ const ThumbnailItem = styled.div<{ $isActive?: boolean }>`
   border-radius: 6px;
   overflow: hidden;
   cursor: pointer;
-  border: 2px solid ${props => props.$isActive ? '#FF7900' : '#d0d7de'};
+  border: 2px solid ${props => props.$isActive ? 'var(--accent-primary)' : 'var(--border-primary)'};
   transition: all 0.3s ease;
-  background: #f8f9fa;
+  background: var(--bg-card);
 
   &:hover {
-    border-color: #FF7900;
+    border-color: var(--accent-primary);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 121, 0, 0.3);
+    box-shadow: var(--shadow-button);
   }
 `;
 
@@ -878,29 +927,21 @@ const ImageCount = styled.div`
   bottom: 5px;
   right: 5px;
   background: rgba(0, 0, 0, 0.7);
-  color: white;
+  color: var(--text-inverse);
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
   font-size: 0.688rem;
   font-weight: 600;
 `;
 
-// Toggle Switch Component
+// Toggle Switch Component - Icon Style
 const ToggleSwitch: React.FC<{ 
   isOn: boolean; 
   onToggle: () => void;
   label?: string;
 }> = ({ isOn, onToggle, label }) => (
   <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-    <ToggleSwitchContainer $isOn={isOn} onClick={onToggle}>
-      <ToggleSwitchInner $isOn={isOn}>
-        <ToggleSwitchKnobContainer $isOn={isOn}>
-          <ToggleSwitchKnob $isOn={isOn}>
-            <ToggleSwitchNeon $isOn={isOn} />
-          </ToggleSwitchKnob>
-        </ToggleSwitchKnobContainer>
-      </ToggleSwitchInner>
-    </ToggleSwitchContainer>
+    <ToggleSwitchContainer $isOn={isOn} onClick={onToggle} title={isOn ? 'Active' : 'Inactive'} />
     {label && <ToggleLabel>{label}</ToggleLabel>}
   </div>
 );
@@ -924,8 +965,8 @@ const WhatsAppIcon = () => (
   <svg viewBox="0 0 48 48" style={{ width: '100%', height: '100%' }}>
     <defs>
       <linearGradient id="whatsappGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#25D366" />
-        <stop offset="100%" stopColor="#128C7E" />
+        <stop offset="0%" style={{ stopColor: 'var(--success)' }} />
+        <stop offset="100%" style={{ stopColor: 'var(--success)' }} />
       </linearGradient>
     </defs>
     <circle cx="24" cy="24" r="20" fill="url(#whatsappGradient)" />
@@ -968,6 +1009,7 @@ const CarDetailsPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const { language } = useLanguage();
   const { currentUser } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   
   const [car, setCar] = useState<CarListing | null>(null);
   const [loading, setLoading] = useState(true);
@@ -1367,10 +1409,10 @@ const CarDetailsPage: React.FC = () => {
     return (
       <LoadingContainer>
         <div style={{ textAlign: 'center', padding: '2rem' }}>
-          <h2 style={{ marginBottom: '1rem', color: '#ef4444' }}>
+          <h2 style={{ marginBottom: '1rem', color: 'var(--error)' }}>
             {language === 'bg' ? 'Автомобилът не е намерен' : 'Car not found'}
           </h2>
-          <p style={{ marginBottom: '1rem', color: '#6b7280' }}>
+          <p style={{ marginBottom: '1rem', color: 'var(--text-tertiary)' }}>
             {language === 'bg' 
               ? `ID: ${carId}` 
               : `ID: ${carId}`}
@@ -1379,8 +1421,8 @@ const CarDetailsPage: React.FC = () => {
             onClick={() => navigate(-1)}
             style={{
               padding: '10px 20px',
-              background: '#1877f2',
-              color: 'white',
+              background: 'var(--accent-primary)',
+              color: 'var(--btn-primary-text)',
               border: 'none',
               borderRadius: '8px',
               cursor: 'pointer',
@@ -1410,6 +1452,12 @@ const CarDetailsPage: React.FC = () => {
 
   return (
     <Container>
+      {/* زر تبديل الثيم المؤقت للاختبار */}
+      <ThemeToggleButton onClick={toggleTheme}>
+        {theme === 'dark' ? '☀️' : '🌙'}
+        {theme === 'dark' ? (language === 'bg' ? 'وضع نهاري' : 'Light Mode') : (language === 'bg' ? 'وضع ليلي' : 'Dark Mode')}
+      </ThemeToggleButton>
+
       <Header>
         <TopBar>
           <BackButton onClick={() => navigate(-1)}>
@@ -1450,7 +1498,7 @@ const CarDetailsPage: React.FC = () => {
             </SellerAvatar>
             <SellerDetails>
               <SellerName>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="#0a0a0a">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
                 </svg>
                 {car.sellerName || (language === 'bg' ? 'Неизвестен' : 'Unknown')}
@@ -1466,9 +1514,9 @@ const CarDetailsPage: React.FC = () => {
 
           <VehicleInfo>
             <VehicleBrand>{car.make}</VehicleBrand>
-            <div style={{ color: '#d0d7de', fontSize: '1.25rem', fontWeight: '300' }}>•</div>
+            <div style={{ color: 'var(--border-primary)', fontSize: '1.25rem', fontWeight: '300' }}>•</div>
             <VehicleModel>{car.model}</VehicleModel>
-            <div style={{ color: '#d0d7de', fontSize: '1.25rem', fontWeight: '300' }}>•</div>
+            <div style={{ color: 'var(--border-primary)', fontSize: '1.25rem', fontWeight: '300' }}>•</div>
             <VehicleModel>{car.year}</VehicleModel>
           </VehicleInfo>
         </InfoBar>
@@ -1547,9 +1595,9 @@ const CarDetailsPage: React.FC = () => {
           {(!car.images || car.images.length === 0) && (
             <div style={{ marginTop: '2rem' }}>
               <ImagePlaceholder>
-                <CarIcon size={60} color="#FF7900" />
+                <CarIcon size={60} color="var(--accent-primary)" />
               </ImagePlaceholder>
-              <p style={{ textAlign: 'center', color: '#6c757d', fontSize: '0.875rem', marginTop: '1rem' }}>
+              <p style={{ textAlign: 'center', color: 'var(--text-tertiary)', fontSize: '0.875rem', marginTop: '1rem' }}>
                 {language === 'bg' ? 'Няма налични снимки' : 'No photos available'}
               </p>
             </div>
@@ -1562,7 +1610,7 @@ const CarDetailsPage: React.FC = () => {
                 <PhotoUploadTitle>
                   {language === 'bg' ? 'Добави снимки' : 'Add Photos'}
                 </PhotoUploadTitle>
-                <span style={{ fontSize: '0.688rem', color: '#6c757d', fontWeight: 500 }}>
+                <span style={{ fontSize: '0.688rem', color: 'var(--text-tertiary)', fontWeight: 500 }}>
                   {car?.images?.length || 0} + {photos.length} / 20
                 </span>
               </div>
@@ -1582,16 +1630,16 @@ const CarDetailsPage: React.FC = () => {
                     <circle cx="32" cy="32" r="5" fill="white" opacity="0.3"/>
                     <defs>
                       <linearGradient id="camera-gradient-compact" x1="2" y1="2" x2="62" y2="62" gradientUnits="userSpaceOnUse">
-                        <stop stopColor="#FF7900"/>
-                        <stop offset="1" stopColor="#FF9500"/>
+                        <stop style={{ stopColor: 'var(--accent-primary)' }}/>
+                        <stop offset="1" style={{ stopColor: 'var(--accent-light)' }}/>
                       </linearGradient>
                       <linearGradient id="camera-body-compact" x1="12" y1="14" x2="52" y2="48" gradientUnits="userSpaceOnUse">
-                        <stop stopColor="#FF7900"/>
-                        <stop offset="1" stopColor="#FF9500"/>
+                        <stop style={{ stopColor: 'var(--accent-primary)' }}/>
+                        <stop offset="1" style={{ stopColor: 'var(--accent-light)' }}/>
                       </linearGradient>
                       <linearGradient id="lens-gradient-compact" x1="24" y1="24" x2="40" y2="40" gradientUnits="userSpaceOnUse">
-                        <stop stopColor="#2c3e50"/>
-                        <stop offset="1" stopColor="#34495e"/>
+                        <stop style={{ stopColor: 'var(--text-primary)' }}/>
+                        <stop offset="1" style={{ stopColor: 'var(--text-secondary)' }}/>
                       </linearGradient>
                     </defs>
                   </svg>
@@ -1961,7 +2009,7 @@ const CarDetailsPage: React.FC = () => {
       {isEditMode && (
         <PriceSection>
           <div style={{ marginBottom: '0.5rem', textAlign: 'center' }}>
-            <h3 style={{ color: 'white', margin: 0, fontSize: '1.125rem', fontWeight: '700' }}>
+            <h3 style={{ color: 'var(--btn-primary-text)', margin: 0, fontSize: '1.125rem', fontWeight: '700' }}>
               {language === 'bg' ? 'Цена (EUR)*' : 'Price (EUR)*'}
             </h3>
           </div>
@@ -1977,11 +2025,11 @@ const CarDetailsPage: React.FC = () => {
                 marginBottom: '0.5rem',
                 background: 'rgba(255, 255, 255, 0.2)',
                 border: '2px solid rgba(255, 255, 255, 0.3)',
-                color: 'white'
+                color: 'var(--btn-primary-text)'
               }}
             />
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem' }}>
-              <label style={{ color: 'white', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <label style={{ color: 'var(--btn-primary-text)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <input
                   type="checkbox"
                   checked={editedCar.negotiable || false}
@@ -2048,14 +2096,14 @@ const CarDetailsPage: React.FC = () => {
             { key: 'collisionWarning', label: 'Collision Warning' }
           ].map(option => (
             <div key={option.key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{ fontSize: '0.813rem', color: '#495057', fontWeight: '500' }}>{option.label}</span>
+              <span style={{ fontSize: '0.813rem', color: 'var(--text-secondary)', fontWeight: '500' }}>{option.label}</span>
               {isEditMode ? (
                 <ToggleSwitch
                   isOn={Boolean(editedCar[option.key as keyof CarListing])}
                   onToggle={() => handleInputChange(option.key as keyof CarListing, !editedCar[option.key as keyof CarListing])}
                 />
               ) : (
-                <span style={{ fontSize: '0.75rem', color: '#6c757d' }}>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>
                   {car[option.key as keyof CarListing] ? '✓' : '✗'}
                 </span>
               )}
@@ -2080,14 +2128,14 @@ const CarDetailsPage: React.FC = () => {
             { key: 'parkAssist', label: 'Park Assist' }
           ].map(option => (
             <div key={option.key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{ fontSize: '0.813rem', color: '#495057', fontWeight: '500' }}>{option.label}</span>
+              <span style={{ fontSize: '0.813rem', color: 'var(--text-secondary)', fontWeight: '500' }}>{option.label}</span>
               {isEditMode ? (
                 <ToggleSwitch
                   isOn={Boolean(editedCar[option.key as keyof CarListing])}
                   onToggle={() => handleInputChange(option.key as keyof CarListing, !editedCar[option.key as keyof CarListing])}
                 />
               ) : (
-                <span style={{ fontSize: '0.75rem', color: '#6c757d' }}>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>
                   {car[option.key as keyof CarListing] ? '✓' : '✗'}
                 </span>
               )}
@@ -2112,14 +2160,14 @@ const CarDetailsPage: React.FC = () => {
             { key: 'usbPorts', label: 'USB Ports' }
           ].map(option => (
             <div key={option.key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{ fontSize: '0.813rem', color: '#495057', fontWeight: '500' }}>{option.label}</span>
+              <span style={{ fontSize: '0.813rem', color: 'var(--text-secondary)', fontWeight: '500' }}>{option.label}</span>
               {isEditMode ? (
                 <ToggleSwitch
                   isOn={Boolean(editedCar[option.key as keyof CarListing])}
                   onToggle={() => handleInputChange(option.key as keyof CarListing, !editedCar[option.key as keyof CarListing])}
                 />
               ) : (
-                <span style={{ fontSize: '0.75rem', color: '#6c757d' }}>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>
                   {car[option.key as keyof CarListing] ? '✓' : '✗'}
                 </span>
               )}
@@ -2144,14 +2192,14 @@ const CarDetailsPage: React.FC = () => {
             { key: 'towHitch', label: 'Tow Hitch' }
           ].map(option => (
             <div key={option.key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{ fontSize: '0.813rem', color: '#495057', fontWeight: '500' }}>{option.label}</span>
+              <span style={{ fontSize: '0.813rem', color: 'var(--text-secondary)', fontWeight: '500' }}>{option.label}</span>
               {isEditMode ? (
                 <ToggleSwitch
                   isOn={Boolean(editedCar[option.key as keyof CarListing])}
                   onToggle={() => handleInputChange(option.key as keyof CarListing, !editedCar[option.key as keyof CarListing])}
                 />
               ) : (
-                <span style={{ fontSize: '0.75rem', color: '#6c757d' }}>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>
                   {car[option.key as keyof CarListing] ? '✓' : '✗'}
                 </span>
               )}

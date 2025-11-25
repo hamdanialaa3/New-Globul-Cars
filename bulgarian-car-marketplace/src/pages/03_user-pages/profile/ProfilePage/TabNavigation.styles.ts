@@ -19,6 +19,12 @@ export const TabNavigation = styled.div<{ $themeColor?: string }>`
   min-height: 70px;
   flex-wrap: nowrap;
   
+  /* ✅ SIMPLIFIED: استخدام CSS Variables من unified-theme.css */
+  background: var(--bg-card);
+  border: 2px solid var(--border-primary);
+  box-shadow: var(--shadow-card);
+  transition: all 0.3s ease;
+  
   /* TABLET & MOBILE: 2 rows × 3 columns layout (LinkedIn inspired) */
   @media (max-width: 1024px) {
     flex-wrap: wrap;
@@ -40,50 +46,8 @@ export const TabNavigation = styled.div<{ $themeColor?: string }>`
     z-index: 9;
     
     /* Better shadow for elevation */
-    box-shadow:
-      0 2px 0 rgba(255, 255, 255, 0.8) inset,
-      0 -1px 0 rgba(0, 0, 0, 0.05) inset,
-      0 4px 12px rgba(0, 0, 0, 0.08),  /* More pronounced */
-      0 2px 8px rgba(0, 0, 0, 0.04);
-    
-    /* Solid background to prevent content showing through */
-    background: linear-gradient(135deg,
-      rgba(245, 247, 250, 1) 0%,
-      rgba(233, 237, 242, 1) 50%,
-      rgba(245, 247, 250, 1) 100%
-    );
+    box-shadow: var(--shadow-md);
   }
-  
-  /* 🎨 Premium Metallic Aluminum Base */
-  background: linear-gradient(135deg,
-    rgba(245, 247, 250, 0.95) 0%,
-    rgba(233, 237, 242, 0.9) 50%,
-    rgba(245, 247, 250, 0.95) 100%
-  );
-  backdrop-filter: blur(20px) saturate(160%);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
-  
-  /* 🎨 DYNAMIC: Metallic Border with Theme Color Gradient */
-  border: 2px solid transparent;
-  background-image: 
-    linear-gradient(rgba(245, 247, 250, 0.95), rgba(233, 237, 242, 0.9)),
-    linear-gradient(135deg,
-      rgba(192, 192, 192, 0.4) 0%,
-      ${props => props.$themeColor ? `${props.$themeColor}80` : 'rgba(255, 143, 16, 0.5)'} 25%,
-      ${props => props.$themeColor ? `${props.$themeColor}CC` : 'rgba(255, 215, 0, 0.8)'} 50%,
-      ${props => props.$themeColor ? `${props.$themeColor}80` : 'rgba(255, 143, 16, 0.5)'} 75%,
-      rgba(192, 192, 192, 0.4) 100%
-    );
-  background-origin: border-box;
-  background-clip: padding-box, border-box;
-  
-  /* 🎨 DYNAMIC: Premium Layered Shadows with Theme Color */
-  box-shadow:
-    0 2px 0 rgba(255, 255, 255, 0.8) inset,
-    0 -1px 0 rgba(0, 0, 0, 0.05) inset,
-    ${props => props.$themeColor ? `0 8px 32px ${props.$themeColor}14` : '0 8px 32px rgba(255, 143, 16, 0.08)'},
-    0 2px 8px rgba(0, 0, 0, 0.04),
-    0 0 0 1px rgba(0, 0, 0, 0.02);
   
   overflow-x: auto;
   overflow-y: hidden;
@@ -92,7 +56,7 @@ export const TabNavigation = styled.div<{ $themeColor?: string }>`
   
   /* Hide scrollbar but keep functionality */
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 143, 16, 0.3) transparent;
+  scrollbar-color: var(--accent-primary) transparent;
   
   &::-webkit-scrollbar {
     height: 4px;
@@ -103,10 +67,12 @@ export const TabNavigation = styled.div<{ $themeColor?: string }>`
   }
   
   &::-webkit-scrollbar-thumb {
-    background: ${props => props.$themeColor 
-      ? `linear-gradient(90deg, ${props.$themeColor} 0%, ${props.$themeColor}CC 100%)` 
-      : 'linear-gradient(90deg, #FF8F10 0%, #FFDF00 100%)'};
+    background: var(--accent-primary);
     border-radius: 4px;
+    
+    &:hover {
+      background: var(--accent-secondary);
+    }
   }
   
   /* 📱 في الموبايل: إخفاء scrollbar (لأننا نستخدم صفين) */
@@ -115,7 +81,7 @@ export const TabNavigation = styled.div<{ $themeColor?: string }>`
     overflow-y: visible;
   }
 
-  /* 🎨 DYNAMIC: Animated Accent Stripe at Bottom with Theme Color */
+  /* 🎨 Simplified: Accent Stripe at Bottom */
   &::after {
     content: '';
     position: absolute;
@@ -124,25 +90,11 @@ export const TabNavigation = styled.div<{ $themeColor?: string }>`
     bottom: 8px;
     height: 3px;
     border-radius: 3px;
-    background: ${props => {
-      const color = props.$themeColor || '#FFD700';
-      return `linear-gradient(90deg, 
-        ${color}00 0%, 
-        ${color}80 10%,
-        ${color}E6 30%,
-        ${color} 50%, 
-        ${color}E6 70%,
-        ${color}80 90%,
-        ${color}00 100%
-      )`;
-    }};
+    background: var(--accent-primary);
     pointer-events: none;
     z-index: 1;
-    /* ⚡ OPTIMIZED: Static glow instead of pulse animation */
-    opacity: 0.8;
-    box-shadow: ${props => props.$themeColor 
-      ? `0 0 12px ${props.$themeColor}B3` 
-      : '0 0 12px rgba(255, 215, 0, 0.7)'};
+    opacity: 0.6;
+    box-shadow: var(--shadow-sm);
   }
   
   @media (max-width: 768px) {

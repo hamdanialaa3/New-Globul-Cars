@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Zap, ArrowRight, CheckCircle } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const Container = styled.div`
   padding: 40px 20px;
@@ -67,20 +68,21 @@ const Button = styled.button`
 `;
 
 const SmartSellStrip: React.FC = () => {
+    const { t } = useLanguage();
+    
     return (
         <Container>
             <Content>
                 <Title>
                     <Zap size={28} fill="white" />
-                    Продайте автомобила си бързо {/* Sell your car fast */}
+                    {t('home.smartSell.title')}
                 </Title>
                 <Description>
-                    Използвайте нашия интелигентен асистент за оценка и публикуване на обява само за 2 минути.
-                    {/* Use our intelligent assistant to value and post an ad in just 2 minutes. */}
+                    {t('home.smartSell.description')}
                 </Description>
             </Content>
             <Button>
-                Започни продажба {/* Start Selling */}
+                {t('home.smartSell.startSelling')}
                 <ArrowRight size={20} />
             </Button>
         </Container>

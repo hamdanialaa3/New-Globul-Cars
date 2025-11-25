@@ -76,14 +76,18 @@ export const ProfilePageContainer = styled.div<{ $isBusinessMode?: boolean }>`
   color: var(--text-primary);
   animation: ${fadeIn} 0.5s ease-out;
   max-width: 1200px;
+  width: 100%;
   margin: 0 auto;
   transition: background-color 0.3s ease, color 0.3s ease;
+  box-sizing: border-box;
+  overflow-x: hidden;
   
   /* MOBILE - Clean background (Instagram/Facebook) */
   @media (max-width: 768px) {
     padding-top: 0;
     padding-bottom: 80px;  /* Space for bottom nav */
     background: var(--bg-primary);
+    max-width: 100%;
   }
   
   @media (max-width: 480px) {
@@ -242,10 +246,10 @@ export const DetailItem = styled.div`
   align-items: center;
   gap: 6px;
   font-size: 0.9rem;
-  color: #6c757d;
+  color: var(--text-tertiary);
   
   svg {
-    color: #FF7900;
+    color: var(--accent-primary);
     flex-shrink: 0;
   }
   
@@ -260,7 +264,7 @@ export const VerifiedBadge = styled.span`
   justify-content: center;
   width: 24px;
   height: 24px;
-  background: linear-gradient(135deg, #1d9bf0, #0c8ce9);
+  background: var(--accent-primary);
   color: white;
   border-radius: 50%;
   font-size: 14px;
@@ -354,8 +358,8 @@ export const StatsContainer = styled.div`
     gap: 0;
     margin: 16px 0 0;
     padding: 16px 0;
-    border-top: 1px solid #e4e6eb;
-    border-bottom: 1px solid #e4e6eb;
+    border-top: 1px solid var(--border-primary);
+    border-bottom: 1px solid var(--border-primary);
     background: rgba(0, 0, 0, 0.01);
   }
   
@@ -530,8 +534,8 @@ export const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary' |
           
           /* MOBILE - Filled background (easier to tap) */
           @media (max-width: 768px) {
-            background-color: #f0f2f5;  /* Instagram gray */
-            border: 1px solid #dbdbdb;
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-primary);
             color: ${theme.colors.text.primary};
             padding: 10px 16px;
             font-size: 0.875rem;
@@ -541,7 +545,7 @@ export const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary' |
             
             &:active {
               transform: scale(0.98);
-              background-color: #e4e6eb;
+              background-color: var(--bg-hover);
             }
           }
         `;
@@ -587,7 +591,7 @@ export const SectionTitle = styled.h2`
     font-weight: 700;
     margin-bottom: 12px;
     padding-bottom: 8px;
-    border-bottom: 2px solid #FF8F10;
+    border-bottom: 2px solid var(--accent-primary);
     width: 100%;  /* Full-width underline */
   }
   
@@ -641,8 +645,8 @@ export const ContentSection = styled.section<{ $themeColor?: string; $isBusiness
     border-radius: 0;  /* Full-width cards */
     margin-bottom: 8px;  /* Tight spacing between cards */
     border: none;
-    border-top: 1px solid #e4e6eb;
-    border-bottom: 1px solid #e4e6eb;
+    border-top: 1px solid var(--border-primary);
+    border-bottom: 1px solid var(--border-primary);
     box-shadow: none;
     
     /* CRITICAL FIX: Space for sticky TabNavigation */
@@ -692,9 +696,8 @@ export const SectionHeader = styled.div`
   h2 {
     margin: 0;
     font-size: 1.5rem;
-    color: #000000;
+    color: var(--text-primary);
     text-shadow: 0 0 10px rgba(76, 175, 80, 0.6), 0 0 20px rgba(76, 175, 80, 0.4);
-    color: ${({ theme }) => theme.colors.text.primary};
   }
 
   .edit-btn {
@@ -734,7 +737,7 @@ export const SectionHeader = styled.div`
   @media (max-width: 768px) {
     margin-bottom: 12px;
     padding-bottom: 12px;
-    border-bottom: 1px solid #e4e6eb;
+    border-bottom: 1px solid var(--border-primary);
     
     h2 {
       font-size: 1.125rem;  /* 18px */
@@ -823,19 +826,19 @@ export const FormGroup = styled.div`
       font-size: 16px;  /* Prevent iOS zoom */
       min-height: 48px;  /* Touch target */
       border-radius: 8px;
-      border: 1px solid #dbdbdb;
+      border: 1px solid var(--border-primary);
       background: white;
       
       /* Better touch feedback */
       -webkit-tap-highlight-color: transparent;
       
       &:focus {
-        border-color: #FF8F10;
-        box-shadow: 0 0 0 2px rgba(255, 143, 16, 0.2);
+        border-color: var(--accent-primary);
+        box-shadow: 0 0 0 2px var(--accent-light);
       }
       
       &::placeholder {
-        color: #8e8e8e;
+        color: var(--text-muted);
         font-size: 15px;
       }
     }
@@ -881,7 +884,7 @@ export const FormActions = styled.div`
     margin: 0 -16px;  /* Full-width */
     padding: 12px 16px;
     background: white;
-    border-top: 1px solid #e4e6eb;
+    border-top: 1px solid var(--border-primary);
     box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.06);
     z-index: 8;
     justify-content: stretch;
@@ -935,14 +938,21 @@ export const NeumorphicFieldValue = styled.span`
 `;
 
 export const PageContainer = styled.div`
-  max-width: 1600px;
+  max-width: 1200px;
+  width: 100%;
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 0 20px;
+  box-sizing: border-box;
+  overflow-x: hidden;
   
   /* MOBILE - No horizontal padding (full-width) */
   @media (max-width: 768px) {
-    padding: 0;
+    padding: 0 12px;
     max-width: 100%;
+  }
+  
+  @media (max-width: 480px) {
+    padding: 0 8px;
   }
 `;
 
@@ -1092,7 +1102,7 @@ export const CarPrice = styled.p`
     font-size: 0.9375rem;  /* 15px */
     font-weight: 700;
     margin: 4px 0 0;
-    color: #FF8F10;
+    color: var(--accent-primary);
   }
   
   @media (max-width: 480px) {

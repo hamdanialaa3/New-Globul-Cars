@@ -79,6 +79,19 @@ export const translations = {
         benefit3: 'AI оценка на оферти',
         cta: 'Регистрация',
         altCta: 'Вход'
+      },
+      aiAnalytics: {
+        title: 'AI Пазарен Анализ',
+        subtitle: 'Вземете информирани решения с нашите усъвършенствани инструменти за анализ. Следете ценовите тенденции и пазарното търсене в реално време.',
+        priceTrends: 'Ценови тенденции',
+        marketShare: 'Пазарен дял',
+        forecasts: 'Прогнози',
+        viewAnalytics: 'Разгледай анализите'
+      },
+      smartSell: {
+        title: 'Продайте автомобила си бързо',
+        description: 'Използвайте нашия интелигентен асистент за оценка и публикуване на обява само за 2 минути.',
+        startSelling: 'Започни продажба'
       }
     },
     mapPage: {
@@ -1658,6 +1671,19 @@ export const translations = {
         benefit3: 'AI offer valuation',
         cta: 'Sign Up',
         altCta: 'Sign In'
+      },
+      aiAnalytics: {
+        title: 'AI Market Analysis',
+        subtitle: 'Make informed decisions with our advanced analysis tools. Track price trends and market demand in real-time.',
+        priceTrends: 'Price Trends',
+        marketShare: 'Market Share',
+        forecasts: 'Forecasts',
+        viewAnalytics: 'View Analytics'
+      },
+      smartSell: {
+        title: 'Sell Your Car Fast',
+        description: 'Use our intelligent assistant to value and post an ad in just 2 minutes.',
+        startSelling: 'Start Selling'
       }
     },
     mapPage: {

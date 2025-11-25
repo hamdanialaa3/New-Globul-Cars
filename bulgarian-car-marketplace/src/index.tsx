@@ -26,6 +26,8 @@ root.render(
 );
 
 // Register Service Worker with Workbox (production only)
+// TEMPORARILY DISABLED FOR CACHE CLEARING
+/*
 registerServiceWorker({
   onSuccess: () => {
     console.log('✅ Content cached for offline use');
@@ -57,6 +59,7 @@ registerServiceWorker({
     document.body.appendChild(updateButton);
   },
 });
+*/
 
 // Install prompt
 let deferredPrompt: any;

@@ -38,24 +38,39 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   // 2️⃣ تطبيق الثيم على الـ HTML root
   useEffect(() => {
     const root = document.documentElement;
+    const body = document.body;
     
     // إزالة الثيم القديم
     root.classList.remove('light-theme', 'dark-theme');
+    body.classList.remove('light-theme', 'dark-theme');
     
     // إضافة الثيم الجديد
     root.classList.add(`${theme}-theme`);
+    body.classList.add(`${theme}-theme`);
     
     // حفظ في localStorage
     localStorage.setItem('theme', theme);
     
     // تحديث الـ data attribute للاستخدام في CSS
     root.setAttribute('data-theme', theme);
+    body.setAttribute('data-theme', theme);
+    
+    // Force apply theme colors immediately
+    root.style.setProperty('--current-theme', theme);
     
     // تحديث meta theme-color للموبايل
     const metaThemeColor = document.querySelector('meta[name="theme-color"]');
     if (metaThemeColor) {
-      metaThemeColor.setAttribute('content', theme === 'dark' ? '#1a1d2e' : '#f5f5f5');
+      metaThemeColor.setAttribute('content', theme === 'dark' ? '#0F1419' : '#F8F9FA');
     }
+    
+    // Debug log (remove in production)
+    console.log(`🌙 Theme applied: ${theme}`, {
+      'data-theme': root.getAttribute('data-theme'),
+      'classList': root.classList.toString(),
+      'bg-primary': getComputedStyle(root).getPropertyValue('--bg-primary'),
+      'text-primary': getComputedStyle(root).getPropertyValue('--text-primary')
+    });
   }, [theme]);
 
   // 3️⃣ الاستماع لتغييرات تفضيل النظام

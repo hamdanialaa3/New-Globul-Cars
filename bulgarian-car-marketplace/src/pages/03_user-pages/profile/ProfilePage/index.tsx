@@ -285,7 +285,7 @@ const IconWrapper = styled.span<{ $color?: string; $size?: number }>`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: ${props => props.$color || '#FF7900'};
+  color: ${props => props.$color || 'var(--accent-primary)'};
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
   transition: all 0.2s ease;
   
@@ -1211,15 +1211,15 @@ const ProfilePage: React.FC = () => {
                   <div style={{
                     textAlign: 'center',
                     padding: '80px 20px',
-                  background: 'linear-gradient(135deg, rgba(220, 53, 69, 0.15) 0%, rgba(200, 35, 51, 0.10) 100%)',
+                  background: 'var(--bg-card)',
                   borderRadius: '16px',
-                  border: '2px solid rgba(220, 53, 69, 0.3)'
+                  border: '2px solid var(--error)'
                 }}>
-                  <Car size={64} color="#dc3545" style={{ marginBottom: '20px' }} />
-                    <h3 style={{ fontSize: '1.5rem', color: '#dc2626', marginBottom: '12px' }}>
+                  <Car size={64} color="var(--error)" style={{ marginBottom: '20px' }} />
+                    <h3 style={{ fontSize: '1.5rem', color: 'var(--error)', marginBottom: '12px' }}>
                       {language === 'bg' ? '🔒 Достъп отказан' : '🔒 Access Denied'}
                     </h3>
-                    <p style={{ fontSize: '1rem', color: '#6c757d' }}>
+                    <p style={{ fontSize: '1rem', color: 'var(--text-tertiary)' }}>
                       {language === 'bg' 
                         ? 'Не можете да видите обявите на друг потребител' 
                         : 'You cannot view another user\'s listings'}
@@ -1238,15 +1238,15 @@ const ProfilePage: React.FC = () => {
                   <div style={{
                     textAlign: 'center',
                     padding: '80px 20px',
-                    background: 'linear-gradient(135deg, rgba(220, 53, 69, 0.15) 0%, rgba(200, 35, 51, 0.10) 100%)',
+                    background: 'var(--bg-card)',
                     borderRadius: '16px',
-                    border: '2px solid rgba(220, 53, 69, 0.3)'
+                    border: '2px solid var(--error)'
                   }}>
-                    <BarChart3 size={64} color="#dc3545" style={{ marginBottom: '20px' }} />
-                    <h3 style={{ fontSize: '1.5rem', color: '#dc2626', marginBottom: '12px' }}>
+                    <BarChart3 size={64} color="var(--error)" style={{ marginBottom: '20px' }} />
+                    <h3 style={{ fontSize: '1.5rem', color: 'var(--error)', marginBottom: '12px' }}>
                       {language === 'bg' ? '🔒 Достъп отказан' : '🔒 Access Denied'}
                     </h3>
-                    <p style={{ fontSize: '1rem', color: '#6c757d' }}>
+                    <p style={{ fontSize: '1rem', color: 'var(--text-tertiary)' }}>
                       {language === 'bg' 
                         ? 'Не можете да видите рекламите на друг потребител' 
                         : 'You cannot view another user\'s campaigns'}
@@ -1390,7 +1390,7 @@ const ProfilePage: React.FC = () => {
                       <S.FormGrid>
                         <S.FormGroup>
                                   <label style={{ color: theme.primary, fontWeight: 'bold' }}>
-                            {language === 'bg' ? 'Име' : 'First Name'} <span style={{ color: '#f44336' }}>*</span>
+                            {language === 'bg' ? 'Име' : 'First Name'} <span style={{ color: 'var(--error)' }}>*</span>
                           </label>
                           <input
                             type="text"
@@ -1407,7 +1407,7 @@ const ProfilePage: React.FC = () => {
 
                         <S.FormGroup>
                                   <label style={{ color: theme.primary, fontWeight: 'bold' }}>
-                            {language === 'bg' ? 'Фамилия' : 'Last Name'} <span style={{ color: '#f44336' }}>*</span>
+                            {language === 'bg' ? 'Фамилия' : 'Last Name'} <span style={{ color: 'var(--error)' }}>*</span>
                           </label>
                           <input
                             type="text"
@@ -1425,7 +1425,7 @@ const ProfilePage: React.FC = () => {
                     ) : (
                       <S.FormGroup>
                                 <label style={{ color: theme.primary, fontWeight: 'bold' }}>
-                          {language === 'bg' ? 'Име на фирмата' : 'Business Name'} <span style={{ color: '#f44336' }}>*</span>
+                          {language === 'bg' ? 'Име на фирмата' : 'Business Name'} <span style={{ color: 'var(--error)' }}>*</span>
                         </label>
                         <input
                           type="text"
@@ -1434,7 +1434,7 @@ const ProfilePage: React.FC = () => {
                           onChange={handleInputChange}
                           placeholder={language === 'bg' ? 'Автомобили България ЕООД' : 'Cars Bulgaria Ltd'}
                           required
-                          style={{ borderColor: '#FF7900', borderWidth: '2px' }}
+                          style={{ borderColor: 'var(--accent-primary)', borderWidth: '2px' }}
                         />
                       </S.FormGroup>
                     )}
@@ -1449,13 +1449,13 @@ const ProfilePage: React.FC = () => {
                       </h4>
                       <S.FormGrid>
                         <S.FormGroup>
-                          <label>{language === 'bg' ? 'Тип на бизнеса' : 'Business Type'} <span style={{ color: '#f44336' }}>*</span></label>
+                          <label>{language === 'bg' ? 'Тип на бизнеса' : 'Business Type'} <span style={{ color: 'var(--error)' }}>*</span></label>
                           <select 
                             name="businessType" 
                             value={formData.businessType} 
                             onChange={handleInputChange}
                             required
-                            style={{ borderColor: '#FF7900' }}
+                            style={{ borderColor: 'var(--accent-primary)' }}
                           >
                                     <option value="dealership">{language === 'bg' ? 'Автосалон / Дилър' : 'Car Dealership'}</option>
                                     <option value="trader">{language === 'bg' ? 'Търговец' : 'Trader'}</option>
@@ -1664,7 +1664,7 @@ const ProfilePage: React.FC = () => {
                           onChange={handleInputChange}
                           placeholder="example@email.com"
                           disabled
-                          style={{ background: '#f0f0f0', cursor: 'not-allowed' }}
+                          style={{ background: 'var(--bg-hover)', cursor: 'not-allowed' }}
                         />
                       </S.FormGroup>
                     </S.FormGrid>

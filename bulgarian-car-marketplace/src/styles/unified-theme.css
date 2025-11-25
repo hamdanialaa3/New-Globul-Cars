@@ -1,0 +1,515 @@
+/* ═══════════════════════════════════════════════════════════════════
+   🚗 UNIFIED CAR MARKETPLACE THEME SYSTEM
+   نظام الثيم الموحد لسوق السيارات
+   
+   الملف الوحيد المتحكم بجميع ألوان وتفاصيل الموقع
+   Inspired by: BMW M Sport, Mercedes-AMG, Audi RS
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════════════════
+   🌅 LIGHT MODE - الوضع النهاري
+   ═══════════════════════════════════════════════════════════════════ */
+:root,
+html[data-theme="light"],
+.light-theme {
+  /* ─────────────────────────────────────────
+     الخلفيات - Backgrounds
+     ───────────────────────────────────────── */
+  --bg-primary: #F8F9FA;              /* صفحة رئيسية - رمادي فاتح جداً */
+  --bg-secondary: #FFFFFF;            /* بطاقات وأقسام - أبيض نقي */
+  --bg-card: #FFFFFF;                 /* بطاقات السيارات - أبيض */
+  --bg-hover: #F1F3F5;                /* تحويم - رمادي فاتح */
+  --bg-accent: #FFF5F0;               /* خلفية مميزة - برتقالي فاتح جداً */
+  --bg-header: #1A1D2E;               /* هيدر داكن ثابت */
+  --bg-footer: #2D3142;               /* فوتر رمادي داكن */
+  
+  /* ─────────────────────────────────────────
+     النصوص - Text Colors
+     ───────────────────────────────────────── */
+  --text-primary: #1A1D2E;            /* نص رئيسي - أزرق داكن جداً */
+  --text-secondary: #4A5568;          /* نص ثانوي - رمادي */
+  --text-tertiary: #718096;           /* نص خفيف - رمادي فاتح */
+  --text-inverse: #FFFFFF;            /* نص عكسي - أبيض */
+  --text-muted: #A0AEC0;              /* نص خافت */
+  --text-on-header: #FFFFFF;          /* نص على الهيدر */
+  --text-link: #FF6B35;               /* روابط - برتقالي */
+  
+  /* ─────────────────────────────────────────
+     الألوان الرئيسية - Primary Accents
+     ───────────────────────────────────────── */
+  --accent-primary: #FF6B35;          /* برتقالي دافئ - للأزرار والتميز */
+  --accent-secondary: #FF8C61;        /* برتقالي فاتح - hover */
+  --accent-dark: #E85A28;             /* برتقالي داكن - active */
+  --accent-light: #FFB399;            /* برتقالي شاحب */
+  
+  --blue-primary: #2C5F8D;            /* أزرق سيارات - للروابط */
+  --blue-light: #4A90E2;              /* أزرق فاتح */
+  --blue-dark: #1A3A5C;               /* أزرق داكن */
+  
+  /* ─────────────────────────────────────────
+     الحدود والفواصل - Borders
+     ───────────────────────────────────────── */
+  --border-primary: #E2E8F0;          /* حدود رئيسية */
+  --border-secondary: #CBD5E0;        /* حدود ثانوية */
+  --border-accent: #FF6B35;           /* حدود مميزة */
+  --border-light: #F7FAFC;            /* حدود خفيفة */
+  
+  /* ─────────────────────────────────────────
+     الأزرار - Buttons
+     ───────────────────────────────────────── */
+  --btn-primary-bg: #FF6B35;
+  --btn-primary-text: #FFFFFF;
+  --btn-primary-hover: #FF8C61;
+  --btn-primary-active: #E85A28;
+  
+  --btn-secondary-bg: #FFFFFF;
+  --btn-secondary-text: #1A1D2E;
+  --btn-secondary-border: #E2E8F0;
+  --btn-secondary-hover: #F8F9FA;
+  
+  --btn-outline-bg: transparent;
+  --btn-outline-text: #FF6B35;
+  --btn-outline-border: #FF6B35;
+  --btn-outline-hover-bg: #FFF5F0;
+  
+  /* ─────────────────────────────────────────
+     الظلال - Shadows
+     ───────────────────────────────────────── */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.12);
+  --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.15);
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-button: 0 2px 6px rgba(255, 107, 53, 0.25);
+  
+  /* ─────────────────────────────────────────
+     حالات - Status Colors
+     ───────────────────────────────────────── */
+  --success: #10B981;
+  --success-light: #D1FAE5;
+  --warning: #F59E0B;
+  --warning-light: #FEF3C7;
+  --error: #EF4444;
+  --error-light: #FEE2E2;
+  --info: #3B82F6;
+  --info-light: #DBEAFE;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   🌙 DARK MODE - الوضع الليلي
+   Luxury Dark Theme - BMW M / Mercedes-AMG Inspired
+   ═══════════════════════════════════════════════════════════════════ */
+html[data-theme="dark"],
+.dark-theme {
+  /* ─────────────────────────────────────────
+     الخلفيات - Backgrounds
+     ───────────────────────────────────────── */
+  --bg-primary: #0F1419;              /* خلفية رئيسية - أسود مزرق عميق */
+  --bg-secondary: #1A1F2E;            /* خلفية ثانوية - أزرق داكن */
+  --bg-card: #1E2432;                 /* بطاقات - أزرق رمادي */
+  --bg-hover: #252B3A;                /* تحويم - أزرق أفتح قليلاً */
+  --bg-accent: #2A1810;               /* خلفية مميزة - برتقالي داكن جداً */
+  --bg-header: #0A0D14;               /* هيدر أسود نقي */
+  --bg-footer: #13161F;               /* فوتر داكن */
+  
+  /* ─────────────────────────────────────────
+     النصوص - Text Colors
+     ───────────────────────────────────────── */
+  --text-primary: #F8FAFC;            /* نص رئيسي - أبيض ناصع */
+  --text-secondary: #CBD5E1;          /* نص ثانوي - رمادي فاتح */
+  --text-tertiary: #94A3B8;           /* نص خفيف - رمادي */
+  --text-inverse: #0F1419;            /* نص عكسي - داكن */
+  --text-muted: #64748B;              /* نص خافت */
+  --text-on-header: #FFFFFF;          /* نص على الهيدر */
+  --text-link: #FF9066;               /* روابط - برتقالي فاتح */
+  
+  /* ─────────────────────────────────────────
+     الألوان الرئيسية - Primary Accents
+     ───────────────────────────────────────── */
+  --accent-primary: #FF8C61;          /* برتقالي محروق - مميز في الداكن */
+  --accent-secondary: #FFA885;        /* برتقالي فاتح */
+  --accent-dark: #E8643D;             /* برتقالي داكن */
+  --accent-light: #FFCBB3;            /* برتقالي شاحب */
+  
+  --blue-primary: #5B9FD8;            /* أزرق سيارات فاتح */
+  --blue-light: #7BB5E8;              /* أزرق فاتح جداً */
+  --blue-dark: #3A7AB8;               /* أزرق داكن */
+  
+  /* ─────────────────────────────────────────
+     الحدود والفواصل - Borders
+     ───────────────────────────────────────── */
+  --border-primary: #2D3748;          /* حدود رئيسية */
+  --border-secondary: #374151;        /* حدود ثانوية */
+  --border-accent: #FF8C61;           /* حدود مميزة */
+  --border-light: #1F2937;            /* حدود خفيفة */
+  
+  /* ─────────────────────────────────────────
+     الأزرار - Buttons
+     ───────────────────────────────────────── */
+  --btn-primary-bg: #FF8C61;
+  --btn-primary-text: #0F1419;
+  --btn-primary-hover: #FFA885;
+  --btn-primary-active: #E8643D;
+  
+  --btn-secondary-bg: #1E2432;
+  --btn-secondary-text: #F8FAFC;
+  --btn-secondary-border: #2D3748;
+  --btn-secondary-hover: #252B3A;
+  
+  --btn-outline-bg: transparent;
+  --btn-outline-text: #FF8C61;
+  --btn-outline-border: #FF8C61;
+  --btn-outline-hover-bg: #2A1810;
+  
+  /* ─────────────────────────────────────────
+     الظلال - Shadows
+     ───────────────────────────────────────── */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.7);
+  --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.8);
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-button: 0 2px 6px rgba(255, 140, 97, 0.35);
+  
+  /* ─────────────────────────────────────────
+     حالات - Status Colors
+     ───────────────────────────────────────── */
+  --success: #34D399;
+  --success-light: #064E3B;
+  --warning: #FBBF24;
+  --warning-light: #78350F;
+  --error: #F87171;
+  --error-light: #7F1D1D;
+  --info: #60A5FA;
+  --info-light: #1E3A8A;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   🎨 GLOBAL ELEMENT STYLING
+   تطبيق الألوان على جميع العناصر
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ─── HTML & Body - Force Theme Application ─── */
+html {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+html[data-theme="dark"] {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+html[data-theme="light"] {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+body {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+#root {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+  min-height: 100vh;
+}
+
+/* ─── Headers & Sections ─── */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-primary);
+  transition: color 0.3s ease;
+}
+
+p, span, div {
+  color: var(--text-primary);
+}
+
+/* ─── Links ─── */
+a {
+  color: var(--text-link);
+  transition: color 0.2s ease;
+}
+a:hover {
+  color: var(--accent-secondary);
+  text-decoration: none;
+}
+
+/* ─── Cards & Containers ─── */
+.card,
+.container,
+.paper,
+section,
+[class*="Card"],
+[class*="Container"] {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+/* ─── Buttons - Primary ─── */
+button,
+.btn,
+[role="button"],
+input[type="button"],
+input[type="submit"] {
+  background-color: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  border: 1px solid var(--btn-primary-bg);
+  box-shadow: var(--shadow-button);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 600;
+}
+
+button:hover,
+.btn:hover,
+[role="button"]:hover {
+  background-color: var(--btn-primary-hover);
+  border-color: var(--btn-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(255, 107, 53, 0.35);
+}
+
+button:active,
+.btn:active {
+  background-color: var(--btn-primary-active);
+  transform: translateY(0);
+}
+
+/* ─── Button Secondary ─── */
+.btn-secondary,
+button[class*="secondary"],
+[class*="SecondaryButton"] {
+  background-color: var(--btn-secondary-bg);
+  color: var(--btn-secondary-text);
+  border: 1px solid var(--btn-secondary-border);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-secondary:hover {
+  background-color: var(--btn-secondary-hover);
+  border-color: var(--border-secondary);
+}
+
+/* ─── Button Outline ─── */
+.btn-outline,
+button[class*="outline"],
+[class*="OutlineButton"] {
+  background-color: var(--btn-outline-bg);
+  color: var(--btn-outline-text);
+  border: 2px solid var(--btn-outline-border);
+  box-shadow: none;
+}
+
+.btn-outline:hover {
+  background-color: var(--btn-outline-hover-bg);
+  color: var(--accent-primary);
+}
+
+/* ─── Inputs & Forms ─── */
+input,
+textarea,
+select {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-primary);
+  transition: border-color 0.2s ease, background-color 0.3s ease;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--accent-primary);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-muted);
+}
+
+/* ─── Borders & Dividers ─── */
+hr,
+.divider,
+.separator,
+.border-top,
+.border-bottom {
+  border-color: var(--border-primary) !important;
+  background-color: var(--border-primary);
+  opacity: 1;
+  transition: border-color 0.3s ease;
+}
+
+/* ─── Header & Footer ─── */
+header,
+.header,
+[class*="Header"] {
+  background-color: var(--bg-header);
+  border-bottom: 1px solid var(--border-secondary);
+  color: var(--text-on-header);
+}
+
+footer,
+.footer,
+[class*="Footer"] {
+  background-color: var(--bg-footer);
+  border-top: 1px solid var(--border-secondary);
+  color: var(--text-secondary);
+}
+
+/* ─── Main Content Area ─── */
+#main-content,
+main {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease;
+}
+
+/* Apply to all sections inside main */
+#main-content main > div,
+#main-content main > section,
+#main-content main div[class*="Section"],
+#main-content main div[class*="Container"] {
+  background-color: var(--bg-card);
+  border-color: var(--border-primary);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* ─── Hover States ─── */
+*:hover:not(button):not(a):not(input) {
+  /* Reserved for specific component hovers */
+}
+
+/* ─── Status Badges ─── */
+.badge-success,
+[class*="success"] {
+  background-color: var(--success-light);
+  color: var(--success);
+  border-color: var(--success);
+}
+
+.badge-warning,
+[class*="warning"] {
+  background-color: var(--warning-light);
+  color: var(--warning);
+  border-color: var(--warning);
+}
+
+.badge-error,
+[class*="error"],
+[class*="danger"] {
+  background-color: var(--error-light);
+  color: var(--error);
+  border-color: var(--error);
+}
+
+.badge-info,
+[class*="info"] {
+  background-color: var(--info-light);
+  color: var(--info);
+  border-color: var(--info);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   🎯 OVERRIDE HARD-CODED COLORS
+   إلغاء الألوان الثابتة في المكونات
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Force all backgrounds to follow theme */
+[style*="background: #f0f0f0"],
+[style*="background: #e0e0e0"],
+[style*="background: #ffffff"],
+[style*="background-color: #f0f0f0"],
+[style*="background-color: #e0e0e0"],
+[style*="background: white"],
+[style*="background-color: white"] {
+  background-color: var(--bg-card) !important;
+}
+
+/* Force all text colors to follow theme */
+[style*="color: white"],
+[style*="color: #fff"],
+[style*="color: #ffffff"],
+[style*="color: black"],
+[style*="color: #000"],
+[style*="color: #000000"] {
+  color: var(--text-primary) !important;
+}
+
+/* Force all borders to follow theme */
+[style*="border-color: #e0e0e0"],
+[style*="border-color: #f0f0f0"],
+[style*="border: 1px solid #e0e0e0"],
+[style*="border: 1px solid #f0f0f0"] {
+  border-color: var(--border-primary) !important;
+}
+
+/* Force all styled-components to use theme variables */
+* {
+  color: inherit;
+}
+
+/* Ensure body and html use theme */
+html,
+body {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Force all divs and sections to use theme */
+div,
+section,
+article,
+main,
+aside {
+  color: var(--text-primary);
+  background-color: transparent;
+}
+
+/* Force all text elements to use theme colors */
+p, span, h1, h2, h3, h4, h5, h6, label, li, td, th {
+  color: var(--text-primary) !important;
+}
+
+/* Force all containers to use theme backgrounds */
+div[class*="Container"],
+div[class*="Section"],
+div[class*="Card"],
+section[class*="Container"],
+section[class*="Section"] {
+  background-color: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   📱 RESPONSIVE ADJUSTMENTS
+   تعديلات استجابة
+   ═══════════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  :root {
+    --shadow-card: 0 1px 4px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.12);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ✨ TRANSITIONS & ANIMATIONS
+   انتقالات سلسة
+   ═══════════════════════════════════════════════════════════════════ */
+* {
+  transition-property: background-color, color, border-color;
+  transition-duration: 0.3s;
+  transition-timing-function: ease;
+}
+
+button,
+a,
+[role="button"] {
+  transition-duration: 0.2s;
+}

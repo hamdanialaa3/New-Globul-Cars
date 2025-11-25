@@ -14,7 +14,9 @@ import {
   MapPin, 
   Activity,
   TrendingUp,
-  Plus
+  Plus,
+  User,
+  Briefcase
 } from 'lucide-react';
 import { getCarLogoUrl } from '../../services/car-logo-service';
 
@@ -54,8 +56,18 @@ export interface GarageCar {
   };
 }
 
+interface UserStats {
+  activeListings?: number;
+  soldCars?: number;
+  followers?: number;
+  totalListings?: number;
+  totalViews?: number;
+  totalMessages?: number;
+}
+
 interface GarageSectionProps {
   cars: GarageCar[];
+  userStats?: UserStats;
   onEdit?: (carId: string) => void;
   onDelete?: (carId: string) => void;
   onAddNew?: () => void;
@@ -83,20 +95,34 @@ const gradientShift = keyframes`
 
 const GarageContainer = styled.div`
   width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
   animation: ${fadeIn} 0.6s ease-out;
   background: var(--bg-primary);
+  box-sizing: border-box;
+  overflow-x: hidden;
+  
+  @media (max-width: 768px) {
+    max-width: 100%;
+  }
 `;
 
 const Header = styled.div`
-  padding: 2rem;
+  padding: 1.5rem 2rem;
   background: linear-gradient(135deg, var(--accent-orange) 0%, var(--accent-primary) 100%);
-  border-radius: 20px 20px 0 0;
+  border-radius: 16px 16px 0 0;
   color: white;
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 1.5rem;
+  gap: 1rem;
+  box-sizing: border-box;
+  
+  @media (max-width: 768px) {
+    padding: 1.25rem 1rem;
+    border-radius: 12px 12px 0 0;
+  }
 `;
 
 const HeaderLeft = styled.div`
@@ -124,15 +150,23 @@ const GarageIcon = styled.div`
 const HeaderTitle = styled.div`
   h2 {
     margin: 0 0 0.5rem 0;
-    font-size: 2rem;
+    font-size: 1.75rem;
     font-weight: 800;
     text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    
+    @media (max-width: 768px) {
+      font-size: 1.5rem;
+    }
   }
   
   p {
     margin: 0;
-    font-size: 1.1rem;
+    font-size: 1rem;
     opacity: 0.9;
+    
+    @media (max-width: 768px) {
+      font-size: 0.9rem;
+    }
   }
 `;
 
@@ -140,9 +174,9 @@ const AddButton = styled.button`
   background: white;
   color: #2c3e50;
   border: none;
-  padding: 1rem 2rem;
+  padding: 0.875rem 1.75rem;
   border-radius: 50px;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 700;
   cursor: pointer;
   display: flex;
@@ -150,6 +184,12 @@ const AddButton = styled.button`
   gap: 0.5rem;
   transition: all 0.3s ease;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  white-space: nowrap;
+  
+  @media (max-width: 768px) {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.875rem;
+  }
   
   &:hover {
     transform: translateY(-2px);
@@ -159,11 +199,18 @@ const AddButton = styled.button`
 
 const StatsBar = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 1rem;
-  padding: 1.5rem 2rem;
-  background: white;
-  border-bottom: 1px solid #ecf0f1;
+  padding: 1.25rem 2rem;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-primary);
+  box-sizing: border-box;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 1rem;
+    gap: 0.75rem;
+  }
 `;
 
 const StatCard = styled.div`
@@ -220,38 +267,77 @@ const CarsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1.5rem;
-  padding: 2rem;
+  padding: 1.5rem 2rem;
   background: var(--bg-primary);
+  box-sizing: border-box;
+  width: 100%;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.25rem;
+    padding: 1.25rem 1.5rem;
+  }
 
   @media (max-width: 768px) {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1rem;
     padding: 1rem;
+  }
+  
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    padding: 0.75rem;
   }
 `;
 
 const CarCard = styled.div`
   background: var(--bg-card);
-  border-radius: 16px;
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: var(--shadow-md);
-  border: 1px solid var(--border);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-primary);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   animation: ${fadeIn} 0.5s ease-out;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 
   &:hover {
     transform: translateY(-4px);
-    box-shadow: var(--shadow-lg);
-    border-color: var(--accent-orange);
+    box-shadow: var(--shadow-md);
+    border-color: var(--accent-primary);
+  }
+  
+  @media (max-width: 768px) {
+    border-radius: 10px;
   }
 `;
 
 const ImageContainer = styled.div`
   position: relative;
   width: 100%;
-  height: 180px;
+  height: 200px;
+  min-height: 200px;
+  max-height: 200px;
   overflow: hidden;
   background: linear-gradient(135deg, #2c3e50 0%, #4ca1af 100%);
+  flex-shrink: 0;
+  
+  @media (max-width: 768px) {
+    height: 180px;
+    min-height: 180px;
+    max-height: 180px;
+  }
+  
+  @media (max-width: 480px) {
+    height: 160px;
+    min-height: 160px;
+    max-height: 160px;
+  }
 `;
 
 const CarImage = styled.img`
@@ -316,28 +402,52 @@ const StatusBadge = styled.div<{ $status: string }>`
 `;
 
 const CardContent = styled.div`
-  padding: 1.25rem;
+  padding: 1rem 1.25rem;
   background: var(--bg-card);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  
+  @media (max-width: 768px) {
+    padding: 0.875rem 1rem;
+  }
 `;
 
 const CarTitle = styled.h3`
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   font-weight: 700;
   color: var(--text-primary);
-  margin: 0 0 12px 0;
+  margin: 0 0 10px 0;
   line-height: 1.3;
+  word-break: break-word;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  
+  @media (max-width: 768px) {
+    font-size: 1rem;
+    margin: 0 0 8px 0;
+  }
 `;
 
 const Price = styled.div`
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   font-weight: 800;
   color: var(--text-primary);
-  margin-bottom: 4px;
+  margin-bottom: 8px;
   display: flex;
   align-items: baseline;
-  gap: 8px;
+  gap: 6px;
   letter-spacing: -0.5px;
   line-height: 1.2;
+  
+  @media (max-width: 768px) {
+    font-size: 1.35rem;
+    margin-bottom: 6px;
+  }
 `;
 
 const DetailsGrid = styled.div`
@@ -540,6 +650,7 @@ const CreateButton = styled.button`
 
 export const GarageSectionPro: React.FC<GarageSectionProps> = ({ 
   cars = [],
+  userStats,
   onEdit,
   onDelete,
   onAddNew
@@ -547,14 +658,24 @@ export const GarageSectionPro: React.FC<GarageSectionProps> = ({
   const { language } = useLanguage();
   const navigate = useNavigate();
 
-  // Statistics
-  const stats = useMemo(() => ({
-    total: cars.length,
+  // Calculate stats from cars (always use actual cars data for total count)
+  const carsStats = useMemo(() => ({
+    total: cars.length, // Actual number of cars loaded
     active: cars.filter(c => c.status === 'active').length,
     sold: cars.filter(c => c.status === 'sold').length,
     totalViews: cars.reduce((sum, c) => sum + (c.views || 0), 0),
     totalFavorites: cars.reduce((sum, c) => sum + (c.favorites || 0), 0)
   }), [cars]);
+
+  // Use real user stats if available, but always prioritize actual cars.length for total count
+  const stats = useMemo(() => ({
+    total: carsStats.total || (userStats?.totalListings ?? 0), // Always show actual cars count first
+    active: userStats?.activeListings ?? carsStats.active,
+    sold: userStats?.soldCars ?? carsStats.sold,
+    totalViews: userStats?.totalViews ?? carsStats.totalViews,
+    followers: userStats?.followers ?? 0,
+    totalFavorites: carsStats.totalFavorites
+  }), [userStats, carsStats]);
 
   // Get image or logo
   const getCarVisual = (car: GarageCar): { type: 'image' | 'logo'; url: string } => {
@@ -633,7 +754,7 @@ export const GarageSectionPro: React.FC<GarageSectionProps> = ({
             <Car />
           </GarageIcon>
           <HeaderTitle>
-            <h2>{language === 'bg' ? 'Моят гараж' : 'My Garage'}</h2>
+            <h2>{language === 'bg' ? 'Гараж / Мараж' : 'Garage / Showroom'}</h2>
             <p>{stats.total} {language === 'bg' ? 'автомобила' : 'vehicles'}</p>
           </HeaderTitle>
         </HeaderLeft>
@@ -643,39 +764,44 @@ export const GarageSectionPro: React.FC<GarageSectionProps> = ({
         </AddButton>
       </Header>
 
-      {/* Statistics */}
-      {cars.length > 0 && (
-        <StatsBar>
-          <StatCard>
-            <StatIcon $color="linear-gradient(135deg, #27ae60, #229954)">
-              <Activity size={20} />
-            </StatIcon>
-            <StatValue>{stats.active}</StatValue>
-            <StatLabel>{language === 'bg' ? 'Активни' : 'Active'}</StatLabel>
-          </StatCard>
-          <StatCard>
-            <StatIcon $color="linear-gradient(135deg, #3498db, #2980b9)">
-              <TrendingUp size={20} />
-            </StatIcon>
-            <StatValue>{stats.sold}</StatValue>
-            <StatLabel>{language === 'bg' ? 'Продадени' : 'Sold'}</StatLabel>
-          </StatCard>
-          <StatCard>
-            <StatIcon $color="linear-gradient(135deg, #9b59b6, #8e44ad)">
-              <Eye size={20} />
-            </StatIcon>
-            <StatValue>{stats.totalViews}</StatValue>
-            <StatLabel>{language === 'bg' ? 'Прегледи' : 'Views'}</StatLabel>
-          </StatCard>
-          <StatCard>
-            <StatIcon $color="linear-gradient(135deg, #e74c3c, #c0392b)">
-              <Heart size={20} />
-            </StatIcon>
-            <StatValue>{stats.totalFavorites}</StatValue>
-            <StatLabel>{language === 'bg' ? 'Любими' : 'Favorites'}</StatLabel>
-          </StatCard>
-        </StatsBar>
-      )}
+      {/* Statistics - Always show */}
+      <StatsBar>
+        <StatCard>
+          <StatIcon $color="linear-gradient(135deg, #e74c3c, #c0392b)">
+            <Car size={20} />
+          </StatIcon>
+          <StatValue>{stats.total}</StatValue>
+          <StatLabel>{language === 'bg' ? 'Общо автомобили' : 'Total Cars'}</StatLabel>
+        </StatCard>
+        <StatCard>
+          <StatIcon $color="linear-gradient(135deg, #27ae60, #229954)">
+            <Activity size={20} />
+          </StatIcon>
+          <StatValue>{stats.active}</StatValue>
+          <StatLabel>{language === 'bg' ? 'Активни обяви' : 'Active Listings'}</StatLabel>
+        </StatCard>
+        <StatCard>
+          <StatIcon $color="linear-gradient(135deg, #3498db, #2980b9)">
+            <TrendingUp size={20} />
+          </StatIcon>
+          <StatValue>{stats.sold}</StatValue>
+          <StatLabel>{language === 'bg' ? 'Продадени' : 'Sold'}</StatLabel>
+        </StatCard>
+        <StatCard>
+          <StatIcon $color="linear-gradient(135deg, #9b59b6, #8e44ad)">
+            <Eye size={20} />
+          </StatIcon>
+          <StatValue>{stats.totalViews || 0}</StatValue>
+          <StatLabel>{language === 'bg' ? 'Прегледи' : 'Views'}</StatLabel>
+        </StatCard>
+        <StatCard>
+          <StatIcon $color="linear-gradient(135deg, #f39c12, #e67e22)">
+            <User size={20} />
+          </StatIcon>
+          <StatValue>{stats.followers}</StatValue>
+          <StatLabel>{language === 'bg' ? 'Последователи' : 'Followers'}</StatLabel>
+        </StatCard>
+      </StatsBar>
 
       {/* Cars Grid */}
       {cars.length > 0 ? (

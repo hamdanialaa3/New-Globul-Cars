@@ -130,10 +130,10 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
             {images.length > 1 && (
               <>
                 <NavButton $direction="left" onClick={prevImage}>
-                  <ChevronLeft size={32} />
+                  <ChevronLeft size={36} strokeWidth={2.5} />
                 </NavButton>
                 <NavButton $direction="right" onClick={nextImage}>
-                  <ChevronRight size={32} />
+                  <ChevronRight size={36} strokeWidth={2.5} />
                 </NavButton>
               </>
             )}
@@ -312,10 +312,10 @@ const NavButton = styled.button<{ $direction: 'left' | 'right' }>`
   top: 50%;
   ${p => p.$direction}: 20px;
   transform: translateY(-50%);
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  border: none;
+  width: 56px;
+  height: 80px;
+  border-radius: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.9);
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
   color: white;
@@ -323,12 +323,39 @@ const NavButton = styled.button<{ $direction: 'left' | 'right' }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 10001;
   
+  svg {
+    width: 36px !important;
+    height: 36px !important;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+  }
+  
   &:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: translateY(-50%) scale(1.1);
+    background: rgba(255, 255, 255, 0.25);
+    border-color: white;
+    transform: translateY(-50%) translateX(${p => p.$direction === 'left' ? '-4px' : '4px'});
+    
+    svg {
+      transform: translateX(${p => p.$direction === 'left' ? '-2px' : '2px'});
+    }
+  }
+  
+  &:active {
+    transform: translateY(-50%) scale(0.95);
+  }
+  
+  @media (max-width: 768px) {
+    width: 44px;
+    height: 64px;
+    ${p => p.$direction}: 10px;
+    
+    svg {
+      width: 28px !important;
+      height: 28px !important;
+    }
   }
 `;
 

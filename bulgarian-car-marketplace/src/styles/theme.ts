@@ -289,8 +289,15 @@ export const bulgarianTheme: DefaultTheme = {
   }
 };
 
-// Global Styles - ????? ?????? ??????
+// Global Styles - الأنماط العامة الموحدة
 export const GlobalStyles = createGlobalStyle`
+  /* ═══════════════════════════════════════════════════════════════════
+     🚗 ALL COLOR VARIABLES NOW IN: unified-theme.css
+     جميع متغيرات الألوان الآن في: unified-theme.css
+     
+     Imported via: src/index.css → @import './styles/unified-theme.css'
+     ═══════════════════════════════════════════════════════════════════ */
+
   * {
     margin: 0;
     padding: 0;
@@ -437,10 +444,25 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   footer, .footer {
-    background: ${bulgarianColors.background.paper};  // أبيض للفوتر
-    border-top: 1px solid #E0E0E0;
+    background: var(--bg-card);
+    border-top: 1px solid var(--border-primary);
     padding: ${bulgarianSpacing.lg};
-    color: ${bulgarianColors.text.primary};
+    color: var(--text-primary);
+  }
+
+  /* Common separators to avoid light seams in dark mode */
+  hr, .divider, .section-divider, .border-top, .border-bottom {
+    border-color: var(--accent-primary) !important; /* use bright blue for testing */
+    color: var(--border-primary) !important;
+    opacity: 1;
+  }
+
+  /* Ensure typical containers inherit themed surfaces */
+  section, .section, .container, .paper, .card {
+    background-color: var(--bg-card);
+    color: var(--text-primary);
+    border-color: var(--border-primary);
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
   }
 
   /* Specific card variants */
@@ -525,6 +547,94 @@ export const GlobalStyles = createGlobalStyle`
       color: black !important;
       text-decoration: underline !important;
     }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     🎨 SEMANTIC ELEMENT STYLING (No nth-child selectors!)
+     تنسيق العناصر الدلالية (بدون nth-child!)
+     ═══════════════════════════════════════════════════════════════════ */
+
+  /* Separators - Dividers inherit theme borders */
+  hr, .divider, .section-divider, .border-top, .border-bottom {
+    border-color: var(--border-primary) !important;
+    background-color: var(--border-primary);
+    opacity: 1;
+    transition: border-color 0.3s ease;
+  }
+
+  /* Cards & Containers inherit theme surfaces */
+  section, .section, .container, .paper, .card {
+    background-color: var(--bg-card);
+    color: var(--text-primary);
+    border-color: var(--border-primary);
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  }
+
+  /* Main content area - NO nth-child selectors, use semantic rules */
+  #main-content,
+  #main-content main,
+  #main-content main > div,
+  #main-content main > section {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  /* Nested cards/sections within main */
+  #main-content main div[class*="Section"],
+  #main-content main div[class*="Container"],
+  #main-content main div[class*="Card"],
+  #main-content main section {
+    background-color: var(--bg-card);
+    border-color: var(--border-primary);
+  }
+
+  /* Make light neutral borders follow theme automatically */
+  html[data-theme="dark"] #main-content main * {
+    /* Replace common light greys with themed borders/backgrounds where they appear */
+    border-color: var(--border-primary) !important;
+  }
+
+  /* Buttons inside main sections inherit accent if they previously used hard-coded light backgrounds */
+  html[data-theme="light"] #main-content main button:not([data-keep-bg]),
+  html[data-theme="dark"] #main-content main button:not([data-keep-bg]) {
+    background-color: var(--accent-primary);
+    color: var(--text-inverse);
+    border: 1px solid var(--accent-primary);
+  }
+  html[data-theme="light"] #main-content main button:not([data-keep-bg]):hover,
+  html[data-theme="dark"] #main-content main button:not([data-keep-bg]):hover {
+    background-color: var(--accent-hover);
+    border-color: var(--accent-hover);
+  }
+
+  /* Buttons inside the provided buttons container - follow theme accents */
+  html[data-theme="light"] #main-content > div > main > section.sc-bUAJAs.gDiYLH > div.sc-eoPBRc.jccddF button,
+  html[data-theme="light"] #main-content > div > main > section.sc-bUAJAs.gDiYLH > div.sc-eoPBRc.jccddF [role="button"],
+  html[data-theme="light"] #main-content > div > main > section.sc-bUAJAs.gDiYLH > div.sc-eoPBRc.jccddF .btn {
+    background: var(--accent-primary) !important;
+    color: var(--text-inverse) !important;
+    border: 1px solid var(--accent-primary) !important;
+  }
+  html[data-theme="light"] #main-content > div > main > section.sc-bUAJAs.gDiYLH > div.sc-eoPBRc.jccddF button:hover,
+  html[data-theme="light"] #main-content > div > main > section.sc-bUAJAs.gDiYLH > div.sc-eoPBRc.jccddF [role="button"]:hover,
+  html[data-theme="light"] #main-content > div > main > section.sc-bUAJAs.gDiYLH > div.sc-eoPBRc.jccddF .btn:hover {
+    background: var(--accent-hover) !important;
+    border-color: var(--accent-hover) !important;
+  }
+
+  html[data-theme="dark"] #main-content > div > main > section.sc-bUAJAs.gDiYLH > div.sc-eoPBRc.jccddF button,
+  html[data-theme="dark"] #main-content > div > main > section.sc-bUAJAs.gDiYLH > div.sc-eoPBRc.jccddF [role="button"],
+  html[data-theme="dark"] #main-content > div > main > section.sc-bUAJAs.gDiYLH > div.sc-eoPBRc.jccddF .btn {
+    background: var(--accent-primary) !important;
+    color: var(--text-inverse) !important;
+    border: 1px solid var(--accent-primary) !important;
+  }
+  html[data-theme="dark"] #main-content > div > main > section.sc-bUAJAs.gDiYLH > div.sc-eoPBRc.jccddF button:hover,
+  html[data-theme="dark"] #main-content > div > main > section.sc-bUAJAs.gDiYLH > div.sc-eoPBRc.jccddF [role="button"]:hover,
+  html[data-theme="dark"] #main-content > div > main > section.sc-bUAJAs.gDiYLH > div.sc-eoPBRc.jccddF .btn:hover {
+    background: var(--accent-hover) !important;
+    border-color: var(--accent-hover) !important;
   }
 `;
 

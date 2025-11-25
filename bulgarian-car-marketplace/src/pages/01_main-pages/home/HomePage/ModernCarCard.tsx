@@ -11,26 +11,22 @@ import GlobulCarLogo from '@/components/icons/GlobulCarLogo';
 
 // Styled Components
 const CardContainer = styled.div<{ $isDark: boolean }>`
-  background: ${props => props.$isDark ? '#1e293b' : '#ffffff'};
+  background: var(--bg-card);
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: ${props => props.$isDark 
-    ? '0 2px 12px rgba(0, 0, 0, 0.3)' 
-    : '0 2px 12px rgba(0, 0, 0, 0.08)'};
+  box-shadow: var(--shadow-card);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   position: relative;
   height: 100%;
   display: flex;
   flex-direction: column;
-  border: 1px solid ${props => props.$isDark ? '#334155' : '#e2e8f0'};
+  border: 1px solid var(--border-primary);
 
   &:hover {
     transform: translateY(-8px);
-    box-shadow: ${props => props.$isDark 
-      ? '0 12px 32px rgba(0, 0, 0, 0.5)' 
-      : '0 12px 32px rgba(0, 0, 0, 0.15)'};
-    border-color: ${props => props.$isDark ? '#475569' : '#cbd5e1'};
+    box-shadow: var(--shadow-lg);
+    border-color: var(--border-accent);
   }
 
   @media (max-width: 768px) {
@@ -42,7 +38,7 @@ const ImageContainer = styled.div`
   position: relative;
   width: 100%;
   padding-top: 66.67%; /* 3:2 Aspect Ratio */
-  background: linear-gradient(135deg, #f5f7fa 0%, #e2e8f0 100%);
+  background: var(--bg-hover);
   overflow: hidden;
 `;
 
@@ -70,7 +66,7 @@ const ImagePlaceholder = styled.div`
   align-items: center;
   justify-content: center;
   font-size: 4rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--bg-secondary);
 `;
 
 const StatusBadge = styled.div<{ type: 'new' | 'used' | 'featured' }>`
@@ -78,9 +74,9 @@ const StatusBadge = styled.div<{ type: 'new' | 'used' | 'featured' }>`
   top: 16px;
   left: 16px;
   background: ${props => {
-    if (props.type === 'new') return 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
-    if (props.type === 'featured') return 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)';
-    return 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)';
+    if (props.type === 'new') return 'var(--success)';
+    if (props.type === 'featured') return 'var(--warning)';
+    return 'var(--info)';
   }};
   color: white;
   padding: 6px 14px;
@@ -89,7 +85,7 @@ const StatusBadge = styled.div<{ type: 'new' | 'used' | 'featured' }>`
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-sm);
   z-index: 2;
 
   @media (max-width: 768px) {
@@ -107,7 +103,7 @@ const FavoriteButton = styled.button<{ $isDark: boolean }>`
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: ${props => props.$isDark ? 'rgba(30, 41, 59, 0.95)' : 'rgba(255, 255, 255, 0.95)'};
+  background: var(--bg-card);
   border: none;
   display: flex;
   align-items: center;
@@ -115,13 +111,13 @@ const FavoriteButton = styled.button<{ $isDark: boolean }>`
   cursor: pointer;
   transition: all 0.3s ease;
   z-index: 2;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  color: ${props => props.$isDark ? '#f1f5f9' : '#1e293b'};
+  box-shadow: var(--shadow-sm);
+  color: var(--text-primary);
 
   &:hover {
     transform: scale(1.1);
-    background: ${props => props.$isDark ? '#334155' : '#ffffff'};
-    color: #ef4444;
+    background: var(--bg-hover);
+    color: var(--error);
   }
 
   @media (max-width: 768px) {
@@ -146,7 +142,7 @@ const CardContent = styled.div`
 const CarTitle = styled.h3<{ $isDark: boolean }>`
   font-size: 1.375rem;
   font-weight: 800;
-  color: ${props => props.$isDark ? '#f1f5f9' : '#1e293b'};
+  color: var(--text-primary);
   margin: 0 0 8px 0;
   line-height: 1.3;
   display: -webkit-box;
@@ -161,7 +157,7 @@ const CarTitle = styled.h3<{ $isDark: boolean }>`
 
 const CarSubtitle = styled.p<{ $isDark: boolean }>`
   font-size: 0.9375rem;
-  color: ${props => props.$isDark ? '#94a3b8' : '#64748b'};
+  color: var(--text-secondary);
   margin: 0 0 16px 0;
   font-weight: 500;
 
@@ -188,13 +184,13 @@ const SpecItem = styled.div<{ $isDark: boolean }>`
   flex-direction: column;
   align-items: center;
   padding: 10px 8px;
-  background: ${props => props.$isDark ? '#0f172a' : '#f8fafc'};
+  background: var(--bg-secondary);
   border-radius: 10px;
   transition: all 0.3s ease;
-  border: 1px solid ${props => props.$isDark ? '#1e293b' : 'transparent'};
+  border: 1px solid var(--border-light);
 
   &:hover {
-    background: ${props => props.$isDark ? '#1e293b' : '#f1f5f9'};
+    background: var(--bg-hover);
     transform: translateY(-2px);
   }
 
@@ -209,7 +205,7 @@ const SpecIcon = styled.div<{ $isDark: boolean }>`
   align-items: center;
   justify-content: center;
   margin-bottom: 4px;
-  color: ${props => props.$isDark ? '#60a5fa' : '#3b82f6'};
+  color: var(--accent-primary);
 
   svg {
     width: 18px;
@@ -227,7 +223,7 @@ const SpecIcon = styled.div<{ $isDark: boolean }>`
 const SpecValue = styled.div<{ $isDark: boolean }>`
   font-size: 0.875rem;
   font-weight: 700;
-  color: ${props => props.$isDark ? '#f1f5f9' : '#1e293b'};
+  color: var(--text-primary);
   text-align: center;
 
   @media (max-width: 768px) {
@@ -237,7 +233,7 @@ const SpecValue = styled.div<{ $isDark: boolean }>`
 
 const SpecLabel = styled.div<{ $isDark: boolean }>`
   font-size: 0.6875rem;
-  color: ${props => props.$isDark ? '#94a3b8' : '#64748b'};
+  color: var(--text-tertiary);
   text-transform: uppercase;
   letter-spacing: 0.3px;
   margin-top: 2px;
@@ -250,7 +246,7 @@ const SpecLabel = styled.div<{ $isDark: boolean }>`
 
 const Divider = styled.div`
   height: 1px;
-  background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
+  background: var(--border-primary);
   margin: 16px 0;
 
   @media (max-width: 768px) {
@@ -273,9 +269,7 @@ const PriceContainer = styled.div`
 const Price = styled.div`
   font-size: 1.75rem;
   font-weight: 900;
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--accent-primary);
   line-height: 1.2;
 
   @media (max-width: 768px) {
@@ -285,7 +279,7 @@ const Price = styled.div`
 
 const PriceLabel = styled.div`
   font-size: 0.75rem;
-  color: #64748b;
+  color: var(--text-tertiary);
   margin-top: 2px;
   font-weight: 600;
 
@@ -295,8 +289,8 @@ const PriceLabel = styled.div`
 `;
 
 const ViewButton = styled.button`
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
   border: none;
   padding: 12px 24px;
   border-radius: 12px;
@@ -304,12 +298,13 @@ const ViewButton = styled.button`
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  box-shadow: var(--shadow-button);
   white-space: nowrap;
 
   &:hover {
+    background: var(--btn-primary-hover);
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    box-shadow: var(--shadow-md);
   }
 
   &:active {
@@ -328,10 +323,10 @@ const LocationBadge = styled.div<{ $isDark: boolean }>`
   align-items: center;
   gap: 6px;
   padding: 6px 12px;
-  background: ${props => props.$isDark ? 'rgba(96, 165, 250, 0.15)' : 'rgba(102, 126, 234, 0.1)'};
+  background: var(--bg-accent);
   border-radius: 20px;
   font-size: 0.8125rem;
-  color: ${props => props.$isDark ? '#60a5fa' : '#667eea'};
+  color: var(--accent-primary);
   font-weight: 600;
   margin-bottom: 12px;
   width: fit-content;

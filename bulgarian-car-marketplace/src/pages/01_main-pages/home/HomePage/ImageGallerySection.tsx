@@ -116,47 +116,76 @@ const NavButton = styled.button`
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: var(--accent-primary);
-  color: white;
-  border: none;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--accent-primary);
+  border: 2px solid var(--accent-primary);
+  width: 56px;
+  height: 80px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 10;
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(8px);
 
   svg {
-    width: 28px;
-    height: 28px;
-    stroke-width: 2.5;
+    width: 36px !important;
+    height: 36px !important;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
   }
 
   &:hover {
     background: var(--accent-primary);
-    transform: translateY(-50%) scale(1.1);
-    box-shadow: var(--shadow-lg);
+    color: white;
+    border-color: var(--accent-primary);
+    box-shadow: 0 6px 24px rgba(255, 121, 0, 0.35);
+    
+    svg {
+      transform: translateX(0);
+    }
   }
 
   &.prev {
     left: 20px;
+    
+    &:hover {
+      transform: translateY(-50%) translateX(-4px);
+      
+      svg {
+        transform: translateX(-2px);
+      }
+    }
   }
 
   &.next {
     right: 20px;
+    
+    &:hover {
+      transform: translateY(-50%) translateX(4px);
+      
+      svg {
+        transform: translateX(2px);
+      }
+    }
+  }
+
+  &:active {
+    transform: translateY(-50%) scale(0.95);
+    box-shadow: 0 2px 8px rgba(255, 121, 0, 0.25);
   }
 
   @media (max-width: 768px) {
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 64px;
+    border-radius: 10px;
 
     svg {
-      width: 24px;
-      height: 24px;
+      width: 28px !important;
+      height: 28px !important;
     }
 
     &.prev {
@@ -351,11 +380,11 @@ const ImageGallerySectionComponent: React.FC = () => {
           )}
 
           <NavButton className="prev" onClick={handlePrevious}>
-            <ChevronLeft size={24} />
+            <ChevronLeft size={36} strokeWidth={2.5} />
           </NavButton>
 
           <NavButton className="next" onClick={handleNext}>
-            <ChevronRight size={24} />
+            <ChevronRight size={36} strokeWidth={2.5} />
           </NavButton>
 
           <ImageCounter>

@@ -3,16 +3,20 @@ import React from 'react';
 import styled from 'styled-components';
 import { useLanguage } from '@/contexts/LanguageContext';
 import type { BulgarianUser } from '@/types/user/bulgarian-user.types';
+import { GarageCarousel } from '@/components/Profile/GarageCarousel';
+import UserPostsFeed from '@/components/Profile/UserPostsFeed';
+import type { ProfileCar } from '../types';
 import { 
   User, Mail, Phone, MapPin, Calendar, Globe, 
-  Building2, Briefcase, Car, Shield, CheckCircle 
+  Building2, Briefcase, Car, Shield, CheckCircle, FileText
 } from 'lucide-react';
 
 interface PublicProfileViewProps {
   user: BulgarianUser;
+  userCars?: ProfileCar[];
 }
 
-export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ user }) => {
+export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ user, userCars = [] }) => {
   const { language } = useLanguage();
 
   const isBusinessAccount = user.accountType === 'business' || user.accountType === 'dealer' || user.accountType === 'company';
@@ -287,6 +291,48 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ user }) =>
               </ActivityCard>
             </ActivityGrid>
           </Section>
+
+          {/* User's Cars Section */}
+          {userCars && userCars.length > 0 && (
+            <Section>
+              <SectionHeader>
+                <Car size={24} />
+                <SectionTitle>
+                  {language === 'bg' ? 'Автомобили' : 'Cars'}
+                </SectionTitle>
+              </SectionHeader>
+              <GarageCarousel
+                cars={userCars.map(car => ({
+                  id: car.id,
+                  make: car.make || '',
+                  model: car.model || '',
+                  year: car.year || 2000,
+                  price: car.price || 0,
+                  mainImage: car.mainImage || car.imageUrl,
+                  imageUrl: car.imageUrl,
+                  status: (car.status as any) || 'active',
+                  views: car.views
+                }))}
+                userId={user.uid}
+                isOwnProfile={false}
+              />
+            </Section>
+          )}
+
+          {/* User's Posts Section */}
+          <Section>
+            <SectionHeader>
+              <FileText size={24} />
+              <SectionTitle>
+                {language === 'bg' ? 'Публикации' : 'Posts'}
+              </SectionTitle>
+            </SectionHeader>
+            <UserPostsFeed 
+              userId={user.uid}
+              limit={10}
+              showTitle={false}
+            />
+          </Section>
         </Content>
       </Layout>
     </Container>
@@ -297,58 +343,117 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ user }) =>
 const Container = styled.div`
   width: 100%;
   min-height: 600px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  
+  @media (max-width: 768px) {
+    padding: 0 12px;
+    max-width: 100%;
+  }
 `;
 
 const Layout = styled.div`
   display: grid;
-  grid-template-columns: 300px 1fr;
-  gap: 24px;
+  grid-template-columns: 260px 1fr;
+  gap: 20px;
+  width: 100%;
+  box-sizing: border-box;
   
   @media (max-width: 968px) {
     grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  @media (max-width: 768px) {
+    gap: 12px;
   }
 `;
 
 const Sidebar = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
+  width: 100%;
+  max-width: 260px;
+  box-sizing: border-box;
   
   @media (max-width: 968px) {
     flex-direction: row;
     flex-wrap: wrap;
+    gap: 12px;
+    max-width: 100%;
   }
 `;
 
 const ProfileCard = styled.div`
-  background: ${({ theme }) => theme.colors.background.paper};
-  border-radius: 16px;
-  padding: 24px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
+  border-radius: 12px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+  box-shadow: var(--shadow-sm);
+  width: 100%;
+  box-sizing: border-box;
   
   @media (max-width: 968px) {
     flex: 1;
-    min-width: 250px;
+    min-width: calc(50% - 6px);
+    max-width: calc(50% - 6px);
+    padding: 12px;
+  }
+  
+  @media (max-width: 480px) {
+    min-width: 100%;
+    max-width: 100%;
   }
 `;
 
 const Avatar = styled.img`
-  width: 120px;
-  height: 120px;
+  width: 80px;
+  height: 80px;
+  min-width: 80px;
+  min-height: 80px;
+  max-width: 80px;
+  max-height: 80px;
   border-radius: 50%;
   object-fit: cover;
-  border: 4px solid ${({ theme }) => theme.colors.primary.main};
+  border: 3px solid var(--accent-primary);
+  flex-shrink: 0;
+  display: block;
+  
+  @media (max-width: 968px) {
+    width: 60px;
+    height: 60px;
+    min-width: 60px;
+    min-height: 60px;
+    max-width: 60px;
+    max-height: 60px;
+  }
 `;
 
 const Name = styled.h2`
-  font-size: 1.5rem;
+  font-size: 1.1rem;
   font-weight: 700;
-  color: ${({ theme }) => theme.colors.text.primary};
+  color: var(--text-primary);
   margin: 0;
   text-align: center;
+  word-break: break-word;
+  width: 100%;
+  box-sizing: border-box;
+  
+  @media (max-width: 968px) {
+    font-size: 1rem;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 0.95rem;
+  }
 `;
 
 const VerifiedBadge = styled.div`
@@ -360,30 +465,42 @@ const VerifiedBadge = styled.div`
   border: 2px solid #10B981;
   border-radius: 20px;
   color: #10B981;
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   font-weight: 600;
 `;
 
 const ProfileType = styled.div`
-  padding: 6px 16px;
-  background: ${({ theme }) => theme.colors.primary.main}20;
+  padding: 6px 12px;
+  background: rgba(255, 143, 16, 0.15);
   border-radius: 20px;
-  color: ${({ theme }) => theme.colors.primary.main};
-  font-size: 0.875rem;
+  color: var(--accent-primary);
+  font-size: 0.75rem;
   font-weight: 600;
 `;
 
 const StatsCard = styled.div`
-  background: ${({ theme }) => theme.colors.background.paper};
-  border-radius: 16px;
-  padding: 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
+  border-radius: 12px;
+  padding: 12px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+  gap: 8px;
+  box-shadow: var(--shadow-sm);
+  width: 100%;
+  box-sizing: border-box;
   
   @media (max-width: 968px) {
     flex: 1;
-    min-width: 250px;
+    min-width: calc(50% - 6px);
+    max-width: calc(50% - 6px);
+    padding: 10px;
+    gap: 6px;
+  }
+  
+  @media (max-width: 480px) {
+    min-width: 100%;
+    max-width: 100%;
   }
 `;
 
@@ -395,30 +512,53 @@ const StatItem = styled.div`
 `;
 
 const StatValue = styled.div`
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 700;
-  color: ${({ theme }) => theme.colors.primary.main};
+  color: var(--accent-primary);
+  
+  @media (max-width: 968px) {
+    font-size: 1.1rem;
+  }
 `;
 
 const StatLabel = styled.div`
-  font-size: 0.75rem;
-  color: ${({ theme }) => theme.colors.text.secondary};
+  font-size: 0.7rem;
+  color: var(--text-secondary);
   text-align: center;
+  word-break: break-word;
 `;
 
 const Content = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 20px;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  
+  @media (max-width: 768px) {
+    gap: 12px;
+  }
 `;
 
 const Section = styled.div`
-  background: ${({ theme }) => theme.colors.background.paper};
-  border-radius: 16px;
-  padding: 32px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
   
   @media (max-width: 768px) {
-    padding: 20px;
+    padding: 14px;
+    border-radius: 8px;
+  }
+  
+  @media (max-width: 480px) {
+    padding: 12px;
   }
 `;
 
@@ -426,38 +566,64 @@ const SectionHeader = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
-  padding-bottom: 16px;
-  border-bottom: 2px solid ${({ theme }) => theme.colors.grey[200]};
-  color: ${({ theme }) => theme.colors.primary.main};
-  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-primary);
+  color: var(--accent-primary);
+  margin-bottom: 20px;
+  
+  svg {
+    flex-shrink: 0;
+  }
 `;
 
 const SectionTitle = styled.h3`
-  font-size: 1.5rem;
+  font-size: 1.1rem;
   font-weight: 700;
-  color: ${({ theme }) => theme.colors.text.primary};
+  color: var(--text-primary);
   margin: 0;
+  word-break: break-word;
+  
+  @media (max-width: 768px) {
+    font-size: 1rem;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 0.95rem;
+  }
 `;
 
 const InfoGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+  width: 100%;
+  box-sizing: border-box;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
 `;
 
 const InfoItem = styled.div`
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  padding: 16px;
-  background: ${({ theme }) => theme.colors.background.default};
-  border-radius: 12px;
+  padding: 12px;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  border: 1px solid var(--border-light);
 `;
 
 const InfoIcon = styled.div`
-  color: ${({ theme }) => theme.colors.primary.main};
+  color: var(--accent-primary);
   flex-shrink: 0;
   margin-top: 2px;
+  
+  svg {
+    width: 18px;
+    height: 18px;
+  }
 `;
 
 const InfoContent = styled.div`
@@ -465,21 +631,22 @@ const InfoContent = styled.div`
   flex-direction: column;
   gap: 4px;
   flex: 1;
+  min-width: 0;
 `;
 
 const InfoLabel = styled.div`
-  font-size: 0.875rem;
+  font-size: 0.8rem;
   font-weight: 600;
-  color: ${({ theme }) => theme.colors.text.secondary};
+  color: var(--text-secondary);
 `;
 
 const InfoValue = styled.div`
-  font-size: 1rem;
-  color: ${({ theme }) => theme.colors.text.primary};
+  font-size: 0.95rem;
+  color: var(--text-primary);
   word-break: break-word;
   
   a {
-    color: ${({ theme }) => theme.colors.primary.main};
+    color: var(--accent-primary);
     text-decoration: none;
     
     &:hover {
@@ -489,61 +656,78 @@ const InfoValue = styled.div`
 `;
 
 const BioSection = styled.div`
-  margin-top: 24px;
-  padding-top: 24px;
-  border-top: 1px solid ${({ theme }) => theme.colors.grey[200]};
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-primary);
 `;
 
 const BioLabel = styled.div`
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 600;
-  color: ${({ theme }) => theme.colors.text.primary};
-  margin-bottom: 12px;
+  color: var(--text-primary);
+  margin-bottom: 8px;
 `;
 
 const BioText = styled.p`
-  font-size: 0.95rem;
-  color: ${({ theme }) => theme.colors.text.secondary};
+  font-size: 0.9rem;
+  color: var(--text-secondary);
   line-height: 1.6;
   margin: 0;
   white-space: pre-wrap;
+  word-break: break-word;
 `;
 
 const ActivityGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
 `;
 
 const ActivityCard = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
-  padding: 24px;
-  background: ${({ theme }) => theme.colors.background.default};
-  border-radius: 12px;
+  gap: 8px;
+  padding: 16px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
   transition: transform 0.2s ease;
   
   &:hover {
-    transform: translateY(-4px);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
   }
 `;
 
 const ActivityIcon = styled.div`
-  color: ${({ theme }) => theme.colors.primary.main};
+  color: var(--accent-primary);
+  
+  svg {
+    width: 24px;
+    height: 24px;
+  }
 `;
 
 const ActivityValue = styled.div`
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: 700;
-  color: ${({ theme }) => theme.colors.primary.main};
+  color: var(--accent-primary);
+  
+  @media (max-width: 768px) {
+    font-size: 1.25rem;
+  }
 `;
 
 const ActivityLabel = styled.div`
-  font-size: 0.875rem;
-  color: ${({ theme }) => theme.colors.text.secondary};
+  font-size: 0.8rem;
+  color: var(--text-secondary);
   text-align: center;
+  word-break: break-word;
 `;
 
 export default PublicProfileView;

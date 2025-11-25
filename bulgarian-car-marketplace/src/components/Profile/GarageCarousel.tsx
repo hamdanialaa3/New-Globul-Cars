@@ -328,47 +328,54 @@ const ScrollButton = styled.button<{ $direction: 'left' | 'right' }>`
   top: 50%;
   ${props => props.$direction === 'left' ? 'left: 8px;' : 'right: 8px;'}
   transform: translateY(-50%);
-  width: 48px;
-  height: 48px;
+  width: 56px;
+  height: 80px;
   background: rgba(255, 255, 255, 0.95);
-  border: 2px solid #FF7900;
-  border-radius: 50%;
+  border: 2px solid var(--accent-primary);
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(8px);
   z-index: 10;
   
+  /* Arrow styling */
   svg {
-    color: #FF7900;
-    width: 28px;
-    height: 28px;
+    color: var(--accent-primary);
+    width: 36px !important;
+    height: 36px !important;
     transition: all 0.3s ease;
+    flex-shrink: 0;
   }
   
   &:hover {
-    background: #FF7900;
-    transform: translateY(-50%) scale(1.1);
-    box-shadow: 0 6px 20px rgba(255, 121, 0, 0.4);
+    background: var(--accent-primary);
+    border-color: var(--accent-primary);
+    transform: translateY(-50%) translateX(${props => props.$direction === 'left' ? '-4px' : '4px'});
+    box-shadow: 0 6px 24px rgba(255, 121, 0, 0.35);
     
     svg {
       color: white;
+      transform: translateX(${props => props.$direction === 'left' ? '-2px' : '2px'});
     }
   }
   
   &:active {
     transform: translateY(-50%) scale(0.95);
+    box-shadow: 0 2px 8px rgba(255, 121, 0, 0.25);
   }
   
   @media (max-width: 768px) {
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 64px;
+    border-radius: 10px;
     
     svg {
-      width: 24px;
-      height: 24px;
+      width: 28px !important;
+      height: 28px !important;
     }
   }
 `;
@@ -475,10 +482,10 @@ export const GarageCarousel: React.FC<GarageCarouselProps> = ({
         {cars.length > 0 && (
           <>
             <ScrollButton $direction="left" onClick={() => scroll('left')}>
-              <ChevronLeft size={28} />
+              <ChevronLeft size={36} strokeWidth={2.5} />
             </ScrollButton>
             <ScrollButton $direction="right" onClick={() => scroll('right')}>
-              <ChevronRight size={28} />
+              <ChevronRight size={36} strokeWidth={2.5} />
             </ScrollButton>
           </>
         )}

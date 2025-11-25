@@ -16,6 +16,7 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 import { 
   Calendar, 
   Gauge, 
@@ -33,7 +34,8 @@ import {
   Edit,
   ArrowLeft,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  User
 } from 'lucide-react';
 import { CarListing } from '@/types/CarListing';
 import StaticMapEmbed from '@/components/StaticMapEmbed';
@@ -199,15 +201,15 @@ const translations = {
 // ==================== Styled Components ====================
 
 const PageWrapper = styled.div<{ $isDark: boolean }>`
-  background: ${props => props.$isDark ? '#0f172a' : '#f5f5f8'};
+  background: var(--bg-primary);
   min-height: 100vh;
   padding: 0;
   transition: background 0.3s ease;
 `;
 
 const TopBar = styled.div<{ $isDark: boolean }>`
-  background: ${props => props.$isDark ? '#1e293b' : '#fff'};
-  border-bottom: 1px solid ${props => props.$isDark ? '#334155' : '#e4e6eb'};
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-primary);
   padding: 1rem 2rem;
   display: flex;
   justify-content: space-between;
@@ -215,7 +217,7 @@ const TopBar = styled.div<{ $isDark: boolean }>`
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: ${props => props.$isDark ? '0 1px 3px rgba(0, 0, 0, 0.3)' : '0 1px 3px rgba(0, 0, 0, 0.05)'};
+  box-shadow: var(--shadow-sm);
   transition: all 0.3s ease;
 
   @media (max-width: 768px) {
@@ -229,7 +231,7 @@ const TopBarLeft = styled.div<{ $isDark: boolean }>`
   display: flex;
   align-items: center;
   gap: 1rem;
-  background: ${props => props.$isDark ? '#1e293b' : 'transparent'};
+  background: transparent;
   transition: background 0.3s ease;
 `;
 
@@ -239,7 +241,7 @@ const BackButton = styled.button<{ $isDark: boolean }>`
   gap: 0.5rem;
   background: none;
   border: none;
-  color: ${props => props.$isDark ? '#cbd5e1' : '#65676b'};
+  color: var(--text-secondary);
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
@@ -248,8 +250,8 @@ const BackButton = styled.button<{ $isDark: boolean }>`
   transition: all 0.2s;
 
   &:hover {
-    background: ${props => props.$isDark ? '#334155' : '#f0f2f5'};
-    color: ${props => props.$isDark ? '#f1f5f9' : '#111827'};
+    background: var(--bg-hover);
+    color: var(--text-primary);
   }
 `;
 
@@ -257,9 +259,9 @@ const EditButton = styled.button<{ $isDark: boolean }>`
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background: ${props => props.$isDark ? '#2563eb' : '#1877f2'};
+  background: var(--btn-primary-bg);
   border: none;
-  color: white;
+  color: var(--btn-primary-text);
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
@@ -271,7 +273,7 @@ const EditButton = styled.button<{ $isDark: boolean }>`
     : '0 2px 4px rgba(24, 119, 242, 0.2)'};
 
   &:hover {
-    background: ${props => props.$isDark ? '#1d4ed8' : '#166fe5'};
+    background: var(--btn-primary-hover);
     transform: translateY(-1px);
     box-shadow: ${props => props.$isDark 
       ? '0 4px 8px rgba(37, 99, 235, 0.5)' 
@@ -283,7 +285,7 @@ const Container = styled.div<{ $isDark: boolean }>`
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
-  background: ${props => props.$isDark ? '#0f172a' : 'transparent'};
+  background: var(--bg-primary);
   transition: background 0.3s ease;
 
   @media (max-width: 768px) {
@@ -296,7 +298,7 @@ const MainSection = styled.div<{ $isDark: boolean }>`
   grid-template-columns: 2fr 1fr;
   gap: 2rem;
   margin-bottom: 2rem;
-  background: ${props => props.$isDark ? '#0f172a' : 'transparent'};
+  background: transparent;
   transition: background 0.3s ease;
 
   @media (max-width: 1024px) {
@@ -308,7 +310,7 @@ const LeftColumn = styled.div<{ $isDark: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  background: ${props => props.$isDark ? '#0f172a' : 'transparent'};
+  background: transparent;
   transition: background 0.3s ease;
 `;
 
@@ -316,16 +318,16 @@ const RightColumn = styled.div<{ $isDark: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  background: ${props => props.$isDark ? '#0f172a' : 'transparent'};
+  background: transparent;
   transition: background 0.3s ease;
 `;
 
 const Card = styled.div<{ $isDark: boolean }>`
-  background: ${props => props.$isDark ? '#1e293b' : '#fff'};
+  background: var(--bg-card);
   border-radius: 12px;
   padding: 1.5rem;
-  box-shadow: ${props => props.$isDark ? '0 1px 2px rgba(0, 0, 0, 0.3)' : '0 1px 2px rgba(0, 0, 0, 0.1)'};
-  border: ${props => props.$isDark ? '1px solid #334155' : 'none'};
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-primary);
   overflow: hidden;
   word-wrap: break-word;
   overflow-wrap: break-word;
@@ -348,7 +350,7 @@ const MainImageContainer = styled.div<{ $isDark: boolean }>`
   position: relative;
   width: 100%;
   aspect-ratio: 16 / 9;
-  background: ${props => props.$isDark ? '#0f172a' : '#000'};
+  background: var(--bg-primary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -367,34 +369,57 @@ const ImageNavButton = styled.button<{ $position: 'left' | 'right'; $isDark: boo
   ${props => props.$position}: 16px;
   top: 50%;
   transform: translateY(-50%);
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: ${props => props.$isDark 
-    ? 'rgba(30, 41, 59, 0.9)' 
-    : 'rgba(255, 255, 255, 0.9)'};
-  border: ${props => props.$isDark ? '1px solid #475569' : 'none'};
+  width: 56px;
+  height: 80px;
+  border-radius: 12px;
+  background: var(--bg-card);
+  border: 2px solid var(--border-primary);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 10;
+  backdrop-filter: blur(8px);
   box-shadow: ${props => props.$isDark 
-    ? '0 2px 8px rgba(0, 0, 0, 0.4)' 
-    : '0 2px 8px rgba(0, 0, 0, 0.15)'};
-
-  &:hover {
-    background: ${props => props.$isDark ? '#1e293b' : 'white'};
-    transform: translateY(-50%) scale(1.1);
-    border-color: ${props => props.$isDark ? '#64748b' : 'transparent'};
-    box-shadow: ${props => props.$isDark 
-      ? '0 4px 12px rgba(0, 0, 0, 0.5)' 
-      : '0 4px 12px rgba(0, 0, 0, 0.2)'};
-  }
+    ? '0 4px 16px rgba(0, 0, 0, 0.4)' 
+    : '0 4px 16px rgba(0, 0, 0, 0.15)'};
 
   svg {
-    color: ${props => props.$isDark ? '#f1f5f9' : '#050505'};
+    color: var(--text-primary);
+    width: 36px !important;
+    height: 36px !important;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+  }
+
+  &:hover {
+    background: var(--accent-primary);
+    border-color: var(--accent-primary);
+    transform: translateY(-50%) translateX(${props => props.$position === 'left' ? '-4px' : '4px'});
+    box-shadow: ${props => props.$isDark 
+      ? '0 6px 24px rgba(255, 121, 0, 0.5)' 
+      : '0 6px 24px rgba(255, 121, 0, 0.35)'};
+    
+    svg {
+      color: white;
+      transform: translateX(${props => props.$position === 'left' ? '-2px' : '2px'});
+    }
+  }
+  
+  &:active {
+    transform: translateY(-50%) scale(0.95);
+  }
+  
+  @media (max-width: 768px) {
+    width: 44px;
+    height: 64px;
+    border-radius: 10px;
+    
+    svg {
+      width: 28px !important;
+      height: 28px !important;
+    }
   }
 `;
 
@@ -403,7 +428,7 @@ const ThumbnailGrid = styled.div<{ $isDark: boolean }>`
   grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
   gap: 4px;
   padding: 8px;
-  background: ${props => props.$isDark ? '#0f172a' : '#f8f9fa'};
+  background: var(--bg-secondary);
   transition: background 0.3s ease;
 `;
 
@@ -414,22 +439,22 @@ const Thumbnail = styled.div<{ $isActive: boolean; $isDark: boolean }>`
   cursor: pointer;
   border: 2px solid ${props => {
     if (props.$isActive) {
-      return props.$isDark ? '#60a5fa' : '#1877f2';
+      return 'var(--accent-primary)';
     }
     return 'transparent';
   }};
   opacity: ${props => props.$isActive ? 1 : 0.7};
   transition: all 0.2s;
-  background: ${props => props.$isDark ? '#1e293b' : '#f8f9fa'};
+  background: var(--bg-card);
 
   &:hover {
     opacity: 1;
     transform: scale(1.05);
     border-color: ${props => {
       if (props.$isActive) {
-        return props.$isDark ? '#60a5fa' : '#1877f2';
+        return 'var(--accent-primary)';
       }
-      return props.$isDark ? '#475569' : '#cbd5e1';
+      return 'var(--border-secondary)';
     }};
   }
 
@@ -445,15 +470,15 @@ const DealerLogos = styled.div<{ $isDark: boolean }>`
   align-items: center;
   gap: 1rem;
   padding: 1rem;
-  border-top: 1px solid ${props => props.$isDark ? '#334155' : '#e4e6eb'};
-  background: ${props => props.$isDark ? '#0f172a' : '#f8f9fa'};
+  border-top: 1px solid var(--border-primary);
+  background: var(--bg-secondary);
   transition: all 0.3s ease;
 `;
 
 const DealerLogo = styled.div<{ $isDark: boolean }>`
   font-size: 14px;
   font-weight: 600;
-  color: ${props => props.$isDark ? '#cbd5e1' : '#65676b'};
+  color: var(--text-tertiary);
   transition: color 0.3s ease;
 `;
 
@@ -466,9 +491,9 @@ const CarBrandLogos = styled.div`
 const BrandLogo = styled.div<{ $isDark: boolean }>`
   font-size: 12px;
   font-weight: 600;
-  color: ${props => props.$isDark ? '#60a5fa' : '#1877f2'};
+  color: var(--accent-primary);
   padding: 4px 8px;
-  background: ${props => props.$isDark ? 'rgba(37, 99, 235, 0.2)' : '#e7f3ff'};
+  background: var(--bg-accent);
   border-radius: 4px;
   transition: all 0.3s ease;
 `;
@@ -486,7 +511,7 @@ const TitleSection = styled(Card)<{ $isDark: boolean }>`
 const CarTitle = styled.h1<{ $isDark: boolean }>`
   font-size: 24px;
   font-weight: 700;
-  color: ${props => props.$isDark ? '#f1f5f9' : '#050505'};
+  color: var(--text-primary);
   margin: 0 0 1rem 0;
   line-height: 1.3;
   word-wrap: break-word;
@@ -516,7 +541,7 @@ const PriceSection = styled.div`
 const NetPrice = styled.div<{ $isDark: boolean }>`
   font-size: 28px;
   font-weight: 700;
-  color: ${props => props.$isDark ? '#f1f5f9' : '#050505'};
+  color: var(--text-primary);
   line-height: 1.2;
   white-space: nowrap;
   transition: color 0.3s ease;
@@ -528,7 +553,7 @@ const NetPrice = styled.div<{ $isDark: boolean }>`
 
 const GrossPrice = styled.div<{ $isDark: boolean }>`
   font-size: 16px;
-  color: ${props => props.$isDark ? '#94a3b8' : '#65676b'};
+  color: var(--text-tertiary);
   font-weight: 500;
   line-height: 1.4;
   white-space: nowrap;
@@ -545,10 +570,10 @@ const FinancingOffer = styled.div<{ $isDark: boolean }>`
   gap: 0.5rem;
   margin-bottom: 1rem;
   padding: 12px;
-  background: ${props => props.$isDark ? 'rgba(37, 99, 235, 0.2)' : '#e7f3ff'};
+  background: var(--bg-accent);
   border-radius: 8px;
   flex-wrap: wrap;
-  border: ${props => props.$isDark ? '1px solid rgba(37, 99, 235, 0.3)' : 'none'};
+  border: 1px solid var(--border-accent);
   transition: all 0.3s ease;
 
   @media (max-width: 768px) {
@@ -561,7 +586,7 @@ const FinancingOffer = styled.div<{ $isDark: boolean }>`
 const FinancingText = styled.div<{ $isDark: boolean }>`
   font-size: 15px;
   font-weight: 600;
-  color: ${props => props.$isDark ? '#60a5fa' : '#1877f2'};
+  color: var(--accent-primary);
   line-height: 1.4;
   word-wrap: break-word;
   transition: color 0.3s ease;
@@ -589,7 +614,7 @@ const KeyDataItem = styled.div<{ $isDark: boolean }>`
   align-items: center;
   gap: 0.5rem;
   font-size: 14px;
-  color: ${props => props.$isDark ? '#94a3b8' : '#65676b'};
+  color: var(--text-tertiary);
   line-height: 1.4;
   word-wrap: break-word;
   overflow-wrap: break-word;
@@ -602,7 +627,7 @@ const KeyDataItem = styled.div<{ $isDark: boolean }>`
 
   svg {
     flex-shrink: 0;
-    color: ${props => props.$isDark ? '#60a5fa' : '#1877f2'};
+    color: var(--accent-primary);
   }
 `;
 
@@ -611,8 +636,8 @@ const QuickInfoIcons = styled.div<{ $isDark: boolean }>`
   flex-wrap: wrap;
   gap: 1.5rem;
   padding: 1rem 0;
-  border-top: 1px solid ${props => props.$isDark ? '#334155' : '#e4e6eb'};
-  border-bottom: 1px solid ${props => props.$isDark ? '#334155' : '#e4e6eb'};
+  border-top: 1px solid var(--border-primary);
+  border-bottom: 1px solid var(--border-primary);
   margin: 1rem 0;
   transition: all 0.3s ease;
 
@@ -628,7 +653,7 @@ const QuickInfoItem = styled.div<{ $isDark: boolean }>`
   align-items: center;
   gap: 0.5rem;
   font-size: 14px;
-  color: ${props => props.$isDark ? '#f1f5f9' : '#050505'};
+  color: var(--text-primary);
   font-weight: 500;
   line-height: 1.4;
   word-wrap: break-word;
@@ -643,7 +668,7 @@ const QuickInfoItem = styled.div<{ $isDark: boolean }>`
 
   svg {
     flex-shrink: 0;
-    color: ${props => props.$isDark ? '#60a5fa' : '#1877f2'};
+    color: var(--accent-primary);
   }
 `;
 
@@ -653,7 +678,7 @@ const IconWrapper = styled.div<{ $isDark: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${props => props.$isDark ? '#60a5fa' : '#1877f2'};
+  color: var(--accent-primary);
   transition: color 0.3s ease;
 `;
 
@@ -671,8 +696,8 @@ const ActionButtons = styled.div`
 
 const PrimaryButton = styled.button<{ $isDark: boolean }>`
   flex: 1;
-  background: ${props => props.$isDark ? '#2563eb' : '#1877f2'};
-  color: white;
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
   border: none;
   padding: 14px 24px;
   border-radius: 8px;
@@ -684,9 +709,7 @@ const PrimaryButton = styled.button<{ $isDark: boolean }>`
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
-  box-shadow: ${props => props.$isDark 
-    ? '0 2px 4px rgba(37, 99, 235, 0.4)' 
-    : '0 2px 4px rgba(24, 119, 242, 0.2)'};
+  box-shadow: var(--shadow-button);
 
   @media (max-width: 768px) {
     padding: 12px 16px;
@@ -695,7 +718,7 @@ const PrimaryButton = styled.button<{ $isDark: boolean }>`
   }
 
   &:hover {
-    background: ${props => props.$isDark ? '#1d4ed8' : '#166fe5'};
+    background: var(--btn-primary-hover);
     transform: translateY(-1px);
     box-shadow: ${props => props.$isDark 
       ? '0 4px 8px rgba(37, 99, 235, 0.5)' 
@@ -707,8 +730,8 @@ const SecondaryButton = styled.button<{ $isDark: boolean }>`
   width: 48px;
   height: 48px;
   border-radius: 8px;
-  border: 1px solid ${props => props.$isDark ? '#334155' : '#e4e6eb'};
-  background: ${props => props.$isDark ? '#1e293b' : 'white'};
+  border: 1px solid var(--border-primary);
+  background: var(--btn-secondary-bg);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -722,14 +745,14 @@ const SecondaryButton = styled.button<{ $isDark: boolean }>`
   }
 
   &:hover {
-    background: ${props => props.$isDark ? '#334155' : '#f0f2f5'};
-    border-color: ${props => props.$isDark ? '#475569' : '#cbd5e1'};
+    background: var(--btn-secondary-hover);
+    border-color: var(--border-secondary);
   }
 
   svg {
     width: 20px;
     height: 20px;
-    color: ${props => props.$isDark ? '#cbd5e1' : '#050505'};
+    color: var(--btn-secondary-text);
 
     @media (max-width: 768px) {
       width: 18px;
@@ -749,7 +772,7 @@ const BatteryInfoSection = styled(Card)<{ $isDark: boolean }>`
 const BatteryTitle = styled.h3<{ $isDark: boolean }>`
   font-size: 18px;
   font-weight: 700;
-  color: ${props => props.$isDark ? '#f1f5f9' : '#050505'};
+  color: var(--text-primary);
   margin: 0 0 1rem 0;
   line-height: 1.3;
   transition: color 0.3s ease;
@@ -779,7 +802,7 @@ const BatteryItem = styled.div`
 
 const BatteryLabel = styled.div<{ $isDark: boolean }>`
   font-size: 13px;
-  color: ${props => props.$isDark ? '#94a3b8' : '#65676b'};
+  color: var(--text-tertiary);
   font-weight: 500;
   line-height: 1.4;
   word-wrap: break-word;
@@ -793,7 +816,7 @@ const BatteryLabel = styled.div<{ $isDark: boolean }>`
 const BatteryValue = styled.div<{ $isDark: boolean }>`
   font-size: 16px;
   font-weight: 700;
-  color: ${props => props.$isDark ? '#f1f5f9' : '#050505'};
+  color: var(--text-primary);
   line-height: 1.4;
   word-wrap: break-word;
   transition: color 0.3s ease;
@@ -810,7 +833,7 @@ const TechnicalDataTable = styled.table<{ $isDark: boolean }>`
 `;
 
 const TableRow = styled.tr<{ $isDark: boolean }>`
-  border-bottom: 1px solid ${props => props.$isDark ? '#334155' : '#e4e6eb'};
+  border-bottom: 1px solid var(--border-primary);
   transition: border-color 0.3s ease;
 
   &:last-child {
@@ -821,7 +844,7 @@ const TableRow = styled.tr<{ $isDark: boolean }>`
 const TableLabel = styled.td<{ $isDark: boolean }>`
   padding: 12px 0;
   font-size: 14px;
-  color: ${props => props.$isDark ? '#94a3b8' : '#65676b'};
+  color: var(--text-tertiary);
   font-weight: 500;
   width: 50%;
   line-height: 1.5;
@@ -840,7 +863,7 @@ const TableLabel = styled.td<{ $isDark: boolean }>`
 const TableValue = styled.td<{ $isDark: boolean }>`
   padding: 12px 0;
   font-size: 14px;
-  color: ${props => props.$isDark ? '#f1f5f9' : '#050505'};
+  color: var(--text-primary);
   font-weight: 600;
   text-align: right;
   line-height: 1.5;
@@ -864,7 +887,7 @@ const FeaturesSection = styled(Card)<{ $isDark: boolean }>`
 const FeaturesTitle = styled.h3<{ $isDark: boolean }>`
   font-size: 18px;
   font-weight: 700;
-  color: ${props => props.$isDark ? '#f1f5f9' : '#050505'};
+  color: var(--text-primary);
   margin: 0 0 1rem 0;
   line-height: 1.3;
   transition: color 0.3s ease;
@@ -886,7 +909,7 @@ const FeaturesCategory = styled.div`
 const CategoryTitle = styled.h4<{ $isDark: boolean }>`
   font-size: 15px;
   font-weight: 600;
-  color: ${props => props.$isDark ? '#e2e8f0' : '#050505'};
+  color: var(--text-primary);
   margin: 0 0 0.75rem 0;
   line-height: 1.3;
   transition: color 0.3s ease;
@@ -913,7 +936,7 @@ const FeatureItem = styled.div<{ $isDark: boolean }>`
   align-items: flex-start;
   gap: 0.5rem;
   font-size: 14px;
-  color: ${props => props.$isDark ? '#e2e8f0' : '#050505'};
+  color: var(--text-primary);
   line-height: 1.5;
   word-wrap: break-word;
   overflow-wrap: break-word;
@@ -946,7 +969,7 @@ const DescriptionSection = styled(Card)<{ $isDark: boolean }>`
 const DescriptionTitle = styled.h3<{ $isDark: boolean }>`
   font-size: 18px;
   font-weight: 700;
-  color: ${props => props.$isDark ? '#f1f5f9' : '#050505'};
+  color: var(--text-primary);
   margin: 0 0 1rem 0;
   line-height: 1.3;
   transition: color 0.3s ease;
@@ -960,7 +983,7 @@ const DescriptionTitle = styled.h3<{ $isDark: boolean }>`
 const DescriptionText = styled.div<{ $isDark: boolean }>`
   font-size: 15px;
   line-height: 1.6;
-  color: ${props => props.$isDark ? '#e2e8f0' : '#050505'};
+  color: var(--text-primary);
   white-space: pre-wrap;
   word-wrap: break-word;
   overflow-wrap: break-word;
@@ -992,16 +1015,47 @@ const DealerInfo = styled.div`
 const DealerName = styled.h3<{ $isDark: boolean }>`
   font-size: 18px;
   font-weight: 700;
-  color: ${props => props.$isDark ? '#f1f5f9' : '#050505'};
+  color: var(--text-primary);
   margin: 0 0 0.5rem 0;
   line-height: 1.3;
   word-wrap: break-word;
   overflow-wrap: break-word;
   transition: color 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--accent-primary);
+  }
 
   @media (max-width: 768px) {
     font-size: 16px;
     margin: 0 0 0.375rem 0;
+  }
+`;
+
+const ProfileLink = styled.a<{ $isDark: boolean }>`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: color 0.3s ease;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--accent-primary);
+    
+    svg {
+      transform: scale(1.1);
+    }
+  }
+
+  svg {
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
   }
 `;
 
@@ -1028,7 +1082,7 @@ const StarIcon = styled(Star)`
 const RatingValue = styled.span<{ $isDark: boolean }>`
   font-size: 16px;
   font-weight: 700;
-  color: ${props => props.$isDark ? '#f1f5f9' : '#050505'};
+  color: var(--text-primary);
   line-height: 1.4;
   white-space: nowrap;
   transition: color 0.3s ease;
@@ -1040,7 +1094,7 @@ const RatingValue = styled.span<{ $isDark: boolean }>`
 
 const RatingCount = styled.span<{ $isDark: boolean }>`
   font-size: 14px;
-  color: ${props => props.$isDark ? '#94a3b8' : '#65676b'};
+  color: var(--text-tertiary);
   margin-left: 0.5rem;
   line-height: 1.4;
   white-space: nowrap;
@@ -1059,16 +1113,18 @@ const DealerButtons = styled.div`
 
 const DealerButton = styled.button<{ $isDark: boolean }>`
   padding: 8px 16px;
-  border: 1px solid ${props => props.$isDark ? '#334155' : '#e4e6eb'};
-  background: ${props => props.$isDark ? '#1e293b' : 'white'};
+  border: 1px solid var(--btn-secondary-border);
+  background: var(--btn-secondary-bg);
   border-radius: 8px;
   font-size: 14px;
   font-weight: 600;
-  color: ${props => props.$isDark ? '#f1f5f9' : '#050505'};
+  color: var(--btn-secondary-text);
   cursor: pointer;
   transition: all 0.2s;
   white-space: nowrap;
   line-height: 1.4;
+  text-decoration: none;
+  display: inline-block;
 
   @media (max-width: 768px) {
     padding: 6px 12px;
@@ -1076,15 +1132,15 @@ const DealerButton = styled.button<{ $isDark: boolean }>`
   }
 
   &:hover {
-    background: ${props => props.$isDark ? '#334155' : '#f0f2f5'};
-    border-color: ${props => props.$isDark ? '#475569' : '#cbd5e1'};
+    background: var(--btn-secondary-hover);
+    border-color: var(--border-secondary);
   }
 `;
 
 const DealerContact = styled.div<{ $isDark: boolean }>`
   margin-top: 1rem;
   padding-top: 1rem;
-  border-top: 1px solid ${props => props.$isDark ? '#334155' : '#e4e6eb'};
+  border-top: 1px solid var(--border-primary);
   transition: border-color 0.3s ease;
 `;
 
@@ -1094,7 +1150,7 @@ const ContactItem = styled.div<{ $isDark: boolean }>`
   gap: 0.5rem;
   margin-bottom: 0.75rem;
   font-size: 14px;
-  color: ${props => props.$isDark ? '#e2e8f0' : '#050505'};
+  color: var(--text-primary);
   line-height: 1.5;
   word-wrap: break-word;
   overflow-wrap: break-word;
@@ -1113,13 +1169,13 @@ const ContactItem = styled.div<{ $isDark: boolean }>`
   svg {
     flex-shrink: 0;
     margin-top: 2px;
-    color: ${props => props.$isDark ? '#60a5fa' : '#1877f2'};
+    color: var(--accent-primary);
   }
 
   a {
     word-break: break-all;
     overflow-wrap: break-word;
-    color: ${props => props.$isDark ? '#60a5fa' : '#1877f2'};
+    color: var(--accent-primary);
     text-decoration: none;
     transition: color 0.3s ease;
 
@@ -1132,14 +1188,14 @@ const ContactItem = styled.div<{ $isDark: boolean }>`
 const OpeningHours = styled.div<{ $isDark: boolean }>`
   margin-top: 1rem;
   padding-top: 1rem;
-  border-top: 1px solid ${props => props.$isDark ? '#334155' : '#e4e6eb'};
+  border-top: 1px solid var(--border-primary);
   transition: border-color 0.3s ease;
 `;
 
 const HoursTitle = styled.h4<{ $isDark: boolean }>`
   font-size: 15px;
   font-weight: 600;
-  color: ${props => props.$isDark ? '#e2e8f0' : '#050505'};
+  color: var(--text-primary);
   margin: 0 0 0.5rem 0;
   line-height: 1.3;
   transition: color 0.3s ease;
@@ -1152,7 +1208,7 @@ const HoursTitle = styled.h4<{ $isDark: boolean }>`
 
 const HoursItem = styled.div<{ $isDark: boolean }>`
   font-size: 14px;
-  color: ${props => props.$isDark ? '#94a3b8' : '#65676b'};
+  color: var(--text-tertiary);
   margin-bottom: 0.25rem;
   line-height: 1.5;
   word-wrap: break-word;
@@ -1176,7 +1232,7 @@ const FinancingSection = styled.div<{ $isDark: boolean }>`
 const FinancingTitle = styled.div<{ $isDark: boolean }>`
   font-size: 15px;
   font-weight: 600;
-  color: ${props => props.$isDark ? '#e2e8f0' : '#050505'};
+  color: var(--text-primary);
   margin-bottom: 0.5rem;
   line-height: 1.4;
   word-wrap: break-word;
@@ -1190,8 +1246,8 @@ const FinancingTitle = styled.div<{ $isDark: boolean }>`
 
 const FinancingButton = styled.button<{ $isDark: boolean }>`
   width: 100%;
-  background: ${props => props.$isDark ? '#7c3aed' : '#8b5cf6'};
-  color: white;
+  background: var(--accent-primary);
+  color: var(--btn-primary-text);
   border: none;
   padding: 12px;
   border-radius: 8px;
@@ -1213,7 +1269,7 @@ const FinancingButton = styled.button<{ $isDark: boolean }>`
   }
 
   &:hover {
-    background: ${props => props.$isDark ? '#6d28d9' : '#7c3aed'};
+    background: var(--accent-secondary);
     box-shadow: ${props => props.$isDark 
       ? '0 4px 8px rgba(124, 58, 237, 0.5)' 
       : '0 4px 8px rgba(139, 92, 246, 0.3)'};
@@ -1228,7 +1284,7 @@ const MapSection = styled(Card)<{ $isDark: boolean }>`
 const MapTitle = styled.h3<{ $isDark: boolean }>`
   font-size: 18px;
   font-weight: 700;
-  color: ${props => props.$isDark ? '#f1f5f9' : '#050505'};
+  color: var(--text-primary);
   margin: 0 0 1rem 0;
   line-height: 1.3;
   transition: color 0.3s ease;
@@ -1247,7 +1303,7 @@ const ServicesSection = styled(Card)<{ $isDark: boolean }>`
 const ServicesTitle = styled.h3<{ $isDark: boolean }>`
   font-size: 18px;
   font-weight: 700;
-  color: ${props => props.$isDark ? '#f1f5f9' : '#050505'};
+  color: var(--text-primary);
   margin: 0 0 1rem 0;
   line-height: 1.3;
   transition: color 0.3s ease;
@@ -1269,7 +1325,7 @@ const ServiceCheckbox = styled.label<{ $isDark: boolean }>`
   align-items: flex-start;
   gap: 0.5rem;
   font-size: 14px;
-  color: ${props => props.$isDark ? '#e2e8f0' : '#050505'};
+  color: var(--text-primary);
   cursor: pointer;
   line-height: 1.5;
   word-wrap: break-word;
@@ -1292,12 +1348,12 @@ const UpdateButton = styled.button<{ $isDark: boolean }>`
   margin-top: 1rem;
   width: 100%;
   padding: 10px;
-  background: ${props => props.$isDark ? '#334155' : '#f0f2f5'};
-  border: 1px solid ${props => props.$isDark ? '#475569' : '#e4e6eb'};
+  background: var(--btn-secondary-bg);
+  border: 1px solid var(--btn-secondary-border);
   border-radius: 8px;
   font-size: 14px;
   font-weight: 600;
-  color: ${props => props.$isDark ? '#f1f5f9' : '#050505'};
+  color: var(--text-primary);
   cursor: pointer;
   transition: all 0.2s;
   white-space: nowrap;
@@ -1312,8 +1368,8 @@ const UpdateButton = styled.button<{ $isDark: boolean }>`
   }
 
   &:hover {
-    background: ${props => props.$isDark ? '#475569' : '#e4e6eb'};
-    border-color: ${props => props.$isDark ? '#64748b' : '#cbd5e1'};
+    background: var(--btn-secondary-hover);
+    border-color: var(--border-secondary);
   }
 `;
 
@@ -1328,9 +1384,72 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
   onContact
 }) => {
   const t = translations[language];
-  const { isDark } = useTheme();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+  const navigate = useNavigate();
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [showAllFeatures, setShowAllFeatures] = useState(false);
+
+  // Get seller ID for profile link
+  const sellerId = car.sellerId || car.userId;
+  
+  // Handler functions
+  const handleProfileClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (sellerId) {
+      navigate(`/profile/${sellerId}`);
+    }
+  };
+
+  const handleContactDealer = () => {
+    if (sellerId) {
+      // Navigate to messages with seller
+      navigate(`/messages?userId=${sellerId}`);
+    } else {
+      onContact('phone');
+    }
+  };
+
+  const handleInquireNow = () => {
+    // Navigate to finance page or messages
+    navigate('/finance');
+  };
+
+  const handleReviews = () => {
+    if (sellerId) {
+      navigate(`/profile/${sellerId}#reviews`);
+    }
+  };
+
+  const handleAllVehicles = () => {
+    if (sellerId) {
+      // Navigate to profile with my-ads tab or filter by seller
+      navigate(`/profile/${sellerId}/my-ads`);
+    } else {
+      navigate('/cars');
+    }
+  };
+
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: `${car.make} ${car.model} ${car.year}`,
+        text: `Check out this ${car.make} ${car.model} for ${formatPrice(car.price)}`,
+        url: window.location.href
+      }).catch(() => {
+        // Fallback: copy to clipboard
+        navigator.clipboard.writeText(window.location.href);
+      });
+    } else {
+      // Fallback: copy to clipboard
+      navigator.clipboard.writeText(window.location.href);
+    }
+  };
+
+  const handleSave = () => {
+    // Navigate to favorites or save to localStorage
+    navigate('/favorites');
+  };
 
   const images = car.images || [];
   const hasImages = images.length > 0;
@@ -1633,7 +1752,7 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
               </QuickInfoIcons>
 
               <ActionButtons>
-                <PrimaryButton $isDark={isDark} onClick={() => onContact('phone')}>
+                <PrimaryButton $isDark={isDark} onClick={handleContactDealer}>
                   {t.contactDealer}
                 </PrimaryButton>
                 <SecondaryButton $isDark={isDark} onClick={() => onContact('phone')} title={t.phone}>
@@ -1645,10 +1764,10 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
                 <SecondaryButton $isDark={isDark} onClick={() => onContact('whatsapp')} title="WhatsApp">
                   <MessageCircle size={20} />
                 </SecondaryButton>
-                <SecondaryButton $isDark={isDark} title={t.share}>
+                <SecondaryButton $isDark={isDark} onClick={handleShare} title={t.share}>
                   <Share2 size={20} />
                 </SecondaryButton>
-                <SecondaryButton $isDark={isDark} title={t.save}>
+                <SecondaryButton $isDark={isDark} onClick={handleSave} title={t.save}>
                   <Bookmark size={20} />
                 </SecondaryButton>
               </ActionButtons>
@@ -1676,7 +1795,7 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
                     <BatteryValue $isDark={isDark}>35 {t.minutes}</BatteryValue>
                   </BatteryItem>
                 </BatteryGrid>
-                <div style={{ marginTop: '1rem', fontSize: '13px', color: isDark ? '#94a3b8' : '#65676b' }}>
+                <div style={{ marginTop: '1rem', fontSize: '13px', color: 'var(--text-tertiary)' }}>
                   {t.batteryWarranty}
                 </div>
               </BatteryInfoSection>
@@ -1850,11 +1969,26 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
                     <RatingValue $isDark={isDark}>4.7</RatingValue>
                     <RatingCount $isDark={isDark}>(119 {t.reviews})</RatingCount>
                   </DealerRating>
-                  <DealerName $isDark={isDark}>{car.sellerName || car.companyName || 'Dealer'}</DealerName>
+                  <DealerName $isDark={isDark} onClick={handleProfileClick}>
+                    {sellerId && (
+                      <User size={20} style={{ flexShrink: 0 }} />
+                    )}
+                    <ProfileLink 
+                      $isDark={isDark} 
+                      href={sellerId ? `/profile/${sellerId}` : '#'}
+                      onClick={handleProfileClick}
+                    >
+                      {car.sellerName || car.companyName || 'Dealer'}
+                    </ProfileLink>
+                  </DealerName>
                 </DealerInfo>
                 <DealerButtons>
-                  <DealerButton $isDark={isDark}>{t.reviews}</DealerButton>
-                  <DealerButton $isDark={isDark}>{t.allVehicles}</DealerButton>
+                  <DealerButton $isDark={isDark} onClick={handleReviews}>
+                    {t.reviews}
+                  </DealerButton>
+                  <DealerButton $isDark={isDark} onClick={handleAllVehicles}>
+                    {t.allVehicles}
+                  </DealerButton>
                 </DealerButtons>
               </DealerHeader>
 
@@ -1896,7 +2030,9 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
                 <FinancingTitle $isDark={isDark}>
                   {language === 'bg' ? 'Интересувате ли се от финансиране?' : 'Interested in financing?'}
                 </FinancingTitle>
-                <FinancingButton $isDark={isDark}>{t.inquireNow}</FinancingButton>
+                <FinancingButton $isDark={isDark} onClick={handleInquireNow}>
+                  {t.inquireNow}
+                </FinancingButton>
               </FinancingSection>
             </DealerSection>
 
@@ -1935,7 +2071,9 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
                   <span>{t.registrationService}</span>
                 </ServiceCheckbox>
               </ServicesGrid>
-              <FinancingButton $isDark={isDark} style={{ marginTop: '1rem' }}>{t.inquireNow}</FinancingButton>
+              <FinancingButton $isDark={isDark} style={{ marginTop: '1rem' }} onClick={handleInquireNow}>
+                {t.inquireNow}
+              </FinancingButton>
             </ServicesSection>
           </RightColumn>
         </MainSection>

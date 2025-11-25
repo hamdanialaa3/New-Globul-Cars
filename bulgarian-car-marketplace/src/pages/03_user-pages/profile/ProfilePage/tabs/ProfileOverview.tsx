@@ -63,7 +63,7 @@ export const ProfileOverview: React.FC<ProfileOverviewProps> = (props) => {
   if (!isOwnProfile) {
     return (
       <OverviewContainer>
-        <PublicProfileView user={user} />
+        <PublicProfileView user={user} userCars={userCars} />
       </OverviewContainer>
     );
   }
