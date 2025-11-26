@@ -23,9 +23,13 @@ const Header = React.lazy(() => import('./components/Header/Header'));
 const MobileHeader = React.lazy(() => import('./components/Header/MobileHeader')); // ✅ NEW: Mobile-only header
 const MobileBottomNav = React.lazy(() => import('./components/layout').then(module => ({ default: module.MobileBottomNav }))); // ✅ NEW: Mobile bottom navigation
 const Footer = React.lazy(() => import('./components/Footer/Footer'));
-import ProtectedRoute from './components/ProtectedRoute';
-import AdminRoute from './components/AdminRoute';
-import AuthGuard from './components/AuthGuard';
+// ❌ REMOVED: Old guards (now using UnifiedAuthGuard from './components/guards')
+// import ProtectedRoute from './components/ProtectedRoute';
+// import AdminRoute from './components/AdminRoute';
+// import AuthGuard from './components/AuthGuard'; // ❌ OLD
+// ✨ NEW: Refactored components (active)
+import { AuthGuard } from './components/guards'; // ✅ NEW
+import { AppProviders } from './providers';
 import NotificationHandler from './components/NotificationHandler';
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 import { FilterProvider } from './contexts/FilterContext';
@@ -169,7 +173,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // Get theme from context
   const { theme } = useTheme();
   const isDark = theme === 'dark';
-  
+
   return (
     <div className="main-layout" style={{
       minHeight: '100vh',
@@ -256,86 +260,72 @@ const App: React.FC = () => {
     <ThemeProvider theme={bulgarianTheme}>
       <GlobalStyles />
       <ErrorBoundary>
-        <LanguageProvider>
-          <CustomThemeProvider>
-            <AuthProvider>
-              <ProfileTypeProvider>
-              <ToastProvider>
-                <GoogleReCaptchaProvider reCaptchaKey={recaptchaKey || "dummy-key"}>
-                  <Router>
-                  {/* Unified filter context (search + listings). Nested to preserve critical provider order. */}
-                  <FilterProvider>
-                  <Suspense fallback={<div style={{ height: '0' }} />}>
-                    <FacebookPixel />
-                  </Suspense>
-                  {/* <FacebookMessengerWidget /> - Temporarily disabled */}
-                  <SkipNavigation />
-                  <NotificationHandler />
-                  <Suspense fallback={
-                    <Suspense fallback={<div>Loading...</div>}>
-                      <ProgressBar duration={2000} />
-                    </Suspense>
-                  }>
-                    <Routes>
-                      {/* Auth Routes - Full Screen (no header/footer) */}
-                      <Route path="/login" element={
-                        <FullScreenLayout>
-                          <LoginPage />
-                        </FullScreenLayout>
-                      } />
-                      <Route path="/register" element={
-                        <FullScreenLayout>
-                          <RegisterPage />
-                        </FullScreenLayout>
-                      } />
-                      <Route path="/verification" element={
-                        <FullScreenLayout>
-                          <EmailVerificationPage />
-                        </FullScreenLayout>
-                      } />
-                      
-                      {/* OAuth Callback - Full Screen (no header/footer) */}
-                      <Route path="/oauth/callback" element={
-                        <FullScreenLayout>
-                          <OAuthCallback />
-                        </FullScreenLayout>
-                      } />
-                      
-                      {/* Super Admin Routes - Full Screen (no header/footer) */}
-                      <Route path="/super-admin-login" element={
-                        <FullScreenLayout>
-                          <SuperAdminLogin />
-                        </FullScreenLayout>
-                      } />
-                      <Route path="/super-admin" element={
-                        <FullScreenLayout>
-                          <SuperAdminDashboard />
-                        </FullScreenLayout>
-                      } />
-                      <Route path="/super-admin/users" element={
-                        <FullScreenLayout>
-                          <SuperAdminUsersPage />
-                        </FullScreenLayout>
-                      } />
-                      {/* Architecture Diagram - Full Screen */}
-                      <Route path="/diagram" element={
-                        <FullScreenLayout>
-                          <ArchitectureDiagramPage />
-                        </FullScreenLayout>
-                      } />
-                      
-                      {/* All other routes with header/footer */}
-                      <Route path="/*" element={<MainLayout />} />
-                    </Routes>
-                  </Suspense>
-                  </FilterProvider>
-                </Router>
-              </GoogleReCaptchaProvider>
-            </ToastProvider>
-            </ProfileTypeProvider>
-          </AuthProvider>
-          </CustomThemeProvider>
-        </LanguageProvider>
+        {/* ✨ NEW: Using extracted AppProviders (contains all 8 providers in correct order) */}
+        <AppProviders recaptchaKey={recaptchaKey || "dummy-key"}>
+          <Suspense fallback={<div style={{ height: '0' }} />}>
+            <FacebookPixel />
+          </Suspense>
+          {/* <FacebookMessengerWidget /> - Temporarily disabled */}
+          <SkipNavigation />
+          <NotificationHandler />
+          <Suspense fallback={
+            <Suspense fallback={<div>Loading...</div>}>
+              <ProgressBar duration={2000} />
+            </Suspense>
+          }>
+            <Routes>
+              {/* Auth Routes - Full Screen (no header/footer) */}
+              <Route path="/login" element={
+                <FullScreenLayout>
+                  <LoginPage />
+                </FullScreenLayout>
+              } />
+              <Route path="/register" element={
+                <FullScreenLayout>
+                  <RegisterPage />
+                </FullScreenLayout>
+              } />
+              <Route path="/verification" element={
+                <FullScreenLayout>
+                  <EmailVerificationPage />
+                </FullScreenLayout>
+              } />
+
+              {/* OAuth Callback - Full Screen (no header/footer) */}
+              <Route path="/oauth/callback" element={
+                <FullScreenLayout>
+                  <OAuthCallback />
+                </FullScreenLayout>
+              } />
+
+              {/* Super Admin Routes - Full Screen (no header/footer) */}
+              <Route path="/super-admin-login" element={
+                <FullScreenLayout>
+                  <SuperAdminLogin />
+                </FullScreenLayout>
+              } />
+              <Route path="/super-admin" element={
+                <FullScreenLayout>
+                  <SuperAdminDashboard />
+                </FullScreenLayout>
+              } />
+              <Route path="/super-admin/users" element={
+                <FullScreenLayout>
+                  <SuperAdminUsersPage />
+                </FullScreenLayout>
+              } />
+              {/* Architecture Diagram - Full Screen */}
+              <Route path="/diagram" element={
+                <FullScreenLayout>
+                  <ArchitectureDiagramPage />
+                </FullScreenLayout>
+              } />
+
+              {/* All other routes with header/footer */}
+              <Route path="/*" element={<MainLayout />} />
+            </Routes>
+          </Suspense>
+        </AppProviders>
       </ErrorBoundary>
     </ThemeProvider>
   );
@@ -344,564 +334,564 @@ const App: React.FC = () => {
 const MainLayout: React.FC = () => {
   const isMobile = useIsMobile();
   return (
-  <Layout>
-    <Suspense fallback={null}>
-      <FloatingAddButton />
-    </Suspense>
-    <Suspense fallback={null}>
-      <RobotChatIcon />
-    </Suspense>
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/social" element={<SocialFeedPage />} />
-      <Route path="/cars" element={<CarsPage />} />
-      <Route path="/cars/:id" element={<CarDetailsPage />} />
-      <Route path="/car/:id" element={<CarDetailsPage />} />
-      
-      {/* Dealer Routes */}
-      <Route path="/dealer/:slug" element={<DealerPublicPage />} />
-      <Route path="/dealer-registration" element={<DealerRegistrationPage />} />
-      <Route
-        path="/dealer-dashboard"
-        element={
-          <ProtectedRoute>
-            <DealerDashboardPage />
-          </ProtectedRoute>
-        }
-      />
-      
-      {/* Unified Sell System - بدء التجربة مباشرة من /sell/auto */}
-      <Route path="/sell" element={<Navigate to="/sell/auto" replace />} />
-      {/* Redirect old routes to new system */}
-      <Route path="/sell-car" element={<Navigate to="/sell/auto" replace />} />
-      <Route path="/add-car" element={<Navigate to="/sell/auto" replace />} />
-      
-      {/* Social Feed - Create Post */}
-      <Route path="/create-post" element={<CreatePostPage />} />
-      {/* Mobile.de-style sell workflow */}
-      <Route
-        path="/sell/auto"
-        element={
-          <AuthGuard requireAuth={true}>
-            <VehicleStartPage />
-          </AuthGuard>
-        }
-      />
-      <Route
-        path="/sell/inserat/:vehicleType/verkaeufertyp"
-        element={
-          <AuthGuard requireAuth={true}>
-            <MobileSellerTypePage />
-          </AuthGuard>
-        }
-      />
-      <Route
-        path="/sell/inserat/:vehicleType/fahrzeugdaten/antrieb-und-umwelt"
-        element={
-          <AuthGuard requireAuth={true}>
-            <VehicleDataPageUnified />
-          </AuthGuard>
-        }
-      />
-      {/* NEW: Unified Equipment Page - All Features in One Place */}
-      <Route
-        path="/sell/inserat/:vehicleType/equipment"
-        element={
-          <AuthGuard requireAuth={true}>
-            <UnifiedEquipmentPage />
-          </AuthGuard>
-        }
-      />
-      
-      {/* Legacy Equipment Routes - Keep for backward compatibility */}
-      <Route
-        path="/sell/inserat/:vehicleType/ausstattung"
-        element={
-          <AuthGuard requireAuth={true}>
-              {isMobile ? <MobileEquipmentMainPage /> : <EquipmentMainPage />}
-          </AuthGuard>
-        }
-      />
-      <Route
-        path="/sell/inserat/:vehicleType/ausstattung/sicherheit"
-        element={
-          <AuthGuard requireAuth={true}>
-            <SafetyEquipmentPage />
-          </AuthGuard>
-        }
-      />
-      <Route
-        path="/sell/inserat/:vehicleType/ausstattung/komfort"
-        element={
-          <AuthGuard requireAuth={true}>
-            <ComfortEquipmentPage />
-          </AuthGuard>
-        }
-      />
-      <Route
-        path="/sell/inserat/:vehicleType/ausstattung/infotainment"
-        element={
-          <AuthGuard requireAuth={true}>
-            <InfotainmentEquipmentPage />
-          </AuthGuard>
-        }
-      />
-      <Route
-        path="/sell/inserat/:vehicleType/ausstattung/extras"
-        element={
-          <AuthGuard requireAuth={true}>
-            <ExtrasEquipmentPage />
-          </AuthGuard>
-        }
-      />
-      <Route
-        path="/sell/inserat/:vehicleType/details/bilder"
-        element={
-          <AuthGuard requireAuth={true}>
-            <ImagesPageUnified />
-          </AuthGuard>
-        }
-      />
-      <Route
-        path="/sell/inserat/:vehicleType/details/preis"
-        element={
-          <AuthGuard requireAuth={true}>
-              {isMobile ? <MobilePricingPage /> : <PricingPage />}
-          </AuthGuard>
-        }
-      />
-      {/* NEW: Unified Contact Page - All Contact Info in One Place */}
-      <Route
-        path="/sell/inserat/:vehicleType/contact"
-        element={
-          <AuthGuard requireAuth={true}>
-              {isMobile ? <MobileContactPage /> : <UnifiedContactPage />}
-          </AuthGuard>
-        }
-      />
-
-      {/* Preview / Summary step before submission */}
-      <Route
-        path="/sell/inserat/:vehicleType/preview"
-        element={
-          <AuthGuard requireAuth={true}>
-              {isMobile ? <MobilePreviewPage /> : <DesktopPreviewPage />}
-          </AuthGuard>
-        }
-      />
-
-      {/* Final submission step */}
-      <Route
-        path="/sell/inserat/:vehicleType/submission"
-        element={
-          <AuthGuard requireAuth={true}>
-              {isMobile ? <MobileSubmissionPage /> : <DesktopSubmissionPage />}
-          </AuthGuard>
-        }
-      />
-
-      {/* Legacy Contact Routes - Keep for backward compatibility */}
-      <Route
-        path="/sell/inserat/:vehicleType/kontakt/name"
-        element={
-          <AuthGuard requireAuth={true}>
-            <ContactNamePage />
-          </AuthGuard>
-        }
-      />
-      <Route
-        path="/sell/inserat/:vehicleType/kontakt/adresse"
-        element={
-          <AuthGuard requireAuth={true}>
-            <ContactAddressPage />
-          </AuthGuard>
-        }
-      />
-      <Route
-        path="/sell/inserat/:vehicleType/kontakt/telefonnummer"
-        element={
-          <AuthGuard requireAuth={true}>
-            <ContactPhonePage />
-          </AuthGuard>
-        }
-      />
-  {/* Profile routes - single entry; nested router handles both index and :userId */}
-  <Route path="/profile/*" element={<ProfileRouter />} />
-      <Route path="/verification" element={<VerificationPage />} />  {/* NEW: Verification System */}
-      <Route path="/billing" element={<BillingPage />} />  {/* NEW: Billing System */}
-      
-      {/* NEW: Payment & Checkout Routes */}
-      <Route
-        path="/checkout/:carId"
-        element={
-          <ProtectedRoute>
-            <CheckoutPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/payment-success/:transactionId"
-        element={
-          <ProtectedRoute>
-            <PaymentSuccessPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/billing/success"
-        element={
-          <ProtectedRoute>
-            <BillingSuccessPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/billing/canceled"
-        element={
-          <ProtectedRoute>
-            <BillingCanceledPage />
-          </ProtectedRoute>
-        }
-      />
-      
-      <Route path="/analytics" element={<AnalyticsDashboard />} />  {/* NEW: Analytics System */}
-      <Route path="/team" element={<TeamManagement />} />  {/* NEW: Team Management */}
-      <Route path="/users" element={<UsersDirectoryPage />} />
-      {/* Redirect /all-users to /users */}
-      <Route path="/all-users" element={<UsersDirectoryPage />} />
-      {/* ⚡ NEW: Browse Pages */}
-      <Route path="/all-posts" element={<AllPostsPage />} />
-      <Route path="/all-cars" element={<AllCarsPage />} />
-      <Route path="/messages" element={<MessagesPage />} />
-      
-      {/* NEW: Social Platform Routes */}
-      <Route
-        path="/events"
-        element={
-          <ProtectedRoute>
-            <EventsPage />
-          </ProtectedRoute>
-        }
-      />
-      
-      <Route path="/admin-login" element={<AdminLoginPage />} />
-      <Route
-        path="/admin"
-        element={
-          <ProtectedRoute>
-            <AdminPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/admin-car-management"
-        element={
-          <AdminRoute>
-            <AdminCarManagementPage />
-          </AdminRoute>
-        }
-      />
-      <Route
-        path="/admin/data-fix"
-        element={
-          <AdminRoute>
-            <AdminDataFix />
-          </AdminRoute>
-        }
-      />
-      <Route
-        path="/notifications"
-        element={
-          <ProtectedRoute>
-            <NotificationsPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/saved-searches"
-        element={
-          <ProtectedRoute>
-            <SavedSearchesPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/favorites"
-        element={
-          <ProtectedRoute>
-            <FavoritesPage />
-          </ProtectedRoute>
-        }
-      />
-      
-      {/* NEW: Invoices & Commissions Pages - P2 Integration */}
-      <Route
-        path="/invoices"
-        element={
-          <ProtectedRoute>
-            <InvoicesPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/commissions"
-        element={
-          <ProtectedRoute>
-            <CommissionsPage />
-          </ProtectedRoute>
-        }
-      />
-      
-      <Route
-        path="/dashboard"
-        element={
-          <ProtectedRoute>
-            <DashboardPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/admin"
-        element={
-          <AdminRoute>
-            <AdminDashboard />
-          </AdminRoute>
-        }
-      />
-
-      {/* Theme Test Page */}
-      <Route path="/theme-test" element={<ThemeTest />} />
-
-      {/* Background Test Page */}
-      <Route path="/background-test" element={<BackgroundTest />} />
-
-      {/* Full Theme Demo Page */}
-      <Route path="/full-demo" element={<FullThemeDemo />} />
-
-      {/* Effects Test Page */}
-      <Route path="/effects-test" element={<EffectsTest />} />
-
-      {/* Icon Showcase Page */}
-      <Route path="/icon-showcase" element={<IconShowcasePage />} />
-
-      {/* IoT Pages */}
-      <Route
-        path="/iot-dashboard"
-        element={
-          <ProtectedRoute>
-            <IoTDashboardPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/car-tracking"
-        element={
-          <ProtectedRoute>
-            <CarTrackingPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/iot-analytics"
-        element={
-          <ProtectedRoute>
-            <IoTAnalyticsPage />
-          </ProtectedRoute>
-        }
-      />
-      
-      {/* AI Dashboard */}
-      <Route
-        path="/ai-dashboard"
-        element={
-          <ProtectedRoute>
-            <AIDashboardPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/admin/ai-quotas"
-        element={
-          <ProtectedRoute>
-            <AIQuotaManager />
-          </ProtectedRoute>
-        }
-      />
-      
-      {/* Integration & Setup Pages */}
-      <Route
-        path="/admin/integration-status"
-        element={
-          <ProtectedRoute>
-            <IntegrationStatusDashboard />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/admin/setup"
-        element={
-          <ProtectedRoute>
-            <QuickSetupPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/admin/cloud-services"
-        element={
-          <ProtectedRoute>
-            <CloudServicesManager />
-          </ProtectedRoute>
-        }
-      />
-
-      {/* N8N Integration Test Page */}
-      <Route path="/n8n-test" element={<N8nTestPage />} />
-
-      {/* Dropdowns Test Page */}
-      <Route path="/test-dropdowns" element={<TestDropdownsPage />} />
-
-      {/* Advanced Features */}
-      <Route
-        path="/advanced-search"
-        element={
-          <AuthGuard requireAuth={true}>
-            <AdvancedSearchPage />
-          </AuthGuard>
-        }
-      />
-      {/* New Car Listing System */}
-      <Route
-        path="/my-listings"
-        element={
-          <ProtectedRoute>
-            <MyListingsPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/my-drafts"
-        element={
-          <ProtectedRoute>
-            <MyDraftsPage />
-          </ProtectedRoute>
-        }
-      />
-            <Route
-              path="/edit-car/:carId"
-              element={
-                <ProtectedRoute>
-                  <EditCarPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/car-details/:carId"
-              element={
-                <ProtectedRoute>
-                  <CarDetailsPage />
-                </ProtectedRoute>
-              }
-            />
-      <Route
-        path="/analytics"
-        element={
-          <ProtectedRoute>
-            <B2BAnalyticsPortal />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/digital-twin"
-        element={
-          <ProtectedRoute>
-            <DigitalTwinPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/subscription"
-        element={
-          <ProtectedRoute>
-            <SubscriptionPage />
-          </ProtectedRoute>
-        }
-      />
-      
-      {/* Migration Page */}
-      <Route
-        path="/migration"
-        element={
-          <ProtectedRoute>
-            <MigrationPage />
-          </ProtectedRoute>
-        }
-      />
-      
-      {/* Debug Cars Page */}
-      <Route
-        path="/debug-cars"
-        element={
-          <ProtectedRoute>
-            <DebugCarsPage />
-          </ProtectedRoute>
-        }
-      />
-
-      {/* Legal Pages */}
-      <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
-      <Route path="/terms-of-service" element={<TermsOfServicePage />} />
-      <Route path="/data-deletion" element={<DataDeletionPage />} />
-
-      {/* Additional Pages */}
-      <Route path="/about" element={<AboutPage />} />
-      {/* Bulgaria Map Analytics */}
-      <Route path="/map" element={<MapAnalyticsPage />} />
-      <Route path="/top-brands" element={<TopBrandsPage />} />
-      <Route
-        path="/brand-gallery"
-        element={
-          <AuthGuard requireAuth={true}>
-            <BrandGalleryPage />
-          </AuthGuard>
-        }
-      />
-      <Route
-        path="/dealers"
-        element={
-          <AuthGuard requireAuth={true}>
-            <DealersPage />
-          </AuthGuard>
-        }
-      />
-      <Route
-        path="/finance"
-        element={
-          <AuthGuard requireAuth={true}>
-            <FinancePage />
-          </AuthGuard>
-        }
-      />
-      <Route path="/contact" element={<ContactPage />} />
-      <Route path="/help" element={<HelpPage />} />
-      <Route path="/support" element={<HelpPage />} /> {/* Support redirects to Help */}
-      <Route path="/cookie-policy" element={<CookiePolicyPage />} />
-      <Route path="/sitemap" element={<SitemapPage />} />
-
-      {/* 404 Page - Already wrapped in Layout by MainLayout */}
-      <Route path="*" element={
-        <Suspense fallback={<div>Loading...</div>}>
-          <NotFoundPage />
-        </Suspense>
-      } />
-    </Routes>
-    
-    {/* Performance Dashboard - Development/Testing Only */}
-    {process.env.NODE_ENV === 'development' && (
+    <Layout>
       <Suspense fallback={null}>
-        <PerformanceDashboard />
+        <FloatingAddButton />
       </Suspense>
-    )}
-  </Layout>
+      <Suspense fallback={null}>
+        <RobotChatIcon />
+      </Suspense>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/social" element={<SocialFeedPage />} />
+        <Route path="/cars" element={<CarsPage />} />
+        <Route path="/cars/:id" element={<CarDetailsPage />} />
+        <Route path="/car/:id" element={<CarDetailsPage />} />
+
+        {/* Dealer Routes */}
+        <Route path="/dealer/:slug" element={<DealerPublicPage />} />
+        <Route path="/dealer-registration" element={<DealerRegistrationPage />} />
+        <Route
+          path="/dealer-dashboard"
+          element={
+            <AuthGuard requireAuth={true}>
+              <DealerDashboardPage />
+            </AuthGuard>
+          }
+        />
+
+        {/* Unified Sell System - بدء التجربة مباشرة من /sell/auto */}
+        <Route path="/sell" element={<Navigate to="/sell/auto" replace />} />
+        {/* Redirect old routes to new system */}
+        <Route path="/sell-car" element={<Navigate to="/sell/auto" replace />} />
+        <Route path="/add-car" element={<Navigate to="/sell/auto" replace />} />
+
+        {/* Social Feed - Create Post */}
+        <Route path="/create-post" element={<CreatePostPage />} />
+        {/* Mobile.de-style sell workflow */}
+        <Route
+          path="/sell/auto"
+          element={
+            <AuthGuard requireAuth={true}>
+              <VehicleStartPage />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/sell/inserat/:vehicleType/verkaeufertyp"
+          element={
+            <AuthGuard requireAuth={true}>
+              <MobileSellerTypePage />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/sell/inserat/:vehicleType/fahrzeugdaten/antrieb-und-umwelt"
+          element={
+            <AuthGuard requireAuth={true}>
+              <VehicleDataPageUnified />
+            </AuthGuard>
+          }
+        />
+        {/* NEW: Unified Equipment Page - All Features in One Place */}
+        <Route
+          path="/sell/inserat/:vehicleType/equipment"
+          element={
+            <AuthGuard requireAuth={true}>
+              <UnifiedEquipmentPage />
+            </AuthGuard>
+          }
+        />
+
+        {/* Legacy Equipment Routes - Keep for backward compatibility */}
+        <Route
+          path="/sell/inserat/:vehicleType/ausstattung"
+          element={
+            <AuthGuard requireAuth={true}>
+              {isMobile ? <MobileEquipmentMainPage /> : <EquipmentMainPage />}
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/sell/inserat/:vehicleType/ausstattung/sicherheit"
+          element={
+            <AuthGuard requireAuth={true}>
+              <SafetyEquipmentPage />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/sell/inserat/:vehicleType/ausstattung/komfort"
+          element={
+            <AuthGuard requireAuth={true}>
+              <ComfortEquipmentPage />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/sell/inserat/:vehicleType/ausstattung/infotainment"
+          element={
+            <AuthGuard requireAuth={true}>
+              <InfotainmentEquipmentPage />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/sell/inserat/:vehicleType/ausstattung/extras"
+          element={
+            <AuthGuard requireAuth={true}>
+              <ExtrasEquipmentPage />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/sell/inserat/:vehicleType/details/bilder"
+          element={
+            <AuthGuard requireAuth={true}>
+              <ImagesPageUnified />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/sell/inserat/:vehicleType/details/preis"
+          element={
+            <AuthGuard requireAuth={true}>
+              {isMobile ? <MobilePricingPage /> : <PricingPage />}
+            </AuthGuard>
+          }
+        />
+        {/* NEW: Unified Contact Page - All Contact Info in One Place */}
+        <Route
+          path="/sell/inserat/:vehicleType/contact"
+          element={
+            <AuthGuard requireAuth={true}>
+              {isMobile ? <MobileContactPage /> : <UnifiedContactPage />}
+            </AuthGuard>
+          }
+        />
+
+        {/* Preview / Summary step before submission */}
+        <Route
+          path="/sell/inserat/:vehicleType/preview"
+          element={
+            <AuthGuard requireAuth={true}>
+              {isMobile ? <MobilePreviewPage /> : <DesktopPreviewPage />}
+            </AuthGuard>
+          }
+        />
+
+        {/* Final submission step */}
+        <Route
+          path="/sell/inserat/:vehicleType/submission"
+          element={
+            <AuthGuard requireAuth={true}>
+              {isMobile ? <MobileSubmissionPage /> : <DesktopSubmissionPage />}
+            </AuthGuard>
+          }
+        />
+
+        {/* Legacy Contact Routes - Keep for backward compatibility */}
+        <Route
+          path="/sell/inserat/:vehicleType/kontakt/name"
+          element={
+            <AuthGuard requireAuth={true}>
+              <ContactNamePage />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/sell/inserat/:vehicleType/kontakt/adresse"
+          element={
+            <AuthGuard requireAuth={true}>
+              <ContactAddressPage />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/sell/inserat/:vehicleType/kontakt/telefonnummer"
+          element={
+            <AuthGuard requireAuth={true}>
+              <ContactPhonePage />
+            </AuthGuard>
+          }
+        />
+        {/* Profile routes - single entry; nested router handles both index and :userId */}
+        <Route path="/profile/*" element={<ProfileRouter />} />
+        <Route path="/verification" element={<VerificationPage />} />  {/* NEW: Verification System */}
+        <Route path="/billing" element={<BillingPage />} />  {/* NEW: Billing System */}
+
+        {/* NEW: Payment & Checkout Routes */}
+        <Route
+          path="/checkout/:carId"
+          element={
+            <AuthGuard requireAuth={true}>
+              <CheckoutPage />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/payment-success/:transactionId"
+          element={
+            <AuthGuard requireAuth={true}>
+              <PaymentSuccessPage />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/billing/success"
+          element={
+            <AuthGuard requireAuth={true}>
+              <BillingSuccessPage />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/billing/canceled"
+          element={
+            <AuthGuard requireAuth={true}>
+              <BillingCanceledPage />
+            </AuthGuard>
+          }
+        />
+
+        <Route path="/analytics" element={<AnalyticsDashboard />} />  {/* NEW: Analytics System */}
+        <Route path="/team" element={<TeamManagement />} />  {/* NEW: Team Management */}
+        <Route path="/users" element={<UsersDirectoryPage />} />
+        {/* Redirect /all-users to /users */}
+        <Route path="/all-users" element={<UsersDirectoryPage />} />
+        {/* ⚡ NEW: Browse Pages */}
+        <Route path="/all-posts" element={<AllPostsPage />} />
+        <Route path="/all-cars" element={<AllCarsPage />} />
+        <Route path="/messages" element={<MessagesPage />} />
+
+        {/* NEW: Social Platform Routes */}
+        <Route
+          path="/events"
+          element={
+            <AuthGuard requireAuth={true}>
+              <EventsPage />
+            </AuthGuard>
+          }
+        />
+
+        <Route path="/admin-login" element={<AdminLoginPage />} />
+        <Route
+          path="/admin"
+          element={
+            <AuthGuard requireAuth={true}>
+              <AdminPage />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/admin-car-management"
+          element={
+            <AuthGuard requireAuth={true} requireAdmin={true}>
+              <AdminCarManagementPage />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/admin/data-fix"
+          element={
+            <AuthGuard requireAuth={true} requireAdmin={true}>
+              <AdminDataFix />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/notifications"
+          element={
+            <AuthGuard requireAuth={true}>
+              <NotificationsPage />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/saved-searches"
+          element={
+            <AuthGuard requireAuth={true}>
+              <SavedSearchesPage />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/favorites"
+          element={
+            <AuthGuard requireAuth={true}>
+              <FavoritesPage />
+            </AuthGuard>
+          }
+        />
+
+        {/* NEW: Invoices & Commissions Pages - P2 Integration */}
+        <Route
+          path="/invoices"
+          element={
+            <AuthGuard requireAuth={true}>
+              <InvoicesPage />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/commissions"
+          element={
+            <AuthGuard requireAuth={true}>
+              <CommissionsPage />
+            </AuthGuard>
+          }
+        />
+
+        <Route
+          path="/dashboard"
+          element={
+            <AuthGuard requireAuth={true}>
+              <DashboardPage />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <AuthGuard requireAuth={true} requireAdmin={true}>
+              <AdminDashboard />
+            </AuthGuard>
+          }
+        />
+
+        {/* Theme Test Page */}
+        <Route path="/theme-test" element={<ThemeTest />} />
+
+        {/* Background Test Page */}
+        <Route path="/background-test" element={<BackgroundTest />} />
+
+        {/* Full Theme Demo Page */}
+        <Route path="/full-demo" element={<FullThemeDemo />} />
+
+        {/* Effects Test Page */}
+        <Route path="/effects-test" element={<EffectsTest />} />
+
+        {/* Icon Showcase Page */}
+        <Route path="/icon-showcase" element={<IconShowcasePage />} />
+
+        {/* IoT Pages */}
+        <Route
+          path="/iot-dashboard"
+          element={
+            <AuthGuard requireAuth={true}>
+              <IoTDashboardPage />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/car-tracking"
+          element={
+            <AuthGuard requireAuth={true}>
+              <CarTrackingPage />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/iot-analytics"
+          element={
+            <AuthGuard requireAuth={true}>
+              <IoTAnalyticsPage />
+            </AuthGuard>
+          }
+        />
+
+        {/* AI Dashboard */}
+        <Route
+          path="/ai-dashboard"
+          element={
+            <AuthGuard requireAuth={true}>
+              <AIDashboardPage />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/admin/ai-quotas"
+          element={
+            <AuthGuard requireAuth={true}>
+              <AIQuotaManager />
+            </AuthGuard>
+          }
+        />
+
+        {/* Integration & Setup Pages */}
+        <Route
+          path="/admin/integration-status"
+          element={
+            <AuthGuard requireAuth={true}>
+              <IntegrationStatusDashboard />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/admin/setup"
+          element={
+            <AuthGuard requireAuth={true}>
+              <QuickSetupPage />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/admin/cloud-services"
+          element={
+            <AuthGuard requireAuth={true}>
+              <CloudServicesManager />
+            </AuthGuard>
+          }
+        />
+
+        {/* N8N Integration Test Page */}
+        <Route path="/n8n-test" element={<N8nTestPage />} />
+
+        {/* Dropdowns Test Page */}
+        <Route path="/test-dropdowns" element={<TestDropdownsPage />} />
+
+        {/* Advanced Features */}
+        <Route
+          path="/advanced-search"
+          element={
+            <AuthGuard requireAuth={true}>
+              <AdvancedSearchPage />
+            </AuthGuard>
+          }
+        />
+        {/* New Car Listing System */}
+        <Route
+          path="/my-listings"
+          element={
+            <AuthGuard requireAuth={true}>
+              <MyListingsPage />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/my-drafts"
+          element={
+            <AuthGuard requireAuth={true}>
+              <MyDraftsPage />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/edit-car/:carId"
+          element={
+            <AuthGuard requireAuth={true}>
+              <EditCarPage />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/car-details/:carId"
+          element={
+            <AuthGuard requireAuth={true}>
+              <CarDetailsPage />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/analytics"
+          element={
+            <AuthGuard requireAuth={true}>
+              <B2BAnalyticsPortal />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/digital-twin"
+          element={
+            <AuthGuard requireAuth={true}>
+              <DigitalTwinPage />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/subscription"
+          element={
+            <AuthGuard requireAuth={true}>
+              <SubscriptionPage />
+            </AuthGuard>
+          }
+        />
+
+        {/* Migration Page */}
+        <Route
+          path="/migration"
+          element={
+            <AuthGuard requireAuth={true}>
+              <MigrationPage />
+            </AuthGuard>
+          }
+        />
+
+        {/* Debug Cars Page */}
+        <Route
+          path="/debug-cars"
+          element={
+            <AuthGuard requireAuth={true}>
+              <DebugCarsPage />
+            </AuthGuard>
+          }
+        />
+
+        {/* Legal Pages */}
+        <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+        <Route path="/terms-of-service" element={<TermsOfServicePage />} />
+        <Route path="/data-deletion" element={<DataDeletionPage />} />
+
+        {/* Additional Pages */}
+        <Route path="/about" element={<AboutPage />} />
+        {/* Bulgaria Map Analytics */}
+        <Route path="/map" element={<MapAnalyticsPage />} />
+        <Route path="/top-brands" element={<TopBrandsPage />} />
+        <Route
+          path="/brand-gallery"
+          element={
+            <AuthGuard requireAuth={true}>
+              <BrandGalleryPage />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/dealers"
+          element={
+            <AuthGuard requireAuth={true}>
+              <DealersPage />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/finance"
+          element={
+            <AuthGuard requireAuth={true}>
+              <FinancePage />
+            </AuthGuard>
+          }
+        />
+        <Route path="/contact" element={<ContactPage />} />
+        <Route path="/help" element={<HelpPage />} />
+        <Route path="/support" element={<HelpPage />} /> {/* Support redirects to Help */}
+        <Route path="/cookie-policy" element={<CookiePolicyPage />} />
+        <Route path="/sitemap" element={<SitemapPage />} />
+
+        {/* 404 Page - Already wrapped in Layout by MainLayout */}
+        <Route path="*" element={
+          <Suspense fallback={<div>Loading...</div>}>
+            <NotFoundPage />
+          </Suspense>
+        } />
+      </Routes>
+
+      {/* Performance Dashboard - Development/Testing Only */}
+      {process.env.NODE_ENV === 'development' && (
+        <Suspense fallback={null}>
+          <PerformanceDashboard />
+        </Suspense>
+      )}
+    </Layout>
   );
 };
 
