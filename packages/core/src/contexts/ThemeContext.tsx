@@ -69,17 +69,9 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
       }
     };
 
-    // Add event listener with proper typing
-    if (mediaQuery.addEventListener) {
-      mediaQuery.addEventListener('change', handleChange);
-      return () => mediaQuery.removeEventListener('change', handleChange);
-    } else {
-      // Fallback for older browsers
-      // @ts-ignore
-      mediaQuery.addListener(handleChange);
-      // @ts-ignore
-      return () => mediaQuery.removeListener(handleChange);
-    }
+    // Modern browsers use addEventListener, older use addListener (deprecated)
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
 
   const toggleTheme = () => {

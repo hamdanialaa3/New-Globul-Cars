@@ -2,6 +2,7 @@
 import styled from 'styled-components';
 import { CarListing } from '@globul-cars/core/typesCarListing';
 import { CarIconSimple } from '../icons/CarIcon';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface VehicleTypeStepProps {
   data: Partial<CarListing>;
@@ -116,55 +117,44 @@ const InfoText = styled.p`
 
 const VehicleTypeStep: React.FC<VehicleTypeStepProps> = ({ data, onDataChange }) => {
   const [selectedType, setSelectedType] = useState<string>(data.vehicleType || '');
+  const { t } = useLanguage();
 
   const vehicleTypes = [
     {
       id: 'car',
-      title: 'Лека кола',
-      titleEn: 'Passenger Car',
+      title: t('sell.start.vehicleTypes.car.title'),
       icon: <CarIconSimple size={32} color="#FF7900" />,
-      description: 'Леки автомобили за лично ползване',
-      descriptionEn: 'Passenger cars for personal use'
+      description: t('sell.start.vehicleTypes.car.desc')
     },
     {
       id: 'suv',
-      title: 'Джип/SUV',
-      titleEn: 'SUV/Off-road',
+      title: t('sell.start.vehicleTypes.suv.title'),
       icon: '🚙',
-      description: 'Високопроходими автомобили',
-      descriptionEn: 'High-clearance vehicles'
+      description: t('sell.start.vehicleTypes.suv.desc')
     },
     {
       id: 'van',
-      title: 'Ван',
-      titleEn: 'Van',
+      title: t('sell.start.vehicleTypes.van.title'),
       icon: '🚐',
-      description: 'Товарни автомобили и комби',
-      descriptionEn: 'Cargo vehicles and vans'
+      description: t('sell.start.vehicleTypes.van.desc')
     },
     {
       id: 'motorcycle',
-      title: 'Мотоциклет',
-      titleEn: 'Motorcycle',
+      title: t('sell.start.vehicleTypes.motorcycle.title'),
       icon: '🏍️',
-      description: 'Двуколесни превозни средства',
-      descriptionEn: 'Two-wheeled vehicles'
+      description: t('sell.start.vehicleTypes.motorcycle.desc')
     },
     {
       id: 'truck',
-      title: 'Камион',
-      titleEn: 'Truck',
+      title: t('sell.start.vehicleTypes.truck.title'),
       icon: '🚛',
-      description: 'Големи товарни автомобили',
-      descriptionEn: 'Large cargo vehicles'
+      description: t('sell.start.vehicleTypes.truck.desc')
     },
     {
       id: 'bus',
-      title: 'Автобус',
-      titleEn: 'Bus',
+      title: t('sell.start.vehicleTypes.bus.title'),
       icon: '🚌',
-      description: 'Автобуси за пътнически транспорт',
-      descriptionEn: 'Buses for passenger transport'
+      description: t('sell.start.vehicleTypes.bus.desc')
     }
   ];
 
@@ -193,11 +183,9 @@ const VehicleTypeStep: React.FC<VehicleTypeStepProps> = ({ data, onDataChange })
       </VehicleGrid>
 
       <InfoSection>
-        <InfoTitle>ℹ️ Информация за типа на превозното средство</InfoTitle>
+        <InfoTitle>ℹ️ {t('sell.start.processInfoTitle')}</InfoTitle>
         <InfoText>
-          Изберете типа на превозното средство, което искате да продадете. 
-          Това ще ни помогне да ви покажем най-подходящите опции и да персонализираме 
-          процеса на създаване на обявата според вашия избор.
+          {t('sell.start.processInfoText')}
         </InfoText>
       </InfoSection>
     </StepContainer>

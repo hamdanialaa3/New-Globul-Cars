@@ -1,5 +1,6 @@
 ﻿import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { useTheme } from '@globul-cars/core/contexts/ThemeContext';
 import { CarListing } from '@globul-cars/core/typesCarListing';
 import { brandsModelsDataService } from '@globul-cars/services/brands-models-data.service';
 
@@ -25,20 +26,20 @@ const FormGroup = styled.div`
   flex-direction: column;
 `;
 
-const Label = styled.label`
+const Label = styled.label<{ $isDark?: boolean }>`
   font-weight: 600;
-  color: #2c3e50;
+  color: ${({ $isDark }) => ($isDark ? '#e6eef9' : '#2c3e50')};
   margin-bottom: 0.5rem;
   font-size: 1rem;
 `;
 
-const Input = styled.input`
+const Input = styled.input<{ $isDark?: boolean }>`
   padding: 1rem;
-  border: 2px solid #e9ecef;
+  border: 2px solid ${({ $isDark }) => ($isDark ? '#1f2937' : '#e9ecef')};
   border-radius: 10px;
   font-size: 1rem;
   transition: all 0.3s ease;
-  background: white;
+  background: ${({ $isDark }) => ($isDark ? '#071025' : 'white')};
 
   &:focus {
     outline: none;
@@ -47,16 +48,16 @@ const Input = styled.input`
   }
 
   &::placeholder {
-    color: #adb5bd;
+    color: ${({ $isDark }) => ($isDark ? '#6b7280' : '#adb5bd')};
   }
 `;
 
-const Select = styled.select`
+const Select = styled.select<{ $isDark?: boolean }>`
   padding: 1rem;
-  border: 2px solid #e9ecef;
+  border: 2px solid ${({ $isDark }) => ($isDark ? '#1f2937' : '#e9ecef')};
   border-radius: 10px;
   font-size: 1rem;
-  background: white;
+  background: ${({ $isDark }) => ($isDark ? '#071025' : 'white')};
   cursor: pointer;
   transition: all 0.3s ease;
 
@@ -67,9 +68,9 @@ const Select = styled.select`
   }
 `;
 
-const TextArea = styled.textarea`
+const TextArea = styled.textarea<{ $isDark?: boolean }>`
   padding: 1rem;
-  border: 2px solid #e9ecef;
+  border: 2px solid ${({ $isDark }) => ($isDark ? '#1f2937' : '#e9ecef')};
   border-radius: 10px;
   font-size: 1rem;
   min-height: 120px;
@@ -84,7 +85,7 @@ const TextArea = styled.textarea`
   }
 
   &::placeholder {
-    color: #adb5bd;
+    color: ${({ $isDark }) => ($isDark ? '#6b7280' : '#adb5bd')};
   }
 `;
 
@@ -95,7 +96,7 @@ const CheckboxGroup = styled.div`
   margin-top: 1rem;
 `;
 
-const CheckboxItem = styled.label`
+const CheckboxItem = styled.label<{ $isDark?: boolean }>`
   display: flex;
   align-items: center;
   cursor: pointer;
@@ -104,7 +105,7 @@ const CheckboxItem = styled.label`
   transition: background-color 0.3s ease;
 
   &:hover {
-    background-color: #f8f9fa;
+    background-color: ${({ $isDark }) => ($isDark ? '#0b1220' : '#f8f9fa')};
   }
 `;
 
@@ -156,6 +157,8 @@ const VehicleDataStep: React.FC<VehicleDataStepProps> = ({ data, onDataChange })
 
   const [availableModels, setAvailableModels] = useState<string[]>([]);
   const [availableMakes, setAvailableMakes] = useState<string[]>([]);
+    const { theme } = useTheme();
+    const isDark = theme === 'dark';
   
   // Load brands on mount
   useEffect(() => {
@@ -224,8 +227,8 @@ const VehicleDataStep: React.FC<VehicleDataStepProps> = ({ data, onDataChange })
     <StepContainer>
       <FormGrid>
         <FormGroup>
-          <Label>Марка *</Label>
-          <Select
+          <Label $isDark={isDark}>Марка *</Label>
+          <Select $isDark={isDark}
             value={formData.make}
             onChange={(e) => handleInputChange('make', e.target.value)}
             required
@@ -238,9 +241,9 @@ const VehicleDataStep: React.FC<VehicleDataStepProps> = ({ data, onDataChange })
         </FormGroup>
 
         <FormGroup>
-          <Label>Модел *</Label>
+          <Label $isDark={isDark}>Модел *</Label>
           {availableModels.length > 0 ? (
-            <Select
+            <Select $isDark={isDark}
               value={formData.model}
               onChange={(e) => handleInputChange('model', e.target.value)}
               disabled={!formData.make}
@@ -255,7 +258,7 @@ const VehicleDataStep: React.FC<VehicleDataStepProps> = ({ data, onDataChange })
               <option value="Other">Друго</option>
             </Select>
           ) : (
-            <Input
+            <Input $isDark={isDark}
               type="text"
               value={formData.model}
               onChange={(e) => handleInputChange('model', e.target.value)}
@@ -267,8 +270,9 @@ const VehicleDataStep: React.FC<VehicleDataStepProps> = ({ data, onDataChange })
         </FormGroup>
 
         <FormGroup>
-          <Label>Година на производство *</Label>
+          <Label $isDark={isDark}>Година на производство *</Label>
           <Input
+            $isDark={isDark}
             type="number"
             value={formData.year}
             onChange={(e) => handleInputChange('year', parseInt(e.target.value))}
@@ -280,8 +284,9 @@ const VehicleDataStep: React.FC<VehicleDataStepProps> = ({ data, onDataChange })
         </FormGroup>
 
         <FormGroup>
-          <Label>Пробег (км) *</Label>
+          <Label $isDark={isDark}>Пробег (км) *</Label>
           <Input
+            $isDark={isDark}
             type="number"
             value={formData.mileage}
             onChange={(e) => handleInputChange('mileage', parseInt(e.target.value))}
@@ -292,8 +297,9 @@ const VehicleDataStep: React.FC<VehicleDataStepProps> = ({ data, onDataChange })
         </FormGroup>
 
         <FormGroup>
-          <Label>Тип гориво *</Label>
+          <Label $isDark={isDark}>Тип гориво *</Label>
           <Select
+            $isDark={isDark}
             value={formData.fuelType}
             onChange={(e) => handleInputChange('fuelType', e.target.value)}
             required
@@ -306,8 +312,9 @@ const VehicleDataStep: React.FC<VehicleDataStepProps> = ({ data, onDataChange })
         </FormGroup>
 
         <FormGroup>
-          <Label>Скоростна кутия *</Label>
+          <Label $isDark={isDark}>Скоростна кутия *</Label>
           <Select
+            $isDark={isDark}
             value={formData.transmission}
             onChange={(e) => handleInputChange('transmission', e.target.value)}
             required
@@ -320,8 +327,8 @@ const VehicleDataStep: React.FC<VehicleDataStepProps> = ({ data, onDataChange })
         </FormGroup>
 
         <FormGroup>
-          <Label>Мощност (к.с.)</Label>
-          <Input
+          <Label $isDark={isDark}>Мощност (к.с.)</Label>
+            <Input $isDark={isDark}
             type="number"
             value={formData.power}
             onChange={(e) => handleInputChange('power', parseInt(e.target.value))}
@@ -331,8 +338,8 @@ const VehicleDataStep: React.FC<VehicleDataStepProps> = ({ data, onDataChange })
         </FormGroup>
 
         <FormGroup>
-          <Label>Обем на двигателя (л)</Label>
-          <Input
+          <Label $isDark={isDark}>Обем на двигателя (л)</Label>
+            <Input $isDark={isDark}
             type="number"
             value={formData.engineSize}
             onChange={(e) => handleInputChange('engineSize', parseFloat(e.target.value))}
@@ -343,7 +350,7 @@ const VehicleDataStep: React.FC<VehicleDataStepProps> = ({ data, onDataChange })
         </FormGroup>
 
         <FormGroup>
-          <Label>Цвят</Label>
+          <Label $isDark={isDark}>Цвят</Label>
           <Select
             value={formData.color}
             onChange={(e) => handleInputChange('color', e.target.value)}
@@ -356,7 +363,7 @@ const VehicleDataStep: React.FC<VehicleDataStepProps> = ({ data, onDataChange })
         </FormGroup>
 
         <FormGroup>
-          <Label>Брой врати</Label>
+          <Label $isDark={isDark}>Брой врати</Label>
           <Select
             value={formData.doors}
             onChange={(e) => handleInputChange('doors', e.target.value)}
@@ -370,7 +377,7 @@ const VehicleDataStep: React.FC<VehicleDataStepProps> = ({ data, onDataChange })
         </FormGroup>
 
         <FormGroup>
-          <Label>Брой места</Label>
+          <Label $isDark={isDark}>Брой места</Label>
           <Select
             value={formData.seats}
             onChange={(e) => handleInputChange('seats', e.target.value)}
@@ -386,7 +393,7 @@ const VehicleDataStep: React.FC<VehicleDataStepProps> = ({ data, onDataChange })
         </FormGroup>
 
         <FormGroup>
-          <Label>Предишни собственици</Label>
+          <Label $isDark={isDark}>Предишни собственици</Label>
           <Select
             value={formData.previousOwners}
             onChange={(e) => handleInputChange('previousOwners', e.target.value)}
@@ -401,9 +408,9 @@ const VehicleDataStep: React.FC<VehicleDataStepProps> = ({ data, onDataChange })
       </FormGrid>
 
       <FormGroup>
-        <Label>Допълнителна информация</Label>
+        <Label $isDark={isDark}>Допълнителна информация</Label>
         <CheckboxGroup>
-          <CheckboxItem>
+          <CheckboxItem $isDark={isDark}>
             <Checkbox
               type="checkbox"
               checked={formData.accidentHistory}
@@ -411,7 +418,7 @@ const VehicleDataStep: React.FC<VehicleDataStepProps> = ({ data, onDataChange })
             />
             <span>Има история на катастрофи</span>
           </CheckboxItem>
-          <CheckboxItem>
+          <CheckboxItem $isDark={isDark}>
             <Checkbox
               type="checkbox"
               checked={formData.serviceHistory}
@@ -423,15 +430,16 @@ const VehicleDataStep: React.FC<VehicleDataStepProps> = ({ data, onDataChange })
       </FormGroup>
 
       <FormGroup>
-        <Label>Описание</Label>
+        <Label $isDark={isDark}>Описание</Label>
         <TextArea
+          $isDark={isDark}
           value={formData.description}
           onChange={(e) => handleInputChange('description', e.target.value)}
           placeholder="Опишете превозното средство, неговите особености и състояние..."
         />
       </FormGroup>
 
-      <InfoCard>
+      <InfoCard $isDark={isDark}>
         <InfoTitle>💡 Съвет за по-добра обява</InfoTitle>
         <InfoText>
           Бъдете точни и честни при попълването на данните. Това ще ви помогне 

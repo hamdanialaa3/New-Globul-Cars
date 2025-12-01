@@ -97,17 +97,6 @@ class SmartSearchService {
       
       const processingTime = Date.now() - startTime;
       
-      // 🔍 DEBUG: Log final results
-      if (isDebug) {
-        console.log('✅ Search completed:', {
-          keywords,
-          resultsCount: paginatedCars.length,
-          totalCount: rankedCars.length,
-          processingTime: processingTime + 'ms',
-          isPersonalized
-        });
-      }
-      
       serviceLogger.info('Smart search completed', {
         keywords,
         resultsCount: paginatedCars.length,

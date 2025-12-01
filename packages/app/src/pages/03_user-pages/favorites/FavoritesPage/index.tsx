@@ -4,8 +4,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { useFavorites } from '@globul-cars/coreuseFavorites';
+import { useFavorites, FavoriteItem } from '@globul-cars/coreuseFavorites';
 import { useLanguage } from '@globul-cars/core/contextsLanguageContext';
+import { useTheme } from '@globul-cars/core/contexts/ThemeContext';
 import {
   Heart,
   Grid,
@@ -64,19 +65,19 @@ const ViewToggle = styled.div`
   border-radius: 8px;
 `;
 
-const ViewButton = styled.button<{ active?: boolean }>`
+const ViewButton = styled.button<{ $active?: boolean }>`
   display: flex;
   align-items: center;
   gap: 6px;
   padding: 8px 16px;
   border: none;
   border-radius: 6px;
-  background: ${props => props.active ? 'white' : 'transparent'};
-  color: ${props => props.active ? '#005ca9' : '#6c757d'};
-  font-weight: ${props => props.active ? '600' : '400'};
+  background: ${props => props.$active ? 'white' : 'transparent'};
+  color: ${props => props.$active ? '#005ca9' : '#6c757d'};
+  font-weight: ${props => props.$active ? '600' : '400'};
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: ${props => props.active ? '0 2px 4px rgba(0,0,0,0.1)' : 'none'};
+  box-shadow: ${props => props.$active ? '0 2px 4px rgba(0,0,0,0.1)' : 'none'};
 
   &:hover {
     color: #005ca9;
@@ -88,23 +89,23 @@ const ViewButton = styled.button<{ active?: boolean }>`
   }
 `;
 
-const FavoritesGrid = styled.div<{ view: 'grid' | 'list' }>`
+const FavoritesGrid = styled.div<{ $view: 'grid' | 'list' }>`
   display: grid;
-  gap: ${props => props.view === 'grid' ? '24px' : '16px'};
+  gap: ${props => props.$view === 'grid' ? '24px' : '16px'};
   grid-template-columns: ${props => 
-    props.view === 'grid' ? 'repeat(auto-fill, minmax(300px, 1fr))' : '1fr'
+    props.$view === 'grid' ? 'repeat(auto-fill, minmax(300px, 1fr))' : '1fr'
   };
 `;
 
-const FavoriteCard = styled.div<{ view: 'grid' | 'list' }>`
+const FavoriteCard = styled.div<{ $view: 'grid' | 'list' }>`
   background: white;
   border: 1px solid #e5e5e5;
   border-radius: 12px;
   overflow: hidden;
   transition: all 0.3s ease;
   cursor: pointer;
-  display: ${props => props.view === 'list' ? 'flex' : 'block'};
-  gap: ${props => props.view === 'list' ? '20px' : '0'};
+  display: ${props => props.$view === 'list' ? 'flex' : 'block'};
+  gap: ${props => props.$view === 'list' ? '20px' : '0'};
 
   &:hover {
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
@@ -113,9 +114,9 @@ const FavoriteCard = styled.div<{ view: 'grid' | 'list' }>`
   }
 `;
 
-const CarImage = styled.div<{ view: 'grid' | 'list'; image: string }>`
-  width: ${props => props.view === 'list' ? '300px' : '100%'};
-  height: ${props => props.view === 'list' ? '200px' : '220px'};
+const CarImage = styled.div<{ $view: 'grid' | 'list'; $image: string }>`
+  width: ${props => props.$view === 'list' ? '300px' : '100%'};
+  height: ${props => props.$view === 'list' ? '200px' : '220px'};
   background: var(--bg-secondary);
   position: relative;
   flex-shrink: 0;
@@ -212,7 +213,7 @@ const CarActions = styled.div`
   border-top: 1px solid #f1f1f1;
 `;
 
-const CardButton = styled.button<{ variant?: 'primary' | 'secondary' | 'danger' }>`
+const CardButton = styled.button<{ $variant?: 'primary' | 'secondary' | 'danger' }>`
   flex: 1;
   display: flex;
   align-items: center;
@@ -226,18 +227,18 @@ const CardButton = styled.button<{ variant?: 'primary' | 'secondary' | 'danger' 
   cursor: pointer;
   transition: all 0.2s ease;
   background: ${props => 
-    props.variant === 'primary' ? '#005ca9' :
-    props.variant === 'danger' ? '#dc3545' :
+    props.$variant === 'primary' ? '#005ca9' :
+    props.$variant === 'danger' ? '#dc3545' :
     '#f8f9fa'
   };
   color: ${props => 
-    props.variant === 'primary' || props.variant === 'danger' ? 'white' : '#212529'
+    props.$variant === 'primary' || props.$variant === 'danger' ? 'white' : '#212529'
   };
 
   &:hover {
     background: ${props => 
-      props.variant === 'primary' ? '#004080' :
-      props.variant === 'danger' ? '#c82333' :
+      props.$variant === 'primary' ? '#004080' :
+      props.$variant === 'danger' ? '#c82333' :
       '#e9ecef'
     };
   }
@@ -266,13 +267,18 @@ const EmptyIconLarge = styled.div`
 
 const FavoritesPage: React.FC = () => {
   const navigate = useNavigate();
-  const { t } = useLanguage();
+  const { language, t } = useLanguage();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const { favorites, loading, removeFavorite } = useFavorites();
   const [view, setView] = useState<'grid' | 'list'>('grid');
 
   const handleRemove = async (e: React.MouseEvent, carId: string) => {
     e.stopPropagation();
-    if (window.confirm('Remove from favorites?')) {
+    const confirmMessage = language === 'bg' 
+      ? 'Премахване от любими?' 
+      : 'Remove from favorites?';
+    if (window.confirm(confirmMessage)) {
       await removeFavorite(carId);
     }
   };
@@ -281,8 +287,8 @@ const FavoritesPage: React.FC = () => {
     navigate(`/cars/${carId}`);
   };
 
-  const getPriceDrop = (fav: any) => {
-    if (fav.originalPrice > fav.carData.price) {
+  const getPriceDrop = (fav: FavoriteItem) => {
+    if (fav.originalPrice && fav.originalPrice > fav.carData.price) {
       const drop = fav.originalPrice - fav.carData.price;
       const percent = Math.round((drop / fav.originalPrice) * 100);
       return { drop, percent };
@@ -293,7 +299,9 @@ const FavoritesPage: React.FC = () => {
   if (loading) {
     return (
       <PageContainer>
-        <LoadingState>Loading favorites...</LoadingState>
+        <LoadingState>
+          {language === 'bg' ? 'Зареждане на любими...' : 'Loading favorites...'}
+        </LoadingState>
       </PageContainer>
     );
   }
@@ -302,14 +310,21 @@ const FavoritesPage: React.FC = () => {
     return (
       <PageContainer>
         <EmptyStateComponent>
-          <EmptyIconLarge>❤️</EmptyIconLarge>
-          <EmptyTitle>No Favorites Yet</EmptyTitle>
+          <EmptyIconLarge>
+            <Heart size={64} color="#dc3545" />
+          </EmptyIconLarge>
+          <EmptyTitle>
+            {language === 'bg' ? 'Все още нямате любими' : 'No Favorites Yet'}
+          </EmptyTitle>
           <EmptyText>
-            Start adding cars to your favorites by clicking the heart icon ❤️
+            {language === 'bg' 
+              ? 'Започнете да добавяте коли към любимите си, като кликнете върху иконата сърце'
+              : 'Start adding cars to your favorites by clicking the heart icon'
+            }
           </EmptyText>
           <EmptyButton onClick={() => navigate('/cars')}>
             <Search size={20} />
-            Browse Cars
+            {language === 'bg' ? 'Разгледай коли' : 'Browse Cars'}
           </EmptyButton>
         </EmptyStateComponent>
       </PageContainer>
@@ -321,43 +336,48 @@ const FavoritesPage: React.FC = () => {
       <Header>
         <TitleSection>
           <Title>
-            <Heart size={32} fill="#dc3545" color="#dc3545" />
-            My Favorites ({favorites.length})
+            <Heart size={32} fill="#dc354615" color="#dc3545" />
+            {language === 'bg' 
+              ? `Моите любими (${favorites.length})` 
+              : `My Favorites (${favorites.length})`
+            }
           </Title>
-          <Subtitle>Cars you've saved for later</Subtitle>
+          <Subtitle>
+            {language === 'bg' ? 'Коли, които сте запазили' : "Cars you've saved for later"}
+          </Subtitle>
         </TitleSection>
         
         <ViewToggle>
           <ViewButton
-            active={view === 'grid'}
+            $active={view === 'grid'}
             onClick={() => setView('grid')}
           >
             <Grid />
-            Grid
+            {language === 'bg' ? 'Мрежа' : 'Grid'}
           </ViewButton>
           <ViewButton
-            active={view === 'list'}
+            $active={view === 'list'}
             onClick={() => setView('list')}
           >
             <List />
-            List
+            {language === 'bg' ? 'Списък' : 'List'}
           </ViewButton>
         </ViewToggle>
       </Header>
 
-      <FavoritesGrid view={view}>
+      <FavoritesGrid $view={view}>
         {favorites.map((fav) => {
           const priceDrop = getPriceDrop(fav);
           
           return (
             <FavoriteCard
               key={fav.id}
-              view={view}
+              $view={view}
               onClick={() => handleViewCar(fav.carId)}
             >
               <CarImage
-                view={view}
-                image={fav.carData.image || '/placeholder-car.jpg'}
+                $view={view}
+                $image={fav.carData.image || '/placeholder-car.jpg'}
               >
                 {priceDrop && (
                   <PriceDropBadge>
@@ -406,18 +426,18 @@ const FavoritesPage: React.FC = () => {
 
                 <CarActions onClick={(e) => e.stopPropagation()}>
                   <CardButton
-                    variant="primary"
+                    $variant="primary"
                     onClick={() => handleViewCar(fav.carId)}
                   >
                     <ExternalLink />
-                    View
+                    {language === 'bg' ? 'Виж' : 'View'}
                   </CardButton>
                   <CardButton
-                    variant="danger"
+                    $variant="danger"
                     onClick={(e) => handleRemove(e, fav.carId)}
                   >
                     <Trash2 />
-                    Remove
+                    {language === 'bg' ? 'Премахни' : 'Remove'}
                   </CardButton>
                 </CarActions>
               </CarContent>

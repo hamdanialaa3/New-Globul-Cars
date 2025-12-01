@@ -3,6 +3,7 @@
 
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { useTheme } from '@globul-cars/core/contexts/ThemeContext';
 
 interface CompleteLogoCollectionProps {
   imageSize?: number;
@@ -79,29 +80,29 @@ const LogoImage = styled.img<{ isVisible: boolean }>`
   left: 0;
 `;
 
-const LogoTitle = styled.h3`
+const LogoTitle = styled.h3<{ $isDark?: boolean }>`
   text-align: center;
   font-size: 1.2rem;
   font-weight: bold;
-  color: #005ca9;
+  color: ${({ $isDark }) => ($isDark ? '#67a1ff' : '#005ca9')};
   margin-top: 1rem;
   margin-bottom: 0.5rem;
 `;
 
-const LogoDescription = styled.p`
+const LogoDescription = styled.p<{ $isDark?: boolean }>`
   text-align: center;
   font-size: 0.9rem;
-  color: #6c757d;
+  color: ${({ $isDark }) => ($isDark ? '#cbd5e1' : '#6c757d')};
   line-height: 1.4;
   max-width: 180px;
 `;
 
-const LogoCard = styled.div`
+const LogoCard = styled.div<{ $isDark?: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 1rem;
-  background: white;
+  background: ${({ $isDark }) => ($isDark ? '#071025' : 'white')};
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -119,6 +120,9 @@ const CompleteLogoCollection: React.FC<CompleteLogoCollectionProps> = ({
 }) => {
   const [currentIndices, setCurrentIndices] = useState<number[]>([]);
   const [images, setImages] = useState<string[]>([]);
+
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
 
   // Load images from the Pic folder
   useEffect(() => {
@@ -176,7 +180,7 @@ const CompleteLogoCollection: React.FC<CompleteLogoCollectionProps> = ({
     <CollectionContainer>
       <LogoGrid showCount={showCount}>
         {Array.from({ length: showCount }, (_, index) => (
-          <LogoCard key={index}>
+          <LogoCard key={index} $isDark={isDark}>
             <LogoFrame size={imageSize}>
               {images.length > 0 && (
                 <LogoImage
@@ -190,8 +194,8 @@ const CompleteLogoCollection: React.FC<CompleteLogoCollectionProps> = ({
                 />
               )}
             </LogoFrame>
-            <LogoTitle>{logoDescriptions[index % logoDescriptions.length].title}</LogoTitle>
-            <LogoDescription>{logoDescriptions[index % logoDescriptions.length].description}</LogoDescription>
+            <LogoTitle $isDark={isDark}>{logoDescriptions[index % logoDescriptions.length].title}</LogoTitle>
+            <LogoDescription $isDark={isDark}>{logoDescriptions[index % logoDescriptions.length].description}</LogoDescription>
           </LogoCard>
         ))}
       </LogoGrid>

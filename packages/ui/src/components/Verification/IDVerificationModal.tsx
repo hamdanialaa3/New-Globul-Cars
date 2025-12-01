@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { X, FileText, Camera, Upload, CheckCircle, AlertCircle } from 'lucide-react';
 import { useLanguage } from '@globul-cars/core/contextsLanguageContext';
+import { useTheme } from '@globul-cars/core/contexts/ThemeContext';
 import { useAuth } from '@globul-cars/core/contextsAuthProvider';
 import { VerificationService } from '@globul-cars/services/verification';
 import DocumentUpload from './DocumentUpload';
@@ -27,8 +28,8 @@ const ModalOverlay = styled.div`
   padding: 20px;
 `;
 
-const ModalContainer = styled.div`
-  background: white;
+const ModalContainer = styled.div<{ $isDark?: boolean }>`
+  background: ${({ $isDark }) => ($isDark ? '#071025' : 'white')};
   border-radius: 16px;
   padding: 32px;
   max-width: 600px;
@@ -36,7 +37,7 @@ const ModalContainer = styled.div`
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
 `;
 
-const ModalHeader = styled.div`
+const ModalHeader = styled.div<{ $isDark?: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -45,26 +46,26 @@ const ModalHeader = styled.div`
   h3 {
     margin: 0;
     font-size: 1.5rem;
-    color: #333;
+    color: ${({ $isDark }) => ($isDark ? '#e6eef9' : '#333')};
     display: flex;
     align-items: center;
     gap: 12px;
   }
 `;
 
-const CloseButton = styled.button`
+const CloseButton = styled.button<{ $isDark?: boolean }>`
   width: 36px;
   height: 36px;
   border-radius: 50%;
   border: none;
-  background: #f0f0f0;
+  background: ${({ $isDark }) => ($isDark ? '#0b1220' : '#f0f0f0')};
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   
   &:hover {
-    background: #e0e0e0;
+    background: ${({ $isDark }) => ($isDark ? '#121827' : '#e0e0e0')};
   }
 `;
 
@@ -75,17 +76,17 @@ const StepIndicator = styled.div`
   margin-bottom: 32px;
 `;
 
-const Step = styled.div<{ $active: boolean; $completed: boolean }>`
+const Step = styled.div<{ $active: boolean; $completed: boolean; $isDark?: boolean }>`
   width: ${props => props.$active ? '40px' : '12px'};
   height: 12px;
   border-radius: 6px;
   background: ${props => 
     props.$completed ? '#4caf50' : 
-    props.$active ? '#FF7900' : '#e0e0e0'};
+    props.$active ? '#FF7900' : (props.$isDark ? '#1f2937' : '#e0e0e0')};
   transition: all 0.3s ease;
 `;
 
-const InfoBox = styled.div<{ $type: 'info' | 'warning' | 'success' | 'error' }>`
+const InfoBox = styled.div<{ $type: 'info' | 'warning' | 'success' | 'error'; $isDark?: boolean }>`
   padding: 16px;
   border-radius: 8px;
   margin-bottom: 24px;
@@ -96,13 +97,13 @@ const InfoBox = styled.div<{ $type: 'info' | 'warning' | 'success' | 'error' }>`
   ${props => {
     switch (props.$type) {
       case 'info':
-        return `background: #e3f2fd; color: #1565c0;`;
+        return `background: ${props.$isDark ? '#07162a' : '#e3f2fd'}; color: ${props.$isDark ? '#8ebcf7' : '#1565c0'};`;
       case 'warning':
-        return `background: #fff3e0; color: #e65100;`;
+        return `background: ${props.$isDark ? '#2a2a1e' : '#fff3e0'}; color: ${props.$isDark ? '#f2c66b' : '#e65100'};`;
       case 'success':
-        return `background: #e8f5e9; color: #2e7d32;`;
+        return `background: ${props.$isDark ? '#0d2b1c' : '#e8f5e9'}; color: ${props.$isDark ? '#9be6bb' : '#2e7d32'};`;
       case 'error':
-        return `background: #ffebee; color: #c62828;`;
+        return `background: ${props.$isDark ? '#2b0b0b' : '#ffebee'}; color: ${props.$isDark ? '#ffb4b4' : '#c62828'};`;
     }
   }}
   
@@ -111,24 +112,24 @@ const InfoBox = styled.div<{ $type: 'info' | 'warning' | 'success' | 'error' }>`
   }
 `;
 
-const DocumentSection = styled.div`
+const DocumentSection = styled.div<{ $isDark?: boolean }>`
   margin-bottom: 24px;
   
   h4 {
     margin: 0 0 12px 0;
     font-size: 1.1rem;
-    color: #333;
+    color: ${({ $isDark }) => ($isDark ? '#e6eef9' : '#333')};
   }
   
   p {
     margin: 0 0 16px 0;
     font-size: 0.875rem;
-    color: #666;
+    color: ${({ $isDark }) => ($isDark ? '#9aa6b2' : '#666')};
     line-height: 1.5;
   }
 `;
 
-const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary' }>`
+const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary'; $isDark?: boolean }>`
   width: 100%;
   padding: 14px;
   border: none;
@@ -143,16 +144,17 @@ const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary' }>`
   transition: all 0.3s ease;
   
   ${props => props.$variant === 'secondary' ? `
-    background: #f0f0f0;
-    color: #666;
-    &:hover { background: #e0e0e0; }
+    background: ${props.$isDark ? '#071025' : '#f0f0f0'};
+    color: ${props.$isDark ? '#cbd5e1' : '#666'};
+    border: 2px solid ${props.$isDark ? '#1f2937' : 'transparent'};
+    &:hover { background: ${props.$isDark ? '#0b1220' : '#e0e0e0'}; }
   ` : `
-    background: #FF7900;
+    background: ${props.$isDark ? 'linear-gradient(135deg, #1f6fe8, #0f4fbf)' : '#FF7900'};
     color: white;
     &:hover { 
-      background: #ff8c1a;
+      background: ${props.$isDark ? 'linear-gradient(135deg, #235fcf, #0a3f9a)' : '#ff8c1a'};
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(255, 121, 0, 0.3);
+      box-shadow: ${props.$isDark ? '0 4px 12px rgba(31, 111, 232, 0.3)' : '0 4px 12px rgba(255, 121, 0, 0.3)'};
     }
   `}
   
@@ -169,10 +171,10 @@ const ButtonGroup = styled.div`
   margin-top: 24px;
 `;
 
-const RequirementsList = styled.ul`
+const RequirementsList = styled.ul<{ $isDark?: boolean }>`
   margin: 16px 0;
   padding-left: 20px;
-  color: #666;
+  color: ${({ $isDark }) => ($isDark ? '#9aa6b2' : '#666')};
   font-size: 0.875rem;
   line-height: 1.8;
 `;
@@ -189,6 +191,8 @@ const IDVerificationModal: React.FC<IDVerificationModalProps> = ({
   onSuccess
 }) => {
   const { language } = useLanguage();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const { currentUser } = useAuth();
   const [step, setStep] = useState<'info' | 'upload' | 'success'>('info');
   const [loading, setLoading] = useState(false);
@@ -237,26 +241,26 @@ const IDVerificationModal: React.FC<IDVerificationModalProps> = ({
 
   return (
     <ModalOverlay onClick={onClose}>
-      <ModalContainer onClick={e => e.stopPropagation()}>
-        <ModalHeader>
+      <ModalContainer $isDark={isDark} onClick={e => e.stopPropagation()}>
+        <ModalHeader $isDark={isDark}>
           <h3>
             <FileText size={24} />
             {language === 'bg' ? 'Потвърди самоличност' : 'Verify Identity'}
           </h3>
-          <CloseButton onClick={onClose}>
+          <CloseButton $isDark={isDark} onClick={onClose}>
             <X size={20} />
           </CloseButton>
         </ModalHeader>
 
         <StepIndicator>
-          <Step $active={step === 'info'} $completed={step !== 'info'} />
-          <Step $active={step === 'upload'} $completed={step === 'success'} />
-          <Step $active={step === 'success'} $completed={false} />
+          <Step $active={step === 'info'} $completed={step !== 'info'} $isDark={isDark} />
+          <Step $active={step === 'upload'} $completed={step === 'success'} $isDark={isDark} />
+          <Step $active={step === 'success'} $completed={false} $isDark={isDark} />
         </StepIndicator>
 
         {step === 'info' && (
           <>
-            <InfoBox $type="info">
+            <InfoBox $type="info" $isDark={isDark}>
               <FileText size={20} />
               <div>
                 {language === 'bg' ? (
@@ -273,7 +277,7 @@ const IDVerificationModal: React.FC<IDVerificationModalProps> = ({
               </div>
             </InfoBox>
 
-            <DocumentSection>
+            <DocumentSection $isDark={isDark}>
               <h4>
                 {language === 'bg' ? 'Изисквания:' : 'Requirements:'}
               </h4>
@@ -286,7 +290,7 @@ const IDVerificationModal: React.FC<IDVerificationModalProps> = ({
               </RequirementsList>
             </DocumentSection>
 
-            <InfoBox $type="warning">
+            <InfoBox $type="warning" $isDark={isDark}>
               <AlertCircle size={20} />
               <div>
                 {language === 'bg' ? (
@@ -303,7 +307,7 @@ const IDVerificationModal: React.FC<IDVerificationModalProps> = ({
               </div>
             </InfoBox>
 
-            <ActionButton onClick={() => setStep('upload')}>
+            <ActionButton $isDark={isDark} onClick={() => setStep('upload')}>
               <Upload size={20} />
               {language === 'bg' ? 'Започни проверка' : 'Start Verification'}
             </ActionButton>
@@ -312,7 +316,7 @@ const IDVerificationModal: React.FC<IDVerificationModalProps> = ({
 
         {step === 'upload' && (
           <>
-            <DocumentSection>
+              <DocumentSection $isDark={isDark}>
               <h4>
                 {language === 'bg' ? '1. Предна страна на лична карта' : '1. Front of ID Card'}
               </h4>
@@ -324,7 +328,7 @@ const IDVerificationModal: React.FC<IDVerificationModalProps> = ({
               />
             </DocumentSection>
 
-            <DocumentSection>
+              <DocumentSection $isDark={isDark}>
               <h4>
                 {language === 'bg' ? '2. Задна страна на лична карта' : '2. Back of ID Card'}
               </h4>
@@ -336,7 +340,7 @@ const IDVerificationModal: React.FC<IDVerificationModalProps> = ({
               />
             </DocumentSection>
 
-            <DocumentSection>
+              <DocumentSection $isDark={isDark}>
               <h4>
                 {language === 'bg' ? '3. Селфи със лична карта (по избор)' : '3. Selfie with ID (optional)'}
               </h4>
@@ -350,7 +354,7 @@ const IDVerificationModal: React.FC<IDVerificationModalProps> = ({
             </DocumentSection>
 
             {error && (
-              <InfoBox $type="error">
+              <InfoBox $type="error" $isDark={isDark}>
                 <AlertCircle size={20} />
                 <div>{error}</div>
               </InfoBox>
@@ -359,6 +363,7 @@ const IDVerificationModal: React.FC<IDVerificationModalProps> = ({
             <ButtonGroup>
               <ActionButton 
                 $variant="secondary" 
+                $isDark={isDark}
                 onClick={() => setStep('info')}
                 disabled={loading}
               >
@@ -367,6 +372,7 @@ const IDVerificationModal: React.FC<IDVerificationModalProps> = ({
               <ActionButton 
                 onClick={handleSubmit}
                 disabled={loading || !frontImage || !backImage}
+                $isDark={isDark}
               >
                 <Upload size={20} />
                 {loading 
@@ -380,13 +386,13 @@ const IDVerificationModal: React.FC<IDVerificationModalProps> = ({
 
         {step === 'success' && (
           <>
-            <InfoBox $type="success">
+            <InfoBox $type="success" $isDark={isDark}>
               <CheckCircle size={32} />
               <div>
-                <h4 style={{ margin: '0 0 8px 0' }}>
+                  <h4 style={{ margin: '0 0 8px 0', color: isDark ? '#e6eef9' : undefined }}>
                   {language === 'bg' ? 'Изпратено успешно!' : 'Submitted Successfully!'}
                 </h4>
-                <p style={{ margin: 0 }}>
+                <p style={{ margin: 0, color: isDark ? '#9aa6b2' : undefined }}>
                   {language === 'bg' 
                     ? 'Документите ви са изпратени за проверка. Ще получите известие до 1-3 работни дни.'
                     : 'Your documents have been submitted for review. You will receive a notification within 1-3 business days.'}

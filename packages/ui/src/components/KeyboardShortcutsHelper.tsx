@@ -3,6 +3,7 @@
 
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { useTheme } from '@globul-cars/core/contexts/ThemeContext';
 import { Keyboard, X } from 'lucide-react';
 
 interface KeyboardShortcutsHelperProps {
@@ -58,8 +59,8 @@ const Modal = styled.div<{ $isOpen: boolean }>`
   backdrop-filter: blur(4px);
 `;
 
-const Card = styled.div`
-  background: white;
+const Card = styled.div<{ $isDark?: boolean }>`
+  background: ${({ $isDark }) => ($isDark ? '#071025' : 'white')};
   border-radius: 16px;
   padding: 2rem;
   width: 90%;
@@ -76,27 +77,27 @@ const Header = styled.div`
   margin-bottom: 1.5rem;
 `;
 
-const Title = styled.h3`
+const Title = styled.h3<{ $isDark?: boolean }>`
   font-size: 1.5rem;
   font-weight: 700;
-  color: #2c3e50;
+  color: ${({ $isDark }) => ($isDark ? '#e6eef9' : '#2c3e50')};
   margin: 0;
   display: flex;
   align-items: center;
   gap: 0.75rem;
 `;
 
-const CloseButton = styled.button`
+const CloseButton = styled.button<{ $isDark?: boolean }>`
   background: none;
   border: none;
-  color: #64748b;
+  color: ${({ $isDark }) => ($isDark ? '#94a3b8' : '#64748b')};
   cursor: pointer;
   padding: 0.5rem;
   border-radius: 8px;
   transition: all 0.2s;
 
   &:hover {
-    background: #f1f5f9;
+    background: ${({ $isDark }) => ($isDark ? 'rgba(148,163,184,0.06)' : '#f1f5f9')};
   }
 `;
 
@@ -106,19 +107,19 @@ const ShortcutsList = styled.div`
   gap: 1rem;
 `;
 
-const ShortcutItem = styled.div`
+const ShortcutItem = styled.div<{ $isDark?: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
-  background: #f8fafc;
+  background: ${({ $isDark }) => ($isDark ? '#071025' : '#f8fafc')};
   border-radius: 8px;
   border-left: 3px solid #ff8f10;
 `;
 
-const ShortcutDesc = styled.div`
+const ShortcutDesc = styled.div<{ $isDark?: boolean }>`
   font-size: 0.938rem;
-  color: #475569;
+  color: ${({ $isDark }) => ($isDark ? '#cbd5e1' : '#475569')};
   font-weight: 500;
 `;
 
@@ -146,13 +147,13 @@ const Plus = styled.span`
   font-weight: 600;
 `;
 
-const Hint = styled.div`
+const Hint = styled.div<{ $isDark?: boolean }>`
   margin-top: 1.5rem;
   padding: 1rem;
   background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
   border-radius: 8px;
   font-size: 0.875rem;
-  color: #475569;
+  color: ${({ $isDark }) => ($isDark ? '#cbd5e1' : '#475569')};
   line-height: 1.6;
 `;
 
@@ -164,6 +165,8 @@ const KeyboardShortcutsHelper: React.FC<KeyboardShortcutsHelperProps> = ({
   language = 'bg'
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
 
   const t = (bg: string, en: string) => language === 'bg' ? bg : en;
 
@@ -240,13 +243,13 @@ const KeyboardShortcutsHelper: React.FC<KeyboardShortcutsHelperProps> = ({
       </FloatingButton>
 
       <Modal $isOpen={isOpen} onClick={() => setIsOpen(false)}>
-        <Card onClick={e => e.stopPropagation()}>
+        <Card $isDark={isDark} onClick={e => e.stopPropagation()}>
           <Header>
-            <Title>
+            <Title $isDark={isDark}>
               <Keyboard />
               {t('Клавишни комбинации', 'Keyboard Shortcuts')}
             </Title>
-            <CloseButton onClick={() => setIsOpen(false)}>
+            <CloseButton $isDark={isDark} onClick={() => setIsOpen(false)}>
               <X size={20} />
             </CloseButton>
           </Header>
@@ -255,8 +258,8 @@ const KeyboardShortcutsHelper: React.FC<KeyboardShortcutsHelperProps> = ({
             {shortcuts
               .filter(s => s.available)
               .map((shortcut, index) => (
-                <ShortcutItem key={index}>
-                  <ShortcutDesc>{shortcut.description}</ShortcutDesc>
+                <ShortcutItem key={index} $isDark={isDark}>
+                  <ShortcutDesc $isDark={isDark}>{shortcut.description}</ShortcutDesc>
                   <KeyCombo>
                     {shortcut.keys.map((key, i) => (
                       <React.Fragment key={i}>
@@ -269,7 +272,7 @@ const KeyboardShortcutsHelper: React.FC<KeyboardShortcutsHelperProps> = ({
               ))}
           </ShortcutsList>
 
-          <Hint>
+          <Hint $isDark={isDark}>
             💡 {t(
               'Натиснете ? по всяко време, за да покажете това меню',
               'Press ? at any time to show this menu'

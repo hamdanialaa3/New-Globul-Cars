@@ -6,6 +6,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { X, Mail, Send, CheckCircle, AlertCircle, Loader } from 'lucide-react';
 import { useLanguage } from '@globul-cars/core/contextsLanguageContext';
+import { useTheme } from '@globul-cars/core/contexts/ThemeContext';
 import { useAuth } from '@globul-cars/core/contextsAuthProvider';
 import { EmailVerificationService } from '@globul-cars/services/email-verification';
 
@@ -24,8 +25,8 @@ const ModalOverlay = styled.div`
   z-index: 10000;
 `;
 
-const ModalContainer = styled.div`
-  background: white;
+const ModalContainer = styled.div<{ $isDark?: boolean }>`
+  background: ${({ $isDark }) => ($isDark ? '#071025' : 'white')};
   border-radius: 16px;
   padding: 32px;
   max-width: 500px;
@@ -34,7 +35,7 @@ const ModalContainer = styled.div`
   position: relative;
 `;
 
-const ModalHeader = styled.div`
+const ModalHeader = styled.div<{ $isDark?: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -43,26 +44,26 @@ const ModalHeader = styled.div`
   h3 {
     margin: 0;
     font-size: 1.5rem;
-    color: #333;
+    color: ${({ $isDark }) => ($isDark ? '#e6eef9' : '#333')};
     display: flex;
     align-items: center;
     gap: 12px;
   }
 `;
 
-const CloseButton = styled.button`
+const CloseButton = styled.button<{ $isDark?: boolean }>`
   width: 36px;
   height: 36px;
   border-radius: 50%;
   border: none;
-  background: #f0f0f0;
+  background: ${({ $isDark }) => ($isDark ? '#0b1220' : '#f0f0f0')};
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   
   &:hover {
-    background: #e0e0e0;
+    background: ${({ $isDark }) => ($isDark ? '#121827' : '#e0e0e0')};
   }
 `;
 
@@ -70,9 +71,9 @@ const ContentSection = styled.div`
   margin-bottom: 24px;
 `;
 
-const EmailDisplay = styled.div`
-  background: #f8f9fa;
-  border: 1px solid #e0e0e0;
+const EmailDisplay = styled.div<{ $isDark?: boolean }>`
+  background: ${({ $isDark }) => ($isDark ? '#071025' : '#f8f9fa')};
+  border: 1px solid ${({ $isDark }) => ($isDark ? '#1f2937' : '#e0e0e0')};
   border-radius: 8px;
   padding: 16px;
   display: flex;
@@ -87,12 +88,12 @@ const EmailDisplay = styled.div`
   p {
     margin: 0;
     font-size: 1rem;
-    color: #333;
+    color: ${({ $isDark }) => ($isDark ? '#e6eef9' : '#333')};
     font-weight: 500;
   }
 `;
 
-const InfoText = styled.p<{ $type?: 'default' | 'success' | 'error' | 'info' }>`
+const InfoText = styled.p<{ $type?: 'default' | 'success' | 'error' | 'info'; $isDark?: boolean }>`
   margin: 16px 0;
   padding: 12px 16px;
   border-radius: 8px;
@@ -102,27 +103,27 @@ const InfoText = styled.p<{ $type?: 'default' | 'success' | 'error' | 'info' }>`
   ${props => {
     switch (props.$type) {
       case 'success':
-        return `
-          background: #d1f4e0;
-          color: #0d7a3f;
-          border-left: 4px solid #0d7a3f;
-        `;
+          return `
+            background: ${props.$isDark ? '#08342b' : '#d1f4e0'};
+            color: ${props.$isDark ? '#9be6bb' : '#0d7a3f'};
+            border-left: 4px solid ${props.$isDark ? '#0d7a3f' : '#0d7a3f'};
+          `;
       case 'error':
         return `
-          background: #ffe5e5;
-          color: #d32f2f;
-          border-left: 4px solid #d32f2f;
+          background: ${props.$isDark ? '#2b0b0b' : '#ffe5e5'};
+          color: ${props.$isDark ? '#ffb4b4' : '#d32f2f'};
+          border-left: 4px solid ${props.$isDark ? '#d32f2f' : '#d32f2f'};
         `;
       case 'info':
         return `
-          background: #e3f2fd;
-          color: #1976d2;
-          border-left: 4px solid #1976d2;
+          background: ${props.$isDark ? '#07162a' : '#e3f2fd'};
+          color: ${props.$isDark ? '#8ebcf7' : '#1976d2'};
+          border-left: 4px solid ${props.$isDark ? '#1976d2' : '#1976d2'};
         `;
       default:
         return `
-          background: #f5f5f5;
-          color: #666;
+          background: ${props.$isDark ? '#071025' : '#f5f5f5'};
+          color: ${props.$isDark ? '#9aa6b2' : '#666'};
         `;
     }
   }}
@@ -134,10 +135,10 @@ const ButtonGroup = styled.div`
   margin-top: 24px;
 `;
 
-const SendButton = styled.button<{ $disabled?: boolean }>`
+const SendButton = styled.button<{ $disabled?: boolean; $isDark?: boolean }>`
   flex: 1;
   padding: 12px 24px;
-  background: ${props => props.$disabled ? '#ccc' : 'linear-gradient(135deg, #FF7900 0%, #FF9500 100%)'};
+  background: ${props => props.$disabled ? (props.$isDark ? '#2a2a2a' : '#ccc') : (props.$isDark ? 'linear-gradient(135deg, #1f6fe8, #0f4fbf)' : 'linear-gradient(135deg, #FF7900 0%, #FF9500 100%)')};
   color: white;
   border: none;
   border-radius: 8px;
@@ -152,7 +153,7 @@ const SendButton = styled.button<{ $disabled?: boolean }>`
   
   &:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 121, 0, 0.3);
+    box-shadow: ${props => props.$isDark ? '0 4px 12px rgba(31, 111, 232, 0.3)' : '0 4px 12px rgba(255, 121, 0, 0.3)'};
   }
   
   &:disabled {
@@ -160,12 +161,12 @@ const SendButton = styled.button<{ $disabled?: boolean }>`
   }
 `;
 
-const CheckButton = styled.button`
+const CheckButton = styled.button<{ $isDark?: boolean }>`
   flex: 1;
   padding: 12px 24px;
-  background: white;
-  color: #FF7900;
-  border: 2px solid #FF7900;
+  background: ${({ $isDark }) => ($isDark ? '#071025' : 'white')};
+  color: ${({ $isDark }) => ($isDark ? '#FFB78C' : '#FF7900')};
+  border: 2px solid ${({ $isDark }) => ($isDark ? '#FF7900' : '#FF7900')};
   border-radius: 8px;
   font-size: 1rem;
   font-weight: 600;
@@ -177,23 +178,23 @@ const CheckButton = styled.button`
   transition: all 0.3s ease;
   
   &:hover {
-    background: #FFF5E6;
+    background: ${({ $isDark }) => ($isDark ? '#071025' : '#FFF5E6')};
     transform: translateY(-2px);
   }
 `;
 
-const Countdown = styled.span`
-  color: #666;
+const Countdown = styled.span<{ $isDark?: boolean }>`
+  color: ${({ $isDark }) => ($isDark ? '#9aa6b2' : '#666')};
   font-size: 0.9rem;
   text-align: center;
   margin-top: 8px;
   display: block;
 `;
 
-const StepsList = styled.ol`
+const StepsList = styled.ol<{ $isDark?: boolean }>`
   margin: 16px 0;
   padding-left: 24px;
-  color: #666;
+  color: ${({ $isDark }) => ($isDark ? '#9aa6b2' : '#666')};
   
   li {
     margin-bottom: 8px;
@@ -210,7 +211,7 @@ const LoadingSpinner = styled.div`
   }
 `;
 
-const StatusIcon = styled.div<{ $status: 'idle' | 'sending' | 'sent' | 'verified' | 'error' }>`
+const StatusIcon = styled.div<{ $status: 'idle' | 'sending' | 'sent' | 'verified' | 'error'; $isDark?: boolean }>`
   width: 80px;
   height: 80px;
   margin: 0 auto 16px;
@@ -223,23 +224,23 @@ const StatusIcon = styled.div<{ $status: 'idle' | 'sending' | 'sent' | 'verified
     switch (props.$status) {
       case 'sent':
         return `
-          background: #d1f4e0;
-          color: #0d7a3f;
+          background: ${props.$isDark ? '#08342b' : '#d1f4e0'};
+          color: ${props.$isDark ? '#9be6bb' : '#0d7a3f'};
         `;
       case 'verified':
         return `
-          background: #d1f4e0;
-          color: #0d7a3f;
+          background: ${props.$isDark ? '#08342b' : '#d1f4e0'};
+          color: ${props.$isDark ? '#9be6bb' : '#0d7a3f'};
         `;
       case 'error':
         return `
-          background: #ffe5e5;
-          color: #d32f2f;
+          background: ${props.$isDark ? '#2b0b0b' : '#ffe5e5'};
+          color: ${props.$isDark ? '#ffb4b4' : '#d32f2f'};
         `;
       default:
         return `
-          background: #f5f5f5;
-          color: #666;
+          background: ${props.$isDark ? '#071025' : '#f5f5f5'};
+          color: ${props.$isDark ? '#9aa6b2' : '#666'};
         `;
     }
   }}
@@ -258,6 +259,8 @@ const EmailVerificationModal: React.FC<EmailVerificationModalProps> = ({
 }) => {
   const { currentUser } = useAuth();
   const { language } = useLanguage();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'verified' | 'error'>('idle');
   const [message, setMessage] = useState('');
   const [countdown, setCountdown] = useState(0);
@@ -353,8 +356,8 @@ const EmailVerificationModal: React.FC<EmailVerificationModalProps> = ({
   if (currentUser?.emailVerified) {
     return (
       <ModalOverlay onClick={onClose}>
-        <ModalContainer onClick={(e) => e.stopPropagation()}>
-          <ModalHeader>
+        <ModalContainer $isDark={isDark} onClick={(e) => e.stopPropagation()}>
+          <ModalHeader $isDark={isDark}>
             <h3>
               <CheckCircle color="#0d7a3f" />
               {language === 'bg' ? 'Потвърдено' : 'Verified'}
@@ -380,44 +383,44 @@ const EmailVerificationModal: React.FC<EmailVerificationModalProps> = ({
 
   return (
     <ModalOverlay onClick={onClose}>
-      <ModalContainer onClick={(e) => e.stopPropagation()}>
-        <ModalHeader>
+      <ModalContainer $isDark={isDark} onClick={(e) => e.stopPropagation()}>
+        <ModalHeader $isDark={isDark}>
           <h3>
             <Mail color="#FF7900" />
             {language === 'bg' ? 'Потвърждение на имейл' : 'Email Verification'}
           </h3>
-          <CloseButton onClick={onClose}>
+          <CloseButton $isDark={isDark} onClick={onClose}>
             <X size={20} />
           </CloseButton>
         </ModalHeader>
 
         <ContentSection>
           {status === 'verified' && (
-            <StatusIcon $status="verified">
+            <StatusIcon $status="verified" $isDark={isDark}>
               <CheckCircle size={40} />
             </StatusIcon>
           )}
 
           {status === 'error' && (
-            <StatusIcon $status="error">
+            <StatusIcon $status="error" $isDark={isDark}>
               <AlertCircle size={40} />
             </StatusIcon>
           )}
 
-          <EmailDisplay>
+          <EmailDisplay $isDark={isDark}>
             <Mail size={20} />
             <p>{currentUser?.email}</p>
           </EmailDisplay>
 
           {status === 'idle' && (
             <>
-              <InfoText>
+              <InfoText $isDark={isDark}>
                 {language === 'bg'
                   ? 'Моля, потвърдете имейл адреса си, за да активирате всички функции на профила си.'
                   : 'Please verify your email address to activate all profile features.'}
               </InfoText>
 
-              <StepsList>
+              <StepsList $isDark={isDark}>
                 <li>
                   {language === 'bg'
                     ? 'Натиснете бутона "Изпрати имейл" по-долу'
@@ -438,7 +441,7 @@ const EmailVerificationModal: React.FC<EmailVerificationModalProps> = ({
           )}
 
           {status === 'sent' && (
-            <InfoText $type="success">
+            <InfoText $type="success" $isDark={isDark}>
               {message}
               <br /><br />
               {language === 'bg'
@@ -448,13 +451,13 @@ const EmailVerificationModal: React.FC<EmailVerificationModalProps> = ({
           )}
 
           {status === 'verified' && (
-            <InfoText $type="success">
+            <InfoText $type="success" $isDark={isDark}>
               {message}
             </InfoText>
           )}
 
           {status === 'error' && message && (
-            <InfoText $type="error">
+            <InfoText $type="error" $isDark={isDark}>
               {message}
             </InfoText>
           )}
@@ -463,6 +466,7 @@ const EmailVerificationModal: React.FC<EmailVerificationModalProps> = ({
         {status !== 'verified' && (
           <ButtonGroup>
             <SendButton
+              $isDark={isDark}
               onClick={handleSendEmail}
               disabled={status === 'sending' || countdown > 0}
               $disabled={status === 'sending' || countdown > 0}
@@ -488,7 +492,7 @@ const EmailVerificationModal: React.FC<EmailVerificationModalProps> = ({
             </SendButton>
 
             {status === 'sent' && (
-              <CheckButton onClick={handleCheckStatus} disabled={isChecking}>
+              <CheckButton $isDark={isDark} onClick={handleCheckStatus} disabled={isChecking}>
                 {isChecking ? (
                   <LoadingSpinner>
                     <Loader size={18} />

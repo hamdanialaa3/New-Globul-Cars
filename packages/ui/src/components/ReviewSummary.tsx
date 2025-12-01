@@ -3,6 +3,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
+import { useTheme } from '@globul-cars/core/contexts/ThemeContext';
 import { Car, DollarSign, MapPin, Phone, Shield, Star, Image as ImageIcon, Edit } from 'lucide-react';
 
 interface ReviewSummaryProps {
@@ -12,8 +13,8 @@ interface ReviewSummaryProps {
   onEdit?: () => void;
 }
 
-const Container = styled.div`
-  background: white;
+const Container = styled.div<{ $isDark?: boolean }>`
+  background: ${({ $isDark }) => ($isDark ? '#071025' : 'white')};
   border-radius: 16px;
   padding: 2rem;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
@@ -29,20 +30,20 @@ const Header = styled.div`
   border-bottom: 2px solid #f3f4f6;
 `;
 
-const Title = styled.h3`
+const Title = styled.h3<{ $isDark?: boolean }>`
   font-size: 1.5rem;
   font-weight: 700;
-  color: #2c3e50;
+  color: ${({ $isDark }) => ($isDark ? '#e6eef9' : '#2c3e50')};
   margin: 0;
   display: flex;
   align-items: center;
   gap: 0.75rem;
 `;
 
-const EditButton = styled.button`
-  background: #f8fafc;
-  border: 2px solid #e2e8f0;
-  color: #475569;
+const EditButton = styled.button<{ $isDark?: boolean }>`
+  background: ${({ $isDark }) => ($isDark ? '#071025' : '#f8fafc')};
+  border: 2px solid ${({ $isDark }) => ($isDark ? '#1f2937' : '#e2e8f0')};
+  color: ${({ $isDark }) => ($isDark ? '#cbd5e1' : '#475569')};
   padding: 0.625rem 1.25rem;
   border-radius: 8px;
   font-weight: 600;
@@ -59,10 +60,10 @@ const EditButton = styled.button`
   }
 `;
 
-const Section = styled.div`
+const Section = styled.div<{ $isDark?: boolean }>`
   margin: 1.5rem 0;
   padding: 1.25rem;
-  background: #f8fafc;
+  background: ${({ $isDark }) => ($isDark ? '#071025' : '#f8fafc')};
   border-radius: 12px;
   border-left: 4px solid #ff8f10;
 `;
@@ -74,34 +75,34 @@ const SectionHeader = styled.div`
   margin-bottom: 1rem;
 `;
 
-const SectionTitle = styled.h4`
+const SectionTitle = styled.h4<{ $isDark?: boolean }>`
   font-size: 1.125rem;
   font-weight: 600;
-  color: #1e293b;
+  color: ${({ $isDark }) => ($isDark ? '#e6eef9' : '#1e293b')};
   margin: 0;
 `;
 
-const DetailRow = styled.div`
+const DetailRow = styled.div<{ $isDark?: boolean }>`
   display: grid;
   grid-template-columns: 140px 1fr;
   gap: 1rem;
   padding: 0.75rem 0;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid ${({ $isDark }) => ($isDark ? '#1f2937' : '#e2e8f0')};
 
   &:last-child {
     border-bottom: none;
   }
 `;
 
-const DetailLabel = styled.div`
+const DetailLabel = styled.div<{ $isDark?: boolean }>`
   font-size: 0.875rem;
-  color: #64748b;
+  color: ${({ $isDark }) => ($isDark ? '#9aa6b2' : '#64748b')};
   font-weight: 500;
 `;
 
-const DetailValue = styled.div`
+const DetailValue = styled.div<{ $isDark?: boolean }>`
   font-size: 0.875rem;
-  color: #1e293b;
+  color: ${({ $isDark }) => ($isDark ? '#e6eef9' : '#1e293b')};
   font-weight: 600;
 `;
 
@@ -112,9 +113,9 @@ const TagsList = styled.div`
   margin-top: 0.75rem;
 `;
 
-const Tag = styled.span`
+const Tag = styled.span<{ $isDark?: boolean }>`
   background: linear-gradient(135deg, #10b981, #059669);
-  color: white;
+  color: ${({ $isDark }) => ($isDark ? '#071025' : 'white')};
   padding: 0.375rem 0.875rem;
   border-radius: 20px;
   font-size: 0.813rem;
@@ -144,22 +145,22 @@ const Badge = styled.span`
   margin-left: 0.5rem;
 `;
 
-const ImageCount = styled.div`
+const ImageCount = styled.div<{ $isDark?: boolean }>`
   display: flex;
   align-items: center;
   gap: 0.5rem;
   font-size: 1rem;
   font-weight: 600;
-  color: #475569;
-  background: white;
+  color: ${({ $isDark }) => ($isDark ? '#cbd5e1' : '#475569')};
+  background: ${({ $isDark }) => ($isDark ? '#071025' : 'white')};
   padding: 0.75rem 1.25rem;
   border-radius: 8px;
-  border: 2px solid #e2e8f0;
+  border: 2px solid ${({ $isDark }) => ($isDark ? '#1f2937' : '#e2e8f0')};
 `;
 
-const Warning = styled.div`
-  background: #fef3c7;
-  border: 2px solid #fbbf24;
+const Warning = styled.div<{ $isDark?: boolean }>`
+  background: ${({ $isDark }) => ($isDark ? '#2a2a1e' : '#fef3c7')};
+  border: 2px solid ${({ $isDark }) => ($isDark ? '#fbbf24' : '#fbbf24')};
   border-radius: 12px;
   padding: 1rem;
   margin: 1rem 0;
@@ -167,7 +168,7 @@ const Warning = styled.div`
   align-items: flex-start;
   gap: 0.75rem;
   font-size: 0.875rem;
-  color: #92400e;
+  color: ${({ $isDark }) => ($isDark ? '#ffefc1' : '#92400e')};
   line-height: 1.5;
 `;
 
@@ -178,6 +179,8 @@ const ReviewSummary: React.FC<ReviewSummaryProps> = ({
   onEdit
 }) => {
   const t = (bg: string, en: string) => language === 'bg' ? bg : en;
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
 
   const formatEquipment = (equipment: string) => {
     if (!equipment) return [];
@@ -185,20 +188,20 @@ const ReviewSummary: React.FC<ReviewSummaryProps> = ({
   };
 
   return (
-    <Container>
+    <Container $isDark={isDark}>
       <Header>
-        <Title>
+        <Title $isDark={isDark}>
           📋 {t('Преглед на обявата', 'Review Your Listing')}
         </Title>
         {onEdit && (
-          <EditButton onClick={onEdit}>
+          <EditButton $isDark={isDark} onClick={onEdit}>
             <Edit size={16} />
             {t('Редактирай', 'Edit')}
           </EditButton>
         )}
       </Header>
 
-      <Warning>
+      <Warning $isDark={isDark}>
         <span style={{ fontSize: '1.5rem' }}>⚠️</span>
         <div>
           {t(
@@ -209,69 +212,69 @@ const ReviewSummary: React.FC<ReviewSummaryProps> = ({
       </Warning>
 
       {/* Vehicle Information */}
-      <Section>
+      <Section $isDark={isDark}>
         <SectionHeader>
           <Car size={24} color="#ff8f10" />
-          <SectionTitle>{t('Автомобил', 'Vehicle')}</SectionTitle>
+          <SectionTitle $isDark={isDark}>{t('Автомобил', 'Vehicle')}</SectionTitle>
         </SectionHeader>
         
-        <DetailRow>
-          <DetailLabel>{t('Марка и модел', 'Make & Model')}:</DetailLabel>
-          <DetailValue>
+        <DetailRow $isDark={isDark}>
+          <DetailLabel $isDark={isDark}>{t('Марка и модел', 'Make & Model')}:</DetailLabel>
+          <DetailValue $isDark={isDark}>
             {workflowData.mk} {workflowData.md || t('(Неуточнен)', '(Unspecified)')}
           </DetailValue>
         </DetailRow>
         
-        <DetailRow>
-          <DetailLabel>{t('Година', 'Year')}:</DetailLabel>
-          <DetailValue>{workflowData.fy}</DetailValue>
+        <DetailRow $isDark={isDark}>
+          <DetailLabel $isDark={isDark}>{t('Година', 'Year')}:</DetailLabel>
+          <DetailValue $isDark={isDark}>{workflowData.fy}</DetailValue>
         </DetailRow>
         
         {workflowData.mi && (
-          <DetailRow>
-            <DetailLabel>{t('Пробег', 'Mileage')}:</DetailLabel>
-            <DetailValue>{workflowData.mi.toLocaleString()} {t('км', 'km')}</DetailValue>
+          <DetailRow $isDark={isDark}>
+            <DetailLabel $isDark={isDark}>{t('Пробег', 'Mileage')}:</DetailLabel>
+            <DetailValue $isDark={isDark}>{workflowData.mi.toLocaleString()} {t('км', 'km')}</DetailValue>
           </DetailRow>
         )}
         
         {workflowData.fm && (
-          <DetailRow>
-            <DetailLabel>{t('Гориво', 'Fuel Type')}:</DetailLabel>
-            <DetailValue>{workflowData.fm}</DetailValue>
+          <DetailRow $isDark={isDark}>
+            <DetailLabel $isDark={isDark}>{t('Гориво', 'Fuel Type')}:</DetailLabel>
+            <DetailValue $isDark={isDark}>{workflowData.fm}</DetailValue>
           </DetailRow>
         )}
         
         {workflowData.tr && (
-          <DetailRow>
-            <DetailLabel>{t('Скоростна кутия', 'Transmission')}:</DetailLabel>
-            <DetailValue>{workflowData.tr}</DetailValue>
+          <DetailRow $isDark={isDark}>
+            <DetailLabel $isDark={isDark}>{t('Скоростна кутия', 'Transmission')}:</DetailLabel>
+            <DetailValue $isDark={isDark}>{workflowData.tr}</DetailValue>
           </DetailRow>
         )}
         
         {workflowData.cl && (
-          <DetailRow>
-            <DetailLabel>{t('Цвят', 'Color')}:</DetailLabel>
-            <DetailValue>{workflowData.cl}</DetailValue>
+          <DetailRow $isDark={isDark}>
+            <DetailLabel $isDark={isDark}>{t('Цвят', 'Color')}:</DetailLabel>
+            <DetailValue $isDark={isDark}>{workflowData.cl}</DetailValue>
           </DetailRow>
         )}
       </Section>
 
       {/* Equipment */}
       {(workflowData.safety || workflowData.comfort || workflowData.infotainment || workflowData.extras) && (
-        <Section>
+        <Section $isDark={isDark}>
           <SectionHeader>
             <Shield size={24} color="#10b981" />
-            <SectionTitle>{t('Оборудване', 'Equipment')}</SectionTitle>
+            <SectionTitle $isDark={isDark}>{t('Оборудване', 'Equipment')}</SectionTitle>
           </SectionHeader>
           
           {workflowData.safety && (
             <div style={{ marginBottom: '1rem' }}>
-              <DetailLabel style={{ marginBottom: '0.5rem' }}>
+              <DetailLabel $isDark={isDark} style={{ marginBottom: '0.5rem' }}>
                 {t('Безопасност', 'Safety')}:
               </DetailLabel>
               <TagsList>
                 {formatEquipment(workflowData.safety).map((item, idx) => (
-                  <Tag key={idx}>✓ {item}</Tag>
+                  <Tag key={idx} $isDark={isDark}>✓ {item}</Tag>
                 ))}
               </TagsList>
             </div>
@@ -279,12 +282,12 @@ const ReviewSummary: React.FC<ReviewSummaryProps> = ({
           
           {workflowData.comfort && (
             <div style={{ marginBottom: '1rem' }}>
-              <DetailLabel style={{ marginBottom: '0.5rem' }}>
+              <DetailLabel $isDark={isDark} style={{ marginBottom: '0.5rem' }}>
                 {t('Комфорт', 'Comfort')}:
               </DetailLabel>
               <TagsList>
                 {formatEquipment(workflowData.comfort).map((item, idx) => (
-                  <Tag key={idx}>✓ {item}</Tag>
+                  <Tag key={idx} $isDark={isDark}>✓ {item}</Tag>
                 ))}
               </TagsList>
             </div>
@@ -292,12 +295,12 @@ const ReviewSummary: React.FC<ReviewSummaryProps> = ({
           
           {workflowData.infotainment && (
             <div style={{ marginBottom: '1rem' }}>
-              <DetailLabel style={{ marginBottom: '0.5rem' }}>
+              <DetailLabel $isDark={isDark} style={{ marginBottom: '0.5rem' }}>
                 {t('Инфотейнмънт', 'Infotainment')}:
               </DetailLabel>
               <TagsList>
                 {formatEquipment(workflowData.infotainment).map((item, idx) => (
-                  <Tag key={idx}>✓ {item}</Tag>
+                  <Tag key={idx} $isDark={isDark}>✓ {item}</Tag>
                 ))}
               </TagsList>
             </div>
@@ -305,12 +308,12 @@ const ReviewSummary: React.FC<ReviewSummaryProps> = ({
           
           {workflowData.extras && (
             <div>
-              <DetailLabel style={{ marginBottom: '0.5rem' }}>
+              <DetailLabel $isDark={isDark} style={{ marginBottom: '0.5rem' }}>
                 {t('Екстри', 'Extras')}:
               </DetailLabel>
               <TagsList>
                 {formatEquipment(workflowData.extras).map((item, idx) => (
-                  <Tag key={idx}>✓ {item}</Tag>
+                  <Tag key={idx} $isDark={isDark}>✓ {item}</Tag>
                 ))}
               </TagsList>
             </div>
@@ -319,10 +322,10 @@ const ReviewSummary: React.FC<ReviewSummaryProps> = ({
       )}
 
       {/* Pricing */}
-      <Section>
+      <Section $isDark={isDark}>
         <SectionHeader>
           <DollarSign size={24} color="#f59e0b" />
-          <SectionTitle>{t('Цена', 'Price')}</SectionTitle>
+          <SectionTitle $isDark={isDark}>{t('Цена', 'Price')}</SectionTitle>
         </SectionHeader>
         
         <PriceDisplay>
@@ -334,13 +337,13 @@ const ReviewSummary: React.FC<ReviewSummaryProps> = ({
       </Section>
 
       {/* Images */}
-      <Section>
+      <Section $isDark={isDark}>
         <SectionHeader>
           <ImageIcon size={24} color="#8b5cf6" />
-          <SectionTitle>{t('Снимки', 'Images')}</SectionTitle>
+          <SectionTitle $isDark={isDark}>{t('Снимки', 'Images')}</SectionTitle>
         </SectionHeader>
         
-        <ImageCount>
+        <ImageCount $isDark={isDark}>
           <ImageIcon size={20} />
           {imagesCount} {t('снимки', 'images')}
           {imagesCount < 3 && (
@@ -351,21 +354,21 @@ const ReviewSummary: React.FC<ReviewSummaryProps> = ({
 
       {/* Location */}
       {(workflowData.region || workflowData.city) && (
-        <Section>
+        <Section $isDark={isDark}>
           <SectionHeader>
             <MapPin size={24} color="#3b82f6" />
-            <SectionTitle>{t('Местоположение', 'Location')}</SectionTitle>
+            <SectionTitle $isDark={isDark}>{t('Местоположение', 'Location')}</SectionTitle>
           </SectionHeader>
           
-          <DetailRow>
-            <DetailLabel>{t('Област', 'Region')}:</DetailLabel>
-            <DetailValue>{workflowData.region}</DetailValue>
+          <DetailRow $isDark={isDark}>
+            <DetailLabel $isDark={isDark}>{t('Област', 'Region')}:</DetailLabel>
+            <DetailValue $isDark={isDark}>{workflowData.region}</DetailValue>
           </DetailRow>
           
           {workflowData.city && (
-            <DetailRow>
-              <DetailLabel>{t('Град', 'City')}:</DetailLabel>
-              <DetailValue>{workflowData.city}</DetailValue>
+            <DetailRow $isDark={isDark}>
+              <DetailLabel $isDark={isDark}>{t('Град', 'City')}:</DetailLabel>
+              <DetailValue $isDark={isDark}>{workflowData.city}</DetailValue>
             </DetailRow>
           )}
         </Section>
@@ -373,23 +376,23 @@ const ReviewSummary: React.FC<ReviewSummaryProps> = ({
 
       {/* Contact */}
       {(workflowData.sellerName || workflowData.sellerPhone) && (
-        <Section>
+        <Section $isDark={isDark}>
           <SectionHeader>
             <Phone size={24} color="#06b6d4" />
-            <SectionTitle>{t('Контакт', 'Contact')}</SectionTitle>
+            <SectionTitle $isDark={isDark}>{t('Контакт', 'Contact')}</SectionTitle>
           </SectionHeader>
           
           {workflowData.sellerName && (
-            <DetailRow>
-              <DetailLabel>{t('Име', 'Name')}:</DetailLabel>
-              <DetailValue>{workflowData.sellerName}</DetailValue>
+            <DetailRow $isDark={isDark}>
+              <DetailLabel $isDark={isDark}>{t('Име', 'Name')}:</DetailLabel>
+              <DetailValue $isDark={isDark}>{workflowData.sellerName}</DetailValue>
             </DetailRow>
           )}
           
           {workflowData.sellerPhone && (
-            <DetailRow>
-              <DetailLabel>{t('Телефон', 'Phone')}:</DetailLabel>
-              <DetailValue>{workflowData.sellerPhone}</DetailValue>
+            <DetailRow $isDark={isDark}>
+              <DetailLabel $isDark={isDark}>{t('Телефон', 'Phone')}:</DetailLabel>
+              <DetailValue $isDark={isDark}>{workflowData.sellerPhone}</DetailValue>
             </DetailRow>
           )}
         </Section>

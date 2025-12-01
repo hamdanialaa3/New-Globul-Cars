@@ -48,10 +48,6 @@ export const InstallButton: React.FC = () => {
     deferredPrompt.prompt();
     const { outcome } = await deferredPrompt.userChoice;
     
-    if (outcome === 'accepted') {
-      console.log('✅ PWA installed');
-    }
-    
     setDeferredPrompt(null);
     setShowButton(false);
   };

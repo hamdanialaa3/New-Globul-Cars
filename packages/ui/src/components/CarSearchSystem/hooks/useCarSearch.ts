@@ -84,9 +84,7 @@ export const useCarSearch = (initialFilters: Partial<FiltersType> = {}) => {
   }, []);
 
   const searchCars = useCallback(() => {
-    // (Comment removed - was in Arabic)
-    console.log('البحث بالفلاتر:', filters);
-    // (Comment removed - was in Arabic)
+    // Search with filters
   }, [filters]);
 
   return {

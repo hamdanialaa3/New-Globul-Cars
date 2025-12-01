@@ -8,7 +8,6 @@ class NotificationService {
   async initialize() {
     // Skip Firebase messaging in development to prevent errors
     if (process.env.NODE_ENV === 'development') {
-      console.log('📱 Firebase messaging disabled in development mode');
       return;
     }
 
@@ -30,11 +29,9 @@ class NotificationService {
     const permission = await Notification.requestPermission();
 
     if (permission === 'granted') {
-      console.log('✅ Notification permission granted');
       const token = await this.getToken();
       return token;
     } else {
-      console.log('❌ Notification permission denied');
       return null;
     }
   }
@@ -48,7 +45,6 @@ class NotificationService {
     try {
       // TODO: Add proper VAPID key from Firebase Console
       // For now, return null to prevent errors
-      console.log('📱 FCM Token: Skipped in development');
       return null;
 
       // Uncomment when VAPID key is available:
@@ -73,7 +69,6 @@ class NotificationService {
       const permission = await Notification.requestPermission();
       
       if (permission === 'granted') {
-        console.log('✅ Notification permission granted');
         const token = await this.getToken();
         
         if (token && userId) {
@@ -82,7 +77,6 @@ class NotificationService {
         
         return token;
       } else {
-        console.log('❌ Notification permission denied');
         return null;
       }
     } catch (error) {
@@ -106,7 +100,6 @@ class NotificationService {
         updatedAt: new Date(),
         platform: 'web'
       });
-      console.log('✅ Token saved');
     } catch (error) {
       console.error('❌ Token save failed:', error);
     }
@@ -114,7 +107,6 @@ class NotificationService {
 
   listenForMessages() {
     onMessage(this.messaging, (payload) => {
-      console.log('📬 Foreground Message:', payload);
       this.showNotification(payload);
     });
   }
@@ -229,15 +221,12 @@ class NotificationService {
       const tokenDoc = await getDoc(doc(db, 'userTokens', userId));
       
       if (!tokenDoc.exists()) {
-        console.log('❌ No token for user:', userId);
         return;
       }
 
       const token = tokenDoc.data().token;
       
-      // هنا سنستخدم Firebase Cloud Functions لإرسال الإشعار
-      // سيتم إضافته في الخطوة التالية
-      console.log('📤 Sending notification to:', userId, notification);
+      // TODO: Use Firebase Cloud Functions to send the notification
       
       return { success: true };
     } catch (error) {

@@ -285,10 +285,8 @@ export const BulgariaLocationDropdown: React.FC<BulgariaLocationDropdownProps> =
    */
   const loadProvinces = async () => {
     try {
-      console.log('[BulgariaLocationDropdown] Starting to load provinces...');
       setIsLoadingProvinces(true);
       const allProvinces = await bulgariaLocationsService.getAllProvinces();
-      console.log('[BulgariaLocationDropdown] Loaded provinces:', allProvinces.length, allProvinces);
       setProvinces(allProvinces);
     } catch (error) {
       console.error('[BulgariaLocationDropdown] Failed to load provinces:', error);

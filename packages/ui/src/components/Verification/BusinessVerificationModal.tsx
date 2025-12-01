@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { X, Building2, FileText, Upload, CheckCircle, AlertCircle, Loader, Info } from 'lucide-react';
 import { useLanguage } from '@globul-cars/core/contextsLanguageContext';
+import { useTheme } from '@globul-cars/core/contexts/ThemeContext';
 import { useAuth } from '@globul-cars/core/contextsAuthProvider';
 import DocumentUpload from './DocumentUpload';
 
@@ -26,8 +27,8 @@ const ModalOverlay = styled.div`
   padding: 20px;
 `;
 
-const ModalContainer = styled.div`
-  background: white;
+const ModalContainer = styled.div<{ $isDark?: boolean }>`
+  background: ${({ $isDark }) => ($isDark ? '#071025' : 'white')};
   border-radius: 16px;
   padding: 32px;
   max-width: 650px;
@@ -35,7 +36,7 @@ const ModalContainer = styled.div`
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
 `;
 
-const ModalHeader = styled.div`
+const ModalHeader = styled.div<{ $isDark?: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -44,26 +45,26 @@ const ModalHeader = styled.div`
   h3 {
     margin: 0;
     font-size: 1.5rem;
-    color: #333;
+    color: ${({ $isDark }) => ($isDark ? '#e6eef9' : '#333')};
     display: flex;
     align-items: center;
     gap: 12px;
   }
 `;
 
-const CloseButton = styled.button`
+const CloseButton = styled.button<{ $isDark?: boolean }>`
   width: 36px;
   height: 36px;
   border-radius: 50%;
   border: none;
-  background: #f0f0f0;
+  background: ${({ $isDark }) => ($isDark ? '#0b1220' : '#f0f0f0')};
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   
   &:hover {
-    background: #e0e0e0;
+    background: ${({ $isDark }) => ($isDark ? '#121827' : '#e0e0e0')};
   }
 `;
 
@@ -95,7 +96,7 @@ const SectionTitle = styled.h4`
   gap: 8px;
 `;
 
-const InfoBox = styled.div<{ $type?: 'info' | 'warning' | 'success' }>`
+const InfoBox = styled.div<{ $type?: 'info' | 'warning' | 'success'; $isDark?: boolean }>`
   padding: 16px;
   border-radius: 8px;
   margin-bottom: 16px;
@@ -107,21 +108,21 @@ const InfoBox = styled.div<{ $type?: 'info' | 'warning' | 'success' }>`
     switch (props.$type) {
       case 'warning':
         return `
-          background: #fff3cd;
+          background: ${props.$isDark ? '#2a2a1e' : '#fff3cd'};
           border-left: 4px solid #ffc107;
-          color: #856404;
+          color: ${props.$isDark ? '#f2c66b' : '#856404'};
         `;
       case 'success':
         return `
-          background: #d1f4e0;
+          background: ${props.$isDark ? '#0d2b1c' : '#d1f4e0'};
           border-left: 4px solid #0d7a3f;
-          color: #0d7a3f;
+          color: ${props.$isDark ? '#9be6bb' : '#0d7a3f'};
         `;
       default:
         return `
-          background: #e3f2fd;
+          background: ${props.$isDark ? '#07162a' : '#e3f2fd'};
           border-left: 4px solid #1976d2;
-          color: #1565c0;
+          color: ${props.$isDark ? '#8ebcf7' : '#1565c0'};
         `;
     }
   }}
@@ -144,9 +145,9 @@ const DocumentsList = styled.div`
   gap: 16px;
 `;
 
-const DocumentItem = styled.div`
-  background: #f8f9fa;
-  border: 2px dashed #dee2e6;
+const DocumentItem = styled.div<{ $isDark?: boolean }>`
+  background: ${({ $isDark }) => ($isDark ? '#071025' : '#f8f9fa')};
+  border: 2px dashed ${({ $isDark }) => ($isDark ? '#1f2937' : '#dee2e6')};
   border-radius: 8px;
   padding: 16px;
 `;
@@ -158,7 +159,7 @@ const DocumentHeader = styled.div`
   margin-bottom: 12px;
 `;
 
-const DocumentTitle = styled.div`
+const DocumentTitle = styled.div<{ $isDark?: boolean }>`
   display: flex;
   align-items: center;
   gap: 8px;
@@ -166,7 +167,7 @@ const DocumentTitle = styled.div`
   h5 {
     margin: 0;
     font-size: 0.95rem;
-    color: #333;
+    color: ${({ $isDark }) => ($isDark ? '#e6eef9' : '#333')};
   }
 `;
 
@@ -179,9 +180,9 @@ const RequiredBadge = styled.span<{ $optional?: boolean }>`
   font-weight: 600;
 `;
 
-const DocumentDescription = styled.p`
+const DocumentDescription = styled.p<{ $isDark?: boolean }>`
   font-size: 0.85rem;
-  color: #666;
+  color: ${({ $isDark }) => ($isDark ? '#9aa6b2' : '#666')};
   margin: 8px 0;
 `;
 
@@ -191,10 +192,10 @@ const ButtonGroup = styled.div`
   margin-top: 24px;
 `;
 
-const SubmitButton = styled.button<{ $disabled?: boolean }>`
+const SubmitButton = styled.button<{ $disabled?: boolean; $isDark?: boolean }>`
   flex: 1;
   padding: 12px 24px;
-  background: ${props => props.$disabled ? '#ccc' : 'linear-gradient(135deg, #FF7900 0%, #FF9500 100%)'};
+  background: ${props => props.$disabled ? (props.$isDark ? '#2a2a2a' : '#ccc') : (props.$isDark ? 'linear-gradient(135deg, #1f6fe8, #0f4fbf)' : 'linear-gradient(135deg, #FF7900 0%, #FF9500 100%)')};
   color: white;
   border: none;
   border-radius: 8px;
@@ -209,16 +210,16 @@ const SubmitButton = styled.button<{ $disabled?: boolean }>`
   
   &:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 121, 0, 0.3);
+    box-shadow: ${props => props.$isDark ? '0 4px 12px rgba(31, 111, 232, 0.3)' : '0 4px 12px rgba(255, 121, 0, 0.3)'};
   }
 `;
 
-const CancelButton = styled.button`
+const CancelButton = styled.button<{ $isDark?: boolean }>`
   flex: 1;
   padding: 12px 24px;
-  background: white;
-  color: #666;
-  border: 2px solid #dee2e6;
+  background: ${({ $isDark }) => ($isDark ? '#071025' : 'white')};
+  color: ${({ $isDark }) => ($isDark ? '#cbd5e1' : '#666')};
+  border: 2px solid ${({ $isDark }) => ($isDark ? '#1f2937' : '#dee2e6')};
   border-radius: 8px;
   font-size: 1rem;
   font-weight: 600;
@@ -226,7 +227,7 @@ const CancelButton = styled.button`
   transition: all 0.3s ease;
   
   &:hover {
-    background: #f8f9fa;
+    background: ${({ $isDark }) => ($isDark ? '#0b1220' : '#f8f9fa')};
   }
 `;
 
@@ -244,49 +245,49 @@ const SuccessOverlay = styled.div`
   padding: 40px 20px;
 `;
 
-const SuccessIcon = styled.div`
+const SuccessIcon = styled.div<{ $isDark?: boolean }>`
   width: 80px;
   height: 80px;
   margin: 0 auto 24px;
   border-radius: 50%;
-  background: #d1f4e0;
-  color: #0d7a3f;
+  background: ${({ $isDark }) => ($isDark ? '#08342b' : '#d1f4e0')};
+  color: ${({ $isDark }) => ($isDark ? '#9be6bb' : '#0d7a3f')};
   display: flex;
   align-items: center;
   justify-content: center;
 `;
 
-const SuccessTitle = styled.h3`
+const SuccessTitle = styled.h3<{ $isDark?: boolean }>`
   font-size: 1.5rem;
-  color: #333;
+  color: ${({ $isDark }) => ($isDark ? '#e6eef9' : '#333')};
   margin: 0 0 12px 0;
 `;
 
-const SuccessMessage = styled.p`
+const SuccessMessage = styled.p<{ $isDark?: boolean }>`
   font-size: 1rem;
-  color: #666;
+  color: ${({ $isDark }) => ($isDark ? '#9aa6b2' : '#666')};
   margin: 0 0 24px 0;
   line-height: 1.5;
 `;
 
-const FilePreview = styled.div`
+const FilePreview = styled.div<{ $isDark?: boolean }>`
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 8px 12px;
-  background: white;
-  border: 1px solid #dee2e6;
+  background: ${({ $isDark }) => ($isDark ? '#071025' : 'white')};
+  border: 1px solid ${({ $isDark }) => ($isDark ? '#1f2937' : '#dee2e6')};
   border-radius: 6px;
   margin-top: 8px;
   
   svg {
-    color: #0d7a3f;
+    color: ${({ $isDark }) => ($isDark ? '#6ee7b7' : '#0d7a3f')};
   }
   
   span {
     flex: 1;
     font-size: 0.85rem;
-    color: #333;
+    color: ${({ $isDark }) => ($isDark ? '#e6eef9' : '#333')};
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -297,7 +298,7 @@ const FilePreview = styled.div`
     border: none;
     padding: 4px;
     cursor: pointer;
-    color: #666;
+    color: ${({ $isDark }) => ($isDark ? '#9aa6b2' : '#666')};
     
     &:hover {
       color: #d32f2f;
@@ -351,11 +352,6 @@ const BusinessVerificationModal: React.FC<BusinessVerificationModalProps> = ({
       // 1. Upload documents to Firebase Storage
       // 2. Update user verification status in Firestore
       // 3. Send notification to admin for review
-      
-      console.log('📄 Business documents submitted:', {
-        userId: currentUser.uid,
-        documents: Object.keys(documents)
-      });
 
       setStep(2);
     } catch (error) {
@@ -372,15 +368,18 @@ const BusinessVerificationModal: React.FC<BusinessVerificationModalProps> = ({
 
   const canSubmit = documents.businessLicense !== undefined;
 
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+
   return (
     <ModalOverlay onClick={onClose}>
-      <ModalContainer onClick={(e) => e.stopPropagation()}>
-        <ModalHeader>
+      <ModalContainer $isDark={isDark} onClick={(e) => e.stopPropagation()}>
+        <ModalHeader $isDark={isDark}>
           <h3>
             <Building2 color="#FF7900" />
             {language === 'bg' ? 'Потвърждение на бизнес' : 'Business Verification'}
           </h3>
-          <CloseButton onClick={onClose}>
+          <CloseButton $isDark={isDark} onClick={onClose}>
             <X size={20} />
           </CloseButton>
         </ModalHeader>
@@ -409,9 +408,9 @@ const BusinessVerificationModal: React.FC<BusinessVerificationModalProps> = ({
 
               <DocumentsList>
                 {/* Business License */}
-                <DocumentItem>
+                <DocumentItem $isDark={isDark}>
                   <DocumentHeader>
-                    <DocumentTitle>
+                    <DocumentTitle $isDark={isDark}>
                       <FileText size={18} color="#FF7900" />
                       <h5>
                         {language === 'bg' ? 'Удостоверение за регистрация' : 'Business Registration Certificate'}
@@ -434,7 +433,7 @@ const BusinessVerificationModal: React.FC<BusinessVerificationModalProps> = ({
                     optional={false}
                   />
                   {documents.businessLicense && (
-                    <FilePreview>
+                    <FilePreview $isDark={isDark}>
                       <CheckCircle size={16} />
                       <span>{documents.businessLicense.name}</span>
                       <button onClick={() => handleFileSelect('businessLicense', null)}>
@@ -445,9 +444,9 @@ const BusinessVerificationModal: React.FC<BusinessVerificationModalProps> = ({
                 </DocumentItem>
 
                 {/* VAT Certificate */}
-                <DocumentItem>
+                <DocumentItem $isDark={isDark}>
                   <DocumentHeader>
-                    <DocumentTitle>
+                    <DocumentTitle $isDark={isDark}>
                       <FileText size={18} color="#FF7900" />
                       <h5>
                         {language === 'bg' ? 'Удостоверение за ДДС' : 'VAT Certificate'}
@@ -470,7 +469,7 @@ const BusinessVerificationModal: React.FC<BusinessVerificationModalProps> = ({
                     optional={true}
                   />
                   {documents.vatCertificate && (
-                    <FilePreview>
+                    <FilePreview $isDark={isDark}>
                       <CheckCircle size={16} />
                       <span>{documents.vatCertificate.name}</span>
                       <button onClick={() => handleFileSelect('vatCertificate', null)}>
@@ -481,9 +480,9 @@ const BusinessVerificationModal: React.FC<BusinessVerificationModalProps> = ({
                 </DocumentItem>
 
                 {/* Trade Register */}
-                <DocumentItem>
+                <DocumentItem $isDark={isDark}>
                   <DocumentHeader>
-                    <DocumentTitle>
+                    <DocumentTitle $isDark={isDark}>
                       <FileText size={18} color="#FF7900" />
                       <h5>
                         {language === 'bg' ? 'Извлечение от Търговския регистър' : 'Trade Register Extract'}
@@ -506,7 +505,7 @@ const BusinessVerificationModal: React.FC<BusinessVerificationModalProps> = ({
                     optional={true}
                   />
                   {documents.tradeRegister && (
-                    <FilePreview>
+                    <FilePreview $isDark={isDark}>
                       <CheckCircle size={16} />
                       <span>{documents.tradeRegister.name}</span>
                       <button onClick={() => handleFileSelect('tradeRegister', null)}>
@@ -519,10 +518,10 @@ const BusinessVerificationModal: React.FC<BusinessVerificationModalProps> = ({
             </ContentSection>
 
             <ButtonGroup>
-              <CancelButton onClick={onClose}>
+              <CancelButton $isDark={isDark} onClick={onClose}>
                 {language === 'bg' ? 'Отказ' : 'Cancel'}
               </CancelButton>
-              <SubmitButton
+              <SubmitButton $isDark={isDark}
                 onClick={handleSubmit}
                 disabled={!canSubmit || isSubmitting}
                 $disabled={!canSubmit || isSubmitting}
@@ -546,19 +545,19 @@ const BusinessVerificationModal: React.FC<BusinessVerificationModalProps> = ({
         )}
 
         {step === 2 && (
-          <SuccessOverlay>
-            <SuccessIcon>
+            <SuccessOverlay>
+            <SuccessIcon $isDark={isDark}>
               <CheckCircle size={40} />
             </SuccessIcon>
-            <SuccessTitle>
+            <SuccessTitle $isDark={isDark}>
               {language === 'bg' ? 'Документите са изпратени!' : 'Documents Submitted!'}
             </SuccessTitle>
-            <SuccessMessage>
+            <SuccessMessage $isDark={isDark}>
               {language === 'bg'
                 ? 'Вашите документи са изпратени успешно. Екипът ни ще ги прегледа в рамките на 1-3 работни дни. Ще получите имейл с резултата от проверката.'
                 : 'Your documents have been submitted successfully. Our team will review them within 1-3 business days. You will receive an email with the verification result.'}
             </SuccessMessage>
-            <SubmitButton onClick={onSuccess}>
+            <SubmitButton $isDark={isDark} onClick={onSuccess}>
               {language === 'bg' ? 'Затвори' : 'Close'}
             </SubmitButton>
           </SuccessOverlay>

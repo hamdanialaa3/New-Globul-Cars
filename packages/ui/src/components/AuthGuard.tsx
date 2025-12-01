@@ -5,6 +5,7 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAuth } from '@globul-cars/core/contextsAuthProvider';
 import { useLanguage } from '@globul-cars/core/contextsLanguageContext';
+import { useTheme } from '@globul-cars/core/contexts/ThemeContext';
 import styled from 'styled-components';
 import { Lock, LogIn, Home } from 'lucide-react';
 
@@ -19,8 +20,8 @@ const LoginRequiredContainer = styled.div`
   text-align: center;
 `;
 
-const MessageCard = styled.div`
-  background: white;
+const MessageCard = styled.div<{ $isDark?: boolean }>`
+  background: ${({ $isDark }) => ($isDark ? '#0b1220' : 'white')};
   padding: 3rem;
   border-radius: 20px;
   box-shadow: 0 20px 40px rgba(0,0,0,0.1);
@@ -35,15 +36,15 @@ const LockIcon = styled.div`
   justify-content: center;
 `;
 
-const Title = styled.h2`
-  color: #333;
+const Title = styled.h2<{ $isDark?: boolean }>`
+  color: ${({ $isDark }) => ($isDark ? '#e6eefa' : '#333')};
   margin-bottom: 1rem;
   font-size: 1.8rem;
   font-weight: 600;
 `;
 
-const Message = styled.p`
-  color: #666;
+const Message = styled.p<{ $isDark?: boolean }>`
+  color: ${({ $isDark }) => ($isDark ? '#d1d5db' : '#666')};
   margin-bottom: 2rem;
   font-size: 1.1rem;
   line-height: 1.6;
@@ -113,6 +114,8 @@ interface AuthGuardProps {
 const LoginRequiredMessage: React.FC = () => {
   const location = useLocation();
   const { t } = useLanguage();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   
   const handleLogin = () => {
     window.location.href = '/login';
@@ -136,12 +139,12 @@ const LoginRequiredMessage: React.FC = () => {
 
   return (
     <LoginRequiredContainer>
-      <MessageCard>
+      <MessageCard $isDark={isDark}>
         <LockIcon>
           <Lock size={64} />
         </LockIcon>
-        <Title>{t('auth.required.title')}</Title>
-        <Message>
+        <Title $isDark={isDark}>{t('auth.required.title')}</Title>
+        <Message $isDark={isDark}>
           {t('auth.required.message')}
           <br /><br />
           <strong>{getPageName(location.pathname)}</strong>

@@ -1049,7 +1049,6 @@ export const LeafletBulgariaMap: React.FC<LeafletBulgariaMapProps> = ({
     const fetchRealCarCounts = async () => {
       try {
         setIsLoadingCounts(true);
-        console.log('🗺️ Loading real car counts from Firestore...');
         
         // Get all region IDs from GeoJSON
         const regionIds = bulgariaData.features.map((f: any) => f.properties.id);
@@ -1058,7 +1057,6 @@ export const LeafletBulgariaMap: React.FC<LeafletBulgariaMapProps> = ({
         const counts = await RegionCarCountService.getAllRegionCounts(regionIds);
         
         setRealCarCounts(counts);
-        console.log('✅ Real car counts loaded:', counts);
       } catch (error) {
         console.error('❌ Error fetching real car counts:', error);
       } finally {

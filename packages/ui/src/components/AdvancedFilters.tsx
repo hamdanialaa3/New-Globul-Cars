@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Filter, X, ChevronDown, ChevronUp } from 'lucide-react';
 import { useLanguage } from '@globul-cars/core/contexts/LanguageContext';
+import { useTheme } from '@globul-cars/core/contexts/ThemeContext';
 import { BULGARIAN_CITIES } from '@globul-cars/core/constantsbulgarianCities';
 import SelectWithOther from './shared/SelectWithOther';
 import { 
@@ -38,21 +39,21 @@ interface AdvancedFiltersProps {
   onClearFilters: () => void;
 }
 
-const FiltersContainer = styled.div`
-  background: white;
+const FiltersContainer = styled.div<{ $isDark?: boolean }>`
+  background: ${({ $isDark }) => ($isDark ? '#0f172a' : 'white')};
   border-radius: 15px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   margin-bottom: 2rem;
   overflow: hidden;
 `;
 
-const FiltersHeader = styled.div`
+const FiltersHeader = styled.div<{ $isDark?: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1.5rem 2rem;
   background: linear-gradient(135deg, #667eea, #764ba2);
-  color: white;
+  color: ${({ $isDark }) => ($isDark ? '#e6eefa' : 'white')};
   cursor: pointer;
   user-select: none;
 
@@ -69,7 +70,7 @@ const HeaderTitle = styled.div`
   font-weight: 600;
 `;
 
-const FiltersContent = styled.div<{ isExpanded: boolean }>`
+const FiltersContent = styled.div<{ isExpanded: boolean; $isDark?: boolean }>`
   max-height: ${props => props.isExpanded ? '2000px' : '0'};
   overflow: hidden;
   transition: max-height 0.3s ease;
@@ -88,18 +89,18 @@ const FilterGroup = styled.div`
   gap: 0.5rem;
 `;
 
-const Label = styled.label`
+const Label = styled.label<{ $isDark?: boolean }>`
   font-weight: 600;
-  color: #2c3e50;
+  color: ${({ $isDark }) => ($isDark ? '#e6eefa' : '#2c3e50')};
   font-size: 0.9rem;
 `;
 
-const Select = styled.select`
+const Select = styled.select<{ $isDark?: boolean }>`
   padding: 0.75rem;
-  border: 2px solid #e9ecef;
+  border: 2px solid ${({ $isDark }) => ($isDark ? '#1f2937' : '#e9ecef')};
   border-radius: 8px;
   font-size: 1rem;
-  background: white;
+  background: ${({ $isDark }) => ($isDark ? '#0b1220' : 'white')};
   cursor: pointer;
   transition: all 0.3s ease;
 
@@ -110,9 +111,9 @@ const Select = styled.select`
   }
 `;
 
-const Input = styled.input`
+const Input = styled.input<{ $isDark?: boolean }>`
   padding: 0.75rem;
-  border: 2px solid #e9ecef;
+  border: 2px solid ${({ $isDark }) => ($isDark ? '#1f2937' : '#e9ecef')};
   border-radius: 8px;
   font-size: 1rem;
   transition: all 0.3s ease;
@@ -136,12 +137,12 @@ const RangeSeparator = styled.span`
   font-weight: 600;
 `;
 
-const ButtonGroup = styled.div`
+const ButtonGroup = styled.div<{ $isDark?: boolean }>`
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
   padding: 1.5rem 2rem;
-  border-top: 1px solid #e9ecef;
+  border-top: 1px solid ${({ $isDark }) => ($isDark ? '#1f2937' : '#e9ecef')};
 `;
 
 const Button = styled.button<{ variant?: 'primary' | 'secondary' }>`
@@ -175,9 +176,9 @@ const Button = styled.button<{ variant?: 'primary' | 'secondary' }>`
   `}
 `;
 
-const ActiveFiltersCount = styled.span`
-  background: white;
-  color: #667eea;
+const ActiveFiltersCount = styled.span<{ $isDark?: boolean }>`
+  background: ${({ $isDark }) => ($isDark ? '#0b1220' : 'white')};
+  color: ${({ $isDark }) => ($isDark ? '#67a1ff' : '#667eea')};
   padding: 0.25rem 0.75rem;
   border-radius: 50px;
   font-size: 0.85rem;
@@ -191,10 +192,12 @@ const AdvancedFilters: React.FC<AdvancedFiltersProps> = ({
   onClearFilters
 }) => {
   const { language } = useLanguage();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const [isExpanded, setIsExpanded] = useState(false);
   const [filters, setFilters] = useState<FilterOptions>(initialFilters);
 
-  const handleFilterChange = (key: keyof FilterOptions, value: any) => {
+  const handleFilterChange = <K extends keyof FilterOptions>(key: K, value: FilterOptions[K]) => {
     setFilters(prev => ({ ...prev, [key]: value }));
   };
 
@@ -218,8 +221,8 @@ const AdvancedFilters: React.FC<AdvancedFiltersProps> = ({
   const sellerTypes = ['private', 'dealer', 'company'];
 
   return (
-    <FiltersContainer>
-      <FiltersHeader onClick={() => setIsExpanded(!isExpanded)}>
+    <FiltersContainer $isDark={isDark}>
+      <FiltersHeader $isDark={isDark} onClick={() => setIsExpanded(!isExpanded)}>
         <HeaderTitle>
           <Filter size={20} />
           <span>{language === 'bg' ? 'Разширени филтри' : 'Advanced Filters'}</span>
@@ -230,11 +233,11 @@ const AdvancedFilters: React.FC<AdvancedFiltersProps> = ({
         {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
       </FiltersHeader>
 
-      <FiltersContent isExpanded={isExpanded}>
+      <FiltersContent $isDark={isDark} isExpanded={isExpanded}>
         <FiltersGrid>
           {/* City */}
           <FilterGroup>
-            <Label>{language === 'bg' ? 'Град' : 'City'}</Label>
+            <Label $isDark={isDark}>{language === 'bg' ? 'Град' : 'City'}</Label>
             <SelectWithOther
               options={BULGARIAN_CITIES.map(city => ({
                 value: city.id,
@@ -250,7 +253,7 @@ const AdvancedFilters: React.FC<AdvancedFiltersProps> = ({
 
           {/* Make */}
           <FilterGroup>
-            <Label>{language === 'bg' ? 'Марка' : 'Make'}</Label>
+            <Label $isDark={isDark}>{language === 'bg' ? 'Марка' : 'Make'}</Label>
             <SelectWithOther
               options={CAR_BRANDS}
               value={filters.make || ''}

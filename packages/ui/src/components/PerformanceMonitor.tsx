@@ -118,11 +118,6 @@ class PerformanceService {
         networkLatency: 0
       });
     });
-
-    // Log in development
-    if (process.env.NODE_ENV === 'development') {
-      console.log(`Performance Metric - ${name}:`, value);
-    }
   }
 
   private getMemoryUsage(): number {

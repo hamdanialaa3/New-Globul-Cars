@@ -232,7 +232,6 @@ const StoriesCarousel: React.FC = () => {
   
   const handleAddStory = () => {
     // TODO: Open story creator modal
-    console.log('Add story clicked');
   };
   
   // ==================== RENDER ====================

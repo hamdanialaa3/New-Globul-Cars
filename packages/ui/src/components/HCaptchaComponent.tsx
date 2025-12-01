@@ -46,7 +46,6 @@ export const HCaptchaComponent = forwardRef<any, HCaptchaComponentProps>(
         size={size}
         languageOverride={language}
         onVerify={(token) => {
-          console.log('Captcha verified:', token);
           onVerify(token);
         }}
         onError={(error) => {
@@ -54,7 +53,6 @@ export const HCaptchaComponent = forwardRef<any, HCaptchaComponentProps>(
           onError?.(error);
         }}
         onExpire={() => {
-          console.log('Captcha expired');
           onExpire?.();
         }}
       />

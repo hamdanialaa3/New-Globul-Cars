@@ -4,6 +4,7 @@
 
 import React, { forwardRef } from 'react';
 import styled, { css } from 'styled-components';
+import { useTheme } from '@globul-cars/core/contexts/ThemeContext';
 // Mobile Design System - Now in UI package
 import { 
   mobileColors, 
@@ -46,11 +47,11 @@ const InputWrapper = styled.div`
   width: 100%;
 `;
 
-const Label = styled.label<{ $required: boolean }>`
+const Label = styled.label<{ $required: boolean; $isDark?: boolean }>`
   font-size: ${mobileTypography.label.fontSize};
   font-weight: ${mobileTypography.label.fontWeight};
   line-height: ${mobileTypography.label.lineHeight};
-  color: ${mobileColors.neutral.gray700};
+  color: ${({ $isDark }) => ($isDark ? mobileColors.neutral.gray400 : mobileColors.neutral.gray700)};
   
   ${props => props.$required && css`
     &::after {
@@ -64,6 +65,7 @@ const InputContainer = styled.div<{
   $hasIcon: boolean;
   $iconPosition: 'left' | 'right';
   $error: boolean;
+  $isDark?: boolean;
 }>`
   position: relative;
   width: 100%;
@@ -104,18 +106,19 @@ const sizeStyles = {
 const StyledInput = styled.input<{
   $size: InputSize;
   $error: boolean;
+  $isDark?: boolean;
 }>`
   ${mobileMixins.preventZoom}
   
   width: 100%;
-  border: 2px solid ${props => props.$error ? mobileColors.error.main : mobileColors.surface.border};
+  border: 2px solid ${props => props.$error ? mobileColors.error.main : (props.$isDark ? '#1f2937' : mobileColors.surface.border)};
   border-radius: ${mobileBorderRadius.md};
-  background: ${mobileColors.surface.background};
+  background: ${props => props.$isDark ? '#071025' : mobileColors.surface.background};
   
   font-family: 'Martica', 'Arial', sans-serif;
   font-weight: ${mobileTypography.input.fontWeight};
   line-height: ${mobileTypography.input.lineHeight};
-  color: ${mobileColors.neutral.gray900};
+  color: ${props => props.$isDark ? mobileColors.neutral.gray100 : mobileColors.neutral.gray900};
   
   transition: ${mobileAnimations.transitions.default};
   
@@ -132,8 +135,8 @@ const StyledInput = styled.input<{
   }
   
   &:disabled {
-    background: ${mobileColors.neutral.gray100};
-    color: ${mobileColors.neutral.gray500};
+    background: ${props => props.$isDark ? '#0b1220' : mobileColors.neutral.gray100};
+    color: ${props => props.$isDark ? mobileColors.neutral.gray500 : mobileColors.neutral.gray500};
     cursor: not-allowed;
   }
   
@@ -154,7 +157,7 @@ const StyledInput = styled.input<{
   }
 `;
 
-const IconWrapper = styled.span<{ $position: 'left' | 'right' }>`
+const IconWrapper = styled.span<{ $position: 'left' | 'right'; $isDark?: boolean }>`
   position: absolute;
   top: 50%;
   ${props => props.$position}: ${mobileSpacing.md};
@@ -164,7 +167,7 @@ const IconWrapper = styled.span<{ $position: 'left' | 'right' }>`
   align-items: center;
   justify-content: center;
   
-  color: ${mobileColors.neutral.gray500};
+  color: ${props => props.$isDark ? mobileColors.neutral.gray400 : mobileColors.neutral.gray500};
   pointer-events: none;
   
   svg {
@@ -173,10 +176,10 @@ const IconWrapper = styled.span<{ $position: 'left' | 'right' }>`
   }
 `;
 
-const HelperText = styled.span<{ $error: boolean }>`
+const HelperText = styled.span<{ $error: boolean; $isDark?: boolean }>`
   font-size: ${mobileTypography.caption.fontSize};
   line-height: ${mobileTypography.caption.lineHeight};
-  color: ${props => props.$error ? mobileColors.error.main : mobileColors.neutral.gray600};
+  color: ${props => props.$error ? mobileColors.error.main : (props.$isDark ? mobileColors.neutral.gray400 : mobileColors.neutral.gray600)};
 `;
 
 export const MobileInput = forwardRef<HTMLInputElement, MobileInputProps>(({
@@ -203,11 +206,13 @@ export const MobileInput = forwardRef<HTMLInputElement, MobileInputProps>(({
 }, ref) => {
   const inputId = id || name;
   const hasError = !!error;
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   
   return (
     <InputWrapper className={className}>
       {label && (
-        <Label htmlFor={inputId} $required={required}>
+        <Label htmlFor={inputId} $required={required} $isDark={isDark}>
           {label}
         </Label>
       )}
@@ -216,9 +221,10 @@ export const MobileInput = forwardRef<HTMLInputElement, MobileInputProps>(({
         $hasIcon={!!icon}
         $iconPosition={iconPosition}
         $error={hasError}
+        $isDark={isDark}
       >
         {icon && (
-          <IconWrapper $position={iconPosition}>
+          <IconWrapper $position={iconPosition} $isDark={isDark}>
             {icon}
           </IconWrapper>
         )}
@@ -240,11 +246,12 @@ export const MobileInput = forwardRef<HTMLInputElement, MobileInputProps>(({
           maxLength={maxLength}
           $size={size}
           $error={hasError}
+          $isDark={isDark}
         />
       </InputContainer>
       
       {(error || helperText) && (
-        <HelperText $error={hasError}>
+        <HelperText $error={hasError} $isDark={isDark}>
           {error || helperText}
         </HelperText>
       )}
@@ -274,22 +281,22 @@ interface MobileTextareaProps {
   maxLength?: number;
 }
 
-const StyledTextarea = styled.textarea<{ $error: boolean }>`
+const StyledTextarea = styled.textarea<{ $error: boolean; $isDark?: boolean }>`
   ${mobileMixins.preventZoom}
   
   width: 100%;
   min-height: 120px;
   padding: ${mobileSpacing.sm} ${mobileSpacing.md};
   
-  border: 2px solid ${props => props.$error ? mobileColors.error.main : mobileColors.surface.border};
+  border: 2px solid ${props => props.$error ? mobileColors.error.main : (props.$isDark ? '#1f2937' : mobileColors.surface.border)};
   border-radius: ${mobileBorderRadius.md};
-  background: ${mobileColors.surface.background};
+  background: ${props => props.$isDark ? '#071025' : mobileColors.surface.background};
   
   font-family: 'Martica', 'Arial', sans-serif;
   font-size: ${mobileTypography.input.fontSize};
   font-weight: ${mobileTypography.input.fontWeight};
   line-height: ${mobileTypography.input.lineHeight};
-  color: ${mobileColors.neutral.gray900};
+  color: ${props => props.$isDark ? mobileColors.neutral.gray100 : mobileColors.neutral.gray900};
   
   resize: vertical;
   transition: ${mobileAnimations.transitions.default};
@@ -305,7 +312,7 @@ const StyledTextarea = styled.textarea<{ $error: boolean }>`
   }
   
   &:disabled {
-    background: ${mobileColors.neutral.gray100};
+    background: ${props => props.$isDark ? '#0b1220' : mobileColors.neutral.gray100};
     color: ${mobileColors.neutral.gray500};
     cursor: not-allowed;
     resize: none;
@@ -332,11 +339,13 @@ export const MobileTextarea = forwardRef<HTMLTextAreaElement, MobileTextareaProp
 }, ref) => {
   const textareaId = id || name;
   const hasError = !!error;
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   
   return (
     <InputWrapper className={className}>
       {label && (
-        <Label htmlFor={textareaId} $required={required}>
+        <Label htmlFor={textareaId} $required={required} $isDark={isDark}>
           {label}
         </Label>
       )}
@@ -356,10 +365,11 @@ export const MobileTextarea = forwardRef<HTMLTextAreaElement, MobileTextareaProp
         onBlur={onBlur}
         maxLength={maxLength}
         $error={hasError}
+        $isDark={isDark}
       />
       
       {(error || helperText) && (
-        <HelperText $error={hasError}>
+        <HelperText $error={hasError} $isDark={isDark}>
           {error || helperText}
         </HelperText>
       )}

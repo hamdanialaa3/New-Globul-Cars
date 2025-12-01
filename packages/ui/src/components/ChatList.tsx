@@ -236,7 +236,7 @@ const ChatList: React.FC<ChatListProps> = ({
     }
   };
 
-  const getLastMessagePreview = (lastMessage: any) => {
+  const getLastMessagePreview = (lastMessage: ChatRoom['lastMessage']) => {
     if (!lastMessage) return t('chat.noMessages');
 
     const content = lastMessage.content || '';

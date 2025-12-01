@@ -6,6 +6,7 @@ import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import { Upload, X, CheckCircle } from 'lucide-react';
 import { useLanguage } from '@globul-cars/core/contextsLanguageContext';
+import { useTheme } from '@globul-cars/core/contexts/ThemeContext';
 
 // ==================== STYLED COMPONENTS ====================
 
@@ -13,22 +14,22 @@ const UploadContainer = styled.div`
   width: 100%;
 `;
 
-const UploadBox = styled.div<{ $hasFile: boolean }>`
-  border: 2px dashed ${props => props.$hasFile ? '#4caf50' : '#e0e0e0'};
+const UploadBox = styled.div<{ $hasFile: boolean; $isDark?: boolean }>`
+  border: 2px dashed ${props => props.$hasFile ? '#4caf50' : (props.$isDark ? '#1f2937' : '#e0e0e0')};
   border-radius: 12px;
   padding: 24px;
   text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  background: ${props => props.$hasFile ? '#f1f8e9' : '#fafafa'};
+  background: ${props => props.$hasFile ? (props.$isDark ? '#062617' : '#f1f8e9') : (props.$isDark ? '#071025' : '#fafafa')};
   
   &:hover {
     border-color: ${props => props.$hasFile ? '#4caf50' : '#FF7900'};
-    background: ${props => props.$hasFile ? '#f1f8e9' : '#fff5e6'};
+    background: ${props => props.$hasFile ? (props.$isDark ? '#062617' : '#f1f8e9') : (props.$isDark ? '#071025' : '#fff5e6')};
   }
 `;
 
-const IconWrapper = styled.div<{ $hasFile: boolean }>`
+const IconWrapper = styled.div<{ $hasFile: boolean; $isDark?: boolean }>`
   width: 60px;
   height: 60px;
   margin: 0 auto 16px auto;
@@ -36,55 +37,55 @@ const IconWrapper = styled.div<{ $hasFile: boolean }>`
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: ${props => props.$hasFile ? '#4caf50' : '#FF7900'};
+  background: ${props => props.$hasFile ? (props.$isDark ? '#14532d' : '#4caf50') : '#FF7900'};
   color: white;
   transition: all 0.3s ease;
 `;
 
-const UploadText = styled.div`
+const UploadText = styled.div<{ $isDark?: boolean }>`
   h4 {
     margin: 0 0 8px 0;
     font-size: 1rem;
-    color: #333;
+    color: ${({ $isDark }) => ($isDark ? '#e6eef9' : '#333')};
   }
   
   p {
     margin: 0;
     font-size: 0.875rem;
-    color: #666;
+    color: ${({ $isDark }) => ($isDark ? '#9aa6b2' : '#666')};
   }
 `;
 
-const FilePreview = styled.div`
+const FilePreview = styled.div<{ $isDark?: boolean }>`
   margin-top: 16px;
   padding: 12px;
-  background: white;
+  background: ${({ $isDark }) => ($isDark ? '#071025' : 'white')};
   border-radius: 8px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid ${({ $isDark }) => ($isDark ? '#1f2937' : '#e0e0e0')};
   display: flex;
   align-items: center;
   justify-content: space-between;
 `;
 
-const FileInfo = styled.div`
+const FileInfo = styled.div<{ $isDark?: boolean }>`
   display: flex;
   align-items: center;
   gap: 12px;
   
   span {
     font-size: 0.875rem;
-    color: #333;
+    color: ${({ $isDark }) => ($isDark ? '#e6eef9' : '#333')};
     font-weight: 500;
   }
 `;
 
-const RemoveButton = styled.button`
+const RemoveButton = styled.button<{ $isDark?: boolean }>`
   width: 28px;
   height: 28px;
   border-radius: 50%;
   border: none;
-  background: #ffebee;
-  color: #c62828;
+  background: ${({ $isDark }) => ($isDark ? '#2b0b0b' : '#ffebee')};
+  color: ${({ $isDark }) => ($isDark ? '#ffb4b4' : '#c62828')};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -92,7 +93,7 @@ const RemoveButton = styled.button`
   transition: all 0.2s ease;
   
   &:hover {
-    background: #ffcdd2;
+    background: ${({ $isDark }) => ($isDark ? '#3b0b0b' : '#ffcdd2')};
   }
 `;
 
@@ -100,11 +101,11 @@ const HiddenInput = styled.input`
   display: none;
 `;
 
-const OptionalBadge = styled.span`
+const OptionalBadge = styled.span<{ $isDark?: boolean }>`
   display: inline-block;
   padding: 4px 8px;
-  background: #e0e0e0;
-  color: #666;
+  background: ${({ $isDark }) => ($isDark ? '#1f2937' : '#e0e0e0')};
+  color: ${({ $isDark }) => ($isDark ? '#cbd5e1' : '#666')};
   border-radius: 4px;
   font-size: 0.75rem;
   font-weight: 600;
@@ -129,6 +130,8 @@ const DocumentUpload: React.FC<DocumentUploadProps> = ({
   optional = false
 }) => {
   const { language } = useLanguage();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const [file, setFile] = useState<File | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -161,16 +164,16 @@ const DocumentUpload: React.FC<DocumentUploadProps> = ({
 
   return (
     <UploadContainer>
-      <UploadBox $hasFile={!!file} onClick={handleClick}>
-        <IconWrapper $hasFile={!!file}>
+      <UploadBox $hasFile={!!file} $isDark={isDark} onClick={handleClick}>
+        <IconWrapper $hasFile={!!file} $isDark={isDark}>
           {file ? <CheckCircle size={32} /> : icon}
         </IconWrapper>
         
-        <UploadText>
+        <UploadText $isDark={isDark}>
           <h4>
             {label}
-            {optional && (
-              <OptionalBadge>
+              {optional && (
+              <OptionalBadge $isDark={isDark}>
                 {language === 'bg' ? 'По избор' : 'Optional'}
               </OptionalBadge>
             )}
@@ -195,13 +198,13 @@ const DocumentUpload: React.FC<DocumentUploadProps> = ({
       </UploadBox>
 
       {file && (
-        <FilePreview>
-          <FileInfo>
+        <FilePreview $isDark={isDark}>
+          <FileInfo $isDark={isDark}>
             <CheckCircle size={20} color="#4caf50" />
             <span>{file.name}</span>
-            <span style={{ color: '#999' }}>({formatFileSize(file.size)})</span>
+            <span style={{ color: isDark ? '#9aa6b2' : '#999' }}>({formatFileSize(file.size)})</span>
           </FileInfo>
-          <RemoveButton onClick={handleRemove}>
+          <RemoveButton $isDark={isDark} onClick={handleRemove}>
             <X size={16} />
           </RemoveButton>
         </FilePreview>

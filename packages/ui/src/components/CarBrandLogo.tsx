@@ -1,13 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useTheme } from '@globul-cars/core/contexts/ThemeContext';
 
-const LogoContainer = styled.div`
+const LogoContainer = styled.div<{ $isDark?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
   width: 60px;
   height: 60px;
-  background: white;
+  background: ${({ $isDark }) => ($isDark ? '#0b1220' : 'white')};
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   margin: 0 auto 1rem;
@@ -20,10 +21,10 @@ const LogoImage = styled.img`
   object-fit: contain;
 `;
 
-const BrandName = styled.div`
+const BrandName = styled.div<{ $isDark?: boolean }>`
   font-size: 0.9rem;
   font-weight: 600;
-  color: #2c3e50;
+  color: ${({ $isDark }) => ($isDark ? '#e6eefa' : '#2c3e50')};
   text-align: center;
   margin-top: 0.5rem;
 `;
@@ -41,6 +42,8 @@ const CarBrandLogo: React.FC<CarBrandLogoProps> = ({
   showName = true,
   className 
 }) => {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   // Map of car makes to their logo paths
   const brandLogos: { [key: string]: string } = {
     'BMW': '/assets/images/professional_car_logos/BMW.png',
@@ -133,7 +136,7 @@ const CarBrandLogo: React.FC<CarBrandLogoProps> = ({
 
   return (
     <div className={className}>
-      <LogoContainer>
+      <LogoContainer $isDark={isDark}>
         <LogoImage 
           src={logoPath} 
           alt={make}
@@ -144,7 +147,7 @@ const CarBrandLogo: React.FC<CarBrandLogoProps> = ({
           }}
         />
       </LogoContainer>
-      {showName && <BrandName>{make}</BrandName>}
+      {showName && <BrandName $isDark={isDark}>{make}</BrandName>}
     </div>
   );
 };

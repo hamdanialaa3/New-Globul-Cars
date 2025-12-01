@@ -385,8 +385,8 @@ const AddRatingForm: React.FC<AddRatingFormProps> = ({
     setLoading(true);
 
     try {
-      // TODO: Implement rating service
-      console.log('Rating data:', {
+      // TODO: Implement rating service - submit to backend
+      const ratingData = {
         carId,
         userId,
         userName,
@@ -398,7 +398,7 @@ const AddRatingForm: React.FC<AddRatingFormProps> = ({
         cons: formData.cons.length > 0 ? formData.cons : undefined,
         verifiedPurchase: formData.verifiedPurchase,
         categories: formData.categories
-      });
+      };
 
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));

@@ -7,6 +7,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useLanguage } from '@globul-cars/core/contextsLanguageContext';
+import { useTheme } from '@globul-cars/core/contexts/ThemeContext';
 import { reviewService as reviewsService, Review } from '@globul-cars/services/reviews/review-service';
 import { Star, User } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
@@ -17,8 +18,8 @@ const Container = styled.div`
   width: 100%;
 `;
 
-const ReviewCard = styled.div`
-  background: white;
+const ReviewCard = styled.div<{ $isDark?: boolean }>`
+  background: ${({ $isDark }) => ($isDark ? '#071025' : 'white')};
   border: 1px solid #e0e0e0;
   border-radius: 12px;
   padding: 20px;
@@ -57,16 +58,16 @@ const ReviewerInfo = styled.div`
   flex: 1;
 `;
 
-const ReviewerName = styled.div`
+const ReviewerName = styled.div<{ $isDark?: boolean }>`
   font-weight: 600;
   font-size: 15px;
-  color: #1a1a1a;
+  color: ${({ $isDark }) => ($isDark ? '#e6eef9' : '#1a1a1a')};
   margin-bottom: 4px;
 `;
 
-const ReviewDate = styled.div`
+const ReviewDate = styled.div<{ $isDark?: boolean }>`
   font-size: 13px;
-  color: #666;
+  color: ${({ $isDark }) => ($isDark ? '#9aa6b2' : '#666')};
 `;
 
 const StarsContainer = styled.div`
@@ -74,11 +75,11 @@ const StarsContainer = styled.div`
   gap: 4px;
 `;
 
-const ReviewContent = styled.p`
+const ReviewContent = styled.p<{ $isDark?: boolean }>`
   margin: 0;
   font-size: 15px;
   line-height: 1.6;
-  color: #333;
+  color: ${({ $isDark }) => ($isDark ? '#cbd5e1' : '#333')};
 `;
 
 const VerifiedBadge = styled.span`
@@ -94,10 +95,10 @@ const VerifiedBadge = styled.span`
   margin-left: 8px;
 `;
 
-const EmptyState = styled.div`
+const EmptyState = styled.div<{ $isDark?: boolean }>`
   text-align: center;
   padding: 40px 20px;
-  color: #666;
+  color: ${({ $isDark }) => ($isDark ? '#9aa6b2' : '#666')};
   
   h3 {
     margin: 0 0 8px;
@@ -109,10 +110,10 @@ const EmptyState = styled.div`
   }
 `;
 
-const LoadingState = styled.div`
+const LoadingState = styled.div<{ $isDark?: boolean }>`
   text-align: center;
   padding: 40px 20px;
-  color: #666;
+  color: ${({ $isDark }) => ($isDark ? '#9aa6b2' : '#666')};
 `;
 
 interface ReviewsListProps {
@@ -123,6 +124,8 @@ const ReviewsList: React.FC<ReviewsListProps> = ({ sellerId }) => {
   const { language } = useLanguage();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
 
   useEffect(() => {
     loadReviews();
@@ -174,7 +177,7 @@ const ReviewsList: React.FC<ReviewsListProps> = ({ sellerId }) => {
   if (loading) {
     return (
       <Container>
-        <LoadingState>
+        <LoadingState $isDark={isDark}>
           {language === 'bg' ? 'Зареждане на отзиви...' : 'Loading reviews...'}
         </LoadingState>
       </Container>
@@ -184,7 +187,7 @@ const ReviewsList: React.FC<ReviewsListProps> = ({ sellerId }) => {
   if (reviews.length === 0) {
     return (
       <Container>
-        <EmptyState>
+        <EmptyState $isDark={isDark}>
           <h3>
             {language === 'bg' ? 'Няма отзиви' : 'No reviews yet'}
           </h3>
@@ -202,14 +205,14 @@ const ReviewsList: React.FC<ReviewsListProps> = ({ sellerId }) => {
   return (
     <Container>
       {reviews.map((review) => (
-        <ReviewCard key={review.id}>
+        <ReviewCard key={review.id} $isDark={isDark}>
           <ReviewHeader>
             <Avatar $imageUrl={review.reviewerPhoto}>
               {!review.reviewerPhoto && getInitials(review.reviewerName || 'User')}
             </Avatar>
             
             <ReviewerInfo>
-              <ReviewerName>
+              <ReviewerName $isDark={isDark}>
                 {review.reviewerName}
                 {review.verified && (
                   <VerifiedBadge>
@@ -217,13 +220,13 @@ const ReviewsList: React.FC<ReviewsListProps> = ({ sellerId }) => {
                   </VerifiedBadge>
                 )}
               </ReviewerName>
-              <ReviewDate>{formatTime(review.createdAt)}</ReviewDate>
+              <ReviewDate $isDark={isDark}>{formatTime(review.createdAt)}</ReviewDate>
             </ReviewerInfo>
             
             {renderStars(review.rating)}
           </ReviewHeader>
           
-          <ReviewContent>{review.comment}</ReviewContent>
+          <ReviewContent $isDark={isDark}>{review.comment}</ReviewContent>
         </ReviewCard>
       ))}
     </Container>

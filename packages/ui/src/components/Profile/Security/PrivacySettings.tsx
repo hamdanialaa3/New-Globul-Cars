@@ -238,10 +238,6 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({ userId }) => {
 
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
-      
-      if (process.env.NODE_ENV === 'development') {
-        console.log('✅ Privacy settings saved');
-      }
     } catch (error) {
       console.error('❌ Save error:', error);
       alert(language === 'bg' ? 'Грешка при запазване' : 'Save error');

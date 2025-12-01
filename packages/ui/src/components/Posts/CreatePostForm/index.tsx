@@ -143,9 +143,8 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onClose, onPostCreated 
           text.trim(),
           [], // Media URLs would need to be extracted
           { platforms: crossPostPlatforms }
-        ).then(results => {
-          const succeeded = Object.values(results).filter(Boolean).length;
-          console.log(`Cross-posted to ${succeeded}/${crossPostPlatforms.length} platforms`);
+        ).then(() => {
+          // Cross-post completed
         }).catch(err => {
           console.error('Cross-post error:', err);
         });

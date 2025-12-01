@@ -585,18 +585,18 @@ const SharedCarForm: React.FC<SharedCarFormProps> = ({
             </FormGroup>
 
             <FormGroup>
-              <FormLabel>Тип превозно средство</FormLabel>
+              <FormLabel>{t('common.vehicleType', 'Тип превозно средство')}</FormLabel>
               <SearchSelect 
                 value={data.vehicleType} 
                 onChange={(e) => handleInputChange('vehicleType', e.target.value)}
               >
-                <option value="">Всички типове</option>
-                <option value="sedan">Седан</option>
-                <option value="hatchback">Хечбек</option>
-                <option value="suv">SUV</option>
-                <option value="wagon">Комби</option>
-                <option value="coupe">Купе</option>
-                <option value="convertible">Кабриолет</option>
+                <option value="">{t('bodyTypes.allTypes', 'Всички типове')}</option>
+                <option value="sedan">{t('bodyTypes.sedan', 'Седан')}</option>
+                <option value="hatchback">{t('bodyTypes.hatchback', 'Хечбек')}</option>
+                <option value="suv">{t('bodyTypes.suv', 'SUV')}</option>
+                <option value="wagon">{t('bodyTypes.wagon', 'Комби')}</option>
+                <option value="coupe">{t('bodyTypes.coupe', 'Купе')}</option>
+                <option value="convertible">{t('bodyTypes.convertible', 'Кабриолет')}</option>
               </SearchSelect>
             </FormGroup>
 

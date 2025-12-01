@@ -115,8 +115,8 @@ const PhotoEditModal: React.FC<PhotoEditModalProps> = ({ onClose }) => {
         try {
           const oldRef = ref(storage, user.photoURL);
           await deleteObject(oldRef);
-        } catch (err) {
-          console.log('Could not delete old photo:', err);
+        } catch {
+          // Old photo may not exist or be inaccessible - continue anyway
         }
       }
 

@@ -13,10 +13,15 @@ import { BULGARIAN_CITIES } from '@globul-cars/corebulgarianCities';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
+// Extend Leaflet Map type to support custom analytics layer
+interface MapWithAnalytics extends L.Map {
+  _analyticsLayer?: L.LayerGroup;
+}
+
 // Analytics helper
-const trackMapEvent = (eventName: string, data?: Record<string, any>) => {
-  if (typeof window !== 'undefined' && (window as any).gtag) {
-    (window as any).gtag('event', eventName, data);
+const trackMapEvent = (eventName: string, data?: Record<string, unknown>) => {
+  if (typeof window !== 'undefined' && (window as unknown as { gtag?: (...args: unknown[]) => void }).gtag) {
+    (window as unknown as { gtag: (...args: unknown[]) => void }).gtag('event', eventName, data);
   }
 };
 
@@ -368,10 +373,10 @@ const MapAnalyticsPage: React.FC = () => {
   const [carsEntities, setCarsEntities] = useState<CarEntity[]>([]);
   const [usersEntities, setUsersEntities] = useState<UserEntity[]>([]);
   const [updatedAt, setUpdatedAt] = useState<number>(Date.now());
-  const mapRef = React.useRef<L.Map | null>(null);
+  const mapRef = React.useRef<MapWithAnalytics | null>(null);
   const [selectedItems, setSelectedItems] = useState<Array<{
     type: 'car' | 'user' | 'workshop' | 'showroom' | 'dealer';
-    data: any;
+    data: CarEntity | UserEntity | RegionDataPoint;
     cityName: string;
     cityId?: string;
   }>>([]);
@@ -520,7 +525,6 @@ const MapAnalyticsPage: React.FC = () => {
     const map = mapRef.current;
     if (!map) return;
     // إزالة الطبقة السابقة
-    // @ts-ignore
     if (map._analyticsLayer) { map.removeLayer(map._analyticsLayer); }
     const layerGroup = L.layerGroup();
 
@@ -622,7 +626,6 @@ const MapAnalyticsPage: React.FC = () => {
       });
     }
     layerGroup.addTo(map);
-    // @ts-ignore
     map._analyticsLayer = layerGroup;
   }, [activeLayer, carsEntities, usersEntities, data, showDetails, t]);
 

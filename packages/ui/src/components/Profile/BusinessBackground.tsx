@@ -117,10 +117,7 @@ const BusinessBackground: React.FC<BusinessBackgroundProps> = ({
     '/assets/images/Pic/pexels-bylukemiller-29566908 (1).jpg'
   ];
 
-  // Debug log
-  useEffect(() => {
-    console.log('🏢 BusinessBackground - isBusinessAccount:', isBusinessAccount);
-  }, [isBusinessAccount]);
+
 
   // Rotate background images every 10 seconds
   useEffect(() => {
@@ -136,12 +133,9 @@ const BusinessBackground: React.FC<BusinessBackgroundProps> = ({
   }, [isBusinessAccount]);
 
   if (!isBusinessAccount) {
-    console.log('🏢 BusinessBackground not shown - not a business account');
     return null;
   }
   
-  console.log('🏢 BusinessBackground rendering with image:', businessImages[currentImageIndex]);
-
   return (
     <>
       <BackgroundContainer>

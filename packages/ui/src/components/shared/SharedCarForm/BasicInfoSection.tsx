@@ -1,5 +1,6 @@
 import React from 'react';
 import { SharedCarData } from '../SharedCarForm';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface BasicInfoSectionProps {
   mode: 'search' | 'listing';
@@ -38,11 +39,13 @@ export const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
   SearchInput,
   RangeGroup
 }) => {
+  const { t } = useLanguage();
+  
   return (
     <SectionCard>
       <SectionHeader isOpen={isOpen} onClick={onToggle}>
         <SectionTitle>
-          {mode === 'search' ? 'Търсене на автомобил' : 'Основни данни'}
+          {mode === 'search' ? t('common.searchCar') || 'Търсене на автомобил' : t('common.basicInfo') || 'Основни данни'}
         </SectionTitle>
         <ExpandIcon isOpen={isOpen} />
       </SectionHeader>
@@ -98,18 +101,18 @@ export const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
           </FormGroup>
 
           <FormGroup>
-            <FormLabel>Тип превозно средство</FormLabel>
+            <FormLabel>{t('common.vehicleType') || 'Тип превозно средство'}</FormLabel>
             <SearchSelect 
               value={data.vehicleType} 
               onChange={(e: any) => onInputChange('vehicleType', e.target.value)}
             >
-              <option value="">Всички типове</option>
-              <option value="sedan">Седан</option>
-              <option value="hatchback">Хечбек</option>
-              <option value="suv">SUV</option>
-              <option value="wagon">Комби</option>
-              <option value="coupe">Купе</option>
-              <option value="convertible">Кабриолет</option>
+              <option value="">{t('bodyTypes.allTypes')}</option>
+              <option value="sedan">{t('bodyTypes.sedan')}</option>
+              <option value="hatchback">{t('bodyTypes.hatchback')}</option>
+              <option value="suv">{t('bodyTypes.suv')}</option>
+              <option value="wagon">{t('bodyTypes.wagon')}</option>
+              <option value="coupe">{t('bodyTypes.coupe')}</option>
+              <option value="convertible">{t('bodyTypes.convertible')}</option>
             </SearchSelect>
           </FormGroup>
 

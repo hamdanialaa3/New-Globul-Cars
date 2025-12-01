@@ -297,11 +297,11 @@ const StoryViewer: React.FC<StoryViewerProps> = ({ story, onClose }) => {
   // ==================== HANDLERS ====================
   
   const handlePrevious = () => {
-    console.log('Previous story');
+    // Navigation logic will be added
   };
   
   const handleNext = () => {
-    console.log('Next story');
+    // Navigation logic will be added
   };
   
   const handleLike = async () => {

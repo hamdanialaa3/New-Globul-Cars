@@ -10,12 +10,9 @@ import { getBaseModels, getModelVariants, hasVariantData } from './carModelsAndV
 import { FEATURED_BRAND_NAMES, isFeaturedBrand, sortBrandsWithFeatured } from './featuredBrands';
 import structuredBrandsData from '../data/car-brands-structured.json';
 import { normalizeKey, resolveCanonicalBrand } from './brand-normalization';
-// Diagnostic: quick log to verify structured data load (will run once at module init)
-// Remove after confirming dropdown population works.
-// eslint-disable-next-line no-console
-console.log('[carBrandsService] structuredBrandsData keys loaded:', Object.keys(structuredBrandsData).slice(0, 10));
-// Expose for browser manual inspection
-if (typeof window !== 'undefined') {
+
+// Expose for browser manual inspection in development
+if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
   (window as any)._structuredBrandKeys = Object.keys(structuredBrandsData);
   (window as any)._structuredSampleAudi = (structuredBrandsData as any)['Audi'];
 }
@@ -249,14 +246,10 @@ export const getClassesForBrand = (brand: string): string[] => {
  * Returns models from the structured hierarchical data, or empty array if not available
  */
 export const getModelsForBrandAndClass = (brand: string, className: string): string[] => {
-  console.log('getModelsForBrandAndClass called with:', brand, className);
   const brandData = getStructuredBrandDataByAny(brand);
-  console.log('brandData:', brandData);
   if (brandData && brandData.models && brandData.models[className]) {
-    console.log('Found models:', brandData.models[className]);
     return brandData.models[className];
   }
-  console.log('No models found, returning empty array');
   return []; // Return empty array for brands without structured data
 };
 
@@ -265,21 +258,17 @@ export const getModelsForBrandAndClass = (brand: string, className: string): str
  * Used for backward compatibility - returns structured data if available, otherwise legacy data
  */
 export const getAllModelsForBrand = (brand: string): string[] => {
-  console.log('getAllModelsForBrand called with:', brand);
   const brandData = getStructuredBrandDataByAny(brand);
-  console.log('brandData:', brandData);
   if (brandData && brandData.models) {
     const allModels: string[] = [];
     Object.values(brandData.models).forEach(models => {
       allModels.push(...models);
     });
     const uniqueModels = [...new Set(allModels)]; // Remove duplicates
-    console.log('All models found:', uniqueModels);
     return uniqueModels;
   }
 
   // Fallback to legacy system for brands without structured data
-  console.log('Falling back to legacy system');
   return getModelsForBrandLegacy(brand);
 };
 
@@ -307,12 +296,8 @@ const getModelsForBrandLegacy = (brand: string): string[] => {
  * Now prioritizes structured data from cars_brands.md, with fallback to legacy system
  */
 export const getModelsForBrand = (brand: string): string[] => {
-  // eslint-disable-next-line no-console
-  console.log(`[carBrandsService] getModelsForBrand called brand="${brand}"`);
   // FIRST PRIORITY: Use structured data from cars_brands.md (NEW DATA SOURCE)
   const allModels = getAllModelsForBrand(brand);
-  // eslint-disable-next-line no-console
-  console.log(`[carBrandsService] flattened models count for "${brand}":`, allModels.length);
   let merged = allModels.slice();
 
   // Merge in legacy sources without overshadowing
@@ -325,7 +310,6 @@ export const getModelsForBrand = (brand: string): string[] => {
   }
 
   if (merged.length > 0) {
-    console.log(`✅ Using merged models for ${brand}:`, merged.length, 'models');
     return merged;
   }
 
@@ -334,7 +318,6 @@ export const getModelsForBrand = (brand: string): string[] => {
   if (BRAND_MODELS_MAP[brand]) return BRAND_MODELS_MAP[brand];
 
   // Fallback: return empty array (user can type manually)
-  console.log(`❌ No models found for ${brand}`);
   return [];
 };
 
@@ -371,8 +354,6 @@ export const searchBrands = (query: string): string[] => {
  * Search models for a brand by query
  */
 export const searchModels = (brand: string, query: string): string[] => {
-  // eslint-disable-next-line no-console
-  console.log(`[carBrandsService] searchModels brand="${brand}" query="${query}"`);
   const models = getModelsForBrand(brand);
   if (!query) return models;
   
@@ -393,8 +374,6 @@ export const isValidBrand = (brand: string): boolean => {
  * Validate if a model exists for a brand
  */
 export const isValidModel = (brand: string, model: string): boolean => {
-  // eslint-disable-next-line no-console
-  console.log(`[carBrandsService] isValidModel brand="${brand}" model="${model}"`);
   const models = getModelsForBrand(brand);
   if (models.length === 0) return true; // Allow any model if no data
   return models.includes(model);

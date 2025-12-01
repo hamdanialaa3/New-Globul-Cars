@@ -101,13 +101,11 @@ class PostsService {
       
       let mediaUrls: string[] = [];
       if (postData.content.media && postData.content.media.length > 0) {
-        console.log(`📤 Uploading ${postData.content.media.length} files...`);
         mediaUrls = await this.uploadPostMedia(
           userId, 
           postData.content.media,
           onUploadProgress
         );
-        console.log(`✅ All files uploaded successfully!`);
       }
       
       const postRef = await addDoc(collection(db, this.collectionName), {
@@ -150,7 +148,6 @@ class PostsService {
         'stats.posts': increment(1)
       });
       
-      console.log('Post created:', postRef.id);
       return postRef.id;
     } catch (error) {
       console.error('Error creating post:', error);
@@ -191,7 +188,6 @@ class PostsService {
             }
           );
           
-          console.log(`✅ Image uploaded: ${file.name} -> ${url}`);
           return url;
         } else {
           // For videos or other files, upload directly with progress
@@ -213,7 +209,6 @@ class PostsService {
               },
               async () => {
                 const url = await getDownloadURL(uploadTask.snapshot.ref);
-                console.log(`✅ File uploaded: ${file.name} -> ${url}`);
                 resolve(url);
               }
             );

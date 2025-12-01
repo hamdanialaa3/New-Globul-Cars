@@ -277,9 +277,6 @@ const ProfileSettings: React.FC = () => {
   const [showPhoneModal, setShowPhoneModal] = useState(false);
   const [showEmailModal, setShowEmailModal] = useState(false);
 
-  // ✅ VERIFICATION: Log to console
-  console.log('✅ SIMPLE DESIGN LOADED - ProfileSettings.tsx - November 8, 2025');
-
   const customerNumber = currentUser?.uid ? currentUser.uid.substring(0, 8).toUpperCase() : '00000000';
 
   const getText = () => {

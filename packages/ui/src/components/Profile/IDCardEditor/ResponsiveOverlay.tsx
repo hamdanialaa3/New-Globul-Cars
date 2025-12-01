@@ -46,14 +46,6 @@ const ResponsiveOverlay: React.FC<ResponsiveOverlayProps> = ({
         const scaleY = displayHeight / 690;   // Original height
         const avgScale = (scaleX + scaleY) / 2;
         
-        console.log(`📐 ${side.toUpperCase()} side - Image scale:`, {
-          displayWidth,
-          displayHeight,
-          scaleX: scaleX.toFixed(3),
-          scaleY: scaleY.toFixed(3),
-          avgScale: avgScale.toFixed(3)
-        });
-        
         setImageDimensions({ width: displayWidth, height: displayHeight });
         setScale(avgScale);
       }

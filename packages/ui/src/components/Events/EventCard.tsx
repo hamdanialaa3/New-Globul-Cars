@@ -189,7 +189,6 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
   const handleInterested = (e: React.MouseEvent) => {
     e.stopPropagation();
     // TODO: Handle RSVP
-    console.log('Interested in event:', event.id);
   };
   
   return (

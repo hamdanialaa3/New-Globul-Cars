@@ -131,3 +131,9 @@ ai-valuation-model/__pycache__/
 ai-valuation-model/*.pyc
 ai-valuation-model/models/
 ai-valuation-model/checkpoints/
+
+# Security - Never commit test files with credentials
+test-production-*.js
+*-production-test.js
+*credentials*.js
+*secrets*.js

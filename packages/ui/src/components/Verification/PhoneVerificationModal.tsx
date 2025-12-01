@@ -6,6 +6,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { X, Phone, Shield, Loader } from 'lucide-react';
 import { useLanguage } from '@globul-cars/core/contextsLanguageContext';
+import { useTheme } from '@globul-cars/core/contexts/ThemeContext';
 import { VerificationService } from '@globul-cars/services/verification';
 
 // ==================== STYLED COMPONENTS ====================
@@ -23,8 +24,8 @@ const ModalOverlay = styled.div`
   z-index: 10000;
 `;
 
-const ModalContainer = styled.div`
-  background: white;
+const ModalContainer = styled.div<{ $isDark?: boolean }>`
+  background: ${({ $isDark }) => ($isDark ? '#071025' : 'white')};
   border-radius: 16px;
   padding: 32px;
   max-width: 500px;
@@ -32,7 +33,7 @@ const ModalContainer = styled.div`
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
 `;
 
-const ModalHeader = styled.div`
+const ModalHeader = styled.div<{ $isDark?: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -41,26 +42,26 @@ const ModalHeader = styled.div`
   h3 {
     margin: 0;
     font-size: 1.5rem;
-    color: #333;
+    color: ${({ $isDark }) => ($isDark ? '#e6eef9' : '#333')};
     display: flex;
     align-items: center;
     gap: 12px;
   }
 `;
 
-const CloseButton = styled.button`
+const CloseButton = styled.button<{ $isDark?: boolean }>`
   width: 36px;
   height: 36px;
   border-radius: 50%;
   border: none;
-  background: #f0f0f0;
+  background: ${({ $isDark }) => ($isDark ? '#0b1220' : '#f0f0f0')};
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   
   &:hover {
-    background: #e0e0e0;
+    background: ${({ $isDark }) => ($isDark ? '#121827' : '#e0e0e0')};
   }
 `;
 
@@ -71,29 +72,31 @@ const StepIndicator = styled.div`
   margin-bottom: 24px;
 `;
 
-const Step = styled.div<{ $active: boolean }>`
+const Step = styled.div<{ $active: boolean; $isDark?: boolean }>`
   width: ${props => props.$active ? '40px' : '12px'};
   height: 12px;
   border-radius: 6px;
-  background: ${props => props.$active ? '#FF7900' : '#e0e0e0'};
+  background: ${props => props.$active ? '#FF7900' : (props.$isDark ? '#1f2937' : '#e0e0e0')};
   transition: all 0.3s ease;
 `;
 
-const FormGroup = styled.div`
+const FormGroup = styled.div<{ $isDark?: boolean }>`
   margin-bottom: 20px;
   
   label {
     display: block;
     margin-bottom: 8px;
     font-weight: 500;
-    color: #333;
+    color: ${({ $isDark }) => ($isDark ? '#e6eef9' : '#333')};
   }
   
   input {
     width: 100%;
     padding: 12px 16px;
-    border: 2px solid #e0e0e0;
+    border: 2px solid ${({ $isDark }) => ($isDark ? '#1f2937' : '#e0e0e0')};
     border-radius: 8px;
+    background: ${({ $isDark }) => ($isDark ? '#071025' : 'white')};
+    color: ${({ $isDark }) => ($isDark ? '#e6eef9' : 'inherit')};
     font-size: 1rem;
     transition: all 0.2s ease;
     
@@ -111,13 +114,15 @@ const OTPInputContainer = styled.div`
   margin: 24px 0;
 `;
 
-const OTPInput = styled.input`
+const OTPInput = styled.input<{ $isDark?: boolean }>`
   width: 50px;
   height: 60px;
   text-align: center;
   font-size: 1.5rem;
   font-weight: bold;
-  border: 2px solid #e0e0e0;
+  border: 2px solid ${({ $isDark }) => ($isDark ? '#1f2937' : '#e0e0e0')};
+  background: ${({ $isDark }) => ($isDark ? '#071025' : 'white')};
+  color: ${({ $isDark }) => ($isDark ? '#e6eef9' : 'inherit')};
   border-radius: 8px;
   
   &:focus {
@@ -126,7 +131,7 @@ const OTPInput = styled.input`
   }
 `;
 
-const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary' }>`
+const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary'; $isDark?: boolean }>`
   width: 100%;
   padding: 14px;
   border: none;
@@ -141,16 +146,17 @@ const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary' }>`
   transition: all 0.3s ease;
   
   ${props => props.$variant === 'secondary' ? `
-    background: #f0f0f0;
-    color: #666;
-    &:hover { background: #e0e0e0; }
+    background: ${props.$isDark ? '#071025' : '#f0f0f0'};
+    color: ${props.$isDark ? '#cbd5e1' : '#666'};
+    border: 2px solid ${props.$isDark ? '#1f2937' : 'transparent'};
+    &:hover { background: ${props.$isDark ? '#0b1220' : '#e0e0e0'}; }
   ` : `
-    background: #FF7900;
+    background: ${props.$isDark ? 'linear-gradient(135deg, #1f6fe8, #0f4fbf)' : '#FF7900'};
     color: white;
     &:hover { 
-      background: #ff8c1a;
+      background: ${props.$isDark ? 'linear-gradient(135deg, #235fcf, #0a3f9a)' : '#ff8c1a'};
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(255, 121, 0, 0.3);
+      box-shadow: ${props.$isDark ? '0 4px 12px rgba(31, 111, 232, 0.3)' : '0 4px 12px rgba(255, 121, 0, 0.3)'};
     }
   `}
   
@@ -161,9 +167,9 @@ const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary' }>`
   }
 `;
 
-const InfoText = styled.p`
+const InfoText = styled.p<{ $isDark?: boolean }>`
   font-size: 0.875rem;
-  color: #666;
+  color: ${({ $isDark }) => ($isDark ? '#9aa6b2' : '#666')};
   text-align: center;
   line-height: 1.5;
   margin: 16px 0;
@@ -185,6 +191,8 @@ const PhoneVerificationModal: React.FC<PhoneVerificationModalProps> = ({
   onSuccess
 }) => {
   const { language } = useLanguage();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const [step, setStep] = useState<'phone' | 'otp'>('phone');
   const [phoneNumber, setPhoneNumber] = useState('+359 ');
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
@@ -266,25 +274,25 @@ const PhoneVerificationModal: React.FC<PhoneVerificationModalProps> = ({
 
   return (
     <ModalOverlay onClick={onClose}>
-      <ModalContainer onClick={e => e.stopPropagation()}>
-        <ModalHeader>
+      <ModalContainer $isDark={isDark} onClick={e => e.stopPropagation()}>
+        <ModalHeader $isDark={isDark}>
           <h3>
             <Phone size={24} />
             {language === 'bg' ? 'Потвърди телефон' : 'Verify Phone'}
           </h3>
-          <CloseButton onClick={onClose}>
+          <CloseButton $isDark={isDark} onClick={onClose}>
             <X size={20} />
           </CloseButton>
         </ModalHeader>
 
         <StepIndicator>
-          <Step $active={step === 'phone'} />
-          <Step $active={step === 'otp'} />
+          <Step $active={step === 'phone'} $isDark={isDark} />
+          <Step $active={step === 'otp'} $isDark={isDark} />
         </StepIndicator>
 
         {step === 'phone' ? (
           <>
-            <FormGroup>
+            <FormGroup $isDark={isDark}>
               <label>
                 {language === 'bg' ? 'Телефонен номер' : 'Phone Number'}
               </label>
@@ -297,7 +305,7 @@ const PhoneVerificationModal: React.FC<PhoneVerificationModalProps> = ({
               />
             </FormGroup>
 
-            <InfoText>
+            <InfoText $isDark={isDark}>
               {language === 'bg'
                 ? 'Ще получите SMS с 6-цифрен код'
                 : 'You will receive an SMS with a 6-digit code'}
@@ -305,16 +313,16 @@ const PhoneVerificationModal: React.FC<PhoneVerificationModalProps> = ({
 
             <RecaptchaContainer id="recaptcha-container" />
 
-            {error && <InfoText style={{ color: '#ef5350' }}>{error}</InfoText>}
+            {error && <InfoText $isDark={isDark} style={{ color: '#ef5350' }}>{error}</InfoText>}
 
-            <ActionButton onClick={handleSendCode} disabled={loading}>
+            <ActionButton $isDark={isDark} onClick={handleSendCode} disabled={loading}>
               {loading ? <Loader size={20} /> : <Shield size={20} />}
               {language === 'bg' ? 'Изпрати код' : 'Send Code'}
             </ActionButton>
           </>
         ) : (
           <>
-            <InfoText>
+            <InfoText $isDark={isDark}>
               {language === 'bg'
                 ? `Въведете кода изпратен на ${phoneNumber}`
                 : `Enter code sent to ${phoneNumber}`}
@@ -322,7 +330,7 @@ const PhoneVerificationModal: React.FC<PhoneVerificationModalProps> = ({
 
             <OTPInputContainer>
               {otp.map((digit, index) => (
-                <OTPInput
+                <OTPInput $isDark={isDark}
                   key={index}
                   ref={(el) => { otpRefs.current[index] = el; }}
                   type="text"
@@ -334,15 +342,16 @@ const PhoneVerificationModal: React.FC<PhoneVerificationModalProps> = ({
               ))}
             </OTPInputContainer>
 
-            {error && <InfoText style={{ color: '#ef5350' }}>{error}</InfoText>}
+            {error && <InfoText $isDark={isDark} style={{ color: '#ef5350' }}>{error}</InfoText>}
 
-            <ActionButton onClick={handleVerifyOTP} disabled={loading}>
+            <ActionButton $isDark={isDark} onClick={handleVerifyOTP} disabled={loading}>
               {loading ? <Loader size={20} /> : <Shield size={20} />}
               {language === 'bg' ? 'Потвърди' : 'Verify'}
             </ActionButton>
 
             <ActionButton 
               $variant="secondary" 
+              $isDark={isDark}
               onClick={() => setStep('phone')}
               style={{ marginTop: '12px' }}
             >
