@@ -64,19 +64,19 @@ const ViewToggle = styled.div`
   border-radius: 8px;
 `;
 
-const ViewButton = styled.button<{ active?: boolean }>`
+const ViewButton = styled.button<{ $active?: boolean }>`
   display: flex;
   align-items: center;
   gap: 6px;
   padding: 8px 16px;
   border: none;
   border-radius: 6px;
-  background: ${props => props.active ? 'white' : 'transparent'};
-  color: ${props => props.active ? '#005ca9' : '#6c757d'};
-  font-weight: ${props => props.active ? '600' : '400'};
+  background: ${props => props.$active ? 'white' : 'transparent'};
+  color: ${props => props.$active ? '#005ca9' : '#6c757d'};
+  font-weight: ${props => props.$active ? '600' : '400'};
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: ${props => props.active ? '0 2px 4px rgba(0,0,0,0.1)' : 'none'};
+  box-shadow: ${props => props.$active ? '0 2px 4px rgba(0,0,0,0.1)' : 'none'};
 
   &:hover {
     color: #005ca9;
@@ -321,7 +321,7 @@ const FavoritesPage: React.FC = () => {
       <Header>
         <TitleSection>
           <Title>
-            <Heart size={32} fill="#dc3545" color="#dc3545" />
+            <Heart size={32} fill="#dc3545" color="#dc354625" />
             My Favorites ({favorites.length})
           </Title>
           <Subtitle>Cars you've saved for later</Subtitle>
@@ -329,14 +329,14 @@ const FavoritesPage: React.FC = () => {
         
         <ViewToggle>
           <ViewButton
-            active={view === 'grid'}
+            $active={view === 'grid'}
             onClick={() => setView('grid')}
           >
             <Grid />
             Grid
           </ViewButton>
           <ViewButton
-            active={view === 'list'}
+            $active={view === 'list'}
             onClick={() => setView('list')}
           >
             <List />

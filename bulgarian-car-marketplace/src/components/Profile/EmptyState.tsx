@@ -97,7 +97,7 @@ const EmptyState: React.FC<EmptyStateProps> = ({ type, onAction }) => {
     },
     cars: {
       icon: ShoppingBag,
-      color: '#FF7900',
+      color: '#c4a991ff',
       title: {
         bg: 'Няма обяви',
         en: 'No Listings Yet'

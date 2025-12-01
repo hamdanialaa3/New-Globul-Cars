@@ -32,7 +32,7 @@ export interface SEOProps {
  * />
  */
 export const SEO: React.FC<SEOProps> = ({
-  title = 'Globul Cars - Най-добрата платформа за автомобили в България',
+  title = 'Bulgarski Mobili - Най-добрата платформа за автомобили в България',
   description = 'Купувайте и продавайте автомобили в България. Хиляди обяви, проверени продавачи, безплатна регистрация.',
   keywords = 'автомобили България, коли втора ръка, продажба коли, купуване коли, автомобили София',
   image = '/og-image.jpg',
@@ -46,7 +46,7 @@ export const SEO: React.FC<SEOProps> = ({
   currency = 'EUR',
   availability = 'in stock'
 }) => {
-  const siteUrl = 'https://globulcars.bg'; // Update with your domain
+  const siteUrl = 'https://mobilebg.eu'; // Update with your domain
   const fullUrl = url ? `${siteUrl}${url}` : siteUrl;
   const fullImage = image.startsWith('http') ? image : `${siteUrl}${image}`;
 
@@ -68,7 +68,7 @@ export const SEO: React.FC<SEOProps> = ({
   } : {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: 'Globul Cars',
+    name: 'Bulgarski Mobili',
     url: siteUrl,
     description,
     potentialAction: {
@@ -86,10 +86,10 @@ export const SEO: React.FC<SEOProps> = ({
       <meta name="description" content={description} />
       <meta name="keywords" content={keywords} />
       {author && <meta name="author" content={author} />}
-      
+
       {/* Canonical URL (FREE - Prevent duplicate content) */}
       <link rel="canonical" href={fullUrl} />
-      
+
       {/* Open Graph / Facebook (FREE - Social media preview) */}
       <meta property="og:type" content={type} />
       <meta property="og:url" content={fullUrl} />
@@ -97,26 +97,26 @@ export const SEO: React.FC<SEOProps> = ({
       <meta property="og:description" content={description} />
       <meta property="og:image" content={fullImage} />
       <meta property="og:locale" content={locale} />
-      <meta property="og:site_name" content="Globul Cars" />
+      <meta property="og:site_name" content="Bulgarski Mobili" />
       {publishedTime && <meta property="article:published_time" content={publishedTime} />}
       {modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
-      
+
       {/* Twitter Card (FREE - Twitter preview) */}
       <meta property="twitter:card" content="summary_large_image" />
       <meta property="twitter:url" content={fullUrl} />
       <meta property="twitter:title" content={title} />
       <meta property="twitter:description" content={description} />
       <meta property="twitter:image" content={fullImage} />
-      
+
       {/* Schema.org JSON-LD (FREE - Rich snippets in Google) */}
       <script type="application/ld+json">
         {JSON.stringify(schemaData)}
       </script>
-      
+
       {/* Mobile optimization (FREE) */}
       <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
       <meta name="theme-color" content="#FF8F10" />
-      
+
       {/* Language alternates (FREE - Multi-language SEO) */}
       <link rel="alternate" hrefLang="bg" href={`${siteUrl}/bg${url || ''}`} />
       <link rel="alternate" hrefLang="en" href={`${siteUrl}/en${url || ''}`} />

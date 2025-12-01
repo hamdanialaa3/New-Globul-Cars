@@ -344,10 +344,29 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   const [theme, setTheme] = useState<Theme>(initialTheme || lightTheme);
   const [isDark, setIsDark] = useState(defaultDark);
 
+  // Initialize theme on mount
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme');
     const savedDark = localStorage.getItem('isDark');
+    const initialIsDark = savedDark ? savedDark === 'true' : defaultDark;
     
+    // Set initial dark mode state
+    setIsDark(initialIsDark);
+    
+    // Apply theme to document immediately
+    if (initialIsDark) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      document.documentElement.classList.add('dark-theme');
+      document.documentElement.classList.remove('light-theme');
+      setTheme(darkTheme);
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.documentElement.classList.add('light-theme');
+      document.documentElement.classList.remove('dark-theme');
+      setTheme(lightTheme);
+    }
+    
+    // Load saved theme if available
     if (savedTheme) {
       try {
         const parsedTheme = JSON.parse(savedTheme);
@@ -356,24 +375,29 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
         console.error('Error parsing saved theme:', error);
       }
     }
-    
-    if (savedDark) {
-      setIsDark(savedDark === 'true');
-    }
   }, []);
 
+  // Update theme when isDark changes
   useEffect(() => {
     if (isDark) {
       setTheme(darkTheme);
+      document.documentElement.setAttribute('data-theme', 'dark');
+      document.documentElement.classList.add('dark-theme');
+      document.documentElement.classList.remove('light-theme');
     } else {
       setTheme(lightTheme);
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.documentElement.classList.add('light-theme');
+      document.documentElement.classList.remove('dark-theme');
     }
   }, [isDark]);
 
+  // Save theme to localStorage
   useEffect(() => {
     localStorage.setItem('theme', JSON.stringify(theme));
   }, [theme]);
 
+  // Save isDark to localStorage
   useEffect(() => {
     localStorage.setItem('isDark', isDark.toString());
   }, [isDark]);

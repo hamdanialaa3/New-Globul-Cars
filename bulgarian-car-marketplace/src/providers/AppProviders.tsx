@@ -39,27 +39,27 @@ import { ThemeProvider } from 'styled-components';
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 
 // Styles
-import { bulgarianTheme, GlobalStyles } from '@/styles/theme';
+import { bulgarianTheme, GlobalStyles } from '../styles/theme';
 
 // Contexts
-import { LanguageProvider } from '@/contexts/LanguageContext';
-import { ThemeProvider as CustomThemeProvider } from '@/contexts/ThemeContext';
-import { AuthProvider } from '@/contexts/AuthProvider';
-import { ProfileTypeProvider } from '@/contexts/ProfileTypeContext';
-import { ToastProvider } from '@/components/Toast';
-import { FilterProvider } from '@/contexts/FilterContext';
+import { LanguageProvider } from '../contexts/LanguageContext';
+import { ThemeProvider as CustomThemeProvider } from '../contexts/ThemeContext';
+import { AuthProvider } from '../contexts/AuthProvider';
+import { ProfileTypeProvider } from '../contexts/ProfileTypeContext';
+import { ToastProvider } from '../components/Toast';
+import { FilterProvider } from '../contexts/FilterContext';
 
 // Components
-import ErrorBoundary from '@/components/ErrorBoundary';
-import { SkipNavigation } from '@/components/Accessibility';
-import NotificationHandler from '@/components/NotificationHandler';
+import ErrorBoundary from '../components/ErrorBoundary';
+import { SkipNavigation } from '../components/Accessibility';
+import NotificationHandler from '../components/NotificationHandler';
 
 // Lazy-loaded components
-const FacebookPixel = React.lazy(() => import('@/components/FacebookPixel'));
-const ProgressBar = React.lazy(() => import('@/components/ProgressBar'));
+const FacebookPixel = React.lazy(() => import('../components/FacebookPixel'));
+const ProgressBar = React.lazy(() => import('../components/ProgressBar'));
 
 // Services
-import { logger } from '@/services/logger-service';
+import { logger } from '../services/logger-service';
 
 /**
  * Props for AppProviders component

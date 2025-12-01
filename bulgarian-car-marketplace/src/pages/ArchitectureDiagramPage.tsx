@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 // @ts-ignore - d3 types may not be available
 import * as d3 from 'd3';
-import Header from '../components/Header/Header';
+import Header from '../components/Header/UnifiedHeader';
 import { useTheme } from '../contexts/ThemeContext';
 
 const Container = styled.div<{ isDark: boolean }>`

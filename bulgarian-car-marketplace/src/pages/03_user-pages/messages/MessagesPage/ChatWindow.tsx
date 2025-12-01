@@ -36,6 +36,16 @@ const Container = styled.div`
   flex-direction: column;
   height: 100%;
   background: #f8f9fa;
+  
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    background: #0f172a;
+  }
+  
+  /* Light Mode Support */
+  html[data-theme="light"] & {
+    background: #f8f9fa;
+  }
 `;
 
 const Header = styled.div`
@@ -47,6 +57,20 @@ const Header = styled.div`
   border-bottom: 1px solid #e9ecef;
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
   z-index: 10;
+  
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    background: #1e293b;
+    border-bottom-color: rgba(148, 163, 184, 0.15);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  
+  /* Light Mode Support */
+  html[data-theme="light"] & {
+    background: white;
+    border-bottom-color: #e9ecef;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
 `;
 
 const BackButton = styled.button`
@@ -74,6 +98,26 @@ const BackButton = styled.button`
   
   @media (min-width: 769px) {
     display: none;
+  }
+  
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    color: #94a3b8;
+    
+    &:hover {
+      background: #334155;
+      color: #e2e8f0;
+    }
+  }
+  
+  /* Light Mode Support */
+  html[data-theme="light"] & {
+    color: #6c757d;
+    
+    &:hover {
+      background: #f1f3f5;
+      color: #212529;
+    }
   }
 `;
 
@@ -112,6 +156,28 @@ const UserDetails = styled.div`
     font-size: 0.85rem;
     color: #6c757d;
   }
+  
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    .name {
+      color: #e2e8f0;
+    }
+    
+    .status {
+      color: #94a3b8;
+    }
+  }
+  
+  /* Light Mode Support */
+  html[data-theme="light"] & {
+    .name {
+      color: #212529;
+    }
+    
+    .status {
+      color: #6c757d;
+    }
+  }
 `;
 
 const Actions = styled.div`
@@ -142,6 +208,26 @@ const ActionButton = styled.button`
     width: 20px;
     height: 20px;
   }
+  
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    color: #94a3b8;
+    
+    &:hover {
+      background: #334155;
+      color: #FF7900;
+    }
+  }
+  
+  /* Light Mode Support */
+  html[data-theme="light"] & {
+    color: #6c757d;
+    
+    &:hover {
+      background: #f1f3f5;
+      color: #FF7900;
+    }
+  }
 `;
 
 const MessagesContainer = styled.div`
@@ -166,6 +252,36 @@ const MessagesContainer = styled.div`
     
     &:hover {
       background: #adb5bd;
+    }
+  }
+  
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    &::-webkit-scrollbar-track {
+      background: #1e293b;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: #475569;
+      
+      &:hover {
+        background: #64748b;
+      }
+    }
+  }
+  
+  /* Light Mode Support */
+  html[data-theme="light"] & {
+    &::-webkit-scrollbar-track {
+      background: #f1f3f5;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: #dee2e6;
+      
+      &:hover {
+        background: #adb5bd;
+      }
     }
   }
 `;
@@ -194,6 +310,46 @@ const DateDivider = styled.div`
     font-weight: 600;
     text-transform: uppercase;
   }
+  
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    &:before {
+      background: rgba(148, 163, 184, 0.2);
+    }
+    
+    span {
+      background: #0f172a;
+      color: #94a3b8;
+    }
+  }
+  
+  /* Light Mode Support */
+  html[data-theme="light"] & {
+    &:before {
+      background: #dee2e6;
+    }
+    
+    span {
+      background: #f8f9fa;
+      color: #6c757d;
+    }
+  }
+`;
+
+const EmptyMessagesState = styled.div`
+  text-align: center;
+  padding: 40px;
+  color: #6c757d;
+  
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    color: #94a3b8;
+  }
+  
+  /* Light Mode Support */
+  html[data-theme="light"] & {
+    color: #6c757d;
+  }
 `;
 
 const LoadingIndicator = styled.div`
@@ -214,6 +370,26 @@ const LoadingIndicator = styled.div`
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+  }
+  
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    color: #94a3b8;
+    
+    .spinner {
+      border-color: #334155;
+      border-top-color: #FF7900;
+    }
+  }
+  
+  /* Light Mode Support */
+  html[data-theme="light"] & {
+    color: #6c757d;
+    
+    .spinner {
+      border-color: #f3f3f3;
+      border-top-color: #FF7900;
+    }
   }
 `;
 
@@ -345,9 +521,9 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
     
     if (messages.length === 0) {
       return (
-        <div style={{ textAlign: 'center', padding: '40px', color: '#6c757d' }}>
+        <EmptyMessagesState>
           <p>{t('messages.noMessages')}</p>
-        </div>
+        </EmptyMessagesState>
       );
     }
     

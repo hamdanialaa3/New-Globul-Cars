@@ -115,6 +115,40 @@ const EditButton = styled.button<{ $themeColor?: string }>`
     cursor: not-allowed;
     transform: none;
   }
+  
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    background: rgba(30, 41, 59, 0.95);
+    color: #e2e8f0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), 0 2px 6px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    
+    svg {
+      color: #cbd5e1;
+    }
+    
+    &:hover {
+      background: rgba(51, 65, 85, 0.98);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5), 0 3px 8px rgba(0, 0, 0, 0.4);
+      border-color: rgba(148, 163, 184, 0.3);
+    }
+    
+    &:active {
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4), 0 1px 4px rgba(0, 0, 0, 0.3);
+    }
+  }
+  
+  /* Light Mode Support */
+  html[data-theme="light"] & {
+    background: rgba(255, 255, 255, 0.98);
+    color: #2c3e50;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    
+    &:hover {
+      background: white;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    }
+  }
 `;
 
 const DropdownMenu = styled.div<{ $isOpen: boolean }>`

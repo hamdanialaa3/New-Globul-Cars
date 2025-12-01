@@ -1,19 +1,4 @@
-// public/sw.js
-// Service Worker for Globul Cars PWA
-
-/* eslint-disable no-restricted-globals */
-const CACHE_NAME = 'globul-cars-v1';
-const STATIC_CACHE = 'globul-cars-static-v1';
-const DYNAMIC_CACHE = 'globul-cars-dynamic-v1';
-
-// Resources to cache immediately
-const STATIC_ASSETS = [
-  '/',
-  '/static/js/bundle.js',
-  '/static/css/main.css',
-  '/manifest.json',
-  '/favicon.ico',
-  '/logo192.png',
+'/logo192.png',
   '/logo512.png'
 ];
 

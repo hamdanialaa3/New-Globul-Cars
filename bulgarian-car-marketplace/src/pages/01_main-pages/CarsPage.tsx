@@ -384,16 +384,15 @@ const CarsPage: React.FC = () => {
         console.log('🔍 URL params:', { regionParam, makeParam });
         logger.info('Loading cars with filters', { region: regionParam, make: makeParam });
 
-        // Build filters object
+        // ✅ FIXED: Build filters object compatible with unifiedCarService.searchCars
         const filters: any = {
-          limit: 100,
-          sortBy: 'createdAt',
-          sortOrder: 'desc'
+          isActive: true,  // Only show active cars
+          isSold: false    // Hide sold cars
         };
 
-        // Add region filter if provided
+        // Add region filter if provided (region is the primary location field)
         if (regionParam) {
-          filters.cityId = regionParam; // Will be used as region in service
+          filters.region = regionParam;
           console.log('🎯 Filtering by region:', regionParam);
         }
 
@@ -403,11 +402,32 @@ const CarsPage: React.FC = () => {
           console.log('🎯 Filtering by make:', makeParam);
         }
 
+        // ✅ ADDED: Read all filter params from URL and apply them
+        const modelParam = searchParams.get('model');
+        const fuelTypeParam = searchParams.get('fuelType');
+        const transmissionParam = searchParams.get('transmission');
+        const priceMinParam = searchParams.get('priceMin');
+        const priceMaxParam = searchParams.get('priceMax');
+        const yearMinParam = searchParams.get('yearMin');
+        const yearMaxParam = searchParams.get('yearMax');
+        const mileageMinParam = searchParams.get('mileageMin');
+        const mileageMaxParam = searchParams.get('mileageMax');
+        const bodyTypeParam = searchParams.get('bodyType');
+
+        if (modelParam) filters.model = modelParam;
+        if (fuelTypeParam) filters.fuelType = fuelTypeParam;
+        if (transmissionParam) filters.transmission = transmissionParam;
+        if (priceMinParam) filters.minPrice = parseFloat(priceMinParam);
+        if (priceMaxParam) filters.maxPrice = parseFloat(priceMaxParam);
+        if (yearMinParam) filters.minYear = parseInt(yearMinParam);
+        if (yearMaxParam) filters.maxYear = parseInt(yearMaxParam);
+        // Note: mileage filters would need to be added to CarFilters interface if needed
+
         if (!regionParam && !makeParam) {
-          console.log('📋 No filters - loading all cars');
+          console.log('📋 No filters - loading all active cars');
         }
 
-        // ⚡ Fetch cars with caching (5 minute cache)
+        // ⚡ Fetch cars with caching (5 minute cache) using unifiedCarService
         const cacheKey = makeParam && regionParam 
           ? `cars-${regionParam}-${makeParam}`
           : regionParam 
@@ -418,22 +438,37 @@ const CarsPage: React.FC = () => {
 
         console.log('🔥 Using cache key:', cacheKey);
         
-        const result = await firebaseCache.getOrFetch(
+        const carsList = await firebaseCache.getOrFetch(
           cacheKey,
           async () => {
-            console.log('📡 Fetching from Firebase (cache miss)...');
-            return await carListingService.getListings(filters);
+            console.log('📡 Fetching from Firebase using unifiedCarService (cache miss)...');
+            // ✅ FIXED: Use unifiedCarService.searchCars instead of non-existent carListingService
+            return await unifiedCarService.searchCars(filters, 100);
           },
           { duration: 5 * 60 * 1000 } // 5 minutes
         );
         
         console.log('📦 Result:', {
-          total: result.listings.length,
+          total: carsList.length,
           filters: { region: regionParam, make: makeParam },
           cacheStats: firebaseCache.getStats()
         });
         
-        setCars(result.listings);
+        // Convert UnifiedCar[] to CarListing[] format
+        const carListings: CarListing[] = carsList.map(car => ({
+          ...car,
+          vehicleType: (car as any).vehicleType || 'car',
+          sellerType: (car as any).sellerType || 'private',
+          sellerName: (car as any).sellerName || '',
+          sellerEmail: (car as any).sellerEmail || '',
+          sellerPhone: (car as any).sellerPhone || '',
+          city: (car as any).city || '',
+          region: (car as any).region || '',
+          status: car.status || 'active',
+          currency: (car as any).currency || 'EUR'
+        } as CarListing));
+        
+        setCars(carListings);
         console.log(`✅ Loaded ${result.listings.length} cars:`, 
           regionParam ? `from region: ${regionParam}` : '',
           makeParam ? `make: ${makeParam}` : '',

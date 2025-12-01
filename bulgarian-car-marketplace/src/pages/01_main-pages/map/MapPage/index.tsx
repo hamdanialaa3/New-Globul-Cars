@@ -65,16 +65,16 @@ const ControlsBar = styled.div`
   box-shadow: 0 4px 14px -4px rgba(0,0,0,0.4);
 `; 
 
-const ToggleButton = styled.button<{active?: boolean}>`
+const ToggleButton = styled.button<{$active?: boolean}>`
   position: relative;
   display: inline-flex;
   align-items: center;
   gap: 0.55rem;
   padding: 0.55rem 0.9rem 0.55rem 0.7rem;
   border-radius: 12px;
-  border: 1px solid ${({active})=> active ? 'var(--accent, #ff8f10)' : 'rgba(255,255,255,0.08)'};
-  background: ${({active})=> active ? 'linear-gradient(135deg,#ff9f30,#ff8f10 60%)' : 'rgba(255,255,255,0.04)'};
-  color: ${({active})=> active ? '#111' : 'var(--text-secondary)'};
+  border: 1px solid ${({$active})=> $active ? 'var(--accent, #ff8f10)' : 'rgba(255,255,255,0.08)'};
+  background: ${({$active})=> $active ? 'linear-gradient(135deg,#ff9f30,#ff8f10 60%)' : 'rgba(255,255,255,0.04)'};
+  color: ${({$active})=> $active ? '#111' : 'var(--text-secondary)'};
   font-size: 0.7rem;
   font-weight: 600;
   letter-spacing: 0.4px;
@@ -83,10 +83,10 @@ const ToggleButton = styled.button<{active?: boolean}>`
   min-width: 118px;
   justify-content: flex-start;
   transition: background .25s,border-color .25s,color .25s,transform .25s;
-  box-shadow: ${({active})=> active ? '0 4px 10px -2px rgba(255,143,16,0.35)' : 'inset 0 0 0 0 rgba(0,0,0,0)'};
+  box-shadow: ${({$active})=> $active ? '0 4px 10px -2px rgba(255,143,16,0.35)' : 'inset 0 0 0 0 rgba(0,0,0,0)'};
   user-select: none;
   -webkit-tap-highlight-color: transparent;
-  &:hover { background: ${({active})=> active ? 'linear-gradient(135deg,#ffa84a,#ff8f10 60%)' : 'rgba(255,255,255,0.07)'}; }
+  &:hover { background: ${({$active})=> $active ? 'linear-gradient(135deg,#ffa84a,#ff8f10 60%)' : 'rgba(255,255,255,0.07)'}; }
   &:active { transform: translateY(1px); }
   &:focus-visible { box-shadow: 0 0 0 2px #ff8f10, 0 0 0 5px rgba(255,143,16,0.4); }
   &[data-layer="users"][data-active="true"] { background: linear-gradient(135deg,#3b82f6,#1d4ed8 65%); color:#fff; border-color:#1d4ed8; box-shadow:0 4px 10px -2px rgba(29,78,216,0.35); }
@@ -641,7 +641,7 @@ const MapAnalyticsPage: React.FC = () => {
             key={layer}
             data-layer={layer}
             data-active={activeLayer===layer}
-            active={activeLayer===layer}
+            $active={activeLayer===layer}
             aria-pressed={activeLayer===layer}
             role="radio"
             aria-checked={activeLayer===layer}
@@ -666,7 +666,7 @@ const MapAnalyticsPage: React.FC = () => {
         <ToggleButton
           data-layer="details"
             data-active={showDetails}
-            active={showDetails}
+            $active={showDetails}
             aria-pressed={showDetails}
             onClick={() => setShowDetails(v => !v)}>
             {t('mapPage.toggleDetails')}

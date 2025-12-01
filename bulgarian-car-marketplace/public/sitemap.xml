@@ -1,123 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xhtml="http://www.w3.org/1999/xhtml">
-  <url>
-    <loc>https://globulcars.bg/</loc>
-    <changefreq>daily</changefreq>
-    <priority>1</priority>
-    <xhtml:link rel="alternate" hreflang="bg" href="https://globulcars.bg/" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://globulcars.bg/en/" />
-  </url>
-  <url>
-    <loc>https://globulcars.bg/cars</loc>
-    <changefreq>hourly</changefreq>
-    <priority>0.9</priority>
-    <xhtml:link rel="alternate" hreflang="bg" href="https://globulcars.bg/cars" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://globulcars.bg/en/cars" />
-  </url>
-  <url>
-    <loc>https://globulcars.bg/sell</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="bg" href="https://globulcars.bg/sell" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://globulcars.bg/en/sell" />
-  </url>
-  <url>
-    <loc>https://globulcars.bg/about</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-    <xhtml:link rel="alternate" hreflang="bg" href="https://globulcars.bg/about" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://globulcars.bg/en/about" />
-  </url>
-  <url>
-    <loc>https://globulcars.bg/contact</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-    <xhtml:link rel="alternate" hreflang="bg" href="https://globulcars.bg/contact" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://globulcars.bg/en/contact" />
-  </url>
-  <url>
-    <loc>https://globulcars.bg/pricing</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="bg" href="https://globulcars.bg/pricing" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://globulcars.bg/en/pricing" />
-  </url>
-  <url>
-    <loc>https://globulcars.bg/faq</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-    <xhtml:link rel="alternate" hreflang="bg" href="https://globulcars.bg/faq" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://globulcars.bg/en/faq" />
-  </url>
-  <url>
-    <loc>https://globulcars.bg/privacy</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-    <xhtml:link rel="alternate" hreflang="bg" href="https://globulcars.bg/privacy" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://globulcars.bg/en/privacy" />
-  </url>
-  <url>
-    <loc>https://globulcars.bg/terms</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-    <xhtml:link rel="alternate" hreflang="bg" href="https://globulcars.bg/terms" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://globulcars.bg/en/terms" />
-  </url>
-  <url>
-    <loc>https://globulcars.bg/seller/01Bat0fLCPgYEokNvf6xnA2Bi9D3</loc>
-    <lastmod>2025-10-23</lastmod>
-    <changefreq>weekly</changefreq>
     <priority>0.6</priority>
-    <xhtml:link rel="alternate" hreflang="bg" href="https://globulcars.bg/seller/01Bat0fLCPgYEokNvf6xnA2Bi9D3" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://globulcars.bg/en/seller/01Bat0fLCPgYEokNvf6xnA2Bi9D3" />
+    <xhtml:link rel="alternate" hreflang="bg" href="https://mobilebg.eu/seller/cu5mQFj3gAUgxIn01piD3lWfkgs1" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://mobilebg.eu/en/seller/cu5mQFj3gAUgxIn01piD3lWfkgs1" />
   </url>
   <url>
-    <loc>https://globulcars.bg/seller/ANlSaZaj0qNmqP2yH0ocri8NTI82</loc>
-    <lastmod>2025-10-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-    <xhtml:link rel="alternate" hreflang="bg" href="https://globulcars.bg/seller/ANlSaZaj0qNmqP2yH0ocri8NTI82" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://globulcars.bg/en/seller/ANlSaZaj0qNmqP2yH0ocri8NTI82" />
-  </url>
-  <url>
-    <loc>https://globulcars.bg/seller/EhyOknYYOFSK4Jnz39eTun6G2oz2</loc>
-    <lastmod>2025-10-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-    <xhtml:link rel="alternate" hreflang="bg" href="https://globulcars.bg/seller/EhyOknYYOFSK4Jnz39eTun6G2oz2" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://globulcars.bg/en/seller/EhyOknYYOFSK4Jnz39eTun6G2oz2" />
-  </url>
-  <url>
-    <loc>https://globulcars.bg/seller/boris_company_varna</loc>
-    <lastmod>2025-10-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-    <xhtml:link rel="alternate" hreflang="bg" href="https://globulcars.bg/seller/boris_company_varna" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://globulcars.bg/en/seller/boris_company_varna" />
-  </url>
-  <url>
-    <loc>https://globulcars.bg/seller/cu5mQFj3gAUgxIn01piD3lWfkgs1</loc>
-    <lastmod>2025-10-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-    <xhtml:link rel="alternate" hreflang="bg" href="https://globulcars.bg/seller/cu5mQFj3gAUgxIn01piD3lWfkgs1" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://globulcars.bg/en/seller/cu5mQFj3gAUgxIn01piD3lWfkgs1" />
-  </url>
-  <url>
-    <loc>https://globulcars.bg/seller/hWgL3uXk0lNbSL0NzJ5aZ1qGVXT2</loc>
+    <loc>https://mobilebg.eu/seller/hWgL3uXk0lNbSL0NzJ5aZ1qGVXT2</loc>
     <lastmod>2025-10-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
-    <xhtml:link rel="alternate" hreflang="bg" href="https://globulcars.bg/seller/hWgL3uXk0lNbSL0NzJ5aZ1qGVXT2" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://globulcars.bg/en/seller/hWgL3uXk0lNbSL0NzJ5aZ1qGVXT2" />
+    <xhtml:link rel="alternate" hreflang="bg" href="https://mobilebg.eu/seller/hWgL3uXk0lNbSL0NzJ5aZ1qGVXT2" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://mobilebg.eu/en/seller/hWgL3uXk0lNbSL0NzJ5aZ1qGVXT2" />
   </url>
   <url>
-    <loc>https://globulcars.bg/seller/ivan_dealer_sofia</loc>
+    <loc>https://mobilebg.eu/seller/ivan_dealer_sofia</loc>
     <lastmod>2025-10-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
-    <xhtml:link rel="alternate" hreflang="bg" href="https://globulcars.bg/seller/ivan_dealer_sofia" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://globulcars.bg/en/seller/ivan_dealer_sofia" />
+    <xhtml:link rel="alternate" hreflang="bg" href="https://mobilebg.eu/seller/ivan_dealer_sofia" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://mobilebg.eu/en/seller/ivan_dealer_sofia" />
   </url>
 </urlset>

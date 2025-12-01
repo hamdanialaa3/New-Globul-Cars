@@ -93,218 +93,202 @@ const Title = styled.h1`
   background-clip: text;
   letter-spacing: -0.5px;
 `;
-
-const Subtitle = styled.p`
-  font-size: 0.95rem;
-  color: #3c4a5d;
-  margin: 0 0 1.75rem 0;
-
-const FormGrid = styled.div`
-  display: inline-flex;
-  align-items: center;
-  padding: 0.4rem 0.85rem;
-  border-radius: 999px;
-  }
-`;
-
-const SmartButton = styled.button`
-  background: white;
-  color: #ff8f10;
-  border: 2px solid #ff8f10;
-  border-radius: 50px;
-  padding: 1rem 2.5rem;
-  font-size: 1.05rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+border - radius: 50px;
+padding: 1rem 2.5rem;
+font - size: 1.05rem;
+font - weight: 600;
+cursor: pointer;
+transition: all 0.3s ease;
+display: flex;
+align - items: center;
+gap: 0.5rem;
 
   &:hover {
-    background: linear-gradient(135deg, #ff8f10, #005ca9);
-    color: white;
-  }
+  background: linear - gradient(135deg, #ff8f10, #005ca9);
+  color: white;
+}
 
   svg {
-    animation: sparkle 2s ease-in-out infinite;
-  }
+  animation: sparkle 2s ease -in -out infinite;
+}
 
-  @keyframes sparkle {
-    0%, 100% { transform: rotate(0deg); }
-    50% { transform: rotate(180deg); }
-  }
+@keyframes sparkle {
+  0 %, 100 % { transform: rotate(0deg); }
+  50 % { transform: rotate(180deg); }
+}
 `;
 
 const Badge = styled.span`
-  background: linear-gradient(135deg, #ffd700, #ffaa00);
-  color: #2c3e50;
-  padding: 0.25rem 0.75rem;
-  border-radius: 20px;
-  font-size: 0.7rem;
-  font-weight: 700;
-  margin-left: 0.5rem;
+background: linear - gradient(135deg, #ffd700, #ffaa00);
+color: #2c3e50;
+padding: 0.25rem 0.75rem;
+border - radius: 20px;
+font - size: 0.7rem;
+font - weight: 700;
+margin - left: 0.5rem;
 `;
 
 const FeaturesGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
+display: grid;
+grid - template - columns: repeat(2, 1fr);
+gap: 1rem;
 `;
 
 const FeatureCard = styled.div`
-  background: white;
-  border-radius: 12px;
-  padding: 1.25rem;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
-  border: 1px solid rgba(255, 143, 16, 0.1);
-  transition: all 0.3s ease;
+background: white;
+border - radius: 12px;
+padding: 1.25rem;
+box - shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+border: 1px solid rgba(255, 143, 16, 0.1);
+transition: all 0.3s ease;
 
   &:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(255, 143, 16, 0.15);
-  }
+  transform: translateY(-3px);
+  box - shadow: 0 8px 25px rgba(255, 143, 16, 0.15);
+}
 `;
 
 const FeatureTitle = styled.h4`
-  font-size: 1rem;
-  font-weight: 600;
-  color: #2c3e50;
-  margin: 0 0 0.5rem 0;
+font - size: 1rem;
+font - weight: 600;
+color: #2c3e50;
+margin: 0 0 0.5rem 0;
 `;
 
 const FeatureDescription = styled.p`
-  font-size: 0.85rem;
-  color: #7f8c8d;
-  margin: 0;
-  line-height: 1.4;
+font - size: 0.85rem;
+color: #7f8c8d;
+margin: 0;
+line - height: 1.4;
 `;
 
 const ListingSection = styled.section`
-  background: #f7f9fc;
-  border-radius: 24px;
-  padding: 2.5rem;
-  border: 1px solid rgba(0, 20, 60, 0.05);
-  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.12);
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+background: #f7f9fc;
+border - radius: 24px;
+padding: 2.5rem;
+border: 1px solid rgba(0, 20, 60, 0.05);
+box - shadow: 0 18px 45px rgba(15, 23, 42, 0.12);
+display: flex;
+flex - direction: column;
+gap: 1.5rem;
 `;
 
 const ListingHeader = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+display: flex;
+flex - direction: column;
+gap: 0.75rem;
 `;
 
 const ListingTitle = styled.h2`
-  font-size: 1.5rem;
-  color: #111c2f;
-  margin: 0;
+font - size: 1.5rem;
+color: #111c2f;
+margin: 0;
 `;
 
 const PopularBrandsHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 1rem;
-  align-items: center;
+display: flex;
+justify - content: space - between;
+flex - wrap: wrap;
+gap: 1rem;
+align - items: center;
 `;
 
 const PopularLabel = styled.div`
-  font-weight: 600;
-  color: #1d2a3b;
+font - weight: 600;
+color: #1d2a3b;
 `;
 
 const PopularSubtext = styled.p`
-  margin: 0.25rem 0 0;
-  color: #637189;
-  font-size: 0.9rem;
+margin: 0.25rem 0 0;
+color: #637189;
+font - size: 0.9rem;
 `;
 
 const BrandChips = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.65rem;
+display: flex;
+flex - wrap: wrap;
+gap: 0.65rem;
 `;
 
 const BrandChip = styled.button<{ $active: boolean }>`
-  padding: 0.65rem 1.2rem;
-  border-radius: 999px;
-  border: 1px solid ${({ $active }) => ($active ? '#ff8f10' : 'rgba(20, 30, 55, 0.12)')};
-  background: ${({ $active }) =>
-    $active ? 'rgba(255, 143, 16, 0.12)' : 'rgba(255, 255, 255, 0.9)'};
-  color: ${({ $active }) => ($active ? '#d26b00' : '#1f2b3c')};
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
+padding: 0.65rem 1.2rem;
+border - radius: 999px;
+border: 1px solid ${ ({ $active }) => ($active ? '#ff8f10' : 'rgba(20, 30, 55, 0.12)') };
+background: ${
+  ({ $active }) =>
+    $active ? 'rgba(255, 143, 16, 0.12)' : 'rgba(255, 255, 255, 0.9)'
+};
+color: ${ ({ $active }) => ($active ? '#d26b00' : '#1f2b3c') };
+font - weight: 600;
+cursor: pointer;
+transition: all 0.2s ease;
 
   &:hover {
-    border-color: #ff8f10;
-    color: #d26b00;
-  }
+  border - color: #ff8f10;
+  color: #d26b00;
+}
 `;
 
 const MoreBrandsButton = styled.button`
-  background: transparent;
-  border: 1px dashed rgba(31, 43, 60, 0.4);
-  border-radius: 999px;
-  padding: 0.55rem 1.4rem;
-  font-weight: 600;
-  color: #1f2b3c;
-  cursor: pointer;
-  transition: all 0.2s ease;
+background: transparent;
+border: 1px dashed rgba(31, 43, 60, 0.4);
+border - radius: 999px;
+padding: 0.55rem 1.4rem;
+font - weight: 600;
+color: #1f2b3c;
+cursor: pointer;
+transition: all 0.2s ease;
 
   &:hover {
-    border-color: #ff8f10;
-    color: #ff8f10;
-  }
+  border - color: #ff8f10;
+  color: #ff8f10;
+}
 `;
 
 const BrandSelectionRow = styled.div`
-  display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
-  gap: 1.5rem;
-  align-items: center;
+display: grid;
+grid - template - columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+gap: 1.5rem;
+align - items: center;
 
-  @media (max-width: 900px) {
-    grid-template-columns: 1fr;
-  }
+@media(max - width: 900px) {
+  grid - template - columns: 1fr;
+}
 `;
 
 const BrandOrbitWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.35rem;
-  background: rgba(12, 20, 40, 0.55);
-  border-radius: 16px;
-  padding: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+display: flex;
+flex - direction: column;
+align - items: center;
+gap: 0.35rem;
+background: rgba(12, 20, 40, 0.55);
+border - radius: 16px;
+padding: 1rem;
+border: 1px solid rgba(255, 255, 255, 0.05);
 `;
 
 const BrandOrbitHint = styled.span`
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.85);
-  text-align: center;
+font - size: 0.85rem;
+color: rgba(255, 255, 255, 0.85);
+text - align: center;
 `;
 
 const FieldGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
+display: flex;
+flex - direction: column;
+gap: 0.4rem;
 `;
 
 const VerticalFieldStack = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+display: flex;
+flex - direction: column;
+gap: 1rem;
 `;
 
 const FieldLabel = styled.label`
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: #1c2536;
+font - size: 0.95rem;
+font - weight: 600;
+color: #1c2536;
 `;
 
 const FieldSelect = styled.select.attrs<{ title?: string; 'aria-label'?: string }>(props => {
@@ -314,42 +298,42 @@ const FieldSelect = styled.select.attrs<{ title?: string; 'aria-label'?: string 
     'aria-label': props['aria-label'] ?? fallback
   };
 })<ValidationProps>`
-  width: 100%;
-  border-radius: 14px;
-  border: 1px solid rgba(15, 23, 42, 0.15);
-  padding: 0.85rem 1rem;
-  font-size: 0.95rem;
-  color: #1c2536;
-  background: ${({ $validation }) => getValidationBackground($validation)};
-  transition: border 0.2s ease;
+width: 100 %;
+border - radius: 14px;
+border: 1px solid rgba(15, 23, 42, 0.15);
+padding: 0.85rem 1rem;
+font - size: 0.95rem;
+color: #1c2536;
+background: ${ ({ $validation }) => getValidationBackground($validation) };
+transition: border 0.2s ease;
 
   &:focus {
-    outline: none;
-    border-color: #ff8f10;
-    box-shadow: 0 0 0 3px rgba(255, 143, 16, 0.15);
-  }
+  outline: none;
+  border - color: #ff8f10;
+  box - shadow: 0 0 0 3px rgba(255, 143, 16, 0.15);
+}
 `;
 
 const FieldInput = styled.input<ValidationProps>`
-  width: 100%;
-  border-radius: 14px;
-  border: 1px solid rgba(15, 23, 42, 0.15);
-  padding: 0.85rem 1rem;
-  font-size: 0.95rem;
-  color: #1c2536;
-  background: ${({ $validation }) => getValidationBackground($validation)};
-  transition: border 0.2s ease;
+width: 100 %;
+border - radius: 14px;
+border: 1px solid rgba(15, 23, 42, 0.15);
+padding: 0.85rem 1rem;
+font - size: 0.95rem;
+color: #1c2536;
+background: ${ ({ $validation }) => getValidationBackground($validation) };
+transition: border 0.2s ease;
 
   &:focus {
-    outline: none;
-    border-color: #ff8f10;
-    box-shadow: 0 0 0 3px rgba(255, 143, 16, 0.15);
-  }
+  outline: none;
+  border - color: #ff8f10;
+  box - shadow: 0 0 0 3px rgba(255, 143, 16, 0.15);
+}
 `;
 
 const FieldHint = styled.span`
-  font-size: 0.8rem;
-  color: #6e7c91;
+font - size: 0.8rem;
+color: #6e7c91;
 `;
 
 `;
@@ -1054,19 +1038,19 @@ const SellPageNew: React.FC = () => {
               value={formState.postalCode}
               placeholder={t('sell.listingSection.postalPlaceholder')}
               onChange={event => handleFormChange('postalCode', event.target.value)}
-            $validation={formState.postalCode ? 'valid' : 'invalid'}
+              $validation={formState.postalCode ? 'valid' : 'invalid'}
             />
             <FieldInput
               value={formState.country}
               placeholder={t('sell.listingSection.countryPlaceholder')}
               onChange={event => handleFormChange('country', event.target.value)}
-            $validation={formState.country ? 'valid' : 'invalid'}
+              $validation={formState.country ? 'valid' : 'invalid'}
             />
             <FieldInput
               value={formState.saleLocation}
               placeholder={t('sell.listingSection.locationPlaceholder')}
               onChange={event => handleFormChange('saleLocation', event.target.value)}
-            $validation={formState.saleLocation ? 'valid' : 'invalid'}
+              $validation={formState.saleLocation ? 'valid' : 'invalid'}
             />
           </InlineFields>
         </FieldGroup>

@@ -11,8 +11,8 @@ import { useTheme } from '@/contexts/ThemeContext';
 // Styled Components
 const SectionContainer = styled.section<{ $isDark: boolean }>`
   padding: 80px 20px;
-  background: ${props => props.$isDark 
-    ? 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' 
+  background: ${props => props.$isDark
+    ? 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)'
     : '#f8fafc'};
   position: relative;
   overflow: hidden;
@@ -106,17 +106,17 @@ const ViewAllButton = styled.button<{ $isDark: boolean }>`
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: ${props => props.$isDark 
-    ? '0 2px 5px rgba(0,0,0,0.3)' 
+  box-shadow: ${props => props.$isDark
+    ? '0 2px 5px rgba(0,0,0,0.3)'
     : '0 2px 5px rgba(0,0,0,0.05)'};
 
   &:hover {
     background: ${props => props.$isDark ? '#334155' : '#f8fafc'};
     border-color: ${props => props.$isDark ? '#475569' : '#cbd5e1'};
     transform: translateY(-2px);
-    box-shadow: ${props => props.$isDark 
-      ? '0 4px 12px rgba(0,0,0,0.4)' 
-      : '0 4px 12px rgba(0,0,0,0.1)'};
+    box-shadow: ${props => props.$isDark
+    ? '0 4px 12px rgba(0,0,0,0.4)'
+    : '0 4px 12px rgba(0,0,0,0.1)'};
   }
 `;
 
@@ -165,8 +165,8 @@ const VehicleClassificationsSection: React.FC = () => {
   };
 
   const selectedCategoryLabel = CATEGORIES.find(c => c.id === selectedCategory);
-  const categoryLabel = language === 'bg' 
-    ? selectedCategoryLabel?.labelBg 
+  const categoryLabel = language === 'bg'
+    ? selectedCategoryLabel?.labelBg
     : selectedCategoryLabel?.labelEn;
 
   return (
@@ -174,15 +174,15 @@ const VehicleClassificationsSection: React.FC = () => {
       <HeaderContainer>
         <Badge>
           <Sparkles size={16} />
-          <span>{language === 'bg' ? 'Интелигентно търсене' : 'Smart Search'}</span>
+          <span>{t('home.vehicleCategories.smartSearch', language === 'bg' ? 'Интелигентно търсене' : 'Smart Search')}</span>
         </Badge>
         <Title $isDark={isDark}>
-          {language === 'bg' ? 'Категории автомобили' : 'Vehicle Categories'}
+          {t('home.vehicleCategories.title', language === 'bg' ? 'Категории автомобили' : 'Vehicle Categories')}
         </Title>
         <Subtitle $isDark={isDark}>
-          {language === 'bg' 
+          {t('home.vehicleCategories.subtitle', language === 'bg'
             ? 'Разгледайте нашата широка гама от автомобили, класифицирани по тип купе за ваше улеснение.'
-            : 'Explore our wide range of cars, classified by body type for your convenience.'}
+            : 'Explore our wide range of cars, classified by body type for your convenience.')}
         </Subtitle>
       </HeaderContainer>
 
@@ -198,12 +198,12 @@ const VehicleClassificationsSection: React.FC = () => {
       </CategoriesGrid>
 
       {loading ? (
-        <div style={{ 
-          textAlign: 'center', 
-          padding: '40px', 
-          color: isDark ? '#cbd5e1' : '#64748b' 
+        <div style={{
+          textAlign: 'center',
+          padding: '40px',
+          color: isDark ? '#cbd5e1' : '#64748b'
         }}>
-          {language === 'bg' ? 'Зареждане на автомобили...' : 'Loading cars...'}
+          {t('home.vehicleCategories.loading', language === 'bg' ? 'Зареждане на автомобили...' : 'Loading cars...')}
         </div>
       ) : (
         <>
@@ -218,7 +218,7 @@ const VehicleClassificationsSection: React.FC = () => {
           </CarsGrid>
 
           <ViewAllButton onClick={handleViewAll} $isDark={isDark}>
-            {language === 'bg' ? 'Виж всички' : 'View All'} {categoryLabel}
+            {t('home.vehicleCategories.viewAll', language === 'bg' ? 'Виж всички' : 'View All')} {categoryLabel}
             <ArrowRight size={18} />
           </ViewAllButton>
         </>

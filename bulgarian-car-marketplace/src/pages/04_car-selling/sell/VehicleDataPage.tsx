@@ -545,7 +545,7 @@ const VehicleDataPage: React.FC = () => {
           <Button
             variant="primary"
             onClick={handleContinue}
-            disabled={!formData.make || !formData.model || !formData.year || !formData.mileage}
+            disabled={!formData.make || !formData.model || !formData.year}
           >
             Продължи →
           </Button>

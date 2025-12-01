@@ -5,8 +5,6 @@ import React, { Suspense } from 'react';
 import { logger } from './services/logger-service';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
-// ⚠️ TEMPORARY: Using local imports until symlink is created
-// TODO: Change back to @globul-cars/core after symlink is created
 import { LanguageProvider } from './contexts/LanguageContext';
 import { AuthProvider } from './contexts/AuthProvider';
 import { ProfileTypeProvider } from './contexts/ProfileTypeContext';
@@ -17,32 +15,22 @@ import './styles/mobile-responsive.css';
 import './styles/typography-improved.css';
 import './styles/premium-effects.css';
 import ErrorBoundary from './components/ErrorBoundary';
-// import RouteErrorBoundary from './components/ErrorBoundary/RouteErrorBoundary';
 import { SkipNavigation } from './components/Accessibility';
-const Header = React.lazy(() => import('./components/Header/Header'));
-const MobileHeader = React.lazy(() => import('./components/Header/MobileHeader')); // ✅ NEW: Mobile-only header
-const MobileBottomNav = React.lazy(() => import('./components/layout').then(module => ({ default: module.MobileBottomNav }))); // ✅ NEW: Mobile bottom navigation
+const Header = React.lazy(() => import('./components/Header/UnifiedHeader'));
+const MobileHeader = React.lazy(() => import('./components/Header/MobileHeader'));
+const MobileBottomNav = React.lazy(() => import('./components/layout').then(module => ({ default: module.MobileBottomNav })));
 const Footer = React.lazy(() => import('./components/Footer/Footer'));
-// ❌ REMOVED: Old guards (now using UnifiedAuthGuard from './components/guards')
-// import ProtectedRoute from './components/ProtectedRoute';
-// import AdminRoute from './components/AdminRoute';
-// import AuthGuard from './components/AuthGuard'; // ❌ OLD
-// ✨ NEW: Refactored components (active)
-import { AuthGuard } from './components/guards'; // ✅ NEW
+import { AuthGuard } from './components/guards';
 import { AppProviders } from './providers';
 import NotificationHandler from './components/NotificationHandler';
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 import { FilterProvider } from './contexts/FilterContext';
-// import AnalyticsTracker from './components/AnalyticsTracker';
 const NotFoundPage = React.lazy(() => import('./components/NotFoundPage'));
 const FacebookPixel = React.lazy(() => import('./components/FacebookPixel'));
 const FloatingAddButton = React.lazy(() => import('./components/FloatingAddButton'));
 const RobotChatIcon = React.lazy(() => import('./components/AI/RobotChatIcon'));
-const PerformanceDashboard = React.lazy(() => import('./components/PerformanceDashboard'));
 import { useIsMobile } from './hooks/useBreakpoint';
 const ProgressBar = React.lazy(() => import('./components/ProgressBar'));
-// Removed problematic imports
-// import useAuthRedirectHandler from './hooks/useAuthRedirectHandler';
 
 // Lazy load pages for better performance
 const ArchitectureDiagramPage = React.lazy(() => import('./pages/ArchitectureDiagramPage'));
@@ -55,24 +43,15 @@ const SocialFeedPage = React.lazy(() => import('./pages/03_user-pages/social/Soc
 const VehicleStartPage = React.lazy(() => import('./pages/04_car-selling/sell/VehicleStartPageNew'));
 const MobileSellerTypePage = React.lazy(() => import('./pages/04_car-selling/sell/MobileSellerTypePage'));
 const VehicleDataPageUnified = React.lazy(() => import('./pages/04_car-selling/sell/VehicleDataPageUnified'));
-const EquipmentMainPage = React.lazy(() => import('./pages/04_car-selling/sell/EquipmentMainPage'));
-const MobileEquipmentMainPage = React.lazy(() => import('./pages/04_car-selling/sell/MobileEquipmentMainPage'));
 const MobilePricingPage = React.lazy(() => import('./pages/04_car-selling/sell/MobilePricingPage'));
 const MobileContactPage = React.lazy(() => import('./pages/04_car-selling/sell/MobileContactPage'));
 const MobilePreviewPage = React.lazy(() => import('./pages/04_car-selling/sell/MobilePreviewPage'));
 const DesktopPreviewPage = React.lazy(() => import('./pages/04_car-selling/sell/DesktopPreviewPage'));
 const MobileSubmissionPage = React.lazy(() => import('./pages/04_car-selling/sell/MobileSubmissionPage'));
 const DesktopSubmissionPage = React.lazy(() => import('./pages/04_car-selling/sell/DesktopSubmissionPage'));
-const SafetyEquipmentPage = React.lazy(() => import('./pages/04_car-selling/sell/Equipment/SafetyPage'));
-const ComfortEquipmentPage = React.lazy(() => import('./pages/04_car-selling/sell/Equipment/ComfortPage'));
-const InfotainmentEquipmentPage = React.lazy(() => import('./pages/04_car-selling/sell/Equipment/InfotainmentPage'));
-const ExtrasEquipmentPage = React.lazy(() => import('./pages/04_car-selling/sell/Equipment/ExtrasPage'));
 const UnifiedEquipmentPage = React.lazy(() => import('./pages/04_car-selling/sell/Equipment/UnifiedEquipmentPage'));
 const ImagesPageUnified = React.lazy(() => import('./pages/04_car-selling/sell/ImagesPageUnified'));
 const PricingPage = React.lazy(() => import('./pages/04_car-selling/sell/Pricing'));
-const ContactNamePage = React.lazy(() => import('./pages/04_car-selling/sell/ContactNamePage'));
-const ContactAddressPage = React.lazy(() => import('./pages/04_car-selling/sell/ContactAddressPage'));
-const ContactPhonePage = React.lazy(() => import('./pages/04_car-selling/sell/ContactPhonePage'));
 const UnifiedContactPage = React.lazy(() => import('./pages/04_car-selling/sell/UnifiedContactPage'));
 
 const MessagesPage = React.lazy(() => import('./pages/03_user-pages/messages/MessagesPage'));
@@ -202,6 +181,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         style={{
           flex: 1,
           padding: '0', // ❌ REMOVED: No padding on mobile - causes yellow transparent frame
+          paddingTop: '80px', // ✅ Space for fixed transparent header
           paddingBottom: '80px', // ✅ Space for mobile bottom nav
           backgroundColor: isDark ? '#0f172a' : '#f5f5f8',
           transition: 'background-color 0.3s ease'
@@ -403,46 +383,14 @@ const MainLayout: React.FC = () => {
           }
         />
 
-        {/* Legacy Equipment Routes - Keep for backward compatibility */}
-        <Route
-          path="/sell/inserat/:vehicleType/ausstattung"
-          element={
-            <AuthGuard requireAuth={true}>
-              {isMobile ? <MobileEquipmentMainPage /> : <EquipmentMainPage />}
-            </AuthGuard>
-          }
+        {/* Redirect German routes to English unified routes */}
+        <Route 
+          path="/sell/inserat/:vehicleType/ausstattung" 
+          element={<Navigate to="../equipment" replace />} 
         />
-        <Route
-          path="/sell/inserat/:vehicleType/ausstattung/sicherheit"
-          element={
-            <AuthGuard requireAuth={true}>
-              <SafetyEquipmentPage />
-            </AuthGuard>
-          }
-        />
-        <Route
-          path="/sell/inserat/:vehicleType/ausstattung/komfort"
-          element={
-            <AuthGuard requireAuth={true}>
-              <ComfortEquipmentPage />
-            </AuthGuard>
-          }
-        />
-        <Route
-          path="/sell/inserat/:vehicleType/ausstattung/infotainment"
-          element={
-            <AuthGuard requireAuth={true}>
-              <InfotainmentEquipmentPage />
-            </AuthGuard>
-          }
-        />
-        <Route
-          path="/sell/inserat/:vehicleType/ausstattung/extras"
-          element={
-            <AuthGuard requireAuth={true}>
-              <ExtrasEquipmentPage />
-            </AuthGuard>
-          }
+        <Route 
+          path="/sell/inserat/:vehicleType/ausstattung/*" 
+          element={<Navigate to="../equipment" replace />} 
         />
         <Route
           path="/sell/inserat/:vehicleType/details/bilder"
@@ -470,7 +418,13 @@ const MainLayout: React.FC = () => {
           }
         />
 
-        {/* Preview / Summary step before submission */}
+        {/* Redirect German contact routes to English unified route */}
+        <Route 
+          path="/sell/inserat/:vehicleType/kontakt/*" 
+          element={<Navigate to="../contact" replace />} 
+        />
+
+        {/* NEW: Preview Page - Review all data before submission */}
         <Route
           path="/sell/inserat/:vehicleType/preview"
           element={
@@ -480,41 +434,6 @@ const MainLayout: React.FC = () => {
           }
         />
 
-        {/* Final submission step */}
-        <Route
-          path="/sell/inserat/:vehicleType/submission"
-          element={
-            <AuthGuard requireAuth={true}>
-              {isMobile ? <MobileSubmissionPage /> : <DesktopSubmissionPage />}
-            </AuthGuard>
-          }
-        />
-
-        {/* Legacy Contact Routes - Keep for backward compatibility */}
-        <Route
-          path="/sell/inserat/:vehicleType/kontakt/name"
-          element={
-            <AuthGuard requireAuth={true}>
-              <ContactNamePage />
-            </AuthGuard>
-          }
-        />
-        <Route
-          path="/sell/inserat/:vehicleType/kontakt/adresse"
-          element={
-            <AuthGuard requireAuth={true}>
-              <ContactAddressPage />
-            </AuthGuard>
-          }
-        />
-        <Route
-          path="/sell/inserat/:vehicleType/kontakt/telefonnummer"
-          element={
-            <AuthGuard requireAuth={true}>
-              <ContactPhonePage />
-            </AuthGuard>
-          }
-        />
         {/* Profile routes - single entry; nested router handles both index and :userId */}
         <Route path="/profile/*" element={<ProfileRouter />} />
         <Route path="/verification" element={<VerificationPage />} />  {/* NEW: Verification System */}
@@ -884,13 +803,6 @@ const MainLayout: React.FC = () => {
           </Suspense>
         } />
       </Routes>
-
-      {/* Performance Dashboard - Development/Testing Only */}
-      {process.env.NODE_ENV === 'development' && (
-        <Suspense fallback={null}>
-          <PerformanceDashboard />
-        </Suspense>
-      )}
     </Layout>
   );
 };

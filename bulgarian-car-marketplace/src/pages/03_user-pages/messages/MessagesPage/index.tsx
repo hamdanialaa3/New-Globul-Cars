@@ -25,6 +25,16 @@ const Container = styled.div`
     flex-direction: column;
     height: calc(100vh - 60px);
   }
+  
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    background: #0f172a;
+  }
+  
+  /* Light Mode Support */
+  html[data-theme="light"] & {
+    background: #f8f9fa;
+  }
 `;
 
 const Sidebar = styled.div<{ $isHidden?: boolean }>`
@@ -37,6 +47,18 @@ const Sidebar = styled.div<{ $isHidden?: boolean }>`
   @media (max-width: 768px) {
     width: 100%;
     display: ${p => p.$isHidden ? 'none' : 'flex'};
+  }
+  
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    background: #1e293b;
+    border-right-color: rgba(148, 163, 184, 0.15);
+  }
+  
+  /* Light Mode Support */
+  html[data-theme="light"] & {
+    background: white;
+    border-right-color: #e9ecef;
   }
 `;
 
@@ -75,6 +97,32 @@ const SidebarHeader = styled.div`
     color: #6c757d;
     margin: 0;
   }
+  
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    border-bottom-color: rgba(148, 163, 184, 0.15);
+    
+    h1 {
+      color: #e2e8f0;
+    }
+    
+    p {
+      color: #94a3b8;
+    }
+  }
+  
+  /* Light Mode Support */
+  html[data-theme="light"] & {
+    border-bottom-color: #e9ecef;
+    
+    h1 {
+      color: #212529;
+    }
+    
+    p {
+      color: #6c757d;
+    }
+  }
 `;
 
 const SearchBar = styled.div`
@@ -89,6 +137,8 @@ const SearchBar = styled.div`
     border-radius: 24px;
     font-size: 0.95rem;
     transition: all 0.2s;
+    background: white;
+    color: #212529;
     
     &:focus {
       outline: none;
@@ -106,6 +156,45 @@ const SearchBar = styled.div`
     height: 18px;
     color: #6c757d;
     pointer-events: none;
+  }
+  
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    border-bottom-color: rgba(148, 163, 184, 0.15);
+    
+    input {
+      background: #334155;
+      border-color: rgba(148, 163, 184, 0.2);
+      color: #e2e8f0;
+      
+      &::placeholder {
+        color: #94a3b8;
+      }
+      
+      &:focus {
+        border-color: #FF7900;
+        box-shadow: 0 0 0 3px rgba(255, 121, 0, 0.2);
+      }
+    }
+    
+    svg {
+      color: #94a3b8;
+    }
+  }
+  
+  /* Light Mode Support */
+  html[data-theme="light"] & {
+    border-bottom-color: #e9ecef;
+    
+    input {
+      background: white;
+      border-color: #dee2e6;
+      color: #212529;
+    }
+    
+    svg {
+      color: #6c757d;
+    }
   }
 `;
 
@@ -138,6 +227,36 @@ const EmptyState = styled.div`
     max-width: 400px;
     line-height: 1.6;
   }
+  
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    color: #94a3b8;
+    
+    svg {
+      opacity: 0.2;
+    }
+    
+    h2 {
+      color: #cbd5e1;
+    }
+    
+    p {
+      color: #94a3b8;
+    }
+  }
+  
+  /* Light Mode Support */
+  html[data-theme="light"] & {
+    color: #6c757d;
+    
+    h2 {
+      color: #495057;
+    }
+    
+    p {
+      color: #6c757d;
+    }
+  }
 `;
 
 const LoadingSpinner = styled.div`
@@ -158,6 +277,22 @@ const LoadingSpinner = styled.div`
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+  }
+  
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    .spinner {
+      border-color: #334155;
+      border-top-color: #FF7900;
+    }
+  }
+  
+  /* Light Mode Support */
+  html[data-theme="light"] & {
+    .spinner {
+      border-color: #f3f3f3;
+      border-top-color: #FF7900;
+    }
   }
 `;
 

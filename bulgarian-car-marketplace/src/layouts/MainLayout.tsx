@@ -17,29 +17,34 @@
 import React, { Suspense } from 'react';
 import { Outlet } from 'react-router-dom';
 import styled from 'styled-components';
-import { useTheme } from '@/contexts/ThemeContext';
+import { useTheme } from '../contexts/ThemeContext';
 
 // Lazy load layout components
-const Header = React.lazy(() => import('@/components/Header/UnifiedHeader'));
-const Footer = React.lazy(() => import('@/components/Footer'));
-const FloatingAddButton = React.lazy(() => import('@/components/FloatingAddButton'));
-const RobotChatIcon = React.lazy(() => import('@/components/RobotChatIcon'));
-const ProgressBar = React.lazy(() => import('@/components/ProgressBar'));
+const Header = React.lazy(() => import('../components/Header/UnifiedHeader'));
+const Footer = React.lazy(() => import('../components/Footer/Footer'));
+const FloatingAddButton = React.lazy(() => import('../components/FloatingAddButton'));
+const RobotChatIcon = React.lazy(() => import('../components/AI/RobotChatIcon'));
+const ProgressBar = React.lazy(() => import('../components/ProgressBar'));
 
 // Styled Components
 const LayoutContainer = styled.div`
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  padding-top: 80px; /* Fixed header height + margin */
   background-color: ${({ theme }) => theme.colors.background};
   color: ${({ theme }) => theme.colors.text};
   transition: background-color 0.3s ease, color 0.3s ease;
+  
+  @media (max-width: 768px) {
+    padding-top: 70px;
+  }
 `;
 
 const MainContent = styled.main<{ $isDark: boolean }>`
   flex: 1;
   padding-bottom: 80px;
-  background-color: ${({ $isDark }) => ($isDark ? '#0f172a' : '#f5f5f8')};
+  background-color: ${({ theme }) => theme.colors.background};
   min-height: calc(100vh - 200px);
   transition: background-color 0.3s ease;
 `;

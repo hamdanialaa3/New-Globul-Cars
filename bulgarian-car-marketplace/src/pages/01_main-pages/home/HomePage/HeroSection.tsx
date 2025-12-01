@@ -22,6 +22,7 @@ const HeroSection = styled.section`
   justify-content: center;
   transform: translateZ(0);
   will-change: transform;
+  transition: background-color 0.3s ease, color 0.3s ease;
   
   &::before {
     content: '';
@@ -31,8 +32,14 @@ const HeroSection = styled.section`
     right: 0;
     bottom: 0;
     background: var(--bg-primary);
-    opacity: 0.65;
+    opacity: 0.7;
     z-index: 0;
+    transition: background-color 0.3s ease, opacity 0.3s ease;
+  }
+  
+  /* Dark mode overlay adjustment */
+  html[data-theme="dark"] &::before {
+    opacity: 0.85;
   }
   
   /* MOBILE OPTIMIZATION - Airbnb/Booking.com inspired */
@@ -43,6 +50,10 @@ const HeroSection = styled.section`
     
     &::before {
       opacity: 0.75;  /* Lighter for better text contrast */
+    }
+    
+    html[data-theme="dark"] &::before {
+      opacity: 0.9;
     }
   }
   
@@ -71,7 +82,18 @@ const HeroTitle = styled.h1`
   font-weight: 700;
   margin-bottom: 1rem;
   line-height: 1.3;
-  color: #FF0000; /* ⚠️ TEST: RED COLOR - CORRECT FOLDER */
+  color: #000000; /* Black for dark mode */
+  transition: color 0.3s ease;
+
+  /* Light mode: Orange */
+  html[data-theme="light"] & {
+    color: #ffffff; /* White for light mode */
+  }
+
+  /* Dark mode: Yellow */
+  html[data-theme="dark"] & {
+    color: #FFD700; /* Yellow/Gold for dark mode */
+  }
 
   /* MOBILE - Professional typography (Airbnb/Booking.com) */
   @media (max-width: 768px) {
@@ -97,10 +119,21 @@ const HeroSubtitle = styled.p`
   font-size: 1rem;
   margin-bottom: 2rem;
   line-height: 1.6;
-  color: var(--text-secondary);
+  color: #000000; /* Black for dark mode */
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
+  transition: color 0.3s ease;
+
+  /* Light mode: White */
+  html[data-theme="light"] & {
+    color: #ffffff; /* White for light mode */
+  }
+
+  /* Dark mode: Yellow */
+  html[data-theme="dark"] & {
+    color: #FFD700; /* Yellow/Gold for dark mode */
+  }
   
   /* MOBILE - Compact subtitle (LinkedIn pattern) */
   @media (max-width: 768px) {
@@ -147,29 +180,110 @@ const HeroButtons = styled.div`
 const HeroButton = styled(Link)`
   display: inline-block;
   padding: 0.875rem 2rem;
-  background: var(--accent-orange);
-  color: #000000;
   text-decoration: none;
   font-weight: 600;
   font-size: 1rem;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-  box-shadow: var(--shadow-md);
+  border-radius: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+  position: relative;
+  overflow: hidden;
+  
+  /* Light mode: Orange gradient background, White text */
+  html[data-theme="light"] & {
+    background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 50%, #FFA500 100%) !important;
+    color: #ffffff !important; /* White text */
+    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.35) !important;
+  }
+
+  /* Dark mode: Yellow gradient background, Black text */
+  html[data-theme="dark"] & {
+    background: linear-gradient(135deg, #FFD700 0%, #FFC107 50%, #FFA000 100%) !important;
+    color: #000000 !important; /* Black text */
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4) !important;
+  }
+
+  /* Shine effect on hover */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s ease;
+  }
 
   &:hover {
-    opacity: 0.9;
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
+    transform: translateY(-3px);
+    html[data-theme="light"] & {
+      background: linear-gradient(135deg, #FF5722 0%, #FF6B35 50%, #FF8C42 100%) !important;
+      color: #ffffff !important; /* White text - keep white on orange */
+      box-shadow: 0 6px 20px rgba(255, 107, 53, 0.5) !important;
+    }
+    html[data-theme="dark"] & {
+      background: linear-gradient(135deg, #FFC107 0%, #FFD700 50%, #FFC107 100%) !important;
+      color: #000000 !important; /* Black text - keep black on yellow */
+      box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6) !important;
+    }
+    
+    &::before {
+      left: 100%;
+    }
+  }
+
+  &:active {
+    transform: translateY(-1px);
+    html[data-theme="light"] & {
+      background: linear-gradient(135deg, #E64A19 0%, #FF5722 50%, #FF6B35 100%) !important;
+      color: #ffffff !important; /* White text - keep white on orange */
+      box-shadow: 0 3px 10px rgba(255, 107, 53, 0.4) !important;
+    }
+    html[data-theme="dark"] & {
+      background: linear-gradient(135deg, #FFA000 0%, #FFC107 50%, #FFD700 100%) !important;
+      color: #000000 !important; /* Black text - keep black on yellow */
+      box-shadow: 0 3px 10px rgba(255, 215, 0, 0.5) !important;
+    }
   }
 
   &.secondary {
-    background: transparent;
-    border: 2px solid var(--accent-orange);
-    color: var(--accent-orange);
+    /* Light mode: Orange gradient background, White text */
+    html[data-theme="light"] & {
+      background: linear-gradient(135deg, #FF8C42 0%, #FF6B35 50%, #FF5722 100%) !important;
+      color: #ffffff !important; /* White text */
+      box-shadow: 0 4px 15px rgba(255, 107, 53, 0.35) !important;
+    }
+
+    /* Dark mode: Yellow gradient background, Black text */
+    html[data-theme="dark"] & {
+      background: linear-gradient(135deg, #FFC107 0%, #FFD700 50%, #FFA000 100%) !important;
+      color: #000000 !important; /* Black text */
+      box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4) !important;
+    }
 
     &:hover {
-      background: var(--accent-orange);
-      color: #000000;
+      html[data-theme="light"] & {
+        background: linear-gradient(135deg, #FF6B35 0%, #FF5722 50%, #E64A19 100%) !important;
+        color: #ffffff !important; /* White text - keep white on orange */
+        box-shadow: 0 6px 20px rgba(255, 107, 53, 0.5) !important;
+      }
+      html[data-theme="dark"] & {
+        background: linear-gradient(135deg, #FFD700 0%, #FFC107 50%, #FFA000 100%) !important;
+        color: #000000 !important; /* Black text - keep black on yellow */
+        box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6) !important;
+      }
+    }
+
+    &:active {
+      html[data-theme="light"] & {
+        background: linear-gradient(135deg, #E64A19 0%, #FF5722 50%, #FF6B35 100%) !important;
+        color: #ffffff !important; /* White text - keep white on orange */
+      }
+      html[data-theme="dark"] & {
+        background: linear-gradient(135deg, #FFA000 0%, #FFC107 50%, #FFD700 100%) !important;
+        color: #000000 !important; /* Black text - keep black on yellow */
+      }
     }
   }
   
@@ -191,17 +305,6 @@ const HeroButton = styled(Link)`
     &:active {
       transform: scale(0.98);
     }
-    
-    &.secondary {
-      background: var(--bg-card);
-      border: 2px solid var(--accent-orange);
-      color: var(--accent-orange);
-      
-      &:active {
-        background: var(--accent-orange);
-        opacity: 0.1;
-      }
-    }
   }
   
   @media (max-width: 480px) {
@@ -221,7 +324,18 @@ const LanguageDemoSection = styled.div`
   span {
     font-size: 0.9rem;
     font-weight: 600;
-    color: #495057;
+    color: #000000; /* Black for dark mode */
+    transition: color 0.3s ease;
+
+    /* Light mode: White */
+    html[data-theme="light"] & {
+      color: #ffffff; /* White for light mode */
+    }
+
+    /* Dark mode: Yellow */
+    html[data-theme="dark"] & {
+      color: #FFD700; /* Yellow/Gold for dark mode */
+    }
   }
 `;
 

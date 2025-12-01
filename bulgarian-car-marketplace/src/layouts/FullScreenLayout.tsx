@@ -16,10 +16,10 @@
 import React, { Suspense } from 'react';
 import { Outlet } from 'react-router-dom';
 import styled from 'styled-components';
-import { useTheme } from '@/contexts/ThemeContext';
+import { useTheme } from '../contexts/ThemeContext';
 
 // Lazy load progress bar
-const ProgressBar = React.lazy(() => import('@/components/ProgressBar'));
+const ProgressBar = React.lazy(() => import('../components/ProgressBar'));
 
 // Styled Components
 const FullScreenContainer = styled.div<{ $isDark: boolean }>`

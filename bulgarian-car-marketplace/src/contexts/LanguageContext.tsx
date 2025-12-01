@@ -1,14 +1,13 @@
 // Global Language Context for Smart Translation System
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { translations } from '../locales/translations';
-import { logger } from '@/services/logger-service';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback, useMemo } from 'react';
+import { translations } from '../locales';
 
 export type Language = 'bg' | 'en';
 
 interface LanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
-  toggleLanguage: () => void; // FIX: Added toggleLanguage
+  toggleLanguage: () => void;
   t: (key: string) => string;
 }
 
@@ -18,84 +17,99 @@ interface LanguageProviderProps {
   children: ReactNode;
 }
 
+// Helper function to get nested value from object by dot-notation path
+function getNestedTranslation(obj: any, keyPath: string): string {
+  const keys = keyPath.split('.');
+  let current = obj;
+  
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i];
+    if (current && typeof current === 'object' && key in current) {
+      current = current[key];
+    } else {
+      // Key not found, return the original keyPath
+      return keyPath;
+    }
+  }
+  
+  // If we found a string value, return it
+  if (typeof current === 'string') {
+    return current;
+  }
+  
+  // If we got an object or other type, return the original key
+  return keyPath;
+}
+
 export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) => {
   const [language, setLanguageState] = useState<Language>(() => {
-    const saved = localStorage.getItem('globul-cars-language');
-    if (saved === 'bg' || saved === 'en') return saved;
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('globul-cars-language');
+      if (saved === 'bg' || saved === 'en') return saved;
+    }
     return 'bg';
   });
 
-  // Smart translation function with nested object support
-  const t = (key: string): string => {
-    try {
-      const keys = key.split('.');
-      let value: any = translations[language];
-      
-      for (const k of keys) {
-        if (value && typeof value === 'object' && k in value) {
-          value = value[k];
-        } else {
-          // Fallback to English if Bulgarian translation missing
-          let fallbackValue: any = translations.en;
-          for (const fk of keys) {
-            if (fallbackValue && typeof fallbackValue === 'object' && fk in fallbackValue) {
-              fallbackValue = fallbackValue[fk];
-          } else {
-            // If both languages fail, return the key itself as last resort
-            if (process.env.NODE_ENV === 'development') {
-              logger.warn('Translation missing for key', { key });
-            }
-            return key;
-          }
+  // Translation function - gets value from nested object using dot notation
+  const t = useCallback((key: string): string => {
+    if (!key || typeof key !== 'string') {
+      console.warn('[Translation] Invalid key:', key);
+      return key || '';
+    }
+    
+    // Get the language object (bg or en)
+    const langObj = translations[language];
+    if (!langObj) {
+      console.error('[Translation] Language object not found for:', language);
+      return key;
+    }
+    
+    // Try to get the translation for current language
+    const translation = getNestedTranslation(langObj, key);
+    
+    // If translation is found (not equal to key), return it
+    if (translation !== key) {
+      return translation;
+    }
+    
+    // Fallback to English if current language is not English
+    if (language !== 'en') {
+      const enObj = translations.en;
+      if (enObj) {
+        const enTranslation = getNestedTranslation(enObj, key);
+        if (enTranslation !== key) {
+          console.warn(`[Translation] Key "${key}" not found in ${language}, using English fallback`);
+          return enTranslation;
         }
-        return fallbackValue;
       }
     }
     
-    return typeof value === 'string' ? value : key;
-  } catch (error) {
-    if (process.env.NODE_ENV === 'development') {
-      logger.warn('Translation error for key', { key, error: (error as Error).message });
-    }
+    // If all else fails, log and return the key itself
+    console.warn(`[Translation] Missing translation for key: "${key}" in language: ${language}`);
     return key;
-  }
-};  // Smart language setter that persists to localStorage and triggers global update
-  const setLanguage = (lang: Language) => {
-    setLanguageState(lang);
-    localStorage.setItem('globul-cars-language', lang);
-    
-    // Trigger a custom event for any components that need to know about language changes
-    window.dispatchEvent(new CustomEvent('languageChange', { 
-      detail: { language: lang } 
-    }));
-    
-    // Update document language attribute for accessibility
-    document.documentElement.lang = lang === 'bg' ? 'bg-BG' : 'en-US';
-    
-    // Update document direction (both Bulgarian and English are LTR)
-    document.documentElement.dir = 'ltr';
-    
-    if (process.env.NODE_ENV === 'development') {
-      logger.info('Language changed', { language: lang.toUpperCase() });
-    }
-  };
-
-  const toggleLanguage = () => {
-    setLanguage(language === 'bg' ? 'en' : 'bg');
-  };
-
-  // Effect to set initial document language
-  useEffect(() => {
-    document.documentElement.lang = language === 'bg' ? 'bg-BG' : 'en-US';
-    document.documentElement.dir = 'ltr';
   }, [language]);
 
-  const value: LanguageContextType = {
+  const setLanguage = useCallback((lang: Language) => {
+    setLanguageState(lang);
+    localStorage.setItem('globul-cars-language', lang);
+    window.dispatchEvent(new CustomEvent('languageChange', { detail: { language: lang } }));
+    document.documentElement.lang = lang === 'bg' ? 'bg-BG' : 'en-US';
+  }, []);
+
+  const toggleLanguage = useCallback(() => {
+    setLanguage(language === 'bg' ? 'en' : 'bg');
+  }, [language, setLanguage]);
+
+  useEffect(() => {
+    document.documentElement.lang = language === 'bg' ? 'bg-BG' : 'en-US';
+  }, [language]);
+
+  const value = useMemo<LanguageContextType>(() => ({
     language,
     setLanguage,
-    toggleLanguage, // FIX: Added to context value
+    toggleLanguage,
     t
-  };
+  }), [language, setLanguage, toggleLanguage, t]);
 
   return (
     <LanguageContext.Provider value={value}>

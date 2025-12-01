@@ -7,6 +7,7 @@ import DemandStats from './DemandStats';
 import { Bot, Zap, ArrowRight, Award } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
+import { logger } from '@/services/logger-service';
 
 // Styled Components
 const SectionContainer = styled.section<{ $isDark: boolean }>`
@@ -93,17 +94,17 @@ const CategoriesNav = styled.div`
   }
 `;
 
-const CategoryTab = styled.button<{ active: boolean; rank?: number; $isDark: boolean }>`
+const CategoryTab = styled.button<{ $active: boolean; rank?: number; $isDark: boolean }>`
   padding: 12px 24px;
   border-radius: 30px;
-  border: 2px solid ${props => props.active 
+  border: 2px solid ${props => props.$active 
     ? '#f093fb' 
     : props.$isDark ? '#334155' : '#e2e8f0'};
-  background: ${props => props.active
+  background: ${props => props.$active
     ? 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'
     : props.$isDark ? '#1e293b' : 'white'
   };
-  color: ${props => props.active ? 'white' : props.$isDark ? '#cbd5e1' : '#64748b'};
+  color: ${props => props.$active ? 'white' : props.$isDark ? '#cbd5e1' : '#64748b'};
   font-size: 0.9375rem;
   font-weight: 700;
   cursor: pointer;
@@ -170,32 +171,66 @@ const ViewAllButton = styled.button`
   gap: 8px;
   margin: 40px auto 0;
   padding: 14px 32px;
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  color: white;
   border: none;
-  border-radius: 30px;
+  border-radius: 12px;
   font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(240, 147, 251, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+
+  /* Light mode: Orange gradient background, White text */
+  html[data-theme="light"] & {
+    background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 50%, #FFA500 100%) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.35) !important;
+  }
+
+  /* Dark mode: Yellow gradient background, Black text */
+  html[data-theme="dark"] & {
+    background: linear-gradient(135deg, #FFD700 0%, #FFC107 50%, #FFA000 100%) !important;
+    color: #000000 !important;
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4) !important;
+  }
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(240, 147, 251, 0.4);
+    transform: translateY(-3px);
+    html[data-theme="light"] & {
+      background: linear-gradient(135deg, #FF5722 0%, #FF6B35 50%, #FF8C42 100%) !important;
+      color: #ffffff !important;
+      box-shadow: 0 6px 20px rgba(255, 107, 53, 0.5) !important;
+    }
+    html[data-theme="dark"] & {
+      background: linear-gradient(135deg, #FFC107 0%, #FFD700 50%, #FFC107 100%) !important;
+      color: #000000 !important;
+      box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6) !important;
+    }
+  }
+
+  &:active {
+    transform: translateY(-1px);
+    html[data-theme="light"] & {
+      background: linear-gradient(135deg, #E64A19 0%, #FF5722 50%, #FF6B35 100%) !important;
+      color: #ffffff !important;
+    }
+    html[data-theme="dark"] & {
+      background: linear-gradient(135deg, #FFA000 0%, #FFC107 50%, #FFD700 100%) !important;
+      color: #000000 !important;
+    }
   }
 `;
 
-// Categories Configuration (Bulgarian)
+// Categories Configuration
 const CATEGORIES = [
-  { id: 'sedan', label: 'Седан', rank: 1 },
-  { id: 'suv', label: 'Джип / SUV', rank: 2 },
-  { id: 'hatchback', label: 'Хечбек', rank: 3 },
-  { id: 'coupe', label: 'Купе', rank: 4 },
-  { id: 'wagon', label: 'Комби', rank: 5 },
-  { id: 'convertible', label: 'Кабрио', rank: 6 },
-  { id: 'pickup', label: 'Пикап', rank: 7 },
-  { id: 'minivan', label: 'Миниван', rank: 8 }
+  { id: 'sedan', rank: 1 },
+  { id: 'suv', rank: 2 },
+  { id: 'hatchback', rank: 3 },
+  { id: 'coupe', rank: 4 },
+  { id: 'wagon', rank: 5 },
+  { id: 'convertible', rank: 6 },
+  { id: 'pickup', rank: 7 },
+  { id: 'minivan', rank: 8 }
 ];
 
 const MostDemandedCategoriesSection: React.FC = () => {
@@ -230,7 +265,7 @@ const MostDemandedCategoriesSection: React.FC = () => {
         setDemandPercentage(demand);
 
       } catch (error) {
-        console.error('Error loading cars:', error);
+        logger.error('Error loading cars', error as Error);
       } finally {
         setLoading(false);
       }
@@ -241,10 +276,6 @@ const MostDemandedCategoriesSection: React.FC = () => {
 
   const handleViewAll = () => {
     navigate(`/search?category=${selectedCategory}`);
-  };
-
-  const getCurrentCategory = () => {
-    return CATEGORIES.find(cat => cat.id === selectedCategory);
   };
 
   return (
@@ -267,20 +298,20 @@ const MostDemandedCategoriesSection: React.FC = () => {
           {CATEGORIES.map(category => (
             <CategoryTab
               key={category.id}
-              active={selectedCategory === category.id}
+              $active={selectedCategory === category.id}
               rank={category.rank}
               $isDark={isDark}
               onClick={() => setSelectedCategory(category.id)}
             >
               {category.rank <= 3 && <Award size={16} color={selectedCategory === category.id ? 'white' : '#f59e0b'} />}
-              {language === 'bg' ? category.label : category.label}
+              {t(`bodyTypes.${category.id}`)}
             </CategoryTab>
           ))}
         </CategoriesNav>
 
         {!loading && cars.length > 0 && (
           <DemandStats
-            categoryName={getCurrentCategory()?.label || ''}
+            categoryName={t(`bodyTypes.${selectedCategory}`)}
             percentage={demandPercentage}
           />
         )}
@@ -308,7 +339,7 @@ const MostDemandedCategoriesSection: React.FC = () => {
 
           {cars.length > 0 && (
             <ViewAllButton onClick={handleViewAll}>
-              {language === 'bg' ? 'Виж всички' : 'View All'} {getCurrentCategory()?.label} ({cars.length}+)
+              {language === 'bg' ? 'Виж всички' : 'View All'} {t(`bodyTypes.${selectedCategory}`)} ({cars.length}+)
               <ArrowRight size={18} />
             </ViewAllButton>
           )}

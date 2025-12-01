@@ -1,0 +1,232 @@
+import { useState, useEffect } from 'react';
+import { CarListing } from '@/types/CarListing';
+import { unifiedCarService } from '@/services/car';
+import { imageUploadService } from '@/services/car/image-upload.service';
+import { logger } from '@/services/logger-service';
+import { getCitiesByRegion } from '@/data/bulgaria-locations';
+import { getModelsByMake } from '@/data/car-makes-models';
+
+export const useCarEdit = (
+  car: CarListing | null,
+  carId: string | undefined,
+  language: 'bg' | 'en',
+  onSaveSuccess?: () => void
+) => {
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editedCar, setEditedCar] = useState<Partial<CarListing>>({});
+  const [saving, setSaving] = useState(false);
+  const [photos, setPhotos] = useState<File[]>([]);
+  const [photoUrls, setPhotoUrls] = useState<string[]>([]);
+  const [isDragOver, setIsDragOver] = useState(false);
+  
+  // State for "Other" option inputs
+  const [showOtherMake, setShowOtherMake] = useState(false);
+  const [showOtherModel, setShowOtherModel] = useState(false);
+  const [showOtherFuelType, setShowOtherFuelType] = useState(false);
+  const [showOtherTransmission, setShowOtherTransmission] = useState(false);
+  const [showOtherColor, setShowOtherColor] = useState(false);
+  const [showOtherDoors, setShowOtherDoors] = useState(false);
+  const [showOtherSeats, setShowOtherSeats] = useState(false);
+  
+  // State for Bulgarian regions and cities
+  const [availableCities, setAvailableCities] = useState<string[]>([]);
+  
+  // State for car models based on selected make
+  const [availableModels, setAvailableModels] = useState<string[]>([]);
+
+  // Initialize editedCar when car is loaded
+  useEffect(() => {
+    if (car) {
+      setEditedCar(car);
+    }
+  }, [car]);
+
+  // Load cities when car data is loaded or region changes
+  useEffect(() => {
+    if (editedCar.region) {
+      const cities = getCitiesByRegion(editedCar.region);
+      const cityNames = cities.map(city => typeof city === 'string' ? city : city.name);
+      setAvailableCities(cityNames);
+    }
+  }, [editedCar.region]);
+  
+  // Load models when make changes
+  useEffect(() => {
+    if (editedCar.make) {
+      const models = getModelsByMake(editedCar.make);
+      setAvailableModels(models);
+      
+      // If current model is not in the new models list, clear it
+      if (editedCar.model && !models.includes(editedCar.model)) {
+        setEditedCar(prev => ({ ...prev, model: '' }));
+      }
+    } else {
+      setAvailableModels([]);
+    }
+  }, [editedCar.make]);
+  
+  // Cleanup URLs on unmount
+  useEffect(() => {
+    return () => {
+      photoUrls.forEach(url => {
+        try {
+          URL.revokeObjectURL(url);
+        } catch (e) {
+          // URL already revoked
+        }
+      });
+    };
+  }, [photoUrls]);
+
+  const handleEdit = () => {
+    setIsEditMode(true);
+    setEditedCar(car || {});
+  };
+
+  const handleSave = async () => {
+    if (!carId || !editedCar) return;
+    
+    setSaving(true);
+    try {
+      // Step 1: Upload new photos to Firebase Storage
+      let uploadedUrls: string[] = [];
+      if (photos.length > 0) {
+        uploadedUrls = await imageUploadService.uploadImages(carId, photos);
+      }
+
+      // Step 2: Merge existing images with new ones
+      const existingImages = car?.images || [];
+      const updatedImages = [...existingImages, ...uploadedUrls];
+
+      // Step 3: Save all changes
+      const updatedCarData = {
+        ...editedCar,
+        images: updatedImages
+      };
+
+      await unifiedCarService.updateCar(carId, updatedCarData);
+      setIsEditMode(false);
+      setPhotos([]);
+      setPhotoUrls([]);
+      
+      alert(language === 'bg' ? 'Промените са запазени успешно!' : 'Changes saved successfully!');
+      
+      if (onSaveSuccess) {
+        onSaveSuccess();
+      }
+    } catch (error) {
+      logger.error('Error saving car changes', error as Error, { carId });
+      alert(language === 'bg' ? 'Грешка при запазване' : 'Error saving changes');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleCancel = () => {
+    setIsEditMode(false);
+    setEditedCar(car || {});
+    setPhotos([]);
+    setPhotoUrls([]);
+  };
+
+  const handleInputChange = (field: keyof CarListing, value: any) => {
+    setEditedCar(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleFileSelect = (files: FileList | null) => {
+    if (!files) return;
+    const fileArray = Array.from(files);
+    const newPhotos = [...photos, ...fileArray].slice(0, 20);
+    setPhotos(newPhotos);
+    
+    const urls = newPhotos.map(file => URL.createObjectURL(file));
+    setPhotoUrls(urls);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragOver(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(false);
+    handleFileSelect(e.dataTransfer.files);
+  };
+
+  const removePhoto = (index: number) => {
+    const newPhotos = photos.filter((_, i) => i !== index);
+    const newUrls = photoUrls.filter((_, i) => i !== index);
+    setPhotos(newPhotos);
+    setPhotoUrls(newUrls);
+  };
+
+  const deleteExistingImage = async (imageUrl: string) => {
+    if (!window.confirm(language === 'bg' 
+      ? 'Сигурни ли сте, че искате да изтриете тази снимка?' 
+      : 'Are you sure you want to delete this image?'
+    )) {
+      return;
+    }
+
+    try {
+      // Remove from Firebase Storage
+      await imageUploadService.deleteImages(carId!, [imageUrl]);
+      
+      // Update car.images array
+      const updatedImages = (car?.images || []).filter(img => img !== imageUrl);
+      await unifiedCarService.updateCar(carId!, { images: updatedImages });
+      
+      alert(language === 'bg' ? 'Снимката е изтрита!' : 'Image deleted successfully!');
+      
+      return updatedImages;
+    } catch (error) {
+      logger.error('Error deleting existing image', error as Error, { carId, imageUrl });
+      alert(language === 'bg' ? 'Грешка при изтриване' : 'Error deleting image');
+      return null;
+    }
+  };
+
+  return {
+    isEditMode,
+    setIsEditMode,
+    editedCar,
+    setEditedCar,
+    saving,
+    photos,
+    photoUrls,
+    isDragOver,
+    showOtherMake,
+    setShowOtherMake,
+    showOtherModel,
+    setShowOtherModel,
+    showOtherFuelType,
+    setShowOtherFuelType,
+    showOtherTransmission,
+    setShowOtherTransmission,
+    showOtherColor,
+    setShowOtherColor,
+    showOtherDoors,
+    setShowOtherDoors,
+    showOtherSeats,
+    setShowOtherSeats,
+    availableCities,
+    setAvailableCities,
+    availableModels,
+    handleEdit,
+    handleSave,
+    handleCancel,
+    handleInputChange,
+    handleFileSelect,
+    handleDragOver,
+    handleDragLeave,
+    handleDrop,
+    removePhoto,
+    deleteExistingImage,
+  };
+};
+

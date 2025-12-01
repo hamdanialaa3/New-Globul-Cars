@@ -180,8 +180,9 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
         className={`notification-button ${unreadCount > 0 ? 'has-unread' : ''}`}
         onClick={onToggle}
         title={t('nav.notifications')}
+        aria-label={t('nav.notifications')}
       >
-        <Bell size={20} />
+        <Bell size={22} strokeWidth={2.5} />
         {unreadCount > 0 && (
           <span className="notification-badge">{unreadCount}</span>
         )}

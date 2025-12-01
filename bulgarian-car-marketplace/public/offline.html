@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="bg">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Globul Cars - Offline</title>
+    <title>Bulgarski Mobili - Offline</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -108,11 +109,13 @@
         }
     </style>
 </head>
+
 <body>
     <div class="offline-container">
         <div class="offline-icon">📱</div>
         <h1>Нямате интернет връзка</h1>
-        <p>Изглежда сте офлайн в момента. Globul Cars работи и без интернет! Можете да преглеждате запазените коли и съобщения.</p>
+        <p>Изглежда сте офлайн в момента. Bulgarski Mobili работи и без интернет! Можете да преглеждате запазените коли
+            и съобщения.</p>
 
         <a href="/" class="retry-btn" onclick="window.location.reload()">Опитай отново</a>
 
@@ -129,7 +132,7 @@
 
     <script>
         // Auto-retry when connection is restored
-        window.addEventListener('online', function() {
+        window.addEventListener('online', function () {
             window.location.reload();
         });
 
@@ -146,4 +149,5 @@
         updateOnlineStatus();
     </script>
 </body>
+
 </html>

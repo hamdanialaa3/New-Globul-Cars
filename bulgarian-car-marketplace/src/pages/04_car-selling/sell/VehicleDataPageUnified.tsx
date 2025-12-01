@@ -492,9 +492,13 @@ const VehicleDataPage: React.FC = () => {
     buildURLSearchParams
   } = useVehicleDataForm();
 
-  // Validation state must match styled component prop type: 'valid' | 'invalid'
+  // ✅ FIX: Validation state shows: empty=invalid(red), filled=valid(green)
+  // This encourages users to fill fields without blocking them
   const getValidationState = useCallback(
-    (value?: string | number | null) => (value ? 'valid' : 'invalid'),
+    (value?: string | number | null): 'valid' | 'invalid' => {
+      // Empty = red (encourages filling), Filled = green (confirms completion)
+      return value && String(value).trim() !== '' ? 'valid' : 'invalid';
+    },
     []
   );
 
@@ -598,15 +602,16 @@ const VehicleDataPage: React.FC = () => {
   // removed legacy brand orbit UI from old section
 
   useEffect(() => {
-    SellWorkflowStepStateService.markPending('vehicle-data');
-
-    // Check if previous steps are completed
+    // ✅ FIX: Run only once on mount to prevent infinite loop
     const vehicleSelectionCompleted = SellWorkflowStepStateService.isCompleted('vehicle-selection');
 
     if (!vehicleSelectionCompleted) {
       navigate('/sell');
+      return;
     }
-  }, [navigate, vehicleType]);
+
+    SellWorkflowStepStateService.markPending('vehicle-data');
+  }, []); // Empty dependencies - run once only
 
   const handleContinue = () => {
     if (canContinue) {
@@ -675,7 +680,7 @@ const VehicleDataPage: React.FC = () => {
               onChange={event => handleRegistrationYearChange(event.target.value)}
               aria-label={t('sell.vehicleData.year')}
               title={t('sell.vehicleData.year')}
-              $validation={registrationParts.year ? 'valid' : 'invalid'}
+              $validation={getValidationState(registrationParts.year)}
             >
               <option value="">{t('sell.vehicleData.selectYear')}</option>
               {yearOptions.map(option => (
@@ -691,7 +696,7 @@ const VehicleDataPage: React.FC = () => {
               disabled={!registrationParts.year}
               aria-label={t('sell.listingSection.month')}
               title={t('sell.listingSection.month')}
-              $validation={registrationParts.month ? 'valid' : 'invalid'}
+              $validation={getValidationState(registrationParts.month)}
             >
               <option value="">{t('sell.listingSection.month')}</option>
               {registrationMonthOptions.map(option => (
@@ -706,16 +711,100 @@ const VehicleDataPage: React.FC = () => {
 
         <InsightField>
           <InsightLabel>{t('sell.listingSection.mileageLabel')}</InsightLabel>
-          <InputSuffixWrapper $validation={formData.mileage ? 'valid' : 'invalid'}>
+          <InputSuffixWrapper $validation={getValidationState(formData.mileage)}>
             <InsightInput
               type="number"
               value={formData.mileage}
               placeholder={t('sell.vehicleData.mileagePlaceholder')}
               onChange={event => handleInputChange('mileage', event.target.value)}
-              $validation={formData.mileage ? 'valid' : 'invalid'}
             />
             <InputSuffix>{t('sell.listingSection.mileageUnitKm')}</InputSuffix>
           </InputSuffixWrapper>
+        </InsightField>
+
+        {/* Technical Details */}
+        <InsightField>
+          <InsightLabel>{t('sell.vehicleData.fuelType')}</InsightLabel>
+          <InsightSelect
+            value={formData.fuelType}
+            onChange={event => handleInputChange('fuelType', event.target.value)}
+            aria-label={t('sell.vehicleData.fuelType')}
+            title={t('sell.vehicleData.fuelType')}
+            $validation={getValidationState(formData.fuelType)}
+          >
+            {fuelOptions.map(option => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </InsightSelect>
+          {formData.fuelType === '__other__' && (
+            <div style={{ marginTop: '0.5rem' }}>
+              <InsightLabel>{t('sell.vehicleData.enterOtherLabel')}</InsightLabel>
+              <InsightInput
+                value={(formData as any).fuelTypeOther || ''}
+                onChange={e => handleInputChange('fuelTypeOther', e.target.value)}
+                placeholder={t('sell.vehicleData.enterOtherPlaceholder')}
+              />
+            </div>
+          )}
+        </InsightField>
+
+        <InsightField>
+          <InsightLabel>{t('sell.vehicleData.transmission')}</InsightLabel>
+          <InsightSelect
+            value={formData.transmission}
+            onChange={event => handleInputChange('transmission', event.target.value)}
+            aria-label={t('sell.vehicleData.transmission')}
+            title={t('sell.vehicleData.transmission')}
+            $validation={getValidationState(formData.transmission)}
+          >
+            {transmissionOptions.map(option => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </InsightSelect>
+        </InsightField>
+
+        <InsightField>
+          <InsightLabel>{t('sell.listingSection.powerLabel')}</InsightLabel>
+          <InputSuffixWrapper $validation={getValidationState(formData.power)}>
+            <InsightInput
+              type="number"
+              value={formData.power}
+              placeholder={t('sell.listingSection.powerPlaceholder')}
+              onChange={event => handleInputChange('power', event.target.value)}
+            />
+            <InputSuffix>HP</InputSuffix>
+          </InputSuffixWrapper>
+        </InsightField>
+
+        <InsightField>
+          <InsightLabel>{t('sell.vehicleData.color')}</InsightLabel>
+          <InsightSelect
+            value={formData.color}
+            onChange={event => handleInputChange('color', event.target.value)}
+            aria-label={t('sell.vehicleData.color')}
+            title={t('sell.vehicleData.color')}
+            $validation={getValidationState(formData.color)}
+          >
+            {colorOptions.map(option => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </InsightSelect>
+          {formData.color === 'other' && (
+            <div style={{ marginTop: '0.5rem' }}>
+              <InsightLabel>{t('sell.vehicleData.enterOtherLabel')}</InsightLabel>
+              <InsightInput
+                value={(formData as any).colorOther || ''}
+                onChange={e => handleInputChange('colorOther', e.target.value)}
+                placeholder={t('sell.vehicleData.enterOtherPlaceholder')}
+              />
+            </div>
+          )}
         </InsightField>
       </VerticalFieldStack>
 
@@ -883,37 +972,9 @@ const VehicleDataPage: React.FC = () => {
 
       <SectionDivider />
 
+      {/* ✅ FIX: Removed duplicate exteriorColor field - already have 'color' in Basic Info */}
       <SectionHeading>{t('sell.exteriorDetails.title')}</SectionHeading>
       <InsightsGrid>
-        <InsightField>
-          <InsightLabel>{t('sell.exteriorDetails.exteriorColor')}</InsightLabel>
-          <InsightSelect
-            value={formData.exteriorColor}
-            onChange={event => handleInputChange('exteriorColor', event.target.value)}
-            aria-label={t('sell.exteriorDetails.exteriorColor')}
-            title={t('sell.exteriorDetails.exteriorColor')}
-          >
-            <option value="">{t('sell.exteriorDetails.exteriorColor')}</option>
-            <option value="black">{t('sell.exteriorDetails.exteriorColorOptions.black')}</option>
-            <option value="white">{t('sell.exteriorDetails.exteriorColorOptions.white')}</option>
-            <option value="gray">{t('sell.exteriorDetails.exteriorColorOptions.gray')}</option>
-            <option value="silver">{t('sell.exteriorDetails.exteriorColorOptions.silver')}</option>
-            <option value="blue">{t('sell.exteriorDetails.exteriorColorOptions.blue')}</option>
-            <option value="red">{t('sell.exteriorDetails.exteriorColorOptions.red')}</option>
-            <option value="green">{t('sell.exteriorDetails.exteriorColorOptions.green')}</option>
-            <option value="yellow">{t('sell.exteriorDetails.exteriorColorOptions.yellow')}</option>
-            <option value="orange">{t('sell.exteriorDetails.exteriorColorOptions.orange')}</option>
-            <option value="brown">{t('sell.exteriorDetails.exteriorColorOptions.brown')}</option>
-            <option value="beige">{t('sell.exteriorDetails.exteriorColorOptions.beige')}</option>
-            <option value="gold">{t('sell.exteriorDetails.exteriorColorOptions.gold')}</option>
-            <option value="purple">{t('sell.exteriorDetails.exteriorColorOptions.purple')}</option>
-            <option value="pink">{t('sell.exteriorDetails.exteriorColorOptions.pink')}</option>
-            <option value="bronze">{t('sell.exteriorDetails.exteriorColorOptions.bronze')}</option>
-            <option value="champagne">{t('sell.exteriorDetails.exteriorColorOptions.champagne')}</option>
-            <option value="other">{t('sell.exteriorDetails.exteriorColorOptions.other')}</option>
-          </InsightSelect>
-        </InsightField>
-
         <InsightField>
           <InsightLabel>{t('sell.exteriorDetails.trimLevel')}</InsightLabel>
           <InsightInput
@@ -921,6 +982,7 @@ const VehicleDataPage: React.FC = () => {
             value={formData.trimLevel}
             placeholder={t('sell.exteriorDetails.trimLevelPlaceholder')}
             onChange={event => handleInputChange('trimLevel', event.target.value)}
+            $validation={getValidationState(formData.trimLevel)}
           />
         </InsightField>
       </InsightsGrid>
@@ -949,102 +1011,6 @@ const VehicleDataPage: React.FC = () => {
           </div>
 
         {renderListingSection(true)}
-
-          <MobileFieldGroup>
-          <MobileLabel>{t('sell.vehicleData.fuelType')}</MobileLabel>
-          <MobileSelect
-            value={formData.fuelType}
-            onChange={(e) => handleInputChange('fuelType', e.target.value)}
-            aria-label={t('sell.vehicleData.fuelType')}
-            title={t('sell.vehicleData.fuelType')}
-            $validation={getValidationState(formData.fuelType)}
-          >
-              {fuelOptions.map(option => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </MobileSelect>
-              {formData.fuelType === '__other__' && (
-                <div style={{ marginTop: '0.5rem' }}>
-                  <MobileLabel>{t('sell.vehicleData.enterOtherLabel')}</MobileLabel>
-                  <MobileInput
-                    value={(formData as any).fuelTypeOther || ''}
-                    onChange={e => handleInputChange('fuelTypeOther', e.target.value)}
-                    placeholder={t('sell.vehicleData.enterOtherPlaceholder')}
-                    aria-label={t('sell.vehicleData.enterOtherPlaceholder')}
-                  />
-                </div>
-              )}
-          </MobileFieldGroup>
-
-          <MobileFieldGroup>
-            <MobileLabel>{t('sell.vehicleData.mileage')}</MobileLabel>
-            <MobileInput
-              type="number"
-              value={formData.mileage}
-              onChange={(e) => handleInputChange('mileage', e.target.value)}
-              placeholder={t('sell.vehicleData.mileagePlaceholder')}
-            $validation={getValidationState(formData.mileage)}
-            />
-            <MobileHint>{t('sell.vehicleData.mileageHint')}</MobileHint>
-          </MobileFieldGroup>
-
-          <MobileFieldGroup>
-            <MobileLabel>{t('sell.listingSection.powerLabel')}</MobileLabel>
-            <MobileInput
-              type="number"
-              value={formData.power}
-              onChange={(e) => handleInputChange('power', e.target.value)}
-              placeholder={t('sell.listingSection.powerPlaceholder')}
-              $validation={getValidationState(formData.power)}
-            />
-          </MobileFieldGroup>
-
-          <MobileFieldGroup>
-          <MobileLabel>{t('sell.vehicleData.transmission')}</MobileLabel>
-          <MobileSelect
-            value={formData.transmission}
-            onChange={(e) => handleInputChange('transmission', e.target.value)}
-            aria-label={t('sell.vehicleData.transmission')}
-            title={t('sell.vehicleData.transmission')}
-            $validation={getValidationState(formData.transmission)}
-          >
-              {transmissionOptions.map(option => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </MobileSelect>
-          </MobileFieldGroup>
-
-          <MobileFieldGroup>
-          <MobileLabel>{t('sell.vehicleData.color')}</MobileLabel>
-          <MobileSelect
-            value={formData.color}
-            onChange={(e) => handleInputChange('color', e.target.value)}
-            aria-label={t('sell.vehicleData.color')}
-            title={t('sell.vehicleData.color')}
-            $validation={getValidationState(formData.color)}
-          >
-              {colorOptions.map(option => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </MobileSelect>
-            {formData.color === 'other' && (
-              <div style={{ marginTop: '0.5rem' }}>
-                <MobileLabel>{t('sell.vehicleData.enterOtherLabel')}</MobileLabel>
-                <MobileInput
-                  value={(formData as any).colorOther || ''}
-                  onChange={e => handleInputChange('colorOther', e.target.value)}
-                  placeholder={t('sell.vehicleData.enterOtherPlaceholder')}
-                  aria-label={t('sell.vehicleData.enterOtherPlaceholder')}
-                />
-              </div>
-            )}
-          </MobileFieldGroup>
 
           {/* Sale Location - Moved to end before footer */}
           <MobileFieldGroup>
@@ -1098,98 +1064,6 @@ const VehicleDataPage: React.FC = () => {
         </div>
 
         {renderListingSection(false)}
-
-        <DesktopFormGrid>
-          <DesktopFieldGroup>
-            <DesktopFieldTitle>{t('sell.vehicleData.technicalDetails')}</DesktopFieldTitle>
-
-            <DesktopLabel>{t('sell.vehicleData.fuelType')}</DesktopLabel>
-            <DesktopSelect
-              value={formData.fuelType}
-              onChange={(e) => handleInputChange('fuelType', e.target.value)}
-              aria-label={t('sell.vehicleData.fuelType')}
-              title={t('sell.vehicleData.fuelType')}
-              $validation={getValidationState(formData.fuelType)}
-            >
-              {fuelOptions.map(option => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </DesktopSelect>
-            {formData.fuelType === '__other__' && (
-              <div style={{ marginTop: '0.5rem' }}>
-                <DesktopLabel>{t('sell.vehicleData.enterOtherLabel')}</DesktopLabel>
-                <DesktopInput
-                  value={(formData as any).fuelTypeOther || ''}
-                  onChange={e => handleInputChange('fuelTypeOther', e.target.value)}
-                  placeholder={t('sell.vehicleData.enterOtherPlaceholder')}
-                  aria-label={t('sell.vehicleData.enterOtherPlaceholder')}
-                />
-              </div>
-            )}
-
-            <DesktopLabel>{t('sell.vehicleData.transmission')}</DesktopLabel>
-            <DesktopSelect
-              value={formData.transmission}
-              onChange={(e) => handleInputChange('transmission', e.target.value)}
-              aria-label={t('sell.vehicleData.transmission')}
-              title={t('sell.vehicleData.transmission')}
-              $validation={getValidationState(formData.transmission)}
-            >
-              {transmissionOptions.map(option => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </DesktopSelect>
-
-            <DesktopLabel>{t('sell.vehicleData.mileage')}</DesktopLabel>
-            <DesktopInput
-              type="number"
-              value={formData.mileage}
-              onChange={(e) => handleInputChange('mileage', e.target.value)}
-              placeholder={t('sell.vehicleData.mileagePlaceholder')}
-              $validation={getValidationState(formData.mileage)}
-            />
-            <DesktopHint>{t('sell.vehicleData.mileageHint')}</DesktopHint>
-
-            <DesktopLabel>{t('sell.listingSection.powerLabel')}</DesktopLabel>
-            <DesktopInput
-              type="number"
-              value={formData.power}
-              onChange={(e) => handleInputChange('power', e.target.value)}
-              placeholder={t('sell.listingSection.powerPlaceholder')}
-              $validation={getValidationState(formData.power)}
-            />
-
-            <DesktopLabel>{t('sell.vehicleData.color')}</DesktopLabel>
-            <DesktopSelect
-              value={formData.color}
-              onChange={(e) => handleInputChange('color', e.target.value)}
-              aria-label={t('sell.vehicleData.color')}
-              title={t('sell.vehicleData.color')}
-              $validation={getValidationState(formData.color)}
-            >
-              {colorOptions.map(option => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </DesktopSelect>
-            {formData.color === 'other' && (
-              <div style={{ marginTop: '0.5rem' }}>
-                <DesktopLabel>{t('sell.vehicleData.enterOtherLabel')}</DesktopLabel>
-                <DesktopInput
-                  value={(formData as any).colorOther || ''}
-                  onChange={e => handleInputChange('colorOther', e.target.value)}
-                  placeholder={t('sell.vehicleData.enterOtherPlaceholder')}
-                  aria-label={t('sell.vehicleData.enterOtherPlaceholder')}
-                />
-              </div>
-            )}
-          </DesktopFieldGroup>
-        </DesktopFormGrid>
 
         {/* Sale Location - Moved to end before footer */}
         <DesktopFieldGroup style={{ maxWidth: '600px', margin: '2rem auto 0' }}>

@@ -63,6 +63,17 @@ const defaultForm: VehicleFormData = {
   trimLevelOther: ''
 };
 
+/**
+ * Helper: returns the registration year string for a VehicleFormData value.
+ * Prefers `year` if present (legacy/mobile select), otherwise extracts the year part from `firstRegistration`.
+ */
+export const getRegistrationYear = (data: Partial<VehicleFormData> | VehicleFormData | undefined): string => {
+  if (!data) return '';
+  const rawYear = (data as any).year || (data as any).firstRegistration || '';
+  if (!rawYear) return '';
+  return String(rawYear).split('-')[0];
+};
+
 export const useVehicleDataForm = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { workflowData, updateWorkflowData, clearWorkflowData } = useSellWorkflow();
@@ -100,9 +111,14 @@ useEffect(() => {
   setFormData(prev => (formEquals(prev, initialValues) ? prev : initialValues));
 }, [initialValues, formEquals]);
 
+  // ✅ FIX: Debounce workflow updates to prevent infinite loop
   useEffect(() => {
-    updateWorkflowData(formData, 'vehicle-data');
-  }, [formData, updateWorkflowData]);
+    const timer = setTimeout(() => {
+      updateWorkflowData(formData, 'vehicle-data');
+    }, 500); // Save after 500ms of no changes
+    
+    return () => clearTimeout(timer);
+  }, [formData]); // Removed updateWorkflowData dependency to break loop
 
   // Load brands asynchronously
   const [availableBrands, setAvailableBrands] = useState<string[]>([]);
@@ -124,6 +140,8 @@ useEffect(() => {
       setAvailableModels([]);
       return;
     }
+
+    // (we don't export helper here) function lives at module scope
 
     const canonical = resolveCanonicalBrand(formData.make);
     
@@ -187,22 +205,17 @@ useEffect(() => {
   );
 
   const canContinue = useMemo(() => {
-    // Required fields for Vehicle Data step
-    const hasBasicInfo = !!formData.make && !!formData.model && !!formData.year;
-    const hasTechnicalDetails = !!formData.fuelType && !!formData.transmission && !!formData.mileage;
-    const hasLocation = !!formData.saleProvince && !!formData.saleCity && !!formData.salePostalCode;
-    
-    return hasBasicInfo && hasTechnicalDetails && hasLocation;
+    // ✅ FIX: Only require brand, model and a registration year.
+    // Support either `year` (legacy/mobile select) or `firstRegistration` (ISO-like "YYYY" or "YYYY-MM").
+    const registrationYear = getRegistrationYear(formData);
+    const hasBasicInfo = !!formData.make && !!formData.model && !!registrationYear;
+
+    return hasBasicInfo; // Users can continue with minimal info (Brand + Model + Year)
   }, [
-    formData.make, 
-    formData.model, 
-    formData.year, 
-    formData.fuelType, 
-    formData.transmission, 
-    formData.mileage,
-    formData.saleProvince,
-    formData.saleCity,
-    formData.salePostalCode
+    formData.make,
+    formData.model,
+    formData.firstRegistration,
+    formData.year
   ]);
 
   const buildURLSearchParams = useCallback(() => {
@@ -213,7 +226,9 @@ useEffect(() => {
     if (formData.mileage) params.set('mi', formData.mileage);
     if (formData.transmission) params.set('tr', formData.transmission);
     // Map typed 'Other' year/month to secure value
-    if (formData.year) params.set('fy', formData.year);
+    // Prefer `year` if present (mobile/legacy), otherwise extract from `firstRegistration`.
+    const fy = getRegistrationYear(formData);
+    if (fy) params.set('fy', fy);
     if (formData.color) params.set('color', formData.color === 'other' ? (formData.colorOther || '') : formData.color);
     return params;
   }, [searchParams, formData]);

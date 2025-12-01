@@ -29,8 +29,10 @@ const LazySection = React.lazy(() => import('@/components/LazySection'));
 const HomeContainer = styled.main`
   width: 100%;
   min-height: 100vh;
-  background-color: #f8fafc;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
   overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
 `;
 
 const SectionSpacer = styled.div`
@@ -45,10 +47,12 @@ const LoadingFallback = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #94a3b8;
-  background: #f1f5f9;
+  color: var(--text-secondary);
+  background: var(--bg-card);
   border-radius: 8px;
   margin: 20px;
+  border: 1px solid var(--border-primary);
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 `;
 
 const HomePage: React.FC = () => {

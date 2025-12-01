@@ -8,6 +8,7 @@
 
 /* ═══════════════════════════════════════════════════════════════════
    🌅 LIGHT MODE - الوضع النهاري
+   Modern, Clean, Professional Design
    ═══════════════════════════════════════════════════════════════════ */
 :root,
 html[data-theme="light"],
@@ -15,13 +16,14 @@ html[data-theme="light"],
   /* ─────────────────────────────────────────
      الخلفيات - Backgrounds
      ───────────────────────────────────────── */
-  --bg-primary: #F8F9FA;              /* صفحة رئيسية - رمادي فاتح جداً */
+  --bg-primary: #FAFBFC;              /* صفحة رئيسية - رمادي فاتح نظيف */
   --bg-secondary: #FFFFFF;            /* بطاقات وأقسام - أبيض نقي */
   --bg-card: #FFFFFF;                 /* بطاقات السيارات - أبيض */
-  --bg-hover: #F1F3F5;                /* تحويم - رمادي فاتح */
-  --bg-accent: #FFF5F0;               /* خلفية مميزة - برتقالي فاتح جداً */
+  --bg-hover: #F5F7FA;                /* تحويم - رمادي فاتح */
+  --bg-accent: #FFF8F5;               /* خلفية مميزة - برتقالي فاتح جداً */
   --bg-header: #1A1D2E;               /* هيدر داكن ثابت */
   --bg-footer: #2D3142;               /* فوتر رمادي داكن */
+  --bg-overlay: rgba(255, 255, 255, 0.95); /* طبقة شفافة */
   
   /* ─────────────────────────────────────────
      النصوص - Text Colors
@@ -33,6 +35,7 @@ html[data-theme="light"],
   --text-muted: #A0AEC0;              /* نص خافت */
   --text-on-header: #FFFFFF;          /* نص على الهيدر */
   --text-link: #FF6B35;               /* روابط - برتقالي */
+  --text-link-hover: #E85A28;         /* روابط عند التحويم */
   
   /* ─────────────────────────────────────────
      الألوان الرئيسية - Primary Accents
@@ -41,6 +44,7 @@ html[data-theme="light"],
   --accent-secondary: #FF8C61;        /* برتقالي فاتح - hover */
   --accent-dark: #E85A28;             /* برتقالي داكن - active */
   --accent-light: #FFB399;            /* برتقالي شاحب */
+  --accent-orange: #FF6B35;           /* برتقالي - متوافق مع المكونات */
   
   --blue-primary: #2C5F8D;            /* أزرق سيارات - للروابط */
   --blue-light: #4A90E2;              /* أزرق فاتح */
@@ -53,6 +57,7 @@ html[data-theme="light"],
   --border-secondary: #CBD5E0;        /* حدود ثانوية */
   --border-accent: #FF6B35;           /* حدود مميزة */
   --border-light: #F7FAFC;            /* حدود خفيفة */
+  --border-hover: #CBD5E0;            /* حدود عند التحويم */
   
   /* ─────────────────────────────────────────
      الأزرار - Buttons
@@ -70,7 +75,7 @@ html[data-theme="light"],
   --btn-outline-bg: transparent;
   --btn-outline-text: #FF6B35;
   --btn-outline-border: #FF6B35;
-  --btn-outline-hover-bg: #FFF5F0;
+  --btn-outline-hover-bg: #FFF8F5;
   
   /* ─────────────────────────────────────────
      الظلال - Shadows
@@ -81,6 +86,7 @@ html[data-theme="light"],
   --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.15);
   --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.06);
   --shadow-button: 0 2px 6px rgba(255, 107, 53, 0.25);
+  --shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.12);
   
   /* ─────────────────────────────────────────
      حالات - Status Colors
@@ -98,6 +104,7 @@ html[data-theme="light"],
 /* ═══════════════════════════════════════════════════════════════════
    🌙 DARK MODE - الوضع الليلي
    Luxury Dark Theme - BMW M / Mercedes-AMG Inspired
+   Modern, Elegant, Professional Dark Design
    ═══════════════════════════════════════════════════════════════════ */
 html[data-theme="dark"],
 .dark-theme {
@@ -111,6 +118,7 @@ html[data-theme="dark"],
   --bg-accent: #2A1810;               /* خلفية مميزة - برتقالي داكن جداً */
   --bg-header: #0A0D14;               /* هيدر أسود نقي */
   --bg-footer: #13161F;               /* فوتر داكن */
+  --bg-overlay: rgba(15, 20, 25, 0.95); /* طبقة شفافة */
   
   /* ─────────────────────────────────────────
      النصوص - Text Colors
@@ -122,6 +130,7 @@ html[data-theme="dark"],
   --text-muted: #64748B;              /* نص خافت */
   --text-on-header: #FFFFFF;          /* نص على الهيدر */
   --text-link: #FF9066;               /* روابط - برتقالي فاتح */
+  --text-link-hover: #FFB399;         /* روابط عند التحويم */
   
   /* ─────────────────────────────────────────
      الألوان الرئيسية - Primary Accents
@@ -130,6 +139,7 @@ html[data-theme="dark"],
   --accent-secondary: #FFA885;        /* برتقالي فاتح */
   --accent-dark: #E8643D;             /* برتقالي داكن */
   --accent-light: #FFCBB3;            /* برتقالي شاحب */
+  --accent-orange: #FF8C61;           /* برتقالي - متوافق مع المكونات */
   
   --blue-primary: #5B9FD8;            /* أزرق سيارات فاتح */
   --blue-light: #7BB5E8;              /* أزرق فاتح جداً */
@@ -142,6 +152,7 @@ html[data-theme="dark"],
   --border-secondary: #374151;        /* حدود ثانوية */
   --border-accent: #FF8C61;           /* حدود مميزة */
   --border-light: #1F2937;            /* حدود خفيفة */
+  --border-hover: #475569;            /* حدود عند التحويم */
   
   /* ─────────────────────────────────────────
      الأزرار - Buttons
@@ -170,6 +181,7 @@ html[data-theme="dark"],
   --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.8);
   --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.4);
   --shadow-button: 0 2px 6px rgba(255, 140, 97, 0.35);
+  --shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.6);
   
   /* ─────────────────────────────────────────
      حالات - Status Colors
@@ -346,12 +358,18 @@ hr,
 }
 
 /* ─── Header & Footer ─── */
-header,
-.header,
-[class*="Header"] {
+/* Note: UnifiedHeader uses styled-components with glassmorphism, so we exclude it */
+header:not(.mobile-de-header):not([class*="HeaderContainer"]),
+.header:not(.mobile-de-header):not([class*="HeaderContainer"]),
+[class*="Header"]:not(.mobile-de-header):not([class*="HeaderContainer"]) {
   background-color: var(--bg-header);
   border-bottom: 1px solid var(--border-secondary);
   color: var(--text-on-header);
+}
+
+/* Exception: Mobile DE Header uses glassmorphism - handled in Header.css */
+.mobile-de-header {
+  /* Glassmorphism styles are in Header.css */
 }
 
 footer,
@@ -493,7 +511,7 @@ section[class*="Section"] {
    ═══════════════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
   :root {
-    --shadow-card: 0 1px 4px rgba(0, 0, 0, 0.08);
+    --shadow-card: 0 1px 4px rgba(222, 16, 16, 0.08);
     --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.12);
   }
 }

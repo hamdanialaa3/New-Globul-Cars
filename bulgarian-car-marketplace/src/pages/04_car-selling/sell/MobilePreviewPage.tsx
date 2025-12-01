@@ -7,15 +7,55 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { SellProgressBar } from '@/components/SellWorkflow';
 import SellWorkflowStepStateService from '@/services/sellWorkflowStepState';
 import { usePreviewSummary } from './Preview/usePreviewSummary';
+import CarBrandLogo from '@/components/CarBrandLogo';
+import useSellWorkflow from '@/hooks/useSellWorkflow';
 
 const ProgressWrapper = styled.div`
   padding: 0.75rem 1rem 0;
+`;
+
+// Watermark for brand logo
+const BrandWatermark = styled.div<{ $isVisible: boolean }>`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-15deg);
+  opacity: ${props => props.$isVisible ? 0.08 : 0};
+  pointer-events: none;
+  z-index: 0;
+  transition: opacity 0.5s ease;
+  width: 400px;
+  height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  /* Ensure logo is visible but very subtle */
+  & > div {
+    width: 100% !important;
+    height: 100% !important;
+    
+    & > div:first-child {
+      width: 400px !important;
+      height: 400px !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      
+      img {
+        width: 400px !important;
+        height: 400px !important;
+        object-fit: contain;
+        filter: grayscale(100%) opacity(0.15);
+      }
+    }
+  }
 `;
 
 const MobilePreviewPage: React.FC = () => {
   const navigate = useNavigate();
   const { t } = useLanguage();
   const { vehicleType } = useParams();
+  const { workflowData } = useSellWorkflow();
 
   const labels = useMemo(
     () => ({
@@ -94,6 +134,13 @@ const MobilePreviewPage: React.FC = () => {
 
   return (
     <>
+      {/* Brand Logo Watermark */}
+      {workflowData.make && (
+        <BrandWatermark $isVisible={!!workflowData.make}>
+          <CarBrandLogo make={workflowData.make} size={400} showName={false} />
+        </BrandWatermark>
+      )}
+      
       <ProgressWrapper>
         <SellProgressBar currentStep="preview" />
       </ProgressWrapper>

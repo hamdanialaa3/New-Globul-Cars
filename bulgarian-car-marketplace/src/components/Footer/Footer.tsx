@@ -17,16 +17,16 @@ const Footer: React.FC = () => {
           {/* Company Info */}
           <div className="footer-section">
             <div className="footer-brand">
-              <img 
-                src="/Logo1.png" 
-                alt="GLOBUL AUTO Logo" 
+              <img
+                src="/Logo1.png"
+                alt="Bulgarski Mobili Logo"
                 className="footer-logo footer-logo-enhanced"
                 style={{ width: '50px', height: '50px', objectFit: 'contain' }}
                 onError={(e) => {
                   (e.target as HTMLImageElement).src = '/Logo1.png';
                 }}
               />
-              <h3 className="footer-title">GLOBUL AUTO</h3>
+              <h3 className="footer-title">Bulgarski Mobili</h3>
             </div>
             <p className="footer-description">
               {t('footer.description')}
@@ -89,9 +89,9 @@ const Footer: React.FC = () => {
                 <span>info@mobilebg.eu</span>
               </div>
               <div className="contact-item">
-                <a 
-                  href="https://www.facebook.com/people/Bulgarian-Car-Marketplace/100080260449528/" 
-                  target="_blank" 
+                <a
+                  href="https://www.facebook.com/people/Bulgarian-Car-Marketplace/100080260449528/"
+                  target="_blank"
                   rel="noopener noreferrer"
                   style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#1877f2', textDecoration: 'none' }}
                 >
@@ -109,7 +109,7 @@ const Footer: React.FC = () => {
         <div className="footer-bottom">
           <div className="footer-bottom-content">
             <p className="copyright">
-              © {currentYear} MOBILE-EU. {t('footer.rights')}
+              © {currentYear} Bulgarski Mobili. {t('footer.rights')}
             </p>
             <div className="footer-bottom-links">
               <a href="/privacy-policy">{t('footer.privacy')}</a>

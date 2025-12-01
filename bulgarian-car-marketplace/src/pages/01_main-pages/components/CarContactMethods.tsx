@@ -1,0 +1,133 @@
+import React from 'react';
+import { CarListing } from '@/types/CarListing';
+import {
+  EquipmentSection,
+  SectionTitle,
+  ContactItem,
+  ContactIcon,
+  ContactLabel,
+} from '../CarDetailsPage.styles';
+import {
+  PhoneIcon,
+  EmailIcon,
+  WhatsAppIcon,
+  ViberIcon,
+  TelegramIcon,
+  FacebookMessengerIcon,
+  SMSIcon,
+} from './ContactIcons';
+
+interface CarContactMethodsProps {
+  car: CarListing;
+  editedCar: Partial<CarListing>;
+  isEditMode: boolean;
+  language: 'bg' | 'en';
+  onContactClick: (method: string) => void;
+  onToggleContact: (fieldKey: keyof CarListing) => void;
+}
+
+export const CarContactMethods: React.FC<CarContactMethodsProps> = ({
+  car,
+  editedCar,
+  isEditMode,
+  language,
+  onContactClick,
+  onToggleContact,
+}) => {
+  const contacts = [
+    { key: 'phone', label: 'Phone', Icon: PhoneIcon },
+    { key: 'email', label: 'Email', Icon: EmailIcon },
+    { key: 'whatsapp', label: 'WhatsApp', Icon: WhatsAppIcon },
+    { key: 'viber', label: 'Viber', Icon: ViberIcon },
+    { key: 'telegram', label: 'Telegram', Icon: TelegramIcon },
+    { key: 'facebook', label: 'Facebook Messenger', Icon: FacebookMessengerIcon },
+    { key: 'sms', label: 'SMS', Icon: SMSIcon }
+  ];
+
+  return (
+    <EquipmentSection>
+      <SectionTitle>
+        {language === 'bg' ? 'Предпочитан начин на контакт' : 'Preferred Contact Method'}
+      </SectionTitle>
+      
+      <div style={{ 
+        display: 'flex', 
+        flexWrap: 'wrap',
+        justifyContent: 'center', 
+        alignItems: 'center',
+        gap: '1rem', 
+        marginTop: '1.5rem',
+        padding: '1rem 0'
+      }}>
+        {contacts.map(contact => {
+          const fieldKey = `contact${contact.key.charAt(0).toUpperCase() + contact.key.slice(1)}` as keyof CarListing;
+          
+          let isActive = false;
+          let canClick = false;
+          
+          if (isEditMode) {
+            isActive = Boolean(editedCar[fieldKey]);
+            canClick = true;
+          } else {
+            isActive = Boolean(car[fieldKey]);
+            canClick = isActive;
+            
+            const hasPhone = Boolean(car.sellerPhone);
+            const hasEmail = Boolean(car.sellerEmail);
+            
+            if (isActive) {
+              switch(contact.key) {
+                case 'phone':
+                case 'whatsapp':
+                case 'viber':
+                case 'telegram':
+                case 'sms':
+                  isActive = hasPhone;
+                  canClick = hasPhone;
+                  break;
+                case 'email':
+                  isActive = hasEmail;
+                  canClick = hasEmail;
+                  break;
+                case 'facebook':
+                  isActive = hasPhone || hasEmail;
+                  canClick = hasPhone || hasEmail;
+                  break;
+              }
+            }
+          }
+          
+          return (
+            <ContactItem 
+              key={contact.key} 
+              $isActive={isActive}
+              onClick={(e) => {
+                if (!isActive && !isEditMode) {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  return;
+                }
+                if (isEditMode) {
+                  onToggleContact(fieldKey);
+                } else if (canClick) {
+                  onContactClick(contact.key);
+                }
+              }}
+              style={{
+                pointerEvents: isEditMode || isActive ? 'auto' : 'none'
+              }}
+            >
+              <ContactIcon $isActive={isActive}>
+                <contact.Icon />
+              </ContactIcon>
+              <ContactLabel $isActive={isActive}>
+                {contact.label}
+              </ContactLabel>
+            </ContactItem>
+          );
+        })}
+      </div>
+    </EquipmentSection>
+  );
+};
+

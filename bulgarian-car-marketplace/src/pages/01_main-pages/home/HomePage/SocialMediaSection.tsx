@@ -301,17 +301,41 @@ const ToggleButton = styled.div`
   align-items: center;
   gap: 8px;
   padding: 12px 24px;
-  background: rgba(255, 215, 0, 0.15);
-  border: 2px solid #FFD700;
   border-radius: 12px;
-  color: #FFD700;
   font-weight: 600;
   font-size: 0.95rem;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  border: none;
+
+  /* Light mode: Orange gradient background, White text */
+  html[data-theme="light"] & {
+    background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 50%, #FFA500 100%) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.35) !important;
+  }
+
+  /* Dark mode: Yellow gradient background, Black text */
+  html[data-theme="dark"] & {
+    background: linear-gradient(135deg, #FFD700 0%, #FFC107 50%, #FFA000 100%) !important;
+    color: #000000 !important;
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4) !important;
+  }
   
   &:hover {
-    background: rgba(255, 215, 0, 0.25);
-    transform: scale(1.05);
+    transform: translateY(-3px);
+    html[data-theme="light"] & {
+      background: linear-gradient(135deg, #FF5722 0%, #FF6B35 50%, #FF8C42 100%) !important;
+      color: #ffffff !important;
+      box-shadow: 0 6px 20px rgba(255, 107, 53, 0.5) !important;
+    }
+    html[data-theme="dark"] & {
+      background: linear-gradient(135deg, #FFC107 0%, #FFD700 50%, #FFC107 100%) !important;
+      color: #000000 !important;
+      box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6) !important;
+    }
   }
   
   svg {

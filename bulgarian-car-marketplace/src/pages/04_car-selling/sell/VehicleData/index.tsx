@@ -21,7 +21,7 @@ import KeyboardShortcutsHelper from '@/components/KeyboardShortcutsHelper';
 import { SellWorkflowLayout } from '@/components/SellWorkflow';
 import { useProfileType } from '@/contexts/ProfileTypeContext';
 import SellWorkflowStepStateService from '@/services/sellWorkflowStepState';
-import { useVehicleDataForm } from './useVehicleDataForm';
+import { useVehicleDataForm, getRegistrationYear } from './useVehicleDataForm';
 
 const VehicleDataPageNew: React.FC = () => {
   const navigate = useNavigate();
@@ -54,12 +54,14 @@ const VehicleDataPageNew: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (formData.make && formData.year) {
+    const registrationYear = getRegistrationYear(formData);
+
+    if (formData.make && registrationYear) {
       SellWorkflowStepStateService.markCompleted('vehicle-data');
     } else {
       SellWorkflowStepStateService.markPending('vehicle-data');
     }
-  }, [formData.make, formData.year]);
+  }, [formData]);
 
 
   // 🆕 Hooks for enhancements
@@ -76,12 +78,14 @@ const VehicleDataPageNew: React.FC = () => {
       return;
     }
     
-    if (!formData.year) {
+    const registrationYear = getRegistrationYear(formData);
+
+    if (!registrationYear) {
       toast.error(getErrorMessage('YEAR_REQUIRED', language as 'bg' | 'en'));
       return;
     }
 
-    const yearNum = parseInt(formData.year);
+    const yearNum = parseInt(registrationYear);
     const currentYear = new Date().getFullYear();
     if (yearNum < 1900 || yearNum > currentYear + 1) {
       toast.error(
@@ -98,7 +102,7 @@ const VehicleDataPageNew: React.FC = () => {
       markComplete({
         make: formData.make,
         model: formData.model,
-        year: formData.year
+        year: registrationYear
       });
 
       const params = buildURLSearchParams();

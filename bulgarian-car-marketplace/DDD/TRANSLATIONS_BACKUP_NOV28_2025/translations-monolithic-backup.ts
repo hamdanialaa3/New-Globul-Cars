@@ -92,6 +92,13 @@ export const translations = {
         title: 'Продайте автомобила си бързо',
         description: 'Използвайте нашия интелигентен асистент за оценка и публикуване на обява само за 2 минути.',
         startSelling: 'Започни продажба'
+      },
+      vehicleCategories: {
+        title: 'Категории автомобили',
+        subtitle: 'Разгледайте нашата широка гама от автомобили, класифицирани по тип купе за ваше улеснение.',
+        smartSearch: 'Интелигентно търсене',
+        viewAll: 'Виж всички',
+        loading: 'Зареждане на автомобили...'
       }
     },
     mapPage: {
@@ -1210,6 +1217,17 @@ export const translations = {
       cacheCleared: 'Кешът е изчистен успешно!',
       continue: 'Продължи'
     },
+    bodyTypes: {
+      allTypes: 'Всички типове',
+      sedan: 'Седан',
+      hatchback: 'Хечбек',
+      suv: 'Джип / SUV',
+      wagon: 'Комби',
+      coupe: 'Купе',
+      convertible: 'Кабрио',
+      pickup: 'Пикап',
+      minivan: 'Миниван'
+    },
     ai: {
       assistant: 'AI Асистент',
       chat: {
@@ -2169,48 +2187,6 @@ export const translations = {
       days: 'days'
     },
     profileType: {
-      private: 'Частен',
-      dealer: 'Търговец',
-      company: 'Фирма'
-    },
-    funnel: {
-      title: 'Конверсионен фуния',
-      views: 'Прегледи',
-      messages: 'Съобщения',
-      published: 'Публикувани',
-      conversionRate: 'конверсия',
-      totalSessions: 'Общо сесии',
-      favorites: 'Любими',
-      workflowConversion: 'Конверсия на процеса'
-    },
-    common: {
-      retry: 'Опитай отново',
-      refresh: 'Опресни',
-      minutes: 'минути',
-      days: 'дни'
-    }
-  },
-  en: {
-    home: {
-      hero: {
-        title: 'The Best Place to Buy and Sell Cars in Bulgaria',
-        subtitle: 'Find your perfect car from thousands of verified listings or sell yours quickly and easily.',
-        browseCars: 'Browse Cars',
-        sellCar: 'Sell Car'
-      },
-      stats: {
-        cars: 'cars',
-        satisfiedCustomers: 'satisfied customers',
-        dealers: 'dealers',
-        satisfaction: 'satisfaction'
-      },
-      featured: {
-        title: 'Featured Cars',
-        subtitle: 'Discover the best deals, selected just for you',
-        viewAll: 'View All'
-      }
-    },
-    profileType: {
       private: 'Private',
       dealer: 'Dealer',
       company: 'Company'
@@ -2230,6 +2206,17 @@ export const translations = {
       refresh: 'Refresh',
       minutes: 'minutes',
       days: 'days'
+    },
+    bodyTypes: {
+      allTypes: 'All Types',
+      sedan: 'Sedan',
+      hatchback: 'Hatchback',
+      suv: 'SUV / Jeep',
+      wagon: 'Wagon',
+      coupe: 'Coupe',
+      convertible: 'Convertible',
+      pickup: 'Pickup',
+      minivan: 'Minivan'
     },
     nav: { 
       home: 'Home', 
@@ -2262,7 +2249,7 @@ export const translations = {
     profileTypes: {
       private: 'Private',
       dealer: 'Dealer',
-      company: 'Company',
+      company: 'Company'
     },
     profile: {
       title: 'My Profile',
@@ -2291,953 +2278,40 @@ export const translations = {
       cancelEdit: 'Cancel',
       gallery: 'Gallery',
       addImage: 'Add Image',
-      changeCover: 'Change Cover',
-      uploadCover: 'Upload Cover',
-      anonymous: 'Anonymous',
-      notLoggedIn: 'Please sign in to view your profile',
-      view: 'View',
-      stats: {
-        cars: 'Cars',
-        favorites: 'Favorites',
-        messages: 'Messages',
-        views: 'Views'
-      },
-      myCars: 'My Cars',
-      noCars: 'You have no cars listed',
-      noCarsDescription: 'Start selling your vehicles now',
-      addFirstCar: 'Add First Car',
-      garage: {
-        title: 'My Garage',
-        myGarage: 'My Garage',
-        viewGarage: 'View Garage',
-        emptyTitle: 'Garage is Empty',
-        emptyDescription: 'Add vehicles to your garage for quick access and management',
-        addToGarage: 'Add to Garage',
-        removeFromGarage: 'Remove from Garage',
-        totalCars: 'Total Vehicles',
-        activeCars: 'Active Listings',
-        soldCars: 'Sold',
-        draftCars: 'Drafts',
-        statistics: 'Garage Statistics',
-        manageAll: 'Manage All',
-        sortBy: 'Sort by',
-        filterBy: 'Filter by',
-        status: {
-          all: 'All',
-          active: 'Active',
-          sold: 'Sold',
-          draft: 'Drafts',
-          pending: 'Pending Approval'
-        }
-      },
-      accountSettings: 'Account Settings',
-      notifications: 'Notifications',
-      privacy: 'Privacy',
-      security: 'Security',
+      businessDetails: 'Business Details',
+      companyName: 'Company Name',
+      companyId: 'Company ID',
+      vatNumber: 'VAT Number',
+      officeAddress: 'Office Address',
+      servicesOffered: 'Services Offered',
+      operatingHours: 'Operating Hours',
+      logoUpload: 'Upload Logo',
+      cover: 'Cover Image',
+      coverUpload: 'Upload Cover',
+      socialMedia: 'Social Media',
+      website: 'Website',
+      facebook: 'Facebook',
+      twitter: 'Twitter',
+      instagram: 'Instagram',
+      linkedin: 'LinkedIn',
+      status: 'Status',
+      active: 'Active',
+      inactive: 'Inactive',
+      verified: 'Verified',
+      unverified: 'Unverified',
+      private: 'Private Seller',
+      dealer: 'Dealer',
+      company: 'Company/Business',
+      viewListings: 'View Listings',
+      contacts: 'Contacts',
+      noListings: 'No listings yet',
+      loading: 'Loading profile...',
+      error: 'Error loading profile',
+      tryAgain: 'Try again',
       deleteAccount: 'Delete Account',
-      deleteAccountConfirm: 'Are you sure you want to delete your account?'
-    },
-    languages: {
-      bulgarian: 'Bulgarian',
-      english: 'English',
-      bg: 'Bulgarian',
-      en: 'English'
-    },
-    topBrands: {
-      topBrands: 'Top Brands',
-      allBrands: 'All Brands',
-      viewAll: 'View All',
-      series: 'series',
-      popularBrands: 'Popular Brands',
-      generation: 'Generation'
-    },
-    footer: {
-      description: 'The leading platform for buying and selling cars in Bulgaria with thousands of verified listings.',
-      quickLinks: 'Quick Links', services: 'Services', contact: 'Contact', support: 'Support',
-      address: 'Sofia, Bulgaria', rights: 'All rights reserved.', privacy: 'Privacy', terms: 'Terms', cookies: 'Cookies', dataDeletion: 'Data Deletion'
-    },
-    contact: {
-      title: 'Contact Us', subtitle: 'We are here to help you with any questions or concerns. Get in touch with our team.',
-      info: {
-        title: 'Get in Touch',
-        address: { title: 'Address', text: 'Sofia, Bulgaria' },
-        phone: { title: 'Phone', text: '+359 2 123 4567' },
-        email: { title: 'Email', text: 'info@globulcars.bg' },
-        hours: { title: 'Working Hours', text: 'Mon-Fri: 9:00-18:00' }
-      },
-      form: {
-        title: 'Send us a Message', success: 'Thank you! Your message has been sent successfully.',
-        name: 'Full Name', email: 'Email Address', phone: 'Phone Number', inquiryType: 'Inquiry Type',
-        inquiryTypes: { general: 'General Inquiry', support: 'Technical Support', sales: 'Sales Question' },
-        subject: 'Subject', message: 'Message', send: 'Send Message'
-      }
-    },
-    carSearch: { tabs: { search: 'Search', filters: 'Filters', popular: 'Popular', trending: 'Trending' }, searching: 'Searching...' },
-    searchResults: {
-      loading: 'Loading results...', empty: 'No results found', count: 'results found',
-      sort: { relevance: 'Relevance', price: 'Price', date: 'Date', mileage: 'Mileage', year: 'Year' },
-      view: { grid: 'Grid', list: 'List' },
-      badges: { promoted: 'Promoted', new: 'New', favorite: 'Favorite' },
-      pagination: { previous: 'Previous', next: 'Next', page: 'Page' }
-    },
-    advancedSearch: {
-      title: 'Advanced Search: Cars – new or used',
-      search: 'Search', searching: 'Searching...', 
-      saveSearch: 'Save Search',
-      save: 'Save',
-      searchName: 'Search Name',
-      searchNamePlaceholder: 'e.g. BMW 3 Series 2020+ Sofia',
-      saveSearchDescription: 'Give this search a name for quick access later',
-      searchSummary: 'Search Summary',
-      pleaseEnterName: 'Please enter a name for this search',
-      reset: 'Reset', resetFilters: 'Clear Filters',
-      applyFiltersAbove: 'Apply filters above', searchCars: 'Search Cars', searchResults: 'Search Results',
-      basicData: 'Basic Data', technicalData: 'Technical data', exterior: 'Exterior', interior: 'Interior', offerDetails: 'Offer Details',
-      any: 'Any', from: 'from', to: 'to', yes: 'Yes', no: 'No', comingSoon: 'Coming soon...', fuelType: 'Fuel type',
-      make: 'Make', model: 'Model', modelPlaceholder: 'e.g. GTI …', vehicleType: 'Vehicle type',
-      numberOfSeats: 'Number of Seats', numberOfDoors: 'Number of doors', slidingDoor: 'Sliding door', typeAndCondition: 'Type and condition', paymentType: 'Payment type',
-      price: 'Price', firstRegistrationDate: 'First Registration Date', mileage: 'Mileage', huValid: 'HU Valid', numberOfOwners: 'Number of Owners',
-      fullServiceHistory: 'Full service history', roadworthy: 'Roadworthy', country: 'Country', cityZipCode: 'City / zip code', radius: 'Radius',
-      additionalOffersWithDelivery: 'Additional offers with delivery', preRegistration: 'Pre-Registration', employeeCar: 'Employee\'s car',
-      classicVehicle: 'Classic Vehicle', demonstrationVehicle: 'Demonstration Vehicle',
-      cabriolet: 'Cabriolet/ Roadster', estate: 'Estate', suv: 'SUV/Pickup', saloon: 'Saloon', small: 'Small Car', sports: 'Sports Car/Coupe', van: 'Van/Minibus', other: 'Other',
-      bulgaria: 'Bulgaria', germany: 'Germany', france: 'France', italy: 'Italy', spain: 'Spain', german: 'German', japanese: 'Japanese', american: 'American', korean: 'Korean', french: 'French', italian: 'Italian', swedish: 'Swedish',
-      interiorColour: 'Interior Colour', interiorMaterial: 'Interior Material', exteriorColour: 'Exterior Colour', allOptions: 'All', yesOption: 'Yes', noOption: 'No', fromPlaceholder: 'From', toPlaceholder: 'To', power: 'Power', cubicCapacity: 'Cubic Capacity',
-      trailerCoupling: 'Trailer Coupling', trailerLoadBraked: 'Trailer Load Braked', trailerLoadUnbraked: 'Trailer Load Unbraked', parkingSensors: 'Parking Sensors', airConditioning: 'Air Conditioning', airbags: 'Airbags', extras: 'Extras',
-      alarm: 'Alarm', ambientLighting: 'Ambient Lighting', androidAuto: 'Android Auto', appleCarPlay: 'Apple CarPlay', armrest: 'Armrest', autoTintedMirror: 'Auto-tinted Mirror', additionalHeating: 'Additional Heating', bluetooth: 'Bluetooth', cargoBarrier: 'Cargo Barrier', cdPlayer: 'CD Player',
-      dabRadio: 'DAB Radio', digitalCockpit: 'Digital Cockpit', disabledAccess: 'Disabled Access', electricRearSeats: 'Electric Rear Seats', electricSeats: 'Electric Seats', electricSeatsMemory: 'Electric Seats Memory', electricWindows: 'Electric Windows', emergencyCallSystem: 'Emergency Call System', fatigueWarning: 'Fatigue Warning',
-      foldingRearSeats: 'Folding Rear Seats', foldingMirrors: 'Folding Mirrors', handsFreeSystem: 'Hands-free System', headUpDisplay: 'Head-up Display', heatedRearSeats: 'Heated Rear Seats', heatedSeats: 'Heated Seats', heatedSteeringWheel: 'Heated Steering Wheel', wirelessCharging: 'Wireless Charging', integratedMusicStreaming: 'Integrated Music Streaming', isofix: 'ISOFIX',
-      leatherSteeringWheel: 'Leather Steering Wheel', lumbarSupport: 'Lumbar Support', massageSeats: 'Massage Seats', multifunctionalSteeringWheel: 'Multifunctional Steering Wheel', navigation: 'Navigation', onBoardComputer: 'On-board Computer', paddleShifters: 'Paddle Shifters', passengerIsofix: 'Passenger ISOFIX', seatVentilation: 'Seat Ventilation', rightHandDrive: 'Right-hand Drive',
-      skiBag: 'Ski Bag', smokersPackage: 'Smoker\'s Package', audioSystem: 'Audio System', sportsSeats: 'Sports Seats', touchscreen: 'Touchscreen', tunerRadio: 'Tuner Radio', tv: 'TV', usbPort: 'USB Port', virtualMirrors: 'Virtual Mirrors', voiceControl: 'Voice Control',
-      winterPackage: 'Winter Package', wlanWifiHotspot: 'WLAN/WiFi Hotspot', seller: 'Seller', dealerRating: 'Dealer Rating', listingOnlineSince: 'Listing Online Since', specialOptions: 'Special Options', listingsWithPhotos: 'Listings with Photos', listingsWithVideo: 'Listings with Video', reducedPrice: 'Reduced Price', nonSmoker: 'Non-smoker',
-      taxi: 'Taxi', vatDeductible: 'VAT Deductible', damagedVehicles: 'Damaged Vehicles', dontShow: 'Don\'t Show', commercialExportImport: 'Commercial, Export/Import', approvedUsedCarProgram: 'Approved Used Car Program', choose: 'Choose', location: 'Location', deliveryOffers: 'Delivery Offers', showOnlyDeliveryOffers: 'Show only offers with delivery',
-      searchInDescription: 'Search in Description', descriptionPlaceholder: 'Enter keywords to search in description...', enterKeywords: 'Enter keywords...', availability: 'Availability', available: 'Available', reserved: 'Reserved', sold: 'Sold', delivery: 'Delivery', deliveryAvailable: 'Delivery available', pickupOnly: 'Pickup only',
-      sellerType: 'Seller Type', dealer: 'Dealer', private: 'Private', garage: 'Garage', extendedWarranty: 'Extended warranty', noWarranty: 'No warranty',
-      serviceHistory: 'Service History', partialServiceHistory: 'Partial service history', noServiceHistory: 'No service history', accidentFree: 'Accident free', damaged: 'Damaged', notRoadworthy: 'Not roadworthy', valid: 'Valid', expired: 'Expired', expiringSoon: 'Expiring soon',
-      
-      // Missing fuel types
-      electricFuel: 'Electric',
-      ethanolFuel: 'Ethanol',
-      hybridDieselElectric: 'Hybrid Diesel/Electric',
-      hybridGasolineElectric: 'Hybrid Gasoline/Electric',
-      hydrogenFuel: 'Hydrogen',
-      lpgFuel: 'LPG (Gas)',
-      naturalGasFuel: 'Natural Gas (CNG)',
-      otherFuel: 'Other',
-      pluginHybridFuel: 'Plug-in Hybrid',
-      
-      // Missing colors
-      black: 'Black',
-      beige: 'Beige',
-      gray: 'Gray',
-      brown: 'Brown',
-      white: 'White',
-      orange: 'Orange',
-      blue: 'Blue',
-      yellow: 'Yellow',
-      red: 'Red',
-      green: 'Green',
-      silver: 'Silver',
-      gold: 'Gold',
-      purple: 'Purple',
-      matte: 'Matte',
-      metallic: 'Metallic',
-      
-      // Missing interior colors
-      interiorBeige: 'Beige',
-      interiorBlack: 'Black',
-      interiorBlue: 'Blue',
-      interiorBrown: 'Brown',
-      interiorGray: 'Gray',
-      interiorRed: 'Red',
-      interiorOther: 'Other',
-      
-      // Missing interior materials
-      alcantara: 'Alcantara',
-      fabric: 'Fabric',
-      artificialLeather: 'Artificial Leather',
-      partialLeather: 'Partial Leather',
-      fullLeather: 'Full Leather',
-      velour: 'Velour',
-      materialOther: 'Other',
-      
-      // Missing countries
-      austria: 'Austria',
-      switzerland: 'Switzerland',
-      countryOther: 'Other',
-      
-      // Missing cities
-      sofia: 'Sofia',
-      plovdiv: 'Plovdiv',
-      varna: 'Varna',
-      burgas: 'Burgas',
-      ruse: 'Ruse',
-      staraZagora: 'Stara Zagora',
-      pleven: 'Pleven',
-      dobrich: 'Dobrich',
-      sliven: 'Sliven',
-      shumen: 'Shumen',
-      pernik: 'Pernik',
-      haskovo: 'Haskovo',
-      
-      // Missing general fields
-      subtitle: 'Find your ideal car with detailed filters',
-      all: 'All',
-      offroad: 'Offroad',
-      
-      // Missing condition types
-      newCondition: 'New',
-      usedCondition: 'Used',
-      preRegistrationCondition: 'Pre-Registration',
-      employeeCondition: 'Employee\'s Car',
-      classicCondition: 'Classic',
-      demonstrationCondition: 'Demonstration',
-      
-      // Missing purchase options
-      purchaseOption: 'Purchase',
-      leasingOption: 'Leasing',
-      
-      // Missing registration fields
-      firstRegistration: 'First Registration',
-      huValidUntil: 'HU Valid Until',
-      exampleYear: 'e.g. 2020',
-      
-      // Missing technical data
-      fuelTankVolume: 'Fuel Tank Volume',
-      
-      // Missing fuel type translations
-      gasolineFuel: 'Gasoline',
-      dieselFuel: 'Diesel',
-      
-      // Missing technical data translations
-      weight: 'Weight',
-      cylinders: 'Cylinders',
-      driveType: 'Drive Type',
-      frontWheelDrive: 'Front Wheel Drive',
-      rearWheelDrive: 'Rear Wheel Drive',
-      allWheelDrive: 'All Wheel Drive',
-      
-      // Missing rating translations
-      veryGoodRating: 'Very Good',
-      goodRating: 'Good',
-      satisfactoryRating: 'Satisfactory',
-      
-      // Missing time period translations
-      adOnlineSince: 'Ad Online Since',
-      lastDay: 'Last Day',
-      last3Days: 'Last 3 Days',
-      lastWeek: 'Last Week',
-      lastMonth: 'Last Month',
-      
-      // Missing media translations
-      adsWithPictures: 'Ads with Pictures',
-      onlyWithPictures: 'Only with Pictures',
-      adsWithVideo: 'Ads with Video',
-      onlyWithVideo: 'Only with Video',
-      
-      // Missing offer translations
-      discountOffers: 'Discount Offers',
-      onlyDiscountOffers: 'Only Discount Offers',
-      nonSmokerVehicle: 'Non-smoker Vehicle',
-      onlyNonSmoker: 'Only Non-smoker',
-      onlyTaxi: 'Only Taxi',
-      vatReclaimable: 'VAT Reclaimable',
-      onlyVatReclaimable: 'Only VAT Reclaimable',
-      warranty: 'Warranty',
-      onlyWithWarranty: 'Only with Warranty',
-      
-      // Missing condition translations
-      includeDamaged: 'Include Damaged',
-      commercialExport: 'Commercial, Export/Import',
-      approvedUsedProgramme: 'Approved Used Car Programme',
-      
-      // Missing location translations
-      city: 'City',
-      onlyDeliveryOffers: 'Only Delivery Offers',
-      
-      // New: Search results and sorting
-      results: 'results',
-      sortBy: 'Sort by',
-      sortNewestFirst: 'Newest first',
-      sortPriceLowHigh: 'Price: Low to High',
-      sortPriceHighLow: 'Price: High to Low',
-      sortYearNewest: 'Year: Newest first',
-      sortMileageLow: 'Mileage: Lowest first',
-      
-      // New: View modes
-      listView: 'List View',
-      mapView: 'Map View',
-      viewDetails: 'View Details',
-      noResultsOnMap: 'No results to show on map'
-    },
-    messaging: {
-      title: 'Messages',
-      subtitle: 'Manage your conversations and messages',
-      conversations: 'Conversations',
-      newMessage: 'New Message',
-      noConversations: 'No conversations',
-      selectConversation: 'Select a conversation',
-      selectConversationDescription: 'Select a conversation from the list to start chatting',
-      noMessages: 'No messages',
-      startConversation: 'Start a conversation by typing a message',
-      typeMessage: 'Type a message...',
-      all: 'All',
-      unread: 'Unread',
-      noSearchResults: 'No search results',
-      noConversationsDescription: 'Start a new conversation with someone',
-      send: 'Send',
-      online: 'Online',
-      lastSeen: 'Last seen',
-      typing: 'typing...',
-      messageSent: 'Message sent',
-      messageDelivered: 'Message delivered',
-      messageRead: 'Message read',
-      errorSending: 'Error sending',
-      errorLoading: 'Error loading',
-      retry: 'Retry',
-      deleteMessage: 'Delete message',
-      editMessage: 'Edit message',
-      replyToMessage: 'Reply to message',
-      forwardMessage: 'Forward message',
-      copyMessage: 'Copy message',
-      markAsRead: 'Mark as read',
-      markAsUnread: 'Mark as unread',
-      archive: 'Archive',
-      unarchive: 'Unarchive',
-      block: 'Block',
-      unblock: 'Unblock',
-      report: 'Report',
-      mute: 'Mute',
-      unmute: 'Unmute',
-      searchMessages: 'Search messages',
-      filterMessages: 'Filter messages',
-      allMessages: 'All messages',
-      unreadMessages: 'Unread messages',
-      starredMessages: 'Starred messages',
-      mediaMessages: 'Media messages',
-      fileMessages: 'File messages',
-      voiceMessages: 'Voice messages',
-      videoMessages: 'Video messages',
-      imageMessages: 'Images',
-      documentMessages: 'Documents',
-      locationMessages: 'Locations',
-      contactMessages: 'Contacts',
-      systemMessages: 'System messages',
-      today: 'Today',
-      yesterday: 'Yesterday',
-      thisWeek: 'This week',
-      lastWeek: 'Last week',
-      thisMonth: 'This month',
-      lastMonth: 'Last month',
-      older: 'Older',
-      newer: 'Newer',
-      loadMore: 'Load more',
-      noMoreMessages: 'No more messages',
-      connectionError: 'Connection error',
-      reconnecting: 'Reconnecting...',
-      connected: 'Connected',
-      disconnected: 'Disconnected',
-      typingIndicator: 'user is typing...',
-      multipleTyping: 'users are typing...',
-      messageStatus: {
-        sending: 'Sending',
-        sent: 'Sent',
-        delivered: 'Delivered',
-        read: 'Read',
-        failed: 'Failed'
-      },
-      messageTypes: {
-        text: 'Text',
-        image: 'Image',
-        video: 'Video',
-        audio: 'Audio',
-        file: 'File',
-        location: 'Location',
-        contact: 'Contact',
-        sticker: 'Sticker',
-        gif: 'GIF',
-        emoji: 'Emoji'
-      },
-      actions: {
-        reply: 'Reply',
-        forward: 'Forward',
-        copy: 'Copy',
-        delete: 'Delete',
-        edit: 'Edit',
-        star: 'Star',
-        unstar: 'Unstar',
-        pin: 'Pin',
-        unpin: 'Unpin',
-        save: 'Save',
-        share: 'Share',
-        download: 'Download',
-        open: 'Open',
-        print: 'Print',
-        export: 'Export',
-        import: 'Import'
-      },
-      settings: {
-        title: 'Message settings',
-        notifications: 'Notifications',
-        sound: 'Sound',
-        vibration: 'Vibration',
-        preview: 'Preview',
-        autoDownload: 'Auto download',
-        dataUsage: 'Data usage',
-        privacy: 'Privacy',
-        security: 'Security',
-        backup: 'Backup',
-        restore: 'Restore',
-        clear: 'Clear',
-        reset: 'Reset'
-      },
-      errors: {
-        networkError: 'Network error',
-        serverError: 'Server error',
-        authenticationError: 'Authentication error',
-        permissionError: 'Permission error',
-        fileSizeError: 'File too large',
-        fileTypeError: 'File type not supported',
-        messageTooLong: 'Message too long',
-        messageEmpty: 'Message is empty',
-        userNotFound: 'User not found',
-        conversationNotFound: 'Conversation not found',
-        messageNotFound: 'Message not found',
-        accessDenied: 'Access denied',
-        rateLimited: 'Too many requests',
-        maintenanceMode: 'Maintenance mode',
-        updateRequired: 'Update required'
-      }
-    },
-    dashboard: {
-      title: 'Dashboard', subtitle: 'Manage your listings and activity', overview: 'Overview',
-      totalCars: 'Total Cars', viewCars: 'View Cars', totalUsers: 'Total Users', viewUsers: 'View Users', totalMessages: 'Total Messages', viewMessages: 'View Messages', totalRevenue: 'Total Revenue', viewRevenue: 'View Revenue',
-      recentActivity: 'Recent Activity', newCars: 'New Cars', viewNewCars: 'View New Cars', newUsers: 'New Users', viewNewUsers: 'View New Users', newMessages: 'New Messages', viewNewMessages: 'View New Messages', systemStatus: 'System Status', viewSystemStatus: 'View System Status',
-      analytics: 'Analytics', pageViews: 'Page Views', userEngagement: 'User Engagement', conversionRate: 'Conversion Rate', bounceRate: 'Bounce Rate',
-      settings: 'Settings', generalSettings: 'General Settings', siteName: 'Site Name', siteDescription: 'Site Description', saveSettings: 'Save Settings',
-      notificationSettings: 'Notification Settings', emailNotifications: 'Email Notifications', smsNotifications: 'SMS Notifications', pushNotifications: 'Push Notifications',
-      securitySettings: 'Security Settings', currentPassword: 'Current Password', newPassword: 'New Password', confirmPassword: 'Confirm Password', updatePassword: 'Update Password',
-      help: 'Help & Support', contactSupport: 'Contact Support',
-      stats: {
-        listingsOnline: 'Listings Online', thisWeek: 'this week', views: 'Views', lastWeek: 'last week', newInquiries: 'New Inquiries', unread: 'unread', potentialSales: 'Potential Sales', basedOnInquiries: 'Based on inquiries'
-      },
-      timeAgo: { justNow: 'Just now', hoursAgo: '{{count}} hours ago', dayAgo: '1 day ago', daysAgo: '{{count}} days ago' },
-      myListings: 'My Listings', carStatus: { active: 'Active', pending: 'Pending', sold: 'Sold', draft: 'Draft' }, noListings: 'No listings',
-      actions: { addNewListing: 'Add New Listing', viewStatistics: 'View Statistics', editProfile: 'Edit Profile', settings: 'Settings', financialReports: 'Financial Reports', support: 'Support', viewAllMessages: 'View All Messages' },
-      recentInquiries: 'Recent Inquiries', noMessages: 'No messages', notifications: 'Notifications', noNotifications: 'No notifications', quickActions: 'Quick Actions',
-      improvementTips: 'Improvement Tips', tips: { addMorePhotos: 'Add more photos', respondQuickly: 'Respond quickly', maintainCompetitivePrices: 'Maintain competitive prices', updateDescriptions: 'Update descriptions' }
-    },
-    notifications: {
-      title: 'Notifications',
-      loading: 'Loading...',
-      noNotifications: 'No notifications',
-      noNotificationsDesc: 'You will receive notifications here for important events.',
-      justNow: 'Just now',
-      minutesAgo: 'minutes ago',
-      hoursAgo: 'hours ago',
-      daysAgo: 'days ago',
-      viewDetails: 'View details',
-      markAsRead: 'Mark as read',
-      delete: 'Delete',
-      markAllRead: 'Mark all as read',
-      settings: 'Settings',
-      viewAll: 'View all',
-      loginRequired: 'Login Required',
-      loginToView: 'Please sign in to view your notifications.',
-      all: 'All',
-      unread: 'Unread',
-      messages: 'Messages',
-      system: 'System'
-    },
-    social: {
-      title: 'Social Media & Community',
-      subtitle: 'Share, discover, and connect with the car community',
-      hideButton: 'Hide social posts',
-      showButton: 'Show social posts',
-      communityFeed: 'Community Feed',
-      feedSubtitle: 'Share your stories, discover new cars, and connect with fellow enthusiasts',
-      filters: {
-        smart: 'Smart',
-        newest: 'Newest',
-        mostLiked: 'Most Liked',
-        mostComments: 'Most Comments',
-        trending: 'Trending'
-      },
-      createPost: {
-        placeholder: "What's on your mind, {name}?",
-        photo: 'Photo',
-        video: 'Video',
-        car: 'Car'
-      },
-      emptyState: {
-        title: 'No posts yet',
-        description: 'Be the first to share something interesting!',
-        createButton: 'Create First Post'
-      },
-      footer: {
-        title: 'Community Feed',
-        description: 'Latest stories, tips, and insights from the car community'
-      },
-      post: {
-        like: 'Like',
-        comment: 'Comment',
-        share: 'Share',
-        likes: 'likes',
-        comments: 'comments',
-        shares: 'shares'
-      },
-      loading: 'Loading posts...',
-      sidebar: {
-        yourProfile: 'Your Profile',
-        friends: 'Friends',
-        saved: 'Saved',
-        savedSearches: 'Saved Searches',
-        allPosts: 'All Posts',
-        marketplace: 'Marketplace',
-        newsFeed: 'News Feed',
-        dealers: 'Dealers',
-        events: 'Events',
-        gallery: 'Gallery',
-        messages: 'Messages',
-        notifications: 'Notifications',
-        shortcuts: 'Your shortcuts',
-        seeMore: 'See more',
-        sponsored: 'Sponsored',
-        contacts: 'Contacts',
-        online: 'online',
-        offline: 'Offline',
-        noContacts: 'No contacts available',
-        contactsWillAppear: 'Users will appear here as they join'
-      }
-    },
-    fullThemeDemo: {
-      title: 'Full Theme Demo Page', overview: 'Overview', primaryTheme: 'Primary Theme', testPrimary: 'Test Primary', secondaryTheme: 'Secondary Theme', testSecondary: 'Test Secondary', accentTheme: 'Accent Theme', testAccent: 'Test Accent', neutralTheme: 'Neutral Theme', testNeutral: 'Test Neutral',
-      typography: 'Typography', headings: 'Headings', testHeadings: 'Test Headings', bodyText: 'Body Text', testBodyText: 'Test Body Text', captions: 'Captions', testCaptions: 'Test Captions', links: 'Links', testLinks: 'Test Links',
-      components: 'Components', buttons: 'Buttons', testButtons: 'Test Buttons', inputs: 'Inputs', testInputs: 'Test Inputs', cards: 'Cards', testCards: 'Test Cards', modals: 'Modals', testModals: 'Test Modals',
-      layout: 'Layout', grid: 'Grid', testGrid: 'Test Grid', spacing: 'Spacing', testSpacing: 'Test Spacing', borders: 'Borders', testBorders: 'Test Borders', shadows: 'Shadows', testShadows: 'Test Shadows'
-    },
-    ratingSystem: { label: 'Rating', votes: 'votes' },
-    auth: {
-      login: { title: 'Login', email: 'Email', password: 'Password', loading: 'Logging in...', submit: 'Login', noAccount: "Don't have an account?", register: 'Register here' },
-      register: { title: 'Register', firstName: 'First Name', lastName: 'Last Name', email: 'Email', password: 'Password', confirmPassword: 'Confirm Password', loading: 'Creating account...', submit: 'Register', haveAccount: 'Already have an account?', login: 'Login here' },
-      orContinueWith: 'Or continue with', continueWithGoogle: 'Continue with Google', continueWithFacebook: 'Continue with Facebook', continueWithApple: 'Continue with Apple',
-      required: {
-        title: 'Login Required',
-        message: 'Please sign in to access this page.',
-        loginButton: 'Sign In',
-        backButton: 'Back to Home',
-        enjoyFeatures: 'Sign in to enjoy all features and services.'
-      },
-      pageNames: {
-        advancedSearch: 'Advanced Search',
-        sell: 'Sell Car',
-        sellCar: 'Sell Car',
-        brandGallery: 'Brand Gallery',
-        dealers: 'Dealers',
-        finance: 'Finance',
-        thisPage: 'this page'
-      }
-    },
-    errors: {
-      notFound: {
-        title: '404',
-        subtitle: 'Page Not Found',
-        description: 'The page you are looking for does not exist or has been moved.',
-        homeButton: 'Go to Homepage'
-      }
-    },
-    common: {
-      back: 'Back',
-      loading: 'Loading...',
-      save: 'Save',
-      cancel: 'Cancel',
-      confirm: 'Confirm',
-      delete: 'Delete',
-      edit: 'Edit',
-      bulgarian: 'Bulgarian',
-      english: 'English',
-      language: 'Language',
-      theme: 'Theme',
-      lightMode: 'Light Mode',
-      darkMode: 'Dark Mode',
-      clearCache: 'Clear Cache',
-      cacheCleared: 'Cache cleared successfully!',
-      continue: 'Continue'
-    },
-    ai: {
-      assistant: 'AI Assistant',
-      chat: {
-        title: 'AI Chat',
-        placeholder: 'Type your message...',
-        send: 'Send',
-        welcome: 'Hello! How can I help you today? Ask me about cars, prices, or anything else!',
-        typing: 'AI is typing...',
-        error: 'Sorry, I encountered an error. Please try again.',
-        quotaExceeded: 'Your daily AI chat quota has been exceeded. Please try again tomorrow or upgrade your plan.',
-        openChat: 'Open AI Chat',
-        closeChat: 'Close AI Chat'
-      },
-      features: {
-        priceAnalysis: 'Price Analysis',
-        marketTrends: 'Market Trends',
-        carRecommendations: 'Car Recommendations',
-        sellingTips: 'Selling Tips'
-      }
-    },
-    emailVerification: {
-      invalidLink: 'Invalid verification link',
-      successTitle: 'Verification Successful!',
-      successMessage: 'Your email address has been verified successfully!',
-      errorTitle: 'Verification Error',
-      errorMessage: 'Error verifying email address',
-      verifyingTitle: 'Verifying...',
-      goToHome: 'Go to Homepage',
-      goToLogin: 'Go to Login',
-      autoRedirect: 'You will be redirected automatically in 3 seconds...'
-    },
-    search: {
-      placeholder: 'Search for cars...',
-      button: 'Search',
-      advanced: 'Advanced Search',
-      results: 'Results',
-      noResults: 'No results found',
-      loading: 'Loading...'
-    },
-    header: {
-      loggedAs: 'Logged as',
-      // My Account Section
-      myAccount: 'My Account',
-      overview: 'Overview',
-      myStatistics: 'My Statistics',
-      myProfile: 'My Profile',
-      
-      // Vehicles Section
-      vehiclesSection: 'My Vehicles',
-      carPark: 'My Vehicles',
-      myAds: 'My Ads',
-      savedSearches: 'Saved Searches',
-      mySearches: 'My Searches',
-      myFavorites: 'Favorites',
-      garage: 'Garage',
-      
-      // Communication Section
-      communicationSection: 'Communication',
-      messages: 'Messages',
-      notifications: 'Notifications',
-      inquiries: 'Inquiries',
-      
-      // Finance Section
-      financeSection: 'Finance',
-      financeCalculator: 'Finance Calculator',
-      invoices: 'Invoices',
-      commissions: 'Commissions',
-      financialReports: 'Financial Reports',
-      insurance: 'Insurance',
-      
-      // Settings Section
-      settingsSection: 'Settings & Control',
-      preferences: 'Preferences',
-      
-      // Appearance
-      appearance: 'Appearance',
-      lightMode: 'Light Mode',
-      darkMode: 'Dark Mode',
-      autoMode: 'Auto',
-      
-      // Text Size
-      textSize: 'Text Size',
-      textSmall: 'Small',
-      textMedium: 'Medium',
-      textLarge: 'Large',
-      
-      // Language
-      language: 'Language',
-      bulgarian: 'Български',
-      english: 'English',
-      
-      // Notification Settings
-      notificationSettings: 'Notification Settings',
-      emailNotif: 'Email Notifications',
-      pushNotif: 'Push Notifications',
-      smsNotif: 'SMS Notifications',
-      
-      // Account Settings
-      accountSettings: 'Account Settings',
-      editProfile: 'Edit Profile',
-      changeAvatar: 'Change Avatar',
-      changeCover: 'Change Cover',
-      privacySettings: 'Privacy Settings',
-      personalData: 'Personal Data',
-      
-      // Security
-      security: 'Security',
-      changePassword: 'Change Password',
-      twoFactorAuth: 'Two-Factor Authentication',
-      activeSessions: 'Active Sessions',
-      
-      // Help & Support
-      helpSupport: 'Help & Support',
-      faq: 'FAQ',
-      contactSupport: 'Contact Support',
-      reportIssue: 'Report Issue',
-      dealerInfo: 'Dealer Info',
-      
-      // Actions
-      logout: 'Logout'
-    },
-    
-    // 🆕 Comprehensive Settings Section (English)
-    settings: {
-      title: 'Settings',
-      
-      // Section Titles
-      account: 'Account Settings',
-      privacy: 'Privacy',
-      notifications: 'Notifications',
-      appearance: 'Appearance & Display',
-      security: 'Security & Login',
-      carPreferences: 'Car Preferences',
-      business: 'Business Information',
-      dealerInfo: 'Dealership Information',
-      companyInfo: 'Company Information',
-      dataExport: 'Data & Export',
-      
-      // Save Actions
-      saveSuccess: 'Settings saved successfully',
-      saveError: 'Error saving settings',
-      
-      // Account Settings
-      displayName: 'Display Name',
-      displayNamePlaceholder: 'Enter your display name',
-      email: 'Email Address',
-      emailHelp: 'Used for login and notifications',
-      phone: 'Phone Number',
-      bio: 'Bio',
-      bioPlaceholder: 'Tell others about yourself...',
-      bioHelp: 'Brief description visible on your profile',
-      language: 'Language',
-      
-      // Privacy Settings
-      profileVisibility: 'Profile Visibility',
-      public: 'Public',
-      publicHelp: 'Anyone can see your profile',
-      registered: 'Registered Users Only',
-      registeredHelp: 'Only logged-in users can see',
-      private: 'Private',
-      privateHelp: 'Only you can see your profile',
-      showPhone: 'Show Phone Number',
-      showPhoneHelp: 'Visible on your listings',
-      showEmail: 'Show Email Address',
-      showEmailHelp: 'Visible on your profile',
-      showLastSeen: 'Show Last Seen',
-      showLastSeenHelp: 'Let others know when you were last active',
-      allowMessages: 'Allow Messages',
-      allowMessagesHelp: 'Buyers can contact you directly',
-      allowCallbacks: 'Allow Callbacks',
-      showActivity: 'Show Activity Status',
-      showActivityHelp: 'Display your online/offline status',
-      
-      // Notification Settings
-      channels: 'Notification Channels',
-      emailNotifications: 'Email Notifications',
-      emailNotificationsHelp: 'Receive updates via email',
-      smsNotifications: 'SMS Notifications',
-      smsNotificationsHelp: 'Receive SMS for important updates',
-      pushNotifications: 'Push Notifications',
-      pushNotificationsHelp: 'Browser push notifications',
-      notificationTypes: 'What to Notify',
-      newMessages: 'New Messages',
-      priceAlerts: 'Price Drop Alerts',
-      favoriteUpdates: 'Favorite Car Updates',
-      newListings: 'New Listings Matching Criteria',
-      promotions: 'Promotions & Deals',
-      newsletter: 'Newsletter',
-      marketing: 'Marketing Communications',
-      
-      // Appearance Settings
-      theme: 'Theme',
-      light: 'Light',
-      dark: 'Dark',
-      auto: 'Auto',
-      currency: 'Currency',
-      currencyHelp: 'Price display currency (EUR only in Bulgaria)',
-      dateFormat: 'Date Format',
-      compactView: 'Compact View',
-      compactViewHelp: 'Show more content on screen',
-      
-      // Security Settings
-      twoFactor: 'Two-Factor Authentication',
-      twoFactorHelp: 'Add extra security to your account',
-      loginAlerts: 'Login Alerts',
-      loginAlertsHelp: 'Get notified of new logins',
-      sessionTimeout: 'Session Timeout',
-      sessionTimeoutHelp: 'Auto-logout after inactivity',
-      minutes: 'minutes',
-      hour: 'hour',
-      hours: 'hours',
-      changePassword: 'Change Password',
-      logoutAllDevices: 'Logout from All Devices',
-      
-      // Car Preferences
-      priceRange: 'Preferred Price Range (EUR)',
-      searchRadius: 'Search Radius (km)',
-      searchRadiusHelp: 'Default radius for location-based searches',
-      
-      // Data & Export
-      downloadData: 'Download Your Data',
-      downloadDataHelp: 'Get a copy of all your data including listings, messages, and activity',
-      exportData: 'Request Data Export',
-      exportStarted: 'Data export started. You will receive an email shortly.',
-      deleteAccount: 'Delete Account',
-      deleteAccountWarning: 'Permanently delete your account and all associated data. This action cannot be undone.',
-      deleteMyAccount: 'Delete My Account',
-      deleteAccountConfirm: 'Are you sure you want to delete your account? This action cannot be undone.',
-      deleteAccountContact: 'Please contact support to delete your account.'
-    },
-    
-    // Social Feed System
-    feed: {
-      title: 'Community Feed',
-      subtitle: 'Share stories, discover cars, connect with enthusiasts',
-      createPost: 'Create Post',
-      createPlaceholder: 'What\'s on your mind',
-      addPhoto: 'Photo',
-      addVideo: 'Video',
-      addCar: 'Car',
-      post: 'Post',
-      posting: 'Posting...',
-      
-      // Post Types
-      postTypes: {
-        text: 'Text Post',
-        carShowcase: 'Car Showcase',
-        tip: 'Tip',
-        question: 'Question',
-        review: 'Review'
-      },
-      
-      // Reactions
-      reactions: {
-        like: 'Like',
-        love: 'Love',
-        haha: 'Haha',
-        wow: 'Wow',
-        sad: 'Sad',
-        angry: 'Angry',
-        support: 'Support'
-      },
-      
-      // Actions
-      comment: 'Comment',
-      share: 'Share',
-      save: 'Save',
-      
-      // Empty States
-      noPosts: 'No posts yet',
-      noPostsDesc: 'Be the first to share something!',
-      endOfFeed: 'You\'ve seen all posts',
-      loginToPost: 'Log in to create posts'
-    },
-    
-    // Help & Support Section
-    help: {
-      title: 'Help & Support',
-      subtitle: 'Find answers to your questions',
-      search: {
-        placeholder: 'Search help articles...'
-      },
-      categories: {
-        title: 'Categories',
-        general: 'General Questions',
-        buying: 'Buying',
-        selling: 'Selling',
-        account: 'Account',
-        payment: 'Payment',
-        safety: 'Safety'
-      },
-      faq: {
-        title: 'Frequently Asked Questions',
-        general: {
-          q1: 'How do I get started with the platform?',
-          a1: 'Simply register with your email or use Google/Facebook for quick signup.',
-          q2: 'Is the platform free?',
-          a2: 'Yes, browsing cars is free. Posting listings has different plan options.',
-          q3: 'How can I contact support?',
-          a3: 'Use live chat, send an email, or call us by phone.'
-        },
-        buying: {
-          q1: 'How do I search for a car?',
-          a1: 'Use advanced search with filters by make, model, price, year, and location.',
-          q2: 'How do I contact the seller?',
-          a2: 'Click the "Message" button on the car listing for direct chat.',
-          q3: 'Can I save favorite cars?',
-          a3: 'Yes, click the heart icon to add a car to favorites.'
-        },
-        selling: {
-          q1: 'How do I sell my car?',
-          a1: 'Click "Sell Car" and follow the 7 easy steps to create a listing.',
-          q2: 'How much does it cost to post a listing?',
-          a2: 'We have different plans - from free to premium with extra features.',
-          q3: 'How long does the listing stay active?',
-          a3: 'Listings stay active 30-90 days depending on your chosen plan.'
-        },
-        account: {
-          q1: 'How do I edit my profile?',
-          a1: 'Go to "Profile" and click "Edit" to update your information.',
-          q2: 'How do I change my password?',
-          a2: 'Go to Settings > Security and select "Change Password".'
-        },
-        payment: {
-          q1: 'What payment methods do you accept?',
-          a1: 'We accept credit cards, debit cards, and bank transfer via Stripe.',
-          q2: 'Is payment secure?',
-          a2: 'Yes, all payments are processed securely via Stripe with SSL encryption.'
-        },
-        safety: {
-          q1: 'How do I avoid scams?',
-          a1: 'Always verify car documents, meet seller in person, and avoid upfront payments.',
-          q2: 'What do you do for data security?',
-          a2: 'We use Firebase Authentication and data encryption for complete protection.'
-        }
-      },
-      contact: {
-        title: 'Contact Us',
-        subtitle: 'Our team is always ready to help',
-        chat: 'Live Chat',
-        email: 'Email Support',
-        phone: 'Phone',
-        docs: 'Documentation'
-      }
-    },
-    profileDashboard: {
-      title: 'Profile Dashboard',
-      overview: 'Overview',
-      trustScore: 'Trust Score',
-      badges: 'Badges',
-      activeListings: 'Active Listings',
-      totalListings: 'Total Listings',
-      sold: 'Sold',
-      views30d: 'Views (30d)',
-      messages30d: 'Messages (30d)',
-      favorites: 'Favorites',
-      avgResponse: 'Avg Response Time',
-      responseRate: 'response rate',
-      reviews: 'Reviews',
-      avgRating: 'Average Rating',
-      conversion: 'Conversion',
-      savedSearches: 'Saved Searches',
-      profileType: 'Profile Type',
-      accountAge: 'Account Age',
-      lastUpdated: 'Last Updated',
-      realtimeOn: 'Live ✓',
-      realtimeOff: 'Live',
-      loading: 'Loading...',
-      error: 'Error loading',
-      loadError: 'Failed to load',
-      noProfile: 'No profile',
-      resetSession: 'Reset Session',
-      viewFullStats: 'View Full Stats',
-      improveTrust: 'Improve Trust'
+      deleteConfirm: 'Are you sure you want to delete your account? This action cannot be undone.',
+      deleteSuccess: 'Your account has been deleted successfully',
+      deleteError: 'Error deleting account'
     },
     savedSearches: {
       title: 'Saved Searches',
@@ -3261,3 +2335,4 @@ export const translations = {
 
 export type BulgarianLanguage = 'bg' | 'en';
 export default translations;
+

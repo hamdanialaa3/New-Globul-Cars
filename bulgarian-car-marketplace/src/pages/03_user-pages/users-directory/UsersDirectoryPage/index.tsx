@@ -23,10 +23,11 @@ import {
   Shield,
   TrendingUp
 } from 'lucide-react';
-import { collection, getDocs, query, limit, orderBy, startAfter } from 'firebase/firestore';
+import { collection, getDocs, query, limit, orderBy, startAfter, DocumentSnapshot } from 'firebase/firestore';
 import { db } from '@/firebase/firebase-config';
 import { BULGARIA_REGIONS } from '@/data/bulgaria-locations';
 import { followService } from '@/services/social/follow.service';
+import { logger } from '@/services/logger-service';
 import { BubblesGrid } from '@/components/UserBubble/BubblesGrid';
 import { OnlineUsersRow } from '@/components/UserBubble/OnlineUsersRow';
 
@@ -705,7 +706,7 @@ const UsersDirectoryPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   
   // ⚡ NEW: Pagination State
-  const [lastDoc, setLastDoc] = useState<any>(null);
+  const [lastDoc, setLastDoc] = useState<DocumentSnapshot | null>(null);
   const [hasMore, setHasMore] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   
@@ -752,9 +753,8 @@ const UsersDirectoryPage: React.FC = () => {
       const online = loadedUsers.filter(u => u.isOnline).slice(0, 20);
       setOnlineUsers(online);
       
-      console.log('Loaded users:', loadedUsers.length, 'Online:', online.length);
     } catch (error) {
-      console.error('Error loading users:', error);
+      logger.error('Error loading users', error as Error);
     } finally {
       setLoading(false);
     }
@@ -784,9 +784,8 @@ const UsersDirectoryPage: React.FC = () => {
       setLastDoc(snapshot.docs[snapshot.docs.length - 1]);
       setHasMore(snapshot.docs.length === 30);
       
-      console.log('Loaded more users:', newUsers.length);
     } catch (error) {
-      console.error('Error loading more users:', error);
+      logger.error('Error loading more users', error as Error);
     } finally {
       setLoadingMore(false);
     }
@@ -799,7 +798,7 @@ const UsersDirectoryPage: React.FC = () => {
       const following = await followService.getFollowing(currentUser.uid, 1000);
       setFollowingUsers(new Set(following));
     } catch (error) {
-      console.error('Error loading following:', error);
+      logger.error('Error loading following', error as Error);
     }
   };
   
@@ -867,7 +866,7 @@ const UsersDirectoryPage: React.FC = () => {
   };
   
   const t = (key: string) => {
-    const translations: Record<string, any> = {
+    const translations: Record<string, Record<string, string>> = {
       bg: {
         title: 'Директория на потребителите',
         subtitle: 'Разгледайте всички потребители в платформата',
@@ -1027,7 +1026,7 @@ const UsersDirectoryPage: React.FC = () => {
             </label>
             <Select 
               value={accountTypeFilter}
-              onChange={(e) => setAccountTypeFilter(e.target.value as any)}
+              onChange={(e) => setAccountTypeFilter(e.target.value as 'all' | 'individual' | 'business')}
             >
               <option value="all">{t('all')}</option>
               <option value="individual">{t('individual')}</option>
@@ -1045,7 +1044,7 @@ const UsersDirectoryPage: React.FC = () => {
               onChange={(e) => setRegionFilter(e.target.value)}
             >
               <option value="all">{t('all')}</option>
-              {BULGARIA_REGIONS.map((region: any, index: number) => (
+              {BULGARIA_REGIONS.map((region, index: number) => (
                 <option key={index} value={region.name}>
                   {language === 'bg' ? region.name : region.nameEn}
                 </option>
@@ -1060,7 +1059,7 @@ const UsersDirectoryPage: React.FC = () => {
             </label>
             <Select 
               value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as any)}
+              onChange={(e) => setSortBy(e.target.value as 'name' | 'newest' | 'trust')}
             >
               <option value="name">{t('name')}</option>
               <option value="newest">{t('newest')}</option>

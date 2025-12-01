@@ -25,6 +25,20 @@ export const TabNavigation = styled.div<{ $themeColor?: string }>`
   box-shadow: var(--shadow-card);
   transition: all 0.3s ease;
   
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    background: rgba(30, 41, 59, 0.95);
+    border-color: rgba(148, 163, 184, 0.15);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Light Mode Support */
+  html[data-theme="light"] & {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04);
+  }
+  
   /* TABLET & MOBILE: 2 rows × 3 columns layout (LinkedIn inspired) */
   @media (max-width: 1024px) {
     flex-wrap: wrap;
@@ -626,7 +640,7 @@ export const TabNavLink = styled(NavLink)<{ $themeColor?: string }>`
     }
   }
   
-  /* Inactive state (default) */
+  /* Inactive state (default) - Light Mode */
   background: linear-gradient(135deg,
     rgba(255, 255, 255, 0.9) 0%,
     rgba(248, 250, 252, 0.85) 100%
@@ -638,7 +652,21 @@ export const TabNavLink = styled(NavLink)<{ $themeColor?: string }>`
   color: #4a5568;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   
-  /* Active state */
+  /* Dark Mode - Inactive state */
+  html[data-theme="dark"] & {
+    background: linear-gradient(135deg,
+      rgba(30, 41, 59, 0.9) 0%,
+      rgba(15, 23, 42, 0.85) 100%
+    );
+    box-shadow: 
+      inset 0 2px 4px rgba(255, 255, 255, 0.05),
+      inset 0 -2px 4px rgba(0, 0, 0, 0.3),
+      0 2px 8px rgba(0, 0, 0, 0.2);
+    color: #cbd5e1;
+    border: 1px solid rgba(148, 163, 184, 0.1);
+  }
+  
+  /* Active state - Light Mode */
   &.active {
     background: ${props => props.$themeColor ? 
       `linear-gradient(135deg, ${props.$themeColor}20 0%, ${props.$themeColor}10 100%)` :
@@ -654,7 +682,23 @@ export const TabNavLink = styled(NavLink)<{ $themeColor?: string }>`
     transform: translateY(-1px);
   }
   
-  /* Hover */
+  /* Active state - Dark Mode */
+  html[data-theme="dark"] &.active {
+    background: ${props => props.$themeColor ? 
+      `linear-gradient(135deg, ${props.$themeColor}30 0%, ${props.$themeColor}20 100%)` :
+      'linear-gradient(135deg, rgba(255, 143, 16, 0.25) 0%, rgba(255, 185, 0, 0.15) 100%)'
+    };
+    box-shadow: 
+      inset 0 2px 6px ${props => props.$themeColor ? `${props.$themeColor}25` : 'rgba(255, 143, 16, 0.15)'},
+      inset 0 -2px 4px rgba(0, 0, 0, 0.3),
+      0 0 0 2px ${props => props.$themeColor ? `${props.$themeColor}60` : 'rgba(255, 143, 16, 0.4)'},
+      0 4px 12px ${props => props.$themeColor ? `${props.$themeColor}30` : 'rgba(255, 143, 16, 0.2)'},
+      0 0 20px ${props => props.$themeColor ? `${props.$themeColor}20` : 'rgba(255, 143, 16, 0.1)'};
+    color: ${props => props.$themeColor || '#FF8F10'};
+    border-color: ${props => props.$themeColor ? `${props.$themeColor}50` : 'rgba(255, 143, 16, 0.3)'};
+  }
+  
+  /* Hover - Light Mode */
   &:hover:not(.active) {
     background: linear-gradient(135deg,
       rgba(255, 255, 255, 0.95) 0%,
@@ -665,6 +709,20 @@ export const TabNavLink = styled(NavLink)<{ $themeColor?: string }>`
       inset 0 -2px 4px rgba(0, 0, 0, 0.03),
       0 4px 12px rgba(0, 0, 0, 0.06);
     transform: translateY(-1px);
+  }
+  
+  /* Hover - Dark Mode */
+  html[data-theme="dark"] &:hover:not(.active) {
+    background: linear-gradient(135deg,
+      rgba(51, 65, 85, 0.95) 0%,
+      rgba(30, 41, 59, 0.9) 100%
+    );
+    box-shadow: 
+      inset 0 2px 5px rgba(255, 255, 255, 0.05),
+      inset 0 -2px 4px rgba(0, 0, 0, 0.3),
+      0 4px 12px rgba(0, 0, 0, 0.3);
+    color: #e2e8f0;
+    border-color: rgba(148, 163, 184, 0.2);
   }
   
   /* Touch & Click */
@@ -685,7 +743,7 @@ export const TabNavLink = styled(NavLink)<{ $themeColor?: string }>`
   /* MOBILE: Active state enhancement */
   @media (max-width: 768px) {
     &.active {
-      /* Stronger active indicator (Facebook pattern) */
+      /* Stronger active indicator (Facebook pattern) - Light Mode */
       box-shadow: 
         inset 0 3px 8px ${props => props.$themeColor ? `${props.$themeColor}20` : 'rgba(255, 143, 16, 0.12)'},
         inset 0 -2px 4px rgba(255, 255, 255, 0.7),
@@ -700,10 +758,25 @@ export const TabNavLink = styled(NavLink)<{ $themeColor?: string }>`
       }
     }
     
-    /* Hover on touch devices (light touch) */
+    /* Dark Mode - Mobile Active */
+    html[data-theme="dark"] &.active {
+      box-shadow: 
+        inset 0 3px 8px ${props => props.$themeColor ? `${props.$themeColor}30` : 'rgba(255, 143, 16, 0.2)'},
+        inset 0 -2px 4px rgba(0, 0, 0, 0.4),
+        0 0 0 2.5px ${props => props.$themeColor ? `${props.$themeColor}70` : 'rgba(255, 143, 16, 0.5)'},
+        0 6px 16px ${props => props.$themeColor ? `${props.$themeColor}35` : 'rgba(255, 143, 16, 0.25)'},
+        0 0 24px ${props => props.$themeColor ? `${props.$themeColor}25` : 'rgba(255, 143, 16, 0.15)'};
+    }
+    
+    /* Hover on touch devices (light touch) - Light Mode */
     &:active:not(.active) {
       transform: scale(0.97);
       background: rgba(0, 0, 0, 0.02);
+    }
+    
+    /* Hover on touch devices - Dark Mode */
+    html[data-theme="dark"] &:active:not(.active) {
+      background: rgba(255, 255, 255, 0.05);
     }
   }
 `;

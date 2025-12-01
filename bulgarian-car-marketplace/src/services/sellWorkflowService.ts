@@ -363,6 +363,32 @@ export class SellWorkflowService {
         CityCarCountService.clearCacheForCity(carData.region);
       }
 
+      // ✅ CRITICAL FIX: Update user statistics after car creation
+      try {
+        const { ProfileService } = await import('./profile/ProfileService');
+        const { unifiedCarService } = await import('./car/unified-car.service');
+        
+        // Get actual active listings count from Firestore (more accurate)
+        const userCars = await unifiedCarService.getUserCars(userId);
+        const activeCarsCount = userCars.filter(car => car.isActive !== false && car.isSold !== true).length;
+        
+        // Update user stats with actual count
+        await ProfileService.updateUserStats(userId, {
+          activeListings: activeCarsCount,
+          totalListings: userCars.length
+        });
+        
+        serviceLogger.info('User stats updated after car creation', { 
+          userId, 
+          carId, 
+          activeListings: activeCarsCount,
+          totalListings: userCars.length
+        });
+      } catch (statsError) {
+        // Don't fail car creation if stats update fails
+        serviceLogger.error('Failed to update user stats after car creation', statsError as Error, { userId, carId });
+      }
+
       serviceLogger.info('Car listing creation completed successfully', { carId, userId });
       return carId;
     } catch (error) {

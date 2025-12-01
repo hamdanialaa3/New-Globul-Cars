@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 import { useLanguage } from '@/contexts/LanguageContext';
 import CarBrandLogo from '@/components/CarBrandLogo';
 import { brandsModelsDataService, type BrandModelsMap } from '@/services/brands-models-data.service';
@@ -169,6 +169,190 @@ const SpherePanel = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+`;
+
+// Animations for the model badge - simple slide in from bottom left
+const slideInRotate = keyframes`
+  0% {
+    opacity: 0;
+    transform: translateX(-80px) translateY(40px) rotate(45deg) scale(0.3);
+  }
+  50% {
+    transform: translateX(-5px) translateY(5px) rotate(12deg) scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) translateY(0) rotate(8deg) scale(1);
+  }
+`;
+
+// Removed pulse, shimmer, and shine animations - using paper sticker effect instead
+
+const ModelBadge = styled.div<{ $isVisible: boolean }>`
+  position: absolute;
+  bottom: 20px;
+  left: -50px;
+  width: 160px;
+  height: 60px;
+  color: #1a1a1a;
+  font-weight: 900;
+  font-size: 1.3rem;
+  padding: 0;
+  z-index: 10;
+  white-space: nowrap;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-family: 'Arial Black', 'Arial', 'Helvetica', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 800px;
+  transform-style: preserve-3d;
+  
+  /* Paper sticker effect - matte yellow paper */
+  background: #FFD700;
+  background-image: 
+    /* Paper texture */
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.02) 0px,
+      transparent 1px,
+      transparent 2px,
+      rgba(0, 0, 0, 0.02) 3px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.02) 0px,
+      transparent 1px,
+      transparent 2px,
+      rgba(0, 0, 0, 0.02) 3px
+    ),
+    /* Subtle gradient */
+    linear-gradient(
+      135deg,
+      #FFD700 0%,
+      #FFEB3B 50%,
+      #FFD700 100%
+    );
+  background-size: 4px 4px, 4px 4px, 100% 100%;
+  
+  /* Curved right part (on sphere) - 65% */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 65%;
+    height: 100%;
+    background: inherit;
+    background-image: inherit;
+    /* Subtle 3D curve - follows sphere */
+    transform: perspective(700px) rotateY(10deg) rotateX(-2deg);
+    transform-origin: right center;
+    z-index: 1;
+    /* Curved edge on left side */
+    clip-path: polygon(5% 0%, 100% 0%, 100% 100%, 5% 100%);
+    /* Subtle shadow on curved surface */
+    box-shadow: 
+      inset 15px 0 20px rgba(0, 0, 0, 0.15),
+      inset -5px 0 10px rgba(255, 255, 255, 0.2);
+  }
+  
+  /* Straight left part (not on sphere) - 35% */
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 35%;
+    height: 100%;
+    background: inherit;
+    background-image: inherit;
+    z-index: 2;
+    /* Straight edge */
+    clip-path: polygon(0% 0%, 95% 0%, 95% 100%, 0% 100%);
+    /* Flat shadow */
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08);
+  }
+  
+  /* Text container */
+  & > span {
+    position: relative;
+    z-index: 3;
+    text-shadow: 
+      0 1px 2px rgba(0, 0, 0, 0.2),
+      0 -1px 1px rgba(255, 255, 255, 0.3);
+    transform: rotate(8deg);
+  }
+  
+  /* Entrance animation - simple slide in */
+  opacity: ${props => props.$isVisible ? 1 : 0};
+  transform: ${props => props.$isVisible 
+    ? 'translateX(0) translateY(0) rotate(8deg) scale(1)' 
+    : 'translateX(-100px) translateY(40px) rotate(45deg) scale(0.2)'
+  };
+  transition: ${props => props.$isVisible 
+    ? 'none' 
+    : 'opacity 0.3s ease, transform 0.3s ease'
+  };
+  
+  ${props => props.$isVisible && css`
+    animation: ${slideInRotate} 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  `}
+  
+  /* Paper sticker shadows - realistic, not glowing */
+  box-shadow: 
+    /* Shadow on sphere surface (curved part) */
+    inset 15px 0 25px rgba(0, 0, 0, 0.12),
+    inset -3px 0 8px rgba(255, 255, 255, 0.3),
+    /* Outer shadow - paper-like */
+    0 4px 12px rgba(0, 0, 0, 0.25),
+    0 2px 6px rgba(0, 0, 0, 0.15),
+    /* Subtle edge highlight */
+    inset 0 -1px 2px rgba(0, 0, 0, 0.1);
+  
+  /* Paper border - subtle */
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-right: 1.5px solid rgba(0, 0, 0, 0.2);
+  
+  /* Paper torn edge effect on left */
+  clip-path: polygon(
+    0% 5%,
+    3% 0%,
+    8% 2%,
+    12% 0%,
+    15% 3%,
+    18% 0%,
+    20% 4%,
+    100% 0%,
+    100% 100%,
+    20% 96%,
+    18% 100%,
+    15% 97%,
+    12% 100%,
+    8% 98%,
+    3% 100%,
+    0% 95%
+  );
+  
+  /* Hover effect - subtle lift */
+  &:hover {
+    transform: rotate(6deg) scale(1.05);
+    box-shadow: 
+      inset 15px 0 25px rgba(0, 0, 0, 0.15),
+      inset -3px 0 8px rgba(255, 255, 255, 0.35),
+      0 6px 16px rgba(0, 0, 0, 0.3),
+      0 3px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  @media (max-width: 900px) {
+    bottom: 15px;
+    left: -40px;
+    width: 130px;
+    height: 50px;
+    font-size: 1.1rem;
+  }
 `;
 
 const GlassSphere = styled.div`
@@ -204,24 +388,24 @@ const SphereInner = styled.div`
   align-items: center;
   justify-content: center;
 
-  /* Override CarBrandLogo styles to fit inside sphere */
+  /* Override CarBrandLogo styles to fit inside sphere - 2x size */
   & > div {
     width: auto !important;
     
     & > div:first-child {
-      /* Logo container */
-      width: 96px !important;
-      height: 96px !important;
+      /* Logo container - doubled size */
+      width: 192px !important;
+      height: 192px !important;
       background: transparent !important;
       box-shadow: none !important;
       margin: 0 !important;
       border-radius: 0 !important;
 
       img {
-        width: 96px !important;
-        height: 96px !important;
+        width: 192px !important;
+        height: 192px !important;
         object-fit: contain;
-        filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+        filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.4));
       }
     }
   }
@@ -463,8 +647,8 @@ export const BrandModelMarkdownDropdown: React.FC<Props> = ({ brand, model, onBr
       <SpherePanel>
         <GlassSphere aria-label={language === 'bg' ? 'Лого на марката' : 'Brand logo'}>
           <SphereInner>
-            {selectedBrand && !showOtherBrand && <CarBrandLogo make={selectedBrand} size={96} showName={false} />}
-            {showOtherBrand && otherBrandValue && <CarBrandLogo make={otherBrandValue} size={96} showName={false} />}
+            {selectedBrand && !showOtherBrand && <CarBrandLogo make={selectedBrand} size={192} showName={false} />}
+            {showOtherBrand && otherBrandValue && <CarBrandLogo make={otherBrandValue} size={192} showName={false} />}
             {!selectedBrand && !showOtherBrand && (
               <div style={{ 
                 color: 'var(--text-muted)', 
@@ -477,6 +661,12 @@ export const BrandModelMarkdownDropdown: React.FC<Props> = ({ brand, model, onBr
             )}
           </SphereInner>
         </GlassSphere>
+        {/* Model Badge - Yellow Sticker - Realistic 3D Effect */}
+        {(selectedModel || otherModelValue) && (
+          <ModelBadge $isVisible={true}>
+            <span>{selectedModel || otherModelValue}</span>
+          </ModelBadge>
+        )}
       </SpherePanel>
     </Container>
   );

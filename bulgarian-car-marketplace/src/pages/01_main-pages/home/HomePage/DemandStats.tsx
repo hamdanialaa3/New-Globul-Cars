@@ -30,7 +30,7 @@ const DemandText = styled.div`
   gap: 8px;
 `;
 
-const DemandBar = styled.div<{ percentage: number }>`
+const DemandBar = styled.div<{ $percentage: number }>`
   flex: 1;
   height: 12px;
   background: rgba(240, 147, 251, 0.2);
@@ -45,7 +45,7 @@ const DemandBar = styled.div<{ percentage: number }>`
     top: 0;
     left: 0;
     height: 100%;
-    width: ${props => props.percentage}%;
+    width: ${props => props.$percentage}%;
     background: linear-gradient(90deg, #f093fb 0%, #f5576c 100%);
     border-radius: 10px;
     transition: width 1s ease-out;
@@ -77,7 +77,7 @@ const DemandStats: React.FC<Props> = ({ categoryName, percentage }) => {
                 <TrendingUp size={18} color="#f5576c" />
                 Търсене за {categoryName} {/* Demand for ... */}
             </DemandText>
-            <DemandBar percentage={percentage} />
+            <DemandBar $percentage={percentage} />
             <DemandPercentage>{percentage}%</DemandPercentage>
         </DemandIndicator>
     );

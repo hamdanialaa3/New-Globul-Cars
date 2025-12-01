@@ -70,24 +70,55 @@ class UnifiedCarService {
    */
   async getFeaturedCars(limitCount: number = 4): Promise<UnifiedCar[]> {
     try {
-      // Try with filters first
-      let q = query(
-        collection(db, this.collectionName),
-        orderBy('createdAt', 'desc'),
-        limit(limitCount * 2) // Get more to filter client-side
-      );
+      // ✅ CRITICAL FIX: Search across ALL vehicle type collections
+      const collections = [
+        'cars',             // Legacy collection
+        'passenger_cars',   // New: Personal cars
+        'suvs',             // New: SUVs/Jeeps
+        'vans',             // New: Vans/Cargo
+        'motorcycles',      // New: Motorcycles
+        'trucks',           // New: Trucks
+        'buses'             // New: Buses
+      ];
 
-      const snapshot = await getDocs(q);
-      let cars = snapshot.docs.map(doc => this.mapDocToCar(doc));
+      const allCars: UnifiedCar[] = [];
+
+      // Query each collection in parallel
+      const queryPromises = collections.map(async (collectionName) => {
+        try {
+          const q = query(
+            collection(db, collectionName),
+            orderBy('createdAt', 'desc'),
+            limit(limitCount * 2) // Get more to filter client-side
+          );
+          const snapshot = await getDocs(q);
+          return snapshot.docs.map(doc => this.mapDocToCar(doc));
+        } catch (error) {
+          serviceLogger.warn(`Error querying ${collectionName}`, { error });
+          return [];
+        }
+      });
+
+      const results = await Promise.all(queryPromises);
+      results.forEach(cars => allCars.push(...cars));
       
-      // Filter client-side for compatibility with old data
-      cars = cars.filter(car => {
+      // Filter client-side for active, non-sold cars
+      const activeCars = allCars.filter(car => {
         const isActive = car.isActive !== false; // Default to true if missing
         const isSold = car.isSold === true; // Default to false if missing
         return isActive && !isSold;
       });
+
+      // Sort by date (newest first) and limit
+      const sorted = activeCars.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
       
-      return cars.slice(0, limitCount);
+      serviceLogger.info('getFeaturedCars: found cars across all collections', { 
+        totalCars: sorted.length,
+        limitCount,
+        perCollection: results.map((cars, i) => ({ collection: collections[i], count: cars.length }))
+      });
+      
+      return sorted.slice(0, limitCount);
     } catch (error) {
       serviceLogger.error('Error getting featured cars', error as Error);
       return [];
@@ -99,60 +130,95 @@ class UnifiedCarService {
    */
   async searchCars(filters: CarFilters = {}, limitCount: number = 20): Promise<UnifiedCar[]> {
     try {
-      let q = query(collection(db, this.collectionName));
+      // ✅ CRITICAL FIX: Search across ALL vehicle type collections
+      const collections = [
+        'cars',             // Legacy collection
+        'passenger_cars',   // New: Personal cars
+        'suvs',             // New: SUVs/Jeeps
+        'vans',             // New: Vans/Cargo
+        'motorcycles',      // New: Motorcycles
+        'trucks',           // New: Trucks
+        'buses'             // New: Buses
+      ];
 
-      // Apply filters (skip isActive/isSold for compatibility)
-      // Will filter client-side instead
-      if (filters.make) {
-        q = query(q, where('make', '==', filters.make));
-      }
-      if (filters.model) {
-        q = query(q, where('model', '==', filters.model));
-      }
-      if (filters.fuelType) {
-        q = query(q, where('fuelType', '==', filters.fuelType));
-      }
-      if (filters.transmission) {
-        q = query(q, where('transmission', '==', filters.transmission));
-      }
-      if (filters.region) {
-        q = query(q, where('region', '==', filters.region));
-      }
+      const allCars: UnifiedCar[] = [];
 
-      q = query(q, limit(limitCount * 2)); // Get more for client-side filtering
+      // Query each collection in parallel
+      const queryPromises = collections.map(async (collectionName) => {
+        try {
+          let q = query(collection(db, collectionName));
 
-      const snapshot = await getDocs(q);
-      let cars = snapshot.docs.map(doc => this.mapDocToCar(doc));
+          // Apply Firestore filters
+          if (filters.make) {
+            q = query(q, where('make', '==', filters.make));
+          }
+          if (filters.model) {
+            q = query(q, where('model', '==', filters.model));
+          }
+          if (filters.fuelType) {
+            q = query(q, where('fuelType', '==', filters.fuelType));
+          }
+          if (filters.transmission) {
+            q = query(q, where('transmission', '==', filters.transmission));
+          }
+          if (filters.region) {
+            q = query(q, where('region', '==', filters.region));
+          }
+
+          q = query(q, limit(limitCount * 2)); // Get more for client-side filtering
+
+          const snapshot = await getDocs(q);
+          return snapshot.docs.map(doc => this.mapDocToCar(doc));
+        } catch (error) {
+          serviceLogger.warn(`Error querying ${collectionName} for search`, { error, filters });
+          return [];
+        }
+      });
+
+      const results = await Promise.all(queryPromises);
+      results.forEach(cars => allCars.push(...cars));
 
       // Client-side filters
+      let filteredCars = allCars;
+
       if (filters.isActive !== undefined) {
-        cars = cars.filter(c => (c.isActive !== false) === filters.isActive);
+        filteredCars = filteredCars.filter(c => (c.isActive !== false) === filters.isActive);
       } else {
         // Default: show only active cars
-        cars = cars.filter(c => c.isActive !== false);
+        filteredCars = filteredCars.filter(c => c.isActive !== false);
       }
       
       if (filters.isSold !== undefined) {
-        cars = cars.filter(c => (c.isSold === true) === filters.isSold);
+        filteredCars = filteredCars.filter(c => (c.isSold === true) === filters.isSold);
       } else {
         // Default: hide sold cars
-        cars = cars.filter(c => c.isSold !== true);
+        filteredCars = filteredCars.filter(c => c.isSold !== true);
       }
       
       if (filters.minYear) {
-        cars = cars.filter(c => c.year >= filters.minYear!);
+        filteredCars = filteredCars.filter(c => c.year >= filters.minYear!);
       }
       if (filters.maxYear) {
-        cars = cars.filter(c => c.year <= filters.maxYear!);
+        filteredCars = filteredCars.filter(c => c.year <= filters.maxYear!);
       }
       if (filters.minPrice) {
-        cars = cars.filter(c => c.price >= filters.minPrice!);
+        filteredCars = filteredCars.filter(c => c.price >= filters.minPrice!);
       }
       if (filters.maxPrice) {
-        cars = cars.filter(c => c.price <= filters.maxPrice!);
+        filteredCars = filteredCars.filter(c => c.price <= filters.maxPrice!);
       }
 
-      return cars.slice(0, limitCount);
+      // Sort and limit
+      const sorted = filteredCars.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+
+      serviceLogger.info('searchCars: found cars across all collections', { 
+        totalCars: sorted.length,
+        filters,
+        limitCount,
+        perCollection: results.map((cars, i) => ({ collection: collections[i], count: cars.length }))
+      });
+
+      return sorted.slice(0, limitCount);
     } catch (error) {
       serviceLogger.error('Error searching cars', error as Error, { filters });
       return [];
@@ -169,16 +235,47 @@ class UnifiedCarService {
     }
 
     try {
-      const q = query(
-        collection(db, this.collectionName),
-        where('sellerId', '==', userId)
-      );
+      // ✅ CRITICAL FIX: Search across ALL vehicle type collections
+      const collections = [
+        'cars',             // Legacy collection
+        'passenger_cars',   // New: Personal cars
+        'suvs',             // New: SUVs/Jeeps
+        'vans',             // New: Vans/Cargo
+        'motorcycles',      // New: Motorcycles
+        'trucks',           // New: Trucks
+        'buses'             // New: Buses
+      ];
 
-      const snapshot = await getDocs(q);
-      const cars = snapshot.docs.map(doc => this.mapDocToCar(doc));
+      const allCars: UnifiedCar[] = [];
 
-      // Sort by date
-      return cars.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+      // Query each collection in parallel
+      const queryPromises = collections.map(async (collectionName) => {
+        try {
+          const q = query(
+            collection(db, collectionName),
+            where('sellerId', '==', userId)
+          );
+          const snapshot = await getDocs(q);
+          return snapshot.docs.map(doc => this.mapDocToCar(doc));
+        } catch (error) {
+          serviceLogger.warn(`Error querying ${collectionName}`, { error, userId });
+          return [];
+        }
+      });
+
+      const results = await Promise.all(queryPromises);
+      results.forEach(cars => allCars.push(...cars));
+
+      // Sort by date (newest first)
+      const sorted = allCars.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+
+      serviceLogger.info('getUserCars: found cars across all collections', { 
+        userId, 
+        totalCars: sorted.length,
+        perCollection: results.map((cars, i) => ({ collection: collections[i], count: cars.length }))
+      });
+
+      return sorted;
     } catch (error) {
       serviceLogger.error('Error getting user cars', error as Error, { userId });
       return [];
@@ -186,18 +283,57 @@ class UnifiedCarService {
   }
 
   /**
-   * Get car by ID
+   * Get car by ID - searches across ALL vehicle type collections
+   * ✅ CRITICAL FIX: Now searches in all collections (passenger_cars, suvs, vans, etc.)
    */
   async getCarById(carId: string): Promise<UnifiedCar | null> {
-    try {
-      const docRef = doc(db, this.collectionName, carId);
-      const docSnap = await getDoc(docRef);
+    if (!carId || carId.trim() === '') {
+      serviceLogger.warn('getCarById: invalid carId', { carId });
+      return null;
+    }
 
-      if (!docSnap.exists()) {
-        return null;
+    try {
+      // ✅ CRITICAL FIX: Search across ALL vehicle type collections
+      const collections = [
+        'cars',             // Legacy collection
+        'passenger_cars',   // New: Personal cars
+        'suvs',             // New: SUVs/Jeeps
+        'vans',             // New: Vans/Cargo
+        'motorcycles',      // New: Motorcycles
+        'trucks',           // New: Trucks
+        'buses'             // New: Buses
+      ];
+
+      // Try each collection in parallel
+      const searchPromises = collections.map(async (collectionName) => {
+        try {
+          const docRef = doc(db, collectionName, carId);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            const foundCar = this.mapDocToCar(docSnap);
+            serviceLogger.info('getCarById: found car', { carId, collection: collectionName });
+            return { car: foundCar, collection: collectionName };
+          }
+          return null;
+        } catch (error) {
+          serviceLogger.warn(`Error querying ${collectionName} for getCarById`, { error, carId });
+          return null;
+        }
+      });
+
+      const results = await Promise.all(searchPromises);
+      const foundResult = results.find(result => result !== null);
+
+      if (foundResult) {
+        serviceLogger.info('getCarById: car found successfully', { 
+          carId, 
+          collection: foundResult.collection 
+        });
+        return foundResult.car;
       }
 
-      return this.mapDocToCar(docSnap);
+      serviceLogger.warn('getCarById: car not found in any collection', { carId });
+      return null;
     } catch (error) {
       serviceLogger.error('Error getting car by ID', error as Error, { carId });
       return null;

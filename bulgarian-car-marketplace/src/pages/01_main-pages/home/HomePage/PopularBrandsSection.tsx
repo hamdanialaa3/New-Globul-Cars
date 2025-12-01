@@ -1,5 +1,4 @@
 // Popular Car Brands Section
-// قسم الماركات الشائعة مع الربط بالبيانات الحقيقية
 
 import React, { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -27,16 +26,16 @@ const POPULAR_BRANDS = [
 
 // Styled Components
 const SectionContainer = styled.section`
-  padding: 3rem 1rem;
+  padding: 3rem 0;
   background-image: url('/assets/backgrounds/metal-bg-1.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  max-width: 1200px;
-  margin: 0 auto;
+  width: 100%;
   position: relative;
   transform: translateZ(0);
   will-change: transform;
+  transition: background-color 0.3s ease;
   
   &::before {
     content: '';
@@ -46,12 +45,29 @@ const SectionContainer = styled.section`
     right: 0;
     bottom: 0;
     background: var(--bg-primary);
-    opacity: 0.8;
+    opacity: 0.75;
     z-index: 0;
+    transition: background-color 0.3s ease, opacity 0.3s ease;
+  }
+  
+  html[data-theme="dark"] &::before {
+    opacity: 0.85;
   }
   
   @media (max-width: 600px) {
-    padding: 2rem 1rem;
+    padding: 2rem 0;
+  }
+`;
+
+const ContentContainer = styled.div`
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  position: relative;
+  z-index: 1;
+  
+  @media (max-width: 600px) {
+    padding: 0 1rem;
   }
 `;
 
@@ -111,8 +127,11 @@ const BrandsGrid = styled.div`
 `;
 
 const BrandCard = styled.button`
-  background: var(--bg-card);
-  border: 2px solid var(--border);
+  /* ✅ FIXED: Fully transparent background with glass effect - no orange color */
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
   padding: 1.5rem 1rem;
   cursor: pointer;
@@ -124,6 +143,14 @@ const BrandCard = styled.button`
   position: relative;
   overflow: hidden;
   opacity: 1;
+  color: var(--text-primary);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+
+  html[data-theme="dark"] & {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
 
   &::before {
     content: '';
@@ -132,16 +159,31 @@ const BrandCard = styled.button`
     left: 0;
     width: 100%;
     height: 100%;
-    background: var(--accent-orange);
+    background: rgba(255, 255, 255, 0.05);
     opacity: 0;
     transition: opacity 0.3s ease;
   }
-  &:hover::before { opacity: 0.1; }
+  
+  html[data-theme="dark"] &::before {
+    background: rgba(255, 255, 255, 0.03);
+  }
+  
+  &:hover::before { opacity: 1; }
   &:hover {
     transform: translateY(-8px);
-    box-shadow: var(--shadow-lg);
-    border-color: var(--accent-orange);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
   }
+  
+  html[data-theme="dark"] &:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    border-color: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.05);
+  }
+  
   &:active { transform: translateY(-4px); }
 `;
 
@@ -179,27 +221,56 @@ const BrandName = styled.div`
 // ✅ Removed CarCount component - no need to display car counts
 
 const ViewMoreButton = styled.button`
-  background: var(--accent-orange);
-  color: #000000;
   border: none;
-  border-radius: 8px;
+  border-radius: 12px;
   padding: 0.875rem 2rem;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   margin: 0 auto;
   display: block;
-  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+
+  /* Light mode: Orange gradient background, White text */
+  html[data-theme="light"] & {
+    background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 50%, #FFA500 100%) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.35) !important;
+  }
+
+  /* Dark mode: Yellow gradient background, Black text */
+  html[data-theme="dark"] & {
+    background: linear-gradient(135deg, #FFD700 0%, #FFC107 50%, #FFA000 100%) !important;
+    color: #000000 !important;
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4) !important;
+  }
   
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
-    opacity: 0.9;
+    transform: translateY(-3px);
+    html[data-theme="light"] & {
+      background: linear-gradient(135deg, #FF5722 0%, #FF6B35 50%, #FF8C42 100%) !important;
+      color: #ffffff !important;
+      box-shadow: 0 6px 20px rgba(255, 107, 53, 0.5) !important;
+    }
+    html[data-theme="dark"] & {
+      background: linear-gradient(135deg, #FFC107 0%, #FFD700 50%, #FFC107 100%) !important;
+      color: #000000 !important;
+      box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6) !important;
+    }
   }
   
   &:active {
-    transform: translateY(0);
+    transform: translateY(-1px);
+    html[data-theme="light"] & {
+      background: linear-gradient(135deg, #E64A19 0%, #FF5722 50%, #FF6B35 100%) !important;
+      color: #ffffff !important;
+    }
+    html[data-theme="dark"] & {
+      background: linear-gradient(135deg, #FFA000 0%, #FFC107 50%, #FFD700 100%) !important;
+      color: #000000 !important;
+    }
   }
   
   @media (max-width: 600px) {
@@ -230,45 +301,47 @@ const PopularBrandsSection: React.FC = () => {
 
   return (
     <SectionContainer>
-      <SectionHeader>
-        <SectionTitle>
-          {language === 'bg' ? 'Популярни Марки Автомобили' : 'Popular Car Brands'}
-        </SectionTitle>
-        <SectionSubtitle>
-          {language === 'bg' 
-            ? 'Разгледайте най-търсените марки автомобили в България' 
-            : 'Explore the most popular car brands in Bulgaria'}
-        </SectionSubtitle>
-      </SectionHeader>
+      <ContentContainer>
+        <SectionHeader>
+          <SectionTitle>
+            {language === 'bg' ? 'Популярни Марки Автомобили' : 'Popular Car Brands'}
+          </SectionTitle>
+          <SectionSubtitle>
+            {language === 'bg' 
+              ? 'Разгледайте най-търсените марки автомобили в България' 
+              : 'Explore the most popular car brands in Bulgaria'}
+          </SectionSubtitle>
+        </SectionHeader>
 
-      <BrandsGrid>
-        {POPULAR_BRANDS.map(brand => {
-          return (
-            <BrandCard
-              key={brand.id}
-              onClick={() => handleBrandClick(brand.id)}
-              title={`${language === 'bg' ? 'Преглед' : 'View'} ${getBrandName(brand)} ${language === 'bg' ? 'автомобили' : 'cars'}`}
-            >
-              <LogoContainer>
-                <img
-                  src={`/assets/images/professional_car_logos/${brand.logo}`}
-                  alt={brand.nameEn}
-                  loading="lazy"
-                  onError={(e) => {
-                    e.currentTarget.src = '/assets/images/logos/default-car.png';
-                  }}
-                />
-              </LogoContainer>
-              <BrandName>{getBrandName(brand)}</BrandName>
-            </BrandCard>
-          );
-        })}
-      </BrandsGrid>
+        <BrandsGrid>
+          {POPULAR_BRANDS.map(brand => {
+            return (
+              <BrandCard
+                key={brand.id}
+                onClick={() => handleBrandClick(brand.id)}
+                title={`${language === 'bg' ? 'Преглед' : 'View'} ${getBrandName(brand)} ${language === 'bg' ? 'автомобили' : 'cars'}`}
+              >
+                <LogoContainer>
+                  <img
+                    src={`/assets/images/professional_car_logos/${brand.logo}`}
+                    alt={brand.nameEn}
+                    loading="lazy"
+                    onError={(e) => {
+                      e.currentTarget.src = '/assets/images/logos/default-car.png';
+                    }}
+                  />
+                </LogoContainer>
+                <BrandName>{getBrandName(brand)}</BrandName>
+              </BrandCard>
+            );
+          })}
+        </BrandsGrid>
 
-      {/* View more button slight reduction for visual harmony */}
-      <ViewMoreButton onClick={handleViewMore} style={{ transform: 'scale(0.9)', transformOrigin: 'center' }}>
-        {language === 'bg' ? 'Виж Повече Марки' : 'More Brands'}
-      </ViewMoreButton>
+        {/* View more button */}
+        <ViewMoreButton onClick={handleViewMore}>
+          {language === 'bg' ? 'Виж Повече Марки' : 'More Brands'}
+        </ViewMoreButton>
+      </ContentContainer>
     </SectionContainer>
   );
 };

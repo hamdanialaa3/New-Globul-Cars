@@ -1,0 +1,13 @@
+// Bulgarian translations - Main export
+export { home } from './home';
+export { mapPage } from './mapPage';
+export { cars } from './cars';
+export { sell } from './sell';
+export { nav } from './nav';
+export { header } from './header';
+export { profileTypes } from './profileTypes';
+export { profile } from './profile';
+export { common } from './common';
+export { bodyTypes } from './bodyTypes';
+export { savedSearches } from './savedSearches';
+export { footer } from './footer';

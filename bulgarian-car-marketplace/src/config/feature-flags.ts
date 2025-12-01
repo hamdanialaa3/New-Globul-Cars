@@ -36,8 +36,9 @@ export const FEATURE_FLAGS = {
      * - Easier to maintain and test
      * 
      * Rollout: Week 1, Day 1-2
+     * ✅ STATUS: ACTIVE (Nov 26, 2025)
      */
-    USE_UNIFIED_AUTH_GUARD: false,
+    USE_UNIFIED_AUTH_GUARD: true,
 
     /**
      * USE_CLEAN_NAMING
@@ -54,6 +55,7 @@ export const FEATURE_FLAGS = {
      * - Better developer experience
      * 
      * Rollout: Week 1, Day 3
+     * ⏳ STATUS: PENDING (Future)
      */
     USE_CLEAN_NAMING: false,
 
@@ -68,8 +70,9 @@ export const FEATURE_FLAGS = {
      * - Easier to test provider hierarchy
      * 
      * Rollout: Week 1, Day 4
+     * ✅ STATUS: ACTIVE (Nov 26, 2025)
      */
-    USE_EXTRACTED_PROVIDERS: false,
+    USE_EXTRACTED_PROVIDERS: true,
 
     // ==========================================
     // Week 2: Route Extraction
@@ -82,8 +85,9 @@ export const FEATURE_FLAGS = {
      * If false, all route-specific flags below are ignored
      * 
      * Rollout: Week 2, Day 1-5
+     * ✅ STATUS: ACTIVE (Nov 26, 2025)
      */
-    USE_EXTRACTED_ROUTES: false,
+    USE_EXTRACTED_ROUTES: true,
 
     /**
      * USE_AUTH_ROUTES
@@ -92,11 +96,53 @@ export const FEATURE_FLAGS = {
      * Includes: Login, Register, Verification, OAuth Callback
      * 
      * Rollout: Week 2, Day 1-2
+     * ✅ STATUS: ACTIVE (Nov 26, 2025)
      */
-    USE_AUTH_ROUTES: false,
+    USE_AUTH_ROUTES: true,
 
     /**
      * USE_SELL_ROUTES
+     * 
+     * Extracts sell workflow routes into sell.routes.tsx
+     * Includes: ~25 routes for vehicle selling process
+     * 
+     * Rollout: Week 2, Day 3
+     * ✅ STATUS: ACTIVE (Nov 26, 2025)
+     */
+    USE_SELL_ROUTES: true,
+
+    /**
+     * USE_ADMIN_ROUTES
+     * 
+     * Extracts admin routes into admin.routes.tsx
+     * Includes: Admin dashboard, Super admin, Management
+     * 
+     * Rollout: Week 2, Day 4
+     * ✅ STATUS: ACTIVE (Nov 26, 2025)
+     */
+    USE_ADMIN_ROUTES: true,
+
+    /**
+     * USE_MAIN_ROUTES
+     * 
+     * Extracts main application routes into main.routes.tsx
+     * Includes: Home, Cars, Profile, Messages, etc.
+     * 
+     * Rollout: Week 2, Day 5
+     * ✅ STATUS: ACTIVE (Nov 26, 2025)
+     */
+    USE_MAIN_ROUTES: true,
+
+    /**
+     * USE_DEALER_ROUTES
+     * 
+     * Extracts dealer routes into dealer.routes.tsx
+     * Includes: Dealer pages, Dashboard, Registration
+     * 
+     * Rollout: Week 2, Day 5
+     * ✅ STATUS: ACTIVE (Nov 26, 2025)
+     */
+    USE_DEALER_ROUTES: true,
      * 
      * Extracts sell workflow routes into sell.routes.tsx
      * Includes: 20+ routes for the mobile.de-style sell flow

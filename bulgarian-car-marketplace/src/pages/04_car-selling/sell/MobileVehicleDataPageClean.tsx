@@ -14,7 +14,7 @@ import { CAR_YEARS } from '@/data/dropdown-options';
 import { SellProgressBar } from '@/components/SellWorkflow';
 import { useProfileType } from '@/contexts/ProfileTypeContext';
 import SellWorkflowStepStateService from '@/services/sellWorkflowStepState';
-import { useVehicleDataForm } from './VehicleData/useVehicleDataForm';
+import { useVehicleDataForm, getRegistrationYear } from './VehicleData/useVehicleDataForm';
 
 // Layout wrappers moved to styles
 import { S } from './MobileVehicleDataPage.styles';
@@ -62,12 +62,14 @@ export const MobileVehicleDataPageClean: React.FC = () => {
   ], []);
 
   useEffect(() => {
-    if (formData.make && formData.year) {
+    const registrationYear = getRegistrationYear(formData);
+
+    if (formData.make && registrationYear) {
       SellWorkflowStepStateService.markCompleted('vehicle-data');
     } else {
       SellWorkflowStepStateService.markPending('vehicle-data');
     }
-  }, [formData.make, formData.year]);
+  }, [formData]);
 
 
 

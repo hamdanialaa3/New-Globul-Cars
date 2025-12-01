@@ -33,6 +33,36 @@ const Container = styled.div`
       background: #adb5bd;
     }
   }
+  
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    &::-webkit-scrollbar-track {
+      background: #1e293b;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: #475569;
+      
+      &:hover {
+        background: #64748b;
+      }
+    }
+  }
+  
+  /* Light Mode Support */
+  html[data-theme="light"] & {
+    &::-webkit-scrollbar-track {
+      background: #f1f3f5;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: #dee2e6;
+      
+      &:hover {
+        background: #adb5bd;
+      }
+    }
+  }
 `;
 
 const ConversationItem = styled.div<{ $isSelected?: boolean }>`
@@ -52,6 +82,32 @@ const ConversationItem = styled.div<{ $isSelected?: boolean }>`
   & + & {
     border-top: 1px solid #f1f3f5;
   }
+  
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    background: ${p => p.$isSelected ? 'rgba(255, 121, 0, 0.15)' : '#1e293b'};
+    
+    &:hover {
+      background: ${p => p.$isSelected ? 'rgba(255, 121, 0, 0.15)' : '#334155'};
+    }
+    
+    & + & {
+      border-top-color: rgba(148, 163, 184, 0.1);
+    }
+  }
+  
+  /* Light Mode Support */
+  html[data-theme="light"] & {
+    background: ${p => p.$isSelected ? 'rgba(255, 121, 0, 0.08)' : 'white'};
+    
+    &:hover {
+      background: ${p => p.$isSelected ? 'rgba(255, 121, 0, 0.08)' : '#f8f9fa'};
+    }
+    
+    & + & {
+      border-top-color: #f1f3f5;
+    }
+  }
 `;
 
 const Avatar = styled.img`
@@ -61,6 +117,16 @@ const Avatar = styled.img`
   object-fit: cover;
   border: 2px solid #dee2e6;
   flex-shrink: 0;
+  
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    border-color: rgba(148, 163, 184, 0.3);
+  }
+  
+  /* Light Mode Support */
+  html[data-theme="light"] & {
+    border-color: #dee2e6;
+  }
 `;
 
 const Content = styled.div`
@@ -82,6 +148,16 @@ const Name = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    color: #e2e8f0;
+  }
+  
+  /* Light Mode Support */
+  html[data-theme="light"] & {
+    color: #212529;
+  }
 `;
 
 const Time = styled.div`
@@ -89,6 +165,16 @@ const Time = styled.div`
   color: #6c757d;
   white-space: nowrap;
   margin-left: 8px;
+  
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    color: #94a3b8;
+  }
+  
+  /* Light Mode Support */
+  html[data-theme="light"] & {
+    color: #6c757d;
+  }
 `;
 
 const MessagePreview = styled.div<{ $hasUnread?: boolean }>`
@@ -106,6 +192,16 @@ const MessagePreview = styled.div<{ $hasUnread?: boolean }>`
     width: 14px;
     height: 14px;
     flex-shrink: 0;
+  }
+  
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    color: ${p => p.$hasUnread ? '#e2e8f0' : '#94a3b8'};
+  }
+  
+  /* Light Mode Support */
+  html[data-theme="light"] & {
+    color: ${p => p.$hasUnread ? '#212529' : '#6c757d'};
   }
 `;
 
@@ -133,6 +229,18 @@ const OnlineIndicator = styled.div<{ $isOnline?: boolean }>`
   position: absolute;
   bottom: 2px;
   right: 2px;
+  
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    border-color: #1e293b;
+    background: ${p => p.$isOnline ? '#22c55e' : '#64748b'};
+  }
+  
+  /* Light Mode Support */
+  html[data-theme="light"] & {
+    border-color: white;
+    background: ${p => p.$isOnline ? '#22c55e' : '#6c757d'};
+  }
 `;
 
 const AvatarContainer = styled.div`
