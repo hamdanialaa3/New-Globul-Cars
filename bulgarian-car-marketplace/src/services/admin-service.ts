@@ -1,5 +1,6 @@
 // Admin Service for managing users and system permissions
 import { doc, getDoc, setDoc, updateDoc, collection, query, where, getDocs, deleteDoc } from 'firebase/firestore';
+import { queryAllCollections, countAllVehicles, VEHICLE_COLLECTIONS } from './search/multi-collection-helper';
 import { db } from '../firebase/firebase-config';
 import { serviceLogger } from './logger-wrapper';
 

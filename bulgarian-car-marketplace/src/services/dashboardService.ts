@@ -14,6 +14,7 @@ import {
 import { db } from '../firebase/firebase-config';
 import { CarListing } from '../types/CarListing';
 import { serviceLogger } from './logger-wrapper';
+import { queryAllCollections } from './search/multi-collection-helper';
 
 export interface DashboardStats {
   totalListings: number;
@@ -81,17 +82,10 @@ class DashboardService {
     }
 
     try {
-      // Get user's cars
-      const carsQuery = query(
-        collection(db, 'cars'),
+      // Get user's cars - ✅ ALL COLLECTIONS
+      const cars = await queryAllCollections(
         where('sellerId', '==', userId)
-      );
-      const carsSnapshot = await getDocs(carsQuery);
-      
-      const cars = carsSnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as CarListing[];
+      ) as CarListing[];
 
       // Calculate stats
       const totalListings = cars.length;
@@ -138,32 +132,27 @@ class DashboardService {
     }
 
     try {
-      const carsQuery = query(
-        collection(db, 'cars'),
+      // Get user's cars - ✅ ALL COLLECTIONS
+      const cars = await queryAllCollections(
         where('sellerId', '==', userId),
         orderBy('updatedAt', 'desc'),
         limit(limitCount)
-      );
+      ) as DashboardCar[];
       
-      const carsSnapshot = await getDocs(carsQuery);
-      
-      return carsSnapshot.docs.map(doc => {
-        const data = doc.data();
-        return {
-          id: doc.id,
-          title: data.title || `${data.make} ${data.model}`,
-          make: data.make || '',
-          model: data.model || '',
-          year: data.year || 0,
-          price: data.price || 0,
-          status: data.status || 'draft',
-          views: data.views || 0,
-          inquiries: data.inquiries || 0,
-          createdAt: data.createdAt?.toDate() || new Date(),
-          updatedAt: data.updatedAt?.toDate() || new Date(),
-          imageUrl: data.images?.[0] || undefined
-        };
-      });
+      return cars.map(car => ({
+        id: car.id,
+        title: car.title || `${car.make} ${car.model}`,
+        make: car.make || '',
+        model: car.model || '',
+        year: car.year || 0,
+        price: car.price || 0,
+        status: car.status || 'draft',
+        views: car.views || 0,
+        inquiries: car.inquiries || 0,
+        createdAt: car.createdAt || new Date(),
+        updatedAt: car.updatedAt || new Date(),
+        imageUrl: car.imageUrl
+      }));
     } catch (error) {
       const code = (error as { code?: string })?.code;
       if (code === 'permission-denied') {
@@ -299,12 +288,8 @@ class DashboardService {
       return () => {}; // Return empty unsubscribe function
     }
 
-    // Preflight: wait for indexes to be ready before attaching realtime listeners (reduces console spam)
-    const carsQueryRef = query(
-      collection(db, 'cars'),
-      where('sellerId', '==', userId),
-      orderBy('updatedAt', 'desc')
-    );
+    // Note: Multi-collection queries don't support onSnapshot, so we'll poll for cars
+    // and use real-time listeners only for messages/notifications
     const messagesQueryRef = query(
       collection(db, 'messages'),
       where('receiverId', '==', userId),
@@ -321,7 +306,6 @@ class DashboardService {
     const preflightCheck = async () => {
       try {
         await Promise.all([
-          getDocs(carsQueryRef),
           getDocs(messagesQueryRef),
           getDocs(notificationsQueryRef)
         ]);
@@ -342,32 +326,24 @@ class DashboardService {
     };
 
     let cancelled = false;
+    let carsPollingInterval: NodeJS.Timeout | null = null;
+    
     const attachListeners = () => {
       if (cancelled) return;
-      const carsUnsub = onSnapshot(carsQueryRef, async (snapshot) => {
-        const cars = snapshot.docs.map(doc => {
-          const data = doc.data();
-          return {
-            id: doc.id,
-            title: data.title || `${data.make} ${data.model}`,
-            make: data.make || '',
-            model: data.model || '',
-            year: data.year || 0,
-            price: data.price || 0,
-            status: data.status || 'draft',
-            views: data.views || 0,
-            inquiries: data.inquiries || 0,
-            createdAt: data.createdAt?.toDate() || new Date(),
-            updatedAt: data.updatedAt?.toDate() || new Date(),
-            imageUrl: data.images?.[0] || undefined
-          };
-        });
-        onCarsUpdate(cars);
-        const stats = await this.calculateStatsFromCars(cars);
-        onStatsUpdate(stats);
-      }, (err) => {
-        serviceLogger.warn('[DashboardService] Cars snapshot error', { error: err });
-      });
+      
+      // Poll cars data every 10 seconds (can't use onSnapshot with multi-collection)
+      const pollCars = async () => {
+        try {
+          const cars = await this.getRecentCars(userId, 5);
+          onCarsUpdate(cars);
+          const stats = await this.calculateStatsFromCars(cars);
+          onStatsUpdate(stats);
+        } catch (error) {
+          serviceLogger.error('[SERVICE] Error polling cars', error as Error);
+        }
+      };
+      pollCars(); // Initial fetch
+      carsPollingInterval = setInterval(pollCars, 10000);
 
       const messagesUnsub = onSnapshot(messagesQueryRef, async (snapshot) => {
         const messages = await Promise.all(
@@ -414,7 +390,7 @@ class DashboardService {
         serviceLogger.warn('[DashboardService] Notifications snapshot error', { error: err });
       });
 
-      this.unsubscribeFunctions = [carsUnsub, messagesUnsub, notificationsUnsub];
+      this.unsubscribeFunctions = [messagesUnsub, notificationsUnsub];
     };
 
     // Retry loop with exponential-ish backoff (fixed step + cap)
@@ -434,6 +410,7 @@ class DashboardService {
 
     return () => {
       cancelled = true;
+      if (carsPollingInterval) clearInterval(carsPollingInterval);
       this.unsubscribeFunctions.forEach(u => u && u());
       this.unsubscribeFunctions = [];
     };
@@ -507,11 +484,7 @@ class DashboardService {
     onNotificationsUpdate: (notifications: DashboardNotification[]) => void
   ): () => void {
     // Preflight: wait for indexes to be ready before attaching realtime listeners (reduces console spam)
-    const carsQueryRef = query(
-      collection(db, 'cars'),
-      where('sellerId', '==', userId),
-      orderBy('updatedAt', 'desc')
-    );
+    // Note: Multi-collection queries don't use onSnapshot, so we'll use polling for cars
     const messagesQueryRef = query(
       collection(db, 'messages'),
       where('receiverId', '==', userId),

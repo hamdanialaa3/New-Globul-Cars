@@ -2,6 +2,7 @@
 // خدمة حساب السيارات حسب المدن البلغارية
 
 import { collection, query, where, getDocs, getCountFromServer } from 'firebase/firestore';
+import { queryAllCollections, countAllVehicles, VEHICLE_COLLECTIONS } from './search/multi-collection-helper';
 import { db } from '../firebase/firebase-config';
 import { BULGARIAN_CITIES } from '../constants/bulgarianCities';
 import { serviceLogger } from './logger-wrapper';
@@ -28,17 +29,15 @@ export class CityCarCountService {
     }
 
     try {
-      // ✅ FIXED: Query using REGION (not city!)
+      // ✅ FIXED: Query ALL vehicle collections using REGION (not city!)
       // cityId parameter is actually regionId (e.g., 'varna')
-      const q = query(
-        collection(db, 'cars'),
+      const cars = await queryAllCollections(
         where('region', '==', cityId),
         where('status', '==', 'active'),
         where('isSold', '==', false)
       );
 
-      const snapshot = await getCountFromServer(q);
-      const count = snapshot.data().count;
+      const count = cars.length;
 
       // Cache the result
       this.cache[cityId] = {

@@ -1,4 +1,5 @@
 import { collection, getDocs, query, limit } from 'firebase/firestore';
+import { queryAllCollections, countAllVehicles, VEHICLE_COLLECTIONS } from './search/multi-collection-helper';
 import { db } from '../firebase/firebase-config';
 import { serviceLogger } from './logger-wrapper';
 
@@ -28,14 +29,10 @@ class FirebaseDebugService {
       }));
         serviceLogger.debug('Users data', { users });
 
-      // Check cars collection
-      const carsSnapshot = await getDocs(collection(db, 'cars'));
-        serviceLogger.debug('Cars found', { count: carsSnapshot.docs.length });
-      const cars = carsSnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-        serviceLogger.debug('Cars data', { cars });
+      // Check cars collection - ✅ ALL COLLECTIONS
+      const cars = await queryAllCollections();
+      serviceLogger.debug('Cars found', { count: cars.length });
+      serviceLogger.debug('Cars data', { cars });
 
       // Check messages collection
       const messagesSnapshot = await getDocs(collection(db, 'messages'));
@@ -52,7 +49,7 @@ class FirebaseDebugService {
           data: users
         },
         cars: {
-          count: carsSnapshot.docs.length,
+          count: cars.length,
           data: cars
         },
         messages: {

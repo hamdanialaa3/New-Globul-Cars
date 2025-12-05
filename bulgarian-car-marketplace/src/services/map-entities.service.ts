@@ -1,4 +1,5 @@
 import { collection, getDocs, query, where, limit } from 'firebase/firestore';
+import { queryAllCollections, countAllVehicles, VEHICLE_COLLECTIONS } from './search/multi-collection-helper';
 import { db } from '../firebase';
 import { BULGARIAN_CITIES } from '../constants/bulgarianCities';
 

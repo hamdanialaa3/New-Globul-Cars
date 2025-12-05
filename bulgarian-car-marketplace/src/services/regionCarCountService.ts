@@ -2,6 +2,7 @@
 // خدمة حساب السيارات حسب المحافظات البلغارية
 
 import { collection, query, where, getDocs, getCountFromServer } from 'firebase/firestore';
+import { queryAllCollections, countAllVehicles, VEHICLE_COLLECTIONS } from './search/multi-collection-helper';
 import { db } from '../firebase/firebase-config';
 import { serviceLogger } from './logger-wrapper';
 
@@ -28,16 +29,13 @@ export class RegionCarCountService {
     try {
       serviceLogger.debug('Fetching car count for region', { regionId });
       
-      // Query cars collection where region matches
-      const q = query(
-        collection(db, 'cars'),
+      // ✅ Query ALL vehicle collections
+      const cars = await queryAllCollections(
         where('status', '==', 'active'),
         where('region', '==', regionId)
       );
 
-      // Use getCountFromServer for better performance
-      const snapshot = await getCountFromServer(q);
-      const count = snapshot.data().count;
+      const count = cars.length;
 
       // Cache the result
       this.cache[regionId] = {

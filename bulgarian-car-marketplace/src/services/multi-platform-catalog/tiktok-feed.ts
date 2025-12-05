@@ -3,6 +3,7 @@
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
 import { collection, getDocs, query, where, orderBy, limit } from 'firebase/firestore';
+import { queryAllCollections, countAllVehicles, VEHICLE_COLLECTIONS } from '../search/multi-collection-helper';
 import { db } from '../../firebase/firebase-config';
 
 interface TikTokProductItem {
