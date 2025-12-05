@@ -18,7 +18,7 @@ import ErrorBoundary from './components/ErrorBoundary';
 import { SkipNavigation } from './components/Accessibility';
 const Header = React.lazy(() => import('./components/Header/UnifiedHeader'));
 const MobileHeader = React.lazy(() => import('./components/Header/MobileHeader'));
-const MobileBottomNav = React.lazy(() => import('./components/layout').then(module => ({ default: module.MobileBottomNav })));
+const MobileBottomNav = React.lazy(() => import('./components/layout/MobileBottomNav'));
 const Footer = React.lazy(() => import('./components/Footer/Footer'));
 import { AuthGuard } from './components/guards';
 import { AppProviders } from './providers';
@@ -468,26 +468,22 @@ const MainLayout: React.FC = () => {
         <Route path="/verification" element={<VerificationPage />} />  {/* NEW: Verification System */}
         <Route path="/billing" element={<BillingPage />} />  {/* NEW: Billing System */}
         
-        {/* NEW: Subscription Success & Cancel Pages */}
-        <Route 
-          path="/billing/success" 
+        {/* Payment & Billing Routes - Success & Cancel Pages */}
+        <Route
+          path="/billing/success"
           element={
             <AuthGuard requireAuth={true}>
-              <React.Suspense fallback={<LoadingSpinner />}>
-                {React.createElement(React.lazy(() => import('./pages/billing/SuccessPage')))}
-              </React.Suspense>
+              <BillingSuccessPage />
             </AuthGuard>
-          } 
+          }
         />
-        <Route 
-          path="/billing/cancel" 
+        <Route
+          path="/billing/canceled"
           element={
             <AuthGuard requireAuth={true}>
-              <React.Suspense fallback={<LoadingSpinner />}>
-                {React.createElement(React.lazy(() => import('./pages/billing/CancelPage')))}
-              </React.Suspense>
+              <BillingCanceledPage />
             </AuthGuard>
-          } 
+          }
         />
 
         {/* NEW: Payment & Checkout Routes */}
@@ -504,22 +500,6 @@ const MainLayout: React.FC = () => {
           element={
             <AuthGuard requireAuth={true}>
               <PaymentSuccessPage />
-            </AuthGuard>
-          }
-        />
-        <Route
-          path="/billing/success"
-          element={
-            <AuthGuard requireAuth={true}>
-              <BillingSuccessPage />
-            </AuthGuard>
-          }
-        />
-        <Route
-          path="/billing/canceled"
-          element={
-            <AuthGuard requireAuth={true}>
-              <BillingCanceledPage />
             </AuthGuard>
           }
         />
@@ -548,8 +528,16 @@ const MainLayout: React.FC = () => {
         <Route
           path="/admin"
           element={
-            <AuthGuard requireAuth={true}>
+            <AuthGuard requireAuth={true} requireAdmin={true}>
               <AdminPage />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/admin/dashboard"
+          element={
+            <AuthGuard requireAuth={true} requireAdmin={true}>
+              <AdminDashboard />
             </AuthGuard>
           }
         />
@@ -617,14 +605,6 @@ const MainLayout: React.FC = () => {
           element={
             <AuthGuard requireAuth={true}>
               <DashboardPage />
-            </AuthGuard>
-          }
-        />
-        <Route
-          path="/admin"
-          element={
-            <AuthGuard requireAuth={true} requireAdmin={true}>
-              <AdminDashboard />
             </AuthGuard>
           }
         />
