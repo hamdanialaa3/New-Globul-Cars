@@ -83,8 +83,9 @@ export function buildFirestoreQuery(filters: InputFilters, options: QueryBuilder
     }
   });
 
-  // Sorting
-  q = query(q, orderBy(sortField!, sortDirection));
+  // ⚡ TEMPORARY: Removed orderBy to avoid index requirement
+  // TODO: Re-enable after creating Firestore indexes (status + createdAt/sortField)
+  // q = query(q, orderBy(sortField!, sortDirection));
 
   // Limit
   q = query(q, limit(maxResults!));

@@ -16,6 +16,7 @@
 import { logger } from '../../services/logger-service';
 import { runUnifiedQuery } from './queryOrchestrator';
 import { SearchData } from '../../pages/05_search-browse/advanced-search/AdvancedSearchPage/types';
+import { queryAllCollections } from '../multi-collection-helper';
 
 export interface SearchQuery {
   text?: string;
