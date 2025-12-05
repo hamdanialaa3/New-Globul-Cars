@@ -1,16 +1,8 @@
 // src/features/billing/types.ts
 // Billing System Types
 
-export type PlanTier = 
-  | 'free' 
-  | 'premium' 
-  | 'dealer_basic' 
-  | 'dealer_pro' 
-  | 'dealer_enterprise' 
-  | 'company_starter' 
-  | 'company_pro' 
-  | 'company_enterprise' 
-  | 'custom';
+// Updated December 2025 - Simplified to 3 plans
+export type PlanTier = 'free' | 'dealer' | 'company';
 
 export type PlanStatus = 'active' | 'trial' | 'past_due' | 'canceled';
 

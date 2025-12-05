@@ -1,8 +1,9 @@
+import { logger } from '../../../services/logger-service';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { X } from 'lucide-react';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { useProfile } from '@/pages/03_user-pages/profile/ProfilePage/hooks/useProfile';
+import { useLanguage } from '../../../contexts/LanguageContext';
+import { useProfile } from '../../../pages/03_user-pages/profile/ProfilePage/hooks/useProfile';
 import { toast } from 'react-toastify';
 
 interface NameEditModalProps {
@@ -58,7 +59,7 @@ const NameEditModal: React.FC<NameEditModalProps> = ({ onClose }) => {
       toast.success(text.success);
       onClose();
     } catch (error) {
-      console.error('Error updating name:', error);
+      logger.error('Error updating name:', error);
       toast.error(text.error);
     } finally {
       setLoading(false);

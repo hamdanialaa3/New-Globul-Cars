@@ -1,3 +1,4 @@
+import { logger } from '../logger-service';
 // src/services/garage/car-delete.service.ts
 // Complete Car Delete Service
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
@@ -161,7 +162,7 @@ class CarDeleteService {
         const imageRef = ref(storage, imageUrl);
         deletePromises.push(deleteObject(imageRef));
       } catch (error) {
-        console.error('Error deleting image:', imageUrl, error);
+        logger.error('Error deleting image:', imageUrl, error);
       }
     }
 

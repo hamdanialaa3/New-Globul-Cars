@@ -2,8 +2,8 @@
 // خدمة حساب السيارات حسب المدن البلغارية
 
 import { collection, query, where, getDocs, getCountFromServer } from 'firebase/firestore';
-import { db } from '@/firebase/firebase-config';
-import { BULGARIAN_CITIES } from '@/constants/bulgarianCities';
+import { db } from '../firebase/firebase-config';
+import { BULGARIAN_CITIES } from '../constants/bulgarianCities';
 import { serviceLogger } from './logger-wrapper';
 
 interface CityCount {

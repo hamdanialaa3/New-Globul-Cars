@@ -1,3 +1,4 @@
+import { logger } from '../../services/logger-service';
 // src/components/Consultations/RequestConsultationModal.tsx
 // Request Consultation Modal
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
@@ -204,7 +205,7 @@ export const RequestConsultationModal: React.FC<RequestConsultationModalProps> =
       onSuccess?.();
       onClose();
     } catch (error) {
-      console.error('Error requesting consultation:', error);
+      logger.error('Error requesting consultation:', error);
       alert(language === 'bg' 
         ? 'Грешка при изпращане на заявката' 
         : 'Error sending request');

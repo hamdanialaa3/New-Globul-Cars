@@ -1,7 +1,7 @@
 // src/utils/errorHandling.ts
 // Error handling utilities for Bulgarian Car Marketplace
 
-import { logger } from '@/services/logger-service';
+import { logger } from '../services/logger-service';
 
 export interface AppError {
   code: string;
@@ -232,7 +232,7 @@ export const handleAsyncError = async <T>(
 
 // Hook for handling errors in React components
 export const useErrorHandler = () => {
-  const handleError = (error: any, context?: string) => {
+  const handleError = (error: Error | unknown, context?: string) => {
     let appError: AppError;
 
     if (error.code && error.code.startsWith('auth/')) {

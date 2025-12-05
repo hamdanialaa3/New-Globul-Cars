@@ -91,27 +91,27 @@ export const InteriorSection: React.FC<InteriorSectionProps> = ({
               <label>{t('advancedSearch.extras')}</label>
               <CheckboxGroup>
                 {[
-                  t('advancedSearch.absExtras'),
-                  t('advancedSearch.edcExtras'),
-                  t('advancedSearch.navigationExtras'),
-                  t('advancedSearch.electricWindowsExtras'),
-                  t('advancedSearch.electricSeatsExtras'),
-                  t('advancedSearch.airConditioningExtras'),
-                  t('advancedSearch.cruiseControlExtras'),
-                  t('advancedSearch.alloyWheelsExtras'),
-                  t('advancedSearch.xenonHeadlightsExtras'),
-                  t('advancedSearch.panoramaRoofExtras'),
-                  t('advancedSearch.bluetoothExtras'),
-                  t('advancedSearch.heatedSeatsExtras')
+                  { key: 'abs', label: t('advancedSearch.absExtras') },
+                  { key: 'edc', label: t('advancedSearch.edcExtras') },
+                  { key: 'navigation', label: t('advancedSearch.navigationExtras') },
+                  { key: 'electricWindows', label: t('advancedSearch.electricWindowsExtras') },
+                  { key: 'electricSeats', label: t('advancedSearch.electricSeatsExtras') },
+                  { key: 'airConditioning', label: t('advancedSearch.airConditioningExtras') },
+                  { key: 'cruiseControl', label: t('advancedSearch.cruiseControlExtras') },
+                  { key: 'alloyWheels', label: t('advancedSearch.alloyWheelsExtras') },
+                  { key: 'xenonHeadlights', label: t('advancedSearch.xenonHeadlightsExtras') },
+                  { key: 'panoramaRoof', label: t('advancedSearch.panoramaRoofExtras') },
+                  { key: 'bluetooth', label: t('advancedSearch.bluetoothExtras') },
+                  { key: 'heatedSeats', label: t('advancedSearch.heatedSeatsExtras') }
                 ].map(extra => (
-                  <CheckboxLabel key={extra}>
+                  <CheckboxLabel key={extra.key}>
                     <input
                       type="checkbox"
-                      checked={searchData.extras.includes(extra)}
-                      onChange={() => onCheckboxToggle('extras', extra)}
+                      checked={searchData.extras.includes(extra.key)}
+                      onChange={() => onCheckboxToggle('extras', extra.key)}
                     />
-                    <CustomCheckbox checked={searchData.extras.includes(extra)} />
-                    {extra}
+                    <CustomCheckbox checked={searchData.extras.includes(extra.key)} />
+                    {extra.label}
                   </CheckboxLabel>
                 ))}
               </CheckboxGroup>

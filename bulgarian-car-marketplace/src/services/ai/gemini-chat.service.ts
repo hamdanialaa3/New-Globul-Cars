@@ -1,10 +1,10 @@
 // Gemini Chat Service - Uses Cloud Function for server-side calls
 // خدمة الدردشة Gemini - عبر دالة سحابية لزيادة الأمان وإدارة الحصص
 
-import { AIChatContext, PriceSuggestion, ProfileAnalysis } from '@/types/ai.types';
+import { AIChatContext, PriceSuggestion, ProfileAnalysis } from '../../types/ai.types';
 import { logger } from '../logger-service';
 import { aiQuotaService } from './ai-quota.service';
-import { functions } from '@/firebase/firebase-config';
+import { functions } from '../../firebase/firebase-config';
 import { httpsCallable } from 'firebase/functions';
 
 class GeminiChatService {

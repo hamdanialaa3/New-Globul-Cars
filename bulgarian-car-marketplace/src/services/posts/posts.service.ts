@@ -3,7 +3,7 @@
 // English/Bulgarian bilingual. No emojis. <300 lines.
 
 import { collection, doc, getDocs, addDoc, updateDoc, deleteDoc, query, where, orderBy, limit, Timestamp } from 'firebase/firestore';
-import { db } from '@/firebase';
+import { db } from '../../firebase';
 
 export interface PostContent {
   title: { bg: string; en: string };

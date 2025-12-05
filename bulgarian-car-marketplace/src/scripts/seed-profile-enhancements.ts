@@ -1,3 +1,4 @@
+import { logger } from '../services/logger-service';
 /**
  * Seed Profile Enhancements Data
  * Creates sample data for testing Phase 1 & Phase 2 features
@@ -6,7 +7,7 @@
  */
 
 import { collection, doc, setDoc, Timestamp } from 'firebase/firestore';
-import { db } from '@/firebase/firebase-config';
+import { db } from '../firebase/firebase-config';
 
 // Replace with actual user IDs from your Firebase project
 const TEST_USER_IDS = [
@@ -56,7 +57,7 @@ async function seedGroups() {
       createdAt: Timestamp.now(),
       updatedAt: Timestamp.now()
     });
-    console.log(`Created group: ${group.name}`);
+    logger.info(`Created group: ${group.name}`);
   }
 }
 
@@ -127,7 +128,7 @@ async function seedChallenges() {
       ...challenge,
       createdAt: Timestamp.now()
     });
-    console.log(`Created challenge: ${challenge.title}`);
+    logger.info(`Created challenge: ${challenge.title}`);
   }
 }
 
@@ -165,7 +166,7 @@ async function seedTransactions(userId: string) {
       userId,
       createdAt: Timestamp.now()
     });
-    console.log(`Created transaction for user ${userId}: ${transaction.carMake} ${transaction.carModel}`);
+    logger.info(`Created transaction for user ${userId}: ${transaction.carMake} ${transaction.carModel}`);
   }
 }
 
@@ -189,7 +190,7 @@ async function seedAvailabilityCalendar(userId: string) {
     customDates: [],
     updatedAt: Timestamp.now()
   });
-  console.log(`Created availability calendar for user ${userId}`);
+  logger.info(`Created availability calendar for user ${userId}`);
 }
 
 /**
@@ -197,7 +198,7 @@ async function seedAvailabilityCalendar(userId: string) {
  */
 export async function seedProfileEnhancements() {
   try {
-    console.log('Starting to seed profile enhancements data...');
+    logger.info('Starting to seed profile enhancements data...');
     
     await seedGroups();
     await seedChallenges();
@@ -208,9 +209,9 @@ export async function seedProfileEnhancements() {
       await seedAvailabilityCalendar(userId);
     }
     
-    console.log('✅ Profile enhancements data seeded successfully!');
+    logger.info('✅ Profile enhancements data seeded successfully!');
   } catch (error) {
-    console.error('❌ Error seeding data:', error);
+    logger.error('❌ Error seeding data:', error);
     throw error;
   }
 }

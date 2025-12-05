@@ -37,10 +37,10 @@ import {
   ChevronRight,
   User
 } from 'lucide-react';
-import { CarListing } from '@/types/CarListing';
-import StaticMapEmbed from '@/components/StaticMapEmbed';
-import GlobulCarLogo from '@/components/icons/GlobulCarLogo';
-import { useTheme } from '@/contexts/ThemeContext';
+import { CarListing } from '../../../types/CarListing';
+import StaticMapEmbed from '../../../components/StaticMapEmbed';
+import GlobulCarLogo from '../../../components/icons/GlobulCarLogo';
+import { useTheme } from '../../../contexts/ThemeContext';
 
 interface CarDetailsGermanStyleProps {
   car: CarListing;

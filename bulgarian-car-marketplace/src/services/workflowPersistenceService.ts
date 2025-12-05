@@ -4,7 +4,7 @@
 import ImageOptimizationService from './imageOptimizationService';
 import { serviceLogger } from './logger-wrapper';
 import SellWorkflowStepStateService from './sellWorkflowStepState';
-import { SELL_WORKFLOW_STEP_ORDER } from '@/constants/sellWorkflowSteps';
+import { SELL_WORKFLOW_STEP_ORDER } from '../constants/sellWorkflowSteps';
 
 const STORAGE_KEY = 'globul_sell_workflow_state';
 const IMAGES_KEY = 'globul_sell_workflow_images';

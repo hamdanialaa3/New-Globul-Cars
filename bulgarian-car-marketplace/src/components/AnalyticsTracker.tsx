@@ -1,3 +1,4 @@
+import { logger } from '../services/logger-service';
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
@@ -29,7 +30,7 @@ class AnalyticsService {
     if (process.env.NODE_ENV === 'production') {
       this.sendToAnalytics(event);
     } else {
-      console.log('Analytics Event:', event);
+      logger.info('Analytics Event:', event);
     }
   }
 
@@ -77,7 +78,7 @@ class AnalyticsService {
   private sendToAnalytics(event: AnalyticsEvent) {
     // Skip analytics in development mode
     if (process.env.NODE_ENV === 'development') {
-      console.log('Analytics event (dev mode):', event);
+      logger.info('Analytics event (dev mode):', event);
       return;
     }
 
@@ -89,7 +90,7 @@ class AnalyticsService {
       },
       body: JSON.stringify(event)
     }).catch(error => {
-      console.error('Analytics error:', error);
+      logger.error('Analytics error:', error);
     });
   }
 

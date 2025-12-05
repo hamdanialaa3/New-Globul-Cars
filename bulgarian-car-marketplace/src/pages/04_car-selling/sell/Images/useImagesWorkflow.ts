@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import WorkflowPersistenceService from '@/services/workflowPersistenceService';
-import useSellWorkflow from '@/hooks/useSellWorkflow';
-import { logger } from '@/services/logger-service';
+import WorkflowPersistenceService from '../../../../services/workflowPersistenceService';
+import useSellWorkflow from '../../../../hooks/useSellWorkflow';
+import { logger } from '../../../../services/logger-service';
 
 const MAX_IMAGES = 20;
 

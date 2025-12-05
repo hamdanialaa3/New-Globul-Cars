@@ -1,7 +1,7 @@
 // Performance Monitoring Utilities
 // أدوات مراقبة الأداء
 
-import { logger } from '@/services/logger-service';
+import { logger } from '../services/logger-service';
 
 /**
  * Measure and log Web Vitals

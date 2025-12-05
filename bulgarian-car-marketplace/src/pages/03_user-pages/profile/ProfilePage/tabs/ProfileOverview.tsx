@@ -5,14 +5,15 @@
 import React from 'react';
 import { useOutletContext } from 'react-router-dom';
 import styled from 'styled-components';
-import type { BulgarianUser } from '@/types/user/bulgarian-user.types';
-import type { ProfileTheme } from '@/contexts/ProfileTypeContext';
-import ProfileDashboard from '@/components/Profile/ProfileDashboard';
-import PrivateProfile from '@/components/PrivateProfile';
-import DealerProfile from '@/components/DealerProfile';
-import CompanyProfile from '@/components/CompanyProfile';
+import type { BulgarianUser } from '../../../../../types/user/bulgarian-user.types';
+import type { ProfileTheme } from '../../../../../contexts/ProfileTypeContext';
+import ProfileDashboard from '../../../../../components/Profile/ProfileDashboard';
+import PrivateProfile from '../../../../../components/PrivateProfile';
+import DealerProfile from '../../../../../components/DealerProfile';
+import CompanyProfile from '../../../../../components/CompanyProfile';
 import { PublicProfileView } from './PublicProfileView';
 import type { ProfileCar } from '../types';
+import CurrentPlanCard from '../components/CurrentPlanCard';
 // Profile Enhancements
 import {
   // Phase 1
@@ -29,13 +30,13 @@ import {
   IntroVideoSection,
   LeaderboardSection,
   AchievementsGallerySection
-} from '@/components/Profile/Enhancements';
+} from '../../../../../components/Profile/Enhancements';
 
 interface ProfileOverviewProps {
-  user: BulgarianUser | null;
-  userCars: ProfileCar[];
-  theme: ProfileTheme;
-  isOwnProfile: boolean;
+  user?: BulgarianUser | null;
+  userCars?: ProfileCar[];
+  theme?: ProfileTheme;
+  isOwnProfile?: boolean;
   onEditClick?: () => void;
 }
 
@@ -76,26 +77,26 @@ export const ProfileOverview: React.FC<ProfileOverviewProps> = (props) => {
     switch (user.profileType) {
       case 'dealer':
         return (
-          <DealerProfile 
-            user={user} 
-            userCars={userCars} 
+          <DealerProfile
+            user={user}
+            userCars={userCars}
             isOwner={isOwnProfile}
           />
         );
       case 'company':
         return (
-          <CompanyProfile 
-            user={user} 
-            userCars={userCars} 
+          <CompanyProfile
+            user={user}
+            userCars={userCars}
             isOwner={isOwnProfile}
           />
         );
       case 'private':
       default:
         return (
-          <PrivateProfile 
-            user={user} 
-            userCars={userCars} 
+          <PrivateProfile
+            user={user}
+            userCars={userCars}
             isOwner={isOwnProfile}
           />
         );
@@ -104,25 +105,30 @@ export const ProfileOverview: React.FC<ProfileOverviewProps> = (props) => {
 
   return (
     <OverviewContainer>
+      {/* Current Subscription Plan Card - Show first for own profile */}
+      {isOwnProfile && (
+        <CurrentPlanCard profileType={user.profileType || 'private'} />
+      )}
+
       {showDashboard && <ProfileDashboard user={user} />}
-      
+
       {/* Profile Enhancements - Phase 1 */}
       <PointsLevelsSection userId={user.uid} isOwnProfile={isOwnProfile} />
       <CarStorySection userId={user.uid} isOwnProfile={isOwnProfile} />
       <SuccessStoriesSection userId={user.uid} isOwnProfile={isOwnProfile} />
       <TrustNetworkSection userId={user.uid} isOwnProfile={isOwnProfile} />
-      
+
       {/* Profile Enhancements - Phase 2 */}
       <GroupsSection userId={user.uid} isOwnProfile={isOwnProfile} />
       <ChallengesSection userId={user.uid} isOwnProfile={isOwnProfile} />
       <TransactionsSection userId={user.uid} isOwnProfile={isOwnProfile} />
       <AvailabilityCalendarSection userId={user.uid} isOwnProfile={isOwnProfile} />
-      
+
       {/* Profile Enhancements - Phase 3 */}
       <IntroVideoSection userId={user.uid} isOwnProfile={isOwnProfile} />
       <LeaderboardSection userId={user.uid} isOwnProfile={isOwnProfile} />
       <AchievementsGallerySection userId={user.uid} isOwnProfile={isOwnProfile} />
-      
+
       {renderProfile()}
     </OverviewContainer>
   );

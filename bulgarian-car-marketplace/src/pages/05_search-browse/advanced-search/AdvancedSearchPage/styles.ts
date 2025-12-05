@@ -5,17 +5,17 @@ import styled from 'styled-components';
 
 // 🎨 ألوان افتراضية قابلة لإعادة الاستخدام
 export const defaultColors = {
-  primary: '#ff6b00',
-  secondary: '#0f172a',
-  text: '#f5f6fa',
-  textSecondary: '#b5b8c4',
-  background: '#1b1f2a',
-  card: '#242936',
-  border: '#2f3544',
-  accent: '#ff4d4f',
-  muted: '#3c4152',
-  success: '#2fff00',
-  error: '#ff3b30'
+  primary: 'var(--accent-primary, #FF8F10)',
+  secondary: 'var(--bg-secondary, #1A1F2E)',
+  text: 'var(--text-primary, #1A1D2E)',
+  textSecondary: 'var(--text-secondary, #6b7280)',
+  background: 'var(--bg-primary, #FAFBFC)',
+  card: 'var(--bg-card, #FFFFFF)',
+  border: 'var(--border-primary, #E2E8F0)',
+  accent: 'var(--accent-orange, #FF8F10)',
+  muted: 'var(--bg-hover, #F5F7FA)',
+  success: 'var(--success, #10B981)',
+  error: 'var(--error, #EF4444)'
 };
 
 // 🧱 الحاوية الرئيسية
@@ -103,7 +103,7 @@ export const SectionHeader = styled.div<{
   border: 1px solid ${({ $isOpen }) => ($isOpen ? defaultColors.accent : 'var(--as-border)')};
 
   &:hover {
-    background: #2f3649;
+    background: var(--bg-hover);
   }
 `;
 
@@ -214,8 +214,8 @@ export const SearchSelect = styled.select<{
   cursor: pointer;
 
   option {
-    background: #1d212d;
-    color: var(--as-text);
+    background: var(--bg-card);
+    color: var(--text-primary);
   }
 `;
 
@@ -265,7 +265,7 @@ export const CustomCheckbox = styled.div<{ checked: boolean }>`
   &::after {
     content: '✓';
     font-size: 12px;
-    color: #0f172a;
+    color: white;
     opacity: ${({ checked }) => (checked ? 1 : 0)};
     transform: ${({ checked }) => (checked ? 'scale(1)' : 'scale(0.4)')};
     transition: all 0.15s ease;

@@ -3,30 +3,31 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { useAuth } from '@/contexts/AuthProvider';
-import SplitScreenLayout from '@/components/SplitScreenLayout';
-import { WorkflowFlow } from '@/components/WorkflowVisualization';
-import SellWorkflowService from '@/services/sellWorkflowService';
-import SelectWithOther from '@/components/shared/SelectWithOther';
-import { CURRENCIES, PRICE_TYPES, AVAILABLE_HOURS } from '@/data/dropdown-options';
+import { useLanguage } from '../../../contexts/LanguageContext';
+import { useAuth } from '../../../contexts/AuthProvider';
+import SplitScreenLayout from '../../../components/SplitScreenLayout';
+import { WorkflowFlow } from '../../../components/WorkflowVisualization';
+import SellWorkflowService from '../../../services/sellWorkflowService';
+import { carValidationService, ValidationResult } from '../../../services/validation/car-validation.service';
+import SelectWithOther from '../../../components/shared/SelectWithOther';
+import { CURRENCIES, PRICE_TYPES, AVAILABLE_HOURS } from '../../../data/dropdown-options';
 import * as S from './UnifiedContactStyles';
 import { toast } from 'react-toastify';
-import { ErrorMessages, getErrorMessage } from '@/constants/ErrorMessages';
-import ReviewSummary from '@/components/ReviewSummary';
-import ImageUploadProgress from '@/components/ImageUploadProgress';
-import KeyboardShortcutsHelper from '@/components/KeyboardShortcutsHelper';
-import useDraftAutoSave from '@/hooks/useDraftAutoSave';
-import { useSellWorkflow } from '@/hooks/useSellWorkflow';
-import useWorkflowStep from '@/hooks/useWorkflowStep';
-import WorkflowPersistenceService from '@/services/workflowPersistenceService';
-import ImageUploadService from '@/services/image-upload-service';
-import { logger } from '@/services/logger-service';
-import { SellWorkflowLayout } from '@/components/SellWorkflow';
-import SellWorkflowStepStateService from '@/services/sellWorkflowStepState';
+import { ErrorMessages, getErrorMessage } from '../../../constants/ErrorMessages';
+import ReviewSummary from '../../../components/ReviewSummary';
+import ImageUploadProgress from '../../../components/ImageUploadProgress';
+import KeyboardShortcutsHelper from '../../../components/KeyboardShortcutsHelper';
+import useDraftAutoSave from '../../../hooks/useDraftAutoSave';
+import { useSellWorkflow } from '../../../hooks/useSellWorkflow';
+import useWorkflowStep from '../../../hooks/useWorkflowStep';
+import WorkflowPersistenceService from '../../../services/workflowPersistenceService';
+import ImageUploadService from '../../../services/image-upload-service';
+import { logger } from '../../../services/logger-service';
+import { SellWorkflowLayout } from '../../../components/SellWorkflow';
+import SellWorkflowStepStateService from '../../../services/sellWorkflowStepState';
 import { useContactForm } from './Contact/useContactForm';
 import { CONTACT_METHODS } from './Contact/contactConstants';
-import { ContactIcons } from '@/components/icons/contact/ContactMethodIcons';
+import { ContactIcons } from '../../../components/icons/contact/ContactMethodIcons';
 
 const UnifiedContactPage: React.FC = () => {
   const navigate = useNavigate();
@@ -61,6 +62,9 @@ const UnifiedContactPage: React.FC = () => {
   const [error, setError] = useState('');
   const [showForcePublish, setShowForcePublish] = useState(false);
   const [missingFields, setMissingFields] = useState<string[]>([]);
+  
+  // Validation state for contact info
+  const [validationResult, setValidationResult] = React.useState<ValidationResult | null>(null);
   
   // 🆕 New state for enhancements
   const [showReview, setShowReview] = useState(false);
@@ -390,7 +394,7 @@ const UnifiedContactPage: React.FC = () => {
 
       // 🌐 N8N Integration
       try {
-        const N8nService = await import('@/services/n8n-integration');
+        const N8nService = await import('../../../services/n8n-integration');
         await N8nService.default.onCarPublished(currentUser.uid, carId, payload as any);
       } catch (n8nError) {
         logger.warn('N8N webhook failed (non-critical)', { error: n8nError, carId });

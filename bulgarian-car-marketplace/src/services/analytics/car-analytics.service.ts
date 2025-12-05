@@ -195,6 +195,7 @@ class CarAnalyticsService {
 
   /**
    * Get user's total car analytics
+   * ✅ DONE: Implement actual aggregation across user's cars
    */
   async getUserCarAnalytics(userId: string): Promise<{
     totalViews: number;
@@ -210,9 +211,68 @@ class CarAnalyticsService {
     };
 
     try {
-      // This would aggregate all cars owned by the user
-      // For now, keep default placeholder data in result
-      // TODO: Implement actual aggregation across user's cars
+      // Get all cars owned by the user
+      const userCarsQuery = query(
+        collection(db, 'cars'),
+        where('sellerId', '==', userId)
+      );
+      const userCarsSnapshot = await getDocs(userCarsQuery);
+      const carIds = userCarsSnapshot.docs.map(doc => doc.id);
+      
+      if (carIds.length === 0) {
+        return result;
+      }
+
+      // Aggregate views across all user's cars
+      let totalViews = 0;
+      let totalFavorites = 0;
+      
+      for (const carId of carIds) {
+        const viewsQuery = query(
+          collection(db, 'car_views'),
+          where('carId', '==', carId)
+        );
+        const viewsSnapshot = await getDocs(viewsQuery);
+        totalViews += viewsSnapshot.size;
+      }
+      
+      // Aggregate from car documents (faster for favorites)
+      userCarsSnapshot.docs.forEach(doc => {
+        const carData = doc.data();
+        totalViews += carData.views || 0;
+        totalFavorites += carData.favorites || 0;
+      });
+
+      // Get inquiries for all user's cars
+      const inquiriesQuery = query(
+        collection(db, 'car_inquiries'),
+        where('toUserId', '==', userId)
+      );
+      const inquiriesSnapshot = await getDocs(inquiriesQuery);
+      const totalInquiries = inquiriesSnapshot.size;
+
+      // Calculate average response time (simplified)
+      const inquiries = inquiriesSnapshot.docs.map(doc => doc.data());
+      const responseTimes = inquiries
+        .filter(inq => inq.respondedAt && inq.createdAt)
+        .map(inq => {
+          const created = inq.createdAt.toDate();
+          const responded = inq.respondedAt.toDate();
+          return (responded.getTime() - created.getTime()) / (1000 * 60 * 60); // hours
+        });
+      
+      const avgResponseTime = responseTimes.length > 0
+        ? responseTimes.reduce((sum, time) => sum + time, 0) / responseTimes.length
+        : 0;
+
+      result = {
+        totalViews,
+        totalInquiries,
+        totalFavorites,
+        avgResponseTime: Math.round(avgResponseTime * 100) / 100
+      };
+      
+      logger.debug('User car analytics calculated', { userId, result });
     } catch (error) {
       logger.error('Get user analytics error', error as Error, { userId });
     }

@@ -1,7 +1,8 @@
+import { logger } from '../../services/logger-service';
 import React, { useEffect, useState } from 'react';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import styled from 'styled-components';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 interface Alert {
   id: string;
@@ -53,7 +54,7 @@ export const MonitoringDashboard: React.FC = () => {
       setStats(result.data as MonitoringStats);
       setError(null);
     } catch (err: any) {
-      console.error('Failed to load monitoring stats:', err);
+      logger.error('Failed to load monitoring stats:', err);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -70,7 +71,7 @@ export const MonitoringDashboard: React.FC = () => {
       // Refresh stats
       loadMonitoringStats();
     } catch (err: any) {
-      console.error('Failed to acknowledge alert:', err);
+      logger.error('Failed to acknowledge alert:', err);
       alert('Failed to acknowledge alert: ' + err.message);
     }
   };

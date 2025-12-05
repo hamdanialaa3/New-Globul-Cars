@@ -2,7 +2,7 @@
 // Email Service for Globul Cars using Firebase Trigger Email Extension
 
 import { collection, addDoc, Timestamp } from 'firebase/firestore';
-import { db } from '@/firebase/firebase-config';
+import { db } from '../firebase/firebase-config';
 import { serviceLogger } from './logger-wrapper';
 
 interface EmailAttachment {

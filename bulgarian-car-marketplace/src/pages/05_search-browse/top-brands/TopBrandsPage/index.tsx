@@ -1,11 +1,12 @@
+import { logger } from '../../../../services/logger-service';
 // Top Brands Page - Main Component
 // Displays categorized car brands with smart sorting algorithm
 // Constitution compliant: No emojis, under 300 lines, modular structure
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { unifiedCarService } from '@/services/car';
+import { useLanguage } from '../../../../contexts/LanguageContext';
+import { unifiedCarService } from '../../../../services/car';
 import brandsData from '../../../../data/car-brands-complete.json';
 import { BrandWithStats } from './types';
 import { calculateBrandStats, categorizeBrands } from './utils';
@@ -43,7 +44,7 @@ const TopBrandsPage: React.FC = () => {
             brandCounts[make] = (brandCounts[make] || 0) + 1;
           });
         } catch (error) {
-          console.error('Error fetching car counts:', error);
+          logger.error('Error fetching car counts:', error);
         }
         
         // Map brands with statistics
@@ -59,7 +60,7 @@ const TopBrandsPage: React.FC = () => {
         
         setBrandsWithStats(brandsWithCounts);
       } catch (error) {
-        console.error('Error loading brand statistics:', error);
+        logger.error('Error loading brand statistics:', error);
       } finally {
         setLoading(false);
       }

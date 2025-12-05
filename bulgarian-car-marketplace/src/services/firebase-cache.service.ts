@@ -31,7 +31,7 @@ interface CacheOptions {
  * 
  * Usage:
  * ```ts
- * import { firebaseCacheService } from '@/services/firebase-cache.service';
+ * import { firebaseCacheService } from '../services/firebase-cache.service';
  * 
  * const cars = await firebaseCacheService.getOrFetch(
  *   'cars-active',

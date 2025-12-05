@@ -1,3 +1,4 @@
+import { logger } from '../../../services/logger-service';
 /**
  * Dealership Information Form
  * Complete form for dealership/showroom profile information
@@ -53,7 +54,7 @@ const DealershipInfoForm: React.FC<DealershipInfoFormProps> = ({ userId = '' }) 
         setDealershipInfo(info);
       }
     } catch (error) {
-      console.error('Error loading dealership info:', error);
+      logger.error('Error loading dealership info:', error);
     } finally {
       setLoading(false);
     }
@@ -94,7 +95,7 @@ const DealershipInfoForm: React.FC<DealershipInfoFormProps> = ({ userId = '' }) 
       await DealershipRepository.updateWithUserSync(userId, dealershipInfo as any);
       showToast('success', language === 'bg' ? 'Информацията е запазена' : 'Information saved successfully');
     } catch (error) {
-      console.error('Error saving dealership info:', error);
+      logger.error('Error saving dealership info:', error);
       showToast('error', language === 'bg' ? 'Грешка при запазване' : 'Error saving information');
     } finally {
       setSaving(false);

@@ -1,3 +1,4 @@
+import { logger } from '../../../services/logger-service';
 /**
  * Transaction History Section
  * Displays user's transaction history and statistics
@@ -6,10 +7,10 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Receipt, TrendingUp, Calendar, Euro } from 'lucide-react';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { useTheme } from '@/contexts/ThemeContext';
-import { transactionsService } from '@/services/profile/transactions.service';
-import type { Transaction, TransactionStats } from '@/types/profile-enhancements.types';
+import { useLanguage } from '../../../contexts/LanguageContext';
+import { useTheme } from '../../../contexts/ThemeContext';
+import { transactionsService } from '../../../services/profile/transactions.service';
+import type { Transaction, TransactionStats } from '../../../types/profile-enhancements.types';
 
 const SectionContainer = styled.section<{ $isDark: boolean }>`
   padding: 24px;
@@ -149,7 +150,7 @@ export const TransactionsSection: React.FC<TransactionsSectionProps> = ({
         setTransactions(txns);
         setStats(statistics);
       } catch (error) {
-        console.error('Error loading transactions:', error);
+        logger.error('Error loading transactions:', error);
         setTransactions([]);
       } finally {
         setLoading(false);

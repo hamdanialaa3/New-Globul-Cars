@@ -1,3 +1,4 @@
+import { logger } from '../../services/logger-service';
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
@@ -1049,7 +1050,7 @@ export const LeafletBulgariaMap: React.FC<LeafletBulgariaMapProps> = ({
     const fetchRealCarCounts = async () => {
       try {
         setIsLoadingCounts(true);
-        console.log('🗺️ Loading real car counts from Firestore...');
+        logger.info('🗺️ Loading real car counts from Firestore...');
         
         // Get all region IDs from GeoJSON
         const regionIds = bulgariaData.features.map((f: any) => f.properties.id);
@@ -1058,9 +1059,9 @@ export const LeafletBulgariaMap: React.FC<LeafletBulgariaMapProps> = ({
         const counts = await RegionCarCountService.getAllRegionCounts(regionIds);
         
         setRealCarCounts(counts);
-        console.log('✅ Real car counts loaded:', counts);
+        logger.info('✅ Real car counts loaded:', counts);
       } catch (error) {
-        console.error('❌ Error fetching real car counts:', error);
+        logger.error('❌ Error fetching real car counts:', error);
       } finally {
         setIsLoadingCounts(false);
       }
@@ -1094,7 +1095,7 @@ export const LeafletBulgariaMap: React.FC<LeafletBulgariaMapProps> = ({
         maxZoom: 18,
       }).addTo(mapInstance.current);
     } catch (error) {
-      console.error('Error initializing map:', error);
+      logger.error('Error initializing map:', error);
     }
 
     // Cleanup: Remove map on unmount
@@ -1105,7 +1106,7 @@ export const LeafletBulgariaMap: React.FC<LeafletBulgariaMapProps> = ({
           mapInstance.current = null;
           geoJsonLayer.current = null;
         } catch (error) {
-          console.error('Error removing map:', error);
+          logger.error('Error removing map:', error);
         }
       }
     };
@@ -1121,7 +1122,7 @@ export const LeafletBulgariaMap: React.FC<LeafletBulgariaMapProps> = ({
         mapInstance.current.removeLayer(geoJsonLayer.current);
         geoJsonLayer.current = null;
       } catch (error) {
-        console.error('Error removing old layer:', error);
+        logger.error('Error removing old layer:', error);
       }
     }
 
@@ -1227,7 +1228,7 @@ export const LeafletBulgariaMap: React.FC<LeafletBulgariaMapProps> = ({
       try {
         mapInstance.current.fitBounds(geoJsonLayer.current.getBounds(), { padding: [20, 20] });
       } catch (error) {
-        console.error('Error fitting bounds:', error);
+        logger.error('Error fitting bounds:', error);
       }
     }
   }, [carCounts, language, onCityClick, navigate]); // ✅ Update data only, don't recreate map

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from '../../../../../hooks/useTranslation';
 import {
   SectionCard,
@@ -36,6 +36,27 @@ export const LocationSection: React.FC<LocationSectionProps> = ({
 }) => {
   const { t } = useTranslation();
 
+  // Check if Bulgaria is selected (check both English and Bulgarian translations)
+  const isBulgariaSelected = searchData.country === t('advancedSearch.bulgaria') || 
+                             searchData.country === 'Bulgaria' || 
+                             searchData.country === 'България' ||
+                             searchData.country === '';
+
+  // Clear city selection when country changes to non-Bulgaria
+  useEffect(() => {
+    if (!isBulgariaSelected && searchData.city) {
+      // Trigger onChange to clear city
+      const event = {
+        target: {
+          name: 'city',
+          value: '',
+          type: 'select-one'
+        }
+      } as React.ChangeEvent<HTMLSelectElement>;
+      onChange(event);
+    }
+  }, [searchData.country, isBulgariaSelected, searchData.city, onChange]);
+
   return (
     <SectionCard>
       <SectionHeader $isOpen={isOpen} onClick={onToggle}>
@@ -55,15 +76,18 @@ export const LocationSection: React.FC<LocationSectionProps> = ({
               </SearchSelect>
             </FormGroup>
 
-            <FormGroup>
-              <label>{t('advancedSearch.city')}</label>
-              <SearchSelect name="city" value={searchData.city} onChange={onChange}>
-                <option value="">{t('advancedSearch.all')}</option>
-                {bulgarianCities.map(city => (
-                  <option key={city} value={city}>{city}</option>
-                ))}
-              </SearchSelect>
-            </FormGroup>
+            {/* Only show City dropdown when Bulgaria is selected or no country selected */}
+            {isBulgariaSelected && (
+              <FormGroup>
+                <label>{t('advancedSearch.city')}</label>
+                <SearchSelect name="city" value={searchData.city} onChange={onChange}>
+                  <option value="">{t('advancedSearch.all')}</option>
+                  {bulgarianCities.map(city => (
+                    <option key={city} value={city}>{city}</option>
+                  ))}
+                </SearchSelect>
+              </FormGroup>
+            )}
 
             <FormGroup>
               <label>{t('advancedSearch.radius')}</label>

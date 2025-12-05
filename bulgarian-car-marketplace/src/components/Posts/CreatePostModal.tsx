@@ -1,3 +1,4 @@
+import { logger } from '../../services/logger-service';
 // src/components/Posts/CreatePostModal.tsx
 // Create Post Modal - Instagram/LinkedIn style
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
@@ -286,7 +287,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
       onSuccess?.();
       onClose();
     } catch (error) {
-      console.error('Error creating post:', error);
+      logger.error('Error creating post:', error);
       alert(language === 'bg' 
         ? 'Грешка при създаване на публикация' 
         : 'Error creating post');

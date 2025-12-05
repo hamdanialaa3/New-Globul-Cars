@@ -1,3 +1,4 @@
+import { logger } from '../../../../services/logger-service';
 // Mobile.de Inspired Overview/Settings Page
 import React from 'react';
 import styled from 'styled-components';
@@ -6,13 +7,13 @@ import {
   Calculator, FileText, ShieldCheck, Plus, ChevronRight, User, Loader,
   ArrowUpDown, Filter
 } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthProvider';
+import { useAuth } from '../../../../contexts/AuthProvider';
 import { useNavigate } from 'react-router-dom';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { ProfileMediaService } from '@/services/profile/ProfileMediaService';
+import { useLanguage } from '../../../../contexts/LanguageContext';
+import { ProfileMediaService } from '../../../../services/profile/ProfileMediaService';
 import { updateProfile } from 'firebase/auth';
-import { useToast } from '@/components/Toast';
-import { unifiedCarService } from '@/services/car/unified-car.service';
+import { useToast } from '../../../../components/Toast';
+import { unifiedCarService } from '../../../../services/car/unified-car.service';
 
 const ProfileSettingsMobileDe: React.FC = () => {
   const { user, currentUser } = useAuth();
@@ -50,7 +51,7 @@ const ProfileSettingsMobileDe: React.FC = () => {
         const activeCars = cars.filter(car => car.isActive !== false && car.isSold !== true);
         setUserCars(activeCars);
       } catch (error) {
-        console.error('Error loading user cars:', error);
+        logger.error('Error loading user cars:', error);
         setUserCars([]);
       } finally {
         setLoadingCars(false);
@@ -145,7 +146,7 @@ const ProfileSettingsMobileDe: React.FC = () => {
 
       toast.success(t('profile.photoUploadSuccess', 'Photo uploaded successfully'));
     } catch (error) {
-      console.error('Error uploading photo:', error);
+      logger.error('Error uploading photo:', error);
       toast.error(t('profile.photoUploadError', 'Error uploading photo'));
     } finally {
       setUploading(false);

@@ -1,3 +1,4 @@
+import { logger } from '../../services/logger-service';
 // CommunityFeedWidget.tsx - Simple widget for creating and viewing posts in profile
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
@@ -213,7 +214,7 @@ const CommunityFeedWidget: React.FC<CommunityFeedWidgetProps> = ({ userId }) => 
         const userPosts = await postsService.getUserPosts(userId, 5); // Only show 5 recent
         setPosts(userPosts);
       } catch (error) {
-        console.error('Error loading posts:', error);
+        logger.error('Error loading posts:', error);
         setPosts([]);
       } finally {
         setLoading(false);

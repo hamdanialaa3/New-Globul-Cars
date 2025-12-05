@@ -5,15 +5,15 @@ import React, { useEffect, useMemo } from 'react';
 import { useNavigate, useSearchParams, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { useLanguage } from '@/contexts/LanguageContext';
-import { MobileContainer, MobileStack } from '@/components/ui/mobile-index';
-import { MobileHeader } from '@/components/layout/MobileHeader';
+import { useLanguage } from '../../../contexts/LanguageContext';
+import { MobileContainer, MobileStack } from '../../../components/ui/mobile-index';
+import { MobileHeader } from '../../../components/layout/MobileHeader';
 
-import { CAR_YEARS } from '@/data/dropdown-options';
+import { CAR_YEARS } from '../../../data/dropdown-options';
 
-import { SellProgressBar } from '@/components/SellWorkflow';
-import { useProfileType } from '@/contexts/ProfileTypeContext';
-import SellWorkflowStepStateService from '@/services/sellWorkflowStepState';
+import { SellProgressBar } from '../../../components/SellWorkflow';
+import { useProfileType } from '../../../contexts/ProfileTypeContext';
+import SellWorkflowStepStateService from '../../../services/sellWorkflowStepState';
 import { useVehicleDataForm, getRegistrationYear } from './VehicleData/useVehicleDataForm';
 
 // Layout wrappers moved to styles

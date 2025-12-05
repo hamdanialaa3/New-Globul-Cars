@@ -1,9 +1,9 @@
 import React from 'react';
 import { Outlet, useNavigate, useParams } from 'react-router-dom';
-import { useTranslation } from '@/hooks/useTranslation';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from '../../../../hooks/useTranslation';
+import { useLanguage } from '../../../../contexts/LanguageContext';
 import { useProfile } from './hooks/useProfile';
-import { useProfileType } from '@/contexts/ProfileTypeContext';
+import { useProfileType } from '../../../../contexts/ProfileTypeContext';
 import {
   UserCircle,
   Car,
@@ -19,10 +19,10 @@ import {
 } from 'lucide-react';
 import * as S from './styles';
 import { TabNavigation, TabNavLink, SyncButton, FollowButton } from './TabNavigation.styles';
-import { CoverImageUploader, BusinessBackground, SimpleProfileAvatar } from '@/components/Profile';
-import { googleProfileSyncService } from '@/services/google/google-profile-sync.service';
-import { followService } from '@/services/social/follow.service';
-import { logger } from '@/services/logger-service';
+import { CoverImageUploader, BusinessBackground, SimpleProfileAvatar } from '../../../../components/Profile';
+import { googleProfileSyncService } from '../../../../services/google/google-profile-sync.service';
+import { followService } from '../../../../services/social/follow.service';
+import { logger } from '../../../../services/logger-service';
 
 /**
  * Profile Page Wrapper
@@ -104,7 +104,7 @@ const ProfilePageWrapper: React.FC = () => {
         await refresh();
       }
     } catch (error) {
-      console.error('Sync error:', error);
+      logger.error('Sync error:', error);
       alert(language === 'bg' ? 'Грешка при синхронизация' : 'Sync error');
     } finally {
       setSyncing(false);
@@ -144,7 +144,7 @@ const ProfilePageWrapper: React.FC = () => {
         setIsFollowing(true);
       }
     } catch (error) {
-      console.error('Follow error:', error);
+      logger.error('Follow error:', error);
     } finally {
       setFollowLoading(false);
     }
@@ -205,7 +205,7 @@ const ProfilePageWrapper: React.FC = () => {
               } : null);
             }}
             onUploadError={(error) => {
-              console.error('Cover error:', error);
+              logger.error('Cover error:', error);
             }}
           />
         )}

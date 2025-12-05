@@ -11,7 +11,7 @@
  * @since 2025-11-03 (Phase 2.2)
  */
 
-import { logger } from '@/services/logger-service';
+import { logger } from '../../services/logger-service';
 
 export class UnifiedAnalyticsService {
   private static instance: UnifiedAnalyticsService;

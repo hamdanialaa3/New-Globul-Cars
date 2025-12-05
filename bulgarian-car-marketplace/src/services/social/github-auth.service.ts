@@ -94,7 +94,7 @@ class GitHubAuthService {
       }
       return result;
     } catch (error) {
-      console.error('❌ Redirect result error:', error);
+      logger.error('❌ Redirect result error:', error);
       return null;
     }
   }

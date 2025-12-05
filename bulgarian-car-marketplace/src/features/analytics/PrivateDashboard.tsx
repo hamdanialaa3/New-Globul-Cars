@@ -1,3 +1,4 @@
+import { logger } from '../../services/logger-service';
 // src/features/analytics/PrivateDashboard.tsx
 // Private User Analytics Dashboard
 
@@ -103,7 +104,7 @@ export const PrivateDashboard: React.FC = () => {
           });
         }
       } catch (err: any) {
-        console.error('Failed to fetch analytics:', err);
+        logger.error('Failed to fetch analytics:', err);
         setError(err.message);
       } finally {
         setLoading(false);

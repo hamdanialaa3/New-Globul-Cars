@@ -19,10 +19,10 @@ import {
   CheckCircle,
   Loader
 } from 'lucide-react';
-import { useTranslation } from '@/hooks/useTranslation';
+import { useTranslation } from '../../../../hooks/useTranslation';
 import { useLogin } from './hooks/useLogin';
-import PhoneAuthModal from '@/components/PhoneAuthModal';
-import BackgroundSlideshow from '@/components/BackgroundSlideshow';
+import PhoneAuthModal from '../../../../components/PhoneAuthModal';
+import BackgroundSlideshow from '../../../../components/BackgroundSlideshow';
 
 // Background images
 const backgroundImages = [

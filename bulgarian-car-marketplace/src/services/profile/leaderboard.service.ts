@@ -16,7 +16,7 @@ import {
   limit,
   serverTimestamp
 } from 'firebase/firestore';
-import { db } from '@/firebase/firebase-config';
+import { db } from '../../firebase/firebase-config';
 import { serviceLogger } from '../logger-wrapper';
 import type {
   Leaderboard,
@@ -24,7 +24,7 @@ import type {
   LeaderboardRank,
   LeaderboardCategory,
   LeaderboardPeriod
-} from '@/types/profile-enhancements.types';
+} from '../../types/profile-enhancements.types';
 import { transactionsService } from './transactions.service';
 import { pointsLevelsService } from './points-levels.service';
 

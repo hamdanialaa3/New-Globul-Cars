@@ -1,3 +1,4 @@
+import { logger } from '../../../services/logger-service';
 // Create Post Form - Main Component
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 // Splitted into multiple files (as per constitution - max 300 lines)
@@ -73,7 +74,7 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onClose, onPostCreated 
           const accounts = await socialMediaService.getConnectedAccounts(user.uid);
           setConnectedAccounts(accounts.map(acc => acc.platform));
         } catch (error) {
-          console.error('Error loading social accounts:', error);
+          logger.error('Error loading social accounts:', error);
         }
       }
     };
@@ -145,9 +146,9 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onClose, onPostCreated 
           { platforms: crossPostPlatforms }
         ).then(results => {
           const succeeded = Object.values(results).filter(Boolean).length;
-          console.log(`Cross-posted to ${succeeded}/${crossPostPlatforms.length} platforms`);
+          logger.info(`Cross-posted to ${succeeded}/${crossPostPlatforms.length} platforms`);
         }).catch(err => {
-          console.error('Cross-post error:', err);
+          logger.error('Cross-post error:', err);
         });
       }
 
@@ -173,7 +174,7 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onClose, onPostCreated 
       }
 
     } catch (error) {
-      console.error('Error creating post:', error);
+      logger.error('Error creating post:', error);
       alert(language === 'bg'
         ? 'Грешка при създаване на публикацията'
         : 'Error creating post');

@@ -8,7 +8,7 @@ import {
   doc,
   getDoc
 } from 'firebase/firestore';
-import { db } from '@/firebase/firebase-config';
+import { db } from '../firebase/firebase-config';
 import { serviceLogger } from './logger-wrapper';
 
 /**
@@ -17,7 +17,7 @@ import { serviceLogger } from './logger-wrapper';
  * 
  * Usage:
  * ```typescript
- * import { firebaseAuthUsersService } from '@/services/firebase-auth-users-service';
+ * import { firebaseAuthUsersService } from '../services/firebase-auth-users-service';
  * const users = await firebaseAuthUsersService.getRealFirebaseUsers();
  * ```
  */

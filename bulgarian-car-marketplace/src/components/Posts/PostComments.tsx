@@ -1,12 +1,13 @@
+import { logger } from '../../services/logger-service';
 // Post Comments Component - Display and manage comments
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Heart, MessageCircle, Edit, Trash2 } from 'lucide-react';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { useAuth } from '@/contexts/AuthProvider';
-import { Comment, commentsService } from '@/services/social/comments.service';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { useAuth } from '../../contexts/AuthProvider';
+import { Comment, commentsService } from '../../services/social/comments.service';
 import { formatDistanceToNow } from 'date-fns';
 import { bg, enUS } from 'date-fns/locale';
 
@@ -31,7 +32,7 @@ export const PostComments: React.FC<PostCommentsProps> = ({ postId, onCommentAdd
         const data = await commentsService.getComments(postId, 50);
         setComments(data);
       } catch (error) {
-        console.error('Error loading comments:', error);
+        logger.error('Error loading comments:', error);
       } finally {
         setLoading(false);
       }
@@ -46,7 +47,7 @@ export const PostComments: React.FC<PostCommentsProps> = ({ postId, onCommentAdd
       const data = await commentsService.getComments(postId, 50);
       setComments(data);
     } catch (error) {
-      console.error('Error loading comments:', error);
+      logger.error('Error loading comments:', error);
     } finally {
       setLoading(false);
     }
@@ -59,7 +60,7 @@ export const PostComments: React.FC<PostCommentsProps> = ({ postId, onCommentAdd
       await commentsService.likeComment(commentId, currentUser.uid);
       await loadComments();
     } catch (error) {
-      console.error('Error liking comment:', error);
+      logger.error('Error liking comment:', error);
     }
   };
 
@@ -72,7 +73,7 @@ export const PostComments: React.FC<PostCommentsProps> = ({ postId, onCommentAdd
       setEditContent('');
       await loadComments();
     } catch (error) {
-      console.error('Error updating comment:', error);
+      logger.error('Error updating comment:', error);
     }
   };
 
@@ -87,7 +88,7 @@ export const PostComments: React.FC<PostCommentsProps> = ({ postId, onCommentAdd
       await commentsService.deleteComment(commentId, currentUser.uid);
       await loadComments();
     } catch (error) {
-      console.error('Error deleting comment:', error);
+      logger.error('Error deleting comment:', error);
     }
   };
 

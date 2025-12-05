@@ -1,3 +1,4 @@
+import { logger } from '../../services/logger-service';
 // src/components/messaging/QuickReplyManager.tsx
 // Quick Reply Templates Manager Component
 // Connected to Backend P2.1 Quick Reply System
@@ -364,7 +365,7 @@ const QuickReplyManager: React.FC<Props> = ({ language = 'bg', onUseTemplate }) 
         setTemplates(result.templates);
       }
     } catch (error) {
-      console.error('Error loading templates:', error);
+      logger.error('Error loading templates:', error);
     } finally {
       setLoading(false);
     }
@@ -426,7 +427,7 @@ const QuickReplyManager: React.FC<Props> = ({ language = 'bg', onUseTemplate }) 
         }
       }
     } catch (error) {
-      console.error('Error saving template:', error);
+      logger.error('Error saving template:', error);
     }
   };
 
@@ -438,7 +439,7 @@ const QuickReplyManager: React.FC<Props> = ({ language = 'bg', onUseTemplate }) 
           await loadTemplates();
         }
       } catch (error) {
-        console.error('Error deleting template:', error);
+        logger.error('Error deleting template:', error);
       }
     }
   };

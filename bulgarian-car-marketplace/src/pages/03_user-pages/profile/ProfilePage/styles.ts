@@ -1,6 +1,6 @@
 import styled, { css, keyframes } from 'styled-components';
 import { Link } from 'react-router-dom';
-import type { ProfileType } from '@/contexts/ProfileTypeContext';
+import type { ProfileType } from '../../../../contexts/ProfileTypeContext';
 
 // Keyframes for animations
 const fadeIn = keyframes`
@@ -74,6 +74,12 @@ export const ProfilePageContainer = styled.div<{ $isBusinessMode?: boolean }>`
   padding-bottom: 4rem;
   background: var(--bg-primary);
   color: var(--text-primary);
+  
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    background: #0f172a;
+    color: #f8fafc;
+  }
   animation: ${fadeIn} 0.5s ease-out;
   max-width: 1200px;
   width: 100%;
@@ -115,6 +121,10 @@ export const ProfileHeader = styled.header`
     
     /* Card-based layout (Airbnb pattern) */
     background: var(--bg-card);
+    
+    html[data-theme="dark"] & {
+      background: #1e293b;
+    }
     border-radius: 16px;
     overflow: hidden;
     box-shadow: var(--shadow-sm);
@@ -615,6 +625,13 @@ export const ProfileSidebar = styled.aside<{ $isBusinessMode: boolean; $themeCol
   gap: 1rem;
   box-shadow: ${({ theme }) => theme.shadows.md};
   
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    background: #1e293b;
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: none;
+  }
+  
   /* MOBILE - Hidden (content in main area) */
   @media (max-width: 768px) {
     display: none;
@@ -638,6 +655,13 @@ export const ContentSection = styled.section<{ $themeColor?: string; $isBusiness
   margin-bottom: 2rem;
   border: 1px solid ${({ theme }) => theme.colors.grey[200]};
   box-shadow: ${({ theme }) => theme.shadows.base};
+  
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    background: #1e293b;
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: none;
+  }
   
   /* MOBILE - Card-based design (Airbnb/Facebook) */
   @media (max-width: 768px) {
@@ -916,7 +940,7 @@ export const NeumorphicFieldWrapper = styled.div`
   position: relative;
 `;
 
-export const NeumorphicFieldLabel = styled.label<{$themeColor?: string}>`
+export const NeumorphicFieldLabel = styled.label<{ $themeColor?: string }>`
   font-size: 0.8rem;
   font-weight: 600;
   color: ${({ theme, $themeColor }) => $themeColor || theme.colors.primary.main};

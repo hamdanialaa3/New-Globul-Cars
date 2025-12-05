@@ -4,9 +4,9 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import ProfileAnalyticsDashboard from '@/components/Profile/Analytics/ProfileAnalyticsDashboard';
-import type { BulgarianUser } from '@/types/user/bulgarian-user.types';
-import type { ProfileTheme } from '@/contexts/ProfileTypeContext';
+import ProfileAnalyticsDashboard from '../../../../../components/Profile/Analytics/ProfileAnalyticsDashboard';
+import type { BulgarianUser } from '../../../../../types/user/bulgarian-user.types';
+import type { ProfileTheme } from '../../../../../contexts/ProfileTypeContext';
 
 interface AnalyticsTabProps {
   user: BulgarianUser | null;

@@ -3,10 +3,10 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { AI_TIER_CONFIGS } from '@/config/ai-tiers.config';
-import { aiQuotaService } from '@/services/ai/ai-quota.service';
-import { useAuth } from '@/contexts/AuthProvider';
-import { useToast } from '@/components/Toast';
+import { AI_TIER_CONFIGS } from '../../config/ai-tiers.config';
+import { aiQuotaService } from '../../services/ai/ai-quota.service';
+import { useAuth } from '../../contexts/AuthProvider';
+import { useToast } from '../../components/Toast';
 
 interface Props {
   isOpen: boolean;

@@ -6,10 +6,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Video, Trophy, Award, Target, FileText, Play } from 'lucide-react';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { useTheme } from '@/contexts/ThemeContext';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { useTheme } from '../../contexts/ThemeContext';
 import { useNavigate } from 'react-router-dom';
-import type { FeedItem } from '@/services/social/smart-feed.service';
+import type { FeedItem } from '../../services/social/smart-feed.service';
 
 const CardContainer = styled.div<{ $isDark: boolean }>`
   background: ${props => props.$isDark ? '#1e293b' : '#ffffff'};

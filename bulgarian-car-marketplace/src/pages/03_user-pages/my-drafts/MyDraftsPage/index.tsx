@@ -2,11 +2,11 @@
 // صفحة مسوداتي - عرض وإدارة المسودات المحفوظة
 
 import React, { useEffect, useState } from 'react';
-import { logger } from '@/services/logger-service';
+import { logger } from '../../../../services/logger-service';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthProvider';
-import { useLanguage } from '@/contexts/LanguageContext';
-import DraftsService, { Draft } from '@/services/drafts-service';
+import { useAuth } from '../../../../contexts/AuthProvider';
+import { useLanguage } from '../../../../contexts/LanguageContext';
+import DraftsService, { Draft } from '../../../../services/drafts-service';
 import styled from 'styled-components';
 import { FileText, Trash2, Clock, ArrowRight, RefreshCw } from 'lucide-react';
 import { toast } from 'react-toastify';

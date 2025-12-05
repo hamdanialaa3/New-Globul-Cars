@@ -1,3 +1,4 @@
+import { logger } from '../../services/logger-service';
 // src/components/Notifications/NotificationBell.tsx
 // Notifications Bell Component
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
@@ -205,7 +206,7 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ userId }) =>
         read: true
       });
     } catch (error) {
-      console.error('Error marking as read:', error);
+      logger.error('Error marking as read:', error);
     }
   };
 
@@ -218,7 +219,7 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ userId }) =>
         )
       );
     } catch (error) {
-      console.error('Error marking all as read:', error);
+      logger.error('Error marking all as read:', error);
     }
   };
 

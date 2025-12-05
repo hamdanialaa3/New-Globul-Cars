@@ -19,11 +19,12 @@ const LoyaltyBanner = React.lazy(() => import('./LoyaltyBanner'));
 // Components created in this folder
 const AIAnalyticsTeaser = React.lazy(() => import('./AIAnalyticsTeaser'));
 const SmartSellStrip = React.lazy(() => import('./SmartSellStrip'));
+const SubscriptionBanner = React.lazy(() => import('./SubscriptionBanner'));
 
 // Global components
 // AIChatbot uses named export, so we map it to default for React.lazy
-const AIChatbot = React.lazy(() => import('@/components/AI/AIChatbot').then(module => ({ default: module.AIChatbot })));
-const LazySection = React.lazy(() => import('@/components/LazySection'));
+const AIChatbot = React.lazy(() => import('../../../../components/AI/AIChatbot').then(module => ({ default: module.AIChatbot })));
+const LazySection = React.lazy(() => import('../../../../components/LazySection'));
 
 // Styled Components
 const HomeContainer = styled.main`
@@ -109,7 +110,16 @@ const HomePage: React.FC = () => {
 
       <SectionSpacer />
 
-      {/* 8. AI Analytics Teaser */}
+      {/* 8. NEW: Subscription Banner - Promote Plans */}
+      <LazySection rootMargin="100px">
+        <Suspense fallback={null}>
+          <SubscriptionBanner />
+        </Suspense>
+      </LazySection>
+
+      <SectionSpacer />
+
+      {/* 9. AI Analytics Teaser */}
       <LazySection rootMargin="200px">
         <Suspense fallback={null}>
           <AIAnalyticsTeaser />

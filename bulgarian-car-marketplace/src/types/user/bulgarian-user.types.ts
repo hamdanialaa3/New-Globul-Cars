@@ -97,7 +97,7 @@ export interface BaseProfile {
 // ==================== DEALER PROFILE ====================
 export interface DealerProfile extends BaseProfile {
   profileType: 'dealer';
-  planTier: 'dealer_basic' | 'dealer_pro' | 'dealer_enterprise';
+  planTier: 'dealer';
   
   // ✅ NEW: Canonical reference (Phase 1+)
   dealershipRef?: `dealerships/${string}`;
@@ -141,7 +141,7 @@ export interface PrivateProfile extends BaseProfile {
 // ==================== COMPANY PROFILE ====================
 export interface CompanyProfile extends BaseProfile {
   profileType: 'company';
-  planTier: 'company_starter' | 'company_pro' | 'company_enterprise';
+  planTier: 'company';
   
   // ✅ NEW: Company reference (Phase 1+)
   companyRef?: `companies/${string}`;
@@ -168,15 +168,13 @@ export type BulgarianUser =
   | CompanyProfile;
 
 // ==================== SUPPORTING TYPES ====================
-export type PlanTier = 
-  | 'free' 
-  | 'premium' 
-  | 'dealer_basic' 
-  | 'dealer_pro' 
-  | 'dealer_enterprise' 
-  | 'company_starter' 
-  | 'company_pro' 
-  | 'company_enterprise';
+/**
+ * Unified Plan Tiers - matches BillingService.ts
+ * Updated: December 2025
+ */
+export type PlanTier = 'free' | 'dealer' | 'company';
+
+export type BillingInterval = 'monthly' | 'annual';
 
 export interface ProfilePermissions {
   canAddListings: boolean;

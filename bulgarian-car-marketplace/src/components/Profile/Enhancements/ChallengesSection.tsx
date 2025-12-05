@@ -1,3 +1,4 @@
+import { logger } from '../../../services/logger-service';
 /**
  * Monthly Challenges Section
  * Displays active monthly challenges and user progress
@@ -6,10 +7,10 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Target, Trophy, CheckCircle, Award } from 'lucide-react';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { useTheme } from '@/contexts/ThemeContext';
-import { challengesService } from '@/services/profile/challenges.service';
-import type { MonthlyChallenge, UserChallengeProgress } from '@/types/profile-enhancements.types';
+import { useLanguage } from '../../../contexts/LanguageContext';
+import { useTheme } from '../../../contexts/ThemeContext';
+import { challengesService } from '../../../services/profile/challenges.service';
+import type { MonthlyChallenge, UserChallengeProgress } from '../../../types/profile-enhancements.types';
 
 const SectionContainer = styled.section<{ $isDark: boolean }>`
   padding: 24px;
@@ -162,7 +163,7 @@ export const ChallengesSection: React.FC<ChallengesSectionProps> = ({
         const userChallenges = await challengesService.getUserActiveChallenges(userId);
         setChallenges(userChallenges);
       } catch (error) {
-        console.error('Error loading challenges:', error);
+        logger.error('Error loading challenges:', error);
         setChallenges([]);
       } finally {
         setLoading(false);

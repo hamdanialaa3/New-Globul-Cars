@@ -5,11 +5,11 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import styled from 'styled-components';
-import { useAuth } from '@/contexts/AuthProvider';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { realtimeMessagingService, Message } from '@/services/realtimeMessaging';
-import MessageBubble from '@/components/messaging/MessageBubble';
-import TypingIndicator from '@/components/messaging/TypingIndicator';
+import { useAuth } from '../../../../contexts/AuthProvider';
+import { useLanguage } from '../../../../contexts/LanguageContext';
+import { realtimeMessagingService, Message } from '../../../../services/realtimeMessaging';
+import MessageBubble from '../../../../components/messaging/MessageBubble';
+import TypingIndicator from '../../../../components/messaging/TypingIndicator';
 import MessageComposer from './MessageComposer';
 import {
   ArrowLeft,

@@ -14,8 +14,11 @@ import {
   addDoc
 } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { getFunctions, httpsCallable } from 'firebase/functions';
 import { db, storage } from '../../firebase/firebase-config';
 import { logger } from '../../services/logger-service';
+
+const functions = getFunctions();
 import { 
   VerificationDocument, 
   VerificationRequest, 
@@ -215,8 +218,8 @@ class VerificationService {
 
       await addDoc(collection(db, 'verificationRequests'), verificationRequest);
 
-      // TODO: Send email notification to admin
-      // TODO: Send confirmation email to user
+      // ✅ DONE: Send email notifications
+      await this.sendVerificationEmails(userId, targetProfileType, verificationRequest);
 
       if (process.env.NODE_ENV === 'development') {
         logger.info('Verification request submitted', { 
@@ -284,8 +287,9 @@ class VerificationService {
         'verification.reviewerId': adminId
       });
 
-      // TODO: Send approval email to user
-      // TODO: Log action in adminLogs
+      // ✅ DONE: Send approval email and log action
+      await this.sendApprovalEmail(userId);
+      await this.logAdminAction(adminId, 'verification_approved', { userId, targetProfileType });
 
       if (process.env.NODE_ENV === 'development') {
         logger.info('Verification approved', { userId, targetProfileType, adminId });
@@ -318,8 +322,9 @@ class VerificationService {
         'verification.notes': reason
       });
 
-      // TODO: Send rejection email to user with reason
-      // TODO: Log action in adminLogs
+      // ✅ DONE: Send rejection email and log action
+      await this.sendRejectionEmail(userId, reason);
+      await this.logAdminAction(adminId, 'verification_rejected', { userId, reason });
 
       if (process.env.NODE_ENV === 'development') {
         logger.info('Verification rejected', { userId, adminId, reason });
@@ -352,6 +357,117 @@ class VerificationService {
     } catch (error) {
       logger.error('Error getting pending verifications', error as Error);
       throw error;
+    }
+  }
+
+  /**
+   * ✅ NEW: Send verification emails (user confirmation + admin notification)
+   */
+  private async sendVerificationEmails(
+    userId: string, 
+    targetProfileType: 'dealer' | 'company',
+    request: VerificationRequest
+  ): Promise<void> {
+    try {
+      // Get user data
+      const userDoc = await getDoc(doc(db, 'users', userId));
+      const userData = userDoc.data();
+      
+      if (!userData) return;
+
+      // Send confirmation email to user
+      const sendUserEmail = httpsCallable(functions, 'sendVerificationSubmittedEmail');
+      await sendUserEmail({
+        userId,
+        userEmail: userData.email,
+        userName: userData.displayName || userData.email,
+        profileType: targetProfileType
+      });
+
+      // Send notification to admin
+      const sendAdminEmail = httpsCallable(functions, 'sendAdminVerificationNotification');
+      await sendAdminEmail({
+        userName: userData.displayName || userData.email,
+        userEmail: userData.email,
+        profileType: targetProfileType,
+        requestId: userId // Using userId as request ID for now
+      });
+
+      logger.info('Verification emails sent', { userId, targetProfileType });
+    } catch (error) {
+      logger.error('Error sending verification emails', error as Error, { userId });
+      // Don't throw - email failure shouldn't block verification submission
+    }
+  }
+
+  /**
+   * ✅ NEW: Send approval email to user
+   */
+  private async sendApprovalEmail(userId: string): Promise<void> {
+    try {
+      const userDoc = await getDoc(doc(db, 'users', userId));
+      const userData = userDoc.data();
+      
+      if (!userData) return;
+
+      const sendEmail = httpsCallable(functions, 'sendVerificationApprovedEmail');
+      await sendEmail({
+        userId,
+        userEmail: userData.email,
+        userName: userData.displayName || userData.email
+      });
+
+      logger.info('Approval email sent', { userId });
+    } catch (error) {
+      logger.error('Error sending approval email', error as Error, { userId });
+    }
+  }
+
+  /**
+   * ✅ NEW: Send rejection email to user
+   */
+  private async sendRejectionEmail(userId: string, reason: string): Promise<void> {
+    try {
+      const userDoc = await getDoc(doc(db, 'users', userId));
+      const userData = userDoc.data();
+      
+      if (!userData) return;
+
+      const sendEmail = httpsCallable(functions, 'sendVerificationRejectedEmail');
+      await sendEmail({
+        userId,
+        userEmail: userData.email,
+        userName: userData.displayName || userData.email,
+        rejectionReason: reason
+      });
+
+      logger.info('Rejection email sent', { userId, reason });
+    } catch (error) {
+      logger.error('Error sending rejection email', error as Error, { userId });
+    }
+  }
+
+  /**
+   * ✅ NEW: Log admin actions
+   */
+  private async logAdminAction(
+    adminId: string, 
+    action: string, 
+    details: Record<string, any>
+  ): Promise<void> {
+    try {
+      await addDoc(collection(db, 'adminLogs'), {
+        adminId,
+        action,
+        details,
+        timestamp: Timestamp.now(),
+        ip: 'unknown', // Could be enhanced with actual IP tracking
+        userAgent: navigator.userAgent
+      });
+
+      logger.info('Admin action logged', { adminId, action, details });
+    } catch (error) {
+      logger.error('Error logging admin action', error as Error, { adminId, action });
     }
   }
 }

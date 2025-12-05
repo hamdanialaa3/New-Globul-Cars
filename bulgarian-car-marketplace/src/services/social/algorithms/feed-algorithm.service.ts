@@ -312,7 +312,7 @@ class FeedAlgorithmService {
       const snapshot = await getDocs(postsQuery);
       return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Post));
     } catch (error) {
-      console.error('Error getting newest posts:', error);
+      logger.error('Error getting newest posts:', error);
       return [];
     }
   }

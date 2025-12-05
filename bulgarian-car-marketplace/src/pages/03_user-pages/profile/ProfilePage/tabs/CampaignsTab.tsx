@@ -4,9 +4,9 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { CampaignsList } from '@/components/Profile/Campaigns';
-import type { BulgarianUser } from '@/types/user/bulgarian-user.types';
-import type { ProfileTheme } from '@/contexts/ProfileTypeContext';
+import { CampaignsList } from '../../../../../components/Profile/Campaigns';
+import type { BulgarianUser } from '../../../../../types/user/bulgarian-user.types';
+import type { ProfileTheme } from '../../../../../contexts/ProfileTypeContext';
 
 interface CampaignsTabProps {
   user: BulgarianUser | null;

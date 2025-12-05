@@ -3,7 +3,7 @@
  * Phase 4 (A1): Validation Layer using Zod
  * 
  * Usage:
- * import { validateDealershipInfo } from '@/utils/validators/profile-validators';
+ * import { validateDealershipInfo } from '../../utils/validators/profile-validators';
  * const result = validateDealershipInfo(data);
  * if (!result.success) { handle errors }
  */

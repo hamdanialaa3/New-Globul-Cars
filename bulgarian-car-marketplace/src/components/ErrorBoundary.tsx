@@ -1,3 +1,4 @@
+import { logger } from '../services/logger-service';
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 import styled from 'styled-components';
 
@@ -95,7 +96,7 @@ class ErrorBoundary extends Component<Props, State> {
 
     // Log error to console in development
     if (process.env.NODE_ENV === 'development') {
-      console.error('ErrorBoundary caught an error:', error, errorInfo);
+      logger.error('ErrorBoundary caught an error:', error, errorInfo);
     }
   }
 

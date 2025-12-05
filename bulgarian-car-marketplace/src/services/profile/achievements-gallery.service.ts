@@ -17,13 +17,13 @@ import {
   serverTimestamp
 } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { db, storage } from '@/firebase/firebase-config';
+import { db, storage } from '../../firebase/firebase-config';
 import { serviceLogger } from '../logger-wrapper';
 import type {
   Achievement,
   AchievementBadge,
   AchievementCertificate
-} from '@/types/profile-enhancements.types';
+} from '../../types/profile-enhancements.types';
 
 export class AchievementsGalleryService {
   private static instance: AchievementsGalleryService;

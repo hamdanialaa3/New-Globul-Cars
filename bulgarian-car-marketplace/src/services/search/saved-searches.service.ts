@@ -4,7 +4,7 @@
 // Cloud Function will handle alert executions; here only data ops + local validation.
 
 import { collection, doc, getDocs, addDoc, deleteDoc, query, where, Timestamp, updateDoc } from 'firebase/firestore';
-import { db } from '@/firebase';
+import { db } from '../../firebase';
 
 export interface SavedSearchCriteria {
   make?: string;

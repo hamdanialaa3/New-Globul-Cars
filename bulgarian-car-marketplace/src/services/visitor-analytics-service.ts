@@ -2,7 +2,7 @@
 // Tracks visitor behavior, geo-location, devices, and traffic sources
 
 import { collection, addDoc, query, where, orderBy, limit, getDocs, serverTimestamp, Timestamp } from 'firebase/firestore';
-import { db } from '@/firebase/firebase-config';
+import { db } from '../firebase/firebase-config';
 import { serviceLogger } from './logger-wrapper';
 
 interface PageView {

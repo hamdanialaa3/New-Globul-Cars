@@ -4,7 +4,7 @@
 
 import React, { useState, useEffect, Suspense } from 'react';
 import styled, { keyframes } from 'styled-components';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '../../../../contexts/LanguageContext';
 import { ChevronDown, ChevronUp, MessageSquare, Users, TrendingUp } from 'lucide-react';
 
 // Lazy load the feed sections

@@ -4,14 +4,15 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled, { DefaultTheme } from 'styled-components';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { SellProgressBar } from '@/components/SellWorkflow';
+import { useLanguage } from '../../../contexts/LanguageContext';
+import { SellProgressBar } from '../../../components/SellWorkflow';
 // removed WorkflowFlow usage with legacy brand/model section
-import SellWorkflowStepStateService from '@/services/sellWorkflowStepState';
+import SellWorkflowStepStateService from '../../../services/sellWorkflowStepState';
+import { carValidationService, ValidationResult } from '../../../services/validation/car-validation.service';
 import { useVehicleDataForm } from './VehicleData/useVehicleDataForm';
-import { useIsMobile } from '@/hooks/useBreakpoint';
-import BrandModelMarkdownDropdown from '@/components/BrandModelMarkdownDropdown/BrandModelMarkdownDropdown';
-import BulgariaLocationDropdown, { BulgariaLocationData } from '@/components/BulgariaLocationDropdown/BulgariaLocationDropdown';
+import { useIsMobile } from '../../../hooks/useBreakpoint';
+import BrandModelMarkdownDropdown from '../../../components/BrandModelMarkdownDropdown/BrandModelMarkdownDropdown';
+import BulgariaLocationDropdown, { BulgariaLocationData } from '../../../components/BulgariaLocationDropdown/BulgariaLocationDropdown';
 // removed legacy structured brands import; new markdown-based dropdown is canonical
 
 // removed legacy popular brands; new markdown-based dropdown replaces this UI
@@ -479,6 +480,95 @@ const ProgressWrapper = styled.div<{ $isMobile: boolean }>`
   margin: 0 auto;
 `;
 
+// Quality Score Indicator Styles
+const QualityScoreContainer = styled.div<{ $isMobile: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: ${props => (props.$isMobile ? '0.5rem' : '1rem')};
+  padding: ${props => (props.$isMobile ? '0.75rem' : '1rem')};
+  margin: ${props => (props.$isMobile ? '1rem 0' : '1.5rem 0')};
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+`;
+
+const QualityScoreCircle = styled.div<{ $score: number }>`
+  position: relative;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: conic-gradient(
+    ${props => {
+      const score = props.$score;
+      const color = score >= 80 ? '#22c55e' : score >= 60 ? '#f59e0b' : '#ef4444';
+      return `${color} ${score * 3.6}deg, rgba(255, 255, 255, 0.1) ${score * 3.6}deg`;
+    }}
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--bg-primary);
+  }
+`;
+
+const QualityScoreNumber = styled.div<{ $score: number }>`
+  position: relative;
+  z-index: 1;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: ${props => {
+    const score = props.$score;
+    return score >= 80 ? '#22c55e' : score >= 60 ? '#f59e0b' : '#ef4444';
+  }};
+`;
+
+const QualityScoreText = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+`;
+
+const QualityScoreLabel = styled.div`
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+`;
+
+const QualityScoreHint = styled.div`
+  font-size: 0.75rem;
+  color: var(--text-muted);
+`;
+
+const ValidationErrorList = styled.div`
+  margin-top: 0.5rem;
+  padding: 0.75rem;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 8px;
+`;
+
+const ValidationError = styled.div`
+  font-size: 0.875rem;
+  color: #ef4444;
+  margin: 0.25rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  &::before {
+    content: '⚠️';
+  }
+`;
+
 const VehicleDataPage: React.FC = () => {
   const isMobile = useIsMobile();
   const { t, language } = useLanguage();
@@ -491,6 +581,15 @@ const VehicleDataPage: React.FC = () => {
     canContinue,
     buildURLSearchParams
   } = useVehicleDataForm();
+
+  // Validation state management
+  const [validationResult, setValidationResult] = React.useState<ValidationResult | null>(null);
+
+  // Real-time validation on form data changes
+  useEffect(() => {
+    const result = carValidationService.validate(formData, 'draft');
+    setValidationResult(result);
+  }, [formData]);
 
   // ✅ FIX: Validation state shows: empty=invalid(red), filled=valid(green)
   // This encourages users to fill fields without blocking them
@@ -557,6 +656,48 @@ const VehicleDataPage: React.FC = () => {
     },
     [registrationParts.year, updateFirstRegistration]
   );
+
+  // Render quality score indicator
+  const renderQualityScore = useCallback(() => {
+    if (!validationResult) return null;
+
+    const score = validationResult.score;
+    const scoreText = language === 'bg' 
+      ? 'Качество на обявата'
+      : 'Listing Quality';
+    const scoreHint = language === 'bg'
+      ? `${score >= 80 ? 'Отлично' : score >= 60 ? 'Добро' : 'Може да се подобри'} - Попълнете още полета за по-висок рейтинг`
+      : `${score >= 80 ? 'Excellent' : score >= 60 ? 'Good' : 'Can be improved'} - Fill more fields for higher rating`;
+
+    return (
+      <QualityScoreContainer $isMobile={isMobile}>
+        <QualityScoreCircle $score={score}>
+          <QualityScoreNumber $score={score}>{score}</QualityScoreNumber>
+        </QualityScoreCircle>
+        <QualityScoreText>
+          <QualityScoreLabel>{scoreText}</QualityScoreLabel>
+          <QualityScoreHint>{scoreHint}</QualityScoreHint>
+        </QualityScoreText>
+      </QualityScoreContainer>
+    );
+  }, [validationResult, isMobile, language]);
+
+  // Get field-specific validation error
+  const getFieldError = useCallback((fieldName: string): string | null => {
+    if (!validationResult) return null;
+    const error = validationResult.errors.find(err => err.field === fieldName);
+    return error ? error.message : null;
+  }, [validationResult]);
+
+  // Render field error message
+  const renderFieldError = useCallback((fieldName: string) => {
+    const error = getFieldError(fieldName);
+    if (!error) return null;
+    
+    return (
+      <ValidationError>{error}</ValidationError>
+    );
+  }, [getFieldError]);
 
   const roadworthyChoice =
     formData.roadworthy === null || formData.roadworthy === undefined
@@ -1000,6 +1141,9 @@ const VehicleDataPage: React.FC = () => {
             <MobileTitle>{t('sell.vehicleData.title')}</MobileTitle>
           </MobileHeader>
 
+          {/* Quality Score Indicator */}
+          {renderQualityScore()}
+
           {/* Standalone brand→model dropdown from Markdown (mobile) - synced to form */}
           <div style={{ marginBottom: '1rem' }}>
             <BrandModelMarkdownDropdown
@@ -1052,6 +1196,9 @@ const VehicleDataPage: React.FC = () => {
         <DesktopHeader>
           <DesktopTitle>{t('sell.vehicleData.title')}</DesktopTitle>
         </DesktopHeader>
+
+        {/* Quality Score Indicator */}
+        {renderQualityScore()}
 
         {/* Standalone brand→model dropdown from Markdown (desktop) - synced to form */}
         <div style={{ marginBottom: '1rem' }}>

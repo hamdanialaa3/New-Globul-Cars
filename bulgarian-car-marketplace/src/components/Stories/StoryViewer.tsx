@@ -1,3 +1,4 @@
+import { logger } from '../../services/logger-service';
 /**
  * StoryViewer - Full-screen story viewer with gestures
  * Location: Bulgaria | Languages: BG/EN | Currency: EUR
@@ -297,11 +298,11 @@ const StoryViewer: React.FC<StoryViewerProps> = ({ story, onClose }) => {
   // ==================== HANDLERS ====================
   
   const handlePrevious = () => {
-    console.log('Previous story');
+    logger.info('Previous story');
   };
   
   const handleNext = () => {
-    console.log('Next story');
+    logger.info('Next story');
   };
   
   const handleLike = async () => {
@@ -311,7 +312,7 @@ const StoryViewer: React.FC<StoryViewerProps> = ({ story, onClose }) => {
       await storiesService.addReaction(story.id, user.uid, '❤️');
       setHasLiked(true);
     } catch (error) {
-      console.error('Failed to like story:', error);
+      logger.error('Failed to like story:', error);
     }
   };
   
@@ -322,7 +323,7 @@ const StoryViewer: React.FC<StoryViewerProps> = ({ story, onClose }) => {
       await storiesService.addReaction(story.id, user.uid, reaction);
       setReaction('');
     } catch (error) {
-      console.error('Failed to send reaction:', error);
+      logger.error('Failed to send reaction:', error);
     }
   };
   

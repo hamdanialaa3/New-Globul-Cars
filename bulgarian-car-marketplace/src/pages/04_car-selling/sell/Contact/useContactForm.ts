@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { BULGARIA_REGIONS, getCitiesByRegion } from '@/data/bulgaria-locations';
-import useSellWorkflow from '@/hooks/useSellWorkflow';
+import { BULGARIA_REGIONS, getCitiesByRegion } from '../../../../data/bulgaria-locations';
+import useSellWorkflow from '../../../../hooks/useSellWorkflow';
 import { CONTACT_METHODS } from './contactConstants';
 
 export interface ContactFormState {

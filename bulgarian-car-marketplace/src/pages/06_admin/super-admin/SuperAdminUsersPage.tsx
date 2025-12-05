@@ -1,3 +1,4 @@
+import { logger } from '../../../services/logger-service';
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
@@ -10,9 +11,9 @@ import {
   collection, doc, getDocs, updateDoc, deleteDoc, query, 
   where, orderBy, serverTimestamp 
 } from 'firebase/firestore';
-import { db } from '@/firebase/firebase-config';
-import { firebaseRealDataService } from '@/services/firebase-real-data-service';
-import { auditLoggingService } from '@/services/audit-logging-service';
+import { db } from '../../../firebase/firebase-config';
+import { firebaseRealDataService } from '../../../services/firebase-real-data-service';
+import { auditLoggingService } from '../../../services/audit-logging-service';
 
 const PageContainer = styled.div`
   min-height: 100vh;
@@ -466,7 +467,7 @@ const SuperAdminUsersPage: React.FC = () => {
       });
 
     } catch (err) {
-      console.error('Error loading data:', err);
+      logger.error('Error loading data:', err);
     } finally {
       setLoading(false);
     }
@@ -498,7 +499,7 @@ const SuperAdminUsersPage: React.FC = () => {
 
       loadData();
     } catch (err) {
-      console.error(`Error ${action} user:`, err);
+      logger.error(`Error ${action} user:`, err);
     }
   };
 

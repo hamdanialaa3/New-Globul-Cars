@@ -1,3 +1,4 @@
+import { logger } from '../services/logger-service';
 // Cache Performance Analytics
 // Tracks cache hit/miss rates and performance metrics
 
@@ -183,7 +184,7 @@ if (typeof window !== 'undefined') {
 if (typeof window !== 'undefined' && process.env.NODE_ENV === 'production') {
   setInterval(() => {
     const overall = cacheAnalytics.getOverallMetrics();
-    console.log('📊 Cache Stats:', {
+    logger.info('📊 Cache Stats:', {
       hitRate: `${overall.hitRate.toFixed(2)}%`,
       totalRequests: overall.totalRequests,
       cacheHits: overall.cacheHits,

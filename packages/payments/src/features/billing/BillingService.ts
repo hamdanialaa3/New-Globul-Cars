@@ -8,74 +8,44 @@ import { Plan, Subscription, Invoice, PlanTier, BillingInterval } from './types'
 class BillingService {
   /**
    * Get all available plans
+   * Updated: December 2025 - Simplified to 3 plans matching main BillingService
    */
   getAvailablePlans(): Plan[] {
-    // This will eventually come from Stripe or Remote Config
+    // This matches bulgarian-car-marketplace/src/features/billing/BillingService.ts
     return [
+      // FREE PLAN
       {
-        id: 'premium',
-        name: { bg: 'Премиум', en: 'Premium' },
-        description: { bg: '10 обяви, приоритетна поддръжка', en: '10 listings, priority support' },
+        id: 'free',
+        name: { bg: 'Безплатен', en: 'Free' },
+        description: { bg: 'За частни продавачи - 5 автомобила на месец', en: 'For private sellers - 5 cars per month' },
         profileType: 'private',
-        pricing: { monthly: 9.99, annual: 99 },
-        listingCap: 10,
-        features: ['priority_support', 'featured_badge']
+        pricing: { monthly: 0, annual: 0 },
+        listingCap: 5,
+        features: ['basic_listing', 'standard_photos', 'contact_buyers']
       },
+      
+      // DEALER PLAN
       {
-        id: 'dealer_basic',
-        name: { bg: 'Дилър - Базов', en: 'Dealer - Basic' },
-        description: { bg: '50 обяви, анализи, бързи отговори', en: '50 listings, analytics, quick replies' },
+        id: 'dealer',
+        name: { bg: 'Търговец', en: 'Dealer' },
+        description: { bg: '15 автомобила месечно + анализи', en: '15 cars monthly + analytics' },
         profileType: 'dealer',
-        pricing: { monthly: 49, annual: 490 },
-        listingCap: 50,
-        features: ['analytics', 'quick_replies', 'bulk_edit'],
+        pricing: { monthly: 29, annual: 300 },
+        listingCap: 15,
+        features: ['analytics', 'quick_replies', 'bulk_edit', 'team_management'],
         popular: true
       },
+      
+      // COMPANY PLAN
       {
-        id: 'dealer_pro',
-        name: { bg: 'Дилър - Про', en: 'Dealer - Pro' },
-        description: { bg: '150 обяви, CSV импорт, API достъп', en: '150 listings, CSV import, API access' },
-        profileType: 'dealer',
-        pricing: { monthly: 99, annual: 990 },
-        listingCap: 150,
-        features: ['analytics', 'csv_import', 'advanced_analytics', 'api_access'],
+        id: 'company',
+        name: { bg: 'Компания', en: 'Company' },
+        description: { bg: 'Неограничени автомобили + API достъп', en: 'Unlimited cars + API access' },
+        profileType: 'company',
+        pricing: { monthly: 199, annual: 1600 },
+        listingCap: -1, // Unlimited
+        features: ['everything', 'api_access', 'dedicated_manager', 'custom_reports'],
         recommended: true
-      },
-      {
-        id: 'dealer_enterprise',
-        name: { bg: 'Дилър - Ентърпрайз', en: 'Dealer - Enterprise' },
-        description: { bg: 'Неограничени обяви, персонален мениджър', en: 'Unlimited listings, dedicated manager' },
-        profileType: 'dealer',
-        pricing: { monthly: 199, annual: 1990 },
-        listingCap: -1,
-        features: ['everything', 'dedicated_manager', 'white_label']
-      },
-      {
-        id: 'company_starter',
-        name: { bg: 'Фирма - Стартер', en: 'Company - Starter' },
-        description: { bg: '100 обяви, екип до 5 човека', en: '100 listings, team up to 5 members' },
-        profileType: 'company',
-        pricing: { monthly: 299, annual: 2990 },
-        listingCap: 100,
-        features: ['team_5', 'multi_location', 'fleet_analytics']
-      },
-      {
-        id: 'company_pro',
-        name: { bg: 'Фирма - Про', en: 'Company - Pro' },
-        description: { bg: 'Неограничени обяви, неограничен екип', en: 'Unlimited listings, unlimited team' },
-        profileType: 'company',
-        pricing: { monthly: 599, annual: 5990 },
-        listingCap: -1,
-        features: ['team_unlimited', 'custom_reports', 'crm_integration']
-      },
-      {
-        id: 'company_enterprise',
-        name: { bg: 'Фирма - Ентърпрайз', en: 'Company - Enterprise' },
-        description: { bg: 'Всички функции, SLA, персонализация', en: 'All features, SLA, customization' },
-        profileType: 'company',
-        pricing: { monthly: 999, annual: 9990 },
-        listingCap: -1,
-        features: ['everything', 'sla', 'custom_everything']
       }
     ];
   }

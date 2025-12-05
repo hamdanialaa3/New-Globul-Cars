@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import styled, { keyframes, css } from 'styled-components';
-import { useLanguage } from '@/contexts/LanguageContext';
-import CarBrandLogo from '@/components/CarBrandLogo';
-import { brandsModelsDataService, type BrandModelsMap } from '@/services/brands-models-data.service';
+import { useLanguage } from '../../contexts/LanguageContext';
+import CarBrandLogo from '../../components/CarBrandLogo';
+import { brandsModelsDataService, type BrandModelsMap } from '../../services/brands-models-data.service';
 
 // Lightweight dropdown module that reads brands/models from centralized service
 // Uses: brandsModelsDataService for consistent data across all pages

@@ -1,3 +1,4 @@
+import { logger } from '../../../services/logger-service';
 // CarSearchSystem/hooks/useCarSearch.ts
 // (Comment removed - was in Arabic)
 
@@ -85,7 +86,7 @@ export const useCarSearch = (initialFilters: Partial<FiltersType> = {}) => {
 
   const searchCars = useCallback(() => {
     // (Comment removed - was in Arabic)
-    console.log('البحث بالفلاتر:', filters);
+    logger.info('البحث بالفلاتر:', filters);
     // (Comment removed - was in Arabic)
   }, [filters]);
 

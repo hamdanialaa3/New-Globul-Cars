@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { Plus, Car, Users, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '../contexts/LanguageContext';
 
 // ==================== ANIMATIONS ====================
 

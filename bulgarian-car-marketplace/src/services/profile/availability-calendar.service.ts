@@ -10,13 +10,13 @@ import {
   updateDoc,
   serverTimestamp
 } from 'firebase/firestore';
-import { db } from '@/firebase/firebase-config';
+import { db } from '../../firebase/firebase-config';
 import { serviceLogger } from '../logger-wrapper';
 import type {
   AvailabilityCalendar,
   DayAvailability,
   TimeSlot
-} from '@/types/profile-enhancements.types';
+} from '../../types/profile-enhancements.types';
 
 export class AvailabilityCalendarService {
   private static instance: AvailabilityCalendarService;

@@ -39,7 +39,7 @@ export interface CacheStats {
  * 
  * Usage:
  * ```typescript
- * import { createCacheService } from '@/services/cache-service';
+ * import { createCacheService } from '../services/cache-service';
  * 
  * const cache = createCacheService({
  *   ttl: 5 * 60 * 1000, // 5 minutes

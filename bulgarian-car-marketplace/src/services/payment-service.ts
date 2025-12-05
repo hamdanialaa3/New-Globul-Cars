@@ -1,7 +1,7 @@
 // src/services/payment-service.ts
 // Complete Payment Service for Bulgarian Car Marketplace
 
-import { db } from '@/firebase/firebase-config';
+import { db } from '../firebase/firebase-config';
 import { collection, addDoc, updateDoc, doc, getDoc, serverTimestamp } from 'firebase/firestore';
 import { errorHandler } from './error-handling-service';
 import { monitoring } from './monitoring-service';

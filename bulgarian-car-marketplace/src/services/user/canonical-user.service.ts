@@ -8,7 +8,7 @@
  * Replaces 50+ duplicate getUserProfile functions across the codebase.
  * 
  * @example
- * import { userService } from '@/services/user/canonical-user.service';
+ * import { userService } from '../../services/user/canonical-user.service';
  * const user = await userService.getUserProfile(userId);
  * 
  * @since 2025-11-03
@@ -16,9 +16,9 @@
  * @author Backend Refactoring Team
  */
 
-import { BulgarianUser } from '@/types/user/bulgarian-user.types';
-import { db } from '@/firebase';
-import { logger } from '@/services/logger-service';
+import { BulgarianUser } from '../../types/user/bulgarian-user.types';
+import { db } from '../../firebase';
+import { logger } from '../../services/logger-service';
 
 export class CanonicalUserService {
   private static instance: CanonicalUserService;

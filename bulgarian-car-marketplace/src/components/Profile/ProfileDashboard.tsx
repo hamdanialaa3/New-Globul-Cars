@@ -1,3 +1,4 @@
+import { logger } from '../../services/logger-service';
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { TrendingUp, Eye, Car, MessageSquare, AlertCircle, Plus, Edit, Settings as SettingsIcon, RefreshCw, MapPin, Mail, Phone as PhoneIcon, Users } from 'lucide-react';
@@ -559,7 +560,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({ user: propUser }) =
         alert(language === 'bg' ? 'Профилът е синхронизиран!' : 'Profile synced!');
       }
     } catch (error) {
-      console.error('Sync error:', error);
+      logger.error('Sync error:', error);
       alert(language === 'bg' ? 'Грешка при синхронизация' : 'Sync error');
     } finally {
       setSyncing(false);

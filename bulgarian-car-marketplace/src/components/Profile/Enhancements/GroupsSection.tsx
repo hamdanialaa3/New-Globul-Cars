@@ -1,3 +1,4 @@
+import { logger } from '../../../services/logger-service';
 /**
  * Groups Section
  * Displays user's groups and allows joining/leaving groups
@@ -6,10 +7,10 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Users, Plus, X, ChevronRight } from 'lucide-react';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { useTheme } from '@/contexts/ThemeContext';
-import { groupsService } from '@/services/profile/groups.service';
-import type { UserGroup, GroupMembership } from '@/types/profile-enhancements.types';
+import { useLanguage } from '../../../contexts/LanguageContext';
+import { useTheme } from '../../../contexts/ThemeContext';
+import { groupsService } from '../../../services/profile/groups.service';
+import type { UserGroup, GroupMembership } from '../../../types/profile-enhancements.types';
 
 const SectionContainer = styled.section<{ $isDark: boolean }>`
   padding: 24px;
@@ -166,7 +167,7 @@ export const GroupsSection: React.FC<GroupsSectionProps> = ({
           setPopularGroups(popular.filter(g => !groups.some(ug => ug.id === g.id)));
         }
       } catch (error) {
-        console.error('Error loading groups:', error);
+        logger.error('Error loading groups:', error);
         setUserGroups([]);
       } finally {
         setLoading(false);
@@ -185,7 +186,7 @@ export const GroupsSection: React.FC<GroupsSectionProps> = ({
       setUserGroups(groups);
       setPopularGroups(prev => prev.filter(g => g.id !== groupId));
     } catch (error) {
-      console.error('Error joining group:', error);
+      logger.error('Error joining group:', error);
     }
   };
 
@@ -197,7 +198,7 @@ export const GroupsSection: React.FC<GroupsSectionProps> = ({
       const groups = await groupsService.getUserGroups(userId);
       setUserGroups(groups);
     } catch (error) {
-      console.error('Error leaving group:', error);
+      logger.error('Error leaving group:', error);
     }
   };
 

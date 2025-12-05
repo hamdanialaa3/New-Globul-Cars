@@ -6,7 +6,7 @@
  * Makes imports cleaner and more maintainable
  * 
  * @example
- * import { AuthGuard } from '@/components/guards';
+ * import { AuthGuard } from '../../components/guards';
  */
 
 export { AuthGuard, type AuthGuardProps } from './AuthGuard';

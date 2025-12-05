@@ -1,3 +1,4 @@
+import { logger } from '../../services/logger-service';
 // src/components/Profile/BusinessBackground.tsx
 // Business Profile Background with LED Strip
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
@@ -119,7 +120,7 @@ const BusinessBackground: React.FC<BusinessBackgroundProps> = ({
 
   // Debug log
   useEffect(() => {
-    console.log('🏢 BusinessBackground - isBusinessAccount:', isBusinessAccount);
+    logger.info('🏢 BusinessBackground - isBusinessAccount:', isBusinessAccount);
   }, [isBusinessAccount]);
 
   // Rotate background images every 10 seconds
@@ -136,11 +137,11 @@ const BusinessBackground: React.FC<BusinessBackgroundProps> = ({
   }, [isBusinessAccount]);
 
   if (!isBusinessAccount) {
-    console.log('🏢 BusinessBackground not shown - not a business account');
+    logger.info('🏢 BusinessBackground not shown - not a business account');
     return null;
   }
   
-  console.log('🏢 BusinessBackground rendering with image:', businessImages[currentImageIndex]);
+  logger.info('🏢 BusinessBackground rendering with image:', businessImages[currentImageIndex]);
 
   return (
     <>

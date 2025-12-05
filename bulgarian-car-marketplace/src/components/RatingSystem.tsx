@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Star, ThumbsUp, ThumbsDown, Heart, Smile, Frown } from 'lucide-react';
-import { useTranslation } from '@/hooks/useTranslation';
+import { useTranslation } from '../hooks/useTranslation';
 
 interface RatingOption {
   id: string;

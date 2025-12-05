@@ -1,3 +1,4 @@
+import { logger } from '../../services/logger-service';
 // Distance Indicator Component
 // مكون عرض المسافة من موقع المستخدم
 
@@ -215,7 +216,7 @@ const DistanceIndicator: React.FC<DistanceIndicatorProps> = ({
 
       setLoading(false);
     } catch (err) {
-      console.error('Error loading distance info:', err);
+      logger.error('Error loading distance info:', err);
       setError(language === 'bg' 
         ? 'Грешка при зареждане на информацията' 
         : 'Error loading information');

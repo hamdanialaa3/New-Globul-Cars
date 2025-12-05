@@ -1,3 +1,4 @@
+import { logger } from '../../services/logger-service';
 // src/features/billing/StripeCheckout.tsx
 // Stripe Checkout Component
 
@@ -69,7 +70,7 @@ const StripeCheckout: React.FC<StripeCheckoutProps> = ({
         throw new Error(data.message || t('billing.checkoutError'));
       }
     } catch (err: any) {
-      console.error('Checkout error:', err);
+      logger.error('Checkout error:', err);
       const errorMessage = err.message || t('billing.checkoutError');
       setError(errorMessage);
       if (onError) onError(errorMessage);

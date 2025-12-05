@@ -143,6 +143,9 @@ export const FEATURE_FLAGS = {
      * ✅ STATUS: ACTIVE (Nov 26, 2025)
      */
     USE_DEALER_ROUTES: true,
+
+    /**
+     * USE_SELL_ROUTES
      * 
      * Extracts sell workflow routes into sell.routes.tsx
      * Includes: 20+ routes for the mobile.de-style sell flow

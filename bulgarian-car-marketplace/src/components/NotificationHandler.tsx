@@ -1,11 +1,12 @@
+import { logger } from '../services/logger-service';
 // src/components/NotificationHandler.tsx
 // Component to handle FCM initialization and foreground messages
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
 import { useEffect } from 'react';
-import { notificationService } from '@/services/notification-service';
+import { notificationService } from '../services/notification-service';
 import { useToast } from './Toast';
-import { useAuth } from '@/contexts/AuthProvider';
+import { useAuth } from '../contexts/AuthProvider';
 
 const NotificationHandler: React.FC = () => {
   const { showToast } = useToast();
@@ -14,7 +15,7 @@ const NotificationHandler: React.FC = () => {
   useEffect(() => {
     // Skip Firebase messaging in development to prevent errors
     if (process.env.NODE_ENV === 'development') {
-      console.log('📱 Notifications disabled in development mode');
+      logger.info('📱 Notifications disabled in development mode');
       return;
     }
 

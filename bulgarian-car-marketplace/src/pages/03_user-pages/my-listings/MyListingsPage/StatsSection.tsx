@@ -4,7 +4,7 @@
 import React from 'react';
 import { MyListingsStats } from './types';
 import { SectionContainer, StatsGrid, StatCard } from './styles';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '../../../../contexts/LanguageContext';
 
 interface StatsSectionProps {
   stats: MyListingsStats;

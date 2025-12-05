@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import SellProgressBar from './SellProgressBar';
-import { SellWorkflowStepId } from '@/constants/sellWorkflowSteps';
+import { SellWorkflowStepId } from '../../constants/sellWorkflowSteps';
 
 interface SellWorkflowLayoutProps {
   currentStep: SellWorkflowStepId;

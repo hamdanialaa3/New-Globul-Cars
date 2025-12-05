@@ -1,4 +1,5 @@
-import { UnifiedCar } from '@/services/car';
+import { logger } from '../../../../services/logger-service';
+import { UnifiedCar } from '../../../../services/car';
 
 // Browsing History Interface
 export interface BrowsingHistoryItem {
@@ -23,7 +24,7 @@ export const getBrowsingHistory = (): BrowsingHistoryItem[] => {
         }
         return [];
     } catch (error) {
-        console.error('Error loading browsing history:', error);
+        logger.error('Error loading browsing history:', error);
         return [];
     }
 };
@@ -52,7 +53,7 @@ export const addToBrowsingHistory = (listing: UnifiedCar) => {
         history = history.slice(0, MAX_HISTORY_ITEMS);
         localStorage.setItem(BROWSING_HISTORY_KEY, JSON.stringify(history));
     } catch (error) {
-        console.error('Error adding to browsing history:', error);
+        logger.error('Error adding to browsing history:', error);
     }
 };
 

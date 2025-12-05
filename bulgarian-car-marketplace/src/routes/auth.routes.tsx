@@ -90,7 +90,7 @@ export const AuthRoutes: React.FC = () => {
 /**
  * Usage in App.tsx:
  * 
- * import { FEATURE_FLAGS } from '@/config/feature-flags';
+ * import { FEATURE_FLAGS } from '../config/feature-flags';
  * import { AuthRoutes } from '@/routes/auth.routes';
  * 
  * // In your Routes:

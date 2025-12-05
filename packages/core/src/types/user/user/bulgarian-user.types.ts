@@ -97,7 +97,7 @@ export interface BaseProfile {
 // ==================== DEALER PROFILE ====================
 export interface DealerProfile extends BaseProfile {
   profileType: 'dealer';
-  planTier: 'dealer_basic' | 'dealer_pro' | 'dealer_enterprise';
+  planTier: 'dealer'; // Updated December 2025
   
   // ✅ NEW: Canonical reference (Phase 1+)
   dealershipRef?: `dealerships/${string}`;
@@ -132,7 +132,7 @@ export interface DealerProfile extends BaseProfile {
 // ==================== PRIVATE PROFILE ====================
 export interface PrivateProfile extends BaseProfile {
   profileType: 'private';
-  planTier: 'free' | 'premium';
+  planTier: 'free'; // Updated December 2025 - Only free for private users
   
   // Private-specific
   egn?: string;  // Bulgarian personal ID (optional)
@@ -141,7 +141,7 @@ export interface PrivateProfile extends BaseProfile {
 // ==================== COMPANY PROFILE ====================
 export interface CompanyProfile extends BaseProfile {
   profileType: 'company';
-  planTier: 'company_starter' | 'company_pro' | 'company_enterprise';
+  planTier: 'company'; // Updated December 2025
   
   // ✅ NEW: Company reference (Phase 1+)
   companyRef?: `companies/${string}`;
@@ -168,15 +168,8 @@ export type BulgarianUser =
   | CompanyProfile;
 
 // ==================== SUPPORTING TYPES ====================
-export type PlanTier = 
-  | 'free' 
-  | 'premium' 
-  | 'dealer_basic' 
-  | 'dealer_pro' 
-  | 'dealer_enterprise' 
-  | 'company_starter' 
-  | 'company_pro' 
-  | 'company_enterprise';
+// Updated December 2025 - Simplified to 3 plans
+export type PlanTier = 'free' | 'dealer' | 'company';
 
 export interface ProfilePermissions {
   canAddListings: boolean;

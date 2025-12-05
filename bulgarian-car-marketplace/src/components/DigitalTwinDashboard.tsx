@@ -1,7 +1,8 @@
+import { logger } from '../services/logger-service';
 import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { MapPin, Fuel, Zap, AlertTriangle, CheckCircle, Clock, Gauge, Battery } from 'lucide-react';
-import { gloubulConnectService, DigitalTwin } from '@/services/gloubul-connect-service';
+import { gloubulConnectService, DigitalTwin } from '../services/gloubul-connect-service';
 
 interface DigitalTwinDashboardProps {
   vin: string;
@@ -140,7 +141,7 @@ export const DigitalTwinDashboard: React.FC<DigitalTwinDashboardProps> = ({ vin 
       setError(null);
     } catch (err) {
       setError('فشل في تحميل بيانات السيارة');
-      console.error('خطأ في تحميل التوأم الرقمي:', err);
+      logger.error('خطأ في تحميل التوأم الرقمي:', err);
     } finally {
       setLoading(false);
     }

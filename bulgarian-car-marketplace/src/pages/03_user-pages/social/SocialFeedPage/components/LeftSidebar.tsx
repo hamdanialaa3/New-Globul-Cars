@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthProvider';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '../../../../../contexts/AuthProvider';
+import { useLanguage } from '../../../../../contexts/LanguageContext';
 
 const MENU_ITEMS = [
   { icon: '👤', key: 'yourProfile', link: '/profile', requireAuth: true },

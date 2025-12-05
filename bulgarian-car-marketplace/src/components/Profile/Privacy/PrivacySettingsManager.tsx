@@ -1,3 +1,4 @@
+import { logger } from '../../../services/logger-service';
 import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { Eye, EyeOff, Shield, Lock, Unlock, Save } from 'lucide-react';
@@ -30,7 +31,7 @@ const PrivacySettingsManager: React.FC<PrivacySettingsManagerProps> = ({
         setSettings(privacySettings);
       }
     } catch (error) {
-      console.error('Error loading privacy settings:', error);
+      logger.error('Error loading privacy settings:', error);
     } finally {
       setLoading(false);
     }
@@ -63,7 +64,7 @@ const PrivacySettingsManager: React.FC<PrivacySettingsManagerProps> = ({
         language === 'bg' ? 'Настройките са запазени' : 'Settings saved successfully'
       );
     } catch (error) {
-      console.error('Error saving privacy settings:', error);
+      logger.error('Error saving privacy settings:', error);
       showToast(
         'error',
         language === 'bg' ? 'Грешка при запазване' : 'Error saving settings'

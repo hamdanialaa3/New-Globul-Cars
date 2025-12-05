@@ -3,13 +3,13 @@
 
 import React, { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useLanguage } from '@/contexts/LanguageContext';
-import SplitScreenLayout from '@/components/SplitScreenLayout';
-import { WorkflowFlow } from '@/components/WorkflowVisualization';
+import { useLanguage } from '../../../../contexts/LanguageContext';
+import SplitScreenLayout from '../../../../components/SplitScreenLayout';
+import { WorkflowFlow } from '../../../../components/WorkflowVisualization';
 import { Euro, TrendingUp, Info } from 'lucide-react';
 import * as S from './styles';
-import { SellWorkflowLayout } from '@/components/SellWorkflow';
-import SellWorkflowStepStateService from '@/services/sellWorkflowStepState';
+import { SellWorkflowLayout } from '../../../../components/SellWorkflow';
+import SellWorkflowStepStateService from '../../../../services/sellWorkflowStepState';
 import { usePricingForm } from './usePricingForm';
 
 const PricingPageNew: React.FC = () => {

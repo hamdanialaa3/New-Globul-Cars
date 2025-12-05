@@ -1,3 +1,4 @@
+import { logger } from '../../services/logger-service';
 // Places Autocomplete Component
 // مكون البحث الذكي للمدن باستخدام Google Places API
 
@@ -206,7 +207,7 @@ const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
         setShowSuggestions(results.length > 0);
         setSelectedIndex(-1);
       } catch (error) {
-        console.error('Error searching places:', error);
+        logger.error('Error searching places:', error);
         setSuggestions([]);
       } finally {
         setLoading(false);

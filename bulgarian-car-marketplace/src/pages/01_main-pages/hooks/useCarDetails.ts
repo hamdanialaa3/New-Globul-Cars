@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
-import { db } from '@/firebase/firebase-config';
-import { unifiedCarService } from '@/services/car';
-import { CarListing } from '@/types/CarListing';
-import { logger } from '@/services/logger-service';
-import { startAiTrace, endAiTrace } from '@/services/performance/ai-performance-traces';
+import { db } from '../../../firebase/firebase-config';
+import { unifiedCarService } from '../../../services/car';
+import { CarListing } from '../../../types/CarListing';
+import { logger } from '../../../services/logger-service';
+import { startAiTrace, endAiTrace } from '../../../services/performance/ai-performance-traces';
 
 export const useCarDetails = (carId: string | undefined) => {
   const [car, setCar] = useState<CarListing | null>(null);
@@ -13,12 +13,12 @@ export const useCarDetails = (carId: string | undefined) => {
   useEffect(() => {
     const loadCar = async () => {
       if (!carId) {
-        console.log('❌ No carId provided');
+        logger.info('❌ No carId provided');
         setLoading(false);
         return;
       }
       
-      console.log('🔍 Loading car with ID:', carId);
+      logger.info('🔍 Loading car with ID:', carId);
       
       const trace = startAiTrace('car_details_load');
       const startTime = performance.now();
@@ -45,18 +45,18 @@ export const useCarDetails = (carId: string | undefined) => {
             } as CarListing;
           }
         } catch (unifiedError) {
-          console.log('⚠️ unifiedCarService failed, trying direct Firestore query...', unifiedError);
+          logger.info('⚠️ unifiedCarService failed, trying direct Firestore query...', unifiedError);
         }
         
         // Fallback: Direct Firestore query if unifiedCarService fails or returns null
         if (!carData) {
-          console.log('⚠️ Trying direct Firestore query for car:', carId);
+          logger.info('⚠️ Trying direct Firestore query for car:', carId);
           const carRef = doc(db, 'cars', carId);
           const carSnap = await getDoc(carRef);
           
           if (carSnap.exists()) {
             const data = carSnap.data();
-            console.log('✅ Found car in Firestore:', data);
+            logger.info('✅ Found car in Firestore:', data);
             carData = {
               id: carSnap.id,
               ...data,
@@ -64,7 +64,7 @@ export const useCarDetails = (carId: string | undefined) => {
               updatedAt: data.updatedAt?.toDate?.() || data.updatedAt,
             } as CarListing;
           } else {
-            console.log('❌ Car not found in Firestore collection "cars" with ID:', carId);
+            logger.info('❌ Car not found in Firestore collection "cars" with ID:', carId);
             // Try alternative collections including all vehicle type collections
             const alternativeCollections = [
               'listings', 
@@ -82,7 +82,7 @@ export const useCarDetails = (carId: string | undefined) => {
                 const altRef = doc(db, collectionName, carId);
                 const altSnap = await getDoc(altRef);
                 if (altSnap.exists()) {
-                  console.log(`✅ Found car in collection "${collectionName}"`);
+                  logger.info(`✅ Found car in collection "${collectionName}"`);
                   const data = altSnap.data();
                   carData = {
                     id: altSnap.id,
@@ -93,29 +93,29 @@ export const useCarDetails = (carId: string | undefined) => {
                   break;
                 }
               } catch (altError) {
-                console.log(`⚠️ Error checking collection "${collectionName}":`, altError);
+                logger.info(`⚠️ Error checking collection "${collectionName}":`, altError);
               }
             }
           }
         }
         
-        console.log('✅ Car data loaded:', carData);
+        logger.info('✅ Car data loaded:', carData);
         
         if (carData) {
           setCar(carData);
         } else {
-          console.log('⚠️ Car not found in database');
+          logger.info('⚠️ Car not found in database');
         }
         
         const duration = performance.now() - startTime;
         endAiTrace(trace, { load_duration_ms: duration, found: carData ? 1 : 0 });
       } catch (error) {
-        console.error('❌ Error loading car:', error);
+        logger.error('❌ Error loading car:', error);
         logger.error('Error loading car details', error as Error, { carId });
         endAiTrace(trace, { error: 1 });
       } finally {
         setLoading(false);
-        console.log('✅ Loading finished');
+        logger.info('✅ Loading finished');
       }
     };
 

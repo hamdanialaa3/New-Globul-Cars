@@ -1,3 +1,4 @@
+import { logger } from '../services/logger-service';
 // Global Language Context for Smart Translation System
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback, useMemo } from 'react';
 import { translations } from '../locales';
@@ -53,14 +54,14 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
   // Translation function - gets value from nested object using dot notation
   const t = useCallback((key: string): string => {
     if (!key || typeof key !== 'string') {
-      console.warn('[Translation] Invalid key:', key);
+      logger.warn('[Translation] Invalid key:', key);
       return key || '';
     }
     
     // Get the language object (bg or en)
     const langObj = translations[language];
     if (!langObj) {
-      console.error('[Translation] Language object not found for:', language);
+      logger.error('[Translation] Language object not found for:', language);
       return key;
     }
     
@@ -78,14 +79,14 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
       if (enObj) {
         const enTranslation = getNestedTranslation(enObj, key);
         if (enTranslation !== key) {
-          console.warn(`[Translation] Key "${key}" not found in ${language}, using English fallback`);
+          logger.warn(`[Translation] Key "${key}" not found in ${language}, using English fallback`);
           return enTranslation;
         }
       }
     }
     
     // If all else fails, log and return the key itself
-    console.warn(`[Translation] Missing translation for key: "${key}" in language: ${language}`);
+    logger.warn(`[Translation] Missing translation for key: "${key}" in language: ${language}`);
     return key;
   }, [language]);
 

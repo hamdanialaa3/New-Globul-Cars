@@ -1,12 +1,13 @@
+import { logger } from '../../../../services/logger-service';
 // src/pages/AdminPage/index.tsx
 // Admin Dashboard - Protected Admin-Only Area
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { doc, getDoc } from 'firebase/firestore';
-import { db } from '@/firebase/firebase-config';
-import { useAuth } from '@/contexts/AuthProvider';  /* ⚡ FIXED */
-import { useLanguage } from '@/contexts/LanguageContext';
+import { db } from '../../../../firebase/firebase-config';
+import { useAuth } from '../../../../contexts/AuthProvider';  /* ⚡ FIXED */
+import { useLanguage } from '../../../../contexts/LanguageContext';
 import VerificationReview from './VerificationReview';
 import UsersManagement from './UsersManagement';
 import ReportsView from './ReportsView';
@@ -42,7 +43,7 @@ const AdminPage: React.FC = () => {
         const adminDoc = await getDoc(doc(db, 'admins', currentUser.uid));
 
         if (!adminDoc.exists()) {
-          console.warn('Non-admin user attempted to access admin page');
+          logger.warn('Non-admin user attempted to access admin page');
           navigate('/');
           return;
         }
@@ -51,7 +52,7 @@ const AdminPage: React.FC = () => {
         setAdminData(adminInfo);
         setIsAdmin(true);
       } catch (error) {
-        console.error('Error checking admin status:', error);
+        logger.error('Error checking admin status:', error);
         navigate('/');
       } finally {
         setLoading(false);

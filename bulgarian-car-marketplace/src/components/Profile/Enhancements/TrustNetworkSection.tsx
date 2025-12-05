@@ -1,3 +1,4 @@
+import { logger } from '../../../services/logger-service';
 /**
  * Trust Network Section
  * Displays user's trust connections and network
@@ -6,10 +7,10 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Users, UserCheck, Shield, ArrowRight } from 'lucide-react';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { useTheme } from '@/contexts/ThemeContext';
-import type { TrustConnection, TrustNetworkStats } from '@/types/profile-enhancements.types';
-import { trustNetworkService } from '@/services/profile/trust-network.service';
+import { useLanguage } from '../../../contexts/LanguageContext';
+import { useTheme } from '../../../contexts/ThemeContext';
+import type { TrustConnection, TrustNetworkStats } from '../../../types/profile-enhancements.types';
+import { trustNetworkService } from '../../../services/profile/trust-network.service';
 
 const SectionContainer = styled.section<{ $isDark: boolean }>`
   padding: 24px;
@@ -207,7 +208,7 @@ export const TrustNetworkSection: React.FC<TrustNetworkSectionProps> = ({
           verifiedConnections: 0
         });
       } catch (error) {
-        console.error('Error loading trust network:', error);
+        logger.error('Error loading trust network:', error);
         setConnections([]);
         setStats({
           partners: 0,

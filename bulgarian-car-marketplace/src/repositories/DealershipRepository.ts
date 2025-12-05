@@ -26,13 +26,13 @@ import {
   runTransaction,
   writeBatch
 } from 'firebase/firestore';
-import { db } from '@/firebase/firebase-config';
-import { logger } from '@/services/logger-service';
+import { db } from '../firebase/firebase-config';
+import { logger } from '../services/logger-service';
 import type {
   DealershipInfo,
   DealershipInfoCreate,
   DealershipInfoUpdate
-} from '@/types/dealership/dealership.types';
+} from '../types/dealership/dealership.types';
 
 export class DealershipRepository {
   private static readonly COLLECTION = 'dealerships';

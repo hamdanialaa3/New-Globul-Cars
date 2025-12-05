@@ -3,6 +3,7 @@ import 'styled-components';
 
 declare module 'styled-components' {
   export interface DefaultTheme {
+    mode?: 'light' | 'dark'; // Theme mode from ThemeContext
     colors: {
       primary: {
         main: string;

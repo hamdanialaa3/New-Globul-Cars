@@ -4,8 +4,8 @@
 import React, { memo } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { useLanguage } from '@/contexts/LanguageContext';
-import LanguageToggle from '@/components/LanguageToggle/LanguageToggle';
+import { useLanguage } from '../../../../contexts/LanguageContext';
+import LanguageToggle from '../../../../components/LanguageToggle/LanguageToggle';
 
 const HeroSection = styled.section`
   background-image: url('/assets/backgrounds/metal-bg-1.jpg');

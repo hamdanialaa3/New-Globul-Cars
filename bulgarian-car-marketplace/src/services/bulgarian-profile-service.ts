@@ -1,3 +1,4 @@
+import { logger } from './logger-service';
 // src/services/bulgarian-profile-service.ts
 // Comprehensive Bulgarian User Profile Service
 // Phase -1: Updated to use canonical types
@@ -28,15 +29,15 @@ import {
   reauthenticateWithCredential
 } from 'firebase/auth';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
-import { auth, db, storage } from '@/firebase/firebase-config';
+import { auth, db, storage } from '../firebase/firebase-config';
 import { serviceLogger } from './logger-wrapper';
 
 // ✅ NEW: Import from canonical types file
-import type { BulgarianUser, DealerProfile as DealerUserProfile } from '@/types/user/bulgarian-user.types';
-import type { DealershipInfo } from '@/types/dealership/dealership.types';
+import type { BulgarianUser, DealerProfile as DealerUserProfile } from '../types/user/bulgarian-user.types';
+import type { DealershipInfo } from '../types/dealership/dealership.types';
 
 /**
- * @deprecated Use DealershipInfo from '@/types/dealership/dealership.types' instead
+ * @deprecated Use DealershipInfo from '../types/dealership/dealership.types' instead
  * This interface is kept only for backward compatibility
  * Will be removed in Phase 4 (Week 8)
  */
@@ -442,7 +443,7 @@ export class BulgarianProfileService {
   static async deleteUserProfile(userId: string): Promise<void> {
     // ✅ CRITICAL FIX: Guard against null/undefined userId
     if (!userId || typeof userId !== 'string' || userId.trim() === '') {
-      console.warn('[BulgarianProfileService] deleteUserProfile called with invalid userId', { userId });
+      logger.warn('[BulgarianProfileService] deleteUserProfile called with invalid userId', { userId });
       throw new Error('Invalid userId provided to deleteUserProfile');
     }
 

@@ -14,7 +14,7 @@
  */
 
 import { useState, useCallback } from 'react';
-import { logger } from '@/services/logger-service';
+import { logger } from '../services/logger-service';
 
 export interface OptimisticUpdateOptions<T, R = void> {
   /**

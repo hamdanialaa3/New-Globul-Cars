@@ -3,7 +3,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { RatingSummary } from '@/services/reviews/rating-service';
+import { RatingSummary } from '../services/reviews/rating-service';
 
 interface RatingDisplayProps {
   summary: RatingSummary | null;

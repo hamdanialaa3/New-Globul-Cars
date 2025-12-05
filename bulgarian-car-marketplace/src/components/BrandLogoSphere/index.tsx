@@ -10,7 +10,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import CarBrandLogo from '@/components/CarBrandLogo';
+import CarBrandLogo from '../../components/CarBrandLogo';
 
 const SphereContainer = styled.div`
   display: flex;

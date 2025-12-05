@@ -1,12 +1,17 @@
-import React, { useState } from 'react';
+import { logger } from '../../../../services/logger-service';
+import React, { useState, useEffect } from 'react';
 import { useAdvancedSearch } from './hooks/useAdvancedSearch';
-import { useSavedSearches } from '@/hooks/useSavedSearches';
-import { useAuth } from '@/contexts/AuthProvider';
+import { useSavedSearches } from '../../../../hooks/useSavedSearches';
+import { useAuth } from '../../../../contexts/AuthProvider';
+import { useSearchParams } from 'react-router-dom';
 import { SearchData } from './types';
-import { searchService } from '@/services/search/UnifiedSearchService';
-import { withAiTrace, AI_TRACE_NAMES } from '@/services/performance/ai-performance-traces';
-import CarCardCompact from '@/components/CarCard/CarCardCompact';
-import { CarListing } from '@/types/CarListing';
+import { searchService } from '../../../../services/search/UnifiedSearchService';
+import { withAiTrace, AI_TRACE_NAMES } from '../../../../services/performance/ai-performance-traces';
+import CarCardCompact from '../../../../components/CarCard/CarCardCompact';
+import { CarListing } from '../../../../types/CarListing';
+import { smartSearchService } from '../../../../services/search/smart-search.service';
+import styled from 'styled-components';
+import { Search, Sparkles, X } from 'lucide-react';
 import {
   SearchContainer,
   Container,
@@ -29,6 +34,126 @@ import { ExteriorSection } from './components/ExteriorSection';
 import { InteriorSection } from './components/InteriorSection';
 import { OfferDetailsSection } from './components/OfferDetailsSection';
 import { LocationSection } from './components/LocationSection';
+
+// ============================================================================
+// QUICK SEARCH STYLED COMPONENTS
+// ============================================================================
+
+const QuickSearchCard = styled.div`
+  background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 8px 30px rgba(139, 92, 246, 0.3);
+  animation: fadeIn 0.3s ease-out;
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+`;
+
+const QuickSearchHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  color: white;
+  
+  h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  p {
+    margin: 0.5rem 0 0 0;
+    opacity: 0.9;
+    font-size: 0.95rem;
+  }
+`;
+
+const QuickSearchInputWrapper = styled.div`
+  display: flex;
+  gap: 0.75rem;
+  align-items: stretch;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+`;
+
+const QuickSearchInput = styled.input`
+  flex: 1;
+  padding: 1rem 1.25rem;
+  font-size: 1.05rem;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.95);
+  transition: all 0.2s;
+  
+  &:focus {
+    outline: none;
+    border-color: white;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+  }
+  
+  &::placeholder {
+    color: #9ca3af;
+  }
+`;
+
+const QuickSearchButton = styled.button`
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #8b5cf6;
+  background: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s;
+  white-space: nowrap;
+  
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  @media (max-width: 768px) {
+    justify-content: center;
+  }
+`;
+
+const ToggleAdvancedButton = styled.button`
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.9rem;
+  color: white;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.3);
+  }
+`;
+
+// ============================================================================
 
 const AdvancedSearchPage: React.FC = () => {
   const { user } = useAuth();
@@ -53,6 +178,13 @@ const AdvancedSearchPage: React.FC = () => {
   } = useAdvancedSearch();
 
   const { saveSearch, getSearchSummary } = useSavedSearches();
+  const [searchParams] = useSearchParams();
+  const mode = searchParams.get('mode'); // 'smart' للبحث الذكي
+  
+  // ⚡ Quick/Smart Search State
+  const [quickSearchQuery, setQuickSearchQuery] = useState('');
+  const [isQuickSearching, setIsQuickSearching] = useState(false);
+  const [showQuickSearch, setShowQuickSearch] = useState(mode === 'smart');
   
   // ⚡ NEW: Search results state
   const [searchResults, setSearchResults] = useState<CarListing[]>([]);
@@ -106,10 +238,10 @@ const AdvancedSearchPage: React.FC = () => {
       setTotalPages(Math.max(1, Math.ceil(result.total / 20)));
       setLastSource(result.source || '');
       setLastMs(result.processingMs);
-      console.log(`✅ Advanced search: ${result.total} results via ${result.source}`);
+      logger.info(`✅ Advanced search: ${result.total} results via ${result.source}`);
       
     } catch (error) {
-      console.error('Advanced search failed:', error);
+      logger.error('Advanced search failed:', error);
       setSearchResults([]);
       setTotalResults(0);
     } finally {
@@ -130,7 +262,7 @@ const AdvancedSearchPage: React.FC = () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
       
     } catch (error) {
-      console.error('Pagination failed:', error);
+      logger.error('Pagination failed:', error);
     } finally {
       setSearching(false);
     }
@@ -160,6 +292,39 @@ const AdvancedSearchPage: React.FC = () => {
     }
   };
 
+  // ⚡ Quick Search Handler
+  const handleQuickSearch = async () => {
+    if (!quickSearchQuery.trim()) return;
+    
+    setIsQuickSearching(true);
+    setSearching(true);
+    
+    try {
+      const result = await smartSearchService.search(quickSearchQuery, user?.uid, 1, 20);
+      setSearchResults(result.cars as CarListing[]);
+      setTotalResults(result.totalCount);
+      setTotalPages(Math.max(1, Math.ceil(result.totalCount / 20)));
+      setLastSource('smart-search');
+      setLastMs(result.processingTime);
+      logger.info(`✨ Smart search: ${result.totalCount} results`);
+      
+    } catch (error) {
+      logger.error('Smart search failed:', error);
+      setSearchResults([]);
+      setTotalResults(0);
+    } finally {
+      setIsQuickSearching(false);
+      setSearching(false);
+    }
+  };
+
+  // Auto-open smart search mode if URL param is present
+  useEffect(() => {
+    if (mode === 'smart') {
+      setShowQuickSearch(true);
+    }
+  }, [mode]);
+
   return (
     <SearchContainer>
       <Container>
@@ -168,6 +333,68 @@ const AdvancedSearchPage: React.FC = () => {
           <h1>{t('advancedSearch.title')}</h1>
           <p>{t('advancedSearch.subtitle')}</p>
         </HeaderSection>
+
+        {/* ⚡ Quick/Smart Search Section */}
+        {showQuickSearch && (
+          <QuickSearchCard>
+            <QuickSearchHeader>
+              <div>
+                <h3>
+                  <Sparkles size={24} />
+                  {t('advancedSearch.quickSearch', 'Quick Smart Search')}
+                </h3>
+                <p>{t('advancedSearch.quickSearchDesc', 'Search using natural language - try "BMW 2020 diesel Sofia" or "Mercedes under 15000"')}</p>
+              </div>
+            </QuickSearchHeader>
+            
+            <QuickSearchInputWrapper>
+              <QuickSearchInput
+                type="text"
+                placeholder={t('advancedSearch.quickSearchPlaceholder', 'e.g., BMW X5 2020 diesel automatic Sofia...')}
+                value={quickSearchQuery}
+                onChange={(e) => setQuickSearchQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleQuickSearch();
+                  }
+                }}
+              />
+              {quickSearchQuery && (
+                <QuickSearchButton
+                  type="button"
+                  onClick={() => setQuickSearchQuery('')}
+                  style={{ background: 'rgba(255, 255, 255, 0.2)', color: 'white', padding: '1rem' }}
+                >
+                  <X size={20} />
+                </QuickSearchButton>
+              )}
+              <QuickSearchButton
+                type="button"
+                onClick={handleQuickSearch}
+                disabled={!quickSearchQuery.trim() || isQuickSearching}
+              >
+                <Search size={20} />
+                {isQuickSearching ? t('common.searching', 'Searching...') : t('common.search', 'Search')}
+              </QuickSearchButton>
+            </QuickSearchInputWrapper>
+            
+            <ToggleAdvancedButton onClick={() => setShowQuickSearch(false)}>
+              {t('advancedSearch.useAdvancedFilters', '↓ Use Advanced Filters Instead')}
+            </ToggleAdvancedButton>
+          </QuickSearchCard>
+        )}
+        
+        {/* Button to show Quick Search if hidden */}
+        {!showQuickSearch && (
+          <QuickSearchCard style={{ padding: '1rem', cursor: 'pointer' }} onClick={() => setShowQuickSearch(true)}>
+            <QuickSearchHeader style={{ marginBottom: 0 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', width: '100%', justifyContent: 'center' }}>
+                <Sparkles size={20} />
+                <span style={{ fontSize: '1rem' }}>{t('advancedSearch.tryQuickSearch', '↑ Try Quick Smart Search Instead')}</span>
+              </div>
+            </QuickSearchHeader>
+          </QuickSearchCard>
+        )}
 
         {/* Search Form */}
         <SearchForm onSubmit={handleSearch}>

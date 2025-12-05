@@ -13,9 +13,9 @@
  * @since 2025-11-03 (Phase 2.1)
  */
 
-import { logger } from '@/services/logger-service';
+import { logger } from '../../services/logger-service';
 import { runUnifiedQuery } from './queryOrchestrator';
-import { SearchData } from '@/pages/05_search-browse/advanced-search/AdvancedSearchPage/types';
+import { SearchData } from '../../pages/05_search-browse/advanced-search/AdvancedSearchPage/types';
 
 export interface SearchQuery {
   text?: string;

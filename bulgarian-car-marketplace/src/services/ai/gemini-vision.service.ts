@@ -2,7 +2,7 @@
 // مجاني + مدفوع مع نظام الحصص
 
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { CarAnalysisResult, ImageQualityAnalysis } from '@/types/ai.types';
+import { CarAnalysisResult, ImageQualityAnalysis } from '../../types/ai.types';
 import { logger } from '../logger-service';
 import { aiQuotaService } from './ai-quota.service';
 

@@ -10,8 +10,8 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { AuthGuard } from '../AuthGuard';
-import { useAuth } from '@/hooks/useAuth';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '../../../hooks/useAuth';
+import { useLanguage } from '../../../contexts/LanguageContext';
 
 // Mock dependencies
 jest.mock('@/hooks/useAuth');

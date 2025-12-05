@@ -1,3 +1,4 @@
+import { logger } from '../../services/logger-service';
 // src/components/Verification/index.ts
 // Verification Components Index - ملف ربط مكونات التحقق
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
@@ -32,7 +33,7 @@ export { default as DocumentUpload } from './DocumentUpload';
  * <PhoneVerificationModal
  *   onClose={() => setShowModal(false)}
  *   onSuccess={() => {
- *     console.log('Phone verified!');
+ *     logger.info('Phone verified!');
  *     setShowModal(false);
  *   }}
  * />
@@ -46,7 +47,7 @@ export { default as DocumentUpload } from './DocumentUpload';
  * <IDVerificationModal
  *   onClose={() => setShowModal(false)}
  *   onSuccess={() => {
- *     console.log('ID submitted!');
+ *     logger.info('ID submitted!');
  *     setShowModal(false);
  *   }}
  * />
@@ -60,7 +61,7 @@ export { default as DocumentUpload } from './DocumentUpload';
  * <DocumentUpload
  *   label="Upload Document"
  *   icon={<FileText size={24} />}
- *   onFileSelect={(file) => console.log(file)}
+ *   onFileSelect={(file) => logger.info(file)}
  *   accept="image/*"
  *   optional={false}
  * />

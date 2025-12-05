@@ -1,3 +1,4 @@
+import { logger } from '../services/logger-service';
 // Sentry Error Monitoring (FREE - 5K errors/month)
 // Track errors, performance, user sessions
 
@@ -20,7 +21,7 @@ export const initSentry = () => {
   const dsn = process.env.REACT_APP_SENTRY_DSN;
   
   if (!dsn || dsn === 'https://your-sentry-dsn@sentry.io/project-id') {
-    console.warn('⚠️ Sentry DSN not configured - error monitoring disabled');
+    logger.warn('⚠️ Sentry DSN not configured - error monitoring disabled');
     return;
   }
   
@@ -87,7 +88,7 @@ export const initSentry = () => {
     },
   });
   
-  console.log('✅ Sentry error monitoring initialized');
+  logger.info('✅ Sentry error monitoring initialized');
 };
 
 /**
@@ -204,7 +205,7 @@ export const handleFirebaseError = (error: any, operation: string) => {
     message: error.message,
   });
   
-  console.error(`Firebase ${operation} error:`, error);
+  logger.error(`Firebase ${operation} error:`, error);
 };
 
 /**
@@ -218,7 +219,7 @@ export const handleAPIError = (error: any, endpoint: string, method: string) => 
     data: error.response?.data,
   });
   
-  console.error(`API ${method} ${endpoint} error:`, error);
+  logger.error(`API ${method} ${endpoint} error:`, error);
 };
 
 /**

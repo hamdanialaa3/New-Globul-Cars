@@ -1,3 +1,4 @@
+import { logger } from '../../services/logger-service';
 // src/components/messaging/AutoResponderSettings.tsx
 // Auto Responder Settings Component
 // Connected to Backend P2.1 Auto Responder System
@@ -359,7 +360,7 @@ const AutoResponderSettings: React.FC<Props> = ({ language = 'bg' }) => {
         setSettings(result.settings);
       }
     } catch (error) {
-      console.error('Error loading settings:', error);
+      logger.error('Error loading settings:', error);
     } finally {
       setLoading(false);
     }
@@ -376,7 +377,7 @@ const AutoResponderSettings: React.FC<Props> = ({ language = 'bg' }) => {
         setTimeout(() => setShowSuccess(false), 3000);
       }
     } catch (error) {
-      console.error('Error saving settings:', error);
+      logger.error('Error saving settings:', error);
     } finally {
       setSaving(false);
     }

@@ -1,18 +1,19 @@
+import { logger } from '../../../../services/logger-service';
 // Smart Feed Section - AI-Powered Community Feed (Third Section)
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthProvider';
-import { useLanguage } from '@/contexts/LanguageContext';
-import feedAlgorithmService from '@/services/social/algorithms/feed-algorithm.service';
-import personalizationService from '@/services/social/algorithms/personalization.service';
-import PostCard from '@/components/Posts/PostCard';
-import { Post } from '@/services/social/posts.service';
+import { useAuth } from '../../../../contexts/AuthProvider';
+import { useLanguage } from '../../../../contexts/LanguageContext';
+import feedAlgorithmService from '../../../../services/social/algorithms/feed-algorithm.service';
+import personalizationService from '../../../../services/social/algorithms/personalization.service';
+import PostCard from '../../../../components/Posts/PostCard';
+import { Post } from '../../../../services/social/posts.service';
 import { Image, Video, Car, Sparkles, Clock, Heart, MessageCircle, TrendingUp, User as UserIcon } from 'lucide-react';
-import { homePageCache, CACHE_KEYS } from '@/services/homepage-cache.service';
-import { NewPostsBanner } from '@/components/Feed/NewPostsBanner';
+import { homePageCache, CACHE_KEYS } from '../../../../services/homepage-cache.service';
+import { NewPostsBanner } from '../../../../components/Feed/NewPostsBanner';
 
 type FeedMode = 'smart' | 'newest' | 'most_liked' | 'most_comments' | 'trending';
 
@@ -88,7 +89,7 @@ const SmartFeedSection: React.FC = () => {
 
       setPosts(prev => pageNum === 1 ? newPosts : [...prev, ...newPosts]);
     } catch (error) {
-      console.error('Failed to load feed:', error);
+      logger.error('Failed to load feed:', error);
     } finally {
       setLoading(false);
       setLoadingMore(false);

@@ -1,10 +1,11 @@
+import { logger } from '../../../../services/logger-service';
 // src/pages/ProfilePage/ConsultationsTab.tsx
 // Consultations Tab Component
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '../../../../contexts/LanguageContext';
 import { 
   MessageSquare, 
   Star, 
@@ -16,8 +17,8 @@ import {
 import { 
   consultationsService, 
   Consultation 
-} from '@/services/social/consultations.service';
-import RequestConsultationModal from '@/components/Consultations/RequestConsultationModal';
+} from '../../../../services/social/consultations.service';
+import RequestConsultationModal from '../../../../components/Consultations/RequestConsultationModal';
 
 // ==================== STYLED COMPONENTS ====================
 
@@ -291,7 +292,7 @@ const ConsultationsTab: React.FC<ConsultationsTabProps> = ({
     try {
       // ✅ CRITICAL FIX: Guard against null/undefined userId
       if (!userId || typeof userId !== 'string' || userId.trim() === '') {
-        console.warn('[ConsultationsTab] loadConsultations called with invalid userId', { userId });
+        logger.warn('[ConsultationsTab] loadConsultations called with invalid userId', { userId });
         setConsultations([]);
         setLoading(false);
         return;
@@ -309,7 +310,7 @@ const ConsultationsTab: React.FC<ConsultationsTabProps> = ({
       
       setConsultations(allConsults);
     } catch (error) {
-      console.error('Error loading consultations:', error);
+      logger.error('Error loading consultations:', error);
     } finally {
       setLoading(false);
     }

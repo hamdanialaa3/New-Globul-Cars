@@ -10,9 +10,9 @@ import {
   Timestamp
 } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { db, storage } from '@/firebase/firebase-config';
-import { BULGARIAN_CITIES } from '@/constants/bulgarianCities';
-import { CarListing } from '@/types/CarListing';
+import { db, storage } from '../firebase/firebase-config';
+import { BULGARIAN_CITIES } from '../constants/bulgarianCities';
+import { CarListing } from '../types/CarListing';
 import LocationHelperService from './location-helper-service';
 import { logger } from './logger-service';
 import { serviceLogger } from './logger-wrapper';

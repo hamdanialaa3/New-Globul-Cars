@@ -5,7 +5,7 @@
 // Use Algolia v4 lite build in browsers (default export)
 import algoliasearch from 'algoliasearch/lite';
 import { SearchData } from '../pages/AdvancedSearchPage/types';
-import { CarListing } from '@/types/CarListing';
+import { CarListing } from '../types/CarListing';
 import { serviceLogger } from './logger-wrapper';
 
 // Algolia configuration from environment

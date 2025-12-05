@@ -1,3 +1,4 @@
+import { logger } from '../../services/logger-service';
 // User Posts Feed - Display user's posts on profile
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
@@ -39,7 +40,7 @@ const UserPostsFeed: React.FC<UserPostsFeedProps> = ({
       const userPosts = await postsService.getUserPosts(targetUserId, limit);
       setPosts(userPosts);
     } catch (error) {
-      console.error('Error loading user posts:', error);
+      logger.error('Error loading user posts:', error);
     } finally {
       setLoading(false);
     }

@@ -22,7 +22,7 @@ import {
   getDoc,
   Timestamp
 } from 'firebase/firestore';
-import { db } from '@/firebase/firebase-config';
+import { db } from '../../firebase/firebase-config';
 import { serviceLogger } from '../logger-wrapper';
 import { introVideoService } from '../profile/intro-video.service';
 import { successStoriesService } from '../profile/success-stories.service';
@@ -32,7 +32,7 @@ import type {
   IntroVideo,
   SuccessStory,
   Achievement
-} from '@/types/profile-enhancements.types';
+} from '../../types/profile-enhancements.types';
 
 export type FeedItemType = 
   | 'post'

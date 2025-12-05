@@ -1,18 +1,18 @@
 import React, { useEffect } from 'react';
 import { useParams, useNavigate, NavLink, Outlet, useLocation } from 'react-router-dom';
-import { useTranslation } from '@/hooks/useTranslation';
-import { useLanguage } from '@/contexts/LanguageContext';
-import LazyImage from '@/components/LazyImage';
+import { useTranslation } from '../../../../hooks/useTranslation';
+import { useLanguage } from '../../../../contexts/LanguageContext';
+import LazyImage from '../../../../components/LazyImage';
 import { useProfile } from './hooks/useProfile';
-import DatePickerBulgarian from '@/components/shared/DatePickerBulgarian';
-import NumberInputBulgarian from '@/components/shared/NumberInputBulgarian';
-import SelectWithOther from '@/components/shared/SelectWithOther';
-import { BULGARIA_REGIONS } from '@/data/bulgaria-locations';
-import { useProfileTracking } from '@/hooks/useProfileTracking';
+import DatePickerBulgarian from '../../../../components/shared/DatePickerBulgarian';
+import NumberInputBulgarian from '../../../../components/shared/NumberInputBulgarian';
+import SelectWithOther from '../../../../components/shared/SelectWithOther';
+import { BULGARIA_REGIONS } from '../../../../data/bulgaria-locations';
+import { useProfileTracking } from '../../../../hooks/useProfileTracking';
 import { bulgarianAuthService } from '../../firebase';
-import { useProfileType } from '@/contexts/ProfileTypeContext';
-import type { ProfileType } from '@/contexts/ProfileTypeContext';
-import { logger } from '@/services/logger-service';
+import { useProfileType } from '../../../../contexts/ProfileTypeContext';
+import type { ProfileType } from '../../../../contexts/ProfileTypeContext';
+import { logger } from '../../../../services/logger-service';
 // NEW: Profile Type-Specific Components
 import PrivateProfile from './components/PrivateProfile';
 import DealerProfile from './components/DealerProfile';
@@ -28,13 +28,13 @@ import {
   BusinessBackground,
   GarageSection,
   ProfileTypeConfirmModal  // ⚡ NEW: Confirmation Modal
-} from '@/components/Profile';
-import type { GarageCar } from '@/components/Profile';
-import { TrustLevel } from '@/services/profile/trust-score-service';
+} from '../../../../components/Profile';
+import type { GarageCar } from '../../../../components/Profile';
+import { TrustLevel } from '../../../../services/profile/trust-score-service';
 // Import Campaigns Components
-import { CampaignsList } from '@/components/Profile/Campaigns';
+import { CampaignsList } from '../../../../components/Profile/Campaigns';
 import { doc, updateDoc } from 'firebase/firestore';
-import { db, auth } from '@/firebase/firebase-config';
+import { db, auth } from '../../../../firebase/firebase-config';
 import { 
   RefreshCw, 
   User, 
@@ -59,21 +59,21 @@ import * as S from './styles';
 import { TabNavigation, TabButton, TabNavLink, SyncButton, FollowButton } from './TabNavigation.styles';
 import styled, { keyframes, css } from 'styled-components';
 // Import new services - moved to top
-import { googleProfileSyncService } from '@/services/google/google-profile-sync.service';
-import { carAnalyticsService } from '@/services/analytics/car-analytics.service';
-import { carDeleteService } from '@/services/garage/car-delete.service';
-import { followService } from '@/services/social/follow.service';
-import PrivacySettings from '@/components/Profile/Security/PrivacySettings';
-import DealershipInfoForm from '@/components/Profile/Dealership/DealershipInfoForm';
-import PrivacySettingsManager from '@/components/Profile/Privacy/PrivacySettingsManager';
-import ProfileAnalyticsDashboard from '@/components/Profile/Analytics/ProfileAnalyticsDashboard';
-import ProfileDashboard from '@/components/Profile/ProfileDashboard';
-import VerificationBadge from '@/components/Profile/VerificationBadge';
+import { googleProfileSyncService } from '../../../../services/google/google-profile-sync.service';
+import { carAnalyticsService } from '../../../../services/analytics/car-analytics.service';
+import { carDeleteService } from '../../../../services/garage/car-delete.service';
+import { followService } from '../../../../services/social/follow.service';
+import PrivacySettings from '../../../../components/Profile/Security/PrivacySettings';
+import DealershipInfoForm from '../../../../components/Profile/Dealership/DealershipInfoForm';
+import PrivacySettingsManager from '../../../../components/Profile/Privacy/PrivacySettingsManager';
+import ProfileAnalyticsDashboard from '../../../../components/Profile/Analytics/ProfileAnalyticsDashboard';
+import ProfileDashboard from '../../../../components/Profile/ProfileDashboard';
+import VerificationBadge from '../../../../components/Profile/VerificationBadge';
 import ConsultationsTab from './ConsultationsTab';
-import { useToast } from '@/components/Toast';
-import ProfileImageUploader from '@/components/Profile/ProfileImageUploader';
-import CommunityFeedWidget from '@/components/Profile/CommunityFeedWidget';
-import SocialMediaSettings from '@/components/Profile/SocialMedia/SocialMediaSettings';
+import { useToast } from '../../../../components/Toast';
+import ProfileImageUploader from '../../../../components/Profile/ProfileImageUploader';
+import CommunityFeedWidget from '../../../../components/Profile/CommunityFeedWidget';
+import SocialMediaSettings from '../../../../components/Profile/SocialMedia/SocialMediaSettings';
 
 // ==================== ANIMATIONS ====================
 // ⚡ OPTIMIZED: Simplified animations - run once on mount, not infinite

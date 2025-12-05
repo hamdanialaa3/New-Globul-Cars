@@ -3,7 +3,7 @@
 // Secure server-side AI integration
 
 import { getFunctions, httpsCallable } from 'firebase/functions';
-import { AIChatContext, AIChatMessage, PriceSuggestion, ProfileAnalysis } from '@/types/ai.types';
+import { AIChatContext, AIChatMessage, PriceSuggestion, ProfileAnalysis } from '../../types/ai.types';
 import { logger } from '../logger-service';
 
 class FirebaseAICallableService {

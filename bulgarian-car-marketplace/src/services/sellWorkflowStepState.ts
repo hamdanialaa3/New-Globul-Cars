@@ -1,4 +1,4 @@
-import { SELL_WORKFLOW_STEPS, SELL_WORKFLOW_STEP_ORDER, SellWorkflowStepId } from '@/constants/sellWorkflowSteps';
+import { SELL_WORKFLOW_STEPS, SELL_WORKFLOW_STEP_ORDER, SellWorkflowStepId } from '../constants/sellWorkflowSteps';
 import { logger } from './logger-service';
 
 export type SellWorkflowStepStatus = 'pending' | 'completed';

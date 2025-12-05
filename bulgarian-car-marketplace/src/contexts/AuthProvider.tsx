@@ -1,9 +1,9 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, updateProfile } from 'firebase/auth';
-import { auth } from '@/firebase/firebase-config';
-import { SocialAuthService } from '@/firebase/social-auth-service';
-import { logger } from '@/services/logger-service';
-import { FirebaseHealthCheck } from '@/utils/firebase-health-check';
+import { auth } from '../firebase/firebase-config';
+import { SocialAuthService } from '../firebase/social-auth-service';
+import { logger } from '../services/logger-service';
+import { FirebaseHealthCheck } from '../utils/firebase-health-check';
 
 interface RegisterOptions {
   displayName?: string;

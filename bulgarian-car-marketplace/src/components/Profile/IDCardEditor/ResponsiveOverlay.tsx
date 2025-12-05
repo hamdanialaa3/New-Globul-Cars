@@ -1,3 +1,4 @@
+import { logger } from '../../../services/logger-service';
 // Responsive ID Card Overlay - Professional Solution
 // Auto-scales fields based on image size
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
@@ -46,7 +47,7 @@ const ResponsiveOverlay: React.FC<ResponsiveOverlayProps> = ({
         const scaleY = displayHeight / 690;   // Original height
         const avgScale = (scaleX + scaleY) / 2;
         
-        console.log(`📐 ${side.toUpperCase()} side - Image scale:`, {
+        logger.info(`📐 ${side.toUpperCase()} side - Image scale:`, {
           displayWidth,
           displayHeight,
           scaleX: scaleX.toFixed(3),

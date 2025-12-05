@@ -1,7 +1,8 @@
+import { logger } from '../../services/logger-service';
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { CarListing } from '../../types/CarListing';
-import { brandsModelsDataService } from '@/services/brands-models-data.service';
+import { brandsModelsDataService } from '../../services/brands-models-data.service';
 
 interface VehicleDataStepProps {
   data: Partial<CarListing>;
@@ -162,7 +163,7 @@ const VehicleDataStep: React.FC<VehicleDataStepProps> = ({ data, onDataChange })
     brandsModelsDataService.getAllBrands()
       .then(brands => setAvailableMakes(brands))
       .catch(error => {
-        console.error('[VehicleDataStep] Failed to load brands:', error);
+        logger.error('[VehicleDataStep] Failed to load brands:', error);
         setAvailableMakes([]);
       });
   }, []);
@@ -173,7 +174,7 @@ const VehicleDataStep: React.FC<VehicleDataStepProps> = ({ data, onDataChange })
       brandsModelsDataService.getModelsForBrand(formData.make)
         .then(models => setAvailableModels(models))
         .catch(error => {
-          console.error('[VehicleDataStep] Failed to load models:', error);
+          logger.error('[VehicleDataStep] Failed to load models:', error);
           setAvailableModels([]);
         });
     } else {

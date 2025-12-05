@@ -1,3 +1,4 @@
+import { logger } from '../../../services/logger-service';
 /**
  * Intro Video Section
  * Displays and manages user introduction video
@@ -6,10 +7,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { Video, Upload, Play, Eye, Lock, Unlock, Trash2 } from 'lucide-react';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { useTheme } from '@/contexts/ThemeContext';
-import { introVideoService } from '@/services/profile/intro-video.service';
-import type { IntroVideo } from '@/types/profile-enhancements.types';
+import { useLanguage } from '../../../contexts/LanguageContext';
+import { useTheme } from '../../../contexts/ThemeContext';
+import { introVideoService } from '../../../services/profile/intro-video.service';
+import type { IntroVideo } from '../../../types/profile-enhancements.types';
 
 const SectionContainer = styled.section<{ $isDark: boolean }>`
   padding: 24px;
@@ -178,7 +179,7 @@ export const IntroVideoSection: React.FC<IntroVideoSectionProps> = ({
         const videoData = await introVideoService.getVideo(userId);
         setVideo(videoData);
       } catch (error) {
-        console.error('Error loading video:', error);
+        logger.error('Error loading video:', error);
         setVideo(null);
       } finally {
         setLoading(false);
@@ -218,7 +219,7 @@ export const IntroVideoSection: React.FC<IntroVideoSectionProps> = ({
       const updatedVideo = await introVideoService.getVideo(userId);
       setVideo(updatedVideo);
     } catch (error) {
-      console.error('Error uploading video:', error);
+      logger.error('Error uploading video:', error);
     }
   };
 
@@ -230,7 +231,7 @@ export const IntroVideoSection: React.FC<IntroVideoSectionProps> = ({
       const updatedVideo = await introVideoService.getVideo(userId);
       setVideo(updatedVideo);
     } catch (error) {
-      console.error('Error updating visibility:', error);
+      logger.error('Error updating visibility:', error);
     }
   };
 
@@ -244,7 +245,7 @@ export const IntroVideoSection: React.FC<IntroVideoSectionProps> = ({
         await introVideoService.deleteVideo(userId);
         setVideo(null);
       } catch (error) {
-        console.error('Error deleting video:', error);
+        logger.error('Error deleting video:', error);
       }
     }
   };

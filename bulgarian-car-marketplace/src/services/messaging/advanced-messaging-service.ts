@@ -385,7 +385,7 @@ export class AdvancedMessagingService {
   ): () => void {
     // ✅ FIX: Guard against null/undefined userId BEFORE constructing query
     if (!userId) {
-      console.warn('subscribeToUserConversations called with null/undefined userId - returning no-op unsubscribe');
+      logger.warn('subscribeToUserConversations called with null/undefined userId - returning no-op unsubscribe');
       return () => {}; // Return no-op unsubscribe function
     }
 

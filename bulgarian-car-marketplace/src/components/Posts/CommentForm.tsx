@@ -4,9 +4,9 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Send } from 'lucide-react';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { useAuth } from '@/contexts/AuthProvider';
-import { commentsService } from '@/services/social/comments.service';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { useAuth } from '../../contexts/AuthProvider';
+import { commentsService } from '../../services/social/comments.service';
 
 interface CommentFormProps {
   postId: string;

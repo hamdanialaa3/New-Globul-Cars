@@ -1,3 +1,4 @@
+import { logger } from '../../services/logger-service';
 /**
  * Integration Status Dashboard
  * لوحة تحكم لعرض حالة تكامل جميع الخدمات
@@ -19,7 +20,7 @@ import {
   BarChart3,
   Wifi
 } from 'lucide-react';
-import { unifiedPlatformService } from '@/services/UnifiedPlatformService';
+import { unifiedPlatformService } from '../../services/UnifiedPlatformService';
 
 interface ServiceStatus {
   name: string;
@@ -283,7 +284,7 @@ const IntegrationStatusDashboard: React.FC = () => {
       setOverallHealth(healthPercentage);
       
     } catch (error) {
-      console.error('Failed to load service status:', error);
+      logger.error('Failed to load service status:', error);
     } finally {
       setLoading(false);
     }

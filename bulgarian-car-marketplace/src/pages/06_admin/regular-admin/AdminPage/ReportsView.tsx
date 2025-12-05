@@ -2,7 +2,7 @@
 // Reports and analytics panel (Placeholder - to be implemented in P0/P1)
 
 import React from 'react';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '../../../../contexts/LanguageContext';
 
 const ReportsView: React.FC = () => {
   const { t } = useLanguage();

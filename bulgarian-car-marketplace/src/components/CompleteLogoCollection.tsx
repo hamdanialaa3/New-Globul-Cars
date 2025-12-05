@@ -1,3 +1,4 @@
+import { logger } from '../services/logger-service';
 // src/components/CompleteLogoCollection.tsx
 // Dynamic Logo Collection with Rotating Images
 
@@ -141,7 +142,7 @@ const CompleteLogoCollection: React.FC<CompleteLogoCollectionProps> = ({
         );
         setCurrentIndices(initialIndices);
       } catch (error) {
-        console.error('Error loading images:', error);
+        logger.error('Error loading images:', error);
       }
     };
 
@@ -184,7 +185,7 @@ const CompleteLogoCollection: React.FC<CompleteLogoCollectionProps> = ({
                   alt={`Logo ${index + 1}`}
                   isVisible={true}
                   onError={(e) => {
-                    console.error('Image failed to load:', e.currentTarget.src);
+                    logger.error('Image failed to load:', e.currentTarget.src);
                     e.currentTarget.style.display = 'none';
                   }}
                 />

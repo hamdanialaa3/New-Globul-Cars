@@ -1,14 +1,15 @@
+import { logger } from '../services/logger-service';
 // Featured Cars Component - Real Firebase Data
 // عرض السيارات المميزة من البيانات الحقيقية
 
 import React, { useState, useEffect, memo } from 'react';
 import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
-import { unifiedCarService, UnifiedCar } from '@/services/car';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { useAuth } from '@/contexts/AuthProvider';
+import { unifiedCarService, UnifiedCar } from '../services/car';
+import { useLanguage } from '../contexts/LanguageContext';
+import { useAuth } from '../contexts/AuthProvider';
 import { MapPin, Fuel, Gauge, Calendar, MessageCircle, User } from 'lucide-react';
-import { homePageCache, CACHE_KEYS } from '@/services/homepage-cache.service';
+import { homePageCache, CACHE_KEYS } from '../services/homepage-cache.service';
 
 interface FeaturedCarsProps {
   limit?: number;
@@ -278,7 +279,7 @@ const FeaturedCars: React.FC<FeaturedCarsProps> = ({
       const cars = await unifiedCarService.getFeaturedCars(limit);
       setCars(cars);
     } catch (error) {
-      console.error('Error loading featured cars:', error);
+      logger.error('Error loading featured cars:', error);
       setCars([]);
     } finally {
       setLoading(false);

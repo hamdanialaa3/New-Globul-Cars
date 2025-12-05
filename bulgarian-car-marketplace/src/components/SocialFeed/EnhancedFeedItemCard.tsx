@@ -1,3 +1,4 @@
+import { logger } from '../../services/logger-service';
 /**
  * Enhanced Feed Item Card
  * Full-featured card with complete engagement system
@@ -29,14 +30,14 @@ import {
   Flag,
   Reply
 } from 'lucide-react';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { useTheme } from '@/contexts/ThemeContext';
-import { useAuth } from '@/contexts/AuthProvider';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { useTheme } from '../../contexts/ThemeContext';
+import { useAuth } from '../../contexts/AuthProvider';
 import { useNavigate } from 'react-router-dom';
-import { postsEngagementService } from '@/services/social/posts-engagement.service';
+import { postsEngagementService } from '../../services/social/posts-engagement.service';
 import { FeedStatsModal } from './FeedStatsModal';
-import type { FeedItem } from '@/services/social/smart-feed.service';
-import type { PostComment } from '@/services/social/posts-engagement.service';
+import type { FeedItem } from '../../services/social/smart-feed.service';
+import type { PostComment } from '../../services/social/posts-engagement.service';
 import {
   collection,
   query,
@@ -47,7 +48,7 @@ import {
   doc,
   getDoc
 } from 'firebase/firestore';
-import { db } from '@/firebase/firebase-config';
+import { db } from '../../firebase/firebase-config';
 
 const CardContainer = styled.div<{ $isDark: boolean }>`
   background: ${props => props.$isDark ? '#1e293b' : '#ffffff'};
@@ -677,7 +678,7 @@ export const EnhancedFeedItemCard: React.FC<EnhancedFeedItemCardProps> = ({
       const newLiked = await postsEngagementService.toggleLike(item.id, user.uid);
       setLiked(newLiked);
     } catch (error) {
-      console.error('Error toggling like:', error);
+      logger.error('Error toggling like:', error);
     } finally {
       setIsLiking(false);
     }
@@ -713,7 +714,7 @@ export const EnhancedFeedItemCard: React.FC<EnhancedFeedItemCardProps> = ({
       }
       await postsEngagementService.sharePost(item.id, user.uid);
     } catch (error) {
-      console.error('Error sharing:', error);
+      logger.error('Error sharing:', error);
     }
   };
 
@@ -725,7 +726,7 @@ export const EnhancedFeedItemCard: React.FC<EnhancedFeedItemCardProps> = ({
       await postsEngagementService.savePost(item.id, user.uid);
       setSaved(!saved);
     } catch (error) {
-      console.error('Error saving post:', error);
+      logger.error('Error saving post:', error);
     }
   };
 
@@ -747,7 +748,7 @@ export const EnhancedFeedItemCard: React.FC<EnhancedFeedItemCardProps> = ({
       setReplyingTo(null);
       setShowComments(true);
     } catch (error) {
-      console.error('Error adding comment:', error);
+      logger.error('Error adding comment:', error);
     } finally {
       setIsCommenting(false);
     }

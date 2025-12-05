@@ -1,16 +1,12 @@
-// MapAnalytics Page - Bulgaria Provinces Visualization
-// صفحة تحليل الخريطة: عرض طبقات المستخدمين والسيارات والتفاصيل لكل إقليم (28 إقليم)
-// NOTE: Lightweight implementation reusing existing services without heavy queries.
-// Data for cars uses RegionCarCountService (cached); user counts are mocked placeholder (TODO replace with real service).
-
 import React, { useEffect, useState, useMemo } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { useLanguage } from '@/contexts/LanguageContext';
-import RegionCarCountService from '@/services/regionCarCountService';
-import GlobulCarLogo from '@/components/icons/GlobulCarLogo';
-import { fetchCarsByCity, fetchUsersByCity, cityIdToCoordinates, CarEntity, UserEntity } from '@/services/map-entities.service';
-import { BULGARIAN_CITIES } from '@/constants/bulgarianCities';
+import * as d3 from 'd3';
+import { useLanguage } from '../../../../contexts/LanguageContext';
+import RegionCarCountService from '../../../../services/regionCarCountService';
+import GlobulCarLogo from '../../../../components/icons/GlobulCarLogo';
+import { fetchCarsByCity, fetchUsersByCity, cityIdToCoordinates, CarEntity, UserEntity } from '../../../../services/map-entities.service';
+import { BULGARIAN_CITIES } from '../../../../constants/bulgarianCities';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
@@ -29,21 +25,21 @@ const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-`; 
+`;
 
 const Header = styled.header`
   text-align: center;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-`; 
+`;
 
 const Title = styled.h1`
   font-size: clamp(1.6rem, 2.7vw, 2.3rem);
   font-weight: 700;
   margin: 0;
   color: var(--text-primary);
-`; 
+`;
 
 const Subtitle = styled.p`
   font-size: 0.95rem;
@@ -51,7 +47,7 @@ const Subtitle = styled.p`
   margin: 0 auto;
   max-width: 720px;
   line-height: 1.5;
-`; 
+`;
 
 const ControlsBar = styled.div`
   display: flex;
@@ -63,18 +59,18 @@ const ControlsBar = styled.div`
   padding: 0.75rem;
   border-radius: 18px;
   box-shadow: 0 4px 14px -4px rgba(0,0,0,0.4);
-`; 
+`;
 
-const ToggleButton = styled.button<{$active?: boolean}>`
+const ToggleButton = styled.button<{ $active?: boolean }>`
   position: relative;
   display: inline-flex;
   align-items: center;
   gap: 0.55rem;
   padding: 0.55rem 0.9rem 0.55rem 0.7rem;
   border-radius: 12px;
-  border: 1px solid ${({$active})=> $active ? 'var(--accent, #ff8f10)' : 'rgba(255,255,255,0.08)'};
-  background: ${({$active})=> $active ? 'linear-gradient(135deg,#ff9f30,#ff8f10 60%)' : 'rgba(255,255,255,0.04)'};
-  color: ${({$active})=> $active ? '#111' : 'var(--text-secondary)'};
+  border: 1px solid ${({ $active }) => $active ? 'var(--accent, #ff8f10)' : 'rgba(255,255,255,0.08)'};
+  background: ${({ $active }) => $active ? 'linear-gradient(135deg,#ff9f30,#ff8f10 60%)' : 'rgba(255,255,255,0.04)'};
+  color: ${({ $active }) => $active ? '#111' : 'var(--text-secondary)'};
   font-size: 0.7rem;
   font-weight: 600;
   letter-spacing: 0.4px;
@@ -83,10 +79,10 @@ const ToggleButton = styled.button<{$active?: boolean}>`
   min-width: 118px;
   justify-content: flex-start;
   transition: background .25s,border-color .25s,color .25s,transform .25s;
-  box-shadow: ${({$active})=> $active ? '0 4px 10px -2px rgba(255,143,16,0.35)' : 'inset 0 0 0 0 rgba(0,0,0,0)'};
+  box-shadow: ${({ $active }) => $active ? '0 4px 10px -2px rgba(255,143,16,0.35)' : 'inset 0 0 0 0 rgba(0,0,0,0)'};
   user-select: none;
   -webkit-tap-highlight-color: transparent;
-  &:hover { background: ${({$active})=> $active ? 'linear-gradient(135deg,#ffa84a,#ff8f10 60%)' : 'rgba(255,255,255,0.07)'}; }
+  &:hover { background: ${({ $active }) => $active ? 'linear-gradient(135deg,#ffa84a,#ff8f10 60%)' : 'rgba(255,255,255,0.07)'}; }
   &:active { transform: translateY(1px); }
   &:focus-visible { box-shadow: 0 0 0 2px #ff8f10, 0 0 0 5px rgba(255,143,16,0.4); }
   &[data-layer="users"][data-active="true"] { background: linear-gradient(135deg,#3b82f6,#1d4ed8 65%); color:#fff; border-color:#1d4ed8; box-shadow:0 4px 10px -2px rgba(29,78,216,0.35); }
@@ -94,7 +90,7 @@ const ToggleButton = styled.button<{$active?: boolean}>`
   &[data-layer="workshops"][data-active="true"] { background: linear-gradient(135deg,#22c55e,#16a34a 65%); color:#062; }
   &[data-layer="showrooms"][data-active="true"] { background: linear-gradient(135deg,#6366f1,#4338ca 65%); color:#fff; }
   &[data-layer="dealers"][data-active="true"] { background: linear-gradient(135deg,#ffd54a,#ff8f10 65%); color:#222; }
-`; 
+`;
 
 const MapWrapper = styled.div`
   position: relative;
@@ -105,7 +101,7 @@ const MapWrapper = styled.div`
   overflow: hidden;
   background: #101317;
   box-shadow: var(--shadow-md);
-`; 
+`;
 
 const Legend = styled.aside`
   position: absolute;
@@ -122,14 +118,14 @@ const Legend = styled.aside`
   gap: 0.45rem;
   min-width: 140px;
   line-height: 1.15;
-`; 
+`;
 
 const LegendItem = styled.div`
   display: flex;
   align-items: center;
   gap: 0.4rem;
   white-space: nowrap;
-`; 
+`;
 
 const UpdatedTag = styled.div`
   font-size: 0.65rem;
@@ -192,30 +188,6 @@ const CloseButton = styled.button`
   opacity: 0.7;
   transition: opacity 0.2s;
   &:hover { opacity: 1; }
-`;
-
-const DetailsContent = styled.div`
-  display: grid;
-  gap: 0.5rem;
-  font-size: 0.9rem;
-`;
-
-const DetailRow = styled.div`
-  display: flex;
-  justify-content: space-between;
-  padding: 0.4rem 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  &:last-child { border-bottom: none; }
-`;
-
-const DetailLabel = styled.span`
-  font-weight: 500;
-  opacity: 0.8;
-`;
-
-const DetailValue = styled.span`
-  font-weight: 600;
-  color: var(--accent, #ff8f10);
 `;
 
 const ItemsGrid = styled.div`
@@ -335,13 +307,6 @@ const CardButton = styled.button`
   }
 `;
 
-const EmptyState = styled.div`
-  text-align: center;
-  padding: 2rem;
-  opacity: 0.6;
-  font-size: 0.9rem;
-`;
-
 interface RegionDataPoint {
   id: string;
   name: string;
@@ -361,7 +326,7 @@ const MapAnalyticsPage: React.FC = () => {
   const navigate = useNavigate();
   const { language, t } = useLanguage();
   // طبقة واحدة نشطة فقط: cars | users | workshops | showrooms | dealers
-  const [activeLayer, setActiveLayer] = useState<'cars'|'users'|'workshops'|'showrooms'|'dealers'>('cars');
+  const [activeLayer, setActiveLayer] = useState<'cars' | 'users' | 'workshops' | 'showrooms' | 'dealers'>('cars');
   const [loadingLayer, setLoadingLayer] = useState<string | null>(null);
   const [showDetails, setShowDetails] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -390,7 +355,7 @@ const MapAnalyticsPage: React.FC = () => {
     (async () => {
       setLoading(true);
       try {
-        const { getUserCountsByCity } = await import('@/services/map-entities.service');
+        const { getUserCountsByCity } = await import('../../../../services/map-entities.service');
         const [carCounts, userCounts] = await Promise.all([
           RegionCarCountService.getAllRegionCounts(REGION_IDS),
           getUserCountsByCity()
@@ -443,18 +408,18 @@ const MapAnalyticsPage: React.FC = () => {
   }, [activeLayer]);
 
   // تحميل كسول لطبقة Places عند التفعيل الأول
-  const ensureLayerData = async (layer: 'workshops'|'showrooms'|'dealers') => {
+  const ensureLayerData = async (layer: 'workshops' | 'showrooms' | 'dealers') => {
     if (loadingLayer) return;
     // تحقق إن كانت البيانات محملة
     const needFetch = data.some(d => d[layer] === -1);
     if (!needFetch) return;
     setLoadingLayer(layer);
     try {
-      const googleMapsService = (await import('@/services/google-maps-enhanced.service')).default;
-      const dayKey = new Date().toISOString().slice(0,10);
+      const googleMapsService = (await import('../../../../services/google-maps-enhanced.service')).default;
+      const dayKey = new Date().toISOString().slice(0, 10);
       const cacheKeyAll = `places_cache_${dayKey}`;
       const allCacheRaw = localStorage.getItem(cacheKeyAll);
-      let allCache: Record<string,{workshops:number;showrooms:number;dealers:number}> = allCacheRaw ? JSON.parse(allCacheRaw) : {};
+      let allCache: Record<string, { workshops: number; showrooms: number; dealers: number }> = allCacheRaw ? JSON.parse(allCacheRaw) : {};
       let progress = 0;
       const concurrency = 4; // عدد المدن المتوازية
       const queue = [...data];
@@ -467,25 +432,25 @@ const MapAnalyticsPage: React.FC = () => {
           let workshops = p.workshops, showrooms = p.showrooms, dealers = p.dealers;
           const perCityKey = p.id;
           if (allCache[perCityKey]) {
-            ({workshops, showrooms, dealers} = allCache[perCityKey]);
+            ({ workshops, showrooms, dealers } = allCache[perCityKey]);
           } else {
-            const [w,s,d] = await Promise.all([
-              googleMapsService.getPlacesCountByType({lat:p.lat,lng:p.lng}, 'car_repair', 10000, 1),
-              googleMapsService.getPlacesCountByType({lat:p.lat,lng:p.lng}, 'car_showroom', 10000, 1),
-              googleMapsService.getPlacesCountByType({lat:p.lat,lng:p.lng}, 'car_dealer', 10000, 1)
+            const [w, s, d] = await Promise.all([
+              googleMapsService.getPlacesCountByType({ lat: p.lat, lng: p.lng }, 'car_repair', 10000, 1),
+              googleMapsService.getPlacesCountByType({ lat: p.lat, lng: p.lng }, 'car_showroom', 10000, 1),
+              googleMapsService.getPlacesCountByType({ lat: p.lat, lng: p.lng }, 'car_dealer', 10000, 1)
             ]);
             workshops = w; showrooms = s; dealers = d;
-            allCache[perCityKey] = {workshops, showrooms, dealers};
+            allCache[perCityKey] = { workshops, showrooms, dealers };
             localStorage.setItem(cacheKeyAll, JSON.stringify(allCache));
           }
-          results.push({...p, workshops, showrooms, dealers });
+          results.push({ ...p, workshops, showrooms, dealers });
           progress += 1;
           if (progress % 3 === 0) {
-            setData(prev => results.concat(queue.map(q=>q))); // تحديث جزئي
+            setData(prev => results.concat(queue.map(q => q))); // تحديث جزئي
           }
         }
       };
-      for (let i=0;i<concurrency;i++) workers.push(runWorker());
+      for (let i = 0; i < concurrency; i++) workers.push(runWorker());
       await Promise.all(workers);
       setData(results);
       setUpdatedAt(Date.now());
@@ -520,14 +485,19 @@ const MapAnalyticsPage: React.FC = () => {
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
-    // إزالة الطبقة السابقة
-    // @ts-ignore
-    if (map._analyticsLayer) { map.removeLayer(map._analyticsLayer); }
+
+    // Extend Leaflet Map type locally
+    interface ExtendedMap extends L.Map {
+      _analyticsLayer?: L.LayerGroup;
+    }
+    const extendedMap = map as ExtendedMap;
+
+    if (extendedMap._analyticsLayer) { map.removeLayer(extendedMap._analyticsLayer); }
     const layerGroup = L.layerGroup();
 
     // وظائف مساعدة
     const jitter = (id: string, base: number) => {
-      let h = 0; for (let i=0;i<id.length;i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
+      let h = 0; for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
       const sign = ((h >> 1) & 1) ? 1 : -1;
       return base + sign * ((h % 7) * 0.0009); // انحراف صغير ثابت
     };
@@ -538,7 +508,7 @@ const MapAnalyticsPage: React.FC = () => {
         if (!coord) return;
         const cityData = BULGARIAN_CITIES.find(c => c.id === car.cityId || c.cityId === car.cityId);
         const cityName = cityData ? (language === 'bg' ? cityData.nameBg : cityData.nameEn) : car.cityId;
-        const marker = L.circleMarker([jitter(car.id, coord.lat), jitter(car.id+'b', coord.lng)], {
+        const marker = L.circleMarker([jitter(car.id, coord.lat), jitter(car.id + 'b', coord.lng)], {
           radius: 5,
           color: '#e36414',
           weight: 1,
@@ -566,7 +536,7 @@ const MapAnalyticsPage: React.FC = () => {
         if (!coord) return;
         const cityData = BULGARIAN_CITIES.find(c => c.id === user.cityId || c.cityId === user.cityId);
         const cityName = cityData ? (language === 'bg' ? cityData.nameBg : cityData.nameEn) : user.cityId;
-        const marker = L.circleMarker([jitter(user.id, coord.lat), jitter(user.id+'b', coord.lng)], {
+        const marker = L.circleMarker([jitter(user.id, coord.lat), jitter(user.id + 'b', coord.lng)], {
           radius: 5,
           color: '#1d4ed8',
           weight: 1,
@@ -608,14 +578,14 @@ const MapAnalyticsPage: React.FC = () => {
         });
         circle.on('click', () => {
           setSelectedCity(point.name);
-          setSelectedItems([{ 
-            type: itemType, 
-            data: { 
-              ...point, 
-              count: value, 
-              coords: {lat: point.lat, lng: point.lng} 
-            }, 
-            cityName: point.name 
+          setSelectedItems([{
+            type: itemType,
+            data: {
+              ...point,
+              count: value,
+              coords: { lat: point.lat, lng: point.lng }
+            },
+            cityName: point.name
           }]);
         });
         if (showDetails) circle.bindTooltip(`${point.name}: ${value}`, { direction: 'top' });
@@ -623,11 +593,10 @@ const MapAnalyticsPage: React.FC = () => {
       });
     }
     layerGroup.addTo(map);
-    // @ts-ignore
-    map._analyticsLayer = layerGroup;
+    extendedMap._analyticsLayer = layerGroup;
   }, [activeLayer, carsEntities, usersEntities, data, showDetails, t]);
 
-  const updatedTimeStr = useMemo(() => new Date(updatedAt).toLocaleTimeString(), [updatedAt]);
+  const updatedTimeStr = new Date(updatedAt).toLocaleTimeString();
 
   return (
     <PageContainer>
@@ -636,40 +605,40 @@ const MapAnalyticsPage: React.FC = () => {
         <Subtitle>{t('mapPage.subtitle')}</Subtitle>
       </Header>
       <ControlsBar role="radiogroup" aria-label="Map layer selection">
-        {(['cars','users','workshops','showrooms','dealers'] as const).map(layer => (
+        {(['cars', 'users', 'workshops', 'showrooms', 'dealers'] as const).map(layer => (
           <ToggleButton
             key={layer}
             data-layer={layer}
-            data-active={activeLayer===layer}
-            $active={activeLayer===layer}
-            aria-pressed={activeLayer===layer}
+            data-active={activeLayer === layer}
+            $active={activeLayer === layer}
+            aria-pressed={activeLayer === layer}
             role="radio"
-            aria-checked={activeLayer===layer}
+            aria-checked={activeLayer === layer}
             onClick={async () => {
               if (activeLayer === layer) return;
               const startTime = performance.now();
               setActiveLayer(layer);
               trackMapEvent('map_layer_toggle', { layer, previous: activeLayer });
-              if (['workshops','showrooms','dealers'].includes(layer)) {
-                await ensureLayerData(layer as 'workshops'|'showrooms'|'dealers');
+              if (['workshops', 'showrooms', 'dealers'].includes(layer)) {
+                await ensureLayerData(layer as 'workshops' | 'showrooms' | 'dealers');
                 const duration = performance.now() - startTime;
                 trackMapEvent('map_layer_load', { layer, duration_ms: Math.round(duration) });
               }
             }}>
-            {layer==='cars' && t('mapPage.layerCars')}
-            {layer==='users' && t('mapPage.layerUsers')}
-            {layer==='workshops' && (<>{t('mapPage.layerWorkshops')}{loadingLayer==='workshops' && ' …'}</>)}
-            {layer==='showrooms' && (<>{t('mapPage.layerShowrooms')}{loadingLayer==='showrooms' && ' …'}</>)}
-            {layer==='dealers' && (<>{t('mapPage.layerDealers')}{loadingLayer==='dealers' && ' …'}</>)}
+            {layer === 'cars' && t('mapPage.layerCars')}
+            {layer === 'users' && t('mapPage.layerUsers')}
+            {layer === 'workshops' && (<>{t('mapPage.layerWorkshops')}{loadingLayer === 'workshops' && ' …'}</>)}
+            {layer === 'showrooms' && (<>{t('mapPage.layerShowrooms')}{loadingLayer === 'showrooms' && ' …'}</>)}
+            {layer === 'dealers' && (<>{t('mapPage.layerDealers')}{loadingLayer === 'dealers' && ' …'}</>)}
           </ToggleButton>
         ))}
         <ToggleButton
           data-layer="details"
-            data-active={showDetails}
-            $active={showDetails}
-            aria-pressed={showDetails}
-            onClick={() => setShowDetails(v => !v)}>
-            {t('mapPage.toggleDetails')}
+          data-active={showDetails}
+          $active={showDetails}
+          aria-pressed={showDetails}
+          onClick={() => setShowDetails(v => !v)}>
+          {t('mapPage.toggleDetails')}
         </ToggleButton>
         {loading && <span style={{ fontSize: '0.65rem', opacity: 0.6 }} aria-live="polite">{t('mapPage.loading')}</span>}
       </ControlsBar>
@@ -677,14 +646,14 @@ const MapAnalyticsPage: React.FC = () => {
         <div id="bulgaria-analytics-map" style={{ width: '100%', height: '100%' }} />
         <Legend>
           <strong style={{ fontSize: '0.75rem' }}>{t('mapPage.legendTitle')}</strong>
-          {activeLayer==='cars' && <LegendItem><span style={{ width: 12, height: 12, background: '#e36414', borderRadius: 4 }} /> {t('mapPage.layerCars')} ({carsEntities.length})</LegendItem>}
-          {activeLayer==='users' && <LegendItem><span style={{ width: 12, height: 12, background: '#1d4ed8', borderRadius: 4 }} /> {t('mapPage.layerUsers')} ({usersEntities.length})</LegendItem>}
-          {activeLayer==='workshops' && <LegendItem><span style={{ width: 12, height: 12, background: '#16a34a', borderRadius: 4 }} /> {t('mapPage.layerWorkshops')}</LegendItem>}
-          {activeLayer==='showrooms' && <LegendItem><span style={{ width: 12, height: 12, background: '#6366f1', borderRadius: 4 }} /> {t('mapPage.layerShowrooms')}</LegendItem>}
-          {activeLayer==='dealers' && <LegendItem><span style={{ width: 12, height: 12, background: '#ff8f10', borderRadius: 4 }} /> {t('mapPage.layerDealers')}</LegendItem>}
+          {activeLayer === 'cars' && <LegendItem><span style={{ width: 12, height: 12, background: '#e36414', borderRadius: 4 }} /> {t('mapPage.layerCars')} ({carsEntities.length})</LegendItem>}
+          {activeLayer === 'users' && <LegendItem><span style={{ width: 12, height: 12, background: '#1d4ed8', borderRadius: 4 }} /> {t('mapPage.layerUsers')} ({usersEntities.length})</LegendItem>}
+          {activeLayer === 'workshops' && <LegendItem><span style={{ width: 12, height: 12, background: '#16a34a', borderRadius: 4 }} /> {t('mapPage.layerWorkshops')}</LegendItem>}
+          {activeLayer === 'showrooms' && <LegendItem><span style={{ width: 12, height: 12, background: '#6366f1', borderRadius: 4 }} /> {t('mapPage.layerShowrooms')}</LegendItem>}
+          {activeLayer === 'dealers' && <LegendItem><span style={{ width: 12, height: 12, background: '#ff8f10', borderRadius: 4 }} /> {t('mapPage.layerDealers')}</LegendItem>}
           <UpdatedTag>{t('mapPage.lastUpdated')}: {updatedTimeStr}</UpdatedTag>
         </Legend>
-        
+
         <DetailsPanel $show={selectedItems.length > 0}>
           {selectedItems.length > 0 && (
             <>
@@ -694,7 +663,7 @@ const MapAnalyticsPage: React.FC = () => {
                 </DetailsPanelTitle>
                 <CloseButton onClick={() => { setSelectedItems([]); setSelectedCity(null); }}>×</CloseButton>
               </DetailsPanelHeader>
-              
+
               <ItemsGrid>
                 {selectedItems.map((item, idx) => {
                   if (item.type === 'car') {
@@ -725,7 +694,7 @@ const MapAnalyticsPage: React.FC = () => {
                       </ItemCard>
                     );
                   }
-                  
+
                   if (item.type === 'user') {
                     return (
                       <ItemCard key={idx} onClick={() => navigate(`/profile/${item.data.id}`)}>
@@ -752,12 +721,12 @@ const MapAnalyticsPage: React.FC = () => {
                       </ItemCard>
                     );
                   }
-                  
+
                   if (item.type === 'workshop' || item.type === 'showroom' || item.type === 'dealer') {
                     const icon = item.type === 'workshop' ? '🔧' : item.type === 'showroom' ? '🏢' : '🤝';
-                    const typeLabel = item.type === 'workshop' ? t('mapPage.workshopItem') : 
-                                     item.type === 'showroom' ? t('mapPage.showroomItem') : 
-                                     t('mapPage.dealerItem');
+                    const typeLabel = item.type === 'workshop' ? t('mapPage.workshopItem') :
+                      item.type === 'showroom' ? t('mapPage.showroomItem') :
+                        t('mapPage.dealerItem');
                     return (
                       <ItemCard key={idx}>
                         <CardHeader>
@@ -792,7 +761,7 @@ const MapAnalyticsPage: React.FC = () => {
                       </ItemCard>
                     );
                   }
-                  
+
                   return null;
                 })}
               </ItemsGrid>

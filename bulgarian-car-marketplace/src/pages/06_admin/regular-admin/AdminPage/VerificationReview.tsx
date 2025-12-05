@@ -1,3 +1,4 @@
+import { logger } from '../../../../services/logger-service';
 // src/pages/AdminPage/VerificationReview.tsx
 // Admin panel for reviewing verification requests
 
@@ -12,10 +13,10 @@ import {
   getDocs,
   limit as firestoreLimit 
 } from 'firebase/firestore';
-import { db } from '@/firebase/firebase-config';  /* ⚡ FIXED */
+import { db } from '../../../../firebase/firebase-config';  /* ⚡ FIXED */
 import { httpsCallable } from 'firebase/functions';
-import { functions } from '@/firebase/firebase-config';  /* ⚡ FIXED */
-import { useLanguage } from '@/contexts/LanguageContext';
+import { functions } from '../../../../firebase/firebase-config';  /* ⚡ FIXED */
+import { useLanguage } from '../../../../contexts/LanguageContext';
 
 interface VerificationDocument {
   type: 'eik' | 'license' | 'vat' | 'insurance' | 'id';
@@ -163,7 +164,7 @@ const VerificationReview: React.FC = () => {
       setSelectedRequest(null);
       alert(t('admin.verificationApproved'));
     } catch (error: any) {
-      console.error('Approval error:', error);
+      logger.error('Approval error:', error);
       alert(t('admin.approvalError') + ': ' + error.message);
     } finally {
       setProcessing(false);
@@ -192,7 +193,7 @@ const VerificationReview: React.FC = () => {
       setRejectionReason('');
       alert(t('admin.verificationRejected'));
     } catch (error: any) {
-      console.error('Rejection error:', error);
+      logger.error('Rejection error:', error);
       alert(t('admin.rejectionError') + ': ' + error.message);
     } finally {
       setProcessing(false);

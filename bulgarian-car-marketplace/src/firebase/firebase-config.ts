@@ -10,7 +10,7 @@ import { getAnalytics, Analytics } from 'firebase/analytics';
 import { getDatabase } from 'firebase/database'; // Real-time Database
 // import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check'; // Disabled to prevent auth errors
 import { BULGARIAN_CONFIG } from '../config/bulgarian-config';
-import { logger } from '@/services/logger-service';
+import { logger } from '../services/logger-service';
 
 // Type declaration for reCAPTCHA
 declare global {
@@ -42,12 +42,22 @@ try {
   throw error;
 }
 
-// Initialize App Check - COMPLETELY DISABLED to prevent auth errors
+// Initialize App Check - ENABLED ONLY IN PRODUCTION for security
 let appCheck: any = null;
-if (process.env.NODE_ENV === 'development') {
-  logger.debug('Firebase App Check is disabled to prevent authentication errors');
+if (process.env.NODE_ENV === 'production' && process.env.REACT_APP_RECAPTCHA_SITE_KEY) {
+  try {
+    const { initializeAppCheck, ReCaptchaV3Provider } = require('firebase/app-check');
+    appCheck = initializeAppCheck(app, {
+      provider: new ReCaptchaV3Provider(process.env.REACT_APP_RECAPTCHA_SITE_KEY),
+      isTokenAutoRefreshEnabled: true
+    });
+    logger.info('Firebase App Check initialized successfully (production only)');
+  } catch (error) {
+    logger.warn('App Check initialization failed (non-critical)', { error: (error as Error)?.message });
+  }
+} else {
+  logger.debug('Firebase App Check disabled (development mode or missing reCAPTCHA key)');
 }
-// DO NOT initialize App Check as it causes auth/firebase-app-check-token-is-invalid errors
 
 // Initialize Firebase services
 let auth: any;

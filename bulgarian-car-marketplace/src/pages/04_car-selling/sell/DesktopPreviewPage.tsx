@@ -2,12 +2,12 @@
 import React, { useEffect, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { SellProgressBar } from '@/components/SellWorkflow';
-import SellWorkflowStepStateService from '@/services/sellWorkflowStepState';
+import { useLanguage } from '../../../contexts/LanguageContext';
+import { SellProgressBar } from '../../../components/SellWorkflow';
+import SellWorkflowStepStateService from '../../../services/sellWorkflowStepState';
 import { usePreviewSummary } from './Preview/usePreviewSummary';
-import CarBrandLogo from '@/components/CarBrandLogo';
-import useSellWorkflow from '@/hooks/useSellWorkflow';
+import CarBrandLogo from '../../../components/CarBrandLogo';
+import useSellWorkflow from '../../../hooks/useSellWorkflow';
 
 const ProgressWrapper = styled.div`
   padding: 1rem 2rem 0;

@@ -1,3 +1,4 @@
+import { logger } from '../logger-service';
 // src/services/profile/index.ts
 // Profile Services Index - ملف الربط الرئيسي
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
@@ -82,7 +83,7 @@ export const ProfileService = {
  * Example 2: Calculate trust score
  * 
  * const score = await ProfileService.trust.calculateTrustScore(userId);
- * console.log(`Trust score: ${score}/100`);
+ * logger.info(`Trust score: ${score}/100`);
  */
 
 /**

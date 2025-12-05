@@ -5,8 +5,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Edit, LogOut, Settings as SettingsIcon, UserPlus } from 'lucide-react';
-import type { BulgarianUser } from '@/types/user/bulgarian-user.types';
-import type { ProfileTheme } from '@/contexts/ProfileTypeContext';
+import type { BulgarianUser } from '../../../../../types/user/bulgarian-user.types';
+import type { ProfileTheme } from '../../../../../contexts/ProfileTypeContext';
 
 interface CompactHeaderProps {
   user: BulgarianUser | null;

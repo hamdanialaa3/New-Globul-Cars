@@ -3,7 +3,7 @@
 
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
-import GlobulCarLogo from '@/components/icons/GlobulCarLogo';
+import GlobulCarLogo from '../../components/icons/GlobulCarLogo';
 
 // Simple, direct data structure - no complex services
 const BRANDS_DATA = {

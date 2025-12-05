@@ -1,3 +1,4 @@
+import { logger } from '../../services/logger-service';
 /**
  * Reviews List Component
  * Displays list of reviews for a seller
@@ -134,7 +135,7 @@ const ReviewsList: React.FC<ReviewsListProps> = ({ sellerId }) => {
       const sellerReviews = await reviewsService.getSellerReviews(sellerId, 20);
       setReviews(sellerReviews);
     } catch (error) {
-      console.error('Error loading reviews:', error);
+      logger.error('Error loading reviews:', error);
     } finally {
       setLoading(false);
     }

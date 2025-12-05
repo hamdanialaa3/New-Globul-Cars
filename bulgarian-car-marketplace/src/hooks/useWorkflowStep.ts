@@ -2,8 +2,8 @@
 // Hook خطوة سير العمل - تتبع التحليلات وإدارة دورة حياة الخطوة
 
 import { useEffect, useRef } from 'react';
-import { useAuth } from '@/contexts/AuthProvider';
-import WorkflowAnalyticsService from '@/services/workflow-analytics-service';
+import { useAuth } from '../contexts/AuthProvider';
+import WorkflowAnalyticsService from '../services/workflow-analytics-service';
 
 export const useWorkflowStep = (
   step: number,

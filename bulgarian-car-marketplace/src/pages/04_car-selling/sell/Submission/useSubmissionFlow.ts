@@ -1,10 +1,10 @@
 import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthProvider';
-import WorkflowPersistenceService from '@/services/workflowPersistenceService';
-import SellWorkflowService from '@/services/sellWorkflowService';
-import useSellWorkflow from '@/hooks/useSellWorkflow';
-import { logger } from '@/services/logger-service';
+import { useAuth } from '../../../../contexts/AuthProvider';
+import WorkflowPersistenceService from '../../../../services/workflowPersistenceService';
+import SellWorkflowService from '../../../../services/sellWorkflowService';
+import useSellWorkflow from '../../../../hooks/useSellWorkflow';
+import { logger } from '../../../../services/logger-service';
 
 export type SubmissionStatus = 'idle' | 'submitting' | 'success' | 'error';
 

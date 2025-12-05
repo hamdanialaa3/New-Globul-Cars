@@ -3,17 +3,17 @@
 // Phase -1: Updated to use canonical types
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { useAuth } from '@/contexts/AuthProvider';
+import { useAuth } from '../contexts/AuthProvider';
 import { doc, getDoc, updateDoc, onSnapshot } from 'firebase/firestore';
-import { db } from '@/firebase/firebase-config';
-import { logger } from '@/services/logger-service';
+import { db } from '../firebase/firebase-config';
+import { logger } from '../services/logger-service';
 import { UserRepository } from '../repositories/UserRepository';
 
 // ✅ NEW: Import from canonical types file
 import type { 
   ProfileType, 
   PlanTier
-} from '@/types/user/bulgarian-user.types';
+} from '../types/user/bulgarian-user.types';
 
 // Theme Colors by Profile Type
 export interface ProfileTheme {
@@ -83,18 +83,14 @@ const THEMES: Record<ProfileType, ProfileTheme> = {
 
 // Permissions by Plan
 function getPermissions(profileType: ProfileType, planTier: PlanTier): ProfilePermissions {
+  // Updated December 2025 - Simplified to 3 plans matching BillingService
   const PLAN_LIMITS: Record<PlanTier, number> = {
-    free: 3,
-    premium: 10,
-    dealer_basic: 50,
-    dealer_pro: 150,
-    dealer_enterprise: -1,  // unlimited
-    company_starter: 100,
-    company_pro: -1,
-    company_enterprise: -1
+    free: 5,
+    dealer: 15,
+    company: -1  // unlimited
   };
 
-  const maxListings = PLAN_LIMITS[planTier] || 3;
+  const maxListings = PLAN_LIMITS[planTier] || 5;
 
   // Base permissions for all
   const base: ProfilePermissions = {

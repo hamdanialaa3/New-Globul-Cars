@@ -1,6 +1,6 @@
 import React from 'react';
-import { useLanguage } from '@/contexts/LanguageContext';
-import ProfileAnalyticsDashboard from '@/components/Profile/Analytics/ProfileAnalyticsDashboard';
+import { useLanguage } from '../../../../contexts/LanguageContext';
+import ProfileAnalyticsDashboard from '../../../../components/Profile/Analytics/ProfileAnalyticsDashboard';
 import * as S from './styles';
 
 /**

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
-import SelectWithOther from '@/components/shared/SelectWithOther';
-import { CURRENCIES, PRICE_TYPES } from '@/data/dropdown-options';
-import { useLanguage } from '@/contexts/LanguageContext';
+import SelectWithOther from '../../../components/shared/SelectWithOther';
+import { CURRENCIES, PRICE_TYPES } from '../../../data/dropdown-options';
+import { useLanguage } from '../../../contexts/LanguageContext';
 
 const PricingContainer = styled.div`
   min-height: 100vh;

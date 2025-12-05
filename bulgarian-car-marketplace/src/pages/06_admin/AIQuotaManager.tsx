@@ -1,9 +1,10 @@
+import { logger } from '../../services/logger-service';
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { collection, getDocs, doc, updateDoc } from 'firebase/firestore';
-import { db } from '@/firebase/firebase-config';
-import { aiQuotaService } from '@/services/ai/ai-quota.service';
-import { AI_TIER_CONFIGS } from '@/config/ai-tiers.config';
+import { db } from '../../firebase/firebase-config';
+import { aiQuotaService } from '../../services/ai/ai-quota.service';
+import { AI_TIER_CONFIGS } from '../../config/ai-tiers.config';
 
 const AIQuotaManager: React.FC = () => {
   const [users, setUsers] = useState<any[]>([]);
@@ -22,7 +23,7 @@ const AIQuotaManager: React.FC = () => {
       }));
       setUsers(usersData);
     } catch (error) {
-      console.error('Error loading users:', error);
+      logger.error('Error loading users:', error);
     } finally {
       setLoading(false);
     }

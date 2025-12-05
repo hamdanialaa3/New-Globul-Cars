@@ -84,19 +84,16 @@ const THEMES: Record<ProfileType, ProfileTheme> = {
 };
 
 // Permissions by Plan
+// Permissions by Plan
 function getPermissions(profileType: ProfileType, planTier: PlanTier): ProfilePermissions {
+  // Updated December 2025 - Simplified to 3 plans matching BillingService
   const PLAN_LIMITS: Record<PlanTier, number> = {
-    free: 3,
-    premium: 10,
-    dealer_basic: 50,
-    dealer_pro: 150,
-    dealer_enterprise: -1,
-    company_starter: 100,
-    company_pro: -1,
-    company_enterprise: -1
+    free: 5,
+    dealer: 15,
+    company: -1  // unlimited
   };
 
-  const maxListings = PLAN_LIMITS[planTier] || 3;
+  const maxListings = PLAN_LIMITS[planTier] || 5;
 
   const base: ProfilePermissions = {
     canAddListings: true,

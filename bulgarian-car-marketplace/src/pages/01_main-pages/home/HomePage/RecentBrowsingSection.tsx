@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import ModernCarCard from './ModernCarCard';
 import { getBrowsingHistory, clearBrowsingHistory, BrowsingHistoryItem } from './browsingHistory';
 import { History, Clock, Eye, Trash2, Search, ArrowRight } from 'lucide-react';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { useTheme } from '@/contexts/ThemeContext';
+import { useLanguage } from '../../../../contexts/LanguageContext';
+import { useTheme } from '../../../../contexts/ThemeContext';
 
 // Styled Components
 const SectionContainer = styled.section<{ $isDark: boolean }>`

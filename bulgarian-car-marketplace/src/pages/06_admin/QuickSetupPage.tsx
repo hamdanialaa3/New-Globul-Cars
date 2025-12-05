@@ -1,3 +1,4 @@
+import { logger } from '../../services/logger-service';
 /**
  * Quick Setup Page
  * صفحة الإعداد السريع لجميع الخدمات السحابية
@@ -387,7 +388,7 @@ const QuickSetupPage: React.FC = () => {
       // أو في خدمة إدارة التكوين الآمنة
       
       const serviceConfig = configs[serviceName] || {};
-      console.log(`Saving config for ${serviceName}:`, serviceConfig);
+      logger.info(`Saving config for ${serviceName}:`, serviceConfig);
       
       // محاكاة حفظ البيانات
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -395,7 +396,7 @@ const QuickSetupPage: React.FC = () => {
       alert(`تم حفظ إعدادات ${serviceName} بنجاح!`);
       
     } catch (error) {
-      console.error('Error saving config:', error);
+      logger.error('Error saving config:', error);
       alert(`خطأ في حفظ إعدادات ${serviceName}`);
     } finally {
       setSaving(prev => ({ ...prev, [serviceName]: false }));
@@ -404,7 +405,7 @@ const QuickSetupPage: React.FC = () => {
 
   const testServiceConnection = async (serviceName: string) => {
     try {
-      console.log(`Testing connection for ${serviceName}`);
+      logger.info(`Testing connection for ${serviceName}`);
       // محاكاة اختبار الاتصال
       await new Promise(resolve => setTimeout(resolve, 1500));
       alert(`اختبار ${serviceName} نجح!`);

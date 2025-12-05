@@ -2,7 +2,7 @@
 
 import React, { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '../../../../contexts/LanguageContext';
 import styled from 'styled-components';
 
 // Popular brands configuration with logos

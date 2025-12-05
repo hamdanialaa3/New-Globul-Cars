@@ -1,9 +1,9 @@
 // AI Image Analyzer Component - FREE
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { geminiVisionService } from '@/services/ai';
-import { CarAnalysisResult } from '@/types/ai.types';
-import { logger } from '@/services/logger-service';
+import { geminiVisionService } from '../../services/ai';
+import { CarAnalysisResult } from '../../types/ai.types';
+import { logger } from '../../services/logger-service';
 
 interface Props {
   onAnalysisComplete: (result: CarAnalysisResult) => void;

@@ -1,9 +1,10 @@
+import { logger } from '../services/logger-service';
 // src/components/AddRatingForm.tsx
 // Add rating form component for Bulgarian Car Marketplace
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useTranslation } from '@/hooks/useTranslation';
+import { useTranslation } from '../hooks/useTranslation';
 
 interface AddRatingFormProps {
   carId: string;
@@ -386,7 +387,7 @@ const AddRatingForm: React.FC<AddRatingFormProps> = ({
 
     try {
       // TODO: Implement rating service
-      console.log('Rating data:', {
+      logger.info('Rating data:', {
         carId,
         userId,
         userName,
@@ -405,7 +406,7 @@ const AddRatingForm: React.FC<AddRatingFormProps> = ({
 
       onRatingAdded();
     } catch (error) {
-      console.error('Error adding rating:', error);
+      logger.error('Error adding rating:', error);
       alert(t('ratings.errors.submitFailed'));
     } finally {
       setLoading(false);

@@ -1,11 +1,12 @@
+import { logger } from '../../../../services/logger-service';
 import React from 'react';
 import styled from 'styled-components';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '../../../../contexts/LanguageContext';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useProfile } from './hooks/useProfile';
-import { useTheme } from '@/contexts/ThemeContext';
-import ModernCarCard from '@/pages/01_main-pages/home/HomePage/ModernCarCard';
-import { UnifiedCar } from '@/services/car';
+import { useTheme } from '../../../../contexts/ThemeContext';
+import ModernCarCard from '../../../01_main-pages/home/HomePage/ModernCarCard';
+import { UnifiedCar } from '../../../../services/car';
 import { Car, Plus, ArrowUpDown, Filter } from 'lucide-react';
 import * as S from './styles';
 
@@ -20,7 +21,7 @@ const ProfileMyAds: React.FC = () => {
   const navigate = useNavigate();
   const params = useParams<{ userId?: string }>();
   const { userCars, isOwnProfile, loadUserCars, user } = useProfile(params.userId);
-  
+
   // Sort and filter states
   const [sortBy, setSortBy] = React.useState<string>('newest');
   const [filterBy, setFilterBy] = React.useState<string>('all');
@@ -153,7 +154,7 @@ const ProfileMyAds: React.FC = () => {
           <EmptyState $isDark={isDark}>
             <Car size={64} style={{ opacity: 0.5, marginBottom: '1rem' }} />
             <EmptyText $isDark={isDark}>
-              {language === 'bg' 
+              {language === 'bg'
                 ? 'Все още нямате обяви'
                 : 'You don\'t have any listings yet'}
             </EmptyText>
@@ -168,7 +169,7 @@ const ProfileMyAds: React.FC = () => {
           <EmptyState $isDark={isDark}>
             <Car size={64} style={{ opacity: 0.5, marginBottom: '1rem' }} />
             <EmptyText $isDark={isDark}>
-              {language === 'bg' 
+              {language === 'bg'
                 ? 'Няма резултати с избраните филтри'
                 : 'No results match the selected filters'}
             </EmptyText>
@@ -188,7 +189,7 @@ const ProfileMyAds: React.FC = () => {
                 showStatus={true}
                 onFavorite={(carId) => {
                   // Handle favorite logic if needed
-                  console.log('Favorite clicked:', carId);
+                  logger.info('Favorite clicked:', carId);
                 }}
               />
             ))}
@@ -206,7 +207,7 @@ const Container = styled.div<{ $isDark: boolean }>`
   padding: 0;
   box-sizing: border-box;
   overflow-x: hidden;
-  background: var(--bg-primary);
+  background: ${({ $isDark }) => $isDark ? '#0f172a' : 'var(--bg-primary)'};
   min-height: 60vh;
   
   @media (max-width: 768px) {
@@ -301,7 +302,7 @@ const EmptyState = styled.div<{ $isDark: boolean }>`
   justify-content: center;
   padding: 4rem 2rem;
   text-align: center;
-  background: var(--bg-card);
+  background: ${({ $isDark }) => $isDark ? '#0f172a' : 'var(--bg-primary)'};
   border-radius: 16px;
   border: 1px solid var(--border-primary);
   

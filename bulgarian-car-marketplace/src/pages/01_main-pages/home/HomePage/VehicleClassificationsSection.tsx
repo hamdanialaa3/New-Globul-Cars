@@ -1,12 +1,13 @@
+import { logger } from '../../../../services/logger-service';
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { unifiedCarService, UnifiedCar } from '@/services/car';
+import { unifiedCarService, UnifiedCar } from '../../../../services/car';
 import ModernCarCard from './ModernCarCard';
 import VehicleCategoryCard, { VehicleCategory } from './VehicleCategoryCard';
 import { Sparkles, ArrowRight } from 'lucide-react';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { useTheme } from '@/contexts/ThemeContext';
+import { useLanguage } from '../../../../contexts/LanguageContext';
+import { useTheme } from '../../../../contexts/ThemeContext';
 
 // Styled Components
 const SectionContainer = styled.section<{ $isDark: boolean }>`
@@ -151,7 +152,7 @@ const VehicleClassificationsSection: React.FC = () => {
         }, 8);
         setCars(result.slice(0, 8));
       } catch (error) {
-        console.error('Error loading cars:', error);
+        logger.error('Error loading cars:', error);
       } finally {
         setLoading(false);
       }

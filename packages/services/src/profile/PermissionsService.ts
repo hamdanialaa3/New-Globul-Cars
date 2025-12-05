@@ -140,19 +140,19 @@ export class PermissionsService {
           hasFeaturedBadge: false
         };
 
-      // Dealer plans
-      case 'dealer_basic':
+      // Dealer plan (unified)
+      case 'dealer':
         return {
           canAddListings: true,
-          maxListings: 50,
+          maxListings: 15,
           canFeatureListings: true,
           canBulkUpload: true,
           hasAnalytics: true,
-          hasAdvancedAnalytics: false,
+          hasAdvancedAnalytics: true,
           hasExportAnalytics: true,
           hasTeam: true,
-          maxTeamMembers: 2,
-          canAssignRoles: false,
+          maxTeamMembers: 3,
+          canAssignRoles: true,
           canExportData: true,
           canImportData: true,
           canBulkEdit: true,
@@ -160,36 +160,7 @@ export class PermissionsService {
           hasWebhooks: false,
           apiRateLimitPerHour: 0,
           canCreateCampaigns: true,
-          maxCampaigns: 2,
-          canUseEmailMarketing: false,
-          hasPrioritySupport: true,
-          hasAccountManager: false,
-          canRequestConsultations: true,
-          canCustomizeBranding: false,
-          canHideCompetitors: false,
-          hasFeaturedBadge: true
-        };
-
-      case 'dealer_pro':
-        return {
-          canAddListings: true,
-          maxListings: 150,
-          canFeatureListings: true,
-          canBulkUpload: true,
-          hasAnalytics: true,
-          hasAdvancedAnalytics: true,
-          hasExportAnalytics: true,
-          hasTeam: true,
-          maxTeamMembers: 5,
-          canAssignRoles: true,
-          canExportData: true,
-          canImportData: true,
-          canBulkEdit: true,
-          canUseAPI: true,
-          hasWebhooks: true,
-          apiRateLimitPerHour: 1000,
-          canCreateCampaigns: true,
-          maxCampaigns: 10,
+          maxCampaigns: 5,
           canUseEmailMarketing: true,
           hasPrioritySupport: true,
           hasAccountManager: false,
@@ -199,40 +170,11 @@ export class PermissionsService {
           hasFeaturedBadge: true
         };
 
-      case 'dealer_enterprise':
+      // Company plan (unified)
+      case 'company':
         return {
           canAddListings: true,
           maxListings: -1, // Unlimited
-          canFeatureListings: true,
-          canBulkUpload: true,
-          hasAnalytics: true,
-          hasAdvancedAnalytics: true,
-          hasExportAnalytics: true,
-          hasTeam: true,
-          maxTeamMembers: -1, // Unlimited
-          canAssignRoles: true,
-          canExportData: true,
-          canImportData: true,
-          canBulkEdit: true,
-          canUseAPI: true,
-          hasWebhooks: true,
-          apiRateLimitPerHour: 10000,
-          canCreateCampaigns: true,
-          maxCampaigns: -1, // Unlimited
-          canUseEmailMarketing: true,
-          hasPrioritySupport: true,
-          hasAccountManager: true,
-          canRequestConsultations: true,
-          canCustomizeBranding: true,
-          canHideCompetitors: true,
-          hasFeaturedBadge: true
-        };
-
-      // Company plans
-      case 'company_starter':
-        return {
-          canAddListings: true,
-          maxListings: 100,
           canFeatureListings: true,
           canBulkUpload: true,
           hasAnalytics: true,
@@ -246,65 +188,7 @@ export class PermissionsService {
           canBulkEdit: true,
           canUseAPI: true,
           hasWebhooks: true,
-          apiRateLimitPerHour: 2000,
-          canCreateCampaigns: true,
-          maxCampaigns: 5,
-          canUseEmailMarketing: true,
-          hasPrioritySupport: true,
-          hasAccountManager: false,
-          canRequestConsultations: true,
-          canCustomizeBranding: true,
-          canHideCompetitors: false,
-          hasFeaturedBadge: true
-        };
-
-      case 'company_pro':
-        return {
-          canAddListings: true,
-          maxListings: -1, // Unlimited
-          canFeatureListings: true,
-          canBulkUpload: true,
-          hasAnalytics: true,
-          hasAdvancedAnalytics: true,
-          hasExportAnalytics: true,
-          hasTeam: true,
-          maxTeamMembers: 50,
-          canAssignRoles: true,
-          canExportData: true,
-          canImportData: true,
-          canBulkEdit: true,
-          canUseAPI: true,
-          hasWebhooks: true,
           apiRateLimitPerHour: 5000,
-          canCreateCampaigns: true,
-          maxCampaigns: -1, // Unlimited
-          canUseEmailMarketing: true,
-          hasPrioritySupport: true,
-          hasAccountManager: true,
-          canRequestConsultations: true,
-          canCustomizeBranding: true,
-          canHideCompetitors: true,
-          hasFeaturedBadge: true
-        };
-
-      case 'company_enterprise':
-        return {
-          canAddListings: true,
-          maxListings: -1, // Unlimited
-          canFeatureListings: true,
-          canBulkUpload: true,
-          hasAnalytics: true,
-          hasAdvancedAnalytics: true,
-          hasExportAnalytics: true,
-          hasTeam: true,
-          maxTeamMembers: -1, // Unlimited
-          canAssignRoles: true,
-          canExportData: true,
-          canImportData: true,
-          canBulkEdit: true,
-          canUseAPI: true,
-          hasWebhooks: true,
-          apiRateLimitPerHour: 50000,
           canCreateCampaigns: true,
           maxCampaigns: -1, // Unlimited
           canUseEmailMarketing: true,
@@ -407,17 +291,13 @@ export class PermissionsService {
 
   /**
    * Get plan tier name for display
+   * Updated: December 2025 - Simplified to 3 plans
    */
   static getPlanDisplayName(planTier: PlanTier, language: 'bg' | 'en' = 'bg'): string {
     const names: Record<PlanTier, { bg: string; en: string }> = {
       free: { bg: 'Безплатен', en: 'Free' },
-      premium: { bg: 'Премиум', en: 'Premium' },
-      dealer_basic: { bg: 'Дилър - Базов', en: 'Dealer - Basic' },
-      dealer_pro: { bg: 'Дилър - Професионален', en: 'Dealer - Pro' },
-      dealer_enterprise: { bg: 'Дилър - Корпоративен', en: 'Dealer - Enterprise' },
-      company_starter: { bg: 'Компания - Стартиращ', en: 'Company - Starter' },
-      company_pro: { bg: 'Компания - Професионален', en: 'Company - Pro' },
-      company_enterprise: { bg: 'Компания - Корпоративен', en: 'Company - Enterprise' }
+      dealer: { bg: 'Търговец', en: 'Dealer' },
+      company: { bg: 'Компания', en: 'Company' }
     };
 
     return names[planTier]?.[language] || planTier;
@@ -425,17 +305,13 @@ export class PermissionsService {
 
   /**
    * Compare two plan tiers (returns true if tier1 > tier2)
+   * Updated: December 2025 - Simplified to 3 plans
    */
   static isHigherTier(tier1: PlanTier, tier2: PlanTier): boolean {
     const tierRanking: Record<PlanTier, number> = {
       free: 0,
-      premium: 1,
-      dealer_basic: 2,
-      dealer_pro: 3,
-      dealer_enterprise: 4,
-      company_starter: 3,
-      company_pro: 4,
-      company_enterprise: 5
+      dealer: 2,
+      company: 3
     };
 
     return tierRanking[tier1] > tierRanking[tier2];
@@ -443,6 +319,7 @@ export class PermissionsService {
 
   /**
    * Get upgrade suggestions
+   * Updated: December 2025 - Simplified to 3 plans
    */
   static getUpgradeSuggestions(
     currentType: ProfileType,
@@ -451,55 +328,50 @@ export class PermissionsService {
     const suggestions: Array<{ tier: PlanTier; benefits: string[] }> = [];
 
     if (currentType === 'private') {
+      // Suggest dealer upgrade
       if (currentTier === 'free') {
         suggestions.push({
-          tier: 'premium',
+          tier: 'dealer',
           benefits: [
-            '10 активни обяви вместо 3',
-            'Аналитика и статистики',
-            'Експорт на данни',
-            'Консултации с експерти'
+            '15 активни обяви вместо 5',
+            'Отборна работа (до 3 члена)',
+            'Напреднала аналитика',
+            'Приоритетна поддръжка',
+            'Фирмен профил и персонализиран бранд'
           ]
         });
       }
-
-      // Suggest dealer upgrade
+      
+      // Suggest company upgrade
       suggestions.push({
-        tier: 'dealer_basic',
+        tier: 'company',
         benefits: [
-          '50 активни обяви',
-          'Отборна работа (2 члена)',
-          'Приоритетна поддръжка',
-          'Фирмен профил'
+          'Неограничени обяви',
+          'Голям отбор (до 10 члена)',
+          'API достъп и уебхуки',
+          'Персонален мениджър',
+          'Скриване на конкуренти'
         ]
       });
     }
 
     if (currentType === 'dealer') {
-      if (currentTier === 'dealer_basic') {
+      // Dealer can only upgrade to Company
+      if (currentTier === 'dealer') {
         suggestions.push({
-          tier: 'dealer_pro',
+          tier: 'company',
           benefits: [
-            '150 активни обяви вместо 50',
-            'Отбор до 5 души',
+            'Неограничени обяви вместо 15',
+            'Отбор до 10 души вместо 3',
             'API достъп',
-            'Имейл маркетинг'
-          ]
-        });
-      }
-
-      if (currentTier === 'dealer_pro') {
-        suggestions.push({
-          tier: 'dealer_enterprise',
-          benefits: [
-            'Неограничени обяви',
-            'Неограничен отбор',
             'Персонален мениджър',
-            'Персонализиран бранд'
+            'Неограничени кампании'
           ]
         });
       }
     }
+
+    // Company tier is already the highest - no upgrades available
 
     return suggestions;
   }

@@ -317,10 +317,10 @@ const ProfileImageUploader: React.FC<ProfileImageUploaderProps> = ({
       });
 
       setImageUrl(undefined);
-      console.log('✅ Profile image deleted');
+      logger.info('✅ Profile image deleted');
 
     } catch (err: any) {
-      console.error('❌ Delete failed:', err);
+      logger.error('❌ Delete failed:', err);
       setError(err.message);
     } finally {
       setUploading(false);

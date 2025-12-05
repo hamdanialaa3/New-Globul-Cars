@@ -3,8 +3,8 @@
 
 import React, { memo } from 'react';
 import styled from 'styled-components';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { useAuth } from '@/contexts/AuthProvider';
+import { useLanguage } from '../../../../contexts/LanguageContext';
+import { useAuth } from '../../../../contexts/AuthProvider';
 
 const Container = styled.section`
   background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-primary-hover) 60%);

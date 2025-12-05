@@ -4,13 +4,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { useAuth } from '@/contexts/AuthProvider';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { unifiedCarService } from '@/services/car';
-import { CarListing } from '@/types/CarListing';
-import { CarIcon } from '@/components/icons/CarIcon';
-import CarCardGermanStyle from '@/components/CarCard/CarCardGermanStyle';
-import { logger } from '@/services/logger-service';
+import { useAuth } from '../../contexts/AuthProvider';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { unifiedCarService } from '../../services/car';
+import { CarListing } from '../../types/CarListing';
+import { CarIcon } from '../../components/icons/CarIcon';
+import CarCardGermanStyle from '../../components/CarCard/CarCardGermanStyle';
+import { logger } from '../../services/logger-service';
 
 const PageContainer = styled.div`
   min-height: 100vh;

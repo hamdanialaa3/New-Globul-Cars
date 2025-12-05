@@ -1,7 +1,8 @@
+import { logger } from '../../../../../services/logger-service';
 import { useState, useEffect } from 'react';
-import { useTranslation } from '@/hooks/useTranslation';
-import { useAuth } from '@/contexts/AuthProvider';
-import { dashboardService, DashboardStats, DashboardCar, DashboardMessage, DashboardNotification } from '@/services/dashboardService';
+import { useTranslation } from '../../../../../hooks/useTranslation';
+import { useAuth } from '../../../../../contexts/AuthProvider';
+import { dashboardService, DashboardStats, DashboardCar, DashboardMessage, DashboardNotification } from '../../../../../services/dashboardService';
 import { FormattedStat } from '../types';
 
 export interface UseDashboardReturn {
@@ -67,7 +68,7 @@ export const useDashboard = (): UseDashboardReturn => {
 
         return unsubscribe;
       } catch (err) {
-        console.error('Error loading dashboard data:', err);
+        logger.error('Error loading dashboard data:', err);
         setError('Failed to load dashboard data');
       } finally {
         setLoading(false);
@@ -133,7 +134,7 @@ export const useDashboard = (): UseDashboardReturn => {
     try {
       await dashboardService.markMessageAsRead(messageId);
     } catch (error) {
-      console.error('Error marking message as read:', error);
+      logger.error('Error marking message as read:', error);
     }
   };
 
@@ -141,7 +142,7 @@ export const useDashboard = (): UseDashboardReturn => {
     try {
       await dashboardService.markNotificationAsRead(notificationId);
     } catch (error) {
-      console.error('Error marking notification as read:', error);
+      logger.error('Error marking notification as read:', error);
     }
   };
 

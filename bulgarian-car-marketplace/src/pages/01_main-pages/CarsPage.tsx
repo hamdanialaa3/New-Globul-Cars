@@ -1,37 +1,76 @@
 // src/pages/CarsPage.tsx
-// Cars Page for Bulgarian Car Marketplace
-// صفحة عرض السيارات مع فلترة متقدمة حسب المدن
-// ⚡ Performance Optimized with Firebase Caching + useMemo
+// Cars Page for Bulgarian Car Marketplace - Modern & Professional Design
+// صفحة عرض السيارات مع فلترة متقدمة وبحث بالذكاء الاصطناعي
+// ⚡ Performance Optimized with Firebase Caching + AI Search
 
 import * as React from 'react';
 import { useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import styled from 'styled-components';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { useAuth } from '@/contexts/AuthProvider';
-import { BULGARIAN_CITIES } from '@/constants/bulgarianCities';
-import { unifiedCarService } from '@/services/car';
-import { CarIcon } from '@/components/icons/CarIcon';
-import { CarListing } from '@/types/CarListing';
-import { logger } from '@/services/logger-service';
-import { firebaseCache, cacheKeys } from '@/services/firebase-cache.service';
-import CarCardCompact from '@/components/CarCard/CarCardCompact';
-import { ResponsiveGrid } from '@/components/layout/ResponsiveGrid';
-import { useIsMobile } from '@/hooks/useBreakpoint';
-import { MobileFilterDrawer, MobileFilterButton, FilterValues } from '@/components/filters';
-import { smartSearchService } from '@/services/search/smart-search.service';
-import { searchHistoryService } from '@/services/search/search-history.service';
-import { Search, X, Clock, TrendingUp } from 'lucide-react';
+import styled, { keyframes, css } from 'styled-components';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { useAuth } from '../../contexts/AuthProvider';
+import { BULGARIAN_CITIES } from '../../constants/bulgarianCities';
+import { unifiedCarService } from '../../services/car';
+import { CarIcon } from '../../components/icons/CarIcon';
+import { CarListing } from '../../types/CarListing';
+import { logger } from '../../services/logger-service';
+import { firebaseCache, cacheKeys } from '../../services/firebase-cache.service';
+import CarCardCompact from '../../components/CarCard/CarCardCompact';
+import { ResponsiveGrid } from '../../components/layout/ResponsiveGrid';
+import { useIsMobile } from '../../hooks/useBreakpoint';
+import { MobileFilterDrawer, MobileFilterButton, FilterValues } from '../../components/filters';
+import { smartSearchService } from '../../services/search/smart-search.service';
+import { searchHistoryService } from '../../services/search/search-history.service';
+import { Search, X, Clock, TrendingUp, Sparkles, SlidersHorizontal } from 'lucide-react';
 
-// Styled Components
+// ============================================================================
+// ANIMATIONS
+// ============================================================================
+
+const fadeInUp = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
+
+const shimmer = keyframes`
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+`;
+
+const glow = keyframes`
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(255, 143, 16, 0.3), 0 0 40px rgba(0, 92, 169, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(255, 143, 16, 0.5), 0 0 60px rgba(0, 92, 169, 0.3);
+  }
+`;
+
+// ============================================================================
+// STYLED COMPONENTS
+// ============================================================================
+
 const CarsContainer = styled.div`
   min-height: 100vh;
+  background: ${({ theme }) => theme.mode === 'dark' 
+    ? 'linear-gradient(180deg, #1a1d2e 0%, #0f1117 100%)'
+    : 'linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%)'};
   padding: ${({ theme }) => theme.spacing['2xl']} 0;
+  transition: background 0.3s ease;
   
-  /* MOBILE - Clean layout (Instagram/Facebook) */
   @media (max-width: 768px) {
-    padding: 16px 0 80px;  /* Space for bottom nav */
-    background: #f0f2f5;  /* Instagram gray */
+    padding: 16px 0 80px;
+    background: ${({ theme }) => theme.mode === 'dark' ? '#1a1d2e' : '#f0f2f5'};
   }
   
   @media (max-width: 480px) {
@@ -40,13 +79,12 @@ const CarsContainer = styled.div`
 `;
 
 const PageContainer = styled.div`
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 0 ${({ theme }) => theme.spacing.md};
+  padding: 0 ${({ theme }) => theme.spacing.lg};
 
-  /* MOBILE - Full-width (Instagram pattern) */
   @media (max-width: 768px) {
-    padding: 0;  /* Full-width for mobile */
+    padding: 0;
     max-width: 100%;
   }
 `;
@@ -54,42 +92,41 @@ const PageContainer = styled.div`
 const PageHeader = styled.div`
   text-align: center;
   margin-bottom: ${({ theme }) => theme.spacing['3xl']};
+  ${css`animation: ${fadeInUp} 0.6s ease-out;`}
 
   @media (max-width: 768px) {
     margin-bottom: 20px;
     padding: 16px 20px;
-    background: white;
+    background: ${({ theme }) => theme.mode === 'dark' ? '#1e2330' : 'white'};
+    box-shadow: 0 2px 8px ${({ theme }) => theme.mode === 'dark' ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.05)'};
   }
 
   h1 {
-    font-size: ${({ theme }) => theme.typography.fontSize['4xl']};
-    font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
-    color: ${({ theme }) => theme.colors.text.primary};
+    font-size: clamp(1.75rem, 4vw, 3rem);
+    font-weight: 800;
+    background: linear-gradient(135deg, #005ca9 0%, #ff8f10 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
 
-    /* MOBILE - Compact header (Airbnb) */
     @media (max-width: 768px) {
-      font-size: 1.5rem;  /* 24px */
-      font-weight: 700;
+      font-size: 1.5rem;
       margin-bottom: 8px;
-    }
-
-    @media (max-width: 480px) {
-      font-size: 1.375rem;  /* 22px */
     }
   }
 
   p {
-    font-size: ${({ theme }) => theme.typography.fontSize.xl};
-    color: ${({ theme }) => theme.colors.text.secondary};
-    margin-bottom: ${({ theme }) => theme.spacing.md};
+    font-size: clamp(0.875rem, 2vw, 1.125rem);
+    color: ${({ theme }) => theme.mode === 'dark' ? '#a0aec0' : theme.colors.text.secondary};
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
     
     @media (max-width: 768px) {
-      font-size: 0.875rem;  /* 14px */
+      font-size: 0.875rem;
       margin-bottom: 0;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
     }
   }
 `;
@@ -106,6 +143,264 @@ const CityBadge = styled.div`
   font-weight: 600;
   margin: 1rem auto;
   box-shadow: 0 4px 15px rgba(255, 143, 16, 0.3);
+  ${css`animation: ${glow} 3s ease-in-out infinite;`}
+  
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+`;
+
+// ============================================================================
+// MODERN SEARCH BAR WITH AI & ADVANCED FILTERS
+// ============================================================================
+
+const SearchSection = styled.div`
+  max-width: 900px;
+  margin: 0 auto 3rem;
+  ${css`animation: ${fadeInUp} 0.7s ease-out 0.1s both;`}
+  
+  @media (max-width: 768px) {
+    margin-bottom: 1.5rem;
+    padding: 0 1rem;
+  }
+`;
+
+const SearchBarWrapper = styled.div`
+  position: relative;
+  margin-bottom: 1.5rem;
+`;
+
+const SearchInputContainer = styled.div`
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  background: ${({ theme }) => theme.mode === 'dark' ? '#1e2330' : 'white'};
+  border: 2px solid transparent;
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: ${({ theme }) => theme.mode === 'dark' 
+    ? '0 4px 20px rgba(0, 0, 0, 0.3)' 
+    : '0 4px 20px rgba(0, 0, 0, 0.08)'};
+  
+  &:focus-within {
+    border-color: #005ca9;
+    box-shadow: 0 8px 30px rgba(0, 92, 169, 0.2);
+    transform: translateY(-2px);
+  }
+  
+  &:hover {
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+  }
+`;
+
+const SearchIconWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 0 1.25rem;
+  color: ${({ theme }) => theme.mode === 'dark' ? '#a0aec0' : '#6c757d'};
+  
+  svg {
+    width: 22px;
+    height: 22px;
+  }
+`;
+
+const SearchInput = styled.input`
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 1.05rem;
+  padding: 1.25rem 0.5rem;
+  font-weight: 500;
+  background: transparent;
+  color: ${({ theme }) => theme.mode === 'dark' ? '#e8eaed' : '#212529'};
+  
+  &::placeholder {
+    color: ${({ theme }) => theme.mode === 'dark' ? '#6c7a8d' : '#adb5bd'};
+    font-weight: 400;
+  }
+  
+  @media (max-width: 768px) {
+    font-size: 1rem;
+    padding: 1rem 0.5rem;
+  }
+`;
+
+const SearchActionsGroup = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-right: 0.75rem;
+`;
+
+const ClearButton = styled.button`
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  color: ${({ theme }) => theme.mode === 'dark' ? '#a0aec0' : '#6c757d'};
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  border-radius: 8px;
+  transition: all 0.2s;
+  
+  &:hover {
+    background: ${({ theme }) => theme.mode === 'dark' ? '#2d3548' : '#f8f9fa'};
+    color: ${({ theme }) => theme.mode === 'dark' ? '#e8eaed' : '#495057'};
+  }
+  
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+`;
+
+const SearchButton = styled.button`
+  background: linear-gradient(135deg, #005ca9, #0066cc);
+  border: none;
+  border-radius: 10px;
+  padding: 0.75rem 1.5rem;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(0, 92, 169, 0.3);
+  
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 92, 169, 0.4);
+    background: linear-gradient(135deg, #0066cc, #005ca9);
+  }
+  
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+  
+  @media (max-width: 768px) {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.875rem;
+  }
+`;
+
+// Action Buttons Row
+const ActionButtonsRow = styled.div`
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  
+  @media (max-width: 768px) {
+    gap: 0.75rem;
+  }
+`;
+
+const ActionButton = styled.button<{ variant?: 'primary' | 'secondary' | 'ai' }>`
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1.75rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid transparent;
+  position: relative;
+  overflow: hidden;
+  
+  /* Primary - Advanced Search */
+  ${props => props.variant === 'primary' && css`
+    background: linear-gradient(135deg, #ff8f10, #ffb347);
+    color: white;
+    box-shadow: 0 4px 15px rgba(255, 143, 16, 0.3);
+    
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(255, 143, 16, 0.4);
+    }
+  `}
+  
+  /* AI Search */
+  ${props => props.variant === 'ai' && css`
+    background: linear-gradient(135deg, #8b5cf6, #6366f1);
+    color: white;
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+    animation: ${glow} 4s ease-in-out infinite;
+    
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 25px rgba(139, 92, 246, 0.5);
+    }
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+      );
+      animation: ${shimmer} 3s infinite;
+    }
+  `}
+  
+  /* Secondary - Filter Results */
+  ${props => props.variant === 'secondary' && css`
+    background: ${({ theme }) => theme.mode === 'dark' ? '#1e2330' : 'white'};
+    color: ${({ theme }) => theme.mode === 'dark' ? '#e8eaed' : '#495057'};
+    border: 2px solid ${({ theme }) => theme.mode === 'dark' ? '#3d4554' : '#dee2e6'};
+    box-shadow: ${({ theme }) => theme.mode === 'dark' 
+      ? '0 2px 8px rgba(0, 0, 0, 0.3)' 
+      : '0 2px 8px rgba(0, 0, 0, 0.05)'};
+    
+    &:hover {
+      border-color: #005ca9;
+      color: #005ca9;
+      box-shadow: 0 4px 12px rgba(0, 92, 169, 0.15);
+    }
+  `}
+  
+  &:active {
+    transform: translateY(0);
+  }
+  
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+  
+  @media (max-width: 768px) {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.875rem;
+    flex: 1;
+    justify-content: center;
+    
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
 `;
 
 const CarsGridWrapper = styled.div`
@@ -149,106 +444,47 @@ const EmptyState = styled.div`
   }
 `;
 
-// ⚡ NEW: Smart Search Bar Styles
-const SearchBarContainer = styled.div`
-  max-width: 800px;
-  margin: 0 auto 2rem;
-  position: relative;
-  
-  @media (max-width: 768px) {
-    margin-bottom: 1.5rem;
-    padding: 0 1rem;
-  }
-`;
-
-const SearchInputWrapper = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-  background: white;
-  border: 2px solid #e9ecef;
-  border-radius: 12px;
-  padding: 0.75rem 1rem;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  
-  &:focus-within {
-    border-color: #005ca9;
-    box-shadow: 0 4px 12px rgba(0, 92, 169, 0.15);
-  }
-`;
-
-const SearchInput = styled.input`
-  flex: 1;
-  border: none;
-  outline: none;
-  font-size: 1rem;
-  padding: 0.25rem 0.5rem;
-  
-  &::placeholder {
-    color: #adb5bd;
-  }
-`;
-
-const SearchIconButton = styled.button`
-  background: linear-gradient(135deg, #005ca9, #0066cc);
-  border: none;
-  border-radius: 8px;
-  padding: 0.5rem 1rem;
-  color: white;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-weight: 600;
-  font-size: 0.875rem;
-  transition: all 0.2s ease;
-  
-  &:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0, 92, 169, 0.3);
-  }
-  
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-`;
-
-const ClearButton = styled.button`
-  background: none;
-  border: none;
-  padding: 0.25rem;
-  color: #6c757d;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  transition: color 0.2s;
-  
-  &:hover {
-    color: #495057;
-  }
-`;
-
 const SuggestionsDropdown = styled.div`
   position: absolute;
   top: calc(100% + 8px);
   left: 0;
   right: 0;
-  background: white;
-  border: 1px solid #e9ecef;
+  background: ${({ theme }) => theme.mode === 'dark' ? '#1e2330' : 'white'};
+  border: 1px solid ${({ theme }) => theme.mode === 'dark' ? '#3d4554' : '#e9ecef'};
   border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  box-shadow: ${({ theme }) => theme.mode === 'dark' 
+    ? '0 8px 24px rgba(0, 0, 0, 0.5)' 
+    : '0 8px 24px rgba(0, 0, 0, 0.12)'};
   max-height: 400px;
   overflow-y: auto;
   z-index: 100;
+  transition: background 0.3s ease, border-color 0.3s ease;
+  
+  /* Custom Scrollbar for dark mode */
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: ${({ theme }) => theme.mode === 'dark' ? '#1a1d2e' : '#f1f3f5'};
+    border-radius: 4px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: ${({ theme }) => theme.mode === 'dark' ? '#3d4554' : '#cbd5e0'};
+    border-radius: 4px;
+    
+    &:hover {
+      background: ${({ theme }) => theme.mode === 'dark' ? '#4a5568' : '#a0aec0'};
+    }
+  }
 `;
 
 const SuggestionSection = styled.div`
   padding: 0.75rem 0;
   
   &:not(:last-child) {
-    border-bottom: 1px solid #f1f3f5;
+    border-bottom: 1px solid ${({ theme }) => theme.mode === 'dark' ? '#3d4554' : '#f1f3f5'};
   }
 `;
 
@@ -259,7 +495,7 @@ const SuggestionHeader = styled.div`
   padding: 0.5rem 1rem;
   font-size: 0.75rem;
   font-weight: 600;
-  color: #6c757d;
+  color: ${({ theme }) => theme.mode === 'dark' ? '#a0aec0' : '#6c757d'};
   text-transform: uppercase;
   
   svg {
@@ -276,15 +512,15 @@ const SuggestionItem = styled.button`
   background: none;
   cursor: pointer;
   font-size: 0.9rem;
-  color: #212529;
+  color: ${({ theme }) => theme.mode === 'dark' ? '#e8eaed' : '#212529'};
   transition: background 0.15s;
   
   &:hover {
-    background: #f8f9fa;
+    background: ${({ theme }) => theme.mode === 'dark' ? '#2d3548' : '#f8f9fa'};
   }
   
   &:active {
-    background: #e9ecef;
+    background: ${({ theme }) => theme.mode === 'dark' ? '#3d4554' : '#e9ecef'};
   }
 `;
 
@@ -305,6 +541,7 @@ const CarsPage: React.FC = () => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [isSmartSearchActive, setIsSmartSearchActive] = useState(false);
   
   // Get filters from URL
   const cityId = searchParams.get('city');
@@ -337,23 +574,44 @@ const CarsPage: React.FC = () => {
 
   // ⚡ NEW: Handle smart search
   const handleSmartSearch = async () => {
-    if (!searchQuery.trim()) return;
+    if (!searchQuery.trim()) {
+      // Reset to normal mode if search is empty
+      console.log('🔍 Smart Search: Empty query, resetting to normal mode');
+      setIsSmartSearchActive(false);
+      return;
+    }
     
+    console.log('🚀 Smart Search TRIGGERED:', { query: searchQuery });
     setIsSearching(true);
     setLoading(true);
     setShowSuggestions(false);
+    setIsSmartSearchActive(true); // Mark that we're in smart search mode
     
     try {
+      console.log('🔍 Calling smartSearchService.search...');
       const result = await smartSearchService.search(searchQuery, user?.uid, 1, 100);
+      console.log('✅ Smart Search Result:', {
+        carsCount: result.cars.length,
+        totalCount: result.totalCount,
+        isPersonalized: result.isPersonalized,
+        firstCar: result.cars[0] ? {
+          make: result.cars[0].make,
+          model: result.cars[0].model,
+          year: result.cars[0].year
+        } : null
+      });
       setCars(result.cars as CarListing[]);
+      setError(null); // Clear any previous errors
       logger.info('Smart search completed', { 
         query: searchQuery, 
         results: result.totalCount,
         personalized: result.isPersonalized 
       });
     } catch (err) {
+      console.error('❌ Smart Search FAILED:', err);
       logger.error('Smart search failed', err as Error);
       setError('Search failed');
+      setCars([]); // Clear cars on error
     } finally {
       setIsSearching(false);
       setLoading(false);
@@ -372,8 +630,14 @@ const CarsPage: React.FC = () => {
 
   // Load cars from Firebase with caching ⚡
   useEffect(() => {
+    // Skip loading if smart search is active
+    if (isSmartSearchActive) {
+      return;
+    }
+    
     const loadCars = async () => {
       try {
+        console.log('🚀 CarsPage: Starting loadCars...');
         setLoading(true);
         setError(null);
         
@@ -381,7 +645,8 @@ const CarsPage: React.FC = () => {
         const regionParam = searchParams.get('city'); // 'city' param is actually region!
         const makeParam = searchParams.get('make');
         
-        console.log('🔍 URL params:', { regionParam, makeParam });
+        console.log('🔍 CarsPage: URL params:', { regionParam, makeParam });
+        logger.info('🔍 URL params:', { regionParam, makeParam });
         logger.info('Loading cars with filters', { region: regionParam, make: makeParam });
 
         // ✅ FIXED: Build filters object compatible with unifiedCarService.searchCars
@@ -393,13 +658,13 @@ const CarsPage: React.FC = () => {
         // Add region filter if provided (region is the primary location field)
         if (regionParam) {
           filters.region = regionParam;
-          console.log('🎯 Filtering by region:', regionParam);
+          logger.info('🎯 Filtering by region', { region: regionParam });
         }
 
         // Add make (brand) filter if provided
         if (makeParam) {
           filters.make = makeParam;
-          console.log('🎯 Filtering by make:', makeParam);
+          logger.info('🎯 Filtering by make', { make: makeParam });
         }
 
         // ✅ ADDED: Read all filter params from URL and apply them
@@ -410,9 +675,9 @@ const CarsPage: React.FC = () => {
         const priceMaxParam = searchParams.get('priceMax');
         const yearMinParam = searchParams.get('yearMin');
         const yearMaxParam = searchParams.get('yearMax');
-        const mileageMinParam = searchParams.get('mileageMin');
-        const mileageMaxParam = searchParams.get('mileageMax');
-        const bodyTypeParam = searchParams.get('bodyType');
+        // const mileageMinParam = searchParams.get('mileageMin');
+        // const mileageMaxParam = searchParams.get('mileageMax');
+        // const bodyTypeParam = searchParams.get('bodyType');
 
         if (modelParam) filters.model = modelParam;
         if (fuelTypeParam) filters.fuelType = fuelTypeParam;
@@ -424,7 +689,7 @@ const CarsPage: React.FC = () => {
         // Note: mileage filters would need to be added to CarFilters interface if needed
 
         if (!regionParam && !makeParam) {
-          console.log('📋 No filters - loading all active cars');
+          logger.info('📋 No filters - loading all active cars');
         }
 
         // ⚡ Fetch cars with caching (5 minute cache) using unifiedCarService
@@ -436,46 +701,56 @@ const CarsPage: React.FC = () => {
               ? cacheKeys.carsByMake(makeParam)
               : cacheKeys.activeCars();
 
-        console.log('🔥 Using cache key:', cacheKey);
+        logger.info('🔥 Using cache key', { cacheKey });
         
         const carsList = await firebaseCache.getOrFetch(
           cacheKey,
           async () => {
-            console.log('📡 Fetching from Firebase using unifiedCarService (cache miss)...');
+            logger.info('📡 Fetching from Firebase using unifiedCarService (cache miss)...');
             // ✅ FIXED: Use unifiedCarService.searchCars instead of non-existent carListingService
             return await unifiedCarService.searchCars(filters, 100);
           },
           { duration: 5 * 60 * 1000 } // 5 minutes
         );
         
-        console.log('📦 Result:', {
+        logger.info('📦 Result:', {
           total: carsList.length,
           filters: { region: regionParam, make: makeParam },
           cacheStats: firebaseCache.getStats()
         });
         
         // Convert UnifiedCar[] to CarListing[] format
-        const carListings: CarListing[] = carsList.map(car => ({
+        const carListings: CarListing[] = carsList.map((car: any) => ({
           ...car,
-          vehicleType: (car as any).vehicleType || 'car',
-          sellerType: (car as any).sellerType || 'private',
-          sellerName: (car as any).sellerName || '',
-          sellerEmail: (car as any).sellerEmail || '',
-          sellerPhone: (car as any).sellerPhone || '',
-          city: (car as any).city || '',
-          region: (car as any).region || '',
+          vehicleType: car.vehicleType || 'car',
+          sellerType: car.sellerType || 'private',
+          sellerName: car.sellerName || '',
+          sellerEmail: car.sellerEmail || '',
+          sellerPhone: car.sellerPhone || '',
+          city: car.city || '',
+          region: car.region || '',
           status: car.status || 'active',
-          currency: (car as any).currency || 'EUR'
+          currency: car.currency || 'EUR'
         } as CarListing));
         
         setCars(carListings);
-        console.log(`✅ Loaded ${result.listings.length} cars:`, 
-          regionParam ? `from region: ${regionParam}` : '',
-          makeParam ? `make: ${makeParam}` : '',
-          !regionParam && !makeParam ? 'all cars' : ''
-        );
+        console.log('🎯 CarsPage: Set cars state', {
+          count: carListings.length,
+          firstCar: carListings[0] ? {
+            id: carListings[0].id,
+            make: carListings[0].make,
+            model: carListings[0].model,
+            isActive: carListings[0].isActive,
+            isSold: carListings[0].isSold
+          } : null
+        });
+        logger.info('✅ Loaded cars', { 
+          count: carListings.length,
+          region: regionParam || 'all',
+          make: makeParam || 'all'
+        });
       } catch (err: any) {
-        console.error('❌ Error loading cars:', err);
+        logger.error('❌ Error loading cars:', err);
         setError(err.message || 'Failed to load cars');
       } finally {
         setLoading(false);
@@ -483,7 +758,7 @@ const CarsPage: React.FC = () => {
     };
 
     loadCars();
-  }, [searchParams]);
+  }, [searchParams, isSmartSearchActive]);
 
   // Get city display name with useMemo ⚡
   const cityDisplayName = useMemo(() => {
@@ -518,6 +793,10 @@ const CarsPage: React.FC = () => {
 
   // Handle filter apply
   const handleApplyFilters = (filters: FilterValues) => {
+    // Reset smart search mode when applying filters
+    setIsSmartSearchActive(false);
+    setSearchQuery(''); // Clear search query
+    
     const newParams = new URLSearchParams();
     
     // Add filters to URL params
@@ -535,6 +814,7 @@ const CarsPage: React.FC = () => {
     if (filters.bodyType) newParams.set('bodyType', filters.bodyType);
 
     setSearchParams(newParams);
+    setShowFilters(false); // Close filter drawer
   };
 
   return (
@@ -573,40 +853,76 @@ const CarsPage: React.FC = () => {
           )}
         </PageHeader>
 
-        {/* ⚡ NEW: Smart Search Bar */}
-        <SearchBarContainer>
-          <SearchInputWrapper>
-            <Search size={20} color="#6c757d" style={{ marginRight: '0.5rem' }} />
-            <SearchInput
-              type="text"
-              placeholder={language === 'bg' 
-                ? 'Търси BMW 2020, Diesel, София...' 
-                : 'Search BMW 2020, Diesel, Sofia...'}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onFocus={() => setShowSuggestions(true)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  handleSmartSearch();
-                }
-              }}
-            />
-            {searchQuery && (
-              <ClearButton onClick={() => {
-                setSearchQuery('');
-                setSuggestions([]);
-              }}>
-                <X size={18} />
-              </ClearButton>
-            )}
-            <SearchIconButton
-              onClick={handleSmartSearch}
-              disabled={!searchQuery.trim() || isSearching}
+        {/* ⚡ MODERN SEARCH SECTION */}
+        <SearchSection>
+          {/* Action Buttons - Advanced Search & AI Search */}
+          <ActionButtonsRow>
+            <ActionButton 
+              variant="primary"
+              onClick={() => window.location.href = '/advanced-search'}
+              aria-label={language === 'bg' ? 'Разширено търсене' : 'Advanced Search'}
             >
-              <Search size={16} />
-              {language === 'bg' ? 'Търси' : 'Search'}
-            </SearchIconButton>
-          </SearchInputWrapper>
+              <SlidersHorizontal />
+              {language === 'bg' ? 'Разширено търсене' : 'Advanced Search'}
+            </ActionButton>
+            
+            <ActionButton 
+              variant="ai"
+              onClick={() => {
+                window.location.href = '/advanced-search?mode=smart';
+              }}
+              aria-label={language === 'bg' ? 'Търсене с ИИ' : 'AI Search'}
+            >
+              <Sparkles />
+              {language === 'bg' ? 'Търсене с ИИ' : 'AI Search'}
+            </ActionButton>
+          </ActionButtonsRow>
+
+          {/* Main Search Bar */}
+          <SearchBarWrapper>
+            <SearchInputContainer>
+              <SearchIconWrapper>
+                <Search />
+              </SearchIconWrapper>
+              
+              <SearchInput
+                type="text"
+                placeholder={language === 'bg' 
+                  ? 'Търси BMW 2020, Diesel, София...' 
+                  : 'Search BMW 2020, Diesel, Sofia...'}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onFocus={() => setShowSuggestions(true)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleSmartSearch();
+                  }
+                }}
+              />
+              
+              <SearchActionsGroup>
+                {searchQuery && (
+                  <ClearButton 
+                    onClick={() => {
+                      setSearchQuery('');
+                      setSuggestions([]);
+                      setIsSmartSearchActive(false); // Reset to normal mode
+                    }}
+                    aria-label={language === 'bg' ? 'Изчисти' : 'Clear'}
+                  >
+                    <X />
+                  </ClearButton>
+                )}
+                
+                <SearchButton
+                  onClick={handleSmartSearch}
+                  disabled={!searchQuery.trim() || isSearching}
+                >
+                  <Search />
+                  {language === 'bg' ? 'Търси' : 'Search'}
+                </SearchButton>
+              </SearchActionsGroup>
+            </SearchInputContainer>
 
           {/* Suggestions Dropdown */}
           {showSuggestions && (suggestions.length > 0 || recentSearches.length > 0) && (
@@ -648,7 +964,8 @@ const CarsPage: React.FC = () => {
               )}
             </SuggestionsDropdown>
           )}
-        </SearchBarContainer>
+        </SearchBarWrapper>
+        </SearchSection>
 
         {/* Loading State */}
         {loading && (

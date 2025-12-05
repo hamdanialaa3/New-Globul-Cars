@@ -1,10 +1,11 @@
+import { logger } from '../services/logger-service';
 // src/components/RatingSection.tsx
 // Complete rating section component for Bulgarian Car Marketplace
 
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useTranslation } from '@/hooks/useTranslation';
-import { bulgarianRatingService, RatingSummary } from '@/services/reviews/rating-service';
+import { useTranslation } from '../hooks/useTranslation';
+import { bulgarianRatingService, RatingSummary } from '../services/reviews/rating-service';
 import RatingDisplay from './RatingDisplay';
 import RatingList from './RatingList';
 import AddRatingForm from './AddRatingForm';
@@ -155,7 +156,7 @@ const RatingSection: React.FC<RatingSectionProps> = ({
         const ratingSummary = await bulgarianRatingService.getRatingSummary(carId);
         setSummary(ratingSummary);
       } catch (error) {
-        console.error('Error loading rating summary:', error);
+        logger.error('Error loading rating summary:', error);
       }
     };
 
@@ -172,7 +173,7 @@ const RatingSection: React.FC<RatingSectionProps> = ({
         const hasReviewed = userRatings.some((rating: any) => rating.carId === carId);
         setUserHasReviewed(hasReviewed);
       } catch (error) {
-        console.error('Error checking user review:', error);
+        logger.error('Error checking user review:', error);
       }
     };
 
@@ -192,7 +193,7 @@ const RatingSection: React.FC<RatingSectionProps> = ({
       const ratingSummary = await bulgarianRatingService.getRatingSummary(carId);
       setSummary(ratingSummary);
     } catch (error) {
-      console.error('Error reloading rating summary:', error);
+      logger.error('Error reloading rating summary:', error);
     }
   };
 

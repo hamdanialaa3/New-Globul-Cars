@@ -4,7 +4,7 @@
 
 import React, { memo } from 'react';
 import styled from 'styled-components';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '../../../../contexts/LanguageContext';
 
 // Styled components kept minimal (<300 lines total file) as per governance
 const StripContainer = styled.section`

@@ -3,7 +3,7 @@
 // Custom hook for PWA functionality
 
 import { useState, useEffect } from 'react';
-import { logger } from '@/services/logger-service';
+import { logger } from '../services/logger-service';
 
 interface BeforeInstallPromptEvent extends Event {
   readonly platforms: string[];

@@ -1,3 +1,4 @@
+import { logger } from '../services/logger-service';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
@@ -121,7 +122,7 @@ class PerformanceService {
 
     // Log in development
     if (process.env.NODE_ENV === 'development') {
-      console.log(`Performance Metric - ${name}:`, value);
+      logger.info(`Performance Metric - ${name}:`, value);
     }
   }
 

@@ -1,3 +1,4 @@
+import { logger } from '../../logger-service';
 // Hybrid Recommender - Combines Collaborative + Content-Based
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
@@ -66,7 +67,7 @@ class HybridRecommenderService {
 
       return reranked.slice(0, limitCount);
     } catch (error) {
-      console.error('Error in hybrid recommendations:', error);
+      logger.error('Error in hybrid recommendations:', error);
       return [];
     }
   }

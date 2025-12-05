@@ -1,10 +1,11 @@
+import { logger } from '../services/logger-service';
 // src/components/CarValuation.tsx
 // AI-Powered Car Valuation Component for Bulgarian Car Marketplace
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { httpsCallable } from 'firebase/functions';
-import { functions } from '@/firebase/firebase-config';
-import { useAuth } from '@/hooks/useAuth';
+import { functions } from '../firebase/firebase-config';
+import { useAuth } from '../hooks/useAuth';
 import styled from 'styled-components';
 import { TrendingUp, Calculator, AlertCircle, CheckCircle } from 'lucide-react';
 
@@ -212,7 +213,7 @@ const CarValuation: React.FC<CarValuationProps> = ({ car, onValuationUpdate }) =
         ['premium', 'enterprise'].includes(subscription?.tier)
       );
     } catch (error) {
-      console.error('Error checking subscription:', error);
+      logger.error('Error checking subscription:', error);
       setHasPremiumAccess(false);
     }
   }, [user]);
@@ -256,7 +257,7 @@ const CarValuation: React.FC<CarValuationProps> = ({ car, onValuationUpdate }) =
         onValuationUpdate(valuationData);
       }
     } catch (error: any) {
-      console.error('Error getting valuation:', error);
+      logger.error('Error getting valuation:', error);
       setError(error.message || 'Failed to get car valuation');
     } finally {
       setLoading(false);

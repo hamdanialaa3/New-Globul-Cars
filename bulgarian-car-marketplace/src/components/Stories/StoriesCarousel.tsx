@@ -1,3 +1,4 @@
+import { logger } from '../../services/logger-service';
 /**
  * StoriesCarousel - Horizontal scrolling stories list
  * Location: Bulgaria | Languages: BG/EN | Currency: EUR
@@ -178,7 +179,7 @@ const StoriesCarousel: React.FC = () => {
         const userStories = await storiesService.getFollowedUserStories(user.uid);
         setStories(userStories);
       } catch (error) {
-        console.error('Failed to load stories:', error);
+        logger.error('Failed to load stories:', error);
       } finally {
         setLoading(false);
       }
@@ -232,7 +233,7 @@ const StoriesCarousel: React.FC = () => {
   
   const handleAddStory = () => {
     // TODO: Open story creator modal
-    console.log('Add story clicked');
+    logger.info('Add story clicked');
   };
   
   // ==================== RENDER ====================

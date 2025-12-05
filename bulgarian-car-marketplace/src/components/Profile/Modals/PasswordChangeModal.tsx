@@ -1,3 +1,4 @@
+import { logger } from '../../../services/logger-service';
 // Password Change Modal
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
@@ -57,7 +58,7 @@ const PasswordChangeModal: React.FC<PasswordChangeModalProps> = ({ onClose }) =>
         : 'Password changed successfully');
       onClose();
     } catch (error: any) {
-      console.error('Error changing password:', error);
+      logger.error('Error changing password:', error);
       
       if (error.code === 'auth/wrong-password') {
         toast.error(language === 'bg'

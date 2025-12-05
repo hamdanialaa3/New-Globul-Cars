@@ -1,3 +1,4 @@
+import { logger } from '../../../../services/logger-service';
 /**
  * MessagesPage - Main messaging interface
  * Location: Bulgaria | Languages: BG/EN | Currency: EUR
@@ -5,9 +6,9 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
-import { useAuth } from '@/contexts/AuthProvider';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { realtimeMessagingService, ChatRoom } from '@/services/realtimeMessaging';
+import { useAuth } from '../../../../contexts/AuthProvider';
+import { useLanguage } from '../../../../contexts/LanguageContext';
+import { realtimeMessagingService, ChatRoom } from '../../../../services/realtimeMessaging';
 import ConversationList from './ConversationList';
 import ChatWindow from './ChatWindow';
 import { MessageCircle, Search, Users } from 'lucide-react';
@@ -320,7 +321,7 @@ const MessagesPage: React.FC = () => {
         const chatRooms = await realtimeMessagingService.getUserChatRooms(user.uid);
         setConversations(chatRooms);
       } catch (error) {
-        console.error('Failed to load conversations:', error);
+        logger.error('Failed to load conversations:', error);
       } finally {
         setLoading(false);
       }

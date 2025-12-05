@@ -3,7 +3,7 @@
 // Integration with Backend P2.2 Features
 
 import { httpsCallable } from 'firebase/functions';
-import { functions } from '@/firebase/firebase-config';
+import { functions } from '../firebase/firebase-config';
 import { serviceLogger } from './logger-wrapper';
 
 // ==================== TYPES ====================

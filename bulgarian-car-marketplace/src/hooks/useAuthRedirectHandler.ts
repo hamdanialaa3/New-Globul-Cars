@@ -3,9 +3,9 @@
 
 import { useEffect, useState } from 'react';
 import { getRedirectResult, User } from 'firebase/auth';
-import { auth } from '@/firebase/firebase-config';
-import { logger } from '@/services/logger-service';
-import { SocialAuthService } from '@/firebase/social-auth-service';
+import { auth } from '../firebase/firebase-config';
+import { logger } from '../services/logger-service';
+import { SocialAuthService } from '../firebase/social-auth-service';
 
 interface AuthRedirectState {
   loading: boolean;

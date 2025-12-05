@@ -11,8 +11,8 @@ import {
   onSnapshot,
   Unsubscribe
 } from 'firebase/firestore';
-import { db } from '@/firebase/firebase-config';
-import { CarListing } from '@/types/CarListing';
+import { db } from '../firebase/firebase-config';
+import { CarListing } from '../types/CarListing';
 import { serviceLogger } from './logger-wrapper';
 
 export interface DashboardStats {

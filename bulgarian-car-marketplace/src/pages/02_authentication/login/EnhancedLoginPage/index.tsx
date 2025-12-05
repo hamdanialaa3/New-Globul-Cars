@@ -1,6 +1,7 @@
+import { logger } from '../../../../services/logger-service';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useTranslation } from '@/hooks/useTranslation';
+import { useTranslation } from '../../../../hooks/useTranslation';
 import {
   Eye,
   EyeOff,
@@ -14,7 +15,7 @@ import {
   Globe
 } from 'lucide-react';
 import { useLogin } from './hooks/useLogin';
-import { SocialAuthService } from '@/firebase/social-auth-service';
+import { SocialAuthService } from '../../../../firebase/social-auth-service';
 import {
   LoginContainer,
   LoginCard,
@@ -192,7 +193,7 @@ const EnhancedLoginPage: React.FC = () => {
                   handleSocialLoginSuccess();
                 }
               } catch (error) {
-                console.error('Google login error:', error);
+                logger.error('Google login error:', error);
               }
             }}
             disabled={loading}
@@ -208,7 +209,7 @@ const EnhancedLoginPage: React.FC = () => {
                   handleSocialLoginSuccess();
                 }
               } catch (error) {
-                console.error('Facebook login error:', error);
+                logger.error('Facebook login error:', error);
               }
             }}
             disabled={loading}

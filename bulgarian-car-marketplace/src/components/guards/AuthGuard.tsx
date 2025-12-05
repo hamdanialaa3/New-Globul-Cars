@@ -30,8 +30,8 @@
 
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { useAuth } from '@/hooks/useAuth';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '../../hooks/useAuth';
+import { useLanguage } from '../../contexts/LanguageContext';
 import styled from 'styled-components';
 import { Lock, LogIn, Home, Shield, Mail } from 'lucide-react';
 

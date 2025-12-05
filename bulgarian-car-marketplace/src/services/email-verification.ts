@@ -8,7 +8,7 @@ import {
   verifyBeforeUpdateEmail,
   User
 } from 'firebase/auth';
-import { auth } from '@/firebase/firebase-config';
+import { auth } from '../firebase/firebase-config';
 import { serviceLogger } from './logger-wrapper';
 
 export interface EmailVerificationResult {

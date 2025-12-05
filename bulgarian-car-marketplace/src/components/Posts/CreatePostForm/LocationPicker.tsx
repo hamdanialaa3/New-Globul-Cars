@@ -1,3 +1,4 @@
+import { logger } from '../../../services/logger-service';
 // Location Picker - Google Maps Location Selector (Like Facebook)
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
@@ -107,7 +108,7 @@ const LocationPicker: React.FC<LocationPickerProps> = ({ value, onChange }) => {
           }
         },
         (error) => {
-          console.error('Geolocation error:', error);
+          logger.error('Geolocation error:', error);
           alert(language === 'bg' 
             ? 'Не можахме да определим местоположението ви'
             : 'Could not determine your location');

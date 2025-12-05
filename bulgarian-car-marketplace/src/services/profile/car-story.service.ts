@@ -10,9 +10,9 @@ import {
   updateDoc,
   serverTimestamp
 } from 'firebase/firestore';
-import { db } from '@/firebase/firebase-config';
+import { db } from '../../firebase/firebase-config';
 import { serviceLogger } from '../logger-wrapper';
-import type { CarStory } from '@/types/profile-enhancements.types';
+import type { CarStory } from '../../types/profile-enhancements.types';
 
 export class CarStoryService {
   private static instance: CarStoryService;

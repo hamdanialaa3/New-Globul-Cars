@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { unifiedCarService, UnifiedCar } from '@/services/car';
+import { unifiedCarService, UnifiedCar } from '../../../../services/car';
 import ModernCarCard from './ModernCarCard';
 import DemandStats from './DemandStats';
 import { Bot, Zap, ArrowRight, Award } from 'lucide-react';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { useTheme } from '@/contexts/ThemeContext';
-import { logger } from '@/services/logger-service';
+import { useLanguage } from '../../../../contexts/LanguageContext';
+import { useTheme } from '../../../../contexts/ThemeContext';
+import { logger } from '../../../../services/logger-service';
 
 // Styled Components
 const SectionContainer = styled.section<{ $isDark: boolean }>`

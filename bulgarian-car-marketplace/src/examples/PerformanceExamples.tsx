@@ -1,10 +1,11 @@
+import { logger } from '../services/logger-service';
 // src/examples/PerformanceExamples.tsx
 // Performance Optimization Examples
 // أمثلة على التحسينات المطبقة
 
 import React, { useMemo, useCallback, useState } from 'react';
-import { OptimizedImage } from '@/components/OptimizedImage';
-import { firebaseCache, cacheKeys } from '@/services/firebase-cache.service';
+import { OptimizedImage } from '../components/OptimizedImage';
+import { firebaseCache, cacheKeys } from '../services/firebase-cache.service';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../firebase';
 
@@ -62,7 +63,7 @@ export const FirebaseCacheExample: React.FC = () => {
       const data = await firebaseCache.getOrFetch(
         cacheKeys.activeCars(),
         async () => {
-          console.log('🔥 Fetching from Firebase...');
+          logger.info('🔥 Fetching from Firebase...');
           const snapshot = await getDocs(
             query(collection(db, 'cars'), where('status', '==', 'active'))
           );
@@ -76,7 +77,7 @@ export const FirebaseCacheExample: React.FC = () => {
       
       setCars(data);
     } catch (error) {
-      console.error('Error fetching cars:', error);
+      logger.error('Error fetching cars:', error);
     } finally {
       setLoading(false);
     }
@@ -116,7 +117,7 @@ const CarCard = React.memo<{
   onView: (id: string) => void;
 }>(
   ({ car, onFavorite, onView }) => {
-    console.log(`Rendering CarCard for ${car.id}`);
+    logger.info(`Rendering CarCard for ${car.id}`);
     
     return (
       <div style={{ border: '1px solid #ddd', padding: '1rem', margin: '0.5rem' }}>
@@ -155,7 +156,7 @@ export const CarListExample: React.FC = () => {
   }, []);
 
   const handleView = useCallback((id: string) => {
-    console.log('Viewing car:', id);
+    logger.info('Viewing car:', id);
   }, []);
 
   return (
@@ -202,7 +203,7 @@ export const FilterExample: React.FC = () => {
 
   // ✅ GOOD: Only recalculates when cars or filters change
   const filteredCars = useMemo(() => {
-    console.log('🔄 Filtering cars...');
+    logger.info('🔄 Filtering cars...');
     return cars.filter(car => {
       if (filters.make && car.make !== filters.make) return false;
       if (car.price < filters.minPrice || car.price > filters.maxPrice) return false;
@@ -213,7 +214,7 @@ export const FilterExample: React.FC = () => {
 
   // ✅ GOOD: Only recalculates when filteredCars changes
   const stats = useMemo(() => {
-    console.log('📊 Calculating stats...');
+    logger.info('📊 Calculating stats...');
     return {
       count: filteredCars.length,
       avgPrice: filteredCars.reduce((sum, car) => sum + car.price, 0) / filteredCars.length,
@@ -338,7 +339,7 @@ export const OptimizedCarsPage: React.FC<OptimizedCarsPageProps> = ({ userId }) 
             key={car.id}
             car={car}
             onFavorite={handleFavorite}
-            onView={(id) => console.log('View', id)}
+            onView={(id) => logger.info('View', id)}
           />
         ))}
       </div>

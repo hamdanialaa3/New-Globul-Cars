@@ -21,8 +21,8 @@
 
 import React, { Suspense } from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
-import { AuthGuard } from '@/components/guards';
-import { useIsMobile } from '@/hooks/useIsMobile';
+import { AuthGuard } from '../components/guards';
+import { useIsMobile } from '../hooks/useIsMobile';
 
 // Lazy load sell workflow pages
 const VehicleStartPage = React.lazy(() => import('@/pages/04_car-selling/sell/VehicleStartPageNew'));
@@ -270,7 +270,7 @@ export const SellRoutes: React.FC = () => {
 /**
  * Usage in App.tsx:
  * 
- * import { FEATURE_FLAGS } from '@/config/feature-flags';
+ * import { FEATURE_FLAGS } from '../config/feature-flags';
  * import { SellRoutes } from '@/routes/sell.routes';
  * 
  * // In your Routes:

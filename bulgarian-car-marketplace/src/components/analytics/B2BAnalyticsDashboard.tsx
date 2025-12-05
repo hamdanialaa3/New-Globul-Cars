@@ -1,3 +1,4 @@
+import { logger } from '../../services/logger-service';
 // src/components/analytics/B2BAnalyticsDashboard.tsx
 // B2B Analytics Dashboard Component for Bulgarian Car Marketplace
 
@@ -271,7 +272,7 @@ const B2BAnalyticsDashboard: React.FC<DashboardProps> = ({ subscriptionTier }) =
 
       setAnalytics(result.data as AnalyticsData);
     } catch (error: any) {
-      console.error('Error loading analytics:', error);
+      logger.error('Error loading analytics:', error);
       setError(error.message || 'Failed to load analytics data');
     } finally {
       setLoading(false);

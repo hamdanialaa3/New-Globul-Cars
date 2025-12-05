@@ -11,18 +11,18 @@
  * This is the SOLE SOURCE for all profile and dealership operations.
  * 
  * @example
- * import { profileService } from '@/services/profile/UnifiedProfileService';
+ * import { profileService } from '../../services/profile/UnifiedProfileService';
  * await profileService.setupDealerProfile(userId, dealerData);
  * 
  * @since 2025-11-03 (Phase 1.2)
  * @version 1.0.0
  */
 
-import { BulgarianUser } from '@/types/user/bulgarian-user.types';
-import { DealershipInfo } from '@/types/dealership/dealership.types';
-import { db, storage } from '@/firebase/firebase-config';
-import { userService } from '@/services/user/canonical-user.service';
-import { logger } from '@/services/logger-service';
+import { BulgarianUser } from '../../types/user/bulgarian-user.types';
+import { DealershipInfo } from '../../types/dealership/dealership.types';
+import { db, storage } from '../../firebase/firebase-config';
+import { userService } from '../../services/user/canonical-user.service';
+import { logger } from '../../services/logger-service';
 import { doc, setDoc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 

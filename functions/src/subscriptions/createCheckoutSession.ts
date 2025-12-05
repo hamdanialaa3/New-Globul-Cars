@@ -19,9 +19,11 @@ const stripe = new Stripe(STRIPE_CONFIG.secretKey, {
  * Create Stripe Checkout Session
  * 
  * Creates a Stripe checkout session for subscription purchase
+ * Updated: December 2025 - Added interval parameter support
  * 
  * @param userId - The user ID subscribing
- * @param planId - The subscription plan ID
+ * @param planId - The subscription plan ID (dealer or company)
+ * @param interval - Billing interval ('monthly' or 'annual')
  * @param successUrl - Optional custom success URL
  * @param cancelUrl - Optional custom cancel URL
  * 
@@ -30,10 +32,11 @@ const stripe = new Stripe(STRIPE_CONFIG.secretKey, {
 export const createCheckoutSession = onCall<{
   userId: string;
   planId: string;
+  interval?: 'monthly' | 'annual'; // New parameter
   successUrl?: string;
   cancelUrl?: string;
 }>({ region: 'europe-west1' }, async (request) => {
-  const { userId, planId, successUrl, cancelUrl } = request.data;
+  const { userId, planId, interval = 'monthly', successUrl, cancelUrl } = request.data;
 
   // 1. Check authentication
   if (!request.auth) {
@@ -52,7 +55,7 @@ export const createCheckoutSession = onCall<{
     );
   }
 
-  // 3. Validate plan
+  // 3. Validate plan and interval
   if (!validatePaidPlan(planId)) {
     throw new HttpsError(
       'invalid-argument',
@@ -60,7 +63,16 @@ export const createCheckoutSession = onCall<{
     );
   }
 
-  const plan = getPlanById(planId)!;
+  // Get the correct plan based on interval (e.g., 'dealer' + 'annual' = 'dealer_annual')
+  const fullPlanId = interval === 'annual' ? `${planId}_annual` : planId;
+  const plan = getPlanById(fullPlanId);
+  
+  if (!plan) {
+    throw new HttpsError(
+      'invalid-argument',
+      `Plan not found: ${fullPlanId}`
+    );
+  }
 
   if (!plan.stripePriceId) {
     throw new HttpsError(
@@ -69,7 +81,7 @@ export const createCheckoutSession = onCall<{
     );
   }
 
-  logger.info('Creating checkout session', { userId, planId });
+  logger.info('Creating checkout session', { userId, planId, interval, fullPlanId });
 
   try {
     // 4. Get user data

@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { MessageCircle } from 'lucide-react';
 import { AIChatbot } from './AIChatbot';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 // ==================== ANIMATIONS ====================
 

@@ -23,8 +23,8 @@
 
 import React, { Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { AuthGuard } from '@/components/guards';
-import ProtectedRoute from '@/components/ProtectedRoute';
+import { AuthGuard } from '../components/guards';
+import ProtectedRoute from '../components/ProtectedRoute';
 
 // ==================== PUBLIC PAGES ====================
 const HomePage = React.lazy(() => import('@/pages/01_main-pages/home/HomePage'));
@@ -350,7 +350,7 @@ export const MainRoutes: React.FC = () => {
 /**
  * Usage in App.tsx:
  * 
- * import { FEATURE_FLAGS } from '@/config/feature-flags';
+ * import { FEATURE_FLAGS } from '../config/feature-flags';
  * import { MainRoutes } from '@/routes/main.routes';
  * 
  * // In your Routes (within MainLayout):

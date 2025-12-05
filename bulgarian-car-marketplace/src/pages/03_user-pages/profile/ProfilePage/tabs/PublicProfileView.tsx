@@ -1,10 +1,10 @@
 // PublicProfileView.tsx - Read-only profile view for other users
 import React from 'react';
 import styled from 'styled-components';
-import { useLanguage } from '@/contexts/LanguageContext';
-import type { BulgarianUser } from '@/types/user/bulgarian-user.types';
-import { GarageCarousel } from '@/components/Profile/GarageCarousel';
-import UserPostsFeed from '@/components/Profile/UserPostsFeed';
+import { useLanguage } from '../../../../../contexts/LanguageContext';
+import type { BulgarianUser } from '../../../../../types/user/bulgarian-user.types';
+import { GarageCarousel } from '../../../../../components/Profile/GarageCarousel';
+import UserPostsFeed from '../../../../../components/Profile/UserPostsFeed';
 import type { ProfileCar } from '../types';
 import { 
   User, Mail, Phone, MapPin, Calendar, Globe, 

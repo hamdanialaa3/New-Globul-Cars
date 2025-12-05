@@ -1,3 +1,4 @@
+import { logger } from './services/logger-service';
 /* eslint-disable no-restricted-globals */
 // Service Worker with Workbox
 // This file will be processed by Workbox during build
@@ -196,7 +197,7 @@ self.addEventListener('activate', (event) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
           if (!cacheWhitelist.includes(cacheName)) {
-            console.log('Deleting old cache:', cacheName);
+            logger.info('Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
         })

@@ -3,13 +3,13 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useNavigate, useSearchParams, useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { useAuth } from '@/contexts/AuthProvider';
-import { SellProgressBar } from '@/components/SellWorkflow';
-import SellWorkflowStepStateService from '@/services/sellWorkflowStepState';
-import WorkflowPersistenceService from '@/services/workflowPersistenceService';
+import { useLanguage } from '../../../contexts/LanguageContext';
+import { useAuth } from '../../../contexts/AuthProvider';
+import { SellProgressBar } from '../../../components/SellWorkflow';
+import SellWorkflowStepStateService from '../../../services/sellWorkflowStepState';
+import WorkflowPersistenceService from '../../../services/workflowPersistenceService';
 import { useImagesWorkflow } from './Images/useImagesWorkflow';
-import { useIsMobile } from '@/hooks/useBreakpoint';
+import { useIsMobile } from '../../../hooks/useBreakpoint';
 import { Upload, X, Image as ImageIcon, Video, Box } from 'lucide-react';
 import { toast } from 'react-toastify';
 

@@ -1,3 +1,4 @@
+import { logger } from '../../../services/logger-service';
 /**
  * Availability Calendar Section
  * Displays and manages user availability calendar
@@ -6,10 +7,10 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Calendar, Clock, Edit2, Check, X } from 'lucide-react';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { useTheme } from '@/contexts/ThemeContext';
-import { availabilityCalendarService } from '@/services/profile/availability-calendar.service';
-import type { AvailabilityCalendar, DayAvailability } from '@/types/profile-enhancements.types';
+import { useLanguage } from '../../../contexts/LanguageContext';
+import { useTheme } from '../../../contexts/ThemeContext';
+import { availabilityCalendarService } from '../../../services/profile/availability-calendar.service';
+import type { AvailabilityCalendar, DayAvailability } from '../../../types/profile-enhancements.types';
 
 const SectionContainer = styled.section<{ $isDark: boolean }>`
   padding: 24px;
@@ -144,7 +145,7 @@ export const AvailabilityCalendarSection: React.FC<AvailabilityCalendarSectionPr
         const cal = await availabilityCalendarService.getCalendar(userId);
         setCalendar(cal);
       } catch (error) {
-        console.error('Error loading calendar:', error);
+        logger.error('Error loading calendar:', error);
         setCalendar(null);
       } finally {
         setLoading(false);

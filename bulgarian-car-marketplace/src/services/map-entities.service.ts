@@ -1,6 +1,6 @@
 import { collection, getDocs, query, where, limit } from 'firebase/firestore';
-import { db } from '@/firebase';
-import { BULGARIAN_CITIES } from '@/constants/bulgarianCities';
+import { db } from '../firebase';
+import { BULGARIAN_CITIES } from '../constants/bulgarianCities';
 
 interface LocationData {
   cityId?: string;

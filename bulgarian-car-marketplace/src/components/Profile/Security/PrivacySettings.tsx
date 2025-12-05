@@ -1,3 +1,4 @@
+import { logger } from '../../../services/logger-service';
 // src/components/Profile/Security/PrivacySettings.tsx
 // Privacy Settings Component
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
@@ -223,7 +224,7 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({ userId }) => {
         setSettings(prev => ({ ...prev, ...userData.privacy }));
       }
     } catch (error) {
-      console.error('Error loading privacy settings:', error);
+      logger.error('Error loading privacy settings:', error);
     }
   };
 
@@ -240,10 +241,10 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({ userId }) => {
       setTimeout(() => setSaved(false), 3000);
       
       if (process.env.NODE_ENV === 'development') {
-        console.log('✅ Privacy settings saved');
+        logger.info('✅ Privacy settings saved');
       }
     } catch (error) {
-      console.error('❌ Save error:', error);
+      logger.error('❌ Save error:', error);
       alert(language === 'bg' ? 'Грешка при запазване' : 'Save error');
     } finally {
       setLoading(false);
@@ -266,7 +267,7 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({ userId }) => {
       
       URL.revokeObjectURL(url);
     } catch (error) {
-      console.error('Export error:', error);
+      logger.error('Export error:', error);
     }
   };
 

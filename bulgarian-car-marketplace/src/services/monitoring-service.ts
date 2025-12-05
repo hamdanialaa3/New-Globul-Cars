@@ -81,7 +81,7 @@ export class MonitoringService {
   // Log for debugging
   serviceLogger.debug('Analytics event tracked', { eventName: event.eventName, userId: event.userId });
 
-    // TODO: Send to analytics service (Google Analytics, Mixpanel, etc.)
+    // ✅ DONE: Send to analytics service (Google Analytics, Mixpanel, etc.)
     this.sendToAnalyticsService(event);
   }
 
@@ -525,9 +525,45 @@ export class MonitoringService {
   }
 
   private sendToAnalyticsService(event: AnalyticsEvent): void {
-    // TODO: Send to Google Analytics, Mixpanel, or other analytics service
-    // For now, just log with serviceLogger
-    serviceLogger.debug('Analytics service event', { eventName: event.eventName, userId: event.userId });
+    // ✅ DONE: Send to Google Analytics, Mixpanel, or other analytics service
+    try {
+      // Google Analytics 4
+      if (typeof window !== 'undefined' && (window as any).gtag) {
+        (window as any).gtag('event', event.eventName, {
+          event_category: event.properties?.category || 'general',
+          event_label: event.properties?.label,
+          value: event.properties?.value,
+          user_id: event.userId,
+          custom_parameters: event.properties
+        });
+      }
+      
+      // Mixpanel (if available)
+      if (typeof window !== 'undefined' && (window as any).mixpanel) {
+        (window as any).mixpanel.track(event.eventName, {
+          ...event.properties,
+          userId: event.userId,
+          sessionId: event.sessionId,
+          language: event.language,
+          timestamp: event.timestamp.toISOString()
+        });
+      }
+      
+      // Facebook Pixel (if available)
+      if (typeof window !== 'undefined' && (window as any).fbq) {
+        (window as any).fbq('trackCustom', event.eventName, event.properties);
+      }
+      
+      serviceLogger.debug('Analytics service event sent', { 
+        eventName: event.eventName, 
+        userId: event.userId,
+        services: ['gtag', 'mixpanel', 'fbq'].filter(service => 
+          typeof window !== 'undefined' && (window as any)[service]
+        )
+      });
+    } catch (error) {
+      serviceLogger.error('Failed to send analytics event', error as Error);
+    }
   }
 }
 

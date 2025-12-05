@@ -1,3 +1,4 @@
+import { logger } from '../services/logger-service';
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { ThemeProvider as StyledThemeProvider } from 'styled-components';
 
@@ -372,7 +373,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
         const parsedTheme = JSON.parse(savedTheme);
         setTheme(parsedTheme);
       } catch (error) {
-        console.error('Error parsing saved theme:', error);
+        logger.error('Error parsing saved theme:', error);
       }
     }
   }, []);

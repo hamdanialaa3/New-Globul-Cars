@@ -1,3 +1,4 @@
+import { logger } from '../../services/logger-service';
 // Static Map Embed Component
 // مكون الخريطة الثابتة المدمجة باستخدام Maps Embed API
 
@@ -131,7 +132,7 @@ const StaticMapEmbed: React.FC<StaticMapEmbedProps> = ({
         setMapUrl(url);
       }
     } catch (error) {
-      console.error('Error loading map:', error);
+      logger.error('Error loading map:', error);
     } finally {
       setLoading(false);
     }
@@ -180,7 +181,7 @@ const StaticMapEmbed: React.FC<StaticMapEmbedProps> = ({
           referrerPolicy="no-referrer-when-downgrade"
           title={`Map of ${location.city}`}
           onError={() => {
-            console.error('Google Maps iframe failed to load');
+            logger.error('Google Maps iframe failed to load');
             setLoading(false);
           }}
         />

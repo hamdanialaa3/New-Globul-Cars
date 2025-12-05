@@ -319,5 +319,4 @@ const PricingPageUnified: React.FC = () => {
   );
 };
 
-export default PricingPageUnified;</content>
-<parameter name="filePath">c:\Users\hamda\Desktop\New Globul Cars\bulgarian-car-marketplace\src\pages\04_car-selling\sell\PricingPageUnified.tsx
+export default PricingPageUnified;

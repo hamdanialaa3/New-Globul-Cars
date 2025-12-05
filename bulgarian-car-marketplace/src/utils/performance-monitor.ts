@@ -2,7 +2,7 @@
 // Performance Monitoring Utilities - أدوات مراقبة الأداء
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
 
-import { logger } from '@/services/logger-service';
+import { logger } from '../services/logger-service';
 
 // ==================== INTERFACES ====================
 

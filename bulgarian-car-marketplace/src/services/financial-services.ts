@@ -15,7 +15,7 @@ import {
   Timestamp
 } from 'firebase/firestore';
 import { getFunctions, httpsCallable } from 'firebase/functions';
-import { db } from '@/firebase/firebase-config';
+import { db } from '../firebase/firebase-config';
 import { logger } from './logger-service';
 import {
   ServiceLead,
@@ -23,7 +23,7 @@ import {
   InsuranceQuoteData,
   FINANCIAL_PARTNERS,
   FinancialPartner
-} from '@/types/firestore-models';
+} from '../types/firestore-models';
 
 export class BulgarianFinancialServices {
   private functions = getFunctions();

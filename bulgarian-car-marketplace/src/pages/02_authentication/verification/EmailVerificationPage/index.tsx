@@ -4,8 +4,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { EmailVerificationService } from '@/services/email-verification';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { EmailVerificationService } from '../../../../services/email-verification';
+import { useLanguage } from '../../../../contexts/LanguageContext';
 import { CheckCircle, AlertCircle, Mail, ArrowLeft } from 'lucide-react';
 
 const PageContainer = styled.div`

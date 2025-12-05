@@ -3,16 +3,16 @@
 
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useAuth } from '@/contexts/AuthProvider';
-import { useTranslation } from '@/hooks/useTranslation';
-import { aiQuotaService } from '@/services/ai/ai-quota.service';
-import { AI_TIER_CONFIGS } from '@/config/ai-tiers.config';
-import { AIQuotaDisplay, AIPricingModal } from '@/components/AI';
-import { logger } from '@/services/logger-service';
-import ImageAnalysisAIIcon from '@/assets/icons/ai/image-analysis-ai.svg';
-import PriceSuggestionsAIIcon from '@/assets/icons/ai/price-suggestions-ai.svg';
-import ChatMessagesAIIcon from '@/assets/icons/ai/chat-messages-ai.svg';
-import ProfileAnalysisAIIcon from '@/assets/icons/ai/profile-analysis-ai.svg';
+import { useAuth } from '../../../contexts/AuthProvider';
+import { useTranslation } from '../../../hooks/useTranslation';
+import { aiQuotaService } from '../../../services/ai/ai-quota.service';
+import { AI_TIER_CONFIGS } from '../../../config/ai-tiers.config';
+import { AIQuotaDisplay, AIPricingModal } from '../../../components/AI';
+import { logger } from '../../../services/logger-service';
+import imageAnalysisIcon from '../../../assets/icons/ai/image-analysis-ai.svg';
+import priceSuggestionsIcon from '../../../assets/icons/ai/price-suggestions-ai.svg';
+import chatMessagesIcon from '../../../assets/icons/ai/chat-messages-ai.svg';
+import profileAnalysisIcon from '../../../assets/icons/ai/profile-analysis-ai.svg';
 
 export const AIDashboardPage: React.FC = () => {
   const { user } = useAuth();

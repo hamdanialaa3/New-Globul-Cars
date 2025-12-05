@@ -1,10 +1,10 @@
 // AI Quota Management Service
 // خدمة إدارة حصص الذكاء الاصطناعي
 
-import { db } from '@/firebase/firebase-config';
+import { db } from '../../firebase/firebase-config';
 import { doc, getDoc, setDoc, updateDoc, increment, collection, addDoc } from 'firebase/firestore';
-import { AIQuota, AIUsageLog, AITier } from '@/types/ai-quota.types';
-import { AI_TIER_CONFIGS, hasExceededQuota, calculateAICost } from '@/config/ai-tiers.config';
+import { AIQuota, AIUsageLog, AITier } from '../../types/ai-quota.types';
+import { AI_TIER_CONFIGS, hasExceededQuota, calculateAICost } from '../../config/ai-tiers.config';
 import { logger } from '../logger-service';
 
 class AIQuotaService {

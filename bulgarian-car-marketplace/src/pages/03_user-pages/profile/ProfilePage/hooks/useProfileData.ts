@@ -4,9 +4,9 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { doc, onSnapshot, getDoc } from 'firebase/firestore';
-import { db, auth } from '@/firebase/firebase-config';
-import { logger } from '@/services/logger-service';
-import type { BulgarianUser } from '@/types/user/bulgarian-user.types';
+import { db, auth } from '../../../../../firebase/firebase-config';
+import { logger } from '../../../../../services/logger-service';
+import type { BulgarianUser } from '../../../../../types/user/bulgarian-user.types';
 
 export interface UseProfileDataReturn {
   user: BulgarianUser | null;
@@ -36,7 +36,7 @@ export const useProfileData = (targetUserId?: string): UseProfileDataReturn => {
       const userId = targetUserId || currentUser.uid;
       
       if (!userId) {
-        console.warn('[useProfileData] userId is null/undefined - skipping');
+        logger.warn('[useProfileData] userId is null/undefined - skipping');
         setUser(null);
         setIsOwnProfile(false);
         return;
@@ -69,7 +69,7 @@ export const useProfileData = (targetUserId?: string): UseProfileDataReturn => {
     
     // ✅ CRITICAL FIX: Guard against null/undefined BEFORE any Firestore operations
     if (!currentUser?.uid) {
-      console.warn('[useProfileData] No authenticated user - skipping real-time listener');
+      logger.warn('[useProfileData] No authenticated user - skipping real-time listener');
       return;
     }
 
@@ -77,7 +77,7 @@ export const useProfileData = (targetUserId?: string): UseProfileDataReturn => {
     
     // ✅ CRITICAL FIX: Double-check userId is valid before creating query
     if (!userId) {
-      console.warn('[useProfileData] userId is null/undefined - skipping real-time listener');
+      logger.warn('[useProfileData] userId is null/undefined - skipping real-time listener');
       return;
     }
 

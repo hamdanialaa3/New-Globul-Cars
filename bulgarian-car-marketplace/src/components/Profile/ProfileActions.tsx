@@ -1,12 +1,13 @@
+import { logger } from '../../services/logger-service';
 // RBAC-Aware Profile Actions Component
 // Conditionally renders admin/dealer features based on user permissions
 // Professional permission checking with hasPermission from rbac constants
 // English/Bulgarian bilingual. No emojis. <200 lines.
 
 import React from 'react';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { useAuth } from '@/contexts/AuthProvider';
-import { hasPermission, Role } from '@/constants/rbac';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { useAuth } from '../../contexts/AuthProvider';
+import { hasPermission, Role } from '../../constants/rbac';
 import styled from 'styled-components';
 
 interface ProfileActionsProps {
@@ -41,12 +42,12 @@ export const ProfileActions: React.FC<ProfileActionsProps> = ({
       
       <ActionsGrid>
         {/* Basic actions - all users */}
-        <ActionCard onClick={() => console.log('Edit profile')}>
+        <ActionCard onClick={() => logger.info('Edit profile')}>
           <ActionIcon>✏️</ActionIcon>
           <ActionLabel>{t('profile.editProfile')}</ActionLabel>
         </ActionCard>
 
-        <ActionCard onClick={() => console.log('View listings')}>
+        <ActionCard onClick={() => logger.info('View listings')}>
           <ActionIcon>📋</ActionIcon>
           <ActionLabel>{t('profile.viewListings')}</ActionLabel>
         </ActionCard>

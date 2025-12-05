@@ -6,10 +6,11 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Trophy, TrendingUp, Calendar, Plus, Edit2 } from 'lucide-react';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { useTheme } from '@/contexts/ThemeContext';
-import type { SuccessStory } from '@/types/profile-enhancements.types';
-import { successStoriesService } from '@/services/profile/success-stories.service';
+import { useLanguage } from '../../../contexts/LanguageContext';
+import { useTheme } from '../../../contexts/ThemeContext';
+import type { SuccessStory } from '../../../types/profile-enhancements.types';
+import { successStoriesService } from '../../../services/profile/success-stories.service';
+import { logger } from '../../../services/logger-service';
 
 const SectionContainer = styled.section<{ $isDark: boolean }>`
   padding: 24px;
@@ -192,7 +193,7 @@ export const SuccessStoriesSection: React.FC<SuccessStoriesSectionProps> = ({
         const loadedStories = await successStoriesService.getPublicStories(userId, 6);
         setStories(loadedStories || []);
       } catch (error) {
-        console.error('Error loading success stories:', error);
+        logger.error('Error loading success stories:', error);
         setStories([]);
       } finally {
         setLoading(false);

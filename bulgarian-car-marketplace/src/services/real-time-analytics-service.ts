@@ -16,7 +16,7 @@ import {
   onSnapshot,
   serverTimestamp
 } from 'firebase/firestore';
-import { db } from '@/firebase/firebase-config';
+import { db } from '../firebase/firebase-config';
 import { serviceLogger } from './logger-wrapper';
 
 // Real-time Analytics Interfaces

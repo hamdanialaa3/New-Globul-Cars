@@ -2,21 +2,16 @@
 // Listing Limits - Enforce plan caps
 
 import { doc, getDoc } from 'firebase/firestore';
-import { db } from '@/firebase/firebase-config';
-import type { PlanTier } from '@/features/billing/types';
-import { logger } from '@/services/logger-service';
+import { db } from '../firebase/firebase-config';
+import type { PlanTier } from '../features/billing/types';
+import { logger } from '../services/logger-service';
 
 // Plan Limits Configuration
+// Updated December 2025 - Simplified to 3 plans matching BillingService
 const PLAN_LIMITS: Record<PlanTier, number> = {
-  free: 3,
-  premium: 10,
-  dealer_basic: 50,
-  dealer_pro: 150,
-  dealer_enterprise: -1,  // unlimited
-  company_starter: 100,
-  company_pro: -1,        // unlimited
-  company_enterprise: -1, // unlimited
-  custom: -1              // unlimited
+  free: 5,
+  dealer: 15,
+  company: -1  // unlimited
 };
 
 /**

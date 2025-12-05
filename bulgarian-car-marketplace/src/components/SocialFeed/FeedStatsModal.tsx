@@ -6,9 +6,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { X, Eye, Heart, MessageCircle, Share2, TrendingUp, Clock } from 'lucide-react';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { useTheme } from '@/contexts/ThemeContext';
-import type { FeedItem } from '@/services/social/smart-feed.service';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { useTheme } from '../../contexts/ThemeContext';
+import type { FeedItem } from '../../services/social/smart-feed.service';
 
 const ModalOverlay = styled.div<{ $isOpen: boolean }>`
   position: fixed;

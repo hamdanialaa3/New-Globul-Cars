@@ -1,3 +1,4 @@
+import { logger } from '../../../services/logger-service';
 // SocialMediaSettings.tsx - Connect Social Media Accounts
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 // Inspired by: Buffer, Hootsuite, Later
@@ -99,7 +100,7 @@ const SocialMediaSettings: React.FC = () => {
       const userAccounts = await socialMediaService.getConnectedAccounts(user!.uid);
       setAccounts(userAccounts);
     } catch (error) {
-      console.error('Error loading accounts:', error);
+      logger.error('Error loading accounts:', error);
     } finally {
       setLoading(false);
     }
@@ -110,7 +111,7 @@ const SocialMediaSettings: React.FC = () => {
       setConnecting(platform);
       await socialMediaService.initiateOAuth(platform, user!.uid);
     } catch (error) {
-      console.error('Error connecting:', error);
+      logger.error('Error connecting:', error);
       alert('Connection failed. Please try again.');
     } finally {
       setConnecting(null);
@@ -128,7 +129,7 @@ const SocialMediaSettings: React.FC = () => {
       await socialMediaService.disconnectAccount(user!.uid, platform);
       await loadAccounts();
     } catch (error) {
-      console.error('Error disconnecting:', error);
+      logger.error('Error disconnecting:', error);
     }
   };
 

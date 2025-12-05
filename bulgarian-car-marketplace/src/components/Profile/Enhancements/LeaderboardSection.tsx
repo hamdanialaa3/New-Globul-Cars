@@ -1,3 +1,4 @@
+import { logger } from '../../../services/logger-service';
 /**
  * Leaderboard Section
  * Displays leaderboard rankings
@@ -6,10 +7,10 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Trophy, TrendingUp, TrendingDown, Minus } from 'lucide-react';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { useTheme } from '@/contexts/ThemeContext';
-import { leaderboardService } from '@/services/profile/leaderboard.service';
-import type { Leaderboard, LeaderboardCategory, LeaderboardPeriod } from '@/types/profile-enhancements.types';
+import { useLanguage } from '../../../contexts/LanguageContext';
+import { useTheme } from '../../../contexts/ThemeContext';
+import { leaderboardService } from '../../../services/profile/leaderboard.service';
+import type { Leaderboard, LeaderboardCategory, LeaderboardPeriod } from '../../../types/profile-enhancements.types';
 
 const SectionContainer = styled.section<{ $isDark: boolean }>`
   padding: 24px;
@@ -170,7 +171,7 @@ export const LeaderboardSection: React.FC<LeaderboardSectionProps> = ({
         const data = await leaderboardService.getLeaderboard(category, period, 10);
         setLeaderboard(data);
       } catch (error) {
-        console.error('Error loading leaderboard:', error);
+        logger.error('Error loading leaderboard:', error);
         setLeaderboard(null);
       } finally {
         setLoading(false);

@@ -4,10 +4,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { getFunctions, httpsCallable } from 'firebase/functions';
-import { AIChatMessage, AIChatContext } from '@/types/ai.types';
-import { useAuth } from '@/contexts/AuthProvider';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { logger } from '@/services/logger-service';
+import { AIChatMessage, AIChatContext } from '../../types/ai.types';
+import { useAuth } from '../../contexts/AuthProvider';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { logger } from '../../services/logger-service';
 
 interface Props {
   context?: AIChatContext;

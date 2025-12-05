@@ -1,12 +1,13 @@
+import { logger } from '../../../../services/logger-service';
 // src/pages/MyListingsPage/index.tsx
 // Main MyListingsPage component that composes all sections
 
 import React, { useState, useEffect, Suspense } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from '@/hooks/useTranslation';
+import { useTranslation } from '../../../../hooks/useTranslation';
 import { MyListingsStats, MyListing, MyListingsFilters } from './types';
 import { MyListingsContainer, SectionHeader, LoadingState } from './styles';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '../../../../contexts/LanguageContext';
 import { useProfile } from '../../profile/ProfilePage/hooks/useProfile';
 import { myListingsService } from './services';
 
@@ -57,7 +58,7 @@ const MyListingsPage: React.FC = () => {
           loadMockData();
         }
       } catch (error) {
-        console.error('Error loading listings:', error);
+        logger.error('Error loading listings:', error);
         // Fallback to mock data on error
         loadMockData();
       } finally {
@@ -314,7 +315,7 @@ const MyListingsPage: React.FC = () => {
           setListings(listings.filter(l => l.id !== listingId));
         }
       } catch (error) {
-        console.error('Error deleting listing:', error);
+        logger.error('Error deleting listing:', error);
         alert('Failed to delete listing. Please try again.');
       }
     }
@@ -337,7 +338,7 @@ const MyListingsPage: React.FC = () => {
         ));
       }
     } catch (error) {
-      console.error('Error toggling featured status:', error);
+      logger.error('Error toggling featured status:', error);
       alert('Failed to update featured status. Please try again.');
     }
   };
@@ -360,7 +361,7 @@ const MyListingsPage: React.FC = () => {
         ));
       }
     } catch (error) {
-      console.error('Error updating status:', error);
+      logger.error('Error updating status:', error);
       alert('Failed to update status. Please try again.');
     }
   };

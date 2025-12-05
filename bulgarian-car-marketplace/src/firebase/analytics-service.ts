@@ -3,7 +3,7 @@
 
 import { analytics } from './firebase-config';
 import { logEvent, setUserProperties, setUserId } from 'firebase/analytics';
-import { logger } from '@/services/logger-service';
+import { logger } from '../services/logger-service';
 
 /**
  * Bulgarian Analytics Service - Singleton Pattern
@@ -11,7 +11,7 @@ import { logger } from '@/services/logger-service';
  * 
  * Usage:
  * ```typescript
- * import { analyticsService } from '@/firebase/analytics-service';
+ * import { analyticsService } from '../firebase/analytics-service';
  * 
  * analyticsService.trackPageView('home', 'Home Page');
  * analyticsService.trackCarEvent('view_car', carData);

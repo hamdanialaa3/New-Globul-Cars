@@ -1,10 +1,11 @@
+import { logger } from '../services/logger-service';
 // src/components/RatingList.tsx
 // Rating list component for Bulgarian Car Marketplace
 
 import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
-import { useTranslation } from '@/hooks/useTranslation';
-import { bulgarianRatingService, CarRating } from '@/services/reviews/rating-service';
+import { useTranslation } from '../hooks/useTranslation';
+import { bulgarianRatingService, CarRating } from '../services/reviews/rating-service';
 
 interface RatingListProps {
   carId: string;
@@ -300,7 +301,7 @@ const RatingList: React.FC<RatingListProps> = ({ carId, className }) => {
         setLastDoc(result.lastDoc);
       }
     } catch (error) {
-      console.error('Error loading ratings:', error);
+      logger.error('Error loading ratings:', error);
     } finally {
       setLoading(false);
       setLoadingMore(false);
@@ -321,7 +322,7 @@ const RatingList: React.FC<RatingListProps> = ({ carId, className }) => {
           : rating
       ));
     } catch (error) {
-      console.error('Error marking helpful:', error);
+      logger.error('Error marking helpful:', error);
     }
   };
 

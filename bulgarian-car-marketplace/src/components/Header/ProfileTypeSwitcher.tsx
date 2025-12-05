@@ -1,3 +1,4 @@
+import { logger } from '../../services/logger-service';
 // src/components/Header/ProfileTypeSwitcher.tsx
 // Profile Type Switcher Component for Header
 import React, { useState } from 'react';
@@ -32,7 +33,7 @@ const ProfileTypeSwitcher: React.FC = () => {
       setShowModal(false);
       setPendingType(null);
     } catch (error) {
-      console.error('Error switching profile type:', error);
+      logger.error('Error switching profile type:', error);
     } finally {
       setIsLoading(false);
     }

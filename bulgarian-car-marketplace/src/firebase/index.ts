@@ -21,7 +21,7 @@ export {
 
 // Export car service
 // ⚠️ DEPRECATED: car-service.ts has been moved to deprecated/services/
-// Use UnifiedCarService from '@/services/car' instead
+// Use UnifiedCarService from '../services/car' instead
 // export {
 //   BulgarianCarService,
 //   bulgarianCarService,

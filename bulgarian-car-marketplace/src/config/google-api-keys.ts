@@ -1,3 +1,4 @@
+import { logger } from '../services/logger-service';
 // Google API Keys Configuration
 // تكوين مفاتيح Google API
 
@@ -27,9 +28,9 @@ export const validateGoogleAPIKeys = () => {
   });
   
   if (missingKeys.length > 0) {
-    console.warn('⚠️ Missing or invalid Google API keys:', missingKeys);
+    logger.warn('⚠️ Missing or invalid Google API keys:', missingKeys);
   } else {
-    console.log('✅ All Google API keys are configured');
+    logger.info('✅ All Google API keys are configured');
   }
   
   return missingKeys.length === 0;

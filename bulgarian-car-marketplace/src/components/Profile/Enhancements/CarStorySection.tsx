@@ -6,10 +6,11 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { BookOpen, Edit2, Save, X, Award, Car, Calendar } from 'lucide-react';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { useTheme } from '@/contexts/ThemeContext';
-import type { CarStory } from '@/types/profile-enhancements.types';
-import { carStoryService } from '@/services/profile/car-story.service';
+import { useLanguage } from '../../../contexts/LanguageContext';
+import { useTheme } from '../../../contexts/ThemeContext';
+import type { CarStory } from '../../../types/profile-enhancements.types';
+import { carStoryService } from '../../../services/profile/car-story.service';
+import { logger } from '../../../services/logger-service';
 
 const SectionContainer = styled.section<{ $isDark: boolean }>`
   padding: 24px;
@@ -199,7 +200,7 @@ export const CarStorySection: React.FC<CarStorySectionProps> = ({
           setEditedStory(data.story || '');
         }
       } catch (error) {
-        console.error('Error loading car story:', error);
+        logger.error('Error loading car story:', error);
         setCarStory(null);
       } finally {
         setLoading(false);
@@ -218,7 +219,7 @@ export const CarStorySection: React.FC<CarStorySectionProps> = ({
       }
       setIsEditing(false);
     } catch (error) {
-      console.error('Error saving car story:', error);
+      logger.error('Error saving car story:', error);
     }
   };
 

@@ -4,8 +4,8 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Circular3DProgressLEDEnhanced from './Circular3DProgressLED_Enhanced';
-import WorkflowPersistenceService from '@/services/workflowPersistenceService';
-import { SELL_WORKFLOW_STEP_ORDER } from '@/constants/sellWorkflowSteps';
+import WorkflowPersistenceService from '../../services/workflowPersistenceService';
+import { SELL_WORKFLOW_STEP_ORDER } from '../../constants/sellWorkflowSteps';
 
 interface WorkflowFlowProps {
   currentStepIndex: number;

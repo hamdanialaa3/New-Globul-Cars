@@ -1,3 +1,4 @@
+import { logger } from '../../services/logger-service';
 // src/features/billing/BillingPage.tsx
 // Billing Page - Subscription Management
 
@@ -63,7 +64,7 @@ export const BillingPage: React.FC = () => {
       const subscription = await billingService.getCurrentSubscription(currentUser.uid);
       setCurrentPlan(subscription?.planId || 'free');
     } catch (error) {
-      console.error('Error loading plan:', error);
+      logger.error('Error loading plan:', error);
     } finally {
       setLoading(false);
     }
@@ -73,17 +74,20 @@ export const BillingPage: React.FC = () => {
     if (!currentUser) return;
 
     try {
-      const { url } = await billingService.createCheckoutSession(currentUser.uid, planId as any, interval);
+      setLoading(true);
       
-      toast.info(
-        language === 'bg' 
-          ? 'Пренасочване към Stripe Checkout (TODO: Stripe интеграция)'
-          : 'Redirecting to Stripe Checkout (TODO: Stripe integration)'
+      // Call Cloud Function to create Stripe checkout
+      const { url, sessionId } = await billingService.createCheckoutSession(
+        currentUser.uid,
+        planId as any,
+        interval
       );
       
-      // window.location.href = url;  // Uncomment when Stripe is configured
+      // Redirect to Stripe Checkout
+      window.location.href = url;
     } catch (error: any) {
       toast.error(error.message || 'Failed to create checkout session');
+      setLoading(false);
     }
   };
 

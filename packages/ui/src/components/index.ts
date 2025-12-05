@@ -1,8 +1,7 @@
 // UI components exports
 export { default as ProgressBar } from './ProgressBar';
-export { default as LoadingSpinner, LoadingSpinner } from './LoadingSpinner';
+export { LoadingSpinner } from './LoadingSpinner';
 export { default as ErrorBoundary } from './ErrorBoundary';
-export { ResponsiveCard } from './ResponsiveCard';
 export * from './Toast';
 
 // HomePage components
@@ -29,7 +28,7 @@ export { ResponsiveButton } from './ResponsiveButton';
 export { MobileInput, MobileTextarea } from './MobileInput';
 export type { InputSize, InputType } from './MobileInput';
 export { MobileButton, MobileButtonGroup } from './MobileButton';
-export type { ButtonVariant, ButtonSize } from './MobileButton';
+export type { ButtonVariant as MobileButtonVariant, ButtonSize as MobileButtonSize } from './MobileButton';
 export { default as Button } from './Button';
 export type { ButtonProps, ButtonVariant, ButtonSize } from './Button';
 

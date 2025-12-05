@@ -3,8 +3,8 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import LogoGallery from '@/components/LogoGallery';
-import CircularImageGallery from '@/components/CircularImageGallery';
+import LogoGallery from '../../../../components/LogoGallery';
+import CircularImageGallery from '../../../../components/CircularImageGallery';
 
 const BrandContainer = styled.div`
   min-height: 100vh;

@@ -53,6 +53,7 @@ const Logo = styled.div<{ $isDark?: boolean }>`
   font-weight: 700;
   color: ${({ $isDark }) => $isDark ? '#f1f5f9' : colors.primary.main};
   transition: color 0.3s ease;
+  margin-left: -24px; /* تقريب من الوسط بمقدار 3 أحرف */
 
   img {
     width: 50px;
@@ -62,6 +63,7 @@ const Logo = styled.div<{ $isDark?: boolean }>`
 
   ${media.maxMobile} {
     font-size: 18px;
+    margin-left: -18px; /* تقليل المسافة في الموبايل */
     img {
       width: 40px;
       height: 40px;
@@ -132,6 +134,11 @@ const Actions = styled.div`
   gap: ${spacing.sm};
   position: relative;
   z-index: ${zIndex.sticky + 1};
+  margin-right: -24px; /* تقريب من الوسط بمقدار 3 أحرف */
+
+  ${media.maxMobile} {
+    margin-right: -18px; /* تقليل المسافة في الموبايل */
+  }
 `;
 
 const IconButton = styled.button<{ $isDark?: boolean }>`
@@ -372,6 +379,16 @@ const RowBadge = styled.span<{ $isDark?: boolean }>`
   flex-shrink: 0;
 `;
 
+// Profile Avatar Image Component
+const ProfileAvatar = styled.img`
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid ${({ theme }) => theme?.colors?.primary?.main || '#ff6b35'};
+  background: ${({ theme }) => theme?.colors?.neutral?.gray100 || '#f8f9fa'};
+`;
+
 const ProfileRow = styled(SettingsRow)`
   padding: ${spacing.lg};
   background: ${({ $isDark }) => 
@@ -594,7 +611,23 @@ const UnifiedHeader: React.FC = () => {
                   $isDark={isDark}
                   onClick={() => handleSettingsItemClick('/profile')}
                 >
-                  <RowIcon $isDark={isDark} className="row-icon">
+                  {user.photoURL ? (
+                    <ProfileAvatar 
+                      src={user.photoURL} 
+                      alt={user.displayName || 'Profile'}
+                      onError={(e) => {
+                        // Fallback to icon if image fails to load
+                        e.currentTarget.style.display = 'none';
+                        const iconContainer = e.currentTarget.nextElementSibling as HTMLElement;
+                        if (iconContainer) iconContainer.style.display = 'flex';
+                      }}
+                    />
+                  ) : null}
+                  <RowIcon 
+                    $isDark={isDark} 
+                    className="row-icon"
+                    style={{ display: user.photoURL ? 'none' : 'flex' }}
+                  >
                     <User size={24} />
                   </RowIcon>
                   <RowContent>

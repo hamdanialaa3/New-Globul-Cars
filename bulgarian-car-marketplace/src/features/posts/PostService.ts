@@ -2,7 +2,7 @@
 // Keep under 300 lines. No emojis.
 
 import { collection, addDoc, doc, getDoc, getDocs, updateDoc, deleteDoc, query, where, orderBy, limit, Timestamp } from 'firebase/firestore';
-import { db } from '@/firebase/firebase-config';
+import { db } from '../../firebase/firebase-config';
 
 export interface PostContentLang {
   title: { bg: string; en: string };

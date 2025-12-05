@@ -5,15 +5,15 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams, useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { useAuth } from '@/contexts/AuthProvider';
-import { MobileContainer, MobileStack } from '@/components/ui/mobile-index';
-import { MobileHeader } from '@/components/layout/MobileHeader';
+import { useLanguage } from '../../../contexts/LanguageContext';
+import { useAuth } from '../../../contexts/AuthProvider';
+import { MobileContainer, MobileStack } from '../../../components/ui/mobile-index';
+import { MobileHeader } from '../../../components/layout/MobileHeader';
 import { S } from './MobilePricingPage.styles';
-import { SellProgressBar } from '@/components/SellWorkflow';
-import SellWorkflowStepStateService from '@/services/sellWorkflowStepState';
+import { SellProgressBar } from '../../../components/SellWorkflow';
+import SellWorkflowStepStateService from '../../../services/sellWorkflowStepState';
 import { usePricingForm } from './Pricing/usePricingForm';
-import { AIPriceSuggestion } from '@/components/AI';
+import { AIPriceSuggestion } from '../../../components/AI';
 
 const ProgressWrapper = styled.div`
   padding: 0.75rem 1rem 0;

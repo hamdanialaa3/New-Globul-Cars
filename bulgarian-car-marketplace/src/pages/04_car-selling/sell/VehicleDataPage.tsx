@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
-import SelectWithOther from '@/components/shared/SelectWithOther';
+import SelectWithOther from '../../../components/shared/SelectWithOther';
 import { 
   CAR_BRANDS, 
   CAR_YEARS, 
@@ -10,8 +10,8 @@ import {
   CAR_COLORS, 
   DOOR_COUNTS, 
   SEAT_COUNTS 
-} from '@/data/dropdown-options';
-import { useLanguage } from '@/contexts/LanguageContext';
+} from '../../../data/dropdown-options';
+import { useLanguage } from '../../../contexts/LanguageContext';
 
 const VehicleDataContainer = styled.div`
   min-height: 100vh;

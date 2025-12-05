@@ -1,3 +1,4 @@
+import { logger } from '../../../../services/logger-service';
 // Admin Data Fix Page
 // صفحة تصحيح البيانات للمسؤول
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
@@ -19,7 +20,7 @@ const AdminDataFix: React.FC = () => {
       const result = await DataOwnershipFixer.checkDataIntegrity();
       setIntegrityReport(result);
     } catch (error) {
-      console.error('Error checking integrity:', error);
+      logger.error('Error checking integrity:', error);
       alert('Error checking data integrity');
     } finally {
       setChecking(false);
@@ -42,7 +43,7 @@ const AdminDataFix: React.FC = () => {
         alert(`❌ حدثت أخطاء:\n\n${result.errors.join('\n')}`);
       }
     } catch (error) {
-      console.error('Error fixing data:', error);
+      logger.error('Error fixing data:', error);
       alert('Error fixing data');
     } finally {
       setFixing(false);

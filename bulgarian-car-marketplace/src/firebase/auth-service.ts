@@ -19,18 +19,18 @@ import {
   sendEmailVerification,
   UserCredential
 } from 'firebase/auth';
-import { logger } from '@/services/logger-service';
+import { logger } from '../services/logger-service';
 import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
 import { auth, db, BulgarianFirebaseUtils } from './firebase-config';
 import { BULGARIAN_CONFIG } from '../config/bulgarian-config';
-import { TrustLevel, Badge } from '@/services/profile/trust-score-service';
+import { TrustLevel, Badge } from '../services/profile/trust-score-service';
 
 // ✅ Import and re-export from canonical source
-export type { BulgarianUser } from '@/types/user/bulgarian-user.types';
+export type { BulgarianUser } from '../types/user/bulgarian-user.types';
 
 /**
  * @deprecated Local BulgarianUser definition is deprecated
- * Use BulgarianUser from '@/types/user/bulgarian-user.types' instead
+ * Use BulgarianUser from '../types/user/bulgarian-user.types' instead
  * This interface is kept only for migration period (will be removed in Phase 4)
  * 
  * OLD definition below - please use canonical type above

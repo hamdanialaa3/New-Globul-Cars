@@ -1,3 +1,4 @@
+import { logger } from '../../services/logger-service';
 // src/components/Posts/PostCard.tsx
 // Post Card Component - Display individual post
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
@@ -375,7 +376,7 @@ export const PostCard: React.FC<PostCardProps> = ({
       setLikes(prev => newLikedState ? prev + 1 : prev - 1);
       onLike?.(post.id);
     } catch (error) {
-      console.error('Error liking post:', error);
+      logger.error('Error liking post:', error);
     }
   };
   

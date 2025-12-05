@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '../contexts/LanguageContext';
 import { Building2, Mail, Phone, MapPin, Globe, Clock } from 'lucide-react';
-import type { BulgarianUser } from '@/types/user/bulgarian-user.types';
-import type { ProfileCar } from '@/pages/03_user-pages/profile/ProfilePage/types';
+import type { BulgarianUser } from '../types/user/bulgarian-user.types';
+import type { ProfileCar } from '../pages/03_user-pages/profile/ProfilePage/types';
 
 interface DealerProfileProps {
   user: BulgarianUser;

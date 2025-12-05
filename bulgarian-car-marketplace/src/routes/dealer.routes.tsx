@@ -14,7 +14,7 @@
 
 import React, { Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import ProtectedRoute from '@/components/ProtectedRoute';
+import ProtectedRoute from '../components/ProtectedRoute';
 
 // Lazy load dealer pages
 const DealerPublicPage = React.lazy(() => import('@/pages/05_dealer/DealerPublicPage'));
@@ -60,7 +60,7 @@ export const DealerRoutes: React.FC = () => {
 /**
  * Usage in App.tsx:
  * 
- * import { FEATURE_FLAGS } from '@/config/feature-flags';
+ * import { FEATURE_FLAGS } from '../config/feature-flags';
  * import { DealerRoutes } from '@/routes/dealer.routes';
  * 
  * // In your Routes:

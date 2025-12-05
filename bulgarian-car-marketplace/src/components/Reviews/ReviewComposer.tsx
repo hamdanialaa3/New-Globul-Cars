@@ -1,3 +1,4 @@
+import { logger } from '../../services/logger-service';
 /**
  * Review Composer Component
  * Allows users to write and submit reviews
@@ -172,7 +173,7 @@ const ReviewComposer: React.FC<ReviewComposerProps> = ({
       setTimeout(() => setSuccess(false), 3000);
 
     } catch (error: any) {
-      console.error('Error submitting review:', error);
+      logger.error('Error submitting review:', error);
       setError(error.message || (language === 'bg' 
         ? 'Грешка при изпращане на отзив' 
         : 'Error submitting review'

@@ -2,13 +2,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { useAuth } from '@/contexts/AuthProvider';
-import WorkflowPersistenceService from '@/services/workflowPersistenceService';
-import { logger } from '@/services/logger-service';
-import { SellProgressBar } from '@/components/SellWorkflow';
-import SellWorkflowStepStateService from '@/services/sellWorkflowStepState';
-import SellWorkflowService from '@/services/sellWorkflowService';
+import { useLanguage } from '../../../contexts/LanguageContext';
+import { useAuth } from '../../../contexts/AuthProvider';
+import WorkflowPersistenceService from '../../../services/workflowPersistenceService';
+import { logger } from '../../../services/logger-service';
+import { SellProgressBar } from '../../../components/SellWorkflow';
+import SellWorkflowStepStateService from '../../../services/sellWorkflowStepState';
+import SellWorkflowService from '../../../services/sellWorkflowService';
 
 const ProgressWrapper = styled.div`
   padding: 1rem 2rem 0;

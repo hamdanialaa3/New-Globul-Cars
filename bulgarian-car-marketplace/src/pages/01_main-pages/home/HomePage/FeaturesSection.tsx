@@ -3,7 +3,7 @@
 
 import React, { memo } from 'react';
 import styled from 'styled-components';
-import { useTranslation } from '@/hooks/useTranslation';
+import { useTranslation } from '../../../../hooks/useTranslation';
 
 const FeaturesSection = styled.section`
   background-image: url('/assets/backgrounds/metal-bg-1.jpg');

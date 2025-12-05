@@ -1,3 +1,4 @@
+import { logger } from './services/logger-service';
 // Custom Service Worker with Workbox
 /* eslint-disable no-restricted-globals */
 
@@ -177,7 +178,7 @@ self.addEventListener('activate', (event) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
           if (!cacheWhitelist.includes(cacheName) && !cacheName.startsWith('workbox-precache')) {
-            console.log('[SW] Deleting old cache:', cacheName);
+            logger.info('[SW] Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
         })
@@ -193,4 +194,4 @@ self.addEventListener('message', (event) => {
   }
 });
 
-console.log('[SW] Service Worker loaded successfully ✅');
+logger.info('[SW] Service Worker loaded successfully ✅');

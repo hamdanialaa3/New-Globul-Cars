@@ -1,3 +1,4 @@
+import { logger } from '../../services/logger-service';
 /**
  * Bulgaria Location Dropdown Component
  * مكون القائمة المنسدلة للمواقع البلغارية
@@ -285,13 +286,13 @@ export const BulgariaLocationDropdown: React.FC<BulgariaLocationDropdownProps> =
    */
   const loadProvinces = async () => {
     try {
-      console.log('[BulgariaLocationDropdown] Starting to load provinces...');
+      logger.info('[BulgariaLocationDropdown] Starting to load provinces...');
       setIsLoadingProvinces(true);
       const allProvinces = await bulgariaLocationsService.getAllProvinces();
-      console.log('[BulgariaLocationDropdown] Loaded provinces:', allProvinces.length, allProvinces);
+      logger.info('[BulgariaLocationDropdown] Loaded provinces:', allProvinces.length, allProvinces);
       setProvinces(allProvinces);
     } catch (error) {
-      console.error('[BulgariaLocationDropdown] Failed to load provinces:', error);
+      logger.error('[BulgariaLocationDropdown] Failed to load provinces:', error);
     } finally {
       setIsLoadingProvinces(false);
     }
@@ -306,7 +307,7 @@ export const BulgariaLocationDropdown: React.FC<BulgariaLocationDropdownProps> =
       const provinceCities = await bulgariaLocationsService.getCitiesInProvince(provinceName);
       setCities(provinceCities);
     } catch (error) {
-      console.error('[BulgariaLocationDropdown] Failed to load cities:', error);
+      logger.error('[BulgariaLocationDropdown] Failed to load cities:', error);
       setCities([]);
     } finally {
       setIsLoadingCities(false);

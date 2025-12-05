@@ -1,7 +1,7 @@
 import React from 'react';
-import { CarListing } from '@/types/CarListing';
-import { getAllMakes, getModelsByMake } from '@/data/car-makes-models';
-import { BULGARIA_REGIONS, getCitiesByRegion } from '@/data/bulgaria-locations';
+import { CarListing } from '../../../types/CarListing';
+import { getAllMakes, getModelsByMake } from '../../../data/car-makes-models';
+import { BULGARIA_REGIONS, getCitiesByRegion } from '../../../data/bulgaria-locations';
 import {
   DetailsSection,
   SectionTitle,

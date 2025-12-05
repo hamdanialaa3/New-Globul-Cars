@@ -1,8 +1,9 @@
+import { logger } from '../../../../../services/logger-service';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from '@/hooks/useTranslation';
-import { useAuth } from '@/hooks/useAuth';
-import { SocialAuthService } from '@/firebase/social-auth-service';
+import { useTranslation } from '../../../../../hooks/useTranslation';
+import { useAuth } from '../../../../../hooks/useAuth';
+import { SocialAuthService } from '../../../../../firebase/social-auth-service';
 import { LoginFormData, LoginState, LoginActions, UseLoginReturn } from '../types';
 
 export const useLogin = (): UseLoginReturn => {
@@ -102,7 +103,7 @@ export const useLogin = (): UseLoginReturn => {
         setError(t('auth.loginFailed', 'Login failed. Please try again.'));
       }
     } catch (err: any) {
-      console.error('Login error:', err);
+      logger.error('Login error:', err);
       setError(t('auth.unexpectedError', 'An unexpected error occurred. Please try again.'));
     } finally {
       setLoading(false);

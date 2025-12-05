@@ -1,3 +1,4 @@
+import { logger } from '../../../services/logger-service';
 // Car Selector - Select car to attach to post
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
@@ -39,7 +40,7 @@ const CarSelector: React.FC<CarSelectorProps> = ({ selected, onChange, userId })
       const snapshot = await getDocs(carsQuery);
       setCars(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
     } catch (error) {
-      console.error('Error loading cars:', error);
+      logger.error('Error loading cars:', error);
     } finally {
       setLoading(false);
     }

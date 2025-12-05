@@ -3,7 +3,7 @@
 // while internally delegating to the unified useLanguage context.
 
 import * as React from 'react';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '../contexts/LanguageContext';
 
 type Interpolations = Record<string, string | number>;
 

@@ -1,14 +1,15 @@
+import { logger } from '../services/logger-service';
 // src/utils/clean-google-auth.js
 // حل نظيف لإعادة تشغيل Google Authentication بدون تداخلات
 
 export const cleanGoogleAuth = async () => {
   console.clear();
-  console.log('🧹 تنظيف Google Authentication وإعادة التشغيل');
-  console.log('='.repeat(50));
+  logger.info('🧹 تنظيف Google Authentication وإعادة التشغيل');
+  logger.info('='.repeat(50));
 
   try {
     // 1. مسح جميع البيانات المحفوظة
-    console.log('🗑️ مسح البيانات المحفوظة...');
+    logger.info('🗑️ مسح البيانات المحفوظة...');
     localStorage.clear();
     sessionStorage.clear();
     
@@ -17,10 +18,10 @@ export const cleanGoogleAuth = async () => {
       document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
     });
     
-    console.log('✅ تم مسح جميع البيانات المحفوظة');
+    logger.info('✅ تم مسح جميع البيانات المحفوظة');
 
     // 2. إعادة تهيئة Firebase من الصفر
-    console.log('🔄 إعادة تهيئة Firebase...');
+    logger.info('🔄 إعادة تهيئة Firebase...');
     
     // استيراد Firebase
     const { initializeApp } = await import('firebase/app');
@@ -46,12 +47,12 @@ export const cleanGoogleAuth = async () => {
     provider.addScope('email');
     provider.addScope('profile');
     
-    console.log('✅ تم إنشاء Firebase app جديد');
-    console.log('Auth Domain:', auth.config.authDomain);
+    logger.info('✅ تم إنشاء Firebase app جديد');
+    logger.info('Auth Domain:', auth.config.authDomain);
 
     // 3. استخدام Redirect فقط (تجنب popup completely)
-    console.log('🚀 بدء تسجيل الدخول باستخدام Redirect...');
-    console.log('سيتم توجيهك إلى Google للمصادقة...');
+    logger.info('🚀 بدء تسجيل الدخول باستخدام Redirect...');
+    logger.info('سيتم توجيهك إلى Google للمصادقة...');
     
     // حفظ معلومات للعودة
     sessionStorage.setItem('auth-attempt', 'true');
@@ -64,9 +65,9 @@ export const cleanGoogleAuth = async () => {
     return { success: true, redirected: true };
     
   } catch (error) {
-    console.error('❌ فشل في التنظيف وإعادة التشغيل:', error);
-    console.error('Error Code:', error.code);
-    console.error('Error Message:', error.message);
+    logger.error('❌ فشل في التنظيف وإعادة التشغيل:', error);
+    logger.error('Error Code:', error.code);
+    logger.error('Error Message:', error.message);
     
     return { 
       success: false, 
@@ -78,14 +79,14 @@ export const cleanGoogleAuth = async () => {
 
 // معالج للتحقق من نتيجة redirect عند العودة
 export const checkCleanAuthResult = async () => {
-  console.log('🔍 التحقق من نتيجة تسجيل الدخول...');
+  logger.info('🔍 التحقق من نتيجة تسجيل الدخول...');
   
   // التحقق من وجود محاولة مصادقة سابقة
   const authAttempt = sessionStorage.getItem('auth-attempt');
   const authTimestamp = sessionStorage.getItem('auth-timestamp');
   
   if (!authAttempt) {
-    console.log('ℹ️ لا توجد محاولة مصادقة سابقة');
+    logger.info('ℹ️ لا توجد محاولة مصادقة سابقة');
     return null;
   }
 
@@ -93,7 +94,7 @@ export const checkCleanAuthResult = async () => {
     const { getAuth, getRedirectResult } = await import('firebase/auth');
     const auth = getAuth();
     
-    console.log('📥 التحقق من redirect result...');
+    logger.info('📥 التحقق من redirect result...');
     const result = await getRedirectResult(auth);
     
     // مسح علامات المحاولة
@@ -101,8 +102,8 @@ export const checkCleanAuthResult = async () => {
     sessionStorage.removeItem('auth-timestamp');
     
     if (result && result.user) {
-      console.log('🎉 نجح تسجيل الدخول عبر Redirect!');
-      console.log('User:', {
+      logger.info('🎉 نجح تسجيل الدخول عبر Redirect!');
+      logger.info('User:', {
         email: result.user.email,
         displayName: result.user.displayName,
         uid: result.user.uid
@@ -114,12 +115,12 @@ export const checkCleanAuthResult = async () => {
         message: `مرحباً ${result.user.displayName || result.user.email}! تم تسجيل الدخول بنجاح.`
       };
     } else {
-      console.log('ℹ️ لا توجد نتيجة redirect');
+      logger.info('ℹ️ لا توجد نتيجة redirect');
       return null;
     }
     
   } catch (error) {
-    console.error('❌ خطأ في التحقق من redirect result:', error);
+    logger.error('❌ خطأ في التحقق من redirect result:', error);
     
     // مسح علامات المحاولة في حالة الخطأ
     sessionStorage.removeItem('auth-attempt');
@@ -142,10 +143,10 @@ if (typeof window !== 'undefined') {
   window.addEventListener('load', async () => {
     const result = await checkCleanAuthResult();
     if (result) {
-      console.log('🔔 نتيجة المصادقة:', result);
+      logger.info('🔔 نتيجة المصادقة:', result);
     }
   });
 }
 
 // إضافة رابط مباشر للتجربة
-console.log('🌐 يمكنك تجربة الرابط المباشر: http://localhost:3001/clean-google-auth');
+logger.info('🌐 يمكنك تجربة الرابط المباشر: http://localhost:3001/clean-google-auth');

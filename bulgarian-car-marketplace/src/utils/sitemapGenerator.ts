@@ -1,9 +1,9 @@
 // src/utils/sitemapGenerator.ts
 // Sitemap Generator for SEO
 
-import { db } from '@/firebase/firebase-config';
+import { db } from '../firebase/firebase-config';
 import { collection, getDocs, query, where } from 'firebase/firestore';
-import { logger } from '@/services/logger-service';
+import { logger } from '../services/logger-service';
 
 export interface SitemapUrl {
   loc: string;

@@ -1,3 +1,4 @@
+import { logger } from '../services/logger-service';
 // Dynamic Sitemap Generator (FREE SEO)
 // Generates XML sitemap for Google Search Console
 
@@ -63,7 +64,7 @@ export const generateCarListingsSitemap = async (baseUrl: string = 'https://glob
       };
     });
   } catch (error) {
-    console.error('Error generating car listings sitemap:', error);
+    logger.error('Error generating car listings sitemap:', error);
     return [];
   }
 };
@@ -142,7 +143,7 @@ export const sitemap = functions.https.onRequest(async (req, res) => {
     res.set('Cache-Control', 'public, max-age=3600'); // Cache 1 hour
     res.status(200).send(xml);
   } catch (error) {
-    console.error('Sitemap generation error:', error);
+    logger.error('Sitemap generation error:', error);
     res.status(500).send('Error generating sitemap');
   }
 });

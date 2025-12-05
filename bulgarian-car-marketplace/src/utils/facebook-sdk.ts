@@ -1,7 +1,7 @@
 // Facebook SDK Loader Utility
 // Loads and initializes Facebook JavaScript SDK
 
-import { logger } from '@/services/logger-service';
+import { logger } from '../services/logger-service';
 
 interface FacebookSDKConfig {
   appId: string;

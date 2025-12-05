@@ -1,3 +1,4 @@
+import { logger } from '../../services/logger-service';
 // src/components/Profile/index.ts
 // Profile Components Export - تصدير مكونات البروفايل
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
@@ -52,7 +53,7 @@ export type { CarouselCar } from './GarageCarousel';
  * 
  * <ProfileImageUploader
  *   currentImageUrl={user.profileImage?.url}
- *   onUploadSuccess={(url) => console.log('Uploaded:', url)}
+ *   onUploadSuccess={(url) => logger.info('Uploaded:', url)}
  * />
  */
 
@@ -63,7 +64,7 @@ export type { CarouselCar } from './GarageCarousel';
  * 
  * <CoverImageUploader
  *   currentImageUrl={user.coverImage?.url}
- *   onUploadSuccess={(url) => console.log('Cover uploaded:', url)}
+ *   onUploadSuccess={(url) => logger.info('Cover uploaded:', url)}
  * />
  */
 

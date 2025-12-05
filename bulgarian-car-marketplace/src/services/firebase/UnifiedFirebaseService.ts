@@ -18,8 +18,8 @@
  * @since 2025-11-03 (Phase 3)
  */
 
-import { db } from '@/firebase/firebase-config';
-import { logger } from '@/services/logger-service';
+import { db } from '../../firebase/firebase-config';
+import { logger } from '../../services/logger-service';
 
 export class UnifiedFirebaseService {
   private static instance: UnifiedFirebaseService;

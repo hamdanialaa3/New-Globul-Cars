@@ -17,12 +17,12 @@ import {
   limit,
   serverTimestamp
 } from 'firebase/firestore';
-import { db } from '@/firebase/firebase-config';
+import { db } from '../../firebase/firebase-config';
 import { serviceLogger } from '../logger-wrapper';
 import type {
   TrustConnection,
   TrustNetworkStats
-} from '@/types/profile-enhancements.types';
+} from '../../types/profile-enhancements.types';
 
 export class TrustNetworkService {
   private static instance: TrustNetworkService;

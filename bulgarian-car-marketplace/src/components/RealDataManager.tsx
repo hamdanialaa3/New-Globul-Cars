@@ -1,7 +1,8 @@
+import { logger } from '../services/logger-service';
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { collection, getDocs, doc, updateDoc, deleteDoc, addDoc } from 'firebase/firestore';
-import { db } from '@/firebase/firebase-config';
+import { db } from '../firebase/firebase-config';
 import { Database, Edit, Trash2, Plus, Save, X } from 'lucide-react';
 
 const Container = styled.div`
@@ -143,7 +144,7 @@ const RealDataManager: React.FC = () => {
       const items = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setData(items);
     } catch (error) {
-      console.error('Error loading data:', error);
+      logger.error('Error loading data:', error);
     } finally {
       setLoading(false);
     }
@@ -164,7 +165,7 @@ const RealDataManager: React.FC = () => {
       setEditingId(null);
       setEditData({});
     } catch (error) {
-      console.error('Error updating data:', error);
+      logger.error('Error updating data:', error);
     }
   };
 
@@ -175,7 +176,7 @@ const RealDataManager: React.FC = () => {
       await deleteDoc(doc(db, activeTab, id));
       await loadData();
     } catch (error) {
-      console.error('Error deleting data:', error);
+      logger.error('Error deleting data:', error);
     }
   };
 
@@ -188,7 +189,7 @@ const RealDataManager: React.FC = () => {
       await addDoc(collection(db, activeTab), newItem);
       await loadData();
     } catch (error) {
-      console.error('Error adding data:', error);
+      logger.error('Error adding data:', error);
     }
   };
 

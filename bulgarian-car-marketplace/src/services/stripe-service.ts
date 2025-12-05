@@ -1,3 +1,4 @@
+import { logger } from './logger-service';
 // src/services/stripe-service.ts
 // Stripe Payments Service using firestore-stripe-payments extension
 
@@ -286,7 +287,7 @@ export class StripeService {
     const user = auth.currentUser;
 
     if (!user || !user.uid) {
-      console.warn('[StripeService] subscribeToSubscriptions called with null/undefined user or user.uid - returning no-op unsubscribe');
+      logger.warn('[StripeService] subscribeToSubscriptions called with null/undefined user or user.uid - returning no-op unsubscribe');
       return () => {};
     }
 

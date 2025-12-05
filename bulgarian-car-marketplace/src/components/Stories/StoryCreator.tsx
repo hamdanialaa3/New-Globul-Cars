@@ -1,3 +1,4 @@
+import { logger } from '../../services/logger-service';
 /**
  * StoryCreator - Create stories with filters and overlays
  * Location: Bulgaria | Languages: BG/EN | Currency: EUR
@@ -282,7 +283,7 @@ const StoryCreator: React.FC<StoryCreatorProps> = ({ onClose, onSuccess }) => {
       onSuccess();
       onClose();
     } catch (error) {
-      console.error('Failed to create story:', error);
+      logger.error('Failed to create story:', error);
       alert('Failed to create story. Please try again.');
     } finally {
       setLoading(false);

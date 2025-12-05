@@ -3,9 +3,9 @@
 
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useAuth } from '@/contexts/AuthProvider';
-import { EmailVerificationService } from '@/services/email-verification';
-import { useTranslation } from '@/hooks/useTranslation';
+import { useAuth } from '../contexts/AuthProvider';
+import { EmailVerificationService } from '../services/email-verification';
+import { useTranslation } from '../hooks/useTranslation';
 import { Mail, CheckCircle, AlertCircle, RefreshCw, Send, Clock } from 'lucide-react';
 
 const VerificationContainer = styled.div`

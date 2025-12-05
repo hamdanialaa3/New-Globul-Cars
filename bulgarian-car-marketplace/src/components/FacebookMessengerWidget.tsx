@@ -1,9 +1,10 @@
+import { logger } from '../services/logger-service';
 // Facebook Messenger Customer Chat Widget
 // Enables live chat support for Bulgarian customers
 // Auto-loads in Bulgarian language
 
 import { useEffect } from 'react';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface FacebookMessengerWidgetProps {
   pageId?: string;
@@ -22,7 +23,7 @@ const FacebookMessengerWidget: React.FC<FacebookMessengerWidgetProps> = ({
 
   useEffect(() => {
     if (!defaultPageId) {
-      console.warn('Facebook Page ID not configured');
+      logger.warn('Facebook Page ID not configured');
       return;
     }
 

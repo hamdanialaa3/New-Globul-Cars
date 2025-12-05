@@ -1,11 +1,12 @@
+import { logger } from '../services/logger-service';
 // src/components/PhoneAuthModal.tsx
 // Phone Authentication Modal Component
 
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Phone, X, Check, Loader, AlertCircle } from 'lucide-react';
-import { useTranslation } from '@/hooks/useTranslation';
-import { SocialAuthService } from '@/firebase/social-auth-service';
+import { useTranslation } from '../hooks/useTranslation';
+import { SocialAuthService } from '../firebase/social-auth-service';
 import { RecaptchaVerifier, ConfirmationResult } from 'firebase/auth';
 
 interface PhoneAuthModalProps {
@@ -241,7 +242,7 @@ const PhoneAuthModal: React.FC<PhoneAuthModalProps> = ({ isOpen, onClose, onSucc
         const verifier = SocialAuthService.setupRecaptchaVerifier('recaptcha-container');
         setRecaptchaVerifier(verifier);
       } catch (err) {
-        console.error('Failed to setup reCAPTCHA:', err);
+        logger.error('Failed to setup reCAPTCHA:', err);
         setError('Failed to initialize phone authentication. Please refresh and try again.');
       }
     }

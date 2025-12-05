@@ -1,3 +1,4 @@
+import { logger } from './logger-service';
 /**
  * Bulgarian Socket Service - Singleton Pattern
  * Real-time messaging using Socket.io
@@ -9,10 +10,10 @@
  * 
  * Usage:
  * ```typescript
- * import { socketService } from '@/services/socket-service';
+ * import { socketService } from '../services/socket-service';
  * 
  * socketService.onNewMessage((data) => {
- *   console.log('New message:', data);
+ *   logger.info('New message:', data);
  * });
  * ```
  */

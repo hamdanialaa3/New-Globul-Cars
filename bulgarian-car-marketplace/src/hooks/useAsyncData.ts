@@ -7,7 +7,7 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
-import { logger } from '@/services/logger-service';
+import { logger } from '../services/logger-service';
 
 export interface UseAsyncDataOptions<T> {
   initialData?: T | null;

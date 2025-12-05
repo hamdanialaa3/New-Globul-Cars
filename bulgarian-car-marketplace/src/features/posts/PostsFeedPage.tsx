@@ -1,10 +1,11 @@
+import { logger } from '../../services/logger-service';
 // PostsFeedPage Component
 // Main page displaying posts feed with filtering
 // English/Bulgarian bilingual. No emojis. <250 lines.
 
 import React, { useState, useEffect } from 'react';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { postsService, type Post } from '@/services/posts/posts.service';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { postsService, type Post } from '../../services/posts/posts.service';
 import { PostCard } from './PostCard';
 import * as S from './feed-styles';
 
@@ -25,7 +26,7 @@ export const PostsFeedPage: React.FC = () => {
       const data = await postsService.list(filterType, 50);
       setPosts(data);
     } catch (err) {
-      console.error('Failed to load posts:', err);
+      logger.error('Failed to load posts:', err);
     } finally {
       setLoading(false);
     }
@@ -33,7 +34,7 @@ export const PostsFeedPage: React.FC = () => {
 
   const handleLike = async (postId: string) => {
     // TODO: Implement like functionality
-    console.log('Like post:', postId);
+    logger.info('Like post:', postId);
   };
 
   const handleFlag = async (postId: string) => {
@@ -43,7 +44,7 @@ export const PostsFeedPage: React.FC = () => {
         await postsService.flag(postId, reason, 'current-user-id');
         await loadPosts();
       } catch (err) {
-        console.error('Failed to flag post:', err);
+        logger.error('Failed to flag post:', err);
       }
     }
   };

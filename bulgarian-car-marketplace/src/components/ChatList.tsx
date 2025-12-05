@@ -1,10 +1,11 @@
+import { logger } from '../services/logger-service';
 // src/components/ChatList.tsx
 // Chat List Component for Bulgarian Car Marketplace
 
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useTranslation } from '@/hooks/useTranslation';
-import { realtimeMessagingService, ChatRoom } from '@/services/realtimeMessaging';
+import { useTranslation } from '../hooks/useTranslation';
+import { realtimeMessagingService, ChatRoom } from '../services/realtimeMessaging';
 
 interface ChatListProps {
   currentUserId: string;
@@ -194,7 +195,7 @@ const ChatList: React.FC<ChatListProps> = ({
         const rooms = await realtimeMessagingService.getUserChatRooms(currentUserId);
         setChatRooms(rooms);
       } catch (error) {
-        console.error('Failed to load chat rooms:', error);
+        logger.error('Failed to load chat rooms:', error);
       } finally {
         setLoading(false);
       }

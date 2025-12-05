@@ -5,15 +5,15 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { useAuth } from '@/contexts/AuthProvider';
+import { useLanguage } from '../../../../contexts/LanguageContext';
+import { useAuth } from '../../../../contexts/AuthProvider';
 import { 
   MobileContainer, 
   MobileStack, 
   MobileCard 
-} from '@/components/ui/mobile-index';
-import { MobileButton } from '@/components/ui/MobileButton';
-import { MobileInput } from '@/components/ui/MobileInput';
+} from '../../../../components/ui/mobile-index';
+import { MobileButton } from '../../../../components/ui/MobileButton';
+import { MobileInput } from '../../../../components/ui/MobileInput';
 import { 
   mobileColors,
   mobileSpacing,

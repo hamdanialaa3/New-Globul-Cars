@@ -101,21 +101,21 @@ export const ExteriorSection: React.FC<ExteriorSectionProps> = ({
               <label>{t('advancedSearch.parkingSensors')}</label>
               <CheckboxGroup>
                 {[
-                  t('advancedSearch.frontParkingSensors'),
-                  t('advancedSearch.rearParkingSensors'),
-                  t('advancedSearch.frontAndRearParkingSensors'),
-                  t('advancedSearch.cameraParkingSensors'),
-                  t('advancedSearch.selfParkingSensors'),
-                  t('advancedSearch.parkAssistParkingSensors')
+                  { key: 'front', label: t('advancedSearch.frontParkingSensors') },
+                  { key: 'rear', label: t('advancedSearch.rearParkingSensors') },
+                  { key: 'frontAndRear', label: t('advancedSearch.frontAndRearParkingSensors') },
+                  { key: 'camera', label: t('advancedSearch.cameraParkingSensors') },
+                  { key: 'selfParking', label: t('advancedSearch.selfParkingSensors') },
+                  { key: 'parkAssist', label: t('advancedSearch.parkAssistParkingSensors') }
                 ].map(sensor => (
-                  <CheckboxLabel key={sensor}>
+                  <CheckboxLabel key={sensor.key}>
                     <input
                       type="checkbox"
-                      checked={searchData.parkingSensors.includes(sensor)}
-                      onChange={() => onCheckboxToggle('parkingSensors', sensor)}
+                      checked={searchData.parkingSensors.includes(sensor.key)}
+                      onChange={() => onCheckboxToggle('parkingSensors', sensor.key)}
                     />
-                    <CustomCheckbox checked={searchData.parkingSensors.includes(sensor)} />
-                    {sensor}
+                    <CustomCheckbox checked={searchData.parkingSensors.includes(sensor.key)} />
+                    {sensor.label}
                   </CheckboxLabel>
                 ))}
               </CheckboxGroup>

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import useSellWorkflow from '@/hooks/useSellWorkflow';
-import WorkflowPersistenceService from '@/services/workflowPersistenceService';
+import useSellWorkflow from '../../../../hooks/useSellWorkflow';
+import WorkflowPersistenceService from '../../../../services/workflowPersistenceService';
 
 interface SummaryRow {
   label: string;

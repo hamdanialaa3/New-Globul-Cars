@@ -1,3 +1,4 @@
+import { logger } from '../services/logger-service';
 // Google Analytics 4 Integration (FREE - Unlimited events)
 // Track user behavior, conversions, and business metrics
 
@@ -13,7 +14,7 @@ import ReactGA from 'react-ga4';
  */
 export const initGA = (measurementId: string = process.env.REACT_APP_GA4_MEASUREMENT_ID || 'G-XXXXXXXXXX') => {
   if (!measurementId || measurementId === 'G-XXXXXXXXXX') {
-    console.warn('GA4 Measurement ID not configured');
+    logger.warn('GA4 Measurement ID not configured');
     return;
   }
   
@@ -24,7 +25,7 @@ export const initGA = (measurementId: string = process.env.REACT_APP_GA4_MEASURE
     }
   });
   
-  console.log('✅ Google Analytics 4 initialized');
+  logger.info('✅ Google Analytics 4 initialized');
 };
 
 /**

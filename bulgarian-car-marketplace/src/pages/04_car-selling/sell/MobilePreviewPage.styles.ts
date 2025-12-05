@@ -6,7 +6,7 @@ import {
   mobileBorderRadius,
   mobileShadows,
   mobileMixins
-} from '@/styles/mobile-design-system';
+} from '../../../styles/mobile-design-system';
 
 const Container = styled.div`
   padding: ${mobileSpacing.md};

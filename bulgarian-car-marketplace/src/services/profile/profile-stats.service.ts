@@ -3,10 +3,10 @@
 // English/Bulgarian agnostic. No emojis. <300 lines enforced.
 
 import { collection, doc, getDocs, query, where, Timestamp, onSnapshot, Unsubscribe } from 'firebase/firestore';
-import { db } from '@/firebase/firebase-config';
-import { logger } from '@/services/logger-service';
-import { savedSearchesService } from '@/services/search/saved-searches.service';
-import WorkflowAnalyticsService from '@/services/workflow-analytics-service';
+import { db } from '../../firebase/firebase-config';
+import { logger } from '../../services/logger-service';
+import { savedSearchesService } from '../../services/search/saved-searches.service';
+import WorkflowAnalyticsService from '../../services/workflow-analytics-service';
 
 // Core profile stats interface with strict typing
 export interface ProfileStats {

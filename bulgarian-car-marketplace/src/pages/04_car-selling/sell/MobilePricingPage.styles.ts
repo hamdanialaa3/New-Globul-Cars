@@ -6,7 +6,7 @@ import {
   mobileBorderRadius,
   mobileAnimations,
   mobileMixins
-} from '@/styles/mobile-design-system';
+} from '../../../styles/mobile-design-system';
 
 const PageWrapper = styled.div`
   min-height: 100vh;

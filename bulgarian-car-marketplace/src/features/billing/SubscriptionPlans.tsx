@@ -17,45 +17,57 @@ interface SubscriptionPlansProps {
 // Styled Components
 const Grid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 2rem;
   margin: 2rem 0;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
 `;
 
 const PlanCard = styled.div<{ popular?: boolean; current?: boolean }>`
-  background: white;
-  border-radius: 16px;
-  padding: 2rem;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  background: ${({ theme }) => theme.colors?.cardBackground || '#ffffff'};
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
   position: relative;
   transition: all 0.3s ease;
-  border: 3px solid ${p => p.current ? '#16a34a' : 'transparent'};
+  border: 3px solid ${p => p.current ? '#16a34a' : 'rgba(255, 143, 16, 0.2)'};
   
   ${p => p.popular && `
     transform: scale(1.05);
-    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.2);
+    box-shadow: 0 12px 32px rgba(255, 143, 16, 0.25);
+    border-color: #FF8F10;
   `}
   
   &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    transform: translateY(-8px) ${p => p.popular ? 'scale(1.05)' : 'scale(1.02)'};
+    box-shadow: 0 16px 40px rgba(255, 143, 16, 0.2);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background: ${({ theme }) => theme.colors?.cardBackgroundDark || '#1a1a1a'};
+    border-color: ${p => p.current ? '#16a34a' : 'rgba(255, 143, 16, 0.3)'};
   }
 `;
 
 const Badge = styled.div<{ type: 'popular' | 'current' }>`
   position: absolute;
   top: -12px;
-  right: 20px;
-  padding: 0.4rem 1rem;
-  border-radius: 20px;
-  font-size: 0.75rem;
+  right: 24px;
+  padding: 0.5rem 1.25rem;
+  border-radius: 24px;
+  font-size: 0.8rem;
   font-weight: 700;
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.4rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   
   ${p => p.type === 'popular' ? `
-    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    background: linear-gradient(135deg, #FF8F10 0%, #fb923c 100%);
     color: white;
   ` : `
     background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
@@ -63,79 +75,104 @@ const Badge = styled.div<{ type: 'popular' | 'current' }>`
   `}
   
   svg {
-    width: 14px;
-    height: 14px;
+    width: 16px;
+    height: 16px;
   }
 `;
 
 const PlanName = styled.h3`
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #1a1a1a;
-  margin: 0 0 0.5rem 0;
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: ${({ theme }) => theme.colors?.text || '#1a1a1a'};
+  margin: 0 0 0.75rem 0;
+
+  @media (prefers-color-scheme: dark) {
+    color: ${({ theme }) => theme.colors?.textDark || '#f5f5f5'};
+  }
 `;
 
 const PlanPrice = styled.div`
-  font-size: 2.5rem;
-  font-weight: bold;
-  color: #1d4ed8;
-  margin: 1rem 0;
+  font-size: 3rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #FF8F10 0%, #fb923c 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 1.5rem 0;
   
   .currency {
-    font-size: 1.5rem;
-    color: #6c757d;
+    font-size: 1.75rem;
+    opacity: 0.8;
   }
   
   .period {
-    font-size: 1rem;
-    color: #9ca3af;
-    font-weight: normal;
+    font-size: 1.1rem;
+    color: ${({ theme }) => theme.colors?.textSecondary || '#9ca3af'};
+    font-weight: 600;
+    -webkit-text-fill-color: currentColor;
+
+    @media (prefers-color-scheme: dark) {
+      color: ${({ theme }) => theme.colors?.textSecondaryDark || '#d1d5db'};
+    }
   }
 `;
 
 const FeaturesList = styled.ul`
   list-style: none;
   padding: 0;
-  margin: 1.5rem 0;
+  margin: 2rem 0;
 `;
 
 const FeatureItem = styled.li`
   display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.5rem 0;
-  color: #4b5563;
-  font-size: 0.9rem;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 0.75rem 0;
+  color: ${({ theme }) => theme.colors?.text || '#4b5563'};
+  font-size: 1rem;
+  line-height: 1.5;
   
   svg {
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
     color: #16a34a;
     flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    color: ${({ theme }) => theme.colors?.textDark || '#e5e7eb'};
   }
 `;
 
 const SelectButton = styled.button<{ selected?: boolean }>`
   width: 100%;
-  padding: 1rem;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 1rem;
+  padding: 1.25rem;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1.1rem;
   border: none;
   cursor: pointer;
   transition: all 0.3s ease;
+  margin-top: 1rem;
   
   ${p => p.selected ? `
-    background: #e5e7eb;
+    background: rgba(229, 231, 235, 0.5);
     color: #6c757d;
     cursor: default;
+    border: 2px solid #e5e7eb;
   ` : `
-    background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%);
+    background: linear-gradient(135deg, #FF8F10 0%, #fb923c 100%);
     color: white;
+    box-shadow: 0 4px 16px rgba(255, 143, 16, 0.3);
     
     &:hover {
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(29, 78, 216, 0.4);
+      box-shadow: 0 8px 24px rgba(255, 143, 16, 0.4);
+    }
+
+    &:active {
+      transform: translateY(0);
     }
   `}
 `;

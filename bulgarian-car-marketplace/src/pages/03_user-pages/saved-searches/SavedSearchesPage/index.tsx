@@ -4,8 +4,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { useSavedSearches } from '@/hooks/useSavedSearches';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useSavedSearches } from '../../../../hooks/useSavedSearches';
+import { useLanguage } from '../../../../contexts/LanguageContext';
 import {
   Search,
   Bell,
@@ -18,7 +18,7 @@ import {
   DollarSign,
   Calendar
 } from 'lucide-react';
-import { SavedSearch } from '@/services/savedSearchesService';
+import { SavedSearch } from '../../../../services/savedSearchesService';
 
 const PageContainer = styled.div`
   max-width: 1200px;

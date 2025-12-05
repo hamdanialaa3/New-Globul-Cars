@@ -6,7 +6,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 import { User, Car, TrendingUp, Settings, MessageSquare, BarChart3 } from 'lucide-react';
-import type { ProfileTheme } from '@/contexts/ProfileTypeContext';
+import type { ProfileTheme } from '../../../../../contexts/ProfileTypeContext';
 
 interface Tab {
   id: string;

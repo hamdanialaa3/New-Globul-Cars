@@ -36,6 +36,7 @@ import FloatingAddButton from '@globul-cars/ui/components/FloatingAddButton';
 import AssistantHead from '@globul-cars/ui/components/AI/AssistantHead';
 import { useIsMobile } from '@globul-cars/core';
 import ProgressBar from '@globul-cars/ui/components/ProgressBar';
+import { LoadingSpinner } from '@globul-cars/ui/components';
 // Removed problematic imports
 // import useAuthRedirectHandler from '@globul-cars/coreuseAuthRedirectHandler';
 
@@ -330,12 +331,13 @@ const MainLayout: React.FC = () => {
   <Layout>
     <FloatingAddButton />
     <AssistantHead />
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/social" element={<SocialFeedPage />} />
-      <Route path="/cars" element={<CarsPage />} />
-      <Route path="/cars/:id" element={<CarDetailsPage />} />
-      <Route path="/car/:id" element={<CarDetailsPage />} />
+    <Suspense fallback={<LoadingSpinner />}>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/social" element={<SocialFeedPage />} />
+        <Route path="/cars" element={<CarsPage />} />
+        <Route path="/cars/:id" element={<CarDetailsPage />} />
+        <Route path="/car/:id" element={<CarDetailsPage />} />
       
       {/* Dealer Routes */}
       <Route path="/dealer/:slug" element={<DealerPublicPage />} />
@@ -867,6 +869,7 @@ const MainLayout: React.FC = () => {
       {/* 404 Page - Already wrapped in Layout by MainLayout */}
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
+    </Suspense>
   </Layout>
   );
 };

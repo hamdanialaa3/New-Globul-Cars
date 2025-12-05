@@ -1,3 +1,4 @@
+import { logger } from '../services/logger-service';
 // UptimeRobot Monitoring Setup (FREE - 50 monitors)
 // Monitor uptime, SSL, ports, keywords
 
@@ -111,7 +112,7 @@ export const createMonitorViaAPI = async (monitorData: any) => {
   const API_KEY = process.env.REACT_APP_UPTIMEROBOT_API_KEY; // Get from uptimerobot.com
   
   if (!API_KEY) {
-    console.warn('UptimeRobot API key not configured');
+    logger.warn('UptimeRobot API key not configured');
     return;
   }
   
@@ -132,10 +133,10 @@ export const createMonitorViaAPI = async (monitorData: any) => {
     });
     
     const data = await response.json();
-    console.log('Monitor created:', data);
+    logger.info('Monitor created:', data);
     return data;
   } catch (error) {
-    console.error('Failed to create monitor:', error);
+    logger.error('Failed to create monitor:', error);
   }
 };
 
@@ -146,7 +147,7 @@ export const getMonitorStatus = async () => {
   const API_KEY = process.env.REACT_APP_UPTIMEROBOT_API_KEY;
   
   if (!API_KEY) {
-    console.warn('UptimeRobot API key not configured');
+    logger.warn('UptimeRobot API key not configured');
     return;
   }
   
@@ -165,7 +166,7 @@ export const getMonitorStatus = async () => {
     const data = await response.json();
     return data.monitors;
   } catch (error) {
-    console.error('Failed to get monitors:', error);
+    logger.error('Failed to get monitors:', error);
   }
 };
 

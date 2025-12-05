@@ -4,17 +4,17 @@
 
 import React, { useState, useCallback, useEffect } from 'react';
 import { useNavigate, useSearchParams, useParams } from 'react-router-dom';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { MobileContainer, MobileStack } from '@/components/ui/mobile-index';
-import { MobileHeader } from '@/components/layout/MobileHeader';
+import { useLanguage } from '../../../contexts/LanguageContext';
+import { MobileContainer, MobileStack } from '../../../components/ui/mobile-index';
+import { MobileHeader } from '../../../components/layout/MobileHeader';
 import { S } from './MobileImagesPage.styles';
-import { geminiVisionService } from '@/services/ai/gemini-vision.service';
-import { useAuth } from '@/contexts/AuthProvider';
-import { useToast } from '@/components/Toast';
+import { geminiVisionService } from '../../../services/ai/gemini-vision.service';
+import { useAuth } from '../../../contexts/AuthProvider';
+import { useToast } from '../../../components/Toast';
 import styled from 'styled-components';
-import { SellProgressBar } from '@/components/SellWorkflow';
-import SellWorkflowStepStateService from '@/services/sellWorkflowStepState';
-import WorkflowPersistenceService from '@/services/workflowPersistenceService';
+import { SellProgressBar } from '../../../components/SellWorkflow';
+import SellWorkflowStepStateService from '../../../services/sellWorkflowStepState';
+import WorkflowPersistenceService from '../../../services/workflowPersistenceService';
 
 const MAX_IMAGES = 20;
 

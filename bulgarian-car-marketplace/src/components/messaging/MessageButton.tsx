@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useTranslation } from '../../hooks/useTranslation';
 import { useAuth } from '../../contexts/AuthProvider';
 import { messagingService } from '../../services/messaging/advanced-messaging-service';
+import { logger } from '../../services/logger-service';
 
 // Styled Components
 const MessageButtonContainer = styled.div`
@@ -172,7 +173,7 @@ const MessageButtonComponent: React.FC<MessageButtonProps> = ({
       // Clear success message after 2 seconds
       setTimeout(() => setSuccess(false), 2000);
     } catch (err) {
-      console.error('Error sending message:', err);
+      logger.error('Error sending message:', err);
       setError(t('messaging.sendError'));
       
       // Clear error message after 3 seconds

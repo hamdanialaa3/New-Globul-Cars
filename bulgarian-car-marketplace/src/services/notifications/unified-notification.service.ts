@@ -12,8 +12,8 @@
  * @since 2025-11-03 (Phase 1.4)
  */
 
-import { db } from '@/firebase/firebase-config';
-import { logger } from '@/services/logger-service';
+import { db } from '../../firebase/firebase-config';
+import { logger } from '../../services/logger-service';
 
 export class UnifiedNotificationService {
   private static instance: UnifiedNotificationService;

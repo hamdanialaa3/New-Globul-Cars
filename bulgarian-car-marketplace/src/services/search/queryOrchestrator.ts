@@ -5,11 +5,11 @@
 //  - Else use Firestore (exact matches + recent listings ordering)
 //  - Future: hybrid union + ranking merge
 
-import algoliaSearchService from '@/services/algoliaSearchService';
+import algoliaSearchService from '../../services/algoliaSearchService';
 import { buildFirestoreQuery } from './firestoreQueryBuilder';
 import { getDocs } from 'firebase/firestore';
-import { logger } from '@/services/logger-service';
-import { SearchData } from '@/pages/05_search-browse/advanced-search/AdvancedSearchPage/types';
+import { logger } from '../../services/logger-service';
+import { SearchData } from '../../pages/05_search-browse/advanced-search/AdvancedSearchPage/types';
 
 export interface OrchestratorResult {
   cars: any[];

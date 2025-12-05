@@ -1,7 +1,7 @@
 // AI Tier Configuration
 // تكوين مستويات الذكاء الاصطناعي
 
-import { AITierConfig } from '@/types/ai-quota.types';
+import { AITierConfig } from '../types/ai-quota.types';
 
 export const AI_TIER_CONFIGS: Record<string, AITierConfig> = {
   free: {

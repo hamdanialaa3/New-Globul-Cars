@@ -1,3 +1,4 @@
+import { logger } from '../../services/logger-service';
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Download } from 'lucide-react';
@@ -49,7 +50,7 @@ export const InstallButton: React.FC = () => {
     const { outcome } = await deferredPrompt.userChoice;
     
     if (outcome === 'accepted') {
-      console.log('✅ PWA installed');
+      logger.info('✅ PWA installed');
     }
     
     setDeferredPrompt(null);

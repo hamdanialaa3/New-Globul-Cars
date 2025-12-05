@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { cloudServicesConfig, ServiceConfig } from '@/services/cloud-services-config';
+import { cloudServicesConfig, ServiceConfig } from '../../services/cloud-services-config';
 import { Check, X, Settings, ExternalLink } from 'lucide-react';
 
 const CloudServicesManager: React.FC = () => {

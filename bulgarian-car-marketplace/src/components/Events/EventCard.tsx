@@ -1,3 +1,4 @@
+import { logger } from '../../services/logger-service';
 /**
  * EventCard - Display event in feed/list
  * Location: Bulgaria | Languages: BG/EN | Currency: EUR
@@ -189,7 +190,7 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
   const handleInterested = (e: React.MouseEvent) => {
     e.stopPropagation();
     // TODO: Handle RSVP
-    console.log('Interested in event:', event.id);
+    logger.info('Interested in event:', event.id);
   };
   
   return (

@@ -2,11 +2,11 @@
 // ترحيل المواقع من المتصفح مباشرة
 
 import { collection, getDocs, doc, updateDoc } from 'firebase/firestore';
-import { db } from '@/firebase/firebase-config';
-import { BULGARIAN_CITIES } from '@/constants/bulgarianCities';
-import { BULGARIA_REGIONS } from '@/data/bulgaria-locations';
-import LocationHelperService, { UnifiedLocation } from '@/services/location-helper-service';
-import { logger } from '@/services/logger-service';
+import { db } from '../firebase/firebase-config';
+import { BULGARIAN_CITIES } from '../constants/bulgarianCities';
+import { BULGARIA_REGIONS } from '../data/bulgaria-locations';
+import LocationHelperService, { UnifiedLocation } from '../services/location-helper-service';
+import { logger } from '../services/logger-service';
 
 interface MigrationResult {
   total: number;

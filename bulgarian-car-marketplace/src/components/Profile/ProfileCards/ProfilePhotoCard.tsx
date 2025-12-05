@@ -1,3 +1,4 @@
+import { logger } from '../../../services/logger-service';
 // Profile Photo Card Component
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
@@ -79,7 +80,7 @@ const ProfilePhotoCard: React.FC<ProfilePhotoCardProps> = ({
         ? 'Снимката е качена успешно'
         : 'Photo uploaded successfully');
     } catch (error: any) {
-      console.error('Error uploading photo:', error);
+      logger.error('Error uploading photo:', error);
       
       let errorMessage = language === 'bg' ? 'Грешка при качване' : 'Upload error';
       
@@ -179,7 +180,7 @@ const ProfilePhotoCard: React.FC<ProfilePhotoCardProps> = ({
         ? 'Снимката е изтрита'
         : 'Photo deleted');
     } catch (error) {
-      console.error('Error deleting photo:', error);
+      logger.error('Error deleting photo:', error);
       toast.error(language === 'bg'
         ? 'Грешка при изтриване'
         : 'Delete error');

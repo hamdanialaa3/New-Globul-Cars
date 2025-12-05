@@ -3,11 +3,11 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { UnifiedCar } from '@/services/car';
+import { UnifiedCar } from '../../../../services/car';
 import { Ruler, Fuel, Settings, MapPin, Heart } from 'lucide-react';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { useTheme } from '@/contexts/ThemeContext';
-import GlobulCarLogo from '@/components/icons/GlobulCarLogo';
+import { useLanguage } from '../../../../contexts/LanguageContext';
+import { useTheme } from '../../../../contexts/ThemeContext';
+import GlobulCarLogo from '../../../../components/icons/GlobulCarLogo';
 
 // Styled Components
 const CardContainer = styled.div<{ $isDark: boolean }>`

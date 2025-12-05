@@ -26,11 +26,23 @@ import NotificationHandler from './components/NotificationHandler';
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 import { FilterProvider } from './contexts/FilterContext';
 const NotFoundPage = React.lazy(() => import('./components/NotFoundPage'));
+
+// 🔧 Dev utilities (available in console)
+if (process.env.NODE_ENV === 'development') {
+  import('./utils/checkCarsStatus').then(module => {
+    (window as any).checkCarsStatus = module.checkAllCarsStatus;
+    (window as any).fixCarsStatus = module.fixAllCarsStatus;
+    console.log('🛠️ Dev utilities loaded:');
+    console.log('  - checkCarsStatus() - فحص حالة السيارات');
+    console.log('  - fixCarsStatus() - إصلاح السيارات المخفية');
+  });
+}
 const FacebookPixel = React.lazy(() => import('./components/FacebookPixel'));
 const FloatingAddButton = React.lazy(() => import('./components/FloatingAddButton'));
 const RobotChatIcon = React.lazy(() => import('./components/AI/RobotChatIcon'));
 import { useIsMobile } from './hooks/useBreakpoint';
 const ProgressBar = React.lazy(() => import('./components/ProgressBar'));
+import LoadingSpinner from './components/LoadingSpinner';
 
 // Lazy load pages for better performance
 const ArchitectureDiagramPage = React.lazy(() => import('./pages/ArchitectureDiagramPage'));
@@ -89,6 +101,7 @@ const PrivacyPolicyPage = React.lazy(() => import('./pages/10_legal/privacy-poli
 const TermsOfServicePage = React.lazy(() => import('./pages/10_legal/terms-of-service/TermsOfServicePage'));
 const DataDeletionPage = React.lazy(() => import('./pages/10_legal/data-deletion/DataDeletionPage'));
 const AdvancedSearchPage = React.lazy(() => import('./pages/05_search-browse/advanced-search/AdvancedSearchPage'));
+const AlgoliaSearchPage = React.lazy(() => import('./pages/05_search-browse/algolia-search/AlgoliaSearchPage'));
 const MyListingsPage = React.lazy(() => import('./pages/03_user-pages/my-listings/MyListingsPage'));
 const MyDraftsPage = React.lazy(() => import('./pages/03_user-pages/my-drafts/MyDraftsPage'));
 const MigrationPage = React.lazy(() => import('./pages/06_admin/MigrationPage'));
@@ -129,6 +142,9 @@ const BillingCanceledPage = React.lazy(() => import('./pages/08_payment-billing/
 const DealerRegistrationPage = React.lazy(() => import('./pages/09_dealer-company/DealerRegistrationPage'));
 const DealerDashboardPage = React.lazy(() => import('./pages/09_dealer-company/DealerDashboardPage'));
 
+// 🔧 Admin Tools
+const AlgoliaSyncManager = React.lazy(() => import('./pages/06_admin/AlgoliaSyncManager'));
+
 // NEW: Admin & Development Pages
 const AdminCarManagementPage = React.lazy(() => import('./pages/06_admin/regular-admin/AdminCarManagementPage'));
 const IconShowcasePage = React.lazy(() => import('./pages/11_testing-dev/IconShowcasePage'));
@@ -151,15 +167,13 @@ const CloudServicesManager = React.lazy(() => import('./pages/06_admin/CloudServ
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // Get theme from context
   const { theme } = useTheme();
-  const isDark = theme === 'dark';
 
   return (
     <div className="main-layout" style={{
       minHeight: '100vh',
       display: 'flex',
-      flexDirection: 'column',
-      backgroundColor: isDark ? '#0f172a' : '#f5f5f8',
-      transition: 'background-color 0.3s ease'
+      flexDirection: 'column'
+      // backgroundColor controlled by CSS var(--bg-primary) in index.css
     }}>
       <header role="banner">
         {/* ✅ Desktop Header - Hidden on mobile */}
@@ -183,13 +197,13 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           padding: '0', // ❌ REMOVED: No padding on mobile - causes yellow transparent frame
           paddingTop: '80px', // ✅ Space for fixed transparent header
           paddingBottom: '80px', // ✅ Space for mobile bottom nav
-          backgroundColor: isDark ? '#0f172a' : '#f5f5f8',
+          backgroundColor: 'transparent', // Let page components control background
           transition: 'background-color 0.3s ease'
         }}
         tabIndex={-1}
       >
         <div className="page-container" style={{
-          backgroundColor: isDark ? '#0f172a' : 'transparent',
+          backgroundColor: 'transparent', // Always transparent - let page components control their own background
           transition: 'background-color 0.3s ease'
         }}>
           {children}
@@ -227,7 +241,9 @@ const FullScreenLayout: React.FC<{ children: React.ReactNode }> = ({ children })
 // Loading fallback is provided inline where needed (simple spinner)
 
 // App Component
-const App: React.FC = () => {
+// Wrapper component that injects theme.mode from ThemeContext into styled-components
+const ThemedApp: React.FC = () => {
+  const { theme } = useTheme();
   const recaptchaKey = process.env.REACT_APP_RECAPTCHA_SITE_KEY;
 
   // Note: reCAPTCHA is optional for development
@@ -236,78 +252,91 @@ const App: React.FC = () => {
     logger.warn('reCAPTCHA Site Key is not configured');
   }
 
+  // Create dynamic theme object with mode property from ThemeContext
+  const dynamicTheme = React.useMemo(() => ({
+    ...bulgarianTheme,
+    mode: theme // 'light' or 'dark' from ThemeContext
+  }), [theme]);
+
   return (
-    <ThemeProvider theme={bulgarianTheme}>
+    <ThemeProvider theme={dynamicTheme}>
       <GlobalStyles />
       <ErrorBoundary>
-        {/* ✨ NEW: Using extracted AppProviders (contains all 8 providers in correct order) */}
-        <AppProviders recaptchaKey={recaptchaKey || "dummy-key"}>
-          <Suspense fallback={<div style={{ height: '0' }} />}>
-            <FacebookPixel />
+        <Suspense fallback={<div style={{ height: '0' }} />}>
+          <FacebookPixel />
+        </Suspense>
+        {/* <FacebookMessengerWidget /> - Temporarily disabled */}
+        <SkipNavigation />
+        <NotificationHandler />
+        <Suspense fallback={
+          <Suspense fallback={<div>Loading...</div>}>
+            <ProgressBar duration={2000} />
           </Suspense>
-          {/* <FacebookMessengerWidget /> - Temporarily disabled */}
-          <SkipNavigation />
-          <NotificationHandler />
-          <Suspense fallback={
-            <Suspense fallback={<div>Loading...</div>}>
-              <ProgressBar duration={2000} />
-            </Suspense>
-          }>
-            <Routes>
-              {/* Auth Routes - Full Screen (no header/footer) */}
-              <Route path="/login" element={
-                <FullScreenLayout>
-                  <LoginPage />
-                </FullScreenLayout>
-              } />
-              <Route path="/register" element={
-                <FullScreenLayout>
-                  <RegisterPage />
-                </FullScreenLayout>
-              } />
-              <Route path="/verification" element={
-                <FullScreenLayout>
-                  <EmailVerificationPage />
-                </FullScreenLayout>
-              } />
+        }>
+          <Routes>
+            {/* Auth Routes - Full Screen (no header/footer) */}
+            <Route path="/login" element={
+              <FullScreenLayout>
+                <LoginPage />
+              </FullScreenLayout>
+            } />
+            <Route path="/register" element={
+              <FullScreenLayout>
+                <RegisterPage />
+              </FullScreenLayout>
+            } />
+            <Route path="/verification" element={
+              <FullScreenLayout>
+                <EmailVerificationPage />
+              </FullScreenLayout>
+            } />
 
-              {/* OAuth Callback - Full Screen (no header/footer) */}
-              <Route path="/oauth/callback" element={
-                <FullScreenLayout>
-                  <OAuthCallback />
-                </FullScreenLayout>
-              } />
+            {/* OAuth Callback - Full Screen (no header/footer) */}
+            <Route path="/oauth/callback" element={
+              <FullScreenLayout>
+                <OAuthCallback />
+              </FullScreenLayout>
+            } />
 
-              {/* Super Admin Routes - Full Screen (no header/footer) */}
-              <Route path="/super-admin-login" element={
-                <FullScreenLayout>
-                  <SuperAdminLogin />
-                </FullScreenLayout>
-              } />
-              <Route path="/super-admin" element={
-                <FullScreenLayout>
-                  <SuperAdminDashboard />
-                </FullScreenLayout>
-              } />
-              <Route path="/super-admin/users" element={
-                <FullScreenLayout>
-                  <SuperAdminUsersPage />
-                </FullScreenLayout>
-              } />
-              {/* Architecture Diagram - Full Screen */}
-              <Route path="/diagram" element={
-                <FullScreenLayout>
-                  <ArchitectureDiagramPage />
-                </FullScreenLayout>
-              } />
+            {/* Super Admin Routes - Full Screen (no header/footer) */}
+            <Route path="/super-admin-login" element={
+              <FullScreenLayout>
+                <SuperAdminLogin />
+              </FullScreenLayout>
+            } />
+            <Route path="/super-admin" element={
+              <FullScreenLayout>
+                <SuperAdminDashboard />
+              </FullScreenLayout>
+            } />
+            <Route path="/super-admin/users" element={
+              <FullScreenLayout>
+                <SuperAdminUsersPage />
+              </FullScreenLayout>
+            } />
+            {/* Architecture Diagram - Full Screen */}
+            <Route path="/diagram" element={
+              <FullScreenLayout>
+                <ArchitectureDiagramPage />
+              </FullScreenLayout>
+            } />
 
-              {/* All other routes with header/footer */}
-              <Route path="/*" element={<MainLayout />} />
-            </Routes>
-          </Suspense>
-        </AppProviders>
+            {/* All other routes with header/footer */}
+            <Route path="/*" element={<MainLayout />} />
+          </Routes>
+        </Suspense>
       </ErrorBoundary>
     </ThemeProvider>
+  );
+};
+
+const App: React.FC = () => {
+  const recaptchaKey = process.env.REACT_APP_RECAPTCHA_SITE_KEY;
+
+  return (
+    <AppProviders recaptchaKey={recaptchaKey || "dummy-key"}>
+      <ThemedApp />
+    </AppProviders>
   );
 };
 
@@ -438,6 +467,28 @@ const MainLayout: React.FC = () => {
         <Route path="/profile/*" element={<ProfileRouter />} />
         <Route path="/verification" element={<VerificationPage />} />  {/* NEW: Verification System */}
         <Route path="/billing" element={<BillingPage />} />  {/* NEW: Billing System */}
+        
+        {/* NEW: Subscription Success & Cancel Pages */}
+        <Route 
+          path="/billing/success" 
+          element={
+            <AuthGuard requireAuth={true}>
+              <React.Suspense fallback={<LoadingSpinner />}>
+                {React.createElement(React.lazy(() => import('./pages/billing/SuccessPage')))}
+              </React.Suspense>
+            </AuthGuard>
+          } 
+        />
+        <Route 
+          path="/billing/cancel" 
+          element={
+            <AuthGuard requireAuth={true}>
+              <React.Suspense fallback={<LoadingSpinner />}>
+                {React.createElement(React.lazy(() => import('./pages/billing/CancelPage')))}
+              </React.Suspense>
+            </AuthGuard>
+          } 
+        />
 
         {/* NEW: Payment & Checkout Routes */}
         <Route
@@ -662,6 +713,14 @@ const MainLayout: React.FC = () => {
             </AuthGuard>
           }
         />
+        <Route
+          path="/admin/algolia-sync"
+          element={
+            <AuthGuard requireAuth={true} requireAdmin={true}>
+              <AlgoliaSyncManager />
+            </AuthGuard>
+          }
+        />
 
         {/* N8N Integration Test Page */}
         <Route path="/n8n-test" element={<N8nTestPage />} />
@@ -673,8 +732,16 @@ const MainLayout: React.FC = () => {
         <Route
           path="/advanced-search"
           element={
-            <AuthGuard requireAuth={true}>
+            <AuthGuard requireAuth={false}>
               <AdvancedSearchPage />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/search"
+          element={
+            <AuthGuard requireAuth={false}>
+              <AlgoliaSearchPage />
             </AuthGuard>
           }
         />

@@ -9,11 +9,11 @@
  */
 
 import { useState, useEffect } from 'react';
-import { ProfileService } from '@/services/profile/ProfileService';
-import { logger } from '@/services/logger-service';
-import type { BulgarianUser } from '@/types/user/bulgarian-user.types';
-import type { DealershipInfo } from '@/types/dealership/dealership.types';
-import type { CompanyInfo } from '@/types/company/company.types';
+import { ProfileService } from '../services/profile/ProfileService';
+import { logger } from '../services/logger-service';
+import type { BulgarianUser } from '../types/user/bulgarian-user.types';
+import type { DealershipInfo } from '../types/dealership/dealership.types';
+import type { CompanyInfo } from '../types/company/company.types';
 
 export interface CompleteProfile {
   user: BulgarianUser | null;

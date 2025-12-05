@@ -13,9 +13,9 @@ import {
   increment
 } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
-import { db, storage } from '@/firebase/firebase-config';
+import { db, storage } from '../../firebase/firebase-config';
 import { serviceLogger } from '../logger-wrapper';
-import type { IntroVideo } from '@/types/profile-enhancements.types';
+import type { IntroVideo } from '../../types/profile-enhancements.types';
 
 export class IntroVideoService {
   private static instance: IntroVideoService;

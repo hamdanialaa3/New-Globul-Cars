@@ -1,9 +1,10 @@
+import { logger } from '../services/logger-service';
 // Fix Old Data Ownership Script
 // سكريبت تصحيح ملكية البيانات القديمة
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
 
 import { collection, getDocs, updateDoc, doc, query, where } from 'firebase/firestore';
-import { db } from '@/firebase/firebase-config';
+import { db } from '../firebase/firebase-config';
 
 /**
  * هذا السكريبت يصلح البيانات القديمة التي قد تكون:
@@ -24,7 +25,7 @@ export class DataOwnershipFixer {
    * إصلاح جميع البيانات القديمة
    */
   static async fixAllOldData(): Promise<FixReport> {
-    console.log('🔧 Starting data ownership fix...\n');
+    logger.info('🔧 Starting data ownership fix...\n');
     
     const report: FixReport = {
       postsFixed: 0,
@@ -35,26 +36,26 @@ export class DataOwnershipFixer {
 
     try {
       // 1. إصلاح المنشورات
-      console.log('📝 Fixing posts...');
+      logger.info('📝 Fixing posts...');
       report.postsFixed = await this.fixPosts();
-      console.log(`✅ Fixed ${report.postsFixed} posts\n`);
+      logger.info(`✅ Fixed ${report.postsFixed} posts\n`);
 
       // 2. إصلاح السيارات
-      console.log('🚗 Fixing cars...');
+      logger.info('🚗 Fixing cars...');
       report.carsFixed = await this.fixCars();
-      console.log(`✅ Fixed ${report.carsFixed} cars\n`);
+      logger.info(`✅ Fixed ${report.carsFixed} cars\n`);
 
       report.success = true;
       
-      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-      console.log('✅ All data fixed successfully!');
-      console.log(`📝 Posts fixed: ${report.postsFixed}`);
-      console.log(`🚗 Cars fixed: ${report.carsFixed}`);
-      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
+      logger.info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      logger.info('✅ All data fixed successfully!');
+      logger.info(`📝 Posts fixed: ${report.postsFixed}`);
+      logger.info(`🚗 Cars fixed: ${report.carsFixed}`);
+      logger.info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
 
       return report;
     } catch (error) {
-      console.error('❌ Error during fix:', error);
+      logger.error('❌ Error during fix:', error);
       report.errors.push(error instanceof Error ? error.message : 'Unknown error');
       return report;
     }
@@ -70,7 +71,7 @@ export class DataOwnershipFixer {
       // جلب جميع المنشورات
       const postsSnapshot = await getDocs(collection(db, 'posts'));
       
-      console.log(`   Found ${postsSnapshot.size} posts to check...`);
+      logger.info(`   Found ${postsSnapshot.size} posts to check...`);
 
       for (const postDoc of postsSnapshot.docs) {
         const postData = postDoc.data();
@@ -79,7 +80,7 @@ export class DataOwnershipFixer {
 
         // ✅ Check 1: authorId موجود؟
         if (!postData.authorId) {
-          console.log(`   ⚠️ Post ${postDoc.id} has no authorId - SKIPPING (cannot fix)`);
+          logger.info(`   ⚠️ Post ${postDoc.id} has no authorId - SKIPPING (cannot fix)`);
           continue;
         }
 
@@ -102,7 +103,7 @@ export class DataOwnershipFixer {
               needsUpdate = true;
             }
           } catch (err) {
-            console.error(`   Error fixing post ${postDoc.id}:`, err);
+            logger.error(`   Error fixing post ${postDoc.id}:`, err);
           }
         }
 
@@ -134,13 +135,13 @@ export class DataOwnershipFixer {
         if (needsUpdate) {
           await updateDoc(doc(db, 'posts', postDoc.id), updates);
           fixedCount++;
-          console.log(`   ✓ Fixed post ${postDoc.id}`);
+          logger.info(`   ✓ Fixed post ${postDoc.id}`);
         }
       }
 
       return fixedCount;
     } catch (error) {
-      console.error('Error fixing posts:', error);
+      logger.error('Error fixing posts:', error);
       throw error;
     }
   }
@@ -155,7 +156,7 @@ export class DataOwnershipFixer {
       // جلب جميع السيارات
       const carsSnapshot = await getDocs(collection(db, 'cars'));
       
-      console.log(`   Found ${carsSnapshot.size} cars to check...`);
+      logger.info(`   Found ${carsSnapshot.size} cars to check...`);
 
       for (const carDoc of carsSnapshot.docs) {
         const carData = carDoc.data();
@@ -164,7 +165,7 @@ export class DataOwnershipFixer {
 
         // ✅ Check 1: userId/ownerId موجود؟
         if (!carData.userId && !carData.ownerId) {
-          console.log(`   ⚠️ Car ${carDoc.id} has no userId/ownerId - SKIPPING`);
+          logger.info(`   ⚠️ Car ${carDoc.id} has no userId/ownerId - SKIPPING`);
           continue;
         }
 
@@ -184,7 +185,7 @@ export class DataOwnershipFixer {
               needsUpdate = true;
             }
           } catch (err) {
-            console.error(`   Error fixing car ${carDoc.id}:`, err);
+            logger.error(`   Error fixing car ${carDoc.id}:`, err);
           }
         }
 
@@ -204,13 +205,13 @@ export class DataOwnershipFixer {
         if (needsUpdate) {
           await updateDoc(doc(db, 'cars', carDoc.id), updates);
           fixedCount++;
-          console.log(`   ✓ Fixed car ${carDoc.id}`);
+          logger.info(`   ✓ Fixed car ${carDoc.id}`);
         }
       }
 
       return fixedCount;
     } catch (error) {
-      console.error('Error fixing cars:', error);
+      logger.error('Error fixing cars:', error);
       throw error;
     }
   }
@@ -224,40 +225,40 @@ export class DataOwnershipFixer {
     totalPosts: number;
     totalCars: number;
   }> {
-    console.log('🔍 Checking data integrity...\n');
+    logger.info('🔍 Checking data integrity...\n');
 
     let postsWithIssues = 0;
     let carsWithIssues = 0;
 
     // فحص المنشورات
     const postsSnapshot = await getDocs(collection(db, 'posts'));
-    console.log(`📝 Total posts: ${postsSnapshot.size}`);
+    logger.info(`📝 Total posts: ${postsSnapshot.size}`);
     
     postsSnapshot.docs.forEach(doc => {
       const data = doc.data();
       if (!data.authorId || !data.authorInfo?.displayName || !data.status) {
         postsWithIssues++;
-        console.log(`   ⚠️ Post ${doc.id}: Missing ${!data.authorId ? 'authorId' : !data.authorInfo?.displayName ? 'authorInfo' : 'status'}`);
+        logger.info(`   ⚠️ Post ${doc.id}: Missing ${!data.authorId ? 'authorId' : !data.authorInfo?.displayName ? 'authorInfo' : 'status'}`);
       }
     });
 
     // فحص السيارات
     const carsSnapshot = await getDocs(collection(db, 'cars'));
-    console.log(`\n🚗 Total cars: ${carsSnapshot.size}`);
+    logger.info(`\n🚗 Total cars: ${carsSnapshot.size}`);
     
     carsSnapshot.docs.forEach(doc => {
       const data = doc.data();
       if (!data.sellerEmail || (!data.userId && !data.ownerId)) {
         carsWithIssues++;
-        console.log(`   ⚠️ Car ${doc.id}: Missing ${!data.sellerEmail ? 'sellerEmail' : 'userId/ownerId'}`);
+        logger.info(`   ⚠️ Car ${doc.id}: Missing ${!data.sellerEmail ? 'sellerEmail' : 'userId/ownerId'}`);
       }
     });
 
-    console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-    console.log(`📊 Results:`);
-    console.log(`   Posts with issues: ${postsWithIssues}/${postsSnapshot.size}`);
-    console.log(`   Cars with issues: ${carsWithIssues}/${carsSnapshot.size}`);
-    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
+    logger.info('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    logger.info(`📊 Results:`);
+    logger.info(`   Posts with issues: ${postsWithIssues}/${postsSnapshot.size}`);
+    logger.info(`   Cars with issues: ${carsWithIssues}/${carsSnapshot.size}`);
+    logger.info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
 
     return {
       postsWithIssues,
@@ -271,23 +272,23 @@ export class DataOwnershipFixer {
    * التحقق من منشورات مستخدم معين
    */
   static async checkUserPosts(userId: string): Promise<void> {
-    console.log(`🔍 Checking posts for user: ${userId}\n`);
+    logger.info(`🔍 Checking posts for user: ${userId}\n`);
 
     const postsSnapshot = await getDocs(
       query(collection(db, 'posts'), where('authorId', '==', userId))
     );
 
-    console.log(`Found ${postsSnapshot.size} posts for this user:\n`);
+    logger.info(`Found ${postsSnapshot.size} posts for this user:\n`);
 
     postsSnapshot.docs.forEach(doc => {
       const data = doc.data();
-      console.log(`📝 Post ${doc.id}:`);
-      console.log(`   authorId: ${data.authorId}`);
-      console.log(`   authorInfo: ${data.authorInfo?.displayName || 'MISSING'}`);
-      console.log(`   status: ${data.status || 'MISSING'}`);
-      console.log(`   type: ${data.type}`);
-      console.log(`   text: ${data.content?.text?.substring(0, 50)}...`);
-      console.log('');
+      logger.info(`📝 Post ${doc.id}:`);
+      logger.info(`   authorId: ${data.authorId}`);
+      logger.info(`   authorInfo: ${data.authorInfo?.displayName || 'MISSING'}`);
+      logger.info(`   status: ${data.status || 'MISSING'}`);
+      logger.info(`   type: ${data.type}`);
+      logger.info(`   text: ${data.content?.text?.substring(0, 50)}...`);
+      logger.info('');
     });
   }
 
@@ -295,22 +296,22 @@ export class DataOwnershipFixer {
    * التحقق من سيارات مستخدم معين
    */
   static async checkUserCars(userEmail: string): Promise<void> {
-    console.log(`🔍 Checking cars for user email: ${userEmail}\n`);
+    logger.info(`🔍 Checking cars for user email: ${userEmail}\n`);
 
     const carsSnapshot = await getDocs(
       query(collection(db, 'cars'), where('sellerEmail', '==', userEmail))
     );
 
-    console.log(`Found ${carsSnapshot.size} cars for this user:\n`);
+    logger.info(`Found ${carsSnapshot.size} cars for this user:\n`);
 
     carsSnapshot.docs.forEach(doc => {
       const data = doc.data();
-      console.log(`🚗 Car ${doc.id}:`);
-      console.log(`   make/model: ${data.make} ${data.model}`);
-      console.log(`   sellerEmail: ${data.sellerEmail || 'MISSING'}`);
-      console.log(`   userId: ${data.userId || data.ownerId || 'MISSING'}`);
-      console.log(`   status: ${data.status || 'MISSING'}`);
-      console.log('');
+      logger.info(`🚗 Car ${doc.id}:`);
+      logger.info(`   make/model: ${data.make} ${data.model}`);
+      logger.info(`   sellerEmail: ${data.sellerEmail || 'MISSING'}`);
+      logger.info(`   userId: ${data.userId || data.ownerId || 'MISSING'}`);
+      logger.info(`   status: ${data.status || 'MISSING'}`);
+      logger.info('');
     });
   }
 }

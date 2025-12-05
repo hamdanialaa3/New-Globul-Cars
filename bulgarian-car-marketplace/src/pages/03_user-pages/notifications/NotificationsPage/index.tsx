@@ -1,8 +1,8 @@
 // Professional Notifications Page for Bulgarian Car Marketplace
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '@/hooks/useAuth';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { logger } from '@/services/logger-service';
+import { useAuth } from '../../../../hooks/useAuth';
+import { useLanguage } from '../../../../contexts/LanguageContext';
+import { logger } from '../../../../services/logger-service';
 import {
   Bell,
   MessageCircle,

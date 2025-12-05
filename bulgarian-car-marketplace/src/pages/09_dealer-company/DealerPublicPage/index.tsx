@@ -1,3 +1,4 @@
+import { logger } from '../../../services/logger-service';
 // src/pages/DealerPublicPage/index.tsx
 // Public Dealer Profile Page (SEO-friendly)
 
@@ -7,8 +8,8 @@ import { Helmet } from 'react-helmet-async';
 import styled from 'styled-components';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { doc, getDoc, collection, query, where, getDocs, limit } from 'firebase/firestore';
-import { db } from '@/firebase/firebase-config';
-import ReviewStars from '@/features/reviews/ReviewStars';
+import { db } from '../../../firebase/firebase-config';
+import ReviewStars from '../../../features/reviews/ReviewStars';
 import ContactForm from './ContactForm';
 
 interface DealerProfile {
@@ -68,7 +69,7 @@ const DealerPublicPage: React.FC = () => {
 
       setListings(listingsData);
     } catch (err) {
-      console.error('Error loading dealer listings:', err);
+      logger.error('Error loading dealer listings:', err);
     }
   }, []);
 
@@ -84,7 +85,7 @@ const DealerPublicPage: React.FC = () => {
 
       setReviews(result.data.reviews || []);
     } catch (err) {
-      console.error('Error loading reviews:', err);
+      logger.error('Error loading reviews:', err);
     }
   }, [functions]);
 
@@ -126,7 +127,7 @@ const DealerPublicPage: React.FC = () => {
 
       setLoading(false);
     } catch (err: any) {
-      console.error('Error loading dealer:', err);
+      logger.error('Error loading dealer:', err);
       setError(err.message);
       setLoading(false);
     }

@@ -1,3 +1,4 @@
+import { logger } from '../logger-service';
 /**
  * Campaign Service - نظام إدارة الحملات الإعلانية
  * Location: Bulgaria | Currency: EUR | Languages: BG/EN
@@ -171,7 +172,7 @@ class CampaignService {
       await setDoc(campaignRef, campaign);
       return campaignId;
     } catch (error) {
-      console.error('Error creating campaign:', error);
+      logger.error('Error creating campaign:', error);
       throw error;
     }
   }
@@ -193,7 +194,7 @@ class CampaignService {
         ...doc.data()
       } as Campaign));
     } catch (error) {
-      console.error('Error getting user campaigns:', error);
+      logger.error('Error getting user campaigns:', error);
       return [];
     }
   }
@@ -214,7 +215,7 @@ class CampaignService {
       }
       return null;
     } catch (error) {
-      console.error('Error getting campaign:', error);
+      logger.error('Error getting campaign:', error);
       return null;
     }
   }
@@ -233,7 +234,7 @@ class CampaignService {
         updatedAt: serverTimestamp()
       });
     } catch (error) {
-      console.error('Error updating campaign status:', error);
+      logger.error('Error updating campaign status:', error);
       throw error;
     }
   }
@@ -249,7 +250,7 @@ class CampaignService {
         lastUpdated: serverTimestamp()
       });
     } catch (error) {
-      console.error('Error recording impression:', error);
+      logger.error('Error recording impression:', error);
     }
   }
 
@@ -274,7 +275,7 @@ class CampaignService {
         });
       }
     } catch (error) {
-      console.error('Error recording click:', error);
+      logger.error('Error recording click:', error);
     }
   }
 
@@ -299,7 +300,7 @@ class CampaignService {
         });
       }
     } catch (error) {
-      console.error('Error recording conversion:', error);
+      logger.error('Error recording conversion:', error);
     }
   }
 
@@ -350,7 +351,7 @@ class CampaignService {
 
       return analytics;
     } catch (error) {
-      console.error('Error getting campaign analytics:', error);
+      logger.error('Error getting campaign analytics:', error);
       throw error;
     }
   }
@@ -369,7 +370,7 @@ class CampaignService {
         updatedAt: serverTimestamp()
       });
     } catch (error) {
-      console.error('Error updating campaign:', error);
+      logger.error('Error updating campaign:', error);
       throw error;
     }
   }
@@ -381,7 +382,7 @@ class CampaignService {
     try {
       await deleteDoc(doc(db, this.campaignsCollection, campaignId));
     } catch (error) {
-      console.error('Error deleting campaign:', error);
+      logger.error('Error deleting campaign:', error);
       throw error;
     }
   }
@@ -403,7 +404,7 @@ class CampaignService {
         ...doc.data()
       } as Campaign));
     } catch (error) {
-      console.error('Error getting active campaigns for car:', error);
+      logger.error('Error getting active campaigns for car:', error);
       return [];
     }
   }
@@ -416,7 +417,7 @@ class CampaignService {
       const campaigns = await this.getActiveCampaignsForCar(carId);
       return campaigns.length > 0;
     } catch (error) {
-      console.error('Error checking active campaign:', error);
+      logger.error('Error checking active campaign:', error);
       return false;
     }
   }

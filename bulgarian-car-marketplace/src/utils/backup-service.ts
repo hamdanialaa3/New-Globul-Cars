@@ -1,3 +1,4 @@
+import { logger } from '../services/logger-service';
 // Firebase Backup Service (FREE - Using GitHub Actions OR Cloud Scheduler)
 // Automated daily backups to Cloud Storage
 
@@ -107,10 +108,10 @@ export const scheduledFirestoreBackup = functions.pubsub
         collectionIds: [], // Empty = all collections
       });
       
-      console.log(\`✅ Backup started: \${response.name}\`);
+      logger.info(\`✅ Backup started: \${response.name}\`);
       return { success: true, operation: response.name };
     } catch (error) {
-      console.error('❌ Backup failed:', error);
+      logger.error('❌ Backup failed:', error);
       throw error;
     }
   });
@@ -152,7 +153,7 @@ const backupAllCollections = async () => {
   const backup = {};
   
   for (const collectionName of collections) {
-    console.log(\`Backing up \${collectionName}...\`);
+    logger.info(\`Backing up \${collectionName}...\`);
     backup[collectionName] = await backupCollection(collectionName);
   }
   
@@ -161,7 +162,7 @@ const backupAllCollections = async () => {
   const filename = \`backup-\${timestamp}.json\`;
   
   fs.writeFileSync(filename, JSON.stringify(backup, null, 2));
-  console.log(\`✅ Backup saved to \${filename}\`);
+  logger.info(\`✅ Backup saved to \${filename}\`);
 };
 
 backupAllCollections().catch(console.error);
@@ -197,28 +198,28 @@ const restoreCollection = async (collectionName, data) => {
     // Firestore batch limit: 500 operations
     if (count % 500 === 0) {
       await batch.commit();
-      console.log(\`  Restored \${count} documents...\`);
+      logger.info(\`  Restored \${count} documents...\`);
     }
   }
   
   await batch.commit();
-  console.log(\`✅ Restored \${count} documents to \${collectionName}\`);
+  logger.info(\`✅ Restored \${count} documents to \${collectionName}\`);
 };
 
 const restoreFromBackup = async (backupFile) => {
   const backup = JSON.parse(fs.readFileSync(backupFile, 'utf8'));
   
   for (const [collectionName, data] of Object.entries(backup)) {
-    console.log(\`Restoring \${collectionName}...\`);
+    logger.info(\`Restoring \${collectionName}...\`);
     await restoreCollection(collectionName, data);
   }
   
-  console.log('✅ Restore complete!');
+  logger.info('✅ Restore complete!');
 };
 
 const backupFile = process.argv[2];
 if (!backupFile) {
-  console.error('Usage: node restore-firestore.js <backup-file.json>');
+  logger.error('Usage: node restore-firestore.js <backup-file.json>');
   process.exit(1);
 }
 

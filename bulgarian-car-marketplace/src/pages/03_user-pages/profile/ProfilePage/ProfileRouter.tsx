@@ -8,7 +8,7 @@ import { ProfileOverview } from './tabs/ProfileOverview';
 import ProfileMyAds from './ProfileMyAds';
 import ProfileCampaigns from './ProfileCampaigns';
 import ProfileAnalytics from './ProfileAnalytics';
-import ProfileSettings from './ProfileSettings';
+
 import ProfileSettingsMobileDe from './ProfileSettingsMobileDe';
 import ProfileConsultations from './ProfileConsultations';
 
@@ -36,15 +36,15 @@ export const ProfileRouter: React.FC = () => {
       <Route path="" element={<ProfilePageWrapper />}>
         {/* Default: Overview */}
         <Route index element={<ProfileOverview />} />
-        
+
         {/* Tab Routes - Must come BEFORE :userId route */}
         <Route path="my-ads" element={<ProfileMyAds />} />
         <Route path="campaigns" element={<ProfileCampaigns />} />
         <Route path="analytics" element={<ProfileAnalytics />} />
         <Route path="settings" element={<ProfileSettingsMobileDe />} />
-        <Route path="settings-old" element={<ProfileSettings />} />
+
         <Route path="consultations" element={<ProfileConsultations />} />
-        
+
         {/* User profile view - Must come AFTER specific routes */}
         <Route path=":userId" element={<ProfileOverview />} />
       </Route>

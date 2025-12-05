@@ -1,3 +1,4 @@
+import { logger } from '../services/logger-service';
 import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { 
@@ -8,7 +9,7 @@ import {
   Activity,
   TrendingUp
 } from 'lucide-react';
-import { firebaseAuthUsersService } from '@/services/firebase-auth-users-service';
+import { firebaseAuthUsersService } from '../services/firebase-auth-users-service';
 
 interface UserDetailsModalProps {
   isOpen: boolean;
@@ -188,7 +189,7 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({
       setUserCars(cars);
       setUserMessages(messages);
     } catch (error) {
-      console.error('Error loading user details:', error);
+      logger.error('Error loading user details:', error);
     } finally {
       setLoading(false);
     }

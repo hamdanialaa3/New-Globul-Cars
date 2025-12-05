@@ -1,3 +1,4 @@
+import { logger } from '../services/logger-service';
 // src/components/ImageOptimizer.tsx
 // Image optimization component for better performance
 
@@ -53,7 +54,7 @@ const ImageOptimizer: React.FC<ImageOptimizerProps> = ({
           setOptimizedSrc(src);
         }
       } catch (error) {
-        console.warn('Image optimization failed, using original:', error);
+        logger.warn('Image optimization failed, using original:', error);
         setOptimizedSrc(src);
       }
     };

@@ -1,3 +1,4 @@
+import { logger } from '../../../services/logger-service';
 // Customer Number Badge Component
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 // Displays user's unique customer number
@@ -27,7 +28,7 @@ const CustomerNumberBadge: React.FC<CustomerNumberBadgeProps> = ({ userId }) => 
       const number = await customerNumberService.getCustomerNumber(userId);
       setCustomerNumber(number);
     } catch (error) {
-      console.error('Error loading customer number:', error);
+      logger.error('Error loading customer number:', error);
     } finally {
       setLoading(false);
     }

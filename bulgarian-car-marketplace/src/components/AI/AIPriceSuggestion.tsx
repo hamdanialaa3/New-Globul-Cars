@@ -3,10 +3,10 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { geminiChatService } from '@/services/ai/gemini-chat.service';
-import { useAuth } from '@/contexts/AuthProvider';
-import { useToast } from '@/components/Toast';
-import { PriceSuggestion } from '@/types/ai.types';
+import { geminiChatService } from '../../services/ai/gemini-chat.service';
+import { useAuth } from '../../contexts/AuthProvider';
+import { useToast } from '../../components/Toast';
+import { PriceSuggestion } from '../../types/ai.types';
 
 interface Props {
   carDetails: {

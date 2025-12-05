@@ -1,3 +1,4 @@
+import { logger } from '../services/logger-service';
 /**
  * Core Web Vitals Tracking
  * Measures and reports critical performance metrics
@@ -63,7 +64,7 @@ class WebVitalsTracker {
     // Log to console in development
     if (process.env.NODE_ENV === 'development') {
       const rating = this.getRating(name, value);
-      console.log(`[Web Vitals] ${name}: ${value.toFixed(2)}ms (${rating})`);
+      logger.info(`[Web Vitals] ${name}: ${value.toFixed(2)}ms (${rating})`);
     }
 
     // Send individual metric in production
@@ -120,7 +121,7 @@ class WebVitalsTracker {
         body: JSON.stringify(body),
         headers: { 'Content-Type': 'application/json' },
         keepalive: true,
-      }).catch(err => console.error('[Web Vitals] Send failed:', err));
+      }).catch(err => logger.error('[Web Vitals] Send failed:', err));
     }
   }
 
@@ -144,7 +145,7 @@ class WebVitalsTracker {
     };
 
     if (process.env.NODE_ENV === 'development') {
-      console.log('[Web Vitals] Final Report:', report);
+      logger.info('[Web Vitals] Final Report:', report);
     }
 
     if (process.env.NODE_ENV === 'production' && navigator.sendBeacon) {

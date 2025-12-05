@@ -1,12 +1,13 @@
+import { logger } from '../../../services/logger-service';
 import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import { X, Camera, Upload, Trash2 } from 'lucide-react';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { useProfile } from '@/pages/03_user-pages/profile/ProfilePage/hooks/useProfile';
+import { useLanguage } from '../../../contexts/LanguageContext';
+import { useProfile } from '../../../pages/03_user-pages/profile/ProfilePage/hooks/useProfile';
 import { toast } from 'react-toastify';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
-import { storage } from '@/firebase';
-import { useAuth } from '@/contexts/AuthProvider';
+import { storage } from '../../../firebase';
+import { useAuth } from '../../../contexts/AuthProvider';
 
 interface PhotoEditModalProps {
   onClose: () => void;
@@ -98,7 +99,7 @@ const PhotoEditModal: React.FC<PhotoEditModalProps> = ({ onClose }) => {
       toast.success(text.success);
       onClose();
     } catch (error) {
-      console.error('Error uploading photo:', error);
+      logger.error('Error uploading photo:', error);
       toast.error(text.error);
     } finally {
       setLoading(false);
@@ -116,7 +117,7 @@ const PhotoEditModal: React.FC<PhotoEditModalProps> = ({ onClose }) => {
           const oldRef = ref(storage, user.photoURL);
           await deleteObject(oldRef);
         } catch (err) {
-          console.log('Could not delete old photo:', err);
+          logger.info('Could not delete old photo:', err);
         }
       }
 
@@ -126,7 +127,7 @@ const PhotoEditModal: React.FC<PhotoEditModalProps> = ({ onClose }) => {
       toast.success(text.removed);
       onClose();
     } catch (error) {
-      console.error('Error removing photo:', error);
+      logger.error('Error removing photo:', error);
       toast.error(text.error);
     } finally {
       setLoading(false);

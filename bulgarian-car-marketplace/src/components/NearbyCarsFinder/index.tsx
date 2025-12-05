@@ -1,3 +1,4 @@
+import { logger } from '../../services/logger-service';
 // Nearby Cars Finder Component
 // مكون البحث عن السيارات القريبة من المستخدم
 
@@ -298,7 +299,7 @@ const NearbyCarsFinder: React.FC = () => {
 
             return null;
           } catch (error) {
-            console.error('Error processing car:', error);
+            logger.error('Error processing car:', error);
             return null;
           }
         })
@@ -312,7 +313,7 @@ const NearbyCarsFinder: React.FC = () => {
       setNearbyCars(validCars as any[]);
       setLoading(false);
     } catch (err) {
-      console.error('Error loading nearby cars:', err);
+      logger.error('Error loading nearby cars:', err);
       setError(language === 'bg'
         ? 'Грешка при зареждане на близките превозни средства'
         : 'Error loading nearby vehicles');

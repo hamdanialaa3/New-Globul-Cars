@@ -2,8 +2,8 @@
 // Custom hook for email verification functionality
 
 import { useState, useEffect, useCallback } from 'react';
-import { EmailVerificationService } from '@/services/email-verification';
-import { useAuth } from '@/contexts/AuthProvider';
+import { EmailVerificationService } from '../services/email-verification';
+import { useAuth } from '../contexts/AuthProvider';
 import { useTranslation } from './useTranslation';
 
 interface UseEmailVerificationResult {

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from '@/hooks/useTranslation';
-import { useAuth } from '@/hooks/useAuth';
-import { SocialAuthService } from '@/firebase/social-auth-service';
+import { useTranslation } from '../../../../../hooks/useTranslation';
+import { useAuth } from '../../../../../hooks/useAuth';
+import { SocialAuthService } from '../../../../../firebase/social-auth-service';
 import { LoginFormData, LoginState, LoginActions, UseLoginReturn } from '../types';
-import { logger } from '@/services/logger-service';
+import { logger } from '../../../../../services/logger-service';
 
 export const useLogin = (): UseLoginReturn => {
   const { t } = useTranslation();
@@ -101,7 +101,7 @@ export const useLogin = (): UseLoginReturn => {
         setError(t('auth.loginFailed', 'Login failed. Please try again.'));
       }
     } catch (err: any) {
-      console.error('Login error:', err);
+      logger.error('Login error:', err);
       setError(t('auth.unexpectedError', 'An unexpected error occurred. Please try again.'));
     } finally {
       setLoading(false);
@@ -188,7 +188,7 @@ export const useLogin = (): UseLoginReturn => {
         navigate('/profile');  // Changed from /dashboard to /profile
       }, 1000);
     } catch (err: any) {
-      console.error('❌ Apple login error:', err);
+      logger.error('❌ Apple login error:', err);
       const userMessage = err?.message || 'حدث خطأ أثناء تسجيل الدخول مع Apple. يرجى المحاولة مرة أخرى.';
       setError(userMessage);
     } finally {
@@ -208,15 +208,15 @@ export const useLogin = (): UseLoginReturn => {
     setSuccess('');
 
     try {
-      console.log('👤 Initiating anonymous login...');
+      logger.info('👤 Initiating anonymous login...');
       const result = await SocialAuthService.signInAnonymously();
-      console.log('✅ Anonymous login successful:', result.user);
+      logger.info('✅ Anonymous login successful:', result.user);
       setSuccess(t('auth.loginSuccess', 'تم الدخول كضيف بنجاح! جاري التوجيه...'));
       setTimeout(() => {
         navigate('/profile');  // Changed from /dashboard to /profile
       }, 1000);
     } catch (err: any) {
-      console.error('❌ Anonymous login error:', err);
+      logger.error('❌ Anonymous login error:', err);
       const userMessage = err?.message || 'حدث خطأ أثناء الدخول كضيف. يرجى المحاولة مرة أخرى.';
       setError(userMessage);
     } finally {

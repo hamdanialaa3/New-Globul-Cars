@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { CarIcon } from '@/components/icons/CarIcon';
-import { CarListing } from '@/types/CarListing';
+import { CarIcon } from '../../../components/icons/CarIcon';
+import { CarListing } from '../../../types/CarListing';
 import {
   ImageSection,
   LogoContainer,

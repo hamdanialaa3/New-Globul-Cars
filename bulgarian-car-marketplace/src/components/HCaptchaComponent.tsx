@@ -1,3 +1,4 @@
+import { logger } from '../services/logger-service';
 // hCaptcha React Component
 // (Comment removed - was in Arabic)
 
@@ -46,15 +47,15 @@ export const HCaptchaComponent = forwardRef<any, HCaptchaComponentProps>(
         size={size}
         languageOverride={language}
         onVerify={(token) => {
-          console.log('Captcha verified:', token);
+          logger.info('Captcha verified:', token);
           onVerify(token);
         }}
         onError={(error) => {
-          console.error('Captcha error:', error);
+          logger.error('Captcha error:', error);
           onError?.(error);
         }}
         onExpire={() => {
-          console.log('Captcha expired');
+          logger.info('Captcha expired');
           onExpire?.();
         }}
       />

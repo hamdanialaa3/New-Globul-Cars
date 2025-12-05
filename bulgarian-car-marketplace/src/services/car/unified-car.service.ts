@@ -16,7 +16,7 @@ import {
   serverTimestamp,
   DocumentSnapshot
 } from 'firebase/firestore';
-import { db, auth } from '@/firebase/firebase-config';
+import { db, auth } from '../../firebase/firebase-config';
 import { homePageCache, CACHE_KEYS } from '../homepage-cache.service';
 import { serviceLogger } from '../logger-wrapper';
 
@@ -130,6 +130,8 @@ class UnifiedCarService {
    */
   async searchCars(filters: CarFilters = {}, limitCount: number = 20): Promise<UnifiedCar[]> {
     try {
+      console.log('🔍 searchCars called with filters:', filters);
+      
       // ✅ CRITICAL FIX: Search across ALL vehicle type collections
       const collections = [
         'cars',             // Legacy collection
@@ -165,11 +167,19 @@ class UnifiedCarService {
             q = query(q, where('region', '==', filters.region));
           }
 
+          q = query(q, orderBy('createdAt', 'desc'));
           q = query(q, limit(limitCount * 2)); // Get more for client-side filtering
 
           const snapshot = await getDocs(q);
-          return snapshot.docs.map(doc => this.mapDocToCar(doc));
+          const cars = snapshot.docs.map(doc => this.mapDocToCar(doc));
+          
+          if (cars.length > 0) {
+            console.log(`📦 ${collectionName}: found ${cars.length} cars`);
+          }
+          
+          return cars;
         } catch (error) {
+          console.warn(`⚠️ Error querying ${collectionName}:`, error);
           serviceLogger.warn(`Error querying ${collectionName} for search`, { error, filters });
           return [];
         }
@@ -177,48 +187,103 @@ class UnifiedCarService {
 
       const results = await Promise.all(queryPromises);
       results.forEach(cars => allCars.push(...cars));
+      
+      console.log('📊 Total cars from all collections:', allCars.length);
+      
+      // Debug: Print first few cars with ALL fields
+      if (allCars.length > 0) {
+        console.log('🚗 Sample cars from database (first 3):');
+        allCars.slice(0, 3).forEach((car, idx) => {
+          console.log(`Car ${idx + 1}:`, {
+            id: car.id,
+            make: car.make,
+            model: car.model,
+            year: car.year,
+            price: car.price,
+            status: (car as any).status,
+            isActive: car.isActive,
+            isSold: car.isSold,
+            createdAt: car.createdAt
+          });
+        });
+      } else {
+        console.log('⚠️ NO CARS FOUND IN ANY COLLECTION!');
+        console.log('📋 Collections checked:', collections);
+        console.log('🔍 Filters applied:', filters);
+      }
 
       // Client-side filters
       let filteredCars = allCars;
+      console.log('🔍 Starting client-side filtering...');
 
       if (filters.isActive !== undefined) {
+        const beforeCount = filteredCars.length;
         filteredCars = filteredCars.filter(c => (c.isActive !== false) === filters.isActive);
+        console.log(`  ✓ isActive=${filters.isActive}: ${beforeCount} → ${filteredCars.length}`);
       } else {
         // Default: show only active cars
+        const beforeCount = filteredCars.length;
         filteredCars = filteredCars.filter(c => c.isActive !== false);
+        console.log(`  ✓ isActive (default=true): ${beforeCount} → ${filteredCars.length}`);
       }
       
       if (filters.isSold !== undefined) {
+        const beforeCount = filteredCars.length;
         filteredCars = filteredCars.filter(c => (c.isSold === true) === filters.isSold);
+        console.log(`  ✓ isSold=${filters.isSold}: ${beforeCount} → ${filteredCars.length}`);
       } else {
         // Default: hide sold cars
+        const beforeCount = filteredCars.length;
         filteredCars = filteredCars.filter(c => c.isSold !== true);
+        console.log(`  ✓ isSold (default=false): ${beforeCount} → ${filteredCars.length}`);
       }
       
       if (filters.minYear) {
+        const beforeCount = filteredCars.length;
         filteredCars = filteredCars.filter(c => c.year >= filters.minYear!);
+        console.log(`  ✓ minYear>=${filters.minYear}: ${beforeCount} → ${filteredCars.length}`);
       }
       if (filters.maxYear) {
+        const beforeCount = filteredCars.length;
         filteredCars = filteredCars.filter(c => c.year <= filters.maxYear!);
+        console.log(`  ✓ maxYear<=${filters.maxYear}: ${beforeCount} → ${filteredCars.length}`);
       }
       if (filters.minPrice) {
+        const beforeCount = filteredCars.length;
         filteredCars = filteredCars.filter(c => c.price >= filters.minPrice!);
+        console.log(`  ✓ minPrice>=${filters.minPrice}: ${beforeCount} → ${filteredCars.length}`);
       }
       if (filters.maxPrice) {
+        const beforeCount = filteredCars.length;
         filteredCars = filteredCars.filter(c => c.price <= filters.maxPrice!);
+        console.log(`  ✓ maxPrice<=${filters.maxPrice}: ${beforeCount} → ${filteredCars.length}`);
       }
 
       // Sort and limit
       const sorted = filteredCars.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+      const result = sorted.slice(0, limitCount);
+      
+      console.log(`✅ Final result: ${result.length} cars (limited from ${sorted.length})`);
+      if (result.length > 0) {
+        console.log('📋 First car sample:', {
+          make: result[0].make,
+          model: result[0].model,
+          year: result[0].year,
+          price: result[0].price,
+          isActive: result[0].isActive,
+          isSold: result[0].isSold
+        });
+      }
 
       serviceLogger.info('searchCars: found cars across all collections', { 
         totalCars: sorted.length,
+        returnedCount: result.length,
         filters,
         limitCount,
         perCollection: results.map((cars, i) => ({ collection: collections[i], count: cars.length }))
       });
 
-      return sorted.slice(0, limitCount);
+      return result;
     } catch (error) {
       serviceLogger.error('Error searching cars', error as Error, { filters });
       return [];
@@ -465,12 +530,41 @@ class UnifiedCarService {
    */
   private mapDocToCar(doc: DocumentSnapshot): UnifiedCar {
     const data = doc.data();
-    return {
+    
+    if (!data) {
+      console.error('❌ Document has no data:', doc.id);
+      throw new Error(`Document ${doc.id} has no data`);
+    }
+    
+    // Debug: Log raw data from Firestore
+    console.log(`🔧 Mapping car ${doc.id}:`, {
+      rawStatus: data.status,
+      rawIsActive: data.isActive,
+      rawIsSold: data.isSold,
+      make: data.make,
+      model: data.model
+    });
+    
+    const car = {
       id: doc.id,
       ...data,
       createdAt: data?.createdAt?.toDate() || new Date(),
       updatedAt: data?.updatedAt?.toDate() || new Date()
     } as UnifiedCar;
+    
+    // Ensure isActive and isSold have default values
+    if (car.isActive === undefined || car.isActive === null) {
+      car.isActive = car.status === 'active';
+      console.log(`  ↳ Set isActive=${car.isActive} from status="${car.status}"`);
+    }
+    if (car.isSold === undefined || car.isSold === null) {
+      car.isSold = car.status === 'sold';
+      console.log(`  ↳ Set isSold=${car.isSold} from status="${car.status}"`);
+    }
+    
+    console.log(`  ✓ Final car state: isActive=${car.isActive}, isSold=${car.isSold}`);
+    
+    return car;
   }
 
   /**

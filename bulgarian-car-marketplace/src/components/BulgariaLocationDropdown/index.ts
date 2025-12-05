@@ -4,4 +4,4 @@
  */
 
 export { BulgariaLocationDropdown, type BulgariaLocationData } from './BulgariaLocationDropdown';
-export default from './BulgariaLocationDropdown';
+export { BulgariaLocationDropdown as default } from './BulgariaLocationDropdown';

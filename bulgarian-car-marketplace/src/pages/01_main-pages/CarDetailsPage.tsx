@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { useAuth } from '@/contexts/AuthProvider';
-import { useTheme } from '@/contexts/ThemeContext';
-import { useCarViewTracking } from '@/hooks/useProfileTracking';
-import { unifiedCarService } from '@/services/car';
-import DistanceIndicator from '@/components/DistanceIndicator';
-import StaticMapEmbed from '@/components/StaticMapEmbed';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { useAuth } from '../../contexts/AuthProvider';
+import { useTheme } from '../../contexts/ThemeContext';
+import { useCarViewTracking } from '../../hooks/useProfileTracking';
+import { unifiedCarService } from '../../services/car';
+import DistanceIndicator from '../../components/DistanceIndicator';
+import StaticMapEmbed from '../../components/StaticMapEmbed';
 import CarDetailsGermanStyle from './components/CarDetailsGermanStyle';
 import { useCarDetails } from './hooks/useCarDetails';
 import { useCarEdit } from './hooks/useCarEdit';
@@ -23,7 +23,7 @@ import {
   LoadingContainer,
   LocationMapContainer,
 } from './CarDetailsPage.styles';
-import { CarListing } from '@/types/CarListing';
+import { CarListing } from '../../types/CarListing';
 
 const CarDetailsPage: React.FC = () => {
   const { id: carId } = useParams<{ id: string }>();

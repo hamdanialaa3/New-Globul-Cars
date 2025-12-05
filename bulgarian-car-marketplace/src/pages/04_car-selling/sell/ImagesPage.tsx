@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
-import ImageOptimizationService from '@/services/imageOptimizationService';
-import WorkflowPersistenceService from '@/services/workflowPersistenceService';
-import { logger } from '@/services/logger-service';
+import ImageOptimizationService from '../../../services/imageOptimizationService';
+import WorkflowPersistenceService from '../../../services/workflowPersistenceService';
+import { logger } from '../../../services/logger-service';
 
 const ImagesContainer = styled.div`
   min-height: 100vh;

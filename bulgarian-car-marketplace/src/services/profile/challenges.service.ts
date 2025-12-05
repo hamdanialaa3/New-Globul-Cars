@@ -17,13 +17,13 @@ import {
   serverTimestamp,
   Timestamp
 } from 'firebase/firestore';
-import { db } from '@/firebase/firebase-config';
+import { db } from '../../firebase/firebase-config';
 import { serviceLogger } from '../logger-wrapper';
 import type {
   MonthlyChallenge,
   UserChallengeProgress,
   ChallengeType
-} from '@/types/profile-enhancements.types';
+} from '../../types/profile-enhancements.types';
 
 export class ChallengesService {
   private static instance: ChallengesService;

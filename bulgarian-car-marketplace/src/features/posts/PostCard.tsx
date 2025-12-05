@@ -3,8 +3,8 @@
 // English/Bulgarian bilingual. No emojis. <200 lines.
 
 import React from 'react';
-import { useLanguage } from '@/contexts/LanguageContext';
-import type { Post } from '@/services/posts/posts.service';
+import { useLanguage } from '../../contexts/LanguageContext';
+import type { Post } from '../../services/posts/posts.service';
 import * as S from './styles';
 
 interface PostCardProps {

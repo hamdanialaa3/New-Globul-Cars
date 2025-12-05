@@ -1,3 +1,4 @@
+import { logger } from '../../../services/logger-service';
 /**
  * Business Information Form
  * Complete business registration details for Dealer & Company profiles
@@ -126,7 +127,7 @@ const BusinessInformationForm: React.FC<BusinessInfoFormProps> = ({ userId }) =>
         }
       }
     } catch (err) {
-      console.error('Error loading business info:', err);
+      logger.error('Error loading business info:', err);
       setError(language === 'bg' ? 'Грешка при зареждане' : 'Error loading data');
     } finally {
       setLoading(false);
@@ -188,7 +189,7 @@ const BusinessInformationForm: React.FC<BusinessInfoFormProps> = ({ userId }) =>
       setTimeout(() => setSuccess(false), 3000);
       
     } catch (err) {
-      console.error('Error saving business info:', err);
+      logger.error('Error saving business info:', err);
       setError((err as Error).message);
     } finally {
       setSaving(false);

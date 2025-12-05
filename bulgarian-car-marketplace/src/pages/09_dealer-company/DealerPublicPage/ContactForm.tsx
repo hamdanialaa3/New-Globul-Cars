@@ -1,10 +1,11 @@
+import { logger } from '../../../services/logger-service';
 // src/pages/DealerPublicPage/ContactForm.tsx
 // Contact Form for Dealer Public Page
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { getFunctions, httpsCallable } from 'firebase/functions';
-import { useAuth } from '@/contexts';
+import { useAuth } from '../../../contexts';
 
 interface ContactFormProps {
   dealerId: string;
@@ -76,7 +77,7 @@ const ContactForm: React.FC<ContactFormProps> = ({ dealerId, dealerName }) => {
         setSuccess(false);
       }, 5000);
     } catch (err: any) {
-      console.error('Error sending message:', err);
+      logger.error('Error sending message:', err);
       setError(err.message || 'Failed to send message. Please try again.');
     } finally {
       setLoading(false);

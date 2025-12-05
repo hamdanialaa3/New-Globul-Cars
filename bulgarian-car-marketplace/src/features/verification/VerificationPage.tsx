@@ -1,3 +1,4 @@
+import { logger } from '../../services/logger-service';
 // src/features/verification/VerificationPage.tsx
 // Verification Page - Document Upload and Status
 
@@ -265,7 +266,7 @@ export const VerificationPage: React.FC = () => {
       // Navigate back to profile
       setTimeout(() => navigate('/profile'), 2000);
     } catch (error: any) {
-      console.error('Error submitting verification:', error);
+      logger.error('Error submitting verification:', error);
       toast.error(error.message || 'Submission failed');
     } finally {
       setSubmitting(false);

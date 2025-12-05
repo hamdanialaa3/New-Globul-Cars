@@ -247,7 +247,7 @@ class BadgesService {
       
       return newBadges;
     } catch (error) {
-      console.error('[BADGES] Error checking badges:', error);
+      logger.error('[BADGES] Error checking badges:', error);
       return [];
     }
   }
@@ -270,7 +270,7 @@ class BadgesService {
         unlockedAt: doc.data().unlockedAt.toDate()
       } as UserBadge));
     } catch (error) {
-      console.error('[BADGES] Error getting user badges:', error);
+      logger.error('[BADGES] Error getting user badges:', error);
       return [];
     }
   }

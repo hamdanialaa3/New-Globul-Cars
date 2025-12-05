@@ -1,11 +1,12 @@
+import { logger } from '../../services/logger-service';
 // AI Quota Display Component
 // عرض حصة الذكاء الاصطناعي
 
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { aiQuotaService } from '@/services/ai/ai-quota.service';
-import { AI_TIER_CONFIGS } from '@/config/ai-tiers.config';
-import { useAuth } from '@/contexts/AuthProvider';
+import { aiQuotaService } from '../../services/ai/ai-quota.service';
+import { AI_TIER_CONFIGS } from '../../config/ai-tiers.config';
+import { useAuth } from '../../contexts/AuthProvider';
 
 export const AIQuotaDisplay: React.FC = () => {
   const { user } = useAuth();
@@ -23,7 +24,7 @@ export const AIQuotaDisplay: React.FC = () => {
       const data = await aiQuotaService.getUsageStats(user!.uid);
       setStats(data);
     } catch (error) {
-      console.error('Failed to load AI stats', error);
+      logger.error('Failed to load AI stats', error);
     } finally {
       setLoading(false);
     }

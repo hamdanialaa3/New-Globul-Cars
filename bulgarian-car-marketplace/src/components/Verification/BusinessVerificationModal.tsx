@@ -1,3 +1,4 @@
+import { logger } from '../../services/logger-service';
 // src/components/Verification/BusinessVerificationModal.tsx
 // Business Verification Modal - نافذة التحقق من البيزنس
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
@@ -352,14 +353,14 @@ const BusinessVerificationModal: React.FC<BusinessVerificationModalProps> = ({
       // 2. Update user verification status in Firestore
       // 3. Send notification to admin for review
       
-      console.log('📄 Business documents submitted:', {
+      logger.info('📄 Business documents submitted:', {
         userId: currentUser.uid,
         documents: Object.keys(documents)
       });
 
       setStep(2);
     } catch (error) {
-      console.error('Error submitting business verification:', error);
+      logger.error('Error submitting business verification:', error);
       alert(
         language === 'bg'
           ? 'Грешка при изпращане на документите'

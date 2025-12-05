@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from '@/hooks/useTranslation';
-import { bulgarianAuthService } from '@/firebase/index';
-import type { BulgarianUser } from '@/types/user/bulgarian-user.types';
-import { useToast } from '@/components/Toast';
-import { useProfileType } from '@/contexts/ProfileTypeContext';
-import { validateProfileData } from '@/utils/validation';
+import { useTranslation } from '../../../../../hooks/useTranslation';
+import { bulgarianAuthService } from '../../../../../firebase/index';
+import type { BulgarianUser } from '../../../../../types/user/bulgarian-user.types';
+import { useToast } from '../../../../../components/Toast';
+import { useProfileType } from '../../../../../contexts/ProfileTypeContext';
+import { validateProfileData } from '../../../../../utils/validation';
 import { doc, onSnapshot } from 'firebase/firestore';
-import { auth, db } from '@/firebase/firebase-config';
-import { unifiedCarService } from '@/services/car';
-import { logger } from '@/services/logger-service';
+import { auth, db } from '../../../../../firebase/firebase-config';
+import { unifiedCarService } from '../../../../../services/car';
+import { logger } from '../../../../../services/logger-service';
 import {
   ProfileFormData,
   ProfileCar,
@@ -193,7 +193,7 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
 
     const userId = target.uid;
     if (typeof userId !== 'string' || userId.trim() === '') {
-      console.warn('[useProfile] invalid userId for realtime listener', { userId });
+      logger.warn('[useProfile] invalid userId for realtime listener', { userId });
       return;
     }
 

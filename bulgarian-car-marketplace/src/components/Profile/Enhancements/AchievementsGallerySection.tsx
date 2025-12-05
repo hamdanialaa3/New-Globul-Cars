@@ -1,3 +1,4 @@
+import { logger } from '../../../services/logger-service';
 /**
  * Achievements Gallery Section
  * Displays user achievements and certificates
@@ -6,10 +7,10 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Award, Trophy, Star, Shield, Zap, Crown } from 'lucide-react';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { useTheme } from '@/contexts/ThemeContext';
-import { achievementsGalleryService } from '@/services/profile/achievements-gallery.service';
-import type { AchievementBadge } from '@/types/profile-enhancements.types';
+import { useLanguage } from '../../../contexts/LanguageContext';
+import { useTheme } from '../../../contexts/ThemeContext';
+import { achievementsGalleryService } from '../../../services/profile/achievements-gallery.service';
+import type { AchievementBadge } from '../../../types/profile-enhancements.types';
 
 const SectionContainer = styled.section<{ $isDark: boolean }>`
   padding: 24px;
@@ -171,7 +172,7 @@ export const AchievementsGallerySection: React.FC<AchievementsGallerySectionProp
         const achievementBadges = await achievementsGalleryService.getAchievementBadges(userId);
         setBadges(achievementBadges);
       } catch (error) {
-        console.error('Error loading badges:', error);
+        logger.error('Error loading badges:', error);
         setBadges([]);
       } finally {
         setLoading(false);

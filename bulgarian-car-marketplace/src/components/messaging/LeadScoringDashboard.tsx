@@ -1,3 +1,4 @@
+import { logger } from '../../services/logger-service';
 // src/components/messaging/LeadScoringDashboard.tsx
 // Lead Scoring Dashboard Component
 // Connected to Backend P2.1 Lead Scoring System
@@ -341,7 +342,7 @@ const LeadScoringDashboard: React.FC<Props> = ({ language = 'bg' }) => {
         setStats(result.stats);
       }
     } catch (error) {
-      console.error('Error loading leads:', error);
+      logger.error('Error loading leads:', error);
     } finally {
       setLoading(false);
     }
@@ -376,7 +377,7 @@ const LeadScoringDashboard: React.FC<Props> = ({ language = 'bg' }) => {
         setEditingNotes({});
       }
     } catch (error) {
-      console.error('Error updating lead status:', error);
+      logger.error('Error updating lead status:', error);
     }
   };
 

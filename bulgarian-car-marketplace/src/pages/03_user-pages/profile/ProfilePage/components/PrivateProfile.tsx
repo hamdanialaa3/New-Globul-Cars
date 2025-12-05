@@ -4,9 +4,9 @@
 import React from 'react';
 import styled from 'styled-components';
 // ✅ NEW: Import from canonical types
-import type { BulgarianUser } from '@/types/user/bulgarian-user.types';
+import type { BulgarianUser } from '../../../../../types/user/bulgarian-user.types';
 import { ProfileCar } from '../types';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '../../../../../contexts/LanguageContext';
 import { User } from 'lucide-react';
 
 // Props

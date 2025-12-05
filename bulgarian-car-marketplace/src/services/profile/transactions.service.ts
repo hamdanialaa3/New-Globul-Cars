@@ -17,9 +17,9 @@ import {
   serverTimestamp,
   Timestamp
 } from 'firebase/firestore';
-import { db } from '@/firebase/firebase-config';
+import { db } from '../../firebase/firebase-config';
 import { serviceLogger } from '../logger-wrapper';
-import type { Transaction, TransactionStats } from '@/types/profile-enhancements.types';
+import type { Transaction, TransactionStats } from '../../types/profile-enhancements.types';
 
 export class TransactionsService {
   private static instance: TransactionsService;

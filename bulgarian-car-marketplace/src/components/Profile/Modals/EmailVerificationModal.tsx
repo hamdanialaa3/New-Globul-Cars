@@ -1,3 +1,4 @@
+import { logger } from '../../../services/logger-service';
 // Email Verification Modal
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
@@ -34,7 +35,7 @@ const EmailVerificationModal: React.FC<EmailVerificationModalProps> = ({ onClose
         ? 'Имейлът за потвърждение е изпратен'
         : 'Verification email sent');
     } catch (error) {
-      console.error('Error sending verification:', error);
+      logger.error('Error sending verification:', error);
       toast.error(language === 'bg'
         ? 'Грешка при изпращане'
         : 'Error sending email');

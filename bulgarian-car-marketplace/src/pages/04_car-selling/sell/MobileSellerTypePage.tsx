@@ -3,11 +3,11 @@
 
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { useProfileType } from '@/contexts/ProfileTypeContext';
+import { useLanguage } from '../../../contexts/LanguageContext';
+import { useProfileType } from '../../../contexts/ProfileTypeContext';
 import styled from 'styled-components';
-import { MobileContainer, MobileStack } from '@/components/ui/mobile-index';
-import { MobileHeader } from '@/components/layout/MobileHeader';
+import { MobileContainer, MobileStack } from '../../../components/ui/mobile-index';
+import { MobileHeader } from '../../../components/layout/MobileHeader';
 import { 
   mobileColors,
   mobileSpacing,
@@ -16,7 +16,7 @@ import {
   mobileAnimations,
   mobileShadows,
   mobileMixins
-} from '@/styles/mobile-design-system';
+} from '../../../styles/mobile-design-system';
 
 type SellerType = 'private' | 'dealer' | 'company';
 

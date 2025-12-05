@@ -1,9 +1,10 @@
+import { logger } from '../../../../../services/logger-service';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from '@/hooks/useTranslation';
-import { useAuth } from '@/hooks/useAuth';
-import { SocialAuthService } from '@/firebase/social-auth-service';
-import { userService } from '@/services/user/canonical-user.service';
+import { useTranslation } from '../../../../../hooks/useTranslation';
+import { useAuth } from '../../../../../hooks/useAuth';
+import { SocialAuthService } from '../../../../../firebase/social-auth-service';
+import { userService } from '../../../../../services/user/canonical-user.service';
 import { RegisterFormData, ValidationErrors } from '../types';
 
 export const useEnhancedRegister = () => {
@@ -183,7 +184,7 @@ export const useEnhancedRegister = () => {
         setError(t('auth.registerFailed', 'Registration failed. Please try again.'));
       }
     } catch (err: any) {
-      console.error('Registration error:', err);
+      logger.error('Registration error:', err);
       setError(t('auth.unexpectedError', 'An unexpected error occurred. Please try again.'));
     } finally {
       setLoading(false);

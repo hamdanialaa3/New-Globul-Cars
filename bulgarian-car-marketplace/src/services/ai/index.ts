@@ -7,5 +7,4 @@ export { geminiChatService } from './gemini-chat.service';
 export { aiQuotaService } from './ai-quota.service';
 
 // New: Firebase Callable Service (Recommended for production)
-export { firebaseAIService } from './firebase-ai-callable.service';
-export default firebaseAIService;
+export { firebaseAIService, firebaseAIService as default } from './firebase-ai-callable.service';

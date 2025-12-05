@@ -18,9 +18,9 @@ import {
   serverTimestamp,
   Timestamp
 } from 'firebase/firestore';
-import { db } from '@/firebase/firebase-config';
+import { db } from '../../firebase/firebase-config';
 import { serviceLogger } from '../logger-wrapper';
-import type { SuccessStory } from '@/types/profile-enhancements.types';
+import type { SuccessStory } from '../../types/profile-enhancements.types';
 
 export class SuccessStoriesService {
   private static instance: SuccessStoriesService;

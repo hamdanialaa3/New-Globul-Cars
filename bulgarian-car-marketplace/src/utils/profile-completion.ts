@@ -3,7 +3,7 @@
 // Phase -1: Updated to use canonical types
 
 // ✅ NEW: Import from canonical types
-import type { BulgarianUser, ProfileType } from '@/types/user/bulgarian-user.types';
+import type { BulgarianUser, ProfileType } from '../types/user/bulgarian-user.types';
 
 /**
  * Calculates profile completion percentage based on profile type

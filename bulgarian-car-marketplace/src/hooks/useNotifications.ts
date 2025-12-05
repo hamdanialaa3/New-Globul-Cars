@@ -2,8 +2,8 @@
 // Custom Hook for Push Notifications Management
 
 import { useState, useEffect } from 'react';
-import { logger } from '@/services/logger-service';
-import { fcmService, PushNotification } from '@/services/fcm-service';
+import { logger } from '../services/logger-service';
+import { fcmService, PushNotification } from '../services/fcm-service';
 
 export const useNotifications = () => {
   const [notifications, setNotifications] = useState<PushNotification[]>([]);

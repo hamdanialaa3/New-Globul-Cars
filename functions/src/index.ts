@@ -45,3 +45,41 @@ export { savedSearchAlertScheduler, savedSearchOnCreate } from './search/saved-s
 
 // Profile Metrics Aggregation (daily scheduled + on-demand)
 export { dailyProfileMetricsAggregation, triggerProfileMetricsAggregation } from './profile/daily-metrics-aggregation';
+
+// ============================================
+// Subscription & Billing Functions (Stripe Integration)
+// وظائف الاشتراكات والفواتير (تكامل Stripe)
+// ============================================
+export { createCheckoutSession } from './subscriptions/createCheckoutSession';
+export { verifyCheckoutSession } from './subscriptions/verifyCheckoutSession';
+export { stripeWebhook } from './subscriptions/stripeWebhook';
+export { cancelSubscription } from './subscriptions/cancelSubscription';
+
+// ============================================
+// Algolia Search Sync Functions
+// وظائف مزامنة البحث مع Algolia
+// ============================================
+
+// ❌ DEPRECATED: Old sync (cars only - 14% coverage) - Replaced by sync-all-collections
+// Keeping imports commented for backward compatibility check
+// export { 
+//   onCarCreate, 
+//   onCarUpdate, 
+//   onCarDelete,
+//   syncAllCarsToAlgolia,
+//   clearAlgoliaIndex
+// } from './algolia/sync-cars';
+
+// ✅ ACTIVE: Sync all 7 collections (100% coverage)
+export {
+  syncCarsToAlgolia,
+  syncPassengerCarsToAlgolia,
+  syncSuvsToAlgolia,
+  syncVansToAlgolia,
+  syncMotorcyclesToAlgolia,
+  syncTrucksToAlgolia,
+  syncBusesToAlgolia,
+  bulkSyncAllCollectionsToAlgolia,
+  clearAllAlgoliaIndices
+} from './algolia/sync-all-collections-to-algolia';
+

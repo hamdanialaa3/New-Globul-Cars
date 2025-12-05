@@ -1,7 +1,8 @@
+import { logger } from '../services/logger-service';
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { collection, getDocs, query, orderBy, limit } from 'firebase/firestore';
-import { db } from '@/firebase/firebase-config';
+import { db } from '../firebase/firebase-config';
 import { Database, Users, Car, Activity, TrendingUp } from 'lucide-react';
 
 const Container = styled.div`
@@ -101,7 +102,7 @@ const RealDataDisplay: React.FC = () => {
 
       setStats({ totalUsers, totalCars, activeCars, verifiedUsers });
     } catch (error) {
-      console.error('Error loading real data:', error);
+      logger.error('Error loading real data:', error);
     } finally {
       setLoading(false);
     }

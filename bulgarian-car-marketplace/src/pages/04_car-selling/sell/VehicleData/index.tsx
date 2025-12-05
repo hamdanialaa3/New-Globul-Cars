@@ -4,23 +4,23 @@
 
 import React, { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useLanguage } from '@/contexts/LanguageContext';
-import SplitScreenLayout from '@/components/SplitScreenLayout';
-import { WorkflowFlow } from '@/components/WorkflowVisualization';
+import { useLanguage } from '../../../../contexts/LanguageContext';
+import SplitScreenLayout from '../../../../components/SplitScreenLayout';
+import { WorkflowFlow } from '../../../../components/WorkflowVisualization';
 import { FUEL_TYPES, TRANSMISSION_TYPES, COLORS, DOOR_OPTIONS, SEAT_OPTIONS } from './types';
-import { isFeaturedBrand } from '@/services/carBrandsService';
+import { isFeaturedBrand } from '../../../../services/carBrandsService';
 import { CAR_YEARS } from '../../../../data/dropdown-options';
 import { Star, Zap } from 'lucide-react';
 import * as S from './styles';
-import Tooltip, { CarSellingTooltips } from '@/components/Tooltip';
+import Tooltip, { CarSellingTooltips } from '../../../../components/Tooltip';
 import { toast } from 'react-toastify';
 import { getErrorMessage } from '../../../../constants/ErrorMessages';
-import useDraftAutoSave from '@/hooks/useDraftAutoSave';
-import useWorkflowStep from '@/hooks/useWorkflowStep';
-import KeyboardShortcutsHelper from '@/components/KeyboardShortcutsHelper';
-import { SellWorkflowLayout } from '@/components/SellWorkflow';
-import { useProfileType } from '@/contexts/ProfileTypeContext';
-import SellWorkflowStepStateService from '@/services/sellWorkflowStepState';
+import useDraftAutoSave from '../../../../hooks/useDraftAutoSave';
+import useWorkflowStep from '../../../../hooks/useWorkflowStep';
+import KeyboardShortcutsHelper from '../../../../components/KeyboardShortcutsHelper';
+import { SellWorkflowLayout } from '../../../../components/SellWorkflow';
+import { useProfileType } from '../../../../contexts/ProfileTypeContext';
+import SellWorkflowStepStateService from '../../../../services/sellWorkflowStepState';
 import { useVehicleDataForm, getRegistrationYear } from './useVehicleDataForm';
 
 const VehicleDataPageNew: React.FC = () => {

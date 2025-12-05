@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import styled, { css } from 'styled-components';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '../../contexts/LanguageContext';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { SELL_WORKFLOW_STEP_GROUPS, SellWorkflowStepId } from '@/constants/sellWorkflowSteps';
+import { SELL_WORKFLOW_STEP_GROUPS, SellWorkflowStepId } from '../../constants/sellWorkflowSteps';
 import SellWorkflowStepStateService, {
   SellWorkflowStepStatus
-} from '@/services/sellWorkflowStepState';
+} from '../../services/sellWorkflowStepState';
 
 interface SellProgressBarProps {
   currentStep: SellWorkflowStepId;

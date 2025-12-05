@@ -5,18 +5,19 @@
 
 import React, { useEffect } from 'react';
 import { useNavigate, useSearchParams, useParams } from 'react-router-dom';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { useIsMobile } from '@/hooks/useBreakpoint';
-import SplitScreenLayout from '@/components/SplitScreenLayout';
-import { WorkflowFlow } from '@/components/WorkflowVisualization';
+import { useLanguage } from '../../../contexts/LanguageContext';
+import { useIsMobile } from '../../../hooks/useBreakpoint';
+import SplitScreenLayout from '../../../components/SplitScreenLayout';
+import { WorkflowFlow } from '../../../components/WorkflowVisualization';
 import { Euro, TrendingUp, Info } from 'lucide-react';
-import SellWorkflowStepStateService from '@/services/sellWorkflowStepState';
+import SellWorkflowStepStateService from '../../../services/sellWorkflowStepState';
+import { carValidationService, ValidationResult } from '../../../services/validation/car-validation.service';
 import { usePricingForm } from './Pricing/usePricingForm';
 
 // Mobile Components
-import { MobileContainer, MobileStack } from '@/components/ui/mobile-index';
-import { MobileHeader } from '@/components/layout/MobileHeader';
-import { SellProgressBar } from '@/components/SellWorkflow';
+import { MobileContainer, MobileStack } from '../../../components/ui/mobile-index';
+import { MobileHeader } from '../../../components/layout/MobileHeader';
+import { SellProgressBar } from '../../../components/SellWorkflow';
 
 // Desktop Styles - Import from existing Pricing page
 const S = React.lazy(() => import('./Pricing/styles'));
@@ -32,6 +33,15 @@ const PricingPageUnified: React.FC = () => {
   const isMobile = useIsMobile();
 
   const { pricingData, handleFieldChange, canContinue, serialize } = usePricingForm();
+
+  // Validation state
+  const [validationResult, setValidationResult] = React.useState<ValidationResult | null>(null);
+
+  // Real-time price validation
+  useEffect(() => {
+    const result = carValidationService.validate({ price: parseFloat(pricingData.price || '0') } as any, 'draft');
+    setValidationResult(result);
+  }, [pricingData.price]);
 
   useEffect(() => {
     SellWorkflowStepStateService.markPending('pricing');
@@ -319,5 +329,4 @@ const PricingPageUnified: React.FC = () => {
   );
 };
 
-export default PricingPageUnified;</content>
-<parameter name="filePath">c:\Users\hamda\Desktop\New Globul Cars\bulgarian-car-marketplace\src\pages\04_car-selling\sell\PricingPageUnified.tsx
+export default PricingPageUnified;

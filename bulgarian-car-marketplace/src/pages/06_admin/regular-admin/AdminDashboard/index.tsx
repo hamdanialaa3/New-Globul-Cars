@@ -2,15 +2,15 @@
 // Admin Dashboard Page for Bulgarian Car Marketplace
 
 import React, { useState, useEffect } from 'react';
-import { logger } from '@/services/logger-service';
+import { logger } from '../../../../services/logger-service';
 import styled from 'styled-components';
-import { useTranslation } from '@/hooks/useTranslation';
+import { useTranslation } from '../../../../hooks/useTranslation';
 import { db } from '../firebase';
 import { collection, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
-import { advancedContentManagementService } from '@/services/advanced-content-management-service';
-import { permissionManagementService } from '@/services/permission-management-service';
-import { adminService } from '@/services/admin-service';
-import { monitoring } from '@/services/monitoring-service';
+import { advancedContentManagementService } from '../../../../services/advanced-content-management-service';
+import { permissionManagementService } from '../../../../services/permission-management-service';
+import { adminService } from '../../../../services/admin-service';
+import { monitoring } from '../../../../services/monitoring-service';
 
 const AdminContainer = styled.div`
   min-height: 100vh;

@@ -4,24 +4,24 @@
 
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { useAuth } from '@/contexts/AuthProvider';
-import { useProfileType } from '@/contexts/ProfileTypeContext';
-import { useIsMobile } from '@/hooks/useBreakpoint';
-import { logger } from '@/services/logger-service';
+import { useLanguage } from '../../../contexts/LanguageContext';
+import { useAuth } from '../../../contexts/AuthProvider';
+import { useProfileType } from '../../../contexts/ProfileTypeContext';
+import { useIsMobile } from '../../../hooks/useBreakpoint';
+import { logger } from '../../../services/logger-service';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import { Car, Truck, Bus, Bike, Caravan, CarFront } from 'lucide-react';
-import SplitScreenLayout from '@/components/SplitScreenLayout';
-import { WorkflowFlow } from '@/components/WorkflowVisualization';
-import N8nIntegrationService from '@/services/n8n-integration';
-import { SellWorkflowLayout } from '@/components/SellWorkflow';
-import SellWorkflowStepStateService from '@/services/sellWorkflowStepState';
+import SplitScreenLayout from '../../../components/SplitScreenLayout';
+import { WorkflowFlow } from '../../../components/WorkflowVisualization';
+import N8nIntegrationService from '../../../services/n8n-integration';
+import { SellWorkflowLayout } from '../../../components/SellWorkflow';
+import SellWorkflowStepStateService from '../../../services/sellWorkflowStepState';
 
 // Mobile Components
-import { MobileContainer, MobileStack } from '@/components/ui/mobile-index';
-import { MobileHeader } from '@/components/layout/MobileHeader';
-import { SellProgressBar } from '@/components/SellWorkflow';
+import { MobileContainer, MobileStack } from '../../../components/ui/mobile-index';
+import { MobileHeader } from '../../../components/layout/MobileHeader';
+import { SellProgressBar } from '../../../components/SellWorkflow';
 
 // Responsive Styles
 const PageWrapper = styled.div<{ $isMobile: boolean }>`
@@ -418,5 +418,4 @@ const VehicleStartPageUnified: React.FC = () => {
   );
 };
 
-export default VehicleStartPageUnified;</content>
-<parameter name="filePath">c:\Users\hamda\Desktop\New Globul Cars\bulgarian-car-marketplace\src\pages\04_car-selling\sell\VehicleStartPageUnified.tsx
+export default VehicleStartPageUnified;

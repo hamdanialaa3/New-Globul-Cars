@@ -1,3 +1,4 @@
+import { logger } from '../../services/logger-service';
 // Sell Page with Workflow Visualization
 // صفحة البيع مع تصور الأتمتة - تصميم split screen
 /* eslint-disable jsx-a11y/control-has-associated-label */
@@ -8,10 +9,10 @@ import { Car, Sparkles, TrendingUp, ShieldCheck, Info } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useAuth } from '../../contexts/AuthProvider';
 import SplitScreenLayout from '../../components/SplitScreenLayout';
-import { WorkflowFlow } from '@/components/WorkflowVisualization';
-import WorkflowPersistenceService from '@/services/workflowPersistenceService';
-import { getAllBrands, getFeaturedBrands, getModelsForBrand, getClassesForBrand, getModelsForBrandAndClass, getAllModelsForBrand } from '@/services/carBrandsService';
-import { CAR_YEARS, FUEL_TYPES } from '@/data/dropdown-options';
+import { WorkflowFlow } from '../../components/WorkflowVisualization';
+import WorkflowPersistenceService from '../../services/workflowPersistenceService';
+import { getAllBrands, getFeaturedBrands, getModelsForBrand, getClassesForBrand, getModelsForBrandAndClass, getAllModelsForBrand } from '../../services/carBrandsService';
+import { CAR_YEARS, FUEL_TYPES } from '../../data/dropdown-options';
 
 const FIRST_REG_MONTHS = [
   { value: '01', labelBg: 'Януари', labelEn: 'January' },
@@ -92,16 +93,15 @@ const Title = styled.h1`
   -webkit-text-fill-color: transparent;
   background-clip: text;
   letter-spacing: -0.5px;
-`;
-border - radius: 50px;
-padding: 1rem 2.5rem;
-font - size: 1.05rem;
-font - weight: 600;
-cursor: pointer;
-transition: all 0.3s ease;
-display: flex;
-align - items: center;
-gap: 0.5rem;
+  border-radius: 50px;
+  padding: 1rem 2.5rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 
   &:hover {
   background: linear - gradient(135deg, #ff8f10, #005ca9);
@@ -526,19 +526,19 @@ const SellPageNew: React.FC = () => {
   }, [formState.brand]);
 
   const modelOptions = useMemo(() => {
-    console.log('Calculating modelOptions for brand:', formState.brand, 'class:', formState.class);
+    logger.info('Calculating modelOptions for brand:', formState.brand, 'class:', formState.class);
     if (!formState.brand) return [];
 
     // If a class is selected, show models for that class
     if (formState.class) {
       const models = getModelsForBrandAndClass(formState.brand, formState.class);
-      console.log('Models for class:', models);
+      logger.info('Models for class:', models);
       return models.length > 0 ? [...models, '__other__'] : models;
     }
 
     // If no class is selected, show all models for the brand
     const allModels = getAllModelsForBrand(formState.brand);
-    console.log('All models for brand:', allModels);
+    logger.info('All models for brand:', allModels);
     return allModels.length > 0 ? [...allModels, '__other__'] : allModels;
   }, [formState.brand, formState.class]);
 
@@ -590,7 +590,7 @@ const SellPageNew: React.FC = () => {
 
   const handleBrandSelect = useCallback(
     (value: string) => {
-      console.log('handleBrandSelect called with brand:', value);
+      logger.info('handleBrandSelect called with brand:', value);
       setFormState(prev => ({
         ...prev,
         brand: value,
@@ -604,14 +604,14 @@ const SellPageNew: React.FC = () => {
 
   const handleClassSelect = useCallback(
     (value: string) => {
-      console.log('handleClassSelect called with:', value);
+      logger.info('handleClassSelect called with:', value);
       setFormState(prev => ({
         ...prev,
         classOther: value === '__other__' ? prev.classOther : '',
         class: value,
         model: ''
       }));
-      console.log('formState updated, class:', value);
+      logger.info('formState updated, class:', value);
     },
     []
   );

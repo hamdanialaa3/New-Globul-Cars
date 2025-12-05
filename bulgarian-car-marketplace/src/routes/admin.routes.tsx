@@ -29,7 +29,7 @@ const ArchitectureDiagramPage = React.lazy(() => import('@/pages/ArchitectureDia
 const FullScreenLayout = React.lazy(() => import('@/components/FullScreenLayout'));
 
 // Guards
-import { AuthGuard } from '@/components/guards';
+import { AuthGuard } from '../components/guards';
 
 /**
  * Admin Routes Component
@@ -108,7 +108,7 @@ export const AdminRoutes: React.FC = () => {
 /**
  * Usage in App.tsx:
  * 
- * import { FEATURE_FLAGS } from '@/config/feature-flags';
+ * import { FEATURE_FLAGS } from '../config/feature-flags';
  * import { AdminRoutes } from '@/routes/admin.routes';
  * 
  * // In your Routes:

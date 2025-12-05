@@ -1,3 +1,4 @@
+import { logger } from '../services/logger-service';
 // src/firebase/messaging-service.ts
 // Bulgarian Messaging Service for Car Marketplace
 
@@ -350,7 +351,7 @@ export class BulgarianMessagingService {
   listenToNewMessages(userId: string | null | undefined, callback: (message: BulgarianMessage) => void): Unsubscribe {
     // ✅ FIX: Guard against null/undefined userId BEFORE constructing query
     if (!userId) {
-      console.warn('listenToNewMessages called with null/undefined userId - returning no-op unsubscribe');
+      logger.warn('listenToNewMessages called with null/undefined userId - returning no-op unsubscribe');
       return () => {}; // Return no-op unsubscribe function
     }
 

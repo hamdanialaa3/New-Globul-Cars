@@ -1,9 +1,10 @@
+import { logger } from '../services/logger-service';
 // src/components/SocialLogin.tsx
 // Social Login Component for Bulgarian Car Marketplace
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useTranslation } from '@/hooks/useTranslation';
+import { useTranslation } from '../hooks/useTranslation';
 import { Chrome, Facebook, Apple } from 'lucide-react';
 import PopupBlockerWarning from './PopupBlockerWarning';
 
@@ -128,7 +129,7 @@ const SocialLogin: React.FC<SocialLoginProps> = ({
         setPopupError(null);
         await onGoogleLogin();
       } catch (error: any) {
-        console.error('Google login error:', error);
+        logger.error('Google login error:', error);
         if (error.message?.includes('popup') || error.message?.includes('blocked')) {
           setPopupError({ provider: 'Google', show: true });
         } else if (onError) {
@@ -144,7 +145,7 @@ const SocialLogin: React.FC<SocialLoginProps> = ({
         setPopupError(null);
         await onFacebookLogin();
       } catch (error: any) {
-        console.error('Facebook login error:', error);
+        logger.error('Facebook login error:', error);
         if (error.message?.includes('popup') || error.message?.includes('blocked')) {
           setPopupError({ provider: 'Facebook', show: true });
         } else if (onError) {
@@ -160,7 +161,7 @@ const SocialLogin: React.FC<SocialLoginProps> = ({
         setPopupError(null);
         await onAppleLogin();
       } catch (error: any) {
-        console.error('Apple login error:', error);
+        logger.error('Apple login error:', error);
         if (error.message?.includes('popup') || error.message?.includes('blocked')) {
           setPopupError({ provider: 'Apple', show: true });
         } else if (onError) {

@@ -1,16 +1,17 @@
+import { logger } from '../../../../services/logger-service';
 // AllPostsPage.tsx - All Posts with Create Post & Simple Filters
 // ⚡ Compact & Professional Design
 
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthProvider';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '../../../../contexts/AuthProvider';
+import { useLanguage } from '../../../../contexts/LanguageContext';
 import { collection, query, getDocs, orderBy, where } from 'firebase/firestore';
-import { db } from '@/firebase/firebase-config';
-import PostCard from '@/components/Posts/PostCard';
-import CreatePostForm from '@/components/Posts/CreatePostForm';
-import { Post } from '@/services/social/posts.service';
+import { db } from '../../../../firebase/firebase-config';
+import PostCard from '../../../../components/Posts/PostCard';
+import CreatePostForm from '../../../../components/Posts/CreatePostForm';
+import { Post } from '../../../../services/social/posts.service';
 import { MessageSquare, Search, X, Plus } from 'lucide-react';
 
 type PostFilter = 'all' | 'smart' | 'newest' | 'most_liked' | 'most_comments' | 'trending';
@@ -68,7 +69,7 @@ const AllPostsPage: React.FC = () => {
 
       setPosts(postsData);
     } catch (error) {
-      console.error('Error loading posts:', error);
+      logger.error('Error loading posts:', error);
     } finally {
       setLoading(false);
     }

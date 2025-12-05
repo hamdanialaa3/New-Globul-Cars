@@ -6,8 +6,15 @@
  */
 
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
+import { BrowserRouter } from 'react-router-dom';
 import { AppProviders } from '../AppProviders';
+
+// Mock Firebase
+jest.mock('@/firebase/firebase-config', () => ({
+  auth: { currentUser: null, onAuthStateChanged: jest.fn() },
+  db: {},
+}));
 
 // Mock all the contexts and components
 jest.mock('@/contexts/LanguageContext', () => ({

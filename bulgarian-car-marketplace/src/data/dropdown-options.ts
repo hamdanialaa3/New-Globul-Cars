@@ -37,20 +37,20 @@ export const SELLER_TYPES: DropdownOption[] = [
  * **Migration Guide:**
  * ```typescript
  * // OLD WAY:
- * import { CAR_BRANDS } from '@/data/dropdown-options';
+ * import { CAR_BRANDS } from '../data/dropdown-options';
  * 
  * // NEW WAY:
- * import { brandsModelsDataService } from '@/services/brands-models-data.service';
+ * import { brandsModelsDataService } from '../services/brands-models-data.service';
  * const brands = await brandsModelsDataService.getAllBrands();
  * 
  * // Or for dropdown format:
- * import { getBrandsAsDropdownOptions } from '@/services/brands-models-migration-helper';
+ * import { getBrandsAsDropdownOptions } from '../services/brands-models-migration-helper';
  * const options = await getBrandsAsDropdownOptions();
  * ```
  * 
  * **Or use the component:**
  * ```typescript
- * import BrandModelMarkdownDropdown from '@/components/BrandModelMarkdownDropdown';
+ * import BrandModelMarkdownDropdown from '../components/BrandModelMarkdownDropdown';
  * <BrandModelMarkdownDropdown onBrandChange={...} onModelChange={...} />
  * ```
  * 

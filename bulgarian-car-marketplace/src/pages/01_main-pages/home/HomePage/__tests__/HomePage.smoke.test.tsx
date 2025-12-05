@@ -6,9 +6,9 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import HomePage from '../index';
-import { LanguageProvider } from '@/contexts/LanguageContext';
-import AuthProvider from '@/contexts/AuthProvider';
-import { ProfileTypeProvider } from '@/contexts/ProfileTypeContext';
+import { LanguageProvider } from '../../../../../contexts/LanguageContext';
+import AuthProvider from '../../../../../contexts/AuthProvider';
+import { ProfileTypeProvider } from '../../../../../contexts/ProfileTypeContext';
 import { MemoryRouter } from 'react-router-dom';
 
 // Minimal provider stack (ThemeProvider & GlobalStyles intentionally omitted for speed; adjust if style-dependent tests added)

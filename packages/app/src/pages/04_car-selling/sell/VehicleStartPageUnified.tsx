@@ -418,5 +418,4 @@ const VehicleStartPageUnified: React.FC = () => {
   );
 };
 
-export default VehicleStartPageUnified;</content>
-<parameter name="filePath">c:\Users\hamda\Desktop\New Globul Cars\bulgarian-car-marketplace\src\pages\04_car-selling\sell\VehicleStartPageUnified.tsx
+export default VehicleStartPageUnified;

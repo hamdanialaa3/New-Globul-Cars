@@ -1,3 +1,4 @@
+import { logger } from '../services/logger-service';
 // Service Worker Registration and Update Handler
 // Registers the service worker and handles updates
 
@@ -9,7 +10,7 @@ interface ServiceWorkerConfig {
 
 export function registerServiceWorker(config?: ServiceWorkerConfig): void {
   if (process.env.NODE_ENV !== 'production') {
-    console.log('⚠️ Service Worker: Skipping registration in development mode');
+    logger.info('⚠️ Service Worker: Skipping registration in development mode');
     return;
   }
 
@@ -20,7 +21,7 @@ export function registerServiceWorker(config?: ServiceWorkerConfig): void {
       navigator.serviceWorker
         .register(swUrl)
         .then((registration) => {
-          console.log('✅ Service Worker registered successfully:', registration.scope);
+          logger.info('✅ Service Worker registered successfully:', registration.scope);
 
           // Check for updates every hour
           setInterval(() => {
@@ -37,7 +38,7 @@ export function registerServiceWorker(config?: ServiceWorkerConfig): void {
               if (installingWorker.state === 'installed') {
                 if (navigator.serviceWorker.controller) {
                   // New update available
-                  console.log('🔄 New content available; please refresh.');
+                  logger.info('🔄 New content available; please refresh.');
                   
                   if (config?.onUpdate) {
                     config.onUpdate(registration);
@@ -49,7 +50,7 @@ export function registerServiceWorker(config?: ServiceWorkerConfig): void {
                   }
                 } else {
                   // Content cached for offline use
-                  console.log('✅ Content is cached for offline use.');
+                  logger.info('✅ Content is cached for offline use.');
                   
                   if (config?.onSuccess) {
                     config.onSuccess(registration);
@@ -60,7 +61,7 @@ export function registerServiceWorker(config?: ServiceWorkerConfig): void {
           };
         })
         .catch((error) => {
-          console.error('❌ Service Worker registration failed:', error);
+          logger.error('❌ Service Worker registration failed:', error);
           
           if (config?.onError) {
             config.onError(error);
@@ -68,7 +69,7 @@ export function registerServiceWorker(config?: ServiceWorkerConfig): void {
         });
     });
   } else {
-    console.warn('⚠️ Service Worker not supported in this browser');
+    logger.warn('⚠️ Service Worker not supported in this browser');
   }
 }
 
@@ -77,10 +78,10 @@ export function unregisterServiceWorker(): void {
     navigator.serviceWorker.ready
       .then((registration) => {
         registration.unregister();
-        console.log('✅ Service Worker unregistered');
+        logger.info('✅ Service Worker unregistered');
       })
       .catch((error) => {
-        console.error('❌ Service Worker unregistration failed:', error);
+        logger.error('❌ Service Worker unregistration failed:', error);
       });
   }
 }
@@ -102,7 +103,7 @@ export async function checkForUpdates(): Promise<boolean> {
         return registration.waiting !== null;
       }
     } catch (error) {
-      console.error('Error checking for updates:', error);
+      logger.error('Error checking for updates:', error);
     }
   }
   return false;
@@ -138,7 +139,7 @@ export async function getCacheStats(): Promise<{
         cacheNames: cacheNames,
       };
     } catch (error) {
-      console.error('Error getting cache stats:', error);
+      logger.error('Error getting cache stats:', error);
     }
   }
 
@@ -154,7 +155,7 @@ export async function clearAllCaches(): Promise<void> {
   if ('caches' in window) {
     const cacheNames = await caches.keys();
     await Promise.all(cacheNames.map(cacheName => caches.delete(cacheName)));
-    console.log('✅ All caches cleared');
+    logger.info('✅ All caches cleared');
   }
 }
 

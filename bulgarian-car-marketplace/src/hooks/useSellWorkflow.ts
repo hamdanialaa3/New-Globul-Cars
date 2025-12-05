@@ -2,11 +2,11 @@
 // Hook لإدارة حالة workflow بيع السيارة عبر جميع الخطوات
 
 import { useState, useEffect, useCallback } from 'react';
-import { logger } from '@/services/logger-service';
-import WorkflowPersistenceService from '@/services/workflowPersistenceService';
-import { useAuth } from '@/contexts/AuthProvider';
-import DraftsService from '@/services/drafts-service';
-import { SELL_WORKFLOW_STEP_ORDER } from '@/constants/sellWorkflowSteps';
+import { logger } from '../services/logger-service';
+import WorkflowPersistenceService from '../services/workflowPersistenceService';
+import { useAuth } from '../contexts/AuthProvider';
+import DraftsService from '../services/drafts-service';
+import { SELL_WORKFLOW_STEP_ORDER } from '../constants/sellWorkflowSteps';
 
 export interface SellWorkflowData {
   // Vehicle Type & Seller

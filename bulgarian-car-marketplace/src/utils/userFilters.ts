@@ -1,5 +1,5 @@
 // src/utils/userFilters.ts
-import type { BulgarianUser } from '@/types/user/bulgarian-user.types';
+import type { BulgarianUser } from '../types/user/bulgarian-user.types';
 
 export const filterUsersBySearch = (users: BulgarianUser[], searchTerm: string): BulgarianUser[] => {
   if (!searchTerm || searchTerm.length < 2) return users;

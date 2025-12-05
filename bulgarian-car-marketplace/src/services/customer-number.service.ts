@@ -3,7 +3,7 @@
 // Generates and manages unique customer numbers for users
 
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
-import { db } from '@/firebase/firebase-config';
+import { db } from '../firebase/firebase-config';
 import { logger } from './logger-service';
 
 /**

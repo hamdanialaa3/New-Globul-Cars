@@ -1,3 +1,4 @@
+import { logger } from '../logger-service';
 // Smart Search Service - Intelligent Keyword-Based Search
 // خدمة البحث الذكي - بحث ذكي بالكلمات المفتاحية
 // 🎯 100% Real - Connected to Firestore
@@ -53,13 +54,12 @@ class SmartSearchService {
     const startTime = Date.now();
     
     try {
-      // 🔍 DEBUG: Log search start
-      const isDebug = typeof window !== 'undefined' && localStorage.getItem('DEBUG_SEARCH') === 'true';
-      if (isDebug) console.log('🔍 Smart search started:', keywords);
+      // 🔍 ALWAYS LOG: Search start
+      console.log('🚀 Smart Search Started:', { keywords, userId, page, pageSize });
       
       // 1. Parse keywords intelligently
       const parsed = this.parseKeywords(keywords);
-      if (isDebug) console.log('📊 Parsed keywords:', parsed);
+      console.log('📊 Parsed keywords:', parsed);
       
       // 2. Check cache first
       const cacheKey = `smart_search_${keywords}_${userId || 'guest'}_${page}`;
@@ -97,16 +97,14 @@ class SmartSearchService {
       
       const processingTime = Date.now() - startTime;
       
-      // 🔍 DEBUG: Log final results
-      if (isDebug) {
-        console.log('✅ Search completed:', {
-          keywords,
-          resultsCount: paginatedCars.length,
-          totalCount: rankedCars.length,
-          processingTime: processingTime + 'ms',
-          isPersonalized
-        });
-      }
+      // 🔍 ALWAYS LOG: Final results
+      console.log('✅ Smart Search Completed:', {
+        keywords,
+        resultsCount: paginatedCars.length,
+        totalCount: rankedCars.length,
+        processingTime: processingTime + 'ms',
+        isPersonalized
+      });
       
       serviceLogger.info('Smart search completed', {
         keywords,
@@ -124,6 +122,7 @@ class SmartSearchService {
       };
       
     } catch (error) {
+      console.error('❌ Smart Search Failed:', error);
       serviceLogger.error('Smart search failed', error as Error);
       throw error;
     }
@@ -181,12 +180,38 @@ class SmartSearchService {
           'zaz': 'ZAZ',
           'byd': 'BYD',
           'suv': 'SUV',
-          'usa': 'USA'
+          'usa': 'USA',
+          'ford': 'Ford',
+          'audi': 'Audi',
+          'toyota': 'Toyota',
+          'honda': 'Honda',
+          'mercedes': 'Mercedes',
+          'nissan': 'Nissan',
+          'hyundai': 'Hyundai',
+          'kia': 'Kia',
+          'mazda': 'Mazda',
+          'volkswagen': 'Volkswagen',
+          'chevrolet': 'Chevrolet',
+          'jeep': 'Jeep',
+          'tesla': 'Tesla',
+          'volvo': 'Volvo',
+          'lexus': 'Lexus',
+          'subaru': 'Subaru',
+          'porsche': 'Porsche',
+          'land': 'Land',
+          'rover': 'Rover',
+          'range': 'Range',
+          'jaguar': 'Jaguar'
         };
         
         // Use mapped name if exists, otherwise capitalize first letter
         const brandName = brandMap[word] || word.charAt(0).toUpperCase() + word.slice(1);
-        parsed.brands.push(brandName);
+        // ⚡ FIX: Don't add to brands array - we'll use keywords for flexible matching
+        // parsed.brands.push(brandName);
+        // Instead, mark this word as a brand for later use
+        if (!parsed.keywords.includes(word)) {
+          parsed.keywords.push(word);
+        }
       }
       
       // Detect years (2000-2025)
@@ -228,54 +253,109 @@ class SmartSearchService {
   /**
    * Execute Firestore search query
    * تنفيذ استعلام البحث في Firestore
+   * ⚡ ENHANCED: Search across ALL 7 collections
    */
   private async executeSearch(
     parsed: ParsedKeywords,
     limitCount: number = 100
-  ): Promise<(CarListing | BulgarianCar)[]> {
+  ): Promise<(CarListing | UnifiedCar)[]> {
     try {
       const isDebug = typeof window !== 'undefined' && localStorage.getItem('DEBUG_SEARCH') === 'true';
       
-      let q: Query<DocumentData> = query(collection(db, this.collectionName));
+      // 🔍 ALWAYS LOG: Search parameters
+      console.log('🔍 Smart Search - Executing with params:', {
+        brands: parsed.brands,
+        fuelTypes: parsed.fuelTypes,
+        years: parsed.years,
+        priceRange: parsed.priceRange,
+        keywords: parsed.keywords
+      });
+      console.log('⚠️ NOTE: Brand filtering moved to client-side for case-insensitive matching');
       
-      // Filter by status (active only)
-      q = query(q, where('status', '==', 'active'));
+      // ⚡ CRITICAL FIX: Search across ALL vehicle type collections
+      const collections = [
+        'cars',             // Legacy collection
+        'passenger_cars',   // Personal cars
+        'suvs',             // SUVs/Jeeps
+        'vans',             // Vans/Cargo
+        'motorcycles',      // Motorcycles
+        'trucks',           // Trucks
+        'buses'             // Buses
+      ];
       
-      // ⚡ SMART FIX: Apply brand filter if detected
-      if (parsed.brands.length > 0) {
-        // Firestore 'in' query supports up to 10 values
-        const brands = parsed.brands.slice(0, 10);
-        q = query(q, where('make', 'in', brands));
+      console.log('🔍 Searching across', collections.length, 'collections:', collections);
+      
+      const allCars: (CarListing | UnifiedCar)[] = [];
+      
+      // Query each collection in parallel
+      const queryPromises = collections.map(async (collectionName) => {
+        try {
+          console.log(`🔎 Querying collection: ${collectionName}...`);
+          
+          let q: Query<DocumentData> = query(collection(db, collectionName));
+          
+          // Filter by status (active only)
+          q = query(q, where('status', '==', 'active'));
+          
+          // ⚡ REMOVED: Brand filter from Firestore (will use client-side for case-insensitive)
+          // Reason: Firestore 'in' query is case-sensitive, won't match 'ford' vs 'Ford' vs 'FORD'
+          
+          // Apply fuel type filter if detected
+          if (parsed.fuelTypes.length > 0) {
+            const fuelTypes = parsed.fuelTypes.slice(0, 10);
+            console.log(`  ⛽ [${collectionName}] Applying fuel filter:`, fuelTypes);
+            q = query(q, where('fuelType', 'in', fuelTypes));
+          }
+          
+          // Order by creation date (newest first)
+          q = query(q, orderBy('createdAt', 'desc'));
+          
+          // Limit results per collection
+          q = query(q, firestoreLimit(Math.ceil(limitCount / collections.length)));
+          
+          // Execute query
+          const snapshot = await getDocs(q);
+          const cars = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          })) as (CarListing | UnifiedCar)[];
+          
+          if (cars.length > 0) {
+            console.log(`  ✅ [${collectionName}] Found ${cars.length} cars`);
+          }
+          
+          return cars;
+        } catch (error) {
+          console.error(`  ❌ [${collectionName}] Query failed:`, error);
+          return [];
+        }
+      });
+      
+      // Wait for all queries to complete
+      const results = await Promise.all(queryPromises);
+      results.forEach(cars => allCars.push(...cars));
+      
+      // 🔍 ALWAYS LOG: Firestore results
+      console.log('✅ Smart Search - Firestore returned:', allCars.length, 'total cars from all collections');
+      if (allCars.length > 0) {
+        console.log('📋 Sample car:', {
+          make: allCars[0].make,
+          model: allCars[0].model,
+          year: allCars[0].year,
+          price: allCars[0].price
+        });
+      } else {
+        console.log('⚠️ NO CARS FOUND in any collection!');
+        console.log('🔍 Search params were:', parsed);
+        console.log('📦 Collections searched:', collections);
       }
-      
-      // Apply fuel type filter if detected
-      if (parsed.fuelTypes.length > 0) {
-        const fuelTypes = parsed.fuelTypes.slice(0, 10);
-        q = query(q, where('fuelType', 'in', fuelTypes));
-      }
-      
-      // Order by creation date (newest first)
-      q = query(q, orderBy('createdAt', 'desc'));
-      
-      // Limit results
-      q = query(q, firestoreLimit(limitCount));
-      
-      // Execute query
-      const snapshot = await getDocs(q);
-      let cars = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as (CarListing | BulgarianCar)[];
-      
-      // 🔍 DEBUG: Log Firestore results
-      if (isDebug) console.log('🔥 Firestore results:', cars.length, 'cars');
       
       // ⚡ NEW: Apply client-side filters (ranges, text search, make/model matching)
-      const beforeFilter = cars.length;
-      cars = this.applyClientSideFilters(cars, parsed);
-      if (isDebug) console.log('✅ After filtering:', cars.length, 'cars (filtered:', beforeFilter - cars.length, ')');
+      const beforeFilter = allCars.length;
+      const filteredCars = this.applyClientSideFilters(allCars, parsed);
+      console.log('🎯 Smart Search - After client-side filtering:', filteredCars.length, 'cars (removed:', beforeFilter - filteredCars.length, ')');
       
-      return cars;
+      return filteredCars;
       
     } catch (error) {
       serviceLogger.error('Firestore search failed', error as Error);
@@ -289,10 +369,13 @@ class SmartSearchService {
    * ⚡ ENHANCED: Now supports FULL text search in make/model/description
    */
   private applyClientSideFilters(
-    cars: (CarListing | BulgarianCar)[],
+    cars: (CarListing | UnifiedCar)[],
     parsed: ParsedKeywords
-  ): (CarListing | BulgarianCar)[] {
-    return cars.filter(car => {
+  ): (CarListing | UnifiedCar)[] {
+    console.log('🎯 Client-side filtering started with', cars.length, 'cars');
+    console.log('📋 Keywords to match:', parsed.keywords);
+    
+    const filtered = cars.filter(car => {
       // Year filter
       if (parsed.years.length > 0) {
         const carYear = car.year || 0;
@@ -309,8 +392,7 @@ class SmartSearchService {
         return false;
       }
       
-      // ⚡ ENHANCED: Keyword matching (in make, model, description)
-      // This catches brands NOT in the knownBrands list (like GMC, etc.)
+      // ⚡ ENHANCED: Case-insensitive keyword matching
       if (parsed.keywords.length > 0) {
         const searchText = `
           ${car.make || ''} 
@@ -321,10 +403,23 @@ class SmartSearchService {
           ${(car as any).category || ''}
         `.toLowerCase();
         
-        // ⚡ SMART: Match if ANY keyword is found (OR logic)
-        const hasMatch = parsed.keywords.some(keyword => 
-          searchText.includes(keyword.toLowerCase())
-        );
+        // ⚡ SMART: Match if ANY keyword is found (OR logic, case-insensitive)
+        const hasMatch = parsed.keywords.some(keyword => {
+          const lowerKeyword = keyword.toLowerCase();
+          const matched = searchText.includes(lowerKeyword);
+          
+          // Debug: Log first 5 cars to see what's being matched
+          if (cars.indexOf(car) < 5) {
+            console.log(`🔍 Checking car ${car.make} ${car.model}:`, {
+              keyword: lowerKeyword,
+              carMake: car.make,
+              matched: matched,
+              searchTextSnippet: searchText.substring(0, 100)
+            });
+          }
+          
+          return matched;
+        });
         
         if (!hasMatch) {
           return false;
@@ -333,6 +428,17 @@ class SmartSearchService {
       
       return true;
     });
+    
+    console.log('✅ After client-side filtering:', filtered.length, 'cars matched');
+    if (filtered.length > 0) {
+      console.log('📋 Sample matched car:', {
+        make: filtered[0].make,
+        model: filtered[0].model,
+        year: filtered[0].year
+      });
+    }
+    
+    return filtered;
   }
 
   /**
@@ -420,7 +526,7 @@ class SmartSearchService {
   async quickSearch(
     keywords: string,
     limit: number = 6
-  ): Promise<(CarListing | BulgarianCar)[]> {
+  ): Promise<(CarListing | UnifiedCar)[]> {
     const result = await this.search(keywords, undefined, 1, limit);
     return result.cars;
   }

@@ -1,3 +1,4 @@
+import { logger } from '../../../services/logger-service';
 /**
  * Points & Levels System Section
  * Displays user's points, level, and achievements
@@ -6,10 +7,10 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Award, TrendingUp, Star, Target, Zap } from 'lucide-react';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { useTheme } from '@/contexts/ThemeContext';
-import type { UserPoints, UserLevel, LevelConfig } from '@/types/profile-enhancements.types';
-import { pointsLevelsService } from '@/services/profile/points-levels.service';
+import { useLanguage } from '../../../contexts/LanguageContext';
+import { useTheme } from '../../../contexts/ThemeContext';
+import type { UserPoints, UserLevel, LevelConfig } from '../../../types/profile-enhancements.types';
+import { pointsLevelsService } from '../../../services/profile/points-levels.service';
 
 const SectionContainer = styled.section<{ $isDark: boolean }>`
   padding: 24px;
@@ -235,7 +236,7 @@ export const PointsLevelsSection: React.FC<PointsLevelsSectionProps> = ({
           }
         }
       } catch (error) {
-        console.error('Error loading user points:', error);
+        logger.error('Error loading user points:', error);
         setUserPoints(null);
       } finally {
         setLoading(false);

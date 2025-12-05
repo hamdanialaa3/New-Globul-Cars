@@ -1,7 +1,8 @@
+import { logger } from '../../services/logger-service';
 import React, { useEffect, useState } from 'react';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import styled from 'styled-components';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 interface Backup {
   name: string;
@@ -34,7 +35,7 @@ export const BackupManagement: React.FC = () => {
       setBackups(data.backups);
       setError(null);
     } catch (err: any) {
-      console.error('Failed to load backups:', err);
+      logger.error('Failed to load backups:', err);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -58,7 +59,7 @@ export const BackupManagement: React.FC = () => {
       // Reload backups after 2 minutes
       setTimeout(loadBackups, 2 * 60 * 1000);
     } catch (err: any) {
-      console.error('Failed to create backup:', err);
+      logger.error('Failed to create backup:', err);
       alert('Failed to create backup: ' + err.message);
     } finally {
       setCreating(false);
@@ -87,7 +88,7 @@ export const BackupManagement: React.FC = () => {
       
       alert('Restore started successfully! This may take 10-30 minutes.');
     } catch (err: any) {
-      console.error('Failed to restore backup:', err);
+      logger.error('Failed to restore backup:', err);
       alert('Failed to restore backup: ' + err.message);
     } finally {
       setRestoring(false);

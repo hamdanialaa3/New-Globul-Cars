@@ -14,7 +14,7 @@ import { logger } from './logger-service';
  * 
  * Usage:
  * ```typescript
- * import { notificationService } from '@/services/notification-service';
+ * import { notificationService } from '../services/notification-service';
  * 
  * await notificationService.initialize();
  * const token = await notificationService.requestPermission();
@@ -136,15 +136,15 @@ class NotificationService {
         updatedAt: new Date(),
         platform: 'web'
       });
-      console.log('✅ Token saved');
+      logger.info('✅ Token saved');
     } catch (error) {
-      console.error('❌ Token save failed:', error);
+      logger.error('❌ Token save failed:', error);
     }
   }
 
   listenForMessages() {
     onMessage(this.messaging, (payload) => {
-      console.log('📬 Foreground Message:', payload);
+      logger.info('📬 Foreground Message:', payload);
       this.showNotification(payload);
     });
   }
@@ -259,7 +259,7 @@ class NotificationService {
       const tokenDoc = await getDoc(doc(db, 'userTokens', userId));
       
       if (!tokenDoc.exists()) {
-        console.log('❌ No token for user:', userId);
+        logger.info('❌ No token for user:', userId);
         return;
       }
 
@@ -267,11 +267,11 @@ class NotificationService {
       
       // هنا سنستخدم Firebase Cloud Functions لإرسال الإشعار
       // سيتم إضافته في الخطوة التالية
-      console.log('📤 Sending notification to:', userId, notification);
+      logger.info('📤 Sending notification to:', userId, notification);
       
       return { success: true };
     } catch (error) {
-      console.error('❌ Send notification failed:', error);
+      logger.error('❌ Send notification failed:', error);
       return { success: false, error };
     }
   }

@@ -4,9 +4,9 @@
 // English/Bulgarian bilingual. No emojis. <250 lines.
 
 import React, { useEffect, useState } from 'react';
-import { useLanguage } from '@/contexts/LanguageContext';
-import WorkflowAnalyticsService from '@/services/workflow-analytics-service';
-import { logger } from '@/services/logger-service';
+import { useLanguage } from '../../contexts/LanguageContext';
+import WorkflowAnalyticsService from '../../services/workflow-analytics-service';
+import { logger } from '../../services/logger-service';
 import styled from 'styled-components';
 
 interface ConversionData {

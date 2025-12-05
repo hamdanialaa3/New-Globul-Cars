@@ -3,19 +3,19 @@
 
 import React, { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useLanguage } from '@/contexts/LanguageContext';
-import SplitScreenLayout from '@/components/SplitScreenLayout';
-import BrandLogoSphere from '@/components/BrandLogoSphere';
+import { useLanguage } from '../../../../contexts/LanguageContext';
+import SplitScreenLayout from '../../../../components/SplitScreenLayout';
+import BrandLogoSphere from '../../../../components/BrandLogoSphere';
 import { 
   Shield, Zap, AlertTriangle, Eye, Wind, Droplets, Armchair, Sun, 
   Fan, Snowflake, Radio, Bluetooth, Smartphone, Music, Wifi, Navigation,
   Sparkles, Moon, Circle, KeyRound, Car 
 } from 'lucide-react';
 import * as S from './UnifiedEquipmentStyles';
-import { SellWorkflowLayout } from '@/components/SellWorkflow';
-import SellWorkflowStepStateService from '@/services/sellWorkflowStepState';
+import { SellWorkflowLayout } from '../../../../components/SellWorkflow';
+import SellWorkflowStepStateService from '../../../../services/sellWorkflowStepState';
 import { useEquipmentSelection } from './useEquipmentSelection';
-import { logger } from '@/services/logger-service';
+import { logger } from '../../../../services/logger-service';
 
 // Equipment Categories
 const EQUIPMENT_CATEGORIES = {

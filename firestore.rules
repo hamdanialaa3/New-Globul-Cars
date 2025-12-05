@@ -197,6 +197,58 @@ service cloud.firestore {
       }
     }
     
+    // ==================== NEW VEHICLE COLLECTIONS ====================
+    // Rules for new vehicle type collections (Dec 2025)
+    // Collections: passenger_cars, suvs, vans, motorcycles, trucks, buses
+    
+    match /passenger_cars/{carId} {
+      allow read: if true; // Public read for all cars
+      allow create: if isAuthenticated() &&
+                       request.resource.data.sellerId == request.auth.uid;
+      allow update, delete: if isAuthenticated() && 
+                               (resource.data.sellerId == request.auth.uid || isAdmin());
+    }
+    
+    match /suvs/{carId} {
+      allow read: if true;
+      allow create: if isAuthenticated() &&
+                       request.resource.data.sellerId == request.auth.uid;
+      allow update, delete: if isAuthenticated() && 
+                               (resource.data.sellerId == request.auth.uid || isAdmin());
+    }
+    
+    match /vans/{carId} {
+      allow read: if true;
+      allow create: if isAuthenticated() &&
+                       request.resource.data.sellerId == request.auth.uid;
+      allow update, delete: if isAuthenticated() && 
+                               (resource.data.sellerId == request.auth.uid || isAdmin());
+    }
+    
+    match /motorcycles/{carId} {
+      allow read: if true;
+      allow create: if isAuthenticated() &&
+                       request.resource.data.sellerId == request.auth.uid;
+      allow update, delete: if isAuthenticated() && 
+                               (resource.data.sellerId == request.auth.uid || isAdmin());
+    }
+    
+    match /trucks/{carId} {
+      allow read: if true;
+      allow create: if isAuthenticated() &&
+                       request.resource.data.sellerId == request.auth.uid;
+      allow update, delete: if isAuthenticated() && 
+                               (resource.data.sellerId == request.auth.uid || isAdmin());
+    }
+    
+    match /buses/{carId} {
+      allow read: if true;
+      allow create: if isAuthenticated() &&
+                       request.resource.data.sellerId == request.auth.uid;
+      allow update, delete: if isAuthenticated() && 
+                               (resource.data.sellerId == request.auth.uid || isAdmin());
+    }
+    
     // ==================== POSTS COLLECTION ====================
     
     match /posts/{postId} {
@@ -370,9 +422,8 @@ service cloud.firestore {
     
     // User Points
     match /userPoints/{userId} {
-      // Users can read their own points
-      allow read: if isAuthenticated() && 
-                     resource.data.userId == request.auth.uid;
+      // Users can read their own points, or any authenticated user can read any points (for leaderboard)
+      allow read: if isAuthenticated();
       
       // Only server/admin can write (via Cloud Functions)
       allow write: if false; // Points should be updated via Cloud Functions only
@@ -418,8 +469,8 @@ service cloud.firestore {
     
     // Monthly Challenges
     match /monthlyChallenges/{challengeId} {
-      // Anyone can read active challenges
-      allow read: if resource.data.isActive == true;
+      // Anyone authenticated can read all challenges (active or inactive)
+      allow read: if isAuthenticated();
       
       // Only admins can create/update challenges
       allow create, update, delete: if isAdmin();
@@ -475,12 +526,8 @@ service cloud.firestore {
     
     // Intro Videos
     match /introVideos/{userId} {
-      // Anyone can read public videos
-      allow read: if resource.data.isPublic == true;
-      
-      // Users can read their own videos
-      allow read: if isAuthenticated() && 
-                     resource.data.userId == request.auth.uid;
+      // Anyone authenticated can read videos (for profile viewing)
+      allow read: if isAuthenticated();
       
       // Users can create/update their own video
       allow write: if isAuthenticated() && 
@@ -511,14 +558,10 @@ service cloud.firestore {
     
     // Achievements
     match /achievements/{achievementId} {
-      // Anyone can read public achievements
-      allow read: if resource.data.isPublic == true;
+      // Anyone authenticated can read achievements (for achievement galleries)
+      allow read: if isAuthenticated();
       
-      // Users can read their own achievements
-      allow read: if isAuthenticated() && 
-                     resource.data.userId == request.auth.uid;
-      
-      // Users can create their own achievements (when unlocked)
+      // Users can create their own achievements
       allow create: if isAuthenticated() && 
                        request.resource.data.userId == request.auth.uid;
       

@@ -1,8 +1,9 @@
+import { logger } from '../../../../../services/logger-service';
 import React, { useEffect, useState, useMemo } from 'react';
 import styled from 'styled-components';
-import { smartContactsService } from '@/services/social/smart-contacts.service';
-import { useAuth } from '@/contexts/AuthProvider';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { smartContactsService } from '../../../../../services/social/smart-contacts.service';
+import { useAuth } from '../../../../../contexts/AuthProvider';
+import { useLanguage } from '../../../../../contexts/LanguageContext';
 
 interface SmartContact {
   id: string;
@@ -46,7 +47,7 @@ const RightSidebarComponent: React.FC = () => {
         const count = await smartContactsService.getOnlineUsersCount();
         setOnlineCount(count);
       } catch (error) {
-        console.error('Error loading contacts:', error);
+        logger.error('Error loading contacts:', error);
         setContacts([]);
       } finally {
         setLoading(false);

@@ -1,8 +1,8 @@
 // Hook for AI Image Analysis
 import { useState, useCallback } from 'react';
-import { geminiVisionService } from '@/services/ai';
-import { CarAnalysisResult } from '@/types/ai.types';
-import { logger } from '@/services/logger-service';
+import { geminiVisionService } from '../services/ai';
+import { CarAnalysisResult } from '../types/ai.types';
+import { logger } from '../services/logger-service';
 
 export const useAIImageAnalysis = () => {
   const [analyzing, setAnalyzing] = useState(false);

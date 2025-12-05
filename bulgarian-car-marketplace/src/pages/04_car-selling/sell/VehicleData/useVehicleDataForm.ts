@@ -1,15 +1,16 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { logger } from '../../../../services/logger-service';
+import { useCallback, useEffect, useMemo, useState, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { brandsModelsDataService } from '@/services/brands-models-data.service';
+import { brandsModelsDataService } from '../../../../services/brands-models-data.service';
 import {
   getVariantsForModel,
   modelHasVariants
-} from '@/services/carBrandsService';
-import { resolveCanonicalBrand } from '@/services/brand-normalization';
-import structuredBrandsData from '@/data/car-brands-structured.json';
+} from '../../../../services/carBrandsService';
+import { resolveCanonicalBrand } from '../../../../services/brand-normalization';
+import structuredBrandsData from '../../../../data/car-brands-structured.json';
 import { VehicleFormData } from './types';
-import useSellWorkflow from '@/hooks/useSellWorkflow';
-import SellWorkflowStepStateService from '@/services/sellWorkflowStepState';
+import useSellWorkflow from '../../../../hooks/useSellWorkflow';
+import SellWorkflowStepStateService from '../../../../services/sellWorkflowStepState';
 
 const defaultForm: VehicleFormData = {
   make: '',
@@ -111,14 +112,22 @@ useEffect(() => {
   setFormData(prev => (formEquals(prev, initialValues) ? prev : initialValues));
 }, [initialValues, formEquals]);
 
-  // ✅ FIX: Debounce workflow updates to prevent infinite loop
+  // ✅ PROFESSIONAL FIX: Use ref to prevent infinite loop while keeping updateWorkflowData stable
+  const updateWorkflowDataRef = useRef(updateWorkflowData);
+  
+  // Keep ref synchronized with latest updateWorkflowData
+  useEffect(() => {
+    updateWorkflowDataRef.current = updateWorkflowData;
+  }, [updateWorkflowData]);
+
+  // Debounced auto-save with stable ref - prevents infinite loop
   useEffect(() => {
     const timer = setTimeout(() => {
-      updateWorkflowData(formData, 'vehicle-data');
+      updateWorkflowDataRef.current(formData, 'vehicle-data');
     }, 500); // Save after 500ms of no changes
     
     return () => clearTimeout(timer);
-  }, [formData]); // Removed updateWorkflowData dependency to break loop
+  }, [formData]); // ✅ Safe: only depends on formData, uses stable ref for function
 
   // Load brands asynchronously
   const [availableBrands, setAvailableBrands] = useState<string[]>([]);
@@ -127,7 +136,7 @@ useEffect(() => {
     brandsModelsDataService.getAllBrands()
       .then(brands => setAvailableBrands(brands))
       .catch(error => {
-        console.error('[useVehicleDataForm] Failed to load brands:', error);
+        logger.error('[useVehicleDataForm] Failed to load brands:', error);
         setAvailableBrands([]);
       });
   }, []);
@@ -157,11 +166,11 @@ useEffect(() => {
             return;
           }
         }
-        console.log('[useVehicleDataForm] brand selected:', formData.make, 'canonical:', canonical, 'models count:', models.length, 'first 8:', models.slice(0, 8));
+        logger.info('[useVehicleDataForm] brand selected:', formData.make, 'canonical:', canonical, 'models count:', models.length, 'first 8:', models.slice(0, 8));
         setAvailableModels(models);
       })
       .catch(error => {
-        console.error('[useVehicleDataForm] Failed to load models:', error);
+        logger.error('[useVehicleDataForm] Failed to load models:', error);
         setAvailableModels([]);
       });
   }, [formData.make]);

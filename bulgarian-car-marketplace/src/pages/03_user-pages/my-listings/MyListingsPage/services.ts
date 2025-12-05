@@ -12,9 +12,9 @@ import {
   deleteDoc,
   serverTimestamp
 } from 'firebase/firestore';
-import { db } from '@/firebase/firebase-config';
+import { db } from '../../../../firebase/firebase-config';
 import { MyListing, MyListingsStats } from './types';
-import { logger } from '@/services/logger-service';
+import { logger } from '../../../../services/logger-service';
 
 class MyListingsService {
   private collectionName = 'cars';

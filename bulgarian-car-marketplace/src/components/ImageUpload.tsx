@@ -4,7 +4,7 @@
 
 import React, { useState, useCallback, useRef } from 'react';
 import styled from 'styled-components';
-import { useTranslation } from '@/hooks/useTranslation';
+import { useTranslation } from '../hooks/useTranslation';
 
 interface ImageUploadProps {
   images: string[];

@@ -120,7 +120,7 @@ class ContentFilteringService {
         .sort((a, b) => b.score - a.score)
         .slice(0, limitCount);
     } catch (error) {
-      console.error('Error in content-based filtering:', error);
+      logger.error('Error in content-based filtering:', error);
       return [];
     }
   }
@@ -158,7 +158,7 @@ class ContentFilteringService {
           } as Post);
         }
       } catch (error) {
-        console.error(`Error fetching post ${postId}:`, error);
+        logger.error(`Error fetching post ${postId}:`, error);
       }
     }
 

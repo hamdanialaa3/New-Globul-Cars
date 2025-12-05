@@ -1,3 +1,4 @@
+import { logger } from '../../services/logger-service';
 // src/features/verification/AdminApprovalQueue.tsx
 // Admin Approval Queue - Review and approve verification requests
 
@@ -250,7 +251,7 @@ export const AdminApprovalQueue: React.FC = () => {
       const pending = await verificationService.getPendingVerifications();
       setRequests(pending);
     } catch (error) {
-      console.error('Error loading verification requests:', error);
+      logger.error('Error loading verification requests:', error);
       toast.error('Failed to load requests');
     } finally {
       setLoading(false);
@@ -281,7 +282,7 @@ export const AdminApprovalQueue: React.FC = () => {
       // Reload requests
       loadRequests();
     } catch (error: any) {
-      console.error('Error approving verification:', error);
+      logger.error('Error approving verification:', error);
       toast.error(error.message || 'Approval failed');
     }
   };
@@ -312,7 +313,7 @@ export const AdminApprovalQueue: React.FC = () => {
       // Reload requests
       loadRequests();
     } catch (error: any) {
-      console.error('Error rejecting verification:', error);
+      logger.error('Error rejecting verification:', error);
       toast.error(error.message || 'Rejection failed');
     }
   };

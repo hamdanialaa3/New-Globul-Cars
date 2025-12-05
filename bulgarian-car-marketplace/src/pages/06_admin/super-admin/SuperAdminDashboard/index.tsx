@@ -1,42 +1,43 @@
+import { logger } from '../../../../services/logger-service';
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { RealTimeAnalytics, UserActivity, ContentModeration } from '@/services/super-admin-service';
-import { realDataInitializer } from '@/services/real-data-initializer';
-import { advancedRealDataService } from '@/services/advanced-real-data-service';
-import { firebaseRealDataService } from '@/services/firebase-real-data-service';
-import { uniqueOwnerService } from '@/services/unique-owner-service';
+import { RealTimeAnalytics, UserActivity, ContentModeration } from '../../../../services/super-admin-service';
+import { realDataInitializer } from '../../../../services/real-data-initializer';
+import { advancedRealDataService } from '../../../../services/advanced-real-data-service';
+import { firebaseRealDataService } from '../../../../services/firebase-real-data-service';
+import { uniqueOwnerService } from '../../../../services/unique-owner-service';
 import { doc, getDoc } from 'firebase/firestore';
-import { db } from '@/firebase/firebase-config';
+import { db } from '../../../../firebase/firebase-config';
 import { getAuth } from 'firebase/auth';
-import { usersReportService } from '@/services/reports/users-report-service';
-import { carsReportService } from '@/services/reports/cars-report-service';
+import { usersReportService } from '../../../../services/reports/users-report-service';
+import { carsReportService } from '../../../../services/reports/cars-report-service';
 import { Download, FileSpreadsheet, FileJson, Users } from 'lucide-react';
-import { useLanguage } from '@/contexts/LanguageContext';
-import GlobulCarLogo from '@/components/icons/GlobulCarLogo';
+import { useLanguage } from '../../../../contexts/LanguageContext';
+import GlobulCarLogo from '../../../../components/icons/GlobulCarLogo';
 
 // Import components
-import AdminHeader from '@/components/SuperAdmin/AdminHeader';
-import AdminNavigation from '@/components/SuperAdmin/AdminNavigation';
-import QuickLinksNavigation from '@/components/SuperAdmin/QuickLinksNavigation';
-import AdminOverview from '@/components/SuperAdmin/AdminOverview';
-import LiveCounters from '@/components/SuperAdmin/LiveCounters';
-import FirebaseConnectionTest from '@/components/SuperAdmin/FirebaseConnectionTest';
-import ProjectInfoPanel from '@/components/SuperAdmin/ProjectInfoPanel';
-import RealTimeAlertsPanel from '@/components/SuperAdmin/RealTimeAlertsPanel';
-import VisitorAnalyticsPanel from '@/components/SuperAdmin/VisitorAnalyticsPanel';
-import RealDataDisplay from '@/components/RealDataDisplay';
-import AdvancedCharts from '@/components/AdvancedCharts';
-import RealDataManager from '@/components/RealDataManager';
-import AdvancedAnalytics from '@/components/AdvancedAnalytics';
-import RealTimeNotifications from '@/components/RealTimeNotifications';
-import AdvancedContentManagement from '@/components/AdvancedContentManagement';
-import AdvancedUserManagement from '@/components/AdvancedUserManagement';
-import PermissionManagement from '@/components/PermissionManagement';
-import AuditLogging from '@/components/AuditLogging';
-import UserDetailsModal from '@/components/UserDetailsModal';
-import FacebookAdminPanel from '@/components/SuperAdmin/FacebookAdminPanel';
-import ArchitecturePanel from '@/components/SuperAdmin/ArchitecturePanel';
+import AdminHeader from '../../../../components/SuperAdmin/AdminHeader';
+import AdminNavigation from '../../../../components/SuperAdmin/AdminNavigation';
+import QuickLinksNavigation from '../../../../components/SuperAdmin/QuickLinksNavigation';
+import AdminOverview from '../../../../components/SuperAdmin/AdminOverview';
+import LiveCounters from '../../../../components/SuperAdmin/LiveCounters';
+import FirebaseConnectionTest from '../../../../components/SuperAdmin/FirebaseConnectionTest';
+import ProjectInfoPanel from '../../../../components/SuperAdmin/ProjectInfoPanel';
+import RealTimeAlertsPanel from '../../../../components/SuperAdmin/RealTimeAlertsPanel';
+import VisitorAnalyticsPanel from '../../../../components/SuperAdmin/VisitorAnalyticsPanel';
+import RealDataDisplay from '../../../../components/RealDataDisplay';
+import AdvancedCharts from '../../../../components/AdvancedCharts';
+import RealDataManager from '../../../../components/RealDataManager';
+import AdvancedAnalytics from '../../../../components/AdvancedAnalytics';
+import RealTimeNotifications from '../../../../components/RealTimeNotifications';
+import AdvancedContentManagement from '../../../../components/AdvancedContentManagement';
+import AdvancedUserManagement from '../../../../components/AdvancedUserManagement';
+import PermissionManagement from '../../../../components/PermissionManagement';
+import AuditLogging from '../../../../components/AuditLogging';
+import UserDetailsModal from '../../../../components/UserDetailsModal';
+import FacebookAdminPanel from '../../../../components/SuperAdmin/FacebookAdminPanel';
+import ArchitecturePanel from '../../../../components/SuperAdmin/ArchitecturePanel';
 
 // Styled Components
 const DashboardContainer = styled.div`
@@ -156,7 +157,7 @@ const SuperAdminDashboard: React.FC = () => {
 
           if (!currentUser || currentUser.email !== 'alaa.hamdani@yahoo.com') {
             if (!hasWarned) {
-              console.warn('⚠️ Not signed into Firebase as the unique owner.');
+              logger.warn('⚠️ Not signed into Firebase as the unique owner.');
               hasWarned = true;
             }
             if (!cancelled && !hasNavigated) {
@@ -168,7 +169,7 @@ const SuperAdminDashboard: React.FC = () => {
           } else {
             if (cancelled) return;
             setIsOwnerAuthed(true);
-            console.log('🔄 Loading real Firebase data...');
+            logger.info('🔄 Loading real Firebase data...');
             const realAnalytics = await firebaseRealDataService.getRealAnalytics();
 
             if (cancelled) return;
@@ -223,10 +224,10 @@ const SuperAdminDashboard: React.FC = () => {
             if (cancelled) return;
             setUserActivity(realUserActivity);
 
-            console.log('✅ Real Firebase data loaded successfully');
+            logger.info('✅ Real Firebase data loaded successfully');
           }
         } catch (error) {
-          console.warn('⚠️ Failed to load real Firebase data.');
+          logger.warn('⚠️ Failed to load real Firebase data.');
           if (!cancelled) {
             navigate('/super-admin-login');
           }
@@ -241,14 +242,14 @@ const SuperAdminDashboard: React.FC = () => {
           if (cancelled) return;
           setContentModeration(moderationData);
         } catch (error) {
-          console.warn('⚠️ Failed to load content moderation data');
+          logger.warn('⚠️ Failed to load content moderation data');
           if (!cancelled) {
             setContentModeration(null);
           }
         }
 
       } catch (error) {
-        console.error('❌ Error initializing dashboard:', error);
+        logger.error('❌ Error initializing dashboard:', error);
         if (!cancelled) {
           setError('Failed to initialize dashboard');
         }
@@ -276,7 +277,7 @@ const SuperAdminDashboard: React.FC = () => {
           });
         }
       } catch (error) {
-        console.log('Stats not available yet');
+        logger.info('Stats not available yet');
       }
     };
 
@@ -303,7 +304,7 @@ const SuperAdminDashboard: React.FC = () => {
         await uniqueOwnerService.logout();
         navigate('/super-admin-login');
       } catch (error) {
-        console.error('Error during logout:', error);
+        logger.error('Error during logout:', error);
       }
     }
   };

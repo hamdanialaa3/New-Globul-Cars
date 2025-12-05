@@ -8,9 +8,9 @@ import TrustStrip from '../TrustStrip';
 import DealerSpotlight from '../DealerSpotlight';
 import LifeMomentsBrowse from '../LifeMomentsBrowse';
 import LoyaltyBanner from '../LoyaltyBanner';
-import { LanguageProvider } from '@/contexts/LanguageContext';
-import AuthProvider from '@/contexts/AuthProvider';
-import { ProfileTypeProvider } from '@/contexts/ProfileTypeContext';
+import { LanguageProvider } from '../../../../../contexts/LanguageContext';
+import AuthProvider from '../../../../../contexts/AuthProvider';
+import { ProfileTypeProvider } from '../../../../../contexts/ProfileTypeContext';
 
 const wrap = (ui: React.ReactElement) => (
   <LanguageProvider>

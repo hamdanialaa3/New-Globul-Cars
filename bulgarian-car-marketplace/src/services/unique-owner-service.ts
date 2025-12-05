@@ -1,6 +1,6 @@
 // Unique Owner Service - نظام الحماية الفريد للمالك الوحيد
 import { doc, getDoc, setDoc, updateDoc, serverTimestamp, collection } from 'firebase/firestore';
-import { db } from '@/firebase/firebase-config';
+import { db } from '../firebase/firebase-config';
 import { serviceLogger } from './logger-wrapper';
 
 export interface UniqueOwnerSession {

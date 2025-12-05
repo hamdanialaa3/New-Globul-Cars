@@ -4,8 +4,8 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { usePWA } from '@/hooks/usePWA';
-import { useTranslation } from '@/hooks/useTranslation';
+import { usePWA } from '../hooks/usePWA';
+import { useTranslation } from '../hooks/useTranslation';
 
 const InstallPromptContainer = styled.div`
   position: fixed;

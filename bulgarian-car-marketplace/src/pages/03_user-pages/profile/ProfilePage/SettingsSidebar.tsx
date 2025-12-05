@@ -1,18 +1,19 @@
+import { logger } from '../../../../services/logger-service';
 // SettingsSidebar.tsx - mobile.de Inspired Black Sidebar
 // ⚡ Compact & Professional Navigation
 
 import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
-import { useAuth } from '@/contexts/AuthProvider';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '../../../../contexts/AuthProvider';
+import { useLanguage } from '../../../../contexts/LanguageContext';
 import { 
   User, Eye, MessageSquare, Search, Heart, ShoppingCart, 
   Package, CreditCard, Car, FileText, Settings, 
   Shield, Bell, Edit, Users, List
 } from 'lucide-react';
 import { collection, query, where, getDocs } from 'firebase/firestore';
-import { db } from '@/firebase/firebase-config';
+import { db } from '../../../../firebase/firebase-config';
 
 interface SidebarCounts {
   messages: number;
@@ -79,7 +80,7 @@ const SettingsSidebar: React.FC = () => {
         myListings: listingsSnap.docs.length
       });
     } catch (error) {
-      console.error('Error loading sidebar counts:', error);
+      logger.error('Error loading sidebar counts:', error);
     }
   };
 

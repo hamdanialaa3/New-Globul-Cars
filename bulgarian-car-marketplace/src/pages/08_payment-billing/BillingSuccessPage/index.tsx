@@ -3,7 +3,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '../../../contexts/LanguageContext';
 
 const BillingSuccessPage: React.FC = () => {
   const { t } = useLanguage();

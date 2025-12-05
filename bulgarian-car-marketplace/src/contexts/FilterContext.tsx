@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { resolveCanonicalBrand } from '@/services/brand-normalization';
-import { SearchData } from '@/pages/05_search-browse/advanced-search/AdvancedSearchPage/types';
+import { resolveCanonicalBrand } from '../services/brand-normalization';
+import { SearchData } from '../pages/05_search-browse/advanced-search/AdvancedSearchPage/types';
 
 /**
  * FilterContext

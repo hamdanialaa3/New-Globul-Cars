@@ -1,3 +1,4 @@
+import { logger } from '../../../services/logger-service';
 /**
  * Create Campaign Modal Component
  * Modal for creating and editing ad campaigns
@@ -192,7 +193,7 @@ const CreateCampaignModal: React.FC<CreateCampaignModalProps> = ({
 
       onClose();
     } catch (error) {
-      console.error('Error creating/updating campaign:', error);
+      logger.error('Error creating/updating campaign:', error);
       setErrors({ 
         submit: language === 'bg' 
           ? 'Грешка при създаване на кампанията' 

@@ -1,3 +1,4 @@
+import { logger } from '../../../../../services/logger-service';
 // src/pages/AdvancedSearchPage/hooks/useAdvancedSearch.ts
 // Custom hook for Advanced Search Page state management
 
@@ -7,8 +8,8 @@ import { useTranslation } from '../../../../../hooks/useTranslation';
 import { SearchData, SectionState, SectionName, SortOption, ViewMode, SearchResultsMeta } from '../types';
 import { CarListing } from '../../../../../types/CarListing';
 import algoliaSearchService from '../../../../../services/algoliaSearchService';
-import { useFilters } from '@/contexts/FilterContext';
-import { brandsModelsDataService } from '@/services/brands-models-data.service';
+import { useFilters } from '../../../../../contexts/FilterContext';
+import { brandsModelsDataService } from '../../../../../services/brands-models-data.service';
 
 const createInitialSearchData = (): SearchData => ({
   // Basic Data
@@ -119,7 +120,7 @@ export const useAdvancedSearch = () => {
     brandsModelsDataService.getAllBrands().then(brands => {
       setCarMakes(brands);
     }).catch(error => {
-      console.error('Failed to load car makes:', error);
+      logger.error('Failed to load car makes:', error);
       // Fallback to popular brands
       setCarMakes([
         'Volkswagen', 'Mercedes-Benz', 'BMW', 'Audi', 'Opel', 'Toyota', 
@@ -226,7 +227,7 @@ export const useAdvancedSearch = () => {
     setIsSearching(true);
 
     try {
-      console.log('🔍 Starting Algolia search with filters:', searchData);
+      logger.info('🔍 Starting Algolia search with filters:', searchData);
       
       // Use Algolia search service with sorting
       const response = await algoliaSearchService.searchCars(searchData, {
@@ -243,7 +244,7 @@ export const useAdvancedSearch = () => {
         totalPages: response.totalPages
       });
       
-      console.log(`✅ Algolia search completed: ${response.totalResults} cars found in ${response.processingTime}ms`);
+      logger.info(`✅ Algolia search completed: ${response.totalResults} cars found in ${response.processingTime}ms`);
 
       // Navigate to results page with search params
       const searchParams = new URLSearchParams();
@@ -258,7 +259,7 @@ export const useAdvancedSearch = () => {
 
       navigate(`/cars?${searchParams.toString()}`);
     } catch (error) {
-      console.error('❌ Algolia search error:', error);
+      logger.error('❌ Algolia search error:', error);
       alert('حدث خطأ أثناء البحث. يرجى المحاولة مرة أخرى.');
     } finally {
       setIsSearching(false);
@@ -289,8 +290,35 @@ export const useAdvancedSearch = () => {
   const countries = [t('advancedSearch.bulgaria'), t('advancedSearch.germany'), t('advancedSearch.austria'), t('advancedSearch.switzerland'), t('advancedSearch.countryOther')];
 
   const bulgarianCities = [
-    t('advancedSearch.sofia'), t('advancedSearch.plovdiv'), t('advancedSearch.varna'), t('advancedSearch.burgas'), t('advancedSearch.ruse'), t('advancedSearch.staraZagora'),
-    t('advancedSearch.pleven'), t('advancedSearch.dobrich'), t('advancedSearch.sliven'), t('advancedSearch.shumen'), t('advancedSearch.pernik'), t('advancedSearch.haskovo')
+    // All 28 Bulgarian Provinces (Области)
+    t('advancedSearch.blagoevgrad'),
+    t('advancedSearch.burgas'),
+    t('advancedSearch.dobrich'),
+    t('advancedSearch.gabrovo'),
+    t('advancedSearch.haskovo'),
+    t('advancedSearch.kardzhali'),
+    t('advancedSearch.kyustendil'),
+    t('advancedSearch.lovech'),
+    t('advancedSearch.montana'),
+    t('advancedSearch.pazardzhik'),
+    t('advancedSearch.pernik'),
+    t('advancedSearch.pleven'),
+    t('advancedSearch.plovdiv'),
+    t('advancedSearch.razgrad'),
+    t('advancedSearch.ruse'),
+    t('advancedSearch.shumen'),
+    t('advancedSearch.silistra'),
+    t('advancedSearch.sliven'),
+    t('advancedSearch.smolyan'),
+    t('advancedSearch.sofia'),
+    t('advancedSearch.sofiaProvince'),
+    t('advancedSearch.staraZagora'),
+    t('advancedSearch.targovishte'),
+    t('advancedSearch.varna'),
+    t('advancedSearch.velikoTarnovo'),
+    t('advancedSearch.vidin'),
+    t('advancedSearch.vratsa'),
+    t('advancedSearch.yambol')
   ];
 
   const radiusOptions = ['10 km', '25 km', '50 km', '100 km', '200 km'];

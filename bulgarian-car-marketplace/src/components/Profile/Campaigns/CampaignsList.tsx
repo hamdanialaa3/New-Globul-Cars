@@ -1,3 +1,4 @@
+import { logger } from '../../../services/logger-service';
 /**
  * Campaigns List Component
  * Displays all user campaigns with filters and actions
@@ -35,7 +36,7 @@ const CampaignsList: React.FC<CampaignsListProps> = ({ userId }) => {
       const analyticsData = await campaignService.getCampaignAnalytics(userId);
       setAnalytics(analyticsData);
     } catch (error) {
-      console.error('Error loading campaigns:', error);
+      logger.error('Error loading campaigns:', error);
     } finally {
       setLoading(false);
     }
@@ -66,7 +67,7 @@ const CampaignsList: React.FC<CampaignsListProps> = ({ userId }) => {
         await campaignService.deleteCampaign(campaignId);
         loadCampaigns();
       } catch (error) {
-        console.error('Error deleting campaign:', error);
+        logger.error('Error deleting campaign:', error);
       }
     }
   };
@@ -76,7 +77,7 @@ const CampaignsList: React.FC<CampaignsListProps> = ({ userId }) => {
       await campaignService.updateCampaignStatus(campaignId, status);
       loadCampaigns();
     } catch (error) {
-      console.error('Error updating campaign status:', error);
+      logger.error('Error updating campaign status:', error);
     }
   };
 

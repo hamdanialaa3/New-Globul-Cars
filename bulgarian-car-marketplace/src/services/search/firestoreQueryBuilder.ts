@@ -3,10 +3,10 @@
 // Phase: Query Unification Step 1
 
 import { collection, query, where, orderBy, limit, Query, DocumentData } from 'firebase/firestore';
-import { db } from '@/firebase/firebase-config';
-import { SearchData } from '@/pages/05_search-browse/advanced-search/AdvancedSearchPage/types';
-import { FilterState } from '@/contexts/FilterContext';
-import { resolveCanonicalBrand } from '@/services/brand-normalization';
+import { db } from '../../firebase/firebase-config';
+import { SearchData } from '../../pages/05_search-browse/advanced-search/AdvancedSearchPage/types';
+import { FilterState } from '../../contexts/FilterContext';
+import { resolveCanonicalBrand } from '../../services/brand-normalization';
 
 export type InputFilters = Partial<SearchData> | Partial<FilterState>;
 

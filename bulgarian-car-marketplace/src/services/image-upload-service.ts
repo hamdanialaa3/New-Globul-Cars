@@ -2,7 +2,7 @@
 // خدمة رفع الصور مع تتبع التقدم وإعادة المحاولة
 
 import { ref, uploadBytesResumable, getDownloadURL, UploadTask } from 'firebase/storage';
-import { storage } from '@/firebase/firebase-config';
+import { storage } from '../firebase/firebase-config';
 import imageCompression from 'browser-image-compression';
 import { serviceLogger } from './logger-wrapper';
 

@@ -3,10 +3,10 @@
 // English/Bulgarian bilingual. No emojis. <300 lines.
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { useAuth } from '@/contexts/AuthProvider';
-import { profileStatsService, ProfileStats } from '@/services/profile/profile-stats.service';
-import { logger } from '@/services/logger-service';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { useAuth } from '../../contexts/AuthProvider';
+import { profileStatsService, ProfileStats } from '../../services/profile/profile-stats.service';
+import { logger } from '../../services/logger-service';
 import * as S from './styles';
 
 export const ProfileDashboard: React.FC = () => {
@@ -229,4 +229,3 @@ const RefreshIcon = () => (
     <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
   </svg>
 );
-};

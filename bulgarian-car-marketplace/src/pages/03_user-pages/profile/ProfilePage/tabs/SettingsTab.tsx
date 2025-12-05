@@ -1,12 +1,15 @@
+import { logger } from '../../../../../services/logger-service';
 // ProfilePage/tabs/SettingsTab.tsx
 // ✅ TESTING VERSION - COMPREHENSIVE SETTINGS PAGE
 // Version: 2.0 - November 9, 2025 - 3:00 PM
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { useLanguage } from '@/contexts/LanguageContext';
-import type { BulgarianUser } from '@/types/user/bulgarian-user.types';
-import type { ProfileTheme } from '@/contexts/ProfileTypeContext';
+import { useLanguage } from '../../../../../contexts/LanguageContext';
+import type { BulgarianUser } from '../../../../../types/user/bulgarian-user.types';
+import type { ProfileTheme } from '../../../../../contexts/ProfileTypeContext';
+import { CreditCard } from 'lucide-react';
 
 interface SettingsTabProps {
   user: BulgarianUser | null;
@@ -15,7 +18,10 @@ interface SettingsTabProps {
 
 // 🔥 SIMPLE TEST VERSION - TO VERIFY HOT RELOAD WORKS
 export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme }) => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const navigate = useNavigate();
+
+  const isBg = language === 'bg';
 
   return (
     <TestContainer>
@@ -30,6 +36,20 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme }) => {
       </ChangeIndicator>
 
       <SectionsGrid>
+        {/* NEW: Subscription Section - First Priority */}
+        <SectionCard 
+          color="#10B981" 
+          onClick={() => navigate('/subscription')}
+          style={{ cursor: 'pointer', gridColumn: isBg ? '1 / -1' : 'auto' }}
+        >
+          <CreditCard size={48} style={{ margin: '0 auto 16px' }} />
+          <h3>💳 {isBg ? 'إدارة الاشتراك' : 'Manage Subscription'}</h3>
+          <p>{isBg ? 'الباقات والأسعار والفواتير' : 'Plans, Pricing & Billing'}</p>
+          <p style={{ marginTop: '12px', fontSize: '0.9rem', opacity: 0.7 }}>
+            {isBg ? 'انقر لعرض جميع الخطط' : 'Click to view all plans'}
+          </p>
+        </SectionCard>
+
         <SectionCard color="#FF8F10">
           <h3>👤 إعدادات الحساب</h3>
           <p>Account Settings</p>
@@ -236,7 +256,7 @@ export default SettingsTab;
           setSettings(userSettings);
         }
       } catch (error) {
-        console.error('Error loading settings:', error);
+        logger.error('Error loading settings:', error);
         showToast('error', t('settings.saveError', 'Error loading settings'));
       }
     };
@@ -260,7 +280,7 @@ export default SettingsTab;
         showToast('error', t('settings.saveError', 'Error saving settings'));
       }
     } catch (error) {
-      console.error('Error saving settings:', error);
+      logger.error('Error saving settings:', error);
       showToast('error', t('settings.saveError', 'Error saving settings'));
     } finally {
       setSaving(false);
@@ -291,7 +311,7 @@ export default SettingsTab;
         showToast('error', t('settings.saveError', 'Error exporting data'));
       }
     } catch (error) {
-      console.error('Error exporting data:', error);
+      logger.error('Error exporting data:', error);
       showToast('error', t('settings.saveError', 'Error exporting data'));
     }
   };

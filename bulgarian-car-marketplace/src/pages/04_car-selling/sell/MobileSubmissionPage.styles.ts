@@ -8,7 +8,7 @@ import {
   mobileBorderRadius,
   mobileMixins,
   mobileAnimations
-} from '@/styles/mobile-design-system';
+} from '../../../styles/mobile-design-system';
 
 // Button pattern
 const buttonPattern = css`

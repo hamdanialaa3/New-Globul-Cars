@@ -1,3 +1,4 @@
+import { logger } from '../../services/logger-service';
 // src/components/Messaging/MessageInput.tsx
 // Message Input Component - مكون إدخال الرسالة
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
@@ -196,7 +197,7 @@ const MessageInput: React.FC<MessageInputProps> = ({
       onSend?.();
 
     } catch (error) {
-      console.error('Error sending message:', error);
+      logger.error('Error sending message:', error);
       alert(language === 'bg' 
         ? 'Грешка при изпращане на съобщение'
         : 'Error sending message');

@@ -4,8 +4,8 @@
  * This file is deprecated and will be removed in future versions.
  * 
  * **Migration Guide:**
- * - Use `brandsModelsDataService` from '@/services/brands-models-data.service' instead
- * - Or use migration helper from '@/services/brands-models-migration-helper'
+ * - Use `brandsModelsDataService` from '../services/brands-models-data.service' instead
+ * - Or use migration helper from '../services/brands-models-migration-helper'
  * 
  * **Why deprecated?**
  * - Limited brand coverage (~30 brands vs 100+ in new system)
@@ -16,7 +16,7 @@
  * 
  * **New API:**
  * ```typescript
- * import { brandsModelsDataService } from '@/services/brands-models-data.service';
+ * import { brandsModelsDataService } from '../services/brands-models-data.service';
  * 
  * // Instead of: getAllMakes()
  * const brands = await brandsModelsDataService.getAllBrands();

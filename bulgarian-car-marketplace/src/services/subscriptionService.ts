@@ -1,5 +1,5 @@
 // Mock subscription service for development when CORS is blocking
-import { functions } from '@/firebase/firebase-config';
+import { functions } from '../firebase/firebase-config';
 import { httpsCallable } from 'firebase/functions';
 import { serviceLogger } from './logger-wrapper';
 

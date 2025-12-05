@@ -1,7 +1,8 @@
+import { logger } from '../services/logger-service';
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { collection, getDocs, query, where } from 'firebase/firestore';
-import { db } from '@/firebase/firebase-config';
+import { db } from '../firebase/firebase-config';
 import { BarChart3, PieChart, TrendingUp, Calendar } from 'lucide-react';
 
 const Container = styled.div`
@@ -126,7 +127,7 @@ const AdvancedCharts: React.FC = () => {
         priceRanges
       });
     } catch (error) {
-      console.error('Error loading chart data:', error);
+      logger.error('Error loading chart data:', error);
     } finally {
       setLoading(false);
     }

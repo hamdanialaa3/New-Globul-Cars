@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import { CarListing } from '@/types/CarListing';
-import { unifiedCarService } from '@/services/car';
-import { imageUploadService } from '@/services/car/image-upload.service';
-import { logger } from '@/services/logger-service';
-import { getCitiesByRegion } from '@/data/bulgaria-locations';
-import { getModelsByMake } from '@/data/car-makes-models';
+import { CarListing } from '../../../types/CarListing';
+import { unifiedCarService } from '../../../services/car';
+import { imageUploadService } from '../../../services/car/image-upload.service';
+import { logger } from '../../../services/logger-service';
+import { getCitiesByRegion } from '../../../data/bulgaria-locations';
+import { getModelsByMake } from '../../../data/car-makes-models';
 
 export const useCarEdit = (
   car: CarListing | null,

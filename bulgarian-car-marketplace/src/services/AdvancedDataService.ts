@@ -1,5 +1,5 @@
-import { CarDataFromFile, CarDataSummary, AdvancedSearchParams, AvailableFilterOptions } from '@/types/CarData';
-import { BULGARIAN_CITIES } from '@/constants/bulgarianCities';
+import { CarDataFromFile, CarDataSummary, AdvancedSearchParams, AvailableFilterOptions } from '../types/CarData';
+import { BULGARIAN_CITIES } from '../constants/bulgarianCities';
 import { logger } from './logger-service';
 
 class AdvancedDataService {

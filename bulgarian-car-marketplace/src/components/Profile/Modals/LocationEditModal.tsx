@@ -1,10 +1,11 @@
+import { logger } from '../../../services/logger-service';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { X, MapPin } from 'lucide-react';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { useProfile } from '@/pages/03_user-pages/profile/ProfilePage/hooks/useProfile';
+import { useLanguage } from '../../../contexts/LanguageContext';
+import { useProfile } from '../../../pages/03_user-pages/profile/ProfilePage/hooks/useProfile';
 import { toast } from 'react-toastify';
-import { BULGARIAN_CITIES } from '@/services/unified-cities-service';
+import { BULGARIAN_CITIES } from '../../../services/unified-cities-service';
 
 interface LocationEditModalProps {
   onClose: () => void;
@@ -62,7 +63,7 @@ const LocationEditModal: React.FC<LocationEditModalProps> = ({ onClose }) => {
       toast.success(text.success);
       onClose();
     } catch (error) {
-      console.error('Error updating location:', error);
+      logger.error('Error updating location:', error);
       toast.error(text.error);
     } finally {
       setLoading(false);

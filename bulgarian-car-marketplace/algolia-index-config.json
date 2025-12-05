@@ -1,0 +1,90 @@
+{
+  "indexName": "cars",
+  "searchableAttributes": [
+    "make",
+    "model",
+    "unordered(bodyType)",
+    "unordered(color)"
+  ],
+  "attributesForFaceting": [
+    "filterOnly(make)",
+    "filterOnly(model)",
+    "filterOnly(year)",
+    "filterOnly(fuel)",
+    "filterOnly(transmission)",
+    "filterOnly(bodyType)",
+    "filterOnly(color)",
+    "filterOnly(condition)",
+    "filterOnly(location.city)",
+    "filterOnly(location.region)",
+    "searchable(make)",
+    "searchable(model)"
+  ],
+  "numericAttributesForFiltering": [
+    "price",
+    "year",
+    "mileage",
+    "power",
+    "engineSize"
+  ],
+  "customRanking": [
+    "desc(createdAt)",
+    "desc(year)",
+    "asc(price)",
+    "asc(mileage)"
+  ],
+  "ranking": [
+    "typo",
+    "geo",
+    "words",
+    "filters",
+    "proximity",
+    "attribute",
+    "exact",
+    "custom"
+  ],
+  "replicas": [
+    "cars_price_asc",
+    "cars_price_desc",
+    "cars_year_desc",
+    "cars_mileage_asc"
+  ],
+  "attributesToRetrieve": [
+    "objectID",
+    "make",
+    "model",
+    "year",
+    "price",
+    "mileage",
+    "fuel",
+    "transmission",
+    "bodyType",
+    "color",
+    "images",
+    "location",
+    "condition",
+    "ownerId",
+    "ownerName",
+    "ownerType",
+    "createdAt",
+    "status"
+  ],
+  "attributesToHighlight": [
+    "make",
+    "model",
+    "bodyType"
+  ],
+  "highlightPreTag": "<mark>",
+  "highlightPostTag": "</mark>",
+  "hitsPerPage": 20,
+  "maxValuesPerFacet": 100,
+  "typoTolerance": true,
+  "allowTyposOnNumericTokens": false,
+  "ignorePlurals": true,
+  "removeStopWords": true,
+  "queryType": "prefixLast",
+  "advancedSyntax": true,
+  "attributeCriteriaComputedByMinProximity": true,
+  "distinct": 1
+}
+
