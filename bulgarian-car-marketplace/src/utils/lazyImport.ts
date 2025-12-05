@@ -2,21 +2,44 @@
 import { lazy, ComponentType } from 'react';
 
 export const safeLazy = <T extends ComponentType<any>>(
-  importFn: () => Promise<{ default: T } | T>
+  importFn: () => Promise<any>
 ) => {
-  return lazy(() => 
-    importFn().then(module => {
-      // Handle both default exports and module objects
-      if ('default' in module) {
-        return { default: module.default };
+  return lazy(async () => {
+    const module = await importFn();
+    
+    // 1. If module has default export, use it
+    if (module && module.default) {
+      return { default: module.default };
+    }
+    
+    // 2. If module itself is a function/component, use it
+    if (typeof module === 'function') {
+      return { default: module };
+    }
+    
+    // 3. Check if it's a valid React component object
+    if (module && typeof module === 'object') {
+      // Check for common React component patterns
+      if (module.$$typeof || module.render || module.type) {
+        return { default: module };
       }
-      // If it's already a component (function or class)
-      if (typeof module === 'function' || (module && typeof module === 'object' && 'render' in module)) {
-        return { default: module as T };
+      
+      // Check if any property is a component
+      const keys = Object.keys(module);
+      for (const key of keys) {
+        if (typeof module[key] === 'function' || 
+            (module[key] && typeof module[key] === 'object' && (module[key].$$typeof || module[key].render))) {
+          // Return the first valid component found
+          console.warn(`Using ${key} from module as default export`);
+          return { default: module[key] };
+        }
       }
-      // Fallback: throw error for debugging
-      console.error('Invalid module loaded:', module);
-      throw new Error('Lazy loaded module must be a React component or have a default export');
-    })
-  );
+    }
+    
+    // 4. Fallback: log error but return empty component to prevent crash
+    console.error('⚠️ Invalid lazy module - returning fallback:', module);
+    return { 
+      default: () => null // Return empty component instead of crashing
+    };
+  });
 };
