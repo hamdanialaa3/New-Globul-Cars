@@ -14,6 +14,7 @@ import { httpsCallable } from 'firebase/functions';
 import { firebaseAuthUsersService } from './firebase-auth-users-service';
 import { firebaseAuthRealUsers } from './firebase-auth-real-users';
 import { serviceLogger } from './logger-wrapper';
+import { countAllVehicles, queryAllCollections } from './search/multi-collection-helper';
 
 // Firebase Real Data Service for Super Admin Dashboard
 class FirebaseRealDataService {
@@ -85,27 +86,27 @@ class FirebaseRealDataService {
     }
   }
 
-  // Get real cars count from Firebase
+  // Get real cars count from Firebase - ✅ ALL COLLECTIONS
   public async getRealCarsCount(): Promise<number> {
     try {
-      const carsSnapshot = await getDocs(collection(db, 'cars'));
-      return carsSnapshot.docs.length;
+      const count = await countAllVehicles();
+      serviceLogger.info('Total vehicles count across all collections', { count });
+      return count;
     } catch (error) {
       serviceLogger.error('Error getting cars count', error as Error);
       throw error; // Don't use mock data - throw the real error
     }
   }
 
-  // Get real active cars count
+  // Get real active cars count - ✅ ALL COLLECTIONS
   public async getRealActiveCarsCount(): Promise<number> {
     try {
-      const q = query(
-        collection(db, 'cars'),
+      const activeCars = await queryAllCollections(
         where('isActive', '==', true)
       );
       
-      const snapshot = await getDocs(q);
-      return snapshot.docs.length;
+      serviceLogger.info('Active vehicles count across all collections', { count: activeCars.length });
+      return activeCars.length;
     } catch (error) {
       serviceLogger.error('Error getting active cars count', error as Error);
       throw error; // Don't use mock data - throw the real error

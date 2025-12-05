@@ -10,6 +10,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
 import { serviceLogger } from './logger-wrapper';
+import { countAllVehicles, queryAllCollections } from './search/multi-collection-helper';
 
 // Live Firebase Counters Service
 // This service fetches real-time data from Firebase project
@@ -46,18 +47,15 @@ class LiveFirebaseCountersService {
       const activeUsersSnapshot = await getDocs(activeUsersQuery);
       const activeUsers = activeUsersSnapshot.docs.length;
       
-      // Get cars count
-      const carsSnapshot = await getDocs(collection(db, 'cars'));
-      const totalCars = carsSnapshot.docs.length;
+      // Get cars count - ✅ ALL COLLECTIONS
+      const totalCars = await countAllVehicles();
       
-      // Get active cars (last 7 days)
+      // Get active cars (last 7 days) - ✅ ALL COLLECTIONS
       const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-      const activeCarsQuery = query(
-        collection(db, 'cars'),
+      const activeCarsResults = await queryAllCollections(
         where('createdAt', '>=', Timestamp.fromDate(weekAgo))
       );
-      const activeCarsSnapshot = await getDocs(activeCarsQuery);
-      const activeCars = activeCarsSnapshot.docs.length;
+      const activeCars = activeCarsResults.length;
       
       // Get messages count
       const messagesSnapshot = await getDocs(collection(db, 'messages'));
@@ -67,13 +65,11 @@ class LiveFirebaseCountersService {
       const viewsSnapshot = await getDocs(collection(db, 'car_views'));
       const totalViews = viewsSnapshot.docs.length;
       
-      // Calculate revenue (mock calculation based on cars sold)
-      const soldCarsQuery = query(
-        collection(db, 'cars'),
+      // Calculate revenue (mock calculation based on cars sold) - ✅ ALL COLLECTIONS
+      const soldCarsResults = await queryAllCollections(
         where('status', '==', 'sold')
       );
-      const soldCarsSnapshot = await getDocs(soldCarsQuery);
-      const soldCars = soldCarsSnapshot.docs.length;
+      const soldCars = soldCarsResults.length;
       const revenue = soldCars * 50; // €50 per car commission
       
       // Get storage usage (mock calculation)

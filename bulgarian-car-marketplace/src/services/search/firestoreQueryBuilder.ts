@@ -1,6 +1,6 @@
 // Unified Firestore Query Builder
 // موحد بناء استعلامات فايرستورات للبحث عن السيارات
-// Phase: Query Unification Step 1
+// Phase: Query Unification Step 1 - MULTI-COLLECTION SUPPORT
 
 import { collection, query, where, orderBy, limit, Query, DocumentData } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
@@ -9,6 +9,17 @@ import { FilterState } from '../../contexts/FilterContext';
 import { resolveCanonicalBrand } from '../../services/brand-normalization';
 
 export type InputFilters = Partial<SearchData> | Partial<FilterState>;
+
+// ✅ ALL VEHICLE COLLECTIONS - Search across ALL types
+export const VEHICLE_COLLECTIONS = [
+  'cars',             // Legacy collection
+  'passenger_cars',   // Personal cars
+  'suvs',             // SUVs/Jeeps
+  'vans',             // Vans/Cargo
+  'motorcycles',      // Motorcycles
+  'trucks',           // Trucks
+  'buses'             // Buses
+] as const;
 
 // Field map to Firestore document fields (kept explicit for future migrations)
 const FIELD_MAP: Record<string, string> = {
@@ -24,7 +35,8 @@ const FIELD_MAP: Record<string, string> = {
 };
 
 export interface QueryBuilderOptions {
-  collectionName?: string;
+  collectionNames?: string[]; // ✅ NEW: Support multiple collections
+  collectionName?: string; // Legacy single collection support
   maxResults?: number; // hard cap limit
   sortField?: string;
   sortDirection?: 'asc' | 'desc';
@@ -32,7 +44,7 @@ export interface QueryBuilderOptions {
 }
 
 const DEFAULT_OPTIONS: QueryBuilderOptions = {
-  collectionName: 'cars',
+  collectionNames: [...VEHICLE_COLLECTIONS], // ✅ Default: Search ALL collections
   maxResults: 100,
   sortField: 'createdAt',
   sortDirection: 'desc'
@@ -41,10 +53,16 @@ const DEFAULT_OPTIONS: QueryBuilderOptions = {
 /**
  * Build Firestore query from unified filters.
  * يحول الفلاتر الموحدة إلى استعلام فايرستور
+ * ✅ CRITICAL FIX: Returns SINGLE query for one collection
  */
 export function buildFirestoreQuery(filters: InputFilters, options: QueryBuilderOptions = {}): Query<DocumentData> {
-  const { collectionName, maxResults, sortField, sortDirection, includeInactive } = { ...DEFAULT_OPTIONS, ...options } as QueryBuilderOptions;
-  let q = query(collection(db, collectionName!));
+  const mergedOptions = { ...DEFAULT_OPTIONS, ...options };
+  const { collectionName, maxResults, sortField, sortDirection, includeInactive } = mergedOptions;
+  
+  // Use single collection if specified, otherwise use first from collectionNames
+  const targetCollection = collectionName || (mergedOptions.collectionNames && mergedOptions.collectionNames[0]) || 'cars';
+  
+  let q = query(collection(db, targetCollection));
 
   // Restrict to active listings unless explicitly disabled via option or env flag
   const requireActive = (typeof process !== 'undefined' && process.env && process.env.REACT_APP_SEARCH_REQUIRE_ACTIVE)
@@ -72,6 +90,19 @@ export function buildFirestoreQuery(filters: InputFilters, options: QueryBuilder
   q = query(q, limit(maxResults!));
 
   return q;
+}
+
+/**
+ * ✅ NEW: Build queries for ALL vehicle collections
+ * Returns array of queries to be executed in parallel
+ */
+export function buildMultiCollectionQueries(filters: InputFilters, options: QueryBuilderOptions = {}): Query<DocumentData>[] {
+  const mergedOptions = { ...DEFAULT_OPTIONS, ...options };
+  const collections = mergedOptions.collectionNames || VEHICLE_COLLECTIONS;
+  
+  return collections.map(collectionName => 
+    buildFirestoreQuery(filters, { ...options, collectionName })
+  );
 }
 
 /**

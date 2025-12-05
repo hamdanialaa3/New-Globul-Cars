@@ -1,6 +1,7 @@
 import { logger } from '../../../../services/logger-service';
 // AllCarsPage.tsx - All Cars with Simple Filters
 // ⚡ Compact & Professional Design
+// ✅ CRITICAL FIX: Search across ALL vehicle collections
 
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
@@ -11,6 +12,17 @@ import CarCardCompact from '../../../../components/CarCard/CarCardCompact';
 import { CarListing } from '../../../../types/CarListing';
 import { Car, Search, Filter, X } from 'lucide-react';
 import { ResponsiveGrid } from '../../../../components/layout/ResponsiveGrid';
+
+// ✅ ALL VEHICLE COLLECTIONS
+const VEHICLE_COLLECTIONS = [
+  'cars',             // Legacy collection
+  'passenger_cars',   // Personal cars
+  'suvs',             // SUVs/Jeeps
+  'vans',             // Vans/Cargo
+  'motorcycles',      // Motorcycles
+  'trucks',           // Trucks
+  'buses'             // Buses
+] as const;
 
 const AllCarsPage: React.FC = () => {
   const { language } = useLanguage();
@@ -36,19 +48,36 @@ const AllCarsPage: React.FC = () => {
   const loadCars = async () => {
     try {
       setLoading(true);
-      const q = query(
-        collection(db, 'cars'),
-        where('status', '==', 'active'),
-        orderBy('createdAt', sortBy === 'newest' ? 'desc' : 'asc')
-      );
+      logger.info('Loading cars from all collections...');
       
-      const snapshot = await getDocs(q);
-      const carsData = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as CarListing[];
+      // ✅ CRITICAL FIX: Query ALL vehicle type collections in parallel
+      const queryPromises = VEHICLE_COLLECTIONS.map(async (collectionName) => {
+        try {
+          const q = query(
+            collection(db, collectionName),
+            where('status', '==', 'active'),
+            orderBy('createdAt', sortBy === 'newest' ? 'desc' : 'asc')
+          );
+          
+          const snapshot = await getDocs(q);
+          const carsData = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          })) as CarListing[];
+          
+          logger.debug(`Found ${carsData.length} cars in ${collectionName}`);
+          return carsData;
+        } catch (error) {
+          logger.warn(`Error querying ${collectionName}:`, error);
+          return [];
+        }
+      });
       
-      setCars(carsData);
+      const results = await Promise.all(queryPromises);
+      const allCars = results.flat();
+      
+      logger.info(`Total cars loaded: ${allCars.length} from ${VEHICLE_COLLECTIONS.length} collections`);
+      setCars(allCars);
     } catch (error) {
       logger.error('Error loading cars:', error);
     } finally {
