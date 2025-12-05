@@ -307,8 +307,9 @@ class SmartSearchService {
             q = query(q, where('fuelType', 'in', fuelTypes));
           }
           
-          // Order by creation date (newest first)
-          q = query(q, orderBy('createdAt', 'desc'));
+          // ⚡ TEMPORARY: Removed orderBy to avoid index requirement
+          // TODO: Re-enable after creating Firestore indexes (status + createdAt)
+          // q = query(q, orderBy('createdAt', 'desc'));
           
           // Limit results per collection
           q = query(q, firestoreLimit(Math.ceil(limitCount / collections.length)));
