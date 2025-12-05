@@ -94,7 +94,7 @@ const CategoriesNav = styled.div`
   }
 `;
 
-const CategoryTab = styled.button<{ $active: boolean; rank?: number; $isDark: boolean }>`
+const CategoryTab = styled.button<{ $active: boolean; $rank?: number; $isDark: boolean }>`
   padding: 12px 24px;
   border-radius: 30px;
   border: 2px solid ${props => props.$active 
@@ -120,7 +120,7 @@ const CategoryTab = styled.button<{ $active: boolean; rank?: number; $isDark: bo
   align-items: center;
   gap: 8px;
 
-  ${props => props.rank && props.rank <= 3 && `
+  ${props => props.$rank && props.$rank <= 3 && `
     &::after {
       content: '';
       position: absolute;
@@ -299,7 +299,7 @@ const MostDemandedCategoriesSection: React.FC = () => {
             <CategoryTab
               key={category.id}
               $active={selectedCategory === category.id}
-              rank={category.rank}
+              $rank={category.rank}
               $isDark={isDark}
               onClick={() => setSelectedCategory(category.id)}
             >

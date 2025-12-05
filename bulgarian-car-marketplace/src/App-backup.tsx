@@ -17,7 +17,6 @@ import './styles/premium-effects.css';
 import ErrorBoundary from './components/ErrorBoundary';
 import { SkipNavigation } from './components/Accessibility';
 import { safeLazy } from './utils/lazyImport';
-
 const Header = safeLazy(() => import('./components/Header/UnifiedHeader'));
 const MobileHeader = safeLazy(() => import('./components/Header/MobileHeader'));
 const MobileBottomNav = safeLazy(() => import('./components/layout/MobileBottomNav'));
@@ -54,99 +53,120 @@ const CarDetailsPage = safeLazy(() => import('./pages/01_main-pages/CarDetailsPa
 const SocialFeedPage = safeLazy(() => import('./pages/03_user-pages/social/SocialFeedPage'));
 
 // Mobile.de-style sell workflow pages (الوحيد المستخدم)
-const VehicleStartPage = safeLazy(() => import('./pages/04_car-selling/sell/VehicleStartPageNew'));
-const MobileSellerTypePage = safeLazy(() => import('./pages/04_car-selling/sell/MobileSellerTypePage'));
-const VehicleDataPageUnified = safeLazy(() => import('./pages/04_car-selling/sell/VehicleDataPageUnified'));
-const MobilePricingPage = safeLazy(() => import('./pages/04_car-selling/sell/MobilePricingPage'));
-const MobileContactPage = safeLazy(() => import('./pages/04_car-selling/sell/MobileContactPage'));
-const MobilePreviewPage = safeLazy(() => import('./pages/04_car-selling/sell/MobilePreviewPage'));
-const DesktopPreviewPage = safeLazy(() => import('./pages/04_car-selling/sell/DesktopPreviewPage'));
-const MobileSubmissionPage = safeLazy(() => import('./pages/04_car-selling/sell/MobileSubmissionPage'));
-const DesktopSubmissionPage = safeLazy(() => import('./pages/04_car-selling/sell/DesktopSubmissionPage'));
-const UnifiedEquipmentPage = safeLazy(() => import('./pages/04_car-selling/sell/Equipment/UnifiedEquipmentPage'));
-const ImagesPageUnified = safeLazy(() => import('./pages/04_car-selling/sell/ImagesPageUnified'));
-const PricingPage = safeLazy(() => import('./pages/04_car-selling/sell/Pricing'));
-const UnifiedContactPage = safeLazy(() => import('./pages/04_car-selling/sell/UnifiedContactPage'));
+const VehicleStartPage = React.lazy(() => import('./pages/04_car-selling/sell/VehicleStartPageNew'));
+const MobileSellerTypePage = React.lazy(() => import('./pages/04_car-selling/sell/MobileSellerTypePage'));
+const VehicleDataPageUnified = React.lazy(() => import('./pages/04_car-selling/sell/VehicleDataPageUnified'));
+const MobilePricingPage = React.lazy(() => import('./pages/04_car-selling/sell/MobilePricingPage'));
+const MobileContactPage = React.lazy(() => import('./pages/04_car-selling/sell/MobileContactPage'));
+const MobilePreviewPage = React.lazy(() => import('./pages/04_car-selling/sell/MobilePreviewPage'));
+const DesktopPreviewPage = React.lazy(() => import('./pages/04_car-selling/sell/DesktopPreviewPage'));
+const MobileSubmissionPage = React.lazy(() => import('./pages/04_car-selling/sell/MobileSubmissionPage'));
+const DesktopSubmissionPage = React.lazy(() => import('./pages/04_car-selling/sell/DesktopSubmissionPage'));
+const UnifiedEquipmentPage = React.lazy(() => import('./pages/04_car-selling/sell/Equipment/UnifiedEquipmentPage'));
+const ImagesPageUnified = React.lazy(() => import('./pages/04_car-selling/sell/ImagesPageUnified'));
+const PricingPage = React.lazy(() => import('./pages/04_car-selling/sell/Pricing'));
+const UnifiedContactPage = React.lazy(() => import('./pages/04_car-selling/sell/UnifiedContactPage'));
 
-const MessagesPage = safeLazy(() => import('./pages/03_user-pages/messages/MessagesPage'));
-const AdminPage = safeLazy(() => import('./pages/06_admin/regular-admin/AdminPage'));
-const AdminLoginPage = safeLazy(() => import('./pages/02_authentication/admin-login/AdminLoginPage'));
-const AdminDataFix = safeLazy(() => import('./pages/06_admin/regular-admin/AdminDataFix'));
-const SuperAdminLogin = safeLazy(() => import('./pages/02_authentication/admin-login/SuperAdminLoginPage'));
-const SuperAdminDashboard = safeLazy(() => import('./pages/06_admin/super-admin/SuperAdminDashboard'));
-const SuperAdminUsersPage = safeLazy(() => import('./pages/06_admin/super-admin/SuperAdminUsersPage'));
+const MessagesPage = React.lazy(() => import('./pages/03_user-pages/messages/MessagesPage'));
+const AdminPage = React.lazy(() => import('./pages/06_admin/regular-admin/AdminPage'));
+const AdminLoginPage = React.lazy(() => import('./pages/02_authentication/admin-login/AdminLoginPage'));
+const AdminDataFix = React.lazy(() => import('./pages/06_admin/regular-admin/AdminDataFix'));
+const SuperAdminLogin = React.lazy(() => import('./pages/02_authentication/admin-login/SuperAdminLoginPage'));
+const SuperAdminDashboard = React.lazy(() => import('./pages/06_admin/super-admin/SuperAdminDashboard'));
+const SuperAdminUsersPage = React.lazy(() => import('./pages/06_admin/super-admin/SuperAdminUsersPage'));
 
-const ProfileRouter = safeLazy(() => import('./pages/03_user-pages/profile/ProfilePage/ProfileRouter'));
-const VerificationPage = safeLazy(() => import('./features/verification/VerificationPage'));
-const BillingPage = safeLazy(() => import('./features/billing/BillingPage'));
-const AnalyticsDashboard = safeLazy(() => import('./features/analytics/AnalyticsDashboard'));
-const TeamManagement = safeLazy(() => import('./features/team/TeamManagement'));
-const UsersDirectoryPage = safeLazy(() => import('./pages/03_user-pages/users-directory/UsersDirectoryPage'));
-const AllPostsPage = safeLazy(() => import('./pages/03_user-pages/social/AllPostsPage'));
-const AllCarsPage = safeLazy(() => import('./pages/05_search-browse/all-cars/AllCarsPage'));
-const EventsPage = safeLazy(() => import('./pages/07_advanced-features/EventsPage'));
-const CreatePostPage = safeLazy(() => import('./pages/03_user-pages/social/CreatePostPage'));
-const OAuthCallback = safeLazy(() => import('./pages/02_authentication/oauth/OAuthCallbackPage'));
-const LoginPage = safeLazy(() => import('./pages/02_authentication/login/LoginPage/LoginPageGlassFixed'));
-const RegisterPage = safeLazy(() => import('./pages/02_authentication/register/RegisterPage/RegisterPageGlassFixed'));
-const EmailVerificationPage = safeLazy(() => import('./pages/02_authentication/verification/EmailVerificationPage'));
-const DashboardPage = safeLazy(() => import('./pages/03_user-pages/dashboard/DashboardPage'));
-const AdminDashboard = safeLazy(() => import('./components/AdminDashboard'));
-const ThemeTest = safeLazy(() => import('./components/ThemeTest'));
-const BackgroundTest = safeLazy(() => import('./components/BackgroundTest'));
-const FullThemeDemo = safeLazy(() => import('./components/FullThemeDemo'));
-const EffectsTest = safeLazy(() => import('./components/EffectsTest'));
-const PrivacyPolicyPage = safeLazy(() => import('./pages/10_legal/privacy-policy/PrivacyPolicyPage'));
-const TermsOfServicePage = safeLazy(() => import('./pages/10_legal/terms-of-service/TermsOfServicePage'));
-const DataDeletionPage = safeLazy(() => import('./pages/10_legal/data-deletion/DataDeletionPage'));
-const AdvancedSearchPage = safeLazy(() => import('./pages/05_search-browse/advanced-search/AdvancedSearchPage'));
-const AlgoliaSearchPage = safeLazy(() => import('./pages/05_search-browse/algolia-search/AlgoliaSearchPage'));
-const MyListingsPage = safeLazy(() => import('./pages/03_user-pages/my-listings/MyListingsPage'));
-const MyDraftsPage = safeLazy(() => import('./pages/03_user-pages/my-drafts/MyDraftsPage'));
-const MigrationPage = safeLazy(() => import('./pages/06_admin/MigrationPage'));
-const DebugCarsPage = safeLazy(() => import('./pages/06_admin/DebugCarsPage'));
-const EditCarPage = safeLazy(() => import('./pages/04_car-selling/EditCarPage'));
-const N8nTestPage = safeLazy(() => import('./pages/11_testing-dev/N8nTestPage'));
-const TestDropdownsPage = safeLazy(() => import('./pages/11_testing-dev/TestDropdownsPage'));
-const B2BAnalyticsPortal = safeLazy(() => import('./pages/07_advanced-features/B2BAnalyticsPortal'));
-const DigitalTwinPage = safeLazy(() => import('./pages/07_advanced-features/DigitalTwinPage'));
-const SubscriptionPage = safeLazy(() => import('./pages/08_payment-billing/SubscriptionPage'));
-const AboutPage = safeLazy(() => import('./pages/01_main-pages/about/AboutPage'));
-const BrandGalleryPage = safeLazy(() => import('./pages/05_search-browse/brand-gallery/BrandGalleryPage'));
-const TopBrandsPage = safeLazy(() => import('./pages/05_search-browse/top-brands/TopBrandsPage'));
-const DealersPage = safeLazy(() => import('./pages/05_search-browse/dealers/DealersPage'));
-const MapAnalyticsPage = safeLazy(() => import('./pages/01_main-pages/map/MapPage'));
-const FinancePage = safeLazy(() => import('./pages/05_search-browse/finance/FinancePage'));
-const ContactPage = safeLazy(() => import('./pages/01_main-pages/contact/ContactPage'));
-const HelpPage = safeLazy(() => import('./pages/01_main-pages/help/HelpPage'));
-const CookiePolicyPage = safeLazy(() => import('./pages/10_legal/cookie-policy/CookiePolicyPage'));
-const SitemapPage = safeLazy(() => import('./pages/10_legal/sitemap/SitemapPage'));
-const NotificationsPage = safeLazy(() => import('./pages/03_user-pages/notifications/NotificationsPage'));
-const SavedSearchesPage = safeLazy(() => import('./pages/03_user-pages/saved-searches/SavedSearchesPage'));
-const FavoritesPage = safeLazy(() => import('./pages/03_user-pages/favorites/FavoritesPage'));
-const DealerPublicPage = safeLazy(() => import('./pages/09_dealer-company/DealerPublicPage'));
-const InvoicesPage = safeLazy(() => import('./pages/08_payment-billing/InvoicesPage'));
-const CommissionsPage = safeLazy(() => import('./pages/08_payment-billing/CommissionsPage'));
-const CheckoutPage = safeLazy(() => import('./pages/08_payment-billing/CheckoutPage'));
-const PaymentSuccessPage = safeLazy(() => import('./pages/08_payment-billing/PaymentSuccessPage'));
-const BillingSuccessPage = safeLazy(() => import('./pages/08_payment-billing/BillingSuccessPage'));
-const BillingCanceledPage = safeLazy(() => import('./pages/08_payment-billing/BillingCanceledPage'));
-const DealerRegistrationPage = safeLazy(() => import('./pages/09_dealer-company/DealerRegistrationPage'));
-const DealerDashboardPage = safeLazy(() => import('./pages/09_dealer-company/DealerDashboardPage'));
-const AlgoliaSyncManager = safeLazy(() => import('./pages/06_admin/AlgoliaSyncManager'));
-const AdminCarManagementPage = safeLazy(() => import('./pages/06_admin/regular-admin/AdminCarManagementPage'));
-const IconShowcasePage = safeLazy(() => import('./pages/11_testing-dev/IconShowcasePage'));
-const IoTDashboardPage = safeLazy(() => import('./pages/03_user-pages/IoTDashboardPage'));
-const CarTrackingPage = safeLazy(() => import('./pages/03_user-pages/CarTrackingPage'));
-const IoTAnalyticsPage = safeLazy(() => import('./pages/03_user-pages/IoTAnalyticsPage'));
-const AIDashboardPage = safeLazy(() => import('./pages/03_user-pages/ai-dashboard/AIDashboardPage'));
-const AIQuotaManager = safeLazy(() => import('./pages/06_admin/AIQuotaManager'));
-const IntegrationStatusDashboard = safeLazy(() => import('./components/admin/IntegrationStatusDashboard'));
-const QuickSetupPage = safeLazy(() => import('./pages/06_admin/QuickSetupPage'));
-const CloudServicesManager = safeLazy(() => import('./pages/06_admin/CloudServicesManager'));
+const ProfileRouter = React.lazy(() => import('./pages/03_user-pages/profile/ProfilePage/ProfileRouter'));  // NEW: Profile Type Router
+const VerificationPage = React.lazy(() => import('./features/verification/VerificationPage'));  // NEW: Verification System
+const BillingPage = React.lazy(() => import('./features/billing/BillingPage'));  // NEW: Billing System
+const AnalyticsDashboard = React.lazy(() => import('./features/analytics/AnalyticsDashboard'));  // NEW: Analytics System
+const TeamManagement = React.lazy(() => import('./features/team/TeamManagement'));  // NEW: Team Management
+const UsersDirectoryPage = React.lazy(() => import('./pages/03_user-pages/users-directory/UsersDirectoryPage')); // Bubbles View
+// ⚡ NEW: Browse Pages (All Posts, All Cars)
+const AllPostsPage = React.lazy(() => import('./pages/03_user-pages/social/AllPostsPage'));
+const AllCarsPage = React.lazy(() => import('./pages/05_search-browse/all-cars/AllCarsPage'));
+// NEW: Social Platform Pages
+const EventsPage = React.lazy(() => import('./pages/07_advanced-features/EventsPage'));  // NEW: Events Page with BG/EN translations - NOT MIGRATED YET
+const CreatePostPage = React.lazy(() => import('./pages/03_user-pages/social/CreatePostPage')); // NEW: Create Post Page
+const OAuthCallback = React.lazy(() => import('./pages/02_authentication/oauth/OAuthCallbackPage')); // NEW: OAuth Callback Handler
+// Glass Morphism Premium Auth Pages
+const LoginPage = React.lazy(() => import('./pages/02_authentication/login/LoginPage/LoginPageGlassFixed'));
+const RegisterPage = React.lazy(() => import('./pages/02_authentication/register/RegisterPage/RegisterPageGlassFixed'));
+const EmailVerificationPage = React.lazy(() => import('./pages/02_authentication/verification/EmailVerificationPage'));
+const DashboardPage = React.lazy(() => import('./pages/03_user-pages/dashboard/DashboardPage'));
+const AdminDashboard = React.lazy(() => import('./components/AdminDashboard'));
+const ThemeTest = React.lazy(() => import('./components/ThemeTest'));
+const BackgroundTest = React.lazy(() => import('./components/BackgroundTest'));
+const FullThemeDemo = React.lazy(() => import('./components/FullThemeDemo'));
+const EffectsTest = React.lazy(() => import('./components/EffectsTest'));
+const PrivacyPolicyPage = React.lazy(() => import('./pages/10_legal/privacy-policy/PrivacyPolicyPage'));
+const TermsOfServicePage = React.lazy(() => import('./pages/10_legal/terms-of-service/TermsOfServicePage'));
+const DataDeletionPage = React.lazy(() => import('./pages/10_legal/data-deletion/DataDeletionPage'));
+const AdvancedSearchPage = React.lazy(() => import('./pages/05_search-browse/advanced-search/AdvancedSearchPage'));
+const AlgoliaSearchPage = React.lazy(() => import('./pages/05_search-browse/algolia-search/AlgoliaSearchPage'));
+const MyListingsPage = React.lazy(() => import('./pages/03_user-pages/my-listings/MyListingsPage'));
+const MyDraftsPage = React.lazy(() => import('./pages/03_user-pages/my-drafts/MyDraftsPage'));
+const MigrationPage = React.lazy(() => import('./pages/06_admin/MigrationPage'));
+const DebugCarsPage = React.lazy(() => import('./pages/06_admin/DebugCarsPage'));
+const EditCarPage = React.lazy(() => import('./pages/04_car-selling/EditCarPage'));
+const N8nTestPage = React.lazy(() => import('./pages/11_testing-dev/N8nTestPage'));
+const TestDropdownsPage = React.lazy(() => import('./pages/11_testing-dev/TestDropdownsPage'));
+const B2BAnalyticsPortal = React.lazy(() => import('./pages/07_advanced-features/B2BAnalyticsPortal'));
+const DigitalTwinPage = React.lazy(() => import('./pages/07_advanced-features/DigitalTwinPage'));
+const SubscriptionPage = React.lazy(() => import('./pages/08_payment-billing/SubscriptionPage'));
+const AboutPage = React.lazy(() => import('./pages/01_main-pages/about/AboutPage'));
+const BrandGalleryPage = React.lazy(() => import('./pages/05_search-browse/brand-gallery/BrandGalleryPage'));
+const TopBrandsPage = React.lazy(() => import('./pages/05_search-browse/top-brands/TopBrandsPage'));
+const DealersPage = React.lazy(() => import('./pages/05_search-browse/dealers/DealersPage'));
+// NEW: Map Analytics Page
+const MapAnalyticsPage = React.lazy(() => import('./pages/01_main-pages/map/MapPage'));
+const FinancePage = React.lazy(() => import('./pages/05_search-browse/finance/FinancePage'));
+const ContactPage = React.lazy(() => import('./pages/01_main-pages/contact/ContactPage'));
+const HelpPage = React.lazy(() => import('./pages/01_main-pages/help/HelpPage'));
+const CookiePolicyPage = React.lazy(() => import('./pages/10_legal/cookie-policy/CookiePolicyPage'));
+const SitemapPage = React.lazy(() => import('./pages/10_legal/sitemap/SitemapPage'));
+const NotificationsPage = React.lazy(() => import('./pages/03_user-pages/notifications/NotificationsPage'));
+const SavedSearchesPage = React.lazy(() => import('./pages/03_user-pages/saved-searches/SavedSearchesPage'));
+const FavoritesPage = React.lazy(() => import('./pages/03_user-pages/favorites/FavoritesPage'));
+const DealerPublicPage = React.lazy(() => import('./pages/09_dealer-company/DealerPublicPage'));  // NEW: Public Dealer Profiles
+
+// NEW: P2 Frontend Integration - Invoices & Commissions
+const InvoicesPage = React.lazy(() => import('./pages/08_payment-billing/InvoicesPage'));
+const CommissionsPage = React.lazy(() => import('./pages/08_payment-billing/CommissionsPage'));
+
+// NEW: Payment & Checkout Pages
+const CheckoutPage = React.lazy(() => import('./pages/08_payment-billing/CheckoutPage'));
+const PaymentSuccessPage = React.lazy(() => import('./pages/08_payment-billing/PaymentSuccessPage'));
+const BillingSuccessPage = React.lazy(() => import('./pages/08_payment-billing/BillingSuccessPage'));
+const BillingCanceledPage = React.lazy(() => import('./pages/08_payment-billing/BillingCanceledPage'));
+
+// NEW: Dealer Pages
+const DealerRegistrationPage = React.lazy(() => import('./pages/09_dealer-company/DealerRegistrationPage'));
+const DealerDashboardPage = React.lazy(() => import('./pages/09_dealer-company/DealerDashboardPage'));
+
+// 🔧 Admin Tools
+const AlgoliaSyncManager = React.lazy(() => import('./pages/06_admin/AlgoliaSyncManager'));
+
+// NEW: Admin & Development Pages
+const AdminCarManagementPage = React.lazy(() => import('./pages/06_admin/regular-admin/AdminCarManagementPage'));
+const IconShowcasePage = React.lazy(() => import('./pages/11_testing-dev/IconShowcasePage'));
+
+// NEW: IoT Pages
+const IoTDashboardPage = React.lazy(() => import('./pages/03_user-pages/IoTDashboardPage'));
+const CarTrackingPage = React.lazy(() => import('./pages/03_user-pages/CarTrackingPage'));
+const IoTAnalyticsPage = React.lazy(() => import('./pages/03_user-pages/IoTAnalyticsPage'));
+
+// NEW: AI Dashboard
+const AIDashboardPage = React.lazy(() => import('./pages/03_user-pages/ai-dashboard/AIDashboardPage'));
+const AIQuotaManager = React.lazy(() => import('./pages/06_admin/AIQuotaManager'));
+
+// NEW: Integration & Setup Pages
+const IntegrationStatusDashboard = React.lazy(() => import('./components/admin/IntegrationStatusDashboard'));
+const QuickSetupPage = React.lazy(() => import('./pages/06_admin/QuickSetupPage'));
+const CloudServicesManager = React.lazy(() => import('./pages/06_admin/CloudServicesManager'));
 
 // Layout Component
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  // Get theme from context
   const { theme } = useTheme();
 
   return (
@@ -154,13 +174,16 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       minHeight: '100vh',
       display: 'flex',
       flexDirection: 'column'
+      // backgroundColor controlled by CSS var(--bg-primary) in index.css
     }}>
       <header role="banner">
+        {/* ✅ Desktop Header - Hidden on mobile */}
         <div className="desktop-header-only">
           <Suspense fallback={<div style={{ height: '70px' }} />}>
             <Header />
           </Suspense>
         </div>
+        {/* ✅ Mobile Header - Visible only on mobile/tablet portrait */}
         <div className="mobile-header-only">
           <Suspense fallback={<div style={{ height: '60px' }} />}>
             <MobileHeader />
@@ -172,16 +195,16 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         role="main"
         style={{
           flex: 1,
-          padding: '0',
-          paddingTop: '80px',
-          paddingBottom: '80px',
-          backgroundColor: 'transparent',
+          padding: '0', // ❌ REMOVED: No padding on mobile - causes yellow transparent frame
+          paddingTop: '80px', // ✅ Space for fixed transparent header
+          paddingBottom: '80px', // ✅ Space for mobile bottom nav
+          backgroundColor: 'transparent', // Let page components control background
           transition: 'background-color 0.3s ease'
         }}
         tabIndex={-1}
       >
         <div className="page-container" style={{
-          backgroundColor: 'transparent',
+          backgroundColor: 'transparent', // Always transparent - let page components control their own background
           transition: 'background-color 0.3s ease'
         }}>
           {children}
@@ -192,6 +215,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           <Footer />
         </Suspense>
       </footer>
+      {/* ✅ Mobile Bottom Navigation - Visible only on mobile */}
       <Suspense fallback={<div style={{ height: '60px' }} />}>
         <MobileBottomNav />
       </Suspense>
@@ -199,6 +223,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   );
 };
 
+// Full-screen pages (no header/footer)
 const FullScreenLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <div style={{ minHeight: '100vh' }}>
@@ -214,17 +239,24 @@ const FullScreenLayout: React.FC<{ children: React.ReactNode }> = ({ children })
   );
 };
 
+// Loading fallback is provided inline where needed (simple spinner)
+
+// App Component
+// Wrapper component that injects theme.mode from ThemeContext into styled-components
 const ThemedApp: React.FC = () => {
   const { theme } = useTheme();
   const recaptchaKey = process.env.REACT_APP_RECAPTCHA_SITE_KEY;
 
+  // Note: reCAPTCHA is optional for development
+  // In production, consider adding the key to .env
   if (!recaptchaKey && process.env.NODE_ENV === 'production') {
     logger.warn('reCAPTCHA Site Key is not configured');
   }
 
+  // Create dynamic theme object with mode property from ThemeContext
   const dynamicTheme = React.useMemo(() => ({
     ...bulgarianTheme,
-    mode: theme
+    mode: theme // 'light' or 'dark' from ThemeContext
   }), [theme]);
 
   return (
@@ -234,6 +266,7 @@ const ThemedApp: React.FC = () => {
         <Suspense fallback={<div style={{ height: '0' }} />}>
           <FacebookPixel />
         </Suspense>
+        {/* <FacebookMessengerWidget /> - Temporarily disabled */}
         <SkipNavigation />
         <NotificationHandler />
         <Suspense fallback={
@@ -242,6 +275,7 @@ const ThemedApp: React.FC = () => {
           </Suspense>
         }>
           <Routes>
+            {/* Auth Routes - Full Screen (no header/footer) */}
             <Route path="/login" element={
               <FullScreenLayout>
                 <LoginPage />
@@ -257,11 +291,15 @@ const ThemedApp: React.FC = () => {
                 <EmailVerificationPage />
               </FullScreenLayout>
             } />
+
+            {/* OAuth Callback - Full Screen (no header/footer) */}
             <Route path="/oauth/callback" element={
               <FullScreenLayout>
                 <OAuthCallback />
               </FullScreenLayout>
             } />
+
+            {/* Super Admin Routes - Full Screen (no header/footer) */}
             <Route path="/super-admin-login" element={
               <FullScreenLayout>
                 <SuperAdminLogin />
@@ -277,11 +315,14 @@ const ThemedApp: React.FC = () => {
                 <SuperAdminUsersPage />
               </FullScreenLayout>
             } />
+            {/* Architecture Diagram - Full Screen */}
             <Route path="/diagram" element={
               <FullScreenLayout>
                 <ArchitectureDiagramPage />
               </FullScreenLayout>
             } />
+
+            {/* All other routes with header/footer */}
             <Route path="/*" element={<MainLayout />} />
           </Routes>
         </Suspense>
@@ -316,6 +357,8 @@ const MainLayout: React.FC = () => {
         <Route path="/cars" element={<CarsPage />} />
         <Route path="/cars/:id" element={<CarDetailsPage />} />
         <Route path="/car/:id" element={<CarDetailsPage />} />
+
+        {/* Dealer Routes */}
         <Route path="/dealer/:slug" element={<DealerPublicPage />} />
         <Route path="/dealer-registration" element={<DealerRegistrationPage />} />
         <Route
@@ -326,10 +369,16 @@ const MainLayout: React.FC = () => {
             </AuthGuard>
           }
         />
+
+        {/* Unified Sell System - بدء التجربة مباشرة من /sell/auto */}
         <Route path="/sell" element={<Navigate to="/sell/auto" replace />} />
+        {/* Redirect old routes to new system */}
         <Route path="/sell-car" element={<Navigate to="/sell/auto" replace />} />
         <Route path="/add-car" element={<Navigate to="/sell/auto" replace />} />
+
+        {/* Social Feed - Create Post */}
         <Route path="/create-post" element={<CreatePostPage />} />
+        {/* Mobile.de-style sell workflow */}
         <Route
           path="/sell/auto"
           element={
@@ -354,6 +403,7 @@ const MainLayout: React.FC = () => {
             </AuthGuard>
           }
         />
+        {/* NEW: Unified Equipment Page - All Features in One Place */}
         <Route
           path="/sell/inserat/:vehicleType/equipment"
           element={
@@ -362,6 +412,8 @@ const MainLayout: React.FC = () => {
             </AuthGuard>
           }
         />
+
+        {/* Redirect German routes to English unified routes */}
         <Route 
           path="/sell/inserat/:vehicleType/ausstattung" 
           element={<Navigate to="../equipment" replace />} 
@@ -386,6 +438,7 @@ const MainLayout: React.FC = () => {
             </AuthGuard>
           }
         />
+        {/* NEW: Unified Contact Page - All Contact Info in One Place */}
         <Route
           path="/sell/inserat/:vehicleType/contact"
           element={
@@ -394,10 +447,14 @@ const MainLayout: React.FC = () => {
             </AuthGuard>
           }
         />
+
+        {/* Redirect German contact routes to English unified route */}
         <Route 
           path="/sell/inserat/:vehicleType/kontakt/*" 
           element={<Navigate to="../contact" replace />} 
         />
+
+        {/* NEW: Preview Page - Review all data before submission */}
         <Route
           path="/sell/inserat/:vehicleType/preview"
           element={
@@ -406,9 +463,13 @@ const MainLayout: React.FC = () => {
             </AuthGuard>
           }
         />
+
+        {/* Profile routes - single entry; nested router handles both index and :userId */}
         <Route path="/profile/*" element={<ProfileRouter />} />
-        <Route path="/verification" element={<VerificationPage />} />
-        <Route path="/billing" element={<BillingPage />} />
+        <Route path="/verification" element={<VerificationPage />} />  {/* NEW: Verification System */}
+        <Route path="/billing" element={<BillingPage />} />  {/* NEW: Billing System */}
+        
+        {/* Payment & Billing Routes - Success & Cancel Pages */}
         <Route
           path="/billing/success"
           element={
@@ -425,6 +486,8 @@ const MainLayout: React.FC = () => {
             </AuthGuard>
           }
         />
+
+        {/* NEW: Payment & Checkout Routes */}
         <Route
           path="/checkout/:carId"
           element={
@@ -441,13 +504,18 @@ const MainLayout: React.FC = () => {
             </AuthGuard>
           }
         />
-        <Route path="/analytics" element={<AnalyticsDashboard />} />
-        <Route path="/team" element={<TeamManagement />} />
+
+        <Route path="/analytics" element={<AnalyticsDashboard />} />  {/* NEW: Analytics System */}
+        <Route path="/team" element={<TeamManagement />} />  {/* NEW: Team Management */}
         <Route path="/users" element={<UsersDirectoryPage />} />
+        {/* Redirect /all-users to /users */}
         <Route path="/all-users" element={<UsersDirectoryPage />} />
+        {/* ⚡ NEW: Browse Pages */}
         <Route path="/all-posts" element={<AllPostsPage />} />
         <Route path="/all-cars" element={<AllCarsPage />} />
         <Route path="/messages" element={<MessagesPage />} />
+
+        {/* NEW: Social Platform Routes */}
         <Route
           path="/events"
           element={
@@ -456,6 +524,7 @@ const MainLayout: React.FC = () => {
             </AuthGuard>
           }
         />
+
         <Route path="/admin-login" element={<AdminLoginPage />} />
         <Route
           path="/admin"
@@ -513,6 +582,8 @@ const MainLayout: React.FC = () => {
             </AuthGuard>
           }
         />
+
+        {/* NEW: Invoices & Commissions Pages - P2 Integration */}
         <Route
           path="/invoices"
           element={
@@ -529,6 +600,7 @@ const MainLayout: React.FC = () => {
             </AuthGuard>
           }
         />
+
         <Route
           path="/dashboard"
           element={
@@ -537,11 +609,23 @@ const MainLayout: React.FC = () => {
             </AuthGuard>
           }
         />
+
+        {/* Theme Test Page */}
         <Route path="/theme-test" element={<ThemeTest />} />
+
+        {/* Background Test Page */}
         <Route path="/background-test" element={<BackgroundTest />} />
+
+        {/* Full Theme Demo Page */}
         <Route path="/full-demo" element={<FullThemeDemo />} />
+
+        {/* Effects Test Page */}
         <Route path="/effects-test" element={<EffectsTest />} />
+
+        {/* Icon Showcase Page */}
         <Route path="/icon-showcase" element={<IconShowcasePage />} />
+
+        {/* IoT Pages */}
         <Route
           path="/iot-dashboard"
           element={
@@ -566,6 +650,8 @@ const MainLayout: React.FC = () => {
             </AuthGuard>
           }
         />
+
+        {/* AI Dashboard */}
         <Route
           path="/ai-dashboard"
           element={
@@ -582,6 +668,8 @@ const MainLayout: React.FC = () => {
             </AuthGuard>
           }
         />
+
+        {/* Integration & Setup Pages */}
         <Route
           path="/admin/integration-status"
           element={
@@ -614,8 +702,14 @@ const MainLayout: React.FC = () => {
             </AuthGuard>
           }
         />
+
+        {/* N8N Integration Test Page */}
         <Route path="/n8n-test" element={<N8nTestPage />} />
+
+        {/* Dropdowns Test Page */}
         <Route path="/test-dropdowns" element={<TestDropdownsPage />} />
+
+        {/* Advanced Features */}
         <Route
           path="/advanced-search"
           element={
@@ -632,6 +726,7 @@ const MainLayout: React.FC = () => {
             </AuthGuard>
           }
         />
+        {/* New Car Listing System */}
         <Route
           path="/my-listings"
           element={
@@ -688,6 +783,8 @@ const MainLayout: React.FC = () => {
             </AuthGuard>
           }
         />
+
+        {/* Migration Page */}
         <Route
           path="/migration"
           element={
@@ -696,6 +793,8 @@ const MainLayout: React.FC = () => {
             </AuthGuard>
           }
         />
+
+        {/* Debug Cars Page */}
         <Route
           path="/debug-cars"
           element={
@@ -704,10 +803,15 @@ const MainLayout: React.FC = () => {
             </AuthGuard>
           }
         />
+
+        {/* Legal Pages */}
         <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
         <Route path="/terms-of-service" element={<TermsOfServicePage />} />
         <Route path="/data-deletion" element={<DataDeletionPage />} />
+
+        {/* Additional Pages */}
         <Route path="/about" element={<AboutPage />} />
+        {/* Bulgaria Map Analytics */}
         <Route path="/map" element={<MapAnalyticsPage />} />
         <Route path="/top-brands" element={<TopBrandsPage />} />
         <Route
@@ -736,9 +840,11 @@ const MainLayout: React.FC = () => {
         />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/help" element={<HelpPage />} />
-        <Route path="/support" element={<HelpPage />} />
+        <Route path="/support" element={<HelpPage />} /> {/* Support redirects to Help */}
         <Route path="/cookie-policy" element={<CookiePolicyPage />} />
         <Route path="/sitemap" element={<SitemapPage />} />
+
+        {/* 404 Page - Already wrapped in Layout by MainLayout */}
         <Route path="*" element={
           <Suspense fallback={<div>Loading...</div>}>
             <NotFoundPage />

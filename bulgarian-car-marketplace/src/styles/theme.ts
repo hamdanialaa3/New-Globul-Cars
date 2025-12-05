@@ -295,7 +295,7 @@ export const GlobalStyles = createGlobalStyle`
      🚗 ALL COLOR VARIABLES NOW IN: unified-theme.css
      جميع متغيرات الألوان الآن في: unified-theme.css
      
-     Imported via: src/index.css → @import './styles/unified-theme.css'
+     Loaded via: src/index.css includes './styles/unified-theme.css'
      ═══════════════════════════════════════════════════════════════════ */
 
   * {
