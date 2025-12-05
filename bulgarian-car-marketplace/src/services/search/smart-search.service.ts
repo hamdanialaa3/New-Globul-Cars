@@ -320,8 +320,14 @@ class SmartSearchService {
             ...doc.data()
           })) as (CarListing | UnifiedCar)[];
           
+          console.log(`  ✅ [${collectionName}] Found ${cars.length} cars`);
           if (cars.length > 0) {
-            console.log(`  ✅ [${collectionName}] Found ${cars.length} cars`);
+            console.log(`  📋 [${collectionName}] Sample:`, {
+              make: cars[0].make,
+              model: cars[0].model,
+              status: cars[0].status,
+              fuelType: (cars[0] as any).fuelType
+            });
           }
           
           return cars;
@@ -336,18 +342,25 @@ class SmartSearchService {
       results.forEach(cars => allCars.push(...cars));
       
       // 🔍 ALWAYS LOG: Firestore results
+      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
       console.log('✅ Smart Search - Firestore returned:', allCars.length, 'total cars from all collections');
+      console.log('📦 Collections results:', collections.map((col, i) => `${col}: ${results[i].length}`).join(', '));
+      
       if (allCars.length > 0) {
-        console.log('📋 Sample car:', {
-          make: allCars[0].make,
-          model: allCars[0].model,
-          year: allCars[0].year,
-          price: allCars[0].price
+        console.log('📋 First 3 cars from Firestore:');
+        allCars.slice(0, 3).forEach((car, i) => {
+          console.log(`  [${i}] ${car.make} ${car.model} (${car.year}) - Status: ${car.status} - Price: ${car.price}`);
         });
       } else {
-        console.log('⚠️ NO CARS FOUND in any collection!');
-        console.log('🔍 Search params were:', parsed);
-        console.log('📦 Collections searched:', collections);
+        console.warn('⚠️ NO CARS FOUND in any collection!');
+        console.warn('🔍 Search params were:', parsed);
+        console.warn('📦 Collections searched:', collections);
+        console.warn('💡 Possible reasons:');
+        console.warn('   1. No cars with status="active"');
+        console.warn('   2. Fuel type filter too restrictive');
+        console.warn('   3. Firestore rules blocking read');
+      }
+      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
       }
       
       // ⚡ NEW: Apply client-side filters (ranges, text search, make/model matching)
@@ -394,27 +407,28 @@ class SmartSearchService {
       
       // ⚡ ENHANCED: Case-insensitive keyword matching
       if (parsed.keywords.length > 0) {
-        const searchText = `
-          ${car.make || ''} 
-          ${car.model || ''} 
-          ${(car as any).description || ''} 
-          ${car.fuelType || ''}
-          ${(car as any).trim || ''}
-          ${(car as any).category || ''}
-        `.toLowerCase();
+        const carMake = (car.make || '').toLowerCase();
+        const carModel = (car.model || '').toLowerCase();
+        const carDescription = ((car as any).description || '').toLowerCase();
+        const carFuelType = (car.fuelType || '').toLowerCase();
+        const carTrim = ((car as any).trim || '').toLowerCase();
+        const carCategory = ((car as any).category || '').toLowerCase();
+        
+        const searchText = `${carMake} ${carModel} ${carDescription} ${carFuelType} ${carTrim} ${carCategory}`;
         
         // ⚡ SMART: Match if ANY keyword is found (OR logic, case-insensitive)
         const hasMatch = parsed.keywords.some(keyword => {
           const lowerKeyword = keyword.toLowerCase();
           const matched = searchText.includes(lowerKeyword);
           
-          // Debug: Log first 5 cars to see what's being matched
-          if (cars.indexOf(car) < 5) {
-            console.log(`🔍 Checking car ${car.make} ${car.model}:`, {
+          // 🔍 ALWAYS LOG: First 3 cars for debugging
+          if (cars.indexOf(car) < 3) {
+            console.log(`🔍 [Car ${cars.indexOf(car)}] ${carMake} ${carModel}:`, {
               keyword: lowerKeyword,
-              carMake: car.make,
               matched: matched,
-              searchTextSnippet: searchText.substring(0, 100)
+              make: car.make,
+              model: car.model,
+              status: car.status
             });
           }
           

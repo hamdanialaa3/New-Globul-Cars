@@ -227,10 +227,10 @@ class AdvancedRealDataService {
         deletedContentSnapshot,
         flaggedMessagesSnapshot
       ] = await Promise.all([
-        queryAllCollections( where('isReported', '==', true))).catch(() => ({ docs: [] })),
+        queryAllCollections(where('isReported', '==', true)).then(cars => ({ docs: cars })).catch(() => ({ docs: [] })),
         getDocs(query(collection(db, 'reviews'), where('status', '==', 'pending'))).catch(() => ({ docs: [] })),
         getDocs(query(collection(db, 'users'), where('status', '==', 'banned'))).catch(() => ({ docs: [] })),
-        queryAllCollections( where('isDeleted', '==', true))).catch(() => ({ docs: [] })),
+        queryAllCollections(where('isDeleted', '==', true)).then(cars => ({ docs: cars })).catch(() => ({ docs: [] })),
         getDocs(query(collection(db, 'messages'), where('isFlagged', '==', true))).catch(() => ({ docs: [] }))
       ]);
 
