@@ -37,7 +37,7 @@ class AdvancedRealDataService {
         userActivitySnapshot
       ] = await Promise.all([
         getDocs(collection(db, 'users')).catch(() => ({ docs: [] })),
-        getDocs(collection(db, 'cars')).catch(() => ({ docs: [] })),
+        queryAllCollections().catch(() => ({ docs: [] })),
         getDocs(collection(db, 'messages')).catch(() => ({ docs: [] })),
         getDocs(collection(db, 'views')).catch(() => ({ docs: [] })),
         getDocs(collection(db, 'user_activity')).catch(() => ({ docs: [] }))
@@ -227,10 +227,10 @@ class AdvancedRealDataService {
         deletedContentSnapshot,
         flaggedMessagesSnapshot
       ] = await Promise.all([
-        getDocs(query(collection(db, 'cars'), where('isReported', '==', true))).catch(() => ({ docs: [] })),
+        queryAllCollections( where('isReported', '==', true))).catch(() => ({ docs: [] })),
         getDocs(query(collection(db, 'reviews'), where('status', '==', 'pending'))).catch(() => ({ docs: [] })),
         getDocs(query(collection(db, 'users'), where('status', '==', 'banned'))).catch(() => ({ docs: [] })),
-        getDocs(query(collection(db, 'cars'), where('isDeleted', '==', true))).catch(() => ({ docs: [] })),
+        queryAllCollections( where('isDeleted', '==', true))).catch(() => ({ docs: [] })),
         getDocs(query(collection(db, 'messages'), where('isFlagged', '==', true))).catch(() => ({ docs: [] }))
       ]);
 
@@ -291,7 +291,7 @@ class AdvancedRealDataService {
     try {
       logger.debug('Fetching real cars...');
       
-      const snapshot = await getDocs(collection(db, 'cars'));
+      const snapshot = await queryAllCollections();
       const cars = snapshot.docs.map(doc => {
         const data = doc.data();
         return {
@@ -374,7 +374,7 @@ class AdvancedRealDataService {
       
       const [usersSnapshot, carsSnapshot, messagesSnapshot] = await Promise.all([
         getDocs(collection(db, 'users')),
-        getDocs(collection(db, 'cars')),
+        queryAllCollections(),
         getDocs(collection(db, 'messages'))
       ]);
 
@@ -484,7 +484,7 @@ class AdvancedRealDataService {
     try {
       logger.debug('Fetching revenue analytics...');
       
-      const carsSnapshot = await getDocs(collection(db, 'cars'));
+      const carsSnapshot = await queryAllCollections();
       const cars = carsSnapshot.docs.map(doc => doc.data());
 
       const now = new Date();

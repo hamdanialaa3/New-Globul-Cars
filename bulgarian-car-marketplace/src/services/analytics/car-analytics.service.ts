@@ -158,7 +158,7 @@ class CarAnalyticsService {
       const inquiriesSnapshot = await getDocs(inquiriesQuery);
 
       // Get favorites count
-      const carDoc = await getDocs(query(collection(db, 'cars'), where('__name__', '==', carId)));
+      const carDoc = await queryAllCollections( where('__name__', '==', carId)));
       const carData = carDoc.docs[0]?.data();
       const favorites = carData?.favorites || 0;
 

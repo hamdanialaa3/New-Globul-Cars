@@ -29,15 +29,11 @@ function extractCityId(docData: any): string | undefined {
 }
 
 export async function fetchCarsByCity(maxPerCity: number = 500): Promise<CarEntity[]> {
-  const carsRef = collection(db, 'cars');
-  // Fetch all active cars (adjust status field name if different)
-  const qAll = query(carsRef, where('status', '==', 'active'));
-  const snapshot = await getDocs(qAll);
-  const cars: CarEntity[] = [];
-  snapshot.forEach(d => {
-    const data = d.data();
-    const cityId = extractCityId(data);
-    cars.push({ id: d.id, cityId });
+  // ✅ Fetch from ALL vehicle collections
+  const allCars = await queryAllCollections(where('status', '==', 'active'));
+  const cars: CarEntity[] = allCars.map(d => {
+    const cityId = extractCityId(d);
+    return { id: d.id, cityId };
   });
   // Optional cap per city to avoid rendering explosions
   const capped: CarEntity[] = [];

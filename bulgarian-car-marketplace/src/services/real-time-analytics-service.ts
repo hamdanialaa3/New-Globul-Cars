@@ -102,7 +102,7 @@ class RealTimeAnalyticsService {
       try {
         [usersSnapshot, carsSnapshot, messagesSnapshot, viewsSnapshot, userActivitySnapshot] = await Promise.all([
           getDocs(collection(db, 'users')).catch(() => ({ docs: [] })),
-          getDocs(collection(db, 'cars')).catch(() => ({ docs: [] })),
+          queryAllCollections().catch(() => ({ docs: [] })),
           getDocs(collection(db, 'messages')).catch(() => ({ docs: [] })),
           getDocs(collection(db, 'views')).catch(() => ({ docs: [] })),
           getDocs(collection(db, 'user_activity')).catch(() => ({ docs: [] }))
@@ -292,10 +292,10 @@ class RealTimeAnalyticsService {
         deletedContentSnapshot,
         flaggedMessagesSnapshot
       ] = await Promise.all([
-        getDocs(query(collection(db, 'cars'), where('isReported', '==', true))).catch(() => ({ docs: [] })),
+        queryAllCollections( where('isReported', '==', true))).catch(() => ({ docs: [] })),
         getDocs(query(collection(db, 'reviews'), where('status', '==', 'pending'))).catch(() => ({ docs: [] })),
         getDocs(query(collection(db, 'users'), where('status', '==', 'banned'))).catch(() => ({ docs: [] })),
-        getDocs(query(collection(db, 'cars'), where('isDeleted', '==', true))).catch(() => ({ docs: [] })),
+        queryAllCollections( where('isDeleted', '==', true))).catch(() => ({ docs: [] })),
         getDocs(query(collection(db, 'messages'), where('isFlagged', '==', true))).catch(() => ({ docs: [] }))
       ]);
 

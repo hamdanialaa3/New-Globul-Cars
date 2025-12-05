@@ -312,10 +312,9 @@ export class AdminService {
       const usersSnapshot = await getDocs(usersQuery);
       stats.totalUsers = usersSnapshot.size;
 
-      // Get total cars
-      const carsQuery = query(collection(db, 'cars'));
-      const carsSnapshot = await getDocs(carsQuery);
-      stats.totalCars = carsSnapshot.size;
+      // Get total cars - ✅ ALL COLLECTIONS
+      const totalCars = await countAllVehicles();
+      stats.totalCars = totalCars;
 
       // Get total messages
       const messagesQuery = query(collection(db, 'messages'));

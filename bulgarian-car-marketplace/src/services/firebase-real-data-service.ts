@@ -144,7 +144,7 @@ class FirebaseRealDataService {
   // Get real revenue from Firebase
   public async getRealRevenue(): Promise<number> {
     try {
-      const carsSnapshot = await getDocs(collection(db, 'cars'));
+      const carsSnapshot = await queryAllCollections();
       let totalRevenue = 0;
       
       carsSnapshot.docs.forEach(doc => {

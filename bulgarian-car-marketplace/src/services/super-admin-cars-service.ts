@@ -407,7 +407,7 @@ class SuperAdminCarsService {
   }> {
     try {
       const [carsSnapshot, postsSnapshot, usersSnapshot] = await Promise.all([
-        getDocs(collection(db, 'cars')),
+        queryAllCollections(),
         getDocs(collection(db, 'posts')),
         getDocs(collection(db, 'users'))
       ]);
@@ -468,7 +468,7 @@ class SuperAdminCarsService {
       const results = { cars: [] as CarListing[], posts: [] as PostData[] };
       
       if (type === 'cars' || type === 'all') {
-        const carsSnapshot = await getDocs(collection(db, 'cars'));
+        const carsSnapshot = await queryAllCollections();
         const cars = carsSnapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data(),

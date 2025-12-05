@@ -266,7 +266,7 @@ export class AdvancedContentManagementService {
   public async getContentStats(): Promise<ContentStats> {
     try {
       const [carsSnapshot, usersSnapshot, reportsSnapshot, moderationSnapshot] = await Promise.all([
-        getDocs(collection(db, 'cars')),
+        queryAllCollections(),
         getDocs(collection(db, 'users')),
         getDocs(collection(db, 'content_reports')),
         getDocs(collection(db, 'content_moderation'))

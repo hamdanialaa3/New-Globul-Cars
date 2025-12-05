@@ -107,7 +107,7 @@ export class SuperAdminService {
         viewsSnapshot
       ] = await Promise.all([
         getDocs(collection(db, 'users')),
-        getDocs(collection(db, 'cars')),
+        queryAllCollections(),
         getDocs(collection(db, 'messages')),
         getDocs(collection(db, 'analytics'))
       ]);
@@ -260,7 +260,8 @@ export class SuperAdminService {
       
       // حذف سيارات المستخدم
       const carsSnapshot = await getDocs(
-        query(collection(db, 'cars'), where('sellerId', '==', userId))
+        // ✅ Query user's cars from ALL collections
+        queryAllCollections(where('sellerId', '==', userId))
       );
       carsSnapshot.docs.forEach(doc => batch.delete(doc.ref));
       
@@ -310,7 +311,7 @@ export class SuperAdminService {
   public async getContentModeration(): Promise<ContentModeration> {
     try {
       const [reportedCars, pendingReviews, bannedUsers, deletedContent, flaggedMessages] = await Promise.all([
-        getDocs(query(collection(db, 'cars'), where('isReported', '==', true))),
+        queryAllCollections( where('isReported', '==', true))),
         getDocs(query(collection(db, 'reviews'), where('status', '==', 'pending'))),
         getDocs(query(collection(db, 'users'), where('isBanned', '==', true))),
         getDocs(query(collection(db, 'deleted_content'))),
