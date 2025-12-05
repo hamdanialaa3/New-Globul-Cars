@@ -1648,11 +1648,30 @@ FIREBASE_SERVICE_ACCOUNT=...
 | **بحث صوتي** | `http://localhost:3000/voice-search` | صفحة البحث الصوتي المخصصة |
 | **إعدادات الصوت** | `http://localhost:3000/voice-settings` | إعدادات اللغة والتعرف الصوتي |
 
-### 📸 البحث المرئي (Visual Search)
-| الصفحة | الرابط | الوصف |
-|-------|--------|-------|
-| **بحث بالصورة** | `http://localhost:3000/visual-search` | رفع صورة والبحث عن سيارات مشابهة |
-| **سجل البحث المرئي** | `http://localhost:3000/visual-history` | سجل عمليات البحث بالصور |
+### 📸 البحث المرئي (Visual Search) ✅ IMPLEMENTED
+| الصفحة | الرابط | الوصف | الحالة |
+|-------|--------|-------|--------|
+| **بحث بالصورة** | `http://localhost:3000/visual-search` | رفع صورة والبحث عن سيارات مشابهة | ✅ DONE |
+| **نتائج البحث المرئي** | `http://localhost:3000/visual-search-results` | عرض نتائج البحث بالصورة مع درجة التشابه | ✅ DONE |
+| **سجل البحث المرئي** | `http://localhost:3000/visual-history` | سجل عمليات البحث بالصور | ⏳ Planned |
+
+**المكونات المنفذة:**
+- ✅ `VisualSearchUpload.tsx` - رفع وتحليل الصور (drag & drop, paste)
+- ✅ `VisualSearchPage.tsx` - صفحة البحث المرئي الرئيسية
+- ✅ `VisualSearchResultsPage.tsx` - عرض النتائج مع التشابه
+
+**الخدمات المنفذة:**
+- ✅ `visual-search.service.ts` - Google Vision API integration
+  - تحليل الصور (make, model, color, year, body type)
+  - حساب درجة التشابه (similarity scoring)
+  - البحث في 7 مجموعات Firestore
+
+**الميزات:**
+- 📸 Drag & drop + clipboard paste
+- 🎯 Confidence scoring (0-100%)
+- 🏷️ Feature detection badges
+- 📊 Similarity percentage with color coding
+- 📱 Mobile-responsive design
 
 ### 🤖 الذكاء الاصطناعي (AI Features)
 | الصفحة | الرابط | الوصف |
@@ -1667,12 +1686,37 @@ FIREBASE_SERVICE_ACCOUNT=...
 | **معاينة AR** | `http://localhost:3000/ar-preview/:carId` | معاينة السيارة بالواقع المعزز |
 | **جولة AR** | `http://localhost:3000/ar-tour/:carId` | جولة افتراضية داخل السيارة |
 
-### 🔔 نظام التنبيهات الذكية (Smart Alerts)
-| الصفحة | الرابط | الوصف |
-|-------|--------|-------|
-| **إدارة التنبيهات** | `http://localhost:3000/alerts` | إدارة جميع التنبيهات الذكية |
-| **تنبيهات الأسعار** | `http://localhost:3000/price-alerts` | تنبيهات انخفاض الأسعار |
-| **تنبيهات السيارات الجديدة** | `http://localhost:3000/new-car-alerts` | تنبيهات السيارات الجديدة المطابقة |
+### 🔔 نظام التنبيهات الذكية (Smart Alerts) ✅ IMPLEMENTED
+| الصفحة | الرابط | الوصف | الحالة |
+|-------|--------|-------|--------|
+| **إدارة التنبيهات** | `http://localhost:3000/alerts` | إدارة جميع التنبيهات الذكية | ⏳ Planned |
+| **إنشاء تنبيه** | `http://localhost:3000/alerts/create` | إنشاء تنبيه ذكي جديد | ✅ DONE |
+| **تنبيهات الأسعار** | `http://localhost:3000/price-alerts` | تنبيهات انخفاض الأسعار | ✅ DONE |
+| **تنبيهات السيارات الجديدة** | `http://localhost:3000/new-car-alerts` | تنبيهات السيارات الجديدة المطابقة | ✅ DONE |
+
+**المكونات المنفذة:**
+- ✅ `SmartAlertCreator.tsx` - نموذج إنشاء تنبيه شامل (600 lines)
+  - 15+ حقل بحث متقدم
+  - فلتر تقييم الصفقات (excellent/great/good)
+  - تتبع انخفاض الأسعار (percentage-based)
+  - 4 قنوات إشعارات (email, push, SMS, in-app)
+  - 3 خيارات تكرار (instant, daily, weekly)
+
+**الخدمات المنفذة:**
+- ✅ `smart-alerts.service.ts` - نظام التنبيهات المحسّن (500 lines)
+  - حساب نقاط التطابق (match scoring)
+  - فلتر تقييم الصفقات
+  - تتبع تغييرات الأسعار
+  - اشتراكات real-time
+
+**الميزات المتقدمة:**
+- 🎯 AI-powered match scoring (min 70% threshold)
+- 💰 Price drop tracking with percentage alerts
+- ⭐ Deal rating filter (only notify for good deals)
+- 📊 Market comparison in alerts
+- 🔔 Multi-channel notifications
+- 📅 Flexible frequency (instant/daily/weekly)
+- 💾 Firestore persistence with real-time updates
 
 ### 📊 تحليلات البائعين (Seller Analytics)
 | الصفحة | الرابط | الوصف |
