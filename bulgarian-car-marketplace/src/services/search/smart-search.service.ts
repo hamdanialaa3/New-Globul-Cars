@@ -361,7 +361,6 @@ class SmartSearchService {
         console.warn('   3. Firestore rules blocking read');
       }
       console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-      }
       
       // ⚡ NEW: Apply client-side filters (ranges, text search, make/model matching)
       const beforeFilter = allCars.length;
