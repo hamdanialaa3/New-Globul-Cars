@@ -285,7 +285,55 @@ interface SendEmailParams {
   fromName?: string;
 }
 
-// Main email sending function
+// Internal helper for sending emails (used by other functions)
+async function sendEmailHelper(params: SendEmailParams): Promise<void> {
+  const { to, templateId, language, variables, fromEmail, fromName } = params;
+  
+  const template = EMAIL_TEMPLATES[templateId];
+  if (!template) {
+    throw new Error(`Template ${templateId} not found`);
+  }
+
+  // Replace variables in template
+  const replaceVariables = (text: string): string => {
+    let result = text;
+    Object.entries(variables).forEach(([key, value]) => {
+      result = result.replace(new RegExp(`{{${key}}}`, 'g'), value);
+    });
+    return result;
+  };
+
+  const subject = replaceVariables(template.subject[language]);
+  const html = replaceVariables(template.html[language]);
+  const text = replaceVariables(template.text[language]);
+
+  // Prepare email
+  const msg = {
+    to,
+    from: {
+      email: fromEmail || 'noreply@globul-cars.com',
+      name: fromName || 'Globul Cars'
+    },
+    subject,
+    text,
+    html,
+    trackingSettings: {
+      clickTracking: { enable: true },
+      openTracking: { enable: true }
+    }
+  };
+
+  // Send email
+  if (!sendGridApiKey) {
+    console.log('SendGrid not configured, email would be sent:', msg);
+    return;
+  }
+
+  await sgMail.send(msg);
+  console.log(`Email sent to ${to} using template ${templateId}`);
+}
+
+// Main email sending function (Cloud Function)
 export const sendEmail = functions.https.onCall(
   async (data: SendEmailParams, context): Promise<{ success: boolean; messageId?: string; error?: string }> => {
     try {
@@ -398,7 +446,7 @@ export const sendVerificationSubmittedEmail = functions.https.onCall(
     const userDoc = await admin.firestore().doc(`users/${userId}`).get();
     const language = userDoc.data()?.language || 'bg';
 
-    return sendEmail({
+    return sendEmailHelper({
       to: userEmail,
       templateId: 'verification_submitted',
       language,
@@ -407,7 +455,7 @@ export const sendVerificationSubmittedEmail = functions.https.onCall(
         profileType,
         submissionDate: new Date().toLocaleDateString(language === 'bg' ? 'bg-BG' : 'en-US')
       }
-    }, { auth: { uid: userId } } as any);
+    });
   }
 );
 
@@ -418,12 +466,12 @@ export const sendVerificationApprovedEmail = functions.https.onCall(
     const userDoc = await admin.firestore().doc(`users/${userId}`).get();
     const language = userDoc.data()?.language || 'bg';
 
-    return sendEmail({
+    return sendEmailHelper({
       to: userEmail,
       templateId: 'verification_approved',
       language,
       variables: { userName }
-    }, { auth: { uid: userId } } as any);
+    });
   }
 );
 
@@ -434,12 +482,12 @@ export const sendVerificationRejectedEmail = functions.https.onCall(
     const userDoc = await admin.firestore().doc(`users/${userId}`).get();
     const language = userDoc.data()?.language || 'bg';
 
-    return sendEmail({
+    return sendEmailHelper({
       to: userEmail,
       templateId: 'verification_rejected',
       language,
       variables: { userName, rejectionReason }
-    }, { auth: { uid: userId } } as any);
+    });
   }
 );
 
@@ -449,7 +497,7 @@ export const sendAdminVerificationNotification = functions.https.onCall(
     
     const adminEmail = 'admin@globul-cars.com'; // Replace with actual admin email
 
-    return sendEmail({
+    return sendEmailHelper({
       to: adminEmail,
       templateId: 'admin_verification_notification',
       language: 'en', // Admin emails in English
@@ -462,6 +510,6 @@ export const sendAdminVerificationNotification = functions.https.onCall(
       },
       fromEmail: 'system@globul-cars.com',
       fromName: 'Globul Cars System'
-    }, { auth: { uid: 'system' } } as any);
+    });
   }
 );

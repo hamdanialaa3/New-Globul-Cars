@@ -7,7 +7,7 @@ import Stripe from 'stripe';
 
 // Initialize Stripe with secret key
 const stripe = new Stripe(functions.config().stripe.secret_key, {
-  apiVersion: '2023-10-16',
+  apiVersion: '2025-10-29.clover',
 });
 
 interface CheckoutRequest {
@@ -267,10 +267,10 @@ async function handleSubscriptionCreated(subscription: Stripe.Subscription) {
     'plan.status': subscription.status,
     'plan.stripeSubscriptionId': subscription.id,
     'plan.currentPeriodStart': admin.firestore.Timestamp.fromDate(
-      new Date(subscription.current_period_start * 1000)
+      new Date((subscription as any).current_period_start * 1000)
     ),
     'plan.currentPeriodEnd': admin.firestore.Timestamp.fromDate(
-      new Date(subscription.current_period_end * 1000)
+      new Date((subscription as any).current_period_end * 1000)
     ),
   });
 }
@@ -283,10 +283,10 @@ async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
   await admin.firestore().doc(`users/${userId}`).update({
     'plan.status': subscription.status,
     'plan.currentPeriodStart': admin.firestore.Timestamp.fromDate(
-      new Date(subscription.current_period_start * 1000)
+      new Date((subscription as any).current_period_start * 1000)
     ),
     'plan.currentPeriodEnd': admin.firestore.Timestamp.fromDate(
-      new Date(subscription.current_period_end * 1000)
+      new Date((subscription as any).current_period_end * 1000)
     ),
   });
 }
@@ -307,7 +307,7 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
 }
 
 async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
-  const subscriptionId = invoice.subscription as string;
+  const subscriptionId = (invoice as any).subscription as string;
   
   if (!subscriptionId) return;
 
@@ -330,7 +330,7 @@ async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
 }
 
 async function handlePaymentFailed(invoice: Stripe.Invoice) {
-  const subscriptionId = invoice.subscription as string;
+  const subscriptionId = (invoice as any).subscription as string;
   
   if (!subscriptionId) return;
 
