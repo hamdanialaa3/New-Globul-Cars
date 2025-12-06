@@ -2,6 +2,14 @@
   "projects": {
     "default": "fire-new-globul"
   },
-  "targets": {},
+  "targets": {
+    "fire-new-globul": {
+      "hosting": {
+        "mobilebg": [
+          "fire-new-globul"
+        ]
+      }
+    }
+  },
   "etags": {}
 }
