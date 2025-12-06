@@ -41,7 +41,7 @@ export const OfferDetailsSection: React.FC<OfferDetailsSectionProps> = ({
           <FormGrid>
             <FormGroup>
               <label>{t('advancedSearch.seller')}</label>
-              <SearchSelect name="seller" value={searchData.seller} onChange={onChange}>
+              <SearchSelect name="seller" value={searchData.seller || ''} onChange={onChange}>
                 <option value="">{t('advancedSearch.all')}</option>
                 <option value="dealer">{t('advancedSearch.dealer')}</option>
                 <option value="private">{t('advancedSearch.privateSeller')}</option>
@@ -50,7 +50,7 @@ export const OfferDetailsSection: React.FC<OfferDetailsSectionProps> = ({
 
             <FormGroup>
               <label>{t('advancedSearch.dealerRating')}</label>
-              <SearchSelect name="dealerRating" value={searchData.dealerRating} onChange={onChange}>
+              <SearchSelect name="dealerRating" value={searchData.dealerRating || ''} onChange={onChange}>
                 <option value="">{t('advancedSearch.all')}</option>
                 <option value="excellent">{t('advancedSearch.excellentRating')}</option>
                 <option value="very-good">{t('advancedSearch.veryGoodRating')}</option>
@@ -61,7 +61,7 @@ export const OfferDetailsSection: React.FC<OfferDetailsSectionProps> = ({
 
             <FormGroup>
               <label>{t('advancedSearch.adOnlineSince')}</label>
-              <SearchSelect name="adOnlineSince" value={searchData.adOnlineSince} onChange={onChange}>
+              <SearchSelect name="adOnlineSince" value={searchData.adOnlineSince || ''} onChange={onChange}>
                 <option value="">{t('advancedSearch.all')}</option>
                 <option value="1">{t('advancedSearch.lastDay')}</option>
                 <option value="3">{t('advancedSearch.last3Days')}</option>
@@ -183,7 +183,7 @@ export const OfferDetailsSection: React.FC<OfferDetailsSectionProps> = ({
 
             <FormGroup>
               <label>{t('advancedSearch.commercialExport')}</label>
-              <SearchSelect name="commercialExport" value={searchData.commercialExport} onChange={onChange}>
+              <SearchSelect name="commercialExport" value={searchData.commercialExport || ''} onChange={onChange}>
                 <option value="">{t('advancedSearch.all')}</option>
                 <option value="yes">{t('advancedSearch.yes')}</option>
                 <option value="no">{t('advancedSearch.no')}</option>
@@ -192,7 +192,7 @@ export const OfferDetailsSection: React.FC<OfferDetailsSectionProps> = ({
 
             <FormGroup>
               <label>{t('advancedSearch.approvedUsedProgramme')}</label>
-              <SearchSelect name="approvedUsedProgramme" value={searchData.approvedUsedProgramme} onChange={onChange}>
+              <SearchSelect name="approvedUsedProgramme" value={searchData.approvedUsedProgramme || ''} onChange={onChange}>
                 <option value="">{t('advancedSearch.all')}</option>
                 <option value="yes">{t('advancedSearch.yes')}</option>
                 <option value="no">{t('advancedSearch.no')}</option>

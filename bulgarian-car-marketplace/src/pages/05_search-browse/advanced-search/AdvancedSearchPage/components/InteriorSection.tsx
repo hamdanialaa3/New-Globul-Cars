@@ -48,7 +48,7 @@ export const InteriorSection: React.FC<InteriorSectionProps> = ({
           <FormGrid>
             <FormGroup>
               <label>{t('advancedSearch.interiorColor')}</label>
-              <SearchSelect name="interiorColor" value={searchData.interiorColor} onChange={onChange}>
+              <SearchSelect name="interiorColor" value={searchData.interiorColor || ''} onChange={onChange}>
                 <option value="">{t('advancedSearch.all')}</option>
                 {interiorColors.map(color => (
                   <option key={color} value={color}>{color}</option>
@@ -58,7 +58,7 @@ export const InteriorSection: React.FC<InteriorSectionProps> = ({
 
             <FormGroup>
               <label>{t('advancedSearch.interiorMaterial')}</label>
-              <SearchSelect name="interiorMaterial" value={searchData.interiorMaterial} onChange={onChange}>
+              <SearchSelect name="interiorMaterial" value={searchData.interiorMaterial || ''} onChange={onChange}>
                 <option value="">{t('advancedSearch.all')}</option>
                 {interiorMaterials.map(material => (
                   <option key={material} value={material}>{material}</option>
@@ -68,7 +68,7 @@ export const InteriorSection: React.FC<InteriorSectionProps> = ({
 
             <FormGroup>
               <label>{t('advancedSearch.airbags')}</label>
-              <SearchSelect name="airbags" value={searchData.airbags} onChange={onChange}>
+              <SearchSelect name="airbags" value={searchData.airbags || ''} onChange={onChange}>
                 <option value="">{t('advancedSearch.all')}</option>
                 <option value="2">{t('advancedSearch.airbags2')}</option>
                 <option value="4">{t('advancedSearch.airbags4')}</option>
@@ -79,7 +79,7 @@ export const InteriorSection: React.FC<InteriorSectionProps> = ({
 
             <FormGroup>
               <label>{t('advancedSearch.airConditioning')}</label>
-              <SearchSelect name="airConditioning" value={searchData.airConditioning} onChange={onChange}>
+              <SearchSelect name="airConditioning" value={searchData.airConditioning || ''} onChange={onChange}>
                 <option value="">{t('advancedSearch.all')}</option>
                 <option value="manual">{t('advancedSearch.manualAirConditioning')}</option>
                 <option value="automatic">{t('advancedSearch.automaticAirConditioning')}</option>

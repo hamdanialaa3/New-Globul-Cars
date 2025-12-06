@@ -42,6 +42,8 @@ if (process.env.NODE_ENV === 'development') {
 const FacebookPixel = safeLazy(() => import('./components/FacebookPixel'));
 const FloatingAddButton = safeLazy(() => import('./components/FloatingAddButton'));
 const RobotChatIcon = safeLazy(() => import('./components/AI/RobotChatIcon'));
+const GlobalWorkflowTimer = safeLazy(() => import('./components/GlobalWorkflowTimer'));
+const WorkflowProgressBar = safeLazy(() => import('./components/WorkflowProgressBar'));
 import { useIsMobile } from './hooks/useBreakpoint';
 const ProgressBar = safeLazy(() => import('./components/ProgressBar'));
 import LoadingSpinner from './components/LoadingSpinner';
@@ -236,6 +238,12 @@ const ThemedApp: React.FC = () => {
         </Suspense>
         <SkipNavigation />
         <NotificationHandler />
+        
+        {/* Global Workflow Timer - Visible across all sell workflow pages */}
+        <Suspense fallback={null}>
+          <GlobalWorkflowTimer />
+        </Suspense>
+        
         <Suspense fallback={
           <Suspense fallback={<div>Loading...</div>}>
             <ProgressBar duration={2000} />

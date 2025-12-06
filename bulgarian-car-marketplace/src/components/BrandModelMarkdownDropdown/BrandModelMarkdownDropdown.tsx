@@ -7,18 +7,18 @@ import { brandsModelsDataService, type BrandModelsMap } from '../../services/bra
 // Lightweight dropdown module that reads brands/models from centralized service
 // Uses: brandsModelsDataService for consistent data across all pages
 
-// Most popular brands in Bulgaria (2023 MVR statistics - used cars)
-const POPULAR_BRANDS_BG = [
-  'Volkswagen',
+// Premium/Top brands (mobile.de style - most searched in Europe)
+const TOP_BRANDS = [
   'Mercedes-Benz',
   'BMW',
   'Audi',
+  'Volkswagen',
+  'Porsche',
+  'Ford',
+  'Skoda',
   'Opel',
   'Toyota',
-  'Ford',
-  'Peugeot',
-  'Honda',
-  'Renault'
+  'Volvo'
 ];
 
 const Container = styled.section`
@@ -93,6 +93,25 @@ const Select = styled.select`
     transform: translateY(-2px);
   }
 
+  /* Style top/premium brands section */
+  option.top-brand {
+    font-weight: 700;
+    color: #1e293b;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  }
+  
+  option.top-brands-separator {
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: #64748b;
+    background: #f1f5f9;
+    border-bottom: 2px solid #cbd5e1;
+    cursor: default;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 0.5rem 1rem;
+  }
+  
   /* Style popular brands with modern badge effect */
   option.popular-brand {
     font-weight: 700;
@@ -469,16 +488,16 @@ export const BrandModelMarkdownDropdown: React.FC<Props> = ({ brand, model, onBr
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Sort brands: popular ones first, then alphabetically
+  // Sort brands: top brands first, then alphabetically
   const brands = useMemo(() => {
     const allBrands = Object.keys(brandModels);
-    const popular = allBrands.filter(b => POPULAR_BRANDS_BG.includes(b)).sort((a, b) => {
-      const indexA = POPULAR_BRANDS_BG.indexOf(a);
-      const indexB = POPULAR_BRANDS_BG.indexOf(b);
+    const topBrands = allBrands.filter(b => TOP_BRANDS.includes(b)).sort((a, b) => {
+      const indexA = TOP_BRANDS.indexOf(a);
+      const indexB = TOP_BRANDS.indexOf(b);
       return indexA - indexB;
     });
-    const others = allBrands.filter(b => !POPULAR_BRANDS_BG.includes(b)).sort((a, b) => a.localeCompare(b));
-    return [...popular, ...others];
+    const others = allBrands.filter(b => !TOP_BRANDS.includes(b)).sort((a, b) => a.localeCompare(b));
+    return [...topBrands, ...others];
   }, [brandModels]);
 
   const models = useMemo(() => (selectedBrand ? (brandModels[selectedBrand] || []) : []), [brandModels, selectedBrand]);
@@ -535,13 +554,14 @@ export const BrandModelMarkdownDropdown: React.FC<Props> = ({ brand, model, onBr
         <Select
           id="markdown-brand"
           aria-label={brandLabel}
-          value={selectedBrand}
+          value={showOtherBrand ? '__OTHER__' : selectedBrand}
           onChange={(e) => {
             const value = e.target.value;
             if (value === '__OTHER__') {
               setShowOtherBrand(true);
               setSelectedBrand('');
               setSelectedModel('');
+              setOtherBrandValue('');
               onBrandChange && onBrandChange('');
               onModelChange && onModelChange('');
             } else {
@@ -556,15 +576,34 @@ export const BrandModelMarkdownDropdown: React.FC<Props> = ({ brand, model, onBr
           disabled={loading || !!error}
         >
           <option value="">{selectBrandText}</option>
-          {brands.map((b) => (
+          
+          {/* Top Brands Section */}
+          <option disabled className="top-brands-separator">
+            ★ {language === 'bg' ? 'ТОП МАРКИ' : 'TOP BRANDS'} ★
+          </option>
+          {brands.filter(b => TOP_BRANDS.includes(b)).map((b) => (
             <option 
-              key={b} 
+              key={`top-${b}`} 
               value={b}
-              className={POPULAR_BRANDS_BG.includes(b) ? 'popular-brand' : ''}
+              className="top-brand"
             >
               {b}
             </option>
           ))}
+          
+          {/* All Other Brands */}
+          <option disabled className="top-brands-separator">
+            {language === 'bg' ? '────── ВСИЧКИ МАРКИ ──────' : '────── ALL BRANDS ──────'}
+          </option>
+          {brands.filter(b => !TOP_BRANDS.includes(b)).map((b) => (
+            <option 
+              key={b} 
+              value={b}
+            >
+              {b}
+            </option>
+          ))}
+          
           <option value="__OTHER__" className="other-option">{otherText}</option>
         </Select>
         
@@ -593,12 +632,13 @@ export const BrandModelMarkdownDropdown: React.FC<Props> = ({ brand, model, onBr
         <Select
           id="markdown-model"
           aria-label={modelLabel}
-          value={selectedModel}
+          value={showOtherModel ? '__OTHER__' : selectedModel}
           onChange={(e) => {
             const value = e.target.value;
             if (value === '__OTHER__') {
               setShowOtherModel(true);
               setSelectedModel('');
+              setOtherModelValue('');
               onModelChange && onModelChange('');
             } else {
               setShowOtherModel(false);

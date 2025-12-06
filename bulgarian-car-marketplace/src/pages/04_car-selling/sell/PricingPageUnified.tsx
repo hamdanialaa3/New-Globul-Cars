@@ -58,11 +58,45 @@ const PricingPageUnified: React.FC = () => {
   const vehicleTypeParam = searchParams.get('vt');
   const make = searchParams.get('mk');
 
-  const handleContinue = () => {
-    if (!pricingData.price || parseFloat(pricingData.price) <= 0) return;
+  const handleContinue = (e?: React.MouseEvent) => {
+    // ✅ FIX: Prevent event bubbling
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    
+    if (!pricingData.price || parseFloat(pricingData.price) <= 0) {
+      // ✅ Show user-friendly error message
+      const errorMsg = language === 'bg'
+        ? 'Моля въведете валидна цена преди да продължите.'
+        : 'Please enter a valid price before continuing.';
+      toast.error(errorMsg);
+      return;
+    }
 
-    const params = serialize();
-    navigate(`/sell/inserat/${vehicleType || vehicleTypeParam || 'car'}/contact?${params.toString()}`);
+    try {
+      // ✅ CRITICAL: Serialize pricing data for next page
+      const params = serialize();
+      
+      // ✅ CRITICAL: Ensure vehicleType is valid
+      const validVehicleType = vehicleType || vehicleTypeParam || 'car';
+      const targetPath = `/sell/inserat/${validVehicleType}/contact?${params.toString()}`;
+      
+      console.log('🚀 Navigating to contact page:', targetPath);
+      console.log('📋 Pricing data:', {
+        price: pricingData.price,
+        currency: pricingData.currency,
+        priceType: pricingData.priceType
+      });
+      
+      // ✅ Navigate to contact page
+      navigate(targetPath);
+    } catch (error) {
+      console.error('❌ Navigation error:', error);
+      toast.error(language === 'bg'
+        ? 'Грешка при навигация. Моля опитайте отново.'
+        : 'Navigation error. Please try again.');
+    }
   };
 
   const formattedPrice = pricingData.price
@@ -179,7 +213,7 @@ const PricingPageUnified: React.FC = () => {
           <MobilePricingStyles.default.StickyFooter>
             <MobilePricingStyles.default.PrimaryButton
               $enabled={canContinue}
-              onClick={handleContinue}
+              onClick={(e) => handleContinue(e)}
               disabled={!canContinue}
             >
               {language === 'bg' ? 'Продължи' : 'Continue'}

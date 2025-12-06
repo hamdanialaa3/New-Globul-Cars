@@ -4,7 +4,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { useLanguage } from '../../../contexts/LanguageContext';
 import { useAuth } from '../../../contexts/AuthProvider';
-import WorkflowPersistenceService from '../../../services/workflowPersistenceService';
+import { UnifiedWorkflowPersistenceService } from '../../../services/unified-workflow-persistence.service';
+import { ImageStorageService } from '../../../services/ImageStorageService';
 import { logger } from '../../../services/logger-service';
 import { SellProgressBar } from '../../../components/SellWorkflow';
 import SellWorkflowStepStateService from '../../../services/sellWorkflowStepState';
@@ -146,26 +147,26 @@ const DesktopSubmissionPage: React.FC = () => {
       setState('submitting');
       SellWorkflowStepStateService.markPending('publish');
 
-      // Load workflow data
-      const workflowState = WorkflowPersistenceService.loadState();
-      if (!workflowState) {
+      // Load workflow data from unified service
+      const workflowData = UnifiedWorkflowPersistenceService.loadData();
+      if (!workflowData) {
         throw new Error('No workflow data found');
       }
 
-      const { data } = workflowState;
-      const images = WorkflowPersistenceService.getImagesAsFiles();
+      // Get images from IndexedDB
+      const images = await ImageStorageService.getImages();
 
       // Validate required data
       if (!user?.uid) {
         throw new Error('User not authenticated');
       }
 
-      if (!data.make || !data.year) {
+      if (!workflowData.make || !workflowData.year) {
         throw new Error('Missing required vehicle information');
       }
 
       // Create the car listing using the actual service
-      const carId = await SellWorkflowService.createCarListing(data, user.uid, images);
+      const carId = await SellWorkflowService.createCarListing(workflowData, user.uid, images);
 
       // Log successful submission
       logger.info('Car listing submitted successfully', {
@@ -173,13 +174,17 @@ const DesktopSubmissionPage: React.FC = () => {
         userId: user.uid,
         vehicleType,
         imageCount: images.length,
-        make: data.make,
-        model: data.model,
-        year: data.year
+        make: workflowData.make,
+        model: workflowData.model,
+        year: workflowData.year
       });
 
-      // Clear workflow state after successful submission
-      WorkflowPersistenceService.clearState();
+      // Mark as published (prevents auto-deletion after timer expires)
+      UnifiedWorkflowPersistenceService.markAsPublished();
+
+      // Clear workflow state and images after successful submission
+      UnifiedWorkflowPersistenceService.clearData();
+      await ImageStorageService.clearImages();
 
       setState('success');
       SellWorkflowStepStateService.markCompleted('publish');

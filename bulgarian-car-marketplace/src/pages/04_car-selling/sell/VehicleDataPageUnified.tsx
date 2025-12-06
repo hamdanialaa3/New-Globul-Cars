@@ -2,7 +2,7 @@
 // صفحة بيانات السيارة الموحدة - تصميم متجاوب
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import React, { useCallback, useEffect, useMemo } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import styled, { DefaultTheme } from 'styled-components';
 import { useLanguage } from '../../../contexts/LanguageContext';
 import { SellProgressBar } from '../../../components/SellWorkflow';
@@ -13,6 +13,7 @@ import { useVehicleDataForm } from './VehicleData/useVehicleDataForm';
 import { useIsMobile } from '../../../hooks/useBreakpoint';
 import BrandModelMarkdownDropdown from '../../../components/BrandModelMarkdownDropdown/BrandModelMarkdownDropdown';
 import BulgariaLocationDropdown, { BulgariaLocationData } from '../../../components/BulgariaLocationDropdown/BulgariaLocationDropdown';
+import { useUnifiedWorkflow } from '../../../hooks/useUnifiedWorkflow';
 // removed legacy structured brands import; new markdown-based dropdown is canonical
 
 // removed legacy popular brands; new markdown-based dropdown replaces this UI
@@ -153,7 +154,8 @@ const MobileStickyFooter = styled.div`
   ${props => themeTokens(props).mobileMixins?.safeAreaPadding || ''};
 `;
 
-const MobilePrimaryButton = styled.button`
+// ✅ NEW: Simple Continue Button - Always Enabled
+const SimpleContinueButton = styled.button`
   width: 100%;
   padding: ${props => themeTokens(props).mobileSpacing?.md || '1rem'};
   background: var(--accent-primary);
@@ -163,14 +165,18 @@ const MobilePrimaryButton = styled.button`
   font-weight: 600;
   font-size: ${props => themeTokens(props).mobileTypography?.body?.fontSize || '1rem'};
   cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 10000;
+  position: relative;
 
-  &:disabled {
-    background: var(--text-muted);
-    cursor: not-allowed;
+  &:hover {
+    background: var(--accent-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(255, 143, 16, 0.4);
   }
 
-  &:hover:not(:disabled) {
-    background: var(--accent-hover);
+  &:active {
+    transform: translateY(0);
   }
 `;
 
@@ -282,6 +288,19 @@ const InsightSelect = styled.select.attrs<{ title?: string; 'aria-label'?: strin
   background: ${({ $validation }) => getValidationBackground($validation)};
   color: var(--text-primary, #1e293b);
   font-size: 0.95rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  
+  &:hover {
+    border-color: ${({ $validation }) => $validation === 'valid' ? '#22c55e' : '#ef4444'};
+    box-shadow: 0 0 10px ${({ $validation }) => $validation === 'valid' ? 'rgba(34, 197, 94, 0.2)' : 'rgba(239, 68, 68, 0.2)'};
+  }
+  
+  &:focus {
+    outline: none;
+    border-color: ${({ $validation }) => $validation === 'valid' ? '#22c55e' : '#ef4444'};
+    box-shadow: 0 0 15px ${({ $validation }) => $validation === 'valid' ? 'rgba(34, 197, 94, 0.3)' : 'rgba(239, 68, 68, 0.3)'};
+  }
 `;
 
 const InsightInput = styled.input<ValidationProps>`
@@ -294,6 +313,18 @@ const InsightInput = styled.input<ValidationProps>`
   background: ${({ $validation }) => getValidationBackground($validation)};
   color: var(--text-primary, #1e293b);
   font-size: 0.95rem;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    border-color: ${({ $validation }) => $validation === 'valid' ? '#22c55e' : '#ef4444'};
+    box-shadow: 0 0 10px ${({ $validation }) => $validation === 'valid' ? 'rgba(34, 197, 94, 0.2)' : 'rgba(239, 68, 68, 0.2)'};
+  }
+  
+  &:focus {
+    outline: none;
+    border-color: ${({ $validation }) => $validation === 'valid' ? '#22c55e' : '#ef4444'};
+    box-shadow: 0 0 15px ${({ $validation }) => $validation === 'valid' ? 'rgba(34, 197, 94, 0.3)' : 'rgba(239, 68, 68, 0.3)'};
+  }
 `;
 
 const InputSuffixWrapper = styled.div<ValidationProps>`
@@ -334,12 +365,20 @@ const PillRow = styled.div`
 const PillButton = styled.button<{ $active: boolean }>`
   border-radius: 999px;
   border: 1px solid ${({ $active }) => ($active ? 'var(--accent-primary)' : 'rgba(255, 255, 255, 0.1)')};
-  background: ${({ $active }) => ($active ? 'rgba(255, 143, 16, 0.2)' : 'transparent')};
-  color: ${({ $active }) => ($active ? 'var(--accent-primary)' : 'var(--text-primary)')};
+  background: ${({ $active }) => ($active ? 'rgba(34, 197, 94, 0.2)' : 'transparent')};
+  color: ${({ $active }) => ($active ? '#22c55e' : 'var(--text-primary)')};
   font-weight: 600;
   padding: 0.55rem 1rem;
   cursor: pointer;
   transition: all 0.2s ease;
+  
+  &:hover {
+    border-color: ${({ $active }) => ($active ? '#22c55e' : '#ef4444')};
+    background: ${({ $active }) => ($active ? 'rgba(34, 197, 94, 0.3)' : 'rgba(239, 68, 68, 0.15)')};
+    color: ${({ $active }) => ($active ? '#22c55e' : '#ef4444')};
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px ${({ $active }) => ($active ? 'rgba(34, 197, 94, 0.3)' : 'rgba(239, 68, 68, 0.3)')};
+  }
 `;
 
 const ToggleRow = styled.div`
@@ -357,11 +396,20 @@ const InsightToggleGroup = styled.div`
 const InsightToggleButton = styled.button<{ $active: boolean }>`
   border-radius: 12px;
   border: 1px solid ${({ $active }) => ($active ? 'var(--accent-primary)' : 'rgba(255, 255, 255, 0.1)')};
-  background: ${({ $active }) => ($active ? 'rgba(255, 143, 16, 0.15)' : 'transparent')};
-  color: ${({ $active }) => ($active ? 'var(--accent-primary)' : 'var(--text-primary)')};
+  background: ${({ $active }) => ($active ? 'rgba(34, 197, 94, 0.2)' : 'transparent')};
+  color: ${({ $active }) => ($active ? '#22c55e' : 'var(--text-primary)')};
   font-weight: 600;
   padding: 0.6rem 1.1rem;
   cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    border-color: ${({ $active }) => ($active ? '#22c55e' : '#ef4444')};
+    background: ${({ $active }) => ($active ? 'rgba(34, 197, 94, 0.3)' : 'rgba(239, 68, 68, 0.15)')};
+    color: ${({ $active }) => ($active ? '#22c55e' : '#ef4444')};
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px ${({ $active }) => ($active ? 'rgba(34, 197, 94, 0.3)' : 'rgba(239, 68, 68, 0.3)')};
+  }
 `;
 
 const DesktopFieldTitle = styled.h3`
@@ -453,7 +501,8 @@ const DesktopButton = styled.button`
   }
 `;
 
-const DesktopPrimaryButton = styled.button`
+// ✅ NEW: Simple Desktop Continue Button - Always Enabled
+const SimpleDesktopContinueButton = styled.button`
   padding: 1rem 2.5rem;
   background: var(--accent-primary);
   color: white;
@@ -461,16 +510,18 @@ const DesktopPrimaryButton = styled.button`
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
+  z-index: 10000;
+  position: relative;
 
-  &:disabled {
-    background: var(--text-muted);
-    cursor: not-allowed;
+  &:hover {
+    background: var(--accent-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(255, 143, 16, 0.4);
   }
 
-  &:hover:not(:disabled) {
-    background: var(--accent-hover);
-    transform: translateY(-1px);
+  &:active {
+    transform: translateY(0);
   }
 `;
 
@@ -569,11 +620,69 @@ const ValidationError = styled.div`
   }
 `;
 
+// ✅ Auto-Save Timer Indicator Styles
+const AutoSaveTimer = styled.div<{ $isMobile: boolean }>`
+  position: fixed;
+  top: ${props => props.$isMobile ? '10px' : '20px'};
+  right: ${props => props.$isMobile ? '10px' : '20px'};
+  z-index: 9999;
+  background: linear-gradient(135deg, rgba(255, 143, 16, 0.95), rgba(220, 38, 38, 0.95));
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  padding: ${props => props.$isMobile ? '0.5rem 0.75rem' : '0.75rem 1rem'};
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  animation: pulse 2s ease-in-out infinite;
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4); }
+    50% { transform: scale(1.05); box-shadow: 0 12px 40px rgba(255, 143, 16, 0.6); }
+  }
+`;
+
+const TimerIcon = styled.div`
+  font-size: 1.25rem;
+  animation: rotate 3s linear infinite;
+
+  @keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+`;
+
+const TimerText = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+`;
+
+const TimerLabel = styled.div<{ $isMobile: boolean }>`
+  font-size: ${props => props.$isMobile ? '0.65rem' : '0.7rem'};
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+`;
+
+const TimerCountdown = styled.div<{ $isMobile: boolean }>`
+  font-size: ${props => props.$isMobile ? '1rem' : '1.25rem'};
+  font-weight: 700;
+  color: #ffffff;
+  font-family: 'Monaco', 'Courier New', monospace;
+`;
+
 const VehicleDataPage: React.FC = () => {
   const isMobile = useIsMobile();
   const { t, language } = useLanguage();
   const navigate = useNavigate();
   const { vehicleType = 'car' } = useParams<{ vehicleType: string }>();
+  const [searchParams] = useSearchParams();
+
+  // ✅ UNIFIED WORKFLOW: Use unified workflow system (Step 2)
+  const { workflowData, updateData, timerState } = useUnifiedWorkflow(2);
 
   const {
     formData,
@@ -582,24 +691,146 @@ const VehicleDataPage: React.FC = () => {
     buildURLSearchParams
   } = useVehicleDataForm();
 
+  // 🐛 DEBUG: Log formData changes
+  useEffect(() => {
+    console.log('🚗 VehicleData formData updated:', {
+      make: formData.make,
+      model: formData.model,
+      year: formData.year,
+      firstRegistration: formData.firstRegistration
+    });
+  }, [formData.make, formData.model, formData.year, formData.firstRegistration]);
+
   // Validation state management
   const [validationResult, setValidationResult] = React.useState<ValidationResult | null>(null);
+  // Touched fields tracking - simple red → green on touch
+  const [touchedFields, setTouchedFields] = React.useState<Set<string>>(new Set());
+
+  // ✅ NEW: Simple touch-based validation: red → green on touch/interaction
+  // أحمر قبل اللمس، أخضر بعد اللمس - بهذه البساطة
+  const getValidationState = useCallback(
+    (fieldName: string): 'valid' | 'invalid' => {
+      // If touched/clicked → green, otherwise → red
+      return touchedFields.has(fieldName) ? 'valid' : 'invalid';
+    },
+    [touchedFields]
+  );
+
+  // Mark field as touched when user interacts with it
+  const markFieldAsTouched = useCallback((fieldName: string) => {
+    setTouchedFields(prev => new Set(prev).add(fieldName));
+  }, []);
+
+  // ✅ UNIFIED WORKFLOW: Load saved data on mount
+  useEffect(() => {
+    if (workflowData) {
+      // Restore all fields from workflow data
+      Object.keys(workflowData).forEach(key => {
+        const value = (workflowData as any)[key];
+        if (value !== undefined && value !== null) {
+          // ✅ FIX: Type-safe key handling
+          const validKey = key as keyof typeof formData;
+          if (validKey in formData) {
+            handleInputChange(validKey, value);
+          }
+        }
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Run once on mount
+
+  // ✅ FIX: Load data from URL parameters and mark as touched
+  useEffect(() => {
+    const make = searchParams.get('mk');
+    const model = searchParams.get('md');
+    const year = searchParams.get('fy');
+
+    if (make) {
+      console.log('🔗 Loading from URL: make =', make);
+      handleInputChange('make', make);
+      markFieldAsTouched('make');
+    }
+    if (model) {
+      console.log('🔗 Loading from URL: model =', model);
+      handleInputChange('model', model);
+      markFieldAsTouched('model');
+    }
+    if (year) {
+      console.log('🔗 Loading from URL: year =', year);
+      handleInputChange('year', year);
+      handleInputChange('firstRegistration', year);
+      markFieldAsTouched('year');
+      markFieldAsTouched('registrationYear');
+    }
+  }, [searchParams, handleInputChange, markFieldAsTouched]);
+
+  // ✅ UNIFIED WORKFLOW: Save formData on every change (AUTO-SAVE)
+  useEffect(() => {
+    if (Object.keys(formData).length > 0) {
+      // Save ALL form data immediately to unified system
+      updateData({
+        make: formData.make,
+        model: formData.model,
+        year: formData.year,
+        firstRegistration: formData.firstRegistration,
+        mileage: formData.mileage,
+        fuelType: formData.fuelType,
+        transmission: formData.transmission,
+        power: formData.power,
+        color: formData.color,
+        doors: formData.doors,
+        // ✅ FIX: Convert null to undefined for roadworthy
+        roadworthy: formData.roadworthy ?? undefined,
+        saleType: formData.saleType,
+        saleTimeline: formData.saleTimeline,
+        region: formData.saleProvince,
+        city: formData.saleCity,
+        postalCode: formData.salePostalCode
+      });
+    }
+  }, [formData, updateData]); // Save on EVERY formData change
 
   // Real-time validation on form data changes
   useEffect(() => {
-    const result = carValidationService.validate(formData, 'draft');
+    // ✅ FIX: Convert formData to validation format (year as number)
+    const validationData = {
+      ...formData,
+      year: formData.year ? parseInt(formData.year, 10) : undefined
+    };
+    const result = carValidationService.validate(validationData as any, 'draft');
     setValidationResult(result);
   }, [formData]);
 
-  // ✅ FIX: Validation state shows: empty=invalid(red), filled=valid(green)
-  // This encourages users to fill fields without blocking them
-  const getValidationState = useCallback(
-    (value?: string | number | null): 'valid' | 'invalid' => {
-      // Empty = red (encourages filling), Filled = green (confirms completion)
-      return value && String(value).trim() !== '' ? 'valid' : 'invalid';
-    },
-    []
-  );
+  // ✅ Define required fields for Vehicle Data step
+  const REQUIRED_FIELDS = useMemo(() => [
+    'make',              // Brand
+    'model',             // Model
+    'registrationYear',  // First Registration Year
+    'registrationMonth', // First Registration Month
+    'mileage',          // Mileage
+    'fuelType',         // Fuel Type
+    'transmission',     // Transmission
+    'power',            // Power (HP)
+    'color',            // Color
+    'doors',            // Doors
+    'roadworthy',       // Is roadworthy?
+    'saleType',         // Type of sale
+    'saleTimeline',     // When to sell
+    'saleLocation'      // Sale location
+  ], []);
+
+  // ✅ Auto-complete step when ALL required fields are touched
+  useEffect(() => {
+    const allFieldsTouched = REQUIRED_FIELDS.every(field => touchedFields.has(field));
+    
+    if (allFieldsTouched) {
+      // Mark step as completed (turns green in progress bar)
+      SellWorkflowStepStateService.markCompleted('vehicle-data');
+    } else {
+      // Mark as pending if not all fields touched yet
+      SellWorkflowStepStateService.markPending('vehicle-data');
+    }
+  }, [touchedFields, REQUIRED_FIELDS]);
 
   const registrationParts = useMemo(() => {
     if (!formData.firstRegistration) {
@@ -641,8 +872,11 @@ const VehicleDataPage: React.FC = () => {
         return;
       }
       updateFirstRegistration(value, undefined);
+      // ✅ Mark as touched when year is selected
+      markFieldAsTouched('registrationYear');
+      markFieldAsTouched('year');
     },
-    [handleInputChange, updateFirstRegistration]
+    [handleInputChange, updateFirstRegistration, markFieldAsTouched]
   );
 
   const handleRegistrationMonthChange = useCallback(
@@ -682,6 +916,8 @@ const VehicleDataPage: React.FC = () => {
     );
   }, [validationResult, isMobile, language]);
 
+  // ✅ Timer now handled by GlobalWorkflowTimer component (no local render needed)
+
   // Get field-specific validation error
   const getFieldError = useCallback((fieldName: string): string | null => {
     if (!validationResult) return null;
@@ -709,6 +945,39 @@ const VehicleDataPage: React.FC = () => {
   const saleTypeChoice = (formData.saleType as 'private' | 'commercial' | undefined) || 'private';
   const saleTimelineChoice =
     (formData.saleTimeline as 'unknown' | 'soon' | 'months' | undefined) || 'unknown';
+
+  // ✅ Mark fields with default values as touched on mount
+  useEffect(() => {
+    const fieldsToMarkAsTouched: string[] = [];
+    
+    // Mark roadworthy as touched if it has a value
+    if (formData.roadworthy !== null && formData.roadworthy !== undefined) {
+      fieldsToMarkAsTouched.push('roadworthy');
+    }
+    
+    // Mark saleType as touched if it has a value
+    if (formData.saleType) {
+      fieldsToMarkAsTouched.push('saleType');
+    }
+    
+    // Mark saleTimeline as touched if it has a value
+    if (formData.saleTimeline) {
+      fieldsToMarkAsTouched.push('saleTimeline');
+    }
+    
+    // Mark doors as touched if it has a value
+    if (formData.doors) {
+      fieldsToMarkAsTouched.push('doors');
+    }
+
+    if (fieldsToMarkAsTouched.length > 0) {
+      setTouchedFields(prev => {
+        const updated = new Set(prev);
+        fieldsToMarkAsTouched.forEach(field => updated.add(field));
+        return updated;
+      });
+    }
+  }, [formData.roadworthy, formData.saleType, formData.saleTimeline, formData.doors]);
 
   // removed legacy popular brand chip handler; new markdown section handles selection
 
@@ -751,14 +1020,40 @@ const VehicleDataPage: React.FC = () => {
       return;
     }
 
-    SellWorkflowStepStateService.markPending('vehicle-data');
+    // Note: Step status is now auto-managed by touchedFields tracking
+    // No need to manually set pending here
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Empty dependencies - run once only
 
-  const handleContinue = () => {
-    if (canContinue) {
+  // ✅ NEW: Simple navigation function - always works
+  const goToNextPage = (e?: React.MouseEvent) => {
+    // Prevent event bubbling
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    
+    try {
+      // Mark step as completed
       SellWorkflowStepStateService.markCompleted('vehicle-data');
+      
+      // Build URL params with all form data
       const params = buildURLSearchParams();
-      navigate(`/sell/inserat/${vehicleType}/equipment?${params}`);
+      
+      // Ensure vehicleType is valid
+      const validVehicleType = vehicleType || 'car';
+      const targetPath = `/sell/inserat/${validVehicleType}/equipment?${params}`;
+      
+      console.log('🚀 Navigating to equipment page:', targetPath);
+      
+      // Navigate directly - no validation blocking
+      navigate(targetPath);
+    } catch (error) {
+      console.error('❌ Navigation error:', error);
+      const errorMsg = language === 'bg' 
+        ? 'Грешка при навигация. Моля опитайте отново.'
+        : 'Navigation error. Please try again.';
+      alert(errorMsg);
     }
   };
 
@@ -819,9 +1114,10 @@ const VehicleDataPage: React.FC = () => {
             <InsightSelect
               value={registrationParts.year}
               onChange={event => handleRegistrationYearChange(event.target.value)}
+              onFocus={() => markFieldAsTouched('registrationYear')}
               aria-label={t('sell.vehicleData.year')}
               title={t('sell.vehicleData.year')}
-              $validation={getValidationState(registrationParts.year)}
+              $validation={getValidationState('registrationYear')}
             >
               <option value="">{t('sell.vehicleData.selectYear')}</option>
               {yearOptions.map(option => (
@@ -834,10 +1130,11 @@ const VehicleDataPage: React.FC = () => {
             <InsightSelect
               value={registrationParts.month}
               onChange={event => handleRegistrationMonthChange(event.target.value)}
+              onFocus={() => markFieldAsTouched('registrationMonth')}
               disabled={!registrationParts.year}
               aria-label={t('sell.listingSection.month')}
               title={t('sell.listingSection.month')}
-              $validation={getValidationState(registrationParts.month)}
+              $validation={getValidationState('registrationMonth')}
             >
               <option value="">{t('sell.listingSection.month')}</option>
               {registrationMonthOptions.map(option => (
@@ -852,12 +1149,13 @@ const VehicleDataPage: React.FC = () => {
 
         <InsightField>
           <InsightLabel>{t('sell.listingSection.mileageLabel')}</InsightLabel>
-          <InputSuffixWrapper $validation={getValidationState(formData.mileage)}>
+          <InputSuffixWrapper $validation={getValidationState('mileage')}>
             <InsightInput
               type="number"
               value={formData.mileage}
               placeholder={t('sell.vehicleData.mileagePlaceholder')}
               onChange={event => handleInputChange('mileage', event.target.value)}
+              onFocus={() => markFieldAsTouched('mileage')}
             />
             <InputSuffix>{t('sell.listingSection.mileageUnitKm')}</InputSuffix>
           </InputSuffixWrapper>
@@ -869,9 +1167,10 @@ const VehicleDataPage: React.FC = () => {
           <InsightSelect
             value={formData.fuelType}
             onChange={event => handleInputChange('fuelType', event.target.value)}
+            onFocus={() => markFieldAsTouched('fuelType')}
             aria-label={t('sell.vehicleData.fuelType')}
             title={t('sell.vehicleData.fuelType')}
-            $validation={getValidationState(formData.fuelType)}
+            $validation={getValidationState('fuelType')}
           >
             {fuelOptions.map(option => (
               <option key={option.value} value={option.value}>
@@ -885,6 +1184,7 @@ const VehicleDataPage: React.FC = () => {
               <InsightInput
                 value={(formData as any).fuelTypeOther || ''}
                 onChange={e => handleInputChange('fuelTypeOther', e.target.value)}
+                onFocus={() => markFieldAsTouched('fuelTypeOther')}
                 placeholder={t('sell.vehicleData.enterOtherPlaceholder')}
               />
             </div>
@@ -896,9 +1196,10 @@ const VehicleDataPage: React.FC = () => {
           <InsightSelect
             value={formData.transmission}
             onChange={event => handleInputChange('transmission', event.target.value)}
+            onFocus={() => markFieldAsTouched('transmission')}
             aria-label={t('sell.vehicleData.transmission')}
             title={t('sell.vehicleData.transmission')}
-            $validation={getValidationState(formData.transmission)}
+            $validation={getValidationState('transmission')}
           >
             {transmissionOptions.map(option => (
               <option key={option.value} value={option.value}>
@@ -910,12 +1211,21 @@ const VehicleDataPage: React.FC = () => {
 
         <InsightField>
           <InsightLabel>{t('sell.listingSection.powerLabel')}</InsightLabel>
-          <InputSuffixWrapper $validation={getValidationState(formData.power)}>
+          <InputSuffixWrapper $validation={getValidationState('power')}>
             <InsightInput
               type="number"
               value={formData.power}
               placeholder={t('sell.listingSection.powerPlaceholder')}
-              onChange={event => handleInputChange('power', event.target.value)}
+              onChange={event => {
+                const value = event.target.value;
+                // حد أقصى 999 حصان (3 خانات)
+                if (value === '' || (Number(value) >= 0 && Number(value) <= 999)) {
+                  handleInputChange('power', value);
+                }
+              }}
+              onFocus={() => markFieldAsTouched('power')}
+              min="0"
+              max="999"
             />
             <InputSuffix>HP</InputSuffix>
           </InputSuffixWrapper>
@@ -926,9 +1236,10 @@ const VehicleDataPage: React.FC = () => {
           <InsightSelect
             value={formData.color}
             onChange={event => handleInputChange('color', event.target.value)}
+            onFocus={() => markFieldAsTouched('color')}
             aria-label={t('sell.vehicleData.color')}
             title={t('sell.vehicleData.color')}
-            $validation={getValidationState(formData.color)}
+            $validation={getValidationState('color')}
           >
             {colorOptions.map(option => (
               <option key={option.value} value={option.value}>
@@ -942,6 +1253,7 @@ const VehicleDataPage: React.FC = () => {
               <InsightInput
                 value={(formData as any).colorOther || ''}
                 onChange={e => handleInputChange('colorOther', e.target.value)}
+                onFocus={() => markFieldAsTouched('colorOther')}
                 placeholder={t('sell.vehicleData.enterOtherPlaceholder')}
               />
             </div>
@@ -961,7 +1273,10 @@ const VehicleDataPage: React.FC = () => {
                 type="button"
                 key={option.value}
                 $active={formData.doors === option.value}
-                onClick={() => handleDoorSelect(option.value)}
+                onClick={() => {
+                  handleDoorSelect(option.value);
+                  markFieldAsTouched('doors');
+                }}
               >
                 {option.label}
               </PillButton>
@@ -980,7 +1295,10 @@ const VehicleDataPage: React.FC = () => {
                 type="button"
                 key={option}
                 $active={roadworthyChoice === option}
-                onClick={() => handleRoadworthyChange(option)}
+                onClick={() => {
+                  handleRoadworthyChange(option);
+                  markFieldAsTouched('roadworthy');
+                }}
               >
                 {t(`sell.listingSection.roadworthyOptions.${option}`)}
               </InsightToggleButton>
@@ -996,7 +1314,10 @@ const VehicleDataPage: React.FC = () => {
                 type="button"
                 key={option}
                 $active={saleTypeChoice === option}
-                onClick={() => handleSaleTypeChange(option)}
+                onClick={() => {
+                  handleSaleTypeChange(option);
+                  markFieldAsTouched('saleType');
+                }}
               >
                 {t(`sell.listingSection.saleTypeOptions.${option}`)}
               </InsightToggleButton>
@@ -1012,7 +1333,10 @@ const VehicleDataPage: React.FC = () => {
                 type="button"
                 key={option}
                 $active={saleTimelineChoice === option}
-                onClick={() => handleSaleTimelineChange(option)}
+                onClick={() => {
+                  handleSaleTimelineChange(option);
+                  markFieldAsTouched('saleTimeline');
+                }}
               >
                 {t(`sell.listingSection.saleTimelineOptions.${option}`)}
               </InsightToggleButton>
@@ -1023,109 +1347,14 @@ const VehicleDataPage: React.FC = () => {
 
       <SectionDivider />
 
-      <SectionHeading>{t('sell.purchaseInformation.title')}</SectionHeading>
-      <InsightsGrid>
-        <InsightField>
-          <InsightLabel>{t('sell.purchaseInformation.whenPurchased')}</InsightLabel>
-          <InlineFields>
-            <InsightSelect
-              value={formData.purchaseMonth}
-              onChange={event => handleInputChange('purchaseMonth', event.target.value)}
-              aria-label={t('sell.purchaseInformation.purchaseMonth')}
-              title={t('sell.purchaseInformation.purchaseMonth')}
-            >
-              <option value="">{t('sell.purchaseInformation.purchaseMonth')}</option>
-              {FIRST_REGISTRATION_MONTHS.map(option => (
-                <option key={option.value} value={option.value}>
-                  {language === 'bg' ? option.labelBg : option.labelEn}
-                </option>
-              ))}
-            </InsightSelect>
-            <InsightSelect
-              value={formData.purchaseYear}
-              onChange={event => handleInputChange('purchaseYear', event.target.value)}
-              aria-label={t('sell.purchaseInformation.purchaseYear')}
-              title={t('sell.purchaseInformation.purchaseYear')}
-            >
-              <option value="">{t('sell.purchaseInformation.purchaseYear')}</option>
-              {yearOptions.map(option => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </InsightSelect>
-          </InlineFields>
-        </InsightField>
-
-        <InsightField>
-          <InsightLabel>{t('sell.purchaseInformation.purchaseMileage')}</InsightLabel>
-          <InputSuffixWrapper>
-            <InsightInput
-              type="number"
-              value={formData.purchaseMileage}
-              placeholder={t('sell.purchaseInformation.purchaseMileagePlaceholder')}
-              onChange={event => handleInputChange('purchaseMileage', event.target.value)}
-            />
-            <InputSuffix>km</InputSuffix>
-          </InputSuffixWrapper>
-        </InsightField>
-
-        <InsightField>
-          <InsightLabel>{t('sell.purchaseInformation.annualMileage')}</InsightLabel>
-          <InsightSelect
-            value={formData.annualMileage}
-            onChange={event => handleInputChange('annualMileage', event.target.value)}
-            aria-label={t('sell.purchaseInformation.annualMileage')}
-            title={t('sell.purchaseInformation.annualMileage')}
-          >
-            <option value="">{t('sell.purchaseInformation.annualMileage')}</option>
-            <option value="5000">{t('sell.purchaseInformation.annualMileageOptions.5000')}</option>
-            <option value="10000">{t('sell.purchaseInformation.annualMileageOptions.10000')}</option>
-            <option value="15000">{t('sell.purchaseInformation.annualMileageOptions.15000')}</option>
-            <option value="20000">{t('sell.purchaseInformation.annualMileageOptions.20000')}</option>
-            <option value="25000">{t('sell.purchaseInformation.annualMileageOptions.25000')}</option>
-            <option value="30000">{t('sell.purchaseInformation.annualMileageOptions.30000')}</option>
-            <option value="40000">{t('sell.purchaseInformation.annualMileageOptions.40000')}</option>
-            <option value="50000">{t('sell.purchaseInformation.annualMileageOptions.50000')}</option>
-          </InsightSelect>
-        </InsightField>
-
-        <ToggleRow>
-          <InsightLabel>{t('sell.purchaseInformation.soleUser')}</InsightLabel>
-          <InsightToggleGroup>
-            <InsightToggleButton
-              type="button"
-              $active={formData.isSoleUser === true}
-              onClick={() => handleInputChange('isSoleUser', true)}
-            >
-              {t('sell.purchaseInformation.soleUserOptions.yes')}
-            </InsightToggleButton>
-            <InsightToggleButton
-              type="button"
-              $active={formData.isSoleUser === false}
-              onClick={() => handleInputChange('isSoleUser', false)}
-            >
-              {t('sell.purchaseInformation.soleUserOptions.no')}
-            </InsightToggleButton>
-          </InsightToggleGroup>
-        </ToggleRow>
-      </InsightsGrid>
+      {/* Purchase Information section removed */}
 
       <SectionDivider />
 
       {/* ✅ FIX: Removed duplicate exteriorColor field - already have 'color' in Basic Info */}
       <SectionHeading>{t('sell.exteriorDetails.title')}</SectionHeading>
       <InsightsGrid>
-        <InsightField>
-          <InsightLabel>{t('sell.exteriorDetails.trimLevel')}</InsightLabel>
-          <InsightInput
-            type="text"
-            value={formData.trimLevel}
-            placeholder={t('sell.exteriorDetails.trimLevelPlaceholder')}
-            onChange={event => handleInputChange('trimLevel', event.target.value)}
-            $validation={getValidationState(formData.trimLevel)}
-          />
-        </InsightField>
+        {/* Trim level field removed */}
       </InsightsGrid>
     </InsightsCard>
   );
@@ -1133,6 +1362,9 @@ const VehicleDataPage: React.FC = () => {
   if (isMobile) {
     return (
       <MobileContainer>
+        {/* ✅ Auto-Save Timer (Fixed Position) */}
+        {/* Timer handled globally by GlobalWorkflowTimer */}
+        
         <ProgressWrapper $isMobile={true}>
           <SellProgressBar currentStep="vehicle-data" />
         </ProgressWrapper>
@@ -1149,8 +1381,14 @@ const VehicleDataPage: React.FC = () => {
             <BrandModelMarkdownDropdown
               brand={formData.make}
               model={formData.model}
-              onBrandChange={(b) => handleInputChange('make', b)}
-              onModelChange={(m) => handleInputChange('model', m)}
+              onBrandChange={(b) => {
+                handleInputChange('make', b);
+                markFieldAsTouched('make');
+              }}
+              onModelChange={(m) => {
+                handleInputChange('model', m);
+                markFieldAsTouched('model');
+              }}
             />
           </div>
 
@@ -1169,18 +1407,19 @@ const VehicleDataPage: React.FC = () => {
                 handleInputChange('saleProvince', location.province);
                 handleInputChange('saleCity', location.city);
                 handleInputChange('salePostalCode', location.postalCode);
+                markFieldAsTouched('saleLocation');
               }}
             />
           </MobileFieldGroup>
         </MobileContent>
 
         <MobileStickyFooter>
-          <MobilePrimaryButton
-            onClick={handleContinue}
-            disabled={!canContinue}
+          <SimpleContinueButton
+            onClick={(e) => goToNextPage(e)}
+            type="button"
           >
-            {t('common.continue')}
-          </MobilePrimaryButton>
+            {t('common.continue')} →
+          </SimpleContinueButton>
         </MobileStickyFooter>
       </MobileContainer>
     );
@@ -1188,6 +1427,9 @@ const VehicleDataPage: React.FC = () => {
 
   return (
     <DesktopContainer>
+      {/* ✅ Auto-Save Timer (Fixed Position) */}
+      {/* Timer handled globally by GlobalWorkflowTimer */}
+      
       <ProgressWrapper $isMobile={false}>
         <SellProgressBar currentStep="vehicle-data" />
       </ProgressWrapper>
@@ -1205,8 +1447,14 @@ const VehicleDataPage: React.FC = () => {
           <BrandModelMarkdownDropdown
             brand={formData.make}
             model={formData.model}
-            onBrandChange={(b) => handleInputChange('make', b)}
-            onModelChange={(m) => handleInputChange('model', m)}
+            onBrandChange={(b) => {
+              handleInputChange('make', b);
+              markFieldAsTouched('make');
+            }}
+            onModelChange={(m) => {
+              handleInputChange('model', m);
+              markFieldAsTouched('model');
+            }}
           />
         </div>
 
@@ -1225,20 +1473,21 @@ const VehicleDataPage: React.FC = () => {
               handleInputChange('saleProvince', location.province);
               handleInputChange('saleCity', location.city);
               handleInputChange('salePostalCode', location.postalCode);
+              markFieldAsTouched('saleLocation');
             }}
           />
         </DesktopFieldGroup>
 
         <DesktopActions>
-          <DesktopButton onClick={handleBack}>
-            {t('common.back')}
+          <DesktopButton onClick={handleBack} type="button">
+            ← {t('common.back')}
           </DesktopButton>
-          <DesktopPrimaryButton
-            onClick={handleContinue}
-            disabled={!canContinue}
+          <SimpleDesktopContinueButton
+            onClick={(e) => goToNextPage(e)}
+            type="button"
           >
-            {t('common.continue')}
-          </DesktopPrimaryButton>
+            {t('common.continue')} →
+          </SimpleDesktopContinueButton>
         </DesktopActions>
       </DesktopContent>
     </DesktopContainer>

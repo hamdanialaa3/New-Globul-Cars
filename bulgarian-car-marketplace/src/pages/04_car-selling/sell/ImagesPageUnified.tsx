@@ -7,8 +7,8 @@ import { useLanguage } from '../../../contexts/LanguageContext';
 import { useAuth } from '../../../contexts/AuthProvider';
 import { SellProgressBar } from '../../../components/SellWorkflow';
 import SellWorkflowStepStateService from '../../../services/sellWorkflowStepState';
-import WorkflowPersistenceService from '../../../services/workflowPersistenceService';
-import { useImagesWorkflow } from './Images/useImagesWorkflow';
+import { useUnifiedWorkflow } from '../../../hooks/useUnifiedWorkflow';
+import { ImageStorageService } from '../../../services/ImageStorageService';
 import { useIsMobile } from '../../../hooks/useBreakpoint';
 import { Upload, X, Image as ImageIcon, Video, Box } from 'lucide-react';
 import { toast } from 'react-toastify';
@@ -506,16 +506,35 @@ const ImagesPage: React.FC = () => {
   const { vehicleType = 'car' } = useParams<{ vehicleType: string }>();
   const { user } = useAuth();
 
+  // Unified workflow hook
+  const { updateData, imagesCount, timerState } = useUnifiedWorkflow(4);
+
   const [isDragOver, setIsDragOver] = useState(false);
   const [isVideoDragOver, setIsVideoDragOver] = useState(false);
   const [videoPreview, setVideoPreview] = useState<string | null>(null);
   const [imagePreviews, setImagePreviews] = useState<Map<number, string>>(new Map());
-  const { files, hasImages, addFiles, removeFile, saveImages } = useImagesWorkflow();
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
+
+  // Load existing images from IndexedDB
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        const savedImages = await ImageStorageService.getImages();
+        if (savedImages.length > 0) {
+          setImageFiles(savedImages);
+          SellWorkflowStepStateService.markCompleted('images');
+        }
+      } catch (error) {
+        console.error('Failed to load images:', error);
+      }
+    };
+    loadImages();
+  }, []);
 
   // Create preview URLs for images
   useEffect(() => {
     const newPreviews = new Map<number, string>();
-    files.forEach((file, index) => {
+    imageFiles.forEach((file, index) => {
       const previewUrl = URL.createObjectURL(file);
       newPreviews.set(index, previewUrl);
     });
@@ -524,7 +543,26 @@ const ImagesPage: React.FC = () => {
     return () => {
       newPreviews.forEach(url => URL.revokeObjectURL(url));
     };
-  }, [files]);
+  }, [imageFiles]);
+
+  // Auto-save images to IndexedDB when they change
+  useEffect(() => {
+    const saveToIndexedDB = async () => {
+      if (imageFiles.length > 0) {
+        try {
+          await ImageStorageService.saveImages(imageFiles);
+          updateData({ imagesCount: imageFiles.length });
+          SellWorkflowStepStateService.markCompleted('images');
+        } catch (error) {
+          console.error('Failed to save images:', error);
+          toast.error(language === 'bg' ? 'Неуспешно запазване на изображенията' : 'Failed to save images');
+        }
+      } else {
+        SellWorkflowStepStateService.markPending('images');
+      }
+    };
+    saveToIndexedDB();
+  }, [imageFiles, updateData, language]);
 
   // Cleanup video preview on unmount
   useEffect(() => {
@@ -534,30 +572,6 @@ const ImagesPage: React.FC = () => {
       }
     };
   }, [videoPreview]);
-
-  useEffect(() => {
-    SellWorkflowStepStateService.markPending('images');
-
-    // Check storage usage and warn if high
-    const storageUsage = WorkflowPersistenceService.getStorageUsage();
-    if (storageUsage.percentage > 80) {
-      toast.warn(language === 'bg'
-        ? 'تحذير: استخدام تخزين عالي. قد تواجه مشاكل في حفظ الصور.'
-        : 'Warning: High storage usage. You may experience issues saving images.', {
-        autoClose: 10000
-      });
-    }
-  }, [language]);
-
-  useEffect(() => {
-    const hasPersistedImages = WorkflowPersistenceService.getImages().length > 0;
-
-    if (files.length > 0 || hasPersistedImages) {
-      SellWorkflowStepStateService.markCompleted('images');
-    } else {
-      SellWorkflowStepStateService.markPending('images');
-    }
-  }, [files.length]);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -574,21 +588,58 @@ const ImagesPage: React.FC = () => {
     setIsDragOver(false);
 
     const droppedFiles = Array.from(e.dataTransfer.files);
-    const imageFiles = droppedFiles.filter(file => file.type.startsWith('image/'));
+    const imageFilesDropped = droppedFiles.filter(file => file.type.startsWith('image/'));
 
-    if (imageFiles.length > 0) {
-      addFiles(imageFiles);
+    if (imageFilesDropped.length > 0) {
+      const totalImages = imageFiles.length + imageFilesDropped.length;
+      if (totalImages > 20) {
+        toast.error(language === 'bg' ? 'Максимум 20 изображения' : 'Maximum 20 images');
+        return;
+      }
+      
+      // Validate file sizes (10MB max per image)
+      const oversizedFiles = imageFilesDropped.filter(file => file.size > 10 * 1024 * 1024);
+      if (oversizedFiles.length > 0) {
+        toast.error(language === 'bg' ? 'Някои файлове са твърде големи (макс. 10MB)' : 'Some files are too large (max 10MB)');
+        return;
+      }
+      
+      setImageFiles(prev => [...prev, ...imageFilesDropped]);
     }
-  }, [addFiles]);
+  }, [imageFiles.length, language]);
 
   const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = Array.from(e.target.files || []);
     if (selectedFiles.length > 0) {
-      addFiles(selectedFiles);
+      const totalImages = imageFiles.length + selectedFiles.length;
+      if (totalImages > 20) {
+        toast.error(language === 'bg' ? 'Максимум 20 изображения' : 'Maximum 20 images');
+        e.target.value = '';
+        return;
+      }
+      
+      // Validate file sizes (10MB max per image)
+      const oversizedFiles = selectedFiles.filter(file => file.size > 10 * 1024 * 1024);
+      if (oversizedFiles.length > 0) {
+        toast.error(language === 'bg' ? 'Някои файлове са твърде големи (макс. 10MB)' : 'Some files are too large (max 10MB)');
+        e.target.value = '';
+        return;
+      }
+      
+      setImageFiles(prev => [...prev, ...selectedFiles]);
     }
     // Reset input
     e.target.value = '';
-  }, [addFiles]);
+  }, [imageFiles.length, language]);
+
+  const handleRemoveImage = useCallback(async (index: number) => {
+    setImageFiles(prev => prev.filter((_, i) => i !== index));
+    try {
+      await ImageStorageService.removeImage(index);
+    } catch (error) {
+      console.error('Failed to remove image:', error);
+    }
+  }, []);
 
   // Video handlers
   const handleVideoDragOver = useCallback((e: React.DragEvent) => {
@@ -644,13 +695,41 @@ const ImagesPage: React.FC = () => {
     setVideoPreview(null);
   }, [videoPreview]);
 
-  const handleContinue = () => {
-    if (hasImages) {
-      saveImages();
-      SellWorkflowStepStateService.markCompleted('images');
-      const params = new URLSearchParams(searchParams);
-      // Navigate to pricing page (EUR currency for Bulgaria market)
-      navigate(`/sell/inserat/${vehicleType}/details/preis?${params.toString()}`);
+  const handleContinue = (e?: React.MouseEvent) => {
+    // ✅ FIX: Prevent event bubbling
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    
+    if (imageFiles.length > 0) {
+      try {
+        // ✅ CRITICAL: Mark step as completed
+        SellWorkflowStepStateService.markCompleted('images');
+        
+        // ✅ CRITICAL: Preserve all URL params from previous steps
+        const params = new URLSearchParams(searchParams);
+        
+        // ✅ CRITICAL: Ensure vehicleType is valid
+        const validVehicleType = vehicleType || 'car';
+        const targetPath = `/sell/inserat/${validVehicleType}/details/preis?${params.toString()}`;
+        
+        console.log('🚀 Navigating to pricing page:', targetPath);
+        console.log('📋 Images uploaded:', imageFiles.length);
+        
+        // ✅ Navigate to pricing page (EUR currency for Bulgaria market)
+        navigate(targetPath);
+      } catch (error) {
+        console.error('❌ Navigation error:', error);
+        toast.error(language === 'bg' 
+          ? 'Грешка при навигация. Моля опитайте отново.'
+          : 'Navigation error. Please try again.');
+      }
+    } else {
+      // ✅ Show user-friendly error message
+      toast.error(language === 'bg' 
+        ? 'Моля, качете поне едно изображение' 
+        : 'Please upload at least one image');
     }
   };
 
@@ -660,7 +739,7 @@ const ImagesPage: React.FC = () => {
   };
 
   const renderImagesGrid = () => {
-    if (files.length === 0) return null;
+    if (imageFiles.length === 0) return null;
 
     const ImageGrid = isMobile ? MobileImagesGrid : DesktopImagesGrid;
     const ImageCard = isMobile ? MobileImageCard : DesktopImageCard;
@@ -669,12 +748,12 @@ const ImagesPage: React.FC = () => {
 
     return (
       <ImageGrid>
-        {files.map((file, index) => {
+        {imageFiles.map((file, index) => {
           const previewUrl = imagePreviews.get(index);
           return (
             <ImageCard key={`${file.name}-${index}`}>
               {previewUrl && <Image src={previewUrl} alt={`Upload ${index + 1}`} />}
-              <RemoveButton onClick={() => removeFile(index)}>
+              <RemoveButton onClick={() => handleRemoveImage(index)}>
                 <X size={isMobile ? 12 : 16} />
               </RemoveButton>
             </ImageCard>
@@ -792,7 +871,7 @@ const ImagesPage: React.FC = () => {
           <MobileStickyFooter>
             <MobilePrimaryButton
               onClick={handleContinue}
-              disabled={!hasImages}
+              disabled={imageFiles.length === 0}
             >
               {t('common.continue')}
             </MobilePrimaryButton>
@@ -912,7 +991,7 @@ const ImagesPage: React.FC = () => {
           </DesktopButton>
           <DesktopPrimaryButton
             onClick={handleContinue}
-            disabled={!hasImages}
+            disabled={imageFiles.length === 0}
           >
             {t('common.continue')}
           </DesktopPrimaryButton>

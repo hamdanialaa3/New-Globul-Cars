@@ -22,6 +22,8 @@ export const advancedSearch = {
   make: 'Марка',
   model: 'Модел',
   modelPlaceholder: 'Изберете модел',
+  enterOtherMake: 'Въведете марка ръчно',
+  enterOtherVehicleType: 'Въведете тип превозно средство ръчно',
   vehicleType: 'Тип превозно средство',
   cabriolet: 'Кабрио',
   estate: 'Комби',

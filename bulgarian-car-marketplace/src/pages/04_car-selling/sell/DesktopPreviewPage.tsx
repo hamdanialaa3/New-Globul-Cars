@@ -8,6 +8,8 @@ import SellWorkflowStepStateService from '../../../services/sellWorkflowStepStat
 import { usePreviewSummary } from './Preview/usePreviewSummary';
 import CarBrandLogo from '../../../components/CarBrandLogo';
 import useSellWorkflow from '../../../hooks/useSellWorkflow';
+import { useUnifiedWorkflow } from '../../../hooks/useUnifiedWorkflow';
+import { ValidationAlert } from '../../../components/ValidationAlert';
 
 const ProgressWrapper = styled.div`
   padding: 1rem 2rem 0;
@@ -259,6 +261,7 @@ const DesktopPreviewPage: React.FC = () => {
   const { t } = useLanguage();
   const { vehicleType } = useParams();
   const { workflowData } = useSellWorkflow();
+  const { validate } = useUnifiedWorkflow(5); // Step 5 = Preview
 
   const labels = useMemo(
     () => ({
@@ -334,8 +337,16 @@ const DesktopPreviewPage: React.FC = () => {
   };
 
   const handlePublish = () => {
-    navigate(`/sell/inserat/${vehicleType || 'car'}/submission`);
+    const validationResult = validate();
+    if (validationResult.isValid) {
+      navigate(`/sell/inserat/${vehicleType || 'car'}/submission`);
+    } else {
+      // Scroll to validation alert
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
+
+  const validationResult = useMemo(() => validate(), [validate]);
 
   return (
     <>
@@ -349,13 +360,21 @@ const DesktopPreviewPage: React.FC = () => {
       <ProgressWrapper>
         <SellProgressBar currentStep="preview" />
       </ProgressWrapper>
-      <PublishTopButton onClick={handlePublish}>
-        {t('sell.preview.actions.publish') || 'Publish Online'}
-      </PublishTopButton>
+
+      {/* Validation Alert */}
       <Container>
+        <ValidationAlert validation={validationResult} />
+
         <Header>
           <Title>{t('sell.preview.title')}</Title>
         </Header>
+
+        <PublishTopButton 
+          onClick={handlePublish}
+          disabled={!validationResult.isValid}
+        >
+          {t('sell.preview.actions.publish') || 'Publish Online'}
+        </PublishTopButton>
 
         <Card>
           <CardTitle>{summary.vehicle.title}</CardTitle>

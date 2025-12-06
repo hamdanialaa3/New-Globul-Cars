@@ -47,7 +47,7 @@ export const ExteriorSection: React.FC<ExteriorSectionProps> = ({
           <FormGrid>
             <FormGroup>
               <label>{t('advancedSearch.exteriorColor')}</label>
-              <SearchSelect name="exteriorColor" value={searchData.exteriorColor} onChange={onChange}>
+              <SearchSelect name="exteriorColor" value={searchData.exteriorColor || ''} onChange={onChange}>
                 <option value="">{t('advancedSearch.all')}</option>
                 {exteriorColors.map(color => (
                   <option key={color} value={color}>{color}</option>
@@ -57,7 +57,7 @@ export const ExteriorSection: React.FC<ExteriorSectionProps> = ({
 
             <FormGroup>
               <label>{t('advancedSearch.trailerCoupling')}</label>
-              <SearchSelect name="trailerCoupling" value={searchData.trailerCoupling} onChange={onChange}>
+              <SearchSelect name="trailerCoupling" value={searchData.trailerCoupling || ''} onChange={onChange}>
                 <option value="">{t('advancedSearch.all')}</option>
                 <option value="yes">{t('advancedSearch.yes')}</option>
                 <option value="no">{t('advancedSearch.no')}</option>
@@ -69,9 +69,9 @@ export const ExteriorSection: React.FC<ExteriorSectionProps> = ({
               <SearchInput
                 type="number"
                 name="trailerLoadBraked"
-                value={searchData.trailerLoadBraked}
+                value={searchData.trailerLoadBraked || ''}
                 onChange={onChange}
-                placeholder={t('advancedSearch.kg')}
+                placeholder={t('advancedSearch.trailerLoadBraked')}
               />
             </FormGroup>
 
@@ -80,9 +80,9 @@ export const ExteriorSection: React.FC<ExteriorSectionProps> = ({
               <SearchInput
                 type="number"
                 name="trailerLoadUnbraked"
-                value={searchData.trailerLoadUnbraked}
+                value={searchData.trailerLoadUnbraked || ''}
                 onChange={onChange}
-                placeholder={t('advancedSearch.kg')}
+                placeholder={t('advancedSearch.trailerLoadUnbraked')}
               />
             </FormGroup>
 
@@ -91,9 +91,9 @@ export const ExteriorSection: React.FC<ExteriorSectionProps> = ({
               <SearchInput
                 type="number"
                 name="noseWeight"
-                value={searchData.noseWeight}
+                value={searchData.noseWeight || ''}
                 onChange={onChange}
-                placeholder={t('advancedSearch.kg')}
+                placeholder={t('advancedSearch.noseWeight')}
               />
             </FormGroup>
 
@@ -123,7 +123,7 @@ export const ExteriorSection: React.FC<ExteriorSectionProps> = ({
 
             <FormGroup>
               <label>{t('advancedSearch.cruiseControl')}</label>
-              <SearchSelect name="cruiseControl" value={searchData.cruiseControl} onChange={onChange}>
+              <SearchSelect name="cruiseControl" value={searchData.cruiseControl || ''} onChange={onChange}>
                 <option value="">{t('advancedSearch.all')}</option>
                 <option value="yes">{t('advancedSearch.yes')}</option>
                 <option value="no">{t('advancedSearch.no')}</option>

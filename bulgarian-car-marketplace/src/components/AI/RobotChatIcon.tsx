@@ -19,12 +19,12 @@ const float = keyframes`
 const FloatingContainer = styled.div`
   position: fixed;
   right: 32px;
-  bottom: 244px; /* FloatingAddButton at 160px + 64px button + 20px gap */
+  bottom: 408px; /* GlobalWorkflowTimer at 328px + 64px + 16px gap */
   z-index: 1000;
   
   @media (max-width: 768px) {
     right: 24px;
-    bottom: 212px; /* Mobile: 136px + 56px + 20px */
+    bottom: 352px; /* Mobile: 280px + 56px + 16px */
   }
 `;
 

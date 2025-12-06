@@ -473,7 +473,7 @@ const AdvancedSearchPage: React.FC = () => {
                     <SearchInput
                       type="text"
                       name="searchDescription"
-                      value={searchData.searchDescription}
+                      value={searchData.searchDescription || ''}
                       onChange={handleInputChange}
                       placeholder={t('advancedSearch.enterKeywords')}
                     />

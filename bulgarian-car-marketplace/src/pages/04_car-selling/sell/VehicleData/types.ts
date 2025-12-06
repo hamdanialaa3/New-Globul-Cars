@@ -24,15 +24,15 @@ export interface VehicleFormData {
   previousOwners: string; // المالكون السابقون
   
   // Purchase Information - معلومات الشراء
-  purchaseMonth: string;   // شهر الشراء
-  purchaseYear: string;    // سنة الشراء
-  purchaseMileage: string; // المسافة عند الشراء
-  annualMileage: string;   // المسافة السنوية
-  isSoleUser: boolean | null; // المستخدم الوحيد؟
+  // purchaseMonth removed
+  // purchaseYear removed
+  // purchaseMileage removed
+  // annualMileage removed
+  // isSoleUser removed
   
   // Exterior Details - تفاصيل خارجية
   exteriorColor: string;   // لون الهيكل الخارجي
-  trimLevel: string;       // مستوى التجهيز
+  // trimLevel removed
   
   // Location fields (updated to Bulgaria-specific structure)
   saleProvince: string; // Област (Province)
@@ -59,7 +59,7 @@ export interface VehicleFormData {
   fuelTypeOther?: string;
   colorOther?: string;
   exteriorColorOther?: string;
-  trimLevelOther?: string;
+  // trimLevelOther removed
 }
 
 export const FUEL_TYPES = [

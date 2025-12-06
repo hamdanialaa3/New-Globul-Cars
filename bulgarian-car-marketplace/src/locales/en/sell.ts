@@ -86,30 +86,7 @@ export const sell = {
       "no": "No"
     }
   },
-  "purchaseInformation": {
-    "title": "Purchase Information",
-    "whenPurchased": "When did you buy the vehicle?",
-    "purchaseMonth": "Purchase Month",
-    "purchaseYear": "Purchase Year",
-    "purchaseMileage": "Mileage when purchased",
-    "purchaseMileagePlaceholder": "Example: 55000",
-    "annualMileage": "How many kilometres do you drive a year?",
-    "annualMileageOptions": {
-      "5000": "Approx. 5,000 km / year",
-      "10000": "Approx. 10,000 km / year",
-      "15000": "Approx. 15,000 km / year",
-      "20000": "Approx. 20,000 km / year",
-      "25000": "Approx. 25,000 km / year",
-      "30000": "Approx. 30,000 km / year",
-      "40000": "Approx. 40,000 km / year",
-      "50000": "Approx. 50,000+ km / year"
-    },
-    "soleUser": "Are you the sole user?",
-    "soleUserOptions": {
-      "yes": "Yes",
-      "no": "No"
-    }
-  },
+  // "purchaseInformation" section removed
   "exteriorDetails": {
     "title": "Exterior Details",
     "exteriorColor": "Exterior Colour",
@@ -132,8 +109,8 @@ export const sell = {
       "champagne": "Champagne",
       "other": "Other"
     },
-    "trimLevel": "Trim level",
-    "trimLevelPlaceholder": "Example: A7 45 TFSI S tronic quattro"
+    // "trimLevel": "Trim level", // removed
+    // "trimLevelPlaceholder": "Example: A7 45 TFSI S tronic quattro" // removed
   },
   "howItWorks": {
     "title": "How It Works?",
@@ -273,19 +250,7 @@ export const sell = {
     "doors23": "2/3",
     "doors45": "4/5",
     "doors67": "6/7",
-    "purchaseInfoTitle": "Purchase Information",
-    "purchaseDateLabel": "When did you buy the vehicle?",
-    "purchaseMonth": "Purchase month",
-    "purchaseYear": "Purchase year",
-    "purchaseMileageLabel": "What was its mileage when purchased?",
-    "purchaseMileagePlaceholder": "Example: 55000",
-    "annualMileageLabel": "How many kilometres do you drive a year?",
-    "selectAnnualMileage": "Select annual mileage",
-    "approx": "Approx.",
-    "soleUserLabel": "Are you the sole user?",
-    "selectOption": "Select option",
-    "yes": "Yes",
-    "no": "No",
+    // Purchase Information translations removed
     "exteriorDetailsTitle": "Exterior Details",
     "exteriorColorLabel": "Exterior Colour",
     "metallicGray": "Metallic Gray",
@@ -298,8 +263,8 @@ export const sell = {
     "gold": "Gold",
     "exteriorColorOther": "Other color (specify)",
     "enterColorName": "Enter color name",
-    "trimLevelLabel": "Trim level",
-    "trimLevelPlaceholder": "Example: A7 45 TFSI S tronic quattro"
+    // "trimLevelLabel": "Trim level", // removed
+    // "trimLevelPlaceholder": "Example: A7 45 TFSI S tronic quattro" // removed
   },
   "equipment": {
     "title": "Equipment",

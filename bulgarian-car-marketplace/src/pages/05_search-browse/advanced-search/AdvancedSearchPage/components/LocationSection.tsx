@@ -68,7 +68,7 @@ export const LocationSection: React.FC<LocationSectionProps> = ({
           <FormGrid>
             <FormGroup>
               <label>{t('advancedSearch.country')}</label>
-              <SearchSelect name="country" value={searchData.country} onChange={onChange}>
+              <SearchSelect name="country" value={searchData.country || ''} onChange={onChange}>
                 <option value="">{t('advancedSearch.all')}</option>
                 {countries.map(country => (
                   <option key={country} value={country}>{country}</option>
@@ -80,7 +80,7 @@ export const LocationSection: React.FC<LocationSectionProps> = ({
             {isBulgariaSelected && (
               <FormGroup>
                 <label>{t('advancedSearch.city')}</label>
-                <SearchSelect name="city" value={searchData.city} onChange={onChange}>
+                <SearchSelect name="city" value={searchData.city || ''} onChange={onChange}>
                   <option value="">{t('advancedSearch.all')}</option>
                   {bulgarianCities.map(city => (
                     <option key={city} value={city}>{city}</option>
@@ -91,7 +91,7 @@ export const LocationSection: React.FC<LocationSectionProps> = ({
 
             <FormGroup>
               <label>{t('advancedSearch.radius')}</label>
-              <SearchSelect name="radius" value={searchData.radius} onChange={onChange}>
+              <SearchSelect name="radius" value={searchData.radius || ''} onChange={onChange}>
                 {radiusOptions.map(radius => (
                   <option key={radius} value={radius}>{radius}</option>
                 ))}

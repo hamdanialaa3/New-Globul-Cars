@@ -43,7 +43,7 @@ export const TechnicalDataSection: React.FC<TechnicalDataSectionProps> = ({
           <FormGrid>
             <FormGroup>
               <label>{t('advancedSearch.fuelType')}</label>
-              <SearchSelect name="fuelType" value={searchData.fuelType} onChange={onChange}>
+              <SearchSelect name="fuelType" value={searchData.fuelType || ''} onChange={onChange}>
                 <option value="">{t('advancedSearch.all')}</option>
                 {fuelTypes.map(fuel => (
                   <option key={fuel} value={fuel}>{fuel}</option>
@@ -57,15 +57,15 @@ export const TechnicalDataSection: React.FC<TechnicalDataSectionProps> = ({
                 <SearchInput
                   type="number"
                   name="powerFrom"
-                  value={searchData.powerFrom}
+                  value={searchData.powerFrom || ''}
                   onChange={onChange}
                   placeholder={t('advancedSearch.from')}
                 />
-                <span>kW</span>
+                <span></span>
                 <SearchInput
                   type="number"
                   name="powerTo"
-                  value={searchData.powerTo}
+                  value={searchData.powerTo || ''}
                   onChange={onChange}
                   placeholder={t('advancedSearch.to')}
                 />
@@ -78,15 +78,15 @@ export const TechnicalDataSection: React.FC<TechnicalDataSectionProps> = ({
                 <SearchInput
                   type="number"
                   name="cubicCapacityFrom"
-                  value={searchData.cubicCapacityFrom}
+                  value={searchData.cubicCapacityFrom || ''}
                   onChange={onChange}
                   placeholder={t('advancedSearch.from')}
                 />
-                <span>cm³</span>
+                <span></span>
                 <SearchInput
                   type="number"
                   name="cubicCapacityTo"
-                  value={searchData.cubicCapacityTo}
+                  value={searchData.cubicCapacityTo || ''}
                   onChange={onChange}
                   placeholder={t('advancedSearch.to')}
                 />
@@ -99,15 +99,15 @@ export const TechnicalDataSection: React.FC<TechnicalDataSectionProps> = ({
                 <SearchInput
                   type="number"
                   name="fuelTankVolumeFrom"
-                  value={searchData.fuelTankVolumeFrom}
+                  value={searchData.fuelTankVolumeFrom || ''}
                   onChange={onChange}
                   placeholder={t('advancedSearch.from')}
                 />
-                <span>l</span>
+                <span></span>
                 <SearchInput
                   type="number"
                   name="fuelTankVolumeTo"
-                  value={searchData.fuelTankVolumeTo}
+                  value={searchData.fuelTankVolumeTo || ''}
                   onChange={onChange}
                   placeholder={t('advancedSearch.to')}
                 />
@@ -120,15 +120,15 @@ export const TechnicalDataSection: React.FC<TechnicalDataSectionProps> = ({
                 <SearchInput
                   type="number"
                   name="weightFrom"
-                  value={searchData.weightFrom}
+                  value={searchData.weightFrom || ''}
                   onChange={onChange}
                   placeholder={t('advancedSearch.from')}
                 />
-                <span>kg</span>
+                <span></span>
                 <SearchInput
                   type="number"
                   name="weightTo"
-                  value={searchData.weightTo}
+                  value={searchData.weightTo || ''}
                   onChange={onChange}
                   placeholder={t('advancedSearch.to')}
                 />
@@ -141,7 +141,7 @@ export const TechnicalDataSection: React.FC<TechnicalDataSectionProps> = ({
                 <SearchInput
                   type="number"
                   name="cylindersFrom"
-                  value={searchData.cylindersFrom}
+                  value={searchData.cylindersFrom || ''}
                   onChange={onChange}
                   placeholder={t('advancedSearch.from')}
                 />
@@ -149,7 +149,7 @@ export const TechnicalDataSection: React.FC<TechnicalDataSectionProps> = ({
                 <SearchInput
                   type="number"
                   name="cylindersTo"
-                  value={searchData.cylindersTo}
+                  value={searchData.cylindersTo || ''}
                   onChange={onChange}
                   placeholder={t('advancedSearch.to')}
                 />
@@ -158,7 +158,7 @@ export const TechnicalDataSection: React.FC<TechnicalDataSectionProps> = ({
 
             <FormGroup>
               <label>{t('advancedSearch.driveType')}</label>
-              <SearchSelect name="driveType" value={searchData.driveType} onChange={onChange}>
+              <SearchSelect name="driveType" value={searchData.driveType || ''} onChange={onChange}>
                 <option value="">{t('advancedSearch.all')}</option>
                 <option value="front">{t('advancedSearch.frontWheelDrive')}</option>
                 <option value="rear">{t('advancedSearch.rearWheelDrive')}</option>
@@ -168,7 +168,7 @@ export const TechnicalDataSection: React.FC<TechnicalDataSectionProps> = ({
 
             <FormGroup>
               <label>{t('advancedSearch.transmission')}</label>
-              <SearchSelect name="transmission" value={searchData.transmission} onChange={onChange}>
+              <SearchSelect name="transmission" value={searchData.transmission || ''} onChange={onChange}>
                 <option value="">{t('advancedSearch.all')}</option>
                 <option value="manual">{t('advancedSearch.manualTransmission')}</option>
                 <option value="automatic">{t('advancedSearch.automaticTransmission')}</option>
@@ -192,7 +192,7 @@ export const TechnicalDataSection: React.FC<TechnicalDataSectionProps> = ({
 
             <FormGroup>
               <label>{t('advancedSearch.emissionSticker')}</label>
-              <SearchSelect name="emissionSticker" value={searchData.emissionSticker} onChange={onChange}>
+              <SearchSelect name="emissionSticker" value={searchData.emissionSticker || ''} onChange={onChange}>
                 <option value="">{t('advancedSearch.all')}</option>
                 <option value="green">{t('advancedSearch.greenSticker')}</option>
                 <option value="yellow">{t('advancedSearch.yellowSticker')}</option>
@@ -203,7 +203,7 @@ export const TechnicalDataSection: React.FC<TechnicalDataSectionProps> = ({
 
             <FormGroup>
               <label>{t('advancedSearch.emissionClass')}</label>
-              <SearchSelect name="emissionClass" value={searchData.emissionClass} onChange={onChange}>
+              <SearchSelect name="emissionClass" value={searchData.emissionClass || ''} onChange={onChange}>
                 <option value="">{t('advancedSearch.all')}</option>
                 <option value="euro1">Euro 1</option>
                 <option value="euro2">Euro 2</option>
@@ -216,7 +216,7 @@ export const TechnicalDataSection: React.FC<TechnicalDataSectionProps> = ({
 
             <FormGroup>
               <label>{t('advancedSearch.particulateFilter')}</label>
-              <SearchSelect name="particulateFilter" value={searchData.particulateFilter} onChange={onChange}>
+              <SearchSelect name="particulateFilter" value={searchData.particulateFilter || ''} onChange={onChange}>
                 <option value="">{t('advancedSearch.all')}</option>
                 <option value="yes">{t('advancedSearch.yes')}</option>
                 <option value="no">{t('advancedSearch.no')}</option>

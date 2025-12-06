@@ -14,6 +14,7 @@ import { toast } from 'react-toastify';
 import N8nIntegrationService from '../../../services/n8n-integration';
 import { SellWorkflowLayout } from '../../../components/SellWorkflow';
 import SellWorkflowStepStateService from '../../../services/sellWorkflowStepState';
+import { useUnifiedWorkflow } from '../../../hooks/useUnifiedWorkflow';
 
 const ContentSection = styled.div`
   display: flex;
@@ -111,6 +112,9 @@ const VehicleStartPageNew: React.FC = () => {
   const { user } = useAuth();
   const { permissions, profileType } = useProfileType();
   const [hoveredType, setHoveredType] = useState<string | null>(null);
+  
+  // Use unified workflow (step 1)
+  const { updateData } = useUnifiedWorkflow(1);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -153,6 +157,12 @@ const VehicleStartPageNew: React.FC = () => {
       );
       return; // Prevent navigation
     }
+
+    // Save vehicle type to unified workflow
+    updateData({ 
+      vehicleType: typeId,
+      sellerType: profileType 
+    });
 
     const params = new URLSearchParams();
     params.set('vt', typeId);

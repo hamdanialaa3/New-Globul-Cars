@@ -16,6 +16,7 @@ import { SellWorkflowLayout } from '../../../../components/SellWorkflow';
 import SellWorkflowStepStateService from '../../../../services/sellWorkflowStepState';
 import { useEquipmentSelection } from './useEquipmentSelection';
 import { logger } from '../../../../services/logger-service';
+import { useUnifiedWorkflow } from '../../../../hooks/useUnifiedWorkflow';
 
 // Equipment Categories
 const EQUIPMENT_CATEGORIES = {
@@ -67,6 +68,9 @@ const UnifiedEquipmentPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { language } = useLanguage();
+  
+  // ✅ UNIFIED WORKFLOW: Use unified workflow (Step 3)
+  const { updateData, markStepCompleted } = useUnifiedWorkflow(3);
 
   const {
     selected: selectedFeatures,
@@ -76,23 +80,53 @@ const UnifiedEquipmentPage: React.FC = () => {
   } = useEquipmentSelection();
   const vehicleType = searchParams.get('vt');
   const make = searchParams.get('mk');
+  
+  // ✅ Auto-save equipment on every selection change
+  useEffect(() => {
+    updateData({
+      safetyEquipment: selectedFeatures.safety,
+      comfortEquipment: selectedFeatures.comfort,
+      infotainmentEquipment: selectedFeatures.infotainment,
+      extrasEquipment: selectedFeatures.extras
+    });
+  }, [selectedFeatures, updateData]);
 
-  const handleContinue = () => {
+  const handleContinue = (e?: React.MouseEvent) => {
+    // ✅ FIX: Prevent event bubbling
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    
     try {
-      // Save equipment selection to workflow
-      const equipmentData = {
-        equipment: selectedFeatures,
-        equipmentCount: totalSelected
-      };
+      // ✅ CRITICAL: Mark step as completed
+      markStepCompleted();
+      SellWorkflowStepStateService.markCompleted('equipment');
       
-      // Update workflow data
-      // Note: This assumes useEquipmentSelection handles persistence
-      
+      // ✅ CRITICAL: Serialize equipment data for next page
       const params = serialize();
-      navigate(`/sell/inserat/${vehicleType || 'car'}/details/bilder?${params.toString()}`);
+      
+      // ✅ CRITICAL: Ensure vehicleType is valid
+      const validVehicleType = vehicleType || 'car';
+      const targetPath = `/sell/inserat/${validVehicleType}/details/bilder?${params.toString()}`;
+      
+      console.log('🚀 Navigating to images page:', targetPath);
+      console.log('📋 Equipment selected:', {
+        safety: selectedFeatures.safety.length,
+        comfort: selectedFeatures.comfort.length,
+        infotainment: selectedFeatures.infotainment.length,
+        extras: selectedFeatures.extras.length
+      });
+      
+      // ✅ Navigate to next step
+      navigate(targetPath);
     } catch (error) {
       logger.error('Error saving equipment data', error as Error);
-      // Could show toast error here
+      // ✅ Show user-friendly error message
+      const errorMsg = language === 'bg'
+        ? 'Грешка при запазване на данните. Моля опитайте отново.'
+        : 'Error saving data. Please try again.';
+      alert(errorMsg);
     }
   };
 
@@ -143,7 +177,7 @@ const UnifiedEquipmentPage: React.FC = () => {
         <S.Button type="button" $variant="secondary" onClick={() => navigate(-1)}>
           ← {language === 'bg' ? 'Назад' : 'Back'}
         </S.Button>
-        <S.Button type="button" $variant="primary" onClick={handleContinue}>
+        <S.Button type="button" $variant="primary" onClick={(e) => handleContinue(e)}>
           {language === 'bg' ? 'Продължи' : 'Continue'} →
         </S.Button>
       </S.NavigationButtons>
@@ -210,7 +244,7 @@ const UnifiedEquipmentPage: React.FC = () => {
         <S.Button type="button" $variant="secondary" onClick={() => navigate(-1)}>
           ← {language === 'bg' ? 'Назад' : 'Back'}
         </S.Button>
-        <S.Button type="button" $variant="primary" onClick={handleContinue}>
+        <S.Button type="button" $variant="primary" onClick={(e) => handleContinue(e)}>
           {language === 'bg' ? 'Продължи' : 'Continue'} →
         </S.Button>
       </S.NavigationButtons>

@@ -16,19 +16,22 @@ import { logger } from './logger-service';
 
 export type BrandModelsMap = Record<string, string[]>;
 
-// Most popular brands in Bulgaria (2023 MVR statistics - used cars)
-export const POPULAR_BRANDS_BG = [
-  'Volkswagen',
+// Premium/Top brands (mobile.de style - most searched in Europe)
+export const TOP_BRANDS = [
   'Mercedes-Benz',
   'BMW',
   'Audi',
+  'Volkswagen',
+  'Porsche',
+  'Ford',
+  'Skoda',
   'Opel',
   'Toyota',
-  'Ford',
-  'Peugeot',
-  'Honda',
-  'Renault'
+  'Volvo'
 ] as const;
+
+// Backward compatibility alias (deprecated - use TOP_BRANDS)
+export const POPULAR_BRANDS_BG = TOP_BRANDS;
 
 export class BrandsModelsDataService {
   private static instance: BrandsModelsDataService;

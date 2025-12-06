@@ -4,7 +4,7 @@
 import React, { useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { Plus, Car, Users, X } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 
 // ==================== ANIMATIONS ====================
@@ -284,10 +284,18 @@ interface SpeedDialAction {
 
 const FloatingAddButton: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { language } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  
+  // ✅ FIX: Hide FloatingAddButton in sell workflow pages to prevent navigation conflicts
+  const isInSellWorkflow = location.pathname.startsWith('/sell/inserat/');
+  
+  if (isInSellWorkflow) {
+    return null; // Don't render in sell workflow
+  }
   
   const actions: SpeedDialAction[] = [
     {

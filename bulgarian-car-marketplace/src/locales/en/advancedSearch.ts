@@ -274,6 +274,10 @@ export const advancedSearch = {
   partialLeather: 'Partial Leather',
   fullLeather: 'Full Leather',
   velour: 'Velour',
-  materialOther: 'Other'
+  materialOther: 'Other',
+  
+  // Manual input placeholders for "Other" option
+  enterOtherMake: 'Enter make manually',
+  enterOtherVehicleType: 'Enter vehicle type manually'
 };
 

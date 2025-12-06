@@ -29,15 +29,15 @@ const defaultForm: VehicleFormData = {
   previousOwners: '',
   
   // Purchase Information
-  purchaseMonth: '',
-  purchaseYear: '',
-  purchaseMileage: '',
-  annualMileage: '',
-  isSoleUser: null,
+  // purchaseMonth: '', // removed
+  // purchaseYear: '', // removed
+  // purchaseMileage: '', // removed
+  // annualMileage: '', // removed
+  // isSoleUser: null, // removed
   
   // Exterior Details
   exteriorColor: '',
-  trimLevel: '',
+  // trimLevel: '', // removed
   
   // Location fields (Bulgaria-specific)
   saleProvince: '',
@@ -61,7 +61,7 @@ const defaultForm: VehicleFormData = {
   fuelTypeOther: '',
   colorOther: '',
   exteriorColorOther: '',
-  trimLevelOther: ''
+  // trimLevelOther: '' // removed
 };
 
 /**
@@ -99,6 +99,33 @@ const initialValues = useMemo<VehicleFormData>(() => {
 const [formData, setFormData] = useState<VehicleFormData>(initialValues);
   const [availableVariants, setAvailableVariants] = useState<string[]>([]);
   const [showVariants, setShowVariants] = useState(false);
+
+  // ✅ FIX: Update formData when URL parameters change
+  useEffect(() => {
+    const urlParams: Partial<VehicleFormData> = {
+      make: searchParams.get('mk') || undefined,
+      model: searchParams.get('md') || undefined,
+      year: searchParams.get('fy') || undefined,
+      fuelType: searchParams.get('fm') || undefined,
+      mileage: searchParams.get('mi') || undefined,
+      transmission: searchParams.get('tr') || undefined
+    };
+
+    // Update formData with URL params if they exist
+    setFormData(prev => {
+      const updated = { ...prev };
+      let hasChanges = false;
+
+      Object.entries(urlParams).forEach(([key, value]) => {
+        if (value && prev[key as keyof VehicleFormData] !== value) {
+          updated[key as keyof VehicleFormData] = value as any;
+          hasChanges = true;
+        }
+      });
+
+      return hasChanges ? updated : prev;
+    });
+  }, [searchParams]);
 
 const formEquals = useCallback(
   (a: VehicleFormData, b: VehicleFormData) => {
@@ -218,6 +245,16 @@ useEffect(() => {
     // Support either `year` (legacy/mobile select) or `firstRegistration` (ISO-like "YYYY" or "YYYY-MM").
     const registrationYear = getRegistrationYear(formData);
     const hasBasicInfo = !!formData.make && !!formData.model && !!registrationYear;
+
+    // 🐛 DEBUG: Log validation status
+    console.log('📋 Form Validation:', {
+      make: formData.make || '❌ Missing',
+      model: formData.model || '❌ Missing',
+      year: formData.year || '(not set)',
+      firstRegistration: formData.firstRegistration || '(not set)',
+      registrationYear: registrationYear || '❌ Missing',
+      canContinue: hasBasicInfo
+    });
 
     return hasBasicInfo; // Users can continue with minimal info (Brand + Model + Year)
   }, [

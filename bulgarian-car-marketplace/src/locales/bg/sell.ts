@@ -86,30 +86,7 @@ export const sell = {
       "no": "Не"
     }
   },
-  "purchaseInformation": {
-    "title": "Информация за покупка",
-    "whenPurchased": "Кога купихте превозното средство?",
-    "purchaseMonth": "Месец на покупка",
-    "purchaseYear": "Година на покупка",
-    "purchaseMileage": "Пробег при покупка",
-    "purchaseMileagePlaceholder": "Пример: 55000",
-    "annualMileage": "Колко километра изминавате годишно?",
-    "annualMileageOptions": {
-      "5000": "Прибл. 5 000 км / година",
-      "10000": "Прибл. 10 000 км / година",
-      "15000": "Прибл. 15 000 км / година",
-      "20000": "Прибл. 20 000 км / година",
-      "25000": "Прибл. 25 000 км / година",
-      "30000": "Прибл. 30 000 км / година",
-      "40000": "Прибл. 40 000 км / година",
-      "50000": "Прибл. 50 000+ км / година"
-    },
-    "soleUser": "Вие ли сте единственият потребител?",
-    "soleUserOptions": {
-      "yes": "Да",
-      "no": "Не"
-    }
-  },
+  // "purchaseInformation" section removed
   "exteriorDetails": {
     "title": "Външни детайли",
     "exteriorColor": "Цвят на външната повърхност",
@@ -132,8 +109,8 @@ export const sell = {
       "champagne": "Шампанско",
       "other": "Друго"
     },
-    "trimLevel": "Ниво на екипировка",
-    "trimLevelPlaceholder": "Пример: A7 45 TFSI S tronic quattro"
+    // "trimLevel": "Ниво на екипировка", // removed
+    // "trimLevelPlaceholder": "Пример: A7 45 TFSI S tronic quattro" // removed
   },
   "howItWorks": {
     "title": "Как работи?",
@@ -273,19 +250,7 @@ export const sell = {
     "doors23": "2/3",
     "doors45": "4/5",
     "doors67": "6/7",
-    "purchaseInfoTitle": "Информация за покупка",
-    "purchaseDateLabel": "Кога купихте превозното средство?",
-    "purchaseMonth": "Месец на покупка",
-    "purchaseYear": "Година на покупка",
-    "purchaseMileageLabel": "Какъв беше пробегът му при покупката?",
-    "purchaseMileagePlaceholder": "Например: 55000",
-    "annualMileageLabel": "Колко километра изминавате годишно?",
-    "selectAnnualMileage": "Изберете годишен пробег",
-    "approx": "Приблизително",
-    "soleUserLabel": "Вие ли сте единственият потребител?",
-    "selectOption": "Изберете опция",
-    "yes": "Да",
-    "no": "Не",
+    // Purchase Information translations removed
     "exteriorDetailsTitle": "Външни детайли",
     "exteriorColorLabel": "Външен цвят",
     "metallicGray": "Металик сив",
@@ -298,8 +263,8 @@ export const sell = {
     "gold": "Златен",
     "exteriorColorOther": "Друг цвят (въведете)",
     "enterColorName": "Въведете име на цвят",
-    "trimLevelLabel": "Ниво на оборудване",
-    "trimLevelPlaceholder": "Например: A7 45 TFSI S tronic quattro"
+    // "trimLevelLabel": "Ниво на оборудване", // removed
+    // "trimLevelPlaceholder": "Например: A7 45 TFSI S tronic quattro" // removed
   },
   "equipment": {
     "title": "Оборудване",
