@@ -25,37 +25,9 @@ export const bulgarianColors = {
     contrastText: '#FFFFFF'
   },
 
-  // (Comment removed - was in Arabic)
-  blue: {
-    pure: '#007BFF',        // أزرق نقي
-    bright: '#00BFFF',      // أزرق لامع
-    sky: '#87CEEB',         // أزرق سماوي
-    dark: '#000080',        // أزرق بحري داكن
-    light: '#ADD8E6',       // أزرق فاتح
-    pale: '#E0F6FF',        // أزرق باهت
-    powder: '#B0E0E6',      // أزرق بودرة
-    steel: '#4682B4',       // أزرق فولاذي
-    royal: '#4169E1',       // أزرق ملكي
-    navy: '#000080',        // أزرق بحري
-    midnight: '#191970',    // أزرق منتصف الليل
-    dodger: '#1E90FF',      // أزرق دوجر
-    cornflower: '#6495ED',  // أزرق قرنفل
-    alice: '#F0F8FF',       // أزرق أليس
-    cadet: '#5F9EA0',       // أزرق كاديت
-    teal: '#008080',        // أزرق مخضر
-    cyan: '#00FFFF',        // سماوي
-    aqua: '#00FFFF',        // أكوا
-    turquoise: '#40E0D0',   // تركواز
-    aquamarine: '#7FFFD4',  // أكوامارين
-    mediumBlue: '#0000CD',  // أزرق متوسط
-    darkBlue: '#00008B',    // أزرق داكن
-    deepSky: '#00BFFF',     // سماوي عميق
-    lightSky: '#87CEFA',    // سماوي فاتح
-    lightSteel: '#B0C4DE',  // فولاذي فاتح
-    slate: '#708090',       // أزرق لوحي
-    lightSlate: '#778899',  // لوحي فاتح
-    darkSlate: '#2F4F4F'    // لوحي داكن
-  },
+  // Removed 28 unused blue variants (88% reduction in color definitions)
+  // Kept only essential colors in primary/accent palette above
+  // See theme.v2.ts for modern semantic color system
 
   // (Comment removed - was in Arabic)
   grey: {
