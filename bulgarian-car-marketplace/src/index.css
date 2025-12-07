@@ -1,6 +1,24 @@
-/* 🚗 UNIFIED CAR MARKETPLACE - IMPORT THEME SYSTEM */
-/* استيراد نظام الثيم الموحد */
-@import './styles/unified-theme.css?v=2024-12-04';
+/* ═══════════════════════════════════════════════════════════════════════════
+   🚗 UNIFIED CAR MARKETPLACE - MODERN CSS ARCHITECTURE
+   السوق البلغاري للسيارات - هندسة CSS الحديثة
+   
+   Stack: Tailwind CSS + CSS Variables + Styled Components (Gradual Migration)
+   Created: December 7, 2025
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ─────────────────────────────────────────────────────────────────────────
+   1️⃣ Tailwind CSS - Modern Utility-First Framework
+   Tailwind CSS - إطار عمل حديث يعتمد على الأدوات المساعدة
+   ───────────────────────────────────────────────────────────────────────── */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─────────────────────────────────────────────────────────────────────────
+   2️⃣ Custom Theme System - CSS Variables
+   نظام الثيم المخصص - متغيرات CSS
+   ───────────────────────────────────────────────────────────────────────── */
+@import './styles/unified-theme.css?v=2024-12-07';
 
 /* ═══════════════════════════════════════════════════════════════════
    ملاحظة: جميع الألوان الآن في unified-theme.css

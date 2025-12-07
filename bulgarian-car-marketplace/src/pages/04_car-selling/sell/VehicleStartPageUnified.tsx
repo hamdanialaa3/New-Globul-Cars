@@ -107,9 +107,18 @@ const VehicleGrid = styled.div<{ $isMobile: boolean }>`
     border-radius: 15px;
     box-shadow: var(--shadow-sm);
     border: 1px solid var(--border);
+    max-width: 1600px;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
+
+    @media (max-width: 1024px) {
+      padding: 1.25rem 1.5rem;
+    }
 
     @media (max-width: 768px) {
       grid-template-columns: repeat(2, 1fr);
+      padding: 1rem 1rem;
     }
 
     @media (max-width: 480px) {
@@ -118,43 +127,65 @@ const VehicleGrid = styled.div<{ $isMobile: boolean }>`
   `}
 `;
 
-const VehicleOption = styled.div<{ $isHovered: boolean; $isMobile: boolean }>`
+const VehicleOption = styled.div<{ $isHovered: boolean; $isMobile: boolean; $disabled?: boolean }>`
   ${props => props.$isMobile ? `
     min-height: 140px;
     padding: 1.5rem 1rem;
-    background: ${props.$isHovered ? 'linear-gradient(135deg, #667eea, #764ba2)' : 'white'};
-    border: 2px solid ${props.$isHovered ? '#667eea' : '#e9ecef'};
+    background: ${props.$disabled 
+      ? '#e9ecef' 
+      : props.$isHovered ? 'linear-gradient(135deg, #667eea, #764ba2)' : 'white'};
+    border: 2px solid ${props.$disabled 
+      ? '#ced4da' 
+      : props.$isHovered ? '#667eea' : '#e9ecef'};
     border-radius: 12px;
     text-align: center;
-    cursor: pointer;
+    cursor: ${props.$disabled ? 'not-allowed' : 'pointer'};
     transition: all 0.3s ease;
-    color: ${props.$isHovered ? 'white' : '#2c3e50'};
+    color: ${props.$disabled 
+      ? '#6c757d' 
+      : props.$isHovered ? 'white' : '#2c3e50'};
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 0.75rem;
+    opacity: ${props.$disabled ? 0.6 : 1};
+    position: relative;
 
     &:active {
-      transform: scale(0.98);
+      transform: ${props.$disabled ? 'none' : 'scale(0.98)'};
     }
   ` : `
-    background: ${props.$isHovered ? 'var(--accent-primary)' : 'var(--bg-secondary)'};
-    border: 2px solid ${props.$isHovered ? 'var(--accent-primary)' : 'var(--border)'};
+    background: ${props.$disabled 
+      ? '#e9ecef' 
+      : props.$isHovered ? 'var(--accent-primary)' : 'var(--bg-secondary)'};
+    border: 2px solid ${props.$disabled 
+      ? '#ced4da' 
+      : props.$isHovered ? 'var(--accent-primary)' : 'var(--border)'};
     border-radius: 12px;
-    padding: 1.5rem 1rem;
+    padding: 2rem 1.5rem;
     text-align: center;
-    cursor: pointer;
+    cursor: ${props.$disabled ? 'not-allowed' : 'pointer'};
     transition: all 0.3s ease;
-    color: ${props.$isHovered ? 'var(--text-inverse)' : 'var(--text-primary)'};
+    color: ${props.$disabled 
+      ? '#6c757d' 
+      : props.$isHovered ? 'var(--text-inverse)' : 'var(--text-primary)'};
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    opacity: ${props.$disabled ? 0.6 : 1};
+    position: relative;
 
     &:hover {
-      transform: translateY(-3px);
-      box-shadow: var(--shadow-md);
+      transform: ${props.$disabled ? 'none' : 'translateY(-3px)'};
+      box-shadow: ${props.$disabled ? 'none' : 'var(--shadow-md)'};
     }
 
     &:active {
-      transform: scale(0.98);
+      transform: ${props.$disabled ? 'none' : 'scale(0.98)'};
     }
   `}
 `;
@@ -245,15 +276,27 @@ const VehicleStartPageUnified: React.FC = () => {
   }, [location.search]);
 
   const vehicleTypes = [
-    { id: 'car', IconComponent: Car, title: t('sell.start.vehicleTypes.car.title', 'Лек автомобил'), desc: t('sell.start.vehicleTypes.car.desc', 'Леки коли до 3.5т') },
-    { id: 'suv', IconComponent: CarFront, title: t('sell.start.vehicleTypes.suv.title', 'Джип/Кросоувър'), desc: t('sell.start.vehicleTypes.suv.desc', 'Високопроходими автомобили') },
-    { id: 'van', IconComponent: Caravan, title: t('sell.start.vehicleTypes.van.title', 'Ван/Комби'), desc: t('sell.start.vehicleTypes.van.desc', 'Товаро-пътнически автомобили') },
-    { id: 'motorcycle', IconComponent: Bike, title: t('sell.start.vehicleTypes.motorcycle.title', 'Мотоциклет'), desc: t('sell.start.vehicleTypes.motorcycle.desc', 'Мотоциклети и скутери') },
-    { id: 'truck', IconComponent: Truck, title: t('sell.start.vehicleTypes.truck.title', 'Камион'), desc: t('sell.start.vehicleTypes.truck.desc', 'Товарни автомобили') },
-    { id: 'bus', IconComponent: Bus, title: t('sell.start.vehicleTypes.bus.title', 'Автобус'), desc: t('sell.start.vehicleTypes.bus.desc', 'Пътнически автобуси') }
+    { id: 'car', IconComponent: Car, title: t('sell.start.vehicleTypes.car.title', 'Лек автомобил'), desc: t('sell.start.vehicleTypes.car.desc', 'Леки коли до 3.5т'), disabled: false },
+    { id: 'suv', IconComponent: CarFront, title: t('sell.start.vehicleTypes.suv.title', 'Джип/Кросоувър'), desc: t('sell.start.vehicleTypes.suv.desc', 'Високопроходими автомобили'), disabled: false },
+    { id: 'van', IconComponent: Caravan, title: t('sell.start.vehicleTypes.van.title', 'Ван/Комби'), desc: t('sell.start.vehicleTypes.van.desc', 'Товаро-пътнически автомобили'), disabled: true },
+    { id: 'motorcycle', IconComponent: Bike, title: t('sell.start.vehicleTypes.motorcycle.title', 'Мотоциклет'), desc: t('sell.start.vehicleTypes.motorcycle.desc', 'Мотоциклети и скутери'), disabled: true },
+    { id: 'truck', IconComponent: Truck, title: t('sell.start.vehicleTypes.truck.title', 'Камион'), desc: t('sell.start.vehicleTypes.truck.desc', 'Товарни автомобили'), disabled: true },
+    { id: 'bus', IconComponent: Bus, title: t('sell.start.vehicleTypes.bus.title', 'Автобус'), desc: t('sell.start.vehicleTypes.bus.desc', 'Пътнически автобуси'), disabled: true }
   ];
 
-  const handleSelect = async (typeId: string) => {
+  const handleSelect = async (typeId: string, disabled: boolean) => {
+    // If disabled, show "Coming Soon" message
+    if (disabled) {
+      toast.info(
+        language === 'bg' ? 'Скоро ще бъде налично' : 'Coming Soon',
+        {
+          autoClose: 3000,
+          position: 'top-center'
+        }
+      );
+      return;
+    }
+
     // Check monthly listing limits before proceeding
     const activeListings = (user as any)?.stats?.activeListings || 0;
     const maxListings = permissions.maxListings;
@@ -325,14 +368,16 @@ const VehicleStartPageUnified: React.FC = () => {
                 {vehicleTypes.map((vehicle) => {
                   const IconComponent = vehicle.IconComponent;
                   const isHovered = hoveredType === vehicle.id;
+                  const isDisabled = vehicle.disabled || false;
 
                   return (
                     <VehicleOption
                       key={vehicle.id}
                       $isHovered={isHovered}
                       $isMobile={true}
-                      onClick={() => handleSelect(vehicle.id)}
-                      onMouseEnter={() => setHoveredType(vehicle.id)}
+                      $disabled={isDisabled}
+                      onClick={() => handleSelect(vehicle.id, isDisabled)}
+                      onMouseEnter={() => !isDisabled && setHoveredType(vehicle.id)}
                       onMouseLeave={() => setHoveredType(null)}
                     >
                       <VehicleIconWrapper $isHovered={isHovered} $isMobile={true}>
@@ -344,6 +389,16 @@ const VehicleStartPageUnified: React.FC = () => {
                       <VehicleDesc $isMobile={true}>
                         {vehicle.desc}
                       </VehicleDesc>
+                      {isDisabled && (
+                        <div style={{ 
+                          marginTop: '0.5rem', 
+                          fontSize: '0.75rem', 
+                          fontWeight: 600,
+                          color: '#6c757d'
+                        }}>
+                          {language === 'bg' ? 'Скоро' : 'Coming Soon'}
+                        </div>
+                      )}
                     </VehicleOption>
                   );
                 })}
@@ -382,14 +437,16 @@ const VehicleStartPageUnified: React.FC = () => {
         {vehicleTypes.map((vehicle) => {
           const IconComponent = vehicle.IconComponent;
           const isHovered = hoveredType === vehicle.id;
+          const isDisabled = vehicle.disabled || false;
 
           return (
             <VehicleOption
               key={vehicle.id}
               $isHovered={isHovered}
               $isMobile={false}
-              onClick={() => handleSelect(vehicle.id)}
-              onMouseEnter={() => setHoveredType(vehicle.id)}
+              $disabled={isDisabled}
+              onClick={() => handleSelect(vehicle.id, isDisabled)}
+              onMouseEnter={() => !isDisabled && setHoveredType(vehicle.id)}
               onMouseLeave={() => setHoveredType(null)}
             >
               <VehicleIconWrapper $isHovered={isHovered} $isMobile={false}>
@@ -401,6 +458,16 @@ const VehicleStartPageUnified: React.FC = () => {
               <VehicleDesc $isMobile={false}>
                 {vehicle.desc}
               </VehicleDesc>
+              {isDisabled && (
+                <div style={{ 
+                  marginTop: '0.5rem', 
+                  fontSize: '0.875rem', 
+                  fontWeight: 600,
+                  color: '#6c757d'
+                }}>
+                  {language === 'bg' ? 'Скоро' : 'Coming Soon'}
+                </div>
+              )}
             </VehicleOption>
           );
         })}

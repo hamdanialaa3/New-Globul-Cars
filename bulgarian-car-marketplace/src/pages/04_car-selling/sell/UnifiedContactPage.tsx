@@ -1,7 +1,7 @@
 // Unified Contact Page - All Contact Info in One Page
 // صفحة موحدة للتواصل - كل المعلومات في مكان واحد
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useLanguage } from '../../../contexts/LanguageContext';
 import { useAuth } from '../../../contexts/AuthProvider';
@@ -86,7 +86,7 @@ const UnifiedContactPage: React.FC = () => {
   useEffect(() => {
     SellWorkflowStepStateService.markPending('contact');
   }, []);
-  
+
   // ✅ UNIFIED WORKFLOW: Restore contact data from saved workflow on mount
   useEffect(() => {
     if (unifiedWorkflowData && Object.keys(unifiedWorkflowData).length > 0) {
@@ -213,23 +213,58 @@ const UnifiedContactPage: React.FC = () => {
   };
 
   // ✅ FIX: Update pricingData from unifiedWorkflowData (priority) or workflowData
+  // ✅ FIX: Use ref and debounce to prevent infinite loop
+  const pricingDataTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const hasUpdatedPricingRef = useRef(false);
+  
   useEffect(() => {
-    const sourceData = unifiedWorkflowData || workflowData;
-    if (sourceData && (sourceData.price || sourceData.currency || sourceData.priceType !== undefined || sourceData.negotiable !== undefined)) {
-      setPricingData(prev => ({
-        price: prev.price || sourceData.price || '',
-        currency: prev.currency || sourceData.currency || 'EUR',
-        priceType:
-          prev.priceType ||
-          (sourceData.priceType as string) ||
-          'fixed',
-        negotiable:
-          typeof prev.negotiable === 'boolean'
-            ? prev.negotiable
-            : sourceData.negotiable === true ||
-              sourceData.negotiable === 'true'
-      }));
+    // Clear any existing timer
+    if (pricingDataTimerRef.current) {
+      clearTimeout(pricingDataTimerRef.current);
     }
+    
+    // Reset flag on mount
+    if (!hasUpdatedPricingRef.current) {
+      hasUpdatedPricingRef.current = false;
+    }
+    
+    // Debounce the update
+    pricingDataTimerRef.current = setTimeout(() => {
+      const sourceData = unifiedWorkflowData || workflowData;
+      if (sourceData && (sourceData.price || sourceData.currency || sourceData.priceType !== undefined || sourceData.negotiable !== undefined)) {
+        setPricingData(prev => {
+          // Only update if values are actually different
+          const newPrice = prev.price || sourceData.price || '';
+          const newCurrency = prev.currency || sourceData.currency || 'EUR';
+          const newPriceType = prev.priceType || (sourceData.priceType as string) || 'fixed';
+          const newNegotiable = typeof prev.negotiable === 'boolean'
+            ? prev.negotiable
+            : sourceData.negotiable === true || sourceData.negotiable === 'true';
+          
+          // Check if values changed
+          if (prev.price === newPrice && 
+              prev.currency === newCurrency && 
+              prev.priceType === newPriceType && 
+              prev.negotiable === newNegotiable) {
+            return prev; // No change, return previous state
+          }
+          
+          hasUpdatedPricingRef.current = true;
+          return {
+            price: newPrice,
+            currency: newCurrency,
+            priceType: newPriceType,
+            negotiable: newNegotiable
+          };
+        });
+      }
+    }, 500); // 500ms debounce
+    
+    return () => {
+      if (pricingDataTimerRef.current) {
+        clearTimeout(pricingDataTimerRef.current);
+      }
+    };
   }, [
     unifiedWorkflowData?.price,
     unifiedWorkflowData?.currency,
@@ -265,7 +300,22 @@ const UnifiedContactPage: React.FC = () => {
     
     // ✅ FIX: Use unifiedWorkflowData first, then fallback to workflowData
     const resolvedMake = unifiedWorkflowData?.make || workflowData?.make || make;
-    const resolvedYear = unifiedWorkflowData?.year || workflowData?.year || year;
+    
+    // ✅ FIX: Extract year from firstRegistration if year is not directly available
+    let resolvedYear = unifiedWorkflowData?.year || workflowData?.year || year;
+    
+    // If year is still null/undefined, try to extract it from firstRegistration
+    if (!resolvedYear) {
+      const firstRegistration = unifiedWorkflowData?.firstRegistration || workflowData?.firstRegistration;
+      if (firstRegistration) {
+        // Extract year from date string (format: "YYYY-MM" or "YYYY-MM-DD")
+        const yearMatch = String(firstRegistration).match(/^(\d{4})/);
+        if (yearMatch) {
+          resolvedYear = yearMatch[1];
+          console.log('🔍 Extracted year from firstRegistration:', resolvedYear);
+        }
+      }
+    }
     
     console.log('🔍 Resolved values:', { resolvedMake, resolvedYear });
 
@@ -330,7 +380,7 @@ const UnifiedContactPage: React.FC = () => {
       totalImages =
         unifiedWorkflowData?.imagesCount ??
         workflowData?.imagesCount ??
-        (images ? parseInt(images, 10) : 0);
+      (images ? parseInt(images, 10) : 0);
       if (totalImages > 0) {
         imagesSource = 'workflowData';
       }
@@ -479,12 +529,12 @@ const UnifiedContactPage: React.FC = () => {
         } else {
           // Fallback to localStorage
           console.log('⚠️ No images in IndexedDB, trying localStorage...');
-          imageFiles = WorkflowPersistenceService.getImagesAsFiles();
+        imageFiles = WorkflowPersistenceService.getImagesAsFiles();
           console.log('📸 Images from localStorage:', { 
             count: imageFiles.length, 
             images: imageFiles.map(f => ({ name: f.name, size: f.size, type: f.type }))
           });
-          if (process.env.NODE_ENV === 'development') {
+        if (process.env.NODE_ENV === 'development') {
             logger.debug(`Loaded ${imageFiles.length} images from localStorage (fallback)`);
           }
         }
@@ -611,7 +661,7 @@ const UnifiedContactPage: React.FC = () => {
       if (imageFiles && imageFiles.length > 0) {
         console.log('✅ Images should be uploaded by createCarListing');
         toast.success(
-          language === 'bg'
+            language === 'bg'
             ? `Обявата е създадена успешно с ${imageFiles.length} снимки!`
             : `Listing created successfully with ${imageFiles.length} images!`,
           { autoClose: 3000 }

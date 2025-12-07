@@ -12,7 +12,6 @@ import { carValidationService, ValidationResult } from '../../../services/valida
 import { useVehicleDataForm } from './VehicleData/useVehicleDataForm';
 import { useIsMobile } from '../../../hooks/useBreakpoint';
 import BrandModelMarkdownDropdown from '../../../components/BrandModelMarkdownDropdown/BrandModelMarkdownDropdown';
-import BulgariaLocationDropdown, { BulgariaLocationData } from '../../../components/BulgariaLocationDropdown/BulgariaLocationDropdown';
 import { useUnifiedWorkflow } from '../../../hooks/useUnifiedWorkflow';
 import DeleteDraftButton from '../../../components/SellWorkflow/DeleteDraftButton';
 // removed legacy structured brands import; new markdown-based dropdown is canonical
@@ -777,9 +776,6 @@ const VehicleDataPage: React.FC = () => {
     if (workflowData.roadworthy !== undefined) fieldsToRestore.push({ key: 'roadworthy', value: workflowData.roadworthy });
     if (workflowData.saleType) fieldsToRestore.push({ key: 'saleType', value: workflowData.saleType as 'private' | 'commercial' });
     if (workflowData.saleTimeline) fieldsToRestore.push({ key: 'saleTimeline', value: workflowData.saleTimeline as 'unknown' | 'soon' | 'months' });
-    if (workflowData.region) fieldsToRestore.push({ key: 'saleProvince', value: workflowData.region });
-    if (workflowData.city) fieldsToRestore.push({ key: 'saleCity', value: workflowData.city });
-    if (workflowData.postalCode) fieldsToRestore.push({ key: 'salePostalCode', value: workflowData.postalCode });
     
     // Restore all fields from unified workflow
     if (fieldsToRestore.length > 0) {
@@ -860,10 +856,7 @@ const VehicleDataPage: React.FC = () => {
         // ✅ FIX: Convert null to undefined for roadworthy
         roadworthy: formData.roadworthy ?? undefined,
         saleType: formData.saleType,
-        saleTimeline: formData.saleTimeline,
-        region: formData.saleProvince,
-        city: formData.saleCity,
-        postalCode: formData.salePostalCode
+        saleTimeline: formData.saleTimeline
       });
     }, 500); // 500ms debounce
 
@@ -890,10 +883,6 @@ const VehicleDataPage: React.FC = () => {
       // Colors
       exteriorColor: formData.color || formData.exteriorColor,
       color: formData.color,
-      
-      // Location
-      region: formData.saleProvince || formData.region,
-      city: formData.saleCity || formData.city,
       
       // Vehicle Type
       vehicleType: vehicleType || formData.vehicleType,
@@ -927,7 +916,6 @@ const VehicleDataPage: React.FC = () => {
     'roadworthy',       // Is roadworthy?
     'saleType',         // Type of sale
     'saleTimeline',     // When to sell
-    'saleLocation'      // Sale location
   ], []);
 
   // ✅ Auto-complete step when ALL required fields are touched
@@ -1522,24 +1510,6 @@ const VehicleDataPage: React.FC = () => {
           </div>
 
         {renderListingSection(true)}
-
-          {/* Sale Location - Moved to end before footer */}
-          <MobileFieldGroup>
-            <MobileLabel>{t('sell.listingSection.saleLocationQuestion')}</MobileLabel>
-            <BulgariaLocationDropdown
-              value={{
-                province: formData.saleProvince || '',
-                city: formData.saleCity || '',
-                postalCode: formData.salePostalCode || ''
-              }}
-              onChange={(location: BulgariaLocationData) => {
-                handleInputChange('saleProvince', location.province);
-                handleInputChange('saleCity', location.city);
-                handleInputChange('salePostalCode', location.postalCode);
-                markFieldAsTouched('saleLocation');
-              }}
-            />
-          </MobileFieldGroup>
         </MobileContent>
 
         <MobileStickyFooter>
@@ -1592,24 +1562,6 @@ const VehicleDataPage: React.FC = () => {
         </div>
 
         {renderListingSection(false)}
-
-        {/* Sale Location - Moved to end before footer */}
-        <DesktopFieldGroup style={{ maxWidth: '600px', margin: '2rem auto 0' }}>
-          <DesktopLabel>{t('sell.listingSection.saleLocationQuestion')}</DesktopLabel>
-          <BulgariaLocationDropdown
-            value={{
-              province: formData.saleProvince || '',
-              city: formData.saleCity || '',
-              postalCode: formData.salePostalCode || ''
-            }}
-            onChange={(location: BulgariaLocationData) => {
-              handleInputChange('saleProvince', location.province);
-              handleInputChange('saleCity', location.city);
-              handleInputChange('salePostalCode', location.postalCode);
-              markFieldAsTouched('saleLocation');
-            }}
-          />
-        </DesktopFieldGroup>
 
         <DesktopActions>
           <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
