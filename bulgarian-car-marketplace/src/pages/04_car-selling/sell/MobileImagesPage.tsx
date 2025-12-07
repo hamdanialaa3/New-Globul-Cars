@@ -131,12 +131,14 @@ const MobileImagesPage: React.FC = () => {
     await new Promise(resolve => setTimeout(resolve, 1000));
     
     const params = new URLSearchParams(searchParams.toString());
-    navigate(`/sell/inserat/${vehicleType}/details/preis?${params.toString()}`);
+    // ✅ NEW ROUTE: Navigate to pricing page
+    navigate(`/sell/inserat/${vehicleType}/pricing?${params.toString()}`);
   };
 
   const handleSkip = () => {
     const params = new URLSearchParams(searchParams.toString());
-    navigate(`/sell/inserat/${vehicleType}/details/preis?${params.toString()}`);
+    // ✅ NEW ROUTE: Navigate to pricing page
+    navigate(`/sell/inserat/${vehicleType}/pricing?${params.toString()}`);
   };
 
   const canContinue = images.length > 0;

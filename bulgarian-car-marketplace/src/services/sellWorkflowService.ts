@@ -57,8 +57,9 @@ export class SellWorkflowService {
 
   /**
    * Transform workflow data to structured car listing
+   * ✅ FIX: Made public for use in edit mode
    */
-  private static transformWorkflowData(
+  static transformWorkflowData(
     workflowData: any,
     userId: string
   ): any {
@@ -339,15 +340,27 @@ export class SellWorkflowService {
 
       // Upload images if provided
       if (imageFiles && imageFiles.length > 0) {
-        const imageUrls = await this.uploadCarImages(carId, imageFiles, carData.vehicleType);
+        serviceLogger.info('Starting image upload', { carId, imageCount: imageFiles.length, imageFiles: imageFiles.map(f => ({ name: f.name, size: f.size, type: f.type })) });
         
-        // Update the listing with image URLs in the correct collection
-        await updateDoc(doc(db, collectionName, carId), {
-          images: imageUrls,
-          updatedAt: serverTimestamp()
-        });
+        try {
+          const imageUrls = await this.uploadCarImages(carId, imageFiles, carData.vehicleType);
+          serviceLogger.info('Images uploaded successfully', { carId, imageCount: imageUrls.length, imageUrls });
+          
+          // Update the listing with image URLs in the correct collection
+          await updateDoc(doc(db, collectionName, carId), {
+            images: imageUrls,
+            updatedAt: serverTimestamp()
+          });
 
-        serviceLogger.info('Images uploaded and linked to car', { carId, imageCount: imageUrls.length });
+          serviceLogger.info('Images uploaded and linked to car', { carId, imageCount: imageUrls.length, collectionName });
+        } catch (uploadError) {
+          serviceLogger.error('Failed to upload images', uploadError as Error, { carId, imageCount: imageFiles.length });
+          // Don't throw - allow listing creation even if images fail
+          // But log the error for debugging
+          console.error('❌ Image upload failed:', uploadError);
+        }
+      } else {
+        serviceLogger.warn('No images provided for car listing', { carId, imageFilesProvided: !!imageFiles, imageFilesLength: imageFiles?.length || 0 });
       }
 
       // ✅ CRITICAL FIX: Invalidate homepage cache
@@ -399,22 +412,29 @@ export class SellWorkflowService {
 
   /**
    * Update existing car listing
+   * ✅ FIX: Support collection name parameter and proper error handling
    */
   static async updateCarListing(
     carId: string,
-    updates: Partial<CarListing>
+    updates: Partial<CarListing>,
+    collectionName?: string
   ): Promise<void> {
     try {
-      const docRef = doc(db, this.collectionName, carId);
+      // Use provided collection name or default to 'cars'
+      const targetCollection = collectionName || this.collectionName;
+      
+      serviceLogger.info('Updating car listing', { carId, collectionName: targetCollection, updateKeys: Object.keys(updates) });
+      
+      const docRef = doc(db, targetCollection, carId);
       
       await updateDoc(docRef, {
         ...updates,
         updatedAt: serverTimestamp()
       });
 
-      serviceLogger.info('Car listing updated successfully', { carId });
+      serviceLogger.info('Car listing updated successfully', { carId, collectionName: targetCollection });
     } catch (error) {
-      serviceLogger.error('Error updating car listing', error as Error, { carId });
+      serviceLogger.error('Error updating car listing', error as Error, { carId, collectionName: collectionName || this.collectionName });
       throw new Error('Failed to update car listing');
     }
   }
@@ -450,7 +470,8 @@ export class SellWorkflowService {
       criticalMissing = true;
     }
 
-    // Critical: at least one image
+    // ✅ FIX: Images are recommended but not critical - allow publishing without images
+    // Images are important for visibility but not blocking for publication
     const imagesCount =
       workflowData.imagesCount ??
       (Array.isArray(workflowData.images)
@@ -461,9 +482,10 @@ export class SellWorkflowService {
             ? workflowData.images
             : 0);
 
-    if (!imagesCount || Number.isNaN(imagesCount) || imagesCount <= 0) {
-      missingFields.push('Images (Снимки)');
-      criticalMissing = true;
+    // Only add to missingFields if strict mode, but don't mark as criticalMissing
+    if (strict && (!imagesCount || Number.isNaN(imagesCount) || imagesCount <= 0)) {
+      missingFields.push('Images (Снимки) - Recommended');
+      // Don't set criticalMissing = true for images - they're recommended, not required
     }
     
     // Check recommended fields (only if strict mode)

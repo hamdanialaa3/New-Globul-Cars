@@ -13,7 +13,7 @@ export interface UnifiedWorkflowData {
   // Step 1: Vehicle Type
   vehicleType?: string; // 'car' | 'suv' | 'van' | 'motorcycle' | 'truck' | 'bus'
 
-  // Step 2: Vehicle Details (18 fields from VehicleDataPageUnified)
+  // Step 2: Vehicle Details (All fields from VehicleDataPageUnified)
   make?: string;
   model?: string;
   year?: string;
@@ -27,6 +27,11 @@ export interface UnifiedWorkflowData {
   color?: string;
   doors?: string;
   seats?: string;
+  exteriorColor?: string; // ✅ ADDED: Exterior color
+  previousOwners?: string; // ✅ ADDED: Previous owners
+  hasAccidentHistory?: boolean; // ✅ ADDED: Accident history
+  hasServiceHistory?: boolean; // ✅ ADDED: Service history
+  variant?: string; // ✅ ADDED: Variant
   condition?: string;
   roadworthy?: boolean;
   saleType?: string;
@@ -138,7 +143,10 @@ export class UnifiedWorkflowPersistenceService {
           elapsedMinutes: Math.round(elapsed / 60000),
           isPublished: data.isPublished
         });
-        this.clearData();
+        // ✅ CRITICAL: clearData now clears images from IndexedDB automatically
+        this.clearData().catch((error: any) => {
+          serviceLogger.warn('Error clearing expired data (non-critical)', { error });
+        });
         return null;
       }
 
@@ -194,11 +202,21 @@ export class UnifiedWorkflowPersistenceService {
   }
 
   /**
-   * Clear all workflow data
+   * Clear all workflow data (including images from IndexedDB)
    */
-  static clearData(): void {
+  static async clearData(): Promise<void> {
     localStorage.removeItem(STORAGE_KEY);
     this.stopTimer();
+
+    // ✅ CRITICAL: Clear images from IndexedDB
+    try {
+      const { ImageStorageService } = await import('./ImageStorageService');
+      await ImageStorageService.clearImages();
+      serviceLogger.info('Images cleared from IndexedDB');
+    } catch (error) {
+      // Non-critical - continue with cleanup
+      serviceLogger.warn('Failed to clear images from IndexedDB (non-critical)', { error });
+    }
 
     serviceLogger.info('Unified workflow data cleared');
   }
@@ -315,8 +333,27 @@ export class UnifiedWorkflowPersistenceService {
       if (!state.isActive && state.remainingSeconds === 0) {
         const data = this.loadData();
         if (data && !data.isPublished) {
-          this.clearData();
-          serviceLogger.info('Workflow auto-deleted after timer expiry');
+          // ✅ Delete from Firestore drafts if draftId exists
+          const draftId = localStorage.getItem('current_draft_id');
+          if (draftId) {
+            try {
+              const { default: DraftsService } = require('./drafts-service');
+              DraftsService.deleteDraft(draftId).catch((error: any) => {
+                // Non-critical - continue with local cleanup
+                serviceLogger.warn('Failed to delete Firestore draft on timer expiry (non-critical)', { error, draftId });
+              });
+              localStorage.removeItem('current_draft_id');
+            } catch (error) {
+              // Non-critical - continue with local cleanup
+              serviceLogger.warn('Error importing DraftsService for auto-delete (non-critical)', { error });
+            }
+          }
+          
+          // ✅ CRITICAL: clearData now clears images from IndexedDB
+          this.clearData().catch((error: any) => {
+            serviceLogger.warn('Error clearing data on timer expiry (non-critical)', { error });
+          });
+          serviceLogger.info('Workflow auto-deleted after timer expiry', { draftId: draftId || 'none' });
         }
       }
     }, 1000); // Update every second

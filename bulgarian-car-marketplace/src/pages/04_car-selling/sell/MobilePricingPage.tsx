@@ -111,17 +111,20 @@ const MobilePricingPage: React.FC = () => {
                 </S.Card>
               )}
 
-              <S.CheckboxGroup>
-                <S.Checkbox
-                  type="checkbox"
-                  id="negotiable"
-                  checked={pricingData.negotiable}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFieldChange('negotiable', e.target.checked)}
-                />
-                <S.CheckboxLabel htmlFor="negotiable">
+              <S.ToggleWrapper>
+                <S.ToggleSwitch $checked={pricingData.negotiable}>
+                  <input
+                    type="checkbox"
+                    id="negotiable"
+                    checked={pricingData.negotiable}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFieldChange('negotiable', e.target.checked)}
+                  />
+                  <span className="toggle-slider" />
+                </S.ToggleSwitch>
+                <S.ToggleLabel htmlFor="negotiable">
                   {t('sell.pricing.negotiable')}
-                </S.CheckboxLabel>
-              </S.CheckboxGroup>
+                </S.ToggleLabel>
+              </S.ToggleWrapper>
 
               <S.CheckboxGroup>
                 <S.Checkbox

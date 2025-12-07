@@ -671,8 +671,8 @@ const Circular3DProgressLEDEnhanced: React.FC<Circular3DProgressLEDEnhancedProps
     };
     loader.onerror = () => {
       if (!isSubscribed) return;
-      // Fall back but do NOT clear instantly to reduce flicker
-      setLogoUrl('/car-logos/mein_logo_rest.png');
+      // ✅ FIX: Use correct path for fallback logo
+      setLogoUrl('/assets/images/professional_car_logos/mein_logo_rest.png');
       setLogoLoaded(true);
       setActiveBrand(carBrand);
     };
@@ -713,7 +713,8 @@ const Circular3DProgressLEDEnhanced: React.FC<Circular3DProgressLEDEnhancedProps
                 alt={activeBrand}
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
-                  target.src = '/car-logos/mein_logo_rest.png';
+                  // ✅ FIX: Use correct path for fallback logo
+                  target.src = '/assets/images/professional_car_logos/mein_logo_rest.png';
                 }}
               />
             </CarLogoContainer>

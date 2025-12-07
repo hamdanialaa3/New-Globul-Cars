@@ -18,6 +18,13 @@ export const HeaderCard = styled.div`
   position: relative;
   overflow: hidden;
 
+  /* ✅ Dark mode support */
+  [data-theme="dark"] &, .dark-theme & {
+    background: var(--bg-card);
+    border-color: var(--border);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  }
+
   &::before {
     content: '';
     position: absolute;
@@ -61,6 +68,13 @@ export const SectionCard = styled.div`
   padding: 1.25rem;
   box-shadow: var(--shadow-md);
   border: 1px solid var(--border);
+
+  /* ✅ Dark mode support */
+  [data-theme="dark"] &, .dark-theme & {
+    background: var(--bg-card);
+    border-color: var(--border);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
 `;
 
 export const SectionTitle = styled.h3`
@@ -110,7 +124,16 @@ export const Input = styled.input`
   border: 2px solid var(--border);
   border-radius: 8px;
   font-size: 0.765rem; /* 150% من 0.51rem */
+  background: var(--bg-card);
+  color: var(--text-primary);
   transition: all 0.3s ease;
+
+  /* ✅ Dark mode support */
+  [data-theme="dark"] &, .dark-theme & {
+    background: var(--bg-card);
+    border-color: var(--border);
+    color: var(--text-primary);
+  }
 
   &:focus {
     outline: none;
@@ -126,6 +149,7 @@ export const Input = styled.input`
   &:disabled {
     background: var(--bg-disabled);
     cursor: not-allowed;
+    opacity: 0.6;
   }
 `;
 
@@ -135,8 +159,22 @@ export const Select = styled.select`
   border-radius: 8px;
   font-size: 0.765rem; /* 150% من 0.51rem */
   background: var(--bg-card);
+  color: var(--text-primary);
   cursor: pointer;
   transition: all 0.3s ease;
+
+  /* ✅ Dark mode support */
+  [data-theme="dark"] &, .dark-theme & {
+    background: var(--bg-card);
+    border-color: var(--border);
+    color: var(--text-primary);
+  }
+
+  /* ✅ Dark mode for options */
+  [data-theme="dark"] & option, .dark-theme & option {
+    background: var(--bg-card);
+    color: var(--text-primary);
+  }
 
   &:focus {
     outline: none;
@@ -158,7 +196,16 @@ export const TextArea = styled.textarea`
   font-size: 0.85rem;
   font-family: inherit;
   resize: vertical;
+  background: var(--bg-card);
+  color: var(--text-primary);
   transition: all 0.3s ease;
+
+  /* ✅ Dark mode support */
+  [data-theme="dark"] &, .dark-theme & {
+    background: var(--bg-card);
+    border-color: var(--border);
+    color: var(--text-primary);
+  }
 
   &:focus {
     outline: none;
@@ -188,6 +235,12 @@ export const ContactMethodRow = styled.div`
   border-radius: 8px;
   background: var(--bg-accent);
   transition: background 0.2s ease;
+
+  /* ✅ Dark mode support */
+  [data-theme="dark"] &, .dark-theme & {
+    background: var(--bg-accent);
+    border: 1px solid var(--border);
+  }
 
   &:hover {
     background: var(--bg-accent);

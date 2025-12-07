@@ -14,11 +14,11 @@ import { CURRENCIES, PRICE_TYPES, AVAILABLE_HOURS } from '../../../data/dropdown
 import * as S from './UnifiedContactStyles';
 import { toast } from 'react-toastify';
 import { ErrorMessages, getErrorMessage } from '../../../constants/ErrorMessages';
-import ReviewSummary from '../../../components/ReviewSummary';
 import ImageUploadProgress from '../../../components/ImageUploadProgress';
 import KeyboardShortcutsHelper from '../../../components/KeyboardShortcutsHelper';
 import useDraftAutoSave from '../../../hooks/useDraftAutoSave';
 import { useSellWorkflow } from '../../../hooks/useSellWorkflow';
+import { useUnifiedWorkflow } from '../../../hooks/useUnifiedWorkflow';
 import useWorkflowStep from '../../../hooks/useWorkflowStep';
 import WorkflowPersistenceService from '../../../services/workflowPersistenceService';
 import ImageUploadService from '../../../services/image-upload-service';
@@ -45,17 +45,27 @@ const UnifiedContactPage: React.FC = () => {
   const [showOtherCityInput, setShowOtherCityInput] = useState(false);
   const [otherCityValue, setOtherCityValue] = useState('');
 
+  // ✅ UNIFIED WORKFLOW: Use unified workflow (Step 6 - Contact) - MUST BE BEFORE useState that uses it
+  const { workflowData: unifiedWorkflowData, updateData, clearWorkflow, markAsPublished } = useUnifiedWorkflow(6);
+  
+  // 🆕 Hooks for new features (legacy support)
+  const { workflowData, updateWorkflowData, clearWorkflowData } = useSellWorkflow();
+
+  // ✅ FIX: Use unifiedWorkflowData in initializer (available now)
   const [pricingData, setPricingData] = useState(() => ({
-    price: searchParams.get('price') || workflowData.price || '',
-    currency: searchParams.get('currency') || workflowData.currency || 'EUR',
+    price: searchParams.get('price') || unifiedWorkflowData?.price || workflowData?.price || '',
+    currency: searchParams.get('currency') || unifiedWorkflowData?.currency || workflowData?.currency || 'EUR',
     priceType:
       searchParams.get('priceType') ||
-      (workflowData.priceType as string) ||
+      (unifiedWorkflowData?.priceType as string) ||
+      (workflowData?.priceType as string) ||
       'fixed',
     negotiable:
       searchParams.get('negotiable') === 'true' ||
-      workflowData.negotiable === true ||
-      workflowData.negotiable === 'true'
+      unifiedWorkflowData?.negotiable === true ||
+      unifiedWorkflowData?.negotiable === 'true' ||
+      workflowData?.negotiable === true ||
+      workflowData?.negotiable === 'true'
   }));
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -72,13 +82,56 @@ const UnifiedContactPage: React.FC = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [totalImages, setTotalImages] = useState(0);
   const [uploadErrors, setUploadErrors] = useState<string[]>([]);
+  
   useEffect(() => {
     SellWorkflowStepStateService.markPending('contact');
   }, []);
-
   
-  // 🆕 Hooks for new features
-  const { workflowData, updateWorkflowData, clearWorkflowData } = useSellWorkflow();
+  // ✅ UNIFIED WORKFLOW: Restore contact data from saved workflow on mount
+  useEffect(() => {
+    if (unifiedWorkflowData && Object.keys(unifiedWorkflowData).length > 0) {
+      console.log('🔄 Restoring contact data from unified workflow:', {
+        sellerName: unifiedWorkflowData.sellerName,
+        sellerEmail: unifiedWorkflowData.sellerEmail,
+        sellerPhone: unifiedWorkflowData.sellerPhone,
+        region: unifiedWorkflowData.region,
+        city: unifiedWorkflowData.city
+      });
+      
+      // Restore contact fields if they exist in workflow data and form is empty
+      if (unifiedWorkflowData.sellerName && !contactData.sellerName) {
+        handleFieldChange('sellerName', unifiedWorkflowData.sellerName);
+      }
+      if (unifiedWorkflowData.sellerEmail && !contactData.sellerEmail) {
+        handleFieldChange('sellerEmail', unifiedWorkflowData.sellerEmail);
+      }
+      if (unifiedWorkflowData.sellerPhone && !contactData.sellerPhone) {
+        handleFieldChange('sellerPhone', unifiedWorkflowData.sellerPhone);
+      }
+      if (unifiedWorkflowData.region && !contactData.region) {
+        handleFieldChange('region', unifiedWorkflowData.region);
+      }
+      if (unifiedWorkflowData.city && !contactData.city) {
+        handleFieldChange('city', unifiedWorkflowData.city);
+      }
+      if (unifiedWorkflowData.postalCode && !contactData.postalCode) {
+        handleFieldChange('postalCode', unifiedWorkflowData.postalCode);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [unifiedWorkflowData]); // Run when unifiedWorkflowData changes (including on mount)
+  
+  // ✅ UNIFIED WORKFLOW: Save contact data on every change
+  useEffect(() => {
+    updateData({
+      sellerName: contactData.sellerName,
+      sellerEmail: contactData.sellerEmail,
+      sellerPhone: contactData.sellerPhone,
+      region: contactData.region,
+      city: contactData.city,
+      postalCode: contactData.postalCode
+    });
+  }, [contactData, updateData]);
   const { saveDraft, isSaving, getTimeSinceLastSave } = useDraftAutoSave(
     { ...workflowData, ...Object.fromEntries(searchParams) },
     { currentStep: 7, interval: 30000 }
@@ -159,25 +212,33 @@ const UnifiedContactPage: React.FC = () => {
     setPricingData(prev => ({ ...prev, [field]: value }));
   };
 
+  // ✅ FIX: Update pricingData from unifiedWorkflowData (priority) or workflowData
   useEffect(() => {
-    setPricingData(prev => ({
-      price: prev.price || workflowData.price || '',
-      currency: prev.currency || workflowData.currency || 'EUR',
-      priceType:
-        prev.priceType ||
-        (workflowData.priceType as string) ||
-        'fixed',
-      negotiable:
-        typeof prev.negotiable === 'boolean'
-          ? prev.negotiable
-          : workflowData.negotiable === true ||
-            workflowData.negotiable === 'true'
-    }));
+    const sourceData = unifiedWorkflowData || workflowData;
+    if (sourceData && (sourceData.price || sourceData.currency || sourceData.priceType !== undefined || sourceData.negotiable !== undefined)) {
+      setPricingData(prev => ({
+        price: prev.price || sourceData.price || '',
+        currency: prev.currency || sourceData.currency || 'EUR',
+        priceType:
+          prev.priceType ||
+          (sourceData.priceType as string) ||
+          'fixed',
+        negotiable:
+          typeof prev.negotiable === 'boolean'
+            ? prev.negotiable
+            : sourceData.negotiable === true ||
+              sourceData.negotiable === 'true'
+      }));
+    }
   }, [
-    workflowData.price,
-    workflowData.currency,
-    workflowData.priceType,
-    workflowData.negotiable
+    unifiedWorkflowData?.price,
+    unifiedWorkflowData?.currency,
+    unifiedWorkflowData?.priceType,
+    unifiedWorkflowData?.negotiable,
+    workflowData?.price,
+    workflowData?.currency,
+    workflowData?.priceType,
+    workflowData?.negotiable
   ]);
 
   useEffect(() => {
@@ -193,17 +254,30 @@ const UnifiedContactPage: React.FC = () => {
   }, [pricingData, updateWorkflowData]);
 
   // 🆕 Enhanced validation with better error messages
-  const validateForm = (): boolean => {
-    const resolvedMake = workflowData.make || make;
-    const resolvedYear = workflowData.year || year;
+  const validateForm = async (): Promise<boolean> => {
+    console.log('🔍 validateForm called', {
+      unifiedWorkflowData: unifiedWorkflowData ? Object.keys(unifiedWorkflowData).length + ' keys' : 'null',
+      workflowData: workflowData ? Object.keys(workflowData).length + ' keys' : 'null',
+      make,
+      year,
+      images
+    });
+    
+    // ✅ FIX: Use unifiedWorkflowData first, then fallback to workflowData
+    const resolvedMake = unifiedWorkflowData?.make || workflowData?.make || make;
+    const resolvedYear = unifiedWorkflowData?.year || workflowData?.year || year;
+    
+    console.log('🔍 Resolved values:', { resolvedMake, resolvedYear });
 
     if (!resolvedMake) {
+      console.warn('❌ Validation failed: MAKE_REQUIRED');
       toast.error(getErrorMessage('MAKE_REQUIRED', language as 'bg' | 'en'));
       logError('MAKE_REQUIRED');
       return false;
     }
 
     if (!resolvedYear) {
+      console.warn('❌ Validation failed: YEAR_REQUIRED');
       toast.error(getErrorMessage('YEAR_REQUIRED', language as 'bg' | 'en'));
       logError('YEAR_REQUIRED');
       return false;
@@ -220,72 +294,133 @@ const UnifiedContactPage: React.FC = () => {
       return false;
     }
 
-    const totalImages =
-      workflowData.imagesCount ??
-      (images ? parseInt(images, 10) : 0);
-
-    if (!totalImages || Number.isNaN(totalImages) || totalImages === 0) {
-      toast.error(
-        language === 'bg'
-          ? 'Добавете поне една снимка, за да публикувате.'
-          : 'Please add at least one image before publishing.'
-      );
-      logError('IMAGES_REQUIRED');
-      return false;
+    // ✅ FIX: Check IndexedDB directly for images (most reliable source)
+    let totalImages = 0;
+    let imagesSource = 'none';
+    
+    try {
+      // Try IndexedDB first
+      const ImageStorageServiceModule = await import('../../../services/ImageStorageService');
+      const savedImages = await ImageStorageServiceModule.ImageStorageService.getImages();
+      if (savedImages && savedImages.length > 0) {
+        totalImages = savedImages.length;
+        imagesSource = 'IndexedDB';
+        console.log('🔍 Images from IndexedDB:', totalImages);
+      }
+    } catch (error) {
+      console.warn('⚠️ Failed to check IndexedDB, trying localStorage', error);
+    }
+    
+    // Fallback to localStorage if IndexedDB is empty
+    if (totalImages === 0) {
+      try {
+        const localStorageImages = WorkflowPersistenceService.getImages();
+        if (localStorageImages && localStorageImages.length > 0) {
+          totalImages = localStorageImages.length;
+          imagesSource = 'localStorage';
+          console.log('🔍 Images from localStorage:', totalImages);
+        }
+      } catch (error) {
+        console.warn('⚠️ Failed to check localStorage', error);
+      }
+    }
+    
+    // Final fallback to workflow data
+    if (totalImages === 0) {
+      totalImages =
+        unifiedWorkflowData?.imagesCount ??
+        workflowData?.imagesCount ??
+        (images ? parseInt(images, 10) : 0);
+      if (totalImages > 0) {
+        imagesSource = 'workflowData';
+      }
     }
 
+    console.log('🔍 Images count:', { 
+      totalImages, 
+      imagesSource,
+      unifiedImagesCount: unifiedWorkflowData?.imagesCount, 
+      workflowImagesCount: workflowData?.imagesCount, 
+      imagesParam: images 
+    });
+
+    // ✅ FIX: Images are recommended but not blocking - allow publishing without images with warning
+    if (!totalImages || Number.isNaN(totalImages) || totalImages === 0) {
+      console.warn('⚠️ No images found, but allowing publish (images are recommended, not required)', { totalImages, imagesSource });
+      // Show warning but don't block - images are recommended, not critical
+      toast.warning(
+        language === 'bg'
+          ? 'Препоръчва се да добавите поне една снимка за по-добра видимост на обявата. Продължавате ли без снимки?'
+          : 'It is recommended to add at least one image for better listing visibility. Continue without images?',
+        { autoClose: 4000 }
+      );
+      // Don't return false - allow publishing without images
+      // logError('IMAGES_REQUIRED'); // Don't log as error since it's not blocking
+    }
+
+    console.log('✅ Validation passed');
     return true;
   };
 
   const handlePublish = async () => {
+    console.log('🚀 handlePublish called');
     setError('');
     
-    // 🆕 Validate first
-    if (!validateForm()) {
+    // 🆕 Validate first (now async to check IndexedDB)
+    const isValid = await validateForm();
+    console.log('✅ Validation result:', isValid);
+    
+    if (!isValid) {
+      console.warn('❌ Validation failed, blocking publish');
+      setIsSubmitting(false);
       return;
     }
 
+    console.log('✅ Validation passed, proceeding with publish');
     setIsSubmitting(true);
 
     try {
+      // ✅ FIX: Merge unifiedWorkflowData (priority) with workflowData
+      const mergedWorkflowData = { ...workflowData, ...unifiedWorkflowData };
+      
       const fallbackModel = language === 'bg' ? 'Неизвестен модел' : 'Unknown Model';
       const finalModel =
-        workflowData.model ||
+        mergedWorkflowData.model ||
         model ||
         fallbackModel;
 
       const payload = {
-        ...workflowData,
-        vehicleType: workflowData.vehicleType || vehicleType || 'car',
-        sellerType: workflowData.sellerType || sellerType || 'private',
-        make: workflowData.make || make || '',
+        ...mergedWorkflowData,
+        vehicleType: mergedWorkflowData.vehicleType || vehicleType || 'car',
+        sellerType: mergedWorkflowData.sellerType || sellerType || 'private',
+        make: mergedWorkflowData.make || make || '',
         model: finalModel,
-        year: workflowData.year || year || '',
-        mileage: workflowData.mileage || mileage || '0',
-        fuelType: workflowData.fuelType || fuelType || '',
-        transmission: workflowData.transmission || transmission || '',
-        color: workflowData.color || color || '',
-        price: pricingData.price || workflowData.price || '',
-        currency: pricingData.currency || workflowData.currency || 'EUR',
-        priceType: pricingData.priceType || workflowData.priceType || 'fixed',
+        year: mergedWorkflowData.year || year || '',
+        mileage: mergedWorkflowData.mileage || mileage || '0',
+        fuelType: mergedWorkflowData.fuelType || fuelType || '',
+        transmission: mergedWorkflowData.transmission || transmission || '',
+        color: mergedWorkflowData.color || color || '',
+        price: pricingData.price || mergedWorkflowData.price || '',
+        currency: pricingData.currency || mergedWorkflowData.currency || 'EUR',
+        priceType: pricingData.priceType || mergedWorkflowData.priceType || 'fixed',
         negotiable: pricingData.negotiable,
-        safety: workflowData.safety || safety || '',
-        comfort: workflowData.comfort || comfort || '',
-        infotainment: workflowData.infotainment || infotainment || '',
-        extras: workflowData.extras || extras || '',
-        sellerName: contactData.sellerName || workflowData.sellerName || '',
-        sellerEmail: contactData.sellerEmail || workflowData.sellerEmail || '',
-        sellerPhone: contactData.sellerPhone || workflowData.sellerPhone || '',
-        additionalPhone: contactData.additionalPhone || workflowData.additionalPhone || '',
+        safety: mergedWorkflowData.safety || mergedWorkflowData.safetyEquipment?.join(',') || safety || '',
+        comfort: mergedWorkflowData.comfort || mergedWorkflowData.comfortEquipment?.join(',') || comfort || '',
+        infotainment: mergedWorkflowData.infotainment || mergedWorkflowData.infotainmentEquipment?.join(',') || infotainment || '',
+        extras: mergedWorkflowData.extras || mergedWorkflowData.extrasEquipment?.join(',') || extras || '',
+        sellerName: contactData.sellerName || mergedWorkflowData.sellerName || '',
+        sellerEmail: contactData.sellerEmail || mergedWorkflowData.sellerEmail || '',
+        sellerPhone: contactData.sellerPhone || mergedWorkflowData.sellerPhone || '',
+        additionalPhone: contactData.additionalPhone || mergedWorkflowData.additionalPhone || '',
         preferredContact: contactData.preferredContact.join(','),
-        availableHours: contactData.availableHours || workflowData.availableHours || '',
-        additionalInfo: contactData.notes || workflowData.additionalInfo || '',
-        region: contactData.region || workflowData.region || '',
-        city: contactData.city || workflowData.city || '',
-        postalCode: contactData.postalCode || workflowData.postalCode || '',
-        location: contactData.location || workflowData.location || '',
-        images: workflowData.images,
-        imagesCount: workflowData.imagesCount
+        availableHours: contactData.availableHours || mergedWorkflowData.availableHours || '',
+        additionalInfo: contactData.notes || mergedWorkflowData.additionalInfo || '',
+        region: contactData.region || mergedWorkflowData.region || '',
+        city: contactData.city || mergedWorkflowData.city || '',
+        postalCode: contactData.postalCode || mergedWorkflowData.postalCode || '',
+        location: contactData.location || mergedWorkflowData.location || '',
+        images: mergedWorkflowData.images,
+        imagesCount: mergedWorkflowData.imagesCount
       };
 
       if (process.env.NODE_ENV === 'development') {
@@ -323,65 +458,164 @@ const UnifiedContactPage: React.FC = () => {
         return;
       }
 
-      // ✅ Load images from localStorage and convert to Files
+      // ✅ Load images from IndexedDB (primary source) or localStorage (fallback)
       let imageFiles: File[] = [];
       try {
-        imageFiles = WorkflowPersistenceService.getImagesAsFiles();
-        if (process.env.NODE_ENV === 'development') {
-          logger.debug(`Loaded ${imageFiles.length} images from persistence`);
+        // Try IndexedDB first (most reliable)
+        const ImageStorageServiceModule = await import('../../../services/ImageStorageService');
+        const savedImages = await ImageStorageServiceModule.ImageStorageService.getImages();
+        console.log('📸 Images from IndexedDB:', { 
+          count: savedImages?.length || 0, 
+          images: savedImages?.map((f: File) => ({ name: f.name, size: f.size, type: f.type })) || []
+        });
+        
+        if (savedImages && savedImages.length > 0) {
+          // getImages() already returns File[] directly
+          imageFiles = savedImages;
+          console.log('✅ Loaded images from IndexedDB:', imageFiles.length);
+          if (process.env.NODE_ENV === 'development') {
+            logger.debug(`Loaded ${imageFiles.length} images from IndexedDB`);
+          }
+        } else {
+          // Fallback to localStorage
+          console.log('⚠️ No images in IndexedDB, trying localStorage...');
+          imageFiles = WorkflowPersistenceService.getImagesAsFiles();
+          console.log('📸 Images from localStorage:', { 
+            count: imageFiles.length, 
+            images: imageFiles.map(f => ({ name: f.name, size: f.size, type: f.type }))
+          });
+          if (process.env.NODE_ENV === 'development') {
+            logger.debug(`Loaded ${imageFiles.length} images from localStorage (fallback)`);
+          }
         }
       } catch (error) {
-        logger.error('Error loading images from WorkflowPersistenceService', error as Error);
+        console.error('❌ Error loading images from IndexedDB:', error);
+        logger.error('Error loading images', error as Error);
+        // Final fallback to localStorage
+        try {
+          imageFiles = WorkflowPersistenceService.getImagesAsFiles();
+          console.log('📸 Fallback: Images from localStorage:', imageFiles.length);
+        } catch (fallbackError) {
+          console.error('❌ Error loading images from WorkflowPersistenceService:', fallbackError);
+          logger.error('Error loading images from WorkflowPersistenceService', fallbackError as Error);
+        }
       }
 
-      // 🆕 Create listing first (without images)
-      const carId = await SellWorkflowService.createCarListing(payload, userId);
-
-      if (!carId) {
-        throw new Error('Failed to create listing');
-      }
-
-      if (process.env.NODE_ENV === 'development') {
-        logger.debug('Car listing created', { carId });
-      }
-
-      // 🆕 Upload images with progress tracking (if available)
+      // ✅ FIX: Pass imageFiles directly to createCarListing - it handles upload internally
+      console.log('📸 Final imageFiles before createCarListing:', { 
+        imageCount: imageFiles.length,
+        imageFiles: imageFiles.map(f => ({ name: f.name, size: f.size, type: f.type })),
+        areFilesValid: imageFiles.every(f => f instanceof File)
+      });
+      
       if (imageFiles && imageFiles.length > 0) {
         setTotalImages(imageFiles.length);
+        console.log('✅ Images ready for upload:', imageFiles.length);
+      } else {
+        console.warn('⚠️ No images found! Publishing without images.');
+      }
+
+      // ✅ FIX: Check if we're in edit mode
+      const isEditMode = sessionStorage.getItem('edit_mode') === 'true';
+      const editCarId = sessionStorage.getItem('edit_car_id');
+      
+      let carId: string;
+      
+      if (isEditMode && editCarId) {
+        // ✅ EDIT MODE: Update existing listing
+        console.log('✏️ Edit mode detected, updating car:', editCarId);
         
-        try {
-          const imageUrls = await ImageUploadService.uploadMultipleImages(
-            imageFiles,
-            carId,
-            (current, total, progress) => {
-              setCurrentImageIndex(current);
-              setUploadProgress(progress);
-            },
-            (fileName, error) => {
-              logger.error(`Upload failed for ${fileName}`, error);
-              setUploadErrors(prev => [...prev, `${fileName}: ${error.message}`]);
-            }
-          );
-
-          if (process.env.NODE_ENV === 'development') {
-            logger.debug(`Uploaded ${imageUrls.length} images`);
-          }
-
-          // Update car document with image URLs
-          if (imageUrls.length > 0) {
-            await SellWorkflowService.updateCarListing(carId, {
-              images: imageUrls as any
+        // Transform payload for update (same as create)
+        const carData = SellWorkflowService.transformWorkflowData(payload, userId);
+        
+        // Get the appropriate collection name
+        const collectionName = SellWorkflowService.getCollectionNameForVehicleType(carData.vehicleType || 'car');
+        
+        // Update the car listing
+        await SellWorkflowService.updateCarListing(editCarId, carData, collectionName);
+        
+        // Upload new images if provided
+        if (imageFiles && imageFiles.length > 0) {
+          try {
+            const imageUrls = await SellWorkflowService.uploadCarImages(editCarId, imageFiles, carData.vehicleType);
+            
+            // Update images in the listing
+            const { doc, updateDoc, serverTimestamp } = await import('firebase/firestore');
+            const { db } = await import('../../../firebase/firebase-config');
+            await updateDoc(doc(db, collectionName, editCarId), {
+              images: imageUrls,
+              updatedAt: serverTimestamp()
             });
+            
+            console.log('✅ Images updated for car:', editCarId, imageUrls.length);
+            toast.success(
+              language === 'bg'
+                ? `Обявата е обновена успешно с ${imageUrls.length} снимки!`
+                : `Listing updated successfully with ${imageUrls.length} images!`,
+              { autoClose: 3000 }
+            );
+          } catch (uploadError) {
+            console.error('❌ Failed to upload images during edit:', uploadError);
+            logger.error('Failed to upload images during edit', uploadError as Error, { carId: editCarId });
+            toast.warning(
+              language === 'bg'
+                ? 'Обявата е обновена, но има проблем с качването на снимките'
+                : 'Listing updated, but there was an issue uploading images',
+              { autoClose: 4000 }
+            );
+            // Don't throw - allow update to complete even if images fail
           }
-        } catch (uploadError) {
-          logger.error('Image upload failed', uploadError as Error, { carId });
-          toast.warning(
+        } else {
+          // No new images, but update was successful
+          toast.success(
             language === 'bg'
-              ? 'Някои снимки не са качени, но обявата е създадена. Можете да добавите снимки по-късно.'
-              : 'Some images failed to upload, but the listing was created. You can add images later.',
-            { autoClose: 5000 }
+              ? 'Обявата е обновена успешно!'
+              : 'Listing updated successfully!',
+            { autoClose: 3000 }
           );
         }
+        
+        carId = editCarId;
+        
+        // Clear edit mode flags
+        sessionStorage.removeItem('edit_mode');
+        sessionStorage.removeItem('edit_car_id');
+        sessionStorage.removeItem('edit_car_data');
+        
+        console.log('✅ Car listing updated successfully:', carId);
+        
+        // Navigate to profile after successful update
+        setTimeout(() => {
+          navigate('/profile/my-ads');
+        }, 800);
+      } else {
+        // ✅ CREATE MODE: Create new listing
+        console.log('🚀 Calling createCarListing with:', { 
+          hasPayload: !!payload, 
+          userId, 
+          imageCount: imageFiles.length,
+          imageFilesProvided: imageFiles.length > 0
+        });
+        carId = await SellWorkflowService.createCarListing(payload, userId, imageFiles);
+
+        if (!carId) {
+          throw new Error('Failed to create listing');
+        }
+
+        if (process.env.NODE_ENV === 'development') {
+          logger.debug('Car listing created', { carId, imageCount: imageFiles.length });
+        }
+      }
+
+      // ✅ Images are already uploaded by createCarListing, no need to upload again
+      if (imageFiles && imageFiles.length > 0) {
+        console.log('✅ Images should be uploaded by createCarListing');
+        toast.success(
+          language === 'bg'
+            ? `Обявата е създадена успешно с ${imageFiles.length} снимки!`
+            : `Listing created successfully with ${imageFiles.length} images!`,
+          { autoClose: 3000 }
+        );
       }
 
       // 🆕 Mark step as completed in analytics
@@ -400,8 +634,26 @@ const UnifiedContactPage: React.FC = () => {
         logger.warn('N8N webhook failed (non-critical)', { error: n8nError, carId });
       }
 
+      // ✅ Clear unified workflow data FIRST (including images from IndexedDB)
+      await markAsPublished(); // Mark as published to prevent timer auto-delete
+      await clearWorkflow(); // Clear all local data including IndexedDB images
+      
+      // Clear legacy workflow data
       clearWorkflowData();
       localStorage.removeItem('current_draft_id');
+      
+      // ✅ Delete draft from Firestore if exists
+      const draftId = localStorage.getItem('current_draft_id');
+      if (draftId && currentUser) {
+        try {
+          const DraftsService = await import('../../../services/drafts-service');
+          await DraftsService.default.deleteDraft(draftId);
+          logger.info('Draft deleted from Firestore after publishing', { draftId });
+        } catch (error) {
+          // Non-critical - continue
+          logger.warn('Failed to delete Firestore draft after publishing (non-critical)', { error, draftId });
+        }
+      }
 
       // 🆕 Success message with toast
       toast.success(
@@ -501,14 +753,6 @@ const UnifiedContactPage: React.FC = () => {
         </S.Button>
       </S.NavigationButtons>
 
-      {/* 🆕 Review Summary before publishing */}
-      <ReviewSummary
-        workflowData={workflowData as Record<string, unknown>}
-        imagesCount={workflowData.imagesCount || 0}
-        language={language as 'bg' | 'en'}
-        onEdit={() => navigate(-1)}
-      />
-
       {/* Section 1: Personal Info */}
       <S.SectionCard>
         <S.SectionTitle>
@@ -540,7 +784,6 @@ const UnifiedContactPage: React.FC = () => {
               value={pricingData.currency}
               onChange={(value) => handlePricingChange('currency', value)}
               placeholder={language === 'bg' ? 'Изберете валута' : 'Select currency'}
-              label={language === 'bg' ? 'Валута' : 'Currency'}
               required
             />
           </S.FormGroup>
@@ -554,7 +797,6 @@ const UnifiedContactPage: React.FC = () => {
               value={pricingData.priceType}
               onChange={(value) => handlePricingChange('priceType', value)}
               placeholder={language === 'bg' ? 'Изберете тип цена' : 'Select price type'}
-              label={language === 'bg' ? 'Тип цена' : 'Price Type'}
               required
             />
           </S.FormGroup>
@@ -650,7 +892,6 @@ const UnifiedContactPage: React.FC = () => {
               value={contactData.region}
             onChange={(value) => handleFieldChange('region', value)}
               placeholder={language === 'bg' ? 'Изберете област' : 'Select region'}
-              label={language === 'bg' ? 'Област' : 'Region'}
               required
             />
           </S.FormGroup>
@@ -668,7 +909,6 @@ const UnifiedContactPage: React.FC = () => {
               value={contactData.city}
             onChange={(value) => handleCityChange(value)}
               placeholder={language === 'bg' ? 'Изберете град' : 'Select city'}
-              label={language === 'bg' ? 'Град' : 'City'}
               required
               disabled={!contactData.region}
               otherPlaceholder={language === 'bg' ? 'Въведете град' : 'Enter city name'}

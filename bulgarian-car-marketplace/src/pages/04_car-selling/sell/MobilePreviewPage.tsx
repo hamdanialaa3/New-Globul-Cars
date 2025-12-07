@@ -9,6 +9,7 @@ import SellWorkflowStepStateService from '../../../services/sellWorkflowStepStat
 import { usePreviewSummary } from './Preview/usePreviewSummary';
 import CarBrandLogo from '../../../components/CarBrandLogo';
 import useSellWorkflow from '../../../hooks/useSellWorkflow';
+import DeleteDraftButton from '../../../components/SellWorkflow/DeleteDraftButton';
 
 const ProgressWrapper = styled.div`
   padding: 0.75rem 1rem 0;
@@ -210,12 +211,17 @@ const MobilePreviewPage: React.FC = () => {
         </S.Card>
 
         <S.Actions>
-          <S.Button onClick={() => goTo('/sell/inserat/:vehicleType/details/bilder')}>
-            {t('sell.preview.actions.editImages')}
-          </S.Button>
-          <S.PrimaryButton onClick={() => goTo('/sell/inserat/:vehicleType/submission')}>
-            {t('sell.preview.actions.continue')}
-          </S.PrimaryButton>
+          <div style={{ display: 'flex', gap: '0.75rem', width: '100%', flexDirection: 'column' }}>
+            <div style={{ display: 'flex', gap: '0.75rem' }}>
+              <DeleteDraftButton currentStep={5} isMobile={true} />
+              <S.Button onClick={() => goTo('/sell/inserat/:vehicleType/images')} style={{ flex: 1 }}>
+                {t('sell.preview.actions.editImages')}
+              </S.Button>
+            </div>
+            <S.PrimaryButton onClick={() => goTo('/sell/inserat/:vehicleType/submission')}>
+              {t('sell.preview.actions.continue')}
+            </S.PrimaryButton>
+          </div>
         </S.Actions>
       </S.Container>
     </>

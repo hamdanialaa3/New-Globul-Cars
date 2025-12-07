@@ -357,7 +357,8 @@ const PricingPage: React.FC = () => {
     if (extras) params.set('extras', extras);
     if (images) params.set('images', images);
 
-    navigate(`/sell/inserat/${vehicleType || 'pkw'}/details/bilder?${params.toString()}`);
+    // ✅ NEW ROUTE: Navigate to images page
+    navigate(`/sell/inserat/${vehicleType || 'car'}/images?${params.toString()}`);
   };
 
   const handleContinue = () => {

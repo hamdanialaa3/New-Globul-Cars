@@ -452,10 +452,36 @@ class UnifiedCarService {
 
   /**
    * Update car
+   * ✅ FIX: Find the correct collection for the car before updating
    */
   async updateCar(carId: string, updates: Partial<UnifiedCar>): Promise<void> {
     try {
-      const docRef = doc(db, this.collectionName, carId);
+      // ✅ FIX: Find which collection contains this car
+      const collections = ['cars', 'passenger_cars', 'suvs', 'vans', 'motorcycles', 'trucks', 'buses'];
+      let foundCollection: string | null = null;
+      let carData: any = null;
+
+      // Search all collections to find the car
+      for (const collectionName of collections) {
+        try {
+          const docRef = doc(db, collectionName, carId);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            foundCollection = collectionName;
+            carData = docSnap.data();
+            break;
+          }
+        } catch (error) {
+          // Continue searching other collections
+          continue;
+        }
+      }
+
+      if (!foundCollection) {
+        throw new Error(`Car with ID ${carId} not found in any collection`);
+      }
+
+      const docRef = doc(db, foundCollection, carId);
       
       // Check if car is being marked as sold
       const wasSold = updates.isSold === true || updates.status === 'sold';
@@ -463,13 +489,11 @@ class UnifiedCarService {
       
       if (wasSold) {
         // Get current car data to check if it was already sold
-        const carSnap = await getDoc(docRef);
-        const currentCar = carSnap.data();
-        const wasAlreadySold = currentCar?.isSold === true || currentCar?.status === 'sold';
+        const wasAlreadySold = carData?.isSold === true || carData?.status === 'sold';
         
-        if (!wasAlreadySold && currentCar?.sellerId) {
+        if (!wasAlreadySold && carData?.sellerId) {
           // Check if this is the first sale
-          const userCars = await this.getUserCars(currentCar.sellerId);
+          const userCars = await this.getUserCars(carData.sellerId);
           const soldCars = userCars.filter(c => c.isSold === true || c.status === 'sold');
           isFirstSale = soldCars.length === 0;
         }

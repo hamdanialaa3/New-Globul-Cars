@@ -9,6 +9,7 @@ import { usePreviewSummary } from './Preview/usePreviewSummary';
 import CarBrandLogo from '../../../components/CarBrandLogo';
 import useSellWorkflow from '../../../hooks/useSellWorkflow';
 import { useUnifiedWorkflow } from '../../../hooks/useUnifiedWorkflow';
+import DeleteDraftButton from '../../../components/SellWorkflow/DeleteDraftButton';
 import { ValidationAlert } from '../../../components/ValidationAlert';
 
 const ProgressWrapper = styled.div`
@@ -437,9 +438,12 @@ const DesktopPreviewPage: React.FC = () => {
         </Card>
 
         <Actions>
-          <Button onClick={() => goTo('/sell/inserat/:vehicleType/details/bilder')}>
-            {t('sell.preview.actions.editImages')}
-          </Button>
+          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+            <DeleteDraftButton currentStep={5} isMobile={false} />
+            <Button onClick={() => goTo('/sell/inserat/:vehicleType/images')}>
+              {t('sell.preview.actions.editImages')}
+            </Button>
+          </div>
           <PrimaryButton onClick={() => goTo('/sell/inserat/:vehicleType/submission')}>
             {t('sell.preview.actions.continue')}
           </PrimaryButton>

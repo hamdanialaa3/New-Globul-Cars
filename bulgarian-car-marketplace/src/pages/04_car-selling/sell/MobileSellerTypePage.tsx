@@ -292,7 +292,8 @@ export const MobileSellerTypePage: React.FC = () => {
     
     setProfileType(selectedType);
     
-    navigate(`/sell/inserat/${vehicleType}/fahrzeugdaten/antrieb-und-umwelt`);
+    // ✅ NEW ROUTE: Navigate to data page
+    navigate(`/sell/inserat/${vehicleType}/data`);
   };
   
   return (

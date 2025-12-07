@@ -302,23 +302,78 @@ class CarValidationService {
 
   /**
    * Calculate quality score (0-100)
+   * ✅ IMPROVED: Works with partial data (draft mode)
    */
   private calculateScore(carData: CarData): number {
     let score = 0;
+    let maxScore = 0;
 
-    // Required fields (60 points total - 6 points each)
-    const requiredFieldScore = this.REQUIRED_FIELDS.reduce((sum, field) => {
-      return sum + (carData[field] ? 6 : 0);
-    }, 0);
-    score += Math.min(requiredFieldScore, 60);
+    // ✅ FIX: Calculate score based on available fields only
+    
+    // Basic Info Fields (40 points total)
+    const basicFields = ['make', 'model', 'year', 'vehicleType'] as Array<keyof CarData>;
+    basicFields.forEach(field => {
+      maxScore += 10;
+      if (carData[field]) {
+        // Check if value is not empty
+        const value = carData[field];
+        if (typeof value === 'string' && value.trim().length > 0) {
+          score += 10;
+        } else if (typeof value === 'number' && value > 0) {
+          score += 10;
+        } else if (value) {
+          score += 10;
+        }
+      }
+    });
 
-    // Images (15 points)
-    if (carData.images && carData.images.length > 0) {
-      score += Math.min(carData.images.length * 3, 15);
+    // Technical Fields (30 points total)
+    const technicalFields = ['mileage', 'fuelType', 'transmission', 'power', 'horsePower'] as Array<keyof CarData>;
+    technicalFields.forEach(field => {
+      maxScore += 6;
+      if (carData[field]) {
+        const value = carData[field];
+        if (typeof value === 'string' && value.trim().length > 0) {
+          score += 6;
+        } else if (typeof value === 'number' && value > 0) {
+          score += 6;
+        } else if (value) {
+          score += 6;
+        }
+      }
+    });
+
+    // Color Fields (10 points total - 5 each)
+    if (carData.color || carData.exteriorColor) {
+      maxScore += 5;
+      score += 5;
+    }
+    if (carData.interiorColor) {
+      maxScore += 5;
+      score += 5;
     }
 
-    // Description quality (10 points)
+    // Location Fields (10 points total - 5 each)
+    if (carData.region || carData.city) {
+      maxScore += 5;
+      score += 5;
+    }
+    if (carData.city && carData.region) {
+      maxScore += 5;
+      score += 5;
+    }
+
+    // Images (15 points) - if available
+    if (carData.images && carData.images.length > 0) {
+      maxScore += 15;
+      score += Math.min(carData.images.length * 3, 15);
+    } else {
+      maxScore += 15; // Still count in max score
+    }
+
+    // Description quality (10 points) - if available
     if (carData.description) {
+      maxScore += 10;
       if (carData.description.length >= 150) {
         score += 10;
       } else if (carData.description.length >= 100) {
@@ -326,18 +381,28 @@ class CarValidationService {
       } else if (carData.description.length >= 50) {
         score += 4;
       }
+    } else {
+      maxScore += 10; // Still count in max score
     }
 
-    // Features and options (10 points)
+    // Features and options (10 points) - if available
     const featuresCount = (carData.features?.length || 0) + (carData.options?.length || 0);
-    score += Math.min(featuresCount * 2, 10);
+    maxScore += 10;
+    if (featuresCount > 0) {
+      score += Math.min(featuresCount * 2, 10);
+    }
 
-    // Service history (5 points)
+    // Service history (5 points) - if available
+    maxScore += 5;
     if (carData.serviceHistory && carData.serviceHistory.length > 0) {
       score += 5;
     }
 
-    return Math.min(Math.round(score), 100);
+    // ✅ FIX: Calculate percentage based on available max score
+    // This ensures score works even with partial data
+    if (maxScore === 0) return 0;
+    const percentage = (score / maxScore) * 100;
+    return Math.min(Math.round(percentage), 100);
   }
 
   /**

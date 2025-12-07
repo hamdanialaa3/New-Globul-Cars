@@ -132,6 +132,19 @@ const Select = styled.select`
     background: var(--bg-card, #ffffff);
     color: var(--text-primary, #1e293b);
   }
+  
+  /* ✅ FIX: Dark mode - white text for top/popular brands */
+  [data-theme="dark"] & option.top-brand,
+  .dark-theme & option.top-brand {
+    color: #ffffff !important;
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%) !important;
+  }
+  
+  [data-theme="dark"] & option.popular-brand,
+  .dark-theme & option.popular-brand {
+    color: #ffffff !important;
+    background: var(--bg-card, #1e293b) !important;
+  }
 `;
 
 const Input = styled.input`
@@ -299,6 +312,7 @@ const ModelBadge = styled.div<{ $isVisible: boolean }>`
   & > span {
     position: relative;
     z-index: 3;
+    color: #000000 !important; /* ✅ FIX: Always black text in light and dark mode */
     text-shadow: 
       0 1px 2px rgba(0, 0, 0, 0.2),
       0 -1px 1px rgba(255, 255, 255, 0.3);
@@ -538,13 +552,16 @@ export const BrandModelMarkdownDropdown: React.FC<Props> = ({ brand, model, onBr
   const brandLabel = t('sell.vehicleData.brand');
   const modelLabel = t('sell.vehicleData.model');
   const hintText = t('sell.vehicleData.sourceMarkdown');
-  const selectBrandText = t('sell.vehicleData.selectBrand');
-  const selectModelText = t('sell.vehicleData.selectModel');
+  const exampleText = language === 'bg' ? 'Пример: ' : 'Example: ';
+  const exampleBrand = 'Mercedes-Benz';
+  const exampleModel = 'C-Class';
+  const selectBrandText = `${exampleText}${exampleBrand} | ${t('sell.vehicleData.selectBrand')}`;
+  const selectModelText = selectedBrand ? `${exampleText}${exampleModel} | ${t('sell.vehicleData.selectModel')}` : t('sell.vehicleData.selectModel');
   const otherText = t('sell.vehicleData.other');
   const enterOtherBrandText = t('sell.vehicleData.enterOtherBrand');
-  const enterOtherBrandPlaceholder = t('sell.vehicleData.enterOtherBrandPlaceholder');
+  const enterOtherBrandPlaceholder = language === 'bg' ? 'Пример: Tesla' : 'Example: Tesla';
   const enterOtherModelText = t('sell.vehicleData.enterOtherModel');
-  const enterOtherModelPlaceholder = t('sell.vehicleData.enterOtherModelPlaceholder');
+  const enterOtherModelPlaceholder = language === 'bg' ? 'Пример: Model 3' : 'Example: Model 3';
 
   return (
     <Container aria-label="Brand and model picker (markdown)">

@@ -11,14 +11,14 @@ import { brandToLogoFileKey, resolveCanonicalBrand } from './brand-normalization
  */
 export const getCarLogoUrl = (brandName: string): string => {
   if (!brandName) {
-    return '/car-logos/mein_logo_rest.png'; // Default logo
+    return '/assets/images/professional_car_logos/mein_logo_rest.png'; // Default logo
   }
 
   // Normalize brand name: capitalize first letter, handle special cases
   const normalizedBrand = normalizeBrandName(brandName);
   
-  // Try to get the logo
-  const logoPath = `/car-logos/${normalizedBrand}.png`;
+  // ✅ FIX: Use correct path for professional car logos
+  const logoPath = `/assets/images/professional_car_logos/${normalizedBrand}.png`;
   
   return logoPath;
 };
@@ -107,7 +107,7 @@ export const getCarLogoWithFallback = async (brandName: string): Promise<string>
     return logoUrl;
   }
   
-  return '/car-logos/mein_logo_rest.png'; // Default fallback
+  return '/assets/images/professional_car_logos/mein_logo_rest.png'; // Default fallback
 };
 
 /**

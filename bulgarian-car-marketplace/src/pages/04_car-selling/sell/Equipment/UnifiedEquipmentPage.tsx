@@ -1,7 +1,7 @@
 // Unified Equipment Page - All Features in One Place
 // صفحة موحدة للمعدات - كل الميزات في مكان واحد
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import SplitScreenLayout from '../../../../components/SplitScreenLayout';
@@ -17,6 +17,7 @@ import SellWorkflowStepStateService from '../../../../services/sellWorkflowStepS
 import { useEquipmentSelection } from './useEquipmentSelection';
 import { logger } from '../../../../services/logger-service';
 import { useUnifiedWorkflow } from '../../../../hooks/useUnifiedWorkflow';
+import DeleteDraftButton from '../../../../components/SellWorkflow/DeleteDraftButton';
 
 // Equipment Categories
 const EQUIPMENT_CATEGORIES = {
@@ -70,25 +71,104 @@ const UnifiedEquipmentPage: React.FC = () => {
   const { language } = useLanguage();
   
   // ✅ UNIFIED WORKFLOW: Use unified workflow (Step 3)
-  const { updateData, markStepCompleted } = useUnifiedWorkflow(3);
+  const { workflowData, updateData, markStepCompleted } = useUnifiedWorkflow(3);
 
   const {
     selected: selectedFeatures,
     toggleFeature,
     totalSelected,
-    serialize
+    serialize,
+    setCategoryFeatures
   } = useEquipmentSelection();
   const vehicleType = searchParams.get('vt');
   const make = searchParams.get('mk');
+  const model = searchParams.get('md');
   
-  // ✅ Auto-save equipment on every selection change
+  // Helper function to compare arrays
+  const arraysEqual = (a: string[], b: string[]): boolean => {
+    if (a.length !== b.length) return false;
+    const sortedA = [...a].sort();
+    const sortedB = [...b].sort();
+    return sortedA.every((val, index) => val === sortedB[index]);
+  };
+
+  // ✅ FIX: Use ref to track if we're restoring data (prevents infinite loop)
+  const isRestoringRef = useRef(false);
+  const hasRestoredRef = useRef(false);
+
+  // ✅ UNIFIED WORKFLOW: Restore saved equipment selections on mount and when navigating back
   useEffect(() => {
-    updateData({
-      safetyEquipment: selectedFeatures.safety,
-      comfortEquipment: selectedFeatures.comfort,
-      infotainmentEquipment: selectedFeatures.infotainment,
-      extrasEquipment: selectedFeatures.extras
-    });
+    // Skip if we've already restored or if there's no workflow data
+    if (hasRestoredRef.current || !workflowData || Object.keys(workflowData).length === 0) {
+      return;
+    }
+
+    // Mark that we're restoring to prevent auto-save
+    isRestoringRef.current = true;
+    hasRestoredRef.current = true;
+
+    // Restore equipment selections from saved workflow data
+    // Only restore if current selection is empty or different
+    let hasChanges = false;
+    
+    if (workflowData.safetyEquipment && Array.isArray(workflowData.safetyEquipment)) {
+      const currentSafety = selectedFeatures.safety;
+      if (currentSafety.length === 0 || !arraysEqual(currentSafety, workflowData.safetyEquipment)) {
+        setCategoryFeatures('safety', workflowData.safetyEquipment);
+        hasChanges = true;
+      }
+    }
+    if (workflowData.comfortEquipment && Array.isArray(workflowData.comfortEquipment)) {
+      const currentComfort = selectedFeatures.comfort;
+      if (currentComfort.length === 0 || !arraysEqual(currentComfort, workflowData.comfortEquipment)) {
+        setCategoryFeatures('comfort', workflowData.comfortEquipment);
+        hasChanges = true;
+      }
+    }
+    if (workflowData.infotainmentEquipment && Array.isArray(workflowData.infotainmentEquipment)) {
+      const currentInfotainment = selectedFeatures.infotainment;
+      if (currentInfotainment.length === 0 || !arraysEqual(currentInfotainment, workflowData.infotainmentEquipment)) {
+        setCategoryFeatures('infotainment', workflowData.infotainmentEquipment);
+        hasChanges = true;
+      }
+    }
+    if (workflowData.extrasEquipment && Array.isArray(workflowData.extrasEquipment)) {
+      const currentExtras = selectedFeatures.extras;
+      if (currentExtras.length === 0 || !arraysEqual(currentExtras, workflowData.extrasEquipment)) {
+        setCategoryFeatures('extras', workflowData.extrasEquipment);
+        hasChanges = true;
+      }
+    }
+
+    // Reset restoring flag after a short delay to allow state updates to complete
+    if (hasChanges) {
+      setTimeout(() => {
+        isRestoringRef.current = false;
+      }, 100);
+    } else {
+      isRestoringRef.current = false;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only run once on mount
+  
+  // ✅ Auto-save equipment on every selection change (but not during restoration)
+  useEffect(() => {
+    // Skip auto-save if we're currently restoring data
+    if (isRestoringRef.current) {
+      return;
+    }
+
+    // Debounce auto-save to prevent excessive updates
+    const timeoutId = setTimeout(() => {
+      updateData({
+        safetyEquipment: selectedFeatures.safety,
+        comfortEquipment: selectedFeatures.comfort,
+        infotainmentEquipment: selectedFeatures.infotainment,
+        extrasEquipment: selectedFeatures.extras
+      });
+    }, 300); // 300ms debounce
+
+    return () => clearTimeout(timeoutId);
   }, [selectedFeatures, updateData]);
 
   const handleContinue = (e?: React.MouseEvent) => {
@@ -106,9 +186,9 @@ const UnifiedEquipmentPage: React.FC = () => {
       // ✅ CRITICAL: Serialize equipment data for next page
       const params = serialize();
       
-      // ✅ CRITICAL: Ensure vehicleType is valid
+      // ✅ NEW ROUTE: Ensure vehicleType is valid
       const validVehicleType = vehicleType || 'car';
-      const targetPath = `/sell/inserat/${validVehicleType}/details/bilder?${params.toString()}`;
+      const targetPath = `/sell/inserat/${validVehicleType}/images?${params.toString()}`;
       
       console.log('🚀 Navigating to images page:', targetPath);
       console.log('📋 Equipment selected:', {
@@ -162,25 +242,33 @@ const UnifiedEquipmentPage: React.FC = () => {
   const leftContent = (
     <S.ContentSection>
       <S.HeaderCard>
-        <S.Title>
-          {language === 'bg' ? 'Оборудване' : 'Equipment'}
-        </S.Title>
-        <S.Subtitle>
-          {language === 'bg' 
-            ? `Изберете всички налични функции • Избрани: ${totalSelected}` 
-            : `Select all available features • Selected: ${totalSelected}`}
-        </S.Subtitle>
+        <S.HeaderContent>
+          <S.HeaderText>
+            <S.Title>
+              {language === 'bg' ? 'Оборудване' : 'Equipment'}
+            </S.Title>
+            <S.Subtitle>
+              {language === 'bg' 
+                ? `Изберете всички налични функции • Избрани: ${totalSelected}` 
+                : `Select all available features • Selected: ${totalSelected}`}
+            </S.Subtitle>
+          </S.HeaderText>
+          {make && (
+            <S.HeaderLogo>
+              <BrandLogoSphere 
+                make={make} 
+                ariaLabel={language === 'bg' ? 'Лого на марката' : 'Brand logo'}
+                size={106}
+              />
+              {model && (
+                <S.ModelBadge $isVisible={true}>
+                  <span>{model}</span>
+                </S.ModelBadge>
+              )}
+            </S.HeaderLogo>
+          )}
+        </S.HeaderContent>
       </S.HeaderCard>
-
-      {/* Top Navigation Buttons */}
-      <S.NavigationButtons>
-        <S.Button type="button" $variant="secondary" onClick={() => navigate(-1)}>
-          ← {language === 'bg' ? 'Назад' : 'Back'}
-        </S.Button>
-        <S.Button type="button" $variant="primary" onClick={(e) => handleContinue(e)}>
-          {language === 'bg' ? 'Продължи' : 'Continue'} →
-        </S.Button>
-      </S.NavigationButtons>
 
       {/* All Equipment Sections - Horizontal Grid */}
       <S.EquipmentSectionsGrid>
@@ -239,28 +327,30 @@ const UnifiedEquipmentPage: React.FC = () => {
           ? '💡 Всички полета са незадължителни. Изберете само наличните функции.' 
           : '💡 All fields are optional. Select only available features.'}
       </S.InfoBox>
-
-      <S.NavigationButtons>
-        <S.Button type="button" $variant="secondary" onClick={() => navigate(-1)}>
-          ← {language === 'bg' ? 'Назад' : 'Back'}
-        </S.Button>
-        <S.Button type="button" $variant="primary" onClick={(e) => handleContinue(e)}>
-          {language === 'bg' ? 'Продължи' : 'Continue'} →
-        </S.Button>
-      </S.NavigationButtons>
     </S.ContentSection>
   );
 
-  const rightContent = make ? (
-    <BrandLogoSphere 
-      make={make} 
-      ariaLabel={language === 'bg' ? 'Лого на марката' : 'Brand logo'}
-    />
-  ) : null;
-
   return (
     <SellWorkflowLayout currentStep="equipment">
-      <SplitScreenLayout leftContent={leftContent} rightContent={rightContent} />
+      <SplitScreenLayout 
+        leftContent={
+          <>
+            {leftContent}
+            {/* Navigation Buttons - Full width matching HeaderCard */}
+            <S.NavigationButtons>
+              <div>
+                <DeleteDraftButton currentStep={3} isMobile={false} />
+                <S.Button type="button" $variant="secondary" onClick={() => navigate(-1)}>
+                  ← {language === 'bg' ? 'Назад' : 'Back'}
+                </S.Button>
+              </div>
+              <S.Button type="button" $variant="primary" onClick={(e) => handleContinue(e)}>
+                {language === 'bg' ? 'Продължи' : 'Continue'} →
+              </S.Button>
+            </S.NavigationButtons>
+          </>
+        } 
+      />
     </SellWorkflowLayout>
   );
 };

@@ -181,8 +181,8 @@ const VehicleStartPageNew: React.FC = () => {
     
     SellWorkflowStepStateService.markCompleted('vehicle-selection');
 
-    // Auto-navigate immediately to vehicle data step
-    navigate(`/sell/inserat/${typeId}/fahrzeugdaten/antrieb-und-umwelt?${params.toString()}`);
+    // ✅ NEW ROUTE: Auto-navigate immediately to vehicle data step
+    navigate(`/sell/inserat/${typeId}/data?${params.toString()}`);
   };
 
   const leftContent = (

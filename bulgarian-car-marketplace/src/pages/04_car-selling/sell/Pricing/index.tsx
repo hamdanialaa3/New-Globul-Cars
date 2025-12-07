@@ -11,6 +11,7 @@ import * as S from './styles';
 import { SellWorkflowLayout } from '../../../../components/SellWorkflow';
 import SellWorkflowStepStateService from '../../../../services/sellWorkflowStepState';
 import { usePricingForm } from './usePricingForm';
+import useSellWorkflow from '../../../../hooks/useSellWorkflow';
 
 const PricingPageNew: React.FC = () => {
   const navigate = useNavigate();
@@ -31,7 +32,13 @@ const PricingPageNew: React.FC = () => {
 
 
   const vehicleType = searchParams.get('vt');
-  const make = searchParams.get('mk');
+  // ✅ FIX: Get make from multiple sources
+  const { workflowData } = useSellWorkflow();
+  const make = searchParams.get('mk') || 
+               searchParams.get('make') || 
+               workflowData?.make || 
+               workflowData?.brand || 
+               '';
 
   const handleContinue = () => {
     if (!pricingData.price) {
@@ -102,17 +109,20 @@ const PricingPageNew: React.FC = () => {
           />
         </S.PriceInputWrapper>
 
-        <S.CheckboxWrapper>
-          <S.Checkbox
-            type="checkbox"
-            id="negotiable"
-            checked={pricingData.negotiable}
-            onChange={(e) => handleFieldChange('negotiable', e.target.checked)}
-          />
-          <S.CheckboxLabel htmlFor="negotiable">
+        <S.ToggleWrapper>
+          <S.ToggleSwitch $checked={pricingData.negotiable}>
+            <input
+              type="checkbox"
+              id="negotiable"
+              checked={pricingData.negotiable}
+              onChange={(e) => handleFieldChange('negotiable', e.target.checked)}
+            />
+            <span className="toggle-slider" />
+          </S.ToggleSwitch>
+          <S.ToggleLabel htmlFor="negotiable">
             {language === 'bg' ? 'Цената подлежи на договаряне' : 'Price is negotiable'}
-          </S.CheckboxLabel>
-        </S.CheckboxWrapper>
+          </S.ToggleLabel>
+        </S.ToggleWrapper>
       </S.FormCard>
 
       <S.InfoCard>

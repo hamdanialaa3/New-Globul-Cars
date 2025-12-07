@@ -39,10 +39,41 @@ export const usePricingForm = () => {
   }, [workflowData, searchParams]);
 
   const [pricingData, setPricingData] = useState<PricingFormState>(initialState);
+  const [isInitialized, setIsInitialized] = useState(false);
 
+  // ✅ FIX: Only initialize once on mount, don't reset on every change
   useEffect(() => {
-    setPricingData(initialState);
-  }, [initialState]);
+    if (!isInitialized) {
+      setPricingData(initialState);
+      setIsInitialized(true);
+    }
+  }, [initialState, isInitialized]);
+
+  // ✅ FIX: Only sync from URL/workflow on initial mount, not on every change
+  // This prevents the price field from blinking/resetting while user is typing
+  useEffect(() => {
+    if (!isInitialized) return;
+    
+    // Only update if price is empty AND we have a value from URL/workflow
+    const urlPrice = searchParams.get('price');
+    const workflowPrice = workflowData.price;
+    
+    if (!pricingData.price && (urlPrice || workflowPrice)) {
+      setPricingData(prev => ({
+        ...prev,
+        price: urlPrice || workflowPrice || prev.price,
+        currency: searchParams.get('currency') || workflowData.currency || prev.currency,
+        priceType: (searchParams.get('priceType') as PricingFormState['priceType']) ||
+          (workflowData.priceType as PricingFormState['priceType']) ||
+          prev.priceType,
+        negotiable: searchParams.get('negotiable') === 'true' ||
+          workflowData.negotiable === true ||
+          workflowData.negotiable === 'true' ||
+          prev.negotiable,
+        vatDeductible: Boolean(workflowData.vatDeductible) || prev.vatDeductible
+      }));
+    }
+  }, [isInitialized]); // ✅ FIX: Only run once after initialization, not on every change
 
   useEffect(() => {
     updateWorkflowData(

@@ -487,7 +487,7 @@ export const BulgariaLocationDropdown: React.FC<BulgariaLocationDropdownProps> =
             disabled={disabled}
             $hasError={!!error}
           >
-            <option value="">{t2('selectProvince')}</option>
+            <option value="">{language === 'bg' ? 'Пример: София-град' : 'Example: Sofia-City'} | {t2('selectProvince')}</option>
             
             {/* Major provinces first */}
             {provinces
@@ -529,7 +529,7 @@ export const BulgariaLocationDropdown: React.FC<BulgariaLocationDropdownProps> =
             type="text"
             value={value.city}
             onChange={handleManualCityChange}
-            placeholder={t2('manualCityPlaceholder')}
+            placeholder={language === 'bg' ? 'Пример: София' : 'Example: Sofia'}
             disabled={disabled}
             $hasError={!!error}
           />
@@ -540,7 +540,7 @@ export const BulgariaLocationDropdown: React.FC<BulgariaLocationDropdownProps> =
             disabled={disabled || !value.province || value.province === 'other'}
             $hasError={!!error}
           >
-            <option value="">{t2('selectCity')}</option>
+            <option value="">{language === 'bg' ? 'Пример: София' : 'Example: Sofia'} | {t2('selectCity')}</option>
             
             {cities.map(city => {
               const displayName = language === 'bg' ? city.name : city.nameEn;
@@ -576,7 +576,7 @@ export const BulgariaLocationDropdown: React.FC<BulgariaLocationDropdownProps> =
           inputMode="numeric"
           value={value.postalCode}
           onChange={handleManualPostalCodeChange}
-          placeholder={t2('manualPostalCodePlaceholder')}
+          placeholder={language === 'bg' ? 'Пример: 1000' : 'Example: 1000'}
           maxLength={4}
           disabled={disabled}
           $hasError={!!error}

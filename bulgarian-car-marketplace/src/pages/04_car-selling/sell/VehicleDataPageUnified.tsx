@@ -14,6 +14,7 @@ import { useIsMobile } from '../../../hooks/useBreakpoint';
 import BrandModelMarkdownDropdown from '../../../components/BrandModelMarkdownDropdown/BrandModelMarkdownDropdown';
 import BulgariaLocationDropdown, { BulgariaLocationData } from '../../../components/BulgariaLocationDropdown/BulgariaLocationDropdown';
 import { useUnifiedWorkflow } from '../../../hooks/useUnifiedWorkflow';
+import DeleteDraftButton from '../../../components/SellWorkflow/DeleteDraftButton';
 // removed legacy structured brands import; new markdown-based dropdown is canonical
 
 // removed legacy popular brands; new markdown-based dropdown replaces this UI
@@ -283,11 +284,13 @@ const InsightSelect = styled.select.attrs<{ title?: string; 'aria-label'?: strin
   max-width: 450px;
   border-radius: 14px;
   border: 2px solid var(--border, rgba(255, 255, 255, 0.08));
-  padding: 0.8rem 1rem;
+  /* ✅ FIX: Match size with other dropdowns (MobileSelect/DesktopSelect) */
+  padding: ${props => themeTokens(props).mobileSpacing?.md || '1rem'};
   min-height: 2.75rem;
   background: ${({ $validation }) => getValidationBackground($validation)};
   color: var(--text-primary, #1e293b);
-  font-size: 0.95rem;
+  /* ✅ FIX: Match font size with other dropdowns */
+  font-size: ${props => themeTokens(props).mobileTypography?.body?.fontSize || '1rem'};
   transition: all 0.2s ease;
   cursor: pointer;
   
@@ -308,11 +311,13 @@ const InsightInput = styled.input<ValidationProps>`
   max-width: 450px;
   border-radius: 14px;
   border: 2px solid var(--border, rgba(255, 255, 255, 0.08));
-  padding: 0.8rem 1rem;
+  /* ✅ FIX: Match size with other dropdowns (MobileSelect/DesktopSelect) */
+  padding: ${props => themeTokens(props).mobileSpacing?.md || '1rem'};
   min-height: 2.75rem;
   background: ${({ $validation }) => getValidationBackground($validation)};
   color: var(--text-primary, #1e293b);
-  font-size: 0.95rem;
+  /* ✅ FIX: Match font size with other dropdowns */
+  font-size: ${props => themeTokens(props).mobileTypography?.body?.fontSize || '1rem'};
   transition: all 0.2s ease;
   
   &:hover {
@@ -329,6 +334,7 @@ const InsightInput = styled.input<ValidationProps>`
 
 const InputSuffixWrapper = styled.div<ValidationProps>`
   display: flex;
+  align-items: center; /* ✅ FIX: Center items vertically */
   max-width: 450px;
   border-radius: 14px;
   border: 2px solid var(--border, rgba(255, 255, 255, 0.08));
@@ -338,9 +344,14 @@ const InputSuffixWrapper = styled.div<ValidationProps>`
 `;
 
 const InputSuffix = styled.span`
+  display: flex;
+  align-items: center; /* ✅ FIX: Center text vertically */
   padding: 0.8rem 1rem;
   font-weight: 600;
   color: #dc2626;
+  white-space: nowrap; /* ✅ FIX: Prevent text wrapping - keep text horizontal */
+  flex-shrink: 0; /* ✅ FIX: Prevent shrinking */
+  line-height: 1; /* ✅ FIX: Single line height */
 `;
 
 const SectionDivider = styled.hr`
@@ -684,6 +695,10 @@ const VehicleDataPage: React.FC = () => {
   // ✅ UNIFIED WORKFLOW: Use unified workflow system (Step 2)
   const { workflowData, updateData, timerState } = useUnifiedWorkflow(2);
 
+  // ✅ FIX: Refs to prevent infinite loop during data restoration
+  const isRestoringRef = React.useRef(false);
+  const hasRestoredRef = React.useRef(false);
+
   const {
     formData,
     handleInputChange,
@@ -721,23 +736,70 @@ const VehicleDataPage: React.FC = () => {
     setTouchedFields(prev => new Set(prev).add(fieldName));
   }, []);
 
-  // ✅ UNIFIED WORKFLOW: Load saved data on mount
+  // ✅ FIX: Load saved data ONLY on mount (not on every workflowData change)
+  // This prevents infinite loop while still allowing restoration when navigating back
   useEffect(() => {
-    if (workflowData) {
-      // Restore all fields from workflow data
-      Object.keys(workflowData).forEach(key => {
-        const value = (workflowData as any)[key];
-        if (value !== undefined && value !== null) {
-          // ✅ FIX: Type-safe key handling
-          const validKey = key as keyof typeof formData;
-          if (validKey in formData) {
-            handleInputChange(validKey, value);
-          }
+    // Skip if we've already restored or if there's no workflow data
+    if (hasRestoredRef.current || !workflowData || Object.keys(workflowData).length === 0) {
+      return;
+    }
+
+    const hasSignificantData = !!(workflowData.make || workflowData.model || workflowData.year || workflowData.mileage);
+    
+    if (!hasSignificantData) {
+      return;
+    }
+
+    // Mark that we're restoring to prevent auto-save
+    isRestoringRef.current = true;
+    hasRestoredRef.current = true;
+    
+    // Restore all fields from workflow data to formData
+    const fieldsToRestore: Array<{ key: keyof typeof formData; value: any }> = [];
+    
+    // Map unified workflow fields to formData fields
+    if (workflowData.make) fieldsToRestore.push({ key: 'make', value: workflowData.make });
+    if (workflowData.model) fieldsToRestore.push({ key: 'model', value: workflowData.model });
+    if (workflowData.year) fieldsToRestore.push({ key: 'year', value: workflowData.year });
+    if (workflowData.firstRegistration) fieldsToRestore.push({ key: 'firstRegistration', value: workflowData.firstRegistration });
+    if (workflowData.mileage) fieldsToRestore.push({ key: 'mileage', value: workflowData.mileage });
+    if (workflowData.fuelType) fieldsToRestore.push({ key: 'fuelType', value: workflowData.fuelType });
+    if (workflowData.transmission) fieldsToRestore.push({ key: 'transmission', value: workflowData.transmission });
+    if (workflowData.power) fieldsToRestore.push({ key: 'power', value: workflowData.power });
+    if (workflowData.color) fieldsToRestore.push({ key: 'color', value: workflowData.color });
+    if (workflowData.doors) fieldsToRestore.push({ key: 'doors', value: workflowData.doors });
+    if (workflowData.seats) fieldsToRestore.push({ key: 'seats', value: workflowData.seats });
+    if (workflowData.exteriorColor) fieldsToRestore.push({ key: 'exteriorColor', value: workflowData.exteriorColor });
+    if (workflowData.previousOwners) fieldsToRestore.push({ key: 'previousOwners', value: workflowData.previousOwners });
+    if (workflowData.hasAccidentHistory !== undefined) fieldsToRestore.push({ key: 'hasAccidentHistory', value: workflowData.hasAccidentHistory });
+    if (workflowData.hasServiceHistory !== undefined) fieldsToRestore.push({ key: 'hasServiceHistory', value: workflowData.hasServiceHistory });
+    if (workflowData.variant) fieldsToRestore.push({ key: 'variant', value: workflowData.variant });
+    if (workflowData.roadworthy !== undefined) fieldsToRestore.push({ key: 'roadworthy', value: workflowData.roadworthy });
+    if (workflowData.saleType) fieldsToRestore.push({ key: 'saleType', value: workflowData.saleType as 'private' | 'commercial' });
+    if (workflowData.saleTimeline) fieldsToRestore.push({ key: 'saleTimeline', value: workflowData.saleTimeline as 'unknown' | 'soon' | 'months' });
+    if (workflowData.region) fieldsToRestore.push({ key: 'saleProvince', value: workflowData.region });
+    if (workflowData.city) fieldsToRestore.push({ key: 'saleCity', value: workflowData.city });
+    if (workflowData.postalCode) fieldsToRestore.push({ key: 'salePostalCode', value: workflowData.postalCode });
+    
+    // Restore all fields from unified workflow
+    if (fieldsToRestore.length > 0) {
+      fieldsToRestore.forEach(({ key, value }) => {
+        // Only restore if different to avoid unnecessary updates
+        if (formData[key] !== value) {
+          handleInputChange(key, value);
+          markFieldAsTouched(key);
         }
       });
+      
+      // Reset flag after a delay to allow formData to update
+      setTimeout(() => {
+        isRestoringRef.current = false;
+      }, 300);
+    } else {
+      isRestoringRef.current = false;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Run once on mount
+  }, []); // Only run once on mount
 
   // ✅ FIX: Load data from URL parameters and mark as touched
   useEffect(() => {
@@ -766,8 +828,18 @@ const VehicleDataPage: React.FC = () => {
 
   // ✅ UNIFIED WORKFLOW: Save formData on every change (AUTO-SAVE)
   useEffect(() => {
-    if (Object.keys(formData).length > 0) {
-      // Save ALL form data immediately to unified system
+    // ✅ FIX: Don't auto-save during data restoration
+    if (isRestoringRef.current) {
+      return;
+    }
+
+    if (Object.keys(formData).length === 0) {
+      return;
+    }
+
+    // ✅ FIX: Debounce auto-save to prevent excessive updates
+    const timeoutId = setTimeout(() => {
+      // ✅ COMPLETE: Save ALL form data to unified system (including all fields)
       updateData({
         make: formData.make,
         model: formData.model,
@@ -779,6 +851,12 @@ const VehicleDataPage: React.FC = () => {
         power: formData.power,
         color: formData.color,
         doors: formData.doors,
+        seats: formData.seats, // ✅ ADDED: Seats
+        exteriorColor: formData.exteriorColor || formData.color, // ✅ ADDED: Exterior color
+        previousOwners: formData.previousOwners, // ✅ ADDED: Previous owners
+        hasAccidentHistory: formData.hasAccidentHistory, // ✅ ADDED: Accident history
+        hasServiceHistory: formData.hasServiceHistory, // ✅ ADDED: Service history
+        variant: formData.variant, // ✅ ADDED: Variant
         // ✅ FIX: Convert null to undefined for roadworthy
         roadworthy: formData.roadworthy ?? undefined,
         saleType: formData.saleType,
@@ -787,19 +865,52 @@ const VehicleDataPage: React.FC = () => {
         city: formData.saleCity,
         postalCode: formData.salePostalCode
       });
-    }
-  }, [formData, updateData]); // Save on EVERY formData change
+    }, 500); // 500ms debounce
+
+    return () => clearTimeout(timeoutId);
+  }, [formData, updateData]); // Save on formData change (with debounce)
 
   // Real-time validation on form data changes
   useEffect(() => {
-    // ✅ FIX: Convert formData to validation format (year as number)
+    // ✅ FIX: Convert formData to validation format with all available fields
     const validationData = {
-      ...formData,
-      year: formData.year ? parseInt(formData.year, 10) : undefined
+      // Basic Info
+      make: formData.make,
+      model: formData.model,
+      year: formData.year ? parseInt(formData.year, 10) : undefined,
+      firstRegistration: formData.firstRegistration ? parseInt(formData.firstRegistration, 10) : undefined,
+      
+      // Technical
+      mileage: formData.mileage ? parseInt(formData.mileage, 10) : undefined,
+      fuelType: formData.fuelType,
+      transmission: formData.transmission,
+      power: formData.power ? parseInt(formData.power, 10) : undefined,
+      horsePower: formData.power ? parseInt(formData.power, 10) : undefined, // Alias for power
+      
+      // Colors
+      exteriorColor: formData.color || formData.exteriorColor,
+      color: formData.color,
+      
+      // Location
+      region: formData.saleProvince || formData.region,
+      city: formData.saleCity || formData.city,
+      
+      // Vehicle Type
+      vehicleType: vehicleType || formData.vehicleType,
+      
+      // Seller Type
+      sellerType: formData.saleType || 'private',
+      
+      // Other fields that might exist
+      doors: formData.doors,
+      roadworthy: formData.roadworthy,
+      saleType: formData.saleType,
+      saleTimeline: formData.saleTimeline
     };
+    
     const result = carValidationService.validate(validationData as any, 'draft');
     setValidationResult(result);
-  }, [formData]);
+  }, [formData, vehicleType]);
 
   // ✅ Define required fields for Vehicle Data step
   const REQUIRED_FIELDS = useMemo(() => [
@@ -844,12 +955,17 @@ const VehicleDataPage: React.FC = () => {
   }, [formData.firstRegistration]);
 
   const registrationMonthOptions = useMemo(
-    () => [
-      ...FIRST_REGISTRATION_MONTHS.map(month => ({
-        value: month.value,
-        label: language === 'bg' ? month.labelBg : month.labelEn
-      }))
-    ],
+    () => {
+      const exampleText = language === 'bg' ? 'Пример: ' : 'Example: ';
+      const exampleMonth = language === 'bg' ? FIRST_REGISTRATION_MONTHS[1].labelBg : FIRST_REGISTRATION_MONTHS[1].labelEn; // February
+      return [
+        { value: '', label: `${exampleText}${exampleMonth} | ${language === 'bg' ? 'Месец' : 'Month'}` },
+        ...FIRST_REGISTRATION_MONTHS.map(month => ({
+          value: month.value,
+          label: language === 'bg' ? month.labelBg : month.labelEn
+        }))
+      ];
+    },
     [language]
   );
   // Add an 'Other' month option for free-text
@@ -1063,42 +1179,56 @@ const VehicleDataPage: React.FC = () => {
 
   // removed legacy brand/model option builders; markdown-based dropdown is the source of truth
 
-  const yearOptions = useMemo(() => [
-    { value: '', label: t('sell.vehicleData.selectYear') },
-    ...Array.from({ length: new Date().getFullYear() - 1900 + 1 }, (_, i) => {
-      const year = (new Date().getFullYear() - i).toString();
-      return { value: year, label: year };
-    })
-    // No 'Other' option for registration years
-  ], [t]);
+  const yearOptions = useMemo(() => {
+    const exampleText = language === 'bg' ? 'Пример: ' : 'Example: ';
+    const currentYear = new Date().getFullYear();
+    const exampleYear = (currentYear - 10).toString(); // Example: 10 years ago
+    
+    return [
+      { value: '', label: `${exampleText}${exampleYear} | ${t('sell.vehicleData.selectYear')}` },
+      ...Array.from({ length: new Date().getFullYear() - 1900 + 1 }, (_, i) => {
+        const year = (new Date().getFullYear() - i).toString();
+        return { value: year, label: year };
+      })
+    ];
+  }, [t, language]);
 
-  const fuelOptions = useMemo(() => [
-    { value: '', label: t('sell.vehicleData.selectFuel') },
-    { value: 'petrol', label: t('sell.vehicleData.petrol') },
-    { value: 'diesel', label: t('sell.vehicleData.diesel') },
-    { value: 'electric', label: t('sell.vehicleData.electric') },
-    { value: 'hybrid', label: t('sell.vehicleData.hybrid') },
-    { value: 'lpg', label: t('sell.vehicleData.lpg') },
-    { value: '__other__', label: t('sell.vehicleData.other') }
-  ], [t]);
+  const fuelOptions = useMemo(() => {
+    const exampleText = language === 'bg' ? 'Пример: ' : 'Example: ';
+    return [
+      { value: '', label: `${exampleText}${t('sell.vehicleData.petrol')} | ${t('sell.vehicleData.selectFuel')}` },
+      { value: 'petrol', label: t('sell.vehicleData.petrol') },
+      { value: 'diesel', label: t('sell.vehicleData.diesel') },
+      { value: 'electric', label: t('sell.vehicleData.electric') },
+      { value: 'hybrid', label: t('sell.vehicleData.hybrid') },
+      { value: 'lpg', label: t('sell.vehicleData.lpg') },
+      { value: '__other__', label: t('sell.vehicleData.other') }
+    ];
+  }, [t, language]);
 
-  const transmissionOptions = useMemo(() => [
-    { value: '', label: t('sell.vehicleData.selectTransmission') },
-    { value: 'manual', label: t('sell.vehicleData.manual') },
-    { value: 'automatic', label: t('sell.vehicleData.automatic') }
-  ], [t]);
+  const transmissionOptions = useMemo(() => {
+    const exampleText = language === 'bg' ? 'Пример: ' : 'Example: ';
+    return [
+      { value: '', label: `${exampleText}${t('sell.vehicleData.manual')} | ${t('sell.vehicleData.selectTransmission')}` },
+      { value: 'manual', label: t('sell.vehicleData.manual') },
+      { value: 'automatic', label: t('sell.vehicleData.automatic') }
+    ];
+  }, [t, language]);
 
-  const colorOptions = useMemo(() => [
-    { value: '', label: t('sell.vehicleData.selectColor') },
-    { value: 'white', label: t('sell.vehicleData.white') },
-    { value: 'black', label: t('sell.vehicleData.black') },
-    { value: 'silver', label: t('sell.vehicleData.silver') },
-    { value: 'gray', label: t('sell.vehicleData.gray') },
-    { value: 'blue', label: t('sell.vehicleData.blue') },
-    { value: 'red', label: t('sell.vehicleData.red') },
-    { value: 'green', label: t('sell.vehicleData.green') },
-    { value: 'other', label: t('sell.vehicleData.other') }
-  ], [t]);
+  const colorOptions = useMemo(() => {
+    const exampleText = language === 'bg' ? 'Пример: ' : 'Example: ';
+    return [
+      { value: '', label: `${exampleText}${t('sell.vehicleData.black')} | ${t('sell.vehicleData.selectColor')}` },
+      { value: 'white', label: t('sell.vehicleData.white') },
+      { value: 'black', label: t('sell.vehicleData.black') },
+      { value: 'silver', label: t('sell.vehicleData.silver') },
+      { value: 'gray', label: t('sell.vehicleData.gray') },
+      { value: 'blue', label: t('sell.vehicleData.blue') },
+      { value: 'red', label: t('sell.vehicleData.red') },
+      { value: 'green', label: t('sell.vehicleData.green') },
+      { value: 'other', label: t('sell.vehicleData.other') }
+    ];
+  }, [t, language]);
 
   const renderListingSection = (isMobileView: boolean) => (
     <InsightsCard $isMobile={isMobileView}>
@@ -1136,7 +1266,6 @@ const VehicleDataPage: React.FC = () => {
               title={t('sell.listingSection.month')}
               $validation={getValidationState('registrationMonth')}
             >
-              <option value="">{t('sell.listingSection.month')}</option>
               {registrationMonthOptions.map(option => (
                 <option key={option.value} value={option.value}>
                   {option.label}
@@ -1153,7 +1282,7 @@ const VehicleDataPage: React.FC = () => {
             <InsightInput
               type="number"
               value={formData.mileage}
-              placeholder={t('sell.vehicleData.mileagePlaceholder')}
+              placeholder={language === 'bg' ? 'Пример: 185000' : 'Example: 185000'}
               onChange={event => handleInputChange('mileage', event.target.value)}
               onFocus={() => markFieldAsTouched('mileage')}
             />
@@ -1185,7 +1314,7 @@ const VehicleDataPage: React.FC = () => {
                 value={(formData as any).fuelTypeOther || ''}
                 onChange={e => handleInputChange('fuelTypeOther', e.target.value)}
                 onFocus={() => markFieldAsTouched('fuelTypeOther')}
-                placeholder={t('sell.vehicleData.enterOtherPlaceholder')}
+                placeholder={language === 'bg' ? 'Пример: CNG' : 'Example: CNG'}
               />
             </div>
           )}
@@ -1215,7 +1344,7 @@ const VehicleDataPage: React.FC = () => {
             <InsightInput
               type="number"
               value={formData.power}
-              placeholder={t('sell.listingSection.powerPlaceholder')}
+              placeholder={language === 'bg' ? 'Пример: 177' : 'Example: 177'}
               onChange={event => {
                 const value = event.target.value;
                 // حد أقصى 999 حصان (3 خانات)
@@ -1254,7 +1383,7 @@ const VehicleDataPage: React.FC = () => {
                 value={(formData as any).colorOther || ''}
                 onChange={e => handleInputChange('colorOther', e.target.value)}
                 onFocus={() => markFieldAsTouched('colorOther')}
-                placeholder={t('sell.vehicleData.enterOtherPlaceholder')}
+                placeholder={language === 'bg' ? 'Пример: Бежов' : 'Example: Beige'}
               />
             </div>
           )}
@@ -1414,12 +1543,16 @@ const VehicleDataPage: React.FC = () => {
         </MobileContent>
 
         <MobileStickyFooter>
-          <SimpleContinueButton
-            onClick={(e) => goToNextPage(e)}
-            type="button"
-          >
-            {t('common.continue')} →
-          </SimpleContinueButton>
+          <div style={{ display: 'flex', gap: '0.75rem', width: '100%' }}>
+            <DeleteDraftButton currentStep={2} isMobile={true} />
+            <SimpleContinueButton
+              onClick={(e) => goToNextPage(e)}
+              type="button"
+              style={{ flex: 1 }}
+            >
+              {t('common.continue')} →
+            </SimpleContinueButton>
+          </div>
         </MobileStickyFooter>
       </MobileContainer>
     );
@@ -1479,9 +1612,12 @@ const VehicleDataPage: React.FC = () => {
         </DesktopFieldGroup>
 
         <DesktopActions>
-          <DesktopButton onClick={handleBack} type="button">
-            ← {t('common.back')}
-          </DesktopButton>
+          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+            <DeleteDraftButton currentStep={2} isMobile={false} />
+            <DesktopButton onClick={handleBack} type="button">
+              ← {t('common.back')}
+            </DesktopButton>
+          </div>
           <SimpleDesktopContinueButton
             onClick={(e) => goToNextPage(e)}
             type="button"

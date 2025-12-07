@@ -13,22 +13,42 @@ interface SellProgressBarProps {
 
 const BarContainer = styled.nav`
   position: relative;
-  background: linear-gradient(135deg, rgba(13, 17, 28, 0.9), rgba(15, 23, 42, 0.95));
+  /* ✅ FIX: Dynamic background for light/dark mode */
+  background: var(--bg-card, #ffffff);
   border-radius: 22px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border, rgba(0, 0, 0, 0.1));
   padding: 0.9rem 1.25rem;
   overflow: hidden;
   box-shadow:
-    0 25px 40px rgba(2, 6, 23, 0.45),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    0 25px 40px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+
+  /* Dark mode styles */
+  [data-theme="dark"] &,
+  .dark-theme & {
+    background: linear-gradient(135deg, rgba(13, 17, 28, 0.9), rgba(15, 23, 42, 0.95));
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow:
+      0 25px 40px rgba(2, 6, 23, 0.45),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
 
   &::after {
     content: '';
     position: absolute;
     inset: 8px;
     border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border, rgba(0, 0, 0, 0.05));
     pointer-events: none;
+    box-shadow: inset 0 0 45px rgba(255, 143, 16, 0.03);
+    transition: all 0.3s ease;
+  }
+
+  /* Dark mode ::after */
+  [data-theme="dark"] &::after,
+  .dark-theme &::after {
+    border-color: rgba(255, 255, 255, 0.04);
     box-shadow: inset 0 0 45px rgba(255, 143, 16, 0.06);
   }
 `;
@@ -60,8 +80,9 @@ const StepButton = styled.button<{
   gap: 0.6rem;
   padding: 0.55rem 0.95rem;
   border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(15, 23, 42, 0.75);
+  /* ✅ FIX: Light mode default */
+  border: 1px solid var(--border, rgba(0, 0, 0, 0.1));
+  background: var(--bg-secondary, #f8f9fa);
   cursor: ${({ $clickable }) => ($clickable ? 'pointer' : 'default')};
   transition: all 0.2s ease-in-out;
   white-space: nowrap;
@@ -75,9 +96,17 @@ const StepButton = styled.button<{
     position: absolute;
     inset: 0;
     border-radius: inherit;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.5), transparent);
+    opacity: 0.3;
+    pointer-events: none;
+    transition: all 0.3s ease;
+  }
+
+  /* Dark mode ::before */
+  [data-theme="dark"] &::before,
+  .dark-theme &::before {
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent);
     opacity: 0.55;
-    pointer-events: none;
   }
 
   &::after {
@@ -85,9 +114,18 @@ const StepButton = styled.button<{
     position: absolute;
     inset: -30%;
     border-radius: 50%;
+    background: radial-gradient(circle, rgba(0, 0, 0, 0.05), transparent 70%);
+    opacity: 0.2;
+    pointer-events: none;
+    mix-blend-mode: multiply;
+    transition: all 0.3s ease;
+  }
+
+  /* Dark mode ::after */
+  [data-theme="dark"] &::after,
+  .dark-theme &::after {
     background: radial-gradient(circle, rgba(255, 255, 255, 0.16), transparent 70%);
     opacity: 0.35;
-    pointer-events: none;
     mix-blend-mode: screen;
   }
 
@@ -114,11 +152,26 @@ const StepButton = styled.button<{
     }
 
     return css`
-      background: linear-gradient(135deg, rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.9));
-      border-color: rgba(148, 163, 184, 0.4);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      background: var(--bg-secondary, #f8f9fa);
+      border-color: var(--border, rgba(0, 0, 0, 0.1));
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
     `;
   }}
+
+  /* Dark mode default state */
+  [data-theme="dark"] &,
+  .dark-theme & {
+    ${({ $status, $active }) => {
+      if (!$active && $status !== 'completed') {
+        return css`
+          background: linear-gradient(135deg, rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.9));
+          border-color: rgba(148, 163, 184, 0.4);
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        `;
+      }
+      return '';
+    }}
+  }
 
   ${({ $clickable, $active }) =>
     $clickable &&
@@ -126,9 +179,23 @@ const StepButton = styled.button<{
     css`
       &:hover {
         transform: translateY(-2px);
-        box-shadow: 0 14px 28px rgba(148, 163, 184, 0.35);
+        box-shadow: 0 14px 28px rgba(148, 163, 184, 0.25);
+        background: var(--bg-hover, #e9ecef);
       }
     `}
+
+  /* Dark mode hover */
+  [data-theme="dark"] &,
+  .dark-theme & {
+    ${({ $clickable, $active }) =>
+      $clickable &&
+      !$active &&
+      css`
+        &:hover {
+          box-shadow: 0 14px 28px rgba(148, 163, 184, 0.35);
+        }
+      `}
+  }
 
   @media (max-width: 768px) {
     width: 100%;
@@ -171,11 +238,26 @@ const StepCircle = styled.span<{
       `;
     }
 
+    /* ✅ FIX: Light mode pending */
     return css`
-      color: #b91c1c;
-      background: #fee2e2;
+      color: #64748b;
+      background: #e2e8f0;
     `;
   }}
+
+  /* Dark mode pending state */
+  [data-theme="dark"] &,
+  .dark-theme & {
+    ${({ $status, $active }) => {
+      if (!$active && $status !== 'completed') {
+        return css`
+          color: #b91c1c;
+          background: #fee2e2;
+        `;
+      }
+      return '';
+    }}
+  }
 `;
 
 const StepLabel = styled.span<{
@@ -186,18 +268,37 @@ const StepLabel = styled.span<{
   font-weight: ${({ $active }) => ($active ? 700 : 600)};
   letter-spacing: -0.01em;
   transition: color 0.2s ease-in-out;
+  /* ✅ FIX: Light mode colors */
   color: ${({ $status, $active }) => {
-    if ($active) return '#f1f5f9';
-    if ($status === 'completed') return '#d1fae5';
-    return '#e2e8f0';
+    if ($active) return '#1e293b';
+    if ($status === 'completed') return '#065f46';
+    return '#64748b';
   }};
+
+  /* Dark mode colors */
+  [data-theme="dark"] &,
+  .dark-theme & {
+    color: ${({ $status, $active }) => {
+      if ($active) return '#f1f5f9';
+      if ($status === 'completed') return '#d1fae5';
+      return '#e2e8f0';
+    }};
+  }
 `;
 
 const StepCaption = styled.span`
   font-size: 0.58rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(248, 250, 252, 0.55);
+  /* ✅ FIX: Light mode color */
+  color: rgba(100, 116, 139, 0.7);
+  transition: color 0.2s ease-in-out;
+
+  /* Dark mode color */
+  [data-theme="dark"] &,
+  .dark-theme & {
+    color: rgba(248, 250, 252, 0.55);
+  }
 `;
 
 const StepContent = styled.div`
@@ -216,15 +317,29 @@ const Connector = styled.li<{ $completed: boolean }>`
   height: 4px;
   border-radius: 999px;
   flex-shrink: 0;
+  /* ✅ FIX: Light mode colors */
   background: ${({ $completed }) =>
     $completed
       ? 'linear-gradient(90deg, rgba(16, 185, 129, 0.95), rgba(45, 212, 191, 0.85))'
-      : 'linear-gradient(90deg, rgba(71, 85, 105, 0.65), rgba(51, 65, 85, 0.4))'};
-  transition: background 0.25s ease-in-out;
+      : 'linear-gradient(90deg, rgba(203, 213, 225, 0.6), rgba(226, 232, 240, 0.4))'};
+  transition: all 0.25s ease-in-out;
   box-shadow: ${({ $completed }) =>
     $completed
       ? '0 8px 16px rgba(16, 185, 129, 0.35)'
-      : 'inset 0 0 6px rgba(15, 23, 42, 0.65)'};
+      : 'inset 0 0 6px rgba(0, 0, 0, 0.05)'};
+
+  /* Dark mode colors */
+  [data-theme="dark"] &,
+  .dark-theme & {
+    background: ${({ $completed }) =>
+      $completed
+        ? 'linear-gradient(90deg, rgba(16, 185, 129, 0.95), rgba(45, 212, 191, 0.85))'
+        : 'linear-gradient(90deg, rgba(71, 85, 105, 0.65), rgba(51, 65, 85, 0.4))'};
+    box-shadow: ${({ $completed }) =>
+      $completed
+        ? '0 8px 16px rgba(16, 185, 129, 0.35)'
+        : 'inset 0 0 6px rgba(15, 23, 42, 0.65)'};
+  }
 
   @media (max-width: 1280px) {
     width: 28px;

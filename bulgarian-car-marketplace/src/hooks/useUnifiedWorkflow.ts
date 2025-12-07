@@ -152,11 +152,11 @@ export const useUnifiedWorkflow = (currentStep: number) => {
   }, []);
 
   /**
-   * Clear all workflow data
+   * Clear all workflow data (including images from IndexedDB)
    */
   const clearWorkflow = useCallback(async () => {
-    UnifiedWorkflowPersistenceService.clearData();
-    await ImageStorageService.clearImages();
+    // ✅ CRITICAL: clearData now clears images from IndexedDB automatically
+    await UnifiedWorkflowPersistenceService.clearData();
     setWorkflowData(null);
     setImagesCount(0);
     setTimerState({

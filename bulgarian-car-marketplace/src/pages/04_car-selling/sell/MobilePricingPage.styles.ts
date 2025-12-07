@@ -119,6 +119,97 @@ const CheckboxGroup = styled.div`
   padding: ${mobileSpacing.sm} 0;
 `;
 
+// ✅ Professional Toggle Switch for Mobile
+const ToggleWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${mobileSpacing.md};
+  padding: ${mobileSpacing.md} 0;
+`;
+
+const ToggleSwitch = styled.label<{ $checked: boolean }>`
+  position: relative;
+  display: inline-block;
+  width: 52px;
+  height: 30px;
+  cursor: pointer;
+  flex-shrink: 0;
+
+  input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+  }
+
+  .toggle-slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: ${props => props.$checked ? '#22c55e' : '#cbd5e1'};
+    border-radius: 30px;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: ${props => props.$checked 
+      ? '0 3px 10px rgba(34, 197, 94, 0.35), inset 0 1px 3px rgba(0, 0, 0, 0.1)' 
+      : 'inset 0 1px 3px rgba(0, 0, 0, 0.1)'};
+
+    &::before {
+      content: '';
+      position: absolute;
+      height: 24px;
+      width: 24px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      border-radius: 50%;
+      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2), 
+                  0 1px 2px rgba(0, 0, 0, 0.1);
+      transform: ${props => props.$checked ? 'translateX(22px)' : 'translateX(0)'};
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: ${props => props.$checked ? '100%' : '0%'};
+      height: ${props => props.$checked ? '100%' : '0%'};
+      background: radial-gradient(circle, rgba(34, 197, 94, 0.25) 0%, transparent 70%);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      pointer-events: none;
+    }
+  }
+
+  &:hover .toggle-slider {
+    box-shadow: ${props => props.$checked 
+      ? '0 4px 14px rgba(34, 197, 94, 0.45), inset 0 1px 3px rgba(0, 0, 0, 0.1)' 
+      : '0 2px 6px rgba(0, 0, 0, 0.12), inset 0 1px 3px rgba(0, 0, 0, 0.1)'};
+  }
+
+  &:active .toggle-slider::before {
+    width: 28px;
+  }
+`;
+
+const ToggleLabel = styled.label`
+  font-size: ${mobileTypography.bodyMedium.fontSize};
+  color: ${mobileColors.neutral.gray700};
+  cursor: pointer;
+  user-select: none;
+  flex: 1;
+  font-weight: 500;
+  transition: color 0.3s ease;
+  
+  &:hover {
+    color: ${mobileColors.primary.main};
+  }
+`;
+
 const Checkbox = styled.input`
   width: 20px;
   height: 20px;
@@ -198,6 +289,9 @@ export const S = {
   Currency,
   FormattedPrice,
   CheckboxGroup,
+  ToggleWrapper,
+  ToggleSwitch,
+  ToggleLabel,
   Checkbox,
   CheckboxLabel,
   InfoCard,

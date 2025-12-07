@@ -8,6 +8,7 @@ import { useAuth } from '../../../contexts/AuthProvider';
 import { SellProgressBar } from '../../../components/SellWorkflow';
 import SellWorkflowStepStateService from '../../../services/sellWorkflowStepState';
 import { useUnifiedWorkflow } from '../../../hooks/useUnifiedWorkflow';
+import DeleteDraftButton from '../../../components/SellWorkflow/DeleteDraftButton';
 import { ImageStorageService } from '../../../services/ImageStorageService';
 import { useIsMobile } from '../../../hooks/useBreakpoint';
 import { Upload, X, Image as ImageIcon, Video, Box } from 'lucide-react';
@@ -246,10 +247,28 @@ const DesktopRemoveButton = styled.button`
 const DesktopActions = styled.div`
   display: flex;
   justify-content: space-between;
-  gap: 1rem;
+  align-items: center;
+  gap: 1.5rem;
   margin-top: 3rem;
-  padding-top: 2rem;
-  border-top: 1px solid var(--border);
+  padding: 2rem;
+  background: var(--bg-card);
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  
+  /* Left side: Delete Draft + Back button */
+  > div:first-child {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 0 0 auto;
+  }
+  
+  /* Right side: Continue button */
+  > button:last-child {
+    flex: 0 0 auto;
+    margin-left: auto;
+  }
 `;
 
 const DesktopButton = styled.button`
@@ -507,29 +526,44 @@ const ImagesPage: React.FC = () => {
   const { user } = useAuth();
 
   // Unified workflow hook
-  const { updateData, imagesCount, timerState } = useUnifiedWorkflow(4);
+  const { workflowData, updateData, imagesCount, timerState } = useUnifiedWorkflow(4);
 
   const [isDragOver, setIsDragOver] = useState(false);
   const [isVideoDragOver, setIsVideoDragOver] = useState(false);
   const [videoPreview, setVideoPreview] = useState<string | null>(null);
   const [imagePreviews, setImagePreviews] = useState<Map<number, string>>(new Map());
   const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [isLoadingImages, setIsLoadingImages] = useState(true);
 
-  // Load existing images from IndexedDB
+  // ✅ UNIFIED WORKFLOW: Load existing images from IndexedDB on mount
   useEffect(() => {
     const loadImages = async () => {
       try {
+        setIsLoadingImages(true);
         const savedImages = await ImageStorageService.getImages();
         if (savedImages.length > 0) {
+          console.log('🔄 Restoring images from IndexedDB:', savedImages.length);
           setImageFiles(savedImages);
           SellWorkflowStepStateService.markCompleted('images');
+          
+          // Update workflow data with images count
+          if (workflowData?.imagesCount !== savedImages.length) {
+            updateData({ imagesCount: savedImages.length });
+          }
+        } else if (workflowData?.imagesCount && workflowData.imagesCount > 0) {
+          // If workflow says we have images but IndexedDB is empty, try to reload
+          console.log('⚠️ Workflow indicates images exist but IndexedDB is empty. Attempting reload...');
         }
       } catch (error) {
         console.error('Failed to load images:', error);
+        toast.error(language === 'bg' ? 'Грешка при зареждане на изображенията' : 'Error loading images');
+      } finally {
+        setIsLoadingImages(false);
       }
     };
     loadImages();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Run once on mount
 
   // Create preview URLs for images
   useEffect(() => {
@@ -710,9 +744,9 @@ const ImagesPage: React.FC = () => {
         // ✅ CRITICAL: Preserve all URL params from previous steps
         const params = new URLSearchParams(searchParams);
         
-        // ✅ CRITICAL: Ensure vehicleType is valid
+        // ✅ NEW ROUTE: Ensure vehicleType is valid
         const validVehicleType = vehicleType || 'car';
-        const targetPath = `/sell/inserat/${validVehicleType}/details/preis?${params.toString()}`;
+        const targetPath = `/sell/inserat/${validVehicleType}/pricing?${params.toString()}`;
         
         console.log('🚀 Navigating to pricing page:', targetPath);
         console.log('📋 Images uploaded:', imageFiles.length);
@@ -869,12 +903,16 @@ const ImagesPage: React.FC = () => {
           </SectionsGrid>
 
           <MobileStickyFooter>
-            <MobilePrimaryButton
-              onClick={handleContinue}
-              disabled={imageFiles.length === 0}
-            >
-              {t('common.continue')}
-            </MobilePrimaryButton>
+            <div style={{ display: 'flex', gap: '0.75rem', width: '100%' }}>
+              <DeleteDraftButton currentStep={4} isMobile={true} />
+              <MobilePrimaryButton
+                onClick={handleContinue}
+                disabled={imageFiles.length === 0}
+                style={{ flex: 1 }}
+              >
+                {t('common.continue')}
+              </MobilePrimaryButton>
+            </div>
           </MobileStickyFooter>
         </MobileContent>
       </MobileContainer>
@@ -986,9 +1024,12 @@ const ImagesPage: React.FC = () => {
         </SectionsGrid>
 
         <DesktopActions>
-          <DesktopButton onClick={handleBack}>
-            {t('common.back')}
-          </DesktopButton>
+          <div>
+            <DeleteDraftButton currentStep={4} isMobile={false} />
+            <DesktopButton onClick={handleBack}>
+              {t('common.back')}
+            </DesktopButton>
+          </div>
           <DesktopPrimaryButton
             onClick={handleContinue}
             disabled={imageFiles.length === 0}

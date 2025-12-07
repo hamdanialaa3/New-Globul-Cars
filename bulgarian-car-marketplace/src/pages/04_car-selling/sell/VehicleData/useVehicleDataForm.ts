@@ -9,7 +9,7 @@ import {
 import { resolveCanonicalBrand } from '../../../../services/brand-normalization';
 import structuredBrandsData from '../../../../data/car-brands-structured.json';
 import { VehicleFormData } from './types';
-import useSellWorkflow from '../../../../hooks/useSellWorkflow';
+import { useUnifiedWorkflow } from '../../../../hooks/useUnifiedWorkflow';
 import SellWorkflowStepStateService from '../../../../services/sellWorkflowStepState';
 
 const defaultForm: VehicleFormData = {
@@ -77,7 +77,8 @@ export const getRegistrationYear = (data: Partial<VehicleFormData> | VehicleForm
 
 export const useVehicleDataForm = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const { workflowData, updateWorkflowData, clearWorkflowData } = useSellWorkflow();
+  // ✅ UNIFIED WORKFLOW: Use unified workflow (Step 2 for Vehicle Data)
+  const { workflowData, updateData, clearWorkflow } = useUnifiedWorkflow(2);
 
 const initialValues = useMemo<VehicleFormData>(() => {
     const fromParams: Partial<VehicleFormData> = {
@@ -89,9 +90,10 @@ const initialValues = useMemo<VehicleFormData>(() => {
       transmission: searchParams.get('tr') || undefined
     };
 
+    // ✅ UNIFIED WORKFLOW: Prioritize unified workflow data over legacy workflow
     return {
       ...defaultForm,
-      ...workflowData,
+      ...(workflowData || {}), // Use unified workflow data
       ...fromParams
     };
   }, [workflowData, searchParams]);
@@ -128,29 +130,137 @@ const [formData, setFormData] = useState<VehicleFormData>(initialValues);
   }, [searchParams]);
 
 const formEquals = useCallback(
-  (a: VehicleFormData, b: VehicleFormData) => {
-    const keys = Object.keys(defaultForm) as (keyof VehicleFormData)[];
-    return keys.every(key => a[key] === b[key]);
-  },
-  []
-);
+    (a: VehicleFormData, b: VehicleFormData) => {
+      const keys = Object.keys(defaultForm) as (keyof VehicleFormData)[];
+      return keys.every(key => a[key] === b[key]);
+    },
+    []
+  );
 
-useEffect(() => {
-  setFormData(prev => (formEquals(prev, initialValues) ? prev : initialValues));
-}, [initialValues, formEquals]);
-
-  // ✅ PROFESSIONAL FIX: Use ref to prevent infinite loop while keeping updateWorkflowData stable
-  const updateWorkflowDataRef = useRef(updateWorkflowData);
-  
-  // Keep ref synchronized with latest updateWorkflowData
+  // ✅ UNIFIED WORKFLOW: Update formData when initialValues change (including when workflowData changes)
   useEffect(() => {
-    updateWorkflowDataRef.current = updateWorkflowData;
-  }, [updateWorkflowData]);
+    setFormData(prev => (formEquals(prev, initialValues) ? prev : initialValues));
+  }, [initialValues, formEquals]);
+
+  // ✅ UNIFIED WORKFLOW: Restore data from unified workflow when it changes (e.g., when navigating back)
+  useEffect(() => {
+    if (workflowData && Object.keys(workflowData).length > 0) {
+      const hasSignificantData = !!(workflowData.make || workflowData.model || workflowData.year || workflowData.mileage);
+      
+      if (hasSignificantData) {
+        // Only restore if formData is missing these values (to avoid overwriting user input)
+        setFormData(prev => {
+          const updated = { ...prev };
+          let hasChanges = false;
+
+          // Restore fields from unified workflow if they're missing in formData
+          if (workflowData.make && !prev.make) {
+            updated.make = workflowData.make;
+            hasChanges = true;
+          }
+          if (workflowData.model && !prev.model) {
+            updated.model = workflowData.model;
+            hasChanges = true;
+          }
+          if (workflowData.year && !prev.year) {
+            updated.year = workflowData.year;
+            hasChanges = true;
+          }
+          if (workflowData.firstRegistration && !prev.firstRegistration) {
+            updated.firstRegistration = workflowData.firstRegistration;
+            hasChanges = true;
+          }
+          if (workflowData.mileage && !prev.mileage) {
+            updated.mileage = workflowData.mileage;
+            hasChanges = true;
+          }
+          if (workflowData.fuelType && !prev.fuelType) {
+            updated.fuelType = workflowData.fuelType;
+            hasChanges = true;
+          }
+          if (workflowData.transmission && !prev.transmission) {
+            updated.transmission = workflowData.transmission;
+            hasChanges = true;
+          }
+          if (workflowData.power && !prev.power) {
+            updated.power = workflowData.power;
+            hasChanges = true;
+          }
+          if (workflowData.color && !prev.color) {
+            updated.color = workflowData.color;
+            hasChanges = true;
+          }
+          if (workflowData.doors && !prev.doors) {
+            updated.doors = workflowData.doors;
+            hasChanges = true;
+          }
+          if (workflowData.seats && !prev.seats) {
+            updated.seats = workflowData.seats;
+            hasChanges = true;
+          }
+          if (workflowData.roadworthy !== undefined && prev.roadworthy === null) {
+            updated.roadworthy = workflowData.roadworthy;
+            hasChanges = true;
+          }
+          if (workflowData.saleType && !prev.saleType) {
+            updated.saleType = workflowData.saleType as 'private' | 'commercial';
+            hasChanges = true;
+          }
+          if (workflowData.saleTimeline && !prev.saleTimeline) {
+            updated.saleTimeline = workflowData.saleTimeline as 'unknown' | 'soon' | 'months';
+            hasChanges = true;
+          }
+          if (workflowData.region && !prev.saleProvince) {
+            updated.saleProvince = workflowData.region;
+            hasChanges = true;
+          }
+          if (workflowData.city && !prev.saleCity) {
+            updated.saleCity = workflowData.city;
+            hasChanges = true;
+          }
+          if (workflowData.postalCode && !prev.salePostalCode) {
+            updated.salePostalCode = workflowData.postalCode;
+            hasChanges = true;
+          }
+
+          return hasChanges ? updated : prev;
+        });
+      }
+    }
+  }, [workflowData]); // Run when workflowData changes (e.g., when navigating back)
+
+  // ✅ UNIFIED WORKFLOW: Auto-save to unified workflow
+  // Use ref to prevent infinite loop while keeping updateData stable
+  const updateDataRef = useRef(updateData);
+  
+  // Keep ref synchronized with latest updateData
+  useEffect(() => {
+    updateDataRef.current = updateData;
+  }, [updateData]);
 
   // Debounced auto-save with stable ref - prevents infinite loop
   useEffect(() => {
     const timer = setTimeout(() => {
-      updateWorkflowDataRef.current(formData, 'vehicle-data');
+      // ✅ UNIFIED WORKFLOW: Save to unified workflow
+      updateDataRef.current({
+        make: formData.make,
+        model: formData.model,
+        year: formData.year,
+        firstRegistration: formData.firstRegistration,
+        mileage: formData.mileage,
+        fuelType: formData.fuelType,
+        transmission: formData.transmission,
+        power: formData.power,
+        color: formData.color,
+        doors: formData.doors,
+        seats: formData.seats,
+        roadworthy: formData.roadworthy ?? undefined,
+        saleType: formData.saleType,
+        saleTimeline: formData.saleTimeline,
+        region: formData.saleProvince,
+        city: formData.saleCity,
+        postalCode: formData.salePostalCode
+      });
     }, 500); // Save after 500ms of no changes
     
     return () => clearTimeout(timer);
@@ -280,8 +390,8 @@ useEffect(() => {
   }, [searchParams, formData]);
 
   const resetForm = useCallback(() => {
-    // Clear workflow data
-    clearWorkflowData();
+    // ✅ UNIFIED WORKFLOW: Clear unified workflow data
+    clearWorkflow();
     
     // Reset step state
     SellWorkflowStepStateService.reset();
@@ -292,13 +402,13 @@ useEffect(() => {
     // Clear URL params
     setSearchParams({});
     
-    // Clear localStorage/sessionStorage
-    localStorage.removeItem('sell-workflow-state');
-    sessionStorage.removeItem('sell-workflow-state');
+    // Clear localStorage/sessionStorage (unified workflow uses its own storage)
+    localStorage.removeItem('unified-workflow-state');
+    sessionStorage.removeItem('unified-workflow-state');
     
     // Reload page to ensure clean state
     window.location.reload();
-  }, [clearWorkflowData, setSearchParams]);
+  }, [clearWorkflow, setSearchParams]);
 
   return {
     formData,

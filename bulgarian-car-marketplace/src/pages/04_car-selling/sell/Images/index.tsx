@@ -80,7 +80,8 @@ const ImagesPageNew: React.FC = () => {
 
       const params = new URLSearchParams(searchParams.toString());
       params.set('images', files.length.toString());
-      navigate(`/sell/inserat/${vehicleType || 'car'}/details/preis?${params.toString()}`);
+      // ✅ NEW ROUTE: Navigate to pricing page
+      navigate(`/sell/inserat/${vehicleType || 'car'}/pricing?${params.toString()}`);
     } catch (error) {
       logger.error('Error saving images', error as Error, { vehicleType });
       

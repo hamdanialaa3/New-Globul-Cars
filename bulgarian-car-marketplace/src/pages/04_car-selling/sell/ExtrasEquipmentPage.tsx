@@ -327,7 +327,8 @@ const ExtrasEquipmentPage: React.FC = () => {
       params.set('extras', selectedEquipment.join(','));
     }
 
-    navigate(`/sell/inserat/${vehicleType || 'pkw'}/details/bilder?${params.toString()}`);
+    // ✅ NEW ROUTE: Navigate to images page
+    navigate(`/sell/inserat/${vehicleType || 'car'}/images?${params.toString()}`);
   };
 
   return (

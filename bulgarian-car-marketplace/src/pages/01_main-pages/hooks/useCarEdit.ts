@@ -88,23 +88,72 @@ export const useCarEdit = (
     
     setSaving(true);
     try {
+      console.log('💾 Starting save process', { carId, photosCount: photos.length, editedCarKeys: Object.keys(editedCar) });
+      
       // Step 1: Upload new photos to Firebase Storage
       let uploadedUrls: string[] = [];
       if (photos.length > 0) {
-        uploadedUrls = await imageUploadService.uploadImages(carId, photos);
+        console.log('📸 Uploading new photos', { 
+          count: photos.length,
+          photos: photos.map((p, i) => ({ 
+            index: i,
+            name: p.name, 
+            size: p.size, 
+            type: p.type,
+            isFile: p instanceof File,
+            isBlob: p instanceof Blob
+          }))
+        });
+        
+        // ✅ Validate photos are File objects
+        const validPhotos = photos.filter((photo, index) => {
+          if (!photo) {
+            console.warn(`Photo at index ${index} is null or undefined`);
+            return false;
+          }
+          if (!(photo instanceof File)) {
+            console.warn(`Photo at index ${index} is not a File object`, { type: typeof photo, photo });
+            return false;
+          }
+          return true;
+        });
+
+        if (validPhotos.length === 0) {
+          throw new Error('No valid photos to upload. Please select image files.');
+        }
+
+        if (validPhotos.length < photos.length) {
+          console.warn('Some photos were filtered out', { 
+            original: photos.length, 
+            valid: validPhotos.length 
+          });
+        }
+
+        try {
+          uploadedUrls = await imageUploadService.uploadImages(carId, validPhotos);
+          console.log('✅ Photos uploaded successfully', { count: uploadedUrls.length, urls: uploadedUrls });
+        } catch (uploadError) {
+          console.error('❌ Failed to upload photos', uploadError);
+          const errorMessage = uploadError instanceof Error ? uploadError.message : 'Unknown error';
+          throw new Error(`Failed to upload images: ${errorMessage}`);
+        }
       }
 
       // Step 2: Merge existing images with new ones
       const existingImages = car?.images || [];
       const updatedImages = [...existingImages, ...uploadedUrls];
+      console.log('🖼️ Merged images', { existing: existingImages.length, new: uploadedUrls.length, total: updatedImages.length });
 
       // Step 3: Save all changes
       const updatedCarData = {
         ...editedCar,
         images: updatedImages
       };
+      console.log('💾 Updating car data', { carId, updates: Object.keys(updatedCarData), imagesCount: updatedImages.length });
 
       await unifiedCarService.updateCar(carId, updatedCarData);
+      console.log('✅ Car updated successfully');
+      
       setIsEditMode(false);
       setPhotos([]);
       setPhotoUrls([]);
@@ -115,8 +164,12 @@ export const useCarEdit = (
         onSaveSuccess();
       }
     } catch (error) {
+      console.error('❌ Error saving car changes', error);
       logger.error('Error saving car changes', error as Error, { carId });
-      alert(language === 'bg' ? 'Грешка при запазване' : 'Error saving changes');
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      alert(language === 'bg' 
+        ? `Грешка при запазване: ${errorMessage}` 
+        : `Error saving changes: ${errorMessage}`);
     } finally {
       setSaving(false);
     }

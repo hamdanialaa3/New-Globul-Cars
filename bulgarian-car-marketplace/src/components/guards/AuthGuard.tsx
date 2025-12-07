@@ -45,18 +45,31 @@ const GuardContainer = styled.div`
   align-items: center;
   justify-content: center;
   min-height: 70vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--accent-primary, #FF6B35) 0%, var(--accent-secondary, #FF8C61) 100%);
   padding: 2rem;
   text-align: center;
+  
+  /* Dark mode support */
+  [data-theme="dark"] &, .dark-theme & {
+    background: linear-gradient(135deg, rgba(26, 29, 46, 0.95) 0%, rgba(45, 49, 66, 0.98) 100%);
+  }
 `;
 
 const MessageCard = styled.div`
-  background: white;
+  background: var(--bg-card, #FFFFFF);
   padding: 3rem;
   border-radius: 20px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-xl, 0 20px 50px rgba(0, 0, 0, 0.15));
   max-width: 500px;
   width: 100%;
+  border: 1px solid var(--border-primary, #E2E8F0);
+  
+  /* Dark mode support */
+  [data-theme="dark"] &, .dark-theme & {
+    background: var(--bg-card, rgba(26, 29, 46, 0.95));
+    border-color: var(--border-primary, rgba(255, 255, 255, 0.1));
+    box-shadow: var(--shadow-xl, 0 20px 50px rgba(0, 0, 0, 0.4));
+  }
   
   @media (max-width: 768px) {
     padding: 2rem;
@@ -68,10 +81,10 @@ const IconWrapper = styled.div<{ $variant?: 'error' | 'warning' | 'info' }>`
   margin-bottom: 1.5rem;
   color: ${({ $variant }) => {
         switch ($variant) {
-            case 'error': return '#ff6b6b';
-            case 'warning': return '#ffa500';
-            case 'info': return '#4a90e2';
-            default: return '#ff6b6b';
+            case 'error': return 'var(--error, #EF4444)';
+            case 'warning': return 'var(--warning, #F59E0B)';
+            case 'info': return 'var(--info, #3B82F6)';
+            default: return 'var(--accent-primary, #FF6B35)';
         }
     }};
   display: flex;
@@ -79,10 +92,15 @@ const IconWrapper = styled.div<{ $variant?: 'error' | 'warning' | 'info' }>`
 `;
 
 const Title = styled.h2`
-  color: #333;
+  color: var(--text-primary, #1A1D2E);
   margin-bottom: 1rem;
   font-size: 1.8rem;
   font-weight: 600;
+  
+  /* Dark mode support */
+  [data-theme="dark"] &, .dark-theme & {
+    color: var(--text-primary, #FFFFFF);
+  }
   
   @media (max-width: 768px) {
     font-size: 1.5rem;
@@ -90,10 +108,24 @@ const Title = styled.h2`
 `;
 
 const Message = styled.p`
-  color: #666;
+  color: var(--text-secondary, #4A5568);
   margin-bottom: 2rem;
   font-size: 1.1rem;
   line-height: 1.6;
+  
+  /* Dark mode support */
+  [data-theme="dark"] &, .dark-theme & {
+    color: var(--text-secondary, rgba(255, 255, 255, 0.8));
+  }
+  
+  strong {
+    color: var(--accent-primary, #FF6B35);
+    font-weight: 600;
+    
+    [data-theme="dark"] &, .dark-theme & {
+      color: var(--accent-primary, #FF6B35);
+    }
+  }
   
   @media (max-width: 768px) {
     font-size: 1rem;
@@ -103,7 +135,7 @@ const Message = styled.p`
 const ButtonGroup = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.75rem;
   justify-content: center;
 `;
 
@@ -113,28 +145,57 @@ const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
   gap: 0.5rem;
   background: ${({ $variant }) =>
         $variant === 'secondary'
-            ? '#6c757d'
-            : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+            ? 'var(--btn-secondary-bg, #FFFFFF)'
+            : 'var(--btn-primary-bg, #FF6B35)'
     };
-  color: white;
-  border: none;
+  color: ${({ $variant }) =>
+        $variant === 'secondary'
+            ? 'var(--btn-secondary-text, #1A1D2E)'
+            : 'var(--btn-primary-text, #FFFFFF)'
+    };
+  border: ${({ $variant }) =>
+        $variant === 'secondary'
+            ? '2px solid var(--btn-secondary-border, #E2E8F0)'
+            : 'none'
+    };
   padding: 1rem 2rem;
-  border-radius: 50px;
+  border-radius: 12px;
   font-size: 1.1rem;
-  font-weight: bold;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
+  box-shadow: ${({ $variant }) =>
+        $variant === 'primary'
+            ? 'var(--shadow-button, 0 2px 6px rgba(255, 107, 53, 0.25))'
+            : 'var(--shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.08))'
+    };
   
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    box-shadow: ${({ $variant }) =>
+        $variant === 'primary'
+            ? 'var(--shadow-hover, 0 4px 16px rgba(0, 0, 0, 0.12))'
+            : 'var(--shadow-md, 0 4px 12px rgba(0, 0, 0, 0.1))'
+    };
     background: ${({ $variant }) =>
-        $variant === 'secondary' ? '#5a6268' : undefined
+        $variant === 'secondary'
+            ? 'var(--btn-secondary-hover, #F8F9FA)'
+            : 'var(--btn-primary-hover, #FF8C61)'
     };
   }
   
   &:active {
     transform: translateY(0);
+  }
+  
+  /* Dark mode support */
+  [data-theme="dark"] &, .dark-theme & {
+    ${({ $variant }) =>
+        $variant === 'secondary' && `
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-primary, #FFFFFF);
+      border-color: rgba(255, 255, 255, 0.2);
+    `}
   }
   
   @media (max-width: 768px) {
@@ -155,8 +216,8 @@ const LoadingContainer = styled.div`
 const LoadingSpinner = styled.div`
   width: 40px;
   height: 40px;
-  border: 4px solid rgba(102, 126, 234, 0.2);
-  border-top-color: #667eea;
+  border: 4px solid rgba(255, 107, 53, 0.2);
+  border-top-color: var(--accent-primary, #FF6B35);
   border-radius: 50%;
   animation: spin 1s linear infinite;
   
@@ -166,8 +227,13 @@ const LoadingSpinner = styled.div`
 `;
 
 const LoadingText = styled.p`
-  color: ${({ theme }) => theme.colors?.text?.secondary || '#666'};
+  color: var(--text-secondary, #4A5568);
   font-size: 1rem;
+  
+  /* Dark mode support */
+  [data-theme="dark"] &, .dark-theme & {
+    color: var(--text-secondary, rgba(255, 255, 255, 0.8));
+  }
 `;
 
 // ==========================================
@@ -232,6 +298,7 @@ const LoginRequiredMessage: React.FC = () => {
         const pageMap: { [key: string]: string } = {
             '/advanced-search': t('auth.pageNames.advancedSearch'),
             '/sell': t('auth.pageNames.sell'),
+            '/sell/auto': t('auth.pageNames.sellCar'),
             '/sell-car': t('auth.pageNames.sellCar'),
             '/brand-gallery': t('auth.pageNames.brandGallery'),
             '/dealers': t('auth.pageNames.dealers'),

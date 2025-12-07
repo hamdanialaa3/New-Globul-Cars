@@ -162,6 +162,7 @@ class ImageStorage {
 
   /**
    * Get all stored images
+   * ✅ FIX: Ensure File objects are properly restored from IndexedDB
    */
   async getImages(): Promise<File[]> {
     try {
@@ -174,13 +175,52 @@ class ImageStorage {
 
         request.onsuccess = () => {
           const data = request.result as ImageData | undefined;
-          resolve(data?.files || []);
+          if (!data || !data.files || data.files.length === 0) {
+            console.log('📸 No images found in IndexedDB');
+            resolve([]);
+            return;
+          }
+
+          // ✅ FIX: Ensure all items are File objects (IndexedDB may return Blob)
+          const files = data.files.map((file, index) => {
+            // If it's already a File, return it
+            if (file instanceof File) {
+              return file;
+            }
+            
+            // If it's a Blob, convert to File
+            if (file instanceof Blob) {
+              const fileName = `image_${index}_${Date.now()}.jpg`;
+              return new File([file], fileName, { type: file.type || 'image/jpeg' });
+            }
+            
+            // If it's a plain object (from structured clone), reconstruct File
+            if (file && typeof file === 'object' && 'size' in file) {
+              const blob = file as any;
+              const fileName = blob.name || `image_${index}_${Date.now()}.jpg`;
+              const fileType = blob.type || 'image/jpeg';
+              return new File([blob], fileName, { type: fileType, lastModified: blob.lastModified || Date.now() });
+            }
+            
+            console.warn('⚠️ Unexpected file type in IndexedDB:', typeof file, file);
+            return null;
+          }).filter((file): file is File => file !== null);
+
+          console.log('📸 Restored images from IndexedDB:', { 
+            count: files.length, 
+            files: files.map(f => ({ name: f.name, size: f.size, type: f.type }))
+          });
+          
+          resolve(files);
         };
 
-        request.onerror = () => reject(new Error('Failed to get images'));
+        request.onerror = () => {
+          console.error('❌ IndexedDB get error:', request.error);
+          reject(new Error('Failed to get images'));
+        };
       });
     } catch (error) {
-      console.error('Error getting images:', error);
+      console.error('❌ Error getting images:', error);
       return [];
     }
   }

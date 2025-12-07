@@ -346,22 +346,17 @@ const MainLayout: React.FC = () => {
             </AuthGuard>
           }
         />
+        {/* ✅ NEW: Unified Sell Workflow Routes - Clean & Sequential */}
+        {/* Step 1: Vehicle Data */}
         <Route
-          path="/sell/inserat/:vehicleType/verkaeufertyp"
-          element={
-            <AuthGuard requireAuth={true}>
-              <MobileSellerTypePage />
-            </AuthGuard>
-          }
-        />
-        <Route
-          path="/sell/inserat/:vehicleType/fahrzeugdaten/antrieb-und-umwelt"
+          path="/sell/inserat/:vehicleType/data"
           element={
             <AuthGuard requireAuth={true}>
               <VehicleDataPageUnified />
             </AuthGuard>
           }
         />
+        {/* Step 2: Equipment */}
         <Route
           path="/sell/inserat/:vehicleType/equipment"
           element={
@@ -370,30 +365,25 @@ const MainLayout: React.FC = () => {
             </AuthGuard>
           }
         />
-        <Route 
-          path="/sell/inserat/:vehicleType/ausstattung" 
-          element={<Navigate to="../equipment" replace />} 
-        />
-        <Route 
-          path="/sell/inserat/:vehicleType/ausstattung/*" 
-          element={<Navigate to="../equipment" replace />} 
-        />
+        {/* Step 3: Images */}
         <Route
-          path="/sell/inserat/:vehicleType/details/bilder"
+          path="/sell/inserat/:vehicleType/images"
           element={
             <AuthGuard requireAuth={true}>
               <ImagesPageUnified />
             </AuthGuard>
           }
         />
+        {/* Step 4: Pricing */}
         <Route
-          path="/sell/inserat/:vehicleType/details/preis"
+          path="/sell/inserat/:vehicleType/pricing"
           element={
             <AuthGuard requireAuth={true}>
               {isMobile ? <MobilePricingPage /> : <PricingPage />}
             </AuthGuard>
           }
         />
+        {/* Step 5: Contact */}
         <Route
           path="/sell/inserat/:vehicleType/contact"
           element={
@@ -402,15 +392,68 @@ const MainLayout: React.FC = () => {
             </AuthGuard>
           }
         />
-        <Route 
-          path="/sell/inserat/:vehicleType/kontakt/*" 
-          element={<Navigate to="../contact" replace />} 
-        />
+        {/* Step 6: Preview */}
         <Route
           path="/sell/inserat/:vehicleType/preview"
           element={
             <AuthGuard requireAuth={true}>
               {isMobile ? <MobilePreviewPage /> : <DesktopPreviewPage />}
+            </AuthGuard>
+          }
+        />
+
+        {/* ✅ REDIRECTS: Old routes → New routes (for backward compatibility) */}
+        <Route 
+          path="/sell/inserat/:vehicleType/fahrzeugdaten/antrieb-und-umwelt" 
+          element={<Navigate to="../data" replace />} 
+        />
+        <Route 
+          path="/sell/inserat/:vehicleType/fahrzeugdaten/antrieb-und-umwelt/*" 
+          element={<Navigate to="../../data" replace />} 
+        />
+        <Route 
+          path="/sell/inserat/:vehicleType/details/bilder" 
+          element={<Navigate to="../images" replace />} 
+        />
+        <Route 
+          path="/sell/inserat/:vehicleType/details/bilder/*" 
+          element={<Navigate to="../../images" replace />} 
+        />
+        <Route 
+          path="/sell/inserat/:vehicleType/details/preis" 
+          element={<Navigate to="../pricing" replace />} 
+        />
+        <Route 
+          path="/sell/inserat/:vehicleType/details/preis/*" 
+          element={<Navigate to="../../pricing" replace />} 
+        />
+        <Route 
+          path="/sell/inserat/:vehicleType/ausstattung" 
+          element={<Navigate to="../equipment" replace />} 
+        />
+        <Route 
+          path="/sell/inserat/:vehicleType/ausstattung/*" 
+          element={<Navigate to="../../equipment" replace />} 
+        />
+        <Route 
+          path="/sell/inserat/:vehicleType/kontakt" 
+          element={<Navigate to="../contact" replace />} 
+        />
+        <Route 
+          path="/sell/inserat/:vehicleType/kontakt/*" 
+          element={<Navigate to="../../contact" replace />} 
+        />
+        {/* Old seller type route - redirect to data (seller type is now handled in data page) */}
+        <Route 
+          path="/sell/inserat/:vehicleType/verkaeufertyp" 
+          element={<Navigate to="../data" replace />} 
+        />
+        {/* Step 7: Submission (Final Step) */}
+        <Route
+          path="/sell/inserat/:vehicleType/submission"
+          element={
+            <AuthGuard requireAuth={true}>
+              {isMobile ? <MobileSubmissionPage /> : <DesktopSubmissionPage />}
             </AuthGuard>
           }
         />

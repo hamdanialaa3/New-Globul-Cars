@@ -9,23 +9,36 @@
 - A3 Sedan
 - A3 Sportback
 - A3 Cabriolet
+- A3 Limousine
+- S3
+- RS3
 - A4
 - A4 Sedan
 - A4 Avant
 - A4 Allroad
+- S4
+- RS4
 - A5
 - A5 Coupe
 - A5 Sportback
 - A5 Cabriolet
+- S5
+- RS5
 - A6
 - A6 Sedan
 - A6 Avant
 - A6 Allroad
+- S6
+- RS6
 - A7
 - A7 Sportback
+- S7
+- RS7
 - A8
 - A8 L
+- S8
 - Q2
+- Q2L
 - Q3
 - Q3 Sportback
 - RS Q3
@@ -34,10 +47,13 @@
 - Q5
 - Q5 Sportback
 - SQ5
+- RS Q5
 - Q7
 - SQ7
+- RS Q7
 - Q8
 - Q8 Sportback
+- SQ8
 - RS Q8
 - TT Coupe
 - TT Roadster
@@ -46,14 +62,13 @@
 - R8
 - R8 Coupe
 - R8 Spyder
-- RS3
-- RS4
-- RS5
-- RS6
-- RS7
+- R8 GT
 - e-tron
 - e-tron GT
 - e-tron Sportback
+- e-tron S
+- Q6 e-tron
+- Q6 Sportback e-tron
 
 ## BMW
 - 116i
@@ -64,73 +79,107 @@
 - M140i
 - 218i
 - 220i
+- 225i
 - 228i
 - M235i
 - M240i
 - 2 Series Active Tourer
 - 2 Series Gran Coupe
+- 2 Series Gran Coupé
 - 316i
 - 318i
 - 320i
+- 320d
 - 325i
+- 325d
 - 328i
 - 330i
+- 330d
 - 335i
+- 335d
 - 340i
 - M340i
 - M3
+- M3 Competition
 - 420i
+- 420d
 - 428i
 - 430i
+- 430d
 - 435i
 - 440i
+- 440d
 - M440i
 - M4
+- M4 Competition
 - 4 Series Gran Coupe
+- 4 Series Convertible
 - 520i
+- 520d
 - 525i
+- 525d
 - 528i
 - 530i
+- 530d
 - 535i
+- 535d
 - 540i
+- 540d
 - 550i
 - M550i
 - M5
+- M5 Competition
 - 630i
 - 640i
+- 640d
 - 650i
 - M6
+- M6 Gran Coupe
 - 730i
+- 730d
 - 740i
+- 740d
 - 750i
+- 750d
 - 760i
 - M760i
 - 840i
+- 840d
 - 850i
 - M850i
 - M8
+- M8 Competition
 - X1
 - X2
 - X3
 - X3 M
+- X3 M Competition
 - X4
 - X4 M
+- X4 M Competition
 - X5
 - X5 M
+- X5 M Competition
 - X6
 - X6 M
+- X6 M Competition
 - X7
 - XM
 - Z3
 - Z4
+- Z4 M40i
 - i3
 - i4
+- i4 M50
 - i5
+- i5 M60
 - i7
+- i7 M70
 - i8
 - iX
 - iX1
 - iX3
+- iX M60
 
 ## Mercedes-Benz
 - A 160
@@ -245,55 +294,106 @@
 - Corolla Altis
 - Corolla Hybrid
 - Corolla Cross
+- Corolla Hatchback
+- Corolla Sedan
+- Corolla Touring Sports
 - Camry
 - Camry Hybrid
 - Yaris
 - Yaris Cross
+- Yaris GR Sport
 - GR Yaris
 - Avalon
 - Land Cruiser
 - Land Cruiser Prado
+- Land Cruiser 70
+- Land Cruiser 200
+- Land Cruiser 300
 - Hilux
+- Hilux Revo
 - RAV4
 - RAV4 Hybrid
 - RAV4 Prime
+- RAV4 Plug-in Hybrid
 - Fortuner
 - Hiace
+- Hiace Commuter
 - Prius
 - Prius Prime
+- Prius Plug-in Hybrid
 - Supra
 - GR Supra
 - C-HR
+- C-HR Hybrid
 - bZ4X
+- bZ3
+- bZ5
 - Mirai
 - Aygo
+- Aygo X
 - Sequoia
 - Tundra
 - Sienna
 - 4Runner
 - Tacoma
 - Venza
+- Venza Hybrid
 - Crown
+- Crown Hybrid
 - Matrix
 - FJ Cruiser
 - Paseo
 - Celica
 - MR2
+- Highlander
+- Highlander Hybrid
+- Cressida
+- Previa
+- Sienna
+- Tercel
+- Echo
+- Solara
+- Starlet
+- Carina
+- Corona
+- Mark II
+- Aristo
+- Soarer
+- Century
+- Alphard
+- Vellfire
+- Proace
+- Proace City
+- Proace Verso
+- GT86
+- GR86
 
 ## Volkswagen
 - Golf
 - Golf GTI
 - Golf R
 - Golf GTE
+- Golf e-Golf
+- Golf Plus
+- Golf Sportsvan
+- Golf Variant
+- Golf Cabriolet
 - Passat
 - Passat Variant
+- Passat Alltrack
+- Passat CC
 - Polo
 - Polo GTI
+- Polo Beats
 - Tiguan
 - Tiguan Allspace
+- Tiguan R
 - T-Roc
+- T-Roc R
+- T-Roc Cabriolet
 - Touareg
 - Arteon
+- Arteon Shooting Brake
 - Jetta
 - Jetta GLI
 - ID.3
@@ -301,46 +401,133 @@
 - ID.5
 - ID.7
 - ID. Buzz
+- ID. Buzz Cargo
 - Taigo
 - T-Cross
 - Caddy
+- Caddy Life
+- Caddy Maxi
 - Multivan
 - Amarok
+- Sharan
+- Touran
+- Up!
+- Up! GTI
+- e-Up!
+- Scirocco
+- Beetle
+- Beetle Convertible
+- Phaeton
+- Eos
+- CC
+- Fox
+- Lupo
+- Bora
+- Vento
+- Santana
+- Corrado
+- Karmann Ghia
+- Type 2
+- Type 3
+- Type 4
+- Transporter
+- Crafter
 
 ## Ford
 - Focus
 - Focus ST
 - Focus RS
+- Focus Active
+- Focus Estate
+- Focus C-MAX
 - Fiesta
 - Fiesta ST
+- Fiesta Active
 - Mondeo
+- Mondeo Hybrid
 - Mustang
 - Mustang GT
 - Mustang Mach-E
+- Mustang Mach-E GT
 - F-150
 - F-150 Raptor
 - F-150 Lightning
+- F-150 Tremor
+- F-150 King Ranch
+- F-150 Platinum
+- F-250
+- F-350
+- F-450
 - Explorer
+- Explorer ST
+- Explorer Hybrid
 - Edge
+- Edge ST
 - Escape
+- Escape Hybrid
+- Escape PHEV
 - Bronco
 - Bronco Sport
+- Bronco Raptor
 - Ranger
 - Ranger Raptor
+- Ranger Wildtrak
 - EcoSport
 - Expedition
+- Expedition Max
 - Transit
+- Transit Custom
+- Transit Connect
 - Puma
+- Puma ST
 - Kuga
+- Kuga Hybrid
+- Kuga PHEV
 - Maverick
+- Maverick Hybrid
 - Fusion
+- Fusion Hybrid
+- Fusion Energi
+- Taurus
+- Taurus SHO
+- Flex
+- Edge
+- Edge ST
+- C-MAX
+- C-MAX Energi
+- S-MAX
+- Galaxy
+- Ka
+- Ka+
+- Figo
+- Aspire
+- Freestyle
+- Endeavour
+- Everest
+- Territory
+- Ecosport
+- Tourneo Connect
+- Tourneo Custom
+- Transit Courier
+- Transit Van
+- Transit Bus
+- Fiesta Active
+- Focus Active
+- Mustang Shelby GT350
+- Mustang Shelby GT500
+- GT
+- GT40
 
 ## Honda
 - Civic
 - Civic Type R
 - Civic Si
+- Civic Hatchback
+- Civic Sedan
+- Civic Coupe
 - Accord
 - Accord Hybrid
+- Accord Coupe
 - CR-V
 - CR-V Hybrid
 - HR-V
@@ -353,6 +540,26 @@
 - Insight
 - Honda e
 - Clarity
+- Clarity Plug-in Hybrid
+- Clarity Fuel Cell
+- City
+- Brio
+- Amaze
+- WR-V
+- BR-V
+- Mobilio
+- CR-Z
+- S2000
+- NSX
+- Element
+- Crosstour
+- Ridgeline
+- Stepwgn
+- Shuttle
+- Vezel
+- ZR-V
+- e:NP1
+- e:NS1
 
 ## Nissan
 - Sentra
@@ -360,21 +567,53 @@
 - Maxima
 - Versa
 - Leaf
+- Leaf e+
 - GT-R
+- GT-R Nismo
 - 370Z
 - 400Z
 - Juke
+- Juke Nismo
 - Kicks
 - Rogue
+- Rogue Sport
 - Murano
 - Pathfinder
 - Armada
 - Frontier
 - Titan
+- Titan XD
 - Navara
+- Navara PRO-4X
 - Qashqai
+- Qashqai+2
 - X-Trail
+- X-Trail e-Power
 - Ariya
+- Note
+- Note e-Power
+- Micra
+- Almera
+- Sunny
+- Tiida
+- Latio
+- Sylphy
+- Serena
+- Elgrand
+- Patrol
+- Patrol GR
+- Terrano
+- Xterra
+- Pathfinder Hybrid
+- Rogue Hybrid
+- Murano Hybrid
+- Cube
+- 350Z
+- 300ZX
+- 240SX
+- Silvia
+- Skyline
+- Fairlady Z
 
 ## Hyundai
 - Elantra
@@ -387,20 +626,48 @@
 - i10
 - i20
 - i20 N
+- i20 Active
 - i30
 - i30 N
+- i30 Fastback
+- i30 Wagon
 - Tucson
 - Tucson Hybrid
 - Santa Fe
 - Santa Fe Hybrid
 - Kona
 - Kona Electric
+- Kona N
 - Palisade
 - Venue
 - Ioniq
 - Ioniq 5
 - Ioniq 6
+- Ioniq 7
 - Creta
+- Creta N Line
+- Grand i10
+- Grand i10 Nios
+- Verna
+- Aura
+- Xcent
+- Eon
+- Santro
+- i40
+- i40 Tourer
+- ix20
+- ix35
+- ix55
+- Genesis
+- Azera
+- Equus
+- Terracan
+- Galloper
+- H-1
+- Starex
+- Staria
+- Bayon
+- Casper
 
 ## Kia
 - Forte
@@ -409,35 +676,95 @@
 - K5
 - Stinger
 - Rio
+- Rio Hatchback
+- Rio Sedan
 - Picanto
 - Sportage
 - Sportage Hybrid
+- Sportage PHEV
 - Sorento
 - Sorento Hybrid
+- Sorento PHEV
 - Seltos
 - Telluride
 - Niro
 - Niro EV
+- Niro PHEV
 - Soul
 - Soul EV
 - EV6
 - EV9
 - Carnival
+- Ceed
+- Ceed SW
+- ProCeed
+- XCeed
+- Venga
+- Venga EV
+- Carens
+- Grand Carnival
+- Mohave
+- Borrego
+- Cadenza
+- K900
+- Quoris
+- Ray
+- Morning
+- Pride
+- K3
+- K7
+- K8
+- K9
+- EV5
+- EV3
 
 ## Mazda
+- Mazda2
 - Mazda3
+- Mazda3 Sedan
+- Mazda3 Hatchback
 - Mazda6
+- Mazda6 Sedan
+- Mazda6 Wagon
 - MX-5 Miata
+- MX-5 RF
 - CX-3
 - CX-30
 - CX-5
 - CX-9
 - CX-50
 - CX-60
+- CX-70
+- CX-80
 - CX-90
 - MX-30
+- MX-30 e-Skyactiv
 - RX-7
 - RX-8
+- RX-9
+- Tribute
+- MPV
+- B-Series
+- BT-50
+- CX-7
+- CX-8
+- Demio
+- Atenza
+- Axela
+- Premacy
+- Biante
+- Verisa
+- Flair
+- Flair Wagon
+- Carol
+- Laputa
+- Spiano
+- AZ-Wagon
+- AZ-Offroad
+- Scrum
+- Bongo
+- Titan
+- E-Series
 
 ## Chevrolet
 - Spark
@@ -546,26 +873,56 @@
 - Solterra
 
 ## Peugeot
+- 108
 - 208
 - e-208
+- 208 GTI
+- 301
 - 308
 - e-308
+- 308 GTI
+- 308 SW
 - 408
 - e-408
 - 508
+- 508 SW
+- 508 PSE
 - 2008
 - e-2008
+- 2008 GT
 - 3008
+- 3008 GT
 - 5008
+- 5008 GT
 - Rifter
 - e-Rifter
 - Expert
 - e-Expert
+- Partner
+- e-Partner
+- Boxer
+- Traveller
+- e-Traveller
+- 206
+- 206 CC
+- 207
+- 307
+- 407
+- 607
+- 1007
+- 4007
+- 4008
+- RCZ
 
 ## Renault
 - Clio
+- Clio RS
+- Clio Estate
 - Megane
+- Megane RS
+- Megane Estate
 - Talisman
+- Talisman Estate
 - Captur
 - Kadjar
 - Austral
@@ -575,34 +932,93 @@
 - Scenic E-Tech
 - Zoe
 - R5 E-Tech
+- Twingo
+- Twingo Electric
+- Twizy
+- Fluence
+- Laguna
+- Laguna Estate
+- Espace
+- Koleos
+- Kangoo
+- Kangoo E-Tech
+- Trafic
+- Master
+- Master E-Tech
+- Duster
+- Sandero
+- Logan
+- Symbol
+- Kaptur
+- Kwid
+- Triber
+- Lodgy
+- Dokker
 
 ## Citroën
 - C1
+- C2
 - C3
+- C3 Aircross
+- C3 Picasso
+- C3-XR
 - C4
+- C4 Cactus
+- C4 Picasso
+- C4 Grand Picasso
 - ë-C4
 - C5
-- C5 X
-- C3 Aircross
 - C5 Aircross
+- C5 X
+- C6
+- C8
 - Berlingo
 - e-Berlingo
 - Spacetourer
 - ë-Spacetourer
 - Ami
+- DS3
+- DS4
+- DS5
+- Jumpy
+- Jumper
+- C-Elysee
+- C-Triomphe
 
 ## Fiat
 - 500
 - 500e
+- 500L
+- 500X
+- 500 Abarth
 - Panda
+- Panda Cross
 - Tipo
+- Tipo Station Wagon
 - Punto
+- Punto Evo
 - Bravo
 - Doblo
+- Doblo Cargo
 - Fiorino
 - 124 Spider
+- 124 Abarth
 - Ulysse
 - Scudo
+- Ducato
+- Talento
+- Fullback
+- Strada
+- Mobi
+- Argo
+- Cronos
+- Toro
+- Grand Siena
+- Palio
+- Uno
+- Linea
+- Freemont
+- Sedici
 
 ## Alfa Romeo
 - Giulia
@@ -680,12 +1096,59 @@
 - Defender 90
 - Defender 110
 - Defender 130
+- Defender P300
+- Defender P400
+- Defender P525
 - Discovery
 - Discovery Sport
+- Discovery 3
+- Discovery 4
+- Discovery 5
 - Range Rover
 - Range Rover Sport
 - Range Rover Velar
 - Range Rover Evoque
+- Range Rover Evoque Convertible
+- Range Rover P400
+- Range Rover P400e
+- Range Rover P525
+- Range Rover P565
+- Range Rover SVAutobiography
+- Range Rover Sport SVR
+- Range Rover Sport P400
+- Range Rover Sport P400e
+- Range Rover Sport P525
+- Range Rover Sport P565
+- Range Rover Velar P250
+- Range Rover Velar P300
+- Range Rover Velar P380
+- Range Rover Evoque P200
+- Range Rover Evoque P250
+- Range Rover Evoque P300
+- Freelander
+- Freelander 2
+- Range Rover Classic
+- Range Rover P38
+- Range Rover L322
+- Range Rover L405
+- Discovery 1
+- Discovery 2
+- Discovery 3
+- Discovery 4
+- Discovery 5
+- Defender 90
+- Defender 110
+- Defender 130
+- Series I
+- Series II
+- Series III
+- Range Rover Evoque
+- Range Rover Velar
+- Range Rover Sport
+- Range Rover
+- Discovery Sport
+- Discovery
+- Defender
 
 ## McLaren
 - 540C
@@ -826,15 +1289,32 @@
 
 ## Volvo
 - S60
+- S60 Recharge
 - S90
+- S90 Recharge
 - V60
+- V60 Cross Country
+- V60 Recharge
 - V90
+- V90 Cross Country
+- V90 Recharge
 - XC40
+- XC40 Recharge
 - XC60
+- XC60 Recharge
 - XC90
+- XC90 Recharge
 - C40 Recharge
 - EX30
 - EX90
+- C30
+- C70
+- S40
+- S80
+- V40
+- V50
+- V70
+- XC70
 
 ## Lada
 - Niva
@@ -849,27 +1329,67 @@
 
 ## Dacia
 - Sandero
+- Sandero Stepway
 - Logan
+- Logan MCV
+- Logan Stepway
 - Duster
+- Duster Stepway
 - Jogger
 - Spring
+- Lodgy
+- Dokker
+- Dokker Van
+- Duster Pick-up
+- Bigster
 
 ## Skoda
 - Fabia
+- Fabia Combi
+- Fabia RS
 - Scala
 - Octavia
+- Octavia Combi
+- Octavia RS
+- Octavia vRS
 - Superb
+- Superb Combi
 - Kodiaq
+- Kodiaq RS
 - Karoq
 - Kamiq
 - Enyaq
+- Enyaq iV
+- Enyaq Coupe
+- Rapid
+- Rapid Spaceback
+- Yeti
+- Roomster
+- Citigo
+- Kodiaq GT
 
 ## Seat
 - Ibiza
+- Ibiza FR
+- Ibiza Cupra
 - Leon
+- Leon FR
+- Leon Cupra
+- Leon ST
 - Ateca
+- Ateca FR
+- Ateca Cupra
 - Arona
+- Arona FR
 - Tarraco
+- Tarraco FR
+- Alhambra
+- Altea
+- Altea XL
+- Toledo
+- Exeo
+- Mii
+- Formentor
 
 ## Cupra
 - Formentor
@@ -1028,19 +1548,76 @@
 ## Opel
 - Corsa
 - Corsa-e
+- Corsa OPC
 - Astra
+- Astra GTC
+- Astra Sports Tourer
+- Astra OPC
 - Insignia
+- Insignia Sports Tourer
+- Insignia OPC
 - Mokka
 - Mokka-e
+- Mokka X
 - Crossland
+- Crossland X
 - Grandland
+- Grandland X
 - Combo
+- Combo Life
+- Combo-e
+- Zafira
+- Zafira Tourer
+- Meriva
+- Adam
+- Adam S
+- Cascada
+- Ampera
+- Ampera-e
+- Vivaro
+- Movano
 
 ## SsangYong
 - Tivoli
+- Tivoli XLV
 - Korando
+- Korando Turismo
 - Rexton
+- Rexton G4
 - Musso
+- Musso Sports
+- Actyon
+- Actyon Sports
+- Kyron
+- Rodius
+- Chairman
+- Chairman W
+- Rexton W
+- Korando C
+- Korando Turismo
+- Tivoli
+- Tivoli XLV
+- XLV
+- X100
+- X200
+- X300
+- X400
+- X500
+- X600
+- X700
+- X800
+- X900
+- X1000
+- X1100
+- X1200
+- X1300
+- X1400
+- X1500
+- X1600
+- X1700
+- X1800
+- X1900
+- X2000
 
 ## Tata
 - Nano

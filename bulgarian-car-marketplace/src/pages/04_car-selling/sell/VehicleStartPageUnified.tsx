@@ -296,7 +296,8 @@ const VehicleStartPageUnified: React.FC = () => {
     SellWorkflowStepStateService.markCompleted('vehicle-selection');
 
     // Auto-navigate immediately
-    navigate(`/sell/inserat/${typeId}/fahrzeugdaten/antrieb-und-umwelt?${params.toString()}`);
+    // ✅ NEW ROUTE: Navigate to data page
+    navigate(`/sell/inserat/${typeId}/data?${params.toString()}`);
   };
 
   // Mobile version

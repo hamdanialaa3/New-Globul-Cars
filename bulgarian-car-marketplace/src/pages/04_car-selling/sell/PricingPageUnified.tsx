@@ -10,9 +10,11 @@ import { useIsMobile } from '../../../hooks/useBreakpoint';
 import SplitScreenLayout from '../../../components/SplitScreenLayout';
 import { WorkflowFlow } from '../../../components/WorkflowVisualization';
 import { Euro, TrendingUp, Info } from 'lucide-react';
+import { toast } from 'react-toastify';
 import SellWorkflowStepStateService from '../../../services/sellWorkflowStepState';
 import { carValidationService, ValidationResult } from '../../../services/validation/car-validation.service';
 import { usePricingForm } from './Pricing/usePricingForm';
+import { useUnifiedWorkflow } from '../../../hooks/useUnifiedWorkflow';
 
 // Mobile Components
 import { MobileContainer, MobileStack } from '../../../components/ui/mobile-index';
@@ -32,7 +34,54 @@ const PricingPageUnified: React.FC = () => {
   const { language } = useLanguage();
   const isMobile = useIsMobile();
 
+  // ✅ UNIFIED WORKFLOW: Use unified workflow (Step 5 - Pricing)
+  const { workflowData: unifiedWorkflowData, updateData } = useUnifiedWorkflow(5);
   const { pricingData, handleFieldChange, canContinue, serialize } = usePricingForm();
+  
+  // ✅ UNIFIED WORKFLOW: Restore pricing data from saved workflow on mount
+  useEffect(() => {
+    if (unifiedWorkflowData && Object.keys(unifiedWorkflowData).length > 0) {
+      console.log('🔄 Restoring pricing data from unified workflow:', {
+        price: unifiedWorkflowData.price,
+        currency: unifiedWorkflowData.currency,
+        priceType: unifiedWorkflowData.priceType,
+        negotiable: unifiedWorkflowData.negotiable,
+        vatDeductible: unifiedWorkflowData.vatDeductible
+      });
+      
+      // Restore pricing fields if they exist in workflow data
+      if (unifiedWorkflowData.price && !pricingData.price) {
+        handleFieldChange('price', unifiedWorkflowData.price);
+      }
+      if (unifiedWorkflowData.currency && unifiedWorkflowData.currency !== pricingData.currency) {
+        handleFieldChange('currency', unifiedWorkflowData.currency);
+      }
+      if (unifiedWorkflowData.priceType && unifiedWorkflowData.priceType !== pricingData.priceType) {
+        handleFieldChange('priceType', unifiedWorkflowData.priceType as any);
+      }
+      if (unifiedWorkflowData.negotiable !== undefined && unifiedWorkflowData.negotiable !== pricingData.negotiable) {
+        handleFieldChange('negotiable', unifiedWorkflowData.negotiable);
+      }
+      if (unifiedWorkflowData.vatDeductible !== undefined && unifiedWorkflowData.vatDeductible !== pricingData.vatDeductible) {
+        handleFieldChange('vatDeductible', unifiedWorkflowData.vatDeductible);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [unifiedWorkflowData]); // Run when unifiedWorkflowData changes (including on mount)
+  
+  // ✅ UNIFIED WORKFLOW: Save pricing data on every change
+  useEffect(() => {
+    updateData({
+      price: pricingData.price,
+      currency: pricingData.currency,
+      priceType: pricingData.priceType,
+      negotiable: pricingData.negotiable,
+      vatDeductible: pricingData.vatDeductible
+    });
+  }, [pricingData, updateData]);
+  
+  // Legacy workflowData for backward compatibility
+  const workflowData = unifiedWorkflowData as any;
 
   // Validation state
   const [validationResult, setValidationResult] = React.useState<ValidationResult | null>(null);
@@ -56,7 +105,13 @@ const PricingPageUnified: React.FC = () => {
   }, [pricingData.price]);
 
   const vehicleTypeParam = searchParams.get('vt');
-  const make = searchParams.get('mk');
+  // ✅ FIX: Get make from multiple sources (URL params, unified workflow data)
+  const make = searchParams.get('mk') || 
+               searchParams.get('make') || 
+               unifiedWorkflowData?.make || 
+               (workflowData as any)?.make || 
+               (workflowData as any)?.brand || 
+               '';
 
   const handleContinue = (e?: React.MouseEvent) => {
     // ✅ FIX: Prevent event bubbling
@@ -182,16 +237,20 @@ const PricingPageUnified: React.FC = () => {
                   </MobilePricingStyles.default.FieldGroup>
 
                   <MobilePricingStyles.default.FieldGroup>
-                    <MobilePricingStyles.default.CheckboxLabel>
-                      <MobilePricingStyles.default.Checkbox
-                        type="checkbox"
-                        checked={pricingData.negotiable}
-                        onChange={(e) => handleFieldChange('negotiable', e.target.checked)}
-                      />
-                      <span>
+                    <MobilePricingStyles.default.ToggleWrapper>
+                      <MobilePricingStyles.default.ToggleSwitch $checked={pricingData.negotiable}>
+                        <input
+                          type="checkbox"
+                          id="negotiable-mobile"
+                          checked={pricingData.negotiable}
+                          onChange={(e) => handleFieldChange('negotiable', e.target.checked)}
+                        />
+                        <span className="toggle-slider" />
+                      </MobilePricingStyles.default.ToggleSwitch>
+                      <MobilePricingStyles.default.ToggleLabel htmlFor="negotiable-mobile">
                         {language === 'bg' ? 'Договаряне възможно' : 'Negotiable'}
-                      </span>
-                    </MobilePricingStyles.default.CheckboxLabel>
+                      </MobilePricingStyles.default.ToggleLabel>
+                    </MobilePricingStyles.default.ToggleWrapper>
                   </MobilePricingStyles.default.FieldGroup>
                 </MobilePricingStyles.default.Card>
 
@@ -318,15 +377,20 @@ const PricingPageUnified: React.FC = () => {
                   </S.default.FieldGroup>
 
                   <S.default.FieldGroup>
-                    <S.default.CheckboxLabel>
-                      <input
-                        type="checkbox"
-                        checked={pricingData.negotiable}
-                        onChange={(e) => handleFieldChange('negotiable', e.target.checked)}
-                        style={{ marginRight: '0.5rem' }}
-                      />
-                      {language === 'bg' ? 'Договаряне възможно' : 'Negotiable'}
-                    </S.default.CheckboxLabel>
+                    <S.default.ToggleWrapper>
+                      <S.default.ToggleSwitch $checked={pricingData.negotiable}>
+                        <input
+                          type="checkbox"
+                          id="negotiable-desktop"
+                          checked={pricingData.negotiable}
+                          onChange={(e) => handleFieldChange('negotiable', e.target.checked)}
+                        />
+                        <span className="toggle-slider" />
+                      </S.default.ToggleSwitch>
+                      <S.default.ToggleLabel htmlFor="negotiable-desktop">
+                        {language === 'bg' ? 'Договаряне възможно' : 'Negotiable'}
+                      </S.default.ToggleLabel>
+                    </S.default.ToggleWrapper>
                   </S.default.FieldGroup>
                 </S.default.FieldRow>
 

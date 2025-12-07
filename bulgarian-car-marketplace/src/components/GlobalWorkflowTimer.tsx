@@ -1,8 +1,9 @@
 // Global Workflow Timer
-// مؤقت عام يظهر في كل صفحات الـ workflow
+// مؤقت عام يظهر فقط في صفحات الـ workflow عند وجود مسودة نشطة
 // يعرض الوقت المتبقي قبل حذف البيانات تلقائياً
 
 import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { Clock, AlertTriangle } from 'lucide-react';
 import UnifiedWorkflowPersistenceService, {
@@ -114,12 +115,17 @@ const TimerValue = styled.div`
 
 export const GlobalWorkflowTimer: React.FC = () => {
   const { t } = useLanguage();
+  const location = useLocation();
   const [isPaused, setIsPaused] = useState(false);
   const [timerState, setTimerState] = useState<TimerState>({
     isActive: false,
     remainingSeconds: 0,
     totalSeconds: 1200
   });
+
+  // ✅ FIX: Check if we're in a sell workflow page
+  const isInSellWorkflow = location.pathname.startsWith('/sell/inserat/') || 
+                           location.pathname.startsWith('/sell/auto');
 
   useEffect(() => {
     // تحميل حالة الإيقاف من localStorage
@@ -138,8 +144,17 @@ export const GlobalWorkflowTimer: React.FC = () => {
     return unsubscribe;
   }, []);
 
-  // Don't show if timer is not active
-  if (!timerState.isActive) {
+  // ✅ FIX: Don't show if:
+  // 1. Not in sell workflow pages
+  // 2. Timer is not active (no active draft)
+  // 3. No workflow data exists
+  if (!isInSellWorkflow || !timerState.isActive) {
+    return null;
+  }
+
+  // ✅ FIX: Double-check that we have active workflow data
+  const workflowData = UnifiedWorkflowPersistenceService.loadData();
+  if (!workflowData || workflowData.isPublished) {
     return null;
   }
 

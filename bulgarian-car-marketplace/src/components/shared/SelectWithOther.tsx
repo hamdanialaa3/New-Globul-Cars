@@ -250,13 +250,33 @@ const SelectButton = styled.button<{
   appearance: none;
   outline: none;
 
+  /* ✅ Dark mode support */
+  [data-theme="dark"] &, .dark-theme & {
+    background: ${props => props.$disabled ? 'var(--bg-disabled)' : 'var(--bg-card)'};
+    color: ${props => props.$disabled ? 'var(--text-secondary)' : 'var(--text-primary)'};
+    border-color: ${props => {
+      if (props.$error) return '#dc3545';
+      if (props.$isOpen) return 'var(--accent-primary)';
+      return 'var(--border)';
+    }};
+  }
+
   &:hover:not(:disabled) {
     border-color: ${props => props.$error ? '#dc3545' : '#007bff'};
+    
+    [data-theme="dark"] &, .dark-theme & {
+      border-color: ${props => props.$error ? '#dc3545' : 'var(--accent-primary)'};
+    }
   }
 
   &:focus {
     border-color: #007bff;
     box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+    
+    [data-theme="dark"] &, .dark-theme & {
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+    }
   }
 `;
 
@@ -266,6 +286,11 @@ const SelectValue = styled.span<{ $isEmpty: boolean }>`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+
+  /* ✅ Dark mode support */
+  [data-theme="dark"] &, .dark-theme & {
+    color: ${props => props.$isEmpty ? 'var(--text-secondary)' : 'var(--text-primary)'};
+  }
 `;
 
 const ChevronIcon = styled(ChevronDown)<{ $isOpen: boolean }>`
@@ -290,6 +315,13 @@ const DropdownMenu = styled.div`
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   max-height: 200px;
   overflow-y: auto;
+
+  /* ✅ Dark mode support */
+  [data-theme="dark"] &, .dark-theme & {
+    background: var(--bg-card);
+    border-color: var(--accent-primary);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  }
 `;
 
 const DropdownList = styled.ul`
@@ -317,6 +349,21 @@ const DropdownItem = styled.li<{
   }};
   font-weight: ${props => props.$isOther ? '600' : '400'};
   border-bottom: 1px solid #f1f3f4;
+
+  /* ✅ Dark mode support */
+  [data-theme="dark"] &, .dark-theme & {
+    background: ${props => {
+      if (props.$isSelected) return 'rgba(102, 126, 234, 0.2)';
+      if (props.$isOther) return 'var(--bg-accent)';
+      return 'transparent';
+    }};
+    color: ${props => {
+      if (props.$disabled) return 'var(--text-secondary)';
+      if (props.$isOther) return 'var(--accent-primary)';
+      return 'var(--text-primary)';
+    }};
+    border-bottom-color: var(--border);
+  }
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -360,13 +407,29 @@ const OtherInput = styled.input<{ $error?: boolean }>`
   transition: all 0.2s ease;
   outline: none;
 
+  /* ✅ Dark mode support */
+  [data-theme="dark"] &, .dark-theme & {
+    background: var(--bg-card);
+    color: var(--text-primary);
+    border-color: ${props => props.$error ? '#dc3545' : 'var(--border)'};
+  }
+
   &:focus {
     border-color: #007bff;
     box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+    
+    [data-theme="dark"] &, .dark-theme & {
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+    }
   }
 
   &::placeholder {
     color: #6c757d;
+    
+    [data-theme="dark"] &, .dark-theme & {
+      color: var(--text-placeholder);
+    }
   }
 `;
 

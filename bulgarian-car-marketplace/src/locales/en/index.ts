@@ -12,3 +12,4 @@ export { bodyTypes } from './bodyTypes';
 export { savedSearches } from './savedSearches';
 export { footer } from './footer';
 export { advancedSearch } from './advancedSearch';
+export { auth } from './auth';
