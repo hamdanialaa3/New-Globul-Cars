@@ -4,15 +4,20 @@ const webpack = require('webpack');
 
 module.exports = {
   eslint: { enable: false },
+  style: {
+    postcss: {
+      mode: 'file',
+    },
+  },
   webpack: {
     configure: (config) => {
       console.log('🔧 CRACO: Configuring webpack...');
-      
+
       // Disable minification in production to ease debugging
       if (config.mode === 'production') {
         config.optimization.minimize = false;
       }
-      
+
       // CRITICAL: Remove CRA's ModuleScopePlugin to allow monorepo imports
       if (config.resolve && config.resolve.plugins) {
         config.resolve.plugins = config.resolve.plugins.filter(
@@ -20,12 +25,12 @@ module.exports = {
         );
         console.log('✅ Removed ModuleScopePlugin');
       }
-      
+
       // Also remove ESLint and TypeScript checker plugins
       if (config.plugins) {
         config.plugins = config.plugins.filter(p => {
           const name = p.constructor?.name;
-          return name !== 'ESLintWebpackPlugin' 
+          return name !== 'ESLintWebpackPlugin'
             && name !== 'ForkTsCheckerWebpackPlugin';
         });
       }
@@ -93,7 +98,7 @@ module.exports = {
       jestConfig.moduleNameMapper = {
         // d3 mock FIRST to prevent ES module parsing
         '^d3$': '<rootDir>/src/__mocks__/d3Mock.js',
-        
+
         // TypeScript path aliases (must match tsconfig.json)
         '^@/services/(.*)$': '<rootDir>/src/services/$1',
         '^@/components/(.*)$': '<rootDir>/src/components/$1',
@@ -107,16 +112,16 @@ module.exports = {
         '^@/constants/(.*)$': '<rootDir>/src/constants/$1',
         '^@/features/(.*)$': '<rootDir>/src/features/$1',
         '^@/assets/(.*)$': '<rootDir>/src/assets/$1',
-        
+
         // Monorepo packages
         '^@globul-cars/core$': '<rootDir>/packages/core/src/index',
         '^@globul-cars/core/(.*)$': '<rootDir>/packages/core/src/$1',
         '^@globul-cars/services$': '<rootDir>/packages/services/src/index',
         '^@globul-cars/services/(.*)$': '<rootDir>/packages/services/src/$1',
-        
+
         // Generic fallback (MUST be last among @/ patterns)
         '^@/(.*)$': '<rootDir>/src/$1',
-        
+
         // Keep existing CRA patterns
         ...Object.fromEntries(
           Object.entries(jestConfig.moduleNameMapper || {}).filter(
@@ -124,7 +129,7 @@ module.exports = {
           )
         ),
       };
-      
+
       return jestConfig;
     }
   }
