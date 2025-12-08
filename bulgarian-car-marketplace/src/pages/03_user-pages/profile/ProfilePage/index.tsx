@@ -635,346 +635,88 @@ const ProfilePage: React.FC = () => {
         </TabNavigation>
         )}
         
-        {/* Cover Image - 🔒 SECURITY: Only editable for own profile */}
-        {isMainProfilePage && isOwnProfile && (
-          <CoverImageUploader
-          currentImageUrl={user.coverImage?.url}
-          themeColor={theme.primary}
-          onUploadSuccess={(url) => {
-            if (process.env.NODE_ENV === 'development') {
-              logger.debug('Cover uploaded', { url });
-            }
-            // Update user state
-            setUser(prev => prev ? { 
-              ...prev, 
-              coverImage: { url, uploadedAt: new Date() } 
-            } : null);
-          }}
-          onUploadError={(error) => {
-            logger.error('Cover error', error as Error);
-          }}
-        />
-        )}
-        
-        {/* Profile Grid */}
+        {/* Cover Image + Profile Picture Container */}
         {location.pathname.includes('/profile') && (
-          <AnimatedProfileGrid key="profile-tab">
-            {/* Profile Sidebar - 🎨 DYNAMIC Theme Colors */}
-            <S.ProfileSidebar $isBusinessMode={isBusinessMode} $themeColor={theme.primary}>
-            {/* User Info ABOVE Profile Image */}
-            <div style={{ textAlign: 'center', marginBottom: '12px', marginTop: '8px' }}>
-              <div style={{ fontSize: '1.1rem', fontWeight: 'bold', marginBottom: '4px' }}>
-                {user.displayName || t('profile.anonymous')}
-              </div>
-              <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginBottom: '10px' }}>
-                {user.email}
-              </div>
-                  </div>
-            {/* Profile Image Uploader (no ring) */}
-            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+          <S.CoverAndProfileWrapper>
+            {/* Cover Image - Editable for own profile, view-only for others */}
+            <CoverImageUploader
+              currentImageUrl={user?.coverImage?.url}
+              themeColor={theme.primary}
+              onUploadSuccess={(url) => {
+                if (process.env.NODE_ENV === 'development') {
+                  logger.debug('Cover uploaded', { url });
+                }
+                setUser(prev => prev ? { 
+                  ...prev, 
+                  coverImage: { url, uploadedAt: new Date() } 
+                } : null);
+              }}
+              onUploadError={(error) => {
+                logger.error('Cover error', error as Error);
+              }}
+            />
+            
+            {/* Centered Profile Picture - Overlaps Cover and Info Bar */}
+            <S.CenteredProfileImageWrapper>
               <ProfileImageUploader
                 currentImageUrl={user?.profileImage?.url}
                 onUploadSuccess={() => window.location.reload()}
                 onUploadError={(err) => alert(err)}
               />
-            </div>
-            {/* ✨ NEW: Verification Badges */}
-            <div style={{ 
-                        display: 'flex',
-              flexWrap: 'wrap', 
-              gap: '8px', 
-              marginTop: '12px',
-              justifyContent: 'center'
-            }}>
-              <VerificationBadge 
-                type="email" 
-                status={user?.email ? 'verified' : 'unverified'} 
-                profileType={profileType}
+            </S.CenteredProfileImageWrapper>
+          </S.CoverAndProfileWrapper>
+        )}
+        
+        {/* User Info Bar */}
+        {location.pathname.includes('/profile') && (
+          <S.UserInfoBar>
+            
+            <S.UserInfoLeft>
+              <S.UserName>
+                {user.displayName || t('profile.anonymous')}
+                <VerificationBadge 
+                  type="email" 
+                  status={user?.email ? 'verified' : 'unverified'} 
+                  profileType={profileType}
+                />
+              </S.UserName>
+              <S.UserEmail>{user.email}</S.UserEmail>
+              <TrustBadge
+                trustScore={user.verification?.trustScore || 10}
+                level={user.verification?.level_old || TrustLevel.UNVERIFIED}
+                badges={user.verification?.badges || []}
               />
-              <VerificationBadge 
-                type="phone" 
-                status={user?.phoneNumber ? 'verified' : 'unverified'} 
-                profileType={profileType}
-              />
-                  </div>
-              
-              {/* Seller Rating (for sellers only) */}
-              {!isOwnProfile && user.accountType === 'business' && (
-                <div style={{ marginBottom: '12px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
-                  <React.Suspense fallback={<div>...</div>}>
-                    {(() => {
-                      const RatingStars = React.lazy(() => import('../../components/Reviews/RatingStars'));
-                      return <RatingStars rating={user.rating?.average || 0} totalReviews={user.rating?.total || 0} showText={true} />;
-                    })()}
-                  </React.Suspense>
-                </div>
-              )}
-              
-              {/* Followers/Following Count */}
-              <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '10px' }}>
-                <div>
-                  <strong>{user.stats?.followers || 0}</strong> {language === 'bg' ? 'Последователи' : 'Followers'}
-                </div>
-                <div>
-                  <strong>{user.stats?.following || 0}</strong> {language === 'bg' ? 'Следва' : 'Following'}
-                </div>
-              </div>
-              
-              {/* Google Sync Button - Own profile only */}
-              {isOwnProfile && user.email?.includes('gmail.com') && (
-                <SyncButton onClick={handleGoogleSync} disabled={syncing}>
-                  <RefreshCw size={16} className={syncing ? 'spinning' : ''} />
-                  {syncing 
-                    ? (language === 'bg' ? 'Синхронизацияне...' : 'Syncing...') 
-                    : (language === 'bg' ? 'Синхронизирай от Google' : 'Sync from Google')}
-                </SyncButton>
-            )}
-
-            {/* Trust Badge */}
-            <TrustBadge
-              trustScore={user.verification?.trustScore || 10}
-              level={user.verification?.level_old || TrustLevel.UNVERIFIED}
-              badges={user.verification?.badges || []}
-            />
-
-            {/* Profile Completion */}
-            <div style={{ marginTop: '20px' }}>
-              <ProfileCompletion
-                hasProfileImage={!!user.profileImage}
-                hasCoverImage={!!user.coverImage}
-                hasBio={!!user.bio}
-                hasPhone={!!user.phoneNumber}
-                hasLocation={!!user.location?.city}
-                emailVerified={user.emailVerified || user.verification?.email?.verified || false}
-                phoneVerified={user.verification?.phone?.verified || false}
-                idVerified={user.verification?.identity?.verified || false}
-              />
-            </div>
-
-            {/* Actions - 🎯 OPTIMIZED: Removed Edit Profile duplicate, kept essential actions */}
-            <S.ProfileActions>
-              {isOwnProfile ? (
-                <>
-                  {/* Own Profile Actions - Edit Profile removed as it's now in Quick Actions */}
-                  <S.ActionButton $variant="secondary" onClick={() => navigate('/users')} $themeColor={theme.primary}>
-                    <Users size={18} />
-                    {language === 'bg' ? 'Директория' : 'Browse Users'}
-                  </S.ActionButton>
-                  
-                  {/* Social Media Links */}
-                  <div style={{
-                    marginTop: '16px',
-                    paddingTop: '16px',
-                    borderTop: '1px solid var(--border)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '8px'
-                  }}>
-                    <div style={{
-                      fontSize: '0.75rem',
-                      fontWeight: '600',
-                      color: 'var(--text-secondary)',
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.5px',
-                      marginBottom: '4px'
-                    }}>
-                      {language === 'bg' ? 'Последвайте ни' : 'Follow Us'}
-                    </div>
-                    
-                    <div style={{
-                      display: 'grid',
-                      gridTemplateColumns: 'repeat(3, 1fr)',
-                      gap: '8px'
-                    }}>
-                      {/* Instagram */}
-                      <a
-                        key="instagram"
-                        href="https://www.instagram.com/globulnet/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          padding: '10px',
-                          background: 'var(--bg-secondary)',
-                          borderRadius: '8px',
-                          color: 'var(--text-primary)',
-                          textDecoration: 'none',
-                          transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-                          boxShadow: 'var(--shadow-sm)',
-                          border: '1px solid var(--border)'
-                        }}
-                        title="Instagram @globulnet"
-                      >
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                        </svg>
-                      </a>
-                      
-                      {/* TikTok */}
-                      <a
-                        key="tiktok"
-                        href="https://www.tiktok.com/@globulnet"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          padding: '10px',
-                          background: 'var(--bg-secondary)',
-                          borderRadius: '8px',
-                          color: 'var(--text-primary)',
-                          textDecoration: 'none',
-                          transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-                          boxShadow: 'var(--shadow-sm)',
-                          border: '1px solid var(--border)'
-                        }}
-                        title="TikTok @globulnet"
-                      >
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
-                        </svg>
-                      </a>
-                      
-                      {/* Facebook */}
-                      <a
-                        key="facebook"
-                        href="https://www.facebook.com/profile.php?id=109254638332601"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          padding: '10px',
-                          background: 'var(--bg-secondary)',
-                          borderRadius: '8px',
-                          color: 'var(--text-primary)',
-                          textDecoration: 'none',
-                          transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-                          boxShadow: 'var(--shadow-sm)',
-                          border: '1px solid var(--border)'
-                        }}
-                        title="Facebook"
-                      >
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                        </svg>
-                      </a>
-                      
-                      {/* Twitter/X */}
-                      <a
-                        key="twitter"
-                        href="https://twitter.com/globulnet"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          padding: '10px',
-                          background: 'var(--bg-secondary)',
-                          borderRadius: '8px',
-                          color: 'var(--text-primary)',
-                          textDecoration: 'none',
-                          transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-                          boxShadow: 'var(--shadow-sm)',
-                          border: '1px solid var(--border)'
-                        }}
-                        title="X (Twitter)"
-                      >
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-                        </svg>
-                      </a>
-                      
-                      {/* LinkedIn */}
-                      <a
-                        key="linkedin"
-                        href="https://www.linkedin.com/company/globulnet"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          padding: '10px',
-                          background: 'var(--bg-secondary)',
-                          borderRadius: '8px',
-                          color: 'var(--text-primary)',
-                          textDecoration: 'none',
-                          transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-                          boxShadow: 'var(--shadow-sm)',
-                          border: '1px solid var(--border)'
-                        }}
-                        title="LinkedIn"
-                      >
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-                        </svg>
-                      </a>
-                      
-                      {/* YouTube */}
-                      <a
-                        key="youtube"
-                        href="https://www.youtube.com/@globulnet"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          padding: '10px',
-                          background: 'var(--bg-secondary)',
-                          borderRadius: '8px',
-                          color: 'var(--text-primary)',
-                          textDecoration: 'none',
-                          transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-                          boxShadow: 'var(--shadow-sm)',
-                          border: '1px solid var(--border)'
-                        }}
-                        title="YouTube"
-                      >
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-                        </svg>
-                      </a>
-                    </div>
-                  </div>
-                  
-                  <S.ActionButton $variant="danger" onClick={handleLogout}>
-                    {t('profile.logout')}
-                  </S.ActionButton>
-                </>
-              ) : (
-                <>
-                  {/* Viewing Another User's Profile */}
-                  <S.ActionButton $variant="primary" onClick={async () => {
-                    if (!user?.uid || !targetUserId) return;
-                    try {
-                      // Import messaging service
-                      const { default: messagingService } = await import('../../services/messaging/messaging.service');
-                      // Create or get conversation
-                      const conversationId = await messagingService.getOrCreateConversation(
-                        user.uid,
-                        targetUserId
-                      );
-                      // Navigate to messages page with this conversation
-                      navigate(`/messages?conversation=${conversationId}`);
-                    } catch (error) {
-                      logger.error('Error creating conversation', error as Error, { 
-                        userId: user?.uid, 
-                        targetUserId 
-                      });
-                      toast.error(language === 'bg' ? 'Грешка при създаване на разговор' : 'Error creating conversation');
-                    }
-                  }}>
-                    <Phone size={18} />
-                    {language === 'bg' ? 'Изпрати съобщение' : 'Send Message'}
-                  </S.ActionButton>
-                  <FollowButton 
+            </S.UserInfoLeft>
+            
+            <S.UserInfoCenter>
+               <S.StatBox>
+                 <span className="number">{user.stats?.followers || 0}</span>
+                 <span className="label">{language === 'bg' ? 'Последователи' : 'Followers'}</span>
+               </S.StatBox>
+               <S.StatBox>
+                 <span className="number">{user.stats?.following || 0}</span>
+                 <span className="label">{language === 'bg' ? 'Следва' : 'Following'}</span>
+               </S.StatBox>
+               <S.StatBox>
+                 <span className="number">{user.verification?.trustScore || 0}%</span>
+                 <span className="label">{language === 'bg' ? 'Доверие' : 'Trust'}</span>
+               </S.StatBox>
+            </S.UserInfoCenter>
+            
+            <S.UserInfoRight>
+               {isOwnProfile ? (
+                 <>
+                   <S.ActionButton $variant="secondary" onClick={() => navigate('/profile/settings')} $themeColor={theme.primary}>
+                     <SettingsIcon size={18} />
+                     {language === 'bg' ? 'Настройки' : 'Settings'}
+                   </S.ActionButton>
+                   <S.ActionButton $variant="danger" onClick={handleLogout}>
+                     {t('profile.logout')}
+                   </S.ActionButton>
+                 </>
+               ) : (
+                 <>
+                   <FollowButton 
                     $following={isFollowing}
                     onClick={handleFollowToggle}
                     disabled={followLoading}
@@ -985,37 +727,61 @@ const ProfilePage: React.FC = () => {
                       : (language === 'bg' ? 'Последвай' : 'Follow')
                     }
                   </FollowButton>
-                  <S.ActionButton $variant="secondary" onClick={() => navigate('/users')}>
-                    <Users size={18} />
-                    {language === 'bg' ? 'Обратно към директорията' : 'Back to Directory'}
-                  </S.ActionButton>
-                  <S.ActionButton $variant="secondary" onClick={() => {
-                    // Scroll to reviews section
-                    const reviewsSection = document.querySelector('[data-section="reviews"]');
-                    if (reviewsSection) {
-                      reviewsSection.scrollIntoView({ behavior: 'smooth' });
+                  <S.ActionButton $variant="primary" onClick={async () => {
+                    if (!user?.uid || !targetUserId) return;
+                    try {
+                      const { default: messagingService } = await import('../../services/messaging/messaging.service');
+                      const conversationId = await messagingService.getOrCreateConversation(user.uid, targetUserId);
+                      navigate(`/messages?conversation=${conversationId}`);
+                    } catch (error) {
+                      logger.error('Error creating conversation', error as Error);
+                      toast.error(language === 'bg' ? 'Грешка' : 'Error');
                     }
                   }}>
-                    <MessageCircle size={18} />
-                    {language === 'bg' ? 'Напиши отзив' : 'Write Review'}
+                    <Phone size={18} />
+                    {language === 'bg' ? 'Съобщение' : 'Message'}
                   </S.ActionButton>
-                  <S.ActionButton $variant="secondary" onClick={() => navigate('/')}>
-                    <Home size={18} />
-                    {language === 'bg' ? 'Начало' : 'Home'}
-                  </S.ActionButton>
-                </>
-              )}
-            </S.ProfileActions>
-          </S.ProfileSidebar>
+                 </>
+               )}
+            </S.UserInfoRight>
+          </S.UserInfoBar>
+        )}
 
-          {/* Profile Content */}
-          <S.ProfileContent>
-            {/* 🎯 UNIFIED: ProfileDashboard shows completion + stats + actions */}
-            {isOwnProfile && (
-              <S.ContentSection $themeColor={theme.primary} $isBusinessMode={isBusinessMode}>
-                <ProfileDashboard user={user} />
-            </S.ContentSection>
-            )}
+        {/* NEW: Plan Bar */}
+        {location.pathname.includes('/profile') && isOwnProfile && (
+          <S.PlanBar $themeColor={theme.primary}>
+            <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+              <S.PlanInfoItem>
+                <span className="value" style={{ textTransform: 'capitalize', fontSize: '1rem' }}>
+                  {planTier === 'free' ? (language === 'bg' ? 'Безплатен план' : 'Free Plan') : planTier}
+                </span>
+              </S.PlanInfoItem>
+              
+              <S.PlanInfoItem>
+                <span className="label">{language === 'bg' ? 'Лимит:' : 'Limit:'}</span>
+                <span className="value">{userCars?.length || 0} / {planTier === 'free' ? 3 : '∞'}</span>
+              </S.PlanInfoItem>
+              
+              <S.PlanInfoItem>
+                <span className="label">{language === 'bg' ? 'Статус:' : 'Status:'}</span>
+                <span className="value" style={{ color: '#4CAF50' }}>{language === 'bg' ? 'Активен' : 'Active'}</span>
+              </S.PlanInfoItem>
+            </div>
+            
+            <S.PlanUpgradeButton $themeColor={theme.primary} onClick={() => navigate('/plans')}>
+              <ArrowDown size={14} style={{ transform: 'rotate(-90deg)' }} />
+              {language === 'bg' ? 'Подобри' : 'Upgrade'}
+            </S.PlanUpgradeButton>
+          </S.PlanBar>
+        )}
+
+        {/* Profile Grid (Modified for single column) */}
+        {location.pathname.includes('/profile') && (
+          <AnimatedProfileGrid key="profile-tab" style={{ gridTemplateColumns: '1fr', gap: 0 }}>
+            {/* Sidebar Removed */}
+
+            {/* Profile Content */}
+            <S.ProfileContent>
             
             {/* Community Feed Widget - Latest Posts */}
             {isOwnProfile && (

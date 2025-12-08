@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import styled, { keyframes, css } from 'styled-components';
-import { Crown, TrendingUp, Building2, CheckCircle, Zap, Shield, Sparkles, Star, Car, Bot, TrendingUp as ChartUp, Target, Lightbulb, Users, MapPin, Plug, Palette, UserCog, Link2, FileText, Phone, CheckSquare, Camera, MessageSquare, Search, Image, Battery, BadgeCheck, BarChart3, Edit3, Headphones, Calendar, CalendarCheck } from 'lucide-react';
-import billingService, { BillingInterval, Plan } from '../../features/billing/BillingService';
+import { Crown, TrendingUp, Building2, CheckCircle, Zap, Shield, Sparkles, Star, Car, Bot, TrendingUp as ChartUp, Target, Lightbulb, Users, MapPin, Plug, Palette, UserCog, Link2, FileText, Phone, CheckSquare, Camera, MessageSquare, Search, Image, Battery, BadgeCheck, BarChart3, Edit3, Headphones, Calendar, CalendarCheck, Eye, ArrowRight } from 'lucide-react';
+import billingService from '../../features/billing/BillingService';
+import type { BillingInterval, Plan } from '../../features/billing/types';
 import { useAuth } from '../../contexts/AuthProvider';
 import { useLanguage } from '../../contexts/LanguageContext';
+// ✅ استيراد ملف الإعدادات المركزي
+import subscriptionTheme, { getPrimaryGradient, getPrimaryGradientWithMiddle, getShadowColor, getBorderColor } from './subscription-theme';
 
 // ==================== ANIMATIONS ====================
 const fadeInUp = keyframes`
@@ -71,7 +74,7 @@ const Header = styled.div`
 const Title = styled.h1`
   font-size: 2rem;
   font-weight: 700;
-  background: linear-gradient(135deg, #FF8F10 0%, #fb923c 100%);
+  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -122,7 +125,7 @@ const IntervalToggle = styled.div`
     border-radius: 62px;
     background: linear-gradient(135deg, 
       transparent 0%, 
-      rgba(255, 143, 16, 0.1) 50%, 
+      ${() => subscriptionTheme.backgrounds.overlay} 50%, 
       transparent 100%
     );
     opacity: 0;
@@ -141,7 +144,7 @@ const IntervalButton = styled.button<{ $active: boolean }>`
   border-radius: 50px;
   border: none;
   background: ${p => p.$active 
-    ? 'linear-gradient(135deg, #FF8F10 0%, #fb923c 100%)' 
+    ? `linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%)`
     : 'transparent'
   };
   color: ${p => p.$active ? 'white' : 'var(--text-secondary)'};
@@ -150,7 +153,7 @@ const IntervalButton = styled.button<{ $active: boolean }>`
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: ${p => p.$active 
-    ? '0 8px 25px rgba(255, 143, 16, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2)' 
+    ? `0 8px 25px ${() => subscriptionTheme.shadows.medium}, inset 0 1px 0 rgba(255, 255, 255, 0.2)` 
     : 'none'
   };
   z-index: ${p => p.$active ? '2' : '1'};
@@ -183,12 +186,12 @@ const IntervalButton = styled.button<{ $active: boolean }>`
   &:hover {
     transform: ${p => p.$active ? 'translateY(-3px) scale(1.02)' : 'translateY(-1px)'};
     box-shadow: ${p => p.$active 
-      ? '0 12px 35px rgba(255, 143, 16, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.3)' 
+      ? `0 12px 35px ${() => subscriptionTheme.shadows.large}, inset 0 1px 0 rgba(255, 255, 255, 0.3)` 
       : '0 4px 15px rgba(0, 0, 0, 0.15)'
     };
     background: ${p => p.$active 
-      ? 'linear-gradient(135deg, #ff9520 0%, #ffa04d 100%)' 
-      : 'rgba(255, 143, 16, 0.08)'
+      ? `linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%)`
+      : subscriptionTheme.backgrounds.hover
     };
   }
 
@@ -223,7 +226,7 @@ const SavingsBadge = styled.span`
   position: absolute;
   top: -18px;
   right: -15px;
-  background: linear-gradient(135deg, #16a34a 0%, #22c55e 100%);
+  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
   color: white;
   padding: 0.45rem 1.1rem;
   border-radius: 25px;
@@ -232,8 +235,8 @@ const SavingsBadge = styled.span`
   white-space: nowrap;
   animation: ${pulse} 2s ease-in-out infinite;
   box-shadow: 
-    0 4px 15px rgba(22, 163, 74, 0.4),
-    0 2px 8px rgba(22, 163, 74, 0.3),
+    0 4px 15px ${() => subscriptionTheme.shadows.medium},
+    0 2px 8px ${() => subscriptionTheme.shadows.small},
     inset 0 1px 0 rgba(255, 255, 255, 0.3);
   border: 2px solid rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(10px);
@@ -276,10 +279,10 @@ const Card = styled.div<{ $highlight?: boolean; $free?: boolean }>`
   border-radius: 16px;
   padding: 1.75rem;
   box-shadow: ${p => p.$highlight 
-    ? '0 20px 60px rgba(255, 143, 16, 0.25)' 
+    ? `0 20px 60px ${() => subscriptionTheme.shadows.small}` 
     : 'var(--shadow-lg)'
   };
-  border: ${p => p.$highlight ? '3px solid #FF8F10' : '2px solid var(--border-primary)'};
+  border: ${p => p.$highlight ? '3px solid var(--accent-primary)' : '2px solid var(--border-primary)'};
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   animation: ${fadeInUp} 0.8s ease-out;
   transform-origin: center;
@@ -294,7 +297,7 @@ const Card = styled.div<{ $highlight?: boolean; $free?: boolean }>`
   &:hover {
     transform: ${p => p.$highlight ? 'scale(1.08)' : 'scale(1.03)'};
     box-shadow: ${p => p.$highlight 
-      ? '0 25px 70px rgba(255, 143, 16, 0.35)' 
+      ? `0 25px 70px ${() => subscriptionTheme.shadows.small}` 
       : 'var(--shadow-xl)'
     };
   }
@@ -323,13 +326,13 @@ const Badge = styled.div`
   position: absolute;
   top: 20px;
   right: -35px;
-  background: linear-gradient(135deg, #FF8F10 0%, #fb923c 100%);
+  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
   color: white;
   padding: 0.5rem 3rem;
   font-weight: 700;
   font-size: 0.85rem;
   transform: rotate(45deg);
-  box-shadow: 0 4px 15px rgba(255, 143, 16, 0.4);
+  box-shadow: 0 4px 15px ${() => subscriptionTheme.shadows.medium};
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -351,7 +354,7 @@ const IconWrapper = styled.div<{ $color: string }>`
   align-items: center;
   justify-content: center;
   margin: 0 auto 1.5rem;
-  box-shadow: 0 8px 25px rgba(255, 143, 16, 0.25);
+  box-shadow: 0 8px 25px ${() => subscriptionTheme.shadows.small};
   animation: ${rotateIn} 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
   
   svg {
@@ -391,7 +394,7 @@ const Price = styled.div<{ $free?: boolean }>`
     font-weight: 700;
     background: ${p => p.$free 
       ? 'linear-gradient(135deg, #6b7280 0%, #9ca3af 100%)'
-      : 'linear-gradient(135deg, #FF8F10 0%, #fb923c 100%)'
+      : `linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%)`
     };
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -443,7 +446,7 @@ const FeatureItem = styled.li<{ $highlight?: boolean }>`
   svg {
     width: 18px;
     height: 18px;
-    color: ${p => p.$highlight ? '#FF8F10' : '#16a34a'};
+    color: ${p => p.$highlight ? 'var(--accent-primary)' : 'var(--accent-secondary)'};
     flex-shrink: 0;
     margin-top: 1px;
     transition: all 0.3s ease;
@@ -459,14 +462,14 @@ const FeatureItem = styled.li<{ $highlight?: boolean }>`
 
   ${p => p.$highlight && `
     font-weight: 600;
-    color: #FF8F10;
+    color: var(--accent-primary);
   `}
 `;
 
 const Button = styled.button<{ $selected?: boolean; $free?: boolean }>`
   width: 100%;
-  padding: 1rem;
-  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  border-radius: 16px;
   font-weight: 600;
   font-size: 1rem;
   border: none;
@@ -475,6 +478,12 @@ const Button = styled.button<{ $selected?: boolean; $free?: boolean }>`
   margin-top: 1rem;
   position: relative;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  
+  /* ✅ FIX: إزالة الإطار الأسود وإضافة تصميم عين */
   
   ${p => p.$selected ? `
     background: rgba(229, 231, 235, 0.5);
@@ -495,23 +504,67 @@ const Button = styled.button<{ $selected?: boolean; $free?: boolean }>`
       transform: translateY(0);
     }
   ` : `
-    background: linear-gradient(135deg, #FF8F10 0%, #fb923c 100%);
+    /* ✅ تصميم جديد: شكل عين مع خلفية برتقالية */
+    background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
     color: white;
-    box-shadow: 0 4px 20px rgba(255, 143, 16, 0.35);
+      box-shadow: 
+      0 4px 20px ${() => subscriptionTheme.shadows.small},
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    border: 2px solid transparent;
+    
+    /* ✅ تأثير عين: دائرة في المنتصف */
+    &::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+      transform: translate(-50%, -50%);
+      transition: width 0.4s ease, height 0.4s ease;
+      pointer-events: none;
+    }
     
     &:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 10px 30px rgba(255, 143, 16, 0.45);
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 
+        0 10px 30px ${() => subscriptionTheme.shadows.medium},
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      border-color: ${() => subscriptionTheme.borders.primary};
+      
+      /* ✅ توسيع تأثير العين عند hover */
+      &::before {
+        width: 200px;
+        height: 200px;
+      }
+      
+      /* ✅ تحريك الأيقونة */
+      svg {
+        transform: scale(1.15) translateX(3px);
+      }
     }
 
     &:active {
-      transform: translateY(-1px);
+      transform: translateY(-1px) scale(0.98);
+        box-shadow: 
+        0 4px 15px ${() => subscriptionTheme.shadows.small},
+        inset 0 2px 4px rgba(0, 0, 0, 0.1);
     }
   `}
 
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+  }
+
+  /* ✅ أيقونة داخل الزر */
+  svg {
+    width: 20px;
+    height: 20px;
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
   }
 
   /* Ripple effect */
@@ -526,6 +579,7 @@ const Button = styled.button<{ $selected?: boolean; $free?: boolean }>`
     background: rgba(255, 255, 255, 0.4);
     transform: translate(-50%, -50%);
     transition: width 0.6s, height 0.6s;
+    pointer-events: none;
   }
 
   &:active::after {
@@ -541,9 +595,9 @@ const MoneyBackGuarantee = styled.div`
   gap: 0.5rem;
   margin-top: 1rem;
   padding: 0.75rem;
-  background: rgba(22, 163, 74, 0.1);
+  background: ${() => subscriptionTheme.backgrounds.overlay};
   border-radius: 12px;
-  color: #16a34a;
+  color: var(--accent-primary);
   font-size: 0.9rem;
   font-weight: 600;
   
@@ -706,7 +760,7 @@ const SubscriptionManagerEnhanced: React.FC = () => {
 
   const getPlanColor = (planId: string) => {
     if (planId === 'free') return 'linear-gradient(135deg, #6b7280 0%, #9ca3af 100%)';
-    if (planId === 'dealer') return 'linear-gradient(135deg, #FF8F10 0%, #fb923c 100%)';
+    if (planId === 'dealer') return `linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%)`;
     return 'linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%)';
   };
 
@@ -846,13 +900,28 @@ const SubscriptionManagerEnhanced: React.FC = () => {
                 onClick={() => !isCurrent && handleSubscribe(plan)}
                 disabled={loading || isCurrent || plan.id === 'free'}
               >
-                {isCurrent 
-                  ? (isBg ? 'Текущ план' : 'Current Plan')
-                  : plan.id === 'free'
-                  ? (isBg ? 'Започнете безплатно' : 'Start Free')
-                  : loading
-                  ? (isBg ? 'Зареждане...' : 'Loading...')
-                  : (isBg ? 'Избери план' : 'Select Plan')}
+                {isCurrent ? (
+                  <>
+                    <CheckCircle size={20} />
+                    {isBg ? 'Текущ план' : 'Current Plan'}
+                  </>
+                ) : plan.id === 'free' ? (
+                  <>
+                    <Eye size={20} />
+                    {isBg ? 'Започнете безплатно' : 'Start Free'}
+                  </>
+                ) : loading ? (
+                  <>
+                    <Zap size={20} className="animate-spin" />
+                    {isBg ? 'Зареждане...' : 'Loading...'}
+                  </>
+                ) : (
+                  <>
+                    <Eye size={20} />
+                    {isBg ? 'Избери план' : 'Select Plan'}
+                    <ArrowRight size={18} />
+                  </>
+                )}
               </Button>
 
               {plan.id !== 'free' && (

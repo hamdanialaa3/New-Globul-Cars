@@ -15,6 +15,7 @@ export interface UnifiedWorkflowData {
 
   // Step 2: Vehicle Details (All fields from VehicleDataPageUnified)
   make?: string;
+  makeRaw?: string; // ✅ ADDED: Raw make input
   model?: string;
   year?: string;
   firstRegistration?: string;
@@ -36,11 +37,25 @@ export interface UnifiedWorkflowData {
   roadworthy?: boolean;
   saleType?: string;
   saleTimeline?: string;
+  bodyType?: string; // ✅ ADDED: Body type
+  
+  // "Other" fields for free text entry
+  bodyTypeOther?: string;
+  makeOther?: string;
+  modelOther?: string;
+  fuelTypeOther?: string;
+  colorOther?: string;
+  exteriorColorOther?: string;
 
   // Location
   region?: string;
   city?: string;
   postalCode?: string;
+  saleProvince?: string; // ✅ ADDED: Specific sale location fields
+  saleCity?: string;
+  salePostalCode?: string;
+  saleCountry?: string;
+  saleLocation?: string;
 
   // Step 3: Equipment (Arrays only - NO duplicate strings!)
   safetyEquipment?: string[];
@@ -84,6 +99,7 @@ export interface UnifiedWorkflowData {
 export class UnifiedWorkflowPersistenceService {
   private static timerInterval: NodeJS.Timeout | null = null;
   private static listeners: Set<(state: TimerState) => void> = new Set();
+  private static clearListeners: Set<() => void> = new Set(); // ✅ ADDED: Listeners for data clearing
 
   /**
    * Save workflow data
@@ -219,6 +235,19 @@ export class UnifiedWorkflowPersistenceService {
     }
 
     serviceLogger.info('Unified workflow data cleared');
+    
+    // Notify clear listeners
+    this.clearListeners.forEach(callback => callback());
+  }
+
+  /**
+   * Subscribe to data clear events
+   */
+  static subscribeToClear(callback: () => void): () => void {
+    this.clearListeners.add(callback);
+    return () => {
+      this.clearListeners.delete(callback);
+    };
   }
 
   /**

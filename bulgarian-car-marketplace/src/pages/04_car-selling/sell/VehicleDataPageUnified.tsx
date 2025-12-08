@@ -1,7 +1,7 @@
 // Unified Vehicle Data Page - Responsive Design
 // صفحة بيانات السيارة الموحدة - تصميم متجاوب
 /* eslint-disable jsx-a11y/control-has-associated-label */
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import styled, { DefaultTheme } from 'styled-components';
 import { useLanguage } from '../../../contexts/LanguageContext';
@@ -10,6 +10,7 @@ import { SellProgressBar } from '../../../components/SellWorkflow';
 import SellWorkflowStepStateService from '../../../services/sellWorkflowStepState';
 import { carValidationService, ValidationResult } from '../../../services/validation/car-validation.service';
 import { useVehicleDataForm } from './VehicleData/useVehicleDataForm';
+import { BODY_TYPES } from './VehicleData/types';
 import { useIsMobile } from '../../../hooks/useBreakpoint';
 import BrandModelMarkdownDropdown from '../../../components/BrandModelMarkdownDropdown/BrandModelMarkdownDropdown';
 import { useUnifiedWorkflow } from '../../../hooks/useUnifiedWorkflow';
@@ -695,8 +696,8 @@ const VehicleDataPage: React.FC = () => {
   const { workflowData, updateData, timerState } = useUnifiedWorkflow(2);
 
   // ✅ FIX: Refs to prevent infinite loop during data restoration
-  const isRestoringRef = React.useRef(false);
-  const hasRestoredRef = React.useRef(false);
+  const isRestoringRef = useRef(false);
+  const hasRestoredRef = useRef(false);
 
   const {
     formData,
@@ -716,9 +717,9 @@ const VehicleDataPage: React.FC = () => {
   }, [formData.make, formData.model, formData.year, formData.firstRegistration]);
 
   // Validation state management
-  const [validationResult, setValidationResult] = React.useState<ValidationResult | null>(null);
+  const [validationResult, setValidationResult] = useState<ValidationResult | null>(null);
   // Touched fields tracking - simple red → green on touch
-  const [touchedFields, setTouchedFields] = React.useState<Set<string>>(new Set());
+  const [touchedFields, setTouchedFields] = useState<Set<string>>(new Set());
 
   // ✅ NEW: Simple touch-based validation: red → green on touch/interaction
   // أحمر قبل اللمس، أخضر بعد اللمس - بهذه البساطة
@@ -757,6 +758,9 @@ const VehicleDataPage: React.FC = () => {
     const fieldsToRestore: Array<{ key: keyof typeof formData; value: any }> = [];
     
     // Map unified workflow fields to formData fields
+    // ✅ NOTE: useVehicleDataForm now handles the actual data restoration.
+    // This effect is primarily for marking fields as TOUCHED for validation purposes.
+    
     if (workflowData.make) fieldsToRestore.push({ key: 'make', value: workflowData.make });
     if (workflowData.model) fieldsToRestore.push({ key: 'model', value: workflowData.model });
     if (workflowData.year) fieldsToRestore.push({ key: 'year', value: workflowData.year });
@@ -773,17 +777,36 @@ const VehicleDataPage: React.FC = () => {
     if (workflowData.hasAccidentHistory !== undefined) fieldsToRestore.push({ key: 'hasAccidentHistory', value: workflowData.hasAccidentHistory });
     if (workflowData.hasServiceHistory !== undefined) fieldsToRestore.push({ key: 'hasServiceHistory', value: workflowData.hasServiceHistory });
     if (workflowData.variant) fieldsToRestore.push({ key: 'variant', value: workflowData.variant });
+    if (workflowData.condition) fieldsToRestore.push({ key: 'condition', value: workflowData.condition }); // ✅ ADDED
     if (workflowData.roadworthy !== undefined) fieldsToRestore.push({ key: 'roadworthy', value: workflowData.roadworthy });
     if (workflowData.saleType) fieldsToRestore.push({ key: 'saleType', value: workflowData.saleType as 'private' | 'commercial' });
     if (workflowData.saleTimeline) fieldsToRestore.push({ key: 'saleTimeline', value: workflowData.saleTimeline as 'unknown' | 'soon' | 'months' });
     
+    // ✅ ADDED: Restore missing fields
+    if (workflowData.makeRaw) fieldsToRestore.push({ key: 'makeRaw', value: workflowData.makeRaw });
+    if (workflowData.bodyType) fieldsToRestore.push({ key: 'bodyType', value: workflowData.bodyType });
+    if (workflowData.bodyTypeOther) fieldsToRestore.push({ key: 'bodyTypeOther', value: workflowData.bodyTypeOther });
+    if (workflowData.makeOther) fieldsToRestore.push({ key: 'makeOther', value: workflowData.makeOther });
+    if (workflowData.modelOther) fieldsToRestore.push({ key: 'modelOther', value: workflowData.modelOther });
+    if (workflowData.fuelTypeOther) fieldsToRestore.push({ key: 'fuelTypeOther', value: workflowData.fuelTypeOther });
+    if (workflowData.colorOther) fieldsToRestore.push({ key: 'colorOther', value: workflowData.colorOther });
+    if (workflowData.exteriorColorOther) fieldsToRestore.push({ key: 'exteriorColorOther', value: workflowData.exteriorColorOther });
+    if (workflowData.saleProvince) fieldsToRestore.push({ key: 'saleProvince', value: workflowData.saleProvince });
+    if (workflowData.saleCity) fieldsToRestore.push({ key: 'saleCity', value: workflowData.saleCity });
+    if (workflowData.salePostalCode) fieldsToRestore.push({ key: 'salePostalCode', value: workflowData.salePostalCode });
+    if (workflowData.saleCountry) fieldsToRestore.push({ key: 'saleCountry', value: workflowData.saleCountry });
+    if (workflowData.saleLocation) fieldsToRestore.push({ key: 'saleLocation', value: workflowData.saleLocation });
+
     // Restore all fields from unified workflow
     if (fieldsToRestore.length > 0) {
       fieldsToRestore.forEach(({ key, value }) => {
         // Only restore if different to avoid unnecessary updates
         if (formData[key] !== value) {
-          handleInputChange(key, value);
+          // handleInputChange(key, value); // Handled by useVehicleDataForm now
           markFieldAsTouched(key);
+        } else {
+          // Even if value is same, mark as touched if it has value
+          if (value) markFieldAsTouched(key);
         }
       });
       
@@ -804,17 +827,14 @@ const VehicleDataPage: React.FC = () => {
     const year = searchParams.get('fy');
 
     if (make) {
-      console.log('🔗 Loading from URL: make =', make);
       handleInputChange('make', make);
       markFieldAsTouched('make');
     }
     if (model) {
-      console.log('🔗 Loading from URL: model =', model);
       handleInputChange('model', model);
       markFieldAsTouched('model');
     }
     if (year) {
-      console.log('🔗 Loading from URL: year =', year);
       handleInputChange('year', year);
       handleInputChange('firstRegistration', year);
       markFieldAsTouched('year');
@@ -838,6 +858,7 @@ const VehicleDataPage: React.FC = () => {
       // ✅ COMPLETE: Save ALL form data to unified system (including all fields)
       updateData({
         make: formData.make,
+        makeRaw: formData.makeRaw, // ✅ ADDED
         model: formData.model,
         year: formData.year,
         firstRegistration: formData.firstRegistration,
@@ -847,16 +868,27 @@ const VehicleDataPage: React.FC = () => {
         power: formData.power,
         color: formData.color,
         doors: formData.doors,
-        seats: formData.seats, // ✅ ADDED: Seats
-        exteriorColor: formData.exteriorColor || formData.color, // ✅ ADDED: Exterior color
-        previousOwners: formData.previousOwners, // ✅ ADDED: Previous owners
-        hasAccidentHistory: formData.hasAccidentHistory, // ✅ ADDED: Accident history
-        hasServiceHistory: formData.hasServiceHistory, // ✅ ADDED: Service history
-        variant: formData.variant, // ✅ ADDED: Variant
-        // ✅ FIX: Convert null to undefined for roadworthy
+        seats: formData.seats,
+        exteriorColor: formData.exteriorColor || formData.color,
+        previousOwners: formData.previousOwners,
+        hasAccidentHistory: formData.hasAccidentHistory,
+        hasServiceHistory: formData.hasServiceHistory,
+        variant: formData.variant,
         roadworthy: formData.roadworthy ?? undefined,
         saleType: formData.saleType,
-        saleTimeline: formData.saleTimeline
+        saleTimeline: formData.saleTimeline,
+        bodyType: formData.bodyType, // ✅ ADDED
+        bodyTypeOther: formData.bodyTypeOther, // ✅ ADDED
+        makeOther: formData.makeOther, // ✅ ADDED
+        modelOther: formData.modelOther, // ✅ ADDED
+        fuelTypeOther: formData.fuelTypeOther, // ✅ ADDED
+        colorOther: formData.colorOther, // ✅ ADDED
+        exteriorColorOther: formData.exteriorColorOther, // ✅ ADDED
+        saleProvince: formData.saleProvince, // ✅ ADDED
+        saleCity: formData.saleCity, // ✅ ADDED
+        salePostalCode: formData.salePostalCode, // ✅ ADDED
+        saleCountry: formData.saleCountry, // ✅ ADDED
+        saleLocation: formData.saleLocation // ✅ ADDED
       });
     }, 500); // 500ms debounce
 
@@ -1148,7 +1180,6 @@ const VehicleDataPage: React.FC = () => {
       const validVehicleType = vehicleType || 'car';
       const targetPath = `/sell/inserat/${validVehicleType}/equipment?${params}`;
       
-      console.log('🚀 Navigating to equipment page:', targetPath);
       
       // Navigate directly - no validation blocking
       navigate(targetPath);
@@ -1218,6 +1249,18 @@ const VehicleDataPage: React.FC = () => {
     ];
   }, [t, language]);
 
+  const bodyTypeOptions = useMemo(() => {
+    const exampleText = language === 'bg' ? 'Пример: ' : 'Example: ';
+    const exampleLabel = language === 'bg' ? 'Седан' : 'Sedan';
+    return [
+      { value: '', label: `${exampleText}${exampleLabel} | ${language === 'bg' ? 'Изберете тип купе' : 'Select Body Type'}` },
+      ...(BODY_TYPES || []).map(bodyType => ({
+        value: bodyType.value,
+        label: language === 'bg' ? bodyType.labelBg : bodyType.labelEn
+      }))
+    ];
+  }, [language]);
+
   const renderListingSection = (isMobileView: boolean) => (
     <InsightsCard $isMobile={isMobileView}>
       <InsightsHeader>
@@ -1265,17 +1308,35 @@ const VehicleDataPage: React.FC = () => {
         </InsightField>
 
         <InsightField>
-          <InsightLabel>{t('sell.listingSection.mileageLabel')}</InsightLabel>
-          <InputSuffixWrapper $validation={getValidationState('mileage')}>
-            <InsightInput
-              type="number"
-              value={formData.mileage}
-              placeholder={language === 'bg' ? 'Пример: 185000' : 'Example: 185000'}
-              onChange={event => handleInputChange('mileage', event.target.value)}
-              onFocus={() => markFieldAsTouched('mileage')}
-            />
-            <InputSuffix>{t('sell.listingSection.mileageUnitKm')}</InputSuffix>
-          </InputSuffixWrapper>
+          <InlineFields>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', flex: 1 }}>
+              <InsightLabel>{t('sell.listingSection.mileageLabel')}</InsightLabel>
+              <InputSuffixWrapper $validation={getValidationState('mileage')}>
+                <InsightInput
+                  type="number"
+                  value={formData.mileage}
+                  placeholder={language === 'bg' ? 'Пример: 185000' : 'Example: 185000'}
+                  onChange={event => handleInputChange('mileage', event.target.value)}
+                  onFocus={() => markFieldAsTouched('mileage')}
+                />
+                <InputSuffix>{t('sell.listingSection.mileageUnitKm')}</InputSuffix>
+              </InputSuffixWrapper>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', flex: 1 }}>
+              <InsightLabel>{t('sell.listingSection.conditionLabel')}</InsightLabel>
+              <InsightSelect
+                value={formData.condition || ''}
+                onChange={event => handleInputChange('condition', event.target.value)}
+                onFocus={() => markFieldAsTouched('condition')}
+                $validation={getValidationState('condition')}
+              >
+                <option value="">{language === 'bg' ? 'Изберете' : 'Select'}</option>
+                <option value="new">{t('sell.listingSection.conditionNew')}</option>
+                <option value="used">{t('sell.listingSection.conditionUsed')}</option>
+                <option value="parts">{t('sell.listingSection.conditionParts')}</option>
+              </InsightSelect>
+            </div>
+          </InlineFields>
         </InsightField>
 
         {/* Technical Details */}
@@ -1469,7 +1530,7 @@ const VehicleDataPage: React.FC = () => {
       <SectionDivider />
 
       {/* ✅ FIX: Removed duplicate exteriorColor field - already have 'color' in Basic Info */}
-      <SectionHeading>{t('sell.exteriorDetails.title')}</SectionHeading>
+      {/* Exterior Details section removed */}
       <InsightsGrid>
         {/* Trim level field removed */}
       </InsightsGrid>
@@ -1508,6 +1569,43 @@ const VehicleDataPage: React.FC = () => {
               }}
             />
           </div>
+
+          {/* Body Type Section - Independent (Mobile) */}
+          <MobileFieldGroup>
+            <MobileLabel>{language === 'bg' ? 'Тип купе' : 'Body Type'}</MobileLabel>
+            <MobileSelect
+              value={formData.bodyType || ''}
+              onChange={(e) => {
+                const value = e.target.value;
+                handleInputChange('bodyType', value);
+                markFieldAsTouched('bodyType');
+                if (value !== 'other') {
+                  handleInputChange('bodyTypeOther', '');
+                }
+              }}
+              onFocus={() => markFieldAsTouched('bodyType')}
+              aria-label={language === 'bg' ? 'Тип купе' : 'Body Type'}
+              title={language === 'bg' ? 'Тип купе' : 'Body Type'}
+            >
+              {bodyTypeOptions.map(option => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </MobileSelect>
+            {formData.bodyType === 'other' && (
+              <div style={{ marginTop: '0.5rem' }}>
+                <MobileLabel>{language === 'bg' ? 'Въведете тип купе' : 'Enter body type'}</MobileLabel>
+                <MobileInput
+                  type="text"
+                  value={(formData as any).bodyTypeOther || ''}
+                  onChange={(e) => handleInputChange('bodyTypeOther', e.target.value)}
+                  onFocus={() => markFieldAsTouched('bodyTypeOther')}
+                  placeholder={language === 'bg' ? 'Пример: Limousine' : 'Example: Limousine'}
+                />
+              </div>
+            )}
+          </MobileFieldGroup>
 
         {renderListingSection(true)}
         </MobileContent>
@@ -1560,6 +1658,50 @@ const VehicleDataPage: React.FC = () => {
             }}
           />
         </div>
+
+        {/* Body Type Section - Independent */}
+        <InsightsCard $isMobile={false} style={{ marginBottom: '1.5rem' }}>
+          <InsightsHeader>
+            <InsightsTitle>{language === 'bg' ? 'Тип купе' : 'Body Type'}</InsightsTitle>
+          </InsightsHeader>
+          <VerticalFieldStack>
+            <InsightField>
+              <InsightLabel>{language === 'bg' ? 'Изберете тип купе' : 'Select Body Type'}</InsightLabel>
+              <InsightSelect
+                value={formData.bodyType || ''}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  handleInputChange('bodyType', value);
+                  markFieldAsTouched('bodyType');
+                  if (value !== 'other') {
+                    handleInputChange('bodyTypeOther', '');
+                  }
+                }}
+                onFocus={() => markFieldAsTouched('bodyType')}
+                aria-label={language === 'bg' ? 'Тип купе' : 'Body Type'}
+                title={language === 'bg' ? 'Тип купе' : 'Body Type'}
+                $validation={getValidationState('bodyType')}
+              >
+                {bodyTypeOptions.map(option => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </InsightSelect>
+              {formData.bodyType === 'other' && (
+                <div style={{ marginTop: '0.5rem' }}>
+                  <InsightLabel>{language === 'bg' ? 'Въведете тип купе' : 'Enter body type'}</InsightLabel>
+                  <InsightInput
+                    value={(formData as any).bodyTypeOther || ''}
+                    onChange={(e) => handleInputChange('bodyTypeOther', e.target.value)}
+                    onFocus={() => markFieldAsTouched('bodyTypeOther')}
+                    placeholder={language === 'bg' ? 'Пример: Limousine' : 'Example: Limousine'}
+                  />
+                </div>
+              )}
+            </InsightField>
+          </VerticalFieldStack>
+        </InsightsCard>
 
         {renderListingSection(false)}
 

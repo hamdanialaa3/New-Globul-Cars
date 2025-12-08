@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from '../../hooks/useTranslation';
 import { useAuth } from '../../contexts/AuthProvider';
-import { messagingService } from '../../services/messaging/advanced-messaging-service';
+import { useNavigate } from 'react-router-dom';
+import { realtimeMessagingService } from '../../services/realtimeMessaging';
 import { logger } from '../../services/logger-service';
 
 // Styled Components
@@ -144,14 +145,16 @@ const MessageButtonComponent: React.FC<MessageButtonProps> = ({
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const navigate = useNavigate();
+
   const handleSendMessage = async () => {
     if (!user) {
-      setError(t('messaging.loginRequired'));
+      setError(t('messaging.loginRequired', 'Please login to send messages'));
       return;
     }
 
     if (user.uid === sellerId) {
-      setError(t('messaging.cannotMessageSelf'));
+      setError(t('messaging.cannotMessageSelf', 'You cannot message yourself'));
       return;
     }
 
@@ -160,21 +163,37 @@ const MessageButtonComponent: React.FC<MessageButtonProps> = ({
       setError(null);
       setSuccess(false);
 
-      // Send initial message
-      await messagingService.sendMessage(
+      // Get or create conversation ID
+      const conversationId = await realtimeMessagingService.getOrCreateConversationId(
         user.uid,
         sellerId,
         carId,
-        `Здравейте! Интересувам се от ${carTitle}. Може ли да получа повече информация?`
+        user.displayName || user.firstName || 'User',
+        sellerName,
+        carTitle
       );
 
+      // Send car link as system message (once per conversation)
+      await realtimeMessagingService.sendCarLinkMessage(
+        conversationId,
+        user.uid,
+        sellerId,
+        user.displayName || user.firstName || 'User',
+        sellerName,
+        carId,
+        carTitle
+      );
+
+      // Navigate to messages page with conversation
+      navigate(`/messages?conversation=${conversationId}&carId=${carId}`);
+      
       setSuccess(true);
       
       // Clear success message after 2 seconds
       setTimeout(() => setSuccess(false), 2000);
     } catch (err) {
       logger.error('Error sending message:', err);
-      setError(t('messaging.sendError'));
+      setError(t('messaging.sendError', 'Failed to send message'));
       
       // Clear error message after 3 seconds
       setTimeout(() => setError(null), 3000);
@@ -215,4 +234,5 @@ const MessageButtonComponent: React.FC<MessageButtonProps> = ({
 };
 
 export default MessageButtonComponent;
+
 

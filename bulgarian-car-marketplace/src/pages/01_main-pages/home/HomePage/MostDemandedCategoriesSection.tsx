@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { unifiedCarService, UnifiedCar } from '../../../../services/car';
 import ModernCarCard from './ModernCarCard';
 import DemandStats from './DemandStats';
-import { Bot, Zap, ArrowRight, Award } from 'lucide-react';
+import { Bot, Award } from 'lucide-react';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { useTheme } from '../../../../contexts/ThemeContext';
 import { logger } from '../../../../services/logger-service';
@@ -165,61 +165,6 @@ const CarsGrid = styled.div`
   }
 `;
 
-const ViewAllButton = styled.button`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 40px auto 0;
-  padding: 14px 32px;
-  border: none;
-  border-radius: 12px;
-  font-size: 1rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
-
-  /* Light mode: Orange gradient background, White text */
-  html[data-theme="light"] & {
-    background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 50%, #FFA500 100%) !important;
-    color: #ffffff !important;
-    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.35) !important;
-  }
-
-  /* Dark mode: Yellow gradient background, Black text */
-  html[data-theme="dark"] & {
-    background: linear-gradient(135deg, #FFD700 0%, #FFC107 50%, #FFA000 100%) !important;
-    color: #000000 !important;
-    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4) !important;
-  }
-
-  &:hover {
-    transform: translateY(-3px);
-    html[data-theme="light"] & {
-      background: linear-gradient(135deg, #FF5722 0%, #FF6B35 50%, #FF8C42 100%) !important;
-      color: #ffffff !important;
-      box-shadow: 0 6px 20px rgba(255, 107, 53, 0.5) !important;
-    }
-    html[data-theme="dark"] & {
-      background: linear-gradient(135deg, #FFC107 0%, #FFD700 50%, #FFC107 100%) !important;
-      color: #000000 !important;
-      box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6) !important;
-    }
-  }
-
-  &:active {
-    transform: translateY(-1px);
-    html[data-theme="light"] & {
-      background: linear-gradient(135deg, #E64A19 0%, #FF5722 50%, #FF6B35 100%) !important;
-      color: #ffffff !important;
-    }
-    html[data-theme="dark"] & {
-      background: linear-gradient(135deg, #FFA000 0%, #FFC107 50%, #FFD700 100%) !important;
-      color: #000000 !important;
-    }
-  }
-`;
 
 // Categories Configuration
 const CATEGORIES = [
@@ -273,10 +218,6 @@ const MostDemandedCategoriesSection: React.FC = () => {
 
     loadCars();
   }, [selectedCategory]);
-
-  const handleViewAll = () => {
-    navigate(`/search?category=${selectedCategory}`);
-  };
 
   return (
     <SectionContainer $isDark={isDark}>
@@ -336,13 +277,6 @@ const MostDemandedCategoriesSection: React.FC = () => {
               />
             ))}
           </CarsGrid>
-
-          {cars.length > 0 && (
-            <ViewAllButton onClick={handleViewAll}>
-              {language === 'bg' ? 'Виж всички' : 'View All'} {t(`bodyTypes.${selectedCategory}`)} ({cars.length}+)
-              <ArrowRight size={18} />
-            </ViewAllButton>
-          )}
         </>
       )}
     </SectionContainer>

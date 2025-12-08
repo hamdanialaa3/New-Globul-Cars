@@ -1,12 +1,12 @@
 // ID Card Overlay - Main modal for editing ID data over card images
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useLanguage } from '../../../contexts/LanguageContext';
+import { useTheme } from '../../../contexts/ThemeContext';
 import { X, Check, RefreshCw, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
 import { IDCardData, ValidationResult } from './types';
-import ResponsiveOverlay from './ResponsiveOverlay';
 import EGNValidator from '../../../services/verification/egn-validator';
 import DatePickerBulgarian from '../../shared/DatePickerBulgarian';
 import NumberInputBulgarian from '../../shared/NumberInputBulgarian';
@@ -27,6 +27,8 @@ const IDCardOverlay: React.FC<IDCardOverlayProps> = ({
   onClose
 }) => {
   const { language } = useLanguage();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const [activeTab, setActiveTab] = useState<TabType>('front');
   const [formData, setFormData] = useState<IDCardData>({
     documentNumber: '',
@@ -178,28 +180,30 @@ const IDCardOverlay: React.FC<IDCardOverlayProps> = ({
     : '/assets/ID_Back.png';
 
   return (
-    <Modal onClick={onClose}>
-      <ModalContent onClick={(e) => e.stopPropagation()}>
+    <Modal $isDark={isDark} onClick={onClose}>
+      <ModalContent $isDark={isDark} onClick={(e: React.MouseEvent) => e.stopPropagation()}>
         {/* Header */}
-        <ModalHeader>
-          <ModalTitle>
+        <ModalHeader $isDark={isDark}>
+          <ModalTitle $isDark={isDark}>
             🆔 {language === 'bg' ? 'Редактиране на лична карта' : 'Edit ID Card'}
           </ModalTitle>
-          <CloseButton onClick={onClose}>
+          <CloseButton $isDark={isDark} onClick={onClose}>
             <X size={24} />
           </CloseButton>
         </ModalHeader>
 
         {/* Tabs */}
-        <TabBar>
+        <TabBar $isDark={isDark}>
           <Tab 
-            $active={activeTab === 'front'} 
+            $active={activeTab === 'front'}
+            $isDark={isDark}
             onClick={() => setActiveTab('front')}
           >
             {language === 'bg' ? 'Лице' : 'Front Side'}
           </Tab>
           <Tab 
-            $active={activeTab === 'back'} 
+            $active={activeTab === 'back'}
+            $isDark={isDark}
             onClick={() => setActiveTab('back')}
           >
             {language === 'bg' ? 'Гръб' : 'Back Side'}
@@ -207,17 +211,17 @@ const IDCardOverlay: React.FC<IDCardOverlayProps> = ({
         </TabBar>
 
         {/* Instructions */}
-        <Instructions>
+        <Instructions $isDark={isDark}>
           {language === 'bg'
             ? 'Попълнете данните си точно както са изписани на личната ви карта. النظام يتكيف تلقائياً مع حجم شاشتك!'
             : 'Fill in your information exactly as it appears on your ID card. System auto-adapts to your screen!'}
         </Instructions>
 
         {/* ⚡ NEW: Two-Column Layout - Form on Left, Image on Right */}
-        <TwoColumnLayout>
+        <TwoColumnLayout $isDark={isDark}>
           {/* LEFT COLUMN: Form Fields */}
-          <FormColumn>
-            <FormScrollArea>
+          <FormColumn $isDark={isDark}>
+            <FormScrollArea $isDark={isDark}>
               {activeTab === 'front' ? (
                 <>
                   <FormSection>
@@ -488,8 +492,8 @@ const IDCardOverlay: React.FC<IDCardOverlayProps> = ({
           </FormColumn>
 
           {/* RIGHT COLUMN: Reference Image */}
-          <ImageColumn>
-            <ImageLabel>
+          <ImageColumn $isDark={isDark}>
+            <ImageLabel $isDark={isDark}>
               📸 {language === 'bg' ? 'مرجع للمقارنة' : 'Reference for Comparison'}
             </ImageLabel>
             <ReferenceImage src={backgroundImage} alt="ID Card Reference" />
@@ -498,8 +502,9 @@ const IDCardOverlay: React.FC<IDCardOverlayProps> = ({
 
         {/* Auto-fill Bar (front side only) */}
         {activeTab === 'front' && (
-          <AutoFillBar>
+          <AutoFillBar $isDark={isDark}>
             <AutoFillButton 
+              $isDark={isDark}
               onClick={handleAutoFillFromEGN}
               disabled={!formData.personalNumber || formData.personalNumber.length !== 10}
             >
@@ -509,12 +514,12 @@ const IDCardOverlay: React.FC<IDCardOverlayProps> = ({
                 : (language === 'bg' ? 'Автоматично попълване от ЕГН' : 'Auto-fill from EGN')}
             </AutoFillButton>
             
-            <ValidateButton onClick={validateForm}>
+            <ValidateButton $isDark={isDark} onClick={validateForm}>
               <Check size={16} />
               {language === 'bg' ? 'Провери' : 'Validate'}
             </ValidateButton>
             
-            <ResetButton onClick={() => setFormData({ ...initialData } as IDCardData)}>
+            <ResetButton $isDark={isDark} onClick={() => setFormData({ ...initialData } as IDCardData)}>
               <RefreshCw size={16} />
               {language === 'bg' ? 'Нулиране' : 'Reset'}
             </ResetButton>
@@ -522,10 +527,10 @@ const IDCardOverlay: React.FC<IDCardOverlayProps> = ({
         )}
 
         {/* Footer */}
-        <ModalFooter>
+        <ModalFooter $isDark={isDark}>
           <FooterLeft>
             {activeTab === 'back' && (
-              <NavButton onClick={handlePrevious}>
+              <NavButton $isDark={isDark} onClick={handlePrevious}>
                 <ChevronLeft size={18} />
                 {language === 'bg' ? 'Назад' : 'Previous'}
               </NavButton>
@@ -533,11 +538,11 @@ const IDCardOverlay: React.FC<IDCardOverlayProps> = ({
           </FooterLeft>
           
           <FooterRight>
-            <CancelButton onClick={onClose}>
+            <CancelButton $isDark={isDark} onClick={onClose}>
               {language === 'bg' ? 'Откажи' : 'Cancel'}
             </CancelButton>
             
-            <SaveButton onClick={handleNext}>
+            <SaveButton $isDark={isDark} onClick={handleNext}>
               {activeTab === 'front' 
                 ? (
                   <>
@@ -559,18 +564,18 @@ const IDCardOverlay: React.FC<IDCardOverlayProps> = ({
 };
 
 // Styled Components
-const Modal = styled.div`
+const Modal = styled.div<{ $isDark?: boolean }>`
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(4px);
+  background: ${props => props.$isDark ? 'rgba(0, 0, 0, 0.85)' : 'rgba(0, 0, 0, 0.75)'};
+  backdrop-filter: blur(8px);
   
   display: flex;
   align-items: center;
   justify-content: center;
   
   z-index: 10000;
-  padding: 20px;
+  padding: 16px;
   
   animation: fadeIn 0.3s ease;
   
@@ -578,20 +583,25 @@ const Modal = styled.div`
     from { opacity: 0; }
     to { opacity: 1; }
   }
+  
+  @media (max-width: 768px) {
+    padding: 0;
+  }
 `;
 
-const ModalContent = styled.div`
-  background: #ffffff;
-  border-radius: 20px;
+const ModalContent = styled.div<{ $isDark?: boolean }>`
+  background: ${props => props.$isDark ? 'var(--bg-card)' : 'var(--bg-secondary)'};
+  border-radius: ${props => props.$isDark ? '16px' : '20px'};
+  border: ${props => props.$isDark ? '1px solid var(--border-primary)' : 'none'};
   
   width: 100%;
-  max-width: 1400px;  /* ⬆️ Increased for two-column layout */
+  max-width: 1400px;
   max-height: 95vh;
   
   display: flex;
   flex-direction: column;
   
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  box-shadow: ${props => props.$isDark ? 'var(--shadow-xl)' : '0 20px 60px rgba(0, 0, 0, 0.4)'};
   
   animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   
@@ -617,88 +627,151 @@ const ModalContent = styled.div`
   }
 `;
 
-const ModalHeader = styled.div`
+const ModalHeader = styled.div<{ $isDark?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
   
-  padding: 24px;
-  border-bottom: 2px solid #f0f2f5;
+  padding: 20px 24px;
+  border-bottom: 2px solid ${props => props.$isDark ? 'var(--border-primary)' : 'var(--border-primary)'};
   
   flex-shrink: 0;
-`;
-
-const ModalTitle = styled.h2`
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #212529;
-  margin: 0;
   
-  @media (max-width: 480px) {
-    font-size: 1.25rem;
+  @media (max-width: 768px) {
+    padding: 16px 20px;
   }
 `;
 
-const CloseButton = styled.button`
+const ModalTitle = styled.h2<{ $isDark?: boolean }>`
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: ${props => props.$isDark ? 'var(--text-primary)' : 'var(--text-primary)'};
+  margin: 0;
+  
+  @media (max-width: 768px) {
+    font-size: 1.25rem;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 1.125rem;
+  }
+`;
+
+const CloseButton = styled.button<{ $isDark?: boolean }>`
   width: 40px;
   height: 40px;
+  min-width: 40px;
+  min-height: 40px;
+  max-width: 40px;
+  max-height: 40px;
   border-radius: 50%;
   border: none;
-  background: #f8f9fa;
-  color: #6c757d;
+  background: ${props => props.$isDark ? 'var(--bg-hover)' : 'var(--bg-hover)'};
+  color: ${props => props.$isDark ? 'var(--text-secondary)' : 'var(--text-secondary)'};
+  padding: 0;
+  margin: 0;
   
   display: flex;
   align-items: center;
   justify-content: center;
   
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  overflow: hidden;
+  
+  svg {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+  }
   
   &:hover {
-    background: #e9ecef;
-    color: #212529;
+    background: ${props => props.$isDark ? 'var(--bg-hover)' : 'var(--bg-hover)'};
+    color: ${props => props.$isDark ? 'var(--text-primary)' : 'var(--text-primary)'};
+    transform: scale(1.05);
+  }
+  
+  &:active {
+    transform: scale(0.95);
+  }
+  
+  @media (max-width: 768px) {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
+    max-width: 36px;
+    max-height: 36px;
+    
+    svg {
+      width: 20px;
+      height: 20px;
+    }
   }
 `;
 
-const TabBar = styled.div`
+const TabBar = styled.div<{ $isDark?: boolean }>`
   display: flex;
   gap: 0;
   padding: 0 24px;
-  border-bottom: 2px solid #e9ecef;
+  border-bottom: 2px solid ${props => props.$isDark ? 'var(--border-primary)' : 'var(--border-primary)'};
   
   flex-shrink: 0;
-`;
-
-const Tab = styled.button<{ $active: boolean }>`
-  padding: 14px 24px;
-  border: none;
-  background: ${props => props.$active ? '#ffffff' : 'transparent'};
-  color: ${props => props.$active ? '#FF7900' : '#6c757d'};
   
-  font-size: 1rem;
-  font-weight: 600;
-  
-  border-bottom: 3px solid ${props => props.$active ? '#FF7900' : 'transparent'};
-  
-  cursor: pointer;
-  transition: all 0.2s;
-  
-  &:hover {
-    color: #FF7900;
-    background: rgba(255, 121, 0, 0.05);
+  @media (max-width: 768px) {
+    padding: 0 20px;
   }
 `;
 
-const Instructions = styled.div`
-  padding: 16px 24px;
-  background: #fff3cd;
-  border-left: 4px solid #ffc107;
+const Tab = styled.button<{ $active: boolean; $isDark?: boolean }>`
+  padding: 14px 24px;
+  border: none;
+  background: ${props => props.$active 
+    ? (props.$isDark ? 'var(--bg-card)' : 'var(--bg-secondary)')
+    : 'transparent'};
+  color: ${props => props.$active 
+    ? 'var(--accent-primary)'
+    : (props.$isDark ? 'var(--text-tertiary)' : 'var(--text-secondary)')};
   
-  font-size: 0.9rem;
-  color: #856404;
+  font-size: 0.95rem;
+  font-weight: 600;
+  
+  border-bottom: 3px solid ${props => props.$active ? 'var(--accent-primary)' : 'transparent'};
+  
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    color: var(--accent-primary);
+    background: ${props => props.$isDark 
+      ? 'rgba(255, 140, 97, 0.1)' 
+      : 'rgba(255, 107, 53, 0.05)'};
+  }
+  
+  @media (max-width: 768px) {
+    padding: 12px 20px;
+    font-size: 0.875rem;
+  }
+`;
+
+const Instructions = styled.div<{ $isDark?: boolean }>`
+  padding: 14px 24px;
+  background: ${props => props.$isDark 
+    ? 'rgba(251, 191, 36, 0.15)' 
+    : 'var(--warning-light)'};
+  border-left: 4px solid ${props => props.$isDark ? 'var(--warning)' : 'var(--warning)'};
+  
+  font-size: 0.875rem;
+  color: ${props => props.$isDark ? 'var(--warning)' : 'var(--text-secondary)'};
   line-height: 1.5;
   
   flex-shrink: 0;
+  
+  @media (max-width: 768px) {
+    padding: 12px 20px;
+    font-size: 0.8125rem;
+  }
 `;
 
 const CardCanvas = styled.div`
@@ -752,20 +825,26 @@ const OverlayContainer = styled.div`
   }
 `;
 
-const AutoFillBar = styled.div`
+const AutoFillBar = styled.div<{ $isDark?: boolean }>`
   display: flex;
   gap: 12px;
   padding: 16px 24px;
-  border-top: 1px solid #e9ecef;
+  border-top: 1px solid ${props => props.$isDark ? 'var(--border-primary)' : 'var(--border-primary)'};
+  background: ${props => props.$isDark ? 'var(--bg-card)' : 'var(--bg-secondary)'};
   
   flex-shrink: 0;
+  
+  @media (max-width: 768px) {
+    padding: 14px 20px;
+    gap: 10px;
+  }
   
   @media (max-width: 600px) {
     flex-direction: column;
   }
 `;
 
-const AutoFillButton = styled.button`
+const AutoFillButton = styled.button<{ $isDark?: boolean }>`
   flex: 1;
   display: flex;
   align-items: center;
@@ -773,8 +852,10 @@ const AutoFillButton = styled.button`
   gap: 8px;
   
   padding: 12px 20px;
-  background: linear-gradient(135deg, #FF7900, #FF8F10);
-  color: white;
+  background: ${props => props.$isDark 
+    ? 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))'
+    : 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))'};
+  color: ${props => props.$isDark ? 'var(--text-inverse)' : 'var(--text-inverse)'};
   border: none;
   border-radius: 10px;
   
@@ -782,11 +863,11 @@ const AutoFillButton = styled.button`
   font-weight: 600;
   cursor: pointer;
   
-  transition: transform 0.2s;
+  transition: all 0.2s ease;
   
   &:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 121, 0, 0.3);
+    box-shadow: var(--shadow-button);
   }
   
   &:active:not(:disabled) {
@@ -806,15 +887,20 @@ const AutoFillButton = styled.button`
     0%, 100% { transform: scale(1); }
     50% { transform: scale(1.1); }
   }
+  
+  @media (max-width: 768px) {
+    padding: 10px 16px;
+    font-size: 0.875rem;
+  }
 `;
 
-const ValidateButton = styled.button`
+const ValidateButton = styled.button<{ $isDark?: boolean }>`
   display: flex;
   align-items: center;
   gap: 6px;
   
   padding: 12px 20px;
-  background: #16a34a;
+  background: ${props => props.$isDark ? 'var(--success)' : 'var(--success)'};
   color: white;
   border: none;
   border-radius: 10px;
@@ -823,45 +909,61 @@ const ValidateButton = styled.button`
   font-weight: 600;
   cursor: pointer;
   
-  transition: transform 0.2s;
+  transition: all 0.2s ease;
   
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+    box-shadow: 0 4px 12px rgba(52, 211, 153, 0.3);
+  }
+  
+  @media (max-width: 768px) {
+    padding: 10px 16px;
+    font-size: 0.875rem;
   }
 `;
 
-const ResetButton = styled.button`
+const ResetButton = styled.button<{ $isDark?: boolean }>`
   display: flex;
   align-items: center;
   gap: 6px;
   
   padding: 12px 20px;
-  background: #f8f9fa;
-  color: #495057;
-  border: 1px solid #dee2e6;
+  background: ${props => props.$isDark ? 'var(--bg-hover)' : 'var(--bg-hover)'};
+  color: ${props => props.$isDark ? 'var(--text-secondary)' : 'var(--text-secondary)'};
+  border: 1px solid ${props => props.$isDark ? 'var(--border-primary)' : 'var(--border-primary)'};
   border-radius: 10px;
   
   font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
   
-  transition: all 0.2s;
+  transition: all 0.2s ease;
   
   &:hover {
-    background: #e9ecef;
+    background: ${props => props.$isDark ? 'var(--bg-hover)' : 'var(--bg-hover)'};
+    border-color: ${props => props.$isDark ? 'var(--border-hover)' : 'var(--border-hover)'};
+  }
+  
+  @media (max-width: 768px) {
+    padding: 10px 16px;
+    font-size: 0.875rem;
   }
 `;
 
-const ModalFooter = styled.div`
+const ModalFooter = styled.div<{ $isDark?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
   
   padding: 20px 24px;
-  border-top: 2px solid #f0f2f5;
+  border-top: 2px solid ${props => props.$isDark ? 'var(--border-primary)' : 'var(--border-primary)'};
+  background: ${props => props.$isDark ? 'var(--bg-card)' : 'var(--bg-secondary)'};
   
   flex-shrink: 0;
+  
+  @media (max-width: 768px) {
+    padding: 16px 20px;
+  }
   
   @media (max-width: 600px) {
     flex-direction: column;
@@ -872,6 +974,10 @@ const ModalFooter = styled.div`
 const FooterLeft = styled.div`
   display: flex;
   gap: 12px;
+  
+  @media (max-width: 600px) {
+    width: 100%;
+  }
 `;
 
 const FooterRight = styled.div`
@@ -887,54 +993,70 @@ const FooterRight = styled.div`
   }
 `;
 
-const NavButton = styled.button`
+const NavButton = styled.button<{ $isDark?: boolean }>`
   display: flex;
   align-items: center;
   gap: 6px;
   
   padding: 12px 20px;
-  background: #f8f9fa;
-  color: #495057;
-  border: 1px solid #dee2e6;
+  background: ${props => props.$isDark ? 'var(--bg-hover)' : 'var(--bg-hover)'};
+  color: ${props => props.$isDark ? 'var(--text-secondary)' : 'var(--text-secondary)'};
+  border: 1px solid ${props => props.$isDark ? 'var(--border-primary)' : 'var(--border-primary)'};
   border-radius: 10px;
   
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   
-  transition: all 0.2s;
+  transition: all 0.2s ease;
   
   &:hover {
-    background: #e9ecef;
+    background: ${props => props.$isDark ? 'var(--bg-hover)' : 'var(--bg-hover)'};
+    border-color: ${props => props.$isDark ? 'var(--border-hover)' : 'var(--border-hover)'};
+    color: ${props => props.$isDark ? 'var(--text-primary)' : 'var(--text-primary)'};
+  }
+  
+  @media (max-width: 768px) {
+    padding: 10px 16px;
+    font-size: 0.875rem;
   }
 `;
 
-const CancelButton = styled.button`
+const CancelButton = styled.button<{ $isDark?: boolean }>`
   padding: 12px 24px;
-  background: #f8f9fa;
-  color: #495057;
-  border: 1px solid #dee2e6;
+  background: ${props => props.$isDark ? 'var(--bg-hover)' : 'var(--bg-hover)'};
+  color: ${props => props.$isDark ? 'var(--text-secondary)' : 'var(--text-secondary)'};
+  border: 1px solid ${props => props.$isDark ? 'var(--border-primary)' : 'var(--border-primary)'};
   border-radius: 10px;
   
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   
-  transition: all 0.2s;
+  transition: all 0.2s ease;
   
   &:hover {
-    background: #e9ecef;
+    background: ${props => props.$isDark ? 'var(--bg-hover)' : 'var(--bg-hover)'};
+    border-color: ${props => props.$isDark ? 'var(--border-hover)' : 'var(--border-hover)'};
+    color: ${props => props.$isDark ? 'var(--text-primary)' : 'var(--text-primary)'};
+  }
+  
+  @media (max-width: 768px) {
+    padding: 10px 20px;
+    font-size: 0.875rem;
   }
 `;
 
-const SaveButton = styled.button`
+const SaveButton = styled.button<{ $isDark?: boolean }>`
   display: flex;
   align-items: center;
   gap: 8px;
   
   padding: 12px 24px;
-  background: linear-gradient(135deg, #FF7900, #FF8F10);
-  color: white;
+  background: ${props => props.$isDark 
+    ? 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))'
+    : 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))'};
+  color: ${props => props.$isDark ? 'var(--text-inverse)' : 'var(--text-inverse)'};
   border: none;
   border-radius: 10px;
   
@@ -942,43 +1064,59 @@ const SaveButton = styled.button`
   font-weight: 600;
   cursor: pointer;
   
-  transition: transform 0.2s;
+  transition: all 0.2s ease;
   
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 121, 0, 0.3);
+    box-shadow: var(--shadow-button);
   }
   
   &:active {
     transform: translateY(0);
   }
+  
+  @media (max-width: 768px) {
+    padding: 10px 20px;
+    font-size: 0.875rem;
+  }
 `;
 
 // NEW: Two-Column Layout Styles
-const TwoColumnLayout = styled.div`
+const TwoColumnLayout = styled.div<{ $isDark?: boolean }>`
   flex: 1;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
   overflow: hidden;
-  background: #f8f9fa;
+  background: ${props => props.$isDark ? 'var(--bg-primary)' : 'var(--bg-primary)'};
   padding: 20px;
   
   @media (max-width: 968px) {
     grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  @media (max-width: 768px) {
+    padding: 16px;
+    gap: 12px;
   }
 `;
 
-const FormColumn = styled.div`
-  background: white;
+const FormColumn = styled.div<{ $isDark?: boolean }>`
+  background: ${props => props.$isDark ? 'var(--bg-card)' : 'var(--bg-card)'};
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: ${props => props.$isDark ? '1px solid var(--border-primary)' : 'none'};
+  box-shadow: ${props => props.$isDark ? 'var(--shadow-card)' : 'var(--shadow-card)'};
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  
+  @media (max-width: 768px) {
+    border-radius: 10px;
+  }
 `;
 
-const FormScrollArea = styled.div`
+const FormScrollArea = styled.div<{ $isDark?: boolean }>`
   flex: 1;
   overflow-y: auto;
   padding: 20px;
@@ -988,12 +1126,20 @@ const FormScrollArea = styled.div`
   }
   
   &::-webkit-scrollbar-track {
-    background: #f1f1f1;
+    background: ${props => props.$isDark ? 'var(--bg-primary)' : 'var(--bg-primary)'};
   }
   
   &::-webkit-scrollbar-thumb {
-    background: #FF7900;
+    background: var(--accent-primary);
     border-radius: 4px;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-secondary);
+  }
+  
+  @media (max-width: 768px) {
+    padding: 16px;
   }
 `;
 
@@ -1003,87 +1149,133 @@ const FormSection = styled.div`
   &:last-child {
     margin-bottom: 0;
   }
+  
+  @media (max-width: 768px) {
+    margin-bottom: 20px;
+  }
 `;
 
 const SectionTitle = styled.h3`
   font-size: 1rem;
   font-weight: 700;
-  color: #212529;
+  color: var(--text-primary);
   margin: 0 0 12px 0;
   padding-bottom: 8px;
-  border-bottom: 2px solid #f0f2f5;
+  border-bottom: 2px solid var(--border-primary);
+  
+  @media (max-width: 768px) {
+    font-size: 0.9375rem;
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+  }
 `;
 
 const FormRow = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 12px;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
 `;
 
 const FormField = styled.div`
   display: flex;
   flex-direction: column;
   gap: 6px;
+  
+  @media (max-width: 768px) {
+    gap: 5px;
+  }
 `;
 
 const Label = styled.label`
   font-size: 0.85rem;
   font-weight: 600;
-  color: #495057;
+  color: var(--text-secondary);
+  
+  @media (max-width: 768px) {
+    font-size: 0.8125rem;
+  }
 `;
 
 const Input = styled.input<{ $hasError?: boolean }>`
   padding: 10px 12px;
-  border: 2px solid ${props => props.$hasError ? '#dc3545' : '#dee2e6'};
+  border: 2px solid ${props => props.$hasError ? 'var(--error)' : 'var(--border-primary)'};
   border-radius: 8px;
   font-size: 0.95rem;
-  color: #212529;
-  background: ${props => props.$hasError ? '#fff5f5' : '#ffffff'};
-  transition: all 0.2s;
+  color: var(--text-primary);
+  background: ${props => props.$hasError ? 'var(--error-light)' : 'var(--bg-card)'};
+  transition: all 0.2s ease;
   
   &:focus {
     outline: none;
-    border-color: ${props => props.$hasError ? '#dc3545' : '#FF7900'};
-    box-shadow: 0 0 0 3px ${props => props.$hasError ? 'rgba(220, 53, 69, 0.1)' : 'rgba(255, 121, 0, 0.1)'};
+    border-color: ${props => props.$hasError ? 'var(--error)' : 'var(--accent-primary)'};
+    box-shadow: 0 0 0 3px ${props => props.$hasError 
+      ? 'rgba(248, 113, 113, 0.1)' 
+      : 'rgba(255, 107, 53, 0.1)'};
   }
   
   &::placeholder {
-    color: #adb5bd;
+    color: var(--text-muted);
   }
   
   &:read-only {
-    background: #e9ecef;
+    background: var(--bg-hover);
     cursor: not-allowed;
+    opacity: 0.7;
+  }
+  
+  @media (max-width: 768px) {
+    padding: 9px 11px;
+    font-size: 0.875rem;
   }
 `;
 
 const Select = styled.select`
   padding: 10px 12px;
-  border: 2px solid #dee2e6;
+  border: 2px solid var(--border-primary);
   border-radius: 8px;
   font-size: 0.95rem;
-  color: #212529;
-  background: #ffffff;
+  color: var(--text-primary);
+  background: var(--bg-card);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
   
   &:focus {
     outline: none;
-    border-color: #FF7900;
-    box-shadow: 0 0 0 3px rgba(255, 121, 0, 0.1);
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+  }
+  
+  option {
+    background: var(--bg-card);
+    color: var(--text-primary);
+  }
+  
+  @media (max-width: 768px) {
+    padding: 9px 11px;
+    font-size: 0.875rem;
   }
 `;
 
 const ErrorText = styled.span`
   font-size: 0.8rem;
-  color: #dc3545;
+  color: var(--error);
   font-weight: 500;
+  
+  @media (max-width: 768px) {
+    font-size: 0.75rem;
+  }
 `;
 
-const ImageColumn = styled.div`
-  background: white;
+const ImageColumn = styled.div<{ $isDark?: boolean }>`
+  background: ${props => props.$isDark ? 'var(--bg-card)' : 'var(--bg-card)'};
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: ${props => props.$isDark ? '1px solid var(--border-primary)' : 'none'};
+  box-shadow: ${props => props.$isDark ? 'var(--shadow-card)' : 'var(--shadow-card)'};
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -1091,20 +1283,39 @@ const ImageColumn = styled.div`
   justify-content: flex-start;
   overflow-y: auto;
   
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: ${props => props.$isDark ? 'var(--bg-primary)' : 'var(--bg-primary)'};
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: var(--accent-primary);
+    border-radius: 4px;
+  }
+  
   @media (max-width: 968px) {
     display: none;
   }
 `;
 
-const ImageLabel = styled.div`
+const ImageLabel = styled.div<{ $isDark?: boolean }>`
   font-size: 0.9rem;
   font-weight: 600;
-  color: #6c757d;
+  color: ${props => props.$isDark ? 'var(--text-secondary)' : 'var(--text-secondary)'};
   margin-bottom: 16px;
   text-align: center;
   padding: 8px 16px;
-  background: #f8f9fa;
+  background: ${props => props.$isDark ? 'var(--bg-hover)' : 'var(--bg-hover)'};
   border-radius: 8px;
+  
+  @media (max-width: 768px) {
+    font-size: 0.875rem;
+    padding: 6px 14px;
+    margin-bottom: 12px;
+  }
 `;
 
 const ReferenceImage = styled.img`
@@ -1112,7 +1323,12 @@ const ReferenceImage = styled.img`
   max-width: 500px;
   height: auto;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-md);
+  
+  @media (max-width: 768px) {
+    border-radius: 10px;
+    max-width: 100%;
+  }
 `;
 
 export default IDCardOverlay;

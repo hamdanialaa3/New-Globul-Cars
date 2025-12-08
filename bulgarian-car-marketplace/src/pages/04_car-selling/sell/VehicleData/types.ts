@@ -15,6 +15,7 @@ export interface VehicleFormData {
   variant: string;     // الفئة (مثل: S3, RS3, Sportback)
   fuelType: string;    // نوع الوقود
   mileage: string;     // المسافة المقطوعة
+  condition?: string;  // الحالة (New/Used/Parts)
   firstRegistration: string; // أول تسجيل
   power: string;       // القوة
   transmission: string; // ناقل الحركة
@@ -52,6 +53,9 @@ export interface VehicleFormData {
   // Boolean Options - خيارات نعم/لا
   hasAccidentHistory: boolean; // تاريخ حوادث
   hasServiceHistory: boolean;  // تاريخ صيانة
+  // Body Type - نوع الهيكل
+  bodyType: string; // Sedan, SUV, Hatchback, Coupe, Wagon, Convertible, Pickup, Minivan, other
+  bodyTypeOther?: string; // Custom body type when "other" is selected
   // Free-text 'Other' fields
   makeOther?: string;
   modelOther?: string;
@@ -78,6 +82,19 @@ export const COLORS = [
 export const DOOR_OPTIONS = ['2', '3', '4', '5', '6+'];
 export const SEAT_OPTIONS = ['2', '4', '5', '6', '7', '8+'];
 export const OWNER_OPTIONS = ['1', '2', '3', '4', '5+'];
+
+// Body Type Options - خيارات نوع الهيكل
+export const BODY_TYPES = [
+  { value: 'sedan', labelBg: 'Седан', labelEn: 'Sedan' },
+  { value: 'suv', labelBg: 'Джип / SUV', labelEn: 'SUV' },
+  { value: 'hatchback', labelBg: 'Хечбек', labelEn: 'Hatchback' },
+  { value: 'coupe', labelBg: 'Купе', labelEn: 'Coupe' },
+  { value: 'wagon', labelBg: 'Комби', labelEn: 'Wagon' },
+  { value: 'convertible', labelBg: 'Кабрио', labelEn: 'Convertible' },
+  { value: 'pickup', labelBg: 'Пикап', labelEn: 'Pickup' },
+  { value: 'minivan', labelBg: 'Миниван', labelEn: 'Minivan' },
+  { value: 'other', labelBg: 'Друг', labelEn: 'Other' }
+];
 
 // Annual Mileage Options - خيارات المسافة السنوية
 export const ANNUAL_MILEAGE_OPTIONS = [

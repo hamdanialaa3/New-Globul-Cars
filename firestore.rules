@@ -28,18 +28,14 @@ service cloud.firestore {
     
     // Validate plan tier (Phase 0 Day 4)
     function isValidPlanTier(tier) {
-      return tier in [
-        'free', 'premium',
-        'dealer_basic', 'dealer_pro', 'dealer_enterprise',
-        'company_starter', 'company_pro', 'company_enterprise'
-      ];
+      return tier in ['free', 'dealer', 'company'];
     }
     
     // Check if plan tier matches profile type (Phase 0 Day 4)
     function planTierMatchesProfileType(profileType, planTier) {
-      return (profileType == 'private' && planTier in ['free', 'premium']) ||
-             (profileType == 'dealer' && planTier in ['dealer_basic', 'dealer_pro', 'dealer_enterprise']) ||
-             (profileType == 'company' && planTier in ['company_starter', 'company_pro', 'company_enterprise']);
+      return (profileType == 'private' && planTier == 'free') ||
+             (profileType == 'dealer' && planTier == 'dealer') ||
+             (profileType == 'company' && planTier == 'company');
     }
     
     // Validate dealer profile requirements (Phase 0 Day 4)

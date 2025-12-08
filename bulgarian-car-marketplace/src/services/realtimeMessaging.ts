@@ -14,9 +14,11 @@ import {
   limit,
   onSnapshot,
   Timestamp,
-  Unsubscribe
+  Unsubscribe,
+  or
 } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
+import { logger } from './logger-service';
 
 export interface Message {
   id: string;
@@ -110,16 +112,165 @@ export class RealtimeMessagingService {
     }
   }
 
-  // Get messages for a chat room
-  async getMessages(senderId: string, receiverId: string, limitCount: number = 50): Promise<Message[]> {
+  // Get or create conversation ID for a specific car
+  async getOrCreateConversationId(
+    senderId: string,
+    receiverId: string,
+    carId: string,
+    senderName: string,
+    receiverName: string,
+    carTitle?: string
+  ): Promise<string> {
+    try {
+      // Generate conversation ID based on participants and carId
+      const conversationId = this.generateConversationId(senderId, receiverId, carId);
+      
+      // Check if conversation exists
+      const conversationRef = doc(db, 'conversations', conversationId);
+      const conversationDoc = await getDoc(conversationRef);
+      
+      if (!conversationDoc.exists()) {
+        // Create new conversation
+        await addDoc(collection(db, 'conversations'), {
+          id: conversationId,
+          participants: [senderId, receiverId],
+          participantNames: {
+            [senderId]: senderName,
+            [receiverId]: receiverName
+          },
+          carId,
+          carTitle: carTitle || '',
+          unreadCount: {
+            [senderId]: 0,
+            [receiverId]: 0
+          },
+          createdAt: Timestamp.fromDate(new Date()),
+          updatedAt: Timestamp.fromDate(new Date())
+        });
+        
+        logger.info('New conversation created', { conversationId, carId, senderId, receiverId });
+      }
+      
+      return conversationId;
+    } catch (error: any) {
+      logger.error('Failed to get or create conversation', error as Error, { senderId, receiverId, carId });
+      throw new Error(`Failed to get or create conversation: ${error.message}`);
+    }
+  }
+
+  // Generate conversation ID based on participants and car
+  private generateConversationId(userId1: string, userId2: string, carId: string): string {
+    const sortedIds = [userId1, userId2].sort();
+    return `${sortedIds[0]}_${sortedIds[1]}_${carId}`;
+  }
+
+  // Check if car link was already sent in this conversation
+  async hasCarLinkBeenSent(conversationId: string, carId: string): Promise<boolean> {
     try {
       const q = query(
         collection(db, 'messages'),
-        where('senderId', 'in', [senderId, receiverId]),
-        where('receiverId', 'in', [senderId, receiverId]),
-        orderBy('createdAt', 'desc'),
-        limit(limitCount)
+        where('conversationId', '==', conversationId),
+        where('carId', '==', carId),
+        where('type', '==', 'system'),
+        limit(1)
       );
+
+      const querySnapshot = await getDocs(q);
+      return !querySnapshot.empty;
+    } catch (error: any) {
+      logger.error('Failed to check car link', error as Error, { conversationId, carId });
+      return false;
+    }
+  }
+
+  // Send car link as system message (once per conversation)
+  async sendCarLinkMessage(
+    conversationId: string,
+    senderId: string,
+    receiverId: string,
+    senderName: string,
+    receiverName: string,
+    carId: string,
+    carTitle: string
+  ): Promise<string | null> {
+    try {
+      // Check if car link was already sent
+      const alreadySent = await this.hasCarLinkBeenSent(conversationId, carId);
+      if (alreadySent) {
+        logger.debug('Car link already sent', { conversationId, carId });
+        return null;
+      }
+
+      // Create car link message
+      const carLink = `${window.location.origin}/car/${carId}`;
+      const messageContent = `🚗 ${carTitle}\n${carLink}`;
+
+      const message: Omit<Message, 'id'> = {
+        conversationId,
+        senderId,
+        senderName,
+        receiverId,
+        receiverName,
+        carId,
+        carTitle,
+        content: messageContent,
+        text: messageContent,
+        messageType: 'system',
+        type: 'system',
+        status: 'sent',
+        isRead: false,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+
+      const docRef = await addDoc(collection(db, 'messages'), {
+        ...message,
+        createdAt: Timestamp.fromDate(message.createdAt),
+        updatedAt: Timestamp.fromDate(message.updatedAt)
+      });
+
+      // Update conversation
+      await this.updateChatRoom(senderId, receiverId, message);
+
+      logger.info('Car link sent', { conversationId, carId, messageId: docRef.id });
+      return docRef.id;
+    } catch (error: any) {
+      logger.error('Failed to send car link', error as Error, { conversationId, carId });
+      return null;
+    }
+  }
+
+  // Get messages for a chat room (fixed query)
+  async getMessages(
+    senderId: string, 
+    receiverId: string, 
+    carId?: string,
+    limitCount: number = 50
+  ): Promise<Message[]> {
+    try {
+      let q;
+      
+      if (carId) {
+        // Get messages for specific car conversation
+        const conversationId = this.generateConversationId(senderId, receiverId, carId);
+        q = query(
+          collection(db, 'messages'),
+          where('conversationId', '==', conversationId),
+          orderBy('createdAt', 'asc'),
+          limit(limitCount)
+        );
+      } else {
+        // Get all messages between two users (fallback to sender/receiver query)
+        // Note: This will get messages where senderId is one user and receiverId is the other
+        // For better results, use carId-specific conversations
+        q = query(
+          collection(db, 'messages'),
+          where('senderId', '==', senderId),
+          where('receiverId', '==', receiverId),
+          orderBy('createdAt', 'asc'),
+          limit(limitCount)
+        );
+      }
 
       const querySnapshot = await getDocs(q);
       const messages: Message[] = [];
@@ -129,15 +280,33 @@ export class RealtimeMessagingService {
         messages.push({
           id: doc.id,
           ...data,
-          createdAt: data.createdAt.toDate(),
-          updatedAt: data.updatedAt.toDate()
+          createdAt: data.createdAt?.toDate() || new Date(),
+          updatedAt: data.updatedAt?.toDate() || new Date()
         } as Message);
       });
 
-      // Reverse to get chronological order
-      return messages.reverse();
+      return messages;
     } catch (error: any) {
-      throw new Error(`Failed to get messages: ${error.message}`);
+      logger.error('Failed to get messages', error as Error, { senderId, receiverId, carId });
+      // Fallback: try without carId filter
+      try {
+        const q = query(
+          collection(db, 'messages'),
+          where('senderId', '==', senderId),
+          where('receiverId', '==', receiverId),
+          orderBy('createdAt', 'asc'),
+          limit(limitCount)
+        );
+        const querySnapshot = await getDocs(q);
+        return querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+          createdAt: doc.data().createdAt?.toDate() || new Date(),
+          updatedAt: doc.data().updatedAt?.toDate() || new Date()
+        } as Message));
+      } catch (fallbackError: any) {
+        throw new Error(`Failed to get messages: ${error.message}`);
+      }
     }
   }
 
@@ -348,7 +517,7 @@ export class RealtimeMessagingService {
     lastMessage: Omit<Message, 'id'>
   ): Promise<void> {
     try {
-      const chatRoomId = this.generateChatRoomId(senderId, receiverId);
+      const chatRoomId = this.generateChatRoomId(senderId, receiverId, lastMessage.carId);
 
       const chatRoomRef = doc(db, 'chatRooms', chatRoomId);
       const chatRoomDoc = await getDoc(chatRoomRef);
@@ -361,6 +530,8 @@ export class RealtimeMessagingService {
             createdAt: Timestamp.fromDate(lastMessage.createdAt),
             updatedAt: Timestamp.fromDate(lastMessage.updatedAt)
           },
+          carId: lastMessage.carId || chatRoomDoc.data().carId,
+          carTitle: lastMessage.carTitle || chatRoomDoc.data().carTitle,
           updatedAt: Timestamp.fromDate(new Date())
         });
       } else {
@@ -377,6 +548,8 @@ export class RealtimeMessagingService {
             createdAt: Timestamp.fromDate(lastMessage.createdAt),
             updatedAt: Timestamp.fromDate(lastMessage.updatedAt)
           },
+          carId: lastMessage.carId,
+          carTitle: lastMessage.carTitle,
           unreadCount: {
             [senderId]: 0,
             [receiverId]: 1
@@ -386,7 +559,7 @@ export class RealtimeMessagingService {
         });
       }
     } catch (error: any) {
-      // Error updating chat room - silently fail
+      logger.error('Error updating chat room', error as Error, { senderId, receiverId });
     }
   }
 
@@ -408,9 +581,12 @@ export class RealtimeMessagingService {
     }
   }
 
-  private generateChatRoomId(userId1: string, userId2: string): string {
+  private generateChatRoomId(userId1: string, userId2: string, carId?: string): string {
     // Create consistent chat room ID regardless of order
     const sortedIds = [userId1, userId2].sort();
+    if (carId) {
+      return `${sortedIds[0]}_${sortedIds[1]}_${carId}`;
+    }
     return `${sortedIds[0]}_${sortedIds[1]}`;
   }
 

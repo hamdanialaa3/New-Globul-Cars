@@ -46,20 +46,16 @@ service cloud.firestore {
       return profileType in ['private', 'dealer', 'company'];
     }
     
-    // Validate plan tier
+    // Validate plan tier (Phase 0 Day 4)
     function isValidPlanTier(tier) {
-      return tier in [
-        'free', 'premium',
-        'dealer_basic', 'dealer_pro', 'dealer_enterprise',
-        'company_starter', 'company_pro', 'company_enterprise'
-      ];
+      return tier in ['free', 'dealer', 'company'];
     }
     
-    // Check if plan tier matches profile type
+    // Check if plan tier matches profile type (Phase 0 Day 4)
     function planTierMatchesProfileType(profileType, planTier) {
-      return (profileType == 'private' && planTier in ['free', 'premium']) ||
-             (profileType == 'dealer' && planTier in ['dealer_basic', 'dealer_pro', 'dealer_enterprise']) ||
-             (profileType == 'company' && planTier in ['company_starter', 'company_pro', 'company_enterprise']);
+      return (profileType == 'private' && planTier == 'free') ||
+             (profileType == 'dealer' && planTier == 'dealer') ||
+             (profileType == 'company' && planTier == 'company');
     }
     
     // AI Quota limits per plan (daily)

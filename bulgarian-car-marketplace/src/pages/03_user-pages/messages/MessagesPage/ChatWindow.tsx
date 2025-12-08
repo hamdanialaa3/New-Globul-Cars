@@ -8,6 +8,9 @@ import styled from 'styled-components';
 import { useAuth } from '../../../../contexts/AuthProvider';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { realtimeMessagingService, Message } from '../../../../services/realtimeMessaging';
+import { collection, query, where, orderBy, onSnapshot } from 'firebase/firestore';
+import { db } from '../../../../firebase/firebase-config';
+import { logger } from '../../../../services/logger-service';
 import MessageBubble from '../../../../components/messaging/MessageBubble';
 import TypingIndicator from '../../../../components/messaging/TypingIndicator';
 import MessageComposer from './MessageComposer';
@@ -26,6 +29,8 @@ interface ChatWindowProps {
   recipientId: string;
   recipientName: string;
   recipientImage?: string;
+  carId?: string;
+  carTitle?: string;
   onBack: () => void;
 }
 
@@ -400,6 +405,8 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
   recipientId,
   recipientName,
   recipientImage,
+  carId,
+  carTitle,
   onBack
 }) => {
   const { user } = useAuth();
@@ -422,11 +429,12 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
         const msgs = await realtimeMessagingService.getMessages(
           user.uid,
           recipientId,
+          carId,
           100
         );
         setMessages(msgs);
       } catch (error) {
-        // Error loading messages - handled by loading state
+        logger.error('Error loading messages', error as Error, { conversationId, carId });
       } finally {
         setLoading(false);
       }
@@ -434,25 +442,36 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
     
     loadMessages();
     
-    // Listen to real-time messages
-    const unsubscribe = realtimeMessagingService.listenToMessages(
-      user.uid,
-      (newMessages) => {
-        setMessages(newMessages.filter(
-          msg => 
-            (msg.senderId === user.uid && msg.receiverId === recipientId) ||
-            (msg.senderId === recipientId && msg.receiverId === user.uid)
-        ));
-      }
+    // Listen to real-time messages for this conversation
+    const q = query(
+      collection(db, 'messages'),
+      where('conversationId', '==', conversationId),
+      orderBy('createdAt', 'asc')
     );
     
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const newMessages: Message[] = [];
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        newMessages.push({
+          id: doc.id,
+          ...data,
+          createdAt: data.createdAt?.toDate() || new Date(),
+          updatedAt: data.updatedAt?.toDate() || new Date()
+        } as Message);
+      });
+      setMessages(newMessages);
+    });
+    
     // Mark messages as read
-    realtimeMessagingService.markMessagesAsRead(user.uid, recipientId);
+    if (carId) {
+      realtimeMessagingService.markMessagesAsRead(user.uid, recipientId);
+    }
     
     return () => {
       unsubscribe();
     };
-  }, [user, recipientId]);
+  }, [user, recipientId, conversationId, carId]);
   
   // Scroll to bottom when messages change
   useEffect(() => {
@@ -465,23 +484,48 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
     if (!user || !content.trim()) return;
     
     try {
-      // Generate conversationId (consistent ordering of user IDs)
-      const conversationId = [user.uid, recipientId].sort().join('_');
+      // Check if this is the first user message in this conversation
+      const userMessages = messages.filter(msg => 
+        msg.senderId === user.uid && 
+        msg.messageType !== 'system' && 
+        msg.type !== 'system'
+      );
       
+      const isFirstMessage = userMessages.length === 0;
+      
+      // If first message and carId exists, send car link first
+      if (isFirstMessage && carId && carTitle) {
+        await realtimeMessagingService.sendCarLinkMessage(
+          conversationId,
+          user.uid,
+          recipientId,
+          user.displayName || user.firstName || user.email || 'User',
+          recipientName || 'User',
+          carId,
+          carTitle
+        );
+      }
+      
+      // Send the actual message
       await realtimeMessagingService.sendMessage({
         conversationId,
         senderId: user.uid,
-        senderName: user.displayName || user.email || 'User',
+        senderName: user.displayName || user.firstName || user.email || 'User',
         receiverId: recipientId,
         receiverName: recipientName || 'User',
+        carId,
+        carTitle,
         content,
+        text: content,
         messageType: 'text',
+        type: 'text',
+        status: 'sent',
         isRead: false
       });
     } catch (error) {
-      // Error sending message - handled by UI state
+      logger.error('Error sending message', error as Error, { conversationId, carId });
     }
-  }, [user, recipientId, recipientName]);
+  }, [user, recipientId, recipientName, conversationId, carId, carTitle, messages]);
   
   const handleTyping = useCallback((isTyping: boolean) => {
     if (!user) return;
@@ -591,6 +635,8 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
         onSendMessage={handleSendMessage}
         onTyping={handleTyping}
         recipientName={recipientName}
+        carId={carId}
+        carTitle={carTitle}
       />
     </Container>
   );

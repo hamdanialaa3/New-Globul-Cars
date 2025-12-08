@@ -9,7 +9,7 @@ import { useAuth } from '../../../../contexts/AuthProvider';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { 
   User, Eye, MessageSquare, Search, Heart, ShoppingCart, 
-  Package, CreditCard, Car, FileText, Settings, 
+  Package, CreditCard, Car, FileText, 
   Shield, Bell, Edit, Users, List
 } from 'lucide-react';
 import { collection, query, where, getDocs } from 'firebase/firestore';
@@ -99,7 +99,7 @@ const SettingsSidebar: React.FC = () => {
       createAd: 'Създай обява',
       myProfile: 'Моят профил',
       myVehicles: 'Моите превозни средства',
-      settings: 'Настройки',
+      settings: 'Редактиране на информация',
       communication: 'Комуникация',
       browse: 'Разглеждане',
       allUsers: 'Всички потребители',
@@ -120,7 +120,7 @@ const SettingsSidebar: React.FC = () => {
       createAd: 'Direct Sale',
       myProfile: 'My Profile',
       myVehicles: 'My vehicles',
-      settings: 'Settings',
+      settings: 'Edit Information',
       communication: 'Communication',
       browse: 'Browse',
       allUsers: 'All Users',
@@ -197,14 +197,14 @@ const SettingsSidebar: React.FC = () => {
       {/* My Profile Section */}
       <NavSection>
         <SectionTitle>{text.myProfile}</SectionTitle>
+        <NavItem to="/profile/settings">
+          <Edit size={14} />
+          {language === 'bg' ? 'Редактиране на информация' : 'Edit Information'}
+        </NavItem>
         <NavItem to="/my-listings">
           <Car size={14} />
           {text.myVehicles}
           {counts.myListings > 0 && <Badge>{counts.myListings}</Badge>}
-        </NavItem>
-        <NavItem to="/profile/settings">
-          <Settings size={14} />
-          {text.settings}
         </NavItem>
         <NavItem to="/notifications">
           <Bell size={14} />

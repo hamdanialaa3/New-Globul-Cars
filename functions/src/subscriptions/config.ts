@@ -51,7 +51,7 @@ export const SUBSCRIPTION_PLANS: Record<string, SubscriptionPlan> = {
     stripePriceId: '', // No Stripe price for free plan
     features: ['basic_search', 'contact_sellers', 'save_favorites'],
     limits: {
-      listings: 5,
+      listings: 3,
       photos: 10,
       videoSupport: false,
       prioritySupport: false,
@@ -78,7 +78,7 @@ export const SUBSCRIPTION_PLANS: Record<string, SubscriptionPlan> = {
       'team_management',
     ],
     limits: {
-      listings: 15,
+      listings: 10,
       photos: 30,
       videoSupport: true,
       prioritySupport: true,
@@ -104,7 +104,7 @@ export const SUBSCRIPTION_PLANS: Record<string, SubscriptionPlan> = {
       'team_management',
     ],
     limits: {
-      listings: 15,
+      listings: 10,
       photos: 30,
       videoSupport: true,
       prioritySupport: true,

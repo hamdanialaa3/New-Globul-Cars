@@ -77,6 +77,7 @@ export const cancelSubscription = onCall<{
 
       // Immediately update Firestore
       await db.collection('users').doc(userId).update({
+        planTier: 'free', // Revert to free at root level
         'subscription.planId': 'free',
         'subscription.planTier': 'free',
         'subscription.status': 'canceled',

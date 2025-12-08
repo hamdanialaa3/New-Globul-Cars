@@ -34,7 +34,6 @@ if (process.env.NODE_ENV === 'development') {
   import('./utils/checkCarsStatus').then(module => {
     (window as any).checkCarsStatus = module.checkAllCarsStatus;
     (window as any).fixCarsStatus = module.fixAllCarsStatus;
-    console.log('🛠️ Dev utilities loaded:');
     console.log('  - checkCarsStatus() - فحص حالة السيارات');
     console.log('  - fixCarsStatus() - إصلاح السيارات المخفية');
   });
@@ -49,7 +48,6 @@ const ProgressBar = safeLazy(() => import('./components/ProgressBar'));
 import LoadingSpinner from './components/LoadingSpinner';
 
 // Lazy load pages for better performance
-const ArchitectureDiagramPage = safeLazy(() => import('./pages/ArchitectureDiagramPage'));
 const HomePage = safeLazy(() => import('./pages/01_main-pages/home/HomePage'));
 const CarsPage = safeLazy(() => import('./pages/01_main-pages/CarsPage'));
 const CarDetailsPage = safeLazy(() => import('./pages/01_main-pages/CarDetailsPage'));
@@ -283,11 +281,6 @@ const ThemedApp: React.FC = () => {
             <Route path="/super-admin/users" element={
               <FullScreenLayout>
                 <SuperAdminUsersPage />
-              </FullScreenLayout>
-            } />
-            <Route path="/diagram" element={
-              <FullScreenLayout>
-                <ArchitectureDiagramPage />
               </FullScreenLayout>
             } />
             <Route path="/*" element={<MainLayout />} />

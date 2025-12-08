@@ -64,7 +64,6 @@ class ImageUploadService {
     }
 
     try {
-      console.log('📸 Starting image upload', { carId, validCount: validImages.length });
       
       // ✅ Use same path structure as SellWorkflowService for consistency
       const uploadPromises = validImages.map(async (image, index) => {
@@ -84,7 +83,6 @@ class ImageUploadService {
           const snapshot = await uploadBytes(imageRef, image);
           const downloadUrl = await getDownloadURL(snapshot.ref);
           
-          console.log(`✅ Image ${index + 1} uploaded successfully`, { url: downloadUrl });
           return downloadUrl;
         } catch (uploadError) {
           console.error(`❌ Failed to upload image ${index + 1}`, uploadError);
@@ -100,7 +98,6 @@ class ImageUploadService {
 
       const urls = await Promise.all(uploadPromises);
       serviceLogger.info('Images uploaded successfully', { carId, count: urls.length });
-      console.log('✅ All images uploaded successfully', { carId, count: urls.length });
       return urls;
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';

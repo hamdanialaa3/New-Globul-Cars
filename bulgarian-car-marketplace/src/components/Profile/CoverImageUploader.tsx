@@ -19,7 +19,7 @@ const CoverContainer = styled.div<{ $themeColor?: string }>`
   width: 100%;
   height: 300px;
   border-radius: 16px;
-  overflow: hidden;
+  overflow: visible;
   
   /* 🎨 Dynamic glassmorphic background for empty state */
   background: ${props => props.$themeColor
@@ -33,7 +33,7 @@ const CoverContainer = styled.div<{ $themeColor?: string }>`
     ${props => props.$themeColor ? `0 8px 28px ${props.$themeColor}33` : '0 8px 28px rgba(255, 143, 16, 0.2)'},
     inset 0 1px 0 rgba(255, 255, 255, 0.3);
   
-  margin-bottom: 60px;
+  margin-bottom: 0;
 `;
 
 const CoverImage = styled.div<{ $imageUrl?: string }>`

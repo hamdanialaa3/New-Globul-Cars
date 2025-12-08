@@ -190,7 +190,6 @@ const UnifiedEquipmentPage: React.FC = () => {
       const validVehicleType = vehicleType || 'car';
       const targetPath = `/sell/inserat/${validVehicleType}/images?${params.toString()}`;
       
-      console.log('🚀 Navigating to images page:', targetPath);
       console.log('📋 Equipment selected:', {
         safety: selectedFeatures.safety.length,
         comfort: selectedFeatures.comfort.length,

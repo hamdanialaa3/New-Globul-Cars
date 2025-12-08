@@ -9,8 +9,8 @@ import ProfileMyAds from './ProfileMyAds';
 import ProfileCampaigns from './ProfileCampaigns';
 import ProfileAnalytics from './ProfileAnalytics';
 
-import ProfileSettingsMobileDe from './ProfileSettingsMobileDe';
 import ProfileConsultations from './ProfileConsultations';
+import SettingsPage from './SettingsPage';
 
 /**
  * Profile Router Component
@@ -41,7 +41,7 @@ export const ProfileRouter: React.FC = () => {
         <Route path="my-ads" element={<ProfileMyAds />} />
         <Route path="campaigns" element={<ProfileCampaigns />} />
         <Route path="analytics" element={<ProfileAnalytics />} />
-        <Route path="settings" element={<ProfileSettingsMobileDe />} />
+        <Route path="settings" element={<SettingsPage />} />
 
         <Route path="consultations" element={<ProfileConsultations />} />
 

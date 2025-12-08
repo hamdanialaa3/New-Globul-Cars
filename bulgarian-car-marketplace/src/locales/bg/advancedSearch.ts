@@ -38,6 +38,7 @@ export const advancedSearch = {
   condition: 'Състояние',
   newCondition: 'Нов',
   usedCondition: 'Употребяван',
+  partsCondition: 'За части',
   preRegistrationCondition: 'Предварителна регистрация',
   employeeCondition: 'Служебен автомобил',
   classicCondition: 'Класическа кола',

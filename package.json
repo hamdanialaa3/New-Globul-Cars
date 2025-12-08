@@ -52,6 +52,7 @@
     "@aws-sdk/client-iot": "^3.927.0",
     "@aws-sdk/client-iot-data-plane": "^3.927.0",
     "@azure/msal-node": "^3.7.4",
+    "@craco/craco": "^7.1.0",
     "@dataconnect/generated": "file:src/dataconnect-generated",
     "@genkit-ai/firebase": "^1.0.4",
     "@google-cloud/bigquery": "^8.1.1",

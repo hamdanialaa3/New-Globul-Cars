@@ -18,7 +18,7 @@ import * as S from './ProfileSettingsMobileDe.styles';
 const ProfileSettingsMobileDe: React.FC = () => {
   const { user, currentUser } = useAuth();
   const navigate = useNavigate();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const toast = useToast();
   
   const userName = user?.displayName || 'User';
@@ -171,8 +171,9 @@ const ProfileSettingsMobileDe: React.FC = () => {
 
   const sidebarSections = [
     {
-      title: 'My mobile.de',
+      title: 'My Mobili BG EU',
       items: [
+        { id: 'editInfo', label: language === 'bg' ? 'Редактиране на информация' : 'Edit Information', path: '/profile/settings' },
         { id: 'overview', label: 'Overview', path: '/profile' },
         { id: 'messages', label: 'Messages', path: '/messages', badge: stats.newMessages }
       ]
@@ -197,7 +198,6 @@ const ProfileSettingsMobileDe: React.FC = () => {
       title: 'My Profile',
       items: [
         { id: 'vehicles', label: t('profile.myGarage', 'My Garage'), path: '/profile/my-ads', badge: userCars.length },
-        { id: 'settings', label: 'Settings', path: '/profile/settings' },
         { id: 'communication', label: 'Communication', path: '/notifications' }
       ]
     }

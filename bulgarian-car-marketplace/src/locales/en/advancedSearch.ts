@@ -36,6 +36,7 @@ export const advancedSearch = {
   condition: 'Condition',
   newCondition: 'New',
   usedCondition: 'Used',
+  partsCondition: 'For Parts',
   preRegistrationCondition: 'Pre-registration',
   employeeCondition: 'Employee Car',
   classicCondition: 'Classic Car',

@@ -322,52 +322,17 @@ class SubscriptionService {
         features: []
       },
       {
-        id: 'premium',
-        name: { bg: 'Премиум', en: 'Premium' },
-        price: 9.99,
-        tier: 'premium',
-        features: []
-      },
-      {
-        id: 'dealer_basic',
-        name: { bg: 'Дилър Базов', en: 'Dealer Basic' },
+        id: 'dealer',
+        name: { bg: 'Дилър', en: 'Dealer' },
         price: 49.99,
-        tier: 'dealer_basic',
+        tier: 'dealer',
         features: []
       },
       {
-        id: 'dealer_pro',
-        name: { bg: 'Дилър Про', en: 'Dealer Pro' },
-        price: 99.99,
-        tier: 'dealer_pro',
-        features: []
-      },
-      {
-        id: 'dealer_enterprise',
-        name: { bg: 'Дилър Корпоративен', en: 'Dealer Enterprise' },
-        price: 299.99,
-        tier: 'dealer_enterprise',
-        features: []
-      },
-      {
-        id: 'company_starter',
-        name: { bg: 'Компания Стартер', en: 'Company Starter' },
+        id: 'company',
+        name: { bg: 'Компания', en: 'Company' },
         price: 149.99,
-        tier: 'company_starter',
-        features: []
-      },
-      {
-        id: 'company_pro',
-        name: { bg: 'Компания Про', en: 'Company Pro' },
-        price: 249.99,
-        tier: 'company_pro',
-        features: []
-      },
-      {
-        id: 'company_enterprise',
-        name: { bg: 'Компания Корпоративна', en: 'Company Enterprise' },
-        price: 499.99,
-        tier: 'company_enterprise',
+        tier: 'company',
         features: []
       }
     ];

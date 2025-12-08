@@ -127,11 +127,18 @@ const BrandsGrid = styled.div`
 `;
 
 const BrandCard = styled.button`
-  /* ✅ FIXED: Fully transparent background with glass effect - no orange color */
-  background: rgba(255, 255, 255, 0.05);
+  /* 🌟 Aluminum Metallic Effect - تأثير ألومنيوم براق وواقعي */
+  background: linear-gradient(135deg, 
+    #E8E8E8 0%,      /* فضي فاتح */
+    #D0D0D0 25%,    /* فضي */
+    #B8B8B8 50%,    /* رمادي فضي */
+    #D0D0D0 75%,    /* فضي */
+    #E8E8E8 100%    /* فضي فاتح */
+  );
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 2px solid rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(200, 200, 200, 0.4);
+  border-top: 2px solid rgba(255, 255, 255, 0.6); /* highlight على الحافة العلوية */
   border-radius: 16px;
   padding: 1.5rem 1rem;
   cursor: pointer;
@@ -144,47 +151,110 @@ const BrandCard = styled.button`
   overflow: hidden;
   opacity: 1;
   color: var(--text-primary);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  box-shadow: 
+    0 4px 15px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5), /* highlight داخلي */
+    inset 0 -1px 0 rgba(0, 0, 0, 0.1); /* shadow داخلي */
 
   html[data-theme="dark"] & {
-    background: rgba(255, 255, 255, 0.03);
-    border-color: rgba(255, 255, 255, 0.08);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, 
+      #4A4A4A 0%,      /* رمادي داكن فاتح */
+      #3A3A3A 25%,     /* رمادي داكن */
+      #2A2A2A 50%,     /* رمادي داكن جداً */
+      #3A3A3A 75%,     /* رمادي داكن */
+      #4A4A4A 100%     /* رمادي داكن فاتح */
+    );
+    border-color: rgba(150, 150, 150, 0.3);
+    border-top: 2px solid rgba(200, 200, 200, 0.4);
+    box-shadow: 
+      0 4px 15px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.3);
   }
 
+  /* تأثير بريق معدني */
   &::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      45deg,
+      transparent 30%,
+      rgba(255, 255, 255, 0.3) 50%,
+      transparent 70%
+    );
+    opacity: 0;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    transform: rotate(45deg) translateX(-100%);
+  }
+  
+  &:hover::before {
+    opacity: 1;
+    transform: rotate(45deg) translateX(100%);
+  }
+
+  /* تأثير انعكاس معدني */
+  &::after {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.05);
-    opacity: 0;
-    transition: opacity 0.3s ease;
+    right: 0;
+    height: 40%;
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.2) 0%,
+      transparent 100%
+    );
+    border-radius: 16px 16px 0 0;
+    pointer-events: none;
   }
   
-  html[data-theme="dark"] &::before {
-    background: rgba(255, 255, 255, 0.03);
-  }
-  
-  &:hover::before { opacity: 1; }
   &:hover {
     transform: translateY(-8px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
-    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 
+      0 12px 30px rgba(0, 0, 0, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.6),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+    border-color: rgba(220, 220, 220, 0.5);
+    border-top: 2px solid rgba(255, 255, 255, 0.7);
+    background: linear-gradient(135deg, 
+      #F0F0F0 0%,      /* فضي فاتح جداً */
+      #E0E0E0 25%,    /* فضي فاتح */
+      #D0D0D0 50%,    /* فضي */
+      #E0E0E0 75%,    /* فضي فاتح */
+      #F0F0F0 100%    /* فضي فاتح جداً */
+    );
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
   }
   
   html[data-theme="dark"] &:hover {
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-    border-color: rgba(255, 255, 255, 0.15);
-    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 
+      0 12px 30px rgba(0, 0, 0, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.4);
+    border-color: rgba(180, 180, 180, 0.4);
+    border-top: 2px solid rgba(220, 220, 220, 0.5);
+    background: linear-gradient(135deg, 
+      #5A5A5A 0%,      /* رمادي داكن فاتح */
+      #4A4A4A 25%,     /* رمادي داكن */
+      #3A3A3A 50%,     /* رمادي داكن */
+      #4A4A4A 75%,     /* رمادي داكن */
+      #5A5A5A 100%     /* رمادي داكن فاتح */
+    );
   }
   
-  &:active { transform: translateY(-4px); }
+  &:active { 
+    transform: translateY(-4px);
+    box-shadow: 
+      0 6px 20px rgba(0, 0, 0, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.4),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.12);
+  }
 `;
 
 const LogoContainer = styled.div`
@@ -291,10 +361,6 @@ const PopularBrandsSection: React.FC = () => {
     navigate(`/cars?make=${encodeURIComponent(brandId)}`);
   };
 
-  const handleViewMore = () => {
-    navigate('/cars');
-  };
-
   const getBrandName = (brand: typeof POPULAR_BRANDS[0]) => {
     return language === 'bg' ? brand.nameBg : brand.nameEn;
   };
@@ -336,11 +402,6 @@ const PopularBrandsSection: React.FC = () => {
             );
           })}
         </BrandsGrid>
-
-        {/* View more button */}
-        <ViewMoreButton onClick={handleViewMore}>
-          {language === 'bg' ? 'Виж Повече Марки' : 'More Brands'}
-        </ViewMoreButton>
       </ContentContainer>
     </SectionContainer>
   );

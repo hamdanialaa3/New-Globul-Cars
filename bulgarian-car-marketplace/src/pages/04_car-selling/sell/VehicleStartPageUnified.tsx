@@ -11,7 +11,7 @@ import { useIsMobile } from '../../../hooks/useBreakpoint';
 import { logger } from '../../../services/logger-service';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
-import { Car, Truck, Bus, Bike, Caravan, CarFront } from 'lucide-react';
+import { Car, Truck, Bus, Bike, Caravan, Wrench } from 'lucide-react';
 import SplitScreenLayout from '../../../components/SplitScreenLayout';
 import { WorkflowFlow } from '../../../components/WorkflowVisualization';
 import N8nIntegrationService from '../../../services/n8n-integration';
@@ -277,11 +277,11 @@ const VehicleStartPageUnified: React.FC = () => {
 
   const vehicleTypes = [
     { id: 'car', IconComponent: Car, title: t('sell.start.vehicleTypes.car.title', 'Лек автомобил'), desc: t('sell.start.vehicleTypes.car.desc', 'Леки коли до 3.5т'), disabled: false },
-    { id: 'suv', IconComponent: CarFront, title: t('sell.start.vehicleTypes.suv.title', 'Джип/Кросоувър'), desc: t('sell.start.vehicleTypes.suv.desc', 'Високопроходими автомобили'), disabled: false },
     { id: 'van', IconComponent: Caravan, title: t('sell.start.vehicleTypes.van.title', 'Ван/Комби'), desc: t('sell.start.vehicleTypes.van.desc', 'Товаро-пътнически автомобили'), disabled: true },
     { id: 'motorcycle', IconComponent: Bike, title: t('sell.start.vehicleTypes.motorcycle.title', 'Мотоциклет'), desc: t('sell.start.vehicleTypes.motorcycle.desc', 'Мотоциклети и скутери'), disabled: true },
     { id: 'truck', IconComponent: Truck, title: t('sell.start.vehicleTypes.truck.title', 'Камион'), desc: t('sell.start.vehicleTypes.truck.desc', 'Товарни автомобили'), disabled: true },
-    { id: 'bus', IconComponent: Bus, title: t('sell.start.vehicleTypes.bus.title', 'Автобус'), desc: t('sell.start.vehicleTypes.bus.desc', 'Пътнически автобуси'), disabled: true }
+    { id: 'bus', IconComponent: Bus, title: t('sell.start.vehicleTypes.bus.title', 'Автобус'), desc: t('sell.start.vehicleTypes.bus.desc', 'Пътнически автобуси'), disabled: true },
+    { id: 'parts', IconComponent: Wrench, title: language === 'bg' ? 'Резервни части' : 'Car Parts', desc: language === 'bg' ? 'Резервни части и аксесоари' : 'Spare parts and accessories', disabled: true }
   ];
 
   const handleSelect = async (typeId: string, disabled: boolean) => {

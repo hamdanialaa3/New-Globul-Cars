@@ -3,322 +3,384 @@ import { logger } from '../../../../../services/logger-service';
 // ✅ TESTING VERSION - COMPREHENSIVE SETTINGS PAGE
 // Version: 2.0 - November 9, 2025 - 3:00 PM
 
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { useLanguage } from '../../../../../contexts/LanguageContext';
+import { useAuth } from '../../../../../contexts/AuthProvider';
+import { useTheme } from '../../../../../contexts/ThemeContext';
 import type { BulgarianUser } from '../../../../../types/user/bulgarian-user.types';
 import type { ProfileTheme } from '../../../../../contexts/ProfileTypeContext';
-import { CreditCard } from 'lucide-react';
+import { 
+  CreditCard, Edit, User, MapPin, Phone, Mail, Save, 
+  Shield, Bell, Settings as SettingsIcon, Lock, Download, 
+  Building2, Globe, Car, Trash2, AlertCircle, FileText,
+  Eye, MessageSquare, TrendingUp, Smartphone, DollarSign,
+  Heart, Sun, Moon, Laptop, ShieldCheck, KeyRound, LogOut,
+  Camera, X
+} from 'lucide-react';
+import { IDCardOverlay, IDCardData } from '../../../../../components/Profile/IDCardEditor';
+import { ProfileService } from '../../../../../services/profile/ProfileService';
+import { unifiedCarService } from '../../../../../services/car/unified-car.service';
+import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
+import { storage } from '../../../../../firebase/firebase-config';
+import { toast } from 'react-toastify';
 
 interface SettingsTabProps {
   user: BulgarianUser | null;
   theme: ProfileTheme;
 }
 
-// 🔥 SIMPLE TEST VERSION - TO VERIFY HOT RELOAD WORKS
+// Main Settings Tab Component
 export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme }) => {
   const { t, language } = useLanguage();
+  const { currentUser } = useAuth();
+  const { theme: appTheme } = useTheme();
   const navigate = useNavigate();
-
-  const isBg = language === 'bg';
-
-  return (
-    <TestContainer>
-      <BigTitle>🎯 إعدادات متقدمة - Advanced Settings</BigTitle>
-      <Subtitle>التحديث: 9 نوفمبر 2025 - الساعة 3:00 مساءً</Subtitle>
-      <Subtitle>Last Update: November 9, 2025 - 3:00 PM</Subtitle>
-      
-      <ChangeIndicator>
-        ✅ هذه الصفحة تم تحديثها بنجاح!
-        <br />
-        ✅ This page has been successfully updated!
-      </ChangeIndicator>
-
-      <SectionsGrid>
-        {/* NEW: Subscription Section - First Priority */}
-        <SectionCard 
-          color="#10B981" 
-          onClick={() => navigate('/subscription')}
-          style={{ cursor: 'pointer', gridColumn: isBg ? '1 / -1' : 'auto' }}
-        >
-          <CreditCard size={48} style={{ margin: '0 auto 16px' }} />
-          <h3>💳 {isBg ? 'إدارة الاشتراك' : 'Manage Subscription'}</h3>
-          <p>{isBg ? 'الباقات والأسعار والفواتير' : 'Plans, Pricing & Billing'}</p>
-          <p style={{ marginTop: '12px', fontSize: '0.9rem', opacity: 0.7 }}>
-            {isBg ? 'انقر لعرض جميع الخطط' : 'Click to view all plans'}
-          </p>
-        </SectionCard>
-
-        <SectionCard color="#FF8F10">
-          <h3>👤 إعدادات الحساب</h3>
-          <p>Account Settings</p>
-        </SectionCard>
-
-        <SectionCard color="#10B981">
-          <h3>🔒 الخصوصية</h3>
-          <p>Privacy Settings</p>
-        </SectionCard>
-
-        <SectionCard color="#3B82F6">
-          <h3>🔔 الإشعارات</h3>
-          <p>Notifications</p>
-        </SectionCard>
-
-        <SectionCard color="#8B5CF6">
-          <h3>🎨 المظهر</h3>
-          <p>Appearance</p>
-        </SectionCard>
-
-        <SectionCard color="#EF4444">
-          <h3>🔐 الأمان</h3>
-          <p>Security</p>
-        </SectionCard>
-
-        <SectionCard color="#F59E0B">
-          <h3>🚗 تفضيلات السيارات</h3>
-          <p>Car Preferences</p>
-        </SectionCard>
-
-        <SectionCard color="#06B6D4">
-          <h3>📥 تصدير البيانات</h3>
-          <p>Data Export</p>
-        </SectionCard>
-
-        <SectionCard color="#EC4899">
-          <h3>🏢 معلومات الأعمال</h3>
-          <p>Business Info</p>
-        </SectionCard>
-      </SectionsGrid>
-
-      <StatusBox>
-        <h4>📊 حالة التطبيق - Application Status</h4>
-        <p>✅ الملف محدّث - File Updated</p>
-        <p>✅ الترجمات جاهزة - Translations Ready</p>
-        <p>✅ الخدمة جاهزة - Service Ready</p>
-        <p>🔄 انتظر Hot Reload - Wait for Hot Reload</p>
-      </StatusBox>
-
-      <WarningBox>
-        <strong>⚠️ ملاحظة مهمة:</strong>
-        <br />
-        إذا لم تر هذه التغييرات، اتبع الخطوات:
-        <ol>
-          <li>اضغط Ctrl + Shift + R (Hard Refresh)</li>
-          <li>أو امسح الكاش من Developer Tools</li>
-          <li>أو أعد تشغيل السيرفر</li>
-        </ol>
-      </WarningBox>
-    </TestContainer>
-  );
-};
-
-// ===== Styled Components =====
-
-const TestContainer = styled.div`
-  padding: 40px;
-  max-width: 1400px;
-  margin: 0 auto;
+  const [searchParams, setSearchParams] = useSearchParams();
+  const isDark = appTheme === 'dark';
   
-  @media (max-width: 768px) {
-    padding: 20px;
-  }
-`;
-
-const BigTitle = styled.h1`
-  font-size: 3rem;
-  font-weight: 800;
-  color: #FF8F10;
-  text-align: center;
-  margin-bottom: 20px;
+  // Get active section from URL or default to 'editInfo'
+  const sectionFromUrl = searchParams.get('section') || 'editInfo';
+  const [activeSection, setActiveSection] = useState<string>(sectionFromUrl);
+  const [saving, setSaving] = useState(false);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   
-  @media (max-width: 768px) {
-    font-size: 2rem;
-  }
-`;
-
-const Subtitle = styled.p`
-  font-size: 1.2rem;
-  color: #ffffff;
-  text-align: center;
-  margin-bottom: 10px;
-`;
-
-const ChangeIndicator = styled.div`
-  background: linear-gradient(135deg, #10B981 0%, #059669 100%);
-  color: #ffffff;
-  padding: 30px;
-  border-radius: 16px;
-  text-align: center;
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin: 40px 0;
-  box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
-  
-  @media (max-width: 768px) {
-    font-size: 1.1rem;
-    padding: 20px;
-  }
-`;
-
-const SectionsGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 24px;
-  margin: 40px 0;
-`;
-
-const SectionCard = styled.div<{ color: string }>`
-  background: rgba(255, 255, 255, 0.05);
-  border: 3px solid ${props => props.color};
-  border-radius: 16px;
-  padding: 32px;
-  text-align: center;
-  transition: all 0.3s ease;
-  
-  &:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 12px 40px ${props => props.color}40;
-    background: rgba(255, 255, 255, 0.08);
-  }
-  
-  h3 {
-    font-size: 1.4rem;
-    color: ${props => props.color};
-    margin: 0 0 12px 0;
-  }
-  
-  p {
-    color: #ffffff;
-    font-size: 1rem;
-    margin: 0;
-    opacity: 0.8;
-  }
-`;
-
-const StatusBox = styled.div`
-  background: rgba(59, 130, 246, 0.1);
-  border: 3px solid #3B82F6;
-  border-radius: 16px;
-  padding: 30px;
-  margin: 40px 0;
-  
-  h4 {
-    font-size: 1.5rem;
-    color: #3B82F6;
-    margin: 0 0 20px 0;
-  }
-  
-  p {
-    font-size: 1.1rem;
-    color: #ffffff;
-    margin: 12px 0;
-    padding-left: 20px;
-  }
-`;
-
-const WarningBox = styled.div`
-  background: rgba(245, 158, 11, 0.1);
-  border: 3px solid #F59E0B;
-  border-radius: 16px;
-  padding: 30px;
-  margin: 40px 0;
-  
-  strong {
-    font-size: 1.3rem;
-    color: #F59E0B;
-    display: block;
-    margin-bottom: 16px;
-  }
-  
-  ol {
-    color: #ffffff;
-    font-size: 1.1rem;
-    line-height: 1.8;
-    padding-left: 20px;
-    
-    li {
-      margin: 12px 0;
+  // Update URL when section changes
+  useEffect(() => {
+    if (sectionFromUrl !== activeSection) {
+      setSearchParams({ section: activeSection }, { replace: true });
     }
-  }
-`;
+  }, [activeSection, sectionFromUrl, setSearchParams]);
+  
+  // Update active section when URL changes
+  useEffect(() => {
+    if (sectionFromUrl && sectionFromUrl !== activeSection) {
+      setActiveSection(sectionFromUrl);
+    }
+  }, [sectionFromUrl]);
+  const [settings, setSettings] = useState<any>({
+    displayName: user?.displayName || '',
+    email: user?.email || '',
+    phone: user?.phoneNumber || '',
+    bio: user?.bio || '',
+    language: user?.preferredLanguage || 'bg',
+    privacy: {
+      profileVisibility: 'public',
+      showPhone: true,
+      showEmail: false
+    }
+  });
 
-export default SettingsTab;
-    const loadSettings = async () => {
-      if (!user?.uid) {
-        return;
-      }
+  const isBusinessAccount = user?.profileType === 'dealer' || user?.profileType === 'company';
 
-      try {
-        const userSettings = await userSettingsService.getUserSettings(user.uid);
-        
-        if (userSettings) {
-          setSettings(userSettings);
+  // Load user settings on mount
+  React.useEffect(() => {
+    if (user) {
+      setSettings({
+        displayName: user.displayName || '',
+        email: user.email || '',
+        phone: user.phoneNumber || '',
+        bio: user.bio || '',
+        language: user.preferredLanguage || 'bg',
+        privacy: {
+          profileVisibility: 'public',
+          showPhone: true,
+          showEmail: false
         }
-      } catch (error) {
-        logger.error('Error loading settings:', error);
-        showToast('error', t('settings.saveError', 'Error loading settings'));
-      }
-    };
-
-    loadSettings();
-  }, [user, t, showToast]);
+      });
+    }
+  }, [user]);
 
   const handleSave = async () => {
-    if (!user?.uid) {
-      showToast('error', t('settings.saveError', 'Error saving settings'));
+    if (!currentUser?.uid) {
+      toast.error(t('settings.saveError', 'Error saving settings'));
       return;
     }
 
     try {
       setSaving(true);
-      const success = await userSettingsService.saveUserSettings(user.uid, settings);
+      await ProfileService.updateUserProfile(currentUser.uid, {
+        displayName: settings.displayName,
+        phoneNumber: settings.phone,
+        bio: settings.bio,
+        preferredLanguage: settings.language
+      });
       
-      if (success) {
-        showToast('success', t('settings.saveSuccess', 'Settings saved successfully'));
-      } else {
-        showToast('error', t('settings.saveError', 'Error saving settings'));
-      }
+      toast.success(t('settings.saveSuccess', 'Settings saved successfully'));
     } catch (error) {
       logger.error('Error saving settings:', error);
-      showToast('error', t('settings.saveError', 'Error saving settings'));
+      toast.error(t('settings.saveError', 'Error saving settings'));
     } finally {
       setSaving(false);
     }
   };
 
+  // Export user data to JSON/CSV file
   const handleExportData = async () => {
-    if (!user?.uid) return;
-    
+    if (!currentUser?.uid || !user) {
+      toast.error(t('settings.exportError', 'Error exporting data'));
+      return;
+    }
+
     try {
-      const exportedData = await userSettingsService.exportUserData(user.uid);
-      
-      if (exportedData) {
-        // Create downloadable JSON file
-        const dataStr = JSON.stringify(exportedData, null, 2);
-        const dataBlob = new Blob([dataStr], { type: 'application/json' });
-        const url = URL.createObjectURL(dataBlob);
+      setSaving(true);
+      toast.info(language === 'bg' ? 'Събиране на данни...' : 'Collecting data...', { autoClose: 2000 });
+
+      // Fetch user's car listings
+      const userCars = await unifiedCarService.searchCars({ sellerId: currentUser.uid }, 1000);
+
+      // Prepare user data
+      const exportData = {
+        exportDate: new Date().toISOString(),
+        user: {
+          uid: user.uid,
+          displayName: user.displayName || '',
+          firstName: user.firstName || '',
+          lastName: user.lastName || '',
+          email: user.email || '',
+          phoneNumber: user.phoneNumber || '',
+          profileType: user.profileType || 'private',
+          location: user.location || {},
+          bio: user.bio || '',
+          preferredLanguage: user.preferredLanguage || 'bg',
+          createdAt: user.createdAt?.toDate?.()?.toISOString() || user.createdAt || '',
+          idCardData: (user as any).idCardData || null
+        },
+        settings: {
+          privacy: settings.privacy || {},
+          notifications: settings.notifications || {},
+          appearance: settings.appearance || {},
+          security: settings.security || {},
+          carPreferences: settings.carPreferences || {}
+        },
+        listings: userCars.map(car => ({
+          id: car.id,
+          make: car.make || '',
+          model: car.model || '',
+          year: car.year || 0,
+          price: car.price || 0,
+          mileage: car.mileage || 0,
+          fuelType: car.fuelType || '',
+          transmission: car.transmission || '',
+          status: car.status || 'active',
+          views: car.views || 0,
+          favorites: car.favorites || 0,
+          createdAt: car.createdAt?.toISOString?.() || car.createdAt || '',
+          updatedAt: car.updatedAt?.toISOString?.() || car.updatedAt || ''
+        })),
+        statistics: {
+          totalListings: userCars.length,
+          activeListings: userCars.filter(c => c.isActive && !c.isSold).length,
+          soldListings: userCars.filter(c => c.isSold).length,
+          totalViews: userCars.reduce((sum, c) => sum + (c.views || 0), 0),
+          totalFavorites: userCars.reduce((sum, c) => sum + (c.favorites || 0), 0)
+        }
+      };
+
+      // Create JSON file
+      const jsonData = JSON.stringify(exportData, null, 2);
+      const blob = new Blob([jsonData], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = `my-data-${new Date().toISOString()}.json`;
+      link.download = `globul-cars-user-data-${user.uid}-${new Date().toISOString().split('T')[0]}.json`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
         
-        showToast('success', t('settings.exportStarted', 'Data exported successfully'));
-      } else {
-        showToast('error', t('settings.saveError', 'Error exporting data'));
-      }
+      toast.success(
+        language === 'bg' 
+          ? '✅ Данните са изтеглени успешно!' 
+          : '✅ Data exported successfully!',
+        { autoClose: 3000 }
+      );
     } catch (error) {
       logger.error('Error exporting data:', error);
-      showToast('error', t('settings.saveError', 'Error exporting data'));
+      toast.error(
+        language === 'bg' 
+          ? 'Грешка при експорт на данни' 
+          : 'Error exporting data',
+        { autoClose: 3000 }
+      );
+    } finally {
+      setSaving(false);
     }
   };
 
+  // Handle profile photo upload
+  const handlePhotoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file || !currentUser?.uid) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast.error(language === 'bg' ? 'Моля, изберете изображение' : 'Please select an image file');
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error(language === 'bg' ? 'Размерът на файла трябва да бъде по-малък от 5MB' : 'File size must be less than 5MB');
+      return;
+    }
+
+    try {
+      setUploadingPhoto(true);
+      
+      // Create preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPhotoPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+
+      // Delete old photo if exists (only if it's in Firebase Storage)
+      if (user?.photoURL && user.photoURL.includes('firebasestorage.googleapis.com')) {
+        try {
+          // Extract the path from the full URL
+          const urlParts = user.photoURL.split('/');
+          const pathIndex = urlParts.findIndex(part => part === 'o');
+          if (pathIndex !== -1 && urlParts[pathIndex + 1]) {
+            const encodedPath = urlParts[pathIndex + 1].split('?')[0];
+            const decodedPath = decodeURIComponent(encodedPath);
+            const oldPhotoRef = ref(storage, decodedPath);
+            await deleteObject(oldPhotoRef);
+          }
+        } catch (error) {
+          // Ignore if old photo doesn't exist
+          logger.warn('Could not delete old photo', error);
+        }
+      }
+
+      // Upload new photo
+      const photoRef = ref(storage, `profile-photos/${currentUser.uid}/${Date.now()}_${file.name}`);
+      await uploadBytes(photoRef, file);
+      const photoURL = await getDownloadURL(photoRef);
+
+      // Update user profile
+      await ProfileService.updateUserProfile(currentUser.uid, {
+        photoURL: photoURL
+      });
+
+      toast.success(
+        language === 'bg' 
+          ? '✅ Снимката е качена успешно!' 
+          : '✅ Photo uploaded successfully!',
+        { autoClose: 3000 }
+      );
+
+      // Reload page to show new photo
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    } catch (error) {
+      logger.error('Error uploading photo:', error);
+      toast.error(
+        language === 'bg' 
+          ? 'Грешка при качване на снимка' 
+          : 'Error uploading photo',
+        { autoClose: 3000 }
+      );
+      setPhotoPreview(null);
+    } finally {
+      setUploadingPhoto(false);
+      // Reset input
+      event.target.value = '';
+    }
+  };
+
+  // Handle delete profile photo
+  const handleDeletePhoto = async () => {
+    if (!currentUser?.uid || !user?.photoURL) return;
+
+    const confirmMessage = language === 'bg'
+      ? 'Наистина ли искате да изтриете профилната си снимка?'
+      : 'Are you sure you want to delete your profile photo?';
+
+    if (!window.confirm(confirmMessage)) return;
+
+    try {
+      setUploadingPhoto(true);
+
+      // Delete from storage (only if it's in Firebase Storage)
+      if (user.photoURL.includes('firebasestorage.googleapis.com')) {
+        try {
+          // Extract the path from the full URL
+          const urlParts = user.photoURL.split('/');
+          const pathIndex = urlParts.findIndex(part => part === 'o');
+          if (pathIndex !== -1 && urlParts[pathIndex + 1]) {
+            const encodedPath = urlParts[pathIndex + 1].split('?')[0];
+            const decodedPath = decodeURIComponent(encodedPath);
+            const photoRef = ref(storage, decodedPath);
+            await deleteObject(photoRef);
+        }
+      } catch (error) {
+          // Log but continue - might be external URL
+          logger.warn('Could not delete photo from storage', error);
+        }
+      }
+
+      // Update user profile
+      await ProfileService.updateUserProfile(currentUser.uid, {
+        photoURL: undefined
+      } as any);
+
+      toast.success(
+        language === 'bg' 
+          ? '✅ Снимката е изтрита успешно!' 
+          : '✅ Photo deleted successfully!',
+        { autoClose: 3000 }
+      );
+
+      // Reload page
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    } catch (error) {
+      logger.error('Error deleting photo:', error);
+      toast.error(
+        language === 'bg' 
+          ? 'Грешка при изтриване на снимка' 
+          : 'Error deleting photo',
+        { autoClose: 3000 }
+      );
+    } finally {
+      setUploadingPhoto(false);
+    }
+  };
+
+  // Handle delete account
   const handleDeleteAccount = async () => {
-    if (window.confirm(t('settings.deleteAccountConfirm', 'Are you sure you want to delete your account? This action cannot be undone.'))) {
-      showToast('error', t('settings.deleteAccountContact', 'Please contact support to delete your account.'));
+    if (!currentUser?.uid) return;
+
+    const confirmMessage = language === 'bg'
+      ? 'Наистина ли искате да изтриете акаунта си? Това действие е необратимо!'
+      : 'Are you sure you want to delete your account? This action is irreversible!';
+
+    if (!window.confirm(confirmMessage)) return;
+
+    try {
+      setSaving(true);
+      // TODO: Implement account deletion logic
+      toast.info(
+        language === 'bg' 
+          ? 'Функцията за изтриване на акаунт е в процес на разработка' 
+          : 'Account deletion feature is under development',
+        { autoClose: 3000 }
+      );
+    } catch (error) {
+      logger.error('Error deleting account:', error);
+      toast.error(
+        language === 'bg' 
+          ? 'Грешка при изтриване на акаунта' 
+          : 'Error deleting account',
+        { autoClose: 3000 }
+      );
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -333,6 +395,7 @@ export default SettingsTab;
   }
 
   const sections = [
+    { id: 'editInfo', icon: Edit, label: language === 'bg' ? 'Редактиране на информация' : 'Edit Information' },
     { id: 'account', icon: User, label: t('settings.account', 'Account') },
     { id: 'privacy', icon: Shield, label: t('settings.privacy', 'Privacy') },
     { id: 'notifications', icon: Bell, label: t('settings.notifications', 'Notifications') },
@@ -350,15 +413,60 @@ export default SettingsTab;
     <SettingsContainer>
       <SettingsLayout>
         {/* Left Sidebar Navigation */}
-        <Sidebar>
-          <SidebarTitle>{t('settings.title', 'Settings')}</SidebarTitle>
+        <Sidebar $isDark={isDark}>
+          {/* Profile Photo Section */}
+          <AvatarSection $isDark={isDark}>
+            <AvatarContainer $isDark={isDark}>
+              <AvatarImage 
+                src={photoPreview || user?.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.displayName || 'User')}&background=FF7900&color=fff&size=128`}
+                alt={user?.displayName || 'Profile'}
+                $isDark={isDark}
+              />
+              {uploadingPhoto && (
+                <UploadingOverlay>
+                  <Spinner />
+                </UploadingOverlay>
+              )}
+              <AvatarEditButton 
+                $isDark={isDark}
+                onClick={() => document.getElementById('photo-upload-input')?.click()}
+                disabled={uploadingPhoto}
+              >
+                <Camera size={16} />
+              </AvatarEditButton>
+              {user?.photoURL && !uploadingPhoto && (
+                <AvatarDeleteButton 
+                  $isDark={isDark}
+                  onClick={handleDeletePhoto}
+                  title={language === 'bg' ? 'Изтрий снимка' : 'Delete photo'}
+                >
+                  <X size={14} />
+                </AvatarDeleteButton>
+              )}
+            </AvatarContainer>
+            <AvatarName $isDark={isDark}>{user?.displayName || 'User'}</AvatarName>
+            <AvatarEmail $isDark={isDark}>{user?.email || ''}</AvatarEmail>
+            <HiddenInput
+              id="photo-upload-input"
+              type="file"
+              accept="image/*"
+              onChange={handlePhotoUpload}
+              disabled={uploadingPhoto}
+            />
+          </AvatarSection>
+
+          <SidebarTitle $isDark={isDark}>{t('settings.title', 'Settings')}</SidebarTitle>
           {sections.map((section) => {
             const Icon = section.icon;
             return (
               <SidebarItem
                 key={section.id}
-                active={activeSection === section.id}
-                onClick={() => setActiveSection(section.id)}
+                $active={activeSection === section.id}
+                $isDark={isDark}
+                onClick={() => {
+                  setActiveSection(section.id);
+                  setSearchParams({ section: section.id }, { replace: true });
+                }}
               >
                 <Icon size={20} />
                 <span>{section.label}</span>
@@ -368,7 +476,12 @@ export default SettingsTab;
         </Sidebar>
 
         {/* Main Content Area */}
-        <ContentArea>
+        <ContentArea $isDark={isDark}>
+          {/* Edit Information Section */}
+          {activeSection === 'editInfo' && (
+            <EditInformationSection user={user} language={language} />
+          )}
+
           {/* Account Settings */}
           {activeSection === 'account' && (
             <Section>
@@ -994,14 +1107,38 @@ export default SettingsTab;
               </SettingGroup>
 
               <SettingGroup>
-                <DangerButton onClick={() => showToast('info', t('settings.changePassword', 'Password change feature coming soon'))}>
+                <DangerButton onClick={() => {
+                  toast.info(t('settings.changePassword', 'Password change feature coming soon'), { autoClose: 3000 });
+                }}>
                   <KeyRound size={18} />
                   {t('settings.changePassword', 'Change Password')}
                 </DangerButton>
               </SettingGroup>
 
               <SettingGroup>
-                <DangerButton onClick={() => signOut()}>
+                <DangerButton onClick={async () => {
+                  if (window.confirm(language === 'bg' 
+                    ? 'Наистина ли искате да излезете от всички устройства?' 
+                    : 'Are you sure you want to logout from all devices?')) {
+                    try {
+                      // TODO: Implement logout from all devices
+                      toast.info(
+                        language === 'bg' 
+                          ? 'Функцията е в процес на разработка' 
+                          : 'Feature is under development',
+                        { autoClose: 3000 }
+                      );
+                    } catch (error) {
+                      logger.error('Error logging out:', error);
+                      toast.error(
+                        language === 'bg' 
+                          ? 'Грешка при излизане' 
+                          : 'Error logging out',
+                        { autoClose: 3000 }
+                      );
+                    }
+                  }
+                }}>
                   <LogOut size={18} />
                   {t('settings.logoutAllDevices', 'Logout from All Devices')}
                 </DangerButton>
@@ -1171,13 +1308,15 @@ const SettingsLayout = styled.div`
   }
 `;
 
-const Sidebar = styled.div`
-  background: rgba(255, 255, 255, 0.05);
+const Sidebar = styled.div<{ $isDark?: boolean }>`
+  background: ${props => props.$isDark ? 'var(--bg-card)' : 'var(--bg-card)'};
+  border: ${props => props.$isDark ? '1px solid var(--border-primary)' : '1px solid var(--border-primary)'};
   border-radius: 16px;
   padding: 20px;
   height: fit-content;
   position: sticky;
   top: 20px;
+  box-shadow: var(--shadow-card);
   
   @media (max-width: 968px) {
     position: static;
@@ -1188,10 +1327,209 @@ const Sidebar = styled.div`
   }
 `;
 
-const SidebarTitle = styled.h2`
+const AvatarSection = styled.div<{ $isDark?: boolean }>`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 0;
+  margin-bottom: 24px;
+  border-bottom: 2px solid ${props => props.$isDark ? 'var(--border-primary)' : 'var(--border-primary)'};
+  
+  @media (max-width: 968px) {
+    padding: 16px 0;
+    margin-bottom: 16px;
+  }
+`;
+
+const AvatarContainer = styled.div<{ $isDark?: boolean }>`
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin-bottom: 12px;
+  
+  @media (max-width: 968px) {
+    width: 100px;
+    height: 100px;
+  }
+`;
+
+const AvatarImage = styled.img<{ $isDark?: boolean }>`
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid ${props => props.$isDark ? 'var(--accent-primary)' : 'var(--accent-primary)'};
+  box-shadow: ${props => props.$isDark ? 'var(--shadow-md)' : 'var(--shadow-md)'};
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: scale(1.05);
+  }
+`;
+
+const UploadingOverlay = styled.div`
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+`;
+
+const AvatarEditButton = styled.button<{ $isDark?: boolean }>`
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  min-height: 36px;
+  max-width: 36px;
+  max-height: 36px;
+  border-radius: 50%;
+  background: ${props => props.$isDark ? 'var(--accent-primary)' : 'var(--accent-primary)'};
+  color: white;
+  border: 3px solid ${props => props.$isDark ? 'var(--bg-card)' : 'var(--bg-card)'};
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 3;
+  box-shadow: var(--shadow-sm);
+  flex-shrink: 0;
+  overflow: hidden;
+  
+  svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+  
+  &:hover:not(:disabled) {
+    background: ${props => props.$isDark ? 'var(--accent-secondary)' : 'var(--accent-secondary)'};
+    transform: scale(1.1);
+  }
+  
+  &:active:not(:disabled) {
+    transform: scale(0.95);
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  @media (max-width: 968px) {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    min-height: 32px;
+    max-width: 32px;
+    max-height: 32px;
+    
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+`;
+
+const AvatarDeleteButton = styled.button<{ $isDark?: boolean }>`
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  min-height: 28px;
+  max-width: 28px;
+  max-height: 28px;
+  border-radius: 50%;
+  background: ${props => props.$isDark ? 'var(--error)' : 'var(--error)'};
+  color: white;
+  border: 2px solid ${props => props.$isDark ? 'var(--bg-card)' : 'var(--bg-card)'};
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 3;
+  box-shadow: var(--shadow-sm);
+  flex-shrink: 0;
+  overflow: hidden;
+  
+  svg {
+    width: 14px;
+    height: 14px;
+    stroke-width: 3;
+    flex-shrink: 0;
+  }
+  
+  &:hover {
+    background: ${props => props.$isDark ? '#dc2626' : '#dc2626'};
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+  }
+  
+  &:active {
+    transform: scale(0.95);
+  }
+  
+  @media (max-width: 968px) {
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    min-height: 24px;
+    max-width: 24px;
+    max-height: 24px;
+    
+    svg {
+      width: 12px;
+      height: 12px;
+    }
+  }
+`;
+
+const AvatarName = styled.div<{ $isDark?: boolean }>`
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: ${props => props.$isDark ? 'var(--text-primary)' : 'var(--text-primary)'};
+  margin-bottom: 4px;
+  text-align: center;
+  word-break: break-word;
+  
+  @media (max-width: 968px) {
+    font-size: 1rem;
+  }
+`;
+
+const AvatarEmail = styled.div<{ $isDark?: boolean }>`
+  font-size: 0.875rem;
+  color: ${props => props.$isDark ? 'var(--text-secondary)' : 'var(--text-secondary)'};
+  text-align: center;
+  word-break: break-word;
+  opacity: 0.8;
+  
+  @media (max-width: 968px) {
+    font-size: 0.8125rem;
+  }
+`;
+
+const HiddenInput = styled.input`
+  display: none;
+`;
+
+const SidebarTitle = styled.h2<{ $isDark?: boolean }>`
   font-size: 1.5rem;
   font-weight: 700;
-  color: #ffffff;
+  color: ${props => props.$isDark ? 'var(--text-primary)' : 'var(--text-primary)'};
   margin: 0 0 20px 0;
   
   @media (max-width: 968px) {
@@ -1201,29 +1539,51 @@ const SidebarTitle = styled.h2`
   }
 `;
 
-const SidebarItem = styled.button<{ active?: boolean }>`
+const SidebarItem = styled.button<{ $active?: boolean; $isDark?: boolean }>`
   display: flex;
   align-items: center;
   gap: 12px;
   width: 100%;
   padding: 12px 16px;
-  background: ${props => props.active ? 'rgba(255, 143, 16, 0.2)' : 'transparent'};
-  border: 2px solid ${props => props.active ? '#FF8F10' : 'transparent'};
+  background: ${props => props.$active 
+    ? (props.$isDark ? 'rgba(255, 140, 97, 0.2)' : 'rgba(255, 107, 53, 0.15)')
+    : 'transparent'};
+  border: 2px solid ${props => props.$active 
+    ? (props.$isDark ? 'var(--accent-primary)' : 'var(--accent-primary)')
+    : 'transparent'};
   border-radius: 12px;
-  color: ${props => props.active ? '#FF8F10' : '#ffffff'};
+  color: ${props => props.$active 
+    ? 'var(--accent-primary)'
+    : (props.$isDark ? 'var(--text-secondary)' : 'var(--text-primary)')};
   font-size: 0.95rem;
-  font-weight: ${props => props.active ? 600 : 400};
+  font-weight: ${props => props.$active ? 600 : 400};
   cursor: pointer;
   transition: all 0.2s ease;
   margin-bottom: 8px;
 
   &:hover {
-    background: ${props => props.active ? 'rgba(255, 143, 16, 0.25)' : 'rgba(255, 255, 255, 0.08)'};
+    background: ${props => props.$active 
+      ? (props.$isDark ? 'rgba(255, 140, 97, 0.25)' : 'rgba(255, 107, 53, 0.2)')
+      : (props.$isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)')};
     transform: translateX(4px);
+    color: var(--accent-primary);
   }
 
   svg {
     flex-shrink: 0;
+    color: ${props => {
+      if (props.$active) return 'var(--accent-primary)';
+      if (props.$isDark) return 'var(--text-secondary)';
+      // في الوضع النهاري: استخدم لون أغمق للأيقونات
+      return '#2D3748'; // رمادي داكن للوضوح
+    }};
+    transition: color 0.2s ease;
+    stroke-width: ${props => props.$active ? 2.5 : 2};
+  }
+  
+  &:hover svg {
+    color: var(--accent-primary);
+    stroke-width: 2.5;
   }
   
   @media (max-width: 968px) {
@@ -1240,10 +1600,12 @@ const SidebarItem = styled.button<{ active?: boolean }>`
   }
 `;
 
-const ContentArea = styled.div`
-  background: rgba(255, 255, 255, 0.05);
+const ContentArea = styled.div<{ $isDark?: boolean }>`
+  background: ${props => props.$isDark ? 'var(--bg-card)' : 'var(--bg-card)'};
+  border: ${props => props.$isDark ? '1px solid var(--border-primary)' : '1px solid var(--border-primary)'};
   border-radius: 16px;
   padding: 32px;
+  box-shadow: var(--shadow-card);
   
   @media (max-width: 768px) {
     padding: 20px;
@@ -1734,6 +2096,385 @@ const Spinner = styled.div`
 
   @keyframes spin {
     to { transform: rotate(360deg); }
+  }
+`;
+
+// ==================== EDIT INFORMATION SECTION ====================
+
+interface EditInformationSectionProps {
+  user: BulgarianUser | null;
+  language: string;
+}
+
+const EditInformationSection: React.FC<EditInformationSectionProps> = ({ user, language }) => {
+  const { currentUser } = useAuth();
+  const [showIDEditor, setShowIDEditor] = useState(false);
+  const [userInfo, setUserInfo] = useState({
+    displayName: user?.displayName || '',
+    firstName: user?.firstName || '',
+    lastName: user?.lastName || '',
+    phoneNumber: user?.phoneNumber || '',
+    email: user?.email || '',
+    city: user?.location?.city || '',
+    region: user?.location?.region || '',
+    address: user?.location?.city || '',
+    bio: user?.bio || ''
+  });
+  const [saving, setSaving] = useState(false);
+  const [idCardData, setIdCardData] = useState<Partial<IDCardData>>({});
+
+  // Load ID card data from user if exists
+  React.useEffect(() => {
+    if (user && (user as any).idCardData) {
+      setIdCardData((user as any).idCardData);
+    }
+  }, [user]);
+
+  const handleSaveUserInfo = async () => {
+    if (!currentUser?.uid) return;
+    
+    setSaving(true);
+    try {
+      await ProfileService.updateUserProfile(currentUser.uid, {
+        displayName: userInfo.displayName,
+        firstName: userInfo.firstName,
+        lastName: userInfo.lastName,
+        phoneNumber: userInfo.phoneNumber,
+        location: {
+          city: userInfo.city,
+          region: userInfo.region,
+          country: 'Bulgaria'
+        },
+        bio: userInfo.bio
+      });
+      
+      toast.success(
+        language === 'bg' 
+          ? 'Информацията е запазена успешно!' 
+          : 'Information saved successfully!',
+        { autoClose: 3000 }
+      );
+    } catch (error) {
+      toast.error(
+        language === 'bg' 
+          ? 'Грешка при запазване на информацията' 
+          : 'Error saving information',
+        { autoClose: 3000 }
+      );
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleSaveIDCard = async (data: IDCardData) => {
+    if (!currentUser?.uid) return;
+    
+    setSaving(true);
+    try {
+      // Save ID card data to user profile
+      await ProfileService.updateUserProfile(currentUser.uid, {
+        idCardData: data,
+        // Auto-fill user info from ID card if empty
+        firstName: userInfo.firstName || data.firstNameBG || data.firstNameEN,
+        lastName: userInfo.lastName || data.lastNameBG || data.lastNameEN,
+        displayName: userInfo.displayName || `${data.firstNameBG || data.firstNameEN} ${data.lastNameBG || data.lastNameEN}`.trim()
+      } as any);
+      
+      setIdCardData(data);
+      setShowIDEditor(false);
+      
+      toast.success(
+        language === 'bg' 
+          ? 'Данните от личната карта са запазени!' 
+          : 'ID card data saved successfully!',
+        { autoClose: 3000 }
+      );
+    } catch (error) {
+      toast.error(
+        language === 'bg' 
+          ? 'Грешка при запазване на данните от личната карта' 
+          : 'Error saving ID card data',
+        { autoClose: 3000 }
+      );
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const isBg = language === 'bg';
+
+  return (
+    <Section>
+      <SectionHeader>
+        <Edit size={24} />
+        <SectionTitle>
+          {isBg ? 'Редактиране на информация' : 'Edit Information'}
+        </SectionTitle>
+      </SectionHeader>
+
+      {/* ID Card Section */}
+      <IDCardSection>
+        <IDCardHeader>
+          <div>
+            <IDCardTitle>
+              {isBg ? '🆔 Лична карта' : '🆔 ID Card'}
+            </IDCardTitle>
+            <IDCardSubtitle>
+              {isBg 
+                ? 'Попълнете данните от личната си карта за автоматично попълване' 
+                : 'Fill in your ID card data for automatic form filling'}
+            </IDCardSubtitle>
+          </div>
+          <IDCardButton onClick={() => setShowIDEditor(true)}>
+            <CreditCard size={18} />
+            {isBg ? 'Редактирай лична карта' : 'Edit ID Card'}
+          </IDCardButton>
+        </IDCardHeader>
+        
+        {idCardData.documentNumber && (
+          <IDCardInfo>
+            <InfoItem>
+              <strong>{isBg ? '№ на документа:' : 'Document No.:'}</strong> {idCardData.documentNumber}
+            </InfoItem>
+            <InfoItem>
+              <strong>{isBg ? 'ЕГН:' : 'EGN:'}</strong> {idCardData.personalNumber}
+            </InfoItem>
+            {(idCardData.firstNameBG || idCardData.firstNameEN) && (
+              <InfoItem>
+                <strong>{isBg ? 'Име:' : 'Name:'}</strong> {idCardData.firstNameBG || idCardData.firstNameEN} {idCardData.lastNameBG || idCardData.lastNameEN}
+              </InfoItem>
+            )}
+          </IDCardInfo>
+        )}
+      </IDCardSection>
+
+      {/* Personal Information Form */}
+      <FormSection>
+        <FormTitle>
+          {isBg ? 'Лична информация' : 'Personal Information'}
+        </FormTitle>
+
+        <SettingGroup>
+          <Label $required>{isBg ? 'Име за показване' : 'Display Name'}</Label>
+          <Input
+            type="text"
+            value={userInfo.displayName}
+            onChange={(e) => setUserInfo({ ...userInfo, displayName: e.target.value })}
+            placeholder={isBg ? 'Вашето име' : 'Your name'}
+          />
+        </SettingGroup>
+
+        <FormRow>
+          <SettingGroup style={{ flex: 1 }}>
+            <Label>{isBg ? 'Име' : 'First Name'}</Label>
+            <Input
+              type="text"
+              value={userInfo.firstName}
+              onChange={(e) => setUserInfo({ ...userInfo, firstName: e.target.value })}
+              placeholder={isBg ? 'Име' : 'First name'}
+            />
+          </SettingGroup>
+
+          <SettingGroup style={{ flex: 1 }}>
+            <Label>{isBg ? 'Фамилия' : 'Last Name'}</Label>
+            <Input
+              type="text"
+              value={userInfo.lastName}
+              onChange={(e) => setUserInfo({ ...userInfo, lastName: e.target.value })}
+              placeholder={isBg ? 'Фамилия' : 'Last name'}
+            />
+          </SettingGroup>
+        </FormRow>
+
+        <SettingGroup>
+          <Label $required>
+            <Mail size={16} style={{ marginRight: '8px', display: 'inline-block' }} />
+            {isBg ? 'Имейл' : 'Email'}
+          </Label>
+          <Input
+            type="email"
+            value={userInfo.email}
+            onChange={(e) => setUserInfo({ ...userInfo, email: e.target.value })}
+            placeholder="example@email.com"
+            disabled
+          />
+          <HelpText>{isBg ? 'Имейлът не може да бъде променен' : 'Email cannot be changed'}</HelpText>
+        </SettingGroup>
+
+        <SettingGroup>
+          <Label>
+            <Phone size={16} style={{ marginRight: '8px', display: 'inline-block' }} />
+            {isBg ? 'Телефон' : 'Phone Number'}
+          </Label>
+          <Input
+            type="tel"
+            value={userInfo.phoneNumber}
+            onChange={(e) => setUserInfo({ ...userInfo, phoneNumber: e.target.value })}
+            placeholder="+359 888 123 456"
+          />
+        </SettingGroup>
+
+        <FormTitle style={{ marginTop: '2rem' }}>
+          {isBg ? 'Местоположение' : 'Location'}
+        </FormTitle>
+
+        <FormRow>
+          <SettingGroup style={{ flex: 1 }}>
+            <Label>{isBg ? 'Област' : 'Region'}</Label>
+            <Input
+              type="text"
+              value={userInfo.region}
+              onChange={(e) => setUserInfo({ ...userInfo, region: e.target.value })}
+              placeholder={isBg ? 'Област' : 'Region'}
+            />
+          </SettingGroup>
+
+          <SettingGroup style={{ flex: 1 }}>
+            <Label>{isBg ? 'Град' : 'City'}</Label>
+            <Input
+              type="text"
+              value={userInfo.city}
+              onChange={(e) => setUserInfo({ ...userInfo, city: e.target.value })}
+              placeholder={isBg ? 'Град' : 'City'}
+            />
+          </SettingGroup>
+        </FormRow>
+
+        <SettingGroup>
+          <Label>
+            <MapPin size={16} style={{ marginRight: '8px', display: 'inline-block' }} />
+            {isBg ? 'Адрес' : 'Address'}
+          </Label>
+          <Input
+            type="text"
+            value={userInfo.address}
+            onChange={(e) => setUserInfo({ ...userInfo, address: e.target.value })}
+            placeholder={isBg ? 'Улица, номер' : 'Street, number'}
+          />
+        </SettingGroup>
+
+        <SettingGroup>
+          <Label>{isBg ? 'Биография' : 'Bio'}</Label>
+          <TextArea
+            value={userInfo.bio}
+            onChange={(e) => setUserInfo({ ...userInfo, bio: e.target.value })}
+            placeholder={isBg ? 'Разкажете за себе си...' : 'Tell others about yourself...'}
+            rows={4}
+          />
+        </SettingGroup>
+
+        <SaveButton onClick={handleSaveUserInfo} disabled={saving}>
+          {saving ? (
+            <>
+              <Spinner />
+              {isBg ? 'Запазване...' : 'Saving...'}
+            </>
+          ) : (
+            <>
+              <Save size={18} />
+              {isBg ? 'Запази промените' : 'Save Changes'}
+            </>
+          )}
+        </SaveButton>
+      </FormSection>
+
+      {/* ID Card Editor Modal */}
+      {showIDEditor && (
+        <IDCardOverlay
+          initialData={idCardData}
+          onSave={handleSaveIDCard}
+          onClose={() => setShowIDEditor(false)}
+        />
+      )}
+    </Section>
+  );
+};
+
+// Styled components for Edit Information Section
+const IDCardSection = styled.div`
+  background: rgba(168, 85, 247, 0.1);
+  border: 2px solid rgba(168, 85, 247, 0.3);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 32px;
+`;
+
+const IDCardHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+`;
+
+const IDCardTitle = styled.h3`
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 8px 0;
+`;
+
+const IDCardSubtitle = styled.p`
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+`;
+
+const IDCardButton = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: #a855f7;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #9333ea;
+    transform: translateY(-2px);
+  }
+`;
+
+const IDCardInfo = styled.div`
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(168, 85, 247, 0.3);
+`;
+
+const InfoItem = styled.div`
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+
+  strong {
+    color: #c084fc;
+    margin-right: 8px;
+  }
+`;
+
+const FormSection = styled.div`
+  margin-top: 32px;
+`;
+
+const FormTitle = styled.h3`
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 20px 0;
+  padding-bottom: 12px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+`;
+
+const FormRow = styled.div`
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
   }
 `;
 

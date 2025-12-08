@@ -137,7 +137,6 @@ const PricingPageUnified: React.FC = () => {
       const validVehicleType = vehicleType || vehicleTypeParam || 'car';
       const targetPath = `/sell/inserat/${validVehicleType}/contact?${params.toString()}`;
       
-      console.log('🚀 Navigating to contact page:', targetPath);
       console.log('📋 Pricing data:', {
         price: pricingData.price,
         currency: pricingData.currency,

@@ -55,11 +55,9 @@ class SmartSearchService {
     
     try {
       // 🔍 ALWAYS LOG: Search start
-      console.log('🚀 Smart Search Started:', { keywords, userId, page, pageSize });
       
       // 1. Parse keywords intelligently
       const parsed = this.parseKeywords(keywords);
-      console.log('📊 Parsed keywords:', parsed);
       
       // 2. Check cache first
       const cacheKey = `smart_search_${keywords}_${userId || 'guest'}_${page}`;
@@ -270,7 +268,6 @@ class SmartSearchService {
         priceRange: parsed.priceRange,
         keywords: parsed.keywords
       });
-      console.log('⚠️ NOTE: Brand filtering moved to client-side for case-insensitive matching');
       
       // ⚡ CRITICAL FIX: Search across ALL vehicle type collections
       const collections = [
@@ -283,14 +280,12 @@ class SmartSearchService {
         'buses'             // Buses
       ];
       
-      console.log('🔍 Searching across', collections.length, 'collections:', collections);
       
       const allCars: (CarListing | UnifiedCar)[] = [];
       
       // Query each collection in parallel
       const queryPromises = collections.map(async (collectionName) => {
         try {
-          console.log(`🔎 Querying collection: ${collectionName}...`);
           
           let q: Query<DocumentData> = query(collection(db, collectionName));
           
@@ -303,7 +298,6 @@ class SmartSearchService {
           // Apply fuel type filter if detected
           if (parsed.fuelTypes.length > 0) {
             const fuelTypes = parsed.fuelTypes.slice(0, 10);
-            console.log(`  ⛽ [${collectionName}] Applying fuel filter:`, fuelTypes);
             q = query(q, where('fuelType', 'in', fuelTypes));
           }
           
@@ -321,7 +315,6 @@ class SmartSearchService {
             ...doc.data()
           })) as (CarListing | UnifiedCar)[];
           
-          console.log(`  ✅ [${collectionName}] Found ${cars.length} cars`);
           if (cars.length > 0) {
             console.log(`  📋 [${collectionName}] Sample:`, {
               make: cars[0].make,
@@ -343,12 +336,10 @@ class SmartSearchService {
       results.forEach(cars => allCars.push(...cars));
       
       // 🔍 ALWAYS LOG: Firestore results
-      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
       console.log('✅ Smart Search - Firestore returned:', allCars.length, 'total cars from all collections');
       console.log('📦 Collections results:', collections.map((col, i) => `${col}: ${results[i].length}`).join(', '));
       
       if (allCars.length > 0) {
-        console.log('📋 First 3 cars from Firestore:');
         allCars.slice(0, 3).forEach((car, i) => {
           console.log(`  [${i}] ${car.make} ${car.model} (${car.year}) - Status: ${car.status} - Price: ${car.price}`);
         });
@@ -361,7 +352,6 @@ class SmartSearchService {
         console.warn('   2. Fuel type filter too restrictive');
         console.warn('   3. Firestore rules blocking read');
       }
-      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
       
       // ⚡ NEW: Apply client-side filters (ranges, text search, make/model matching)
       const beforeFilter = allCars.length;
@@ -385,7 +375,6 @@ class SmartSearchService {
     cars: (CarListing | UnifiedCar)[],
     parsed: ParsedKeywords
   ): (CarListing | UnifiedCar)[] {
-    console.log('🎯 Client-side filtering started with', cars.length, 'cars');
     console.log('📋 Keywords to match:', parsed.keywords);
     
     const filtered = cars.filter(car => {
@@ -443,7 +432,6 @@ class SmartSearchService {
       return true;
     });
     
-    console.log('✅ After client-side filtering:', filtered.length, 'cars matched');
     if (filtered.length > 0) {
       console.log('📋 Sample matched car:', {
         make: filtered[0].make,

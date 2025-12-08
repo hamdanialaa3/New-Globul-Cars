@@ -165,6 +165,16 @@ export const BasicDataSection: React.FC<BasicDataSectionProps> = ({
             </FormGroup>
 
             <FormGroup>
+              <label>{t('advancedSearch.condition')}</label>
+              <SearchSelect name="condition" value={searchData.condition} onChange={onChange}>
+                <option value="">{t('advancedSearch.all')}</option>
+                <option value="new">{t('advancedSearch.newCondition')}</option>
+                <option value="used">{t('advancedSearch.usedCondition')}</option>
+                <option value="parts">{t('advancedSearch.partsCondition')}</option>
+              </SearchSelect>
+            </FormGroup>
+
+            <FormGroup>
               <label>{t('advancedSearch.numberOfSeats')}</label>
               <RangeGroup>
                 <SearchInput

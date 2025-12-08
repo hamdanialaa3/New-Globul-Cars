@@ -65,7 +65,7 @@ const THEMES: Record<ProfileType, ProfileTheme> = {
     primary: '#FF8F10',     // Orange
     secondary: '#FFDF00',   // Yellow
     accent: '#FF7900',      // Dark Orange
-    gradient: 'linear-gradient(135deg, #FF8F10 0%, #FFDF00 100%)'
+    gradient: 'linear-gradient(135deg,rgb(16, 255, 16) 0%,rgb(17, 255, 0) 100%)'
   },
   dealer: {
     primary: '#16a34a',     // Green
@@ -85,12 +85,12 @@ const THEMES: Record<ProfileType, ProfileTheme> = {
 function getPermissions(profileType: ProfileType, planTier: PlanTier): ProfilePermissions {
   // Updated December 2025 - Simplified to 3 plans matching BillingService
   const PLAN_LIMITS: Record<PlanTier, number> = {
-    free: 5,
-    dealer: 15,
+    free: 3,
+    dealer: 10,
     company: -1  // unlimited
   };
 
-  const maxListings = PLAN_LIMITS[planTier] || 5;
+  const maxListings = PLAN_LIMITS[planTier] || 3;
 
   // Base permissions for all
   const base: ProfilePermissions = {
@@ -107,48 +107,31 @@ function getPermissions(profileType: ProfileType, planTier: PlanTier): ProfilePe
     canUseAPI: false
   };
 
-  // Premium enhancements
-  if (planTier === 'premium') {
+  // Dealer enhancements
+  if (profileType === 'dealer' || planTier === 'dealer') {
     return {
       ...base,
+      maxListings: 10,
+      hasAnalytics: true,
+      canUseQuickReplies: true,
+      canBulkEdit: true,
       hasPrioritySupport: true
     };
   }
 
-  // Dealer enhancements
-  if (profileType === 'dealer') {
-    const dealerBase = {
-      ...base,
-      hasAnalytics: true,
-      canUseQuickReplies: true,
-      canBulkEdit: true
-    };
-
-    if (planTier === 'dealer_pro' || planTier === 'dealer_enterprise') {
-      return {
-        ...dealerBase,
-        hasAdvancedAnalytics: true,
-        canExportData: true,
-        canImportCSV: true,
-        canUseAPI: planTier === 'dealer_enterprise'
-      };
-    }
-
-    return dealerBase;
-  }
-
   // Company enhancements
-  if (profileType === 'company') {
+  if (profileType === 'company' || planTier === 'company') {
     return {
       ...base,
+      maxListings: -1,
       hasAnalytics: true,
       hasAdvancedAnalytics: true,
       hasTeam: true,
       canExportData: true,
       canUseQuickReplies: true,
       canBulkEdit: true,
-      canImportCSV: planTier !== 'company_starter',
-      canUseAPI: planTier === 'company_pro' || planTier === 'company_enterprise',
+      canImportCSV: true,
+      canUseAPI: true,
       hasPrioritySupport: true
     };
   }
@@ -284,9 +267,9 @@ export const ProfileTypeProvider: React.FC<ProfileTypeProviderProps> = ({ childr
 
       // 4. Validate plan tier compatibility
       const validPlanTiers: Record<ProfileType, PlanTier[]> = {
-        private: ['free', 'premium'],
-        dealer: ['dealer_basic', 'dealer_pro', 'dealer_enterprise'],
-        company: ['company_starter', 'company_pro', 'company_enterprise']
+        private: ['free'],
+        dealer: ['dealer'],
+        company: ['company']
       };
 
       // Type-safe plan tier access

@@ -153,58 +153,6 @@ const SearchButton = styled(Link)<{ $variant?: 'primary' | 'secondary' }>`
   }
 `;
 
-const ViewAllButton = styled(Link)`
-  display: inline-block;
-  padding: 0.625rem 1.25rem;
-  border-radius: 12px;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 0.875rem;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border: none;
-  position: relative;
-  overflow: hidden;
-
-  /* Light mode: Orange gradient background, White text */
-  html[data-theme="light"] & {
-    background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 50%, #FFA500 100%) !important;
-    color: #ffffff !important;
-    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.35) !important;
-  }
-
-  /* Dark mode: Yellow gradient background, Black text */
-  html[data-theme="dark"] & {
-    background: linear-gradient(135deg, #FFD700 0%, #FFC107 50%, #FFA000 100%) !important;
-    color: #000000 !important;
-    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4) !important;
-  }
-
-  &:hover {
-    transform: translateY(-3px);
-    html[data-theme="light"] & {
-      background: linear-gradient(135deg, #FF5722 0%, #FF6B35 50%, #FF8C42 100%) !important;
-      color: #ffffff !important;
-      box-shadow: 0 6px 20px rgba(255, 107, 53, 0.5) !important;
-    }
-    html[data-theme="dark"] & {
-      background: linear-gradient(135deg, #FFC107 0%, #FFD700 50%, #FFC107 100%) !important;
-      color: #000000 !important;
-      box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6) !important;
-    }
-  }
-
-  &:active {
-    transform: translateY(-1px);
-    html[data-theme="light"] & {
-      background: linear-gradient(135deg, #E64A19 0%, #FF5722 50%, #FF6B35 100%) !important;
-      color: #ffffff !important;
-    }
-    html[data-theme="dark"] & {
-      background: linear-gradient(135deg, #FFA000 0%, #FFC107 50%, #FFD700 100%) !important;
-      color: #000000 !important;
-    }
-  }
-`;
 
 const LoadingFallback = styled.div`
   text-align: center;

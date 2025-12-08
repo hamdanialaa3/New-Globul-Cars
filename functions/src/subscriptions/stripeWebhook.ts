@@ -125,6 +125,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     // Update user subscription in Firestore
     const period = getSubscriptionPeriod(subscription);
     await db.collection('users').doc(userId).update({
+      planTier: planTier, // Sync to root level
       'subscription.planId': planId,
       'subscription.planTier': planTier,
       'subscription.status': 'active',
@@ -246,6 +247,7 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
 
     // Update subscription status
     await db.collection('users').doc(userId).update({
+      planTier: 'free', // Revert to free at root level
       'subscription.planId': 'free',
       'subscription.planTier': 'free',
       'subscription.status': 'canceled',

@@ -176,7 +176,6 @@ class ImageStorage {
         request.onsuccess = () => {
           const data = request.result as ImageData | undefined;
           if (!data || !data.files || data.files.length === 0) {
-            console.log('📸 No images found in IndexedDB');
             resolve([]);
             return;
           }

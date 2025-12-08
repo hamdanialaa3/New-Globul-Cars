@@ -54,6 +54,7 @@ export interface CarFilters {
   maxPrice?: number;
   fuelType?: string;
   transmission?: string;
+  bodyType?: string; // Sedan, SUV, Hatchback, Coupe, Wagon, Convertible, Pickup, Minivan, other
   region?: string;
   sellerId?: string;
   isActive?: boolean;
@@ -130,7 +131,6 @@ class UnifiedCarService {
    */
   async searchCars(filters: CarFilters = {}, limitCount: number = 20): Promise<UnifiedCar[]> {
     try {
-      console.log('🔍 searchCars called with filters:', filters);
       
       // ✅ CRITICAL FIX: Search across ALL vehicle type collections
       const collections = [
@@ -163,6 +163,9 @@ class UnifiedCarService {
           if (filters.transmission) {
             q = query(q, where('transmission', '==', filters.transmission));
           }
+          if (filters.bodyType) {
+            q = query(q, where('bodyType', '==', filters.bodyType));
+          }
           if (filters.region) {
             q = query(q, where('region', '==', filters.region));
           }
@@ -174,7 +177,6 @@ class UnifiedCarService {
           const cars = snapshot.docs.map(doc => this.mapDocToCar(doc));
           
           if (cars.length > 0) {
-            console.log(`📦 ${collectionName}: found ${cars.length} cars`);
           }
           
           return cars;
@@ -188,7 +190,6 @@ class UnifiedCarService {
       const results = await Promise.all(queryPromises);
       results.forEach(cars => allCars.push(...cars));
       
-      console.log('📊 Total cars from all collections:', allCars.length);
       
       // Debug: Print first few cars with ALL fields
       if (allCars.length > 0) {
@@ -207,19 +208,15 @@ class UnifiedCarService {
           });
         });
       } else {
-        console.log('⚠️ NO CARS FOUND IN ANY COLLECTION!');
         console.log('📋 Collections checked:', collections);
-        console.log('🔍 Filters applied:', filters);
       }
 
       // Client-side filters
       let filteredCars = allCars;
-      console.log('🔍 Starting client-side filtering...');
 
       if (filters.isActive !== undefined) {
         const beforeCount = filteredCars.length;
         filteredCars = filteredCars.filter(c => (c.isActive !== false) === filters.isActive);
-        console.log(`  ✓ isActive=${filters.isActive}: ${beforeCount} → ${filteredCars.length}`);
       } else {
         // Default: show only active cars
         const beforeCount = filteredCars.length;
@@ -230,7 +227,6 @@ class UnifiedCarService {
       if (filters.isSold !== undefined) {
         const beforeCount = filteredCars.length;
         filteredCars = filteredCars.filter(c => (c.isSold === true) === filters.isSold);
-        console.log(`  ✓ isSold=${filters.isSold}: ${beforeCount} → ${filteredCars.length}`);
       } else {
         // Default: hide sold cars
         const beforeCount = filteredCars.length;
@@ -241,22 +237,25 @@ class UnifiedCarService {
       if (filters.minYear) {
         const beforeCount = filteredCars.length;
         filteredCars = filteredCars.filter(c => c.year >= filters.minYear!);
-        console.log(`  ✓ minYear>=${filters.minYear}: ${beforeCount} → ${filteredCars.length}`);
       }
       if (filters.maxYear) {
         const beforeCount = filteredCars.length;
         filteredCars = filteredCars.filter(c => c.year <= filters.maxYear!);
-        console.log(`  ✓ maxYear<=${filters.maxYear}: ${beforeCount} → ${filteredCars.length}`);
       }
       if (filters.minPrice) {
         const beforeCount = filteredCars.length;
         filteredCars = filteredCars.filter(c => c.price >= filters.minPrice!);
-        console.log(`  ✓ minPrice>=${filters.minPrice}: ${beforeCount} → ${filteredCars.length}`);
       }
       if (filters.maxPrice) {
         const beforeCount = filteredCars.length;
         filteredCars = filteredCars.filter(c => c.price <= filters.maxPrice!);
-        console.log(`  ✓ maxPrice<=${filters.maxPrice}: ${beforeCount} → ${filteredCars.length}`);
+      }
+      if (filters.bodyType) {
+        const beforeCount = filteredCars.length;
+        filteredCars = filteredCars.filter(c => {
+          const carBodyType = (c as any).bodyType || '';
+          return carBodyType.toLowerCase() === filters.bodyType!.toLowerCase();
+        });
       }
 
       // Sort and limit
@@ -566,12 +565,19 @@ class UnifiedCarService {
       rawIsActive: data.isActive,
       rawIsSold: data.isSold,
       make: data.make,
-      model: data.model
+      model: data.model,
+      rawPrice: data.price,
+      netPrice: data.netPrice,
+      finalPrice: data.finalPrice
     });
     
     const car = {
       id: doc.id,
       ...data,
+      // ✅ FIX: Prioritize netPrice or finalPrice over price if they exist
+      price: typeof data.netPrice === 'number' ? data.netPrice : 
+             typeof data.finalPrice === 'number' ? data.finalPrice :
+             typeof data.price === 'number' ? data.price : 0,
       createdAt: data?.createdAt?.toDate() || new Date(),
       updatedAt: data?.updatedAt?.toDate() || new Date()
     } as UnifiedCar;
@@ -579,14 +585,11 @@ class UnifiedCarService {
     // Ensure isActive and isSold have default values
     if (car.isActive === undefined || car.isActive === null) {
       car.isActive = car.status === 'active';
-      console.log(`  ↳ Set isActive=${car.isActive} from status="${car.status}"`);
     }
     if (car.isSold === undefined || car.isSold === null) {
       car.isSold = car.status === 'sold';
-      console.log(`  ↳ Set isSold=${car.isSold} from status="${car.status}"`);
     }
     
-    console.log(`  ✓ Final car state: isActive=${car.isActive}, isSold=${car.isSold}`);
     
     return car;
   }

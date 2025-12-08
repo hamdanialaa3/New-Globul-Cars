@@ -148,7 +148,8 @@ const VehicleClassificationsSection: React.FC = () => {
       try {
         const result = await unifiedCarService.searchCars({
           isActive: true,
-          isSold: false
+          isSold: false,
+          bodyType: selectedCategory // Filter by selected body type
         }, 8);
         setCars(result.slice(0, 8));
       } catch (error) {
@@ -217,11 +218,6 @@ const VehicleClassificationsSection: React.FC = () => {
               />
             ))}
           </CarsGrid>
-
-          <ViewAllButton onClick={handleViewAll} $isDark={isDark}>
-            {t('home.vehicleCategories.viewAll', language === 'bg' ? 'Виж всички' : 'View All')} {categoryLabel}
-            <ArrowRight size={18} />
-          </ViewAllButton>
         </>
       )}
     </SectionContainer>

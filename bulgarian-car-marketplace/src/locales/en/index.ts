@@ -13,3 +13,4 @@ export { savedSearches } from './savedSearches';
 export { footer } from './footer';
 export { advancedSearch } from './advancedSearch';
 export { auth } from './auth';
+export { settings } from './settings';

@@ -576,19 +576,16 @@ const CarsPage: React.FC = () => {
   const handleSmartSearch = async () => {
     if (!searchQuery.trim()) {
       // Reset to normal mode if search is empty
-      console.log('🔍 Smart Search: Empty query, resetting to normal mode');
       setIsSmartSearchActive(false);
       return;
     }
     
-    console.log('🚀 Smart Search TRIGGERED:', { query: searchQuery });
     setIsSearching(true);
     setLoading(true);
     setShowSuggestions(false);
     setIsSmartSearchActive(true); // Mark that we're in smart search mode
     
     try {
-      console.log('🔍 Calling smartSearchService.search...');
       const result = await smartSearchService.search(searchQuery, user?.uid, 1, 100);
       console.log('✅ Smart Search Result:', {
         carsCount: result.cars.length,
@@ -637,7 +634,6 @@ const CarsPage: React.FC = () => {
     
     const loadCars = async () => {
       try {
-        console.log('🚀 CarsPage: Starting loadCars...');
         setLoading(true);
         setError(null);
         
@@ -645,7 +641,6 @@ const CarsPage: React.FC = () => {
         const regionParam = searchParams.get('city'); // 'city' param is actually region!
         const makeParam = searchParams.get('make');
         
-        console.log('🔍 CarsPage: URL params:', { regionParam, makeParam });
         logger.info('🔍 URL params:', { regionParam, makeParam });
         logger.info('Loading cars with filters', { region: regionParam, make: makeParam });
 

@@ -39,6 +39,8 @@ const UnifiedContactPage: React.FC = () => {
     contactData,
     availableRegions,
     availableCities,
+    availablePostalCodes,
+    availableStreets,
     handleFieldChange,
     toggleContactMethod
   } = useContactForm({ language: language as 'bg' | 'en', requireContactFields: false });
@@ -87,43 +89,65 @@ const UnifiedContactPage: React.FC = () => {
     SellWorkflowStepStateService.markPending('contact');
   }, []);
 
-  // ✅ UNIFIED WORKFLOW: Restore contact data from saved workflow on mount
+  // ✅ FIX: Use refs to track restoration and prevent infinite loop
+  const hasRestoredRef = useRef(false);
+  const isSavingRef = useRef(false);
+  const lastSavedContactDataRef = useRef<string>('');
+
+  // ✅ UNIFIED WORKFLOW: Restore contact data from saved workflow on mount (ONCE)
   useEffect(() => {
+    // Only restore once on mount, not on every unifiedWorkflowData change
+    if (hasRestoredRef.current) return;
+    
     if (unifiedWorkflowData && Object.keys(unifiedWorkflowData).length > 0) {
-      console.log('🔄 Restoring contact data from unified workflow:', {
+      const contactFields = {
         sellerName: unifiedWorkflowData.sellerName,
         sellerEmail: unifiedWorkflowData.sellerEmail,
         sellerPhone: unifiedWorkflowData.sellerPhone,
         region: unifiedWorkflowData.region,
-        city: unifiedWorkflowData.city
-      });
+        city: unifiedWorkflowData.city,
+        postalCode: unifiedWorkflowData.postalCode
+      };
+
+      // Only restore if workflow has data and form is empty
+      const hasWorkflowData = Object.values(contactFields).some(v => v);
+      const hasFormData = Object.values(contactData).some(v => v);
       
-      // Restore contact fields if they exist in workflow data and form is empty
-      if (unifiedWorkflowData.sellerName && !contactData.sellerName) {
-        handleFieldChange('sellerName', unifiedWorkflowData.sellerName);
-      }
-      if (unifiedWorkflowData.sellerEmail && !contactData.sellerEmail) {
-        handleFieldChange('sellerEmail', unifiedWorkflowData.sellerEmail);
-      }
-      if (unifiedWorkflowData.sellerPhone && !contactData.sellerPhone) {
-        handleFieldChange('sellerPhone', unifiedWorkflowData.sellerPhone);
-      }
-      if (unifiedWorkflowData.region && !contactData.region) {
-        handleFieldChange('region', unifiedWorkflowData.region);
-      }
-      if (unifiedWorkflowData.city && !contactData.city) {
-        handleFieldChange('city', unifiedWorkflowData.city);
-      }
-      if (unifiedWorkflowData.postalCode && !contactData.postalCode) {
-        handleFieldChange('postalCode', unifiedWorkflowData.postalCode);
+      if (hasWorkflowData && !hasFormData) {
+        console.log('🔄 Restoring contact data from unified workflow:', contactFields);
+        
+        // Restore contact fields if they exist in workflow data and form is empty
+        if (contactFields.sellerName && !contactData.sellerName) {
+          handleFieldChange('sellerName', contactFields.sellerName);
+        }
+        if (contactFields.sellerEmail && !contactData.sellerEmail) {
+          handleFieldChange('sellerEmail', contactFields.sellerEmail);
+        }
+        if (contactFields.sellerPhone && !contactData.sellerPhone) {
+          handleFieldChange('sellerPhone', contactFields.sellerPhone);
+        }
+        if (contactFields.region && !contactData.region) {
+          handleFieldChange('region', contactFields.region);
+        }
+        if (contactFields.city && !contactData.city) {
+          handleFieldChange('city', contactFields.city);
+        }
+        if (contactFields.postalCode && !contactData.postalCode) {
+          handleFieldChange('postalCode', contactFields.postalCode);
+        }
+        
+        hasRestoredRef.current = true;
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [unifiedWorkflowData]); // Run when unifiedWorkflowData changes (including on mount)
+  }, []); // Run ONLY on mount
   
-  // ✅ UNIFIED WORKFLOW: Save contact data on every change
+  // ✅ UNIFIED WORKFLOW: Save contact data on every change (with debounce and comparison)
   useEffect(() => {
-    updateData({
+    // Skip if we're currently saving or if data hasn't changed
+    if (isSavingRef.current) return;
+    
+    const currentContactDataString = JSON.stringify({
       sellerName: contactData.sellerName,
       sellerEmail: contactData.sellerEmail,
       sellerPhone: contactData.sellerPhone,
@@ -131,7 +155,38 @@ const UnifiedContactPage: React.FC = () => {
       city: contactData.city,
       postalCode: contactData.postalCode
     });
-  }, [contactData, updateData]);
+    
+    // Only save if data actually changed
+    if (currentContactDataString === lastSavedContactDataRef.current) {
+      return;
+    }
+    
+    // Mark as saving
+    isSavingRef.current = true;
+    lastSavedContactDataRef.current = currentContactDataString;
+    
+    // Debounce the save
+    const saveTimer = setTimeout(() => {
+      updateData({
+        sellerName: contactData.sellerName,
+        sellerEmail: contactData.sellerEmail,
+        sellerPhone: contactData.sellerPhone,
+        region: contactData.region,
+        city: contactData.city,
+        postalCode: contactData.postalCode
+      });
+      
+      // Reset saving flag after a short delay
+      setTimeout(() => {
+        isSavingRef.current = false;
+      }, 100);
+    }, 300);
+    
+    return () => {
+      clearTimeout(saveTimer);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [contactData.sellerName, contactData.sellerEmail, contactData.sellerPhone, contactData.region, contactData.city, contactData.postalCode]);
   const { saveDraft, isSaving, getTimeSinceLastSave } = useDraftAutoSave(
     { ...workflowData, ...Object.fromEntries(searchParams) },
     { currentStep: 7, interval: 30000 }
@@ -312,12 +367,10 @@ const UnifiedContactPage: React.FC = () => {
         const yearMatch = String(firstRegistration).match(/^(\d{4})/);
         if (yearMatch) {
           resolvedYear = yearMatch[1];
-          console.log('🔍 Extracted year from firstRegistration:', resolvedYear);
         }
       }
     }
     
-    console.log('🔍 Resolved values:', { resolvedMake, resolvedYear });
 
     if (!resolvedMake) {
       console.warn('❌ Validation failed: MAKE_REQUIRED');
@@ -355,7 +408,6 @@ const UnifiedContactPage: React.FC = () => {
       if (savedImages && savedImages.length > 0) {
         totalImages = savedImages.length;
         imagesSource = 'IndexedDB';
-        console.log('🔍 Images from IndexedDB:', totalImages);
       }
     } catch (error) {
       console.warn('⚠️ Failed to check IndexedDB, trying localStorage', error);
@@ -368,7 +420,6 @@ const UnifiedContactPage: React.FC = () => {
         if (localStorageImages && localStorageImages.length > 0) {
           totalImages = localStorageImages.length;
           imagesSource = 'localStorage';
-          console.log('🔍 Images from localStorage:', totalImages);
         }
       } catch (error) {
         console.warn('⚠️ Failed to check localStorage', error);
@@ -408,17 +459,14 @@ const UnifiedContactPage: React.FC = () => {
       // logError('IMAGES_REQUIRED'); // Don't log as error since it's not blocking
     }
 
-    console.log('✅ Validation passed');
     return true;
   };
 
   const handlePublish = async () => {
-    console.log('🚀 handlePublish called');
     setError('');
     
     // 🆕 Validate first (now async to check IndexedDB)
     const isValid = await validateForm();
-    console.log('✅ Validation result:', isValid);
     
     if (!isValid) {
       console.warn('❌ Validation failed, blocking publish');
@@ -426,7 +474,6 @@ const UnifiedContactPage: React.FC = () => {
       return;
     }
 
-    console.log('✅ Validation passed, proceeding with publish');
     setIsSubmitting(true);
 
     try {
@@ -522,13 +569,11 @@ const UnifiedContactPage: React.FC = () => {
         if (savedImages && savedImages.length > 0) {
           // getImages() already returns File[] directly
           imageFiles = savedImages;
-          console.log('✅ Loaded images from IndexedDB:', imageFiles.length);
           if (process.env.NODE_ENV === 'development') {
             logger.debug(`Loaded ${imageFiles.length} images from IndexedDB`);
           }
         } else {
           // Fallback to localStorage
-          console.log('⚠️ No images in IndexedDB, trying localStorage...');
         imageFiles = WorkflowPersistenceService.getImagesAsFiles();
           console.log('📸 Images from localStorage:', { 
             count: imageFiles.length, 
@@ -544,7 +589,6 @@ const UnifiedContactPage: React.FC = () => {
         // Final fallback to localStorage
         try {
           imageFiles = WorkflowPersistenceService.getImagesAsFiles();
-          console.log('📸 Fallback: Images from localStorage:', imageFiles.length);
         } catch (fallbackError) {
           console.error('❌ Error loading images from WorkflowPersistenceService:', fallbackError);
           logger.error('Error loading images from WorkflowPersistenceService', fallbackError as Error);
@@ -560,7 +604,6 @@ const UnifiedContactPage: React.FC = () => {
       
       if (imageFiles && imageFiles.length > 0) {
         setTotalImages(imageFiles.length);
-        console.log('✅ Images ready for upload:', imageFiles.length);
       } else {
         console.warn('⚠️ No images found! Publishing without images.');
       }
@@ -573,7 +616,6 @@ const UnifiedContactPage: React.FC = () => {
       
       if (isEditMode && editCarId) {
         // ✅ EDIT MODE: Update existing listing
-        console.log('✏️ Edit mode detected, updating car:', editCarId);
         
         // Transform payload for update (same as create)
         const carData = SellWorkflowService.transformWorkflowData(payload, userId);
@@ -597,7 +639,6 @@ const UnifiedContactPage: React.FC = () => {
               updatedAt: serverTimestamp()
             });
             
-            console.log('✅ Images updated for car:', editCarId, imageUrls.length);
             toast.success(
               language === 'bg'
                 ? `Обявата е обновена успешно с ${imageUrls.length} снимки!`
@@ -632,7 +673,6 @@ const UnifiedContactPage: React.FC = () => {
         sessionStorage.removeItem('edit_car_id');
         sessionStorage.removeItem('edit_car_data');
         
-        console.log('✅ Car listing updated successfully:', carId);
         
         // Navigate to profile after successful update
         setTimeout(() => {
@@ -659,7 +699,6 @@ const UnifiedContactPage: React.FC = () => {
 
       // ✅ Images are already uploaded by createCarListing, no need to upload again
       if (imageFiles && imageFiles.length > 0) {
-        console.log('✅ Images should be uploaded by createCarListing');
         toast.success(
             language === 'bg'
             ? `Обявата е създадена успешно с ${imageFiles.length} снимки!`
@@ -969,24 +1008,60 @@ const UnifiedContactPage: React.FC = () => {
             <S.Label>
               {language === 'bg' ? 'Пощенски код' : 'Postal Code'}
             </S.Label>
-            <S.Input
-              type="text"
-              value={contactData.postalCode}
-            onChange={(e) => handleFieldChange('postalCode', e.target.value)}
-              placeholder="1000"
-            />
+            {availablePostalCodes.length > 0 ? (
+              <SelectWithOther
+                options={availablePostalCodes.map(pc => ({
+                  value: pc.code,
+                  label: pc.district 
+                    ? `${pc.code} - ${pc.district}` 
+                    : pc.code,
+                  labelEn: pc.district 
+                    ? `${pc.code} - ${pc.district}` 
+                    : pc.code
+                }))}
+                value={contactData.postalCode}
+                onChange={(value) => handleFieldChange('postalCode', value)}
+                placeholder={language === 'bg' ? 'Изберете пощенски код' : 'Select postal code'}
+                disabled={!contactData.city}
+                otherPlaceholder={language === 'bg' ? 'Въведете пощенски код' : 'Enter postal code'}
+              />
+            ) : (
+              <S.Input
+                type="text"
+                value={contactData.postalCode}
+                onChange={(e) => handleFieldChange('postalCode', e.target.value)}
+                placeholder="1000"
+                disabled={!contactData.city}
+              />
+            )}
           </S.FormGroup>
 
           <S.FormGroup>
             <S.Label>
               {language === 'bg' ? 'Точно местоположение' : 'Exact Location'}
             </S.Label>
-            <S.Input
-              type="text"
-              value={contactData.location}
-            onChange={(e) => handleFieldChange('location', e.target.value)}
-              placeholder={language === 'bg' ? 'Улица, номер' : 'Street, number'}
-            />
+            {availableStreets.length > 0 ? (
+              <SelectWithOther
+                options={availableStreets.map(street => ({
+                  value: street,
+                  label: street,
+                  labelEn: street
+                }))}
+                value={contactData.location}
+                onChange={(value) => handleFieldChange('location', value)}
+                placeholder={language === 'bg' ? 'Изберете улица' : 'Select street'}
+                disabled={!contactData.postalCode}
+                otherPlaceholder={language === 'bg' ? 'Въведете улица, номер' : 'Enter street, number'}
+              />
+            ) : (
+              <S.Input
+                type="text"
+                value={contactData.location}
+                onChange={(e) => handleFieldChange('location', e.target.value)}
+                placeholder={language === 'bg' ? 'Улица, номер' : 'Street, number'}
+                disabled={!contactData.postalCode}
+              />
+            )}
           </S.FormGroup>
         </S.CompactGrid>
       </S.SectionCard>

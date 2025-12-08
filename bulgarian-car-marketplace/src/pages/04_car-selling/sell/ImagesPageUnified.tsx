@@ -90,17 +90,43 @@ const MobileRemoveButton = styled.button`
   position: absolute;
   top: ${props => props.theme.mobileSpacing?.xs || '0.25rem'};
   right: ${props => props.theme.mobileSpacing?.xs || '0.25rem'};
-  background: rgba(239, 68, 68, 0.9);
+  background: #ef4444;
   color: white;
-  border: none;
+  border: 2px solid white;
   border-radius: 50%;
-  width: 24px;
-  height: 24px;
+  width: 26px;
+  height: 26px;
+  min-width: 26px;
+  min-height: 26px;
+  max-width: 26px;
+  max-height: 26px;
+  padding: 0;
+  margin: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  overflow: hidden;
+
+  svg {
+    width: 14px;
+    height: 14px;
+    stroke-width: 3;
+    flex-shrink: 0;
+  }
+
+  &:hover {
+    background: #dc2626;
+    transform: scale(1.1);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
 `;
 
 const MobileStickyFooter = styled.div`
@@ -225,22 +251,43 @@ const DesktopRemoveButton = styled.button`
   position: absolute;
   top: 0.5rem;
   right: 0.5rem;
-  background: rgba(239, 68, 68, 0.9);
+  background: #ef4444;
   color: white;
-  border: none;
+  border: 2px solid white;
   border-radius: 50%;
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
+  min-width: 30px;
+  min-height: 30px;
+  max-width: 30px;
+  max-height: 30px;
+  padding: 0;
+  margin: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 16px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  z-index: 10;
   transition: all 0.2s ease;
+  flex-shrink: 0;
+  overflow: hidden;
+
+  svg {
+    width: 16px;
+    height: 16px;
+    stroke-width: 3;
+    flex-shrink: 0;
+  }
 
   &:hover {
-    background: rgba(239, 68, 68, 1);
+    background: #dc2626;
     transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+  }
+
+  &:active {
+    transform: scale(0.95);
   }
 `;
 
@@ -517,6 +564,78 @@ const ImagesSectionContent = styled.div`
   }
 `;
 
+// Thumbnails Grid Container (below upload area)
+const ThumbnailsContainer = styled.div<{ $isMobile?: boolean }>`
+  margin-top: ${props => props.$isMobile ? (props.theme.mobileSpacing?.md || '1rem') : '1.5rem'};
+  padding-top: ${props => props.$isMobile ? (props.theme.mobileSpacing?.md || '1rem') : '1.5rem'};
+  border-top: 1px solid var(--border);
+`;
+
+const ThumbnailsGrid = styled.div<{ $isMobile?: boolean }>`
+  display: grid;
+  grid-template-columns: ${props => props.$isMobile ? 'repeat(2, 1fr)' : 'repeat(auto-fill, minmax(120px, 1fr))'};
+  gap: ${props => props.$isMobile ? (props.theme.mobileSpacing?.sm || '0.75rem') : '1rem'};
+`;
+
+const ThumbnailCard = styled.div<{ $isMobile?: boolean }>`
+  position: relative;
+  aspect-ratio: 4/3;
+  border-radius: ${props => props.$isMobile ? (props.theme.mobileBorderRadius?.sm || '6px') : '8px'};
+  overflow: hidden;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+`;
+
+const ThumbnailImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+`;
+
+const ThumbnailRemoveButton = styled.button<{ $isMobile?: boolean }>`
+  position: absolute;
+  top: ${props => props.$isMobile ? '0.25rem' : '0.375rem'};
+  right: ${props => props.$isMobile ? '0.25rem' : '0.375rem'};
+  background: #ef4444;
+  color: white;
+  border: 2px solid white;
+  border-radius: 50%;
+  width: ${props => props.$isMobile ? '26px' : '30px'};
+  height: ${props => props.$isMobile ? '26px' : '30px'};
+  min-width: ${props => props.$isMobile ? '26px' : '30px'};
+  min-height: ${props => props.$isMobile ? '26px' : '30px'};
+  max-width: ${props => props.$isMobile ? '26px' : '30px'};
+  max-height: ${props => props.$isMobile ? '26px' : '30px'};
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  overflow: hidden;
+
+  svg {
+    width: ${props => props.$isMobile ? '14px' : '16px'};
+    height: ${props => props.$isMobile ? '14px' : '16px'};
+    stroke-width: 3;
+    flex-shrink: 0;
+  }
+
+  &:hover {
+    background: #dc2626;
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+`;
+
 const ImagesPage: React.FC = () => {
   const isMobile = useIsMobile();
   const { t, language } = useLanguage();
@@ -535,6 +654,15 @@ const ImagesPage: React.FC = () => {
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [isLoadingImages, setIsLoadingImages] = useState(true);
 
+  // ✅ Handle Clear Event (Timer Expiry)
+  useEffect(() => {
+    if (!workflowData && !isLoadingImages) {
+      setImageFiles([]);
+      setVideoPreview(null);
+      setImagePreviews(new Map());
+    }
+  }, [workflowData, isLoadingImages]);
+
   // ✅ UNIFIED WORKFLOW: Load existing images from IndexedDB on mount
   useEffect(() => {
     const loadImages = async () => {
@@ -542,7 +670,6 @@ const ImagesPage: React.FC = () => {
         setIsLoadingImages(true);
         const savedImages = await ImageStorageService.getImages();
         if (savedImages.length > 0) {
-          console.log('🔄 Restoring images from IndexedDB:', savedImages.length);
           setImageFiles(savedImages);
           SellWorkflowStepStateService.markCompleted('images');
           
@@ -552,7 +679,6 @@ const ImagesPage: React.FC = () => {
           }
         } else if (workflowData?.imagesCount && workflowData.imagesCount > 0) {
           // If workflow says we have images but IndexedDB is empty, try to reload
-          console.log('⚠️ Workflow indicates images exist but IndexedDB is empty. Attempting reload...');
         }
       } catch (error) {
         console.error('Failed to load images:', error);
@@ -748,7 +874,6 @@ const ImagesPage: React.FC = () => {
         const validVehicleType = vehicleType || 'car';
         const targetPath = `/sell/inserat/${validVehicleType}/pricing?${params.toString()}`;
         
-        console.log('🚀 Navigating to pricing page:', targetPath);
         console.log('📋 Images uploaded:', imageFiles.length);
         
         // ✅ Navigate to pricing page (EUR currency for Bulgaria market)
@@ -797,6 +922,32 @@ const ImagesPage: React.FC = () => {
     );
   };
 
+  const renderThumbnails = () => {
+    if (imageFiles.length === 0) return null;
+
+    return (
+      <ThumbnailsContainer $isMobile={isMobile}>
+        <ThumbnailsGrid $isMobile={isMobile}>
+          {imageFiles.map((file, index) => {
+            const previewUrl = imagePreviews.get(index);
+            return (
+              <ThumbnailCard key={`thumb-${file.name}-${index}`} $isMobile={isMobile}>
+                {previewUrl && <ThumbnailImage src={previewUrl} alt={`Thumbnail ${index + 1}`} />}
+                <ThumbnailRemoveButton 
+                  $isMobile={isMobile}
+                  onClick={() => handleRemoveImage(index)}
+                  aria-label={language === 'bg' ? 'Премахни изображение' : 'Remove image'}
+                >
+                  <X size={isMobile ? 12 : 14} />
+                </ThumbnailRemoveButton>
+              </ThumbnailCard>
+            );
+          })}
+        </ThumbnailsGrid>
+      </ThumbnailsContainer>
+    );
+  };
+
   if (isMobile) {
     return (
       <MobileContainer>
@@ -841,9 +992,8 @@ const ImagesPage: React.FC = () => {
                 />
               </MobileUploadArea>
 
-              <ImagesSectionContent>
-                {renderImagesGrid()}
-              </ImagesSectionContent>
+              {/* Thumbnails below upload area */}
+              {renderThumbnails()}
             </ImagesSectionCard>
 
             {/* Video Upload Section */}
@@ -962,9 +1112,8 @@ const ImagesPage: React.FC = () => {
               />
             </DesktopUploadArea>
 
-            <ImagesSectionContent>
-              {renderImagesGrid()}
-            </ImagesSectionContent>
+            {/* Thumbnails below upload area */}
+            {renderThumbnails()}
           </ImagesSectionCard>
 
           {/* Video Upload Section */}

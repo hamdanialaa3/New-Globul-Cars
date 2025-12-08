@@ -7,6 +7,10 @@ import styled, { keyframes } from 'styled-components';
 import { useLanguage } from '../../contexts/LanguageContext';
 import SubscriptionManager from '../../components/subscription/SubscriptionManager';
 import { useAuth } from '../../contexts/AuthProvider';
+// ✅ استيراد ملف الإعدادات المركزي
+import subscriptionTheme, { getPrimaryGradient, getPrimaryGradientWithMiddle, getShadowColor } from '../../components/subscription/subscription-theme';
+// 🧪 ملف اختبار - احذفه بعد التأكد
+import TestColorChange from '../../components/subscription/TEST_COLOR_CHANGE';
 import { 
   Crown, ArrowLeft, Star, Shield, TrendingUp, Users, 
   CheckCircle, Sparkles, Award, Zap, Clock, HeartHandshake,
@@ -95,7 +99,7 @@ const PageContainer = styled.div`
 
 // Hero Header with Premium Design
 const HeroHeader = styled.header`
-  background: linear-gradient(135deg, #FF8F10 0%, #fb923c 50%, #FF8F10 100%);
+  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 50%, var(--accent-primary) 100%);
   background-size: 200% 200%;
   animation: ${shimmer} 8s linear infinite;
   padding: 2rem 0;
@@ -272,19 +276,19 @@ const TrustBadge = styled.div`
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 1rem;
-  background: rgba(255, 143, 16, 0.05);
+  background: rgba(22, 163, 74, 0.05);
   border-radius: 50px;
   transition: all 0.3s ease;
 
   &:hover {
-    background: rgba(255, 143, 16, 0.1);
+    background: ${() => subscriptionTheme.backgrounds.overlay};
     transform: translateY(-2px);
   }
 
   svg {
     width: 18px;
     height: 18px;
-    color: #FF8F10;
+    color: var(--accent-primary);
   }
 
   span {
@@ -316,7 +320,7 @@ const SectionTitle = styled.h2`
   svg {
     width: 2.5rem;
     height: 2.5rem;
-    color: #FF8F10;
+    color: var(--accent-primary);
   }
 `;
 
@@ -334,7 +338,7 @@ const SectionSubtitle = styled.p`
 const ComparisonSection = styled.section`
   margin: 5rem 0;
   padding: 4rem 0;
-  background: linear-gradient(135deg, rgba(255, 143, 16, 0.03) 0%, transparent 100%);
+  background: ${() => `linear-gradient(135deg, ${subscriptionTheme.backgrounds.active} 0%, transparent 100%)`};
   border-radius: 30px;
   animation: ${fadeIn} 1s ease;
 `;
@@ -353,7 +357,7 @@ const TableHeader = styled.div`
   grid-template-columns: 2fr 1fr 1fr 1fr;
   gap: 1rem;
   padding: 1.5rem;
-  background: linear-gradient(135deg, #FF8F10 0%, #fb923c 100%);
+  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
   font-weight: 700;
   color: white;
   font-size: 1.1rem;
@@ -375,7 +379,7 @@ const TableRow = styled.div<{ $highlight?: boolean }>`
   background: var(--bg-card);
 
   ${p => p.$highlight && `
-    background: rgba(255, 143, 16, 0.05);
+    background: rgba(22, 163, 74, 0.05);
   `}
 
   &:hover {
@@ -398,7 +402,7 @@ const FeatureCell = styled.div`
   svg {
     width: 20px;
     height: 20px;
-    color: #FF8F10;
+    color: var(--accent-primary);
   }
 
   @media (max-width: 768px) {
@@ -414,7 +418,7 @@ const ValueCell = styled.div`
   svg {
     width: 20px;
     height: 20px;
-    color: #16a34a;
+    color: var(--accent-primary);
     margin: 0 auto;
   }
 `;
@@ -458,7 +462,7 @@ const TestimonialCard = styled.div`
 const QuoteIcon = styled.div`
   width: 50px;
   height: 50px;
-  background: linear-gradient(135deg, #FF8F10 0%, #fb923c 100%);
+  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -490,7 +494,7 @@ const AuthorAvatar = styled.div`
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #FF8F10 0%, #fb923c 100%);
+  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -545,7 +549,7 @@ const FAQItem = styled.div<{ $isOpen: boolean }>`
   transition: all 0.3s ease;
 
   ${p => p.$isOpen && `
-    box-shadow: 0 4px 20px rgba(255, 143, 16, 0.15);
+    box-shadow: 0 4px 20px ${() => subscriptionTheme.shadows.small};
   `}
 `;
 
@@ -565,14 +569,14 @@ const FAQQuestion = styled.button`
   transition: all 0.3s ease;
 
   &:hover {
-    color: #FF8F10;
+    color: var(--accent-primary);
   }
 
   svg {
     width: 24px;
     height: 24px;
     transition: transform 0.3s ease;
-    color: #FF8F10;
+    color: var(--accent-primary);
   }
 `;
 
@@ -587,7 +591,7 @@ const FAQAnswer = styled.div<{ $isOpen: boolean }>`
 
 // CTA Section
 const CTASection = styled.section`
-  background: linear-gradient(135deg, #FF8F10 0%, #fb923c 100%);
+  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
   padding: 4rem 2rem;
   border-radius: 30px;
   text-align: center;
@@ -646,7 +650,7 @@ const CTAText = styled.p`
 const CTAButton = styled.button`
   padding: 1.25rem 3rem;
   background: white;
-  color: #FF8F10;
+  color: var(--accent-primary);
   border: none;
   border-radius: 50px;
   font-size: 1.1rem;
@@ -804,6 +808,8 @@ const SubscriptionPage: React.FC = () => {
 
   return (
     <PageContainer>
+      {/* 🧪 ملف اختبار - احذفه بعد التأكد */}
+      <TestColorChange />
       {/* Hero Header */}
       <HeroHeader>
         <HeroContent>

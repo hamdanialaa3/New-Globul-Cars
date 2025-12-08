@@ -51,13 +51,23 @@ export const useUnifiedWorkflow = (currentStep: number) => {
 
   // Subscribe to timer updates
   useEffect(() => {
-    const unsubscribe = UnifiedWorkflowPersistenceService.subscribeToTimer(
+    const unsubscribeTimer = UnifiedWorkflowPersistenceService.subscribeToTimer(
       (state) => {
         setTimerState(state);
       }
     );
 
-    return unsubscribe;
+    // ✅ Subscribe to clear events (Timer Expiry)
+    const unsubscribeClear = UnifiedWorkflowPersistenceService.subscribeToClear(() => {
+      setWorkflowData(null);
+      setImagesCount(0);
+      serviceLogger.info('Workflow data cleared in hook (Timer Expiry)');
+    });
+
+    return () => {
+      unsubscribeTimer();
+      unsubscribeClear();
+    };
   }, []);
 
   /**

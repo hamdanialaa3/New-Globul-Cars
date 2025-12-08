@@ -6,6 +6,7 @@ import { logger } from '../../../../services/logger-service';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
+import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../../../contexts/AuthProvider';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { realtimeMessagingService, ChatRoom } from '../../../../services/realtimeMessaging';
@@ -302,6 +303,7 @@ const LoadingSpinner = styled.div`
 const MessagesPage: React.FC = () => {
   const { user } = useAuth();
   const { t } = useLanguage();
+  const [searchParams] = useSearchParams();
   
   const [conversations, setConversations] = useState<ChatRoom[]>([]);
   const [selectedConversation, setSelectedConversation] = useState<ChatRoom | null>(null);
@@ -309,9 +311,13 @@ const MessagesPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showMobileChat, setShowMobileChat] = useState(false);
   
+  // Get carId from URL params
+  const carIdFromUrl = searchParams.get('carId');
+  const conversationIdFromUrl = searchParams.get('conversation');
+  
   // ==================== EFFECTS ====================
   
-  // Load conversations
+  // Load conversations and select from URL
   useEffect(() => {
     if (!user) return;
     
@@ -320,6 +326,15 @@ const MessagesPage: React.FC = () => {
         setLoading(true);
         const chatRooms = await realtimeMessagingService.getUserChatRooms(user.uid);
         setConversations(chatRooms);
+        
+        // If conversationId in URL, select it
+        if (conversationIdFromUrl) {
+          const found = chatRooms.find(room => room.id === conversationIdFromUrl);
+          if (found) {
+            setSelectedConversation(found);
+            setShowMobileChat(true);
+          }
+        }
       } catch (error) {
         logger.error('Failed to load conversations:', error);
       } finally {
@@ -334,13 +349,21 @@ const MessagesPage: React.FC = () => {
       user.uid,
       (updatedChatRooms) => {
         setConversations(updatedChatRooms);
+        
+        // Update selected conversation if it exists
+        if (selectedConversation) {
+          const updated = updatedChatRooms.find(room => room.id === selectedConversation.id);
+          if (updated) {
+            setSelectedConversation(updated);
+          }
+        }
       }
     );
     
     return () => {
       unsubscribe();
     };
-  }, [user]);
+  }, [user, conversationIdFromUrl]);
   
   // ==================== HANDLERS ====================
   
@@ -423,6 +446,8 @@ const MessagesPage: React.FC = () => {
     // Get recipient info
     const recipientId = selectedConversation.participants.find(id => id !== user?.uid) || '';
     const recipientName = selectedConversation.participantNames?.[recipientId] || 'Unknown';
+    const carId = carIdFromUrl || selectedConversation.carId;
+    const carTitle = selectedConversation.carTitle;
     
     return (
       <MainContent $isHidden={!showMobileChat}>
@@ -430,6 +455,8 @@ const MessagesPage: React.FC = () => {
           conversationId={selectedConversation.id}
           recipientId={recipientId}
           recipientName={recipientName}
+          carId={carId}
+          carTitle={carTitle}
           onBack={handleBackToList}
         />
       </MainContent>

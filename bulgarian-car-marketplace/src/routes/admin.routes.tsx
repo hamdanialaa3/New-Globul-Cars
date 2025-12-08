@@ -23,7 +23,6 @@ const AdminPage = React.lazy(() => import('@/pages/06_admin/regular-admin/AdminP
 const SuperAdminLogin = React.lazy(() => import('@/pages/06_admin/super-admin/SuperAdminLogin'));
 const SuperAdminDashboard = React.lazy(() => import('@/pages/06_admin/super-admin/SuperAdminDashboard'));
 const SuperAdminUsersPage = React.lazy(() => import('@/pages/06_admin/super-admin/SuperAdminUsersPage'));
-const ArchitectureDiagramPage = React.lazy(() => import('@/pages/ArchitectureDiagramPage'));
 
 // Lazy load layout
 const FullScreenLayout = React.lazy(() => import('@/components/FullScreenLayout'));
@@ -92,14 +91,6 @@ export const AdminRoutes: React.FC = () => {
                 />
 
                 {/* Architecture Diagram - Full Screen */}
-                <Route
-                    path="/diagram"
-                    element={
-                        <FullScreenLayout>
-                            <ArchitectureDiagramPage />
-                        </FullScreenLayout>
-                    }
-                />
             </Routes>
         </Suspense>
     );

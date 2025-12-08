@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { BULGARIA_REGIONS, getCitiesByRegion } from '../../../../data/bulgaria-locations';
+import { getPostalCodesForCity, getStreetsForPostalCode, PostalCodeData } from '../../../../data/bulgaria-postal-codes';
 import useSellWorkflow from '../../../../hooks/useSellWorkflow';
 import { CONTACT_METHODS } from './contactConstants';
 
@@ -53,6 +54,8 @@ export const useContactForm = ({ language, requireContactFields = false }: UseCo
   });
 
   const [availableCities, setAvailableCities] = useState<Array<{ name: string; nameEn?: string }>>([]);
+  const [availablePostalCodes, setAvailablePostalCodes] = useState<PostalCodeData[]>([]);
+  const [availableStreets, setAvailableStreets] = useState<string[]>([]);
 
   useEffect(() => {
     updateWorkflowData(
@@ -65,17 +68,59 @@ export const useContactForm = ({ language, requireContactFields = false }: UseCo
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contactData]);
 
+  // Update cities when region changes
   useEffect(() => {
     if (!contactData.region) {
       setAvailableCities([]);
+      setAvailablePostalCodes([]);
+      setAvailableStreets([]);
+      // Clear city, postal code, and location when region is cleared
+      setContactData(prev => ({ ...prev, city: '', postalCode: '', location: '' }));
       return;
     }
     const cities = getCitiesByRegion(contactData.region, language);
     setAvailableCities(cities);
+    // Clear city if it's not in the new region's cities
     if (cities.length > 0 && !cities.some(city => city.name === contactData.city)) {
-      setContactData(prev => ({ ...prev, city: '' }));
+      setContactData(prev => ({ ...prev, city: '', postalCode: '', location: '' }));
+      setAvailablePostalCodes([]);
+      setAvailableStreets([]);
     }
   }, [contactData.region, contactData.city, language]);
+
+  // Update postal codes when city changes
+  useEffect(() => {
+    if (!contactData.city || !contactData.region) {
+      setAvailablePostalCodes([]);
+      setAvailableStreets([]);
+      // Clear postal code and location when city is cleared
+      setContactData(prev => ({ ...prev, postalCode: '', location: '' }));
+      return;
+    }
+    const postalCodes = getPostalCodesForCity(contactData.city, contactData.region);
+    setAvailablePostalCodes(postalCodes);
+    // Clear postal code if it's not in the new city's postal codes
+    if (postalCodes.length > 0 && !postalCodes.some(pc => pc.code === contactData.postalCode)) {
+      setContactData(prev => ({ ...prev, postalCode: '', location: '' }));
+      setAvailableStreets([]);
+    }
+  }, [contactData.city, contactData.region, contactData.postalCode]);
+
+  // Update streets when postal code changes
+  useEffect(() => {
+    if (!contactData.postalCode || !contactData.city) {
+      setAvailableStreets([]);
+      // Clear location when postal code is cleared
+      setContactData(prev => ({ ...prev, location: '' }));
+      return;
+    }
+    const streets = getStreetsForPostalCode(contactData.postalCode, contactData.city);
+    setAvailableStreets(streets);
+    // Clear location if it's not in the new postal code's streets
+    if (streets.length > 0 && !streets.includes(contactData.location)) {
+      setContactData(prev => ({ ...prev, location: '' }));
+    }
+  }, [contactData.postalCode, contactData.city, contactData.location]);
 
   const handleFieldChange = useCallback(<K extends keyof ContactFormState>(field: K, value: ContactFormState[K]) => {
     setContactData(prev => ({ ...prev, [field]: value }));
@@ -116,6 +161,8 @@ export const useContactForm = ({ language, requireContactFields = false }: UseCo
     contactData,
     availableRegions,
     availableCities,
+    availablePostalCodes,
+    availableStreets,
     canContinue,
     handleFieldChange,
     toggleContactMethod,

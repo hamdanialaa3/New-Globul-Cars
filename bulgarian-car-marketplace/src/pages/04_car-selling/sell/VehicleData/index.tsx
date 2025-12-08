@@ -7,7 +7,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import SplitScreenLayout from '../../../../components/SplitScreenLayout';
 import { WorkflowFlow } from '../../../../components/WorkflowVisualization';
-import { FUEL_TYPES, TRANSMISSION_TYPES, COLORS, DOOR_OPTIONS, SEAT_OPTIONS } from './types';
+import { FUEL_TYPES, TRANSMISSION_TYPES, COLORS, DOOR_OPTIONS, SEAT_OPTIONS, BODY_TYPES } from './types';
 import { isFeaturedBrand } from '../../../../services/carBrandsService';
 import { CAR_YEARS } from '../../../../data/dropdown-options';
 import { Star, Zap } from 'lucide-react';
@@ -163,6 +163,63 @@ const VehicleDataPageNew: React.FC = () => {
         </S.Button>
       </S.NavigationButtons>
 
+      {/* Body Type Section - Independent */}
+      <S.FormCard>
+        <S.SectionTitle>
+          {language === 'bg' ? 'Тип купе' : 'Body Type'}
+        </S.SectionTitle>
+        <S.FormGrid>
+          <S.FormGroup>
+            <S.Label htmlFor="bodyType" $required>
+              {language === 'bg' ? 'Изберете тип купе' : 'Select Body Type'}
+            </S.Label>
+            <S.Select
+              id="bodyType"
+              aria-label={language === 'bg' ? 'Тип купе' : 'Body Type'}
+              title={language === 'bg' ? 'Тип купе' : 'Body Type'}
+              value={formData.bodyType || ''}
+              onChange={(e) => {
+                const value = e.target.value;
+                handleInputChange('bodyType', value);
+                if (value !== 'other') {
+                  handleInputChange('bodyTypeOther', '');
+                }
+              }}
+            >
+              <option value="">{language === 'bg' ? 'Изберете тип купе' : 'Select Body Type'}</option>
+              {BODY_TYPES && BODY_TYPES.length > 0 ? (
+                BODY_TYPES.map(bodyType => (
+                  <option key={bodyType.value} value={bodyType.value}>
+                    {language === 'bg' ? bodyType.labelBg : bodyType.labelEn}
+                  </option>
+                ))
+              ) : (
+                <>
+                  <option value="sedan">{language === 'bg' ? 'Седан' : 'Sedan'}</option>
+                  <option value="suv">{language === 'bg' ? 'Джип / SUV' : 'SUV'}</option>
+                  <option value="hatchback">{language === 'bg' ? 'Хечбек' : 'Hatchback'}</option>
+                  <option value="coupe">{language === 'bg' ? 'Купе' : 'Coupe'}</option>
+                  <option value="wagon">{language === 'bg' ? 'Комби' : 'Wagon'}</option>
+                  <option value="convertible">{language === 'bg' ? 'Кабрио' : 'Convertible'}</option>
+                  <option value="pickup">{language === 'bg' ? 'Пикап' : 'Pickup'}</option>
+                  <option value="minivan">{language === 'bg' ? 'Миниван' : 'Minivan'}</option>
+                  <option value="other">{language === 'bg' ? 'Друг' : 'Other'}</option>
+                </>
+              )}
+            </S.Select>
+            {formData.bodyType === 'other' && (
+              <S.Input
+                type="text"
+                value={formData.bodyTypeOther || ''}
+                onChange={(e) => handleInputChange('bodyTypeOther', e.target.value)}
+                placeholder={language === 'bg' ? 'Въведете тип купе' : 'Enter body type'}
+                style={{ marginTop: '0.75rem' }}
+              />
+            )}
+          </S.FormGroup>
+        </S.FormGrid>
+      </S.FormCard>
+
       {/* Required Fields */}
       <S.FormCard>
         <S.SectionTitle>
@@ -236,6 +293,52 @@ const VehicleDataPageNew: React.FC = () => {
                 </option>
               ))}
             </S.Select>
+          </S.FormGroup>
+        </S.FormGrid>
+
+        <S.FormGrid>
+          <S.FormGroup>
+            <S.Label htmlFor="model">{language === 'bg' ? 'Модел' : 'Model'}</S.Label>
+            {availableModels.length > 0 ? (
+              <S.Select
+                id="model"
+                aria-label={language === 'bg' ? 'Модел' : 'Model'}
+                title={language === 'bg' ? 'Модел' : 'Model'}
+                value={formData.model}
+                onChange={(e) => handleInputChange('model', e.target.value)}
+                disabled={!formData.make}
+              >
+                <option value="">{language === 'bg' ? 'Изберете модел' : 'Select Model'}</option>
+                {availableModels.map(model => (
+                  <option key={model} value={model}>{model}</option>
+                ))}
+                <option value="__other__">{language === 'bg' ? '◆ Друг модел (въведете ръчно)' : '◆ Other model (enter manually)'}</option>
+              </S.Select>
+            ) : (
+              <S.Input
+                id="model"
+                type="text"
+                value={formData.model}
+                onChange={(e) => handleInputChange('model', e.target.value)}
+                placeholder={language === 'bg' ? 'Например: X5' : 'Example: X5'}
+                disabled={!formData.make}
+              />
+            )}
+            {formData.model === '__other__' && (
+              <S.Input
+                type="text"
+                value={formData.model}
+                onChange={(e) => handleInputChange('model', e.target.value)}
+                placeholder={language === 'bg' ? 'Въведете модел ръчно' : 'Enter model manually'}
+                style={{ marginTop: '0.75rem' }}
+              />
+            )}
+            {!formData.make && (
+              <S.HintText style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <Zap size={12} color="#7f8c8d" />
+                {language === 'bg' ? 'Първо изберете марка' : 'Select make first'}
+              </S.HintText>
+            )}
           </S.FormGroup>
         </S.FormGrid>
 

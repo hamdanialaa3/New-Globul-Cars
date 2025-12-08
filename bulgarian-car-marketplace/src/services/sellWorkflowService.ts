@@ -7,7 +7,8 @@ import {
   addDoc,
   updateDoc,
   serverTimestamp,
-  Timestamp
+  Timestamp,
+  runTransaction
 } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '../firebase/firebase-config';
@@ -135,6 +136,9 @@ export class SellWorkflowService {
       condition: workflowData.condition || 'used',
       previousOwners: workflowData.previousOwners?.toString(),
       numberOfOwners: workflowData.previousOwners ? parseInt(workflowData.previousOwners) : (workflowData.numberOfOwners ? parseInt(workflowData.numberOfOwners) : undefined),
+      // Body Type - نوع الهيكل
+      bodyType: workflowData.bodyType || (workflowData.bodyTypeOther ? 'other' : ''),
+      bodyTypeOther: workflowData.bodyTypeOther || '',
       
       // ⭐ Registration & Inspection
       firstRegistrationDate: workflowData.firstRegistration 
@@ -289,6 +293,7 @@ export class SellWorkflowService {
 
   /**
    * Create complete car listing from workflow
+   * ✅ TRANSACTIONAL: Ensures limits are enforced atomically
    */
   static async createCarListing(
     workflowData: any,
@@ -318,18 +323,59 @@ export class SellWorkflowService {
       const now = new Date();
       const adOnlineSince = carData.adOnlineSince || now;
       
-      // Create the listing document in the appropriate collection
-      const docRef = await addDoc(collection(db, collectionName), {
+      // Prepare car document reference
+      const carRef = doc(collection(db, collectionName));
+      const carId = carRef.id;
+
+      // Prepare final data
+      const finalCarData = {
         ...carData,
         adOnlineSince: Timestamp.fromDate(adOnlineSince),
-        adOnlineSinceDays: carData.adOnlineSinceDays || 0, // Will be updated daily via cloud function if needed
+        adOnlineSinceDays: carData.adOnlineSinceDays || 0,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
         expiresAt: Timestamp.fromDate(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)) // 30 days
+      };
+
+      // 🔒 TRANSACTION: Enforce limits and create listing
+      await runTransaction(db, async (transaction) => {
+        // 1. Read User Document
+        const userRef = doc(db, 'users', userId);
+        const userDoc = await transaction.get(userRef);
+
+        if (!userDoc.exists()) {
+          throw new Error('User profile not found');
+        }
+
+        const userData = userDoc.data();
+        const planTier = userData.planTier || 'free';
+        const activeListings = userData.stats?.activeListings || 0;
+
+        // 2. Check Limits (Unified PlanTier)
+        const LIMITS: Record<string, number> = {
+          'free': 3,
+          'dealer': 10,
+          'company': -1
+        };
+        
+        const limit = LIMITS[planTier] !== undefined ? LIMITS[planTier] : 3;
+
+        if (limit !== -1 && activeListings >= limit) {
+          throw new Error(`Listing limit reached for ${planTier} plan. Limit: ${limit}, Active: ${activeListings}`);
+        }
+
+        // 3. Writes
+        transaction.set(carRef, finalCarData);
+        
+        // Atomic increment
+        transaction.update(userRef, {
+          'stats.activeListings': activeListings + 1,
+          'stats.totalListings': (userData.stats?.totalListings || 0) + 1,
+          updatedAt: serverTimestamp()
+        });
       });
 
-      const carId = docRef.id;
-      serviceLogger.info('Car listing created with ID', { 
+      serviceLogger.info('Car listing created with ID via transaction', { 
         carId, 
         userId, 
         make: carData.make, 
@@ -376,31 +422,10 @@ export class SellWorkflowService {
         CityCarCountService.clearCacheForCity(carData.region);
       }
 
-      // ✅ CRITICAL FIX: Update user statistics after car creation
-      try {
-        const { ProfileService } = await import('./profile/ProfileService');
-        const { unifiedCarService } = await import('./car/unified-car.service');
-        
-        // Get actual active listings count from Firestore (more accurate)
-        const userCars = await unifiedCarService.getUserCars(userId);
-        const activeCarsCount = userCars.filter(car => car.isActive !== false && car.isSold !== true).length;
-        
-        // Update user stats with actual count
-        await ProfileService.updateUserStats(userId, {
-          activeListings: activeCarsCount,
-          totalListings: userCars.length
-        });
-        
-        serviceLogger.info('User stats updated after car creation', { 
-          userId, 
-          carId, 
-          activeListings: activeCarsCount,
-          totalListings: userCars.length
-        });
-      } catch (statsError) {
-        // Don't fail car creation if stats update fails
-        serviceLogger.error('Failed to update user stats after car creation', statsError as Error, { userId, carId });
-      }
+      // Note: User stats already updated in transaction, no need to call ProfileService.updateUserStats again
+      // unless we want to sync with "actual" count from collection query, but transaction is safer for limits.
+      // We can skip the redundant update or keep it as a "repair" mechanism. 
+      // Given the transaction handles the increment correctly, we can skip the expensive count query here.
 
       serviceLogger.info('Car listing creation completed successfully', { carId, userId });
       return carId;

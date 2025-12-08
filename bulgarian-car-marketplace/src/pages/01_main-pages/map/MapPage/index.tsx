@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import * as d3 from 'd3';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import RegionCarCountService from '../../../../services/regionCarCountService';
 import GlobulCarLogo from '../../../../components/icons/GlobulCarLogo';

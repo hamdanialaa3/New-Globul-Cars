@@ -21,6 +21,8 @@ interface MessageComposerProps {
   onSendMessage: (content: string, attachments?: any[]) => void;
   onTyping: (isTyping: boolean) => void;
   recipientName: string;
+  carId?: string;
+  carTitle?: string;
 }
 
 // ==================== STYLED COMPONENTS ====================
@@ -174,7 +176,9 @@ const HiddenFileInput = styled.input`
 const MessageComposer: React.FC<MessageComposerProps> = ({
   onSendMessage,
   onTyping,
-  recipientName
+  recipientName,
+  carId,
+  carTitle
 }) => {
   const { t } = useLanguage();
   const textareaRef = useRef<HTMLTextAreaElement>(null);

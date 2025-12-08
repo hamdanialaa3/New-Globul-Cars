@@ -1,103 +1,41 @@
-import { IoTDataPlaneClient, PublishCommand, GetThingShadowCommand } from '@aws-sdk/client-iot-data-plane';
-import { IoTClient, CreateThingCommand, AttachThingPrincipalCommand } from '@aws-sdk/client-iot';
+// IoT Service Stub - AWS SDK removed to reduce bundle size
+// Re-implement with lightweight alternative if needed
 
 export interface CarTelemetryData {
-  carId: string;
-  location: {
-    latitude: number;
-    longitude: number;
+  speed?: number;
+  fuelLevel?: number;
+  location?: { lat: number; lng: number };
+  engineStatus?: string;
+}
+
+export interface CarShadow {
+  state: {
+    reported: CarTelemetryData;
   };
-  engineStatus: 'on' | 'off';
-  fuelLevel: number;
-  speed: number;
-  temperature: number;
-  timestamp: number;
-  isOnline: boolean;
 }
 
-export interface CarIoTDevice {
-  thingName: string;
-  certificateArn: string;
-  status: 'connected' | 'disconnected';
-  lastSeen: Date;
-}
-
-class IoTService {
-  private iotDataClient: IoTDataPlaneClient;
-  private iotClient: IoTClient;
-  private endpoint: string;
-
-  constructor() {
-    this.endpoint = process.env.REACT_APP_IOT_ENDPOINT || '';
-    
-    this.iotDataClient = new IoTDataPlaneClient({
-      region: process.env.REACT_APP_AWS_REGION || 'eu-central-1',
-      endpoint: `https://${this.endpoint}`
-    });
-
-    this.iotClient = new IoTClient({
-      region: process.env.REACT_APP_AWS_REGION || 'eu-central-1'
-    });
+class IoTServiceStub {
+  async getCarTelemetry(carId: string): Promise<CarTelemetryData | null> {
+    console.warn('IoT Service: AWS SDK removed - telemetry not available');
+    return null;
   }
 
-  async publishCarTelemetry(carId: string, data: Omit<CarTelemetryData, 'carId' | 'timestamp'>): Promise<void> {
-    const telemetryData: CarTelemetryData = {
-      carId,
-      ...data,
-      timestamp: Date.now()
-    };
-
-    const command = new PublishCommand({
-      topic: `cars/${carId}/telemetry`,
-      payload: JSON.stringify(telemetryData)
-    });
-
-    await this.iotDataClient.send(command);
+  async getCarShadow(carId: string): Promise<CarShadow | null> {
+    console.warn('IoT Service: AWS SDK removed - shadow not available');
+    return null;
   }
 
-  async getCarShadow(carId: string): Promise<any> {
-    const command = new GetThingShadowCommand({
-      thingName: carId
-    });
-
-    const response = await this.iotDataClient.send(command);
-    return JSON.parse(new TextDecoder().decode(response.payload));
+  subscribeToCarUpdates(
+    carId: string,
+    callback: (data: CarTelemetryData) => void
+  ): () => void {
+    console.warn('IoT Service: AWS SDK removed - subscriptions not available');
+    return () => {}; // No-op unsubscribe
   }
 
-  async createCarDevice(carId: string): Promise<CarIoTDevice> {
-    const command = new CreateThingCommand({
-      thingName: carId,
-      thingTypeName: 'CarDevice'
-    });
-
-    await this.iotClient.send(command);
-
-    return {
-      thingName: carId,
-      certificateArn: '',
-      status: 'disconnected',
-      lastSeen: new Date()
-    };
-  }
-
-  subscribeToCarUpdates(carId: string, callback: (data: CarTelemetryData) => void): () => void {
-    // WebSocket connection for real-time updates
-    const ws = new WebSocket(`wss://${this.endpoint}/mqtt`);
-    
-    ws.onopen = () => {
-      ws.send(JSON.stringify({
-        action: 'subscribe',
-        topic: `cars/${carId}/telemetry`
-      }));
-    };
-
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      callback(data);
-    };
-
-    return () => ws.close();
+  async notifyCarSale(carId: string): Promise<void> {
+    console.warn('IoT Service: AWS SDK removed - notifications not available');
   }
 }
 
-export const iotService = new IoTService();
+export const iotService = new IoTServiceStub();

@@ -133,7 +133,7 @@ export class ProfileService {
           transaction.update(userRef, {
             profileType: 'dealer',
             dealershipRef: `dealerships/${uid}`,
-            planTier: currentUser.planTier?.includes('dealer') ? currentUser.planTier : 'dealer_basic',
+            planTier: currentUser.planTier === 'dealer' ? 'dealer' : 'dealer', // Force valid tier
             updatedAt: serverTimestamp()
           });
 
@@ -153,7 +153,7 @@ export class ProfileService {
           transaction.update(userRef, {
             profileType: 'company',
             companyRef: `companies/${uid}`,
-            planTier: currentUser.planTier?.includes('company') ? currentUser.planTier : 'company_starter',
+            planTier: currentUser.planTier === 'company' ? 'company' : 'company', // Force valid tier
             updatedAt: serverTimestamp()
           });
 

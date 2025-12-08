@@ -20,6 +20,7 @@ const defaultForm: VehicleFormData = {
   variant: '',
   fuelType: '',
   mileage: '',
+  condition: '',
   firstRegistration: '',
   power: '',
   transmission: '',
@@ -52,8 +53,9 @@ const defaultForm: VehicleFormData = {
   saleTimeline: 'unknown',
   roadworthy: null,
   hasAccidentHistory: false,
-  hasServiceHistory: false
-  ,
+  hasServiceHistory: false,
+  bodyType: '',
+  bodyTypeOther: '',
   // typed 'other' values
   makeOther: '',
   modelOther: '',
@@ -138,13 +140,33 @@ const formEquals = useCallback(
   );
 
   // ✅ UNIFIED WORKFLOW: Update formData when initialValues change (including when workflowData changes)
+  // ✅ FIX: Preserve user input for bodyType and bodyTypeOther when updating from initialValues
   useEffect(() => {
-    setFormData(prev => (formEquals(prev, initialValues) ? prev : initialValues));
+    setFormData(prev => {
+      // If formData has user-entered values that differ from initialValues, preserve them
+      const preservedBodyType = prev.bodyType || initialValues.bodyType || '';
+      const preservedBodyTypeOther = prev.bodyTypeOther || initialValues.bodyTypeOther || '';
+      
+      const updated = formEquals(prev, initialValues) ? prev : {
+        ...initialValues,
+        // Preserve bodyType if user has selected something
+        bodyType: preservedBodyType,
+        bodyTypeOther: preservedBodyTypeOther
+      };
+      
+      return updated;
+    });
   }, [initialValues, formEquals]);
 
   // ✅ UNIFIED WORKFLOW: Restore data from unified workflow when it changes (e.g., when navigating back)
   useEffect(() => {
-    if (workflowData && Object.keys(workflowData).length > 0) {
+    // ✅ Handle Clear Event (Timer Expiry)
+    if (!workflowData) {
+      setFormData(defaultForm);
+      return;
+    }
+
+    if (Object.keys(workflowData).length > 0) {
       const hasSignificantData = !!(workflowData.make || workflowData.model || workflowData.year || workflowData.mileage);
       
       if (hasSignificantData) {
@@ -153,81 +175,53 @@ const formEquals = useCallback(
           const updated = { ...prev };
           let hasChanges = false;
 
-          // Restore fields from unified workflow if they're missing in formData
-          if (workflowData.make && !prev.make) {
-            updated.make = workflowData.make;
-            hasChanges = true;
-          }
-          if (workflowData.model && !prev.model) {
-            updated.model = workflowData.model;
-            hasChanges = true;
-          }
-          if (workflowData.year && !prev.year) {
-            updated.year = workflowData.year;
-            hasChanges = true;
-          }
-          if (workflowData.firstRegistration && !prev.firstRegistration) {
-            updated.firstRegistration = workflowData.firstRegistration;
-            hasChanges = true;
-          }
-          if (workflowData.mileage && !prev.mileage) {
-            updated.mileage = workflowData.mileage;
-            hasChanges = true;
-          }
-          if (workflowData.fuelType && !prev.fuelType) {
-            updated.fuelType = workflowData.fuelType;
-            hasChanges = true;
-          }
-          if (workflowData.transmission && !prev.transmission) {
-            updated.transmission = workflowData.transmission;
-            hasChanges = true;
-          }
-          if (workflowData.power && !prev.power) {
-            updated.power = workflowData.power;
-            hasChanges = true;
-          }
-          if (workflowData.color && !prev.color) {
-            updated.color = workflowData.color;
-            hasChanges = true;
-          }
-          if (workflowData.doors && !prev.doors) {
-            updated.doors = workflowData.doors;
-            hasChanges = true;
-          }
-          if (workflowData.seats && !prev.seats) {
-            updated.seats = workflowData.seats;
-            hasChanges = true;
-          }
-          if (workflowData.roadworthy !== undefined && prev.roadworthy === null) {
-            updated.roadworthy = workflowData.roadworthy;
-            hasChanges = true;
-          }
-          if (workflowData.saleType && !prev.saleType) {
-            updated.saleType = workflowData.saleType as 'private' | 'commercial';
-            hasChanges = true;
-          }
-          if (workflowData.saleTimeline && !prev.saleTimeline) {
-            updated.saleTimeline = workflowData.saleTimeline as 'unknown' | 'soon' | 'months';
-            hasChanges = true;
-          }
-          if (workflowData.region && !prev.saleProvince) {
-            updated.saleProvince = workflowData.region;
-            hasChanges = true;
-          }
-          if (workflowData.city && !prev.saleCity) {
-            updated.saleCity = workflowData.city;
-            hasChanges = true;
-          }
-          if (workflowData.postalCode && !prev.salePostalCode) {
-            updated.salePostalCode = workflowData.postalCode;
-            hasChanges = true;
-          }
+          // Helper to restore field if missing or different
+          const restore = (key: keyof VehicleFormData, value: any) => {
+            if (value !== undefined && value !== null && prev[key] !== value) {
+              updated[key] = value;
+              hasChanges = true;
+            }
+          };
+
+          restore('make', workflowData.make);
+          restore('makeRaw', workflowData.makeRaw);
+          restore('model', workflowData.model);
+          restore('year', workflowData.year);
+          restore('firstRegistration', workflowData.firstRegistration);
+          restore('mileage', workflowData.mileage);
+          restore('fuelType', workflowData.fuelType);
+          restore('transmission', workflowData.transmission);
+          restore('power', workflowData.power);
+          restore('color', workflowData.color);
+          restore('doors', workflowData.doors);
+          restore('seats', workflowData.seats);
+          restore('exteriorColor', workflowData.exteriorColor);
+          restore('previousOwners', workflowData.previousOwners);
+          restore('hasAccidentHistory', workflowData.hasAccidentHistory);
+          restore('hasServiceHistory', workflowData.hasServiceHistory);
+          restore('variant', workflowData.variant);
+          restore('condition', workflowData.condition); // ✅ ADDED
+          restore('roadworthy', workflowData.roadworthy);
+          restore('saleType', workflowData.saleType as any);
+          restore('saleTimeline', workflowData.saleTimeline as any);
+          restore('saleProvince', workflowData.saleProvince || workflowData.region);
+          restore('saleCity', workflowData.saleCity || workflowData.city);
+          restore('salePostalCode', workflowData.salePostalCode || workflowData.postalCode);
+          restore('bodyType', workflowData.bodyType);
+          restore('bodyTypeOther', workflowData.bodyTypeOther);
+          restore('makeOther', workflowData.makeOther);
+          restore('modelOther', workflowData.modelOther);
+          restore('fuelTypeOther', workflowData.fuelTypeOther);
+          restore('colorOther', workflowData.colorOther);
+          restore('exteriorColorOther', workflowData.exteriorColorOther);
+          restore('saleCountry', workflowData.saleCountry);
+          restore('saleLocation', workflowData.saleLocation);
 
           return hasChanges ? updated : prev;
         });
       }
     }
-  }, [workflowData]); // Run when workflowData changes (e.g., when navigating back)
+  }, [workflowData]); // Run when workflowData changes
 
   // ✅ UNIFIED WORKFLOW: Auto-save to unified workflow
   // Use ref to prevent infinite loop while keeping updateData stable
@@ -244,6 +238,7 @@ const formEquals = useCallback(
       // ✅ UNIFIED WORKFLOW: Save to unified workflow
       updateDataRef.current({
         make: formData.make,
+        makeRaw: formData.makeRaw, // ✅ ADDED
         model: formData.model,
         year: formData.year,
         firstRegistration: formData.firstRegistration,
@@ -254,12 +249,31 @@ const formEquals = useCallback(
         color: formData.color,
         doors: formData.doors,
         seats: formData.seats,
+        exteriorColor: formData.exteriorColor, // ✅ ADDED
+        previousOwners: formData.previousOwners, // ✅ ADDED
+        hasAccidentHistory: formData.hasAccidentHistory, // ✅ ADDED
+        hasServiceHistory: formData.hasServiceHistory, // ✅ ADDED
+        variant: formData.variant, // ✅ ADDED
+        condition: formData.condition, // ✅ ADDED
         roadworthy: formData.roadworthy ?? undefined,
         saleType: formData.saleType,
         saleTimeline: formData.saleTimeline,
         region: formData.saleProvince,
         city: formData.saleCity,
-        postalCode: formData.salePostalCode
+        postalCode: formData.salePostalCode,
+        // ✅ FIX: Save bodyType and bodyTypeOther
+        bodyType: formData.bodyType,
+        bodyTypeOther: formData.bodyTypeOther,
+        makeOther: formData.makeOther, // ✅ ADDED
+        modelOther: formData.modelOther, // ✅ ADDED
+        fuelTypeOther: formData.fuelTypeOther, // ✅ ADDED
+        colorOther: formData.colorOther, // ✅ ADDED
+        exteriorColorOther: formData.exteriorColorOther, // ✅ ADDED
+        saleProvince: formData.saleProvince, // ✅ ADDED
+        saleCity: formData.saleCity, // ✅ ADDED
+        salePostalCode: formData.salePostalCode, // ✅ ADDED
+        saleCountry: formData.saleCountry, // ✅ ADDED
+        saleLocation: formData.saleLocation // ✅ ADDED
       });
     }, 500); // Save after 500ms of no changes
     

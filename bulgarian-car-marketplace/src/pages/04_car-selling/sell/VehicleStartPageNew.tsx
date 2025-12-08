@@ -6,7 +6,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../../contexts/LanguageContext';
 import { logger } from '../../../services/logger-service';
 import styled from 'styled-components';
-import { Car, Truck, Bus, Bike, Caravan, CarFront } from 'lucide-react';
+import { Car, Truck, Bus, Bike, Caravan, Wrench } from 'lucide-react';
 import SplitScreenLayout from '../../../components/SplitScreenLayout';
 import { useAuth } from '../../../contexts/AuthProvider';
 import { useProfileType } from '../../../contexts/ProfileTypeContext';
@@ -51,25 +51,30 @@ const VehicleGrid = styled.div`
   }
 `;
 
-const VehicleOption = styled.div<{ $isHovered: boolean }>`
-  background: ${props => props.$isHovered
+const VehicleOption = styled.div<{ $isHovered: boolean; $disabled?: boolean }>`
+  background: ${props => props.$isHovered && !props.$disabled
     ? 'var(--accent-primary)'
     : 'var(--bg-secondary)'};
-  border: 2px solid ${props => props.$isHovered ? 'var(--accent-primary)' : 'var(--border)'};
+  border: 2px solid ${props => props.$isHovered && !props.$disabled ? 'var(--accent-primary)' : 'var(--border)'};
   border-radius: 16px;
   padding: 1.75rem 1.25rem;
   text-align: center;
-  cursor: pointer;
+  cursor: ${props => props.$disabled ? 'not-allowed' : 'pointer'};
   transition: all 0.3s ease;
-  color: ${props => props.$isHovered ? 'var(--text-inverse)' : 'var(--text-primary)'};
+  color: ${props => props.$isHovered && !props.$disabled ? 'var(--text-inverse)' : 'var(--text-primary)'};
+  opacity: ${props => props.$disabled ? 0.7 : 1};
 
   &:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-md);
+    ${props => !props.$disabled && `
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+    `}
   }
 
   &:active {
-    transform: scale(0.98);
+    ${props => !props.$disabled && `
+      transform: scale(0.98);
+    `}
   }
 `;
 
@@ -125,15 +130,27 @@ const VehicleStartPageNew: React.FC = () => {
   }, [location.search]);
 
   const vehicleTypes = [
-    { id: 'car', IconComponent: Car },
-    { id: 'suv', IconComponent: CarFront },
-    { id: 'van', IconComponent: Caravan },
-    { id: 'motorcycle', IconComponent: Bike },
-    { id: 'truck', IconComponent: Truck },
-    { id: 'bus', IconComponent: Bus }
+    { id: 'car', IconComponent: Car, disabled: false },
+    { id: 'van', IconComponent: Caravan, disabled: true },
+    { id: 'motorcycle', IconComponent: Bike, disabled: true },
+    { id: 'truck', IconComponent: Truck, disabled: true },
+    { id: 'bus', IconComponent: Bus, disabled: true },
+    { id: 'parts', IconComponent: Wrench, disabled: true }
   ];
 
-  const handleSelect = async (typeId: string) => {
+  const handleSelect = async (typeId: string, disabled?: boolean) => {
+    // If disabled, show "Coming Soon" message
+    if (disabled) {
+      toast.info(
+        language === 'bg' ? 'Скоро ще бъде налично' : 'Coming Soon',
+        {
+          autoClose: 3000,
+          position: 'top-center'
+        }
+      );
+      return;
+    }
+
     // Check monthly listing limits before proceeding
     const activeListings = (user as any)?.stats?.activeListings || 0;
     const maxListings = permissions.maxListings;
@@ -192,24 +209,40 @@ const VehicleStartPageNew: React.FC = () => {
           {vehicleTypes.map((vehicle) => {
             const IconComponent = vehicle.IconComponent;
             const isHovered = hoveredType === vehicle.id;
+            const isDisabled = vehicle.disabled || false;
 
             return (
               <VehicleOption
                 key={vehicle.id}
                 $isHovered={isHovered}
-                onClick={() => handleSelect(vehicle.id)}
-                onMouseEnter={() => setHoveredType(vehicle.id)}
+                $disabled={isDisabled}
+                onClick={() => handleSelect(vehicle.id, isDisabled)}
+                onMouseEnter={() => !isDisabled && setHoveredType(vehicle.id)}
                 onMouseLeave={() => setHoveredType(null)}
               >
                 <VehicleIconWrapper $isHovered={isHovered}>
                   <IconComponent />
                 </VehicleIconWrapper>
                 <VehicleLabel>
-                  {t(`sell.start.vehicleTypes.${vehicle.id}.title`)}
+                  {vehicle.id === 'parts' 
+                    ? (language === 'bg' ? 'Резервни части' : 'Car Parts')
+                    : t(`sell.start.vehicleTypes.${vehicle.id}.title`)}
                 </VehicleLabel>
                 <VehicleDesc>
-                  {t(`sell.start.vehicleTypes.${vehicle.id}.desc`)}
+                  {vehicle.id === 'parts'
+                    ? (language === 'bg' ? 'Резервни части и аксесоари' : 'Spare parts and accessories')
+                    : t(`sell.start.vehicleTypes.${vehicle.id}.desc`)}
                 </VehicleDesc>
+                {isDisabled && (
+                  <div style={{ 
+                    marginTop: '0.5rem', 
+                    fontSize: '0.875rem', 
+                    fontWeight: 600,
+                    color: '#6c757d'
+                  }}>
+                    {language === 'bg' ? 'Скоро' : 'Coming Soon'}
+                  </div>
+                )}
               </VehicleOption>
             );
           })}

@@ -131,7 +131,6 @@ export const useCarEdit = (
 
         try {
           uploadedUrls = await imageUploadService.uploadImages(carId, validPhotos);
-          console.log('✅ Photos uploaded successfully', { count: uploadedUrls.length, urls: uploadedUrls });
         } catch (uploadError) {
           console.error('❌ Failed to upload photos', uploadError);
           const errorMessage = uploadError instanceof Error ? uploadError.message : 'Unknown error';
@@ -142,7 +141,6 @@ export const useCarEdit = (
       // Step 2: Merge existing images with new ones
       const existingImages = car?.images || [];
       const updatedImages = [...existingImages, ...uploadedUrls];
-      console.log('🖼️ Merged images', { existing: existingImages.length, new: uploadedUrls.length, total: updatedImages.length });
 
       // Step 3: Save all changes
       const updatedCarData = {
@@ -152,7 +150,6 @@ export const useCarEdit = (
       console.log('💾 Updating car data', { carId, updates: Object.keys(updatedCarData), imagesCount: updatedImages.length });
 
       await unifiedCarService.updateCar(carId, updatedCarData);
-      console.log('✅ Car updated successfully');
       
       setIsEditMode(false);
       setPhotos([]);

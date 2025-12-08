@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import * as S from './styles';
 import { TabNavigation, TabNavLink, SyncButton, FollowButton } from './TabNavigation.styles';
-import { CoverImageUploader, BusinessBackground, SimpleProfileAvatar } from '../../../../components/Profile';
+import { CoverImageUploader, BusinessBackground, SimpleProfileAvatar, ProfileImageUploader } from '../../../../components/Profile';
 import { googleProfileSyncService } from '../../../../services/google/google-profile-sync.service';
 import { followService } from '../../../../services/social/follow.service';
 import { logger } from '../../../../services/logger-service';
@@ -193,21 +193,89 @@ const ProfilePageWrapper: React.FC = () => {
           )}
         </TabNavigation>
         
-        {/* Cover Image - Only on main /profile page */}
-        {window.location.pathname.replace(/\/$/, '') === basePath.replace(/\/$/, '') && isOwnProfile && (
-          <CoverImageUploader
-            currentImageUrl={activeProfile.coverImage?.url}
-            themeColor={theme.primary}
-            onUploadSuccess={(url) => {
-              setUser(prev => prev ? { 
-                ...prev, 
-                coverImage: { url, uploadedAt: new Date() } 
-              } : null);
-            }}
-            onUploadError={(error) => {
-              logger.error('Cover error:', error);
-            }}
-          />
+        {/* Cover Image + Profile Picture - Only on main /profile page */}
+        {window.location.pathname.replace(/\/$/, '') === basePath.replace(/\/$/, '') && (
+          <S.CoverAndProfileWrapper>
+            {/* Cover Image */}
+            {isOwnProfile && (
+              <CoverImageUploader
+                currentImageUrl={typeof activeProfile.coverImage === 'string' ? activeProfile.coverImage : activeProfile.coverImage?.url}
+                themeColor={theme.primary}
+                onUploadSuccess={(url) => {
+                  setUser(prev => prev ? { 
+                    ...prev, 
+                    coverImage: url
+                  } : null);
+                }}
+                onUploadError={(error) => {
+                  logger.error('Cover error', error as Error);
+                }}
+              />
+            )}
+            
+            {/* Centered Profile Picture */}
+            <S.CenteredProfileImageWrapper>
+              <ProfileImageUploader
+                currentImageUrl={typeof activeProfile?.photoURL === 'string' ? activeProfile.photoURL : undefined}
+                onUploadSuccess={() => window.location.reload()}
+                onUploadError={(err) => alert(err)}
+              />
+            </S.CenteredProfileImageWrapper>
+          </S.CoverAndProfileWrapper>
+        )}
+        
+        {/* User Info Bar with Name and Stats */}
+        {window.location.pathname.replace(/\/$/, '') === basePath.replace(/\/$/, '') && (
+          <S.UserInfoBar>
+            <S.UserInfoLeft>
+              <S.UserName>
+                {activeProfile.displayName || (language === 'bg' ? 'Анонимен' : 'Anonymous')}
+              </S.UserName>
+              <S.UserEmail>{activeProfile.email}</S.UserEmail>
+            </S.UserInfoLeft>
+            
+            <S.UserInfoCenter>
+              <S.StatBox>
+                <span className="number">{activeProfile.stats?.totalViews || 0}</span>
+                <span className="label">{language === 'bg' ? 'Прегледи' : 'Views'}</span>
+              </S.StatBox>
+              <S.StatBox>
+                <span className="number">{activeProfile.stats?.activeListings || 0}</span>
+                <span className="label">{language === 'bg' ? 'Обяви' : 'Listings'}</span>
+              </S.StatBox>
+              <S.StatBox>
+                <span className="number">{activeProfile.stats?.trustScore || 0}%</span>
+                <span className="label">{language === 'bg' ? 'Доверие' : 'Trust'}</span>
+              </S.StatBox>
+            </S.UserInfoCenter>
+            
+            <S.UserInfoRight>
+              {isOwnProfile ? (
+                <S.ActionButton $variant="secondary" onClick={handleGoogleSync}>
+                  <RefreshCw size={16} className={syncing ? 'spinning' : ''} />
+                  {syncing 
+                    ? (language === 'bg' ? 'Синхронизиране...' : 'Syncing...') 
+                    : (language === 'bg' ? 'Синхронизирай' : 'Sync')}
+                </S.ActionButton>
+              ) : (
+                <>
+                  <FollowButton 
+                    onClick={handleFollow} 
+                    disabled={followLoading}
+                    $following={isFollowing}
+                  >
+                    {isFollowing 
+                      ? (language === 'bg' ? 'Последван' : 'Following')
+                      : (language === 'bg' ? 'Последвай' : 'Follow')}
+                  </FollowButton>
+                  <S.ActionButton $variant="primary" onClick={handleMessage}>
+                    <PhoneIcon size={16} />
+                    {language === 'bg' ? 'Съобщение' : 'Message'}
+                  </S.ActionButton>
+                </>
+              )}
+            </S.UserInfoRight>
+          </S.UserInfoBar>
         )}
         
         {/* ⚡ HIDDEN: Old Profile Header - Will be merged into ProfileDashboard */}

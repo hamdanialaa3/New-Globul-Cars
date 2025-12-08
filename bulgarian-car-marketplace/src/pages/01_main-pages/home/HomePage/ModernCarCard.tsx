@@ -4,7 +4,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { UnifiedCar } from '../../../../services/car';
-import { Ruler, Fuel, Settings, MapPin, Heart } from 'lucide-react';
+import { Ruler, Fuel, Settings, MapPin } from 'lucide-react';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { useTheme } from '../../../../contexts/ThemeContext';
 import GlobulCarLogo from '../../../../components/icons/GlobulCarLogo';
@@ -96,37 +96,6 @@ const StatusBadge = styled.div<{ type: 'new' | 'used' | 'featured' }>`
   }
 `;
 
-const FavoriteButton = styled.button<{ $isDark: boolean }>`
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: var(--bg-card);
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  z-index: 2;
-  box-shadow: var(--shadow-sm);
-  color: var(--text-primary);
-
-  &:hover {
-    transform: scale(1.1);
-    background: var(--bg-hover);
-    color: var(--error);
-  }
-
-  @media (max-width: 768px) {
-    width: 36px;
-    height: 36px;
-    top: 12px;
-    right: 12px;
-  }
-`;
 
 const CardContent = styled.div`
   padding: 20px;
@@ -288,35 +257,6 @@ const PriceLabel = styled.div`
   }
 `;
 
-const ViewButton = styled.button`
-  background: var(--btn-primary-bg);
-  color: var(--btn-primary-text);
-  border: none;
-  padding: 12px 24px;
-  border-radius: 12px;
-  font-size: 0.9375rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: var(--shadow-button);
-  white-space: nowrap;
-
-  &:hover {
-    background: var(--btn-primary-hover);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-  }
-
-  &:active {
-    transform: translateY(0);
-  }
-
-  @media (max-width: 768px) {
-    padding: 10px 20px;
-    font-size: 0.875rem;
-    border-radius: 10px;
-  }
-`;
 
 const LocationBadge = styled.div<{ $isDark: boolean }>`
   display: flex;
@@ -361,13 +301,6 @@ const ModernCarCard: React.FC<ModernCarCardProps> = ({
 
   const handleCardClick = () => {
     navigate(`/car/${car.id}`);
-  };
-
-  const handleFavoriteClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (onFavorite) {
-      onFavorite(car.id);
-    }
   };
 
   const formatPrice = (price: number): string => {
@@ -451,10 +384,6 @@ const ModernCarCard: React.FC<ModernCarCardProps> = ({
             {getStatusLabel()}
           </StatusBadge>
         )}
-
-        <FavoriteButton onClick={handleFavoriteClick} $isDark={isDark}>
-          <Heart size={18} />
-        </FavoriteButton>
       </ImageContainer>
 
       <CardContent>
@@ -494,10 +423,9 @@ const ModernCarCard: React.FC<ModernCarCardProps> = ({
 
         <PriceSection>
           <PriceContainer>
-            <Price>{formatPrice(car.price || 0)}</Price>
-            <PriceLabel>{language === 'bg' ? 'Крайна цена' : 'Final Price'}</PriceLabel>
+            <Price>{formatPrice((car as any).netPrice || (car as any).finalPrice || car.price || 0)}</Price>
+            <PriceLabel>{language === 'bg' ? 'Нето цена' : 'Net Price'}</PriceLabel>
           </PriceContainer>
-          <ViewButton>{language === 'bg' ? 'Виж детайли' : 'View Details'}</ViewButton>
         </PriceSection>
       </CardContent>
     </CardContainer>

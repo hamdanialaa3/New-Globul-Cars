@@ -231,30 +231,6 @@ const LoadingState = styled.div`
   color: var(--text-secondary);
 `;
 
-const ViewAllButton = styled(Link)`
-  display: inline-block;
-  margin: 2rem auto 0;
-  padding: 0.875rem 2rem;
-  background: linear-gradient(135deg, #FF8F10, #FFDF00);
-  color: #000;
-  text-decoration: none;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 1rem;
-  transition: all 0.3s ease;
-  text-align: center;
-  box-shadow: 0 4px 12px rgba(255, 143, 16, 0.3);
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(255, 143, 16, 0.4);
-  }
-`;
-
-const ButtonWrapper = styled.div`
-  text-align: center;
-  margin-top: 2rem;
-`;
 
 const FeaturedCars: React.FC<FeaturedCarsProps> = ({
   limit = 4, // ⚡ OPTIMIZED: Changed default from 8 to 4
@@ -264,7 +240,6 @@ const FeaturedCars: React.FC<FeaturedCarsProps> = ({
   const navigate = useNavigate();
   const [cars, setCars] = useState<UnifiedCar[]>([]);
   const [loading, setLoading] = useState(true);
-  const [displayCount, setDisplayCount] = useState(limit); // ⚡ OPTIMIZED: Use limit as initial display count
 
   useEffect(() => {
     loadFeaturedCars();
@@ -318,11 +293,7 @@ const FeaturedCars: React.FC<FeaturedCarsProps> = ({
     return price < 15000;
   };
 
-  const handleLoadMore = () => {
-    setDisplayCount(prev => prev + 8);
-  };
-
-  const visibleCars = cars.slice(0, displayCount);
+  const visibleCars = cars.slice(0, limit);
 
   if (loading) {
     return (
@@ -448,26 +419,6 @@ const FeaturedCars: React.FC<FeaturedCarsProps> = ({
           </CarCard>
         ))}
       </FeaturedCarsContainer>
-
-      {displayCount < cars.length && (
-        <ButtonWrapper>
-          <ViewAllButton 
-            as="button" 
-            onClick={handleLoadMore}
-            style={{ cursor: 'pointer', border: 'none' }}
-          >
-            {language === 'bg' ? 'Покажи още автомобили' : 'Load More Cars'} →
-          </ViewAllButton>
-        </ButtonWrapper>
-      )}
-      
-      {displayCount >= cars.length && cars.length > 0 && (
-        <ButtonWrapper>
-          <ViewAllButton to="/cars">
-            {language === 'bg' ? 'Виж всички автомобили' : 'View All Cars'} →
-          </ViewAllButton>
-        </ButtonWrapper>
-      )}
     </>
   );
 };
