@@ -29,6 +29,18 @@ const Card = styled.div`
     background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
     border-radius: 50%;
   }
+  
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    border-color: rgba(148, 163, 184, 0.2);
+    
+    &::before {
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+    }
+  }
+  
+  transition: background 0.3s ease, border-color 0.3s ease;
 `;
 
 const Header = styled.div`
@@ -70,12 +82,26 @@ const PlanName = styled.h3`
   font-weight: 700;
   color: #0f172a;
   margin: 0 0 4px 0;
+  
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    color: #f8fafc;
+  }
+  
+  transition: color 0.3s ease;
 `;
 
 const PlanTier = styled.span`
   font-size: 0.875rem;
   color: #64748b;
   font-weight: 500;
+  
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    color: #cbd5e1;
+  }
+  
+  transition: color 0.3s ease;
 `;
 
 const UpgradeButton = styled.button`
@@ -116,6 +142,15 @@ const Stat = styled.div`
   padding: 16px;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    background: rgba(30, 41, 59, 0.6);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+  
+  transition: background 0.3s ease, border-color 0.3s ease;
 `;
 
 const StatLabel = styled.div`
@@ -123,18 +158,39 @@ const StatLabel = styled.div`
   color: #64748b;
   margin-bottom: 8px;
   font-weight: 500;
+  
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    color: #cbd5e1;
+  }
+  
+  transition: color 0.3s ease;
 `;
 
 const StatValue = styled.div`
   font-size: 1.75rem;
   font-weight: 700;
   color: #0f172a;
+  
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    color: #f8fafc;
+  }
+  
+  transition: color 0.3s ease;
 `;
 
 const StatExtra = styled.div`
   font-size: 0.75rem;
   color: #94a3b8;
   margin-top: 4px;
+  
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    color: #94a3b8;
+  }
+  
+  transition: color 0.3s ease;
 `;
 
 const FreeBadge = styled.div`

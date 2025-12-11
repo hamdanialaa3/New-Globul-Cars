@@ -17,7 +17,8 @@ import {
   Shield,
   AlertCircle,
   CheckCircle,
-  Loader
+  Loader,
+  Check
 } from 'lucide-react';
 import { useTranslation } from '../../../../hooks/useTranslation';
 import { useLogin } from './hooks/useLogin';
@@ -84,6 +85,16 @@ const GlassWrapper = styled.div`
   z-index: 10;
   animation: ${fadeIn} 0.6s ease;
 
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    background: rgba(30, 41, 59, 0.95);
+    border-color: rgba(148, 163, 184, 0.3);
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.6),
+      0 4px 16px rgba(255, 143, 16, 0.2);
+  }
+  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+
   @media (max-width: 768px) {
     max-width: 100%;
     padding: 30px 20px;
@@ -95,13 +106,56 @@ const GlassWrapper = styled.div`
   }
 `;
 
+const TitleWrapper = styled.div`
+  position: relative;
+  text-align: center;
+  margin-bottom: 12px;
+  padding: 20px 0;
+  animation: ${slideIn} 0.6s ease;
+`;
+
+const LogoBackground = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 250px;
+  height: 250px;
+  opacity: 0.08;
+  background-image: url('/Logo1.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  pointer-events: none;
+  z-index: 0;
+
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    opacity: 0.12;
+    filter: brightness(1.2);
+  }
+
+  @media (max-width: 480px) {
+    width: 180px;
+    height: 180px;
+  }
+`;
+
 const Title = styled.h1`
   font-size: 42px;
   font-weight: 700;
   text-align: center;
   color: #2c3e50;
-  margin-bottom: 12px;
+  margin: 0;
+  position: relative;
+  z-index: 1;
   animation: ${slideIn} 0.6s ease;
+
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    color: #f8fafc;
+  }
+  transition: color 0.3s ease;
 
   @media (max-width: 768px) {
     font-size: 36px;
@@ -117,7 +171,16 @@ const Subtitle = styled.p`
   color: #6c757d;
   font-size: 15px;
   margin-bottom: 30px;
+  margin-top: 0;
+  position: relative;
+  z-index: 1;
   animation: ${slideIn} 0.6s ease 0.1s backwards;
+
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    color: #cbd5e1;
+  }
+  transition: color 0.3s ease;
 
   @media (max-width: 480px) {
     font-size: 14px;
@@ -173,6 +236,28 @@ const Input = styled.input<{ $verified?: boolean }>`
     cursor: not-allowed;
   }
 
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    background: ${props => props.$verified ? '#334155' : 'rgba(255, 255, 255, 0.05)'};
+    border-color: ${props => props.$verified ? '#475569' : 'rgba(148, 163, 184, 0.2)'};
+    color: ${props => props.$verified ? '#94a3b8' : '#f8fafc'};
+    
+    &::placeholder {
+      color: ${props => props.$verified ? '#64748b' : 'rgba(203, 213, 225, 0.5)'};
+    }
+
+    &:focus {
+      border-color: ${props => props.$verified ? '#475569' : '#FF8F10'};
+      background: ${props => props.$verified ? '#334155' : 'rgba(255, 143, 16, 0.1)'};
+      box-shadow: ${props => props.$verified ? 'none' : '0 0 20px rgba(255, 143, 16, 0.3)'};
+    }
+
+    &:disabled {
+      background: #334155;
+      color: #64748b;
+    }
+  }
+
   @media (max-width: 480px) {
     height: 48px;
     font-size: 15px;
@@ -190,6 +275,16 @@ const InputIcon = styled.div`
   &:hover {
     color: #2c3e50;
   }
+
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    color: #94a3b8;
+    
+    &:hover {
+      color: #f8fafc;
+    }
+  }
+  transition: color 0.3s ease;
 `;
 
 const RememberForgot = styled.div`
@@ -211,15 +306,85 @@ const RememberForgot = styled.div`
 const RememberLabel = styled.label`
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   color: #495057;
   cursor: pointer;
+  user-select: none;
+  position: relative;
 
+  /* Hide default checkbox */
   input[type="checkbox"] {
-    accent-color: #FF8F10;
-    width: 16px;
-    height: 16px;
+    position: absolute;
+    opacity: 0;
     cursor: pointer;
+    width: 0;
+    height: 0;
+  }
+
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    color: #cbd5e1;
+  }
+  transition: color 0.3s ease;
+`;
+
+const CustomCheckbox = styled.div<{ $checked: boolean }>`
+  position: relative;
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  min-height: 22px;
+  border-radius: 6px;
+  border: 2px solid ${props => props.$checked ? '#22c55e' : 'rgba(0, 0, 0, 0.2)'};
+  background: ${props => props.$checked 
+    ? 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)' 
+    : 'transparent'};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: ${props => props.$checked 
+    ? '0 4px 12px rgba(34, 197, 94, 0.3)' 
+    : '0 2px 4px rgba(0, 0, 0, 0.1)'};
+
+  /* Check icon */
+  svg {
+    width: 14px;
+    height: 14px;
+    color: white;
+    opacity: ${props => props.$checked ? 1 : 0};
+    transform: ${props => props.$checked ? 'scale(1) rotate(0deg)' : 'scale(0.5) rotate(-45deg)'};
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Hover effect */
+  &:hover {
+    border-color: ${props => props.$checked ? '#16a34a' : '#22c55e'};
+    background: ${props => props.$checked 
+      ? 'linear-gradient(135deg, #16a34a 0%, #15803d 100%)' 
+      : 'rgba(34, 197, 94, 0.1)'};
+    transform: scale(1.05);
+    box-shadow: ${props => props.$checked 
+      ? '0 6px 16px rgba(34, 197, 94, 0.4)' 
+      : '0 4px 8px rgba(34, 197, 94, 0.2)'};
+  }
+
+  /* Active/pressed effect */
+  &:active {
+    transform: scale(0.95);
+  }
+
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    border-color: ${props => props.$checked ? '#22c55e' : 'rgba(148, 163, 184, 0.3)'};
+    
+    &:hover {
+      border-color: ${props => props.$checked ? '#16a34a' : '#22c55e'};
+      background: ${props => props.$checked 
+        ? 'linear-gradient(135deg, #16a34a 0%, #15803d 100%)' 
+        : 'rgba(34, 197, 94, 0.15)'};
+    }
   }
 `;
 
@@ -306,6 +471,19 @@ const Divider = styled.div`
     white-space: nowrap;
   }
 
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    &::before,
+    &::after {
+      background: rgba(148, 163, 184, 0.3);
+    }
+
+    span {
+      color: #94a3b8;
+    }
+  }
+  transition: all 0.3s ease;
+
   @media (max-width: 480px) {
     margin: 20px 0;
     span {
@@ -373,6 +551,23 @@ const SocialButton = styled.button`
     cursor: not-allowed;
   }
 
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(148, 163, 184, 0.2);
+    color: #cbd5e1;
+
+    &:hover:not(:disabled) {
+      background: rgba(255, 143, 16, 0.15);
+      border-color: #FF8F10;
+      color: #FF8F10;
+    }
+
+    &:active:not(:disabled) {
+      background: rgba(255, 143, 16, 0.2);
+    }
+  }
+
   @media (max-width: 480px) {
     font-size: 14px;
     padding: 12px;
@@ -399,6 +594,23 @@ const GuestButton = styled(SocialButton)`
     transform: scale(0.98);
     background: rgba(255, 143, 16, 0.25);
   }
+
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    background: rgba(255, 143, 16, 0.15);
+    border-color: #FF8F10;
+    color: #FF8F10;
+
+    &:hover:not(:disabled) {
+      background: rgba(255, 143, 16, 0.25);
+      border-color: #ffa647;
+      color: #ffa647;
+    }
+
+    &:active:not(:disabled) {
+      background: rgba(255, 143, 16, 0.3);
+    }
+  }
 `;
 
 const RegisterLink = styled.div`
@@ -419,6 +631,20 @@ const RegisterLink = styled.div`
       text-decoration: underline;
     }
   }
+
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    color: #cbd5e1;
+
+    a {
+      color: #FF8F10;
+
+      &:hover {
+        color: #ffa647;
+      }
+    }
+  }
+  transition: color 0.3s ease;
 
   @media (max-width: 480px) {
     font-size: 13px;
@@ -445,6 +671,20 @@ const Message = styled.div<{ $type: 'error' | 'success' }>`
     color: #16a34a;
   `}
 
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    ${props => props.$type === 'error' ? `
+      background: rgba(239, 68, 68, 0.2);
+      border-color: rgba(239, 68, 68, 0.6);
+      color: #f87171;
+    ` : `
+      background: rgba(34, 197, 94, 0.2);
+      border-color: rgba(34, 197, 94, 0.6);
+      color: #4ade80;
+    `}
+  }
+  transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+
   @media (max-width: 480px) {
     font-size: 13px;
     padding: 10px 14px;
@@ -463,6 +703,13 @@ const SecurityBadge = styled.div`
   color: #6c757d;
   font-size: 12px;
   animation: ${slideIn} 0.6s ease 0.8s backwards;
+
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    background: rgba(255, 255, 255, 0.05);
+    color: #94a3b8;
+  }
+  transition: background 0.3s ease, color 0.3s ease;
 
   @media (max-width: 480px) {
     font-size: 11px;
@@ -503,7 +750,14 @@ const LoginPageGlassFixed: React.FC = () => {
       />
       
       <GlassWrapper>
-        <Title>{language === 'bg' ? 'Влезте' : 'Login'}</Title>
+        <TitleWrapper>
+          <LogoBackground />
+          <Title>
+            {language === 'bg' 
+              ? 'Влезте с Mobili' 
+              : 'Login with Mobili'}
+          </Title>
+        </TitleWrapper>
         <Subtitle>
           {language === 'bg' 
             ? 'Добре дошли обратно в Bulgarian Car Marketplace' 
@@ -566,7 +820,10 @@ const LoginPageGlassFixed: React.FC = () => {
                 onChange={handleInputChange}
                 disabled={loading}
               />
-              {language === 'bg' ? 'Запомни ме' : 'Remember me'}
+              <CustomCheckbox $checked={formData.rememberMe}>
+                <Check size={14} strokeWidth={3} />
+              </CustomCheckbox>
+              <span>{language === 'bg' ? 'Запомни ме' : 'Remember me'}</span>
             </RememberLabel>
             <ForgotLink to="/forgot-password">
               {language === 'bg' ? 'Забравена парола?' : 'Forgot password?'}

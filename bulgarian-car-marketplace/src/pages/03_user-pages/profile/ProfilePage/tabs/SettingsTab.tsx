@@ -20,6 +20,7 @@ import {
   Camera, X
 } from 'lucide-react';
 import { IDCardOverlay, IDCardData } from '../../../../../components/Profile/IDCardEditor';
+import ProfileImageUploader from '../../../../../components/Profile/ProfileImageUploader';
 import { ProfileService } from '../../../../../services/profile/ProfileService';
 import { unifiedCarService } from '../../../../../services/car/unified-car.service';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
@@ -29,10 +30,12 @@ import { toast } from 'react-toastify';
 interface SettingsTabProps {
   user: BulgarianUser | null;
   theme: ProfileTheme;
+  refresh?: () => Promise<void>;
+  setUser?: React.Dispatch<React.SetStateAction<BulgarianUser | null>>;
 }
 
 // Main Settings Tab Component
-export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme }) => {
+export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, setUser }) => {
   const { t, language } = useLanguage();
   const { currentUser } = useAuth();
   const { theme: appTheme } = useTheme();
@@ -414,45 +417,39 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme }) => {
       <SettingsLayout>
         {/* Left Sidebar Navigation */}
         <Sidebar $isDark={isDark}>
-          {/* Profile Photo Section */}
+          {/* Profile Photo Section - Using same ProfileImageUploader as main profile page */}
           <AvatarSection $isDark={isDark}>
-            <AvatarContainer $isDark={isDark}>
-              <AvatarImage 
-                src={photoPreview || user?.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.displayName || 'User')}&background=FF7900&color=fff&size=128`}
-                alt={user?.displayName || 'Profile'}
-                $isDark={isDark}
-              />
-              {uploadingPhoto && (
-                <UploadingOverlay>
-                  <Spinner />
-                </UploadingOverlay>
-              )}
-              <AvatarEditButton 
-                $isDark={isDark}
-                onClick={() => document.getElementById('photo-upload-input')?.click()}
-                disabled={uploadingPhoto}
-              >
-                <Camera size={16} />
-              </AvatarEditButton>
-              {user?.photoURL && !uploadingPhoto && (
-                <AvatarDeleteButton 
-                  $isDark={isDark}
-                  onClick={handleDeletePhoto}
-                  title={language === 'bg' ? 'Изтрий снимка' : 'Delete photo'}
-                >
-                  <X size={14} />
-                </AvatarDeleteButton>
-              )}
-            </AvatarContainer>
+            <ProfileImageUploader
+              currentImageUrl={typeof user?.photoURL === 'string' ? user.photoURL : (typeof user?.profileImage === 'object' ? user.profileImage?.url : undefined)}
+              onUploadSuccess={(url) => {
+                // Update local state immediately if setUser is available
+                if (setUser) {
+                  setUser(prev => prev ? { 
+                    ...prev, 
+                    photoURL: url,
+                    profileImage: url ? { url, uploadedAt: new Date() } : undefined
+                  } : null);
+                }
+                // Refresh profile data if refresh is available
+                if (refresh) {
+                  refresh();
+                } else {
+                  // Fallback: reload page
+                  setTimeout(() => {
+                    window.location.reload();
+                  }, 500);
+                }
+              }}
+              onUploadError={(err) => {
+                logger.error('Profile image upload error in settings', err as Error);
+                toast.error(
+                  language === 'bg' ? `Грешка при качване: ${err}` : `Upload error: ${err}`,
+                  { autoClose: 3000 }
+                );
+              }}
+            />
             <AvatarName $isDark={isDark}>{user?.displayName || 'User'}</AvatarName>
             <AvatarEmail $isDark={isDark}>{user?.email || ''}</AvatarEmail>
-            <HiddenInput
-              id="photo-upload-input"
-              type="file"
-              accept="image/*"
-              onChange={handlePhotoUpload}
-              disabled={uploadingPhoto}
-            />
           </AvatarSection>
 
           <SidebarTitle $isDark={isDark}>{t('settings.title', 'Settings')}</SidebarTitle>
@@ -1334,6 +1331,11 @@ const AvatarSection = styled.div<{ $isDark?: boolean }>`
   padding: 20px 0;
   margin-bottom: 24px;
   border-bottom: 2px solid ${props => props.$isDark ? 'var(--border-primary)' : 'var(--border-primary)'};
+  
+  /* Style for ProfileImageUploader inside */
+  > div {
+    margin-bottom: 12px;
+  }
   
   @media (max-width: 968px) {
     padding: 16px 0;

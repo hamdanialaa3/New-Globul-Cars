@@ -1,7 +1,7 @@
 // SharedCarForm.tsx - ???? ????? ??????? ??????? (??? + ???)
 // Mobile.de inspired design with Bulgarian localization
 
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from '../../locales/useTranslation';
 import { BULGARIAN_CITIES } from '../../constants/bulgarianCities';
@@ -413,6 +413,25 @@ const SharedCarForm: React.FC<SharedCarFormProps> = ({
   className
 }) => {
   const { t } = useTranslation();
+  const previewUrlsRef = useRef<Map<number, string>>(new Map());
+
+  // Cleanup preview URLs
+  useEffect(() => {
+    if (!data.images) return;
+    
+    previewUrlsRef.current.forEach(url => URL.revokeObjectURL(url));
+    previewUrlsRef.current.clear();
+    
+    data.images.forEach((image, index) => {
+      const url = URL.createObjectURL(image);
+      previewUrlsRef.current.set(index, url);
+    });
+    
+    return () => {
+      previewUrlsRef.current.forEach(url => URL.revokeObjectURL(url));
+      previewUrlsRef.current.clear();
+    };
+  }, [data.images]);
   
   // Section visibility state
   const [openSections, setOpenSections] = React.useState<Record<string, boolean>>({
@@ -1004,7 +1023,7 @@ const SharedCarForm: React.FC<SharedCarFormProps> = ({
                 {data.images.map((image, index) => (
                   <PreviewImage key={index}>
                     <img 
-                      src={URL.createObjectURL(image)} 
+                      src={previewUrlsRef.current.get(index) || ''} 
                       alt={`Preview ${index + 1}`} 
                     />
                     <button 

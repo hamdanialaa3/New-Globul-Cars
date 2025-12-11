@@ -1,9 +1,11 @@
 import React from 'react';
-import { Outlet, useNavigate, useParams } from 'react-router-dom';
+import { Outlet, useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useTranslation } from '../../../../hooks/useTranslation';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { useProfile } from './hooks/useProfile';
 import { useProfileType } from '../../../../contexts/ProfileTypeContext';
+import { useAuth } from '../../../../contexts/AuthProvider';
+import { AuthGuard } from '../../../../components/guards/AuthGuard';
 import {
   UserCircle,
   Car,
@@ -37,11 +39,16 @@ const ProfilePageWrapper: React.FC = () => {
   const { t } = useTranslation();
   const { language } = useLanguage();
   const navigate = useNavigate();
+  const location = useLocation();
   const params = useParams<{ userId?: string }>();
   const { profileType, theme } = useProfileType();
+  const { currentUser } = useAuth();
   
   // Get target user ID from URL route parameter
   const targetUserId = params.userId;
+  
+  // Check if user is trying to access their own profile without being logged in
+  const isAccessingOwnProfile = !targetUserId || location.pathname === '/profile' || location.pathname === '/profile/';
   
   const {
     user,
@@ -111,6 +118,15 @@ const ProfilePageWrapper: React.FC = () => {
     }
   };
   
+  // ⚡ AUTHENTICATION CHECK: If accessing own profile without login, show AuthGuard
+  if (isAccessingOwnProfile && !currentUser) {
+    return (
+      <AuthGuard requireAuth={true} showMessage={true}>
+        <div />
+      </AuthGuard>
+    );
+  }
+  
   if (loading) {
     return (
       <div style={{ padding: '40px', textAlign: 'center' }}>
@@ -120,10 +136,30 @@ const ProfilePageWrapper: React.FC = () => {
   }
 
   if (error && !activeProfile) {
+    // If trying to view another user's profile and it doesn't exist, show error
+    if (targetUserId && !target) {
+      return (
+        <div style={{ padding: '40px', textAlign: 'center' }}>
+          <h2>{language === 'bg' ? 'Потребителят не е намерен' : 'User not found'}</h2>
+          <p style={{ marginTop: '16px', color: '#6c757d' }}>
+            {language === 'bg' ? 'Профилът, който търсите, не съществува.' : 'The profile you are looking for does not exist.'}
+          </p>
+        </div>
+      );
+    }
     return (
       <div style={{ padding: '40px', textAlign: 'center' }}>
         {error}
       </div>
+    );
+  }
+
+  // If accessing own profile and no active profile found, wait for loading
+  if (isAccessingOwnProfile && !activeProfile && !loading) {
+    return (
+      <AuthGuard requireAuth={true} showMessage={true}>
+        <div />
+      </AuthGuard>
     );
   }
 
@@ -216,9 +252,21 @@ const ProfilePageWrapper: React.FC = () => {
             {/* Centered Profile Picture */}
             <S.CenteredProfileImageWrapper>
               <ProfileImageUploader
-                currentImageUrl={typeof activeProfile?.photoURL === 'string' ? activeProfile.photoURL : undefined}
-                onUploadSuccess={() => window.location.reload()}
-                onUploadError={(err) => alert(err)}
+                currentImageUrl={typeof activeProfile?.photoURL === 'string' ? activeProfile.photoURL : (typeof activeProfile?.profileImage === 'object' ? activeProfile.profileImage?.url : undefined)}
+                onUploadSuccess={(url) => {
+                  // Update local state immediately
+                  setUser(prev => prev ? { 
+                    ...prev, 
+                    photoURL: url,
+                    profileImage: url ? { url, uploadedAt: new Date() } : undefined
+                  } : null);
+                  // Refresh profile data
+                  refresh();
+                }}
+                onUploadError={(err) => {
+                  logger.error('Profile image upload error', err as Error);
+                  alert(language === 'bg' ? `Грешка при качване: ${err}` : `Upload error: ${err}`);
+                }}
               />
             </S.CenteredProfileImageWrapper>
           </S.CoverAndProfileWrapper>
@@ -284,7 +332,7 @@ const ProfilePageWrapper: React.FC = () => {
         )}
         
         {/* Content Area - React Router will render child routes here */}
-        <Outlet context={{ user: activeProfile, viewer, isOwnProfile, theme, userCars }} />
+        <Outlet context={{ user: activeProfile, viewer, isOwnProfile, theme, userCars, refresh, setUser }} />
       </S.PageContainer>
     </S.ProfilePageContainer>
   );

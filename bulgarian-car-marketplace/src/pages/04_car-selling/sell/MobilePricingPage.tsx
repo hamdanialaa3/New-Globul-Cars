@@ -153,7 +153,7 @@ const MobilePricingPage: React.FC = () => {
           onClick={handleContinue}
           disabled={!canContinue}
         >
-          {t('sell.start.continue')}
+          {t('common.next')}
         </S.PrimaryButton>
       </S.StickyFooter>
     </S.PageWrapper>

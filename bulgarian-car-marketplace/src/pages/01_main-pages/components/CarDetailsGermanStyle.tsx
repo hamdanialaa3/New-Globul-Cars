@@ -14,7 +14,7 @@
  * - Additional services
  */
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -1642,7 +1642,7 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
                     <MainImage 
                       src={typeof images[selectedImageIndex] === 'string' 
                         ? String(images[selectedImageIndex])
-                        : URL.createObjectURL(images[selectedImageIndex])}
+                        : previewUrlsRef.current.get(selectedImageIndex) || ''}
                       alt={`${car.make} ${car.model}`}
                     />
                     {images.length > 1 && (
@@ -1665,7 +1665,7 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
                         onClick={() => setSelectedImageIndex(index)}
                       >
                         <img 
-                          src={typeof image === 'string' ? String(image) : URL.createObjectURL(image)}
+                          src={typeof image === 'string' ? String(image) : previewUrlsRef.current.get(index) || ''}
                           alt={`Thumbnail ${index + 1}`}
                         />
                       </Thumbnail>

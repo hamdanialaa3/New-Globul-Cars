@@ -320,7 +320,7 @@ export const MobileVehicleStartPage: React.FC = () => {
           onClick={handleContinue}
           disabled={!selectedType}
         >
-          {t('sell.start.continue')}
+          {t('common.next')}
         </ContinueButton>
       </StickyFooter>
     </PageWrapper>

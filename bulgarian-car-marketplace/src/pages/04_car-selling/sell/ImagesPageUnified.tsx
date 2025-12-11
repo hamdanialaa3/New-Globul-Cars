@@ -13,6 +13,7 @@ import { ImageStorageService } from '../../../services/ImageStorageService';
 import { useIsMobile } from '../../../hooks/useBreakpoint';
 import { Upload, X, Image as ImageIcon, Video, Box } from 'lucide-react';
 import { toast } from 'react-toastify';
+import { WorkflowPageLayout } from '../../../components/sell-workflow/WorkflowPageLayout';
 
 // Mobile Styles
 const MobileContainer = styled.div`
@@ -1060,7 +1061,7 @@ const ImagesPage: React.FC = () => {
                 disabled={imageFiles.length === 0}
                 style={{ flex: 1 }}
               >
-                {t('common.continue')}
+                {t('common.next')}
               </MobilePrimaryButton>
             </div>
           </MobileStickyFooter>
@@ -1069,18 +1070,13 @@ const ImagesPage: React.FC = () => {
     );
   }
 
-  return (
-    <DesktopContainer>
-      <ProgressWrapper isMobile={false}>
-        <SellProgressBar currentStep="images" />
-      </ProgressWrapper>
-      <DesktopContent>
-        <DesktopHeader>
-          <DesktopTitle>{t('sell.images.title')}</DesktopTitle>
-        </DesktopHeader>
-
-        {/* Three Equal Sections Grid */}
-        <SectionsGrid $isMobile={false}>
+  // Desktop Layout with WorkflowPageLayout
+  const progressBar = <SellProgressBar currentStep="images" />;
+  
+  const pageContent = (
+    <>
+      {/* Three Equal Sections Grid */}
+      <SectionsGrid $isMobile={false}>
           {/* Images Section */}
           <ImagesSectionCard $isMobile={false}>
             <ImagesSectionTitle $isMobile={false}>
@@ -1170,24 +1166,37 @@ const ImagesPage: React.FC = () => {
               <Model3DDescription>{t('sell.images.model3d.description')}</Model3DDescription>
             </Model3DPlaceholder>
           </Model3DSection>
-        </SectionsGrid>
-
-        <DesktopActions>
-          <div>
-            <DeleteDraftButton currentStep={4} isMobile={false} />
-            <DesktopButton onClick={handleBack}>
-              {t('common.back')}
-            </DesktopButton>
-          </div>
-          <DesktopPrimaryButton
-            onClick={handleContinue}
-            disabled={imageFiles.length === 0}
-          >
-            {t('common.continue')}
-          </DesktopPrimaryButton>
-        </DesktopActions>
-      </DesktopContent>
-    </DesktopContainer>
+      </SectionsGrid>
+    </>
+  );
+  
+  const navigation = (
+    <DesktopActions>
+      <div>
+        <DeleteDraftButton currentStep={4} isMobile={false} />
+        <DesktopButton onClick={handleBack}>
+          {t('common.back')}
+        </DesktopButton>
+      </div>
+      <DesktopPrimaryButton
+        onClick={handleContinue}
+        disabled={imageFiles.length === 0}
+      >
+        {t('common.next')}
+      </DesktopPrimaryButton>
+    </DesktopActions>
+  );
+  
+  return (
+    <WorkflowPageLayout
+      progressBar={progressBar}
+      title={t('sell.images.title')}
+      subtitle={t('sell.images.subtitle')}
+      isMobile={false}
+    >
+      {pageContent}
+      {navigation}
+    </WorkflowPageLayout>
   );
 };
 

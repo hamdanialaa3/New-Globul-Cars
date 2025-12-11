@@ -561,7 +561,7 @@ const UnifiedContactPage: React.FC = () => {
         // Try IndexedDB first (most reliable)
         const ImageStorageServiceModule = await import('../../../services/ImageStorageService');
         const savedImages = await ImageStorageServiceModule.ImageStorageService.getImages();
-        console.log('📸 Images from IndexedDB:', { 
+        console.log('📸 [DEBUG] Images from IndexedDB:', { 
           count: savedImages?.length || 0, 
           images: savedImages?.map((f: File) => ({ name: f.name, size: f.size, type: f.type })) || []
         });
@@ -569,13 +569,15 @@ const UnifiedContactPage: React.FC = () => {
         if (savedImages && savedImages.length > 0) {
           // getImages() already returns File[] directly
           imageFiles = savedImages;
+          console.log('✅ [DEBUG] Using IndexedDB images:', imageFiles.length, 'files');
           if (process.env.NODE_ENV === 'development') {
             logger.debug(`Loaded ${imageFiles.length} images from IndexedDB`);
           }
         } else {
           // Fallback to localStorage
+          console.log('⚠️ [DEBUG] No IndexedDB images, trying localStorage fallback...');
         imageFiles = WorkflowPersistenceService.getImagesAsFiles();
-          console.log('📸 Images from localStorage:', { 
+          console.log('📸 [DEBUG] Images from localStorage:', { 
             count: imageFiles.length, 
             images: imageFiles.map(f => ({ name: f.name, size: f.size, type: f.type }))
           });
@@ -584,28 +586,42 @@ const UnifiedContactPage: React.FC = () => {
           }
         }
       } catch (error) {
-        console.error('❌ Error loading images from IndexedDB:', error);
+        console.error('❌ [DEBUG] Error loading images from IndexedDB:', error);
         logger.error('Error loading images', error as Error);
         // Final fallback to localStorage
         try {
+          console.log('🔄 [DEBUG] Attempting final fallback to WorkflowPersistenceService...');
           imageFiles = WorkflowPersistenceService.getImagesAsFiles();
+          console.log('📸 [DEBUG] Final fallback images:', imageFiles.length);
         } catch (fallbackError) {
-          console.error('❌ Error loading images from WorkflowPersistenceService:', fallbackError);
+          console.error('❌ [DEBUG] Error loading images from WorkflowPersistenceService:', fallbackError);
           logger.error('Error loading images from WorkflowPersistenceService', fallbackError as Error);
         }
       }
 
-      // ✅ FIX: Pass imageFiles directly to createCarListing - it handles upload internally
-      console.log('📸 Final imageFiles before createCarListing:', { 
+      // ✅ CRITICAL DEBUG: Verify File objects before passing to createCarListing
+      console.log('🔍 [DEBUG] Final imageFiles validation before createCarListing:', { 
         imageCount: imageFiles.length,
-        imageFiles: imageFiles.map(f => ({ name: f.name, size: f.size, type: f.type })),
-        areFilesValid: imageFiles.every(f => f instanceof File)
+        imageFiles: imageFiles.map(f => ({ 
+          name: f.name, 
+          size: f.size, 
+          type: f.type,
+          isFile: f instanceof File,
+          isBlob: f instanceof Blob
+        })),
+        areAllFilesValid: imageFiles.every(f => f instanceof File),
+        areAllBlobsValid: imageFiles.every(f => f instanceof Blob)
       });
       
       if (imageFiles && imageFiles.length > 0) {
         setTotalImages(imageFiles.length);
+        console.log('✅ [DEBUG] Set totalImages to:', imageFiles.length);
       } else {
-        console.warn('⚠️ No images found! Publishing without images.');
+        console.warn('⚠️ [DEBUG] No images found! Publishing without images.');
+        console.warn('💡 [DEBUG] Possible causes:');
+        console.warn('   1. Images not saved to IndexedDB during workflow');
+        console.warn('   2. IndexedDB cleared before publish');
+        console.warn('   3. WorkflowPersistenceService.getImagesAsFiles() returned empty array');
       }
 
       // ✅ FIX: Check if we're in edit mode

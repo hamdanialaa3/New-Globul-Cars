@@ -11,12 +11,14 @@ interface ProfilePageContext {
   isOwnProfile: boolean;
   theme: ProfileTheme;
   userCars?: any[];
+  refresh?: () => Promise<void>;
+  setUser?: React.Dispatch<React.SetStateAction<BulgarianUser | null>>;
 }
 
 const SettingsPage: React.FC = () => {
-  const { user, theme } = useOutletContext<ProfilePageContext>();
+  const { user, theme, refresh, setUser } = useOutletContext<ProfilePageContext>();
 
-  return <SettingsTab user={user} theme={theme} />;
+  return <SettingsTab user={user} theme={theme} refresh={refresh} setUser={setUser} />;
 };
 
 export default SettingsPage;

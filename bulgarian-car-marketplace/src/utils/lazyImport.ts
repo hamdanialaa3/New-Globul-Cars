@@ -1,5 +1,6 @@
 // Utility for safe lazy imports
 import { lazy, ComponentType } from 'react';
+import { logger } from '../services/logger-service';
 
 export const safeLazy = <T extends ComponentType<any>>(
   importFn: () => Promise<any>
@@ -30,14 +31,14 @@ export const safeLazy = <T extends ComponentType<any>>(
         if (typeof module[key] === 'function' || 
             (module[key] && typeof module[key] === 'object' && (module[key].$$typeof || module[key].render))) {
           // Return the first valid component found
-          console.warn(`Using ${key} from module as default export`);
+          logger.warn(`Using ${key} from module as default export`);
           return { default: module[key] };
         }
       }
     }
     
     // 4. Fallback: log error but return empty component to prevent crash
-    console.error('⚠️ Invalid lazy module - returning fallback:', module);
+    logger.error('Invalid lazy module - returning fallback', new Error('Invalid module'), { module });
     return { 
       default: () => null // Return empty component instead of crashing
     };

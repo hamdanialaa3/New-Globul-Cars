@@ -15,6 +15,7 @@ import SellWorkflowStepStateService from '../../../services/sellWorkflowStepStat
 import { carValidationService, ValidationResult } from '../../../services/validation/car-validation.service';
 import { usePricingForm } from './Pricing/usePricingForm';
 import { useUnifiedWorkflow } from '../../../hooks/useUnifiedWorkflow';
+import { WorkflowPageLayout } from '../../../components/sell-workflow/WorkflowPageLayout';
 
 // Mobile Components
 import { MobileContainer, MobileStack } from '../../../components/ui/mobile-index';
@@ -31,7 +32,7 @@ const PricingPageUnified: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { vehicleType = 'car' } = useParams<{ vehicleType: string }>();
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const isMobile = useIsMobile();
 
   // ✅ UNIFIED WORKFLOW: Use unified workflow (Step 5 - Pricing)
@@ -57,7 +58,7 @@ const PricingPageUnified: React.FC = () => {
         handleFieldChange('currency', unifiedWorkflowData.currency);
       }
       if (unifiedWorkflowData.priceType && unifiedWorkflowData.priceType !== pricingData.priceType) {
-        handleFieldChange('priceType', unifiedWorkflowData.priceType as any);
+        handleFieldChange('priceType', unifiedWorkflowData.priceType);
       }
       if (unifiedWorkflowData.negotiable !== undefined && unifiedWorkflowData.negotiable !== pricingData.negotiable) {
         handleFieldChange('negotiable', unifiedWorkflowData.negotiable);
@@ -80,15 +81,12 @@ const PricingPageUnified: React.FC = () => {
     });
   }, [pricingData, updateData]);
   
-  // Legacy workflowData for backward compatibility
-  const workflowData = unifiedWorkflowData as any;
-
   // Validation state
   const [validationResult, setValidationResult] = React.useState<ValidationResult | null>(null);
 
   // Real-time price validation
   useEffect(() => {
-    const result = carValidationService.validate({ price: parseFloat(pricingData.price || '0') } as any, 'draft');
+    const result = carValidationService.validate({ price: parseFloat(pricingData.price || '0') }, 'draft');
     setValidationResult(result);
   }, [pricingData.price]);
 
@@ -109,8 +107,6 @@ const PricingPageUnified: React.FC = () => {
   const make = searchParams.get('mk') || 
                searchParams.get('make') || 
                unifiedWorkflowData?.make || 
-               (workflowData as any)?.make || 
-               (workflowData as any)?.brand || 
                '';
 
   const handleContinue = (e?: React.MouseEvent) => {
@@ -137,6 +133,7 @@ const PricingPageUnified: React.FC = () => {
       const validVehicleType = vehicleType || vehicleTypeParam || 'car';
       const targetPath = `/sell/inserat/${validVehicleType}/contact?${params.toString()}`;
       
+      console.log('🚀 Navigating to contact page:', targetPath);
       console.log('📋 Pricing data:', {
         price: pricingData.price,
         currency: pricingData.currency,
@@ -283,61 +280,81 @@ const PricingPageUnified: React.FC = () => {
   }
 
   // Render desktop version
-  return (
+  const progressBar = <SellProgressBar currentStep="pricing" />;
+  
+  const pageContent = (
     <React.Suspense fallback={<div>Loading...</div>}>
-      <S.default.Container>
-        <SplitScreenLayout
-          leftContent={
-            <S.default.ContentSection>
-              <S.default.HeaderCard>
-                <S.default.Title>
-                  {language === 'bg' ? 'Цена на превозното средство' : 'Vehicle Price'}
-                </S.default.Title>
-                <S.default.Subtitle>
-                  {language === 'bg'
-                    ? 'Определете цената на вашето превозно средство'
-                    : 'Set your vehicle price'}
-                </S.default.Subtitle>
+      <S.default.FreeLayout>
+            {/* Vehicle Summary - LEFT */}
+            <S.default.SummarySection>
+              {unifiedWorkflowData && (
+                <>
+                  {unifiedWorkflowData.mileage && (
+                    <S.default.SummaryItem>
+                      <S.default.SummaryIcon>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2"/>
+                          <path d="M12 6v6l4 2" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                        </svg>
+                      </S.default.SummaryIcon>
+                      <S.default.SummaryText>
+                        {unifiedWorkflowData.mileage.toLocaleString()} {language === 'bg' ? 'км' : 'km'}
+                      </S.default.SummaryText>
+                    </S.default.SummaryItem>
+                  )}
+                  {unifiedWorkflowData.transmission && (
+                    <S.default.SummaryItem>
+                      <S.default.SummaryIcon>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <circle cx="12" cy="7" r="2" stroke="currentColor" strokeWidth="2"/>
+                          <circle cx="12" cy="17" r="2" stroke="currentColor" strokeWidth="2"/>
+                          <path d="M12 9v6" stroke="currentColor" strokeWidth="2"/>
+                        </svg>
+                      </S.default.SummaryIcon>
+                      <S.default.SummaryText>
+                        {unifiedWorkflowData.transmission === 'automatic' 
+                          ? (language === 'bg' ? 'Автоматична' : 'Automatic')
+                          : (language === 'bg' ? 'Ръчна' : 'Manual')}
+                      </S.default.SummaryText>
+                    </S.default.SummaryItem>
+                  )}
+                  {unifiedWorkflowData.fuelType && (
+                    <S.default.SummaryItem>
+                      <S.default.SummaryIcon>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M3 6h10v12H3z" stroke="currentColor" strokeWidth="2"/>
+                          <path d="M13 9h2l3 3v6h-2" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                          <circle cx="6" cy="18" r="1" fill="currentColor"/>
+                        </svg>
+                      </S.default.SummaryIcon>
+                      <S.default.SummaryText>{unifiedWorkflowData.fuelType}</S.default.SummaryText>
+                    </S.default.SummaryItem>
+                  )}
+                  {unifiedWorkflowData.color && (
+                    <S.default.SummaryItem>
+                      <S.default.SummaryIcon>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2"/>
+                          <circle cx="12" cy="12" r="5" fill="currentColor" opacity="0.3"/>
+                        </svg>
+                      </S.default.SummaryIcon>
+                      <S.default.SummaryText>{unifiedWorkflowData.color}</S.default.SummaryText>
+                    </S.default.SummaryItem>
+                  )}
+                </>
+              )}
+            </S.default.SummarySection>
 
-                <S.default.BrandOrbitInline>
-                  <WorkflowFlow
-                    variant="inline"
-                    currentStepIndex={4}
-                    totalSteps={8}
-                    carBrand={make || undefined}
-                    language={language}
-                  />
-                </S.default.BrandOrbitInline>
-              </S.default.HeaderCard>
-
-              {/* Top Navigation Buttons */}
-              <S.default.NavigationButtons>
-                <S.default.Button
-                  type="button"
-                  $variant="secondary"
-                  onClick={() => navigate(-1)}
-                >
-                  ← {language === 'bg' ? 'Назад' : 'Back'}
-                </S.default.Button>
-                <S.default.Button
-                  type="button"
-                  $variant="primary"
-                  onClick={handleContinue}
-                  disabled={!canContinue}
-                >
-                  {language === 'bg' ? 'Продължи' : 'Continue'} →
-                </S.default.Button>
-              </S.default.NavigationButtons>
-
-              <S.default.FormCard>
+            {/* Price Form - CENTER */}
+            <S.default.PriceSection>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '100%' }}>
                 <S.default.Label>
                   {language === 'bg' ? 'Цена (EUR)' : 'Price (EUR)'}
                   <span style={{ color: '#ff8f10', marginLeft: '0.25rem' }}>*</span>
                 </S.default.Label>
-
                 <S.default.PriceInputWrapper>
                   <S.default.PriceIcon>
-                    <Euro size={24} />
+                    <Euro size={20} />
                   </S.default.PriceIcon>
                   <S.default.PriceInput
                     type="number"
@@ -346,83 +363,94 @@ const PricingPageUnified: React.FC = () => {
                     placeholder="15000"
                     min="100"
                     max="1000000"
+                    $hasValue={Boolean(pricingData.price && pricingData.price.toString().length > 0)}
                   />
-                  {formattedPrice && (
-                    <S.default.FormattedPrice>
-                      {formattedPrice} EUR
-                    </S.default.FormattedPrice>
-                  )}
                 </S.default.PriceInputWrapper>
+                {formattedPrice && (
+                  <S.default.FormattedPrice>
+                    {formattedPrice} EUR
+                  </S.default.FormattedPrice>
+                )}
+              </div>
+              <S.default.FieldGroup style={{ width: '100%' }}>
+                <S.default.Select
+                  value={pricingData.priceType}
+                  onChange={(e) => {
+                    const newType = e.target.value;
+                    handleFieldChange('priceType', newType);
+                    handleFieldChange('negotiable', newType === 'negotiable' || newType === 'best_offer');
+                  }}
+                >
+                  <option value="fixed">{language === 'bg' ? 'Фиксирана' : 'Fixed'}</option>
+                  <option value="negotiable">{language === 'bg' ? 'Договаряема' : 'Negotiable'}</option>
+                  <option value="best_offer">{language === 'bg' ? 'Най-добра оферта' : 'Best Offer'}</option>
+                </S.default.Select>
+              </S.default.FieldGroup>
+            </S.default.PriceSection>
 
-                <S.default.FieldRow>
-                  <S.default.FieldGroup>
-                    <S.default.Label>
-                      {language === 'bg' ? 'Тип цена' : 'Price Type'}
-                    </S.default.Label>
-                    <S.default.Select
-                      value={pricingData.priceType}
-                      onChange={(e) => handleFieldChange('priceType', e.target.value)}
-                    >
-                      <option value="fixed">
-                        {language === 'bg' ? 'Фиксирана' : 'Fixed'}
-                      </option>
-                      <option value="negotiable">
-                        {language === 'bg' ? 'Договаряема' : 'Negotiable'}
-                      </option>
-                      <option value="best_offer">
-                        {language === 'bg' ? 'Най-добра оферта' : 'Best Offer'}
-                      </option>
-                    </S.default.Select>
-                  </S.default.FieldGroup>
+            {/* Brand Logo - RIGHT */}
+            {make && (
+              <S.default.LogoSection>
+                <WorkflowFlow
+                  variant="inline"
+                  currentStepIndex={4}
+                  totalSteps={8}
+                  carBrand={make || undefined}
+                  language={language}
+                />
+              </S.default.LogoSection>
+            )}
+          </S.default.FreeLayout>
 
-                  <S.default.FieldGroup>
-                    <S.default.ToggleWrapper>
-                      <S.default.ToggleSwitch $checked={pricingData.negotiable}>
-                        <input
-                          type="checkbox"
-                          id="negotiable-desktop"
-                          checked={pricingData.negotiable}
-                          onChange={(e) => handleFieldChange('negotiable', e.target.checked)}
-                        />
-                        <span className="toggle-slider" />
-                      </S.default.ToggleSwitch>
-                      <S.default.ToggleLabel htmlFor="negotiable-desktop">
-                        {language === 'bg' ? 'Договаряне възможно' : 'Negotiable'}
-                      </S.default.ToggleLabel>
-                    </S.default.ToggleWrapper>
-                  </S.default.FieldGroup>
-                </S.default.FieldRow>
-
-                <S.default.InfoBox>
-                  <Info size={20} />
-                  <div>
-                    <S.default.InfoTitle>
-                      {language === 'bg' ? 'Съвети за ценообразуване' : 'Pricing Tips'}
-                    </S.default.InfoTitle>
-                    <S.default.InfoText>
-                      {language === 'bg'
-                        ? 'Използвайте реалистични цени въз основа на пазара. Можете да проверите подобни обяви за сравнение.'
-                        : 'Use realistic prices based on market value. You can check similar listings for comparison.'}
-                    </S.default.InfoText>
-                  </div>
-                </S.default.InfoBox>
-              </S.default.FormCard>
-            </S.default.ContentSection>
-          }
-          rightContent={
-            <S.default.SidebarSection>
-              <WorkflowFlow
-                variant="sidebar"
-                currentStepIndex={4}
-                totalSteps={8}
-                carBrand={make || undefined}
-                language={language}
-              />
-            </S.default.SidebarSection>
-          }
-        />
-      </S.default.Container>
+      </S.default.FreeLayout>
+      
+      {/* Info box */}
+      <S.default.InfoBox>
+        <Info size={20} />
+        <div>
+          <S.default.InfoTitle>
+            {language === 'bg' ? 'Съвети за ценообразуване' : 'Pricing Tips'}
+          </S.default.InfoTitle>
+          <S.default.InfoText>
+            {language === 'bg'
+              ? 'Използвайте реалистични цени въз основа на пазара. Можете да проверите подобни обяви за сравнение.'
+              : 'Use realistic prices based on market value. You can check similar listings for comparison.'}
+          </S.default.InfoText>
+        </div>
+      </S.default.InfoBox>
     </React.Suspense>
+  );
+  
+  const navigation = (
+    <S.default.NavigationButtons>
+      <S.default.Button
+        type="button"
+        $variant="secondary"
+        onClick={() => navigate(-1)}
+      >
+        ← {t('common.back')}
+      </S.default.Button>
+      <S.default.Button
+        type="button"
+        $variant="primary"
+        onClick={handleContinue}
+        disabled={!canContinue}
+      >
+        {t('common.next')} →
+      </S.default.Button>
+    </S.default.NavigationButtons>
+  );
+  
+  return (
+    <WorkflowPageLayout
+      progressBar={progressBar}
+      title={language === 'bg' ? 'Цена на превозното средство' : 'Vehicle Price'}
+      subtitle={language === 'bg' ? 'Определете цената на вашето превозно средство' : 'Set your vehicle price'}
+      isMobile={false}
+    >
+      {pageContent}
+      {navigation}
+    </WorkflowPageLayout>
   );
 };
 

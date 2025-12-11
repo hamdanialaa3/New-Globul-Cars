@@ -968,6 +968,16 @@ export const PageContainer = styled.div`
   padding: 0 20px;
   box-sizing: border-box;
   overflow-x: hidden;
+  background: transparent;
+  color: var(--text-primary);
+  
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    background: transparent;
+    color: #f8fafc;
+  }
+  
+  transition: background-color 0.3s ease, color 0.3s ease;
   
   /* MOBILE - No horizontal padding (full-width) */
   @media (max-width: 768px) {
@@ -1206,6 +1216,17 @@ export const UserInfoBar = styled.div`
   position: relative;
   border: 1px solid var(--border-primary);
   z-index: 0;
+  color: var(--text-primary);
+  
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    background: #1e293b;
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #f8fafc;
+    box-shadow: none;
+  }
+  
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
   
   @media (max-width: 960px) {
     flex-direction: column;
@@ -1220,6 +1241,14 @@ export const UserInfoLeft = styled.div`
   flex-direction: column;
   gap: 4px;
   text-align: left;
+  color: var(--text-primary);
+  
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    color: #f8fafc;
+  }
+  
+  transition: color 0.3s ease;
   
   @media (max-width: 960px) {
     align-items: flex-start;
@@ -1230,18 +1259,34 @@ export const UserInfoCenter = styled.div`
   display: flex;
   gap: 32px;
   
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    color: #f8fafc;
+  }
+  
   @media (max-width: 960px) {
     width: 100%;
     justify-content: center;
     padding: 16px 0;
     border-top: 1px solid var(--border-secondary);
     border-bottom: 1px solid var(--border-secondary);
+    
+    /* Dark Mode Support for borders */
+    html[data-theme="dark"] & {
+      border-top-color: rgba(255, 255, 255, 0.1);
+      border-bottom-color: rgba(255, 255, 255, 0.1);
+    }
   }
 `;
 
 export const UserInfoRight = styled.div`
   display: flex;
   gap: 12px;
+  
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    color: #f8fafc;
+  }
   
   @media (max-width: 960px) {
     width: 100%;
@@ -1260,6 +1305,20 @@ export const PlanBar = styled.div<{ $themeColor?: string }>`
   margin-bottom: 1.5rem;
   backdrop-filter: blur(10px);
   min-height: 48px;
+  color: var(--text-primary);
+  
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    background: ${props => props.$themeColor 
+      ? `linear-gradient(90deg, ${props.$themeColor}20 0%, ${props.$themeColor}10 100%)`
+      : '#1e293b'};
+    border-color: ${props => props.$themeColor 
+      ? `${props.$themeColor}40`
+      : 'rgba(255, 255, 255, 0.1)'};
+    color: #f8fafc;
+  }
+  
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
   
   @media (max-width: 768px) {
     flex-direction: column;
@@ -1275,18 +1334,39 @@ export const PlanInfoItem = styled.div`
   align-items: center;
   gap: 6px;
   font-size: 0.9rem;
+  color: var(--text-primary);
   
   span.label {
     opacity: 0.7;
     font-weight: 500;
     font-size: 0.85rem;
     text-transform: uppercase;
+    color: var(--text-secondary);
+    
+    /* Dark Mode Support */
+    html[data-theme="dark"] & {
+      color: #cbd5e1;
+      opacity: 0.8;
+    }
   }
   
   span.value {
     font-weight: 700;
     font-size: 0.95rem;
+    color: var(--text-primary);
+    
+    /* Dark Mode Support */
+    html[data-theme="dark"] & {
+      color: #f8fafc;
+    }
   }
+  
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    color: #f8fafc;
+  }
+  
+  transition: color 0.3s ease;
   
   /* Separator for desktop */
   @media (min-width: 769px) {
@@ -1299,6 +1379,12 @@ export const PlanInfoItem = styled.div`
       margin-left: 16px;
       margin-right: 8px;
       opacity: 0.5;
+      
+      /* Dark Mode Support for separator */
+      html[data-theme="dark"] & {
+        background: rgba(255, 255, 255, 0.1);
+        opacity: 0.6;
+      }
     }
   }
 `;
@@ -1352,6 +1438,13 @@ export const UserName = styled.h1`
   gap: 8px;
   justify-content: flex-start;
   
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    color: #f8fafc;
+  }
+  
+  transition: color 0.3s ease;
+  
   @media (max-width: 960px) {
     justify-content: flex-start;
     font-size: 1.5rem;
@@ -1361,6 +1454,13 @@ export const UserName = styled.h1`
 export const UserEmail = styled.div`
   color: var(--text-secondary);
   font-size: 0.95rem;
+  
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    color: #cbd5e1;
+  }
+  
+  transition: color 0.3s ease;
 `;
 
 export const StatBox = styled.div`
@@ -1372,11 +1472,23 @@ export const StatBox = styled.div`
     font-size: 1.25rem;
     font-weight: 700;
     color: var(--text-primary);
+    
+    /* Dark Mode Support */
+    html[data-theme="dark"] & {
+      color: #f8fafc;
+    }
   }
   
   span.label {
     font-size: 0.75rem;
     color: var(--text-secondary);
     text-transform: uppercase;
+    
+    /* Dark Mode Support */
+    html[data-theme="dark"] & {
+      color: #cbd5e1;
+    }
   }
+  
+  transition: color 0.3s ease;
 `;

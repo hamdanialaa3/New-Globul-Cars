@@ -2,14 +2,15 @@
 // Profile Image Uploader Component - مكون رفع الصورة الشخصية
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
-import { Camera, Upload, X, Loader } from 'lucide-react';
+import { Camera, X, Loader } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { ProfileService } from '../../services/profile';
 import { useAuth } from '../../hooks/useAuth';
 import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from '../../firebase/firebase-config';
+import { updateProfile } from 'firebase/auth';
+import { db, auth } from '../../firebase/firebase-config';
 import { measureAsync } from '../../utils/performance-monitor';
 import { logger } from '../../services/logger-service';
 
@@ -79,72 +80,141 @@ const UploadButton = styled.button`
   right: 0;
   width: 40px;
   height: 40px;
+  min-width: 40px;
+  max-width: 40px;
+  min-height: 40px;
+  max-height: 40px;
   border-radius: 50%;
-  background: #FF7900;
-  border: 3px solid #fff;
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.85) 0%, rgba(22, 163, 74, 0.85) 100%);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 3px solid rgba(255, 255, 255, 0.9);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(255, 121, 0, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 4px 12px rgba(34, 197, 94, 0.3),
+    0 2px 4px rgba(0, 0, 0, 0.1);
   z-index: 10;
   pointer-events: auto;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
+  padding: 0;
+  margin: 0;
+  flex-shrink: 0;
+  aspect-ratio: 1 / 1;
 
   &:hover {
-    background: #ff8c1a;
-    transform: scale(1.1);
+    background: linear-gradient(135deg, rgba(22, 163, 74, 0.95) 0%, rgba(21, 128, 61, 0.95) 100%);
+    border-color: rgba(255, 255, 255, 1);
+    transform: scale(1.1) translateY(-2px);
+    box-shadow: 
+      0 6px 16px rgba(34, 197, 94, 0.4),
+      0 4px 8px rgba(0, 0, 0, 0.15);
   }
 
   &:active {
-    transform: scale(1.05);
+    transform: scale(1.05) translateY(0);
   }
 
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+    transform: scale(1);
   }
 
   svg {
     color: white;
     pointer-events: none;
+    width: 18px;
+    height: 18px;
+    stroke-width: 2.5px;
+    flex-shrink: 0;
+  }
+
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.75) 0%, rgba(22, 163, 74, 0.75) 100%);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 
+      0 4px 12px rgba(34, 197, 94, 0.35),
+      0 2px 4px rgba(0, 0, 0, 0.4);
+
+    &:hover {
+      background: linear-gradient(135deg, rgba(22, 163, 74, 0.9) 0%, rgba(21, 128, 61, 0.9) 100%);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
   }
 `;
 
 const DeleteButton = styled.button`
   position: absolute;
-  top: -8px;
-  right: -8px;
-  width: 24px;
-  height: 24px;
+  top: 0;
+  right: 0;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  max-width: 32px;
+  min-height: 32px;
+  max-height: 32px;
   border-radius: 50%;
-  background: #ef5350;
-  border: none;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.85) 0%, rgba(220, 38, 38, 0.85) 100%);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 3px solid rgba(255, 255, 255, 0.9);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(239, 83, 80, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 4px 12px rgba(239, 68, 68, 0.3),
+    0 2px 4px rgba(0, 0, 0, 0.1);
   z-index: 11;
   pointer-events: auto;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
+  padding: 0;
+  margin: 0;
+  flex-shrink: 0;
+  aspect-ratio: 1 / 1;
 
   &:hover {
-    background: #e53935;
-    transform: scale(1.1);
+    background: linear-gradient(135deg, rgba(220, 38, 38, 0.95) 0%, rgba(185, 28, 28, 0.95) 100%);
+    border-color: rgba(255, 255, 255, 1);
+    transform: scale(1.15) translateY(-2px);
+    box-shadow: 
+      0 6px 16px rgba(239, 68, 68, 0.4),
+      0 4px 8px rgba(0, 0, 0, 0.15);
   }
 
   &:active {
-    transform: scale(1.05);
+    transform: scale(1.08) translateY(0);
   }
 
   svg {
     color: white;
     pointer-events: none;
+    width: 14px;
+    height: 14px;
+    stroke-width: 3px;
+    flex-shrink: 0;
+  }
+
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.75) 0%, rgba(220, 38, 38, 0.75) 100%);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 
+      0 4px 12px rgba(239, 68, 68, 0.35),
+      0 2px 4px rgba(0, 0, 0, 0.4);
+
+    &:hover {
+      background: linear-gradient(135deg, rgba(220, 38, 38, 0.9) 0%, rgba(185, 28, 28, 0.9) 100%);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
   }
 `;
 
@@ -208,7 +278,7 @@ const ProfileImageUploader: React.FC<ProfileImageUploaderProps> = ({
   onUploadSuccess,
   onUploadError
 }) => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { user } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -216,6 +286,13 @@ const ProfileImageUploader: React.FC<ProfileImageUploaderProps> = ({
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
+
+  // Sync with currentImageUrl prop
+  useEffect(() => {
+    if (currentImageUrl) {
+      setImageUrl(currentImageUrl);
+    }
+  }, [currentImageUrl]);
 
   // Handle file selection
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -256,22 +333,44 @@ const ProfileImageUploader: React.FC<ProfileImageUploaderProps> = ({
       });
       setProgress(70);
 
-      // 4. Update Firestore
+      // 4. Update Firebase Auth photoURL
+      const currentUser = auth.currentUser;
+      if (currentUser) {
+        if (process.env.NODE_ENV === 'development') {
+          logger.debug('Updating Firebase Auth photoURL', { userId: user.uid });
+        }
+        try {
+          await updateProfile(currentUser, {
+            photoURL: url
+          });
+        } catch (authError: any) {
+          logger.warn('Failed to update Auth photoURL, continuing with Firestore update', authError);
+        }
+      }
+      setProgress(75);
+
+      // 5. Update Firestore (both photoURL and profileImage.url)
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Updating user profile in Firestore', { userId: user.uid });
       }
       await updateDoc(doc(db, 'users', user.uid), {
-        'profileImage.url': url,
+        photoURL: url, // Main photoURL field
+        'profileImage.url': url, // ProfileImage object for backward compatibility
         'profileImage.uploadedAt': serverTimestamp(),
         updatedAt: serverTimestamp()
       });
       setProgress(90);
 
-      // 5. Recalculate trust score
+      // 6. Recalculate trust score
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Calculating trust score', { userId: user.uid });
       }
-      await ProfileService.trust.calculateTrustScore(user.uid);
+      try {
+        await ProfileService.trust.calculateTrustScore(user.uid);
+      } catch (trustError: any) {
+        logger.warn('Failed to recalculate trust score', trustError);
+        // Don't fail the upload if trust score calculation fails
+      }
       setProgress(100);
 
       // Success!
@@ -300,28 +399,49 @@ const ProfileImageUploader: React.FC<ProfileImageUploaderProps> = ({
   const handleDelete = async () => {
     if (!user || !imageUrl) return;
 
-    const confirmed = window.confirm('Delete profile image?');
+    const confirmed = window.confirm(
+      language === 'bg' ? 'Изтриване на профилната снимка?' : 'Delete profile image?'
+    );
 
     if (!confirmed) return;
 
     setUploading(true);
+    setError(null);
 
     try {
       // Delete from Storage
       await ProfileService.image.deleteImage(user.uid, 'profile/avatar.jpg');
 
-      // Update Firestore
+      // Update Firebase Auth photoURL
+      const currentUser = auth.currentUser;
+      if (currentUser) {
+        try {
+          await updateProfile(currentUser, {
+            photoURL: null
+          });
+        } catch (authError: any) {
+          logger.warn('Failed to update Auth photoURL during delete', authError);
+        }
+      }
+
+      // Update Firestore (remove both photoURL and profileImage)
       await updateDoc(doc(db, 'users', user.uid), {
+        photoURL: null,
         profileImage: null,
         updatedAt: serverTimestamp()
       });
 
       setImageUrl(undefined);
-      logger.info('✅ Profile image deleted');
+      onUploadSuccess?.('');
+      
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Profile image deleted successfully', { userId: user.uid });
+      }
 
     } catch (err: any) {
-      logger.error('❌ Delete failed:', err);
-      setError(err.message);
+      logger.error('Profile image delete failed', err as Error, { userId: user.uid });
+      setError(err.message || (language === 'bg' ? 'Грешка при изтриване' : 'Delete failed'));
+      onUploadError?.(err.message);
     } finally {
       setUploading(false);
     }
@@ -361,14 +481,14 @@ const ProfileImageUploader: React.FC<ProfileImageUploaderProps> = ({
       />
 
       {!uploading && (
-        <UploadButton onClick={handleClick} disabled={uploading}>
-          {imageUrl ? <Camera size={20} /> : <Upload size={20} />}
+        <UploadButton onClick={handleClick} disabled={uploading} title={language === 'bg' ? 'Качи/Промени снимка' : 'Upload/Change photo'}>
+          <Camera size={20} />
         </UploadButton>
       )}
 
       {imageUrl && !uploading && (
-        <DeleteButton onClick={handleDelete}>
-          <X size={12} />
+        <DeleteButton onClick={handleDelete} title={language === 'bg' ? 'Изтрий снимка' : 'Delete photo'}>
+          <X size={18} />
         </DeleteButton>
       )}
 

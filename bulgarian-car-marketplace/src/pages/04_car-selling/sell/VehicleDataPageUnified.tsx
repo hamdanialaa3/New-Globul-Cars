@@ -14,6 +14,7 @@ import { BODY_TYPES } from './VehicleData/types';
 import { useIsMobile } from '../../../hooks/useBreakpoint';
 import BrandModelMarkdownDropdown from '../../../components/BrandModelMarkdownDropdown/BrandModelMarkdownDropdown';
 import { useUnifiedWorkflow } from '../../../hooks/useUnifiedWorkflow';
+import { WorkflowPageLayout } from '../../../components/sell-workflow/WorkflowPageLayout';
 import DeleteDraftButton from '../../../components/SellWorkflow/DeleteDraftButton';
 // removed legacy structured brands import; new markdown-based dropdown is canonical
 
@@ -375,20 +376,26 @@ const PillRow = styled.div`
 
 const PillButton = styled.button<{ $active: boolean }>`
   border-radius: 999px;
-  border: 1px solid ${({ $active }) => ($active ? 'var(--accent-primary)' : 'rgba(255, 255, 255, 0.1)')};
-  background: ${({ $active }) => ($active ? 'rgba(34, 197, 94, 0.2)' : 'transparent')};
+  border: 2px solid ${({ $active }) => ($active ? '#22c55e' : 'rgba(148, 163, 184, 0.3)')};
+  background: ${({ $active }) => ($active ? 'rgba(34, 197, 94, 0.15)' : 'rgba(148, 163, 184, 0.08)')};
   color: ${({ $active }) => ($active ? '#22c55e' : 'var(--text-primary)')};
-  font-weight: 600;
-  padding: 0.55rem 1rem;
+  font-weight: ${({ $active }) => ($active ? '700' : '600')};
+  padding: 0.6rem 1.2rem;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: ${({ $active }) => ($active ? '0 0 0 3px rgba(34, 197, 94, 0.15)' : 'none')};
   
   &:hover {
-    border-color: ${({ $active }) => ($active ? '#22c55e' : '#ef4444')};
-    background: ${({ $active }) => ($active ? 'rgba(34, 197, 94, 0.3)' : 'rgba(239, 68, 68, 0.15)')};
-    color: ${({ $active }) => ($active ? '#22c55e' : '#ef4444')};
+    border-color: #22c55e;
+    background: rgba(34, 197, 94, 0.2);
+    color: #22c55e;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px ${({ $active }) => ($active ? 'rgba(34, 197, 94, 0.3)' : 'rgba(239, 68, 68, 0.3)')};
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.25), 0 0 0 3px rgba(34, 197, 94, 0.1);
+  }
+  
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
   }
 `;
 
@@ -406,20 +413,28 @@ const InsightToggleGroup = styled.div`
 
 const InsightToggleButton = styled.button<{ $active: boolean }>`
   border-radius: 12px;
-  border: 1px solid ${({ $active }) => ($active ? 'var(--accent-primary)' : 'rgba(255, 255, 255, 0.1)')};
-  background: ${({ $active }) => ($active ? 'rgba(34, 197, 94, 0.2)' : 'transparent')};
+  border: 2px solid ${({ $active }) => ($active ? '#22c55e' : 'rgba(148, 163, 184, 0.3)')};
+  background: ${({ $active }) => ($active ? 'rgba(34, 197, 94, 0.15)' : 'rgba(148, 163, 184, 0.08)')};
   color: ${({ $active }) => ($active ? '#22c55e' : 'var(--text-primary)')};
-  font-weight: 600;
-  padding: 0.6rem 1.1rem;
+  font-weight: ${({ $active }) => ($active ? '700' : '600')};
+  padding: 0.7rem 1.3rem;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: ${({ $active }) => ($active ? '0 0 0 3px rgba(34, 197, 94, 0.15)' : 'none')};
+  min-width: 120px;
+  text-align: center;
   
   &:hover {
-    border-color: ${({ $active }) => ($active ? '#22c55e' : '#ef4444')};
-    background: ${({ $active }) => ($active ? 'rgba(34, 197, 94, 0.3)' : 'rgba(239, 68, 68, 0.15)')};
-    color: ${({ $active }) => ($active ? '#22c55e' : '#ef4444')};
+    border-color: #22c55e;
+    background: rgba(34, 197, 94, 0.2);
+    color: #22c55e;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px ${({ $active }) => ($active ? 'rgba(34, 197, 94, 0.3)' : 'rgba(239, 68, 68, 0.3)')};
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.25), 0 0 0 3px rgba(34, 197, 94, 0.1);
+  }
+  
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
   }
 `;
 
@@ -929,7 +944,7 @@ const VehicleDataPage: React.FC = () => {
       saleTimeline: formData.saleTimeline
     };
     
-    const result = carValidationService.validate(validationData as any, 'draft');
+    const result = carValidationService.validate(validationData as Partial<VehicleFormData>, 'draft');
     setValidationResult(result);
   }, [formData, vehicleType]);
 
@@ -1071,16 +1086,16 @@ const VehicleDataPage: React.FC = () => {
     );
   }, [getFieldError]);
 
-  const roadworthyChoice =
-    formData.roadworthy === null || formData.roadworthy === undefined
+  const roadworthyChoice: 'yes' | 'no' | undefined =
+    formData.roadworthy === true
       ? 'yes'
-      : formData.roadworthy
-        ? 'yes'
-        : 'no';
+      : formData.roadworthy === false
+      ? 'no'
+      : undefined;
 
-  const saleTypeChoice = (formData.saleType as 'private' | 'commercial' | undefined) || 'private';
+  const saleTypeChoice = (formData.saleType as 'private' | 'commercial' | undefined);
   const saleTimelineChoice =
-    (formData.saleTimeline as 'unknown' | 'soon' | 'months' | undefined) || 'unknown';
+    (formData.saleTimeline as 'unknown' | 'soon' | 'months' | undefined);
 
   // ✅ Mark fields with default values as touched on mount
   useEffect(() => {
@@ -1360,7 +1375,7 @@ const VehicleDataPage: React.FC = () => {
             <div style={{ marginTop: '0.5rem' }}>
               <InsightLabel>{t('sell.vehicleData.enterOtherLabel')}</InsightLabel>
               <InsightInput
-                value={(formData as any).fuelTypeOther || ''}
+                value={formData.fuelTypeOther || ''}
                 onChange={e => handleInputChange('fuelTypeOther', e.target.value)}
                 onFocus={() => markFieldAsTouched('fuelTypeOther')}
                 placeholder={language === 'bg' ? 'Пример: CNG' : 'Example: CNG'}
@@ -1429,7 +1444,7 @@ const VehicleDataPage: React.FC = () => {
             <div style={{ marginTop: '0.5rem' }}>
               <InsightLabel>{t('sell.vehicleData.enterOtherLabel')}</InsightLabel>
               <InsightInput
-                value={(formData as any).colorOther || ''}
+                value={formData.colorOther || ''}
                 onChange={e => handleInputChange('colorOther', e.target.value)}
                 onFocus={() => markFieldAsTouched('colorOther')}
                 placeholder={language === 'bg' ? 'Пример: Бежов' : 'Example: Beige'}
@@ -1598,7 +1613,7 @@ const VehicleDataPage: React.FC = () => {
                 <MobileLabel>{language === 'bg' ? 'Въведете тип купе' : 'Enter body type'}</MobileLabel>
                 <MobileInput
                   type="text"
-                  value={(formData as any).bodyTypeOther || ''}
+                  value={formData.bodyTypeOther || ''}
                   onChange={(e) => handleInputChange('bodyTypeOther', e.target.value)}
                   onFocus={() => markFieldAsTouched('bodyTypeOther')}
                   placeholder={language === 'bg' ? 'Пример: Limousine' : 'Example: Limousine'}
@@ -1618,7 +1633,7 @@ const VehicleDataPage: React.FC = () => {
               type="button"
               style={{ flex: 1 }}
             >
-              {t('common.continue')} →
+              {t('common.next')} →
             </SimpleContinueButton>
           </div>
         </MobileStickyFooter>
@@ -1626,25 +1641,16 @@ const VehicleDataPage: React.FC = () => {
     );
   }
 
-  return (
-    <DesktopContainer>
-      {/* ✅ Auto-Save Timer (Fixed Position) */}
-      {/* Timer handled globally by GlobalWorkflowTimer */}
-      
-      <ProgressWrapper $isMobile={false}>
-        <SellProgressBar currentStep="vehicle-data" />
-      </ProgressWrapper>
-      <DesktopContent>
-        {/* Debug banner removed with legacy brand/model section */}
-        <DesktopHeader>
-          <DesktopTitle>{t('sell.vehicleData.title')}</DesktopTitle>
-        </DesktopHeader>
+  // Desktop Layout with WorkflowPageLayout
+  const progressBar = <SellProgressBar currentStep="vehicle-data" />;
+  
+  const pageContent = (
+    <>
+      {/* Quality Score Indicator */}
+      {renderQualityScore()}
 
-        {/* Quality Score Indicator */}
-        {renderQualityScore()}
-
-        {/* Standalone brand→model dropdown from Markdown (desktop) - synced to form */}
-        <div style={{ marginBottom: '1rem' }}>
+      {/* Standalone brand→model dropdown from Markdown (desktop) - synced to form */}
+      <div style={{ marginBottom: '1rem' }}>
           <BrandModelMarkdownDropdown
             brand={formData.make}
             model={formData.model}
@@ -1692,7 +1698,7 @@ const VehicleDataPage: React.FC = () => {
                 <div style={{ marginTop: '0.5rem' }}>
                   <InsightLabel>{language === 'bg' ? 'Въведете тип купе' : 'Enter body type'}</InsightLabel>
                   <InsightInput
-                    value={(formData as any).bodyTypeOther || ''}
+                    value={formData.bodyTypeOther || ''}
                     onChange={(e) => handleInputChange('bodyTypeOther', e.target.value)}
                     onFocus={() => markFieldAsTouched('bodyTypeOther')}
                     placeholder={language === 'bg' ? 'Пример: Limousine' : 'Example: Limousine'}
@@ -1703,24 +1709,37 @@ const VehicleDataPage: React.FC = () => {
           </VerticalFieldStack>
         </InsightsCard>
 
-        {renderListingSection(false)}
-
-        <DesktopActions>
-          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-            <DeleteDraftButton currentStep={2} isMobile={false} />
-            <DesktopButton onClick={handleBack} type="button">
-              ← {t('common.back')}
-            </DesktopButton>
-          </div>
-          <SimpleDesktopContinueButton
-            onClick={(e) => goToNextPage(e)}
-            type="button"
-          >
-            {t('common.continue')} →
-          </SimpleDesktopContinueButton>
-        </DesktopActions>
-      </DesktopContent>
-    </DesktopContainer>
+      {renderListingSection(false)}
+    </>
+  );
+  
+  const navigation = (
+    <DesktopActions>
+      <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+        <DeleteDraftButton currentStep={2} isMobile={false} />
+        <DesktopButton onClick={handleBack} type="button">
+          ← {t('common.back')}
+        </DesktopButton>
+      </div>
+      <SimpleDesktopContinueButton
+        onClick={(e) => goToNextPage(e)}
+        type="button"
+      >
+        {t('common.next')} →
+      </SimpleDesktopContinueButton>
+    </DesktopActions>
+  );
+  
+  return (
+    <WorkflowPageLayout
+      progressBar={progressBar}
+      title={t('sell.vehicleData.title')}
+      subtitle={t('sell.vehicleData.subtitle')}
+      isMobile={false}
+    >
+      {pageContent}
+      {navigation}
+    </WorkflowPageLayout>
   );
 };
 

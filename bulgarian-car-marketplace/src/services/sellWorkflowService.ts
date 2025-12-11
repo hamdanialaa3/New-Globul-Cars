@@ -270,22 +270,57 @@ export class SellWorkflowService {
     vehicleType?: string
   ): Promise<string[]> {
     try {
+      console.log('☁️ [DEBUG] uploadCarImages starting...', {
+        carId,
+        imageCount: imageFiles.length,
+        vehicleType,
+        imageFiles: imageFiles.map((f, i) => ({
+          index: i,
+          name: f.name,
+          size: f.size,
+          type: f.type,
+          isFile: f instanceof File,
+          isBlob: f instanceof Blob
+        }))
+      });
+      
       const uploadPromises = imageFiles.map(async (file, index) => {
         const timestamp = Date.now();
         const fileName = `${timestamp}_${index}_${file.name}`;
         const imageRef = ref(storage, `cars/${carId}/images/${fileName}`);
         
+        console.log(`📤 [DEBUG] Uploading image ${index + 1}/${imageFiles.length}:`, {
+          fileName,
+          size: file.size,
+          type: file.type,
+          path: `cars/${carId}/images/${fileName}`
+        });
+        
         const snapshot = await uploadBytes(imageRef, file);
         const downloadUrl = await getDownloadURL(snapshot.ref);
+        
+        console.log(`✅ [DEBUG] Image ${index + 1} uploaded successfully:`, {
+          fileName,
+          downloadUrl: downloadUrl.substring(0, 100) + '...'
+        });
         
         return downloadUrl;
       });
 
       const imageUrls = await Promise.all(uploadPromises);
+      console.log('✅ [DEBUG] All images uploaded successfully!', {
+        carId,
+        imageCount: imageUrls.length,
+        imageUrls: imageUrls.map((url, i) => ({
+          index: i,
+          url: url.substring(0, 100) + '...'
+        }))
+      });
       serviceLogger.info('Uploaded car images', { carId, imageCount: imageUrls.length });
       
       return imageUrls;
     } catch (error) {
+      console.error('❌ [DEBUG] uploadCarImages FAILED:', error);
       serviceLogger.error('Error uploading car images', error as Error, { carId, imageCount: imageFiles.length });
       throw new Error('Failed to upload car images');
     }
@@ -301,6 +336,21 @@ export class SellWorkflowService {
     imageFiles?: File[]
   ): Promise<string> {
     try {
+      console.log('🚀 [DEBUG] createCarListing called with:', {
+        userId,
+        hasMake: !!workflowData.make,
+        hasModel: !!workflowData.model,
+        imageFilesProvided: !!imageFiles,
+        imageFilesCount: imageFiles?.length || 0,
+        imageFilesDetails: imageFiles?.map(f => ({
+          name: f.name,
+          size: f.size,
+          type: f.type,
+          isFile: f instanceof File,
+          isBlob: f instanceof Blob
+        }))
+      });
+      
       serviceLogger.info('Starting car listing creation', { userId, hasMake: !!workflowData.make, hasModel: !!workflowData.model });
       serviceLogger.debug('Workflow data received', { make: workflowData.make, model: workflowData.model, year: workflowData.year });
 
@@ -386,11 +436,34 @@ export class SellWorkflowService {
 
       // Upload images if provided
       if (imageFiles && imageFiles.length > 0) {
+        console.log('📸 [DEBUG] Starting image upload process...', {
+          carId,
+          imageCount: imageFiles.length,
+          imageFiles: imageFiles.map(f => ({
+            name: f.name,
+            size: f.size,
+            type: f.type,
+            isFile: f instanceof File
+          }))
+        });
+        
         serviceLogger.info('Starting image upload', { carId, imageCount: imageFiles.length, imageFiles: imageFiles.map(f => ({ name: f.name, size: f.size, type: f.type })) });
         
         try {
+          console.log('☁️ [DEBUG] Calling uploadCarImages...');
           const imageUrls = await this.uploadCarImages(carId, imageFiles, carData.vehicleType);
+          console.log('✅ [DEBUG] Images uploaded successfully!', {
+            carId,
+            imageCount: imageUrls.length,
+            imageUrls
+          });
           serviceLogger.info('Images uploaded successfully', { carId, imageCount: imageUrls.length, imageUrls });
+          
+          console.log('💾 [DEBUG] Updating Firestore with image URLs...', {
+            collectionName,
+            carId,
+            imageUrlsCount: imageUrls.length
+          });
           
           // Update the listing with image URLs in the correct collection
           await updateDoc(doc(db, collectionName, carId), {
@@ -398,14 +471,25 @@ export class SellWorkflowService {
             updatedAt: serverTimestamp()
           });
 
+          console.log('✅ [DEBUG] Firestore updated with images!', {
+            carId,
+            collectionName,
+            imageCount: imageUrls.length
+          });
           serviceLogger.info('Images uploaded and linked to car', { carId, imageCount: imageUrls.length, collectionName });
         } catch (uploadError) {
+          console.error('❌ [DEBUG] Image upload FAILED:', uploadError);
           serviceLogger.error('Failed to upload images', uploadError as Error, { carId, imageCount: imageFiles.length });
           // Don't throw - allow listing creation even if images fail
           // But log the error for debugging
           console.error('❌ Image upload failed:', uploadError);
         }
       } else {
+        console.warn('⚠️ [DEBUG] No images provided for car listing!', {
+          carId,
+          imageFilesProvided: !!imageFiles,
+          imageFilesLength: imageFiles?.length || 0
+        });
         serviceLogger.warn('No images provided for car listing', { carId, imageFilesProvided: !!imageFiles, imageFilesLength: imageFiles?.length || 0 });
       }
 

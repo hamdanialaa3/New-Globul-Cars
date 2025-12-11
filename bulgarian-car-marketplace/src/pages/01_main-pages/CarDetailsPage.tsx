@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useAuth } from '../../contexts/AuthProvider';
@@ -16,6 +16,7 @@ import { CarBasicInfo } from './components/CarBasicInfo';
 import { CarEditForm } from './components/CarEditForm';
 import { CarContactMethods } from './components/CarContactMethods';
 import { CarEquipmentDisplay } from './components/CarEquipmentDisplay';
+import { DeleteConfirmDialog } from './components/DeleteConfirmDialog';
 import {
   Container,
   MainContent,
@@ -32,6 +33,9 @@ const CarDetailsPage: React.FC = () => {
   const { language } = useLanguage();
   const { currentUser } = useAuth();
   const { theme, toggleTheme } = useTheme();
+  
+  // Delete dialog state
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   
   // Use custom hooks
   const { car, loading, setCar } = useCarDetails(carId);
@@ -199,6 +203,50 @@ const CarDetailsPage: React.FC = () => {
     }
   };
 
+  const handleDeleteClick = () => {
+    setShowDeleteDialog(true);
+  };
+
+  const handleDeleteConfirm = async (isSold: boolean) => {
+    if (!currentUser) {
+      alert(language === 'bg' ? 'Моля влезте в профила си' : 'Please log in');
+      return;
+    }
+
+    setShowDeleteDialog(false);
+    
+    // Show loading indicator
+    const confirmed = window.confirm(
+      language === 'bg'
+        ? 'Моля потвърдете изтриването. Това действие е необратимо!'
+        : 'Please confirm deletion. This action cannot be undone!'
+    );
+
+    if (!confirmed) return;
+
+    const success = await editHook.handleDelete(currentUser.uid);
+    
+    if (success) {
+      // Show success message
+      alert(
+        language === 'bg'
+          ? isSold 
+            ? '✅ Честито за продажбата! Обявата е изтрита успешно.'
+            : '✅ Обявата е изтрита успешно.'
+          : isSold
+            ? '✅ Congratulations on the sale! Listing deleted successfully.'
+            : '✅ Listing deleted successfully.'
+      );
+      
+      // Navigate to profile
+      navigate('/profile/my-ads');
+    }
+  };
+
+  const handleDeleteCancel = () => {
+    setShowDeleteDialog(false);
+  };
+
   if (loading) {
     return <LoadingContainer>{language === 'bg' ? 'Зареждане...' : 'Loading...'}</LoadingContainer>;
   }
@@ -309,6 +357,7 @@ const CarDetailsPage: React.FC = () => {
             onInputChange={editHook.handleInputChange}
             onSetShowOther={handleSetShowOther}
             onSetAvailableCities={editHook.setAvailableCities}
+            onDelete={isOwner ? handleDeleteClick : undefined}
           />
         ) : (
           <CarBasicInfo
@@ -366,6 +415,15 @@ const CarDetailsPage: React.FC = () => {
           />
         </LocationMapContainer>
       )}
+
+      {/* Delete Confirmation Dialog */}
+      <DeleteConfirmDialog
+        isOpen={showDeleteDialog}
+        language={language as 'bg' | 'en'}
+        sellerType={car?.sellerType || 'private'}
+        onConfirm={handleDeleteConfirm}
+        onCancel={handleDeleteCancel}
+      />
     </Container>
   );
 };

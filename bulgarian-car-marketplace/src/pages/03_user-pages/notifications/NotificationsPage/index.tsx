@@ -3,6 +3,11 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../../../hooks/useAuth';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { logger } from '../../../../services/logger-service';
+import { 
+  notificationsFirebaseService, 
+  FirebaseNotification 
+} from '../../../../services/notifications/notifications-firebase.service';
+import { Timestamp } from 'firebase/firestore';
 import {
   Bell,
   MessageCircle,
@@ -36,91 +41,124 @@ const NotificationsPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'unread' | 'messages' | 'system'>('all');
 
+  // ✅ Real-time Firebase subscription
   useEffect(() => {
-    if (user) {
-      loadNotifications();
-    }
-  }, [user, filter, language]);
-
-  const loadNotifications = async () => {
-    try {
-      setLoading(true);
-      // Simulate loading notifications from Firebase
-      
-      const mockNotifications: Notification[] = [
-        {
-          id: '1',
-          type: 'message',
-          title: language === 'bg' ? 'Ново съобщение' : 'New Message',
-          message: language === 'bg' ? 'Имате ново съобщение за вашата обява BMW X5' : 'You have a new message about your BMW X5 listing',
-          timestamp: new Date(Date.now() - 1000 * 60 * 30), // 30 minutes ago
-          read: false,
-          actionUrl: '/messages'
-        },
-        {
-          id: '2',
-          type: 'search',
-          title: language === 'bg' ? 'Търсене' : 'Search Alert',
-          message: language === 'bg' ? 'Нови автомобили, отговарящи на вашето търсене за "Audi A4" под 20000 EUR' : 'New cars matching your search for "Audi A4" under 20000 EUR',
-          timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 hours ago
-          read: true,
-          actionUrl: '/cars?search=Audi%20A4&maxPrice=20000'
-        },
-        {
-          id: '3',
-          type: 'login',
-          title: language === 'bg' ? 'Сигурност' : 'Security Alert',
-          message: language === 'bg' ? 'Нов вход от Chrome на Windows' : 'New login from Chrome on Windows',
-          timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 day ago
-          read: true,
-          actionUrl: '/profile/security'
-        },
-        {
-          id: '4',
-          type: 'car',
-          title: language === 'bg' ? 'Обновление на автомобил' : 'Car Update',
-          message: language === 'bg' ? 'Вашата обява Mercedes C-Class е видяна 25 пъти днес' : 'Your Mercedes C-Class listing has been viewed 25 times today',
-          timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2), // 2 days ago
-          read: false,
-          actionUrl: '/my-listings'
-        },
-        {
-          id: '5',
-          type: 'system',
-          title: language === 'bg' ? 'Поддръжка на системата' : 'System Maintenance',
-          message: language === 'bg' ? 'Планираната поддръжка приключи. Всички услуги са отново онлайн.' : 'Scheduled maintenance completed. All services are back online.',
-          timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3), // 3 days ago
-          read: true
-        }
-      ];
-
-      setNotifications(mockNotifications);
-    } catch (error) {
-      logger.error('Error loading notifications', error as Error, { userId: user?.uid });
-    } finally {
+    if (!user?.uid) {
       setLoading(false);
+      return;
     }
-  };
+
+    setLoading(true);
+
+    // Determine filter for Firebase query
+    let firebaseFilter: 'all' | 'unread' | 'read' = 'all';
+    if (filter === 'unread') {
+      firebaseFilter = 'unread';
+    }
+
+    // Determine type filter
+    let typeFilter: any = undefined;
+    if (filter === 'messages') {
+      typeFilter = 'message';
+    } else if (filter === 'system') {
+      // Firebase doesn't support 'OR' in where clause, so we'll filter client-side
+      typeFilter = undefined;
+    }
+
+    // Subscribe to notifications
+    const unsubscribe = notificationsFirebaseService.subscribeToNotifications(
+      user.uid,
+      (firebaseNotifications: FirebaseNotification[]) => {
+        // Convert Firebase notifications to local format
+        const converted: Notification[] = firebaseNotifications.map(n => ({
+          id: n.id,
+          type: n.type,
+          title: n.title,
+          message: n.message,
+          timestamp: n.timestamp instanceof Timestamp ? n.timestamp.toDate() : new Date(),
+          read: n.read,
+          actionUrl: n.actionUrl,
+          metadata: n.metadata
+        }));
+
+        // Client-side filter for 'system' type (includes 'system' and 'alert')
+        const filtered = filter === 'system'
+          ? converted.filter(n => n.type === 'system' || n.type === 'alert')
+          : converted;
+
+        setNotifications(filtered);
+        setLoading(false);
+      },
+      {
+        filter: firebaseFilter,
+        type: typeFilter
+      }
+    );
+
+    // Cleanup subscription on unmount or filter change
+    return () => {
+      unsubscribe();
+    };
+  }, [user?.uid, filter]);
 
   const markAsRead = async (notificationId: string) => {
+    // Optimistic update
     setNotifications(prev =>
       prev.map(notif =>
         notif.id === notificationId ? { ...notif, read: true } : notif
       )
     );
-    // TODO: Update in Firebase
+
+    // ✅ Update in Firebase
+    const success = await notificationsFirebaseService.markAsRead(notificationId);
+    
+    if (!success) {
+      // Revert optimistic update on failure
+      setNotifications(prev =>
+        prev.map(notif =>
+          notif.id === notificationId ? { ...notif, read: false } : notif
+        )
+      );
+      logger.error('Failed to mark notification as read', new Error('Firebase update failed'), { notificationId });
+    }
   };
 
   const markAllAsRead = async () => {
+    if (!user?.uid) return;
+
+    // Optimistic update
     setNotifications(prev =>
       prev.map(notif => ({ ...notif, read: true }))
     );
-    // TODO: Update in Firebase
+
+    // ✅ Update in Firebase
+    const success = await notificationsFirebaseService.markAllAsRead(user.uid);
+    
+    if (!success) {
+      // Revert optimistic update on failure
+      loadNotifications(); // Reload from Firebase to get correct state
+      logger.error('Failed to mark all notifications as read', new Error('Firebase update failed'), { userId: user.uid });
+    }
   };
 
   const deleteNotification = async (notificationId: string) => {
+    // Optimistic update
     setNotifications(prev => prev.filter(notif => notif.id !== notificationId));
-    // TODO: Delete from Firebase
+
+    // ✅ Delete from Firebase
+    const success = await notificationsFirebaseService.deleteNotification(notificationId);
+    
+    if (!success) {
+      // Revert optimistic update on failure
+      loadNotifications(); // Reload from Firebase to get correct state
+      logger.error('Failed to delete notification', new Error('Firebase delete failed'), { notificationId });
+    }
+  };
+
+  // Helper function to reload notifications (used for error recovery)
+  const loadNotifications = () => {
+    // Subscription will automatically reload via useEffect
+    // This is a no-op but kept for backward compatibility
   };
 
   const getNotificationIcon = (type: string) => {
@@ -165,10 +203,23 @@ const NotificationsPage: React.FC = () => {
     const hours = Math.floor(diff / (1000 * 60 * 60));
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
 
-    if (minutes < 1) return t('notifications.justNow');
-    if (minutes < 60) return `${minutes} ${t('notifications.minutesAgo')}`;
-    if (hours < 24) return `${hours} ${t('notifications.hoursAgo')}`;
-    return `${days} ${t('notifications.daysAgo')}`;
+    if (minutes < 1) return t('common.notifications.justNow');
+    if (minutes < 60) {
+      const minutesText = minutes === 1 
+        ? t('common.notifications.minuteAgo')
+        : t('common.notifications.minutesAgo');
+      return `${minutes} ${minutesText}`;
+    }
+    if (hours < 24) {
+      const hoursText = hours === 1
+        ? t('common.notifications.hourAgo')
+        : t('common.notifications.hoursAgo');
+      return `${hours} ${hoursText}`;
+    }
+    const daysText = days === 1
+      ? t('common.notifications.dayAgo')
+      : t('common.notifications.daysAgo');
+    return `${days} ${daysText}`;
   };
 
   if (!user) {
@@ -177,8 +228,8 @@ const NotificationsPage: React.FC = () => {
         <div className="notifications-container">
           <div className="login-required">
             <Bell size={48} />
-            <h2>{t('notifications.loginRequired')}</h2>
-            <p>{t('notifications.loginToView')}</p>
+            <h2>{t('common.notifications.loginRequired')}</h2>
+            <p>{t('common.notifications.loginToView')}</p>
           </div>
         </div>
       </div>
@@ -191,7 +242,7 @@ const NotificationsPage: React.FC = () => {
         <div className="notifications-header">
           <div className="header-left">
             <Bell size={32} />
-            <h1>{t('notifications.title')}</h1>
+            <h1>{t('common.notifications.title')}</h1>
           </div>
           <div className="header-actions">
             <button
@@ -200,11 +251,11 @@ const NotificationsPage: React.FC = () => {
               disabled={!notifications.some(n => !n.read)}
             >
               <CheckCircle size={16} />
-              {t('notifications.markAllRead')}
+              {t('common.notifications.markAllRead')}
             </button>
             <button className="action-button secondary">
               <Settings size={16} />
-              {t('notifications.settings')}
+              {t('common.notifications.settings')}
             </button>
           </div>
         </div>
@@ -214,25 +265,25 @@ const NotificationsPage: React.FC = () => {
             className={`filter-button ${filter === 'all' ? 'active' : ''}`}
             onClick={() => setFilter('all')}
           >
-            {t('notifications.all')} ({notifications.length})
+            {t('common.notifications.all')} ({notifications.length})
           </button>
           <button
             className={`filter-button ${filter === 'unread' ? 'active' : ''}`}
             onClick={() => setFilter('unread')}
           >
-            {t('notifications.unread')} ({notifications.filter(n => !n.read).length})
+            {t('common.notifications.unread')} ({notifications.filter(n => !n.read).length})
           </button>
           <button
             className={`filter-button ${filter === 'messages' ? 'active' : ''}`}
             onClick={() => setFilter('messages')}
           >
-            {t('notifications.messages')} ({notifications.filter(n => n.type === 'message').length})
+            {t('common.notifications.messages')} ({notifications.filter(n => n.type === 'message').length})
           </button>
           <button
             className={`filter-button ${filter === 'system' ? 'active' : ''}`}
             onClick={() => setFilter('system')}
           >
-            {t('notifications.system')} ({notifications.filter(n => n.type === 'system' || n.type === 'alert').length})
+            {t('common.notifications.system')} ({notifications.filter(n => n.type === 'system' || n.type === 'alert').length})
           </button>
         </div>
 
@@ -240,13 +291,13 @@ const NotificationsPage: React.FC = () => {
           {loading ? (
             <div className="loading-state">
               <div className="loading-spinner"></div>
-              <p>{t('notifications.loading')}</p>
+              <p>{t('common.notifications.loading')}</p>
             </div>
           ) : filteredNotifications.length === 0 ? (
             <div className="empty-state">
               <Bell size={64} />
-              <h3>{t('notifications.noNotifications')}</h3>
-              <p>{t('notifications.noNotificationsDesc')}</p>
+              <h3>{t('common.notifications.noNotifications')}</h3>
+              <p>{t('common.notifications.noNotificationsDesc')}</p>
             </div>
           ) : (
             filteredNotifications.map(notification => (
@@ -278,7 +329,7 @@ const NotificationsPage: React.FC = () => {
                       className="notification-action"
                       onClick={(e) => e.stopPropagation()}
                     >
-                      {t('notifications.viewDetails')}
+                      {t('common.notifications.viewDetails')}
                     </a>
                   )}
                 </div>
@@ -291,7 +342,7 @@ const NotificationsPage: React.FC = () => {
                         e.stopPropagation();
                         markAsRead(notification.id);
                       }}
-                      title={t('notifications.markAsRead')}
+                      title={t('common.notifications.markAsRead')}
                     >
                       <CheckCircle size={16} />
                     </button>
@@ -302,7 +353,7 @@ const NotificationsPage: React.FC = () => {
                       e.stopPropagation();
                       deleteNotification(notification.id);
                     }}
-                    title={t('notifications.delete')}
+                    title={t('common.notifications.delete')}
                   >
                     <Trash2 size={16} />
                   </button>

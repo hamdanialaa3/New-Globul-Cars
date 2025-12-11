@@ -32,7 +32,7 @@ interface CarStatus {
 }
 
 export async function checkAllCarsStatus(): Promise<CarStatus[]> {
-  console.log('🔍 Checking all cars status...');
+  logger.info('Checking all cars status');
   
   const allCars: CarStatus[] = [];
   
@@ -41,11 +41,11 @@ export async function checkAllCarsStatus(): Promise<CarStatus[]> {
       const snapshot = await getDocs(collection(db, collectionName));
       
       if (snapshot.empty) {
-        console.log(`⚠️  ${collectionName}: No documents`);
+        logger.warn(`${collectionName}: No documents`);
         continue;
       }
       
-      console.log(`📦 ${collectionName}: ${snapshot.size} documents`);
+      logger.info(`${collectionName}: ${snapshot.size} documents`);
       
       snapshot.docs.forEach(docSnap => {
         const data = docSnap.data();
@@ -78,13 +78,13 @@ export async function checkAllCarsStatus(): Promise<CarStatus[]> {
         });
         
         if (!isVisible) {
-          console.warn(`❌ HIDDEN: ${data.make} ${data.model} - ${reason}`);
+          logger.warn(`HIDDEN: ${data.make} ${data.model}`, { reason });
         } else {
-          console.log(`✅ VISIBLE: ${data.make} ${data.model}`);
+          logger.debug(`VISIBLE: ${data.make} ${data.model}`);
         }
       });
     } catch (error) {
-      console.error(`❌ Error checking ${collectionName}:`, error);
+      logger.error(`Error checking ${collectionName}`, error as Error);
     }
   }
   
@@ -92,18 +92,17 @@ export async function checkAllCarsStatus(): Promise<CarStatus[]> {
   const visibleCount = allCars.filter(c => c.isVisible).length;
   const hiddenCount = allCars.filter(c => !c.isVisible).length;
   
-  console.log('\n' + '='.repeat(60));
-  console.log('📊 SUMMARY:');
-  console.log(`Total cars: ${allCars.length}`);
-  console.log(`Visible: ${visibleCount} ✅`);
-  console.log(`Hidden: ${hiddenCount} ❌`);
-  console.log('='.repeat(60));
+  logger.info('Cars Status Summary', {
+    total: allCars.length,
+    visible: visibleCount,
+    hidden: hiddenCount
+  });
   
   return allCars;
 }
 
 export async function fixAllCarsStatus(): Promise<number> {
-  console.log('🔧 Fixing all cars status...');
+  logger.info('Fixing all cars status');
   
   let fixedCount = 0;
   
@@ -147,21 +146,18 @@ export async function fixAllCarsStatus(): Promise<number> {
             });
             
             fixedCount++;
-            console.log(`✅ Fixed: ${data.make} ${data.model} (${collectionName}/${docSnap.id})`);
-            console.log(`   Updates: ${JSON.stringify(updates)}`);
+            logger.info(`Fixed car: ${data.make} ${data.model}`, { collection: collectionName, id: docSnap.id, updates });
           } catch (error) {
-            console.error(`❌ Failed to fix ${docSnap.id}:`, error);
+            logger.error(`Failed to fix ${docSnap.id}`, error as Error);
           }
         }
       }
     } catch (error) {
-      console.error(`❌ Error fixing ${collectionName}:`, error);
+      logger.error(`Error fixing ${collectionName}`, error as Error);
     }
   }
   
-  console.log('\n' + '='.repeat(60));
-  console.log(`🎉 Fixed ${fixedCount} cars!`);
-  console.log('='.repeat(60));
+  logger.info('Fixing cars complete', { fixedCount });
   
   return fixedCount;
 }

@@ -27,6 +27,8 @@ import { AppProviders } from './providers';
 import NotificationHandler from './components/NotificationHandler';
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 import { FilterProvider } from './contexts/FilterContext';
+import InactivityWarning from './components/InactivityWarning';
+import IndexedDBActivityTracker from './services/indexeddb-activity-tracker';
 const NotFoundPage = safeLazy(() => import('./components/NotFoundPage'));
 
 // 🔧 Dev utilities (available in console)
@@ -218,6 +220,11 @@ const ThemedApp: React.FC = () => {
   const { theme } = useTheme();
   const recaptchaKey = process.env.REACT_APP_RECAPTCHA_SITE_KEY;
 
+  // Initialize activity tracker on mount
+  React.useEffect(() => {
+    IndexedDBActivityTracker.initialize();
+  }, []);
+
   if (!recaptchaKey && process.env.NODE_ENV === 'production') {
     logger.warn('reCAPTCHA Site Key is not configured');
   }
@@ -236,6 +243,7 @@ const ThemedApp: React.FC = () => {
         </Suspense>
         <SkipNavigation />
         <NotificationHandler />
+        <InactivityWarning />
         
         {/* Global Workflow Timer - Visible across all sell workflow pages */}
         <Suspense fallback={null}>

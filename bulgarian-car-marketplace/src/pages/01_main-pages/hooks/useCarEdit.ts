@@ -5,6 +5,7 @@ import { imageUploadService } from '../../../services/car/image-upload.service';
 import { logger } from '../../../services/logger-service';
 import { getCitiesByRegion } from '../../../data/bulgaria-locations';
 import { getModelsByMake } from '../../../data/car-makes-models';
+import { carDeleteService } from '../../../services/garage/car-delete.service';
 
 export const useCarEdit = (
   car: CarListing | null,
@@ -241,6 +242,33 @@ export const useCarEdit = (
     }
   };
 
+  const handleDelete = async (userId: string): Promise<boolean> => {
+    if (!carId) {
+      logger.error('Cannot delete car: carId is undefined', new Error('No carId'), {});
+      return false;
+    }
+
+    try {
+      console.log('🗑️ Starting car deletion process...', { carId, userId });
+      
+      const result = await carDeleteService.deleteCar(carId, userId);
+      
+      if (result.success) {
+        console.log('✅ Car deleted successfully', { carId });
+        return true;
+      } else {
+        console.error('❌ Car deletion failed', { carId, message: result.message });
+        alert(result.message);
+        return false;
+      }
+    } catch (error) {
+      logger.error('Error deleting car', error as Error, { carId, userId });
+      console.error('❌ Exception during car deletion:', error);
+      alert(language === 'bg' ? 'Грешка при изтриване на обявата' : 'Error deleting listing');
+      return false;
+    }
+  };
+
   return {
     isEditMode,
     setIsEditMode,
@@ -277,6 +305,7 @@ export const useCarEdit = (
     handleDrop,
     removePhoto,
     deleteExistingImage,
+    handleDelete,
   };
 };
 

@@ -70,23 +70,29 @@ class NotificationService {
   }
 
   async getToken() {
-    // Skip in development
+    // Skip in development (optional - remove this check to test in dev)
     if (process.env.NODE_ENV === 'development') {
+      logger.debug('FCM Token: Skipped in development mode');
       return null;
     }
 
     try {
-      // TODO: Add proper VAPID key from Firebase Console
-      // For now, return null to prevent errors
-      logger.debug('FCM Token: Skipped in development');
-      return null;
+      const vapidKey = process.env.REACT_APP_VAPID_KEY;
+      
+      if (!vapidKey) {
+        logger.error('VAPID key not configured - check .env file for REACT_APP_VAPID_KEY');
+        return null;
+      }
 
-      // Uncomment when VAPID key is available:
-      // const token = await getToken(this.messaging, {
-      //   vapidKey: 'YOUR_ACTUAL_VAPID_KEY_FROM_FIREBASE_CONSOLE'
-      // });
-      // logger.info('FCM Token received', { tokenLength: token.length });
-      // return token;
+      const token = await getToken(this.messaging, { vapidKey });
+      
+      if (token) {
+        logger.info('FCM Token received', { tokenLength: token.length });
+        return token;
+      } else {
+        logger.warn('No FCM token received - check Firebase configuration');
+        return null;
+      }
     } catch (error) {
       logger.error('Token error', error as Error);
       return null;

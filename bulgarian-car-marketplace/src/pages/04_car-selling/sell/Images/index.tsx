@@ -2,7 +2,7 @@
 // صفحة رفع الصور مع الأتمتة
 // File Size: ~250 lines ✅
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { logger } from '../../../../services/logger-service';
@@ -22,6 +22,9 @@ const ImagesPageNew: React.FC = () => {
   const { language } = useLanguage();
   const [isDragOver, setIsDragOver] = useState(false);
   const { files, hasImages, addFiles, removeFile, saveImages } = useImagesWorkflow();
+  
+  // ✅ FIX: Track preview URLs for cleanup
+  const previewUrlsRef = useRef<Map<number, string>>(new Map());
 
   const vehicleType = searchParams.get('vt');
   const make = searchParams.get('mk');
@@ -51,6 +54,24 @@ const ImagesPageNew: React.FC = () => {
     }
   }, [files.length]);
 
+  // ✅ FIX: Create and cleanup preview URLs
+  useEffect(() => {
+    // Revoke old URLs
+    previewUrlsRef.current.forEach(url => URL.revokeObjectURL(url));
+    previewUrlsRef.current.clear();
+    
+    // Create new URLs
+    files.forEach((file, index) => {
+      const url = URL.createObjectURL(file);
+      previewUrlsRef.current.set(index, url);
+    });
+    
+    // Cleanup on unmount or files change
+    return () => {
+      previewUrlsRef.current.forEach(url => URL.revokeObjectURL(url));
+      previewUrlsRef.current.clear();
+    };
+  }, [files]);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -175,7 +196,10 @@ const ImagesPageNew: React.FC = () => {
         <S.PreviewGrid>
           {files.map((file, index) => (
             <S.PreviewCard key={index}>
-              <S.PreviewImage src={URL.createObjectURL(file)} alt={`Preview ${index + 1}`} />
+              <S.PreviewImage 
+                src={previewUrlsRef.current.get(index) || ''} 
+                alt={`Preview ${index + 1}`} 
+              />
               <S.RemoveButton onClick={() => removeFile(index)}>
                 <X size={16} />
               </S.RemoveButton>
