@@ -739,15 +739,20 @@ const VehicleDataPage: React.FC = () => {
     buildURLSearchParams
   } = useVehicleDataForm();
 
-  // 🐛 DEBUG: Log formData changes
+  // 🐛 DEBUG: Log formData changes - COMPREHENSIVE
   useEffect(() => {
     console.log('🚗 VehicleData formData updated:', {
       make: formData.make,
       model: formData.model,
       year: formData.year,
-      firstRegistration: formData.firstRegistration
+      firstRegistration: formData.firstRegistration,
+      doors: formData.doors,
+      roadworthy: formData.roadworthy,
+      saleType: formData.saleType,
+      saleTimeline: formData.saleTimeline,
+      timestamp: new Date().toISOString()
     });
-  }, [formData.make, formData.model, formData.year, formData.firstRegistration]);
+  }, [formData]);
 
   // Validation state management
   const [validationResult, setValidationResult] = useState<ValidationResult | null>(null);
@@ -1152,28 +1157,36 @@ const VehicleDataPage: React.FC = () => {
 
   const handleDoorSelect = useCallback(
     (value: string) => {
+      console.log('🚪 Door button clicked:', { value, timestamp: new Date().toISOString() });
       handleInputChange('doors', value);
+      console.log('✅ handleInputChange called for doors');
     },
     [handleInputChange]
   );
 
   const handleRoadworthyChange = useCallback(
     (value: 'yes' | 'no') => {
+      console.log('🛣️ Roadworthy button clicked:', { value, boolValue: value === 'yes', timestamp: new Date().toISOString() });
       handleInputChange('roadworthy', value === 'yes');
+      console.log('✅ handleInputChange called for roadworthy');
     },
     [handleInputChange]
   );
 
   const handleSaleTypeChange = useCallback(
     (value: 'private' | 'commercial') => {
+      console.log('💼 Sale Type button clicked:', { value, timestamp: new Date().toISOString() });
       handleInputChange('saleType', value);
+      console.log('✅ handleInputChange called for saleType');
     },
     [handleInputChange]
   );
 
   const handleSaleTimelineChange = useCallback(
     (value: 'unknown' | 'soon' | 'months') => {
+      console.log('📅 Sale Timeline button clicked:', { value, timestamp: new Date().toISOString() });
       handleInputChange('saleTimeline', value);
+      console.log('✅ handleInputChange called for saleTimeline');
     },
     [handleInputChange]
   );
@@ -1485,8 +1498,10 @@ const VehicleDataPage: React.FC = () => {
                 key={option.value}
                 $active={formData.doors === option.value}
                 onClick={() => {
+                  console.log('🔴 DOOR BUTTON CLICKED:', option.value);
                   handleDoorSelect(option.value);
                   markFieldAsTouched('doors');
+                  console.log('✅ markFieldAsTouched called for doors');
                 }}
               >
                 {option.label}
@@ -1507,8 +1522,10 @@ const VehicleDataPage: React.FC = () => {
                 key={option}
                 $active={roadworthyChoice === option}
                 onClick={() => {
+                  console.log('🔴 ROADWORTHY BUTTON CLICKED:', option);
                   handleRoadworthyChange(option);
                   markFieldAsTouched('roadworthy');
+                  console.log('✅ markFieldAsTouched called for roadworthy');
                 }}
               >
                 {t(`sell.listingSection.roadworthyOptions.${option}`)}
@@ -1526,8 +1543,10 @@ const VehicleDataPage: React.FC = () => {
                 key={option}
                 $active={saleTypeChoice === option}
                 onClick={() => {
+                  console.log('🔴 SALE TYPE BUTTON CLICKED:', option);
                   handleSaleTypeChange(option);
                   markFieldAsTouched('saleType');
+                  console.log('✅ markFieldAsTouched called for saleType');
                 }}
               >
                 {t(`sell.listingSection.saleTypeOptions.${option}`)}
@@ -1545,8 +1564,10 @@ const VehicleDataPage: React.FC = () => {
                 key={option}
                 $active={saleTimelineChoice === option}
                 onClick={() => {
+                  console.log('🔴 SALE TIMELINE BUTTON CLICKED:', option);
                   handleSaleTimelineChange(option);
                   markFieldAsTouched('saleTimeline');
+                  console.log('✅ markFieldAsTouched called for saleTimeline');
                 }}
               >
                 {t(`sell.listingSection.saleTimelineOptions.${option}`)}

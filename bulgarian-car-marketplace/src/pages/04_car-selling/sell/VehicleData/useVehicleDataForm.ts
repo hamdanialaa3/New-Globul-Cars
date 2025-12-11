@@ -345,8 +345,15 @@ const formEquals = useCallback(
 
   const handleInputChange = useCallback(
     (field: keyof VehicleFormData, value: string | boolean) => {
+      // 🐛 DEBUG: Log all input changes to track button clicks
+      console.log('🔄 handleInputChange called:', { field, value, timestamp: new Date().toISOString() });
+      
       setFormData(prev => {
         const next = { ...prev, [field]: value };
+        
+        // 🐛 DEBUG: Log state change
+        console.log('📝 formData updating:', { field, oldValue: prev[field], newValue: value });
+        
         if (field === 'make') {
           // Preserve raw user input then store canonical form for consistency
           next.makeRaw = String(value);
