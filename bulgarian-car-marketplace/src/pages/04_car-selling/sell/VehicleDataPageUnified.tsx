@@ -452,17 +452,6 @@ const InsightToggleGroup = styled.div`
   pointer-events: auto;
 `;
 
-const PillRow = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  
-  /* ✅ FIX: Ensure buttons are clickable */
-  position: relative;
-  z-index: 1;
-  pointer-events: auto;
-`;
-
 const InsightToggleButton = styled.button<{ $active: boolean }>`
   border-radius: 12px;
   border: 2px solid ${({ $active }) => ($active ? '#22c55e' : 'rgba(148, 163, 184, 0.3)')};

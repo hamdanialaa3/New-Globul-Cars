@@ -81,6 +81,8 @@ const SuperAdminUsersPage = safeLazy(() => import('./pages/06_admin/super-admin/
 const ProfileRouter = safeLazy(() => import('./pages/03_user-pages/profile/ProfilePage/ProfileRouter'));
 const VerificationPage = safeLazy(() => import('./features/verification/VerificationPage'));
 const BillingPage = safeLazy(() => import('./features/billing/BillingPage'));
+const BillingSuccessPage = safeLazy(() => import('./pages/08_payment-billing/BillingSuccessPage'));
+const BillingCanceledPage = safeLazy(() => import('./pages/08_payment-billing/BillingCanceledPage'));
 const AnalyticsDashboard = safeLazy(() => import('./features/analytics/AnalyticsDashboard'));
 const TeamManagement = safeLazy(() => import('./features/team/TeamManagement'));
 const UsersDirectoryPage = safeLazy(() => import('./pages/03_user-pages/users-directory/UsersDirectoryPage'));

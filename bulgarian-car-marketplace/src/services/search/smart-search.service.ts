@@ -302,7 +302,7 @@ class SmartSearchService {
           const cars = snapshot.docs.map(doc => ({
             id: doc.id,
             ...doc.data()
-          )) as (CarListing | UnifiedCar)[];
+          })) as (CarListing | UnifiedCar)[];
           
           if (cars.length > 0 && isDebug) {
             serviceLogger.debug(`[${collectionName}] Sample`, {
