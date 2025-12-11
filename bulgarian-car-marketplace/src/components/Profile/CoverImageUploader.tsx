@@ -166,6 +166,22 @@ const DropdownMenu = styled.div<{ $isOpen: boolean }>`
   z-index: 20;
   pointer-events: ${props => props.$isOpen ? 'auto' : 'none'};
   overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(10px);
+  
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    background: rgba(30, 41, 59, 0.98);
+    border-color: rgba(148, 163, 184, 0.2);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.4);
+  }
+  
+  /* Light Mode Support */
+  html[data-theme="light"] & {
+    background: rgba(255, 255, 255, 0.98);
+    border-color: rgba(0, 0, 0, 0.08);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  }
 `;
 
 const MenuOption = styled.button`
@@ -220,6 +236,64 @@ const MenuOption = styled.button`
     
     &:hover {
       background: rgba(231, 76, 60, 0.08);
+    }
+  }
+  
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    color: #e2e8f0;
+    
+    svg {
+      color: #cbd5e1;
+    }
+    
+    &:hover {
+      background: rgba(148, 163, 184, 0.1);
+    }
+    
+    &:active {
+      background: rgba(148, 163, 184, 0.15);
+    }
+    
+    &.danger {
+      color: #f87171;
+      
+      svg {
+        color: #f87171;
+      }
+      
+      &:hover {
+        background: rgba(248, 113, 113, 0.15);
+      }
+    }
+  }
+  
+  /* Light Mode Support */
+  html[data-theme="light"] & {
+    color: #2c3e50;
+    
+    svg {
+      color: #6c757d;
+    }
+    
+    &:hover {
+      background: rgba(44, 62, 80, 0.05);
+    }
+    
+    &:active {
+      background: rgba(44, 62, 80, 0.1);
+    }
+    
+    &.danger {
+      color: #e74c3c;
+      
+      svg {
+        color: #e74c3c;
+      }
+      
+      &:hover {
+        background: rgba(231, 76, 60, 0.08);
+      }
     }
   }
 `;
