@@ -7,6 +7,8 @@
 
 import { collection, getDocs, doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
+import { logger } from '../services/logger-service';
+import { VehicleCollections } from '../constants/vehicleCollections';
 
 const COLLECTIONS = [
   'cars',
