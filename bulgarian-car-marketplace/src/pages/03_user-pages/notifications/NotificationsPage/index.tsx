@@ -51,7 +51,7 @@ const NotificationsPage: React.FC = () => {
         {
           id: '1',
           type: 'message',
-          title: language === 'bg' ? 'Ново съобщение' : 'New Message',
+          title: t('notifications.types.message'),
           message: language === 'bg' ? 'Имате ново съобщение за вашата обява BMW X5' : 'You have a new message about your BMW X5 listing',
           timestamp: new Date(Date.now() - 1000 * 60 * 30), // 30 minutes ago
           read: false,
@@ -60,7 +60,7 @@ const NotificationsPage: React.FC = () => {
         {
           id: '2',
           type: 'search',
-          title: language === 'bg' ? 'Търсене' : 'Search Alert',
+          title: t('notifications.types.search'),
           message: language === 'bg' ? 'Нови автомобили, отговарящи на вашето търсене за "Audi A4" под 20000 EUR' : 'New cars matching your search for "Audi A4" under 20000 EUR',
           timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 hours ago
           read: true,
@@ -69,7 +69,7 @@ const NotificationsPage: React.FC = () => {
         {
           id: '3',
           type: 'login',
-          title: language === 'bg' ? 'Сигурност' : 'Security Alert',
+          title: t('notifications.types.security'),
           message: language === 'bg' ? 'Нов вход от Chrome на Windows' : 'New login from Chrome on Windows',
           timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 day ago
           read: true,
@@ -78,7 +78,7 @@ const NotificationsPage: React.FC = () => {
         {
           id: '4',
           type: 'car',
-          title: language === 'bg' ? 'Обновление на автомобил' : 'Car Update',
+          title: t('notifications.types.car'),
           message: language === 'bg' ? 'Вашата обява Mercedes C-Class е видяна 25 пъти днес' : 'Your Mercedes C-Class listing has been viewed 25 times today',
           timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2), // 2 days ago
           read: false,
@@ -87,7 +87,7 @@ const NotificationsPage: React.FC = () => {
         {
           id: '5',
           type: 'system',
-          title: language === 'bg' ? 'Поддръжка на системата' : 'System Maintenance',
+          title: t('notifications.types.system'),
           message: language === 'bg' ? 'Планираната поддръжка приключи. Всички услуги са отново онлайн.' : 'Scheduled maintenance completed. All services are back online.',
           timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3), // 3 days ago
           read: true

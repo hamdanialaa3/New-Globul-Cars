@@ -53,6 +53,13 @@ export const common = {
     "hoursAgo": "hr ago",
     "daysAgo": "days ago",
     "loginRequired": "Login required",
-    "loginToView": "Please login to your account to view your notifications."
+    "loginToView": "Please login to your account to view your notifications.",
+    "types": {
+      "message": "New Message",
+      "search": "Search Alert",
+      "security": "Security Alert",
+      "car": "Car Update",
+      "system": "System Maintenance"
+    }
   }
 } as const;
