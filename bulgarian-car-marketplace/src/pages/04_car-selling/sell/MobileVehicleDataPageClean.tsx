@@ -227,7 +227,7 @@ export const MobileVehicleDataPageClean: React.FC = () => {
 
       <StickyFooter>
         <PrimaryButton $enabled={canContinue} onClick={goNext} disabled={!canContinue}>
-          {t('sell.start.continue')}
+          {t('common.next')}
         </PrimaryButton>
       </StickyFooter>
     </S.PageWrapper>

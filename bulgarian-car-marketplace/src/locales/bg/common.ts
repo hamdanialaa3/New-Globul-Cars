@@ -16,6 +16,7 @@ export const common = {
   "clearCache": "Изчисти кеша",
   "cacheCleared": "Кешът е изчистен успешно!",
   "continue": "Продължи",
+  "next": "Напред",
   "retry": "Опитай отново",
   "refresh": "Обнови",
   "minutes": "минути",

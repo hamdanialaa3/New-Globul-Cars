@@ -16,6 +16,7 @@ export const common = {
   "clearCache": "Clear cache",
   "cacheCleared": "Cache cleared successfully!",
   "continue": "Continue",
+  "next": "Next",
   "retry": "Retry",
   "refresh": "Refresh",
   "minutes": "minutes",

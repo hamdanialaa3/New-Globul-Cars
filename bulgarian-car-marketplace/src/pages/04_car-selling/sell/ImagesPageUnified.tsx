@@ -1060,7 +1060,7 @@ const ImagesPage: React.FC = () => {
                 disabled={imageFiles.length === 0}
                 style={{ flex: 1 }}
               >
-                {t('common.continue')}
+                {t('common.next')}
               </MobilePrimaryButton>
             </div>
           </MobileStickyFooter>
@@ -1183,7 +1183,7 @@ const ImagesPage: React.FC = () => {
             onClick={handleContinue}
             disabled={imageFiles.length === 0}
           >
-            {t('common.continue')}
+            {t('common.next')}
           </DesktopPrimaryButton>
         </DesktopActions>
       </DesktopContent>

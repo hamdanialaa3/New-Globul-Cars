@@ -256,7 +256,7 @@ const MobileImagesPage: React.FC = () => {
             onClick={handleContinue}
             disabled={uploading}
           >
-            {uploading ? t('sell.images.uploading') : t('sell.start.continue')}
+            {uploading ? t('sell.images.uploading') : t('common.next')}
           </S.PrimaryButton>
         ) : (
           <S.SkipButton onClick={handleSkip}>

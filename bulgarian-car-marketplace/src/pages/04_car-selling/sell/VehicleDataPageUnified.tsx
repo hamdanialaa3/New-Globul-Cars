@@ -1618,7 +1618,7 @@ const VehicleDataPage: React.FC = () => {
               type="button"
               style={{ flex: 1 }}
             >
-              {t('common.continue')} →
+              {t('common.next')} →
             </SimpleContinueButton>
           </div>
         </MobileStickyFooter>
@@ -1716,7 +1716,7 @@ const VehicleDataPage: React.FC = () => {
             onClick={(e) => goToNextPage(e)}
             type="button"
           >
-            {t('common.continue')} →
+            {t('common.next')} →
           </SimpleDesktopContinueButton>
         </DesktopActions>
       </DesktopContent>
