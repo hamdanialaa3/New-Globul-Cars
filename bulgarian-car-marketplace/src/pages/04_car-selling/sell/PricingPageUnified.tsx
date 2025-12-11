@@ -15,6 +15,7 @@ import SellWorkflowStepStateService from '../../../services/sellWorkflowStepStat
 import { carValidationService, ValidationResult } from '../../../services/validation/car-validation.service';
 import { usePricingForm } from './Pricing/usePricingForm';
 import { useUnifiedWorkflow } from '../../../hooks/useUnifiedWorkflow';
+import { WorkflowPageLayout } from '../../../components/sell-workflow/WorkflowPageLayout';
 
 // Mobile Components
 import { MobileContainer, MobileStack } from '../../../components/ui/mobile-index';
@@ -31,7 +32,7 @@ const PricingPageUnified: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { vehicleType = 'car' } = useParams<{ vehicleType: string }>();
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const isMobile = useIsMobile();
 
   // ✅ UNIFIED WORKFLOW: Use unified workflow (Step 5 - Pricing)
@@ -284,12 +285,11 @@ const PricingPageUnified: React.FC = () => {
   }
 
   // Render desktop version
-  return (
+  const progressBar = <SellProgressBar currentStep="pricing" />;
+  
+  const pageContent = (
     <React.Suspense fallback={<div>Loading...</div>}>
-      <S.default.FullWidthContainer>
-        <S.default.ContentSection>
-          {/* FREE LAYOUT - NO FRAMES OR BORDERS */}
-          <S.default.FreeLayout>
+      <S.default.FreeLayout>
             {/* Vehicle Summary - LEFT */}
             <S.default.SummarySection>
               {unifiedWorkflowData && (
@@ -407,42 +407,55 @@ const PricingPageUnified: React.FC = () => {
             )}
           </S.default.FreeLayout>
 
-          {/* Navigation buttons below */}
-          <S.default.NavigationButtons>
-            <S.default.Button
-              type="button"
-              $variant="secondary"
-              onClick={() => navigate(-1)}
-            >
-              ← {t('common.back')}
-            </S.default.Button>
-            <S.default.Button
-              type="button"
-              $variant="primary"
-              onClick={handleContinue}
-              disabled={!canContinue}
-            >
-              {t('common.next')} →
-            </S.default.Button>
-          </S.default.NavigationButtons>
-
-          {/* Info box */}
-          <S.default.InfoBox>
-            <Info size={20} />
-            <div>
-              <S.default.InfoTitle>
-                {language === 'bg' ? 'Съвети за ценообразуване' : 'Pricing Tips'}
-              </S.default.InfoTitle>
-              <S.default.InfoText>
-                {language === 'bg'
-                  ? 'Използвайте реалистични цени въз основа на пазара. Можете да проверите подобни обяви за сравнение.'
-                  : 'Use realistic prices based on market value. You can check similar listings for comparison.'}
-              </S.default.InfoText>
-            </div>
-          </S.default.InfoBox>
-        </S.default.ContentSection>
-      </S.default.FullWidthContainer>
+      </S.default.FreeLayout>
+      
+      {/* Info box */}
+      <S.default.InfoBox>
+        <Info size={20} />
+        <div>
+          <S.default.InfoTitle>
+            {language === 'bg' ? 'Съвети за ценообразуване' : 'Pricing Tips'}
+          </S.default.InfoTitle>
+          <S.default.InfoText>
+            {language === 'bg'
+              ? 'Използвайте реалистични цени въз основа на пазара. Можете да проверите подобни обяви за сравнение.'
+              : 'Use realistic prices based on market value. You can check similar listings for comparison.'}
+          </S.default.InfoText>
+        </div>
+      </S.default.InfoBox>
     </React.Suspense>
+  );
+  
+  const navigation = (
+    <S.default.NavigationButtons>
+      <S.default.Button
+        type="button"
+        $variant="secondary"
+        onClick={() => navigate(-1)}
+      >
+        ← {t('common.back')}
+      </S.default.Button>
+      <S.default.Button
+        type="button"
+        $variant="primary"
+        onClick={handleContinue}
+        disabled={!canContinue}
+      >
+        {t('common.next')} →
+      </S.default.Button>
+    </S.default.NavigationButtons>
+  );
+  
+  return (
+    <WorkflowPageLayout
+      progressBar={progressBar}
+      title={language === 'bg' ? 'Цена на превозното средство' : 'Vehicle Price'}
+      subtitle={language === 'bg' ? 'Определете цената на вашето превозно средство' : 'Set your vehicle price'}
+      isMobile={false}
+    >
+      {pageContent}
+      {navigation}
+    </WorkflowPageLayout>
   );
 };
 
