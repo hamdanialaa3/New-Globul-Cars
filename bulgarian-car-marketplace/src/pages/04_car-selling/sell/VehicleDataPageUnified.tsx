@@ -376,20 +376,26 @@ const PillRow = styled.div`
 
 const PillButton = styled.button<{ $active: boolean }>`
   border-radius: 999px;
-  border: 1px solid ${({ $active }) => ($active ? 'var(--accent-primary)' : 'rgba(255, 255, 255, 0.1)')};
-  background: ${({ $active }) => ($active ? 'rgba(34, 197, 94, 0.2)' : 'transparent')};
+  border: 2px solid ${({ $active }) => ($active ? '#22c55e' : 'rgba(148, 163, 184, 0.3)')};
+  background: ${({ $active }) => ($active ? 'rgba(34, 197, 94, 0.15)' : 'rgba(148, 163, 184, 0.08)')};
   color: ${({ $active }) => ($active ? '#22c55e' : 'var(--text-primary)')};
-  font-weight: 600;
-  padding: 0.55rem 1rem;
+  font-weight: ${({ $active }) => ($active ? '700' : '600')};
+  padding: 0.6rem 1.2rem;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: ${({ $active }) => ($active ? '0 0 0 3px rgba(34, 197, 94, 0.15)' : 'none')};
   
   &:hover {
-    border-color: ${({ $active }) => ($active ? '#22c55e' : '#ef4444')};
-    background: ${({ $active }) => ($active ? 'rgba(34, 197, 94, 0.3)' : 'rgba(239, 68, 68, 0.15)')};
-    color: ${({ $active }) => ($active ? '#22c55e' : '#ef4444')};
+    border-color: #22c55e;
+    background: rgba(34, 197, 94, 0.2);
+    color: #22c55e;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px ${({ $active }) => ($active ? 'rgba(34, 197, 94, 0.3)' : 'rgba(239, 68, 68, 0.3)')};
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.25), 0 0 0 3px rgba(34, 197, 94, 0.1);
+  }
+  
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
   }
 `;
 
@@ -407,20 +413,28 @@ const InsightToggleGroup = styled.div`
 
 const InsightToggleButton = styled.button<{ $active: boolean }>`
   border-radius: 12px;
-  border: 1px solid ${({ $active }) => ($active ? 'var(--accent-primary)' : 'rgba(255, 255, 255, 0.1)')};
-  background: ${({ $active }) => ($active ? 'rgba(34, 197, 94, 0.2)' : 'transparent')};
+  border: 2px solid ${({ $active }) => ($active ? '#22c55e' : 'rgba(148, 163, 184, 0.3)')};
+  background: ${({ $active }) => ($active ? 'rgba(34, 197, 94, 0.15)' : 'rgba(148, 163, 184, 0.08)')};
   color: ${({ $active }) => ($active ? '#22c55e' : 'var(--text-primary)')};
-  font-weight: 600;
-  padding: 0.6rem 1.1rem;
+  font-weight: ${({ $active }) => ($active ? '700' : '600')};
+  padding: 0.7rem 1.3rem;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: ${({ $active }) => ($active ? '0 0 0 3px rgba(34, 197, 94, 0.15)' : 'none')};
+  min-width: 120px;
+  text-align: center;
   
   &:hover {
-    border-color: ${({ $active }) => ($active ? '#22c55e' : '#ef4444')};
-    background: ${({ $active }) => ($active ? 'rgba(34, 197, 94, 0.3)' : 'rgba(239, 68, 68, 0.15)')};
-    color: ${({ $active }) => ($active ? '#22c55e' : '#ef4444')};
+    border-color: #22c55e;
+    background: rgba(34, 197, 94, 0.2);
+    color: #22c55e;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px ${({ $active }) => ($active ? 'rgba(34, 197, 94, 0.3)' : 'rgba(239, 68, 68, 0.3)')};
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.25), 0 0 0 3px rgba(34, 197, 94, 0.1);
+  }
+  
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
   }
 `;
 
@@ -1072,16 +1086,16 @@ const VehicleDataPage: React.FC = () => {
     );
   }, [getFieldError]);
 
-  const roadworthyChoice =
-    formData.roadworthy === null || formData.roadworthy === undefined
+  const roadworthyChoice: 'yes' | 'no' | undefined =
+    formData.roadworthy === true
       ? 'yes'
-      : formData.roadworthy
-        ? 'yes'
-        : 'no';
+      : formData.roadworthy === false
+      ? 'no'
+      : undefined;
 
-  const saleTypeChoice = (formData.saleType as 'private' | 'commercial' | undefined) || 'private';
+  const saleTypeChoice = (formData.saleType as 'private' | 'commercial' | undefined);
   const saleTimelineChoice =
-    (formData.saleTimeline as 'unknown' | 'soon' | 'months' | undefined) || 'unknown';
+    (formData.saleTimeline as 'unknown' | 'soon' | 'months' | undefined);
 
   // ✅ Mark fields with default values as touched on mount
   useEffect(() => {
