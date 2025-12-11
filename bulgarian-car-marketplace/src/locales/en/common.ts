@@ -33,5 +33,26 @@ export const common = {
       "description": "The page you are looking for may have been moved or deleted.",
       "homeButton": "Go to homepage"
     }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "markAllRead": "Mark all as read",
+    "settings": "Settings",
+    "all": "All",
+    "unread": "Unread",
+    "messages": "Messages",
+    "system": "System",
+    "loading": "Loading notifications...",
+    "noNotifications": "No notifications",
+    "noNotificationsDesc": "You don't have any notifications at the moment.",
+    "viewDetails": "View details",
+    "markAsRead": "Mark as read",
+    "delete": "Delete",
+    "justNow": "Just now",
+    "minutesAgo": "min ago",
+    "hoursAgo": "hr ago",
+    "daysAgo": "days ago",
+    "loginRequired": "Login required",
+    "loginToView": "Please login to your account to view your notifications."
   }
 } as const;

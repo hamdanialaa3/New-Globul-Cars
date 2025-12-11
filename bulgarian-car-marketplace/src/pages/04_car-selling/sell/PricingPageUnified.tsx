@@ -58,7 +58,7 @@ const PricingPageUnified: React.FC = () => {
         handleFieldChange('currency', unifiedWorkflowData.currency);
       }
       if (unifiedWorkflowData.priceType && unifiedWorkflowData.priceType !== pricingData.priceType) {
-        handleFieldChange('priceType', unifiedWorkflowData.priceType as any);
+        handleFieldChange('priceType', unifiedWorkflowData.priceType);
       }
       if (unifiedWorkflowData.negotiable !== undefined && unifiedWorkflowData.negotiable !== pricingData.negotiable) {
         handleFieldChange('negotiable', unifiedWorkflowData.negotiable);
@@ -81,15 +81,12 @@ const PricingPageUnified: React.FC = () => {
     });
   }, [pricingData, updateData]);
   
-  // Legacy workflowData for backward compatibility
-  const workflowData = unifiedWorkflowData as any;
-
   // Validation state
   const [validationResult, setValidationResult] = React.useState<ValidationResult | null>(null);
 
   // Real-time price validation
   useEffect(() => {
-    const result = carValidationService.validate({ price: parseFloat(pricingData.price || '0') } as any, 'draft');
+    const result = carValidationService.validate({ price: parseFloat(pricingData.price || '0') }, 'draft');
     setValidationResult(result);
   }, [pricingData.price]);
 
@@ -110,8 +107,6 @@ const PricingPageUnified: React.FC = () => {
   const make = searchParams.get('mk') || 
                searchParams.get('make') || 
                unifiedWorkflowData?.make || 
-               (workflowData as any)?.make || 
-               (workflowData as any)?.brand || 
                '';
 
   const handleContinue = (e?: React.MouseEvent) => {

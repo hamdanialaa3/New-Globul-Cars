@@ -930,7 +930,7 @@ const VehicleDataPage: React.FC = () => {
       saleTimeline: formData.saleTimeline
     };
     
-    const result = carValidationService.validate(validationData as any, 'draft');
+    const result = carValidationService.validate(validationData as Partial<VehicleFormData>, 'draft');
     setValidationResult(result);
   }, [formData, vehicleType]);
 
@@ -1361,7 +1361,7 @@ const VehicleDataPage: React.FC = () => {
             <div style={{ marginTop: '0.5rem' }}>
               <InsightLabel>{t('sell.vehicleData.enterOtherLabel')}</InsightLabel>
               <InsightInput
-                value={(formData as any).fuelTypeOther || ''}
+                value={formData.fuelTypeOther || ''}
                 onChange={e => handleInputChange('fuelTypeOther', e.target.value)}
                 onFocus={() => markFieldAsTouched('fuelTypeOther')}
                 placeholder={language === 'bg' ? 'Пример: CNG' : 'Example: CNG'}
@@ -1430,7 +1430,7 @@ const VehicleDataPage: React.FC = () => {
             <div style={{ marginTop: '0.5rem' }}>
               <InsightLabel>{t('sell.vehicleData.enterOtherLabel')}</InsightLabel>
               <InsightInput
-                value={(formData as any).colorOther || ''}
+                value={formData.colorOther || ''}
                 onChange={e => handleInputChange('colorOther', e.target.value)}
                 onFocus={() => markFieldAsTouched('colorOther')}
                 placeholder={language === 'bg' ? 'Пример: Бежов' : 'Example: Beige'}
@@ -1599,7 +1599,7 @@ const VehicleDataPage: React.FC = () => {
                 <MobileLabel>{language === 'bg' ? 'Въведете тип купе' : 'Enter body type'}</MobileLabel>
                 <MobileInput
                   type="text"
-                  value={(formData as any).bodyTypeOther || ''}
+                  value={formData.bodyTypeOther || ''}
                   onChange={(e) => handleInputChange('bodyTypeOther', e.target.value)}
                   onFocus={() => markFieldAsTouched('bodyTypeOther')}
                   placeholder={language === 'bg' ? 'Пример: Limousine' : 'Example: Limousine'}
@@ -1684,7 +1684,7 @@ const VehicleDataPage: React.FC = () => {
                 <div style={{ marginTop: '0.5rem' }}>
                   <InsightLabel>{language === 'bg' ? 'Въведете тип купе' : 'Enter body type'}</InsightLabel>
                   <InsightInput
-                    value={(formData as any).bodyTypeOther || ''}
+                    value={formData.bodyTypeOther || ''}
                     onChange={(e) => handleInputChange('bodyTypeOther', e.target.value)}
                     onFocus={() => markFieldAsTouched('bodyTypeOther')}
                     placeholder={language === 'bg' ? 'Пример: Limousine' : 'Example: Limousine'}

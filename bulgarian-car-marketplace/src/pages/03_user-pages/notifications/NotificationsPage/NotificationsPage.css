@@ -3,6 +3,12 @@
   min-height: 100vh;
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
   padding: 20px 0;
+  transition: background 0.3s ease;
+}
+
+/* Dark Mode Support */
+html[data-theme="dark"] .notifications-page {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
 }
 
 .notifications-container {
@@ -21,6 +27,14 @@
   background: white;
   border-radius: 12px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: background 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+/* Dark Mode Support */
+html[data-theme="dark"] .notifications-header {
+  background: #1e293b;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(148, 163, 184, 0.1);
 }
 
 .header-left {
@@ -34,6 +48,12 @@
   font-size: 28px;
   font-weight: 600;
   color: #2c3e50;
+  transition: color 0.3s ease;
+}
+
+/* Dark Mode Support */
+html[data-theme="dark"] .header-left h1 {
+  color: #f8fafc;
 }
 
 .header-actions {
@@ -63,6 +83,19 @@
   background: white;
   color: #6c757d;
   border: 1px solid #dee2e6;
+  transition: all 0.3s ease;
+}
+
+/* Dark Mode Support */
+html[data-theme="dark"] .action-button.secondary {
+  background: #334155;
+  color: #cbd5e1;
+  border-color: rgba(148, 163, 184, 0.2);
+}
+
+html[data-theme="dark"] .action-button.secondary:hover {
+  background: #475569;
+  color: #f8fafc;
 }
 
 .action-button:hover {
@@ -95,6 +128,18 @@
   transition: all 0.3s ease;
 }
 
+/* Dark Mode Support */
+html[data-theme="dark"] .filter-button {
+  background: #334155;
+  color: #cbd5e1;
+  border-color: rgba(148, 163, 184, 0.2);
+}
+
+html[data-theme="dark"] .filter-button:hover {
+  background: #475569;
+  border-color: rgba(148, 163, 184, 0.3);
+}
+
 .filter-button:hover {
   background: #f8f9fa;
   border-color: #adb5bd;
@@ -112,6 +157,14 @@
   border-radius: 12px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   overflow: hidden;
+  transition: background 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+/* Dark Mode Support */
+html[data-theme="dark"] .notifications-list {
+  background: #1e293b;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(148, 163, 184, 0.1);
 }
 
 .notification-item {
@@ -124,6 +177,11 @@
   position: relative;
 }
 
+/* Dark Mode Support */
+html[data-theme="dark"] .notification-item {
+  border-bottom-color: rgba(148, 163, 184, 0.1);
+}
+
 .notification-item:last-child {
   border-bottom: none;
 }
@@ -132,9 +190,20 @@
   background: #f8f9fa;
 }
 
+/* Dark Mode Support */
+html[data-theme="dark"] .notification-item:hover {
+  background: rgba(148, 163, 184, 0.08);
+}
+
 .notification-item.unread {
   background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
   border-left: 4px solid #007bff;
+}
+
+/* Dark Mode Support */
+html[data-theme="dark"] .notification-item.unread {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(147, 51, 234, 0.15) 100%);
+  border-left-color: #3b82f6;
 }
 
 .notification-item.unread::before {
@@ -181,6 +250,12 @@
   font-size: 16px;
   font-weight: 600;
   color: #2c3e50;
+  transition: color 0.3s ease;
+}
+
+/* Dark Mode Support */
+html[data-theme="dark"] .notification-title {
+  color: #f8fafc;
 }
 
 .notification-time {
@@ -188,6 +263,12 @@
   color: #6c757d;
   white-space: nowrap;
   margin-left: 10px;
+  transition: color 0.3s ease;
+}
+
+/* Dark Mode Support */
+html[data-theme="dark"] .notification-time {
+  color: #94a3b8;
 }
 
 .notification-message {
@@ -195,6 +276,12 @@
   font-size: 14px;
   color: #495057;
   line-height: 1.4;
+  transition: color 0.3s ease;
+}
+
+/* Dark Mode Support */
+html[data-theme="dark"] .notification-message {
+  color: #cbd5e1;
 }
 
 .notification-action {
@@ -236,6 +323,16 @@
   color: #495057;
 }
 
+/* Dark Mode Support */
+html[data-theme="dark"] .action-icon {
+  color: #94a3b8;
+}
+
+html[data-theme="dark"] .action-icon:hover {
+  background: rgba(148, 163, 184, 0.15);
+  color: #f8fafc;
+}
+
 .action-icon.delete:hover {
   background: #fee;
   color: #dc3545;
@@ -249,6 +346,12 @@
   justify-content: center;
   padding: 60px 20px;
   color: #6c757d;
+  transition: color 0.3s ease;
+}
+
+/* Dark Mode Support */
+html[data-theme="dark"] .loading-state {
+  color: #94a3b8;
 }
 
 .loading-spinner {
@@ -275,12 +378,24 @@
   padding: 80px 20px;
   color: #6c757d;
   text-align: center;
+  transition: color 0.3s ease;
+}
+
+/* Dark Mode Support */
+html[data-theme="dark"] .empty-state {
+  color: #94a3b8;
 }
 
 .empty-state h3 {
   margin: 20px 0 10px 0;
   font-size: 24px;
   color: #495057;
+  transition: color 0.3s ease;
+}
+
+/* Dark Mode Support */
+html[data-theme="dark"] .empty-state h3 {
+  color: #f8fafc;
 }
 
 .empty-state p {
@@ -297,12 +412,24 @@
   padding: 80px 20px;
   text-align: center;
   color: #6c757d;
+  transition: color 0.3s ease;
+}
+
+/* Dark Mode Support */
+html[data-theme="dark"] .login-required {
+  color: #94a3b8;
 }
 
 .login-required h2 {
   margin: 20px 0 10px 0;
   font-size: 28px;
   color: #495057;
+  transition: color 0.3s ease;
+}
+
+/* Dark Mode Support */
+html[data-theme="dark"] .login-required h2 {
+  color: #f8fafc;
 }
 
 .login-required p {

@@ -33,5 +33,26 @@ export const common = {
       "description": "Страницата, която търсите, може да е била преместена или изтрита.",
       "homeButton": "Към началната страница"
     }
+  },
+  "notifications": {
+    "title": "Известия",
+    "markAllRead": "Маркирай всички като прочетени",
+    "settings": "Настройки",
+    "all": "Всички",
+    "unread": "Непрочетени",
+    "messages": "Съобщения",
+    "system": "Система",
+    "loading": "Зареждане на известия...",
+    "noNotifications": "Няма известия",
+    "noNotificationsDesc": "Нямате нови известия в момента.",
+    "viewDetails": "Виж детайли",
+    "markAsRead": "Маркирай като прочетено",
+    "delete": "Изтрий",
+    "justNow": "Току-що",
+    "minutesAgo": "мин. преди",
+    "hoursAgo": "ч. преди",
+    "daysAgo": "дн. преди",
+    "loginRequired": "Входът е задължителен",
+    "loginToView": "Моля, влезте в профила си, за да видите известията си."
   }
 } as const;
