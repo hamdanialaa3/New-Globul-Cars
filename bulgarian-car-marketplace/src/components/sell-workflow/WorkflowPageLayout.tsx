@@ -63,10 +63,9 @@ export const WorkflowPageLayout: React.FC<WorkflowPageLayoutProps> = ({
 // ============================================================================
 
 const PageContainer = styled.div<{ $isMobile: boolean }>`
-  /* ✅ STANDARD: Same width for all pages */
+  /* ✅ Removed max-width restriction - content can use full width */
   width: 100%;
-  max-width: ${({ $isMobile }) => ($isMobile ? '100%' : '1200px')};
-  margin: 0 auto;
+  margin: 0;
   padding: ${({ $isMobile }) => ($isMobile ? '1rem' : '2rem')};
   
   /* ✅ FIX: Prevent horizontal overflow */
@@ -86,10 +85,10 @@ const ProgressSection = styled.div`
 `;
 
 const ContentWrapper = styled.main<{ $isMobile: boolean }>`
-  /* ✅ STANDARD: Consistent content wrapper */
-  background: ${({ $isMobile }) => ($isMobile ? 'transparent' : 'var(--bg-primary, #ffffff)')};
-  border-radius: ${({ $isMobile }) => ($isMobile ? '0' : '20px')};
-  padding: ${({ $isMobile }) => ($isMobile ? '0' : '2rem')};
+  /* ✅ Removed frame - transparent background, no borders */
+  background: transparent;
+  border-radius: 0;
+  padding: ${({ $isMobile }) => ($isMobile ? '0' : '0')};
   
   @media (max-width: 768px) {
     padding: 0;
@@ -123,45 +122,20 @@ const PageSubtitle = styled.p<{ $isMobile: boolean }>`
 `;
 
 const ContentSection = styled.div<{ $isMobile: boolean }>`
-  /* ✅ STANDARD: Consistent content area */
-  background: var(--bg-card, #ffffff);
-  border-radius: ${({ $isMobile }) => ($isMobile ? '12px' : '20px')};
+  /* ✅ Removed frame restrictions - transparent background, no borders, no height limits */
+  background: transparent;
+  border-radius: 0;
   padding: ${({ $isMobile }) => ($isMobile ? '1.5rem' : '2.5rem')};
-  box-shadow: ${({ $isMobile }) => 
-    $isMobile 
-      ? '0 2px 8px rgba(0, 0, 0, 0.08)' 
-      : '0 4px 16px rgba(0, 0, 0, 0.1)'};
-  border: 1px solid var(--border, #e0e0e0);
+  box-shadow: none;
+  border: none;
   
-  /* ✅ FIX: Consistent height */
-  min-height: 400px;
-  max-height: 800px;
-  overflow-y: auto;
-  
-  /* Custom scrollbar */
-  &::-webkit-scrollbar {
-    width: 8px;
-  }
-  
-  &::-webkit-scrollbar-track {
-    background: var(--bg-secondary, #f5f5f5);
-    border-radius: 4px;
-  }
-  
-  &::-webkit-scrollbar-thumb {
-    background: var(--border, #e0e0e0);
-    border-radius: 4px;
-    transition: background 0.2s ease;
-    
-    &:hover {
-      background: var(--text-tertiary, #999999);
-    }
-  }
+  /* ✅ Removed height restrictions - content can grow naturally */
+  min-height: auto;
+  max-height: none;
+  overflow-y: visible;
   
   @media (max-width: 768px) {
     padding: 1.25rem;
-    min-height: 300px;
-    max-height: 600px;
   }
 `;
 

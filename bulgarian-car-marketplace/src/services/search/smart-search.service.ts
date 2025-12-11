@@ -95,15 +95,6 @@ class SmartSearchService {
       
       const processingTime = Date.now() - startTime;
       
-      // 🔍 ALWAYS LOG: Final results
-      console.log('✅ Smart Search Completed:', {
-        keywords,
-        resultsCount: paginatedCars.length,
-        totalCount: rankedCars.length,
-        processingTime: processingTime + 'ms',
-        isPersonalized
-      });
-      
       serviceLogger.info('Smart search completed', {
         keywords,
         resultsCount: paginatedCars.length,
@@ -120,7 +111,6 @@ class SmartSearchService {
       };
       
     } catch (error) {
-      console.error('❌ Smart Search Failed:', error);
       serviceLogger.error('Smart search failed', error as Error);
       throw error;
     }
@@ -260,8 +250,7 @@ class SmartSearchService {
     try {
       const isDebug = typeof window !== 'undefined' && localStorage.getItem('DEBUG_SEARCH') === 'true';
       
-      // 🔍 ALWAYS LOG: Search parameters
-      console.log('🔍 Smart Search - Executing with params:', {
+      serviceLogger.debug('Smart Search - Executing with params', {
         brands: parsed.brands,
         fuelTypes: parsed.fuelTypes,
         years: parsed.years,
@@ -313,10 +302,10 @@ class SmartSearchService {
           const cars = snapshot.docs.map(doc => ({
             id: doc.id,
             ...doc.data()
-          })) as (CarListing | UnifiedCar)[];
+          )) as (CarListing | UnifiedCar)[];
           
-          if (cars.length > 0) {
-            console.log(`  📋 [${collectionName}] Sample:`, {
+          if (cars.length > 0 && isDebug) {
+            serviceLogger.debug(`[${collectionName}] Sample`, {
               make: cars[0].make,
               model: cars[0].model,
               status: cars[0].status,
@@ -326,7 +315,7 @@ class SmartSearchService {
           
           return cars;
         } catch (error) {
-          console.error(`  ❌ [${collectionName}] Query failed:`, error);
+          serviceLogger.error(`[${collectionName}] Query failed`, error as Error);
           return [];
         }
       });
@@ -335,28 +324,26 @@ class SmartSearchService {
       const results = await Promise.all(queryPromises);
       results.forEach(cars => allCars.push(...cars));
       
-      // 🔍 ALWAYS LOG: Firestore results
-      console.log('✅ Smart Search - Firestore returned:', allCars.length, 'total cars from all collections');
-      console.log('📦 Collections results:', collections.map((col, i) => `${col}: ${results[i].length}`).join(', '));
+      serviceLogger.debug('Smart Search - Firestore returned', {
+        totalCars: allCars.length,
+        collections: collections.map((col, i) => ({ name: col, count: results[i].length }))
+      });
       
-      if (allCars.length > 0) {
-        allCars.slice(0, 3).forEach((car, i) => {
-          console.log(`  [${i}] ${car.make} ${car.model} (${car.year}) - Status: ${car.status} - Price: ${car.price}`);
-        });
-      } else {
-        console.warn('⚠️ NO CARS FOUND in any collection!');
-        console.warn('🔍 Search params were:', parsed);
-        console.warn('📦 Collections searched:', collections);
-        console.warn('💡 Possible reasons:');
-        console.warn('   1. No cars with status="active"');
-        console.warn('   2. Fuel type filter too restrictive');
-        console.warn('   3. Firestore rules blocking read');
+      if (allCars.length === 0) {
+        serviceLogger.warn('No cars found in any collection', { parsed, collections });
       }
       
       // ⚡ NEW: Apply client-side filters (ranges, text search, make/model matching)
       const beforeFilter = allCars.length;
       const filteredCars = this.applyClientSideFilters(allCars, parsed);
-      console.log('🎯 Smart Search - After client-side filtering:', filteredCars.length, 'cars (removed:', beforeFilter - filteredCars.length, ')');
+      
+      if (isDebug) {
+        serviceLogger.debug('After client-side filtering', {
+          before: beforeFilter,
+          after: filteredCars.length,
+          removed: beforeFilter - filteredCars.length
+        });
+      }
       
       return filteredCars;
       
@@ -375,7 +362,7 @@ class SmartSearchService {
     cars: (CarListing | UnifiedCar)[],
     parsed: ParsedKeywords
   ): (CarListing | UnifiedCar)[] {
-    console.log('📋 Keywords to match:', parsed.keywords);
+    const isDebug = typeof window !== 'undefined' && localStorage.getItem('DEBUG_SEARCH') === 'true';
     
     const filtered = cars.filter(car => {
       // Year filter
@@ -409,18 +396,6 @@ class SmartSearchService {
         const hasMatch = parsed.keywords.some(keyword => {
           const lowerKeyword = keyword.toLowerCase();
           const matched = searchText.includes(lowerKeyword);
-          
-          // 🔍 ALWAYS LOG: First 3 cars for debugging
-          if (cars.indexOf(car) < 3) {
-            console.log(`🔍 [Car ${cars.indexOf(car)}] ${carMake} ${carModel}:`, {
-              keyword: lowerKeyword,
-              matched: matched,
-              make: car.make,
-              model: car.model,
-              status: car.status
-            });
-          }
-          
           return matched;
         });
         
@@ -431,14 +406,6 @@ class SmartSearchService {
       
       return true;
     });
-    
-    if (filtered.length > 0) {
-      console.log('📋 Sample matched car:', {
-        make: filtered[0].make,
-        model: filtered[0].model,
-        year: filtered[0].year
-      });
-    }
     
     return filtered;
   }

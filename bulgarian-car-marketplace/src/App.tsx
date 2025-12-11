@@ -57,6 +57,7 @@ const SocialFeedPage = safeLazy(() => import('./pages/03_user-pages/social/Socia
 
 // Mobile.de-style sell workflow pages (الوحيد المستخدم)
 const VehicleStartPage = safeLazy(() => import('./pages/04_car-selling/sell/VehicleStartPageNew'));
+const MobileSellerTypePage = safeLazy(() => import('./pages/04_car-selling/sell/MobileSellerTypePage'));
 const VehicleDataPageUnified = safeLazy(() => import('./pages/04_car-selling/sell/VehicleDataPageUnified'));
 const MobilePricingPage = safeLazy(() => import('./pages/04_car-selling/sell/MobilePricingPage'));
 const MobileContactPage = safeLazy(() => import('./pages/04_car-selling/sell/MobileContactPage'));
@@ -346,21 +347,8 @@ const MainLayout: React.FC = () => {
             </AuthGuard>
           }
         />
-        {/* ======================================== */}
-        {/* ✅ UNIFIED SELL WORKFLOW ROUTES - 8 STEPS */}
-        {/* ======================================== */}
-        
-        {/* Step 1: Vehicle Selection */}
-        <Route
-          path="/sell/auto"
-          element={
-            <AuthGuard requireAuth={true}>
-              <VehicleStartPage />
-            </AuthGuard>
-          }
-        />
-        
-        {/* Step 2: Vehicle Data (includes seller type selection - unified) */}
+        {/* ✅ NEW: Unified Sell Workflow Routes - Clean & Sequential */}
+        {/* Step 1: Vehicle Data */}
         <Route
           path="/sell/inserat/:vehicleType/data"
           element={
@@ -369,8 +357,7 @@ const MainLayout: React.FC = () => {
             </AuthGuard>
           }
         />
-        
-        {/* Step 3: Equipment (unified - all categories in one page) */}
+        {/* Step 2: Equipment */}
         <Route
           path="/sell/inserat/:vehicleType/equipment"
           element={
@@ -379,8 +366,7 @@ const MainLayout: React.FC = () => {
             </AuthGuard>
           }
         />
-        
-        {/* Step 4: Images Upload */}
+        {/* Step 3: Images */}
         <Route
           path="/sell/inserat/:vehicleType/images"
           element={
@@ -389,8 +375,7 @@ const MainLayout: React.FC = () => {
             </AuthGuard>
           }
         />
-        
-        {/* Step 5: Pricing & Financing */}
+        {/* Step 4: Pricing */}
         <Route
           path="/sell/inserat/:vehicleType/pricing"
           element={
@@ -399,8 +384,7 @@ const MainLayout: React.FC = () => {
             </AuthGuard>
           }
         />
-        
-        {/* Step 6: Contact Information (unified - all fields in one page) */}
+        {/* Step 5: Contact */}
         <Route
           path="/sell/inserat/:vehicleType/contact"
           element={
@@ -409,8 +393,7 @@ const MainLayout: React.FC = () => {
             </AuthGuard>
           }
         />
-        
-        {/* Step 7: Preview & Review */}
+        {/* Step 6: Preview */}
         <Route
           path="/sell/inserat/:vehicleType/preview"
           element={
@@ -461,7 +444,12 @@ const MainLayout: React.FC = () => {
           path="/sell/inserat/:vehicleType/kontakt/*" 
           element={<Navigate to="../../contact" replace />} 
         />
-        {/* Step 8: Final Submission & Publish */}
+        {/* Old seller type route - redirect to data (seller type is now handled in data page) */}
+        <Route 
+          path="/sell/inserat/:vehicleType/verkaeufertyp" 
+          element={<Navigate to="../data" replace />} 
+        />
+        {/* Step 7: Submission (Final Step) */}
         <Route
           path="/sell/inserat/:vehicleType/submission"
           element={
@@ -469,16 +457,6 @@ const MainLayout: React.FC = () => {
               {isMobile ? <MobileSubmissionPage /> : <DesktopSubmissionPage />}
             </AuthGuard>
           }
-        />
-        
-        {/* ======================================== */}
-        {/* 🔀 LEGACY ROUTE REDIRECTS (Backward Compatibility) */}
-        {/* ======================================== */}
-        
-        {/* Old seller type route → redirect to data (seller type now integrated in data page) */}
-        <Route 
-          path="/sell/inserat/:vehicleType/verkaeufertyp" 
-          element={<Navigate to="../data" replace />} 
         />
         <Route path="/profile/*" element={<ProfileRouter />} />
         <Route path="/verification" element={<VerificationPage />} />

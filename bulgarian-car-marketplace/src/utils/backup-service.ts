@@ -165,7 +165,7 @@ const backupAllCollections = async () => {
   logger.info(\`✅ Backup saved to \${filename}\`);
 };
 
-backupAllCollections().catch(console.error);
+backupAllCollections().catch((error) => logger.error('Backup failed', error));
 `;
 
 // ========== Restore Script (FREE) ==========
@@ -223,7 +223,7 @@ if (!backupFile) {
   process.exit(1);
 }
 
-restoreFromBackup(backupFile).catch(console.error);
+restoreFromBackup(backupFile).catch((error) => logger.error('Restore failed', error));
 `;
 
 // ========== Backup Retention Policy (FREE - Cloud Storage lifecycle) ==========

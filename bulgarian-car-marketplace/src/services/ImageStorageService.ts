@@ -201,25 +201,18 @@ class ImageStorage {
               return new File([blob], fileName, { type: fileType, lastModified: blob.lastModified || Date.now() });
             }
             
-            console.warn('⚠️ Unexpected file type in IndexedDB:', typeof file, file);
+            // Unexpected file type - skip it
             return null;
           }).filter((file): file is File => file !== null);
 
-          console.log('📸 Restored images from IndexedDB:', { 
-            count: files.length, 
-            files: files.map(f => ({ name: f.name, size: f.size, type: f.type }))
-          });
-          
           resolve(files);
         };
 
         request.onerror = () => {
-          console.error('❌ IndexedDB get error:', request.error);
           reject(new Error('Failed to get images'));
         };
       });
     } catch (error) {
-      console.error('❌ Error getting images:', error);
       return [];
     }
   }
@@ -244,7 +237,6 @@ class ImageStorage {
         request.onerror = () => reject(new Error('Failed to get thumbnails'));
       });
     } catch (error) {
-      console.error('Error getting thumbnails:', error);
       return [];
     }
   }
@@ -298,7 +290,7 @@ class ImageStorage {
         request.onerror = () => reject(new Error('Failed to clear images'));
       });
     } catch (error) {
-      console.error('Error clearing images:', error);
+      // Silent fail
     }
   }
 
@@ -325,7 +317,6 @@ class ImageStorage {
         request.onerror = () => reject(new Error('Failed to get storage info'));
       });
     } catch (error) {
-      console.error('Error getting storage info:', error);
       return { count: 0, timestamp: null };
     }
   }

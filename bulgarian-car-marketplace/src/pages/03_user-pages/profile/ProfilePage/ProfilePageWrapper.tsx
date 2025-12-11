@@ -282,22 +282,23 @@ const ProfilePageWrapper: React.FC = () => {
               <S.UserEmail>{activeProfile.email}</S.UserEmail>
             </S.UserInfoLeft>
             
-            <S.UserInfoCenter>
-              <S.StatBox>
-                <span className="number">{activeProfile.stats?.totalViews || 0}</span>
-                <span className="label">{language === 'bg' ? 'Прегледи' : 'Views'}</span>
-              </S.StatBox>
-              <S.StatBox>
-                <span className="number">{activeProfile.stats?.activeListings || 0}</span>
-                <span className="label">{language === 'bg' ? 'Обяви' : 'Listings'}</span>
-              </S.StatBox>
-              <S.StatBox>
-                <span className="number">{activeProfile.stats?.trustScore || 0}%</span>
-                <span className="label">{language === 'bg' ? 'Доверие' : 'Trust'}</span>
-              </S.StatBox>
-            </S.UserInfoCenter>
-            
             <S.UserInfoRight>
+              {/* Stats moved to the right side */}
+              <S.UserInfoCenter>
+                <S.StatBox>
+                  <span className="number">{activeProfile.stats?.totalViews || 0}</span>
+                  <span className="label">{language === 'bg' ? 'Прегледи' : 'Views'}</span>
+                </S.StatBox>
+                <S.StatBox>
+                  <span className="number">{activeProfile.stats?.activeListings || 0}</span>
+                  <span className="label">{language === 'bg' ? 'Обяви' : 'Listings'}</span>
+                </S.StatBox>
+                <S.StatBox>
+                  <span className="number">{activeProfile.stats?.trustScore || 0}%</span>
+                  <span className="label">{language === 'bg' ? 'Доверие' : 'Trust'}</span>
+                </S.StatBox>
+              </S.UserInfoCenter>
+              
               {isOwnProfile ? (
                 <S.ActionButton $variant="secondary" onClick={handleGoogleSync}>
                   <RefreshCw size={16} className={syncing ? 'spinning' : ''} />

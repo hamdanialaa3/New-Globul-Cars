@@ -12,9 +12,9 @@ import ReactGA from 'react-ga4';
  * import { initGA } from './utils/google-analytics';
  * useEffect(() => { initGA(); }, []);
  */
-export const initGA = (measurementId: string = process.env.REACT_APP_GA4_MEASUREMENT_ID || 'G-XXXXXXXXXX') => {
-  if (!measurementId || measurementId === 'G-XXXXXXXXXX') {
-    logger.warn('GA4 Measurement ID not configured');
+export const initGA = (measurementId: string = process.env.REACT_APP_FIREBASE_MEASUREMENT_ID || process.env.REACT_APP_GA4_MEASUREMENT_ID) => {
+  if (!measurementId) {
+    logger.warn('GA4 Measurement ID not configured - add REACT_APP_FIREBASE_MEASUREMENT_ID to .env');
     return;
   }
   
