@@ -1158,37 +1158,92 @@ const VehicleDataPage: React.FC = () => {
   const handleDoorSelect = useCallback(
     (value: string) => {
       console.log('🚪 Door button clicked:', { value, timestamp: new Date().toISOString() });
-      handleInputChange('doors', value);
+      
+      // ✅ FIX: Toggle behavior - clicking active button deselects it
+      const currentDoors = formData.doors;
+      
+      if (currentDoors === value) {
+        // Clicking same button -> deselect (set to empty string)
+        console.log('🔄 Deselecting doors (was:', value, ')');
+        handleInputChange('doors', '');
+      } else {
+        // Clicking different button -> select it
+        console.log('✅ Selecting doors:', value);
+        handleInputChange('doors', value);
+      }
+      
       console.log('✅ handleInputChange called for doors');
     },
-    [handleInputChange]
+    [handleInputChange, formData.doors]
   );
 
   const handleRoadworthyChange = useCallback(
     (value: 'yes' | 'no') => {
       console.log('🛣️ Roadworthy button clicked:', { value, boolValue: value === 'yes', timestamp: new Date().toISOString() });
-      handleInputChange('roadworthy', value === 'yes');
+      
+      // ✅ FIX: Toggle behavior - clicking active button deselects it
+      const currentChoice: 'yes' | 'no' | undefined = 
+        formData.roadworthy === true ? 'yes' : 
+        formData.roadworthy === false ? 'no' : 
+        undefined;
+      
+      if (currentChoice === value) {
+        // Clicking same button -> deselect (set to null)
+        console.log('🔄 Deselecting roadworthy (was:', value, ')');
+        handleInputChange('roadworthy', null as any);
+      } else {
+        // Clicking different button -> select it
+        console.log('✅ Selecting roadworthy:', value);
+        handleInputChange('roadworthy', value === 'yes');
+      }
+      
       console.log('✅ handleInputChange called for roadworthy');
     },
-    [handleInputChange]
+    [handleInputChange, formData.roadworthy]
   );
 
   const handleSaleTypeChange = useCallback(
     (value: 'private' | 'commercial') => {
       console.log('💼 Sale Type button clicked:', { value, timestamp: new Date().toISOString() });
-      handleInputChange('saleType', value);
+      
+      // ✅ FIX: Toggle behavior - clicking active button deselects it
+      const currentChoice = formData.saleType as 'private' | 'commercial' | undefined;
+      
+      if (currentChoice === value) {
+        // Clicking same button -> deselect (reset to default 'private')
+        console.log('🔄 Deselecting sale type (was:', value, '), resetting to private');
+        handleInputChange('saleType', 'private');
+      } else {
+        // Clicking different button -> select it
+        console.log('✅ Selecting sale type:', value);
+        handleInputChange('saleType', value);
+      }
+      
       console.log('✅ handleInputChange called for saleType');
     },
-    [handleInputChange]
+    [handleInputChange, formData.saleType]
   );
 
   const handleSaleTimelineChange = useCallback(
     (value: 'unknown' | 'soon' | 'months') => {
       console.log('📅 Sale Timeline button clicked:', { value, timestamp: new Date().toISOString() });
-      handleInputChange('saleTimeline', value);
+      
+      // ✅ FIX: Toggle behavior - clicking active button deselects it
+      const currentChoice = formData.saleTimeline as 'unknown' | 'soon' | 'months' | undefined;
+      
+      if (currentChoice === value) {
+        // Clicking same button -> deselect (reset to 'unknown')
+        console.log('🔄 Deselecting sale timeline (was:', value, '), resetting to unknown');
+        handleInputChange('saleTimeline', 'unknown');
+      } else {
+        // Clicking different button -> select it
+        console.log('✅ Selecting sale timeline:', value);
+        handleInputChange('saleTimeline', value);
+      }
+      
       console.log('✅ handleInputChange called for saleTimeline');
     },
-    [handleInputChange]
+    [handleInputChange, formData.saleTimeline]
   );
 
   // removed legacy brand orbit UI from old section
