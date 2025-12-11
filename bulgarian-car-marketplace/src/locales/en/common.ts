@@ -50,8 +50,11 @@ export const common = {
     "delete": "Delete",
     "justNow": "Just now",
     "minutesAgo": "min ago",
+    "minuteAgo": "minute ago",
     "hoursAgo": "hr ago",
+    "hourAgo": "hour ago",
     "daysAgo": "days ago",
+    "dayAgo": "day ago",
     "loginRequired": "Login required",
     "loginToView": "Please login to your account to view your notifications.",
     "types": {

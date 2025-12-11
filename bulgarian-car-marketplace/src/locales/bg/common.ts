@@ -50,8 +50,11 @@ export const common = {
     "delete": "Изтрий",
     "justNow": "Току-що",
     "minutesAgo": "мин. преди",
+    "minuteAgo": "минута преди",
     "hoursAgo": "ч. преди",
+    "hourAgo": "час преди",
     "daysAgo": "дн. преди",
+    "dayAgo": "ден преди",
     "loginRequired": "Входът е задължителен",
     "loginToView": "Моля, влезте в профила си, за да видите известията си.",
     "types": {

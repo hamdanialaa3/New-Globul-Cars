@@ -52,7 +52,7 @@ const NotificationsPage: React.FC = () => {
           id: '1',
           type: 'message',
           title: t('common.notifications.types.message'),
-          message: language === 'bg' ? 'Имате ново съобщение за вашата обява BMW X5' : 'You have a new message about your BMW X5 listing',
+          message: t('common.notifications.messages.newMessage'),
           timestamp: new Date(Date.now() - 1000 * 60 * 30), // 30 minutes ago
           read: false,
           actionUrl: '/messages'
@@ -61,7 +61,7 @@ const NotificationsPage: React.FC = () => {
           id: '2',
           type: 'search',
           title: t('common.notifications.types.search'),
-          message: language === 'bg' ? 'Нови автомобили, отговарящи на вашето търсене за "Audi A4" под 20000 EUR' : 'New cars matching your search for "Audi A4" under 20000 EUR',
+          message: t('common.notifications.messages.searchMatch'),
           timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 hours ago
           read: true,
           actionUrl: '/cars?search=Audi%20A4&maxPrice=20000'
@@ -70,7 +70,7 @@ const NotificationsPage: React.FC = () => {
           id: '3',
           type: 'login',
           title: t('common.notifications.types.security'),
-          message: language === 'bg' ? 'Нов вход от Chrome на Windows' : 'New login from Chrome on Windows',
+          message: t('common.notifications.messages.newLogin'),
           timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 day ago
           read: true,
           actionUrl: '/profile/security'
@@ -79,7 +79,7 @@ const NotificationsPage: React.FC = () => {
           id: '4',
           type: 'car',
           title: t('common.notifications.types.car'),
-          message: language === 'bg' ? 'Вашата обява Mercedes C-Class е видяна 25 пъти днес' : 'Your Mercedes C-Class listing has been viewed 25 times today',
+          message: t('common.notifications.messages.carViewed'),
           timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2), // 2 days ago
           read: false,
           actionUrl: '/my-listings'
@@ -88,7 +88,7 @@ const NotificationsPage: React.FC = () => {
           id: '5',
           type: 'system',
           title: t('common.notifications.types.system'),
-          message: language === 'bg' ? 'Планираната поддръжка приключи. Всички услуги са отново онлайн.' : 'Scheduled maintenance completed. All services are back online.',
+          message: t('common.notifications.messages.maintenanceComplete'),
           timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3), // 3 days ago
           read: true
         }
@@ -168,18 +168,18 @@ const NotificationsPage: React.FC = () => {
     if (minutes < 1) return t('common.notifications.justNow');
     if (minutes < 60) {
       const minutesText = minutes === 1 
-        ? (language === 'bg' ? 'минута' : 'minute')
+        ? t('common.notifications.minuteAgo')
         : t('common.notifications.minutesAgo');
       return `${minutes} ${minutesText}`;
     }
     if (hours < 24) {
       const hoursText = hours === 1
-        ? (language === 'bg' ? 'час' : 'hour')
+        ? t('common.notifications.hourAgo')
         : t('common.notifications.hoursAgo');
       return `${hours} ${hoursText}`;
     }
     const daysText = days === 1
-      ? (language === 'bg' ? 'ден' : 'day')
+      ? t('common.notifications.dayAgo')
       : t('common.notifications.daysAgo');
     return `${days} ${daysText}`;
   };
