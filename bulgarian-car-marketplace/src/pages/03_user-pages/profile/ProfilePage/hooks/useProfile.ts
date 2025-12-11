@@ -142,6 +142,16 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
       const viewingOwn = !effectiveTargetId || effectiveTargetId === authUser?.uid;
       setIsOwnProfile(viewingOwn);
 
+      // ⚡ FIX: If accessing own profile without being logged in, don't try to load data
+      // AuthGuard will handle showing the login prompt
+      if (viewingOwn && !authUser) {
+        setLoading(false);
+        setViewer(null);
+        setTarget(null);
+        setError(null);
+        return;
+      }
+
       if (process.env.NODE_ENV === 'development') {
         logger.debug('useProfile: loading profiles', {
           targetUserId,
@@ -167,16 +177,26 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
       setFormData(buildFormData(normalizedTarget));
       await loadCarsForProfile(normalizedTarget);
 
+      // ⚡ FIX: Only show error if user is logged in and trying to access their own profile
+      // Don't show error toast if user is not logged in (AuthGuard will handle it)
       if (!normalizedTarget) {
         const message = t('profile.load_user_error');
         setError(message);
-        toast.error(message);
+        // Only show toast if user is logged in (viewer exists)
+        if (normalizedViewer) {
+          toast.error(message);
+        }
       }
     } catch (err) {
       logger.error('Error loading user profile', err as Error, { targetUserId, effectiveTargetId });
       const message = t('profile.load_user_error_generic');
       setError(message);
-      toast.error(message);
+      // ⚡ FIX: Only show toast if user is logged in
+      // Check if viewer exists (user is logged in) before showing error toast
+      const authUser = auth.currentUser;
+      if (authUser) {
+        toast.error(message);
+      }
     } finally {
       setLoading(false);
     }

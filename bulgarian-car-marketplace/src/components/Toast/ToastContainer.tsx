@@ -46,16 +46,29 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     title?: string,
     duration?: number
   ) => {
-    const id = `toast_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    const newToast: ToastData = {
-      id,
-      type,
-      title,
-      message,
-      duration
-    };
-
-    setToasts(prev => [...prev, newToast]);
+    // ⚡ FIX: Prevent duplicate toasts with the same message
+    setToasts(prev => {
+      // Check if a toast with the same message already exists
+      const isDuplicate = prev.some(
+        toast => toast.message === message && toast.type === type
+      );
+      
+      if (isDuplicate) {
+        // If duplicate exists, don't add a new one
+        return prev;
+      }
+      
+      const id = `toast_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const newToast: ToastData = {
+        id,
+        type,
+        title,
+        message,
+        duration
+      };
+      
+      return [...prev, newToast];
+    });
   }, []);
 
   const removeToast = useCallback((id: string) => {

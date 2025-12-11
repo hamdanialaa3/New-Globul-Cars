@@ -272,6 +272,9 @@ const ImagesPage: React.FC = () => {
   const [isDragOver, setIsDragOver] = useState(false);
   const [isOptimizing, setIsOptimizing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  // ✅ FIX: Track preview URLs for cleanup
+  const previewUrlsRef = useRef<Map<number, string>>(new Map());
 
   // Load saved images on mount
   useEffect(() => {
@@ -283,6 +286,25 @@ const ImagesPage: React.FC = () => {
       }
     }
   }, []);
+  
+  // ✅ FIX: Create and cleanup preview URLs
+  useEffect(() => {
+    // Revoke old URLs
+    previewUrlsRef.current.forEach(url => URL.revokeObjectURL(url));
+    previewUrlsRef.current.clear();
+    
+    // Create new URLs
+    images.forEach((image, index) => {
+      const url = URL.createObjectURL(image);
+      previewUrlsRef.current.set(index, url);
+    });
+    
+    // Cleanup on unmount
+    return () => {
+      previewUrlsRef.current.forEach(url => URL.revokeObjectURL(url));
+      previewUrlsRef.current.clear();
+    };
+  }, [images]);
 
   // Extract parameters from URL
   const vehicleType = searchParams.get('vt');
@@ -495,7 +517,7 @@ const ImagesPage: React.FC = () => {
             {images.map((image, index) => (
               <ImageCard key={index}>
                 <Image
-                  src={URL.createObjectURL(image)}
+                  src={previewUrlsRef.current.get(index) || ''}
                   alt={`Снимка ${index + 1}`}
                 />
                 <ImageOverlay onClick={() => handleDeleteImage(index)}>

@@ -4,7 +4,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
-import { Camera, Upload, X, Loader } from 'lucide-react';
+import { Camera, X, Loader } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { ProfileService } from '../../services/profile';
 import { useAuth } from '../../hooks/useAuth';
@@ -76,76 +76,143 @@ const Placeholder = styled.div`
 
 const UploadButton = styled.button`
   position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 40px;
-  height: 40px;
+  bottom: -4px;
+  right: -4px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
   border-radius: 50%;
-  background: #FF7900;
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
   border: 3px solid #fff;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(255, 121, 0, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 4px 12px rgba(34, 197, 94, 0.35),
+    0 2px 4px rgba(0, 0, 0, 0.1);
   z-index: 10;
   pointer-events: auto;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
 
   &:hover {
-    background: #ff8c1a;
-    transform: scale(1.1);
+    background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+    transform: scale(1.1) translateY(-2px);
+    box-shadow: 
+      0 6px 16px rgba(34, 197, 94, 0.45),
+      0 4px 8px rgba(0, 0, 0, 0.15);
   }
 
   &:active {
-    transform: scale(1.05);
+    transform: scale(1.05) translateY(0);
   }
 
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+    transform: scale(1);
   }
 
   svg {
     color: white;
     pointer-events: none;
+    width: 20px;
+    height: 20px;
+    stroke-width: 2.5px;
+  }
+
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    border-color: #1e293b;
+    box-shadow: 
+      0 4px 12px rgba(34, 197, 94, 0.4),
+      0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  @media (max-width: 480px) {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+    bottom: -2px;
+    right: -2px;
+    border-width: 2.5px;
+
+    svg {
+      width: 18px;
+      height: 18px;
+    }
   }
 `;
 
 const DeleteButton = styled.button`
   position: absolute;
-  top: -8px;
-  right: -8px;
-  width: 24px;
-  height: 24px;
+  top: -6px;
+  right: -6px;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  min-height: 36px;
   border-radius: 50%;
-  background: #ef5350;
-  border: none;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  border: 3px solid #fff;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(239, 83, 80, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 4px 12px rgba(239, 68, 68, 0.35),
+    0 2px 4px rgba(0, 0, 0, 0.1);
   z-index: 11;
   pointer-events: auto;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
 
   &:hover {
-    background: #e53935;
-    transform: scale(1.1);
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    transform: scale(1.15) translateY(-2px);
+    box-shadow: 
+      0 6px 16px rgba(239, 68, 68, 0.45),
+      0 4px 8px rgba(0, 0, 0, 0.15);
   }
 
   &:active {
-    transform: scale(1.05);
+    transform: scale(1.08) translateY(0);
   }
 
   svg {
     color: white;
     pointer-events: none;
+    width: 18px;
+    height: 18px;
+    stroke-width: 3px;
+  }
+
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    border-color: #1e293b;
+    box-shadow: 
+      0 4px 12px rgba(239, 68, 68, 0.4),
+      0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  @media (max-width: 480px) {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    min-height: 32px;
+    top: -4px;
+    right: -4px;
+    border-width: 2.5px;
+
+    svg {
+      width: 16px;
+      height: 16px;
+    }
   }
 `;
 
@@ -412,14 +479,14 @@ const ProfileImageUploader: React.FC<ProfileImageUploaderProps> = ({
       />
 
       {!uploading && (
-        <UploadButton onClick={handleClick} disabled={uploading}>
-          {imageUrl ? <Camera size={20} /> : <Upload size={20} />}
+        <UploadButton onClick={handleClick} disabled={uploading} title={language === 'bg' ? 'Качи/Промени снимка' : 'Upload/Change photo'}>
+          <Camera size={20} />
         </UploadButton>
       )}
 
       {imageUrl && !uploading && (
-        <DeleteButton onClick={handleDelete}>
-          <X size={12} />
+        <DeleteButton onClick={handleDelete} title={language === 'bg' ? 'Изтрий снимка' : 'Delete photo'}>
+          <X size={18} />
         </DeleteButton>
       )}
 

@@ -2,7 +2,7 @@
 // Purpose: Photo upload for vehicle listing on mobile/tablet
 // Mobile-first; no emojis; <300 lines
 
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams, useParams } from 'react-router-dom';
 import { useLanguage } from '../../../contexts/LanguageContext';
 import { MobileContainer, MobileStack } from '../../../components/ui/mobile-index';
@@ -52,6 +52,17 @@ const MobileImagesPage: React.FC = () => {
   useEffect(() => {
     SellWorkflowStepStateService.markPending('images');
   }, []);
+
+  // ✅ FIX: Cleanup preview URLs on unmount
+  useEffect(() => {
+    return () => {
+      images.forEach(img => {
+        if (img.preview) {
+          URL.revokeObjectURL(img.preview);
+        }
+      });
+    };
+  }, [images]);
 
   const handleFileSelect = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
