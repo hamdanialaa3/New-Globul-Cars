@@ -384,6 +384,10 @@ const PillButton = styled.button<{ $active: boolean }>`
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: ${({ $active }) => ($active ? '0 0 0 3px rgba(34, 197, 94, 0.15)' : 'none')};
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+  font-size: 1rem;
   
   &:hover {
     border-color: #22c55e;
@@ -396,6 +400,11 @@ const PillButton = styled.button<{ $active: boolean }>`
   &:active {
     transform: translateY(0);
     box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+  }
+  
+  &:focus-visible {
+    outline: 2px solid #22c55e;
+    outline-offset: 2px;
   }
 `;
 
@@ -423,6 +432,10 @@ const InsightToggleButton = styled.button<{ $active: boolean }>`
   box-shadow: ${({ $active }) => ($active ? '0 0 0 3px rgba(34, 197, 94, 0.15)' : 'none')};
   min-width: 120px;
   text-align: center;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+  font-size: 1rem;
   
   &:hover {
     border-color: #22c55e;
@@ -435,6 +448,11 @@ const InsightToggleButton = styled.button<{ $active: boolean }>`
   &:active {
     transform: translateY(0);
     box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+  }
+  
+  &:focus-visible {
+    outline: 2px solid #22c55e;
+    outline-offset: 2px;
   }
 `;
 
