@@ -76,33 +76,42 @@ const Placeholder = styled.div`
 
 const UploadButton = styled.button`
   position: absolute;
-  bottom: -4px;
-  right: -4px;
-  width: 44px;
-  height: 44px;
-  min-width: 44px;
-  min-height: 44px;
+  bottom: 0;
+  right: 0;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  max-width: 40px;
+  min-height: 40px;
+  max-height: 40px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-  border: 3px solid #fff;
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.85) 0%, rgba(22, 163, 74, 0.85) 100%);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 3px solid rgba(255, 255, 255, 0.9);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 
-    0 4px 12px rgba(34, 197, 94, 0.35),
+    0 4px 12px rgba(34, 197, 94, 0.3),
     0 2px 4px rgba(0, 0, 0, 0.1);
   z-index: 10;
   pointer-events: auto;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
+  padding: 0;
+  margin: 0;
+  flex-shrink: 0;
+  aspect-ratio: 1 / 1;
 
   &:hover {
-    background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+    background: linear-gradient(135deg, rgba(22, 163, 74, 0.95) 0%, rgba(21, 128, 61, 0.95) 100%);
+    border-color: rgba(255, 255, 255, 1);
     transform: scale(1.1) translateY(-2px);
     box-shadow: 
-      0 6px 16px rgba(34, 197, 94, 0.45),
+      0 6px 16px rgba(34, 197, 94, 0.4),
       0 4px 8px rgba(0, 0, 0, 0.15);
   }
 
@@ -119,64 +128,65 @@ const UploadButton = styled.button`
   svg {
     color: white;
     pointer-events: none;
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     stroke-width: 2.5px;
+    flex-shrink: 0;
   }
 
   /* Dark Mode Support */
   html[data-theme="dark"] & {
-    border-color: #1e293b;
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.75) 0%, rgba(22, 163, 74, 0.75) 100%);
+    border-color: rgba(255, 255, 255, 0.2);
     box-shadow: 
-      0 4px 12px rgba(34, 197, 94, 0.4),
-      0 2px 4px rgba(0, 0, 0, 0.3);
-  }
+      0 4px 12px rgba(34, 197, 94, 0.35),
+      0 2px 4px rgba(0, 0, 0, 0.4);
 
-  @media (max-width: 480px) {
-    width: 40px;
-    height: 40px;
-    min-width: 40px;
-    min-height: 40px;
-    bottom: -2px;
-    right: -2px;
-    border-width: 2.5px;
-
-    svg {
-      width: 18px;
-      height: 18px;
+    &:hover {
+      background: linear-gradient(135deg, rgba(22, 163, 74, 0.9) 0%, rgba(21, 128, 61, 0.9) 100%);
+      border-color: rgba(255, 255, 255, 0.3);
     }
   }
 `;
 
 const DeleteButton = styled.button`
   position: absolute;
-  top: -6px;
-  right: -6px;
-  width: 36px;
-  height: 36px;
-  min-width: 36px;
-  min-height: 36px;
+  top: 0;
+  right: 0;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  max-width: 32px;
+  min-height: 32px;
+  max-height: 32px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-  border: 3px solid #fff;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.85) 0%, rgba(220, 38, 38, 0.85) 100%);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 3px solid rgba(255, 255, 255, 0.9);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 
-    0 4px 12px rgba(239, 68, 68, 0.35),
+    0 4px 12px rgba(239, 68, 68, 0.3),
     0 2px 4px rgba(0, 0, 0, 0.1);
   z-index: 11;
   pointer-events: auto;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
+  padding: 0;
+  margin: 0;
+  flex-shrink: 0;
+  aspect-ratio: 1 / 1;
 
   &:hover {
-    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    background: linear-gradient(135deg, rgba(220, 38, 38, 0.95) 0%, rgba(185, 28, 28, 0.95) 100%);
+    border-color: rgba(255, 255, 255, 1);
     transform: scale(1.15) translateY(-2px);
     box-shadow: 
-      0 6px 16px rgba(239, 68, 68, 0.45),
+      0 6px 16px rgba(239, 68, 68, 0.4),
       0 4px 8px rgba(0, 0, 0, 0.15);
   }
 
@@ -187,31 +197,23 @@ const DeleteButton = styled.button`
   svg {
     color: white;
     pointer-events: none;
-    width: 18px;
-    height: 18px;
+    width: 14px;
+    height: 14px;
     stroke-width: 3px;
+    flex-shrink: 0;
   }
 
   /* Dark Mode Support */
   html[data-theme="dark"] & {
-    border-color: #1e293b;
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.75) 0%, rgba(220, 38, 38, 0.75) 100%);
+    border-color: rgba(255, 255, 255, 0.2);
     box-shadow: 
-      0 4px 12px rgba(239, 68, 68, 0.4),
-      0 2px 4px rgba(0, 0, 0, 0.3);
-  }
+      0 4px 12px rgba(239, 68, 68, 0.35),
+      0 2px 4px rgba(0, 0, 0, 0.4);
 
-  @media (max-width: 480px) {
-    width: 32px;
-    height: 32px;
-    min-width: 32px;
-    min-height: 32px;
-    top: -4px;
-    right: -4px;
-    border-width: 2.5px;
-
-    svg {
-      width: 16px;
-      height: 16px;
+    &:hover {
+      background: linear-gradient(135deg, rgba(220, 38, 38, 0.9) 0%, rgba(185, 28, 28, 0.9) 100%);
+      border-color: rgba(255, 255, 255, 0.3);
     }
   }
 `;

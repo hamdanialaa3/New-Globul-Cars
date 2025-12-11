@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { CarListing } from '../../types/CarListing';
 
@@ -199,6 +199,23 @@ const ImagesStep: React.FC<ImagesStepProps> = ({ data, onDataChange }) => {
   const [isDragOver, setIsDragOver] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const previewUrlsRef = useRef<Map<number, string>>(new Map());
+
+  // Cleanup preview URLs
+  useEffect(() => {
+    previewUrlsRef.current.forEach(url => URL.revokeObjectURL(url));
+    previewUrlsRef.current.clear();
+    
+    images.forEach((image, index) => {
+      const url = URL.createObjectURL(image);
+      previewUrlsRef.current.set(index, url);
+    });
+    
+    return () => {
+      previewUrlsRef.current.forEach(url => URL.revokeObjectURL(url));
+      previewUrlsRef.current.clear();
+    };
+  }, [images]);
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -312,7 +329,7 @@ const ImagesStep: React.FC<ImagesStepProps> = ({ data, onDataChange }) => {
           {images.map((image, index) => (
             <ImageCard key={index}>
               <Image
-                src={URL.createObjectURL(image)}
+                src={previewUrlsRef.current.get(index) || ''}
                 alt={`Снимка ${index + 1}`}
               />
               <ImageOverlay onClick={() => handleDeleteImage(index)}>

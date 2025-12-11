@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { CarIcon } from '../../../components/icons/CarIcon';
 import { CarListing } from '../../../types/CarListing';
 import {
@@ -60,6 +60,25 @@ export const CarImageGallery: React.FC<CarImageGalleryProps> = ({
   onRemovePhoto,
 }) => {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const previewUrlsRef = useRef<Map<number, string>>(new Map());
+
+  // Cleanup preview URLs for File objects
+  useEffect(() => {
+    previewUrlsRef.current.forEach(url => URL.revokeObjectURL(url));
+    previewUrlsRef.current.clear();
+    
+    car.images?.forEach((image, index) => {
+      if (typeof image !== 'string') {
+        const url = URL.createObjectURL(image);
+        previewUrlsRef.current.set(index, url);
+      }
+    });
+    
+    return () => {
+      previewUrlsRef.current.forEach(url => URL.revokeObjectURL(url));
+      previewUrlsRef.current.clear();
+    };
+  }, [car.images]);
 
   const handleDeleteImage = async (e: React.MouseEvent, imageUrl: string) => {
     e.stopPropagation();
@@ -96,7 +115,7 @@ export const CarImageGallery: React.FC<CarImageGalleryProps> = ({
               src={
                 typeof car.images[selectedImageIndex] === 'string' 
                   ? String(car.images[selectedImageIndex])
-                  : URL.createObjectURL(car.images[selectedImageIndex])
+                  : previewUrlsRef.current.get(selectedImageIndex) || ''
               } 
               alt={`${car.make} ${car.model} - Photo ${selectedImageIndex + 1}`} 
             />
@@ -111,7 +130,7 @@ export const CarImageGallery: React.FC<CarImageGalleryProps> = ({
                 onClick={() => setSelectedImageIndex(index)}
               >
                 <ThumbnailImage 
-                  src={typeof image === 'string' ? String(image) : URL.createObjectURL(image)} 
+                  src={typeof image === 'string' ? String(image) : previewUrlsRef.current.get(index) || ''} 
                   alt={`Thumbnail ${index + 1}`} 
                 />
                 {isEditMode && isOwner && (
