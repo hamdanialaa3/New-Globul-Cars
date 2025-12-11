@@ -2,14 +2,15 @@
 // Profile Image Uploader Component - مكون رفع الصورة الشخصية
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { Camera, Upload, X, Loader } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { ProfileService } from '../../services/profile';
 import { useAuth } from '../../hooks/useAuth';
 import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from '../../firebase/firebase-config';
+import { updateProfile } from 'firebase/auth';
+import { db, auth } from '../../firebase/firebase-config';
 import { measureAsync } from '../../utils/performance-monitor';
 import { logger } from '../../services/logger-service';
 
@@ -217,6 +218,13 @@ const ProfileImageUploader: React.FC<ProfileImageUploaderProps> = ({
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
 
+  // Sync with currentImageUrl prop
+  useEffect(() => {
+    if (currentImageUrl) {
+      setImageUrl(currentImageUrl);
+    }
+  }, [currentImageUrl]);
+
   // Handle file selection
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -256,22 +264,44 @@ const ProfileImageUploader: React.FC<ProfileImageUploaderProps> = ({
       });
       setProgress(70);
 
-      // 4. Update Firestore
+      // 4. Update Firebase Auth photoURL
+      const currentUser = auth.currentUser;
+      if (currentUser) {
+        if (process.env.NODE_ENV === 'development') {
+          logger.debug('Updating Firebase Auth photoURL', { userId: user.uid });
+        }
+        try {
+          await updateProfile(currentUser, {
+            photoURL: url
+          });
+        } catch (authError: any) {
+          logger.warn('Failed to update Auth photoURL, continuing with Firestore update', authError);
+        }
+      }
+      setProgress(75);
+
+      // 5. Update Firestore (both photoURL and profileImage.url)
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Updating user profile in Firestore', { userId: user.uid });
       }
       await updateDoc(doc(db, 'users', user.uid), {
-        'profileImage.url': url,
+        photoURL: url, // Main photoURL field
+        'profileImage.url': url, // ProfileImage object for backward compatibility
         'profileImage.uploadedAt': serverTimestamp(),
         updatedAt: serverTimestamp()
       });
       setProgress(90);
 
-      // 5. Recalculate trust score
+      // 6. Recalculate trust score
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Calculating trust score', { userId: user.uid });
       }
-      await ProfileService.trust.calculateTrustScore(user.uid);
+      try {
+        await ProfileService.trust.calculateTrustScore(user.uid);
+      } catch (trustError: any) {
+        logger.warn('Failed to recalculate trust score', trustError);
+        // Don't fail the upload if trust score calculation fails
+      }
       setProgress(100);
 
       // Success!
@@ -300,28 +330,49 @@ const ProfileImageUploader: React.FC<ProfileImageUploaderProps> = ({
   const handleDelete = async () => {
     if (!user || !imageUrl) return;
 
-    const confirmed = window.confirm('Delete profile image?');
+    const confirmed = window.confirm(
+      language === 'bg' ? 'Изтриване на профилната снимка?' : 'Delete profile image?'
+    );
 
     if (!confirmed) return;
 
     setUploading(true);
+    setError(null);
 
     try {
       // Delete from Storage
       await ProfileService.image.deleteImage(user.uid, 'profile/avatar.jpg');
 
-      // Update Firestore
+      // Update Firebase Auth photoURL
+      const currentUser = auth.currentUser;
+      if (currentUser) {
+        try {
+          await updateProfile(currentUser, {
+            photoURL: null
+          });
+        } catch (authError: any) {
+          logger.warn('Failed to update Auth photoURL during delete', authError);
+        }
+      }
+
+      // Update Firestore (remove both photoURL and profileImage)
       await updateDoc(doc(db, 'users', user.uid), {
+        photoURL: null,
         profileImage: null,
         updatedAt: serverTimestamp()
       });
 
       setImageUrl(undefined);
-      logger.info('✅ Profile image deleted');
+      onUploadSuccess?.('');
+      
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Profile image deleted successfully', { userId: user.uid });
+      }
 
     } catch (err: any) {
-      logger.error('❌ Delete failed:', err);
-      setError(err.message);
+      logger.error('Profile image delete failed', err as Error, { userId: user.uid });
+      setError(err.message || (language === 'bg' ? 'Грешка при изтриване' : 'Delete failed'));
+      onUploadError?.(err.message);
     } finally {
       setUploading(false);
     }

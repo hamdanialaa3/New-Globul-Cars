@@ -216,9 +216,21 @@ const ProfilePageWrapper: React.FC = () => {
             {/* Centered Profile Picture */}
             <S.CenteredProfileImageWrapper>
               <ProfileImageUploader
-                currentImageUrl={typeof activeProfile?.photoURL === 'string' ? activeProfile.photoURL : undefined}
-                onUploadSuccess={() => window.location.reload()}
-                onUploadError={(err) => alert(err)}
+                currentImageUrl={typeof activeProfile?.photoURL === 'string' ? activeProfile.photoURL : (typeof activeProfile?.profileImage === 'object' ? activeProfile.profileImage?.url : undefined)}
+                onUploadSuccess={(url) => {
+                  // Update local state immediately
+                  setUser(prev => prev ? { 
+                    ...prev, 
+                    photoURL: url,
+                    profileImage: url ? { url, uploadedAt: new Date() } : undefined
+                  } : null);
+                  // Refresh profile data
+                  refresh();
+                }}
+                onUploadError={(err) => {
+                  logger.error('Profile image upload error', err as Error);
+                  alert(language === 'bg' ? `Грешка при качване: ${err}` : `Upload error: ${err}`);
+                }}
               />
             </S.CenteredProfileImageWrapper>
           </S.CoverAndProfileWrapper>
