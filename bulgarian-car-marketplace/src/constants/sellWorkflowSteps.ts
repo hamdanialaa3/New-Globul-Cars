@@ -1,3 +1,16 @@
+/**
+ * Sell Workflow Step IDs
+ * 
+ * Represents the 8 unified steps in the car selling workflow:
+ * 1. vehicle-selection: Choose vehicle type (car, motorcycle, truck, etc.)
+ * 2. vehicle-data: Enter vehicle data + seller type (unified page)
+ * 3. equipment: Select equipment/features (unified - all categories in one page)
+ * 4. images: Upload vehicle images (up to 20 photos)
+ * 5. pricing: Set price and financing options
+ * 6. contact: Enter contact information (unified - all fields in one page)
+ * 7. preview: Review all entered information
+ * 8. publish: Final submission and publish
+ */
 export type SellWorkflowStepId =
   | 'vehicle-selection'
   | 'vehicle-data'
@@ -16,6 +29,10 @@ export interface SellWorkflowStep {
   };
 }
 
+/**
+ * All workflow steps in order
+ * Note: Step 2 (vehicle-data) now includes seller type selection (previously separate)
+ */
 export const SELL_WORKFLOW_STEPS: SellWorkflowStep[] = [
   {
     id: 'vehicle-selection',
@@ -28,7 +45,7 @@ export const SELL_WORKFLOW_STEPS: SellWorkflowStep[] = [
     id: 'vehicle-data',
     labels: {
       bg: 'Данни за превозното средство',
-      en: 'Vehicle Data'
+      en: 'Vehicle Data & Seller Type' // Updated to reflect unified nature
     }
   },
   {
@@ -86,6 +103,12 @@ export interface SellWorkflowStepGroup {
   };
 }
 
+/**
+ * Workflow Step Groups
+ * Groups related steps together for UI display and progress tracking
+ * 
+ * Note: 'vehicle-data' step now includes seller type selection (previously separate)
+ */
 export const SELL_WORKFLOW_STEP_GROUPS: SellWorkflowStepGroup[] = [
   {
     id: 'vehicle-basics',
@@ -97,10 +120,10 @@ export const SELL_WORKFLOW_STEP_GROUPS: SellWorkflowStepGroup[] = [
   },
   {
     id: 'vehicle-data',
-    steps: ['vehicle-data'],
+    steps: ['vehicle-data'], // Includes: vehicle data + seller type (unified)
     labels: {
       bg: 'Данни за превозното средство',
-      en: 'Vehicle Data'
+      en: 'Vehicle Data & Seller Type'
     }
   },
   {
