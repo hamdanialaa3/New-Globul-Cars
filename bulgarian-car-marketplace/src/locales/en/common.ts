@@ -60,6 +60,13 @@ export const common = {
       "security": "Security Alert",
       "car": "Car Update",
       "system": "System Maintenance"
+    },
+    "messages": {
+      "newMessage": "You have a new message about your BMW X5 listing",
+      "searchMatch": "New cars matching your search for \"Audi A4\" under 20000 EUR",
+      "newLogin": "New login from Chrome on Windows",
+      "carViewed": "Your Mercedes C-Class listing has been viewed 25 times today",
+      "maintenanceComplete": "Scheduled maintenance completed. All services are back online."
     }
   }
 } as const;

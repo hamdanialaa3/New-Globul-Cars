@@ -60,6 +60,13 @@ export const common = {
       "security": "Сигурност",
       "car": "Обновление на автомобил",
       "system": "Поддръжка на системата"
+    },
+    "messages": {
+      "newMessage": "Имате ново съобщение за вашата обява BMW X5",
+      "searchMatch": "Нови автомобили, отговарящи на вашето търсене за \"Audi A4\" под 20000 EUR",
+      "newLogin": "Нов вход от Chrome на Windows",
+      "carViewed": "Вашата обява Mercedes C-Class е видяна 25 пъти днес",
+      "maintenanceComplete": "Планираната поддръжка приключи. Всички услуги са отново онлайн."
     }
   }
 } as const;

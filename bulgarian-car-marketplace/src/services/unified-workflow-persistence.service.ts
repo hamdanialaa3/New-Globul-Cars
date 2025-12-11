@@ -100,6 +100,9 @@ export class UnifiedWorkflowPersistenceService {
   private static timerInterval: NodeJS.Timeout | null = null;
   private static listeners: Set<(state: TimerState) => void> = new Set();
   private static clearListeners: Set<() => void> = new Set(); // ✅ ADDED: Listeners for data clearing
+  private static saveInProgress = false; // Prevent concurrent saves
+  private static lastSaveTimestamp = 0; // Debounce tracking
+  private static saveDebounceMs = 100; // Minimum time between saves
 
   /**
    * Save workflow data
@@ -110,8 +113,23 @@ export class UnifiedWorkflowPersistenceService {
     currentStep: number
   ): void {
     try {
-      const existing = this.loadData();
+      // Prevent concurrent saves
+      if (this.saveInProgress) {
+        serviceLogger.debug('Save in progress, skipping duplicate save', { currentStep });
+        return;
+      }
+
+      // Debounce: Skip if saved too recently
       const now = Date.now();
+      if (now - this.lastSaveTimestamp < this.saveDebounceMs) {
+        serviceLogger.debug('Debouncing save operation', { 
+          timeSinceLastSave: now - this.lastSaveTimestamp 
+        });
+        return;
+      }
+
+      this.saveInProgress = true;
+      const existing = this.loadData();
 
       const updated: UnifiedWorkflowData = {
         ...(existing || {}),
@@ -124,6 +142,7 @@ export class UnifiedWorkflowPersistenceService {
       };
 
       localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+      this.lastSaveTimestamp = now;
 
       // Start timer if not started
       this.startTimer();
@@ -137,6 +156,8 @@ export class UnifiedWorkflowPersistenceService {
         currentStep
       });
       throw new Error('Failed to save workflow data');
+    } finally {
+      this.saveInProgress = false;
     }
   }
 
@@ -221,12 +242,19 @@ export class UnifiedWorkflowPersistenceService {
    * Clear all workflow data (including images from IndexedDB)
    */
   static async clearData(): Promise<void> {
+    // Prevent concurrent clear operations
+    if (this.saveInProgress) {
+      await new Promise(resolve => setTimeout(resolve, 50)); // Wait for save to finish
+    }
+
     localStorage.removeItem(STORAGE_KEY);
     this.stopTimer();
+    this.saveInProgress = false; // Reset save flag
+    this.lastSaveTimestamp = 0; // Reset debounce
 
     // ✅ CRITICAL: Clear images from IndexedDB
     try {
-      const { ImageStorageService } = await import('./ImageStorageService');
+      const ImageStorageService = (await import('./image-storage.service')).default;
       await ImageStorageService.clearImages();
       serviceLogger.info('Images cleared from IndexedDB');
     } catch (error) {
@@ -237,7 +265,13 @@ export class UnifiedWorkflowPersistenceService {
     serviceLogger.info('Unified workflow data cleared');
     
     // Notify clear listeners
-    this.clearListeners.forEach(callback => callback());
+    this.clearListeners.forEach(callback => {
+      try {
+        callback();
+      } catch (error) {
+        serviceLogger.warn('Error in clear listener', { error });
+      }
+    });
   }
 
   /**

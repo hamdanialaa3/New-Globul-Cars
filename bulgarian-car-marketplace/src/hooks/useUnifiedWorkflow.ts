@@ -71,14 +71,15 @@ export const useUnifiedWorkflow = (currentStep: number) => {
   }, []);
 
   /**
-   * Update workflow data
+   * Update workflow data (with debouncing)
    */
   const updateData = useCallback(
     (updates: Partial<UnifiedWorkflowData>) => {
       try {
+        // Save to persistence service (now has built-in debouncing)
         UnifiedWorkflowPersistenceService.saveData(updates, currentStep);
 
-        // Update local state
+        // Update local state optimistically
         setWorkflowData((prev) => ({
           ...(prev || {}),
           ...updates,
@@ -86,7 +87,7 @@ export const useUnifiedWorkflow = (currentStep: number) => {
           lastSavedAt: Date.now()
         } as UnifiedWorkflowData));
 
-        serviceLogger.info('Workflow data updated', {
+        serviceLogger.debug('Workflow data updated in hook', {
           step: currentStep,
           fields: Object.keys(updates)
         });
@@ -94,7 +95,7 @@ export const useUnifiedWorkflow = (currentStep: number) => {
         serviceLogger.error('Error updating workflow data', error as Error, {
           step: currentStep
         });
-        throw error;
+        // Don't throw - let user continue working
       }
     },
     [currentStep]

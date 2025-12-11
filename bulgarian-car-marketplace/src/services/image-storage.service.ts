@@ -16,6 +16,44 @@ export interface StoredImage {
 
 export class ImageStorageService {
   private static dbPromise: Promise<IDBDatabase> | null = null;
+  private static operationInProgress = false; // Prevent concurrent operations
+  private static operationQueue: Array<() => Promise<void>> = []; // Queue for pending operations
+
+  /**
+   * Execute operation with queue management
+   */
+  private static async executeWithQueue<T>(operation: () => Promise<T>): Promise<T> {
+    // If operation in progress, queue this one
+    if (this.operationInProgress) {
+      return new Promise((resolve, reject) => {
+        this.operationQueue.push(async () => {
+          try {
+            const result = await operation();
+            resolve(result);
+          } catch (error) {
+            reject(error);
+          }
+        });
+      });
+    }
+
+    // Execute immediately
+    this.operationInProgress = true;
+    try {
+      const result = await operation();
+      return result;
+    } finally {
+      this.operationInProgress = false;
+      
+      // Process next in queue
+      const next = this.operationQueue.shift();
+      if (next) {
+        next().catch(error => {
+          serviceLogger.error('Error processing queued operation', error);
+        });
+      }
+    }
+  }
 
   /**
    * Open IndexedDB connection
@@ -58,57 +96,59 @@ export class ImageStorageService {
    * Replaces all existing images
    */
   static async saveImages(files: File[]): Promise<void> {
-    try {
-      if (files.length === 0) {
-        await this.clearImages();
-        return;
+    return this.executeWithQueue(async () => {
+      try {
+        if (files.length === 0) {
+          await this.clearImages();
+          return;
+        }
+
+        serviceLogger.info('Saving images to IndexedDB', { count: files.length });
+
+        const db = await this.openDB();
+        const tx = db.transaction(STORE_NAME, 'readwrite');
+        const store = tx.objectStore(STORE_NAME);
+
+        // Clear existing images
+        await store.clear();
+
+        // Store new images
+        const promises: Promise<void>[] = [];
+
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          
+          // Create thumbnail preview (max 200x200, low quality)
+          const preview = await this.createThumbnail(file);
+
+          const imageData: StoredImage = {
+            id: i,
+            file,
+            preview,
+          };
+
+          promises.push(
+            new Promise((resolve, reject) => {
+              const request = store.put(imageData);
+              request.onsuccess = () => resolve();
+              request.onerror = () => reject(request.error);
+            })
+          );
+        }
+
+        await Promise.all(promises);
+
+        serviceLogger.info('Images saved successfully to IndexedDB', {
+          count: files.length,
+          totalSize: files.reduce((sum, f) => sum + f.size, 0)
+        });
+      } catch (error) {
+        serviceLogger.error('Error saving images to IndexedDB', error as Error, {
+          count: files.length
+        });
+        throw new Error('Failed to save images');
       }
-
-      serviceLogger.info('Saving images to IndexedDB', { count: files.length });
-
-      const db = await this.openDB();
-      const tx = db.transaction(STORE_NAME, 'readwrite');
-      const store = tx.objectStore(STORE_NAME);
-
-      // Clear existing images
-      await store.clear();
-
-      // Store new images
-      const promises: Promise<void>[] = [];
-
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        
-        // Create thumbnail preview (max 200x200, low quality)
-        const preview = await this.createThumbnail(file);
-
-        const imageData: StoredImage = {
-          id: i,
-          file,
-          preview,
-        };
-
-        promises.push(
-          new Promise((resolve, reject) => {
-            const request = store.put(imageData);
-            request.onsuccess = () => resolve();
-            request.onerror = () => reject(request.error);
-          })
-        );
-      }
-
-      await Promise.all(promises);
-
-      serviceLogger.info('Images saved successfully to IndexedDB', {
-        count: files.length,
-        totalSize: files.reduce((sum, f) => sum + f.size, 0)
-      });
-    } catch (error) {
-      serviceLogger.error('Error saving images to IndexedDB', error as Error, {
-        count: files.length
-      });
-      throw new Error('Failed to save images');
-    }
+    });
   }
 
   /**
@@ -198,21 +238,23 @@ export class ImageStorageService {
    * Clear all images
    */
   static async clearImages(): Promise<void> {
-    try {
-      const db = await this.openDB();
-      const tx = db.transaction(STORE_NAME, 'readwrite');
-      const store = tx.objectStore(STORE_NAME);
+    return this.executeWithQueue(async () => {
+      try {
+        const db = await this.openDB();
+        const tx = db.transaction(STORE_NAME, 'readwrite');
+        const store = tx.objectStore(STORE_NAME);
 
-      await new Promise<void>((resolve, reject) => {
-        const request = store.clear();
-        request.onsuccess = () => resolve();
-        request.onerror = () => reject(request.error);
-      });
+        await new Promise<void>((resolve, reject) => {
+          const request = store.clear();
+          request.onsuccess = () => resolve();
+          request.onerror = () => reject(request.error);
+        });
 
-      serviceLogger.info('Images cleared from IndexedDB');
-    } catch (error) {
-      serviceLogger.error('Error clearing images from IndexedDB', error as Error);
-    }
+        serviceLogger.info('Images cleared from IndexedDB');
+      } catch (error) {
+        serviceLogger.error('Error clearing images from IndexedDB', error as Error);
+      }
+    });
   }
 
   /**
