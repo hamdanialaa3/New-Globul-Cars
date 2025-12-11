@@ -32,6 +32,7 @@ interface CarEditFormProps {
   onInputChange: (field: keyof CarListing, value: any) => void;
   onSetShowOther: (field: string, value: boolean) => void;
   onSetAvailableCities: (cities: string[]) => void;
+  onDelete?: () => void;
 }
 
 export const CarEditForm: React.FC<CarEditFormProps> = ({
@@ -50,6 +51,7 @@ export const CarEditForm: React.FC<CarEditFormProps> = ({
   onInputChange,
   onSetShowOther,
   onSetAvailableCities,
+  onDelete,
 }) => {
   return (
     <>
@@ -623,6 +625,52 @@ export const CarEditForm: React.FC<CarEditFormProps> = ({
           />
         </DetailRow>
       </EquipmentSection>
+
+      {/* Delete Button Section */}
+      {onDelete && (
+        <EquipmentSection style={{ 
+          marginTop: '2rem',
+          borderTop: '2px solid rgba(239, 68, 68, 0.2)',
+          paddingTop: '1.5rem'
+        }}>
+          <div style={{ textAlign: 'center' }}>
+            <button
+              type="button"
+              onClick={onDelete}
+              style={{
+                width: '100%',
+                maxWidth: '400px',
+                padding: '1rem 2rem',
+                background: 'linear-gradient(135deg, #ef4444, #dc2626)',
+                color: 'white',
+                border: 'none',
+                borderRadius: '8px',
+                fontSize: '1rem',
+                fontWeight: 600,
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.5rem',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'linear-gradient(135deg, #dc2626, #b91c1c)';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 8px 16px rgba(239, 68, 68, 0.3)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
+            >
+              <span style={{ fontSize: '1.25rem' }}>🗑️</span>
+              {language === 'bg' ? 'Изтриване на обявата' : 'Delete Listing'}
+            </button>
+          </div>
+        </EquipmentSection>
+      )}
     </>
   );
 };
