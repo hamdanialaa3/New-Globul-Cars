@@ -46,7 +46,14 @@ class FCMService {
   private listeners: ((notification: PushNotification) => void)[] = [];
 
   constructor() {
-    this.vapidKey = process.env.REACT_APP_FCM_VAPID_KEY || '';
+    // ✅ Get VAPID key from environment variable
+    this.vapidKey = process.env.REACT_APP_VAPID_KEY || '';
+    
+    // Warn if VAPID key not configured
+    if (!this.vapidKey) {
+      serviceLogger.warn('VAPID key not configured - push notifications disabled. Add REACT_APP_VAPID_KEY to .env file', {});
+    }
+    
     this.initializeMessaging();
   }
 
