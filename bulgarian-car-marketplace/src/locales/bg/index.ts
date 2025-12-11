@@ -14,3 +14,4 @@ export { footer } from './footer';
 export { advancedSearch } from './advancedSearch';
 export { auth } from './auth';
 export { settings } from './settings';
+export { errors } from './errors';
