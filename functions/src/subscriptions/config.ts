@@ -18,9 +18,10 @@ import { SubscriptionPlan } from './types';
 export const STRIPE_CONFIG = {
   secretKey: process.env.STRIPE_SECRET_KEY || '',
   webhookSecret: process.env.STRIPE_WEBHOOK_SECRET || '',
-  currency: 'bgn', // Bulgarian Lev
-  successUrl: process.env.FRONTEND_URL + '/billing/success',
-  cancelUrl: process.env.FRONTEND_URL + '/billing/canceled',
+  publishableKey: process.env.STRIPE_PUBLISHABLE_KEY || '',
+  currency: 'eur', // Euro - Bulgaria pricing
+  successUrl: (process.env.FRONTEND_URL || 'https://fire-new-globul.web.app') + '/billing/success',
+  cancelUrl: (process.env.FRONTEND_URL || 'https://fire-new-globul.web.app') + '/billing/canceled',
 };
 
 /**
