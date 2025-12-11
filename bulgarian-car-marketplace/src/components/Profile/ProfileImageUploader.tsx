@@ -276,7 +276,7 @@ const ProfileImageUploader: React.FC<ProfileImageUploaderProps> = ({
   onUploadSuccess,
   onUploadError
 }) => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { user } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
 

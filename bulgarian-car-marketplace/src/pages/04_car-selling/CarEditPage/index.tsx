@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, ChangeEvent, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, ChangeEvent, useMemo, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../contexts/AuthProvider';
 import { useLanguage } from '../../../contexts/LanguageContext';
@@ -317,6 +317,9 @@ const CarEditPage: React.FC = () => {
   const [images, setImages] = useState<string[]>([]);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [uploadingImage, setUploadingImage] = useState(false);
+  
+  // Track preview URLs for cleanup
+  const previewUrlsRef = useRef<Map<number, string>>(new Map());
 
   useEffect(() => {
     const loadCarData = async () => {
@@ -419,6 +422,27 @@ const CarEditPage: React.FC = () => {
 
     loadCarData();
   }, [carId, currentUser, t, language]);
+
+  // Cleanup preview URLs when images change
+  useEffect(() => {
+    // Revoke old URLs
+    previewUrlsRef.current.forEach(url => URL.revokeObjectURL(url));
+    previewUrlsRef.current.clear();
+
+    // Create new URLs for File objects
+    images.forEach((img, index) => {
+      if (typeof img !== 'string') {
+        const url = URL.createObjectURL(img as File);
+        previewUrlsRef.current.set(index, url);
+      }
+    });
+
+    // Cleanup on unmount
+    return () => {
+      previewUrlsRef.current.forEach(url => URL.revokeObjectURL(url));
+      previewUrlsRef.current.clear();
+    };
+  }, [images]);
 
   const handleInputChange = useCallback((field: string, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -782,7 +806,7 @@ const CarEditPage: React.FC = () => {
                     <MainImage
                       src={typeof images[selectedImageIndex] === 'string'
                         ? images[selectedImageIndex] as string
-                        : URL.createObjectURL(images[selectedImageIndex] as File)}
+                        : previewUrlsRef.current.get(selectedImageIndex) || ''}
                       alt={`${formData.make} ${formData.model}`}
                     />
                     {images.length > 1 && (
@@ -826,7 +850,7 @@ const CarEditPage: React.FC = () => {
                     onClick={() => setSelectedImageIndex(index)}
                   >
                     <img
-                      src={typeof img === 'string' ? img : URL.createObjectURL(img)}
+                      src={typeof img === 'string' ? img : previewUrlsRef.current.get(index) || ''}
                       alt={`Thumbnail ${index + 1}`}
                     />
                   </Thumbnail>
