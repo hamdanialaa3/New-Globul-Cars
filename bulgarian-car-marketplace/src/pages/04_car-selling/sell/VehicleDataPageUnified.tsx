@@ -14,6 +14,7 @@ import { BODY_TYPES } from './VehicleData/types';
 import { useIsMobile } from '../../../hooks/useBreakpoint';
 import BrandModelMarkdownDropdown from '../../../components/BrandModelMarkdownDropdown/BrandModelMarkdownDropdown';
 import { useUnifiedWorkflow } from '../../../hooks/useUnifiedWorkflow';
+import { WorkflowPageLayout } from '../../../components/sell-workflow/WorkflowPageLayout';
 import DeleteDraftButton from '../../../components/SellWorkflow/DeleteDraftButton';
 // removed legacy structured brands import; new markdown-based dropdown is canonical
 
@@ -1626,25 +1627,16 @@ const VehicleDataPage: React.FC = () => {
     );
   }
 
-  return (
-    <DesktopContainer>
-      {/* ✅ Auto-Save Timer (Fixed Position) */}
-      {/* Timer handled globally by GlobalWorkflowTimer */}
-      
-      <ProgressWrapper $isMobile={false}>
-        <SellProgressBar currentStep="vehicle-data" />
-      </ProgressWrapper>
-      <DesktopContent>
-        {/* Debug banner removed with legacy brand/model section */}
-        <DesktopHeader>
-          <DesktopTitle>{t('sell.vehicleData.title')}</DesktopTitle>
-        </DesktopHeader>
+  // Desktop Layout with WorkflowPageLayout
+  const progressBar = <SellProgressBar currentStep="vehicle-data" />;
+  
+  const pageContent = (
+    <>
+      {/* Quality Score Indicator */}
+      {renderQualityScore()}
 
-        {/* Quality Score Indicator */}
-        {renderQualityScore()}
-
-        {/* Standalone brand→model dropdown from Markdown (desktop) - synced to form */}
-        <div style={{ marginBottom: '1rem' }}>
+      {/* Standalone brand→model dropdown from Markdown (desktop) - synced to form */}
+      <div style={{ marginBottom: '1rem' }}>
           <BrandModelMarkdownDropdown
             brand={formData.make}
             model={formData.model}
@@ -1703,24 +1695,37 @@ const VehicleDataPage: React.FC = () => {
           </VerticalFieldStack>
         </InsightsCard>
 
-        {renderListingSection(false)}
-
-        <DesktopActions>
-          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-            <DeleteDraftButton currentStep={2} isMobile={false} />
-            <DesktopButton onClick={handleBack} type="button">
-              ← {t('common.back')}
-            </DesktopButton>
-          </div>
-          <SimpleDesktopContinueButton
-            onClick={(e) => goToNextPage(e)}
-            type="button"
-          >
-            {t('common.next')} →
-          </SimpleDesktopContinueButton>
-        </DesktopActions>
-      </DesktopContent>
-    </DesktopContainer>
+      {renderListingSection(false)}
+    </>
+  );
+  
+  const navigation = (
+    <DesktopActions>
+      <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+        <DeleteDraftButton currentStep={2} isMobile={false} />
+        <DesktopButton onClick={handleBack} type="button">
+          ← {t('common.back')}
+        </DesktopButton>
+      </div>
+      <SimpleDesktopContinueButton
+        onClick={(e) => goToNextPage(e)}
+        type="button"
+      >
+        {t('common.next')} →
+      </SimpleDesktopContinueButton>
+    </DesktopActions>
+  );
+  
+  return (
+    <WorkflowPageLayout
+      progressBar={progressBar}
+      title={t('sell.vehicleData.title')}
+      subtitle={t('sell.vehicleData.subtitle')}
+      isMobile={false}
+    >
+      {pageContent}
+      {navigation}
+    </WorkflowPageLayout>
   );
 };
 
