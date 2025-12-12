@@ -114,10 +114,10 @@ class SubscriptionService {
       const successUrl = data.successUrl || `${window.location.origin}/billing/success?session_id={CHECKOUT_SESSION_ID}`;
       const cancelUrl = data.cancelUrl || `${window.location.origin}/billing/cancel`;
 
-      // Call Cloud Function
+      // Call Extension Cloud Function
       const createCheckout = httpsCallable<CheckoutSessionData, CheckoutSessionResult>(
         functions, 
-        'createCheckoutSession'
+        'ext-firestore-stripe-payments-createCheckoutSession'
       );
 
       const result = await createCheckout({
@@ -164,9 +164,11 @@ class SubscriptionService {
         immediate: data.immediate 
       });
 
+      // Extension manages cancellation through Firestore automatically
+      // We can use Stripe API directly or update Firestore subscription doc
       const cancelSub = httpsCallable<CancelSubscriptionData, CancelSubscriptionResult>(
         functions,
-        'cancelSubscription'
+        'ext-firestore-stripe-payments-cancelSubscription'
       );
 
       const result = await cancelSub(data);

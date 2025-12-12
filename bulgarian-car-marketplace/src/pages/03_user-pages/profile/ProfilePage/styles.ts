@@ -1258,7 +1258,6 @@ export const UserInfoLeft = styled.div`
 export const UserInfoCenter = styled.div`
   display: flex;
   gap: 32px;
-  align-items: center;
   
   /* Dark Mode Support */
   html[data-theme="dark"] & {
@@ -1282,8 +1281,7 @@ export const UserInfoCenter = styled.div`
 
 export const UserInfoRight = styled.div`
   display: flex;
-  align-items: center;
-  gap: 32px;
+  gap: 12px;
   
   /* Dark Mode Support */
   html[data-theme="dark"] & {
@@ -1292,9 +1290,7 @@ export const UserInfoRight = styled.div`
   
   @media (max-width: 960px) {
     width: 100%;
-    flex-direction: column;
-    gap: 1.5rem;
-    align-items: stretch;
+    justify-content: center;
   }
 `;
 

@@ -1,12 +1,13 @@
 import { logger } from '../../services/logger-service';
 // src/features/billing/StripeCheckout.tsx
-// Stripe Checkout Component
+// Stripe Checkout Component - Updated for Extension (Dec 2025)
 
 import React, { useState } from 'react';
 import { httpsCallable } from 'firebase/functions';
 import { functions } from '../../firebase/firebase-config';
 import { useAuth } from '../../contexts/AuthProvider';  /* ⚡ FIXED */
 import { useLanguage } from '../../contexts/LanguageContext';
+import { getStripePriceId, STRIPE_FUNCTIONS } from '../../config/stripe-extension.config';
 
 interface StripeCheckoutProps {
   planId: string;
@@ -45,26 +46,30 @@ const StripeCheckout: React.FC<StripeCheckoutProps> = ({
     setError(null);
 
     try {
-      // Call Cloud Function to create checkout session
-      const createCheckoutSession = httpsCallable(functions, 'createCheckoutSession');
+      // ✅ UPDATED: Using Stripe Extension Cloud Function
+      const createCheckoutSession = httpsCallable(functions, STRIPE_FUNCTIONS.createCheckoutSession);
+      
+      // Extract plan tier and interval from planId (format: 'dealer-monthly', 'company-annual', etc.)
+      const [tier, interval] = planId.split('-') as ['dealer' | 'company', 'monthly' | 'annual'];
+      const priceId = getStripePriceId(tier, interval);
       
       const result = await createCheckoutSession({
-        userId: currentUser.uid,
-        planId,
-        successUrl: `${window.location.origin}/billing/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancelUrl: `${window.location.origin}/billing`,
+        price: priceId,
+        success_url: `${window.location.origin}/billing/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${window.location.origin}/billing`,
+        client_reference_id: currentUser.uid,
       });
 
       const data = result.data as {
-        success: boolean;
-        checkoutUrl: string;
+        success?: boolean;
+        url: string;  // Extension returns 'url' not 'checkoutUrl'
         sessionId: string;
         message?: string;
       };
 
-      if (data.success && data.checkoutUrl) {
+      if (data.url) {
         // Redirect to Stripe Checkout
-        window.location.href = data.checkoutUrl;
+        window.location.href = data.url;
         if (onSuccess) onSuccess();
       } else {
         throw new Error(data.message || t('billing.checkoutError'));

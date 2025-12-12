@@ -1,16 +1,10 @@
-// Firebase Cloud Functions Entry Point
-// TEMPORARY: Stripe Functions Only
-// Location: Bulgaria | Languages: BG/EN | Currency: EUR
-
+// Minimal index.ts for Stripe functions only
 import * as admin from 'firebase-admin';
 
 // Initialize Firebase Admin
 admin.initializeApp();
 
-// ============================================
-// Subscription & Billing Functions (Stripe Integration)
-// وظائف الاشتراكات والفواتير (تكامل Stripe)
-// ============================================
+// Export ONLY Stripe subscription functions
 export { createCheckoutSession } from './subscriptions/createCheckoutSession';
 export { verifyCheckoutSession } from './subscriptions/verifyCheckoutSession';
 export { stripeWebhook } from './subscriptions/stripeWebhook';

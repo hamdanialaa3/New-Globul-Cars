@@ -688,23 +688,22 @@ const ProfilePage: React.FC = () => {
               />
             </S.UserInfoLeft>
             
+            <S.UserInfoCenter>
+               <S.StatBox>
+                 <span className="number">{user.stats?.followers || 0}</span>
+                 <span className="label">{language === 'bg' ? 'Последователи' : 'Followers'}</span>
+               </S.StatBox>
+               <S.StatBox>
+                 <span className="number">{user.stats?.following || 0}</span>
+                 <span className="label">{language === 'bg' ? 'Следва' : 'Following'}</span>
+               </S.StatBox>
+               <S.StatBox>
+                 <span className="number">{user.verification?.trustScore || 0}%</span>
+                 <span className="label">{language === 'bg' ? 'Доверие' : 'Trust'}</span>
+               </S.StatBox>
+            </S.UserInfoCenter>
+            
             <S.UserInfoRight>
-              {/* Stats moved to the right side */}
-              <S.UserInfoCenter>
-                <S.StatBox>
-                  <span className="number">{user.stats?.followers || 0}</span>
-                  <span className="label">{language === 'bg' ? 'Последователи' : 'Followers'}</span>
-                </S.StatBox>
-                <S.StatBox>
-                  <span className="number">{user.stats?.following || 0}</span>
-                  <span className="label">{language === 'bg' ? 'Следва' : 'Following'}</span>
-                </S.StatBox>
-                <S.StatBox>
-                  <span className="number">{user.verification?.trustScore || 0}%</span>
-                  <span className="label">{language === 'bg' ? 'Доверие' : 'Trust'}</span>
-                </S.StatBox>
-              </S.UserInfoCenter>
-              
                {isOwnProfile ? (
                  <>
                    <S.ActionButton $variant="secondary" onClick={() => navigate('/profile/settings')} $themeColor={theme.primary}>

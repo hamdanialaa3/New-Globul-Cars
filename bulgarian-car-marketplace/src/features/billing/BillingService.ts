@@ -1,11 +1,12 @@
 import { logger } from '../../services/logger-service';
 // src/features/billing/BillingService.ts
-// Billing Service - Stripe Integration via Cloud Functions
+// Billing Service - Stripe Integration via Extension
 
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { doc, getDoc, updateDoc, collection, query, where, getDocs, Timestamp } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { Plan, Subscription, Invoice, PlanTier, BillingInterval } from './types';
+import { getStripePriceId, STRIPE_FUNCTIONS } from '../../config/stripe-extension.config';
 
 const functions = getFunctions();
 
@@ -123,8 +124,8 @@ class BillingService {
   }
 
   /**
-   * Create Stripe checkout session (REAL - calls Cloud Function)
-   * ✅ COMPLETED: Stripe integration implemented
+   * Create Stripe checkout session
+   * ✅ UPDATED: Using Stripe Extension (Dec 2025)
    */
   async createCheckoutSession(
     userId: string,
@@ -132,20 +133,26 @@ class BillingService {
     interval: BillingInterval
   ): Promise<{ url: string; sessionId: string }> {
     try {
-      // ✅ DONE: Call Cloud Function to create Stripe Checkout Session
-      const createCheckout = httpsCallable(functions, 'createCheckoutSession');
+      // ✅ UPDATED: Using Stripe Extension Cloud Function
+      const createCheckout = httpsCallable(functions, STRIPE_FUNCTIONS.createCheckoutSession);
+      
+      // Get Stripe Price ID for this plan
+      const priceId = getStripePriceId(
+        planId as 'dealer' | 'company', 
+        interval
+      );
       
       const result = await createCheckout({
-        userId,
-        planId,
-        successUrl: `${window.location.origin}/billing/success`,
-        cancelUrl: `${window.location.origin}/billing/canceled`,
+        price: priceId,
+        success_url: `${window.location.origin}/billing/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${window.location.origin}/billing/canceled`,
+        client_reference_id: userId, // Track which user made the purchase
       });
 
-      const data = result.data as { sessionId: string; checkoutUrl: string };
+      const data = result.data as { sessionId: string; url: string };
       
       return {
-        url: data.checkoutUrl,
+        url: data.url,  // Extension returns 'url' not 'checkoutUrl'
         sessionId: data.sessionId,
       };
     } catch (error: any) {
@@ -166,7 +173,7 @@ class BillingService {
 
       // TODO: Cancel in Stripe (requires Stripe API call)
       // Note: Currently cancels in Firestore only, Stripe cancellation via webhook
-      logger.info('Subscription canceled for user:', userId);
+      logger.info('Subscription canceled for user:', { userId });
     } catch (error) {
       logger.error('Error canceling subscription:', error);
       throw error;

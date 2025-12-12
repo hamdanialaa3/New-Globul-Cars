@@ -15,7 +15,8 @@
   },
   "compileOnSave": true,
   "include": [
-    "src"
+    "src/index.ts",
+    "src/subscriptions/**/*"
   ],
   "exclude": [
     "src/autonomous-resale.ts",

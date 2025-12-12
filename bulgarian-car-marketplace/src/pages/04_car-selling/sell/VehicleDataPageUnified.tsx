@@ -221,22 +221,15 @@ const DesktopFieldGroup = styled.div`
 `;
 
 const InsightsCard = styled.section<{ $isMobile?: boolean }>`
-  /* Removed card frame: background, border, box-shadow for cleaner look */
-  background: transparent;
-  border-radius: 0;
+  background: var(--bg-card);
+  border-radius: 22px;
   padding: ${({ $isMobile }) => ($isMobile ? '1.5rem' : '2rem')};
-  border: none;
-  box-shadow: none;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  box-shadow: 0 25px 55px rgba(15, 23, 42, 0.15);
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
   margin-top: ${({ $isMobile }) => ($isMobile ? '1rem' : '1.5rem')};
-  
-  /* ✅ FIX: Ensure all interactive elements inside are clickable */
-  position: relative;
-  z-index: 0;
-  pointer-events: auto;
-  overflow: visible;
 `;
 
 const InsightsHeader = styled.div`
@@ -255,11 +248,6 @@ const InsightsGrid = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  
-  /* ✅ FIX: Ensure buttons are clickable */
-  position: relative;
-  z-index: 1;
-  pointer-events: auto;
 `;
 
 const InlineFields = styled.div`
@@ -384,11 +372,6 @@ const PillRow = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  
-  /* ✅ FIX: Ensure buttons are clickable */
-  position: relative;
-  z-index: 1;
-  pointer-events: auto;
 `;
 
 const PillButton = styled.button<{ $active: boolean }>`
@@ -405,11 +388,6 @@ const PillButton = styled.button<{ $active: boolean }>`
   -webkit-tap-highlight-color: transparent;
   outline: none;
   font-size: 1rem;
-  
-  /* ✅ FIX: Ensure button is clickable in Desktop - higher z-index to override any overlays */
-  position: relative;
-  z-index: 10 !important;
-  pointer-events: auto !important;
   
   &:hover {
     border-color: #22c55e;
@@ -434,22 +412,12 @@ const ToggleRow = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
-  
-  /* ✅ FIX: Ensure buttons are clickable */
-  position: relative;
-  z-index: 1;
-  pointer-events: auto;
 `;
 
 const InsightToggleGroup = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  
-  /* ✅ FIX: Ensure buttons are clickable */
-  position: relative;
-  z-index: 1;
-  pointer-events: auto;
 `;
 
 const InsightToggleButton = styled.button<{ $active: boolean }>`
@@ -468,11 +436,6 @@ const InsightToggleButton = styled.button<{ $active: boolean }>`
   -webkit-tap-highlight-color: transparent;
   outline: none;
   font-size: 1rem;
-  
-  /* ✅ FIX: Ensure button is clickable in Desktop - higher z-index to override any overlays */
-  position: relative;
-  z-index: 10 !important;
-  pointer-events: auto !important;
   
   &:hover {
     border-color: #22c55e;
