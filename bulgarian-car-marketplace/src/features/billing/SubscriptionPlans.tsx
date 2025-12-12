@@ -31,25 +31,36 @@ const PlanCard = styled.div<{ popular?: boolean; current?: boolean }>`
   background: ${({ theme }) => theme.colors?.cardBackground || '#ffffff'};
   border-radius: 20px;
   padding: 2.5rem;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
   position: relative;
   transition: all 0.3s ease;
-  border: 3px solid ${p => p.current ? '#16a34a' : 'rgba(255, 143, 16, 0.2)'};
+  border: 2px solid ${p => p.current ? '#16a34a' : '#e2e8f0'};
   
   ${p => p.popular && `
     transform: scale(1.05);
-    box-shadow: 0 12px 32px rgba(255, 143, 16, 0.25);
-    border-color: #FF8F10;
+    box-shadow: 0 12px 32px rgba(255, 143, 16, 0.15);
+    border: 2px solid #FF8F10;
   `}
   
   &:hover {
     transform: translateY(-8px) ${p => p.popular ? 'scale(1.05)' : 'scale(1.02)'};
-    box-shadow: 0 16px 40px rgba(255, 143, 16, 0.2);
+    box-shadow: 0 16px 40px rgba(255, 143, 16, 0.15);
+    border-color: ${p => p.current ? '#16a34a' : '#FF8F10'};
   }
 
   @media (prefers-color-scheme: dark) {
-    background: ${({ theme }) => theme.colors?.cardBackgroundDark || '#1a1a1a'};
-    border-color: ${p => p.current ? '#16a34a' : 'rgba(255, 143, 16, 0.3)'};
+    background: ${({ theme }) => theme.colors?.cardBackgroundDark || '#1e293b'};
+    border-color: ${p => p.current ? '#16a34a' : '#334155'};
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    
+    ${p => p.popular && `
+      border-color: #FF8F10;
+      box-shadow: 0 12px 32px rgba(255, 143, 16, 0.25);
+    `}
+    
+    &:hover {
+      box-shadow: 0 16px 40px rgba(255, 143, 16, 0.2);
+    }
   }
 `;
 
@@ -83,11 +94,11 @@ const Badge = styled.div<{ type: 'popular' | 'current' }>`
 const PlanName = styled.h3`
   font-size: 1.75rem;
   font-weight: 800;
-  color: ${({ theme }) => theme.colors?.text || '#1a1a1a'};
+  color: ${({ theme }) => theme.colors?.text || '#0f172a'};
   margin: 0 0 0.75rem 0;
 
   @media (prefers-color-scheme: dark) {
-    color: ${({ theme }) => theme.colors?.textDark || '#f5f5f5'};
+    color: ${({ theme }) => theme.colors?.textDark || '#f1f5f9'};
   }
 `;
 
@@ -128,7 +139,7 @@ const FeatureItem = styled.li`
   align-items: flex-start;
   gap: 1rem;
   padding: 0.75rem 0;
-  color: ${({ theme }) => theme.colors?.text || '#4b5563'};
+  color: ${({ theme }) => theme.colors?.text || '#475569'};
   font-size: 1rem;
   line-height: 1.5;
   
@@ -141,7 +152,11 @@ const FeatureItem = styled.li`
   }
 
   @media (prefers-color-scheme: dark) {
-    color: ${({ theme }) => theme.colors?.textDark || '#e5e7eb'};
+    color: ${({ theme }) => theme.colors?.textDark || '#cbd5e1'};
+    
+    svg {
+      color: #22c55e;
+    }
   }
 `;
 
@@ -157,22 +172,37 @@ const SelectButton = styled.button<{ selected?: boolean }>`
   margin-top: 1rem;
   
   ${p => p.selected ? `
-    background: rgba(229, 231, 235, 0.5);
-    color: #6c757d;
+    background: #f1f5f9;
+    color: #64748b;
     cursor: default;
-    border: 2px solid #e5e7eb;
+    border: 2px solid #cbd5e1;
+    
+    @media (prefers-color-scheme: dark) {
+      background: #334155;
+      color: #94a3b8;
+      border-color: #475569;
+    }
   ` : `
     background: linear-gradient(135deg, #FF8F10 0%, #fb923c 100%);
     color: white;
-    box-shadow: 0 4px 16px rgba(255, 143, 16, 0.3);
+    box-shadow: 0 4px 16px rgba(255, 143, 16, 0.25);
     
     &:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(255, 143, 16, 0.4);
+      box-shadow: 0 8px 24px rgba(255, 143, 16, 0.35);
+      background: linear-gradient(135deg, #fb923c 0%, #FF8F10 100%);
     }
 
     &:active {
       transform: translateY(0);
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      box-shadow: 0 4px 16px rgba(255, 143, 16, 0.4);
+      
+      &:hover {
+        box-shadow: 0 8px 24px rgba(255, 143, 16, 0.5);
+      }
     }
   `}
 `;

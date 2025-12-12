@@ -26,20 +26,34 @@ const Header = styled.div`
 const Title = styled.h1`
   font-size: 2.5rem;
   font-weight: bold;
-  color: #1a1a1a;
+  color: ${({ theme }) => theme.colors?.text || '#1a1a2e'};
   margin-bottom: 0.5rem;
+
+  @media (prefers-color-scheme: dark) {
+    color: ${({ theme }) => theme.colors?.textDark || '#f5f5f5'};
+  }
 `;
 
 const Subtitle = styled.p`
-  color: #6c757d;
+  color: ${({ theme }) => theme.colors?.textSecondary || '#64748b'};
   font-size: 1.1rem;
+
+  @media (prefers-color-scheme: dark) {
+    color: ${({ theme }) => theme.colors?.textSecondaryDark || '#94a3b8'};
+  }
 `;
 
 const CurrentPlanCard = styled.div`
-  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border: 1px solid #bae6fd;
   border-radius: 16px;
   padding: 2rem;
   margin-bottom: 3rem;
+
+  @media (prefers-color-scheme: dark) {
+    background: linear-gradient(135deg, #1e3a5f 0%, #1e293b 100%);
+    border-color: #334155;
+  }
 `;
 
 /**
