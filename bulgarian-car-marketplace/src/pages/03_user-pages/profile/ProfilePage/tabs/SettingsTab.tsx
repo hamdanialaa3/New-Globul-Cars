@@ -178,14 +178,90 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
       return;
     }
 
+    // Validation
+    if (settings.displayName && settings.displayName.trim().length < 2) {
+      toast.error(language === 'bg' ? 'Името трябва да бъде поне 2 символа' : 'Display name must be at least 2 characters');
+      return;
+    }
+
+    if (settings.phone && settings.phone.trim() !== '') {
+      // Basic phone validation (Bulgarian format)
+      const phoneRegex = /^(\+359|0)[0-9]{9}$/;
+      if (!phoneRegex.test(settings.phone.replace(/\s/g, ''))) {
+        toast.error(language === 'bg' ? 'Невалиден телефонен номер' : 'Invalid phone number');
+        return;
+      }
+    }
+
     try {
       setSaving(true);
+      
+      // Update basic profile information
       await ProfileService.updateUserProfile(currentUser.uid, {
-        displayName: settings.displayName,
-        phoneNumber: settings.phone,
-        bio: settings.bio,
-        preferredLanguage: settings.language
+        displayName: settings.displayName?.trim() || '',
+        phoneNumber: settings.phone?.trim() || '',
+        bio: settings.bio?.trim() || '',
+        preferredLanguage: settings.language || 'bg'
       });
+
+      // Update privacy settings
+      await ProfileService.updateUserProfile(currentUser.uid, {
+        privacy: {
+          profileVisibility: settings.privacy.profileVisibility,
+          showPhone: settings.privacy.showPhone,
+          showEmail: settings.privacy.showEmail,
+          showLastSeen: settings.privacy.showLastSeen,
+          allowMessages: settings.privacy.allowMessages,
+          showActivity: settings.privacy.showActivity
+        }
+      });
+
+      // Update notifications settings
+      await ProfileService.updateUserProfile(currentUser.uid, {
+        notifications: {
+          email: settings.notifications.email,
+          sms: settings.notifications.sms,
+          push: settings.notifications.push,
+          newMessages: settings.notifications.newMessages,
+          priceAlerts: settings.notifications.priceAlerts,
+          favoriteUpdates: settings.notifications.favoriteUpdates,
+          newListings: settings.notifications.newListings,
+          promotions: settings.notifications.promotions,
+          newsletter: settings.notifications.newsletter
+        }
+      });
+
+      // Update appearance settings
+      await ProfileService.updateUserProfile(currentUser.uid, {
+        appearance: {
+          theme: settings.appearance.theme,
+          currency: settings.appearance.currency,
+          dateFormat: settings.appearance.dateFormat,
+          compactView: settings.appearance.compactView
+        }
+      });
+
+      // Update security settings
+      await ProfileService.updateUserProfile(currentUser.uid, {
+        security: {
+          twoFactorEnabled: settings.security.twoFactorEnabled,
+          loginAlerts: settings.security.loginAlerts,
+          sessionTimeout: settings.security.sessionTimeout
+        }
+      });
+
+      // Update car preferences
+      await ProfileService.updateUserProfile(currentUser.uid, {
+        carPreferences: {
+          priceRange: settings.carPreferences.priceRange,
+          searchRadius: settings.carPreferences.searchRadius
+        }
+      });
+
+      // Refresh user data
+      if (refresh) {
+        await refresh();
+      }
       
       toast.success(t('settings.saveSuccess', 'Settings saved successfully'));
     } catch (error) {
@@ -493,27 +569,65 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
     if (!currentUser?.uid) return;
 
     const confirmMessage = language === 'bg'
-      ? 'Наистина ли искате да изтриете акаунта си? Това действие е необратимо!'
-      : 'Are you sure you want to delete your account? This action is irreversible!';
+      ? 'Наистина ли искате да изтриете акаунта си? Това действие е необратимо и ще изтрие всички ваши данни!'
+      : 'Are you sure you want to delete your account? This action is irreversible and will delete all your data!';
 
     if (!window.confirm(confirmMessage)) return;
 
+    // Double confirmation
+    const doubleConfirm = language === 'bg'
+      ? 'Това е последното предупреждение! Акаунтът ви ще бъде изтрит завинаги. Продължавате ли?'
+      : 'This is your last warning! Your account will be permanently deleted. Do you want to continue?';
+
+    if (!window.confirm(doubleConfirm)) return;
+
     try {
       setSaving(true);
-      // TODO: Implement account deletion logic
       toast.info(
         language === 'bg' 
-          ? 'Функцията за изтриване на акаунт е в процес на разработка' 
-          : 'Account deletion feature is under development',
+          ? 'Изтриване на акаунта...' 
+          : 'Deleting account...',
+        { autoClose: 2000 }
+      );
+
+      // Delete user profile and all associated data from Firestore
+      await BulgarianProfileService.deleteUserProfile(currentUser.uid);
+
+      // Delete Firebase Auth user
+      try {
+        await deleteAccountService.deleteCurrentUser();
+      } catch (error: any) {
+        // If re-authentication is required, show error
+        if (error?.code === 'REAUTH_REQUIRED' || error?.code === 'auth/requires-recent-login') {
+          toast.error(
+            language === 'bg' 
+              ? 'Изисква се повторно удостоверяване. Моля, влезте отново и опитайте пак.' 
+              : 'Re-authentication required. Please log in again and try again.',
+            { autoClose: 5000 }
+          );
+          return;
+        }
+        throw error;
+      }
+
+      toast.success(
+        language === 'bg' 
+          ? '✅ Акаунтът е изтрит успешно' 
+          : '✅ Account deleted successfully',
         { autoClose: 3000 }
       );
-    } catch (error) {
+
+      // Redirect to home page after deletion
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 2000);
+    } catch (error: any) {
       logger.error('Error deleting account:', error);
       toast.error(
         language === 'bg' 
-          ? 'Грешка при изтриване на акаунта' 
-          : 'Error deleting account',
-        { autoClose: 3000 }
+          ? `Грешка при изтриване на акаунта: ${error?.message || 'Неизвестна грешка'}` 
+          : `Error deleting account: ${error?.message || 'Unknown error'}`,
+        { autoClose: 5000 }
       );
     } finally {
       setSaving(false);
@@ -706,18 +820,14 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
               <SettingGroup>
                 <Label>{t('settings.profileVisibility', 'Profile Visibility')}</Label>
                 <RadioGroup>
-                  <RadioOption>
-                    <input
-                      type="radio"
-                      name="visibility"
-                      value="public"
-                      checked={settings.privacy.profileVisibility === 'public'}
-                      onChange={() => setSettings({
-                        ...settings,
-                        privacy: { ...settings.privacy, profileVisibility: 'public' }
-                      })}
-                    />
-                    <RadioLabel>
+                  <RadioOption
+                    $active={settings.privacy.profileVisibility === 'public'}
+                    onClick={() => setSettings({
+                      ...settings,
+                      privacy: { ...settings.privacy, profileVisibility: 'public' }
+                    })}
+                  >
+                    <RadioLabel $active={settings.privacy.profileVisibility === 'public'}>
                       <Globe size={18} />
                       <div>
                         <strong>{t('settings.public', 'Public')}</strong>
@@ -726,18 +836,14 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
                     </RadioLabel>
                   </RadioOption>
 
-                  <RadioOption>
-                    <input
-                      type="radio"
-                      name="visibility"
-                      value="registered"
-                      checked={settings.privacy.profileVisibility === 'registered'}
-                      onChange={() => setSettings({
-                        ...settings,
-                        privacy: { ...settings.privacy, profileVisibility: 'registered' }
-                      })}
-                    />
-                    <RadioLabel>
+                  <RadioOption
+                    $active={settings.privacy.profileVisibility === 'registered'}
+                    onClick={() => setSettings({
+                      ...settings,
+                      privacy: { ...settings.privacy, profileVisibility: 'registered' }
+                    })}
+                  >
+                    <RadioLabel $active={settings.privacy.profileVisibility === 'registered'}>
                       <User size={18} />
                       <div>
                         <strong>{t('settings.registered', 'Registered Users Only')}</strong>
@@ -746,18 +852,14 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
                     </RadioLabel>
                   </RadioOption>
 
-                  <RadioOption>
-                    <input
-                      type="radio"
-                      name="visibility"
-                      value="private"
-                      checked={settings.privacy.profileVisibility === 'private'}
-                      onChange={() => setSettings({
-                        ...settings,
-                        privacy: { ...settings.privacy, profileVisibility: 'private' }
-                      })}
-                    />
-                    <RadioLabel>
+                  <RadioOption
+                    $active={settings.privacy.profileVisibility === 'private'}
+                    onClick={() => setSettings({
+                      ...settings,
+                      privacy: { ...settings.privacy, profileVisibility: 'private' }
+                    })}
+                  >
+                    <RadioLabel $active={settings.privacy.profileVisibility === 'private'}>
                       <Lock size={18} />
                       <div>
                         <strong>{t('settings.private', 'Private')}</strong>
@@ -769,7 +871,13 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
               </SettingGroup>
 
               <SettingGroup>
-                <ToggleRow>
+                <ToggleRow
+                  $active={settings.privacy.showPhone}
+                  onClick={() => setSettings({
+                    ...settings,
+                    privacy: { ...settings.privacy, showPhone: !settings.privacy.showPhone }
+                  })}
+                >
                   <ToggleLabel>
                     <Phone size={18} />
                     <div>
@@ -777,18 +885,17 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
                       <HelpText>{t('settings.showPhoneHelp', 'Visible on your listings')}</HelpText>
                     </div>
                   </ToggleLabel>
-                  <Toggle
-                    checked={settings.privacy.showPhone}
-                    onChange={() => setSettings({
-                      ...settings,
-                      privacy: { ...settings.privacy, showPhone: !settings.privacy.showPhone }
-                    })}
-                  />
                 </ToggleRow>
               </SettingGroup>
 
               <SettingGroup>
-                <ToggleRow>
+                <ToggleRow
+                  $active={settings.privacy.showEmail}
+                  onClick={() => setSettings({
+                    ...settings,
+                    privacy: { ...settings.privacy, showEmail: !settings.privacy.showEmail }
+                  })}
+                >
                   <ToggleLabel>
                     <Mail size={18} />
                     <div>
@@ -796,18 +903,17 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
                       <HelpText>{t('settings.showEmailHelp', 'Visible on your profile')}</HelpText>
                     </div>
                   </ToggleLabel>
-                  <Toggle
-                    checked={settings.privacy.showEmail}
-                    onChange={() => setSettings({
-                      ...settings,
-                      privacy: { ...settings.privacy, showEmail: !settings.privacy.showEmail }
-                    })}
-                  />
                 </ToggleRow>
               </SettingGroup>
 
               <SettingGroup>
-                <ToggleRow>
+                <ToggleRow
+                  $active={settings.privacy.showLastSeen}
+                  onClick={() => setSettings({
+                    ...settings,
+                    privacy: { ...settings.privacy, showLastSeen: !settings.privacy.showLastSeen }
+                  })}
+                >
                   <ToggleLabel>
                     <Eye size={18} />
                     <div>
@@ -815,18 +921,17 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
                       <HelpText>{t('settings.showLastSeenHelp', 'Let others know when you were last active')}</HelpText>
                     </div>
                   </ToggleLabel>
-                  <Toggle
-                    checked={settings.privacy.showLastSeen}
-                    onChange={() => setSettings({
-                      ...settings,
-                      privacy: { ...settings.privacy, showLastSeen: !settings.privacy.showLastSeen }
-                    })}
-                  />
                 </ToggleRow>
               </SettingGroup>
 
               <SettingGroup>
-                <ToggleRow>
+                <ToggleRow
+                  $active={settings.privacy.allowMessages}
+                  onClick={() => setSettings({
+                    ...settings,
+                    privacy: { ...settings.privacy, allowMessages: !settings.privacy.allowMessages }
+                  })}
+                >
                   <ToggleLabel>
                     <MessageSquare size={18} />
                     <div>
@@ -834,18 +939,17 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
                       <HelpText>{t('settings.allowMessagesHelp', 'Buyers can contact you directly')}</HelpText>
                     </div>
                   </ToggleLabel>
-                  <Toggle
-                    checked={settings.privacy.allowMessages}
-                    onChange={() => setSettings({
-                      ...settings,
-                      privacy: { ...settings.privacy, allowMessages: !settings.privacy.allowMessages }
-                    })}
-                  />
                 </ToggleRow>
               </SettingGroup>
 
               <SettingGroup>
-                <ToggleRow>
+                <ToggleRow
+                  $active={settings.privacy.showActivity}
+                  onClick={() => setSettings({
+                    ...settings,
+                    privacy: { ...settings.privacy, showActivity: !settings.privacy.showActivity }
+                  })}
+                >
                   <ToggleLabel>
                     <TrendingUp size={18} />
                     <div>
@@ -853,13 +957,6 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
                       <HelpText>{t('settings.showActivityHelp', 'Display your online/offline status')}</HelpText>
                     </div>
                   </ToggleLabel>
-                  <Toggle
-                    checked={settings.privacy.showActivity}
-                    onChange={() => setSettings({
-                      ...settings,
-                      privacy: { ...settings.privacy, showActivity: !settings.privacy.showActivity }
-                    })}
-                  />
                 </ToggleRow>
               </SettingGroup>
 
@@ -891,7 +988,13 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
                 <GroupTitle>{t('settings.channels', 'Notification Channels')}</GroupTitle>
                 
                 <SettingGroup>
-                  <ToggleRow>
+                  <ToggleRow
+                    $active={settings.notifications.email}
+                    onClick={() => setSettings({
+                      ...settings,
+                      notifications: { ...settings.notifications, email: !settings.notifications.email }
+                    })}
+                  >
                     <ToggleLabel>
                       <Mail size={18} />
                       <div>
@@ -899,18 +1002,17 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
                         <HelpText>{t('settings.emailNotificationsHelp', 'Receive updates via email')}</HelpText>
                       </div>
                     </ToggleLabel>
-                    <Toggle
-                      checked={settings.notifications.email}
-                      onChange={() => setSettings({
-                        ...settings,
-                        notifications: { ...settings.notifications, email: !settings.notifications.email }
-                      })}
-                    />
                   </ToggleRow>
                 </SettingGroup>
 
                 <SettingGroup>
-                  <ToggleRow>
+                  <ToggleRow
+                    $active={settings.notifications.sms}
+                    onClick={() => setSettings({
+                      ...settings,
+                      notifications: { ...settings.notifications, sms: !settings.notifications.sms }
+                    })}
+                  >
                     <ToggleLabel>
                       <Smartphone size={18} />
                       <div>
@@ -918,18 +1020,17 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
                         <HelpText>{t('settings.smsNotificationsHelp', 'Receive SMS for important updates')}</HelpText>
                       </div>
                     </ToggleLabel>
-                    <Toggle
-                      checked={settings.notifications.sms}
-                      onChange={() => setSettings({
-                        ...settings,
-                        notifications: { ...settings.notifications, sms: !settings.notifications.sms }
-                      })}
-                    />
                   </ToggleRow>
                 </SettingGroup>
 
                 <SettingGroup>
-                  <ToggleRow>
+                  <ToggleRow
+                    $active={settings.notifications.push}
+                    onClick={() => setSettings({
+                      ...settings,
+                      notifications: { ...settings.notifications, push: !settings.notifications.push }
+                    })}
+                  >
                     <ToggleLabel>
                       <Bell size={18} />
                       <div>
@@ -937,13 +1038,6 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
                         <HelpText>{t('settings.pushNotificationsHelp', 'Browser push notifications')}</HelpText>
                       </div>
                     </ToggleLabel>
-                    <Toggle
-                      checked={settings.notifications.push}
-                      onChange={() => setSettings({
-                        ...settings,
-                        notifications: { ...settings.notifications, push: !settings.notifications.push }
-                      })}
-                    />
                   </ToggleRow>
                 </SettingGroup>
               </NotificationGroup>
@@ -952,98 +1046,104 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
                 <GroupTitle>{t('settings.notificationTypes', 'What to Notify')}</GroupTitle>
                 
                 <SettingGroup>
-                  <ToggleRow>
+                  <ToggleRow
+                    $active={settings.notifications.newMessages}
+                    onClick={() => setSettings({
+                      ...settings,
+                      notifications: { ...settings.notifications, newMessages: !settings.notifications.newMessages }
+                    })}
+                  >
                     <ToggleLabel>
                       <MessageSquare size={18} />
-                      <strong>{t('settings.newMessages', 'New Messages')}</strong>
+                      <div>
+                        <strong>{t('settings.newMessages', 'New Messages')}</strong>
+                      </div>
                     </ToggleLabel>
-                    <Toggle
-                      checked={settings.notifications.newMessages}
-                      onChange={() => setSettings({
-                        ...settings,
-                        notifications: { ...settings.notifications, newMessages: !settings.notifications.newMessages }
-                      })}
-                    />
                   </ToggleRow>
                 </SettingGroup>
 
                 <SettingGroup>
-                  <ToggleRow>
+                  <ToggleRow
+                    $active={settings.notifications.priceAlerts}
+                    onClick={() => setSettings({
+                      ...settings,
+                      notifications: { ...settings.notifications, priceAlerts: !settings.notifications.priceAlerts }
+                    })}
+                  >
                     <ToggleLabel>
                       <DollarSign size={18} />
-                      <strong>{t('settings.priceAlerts', 'Price Drop Alerts')}</strong>
+                      <div>
+                        <strong>{t('settings.priceAlerts', 'Price Drop Alerts')}</strong>
+                      </div>
                     </ToggleLabel>
-                    <Toggle
-                      checked={settings.notifications.priceAlerts}
-                      onChange={() => setSettings({
-                        ...settings,
-                        notifications: { ...settings.notifications, priceAlerts: !settings.notifications.priceAlerts }
-                      })}
-                    />
                   </ToggleRow>
                 </SettingGroup>
 
                 <SettingGroup>
-                  <ToggleRow>
+                  <ToggleRow
+                    $active={settings.notifications.favoriteUpdates}
+                    onClick={() => setSettings({
+                      ...settings,
+                      notifications: { ...settings.notifications, favoriteUpdates: !settings.notifications.favoriteUpdates }
+                    })}
+                  >
                     <ToggleLabel>
                       <Heart size={18} />
-                      <strong>{t('settings.favoriteUpdates', 'Favorite Car Updates')}</strong>
+                      <div>
+                        <strong>{t('settings.favoriteUpdates', 'Favorite Car Updates')}</strong>
+                      </div>
                     </ToggleLabel>
-                    <Toggle
-                      checked={settings.notifications.favoriteUpdates}
-                      onChange={() => setSettings({
-                        ...settings,
-                        notifications: { ...settings.notifications, favoriteUpdates: !settings.notifications.favoriteUpdates }
-                      })}
-                    />
                   </ToggleRow>
                 </SettingGroup>
 
                 <SettingGroup>
-                  <ToggleRow>
+                  <ToggleRow
+                    $active={settings.notifications.newListings}
+                    onClick={() => setSettings({
+                      ...settings,
+                      notifications: { ...settings.notifications, newListings: !settings.notifications.newListings }
+                    })}
+                  >
                     <ToggleLabel>
                       <Car size={18} />
-                      <strong>{t('settings.newListings', 'New Listings Matching Criteria')}</strong>
+                      <div>
+                        <strong>{t('settings.newListings', 'New Listings Matching Criteria')}</strong>
+                      </div>
                     </ToggleLabel>
-                    <Toggle
-                      checked={settings.notifications.newListings}
-                      onChange={() => setSettings({
-                        ...settings,
-                        notifications: { ...settings.notifications, newListings: !settings.notifications.newListings }
-                      })}
-                    />
                   </ToggleRow>
                 </SettingGroup>
 
                 <SettingGroup>
-                  <ToggleRow>
+                  <ToggleRow
+                    $active={settings.notifications.promotions}
+                    onClick={() => setSettings({
+                      ...settings,
+                      notifications: { ...settings.notifications, promotions: !settings.notifications.promotions }
+                    })}
+                  >
                     <ToggleLabel>
                       <TrendingUp size={18} />
-                      <strong>{t('settings.promotions', 'Promotions & Deals')}</strong>
+                      <div>
+                        <strong>{t('settings.promotions', 'Promotions & Deals')}</strong>
+                      </div>
                     </ToggleLabel>
-                    <Toggle
-                      checked={settings.notifications.promotions}
-                      onChange={() => setSettings({
-                        ...settings,
-                        notifications: { ...settings.notifications, promotions: !settings.notifications.promotions }
-                      })}
-                    />
                   </ToggleRow>
                 </SettingGroup>
 
                 <SettingGroup>
-                  <ToggleRow>
+                  <ToggleRow
+                    $active={settings.notifications.newsletter}
+                    onClick={() => setSettings({
+                      ...settings,
+                      notifications: { ...settings.notifications, newsletter: !settings.notifications.newsletter }
+                    })}
+                  >
                     <ToggleLabel>
                       <FileText size={18} />
-                      <strong>{t('settings.newsletter', 'Newsletter')}</strong>
+                      <div>
+                        <strong>{t('settings.newsletter', 'Newsletter')}</strong>
+                      </div>
                     </ToggleLabel>
-                    <Toggle
-                      checked={settings.notifications.newsletter}
-                      onChange={() => setSettings({
-                        ...settings,
-                        notifications: { ...settings.notifications, newsletter: !settings.notifications.newsletter }
-                      })}
-                    />
                   </ToggleRow>
                 </SettingGroup>
               </NotificationGroup>
@@ -1133,13 +1233,21 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
                     appearance: { ...settings.appearance, dateFormat: e.target.value as any }
                   })}
                 >
+                  <option value="dd.mm.yyyy">DD.MM.YYYY</option>
+                  <option value="dd-mm-yyyy">DD-MM-YYYY</option>
                   <option value="dd/mm/yyyy">DD/MM/YYYY</option>
                   <option value="mm/dd/yyyy">MM/DD/YYYY</option>
                 </Select>
               </SettingGroup>
 
               <SettingGroup>
-                <ToggleRow>
+                <ToggleRow
+                  $active={settings.appearance.compactView}
+                  onClick={() => setSettings({
+                    ...settings,
+                    appearance: { ...settings.appearance, compactView: !settings.appearance.compactView }
+                  })}
+                >
                   <ToggleLabel>
                     <Laptop size={18} />
                     <div>
@@ -1147,13 +1255,6 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
                       <HelpText>{t('settings.compactViewHelp', 'Show more content on screen')}</HelpText>
                     </div>
                   </ToggleLabel>
-                  <Toggle
-                    checked={settings.appearance.compactView}
-                    onChange={() => setSettings({
-                      ...settings,
-                      appearance: { ...settings.appearance, compactView: !settings.appearance.compactView }
-                    })}
-                  />
                 </ToggleRow>
               </SettingGroup>
 
@@ -1182,7 +1283,13 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
               </SectionHeader>
 
               <SettingGroup>
-                <ToggleRow>
+                <ToggleRow
+                  $active={settings.security.twoFactorEnabled}
+                  onClick={() => setSettings({
+                    ...settings,
+                    security: { ...settings.security, twoFactorEnabled: !settings.security.twoFactorEnabled }
+                  })}
+                >
                   <ToggleLabel>
                     <ShieldCheck size={18} />
                     <div>
@@ -1190,18 +1297,17 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
                       <HelpText>{t('settings.twoFactorHelp', 'Add extra security to your account')}</HelpText>
                     </div>
                   </ToggleLabel>
-                  <Toggle
-                    checked={settings.security.twoFactorEnabled}
-                    onChange={() => setSettings({
-                      ...settings,
-                      security: { ...settings.security, twoFactorEnabled: !settings.security.twoFactorEnabled }
-                    })}
-                  />
                 </ToggleRow>
               </SettingGroup>
 
               <SettingGroup>
-                <ToggleRow>
+                <ToggleRow
+                  $active={settings.security.loginAlerts}
+                  onClick={() => setSettings({
+                    ...settings,
+                    security: { ...settings.security, loginAlerts: !settings.security.loginAlerts }
+                  })}
+                >
                   <ToggleLabel>
                     <AlertCircle size={18} />
                     <div>
@@ -1209,13 +1315,6 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
                       <HelpText>{t('settings.loginAlertsHelp', 'Get notified of new logins')}</HelpText>
                     </div>
                   </ToggleLabel>
-                  <Toggle
-                    checked={settings.security.loginAlerts}
-                    onChange={() => setSettings({
-                      ...settings,
-                      security: { ...settings.security, loginAlerts: !settings.security.loginAlerts }
-                    })}
-                  />
                 </ToggleRow>
               </SettingGroup>
 
@@ -1959,32 +2058,121 @@ const HelpText = styled.p`
   color: rgba(255, 255, 255, 0.6);
   margin: 0;
   line-height: 1.4;
+  text-transform: none;
+  letter-spacing: normal;
+  font-weight: 400;
 `;
 
-const ToggleRow = styled.div`
+// Neumorphism Switch Components
+const SwitchContainer = styled.div<{ $active: boolean }>`
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 16px;
-  background: rgba(255, 255, 255, 0.05);
+  gap: 16px;
+  width: 100%;
+  padding: 12px;
+  position: relative;
+`;
+
+const SwitchWrapper = styled.div<{ $active: boolean }>`
+  position: relative;
+  width: 50px;
+  height: 25px;
+  background: #3e3e3e;
+  border-radius: 12.5px;
+  box-shadow: 
+    5px 5px 10px rgba(0, 0, 0, 0.4), 
+    -5px -5px 10px rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: all 0.4s ease;
+`;
+
+const SwitchInner = styled.div<{ $active: boolean }>`
+  position: absolute;
+  top: 2.5px;
+  left: 2.5px;
+  width: calc(100% - 5px);
+  height: calc(100% - 5px);
+  background-color: #3e3e3e;
+  border-radius: 10px;
+  box-shadow: 
+    inset 2.5px 2.5px 5px rgba(0, 0, 0, 0.4), 
+    inset -2.5px -2.5px 5px rgba(255, 255, 255, 0.1);
+  transition: background-color 0.4s ease;
+`;
+
+const SwitchKnobContainer = styled.div<{ $active: boolean }>`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  overflow: hidden;
+  transition: transform 0.4s ease;
+  transform: ${props => props.$active ? 'translateX(100%)' : 'translateX(0)'};
+`;
+
+const SwitchKnob = styled.div<{ $active: boolean }>`
+  position: relative;
+  width: 20px;
+  height: 20px;
+  top: 2.5px;
+  left: 2.5px;
+  background-color: #3e3e3e;
+  border-radius: 50%;
+  box-shadow: 
+    2.5px 2.5px 5px rgba(0, 0, 0, 0.5), 
+    -2.5px -2.5px 5px rgba(255, 255, 255, 0.1);
+  transition: background-color 0.4s ease;
+`;
+
+const SwitchKnobNeon = styled.div<{ $active: boolean }>`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 12.5px;
+  height: 12.5px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: ${props => props.$active 
+    ? '0 0 5px #0f0, 0 0 10px #0f0, 0 0 15px #0f0, 0 0 20px #0f0'
+    : '0 0 5px #ff8c00, 0 0 10px #ff8c00'};
+  transition: box-shadow 0.4s ease;
+  pointer-events: none;
+`;
+
+const SwitchRow = styled.div<{ $active: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  padding: 16px 20px;
+  background: rgba(255, 255, 255, 0.03);
   border-radius: 12px;
-  transition: background 0.2s ease;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid ${props => props.$active ? 'rgba(15, 255, 0, 0.3)' : 'transparent'};
 
   &:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateY(-2px);
   }
 `;
 
-const ToggleLabel = styled.div`
+const SwitchLabel = styled.div`
   display: flex;
   align-items: flex-start;
   gap: 12px;
   flex: 1;
+  position: relative;
+  z-index: 1;
 
   svg {
-    color: #FF8F10;
+    color: #ffffff;
     margin-top: 2px;
     flex-shrink: 0;
+    width: 18px;
+    height: 18px;
   }
 
   strong {
@@ -1992,6 +2180,63 @@ const ToggleLabel = styled.div`
     color: #ffffff;
     font-size: 0.95rem;
     margin-bottom: 4px;
+    transition: color 0.2s ease;
+    font-weight: 600;
+  }
+  
+  div {
+    flex: 1;
+  }
+`;
+
+// Toggle Row with Neumorphism Switch
+const ToggleRow: React.FC<{
+  $active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}> = ({ $active, onClick, children }) => {
+  return (
+    <SwitchRow $active={$active} onClick={onClick}>
+      <SwitchLabel>{children}</SwitchLabel>
+      <SwitchWrapper $active={$active} onClick={(e) => { e.stopPropagation(); onClick(); }}>
+        <SwitchInner $active={$active} />
+        <SwitchKnobContainer $active={$active}>
+          <SwitchKnob $active={$active}>
+            <SwitchKnobNeon $active={$active} />
+          </SwitchKnob>
+        </SwitchKnobContainer>
+      </SwitchWrapper>
+    </SwitchRow>
+  );
+};
+
+const ToggleLabel = styled.div`
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  flex: 1;
+  position: relative;
+  z-index: 1;
+
+  svg {
+    color: #ffffff;
+    margin-top: 2px;
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+  }
+
+  strong {
+    display: block;
+    color: #ffffff;
+    font-size: 0.95rem;
+    margin-bottom: 4px;
+    transition: color 0.2s ease;
+    font-weight: 600;
+  }
+  
+  div {
+    flex: 1;
   }
 `;
 
@@ -2030,59 +2275,67 @@ const Toggle = styled.input.attrs({ type: 'checkbox' })`
 const RadioGroup = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
 `;
 
-const RadioOption = styled.label`
+// Radio Option without switch - only text color changes
+const RadioOptionRow = styled.div<{ $active: boolean }>`
   display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 16px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 2px solid rgba(255, 255, 255, 0.1);
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  padding: 16px 20px;
+  background: rgba(255, 255, 255, 0.03);
   border-radius: 12px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.2);
-  }
-
-  input[type="radio"] {
-    margin-top: 2px;
-    width: 20px;
-    height: 20px;
-    accent-color: #FF8F10;
-    cursor: pointer;
-    flex-shrink: 0;
-  }
-
-  input[type="radio"]:checked + div {
-    strong {
-      color: #FF8F10;
-    }
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateY(-2px);
   }
 `;
 
-const RadioLabel = styled.div`
+const RadioOption: React.FC<{
+  $active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}> = ({ $active, onClick, children }) => {
+  return (
+    <RadioOptionRow $active={$active} onClick={onClick}>
+      {children}
+    </RadioOptionRow>
+  );
+};
+
+const RadioLabel = styled.div<{ $active: boolean }>`
   display: flex;
   align-items: flex-start;
   gap: 12px;
   flex: 1;
+  position: relative;
+  z-index: 1;
 
   svg {
-    color: #FF8F10;
+    color: ${props => props.$active ? '#0f0' : '#ef4444'};
     margin-top: 2px;
     flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    transition: color 0.2s ease;
   }
 
   strong {
     display: block;
-    color: #ffffff;
+    color: ${props => props.$active ? '#0f0' : '#ef4444'};
     font-size: 0.95rem;
     margin-bottom: 4px;
     transition: color 0.2s ease;
+    font-weight: 600;
+  }
+  
+  div {
+    flex: 1;
   }
 `;
 
@@ -2208,78 +2461,150 @@ const Divider = styled.div`
   margin: 16px 0;
 `;
 
-const SaveButton = styled.button`
+// Animated Button Styles (from b1)
+const AnimatedButtonBase = styled.button<{ $color?: string }>`
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   padding: 14px 24px;
-  background: linear-gradient(135deg, #FF8F10 0%, #FF6B10 100%);
-  border: none;
-  border-radius: 12px;
-  color: #ffffff;
-  font-size: 1rem;
+  color: ${props => props.$color || '#1670f0'};
+  text-transform: uppercase;
+  text-decoration: none;
+  letter-spacing: 2px;
+  font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
-  align-self: flex-start;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+  border: none;
+  background: transparent;
+  transition: all 0.3s ease;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    bottom: 2px;
+    width: 50%;
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  > span.btn-span {
+    position: absolute;
+    display: block;
+  }
+
+  > span.btn-span:nth-of-type(1) {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(to right, #0c002b, ${props => props.$color || '#1670f0'});
+    animation: animate1 2s linear infinite;
+    animation-delay: 1s;
+  }
+
+  > span.btn-span:nth-of-type(2) {
+    top: 0;
+    right: 0;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(to bottom, #0c002b, ${props => props.$color || '#1670f0'});
+    animation: animate2 2s linear infinite;
+    animation-delay: 2s;
+  }
+
+  > span.btn-span:nth-of-type(3) {
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(to left, #0c002b, ${props => props.$color || '#1670f0'});
+    animation: animate3 2s linear infinite;
+    animation-delay: 1s;
+  }
+
+  > span.btn-span:nth-of-type(4) {
+    top: 0;
+    left: 0;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(to top, #0c002b, ${props => props.$color || '#1670f0'});
+    animation: animate4 2s linear infinite;
+    animation-delay: 2s;
+  }
+
+  @keyframes animate1 {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+
+  @keyframes animate2 {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100%); }
+  }
+
+  @keyframes animate3 {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+  }
+
+  @keyframes animate4 {
+    0% { transform: translateY(100%); }
+    100% { transform: translateY(-100%); }
+  }
 
   &:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(255, 143, 16, 0.4);
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
   }
 
   &:disabled {
-    opacity: 0.6;
+    opacity: 0.5;
     cursor: not-allowed;
+    
+    > span.btn-span {
+      animation: none;
+    }
   }
 `;
 
-const SecondaryButton = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 12px 20px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  border-radius: 12px;
-  color: #ffffff;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  align-self: flex-start;
+// Button wrapper component to add spans automatically
+const AnimatedButton: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement> & { $color?: string }> = ({ children, $color, ...props }) => {
+  return (
+    <AnimatedButtonBase $color={$color} {...props}>
+      <span className="btn-span"></span>
+      <span className="btn-span"></span>
+      <span className="btn-span"></span>
+      <span className="btn-span"></span>
+      {children}
+    </AnimatedButtonBase>
+  );
+};
 
-  &:hover {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.3);
-    transform: translateY(-2px);
-  }
-`;
+const SaveButton = (props: React.ButtonHTMLAttributes<HTMLButtonElement>) => (
+  <AnimatedButton $color="#1670f0" {...props} />
+);
 
-const DangerButton = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 12px 20px;
-  background: rgba(239, 68, 68, 0.1);
-  border: 2px solid rgba(239, 68, 68, 0.3);
-  border-radius: 12px;
-  color: #ef4444;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  align-self: flex-start;
+const SecondaryButton = (props: React.ButtonHTMLAttributes<HTMLButtonElement>) => (
+  <AnimatedButton $color="#1670f0" {...props} />
+);
 
-  &:hover {
-    background: rgba(239, 68, 68, 0.2);
-    border-color: rgba(239, 68, 68, 0.5);
-    transform: translateY(-2px);
-  }
-`;
+const DangerButton = (props: React.ButtonHTMLAttributes<HTMLButtonElement>) => (
+  <AnimatedButton $color="#ef4444" {...props} />
+);
+
+const CancelButton = (props: React.ButtonHTMLAttributes<HTMLButtonElement>) => (
+  <AnimatedButton $color="#6b7280" {...props} />
+);
+
+const SavePasswordButton = (props: React.ButtonHTMLAttributes<HTMLButtonElement>) => (
+  <AnimatedButton $color="#10b981" {...props} />
+);
+
 
 const PasswordChangeForm = styled.div`
   display: flex;
@@ -2314,51 +2639,6 @@ const PasswordButtonGroup = styled.div`
   margin-top: 8px;
 `;
 
-const CancelButton = styled.button`
-  flex: 1;
-  padding: 12px;
-  background: var(--bg-secondary);
-  border: 2px solid var(--border-primary);
-  border-radius: 8px;
-  color: var(--text-primary);
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover:not(:disabled) {
-    background: var(--bg-hover);
-    transform: translateY(-2px);
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-`;
-
-const SavePasswordButton = styled.button`
-  flex: 1;
-  padding: 12px;
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  border: none;
-  border-radius: 8px;
-  color: white;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-`;
 
 const LoadingMessage = styled.div`
   text-align: center;
@@ -2700,24 +2980,9 @@ const IDCardSubtitle = styled.p`
   margin: 0;
 `;
 
-const IDCardButton = styled.button`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 20px;
-  background: #a855f7;
-  border: none;
-  border-radius: 10px;
-  color: white;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background: #9333ea;
-    transform: translateY(-2px);
-  }
-`;
+const IDCardButton: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement>> = (props) => (
+  <AnimatedButton $color="#a855f7" {...props} />
+);
 
 const IDCardInfo = styled.div`
   margin-top: 16px;
@@ -2738,6 +3003,15 @@ const InfoItem = styled.div`
 
 const FormSection = styled.div`
   margin-top: 32px;
+`;
+
+const FormTitle = styled.h3`
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 20px 0;
+  padding-bottom: 12px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
 `;
 
 const FormRow = styled.div`

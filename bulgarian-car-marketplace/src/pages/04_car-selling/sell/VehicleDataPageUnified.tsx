@@ -182,17 +182,17 @@ const SimpleContinueButton = styled.button`
   }
 `;
 
-// Desktop Styles
+// Desktop Styles - Professional Car Display Layout (like PDF)
 const DesktopContainer = styled.div`
   min-height: 100vh;
-  background: var(--bg-primary);
-  padding: 2rem 0;
+  background: #f5f5f8;
+  padding: 1.5rem 0 2.5rem;
 `;
 
 const DesktopContent = styled.div`
-  max-width: 1200px;
+  max-width: 1240px;
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 0 1.5rem;
 `;
 
 const DesktopHeader = styled.div`
@@ -205,6 +205,113 @@ const DesktopTitle = styled.h1`
   font-weight: 700;
   color: var(--text-primary);
   margin: 0;
+`;
+
+// ✅ NEW: Professional Gallery Layout (like CarDetailsModernView)
+const ProfessionalGallery = styled.div`
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.06);
+  padding: 1.5rem;
+  margin-bottom: 1.75rem;
+`;
+
+const VehicleTitleRow = styled.div`
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+`;
+
+const VehicleTitleBlock = styled.div`
+  flex: 1 1 300px;
+`;
+
+const VehicleTitleText = styled.h1`
+  font-size: 1.9rem;
+  color: #111827;
+  margin: 0 0 0.5rem;
+  font-weight: 700;
+`;
+
+const VehicleMetaInfo = styled.div`
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  color: #6b7280;
+  font-size: 0.95rem;
+  font-weight: 500;
+`;
+
+const MainImageContainer = styled.div`
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #101623;
+  min-height: 400px;
+  max-height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 1rem;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+`;
+
+const ThumbnailStrip = styled.div`
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+`;
+
+const ThumbnailButton = styled.button<{ $active: boolean }>`
+  border: 2px solid ${(props) => (props.$active ? '#fb923c' : 'transparent')};
+  border-radius: 12px;
+  overflow: hidden;
+  width: 88px;
+  height: 66px;
+  padding: 0;
+  background: #f3f4f6;
+  cursor: pointer;
+  flex-shrink: 0;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &:hover {
+    border-color: #fb923c;
+  }
+`;
+
+// ✅ NEW: Professional Layout Grid (like CarDetailsModernView)
+const ProfessionalLayout = styled.div`
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.75rem;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const ProfessionalCard = styled.div`
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.06);
+  padding: 1.75rem;
 `;
 
 const DesktopFormGrid = styled.div`
@@ -221,11 +328,10 @@ const DesktopFieldGroup = styled.div`
 `;
 
 const InsightsCard = styled.section<{ $isMobile?: boolean }>`
-  background: var(--bg-card);
-  border-radius: 22px;
-  padding: ${({ $isMobile }) => ($isMobile ? '1.5rem' : '2rem')};
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  box-shadow: 0 25px 55px rgba(15, 23, 42, 0.15);
+  background: #fff;
+  border-radius: 18px;
+  padding: ${({ $isMobile }) => ($isMobile ? '1.5rem' : '1.75rem')};
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.06);
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -271,7 +377,9 @@ const VerticalFieldStack = styled.div`
 const InsightLabel = styled.label`
   font-size: 0.95rem;
   font-weight: 600;
-  color: var(--text-primary);
+  color: #111827;
+  margin-bottom: 0.5rem;
+  display: block;
 `;
 
 const InsightSelect = styled.select.attrs<{ title?: string; 'aria-label'?: string }>(props => {
@@ -283,15 +391,13 @@ const InsightSelect = styled.select.attrs<{ title?: string; 'aria-label'?: strin
 })<ValidationProps>`
   width: 100%;
   max-width: 450px;
-  border-radius: 14px;
-  border: 2px solid var(--border, rgba(255, 255, 255, 0.08));
-  /* ✅ FIX: Match size with other dropdowns (MobileSelect/DesktopSelect) */
-  padding: ${props => themeTokens(props).mobileSpacing?.md || '1rem'};
+  border-radius: 12px;
+  border: 2px solid ${({ $validation }) => $validation === 'valid' ? '#e2e8f0' : '#e2e8f0'};
+  padding: 0.875rem 1rem;
   min-height: 2.75rem;
   background: ${({ $validation }) => getValidationBackground($validation)};
-  color: var(--text-primary, #1e293b);
-  /* ✅ FIX: Match font size with other dropdowns */
-  font-size: ${props => themeTokens(props).mobileTypography?.body?.fontSize || '1rem'};
+  color: #1e293b;
+  font-size: 1rem;
   transition: all 0.2s ease;
   cursor: pointer;
   
@@ -310,15 +416,13 @@ const InsightSelect = styled.select.attrs<{ title?: string; 'aria-label'?: strin
 const InsightInput = styled.input<ValidationProps>`
   width: 100%;
   max-width: 450px;
-  border-radius: 14px;
-  border: 2px solid var(--border, rgba(255, 255, 255, 0.08));
-  /* ✅ FIX: Match size with other dropdowns (MobileSelect/DesktopSelect) */
-  padding: ${props => themeTokens(props).mobileSpacing?.md || '1rem'};
+  border-radius: 12px;
+  border: 2px solid #e2e8f0;
+  padding: 0.875rem 1rem;
   min-height: 2.75rem;
   background: ${({ $validation }) => getValidationBackground($validation)};
-  color: var(--text-primary, #1e293b);
-  /* ✅ FIX: Match font size with other dropdowns */
-  font-size: ${props => themeTokens(props).mobileTypography?.body?.fontSize || '1rem'};
+  color: #1e293b;
+  font-size: 1rem;
   transition: all 0.2s ease;
   
   &:hover {
@@ -335,37 +439,50 @@ const InsightInput = styled.input<ValidationProps>`
 
 const InputSuffixWrapper = styled.div<ValidationProps>`
   display: flex;
-  align-items: center; /* ✅ FIX: Center items vertically */
+  align-items: center;
   max-width: 450px;
-  border-radius: 14px;
-  border: 2px solid var(--border, rgba(255, 255, 255, 0.08));
+  border-radius: 12px;
+  border: 2px solid #e2e8f0;
   min-height: 2.75rem;
   overflow: hidden;
   background: ${({ $validation }) => getValidationBackground($validation)};
+  transition: all 0.2s ease;
+  
+  &:hover {
+    border-color: ${({ $validation }) => $validation === 'valid' ? '#22c55e' : '#ef4444'};
+  }
+  
+  &:focus-within {
+    border-color: ${({ $validation }) => $validation === 'valid' ? '#22c55e' : '#ef4444'};
+    box-shadow: 0 0 15px ${({ $validation }) => $validation === 'valid' ? 'rgba(34, 197, 94, 0.3)' : 'rgba(239, 68, 68, 0.3)'};
+  }
 `;
 
 const InputSuffix = styled.span`
   display: flex;
-  align-items: center; /* ✅ FIX: Center text vertically */
-  padding: 0.8rem 1rem;
+  align-items: center;
+  padding: 0.875rem 1rem;
   font-weight: 600;
-  color: #dc2626;
-  white-space: nowrap; /* ✅ FIX: Prevent text wrapping - keep text horizontal */
-  flex-shrink: 0; /* ✅ FIX: Prevent shrinking */
-  line-height: 1; /* ✅ FIX: Single line height */
+  color: #6b7280;
+  white-space: nowrap;
+  flex-shrink: 0;
+  line-height: 1;
+  background: #f3f4f6;
+  border-left: 1px solid #e5e7eb;
 `;
 
 const SectionDivider = styled.hr`
   border: none;
   height: 1px;
-  background: var(--border);
-  opacity: 0.3;
+  background: #e5e7eb;
+  margin: 1.5rem 0;
 `;
 
 const SectionHeading = styled.h3`
-  margin: 0;
+  margin: 0 0 1rem 0;
   font-size: 1.1rem;
-  color: var(--text-primary);
+  color: #111827;
+  font-weight: 600;
 `;
 
 const PillRow = styled.div`
@@ -727,6 +844,45 @@ const VehicleDataPage: React.FC = () => {
 
   // ✅ UNIFIED WORKFLOW: Use unified workflow system (Step 2)
   const { workflowData, updateData, timerState } = useUnifiedWorkflow(2);
+
+  // ✅ NEW: Check if in edit mode and load car images
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [carImages, setCarImages] = useState<string[]>([]);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [editCarData, setEditCarData] = useState<any>(null);
+
+  // ✅ Load edit mode data and images
+  useEffect(() => {
+    const editMode = sessionStorage.getItem('edit_mode') === 'true';
+    setIsEditMode(editMode);
+
+    if (editMode) {
+      // Load car data from sessionStorage
+      const savedCarData = sessionStorage.getItem('edit_car_data');
+      if (savedCarData) {
+        try {
+          const carData = JSON.parse(savedCarData);
+          setEditCarData(carData);
+          
+          // Load images from localStorage
+          const savedImages = localStorage.getItem('globul_sell_workflow_images');
+          if (savedImages) {
+            try {
+              const images = JSON.parse(savedImages);
+              setCarImages(images.filter((img: string) => img && img.length > 0));
+            } catch (e) {
+              console.error('Error parsing saved images:', e);
+            }
+          } else if (carData.images && carData.images.length > 0) {
+            // Use images from car data if available
+            setCarImages(carData.images);
+          }
+        } catch (e) {
+          console.error('Error parsing saved car data:', e);
+        }
+      }
+    }
+  }, []);
 
   // ✅ FIX: Refs to prevent infinite loop during data restoration
   const isRestoringRef = useRef(false);
@@ -1735,10 +1891,146 @@ const VehicleDataPage: React.FC = () => {
     );
   }
 
+  // ✅ NEW: Render professional gallery (like CarDetailsModernView)
+  const renderProfessionalGallery = () => {
+    if (!isEditMode || carImages.length === 0) return null;
+
+    return (
+      <ProfessionalGallery>
+        <VehicleTitleRow>
+          <VehicleTitleBlock>
+            <VehicleTitleText>
+              {formData.make || editCarData?.make || ''} {formData.model || editCarData?.model || ''} {formData.year || editCarData?.year ? `· ${formData.year || editCarData?.year}` : ''}
+            </VehicleTitleText>
+            <VehicleMetaInfo>
+              {formData.fuelType && <span>{formData.fuelType}</span>}
+              {formData.power && <span>{formData.power} HP</span>}
+              {formData.transmission && <span>{formData.transmission}</span>}
+            </VehicleMetaInfo>
+          </VehicleTitleBlock>
+        </VehicleTitleRow>
+
+        <MainImageContainer>
+          {carImages[selectedImageIndex] ? (
+            <img 
+              src={carImages[selectedImageIndex]} 
+              alt={`${formData.make || ''} ${formData.model || ''}`} 
+              loading="lazy" 
+            />
+          ) : (
+            <div style={{ color: '#9ca3af', fontWeight: 600, fontSize: '1rem' }}>
+              {language === 'bg' ? 'Няма налична снимка' : 'No image available'}
+            </div>
+          )}
+        </MainImageContainer>
+
+        {carImages.length > 1 && (
+          <ThumbnailStrip>
+            {carImages.map((src, index) => (
+              <ThumbnailButton
+                key={src + index}
+                $active={index === selectedImageIndex}
+                onClick={() => setSelectedImageIndex(index)}
+                aria-label={`Select image ${index + 1}`}
+              >
+                <img src={src} alt={`Thumbnail ${index + 1}`} loading="lazy" />
+              </ThumbnailButton>
+            ))}
+          </ThumbnailStrip>
+        )}
+      </ProfessionalGallery>
+    );
+  };
+
   // Desktop Layout with WorkflowPageLayout
   const progressBar = <SellProgressBar currentStep="vehicle-data" />;
   
-  const pageContent = (
+  // ✅ NEW: Professional layout when in edit mode (like PDF/CarDetailsModernView)
+  const pageContent = isEditMode ? (
+    <ProfessionalLayout>
+      <div>
+        {/* Professional Gallery with Images */}
+        {renderProfessionalGallery()}
+
+        {/* Brand/Model Selection */}
+        <ProfessionalCard style={{ marginBottom: '1.5rem' }}>
+          <InsightsHeader>
+            <InsightsTitle>{language === 'bg' ? 'Марка и модел' : 'Make and Model'}</InsightsTitle>
+          </InsightsHeader>
+          <VerticalFieldStack>
+            <InsightField>
+              <BrandModelMarkdownDropdown
+                brand={formData.make}
+                model={formData.model}
+                onBrandChange={(b) => {
+                  handleInputChange('make', b);
+                  markFieldAsTouched('make');
+                }}
+                onModelChange={(m) => {
+                  handleInputChange('model', m);
+                  markFieldAsTouched('model');
+                }}
+              />
+            </InsightField>
+          </VerticalFieldStack>
+        </ProfessionalCard>
+
+        {/* Body Type Section */}
+        <ProfessionalCard style={{ marginBottom: '1.5rem' }}>
+          <InsightsHeader>
+            <InsightsTitle>{language === 'bg' ? 'Тип купе' : 'Body Type'}</InsightsTitle>
+          </InsightsHeader>
+          <VerticalFieldStack>
+            <InsightField>
+              <InsightLabel>{language === 'bg' ? 'Изберете тип купе' : 'Select Body Type'}</InsightLabel>
+              <InsightSelect
+                value={formData.bodyType || ''}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  handleInputChange('bodyType', value);
+                  markFieldAsTouched('bodyType');
+                  if (value !== 'other') {
+                    handleInputChange('bodyTypeOther', '');
+                  }
+                }}
+                onFocus={() => markFieldAsTouched('bodyType')}
+                aria-label={language === 'bg' ? 'Тип купе' : 'Body Type'}
+                title={language === 'bg' ? 'Тип купе' : 'Body Type'}
+                $validation={getValidationState('bodyType')}
+              >
+                {bodyTypeOptions.map(option => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </InsightSelect>
+              {formData.bodyType === 'other' && (
+                <div style={{ marginTop: '0.5rem' }}>
+                  <InsightLabel>{language === 'bg' ? 'Въведете тип купе' : 'Enter body type'}</InsightLabel>
+                  <InsightInput
+                    value={formData.bodyTypeOther || ''}
+                    onChange={(e) => handleInputChange('bodyTypeOther', e.target.value)}
+                    onFocus={() => markFieldAsTouched('bodyTypeOther')}
+                    placeholder={language === 'bg' ? 'Пример: Limousine' : 'Example: Limousine'}
+                  />
+                </div>
+              )}
+            </InsightField>
+          </VerticalFieldStack>
+        </ProfessionalCard>
+
+        {/* Vehicle Data Section */}
+        <ProfessionalCard>
+          {renderListingSection(false)}
+        </ProfessionalCard>
+      </div>
+
+      {/* Right Sidebar - Quality Score & Info */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+        {renderQualityScore()}
+      </div>
+    </ProfessionalLayout>
+  ) : (
     <>
       {/* Quality Score Indicator */}
       {renderQualityScore()}
@@ -1824,6 +2116,29 @@ const VehicleDataPage: React.FC = () => {
     </DesktopActions>
   );
   
+  // ✅ NEW: Use professional layout container when in edit mode
+  if (isEditMode && !isMobile) {
+    return (
+      <DesktopContainer>
+        <ProgressWrapper $isMobile={false}>
+          {progressBar}
+        </ProgressWrapper>
+        <DesktopContent>
+          <DesktopHeader>
+            <DesktopTitle>{t('sell.vehicleData.title')}</DesktopTitle>
+            {t('sell.vehicleData.subtitle') && (
+              <p style={{ fontSize: '1rem', color: '#666666', margin: '0.5rem 0 0' }}>
+                {t('sell.vehicleData.subtitle')}
+              </p>
+            )}
+          </DesktopHeader>
+          {pageContent}
+          {navigation}
+        </DesktopContent>
+      </DesktopContainer>
+    );
+  }
+
   return (
     <WorkflowPageLayout
       progressBar={progressBar}

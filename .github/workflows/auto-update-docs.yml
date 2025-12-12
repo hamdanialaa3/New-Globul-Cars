@@ -1,0 +1,48 @@
+name: Auto Update Documentation
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'bulgarian-car-marketplace/src/**'
+      - 'functions/src/**'
+      - 'assets/**'
+      - 'auto-update-documentation.js'
+  workflow_dispatch: {}
+  schedule:
+    - cron: '15 2 * * *'
+
+jobs:
+  update-docs:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install minimal deps
+        run: |
+          npm ci --ignore-scripts || npm i --ignore-scripts
+
+      - name: Update documentation
+        run: node auto-update-documentation.js --analyze
+
+      - name: Commit changes if any
+        run: |
+          git config user.email "copilot@github.com"
+          git config user.name "GitHub Copilot"
+          if ! git diff --quiet -- PROJECT_DOCUMENTATION.md; then
+            git add PROJECT_DOCUMENTATION.md
+            git commit -m "docs: auto-update PROJECT_DOCUMENTATION.md"
+            git push
+          else
+            echo "No documentation changes to commit."
+          fi

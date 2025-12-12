@@ -2,6 +2,7 @@
 // Stripe configuration and subscription plans
 
 import { SubscriptionPlan } from './types';
+import * as functions from 'firebase-functions';
 
 /**
  * Stripe Configuration
@@ -15,13 +16,25 @@ import { SubscriptionPlan } from './types';
  * firebase functions:config:set stripe.secret_key="sk_test_..." stripe.webhook_secret="whsec_..."
  */
 
+const getConfig = () => {
+  try {
+    return ((functions as any).config && (functions as any).config()) ? (functions as any).config() : {};
+  } catch {
+    return {};
+  }
+};
+
+const cfg = getConfig();
+const cfgStripe = cfg?.stripe || {};
+const cfgApp = cfg?.app || {};
+
 export const STRIPE_CONFIG = {
-  secretKey: process.env.STRIPE_SECRET_KEY || '',
-  webhookSecret: process.env.STRIPE_WEBHOOK_SECRET || '',
-  publishableKey: process.env.STRIPE_PUBLISHABLE_KEY || '',
+  secretKey: process.env.STRIPE_SECRET_KEY || cfgStripe.secret_key || '',
+  webhookSecret: process.env.STRIPE_WEBHOOK_SECRET || cfgStripe.webhook_secret || '',
+  publishableKey: process.env.STRIPE_PUBLISHABLE_KEY || cfgStripe.publishable_key || '',
   currency: 'eur', // Euro - Bulgaria pricing
-  successUrl: (process.env.FRONTEND_URL || 'https://fire-new-globul.web.app') + '/billing/success',
-  cancelUrl: (process.env.FRONTEND_URL || 'https://fire-new-globul.web.app') + '/billing/canceled',
+  successUrl: (process.env.FRONTEND_URL || cfgApp.frontend_url || 'https://fire-new-globul.web.app') + '/billing/success',
+  cancelUrl: (process.env.FRONTEND_URL || cfgApp.frontend_url || 'https://fire-new-globul.web.app') + '/billing/canceled',
 };
 
 /**
@@ -62,8 +75,8 @@ export const SUBSCRIPTION_PLANS: Record<string, SubscriptionPlan> = {
   },
 
   // Dealer Plan - Monthly & Annual billing
-  dealer: {
-    id: 'dealer',
+  dealer_monthly: {
+    id: 'dealer_monthly',
     tier: 'dealer',
     name: 'Търговец',
     nameEn: 'Dealer',
@@ -115,8 +128,8 @@ export const SUBSCRIPTION_PLANS: Record<string, SubscriptionPlan> = {
   },
 
   // Company Plan - Monthly & Annual billing
-  company: {
-    id: 'company',
+  company_monthly: {
+    id: 'company_monthly',
     tier: 'company',
     name: 'Компания',
     nameEn: 'Company',

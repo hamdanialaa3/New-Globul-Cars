@@ -41,6 +41,7 @@ import { CarListing } from '../../../types/CarListing';
 import StaticMapEmbed from '../../../components/StaticMapEmbed';
 import GlobulCarLogo from '../../../components/icons/GlobulCarLogo';
 import { useTheme } from '../../../contexts/ThemeContext';
+import CarSuggestionsList from './CarSuggestionsList';
 
 interface CarDetailsGermanStyleProps {
   car: CarListing;
@@ -205,6 +206,9 @@ const PageWrapper = styled.div<{ $isDark: boolean }>`
   min-height: 100vh;
   padding: 0;
   transition: background 0.3s ease;
+  /* ✅ FIX: Prevent layout shifts */
+  width: 100% !important;
+  overflow-x: hidden;
 `;
 
 const TopBar = styled.div<{ $isDark: boolean }>`
@@ -282,27 +286,57 @@ const EditButton = styled.button<{ $isDark: boolean }>`
 `;
 
 const Container = styled.div<{ $isDark: boolean }>`
-  max-width: 1200px;
+  max-width: 1200px !important;
   margin: 0 auto;
   padding: 2rem;
   background: var(--bg-primary);
   transition: background 0.3s ease;
+  /* ✅ FIX: Prevent container from changing width */
+  width: 100%;
+  box-sizing: border-box;
+  /* ✅ FIX: Force container to maintain desktop width */
+  position: relative;
 
   @media (max-width: 768px) {
     padding: 1rem;
+    max-width: 100% !important;
+  }
+
+  /* ✅ FIX: Ensure desktop width for screens > 768px */
+  @media (min-width: 769px) {
+    max-width: 1200px !important;
+    padding: 2rem !important;
   }
 `;
 
 const MainSection = styled.div<{ $isDark: boolean }>`
-  display: grid;
-  grid-template-columns: 2fr 1fr;
+  display: grid !important;
+  grid-template-columns: 2fr 1fr !important;
   gap: 2rem;
   margin-bottom: 2rem;
   background: transparent;
   transition: background 0.3s ease;
+  /* ✅ FIX: Prevent layout shifts */
+  min-height: 0;
+  width: 100%;
+  box-sizing: border-box;
+  /* ✅ FIX: Force desktop layout by default */
+  position: relative;
 
-  @media (max-width: 1024px) {
-    grid-template-columns: 1fr;
+  /* ✅ FIX: Only change to single column on mobile (≤768px) */
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem;
+  }
+
+  /* ✅ FIX: Force 2-column layout on tablets and desktop (≥769px) - CRITICAL */
+  @media (min-width: 769px) {
+    grid-template-columns: 2fr 1fr !important;
+  }
+
+  /* ✅ FIX: Ensure desktop layout for all screens wider than 768px */
+  @media (min-width: 769px) and (max-width: 9999px) {
+    grid-template-columns: 2fr 1fr !important;
   }
 `;
 
@@ -320,6 +354,9 @@ const RightColumn = styled.div<{ $isDark: boolean }>`
   gap: 1.5rem;
   background: transparent;
   transition: background 0.3s ease;
+  /* ✅ FIX: Prevent layout shifts */
+  min-width: 0;
+  width: 100%;
 `;
 
 const Card = styled.div<{ $isDark: boolean }>`
@@ -348,20 +385,54 @@ const ImageSection = styled(Card)<{ $isDark: boolean }>`
 
 const MainImageContainer = styled.div<{ $isDark: boolean }>`
   position: relative;
-  width: 100%;
-  aspect-ratio: 16 / 9;
+  width: 100% !important;
+  /* ✅ FIX: Fixed height for desktop to prevent layout shifts */
+  height: 500px !important;
+  max-height: 500px !important;
+  min-height: 500px !important;
   background: var(--bg-primary);
-  display: flex;
+  display: flex !important;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: background 0.3s ease;
+  overflow: hidden;
+  flex-shrink: 0;
+  /* ✅ FIX: Prevent container from resizing */
+  box-sizing: border-box;
+  /* ✅ FIX: Force GPU acceleration and prevent reflow */
+  will-change: auto;
+  /* ✅ FIX: Prevent layout shifts during image load */
+  contain: layout style paint;
+
+  @media (max-width: 1024px) {
+    height: 400px !important;
+    max-height: 400px !important;
+    min-height: 400px !important;
+  }
+
+  @media (max-width: 768px) {
+    height: 280px !important;
+    max-height: 280px !important;
+    min-height: 280px !important;
+  }
+
+  /* ✅ FIX: Ensure desktop height for screens > 768px */
+  @media (min-width: 769px) {
+    height: 500px !important;
+    max-height: 500px !important;
+    min-height: 500px !important;
+  }
 `;
 
 const MainImage = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
+  display: block;
+  /* ✅ FIX: Prevent image from causing layout shifts */
+  flex-shrink: 0;
 `;
 
 const ImageNavButton = styled.button<{ $position: 'left' | 'right'; $isDark: boolean }>`
@@ -1389,6 +1460,47 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
   const navigate = useNavigate();
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [showAllFeatures, setShowAllFeatures] = useState(false);
+  
+  // ✅ FIX: Add previewUrlsRef for File objects
+  const previewUrlsRef = useRef<Map<number, string>>(new Map());
+  const [resolvedImages, setResolvedImages] = useState<string[]>([]);
+  
+  // ✅ FIX: Lock layout on mount - prevent changes after load
+  useEffect(() => {
+    // Lock initial layout - CSS media queries handle responsive behavior
+    return undefined;
+  }, []); // Only run once on mount
+
+  // ✅ FIX: Resolve images immediately to prevent layout shifts
+  useEffect(() => {
+    const images = car.images || [];
+    const cleanUp: string[] = [];
+    
+    // Resolve all images immediately (synchronously if possible)
+    const urls = images.map((image) => {
+      if (typeof image === 'string') {
+        return image;
+      }
+      // For File objects, create object URL
+      const url = URL.createObjectURL(image);
+      cleanUp.push(url);
+      return url;
+    });
+    
+    // ✅ FIX: Set images immediately without waiting
+    setResolvedImages(urls);
+    
+    // Store in ref for backward compatibility
+    urls.forEach((url, index) => {
+      previewUrlsRef.current.set(index, url);
+    });
+    
+    return () => {
+      // Cleanup object URLs
+      cleanUp.forEach((url) => URL.revokeObjectURL(url));
+      previewUrlsRef.current.clear();
+    };
+  }, [car.images]);
 
   // Get seller ID for profile link
   const sellerId = car.sellerId || car.userId;
@@ -1451,7 +1563,8 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
     navigate('/favorites');
   };
 
-  const images = car.images || [];
+  // ✅ FIX: Use resolved images instead of raw car.images
+  const images = resolvedImages.length > 0 ? resolvedImages : (car.images || []);
   const hasImages = images.length > 0;
 
   // Helper function to get location string
@@ -1640,10 +1753,17 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
                 <>
                   <MainImageContainer $isDark={isDark}>
                     <MainImage 
-                      src={typeof images[selectedImageIndex] === 'string' 
-                        ? String(images[selectedImageIndex])
-                        : previewUrlsRef.current.get(selectedImageIndex) || ''}
+                      src={images[selectedImageIndex] || ''}
                       alt={`${car.make} ${car.model}`}
+                      loading={selectedImageIndex === 0 ? "eager" : "lazy"}
+                      decoding="sync"
+                      onLoad={(e) => {
+                        // ✅ FIX: Ensure image maintains size
+                        const img = e.target as HTMLImageElement;
+                        img.style.width = '100%';
+                        img.style.height = '100%';
+                        img.style.objectFit = 'cover';
+                      }}
                     />
                     {images.length > 1 && (
                       <>
@@ -1665,8 +1785,10 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
                         onClick={() => setSelectedImageIndex(index)}
                       >
                         <img 
-                          src={typeof image === 'string' ? String(image) : previewUrlsRef.current.get(index) || ''}
+                          src={image || ''}
                           alt={`Thumbnail ${index + 1}`}
+                          loading="lazy"
+                          decoding="async"
                         />
                       </Thumbnail>
                     ))}
@@ -2077,6 +2199,15 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
             </ServicesSection>
           </RightColumn>
         </MainSection>
+
+        {/* ✅ Car Suggestions List - Outside grid to prevent layout shift */}
+        {car && (car.id || (car as any).carId) && (
+          <CarSuggestionsList
+            currentCar={car}
+            language={language}
+            limit={6}
+          />
+        )}
       </Container>
     </PageWrapper>
   );

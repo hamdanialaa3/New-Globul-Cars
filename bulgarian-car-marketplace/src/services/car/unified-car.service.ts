@@ -127,6 +127,80 @@ class UnifiedCarService {
   }
 
   /**
+   * Get similar cars (for recommendations)
+   */
+  async getSimilarCars(carId: string, limitCount: number = 6): Promise<UnifiedCar[]> {
+    try {
+      const car = await this.getCarById(carId);
+      if (!car) return [];
+
+      const collections = [
+        'cars',
+        'passenger_cars',
+        'suvs',
+        'vans',
+        'motorcycles',
+        'trucks',
+        'buses'
+      ];
+
+      const allCars: UnifiedCar[] = [];
+
+      // Query each collection for similar cars
+      const queryPromises = collections.map(async (collectionName) => {
+        try {
+          // First try: Same make and model
+          let q = query(
+            collection(db, collectionName),
+            where('make', '==', car.make),
+            where('model', '==', car.model),
+            where('status', '==', 'active'),
+            orderBy('createdAt', 'desc'),
+            limit(limitCount * 2)
+          );
+          
+          let snapshot = await getDocs(q).catch(() => null);
+          
+          // If no results, try just same make
+          if (!snapshot || snapshot.empty) {
+            q = query(
+              collection(db, collectionName),
+              where('make', '==', car.make),
+              where('status', '==', 'active'),
+              orderBy('createdAt', 'desc'),
+              limit(limitCount * 2)
+            );
+            snapshot = await getDocs(q).catch(() => null);
+          }
+
+          if (snapshot && !snapshot.empty) {
+            return snapshot.docs
+              .map(doc => this.mapDocToCar(doc))
+              .filter(c => c.id !== carId && c.isActive !== false && c.isSold !== true);
+          }
+          return [];
+        } catch (error) {
+          serviceLogger.warn(`Error querying similar cars from ${collectionName}`, { error });
+          return [];
+        }
+      });
+
+      const results = await Promise.all(queryPromises);
+      results.forEach(cars => allCars.push(...cars));
+
+      // Remove duplicates and sort
+      const uniqueCars = Array.from(
+        new Map(allCars.map(car => [car.id, car])).values()
+      );
+
+      return uniqueCars.slice(0, limitCount);
+    } catch (error) {
+      serviceLogger.error('Error getting similar cars', error as Error);
+      return [];
+    }
+  }
+
+  /**
    * Search cars with filters
    */
   async searchCars(filters: CarFilters = {}, limitCount: number = 20): Promise<UnifiedCar[]> {

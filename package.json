@@ -19,7 +19,10 @@
     "firebase:dev": "firebase emulators:start",
     "firebase:deploy": "firebase deploy",
     "firebase:deploy:hosting": "firebase deploy --only hosting",
-    "firebase:deploy:functions": "firebase deploy --only functions"
+    "firebase:deploy:functions": "firebase deploy --only functions",
+    "docs:analyze": "node auto-update-documentation.js --analyze",
+    "docs:quick": "node auto-update-documentation.js --quick",
+    "docs:watch": "node auto-update-documentation.js --watch"
   },
   "keywords": [
     "firebase",

@@ -2,6 +2,8 @@ import React, { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import StaticMapEmbed from '../../../components/StaticMapEmbed';
 import { CarListing } from '../../../types/CarListing';
+import CarSuggestionsList from './CarSuggestionsList';
+import CarSuggestionsList from './CarSuggestionsList';
 
 interface CarDetailsModernViewProps {
   car: CarListing;
@@ -183,12 +185,23 @@ const PageWrapper = styled.div`
   background: #f5f5f8;
   min-height: 100vh;
   padding: 1.5rem 0 2.5rem;
+  /* ✅ FIX: Prevent layout shifts */
+  width: 100%;
+  overflow-x: hidden;
 `;
 
 const Inner = styled.div`
   max-width: 1240px;
   margin: 0 auto;
   padding: 0 1.5rem;
+  /* ✅ FIX: Prevent container from changing width */
+  width: 100%;
+  box-sizing: border-box;
+
+  @media (max-width: 768px) {
+    padding: 0 1rem;
+    max-width: 100%;
+  }
 `;
 
 const TopBar = styled.div`
@@ -236,12 +249,30 @@ const EditButton = styled.button`
 `;
 
 const Layout = styled.div`
-  display: grid;
-  grid-template-columns: 2fr 1fr;
+  display: grid !important;
+  grid-template-columns: 2fr 1fr !important;
   gap: 1.75rem;
+  /* ✅ FIX: Prevent layout shifts */
+  min-height: 0;
+  width: 100%;
+  box-sizing: border-box;
+  /* ✅ FIX: Force desktop layout by default */
+  position: relative;
 
-  @media (max-width: 1024px) {
-    grid-template-columns: 1fr;
+  /* ✅ FIX: Only change to single column on mobile (≤768px) */
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem;
+  }
+
+  /* ✅ FIX: Force 2-column layout on tablets and desktop (≥769px) - CRITICAL */
+  @media (min-width: 769px) {
+    grid-template-columns: 2fr 1fr !important;
+  }
+
+  /* ✅ FIX: Ensure desktop layout for all screens wider than 768px */
+  @media (min-width: 769px) and (max-width: 9999px) {
+    grid-template-columns: 2fr 1fr !important;
   }
 `;
 
@@ -254,6 +285,10 @@ const Card = styled.div`
 
 const Gallery = styled(Card)`
   padding: 1.5rem;
+  /* ✅ FIX: Prevent layout shifts */
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
 `;
 
 const TitleRow = styled.div`
@@ -289,15 +324,44 @@ const MainImage = styled.div`
   border-radius: 16px;
   overflow: hidden;
   background: #101623;
-  min-height: 360px;
+  /* ✅ FIX: Fixed height for desktop to prevent layout shifts */
+  height: 500px;
+  max-height: 500px;
+  min-height: 500px;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
+  /* ✅ FIX: Prevent container from resizing */
+  box-sizing: border-box;
+  /* ✅ FIX: Force GPU acceleration and prevent reflow */
+  will-change: auto;
+  /* ✅ FIX: Prevent layout shifts during image load */
+  contain: layout style paint;
+
+  @media (max-width: 1024px) {
+    height: 400px;
+    max-height: 400px;
+    min-height: 400px;
+  }
+
+  @media (max-width: 768px) {
+    height: 280px;
+    max-height: 280px;
+    min-height: 280px;
+  }
 
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center;
+    display: block;
+    flex-shrink: 0;
+    /* ✅ FIX: Prevent reflow during image load */
+    will-change: auto;
+    min-width: 0;
+    min-height: 0;
   }
 `;
 
@@ -618,6 +682,7 @@ const CarDetailsModernView: React.FC<CarDetailsModernViewProps> = ({
   const [selectedImage, setSelectedImage] = useState(0);
   const [resolvedImages, setResolvedImages] = useState<string[]>([]);
 
+  // ✅ FIX: Resolve images immediately to prevent layout shifts
   useEffect(() => {
     const cleanUp: string[] = [];
     const urls = (car.images || []).map((image) => {
@@ -628,6 +693,7 @@ const CarDetailsModernView: React.FC<CarDetailsModernViewProps> = ({
       cleanUp.push(url);
       return url;
     });
+    // ✅ FIX: Set immediately, don't wait
     setResolvedImages(urls);
     return () => {
       cleanUp.forEach((url) => URL.revokeObjectURL(url));
@@ -747,7 +813,19 @@ const CarDetailsModernView: React.FC<CarDetailsModernViewProps> = ({
 
               <MainImage>
                 {resolvedImages.length > 0 ? (
-                  <img src={resolvedImages[selectedImage]} alt={`${car.make} ${car.model}`} loading="lazy" />
+                  <img 
+                    src={resolvedImages[selectedImage]} 
+                    alt={`${car.make} ${car.model}`} 
+                    loading={selectedImage === 0 ? "eager" : "lazy"}
+                    decoding="sync"
+                    onLoad={(e) => {
+                      // ✅ FIX: Ensure image maintains size
+                      const img = e.target as HTMLImageElement;
+                      img.style.width = '100%';
+                      img.style.height = '100%';
+                      img.style.objectFit = 'cover';
+                    }}
+                  />
                 ) : (
                   <div style={{ color: '#9ca3af', fontWeight: 600, fontSize: '1rem' }}>{text.noImage}</div>
                 )}
@@ -831,6 +909,15 @@ const CarDetailsModernView: React.FC<CarDetailsModernViewProps> = ({
                 />
               </MapBody>
             </MapCard>
+
+            {/* ✅ NEW: Car Suggestions List (like PDF) */}
+            {car && (car.id || (car as any).carId) && (
+              <CarSuggestionsList
+                currentCar={car}
+                language={language}
+                limit={6}
+              />
+            )}
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
