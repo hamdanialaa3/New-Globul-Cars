@@ -133,8 +133,6 @@ const InvoicesPage = safeLazy(() => import('./pages/08_payment-billing/InvoicesP
 const CommissionsPage = safeLazy(() => import('./pages/08_payment-billing/CommissionsPage'));
 const CheckoutPage = safeLazy(() => import('./pages/08_payment-billing/CheckoutPage'));
 const PaymentSuccessPage = safeLazy(() => import('./pages/08_payment-billing/PaymentSuccessPage'));
-const BillingSuccessPage = safeLazy(() => import('./pages/08_payment-billing/BillingSuccessPage'));
-const BillingCanceledPage = safeLazy(() => import('./pages/08_payment-billing/BillingCanceledPage'));
 const DealerRegistrationPage = safeLazy(() => import('./pages/09_dealer-company/DealerRegistrationPage'));
 const DealerDashboardPage = safeLazy(() => import('./pages/09_dealer-company/DealerDashboardPage'));
 const AlgoliaSyncManager = safeLazy(() => import('./pages/06_admin/AlgoliaSyncManager'));
