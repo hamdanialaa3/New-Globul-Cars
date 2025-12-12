@@ -40,6 +40,13 @@ export { FollowButton } from './FollowButton';
 export { default as CommunityFeedWidget } from './CommunityFeedWidget';
 export { default as UserPostsFeed } from './UserPostsFeed';  // ⚡ NEW: User Posts Feed
 
+// Personal Vehicle Components - ⚡ NEW: Mobile.de style
+export { default as AddPersonalVehicleModal } from './AddPersonalVehicleModal';
+export { default as PersonalVehicleWizard } from './PersonalVehicleWizard';
+export { default as PersonalVehicleForm } from './PersonalVehicleForm';
+export { default as PersonalVehicleCard } from './PersonalVehicleCard';
+export { default as ColorPickerGrid } from './ColorPickerGrid';
+
 // Export types
 export type { GarageCar } from './GarageSection_Pro';
 export type { CarouselCar } from './GarageCarousel';

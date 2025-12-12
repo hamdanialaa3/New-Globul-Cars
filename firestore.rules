@@ -590,6 +590,57 @@ service cloud.firestore {
                        resource.data.userId == request.auth.uid;
     }
     
+    // ==================== PERSONAL VEHICLES - Mobile.de Style ====================
+    
+    // User Personal Vehicles
+    match /userVehicles/{vehicleId} {
+      // Users can read their own vehicles
+      allow read: if isAuthenticated() && 
+                     resource.data.userId == request.auth.uid;
+      
+      // Users can create their own vehicles
+      allow create: if isAuthenticated() && 
+                       request.resource.data.userId == request.auth.uid &&
+                       request.resource.data.make is string &&
+                       request.resource.data.model is string &&
+                       request.resource.data.currentMileage is number &&
+                       request.resource.data.postalCode is string;
+      
+      // Users can update their own vehicles
+      allow update: if isAuthenticated() && 
+                       resource.data.userId == request.auth.uid &&
+                       !('userId' in request.resource.data.diff(resource.data)) &&
+                       !('id' in request.resource.data.diff(resource.data));
+      
+      // Users can delete their own vehicles
+      allow delete: if isAuthenticated() && 
+                       resource.data.userId == request.auth.uid;
+    }
+    
+    // Vehicle Reminders
+    match /vehicleReminders/{reminderId} {
+      // Users can read their own reminders
+      allow read: if isAuthenticated() && 
+                     resource.data.userId == request.auth.uid;
+      
+      // Users can create their own reminders
+      allow create: if isAuthenticated() && 
+                       request.resource.data.userId == request.auth.uid &&
+                       request.resource.data.vehicleId is string &&
+                       request.resource.data.type is string &&
+                       request.resource.data.dueDate is timestamp;
+      
+      // Users can update their own reminders
+      allow update: if isAuthenticated() && 
+                       resource.data.userId == request.auth.uid &&
+                       !('userId' in request.resource.data.diff(resource.data)) &&
+                       !('vehicleId' in request.resource.data.diff(resource.data));
+      
+      // Users can delete their own reminders
+      allow delete: if isAuthenticated() && 
+                       resource.data.userId == request.auth.uid;
+    }
+    
     // ==================== DEFAULT DENY ====================
     
     // Deny all other access by default

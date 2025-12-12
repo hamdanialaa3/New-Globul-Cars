@@ -16,6 +16,12 @@ const Container = styled.div`
   max-width: 1400px;
   margin: 0 auto;
   padding: 2rem 1rem;
+  min-height: 100vh;
+  background: ${({ theme }) => theme.colors?.background || '#f8fafc'};
+
+  @media (prefers-color-scheme: dark) {
+    background: ${({ theme }) => theme.colors?.backgroundDark || '#0f172a'};
+  }
 `;
 
 const Header = styled.div`
