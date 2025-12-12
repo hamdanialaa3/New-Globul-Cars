@@ -17,11 +17,7 @@ const Container = styled.div`
   margin: 0 auto;
   padding: 2rem 1rem;
   min-height: 100vh;
-  background: ${({ theme }) => theme.colors?.background || '#f8fafc'};
-
-  @media (prefers-color-scheme: dark) {
-    background: ${({ theme }) => theme.colors?.backgroundDark || '#0f172a'};
-  }
+  background: var(--bg-primary);
 `;
 
 const Header = styled.div`
@@ -32,21 +28,13 @@ const Header = styled.div`
 const Title = styled.h1`
   font-size: 2.5rem;
   font-weight: bold;
-  color: ${({ theme }) => theme.colors?.text || '#1a1a2e'};
+  color: var(--text-primary);
   margin-bottom: 0.5rem;
-
-  @media (prefers-color-scheme: dark) {
-    color: ${({ theme }) => theme.colors?.textDark || '#f5f5f5'};
-  }
 `;
 
 const Subtitle = styled.p`
-  color: ${({ theme }) => theme.colors?.textSecondary || '#64748b'};
+  color: var(--text-secondary);
   font-size: 1.1rem;
-
-  @media (prefers-color-scheme: dark) {
-    color: ${({ theme }) => theme.colors?.textSecondaryDark || '#94a3b8'};
-  }
 `;
 
 const CurrentPlanCard = styled.div`

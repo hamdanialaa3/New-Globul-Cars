@@ -57,6 +57,7 @@ const SocialFeedPage = safeLazy(() => import('./pages/03_user-pages/social/Socia
 
 // Mobile.de-style sell workflow pages (الوحيد المستخدم)
 const VehicleStartPage = safeLazy(() => import('./pages/04_car-selling/sell/VehicleStartPageNew'));
+const SellModalPage = safeLazy(() => import('./pages/04_car-selling/sell/SellModalPage'));
 const MobileSellerTypePage = safeLazy(() => import('./pages/04_car-selling/sell/MobileSellerTypePage'));
 const VehicleDataPageUnified = safeLazy(() => import('./pages/04_car-selling/sell/VehicleDataPageUnified'));
 const MobilePricingPage = safeLazy(() => import('./pages/04_car-selling/sell/MobilePricingPage'));
@@ -343,7 +344,7 @@ const MainLayout: React.FC = () => {
           path="/sell/auto"
           element={
             <AuthGuard requireAuth={true}>
-              <VehicleStartPage />
+              <SellModalPage />
             </AuthGuard>
           }
         />

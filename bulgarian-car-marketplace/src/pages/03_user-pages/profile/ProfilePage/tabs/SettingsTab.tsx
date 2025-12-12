@@ -10,7 +10,9 @@ import { useLanguage } from '../../../../../contexts/LanguageContext';
 import { useAuth } from '../../../../../contexts/AuthProvider';
 import { useTheme } from '../../../../../contexts/ThemeContext';
 import type { BulgarianUser } from '../../../../../types/user/bulgarian-user.types';
+import { isDealerProfile } from '../../../../../types/user/bulgarian-user.types';
 import type { ProfileTheme } from '../../../../../contexts/ProfileTypeContext';
+import DealershipInfoForm from '../../../../../components/Profile/Dealership/DealershipInfoForm';
 import { 
   CreditCard, Edit, User, MapPin, Phone, Mail, Save, 
   Shield, Bell, Settings as SettingsIcon, Lock, Download, 
@@ -24,8 +26,9 @@ import ProfileImageUploader from '../../../../../components/Profile/ProfileImage
 import { ProfileService } from '../../../../../services/profile/ProfileService';
 import { unifiedCarService } from '../../../../../services/car/unified-car.service';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
-import { storage } from '../../../../../firebase/firebase-config';
+import { storage, auth } from '../../../../../firebase/firebase-config';
 import { toast } from 'react-toastify';
+import { updatePassword, reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
 
 interface SettingsTabProps {
   user: BulgarianUser | null;
@@ -50,6 +53,15 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   
+  // Password change state
+  const [showPasswordChange, setShowPasswordChange] = useState(false);
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  });
+  const [changingPassword, setChangingPassword] = useState(false);
+  
   // Update URL when section changes
   useEffect(() => {
     if (sectionFromUrl !== activeSection) {
@@ -72,7 +84,39 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
     privacy: {
       profileVisibility: 'public',
       showPhone: true,
-      showEmail: false
+      showEmail: false,
+      showLastSeen: true,
+      allowMessages: true,
+      showActivity: true
+    },
+    notifications: {
+      email: true,
+      sms: false,
+      push: true,
+      newMessages: true,
+      priceAlerts: true,
+      favoriteUpdates: true,
+      newListings: true,
+      promotions: false,
+      newsletter: false
+    },
+    appearance: {
+      theme: 'auto',
+      currency: 'EUR',
+      dateFormat: 'dd/mm/yyyy',
+      compactView: false
+    },
+    security: {
+      twoFactorEnabled: false,
+      loginAlerts: true,
+      sessionTimeout: 30
+    },
+    carPreferences: {
+      priceRange: {
+        min: 0,
+        max: 100000
+      },
+      searchRadius: 50
     }
   });
 
@@ -88,9 +132,41 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
         bio: user.bio || '',
         language: user.preferredLanguage || 'bg',
         privacy: {
-          profileVisibility: 'public',
-          showPhone: true,
-          showEmail: false
+          profileVisibility: (user as any).privacy?.profileVisibility || 'public',
+          showPhone: (user as any).privacy?.showPhone !== false,
+          showEmail: (user as any).privacy?.showEmail === true,
+          showLastSeen: (user as any).privacy?.showLastSeen !== false,
+          allowMessages: (user as any).privacy?.allowMessages !== false,
+          showActivity: (user as any).privacy?.showActivity !== false
+        },
+        notifications: {
+          email: (user as any).notifications?.email !== false,
+          sms: (user as any).notifications?.sms === true,
+          push: (user as any).notifications?.push !== false,
+          newMessages: (user as any).notifications?.newMessages !== false,
+          priceAlerts: (user as any).notifications?.priceAlerts !== false,
+          favoriteUpdates: (user as any).notifications?.favoriteUpdates !== false,
+          newListings: (user as any).notifications?.newListings !== false,
+          promotions: (user as any).notifications?.promotions === true,
+          newsletter: (user as any).notifications?.newsletter === true
+        },
+        appearance: {
+          theme: (user as any).appearance?.theme || 'auto',
+          currency: (user as any).appearance?.currency || 'EUR',
+          dateFormat: (user as any).appearance?.dateFormat || 'dd/mm/yyyy',
+          compactView: (user as any).appearance?.compactView === true
+        },
+        security: {
+          twoFactorEnabled: (user as any).security?.twoFactorEnabled === true,
+          loginAlerts: (user as any).security?.loginAlerts !== false,
+          sessionTimeout: (user as any).security?.sessionTimeout || 30
+        },
+        carPreferences: {
+          priceRange: {
+            min: (user as any).carPreferences?.priceRange?.min || 0,
+            max: (user as any).carPreferences?.priceRange?.max || 100000
+          },
+          searchRadius: (user as any).carPreferences?.searchRadius || 50
         }
       });
     }
@@ -117,6 +193,63 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
       toast.error(t('settings.saveError', 'Error saving settings'));
     } finally {
       setSaving(false);
+    }
+  };
+
+  // Handle password change
+  const handlePasswordChange = async () => {
+    // Validation
+    if (!passwordData.currentPassword || !passwordData.newPassword || !passwordData.confirmPassword) {
+      toast.error(language === 'bg' ? 'Моля попълнете всички полета' : 'Please fill all fields');
+      return;
+    }
+
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      toast.error(t('settings.passwordMismatch', 'Passwords do not match'));
+      return;
+    }
+
+    if (passwordData.newPassword.length < 6) {
+      toast.error(t('settings.passwordTooShort', 'Password must be at least 6 characters'));
+      return;
+    }
+
+    if (!auth.currentUser || !auth.currentUser.email) {
+      toast.error(language === 'bg' ? 'Грешка при удостоверяване' : 'Authentication error');
+      return;
+    }
+
+    try {
+      setChangingPassword(true);
+
+      // Re-authenticate user first
+      const credential = EmailAuthProvider.credential(
+        auth.currentUser.email,
+        passwordData.currentPassword
+      );
+      
+      await reauthenticateWithCredential(auth.currentUser, credential);
+
+      // Update password
+      await updatePassword(auth.currentUser, passwordData.newPassword);
+
+      // Success
+      toast.success(t('settings.passwordChanged', 'Password changed successfully'));
+      setShowPasswordChange(false);
+      setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+      
+    } catch (error: any) {
+      logger.error('Error changing password:', error);
+      
+      if (error.code === 'auth/wrong-password') {
+        toast.error(t('settings.wrongPassword', 'Wrong current password'));
+      } else if (error.code === 'auth/weak-password') {
+        toast.error(t('settings.passwordTooShort', 'Password must be at least 6 characters'));
+      } else {
+        toast.error(language === 'bg' ? 'Грешка при смяна на паролата' : 'Error changing password');
+      }
+    } finally {
+      setChangingPassword(false);
     }
   };
 
@@ -1104,12 +1237,71 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
               </SettingGroup>
 
               <SettingGroup>
-                <DangerButton onClick={() => {
-                  toast.info(t('settings.changePassword', 'Password change feature coming soon'), { autoClose: 3000 });
-                }}>
-                  <KeyRound size={18} />
-                  {t('settings.changePassword', 'Change Password')}
-                </DangerButton>
+                {!showPasswordChange ? (
+                  <DangerButton onClick={() => setShowPasswordChange(true)}>
+                    <KeyRound size={18} />
+                    {t('settings.changePassword', 'Change Password')}
+                  </DangerButton>
+                ) : (
+                  <PasswordChangeForm>
+                    <PasswordFormTitle>
+                      <KeyRound size={20} />
+                      {t('settings.changePassword', 'Change Password')}
+                    </PasswordFormTitle>
+                    
+                    <PasswordField>
+                      <Label>{t('settings.currentPassword', 'Current Password')}</Label>
+                      <Input
+                        type="password"
+                        value={passwordData.currentPassword}
+                        onChange={(e) => setPasswordData({...passwordData, currentPassword: e.target.value})}
+                        placeholder="••••••••"
+                      />
+                    </PasswordField>
+
+                    <PasswordField>
+                      <Label>{t('settings.newPassword', 'New Password')}</Label>
+                      <Input
+                        type="password"
+                        value={passwordData.newPassword}
+                        onChange={(e) => setPasswordData({...passwordData, newPassword: e.target.value})}
+                        placeholder="••••••••"
+                      />
+                    </PasswordField>
+
+                    <PasswordField>
+                      <Label>{t('settings.confirmPassword', 'Confirm Password')}</Label>
+                      <Input
+                        type="password"
+                        value={passwordData.confirmPassword}
+                        onChange={(e) => setPasswordData({...passwordData, confirmPassword: e.target.value})}
+                        placeholder="••••••••"
+                      />
+                    </PasswordField>
+
+                    <PasswordButtonGroup>
+                      <CancelButton 
+                        onClick={() => {
+                          setShowPasswordChange(false);
+                          setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+                        }}
+                        disabled={changingPassword}
+                      >
+                        {language === 'bg' ? 'Отказ' : 'Cancel'}
+                      </CancelButton>
+                      <SavePasswordButton 
+                        onClick={handlePasswordChange}
+                        disabled={changingPassword}
+                      >
+                        {changingPassword ? (
+                          language === 'bg' ? 'Смяна...' : 'Changing...'
+                        ) : (
+                          language === 'bg' ? 'Смени паролата' : 'Change Password'
+                        )}
+                      </SavePasswordButton>
+                    </PasswordButtonGroup>
+                  </PasswordChangeForm>
+                )}
               </SettingGroup>
 
               <SettingGroup>
@@ -1642,11 +1834,19 @@ const SettingGroup = styled.div`
   gap: 8px;
 `;
 
-const Label = styled.label`
+const Label = styled.label<{ $required?: boolean }>`
   font-size: 0.95rem;
   font-weight: 600;
   color: #ffffff;
   margin-bottom: 4px;
+  
+  ${props => props.$required && `
+    &::after {
+      content: ' *';
+      color: #ef4444;
+      margin-left: 4px;
+    }
+  `}
 `;
 
 const Input = styled.input`
@@ -2081,6 +2281,85 @@ const DangerButton = styled.button`
   }
 `;
 
+const PasswordChangeForm = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  background: var(--bg-card);
+  border: 2px solid var(--border-primary);
+  border-radius: 12px;
+  width: 100%;
+`;
+
+const PasswordFormTitle = styled.h3`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+`;
+
+const PasswordField = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;
+
+const PasswordButtonGroup = styled.div`
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+`;
+
+const CancelButton = styled.button`
+  flex: 1;
+  padding: 12px;
+  background: var(--bg-secondary);
+  border: 2px solid var(--border-primary);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background: var(--bg-hover);
+    transform: translateY(-2px);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+`;
+
+const SavePasswordButton = styled.button`
+  flex: 1;
+  padding: 12px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+`;
+
 const LoadingMessage = styled.div`
   text-align: center;
   color: rgba(255, 255, 255, 0.6);
@@ -2459,15 +2738,6 @@ const InfoItem = styled.div`
 
 const FormSection = styled.div`
   margin-top: 32px;
-`;
-
-const FormTitle = styled.h3`
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #ffffff;
-  margin: 0 0 20px 0;
-  padding-bottom: 12px;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
 `;
 
 const FormRow = styled.div`

@@ -19,7 +19,6 @@ const LoyaltyBanner = React.lazy(() => import('./LoyaltyBanner'));
 // Components created in this folder
 const AIAnalyticsTeaser = React.lazy(() => import('./AIAnalyticsTeaser'));
 const SmartSellStrip = React.lazy(() => import('./SmartSellStrip'));
-const SubscriptionBanner = React.lazy(() => import('./SubscriptionBanner'));
 
 // Global components
 // AIChatbot uses named export, so we map it to default for React.lazy
@@ -107,15 +106,6 @@ const HomePage: React.FC = () => {
 
       {/* 7. NEW: Most Demanded Categories (AI Section) */}
       <MostDemandedCategoriesSection />
-
-      <SectionSpacer />
-
-      {/* 8. NEW: Subscription Banner - Promote Plans */}
-      <LazySection rootMargin="100px">
-        <Suspense fallback={null}>
-          <SubscriptionBanner />
-        </Suspense>
-      </LazySection>
 
       <SectionSpacer />
 

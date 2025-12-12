@@ -18,9 +18,6 @@ import { useLanguage } from '../../../contexts/LanguageContext';
 // ✅ NEW: Use DealershipRepository instead of old service
 import { DealershipRepository } from '../../../repositories/DealershipRepository';
 import { 
-  DEFAULT_WORKING_HOURS, 
-  DEFAULT_SERVICES, 
-  DEFAULT_CERTIFICATIONS,
   type DealershipInfo,
   type LegalForm,
   type VehicleType,
@@ -38,9 +35,24 @@ const DealershipInfoForm: React.FC<DealershipInfoFormProps> = ({ userId = '' }) 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [dealershipInfo, setDealershipInfo] = useState<Partial<DealershipInfo>>({
-    workingHours: DEFAULT_WORKING_HOURS,
-    services: DEFAULT_SERVICES,
-    certifications: DEFAULT_CERTIFICATIONS,
+    workingHours: {
+      monday: { open: '09:00', close: '18:00', closed: false },
+      tuesday: { open: '09:00', close: '18:00', closed: false },
+      wednesday: { open: '09:00', close: '18:00', closed: false },
+      thursday: { open: '09:00', close: '18:00', closed: false },
+      friday: { open: '09:00', close: '18:00', closed: false },
+      saturday: { open: '09:00', close: '14:00', closed: false },
+      sunday: { open: '00:00', close: '00:00', closed: true }
+    },
+    services: {
+      servicesOffered: [],
+      specializations: [],
+      vehicleTypes: []
+    },
+    certifications: {
+      certificates: [],
+      memberships: []
+    },
     documents: [],
     galleryImages: []
   });

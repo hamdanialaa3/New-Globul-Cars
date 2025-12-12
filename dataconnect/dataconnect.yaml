@@ -1,11 +1,11 @@
 specVersion: "v1"
 serviceId: "newglobulcars"
-location: "us-central1"
+location: "europe-west1"
 schema:
   source: "./schema"
   datasource:
     postgresql:
-      database: "fdcdb-1"
+      database: "fdcdb"
       cloudSql:
         instanceId: "newglobulcars-fdc"
         # schemaValidation: "STRICT"     # STRICT mode makes Postgres schema match Data Connect exactly.

@@ -1,0 +1,844 @@
+// Sell Vehicle Wizard Component
+// معالج خطوات بيع السيارة داخل الـ modal - نمط mobile.de
+
+import React, { useState, useCallback, useMemo } from 'react';
+import styled, { keyframes } from 'styled-components';
+import { Check, ArrowLeft, ArrowRight, RotateCcw, AlertTriangle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { useAuth } from '../../contexts/AuthProvider';
+import { SELL_WORKFLOW_STEPS, SellWorkflowStepId } from '../../constants/sellWorkflowSteps';
+import useSellWorkflow from '../../hooks/useSellWorkflow';
+import SellWorkflowService from '../../services/sellWorkflowService';
+import { ImageStorageService } from '../../services/ImageStorageService';
+import WorkflowPersistenceService from '../../services/workflowPersistenceService';
+import { toast } from 'react-toastify';
+import { logger } from '../../services/logger-service';
+import SellVehicleStep1 from './steps/SellVehicleStep1';
+import SellVehicleStep2 from './steps/SellVehicleStep2';
+import SellVehicleStep3 from './steps/SellVehicleStep3';
+import SellVehicleStep4 from './steps/SellVehicleStep4';
+import SellVehicleStep5 from './steps/SellVehicleStep5';
+import SellVehicleStep6 from './steps/SellVehicleStep6';
+
+interface SellVehicleWizardProps {
+  initialStep?: number;
+  onComplete: () => void;
+  onCancel: () => void;
+}
+
+const TOTAL_STEPS = 6; // بدون preview و publish - فقط الخطوات الأساسية
+
+// Animations
+const slideInRight = keyframes`
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+`;
+
+const slideInLeft = keyframes`
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+`;
+
+const checkmarkPop = keyframes`
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+`;
+
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
+
+// Styled Components
+const WizardContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  min-height: 500px;
+  width: 100%;
+`;
+
+const ProgressBar = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 0 1rem 0;
+  margin-top: 1rem;
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--border);
+    z-index: 0;
+  }
+`;
+
+const ProgressLine = styled.div<{ $progress: number }>`
+  position: absolute;
+  top: 50%;
+  left: 0;
+  height: 2px;
+  background: var(--accent-primary);
+  width: ${props => props.$progress}%;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
+`;
+
+const ProgressStep = styled.div<{ $active: boolean; $completed: boolean }>`
+  position: relative;
+  z-index: 2;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  min-height: 40px;
+  max-width: 40px;
+  max-height: 40px;
+  border-radius: 50%;
+  background: ${props => {
+    if (props.$completed) return 'var(--accent-primary)';
+    if (props.$active) return 'var(--accent-primary)';
+    return 'var(--bg-card)';
+  }};
+  border: 3px solid ${props => {
+    if (props.$completed || props.$active) return 'var(--accent-primary)';
+    return 'var(--border)';
+  }};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: ${props => (props.$completed || props.$active) ? 'white' : 'var(--text-secondary)'};
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: ${props => props.$active ? 'scale(1.1)' : 'scale(1)'};
+  box-shadow: ${props => props.$active 
+    ? '0 0 0 3px rgba(59, 130, 246, 0.15)' 
+    : 'none'};
+  flex-shrink: 0;
+  
+  svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    animation: ${checkmarkPop} 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+`;
+
+const StepContent = styled.div<{ $direction: 'forward' | 'backward' }>`
+  animation: ${props => props.$direction === 'forward' ? slideInRight : slideInLeft} 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  min-height: 400px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+`;
+
+const StepTitle = styled.h3`
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 1rem 0;
+  text-align: center;
+`;
+
+const NavigationButtons = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+  position: relative;
+`;
+
+const ResetButton = styled.button`
+  padding: 0.75rem 1.25rem;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 2px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  
+  &:hover:not(:disabled) {
+    border-color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    transform: translateY(-1px);
+  }
+  
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+`;
+
+const ResetConfirmDialog = styled.div`
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: var(--bg-card);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+  min-width: 280px;
+  animation: ${fadeIn} 0.2s ease-out;
+`;
+
+const ResetConfirmTitle = styled.div`
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  
+  svg {
+    color: #f59e0b;
+  }
+`;
+
+const ResetConfirmText = styled.div`
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+  line-height: 1.5;
+`;
+
+const ResetConfirmButtons = styled.div`
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+`;
+
+const ConfirmButton = styled.button<{ $variant: 'danger' | 'cancel' }>`
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  
+  ${props => props.$variant === 'danger' ? `
+    background: #ef4444;
+    color: white;
+    
+    &:hover {
+      background: #dc2626;
+      transform: scale(1.05);
+    }
+  ` : `
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    
+    &:hover {
+      background: var(--bg-hover);
+    }
+  `}
+`;
+
+const Button = styled.button<{ $variant?: 'primary' | 'secondary' }>`
+  padding: 0.875rem 1.75rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: none;
+  
+  ${props => props.$variant === 'primary' ? `
+    background: var(--accent-primary);
+    color: white;
+    
+    &:hover:not(:disabled) {
+      background: var(--accent-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
+    }
+  ` : `
+    background: var(--bg-card);
+    color: var(--text-primary);
+    border: 2px solid var(--border);
+    
+    &:hover:not(:disabled) {
+      border-color: var(--accent-primary);
+      background: var(--bg-hover);
+    }
+  `}
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+`;
+
+export const SellVehicleWizard: React.FC<SellVehicleWizardProps> = ({
+  initialStep = 0,
+  onComplete,
+  onCancel,
+}) => {
+  const { language } = useLanguage();
+  const navigate = useNavigate();
+  const { currentUser } = useAuth();
+  const { workflowData, updateWorkflowData, clearWorkflowData } = useSellWorkflow();
+  const [currentStep, setCurrentStep] = useState(initialStep);
+  const [direction, setDirection] = useState<'forward' | 'backward'>('forward');
+  const [isPublishing, setIsPublishing] = useState(false);
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [isResetting, setIsResetting] = useState(false);
+
+  const stepIds: SellWorkflowStepId[] = [
+    'vehicle-selection',
+    'vehicle-data',
+    'equipment',
+    'images',
+    'pricing',
+    'contact',
+  ];
+
+  const canProceed = useMemo(() => {
+    switch (currentStep) {
+      case 0: // vehicle-selection
+        return !!workflowData.vehicleType;
+      case 1: // vehicle-data
+        return !!(workflowData.make && workflowData.model && workflowData.year);
+      case 2: // equipment
+        return true; // Optional
+      case 3: // images
+        return true; // Optional - images are saved in IndexedDB
+      case 4: // pricing
+        return !!workflowData.price;
+      case 5: // contact
+        return !!(
+          workflowData.sellerName && 
+          workflowData.sellerEmail && 
+          workflowData.sellerPhone &&
+          workflowData.region &&
+          workflowData.city
+        );
+      default:
+        return false;
+    }
+  }, [currentStep, workflowData]);
+
+  const handleNext = useCallback(() => {
+    if (canProceed && currentStep < TOTAL_STEPS - 1) {
+      setDirection('forward');
+      setCurrentStep(prev => prev + 1);
+    }
+  }, [canProceed, currentStep]);
+
+  const handleBack = useCallback(() => {
+    if (currentStep > 0) {
+      setDirection('backward');
+      setCurrentStep(prev => prev - 1);
+    }
+  }, [currentStep]);
+
+  const handleComplete = useCallback(async () => {
+    if (isPublishing) return; // Prevent double submission
+    
+    setIsPublishing(true);
+    
+    try {
+      // Validate required fields
+      if (!workflowData.make || !workflowData.year) {
+        toast.error(
+          language === 'bg' 
+            ? 'Липсва критична информация за превозното средство' 
+            : 'Missing critical vehicle information'
+        );
+        setIsPublishing(false);
+        return;
+      }
+
+      if (!currentUser?.uid) {
+        toast.error(
+          language === 'bg' 
+            ? 'Моля влезте в профила си' 
+            : 'Please log in to your account'
+        );
+        setIsPublishing(false);
+        return;
+      }
+
+      // Get images from IndexedDB
+      let imageFiles: File[] = [];
+      try {
+        imageFiles = await ImageStorageService.getImages();
+        console.log('📸 Images loaded from IndexedDB:', imageFiles.length);
+      } catch (error) {
+        console.error('Error loading images from IndexedDB:', error);
+        logger.warn('Failed to load images from IndexedDB', error as Error);
+      }
+
+      // Prepare payload - merge all workflow data
+      const payload = {
+        ...workflowData,
+        vehicleType: workflowData.vehicleType || 'car',
+        sellerType: workflowData.sellerType || 'private',
+        // Ensure equipment arrays are converted to strings if needed
+        safety: Array.isArray(workflowData.safetyEquipment) 
+          ? workflowData.safetyEquipment.join(',') 
+          : (workflowData.safety || ''),
+        comfort: Array.isArray(workflowData.comfortEquipment) 
+          ? workflowData.comfortEquipment.join(',') 
+          : (workflowData.comfort || ''),
+        infotainment: Array.isArray(workflowData.infotainmentEquipment) 
+          ? workflowData.infotainmentEquipment.join(',') 
+          : (workflowData.infotainment || ''),
+        extras: Array.isArray(workflowData.extrasEquipment) 
+          ? workflowData.extrasEquipment.join(',') 
+          : (workflowData.extras || ''),
+        // Ensure preferredContact is a string
+        preferredContact: Array.isArray(workflowData.preferredContact)
+          ? workflowData.preferredContact.join(',')
+          : (workflowData.preferredContact || ''),
+        imagesCount: imageFiles.length || workflowData.imagesCount || 0
+      };
+
+      // Validate workflow data
+      console.log('🔍 Validating workflow data...', {
+        make: payload.make,
+        model: payload.model,
+        year: payload.year,
+        vehicleType: payload.vehicleType,
+        sellerName: payload.sellerName,
+        sellerEmail: payload.sellerEmail,
+        sellerPhone: payload.sellerPhone
+      });
+
+      const validation = SellWorkflowService.validateWorkflowData(payload, false);
+      
+      if (validation.criticalMissing) {
+        console.error('❌ Validation failed - critical fields missing:', validation.missingFields);
+        toast.error(
+          language === 'bg' 
+            ? `Критична информация липсва: ${validation.missingFields.join(', ')}` 
+            : `Critical information missing: ${validation.missingFields.join(', ')}`
+        );
+        setIsPublishing(false);
+        return;
+      }
+
+      console.log('✅ Validation passed');
+
+      // Create car listing
+      console.log('🚀 Creating car listing...', {
+        hasPayload: !!payload,
+        userId: currentUser.uid,
+        imageCount: imageFiles.length,
+        make: payload.make,
+        model: payload.model,
+        year: payload.year,
+        vehicleType: payload.vehicleType,
+        payloadKeys: Object.keys(payload)
+      });
+
+      let carId: string;
+      try {
+        console.log('📤 Calling createCarListing service...');
+        carId = await SellWorkflowService.createCarListing(payload, currentUser.uid, imageFiles);
+        console.log('✅ createCarListing returned carId:', carId);
+        console.log('✅ Car ID type:', typeof carId);
+        console.log('✅ Car ID length:', carId?.length);
+        
+        if (!carId || typeof carId !== 'string' || carId.trim() === '') {
+          console.error('❌ Invalid carId returned:', carId, 'Type:', typeof carId);
+          throw new Error('Car ID is empty or invalid');
+        }
+        
+        console.log('✅ Car ID is valid and ready for navigation:', carId);
+      } catch (createError: any) {
+        console.error('❌ Error creating car listing:', createError);
+        console.error('❌ Error details:', {
+          message: createError.message,
+          stack: createError.stack,
+          name: createError.name
+        });
+        logger.error('Failed to create car listing', createError as Error, {
+          userId: currentUser.uid,
+          payload: { 
+            make: payload.make, 
+            model: payload.model, 
+            year: payload.year,
+            vehicleType: payload.vehicleType
+          },
+          errorMessage: createError.message,
+          errorStack: createError.stack
+        });
+        throw createError; // Re-throw to be caught by outer catch
+      }
+
+      // Success message
+      toast.success(
+        language === 'bg' 
+          ? `Обявата е създадена успешно${imageFiles.length > 0 ? ` с ${imageFiles.length} снимки` : ''}!` 
+          : `Listing created successfully${imageFiles.length > 0 ? ` with ${imageFiles.length} images` : ''}!`,
+        {
+          autoClose: 3000,
+          position: 'top-center'
+        }
+      );
+
+      // N8N Integration (non-critical)
+      try {
+        const N8nService = await import('../../services/n8n-integration');
+        await N8nService.default.onCarPublished(currentUser.uid, carId, payload as any);
+      } catch (n8nError) {
+        logger.warn('N8N webhook failed (non-critical)', { error: n8nError, carId });
+      }
+
+      // Get draftId BEFORE clearing localStorage
+      const draftId = localStorage.getItem('current_draft_id');
+
+      // Clear workflow data and images AFTER successful creation
+      clearWorkflowData();
+      try {
+        await ImageStorageService.clearImages();
+        console.log('✅ Images cleared from IndexedDB');
+      } catch (error) {
+        logger.warn('Failed to clear images from IndexedDB (non-critical)', error as Error);
+      }
+      localStorage.removeItem('current_draft_id');
+
+      // Delete draft from Firestore if exists
+      if (draftId && currentUser) {
+        try {
+          const DraftsService = await import('../../services/drafts-service');
+          await DraftsService.default.deleteDraft(draftId);
+          logger.info('Draft deleted from Firestore after publishing', { draftId });
+        } catch (error) {
+          logger.warn('Failed to delete Firestore draft (non-critical)', { error, draftId });
+        }
+      }
+
+      logger.info('Car listing published successfully', { carId, userId: currentUser.uid });
+      console.log('✅ All cleanup completed. Car ID:', carId);
+
+      // Close modal first, then navigate to car detail page
+      onComplete(); // This will trigger modal close
+      
+      // Navigate to the car detail page after a short delay
+      setTimeout(() => {
+        // Navigate to car detail page - user can edit or view the listing
+        const carDetailUrl = `/car/${carId}`;
+        console.log('✅ Navigating to car detail page:', carDetailUrl);
+        navigate(carDetailUrl);
+      }, 500);
+
+    } catch (error: any) {
+      console.error('❌ Error in handleComplete:', error);
+      console.error('❌ Error details:', {
+        message: error.message,
+        stack: error.stack,
+        name: error.name,
+        userId: currentUser?.uid
+      });
+      
+      logger.error('Error creating listing', error as Error, {
+        userId: currentUser?.uid,
+        errorMessage: error.message,
+        errorStack: error.stack
+      });
+      
+      const errorMessage = error.message || (language === 'bg' 
+        ? 'Възникна грешка при създаване на обявата' 
+        : 'Error creating listing');
+      
+      toast.error(errorMessage, {
+        autoClose: 5000,
+        position: 'top-center'
+      });
+      
+      setIsPublishing(false);
+    }
+  }, [workflowData, currentUser, language, navigate, onComplete, clearWorkflowData, isPublishing]);
+
+  // Reset Memory - Clear everything and start fresh
+  const handleResetMemory = useCallback(async () => {
+    if (!showResetConfirm) {
+      setShowResetConfirm(true);
+      return;
+    }
+
+    setIsResetting(true);
+    
+    try {
+      // Clear all workflow data
+      clearWorkflowData();
+      
+      // Clear images from IndexedDB
+      try {
+        await ImageStorageService.clearImages();
+        console.log('✅ Images cleared from IndexedDB');
+      } catch (error) {
+        console.error('Error clearing images:', error);
+      }
+
+      // Clear WorkflowPersistenceService
+      WorkflowPersistenceService.clearState();
+
+      // Clear localStorage items related to workflow
+      localStorage.removeItem('current_draft_id');
+      localStorage.removeItem('workflow_state');
+      localStorage.removeItem('workflow_images');
+      
+      // Clear unified workflow if exists
+      try {
+        const UnifiedWorkflowPersistenceServiceModule = await import('../../services/unified-workflow-persistence.service');
+        const UnifiedWorkflowPersistenceService = UnifiedWorkflowPersistenceServiceModule.default || UnifiedWorkflowPersistenceServiceModule.UnifiedWorkflowPersistenceService;
+        if (UnifiedWorkflowPersistenceService && typeof UnifiedWorkflowPersistenceService.clearData === 'function') {
+          await UnifiedWorkflowPersistenceService.clearData();
+          console.log('✅ Unified workflow data cleared');
+        }
+      } catch (error) {
+        console.warn('Unified workflow service not available or already cleared:', error);
+      }
+
+      // Delete draft from Firestore if exists (get draftId before clearing localStorage)
+      const draftId = localStorage.getItem('current_draft_id');
+      if (draftId && currentUser) {
+        try {
+          const DraftsService = await import('../../services/drafts-service');
+          await DraftsService.default.deleteDraft(draftId);
+          logger.info('Draft deleted from Firestore during reset', { draftId });
+        } catch (error) {
+          logger.warn('Failed to delete Firestore draft (non-critical)', { error, draftId });
+        }
+      }
+
+      // Clear any session storage
+      sessionStorage.removeItem('edit_mode');
+      sessionStorage.removeItem('edit_car_id');
+      sessionStorage.removeItem('edit_car_data');
+
+      // Reset to first step
+      setCurrentStep(0);
+      setDirection('forward');
+      setShowResetConfirm(false);
+
+      toast.success(
+        language === 'bg' 
+          ? 'Памятта е изчистена. Започвате отново.' 
+          : 'Memory reset. Starting fresh.',
+        {
+          autoClose: 2000,
+          position: 'top-center'
+        }
+      );
+
+      logger.info('Workflow memory reset completed', { userId: currentUser?.uid });
+    } catch (error) {
+      logger.error('Error resetting workflow memory', error as Error);
+      toast.error(
+        language === 'bg' 
+          ? 'Грешка при изчистване на паметта' 
+          : 'Error resetting memory',
+        {
+          autoClose: 3000
+        }
+      );
+    } finally {
+      setIsResetting(false);
+    }
+  }, [showResetConfirm, clearWorkflowData, currentUser, language]);
+
+  const stepTitles = stepIds.map(stepId => {
+    const step = SELL_WORKFLOW_STEPS.find(s => s.id === stepId);
+    return step ? (language === 'bg' ? step.labels.bg : step.labels.en) : '';
+  });
+
+  const progress = ((currentStep + 1) / TOTAL_STEPS) * 100;
+
+  return (
+    <WizardContainer>
+      <ProgressBar>
+        <ProgressLine $progress={progress} />
+        {Array.from({ length: TOTAL_STEPS }, (_, index) => (
+          <ProgressStep
+            key={index}
+            $active={currentStep === index}
+            $completed={currentStep > index}
+            title={stepTitles[index]}
+          >
+            {currentStep > index ? <Check size={18} /> : index + 1}
+          </ProgressStep>
+        ))}
+      </ProgressBar>
+
+      <StepContent $direction={direction}>
+        <StepTitle>{stepTitles[currentStep]}</StepTitle>
+
+        {currentStep === 0 && (
+          <SellVehicleStep1
+            workflowData={workflowData}
+            onUpdate={updateWorkflowData}
+          />
+        )}
+
+        {currentStep === 1 && (
+          <SellVehicleStep2
+            workflowData={workflowData}
+            onUpdate={updateWorkflowData}
+          />
+        )}
+
+        {currentStep === 2 && (
+          <SellVehicleStep3
+            workflowData={workflowData}
+            onUpdate={updateWorkflowData}
+          />
+        )}
+
+        {currentStep === 3 && (
+          <SellVehicleStep4
+            workflowData={workflowData}
+            onUpdate={updateWorkflowData}
+          />
+        )}
+
+        {currentStep === 4 && (
+          <SellVehicleStep5
+            workflowData={workflowData}
+            onUpdate={updateWorkflowData}
+          />
+        )}
+
+        {currentStep === 5 && (
+          <SellVehicleStep6
+            workflowData={workflowData}
+            onUpdate={updateWorkflowData}
+          />
+        )}
+      </StepContent>
+
+      <NavigationButtons>
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+          {currentStep > 0 && (
+            <Button $variant="secondary" onClick={handleBack}>
+              <ArrowLeft size={18} />
+              {language === 'bg' ? 'Назад' : 'Back'}
+            </Button>
+          )}
+          <ResetButton 
+            onClick={handleResetMemory} 
+            disabled={isPublishing || isResetting}
+            title={language === 'bg' ? 'Изчисти паметта и започни отново' : 'Reset memory and start fresh'}
+          >
+            <RotateCcw size={16} />
+            {language === 'bg' ? 'Изчисти паметта' : 'Reset Memory'}
+          </ResetButton>
+          {showResetConfirm && (
+            <ResetConfirmDialog>
+              <ResetConfirmTitle>
+                <AlertTriangle size={18} />
+                {language === 'bg' ? 'Потвърждение' : 'Confirmation'}
+              </ResetConfirmTitle>
+              <ResetConfirmText>
+                {language === 'bg' 
+                  ? 'Сигурни ли сте, че искате да изчистите всички данни и да започнете отново? Това действие не може да бъде отменено.'
+                  : 'Are you sure you want to clear all data and start fresh? This action cannot be undone.'}
+              </ResetConfirmText>
+              <ResetConfirmButtons>
+                <ConfirmButton 
+                  $variant="cancel" 
+                  onClick={() => setShowResetConfirm(false)}
+                  disabled={isResetting}
+                >
+                  {language === 'bg' ? 'Отказ' : 'Cancel'}
+                </ConfirmButton>
+                <ConfirmButton 
+                  $variant="danger" 
+                  onClick={handleResetMemory}
+                  disabled={isResetting}
+                >
+                  {isResetting 
+                    ? (language === 'bg' ? 'Изчистване...' : 'Resetting...')
+                    : (language === 'bg' ? 'Изчисти' : 'Reset')
+                  }
+                </ConfirmButton>
+              </ResetConfirmButtons>
+            </ResetConfirmDialog>
+          )}
+        </div>
+        <div style={{ display: 'flex', gap: '1rem' }}>
+          <Button $variant="secondary" onClick={onCancel} disabled={isPublishing || isResetting}>
+            {language === 'bg' ? 'Отказ' : 'Cancel'}
+          </Button>
+          {currentStep < TOTAL_STEPS - 1 ? (
+            <Button $variant="primary" onClick={handleNext} disabled={!canProceed || isPublishing || isResetting}>
+              {language === 'bg' ? 'Напред' : 'Next'}
+              <ArrowRight size={18} />
+            </Button>
+          ) : (
+            <Button $variant="primary" onClick={handleComplete} disabled={!canProceed || isPublishing || isResetting}>
+              {isPublishing 
+                ? (language === 'bg' ? 'Публикуване...' : 'Publishing...')
+                : (language === 'bg' ? 'Публикувай' : 'Publish')
+              }
+              {!isPublishing && <Check size={18} />}
+            </Button>
+          )}
+        </div>
+      </NavigationButtons>
+    </WizardContainer>
+  );
+};
+
+export default SellVehicleWizard;

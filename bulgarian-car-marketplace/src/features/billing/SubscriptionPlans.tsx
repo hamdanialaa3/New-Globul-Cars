@@ -28,13 +28,13 @@ const Grid = styled.div`
 `;
 
 const PlanCard = styled.div<{ popular?: boolean; current?: boolean }>`
-  background: ${({ theme }) => theme.colors?.cardBackground || '#ffffff'};
+  background: var(--bg-card);
   border-radius: 20px;
   padding: 2.5rem;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
   position: relative;
   transition: all 0.3s ease;
-  border: 2px solid ${p => p.current ? '#16a34a' : '#e2e8f0'};
+  border: 2px solid ${p => p.current ? '#16a34a' : 'var(--border-primary)'};
   
   ${p => p.popular && `
     transform: scale(1.05);
@@ -46,21 +46,6 @@ const PlanCard = styled.div<{ popular?: boolean; current?: boolean }>`
     transform: translateY(-8px) ${p => p.popular ? 'scale(1.05)' : 'scale(1.02)'};
     box-shadow: 0 16px 40px rgba(255, 143, 16, 0.15);
     border-color: ${p => p.current ? '#16a34a' : '#FF8F10'};
-  }
-
-  @media (prefers-color-scheme: dark) {
-    background: ${({ theme }) => theme.colors?.cardBackgroundDark || '#1e293b'};
-    border-color: ${p => p.current ? '#16a34a' : '#334155'};
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-    
-    ${p => p.popular && `
-      border-color: #FF8F10;
-      box-shadow: 0 12px 32px rgba(255, 143, 16, 0.25);
-    `}
-    
-    &:hover {
-      box-shadow: 0 16px 40px rgba(255, 143, 16, 0.2);
-    }
   }
 `;
 
@@ -94,7 +79,7 @@ const Badge = styled.div<{ type: 'popular' | 'current' }>`
 const PlanName = styled.h3`
   font-size: 1.75rem;
   font-weight: 800;
-  color: ${({ theme }) => theme.colors?.text || '#0f172a'};
+  color: var(--text-primary);
   margin: 0 0 0.75rem 0;
 
   @media (prefers-color-scheme: dark) {
