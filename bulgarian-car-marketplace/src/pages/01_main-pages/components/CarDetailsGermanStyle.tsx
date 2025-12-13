@@ -41,6 +41,7 @@ import { CarListing } from '../../../types/CarListing';
 import StaticMapEmbed from '../../../components/StaticMapEmbed';
 import GlobulCarLogo from '../../../components/icons/GlobulCarLogo';
 import { useTheme } from '../../../contexts/ThemeContext';
+import { ShareButton } from '../../../components/ShareButton';
 import CarSuggestionsList from './CarSuggestionsList';
 
 interface CarDetailsGermanStyleProps {
@@ -1886,9 +1887,15 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
                 <SecondaryButton $isDark={isDark} onClick={() => onContact('whatsapp')} title="WhatsApp">
                   <MessageCircle size={20} />
                 </SecondaryButton>
-                <SecondaryButton $isDark={isDark} onClick={handleShare} title={t.share}>
-                  <Share2 size={20} />
-                </SecondaryButton>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <ShareButton
+                    url={`${window.location.origin}/car/${car.id}`}
+                    title={car.make && car.model ? `${car.make} ${car.model} ${car.year || ''}`.trim() : 'سيارة'}
+                    text={`سيارة: ${car.make || ''} ${car.model || ''} - ${car.price ? `€${car.price}` : ''}`}
+                    variant="icon"
+                    size="md"
+                  />
+                </div>
                 <SecondaryButton $isDark={isDark} onClick={handleSave} title={t.save}>
                   <Bookmark size={20} />
                 </SecondaryButton>

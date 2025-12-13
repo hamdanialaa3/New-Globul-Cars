@@ -1197,8 +1197,10 @@ export const CoverAndProfileWrapper = styled.div`
   margin-bottom: -75px; /* Pull the info bar up to overlap with profile picture */
   z-index: 5;
   
+  /* ✅ FIX: Mobile - Remove overlap completely */
   @media (max-width: 960px) {
-    margin-bottom: -60px;
+    margin-bottom: 0 !important; /* ✅ Remove overlap on mobile - separate sections */
+    padding-bottom: 0; /* ✅ No extra padding */
   }
 `;
 
@@ -1228,11 +1230,15 @@ export const UserInfoBar = styled.div`
   
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
   
+  /* ✅ FIX: Mobile - Separate bar without overlap */
   @media (max-width: 960px) {
     flex-direction: column;
     gap: 1.5rem;
-    padding: 100px 1rem 1.5rem;
+    padding: 1.5rem 1rem !important; /* ✅ Normal padding, no space for overlapping image */
+    padding-top: 1.5rem !important; /* ✅ Start from top, no overlap - CRITICAL */
+    margin-top: 1rem; /* ✅ Add space between cover image and info bar */
     text-align: center;
+    z-index: 1; /* ✅ Ensure it's above the profile image */
   }
 `;
 
@@ -1250,8 +1256,11 @@ export const UserInfoLeft = styled.div`
   
   transition: color 0.3s ease;
   
+  /* ✅ FIX: Mobile - Center align for better layout */
   @media (max-width: 960px) {
-    align-items: flex-start;
+    align-items: center; /* ✅ Center instead of flex-start */
+    text-align: center; /* ✅ Center text */
+    width: 100%; /* ✅ Full width */
   }
 `;
 
@@ -1281,7 +1290,8 @@ export const UserInfoCenter = styled.div`
 
 export const UserInfoRight = styled.div`
   display: flex;
-  gap: 12px;
+  align-items: center;
+  gap: 24px;
   
   /* Dark Mode Support */
   html[data-theme="dark"] & {
@@ -1290,7 +1300,27 @@ export const UserInfoRight = styled.div`
   
   @media (max-width: 960px) {
     width: 100%;
-    justify-content: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+`;
+
+/* ✅ New container for stats on the right side of UserInfoBar */
+export const UserInfoStatsContainer = styled.div`
+  display: flex;
+  gap: 32px;
+  align-items: center;
+  
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    color: #f8fafc;
+  }
+  
+  @media (max-width: 960px) {
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
   }
 `;
 
@@ -1423,8 +1453,15 @@ export const CenteredProfileImageWrapper = styled.div`
   z-index: 100;
   filter: drop-shadow(0 8px 16px rgba(0,0,0,0.2));
   
+  /* ✅ FIX: Mobile - Position image above the info bar, not overlapping */
   @media (max-width: 960px) {
-    bottom: -60px;
+    position: relative !important; /* ✅ Change from absolute to relative - CRITICAL */
+    bottom: auto !important; /* ✅ Remove negative bottom */
+    left: auto !important; /* ✅ Remove centering via left */
+    transform: none !important; /* ✅ Remove transform */
+    margin: -60px auto 1rem !important; /* ✅ Center with margin, add space below */
+    width: fit-content; /* ✅ Fit content width */
+    z-index: 0; /* ✅ Lower z-index so it doesn't overlap text */
   }
 `;
 

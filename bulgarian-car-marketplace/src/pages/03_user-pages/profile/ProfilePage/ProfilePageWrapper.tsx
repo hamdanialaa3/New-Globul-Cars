@@ -22,6 +22,7 @@ import {
 import * as S from './styles';
 import { TabNavigation, TabNavLink, SyncButton, FollowButton } from './TabNavigation.styles';
 import { CoverImageUploader, BusinessBackground, SimpleProfileAvatar, ProfileImageUploader } from '../../../../components/Profile';
+import { ShareButton } from '../../../../components/ShareButton';
 import { googleProfileSyncService } from '../../../../services/google/google-profile-sync.service';
 import { followService } from '../../../../services/social/follow.service';
 import { logger } from '../../../../services/logger-service';
@@ -282,22 +283,24 @@ const ProfilePageWrapper: React.FC = () => {
               <S.UserEmail>{activeProfile.email}</S.UserEmail>
             </S.UserInfoLeft>
             
-            <S.UserInfoCenter>
-              <S.StatBox>
-                <span className="number">{activeProfile.stats?.totalViews || 0}</span>
-                <span className="label">{language === 'bg' ? 'Прегледи' : 'Views'}</span>
-              </S.StatBox>
-              <S.StatBox>
-                <span className="number">{activeProfile.stats?.activeListings || 0}</span>
-                <span className="label">{language === 'bg' ? 'Обяви' : 'Listings'}</span>
-              </S.StatBox>
-              <S.StatBox>
-                <span className="number">{activeProfile.stats?.trustScore || 0}%</span>
-                <span className="label">{language === 'bg' ? 'Доверие' : 'Trust'}</span>
-              </S.StatBox>
-            </S.UserInfoCenter>
-            
             <S.UserInfoRight>
+              {/* ✅ Stats moved to the right */}
+              <S.UserInfoStatsContainer>
+                <S.StatBox>
+                  <span className="number">{activeProfile.stats?.totalViews || 0}</span>
+                  <span className="label">{language === 'bg' ? 'Прегледи' : 'Views'}</span>
+                </S.StatBox>
+                <S.StatBox>
+                  <span className="number">{activeProfile.stats?.activeListings || 0}</span>
+                  <span className="label">{language === 'bg' ? 'Обяви' : 'Listings'}</span>
+                </S.StatBox>
+                <S.StatBox>
+                  <span className="number">{activeProfile.stats?.trustScore || 0}%</span>
+                  <span className="label">{language === 'bg' ? 'Доверие' : 'Trust'}</span>
+                </S.StatBox>
+              </S.UserInfoStatsContainer>
+              
+              {/* Action buttons */}
               {isOwnProfile ? (
                 <S.ActionButton $variant="secondary" onClick={handleGoogleSync}>
                   <RefreshCw size={16} className={syncing ? 'spinning' : ''} />
@@ -307,6 +310,13 @@ const ProfilePageWrapper: React.FC = () => {
                 </S.ActionButton>
               ) : (
                 <>
+                  <ShareButton
+                    url={`${window.location.origin}/profile/${activeProfile.uid}`}
+                    title={activeProfile.displayName || 'Профил'}
+                    text={`Изгледайте профила на ${activeProfile.displayName}`}
+                    variant="button"
+                    size="md"
+                  />
                   <FollowButton 
                     onClick={handleFollow} 
                     disabled={followLoading}
