@@ -22,7 +22,6 @@ import {
 import * as S from './styles';
 import { TabNavigation, TabNavLink, SyncButton, FollowButton } from './TabNavigation.styles';
 import { CoverImageUploader, BusinessBackground, SimpleProfileAvatar, ProfileImageUploader } from '../../../../components/Profile';
-import { ShareButton } from '../../../../components/ShareButton';
 import { googleProfileSyncService } from '../../../../services/google/google-profile-sync.service';
 import { followService } from '../../../../services/social/follow.service';
 import { logger } from '../../../../services/logger-service';
@@ -311,13 +310,6 @@ const ProfilePageWrapper: React.FC = () => {
                 </S.ActionButtonCompact>
               ) : (
                 <>
-                  <ShareButton
-                    url={`${window.location.origin}/profile/${activeProfile.uid}`}
-                    title={activeProfile.displayName || 'Профил'}
-                    text={`Изгледайте профила на ${activeProfile.displayName}`}
-                    variant="button"
-                    size="sm"
-                  />
                   <FollowButton 
                     onClick={handleFollow} 
                     disabled={followLoading}

@@ -43,6 +43,7 @@ if (process.env.NODE_ENV === 'development') {
 const FacebookPixel = safeLazy(() => import('./components/FacebookPixel'));
 const FloatingAddButton = safeLazy(() => import('./components/FloatingAddButton'));
 const RobotChatIcon = safeLazy(() => import('./components/AI/RobotChatIcon'));
+const FloatingShareButton = safeLazy(() => import('./components/FloatingShareButton'));
 const GlobalWorkflowTimer = safeLazy(() => import('./components/GlobalWorkflowTimer'));
 const WorkflowProgressBar = safeLazy(() => import('./components/WorkflowProgressBar'));
 import { useIsMobile } from './hooks/useBreakpoint';
@@ -316,6 +317,9 @@ const MainLayout: React.FC = () => {
     <Layout>
       <Suspense fallback={null}>
         <FloatingAddButton />
+      </Suspense>
+      <Suspense fallback={null}>
+        <FloatingShareButton />
       </Suspense>
       <Suspense fallback={null}>
         <RobotChatIcon />

@@ -571,32 +571,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({ user: propUser }) =
     <DashboardContainer>
       {/* ✅ Profile Completion Card Removed */}
       
-      {/* Activity Stats - 🎯 COMPACT: Single Row */}
-      <StatsGrid>
-        <StatCard $theme={theme}>
-          <StatIcon><Eye size={20} /></StatIcon>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-            <StatValue>{userData?.profileViews || 0}</StatValue>
-            <StatLabel>Profile Views</StatLabel>
-          </div>
-        </StatCard>
-        
-        <StatCard $theme={theme}>
-          <StatIcon><Car size={20} /></StatIcon>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-            <StatValue>{userData?.activeListings || 0}</StatValue>
-            <StatLabel>Active Listings</StatLabel>
-          </div>
-        </StatCard>
-        
-        <StatCard $theme={theme}>
-          <StatIcon><MessageSquare size={20} /></StatIcon>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-            <StatValue>{userData?.messages || 0}</StatValue>
-            <StatLabel>Messages</StatLabel>
-          </div>
-        </StatCard>
-      </StatsGrid>
+      {/* ✅ Activity Stats Removed */}
     </DashboardContainer>
   );
 };

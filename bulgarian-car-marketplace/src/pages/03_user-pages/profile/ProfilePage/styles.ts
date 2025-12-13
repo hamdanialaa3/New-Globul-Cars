@@ -1765,13 +1765,11 @@ export const CenteredProfileImageWrapper = styled.div`
   transform: translateX(-50%);
   z-index: 100;
   
-  /* ✅ FIX: Very strong shadow for profile image - multiple layers */
-  filter: drop-shadow(0 16px 32px rgba(0,0,0,0.5)) 
-          drop-shadow(0 8px 16px rgba(0,0,0,0.4))
-          drop-shadow(0 4px 8px rgba(0,0,0,0.3))
-          drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+  /* ✅ FIX: Professional mechanical gear shadow - subtle and elegant */
+  filter: drop-shadow(0 6px 12px rgba(0,0,0,0.12)) 
+          drop-shadow(0 3px 6px rgba(0,0,0,0.08));
   
-  /* ✅ FIX: Create large exclusion zone - prevent text from appearing behind image */
+  /* ✅ FIX: Create mechanical gear-shaped exclusion zone - professional look */
   &::before {
     content: '';
     position: absolute;
@@ -1780,14 +1778,28 @@ export const CenteredProfileImageWrapper = styled.div`
     transform: translate(-50%, -50%);
     width: 220px; /* ✅ Much wider than image (typically 120-150px) */
     height: 220px; /* ✅ Much taller than image */
-    border-radius: 50%;
+    /* ✅ Professional mechanical gear shape - 12 teeth for smoother, elegant look */
+    clip-path: polygon(
+      50% 0%, 53% 0%, 56% 7%, 62% 4%, 68% 0%, 75% 0%, 78% 4%, 84% 7%, 87% 0%, 93% 0%, 96% 7%, 100% 10%,
+      100% 15%, 97% 18%, 100% 22%, 100% 28%, 97% 32%, 100% 35%, 100% 40%, 100% 45%, 100% 50%,
+      100% 55%, 100% 60%, 100% 65%, 97% 68%, 100% 72%, 100% 78%, 97% 82%, 100% 85%, 100% 90%,
+      96% 93%, 93% 100%, 87% 100%, 84% 93%, 78% 96%, 75% 100%, 68% 100%, 62% 96%, 56% 93%, 53% 100%, 50% 100%,
+      47% 100%, 44% 93%, 38% 96%, 32% 100%, 25% 100%, 22% 96%, 16% 93%, 13% 100%, 7% 100%, 4% 93%,
+      0% 90%, 0% 85%, 3% 82%, 0% 78%, 0% 72%, 3% 68%, 0% 65%, 0% 60%, 0% 55%, 0% 50%,
+      0% 45%, 0% 40%, 0% 35%, 3% 32%, 0% 28%, 0% 22%, 3% 18%, 0% 15%, 0% 10%, 4% 7%,
+      7% 0%, 13% 0%, 16% 7%, 22% 4%, 25% 0%, 32% 0%, 38% 4%, 44% 7%, 47% 0%
+    );
     background: var(--bg-card);
     z-index: 99; /* ✅ High z-index to block text */
-    box-shadow: 0 0 60px rgba(0,0,0,0.2);
+    opacity: 0.88; /* ✅ Subtle transparency - professional look */
+    box-shadow: 
+      0 0 35px rgba(0,0,0,0.1),
+      0 0 18px rgba(0,0,0,0.06),
+      inset 0 0 25px rgba(0,0,0,0.04);
     pointer-events: none;
   }
   
-  /* ✅ FIX: Additional exclusion layer for extra protection */
+  /* ✅ FIX: Additional gear layer for depth and shadow effect */
   &::after {
     content: '';
     position: absolute;
@@ -1796,10 +1808,23 @@ export const CenteredProfileImageWrapper = styled.div`
     transform: translate(-50%, -50%);
     width: 240px; /* ✅ Even wider exclusion zone */
     height: 240px;
-    border-radius: 50%;
+    /* ✅ Outer gear shape - 12 teeth matching inner gear, slightly larger */
+    clip-path: polygon(
+      50% 0%, 53% 0%, 56% 6%, 62% 3%, 68% 0%, 75% 0%, 78% 3%, 84% 6%, 87% 0%, 93% 0%, 96% 6%, 100% 9%,
+      100% 14%, 97% 17%, 100% 21%, 100% 27%, 97% 31%, 100% 34%, 100% 39%, 100% 44%, 100% 50%,
+      100% 56%, 100% 61%, 100% 66%, 97% 69%, 100% 73%, 100% 79%, 97% 83%, 100% 86%, 100% 91%,
+      96% 94%, 93% 100%, 87% 100%, 84% 94%, 78% 97%, 75% 100%, 68% 100%, 62% 97%, 56% 94%, 53% 100%, 50% 100%,
+      47% 100%, 44% 94%, 38% 97%, 32% 100%, 25% 100%, 22% 97%, 16% 94%, 13% 100%, 7% 100%, 4% 94%,
+      0% 91%, 0% 86%, 3% 83%, 0% 79%, 0% 73%, 3% 69%, 0% 66%, 0% 61%, 0% 56%, 0% 50%,
+      0% 44%, 0% 39%, 0% 34%, 3% 31%, 0% 27%, 0% 21%, 3% 17%, 0% 14%, 0% 9%, 4% 6%,
+      7% 0%, 13% 0%, 16% 6%, 22% 3%, 25% 0%, 32% 0%, 38% 3%, 44% 6%, 47% 0%
+    );
     background: var(--bg-card);
     z-index: 98; /* ✅ Slightly lower but still blocks text */
-    opacity: 0.95;
+    opacity: 0.82; /* ✅ More transparent for depth */
+    box-shadow: 
+      0 0 45px rgba(0,0,0,0.08),
+      0 0 22px rgba(0,0,0,0.05);
     pointer-events: none;
   }
   
