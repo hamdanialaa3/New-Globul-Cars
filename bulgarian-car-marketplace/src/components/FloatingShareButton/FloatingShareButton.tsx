@@ -3,7 +3,7 @@
 // يظهر بين زر AI وزر المهام
 
 import React, { useState } from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 import { Share2 } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { logger } from '../../services/logger-service';
@@ -45,7 +45,7 @@ const ShareContainer = styled.div<{ $active: boolean }>`
   /* Expand container when active to fit icons */
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   
-  ${props => props.$active && `
+  ${props => props.$active && css`
     width: 280px;
     height: 280px;
   `}
@@ -84,7 +84,7 @@ const ShareButton = styled.button<{ $spinning: boolean }>`
     transform: translateY(-2px);
   }
   
-  ${props => props.$spinning && `
+  ${props => props.$spinning && css`
     animation: ${spinCenter} 0.6s ease-in-out forwards;
   `}
   
@@ -133,7 +133,7 @@ const SocialIcon = styled.a<{ $r: number; $a: number; $active: boolean; $accent:
              rotate(${props => -props.$a}deg);
   
   /* الحركة النهائية: تنتشر في دائرة */
-  ${props => props.$active && `
+  ${props => props.$active && css`
     transform: translate(-50%, -50%) 
                rotate(${props.$a}deg) 
                translate(${props.$r}px, 0) 
