@@ -273,41 +273,42 @@ const ProfilePageWrapper: React.FC = () => {
           </S.CoverAndProfileWrapper>
         )}
         
-        {/* User Info Bar with Name and Stats */}
+        {/* ✅ Single Modern Stats Bar with Name + 5 Stats */}
         {window.location.pathname.replace(/\/$/, '') === basePath.replace(/\/$/, '') && (
-          <S.UserInfoBar>
-            <S.UserInfoLeft>
-              <S.UserName>
+          <S.SingleStatsBar>
+            {/* Name Section */}
+            <S.StatBarNameSection>
+              <S.UserNameCompact>
                 {activeProfile.displayName || (language === 'bg' ? 'Анонимен' : 'Anonymous')}
-              </S.UserName>
-              <S.UserEmail>{activeProfile.email}</S.UserEmail>
-            </S.UserInfoLeft>
-            
-            <S.UserInfoRight>
-              {/* ✅ Stats moved to the right */}
-              <S.UserInfoStatsContainer>
-                <S.StatBox>
-                  <span className="number">{activeProfile.stats?.totalViews || 0}</span>
-                  <span className="label">{language === 'bg' ? 'Прегледи' : 'Views'}</span>
-                </S.StatBox>
-                <S.StatBox>
-                  <span className="number">{activeProfile.stats?.activeListings || 0}</span>
-                  <span className="label">{language === 'bg' ? 'Обяви' : 'Listings'}</span>
-                </S.StatBox>
-                <S.StatBox>
-                  <span className="number">{activeProfile.stats?.trustScore || 0}%</span>
-                  <span className="label">{language === 'bg' ? 'Доверие' : 'Trust'}</span>
-                </S.StatBox>
-              </S.UserInfoStatsContainer>
-              
-              {/* Action buttons */}
+              </S.UserNameCompact>
+              <S.UserEmailCompact>{activeProfile.email}</S.UserEmailCompact>
+            </S.StatBarNameSection>
+
+            {/* Stats Section - Only Views, Listings, Trust */}
+            <S.StatBarStatsSection>
+              <S.StatItem>
+                <S.StatNumber>{activeProfile.stats?.totalViews || 0}</S.StatNumber>
+                <S.StatLabel>{language === 'bg' ? 'Views' : 'Views'}</S.StatLabel>
+              </S.StatItem>
+              <S.StatItem>
+                <S.StatNumber>{activeProfile.stats?.activeListings || 0}</S.StatNumber>
+                <S.StatLabel>{language === 'bg' ? 'Listings' : 'Listings'}</S.StatLabel>
+              </S.StatItem>
+              <S.StatItem>
+                <S.StatNumber>{activeProfile.stats?.trustScore || 0}%</S.StatNumber>
+                <S.StatLabel>{language === 'bg' ? 'Trust' : 'Trust'}</S.StatLabel>
+              </S.StatItem>
+            </S.StatBarStatsSection>
+
+            {/* Actions Section */}
+            <S.StatBarActionsSection>
               {isOwnProfile ? (
-                <S.ActionButton $variant="secondary" onClick={handleGoogleSync}>
+                <S.ActionButtonCompact $variant="secondary" onClick={handleGoogleSync}>
                   <RefreshCw size={16} className={syncing ? 'spinning' : ''} />
                   {syncing 
                     ? (language === 'bg' ? 'Синхронизиране...' : 'Syncing...') 
                     : (language === 'bg' ? 'Синхронизирай' : 'Sync')}
-                </S.ActionButton>
+                </S.ActionButtonCompact>
               ) : (
                 <>
                   <ShareButton
@@ -315,7 +316,7 @@ const ProfilePageWrapper: React.FC = () => {
                     title={activeProfile.displayName || 'Профил'}
                     text={`Изгледайте профила на ${activeProfile.displayName}`}
                     variant="button"
-                    size="md"
+                    size="sm"
                   />
                   <FollowButton 
                     onClick={handleFollow} 
@@ -326,14 +327,14 @@ const ProfilePageWrapper: React.FC = () => {
                       ? (language === 'bg' ? 'Последван' : 'Following')
                       : (language === 'bg' ? 'Последвай' : 'Follow')}
                   </FollowButton>
-                  <S.ActionButton $variant="primary" onClick={handleMessage}>
+                  <S.ActionButtonCompact $variant="primary" onClick={handleMessage}>
                     <PhoneIcon size={16} />
                     {language === 'bg' ? 'Съобщение' : 'Message'}
-                  </S.ActionButton>
+                  </S.ActionButtonCompact>
                 </>
               )}
-            </S.UserInfoRight>
-          </S.UserInfoBar>
+            </S.StatBarActionsSection>
+          </S.SingleStatsBar>
         )}
         
         {/* ⚡ HIDDEN: Old Profile Header - Will be merged into ProfileDashboard */}

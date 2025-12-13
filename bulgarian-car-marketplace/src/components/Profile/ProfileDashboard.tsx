@@ -569,37 +569,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({ user: propUser }) =
   
   return (
     <DashboardContainer>
-      {/* ⚡ NEW: Merged Profile Header + Completion Card */}
-      <CompletionCard $theme={theme}>
-        {/* Profile Header Section Removed - Moved to Main Profile Page */}
-
-        
-        {/* Completion Details Section */}
-        <CompletionDetailsSection>
-          <CardHeader>
-            <TrendingUp size={24} />
-            <CardTitle>Profile Completion</CardTitle>
-          </CardHeader>
-          
-          {getMissingFields(userData, profileType).length > 0 ? (
-            <div>
-              <p style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '0.9rem', marginBottom: '8px' }}>
-                Missing fields:
-              </p>
-              {getMissingFields(userData, profileType).map(field => (
-                <MissingFieldChip key={field} $theme={theme}>
-                  <AlertCircle size={12} />
-                  {field}
-                </MissingFieldChip>
-              ))}
-            </div>
-          ) : (
-            <p style={{ color: '#4CAF50', fontSize: '0.9rem' }}>
-              Profile Complete!
-            </p>
-          )}
-        </CompletionDetailsSection>
-      </CompletionCard>
+      {/* ✅ Profile Completion Card Removed */}
       
       {/* Activity Stats - 🎯 COMPACT: Single Row */}
       <StatsGrid>

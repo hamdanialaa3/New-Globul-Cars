@@ -663,6 +663,15 @@ export const ContentSection = styled.section<{ $themeColor?: string; $isBusiness
     box-shadow: none;
   }
   
+  /* ✅ FIX: Desktop - Add margin-top to push content below cover */
+  @media (min-width: 961px) {
+    margin-top: 1rem; /* ✅ Add space below stats bar */
+    
+    &:first-of-type {
+      margin-top: 1rem; /* ✅ First section also has space */
+    }
+  }
+  
   /* MOBILE - Card-based design (Airbnb/Facebook) */
   @media (max-width: 768px) {
     padding: 16px;
@@ -1197,6 +1206,12 @@ export const CoverAndProfileWrapper = styled.div`
   margin-bottom: -75px; /* Pull the info bar up to overlap with profile picture */
   z-index: 5;
   
+  /* ✅ FIX: Desktop - Add margin-bottom to push content down */
+  @media (min-width: 961px) {
+    margin-bottom: 0; /* ✅ Remove negative margin on desktop */
+    padding-bottom: 1rem; /* ✅ Add space below cover */
+  }
+  
   /* ✅ FIX: Mobile - Remove overlap completely */
   @media (max-width: 960px) {
     margin-bottom: 0 !important; /* ✅ Remove overlap on mobile - separate sections */
@@ -1220,6 +1235,11 @@ export const UserInfoBar = styled.div`
   z-index: 0;
   color: var(--text-primary);
   
+  /* ✅ FIX: Desktop - Add margin-top to push content below cover */
+  @media (min-width: 961px) {
+    margin-top: 1rem; /* ✅ Add space below cover image */
+  }
+  
   /* Dark Mode Support */
   html[data-theme="dark"] & {
     background: #1e293b;
@@ -1229,6 +1249,11 @@ export const UserInfoBar = styled.div`
   }
   
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  
+  /* ✅ FIX: Desktop - Add margin-top to push content below cover */
+  @media (min-width: 961px) {
+    margin-top: 1.5rem; /* ✅ Add space below cover image */
+  }
   
   /* ✅ FIX: Mobile - Separate bar without overlap */
   @media (max-width: 960px) {
@@ -1321,6 +1346,294 @@ export const UserInfoStatsContainer = styled.div`
     gap: 16px;
     flex-wrap: wrap;
     justify-content: flex-end;
+  }
+`;
+
+/* ✅ Single Modern Stats Bar - One unified bar */
+export const SingleStatsBar = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-card);
+  border-radius: 16px;
+  padding: 1.5rem 2rem;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-primary);
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+  gap: 2rem;
+  
+  /* ✅ FIX: Desktop - Add margin-top and padding to avoid profile image */
+  @media (min-width: 961px) {
+    margin-top: 2rem; /* ✅ Add more space below cover image */
+    padding-top: 6rem; /* ✅ Add space for profile image above */
+    position: relative;
+  }
+  
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    background: #1e293b;
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: none;
+  }
+  
+  @media (max-width: 960px) {
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 1.5rem 1rem;
+    align-items: stretch;
+  }
+`;
+
+export const StatBarNameSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 200px;
+  
+  /* ✅ FIX: Desktop - Prevent text from going behind profile image */
+  @media (min-width: 961px) {
+    position: relative;
+    z-index: 1; /* ✅ Lower than profile image */
+    
+    /* ✅ Create exclusion zone - push text away from center */
+    &::before {
+      content: '';
+      position: absolute;
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 220px; /* ✅ Wider than profile image */
+      height: 220px;
+      border-radius: 50%;
+      background: transparent;
+      z-index: -1;
+      pointer-events: none;
+    }
+  }
+  
+  @media (max-width: 960px) {
+    min-width: auto;
+    text-align: center;
+    
+    &::before {
+      display: none; /* ✅ Hide on mobile */
+    }
+  }
+`;
+
+export const StatBarStatsSection = styled.div`
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex: 1;
+  gap: 1.5rem;
+  
+  /* ✅ FIX: Desktop - Prevent stats from going behind profile image */
+  @media (min-width: 961px) {
+    position: relative;
+    z-index: 1; /* ✅ Lower than profile image */
+    
+    /* ✅ Create exclusion zone in center - push stats away */
+    &::before {
+      content: '';
+      position: absolute;
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 220px; /* ✅ Wider than profile image */
+      height: 220px;
+      border-radius: 50%;
+      background: transparent;
+      z-index: -1;
+      pointer-events: none;
+    }
+  }
+  
+  @media (max-width: 960px) {
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: space-between;
+    
+    &::before {
+      display: none; /* ✅ Hide on mobile */
+    }
+  }
+`;
+
+export const StatBarActionsSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: fit-content;
+  
+  @media (max-width: 960px) {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+`;
+
+export const StatCard = styled.div`
+  background: var(--bg-card);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-primary);
+  transition: all 0.3s ease;
+  
+  /* Dark Mode Support */
+  html[data-theme="dark"] & {
+    background: #1e293b;
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: none;
+  }
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
+  
+  @media (max-width: 960px) {
+    padding: 1.25rem;
+  }
+`;
+
+export const StatCardHeader = styled.div`
+  margin-bottom: 1.25rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-primary);
+  
+  html[data-theme="dark"] & {
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+  }
+`;
+
+export const StatCardTitle = styled.h3`
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  
+  html[data-theme="dark"] & {
+    color: #f8fafc;
+  }
+`;
+
+export const UserNameCompact = styled.h2`
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0 0 0.5rem 0;
+  
+  html[data-theme="dark"] & {
+    color: #f8fafc;
+  }
+`;
+
+export const UserEmailCompact = styled.div`
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  
+  html[data-theme="dark"] & {
+    color: #cbd5e1;
+  }
+`;
+
+export const StatCardContent = styled.div`
+  display: flex;
+  justify-content: space-around;
+  gap: 1rem;
+  
+  @media (max-width: 960px) {
+    justify-content: space-between;
+  }
+`;
+
+export const StatItem = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+`;
+
+export const StatNumber = styled.span`
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--accent-primary);
+  line-height: 1;
+  
+  html[data-theme="dark"] & {
+    color: #fb923c;
+  }
+`;
+
+export const StatLabel = styled.span`
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-align: center;
+  
+  html[data-theme="dark"] & {
+    color: #cbd5e1;
+  }
+`;
+
+export const StatCardActions = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  
+  @media (max-width: 960px) {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+`;
+
+export const ActionButtonCompact = styled.button<{ $variant?: 'primary' | 'secondary' }>`
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+  width: 100%;
+  
+  ${props => props.$variant === 'primary' ? `
+    background: var(--accent-primary);
+    color: white;
+    
+    &:hover {
+      background: var(--accent-primary-hover);
+      transform: translateY(-1px);
+    }
+  ` : `
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-primary);
+    
+    &:hover {
+      background: var(--bg-hover);
+    }
+  `}
+  
+  html[data-theme="dark"] & {
+    ${props => props.$variant === 'primary' ? `
+      background: #fb923c;
+      color: white;
+    ` : `
+      background: #2a2a2a;
+      color: #f8fafc;
+      border-color: rgba(255, 255, 255, 0.1);
+    `}
   }
 `;
 
@@ -1451,7 +1764,56 @@ export const CenteredProfileImageWrapper = styled.div`
   left: 50%;
   transform: translateX(-50%);
   z-index: 100;
-  filter: drop-shadow(0 8px 16px rgba(0,0,0,0.2));
+  
+  /* ✅ FIX: Very strong shadow for profile image - multiple layers */
+  filter: drop-shadow(0 16px 32px rgba(0,0,0,0.5)) 
+          drop-shadow(0 8px 16px rgba(0,0,0,0.4))
+          drop-shadow(0 4px 8px rgba(0,0,0,0.3))
+          drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+  
+  /* ✅ FIX: Create large exclusion zone - prevent text from appearing behind image */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 220px; /* ✅ Much wider than image (typically 120-150px) */
+    height: 220px; /* ✅ Much taller than image */
+    border-radius: 50%;
+    background: var(--bg-card);
+    z-index: 99; /* ✅ High z-index to block text */
+    box-shadow: 0 0 60px rgba(0,0,0,0.2);
+    pointer-events: none;
+  }
+  
+  /* ✅ FIX: Additional exclusion layer for extra protection */
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 240px; /* ✅ Even wider exclusion zone */
+    height: 240px;
+    border-radius: 50%;
+    background: var(--bg-card);
+    z-index: 98; /* ✅ Slightly lower but still blocks text */
+    opacity: 0.95;
+    pointer-events: none;
+  }
+  
+  /* ✅ FIX: Ensure image itself has highest z-index */
+  > * {
+    position: relative;
+    z-index: 101; /* ✅ Image above all exclusion zones */
+  }
+  
+  /* ✅ FIX: Force all children (including ProfileImageUploader) to have proper z-index */
+  > div {
+    position: relative;
+    z-index: 101;
+  }
   
   /* ✅ FIX: Mobile - Position image above the info bar, not overlapping */
   @media (max-width: 960px) {
@@ -1462,6 +1824,12 @@ export const CenteredProfileImageWrapper = styled.div`
     margin: -60px auto 1rem !important; /* ✅ Center with margin, add space below */
     width: fit-content; /* ✅ Fit content width */
     z-index: 0; /* ✅ Lower z-index so it doesn't overlap text */
+    filter: drop-shadow(0 8px 16px rgba(0,0,0,0.2)); /* ✅ Lighter shadow on mobile */
+    
+    &::before,
+    &::after {
+      display: none; /* ✅ Hide exclusion zones on mobile */
+    }
   }
 `;
 

@@ -29,7 +29,11 @@ const ImagePreview = styled.div<{ $hasImage: boolean }>`
   border-radius: 50%;
   overflow: hidden;
   border: 4px solid #fff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  /* ✅ FIX: Strong shadow for profile image */
+  box-shadow: 
+    0 12px 24px rgba(0, 0, 0, 0.3),
+    0 6px 12px rgba(0, 0, 0, 0.2),
+    0 0 0 8px rgba(255, 255, 255, 0.1); /* ✅ Outer glow to push text away */
   
   /* 🎨 Orange glassmorphic background for empty state */
   background: ${props => props.$hasImage 
