@@ -1,11 +1,12 @@
 // FloatingShareButton.tsx
 // زر المشاركة العائم بتأثير القرص الدوار (Spinning Dial)
-// يظهر بين زر AI وزر المهام
+// يظهر في صفحة البروفايل فوق زر Sync
 
 import React, { useState } from 'react';
 import styled, { keyframes, css } from 'styled-components';
-import { Share2 } from 'lucide-react';
+import { Share2, User } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { useAuth } from '../../contexts/AuthProvider';
 import { logger } from '../../services/logger-service';
 
 // ==================== ANIMATIONS ====================
@@ -23,15 +24,9 @@ const spinCenter = keyframes`
 // ==================== STYLED COMPONENTS ====================
 
 const FloatingContainer = styled.div<{ $active: boolean }>`
-  position: fixed;
-  right: 32px;
-  bottom: 328px; /* بين AI (408px) وزر المهام (248px) */
-  z-index: 1001;
-  
-  @media (max-width: 768px) {
-    right: 24px;
-    bottom: 288px; /* Mobile positioning */
-  }
+  position: relative;
+  display: inline-block;
+  margin-right: 8px;
 `;
 
 const ShareContainer = styled.div<{ $active: boolean }>`
@@ -51,15 +46,30 @@ const ShareContainer = styled.div<{ $active: boolean }>`
   `}
 `;
 
+// Backdrop - للإغلاق عند الضغط في الوسط
+const Backdrop = styled.div<{ $active: boolean }>`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 999;
+  opacity: ${props => props.$active ? 1 : 0};
+  pointer-events: ${props => props.$active ? 'auto' : 'none'};
+  transition: opacity 0.3s ease;
+  backdrop-filter: blur(2px);
+`;
+
 const ShareButton = styled.button<{ $spinning: boolean }>`
   position: relative;
-  width: 64px;
-  height: 64px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   border: none;
   padding: 0;
   cursor: pointer;
-  z-index: 10;
+  z-index: 1000;
   
   background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
   
@@ -68,20 +78,19 @@ const ShareButton = styled.button<{ $spinning: boolean }>`
   justify-content: center;
   
   color: white;
-  font-size: 24px;
+  font-size: 20px;
   
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  animation: ${float} 3s ease-in-out infinite;
   
-  box-shadow: 0 8px 24px rgba(245, 158, 11, 0.35);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35);
   
   &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 32px rgba(245, 158, 11, 0.5);
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(245, 158, 11, 0.5);
   }
   
   &:active {
-    transform: translateY(-2px);
+    transform: scale(0.95);
   }
   
   ${props => props.$spinning && css`
@@ -168,6 +177,24 @@ const SocialIcon = styled.a<{ $r: number; $a: number; $active: boolean; $accent:
   }
 `;
 
+const CloseOverlay = styled.div<{ $active: boolean }>`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  cursor: pointer;
+  opacity: ${props => props.$active ? 1 : 0};
+  pointer-events: ${props => props.$active ? 'auto' : 'none'};
+  z-index: 5;
+  
+  &:hover {
+    background: rgba(0, 0, 0, 0.05);
+  }
+`;
+
 const Tooltip = styled.div<{ $show: boolean }>`
   position: absolute;
   bottom: calc(100% + 12px);
@@ -216,58 +243,60 @@ export const FloatingShareButton: React.FC = () => {
   const [isSpinning, setIsSpinning] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
   const { language } = useLanguage();
+  const { user } = useAuth();
   
   const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
+  const profileUrl = user ? `${window.location.origin}/profile/${user.uid}` : currentUrl;
   
   const socialLinks: SocialLink[] = [
     {
+      name: 'Profile',
+      url: (url) => profileUrl,
+      icon: 'https://cdn-icons-png.flaticon.com/512/747/747376.png',
+      accent: '#8b5cf6',
+      angle: 0
+    },
+    {
       name: 'Facebook',
-      url: (url) => `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
+      url: (url) => `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(profileUrl)}`,
       icon: 'https://cdn-icons-png.flaticon.com/512/174/174848.png',
       accent: '#1877F2',
-      angle: 45
+      angle: 51.4
     },
     {
       name: 'Instagram',
       url: (url) => `https://www.instagram.com/`,
       icon: 'https://cdn-icons-png.flaticon.com/512/174/174855.png',
       accent: '#E1306C',
-      angle: 90
+      angle: 102.8
     },
     {
       name: 'Twitter',
-      url: (url) => `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}`,
+      url: (url) => `https://twitter.com/intent/tweet?url=${encodeURIComponent(profileUrl)}`,
       icon: 'https://cdn-icons-png.flaticon.com/512/733/733579.png',
       accent: '#1DA1F2',
-      angle: 135
+      angle: 154.2
     },
     {
       name: 'LinkedIn',
-      url: (url) => `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
+      url: (url) => `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(profileUrl)}`,
       icon: 'https://cdn-icons-png.flaticon.com/512/174/174857.png',
       accent: '#0A66C2',
-      angle: 180
+      angle: 205.6
     },
     {
       name: 'WhatsApp',
-      url: (url) => `https://wa.me/?text=${encodeURIComponent(url)}`,
+      url: (url) => `https://wa.me/?text=${encodeURIComponent(profileUrl)}`,
       icon: 'https://cdn-icons-png.flaticon.com/512/733/733585.png',
       accent: '#25D366',
-      angle: 225
+      angle: 257
     },
     {
       name: 'Telegram',
-      url: (url) => `https://t.me/share/url?url=${encodeURIComponent(url)}`,
+      url: (url) => `https://t.me/share/url?url=${encodeURIComponent(profileUrl)}`,
       icon: 'https://cdn-icons-png.flaticon.com/512/2111/2111646.png',
       accent: '#0088cc',
-      angle: 270
-    },
-    {
-      name: 'Email',
-      url: (url) => `mailto:?subject=Check this out&body=${encodeURIComponent(url)}`,
-      icon: 'https://cdn-icons-png.flaticon.com/512/732/732200.png',
-      accent: '#EA4335',
-      angle: 315
+      angle: 308.4
     }
   ];
   
@@ -285,37 +314,50 @@ export const FloatingShareButton: React.FC = () => {
   };
   
   const handleSocialClick = (platform: string, url: string) => {
-    logger.info('Share clicked', { platform, url: currentUrl });
-    window.open(url, '_blank', 'noopener,noreferrer,width=600,height=600');
+    if (platform === 'Profile') {
+      // نسخ رابط البروفايل
+      navigator.clipboard.writeText(url);
+      logger.info('Profile link copied', { url });
+      setIsActive(false);
+    } else {
+      logger.info('Share clicked', { platform, url });
+      window.open(url, '_blank', 'noopener,noreferrer,width=600,height=600');
+      setIsActive(false);
+    }
   };
   
   const handleAnimationEnd = () => {
     setIsSpinning(false);
   };
   
+  const handleBackdropClick = () => {
+    setIsActive(false);
+  };
+  
   const tooltipText = {
-    bg: isActive ? 'إغلاق المشاركة' : 'مشاركة',
-    en: isActive ? 'Close Share' : 'Share'
+    bg: isActive ? 'إغلاق المشاركة' : 'مشاركة البروفايل',
+    en: isActive ? 'Close Share' : 'Share Profile'
   };
   
   return (
-    <FloatingContainer $active={isActive}>
-      <ShareContainer $active={isActive}>
-        <ShareButton
-          $spinning={isSpinning}
-          onClick={handleToggle}
-          onAnimationEnd={handleAnimationEnd}
-          onMouseEnter={() => setShowTooltip(true)}
-          onMouseLeave={() => setShowTooltip(false)}
-          aria-label={isActive ? 'Close share menu' : 'Open share menu'}
-          style={{ opacity: isActive ? 0 : 1, pointerEvents: isActive ? 'none' : 'auto' }}
-        >
-          <Share2 size={26} />
-        </ShareButton>
-        
-        <Tooltip $show={showTooltip && !isActive}>
-          {tooltipText[language as keyof typeof tooltipText] || tooltipText.en}
-        </Tooltip>
+    <>
+      <Backdrop $active={isActive} onClick={handleBackdropClick} />
+      <FloatingContainer $active={isActive}>
+        <ShareContainer $active={isActive}>
+          <ShareButton
+            $spinning={isSpinning}
+            onClick={handleToggle}
+            onAnimationEnd={handleAnimationEnd}
+            onMouseEnter={() => setShowTooltip(true)}
+            onMouseLeave={() => setShowTooltip(false)}
+            aria-label={isActive ? 'Close share menu' : 'Open share menu'}
+          >
+            <Share2 size={20} />
+          </ShareButton>
+          
+          <Tooltip $show={showTooltip && !isActive}>
+            {tooltipText[language as keyof typeof tooltipText] || tooltipText.en}
+          </Tooltip>
         
         <IconContainer $active={isActive}>
           {socialLinks.map((social) => (
@@ -335,9 +377,10 @@ export const FloatingShareButton: React.FC = () => {
               <img src={social.icon} alt={social.name} />
             </SocialIcon>
           ))}
-        </IconContainer>
-      </ShareContainer>
-    </FloatingContainer>
+          </IconContainer>
+        </ShareContainer>
+      </FloatingContainer>
+    </>
   );
 };
 

@@ -31,23 +31,13 @@ const ImagePreview = styled.div<{ $hasImage: boolean }>`
   border: 4px solid #fff;
   position: relative;
   
-  /* ✅ FIX: Professional mechanical gear shadow - subtle and elegant */
+  /* ✅ FIX: Professional shadow - subtle and elegant */
   box-shadow: 
     0 8px 20px rgba(0, 0, 0, 0.12),
     0 4px 10px rgba(0, 0, 0, 0.08),
     0 2px 5px rgba(0, 0, 0, 0.05);
   
-  /* ✅ FIX: Mechanical gear border effect - professional 8-tooth gear */
-  &::before {
-    content: '';
-    position: absolute;
-    top: -12px;
-    left: -12px;
-    right: -12px;
-    bottom: -12px;
-    /* ✅ Professional mechanical gear shape - 8 teeth */
-    clip-path: polygon(
-      50% 0%, 60% 0%, 65% 10%, 75% 10%, 80% 0%, 90% 0%, 95% 10%, 100% 10%, 100% 20%,
+  /* ✅ Removed gear border effect - using 3D gear component instead */
       95% 20%, 90% 30%, 100% 30%, 100% 50%, 90% 50%, 95% 60%, 100% 60%, 100% 70%,
       95% 70%, 90% 80%, 100% 80%, 100% 90%, 95% 90%, 80% 90%, 75% 90%, 65% 90%, 60% 100%, 50% 100%,
       40% 100%, 35% 90%, 25% 90%, 20% 90%, 5% 90%, 0% 90%, 0% 80%, 10% 80%, 5% 70%, 0% 70%,
