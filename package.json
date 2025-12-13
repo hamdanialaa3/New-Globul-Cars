@@ -51,10 +51,6 @@
     "npm": ">=8.0.0"
   },
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.927.0",
-    "@aws-sdk/client-iot": "^3.927.0",
-    "@aws-sdk/client-iot-data-plane": "^3.927.0",
-    "@azure/msal-node": "^3.7.4",
     "@craco/craco": "^7.1.0",
     "@dataconnect/generated": "file:src/dataconnect-generated",
     "@genkit-ai/firebase": "^1.0.4",
@@ -75,8 +71,8 @@
     "axios": "^1.12.2",
     "cheerio": "^1.1.2",
     "dotenv": "^17.2.2",
-    "firebase": "^12.2.1",
-    "firebase-admin": "^12.6.0",
+    "firebase": "^12.3.0",
+    "firebase-admin": "^12.3.0",
     "googleapis": "^160.0.0",
     "mysql2": "^3.15.0"
   },
@@ -90,7 +86,7 @@
     "prettier": "^3.0.0",
     "ts-node": "^10.9.0",
     "typedoc": "^0.25.0",
-    "typescript": "^5.0.0"
+    "typescript": "^5.4.5"
   },
   "peerDependencies": {
     "firebase": "^12.2.1"

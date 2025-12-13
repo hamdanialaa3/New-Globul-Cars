@@ -1,10 +1,12 @@
 // LoyaltyBanner.tsx
 // Encourages registration / login to unlock platform benefits
 
-import React, { memo } from 'react';
+import React, { memo, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { useAuth } from '../../../../contexts/AuthProvider';
+import { useNavigate } from 'react-router-dom';
+import { analyticsService } from '../../../../services/analytics/UnifiedAnalyticsService';
 
 const Container = styled.section`
   background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-primary-hover) 60%);
@@ -137,8 +139,42 @@ const LoyaltyBanner: React.FC = memo(() => {
   // Only render if unauthenticated (guard against flicker with currentUser check)
   if (currentUser) return null;
 
-  // TODO(analytics): Fire 'home_loyaltybanner_view' when visible & unauthenticated
-  // TODO(analytics): Track 'home_loyaltybanner_signup_click' & 'home_loyaltybanner_signin_click'
+  const bannerRef = useRef<HTMLDivElement>(null);
+
+useEffect(() => {
+  // Fire 'home_loyaltybanner_view' when visible & unauthenticated
+  if (currentUser) return; // Only track for unauth users
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      if (entries[0].isIntersecting) {
+        analyticsService.trackEvent('home_loyaltybanner_view', {});
+        observer.unobserve(entries[0].target);
+      }
+    },
+    { threshold: 0.3 }
+  );
+
+  if (bannerRef.current) {
+    observer.observe(bannerRef.current);
+  }
+
+  return () => observer.disconnect();
+}, [currentUser]);
+
+// When signup is clicked:
+const handleSignupClick = () => {
+  // Track 'home_loyaltybanner_signup_click'
+  analyticsService.trackEvent('home_loyaltybanner_signup_click', {});
+  navigate('/auth/register');
+};
+
+// When signin is clicked:
+const handleSigninClick = () => {
+  // Track 'home_loyaltybanner_signin_click'
+  analyticsService.trackEvent('home_loyaltybanner_signin_click', {});
+  navigate('/auth/login');
+};
 
   return (
     <Container aria-label={t('home.loyaltyBanner.title')}>
@@ -150,8 +186,8 @@ const LoyaltyBanner: React.FC = memo(() => {
         <BenefitItem>{t('home.loyaltyBanner.benefit3')}</BenefitItem>
       </BenefitsList>
       <Actions>
-        <CTAButton data-action="signup">{t('home.loyaltyBanner.cta')}</CTAButton>
-        <CTAButton data-action="signin">{t('home.loyaltyBanner.altCta')}</CTAButton>
+        <CTAButton data-action="signup" onClick={() => navigate('/auth/register')}>{t('home.loyaltyBanner.cta')}</CTAButton>
+        <CTAButton data-action="signin" onClick={handleSigninClick}>{t('home.loyaltyBanner.altCta')}</CTAButton>
       </Actions>
     </Container>
   );

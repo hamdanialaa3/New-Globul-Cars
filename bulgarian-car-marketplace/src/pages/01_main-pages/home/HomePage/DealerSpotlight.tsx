@@ -1,9 +1,11 @@
 // DealerSpotlight.tsx
 // Highlights top verified dealers with mock data (placeholder for future dynamic fetch)
 
-import React, { memo } from 'react';
+import React, { memo, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { useLanguage } from '../../../../contexts/LanguageContext';
+import { useNavigate } from 'react-router-dom';
+import { analyticsService } from '../../../../services/analytics/UnifiedAnalyticsService';
 
 interface DealerInfo {
   id: string;
@@ -106,10 +108,44 @@ const ViewAllLink = styled.button`
 
 const DealerSpotlight: React.FC = memo(() => {
   const { t } = useLanguage();
+  const dealerSectionRef = useRef<HTMLDivElement>(null);
 
-  // TODO(analytics): Fire 'home_dealerspotlight_view' when visible
-  // TODO(analytics): Track 'home_dealerspotlight_click_dealer' with dealer id
-  // TODO(analytics): Track 'home_dealerspotlight_view_all'
+useEffect(() => {
+  // Fire 'home_dealerspotlight_view' when visible
+  const observer = new IntersectionObserver(
+    (entries) => {
+      if (entries[0].isIntersecting) {
+        analyticsService.trackEvent('home_dealerspotlight_view', {
+          dealerCount: MOCK_DEALERS?.length || 0,
+        });
+        observer.unobserve(entries[0].target);
+      }
+    },
+    { threshold: 0.3 }
+  );
+
+  if (dealerSectionRef.current) {
+    observer.observe(dealerSectionRef.current);
+  }
+
+  return () => observer.disconnect();
+}, []);
+
+// When dealer is clicked:
+const handleDealerClick = (dealerId: string) => {
+  // Track 'home_dealerspotlight_click_dealer' with dealer id
+  analyticsService.trackEvent('home_dealerspotlight_click_dealer', {
+    dealerId,
+  });
+  navigate(`/dealer/${dealerId}`);
+};
+
+// When "View All" is clicked:
+const handleViewAll = () => {
+  // Track 'home_dealerspotlight_view_all'
+  analyticsService.trackEvent('home_dealerspotlight_view_all', {});
+  navigate('/dealers');
+};
 
   return (
     <SectionContainer aria-label={t('home.dealerSpotlight.title')}>
@@ -119,7 +155,7 @@ const DealerSpotlight: React.FC = memo(() => {
       </Header>
       <DealerGrid>
         {MOCK_DEALERS.map(d => (
-          <DealerCard key={d.id} data-dealer-id={d.id}>
+          <DealerCard key={d.id} data-dealer-id={d.id} onClick={() => handleDealerClick(d.id)}>
             <DealerName>{d.name}</DealerName>
             <DealerMeta>
               <span>{t('home.dealerSpotlight.rating')}: {d.rating.toFixed(1)}</span>
@@ -129,7 +165,7 @@ const DealerSpotlight: React.FC = memo(() => {
           </DealerCard>
         ))}
       </DealerGrid>
-      <ViewAllLink type="button">{t('home.dealerSpotlight.viewAll')}</ViewAllLink>
+      <ViewAllLink type="button" onClick={handleViewAll}>{t('home.dealerSpotlight.viewAll')}</ViewAllLink>
     </SectionContainer>
   );
 });

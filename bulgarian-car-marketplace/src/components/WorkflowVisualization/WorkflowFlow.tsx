@@ -4,7 +4,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Circular3DProgressLEDEnhanced from './Circular3DProgressLED_Enhanced';
-import WorkflowPersistenceService from '../../services/workflowPersistenceService';
+import { WorkflowPersistenceService } from '../../services/unified-workflow-persistence.service';
 import { SELL_WORKFLOW_STEP_ORDER } from '../../constants/sellWorkflowSteps';
 
 interface WorkflowFlowProps {

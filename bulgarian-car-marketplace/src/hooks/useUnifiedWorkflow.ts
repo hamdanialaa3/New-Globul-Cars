@@ -8,7 +8,7 @@ import UnifiedWorkflowPersistenceService, {
   TimerState,
   ValidationResult
 } from '../services/unified-workflow-persistence.service';
-import ImageStorageService from '../services/image-storage.service';
+import { ImageStorageService } from '../services/ImageStorageService';
 import { serviceLogger } from '../services/logger-wrapper';
 
 export const useUnifiedWorkflow = (currentStep: number) => {

@@ -4,7 +4,7 @@ import { unifiedCarService } from '../../../services/car';
 import { imageUploadService } from '../../../services/car/image-upload.service';
 import { logger } from '../../../services/logger-service';
 import { getCitiesByRegion } from '../../../data/bulgaria-locations';
-import { getModelsByMake } from '../../../data/car-makes-models';
+import { brandsModelsDataService } from '../../../services/brands-models-data.service';
 import { carDeleteService } from '../../../services/garage/car-delete.service';
 
 export const useCarEdit = (
@@ -54,13 +54,19 @@ export const useCarEdit = (
   // Load models when make changes
   useEffect(() => {
     if (editedCar.make) {
-      const models = getModelsByMake(editedCar.make);
-      setAvailableModels(models);
-      
-      // If current model is not in the new models list, clear it
-      if (editedCar.model && !models.includes(editedCar.model)) {
-        setEditedCar(prev => ({ ...prev, model: '' }));
-      }
+      brandsModelsDataService.getModelsForBrand(editedCar.make)
+        .then(models => {
+          setAvailableModels(models);
+          
+          // If current model is not in the new models list, clear it
+          if (editedCar.model && !models.includes(editedCar.model)) {
+            setEditedCar(prev => ({ ...prev, model: '' }));
+          }
+        })
+        .catch(error => {
+          logger.error('Error loading models for brand', error as Error, { make: editedCar.make });
+          setAvailableModels([]);
+        });
     } else {
       setAvailableModels([]);
     }

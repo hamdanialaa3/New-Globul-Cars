@@ -11,7 +11,7 @@ import { SELL_WORKFLOW_STEPS, SellWorkflowStepId } from '../../constants/sellWor
 import useSellWorkflow from '../../hooks/useSellWorkflow';
 import SellWorkflowService from '../../services/sellWorkflowService';
 import { ImageStorageService } from '../../services/ImageStorageService';
-import WorkflowPersistenceService from '../../services/workflowPersistenceService';
+import { WorkflowPersistenceService } from '../../services/unified-workflow-persistence.service';
 import { toast } from 'react-toastify';
 import { logger } from '../../services/logger-service';
 import SellVehicleStep1 from './steps/SellVehicleStep1';

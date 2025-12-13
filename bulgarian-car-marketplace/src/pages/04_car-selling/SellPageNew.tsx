@@ -10,7 +10,7 @@ import { useLanguage } from '../../contexts/LanguageContext';
 import { useAuth } from '../../contexts/AuthProvider';
 import SplitScreenLayout from '../../components/SplitScreenLayout';
 import { WorkflowFlow } from '../../components/WorkflowVisualization';
-import WorkflowPersistenceService from '../../services/workflowPersistenceService';
+import { WorkflowPersistenceService } from '../../services/unified-workflow-persistence.service';
 import { getAllBrands, getFeaturedBrands, getModelsForBrand, getClassesForBrand, getModelsForBrandAndClass, getAllModelsForBrand } from '../../services/carBrandsService';
 import { CAR_YEARS, FUEL_TYPES } from '../../data/dropdown-options';
 

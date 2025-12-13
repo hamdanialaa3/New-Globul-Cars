@@ -48,6 +48,7 @@ import { AuthProvider } from '../contexts/AuthProvider';
 import { ProfileTypeProvider } from '../contexts/ProfileTypeContext';
 import { ToastProvider } from '../components/Toast';
 import { FilterProvider } from '../contexts/FilterContext';
+import StripeProvider from './StripeProvider';
 
 // Components
 import ErrorBoundary from '../components/ErrorBoundary';
@@ -101,37 +102,39 @@ export const AppProviders: React.FC<AppProvidersProps> = ({ children }) => {
                 <LanguageProvider>
                     <CustomThemeProvider>
                         <AuthProvider>
-                            <ProfileTypeProvider>
-                                <ToastProvider>
-                                    <GoogleReCaptchaProvider reCaptchaKey={recaptchaKey || 'dummy-key'}>
-                                        <Router>
-                                            <FilterProvider>
-                                                {/* Facebook Pixel - Analytics */}
-                                                <Suspense fallback={<div style={{ height: '0' }} />}>
-                                                    <FacebookPixel />
-                                                </Suspense>
+                            <StripeProvider>
+                                <ProfileTypeProvider>
+                                    <ToastProvider>
+                                        <GoogleReCaptchaProvider reCaptchaKey={recaptchaKey || 'dummy-key'}>
+                                            <Router>
+                                                <FilterProvider>
+                                                    {/* Facebook Pixel - Analytics */}
+                                                    <Suspense fallback={<div style={{ height: '0' }} />}>
+                                                        <FacebookPixel />
+                                                    </Suspense>
 
-                                                {/* Skip Navigation - Accessibility */}
-                                                <SkipNavigation />
+                                                    {/* Skip Navigation - Accessibility */}
+                                                    <SkipNavigation />
 
-                                                {/* Notification Handler - Real-time notifications */}
-                                                <NotificationHandler />
+                                                    {/* Notification Handler - Real-time notifications */}
+                                                    <NotificationHandler />
 
-                                                {/* Progress Bar - Loading indicator */}
-                                                <Suspense
-                                                    fallback={
-                                                        <Suspense fallback={<div>Loading...</div>}>
-                                                            <ProgressBar duration={2000} />
-                                                        </Suspense>
-                                                    }
-                                                >
-                                                    {children}
-                                                </Suspense>
-                                            </FilterProvider>
-                                        </Router>
-                                    </GoogleReCaptchaProvider>
-                                </ToastProvider>
-                            </ProfileTypeProvider>
+                                                    {/* Progress Bar - Loading indicator */}
+                                                    <Suspense
+                                                        fallback={
+                                                            <Suspense fallback={<div>Loading...</div>}>
+                                                                <ProgressBar duration={2000} />
+                                                            </Suspense>
+                                                        }
+                                                    >
+                                                        {children}
+                                                    </Suspense>
+                                                </FilterProvider>
+                                            </Router>
+                                        </GoogleReCaptchaProvider>
+                                    </ToastProvider>
+                                </ProfileTypeProvider>
+                            </StripeProvider>
                         </AuthProvider>
                     </CustomThemeProvider>
                 </LanguageProvider>

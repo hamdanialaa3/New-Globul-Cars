@@ -1,9 +1,11 @@
 // LifeMomentsBrowse.tsx
 // Presents lifestyle-oriented entry points to car discovery
 
-import React, { memo } from 'react';
+import React, { memo, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { useLanguage } from '../../../../contexts/LanguageContext';
+import { useNavigate } from 'react-router-dom';
+import { analyticsService } from '../../../../services/analytics/UnifiedAnalyticsService';
 
 interface LifeMomentItem {
   key: string;
@@ -90,9 +92,37 @@ const MomentTitle = styled.span`
 
 const LifeMomentsBrowse: React.FC = memo(() => {
   const { t } = useLanguage();
+  const browseSectionRef = useRef<HTMLDivElement>(null);
 
-  // TODO(analytics): Fire 'home_lifemoments_view' once visible
-  // TODO(analytics): Track 'home_lifemoments_click' with moment key
+useEffect(() => {
+  // Fire 'home_lifemoments_view' once visible
+  const observer = new IntersectionObserver(
+    (entries) => {
+      if (entries[0].isIntersecting) {
+        analyticsService.trackEvent('home_lifemoments_view', {
+          momentCount: MOMENTS?.length || 0,
+        });
+        observer.unobserve(entries[0].target);
+      }
+    },
+    { threshold: 0.3 }
+  );
+
+  if (browseSectionRef.current) {
+    observer.observe(browseSectionRef.current);
+  }
+
+  return () => observer.disconnect();
+}, []);
+
+// When moment is clicked:
+const handleMomentClick = (momentKey: string) => {
+  // Track 'home_lifemoments_click' with moment key
+  analyticsService.trackEvent('home_lifemoments_click', {
+    momentKey,
+  });
+  navigate(`/browse?moment=${momentKey}`);
+};
 
   return (
     <Section aria-label={t('home.lifeMomentsBrowse.title')}>
@@ -102,7 +132,7 @@ const LifeMomentsBrowse: React.FC = memo(() => {
       </Header>
       <MomentsGrid>
         {MOMENTS.map(m => (
-          <MomentCard key={m.key} data-moment={m.key}>
+          <MomentCard key={m.key} data-moment={m.key} onClick={() => handleMomentClick(m.key)}>
             <MomentLabel>{t('home.lifeMomentsBrowse.title')}</MomentLabel>
             <MomentTitle>{t(`home.lifeMomentsBrowse.moments.${m.key}.title`)}</MomentTitle>
           </MomentCard>

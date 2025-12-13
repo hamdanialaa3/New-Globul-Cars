@@ -421,8 +421,11 @@ service cloud.firestore {
       // Users can read their own points, or any authenticated user can read any points (for leaderboard)
       allow read: if isAuthenticated();
       
-      // Only server/admin can write (via Cloud Functions)
-      allow write: if false; // Points should be updated via Cloud Functions only
+      // Users can create their own initial userPoints document
+      allow create: if isAuthenticated() && userId == request.auth.uid;
+      
+      // Only server/admin can update/delete (via Cloud Functions)
+      allow update, delete: if isAdmin();
     }
     
     // ==================== PROFILE ENHANCEMENTS - PHASE 2 ====================
@@ -637,6 +640,26 @@ service cloud.firestore {
                        !('vehicleId' in request.resource.data.diff(resource.data));
       
       // Users can delete their own reminders
+      allow delete: if isAuthenticated() && 
+                       resource.data.userId == request.auth.uid;
+    }
+    
+    // Saved Searches
+    match /savedSearches/{searchId} {
+      // Users can read their own saved searches
+      allow read: if isAuthenticated() && 
+                     resource.data.userId == request.auth.uid;
+      
+      // Users can create their own saved searches
+      allow create: if isAuthenticated() && 
+                       request.resource.data.userId == request.auth.uid;
+      
+      // Users can update their own saved searches
+      allow update: if isAuthenticated() && 
+                       resource.data.userId == request.auth.uid &&
+                       !('userId' in request.resource.data.diff(resource.data));
+      
+      // Users can delete their own saved searches
       allow delete: if isAuthenticated() && 
                        resource.data.userId == request.auth.uid;
     }

@@ -12,7 +12,7 @@ import { Upload, X, Image as ImageIcon } from 'lucide-react';
 import * as S from './styles';
 import { SellWorkflowLayout } from '../../../../components/SellWorkflow';
 import SellWorkflowStepStateService from '../../../../services/sellWorkflowStepState';
-import WorkflowPersistenceService from '../../../../services/workflowPersistenceService';
+import { WorkflowPersistenceService } from '../../../../services/unified-workflow-persistence.service';
 import { useImagesWorkflow } from './useImagesWorkflow';
 import { toast } from 'react-toastify';
 

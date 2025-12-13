@@ -26,7 +26,6 @@
     "instantsearch.css": "^8.9.0",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.544.0",
-    "next-auth": "^4.24.11",
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
     "react-firebase-hooks": "^5.1.1",
@@ -41,11 +40,14 @@
     "recharts": "^3.2.1",
     "styled-components": "^6.1.19",
     "translate": "^3.0.1",
-    "typescript": "^4.9.5",
-    "web-vitals": "^2.1.4"
+    "typescript": "^5.4.5",
+    "web-vitals": "^2.1.4",
+    "@stripe/react-stripe-js": "^2.8.0",
+    "@stripe/stripe-js": "^3.5.0"
   },
   "scripts": {
     "start": "craco start",
+    "start:dev": "cross-env NODE_OPTIONS=--max_old_space_size=4096 BROWSER=none npm run start",
     "build": "craco build",
     "build:analyze": "npm run build && npx source-map-explorer 'build/static/js/*.js'",
     "build:optimized": "npm run build && node scripts/optimize-images.js",
@@ -58,7 +60,8 @@
     "deploy:hosting": "firebase deploy --only hosting",
     "deploy:functions": "firebase deploy --only functions",
     "serve": "firebase serve --only hosting",
-    "emulate": "firebase emulators:start"
+    "emulate": "firebase emulators:start",
+    "type-check": "tsc --noEmit"
   },
   "eslintConfig": {
     "extends": [
@@ -109,7 +112,8 @@
     "workbox-precaching": "^7.4.0",
     "workbox-routing": "^7.4.0",
     "workbox-strategies": "^7.4.0",
-    "workbox-webpack-plugin": "^7.4.0"
+    "workbox-webpack-plugin": "^7.4.0",
+    "cross-env": "^7.0.3"
   },
   "browserslist": {
     "production": [

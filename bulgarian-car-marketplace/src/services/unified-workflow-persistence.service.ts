@@ -254,7 +254,7 @@ export class UnifiedWorkflowPersistenceService {
 
     // ✅ CRITICAL: Clear images from IndexedDB
     try {
-      const ImageStorageService = (await import('./image-storage.service')).default;
+      const { ImageStorageService } = await import('./ImageStorageService');
       await ImageStorageService.clearImages();
       serviceLogger.info('Images cleared from IndexedDB');
     } catch (error) {
@@ -477,5 +477,155 @@ export interface ValidationResult {
   critical: string[];
   recommended: string[];
 }
+
+// ==================== BACKWARD COMPATIBILITY WRAPPERS ====================
+// These wrappers allow old code using WorkflowPersistenceService to work with UnifiedWorkflowPersistenceService
+
+/**
+ * @deprecated Use UnifiedWorkflowPersistenceService.saveData() instead
+ * Wrapper for backward compatibility with WorkflowPersistenceService.saveState()
+ */
+export const WorkflowPersistenceService = {
+  /**
+   * @deprecated Use UnifiedWorkflowPersistenceService.saveData() instead
+   */
+  saveState: (data: Record<string, any>, currentStep: string): void => {
+    // Convert step string to number
+    const stepMap: Record<string, number> = {
+      'vehicle-data': 1,
+      'vehicle-details': 2,
+      'equipment': 3,
+      'images': 4,
+      'pricing': 5,
+      'contact': 6,
+      'preview': 7
+    };
+    const stepNumber = stepMap[currentStep] || 1;
+    
+    UnifiedWorkflowPersistenceService.saveData(data as Partial<UnifiedWorkflowData>, stepNumber);
+  },
+
+  /**
+   * @deprecated Use UnifiedWorkflowPersistenceService.loadData() instead
+   */
+  loadState: (): { data: Record<string, any>; images: string[]; lastUpdated: number; currentStep: string } | null => {
+    const data = UnifiedWorkflowPersistenceService.loadData();
+    if (!data) return null;
+
+    // Convert step number to string
+    const stepMap: Record<number, string> = {
+      1: 'vehicle-data',
+      2: 'vehicle-details',
+      3: 'equipment',
+      4: 'images',
+      5: 'pricing',
+      6: 'contact',
+      7: 'preview'
+    };
+    const currentStep = stepMap[data.currentStep] || 'vehicle-data';
+
+    return {
+      data: data as Record<string, any>,
+      images: [], // Images are now in IndexedDB, not in state
+      lastUpdated: data.lastSavedAt,
+      currentStep
+    };
+  },
+
+  /**
+   * @deprecated Use UnifiedWorkflowPersistenceService.clearData() instead
+   */
+  clearState: (): void => {
+    UnifiedWorkflowPersistenceService.clearData().catch((error) => {
+      serviceLogger.warn('Error clearing state in wrapper', { error });
+    });
+  },
+
+  /**
+   * @deprecated Use ImageStorageService.getImages() instead
+   * Returns empty array for backward compatibility (images are now in IndexedDB)
+   */
+  getImages: (): string[] => {
+    // Images are now stored in IndexedDB via ImageStorageService
+    // Return empty array for backward compatibility
+    // Callers should use ImageStorageService.getImages() to get File objects
+    return [];
+  },
+
+  /**
+   * @deprecated Use ImageStorageService.getImages() instead
+   * Converts IndexedDB images to File objects
+   */
+  getImagesAsFiles: async (): Promise<File[]> => {
+    try {
+      const { ImageStorageService } = await import('./ImageStorageService');
+      return await ImageStorageService.getImages();
+    } catch (error) {
+      serviceLogger.error('Error getting images as files', error as Error);
+      return [];
+    }
+  },
+
+  /**
+   * @deprecated Use ImageStorageService.saveImages() instead
+   */
+  saveImages: async (files: File[]): Promise<void> => {
+    const { ImageStorageService } = await import('./ImageStorageService');
+    await ImageStorageService.saveImages(files);
+    
+    // Update imagesCount in workflow data
+    const data = UnifiedWorkflowPersistenceService.loadData();
+    if (data) {
+      UnifiedWorkflowPersistenceService.saveData(
+        { imagesCount: files.length },
+        data.currentStep
+      );
+    }
+  },
+
+  /**
+   * @deprecated Use ImageStorageService.clearImages() instead
+   */
+  clearImages: async (): Promise<void> => {
+    const { ImageStorageService } = await import('./ImageStorageService');
+    await ImageStorageService.clearImages();
+  },
+
+  /**
+   * @deprecated Use UnifiedWorkflowPersistenceService.getCurrentStep() instead
+   */
+  getCurrentStep: (): string => {
+    const step = UnifiedWorkflowPersistenceService.getCurrentStep();
+    const stepMap: Record<number, string> = {
+      1: 'vehicle-data',
+      2: 'vehicle-details',
+      3: 'equipment',
+      4: 'images',
+      5: 'pricing',
+      6: 'contact',
+      7: 'preview'
+    };
+    return stepMap[step] || 'vehicle-data';
+  },
+
+  /**
+   * @deprecated Use UnifiedWorkflowPersistenceService.getProgress() instead
+   */
+  getProgress: (): number => {
+    return UnifiedWorkflowPersistenceService.getProgress();
+  },
+
+  /**
+   * @deprecated Use UnifiedWorkflowPersistenceService.getStorageUsage() instead
+   */
+  getStorageUsage: (): { used: number; max: number; percentage: number } => {
+    const usage = UnifiedWorkflowPersistenceService.getStorageUsage();
+    return {
+      used: usage.used,
+      max: 5 * 1024 * 1024, // 5MB estimate
+      percentage: usage.percentage
+    };
+  }
+};
 
 export default UnifiedWorkflowPersistenceService;

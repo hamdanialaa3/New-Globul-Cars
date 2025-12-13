@@ -6,12 +6,18 @@ import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 import * as logger from 'firebase-functions/logger';
 import Stripe from 'stripe';
 import { STRIPE_CONFIG } from './config';
+import { 
+  sendSubscriptionActivatedEmail, 
+  sendPaymentFailedEmail, 
+  sendSubscriptionCanceledEmail 
+} from './stripe-email-service';
 
 const db = getFirestore();
 
 // Initialize Stripe
+// Use a stable, supported Stripe API version (types bundled with stripe@20)
 const stripe = new Stripe(STRIPE_CONFIG.secretKey, {
-  apiVersion: '2025-09-30.clover' as any,
+  apiVersion: '2024-06-20',
 });
 
 // Helper to safely access Stripe properties that may not be in type definitions

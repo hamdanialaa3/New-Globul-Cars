@@ -14,7 +14,7 @@
 
 import React, { Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import ProtectedRoute from '../components/ProtectedRoute';
+import { AuthGuard } from '../components/guards';
 
 // Lazy load dealer pages
 const DealerPublicPage = React.lazy(() => import('@/pages/05_dealer/DealerPublicPage'));
@@ -47,9 +47,9 @@ export const DealerRoutes: React.FC = () => {
                 <Route
                     path="/dealer-dashboard"
                     element={
-                        <ProtectedRoute>
+                        <AuthGuard requireAuth={true}>
                             <DealerDashboardPage />
-                        </ProtectedRoute>
+                        </AuthGuard>
                     }
                 />
             </Routes>

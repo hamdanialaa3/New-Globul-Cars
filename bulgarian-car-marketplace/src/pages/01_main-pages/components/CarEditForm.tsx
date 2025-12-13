@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { CarListing } from '../../../types/CarListing';
-import { getAllMakes, getModelsByMake } from '../../../data/car-makes-models';
+import { brandsModelsDataService } from '../../../services/brands-models-data.service';
 import { BULGARIA_REGIONS, getCitiesByRegion } from '../../../data/bulgaria-locations';
 import {
   DetailsSection,
@@ -53,6 +53,18 @@ export const CarEditForm: React.FC<CarEditFormProps> = ({
   onSetAvailableCities,
   onDelete,
 }) => {
+  const [availableMakes, setAvailableMakes] = useState<string[]>([]);
+
+  // Load all brands on mount
+  useEffect(() => {
+    brandsModelsDataService.getAllBrands()
+      .then(brands => setAvailableMakes(brands))
+      .catch(error => {
+        console.error('Error loading brands:', error);
+        setAvailableMakes([]);
+      });
+  }, []);
+
   return (
     <>
       {/* Price Section - Only for Edit Mode */}
@@ -112,7 +124,7 @@ export const CarEditForm: React.FC<CarEditFormProps> = ({
               }}
             >
               <option value="">{language === 'bg' ? 'Изберете марка' : 'Select make'}</option>
-              {getAllMakes().filter(make => make !== 'Other').map(make => (
+              {availableMakes.filter(make => make !== 'Other').map(make => (
                 <option key={make} value={make}>{make}</option>
               ))}
               <option className="other-option" value="Other">{language === 'bg' ? '▼ Друго' : '▼ Other'}</option>

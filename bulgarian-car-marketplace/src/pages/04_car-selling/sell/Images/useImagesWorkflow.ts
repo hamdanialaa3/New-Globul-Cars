@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import WorkflowPersistenceService from '../../../../services/workflowPersistenceService';
+import { WorkflowPersistenceService } from '../../../../services/unified-workflow-persistence.service';
 import useSellWorkflow from '../../../../hooks/useSellWorkflow';
 import { logger } from '../../../../services/logger-service';
 
@@ -18,8 +18,23 @@ const filterFiles = (files: File[]) => {
 
 export const useImagesWorkflow = () => {
   const { updateWorkflowData } = useSellWorkflow();
-  const [files, setFiles] = useState<File[]>(() => WorkflowPersistenceService.getImagesAsFiles());
+  const [files, setFiles] = useState<File[]>([]);
   const [isSaving, setIsSaving] = useState(false);
+
+  // Load images from storage on mount
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        const savedImages = await WorkflowPersistenceService.getImagesAsFiles();
+        if (savedImages.length > 0) {
+          setFiles(savedImages);
+        }
+      } catch (error) {
+        logger.warn('Failed to load images from storage', error as Error);
+      }
+    };
+    loadImages();
+  }, []);
 
   useEffect(() => {
     updateWorkflowData(

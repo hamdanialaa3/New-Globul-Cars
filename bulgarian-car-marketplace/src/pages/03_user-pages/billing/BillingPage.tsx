@@ -4,12 +4,12 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { useAuth } from '@/contexts/AuthProvider';
-import { useToast } from '@/components/Toast';
-import { subscriptionService, type BillingInterval } from '@/services/billing/subscription-service';
-import { analyticsService } from '@/services/analytics/UnifiedAnalyticsService';
-import type { SubscriptionInfo } from '@/types/subscription';
+import { useLanguage } from '../../../contexts/LanguageContext';
+import { useAuth } from '../../../contexts/AuthProvider';
+import { useToast } from '../../../components/Toast';
+import { subscriptionService, type BillingInterval } from '../../../services/billing/subscription-service';
+import { analyticsService } from '../../../services/analytics/UnifiedAnalyticsService';
+import type { SubscriptionInfo } from '../../../types/subscription';
 
 const Container = styled.div`
   max-width: 960px;

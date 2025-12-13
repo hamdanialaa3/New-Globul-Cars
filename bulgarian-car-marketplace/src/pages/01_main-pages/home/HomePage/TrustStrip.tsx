@@ -2,9 +2,11 @@
 // Lightweight trust & marketplace pulse strip displayed near top of homepage
 // Shows key marketplace statistics to build confidence and conversion.
 
-import React, { memo } from 'react';
+import React, { memo, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { useLanguage } from '../../../../contexts/LanguageContext';
+import { useNavigate } from 'react-router-dom';
+import { analyticsService } from '../../../../services/analytics/UnifiedAnalyticsService';
 
 // Styled components kept minimal (<300 lines total file) as per governance
 const StripContainer = styled.section`
@@ -94,9 +96,39 @@ const TrustStrip: React.FC<TrustStripProps> = memo(({
   lastUpdatedMinutesAgo = 5
 }) => {
   const { t } = useLanguage();
+  const trustStripRef = useRef<HTMLDivElement>(null);
 
-  // TODO(analytics): fire 'home_truststrip_view' when component becomes visible (IntersectionObserver)
-  // TODO(analytics): track clicks on browse and sell buttons ('home_truststrip_cta_browse', 'home_truststrip_cta_sell')
+useEffect(() => {
+  // fire 'home_truststrip_view' when component becomes visible (IntersectionObserver)
+  const observer = new IntersectionObserver(
+    (entries) => {
+      if (entries[0].isIntersecting) {
+        analyticsService.trackEvent('home_truststrip_view', {});
+        observer.unobserve(entries[0].target);
+      }
+    },
+    { threshold: 0.3 }
+  );
+
+  if (trustStripRef.current) {
+    observer.observe(trustStripRef.current);
+  }
+
+  return () => observer.disconnect();
+}, []);
+
+// When CTA buttons are clicked:
+const handleBrowseClick = () => {
+  // track 'home_truststrip_cta_browse'
+  analyticsService.trackEvent('home_truststrip_cta_browse', {});
+  navigate('/cars');
+};
+
+const handleSellClick = () => {
+  // track 'home_truststrip_cta_sell'
+  analyticsService.trackEvent('home_truststrip_cta_sell', {});
+  navigate('/sell');
+};
 
   return (
     <StripContainer aria-label={t('home.trustStrip.marketplacePulse')}>
@@ -118,10 +150,10 @@ const TrustStrip: React.FC<TrustStripProps> = memo(({
       </StatItem>
 
       <Actions>
-        <ActionButton type="button" data-cta="browse">
+        <ActionButton type="button" data-cta="browse" onClick={handleBrowseClick}>
           {t('home.trustStrip.ctaBrowse')}
         </ActionButton>
-        <ActionButton type="button" data-cta="sell">
+        <ActionButton type="button" data-cta="sell" onClick={handleSellClick}>
           {t('home.trustStrip.ctaSell')}
         </ActionButton>
       </Actions>

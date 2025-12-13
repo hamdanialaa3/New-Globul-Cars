@@ -14,7 +14,7 @@ import { useToast } from '../../../components/Toast';
 import styled from 'styled-components';
 import { SellProgressBar } from '../../../components/SellWorkflow';
 import SellWorkflowStepStateService from '../../../services/sellWorkflowStepState';
-import WorkflowPersistenceService from '../../../services/workflowPersistenceService';
+import { WorkflowPersistenceService } from '../../../services/unified-workflow-persistence.service';
 
 const MAX_IMAGES = 20;
 

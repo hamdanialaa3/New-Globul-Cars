@@ -346,13 +346,17 @@ const formEquals = useCallback(
   const handleInputChange = useCallback(
     (field: keyof VehicleFormData, value: string | boolean) => {
       // 🐛 DEBUG: Log all input changes to track button clicks
-      console.log('🔄 handleInputChange called:', { field, value, timestamp: new Date().toISOString() });
+      if (process.env.NODE_ENV === 'development') {
+        serviceLogger.debug('handleInputChange called', { field, value, timestamp: new Date().toISOString() });
+      }
       
       setFormData(prev => {
         const next = { ...prev, [field]: value };
         
         // 🐛 DEBUG: Log state change
-        console.log('📝 formData updating:', { field, oldValue: prev[field], newValue: value });
+        if (process.env.NODE_ENV === 'development') {
+          serviceLogger.debug('formData updating', { field, oldValue: prev[field], newValue: value });
+        }
         
         if (field === 'make') {
           // Preserve raw user input then store canonical form for consistency
@@ -378,14 +382,16 @@ const formEquals = useCallback(
     const hasBasicInfo = !!formData.make && !!formData.model && !!registrationYear;
 
     // 🐛 DEBUG: Log validation status
-    console.log('📋 Form Validation:', {
-      make: formData.make || '❌ Missing',
-      model: formData.model || '❌ Missing',
-      year: formData.year || '(not set)',
-      firstRegistration: formData.firstRegistration || '(not set)',
-      registrationYear: registrationYear || '❌ Missing',
-      canContinue: hasBasicInfo
-    });
+    if (process.env.NODE_ENV === 'development') {
+      serviceLogger.debug('Form Validation', {
+        make: formData.make || 'Missing',
+        model: formData.model || 'Missing',
+        year: formData.year || '(not set)',
+        firstRegistration: formData.firstRegistration || '(not set)',
+        registrationYear: registrationYear || 'Missing',
+        canContinue: hasBasicInfo
+      });
+    }
 
     return hasBasicInfo; // Users can continue with minimal info (Brand + Model + Year)
   }, [

@@ -3,8 +3,8 @@
 
 import React, { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import SuccessPage from '@/pages/billing/SuccessPage';
-import { analyticsService } from '@/services/analytics/UnifiedAnalyticsService';
+import SuccessPage from '../billing/SuccessPage';
+import { analyticsService } from '../../../services/analytics/UnifiedAnalyticsService';
 
 const BillingSuccessPage: React.FC = () => {
   const [params] = useSearchParams();

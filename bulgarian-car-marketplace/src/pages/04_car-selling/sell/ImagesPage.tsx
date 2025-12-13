@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import ImageOptimizationService from '../../../services/imageOptimizationService';
-import WorkflowPersistenceService from '../../../services/workflowPersistenceService';
+import { WorkflowPersistenceService } from '../../../services/unified-workflow-persistence.service';
 import { logger } from '../../../services/logger-service';
 
 const ImagesContainer = styled.div`
@@ -278,13 +278,16 @@ const ImagesPage: React.FC = () => {
 
   // Load saved images on mount
   useEffect(() => {
-    const savedImages = WorkflowPersistenceService.getImagesAsFiles();
-    if (savedImages.length > 0) {
-      setImages(savedImages);
-      if (process.env.NODE_ENV === 'development') {
-        logger.debug(`Loaded ${savedImages.length} saved images`);
+    const loadImages = async () => {
+      const savedImages = await WorkflowPersistenceService.getImagesAsFiles();
+      if (savedImages.length > 0) {
+        setImages(savedImages);
+        if (process.env.NODE_ENV === 'development') {
+          logger.debug(`Loaded ${savedImages.length} saved images`);
+        }
       }
-    }
+    };
+    loadImages();
   }, []);
   
   // ✅ FIX: Create and cleanup preview URLs

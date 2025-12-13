@@ -3,7 +3,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { logger } from '../services/logger-service';
-import WorkflowPersistenceService from '../services/workflowPersistenceService';
+import { WorkflowPersistenceService } from '../services/unified-workflow-persistence.service';
 import { useAuth } from '../contexts/AuthProvider';
 import DraftsService from '../services/drafts-service';
 import { SELL_WORKFLOW_STEP_ORDER } from '../constants/sellWorkflowSteps';

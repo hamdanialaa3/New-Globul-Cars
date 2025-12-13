@@ -20,7 +20,7 @@ import KeyboardShortcutsHelper from '../../../components/KeyboardShortcutsHelper
 import useDraftAutoSave from '../../../hooks/useDraftAutoSave';
 import { useSellWorkflow } from '../../../hooks/useSellWorkflow';
 import useWorkflowStep from '../../../hooks/useWorkflowStep';
-import WorkflowPersistenceService from '../../../services/workflowPersistenceService';
+import { WorkflowPersistenceService } from '../../../services/unified-workflow-persistence.service';
 import ImageUploadService from '../../../services/image-upload-service';
 import { logger } from '../../../services/logger-service';
 import { SellWorkflowLayout } from '../../../components/SellWorkflow';

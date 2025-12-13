@@ -24,7 +24,6 @@
 import React, { Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { AuthGuard } from '../components/guards';
-import ProtectedRoute from '../components/ProtectedRoute';
 
 // ==================== PUBLIC PAGES ====================
 const HomePage = React.lazy(() => import('@/pages/01_main-pages/home/HomePage'));
@@ -140,9 +139,9 @@ export const MainRoutes: React.FC = () => {
                 <Route
                     path="/notifications"
                     element={
-                        <ProtectedRoute>
+                        <AuthGuard requireAuth={true}>
                             <NotificationsPage />
-                        </ProtectedRoute>
+                        </AuthGuard>
                     }
                 />
 
@@ -150,9 +149,9 @@ export const MainRoutes: React.FC = () => {
                 <Route
                     path="/saved-searches"
                     element={
-                        <ProtectedRoute>
+                        <AuthGuard requireAuth={true}>
                             <SavedSearchesPage />
-                        </ProtectedRoute>
+                        </AuthGuard>
                     }
                 />
 
@@ -160,9 +159,9 @@ export const MainRoutes: React.FC = () => {
                 <Route
                     path="/favorites"
                     element={
-                        <ProtectedRoute>
+                        <AuthGuard requireAuth={true}>
                             <FavoritesPage />
-                        </ProtectedRoute>
+                        </AuthGuard>
                     }
                 />
 
@@ -170,9 +169,9 @@ export const MainRoutes: React.FC = () => {
                 <Route
                     path="/dashboard"
                     element={
-                        <ProtectedRoute>
+                        <AuthGuard requireAuth={true}>
                             <DashboardPage />
-                        </ProtectedRoute>
+                        </AuthGuard>
                     }
                 />
 
@@ -182,9 +181,9 @@ export const MainRoutes: React.FC = () => {
                 <Route
                     path="/checkout/:carId"
                     element={
-                        <ProtectedRoute>
+                        <AuthGuard requireAuth={true}>
                             <CheckoutPage />
-                        </ProtectedRoute>
+                        </AuthGuard>
                     }
                 />
 
@@ -192,9 +191,9 @@ export const MainRoutes: React.FC = () => {
                 <Route
                     path="/payment-success/:transactionId"
                     element={
-                        <ProtectedRoute>
+                        <AuthGuard requireAuth={true}>
                             <PaymentSuccessPage />
-                        </ProtectedRoute>
+                        </AuthGuard>
                     }
                 />
 
@@ -202,9 +201,9 @@ export const MainRoutes: React.FC = () => {
                 <Route
                     path="/payment-canceled"
                     element={
-                        <ProtectedRoute>
+                        <AuthGuard requireAuth={true}>
                             <PaymentCanceledPage />
-                        </ProtectedRoute>
+                        </AuthGuard>
                     }
                 />
 
@@ -212,9 +211,9 @@ export const MainRoutes: React.FC = () => {
                 <Route
                     path="/billing/success"
                     element={
-                        <ProtectedRoute>
+                        <AuthGuard requireAuth={true}>
                             <BillingSuccessPage />
-                        </ProtectedRoute>
+                        </AuthGuard>
                     }
                 />
 
@@ -222,9 +221,9 @@ export const MainRoutes: React.FC = () => {
                 <Route
                     path="/billing/canceled"
                     element={
-                        <ProtectedRoute>
+                        <AuthGuard requireAuth={true}>
                             <BillingCanceledPage />
-                        </ProtectedRoute>
+                        </AuthGuard>
                     }
                 />
 
@@ -232,9 +231,9 @@ export const MainRoutes: React.FC = () => {
                 <Route
                     path="/invoices"
                     element={
-                        <ProtectedRoute>
+                        <AuthGuard requireAuth={true}>
                             <InvoicesPage />
-                        </ProtectedRoute>
+                        </AuthGuard>
                     }
                 />
 
@@ -242,9 +241,9 @@ export const MainRoutes: React.FC = () => {
                 <Route
                     path="/commissions"
                     element={
-                        <ProtectedRoute>
+                        <AuthGuard requireAuth={true}>
                             <CommissionsPage />
-                        </ProtectedRoute>
+                        </AuthGuard>
                     }
                 />
 
@@ -266,19 +265,33 @@ export const MainRoutes: React.FC = () => {
                 <Route
                     path="/events"
                     element={
-                        <ProtectedRoute>
+                        <AuthGuard requireAuth={true}>
                             <EventsPage />
-                        </ProtectedRoute>
+                        </AuthGuard>
                     }
                 />
 
                 {/* ==================== ANALYTICS & MANAGEMENT ==================== */}
 
                 {/* Analytics Dashboard */}
-                <Route path="/analytics" element={<AnalyticsDashboard />} />
+                <Route
+                    path="/analytics"
+                    element={
+                        <AuthGuard requireAuth={true}>
+                            <AnalyticsDashboard />
+                        </AuthGuard>
+                    }
+                />
 
                 {/* Team Management */}
-                <Route path="/team" element={<TeamManagement />} />
+                <Route
+                    path="/team"
+                    element={
+                        <AuthGuard requireAuth={true}>
+                            <TeamManagement />
+                        </AuthGuard>
+                    }
+                />
 
                 {/* ==================== IOT FEATURES ==================== */}
 
@@ -286,9 +299,9 @@ export const MainRoutes: React.FC = () => {
                 <Route
                     path="/iot-dashboard"
                     element={
-                        <ProtectedRoute>
+                        <AuthGuard requireAuth={true}>
                             <IoTDashboardPage />
-                        </ProtectedRoute>
+                        </AuthGuard>
                     }
                 />
 
@@ -296,9 +309,9 @@ export const MainRoutes: React.FC = () => {
                 <Route
                     path="/car-tracking"
                     element={
-                        <ProtectedRoute>
+                        <AuthGuard requireAuth={true}>
                             <CarTrackingPage />
-                        </ProtectedRoute>
+                        </AuthGuard>
                     }
                 />
 
@@ -306,9 +319,9 @@ export const MainRoutes: React.FC = () => {
                 <Route
                     path="/maintenance-schedule"
                     element={
-                        <ProtectedRoute>
+                        <AuthGuard requireAuth={true}>
                             <MaintenanceSchedulePage />
-                        </ProtectedRoute>
+                        </AuthGuard>
                     }
                 />
 

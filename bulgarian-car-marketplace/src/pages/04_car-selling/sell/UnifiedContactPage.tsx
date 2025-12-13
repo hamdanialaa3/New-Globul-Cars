@@ -20,7 +20,7 @@ import useDraftAutoSave from '../../../hooks/useDraftAutoSave';
 import { useSellWorkflow } from '../../../hooks/useSellWorkflow';
 import { useUnifiedWorkflow } from '../../../hooks/useUnifiedWorkflow';
 import useWorkflowStep from '../../../hooks/useWorkflowStep';
-import WorkflowPersistenceService from '../../../services/workflowPersistenceService';
+import { WorkflowPersistenceService } from '../../../services/unified-workflow-persistence.service';
 import ImageUploadService from '../../../services/image-upload-service';
 import { logger } from '../../../services/logger-service';
 import { SellWorkflowLayout } from '../../../components/SellWorkflow';
@@ -114,7 +114,9 @@ const UnifiedContactPage: React.FC = () => {
       const hasFormData = Object.values(contactData).some(v => v);
       
       if (hasWorkflowData && !hasFormData) {
-        console.log('🔄 Restoring contact data from unified workflow:', contactFields);
+        if (process.env.NODE_ENV === 'development') {
+          logger.debug('Restoring contact data from unified workflow', { contactFields });
+        }
         
         // Restore contact fields if they exist in workflow data and form is empty
         if (contactFields.sellerName && !contactData.sellerName) {
@@ -345,13 +347,15 @@ const UnifiedContactPage: React.FC = () => {
 
   // 🆕 Enhanced validation with better error messages
   const validateForm = async (): Promise<boolean> => {
-    console.log('🔍 validateForm called', {
-      unifiedWorkflowData: unifiedWorkflowData ? Object.keys(unifiedWorkflowData).length + ' keys' : 'null',
-      workflowData: workflowData ? Object.keys(workflowData).length + ' keys' : 'null',
-      make,
-      year,
-      images
-    });
+    if (process.env.NODE_ENV === 'development') {
+      logger.debug('validateForm called', {
+        unifiedWorkflowData: unifiedWorkflowData ? Object.keys(unifiedWorkflowData).length + ' keys' : 'null',
+        workflowData: workflowData ? Object.keys(workflowData).length + ' keys' : 'null',
+        make,
+        year,
+        images
+      });
+    }
     
     // ✅ FIX: Use unifiedWorkflowData first, then fallback to workflowData
     const resolvedMake = unifiedWorkflowData?.make || workflowData?.make || make;
@@ -373,14 +377,18 @@ const UnifiedContactPage: React.FC = () => {
     
 
     if (!resolvedMake) {
-      console.warn('❌ Validation failed: MAKE_REQUIRED');
+      if (process.env.NODE_ENV === 'development') {
+        logger.warn('Validation failed: MAKE_REQUIRED');
+      }
       toast.error(getErrorMessage('MAKE_REQUIRED', language as 'bg' | 'en'));
       logError('MAKE_REQUIRED');
       return false;
     }
 
     if (!resolvedYear) {
-      console.warn('❌ Validation failed: YEAR_REQUIRED');
+      if (process.env.NODE_ENV === 'development') {
+        logger.warn('Validation failed: YEAR_REQUIRED');
+      }
       toast.error(getErrorMessage('YEAR_REQUIRED', language as 'bg' | 'en'));
       logError('YEAR_REQUIRED');
       return false;
@@ -410,7 +418,9 @@ const UnifiedContactPage: React.FC = () => {
         imagesSource = 'IndexedDB';
       }
     } catch (error) {
-      console.warn('⚠️ Failed to check IndexedDB, trying localStorage', error);
+      if (process.env.NODE_ENV === 'development') {
+        logger.warn('Failed to check IndexedDB, trying localStorage', { error });
+      }
     }
     
     // Fallback to localStorage if IndexedDB is empty
@@ -422,7 +432,9 @@ const UnifiedContactPage: React.FC = () => {
           imagesSource = 'localStorage';
         }
       } catch (error) {
-        console.warn('⚠️ Failed to check localStorage', error);
+        if (process.env.NODE_ENV === 'development') {
+          logger.warn('Failed to check localStorage', { error });
+        }
       }
     }
     
@@ -437,17 +449,21 @@ const UnifiedContactPage: React.FC = () => {
       }
     }
 
-    console.log('🔍 Images count:', { 
-      totalImages, 
-      imagesSource,
-      unifiedImagesCount: unifiedWorkflowData?.imagesCount, 
-      workflowImagesCount: workflowData?.imagesCount, 
-      imagesParam: images 
-    });
+    if (process.env.NODE_ENV === 'development') {
+      logger.debug('Images count', { 
+        totalImages, 
+        imagesSource,
+        unifiedImagesCount: unifiedWorkflowData?.imagesCount, 
+        workflowImagesCount: workflowData?.imagesCount, 
+        imagesParam: images 
+      });
+    }
 
     // ✅ FIX: Images are recommended but not blocking - allow publishing without images with warning
     if (!totalImages || Number.isNaN(totalImages) || totalImages === 0) {
-      console.warn('⚠️ No images found, but allowing publish (images are recommended, not required)', { totalImages, imagesSource });
+      if (process.env.NODE_ENV === 'development') {
+        logger.warn('No images found, but allowing publish (images are recommended, not required)', { totalImages, imagesSource });
+      }
       // Show warning but don't block - images are recommended, not critical
       toast.warning(
         language === 'bg'
@@ -469,7 +485,9 @@ const UnifiedContactPage: React.FC = () => {
     const isValid = await validateForm();
     
     if (!isValid) {
-      console.warn('❌ Validation failed, blocking publish');
+      if (process.env.NODE_ENV === 'development') {
+        logger.warn('Validation failed, blocking publish');
+      }
       setIsSubmitting(false);
       return;
     }
@@ -561,67 +579,73 @@ const UnifiedContactPage: React.FC = () => {
         // Try IndexedDB first (most reliable)
         const ImageStorageServiceModule = await import('../../../services/ImageStorageService');
         const savedImages = await ImageStorageServiceModule.ImageStorageService.getImages();
-        console.log('📸 [DEBUG] Images from IndexedDB:', { 
-          count: savedImages?.length || 0, 
-          images: savedImages?.map((f: File) => ({ name: f.name, size: f.size, type: f.type })) || []
-        });
+        if (process.env.NODE_ENV === 'development') {
+          logger.debug('Images from IndexedDB', { 
+            count: savedImages?.length || 0, 
+            images: savedImages?.map((f: File) => ({ name: f.name, size: f.size, type: f.type })) || []
+          });
+        }
         
         if (savedImages && savedImages.length > 0) {
           // getImages() already returns File[] directly
           imageFiles = savedImages;
-          console.log('✅ [DEBUG] Using IndexedDB images:', imageFiles.length, 'files');
           if (process.env.NODE_ENV === 'development') {
             logger.debug(`Loaded ${imageFiles.length} images from IndexedDB`);
           }
         } else {
           // Fallback to localStorage
-          console.log('⚠️ [DEBUG] No IndexedDB images, trying localStorage fallback...');
-        imageFiles = WorkflowPersistenceService.getImagesAsFiles();
-          console.log('📸 [DEBUG] Images from localStorage:', { 
-            count: imageFiles.length, 
-            images: imageFiles.map(f => ({ name: f.name, size: f.size, type: f.type }))
-          });
-        if (process.env.NODE_ENV === 'development') {
-            logger.debug(`Loaded ${imageFiles.length} images from localStorage (fallback)`);
+          if (process.env.NODE_ENV === 'development') {
+            logger.debug('No IndexedDB images, trying localStorage fallback');
+          }
+        imageFiles = await WorkflowPersistenceService.getImagesAsFiles();
+          if (process.env.NODE_ENV === 'development') {
+            logger.debug('Images from localStorage', { 
+              count: imageFiles.length, 
+              images: imageFiles.map(f => ({ name: f.name, size: f.size, type: f.type }))
+            });
           }
         }
       } catch (error) {
-        console.error('❌ [DEBUG] Error loading images from IndexedDB:', error);
-        logger.error('Error loading images', error as Error);
+        logger.error('Error loading images from IndexedDB', error as Error);
         // Final fallback to localStorage
         try {
-          console.log('🔄 [DEBUG] Attempting final fallback to WorkflowPersistenceService...');
-          imageFiles = WorkflowPersistenceService.getImagesAsFiles();
-          console.log('📸 [DEBUG] Final fallback images:', imageFiles.length);
+          if (process.env.NODE_ENV === 'development') {
+            logger.debug('Attempting final fallback to WorkflowPersistenceService');
+          }
+          imageFiles = await WorkflowPersistenceService.getImagesAsFiles();
+          if (process.env.NODE_ENV === 'development') {
+            logger.debug('Final fallback images loaded', { count: imageFiles.length });
+          }
         } catch (fallbackError) {
-          console.error('❌ [DEBUG] Error loading images from WorkflowPersistenceService:', fallbackError);
           logger.error('Error loading images from WorkflowPersistenceService', fallbackError as Error);
         }
       }
 
       // ✅ CRITICAL DEBUG: Verify File objects before passing to createCarListing
-      console.log('🔍 [DEBUG] Final imageFiles validation before createCarListing:', { 
-        imageCount: imageFiles.length,
-        imageFiles: imageFiles.map(f => ({ 
-          name: f.name, 
-          size: f.size, 
-          type: f.type,
-          isFile: f instanceof File,
-          isBlob: f instanceof Blob
-        })),
-        areAllFilesValid: imageFiles.every(f => f instanceof File),
-        areAllBlobsValid: imageFiles.every(f => f instanceof Blob)
-      });
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Final imageFiles validation before createCarListing', { 
+          imageCount: imageFiles.length,
+          imageFiles: imageFiles.map(f => ({ 
+            name: f.name, 
+            size: f.size, 
+            type: f.type,
+            isFile: f instanceof File,
+            isBlob: f instanceof Blob
+          })),
+          areAllFilesValid: imageFiles.every(f => f instanceof File),
+          areAllBlobsValid: imageFiles.every(f => f instanceof Blob)
+        });
+      }
       
       if (imageFiles && imageFiles.length > 0) {
         setTotalImages(imageFiles.length);
-        console.log('✅ [DEBUG] Set totalImages to:', imageFiles.length);
+        if (process.env.NODE_ENV === 'development') {
+          logger.debug('Set totalImages', { count: imageFiles.length });
+        }
       } else {
-        console.warn('⚠️ [DEBUG] No images found! Publishing without images.');
-        console.warn('💡 [DEBUG] Possible causes:');
-        console.warn('   1. Images not saved to IndexedDB during workflow');
-        console.warn('   2. IndexedDB cleared before publish');
-        console.warn('   3. WorkflowPersistenceService.getImagesAsFiles() returned empty array');
+        if (process.env.NODE_ENV === 'development') {
+          logger.warn('No images found! Publishing without images. Possible causes: 1. Images not saved to IndexedDB during workflow, 2. IndexedDB cleared before publish, 3. WorkflowPersistenceService.getImagesAsFiles() returned empty array');
+        }
       }
 
       // ✅ FIX: Check if we're in edit mode
@@ -662,7 +686,6 @@ const UnifiedContactPage: React.FC = () => {
               { autoClose: 3000 }
             );
           } catch (uploadError) {
-            console.error('❌ Failed to upload images during edit:', uploadError);
             logger.error('Failed to upload images during edit', uploadError as Error, { carId: editCarId });
             toast.warning(
               language === 'bg'
@@ -696,12 +719,14 @@ const UnifiedContactPage: React.FC = () => {
         }, 800);
       } else {
         // ✅ CREATE MODE: Create new listing
-        console.log('🚀 Calling createCarListing with:', { 
-          hasPayload: !!payload, 
-          userId, 
-          imageCount: imageFiles.length,
-          imageFilesProvided: imageFiles.length > 0
-        });
+        if (process.env.NODE_ENV === 'development') {
+          logger.debug('Calling createCarListing', { 
+            hasPayload: !!payload, 
+            userId, 
+            imageCount: imageFiles.length,
+            imageFilesProvided: imageFiles.length > 0
+          });
+        }
         carId = await SellWorkflowService.createCarListing(payload, userId, imageFiles);
 
         if (!carId) {

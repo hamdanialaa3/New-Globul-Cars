@@ -4,7 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { useLanguage } from '../../../contexts/LanguageContext';
 import { useAuth } from '../../../contexts/AuthProvider';
-import WorkflowPersistenceService from '../../../services/workflowPersistenceService';
+import { WorkflowPersistenceService } from '../../../services/unified-workflow-persistence.service';
 import { logger } from '../../../services/logger-service';
 import { S } from './MobileSubmissionPage.styles';
 import { SellProgressBar } from '../../../components/SellWorkflow';
@@ -37,7 +37,7 @@ const MobileSubmissionPage: React.FC = () => {
       }
 
       const { data } = workflowState;
-      const images = WorkflowPersistenceService.getImagesAsFiles();
+      const images = await WorkflowPersistenceService.getImagesAsFiles();
 
       // Validate required data
       if (!user?.uid) {

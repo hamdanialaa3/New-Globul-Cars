@@ -16,3 +16,9 @@ export { verifyCheckoutSession } from './subscriptions/verifyCheckoutSession';
 export { stripeWebhook } from './subscriptions/stripeWebhook';
 export { cancelSubscription } from './subscriptions/cancelSubscription';
 export { getSubscriptionStatus } from './subscriptions/getSubscriptionStatus';
+
+// ============================================
+// Verification Functions
+// وظائف التحقق
+// ============================================
+export { verifyEIK } from './verification/verifyEIK';

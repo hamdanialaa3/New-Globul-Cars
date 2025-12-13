@@ -144,25 +144,6 @@ export const FEATURE_FLAGS = {
      */
     USE_DEALER_ROUTES: true,
 
-    /**
-     * USE_SELL_ROUTES
-     * 
-     * Extracts sell workflow routes into sell.routes.tsx
-     * Includes: 20+ routes for the mobile.de-style sell flow
-     * 
-     * Rollout: Week 2, Day 3-4
-     */
-    USE_SELL_ROUTES: false,
-
-    /**
-     * USE_ADMIN_ROUTES
-     * 
-     * Extracts admin routes into admin.routes.tsx
-     * Includes: Admin dashboard, management pages
-     * 
-     * Rollout: Week 2, Day 3-4
-     */
-    USE_ADMIN_ROUTES: false,
 
     // ==========================================
     // Week 3: React Router Outlets

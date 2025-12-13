@@ -1,7 +1,8 @@
 /**
- * Image Storage Service using IndexedDB
+ * Unified Image Storage Service using IndexedDB
  * Solves localStorage quota issues with large image files (up to 20 images)
  * Auto-generates thumbnails for performance
+ * Includes queue management and operation locking
  * 
  * Architecture:
  * - Database: 'globul_workflow_images_db'
@@ -9,9 +10,13 @@
  * - Auto-thumbnail generation (200x200px at 0.7 quality)
  * - Max file size: 10MB per image
  * - Max images: 20
+ * - Queue management for concurrent operations
  * 
  * @file ImageStorageService.ts
+ * @since 2025-12 - Unified from image-storage.service.ts
  */
+
+import { serviceLogger } from './logger-wrapper';
 
 interface ImageData {
   files: File[];
@@ -30,22 +35,64 @@ class ImageStorage {
   private readonly MAX_IMAGES = 20;
 
   private db: IDBDatabase | null = null;
+  private static dbPromise: Promise<IDBDatabase> | null = null;
+  private static operationInProgress = false;
+  private static operationQueue: Array<() => Promise<void>> = [];
+
+  /**
+   * Execute operation with queue management
+   */
+  private static async executeWithQueue<T>(operation: () => Promise<T>): Promise<T> {
+    if (this.operationInProgress) {
+      return new Promise((resolve, reject) => {
+        this.operationQueue.push(async () => {
+          try {
+            const result = await operation();
+            resolve(result);
+          } catch (error) {
+            reject(error);
+          }
+        });
+      });
+    }
+
+    this.operationInProgress = true;
+    try {
+      const result = await operation();
+      return result;
+    } finally {
+      this.operationInProgress = false;
+      
+      const next = this.operationQueue.shift();
+      if (next) {
+        next().catch(error => {
+          serviceLogger.error('Error processing queued operation', error);
+        });
+      }
+    }
+  }
 
   /**
    * Initialize IndexedDB database
    */
   private async initDB(): Promise<IDBDatabase> {
     if (this.db) return this.db;
+    if (ImageStorage.dbPromise) {
+      this.db = await ImageStorage.dbPromise;
+      return this.db;
+    }
 
-    return new Promise((resolve, reject) => {
+    ImageStorage.dbPromise = new Promise((resolve, reject) => {
       const request = indexedDB.open(this.DB_NAME, this.DB_VERSION);
 
       request.onerror = () => {
-        reject(new Error('Failed to open IndexedDB'));
+        serviceLogger.error('Failed to open IndexedDB', new Error(request.error?.message || 'Unknown error'));
+        reject(request.error);
       };
 
       request.onsuccess = () => {
         this.db = request.result;
+        serviceLogger.info('IndexedDB opened successfully');
         resolve(this.db);
       };
 
@@ -53,9 +100,13 @@ class ImageStorage {
         const db = (event.target as IDBOpenDBRequest).result;
         if (!db.objectStoreNames.contains(this.STORE_NAME)) {
           db.createObjectStore(this.STORE_NAME);
+          serviceLogger.info('IndexedDB object store created');
         }
       };
     });
+
+    this.db = await ImageStorage.dbPromise;
+    return this.db;
   }
 
   /**
@@ -128,35 +179,61 @@ class ImageStorage {
 
   /**
    * Save images to IndexedDB
+   * Uses queue management to prevent concurrent operations
    */
   async saveImages(files: File[]): Promise<void> {
-    if (files.length > this.MAX_IMAGES) {
-      throw new Error(`Maximum ${this.MAX_IMAGES} images allowed`);
-    }
+    return ImageStorage.executeWithQueue(async () => {
+      try {
+        if (files.length === 0) {
+          await this.clearImages();
+          return;
+        }
 
-    // Validate all files
-    files.forEach(file => this.validateImage(file));
+        if (files.length > this.MAX_IMAGES) {
+          throw new Error(`Maximum ${this.MAX_IMAGES} images allowed`);
+        }
 
-    // Generate thumbnails
-    const thumbnails = await Promise.all(
-      files.map(file => this.generateThumbnail(file))
-    );
+        // Validate all files
+        files.forEach(file => this.validateImage(file));
 
-    const imageData: ImageData = {
-      files,
-      thumbnails,
-      timestamp: Date.now()
-    };
+        serviceLogger.info('Saving images to IndexedDB', { count: files.length });
 
-    const db = await this.initDB();
+        // Generate thumbnails
+        const thumbnails = await Promise.all(
+          files.map(file => this.generateThumbnail(file))
+        );
 
-    return new Promise((resolve, reject) => {
-      const transaction = db.transaction([this.STORE_NAME], 'readwrite');
-      const store = transaction.objectStore(this.STORE_NAME);
-      const request = store.put(imageData, this.KEY);
+        const imageData: ImageData = {
+          files,
+          thumbnails,
+          timestamp: Date.now()
+        };
 
-      request.onsuccess = () => resolve();
-      request.onerror = () => reject(new Error('Failed to save images'));
+        const db = await this.initDB();
+
+        await new Promise<void>((resolve, reject) => {
+          const transaction = db.transaction([this.STORE_NAME], 'readwrite');
+          const store = transaction.objectStore(this.STORE_NAME);
+          const request = store.put(imageData, this.KEY);
+
+          request.onsuccess = () => {
+            serviceLogger.info('Images saved successfully to IndexedDB', {
+              count: files.length,
+              totalSize: files.reduce((sum, f) => sum + f.size, 0)
+            });
+            resolve();
+          };
+          request.onerror = () => {
+            serviceLogger.error('Failed to save images', new Error(request.error?.message || 'Unknown error'));
+            reject(new Error('Failed to save images'));
+          };
+        });
+      } catch (error) {
+        serviceLogger.error('Error saving images to IndexedDB', error as Error, {
+          count: files.length
+        });
+        throw error;
+      }
     });
   }
 
@@ -176,6 +253,7 @@ class ImageStorage {
         request.onsuccess = () => {
           const data = request.result as ImageData | undefined;
           if (!data || !data.files || data.files.length === 0) {
+            serviceLogger.info('No images found in IndexedDB');
             resolve([]);
             return;
           }
@@ -205,14 +283,17 @@ class ImageStorage {
             return null;
           }).filter((file): file is File => file !== null);
 
+          serviceLogger.info('Images loaded from IndexedDB', { count: files.length });
           resolve(files);
         };
 
         request.onerror = () => {
+          serviceLogger.error('Error loading images from IndexedDB', new Error(request.error?.message || 'Unknown error'));
           reject(new Error('Failed to get images'));
         };
       });
     } catch (error) {
+      serviceLogger.error('Error getting images from IndexedDB', error as Error);
       return [];
     }
   }
@@ -278,20 +359,28 @@ class ImageStorage {
    * Clear all stored images
    */
   async clearImages(): Promise<void> {
-    try {
-      const db = await this.initDB();
+    return ImageStorage.executeWithQueue(async () => {
+      try {
+        const db = await this.initDB();
 
-      return new Promise((resolve, reject) => {
-        const transaction = db.transaction([this.STORE_NAME], 'readwrite');
-        const store = transaction.objectStore(this.STORE_NAME);
-        const request = store.delete(this.KEY);
+        await new Promise<void>((resolve, reject) => {
+          const transaction = db.transaction([this.STORE_NAME], 'readwrite');
+          const store = transaction.objectStore(this.STORE_NAME);
+          const request = store.delete(this.KEY);
 
-        request.onsuccess = () => resolve();
-        request.onerror = () => reject(new Error('Failed to clear images'));
-      });
-    } catch (error) {
-      // Silent fail
-    }
+          request.onsuccess = () => {
+            serviceLogger.info('Images cleared from IndexedDB');
+            resolve();
+          };
+          request.onerror = () => {
+            serviceLogger.error('Error clearing images from IndexedDB', new Error(request.error?.message || 'Unknown error'));
+            reject(new Error('Failed to clear images'));
+          };
+        });
+      } catch (error) {
+        serviceLogger.error('Error clearing images from IndexedDB', error as Error);
+      }
+    });
   }
 
   /**
@@ -328,7 +417,62 @@ class ImageStorage {
     const info = await this.getStorageInfo();
     return info.count > 0;
   }
+
+  /**
+   * Get images count
+   */
+  async getImagesCount(): Promise<number> {
+    const info = await this.getStorageInfo();
+    return info.count;
+  }
+
+  /**
+   * Get storage estimate (from navigator.storage API)
+   */
+  async getStorageEstimate(): Promise<{
+    usage: number;
+    quota: number;
+    percentage: number;
+  }> {
+    try {
+      if ('storage' in navigator && 'estimate' in navigator.storage) {
+        const estimate = await navigator.storage.estimate();
+        const usage = estimate.usage || 0;
+        const quota = estimate.quota || 0;
+        const percentage = quota > 0 ? (usage / quota) * 100 : 0;
+
+        return { usage, quota, percentage };
+      }
+
+      return { usage: 0, quota: 0, percentage: 0 };
+    } catch (error) {
+      serviceLogger.error('Error getting storage estimate', error as Error);
+      return { usage: 0, quota: 0, percentage: 0 };
+    }
+  }
+
+  /**
+   * Validate image file
+   */
+  static validateImage(file: File): { valid: boolean; error?: string } {
+    // Check file type
+    if (!file.type.startsWith('image/')) {
+      return { valid: false, error: 'File must be an image' };
+    }
+
+    // Check file size (max 10MB per image)
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    if (file.size > maxSize) {
+      return {
+        valid: false,
+        error: `File too large (max 10MB). Current: ${(file.size / 1024 / 1024).toFixed(2)}MB`
+      };
+    }
+
+    return { valid: true };
+  }
 }
 
 // Export singleton instance
 export const ImageStorageService = new ImageStorage();
+export default ImageStorageService;

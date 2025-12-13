@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../../contexts/AuthProvider';
-import WorkflowPersistenceService from '../../../../services/workflowPersistenceService';
+import { WorkflowPersistenceService } from '../../../../services/unified-workflow-persistence.service';
 import SellWorkflowService from '../../../../services/sellWorkflowService';
 import useSellWorkflow from '../../../../hooks/useSellWorkflow';
 import { logger } from '../../../../services/logger-service';
@@ -35,7 +35,7 @@ export const useSubmissionFlow = ({ redirectPath = '/profile/my-ads' }: UseSubmi
         ...workflowData,
         ...(persistedState?.data || {})
       };
-      const images = WorkflowPersistenceService.getImagesAsFiles();
+      const images = await WorkflowPersistenceService.getImagesAsFiles();
 
       const validation = SellWorkflowService.validateWorkflowData(
         {

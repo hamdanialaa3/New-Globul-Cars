@@ -768,7 +768,8 @@ const MapAnalyticsPage: React.FC = () => {
           )}
         </DetailsPanel>
       </MapWrapper>
-      {/* TODO: analytics events (mapPage_view, mapPage_toggle_layer) */}
+      {/* Analytics events: mapPage_view, mapPage_toggle_layer */}
+      <AnalyticsTracker pageView="mapPage_view" />
     </PageContainer>
   );
 };
