@@ -9,11 +9,14 @@ export const GearContainer = styled.div<{ $size: number }>`
   height: ${props => props.$size}px;
   z-index: 99;
   pointer-events: none;
-  opacity: 0.85;
+  opacity: 0.88;
   
-  /* ✅ Precise positioning behind profile image */
+  /* ✅ Precise positioning behind profile image - perfectly centered */
   margin: 0;
   padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   
   canvas {
     display: block;
@@ -21,6 +24,7 @@ export const GearContainer = styled.div<{ $size: number }>`
     height: 100% !important;
     margin: 0;
     padding: 0;
+    object-fit: contain;
   }
   
   /* Hide on mobile */

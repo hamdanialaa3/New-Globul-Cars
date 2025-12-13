@@ -22,8 +22,6 @@ import {
 import * as S from './styles';
 import { TabNavigation, TabNavLink, SyncButton, FollowButton } from './TabNavigation.styles';
 import { CoverImageUploader, BusinessBackground, SimpleProfileAvatar, ProfileImageUploader } from '../../../../components/Profile';
-import { MechanicalGear3D } from '../../../../components/MechanicalGear3D';
-import FloatingShareButton from '../../../../components/FloatingShareButton';
 import { googleProfileSyncService } from '../../../../services/google/google-profile-sync.service';
 import { followService } from '../../../../services/social/follow.service';
 import { logger } from '../../../../services/logger-service';
@@ -253,8 +251,6 @@ const ProfilePageWrapper: React.FC = () => {
             
             {/* Centered Profile Picture */}
             <S.CenteredProfileImageWrapper>
-              {/* 3D Mechanical Gear Background - Single gear, 150% size (360px) */}
-              <MechanicalGear3D size={360} />
               <ProfileImageUploader
                 currentImageUrl={typeof activeProfile?.photoURL === 'string' ? activeProfile.photoURL : (typeof activeProfile?.profileImage === 'object' ? activeProfile.profileImage?.url : undefined)}
                 onUploadSuccess={(url) => {
@@ -307,9 +303,6 @@ const ProfilePageWrapper: React.FC = () => {
             <S.StatBarActionsSection>
               {isOwnProfile ? (
                 <>
-                  <div style={{ position: 'relative' }}>
-                    <FloatingShareButton />
-                  </div>
                   <S.ActionButtonCompact $variant="secondary" onClick={handleGoogleSync}>
                     <RefreshCw size={16} className={syncing ? 'spinning' : ''} />
                     {syncing 

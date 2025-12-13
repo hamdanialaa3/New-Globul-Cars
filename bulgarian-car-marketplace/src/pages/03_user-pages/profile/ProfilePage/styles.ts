@@ -1765,26 +1765,9 @@ export const CenteredProfileImageWrapper = styled.div`
   transform: translateX(-50%);
   z-index: 100;
   
-  /* ✅ FIX: Professional shadow for profile image */
+  /* ✅ Elegant shadow for profile image */
   filter: drop-shadow(0 6px 12px rgba(0,0,0,0.12)) 
           drop-shadow(0 3px 6px rgba(0,0,0,0.08));
-  
-  /* ✅ FIX: Ensure image itself has highest z-index above 3D gear */
-  > * {
-    position: relative;
-    z-index: 101; /* ✅ Image above 3D gear */
-  }
-  
-  /* ✅ FIX: Force ProfileImageUploader to have highest z-index above 3D gear */
-  > div:not(:first-child) {
-    position: relative;
-    z-index: 101;
-  }
-  
-  /* ✅ FIX: Ensure 3D gear is behind everything */
-  > div:first-child {
-    z-index: 99;
-  }
   
   /* ✅ FIX: Mobile - Position image above the info bar, not overlapping */
   @media (max-width: 960px) {
