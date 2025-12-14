@@ -104,6 +104,9 @@ export const createCheckoutSession = onCall<{
     const userData = userDoc.data();
     const userEmail = userData?.email || request.auth.token.email;
 
+    // Get Stripe instance
+    const stripe = getStripe();
+
     // 5. Create or get Stripe customer
     let stripeCustomerId = userData?.stripeCustomerId;
 
@@ -129,7 +132,6 @@ export const createCheckoutSession = onCall<{
     }
 
     // 6. Create Checkout Session
-    const stripe = getStripe();
     const session = await stripe.checkout.sessions.create({
       customer: stripeCustomerId,
       mode: 'subscription',
