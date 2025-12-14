@@ -25,11 +25,9 @@ interface EmailTemplate {
 /**
  * Send Welcome Email when user signs up
  */
-export const sendWelcomeEmail = functions
-  .region('europe-west1')
-  .auth.user().onCreate(async (user) => {
-    try {
-      console.log('📧 Sending welcome email to:', user.email);
+export const sendWelcomeEmail = functions.auth.user().onCreate(async (user) => {
+  try {
+    console.log('📧 Sending welcome email to:', user.email);
 
       if (!user.email) {
         console.log('⚠️ No email found for user');
@@ -84,14 +82,12 @@ export const sendWelcomeEmail = functions
 /**
  * Send Car Listing Confirmation Email
  */
-export const sendCarListingEmail = functions
-  .region('europe-west1')
-  .firestore.document('cars/{carId}').onCreate(async (snapshot, context) => {
-    try {
-      const carData = snapshot.data();
-      const carId = context.params.carId;
+export const sendCarListingEmail = functions.firestore.document('cars/{carId}').onCreate(async (snapshot, context) => {
+  try {
+    const carData = snapshot.data();
+    const carId = context.params.carId;
 
-      console.log('📧 Sending car listing email for:', carId);
+    console.log('📧 Sending car listing email for:', carId);
 
       if (!carData.userId) {
         console.log('⚠️ No userId found in car data');
@@ -151,21 +147,19 @@ export const sendCarListingEmail = functions
 /**
  * Send Verification Email (callable function)
  */
-export const sendVerificationEmail = functions
-  .region('europe-west1')
-  .https.onCall(async (data, context) => {
-    // Check authentication
-    if (!context.auth) {
-      throw new functions.https.HttpsError(
-        'unauthenticated',
-        'User must be authenticated'
-      );
-    }
+export const sendVerificationEmail = functions.https.onCall(async (data, context) => {
+  // Check authentication
+  if (!context.auth) {
+    throw new functions.https.HttpsError(
+      'unauthenticated',
+      'User must be authenticated'
+    );
+  }
 
-    try {
-      const { email, displayName, language, verificationLink } = data;
+  try {
+    const { email, displayName, language, verificationLink } = data;
 
-      console.log('📧 Sending verification email to:', email);
+    console.log('📧 Sending verification email to:', email);
 
       const subject = language === 'bg'
         ? 'Потвърдете вашия имейл адрес'
@@ -212,17 +206,15 @@ export const sendVerificationEmail = functions
 /**
  * Send Subscription Confirmation Email
  */
-export const sendSubscriptionEmail = functions
-  .region('europe-west1')
-  .https.onCall(async (data, context) => {
-    if (!context.auth) {
-      throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
-    }
+export const sendSubscriptionEmail = functions.https.onCall(async (data, context) => {
+  if (!context.auth) {
+    throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
+  }
 
-    try {
-      const { email, displayName, language, planName, amount, currency } = data;
+  try {
+    const { email, displayName, language, planName, amount, currency } = data;
 
-      console.log('📧 Sending subscription email to:', email);
+    console.log('📧 Sending subscription email to:', email);
 
       const subject = language === 'bg'
         ? `Абонаментът ви за ${planName} е активиран! ✅`
