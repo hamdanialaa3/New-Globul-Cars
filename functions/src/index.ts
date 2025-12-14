@@ -18,6 +18,17 @@ export { cancelSubscription } from './subscriptions/cancelSubscription';
 export { getSubscriptionStatus } from './subscriptions/getSubscriptionStatus';
 
 // ============================================
+// Email Service Functions
+// وظائف خدمة البريد الإلكتروني
+// ============================================
+export { 
+  sendWelcomeEmail,
+  sendCarListingEmail,
+  sendVerificationEmail,
+  sendSubscriptionEmail
+} from './email/email-sender';
+
+// ============================================
 // Verification Functions
 // وظائف التحقق
 // ============================================
