@@ -376,7 +376,7 @@ export class UnifiedWorkflowPersistenceService {
     if (strict) {
       if (!data.sellerPhone) recommended.push('Phone (Телефон)');
       if (!data.sellerEmail) recommended.push('Email (Имейл)');
-      if (!data.region) recommended.push('Region (Област)');
+      if (!data.locationData?.regionName) recommended.push('Region (Област)');
     }
 
     return {

@@ -88,7 +88,7 @@ const ScrollContainer = styled.div`
 `;
 
 interface OnlineUsersRowProps {
-  onlineUsers: any[];
+  onlineUsers: unknown[];
   followingUsers?: Set<string>;
   onFollow?: (userId: string) => void;
   onMessage?: (userId: string) => void;

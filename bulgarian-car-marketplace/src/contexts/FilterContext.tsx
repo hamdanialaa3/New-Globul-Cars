@@ -145,7 +145,7 @@ export const FilterProvider: React.FC<ProviderProps> = ({ children, autoSync = t
     priceTo: filters.priceTo,
     firstRegistrationFrom: filters.yearFrom,
     firstRegistrationTo: filters.yearTo,
-    city: filters.city,
+    city: filters.locationData?.cityName,
     fuelType: filters.fuelType,
     transmission: filters.transmission,
     searchDescription: filters.text

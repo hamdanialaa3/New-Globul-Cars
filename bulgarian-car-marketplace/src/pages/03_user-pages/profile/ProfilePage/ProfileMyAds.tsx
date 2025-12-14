@@ -43,7 +43,7 @@ const ProfileMyAds: React.FC = () => {
       transmission: car.transmission || car.gearbox,
       images: car.images || (car.mainImage ? [car.mainImage] : []),
       mainImage: car.mainImage || car.images?.[0],
-      location: car.location || (car.city ? { city: car.city } : undefined),
+      location: car.location || (car.locationData?.cityName ? { city: car.locationData?.cityName } : undefined),
       condition: car.condition || 'used',
       isFeatured: car.isFeatured || false,
       isActive: car.isActive !== false,

@@ -57,7 +57,7 @@ const NotificationsPage: React.FC = () => {
     }
 
     // Determine type filter
-    let typeFilter: any = undefined;
+    let typeFilter: Record<string, unknown> = undefined;
     if (filter === 'messages') {
       typeFilter = 'message';
     } else if (filter === 'system') {

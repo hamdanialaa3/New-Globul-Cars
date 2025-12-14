@@ -34,7 +34,7 @@ export const subscriptionService = {
       }
       logger.info('Checkout session created', { planId: params.planId, interval: params.interval, sessionId: res.data.sessionId });
       return res.data;
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('createCheckoutSession failed', error);
       throw error;
     }
@@ -49,7 +49,7 @@ export const subscriptionService = {
       }
       logger.info('Checkout session verified', { sessionId, subscription: res.data.subscription });
       return res.data;
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('verifyCheckoutSession failed', error);
       throw error;
     }
@@ -64,7 +64,7 @@ export const subscriptionService = {
         return res.data.subscription;
       }
       return null;
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.warn('getSubscriptionStatus failed', error);
       return null;
     }
@@ -79,7 +79,7 @@ export const subscriptionService = {
       }
       logger.info('Subscription cancellation processed', { userId, immediate });
       return res.data;
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('cancelSubscription failed', error);
       throw error;
     }
@@ -90,7 +90,7 @@ export const subscriptionService = {
       const callable = httpsCallable(REGION_FUNCTIONS, FN_CREATE_BILLING_PORTAL);
       const res = await callable({ return_url: returnUrl || (typeof window !== 'undefined' ? `${window.location.origin}/billing` : undefined) }) as HttpsCallableResult<{ url?: string }>;
       return res.data?.url || null;
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('createBillingPortalLink failed', error);
       return null;
     }

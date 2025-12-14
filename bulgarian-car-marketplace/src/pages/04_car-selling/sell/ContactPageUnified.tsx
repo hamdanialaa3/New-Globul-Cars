@@ -148,14 +148,14 @@ const ContactPageUnified: React.FC = () => {
   };
 
   useEffect(() => {
-    if (contactData.city && !availableCities.some(city => city.name === contactData.city)) {
+    if (contactData.locationData?.cityName && !availableCities.some(city => city.name === contactData.locationData?.cityName)) {
       setShowOtherCityInput(true);
-      setOtherCityValue(contactData.city);
+      setOtherCityValue(contactData.locationData?.cityName);
     } else {
       setShowOtherCityInput(false);
       setOtherCityValue('');
     }
-  }, [contactData.city, availableCities]);
+  }, [contactData.locationData?.cityName, availableCities]);
 
   // Handle pricing changes
   const handlePricingChange = (field: string, value: string | boolean) => {
@@ -252,7 +252,7 @@ const ContactPageUnified: React.FC = () => {
         availableHours: contactData.availableHours || workflowData.availableHours || '',
         additionalInfo: contactData.notes || workflowData.additionalInfo || '',
         region: contactData.region || workflowData.region || '',
-        city: contactData.city || workflowData.city || '',
+        city: contactData.locationData?.cityName || workflowData.locationData?.cityName || '',
         postalCode: contactData.postalCode || workflowData.postalCode || '',
         location: contactData.location || workflowData.location || '',
         images: workflowData.images,
@@ -297,7 +297,7 @@ const ContactPageUnified: React.FC = () => {
         navigate('/profile/my-ads');
       }, 800);
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Error creating listing', error as Error, {
         userId: currentUser?.uid,
         errorMessage: error.message
@@ -318,7 +318,7 @@ const ContactPageUnified: React.FC = () => {
       name: contactData.sellerName,
       phone: contactData.sellerPhone,
       email: contactData.sellerEmail,
-      city: contactData.city,
+      city: contactData.locationData?.cityName,
       zipCode: contactData.postalCode
     }).forEach(([key, value]) => {
       if (value) params.set(key, value);
@@ -425,7 +425,7 @@ const ContactPageUnified: React.FC = () => {
                       <MobileContactStyles.default.Input
                         id="city"
                         type="text"
-                        value={contactData.city}
+                        value={contactData.locationData?.cityName}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                           handleCityChange(e.target.value)}
                         placeholder={language === 'bg' ? 'Вашият град' : 'Your city'}
@@ -691,7 +691,7 @@ const ContactPageUnified: React.FC = () => {
                         label: city.name,
                         labelEn: city.nameEn || city.name
                       }))}
-                      value={contactData.city}
+                      value={contactData.locationData?.cityName}
                       onChange={(value) => handleCityChange(value)}
                       placeholder={language === 'bg' ? 'Изберете град' : 'Select city'}
                       label={language === 'bg' ? 'Град' : 'City'}

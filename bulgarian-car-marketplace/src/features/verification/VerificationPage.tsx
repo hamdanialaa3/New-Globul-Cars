@@ -265,7 +265,7 @@ export const VerificationPage: React.FC = () => {
 
       // Navigate back to profile
       setTimeout(() => navigate('/profile'), 2000);
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Error submitting verification:', error);
       toast.error(error.message || 'Submission failed');
     } finally {

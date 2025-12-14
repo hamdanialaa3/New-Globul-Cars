@@ -1629,7 +1629,7 @@ const ProfilePage: React.FC = () => {
                       <input
                         type="text"
                         name="city"
-                        value={formData.city}
+                        value={formData.locationData?.cityName}
                         onChange={handleInputChange}
                           onFocus={() => setActiveField('city')}
                           onBlur={() => setActiveField(undefined)}

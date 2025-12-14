@@ -186,7 +186,7 @@ export class ReviewService {
         reviewId: docRef.id
       };
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       serviceLogger.error('Submit review failed', error as Error, { sellerId: data?.sellerId, buyerId: data?.buyerId });
       return {
         success: false,

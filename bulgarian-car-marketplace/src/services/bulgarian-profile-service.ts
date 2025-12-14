@@ -323,7 +323,7 @@ export class BulgarianProfileService {
       });
 
       // Update user profile with summary
-      const updateData: any = {};
+      const updateData: Record<string, unknown> = {};
       
       switch (activity.type) {
         case 'search':

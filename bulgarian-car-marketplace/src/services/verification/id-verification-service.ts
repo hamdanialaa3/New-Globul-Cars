@@ -108,7 +108,7 @@ export class IDVerificationService {
         requestId: requestRef.id
       };
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       serviceLogger.error('ID submission failed', error as Error, { userId });
       return {
         success: false,

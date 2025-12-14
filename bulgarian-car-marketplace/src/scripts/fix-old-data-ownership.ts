@@ -76,7 +76,7 @@ export class DataOwnershipFixer {
       for (const postDoc of postsSnapshot.docs) {
         const postData = postDoc.data();
         let needsUpdate = false;
-        const updates: any = {};
+        const updates: Record<string, unknown> = {};
 
         // ✅ Check 1: authorId موجود؟
         if (!postData.authorId) {
@@ -161,7 +161,7 @@ export class DataOwnershipFixer {
       for (const carDoc of carsSnapshot.docs) {
         const carData = carDoc.data();
         let needsUpdate = false;
-        const updates: any = {};
+        const updates: Record<string, unknown> = {};
 
         // ✅ Check 1: userId/ownerId موجود؟
         if (!carData.userId && !carData.ownerId) {

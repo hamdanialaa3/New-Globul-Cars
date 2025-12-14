@@ -101,7 +101,7 @@ class SmartAlertsService {
         ...doc.data(),
         timestamp: doc.data().timestamp?.toDate() || new Date()
       } as Alert));
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Silently handle permission errors
       if (error?.code === 'permission-denied') {
         return [];

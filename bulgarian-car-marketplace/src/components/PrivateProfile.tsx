@@ -107,7 +107,7 @@ const PrivateProfile: React.FC<PrivateProfileProps> = ({ user, userCars, isOwner
           {user.location?.city && (
             <InfoItem>
               <MapPin size={16} />
-              <span>{user.location.city}</span>
+              <span>{user.locationData?.cityName}</span>
             </InfoItem>
           )}
           {user.createdAt && (

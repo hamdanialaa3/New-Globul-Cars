@@ -317,7 +317,7 @@ const EventsPage: React.FC = () => {
                     </div>
                     <div className="detail-item">
                       <MapPin size={16} />
-                      <span>{event.location}, {event.city}</span>
+                      <span>{event.location}, {event.locationData?.cityName}</span>
                     </div>
                     <div className="detail-item">
                       <Users size={16} />

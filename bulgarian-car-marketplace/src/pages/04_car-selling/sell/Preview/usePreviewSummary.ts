@@ -70,7 +70,7 @@ export const usePreviewSummary = (labels: {
     { label: labels.contact.phone, value: workflowData.sellerPhone || '—' },
     { label: labels.contact.email, value: workflowData.sellerEmail || '—' },
     { label: labels.contact.region, value: workflowData.region || '—' },
-    { label: labels.contact.city, value: workflowData.city || '—' },
+    { label: labels.contact.locationData?.cityName, value: workflowData.locationData?.cityName || '—' },
     { label: labels.contact.zip, value: workflowData.postalCode || '—' }
   ];
 

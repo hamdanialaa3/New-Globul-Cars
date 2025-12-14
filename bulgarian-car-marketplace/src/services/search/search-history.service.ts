@@ -37,7 +37,7 @@ class SearchHistoryService {
   async saveSearch(
     userId: string,
     query: string,
-    filters: any = {},
+    filters: Record<string, unknown> = {},
     resultsCount: number = 0
   ): Promise<void> {
     try {

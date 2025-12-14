@@ -81,46 +81,46 @@ export const useContactForm = ({ language, requireContactFields = false }: UseCo
     const cities = getCitiesByRegion(contactData.region, language);
     setAvailableCities(cities);
     // Clear city if it's not in the new region's cities
-    if (cities.length > 0 && !cities.some(city => city.name === contactData.city)) {
+    if (cities.length > 0 && !cities.some(city => city.name === contactData.locationData?.cityName)) {
       setContactData(prev => ({ ...prev, city: '', postalCode: '', location: '' }));
       setAvailablePostalCodes([]);
       setAvailableStreets([]);
     }
-  }, [contactData.region, contactData.city, language]);
+  }, [contactData.region, contactData.locationData?.cityName, language]);
 
   // Update postal codes when city changes
   useEffect(() => {
-    if (!contactData.city || !contactData.region) {
+    if (!contactData.locationData?.cityName || !contactData.region) {
       setAvailablePostalCodes([]);
       setAvailableStreets([]);
       // Clear postal code and location when city is cleared
       setContactData(prev => ({ ...prev, postalCode: '', location: '' }));
       return;
     }
-    const postalCodes = getPostalCodesForCity(contactData.city, contactData.region);
+    const postalCodes = getPostalCodesForCity(contactData.locationData?.cityName, contactData.region);
     setAvailablePostalCodes(postalCodes);
     // Clear postal code if it's not in the new city's postal codes
     if (postalCodes.length > 0 && !postalCodes.some(pc => pc.code === contactData.postalCode)) {
       setContactData(prev => ({ ...prev, postalCode: '', location: '' }));
       setAvailableStreets([]);
     }
-  }, [contactData.city, contactData.region, contactData.postalCode]);
+  }, [contactData.locationData?.cityName, contactData.region, contactData.postalCode]);
 
   // Update streets when postal code changes
   useEffect(() => {
-    if (!contactData.postalCode || !contactData.city) {
+    if (!contactData.postalCode || !contactData.locationData?.cityName) {
       setAvailableStreets([]);
       // Clear location when postal code is cleared
       setContactData(prev => ({ ...prev, location: '' }));
       return;
     }
-    const streets = getStreetsForPostalCode(contactData.postalCode, contactData.city);
+    const streets = getStreetsForPostalCode(contactData.postalCode, contactData.locationData?.cityName);
     setAvailableStreets(streets);
     // Clear location if it's not in the new postal code's streets
     if (streets.length > 0 && !streets.includes(contactData.location)) {
       setContactData(prev => ({ ...prev, location: '' }));
     }
-  }, [contactData.postalCode, contactData.city, contactData.location]);
+  }, [contactData.postalCode, contactData.locationData?.cityName, contactData.location]);
 
   const handleFieldChange = useCallback(<K extends keyof ContactFormState>(field: K, value: ContactFormState[K]) => {
     setContactData(prev => ({ ...prev, [field]: value }));
@@ -153,7 +153,7 @@ export const useContactForm = ({ language, requireContactFields = false }: UseCo
       contactData.sellerEmail.trim().length > 0 &&
       contactData.sellerPhone.trim().length > 0 &&
       contactData.region.trim().length > 0 &&
-      contactData.city.trim().length > 0
+      contactData.locationData?.cityName.trim().length > 0
     );
   }, [contactData, requireContactFields]);
 

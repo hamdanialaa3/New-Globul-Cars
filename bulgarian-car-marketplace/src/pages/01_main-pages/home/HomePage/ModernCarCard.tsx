@@ -330,9 +330,9 @@ const ModernCarCard: React.FC<ModernCarCardProps> = ({
   // Helper to get location string
   const getLocation = () => {
     if (typeof car.location === 'string') return car.location;
-    if (language === 'bg' && car.location?.cityNameBg) return car.location.cityNameBg;
-    if (car.location?.cityNameEn) return car.location.cityNameEn;
-    if (car.location?.city) return car.location.city;
+    if (language === 'bg' && car.location?.cityNameBg) return car.locationData?.cityNameNameBg;
+    if (car.location?.cityNameEn) return car.locationData?.cityNameNameEn;
+    if (car.location?.city) return car.locationData?.cityName;
     return language === 'bg' ? 'България' : 'Bulgaria';
   };
 

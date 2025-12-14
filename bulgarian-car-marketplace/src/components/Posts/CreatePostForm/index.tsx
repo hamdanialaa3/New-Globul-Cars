@@ -112,7 +112,7 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onClose, onPostCreated 
           hashtags: hashtags.length > 0 ? hashtags : undefined
         },
         visibility,
-        location: location.city ? location : undefined
+        location: location.locationData?.cityName ? location : undefined
       };
 
       // Create post with userId, postData, and upload progress callback

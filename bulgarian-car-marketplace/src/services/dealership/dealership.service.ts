@@ -444,8 +444,8 @@ class DealershipService {
       let q = collection(db, 'dealerships');
       const constraints = [];
       
-      if (criteria.city) {
-        constraints.push(where('address.city', '==', criteria.city));
+      if (criteria.locationData?.cityName) {
+        constraints.push(where('address.locationData?.cityName', '==', criteria.locationData?.cityName));
       }
       if (criteria.region) {
         constraints.push(where('address.region', '==', criteria.region));

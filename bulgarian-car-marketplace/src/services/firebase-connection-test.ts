@@ -66,7 +66,7 @@ class FirebaseConnectionTestService {
         }
       };
       
-    } catch (error: any) {
+    } catch (error: unknown) {
       serviceLogger.error('Firebase connection failed', error as Error);
       
       // Return mock data if connection fails
@@ -135,7 +135,7 @@ class FirebaseConnectionTestService {
         }
       };
       
-    } catch (error: any) {
+    } catch (error: unknown) {
       serviceLogger.error('Firestore write operation failed', error as Error);
       return {
         success: false,
@@ -192,7 +192,7 @@ class FirebaseConnectionTestService {
         }
       };
       
-    } catch (error: any) {
+    } catch (error: unknown) {
       serviceLogger.error('Failed to fetch real users data', error as Error);
       return {
         success: false,
@@ -236,7 +236,7 @@ class FirebaseConnectionTestService {
         }
       };
       
-    } catch (error: any) {
+    } catch (error: unknown) {
       serviceLogger.error('Real-time updates test failed', error as Error);
       return {
         success: false,
@@ -250,7 +250,7 @@ class FirebaseConnectionTestService {
   public async runCompleteTest(): Promise<{
     success: boolean;
     message: string;
-    results: any[];
+    results: unknown[];
     error?: string;
   }> {
     try {
@@ -291,7 +291,7 @@ class FirebaseConnectionTestService {
         error: allTestsPassed ? undefined : 'Some tests failed'
       };
       
-    } catch (error: any) {
+    } catch (error: unknown) {
       serviceLogger.error('Complete Firebase test suite failed', error as Error);
       return {
         success: false,

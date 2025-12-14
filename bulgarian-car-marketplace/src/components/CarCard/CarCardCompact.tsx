@@ -225,7 +225,7 @@ const CarCardCompact: React.FC<CarCardCompactProps> = ({ car }) => {
              car.location?.cityName?.en ||
              car.location?.cityName?.bg;
     }
-    return car.city || car.region || (language === 'bg' ? 'България' : 'Bulgaria');
+    return car.locationData?.cityName || car.region || (language === 'bg' ? 'България' : 'Bulgaria');
   };
 
   const price = car.price || 0;

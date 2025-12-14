@@ -118,7 +118,7 @@ export async function fixAllCarsStatus(): Promise<number> {
       for (const docSnap of snapshot.docs) {
         const data = docSnap.data();
         
-        const updates: any = {};
+        const updates: Record<string, unknown> = {};
         let needsUpdate = false;
         
         // Check and fix status

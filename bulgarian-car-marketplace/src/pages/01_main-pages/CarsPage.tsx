@@ -605,7 +605,7 @@ const CarsPage: React.FC = () => {
         personalized: result.isPersonalized 
       });
     } catch (err) {
-      console.error('❌ Smart Search FAILED:', err);
+      logger.error('❌ Smart Search FAILED:', err);
       logger.error('Smart search failed', err as Error);
       setError('Search failed');
       setCars([]); // Clear cars on error
@@ -645,7 +645,7 @@ const CarsPage: React.FC = () => {
         logger.info('Loading cars with filters', { region: regionParam, make: makeParam });
 
         // ✅ FIXED: Build filters object compatible with unifiedCarService.searchCars
-        const filters: any = {
+        const filters: Record<string, unknown> = {
           isActive: true,  // Only show active cars
           isSold: false    // Hide sold cars
         };
@@ -722,7 +722,7 @@ const CarsPage: React.FC = () => {
           sellerName: car.sellerName || '',
           sellerEmail: car.sellerEmail || '',
           sellerPhone: car.sellerPhone || '',
-          city: car.city || '',
+          city: car.locationData?.cityName || '',
           region: car.region || '',
           status: car.status || 'active',
           currency: car.currency || 'EUR'

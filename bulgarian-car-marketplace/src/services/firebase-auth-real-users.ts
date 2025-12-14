@@ -63,7 +63,7 @@ class FirebaseAuthRealUsers {
       
       return data.totalUsers;
       
-    } catch (error: any) {
+    } catch (error: unknown) {
       serviceLogger.error('Error getting real auth users', error as Error);
       
       // If function not deployed, use Firestore count instead
@@ -105,7 +105,7 @@ class FirebaseAuthRealUsers {
       
       return data.activeUsers;
       
-    } catch (error: any) {
+    } catch (error: unknown) {
       serviceLogger.error('Error getting active auth users', error as Error);
       
       if (error.code === 'functions/not-found') {
@@ -132,7 +132,7 @@ class FirebaseAuthRealUsers {
       serviceLogger.info('Got users from Cloud Function', { count: result.data.users.length });
       return result.data.users;
       
-    } catch (error: any) {
+    } catch (error: unknown) {
       serviceLogger.error('Error getting auth users list', error as Error);
       
       // If Cloud Function not deployed, get from Firestore as fallback
@@ -191,7 +191,7 @@ class FirebaseAuthRealUsers {
       
       return data;
       
-    } catch (error: any) {
+    } catch (error: unknown) {
       serviceLogger.error('Error syncing users', error as Error);
       throw error;
     }

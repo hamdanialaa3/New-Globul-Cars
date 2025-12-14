@@ -382,7 +382,7 @@ export function isCompanyInfoComplete(info: CompanyInfo): boolean {
     isValidBULSTAT(info.bulstat) &&
     info.legalForm &&
     info.headquarters.street &&
-    info.headquarters.city &&
+    info.headquarters.locationData?.cityName &&
     info.contact.phone &&
     info.contact.email
   );
@@ -399,7 +399,7 @@ export function calculateCompanyCompleteness(info: CompanyInfo): number {
   if (info.companyNameBG) score += 1;
   if (info.bulstat && isValidBULSTAT(info.bulstat)) score += 1;
   if (info.legalForm) score += 1;
-  if (info.headquarters.street && info.headquarters.city) score += 1;
+  if (info.headquarters.street && info.headquarters.locationData?.cityName) score += 1;
   if (info.contact.phone && info.contact.email) score += 1;
   
   // Optional but important (5 points)

@@ -48,7 +48,7 @@ const ContactDataCard: React.FC<ContactDataCardProps> = ({
         </ValueSection>
       </DataRow>
 
-      {address && (address.street || address.city) && (
+      {address && (address.street || address.locationData?.cityName) && (
         <DataRow>
           <LabelSection>
             <IconWrapper><MapPin size={16} /></IconWrapper>
@@ -57,9 +57,9 @@ const ContactDataCard: React.FC<ContactDataCardProps> = ({
           <ValueSection>
             <Value>
               {address.street && <div>{address.street}</div>}
-              {(address.postalCode || address.city) && (
+              {(address.postalCode || address.locationData?.cityName) && (
                 <div>
-                  {address.postalCode} {address.city}
+                  {address.postalCode} {address.locationData?.cityName}
                 </div>
               )}
             </Value>

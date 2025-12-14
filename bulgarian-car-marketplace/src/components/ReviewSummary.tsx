@@ -350,7 +350,7 @@ const ReviewSummary: React.FC<ReviewSummaryProps> = ({
       </Section>
 
       {/* Location */}
-      {(workflowData.region || workflowData.city) && (
+      {(workflowData.region || workflowData.locationData?.cityName) && (
         <Section>
           <SectionHeader>
             <MapPin size={24} color="#3b82f6" />
@@ -362,10 +362,10 @@ const ReviewSummary: React.FC<ReviewSummaryProps> = ({
             <DetailValue>{workflowData.region}</DetailValue>
           </DetailRow>
           
-          {workflowData.city && (
+          {workflowData.locationData?.cityName && (
             <DetailRow>
               <DetailLabel>{t('Град', 'City')}:</DetailLabel>
-              <DetailValue>{workflowData.city}</DetailValue>
+              <DetailValue>{workflowData.locationData?.cityName}</DetailValue>
             </DetailRow>
           )}
         </Section>

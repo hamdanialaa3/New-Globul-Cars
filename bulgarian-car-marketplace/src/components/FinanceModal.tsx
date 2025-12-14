@@ -321,7 +321,7 @@ const FinanceModal: React.FC<FinanceModalProps> = ({
       alert('Заявката за финансиране е изпратена успешно! Ще се свържем с Вас скоро.');
       onClose();
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       setError(error.message || 'Възникна грешка при изпращане на заявката');
     } finally {
       setIsSubmitting(false);

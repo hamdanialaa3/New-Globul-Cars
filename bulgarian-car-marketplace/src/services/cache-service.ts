@@ -390,7 +390,7 @@ export class CacheService {
    * Estimate size of data in bytes
    * (Comment removed - was in Arabic)
    */
-  private estimateSize(data: any): number {
+  private estimateSize(data: unknown): number {
     if (data === null || data === undefined) return 0;
 
     const str = typeof data === 'string' ? data : JSON.stringify(data);
@@ -401,7 +401,7 @@ export class CacheService {
    * Compress data (simple implementation)
    * (Comment removed - was in Arabic)
    */
-  private compress(data: any): any {
+  private compress(data: unknown): any {
     // In a real implementation, you would use a compression library
     // For now, just return the data as-is
     return data;
@@ -411,7 +411,7 @@ export class CacheService {
    * Decompress data
    * (Comment removed - was in Arabic)
    */
-  private decompress(data: any): any {
+  private decompress(data: unknown): any {
     // In a real implementation, you would use a decompression library
     return data;
   }

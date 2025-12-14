@@ -172,7 +172,7 @@ const ReviewComposer: React.FC<ReviewComposerProps> = ({
       // Hide success message after 3 seconds
       setTimeout(() => setSuccess(false), 3000);
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Error submitting review:', error);
       setError(error.message || (language === 'bg' 
         ? 'Грешка при изпращане на отзив' 

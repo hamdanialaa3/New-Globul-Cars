@@ -269,8 +269,8 @@ export const BulgariaLocationDropdown: React.FC<BulgariaLocationDropdownProps> =
 
   // Auto-fill postal code when city selected (only if postal code is empty)
   useEffect(() => {
-    if (value.city && cities.length > 0 && !showManualCity && !value.postalCode) {
-      const selectedCity = cities.find(c => c.name === value.city || c.nameEn === value.city);
+    if (value.locationData?.cityName && cities.length > 0 && !showManualCity && !value.postalCode) {
+      const selectedCity = cities.find(c => c.name === value.locationData?.cityName || c.nameEn === value.locationData?.cityName);
       if (selectedCity && selectedCity.postalCode) {
         onChange({
           ...value,
@@ -279,7 +279,7 @@ export const BulgariaLocationDropdown: React.FC<BulgariaLocationDropdownProps> =
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value.city, cities, showManualCity]);
+  }, [value.locationData?.cityName, cities, showManualCity]);
 
   /**
    * Load all provinces
@@ -527,7 +527,7 @@ export const BulgariaLocationDropdown: React.FC<BulgariaLocationDropdownProps> =
         ) : showManualCity ? (
           <Input
             type="text"
-            value={value.city}
+            value={value.locationData?.cityName}
             onChange={handleManualCityChange}
             placeholder={language === 'bg' ? 'Пример: София' : 'Example: Sofia'}
             disabled={disabled}
@@ -535,7 +535,7 @@ export const BulgariaLocationDropdown: React.FC<BulgariaLocationDropdownProps> =
           />
         ) : (
           <Select
-            value={value.city || ''}
+            value={value.locationData?.cityName || ''}
             onChange={handleCityChange}
             disabled={disabled || !value.province || value.province === 'other'}
             $hasError={!!error}

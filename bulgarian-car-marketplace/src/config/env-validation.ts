@@ -1,3 +1,5 @@
+import { logger } from '../services/logger-service';
+
 /**
  * Environment Variables Validation
  * Validates required environment variables on app startup
@@ -56,7 +58,7 @@ export function validateEnvironmentVariables(): void {
 
   // Log warnings in development
   if (process.env.NODE_ENV === 'development' && warnings.length > 0) {
-    console.warn('⚠️ Environment Variable Warnings:', warnings);
+    logger.warn('⚠️ Environment Variable Warnings:', warnings);
   }
 
   // Throw error if critical variables are missing

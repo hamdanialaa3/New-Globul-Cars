@@ -15,6 +15,8 @@ import { Upload, X, Image as ImageIcon, Video, Box } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { WorkflowPageLayout } from '../../../components/sell-workflow/WorkflowPageLayout';
 import { serviceLogger } from '../../../services/logger-wrapper';
+import { logger } from '../../../services/logger-service';
+
 
 // Mobile Styles
 const MobileContainer = styled.div`
@@ -799,7 +801,7 @@ const ImagesPage: React.FC = () => {
     try {
       await ImageStorageService.removeImage(index);
     } catch (error) {
-      console.error('Failed to remove image:', error);
+      logger.error('Failed to remove image:', error);
     }
   }, []);
 
@@ -876,12 +878,12 @@ const ImagesPage: React.FC = () => {
         const validVehicleType = vehicleType || 'car';
         const targetPath = `/sell/inserat/${validVehicleType}/pricing?${params.toString()}`;
         
-        console.log('📋 Images uploaded:', imageFiles.length);
+        logger.info('📋 Images uploaded:', imageFiles.length);
         
         // ✅ Navigate to pricing page (EUR currency for Bulgaria market)
         navigate(targetPath);
       } catch (error) {
-        console.error('❌ Navigation error:', error);
+        logger.error('❌ Navigation error:', error);
         toast.error(language === 'bg' 
           ? 'Грешка при навигация. Моля опитайте отново.'
           : 'Navigation error. Please try again.');

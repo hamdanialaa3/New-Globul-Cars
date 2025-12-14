@@ -22,8 +22,8 @@ function parseEphemeral(token: string): ParsedEphemeral | null {
   }
 }
 // Lazy import firebase functions to avoid hard dependency during SSR or build phases
-let functionsModule: any = null;
-let httpsCallable: any = null;
+let functionsModule: Record<string, unknown> = null;
+let httpsCallable: Record<string, unknown> = null;
 async function loadFunctions() {
   if (!functionsModule) {
     try {
@@ -103,7 +103,7 @@ export class SocialTokenProvider {
         if (app) {
           const f = functionsModule.getFunctions(app, regionFn);
           const callable = httpsCallable(f, 'getSocialAccessToken');
-          const result: any = await callable({ platform });
+          const result: Record<string, unknown> = await callable({ platform });
           if (result?.data?.token) {
             const backendToken: SocialToken = {
               platform,

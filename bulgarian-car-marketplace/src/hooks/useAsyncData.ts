@@ -39,7 +39,7 @@ export interface UseAsyncDataReturn<T> {
  */
 export function useAsyncData<T>(
   fetchFn: () => Promise<T>,
-  deps: any[] = [],
+  deps: unknown[] = [],
   options: UseAsyncDataOptions<T> = {}
 ): UseAsyncDataReturn<T> {
   const [data, setData] = useState<T | null>(options.initialData ?? null);

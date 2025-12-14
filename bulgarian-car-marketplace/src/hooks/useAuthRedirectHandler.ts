@@ -62,7 +62,7 @@ export const useAuthRedirectHandler = () => {
           });
         }
         
-      } catch (error: any) {
+      } catch (error: unknown) {
         logger.error('OAuth redirect error', error as Error);
         
         let errorMessage = 'حدث خطأ أثناء تسجيل الدخول. يرجى المحاولة مرة أخرى.';

@@ -408,7 +408,7 @@ export const PostCard: React.FC<PostCardProps> = ({
           </div>
           <div className="meta">
             {post.createdAt?.toDate?.().toLocaleDateString()} 
-            {post.location?.city && ` • ${post.location.city}`}
+            {post.location?.city && ` • ${post.locationData?.cityName}`}
           </div>
         </AuthorInfo>
         <MoreButton>

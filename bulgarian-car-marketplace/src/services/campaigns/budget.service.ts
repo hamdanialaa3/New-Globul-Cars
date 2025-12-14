@@ -157,7 +157,7 @@ class BudgetService {
       } else {
         // Update existing record
         const docRef = snapshot.docs[0].ref;
-        const updates: any = {
+        const updates: Record<string, unknown> = {
           spent: increment(amount)
         };
         

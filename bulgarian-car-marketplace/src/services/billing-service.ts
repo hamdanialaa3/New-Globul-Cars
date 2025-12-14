@@ -79,7 +79,7 @@ export const generateInvoice = async (data: {
     const generateInvoiceFn = httpsCallable(functions, 'generateInvoice');
     const result = await generateInvoiceFn(data);
     return result.data as any;
-  } catch (error: any) {
+  } catch (error: unknown) {
     serviceLogger.error('Error generating invoice', error as Error);
     return { success: false, error: error.message };
   }
@@ -100,7 +100,7 @@ export const getInvoices = async (params?: {
     const getInvoicesFn = httpsCallable(functions, 'getInvoices');
     const result = await getInvoicesFn(params || {});
     return result.data as any;
-  } catch (error: any) {
+  } catch (error: unknown) {
     serviceLogger.error('Error getting invoices', error as Error, { params });
     return { success: false, error: error.message };
   }
@@ -117,7 +117,7 @@ export const getInvoice = async (
     const getInvoiceFn = httpsCallable(functions, 'getInvoice');
     const result = await getInvoiceFn({ invoiceId });
     return result.data as any;
-  } catch (error: any) {
+  } catch (error: unknown) {
     serviceLogger.error('Error getting invoice', error as Error, { invoiceId });
     return { success: false, error: error.message };
   }
@@ -135,7 +135,7 @@ export const updateInvoiceStatus = async (
     const updateInvoiceStatusFn = httpsCallable(functions, 'updateInvoiceStatus');
     const result = await updateInvoiceStatusFn({ invoiceId, status, notes });
     return result.data as any;
-  } catch (error: any) {
+  } catch (error: unknown) {
     serviceLogger.error('Error updating invoice status', error as Error, { invoiceId, status });
     return { success: false, error: error.message };
   }
@@ -152,7 +152,7 @@ export const sendInvoiceEmail = async (
     const sendInvoiceEmailFn = httpsCallable(functions, 'sendInvoiceEmail');
     const result = await sendInvoiceEmailFn({ invoiceId, recipientEmail });
     return result.data as any;
-  } catch (error: any) {
+  } catch (error: unknown) {
     serviceLogger.error('Error sending invoice email', error as Error, { invoiceId, recipientEmail });
     return { success: false, error: error.message };
   }

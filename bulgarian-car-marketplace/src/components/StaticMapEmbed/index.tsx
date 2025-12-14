@@ -122,7 +122,7 @@ const StaticMapEmbed: React.FC<StaticMapEmbedProps> = ({
       if (!coords) {
         // Geocode the location
         googleMapsService.initialize();
-        const address = `${location.city}, ${location.region || ''}, Bulgaria`;
+        const address = `${location.locationData?.cityName}, ${location.region || ''}, Bulgaria`;
         const geocoded = await googleMapsService.geocodeAddress(address);
         coords = geocoded || undefined;
       }
@@ -142,7 +142,7 @@ const StaticMapEmbed: React.FC<StaticMapEmbedProps> = ({
     if (location.coordinates) {
       return `https://www.google.com/maps/search/?api=1&query=${location.coordinates.lat},${location.coordinates.lng}`;
     }
-    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location.city + ', Bulgaria')}`;
+    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location.locationData?.cityName + ', Bulgaria')}`;
   };
 
   return (
@@ -155,7 +155,7 @@ const StaticMapEmbed: React.FC<StaticMapEmbedProps> = ({
               {language === 'bg' ? 'Местоположение на картата' : 'Location on Map'}
             </Title>
             <LocationText>
-              {location.city}
+              {location.locationData?.cityName}
               {location.region && `, ${location.region}`}
             </LocationText>
           </div>
@@ -179,7 +179,7 @@ const StaticMapEmbed: React.FC<StaticMapEmbedProps> = ({
           src={mapUrl}
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"
-          title={`Map of ${location.city}`}
+          title={`Map of ${location.locationData?.cityName}`}
           onError={() => {
             logger.error('Google Maps iframe failed to load');
             setLoading(false);

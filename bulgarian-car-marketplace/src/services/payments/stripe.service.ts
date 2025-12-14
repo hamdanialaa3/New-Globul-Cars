@@ -60,7 +60,7 @@ class StripeService {
 
       return result.data;
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       serviceLogger.error('Error creating Stripe account', error as Error, { email, businessType });
       throw new Error(error.message || 'Failed to create Stripe account');
     }
@@ -79,7 +79,7 @@ class StripeService {
       const result = await getStatus();
       return result.data;
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       serviceLogger.error('Error getting account status', error as Error);
       throw new Error(error.message || 'Failed to get account status');
     }
@@ -108,7 +108,7 @@ class StripeService {
 
       return result.data;
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       serviceLogger.error('Error creating payment intent', error as Error, { carId, amount, buyerId });
       throw new Error(error.message || 'Failed to create payment');
     }
@@ -127,7 +127,7 @@ class StripeService {
       const result = await confirmPayment({ paymentId });
       return result.data;
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       serviceLogger.error('Error confirming payment', error as Error, { paymentId });
       throw new Error(error.message || 'Failed to confirm payment');
     }

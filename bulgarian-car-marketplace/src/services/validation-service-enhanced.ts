@@ -8,7 +8,7 @@ export interface ValidationRule {
   min?: number;
   max?: number;
   pattern?: RegExp;
-  custom?: (value: any) => boolean;
+  custom?: (value: unknown) => boolean;
   email?: boolean;
   phone?: boolean;
   url?: boolean;
@@ -153,7 +153,7 @@ class ValidationService {
   /**
    * Helper: Check if value is empty
    */
-  private isEmpty(value: any): boolean {
+  private isEmpty(value: unknown): boolean {
     if (value === null || value === undefined) return true;
     if (typeof value === 'string') return value.trim() === '';
     if (Array.isArray(value)) return value.length === 0;

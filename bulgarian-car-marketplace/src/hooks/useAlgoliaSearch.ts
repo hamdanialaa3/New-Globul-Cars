@@ -9,7 +9,7 @@ interface UseAlgoliaSearchReturn {
   search: (query: string, filters?: any) => Promise<any>;
   loading: boolean;
   error: string | null;
-  results: any[];
+  results: unknown[];
   totalResults: number;
 }
 
@@ -19,7 +19,7 @@ export const useAlgoliaSearch = (): UseAlgoliaSearchReturn => {
   const [results, setResults] = useState<any[]>([]);
   const [totalResults, setTotalResults] = useState(0);
 
-  const search = useCallback(async (query: string, filters: any = {}) => {
+  const search = useCallback(async (query: string, filters: Record<string, unknown> = {}) => {
     setLoading(true);
     setError(null);
 

@@ -896,13 +896,13 @@ const CarDetailsModernView: React.FC<CarDetailsModernViewProps> = ({
               <MapHeader>
                 <SectionTitle style={{ marginBottom: '0.25rem' }}>{text.mapHeading}</SectionTitle>
                 <div style={{ color: '#6b7280', fontSize: '0.9rem', fontWeight: 500 }}>
-                  {car.city}, {car.region}
+                  {car.locationData?.cityName}, {car.region}
                 </div>
               </MapHeader>
               <MapBody>
                 <StaticMapEmbed
                   location={{
-                    city: car.city,
+                    city: car.locationData?.cityName,
                     region: car.region,
                     coordinates: car.coordinates,
                   }}
@@ -978,7 +978,7 @@ const CarDetailsModernView: React.FC<CarDetailsModernViewProps> = ({
                 <SectionTitle style={{ marginBottom: '0.75rem' }}>{text.sellerAbout}</SectionTitle>
                 <div style={{ fontWeight: 700, marginBottom: '0.5rem' }}>{car.companyName || car.sellerName}</div>
                 <div style={{ color: '#6b7280', fontSize: '0.9rem', marginBottom: '0.75rem' }}>
-                  {car.companyAddress || `${car.city}, ${car.region}`}
+                  {car.companyAddress || `${car.locationData?.cityName}, ${car.region}`}
                 </div>
                 <RatingHighlights>
                   <span>⭐ 4.7</span>

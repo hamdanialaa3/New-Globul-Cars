@@ -281,7 +281,7 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
       'filters.fuelType': { bg: 'Гориво', en: 'Fuel Type' },
       'filters.transmission': { bg: 'Скоростна кутия', en: 'Transmission' },
       'filters.bodyType': { bg: 'Тип купе', en: 'Body Type' },
-      'filters.region': { bg: 'Регион', en: 'Region' },
+      'filters.locationData?.regionName': { bg: 'Регион', en: 'Region' },
       'filters.from': { bg: 'От', en: 'From' },
       'filters.to': { bg: 'До', en: 'To' },
       'filters.apply': { bg: 'Приложи филтри', en: 'Apply Filters' },
@@ -447,11 +447,11 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
 
           {/* Region */}
           <FilterSection>
-            <SectionTitle>{t('filters.region')}</SectionTitle>
+            <SectionTitle>{t('filters.locationData?.regionName')}</SectionTitle>
             <Input
               type="text"
               placeholder={t('filters.selectRegion')}
-              value={filters.region || ''}
+              value={filters.locationData?.regionName || ''}
               onChange={(e) => handleChange('region', e.target.value)}
             />
           </FilterSection>

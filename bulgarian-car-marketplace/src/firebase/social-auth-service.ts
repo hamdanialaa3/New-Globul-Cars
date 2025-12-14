@@ -74,7 +74,7 @@ export class SocialAuthService {
       await this.createOrUpdateBulgarianProfile(result.user);
       
       return result;
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Email/Password sign-in error', error as Error);
       throw new Error(this.getErrorMessage(error.code, 'Email/Password'));
     }
@@ -94,7 +94,7 @@ export class SocialAuthService {
       await this.createOrUpdateBulgarianProfile(result.user);
       
       return result;
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Email/Password registration error', error as Error);
       throw new Error(this.getErrorMessage(error.code, 'Email/Password'));
     }
@@ -171,7 +171,7 @@ export class SocialAuthService {
       }
       
       return result;
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Enhanced error logging
       logger.error('Google Sign-in Error', error as Error, {
         code: error.code,
@@ -284,7 +284,7 @@ export class SocialAuthService {
       }
       
       return result;
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Facebook sign-in error', error as Error);
 
       // Handle popup blocked error with user-friendly message
@@ -351,7 +351,7 @@ export class SocialAuthService {
       }
       
       return result;
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.warn('Apple popup failed, trying redirect', { code: error.code });
 
       // If popup is blocked, try redirect
@@ -395,7 +395,7 @@ export class SocialAuthService {
       // First try popup
       const result = await signInWithPopup(auth, microsoftProvider);
       return result;
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.warn('Microsoft popup failed, trying redirect', { code: error.code });
 
       // If popup is blocked, try redirect
@@ -429,7 +429,7 @@ export class SocialAuthService {
       // First try popup
       const result = await signInWithPopup(auth, samsungProvider);
       return result;
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.warn('Samsung popup failed, trying redirect', { code: error.code });
 
       // If popup is blocked, try redirect
@@ -461,7 +461,7 @@ export class SocialAuthService {
   static async signInWithGoogleRedirect(): Promise<void> {
     try {
       await signInWithRedirect(auth, googleProvider);
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Google redirect sign-in error', error as Error);
       throw new Error(this.getErrorMessage(error.code, 'Google'));
     }
@@ -473,7 +473,7 @@ export class SocialAuthService {
   static async signInWithFacebookRedirect(): Promise<void> {
     try {
       await signInWithRedirect(auth, facebookProvider);
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Facebook redirect sign-in error', error as Error);
       throw new Error(this.getErrorMessage(error.code, 'Facebook'));
     }
@@ -485,7 +485,7 @@ export class SocialAuthService {
   static async signInWithAppleRedirect(): Promise<void> {
     try {
       await signInWithRedirect(auth, appleProvider);
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Apple redirect sign-in error', error as Error);
       throw new Error(this.getErrorMessage(error.code, 'Apple'));
     }
@@ -497,7 +497,7 @@ export class SocialAuthService {
   static async signInWithMicrosoftRedirect(): Promise<void> {
     try {
       await signInWithRedirect(auth, microsoftProvider);
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Microsoft redirect sign-in error', error as Error);
       throw new Error(this.getErrorMessage(error.code, 'Microsoft'));
     }
@@ -509,7 +509,7 @@ export class SocialAuthService {
   static async signInWithSamsungRedirect(): Promise<void> {
     try {
       await signInWithRedirect(auth, samsungProvider);
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Samsung redirect sign-in error', error as Error);
       throw new Error(this.getErrorMessage(error.code, 'Samsung'));
     }
@@ -522,7 +522,7 @@ export class SocialAuthService {
     try {
       const result = await getRedirectResult(auth);
       return result;
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Redirect result error', error as Error);
       throw new Error(this.getErrorMessage(error.code, 'Redirect'));
     }
@@ -681,7 +681,7 @@ export class SocialAuthService {
       await this.createOrUpdateBulgarianProfile(result.user);
       
       return result;
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error(`Error linking ${providerType} provider`, error as Error);
       throw new Error(this.getErrorMessage(error.code, providerType));
     }
@@ -702,7 +702,7 @@ export class SocialAuthService {
       await this.createOrUpdateBulgarianProfile(result);
       
       return result;
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error(`Error unlinking provider ${providerId}`, error as Error);
       throw new Error(this.getErrorMessage(error.code, 'unlink'));
     }
@@ -734,7 +734,7 @@ export class SocialAuthService {
     try {
       const result = await reauthenticateWithPopup(auth.currentUser, provider);
       return result;
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error(`Error reauthenticating with ${providerType}`, error as Error);
       throw new Error(this.getErrorMessage(error.code, providerType));
     }
@@ -756,7 +756,7 @@ export class SocialAuthService {
       
       // Also update Firestore profile
       await this.createOrUpdateBulgarianProfile(auth.currentUser, updates);
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Error updating profile', error as Error);
       throw new Error(this.getErrorMessage(error.code, 'update-profile'));
     }
@@ -781,7 +781,7 @@ export class SocialAuthService {
       
       // Delete Firebase Auth user
       await deleteUser(auth.currentUser);
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Error deleting user account', error as Error);
       throw new Error(this.getErrorMessage(error.code, 'delete-account'));
     }
@@ -800,7 +800,7 @@ export class SocialAuthService {
       }
       
       return null;
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Error fetching user profile', error as Error);
       throw new Error('Failed to fetch user profile');
     }
@@ -816,7 +816,7 @@ export class SocialAuthService {
         ...updates,
         updatedAt: serverTimestamp()
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Error updating Bulgarian profile', error as Error);
       throw new Error('Failed to update profile');
     }
@@ -843,7 +843,7 @@ export class SocialAuthService {
         q = query(q, where('isDealer', '==', criteria.isDealer));
       }
       if (criteria.location) {
-        q = query(q, where('location.city', '==', criteria.location));
+        q = query(q, where('location.locationData?.cityName', '==', criteria.location));
       }
       
       const querySnapshot = await getDocs(q);
@@ -854,7 +854,7 @@ export class SocialAuthService {
       });
       
       return users.slice(0, criteria.limit || 50);
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Error searching users', error as Error);
       throw new Error('Failed to search users');
     }
@@ -915,7 +915,7 @@ export class SocialAuthService {
       }
       
       return result;
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Anonymous Sign-in Error', error as Error);
       
       if (error.code === 'auth/operation-not-allowed') {
@@ -946,7 +946,7 @@ export class SocialAuthService {
       });
       
       return recaptchaVerifier;
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('reCAPTCHA setup error', error as Error);
       throw new Error('Failed to setup reCAPTCHA verifier');
     }
@@ -973,7 +973,7 @@ export class SocialAuthService {
         logger.debug('Verification code sent successfully');
       }
       return confirmationResult;
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Phone verification code error', error as Error);
       throw new Error(this.getErrorMessage(error.code, 'Phone'));
     }
@@ -1009,7 +1009,7 @@ export class SocialAuthService {
       }
       
       return result;
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Phone code verification error', error as Error);
       throw new Error(this.getErrorMessage(error.code, 'Phone Verification'));
     }
@@ -1027,7 +1027,7 @@ export class SocialAuthService {
       const formattedPhone = phoneNumber.startsWith('+') ? phoneNumber : `+359${phoneNumber}`;
       const confirmationResult = await signInWithPhoneNumber(auth, formattedPhone, recaptchaVerifier);
       return confirmationResult;
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Link phone number error', error as Error);
       throw new Error(this.getErrorMessage(error.code, 'Phone Linking'));
     }
@@ -1072,7 +1072,7 @@ export class SocialAuthService {
         logger.debug('Anonymous account converted successfully');
       }
       return newUserCredential;
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Convert anonymous account error', error as Error);
       throw new Error(this.getErrorMessage(error.code, 'Account Conversion'));
     }

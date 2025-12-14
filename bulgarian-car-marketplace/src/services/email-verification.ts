@@ -82,7 +82,7 @@ export class EmailVerificationService {
           : `Verification email sent to ${user.email}`
       };
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       serviceLogger.error('Email verification error', error as Error, { email: user?.email });
       
       let errorMessage: string;
@@ -143,7 +143,7 @@ export class EmailVerificationService {
         message: 'Email verified successfully'
       };
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       serviceLogger.error('Email verification with code error', error as Error, { actionCode });
       
       let errorMessage: string;
@@ -185,7 +185,7 @@ export class EmailVerificationService {
         email: info.data.email || '',
         previousEmail: info.data.previousEmail || undefined
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       serviceLogger.error('Get action code info error', error as Error, { actionCode });
       return null;
     }
@@ -220,7 +220,7 @@ export class EmailVerificationService {
           : `Verification email sent to ${newEmail}`
       };
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       serviceLogger.error('Email update verification error', error as Error, { newEmail });
       
       let errorMessage: string;

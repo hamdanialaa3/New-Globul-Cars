@@ -183,7 +183,7 @@ const AlgoliaAdminPanel: React.FC = () => {
         type: 'success', 
         text: `✅ ${data.message || 'Sync completed'} (${data.count} cars)` 
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       serviceLogger.error('Sync error', error as Error);
       setMessage({ 
         type: 'error', 
@@ -216,7 +216,7 @@ const AlgoliaAdminPanel: React.FC = () => {
         type: 'success', 
         text: data.message || 'Index cleared successfully' 
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       serviceLogger.error('Clear error', error as Error);
       setMessage({ 
         type: 'error', 

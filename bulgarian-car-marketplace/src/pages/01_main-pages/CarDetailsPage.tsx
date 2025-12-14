@@ -395,11 +395,11 @@ const CarDetailsPage: React.FC = () => {
       )}
 
       {/* Distance & Directions - Only in view mode */}
-      {!editHook.isEditMode && car && car.city && (
+      {!editHook.isEditMode && car && car.locationData?.cityName && (
         <LocationMapContainer>
           <StaticMapEmbed
             location={{
-              city: car.city,
+              city: car.locationData?.cityName,
               region: car.region,
               coordinates: car.coordinates
             }}
@@ -408,7 +408,7 @@ const CarDetailsPage: React.FC = () => {
           
           <DistanceIndicator
             carLocation={{
-              city: car.city,
+              city: car.locationData?.cityName,
               region: car.region,
               coordinates: car.coordinates
             }}

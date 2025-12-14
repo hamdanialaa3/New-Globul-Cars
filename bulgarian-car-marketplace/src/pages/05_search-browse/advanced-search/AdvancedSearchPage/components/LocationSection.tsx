@@ -44,7 +44,7 @@ export const LocationSection: React.FC<LocationSectionProps> = ({
 
   // Clear city selection when country changes to non-Bulgaria
   useEffect(() => {
-    if (!isBulgariaSelected && searchData.city) {
+    if (!isBulgariaSelected && searchData.locationData?.cityName) {
       // Trigger onChange to clear city
       const event = {
         target: {
@@ -55,7 +55,7 @@ export const LocationSection: React.FC<LocationSectionProps> = ({
       } as React.ChangeEvent<HTMLSelectElement>;
       onChange(event);
     }
-  }, [searchData.country, isBulgariaSelected, searchData.city, onChange]);
+  }, [searchData.country, isBulgariaSelected, searchData.locationData?.cityName, onChange]);
 
   return (
     <SectionCard>
@@ -79,8 +79,8 @@ export const LocationSection: React.FC<LocationSectionProps> = ({
             {/* Only show City dropdown when Bulgaria is selected or no country selected */}
             {isBulgariaSelected && (
               <FormGroup>
-                <label>{t('advancedSearch.city')}</label>
-                <SearchSelect name="city" value={searchData.city || ''} onChange={onChange}>
+                <label>{t('advancedSearch.locationData?.cityName')}</label>
+                <SearchSelect name="city" value={searchData.locationData?.cityName || ''} onChange={onChange}>
                   <option value="">{t('advancedSearch.all')}</option>
                   {bulgarianCities.map(city => (
                     <option key={city} value={city}>{city}</option>

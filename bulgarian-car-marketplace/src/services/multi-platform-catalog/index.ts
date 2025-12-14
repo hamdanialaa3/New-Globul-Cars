@@ -22,7 +22,7 @@ class MultiPlatformCatalogService {
   ];
   
   static async generateFeedForPlatform(platform: string, format: string): Promise<string> {
-    let cars: any[] = [];
+    let cars: unknown[] = [];
     
     switch (platform) {
       case 'google':

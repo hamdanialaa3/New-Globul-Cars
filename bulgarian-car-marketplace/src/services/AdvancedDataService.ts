@@ -217,7 +217,7 @@ class AdvancedDataService {
     results = this.applyMileageFilter(results, params.minMileage, params.maxMileage);
     results = this.applyFuelTypeFilter(results, params.fuelType);
     results = this.applyTransmissionFilter(results, params.transmission);
-    results = this.applyLocationFilter(results, params.city, params.radius);
+    results = this.applyLocationFilter(results, params.locationData?.cityName, params.radius);
     results = this.applyVehicleTypeFilter(results, params.vehicleType);
     results = this.applyConditionFilter(results, params.condition);
     results = this.applySeatsFilter(results, params.minSeats, params.maxSeats);

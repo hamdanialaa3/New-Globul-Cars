@@ -112,7 +112,7 @@ const StripeCheckoutForm: React.FC<StripeCheckoutFormProps> = ({
         onSuccess();
       }
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('❌ Payment failed:', error);
 
       // Handle error

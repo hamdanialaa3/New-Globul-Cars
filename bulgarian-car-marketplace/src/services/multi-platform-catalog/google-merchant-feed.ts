@@ -47,7 +47,7 @@ class GoogleMerchantFeedService {
       id: car.id,
       title: `${car.make} ${car.model} ${car.year}`,
       description: car.description || 
-        `${car.make} ${car.model} ${car.year}, ${car.mileage} km, ${car.fuelType}, ${car.transmission}. Located in ${car.city}, Bulgaria.`,
+        `${car.make} ${car.model} ${car.year}, ${car.mileage} km, ${car.fuelType}, ${car.transmission}. Located in ${car.locationData?.cityName}, Bulgaria.`,
       link: `${baseUrl}/cars/${car.id}`,
       image_link: firstImage,
       additional_image_link: additionalImages.length > 0 ? additionalImages : undefined,
@@ -64,12 +64,12 @@ class GoogleMerchantFeedService {
       custom_label_0: car.make,
       custom_label_1: car.vehicleType,
       custom_label_2: car.fuelType,
-      custom_label_3: car.city,
+      custom_label_3: car.locationData?.cityName,
       custom_label_4: car.region
     };
   }
   
-  static generateXMLFeed(cars: any[]): string {
+  static generateXMLFeed(cars: unknown[]): string {
     const items = cars.map(car => this.convertCarToGoogleProduct(car));
     
     let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';

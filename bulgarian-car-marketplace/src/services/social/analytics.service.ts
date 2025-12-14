@@ -288,7 +288,7 @@ class AnalyticsService {
     return messagesSnapshot.docs;
   }
 
-  private calculatePostMetrics(posts: any[]) {
+  private calculatePostMetrics(posts: unknown[]) {
     let totalViews = 0;
     let totalLikes = 0;
     let totalComments = 0;
@@ -368,7 +368,7 @@ class AnalyticsService {
     return growth;
   }
 
-  private calculateEngagementTrend(posts: any[]): DataPoint[] {
+  private calculateEngagementTrend(posts: unknown[]): DataPoint[] {
     // ✅ DONE: Engagement trend calculation
     const dailyEngagement = new Map<string, { views: number; interactions: number }>();
     

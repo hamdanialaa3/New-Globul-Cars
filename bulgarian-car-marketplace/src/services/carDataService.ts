@@ -395,7 +395,7 @@ export class CarDataService {
   }
 
   // Search methods
-  searchCars(query: string = '', filters: any = {}): CarDataFromFile[] {
+  searchCars(query: string = '', filters: Record<string, unknown> = {}): CarDataFromFile[] {
     let results: CarDataFromFile[] = [];
 
     // Collect all cars from all brands

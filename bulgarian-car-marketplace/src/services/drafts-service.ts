@@ -68,7 +68,7 @@ export class DraftsService {
 
       serviceLogger.info('Draft created', { draftId: docRef.id, userId });
       return docRef.id;
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Silently handle permission errors in development
       if (error?.code === 'permission-denied' || error?.message?.includes('Missing or insufficient permissions')) {
         throw error; // Still throw, but don't log
@@ -128,7 +128,7 @@ export class DraftsService {
         id: doc.id,
         ...doc.data()
       } as Draft));
-    } catch (error: any) {
+    } catch (error: unknown) {
       // ✅ FIX: Silently handle permissions errors in development (expected when rules not deployed)
       if (error?.code === 'permission-denied' || error?.message?.includes('Missing or insufficient permissions')) {
         // Expected in development - firestore.rules may not be deployed yet
@@ -169,7 +169,7 @@ export class DraftsService {
     try {
       await deleteDoc(doc(db, this.collectionName, draftId));
       serviceLogger.info('Draft updated', { draftId });
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Silently handle permission errors in development
       if (error?.code === 'permission-denied' || error?.message?.includes('Missing or insufficient permissions')) {
         throw error; // Still throw, but don't log
@@ -201,7 +201,7 @@ export class DraftsService {
         const newDraftId = await this.createDraft(userId, workflowData, currentStep);
         return newDraftId;
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Silently handle permission errors in development
       if (error?.code === 'permission-denied' || error?.message?.includes('Missing or insufficient permissions')) {
         return draftId || ''; // Return silently

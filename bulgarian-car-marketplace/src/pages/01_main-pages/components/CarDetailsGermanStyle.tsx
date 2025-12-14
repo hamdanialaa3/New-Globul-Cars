@@ -1573,11 +1573,11 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
     if (typeof car.location === 'string') return car.location;
     if (car.location && typeof car.location === 'object') {
       // Handle location object
-      if (language === 'bg' && car.location.cityNameBg) {
-        return `${car.location.cityNameBg}${car.location.regionNameBg ? `, ${car.location.regionNameBg}` : ''}`;
+      if (language === 'bg' && car.locationData?.cityNameNameBg) {
+        return `${car.locationData?.cityNameNameBg}${car.location.regionNameBg ? `, ${car.location.regionNameBg}` : ''}`;
       }
-      if (car.location.cityNameEn) {
-        return `${car.location.cityNameEn}${car.location.regionNameEn ? `, ${car.location.regionNameEn}` : ''}`;
+      if (car.locationData?.cityNameNameEn) {
+        return `${car.locationData?.cityNameNameEn}${car.location.regionNameEn ? `, ${car.location.regionNameEn}` : ''}`;
       }
       if (car.location.address) return car.location.address;
     }
@@ -1594,7 +1594,7 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
   const getCityString = () => {
     if (typeof car.city === 'string') return car.city;
     if (car.location && typeof car.location === 'object') {
-      return language === 'bg' ? (car.location.cityNameBg || car.location.cityNameEn || '') : (car.location.cityNameEn || car.location.cityNameBg || '');
+      return language === 'bg' ? (car.locationData?.cityNameNameBg || car.locationData?.cityNameNameEn || '') : (car.locationData?.cityNameNameEn || car.locationData?.cityNameNameBg || '');
     }
     return '';
   };

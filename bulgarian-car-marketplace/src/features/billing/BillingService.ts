@@ -155,7 +155,7 @@ class BillingService {
         url: data.url,  // Extension returns 'url' not 'checkoutUrl'
         sessionId: data.sessionId,
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       serviceLogger.error('Error creating checkout session', error as Error);
       throw new Error(error.message || 'Failed to create checkout session');
     }

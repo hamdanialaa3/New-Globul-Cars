@@ -70,7 +70,7 @@ class FeedAlgorithmService {
       
       // C. Local posts (20%)
       user?.location?.city 
-        ? this.getLocalPosts(user.location.city, Math.floor(totalLimit * 0.2))
+        ? this.getLocalPosts(user.locationData?.cityName, Math.floor(totalLimit * 0.2))
         : []
     ]);
 

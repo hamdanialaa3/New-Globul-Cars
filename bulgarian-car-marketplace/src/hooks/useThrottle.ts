@@ -1,7 +1,7 @@
 // src/hooks/useThrottle.ts
 import { useRef, useCallback } from 'react';
 
-export function useThrottle<T extends (...args: any[]) => any>(
+export function useThrottle<T extends (...args: unknown[]) => any>(
   callback: T,
   delay: number
 ): T {

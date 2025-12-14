@@ -212,7 +212,7 @@ export class UniqueOwnerService {
     try {
       const response = await fetch('https://ipapi.co/json/');
       const data = await response.json();
-      return `${data.city}, ${data.country}` || 'unknown';
+      return `${data.locationData?.cityName}, ${data.country}` || 'unknown';
     } catch (error) {
       return 'unknown';
     }

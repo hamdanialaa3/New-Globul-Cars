@@ -313,7 +313,7 @@ const AdminCarManagementPage: React.FC = () => {
       car.make?.toLowerCase().includes(search) ||
       car.model?.toLowerCase().includes(search) ||
       car.sellerName?.toLowerCase().includes(search) ||
-      car.city?.toLowerCase().includes(search)
+      car.locationData?.cityName?.toLowerCase().includes(search)
     );
   });
 
@@ -404,7 +404,7 @@ const AdminCarManagementPage: React.FC = () => {
               <Td>
                 <strong>{car.price?.toLocaleString()} {car.currency}</strong>
               </Td>
-              <Td>{car.city}</Td>
+              <Td>{car.locationData?.cityName}</Td>
               <Td>
                 <StatusBadge status={car.status || 'draft'}>
                   {car.status || 'draft'}

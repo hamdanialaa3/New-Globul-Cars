@@ -72,8 +72,8 @@ class AlgoliaSearchService {
     }
 
     // Location filters
-    if (searchData.city) {
-      filters.push(`city:"${searchData.city}"`);
+    if (searchData.locationData?.cityName) {
+      filters.push(`city:"${searchData.locationData?.cityName}"`);
     }
 
     if (searchData.country) {
@@ -290,7 +290,7 @@ class AlgoliaSearchService {
    * بناء فلاتر البحث الجغرافي
    */
   private buildGeoFilters(searchData: SearchData): any {
-    if (!searchData.city || !searchData.radius) {
+    if (!searchData.locationData?.cityName || !searchData.radius) {
       return null;
     }
 
@@ -304,7 +304,7 @@ class AlgoliaSearchService {
       // Add more cities as needed
     };
 
-    const coords = cityCoordinates[searchData.city];
+    const coords = cityCoordinates[searchData.locationData?.cityName];
     if (!coords) {
       return null;
     }
@@ -365,7 +365,7 @@ class AlgoliaSearchService {
       const searchIndex = this.client.initIndex(indexName);
 
       // Build search parameters
-      const searchParams: any = {
+      const searchParams: Record<string, unknown> = {
         query: queryString,
         filters,
         page: options.page || 0,

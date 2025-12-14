@@ -79,7 +79,7 @@ const ProfilePhotoCard: React.FC<ProfilePhotoCardProps> = ({
       toast.success(language === 'bg'
         ? 'Снимката е качена успешно'
         : 'Photo uploaded successfully');
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Error uploading photo:', error);
       
       let errorMessage = language === 'bg' ? 'Грешка при качване' : 'Upload error';

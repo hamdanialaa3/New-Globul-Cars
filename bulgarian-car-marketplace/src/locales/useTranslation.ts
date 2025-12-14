@@ -19,7 +19,7 @@ export function useTranslation() {
 
   const t = useCallback((key: string): string => {
     const parts = key.split('.');
-    let current: any = translations[language as Language];
+    let current: Record<string, unknown> = translations[language as Language];
     for (const p of parts) {
       if (current && typeof current === 'object' && p in current) {
         current = current[p];

@@ -1,5 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import * as S from './MechanicalGear3D.styles';
+import { logger } from '../../services/logger-service';
+
 
 interface MechanicalGear3DProps {
   size?: number; // Size in pixels (default: 240)
@@ -35,7 +37,7 @@ export const MechanicalGear3D: React.FC<MechanicalGear3DProps> = ({
         if (!containerRef.current) return;
         
         // Wait for Three.js to load if not immediately available
-        let THREE: any = (window as any).THREE;
+        let THREE: Record<string, unknown> = (window as any).THREE;
         
         if (!THREE) {
           await new Promise<void>((resolve) => {
@@ -51,7 +53,7 @@ export const MechanicalGear3D: React.FC<MechanicalGear3DProps> = ({
             setTimeout(() => {
               clearInterval(checkThree);
               if (!THREE) {
-                console.warn('Three.js failed to load from CDN');
+                logger.warn('Three.js failed to load from CDN');
               }
               resolve();
             }, 10000);
@@ -59,7 +61,7 @@ export const MechanicalGear3D: React.FC<MechanicalGear3DProps> = ({
         }
 
         if (!THREE) {
-          console.warn('Three.js not available');
+          logger.warn('Three.js not available');
           return;
         }
 
@@ -196,7 +198,7 @@ export const MechanicalGear3D: React.FC<MechanicalGear3DProps> = ({
         animate();
 
       } catch (error) {
-        console.error('Error initializing Three.js gear:', error);
+        logger.error('Error initializing Three.js gear:', error);
       }
     };
 

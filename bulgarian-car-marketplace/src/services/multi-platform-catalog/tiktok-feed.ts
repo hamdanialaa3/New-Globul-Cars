@@ -49,7 +49,7 @@ class TikTokFeedService {
     };
   }
   
-  static generateJSONFeed(cars: any[]): string {
+  static generateJSONFeed(cars: unknown[]): string {
     const items = cars.map(car => this.convertCarToTikTokProduct(car));
     
     return JSON.stringify({

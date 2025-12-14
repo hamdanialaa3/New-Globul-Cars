@@ -103,7 +103,7 @@ export const AIChatbot: React.FC<Props> = ({
 
       setMessages(prev => [...prev, assistantMessage]);
       
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Chatbot error', error);
       
       const errorMessages = {

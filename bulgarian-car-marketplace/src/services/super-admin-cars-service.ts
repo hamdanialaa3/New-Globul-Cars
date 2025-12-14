@@ -126,7 +126,7 @@ class SuperAdminCarsService {
       }
       
       if (filters?.city) {
-        carsQuery = query(carsQuery, where('city', '==', filters.city));
+        carsQuery = query(carsQuery, where('city', '==', filters.locationData?.cityName));
       }
 
       const snapshot = await getDocs(carsQuery);
@@ -278,7 +278,7 @@ class SuperAdminCarsService {
   ): Promise<void> {
     try {
       const carRef = doc(db, 'cars', carId);
-      const updateData: any = {
+      const updateData: Record<string, unknown> = {
         status,
         updatedAt: serverTimestamp()
       };
@@ -314,7 +314,7 @@ class SuperAdminCarsService {
   ): Promise<void> {
     try {
       const postRef = doc(db, 'posts', postId);
-      const updateData: any = {
+      const updateData: Record<string, unknown> = {
         status,
         updatedAt: serverTimestamp()
       };
@@ -366,7 +366,7 @@ class SuperAdminCarsService {
       
       carIds.forEach(carId => {
         const carRef = doc(db, 'cars', carId);
-        const updateData: any = {
+        const updateData: Record<string, unknown> = {
           status,
           updatedAt: serverTimestamp()
         };

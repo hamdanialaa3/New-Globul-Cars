@@ -150,7 +150,7 @@ const RealDataManager: React.FC = () => {
     }
   };
 
-  const handleEdit = (item: any) => {
+  const handleEdit = (item: unknown) => {
     setEditingId(item.id);
     setEditData({ ...item });
   };

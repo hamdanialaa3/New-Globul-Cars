@@ -115,7 +115,7 @@ export class BulgarianMessagingService {
       await this.sendMessageNotification(messageData.recipientId, message);
 
       return docRef.id;
-    } catch (error: any) {
+    } catch (error: unknown) {
       throw this.handleMessagingError(error);
     }
   }
@@ -217,7 +217,7 @@ export class BulgarianMessagingService {
       });
 
       return messages;
-    } catch (error: any) {
+    } catch (error: unknown) {
       throw this.handleMessagingError(error);
     }
   }
@@ -247,7 +247,7 @@ export class BulgarianMessagingService {
       });
 
       return messages;
-    } catch (error: any) {
+    } catch (error: unknown) {
       throw this.handleMessagingError(error);
     }
   }
@@ -276,7 +276,7 @@ export class BulgarianMessagingService {
 
       // Update chat room unread count
       await this.updateChatRoomUnreadCount(message.carId, message.senderId, message.recipientId);
-    } catch (error: any) {
+    } catch (error: unknown) {
       throw this.handleMessagingError(error);
     }
   }
@@ -302,7 +302,7 @@ export class BulgarianMessagingService {
         isArchived: true,
         updatedAt: Timestamp.fromDate(new Date())
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       throw this.handleMessagingError(error);
     }
   }
@@ -325,7 +325,7 @@ export class BulgarianMessagingService {
       }
 
       await deleteDoc(messageRef);
-    } catch (error: any) {
+    } catch (error: unknown) {
       throw this.handleMessagingError(error);
     }
   }
@@ -342,7 +342,7 @@ export class BulgarianMessagingService {
 
       const querySnapshot = await getDocs(q);
       return querySnapshot.size;
-    } catch (error: any) {
+    } catch (error: unknown) {
       throw this.handleMessagingError(error);
     }
   }
@@ -409,7 +409,7 @@ export class BulgarianMessagingService {
 
       if (chatRoomDoc.exists()) {
         // Update existing chat room
-        const updateData: any = {
+        const updateData: Record<string, unknown> = {
           lastMessage: { ...message, id: messageId },
           updatedAt: Timestamp.fromDate(new Date())
         };
@@ -449,7 +449,7 @@ export class BulgarianMessagingService {
       const chatRoomDoc = await getDoc(chatRoomRef);
       if (chatRoomDoc.exists()) {
         const currentUnreadCount = chatRoomDoc.data()?.unreadCount?.[recipientId] || 0;
-        const updateData: any = {
+        const updateData: Record<string, unknown> = {
           updatedAt: Timestamp.fromDate(new Date())
         };
         updateData[`unreadCount.${recipientId}`] = Math.max(0, currentUnreadCount - 1);

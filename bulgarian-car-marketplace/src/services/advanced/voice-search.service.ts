@@ -37,7 +37,7 @@ export interface VoiceRecognitionEvent {
 
 class VoiceSearchService {
   private static instance: VoiceSearchService;
-  private recognition: any = null;
+  private recognition: Record<string, unknown> = null;
   private isListening = false;
   private currentLanguage: VoiceSearchConfig['language'] = 'bg-BG';
 
@@ -178,7 +178,7 @@ class VoiceSearchService {
         resolve();
       };
 
-      this.recognition.onresult = (event: any) => {
+      this.recognition.onresult = (event: React.FormEvent) => {
         const result = event.results[event.results.length - 1];
         const transcript = result[0].transcript;
         const confidence = result[0].confidence;
@@ -196,7 +196,7 @@ class VoiceSearchService {
         });
       };
 
-      this.recognition.onerror = (event: any) => {
+      this.recognition.onerror = (event: React.FormEvent) => {
         this.isListening = false;
         const error = new Error(`Speech recognition error: ${event.error}`);
         logger.error('Voice recognition error', error, { errorType: event.error });
@@ -287,9 +287,9 @@ class VoiceSearchService {
     });
 
     // Extract city
-    const cityMatch = transcript.match(patterns.city);
+    const cityMatch = transcript.match(patterns.locationData?.cityName);
     if (cityMatch) {
-      query.city = cityMatch[1];
+      query.locationData?.cityName = cityMatch[1];
     }
 
     // Store full transcript as keywords
@@ -339,7 +339,7 @@ class VoiceSearchService {
     if (parsed.year) parts.push(parsed.year.toString());
     if (parsed.fuelType) parts.push(parsed.fuelType);
     if (parsed.transmission) parts.push(parsed.transmission);
-    if (parsed.city) parts.push(parsed.city);
+    if (parsed.locationData?.cityName) parts.push(parsed.locationData?.cityName);
     if (parsed.maxPrice) parts.push(`under ${parsed.maxPrice}`);
 
     return parts.join(' ');

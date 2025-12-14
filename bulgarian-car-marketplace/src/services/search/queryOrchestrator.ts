@@ -12,7 +12,7 @@ import { logger } from '../../services/logger-service';
 import { SearchData } from '../../pages/05_search-browse/advanced-search/AdvancedSearchPage/types';
 
 export interface OrchestratorResult {
-  cars: any[];
+  cars: unknown[];
   total: number;
   source: 'algolia' | 'firestore';
   processingMs: number;
@@ -49,7 +49,7 @@ export async function runUnifiedQuery(filters: Partial<SearchData>, options: Orc
     const queries = buildMultiCollectionQueries(filters, { maxResults: 100 });
     const snapshots = await Promise.all(queries.map(q => getDocs(q)));
     
-    const cars: any[] = [];
+    const cars: unknown[] = [];
     snapshots.forEach(snap => {
       snap.forEach(doc => cars.push({ id: doc.id, ...doc.data() }));
     });
@@ -71,7 +71,7 @@ export async function runUnifiedQuery(filters: Partial<SearchData>, options: Orc
     logger.warn('No results found, trying with inactive listings included');
     const queriesAll = buildMultiCollectionQueries(filters, { maxResults: 100, includeInactive: true });
     const snapshotsAll = await Promise.all(queriesAll.map(q => getDocs(q)));
-    const carsAll: any[] = [];
+    const carsAll: unknown[] = [];
     snapshotsAll.forEach(snap => {
       snap.forEach(doc => carsAll.push({ id: doc.id, ...doc.data() }));
     });

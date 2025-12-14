@@ -51,7 +51,7 @@ export class N8nIntegrationService {
       }
 
       return await response.json();
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Silently ignore CORS errors in development (localhost)
       if (error?.message?.includes('CORS') || error?.message?.includes('Failed to fetch')) {
         if (process.env.NODE_ENV === 'development') {

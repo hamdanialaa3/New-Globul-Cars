@@ -269,8 +269,8 @@ const NearbyCarsFinder: React.FC = () => {
           try {
             // Geocode car location if needed
             let carCoords = car.coordinates;
-            if (!carCoords && car.city) {
-              const address = `${car.city}, ${car.region || ''}, Bulgaria`;
+            if (!carCoords && car.locationData?.cityName) {
+              const address = `${car.locationData?.cityName}, ${car.region || ''}, Bulgaria`;
               const geocoded = await googleMapsService.geocodeAddress(address);
               carCoords = geocoded || undefined;
             }

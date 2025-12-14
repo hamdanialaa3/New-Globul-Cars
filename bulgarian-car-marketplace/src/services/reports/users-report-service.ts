@@ -46,7 +46,7 @@ export class UsersReportService {
       }
 
       if (filters?.city) {
-        q = query(q, where('city', '==', filters.city));
+        q = query(q, where('city', '==', filters.locationData?.cityName));
       }
 
       if (filters?.verifiedOnly) {
@@ -65,7 +65,7 @@ export class UsersReportService {
           profileType: data.profileType || 'private',
           createdAt: data.createdAt?.toDate() || new Date(),
           lastLogin: data.lastLogin?.toDate(),
-          city: data.city || '',
+          city: data.locationData?.cityName || '',
           activeListings: data.stats?.activeListings || 0,
           verifiedEmail: data.verifiedEmail || false,
           verifiedPhone: data.verifiedPhone || false,
@@ -101,7 +101,7 @@ export class UsersReportService {
       user.displayName,
       user.phoneNumber || '-',
       this.translateProfileType(user.profileType),
-      user.city || '-',
+      user.locationData?.cityName || '-',
       user.activeListings?.toString() || '0',
       user.verifiedEmail ? 'نعم' : 'لا',
       user.verifiedPhone ? 'نعم' : 'لا',
@@ -141,7 +141,7 @@ export class UsersReportService {
         <td>${user.displayName}</td>
         <td>${user.phoneNumber || '-'}</td>
         <td>${this.translateProfileType(user.profileType)}</td>
-        <td>${user.city || '-'}</td>
+        <td>${user.locationData?.cityName || '-'}</td>
         <td>${user.activeListings || 0}</td>
         <td>${user.verifiedEmail ? 'نعم' : 'لا'}</td>
         <td>${user.verifiedPhone ? 'نعم' : 'لا'}</td>

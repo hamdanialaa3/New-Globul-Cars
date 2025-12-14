@@ -109,7 +109,7 @@ class LiveFirebaseCountersService {
         deployedBy: 'globul.net.m@gmail.com'
       };
       
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Silently handle permission errors
       if (error?.code !== 'permission-denied') {
         serviceLogger.error('Error fetching live analytics', error as unknown as Error);
@@ -216,7 +216,7 @@ class LiveFirebaseCountersService {
   }
 
   // Subscribe to real-time updates
-  public subscribeToLiveUpdates(callback: (data: any) => void): () => void {
+  public subscribeToLiveUpdates(callback: (data: unknown) => void): () => void {
     const unsubscribe = onSnapshot(collection(db, 'users'), () => {
       this.getLiveAnalytics().then(callback);
     });

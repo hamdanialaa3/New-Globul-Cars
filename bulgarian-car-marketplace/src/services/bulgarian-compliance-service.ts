@@ -254,7 +254,7 @@ class BulgarianComplianceService {
   ): Promise<void> {
     try {
       const requirementRef = doc(db, 'compliance_requirements', requirementId);
-      const updateData: any = {
+      const updateData: Record<string, unknown> = {
         isCompleted,
         completedBy,
         updatedAt: serverTimestamp()

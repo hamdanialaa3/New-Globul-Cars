@@ -132,7 +132,7 @@ const BillingPage: React.FC = () => {
         setLoadingStatus(true);
         const status = await subscriptionService.getSubscriptionStatus(currentUser.uid);
         setSubscription(status);
-      } catch (error: any) {
+      } catch (error: unknown) {
         logger.warn('Failed to fetch subscription status', error as Error);
         // Don't show error to user - just show no subscription state
       } finally {

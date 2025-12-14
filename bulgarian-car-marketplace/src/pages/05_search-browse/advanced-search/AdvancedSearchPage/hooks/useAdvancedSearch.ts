@@ -213,7 +213,7 @@ export const useAdvancedSearch = () => {
       priceTo: filters.priceTo || prev.priceTo,
       firstRegistrationFrom: filters.yearFrom || prev.firstRegistrationFrom,
       firstRegistrationTo: filters.yearTo || prev.firstRegistrationTo,
-      city: filters.city || prev.city,
+      city: filters.locationData?.cityName || prev.locationData?.cityName,
       fuelType: filters.fuelType || prev.fuelType,
       transmission: filters.transmission || prev.transmission,
       searchDescription: filters.text || prev.searchDescription

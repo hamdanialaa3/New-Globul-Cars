@@ -316,7 +316,7 @@ export function isDealershipInfoComplete(info: DealershipInfo): boolean {
     info.eik &&
     isValidEIK(info.eik) &&
     info.address.street &&
-    info.address.city &&
+    info.address.locationData?.cityName &&
     info.contact.phone &&
     info.contact.email &&
     validateWorkingHours(info.workingHours)
@@ -333,7 +333,7 @@ export function calculateDealershipCompleteness(info: DealershipInfo): number {
   // Required fields (5 points)
   if (info.dealershipNameBG) score += 1;
   if (info.eik && isValidEIK(info.eik)) score += 1;
-  if (info.address.street && info.address.city) score += 1;
+  if (info.address.street && info.address.locationData?.cityName) score += 1;
   if (info.contact.phone && info.contact.email) score += 1;
   if (validateWorkingHours(info.workingHours)) score += 1;
   

@@ -268,7 +268,7 @@ const DealershipInfoForm: React.FC<DealershipInfoFormProps> = ({ userId = '' }) 
         
         <FormGrid>
           <FormGroup>
-            <Label>{t.city} *</Label>
+            <Label>{t.locationData?.cityName} *</Label>
             <Input
               type="text"
               value={dealershipInfo.address?.city || ''}

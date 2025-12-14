@@ -131,7 +131,7 @@ class AdvancedRealDataService {
       // Get top cities
       const topCities = users.reduce((cities, user) => {
         const city = user.location?.city || 'Unknown';
-        const existing = cities.find((c: { city: string; count: number }) => c.city === city);
+        const existing = cities.find((c: { city: string; count: number }) => c.locationData?.cityName === city);
         if (existing) {
           existing.count += 1;
         } else {
@@ -355,7 +355,7 @@ class AdvancedRealDataService {
   }
 
   // Subscribe to real-time updates
-  public subscribeToRealTimeUpdates(callback: (data: any) => void): () => void {
+  public subscribeToRealTimeUpdates(callback: (data: unknown) => void): () => void {
     const unsubscribe = onSnapshot(
       collection(db, 'users'),
       (snapshot) => {

@@ -6,12 +6,12 @@ import { UnifiedCar } from '../services/car/unified-car.service';
 // Generate meta tags for car pages
 export const generateCarMetaTags = (car: UnifiedCar) => {
   const title = `${car.make} ${car.model} ${car.year} - ${car.price}€ | MOBILE-EU`;
-  const description = `${car.make} ${car.model} ${car.year} година, ${car.mileage.toLocaleString('bg-BG')} км, ${car.fuelType}, ${car.transmission}. Цена: ${car.price}€. ${car.location.city}, ${car.location.region}, България.`;
+  const description = `${car.make} ${car.model} ${car.year} година, ${car.mileage.toLocaleString('bg-BG')} км, ${car.fuelType}, ${car.transmission}. Цена: ${car.price}€. ${car.locationData?.cityName}, ${car.location.region}, България.`;
 
   return {
     title,
     description,
-    keywords: `${car.make}, ${car.model}, ${car.year}, кола, автомобил, продажба, ${car.location.city}, България`,
+    keywords: `${car.make}, ${car.model}, ${car.year}, кола, автомобил, продажба, ${car.locationData?.cityName}, България`,
     og: {
       title,
       description,
@@ -80,7 +80,7 @@ export const generateCarStructuredData = (car: UnifiedCar) => {
     image: car.images,
     address: {
       '@type': 'PostalAddress',
-      addressLocality: car.location.city,
+      addressLocality: car.locationData?.cityName,
       addressRegion: car.location.region,
       postalCode: car.location.postalCode,
       addressCountry: car.location.country

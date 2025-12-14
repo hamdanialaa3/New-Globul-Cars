@@ -377,7 +377,7 @@ const BusinessInformationForm: React.FC<BusinessInfoFormProps> = ({ userId }) =>
         
         <FormGrid>
           <FormGroup>
-            <Label>{t.city}</Label>
+            <Label>{t.locationData?.cityName}</Label>
             <Input
               type="text"
               value={businessInfo.registeredAddress?.city || ''}

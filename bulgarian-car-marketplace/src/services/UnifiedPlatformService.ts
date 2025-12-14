@@ -61,10 +61,10 @@ interface CarAnalysisResult {
 }
 
 interface UserRecommendations {
-  cars: any[];
+  cars: unknown[];
   confidence: number;
   reasons: string[];
-  marketTrends: any[];
+  marketTrends: unknown[];
 }
 
 class UnifiedPlatformService {
@@ -231,7 +231,7 @@ class UnifiedPlatformService {
   /**
    * بحث متقدم موحد
    */
-  async unifiedSearch(query: string, filters: any = {}, userId?: string) {
+  async unifiedSearch(query: string, filters: Record<string, unknown> = {}, userId?: string) {
     try {
       // 1. بحث Algolia المتقدم
       const algoliaResults = await algoliaSearchService.searchCars(query, filters);
@@ -365,7 +365,7 @@ class UnifiedPlatformService {
     ];
   }
 
-  private async enhanceSearchResults(results: any[], userId?: string) {
+  private async enhanceSearchResults(results: unknown[], userId?: string) {
     // تحسين نتائج البحث بالذكاء الاصطناعي
     return results;
   }

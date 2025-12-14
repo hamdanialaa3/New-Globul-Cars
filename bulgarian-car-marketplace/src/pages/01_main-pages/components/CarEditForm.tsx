@@ -607,7 +607,7 @@ export const CarEditForm: React.FC<CarEditFormProps> = ({
           <DetailLabel>{language === 'bg' ? 'Град' : 'City'}</DetailLabel>
           {availableCities.length > 0 ? (
             <EditableSelect
-              value={editedCar.city || ''}
+              value={editedCar.locationData?.cityName || ''}
               aria-label={language === 'bg' ? 'Изберете град' : 'Select city'}
               onChange={(e) => onInputChange('city', e.target.value)}
             >
@@ -620,7 +620,7 @@ export const CarEditForm: React.FC<CarEditFormProps> = ({
             </EditableSelect>
           ) : (
             <EditableInput
-              value={editedCar.city || ''}
+              value={editedCar.locationData?.cityName || ''}
               onChange={(e) => onInputChange('city', e.target.value)}
               placeholder={language === 'bg' ? 'Първо изберете регион' : 'Select region first'}
               disabled

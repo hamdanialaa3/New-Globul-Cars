@@ -49,7 +49,7 @@ export const TechnicalSection: React.FC<TechnicalSectionProps> = ({
             <FormLabel>Гориво</FormLabel>
             <SearchSelect 
               value={data.fuelType} 
-              onChange={(e: any) => onInputChange('fuelType', e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => onInputChange('fuelType', e.target.value)}
             >
               <option value="">Всички горива</option>
               <option value="petrol">Бензин</option>
@@ -65,7 +65,7 @@ export const TechnicalSection: React.FC<TechnicalSectionProps> = ({
             <FormLabel>Скоростна кутия</FormLabel>
             <SearchSelect 
               value={data.transmission} 
-              onChange={(e: any) => onInputChange('transmission', e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => onInputChange('transmission', e.target.value)}
             >
               <option value="">Всички</option>
               <option value="manual">Ръчна</option>
@@ -80,7 +80,7 @@ export const TechnicalSection: React.FC<TechnicalSectionProps> = ({
               type="number" 
               placeholder={mode === 'search' ? "до" : "Мощност в к.с."}
               value={data.power}
-              onChange={(e: any) => onInputChange('power', e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => onInputChange('power', e.target.value)}
             />
           </FormGroup>
 
@@ -90,7 +90,7 @@ export const TechnicalSection: React.FC<TechnicalSectionProps> = ({
               type="number" 
               placeholder={mode === 'search' ? "до" : "Обем в см³"}
               value={data.engineSize}
-              onChange={(e: any) => onInputChange('engineSize', e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => onInputChange('engineSize', e.target.value)}
             />
           </FormGroup>
 
@@ -98,7 +98,7 @@ export const TechnicalSection: React.FC<TechnicalSectionProps> = ({
             <FormLabel>Предаване</FormLabel>
             <SearchSelect 
               value={data.driveType} 
-              onChange={(e: any) => onInputChange('driveType', e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => onInputChange('driveType', e.target.value)}
             >
               <option value="">Всички</option>
               <option value="front">Предно</option>
@@ -113,7 +113,7 @@ export const TechnicalSection: React.FC<TechnicalSectionProps> = ({
               type="number" 
               placeholder="Разход"
               value={data.fuelConsumption}
-              onChange={(e: any) => onInputChange('fuelConsumption', e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => onInputChange('fuelConsumption', e.target.value)}
               step="0.1"
             />
           </FormGroup>
@@ -122,7 +122,7 @@ export const TechnicalSection: React.FC<TechnicalSectionProps> = ({
             <FormLabel>Емисии (Евро норма)</FormLabel>
             <SearchSelect 
               value={data.emissionClass} 
-              onChange={(e: any) => onInputChange('emissionClass', e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => onInputChange('emissionClass', e.target.value)}
             >
               <option value="">Всички</option>
               <option value="euro6">Euro 6</option>
@@ -136,7 +136,7 @@ export const TechnicalSection: React.FC<TechnicalSectionProps> = ({
             <FormLabel>Цвят (външен)</FormLabel>
             <SearchSelect 
               value={data.exteriorColor} 
-              onChange={(e: any) => onInputChange('exteriorColor', e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => onInputChange('exteriorColor', e.target.value)}
             >
               <option value="">Всички цветове</option>
               <option value="white">Бяло</option>
@@ -153,7 +153,7 @@ export const TechnicalSection: React.FC<TechnicalSectionProps> = ({
             <FormLabel>Цвят (интериор)</FormLabel>
             <SearchSelect 
               value={data.interiorColor} 
-              onChange={(e: any) => onInputChange('interiorColor', e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => onInputChange('interiorColor', e.target.value)}
             >
               <option value="">Всички</option>
               <option value="black">Черен</option>
@@ -167,7 +167,7 @@ export const TechnicalSection: React.FC<TechnicalSectionProps> = ({
             <FormLabel>Брой врати</FormLabel>
             <SearchSelect 
               value={data.doors} 
-              onChange={(e: any) => onInputChange('doors', e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => onInputChange('doors', e.target.value)}
             >
               <option value="">Всички</option>
               <option value="2">2 врати</option>
@@ -181,7 +181,7 @@ export const TechnicalSection: React.FC<TechnicalSectionProps> = ({
             <FormLabel>Брой места</FormLabel>
             <SearchSelect 
               value={data.seats} 
-              onChange={(e: any) => onInputChange('seats', e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => onInputChange('seats', e.target.value)}
             >
               <option value="">Всички</option>
               <option value="2">2</option>

@@ -40,7 +40,7 @@ export const verifyEIK = async (
     const verifyEIKFn = httpsCallable(functions, 'verifyEIK');
     const result = await verifyEIKFn({ eik, businessName });
     return result.data as any;
-  } catch (error: any) {
+  } catch (error: unknown) {
     logger.error('Error verifying EIK', error as Error, { eik, businessName });
     return {
       valid: false,

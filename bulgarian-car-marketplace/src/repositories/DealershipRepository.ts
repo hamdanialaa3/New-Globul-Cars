@@ -204,7 +204,7 @@ export class DealershipRepository {
     try {
       const q = query(
         collection(db, this.COLLECTION),
-        where('address.city', '==', city),
+        where('address.locationData?.cityName', '==', city),
         where('verification.status', '==', 'verified'),
         orderBy('createdAt', 'desc'),
         limit(limitCount)
@@ -256,7 +256,7 @@ export class DealershipRepository {
         });
 
         // Update user snapshot if name/logo/status changed
-        const snapshotUpdate: any = {};
+        const snapshotUpdate: Record<string, unknown> = {};
         if (data.dealershipNameBG) snapshotUpdate['dealerSnapshot.nameBG'] = data.dealershipNameBG;
         if (data.dealershipNameEN) snapshotUpdate['dealerSnapshot.nameEN'] = data.dealershipNameEN;
         if (data.media?.logo) snapshotUpdate['dealerSnapshot.logo'] = data.media.logo;

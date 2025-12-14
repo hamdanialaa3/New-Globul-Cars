@@ -443,7 +443,7 @@ const SuperAdminUsersPage: React.FC = () => {
         filteredUsers = usersData.filter(user => 
           user.displayName?.toLowerCase().includes(searchLower) ||
           user.email?.toLowerCase().includes(searchLower) ||
-          user.city?.toLowerCase().includes(searchLower)
+          user.locationData?.cityName?.toLowerCase().includes(searchLower)
         );
       }
 
@@ -679,7 +679,7 @@ const SuperAdminUsersPage: React.FC = () => {
                     <TableCell>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                         <MapPin size={14} />
-                        {user.city || 'غير محدد'}
+                        {user.locationData?.cityName || 'غير محدد'}
                       </div>
                     </TableCell>
                     <TableCell>
@@ -741,7 +741,7 @@ const SuperAdminUsersPage: React.FC = () => {
               <div style={{ display: 'grid', gap: '1rem' }}>
                 <div><strong>النوع:</strong> {selectedUser.profileType === 'dealer' ? 'معرض' : selectedUser.profileType === 'company' ? 'شركة' : 'خاص'}</div>
                 <div><strong>الحالة:</strong> {selectedUser.status === 'active' ? 'نشط' : selectedUser.status === 'suspended' ? 'معلق' : 'غير نشط'}</div>
-                <div><strong>المدينة:</strong> {selectedUser.city || 'غير محدد'}</div>
+                <div><strong>المدينة:</strong> {selectedUser.locationData?.cityName || 'غير محدد'}</div>
                 <div><strong>رقم الهاتف:</strong> {selectedUser.phoneNumber || 'غير محدد'}</div>
                 <div><strong>تاريخ التسجيل:</strong> {selectedUser.createdAt ? new Date(selectedUser.createdAt).toLocaleDateString('ar-EG') : '-'}</div>
                 <div><strong>البريد الإلكتروني متحقق:</strong> {selectedUser.emailVerified ? 'نعم' : 'لا'}</div>

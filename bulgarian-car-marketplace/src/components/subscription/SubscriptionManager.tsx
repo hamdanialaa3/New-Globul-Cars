@@ -7,6 +7,8 @@ import { useAuth } from '../../contexts/AuthProvider';
 import { useLanguage } from '../../contexts/LanguageContext';
 // ✅ استيراد ملف الإعدادات المركزي
 import subscriptionTheme, { getPrimaryGradient, getPrimaryGradientWithMiddle, getShadowColor, getBorderColor } from './subscription-theme';
+import { logger } from '../../services/logger-service';
+
 
 // ==================== ANIMATIONS ====================
 const fadeInUp = keyframes`
@@ -673,8 +675,8 @@ const SubscriptionManagerEnhanced: React.FC = () => {
       
       // Redirect to Stripe Checkout
       window.location.href = url;
-    } catch (error: any) {
-      console.error('Subscription error:', error);
+    } catch (error: unknown) {
+      logger.error('Subscription error:', error);
       alert(isBg 
         ? 'Грешка при създаване на сесия. Опитайте отново.' 
         : 'Error creating checkout session. Please try again.'

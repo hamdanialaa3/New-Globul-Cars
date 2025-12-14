@@ -417,7 +417,7 @@ export class PerformanceService {
   /**
    * Debounce function calls
    */
-  public debounce<T extends (...args: any[]) => any>(
+  public debounce<T extends (...args: unknown[]) => any>(
     func: T,
     wait: number
   ): (...args: Parameters<T>) => void {
@@ -432,7 +432,7 @@ export class PerformanceService {
   /**
    * Throttle function calls
    */
-  public throttle<T extends (...args: any[]) => any>(
+  public throttle<T extends (...args: unknown[]) => any>(
     func: T,
     limit: number
   ): (...args: Parameters<T>) => void {
@@ -596,14 +596,14 @@ export class PerformanceService {
 export const performanceService = PerformanceService.getInstance();
 
 // Helper functions
-export const debounce = <T extends (...args: any[]) => any>(
+export const debounce = <T extends (...args: unknown[]) => any>(
   func: T,
   wait: number
 ): (...args: Parameters<T>) => void => {
   return performanceService.debounce(func, wait);
 };
 
-export const throttle = <T extends (...args: any[]) => any>(
+export const throttle = <T extends (...args: unknown[]) => any>(
   func: T,
   limit: number
 ): (...args: Parameters<T>) => void => {

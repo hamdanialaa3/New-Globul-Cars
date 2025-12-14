@@ -195,10 +195,10 @@ const CarCardGermanStyle: React.FC<CarCardProps> = ({ car }) => {
   };
 
   const getLocation = () => {
-    if (car.city && car.region) {
-      return `${car.city}, ${car.region}`;
-    } else if (car.city) {
-      return car.city;
+    if (car.locationData?.cityName && car.region) {
+      return `${car.locationData?.cityName}, ${car.region}`;
+    } else if (car.locationData?.cityName) {
+      return car.locationData?.cityName;
     } else if (car.region) {
       return car.region;
     }

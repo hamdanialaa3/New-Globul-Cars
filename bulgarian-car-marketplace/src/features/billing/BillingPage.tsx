@@ -93,7 +93,7 @@ export const BillingPage: React.FC = () => {
       
       // Redirect to Stripe Checkout
       window.location.href = url;
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast.error(error.message || 'Failed to create checkout session');
       setLoading(false);
     }

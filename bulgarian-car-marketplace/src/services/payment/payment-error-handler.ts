@@ -302,7 +302,7 @@ export class PaymentRetryManager {
         const result = await operation();
         this.reset();
         return result;
-      } catch (error: any) {
+      } catch (error: unknown) {
         const paymentError = error.type 
           ? PaymentErrorHandler.handleStripeError(error)
           : PaymentErrorHandler.handleGenericError(error);

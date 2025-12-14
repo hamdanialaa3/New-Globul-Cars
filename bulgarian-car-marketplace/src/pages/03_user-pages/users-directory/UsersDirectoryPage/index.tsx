@@ -1118,7 +1118,7 @@ const UsersDirectoryPage: React.FC = () => {
                     {user.location && (
                       <UserLocation>
                         <MapPin size={14} />
-                        {language === 'bg' ? user.location.region : user.location.city}
+                        {language === 'bg' ? user.location.region : user.locationData?.cityName}
                       </UserLocation>
                     )}
                   </UserInfo>
@@ -1167,7 +1167,7 @@ const UsersDirectoryPage: React.FC = () => {
                       {user.location && (
                         <div className="meta-item">
                           <MapPin size={16} />
-                          <span>{language === 'bg' ? user.location.region || user.location.city : user.location.city || user.location.region}</span>
+                          <span>{language === 'bg' ? user.location.region || user.locationData?.cityName : user.locationData?.cityName || user.location.region}</span>
                         </div>
                       )}
                     </ListUserMeta>

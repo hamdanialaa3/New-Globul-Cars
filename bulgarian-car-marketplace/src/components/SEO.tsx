@@ -118,7 +118,7 @@ export const SEO: React.FC<SEOProps> = ({
       <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       
       {/* Geo Tags (Bulgaria) */}
-      <meta name="geo.region" content="BG" />
+      <meta name="geo.locationData?.regionName" content="BG" />
       <meta name="geo.placename" content="Bulgaria" />
     </Helmet>
   );

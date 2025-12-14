@@ -677,7 +677,7 @@ const MapAnalyticsPage: React.FC = () => {
                         </CardHeader>
                         <CardBody>
                           <CardField>
-                            <CardLabel>{t('mapPage.city')}:</CardLabel>
+                            <CardLabel>{t('mapPage.locationData?.cityName')}:</CardLabel>
                             <CardValue>{item.cityName}</CardValue>
                           </CardField>
                           <CardField>
@@ -704,7 +704,7 @@ const MapAnalyticsPage: React.FC = () => {
                         </CardHeader>
                         <CardBody>
                           <CardField>
-                            <CardLabel>{t('mapPage.city')}:</CardLabel>
+                            <CardLabel>{t('mapPage.locationData?.cityName')}:</CardLabel>
                             <CardValue>{item.cityName}</CardValue>
                           </CardField>
                           <CardField>
@@ -735,7 +735,7 @@ const MapAnalyticsPage: React.FC = () => {
                         </CardHeader>
                         <CardBody>
                           <CardField>
-                            <CardLabel>{t('mapPage.city')}:</CardLabel>
+                            <CardLabel>{t('mapPage.locationData?.cityName')}:</CardLabel>
                             <CardValue>{item.cityName}</CardValue>
                           </CardField>
                           <CardField>

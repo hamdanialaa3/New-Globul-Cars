@@ -105,7 +105,7 @@ const VerificationReview: React.FC = () => {
   useEffect(() => {
     const loadStats = async () => {
       const statuses = ['pending', 'approved', 'rejected'];
-      const counts: any = {};
+      const counts: Record<string, unknown> = {};
       
       for (const status of statuses) {
         const q = query(
@@ -163,7 +163,7 @@ const VerificationReview: React.FC = () => {
       setShowApproveModal(false);
       setSelectedRequest(null);
       alert(t('admin.verificationApproved'));
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Approval error:', error);
       alert(t('admin.approvalError') + ': ' + error.message);
     } finally {
@@ -192,7 +192,7 @@ const VerificationReview: React.FC = () => {
       setSelectedRequest(null);
       setRejectionReason('');
       alert(t('admin.verificationRejected'));
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Rejection error:', error);
       alert(t('admin.rejectionError') + ': ' + error.message);
     } finally {
@@ -585,8 +585,8 @@ const VerificationReview: React.FC = () => {
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <p className="text-sm text-gray-600">{t('admin.city')}</p>
-                        <p className="font-medium">{selectedRequest.businessInfo.city}</p>
+                        <p className="text-sm text-gray-600">{t('admin.locationData?.cityName')}</p>
+                        <p className="font-medium">{selectedRequest.businessInfo.locationData?.cityName}</p>
                       </div>
                       <div>
                         <p className="text-sm text-gray-600">{t('admin.phone')}</p>

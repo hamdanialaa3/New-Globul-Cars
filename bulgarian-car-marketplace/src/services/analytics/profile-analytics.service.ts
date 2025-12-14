@@ -320,7 +320,7 @@ class ProfileAnalyticsService {
   /**
    * Calculate Views by Day
    */
-  private calculateViewsByDay(events: any[], periodDays: number): Record<string, number> {
+  private calculateViewsByDay(events: unknown[], periodDays: number): Record<string, number> {
     const viewsByDay: Record<string, number> = {};
     const now = new Date();
     

@@ -110,7 +110,7 @@ export class PhoneVerificationService {
         verificationId: this.confirmationResult.verificationId
       };
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('SMS send failed', error as Error, { phoneNumber });
       return {
         success: false,
@@ -163,7 +163,7 @@ export class PhoneVerificationService {
         phoneNumber: result.user.phoneNumber || undefined
       };
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Phone verification failed', error as Error, { code });
       return {
         success: false,

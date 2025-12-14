@@ -121,7 +121,7 @@ const OAuthCallback: React.FC = () => {
         navigate('/profile?tab=settings');
       }, 2000);
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('OAuth callback error:', error);
       setStatus('error');
       setMessage(error.message || text.error);

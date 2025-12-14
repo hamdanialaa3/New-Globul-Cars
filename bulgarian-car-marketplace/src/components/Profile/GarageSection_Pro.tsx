@@ -700,7 +700,7 @@ export const GarageSectionPro: React.FC<GarageSectionProps> = ({
   // Get location
   const getLocation = (car: GarageCar): string => {
     if (car.location?.city && car.location?.region) {
-      return `${car.location.city}, ${car.location.region}`;
+      return `${car.locationData?.cityName}, ${car.location.region}`;
     }
     if (car.city && car.region) {
       return `${car.city}, ${car.region}`;

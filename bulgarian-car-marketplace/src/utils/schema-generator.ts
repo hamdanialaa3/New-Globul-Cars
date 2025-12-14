@@ -103,7 +103,7 @@ export const generateCarSchema = (car: CarData, language: 'bg' | 'en' = 'bg') =>
  * https://schema.org/Organization
  */
 export const generateOrganizationSchema = (data: OrganizationData) => {
-  const schema: any = {
+  const schema: Record<string, unknown> = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: data.name,

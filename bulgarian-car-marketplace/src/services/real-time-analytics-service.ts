@@ -167,7 +167,7 @@ class RealTimeAnalyticsService {
       const geoDistribution: { [key: string]: number } = {};
       users.forEach(user => {
         if (user.location?.city) {
-          geoDistribution[user.location.city] = (geoDistribution[user.location.city] || 0) + 1;
+          geoDistribution[user.locationData?.cityName] = (geoDistribution[user.locationData?.cityName] || 0) + 1;
         }
       });
 
@@ -202,7 +202,7 @@ class RealTimeAnalyticsService {
       const cityCounts: { [key: string]: number } = {};
       users.forEach(user => {
         if (user.location?.city) {
-          cityCounts[user.location.city] = (cityCounts[user.location.city] || 0) + 1;
+          cityCounts[user.locationData?.cityName] = (cityCounts[user.locationData?.cityName] || 0) + 1;
         }
       });
       const topCities = Object.entries(cityCounts)
@@ -424,7 +424,7 @@ class RealTimeAnalyticsService {
   }
 
   // Private helper methods
-  private calculateUserGrowth(users: any[]): { date: string; count: number }[] {
+  private calculateUserGrowth(users: unknown[]): { date: string; count: number }[] {
     const growth: { [key: string]: number } = {};
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
@@ -444,7 +444,7 @@ class RealTimeAnalyticsService {
       .sort((a, b) => a.date.localeCompare(b.date));
   }
 
-  private calculateCarListingsGrowth(cars: any[]): { date: string; count: number }[] {
+  private calculateCarListingsGrowth(cars: unknown[]): { date: string; count: number }[] {
     const growth: { [key: string]: number } = {};
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);

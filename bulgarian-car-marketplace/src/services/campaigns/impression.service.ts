@@ -105,7 +105,7 @@ class ImpressionService {
         browser,
         os,
         location: data.location,
-        region: data.region,
+        region: data.locationData?.regionName,
         referrer: data.referrer,
         timestamp: serverTimestamp() as Timestamp
       };
@@ -168,7 +168,7 @@ class ImpressionService {
         browser,
         os,
         location: data.location,
-        region: data.region,
+        region: data.locationData?.regionName,
         referrer: data.referrer,
         timestamp: serverTimestamp() as Timestamp
       };
@@ -298,9 +298,9 @@ class ImpressionService {
         }
 
         // Region breakdown
-        if (impression.region) {
-          analytics.regionBreakdown[impression.region] = 
-            (analytics.regionBreakdown[impression.region] || 0) + 1;
+        if (impression.locationData?.regionName) {
+          analytics.regionBreakdown[impression.locationData?.regionName] = 
+            (analytics.regionBreakdown[impression.locationData?.regionName] || 0) + 1;
         }
 
         // Hourly breakdown

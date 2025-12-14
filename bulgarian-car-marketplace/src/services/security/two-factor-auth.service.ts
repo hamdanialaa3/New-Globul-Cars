@@ -87,7 +87,7 @@ class TwoFactorAuthService {
         message: 'Кодът е изпратен / Code sent',
         verificationId: this.confirmationResult.verificationId
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Send OTP error', error as Error, { errorCode: error.code });
       return {
         success: false,
@@ -125,7 +125,7 @@ class TwoFactorAuthService {
         success: true,
         message: 'Двуфакторната автентикация е активирана / 2FA enabled'
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Verify OTP error', error as Error, { userId });
       return {
         success: false,

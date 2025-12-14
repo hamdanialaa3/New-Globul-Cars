@@ -90,7 +90,7 @@ export const useDealershipForm = (
     }
 
     if (!formData.address?.city) {
-      newErrors['address.city'] = 'المدينة مطلوبة';
+      newErrors['address.locationData?.cityName'] = 'المدينة مطلوبة';
     }
 
     // Validate working hours

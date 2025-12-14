@@ -241,7 +241,7 @@ const AdvancedFilters: React.FC<AdvancedFiltersProps> = ({
                 label: city.nameBg,
                 labelEn: city.nameEn
               }))}
-              value={filters.city || ''}
+              value={filters.locationData?.cityName || ''}
               onChange={(value) => handleFilterChange('city', value)}
               placeholder={language === 'bg' ? 'Всички градове' : 'All cities'}
               showOther={true}

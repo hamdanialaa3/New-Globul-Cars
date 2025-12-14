@@ -43,7 +43,7 @@ try {
 }
 
 // Initialize App Check - ENABLED ONLY IN PRODUCTION for security
-let appCheck: any = null;
+let appCheck: Record<string, unknown> = null;
 if (process.env.NODE_ENV === 'production' && process.env.REACT_APP_RECAPTCHA_SITE_KEY) {
   try {
     const { initializeAppCheck, ReCaptchaV3Provider } = require('firebase/app-check');

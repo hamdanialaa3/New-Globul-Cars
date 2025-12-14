@@ -163,7 +163,7 @@ const RightSidebarComponent: React.FC = () => {
                     <Name>{contact.displayName}</Name>
                     <Status>
                       {contact.location?.city && contact.location?.country
-                        ? `${contact.location.city}, ${contact.location.country}`
+                        ? `${contact.locationData?.cityName}, ${contact.location.country}`
                         : contact.location?.city || 'Bulgaria'}
                     </Status>
                   </ContactInfo>

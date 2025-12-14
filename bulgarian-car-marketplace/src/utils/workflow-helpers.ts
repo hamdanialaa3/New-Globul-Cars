@@ -73,7 +73,7 @@ export const deepClone = <T>(obj: T): T => {
 /**
  * Debounce function
  */
-export const debounce = <T extends (...args: any[]) => any>(
+export const debounce = <T extends (...args: unknown[]) => any>(
   func: T,
   wait: number
 ): ((...args: Parameters<T>) => void) => {
@@ -88,7 +88,7 @@ export const debounce = <T extends (...args: any[]) => any>(
 /**
  * Throttle function
  */
-export const throttle = <T extends (...args: any[]) => any>(
+export const throttle = <T extends (...args: unknown[]) => any>(
   func: T,
   limit: number
 ): ((...args: Parameters<T>) => void) => {
@@ -152,7 +152,7 @@ export const generateId = (): string => {
 /**
  * Check if arrays are equal (shallow comparison)
  */
-export const arraysEqual = (a: any[], b: any[]): boolean => {
+export const arraysEqual = (a: unknown[], b: unknown[]): boolean => {
   if (a === b) return true;
   if (a.length !== b.length) return false;
 

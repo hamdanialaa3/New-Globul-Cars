@@ -133,13 +133,13 @@ const ProfileOverview: React.FC = () => {
             
             {hasBusinessInfo.registeredAddress && (
               <>
-                {hasBusinessInfo.registeredAddress.city && (
+                {hasBusinessInfo.registeredAddress.locationData?.cityName && (
                   <InfoItem>
                     <InfoLabel>
                       <MapPin size={14} />
                       {language === 'bg' ? 'Град:' : 'City:'}
                     </InfoLabel>
-                    <InfoValue>{hasBusinessInfo.registeredAddress.city}</InfoValue>
+                    <InfoValue>{hasBusinessInfo.registeredAddress.locationData?.cityName}</InfoValue>
                   </InfoItem>
                 )}
                 

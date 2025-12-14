@@ -50,7 +50,7 @@ export class ProfileService {
       }
 
       const user = { ...userSnap.data(), uid } as BulgarianUser;
-      const result: any = { user };
+      const result: Record<string, unknown> = { user };
 
       // Load additional data based on profile type
       if (user.profileType === 'dealer') {
@@ -206,7 +206,7 @@ export class ProfileService {
   ): Promise<void> {
     try {
       const userRef = doc(db, 'users', uid);
-      const updates: any = {};
+      const updates: Record<string, unknown> = {};
 
       if (stats.activeListings !== undefined) {
         updates['stats.activeListings'] = stats.activeListings;

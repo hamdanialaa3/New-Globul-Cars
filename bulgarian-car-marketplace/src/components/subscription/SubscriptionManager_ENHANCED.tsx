@@ -4,6 +4,8 @@ import { Crown, TrendingUp, Building2, CheckCircle, Zap, Shield, Sparkles, Star 
 import billingService, { BillingInterval, Plan } from '../../services/billing/BillingService';
 import { useAuth } from '../../contexts/AuthProvider';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { logger } from '../../services/logger-service';
+
 
 // ==================== ANIMATIONS ====================
 const fadeInUp = keyframes`
@@ -552,8 +554,8 @@ const SubscriptionManagerEnhanced: React.FC = () => {
       
       // Redirect to Stripe Checkout
       window.location.href = url;
-    } catch (error: any) {
-      console.error('Subscription error:', error);
+    } catch (error: unknown) {
+      logger.error('Subscription error:', error);
       alert(isBg 
         ? 'Грешка при създаване на сесия. Опитайте отново.' 
         : 'Error creating checkout session. Please try again.'

@@ -72,7 +72,7 @@ const buildFormData = (profile: BulgarianUser | null): ProfileFormData => ({
   preferredLanguage: profile?.preferredLanguage || 'bg'
 });
 
-const mapListingsToCars = (listings: any[]): ProfileCar[] =>
+const mapListingsToCars = (listings: unknown[]): ProfileCar[] =>
   listings.map(car => ({
     id: car.id || '',
     title: `${car.make} ${car.model}`,
@@ -258,7 +258,7 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
         return;
       }
 
-      const updateData: any = {
+      const updateData: Record<string, unknown> = {
         uid: target.uid,
         displayName: formData.accountType === 'business'
           ? formData.businessName

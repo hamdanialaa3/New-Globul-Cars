@@ -125,7 +125,7 @@ export class AdvancedContentManagementService {
   ): Promise<void> {
     try {
       const reportRef = doc(db, 'content_reports', reportId);
-      const updateData: any = {
+      const updateData: Record<string, unknown> = {
         status: action === 'approve' ? 'reviewed' : 'dismissed',
         reviewedBy: moderatorId,
         reviewedAt: serverTimestamp(),
@@ -162,7 +162,7 @@ export class AdvancedContentManagementService {
 
       // تحديث حالة المحتوى
       const contentRef = doc(db, contentType === 'car' ? 'cars' : 'users', contentId);
-      const moderationData: any = {
+      const moderationData: Record<string, unknown> = {
         status: action === 'delete' ? 'deleted' : 
                 action === 'hide' ? 'hidden' : 
                 action === 'flag' ? 'flagged' : 'active',

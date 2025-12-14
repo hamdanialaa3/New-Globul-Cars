@@ -120,7 +120,7 @@ class SmartContactsService {
 
     // 1. Location proximity (30 points max)
     if (currentUser?.location && contact.location) {
-      if (contact.location.city === currentUser.location.city) {
+      if (contact.locationData?.cityName === currentUser.locationData?.cityName) {
         score += 30; // Same city
       } else if (contact.location.country === currentUser.location.country) {
         score += 15; // Same country

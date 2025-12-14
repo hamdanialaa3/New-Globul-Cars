@@ -118,7 +118,7 @@ class FirebaseRealDataService {
     try {
       const messagesSnapshot = await getDocs(collection(db, 'messages'));
       return messagesSnapshot.docs.length;
-    } catch (error: any) {
+    } catch (error: unknown) {
       // ⚡ FIX: Silently fail for permission errors (non-critical data)
       if (error?.code !== 'permission-denied') {
         serviceLogger.error('Error getting messages count', error as Error);
@@ -132,7 +132,7 @@ class FirebaseRealDataService {
     try {
       const viewsSnapshot = await getDocs(collection(db, 'views'));
       return viewsSnapshot.docs.length;
-    } catch (error: any) {
+    } catch (error: unknown) {
       // ⚡ FIX: Silently fail for permission errors (non-critical data)
       if (error?.code !== 'permission-denied') {
         serviceLogger.error('Error getting views count', error as Error);
@@ -224,7 +224,7 @@ class FirebaseRealDataService {
       const getAnalytics = httpsCallable(functions, 'getSuperAdminAnalytics');
       const res = await getAnalytics({});
       if (res && (res as any).data) {
-        const data: any = (res as any).data;
+        const data: Record<string, unknown> = (res as any).data;
         return {
           ...data,
           lastUpdated: data.lastUpdated ? new Date(data.lastUpdated) : new Date(),
@@ -280,7 +280,7 @@ class FirebaseRealDataService {
   }
 
   // Subscribe to real-time updates
-  public subscribeToRealTimeUpdates(callback: (data: any) => void): () => void {
+  public subscribeToRealTimeUpdates(callback: (data: unknown) => void): () => void {
     const unsubscribe = onSnapshot(
       collection(db, 'users'),
       (snapshot) => {

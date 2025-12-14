@@ -139,7 +139,7 @@ export class SuperAdminService {
           countries.set(data.location.country, (countries.get(data.location.country) || 0) + 1);
         }
         if (data.location?.city) {
-          cities.set(data.location.city, (cities.get(data.location.city) || 0) + 1);
+          cities.set(data.locationData?.cityName, (cities.get(data.locationData?.cityName) || 0) + 1);
         }
       });
 

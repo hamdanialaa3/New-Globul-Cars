@@ -129,7 +129,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             logger.debug('No redirect result found (normal on direct page loads)');
           }
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
         logger.error('Redirect result error', error as Error);
         if (error.code !== 'auth/no-auth-event') {
           // Only log actual errors, not the normal "no redirect pending" case

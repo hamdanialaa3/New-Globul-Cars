@@ -378,7 +378,7 @@ export const SellVehicleWizard: React.FC<SellVehicleWizardProps> = ({
           workflowData.sellerEmail && 
           workflowData.sellerPhone &&
           workflowData.region &&
-          workflowData.city
+          workflowData.locationData?.cityName
         );
       default:
         return false;
@@ -607,7 +607,7 @@ export const SellVehicleWizard: React.FC<SellVehicleWizardProps> = ({
         navigate(carDetailUrl);
       }, 500);
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Error in handleComplete', error as Error, {
         message: error.message,
         stack: error.stack,

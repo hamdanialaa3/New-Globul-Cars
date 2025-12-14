@@ -3,7 +3,7 @@
 
 const mockStyled = (tag: any) => {
   return jest.fn().mockImplementation((styles: any) => {
-    return jest.fn().mockImplementation((props: any) => {
+    return jest.fn().mockImplementation((props: Record<string, unknown>) => {
       return {
         type: tag,
         props: { ...props, className: 'mock-styled-component' },
@@ -15,7 +15,7 @@ const mockStyled = (tag: any) => {
 };
 
 const createGlobalStyle = jest.fn().mockImplementation((styles: any) => {
-  return jest.fn().mockImplementation((props: any) => {
+  return jest.fn().mockImplementation((props: Record<string, unknown>) => {
     return {
       type: 'style',
       props: { ...props, 'data-styled-global': true },

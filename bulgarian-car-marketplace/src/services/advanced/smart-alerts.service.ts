@@ -200,7 +200,7 @@ class SmartAlertsService {
   async findMatches(alert: SmartAlert): Promise<AlertMatch[]> {
     try {
       const { criteria } = alert;
-      const constraints: any[] = [where('status', '==', 'active')];
+      const constraints: unknown[] = [where('status', '==', 'active')];
 
       // Build query constraints
       if (criteria.make) constraints.push(where('make', '==', criteria.make));

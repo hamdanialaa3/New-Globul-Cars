@@ -133,7 +133,7 @@ const AdvancedCharts: React.FC = () => {
     }
   };
 
-  const processUsersByMonth = (users: any[]) => {
+  const processUsersByMonth = (users: unknown[]) => {
     const months = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو'];
     return months.map((month, index) => ({
       month,
@@ -141,7 +141,7 @@ const AdvancedCharts: React.FC = () => {
     }));
   };
 
-  const processCarsByBrand = (cars: any[]) => {
+  const processCarsByBrand = (cars: unknown[]) => {
     const brands = ['BMW', 'Mercedes', 'Audi', 'Toyota', 'Volkswagen'];
     return brands.map(brand => ({
       brand,
@@ -149,7 +149,7 @@ const AdvancedCharts: React.FC = () => {
     }));
   };
 
-  const processCarsByCity = (cars: any[]) => {
+  const processCarsByCity = (cars: unknown[]) => {
     const cities = ['София', 'Пловдив', 'Варна', 'Бургас', 'Русе'];
     return cities.map(city => ({
       city,
@@ -157,7 +157,7 @@ const AdvancedCharts: React.FC = () => {
     }));
   };
 
-  const processPriceRanges = (cars: any[]) => {
+  const processPriceRanges = (cars: unknown[]) => {
     const ranges = [
       { range: '0-10k€', min: 0, max: 10000 },
       { range: '10-20k€', min: 10000, max: 20000 },
@@ -248,7 +248,7 @@ const AdvancedCharts: React.FC = () => {
             {chartData.carsByCity.map((item, index) => (
               <LegendItem key={index}>
                 <LegendColor color={`hsl(${200 + index * 30}, 60%, 50%)`} />
-                <span>{item.city}</span>
+                <span>{item.locationData?.cityName}</span>
               </LegendItem>
             ))}
           </ChartLegend>

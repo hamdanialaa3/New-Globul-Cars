@@ -195,7 +195,7 @@ export const AnalyticsSystem: React.FC<AnalyticsSystemProps> = ({
             {searchParams.model && ` ${searchParams.model}`}
             {searchParams.minPrice && ` от ${searchParams.minPrice}€`}
             {searchParams.maxPrice && ` до ${searchParams.maxPrice}€`}
-            {searchParams.city && ` в ${searchParams.city}`}
+            {searchParams.locationData?.cityName && ` в ${searchParams.locationData?.cityName}`}
             {searchParams.fuelType.length > 0 && ` с ${searchParams.fuelType.join(', ')}`}
             . Намерени бяха {searchResults.length} автомобила.
           </SummaryText>

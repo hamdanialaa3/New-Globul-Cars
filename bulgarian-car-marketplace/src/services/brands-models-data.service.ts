@@ -117,7 +117,7 @@ export class BrandsModelsDataService {
         });
 
         return parsed;
-      } catch (error: any) {
+      } catch (error: unknown) {
         logger.error('Failed to load brands/models data', error);
         throw error;
       } finally {

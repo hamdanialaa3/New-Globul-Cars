@@ -17,6 +17,8 @@ import { useUnifiedWorkflow } from '../../../hooks/useUnifiedWorkflow';
 import { WorkflowPageLayout } from '../../../components/sell-workflow/WorkflowPageLayout';
 import DeleteDraftButton from '../../../components/SellWorkflow/DeleteDraftButton';
 import { serviceLogger } from '../../../services/logger-wrapper';
+import { logger } from '../../../services/logger-service';
+
 // removed legacy structured brands import; new markdown-based dropdown is canonical
 
 // removed legacy popular brands; new markdown-based dropdown replaces this UI
@@ -1314,29 +1316,29 @@ const VehicleDataPage: React.FC = () => {
 
   const handleDoorSelect = useCallback(
     (value: string) => {
-      console.log('🚪 Door button clicked:', { value, timestamp: new Date().toISOString() });
+      logger.info('🚪 Door button clicked:', { value, timestamp: new Date();.toISOString() });
       
       // ✅ FIX: Toggle behavior - clicking active button deselects it
       const currentDoors = formData.doors;
       
       if (currentDoors === value) {
         // Clicking same button -> deselect (set to empty string)
-        console.log('🔄 Deselecting doors (was:', value, ')');
+        logger.info('🔄 Deselecting doors (was:', value, ');');
         handleInputChange('doors', '');
       } else {
         // Clicking different button -> select it
-        console.log('✅ Selecting doors:', value);
+        logger.info('✅ Selecting doors:', value);
         handleInputChange('doors', value);
       }
       
-      console.log('✅ handleInputChange called for doors');
+      logger.info('✅ handleInputChange called for doors');
     },
     [handleInputChange, formData.doors]
   );
 
   const handleRoadworthyChange = useCallback(
     (value: 'yes' | 'no') => {
-      console.log('🛣️ Roadworthy button clicked:', { value, boolValue: value === 'yes', timestamp: new Date().toISOString() });
+      logger.info('🛣️ Roadworthy button clicked:', { value, boolValue: value === 'yes', timestamp: new Date();.toISOString() });
       
       // ✅ FIX: Toggle behavior - clicking active button deselects it
       const currentChoice: 'yes' | 'no' | undefined = 
@@ -1346,59 +1348,59 @@ const VehicleDataPage: React.FC = () => {
       
       if (currentChoice === value) {
         // Clicking same button -> deselect (set to null)
-        console.log('🔄 Deselecting roadworthy (was:', value, ')');
+        logger.info('🔄 Deselecting roadworthy (was:', value, ');');
         handleInputChange('roadworthy', null as any);
       } else {
         // Clicking different button -> select it
-        console.log('✅ Selecting roadworthy:', value);
+        logger.info('✅ Selecting roadworthy:', value);
         handleInputChange('roadworthy', value === 'yes');
       }
       
-      console.log('✅ handleInputChange called for roadworthy');
+      logger.info('✅ handleInputChange called for roadworthy');
     },
     [handleInputChange, formData.roadworthy]
   );
 
   const handleSaleTypeChange = useCallback(
     (value: 'private' | 'commercial') => {
-      console.log('💼 Sale Type button clicked:', { value, timestamp: new Date().toISOString() });
+      logger.info('💼 Sale Type button clicked:', { value, timestamp: new Date();.toISOString() });
       
       // ✅ FIX: Toggle behavior - clicking active button deselects it
       const currentChoice = formData.saleType as 'private' | 'commercial' | undefined;
       
       if (currentChoice === value) {
         // Clicking same button -> deselect (reset to default 'private')
-        console.log('🔄 Deselecting sale type (was:', value, '), resetting to private');
+        logger.info('🔄 Deselecting sale type (was:', value, ');, resetting to private');
         handleInputChange('saleType', 'private');
       } else {
         // Clicking different button -> select it
-        console.log('✅ Selecting sale type:', value);
+        logger.info('✅ Selecting sale type:', value);
         handleInputChange('saleType', value);
       }
       
-      console.log('✅ handleInputChange called for saleType');
+      logger.info('✅ handleInputChange called for saleType');
     },
     [handleInputChange, formData.saleType]
   );
 
   const handleSaleTimelineChange = useCallback(
     (value: 'unknown' | 'soon' | 'months') => {
-      console.log('📅 Sale Timeline button clicked:', { value, timestamp: new Date().toISOString() });
+      logger.info('📅 Sale Timeline button clicked:', { value, timestamp: new Date();.toISOString() });
       
       // ✅ FIX: Toggle behavior - clicking active button deselects it
       const currentChoice = formData.saleTimeline as 'unknown' | 'soon' | 'months' | undefined;
       
       if (currentChoice === value) {
         // Clicking same button -> deselect (reset to 'unknown')
-        console.log('🔄 Deselecting sale timeline (was:', value, '), resetting to unknown');
+        logger.info('🔄 Deselecting sale timeline (was:', value, ');, resetting to unknown');
         handleInputChange('saleTimeline', 'unknown');
       } else {
         // Clicking different button -> select it
-        console.log('✅ Selecting sale timeline:', value);
+        logger.info('✅ Selecting sale timeline:', value);
         handleInputChange('saleTimeline', value);
       }
       
-      console.log('✅ handleInputChange called for saleTimeline');
+      logger.info('✅ handleInputChange called for saleTimeline');
     },
     [handleInputChange, formData.saleTimeline]
   );
@@ -1710,10 +1712,10 @@ const VehicleDataPage: React.FC = () => {
                 key={option.value}
                 $active={formData.doors === option.value}
                 onClick={() => {
-                  console.log('🔴 DOOR BUTTON CLICKED:', option.value);
+                  logger.info('🔴 DOOR BUTTON CLICKED:', option.value);
                   handleDoorSelect(option.value);
                   markFieldAsTouched('doors');
-                  console.log('✅ markFieldAsTouched called for doors');
+                  logger.info('✅ markFieldAsTouched called for doors');
                 }}
               >
                 {option.label}
@@ -1734,10 +1736,10 @@ const VehicleDataPage: React.FC = () => {
                 key={option}
                 $active={roadworthyChoice === option}
                 onClick={() => {
-                  console.log('🔴 ROADWORTHY BUTTON CLICKED:', option);
+                  logger.info('🔴 ROADWORTHY BUTTON CLICKED:', option);
                   handleRoadworthyChange(option);
                   markFieldAsTouched('roadworthy');
-                  console.log('✅ markFieldAsTouched called for roadworthy');
+                  logger.info('✅ markFieldAsTouched called for roadworthy');
                 }}
               >
                 {t(`sell.listingSection.roadworthyOptions.${option}`)}
@@ -1755,10 +1757,10 @@ const VehicleDataPage: React.FC = () => {
                 key={option}
                 $active={saleTypeChoice === option}
                 onClick={() => {
-                  console.log('🔴 SALE TYPE BUTTON CLICKED:', option);
+                  logger.info('🔴 SALE TYPE BUTTON CLICKED:', option);
                   handleSaleTypeChange(option);
                   markFieldAsTouched('saleType');
-                  console.log('✅ markFieldAsTouched called for saleType');
+                  logger.info('✅ markFieldAsTouched called for saleType');
                 }}
               >
                 {t(`sell.listingSection.saleTypeOptions.${option}`)}
@@ -1776,10 +1778,10 @@ const VehicleDataPage: React.FC = () => {
                 key={option}
                 $active={saleTimelineChoice === option}
                 onClick={() => {
-                  console.log('🔴 SALE TIMELINE BUTTON CLICKED:', option);
+                  logger.info('🔴 SALE TIMELINE BUTTON CLICKED:', option);
                   handleSaleTimelineChange(option);
                   markFieldAsTouched('saleTimeline');
-                  console.log('✅ markFieldAsTouched called for saleTimeline');
+                  logger.info('✅ markFieldAsTouched called for saleTimeline');
                 }}
               >
                 {t(`sell.listingSection.saleTimelineOptions.${option}`)}

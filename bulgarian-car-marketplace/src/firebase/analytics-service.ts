@@ -71,7 +71,7 @@ export class BulgarianAnalyticsService {
     if (!analytics) return;
 
     try {
-      const eventData: any = {
+      const eventData: Record<string, unknown> = {
         custom_event: `car_${event}`
       };
 

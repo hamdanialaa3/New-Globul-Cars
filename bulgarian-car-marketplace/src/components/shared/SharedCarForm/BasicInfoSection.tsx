@@ -53,7 +53,7 @@ export const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
             <FormLabel>Марка *</FormLabel>
             <SearchSelect 
               value={data.make} 
-              onChange={(e: any) => onInputChange('make', e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => onInputChange('make', e.target.value)}
             >
               <option value="">Всички марки</option>
               <option value="audi">Audi</option>
@@ -73,7 +73,7 @@ export const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
             <FormLabel>Модел</FormLabel>
             <SearchSelect 
               value={data.model} 
-              onChange={(e: any) => onInputChange('model', e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => onInputChange('model', e.target.value)}
               disabled={!data.make}
             >
               <option value="">Всички модели</option>
@@ -101,7 +101,7 @@ export const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
             <FormLabel>Тип превозно средство</FormLabel>
             <SearchSelect 
               value={data.vehicleType} 
-              onChange={(e: any) => onInputChange('vehicleType', e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => onInputChange('vehicleType', e.target.value)}
             >
               <option value="">Всички типове</option>
               <option value="sedan">Седан</option>
@@ -117,7 +117,7 @@ export const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
             <FormLabel>Състояние</FormLabel>
             <SearchSelect 
               value={data.condition} 
-              onChange={(e: any) => onInputChange('condition', e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => onInputChange('condition', e.target.value)}
             >
               <option value="">Всички</option>
               <option value="new">Нов автомобил</option>
@@ -136,7 +136,7 @@ export const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
                     type="number" 
                     placeholder="от"
                     value={data.price}
-                    onChange={(e: any) => onInputChange('price', e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => onInputChange('price', e.target.value)}
                   />
                   <span>до</span>
                   <SearchInput 
@@ -153,7 +153,7 @@ export const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
                 type="number" 
                 placeholder="Въведете цена в EUR"
                 value={data.price}
-                onChange={(e: any) => onInputChange('price', e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => onInputChange('price', e.target.value)}
               />
             </FormGroup>
           )}
@@ -164,7 +164,7 @@ export const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
               type="number" 
               placeholder={mode === 'search' ? "до" : "Пробег в км"}
               value={data.mileage}
-              onChange={(e: any) => onInputChange('mileage', e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => onInputChange('mileage', e.target.value)}
             />
           </FormGroup>
         </FormGrid>

@@ -222,7 +222,7 @@ const SearchResultsMap: React.FC<SearchResultsMapProps> = ({
                      <span>{selectedCar.power} HP</span>
                   </div>
                   <div className="location">
-                     {selectedCar.location.city}, {selectedCar.location.region}
+                     {selectedCar.locationData?.cityName}, {selectedCar.location.region}
                   </div>
                   <button className="view-button">
                     عرض التفاصيل

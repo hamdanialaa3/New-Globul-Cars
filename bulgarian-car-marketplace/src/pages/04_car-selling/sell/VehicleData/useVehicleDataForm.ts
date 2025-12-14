@@ -205,7 +205,7 @@ const formEquals = useCallback(
           restore('saleType', workflowData.saleType as any);
           restore('saleTimeline', workflowData.saleTimeline as any);
           restore('saleProvince', workflowData.saleProvince || workflowData.region);
-          restore('saleCity', workflowData.saleCity || workflowData.city);
+          restore('saleCity', workflowData.saleCity || workflowData.locationData?.cityName);
           restore('salePostalCode', workflowData.salePostalCode || workflowData.postalCode);
           restore('bodyType', workflowData.bodyType);
           restore('bodyTypeOther', workflowData.bodyTypeOther);

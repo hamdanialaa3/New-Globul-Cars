@@ -46,7 +46,7 @@ export const getCommissionPeriods = async (params?: {
     const getCommissionPeriodsFn = httpsCallable(functions, 'getCommissionPeriods');
     const result = await getCommissionPeriodsFn(params || {});
     return result.data as any;
-  } catch (error: any) {
+  } catch (error: unknown) {
     serviceLogger.error('Error getting commission periods', error as Error, { params });
     return { success: false, error: error.message };
   }
@@ -63,7 +63,7 @@ export const getCommissionPeriod = async (
     const getCommissionPeriodFn = httpsCallable(functions, 'getCommissionPeriod');
     const result = await getCommissionPeriodFn({ period });
     return result.data as any;
-  } catch (error: any) {
+  } catch (error: unknown) {
     serviceLogger.error('Error getting commission period', error as Error, { period });
     return { success: false, error: error.message };
   }
@@ -86,7 +86,7 @@ export const getAllCommissionPeriods = async (params?: {
     const getAllCommissionPeriodsFn = httpsCallable(functions, 'getAllCommissionPeriods');
     const result = await getAllCommissionPeriodsFn(params || {});
     return result.data as any;
-  } catch (error: any) {
+  } catch (error: unknown) {
     serviceLogger.error('Error getting all commission periods', error as Error, { params });
     return { success: false, error: error.message };
   }
@@ -102,7 +102,7 @@ export const getCommissionRate = async (): Promise<{
     const getCommissionRateFn = httpsCallable(functions, 'getCommissionRate');
     const result = await getCommissionRateFn();
     return result.data as any;
-  } catch (error: any) {
+  } catch (error: unknown) {
     serviceLogger.error('Error getting commission rate', error as Error);
     return { success: false, error: error.message };
   }
@@ -120,7 +120,7 @@ export const triggerCommissionCharging = async (
     const triggerCommissionChargingFn = httpsCallable(functions, 'triggerCommissionCharging');
     const result = await triggerCommissionChargingFn({ period });
     return result.data as any;
-  } catch (error: any) {
+  } catch (error: unknown) {
     serviceLogger.error('Error triggering commission charging', error as Error, { period });
     return { success: false, error: error.message };
   }
@@ -138,7 +138,7 @@ export const markCommissionPaid = async (
     const markCommissionPaidFn = httpsCallable(functions, 'markCommissionPaid');
     const result = await markCommissionPaidFn({ period, userId, notes });
     return result.data as any;
-  } catch (error: any) {
+  } catch (error: unknown) {
     serviceLogger.error('Error marking commission paid', error as Error, { period, userId });
     return { success: false, error: error.message };
   }
@@ -156,7 +156,7 @@ export const generateCommissionStatement = async (
     const generateCommissionStatementFn = httpsCallable(functions, 'generateCommissionStatement');
     const result = await generateCommissionStatementFn({ period, userId });
     return result.data as any;
-  } catch (error: any) {
+  } catch (error: unknown) {
     serviceLogger.error('Error generating commission statement', error as Error, { period, userId });
     return { success: false, error: error.message };
   }

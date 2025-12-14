@@ -62,11 +62,13 @@ function MyPage() {
 3️⃣ TYPESCRIPT SUPPORT:
 ────────────────────────
 import { ButtonProps } from '@/components/design-system';
+import { logger } from '../../services/logger-service';
+
 
 const customButton: ButtonProps = {
   variant: 'primary',
   size: 'lg',
-  onClick: () => console.log('Clicked!'),
+  onClick: () => logger.info('Clicked!');,
 };
 
 

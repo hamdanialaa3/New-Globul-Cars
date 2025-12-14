@@ -37,13 +37,13 @@ const ReportsPage: React.FC = () => {
       if (selectedReport === 'users') {
         const data = await usersReportService.getAllUsers({
           profileType: userFilters.profileType || undefined,
-          city: userFilters.city || undefined,
+          city: userFilters.locationData?.cityName || undefined,
           verifiedOnly: userFilters.verifiedOnly,
         });
         setUsers(data);
       } else {
         const data = await carsReportService.getAllCars({
-          city: carFilters.city || undefined,
+          city: carFilters.locationData?.cityName || undefined,
           status: carFilters.status || undefined,
           make: carFilters.make || undefined,
           yearFrom: carFilters.yearFrom ? parseInt(carFilters.yearFrom) : undefined,
@@ -78,7 +78,7 @@ const ReportsPage: React.FC = () => {
         usersReportService.downloadReport(content, filename, format);
       } else {
         let content = '';
-        const filename = `cars-report-${carFilters.city || 'all'}-${new Date().toISOString().split('T')[0]}`;
+        const filename = `cars-report-${carFilters.locationData?.cityName || 'all'}-${new Date().toISOString().split('T')[0]}`;
         
         if (format === 'csv') {
           content = await carsReportService.exportToCSV(cars);
@@ -148,7 +148,7 @@ const ReportsPage: React.FC = () => {
               <input
                 type="text"
                 placeholder="София, Пловдив..."
-                value={userFilters.city}
+                value={userFilters.locationData?.cityName}
                 onChange={(e) => setUserFilters({ ...userFilters, city: e.target.value })}
               />
             </FilterGroup>
@@ -176,7 +176,7 @@ const ReportsPage: React.FC = () => {
               <input
                 type="text"
                 placeholder="София"
-                value={carFilters.city}
+                value={carFilters.locationData?.cityName}
                 onChange={(e) => setCarFilters({ ...carFilters, city: e.target.value })}
               />
             </FilterGroup>
@@ -267,7 +267,7 @@ const ReportsPage: React.FC = () => {
                   <td>{user.displayName}</td>
                   <td>{user.email}</td>
                   <td>{user.profileType}</td>
-                  <td>{user.city || '-'}</td>
+                  <td>{user.locationData?.cityName || '-'}</td>
                   <td>{user.activeListings}</td>
                   <td>{user.createdAt.toLocaleDateString('bg-BG')}</td>
                 </tr>

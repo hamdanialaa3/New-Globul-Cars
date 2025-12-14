@@ -27,7 +27,7 @@ export const eikVerificationService = {
       const result = await callable({ eik }) as any;
 
       return result.data;
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('EIK verification failed', error);
       throw new Error(error.message || 'Failed to verify EIK');
     }

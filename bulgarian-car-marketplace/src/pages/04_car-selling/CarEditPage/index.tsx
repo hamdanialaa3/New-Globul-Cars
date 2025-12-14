@@ -128,7 +128,7 @@ const EXTRA_EQUIPMENT = [
 
 const slugify = (value: string) => value.toLowerCase().replace(/[^a-zа-я0-9]+/gi, '');
 
-const normalizeBoolean = (value: any): boolean | undefined => {
+const normalizeBoolean = (value: unknown): boolean | undefined => {
   if (value === undefined || value === null) return undefined;
   if (typeof value === 'boolean') return value;
   if (typeof value === 'number') return value === 1;
@@ -1397,10 +1397,10 @@ const CarEditPage: React.FC = () => {
               <SectionTitle $isDark={isDark}>{t.sections.location}</SectionTitle>
 
               <FormGroup>
-                <Label $isDark={isDark}>{t.fields.city}</Label>
+                <Label $isDark={isDark}>{t.fields.locationData?.cityName}</Label>
                 <Select
                   $isDark={isDark}
-                  value={formData.city || ''}
+                  value={formData.locationData?.cityName || ''}
                   onChange={handleSelectChange('city')}
                 >
                   <option value="">{t.placeholders.select}</option>

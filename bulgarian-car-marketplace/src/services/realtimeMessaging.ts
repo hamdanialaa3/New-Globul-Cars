@@ -107,7 +107,7 @@ export class RealtimeMessagingService {
       await this.updateChatRoom(messageData.senderId, messageData.receiverId, message);
 
       return docRef.id;
-    } catch (error: any) {
+    } catch (error: unknown) {
       throw new Error(`Failed to send message: ${error.message}`);
     }
   }
@@ -152,7 +152,7 @@ export class RealtimeMessagingService {
       }
       
       return conversationId;
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Failed to get or create conversation', error as Error, { senderId, receiverId, carId });
       throw new Error(`Failed to get or create conversation: ${error.message}`);
     }
@@ -177,7 +177,7 @@ export class RealtimeMessagingService {
 
       const querySnapshot = await getDocs(q);
       return !querySnapshot.empty;
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Failed to check car link', error as Error, { conversationId, carId });
       return false;
     }
@@ -234,7 +234,7 @@ export class RealtimeMessagingService {
 
       logger.info('Car link sent', { conversationId, carId, messageId: docRef.id });
       return docRef.id;
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Failed to send car link', error as Error, { conversationId, carId });
       return null;
     }
@@ -286,7 +286,7 @@ export class RealtimeMessagingService {
       });
 
       return messages;
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Failed to get messages', error as Error, { senderId, receiverId, carId });
       // Fallback: try without carId filter
       try {
@@ -333,7 +333,7 @@ export class RealtimeMessagingService {
 
       // Update unread count in chat room
       await this.updateUnreadCount(senderId, receiverId, 0);
-    } catch (error: any) {
+    } catch (error: unknown) {
       throw new Error(`Failed to mark messages as read: ${error.message}`);
     }
   }
@@ -404,7 +404,7 @@ export class RealtimeMessagingService {
       });
 
       return chatRooms;
-    } catch (error: any) {
+    } catch (error: unknown) {
       throw new Error(`Failed to get chat rooms: ${error.message}`);
     }
   }
@@ -468,7 +468,7 @@ export class RealtimeMessagingService {
         ...typingData,
         receiverId
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Error sending typing indicator - silently fail
     }
   }
@@ -558,7 +558,7 @@ export class RealtimeMessagingService {
           updatedAt: Timestamp.fromDate(new Date())
         });
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Error updating chat room', error as Error, { senderId, receiverId });
     }
   }
@@ -576,7 +576,7 @@ export class RealtimeMessagingService {
         [`unreadCount.${receiverId}`]: count,
         updatedAt: Timestamp.fromDate(new Date())
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Error updating unread count - silently fail
     }
   }

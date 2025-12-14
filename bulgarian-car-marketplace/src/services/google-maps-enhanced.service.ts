@@ -35,7 +35,7 @@ export interface DistanceResult {
 }
 
 export interface DirectionsResult {
-  routes: any[];
+  routes: unknown[];
   status: string;
 }
 

@@ -147,7 +147,7 @@ class DealRatingService {
 
     try {
       // Build constraints
-      const constraints: any[] = [
+      const constraints: unknown[] = [
         where('status', '==', 'active'),
         where('make', '==', make)
       ];

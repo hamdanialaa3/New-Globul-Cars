@@ -138,8 +138,8 @@ class EventsService {
         location: {
           ...eventData.location,
           coordinates: new GeoPoint(
-            eventData.location.coordinates.lat,
-            eventData.location.coordinates.lng
+            eventData.locationData?.coordinates.lat,
+            eventData.locationData?.coordinates.lng
           )
         },
         startDate: Timestamp.fromDate(eventData.startDate),
@@ -321,7 +321,7 @@ class EventsService {
     newStatus: EventRSVP['status'],
     userId: string
   ): Promise<void> {
-    const updates: any = {};
+    const updates: Record<string, unknown> = {};
     
     if (oldStatus === 'going') {
       updates.attendeeCount = increment(-1);

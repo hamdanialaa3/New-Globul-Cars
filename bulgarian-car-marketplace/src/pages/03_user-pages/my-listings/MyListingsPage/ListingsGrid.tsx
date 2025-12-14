@@ -131,7 +131,7 @@ const ListingsGridComponent: React.FC<ListingsGridProps> = ({
 
                 <div className="location-info">
                   <span>📍</span>
-                  <span>{listing.location.cityName.bg}, {listing.location.region}</span>
+                  <span>{listing.locationData?.cityNameName.bg}, {listing.location.region}</span>
                 </div>
 
                 <div className="contact-info">

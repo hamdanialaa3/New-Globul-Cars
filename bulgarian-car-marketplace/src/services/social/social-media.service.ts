@@ -177,7 +177,7 @@ class SocialMediaService {
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Token exchange successful', { platform, data: result.data });
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Token exchange failed', error as Error, { platform });
       throw new Error(error.message || 'Failed to exchange token');
     }

@@ -289,7 +289,7 @@ const DesktopPreviewPage: React.FC = () => {
         phone: t('sell.preview.phone'),
         email: t('sell.preview.email'),
         region: t('sell.preview.region'),
-        city: t('sell.preview.city'),
+        city: t('sell.preview.locationData?.cityName'),
         zip: t('sell.preview.zip')
       },
       sections: {

@@ -438,7 +438,7 @@ export const DealershipProfileForm: React.FC<DealershipProfileFormProps> = ({
               <Input
                 type="text"
                 value={formData.address?.city || ''}
-                onChange={(e) => handleInputChange('address.city', e.target.value)}
+                onChange={(e) => handleInputChange('address.locationData?.cityName', e.target.value)}
                 placeholder="София"
                 $themeColor={themeColor}
                 required

@@ -82,7 +82,7 @@ class AlgoliaSearchService {
       if (filters.model) filterParts.push(`model:"${filters.model}"`);
       if (filters.fuelType) filterParts.push(`fuelType:"${filters.fuelType}"`);
       if (filters.transmission) filterParts.push(`transmission:"${filters.transmission}"`);
-      if (filters.region) filterParts.push(`region:"${filters.region}"`);
+      if (filters.locationData?.regionName) filterParts.push(`region:"${filters.locationData?.regionName}"`);
       if (filters.condition) filterParts.push(`condition:"${filters.condition}"`);
       
       // Numeric filters

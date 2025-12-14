@@ -196,7 +196,7 @@ const AdvancedSearchPage: React.FC = () => {
   const [lastMs, setLastMs] = useState<number | undefined>(undefined);
   const showSearchDebug = process.env.REACT_APP_SHOW_SEARCH_DEBUG === 'true';
 
-  const convertToSavedSearchFilters = (data: SearchData): any => {
+  const convertToSavedSearchFilters = (data: SearchData): Record<string, unknown> => {
     return {
       make: data.make || undefined,
       model: data.model || undefined,
@@ -211,7 +211,7 @@ const AdvancedSearchPage: React.FC = () => {
       engineMax: data.cubicCapacityTo ? parseInt(data.cubicCapacityTo) : undefined,
       powerMin: data.powerFrom ? parseInt(data.powerFrom) : undefined,
       powerMax: data.powerTo ? parseInt(data.powerTo) : undefined,
-      location: data.city || undefined,
+      location: data.locationData?.cityName || undefined,
       radius: data.radius ? parseInt(data.radius) : undefined,
       condition: data.condition || undefined,
       vehicleType: data.vehicleType || undefined,
@@ -278,7 +278,7 @@ const AdvancedSearchPage: React.FC = () => {
   };
 
   const handleSaveSearch = async (name: string) => {
-    const filters: any = convertToSavedSearchFilters(searchData);
+    const filters: Record<string, unknown> = convertToSavedSearchFilters(searchData);
 
     const success = await saveSearch({
       name: name.trim(),

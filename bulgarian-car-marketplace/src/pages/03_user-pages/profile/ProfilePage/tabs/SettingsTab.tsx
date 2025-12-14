@@ -314,7 +314,7 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
       setShowPasswordChange(false);
       setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
       
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Error changing password:', error);
       
       if (error.code === 'auth/wrong-password') {
@@ -596,7 +596,7 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
       // Delete Firebase Auth user
       try {
         await deleteAccountService.deleteCurrentUser();
-      } catch (error: any) {
+      } catch (error: unknown) {
         // If re-authentication is required, show error
         if (error?.code === 'REAUTH_REQUIRED' || error?.code === 'auth/requires-recent-login') {
           toast.error(
@@ -621,7 +621,7 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
       setTimeout(() => {
         window.location.href = '/';
       }, 2000);
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Error deleting account:', error);
       toast.error(
         language === 'bg' 
@@ -2702,7 +2702,7 @@ const EditInformationSection: React.FC<EditInformationSectionProps> = ({ user, l
         lastName: userInfo.lastName,
         phoneNumber: userInfo.phoneNumber,
         location: {
-          city: userInfo.city,
+          city: userInfo.locationData?.cityName,
           region: userInfo.region,
           country: 'Bulgaria'
         },
@@ -2894,7 +2894,7 @@ const EditInformationSection: React.FC<EditInformationSectionProps> = ({ user, l
             <Label>{isBg ? 'Град' : 'City'}</Label>
             <Input
               type="text"
-              value={userInfo.city}
+              value={userInfo.locationData?.cityName}
               onChange={(e) => setUserInfo({ ...userInfo, city: e.target.value })}
               placeholder={isBg ? 'Град' : 'City'}
             />

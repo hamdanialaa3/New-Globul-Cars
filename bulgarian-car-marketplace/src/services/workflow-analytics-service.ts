@@ -89,7 +89,7 @@ export class WorkflowAnalyticsService {
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Analytics event logged', { step, stepName, action });
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Silently fail for permission errors - don't break the main flow
       if (error?.code === 'permission-denied' || error?.message?.includes('permission')) {
         // Analytics is optional, just log in dev mode

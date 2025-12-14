@@ -57,7 +57,7 @@ const PasswordChangeModal: React.FC<PasswordChangeModalProps> = ({ onClose }) =>
         ? 'Паролата е променена успешно'
         : 'Password changed successfully');
       onClose();
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Error changing password:', error);
       
       if (error.code === 'auth/wrong-password') {

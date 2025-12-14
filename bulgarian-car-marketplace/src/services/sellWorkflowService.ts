@@ -69,7 +69,7 @@ export class SellWorkflowService {
     // City = المدينة التابعة (للجمال فقط)
     
     const regionName = workflowData.region; // e.g., "Варна"
-    const cityName = workflowData.city; // e.g., "Аксаково" (decorative only)
+    const cityName = workflowData.locationData?.cityName; // e.g., "Аксаково" (decorative only)
     const postalCode = workflowData.postalCode; // decorative only
     
     // Find region in BULGARIAN_CITIES (case-insensitive, flexible matching)
@@ -585,7 +585,7 @@ export class SellWorkflowService {
       }
       
       // Check location (only in strict mode)
-      if (!workflowData.region && !workflowData.city) {
+      if (!workflowData.region && !workflowData.locationData?.cityName) {
         missingFields.push('Location (Местоположение)');
       }
     }
@@ -611,7 +611,7 @@ export class SellWorkflowService {
     if (workflowData.images) completedSteps++;
     if (workflowData.price) completedSteps++;
     if (workflowData.sellerName && workflowData.sellerEmail && workflowData.sellerPhone) completedSteps++;
-    if (workflowData.region || workflowData.city) completedSteps++;
+    if (workflowData.region || workflowData.locationData?.cityName) completedSteps++;
 
     return Math.round((completedSteps / totalSteps) * 100);
   }

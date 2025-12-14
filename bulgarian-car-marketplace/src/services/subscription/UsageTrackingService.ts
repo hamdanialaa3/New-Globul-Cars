@@ -125,7 +125,7 @@ class UsageTrackingService {
         },
       };
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       serviceLogger.error('Error getting current usage', error as Error, { userId });
       return null;
     }
@@ -268,7 +268,7 @@ class UsageTrackingService {
       serviceLogger.info('Usage incremented', { userId, type });
       return true;
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       serviceLogger.error('Error incrementing usage', error as Error, { userId, type });
       return false;
     }
@@ -293,7 +293,7 @@ class UsageTrackingService {
       serviceLogger.info('Usage decremented', { userId, type });
       return true;
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       serviceLogger.error('Error decrementing usage', error as Error, { userId, type });
       return false;
     }
@@ -314,7 +314,7 @@ class UsageTrackingService {
 
       serviceLogger.info('API calls counter reset', { userId });
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       serviceLogger.error('Error resetting API calls', error as Error, { userId });
     }
   }

@@ -235,7 +235,7 @@ const CheckoutPage: React.FC = () => {
       } else {
         throw new Error('No checkout URL returned');
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Payment error', error as Error, { carId, userId: user?.uid, retryAttempt });
       
       const errorMessage = error.message || (language === 'bg' ? 'Грешка при плащане' : 'Payment error');

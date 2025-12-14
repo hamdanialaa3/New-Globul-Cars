@@ -54,7 +54,7 @@ export class CarsReportService {
 
       // فلتر المدينة
       if (filters?.city) {
-        q = query(q, where('location', '==', filters.city));
+        q = query(q, where('location', '==', filters.locationData?.cityName));
       }
 
       // فلتر الحالة

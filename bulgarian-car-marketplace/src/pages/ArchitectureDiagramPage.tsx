@@ -480,7 +480,7 @@ const ArchitectureDiagramPage: React.FC = () => {
     });
 
     // Links
-    const links: any[] = [];
+    const links: unknown[] = [];
     nodes.forEach(node => {
       node.dependencies.forEach(depId => {
         const target = nodes.find(n => n.id === depId);

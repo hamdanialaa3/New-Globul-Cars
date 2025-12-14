@@ -44,12 +44,12 @@ export const useCarEdit = (
 
   // Load cities when car data is loaded or region changes
   useEffect(() => {
-    if (editedCar.region) {
-      const cities = getCitiesByRegion(editedCar.region);
+    if (editedCar.locationData?.regionName) {
+      const cities = getCitiesByRegion(editedCar.locationData?.regionName);
       const cityNames = cities.map(city => typeof city === 'string' ? city : city.name);
       setAvailableCities(cityNames);
     }
-  }, [editedCar.region]);
+  }, [editedCar.locationData?.regionName]);
   
   // Load models when make changes
   useEffect(() => {

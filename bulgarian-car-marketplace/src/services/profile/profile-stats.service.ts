@@ -232,7 +232,7 @@ class ProfileStatsService {
 
   // Legacy private methods removed; dataSource handles retrieval.
 
-  private aggregateStats(profileDoc: any, listingsSnap: any, metricsSnap: any, reviewsSnap: any, searchesSnap: any[]): ProfileStats {
+  private aggregateStats(profileDoc: any, listingsSnap: any, metricsSnap: any, reviewsSnap: any, searchesSnap: unknown[]): ProfileStats {
     // Profile baseline
     const profile = profileDoc?.data() || {};
     const trustScore = profile.trustScore || 0;

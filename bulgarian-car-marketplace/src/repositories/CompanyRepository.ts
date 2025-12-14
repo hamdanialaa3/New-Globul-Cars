@@ -203,7 +203,7 @@ export class CompanyRepository {
     try {
       const q = query(
         collection(db, this.COLLECTION),
-        where('headquarters.city', '==', city),
+        where('headquarters.locationData?.cityName', '==', city),
         where('verification.status', '==', 'verified'),
         orderBy('createdAt', 'desc'),
         limit(limitCount)
@@ -276,7 +276,7 @@ export class CompanyRepository {
         });
 
         // Update user snapshot if name/logo/status changed
-        const snapshotUpdate: any = {};
+        const snapshotUpdate: Record<string, unknown> = {};
         if (data.companyNameBG) snapshotUpdate['companySnapshot.nameBG'] = data.companyNameBG;
         if (data.companyNameEN) snapshotUpdate['companySnapshot.nameEN'] = data.companyNameEN;
         if (data.media?.logo) snapshotUpdate['companySnapshot.logo'] = data.media.logo;

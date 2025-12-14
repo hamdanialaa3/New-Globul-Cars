@@ -18,7 +18,7 @@ import {
 // ==================== INTERFACES ====================
 
 interface MessageComposerProps {
-  onSendMessage: (content: string, attachments?: any[]) => void;
+  onSendMessage: (content: string, attachments?: unknown[]) => void;
   onTyping: (isTyping: boolean) => void;
   recipientName: string;
   carId?: string;

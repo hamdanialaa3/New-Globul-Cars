@@ -232,7 +232,7 @@ class VisualSearchService {
   ): Promise<VisualSearchResult['similarCars']> {
     try {
       // Build query constraints
-      const constraints: any[] = [
+      const constraints: unknown[] = [
         where('status', '==', 'active')
       ];
 

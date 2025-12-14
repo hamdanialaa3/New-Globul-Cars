@@ -334,7 +334,7 @@ class AdvancedUserManagementService {
         filteredUsers = users.filter(user => 
           user.displayName.toLowerCase().includes(searchTerm) ||
           user.email.toLowerCase().includes(searchTerm) ||
-          user.location.city.toLowerCase().includes(searchTerm)
+          user.locationData?.cityName.toLowerCase().includes(searchTerm)
         );
       }
       

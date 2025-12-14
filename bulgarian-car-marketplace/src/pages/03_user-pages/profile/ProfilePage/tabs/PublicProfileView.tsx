@@ -97,7 +97,7 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ user, user
                   <InfoIcon><MapPin size={18} /></InfoIcon>
                   <InfoContent>
                     <InfoLabel>{language === 'bg' ? 'Град' : 'City'}</InfoLabel>
-                    <InfoValue>{user.location.city}</InfoValue>
+                    <InfoValue>{user.locationData?.cityName}</InfoValue>
                   </InfoContent>
                 </InfoItem>
               )}

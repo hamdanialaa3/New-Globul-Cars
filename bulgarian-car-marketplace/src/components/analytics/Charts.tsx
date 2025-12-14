@@ -160,7 +160,7 @@ interface PriceDistributionProps {
 
 export const PriceDistributionChart: React.FC<PriceDistributionProps> = ({ data }) => {
   const pieData = data.map((item, index) => ({
-    name: item.city,
+    name: item.locationData?.cityName,
     value: item.sampleSize,
     price: item.averagePrice
   }));

@@ -284,10 +284,10 @@ const SearchFilterSection: React.FC<SearchFilterSectionProps> = ({
   <SectionTitle>{t('carSearch.location', 'Location')}</SectionTitle>
       <FilterGrid>
         <FilterGroup>
-          <FilterLabel>{t('carSearch.city', 'City')}</FilterLabel>
+          <FilterLabel>{t('carSearch.locationData?.cityName', 'City')}</FilterLabel>
           <FilterInput
             type="text"
-            value={searchParams.city}
+            value={searchParams.locationData?.cityName}
             onChange={(e) => handleInputChange('city', e.target.value)}
             placeholder="e.g. Sofia, Plovdiv"
           />

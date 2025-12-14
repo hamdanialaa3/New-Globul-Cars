@@ -200,7 +200,7 @@ const ContactStep: React.FC<ContactStepProps> = ({ data, onDataChange }) => {
     companyAddress: data.companyAddress || '',
     companyWebsite: data.companyWebsite || '',
     location: data.location || '',
-    city: data.city || '',
+    city: data.locationData?.cityName || '',
     region: data.region || '',
     postalCode: data.postalCode || '',
     preferredContact: data.preferredContact || [],
@@ -363,7 +363,7 @@ const ContactStep: React.FC<ContactStepProps> = ({ data, onDataChange }) => {
             <Label>Град *</Label>
             <Input
               type="text"
-              value={contact.city}
+              value={contact.locationData?.cityName}
               onChange={(e) => handleInputChange('city', e.target.value)}
               placeholder="Име на града"
               required
@@ -408,8 +408,8 @@ const ContactStep: React.FC<ContactStepProps> = ({ data, onDataChange }) => {
       <LocationCard>
         <LocationTitle>📍 Местоположение на превозното средство</LocationTitle>
         <LocationText>
-          {contact.region && contact.city 
-            ? `${contact.city}, ${contact.region}${contact.postalCode ? `, ${contact.postalCode}` : ''}`
+          {contact.region && contact.locationData?.cityName 
+            ? `${contact.locationData?.cityName}, ${contact.region}${contact.postalCode ? `, ${contact.postalCode}` : ''}`
             : 'Моля, попълнете местоположението на превозното средство'
           }
         </LocationText>

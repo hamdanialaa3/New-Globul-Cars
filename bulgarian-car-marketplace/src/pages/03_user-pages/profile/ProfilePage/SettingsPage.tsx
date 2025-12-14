@@ -10,7 +10,7 @@ interface ProfilePageContext {
   viewer: BulgarianUser | null;
   isOwnProfile: boolean;
   theme: ProfileTheme;
-  userCars?: any[];
+  userCars?: unknown[];
   refresh?: () => Promise<void>;
   setUser?: React.Dispatch<React.SetStateAction<BulgarianUser | null>>;
 }

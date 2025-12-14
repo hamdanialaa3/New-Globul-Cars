@@ -96,7 +96,7 @@ class PostsService {
   }
 
   async update(postId: string, content: Partial<PostContent>): Promise<void> {
-    const updates: any = { updatedAt: Timestamp.fromDate(new Date()) };
+    const updates: Record<string, unknown> = { updatedAt: Timestamp.fromDate(new Date()) };
     if (content.title) updates['content.title'] = content.title;
     if (content.body) updates['content.body'] = content.body;
     await updateDoc(doc(db, COLLECTION, postId), updates);

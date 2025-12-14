@@ -271,7 +271,7 @@ const B2BAnalyticsDashboard: React.FC<DashboardProps> = ({ subscriptionTier }) =
       });
 
       setAnalytics(result.data as AnalyticsData);
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Error loading analytics:', error);
       setError(error.message || 'Failed to load analytics data');
     } finally {
@@ -308,7 +308,7 @@ const B2BAnalyticsDashboard: React.FC<DashboardProps> = ({ subscriptionTier }) =
       a.download = `bulgarian-car-analytics-${dateRange}.csv`;
       a.click();
       window.URL.revokeObjectURL(url);
-    } catch (error: any) {
+    } catch (error: unknown) {
       setError('Failed to export analytics data');
     }
   };

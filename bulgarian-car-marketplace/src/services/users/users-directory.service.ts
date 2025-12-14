@@ -58,8 +58,8 @@ class UsersDirectoryService {
         q = query(q, where('profileType', '==', filters.profileType));
       }
 
-      if (filters.region) {
-        q = query(q, where('location.region', '==', filters.region));
+      if (filters.locationData?.regionName) {
+        q = query(q, where('location.locationData?.regionName', '==', filters.locationData?.regionName));
       }
 
       if (filters.verifiedOnly) {

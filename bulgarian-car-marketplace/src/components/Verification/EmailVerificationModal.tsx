@@ -313,7 +313,7 @@ const EmailVerificationModal: React.FC<EmailVerificationModalProps> = ({
         setStatus('error');
         setMessage(result.message);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       setStatus('error');
       setMessage(
         language === 'bg'

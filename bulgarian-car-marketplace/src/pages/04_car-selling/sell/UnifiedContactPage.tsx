@@ -105,7 +105,7 @@ const UnifiedContactPage: React.FC = () => {
         sellerEmail: unifiedWorkflowData.sellerEmail,
         sellerPhone: unifiedWorkflowData.sellerPhone,
         region: unifiedWorkflowData.region,
-        city: unifiedWorkflowData.city,
+        city: unifiedWorkflowData.locationData?.cityName,
         postalCode: unifiedWorkflowData.postalCode
       };
 
@@ -131,8 +131,8 @@ const UnifiedContactPage: React.FC = () => {
         if (contactFields.region && !contactData.region) {
           handleFieldChange('region', contactFields.region);
         }
-        if (contactFields.city && !contactData.city) {
-          handleFieldChange('city', contactFields.city);
+        if (contactFields.locationData?.cityName && !contactData.locationData?.cityName) {
+          handleFieldChange('city', contactFields.locationData?.cityName);
         }
         if (contactFields.postalCode && !contactData.postalCode) {
           handleFieldChange('postalCode', contactFields.postalCode);
@@ -154,7 +154,7 @@ const UnifiedContactPage: React.FC = () => {
       sellerEmail: contactData.sellerEmail,
       sellerPhone: contactData.sellerPhone,
       region: contactData.region,
-      city: contactData.city,
+      city: contactData.locationData?.cityName,
       postalCode: contactData.postalCode
     });
     
@@ -174,7 +174,7 @@ const UnifiedContactPage: React.FC = () => {
         sellerEmail: contactData.sellerEmail,
         sellerPhone: contactData.sellerPhone,
         region: contactData.region,
-        city: contactData.city,
+        city: contactData.locationData?.cityName,
         postalCode: contactData.postalCode
       });
       
@@ -188,7 +188,7 @@ const UnifiedContactPage: React.FC = () => {
       clearTimeout(saveTimer);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [contactData.sellerName, contactData.sellerEmail, contactData.sellerPhone, contactData.region, contactData.city, contactData.postalCode]);
+  }, [contactData.sellerName, contactData.sellerEmail, contactData.sellerPhone, contactData.region, contactData.locationData?.cityName, contactData.postalCode]);
   const { saveDraft, isSaving, getTimeSinceLastSave } = useDraftAutoSave(
     { ...workflowData, ...Object.fromEntries(searchParams) },
     { currentStep: 7, interval: 30000 }
@@ -256,14 +256,14 @@ const UnifiedContactPage: React.FC = () => {
   };
 
   useEffect(() => {
-    if (contactData.city && !availableCities.some(city => city.name === contactData.city)) {
+    if (contactData.locationData?.cityName && !availableCities.some(city => city.name === contactData.locationData?.cityName)) {
       setShowOtherCityInput(true);
-      setOtherCityValue(contactData.city);
+      setOtherCityValue(contactData.locationData?.cityName);
     } else {
       setShowOtherCityInput(false);
       setOtherCityValue('');
     }
-  }, [contactData.city, availableCities]);
+  }, [contactData.locationData?.cityName, availableCities]);
 
   const handlePricingChange = (field: string, value: string | boolean) => {
     setPricingData(prev => ({ ...prev, [field]: value }));
@@ -531,7 +531,7 @@ const UnifiedContactPage: React.FC = () => {
         availableHours: contactData.availableHours || mergedWorkflowData.availableHours || '',
         additionalInfo: contactData.notes || mergedWorkflowData.additionalInfo || '',
         region: contactData.region || mergedWorkflowData.region || '',
-        city: contactData.city || mergedWorkflowData.city || '',
+        city: contactData.locationData?.cityName || mergedWorkflowData.locationData?.cityName || '',
         postalCode: contactData.postalCode || mergedWorkflowData.postalCode || '',
         location: contactData.location || mergedWorkflowData.location || '',
         images: mergedWorkflowData.images,
@@ -802,7 +802,7 @@ const UnifiedContactPage: React.FC = () => {
         navigate('/profile/my-ads');
       }, 800);
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Error creating listing', error as Error, { 
         userId: currentUser?.uid,
         errorMessage: error.message 
@@ -1036,7 +1036,7 @@ const UnifiedContactPage: React.FC = () => {
                 label: city.name,
                 labelEn: city.nameEn || city.name
               }))}
-              value={contactData.city}
+              value={contactData.locationData?.cityName}
             onChange={(value) => handleCityChange(value)}
               placeholder={language === 'bg' ? 'Изберете град' : 'Select city'}
               required
@@ -1063,7 +1063,7 @@ const UnifiedContactPage: React.FC = () => {
                 value={contactData.postalCode}
                 onChange={(value) => handleFieldChange('postalCode', value)}
                 placeholder={language === 'bg' ? 'Изберете пощенски код' : 'Select postal code'}
-                disabled={!contactData.city}
+                disabled={!contactData.locationData?.cityName}
                 otherPlaceholder={language === 'bg' ? 'Въведете пощенски код' : 'Enter postal code'}
               />
             ) : (
@@ -1072,7 +1072,7 @@ const UnifiedContactPage: React.FC = () => {
                 value={contactData.postalCode}
                 onChange={(e) => handleFieldChange('postalCode', e.target.value)}
                 placeholder="1000"
-                disabled={!contactData.city}
+                disabled={!contactData.locationData?.cityName}
               />
             )}
           </S.FormGroup>
@@ -1238,7 +1238,7 @@ const UnifiedContactPage: React.FC = () => {
           <S.SummaryLabel>
             {language === 'bg' ? 'Местоположение:' : 'Location:'}
           </S.SummaryLabel>
-          <S.SummaryValue>{contactData.city}, {contactData.region}</S.SummaryValue>
+          <S.SummaryValue>{contactData.locationData?.cityName}, {contactData.region}</S.SummaryValue>
         </S.SummaryRow>
       </S.SummaryCard>
 

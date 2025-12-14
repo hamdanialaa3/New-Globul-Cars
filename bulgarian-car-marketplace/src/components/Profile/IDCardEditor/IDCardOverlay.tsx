@@ -102,8 +102,8 @@ const IDCardOverlay: React.FC<IDCardOverlayProps> = ({
           ? EGNValidator.formatBulgarianDate(analysis.birthDate) 
           : prev.dateOfBirth,
         sex: analysis.sex || prev.sex,
-        placeOfBirth: analysis.region 
-          ? `${analysis.region}/${analysis.region}` 
+        placeOfBirth: analysis.locationData?.regionName 
+          ? `${analysis.locationData?.regionName}/${analysis.locationData?.regionName}` 
           : prev.placeOfBirth
       }));
       

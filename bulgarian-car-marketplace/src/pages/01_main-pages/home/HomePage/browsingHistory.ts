@@ -17,7 +17,7 @@ export const getBrowsingHistory = (): BrowsingHistoryItem[] => {
         const historyJson = localStorage.getItem(BROWSING_HISTORY_KEY);
         if (historyJson) {
             const history = JSON.parse(historyJson);
-            return history.map((item: any) => ({
+            return history.map((item: unknown) => ({
                 ...item,
                 viewedAt: new Date(item.viewedAt)
             }));

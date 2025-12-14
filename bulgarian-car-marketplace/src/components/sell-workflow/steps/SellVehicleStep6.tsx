@@ -123,29 +123,29 @@ export const SellVehicleStep6: React.FC<SellVehicleStep6Props> = ({
 
   // Get available postal codes based on selected city
   const availablePostalCodes = useMemo(() => {
-    if (!workflowData.city || !workflowData.region) return [];
-    return getPostalCodesForCity(workflowData.city, workflowData.region);
-  }, [workflowData.city, workflowData.region]);
+    if (!workflowData.locationData?.cityName || !workflowData.region) return [];
+    return getPostalCodesForCity(workflowData.locationData?.cityName, workflowData.region);
+  }, [workflowData.locationData?.cityName, workflowData.region]);
 
   // Clear city and postal code when region changes
   useEffect(() => {
-    if (workflowData.region && workflowData.city) {
+    if (workflowData.region && workflowData.locationData?.cityName) {
       const cities = getCitiesByRegion(workflowData.region, language as 'bg' | 'en');
-      if (!cities.some(c => c.name === workflowData.city)) {
+      if (!cities.some(c => c.name === workflowData.locationData?.cityName)) {
         onUpdate({ city: '', postalCode: '' });
       }
     }
-  }, [workflowData.region, language, onUpdate, workflowData.city]);
+  }, [workflowData.region, language, onUpdate, workflowData.locationData?.cityName]);
 
   // Clear postal code when city changes
   useEffect(() => {
-    if (workflowData.city && workflowData.postalCode) {
-      const postalCodes = getPostalCodesForCity(workflowData.city, workflowData.region || '');
+    if (workflowData.locationData?.cityName && workflowData.postalCode) {
+      const postalCodes = getPostalCodesForCity(workflowData.locationData?.cityName, workflowData.region || '');
       if (!postalCodes.some(pc => pc.code === workflowData.postalCode)) {
         onUpdate({ postalCode: '' });
       }
     }
-  }, [workflowData.city, workflowData.region, onUpdate, workflowData.postalCode]);
+  }, [workflowData.locationData?.cityName, workflowData.region, onUpdate, workflowData.postalCode]);
 
   return (
     <FormContainer>
@@ -215,7 +215,7 @@ export const SellVehicleStep6: React.FC<SellVehicleStep6Props> = ({
       <FieldGroup>
         <Label>{language === 'bg' ? 'Град' : 'City'} *</Label>
         <Select
-          value={workflowData.city || ''}
+          value={workflowData.locationData?.cityName || ''}
           onChange={(e) => {
             onUpdate({ 
               city: e.target.value,
@@ -239,7 +239,7 @@ export const SellVehicleStep6: React.FC<SellVehicleStep6Props> = ({
         <Select
           value={workflowData.postalCode || ''}
           onChange={(e) => onUpdate({ postalCode: e.target.value })}
-          disabled={!workflowData.city}
+          disabled={!workflowData.locationData?.cityName}
         >
           <option value="">{language === 'bg' ? 'Изберете пощенски код' : 'Select postal code'}</option>
           {availablePostalCodes.map(pc => (

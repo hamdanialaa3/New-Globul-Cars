@@ -9,6 +9,8 @@ import { SellWorkflowData } from '../../../hooks/useSellWorkflow';
 import { ImageStorageService } from '../../../services/ImageStorageService';
 import { useAuth } from '../../../contexts/AuthProvider';
 import { toast } from 'react-toastify';
+import { logger } from '../../../services/logger-service';
+
 
 interface SellVehicleStep4Props {
   workflowData: SellWorkflowData;
@@ -278,7 +280,7 @@ export const SellVehicleStep4: React.FC<SellVehicleStep4Props> = ({
           onUpdate({ imagesCount: savedImages.length });
         }
       } catch (error) {
-        console.error('Failed to load images:', error);
+        logger.error('Failed to load images:', error);
       }
     };
     loadImages();
@@ -306,9 +308,9 @@ export const SellVehicleStep4: React.FC<SellVehicleStep4Props> = ({
         try {
           const previewUrl = URL.createObjectURL(file);
           newPreviews.set(index, previewUrl);
-          console.log(`Created preview URL for image ${index + 1}:`, file.name);
+          logger.info(`Created preview URL for image ${index + 1}:`, file.name);
         } catch (error) {
-          console.error(`Failed to create preview for image ${index + 1}:`, error);
+          logger.error(`Failed to create preview for image ${index + 1}:`, error);
         }
       }
     });
@@ -361,14 +363,14 @@ export const SellVehicleStep4: React.FC<SellVehicleStep4Props> = ({
       // Update local state FIRST so images appear immediately
       const newFiles = [...imageFiles, ...filesArray];
       setImageFiles(newFiles);
-      console.log('Images state updated immediately:', newFiles.length);
+      logger.info('Images state updated immediately:', newFiles.length);
       
       // Then save to IndexedDB in the background
       try {
         await ImageStorageService.saveImages(newFiles);
-        console.log('Images saved to IndexedDB:', newFiles.length);
+        logger.info('Images saved to IndexedDB:', newFiles.length);
       } catch (saveError) {
-        console.error('Failed to save to IndexedDB (but images are still shown):', saveError);
+        logger.error('Failed to save to IndexedDB (but images are still shown);:', saveError);
         // Don't show error to user since images are already displayed
       }
       
@@ -383,7 +385,7 @@ export const SellVehicleStep4: React.FC<SellVehicleStep4Props> = ({
           : `${filesArray.length} images added successfully`
       );
     } catch (error) {
-      console.error('Failed to process images:', error);
+      logger.error('Failed to process images:', error);
       toast.error(
         language === 'bg' 
           ? 'Грешка при обработка на снимки'
@@ -425,7 +427,7 @@ export const SellVehicleStep4: React.FC<SellVehicleStep4Props> = ({
         mainImage: newFiles[0] ? URL.createObjectURL(newFiles[0]) : undefined,
       });
     } catch (error) {
-      console.error('Failed to remove image:', error);
+      logger.error('Failed to remove image:', error);
       toast.error(
         language === 'bg' 
           ? 'Грешка при изтриване на снимка'
@@ -492,7 +494,7 @@ export const SellVehicleStep4: React.FC<SellVehicleStep4Props> = ({
                   <ImageThumbnail>
                     {previewUrl ? (
                       <ImagePreview src={previewUrl} alt={fileName} onError={(e) => {
-                        console.error('Failed to load preview for image:', index, file.name);
+                        logger.error('Failed to load preview for image:', index, file.name);
                         // Try to create a new preview URL if the old one is invalid
                         if (file instanceof File) {
                           const newUrl = URL.createObjectURL(file);

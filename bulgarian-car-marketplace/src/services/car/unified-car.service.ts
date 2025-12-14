@@ -240,8 +240,8 @@ class UnifiedCarService {
           if (filters.bodyType) {
             q = query(q, where('bodyType', '==', filters.bodyType));
           }
-          if (filters.region) {
-            q = query(q, where('region', '==', filters.region));
+          if (filters.locationData?.regionName) {
+            q = query(q, where('region', '==', filters.locationData?.regionName));
           }
 
           q = query(q, orderBy('createdAt', 'desc'));
@@ -531,7 +531,7 @@ class UnifiedCarService {
       // ✅ FIX: Find which collection contains this car
       const collections = ['cars', 'passenger_cars', 'suvs', 'vans', 'motorcycles', 'trucks', 'buses'];
       let foundCollection: string | null = null;
-      let carData: any = null;
+      let carData: Record<string, unknown> = null;
 
       // Search all collections to find the car
       for (const collectionName of collections) {

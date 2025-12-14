@@ -525,7 +525,7 @@ const Hit: React.FC<HitProps> = ({ hit }) => {
           {hit.location?.city && (
             <SpecBadge>
               <MapPin />
-              {hit.location.city}
+              {hit.locationData?.cityName}
             </SpecBadge>
           )}
         </HitSpecs>

@@ -121,8 +121,8 @@ const DebugCarsPage: React.FC = () => {
       setCars(carsData);
 
       // Calculate stats
-      const cityStats: any = {};
-      const withLocation = carsData.filter((car: any) => car.location && car.location.cityId);
+      const cityStats: Record<string, unknown> = {};
+      const withLocation = carsData.filter((car: any) => car.location && car.locationData?.cityNameId);
       const withOldCity = carsData.filter((car: any) => car.city && !car.location?.cityId);
       const withoutCity = carsData.filter((car: any) => !car.city && !car.location?.cityId);
 
@@ -161,8 +161,8 @@ const DebugCarsPage: React.FC = () => {
       setCars(carsData);
 
       // Calculate stats
-      const cityStats: any = {};
-      const withLocation = carsData.filter((car: any) => car.location && car.location.cityId);
+      const cityStats: Record<string, unknown> = {};
+      const withLocation = carsData.filter((car: any) => car.location && car.locationData?.cityNameId);
       const withOldCity = carsData.filter((car: any) => car.city && !car.location?.cityId);
       const withoutCity = carsData.filter((car: any) => !car.city && !car.location?.cityId);
 

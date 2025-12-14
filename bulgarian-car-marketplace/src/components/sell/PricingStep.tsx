@@ -237,7 +237,7 @@ const PricingStep: React.FC<PricingStepProps> = ({ data, onDataChange }) => {
     const newPricing = { ...pricing, [field]: value };
     setPricing(newPricing);
     // convert numeric fields to number when calling parent
-    const outbound: any = { ...newPricing };
+    const outbound: Record<string, unknown> = { ...newPricing };
     if (outbound.price !== '' && typeof outbound.price === 'string') outbound.price = parseFloat(outbound.price) || 0;
     if (outbound.warrantyMonths !== '' && typeof outbound.warrantyMonths === 'string') outbound.warrantyMonths = parseInt(outbound.warrantyMonths) || 0;
     onDataChange(outbound);
@@ -249,7 +249,7 @@ const PricingStep: React.FC<PricingStepProps> = ({ data, onDataChange }) => {
       : [...pricing.paymentMethods, method];
     const newPricing = { ...pricing, paymentMethods: newMethods };
     setPricing(newPricing);
-    const outbound: any = { ...newPricing };
+    const outbound: Record<string, unknown> = { ...newPricing };
     if (outbound.price !== '' && typeof outbound.price === 'string') outbound.price = parseFloat(outbound.price) || 0;
     if (outbound.warrantyMonths !== '' && typeof outbound.warrantyMonths === 'string') outbound.warrantyMonths = parseInt(outbound.warrantyMonths) || 0;
     onDataChange(outbound);

@@ -110,7 +110,7 @@ const EditCarPage: React.FC = () => {
         sellerName: carData.ownerName || carData.sellerName || '',
         sellerEmail: carData.sellerEmail || '',
         sellerPhone: carData.sellerPhone || '',
-        city: carData.city || '',
+        city: carData.locationData?.cityName || '',
         region: carData.region || '',
         status: carData.status || 'active',
         accidentHistory: carData.accidentHistory || false,

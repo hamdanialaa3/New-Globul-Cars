@@ -87,7 +87,7 @@ const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({ onSuccess, onEr
       }
       onSuccess?.(result.user);
       
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Google sign-in error', error as Error);
       
       if (error.message === 'REDIRECT_INITIATED') {

@@ -48,14 +48,14 @@ class InstagramFeedService {
       product_type: `Vehicles/${car.vehicleType}/${car.make}`,
       google_product_category: '916',
       custom_label_0: car.make,
-      custom_label_1: car.city,
+      custom_label_1: car.locationData?.cityName,
       custom_label_2: car.fuelType,
       custom_label_3: car.transmission,
       custom_label_4: car.region
     };
   }
   
-  static generateCSVFeed(cars: any[]): string {
+  static generateCSVFeed(cars: unknown[]): string {
     const items = cars.map(car => this.convertCarToInstagramProduct(car));
     
     let csv = 'retailer_id,name,description,url,image_url,brand,price,availability,condition,product_type\n';

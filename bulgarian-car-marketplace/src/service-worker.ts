@@ -105,7 +105,7 @@ registerRoute(
 );
 
 // Background sync for offline actions
-self.addEventListener('sync', (event: any) => {
+self.addEventListener('sync', (event: React.FormEvent) => {
   if (event.tag === 'sync-messages') {
     event.waitUntil(syncMessages());
   }
@@ -115,7 +115,7 @@ self.addEventListener('sync', (event: any) => {
 });
 
 // Push notifications
-self.addEventListener('push', (event: any) => {
+self.addEventListener('push', (event: React.FormEvent) => {
   const data = event.data?.json() ?? {};
   const title = data.title || 'Globul Cars';
   const options = {
@@ -141,7 +141,7 @@ self.addEventListener('push', (event: any) => {
 });
 
 // Notification click handler
-self.addEventListener('notificationclick', (event: any) => {
+self.addEventListener('notificationclick', (event: React.FormEvent) => {
   event.notification.close();
 
   if (event.action === 'open') {

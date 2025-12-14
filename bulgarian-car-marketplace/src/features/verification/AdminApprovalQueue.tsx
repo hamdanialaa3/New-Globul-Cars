@@ -281,7 +281,7 @@ export const AdminApprovalQueue: React.FC = () => {
 
       // Reload requests
       loadRequests();
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Error approving verification:', error);
       toast.error(error.message || 'Approval failed');
     }
@@ -312,7 +312,7 @@ export const AdminApprovalQueue: React.FC = () => {
 
       // Reload requests
       loadRequests();
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Error rejecting verification:', error);
       toast.error(error.message || 'Rejection failed');
     }

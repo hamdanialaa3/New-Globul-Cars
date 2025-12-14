@@ -120,12 +120,12 @@ const MobileContactPage: React.FC = () => {
 
                 <S.FieldGroup>
                   <S.Label htmlFor="city">
-                    {t('sell.contact.city')}
+                    {t('sell.contact.locationData?.cityName')}
                   </S.Label>
                   <S.Input
                     id="city"
                     type="text"
-                    value={form.city}
+                    value={form.locationData?.cityName}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange('city', e.target.value)}
                     placeholder={t('sell.contact.cityPlaceholder')}
                   />

@@ -32,7 +32,7 @@ export interface SearchQuery {
 }
 
 export interface SearchResult {
-  cars: any[];
+  cars: unknown[];
   total: number;
   page: number;
   hasMore: boolean;
@@ -67,7 +67,7 @@ export class UnifiedSearchService {
         priceTo: query.priceTo ? String(query.priceTo) : undefined,
         firstRegistrationFrom: query.yearFrom ? String(query.yearFrom) : undefined,
         firstRegistrationTo: query.yearTo ? String(query.yearTo) : undefined,
-        city: query.city,
+        city: query.locationData?.cityName,
         fuelType: query.fuelType,
         transmission: query.transmission,
         searchDescription: query.text

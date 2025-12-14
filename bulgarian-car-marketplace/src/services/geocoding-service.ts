@@ -217,7 +217,7 @@ export class GeocodingService {
   }
 
   // Helper methods
-  private getAddressComponent(components: any[], type: string): string | undefined {
+  private getAddressComponent(components: unknown[], type: string): string | undefined {
     const component = components.find((c) => c.types.includes(type));
     return component ? component.long_name : undefined;
   }

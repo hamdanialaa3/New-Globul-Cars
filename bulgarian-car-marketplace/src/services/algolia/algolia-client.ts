@@ -63,7 +63,7 @@ export const searchConfig = {
     'filterOnly(bodyType)',
     'filterOnly(color)',
     'filterOnly(condition)',
-    'filterOnly(location.city)',
+    'filterOnly(location.locationData?.cityName)',
     'filterOnly(location.region)',
     'searchable(make)',
     'searchable(model)'

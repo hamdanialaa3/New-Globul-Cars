@@ -36,7 +36,7 @@ const GridContainer = styled.div<{ $density: 'comfortable' | 'compact' | 'cozy' 
 `;
 
 interface BubblesGridProps {
-  users: any[];
+  users: unknown[];
   density?: 'comfortable' | 'compact' | 'cozy';
   bubbleSize?: 'small' | 'medium' | 'large';
   followingUsers?: Set<string>;

@@ -89,7 +89,7 @@ export class CallService {
         callId: docRef.id
       };
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Initiate call failed', error as Error);
       return {
         success: false,

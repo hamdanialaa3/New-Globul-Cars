@@ -76,7 +76,7 @@ const DealerPublicPage: React.FC = () => {
   const loadReviews = React.useCallback(async (dealerId: string) => {
     try {
       const getReviews = httpsCallable(functions, 'getReviews');
-      const result: any = await getReviews({
+      const result: Record<string, unknown> = await getReviews({
         targetUserId: dealerId,
         sortBy: 'recent',
         page: 1,
