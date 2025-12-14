@@ -10,6 +10,6 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "glob": "^10.3.10"
+    "glob": "^10.5.0"
   }
 }
