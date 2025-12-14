@@ -72,9 +72,14 @@ npm run deploy
 
 ### Core Files (Must Read):
 1. **`.github/copilot-instructions.md`** - Complete project architecture & conventions
-2. **`bulgarian-car-marketplace/README.md`** - Frontend app details
-3. **`bulgarian-car-marketplace/SERVER_NOW_WORKING.md`** - Server setup guide
-4. **`functions/README.md`** - Backend Cloud Functions guide
+   - **What:** Comprehensive guide for GitHub Copilot AI assistant
+   - **Why:** Ensures AI-generated code follows our project standards
+   - **Use:** Reference when unsure about code patterns or conventions
+   - **بالعربية:** دليل شامل لمساعد الذكاء الاصطناعي GitHub Copilot لفهم بنية المشروع
+2. **`.github/README.md`** - Explanation of GitHub configuration files
+3. **`bulgarian-car-marketplace/README.md`** - Frontend app details
+4. **`bulgarian-car-marketplace/SERVER_NOW_WORKING.md`** - Server setup guide
+5. **`functions/README.md`** - Backend Cloud Functions guide
 
 ### Archived Documentation:
 - All old reports, guides, and temporary files → **`DDD/DOCUMENTATION_ARCHIVE_NOV_2025/`**
