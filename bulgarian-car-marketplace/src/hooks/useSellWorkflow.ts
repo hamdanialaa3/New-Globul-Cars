@@ -78,6 +78,11 @@ export interface SellWorkflowData {
   additionalInfo?: string;
   description?: string;
   notes?: string;
+  
+  // Sale Information
+  saleType?: string; // 'private' | 'commercial'
+  saleTimeline?: string; // 'unknown' | 'soon' | 'months'
+  roadworthy?: boolean; // Roadworthy status
 }
 
 const STEP_INDEX_MAP: Record<string, number> = SELL_WORKFLOW_STEP_ORDER.reduce((map, id, index) => {

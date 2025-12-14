@@ -10,9 +10,11 @@ const SellModalPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const [isOpen, setIsOpen] = useState(true);
   
-  // Get initial step from URL params if exists
+  // Get initial step and vehicleType from URL params if exists
   const stepParam = searchParams.get('step');
+  const vehicleTypeParam = searchParams.get('vt');
   const initialStep = stepParam ? parseInt(stepParam, 10) : 0;
+  const initialVehicleType = vehicleTypeParam || undefined;
 
   const handleClose = () => {
     setIsOpen(false);
@@ -35,6 +37,7 @@ const SellModalPage: React.FC = () => {
       onClose={handleClose}
       onComplete={handleComplete}
       initialStep={initialStep}
+      initialVehicleType={initialVehicleType}
     />
   );
 };

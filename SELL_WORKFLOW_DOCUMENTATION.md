@@ -1,8 +1,17 @@
-# 🚗 Sell Workflow - التوثيق الشامل الكامل
+# 🚗 Sell Workflow - التوثيق الشامل الكامل (قديم)
 ## Bulgarian Car Marketplace - Sell Workflow Complete Documentation
 
+---
+
+## ⚠️ تحذير مهم
+
+**هذا الملف قديم ويوثق النظام القديم (Page System)**  
+**راجع `SELL_WORKFLOW_COMPLETE_DOCUMENTATION.md` للحصول على التوثيق المحدث للنظام الجديد (Modal System)**
+
+---
+
 **آخر تحديث:** 11 ديسمبر 2025  
-**الحالة:** ✅ نظام مكتمل وقيد التشغيل  
+**الحالة:** ⚠️ **قديم - تم استبداله بـ Modal System**  
 **المطور:** GitHub Copilot Agent 🤖
 
 ---

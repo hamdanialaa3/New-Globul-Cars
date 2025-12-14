@@ -255,7 +255,7 @@ class UnifiedCarService {
           
           return cars;
         } catch (error) {
-          console.warn(`⚠️ Error querying ${collectionName}:`, error);
+          serviceLogger.warn(`⚠️ Error querying ${collectionName}`, { error });
           serviceLogger.warn(`Error querying ${collectionName} for search`, { error, filters });
           return [];
         }
@@ -267,9 +267,9 @@ class UnifiedCarService {
       
       // Debug: Print first few cars with ALL fields
       if (allCars.length > 0) {
-        console.log('🚗 Sample cars from database (first 3):');
+        serviceLogger.info('🚗 Sample cars from database (first 3):');
         allCars.slice(0, 3).forEach((car, idx) => {
-          console.log(`Car ${idx + 1}:`, {
+          serviceLogger.info(`Car ${idx + 1}:`, {
             id: car.id,
             make: car.make,
             model: car.model,
@@ -282,7 +282,7 @@ class UnifiedCarService {
           });
         });
       } else {
-        console.log('📋 Collections checked:', collections);
+        serviceLogger.info('📋 Collections checked:', { collections });
       }
 
       // Client-side filters
@@ -295,7 +295,7 @@ class UnifiedCarService {
         // Default: show only active cars
         const beforeCount = filteredCars.length;
         filteredCars = filteredCars.filter(c => c.isActive !== false);
-        console.log(`  ✓ isActive (default=true): ${beforeCount} → ${filteredCars.length}`);
+        serviceLogger.info('isActive default filter applied', { beforeCount, afterCount: filteredCars.length });
       }
       
       if (filters.isSold !== undefined) {
@@ -305,7 +305,7 @@ class UnifiedCarService {
         // Default: hide sold cars
         const beforeCount = filteredCars.length;
         filteredCars = filteredCars.filter(c => c.isSold !== true);
-        console.log(`  ✓ isSold (default=false): ${beforeCount} → ${filteredCars.length}`);
+        serviceLogger.info('isSold default filter applied', { beforeCount, afterCount: filteredCars.length });
       }
       
       if (filters.minYear) {
@@ -336,9 +336,9 @@ class UnifiedCarService {
       const sorted = filteredCars.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
       const result = sorted.slice(0, limitCount);
       
-      console.log(`✅ Final result: ${result.length} cars (limited from ${sorted.length})`);
+      serviceLogger.info('searchCars: final result', { returnedCount: result.length, totalConsidered: sorted.length });
       if (result.length > 0) {
-        console.log('📋 First car sample:', {
+        serviceLogger.info('searchCars: first car sample', {
           make: result[0].make,
           model: result[0].model,
           year: result[0].year,
@@ -400,7 +400,6 @@ class UnifiedCarService {
           return [];
         }
       });
-
       const results = await Promise.all(queryPromises);
       results.forEach(cars => allCars.push(...cars));
 
@@ -629,12 +628,13 @@ class UnifiedCarService {
     const data = doc.data();
     
     if (!data) {
-      console.error('❌ Document has no data:', doc.id);
+      serviceLogger.error('Document has no data', new Error(`Document ${doc.id} has no data`), { docId: doc.id });
       throw new Error(`Document ${doc.id} has no data`);
     }
     
     // Debug: Log raw data from Firestore
-    console.log(`🔧 Mapping car ${doc.id}:`, {
+    serviceLogger.debug('Mapping car document', {
+      docId: doc.id,
       rawStatus: data.status,
       rawIsActive: data.isActive,
       rawIsSold: data.isSold,

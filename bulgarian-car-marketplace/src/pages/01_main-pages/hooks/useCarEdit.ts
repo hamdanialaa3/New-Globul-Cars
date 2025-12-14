@@ -95,31 +95,35 @@ export const useCarEdit = (
     
     setSaving(true);
     try {
-      console.log('💾 Starting save process', { carId, photosCount: photos.length, editedCarKeys: Object.keys(editedCar) });
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Starting save process', { carId, photosCount: photos.length, editedCarKeys: Object.keys(editedCar) });
+      }
       
       // Step 1: Upload new photos to Firebase Storage
       let uploadedUrls: string[] = [];
       if (photos.length > 0) {
-        console.log('📸 Uploading new photos', { 
-          count: photos.length,
-          photos: photos.map((p, i) => ({ 
-            index: i,
-            name: p.name, 
-            size: p.size, 
-            type: p.type,
-            isFile: p instanceof File,
-            isBlob: p instanceof Blob
-          }))
-        });
+        if (process.env.NODE_ENV === 'development') {
+          logger.debug('Uploading new photos', { 
+            count: photos.length,
+            photos: photos.map((p, i) => ({ 
+              index: i,
+              name: p.name, 
+              size: p.size, 
+              type: p.type,
+              isFile: p instanceof File,
+              isBlob: p instanceof Blob
+            }))
+          });
+        }
         
         // ✅ Validate photos are File objects
         const validPhotos = photos.filter((photo, index) => {
           if (!photo) {
-            console.warn(`Photo at index ${index} is null or undefined`);
+            logger.warn(`Photo at index ${index} is null or undefined`);
             return false;
           }
           if (!(photo instanceof File)) {
-            console.warn(`Photo at index ${index} is not a File object`, { type: typeof photo, photo });
+            logger.warn(`Photo at index ${index} is not a File object`, { type: typeof photo });
             return false;
           }
           return true;
@@ -130,7 +134,7 @@ export const useCarEdit = (
         }
 
         if (validPhotos.length < photos.length) {
-          console.warn('Some photos were filtered out', { 
+          logger.warn('Some photos were filtered out', { 
             original: photos.length, 
             valid: validPhotos.length 
           });
@@ -139,7 +143,7 @@ export const useCarEdit = (
         try {
           uploadedUrls = await imageUploadService.uploadImages(carId, validPhotos);
         } catch (uploadError) {
-          console.error('❌ Failed to upload photos', uploadError);
+          logger.error('Failed to upload photos', uploadError as Error);
           const errorMessage = uploadError instanceof Error ? uploadError.message : 'Unknown error';
           throw new Error(`Failed to upload images: ${errorMessage}`);
         }
@@ -154,7 +158,9 @@ export const useCarEdit = (
         ...editedCar,
         images: updatedImages
       };
-      console.log('💾 Updating car data', { carId, updates: Object.keys(updatedCarData), imagesCount: updatedImages.length });
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Updating car data', { carId, updates: Object.keys(updatedCarData), imagesCount: updatedImages.length });
+      }
 
       await unifiedCarService.updateCar(carId, updatedCarData);
       
@@ -168,7 +174,6 @@ export const useCarEdit = (
         onSaveSuccess();
       }
     } catch (error) {
-      console.error('❌ Error saving car changes', error);
       logger.error('Error saving car changes', error as Error, { carId });
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       alert(language === 'bg' 
@@ -255,21 +260,24 @@ export const useCarEdit = (
     }
 
     try {
-      console.log('🗑️ Starting car deletion process...', { carId, userId });
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Starting car deletion process', { carId, userId });
+      }
       
       const result = await carDeleteService.deleteCar(carId, userId);
       
       if (result.success) {
-        console.log('✅ Car deleted successfully', { carId });
+        if (process.env.NODE_ENV === 'development') {
+          logger.debug('Car deleted successfully', { carId });
+        }
         return true;
       } else {
-        console.error('❌ Car deletion failed', { carId, message: result.message });
+        logger.error('Car deletion failed', new Error(result.message), { carId });
         alert(result.message);
         return false;
       }
     } catch (error) {
-      logger.error('Error deleting car', error as Error, { carId, userId });
-      console.error('❌ Exception during car deletion:', error);
+      logger.error('Exception during car deletion', error as Error, { carId, userId });
       alert(language === 'bg' ? 'Грешка при изтриване на обявата' : 'Error deleting listing');
       return false;
     }

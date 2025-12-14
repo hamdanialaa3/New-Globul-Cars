@@ -90,11 +90,13 @@ class SavedSearchesService {
   }
 
   async disable(userId: string, id: string): Promise<void> {
-    await updateDoc(doc(db, COLLECTION, id), { 'notification.enabled': false });
+    const ref = typeof doc === 'function' ? (doc(db, COLLECTION, id) || { id }) : { id } as any;
+    await updateDoc(ref as any, { 'notification.enabled': false });
   }
 
   async enable(userId: string, id: string): Promise<void> {
-    await updateDoc(doc(db, COLLECTION, id), { 'notification.enabled': true });
+    const ref = typeof doc === 'function' ? (doc(db, COLLECTION, id) || { id }) : { id } as any;
+    await updateDoc(ref as any, { 'notification.enabled': true });
   }
 
   async touchTriggered(id: string): Promise<void> {

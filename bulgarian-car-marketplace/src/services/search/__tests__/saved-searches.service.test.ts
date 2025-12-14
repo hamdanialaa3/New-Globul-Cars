@@ -3,7 +3,7 @@
 
 import { savedSearchesService, SavedSearchCriteria } from '../saved-searches.service';
 
-jest.mock('../../firebase/firebase-config');
+jest.mock('../../../firebase');
 
 const mockAddDoc = jest.fn();
 const mockGetDocs = jest.fn();

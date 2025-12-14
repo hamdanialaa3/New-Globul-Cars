@@ -52,7 +52,7 @@ describe('RBAC Constants', () => {
       const userPerms = listRolePermissions('user');
       expect(userPerms.length).toBeGreaterThan(0);
       expect(userPerms).toContain('listing.create');
-      expect(userPerms).toContain('savedSearch.create');
+      expect(userPerms).toContain('savedsearch.create');
     });
 
     it('should return more permissions for admin than user', () => {

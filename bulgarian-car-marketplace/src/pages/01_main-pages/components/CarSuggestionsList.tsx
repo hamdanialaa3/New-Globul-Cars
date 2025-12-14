@@ -340,7 +340,7 @@ const CarSuggestionsList: React.FC<CarSuggestionsListProps> = ({
       // Get car ID from currentCar (could be id, carId, or documentId)
       const carId = (currentCar as any).id || (currentCar as any).carId || (currentCar as any).documentId;
       
-      console.log('🔍 CarSuggestionsList - Loading suggestions for car:', {
+      serviceLogger.info('CarSuggestionsList: loading suggestions', {
         carId,
         make: currentCar.make,
         model: currentCar.model,
@@ -348,38 +348,38 @@ const CarSuggestionsList: React.FC<CarSuggestionsListProps> = ({
       });
       
       if (!carId) {
-        console.warn('⚠️ CarSuggestionsList - No car ID found');
+        serviceLogger.warn('CarSuggestionsList: no car ID found');
         setLoading(false);
         return;
       }
 
       try {
         setLoading(true);
-        console.log('📡 CarSuggestionsList - Calling getSimilarCars...');
+        serviceLogger.info('CarSuggestionsList: calling getSimilarCars');
         const similarCars = await unifiedCarService.getSimilarCars(carId, limit);
-        console.log('✅ CarSuggestionsList - Got similar cars:', similarCars.length);
+        serviceLogger.info('CarSuggestionsList: similar cars count', { count: similarCars.length });
         
         // Filter out the current car
         const filtered = similarCars.filter(car => car.id !== carId);
-        console.log('✅ CarSuggestionsList - Filtered cars:', filtered.length);
+        serviceLogger.info('CarSuggestionsList: filtered cars count', { count: filtered.length });
         
         // If no similar cars, try to get featured cars as fallback
         if (filtered.length === 0) {
-          console.log('⚠️ No similar cars found, trying featured cars...');
+          serviceLogger.info('CarSuggestionsList: no similar cars, trying featured');
           try {
             const featuredCars = await unifiedCarService.getFeaturedCars(limit);
             const fallbackCars = featuredCars.filter(car => car.id !== carId);
-            console.log('✅ CarSuggestionsList - Got featured cars as fallback:', fallbackCars.length);
+            serviceLogger.info('CarSuggestionsList: featured fallback count', { count: fallbackCars.length });
             setSuggestions(fallbackCars.slice(0, limit));
           } catch (fallbackError) {
-            console.error('❌ CarSuggestionsList - Error loading featured cars:', fallbackError);
+            serviceLogger.error('CarSuggestionsList: error loading featured cars', fallbackError as Error);
             setSuggestions([]);
           }
         } else {
           setSuggestions(filtered.slice(0, limit));
         }
       } catch (error) {
-        console.error('❌ CarSuggestionsList - Error loading car suggestions:', error);
+        serviceLogger.error('CarSuggestionsList: error loading suggestions', error as Error);
         setSuggestions([]);
       } finally {
         setLoading(false);

@@ -9,6 +9,7 @@ import { useAuth } from '../../../contexts/AuthProvider';
 import { useToast } from '../../../components/Toast';
 import { subscriptionService, type BillingInterval } from '../../../services/billing/subscription-service';
 import { analyticsService } from '../../../services/analytics/UnifiedAnalyticsService';
+import { logger } from '../../../services/logger-service';
 import type { SubscriptionInfo } from '../../../types/subscription';
 
 const Container = styled.div`
@@ -132,7 +133,7 @@ const BillingPage: React.FC = () => {
         const status = await subscriptionService.getSubscriptionStatus(currentUser.uid);
         setSubscription(status);
       } catch (error: any) {
-        console.warn('Failed to fetch subscription status:', error);
+        logger.warn('Failed to fetch subscription status', error as Error);
         // Don't show error to user - just show no subscription state
       } finally {
         setLoadingStatus(false);

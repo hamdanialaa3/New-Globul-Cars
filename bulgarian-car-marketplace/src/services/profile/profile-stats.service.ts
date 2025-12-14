@@ -199,6 +199,10 @@ class ProfileStatsService {
     this.cache.delete(profileId);
   }
 
+  clearCache(profileId: string): void {
+    this.cache.delete(profileId);
+  }
+
   /**
    * Clear all cache (useful for logout/switch user)
    */

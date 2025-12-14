@@ -36,8 +36,8 @@ if (process.env.NODE_ENV === 'development') {
   import('./utils/checkCarsStatus').then(module => {
     (window as any).checkCarsStatus = module.checkAllCarsStatus;
     (window as any).fixCarsStatus = module.fixAllCarsStatus;
-    console.log('  - checkCarsStatus() - فحص حالة السيارات');
-    console.log('  - fixCarsStatus() - إصلاح السيارات المخفية');
+    // Development helper functions registered
+    // Use: window.checkCarsStatus() or window.fixCarsStatus() in browser console
   });
 }
 const FacebookPixel = safeLazy(() => import('./components/FacebookPixel'));
@@ -55,21 +55,16 @@ const CarsPage = safeLazy(() => import('./pages/01_main-pages/CarsPage'));
 const CarDetailsPage = safeLazy(() => import('./pages/01_main-pages/CarDetailsPage'));
 const SocialFeedPage = safeLazy(() => import('./pages/03_user-pages/social/SocialFeedPage'));
 
-// Mobile.de-style sell workflow pages (الوحيد المستخدم)
-const VehicleStartPage = safeLazy(() => import('./pages/04_car-selling/sell/VehicleStartPageNew'));
+// ✅ MODAL SYSTEM: Sell workflow now uses Modal only (SellModalPage → SellVehicleWizard)
 const SellModalPage = safeLazy(() => import('./pages/04_car-selling/sell/SellModalPage'));
-const MobileSellerTypePage = safeLazy(() => import('./pages/04_car-selling/sell/MobileSellerTypePage'));
-const VehicleDataPageUnified = safeLazy(() => import('./pages/04_car-selling/sell/VehicleDataPageUnified'));
-const MobilePricingPage = safeLazy(() => import('./pages/04_car-selling/sell/MobilePricingPage'));
-const MobileContactPage = safeLazy(() => import('./pages/04_car-selling/sell/MobileContactPage'));
-const MobilePreviewPage = safeLazy(() => import('./pages/04_car-selling/sell/MobilePreviewPage'));
-const DesktopPreviewPage = safeLazy(() => import('./pages/04_car-selling/sell/DesktopPreviewPage'));
-const MobileSubmissionPage = safeLazy(() => import('./pages/04_car-selling/sell/MobileSubmissionPage'));
-const DesktopSubmissionPage = safeLazy(() => import('./pages/04_car-selling/sell/DesktopSubmissionPage'));
-const UnifiedEquipmentPage = safeLazy(() => import('./pages/04_car-selling/sell/Equipment/UnifiedEquipmentPage'));
-const ImagesPageUnified = safeLazy(() => import('./pages/04_car-selling/sell/ImagesPageUnified'));
-const PricingPage = safeLazy(() => import('./pages/04_car-selling/sell/Pricing'));
-const UnifiedContactPage = safeLazy(() => import('./pages/04_car-selling/sell/UnifiedContactPage'));
+
+// ✅ MODAL SYSTEM: Redirect component for old routes (backward compatibility)
+import SellRouteRedirect from './components/sell-workflow/SellRouteRedirect';
+
+// ⚠️ DEPRECATED: Old sell workflow pages - kept for reference only, not used anymore
+// All old routes redirect to Modal via SellRouteRedirect
+// Old pages: VehicleDataPageUnified, UnifiedEquipmentPage, ImagesPageUnified, 
+// PricingPage, UnifiedContactPage, DesktopPreviewPage, DesktopSubmissionPage
 
 const MessagesPage = safeLazy(() => import('./pages/03_user-pages/messages/MessagesPage'));
 const AdminPage = safeLazy(() => import('./pages/06_admin/regular-admin/AdminPage'));
@@ -348,60 +343,36 @@ const MainLayout: React.FC = () => {
             </AuthGuard>
           }
         />
-        {/* ✅ NEW: Unified Sell Workflow Routes - Clean & Sequential */}
-        {/* Step 1: Vehicle Data */}
+        {/* ✅ MODAL SYSTEM: Redirect all old routes to Modal with step parameter */}
+        {/* Step 1: Vehicle Data → Modal Step 1 */}
         <Route
           path="/sell/inserat/:vehicleType/data"
-          element={
-            <AuthGuard requireAuth={true}>
-              <VehicleDataPageUnified />
-            </AuthGuard>
-          }
+          element={<SellRouteRedirect step={1} />}
         />
-        {/* Step 2: Equipment */}
+        {/* Step 2: Equipment → Modal Step 2 */}
         <Route
           path="/sell/inserat/:vehicleType/equipment"
-          element={
-            <AuthGuard requireAuth={true}>
-              <UnifiedEquipmentPage />
-            </AuthGuard>
-          }
+          element={<SellRouteRedirect step={2} />}
         />
-        {/* Step 3: Images */}
+        {/* Step 3: Images → Modal Step 3 */}
         <Route
           path="/sell/inserat/:vehicleType/images"
-          element={
-            <AuthGuard requireAuth={true}>
-              <ImagesPageUnified />
-            </AuthGuard>
-          }
+          element={<SellRouteRedirect step={3} />}
         />
-        {/* Step 4: Pricing */}
+        {/* Step 4: Pricing → Modal Step 4 */}
         <Route
           path="/sell/inserat/:vehicleType/pricing"
-          element={
-            <AuthGuard requireAuth={true}>
-              {isMobile ? <MobilePricingPage /> : <PricingPage />}
-            </AuthGuard>
-          }
+          element={<SellRouteRedirect step={4} />}
         />
-        {/* Step 5: Contact */}
+        {/* Step 5: Contact → Modal Step 5 */}
         <Route
           path="/sell/inserat/:vehicleType/contact"
-          element={
-            <AuthGuard requireAuth={true}>
-              {isMobile ? <MobileContactPage /> : <UnifiedContactPage />}
-            </AuthGuard>
-          }
+          element={<SellRouteRedirect step={5} />}
         />
-        {/* Step 6: Preview */}
+        {/* Step 6: Preview → Modal Step 5 (same as contact, preview is internal) */}
         <Route
           path="/sell/inserat/:vehicleType/preview"
-          element={
-            <AuthGuard requireAuth={true}>
-              {isMobile ? <MobilePreviewPage /> : <DesktopPreviewPage />}
-            </AuthGuard>
-          }
+          element={<SellRouteRedirect step={5} />}
         />
 
         {/* ✅ REDIRECTS: Old routes → New routes (for backward compatibility) */}
@@ -450,14 +421,10 @@ const MainLayout: React.FC = () => {
           path="/sell/inserat/:vehicleType/verkaeufertyp" 
           element={<Navigate to="../data" replace />} 
         />
-        {/* Step 7: Submission (Final Step) */}
+        {/* Step 7: Submission → Modal Step 5 (submission is handled in Modal) */}
         <Route
           path="/sell/inserat/:vehicleType/submission"
-          element={
-            <AuthGuard requireAuth={true}>
-              {isMobile ? <MobileSubmissionPage /> : <DesktopSubmissionPage />}
-            </AuthGuard>
-          }
+          element={<SellRouteRedirect step={5} />}
         />
         <Route path="/profile/*" element={<ProfileRouter />} />
         <Route path="/verification" element={<VerificationPage />} />

@@ -31,23 +31,24 @@ jest.mock('@/services/workflow-analytics-service', () => ({
 }));
 
 // Mock Firestore
-const mockGetDocs = jest.fn();
-const mockOnSnapshot = jest.fn();
-const mockGetDoc = jest.fn();
-
-jest.mock('firebase/firestore', () => ({
-  collection: jest.fn(),
-  doc: jest.fn(),
-  getDoc: mockGetDoc,
-  getDocs: mockGetDocs,
-  query: jest.fn((...args) => args),
-  where: jest.fn((field, op, value) => ({ field, op, value })),
-  onSnapshot: mockOnSnapshot,
-  Timestamp: {
-    fromDate: jest.fn((d) => ({ toDate: () => d, seconds: d.getTime() / 1000, nanoseconds: 0 })),
-    now: jest.fn(() => ({ toDate: () => new Date(), seconds: Date.now() / 1000, nanoseconds: 0 }))
-  }
-}));
+jest.mock('firebase/firestore', () => {
+  const mockGetDocs = jest.fn();
+  const mockOnSnapshot = jest.fn();
+  const mockGetDoc = jest.fn();
+  return {
+    collection: jest.fn(),
+    doc: jest.fn(),
+    getDoc: mockGetDoc,
+    getDocs: mockGetDocs,
+    query: jest.fn((...args) => args),
+    where: jest.fn((field, op, value) => ({ field, op, value })),
+    onSnapshot: mockOnSnapshot,
+    Timestamp: {
+      fromDate: jest.fn((d) => ({ toDate: () => d, seconds: d.getTime() / 1000, nanoseconds: 0 })),
+      now: jest.fn(() => ({ toDate: () => new Date(), seconds: Date.now() / 1000, nanoseconds: 0 }))
+    }
+  };
+});
 
 describe('ProfileStatsService - Basic Tests', () => {
   beforeEach(() => {

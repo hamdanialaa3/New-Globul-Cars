@@ -376,6 +376,95 @@ export const SellVehicleStep2: React.FC<SellVehicleStep2Props> = ({
           placeholder={language === 'bg' ? 'Въведете цвят' : 'Enter color'}
         />
       </FieldGroup>
+
+      <SectionDivider />
+
+      {/* Seller Information */}
+      <SectionTitle>{language === 'bg' ? 'Информация за продавача' : 'Seller Information'}</SectionTitle>
+
+      <FieldGroup>
+        <Label>{language === 'bg' ? 'Тип продавач' : 'Seller Type'}</Label>
+        <ToggleGroup>
+          <ToggleButton
+            $active={workflowData.sellerType === 'private'}
+            onClick={() => onUpdate({ sellerType: 'private' })}
+          >
+            {language === 'bg' ? 'Частно лице' : 'Private'}
+          </ToggleButton>
+          <ToggleButton
+            $active={workflowData.sellerType === 'dealer'}
+            onClick={() => onUpdate({ sellerType: 'dealer' })}
+          >
+            {language === 'bg' ? 'Търговец' : 'Dealer'}
+          </ToggleButton>
+          <ToggleButton
+            $active={workflowData.sellerType === 'company'}
+            onClick={() => onUpdate({ sellerType: 'company' })}
+          >
+            {language === 'bg' ? 'Фирма' : 'Company'}
+          </ToggleButton>
+        </ToggleGroup>
+      </FieldGroup>
+
+      <FieldGroup>
+        <Label>{language === 'bg' ? 'Тип продажба' : 'Sale Type'}</Label>
+        <ToggleGroup>
+          <ToggleButton
+            $active={workflowData.saleType === 'private'}
+            onClick={() => onUpdate({ saleType: 'private' })}
+          >
+            {language === 'bg' ? 'Частна' : 'Private'}
+          </ToggleButton>
+          <ToggleButton
+            $active={workflowData.saleType === 'commercial'}
+            onClick={() => onUpdate({ saleType: 'commercial' })}
+          >
+            {language === 'bg' ? 'Търговска' : 'Commercial'}
+          </ToggleButton>
+        </ToggleGroup>
+      </FieldGroup>
+
+      <FieldGroup>
+        <Label>{language === 'bg' ? 'Готовност за продажба' : 'Sale Timeline'}</Label>
+        <ToggleGroup>
+          <ToggleButton
+            $active={workflowData.saleTimeline === 'unknown'}
+            onClick={() => onUpdate({ saleTimeline: 'unknown' })}
+          >
+            {language === 'bg' ? 'Не знам' : "Don't know"}
+          </ToggleButton>
+          <ToggleButton
+            $active={workflowData.saleTimeline === 'soon'}
+            onClick={() => onUpdate({ saleTimeline: 'soon' })}
+          >
+            {language === 'bg' ? 'Възможно най-скоро' : 'ASAP'}
+          </ToggleButton>
+          <ToggleButton
+            $active={workflowData.saleTimeline === 'months'}
+            onClick={() => onUpdate({ saleTimeline: 'months' })}
+          >
+            {language === 'bg' ? 'В рамките на месеци' : 'Within months'}
+          </ToggleButton>
+        </ToggleGroup>
+      </FieldGroup>
+
+      <FieldGroup>
+        <Label>{language === 'bg' ? 'Годност за път' : 'Roadworthy'}</Label>
+        <ToggleGroup>
+          <ToggleButton
+            $active={workflowData.roadworthy === true}
+            onClick={() => onUpdate({ roadworthy: true })}
+          >
+            {language === 'bg' ? 'Да' : 'Yes'}
+          </ToggleButton>
+          <ToggleButton
+            $active={workflowData.roadworthy === false}
+            onClick={() => onUpdate({ roadworthy: false })}
+          >
+            {language === 'bg' ? 'Не' : 'No'}
+          </ToggleButton>
+        </ToggleGroup>
+      </FieldGroup>
     </FormContainer>
   );
 };

@@ -1,22 +1,21 @@
 // src/routes/sell.routes.tsx
 /**
- * Sell Workflow Routes
+ * ⚠️ DEPRECATED: Sell Workflow Routes
  * 
- * Contains all car selling workflow routes (~25 routes):
- * - Vehicle start page
- * - Seller type selection
- * - Vehicle data entry
- * - Equipment selection
- * - Images upload
- * - Pricing
- * - Contact information
- * - Preview
- * - Submission
+ * This file is DEPRECATED and NOT USED anymore.
  * 
- * Includes both new unified routes and legacy routes for backward compatibility
+ * The new system uses Modal-based workflow:
+ * - All routes redirect to /sell/auto (Modal)
+ * - Modal contains all 6 steps in one place
+ * - Uses useSellWorkflow hook (not useUnifiedWorkflow)
+ * 
+ * Old routes are handled by SellRouteRedirect component in App.tsx
+ * 
+ * ⚠️ DO NOT USE THIS FILE - It's kept for reference only
  * 
  * Created: Week 2, Day 3
- * Part of: Route Extraction Refactoring
+ * Deprecated: December 13, 2025
+ * Reason: Unified to Modal System
  */
 
 import React, { Suspense } from 'react';

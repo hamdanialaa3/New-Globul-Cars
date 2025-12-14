@@ -135,7 +135,7 @@ class AlgoliaSearchService {
     serviceLogger.debug('Using Firestore fallback for search', { query, filters });
     
     // This is a simplified fallback
-    // In production, use the existing carListingService
+    // In production, use unifiedCarService.searchCars()
     return {
       hits: [],
       totalHits: 0,

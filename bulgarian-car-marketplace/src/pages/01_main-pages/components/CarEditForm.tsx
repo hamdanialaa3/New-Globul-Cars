@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { CarListing } from '../../../types/CarListing';
 import { brandsModelsDataService } from '../../../services/brands-models-data.service';
+import { logger } from '../../../services/logger-service';
 import { BULGARIA_REGIONS, getCitiesByRegion } from '../../../data/bulgaria-locations';
 import {
   DetailsSection,
@@ -60,7 +61,7 @@ export const CarEditForm: React.FC<CarEditFormProps> = ({
     brandsModelsDataService.getAllBrands()
       .then(brands => setAvailableMakes(brands))
       .catch(error => {
-        console.error('Error loading brands:', error);
+        logger.error('Error loading brands', error as Error);
         setAvailableMakes([]);
       });
   }, []);

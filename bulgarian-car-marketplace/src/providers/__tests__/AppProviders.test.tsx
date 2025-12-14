@@ -6,14 +6,31 @@
  */
 
 import React from 'react';
-import { render } from '@testing-library/react';
-import { BrowserRouter } from 'react-router-dom';
+import { render, screen } from '@testing-library/react';
 import { AppProviders } from '../AppProviders';
 
 // Mock Firebase
 jest.mock('@/firebase/firebase-config', () => ({
   auth: { currentUser: null, onAuthStateChanged: jest.fn() },
   db: {},
+}));
+
+jest.mock('styled-components', () => ({
+    ThemeProvider: ({ children }: { children: React.ReactNode }) => <div data-testid="styled-theme-provider">{children}</div>,
+}));
+
+jest.mock('../StripeProvider', () => ({
+    __esModule: true,
+    default: ({ children }: { children: React.ReactNode }) => <div data-testid="stripe-provider">{children}</div>,
+}));
+
+jest.mock('@/styles/theme', () => ({
+    bulgarianTheme: {},
+    GlobalStyles: () => <div data-testid="global-styles" />,
+}));
+
+jest.mock('react-router-dom', () => ({
+    BrowserRouter: ({ children }: { children: React.ReactNode }) => <div data-testid="router">{children}</div>,
 }));
 
 // Mock all the contexts and components

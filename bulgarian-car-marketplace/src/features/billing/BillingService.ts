@@ -156,7 +156,7 @@ class BillingService {
         sessionId: data.sessionId,
       };
     } catch (error: any) {
-      console.error('Error creating checkout session:', error);
+      serviceLogger.error('Error creating checkout session', error as Error);
       throw new Error(error.message || 'Failed to create checkout session');
     }
   }

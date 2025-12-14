@@ -236,8 +236,9 @@ const AdminCarManagementPage: React.FC = () => {
   const loadCars = async () => {
     try {
       setLoading(true);
-      const result = await carListingService.getListings({ limit: 1000 });
-      setCars(result.listings);
+      // ✅ Use unifiedCarService instead of carListingService
+      const cars = await unifiedCarService.searchCars({}, 1000);
+      setCars(cars as any[]);
     } catch (error) {
       logger.error('Error loading cars (admin)', error as Error);
     } finally {
@@ -247,14 +248,14 @@ const AdminCarManagementPage: React.FC = () => {
 
   const loadStats = async () => {
     try {
-      const result = await carListingService.getListings({ limit: 1000 });
-      const listings = result.listings;
+      // ✅ Use unifiedCarService instead of carListingService
+      const cars = await unifiedCarService.searchCars({}, 1000);
       
       setStats({
-        total: listings.length,
-        active: listings.filter(c => c.status === 'active').length,
-        sold: listings.filter(c => c.status === 'sold').length,
-        draft: listings.filter(c => c.status === 'draft').length
+        total: cars.length,
+        active: cars.filter(c => c.status === 'active' || (c.isActive && !c.isSold)).length,
+        sold: cars.filter(c => c.status === 'sold' || c.isSold).length,
+        draft: cars.filter(c => c.status === 'draft' || (!c.isActive && !c.isSold)).length
       });
     } catch (error) {
       logger.error('Error loading admin stats', error as Error);
@@ -282,10 +283,19 @@ const AdminCarManagementPage: React.FC = () => {
     const newStatus = currentStatus === 'active' ? 'sold' : 'active';
     
     try {
+      // ✅ Use unifiedCarService instead of carListingService
       if (newStatus === 'sold') {
-        await carListingService.markAsSold(id);
+        await unifiedCarService.updateCar(id, { 
+          status: 'sold',
+          isSold: true,
+          isActive: false
+        });
       } else {
-        await carListingService.publishListing(id);
+        await unifiedCarService.updateCar(id, { 
+          status: 'active',
+          isSold: false,
+          isActive: true
+        });
       }
       loadCars();
       loadStats();

@@ -43,8 +43,9 @@ const FavoritesPage = React.lazy(() => import('@/pages/03_user-pages/favorites/F
 const DashboardPage = React.lazy(() => import('@/pages/03_user-pages/dashboard/DashboardPage'));
 
 // ==================== PAYMENT & BILLING ====================
-const CheckoutPage = React.lazy(() => import('@/pages/03_user-pages/checkout/CheckoutPage'));
-const PaymentSuccessPage = React.lazy(() => import('@/pages/03_user-pages/payment/PaymentSuccessPage'));
+const CheckoutPage = React.lazy(() => import('@/pages/08_payment-billing/CheckoutPage'));
+const PaymentSuccessPage = React.lazy(() => import('@/pages/08_payment-billing/PaymentSuccessPage'));
+const PaymentFailedPage = React.lazy(() => import('@/pages/08_payment-billing/PaymentFailedPage'));
 const PaymentCanceledPage = React.lazy(() => import('@/pages/03_user-pages/payment/PaymentCanceledPage'));
 const BillingSuccessPage = React.lazy(() => import('@/pages/03_user-pages/billing/BillingSuccessPage'));
 const BillingCanceledPage = React.lazy(() => import('@/pages/03_user-pages/billing/BillingCanceledPage'));
@@ -193,6 +194,16 @@ export const MainRoutes: React.FC = () => {
                     element={
                         <AuthGuard requireAuth={true}>
                             <PaymentSuccessPage />
+                        </AuthGuard>
+                    }
+                />
+
+                {/* Payment Failed */}
+                <Route
+                    path="/payment-failed"
+                    element={
+                        <AuthGuard requireAuth={true}>
+                            <PaymentFailedPage />
                         </AuthGuard>
                     }
                 />

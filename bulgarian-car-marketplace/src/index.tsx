@@ -14,6 +14,20 @@ import webVitalsTracker from './utils/webVitals';
 // Import Firebase configuration
 import './firebase/firebase-config';
 
+// Validate environment variables (only in production to avoid breaking development)
+if (process.env.NODE_ENV === 'production') {
+  try {
+    const { validateEnvironmentVariables } = require('./config/env-validation');
+    validateEnvironmentVariables();
+  } catch (error) {
+    // Log error but don't block app startup in development
+    if (error instanceof Error && error.name === 'EnvValidationError') {
+      logger.error('Environment validation failed', error);
+      logger.error('❌ Environment Variables Error', new Error(error.message));
+    }
+  }
+}
+
 // Bulgarian Car Marketplace
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

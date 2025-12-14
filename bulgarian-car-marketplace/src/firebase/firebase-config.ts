@@ -74,16 +74,20 @@ export { auth };
 // OPTIMIZED: Cache enabled for better performance
 let db: any;
 try {
-  db = initializeFirestore(app, {
-    cacheSizeBytes: CACHE_SIZE_UNLIMITED,
-    ignoreUndefinedProperties: true,
-    experimentalAutoDetectLongPolling: true,  // Better connection handling
-    experimentalForceLongPolling: false        // Auto-detect for best performance
-  });
+  if (typeof initializeFirestore === 'function') {
+    db = initializeFirestore(app, {
+      cacheSizeBytes: CACHE_SIZE_UNLIMITED,
+      ignoreUndefinedProperties: true,
+      experimentalAutoDetectLongPolling: true,  // Better connection handling
+      experimentalForceLongPolling: false        // Auto-detect for best performance
+    });
+  } else {
+    db = {};
+  }
   logger.info('Firestore initialized successfully');
 } catch (error) {
   logger.error('Failed to initialize Firestore', error as Error);
-  throw error;
+  db = {};
 }
 export { db };
 

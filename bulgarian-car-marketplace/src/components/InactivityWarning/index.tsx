@@ -74,7 +74,7 @@ const Button = styled.button<{ $variant: 'primary' | 'secondary' }>`
 export const InactivityWarning: React.FC = () => {
   const { language } = useLanguage();
   const [showWarning, setShowWarning] = useState(false);
-  const [status, setStatus] = useState(IndexedDBActivityTracker.getActivityStatus());
+  const [status, setStatus] = useState(IndexedDBActivityTracker.getStatusDetails());
 
   useEffect(() => {
     // Check on mount
@@ -83,7 +83,7 @@ export const InactivityWarning: React.FC = () => {
 
     // Check periodically (every hour)
     const interval = setInterval(() => {
-      const newStatus = IndexedDBActivityTracker.getActivityStatus();
+      const newStatus = IndexedDBActivityTracker.getStatusDetails();
       setStatus(newStatus);
       setShowWarning(IndexedDBActivityTracker.shouldShowWarning());
     }, 60 * 60 * 1000); // 1 hour

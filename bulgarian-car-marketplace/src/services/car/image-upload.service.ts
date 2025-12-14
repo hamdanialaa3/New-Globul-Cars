@@ -73,7 +73,7 @@ class ImageUploadService {
           const imagePath = `cars/${carId}/images/${fileName}`;
           const imageRef = ref(storage, imagePath);
           
-          console.log(`📤 Uploading image ${index + 1}/${validImages.length}`, { 
+          serviceLogger.info(`📤 Uploading image ${index + 1}/${validImages.length}`, { 
             name: image.name, 
             size: image.size, 
             type: image.type,
@@ -85,7 +85,7 @@ class ImageUploadService {
           
           return downloadUrl;
         } catch (uploadError) {
-          console.error(`❌ Failed to upload image ${index + 1}`, uploadError);
+          serviceLogger.error(`❌ Failed to upload image ${index + 1}`, uploadError as Error);
           serviceLogger.error(`Failed to upload image ${index + 1}`, uploadError as Error, { 
             carId, 
             imageName: image.name,
@@ -102,7 +102,7 @@ class ImageUploadService {
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       const errorDetails = error instanceof Error ? error.stack : String(error);
-      console.error('❌ Failed to upload images', { error: errorMessage, details: errorDetails, carId });
+      serviceLogger.error('❌ Failed to upload images', new Error(errorMessage), { details: errorDetails, carId });
       serviceLogger.error('Failed to upload images', error as Error, { carId, imageCount: validImages.length });
       throw new Error(`Failed to upload images: ${errorMessage}`);
     }

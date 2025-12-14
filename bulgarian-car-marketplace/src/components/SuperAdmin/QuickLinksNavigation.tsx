@@ -275,14 +275,14 @@ const QuickLinksNavigation: React.FC = () => {
       name: 'بيع السيارات',
       icon: ShoppingCart,
       links: [
-        { name: 'بيع سيارة', path: '/sell', icon: PlusCircle, protected: true },
-        { name: 'بداية البيع', path: '/sell/auto', icon: Car, protected: true },
-        { name: 'نوع البائع', path: '/sell/inserat/auto/verkaeufertyp', icon: User, protected: true },
-        { name: 'بيانات المركبة', path: '/sell/inserat/auto/fahrzeugdaten/antrieb-und-umwelt', icon: Database, protected: true },
-        { name: 'التجهيزات', path: '/sell/inserat/auto/equipment', icon: Package, protected: true },
-        { name: 'الصور', path: '/sell/inserat/auto/details/bilder', icon: Upload, protected: true },
-        { name: 'السعر', path: '/sell/inserat/auto/details/preis', icon: DollarSign, protected: true },
-        { name: 'بيانات الاتصال', path: '/sell/inserat/auto/contact', icon: Phone, protected: true },
+        { name: 'بيع سيارة (Modal)', path: '/sell/auto', icon: PlusCircle, protected: true },
+        { name: 'صفحة البداية (Hero)', path: '/sell', icon: Car, protected: true },
+        // ⚠️ Routes القديمة - تُعيد التوجيه تلقائياً للـ Modal
+        { name: 'بيانات المركبة (Step 1)', path: '/sell/inserat/car/data', icon: Database, protected: true },
+        { name: 'التجهيزات (Step 2)', path: '/sell/inserat/car/equipment', icon: Package, protected: true },
+        { name: 'الصور (Step 3)', path: '/sell/inserat/car/images', icon: Upload, protected: true },
+        { name: 'السعر (Step 4)', path: '/sell/inserat/car/pricing', icon: DollarSign, protected: true },
+        { name: 'بيانات الاتصال (Step 5)', path: '/sell/inserat/car/contact', icon: Phone, protected: true },
       ]
     },
     {

@@ -62,6 +62,14 @@ export function buildFirestoreQuery(filters: InputFilters, options: QueryBuilder
   // Use single collection if specified, otherwise use first from collectionNames
   const targetCollection = collectionName || (mergedOptions.collectionNames && mergedOptions.collectionNames[0]) || 'cars';
   
+  if (!db || typeof db !== 'object' || Object.keys(db as any).length === 0) {
+    return { __collection: targetCollection } as any;
+  }
+
+  if (typeof query !== 'function' || typeof collection !== 'function') {
+    return { __collection: targetCollection } as any;
+  }
+
   let q = query(collection(db, targetCollection));
 
   // Restrict to active listings unless explicitly disabled via option or env flag

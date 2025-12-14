@@ -29,7 +29,7 @@ export class ValidationService {
     vin: /^[A-HJ-NPR-Z0-9]{17}$/, // Vehicle VIN
     licensePlate: /^[ABCEHKMPTXY][0-9]{4}[ABCEHKMPTXY]{2}$/, // Bulgarian license plates
     taxNumber: /^[0-9]{9,10}$/, // Bulgarian tax numbers
-    password: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+    password: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/
   };
 
   // Localized error messages

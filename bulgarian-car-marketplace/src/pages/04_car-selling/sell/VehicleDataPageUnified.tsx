@@ -16,6 +16,7 @@ import BrandModelMarkdownDropdown from '../../../components/BrandModelMarkdownDr
 import { useUnifiedWorkflow } from '../../../hooks/useUnifiedWorkflow';
 import { WorkflowPageLayout } from '../../../components/sell-workflow/WorkflowPageLayout';
 import DeleteDraftButton from '../../../components/SellWorkflow/DeleteDraftButton';
+import { serviceLogger } from '../../../services/logger-wrapper';
 // removed legacy structured brands import; new markdown-based dropdown is canonical
 
 // removed legacy popular brands; new markdown-based dropdown replaces this UI
@@ -871,14 +872,14 @@ const VehicleDataPage: React.FC = () => {
               const images = JSON.parse(savedImages);
               setCarImages(images.filter((img: string) => img && img.length > 0));
             } catch (e) {
-              console.error('Error parsing saved images:', e);
+              serviceLogger.error('Error parsing saved images', e as Error);
             }
           } else if (carData.images && carData.images.length > 0) {
             // Use images from car data if available
             setCarImages(carData.images);
           }
         } catch (e) {
-          console.error('Error parsing saved car data:', e);
+          serviceLogger.error('Error parsing saved car data', e as Error);
         }
       }
     }
@@ -1441,7 +1442,7 @@ const VehicleDataPage: React.FC = () => {
       // Navigate directly - no validation blocking
       navigate(targetPath);
     } catch (error) {
-      console.error('❌ Navigation error:', error);
+      serviceLogger.error('Navigation error', error as Error);
       const errorMsg = language === 'bg' 
         ? 'Грешка при навигация. Моля опитайте отново.'
         : 'Navigation error. Please try again.';

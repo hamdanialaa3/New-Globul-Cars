@@ -1,14 +1,17 @@
 // src/pages/CheckoutPage.tsx
-// Checkout Page for Car Purchase
+// Checkout Page for Car Purchase with Stripe Integration
 
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAuth } from '../../hooks/useAuth';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { paymentService } from '../../services/payment-service';
-import { ArrowLeft, CreditCard, Lock, Check } from 'lucide-react';
+import { ArrowLeft, CreditCard, Lock, Check, AlertCircle, RefreshCw } from 'lucide-react';
 import { logger } from '../../services/logger-service';
+import { unifiedCarService } from '../../services/car';
+import { getFunctions, httpsCallable } from 'firebase/functions';
+import { functions } from '../../firebase/firebase-config';
+import { useToast } from '../../components/Toast';
 
 const Container = styled.div`
   max-width: 1200px;
@@ -157,62 +160,128 @@ const CheckoutPage: React.FC = () => {
     loadCarDetails();
   }, [carId, user, navigate]);
 
+  const toast = useToast();
+  const [error, setError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
+  const MAX_RETRIES = 3;
+
   const loadCarDetails = async () => {
+    if (!carId) return;
+    
     try {
-      // In production, load from Firebase
-      // For now, use mock data
+      setLoading(true);
+      const carData = await unifiedCarService.getCarById(carId);
+      
+      if (!carData) {
+        throw new Error('Car not found');
+      }
+
       setCar({
-        id: carId,
-        make: 'BMW',
-        model: '320d',
-        year: 2023,
-        price: 45000,
-        images: ['https://via.placeholder.com/400x300']
+        id: carData.id,
+        make: carData.make,
+        model: carData.model,
+        year: carData.year,
+        price: carData.price,
+        images: carData.images || [],
+        sellerId: carData.sellerId
       });
     } catch (error) {
       logger.error('Error loading checkout car details', error as Error, { carId });
-    }
-  };
-
-  const handlePayment = async () => {
-    if (!user || !car) return;
-
-    setLoading(true);
-
-    try {
-      // Create payment intent
-      const intent = await paymentService.createCarPaymentIntent(
-        car.id,
-        car.price,
-        user.uid,
-        {
-          carMake: car.make,
-          carModel: car.model,
-          carYear: car.year
-        }
-      );
-
-      // Process payment (in production, this would show Stripe payment form)
-      const result = await paymentService.processPayment(intent.id, 'pm_card_visa');
-
-      if (result.success) {
-        navigate(`/payment-success/${result.transactionId}`);
-      } else {
-        alert(result.error || 'Payment failed');
-      }
-    } catch (error) {
-      logger.error('Payment error', error as Error, { carId, userId: user?.uid });
-      alert('Payment failed. Please try again.');
+      setError(language === 'bg' ? 'Грешка при зареждане на данните' : 'Error loading car details');
+      toast.error(language === 'bg' ? 'Грешка при зареждане на данните' : 'Error loading car details');
     } finally {
       setLoading(false);
     }
   };
 
-  if (!car) {
-    return <Container>Loading...</Container>;
+  const handlePayment = async (retryAttempt = 0) => {
+    if (!user || !car) return;
+
+    // Prevent self-purchase
+    if (car.sellerId === user.uid) {
+      const errorMsg = language === 'bg' 
+        ? 'Не можете да закупите собствената си кола' 
+        : 'You cannot purchase your own car';
+      setError(errorMsg);
+      toast.error(errorMsg);
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      // Call Cloud Function to create Stripe checkout session
+      const createCarPaymentIntent = httpsCallable(functions, 'createCarPaymentIntent');
+      
+      const result = await createCarPaymentIntent({
+        carId: car.id,
+        amount: car.price,
+        currency: 'EUR',
+        buyerId: user.uid
+      });
+
+      const data = result.data as {
+        checkoutUrl?: string;
+        sessionId?: string;
+        error?: string;
+      };
+
+      if (data.checkoutUrl) {
+        // Redirect to Stripe Checkout
+        window.location.href = data.checkoutUrl;
+      } else if (data.error) {
+        throw new Error(data.error);
+      } else {
+        throw new Error('No checkout URL returned');
+      }
+    } catch (error: any) {
+      logger.error('Payment error', error as Error, { carId, userId: user?.uid, retryAttempt });
+      
+      const errorMessage = error.message || (language === 'bg' ? 'Грешка при плащане' : 'Payment error');
+      setError(errorMessage);
+
+      // Retry mechanism
+      if (retryAttempt < MAX_RETRIES) {
+        const retryMsg = language === 'bg'
+          ? `Опит ${retryAttempt + 1} от ${MAX_RETRIES}...`
+          : `Retry ${retryAttempt + 1} of ${MAX_RETRIES}...`;
+        toast.warn(retryMsg);
+        
+        setTimeout(() => {
+          setRetryCount(retryAttempt + 1);
+          handlePayment(retryAttempt + 1);
+        }, 2000 * (retryAttempt + 1)); // Exponential backoff
+      } else {
+        // Max retries reached - redirect to error page
+        toast.error(errorMessage);
+        navigate(`/payment-failed?carId=${carId}&error=${encodeURIComponent(errorMessage)}`);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading && !car) {
+    return <Container>{language === 'bg' ? 'Зареждане...' : 'Loading...'}</Container>;
   }
 
-  const commission = paymentService.calculateCommission(car.price, 10);
+  if (!car) {
+    return (
+      <Container>
+        <div style={{ textAlign: 'center', padding: '2rem' }}>
+          <p>{language === 'bg' ? 'Колата не е намерена' : 'Car not found'}</p>
+          <BackButton onClick={() => navigate('/cars')}>
+            <ArrowLeft size={20} />
+            {language === 'bg' ? 'Назад' : 'Back'}
+          </BackButton>
+        </div>
+      </Container>
+    );
+  }
+
+  const commission = Math.round(car.price * 0.05); // 5% platform fee
+  const total = car.price + commission;
 
   return (
     <Container>
@@ -231,18 +300,29 @@ const CheckoutPage: React.FC = () => {
             {language === 'bg' ? 'Метод на плащане' : 'Payment Method'}
           </CardTitle>
 
-          <div style={{ padding: '2rem', textAlign: 'center', color: '#7f8c8d' }}>
-            <p>{language === 'bg' 
-              ? 'Интеграцията със Stripe ще бъде активирана скоро'
-              : 'Stripe integration will be activated soon'}</p>
-            <p>{language === 'bg'
-              ? 'За момента можете да се свържете директно с продавача'
-              : 'For now, you can contact the seller directly'}</p>
-          </div>
+          {error && (
+            <div style={{ 
+              padding: '1rem', 
+              background: '#fee2e2', 
+              border: '1px solid #fecaca',
+              borderRadius: '8px',
+              marginBottom: '1rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              color: '#dc2626'
+            }}>
+              <AlertCircle size={20} />
+              <span>{error}</span>
+            </div>
+          )}
 
-          <PaymentButton onClick={handlePayment} disabled={loading}>
+          <PaymentButton onClick={() => handlePayment(0)} disabled={loading || !car}>
             {loading ? (
-              language === 'bg' ? 'Обработка...' : 'Processing...'
+              <>
+                <RefreshCw size={20} style={{ animation: 'spin 1s linear infinite' }} />
+                {language === 'bg' ? 'Обработка...' : 'Processing...'}
+              </>
             ) : (
               <>
                 <Lock size={20} />
@@ -279,12 +359,12 @@ const CheckoutPage: React.FC = () => {
               <span>€{car.price.toLocaleString()}</span>
             </SummaryRow>
             <SummaryRow>
-              <span>{language === 'bg' ? 'Такса за платформа (10%)' : 'Platform Fee (10%)'}</span>
-              <span>€{commission.commission.toLocaleString()}</span>
+              <span>{language === 'bg' ? 'Такса за платформа (5%)' : 'Platform Fee (5%)'}</span>
+              <span>€{commission.toLocaleString()}</span>
             </SummaryRow>
             <TotalRow>
               <span>{language === 'bg' ? 'Общо' : 'Total'}</span>
-              <span>€{car.price.toLocaleString()}</span>
+              <span>€{total.toLocaleString()}</span>
             </TotalRow>
           </OrderSummary>
 
@@ -301,6 +381,13 @@ const CheckoutPage: React.FC = () => {
           </div>
         </Card>
       </Grid>
+
+      <style>{`
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
     </Container>
   );
 };

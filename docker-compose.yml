@@ -1,0 +1,47 @@
+services:
+  frontend:
+    build:
+      context: ./bulgarian-car-marketplace
+      dockerfile: Dockerfile
+    image: globul-cars/frontend:latest
+    container_name: globul-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    # For dev: mount and run npm start (see notes below)
+    profiles: ["prod"]
+
+  frontend-dev:
+    profiles: ["dev"]
+    build:
+      context: ./bulgarian-car-marketplace
+      dockerfile: Dockerfile
+    image: globul-cars/frontend:dev
+    container_name: globul-frontend-dev
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - BROWSER=none
+    command: ["npm","start"]
+    volumes:
+      - ./bulgarian-car-marketplace:/app
+      - /app/node_modules
+
+  # Uncomment to build functions in a container; pair with emulator separately
+  # functions:
+  #   build:
+  #     context: ./functions
+  #     dockerfile: Dockerfile
+  #   image: globul-cars/functions:latest
+  #   container_name: globul-functions
+  #   ports:
+  #     - "5001:5001"
+  #   environment:
+  #     - NODE_ENV=development
+  #   command: ["npm","run","build"]
+
+networks:
+  default:
+    name: globul-cars-net

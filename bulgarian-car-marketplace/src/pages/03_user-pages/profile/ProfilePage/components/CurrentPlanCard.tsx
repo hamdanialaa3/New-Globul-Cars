@@ -9,6 +9,7 @@ import { useLanguage } from '../../../../../contexts/LanguageContext';
 import { useAuth } from '../../../../../contexts/AuthProvider';
 import billingService from '../../../../../features/billing/BillingService';
 import { Subscription } from '../../../../../features/billing/types';
+import { serviceLogger } from '../../../../../services/logger-wrapper';
 
 const Card = styled.div`
   background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
@@ -237,7 +238,7 @@ export const CurrentPlanCard: React.FC<CurrentPlanCardProps> = ({ profileType })
       const sub = await billingService.getCurrentSubscription(currentUser.uid);
       setSubscription(sub);
     } catch (error) {
-      console.error('Error loading subscription:', error);
+      serviceLogger.error('Error loading subscription', error as Error);
     } finally {
       setLoading(false);
     }

@@ -42,13 +42,16 @@
     "translate": "^3.0.1",
     "typescript": "^5.4.5",
     "web-vitals": "^2.1.4",
-    "@stripe/react-stripe-js": "^2.8.0",
+    "@stripe/react-stripe-js": "^2.9.0",
     "@stripe/stripe-js": "^3.5.0"
   },
   "scripts": {
     "start": "craco start",
     "start:dev": "cross-env NODE_OPTIONS=--max_old_space_size=4096 BROWSER=none npm run start",
     "build": "craco build",
+    "ci:strict": "npm ci --no-audit --no-fund",
+    "dev:vite": "npx vite",
+    "build:vite": "npx vite build",
     "build:analyze": "npm run build && npx source-map-explorer 'build/static/js/*.js'",
     "build:optimized": "npm run build && node scripts/optimize-images.js",
     "test": "craco test",

@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { useAuth } from '../../contexts/AuthProvider';
 import { Database, RefreshCw, Trash2, CheckCircle, AlertCircle } from 'lucide-react';
+import { serviceLogger } from '../../services/logger-wrapper';
 
 const Panel = styled.div`
   max-width: 800px;
@@ -183,7 +184,7 @@ const AlgoliaAdminPanel: React.FC = () => {
         text: `✅ ${data.message || 'Sync completed'} (${data.count} cars)` 
       });
     } catch (error: any) {
-      console.error('Sync error:', error);
+      serviceLogger.error('Sync error', error as Error);
       setMessage({ 
         type: 'error', 
         text: `❌ Sync failed: ${error.message}` 
@@ -216,7 +217,7 @@ const AlgoliaAdminPanel: React.FC = () => {
         text: data.message || 'Index cleared successfully' 
       });
     } catch (error: any) {
-      console.error('Clear error:', error);
+      serviceLogger.error('Clear error', error as Error);
       setMessage({ 
         type: 'error', 
         text: `Failed to clear: ${error.message}` 

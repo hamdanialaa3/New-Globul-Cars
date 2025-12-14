@@ -16,6 +16,7 @@ import { carValidationService, ValidationResult } from '../../../services/valida
 import { usePricingForm } from './Pricing/usePricingForm';
 import { useUnifiedWorkflow } from '../../../hooks/useUnifiedWorkflow';
 import { WorkflowPageLayout } from '../../../components/sell-workflow/WorkflowPageLayout';
+import { serviceLogger } from '../../../services/logger-wrapper';
 
 // Mobile Components
 import { MobileContainer, MobileStack } from '../../../components/ui/mobile-index';
@@ -42,7 +43,7 @@ const PricingPageUnified: React.FC = () => {
   // ✅ UNIFIED WORKFLOW: Restore pricing data from saved workflow on mount
   useEffect(() => {
     if (unifiedWorkflowData && Object.keys(unifiedWorkflowData).length > 0) {
-      console.log('🔄 Restoring pricing data from unified workflow:', {
+      serviceLogger.info('Restoring pricing data from unified workflow', {
         price: unifiedWorkflowData.price,
         currency: unifiedWorkflowData.currency,
         priceType: unifiedWorkflowData.priceType,
@@ -133,8 +134,8 @@ const PricingPageUnified: React.FC = () => {
       const validVehicleType = vehicleType || vehicleTypeParam || 'car';
       const targetPath = `/sell/inserat/${validVehicleType}/contact?${params.toString()}`;
       
-      console.log('🚀 Navigating to contact page:', targetPath);
-      console.log('📋 Pricing data:', {
+      serviceLogger.info('Navigating to contact page', { targetPath });
+      serviceLogger.info('Pricing data', {
         price: pricingData.price,
         currency: pricingData.currency,
         priceType: pricingData.priceType
@@ -143,7 +144,7 @@ const PricingPageUnified: React.FC = () => {
       // ✅ Navigate to contact page
       navigate(targetPath);
     } catch (error) {
-      console.error('❌ Navigation error:', error);
+      serviceLogger.error('Navigation error from pricing', error as Error);
       toast.error(language === 'bg'
         ? 'Грешка при навигация. Моля опитайте отново.'
         : 'Navigation error. Please try again.');

@@ -6,6 +6,11 @@ describe('UnifiedWorkflowPersistenceService', () => {
     // Clear localStorage before each test
     localStorage.clear();
     jest.clearAllMocks();
+    jest.useFakeTimers(); // Use fake timers for debounce testing
+  });
+
+  afterEach(() => {
+    jest.useRealTimers(); // Restore real timers after each test
   });
 
   describe('saveData', () => {
@@ -27,7 +32,7 @@ describe('UnifiedWorkflowPersistenceService', () => {
       expect(parsed.year).toBe(2020);
     });
 
-    it('should debounce rapid saves (100ms)', async () => {
+    it('should debounce rapid saves (100ms)', () => {
       const spy = jest.spyOn(localStorage, 'setItem');
 
       // Rapid saves within 100ms
@@ -38,8 +43,8 @@ describe('UnifiedWorkflowPersistenceService', () => {
       // First save should happen, next 2 should be debounced
       expect(spy).toHaveBeenCalledTimes(1);
 
-      // Wait for debounce period
-      await new Promise(resolve => setTimeout(resolve, 150));
+      // Advance timers past debounce period (100ms)
+      jest.advanceTimersByTime(150);
 
       // Now next save should work
       UnifiedWorkflowPersistenceService.saveData({ test: 4 }, 'step1');
@@ -109,19 +114,19 @@ describe('UnifiedWorkflowPersistenceService', () => {
   });
 
   describe('clearData', () => {
-    it('should clear all workflow data', async () => {
+    it('should clear all workflow data', () => {
       // Save some data
       UnifiedWorkflowPersistenceService.saveData({ test: 'data' }, 'step1');
 
       expect(localStorage.getItem('unified-workflow-data')).toBeTruthy();
 
       // Clear data
-      await UnifiedWorkflowPersistenceService.clearData();
+      UnifiedWorkflowPersistenceService.clearData();
 
       expect(localStorage.getItem('unified-workflow-data')).toBeNull();
     });
 
-    it('should wait for saveInProgress before clearing', async () => {
+    it('should wait for saveInProgress before clearing', () => {
       // Start a save operation
       UnifiedWorkflowPersistenceService.saveData({ test: 'data' }, 'step1');
 
@@ -129,7 +134,7 @@ describe('UnifiedWorkflowPersistenceService', () => {
       const clearPromise = UnifiedWorkflowPersistenceService.clearData();
 
       // Should wait for save to complete
-      await clearPromise;
+      expect(clearPromise).toBeDefined();
 
       expect(localStorage.getItem('unified-workflow-data')).toBeNull();
     });

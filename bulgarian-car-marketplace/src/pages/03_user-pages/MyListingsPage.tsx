@@ -250,8 +250,10 @@ const MyListingsPage: React.FC = () => {
         logger.debug('Loading user listings', { email: user.email });
       }
 
-      const userListings = await carListingService.getListingsBySeller(user.email || '');
-      setListings(userListings);
+      // ✅ Use unifiedCarService instead of carListingService
+      // Get user's cars by sellerId (user.uid)
+      const userListings = await unifiedCarService.getUserCars(user.uid);
+      setListings(userListings as any[]);
 
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Loaded user listings successfully', { count: userListings.length });

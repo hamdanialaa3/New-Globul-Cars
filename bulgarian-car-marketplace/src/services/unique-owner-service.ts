@@ -2,6 +2,7 @@
 import { doc, getDoc, setDoc, updateDoc, serverTimestamp, collection } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
 import { serviceLogger } from './logger-wrapper';
+import { getAdminEmail, getAdminPassword, isAdminConfigured } from '../config/env-validation';
 
 export interface UniqueOwnerSession {
   email: string;
@@ -32,9 +33,21 @@ export interface SecurityLog {
 
 export class UniqueOwnerService {
   private static instance: UniqueOwnerService;
-  private readonly UNIQUE_OWNER_EMAIL = 'alaa.hamdani@yahoo.com';
-  private readonly UNIQUE_OWNER_PASSWORD = 'Alaa1983';
+  // ✅ Security: Use environment variables instead of hardcoded credentials
+  private readonly UNIQUE_OWNER_EMAIL: string;
+  private readonly UNIQUE_OWNER_PASSWORD: string;
   private currentSession: UniqueOwnerSession | null = null;
+
+  private constructor() {
+    // Get credentials from environment variables
+    this.UNIQUE_OWNER_EMAIL = getAdminEmail();
+    this.UNIQUE_OWNER_PASSWORD = getAdminPassword();
+    
+    // Warn if admin credentials are not configured
+    if (!isAdminConfigured()) {
+      serviceLogger.warn('Admin credentials not configured - Super Admin login will not work');
+    }
+  }
 
   public static getInstance(): UniqueOwnerService {
     if (!UniqueOwnerService.instance) {

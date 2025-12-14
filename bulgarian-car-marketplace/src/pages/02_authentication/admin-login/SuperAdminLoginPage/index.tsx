@@ -6,6 +6,7 @@ import { Shield, Lock, Eye, EyeOff, CheckCircle, AlertCircle } from 'lucide-reac
 import { uniqueOwnerService } from '../../../../services/unique-owner-service';
 import { auth } from '../../../../firebase/firebase-config';
 import { signInWithEmailAndPassword } from 'firebase/auth';
+import { getAdminEmail, isAdminConfigured } from '../../../../config/env-validation';
 
 // Styled Components
 const LoginContainer = styled.div`
@@ -210,11 +211,22 @@ const SecurityBadge = styled.div`
 
 const SuperAdminLogin: React.FC = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('alaa.hamdani@yahoo.com');
-  const [password, setPassword] = useState('Alaa1983');
+  // ✅ Security: Use environment variables instead of hardcoded credentials
+  const [email, setEmail] = useState(getAdminEmail());
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{type: 'success' | 'error', text: string} | null>(null);
+
+  // Warn if admin credentials are not configured
+  useEffect(() => {
+    if (!isAdminConfigured()) {
+      setMessage({
+        type: 'error',
+        text: 'Admin credentials not configured. Please set REACT_APP_ADMIN_EMAIL and REACT_APP_ADMIN_PASSWORD in your .env file.'
+      });
+    }
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();

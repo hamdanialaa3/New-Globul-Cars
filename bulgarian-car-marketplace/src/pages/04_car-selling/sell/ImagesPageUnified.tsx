@@ -14,6 +14,7 @@ import { useIsMobile } from '../../../hooks/useBreakpoint';
 import { Upload, X, Image as ImageIcon, Video, Box } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { WorkflowPageLayout } from '../../../components/sell-workflow/WorkflowPageLayout';
+import { serviceLogger } from '../../../services/logger-wrapper';
 
 // Mobile Styles
 const MobileContainer = styled.div`
@@ -682,7 +683,7 @@ const ImagesPage: React.FC = () => {
           // If workflow says we have images but IndexedDB is empty, try to reload
         }
       } catch (error) {
-        console.error('Failed to load images:', error);
+        serviceLogger.error('Failed to load images', error as Error);
         toast.error(language === 'bg' ? 'Грешка при зареждане на изображенията' : 'Error loading images');
       } finally {
         setIsLoadingImages(false);
@@ -715,7 +716,7 @@ const ImagesPage: React.FC = () => {
           updateData({ imagesCount: imageFiles.length });
           SellWorkflowStepStateService.markCompleted('images');
         } catch (error) {
-          console.error('Failed to save images:', error);
+          serviceLogger.error('Failed to save images', error as Error);
           toast.error(language === 'bg' ? 'Неуспешно запазване на изображенията' : 'Failed to save images');
         }
       } else {

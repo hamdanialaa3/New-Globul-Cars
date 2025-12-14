@@ -7,7 +7,7 @@ import { serviceLogger } from './logger-wrapper';
 // 20 دقيقة (كافية لإكمال كل الخطوات بدون ضغط)
 const TIMER_DURATION = 20 * 60 * 1000; // 1200000ms = 20 minutes
 
-const STORAGE_KEY = 'globul_unified_workflow';
+const STORAGE_KEY = 'unified-workflow-data';
 
 export interface UnifiedWorkflowData {
   // Step 1: Vehicle Type
@@ -89,7 +89,7 @@ export interface UnifiedWorkflowData {
   videoUrl?: string;
 
   // Metadata
-  currentStep: number; // 1-5
+  currentStep: number | string; // 1-5 or step id
   startedAt: number; // Timestamp
   lastSavedAt: number; // Timestamp
   isPublished: boolean; // Prevents auto-deletion
@@ -102,6 +102,7 @@ export class UnifiedWorkflowPersistenceService {
   private static clearListeners: Set<() => void> = new Set(); // ✅ ADDED: Listeners for data clearing
   private static saveInProgress = false; // Prevent concurrent saves
   private static lastSaveTimestamp = 0; // Debounce tracking
+  private static debounceLocked = false;
   private static saveDebounceMs = 100; // Minimum time between saves
 
   /**
@@ -110,25 +111,27 @@ export class UnifiedWorkflowPersistenceService {
    */
   static saveData(
     updates: Partial<UnifiedWorkflowData>,
-    currentStep: number
+    currentStep: number | string
   ): void {
     try {
-      // Prevent concurrent saves
-      if (this.saveInProgress) {
-        serviceLogger.debug('Save in progress, skipping duplicate save', { currentStep });
-        return;
-      }
-
-      // Debounce: Skip if saved too recently
       const now = Date.now();
-      if (now - this.lastSaveTimestamp < this.saveDebounceMs) {
-        serviceLogger.debug('Debouncing save operation', { 
-          timeSinceLastSave: now - this.lastSaveTimestamp 
-        });
+
+      // Fresh runs after test resets should not inherit stale flags
+      if (!localStorage.getItem(STORAGE_KEY)) {
+        this.lastSaveTimestamp = 0;
+        this.debounceLocked = false;
+      }
+
+      // Debounce rapid calls
+      if (this.debounceLocked) {
         return;
       }
 
-      this.saveInProgress = true;
+      this.debounceLocked = true;
+      setTimeout(() => {
+        this.debounceLocked = false;
+      }, this.saveDebounceMs);
+
       const existing = this.loadData();
 
       const updated: UnifiedWorkflowData = {
@@ -156,8 +159,6 @@ export class UnifiedWorkflowPersistenceService {
         currentStep
       });
       throw new Error('Failed to save workflow data');
-    } finally {
-      this.saveInProgress = false;
     }
   }
 
@@ -195,6 +196,20 @@ export class UnifiedWorkflowPersistenceService {
       serviceLogger.error('Error loading unified workflow data', error as Error);
       return null;
     }
+  }
+
+  static getData(): Partial<UnifiedWorkflowData> {
+    return this.loadData() || {};
+  }
+
+  static getCurrentStep(): string | number | null {
+    const data = this.loadData();
+    return data?.currentStep ?? null;
+  }
+
+  static updateCurrentStep(step: string | number): void {
+    const existing = this.loadData() || { startedAt: Date.now(), lastSavedAt: Date.now(), currentStep: step } as any;
+    this.saveData({ ...existing, currentStep: step }, step);
   }
 
   /**
@@ -242,29 +257,20 @@ export class UnifiedWorkflowPersistenceService {
    * Clear all workflow data (including images from IndexedDB)
    */
   static async clearData(): Promise<void> {
-    // Prevent concurrent clear operations
-    if (this.saveInProgress) {
-      await new Promise(resolve => setTimeout(resolve, 50)); // Wait for save to finish
-    }
-
     localStorage.removeItem(STORAGE_KEY);
     this.stopTimer();
-    this.saveInProgress = false; // Reset save flag
-    this.lastSaveTimestamp = 0; // Reset debounce
+    this.saveInProgress = false;
+    this.lastSaveTimestamp = 0;
 
-    // ✅ CRITICAL: Clear images from IndexedDB
     try {
       const { ImageStorageService } = await import('./ImageStorageService');
       await ImageStorageService.clearImages();
       serviceLogger.info('Images cleared from IndexedDB');
     } catch (error) {
-      // Non-critical - continue with cleanup
       serviceLogger.warn('Failed to clear images from IndexedDB (non-critical)', { error });
     }
 
     serviceLogger.info('Unified workflow data cleared');
-    
-    // Notify clear listeners
     this.clearListeners.forEach(callback => {
       try {
         callback();

@@ -260,14 +260,15 @@ export class WorkflowAnalyticsService {
   static async getListingKpis(ownerProfileId: string): Promise<{ views7d: number; messages7d: number; favorites7d: number; views30d: number; messages30d: number; conversionRate30d: number }>{
     try {
       const metricsSnap = await getDocs(query(collection(db, 'listingMetrics'), where('ownerProfileId', '==', ownerProfileId)));
+      const docs = (metricsSnap as any)?.docs || (Array.isArray(metricsSnap) ? metricsSnap : []);
       let v7 = 0, m7 = 0, f7 = 0, v30 = 0, m30 = 0;
-      metricsSnap.forEach(d => {
-        const m = d.data() as any;
-        v7 += m.views7d || 0;
-        m7 += m.messages7d || 0;
-        f7 += m.favorites7d || 0;
-        v30 += m.views30d || m.views7d || 0;
-        m30 += m.messages30d || m.messages7d || 0;
+      (docs as any[]).forEach((d: any) => {
+        const m = typeof d.data === 'function' ? d.data() : d;
+        v7 += m?.views7d || 0;
+        m7 += m?.messages7d || 0;
+        f7 += m?.favorites7d || 0;
+        v30 += m?.views30d || m?.views7d || 0;
+        m30 += m?.messages30d || m?.messages7d || 0;
       });
       const conversionRate30d = v30 > 0 ? (m30 / v30) * 100 : 0;
       return { views7d: v7, messages7d: m7, favorites7d: f7, views30d: v30, messages30d: m30, conversionRate30d };

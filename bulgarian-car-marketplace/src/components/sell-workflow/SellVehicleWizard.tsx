@@ -1,7 +1,7 @@
 // Sell Vehicle Wizard Component
 // معالج خطوات بيع السيارة داخل الـ modal - نمط mobile.de
 
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { Check, ArrowLeft, ArrowRight, RotateCcw, AlertTriangle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -25,6 +25,7 @@ interface SellVehicleWizardProps {
   initialStep?: number;
   onComplete: () => void;
   onCancel: () => void;
+  initialVehicleType?: string;
 }
 
 const TOTAL_STEPS = 6; // بدون preview و publish - فقط الخطوات الأساسية
@@ -331,12 +332,20 @@ export const SellVehicleWizard: React.FC<SellVehicleWizardProps> = ({
   initialStep = 0,
   onComplete,
   onCancel,
+  initialVehicleType,
 }) => {
   const { language } = useLanguage();
   const navigate = useNavigate();
   const { currentUser } = useAuth();
   const { workflowData, updateWorkflowData, clearWorkflowData } = useSellWorkflow();
   const [currentStep, setCurrentStep] = useState(initialStep);
+
+  // ✅ Set initial vehicle type if provided from URL
+  useEffect(() => {
+    if (initialVehicleType && !workflowData.vehicleType) {
+      updateWorkflowData({ vehicleType: initialVehicleType }, 'vehicle-selection');
+    }
+  }, [initialVehicleType, workflowData.vehicleType, updateWorkflowData]);
   const [direction, setDirection] = useState<'forward' | 'backward'>('forward');
   const [isPublishing, setIsPublishing] = useState(false);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
@@ -421,9 +430,10 @@ export const SellVehicleWizard: React.FC<SellVehicleWizardProps> = ({
       let imageFiles: File[] = [];
       try {
         imageFiles = await ImageStorageService.getImages();
-        console.log('📸 Images loaded from IndexedDB:', imageFiles.length);
+        if (process.env.NODE_ENV === 'development') {
+          logger.debug('Images loaded from IndexedDB', { count: imageFiles.length });
+        }
       } catch (error) {
-        console.error('Error loading images from IndexedDB:', error);
         logger.warn('Failed to load images from IndexedDB', error as Error);
       }
 
@@ -453,20 +463,22 @@ export const SellVehicleWizard: React.FC<SellVehicleWizardProps> = ({
       };
 
       // Validate workflow data
-      console.log('🔍 Validating workflow data...', {
-        make: payload.make,
-        model: payload.model,
-        year: payload.year,
-        vehicleType: payload.vehicleType,
-        sellerName: payload.sellerName,
-        sellerEmail: payload.sellerEmail,
-        sellerPhone: payload.sellerPhone
-      });
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Validating workflow data', {
+          make: payload.make,
+          model: payload.model,
+          year: payload.year,
+          vehicleType: payload.vehicleType,
+          sellerName: payload.sellerName,
+          sellerEmail: payload.sellerEmail,
+          sellerPhone: payload.sellerPhone
+        });
+      }
 
       const validation = SellWorkflowService.validateWorkflowData(payload, false);
       
       if (validation.criticalMissing) {
-        console.error('❌ Validation failed - critical fields missing:', validation.missingFields);
+        logger.error('Validation failed - critical fields missing', new Error('Missing required fields'), { missingFields: validation.missingFields });
         toast.error(
           language === 'bg' 
             ? `Критична информация липсва: ${validation.missingFields.join(', ')}` 
@@ -476,37 +488,44 @@ export const SellVehicleWizard: React.FC<SellVehicleWizardProps> = ({
         return;
       }
 
-      console.log('✅ Validation passed');
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Validation passed');
+      }
 
       // Create car listing
-      console.log('🚀 Creating car listing...', {
-        hasPayload: !!payload,
-        userId: currentUser.uid,
-        imageCount: imageFiles.length,
-        make: payload.make,
-        model: payload.model,
-        year: payload.year,
-        vehicleType: payload.vehicleType,
-        payloadKeys: Object.keys(payload)
-      });
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Creating car listing', {
+          hasPayload: !!payload,
+          userId: currentUser.uid,
+          imageCount: imageFiles.length,
+          make: payload.make,
+          model: payload.model,
+          year: payload.year,
+          vehicleType: payload.vehicleType
+        });
+      }
 
       let carId: string;
       try {
-        console.log('📤 Calling createCarListing service...');
+        if (process.env.NODE_ENV === 'development') {
+          logger.debug('Calling createCarListing service');
+        }
         carId = await SellWorkflowService.createCarListing(payload, currentUser.uid, imageFiles);
-        console.log('✅ createCarListing returned carId:', carId);
-        console.log('✅ Car ID type:', typeof carId);
-        console.log('✅ Car ID length:', carId?.length);
+        
+        if (process.env.NODE_ENV === 'development') {
+          logger.debug('createCarListing returned carId', { carId, type: typeof carId, length: carId?.length });
+        }
         
         if (!carId || typeof carId !== 'string' || carId.trim() === '') {
-          console.error('❌ Invalid carId returned:', carId, 'Type:', typeof carId);
+          logger.error('Invalid carId returned', new Error('Car ID is empty or invalid'), { carId, type: typeof carId });
           throw new Error('Car ID is empty or invalid');
         }
         
-        console.log('✅ Car ID is valid and ready for navigation:', carId);
+        if (process.env.NODE_ENV === 'development') {
+          logger.debug('Car ID is valid and ready for navigation', { carId });
+        }
       } catch (createError: any) {
-        console.error('❌ Error creating car listing:', createError);
-        console.error('❌ Error details:', {
+        logger.error('Error creating car listing', createError as Error, {
           message: createError.message,
           stack: createError.stack,
           name: createError.name
@@ -551,7 +570,9 @@ export const SellVehicleWizard: React.FC<SellVehicleWizardProps> = ({
       clearWorkflowData();
       try {
         await ImageStorageService.clearImages();
-        console.log('✅ Images cleared from IndexedDB');
+        if (process.env.NODE_ENV === 'development') {
+          logger.debug('Images cleared from IndexedDB');
+        }
       } catch (error) {
         logger.warn('Failed to clear images from IndexedDB (non-critical)', error as Error);
       }
@@ -569,7 +590,9 @@ export const SellVehicleWizard: React.FC<SellVehicleWizardProps> = ({
       }
 
       logger.info('Car listing published successfully', { carId, userId: currentUser.uid });
-      console.log('✅ All cleanup completed. Car ID:', carId);
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('All cleanup completed', { carId });
+      }
 
       // Close modal first, then navigate to car detail page
       onComplete(); // This will trigger modal close
@@ -578,13 +601,14 @@ export const SellVehicleWizard: React.FC<SellVehicleWizardProps> = ({
       setTimeout(() => {
         // Navigate to car detail page - user can edit or view the listing
         const carDetailUrl = `/car/${carId}`;
-        console.log('✅ Navigating to car detail page:', carDetailUrl);
+        if (process.env.NODE_ENV === 'development') {
+          logger.debug('Navigating to car detail page', { carDetailUrl });
+        }
         navigate(carDetailUrl);
       }, 500);
 
     } catch (error: any) {
-      console.error('❌ Error in handleComplete:', error);
-      console.error('❌ Error details:', {
+      logger.error('Error in handleComplete', error as Error, {
         message: error.message,
         stack: error.stack,
         name: error.name,
@@ -626,9 +650,11 @@ export const SellVehicleWizard: React.FC<SellVehicleWizardProps> = ({
       // Clear images from IndexedDB
       try {
         await ImageStorageService.clearImages();
-        console.log('✅ Images cleared from IndexedDB');
+        if (process.env.NODE_ENV === 'development') {
+          logger.debug('Images cleared from IndexedDB');
+        }
       } catch (error) {
-        console.error('Error clearing images:', error);
+        logger.warn('Error clearing images', error as Error);
       }
 
       // Clear WorkflowPersistenceService
@@ -645,10 +671,12 @@ export const SellVehicleWizard: React.FC<SellVehicleWizardProps> = ({
         const UnifiedWorkflowPersistenceService = UnifiedWorkflowPersistenceServiceModule.default || UnifiedWorkflowPersistenceServiceModule.UnifiedWorkflowPersistenceService;
         if (UnifiedWorkflowPersistenceService && typeof UnifiedWorkflowPersistenceService.clearData === 'function') {
           await UnifiedWorkflowPersistenceService.clearData();
-          console.log('✅ Unified workflow data cleared');
+          if (process.env.NODE_ENV === 'development') {
+            logger.debug('Unified workflow data cleared');
+          }
         }
       } catch (error) {
-        console.warn('Unified workflow service not available or already cleared:', error);
+        logger.warn('Unified workflow service not available or already cleared', error as Error);
       }
 
       // Delete draft from Firestore if exists (get draftId before clearing localStorage)

@@ -12,6 +12,7 @@ interface SellVehicleModalProps {
   onClose: () => void;
   onComplete?: () => void;
   initialStep?: number;
+  initialVehicleType?: string;
 }
 
 // Animations
@@ -140,6 +141,7 @@ export const SellVehicleModal: React.FC<SellVehicleModalProps> = ({
   onClose,
   onComplete,
   initialStep = 0,
+  initialVehicleType,
 }) => {
   const { language } = useLanguage();
   const [isClosing, setIsClosing] = useState(false);
@@ -190,6 +192,7 @@ export const SellVehicleModal: React.FC<SellVehicleModalProps> = ({
             initialStep={initialStep}
             onComplete={handleComplete}
             onCancel={handleClose}
+            initialVehicleType={initialVehicleType}
           />
         </WizardContainer>
       </ModalContainer>

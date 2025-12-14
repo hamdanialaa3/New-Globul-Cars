@@ -23,9 +23,17 @@ jest.mock('firebase/auth', () => ({
   createUserWithEmailAndPassword: jest.fn(),
   sendPasswordResetEmail: jest.fn(),
   updateProfile: jest.fn(),
-  GoogleAuthProvider: jest.fn(),
+  signInWithRedirect: jest.fn(),
+  getRedirectResult: jest.fn(),
+  GoogleAuthProvider: jest.fn().mockImplementation(() => ({
+    addScope: jest.fn(),
+    setCustomParameters: jest.fn(),
+  })),
   signInWithPopup: jest.fn(),
-  FacebookAuthProvider: jest.fn(),
+  FacebookAuthProvider: jest.fn().mockImplementation(() => ({
+    addScope: jest.fn(),
+    setCustomParameters: jest.fn(),
+  })),
   OAuthProvider: jest.fn().mockImplementation((providerId) => ({
     providerId,
     addScope: jest.fn(),

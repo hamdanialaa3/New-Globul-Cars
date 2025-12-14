@@ -3,14 +3,20 @@
 
 import React from 'react';
 
-const mockReactRouterDom = {
-  BrowserRouter: ({ children }: any) => children,
-  Routes: ({ children }: any) => children,
-  Route: ({ element }: any) => element,
-  Link: ({ children, to }: any) => React.createElement('a', { href: to }, children),
-  useNavigate: () => jest.fn(),
-  useLocation: () => ({ pathname: '/', search: '', hash: '', state: null }),
-  useParams: () => ({}),
-};
+export const BrowserRouter = ({ children }: any) => children;
+export const Routes = ({ children }: any) => children;
+export const Route = ({ element }: any) => element;
+export const Link = ({ children, to }: any) => React.createElement('a', { href: to }, children);
+export const useNavigate = () => jest.fn();
+export const useLocation = () => ({ pathname: '/', search: '', hash: '', state: null });
+export const useParams = () => ({});
 
-export default mockReactRouterDom;
+export default {
+  BrowserRouter,
+  Routes,
+  Route,
+  Link,
+  useNavigate,
+  useLocation,
+  useParams,
+};
