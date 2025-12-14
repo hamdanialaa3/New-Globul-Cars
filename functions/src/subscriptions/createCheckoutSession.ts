@@ -10,10 +10,20 @@ import { STRIPE_CONFIG, getPlanById, validatePaidPlan } from './config';
 
 const db = getFirestore();
 
-// Initialize Stripe
-const stripe = new Stripe(STRIPE_CONFIG.secretKey, {
-  apiVersion: '2025-09-30.clover' as any,
-});
+// Initialize Stripe only if secret key is configured
+let stripeInstance: Stripe | null = null;
+
+const getStripe = (): Stripe => {
+  if (!stripeInstance) {
+    if (!STRIPE_CONFIG.secretKey) {
+      throw new Error('Stripe secret key is not configured. Set STRIPE_SECRET_KEY environment variable.');
+    }
+    stripeInstance = new Stripe(STRIPE_CONFIG.secretKey, {
+      apiVersion: '2025-09-30.clover' as any,
+    });
+  }
+  return stripeInstance;
+};
 
 /**
  * Create Stripe Checkout Session
@@ -119,6 +129,7 @@ export const createCheckoutSession = onCall<{
     }
 
     // 6. Create Checkout Session
+    const stripe = getStripe();
     const session = await stripe.checkout.sessions.create({
       customer: stripeCustomerId,
       mode: 'subscription',
