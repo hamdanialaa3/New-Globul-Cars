@@ -12,6 +12,16 @@ interface SubscriptionEmailData {
   language: 'bg' | 'en';
 }
 
+/**
+ * Placeholder for email sending
+ * TODO: Implement with Sendgrid API
+ */
+async function sendEmailHelper(options: any) {
+  console.log('Email service not yet implemented:', options);
+  // Implement with Sendgrid or other email service
+  return Promise.resolve();
+}
+
 export const sendSubscriptionActivatedEmail = async (data: SubscriptionEmailData) => {
   const { userEmail, userName, planName, amount, currency, nextBillingDate, language } = data;
 
