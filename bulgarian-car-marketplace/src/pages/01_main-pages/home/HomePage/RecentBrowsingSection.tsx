@@ -6,6 +6,7 @@ import { getBrowsingHistory, clearBrowsingHistory, BrowsingHistoryItem } from '.
 import { History, Clock, Eye, Trash2, Search, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { useTheme } from '../../../../contexts/ThemeContext';
+import HorizontalScrollContainer from '../../../../components/HorizontalScrollContainer/HorizontalScrollContainer';
 
 // Styled Components
 const SectionContainer = styled.section<{ $isDark: boolean }>`
@@ -72,19 +73,11 @@ const SectionSubtitle = styled.p<{ $isDark: boolean }>`
   }
 `;
 
-const CarsGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 32px;
+const CarsContainer = styled.div`
   max-width: 1400px;
   margin: 0 auto;
   position: relative;
   z-index: 2;
-
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    gap: 24px;
-  }
 `;
 
 const EmptyState = styled.div<{ $isDark: boolean }>`
@@ -380,26 +373,33 @@ const RecentBrowsingSection: React.FC = () => {
         </SectionSubtitle>
       </SectionHeader>
 
-      <CarsGrid>
-        {sortedHistory.map((item, index) => (
-          <div key={`${item.listing.id}-${index}`} style={{ position: 'relative' }}>
-            <ModernCarCard
-              car={item.listing}
-              showStatus={false}
-            />
-            <TimeBadgeOverlay>
-              <Clock size={14} />
-              {formatTimeAgo(item.viewedAt)}
-            </TimeBadgeOverlay>
-            <ViewCountBadge>
-              <Eye size={14} />
-              {item.viewCount} {language === 'bg' 
-                ? (item.viewCount === 1 ? 'преглед' : 'прегледа')
-                : (item.viewCount === 1 ? 'view' : 'views')}
-            </ViewCountBadge>
-          </div>
-        ))}
-      </CarsGrid>
+      <CarsContainer>
+        <HorizontalScrollContainer
+          gap="32px"
+          padding="0"
+          itemMinWidth="320px"
+          showArrows={true}
+        >
+          {sortedHistory.map((item, index) => (
+            <div key={`${item.listing.id}-${index}`} style={{ position: 'relative' }}>
+              <ModernCarCard
+                car={item.listing}
+                showStatus={false}
+              />
+              <TimeBadgeOverlay>
+                <Clock size={14} />
+                {formatTimeAgo(item.viewedAt)}
+              </TimeBadgeOverlay>
+              <ViewCountBadge>
+                <Eye size={14} />
+                {item.viewCount} {language === 'bg' 
+                  ? (item.viewCount === 1 ? 'преглед' : 'прегледа')
+                  : (item.viewCount === 1 ? 'view' : 'views')}
+              </ViewCountBadge>
+            </div>
+          ))}
+        </HorizontalScrollContainer>
+      </CarsContainer>
 
       <ClearButton onClick={handleClearHistory}>
         <Trash2 size={18} />

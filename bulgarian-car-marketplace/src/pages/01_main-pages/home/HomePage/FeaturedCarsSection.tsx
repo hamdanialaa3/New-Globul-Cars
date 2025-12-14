@@ -153,6 +153,60 @@ const SearchButton = styled(Link)<{ $variant?: 'primary' | 'secondary' }>`
   }
 `;
 
+const ViewAllFeaturedButton = styled(Link)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 1.5rem auto 0;
+  padding: 0.75rem 2rem;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  letter-spacing: 0.02em;
+  width: fit-content;
+
+  /* Light mode: Orange/Yellow gradient */
+  html[data-theme="light"] & {
+    background: linear-gradient(135deg, #FF8F10 0%, #FFA500 50%, #FFD700 100%);
+    color: #000000;
+    box-shadow: 0 4px 20px rgba(255, 143, 16, 0.4);
+  }
+
+  /* Dark mode: Black with yellow text */
+  html[data-theme="dark"] & {
+    background: #000000;
+    color: #FFD700;
+    border: 2px solid #FFD700;
+    box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
+  }
+  
+  &:hover {
+    transform: translateY(-3px) scale(1.02);
+    html[data-theme="light"] & {
+      background: linear-gradient(135deg, #FFA500 0%, #FFD700 50%, #FF8F10 100%);
+      box-shadow: 0 8px 30px rgba(255, 143, 16, 0.5);
+    }
+    html[data-theme="dark"] & {
+      background: #1a1a1a;
+      box-shadow: 0 8px 30px rgba(255, 215, 0, 0.4);
+    }
+  }
+  
+  &:active {
+    transform: translateY(-1px) scale(1);
+  }
+  
+  @media (max-width: 600px) {
+    padding: 0.625rem 1.5rem;
+    font-size: 0.875rem;
+  }
+`;
+
 
 const LoadingFallback = styled.div`
   text-align: center;
@@ -178,7 +232,7 @@ const FeaturedCarsSectionComponent: React.FC = () => {
               : 'Discover our handpicked selection of premium vehicles available in the Bulgarian marketplace.'}
           </p>
           
-          {/* ⚡ NEW: Search Buttons (replacing View All button) */}
+          {/* ⚡ Search Buttons */}
           <SearchButtonsContainer>
             <SearchButton to="/cars" $variant="primary">
               <Search />
@@ -189,6 +243,11 @@ const FeaturedCarsSectionComponent: React.FC = () => {
               <span>{language === 'bg' ? 'Разширено търсене' : 'Advanced Search'}</span>
             </SearchButton>
           </SearchButtonsContainer>
+          
+          {/* ⚡ View All Featured Button */}
+          <ViewAllFeaturedButton to="/cars?featured=true">
+            {language === 'bg' ? 'Виж всички избрани →' : 'View All Featured →'}
+          </ViewAllFeaturedButton>
         </SectionHeader>
 
         <Suspense fallback={<LoadingFallback>Loading featured cars...</LoadingFallback>}>

@@ -328,54 +328,63 @@ const ScrollButton = styled.button<{ $direction: 'left' | 'right' }>`
   top: 50%;
   ${props => props.$direction === 'left' ? 'left: 8px;' : 'right: 8px;'}
   transform: translateY(-50%);
-  width: 56px;
-  height: 80px;
-  background: rgba(255, 255, 255, 0.95);
-  border: 2px solid var(--accent-primary);
-  border-radius: 12px;
+  width: 50px;
+  height: 50px;
+  min-width: 50px;
+  min-height: 50px;
+  max-width: 50px;
+  max-height: 50px;
+  background: rgba(255, 143, 16, 0.25);
+  border: 2px solid rgba(255, 143, 16, 0.5);
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 16px rgba(255, 143, 16, 0.2);
   backdrop-filter: blur(8px);
   z-index: 10;
   
   /* Arrow styling */
   svg {
     color: var(--accent-primary);
-    width: 36px !important;
-    height: 36px !important;
+    width: 24px !important;
+    height: 24px !important;
     transition: all 0.3s ease;
     flex-shrink: 0;
+    display: block;
   }
   
   &:hover {
-    background: var(--accent-primary);
+    background: rgba(255, 143, 16, 0.4);
     border-color: var(--accent-primary);
     transform: translateY(-50%) translateX(${props => props.$direction === 'left' ? '-4px' : '4px'});
-    box-shadow: 0 6px 24px rgba(255, 121, 0, 0.35);
+    box-shadow: 0 6px 24px rgba(255, 143, 16, 0.3);
     
     svg {
-      color: white;
+      color: var(--accent-primary);
       transform: translateX(${props => props.$direction === 'left' ? '-2px' : '2px'});
     }
   }
   
   &:active {
     transform: translateY(-50%) scale(0.95);
-    box-shadow: 0 2px 8px rgba(255, 121, 0, 0.25);
+    box-shadow: 0 2px 8px rgba(255, 143, 16, 0.25);
   }
   
   @media (max-width: 768px) {
-    width: 44px;
-    height: 64px;
-    border-radius: 10px;
+    width: 50px;
+    height: 50px;
+    min-width: 50px;
+    min-height: 50px;
+    max-width: 50px;
+    max-height: 50px;
+    border-radius: 50%;
     
     svg {
-      width: 28px !important;
-      height: 28px !important;
+      width: 24px !important;
+      height: 24px !important;
     }
   }
 `;

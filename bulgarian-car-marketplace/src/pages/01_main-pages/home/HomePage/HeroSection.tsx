@@ -6,6 +6,8 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import LanguageToggle from '../../../../components/LanguageToggle/LanguageToggle';
+import AdvancedSearchWidget from './AdvancedSearchWidget';
+import QuickBrandsSection from './QuickBrandsSection';
 
 const HeroSection = styled.section`
   background-image: url('/assets/backgrounds/metal-bg-1.jpg');
@@ -75,74 +77,183 @@ const HeroContent = styled.div`
   position: relative;
   z-index: 2;
   text-align: center;
+  width: 100%;
+`;
+
+const HeroTitleWrapper = styled.div`
+  width: 100%;
+  margin-bottom: 1.25rem;
+  overflow: hidden;
+  position: relative;
+
+  @media (max-width: 768px) {
+    margin-bottom: 1rem;
+    overflow: visible;
+  }
+
+  @media (max-width: 480px) {
+    overflow: hidden;
+    mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      black 10%,
+      black 90%,
+      transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      black 10%,
+      black 90%,
+      transparent 100%
+    );
+  }
 `;
 
 const HeroTitle = styled.h1`
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-  line-height: 1.3;
-  color: #000000; /* Black for dark mode */
-  transition: color 0.3s ease;
+  font-size: clamp(1.5rem, 4vw + 1rem, 3.5rem);
+  font-weight: 900;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: fadeInUp 0.8s ease-out;
+  width: 100%;
+  margin: 0;
+  display: inline-block;
 
-  /* Light mode: Orange */
+  /* Light mode: Orange gradient */
   html[data-theme="light"] & {
-    color: #ffffff; /* White for light mode */
+    background: linear-gradient(135deg, #FF8F10 0%, #FFA500 50%, #FFD700 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 2px 4px rgba(255, 143, 16, 0.3));
   }
 
-  /* Dark mode: Yellow */
+  /* Dark mode: Black with yellow accent */
   html[data-theme="dark"] & {
-    color: #FFD700; /* Yellow/Gold for dark mode */
+    color: #000000;
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.5), 0 2px 4px rgba(0, 0, 0, 0.3);
   }
 
-  /* MOBILE - Professional typography (Airbnb/Booking.com) */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes scrollTitle {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(calc(-100% + 100%));
+    }
+  }
+
+  @keyframes scrollTitleMobile {
+    0%, 12% {
+      transform: translateX(0);
+    }
+    38% {
+      transform: translateX(calc(-100% + 100vw - 6rem));
+    }
+    62% {
+      transform: translateX(calc(-100% + 100vw - 6rem));
+    }
+    88%, 100% {
+      transform: translateX(0);
+    }
+  }
+
+  /* Tablet */
+  @media (max-width: 1024px) {
+    font-size: clamp(1.5rem, 4vw + 0.5rem, 2.75rem);
+    padding: 0 20px;
+  }
+
+  /* Mobile */
   @media (max-width: 768px) {
-    font-size: 1.75rem;  /* 28px */
-    font-weight: 800;  /* Bolder for impact */
-    line-height: 1.2;
-    margin-bottom: 12px;
+    font-size: clamp(1.25rem, 5vw + 0.25rem, 2rem);
     padding: 0 16px;
+    line-height: 1.3;
   }
   
+  /* Small Mobile - Scrolling Title */
   @media (max-width: 480px) {
-    font-size: 1.5rem;  /* 24px */
-    line-height: 1.25;
-    padding: 0 12px;
+    font-size: clamp(1.125rem, 6vw, 1.75rem);
+    padding: 0 3rem;
+    white-space: nowrap;
+    display: inline-block;
+    width: auto;
+    animation: fadeInUp 0.8s ease-out, scrollTitleMobile 22s infinite ease-in-out 1.5s;
+    
+    /* Pause on hover/touch for better UX */
+    &:hover,
+    &:active {
+      animation-play-state: paused;
+    }
+    
+    /* Ensure text doesn't break */
+    word-break: keep-all;
+    overflow-wrap: normal;
   }
-  
-  @media (max-width: 380px) {
-    font-size: 1.375rem;  /* 22px */
+
+  /* Extra Small Mobile */
+  @media (max-width: 360px) {
+    font-size: clamp(1rem, 7vw, 1.5rem);
+    padding: 0 1.5rem;
+    animation-duration: 18s, 18s;
+  }
+
+  /* Responsive scaling for any viewport */
+  @media (min-width: 1400px) {
+    font-size: clamp(2.5rem, 3vw, 3.5rem);
+  }
+
+  @media (min-width: 1920px) {
+    font-size: clamp(3rem, 2.5vw, 4rem);
+  }
+
+  /* Smooth scaling on resize */
+  @media (orientation: landscape) and (max-height: 500px) {
+    font-size: clamp(1rem, 3vw, 2rem);
   }
 `;
 
 const HeroSubtitle = styled.p`
-  font-size: 1rem;
-  margin-bottom: 2rem;
-  line-height: 1.6;
-  color: #000000; /* Black for dark mode */
-  max-width: 600px;
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  margin-bottom: 2.5rem;
+  line-height: 1.7;
+  max-width: 700px;
   margin-left: auto;
   margin-right: auto;
-  transition: color 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: fadeInUp 0.8s ease-out 0.2s both;
+  font-weight: 400;
 
-  /* Light mode: White */
+  /* Light mode: Black text */
   html[data-theme="light"] & {
-    color: #ffffff; /* White for light mode */
+    color: #1a1a1a;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
   }
 
-  /* Dark mode: Yellow */
+  /* Dark mode: Yellow text */
   html[data-theme="dark"] & {
-    color: #FFD700; /* Yellow/Gold for dark mode */
+    color: #FFD700;
+    text-shadow: 0 2px 8px rgba(255, 215, 0, 0.4);
   }
   
-  /* MOBILE - Compact subtitle (LinkedIn pattern) */
   @media (max-width: 768px) {
-    font-size: 0.9375rem;  /* 15px */
-    line-height: 1.5;
-    margin-bottom: 20px;
+    font-size: clamp(0.9375rem, 1.8vw, 1.125rem);
+    margin-bottom: 2rem;
     padding: 0 20px;
-    
-    /* Limit to 3 lines */
+    line-height: 1.6;
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
@@ -150,8 +261,8 @@ const HeroSubtitle = styled.p`
   }
   
   @media (max-width: 480px) {
-    font-size: 0.875rem;  /* 14px */
-    -webkit-line-clamp: 2;  /* 2 lines on small screens */
+    font-size: clamp(0.875rem, 1.6vw, 1rem);
+    -webkit-line-clamp: 2;
     padding: 0 16px;
   }
 `;
@@ -178,32 +289,38 @@ const HeroButtons = styled.div`
 `;
 
 const HeroButton = styled(Link)`
-  display: inline-block;
-  padding: 0.875rem 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 28px;
   text-decoration: none;
-  font-weight: 600;
-  font-size: 1rem;
-  border-radius: 12px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border: none;
+  font-weight: 700;
+  font-size: 0.9375rem;
+  border-radius: 10px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1.5px solid transparent;
   position: relative;
   overflow: hidden;
+  letter-spacing: 0.02em;
+  animation: fadeInUp 0.8s ease-out 0.4s both;
+  min-height: 44px;
   
-  /* Light mode: Orange gradient background, White text */
+  /* Light mode: Orange/Yellow gradient */
   html[data-theme="light"] & {
-    background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 50%, #FFA500 100%) !important;
-    color: #ffffff !important; /* White text */
-    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.35) !important;
+    background: linear-gradient(135deg, #FF8F10 0%, #FFD700 100%);
+    color: #000000;
+    box-shadow: 0 4px 16px rgba(255, 143, 16, 0.3);
   }
 
-  /* Dark mode: Yellow gradient background, Black text */
+  /* Dark mode: Black background, Yellow text */
   html[data-theme="dark"] & {
-    background: linear-gradient(135deg, #FFD700 0%, #FFC107 50%, #FFA000 100%) !important;
-    color: #000000 !important; /* Black text */
-    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4) !important;
+    background: #000000;
+    color: #FFD700;
+    border-color: #FFD700;
+    box-shadow: 0 4px 16px rgba(255, 215, 0, 0.25);
   }
 
-  /* Shine effect on hover */
+  /* Shine effect */
   &::before {
     content: '';
     position: absolute;
@@ -216,16 +333,16 @@ const HeroButton = styled(Link)`
   }
 
   &:hover {
-    transform: translateY(-3px);
+    transform: translateY(-2px);
+    
     html[data-theme="light"] & {
-      background: linear-gradient(135deg, #FF5722 0%, #FF6B35 50%, #FF8C42 100%) !important;
-      color: #ffffff !important; /* White text - keep white on orange */
-      box-shadow: 0 6px 20px rgba(255, 107, 53, 0.5) !important;
+      background: linear-gradient(135deg, #FFA500 0%, #FFD700 100%);
+      box-shadow: 0 6px 20px rgba(255, 143, 16, 0.4);
     }
+    
     html[data-theme="dark"] & {
-      background: linear-gradient(135deg, #FFC107 0%, #FFD700 50%, #FFC107 100%) !important;
-      color: #000000 !important; /* Black text - keep black on yellow */
-      box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6) !important;
+      background: #1a1a1a;
+      box-shadow: 0 6px 20px rgba(255, 215, 0, 0.35);
     }
     
     &::before {
@@ -234,83 +351,53 @@ const HeroButton = styled(Link)`
   }
 
   &:active {
-    transform: translateY(-1px);
-    html[data-theme="light"] & {
-      background: linear-gradient(135deg, #E64A19 0%, #FF5722 50%, #FF6B35 100%) !important;
-      color: #ffffff !important; /* White text - keep white on orange */
-      box-shadow: 0 3px 10px rgba(255, 107, 53, 0.4) !important;
-    }
-    html[data-theme="dark"] & {
-      background: linear-gradient(135deg, #FFA000 0%, #FFC107 50%, #FFD700 100%) !important;
-      color: #000000 !important; /* Black text - keep black on yellow */
-      box-shadow: 0 3px 10px rgba(255, 215, 0, 0.5) !important;
-    }
+    transform: translateY(0);
   }
 
   &.secondary {
-    /* Light mode: Orange gradient background, White text */
     html[data-theme="light"] & {
-      background: linear-gradient(135deg, #FF8C42 0%, #FF6B35 50%, #FF5722 100%) !important;
-      color: #ffffff !important; /* White text */
-      box-shadow: 0 4px 15px rgba(255, 107, 53, 0.35) !important;
+      background: transparent;
+      color: #FF8F10;
+      border-color: #FF8F10;
+      box-shadow: 0 2px 8px rgba(255, 143, 16, 0.15);
     }
 
-    /* Dark mode: Yellow gradient background, Black text */
     html[data-theme="dark"] & {
-      background: linear-gradient(135deg, #FFC107 0%, #FFD700 50%, #FFA000 100%) !important;
-      color: #000000 !important; /* Black text */
-      box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4) !important;
+      background: transparent;
+      color: #FFD700;
+      border-color: #FFD700;
+      box-shadow: 0 2px 8px rgba(255, 215, 0, 0.15);
     }
 
     &:hover {
       html[data-theme="light"] & {
-        background: linear-gradient(135deg, #FF6B35 0%, #FF5722 50%, #E64A19 100%) !important;
-        color: #ffffff !important; /* White text - keep white on orange */
-        box-shadow: 0 6px 20px rgba(255, 107, 53, 0.5) !important;
+        background: #FF8F10;
+        color: #000000;
+        box-shadow: 0 4px 16px rgba(255, 143, 16, 0.3);
       }
+      
       html[data-theme="dark"] & {
-        background: linear-gradient(135deg, #FFD700 0%, #FFC107 50%, #FFA000 100%) !important;
-        color: #000000 !important; /* Black text - keep black on yellow */
-        box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6) !important;
-      }
-    }
-
-    &:active {
-      html[data-theme="light"] & {
-        background: linear-gradient(135deg, #E64A19 0%, #FF5722 50%, #FF6B35 100%) !important;
-        color: #ffffff !important; /* White text - keep white on orange */
-      }
-      html[data-theme="dark"] & {
-        background: linear-gradient(135deg, #FFA000 0%, #FFC107 50%, #FFD700 100%) !important;
-        color: #000000 !important; /* Black text - keep black on yellow */
+        background: #FFD700;
+        color: #000000;
+        box-shadow: 0 4px 16px rgba(255, 215, 0, 0.3);
       }
     }
   }
   
-  /* MOBILE - Full-width touch-optimized (Facebook/Instagram CTA) */
   @media (max-width: 768px) {
-    display: block;
     width: 100%;
-    padding: 14px 24px;
-    font-size: 1rem;  /* 16px - clear */
-    font-weight: 700;
-    min-height: 52px;  /* Larger for hero CTAs */
-    border-radius: 12px;  /* More rounded */
-    text-align: center;
-    
-    /* Better touch feedback */
+    padding: 10px 24px;
+    font-size: 0.875rem;
+    min-height: 42px;
+    border-radius: 10px;
     -webkit-tap-highlight-color: transparent;
     user-select: none;
-    
-    &:active {
-      transform: scale(0.98);
-    }
   }
   
   @media (max-width: 480px) {
-    padding: 12px 20px;
-    font-size: 0.9375rem;  /* 15px */
-    min-height: 50px;
+    padding: 9px 20px;
+    font-size: 0.8125rem;
+    min-height: 40px;
   }
 `;
 
@@ -343,14 +430,23 @@ const HeroSectionComponent: React.FC = () => {
   const { t } = useLanguage();
 
   return (
-    <HeroSection style={{ position: 'relative', zIndex: 1 }}>
+      <HeroSection style={{ position: 'relative', zIndex: 1 }}>
       <HeroContent>
-        <HeroTitle>
-          {t('home.hero.title')}
-        </HeroTitle>
+        <HeroTitleWrapper>
+          <HeroTitle>
+            {t('home.hero.title')}
+          </HeroTitle>
+        </HeroTitleWrapper>
         <HeroSubtitle>
           {t('home.hero.subtitle')}
         </HeroSubtitle>
+        
+        {/* Advanced Search Widget */}
+        <AdvancedSearchWidget />
+        
+        {/* Quick Brand Filters */}
+        <QuickBrandsSection />
+        
         <HeroButtons>
           <HeroButton to="/cars">
             {t('home.hero.browseCars')}

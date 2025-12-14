@@ -10,6 +10,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthProvider';
 import { MapPin, Fuel, Gauge, Calendar, MessageCircle, User } from 'lucide-react';
 import { homePageCache, CACHE_KEYS } from '../services/homepage-cache.service';
+import HorizontalScrollContainer from './HorizontalScrollContainer/HorizontalScrollContainer';
 
 interface FeaturedCarsProps {
   limit?: number;
@@ -18,26 +19,7 @@ interface FeaturedCarsProps {
 }
 
 const FeaturedCarsContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1.2rem;
   margin-top: 2rem;
-  transform: scale(0.8);
-  transform-origin: top center;
-  
-  @media (max-width: 1400px) {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  
-  @media (max-width: 1024px) {
-    grid-template-columns: repeat(2, 1fr);
-    transform: scale(0.85);
-  }
-  
-  @media (max-width: 600px) {
-    grid-template-columns: 1fr;
-    transform: scale(0.9);
-  }
 `;
 
 const CarCard = styled(Link)`
@@ -319,8 +301,14 @@ const FeaturedCars: React.FC<FeaturedCarsProps> = ({
   return (
     <>
       <FeaturedCarsContainer>
-        {visibleCars.map((car) => (
-          <CarCard key={car.id} to={`/cars/${car.id}`}>
+        <HorizontalScrollContainer
+          gap="1.2rem"
+          padding="0"
+          itemMinWidth="280px"
+          showArrows={true}
+        >
+          {visibleCars.map((car) => (
+            <CarCard key={car.id} to={`/cars/${car.id}`}>
             <CarImageWrapper>
               {car.images && car.images.length > 0 ? (
               <CarImage 
@@ -417,7 +405,8 @@ const FeaturedCars: React.FC<FeaturedCarsProps> = ({
               </CarLocation>
             </CarInfo>
           </CarCard>
-        ))}
+          ))}
+        </HorizontalScrollContainer>
       </FeaturedCarsContainer>
     </>
   );

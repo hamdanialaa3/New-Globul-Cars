@@ -4,10 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import { unifiedCarService, UnifiedCar } from '../../../../services/car';
 import ModernCarCard from './ModernCarCard';
 import DemandStats from './DemandStats';
-import { Bot, Award } from 'lucide-react';
+import { Bot, ArrowRight, TrendingUp } from 'lucide-react';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { useTheme } from '../../../../contexts/ThemeContext';
 import { logger } from '../../../../services/logger-service';
+import HorizontalScrollContainer from '../../../../components/HorizontalScrollContainer/HorizontalScrollContainer';
 
 // Styled Components
 const SectionContainer = styled.section<{ $isDark: boolean }>`
@@ -82,16 +83,88 @@ const SectionSubtitle = styled.p<{ $isDark: boolean }>`
   }
 `;
 
-const CategoriesNav = styled.div`
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  flex-wrap: wrap;
+const CategoriesNavContainer = styled.div`
   margin-bottom: 40px;
+`;
 
-  @media (max-width: 768px) {
-    gap: 8px;
+const ViewAllButton = styled.button<{ $isDark: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 40px auto 0;
+  padding: 0.75rem 2rem;
+  border: none;
+  border-radius: 12px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  letter-spacing: 0.02em;
+  position: relative;
+  overflow: hidden;
+
+  /* Light mode: Orange/Yellow gradient */
+  html[data-theme="light"] & {
+    background: linear-gradient(135deg, #FF8F10 0%, #FFA500 50%, #FFD700 100%);
+    color: #000000;
+    box-shadow: 0 4px 20px rgba(255, 143, 16, 0.4);
   }
+
+  /* Dark mode: Black with yellow text */
+  html[data-theme="dark"] & {
+    background: #000000;
+    color: #FFD700;
+    border: 2px solid #FFD700;
+    box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
+  }
+  
+  &:hover {
+    transform: translateY(-3px) scale(1.02);
+    html[data-theme="light"] & {
+      background: linear-gradient(135deg, #FFA500 0%, #FFD700 50%, #FF8F10 100%);
+      box-shadow: 0 8px 30px rgba(255, 143, 16, 0.5);
+    }
+    html[data-theme="dark"] & {
+      background: #1a1a1a;
+      box-shadow: 0 8px 30px rgba(255, 215, 0, 0.4);
+    }
+  }
+  
+  &:active {
+    transform: translateY(-1px) scale(1);
+  }
+  
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+  
+  @media (max-width: 768px) {
+    padding: 0.625rem 1.5rem;
+    font-size: 0.875rem;
+  }
+`;
+
+const RankBadge = styled.span<{ $rank: number; $active: boolean; $isDark: boolean }>`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 6px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  background: ${props => {
+    if (props.$rank === 1) return 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)';
+    if (props.$rank === 2) return 'linear-gradient(135deg, #C0C0C0 0%, #A8A8A8 100%)';
+    if (props.$rank === 3) return 'linear-gradient(135deg, #CD7F32 0%, #B87333 100%)';
+    return 'transparent';
+  }};
+  color: ${props => props.$rank <= 3 ? '#000000' : 'transparent'};
+  box-shadow: ${props => props.$rank <= 3 ? '0 2px 8px rgba(0, 0, 0, 0.2)' : 'none'};
+  margin-right: 4px;
 `;
 
 const CategoryTab = styled.button<{ $active: boolean; $rank?: number; $isDark: boolean }>`
@@ -120,20 +193,6 @@ const CategoryTab = styled.button<{ $active: boolean; $rank?: number; $isDark: b
   align-items: center;
   gap: 8px;
 
-  ${props => props.$rank && props.$rank <= 3 && `
-    &::after {
-      content: '';
-      position: absolute;
-      top: -4px;
-      right: -4px;
-      width: 20px;
-      height: 20px;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFD700' stroke='%23B8860B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='8' r='7'/%3E%3Cpolyline points='8.21 13.89 7 23 12 20 17 23 15.79 13.88'/%3E%3C/svg%3E");
-      background-size: contain;
-      background-repeat: no-repeat;
-    }
-  `}
-
   &:hover {
     transform: translateY(-2px);
     box-shadow: ${props => props.active
@@ -150,19 +209,11 @@ const CategoryTab = styled.button<{ $active: boolean; $rank?: number; $isDark: b
   }
 `;
 
-const CarsGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 32px;
+const CarsContainer = styled.div`
   max-width: 1400px;
   margin: 0 auto;
   position: relative;
   z-index: 2;
-
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    gap: 24px;
-  }
 `;
 
 
@@ -235,20 +286,36 @@ const MostDemandedCategoriesSection: React.FC = () => {
             : 'Discover the most popular car categories based on intelligent user demand analysis.'}
         </SectionSubtitle>
 
-        <CategoriesNav>
-          {CATEGORIES.map(category => (
-            <CategoryTab
-              key={category.id}
-              $active={selectedCategory === category.id}
-              $rank={category.rank}
-              $isDark={isDark}
-              onClick={() => setSelectedCategory(category.id)}
-            >
-              {category.rank <= 3 && <Award size={16} color={selectedCategory === category.id ? 'white' : '#f59e0b'} />}
-              {t(`bodyTypes.${category.id}`)}
-            </CategoryTab>
-          ))}
-        </CategoriesNav>
+        <CategoriesNavContainer>
+          <HorizontalScrollContainer
+            gap="12px"
+            padding="0"
+            itemMinWidth="auto"
+            showArrows={true}
+          >
+            {CATEGORIES.map(category => (
+              <CategoryTab
+                key={category.id}
+                $active={selectedCategory === category.id}
+                $rank={category.rank}
+                $isDark={isDark}
+                onClick={() => setSelectedCategory(category.id)}
+              >
+                {category.rank <= 3 && (
+                  <RankBadge 
+                    $rank={category.rank} 
+                    $active={selectedCategory === category.id}
+                    $isDark={isDark}
+                  >
+                    {category.rank}
+                  </RankBadge>
+                )}
+                {category.rank <= 3 && <TrendingUp size={14} />}
+                {t(`bodyTypes.${category.id}`)}
+              </CategoryTab>
+            ))}
+          </HorizontalScrollContainer>
+        </CategoriesNavContainer>
 
         {!loading && cars.length > 0 && (
           <DemandStats
@@ -268,15 +335,29 @@ const MostDemandedCategoriesSection: React.FC = () => {
         </div>
       ) : (
         <>
-          <CarsGrid>
-            {cars.slice(0, 12).map(car => (
-              <ModernCarCard
-                key={car.id}
-                car={car}
-                showStatus={true}
-              />
-            ))}
-          </CarsGrid>
+          <CarsContainer>
+            <HorizontalScrollContainer
+              gap="32px"
+              padding="0"
+              itemMinWidth="320px"
+              showArrows={true}
+            >
+              {cars.slice(0, 12).map(car => (
+                <ModernCarCard
+                  key={car.id}
+                  car={car}
+                  showStatus={true}
+                />
+              ))}
+            </HorizontalScrollContainer>
+          </CarsContainer>
+          
+          {cars.length > 0 && (
+            <ViewAllButton $isDark={isDark} onClick={() => navigate(`/cars?bodyType=${selectedCategory}`)}>
+              <span>{language === 'bg' ? 'Виж всички' : 'View All'}</span>
+              <ArrowRight size={18} />
+            </ViewAllButton>
+          )}
         </>
       )}
     </SectionContainer>

@@ -151,33 +151,38 @@ const NavButton = styled.button`
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 143, 16, 0.25);
   color: var(--accent-primary);
-  border: 2px solid var(--accent-primary);
-  width: 56px;
-  height: 80px;
-  border-radius: 12px;
+  border: 2px solid rgba(255, 143, 16, 0.5);
+  width: 50px;
+  height: 50px;
+  min-width: 50px;
+  min-height: 50px;
+  max-width: 50px;
+  max-height: 50px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 10;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 16px rgba(255, 143, 16, 0.2);
   backdrop-filter: blur(8px);
 
   svg {
-    width: 36px !important;
-    height: 36px !important;
+    width: 24px !important;
+    height: 24px !important;
     flex-shrink: 0;
     transition: all 0.3s ease;
+    display: block;
   }
 
   &:hover {
-    background: var(--accent-primary);
-    color: white;
+    background: rgba(255, 143, 16, 0.4);
+    color: var(--accent-primary);
     border-color: var(--accent-primary);
-    box-shadow: 0 6px 24px rgba(255, 121, 0, 0.35);
+    box-shadow: 0 6px 24px rgba(255, 143, 16, 0.3);
     
     svg {
       transform: translateX(0);
@@ -210,17 +215,21 @@ const NavButton = styled.button`
 
   &:active {
     transform: translateY(-50%) scale(0.95);
-    box-shadow: 0 2px 8px rgba(255, 121, 0, 0.25);
+    box-shadow: 0 2px 8px rgba(255, 143, 16, 0.25);
   }
 
   @media (max-width: 768px) {
-    width: 44px;
-    height: 64px;
-    border-radius: 10px;
+    width: 50px;
+    height: 50px;
+    min-width: 50px;
+    min-height: 50px;
+    max-width: 50px;
+    max-height: 50px;
+    border-radius: 50%;
 
     svg {
-      width: 28px !important;
-      height: 28px !important;
+      width: 24px !important;
+      height: 24px !important;
     }
 
     &.prev {

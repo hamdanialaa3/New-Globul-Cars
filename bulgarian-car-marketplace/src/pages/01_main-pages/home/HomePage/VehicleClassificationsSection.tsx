@@ -8,13 +8,14 @@ import VehicleCategoryCard, { VehicleCategory } from './VehicleCategoryCard';
 import { Sparkles, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { useTheme } from '../../../../contexts/ThemeContext';
+import HorizontalScrollContainer from '../../../../components/HorizontalScrollContainer/HorizontalScrollContainer';
 
 // Styled Components
 const SectionContainer = styled.section<{ $isDark: boolean }>`
   padding: 80px 20px;
   background: ${props => props.$isDark
     ? 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)'
-    : '#f8fafc'};
+    : '#f5f1eb'};
   position: relative;
   overflow: hidden;
   transition: background 0.3s ease;
@@ -65,32 +66,16 @@ const Subtitle = styled.p<{ $isDark: boolean }>`
   transition: color 0.3s ease;
 `;
 
-const CategoriesGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 16px;
+const CategoriesContainer = styled.div`
   margin-bottom: 50px;
   max-width: 1200px;
   margin-left: auto;
   margin-right: auto;
-
-  @media (max-width: 768px) {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-  }
 `;
 
-const CarsGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 30px;
+const CarsContainer = styled.div`
   max-width: 1400px;
   margin: 0 auto;
-
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
 `;
 
 const ViewAllButton = styled.button<{ $isDark: boolean }>`
@@ -163,7 +148,7 @@ const VehicleClassificationsSection: React.FC = () => {
   }, [selectedCategory]);
 
   const handleViewAll = () => {
-    navigate(`/search?category=${selectedCategory}`);
+    navigate(`/cars?bodyType=${selectedCategory}`);
   };
 
   const selectedCategoryLabel = CATEGORIES.find(c => c.id === selectedCategory);
@@ -188,16 +173,23 @@ const VehicleClassificationsSection: React.FC = () => {
         </Subtitle>
       </HeaderContainer>
 
-      <CategoriesGrid>
-        {CATEGORIES.map(category => (
-          <VehicleCategoryCard
-            key={category.id}
-            category={category}
-            isActive={selectedCategory === category.id}
-            onClick={() => setSelectedCategory(category.id)}
-          />
-        ))}
-      </CategoriesGrid>
+      <CategoriesContainer>
+        <HorizontalScrollContainer
+          gap="16px"
+          padding="0"
+          itemMinWidth="140px"
+          showArrows={true}
+        >
+          {CATEGORIES.map(category => (
+            <VehicleCategoryCard
+              key={category.id}
+              category={category}
+              isActive={selectedCategory === category.id}
+              onClick={() => setSelectedCategory(category.id)}
+            />
+          ))}
+        </HorizontalScrollContainer>
+      </CategoriesContainer>
 
       {loading ? (
         <div style={{
@@ -209,15 +201,29 @@ const VehicleClassificationsSection: React.FC = () => {
         </div>
       ) : (
         <>
-          <CarsGrid>
-            {cars.map(car => (
-              <ModernCarCard
-                key={car.id}
-                car={car}
-                showStatus={true}
-              />
-            ))}
-          </CarsGrid>
+          <CarsContainer>
+            <HorizontalScrollContainer
+              gap="30px"
+              padding="0"
+              itemMinWidth="300px"
+              showArrows={true}
+            >
+              {cars.map(car => (
+                <ModernCarCard
+                  key={car.id}
+                  car={car}
+                  showStatus={true}
+                />
+              ))}
+            </HorizontalScrollContainer>
+          </CarsContainer>
+          
+          {cars.length > 0 && (
+            <ViewAllButton $isDark={isDark} onClick={handleViewAll}>
+              <span>{language === 'bg' ? 'Виж всички' : 'View All'}</span>
+              <ArrowRight size={18} />
+            </ViewAllButton>
+          )}
         </>
       )}
     </SectionContainer>

@@ -7,10 +7,11 @@ const NavWrapper = styled.nav`
   bottom: 0;
   left: 0;
   right: 0;
-  background: var(--footer-bg, #ffffff);
-  border-top: 1px solid ${props => `var(--border-primary, ${props.theme.colors.grey?.[200] || '#e5e7eb'})`};
+  background: var(--bg-primary);
+  border-top: 1px solid var(--border-primary);
   z-index: 40;
-  box-shadow: var(--shadow-sm, 0 -1px 3px rgba(0, 0, 0, 0.05));
+  box-shadow: var(--shadow-sm);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
   
   /* Hide on desktop */
   @media (min-width: 768px) {
@@ -45,19 +46,19 @@ const NavItem = styled.button<{ $isActive: boolean }>`
   color: ${props => props.$isActive ? 'var(--accent-primary)' : 'var(--text-secondary)'};
   min-width: 60px;
   min-height: 60px;
-  transition: all 0.2s ease;
+  transition: all 0.2s ease, background-color 0.3s ease, color 0.3s ease;
   border-radius: 12px;
   
   &:active {
     transform: scale(0.95);
-    background: ${props => props.$isActive ? 'var(--accent-hover)' : 'var(--bg-hover)'};
-    color: ${props => props.$isActive ? 'var(--text-inverse)' : 'var(--text-primary)'};
+    background: ${props => props.$isActive ? 'var(--accent-primary)' : 'var(--bg-hover)'};
+    color: ${props => props.$isActive ? 'var(--btn-primary-text)' : 'var(--text-primary)'};
   }
   
   svg {
     width: 24px;
     height: 24px;
-    transition: all 0.2s ease;
+    transition: all 0.2s ease, color 0.3s ease;
     color: currentColor;
   }
   
@@ -80,8 +81,8 @@ const Badge = styled.span`
   position: absolute;
   top: 6px;
   right: 8px;
-  background: var(--error, ${props => props.theme.colors.error || '#dc3545'});
-  color: var(--text-inverse, #ffffff);
+  background: var(--error);
+  color: var(--text-inverse);
   font-size: 10px;
   font-weight: 600;
   min-width: 18px;
@@ -91,7 +92,8 @@ const Badge = styled.span`
   align-items: center;
   justify-content: center;
   padding: 0 4px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-sm);
+  transition: background-color 0.3s ease, color 0.3s ease;
 `;
 
 interface NavItemType {
@@ -116,7 +118,7 @@ const SearchIcon = (isActive: boolean) => (
 const PlusIcon = (isActive: boolean) => (
   <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
     <circle cx="12" cy="12" r="10" strokeWidth={2} fill={isActive ? "currentColor" : "none"} />
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v8m-4-4h8" stroke={isActive ? "white" : "currentColor"} />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v8m-4-4h8" stroke="currentColor" />
   </svg>
 );
 

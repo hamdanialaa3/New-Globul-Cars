@@ -7,6 +7,11 @@ import HeroSection from './HeroSection';
 import VehicleClassificationsSection from './VehicleClassificationsSection';
 import MostDemandedCategoriesSection from './MostDemandedCategoriesSection';
 import RecentBrowsingSection from './RecentBrowsingSection';
+import LatestCarsSection from './LatestCarsSection';
+import TrustStrip from './TrustStrip';
+import NewCarsSection from './NewCarsSection';
+import CategoriesSection from './CategoriesSection';
+import TrustSection from './TrustSection';
 
 // Lazy loaded components - Local imports where available
 const PopularBrandsSection = React.lazy(() => import('./PopularBrandsSection'));
@@ -23,7 +28,8 @@ const SmartSellStrip = React.lazy(() => import('./SmartSellStrip'));
 // Global components
 // AIChatbot uses named export, so we map it to default for React.lazy
 const AIChatbot = React.lazy(() => import('../../../../components/AI/AIChatbot').then(module => ({ default: module.AIChatbot })));
-const LazySection = React.lazy(() => import('../../../../components/LazySection'));
+// LazySection is simple enough to import directly (no lazy loading needed)
+import LazySection from '../../../../components/LazySection';
 
 // Styled Components
 const HomeContainer = styled.main`
@@ -63,7 +69,40 @@ const HomePage: React.FC = () => {
 
       <SectionSpacer />
 
-      {/* 2. Popular Brands Section - MOVED TO TOP */}
+        {/* 2. New Cars Section - Latest Added (Last 24 Hours) - CRITICAL */}
+        <NewCarsSection />
+
+        <SectionSpacer />
+
+        {/* 3. Trust Strip - Build credibility */}
+        <TrustStrip />
+
+        <SectionSpacer />
+
+        {/* 3.5. Categories Section - Popular Categories with Real Data */}
+        <LazySection rootMargin="0px" minHeight="600px">
+          <Suspense fallback={<LoadingFallback>Зареждане на категории...</LoadingFallback>}>
+            <CategoriesSection />
+          </Suspense>
+        </LazySection>
+
+        <SectionSpacer />
+
+        {/* 3.6. Trust Section - Why Choose Us */}
+        <LazySection rootMargin="0px" minHeight="400px">
+          <Suspense fallback={null}>
+            <TrustSection />
+          </Suspense>
+        </LazySection>
+
+        <SectionSpacer />
+
+        {/* 4. Latest Cars - Fresh inventory */}
+        <LatestCarsSection />
+
+        <SectionSpacer />
+
+        {/* 4. Popular Brands Section */}
       <LazySection rootMargin="0px" minHeight="500px">
         <Suspense fallback={<LoadingFallback>Зареждане на марки...</LoadingFallback>}>
           <PopularBrandsSection />

@@ -4,6 +4,7 @@ import React, { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import styled from 'styled-components';
+import HorizontalScrollContainer from '../../../../components/HorizontalScrollContainer/HorizontalScrollContainer';
 
 // Popular brands configuration with logos
 const POPULAR_BRANDS = [
@@ -110,20 +111,9 @@ const SectionSubtitle = styled.p`
   }
 `;
 
-// Original responsive grid (auto-fill) before size reduction / fixed columns
-const BrandsGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 2rem;
+// Horizontal scroll container - no grid, always horizontal
+const BrandsContainer = styled.div`
   margin-bottom: 2rem;
-  @media (max-width: 768px) {
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 1.5rem;
-  }
-  @media (max-width: 480px) {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-  }
 `;
 
 const BrandCard = styled.button`
@@ -290,62 +280,54 @@ const BrandName = styled.div`
 
 // ✅ Removed CarCount component - no need to display car counts
 
-const ViewMoreButton = styled.button`
+const ViewAllBrandsButton = styled.button`
   border: none;
   border-radius: 12px;
-  padding: 0.875rem 2rem;
-  font-size: 1rem;
+  padding: 0.75rem 2rem;
+  font-size: 0.9375rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  margin: 0 auto;
+  margin: 2rem auto 0;
   display: block;
   position: relative;
   overflow: hidden;
+  letter-spacing: 0.02em;
 
-  /* Light mode: Orange gradient background, White text */
+  /* Light mode: Orange/Yellow gradient */
   html[data-theme="light"] & {
-    background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 50%, #FFA500 100%) !important;
-    color: #ffffff !important;
-    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.35) !important;
+    background: linear-gradient(135deg, #FF8F10 0%, #FFA500 50%, #FFD700 100%);
+    color: #000000;
+    box-shadow: 0 4px 20px rgba(255, 143, 16, 0.4);
   }
 
-  /* Dark mode: Yellow gradient background, Black text */
+  /* Dark mode: Black with yellow text */
   html[data-theme="dark"] & {
-    background: linear-gradient(135deg, #FFD700 0%, #FFC107 50%, #FFA000 100%) !important;
-    color: #000000 !important;
-    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4) !important;
+    background: #000000;
+    color: #FFD700;
+    border: 2px solid #FFD700;
+    box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
   }
   
   &:hover {
-    transform: translateY(-3px);
+    transform: translateY(-3px) scale(1.02);
     html[data-theme="light"] & {
-      background: linear-gradient(135deg, #FF5722 0%, #FF6B35 50%, #FF8C42 100%) !important;
-      color: #ffffff !important;
-      box-shadow: 0 6px 20px rgba(255, 107, 53, 0.5) !important;
+      background: linear-gradient(135deg, #FFA500 0%, #FFD700 50%, #FF8F10 100%);
+      box-shadow: 0 8px 30px rgba(255, 143, 16, 0.5);
     }
     html[data-theme="dark"] & {
-      background: linear-gradient(135deg, #FFC107 0%, #FFD700 50%, #FFC107 100%) !important;
-      color: #000000 !important;
-      box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6) !important;
+      background: #1a1a1a;
+      box-shadow: 0 8px 30px rgba(255, 215, 0, 0.4);
     }
   }
   
   &:active {
-    transform: translateY(-1px);
-    html[data-theme="light"] & {
-      background: linear-gradient(135deg, #E64A19 0%, #FF5722 50%, #FF6B35 100%) !important;
-      color: #ffffff !important;
-    }
-    html[data-theme="dark"] & {
-      background: linear-gradient(135deg, #FFA000 0%, #FFC107 50%, #FFD700 100%) !important;
-      color: #000000 !important;
-    }
+    transform: translateY(-1px) scale(1);
   }
   
   @media (max-width: 600px) {
-    padding: 0.75rem 1.5rem;
-    font-size: 0.9rem;
+    padding: 0.625rem 1.5rem;
+    font-size: 0.875rem;
   }
 `;
 
@@ -378,30 +360,41 @@ const PopularBrandsSection: React.FC = () => {
               : 'Explore the most popular car brands in Bulgaria'}
           </SectionSubtitle>
         </SectionHeader>
+        
+        <ViewAllBrandsButton onClick={() => navigate('/cars')}>
+          {language === 'bg' ? 'Виж всички марки →' : 'View All Brands →'}
+        </ViewAllBrandsButton>
 
-        <BrandsGrid>
-          {POPULAR_BRANDS.map(brand => {
-            return (
-              <BrandCard
-                key={brand.id}
-                onClick={() => handleBrandClick(brand.id)}
-                title={`${language === 'bg' ? 'Преглед' : 'View'} ${getBrandName(brand)} ${language === 'bg' ? 'автомобили' : 'cars'}`}
-              >
-                <LogoContainer>
-                  <img
-                    src={`/assets/images/professional_car_logos/${brand.logo}`}
-                    alt={brand.nameEn}
-                    loading="lazy"
-                    onError={(e) => {
-                      e.currentTarget.src = '/assets/images/logos/default-car.png';
-                    }}
-                  />
-                </LogoContainer>
-                <BrandName>{getBrandName(brand)}</BrandName>
-              </BrandCard>
-            );
-          })}
-        </BrandsGrid>
+        <BrandsContainer>
+          <HorizontalScrollContainer
+            gap="2rem"
+            padding="0"
+            itemMinWidth="180px"
+            showArrows={true}
+          >
+            {POPULAR_BRANDS.map(brand => {
+              return (
+                <BrandCard
+                  key={brand.id}
+                  onClick={() => handleBrandClick(brand.id)}
+                  title={`${language === 'bg' ? 'Преглед' : 'View'} ${getBrandName(brand)} ${language === 'bg' ? 'автомобили' : 'cars'}`}
+                >
+                  <LogoContainer>
+                    <img
+                      src={`/assets/images/professional_car_logos/${brand.logo}`}
+                      alt={brand.nameEn}
+                      loading="lazy"
+                      onError={(e) => {
+                        e.currentTarget.src = '/assets/images/logos/default-car.png';
+                      }}
+                    />
+                  </LogoContainer>
+                  <BrandName>{getBrandName(brand)}</BrandName>
+                </BrandCard>
+              );
+            })}
+          </HorizontalScrollContainer>
+        </BrandsContainer>
       </ContentContainer>
     </SectionContainer>
   );

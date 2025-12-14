@@ -312,11 +312,15 @@ const NavButton = styled.button<{ $direction: 'left' | 'right' }>`
   top: 50%;
   ${p => p.$direction}: 20px;
   transform: translateY(-50%);
-  width: 56px;
-  height: 80px;
-  border-radius: 12px;
-  border: 2px solid rgba(255, 255, 255, 0.9);
-  background: rgba(255, 255, 255, 0.1);
+  width: 50px;
+  height: 50px;
+  min-width: 50px;
+  min-height: 50px;
+  max-width: 50px;
+  max-height: 50px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.25);
   backdrop-filter: blur(10px);
   color: white;
   cursor: pointer;
@@ -325,18 +329,21 @@ const NavButton = styled.button<{ $direction: 'left' | 'right' }>`
   justify-content: center;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 10001;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   
   svg {
-    width: 36px !important;
-    height: 36px !important;
+    width: 24px !important;
+    height: 24px !important;
     flex-shrink: 0;
     transition: transform 0.3s ease;
+    display: block;
   }
   
   &:hover {
-    background: rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.4);
     border-color: white;
     transform: translateY(-50%) translateX(${p => p.$direction === 'left' ? '-4px' : '4px'});
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
     
     svg {
       transform: translateX(${p => p.$direction === 'left' ? '-2px' : '2px'});
@@ -348,13 +355,17 @@ const NavButton = styled.button<{ $direction: 'left' | 'right' }>`
   }
   
   @media (max-width: 768px) {
-    width: 44px;
-    height: 64px;
+    width: 50px;
+    height: 50px;
+    min-width: 50px;
+    min-height: 50px;
+    max-width: 50px;
+    max-height: 50px;
     ${p => p.$direction}: 10px;
     
     svg {
-      width: 28px !important;
-      height: 28px !important;
+      width: 24px !important;
+      height: 24px !important;
     }
   }
 `;

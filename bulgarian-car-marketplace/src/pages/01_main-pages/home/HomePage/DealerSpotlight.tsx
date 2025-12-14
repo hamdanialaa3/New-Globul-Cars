@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 import { analyticsService } from '../../../../services/analytics/UnifiedAnalyticsService';
+import HorizontalScrollContainer from '../../../../components/HorizontalScrollContainer/HorizontalScrollContainer';
 
 interface DealerInfo {
   id: string;
@@ -53,10 +54,8 @@ const Subtitle = styled.p`
   color: var(--text-secondary);
 `;
 
-const DealerGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 16px;
+const DealerContainer = styled.div`
+  /* Container for horizontal scroll */
 `;
 
 const DealerCard = styled.div`
@@ -153,18 +152,25 @@ const handleViewAll = () => {
         <Title>{t('home.dealerSpotlight.title')}</Title>
         <Subtitle>{t('home.dealerSpotlight.subtitle')}</Subtitle>
       </Header>
-      <DealerGrid>
-        {MOCK_DEALERS.map(d => (
-          <DealerCard key={d.id} data-dealer-id={d.id} onClick={() => handleDealerClick(d.id)}>
-            <DealerName>{d.name}</DealerName>
-            <DealerMeta>
-              <span>{t('home.dealerSpotlight.rating')}: {d.rating.toFixed(1)}</span>
-              <span>{t('home.dealerSpotlight.listings')}: {d.listings}</span>
-              {d.verified && <VerifiedBadge>{t('home.dealerSpotlight.verified')}</VerifiedBadge>}
-            </DealerMeta>
-          </DealerCard>
-        ))}
-      </DealerGrid>
+      <DealerContainer>
+        <HorizontalScrollContainer
+          gap="16px"
+          padding="0"
+          itemMinWidth="220px"
+          showArrows={true}
+        >
+          {MOCK_DEALERS.map(d => (
+            <DealerCard key={d.id} data-dealer-id={d.id} onClick={() => handleDealerClick(d.id)}>
+              <DealerName>{d.name}</DealerName>
+              <DealerMeta>
+                <span>{t('home.dealerSpotlight.rating')}: {d.rating.toFixed(1)}</span>
+                <span>{t('home.dealerSpotlight.listings')}: {d.listings}</span>
+                {d.verified && <VerifiedBadge>{t('home.dealerSpotlight.verified')}</VerifiedBadge>}
+              </DealerMeta>
+            </DealerCard>
+          ))}
+        </HorizontalScrollContainer>
+      </DealerContainer>
       <ViewAllLink type="button" onClick={handleViewAll}>{t('home.dealerSpotlight.viewAll')}</ViewAllLink>
     </SectionContainer>
   );

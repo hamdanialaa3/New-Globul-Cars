@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 import { analyticsService } from '../../../../services/analytics/UnifiedAnalyticsService';
+import HorizontalScrollContainer from '../../../../components/HorizontalScrollContainer/HorizontalScrollContainer';
 
 interface LifeMomentItem {
   key: string;
@@ -51,10 +52,8 @@ const Subtitle = styled.p`
   color: var(--text-secondary);
 `;
 
-const MomentsGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 14px;
+const MomentsContainer = styled.div`
+  /* Container for horizontal scroll */
 `;
 
 const MomentCard = styled.button`
@@ -130,14 +129,21 @@ const handleMomentClick = (momentKey: string) => {
         <Title>{t('home.lifeMomentsBrowse.title')}</Title>
         <Subtitle>{t('home.lifeMomentsBrowse.subtitle')}</Subtitle>
       </Header>
-      <MomentsGrid>
-        {MOMENTS.map(m => (
-          <MomentCard key={m.key} data-moment={m.key} onClick={() => handleMomentClick(m.key)}>
-            <MomentLabel>{t('home.lifeMomentsBrowse.title')}</MomentLabel>
-            <MomentTitle>{t(`home.lifeMomentsBrowse.moments.${m.key}.title`)}</MomentTitle>
-          </MomentCard>
-        ))}
-      </MomentsGrid>
+      <MomentsContainer>
+        <HorizontalScrollContainer
+          gap="14px"
+          padding="0"
+          itemMinWidth="140px"
+          showArrows={true}
+        >
+          {MOMENTS.map(m => (
+            <MomentCard key={m.key} data-moment={m.key} onClick={() => handleMomentClick(m.key)}>
+              <MomentLabel>{t('home.lifeMomentsBrowse.title')}</MomentLabel>
+              <MomentTitle>{t(`home.lifeMomentsBrowse.moments.${m.key}.title`)}</MomentTitle>
+            </MomentCard>
+          ))}
+        </HorizontalScrollContainer>
+      </MomentsContainer>
     </Section>
   );
 });

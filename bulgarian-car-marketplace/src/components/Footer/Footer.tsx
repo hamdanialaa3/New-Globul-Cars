@@ -72,19 +72,19 @@ const Footer: React.FC = () => {
             <div className="contact-info">
               <div className="contact-item">
                 <span className="contact-icon">
-                  <MapPin size={18} color="#0066cc" />
+                  <MapPin size={18} />
                 </span>
                 <span>{t('footer.address')}</span>
               </div>
               <div className="contact-item">
                 <span className="contact-icon">
-                  <Phone size={18} color="#0066cc" />
+                  <Phone size={18} />
                 </span>
                 <span>+359 2 123 4567</span>
               </div>
               <div className="contact-item">
                 <span className="contact-icon">
-                  <Mail size={18} color="#0066cc" />
+                  <Mail size={18} />
                 </span>
                 <span>info@mobilebg.eu</span>
               </div>
@@ -93,10 +93,11 @@ const Footer: React.FC = () => {
                   href="https://www.facebook.com/people/Bulgarian-Car-Marketplace/100080260449528/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#1877f2', textDecoration: 'none' }}
+                  className="facebook-link"
+                  style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}
                 >
                   <span className="contact-icon">
-                    <Facebook size={18} color="#1877f2" />
+                    <Facebook size={18} />
                   </span>
                   <span>{language === 'bg' ? 'Последвайте ни във Facebook' : 'Follow us on Facebook'}</span>
                 </a>

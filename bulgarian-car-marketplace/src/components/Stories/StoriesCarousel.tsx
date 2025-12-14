@@ -74,23 +74,30 @@ const NavButton = styled.button<{ $position: 'left' | 'right' }>`
   top: 50%;
   ${p => p.$position}: 10px;
   transform: translateY(-50%);
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
+  min-width: 50px;
+  min-height: 50px;
+  max-width: 50px;
+  max-height: 50px;
   border-radius: 50%;
-  border: none;
-  background: white;
-  color: #212529;
+  border: 2px solid rgba(255, 143, 16, 0.5);
+  background: rgba(255, 143, 16, 0.25);
+  color: #FF8F10;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px rgba(255, 143, 16, 0.2);
   transition: all 0.2s;
   z-index: 2;
+  backdrop-filter: blur(8px);
   
   &:hover {
-    background: #f8f9fa;
-    transform: translateY(-50%) scale(1.05);
+    background: rgba(255, 143, 16, 0.4);
+    border-color: #FF8F10;
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 6px 16px rgba(255, 143, 16, 0.3);
   }
   
   &:disabled {
@@ -99,12 +106,19 @@ const NavButton = styled.button<{ $position: 'left' | 'right' }>`
   }
   
   svg {
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    display: block;
   }
   
   @media (max-width: 768px) {
-    display: none;
+    width: 50px;
+    height: 50px;
+    min-width: 50px;
+    min-height: 50px;
+    max-width: 50px;
+    max-height: 50px;
   }
 `;
 

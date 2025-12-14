@@ -212,11 +212,15 @@ export const ImageNavButton = styled.button<{ $position: 'left' | 'right'; $isDa
   ${p => p.$position}: 12px;
   top: 50%;
   transform: translateY(-50%);
-  width: 44px;
-  height: 44px;
+  width: 50px;
+  height: 50px;
+  min-width: 50px;
+  min-height: 50px;
+  max-width: 50px;
+  max-height: 50px;
   border-radius: 50%;
-  background: ${p => p.$isDark ? 'rgba(30, 41, 59, 0.9)' : 'rgba(255, 255, 255, 0.95)'};
-  border: 1px solid ${p => p.$isDark ? '#475569' : '#e2e8f0'};
+  background: ${p => p.$isDark ? 'rgba(255, 215, 0, 0.25)' : 'rgba(255, 143, 16, 0.25)'};
+  border: 2px solid ${p => p.$isDark ? 'rgba(255, 215, 0, 0.5)' : 'rgba(255, 143, 16, 0.5)'};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -224,13 +228,25 @@ export const ImageNavButton = styled.button<{ $position: 'left' | 'right'; $isDa
   transition: all 0.2s;
   z-index: 10;
   backdrop-filter: blur(8px);
+  box-shadow: ${p => p.$isDark 
+    ? '0 4px 12px rgba(255, 215, 0, 0.2)' 
+    : '0 4px 12px rgba(255, 143, 16, 0.2)'};
 
-  svg { color: ${p => p.$isDark ? '#f1f5f9' : '#1e293b'}; }
+  svg { 
+    color: ${p => p.$isDark ? '#FFD700' : '#FF8F10'}; 
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    display: block;
+  }
 
   &:hover {
-    background: #f97316;
-    border-color: #f97316;
-    svg { color: white; }
+    background: ${p => p.$isDark ? 'rgba(255, 215, 0, 0.4)' : 'rgba(255, 143, 16, 0.4)'};
+    border-color: ${p => p.$isDark ? '#FFD700' : '#FF8F10'};
+    box-shadow: ${p => p.$isDark 
+      ? '0 6px 16px rgba(255, 215, 0, 0.3)' 
+      : '0 6px 16px rgba(255, 143, 16, 0.3)'};
+    svg { color: ${p => p.$isDark ? '#FFD700' : '#FF8F10'}; }
   }
 `;
 

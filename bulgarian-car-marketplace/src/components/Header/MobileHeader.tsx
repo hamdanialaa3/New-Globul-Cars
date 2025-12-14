@@ -4,12 +4,15 @@
  * Uses styled-components only (no CSS file dependency)
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { logger } from '../../services/logger-service';
 import { useAuth } from '../../contexts/AuthProvider';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { useTheme } from '../../contexts/ThemeContext';
+import CyberToggle from '../CyberToggle/CyberToggle';
+import LanguageToggle from '../LanguageToggle/LanguageToggle';
 
 // ========================================
 // STYLED COMPONENTS
@@ -23,16 +26,16 @@ const HeaderContainer = styled.header`
   left: 0;
   right: 0;
   height: 60px;
-  background: var(--header-bg, rgba(255, 255, 255, 0.95));
+  background: var(--bg-primary);
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--border-primary, rgba(0, 0, 0, 0.08));
+  border-bottom: 1px solid var(--border-primary);
   color: var(--text-primary);
   z-index: 1000;
   display: flex;
   align-items: center;
   padding: 0 16px;
-  box-shadow: var(--shadow-sm, 0 2px 8px rgba(0, 0, 0, 0.04));
-  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: var(--shadow-sm);
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 `;
 
 const HeaderContent = styled.div`
@@ -58,7 +61,7 @@ const MenuButton = styled.button<{ $isOpen: boolean }>`
   padding: 0;
 
   &:hover {
-    background: ${props => props.$isOpen ? 'var(--accent-hover)' : 'var(--bg-hover)'};
+    background: ${props => props.$isOpen ? 'var(--accent-secondary)' : 'var(--bg-hover)'};
   }
 
   &:active {
@@ -89,6 +92,76 @@ const UserSection = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
+  position: relative;
+`;
+
+const SettingsButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: ${HEADER_BUTTON_SIZE};
+  height: ${HEADER_BUTTON_SIZE};
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+
+  &:hover {
+    background: var(--bg-hover);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  svg {
+    width: 24px;
+    height: 24px;
+  }
+`;
+
+const SettingsDropdown = styled.div<{ $isOpen: boolean }>`
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  min-width: 280px;
+  max-height: 400px;
+  overflow-y: auto;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: 12px;
+  box-shadow: var(--shadow-md);
+  z-index: 1002;
+  opacity: ${props => props.$isOpen ? 1 : 0};
+  visibility: ${props => props.$isOpen ? 'visible' : 'hidden'};
+  pointer-events: ${props => props.$isOpen ? 'auto' : 'none'};
+  transform: ${props => props.$isOpen ? 'translateY(0)' : 'translateY(-10px)'};
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 12px;
+`;
+
+const SettingsRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: var(--bg-hover);
+  }
+`;
+
+const SettingsLabel = styled.span`
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
 `;
 
 const UserButton = styled.button`
@@ -136,12 +209,12 @@ const LoginButton = styled.button`
   transition: all 0.2s ease;
 
   &:hover {
-    background: var(--accent-hover);
+    background: var(--accent-secondary);
   }
 
   &:active {
     transform: scale(0.95);
-    background: var(--accent-active);
+    background: var(--accent-dark);
   }
 `;
 
@@ -165,14 +238,14 @@ const MenuDrawer = styled.div<{ $isOpen: boolean }>`
   bottom: 0;
   width: 280px;
   max-width: 85vw;
-  background: var(--bg-card, #fff);
+  background: var(--bg-card);
   color: var(--text-primary);
   z-index: 1001;
   transform: translateX(${props => props.$isOpen ? '0' : '-100%'});
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease, color 0.3s ease;
   display: flex;
   flex-direction: column;
-  box-shadow: var(--shadow-md, 2px 0 16px rgba(0, 0, 0, 0.1));
+  box-shadow: var(--shadow-md);
 `;
 
 const MenuHeader = styled.div`
@@ -180,8 +253,9 @@ const MenuHeader = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 16px;
-  border-bottom: 1px solid var(--border-primary, #e0e0e0);
+  border-bottom: 1px solid var(--border-primary);
   min-height: 60px;
+  transition: border-color 0.3s ease;
 `;
 
 const MenuLogo = styled.div`
@@ -214,8 +288,9 @@ const UserInfo = styled.div`
   align-items: center;
   gap: 12px;
   padding: 20px 16px;
-  border-bottom: 1px solid var(--border-primary, #e0e0e0);
-  background: var(--bg-secondary, linear-gradient(135deg, #f5f7fa 0%, #fff 100%));
+  border-bottom: 1px solid var(--border-primary);
+  background: var(--bg-secondary);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 `;
 
 const UserAvatar = styled.div`
@@ -266,7 +341,8 @@ const MenuContent = styled.div`
 
 const MenuSection = styled.div`
   padding: 12px 0;
-  border-bottom: 1px solid var(--border-primary, #e0e0e0);
+  border-bottom: 1px solid var(--border-primary);
+  transition: border-color 0.3s ease;
   
   /* CRITICAL FIX: Prevent overlapping */
   position: relative;
@@ -282,9 +358,10 @@ const SectionTitle = styled.div`
   padding: 8px 16px;
   font-size: 12px;
   font-weight: 600;
-  color: var(--text-tertiary, #999);
+  color: var(--text-tertiary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  transition: color 0.3s ease;
 `;
 
 const MenuItem = styled.button<{ $variant?: 'primary' | 'danger' }>`
@@ -323,7 +400,7 @@ const MenuItem = styled.button<{ $variant?: 'primary' | 'danger' }>`
 
   &:hover {
     background: ${props =>
-    props.$variant === 'primary' ? 'var(--accent-hover)' :
+    props.$variant === 'primary' ? 'var(--accent-secondary)' :
       props.$variant === 'danger' ? 'var(--error)' :
         'var(--bg-hover)'
   };
@@ -333,7 +410,7 @@ const MenuItem = styled.button<{ $variant?: 'primary' | 'danger' }>`
   &:active {
     transform: scale(0.98);
     background: ${props =>
-    props.$variant === 'primary' ? 'var(--accent-active)' :
+    props.$variant === 'primary' ? 'var(--accent-dark)' :
       props.$variant === 'danger' ? 'var(--error)' :
         'var(--bg-hover)'
   };
@@ -620,14 +697,37 @@ const UsersIcon = () => (
 const MobileHeader: React.FC = () => {
   const { user, logout } = useAuth();
   const { language, toggleLanguage } = useLanguage();
+  const { theme } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const settingsRef = useRef<HTMLDivElement>(null);
 
   // Close menu on route change
   useEffect(() => {
     setIsMenuOpen(false);
+    setIsSettingsOpen(false);
   }, [location.pathname]);
+
+  // Close settings dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (settingsRef.current && !settingsRef.current.contains(event.target as Node)) {
+        setIsSettingsOpen(false);
+      }
+    };
+
+    if (isSettingsOpen) {
+      setTimeout(() => {
+        document.addEventListener('mousedown', handleClickOutside);
+      }, 0);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isSettingsOpen]);
 
   // Prevent body scroll when menu is open
   useEffect(() => {
@@ -686,7 +786,17 @@ const MobileHeader: React.FC = () => {
             Bulgarski Mobili
           </Logo>
 
-          <UserSection>
+          <UserSection ref={settingsRef}>
+            <SettingsButton
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsSettingsOpen(!isSettingsOpen);
+              }}
+              aria-label={language === 'bg' ? 'Настройки' : 'Settings'}
+            >
+              <SettingsIcon />
+            </SettingsButton>
             {user ? (
               <UserButton type="button" onClick={handleMenuItemClick('/profile')}>
                 <UserIcon size={24} />
@@ -696,6 +806,16 @@ const MobileHeader: React.FC = () => {
                 {language === 'bg' ? 'Вход' : 'Login'}
               </LoginButton>
             )}
+            <SettingsDropdown $isOpen={isSettingsOpen}>
+              <SettingsRow>
+                <SettingsLabel>{language === 'bg' ? 'Език' : 'Language'}</SettingsLabel>
+                <LanguageToggle size="small" showText={false} />
+              </SettingsRow>
+              <SettingsRow>
+                <SettingsLabel>{language === 'bg' ? 'Тема' : 'Theme'}</SettingsLabel>
+                <CyberToggle />
+              </SettingsRow>
+            </SettingsDropdown>
           </UserSection>
         </HeaderContent>
       </HeaderContainer>

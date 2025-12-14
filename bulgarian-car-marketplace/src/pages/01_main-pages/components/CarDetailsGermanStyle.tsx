@@ -440,11 +440,19 @@ const ImageNavButton = styled.button<{ $position: 'left' | 'right'; $isDark: boo
   ${props => props.$position}: 16px;
   top: 50%;
   transform: translateY(-50%);
-  width: 56px;
-  height: 80px;
-  border-radius: 12px;
-  background: var(--bg-card);
-  border: 2px solid var(--border-primary);
+  width: 50px;
+  height: 50px;
+  min-width: 50px;
+  min-height: 50px;
+  max-width: 50px;
+  max-height: 50px;
+  border-radius: 50%;
+  background: ${props => props.$isDark 
+    ? 'rgba(255, 215, 0, 0.25)' 
+    : 'rgba(255, 143, 16, 0.25)'};
+  border: 2px solid ${props => props.$isDark 
+    ? 'rgba(255, 215, 0, 0.5)' 
+    : 'rgba(255, 143, 16, 0.5)'};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -453,27 +461,30 @@ const ImageNavButton = styled.button<{ $position: 'left' | 'right'; $isDark: boo
   z-index: 10;
   backdrop-filter: blur(8px);
   box-shadow: ${props => props.$isDark 
-    ? '0 4px 16px rgba(0, 0, 0, 0.4)' 
-    : '0 4px 16px rgba(0, 0, 0, 0.15)'};
+    ? '0 4px 16px rgba(255, 215, 0, 0.2)' 
+    : '0 4px 16px rgba(255, 143, 16, 0.2)'};
 
   svg {
-    color: var(--text-primary);
-    width: 36px !important;
-    height: 36px !important;
+    color: ${props => props.$isDark ? '#FFD700' : '#FF8F10'};
+    width: 24px !important;
+    height: 24px !important;
     flex-shrink: 0;
     transition: transform 0.3s ease;
+    display: block;
   }
 
   &:hover {
-    background: var(--accent-primary);
+    background: ${props => props.$isDark 
+      ? 'rgba(255, 215, 0, 0.4)' 
+      : 'rgba(255, 143, 16, 0.4)'};
     border-color: var(--accent-primary);
     transform: translateY(-50%) translateX(${props => props.$position === 'left' ? '-4px' : '4px'});
     box-shadow: ${props => props.$isDark 
-      ? '0 6px 24px rgba(255, 121, 0, 0.5)' 
-      : '0 6px 24px rgba(255, 121, 0, 0.35)'};
+      ? '0 6px 24px rgba(255, 215, 0, 0.3)' 
+      : '0 6px 24px rgba(255, 143, 16, 0.3)'};
     
     svg {
-      color: white;
+      color: ${props => props.$isDark ? '#FFD700' : '#FF8F10'};
       transform: translateX(${props => props.$position === 'left' ? '-2px' : '2px'});
     }
   }
@@ -483,13 +494,17 @@ const ImageNavButton = styled.button<{ $position: 'left' | 'right'; $isDark: boo
   }
   
   @media (max-width: 768px) {
-    width: 44px;
-    height: 64px;
-    border-radius: 10px;
+    width: 50px;
+    height: 50px;
+    min-width: 50px;
+    min-height: 50px;
+    max-width: 50px;
+    max-height: 50px;
+    border-radius: 50%;
     
     svg {
-      width: 28px !important;
-      height: 28px !important;
+      width: 24px !important;
+      height: 24px !important;
     }
   }
 `;
