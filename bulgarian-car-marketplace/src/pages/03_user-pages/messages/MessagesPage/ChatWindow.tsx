@@ -464,9 +464,11 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
       setMessages(newMessages);
     });
     
-    // Mark messages as read
-    if (carId) {
-      realtimeMessagingService.markMessagesAsRead(user.uid, recipientId);
+    // ✅ FIX: Mark messages as read using conversationId
+    if (conversationId && user) {
+      realtimeMessagingService.markMessagesAsRead(conversationId, user.uid).catch(error => {
+        logger.debug('Failed to mark messages as read', { conversationId, error });
+      });
     }
     
     return () => {

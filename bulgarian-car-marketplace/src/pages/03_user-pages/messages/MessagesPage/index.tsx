@@ -303,7 +303,7 @@ const LoadingSpinner = styled.div`
 
 const MessagesPage: React.FC = () => {
   const { user } = useAuth();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [searchParams] = useSearchParams();
   
   const [conversations, setConversations] = useState<ChatRoom[]>([]);
@@ -312,6 +312,36 @@ const MessagesPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showMobileChat, setShowMobileChat] = useState(false);
   const [recipientImages, setRecipientImages] = useState<{ [userId: string]: string }>({});
+  const [directConversation, setDirectConversation] = useState<ChatRoom | null>(null);
+  
+  // ✅ NEW: Load conversation directly from URL if not in list
+  useEffect(() => {
+    if (!user || !conversationIdFromUrl || selectedConversation) return;
+    
+    const loadDirectConversation = async () => {
+      try {
+        const conv = await realtimeMessagingService.getConversationById(conversationIdFromUrl);
+        if (conv) {
+          logger.debug('Loaded conversation directly from URL', { conversationId: conversationIdFromUrl });
+          setDirectConversation(conv);
+          setSelectedConversation(conv);
+          setShowMobileChat(true);
+          
+          // Also add to conversations list if not there
+          setConversations(prev => {
+            if (!prev.find(c => c.id === conversationIdFromUrl)) {
+              return [conv, ...prev];
+            }
+            return prev;
+          });
+        }
+      } catch (error) {
+        logger.debug('Could not load conversation directly', { conversationId: conversationIdFromUrl, error });
+      }
+    };
+    
+    loadDirectConversation();
+  }, [user, conversationIdFromUrl, selectedConversation]);
   
   // Load recipient images
   useEffect(() => {
@@ -347,9 +377,16 @@ const MessagesPage: React.FC = () => {
     loadRecipientImages();
   }, [user, conversations]);
   
-  // Get carId from URL params
+  // Get URL params
   const carIdFromUrl = searchParams.get('carId');
   const conversationIdFromUrl = searchParams.get('conversation');
+  
+  // Debug logging
+  useEffect(() => {
+    if (conversationIdFromUrl) {
+      logger.debug('MessagesPage: conversationId from URL', { conversationId: conversationIdFromUrl, carId: carIdFromUrl });
+    }
+  }, [conversationIdFromUrl, carIdFromUrl]);
   
   // ==================== EFFECTS ====================
   
@@ -360,27 +397,59 @@ const MessagesPage: React.FC = () => {
     const loadConversations = async () => {
       try {
         setLoading(true);
+        logger.debug('Loading conversations for user', { userId: user.uid, conversationId: conversationIdFromUrl });
+        
         const chatRooms = await realtimeMessagingService.getUserChatRooms(user.uid);
+        logger.debug('Loaded chatRooms', { count: chatRooms.length, rooms: chatRooms.map(r => r.id) });
         setConversations(chatRooms);
         
         // ✅ FIX: If conversationId in URL, try to find it
         if (conversationIdFromUrl) {
-          const found = chatRooms.find(room => room.id === conversationIdFromUrl);
+          logger.debug('Looking for conversation from URL', { conversationId: conversationIdFromUrl });
+          let found = chatRooms.find(room => room.id === conversationIdFromUrl);
           
           if (found) {
+            logger.debug('Found conversation in chatRooms', { conversationId: conversationIdFromUrl });
             setSelectedConversation(found);
             setShowMobileChat(true);
           } else {
-            // If conversation exists but chatRoom not loaded yet, wait a bit and reload
-            setTimeout(async () => {
-              const updatedChatRooms = await realtimeMessagingService.getUserChatRooms(user.uid);
-              setConversations(updatedChatRooms);
-              const foundAfterReload = updatedChatRooms.find(room => room.id === conversationIdFromUrl);
-              if (foundAfterReload) {
-                setSelectedConversation(foundAfterReload);
-                setShowMobileChat(true);
+            // ✅ FIX: Try to get conversation directly from conversations collection
+            logger.debug('Conversation not found in chatRooms, trying conversations collection', { conversationId: conversationIdFromUrl });
+            const conversation = await realtimeMessagingService.getConversationById(conversationIdFromUrl);
+            
+            if (conversation) {
+              logger.debug('Found conversation in conversations collection', { conversationId: conversationIdFromUrl });
+              // Add to conversations list if not already there
+              if (!chatRooms.find(r => r.id === conversationIdFromUrl)) {
+                setConversations([conversation, ...chatRooms]);
               }
-            }, 500);
+              setSelectedConversation(conversation);
+              setShowMobileChat(true);
+            } else {
+              // If still not found, wait a bit and reload (conversation might be creating)
+              logger.warn('Conversation not found, waiting and retrying...', { conversationId: conversationIdFromUrl });
+              setTimeout(async () => {
+                const updatedChatRooms = await realtimeMessagingService.getUserChatRooms(user.uid);
+                setConversations(updatedChatRooms);
+                const foundAfterReload = updatedChatRooms.find(room => room.id === conversationIdFromUrl);
+                if (foundAfterReload) {
+                  logger.debug('Found conversation after reload', { conversationId: conversationIdFromUrl });
+                  setSelectedConversation(foundAfterReload);
+                  setShowMobileChat(true);
+                } else {
+                  // Last attempt: try conversations collection again
+                  const conversationRetry = await realtimeMessagingService.getConversationById(conversationIdFromUrl);
+                  if (conversationRetry) {
+                    logger.debug('Found conversation on retry', { conversationId: conversationIdFromUrl });
+                    setConversations([conversationRetry, ...updatedChatRooms]);
+                    setSelectedConversation(conversationRetry);
+                    setShowMobileChat(true);
+                  } else {
+                    logger.error('Conversation not found after all attempts', { conversationId: conversationIdFromUrl });
+                  }
+                }
+              }, 1000);
+            }
           }
         }
       } catch (error) {
@@ -403,6 +472,26 @@ const MessagesPage: React.FC = () => {
           const updated = updatedChatRooms.find(room => room.id === selectedConversation.id);
           if (updated) {
             setSelectedConversation(updated);
+          }
+        }
+        
+        // ✅ FIX: If we're waiting for a conversation from URL, check again
+        if (conversationIdFromUrl) {
+          const found = updatedChatRooms.find(room => room.id === conversationIdFromUrl);
+          if (found && !selectedConversation) {
+            setSelectedConversation(found);
+            setShowMobileChat(true);
+          } else if (!found && !selectedConversation) {
+            // Try to get from conversations collection
+            realtimeMessagingService.getConversationById(conversationIdFromUrl).then(conv => {
+              if (conv) {
+                setConversations([conv, ...updatedChatRooms]);
+                setSelectedConversation(conv);
+                setShowMobileChat(true);
+              }
+            }).catch(() => {
+              // Conversation doesn't exist
+            });
           }
         }
       }
@@ -470,6 +559,12 @@ const MessagesPage: React.FC = () => {
           currentUserId={user.uid}
           recipientImages={recipientImages}
         />
+      ) : searchQuery ? (
+        <EmptyState>
+          <Search />
+          <h2>{language === 'bg' ? 'Няма резултати' : 'No results'}</h2>
+          <p>{language === 'bg' ? 'Не са намерени разговори, отговарящи на търсенето.' : 'No conversations match your search.'}</p>
+        </EmptyState>
       ) : (
         <EmptyState>
           <Users />
@@ -481,7 +576,21 @@ const MessagesPage: React.FC = () => {
   );
   
   const renderMainContent = () => {
-    if (!selectedConversation) {
+    // ✅ FIX: Use directConversation if available (loaded from URL)
+    const activeConversation = selectedConversation || directConversation;
+    
+    // ✅ FIX: If conversationId in URL but not loaded yet, show loading
+    if (conversationIdFromUrl && !activeConversation) {
+      return (
+        <MainContent>
+          <LoadingSpinner>
+            <div className="spinner" />
+          </LoadingSpinner>
+        </MainContent>
+      );
+    }
+    
+    if (!activeConversation) {
       return (
         <MainContent>
           <EmptyState>
@@ -494,16 +603,29 @@ const MessagesPage: React.FC = () => {
     }
     
     // Get recipient info
-    const recipientId = selectedConversation.participants.find(id => id !== user?.uid) || '';
-    const recipientName = selectedConversation.participantNames?.[recipientId] || 'Unknown';
+    const recipientId = activeConversation.participants.find(id => id !== user?.uid) || activeConversation.participants[0] || '';
+    const recipientName = activeConversation.participantNames?.[recipientId] || 'Unknown';
     const recipientImage = recipientImages[recipientId] || undefined;
-    const carId = carIdFromUrl || selectedConversation.carId;
-    const carTitle = selectedConversation.carTitle;
+    const carId = carIdFromUrl || activeConversation.carId;
+    const carTitle = activeConversation.carTitle;
+    
+    // ✅ FIX: Don't render if we don't have valid recipientId
+    if (!recipientId || !user) {
+      return (
+        <MainContent>
+          <EmptyState>
+            <MessageCircle />
+            <h2>{t('messages.selectConversation')}</h2>
+            <p>{t('messages.selectConversationHint')}</p>
+          </EmptyState>
+        </MainContent>
+      );
+    }
     
     return (
       <MainContent $isHidden={!showMobileChat}>
         <ChatWindow
-          conversationId={selectedConversation.id}
+          conversationId={activeConversation.id}
           recipientId={recipientId}
           recipientName={recipientName}
           recipientImage={recipientImage}
@@ -520,11 +642,27 @@ const MessagesPage: React.FC = () => {
   if (!user) {
     return (
       <Container>
-        <EmptyState>
-          <MessageCircle />
-          <h2>{t('messages.loginRequired')}</h2>
-          <p>{t('messages.loginRequiredHint')}</p>
-        </EmptyState>
+        <Sidebar>
+          <SidebarHeader>
+            <h1>
+              <MessageCircle />
+              {t('messages.title')}
+            </h1>
+            <p>{t('messages.subtitle')}</p>
+          </SidebarHeader>
+          <EmptyState>
+            <MessageCircle />
+            <h2>{t('messages.loginRequired')}</h2>
+            <p>{t('messages.loginRequiredHint')}</p>
+          </EmptyState>
+        </Sidebar>
+        <MainContent>
+          <EmptyState>
+            <MessageCircle />
+            <h2>{t('messages.loginRequired')}</h2>
+            <p>{t('messages.loginRequiredHint')}</p>
+          </EmptyState>
+        </MainContent>
       </Container>
     );
   }

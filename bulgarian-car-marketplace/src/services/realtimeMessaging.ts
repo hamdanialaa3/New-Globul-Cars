@@ -509,6 +509,53 @@ export class RealtimeMessagingService {
     }
   }
 
+  // ✅ NEW: Get conversation by ID (from conversations collection)
+  async getConversationById(conversationId: string): Promise<ChatRoom | null> {
+    try {
+      const conversationRef = doc(db, 'conversations', conversationId);
+      const conversationDoc = await getDoc(conversationRef);
+      
+      if (!conversationDoc.exists()) {
+        return null;
+      }
+      
+      const data = conversationDoc.data();
+      
+      // Convert conversation to ChatRoom format
+      const chatRoom: ChatRoom = {
+        id: conversationId,
+        participants: data.participants || [],
+        participantNames: data.participantNames || {},
+        carId: data.carId,
+        carTitle: data.carTitle,
+        unreadCount: data.unreadCount || {},
+        createdAt: data.createdAt?.toDate() || new Date(),
+        updatedAt: data.updatedAt?.toDate() || new Date(),
+        lastMessage: data.lastMessage ? {
+          id: '',
+          conversationId,
+          senderId: data.lastMessage.senderId || '',
+          senderName: '',
+          receiverId: '',
+          receiverName: '',
+          content: data.lastMessage.text || '',
+          text: data.lastMessage.text || '',
+          messageType: 'text',
+          type: 'text',
+          status: 'sent',
+          isRead: false,
+          createdAt: data.lastMessage.timestamp?.toDate() || new Date(),
+          updatedAt: data.lastMessage.timestamp?.toDate() || new Date()
+        } : undefined
+      };
+      
+      return chatRoom;
+    } catch (error: unknown) {
+      logger.error('Failed to get conversation by ID', error as Error, { conversationId });
+      return null;
+    }
+  }
+
   // Listen to chat rooms in real-time
   listenToChatRooms(
     userId: string | null | undefined,

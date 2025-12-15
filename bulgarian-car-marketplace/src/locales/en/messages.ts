@@ -16,5 +16,10 @@ export const messages = {
   messageSent: "Message sent!",
   cannotMessageSelf: "You cannot message yourself",
   sendError: "Failed to send message",
-  loginRequired: "Please login to send messages"
+  typeMessage: "Type a message...",
+  send: "Send",
+  attachImage: "Attach image",
+  attachFile: "Attach file",
+  emoji: "Emoji",
+  selectConversation: "Select a conversation to start chatting"
 };

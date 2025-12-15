@@ -16,5 +16,10 @@ export const messages = {
   messageSent: "Съобщението е изпратено!",
   cannotMessageSelf: "Не можете да си изпращате съобщения",
   sendError: "Неуспешно изпращане на съобщение",
-  loginRequired: "Моля, влезте, за да изпращате съобщения"
+  typeMessage: "Напишете съобщение...",
+  send: "Изпрати",
+  attachImage: "Прикачи изображение",
+  attachFile: "Прикачи файл",
+  emoji: "Емотикон",
+  selectConversation: "Изберете разговор, за да започнете чат"
 };
