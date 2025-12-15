@@ -155,7 +155,7 @@ class FeedAlgorithmService {
       collection(db, 'posts'),
       where('status', '==', 'published'),
       where('visibility', '==', 'public'),
-      where('location.city', '==', city),
+      where('locationData.cityId', '==', city),
       orderBy('createdAt', 'desc'),
       limit(limitCount)
     );

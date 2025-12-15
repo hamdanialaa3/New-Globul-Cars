@@ -253,6 +253,8 @@ interface ConversationListProps {
   conversations: ChatRoom[];
   selectedId?: string;
   onSelect: (conversation: ChatRoom) => void;
+  currentUserId: string;
+  recipientImages?: { [userId: string]: string };
 }
 
 // ==================== COMPONENT ====================
@@ -260,7 +262,9 @@ interface ConversationListProps {
 const ConversationList: React.FC<ConversationListProps> = ({
   conversations,
   selectedId,
-  onSelect
+  onSelect,
+  currentUserId,
+  recipientImages = {}
 }) => {
   const { language } = useLanguage();
   
@@ -275,25 +279,35 @@ const ConversationList: React.FC<ConversationListProps> = ({
     return conversation.unreadCount?.[userId] || 0;
   };
   
+  const getRecipientInfo = (conversation: ChatRoom) => {
+    const recipientId = conversation.participants.find(id => id !== currentUserId) || conversation.participants[0];
+    const recipientName = conversation.participantNames?.[recipientId] || 'Unknown';
+    const recipientImage = recipientImages[recipientId] || '/assets/default-avatar.png';
+    return { recipientId, recipientName, recipientImage };
+  };
+  
   const renderMessagePreview = (conversation: ChatRoom) => {
     const lastMessage = conversation.lastMessage;
     
     if (!lastMessage) {
-      return <span>No messages yet</span>;
+      return <span>{language === 'bg' ? 'Все още няма съобщения' : 'No messages yet'}</span>;
     }
     
     let icon = null;
-    if (lastMessage.senderId === conversation.participants[0]) {
+    // ✅ FIX: Check if current user is sender
+    if (lastMessage.senderId === currentUserId) {
       icon = lastMessage.isRead ? <CheckCheck /> : <Check />;
     }
     
-    let content = lastMessage.content;
-    if (lastMessage.type === 'image') {
-      content = 'Image';
+    let content = lastMessage.content || lastMessage.text || '';
+    if (lastMessage.type === 'image' || lastMessage.messageType === 'image') {
+      content = language === 'bg' ? 'Изображение' : 'Image';
     } else if (lastMessage.type === 'file') {
-      content = 'File';
+      content = language === 'bg' ? 'Файл' : 'File';
     } else if (lastMessage.type === 'voice') {
-      content = 'Voice message';
+      content = language === 'bg' ? 'Гласово съобщение' : 'Voice message';
+    } else if (lastMessage.type === 'system' || lastMessage.messageType === 'system') {
+      content = content.substring(0, 50); // Truncate system messages
     }
     
     return (
@@ -308,12 +322,11 @@ const ConversationList: React.FC<ConversationListProps> = ({
     <Container>
       {conversations.map(conversation => {
         const isSelected = conversation.id === selectedId;
-        const unreadCount = getUnreadCount(conversation, conversation.participants[0]);
+        const unreadCount = getUnreadCount(conversation, currentUserId);
         const hasUnread = unreadCount > 0;
         
-        // Get recipient info (for now, just use first participant)
-        const recipientId = conversation.participants[1] || conversation.participants[0];
-        const recipientName = conversation.participantNames?.[recipientId] || 'Unknown';
+        // ✅ FIX: Get recipient info correctly
+        const { recipientId, recipientName, recipientImage } = getRecipientInfo(conversation);
         
         return (
           <ConversationItem
@@ -323,8 +336,12 @@ const ConversationList: React.FC<ConversationListProps> = ({
           >
             <AvatarContainer>
               <Avatar
-                src={`/assets/default-avatar.png`}
+                src={recipientImage}
                 alt={recipientName}
+                onError={(e) => {
+                  // Fallback to default avatar on error
+                  (e.target as HTMLImageElement).src = '/assets/default-avatar.png';
+                }}
               />
               <OnlineIndicator $isOnline={false} />
             </AvatarContainer>

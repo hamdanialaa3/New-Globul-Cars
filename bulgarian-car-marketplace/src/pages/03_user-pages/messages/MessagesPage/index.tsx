@@ -10,6 +10,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../../../contexts/AuthProvider';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { realtimeMessagingService, ChatRoom } from '../../../../services/realtimeMessaging';
+import { userService } from '../../../../services/user/canonical-user.service';
 import ConversationList from './ConversationList';
 import ChatWindow from './ChatWindow';
 import { MessageCircle, Search, Users } from 'lucide-react';
@@ -310,6 +311,41 @@ const MessagesPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [showMobileChat, setShowMobileChat] = useState(false);
+  const [recipientImages, setRecipientImages] = useState<{ [userId: string]: string }>({});
+  
+  // Load recipient images
+  useEffect(() => {
+    if (!user || conversations.length === 0) return;
+    
+    const loadRecipientImages = async () => {
+      const imageMap: { [userId: string]: string } = {};
+      
+      for (const conversation of conversations) {
+        const recipientId = conversation.participants.find(id => id !== user.uid);
+        if (recipientId && !imageMap[recipientId]) {
+          try {
+            const recipientProfile = await userService.getUserProfile(recipientId);
+            if (recipientProfile) {
+              const imageUrl = recipientProfile.photoURL || 
+                              (recipientProfile.profileImage && typeof recipientProfile.profileImage === 'object' 
+                                ? recipientProfile.profileImage.url 
+                                : recipientProfile.profileImage) ||
+                              '';
+              if (imageUrl) {
+                imageMap[recipientId] = imageUrl;
+              }
+            }
+          } catch (error) {
+            logger.debug('Failed to load recipient image', { recipientId, error });
+          }
+        }
+      }
+      
+      setRecipientImages(prev => ({ ...prev, ...imageMap }));
+    };
+    
+    loadRecipientImages();
+  }, [user, conversations]);
   
   // Get carId from URL params
   const carIdFromUrl = searchParams.get('carId');
@@ -327,12 +363,24 @@ const MessagesPage: React.FC = () => {
         const chatRooms = await realtimeMessagingService.getUserChatRooms(user.uid);
         setConversations(chatRooms);
         
-        // If conversationId in URL, select it
+        // ✅ FIX: If conversationId in URL, try to find it
         if (conversationIdFromUrl) {
           const found = chatRooms.find(room => room.id === conversationIdFromUrl);
+          
           if (found) {
             setSelectedConversation(found);
             setShowMobileChat(true);
+          } else {
+            // If conversation exists but chatRoom not loaded yet, wait a bit and reload
+            setTimeout(async () => {
+              const updatedChatRooms = await realtimeMessagingService.getUserChatRooms(user.uid);
+              setConversations(updatedChatRooms);
+              const foundAfterReload = updatedChatRooms.find(room => room.id === conversationIdFromUrl);
+              if (foundAfterReload) {
+                setSelectedConversation(foundAfterReload);
+                setShowMobileChat(true);
+              }
+            }, 500);
           }
         }
       } catch (error) {
@@ -363,7 +411,7 @@ const MessagesPage: React.FC = () => {
     return () => {
       unsubscribe();
     };
-  }, [user, conversationIdFromUrl]);
+  }, [user, conversationIdFromUrl, carIdFromUrl]);
   
   // ==================== HANDLERS ====================
   
@@ -419,6 +467,8 @@ const MessagesPage: React.FC = () => {
           conversations={filteredConversations}
           selectedId={selectedConversation?.id}
           onSelect={handleConversationSelect}
+          currentUserId={user.uid}
+          recipientImages={recipientImages}
         />
       ) : (
         <EmptyState>
@@ -446,6 +496,7 @@ const MessagesPage: React.FC = () => {
     // Get recipient info
     const recipientId = selectedConversation.participants.find(id => id !== user?.uid) || '';
     const recipientName = selectedConversation.participantNames?.[recipientId] || 'Unknown';
+    const recipientImage = recipientImages[recipientId] || undefined;
     const carId = carIdFromUrl || selectedConversation.carId;
     const carTitle = selectedConversation.carTitle;
     
@@ -455,6 +506,7 @@ const MessagesPage: React.FC = () => {
           conversationId={selectedConversation.id}
           recipientId={recipientId}
           recipientName={recipientName}
+          recipientImage={recipientImage}
           carId={carId}
           carTitle={carTitle}
           onBack={handleBackToList}

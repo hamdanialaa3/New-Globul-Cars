@@ -187,7 +187,7 @@ class EventsService {
         q = query(
           collection(db, this.collectionName),
           where('status', '==', 'upcoming'),
-          where('location.city', '==', cityFilter),
+          where('locationData.cityId', '==', cityFilter),
           where('startDate', '>', Timestamp.fromDate(now)),
           orderBy('startDate', 'asc'),
           limit(limitCount)
