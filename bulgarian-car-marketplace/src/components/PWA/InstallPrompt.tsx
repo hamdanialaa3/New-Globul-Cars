@@ -111,8 +111,19 @@ const CloseButton = styled.button`
 
 export const InstallPrompt: React.FC = () => {
   const { isInstallable, installApp, isInstalled } = usePWA();
-  const { t, language } = useLanguage();
+  const { language } = useLanguage();
   const [dismissed, setDismissed] = React.useState(false);
+
+  // ✅ FIX: Check if previously dismissed within 7 days - MUST be before early return
+  React.useEffect(() => {
+    const dismissedTime = localStorage.getItem('pwa-install-dismissed');
+    if (dismissedTime) {
+      const daysSinceDismissal = (Date.now() - parseInt(dismissedTime)) / (1000 * 60 * 60 * 24);
+      if (daysSinceDismissal < 7) {
+        setDismissed(true);
+      }
+    }
+  }, []);
 
   // Don't show if not installable, already installed, or dismissed
   if (!isInstallable || isInstalled || dismissed) {
@@ -129,17 +140,6 @@ export const InstallPrompt: React.FC = () => {
     // Remember dismissal for 7 days
     localStorage.setItem('pwa-install-dismissed', Date.now().toString());
   };
-
-  // Check if previously dismissed within 7 days
-  React.useEffect(() => {
-    const dismissedTime = localStorage.getItem('pwa-install-dismissed');
-    if (dismissedTime) {
-      const daysSinceDismissal = (Date.now() - parseInt(dismissedTime)) / (1000 * 60 * 60 * 24);
-      if (daysSinceDismissal < 7) {
-        setDismissed(true);
-      }
-    }
-  }, []);
 
   return (
     <PromptContainer>
