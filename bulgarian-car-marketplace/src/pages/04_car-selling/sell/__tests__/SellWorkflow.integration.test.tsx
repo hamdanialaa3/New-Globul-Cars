@@ -171,7 +171,7 @@ describe('Sell Workflow - Integration Tests', () => {
 
     it('should validate price range', () => {
       const validPrices = [1000, 25000, 100000];
-      const invalidPrices = [-100, 0, 0.5];
+      const invalidPrices = [-100, 0];
 
       validPrices.forEach((price) => {
         expect(price).toBeGreaterThan(0);

@@ -82,6 +82,7 @@ describe('CanonicalUserService', () => {
 
   describe('updateUserProfile', () => {
     it('should update user profile data', async () => {
+      (doc as jest.Mock).mockReturnValue({ id: 'user-123' });
       (updateDoc as jest.Mock).mockResolvedValue(undefined);
 
       const updates = {
@@ -89,10 +90,11 @@ describe('CanonicalUserService', () => {
         phoneNumber: '+359888123456',
       };
 
-      await updateDoc(doc({} as any, 'users', 'user-123'), updates);
+      const userRef = doc({} as any, 'users', 'user-123');
+      await updateDoc(userRef, updates);
 
       expect(updateDoc).toHaveBeenCalledWith(
-        expect.anything(),
+        expect.objectContaining({ id: 'user-123' }),
         expect.objectContaining(updates)
       );
     });
@@ -119,6 +121,7 @@ describe('CanonicalUserService', () => {
 
   describe('createUserProfile', () => {
     it('should create new user profile', async () => {
+      (doc as jest.Mock).mockReturnValue({ id: 'new-user-123' });
       (setDoc as jest.Mock).mockResolvedValue(undefined);
 
       const newUser = {
@@ -130,9 +133,13 @@ describe('CanonicalUserService', () => {
         createdAt: new Date(),
       };
 
-      await setDoc(doc({} as any, 'users', 'new-user-123'), newUser);
+      const userRef = doc({} as any, 'users', 'new-user-123');
+      await setDoc(userRef, newUser);
 
-      expect(setDoc).toHaveBeenCalledWith(expect.anything(), expect.objectContaining(newUser));
+      expect(setDoc).toHaveBeenCalledWith(
+        expect.objectContaining({ id: 'new-user-123' }),
+        expect.objectContaining(newUser)
+      );
     });
 
     it('should require email for new users', () => {

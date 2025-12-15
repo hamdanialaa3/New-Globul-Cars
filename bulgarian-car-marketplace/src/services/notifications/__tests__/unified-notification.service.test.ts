@@ -238,7 +238,7 @@ describe('UnifiedNotificationService', () => {
 
       invalidNotifications.forEach((notif) => {
         const hasType = 'type' in notif && notif.type;
-        const hasTitle = 'title' in notif && notif.title;
+        const hasTitle = 'title' in notif && Boolean(notif.title);
         const isValid = hasType && hasTitle;
 
         expect(isValid).toBe(false);
@@ -392,7 +392,8 @@ describe('UnifiedNotificationService', () => {
       expect(db.collection('notifications').add).toHaveBeenCalledWith(
         expect.objectContaining({
           title: 'Welcome!',
-          link: undefined,
+          message: 'Welcome to Globul Cars',
+          // link is not set when not provided
         })
       );
     });
