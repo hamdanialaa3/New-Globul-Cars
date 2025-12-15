@@ -256,6 +256,7 @@ export const SellVehicleWizard: React.FC<SellVehicleWizardProps> = ({
   initialVehicleType,
   mode = 'create',
   existingCarId,
+  initialStep = 1,
 }) => {
   const { language } = useLanguage();
   const navigate = useNavigate();
