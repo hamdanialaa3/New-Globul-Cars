@@ -3,6 +3,27 @@
 // Coverage Target: 85%+
 // Professional Testing - December 15, 2025 🎯
 
+// Mock Firebase config
+jest.mock('../../../firebase/firebase-config', () => ({
+  db: {
+    collection: jest.fn().mockReturnThis(),
+    doc: jest.fn().mockReturnThis(),
+    add: jest.fn().mockResolvedValue({ id: 'test-notif-id' }),
+    get: jest.fn().mockResolvedValue({ exists: true, data: () => ({}) }),
+    update: jest.fn().mockResolvedValue(undefined),
+  },
+}));
+
+// Mock logger
+jest.mock('../../logger-service', () => ({
+  logger: {
+    info: jest.fn(),
+    error: jest.fn(),
+    debug: jest.fn(),
+    warn: jest.fn(),
+  },
+}));
+
 describe('UnifiedNotificationService', () => {
   describe('Singleton Pattern', () => {
     it('should implement singleton pattern correctly', () => {
@@ -238,13 +259,17 @@ describe('UnifiedNotificationService', () => {
 
 // Import at the end to avoid hoisting issues
 import { UnifiedNotificationService } from '../unified-notification.service';
+import { db } from '../../../firebase/firebase-config';
+import { logger } from '../../logger-service';
 
 describe('UnifiedNotificationService', () => {
   let service: UnifiedNotificationService;
+  let notificationService: UnifiedNotificationService;
 
   beforeEach(() => {
     jest.clearAllMocks();
     service = UnifiedNotificationService.getInstance();
+    notificationService = service;
   });
 
   describe('Singleton Pattern', () => {

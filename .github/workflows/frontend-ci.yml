@@ -17,6 +17,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    
+    env:
+      NODE_OPTIONS: --max-old-space-size=4096
+      CI: true
+    
     defaults:
       run:
         working-directory: bulgarian-car-marketplace
@@ -38,7 +43,7 @@ jobs:
 
       - name: Tests (must pass)
         run: |
-          npm test -- --watchAll=false --passWithNoTests
+          npm test -- --watchAll=false --passWithNoTests --maxWorkers=50% --logHeapUsage
 
       - name: Strict install check (React 19 peer readiness)
         run: |

@@ -5,24 +5,24 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import { LanguageProvider } from '../../../contexts/LanguageContext';
-import { AuthProvider } from '../../../contexts/AuthContext';
+import { LanguageProvider } from '../../../../contexts/LanguageContext';
+import { AuthProvider } from '../../../../contexts/AuthContext';
 
 // Mock services
-jest.mock('../../../services/sellWorkflowService', () => ({
+jest.mock('../../../../services/sellWorkflowService', () => ({
   saveDraft: jest.fn().mockResolvedValue(true),
   loadDraft: jest.fn().mockResolvedValue(null),
   deleteDraft: jest.fn().mockResolvedValue(true),
 }));
 
-jest.mock('../../../services/brands-models-data.service', () => ({
+jest.mock('../../../../services/brands-models-data.service', () => ({
   brandsModelsDataService: {
     getAllBrands: jest.fn().mockResolvedValue(['BMW', 'Mercedes', 'Audi']),
     getModelsForBrand: jest.fn().mockResolvedValue(['X5', 'X3', 'M3']),
   },
 }));
 
-jest.mock('../../../services/logger-service', () => ({
+jest.mock('../../../../services/logger-service', () => ({
   logger: {
     info: jest.fn(),
     warn: jest.fn(),

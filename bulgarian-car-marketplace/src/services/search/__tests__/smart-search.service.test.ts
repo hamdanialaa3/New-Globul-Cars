@@ -22,12 +22,12 @@ jest.mock('../../homepage-cache.service', () => ({
   },
   CACHE_KEYS: {},
 }));
-jest.mock('../search/search-history.service', () => ({
+jest.mock('./search-history.service', () => ({
   searchHistoryService: {
     saveSearch: jest.fn(),
   },
 }));
-jest.mock('../search/search-personalization.service', () => ({
+jest.mock('./search-personalization.service', () => ({
   searchPersonalizationService: {
     personalizeResults: jest.fn((cars) => cars),
   },

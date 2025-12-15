@@ -17,7 +17,7 @@ jest.mock('firebase/firestore', () => ({
   serverTimestamp: jest.fn(() => new Date()),
 }));
 
-jest.mock('../../firebase/firebase-config', () => ({
+jest.mock('../../../firebase/firebase-config', () => ({
   db: {},
   auth: { currentUser: { uid: 'test-user-123' } },
 }));

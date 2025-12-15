@@ -111,7 +111,7 @@ const FormLabel = styled.label`
   letter-spacing: 1px;
 `;
 
-const FormSelect = styled.select`
+const FormSelect = styled('select')`
   width: 100%;
   height: 55px;
   background: #0f0f13;

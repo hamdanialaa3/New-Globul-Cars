@@ -8,7 +8,7 @@ import { writeBatch, doc, getDoc, getDocs } from 'firebase/firestore';
 
 // Mock dependencies
 jest.mock('firebase/firestore');
-jest.mock('../../firebase/firebase-config', () => ({
+jest.mock('../../../firebase/firebase-config', () => ({
   db: {},
 }));
 jest.mock('../../rate-limiting/rateLimiter.service', () => ({

@@ -10,7 +10,7 @@ import {
   sanitizeFilename,
   escapeHTML,
   validateBulgarianEIK,
-} from '../../inputSanitizer';
+} from '../inputSanitizer';
 
 describe('Input Sanitizer Utilities', () => {
   describe('sanitizeCarMakeModel', () => {
