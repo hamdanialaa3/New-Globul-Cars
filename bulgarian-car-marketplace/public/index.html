@@ -231,16 +231,17 @@
             const glassSphere = new THREE.Mesh(sphereGeo, sphereMat);
             scene.add(glassSphere);
 
-            // Inner Logo (Rotating Horizontally)
+            // Inner Logo (Rotating Horizontally) - Using project logo
             const loader = new THREE.TextureLoader();
             const logoTexture = loader.load(
-                '%PUBLIC_URL%/Logo1.png',
+                '%PUBLIC_URL%/logo-sphere.webp',
+                (texture) => {
+                    // Success callback
+                    console.log('Logo texture loaded successfully');
+                },
                 undefined,
-                undefined,
-                () => {
-                    // Fallback: use wireframe car image if logo fails
-                    logoTexture.image = new Image();
-                    logoTexture.image.src = 'https://img.freepik.com/premium-photo/wireframe-car-blueprint-dark-background_1033579-37397.jpg';
+                (error) => {
+                    console.warn('Logo texture failed to load:', error);
                 }
             );
             
@@ -248,7 +249,7 @@
             const logoMat = new THREE.MeshBasicMaterial({
                 map: logoTexture,
                 transparent: true,
-                opacity: 0.9,
+                opacity: 0.95,
                 side: THREE.DoubleSide
             });
             const innerLogo = new THREE.Mesh(logoGeo, logoMat);
