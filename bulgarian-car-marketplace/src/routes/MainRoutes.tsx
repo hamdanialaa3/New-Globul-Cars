@@ -17,6 +17,7 @@ const AdminPage = safeLazy(() => import('../pages/06_admin/regular-admin/AdminPa
 const AdminLoginPage = safeLazy(() => import('../pages/02_authentication/admin-login/AdminLoginPage'));
 const AdminDataFix = safeLazy(() => import('../pages/06_admin/regular-admin/AdminDataFix'));
 const ProfileRouter = safeLazy(() => import('../pages/03_user-pages/profile/ProfilePage/ProfileRouter'));
+const NumericProfileRouter = safeLazy(() => import('./NumericProfileRouter'));
 const VerificationPage = safeLazy(() => import('../features/verification/VerificationPage'));
 const BillingPage = safeLazy(() => import('../features/billing/BillingPage'));
 const BillingSuccessPage = safeLazy(() => import('../pages/08_payment-billing/BillingSuccessPage'));
@@ -125,7 +126,12 @@ export const MainRoutes: React.FC = () => {
             <Route path="/sell/inserat/:vehicleType/preview" element={<SellRouteRedirect step={5} />} />
             <Route path="/sell/inserat/:vehicleType/submission" element={<SellRouteRedirect step={5} />} />
 
-            <Route path="/profile/*" element={<ProfileRouter />} />
+            {/* 🔢 NEW: Numeric ID-based profile routes (world-class URLs) */}
+            <Route path="/profile/*" element={<NumericProfileRouter />} />
+            
+            {/* ⚠️ DEPRECATED: Legacy Firebase UID routes (backward compatibility) */}
+            {/* <Route path="/profile-legacy/*" element={<ProfileRouter />} /> */}
+            
             <Route path="/verification" element={<VerificationPage />} />
             <Route path="/billing" element={<BillingPage />} />
             <Route

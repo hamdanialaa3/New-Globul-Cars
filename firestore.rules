@@ -79,17 +79,24 @@ service cloud.firestore {
       // Allow create if:
       // - User is creating their own profile
       // - Required fields are present
+      // 🔢 NEW: numericId will be auto-assigned by Cloud Function (onCreate trigger)
       allow create: if isAuthenticated() && 
                        request.auth.uid == userId &&
                        request.resource.data.email is string &&
                        request.resource.data.displayName is string &&
                        isValidProfileType(request.resource.data.profileType) &&
-                       request.resource.data.profileType == 'private'; // New users default to private
+                       request.resource.data.profileType == 'private' && // New users default to private
+                       // 🔢 VALIDATION: numericId must NOT be provided by client (auto-assigned by function)
+                       (!('numericId' in request.resource.data) || request.resource.data.numericId == null);
       
       // Allow update if:
       // - User owns the profile OR is admin
       // - Profile type changes are validated (Phase 0 Day 4)
+      // 🔢 NEW: numericId is immutable after creation
       allow update: if (isOwner(userId) || isAdmin()) &&
+                       // 🔢 VALIDATION: numericId cannot be changed after creation
+                       (!('numericId' in request.resource.data) || 
+                        request.resource.data.numericId == resource.data.numericId) &&
                        // Validate profileType if being changed
                        (!('profileType' in request.resource.data) || 
                         (isValidProfileType(request.resource.data.profileType) &&
@@ -181,21 +188,33 @@ service cloud.firestore {
       // 3. sellerEmail matches authenticated user's email
       // 4. status must be 'active' and isActive must be true for new listings
       // 5. Listing limits based on plan tier
+      // 🔢 NEW: numericId and sellerNumericId will be auto-assigned by Cloud Function
       allow create: if isAuthenticated() &&
                        request.resource.data.sellerId is string &&
                        request.resource.data.sellerId == request.auth.uid &&
                        request.resource.data.sellerEmail == request.auth.token.email &&
                        request.resource.data.status == 'active' &&
                        request.resource.data.isActive == true &&
+                       // 🔢 VALIDATION: numericId must NOT be provided by client (auto-assigned by function)
+                       (!('numericId' in request.resource.data) || request.resource.data.numericId == null) &&
+                       // 🔢 VALIDATION: sellerNumericId must NOT be provided by client (auto-assigned by function)
+                       (!('sellerNumericId' in request.resource.data) || request.resource.data.sellerNumericId == null) &&
                        // Check listing limits based on plan tier
                        canAddListing(request.auth.uid);
       
       // Allow update if owner or admin
       // Prevents changing sellerId (ownership transfer protection)
+      // 🔢 NEW: numericId and sellerNumericId are immutable after creation
       allow update: if (isOwner(resource.data.sellerId) || isAdmin()) &&
                        // Prevent changing sellerId
                        (!('sellerId' in request.resource.data.diff(resource.data)) ||
-                        request.resource.data.sellerId == resource.data.sellerId);
+                        request.resource.data.sellerId == resource.data.sellerId) &&
+                       // 🔢 VALIDATION: numericId cannot be changed after creation
+                       (!('numericId' in request.resource.data) || 
+                        request.resource.data.numericId == resource.data.numericId) &&
+                       // 🔢 VALIDATION: sellerNumericId cannot be changed after creation
+                       (!('sellerNumericId' in request.resource.data) || 
+                        request.resource.data.sellerNumericId == resource.data.sellerNumericId);
       
       // Allow delete if owner or admin
       allow delete: if isOwner(resource.data.sellerId) || isAdmin();

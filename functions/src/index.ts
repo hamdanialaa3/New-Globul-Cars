@@ -23,3 +23,12 @@ export { getSubscriptionStatus } from './subscriptions/getSubscriptionStatus';
 // وظائف التحقق
 // ============================================
 export { verifyEIK } from './verification/verifyEIK';
+
+// ============================================
+// 🔢 Auto ID Assignment Functions
+// وظائف تعيين المعرفات الرقمية التلقائي
+// ============================================
+// Automatic numeric ID assignment for users and cars
+// Inspired by mobile.de & AutoScout24 URL structure
+export { assignUserNumericId } from './auto-id-assignment/assignUserNumericId';
+export { assignCarNumericId } from './auto-id-assignment/assignCarNumericId';
