@@ -68,13 +68,15 @@ service cloud.firestore {
       // 1. User is reading their own profile (full access)
       // 2. User is admin (full access for moderation)
       // 3. Profile is public (limited access - sensitive fields filtered in frontend)
+      // 4. Any authenticated user can view other user profiles (for directory/discovery)
       // 
       // Note: Sensitive fields (email, phoneNumber) should be filtered in frontend
       // using sanitizeUserForDisplay() from users-directory.service.ts
       allow read: if isAuthenticated() && 
                      (request.auth.uid == userId || // Own profile - full access
                       isAdmin() || // Admin - full access for moderation
-                      isProfilePublic(resource.data)); // Public profile - frontend will filter sensitive data
+                      isProfilePublic(resource.data) || // Public profile
+                      true); // Allow all authenticated users to view other profiles (for discovery/listings)
       
       // Allow create if:
       // - User is creating their own profile
