@@ -312,36 +312,6 @@ const MessagesPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showMobileChat, setShowMobileChat] = useState(false);
   const [recipientImages, setRecipientImages] = useState<{ [userId: string]: string }>({});
-  const [directConversation, setDirectConversation] = useState<ChatRoom | null>(null);
-  
-  // ✅ NEW: Load conversation directly from URL if not in list
-  useEffect(() => {
-    if (!user || !conversationIdFromUrl || selectedConversation) return;
-    
-    const loadDirectConversation = async () => {
-      try {
-        const conv = await realtimeMessagingService.getConversationById(conversationIdFromUrl);
-        if (conv) {
-          logger.debug('Loaded conversation directly from URL', { conversationId: conversationIdFromUrl });
-          setDirectConversation(conv);
-          setSelectedConversation(conv);
-          setShowMobileChat(true);
-          
-          // Also add to conversations list if not there
-          setConversations(prev => {
-            if (!prev.find(c => c.id === conversationIdFromUrl)) {
-              return [conv, ...prev];
-            }
-            return prev;
-          });
-        }
-      } catch (error) {
-        logger.debug('Could not load conversation directly', { conversationId: conversationIdFromUrl, error });
-      }
-    };
-    
-    loadDirectConversation();
-  }, [user, conversationIdFromUrl, selectedConversation]);
   
   // Load recipient images
   useEffect(() => {
@@ -380,13 +350,17 @@ const MessagesPage: React.FC = () => {
   // Get URL params
   const carIdFromUrl = searchParams.get('carId');
   const conversationIdFromUrl = searchParams.get('conversation');
+  const userIdFromUrl = searchParams.get('userId'); // ✅ NEW: Get userId from URL
   
   // Debug logging
   useEffect(() => {
     if (conversationIdFromUrl) {
       logger.debug('MessagesPage: conversationId from URL', { conversationId: conversationIdFromUrl, carId: carIdFromUrl });
     }
-  }, [conversationIdFromUrl, carIdFromUrl]);
+    if (userIdFromUrl) {
+      logger.debug('MessagesPage: userId from URL', { userId: userIdFromUrl, carId: carIdFromUrl });
+    }
+  }, [conversationIdFromUrl, carIdFromUrl, userIdFromUrl]);
   
   // ==================== EFFECTS ====================
   
@@ -403,8 +377,57 @@ const MessagesPage: React.FC = () => {
         logger.debug('Loaded chatRooms', { count: chatRooms.length, rooms: chatRooms.map(r => r.id) });
         setConversations(chatRooms);
         
+        // ✅ FIX: If userId in URL, find or create conversation
+        if (userIdFromUrl && userIdFromUrl !== user.uid) {
+          logger.debug('Looking for conversation with user', { userId: userIdFromUrl });
+          // Try to find existing conversation with this user
+          const existingConv = chatRooms.find(room => 
+            room.participants.includes(userIdFromUrl) && room.participants.includes(user.uid)
+          );
+          
+          if (existingConv) {
+            logger.debug('Found existing conversation with user', { conversationId: existingConv.id, userId: userIdFromUrl });
+            setSelectedConversation(existingConv);
+            setShowMobileChat(true);
+          } else {
+            // Create a placeholder conversation
+            logger.debug('Creating placeholder conversation with user', { userId: userIdFromUrl });
+            try {
+              // Get recipient's name
+              const recipientProfile = await userService.getUserProfile(userIdFromUrl);
+              const recipientName = recipientProfile?.displayName || 'User';
+              
+              // Create a temporary conversation ID
+              const tempConversationId = `${user.uid}_${userIdFromUrl}`.split('').sort().join('');
+              
+              const newConversation: ChatRoom = {
+                id: tempConversationId,
+                participants: [user.uid, userIdFromUrl],
+                participantNames: {
+                  [user.uid]: user.displayName || 'You',
+                  [userIdFromUrl]: recipientName
+                },
+                unreadCount: {
+                  [user.uid]: 0,
+                  [userIdFromUrl]: 0
+                },
+                carId: carIdFromUrl || undefined,
+                createdAt: new Date(),
+                updatedAt: new Date()
+              };
+              
+              logger.debug('Created placeholder conversation', { conversationId: newConversation.id });
+              // Add to conversations list
+              setConversations([newConversation, ...chatRooms]);
+              setSelectedConversation(newConversation);
+              setShowMobileChat(true);
+            } catch (error) {
+              logger.error('Failed to create placeholder conversation', { userId: userIdFromUrl, error });
+            }
+          }
+        }
         // ✅ FIX: If conversationId in URL, try to find it
-        if (conversationIdFromUrl) {
+        else if (conversationIdFromUrl) {
           logger.debug('Looking for conversation from URL', { conversationId: conversationIdFromUrl });
           let found = chatRooms.find(room => room.id === conversationIdFromUrl);
           
@@ -476,22 +499,11 @@ const MessagesPage: React.FC = () => {
         }
         
         // ✅ FIX: If we're waiting for a conversation from URL, check again
-        if (conversationIdFromUrl) {
+        if (conversationIdFromUrl && !selectedConversation) {
           const found = updatedChatRooms.find(room => room.id === conversationIdFromUrl);
-          if (found && !selectedConversation) {
+          if (found) {
             setSelectedConversation(found);
             setShowMobileChat(true);
-          } else if (!found && !selectedConversation) {
-            // Try to get from conversations collection
-            realtimeMessagingService.getConversationById(conversationIdFromUrl).then(conv => {
-              if (conv) {
-                setConversations([conv, ...updatedChatRooms]);
-                setSelectedConversation(conv);
-                setShowMobileChat(true);
-              }
-            }).catch(() => {
-              // Conversation doesn't exist
-            });
           }
         }
       }
@@ -500,7 +512,7 @@ const MessagesPage: React.FC = () => {
     return () => {
       unsubscribe();
     };
-  }, [user, conversationIdFromUrl, carIdFromUrl]);
+  }, [user, conversationIdFromUrl, carIdFromUrl, userIdFromUrl]);
   
   // ==================== HANDLERS ====================
   
@@ -576,21 +588,31 @@ const MessagesPage: React.FC = () => {
   );
   
   const renderMainContent = () => {
-    // ✅ FIX: Use directConversation if available (loaded from URL)
-    const activeConversation = selectedConversation || directConversation;
-    
-    // ✅ FIX: If conversationId in URL but not loaded yet, show loading
-    if (conversationIdFromUrl && !activeConversation) {
+    // ✅ FIX: If conversationId in URL but not selected yet, show loading
+    if (conversationIdFromUrl && !selectedConversation) {
+      if (loading) {
+        return (
+          <MainContent>
+            <LoadingSpinner>
+              <div className="spinner" />
+            </LoadingSpinner>
+          </MainContent>
+        );
+      }
+      
+      // If we have conversationId but couldn't load it, show error state
       return (
         <MainContent>
-          <LoadingSpinner>
-            <div className="spinner" />
-          </LoadingSpinner>
+          <EmptyState>
+            <MessageCircle />
+            <h2>{t('messages.loading')}</h2>
+            <p>{language === 'bg' ? 'Зареждане на разговора...' : 'Loading conversation...'}</p>
+          </EmptyState>
         </MainContent>
       );
     }
     
-    if (!activeConversation) {
+    if (!selectedConversation) {
       return (
         <MainContent>
           <EmptyState>
@@ -603,11 +625,11 @@ const MessagesPage: React.FC = () => {
     }
     
     // Get recipient info
-    const recipientId = activeConversation.participants.find(id => id !== user?.uid) || activeConversation.participants[0] || '';
-    const recipientName = activeConversation.participantNames?.[recipientId] || 'Unknown';
+    const recipientId = selectedConversation.participants.find(id => id !== user?.uid) || selectedConversation.participants[0] || '';
+    const recipientName = selectedConversation.participantNames?.[recipientId] || 'Unknown';
     const recipientImage = recipientImages[recipientId] || undefined;
-    const carId = carIdFromUrl || activeConversation.carId;
-    const carTitle = activeConversation.carTitle;
+    const carId = carIdFromUrl || selectedConversation.carId;
+    const carTitle = selectedConversation.carTitle;
     
     // ✅ FIX: Don't render if we don't have valid recipientId
     if (!recipientId || !user) {
@@ -625,7 +647,7 @@ const MessagesPage: React.FC = () => {
     return (
       <MainContent $isHidden={!showMobileChat}>
         <ChatWindow
-          conversationId={activeConversation.id}
+          conversationId={selectedConversation.id}
           recipientId={recipientId}
           recipientName={recipientName}
           recipientImage={recipientImage}
