@@ -15,6 +15,11 @@ export interface UserProfile {
     displayName?: string;
     photoURL?: string;
     role?: 'user' | 'admin' | 'dealer';
+    
+    // ✅ NEW: Numeric ID system for clean URLs
+    numericId?: number;           // Unique numeric ID (e.g., 1, 2, 3...)
+    profileSlug?: string;         // Optional username slug (e.g., "john-doe")
+    
     [key: string]: unknown;
 }
 

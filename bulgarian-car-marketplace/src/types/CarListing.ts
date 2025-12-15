@@ -1,6 +1,11 @@
 export interface CarListing {
   // Basic Information
   id?: string;
+  
+  // ✅ NEW: Numeric ID system for clean URLs
+  numericId?: number;           // Unique numeric ID per seller (e.g., 1, 2, 3...)
+  sellerNumericId?: number;     // Seller's numeric ID
+  
   vehicleType: string;
   make: string;
   model: string;
