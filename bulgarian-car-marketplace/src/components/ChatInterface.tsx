@@ -273,11 +273,13 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
   useEffect(() => {
     const loadMessages = async () => {
       try {
-        const chatMessages = await realtimeMessagingService.getMessages(
-              currentUserId,
-          otherUserId
+        // ✅ FIX: getMessages now returns { messages, lastDoc }
+        const result = await realtimeMessagingService.getMessages(
+          currentUserId,
+          otherUserId,
+          carId
         );
-        setMessages(chatMessages);
+        setMessages(result.messages);
       } catch (error) {
             logger.error('Failed to load messages', error as Error, { currentUserId, otherUserId });
       }
@@ -305,7 +307,13 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
 
   // Listen to typing indicators
   useEffect(() => {
+    if (!currentUserId || !otherUserId || !carId) return;
+    
+    // ✅ FIX: Generate conversationId for typing indicators
+    const conversationId = [currentUserId, otherUserId].sort().join('_') + (carId ? `_${carId}` : '');
+    
     const unsubscribe = realtimeMessagingService.listenToTypingIndicators(
+      conversationId,
       currentUserId,
       (indicators) => {
         const relevantIndicators = indicators.filter(
@@ -316,7 +324,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
     );
 
     return () => unsubscribe();
-  }, [currentUserId, otherUserId]);
+  }, [currentUserId, otherUserId, carId]);
 
   // Scroll to bottom when new messages arrive
   useEffect(() => {

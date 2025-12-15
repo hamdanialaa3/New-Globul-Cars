@@ -45,7 +45,7 @@
         href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;600;800&family=Playfair+Display:wght@700&display=swap"
         rel="stylesheet">
     <style>
-        /* --- SMART LOADER STYLES --- */
+        /* --- ULTIMATE GEAR LOGO LOADER --- */
         #loader-container {
             position: fixed;
             top: 0;
@@ -55,97 +55,61 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background: rgba(5, 5, 10, 0.4);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            background: rgba(5, 5, 10, 0.95);
+            backdrop-filter: blur(8px);
             z-index: 99999;
-            /* Ensure it is on top of everything */
             font-family: 'Exo 2', sans-serif;
-            color: white;
-            transition: opacity 0.5s ease, visibility 0.5s;
+            transition: opacity 0.5s ease;
         }
 
-        .loader-content-wrapper {
+        .loader-wrapper {
             position: relative;
+            width: 400px;
+            height: 400px;
             display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
+            align-items: center;
         }
 
-        #gear-canvas-container {
-            width: 300px;
-            height: 300px;
-            position: relative;
+        #canvas-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             z-index: 1;
         }
 
-        .brand-name-container {
-            margin-top: -40px;
-            z-index: 2;
+        .text-container {
+            position: absolute;
+            bottom: -60px;
+            width: 100%;
             text-align: center;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
+            color: white;
+            z-index: 2;
         }
 
-        .brand-text-bg {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.5rem;
+        .brand-text {
+            font-size: 1.5rem;
             font-weight: 700;
-            color: #ffffff;
-            opacity: 0;
-            animation: fadeInFlash 3s ease-in-out forwards, pulseGlow 2s ease-in-out 3s infinite alternate;
-        }
-
-        .brand-text-en {
-            font-family: 'Exo 2', sans-serif;
-            font-size: 1.2rem;
-            font-weight: 300;
-            letter-spacing: 4px;
+            letter-spacing: 2px;
             text-transform: uppercase;
+            color: #ffffff;
+            text-shadow: 0 0 15px rgba(0, 204, 255, 0.6);
+            margin-bottom: 5px;
+        }
+
+        .status-text {
+            font-size: 0.8rem;
             color: #00ccff;
-            opacity: 0;
-            animation: fadeInFlash 3s ease-in-out 0.5s forwards, pulseCyan 2s ease-in-out 3.5s infinite alternate;
+            letter-spacing: 3px;
+            opacity: 0.8;
+            animation: pulseStatus 1.5s infinite;
         }
 
-        @keyframes fadeInFlash {
-            0% {
-                opacity: 0;
-                text-shadow: none;
-                transform: translateY(10px);
-            }
-
-            50% {
-                opacity: 0.5;
-                text-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
-            }
-
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-                text-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 40px rgba(255, 255, 255, 0.4);
-            }
-        }
-
-        @keyframes pulseGlow {
-            from {
-                text-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 40px rgba(255, 255, 255, 0.4);
-            }
-
-            to {
-                text-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 0 0 20px rgba(255, 255, 255, 0.2);
-            }
-        }
-
-        @keyframes pulseCyan {
-            from {
-                text-shadow: 0 0 15px rgba(0, 204, 255, 0.8), 0 0 30px rgba(0, 204, 255, 0.4);
-            }
-
-            to {
-                text-shadow: 0 0 5px rgba(0, 204, 255, 0.5), 0 0 10px rgba(0, 204, 255, 0.2);
-            }
+        @keyframes pulseStatus {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
         }
     </style>
 </head>
@@ -153,20 +117,20 @@
 <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
 
-    <!-- INITIAL LOADER -->
+    <!-- ULTIMATE GEAR LOGO LOADER -->
     <div id="loader-container">
-        <div class="loader-content-wrapper">
-            <div id="gear-canvas-container"></div>
-            <div class="brand-name-container">
-                <div class="brand-text-bg">Български мобили</div>
-                <div class="brand-text-en">Bulgarski Mobili</div>
+        <div class="loader-wrapper">
+            <div id="canvas-container"></div>
+            <div class="text-container">
+                <div class="brand-text">Bulgarski Mobili</div>
+                <div class="status-text">INITIALIZING SYSTEMS...</div>
             </div>
         </div>
     </div>
 
     <div id="root"></div>
 
-    <!-- THREE.JS FOR LOADER -->
+    <!-- THREE.JS LOADER MODULE -->
     <script type="importmap">
         {
             "imports": {
@@ -174,83 +138,175 @@
             }
         }
     </script>
+    
     <script type="module">
         import * as THREE from 'three';
 
         try {
-            const container = document.getElementById('gear-canvas-container');
-            if (container) {
-                const scene = new THREE.Scene();
-                const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
-                camera.position.z = 18;
-                const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-                renderer.setSize(300, 300);
-                renderer.setPixelRatio(window.devicePixelRatio);
-                renderer.toneMapping = THREE.ACESFilmicToneMapping;
-                renderer.toneMappingExposure = 1.2;
-                container.appendChild(renderer.domElement);
+            // Setup Scene
+            const container = document.getElementById('canvas-container');
+            if (!container) throw new Error('Canvas container not found');
 
-                const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
-                scene.add(ambientLight);
-                const mainLight = new THREE.PointLight(0xffffff, 2);
-                mainLight.position.set(5, 5, 10);
-                scene.add(mainLight);
-                const rimLight = new THREE.PointLight(0x00ccff, 3);
-                rimLight.position.set(-5, -5, -5);
-                scene.add(rimLight);
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+            camera.position.z = 22;
 
-                function createGearShape(outerRadius, innerRadius, teeth, toothDepth) {
-                    const shape = new THREE.Shape();
-                    const pi2 = Math.PI * 2;
-                    const step = pi2 / (teeth * 2);
-                    shape.moveTo(outerRadius, 0);
-                    for (let i = 0; i < teeth; i++) {
-                        const angle = (i * 2) * step;
-                        shape.lineTo(Math.cos(angle) * outerRadius, Math.sin(angle) * outerRadius);
-                        shape.lineTo(Math.cos(angle + step * 0.5) * (outerRadius + toothDepth), Math.sin(angle + step * 0.5) * (outerRadius + toothDepth));
-                        shape.lineTo(Math.cos(angle + step * 1.5) * (outerRadius + toothDepth), Math.sin(angle + step * 1.5) * (outerRadius + toothDepth));
-                        shape.lineTo(Math.cos(angle + step * 2) * outerRadius, Math.sin(angle + step * 2) * outerRadius);
-                    }
-                    const hole = new THREE.Path();
-                    hole.absarc(0, 0, innerRadius, 0, Math.PI * 2, true);
-                    shape.holes.push(hole);
-                    return shape;
+            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(400, 400);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            renderer.toneMappingExposure = 1.3;
+            container.appendChild(renderer.domElement);
+
+            // Lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+            scene.add(ambientLight);
+
+            const mainLight = new THREE.DirectionalLight(0xffffff, 2);
+            mainLight.position.set(5, 10, 15);
+            scene.add(mainLight);
+
+            const rimLight = new THREE.PointLight(0x00ccff, 5, 20);
+            rimLight.position.set(-5, -5, 5);
+            scene.add(rimLight);
+
+            // Gear Shape Function
+            function createGearShape(outerRadius, innerRadius, teeth, toothDepth) {
+                const shape = new THREE.Shape();
+                const pi2 = Math.PI * 2;
+                const step = pi2 / (teeth * 2);
+                shape.moveTo(outerRadius, 0);
+                for (let i = 0; i < teeth; i++) {
+                    const angle = (i * 2) * step;
+                    shape.lineTo(Math.cos(angle) * outerRadius, Math.sin(angle) * outerRadius);
+                    shape.lineTo(Math.cos(angle + step * 0.5) * (outerRadius + toothDepth), Math.sin(angle + step * 0.5) * (outerRadius + toothDepth));
+                    shape.lineTo(Math.cos(angle + step * 1.5) * (outerRadius + toothDepth), Math.sin(angle + step * 1.5) * (outerRadius + toothDepth));
+                    shape.lineTo(Math.cos(angle + step * 2) * outerRadius, Math.sin(angle + step * 2) * outerRadius);
                 }
-
-                const gearShape = createGearShape(4.2, 3.2, 12, 0.6);
-                const extrudeSettings = { depth: 0.5, bevelEnabled: true, bevelThickness: 0.1, bevelSize: 0.1, bevelSegments: 3 };
-                const geometry = new THREE.ExtrudeGeometry(gearShape, extrudeSettings);
-                const material = new THREE.MeshStandardMaterial({ color: 0x99aacc, metalness: 0.9, roughness: 0.2 });
-                const gear = new THREE.Mesh(geometry, material);
-                geometry.center();
-                scene.add(gear);
-
-                const flashGroup = new THREE.Group();
-                scene.add(flashGroup);
-                const flashLight = new THREE.PointLight(0x00ffff, 8, 12);
-                flashLight.position.set(3.3, 0, 1);
-                flashGroup.add(flashLight);
-                const flashSphere = new THREE.Mesh(new THREE.SphereGeometry(0.12, 16, 16), new THREE.MeshBasicMaterial({ color: 0xccffff }));
-                flashSphere.position.set(3.3, 0, 0);
-                flashGroup.add(flashSphere);
-
-                function animate() {
-                    if (!document.getElementById('loader-container')) return; // Stop if removed
-                    requestAnimationFrame(animate);
-                    gear.rotation.z -= 0.01;
-                    flashGroup.rotation.z += 0.05;
-                    const tilt = Math.sin(Date.now() * 0.001) * 0.1;
-                    gear.rotation.x = tilt;
-                    gear.rotation.y = tilt;
-                    flashGroup.position.z = gear.position.z;
-                    flashGroup.rotation.x = tilt;
-                    flashGroup.rotation.y = tilt;
-                    renderer.render(scene, camera);
-                }
-                animate();
+                const hole = new THREE.Path();
+                hole.absarc(0, 0, innerRadius, 0, Math.PI * 2, true);
+                shape.holes.push(hole);
+                return shape;
             }
-        } catch (e) {
-            console.error("Loader animation error", e);
+
+            // Create Gear (Outer Ring)
+            const gearShape = createGearShape(5.5, 4.5, 16, 0.8);
+            const extrudeSettings = { 
+                depth: 0.5, 
+                bevelEnabled: true, 
+                bevelThickness: 0.1, 
+                bevelSize: 0.1, 
+                bevelSegments: 3 
+            };
+            const gearGeometry = new THREE.ExtrudeGeometry(gearShape, extrudeSettings);
+            const gearMaterial = new THREE.MeshStandardMaterial({
+                color: 0x8899aa,
+                metalness: 0.9,
+                roughness: 0.2
+            });
+            const gear = new THREE.Mesh(gearGeometry, gearMaterial);
+            gearGeometry.center();
+            scene.add(gear);
+
+            // Flash Light on Gear
+            const flashGroup = new THREE.Group();
+            scene.add(flashGroup);
+            const flashLight = new THREE.PointLight(0x00ffff, 8, 10);
+            flashLight.position.set(4.8, 0, 1);
+            flashGroup.add(flashLight);
+
+            // Glass Sphere (Center)
+            const sphereGeo = new THREE.SphereGeometry(3.5, 64, 64);
+            const sphereMat = new THREE.MeshPhysicalMaterial({
+                color: 0xffffff,
+                metalness: 0.1,
+                roughness: 0,
+                transmission: 0.9,
+                thickness: 1.5,
+                clearcoat: 1,
+                clearcoatRoughness: 0.1,
+                transparent: true,
+                opacity: 0.3
+            });
+            const glassSphere = new THREE.Mesh(sphereGeo, sphereMat);
+            scene.add(glassSphere);
+
+            // Inner Logo (Rotating Horizontally)
+            const loader = new THREE.TextureLoader();
+            const logoTexture = loader.load(
+                '%PUBLIC_URL%/Logo1.png',
+                undefined,
+                undefined,
+                () => {
+                    // Fallback: use wireframe car image if logo fails
+                    logoTexture.image = new Image();
+                    logoTexture.image.src = 'https://img.freepik.com/premium-photo/wireframe-car-blueprint-dark-background_1033579-37397.jpg';
+                }
+            );
+            
+            const logoGeo = new THREE.BoxGeometry(4.5, 3, 0.1);
+            const logoMat = new THREE.MeshBasicMaterial({
+                map: logoTexture,
+                transparent: true,
+                opacity: 0.9,
+                side: THREE.DoubleSide
+            });
+            const innerLogo = new THREE.Mesh(logoGeo, logoMat);
+            scene.add(innerLogo);
+
+            // Orbits around sphere
+            const orbitGroup = new THREE.Group();
+            scene.add(orbitGroup);
+
+            const ring1Geo = new THREE.TorusGeometry(3.8, 0.03, 16, 100);
+            const ringMat = new THREE.MeshBasicMaterial({ 
+                color: 0xffffff, 
+                transparent: true, 
+                opacity: 0.6 
+            });
+            const ring1 = new THREE.Mesh(ring1Geo, ringMat);
+            ring1.rotation.x = Math.PI / 2 + 0.5;
+            orbitGroup.add(ring1);
+
+            const ring2Geo = new THREE.TorusGeometry(4.2, 0.03, 16, 100);
+            const ring2Mat = new THREE.MeshBasicMaterial({ 
+                color: 0x00ccff, 
+                transparent: true, 
+                opacity: 0.6 
+            });
+            const ring2 = new THREE.Mesh(ring2Geo, ring2Mat);
+            ring2.rotation.x = Math.PI / 2 - 0.5;
+            orbitGroup.add(ring2);
+
+            // Animation Loop
+            function animate() {
+                if (!document.getElementById('loader-container')) return;
+                requestAnimationFrame(animate);
+
+                // Rotate gear slowly
+                gear.rotation.z -= 0.005;
+                
+                // Rotate flash fast
+                flashGroup.rotation.z += 0.03;
+
+                // Rotate inner logo horizontally
+                innerLogo.rotation.y += 0.015;
+
+                // Rotate orbits independently
+                orbitGroup.rotation.y += 0.005;
+                orbitGroup.rotation.z += 0.002;
+
+                // Float effect
+                const floatY = Math.sin(Date.now() * 0.001) * 0.2;
+                scene.position.y = floatY;
+
+                renderer.render(scene, camera);
+            }
+
+            animate();
+
+        } catch (error) {
+            console.error('Loader animation error:', error);
         }
     </script>
     <!--

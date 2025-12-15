@@ -426,13 +426,14 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
     const loadMessages = async () => {
       try {
         setLoading(true);
-        const msgs = await realtimeMessagingService.getMessages(
+        // ✅ FIX: getMessages now returns { messages, lastDoc }
+        const result = await realtimeMessagingService.getMessages(
           user.uid,
           recipientId,
           carId,
           100
         );
-        setMessages(msgs);
+        setMessages(result.messages);
       } catch (error) {
         logger.error('Error loading messages', error as Error, { conversationId, carId });
       } finally {
@@ -528,14 +529,16 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
   }, [user, recipientId, recipientName, conversationId, carId, carTitle, messages]);
   
   const handleTyping = useCallback((isTyping: boolean) => {
-    if (!user) return;
+    if (!user || !conversationId) return;
     
+    // ✅ FIX: sendTypingIndicator now requires conversationId
     realtimeMessagingService.sendTypingIndicator(
+      conversationId,
       user.uid,
       recipientId,
       isTyping
     );
-  }, [user, recipientId]);
+  }, [user, recipientId, conversationId]);
   
   // ==================== RENDER HELPERS ====================
   

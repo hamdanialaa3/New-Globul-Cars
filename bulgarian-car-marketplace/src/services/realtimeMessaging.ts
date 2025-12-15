@@ -5,6 +5,7 @@ import {
   collection,
   doc,
   addDoc,
+  setDoc,
   updateDoc,
   getDoc,
   getDocs,
@@ -15,10 +16,15 @@ import {
   onSnapshot,
   Timestamp,
   Unsubscribe,
-  or
+  or,
+  serverTimestamp,
+  writeBatch,
+  startAfter,
+  QueryDocumentSnapshot
 } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
 import { logger } from './logger-service';
+import { rateLimiter, RATE_LIMIT_CONFIGS } from './rate-limiting/rateLimiter.service';
 
 export interface Message {
   id: string;
@@ -89,6 +95,37 @@ export class RealtimeMessagingService {
   // Send a message
   async sendMessage(messageData: Omit<Message, 'id' | 'createdAt' | 'updatedAt'>): Promise<string> {
     try {
+      // Rate limiting check
+      const rateLimit = rateLimiter.checkRateLimit(
+        messageData.senderId,
+        'message',
+        RATE_LIMIT_CONFIGS.message
+      );
+
+      if (!rateLimit.allowed) {
+        logger.warn('Rate limit exceeded for message', {
+          senderId: messageData.senderId,
+          receiverId: messageData.receiverId,
+          resetTime: rateLimit.resetTime
+        });
+        throw new Error(
+          `Rate limit exceeded. Please wait ${Math.ceil((rateLimit.resetTime - Date.now()) / 1000)} seconds before sending another message.`
+        );
+      }
+
+      // Validate conversation ownership
+      if (messageData.conversationId) {
+        const conversationRef = doc(db, 'conversations', messageData.conversationId);
+        const conversationDoc = await getDoc(conversationRef);
+        
+        if (conversationDoc.exists()) {
+          const participants = conversationDoc.data().participants || [];
+          if (!participants.includes(messageData.senderId)) {
+            throw new Error('User is not a participant in this conversation');
+          }
+        }
+      }
+
       // Create message object
       const message: Omit<Message, 'id'> = {
         ...messageData,
@@ -103,16 +140,23 @@ export class RealtimeMessagingService {
         updatedAt: Timestamp.fromDate(message.updatedAt)
       });
 
-      // Update chat room
+      // Update chat room and conversation
       await this.updateChatRoom(messageData.senderId, messageData.receiverId, message);
+      await this.updateConversation(messageData.conversationId, message);
 
       return docRef.id;
     } catch (error: unknown) {
+      logger.error('Failed to send message', error as Error, {
+        senderId: messageData.senderId,
+        receiverId: messageData.receiverId,
+        conversationId: messageData.conversationId
+      });
       throw new Error(`Failed to send message: ${error.message}`);
     }
   }
 
   // Get or create conversation ID for a specific car
+  // ✅ FIXED: Race Condition - uses setDoc with merge instead of addDoc
   async getOrCreateConversationId(
     senderId: string,
     receiverId: string,
@@ -125,31 +169,49 @@ export class RealtimeMessagingService {
       // Generate conversation ID based on participants and carId
       const conversationId = this.generateConversationId(senderId, receiverId, carId);
       
-      // Check if conversation exists
+      // ✅ FIX: Use setDoc with merge to prevent race conditions
       const conversationRef = doc(db, 'conversations', conversationId);
-      const conversationDoc = await getDoc(conversationRef);
       
-      if (!conversationDoc.exists()) {
-        // Create new conversation
-        await addDoc(collection(db, 'conversations'), {
-          id: conversationId,
-          participants: [senderId, receiverId],
-          participantNames: {
-            [senderId]: senderName,
-            [receiverId]: receiverName
-          },
-          carId,
-          carTitle: carTitle || '',
-          unreadCount: {
-            [senderId]: 0,
-            [receiverId]: 0
-          },
-          createdAt: Timestamp.fromDate(new Date()),
-          updatedAt: Timestamp.fromDate(new Date())
-        });
-        
-        logger.info('New conversation created', { conversationId, carId, senderId, receiverId });
-      }
+      // Use setDoc with merge to atomically create or update
+      await setDoc(conversationRef, {
+        id: conversationId,
+        participants: [senderId, receiverId],
+        participantNames: {
+          [senderId]: senderName,
+          [receiverId]: receiverName
+        },
+        carId,
+        carTitle: carTitle || '',
+        unreadCount: {
+          [senderId]: 0,
+          [receiverId]: 0
+        },
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      }, { merge: true });
+
+      // ✅ FIX: Also create/update chatRoom to keep them in sync
+      const chatRoomId = this.generateChatRoomId(senderId, receiverId, carId);
+      const chatRoomRef = doc(db, 'chatRooms', chatRoomId);
+      
+      await setDoc(chatRoomRef, {
+        id: chatRoomId,
+        participants: [senderId, receiverId],
+        participantNames: {
+          [senderId]: senderName,
+          [receiverId]: receiverName
+        },
+        carId,
+        carTitle: carTitle || '',
+        unreadCount: {
+          [senderId]: 0,
+          [receiverId]: 0
+        },
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      }, { merge: true });
+      
+      logger.info('Conversation and chatRoom created/updated', { conversationId, chatRoomId, carId, senderId, receiverId });
       
       return conversationId;
     } catch (error: unknown) {
@@ -240,40 +302,44 @@ export class RealtimeMessagingService {
     }
   }
 
-  // Get messages for a chat room (fixed query)
+  // Get messages for a chat room (with pagination support)
   async getMessages(
     senderId: string, 
     receiverId: string, 
     carId?: string,
-    limitCount: number = 50
-  ): Promise<Message[]> {
+    limitCount: number = 50,
+    lastMessage?: QueryDocumentSnapshot
+  ): Promise<{ messages: Message[]; lastDoc?: QueryDocumentSnapshot }> {
     try {
       let q;
       
       if (carId) {
         // Get messages for specific car conversation
         const conversationId = this.generateConversationId(senderId, receiverId, carId);
-        q = query(
+        const baseQuery = query(
           collection(db, 'messages'),
           where('conversationId', '==', conversationId),
           orderBy('createdAt', 'asc'),
           limit(limitCount)
         );
+        q = lastMessage ? query(baseQuery, startAfter(lastMessage)) : baseQuery;
       } else {
         // Get all messages between two users (fallback to sender/receiver query)
         // Note: This will get messages where senderId is one user and receiverId is the other
         // For better results, use carId-specific conversations
-        q = query(
+        const baseQuery = query(
           collection(db, 'messages'),
           where('senderId', '==', senderId),
           where('receiverId', '==', receiverId),
           orderBy('createdAt', 'asc'),
           limit(limitCount)
         );
+        q = lastMessage ? query(baseQuery, startAfter(lastMessage)) : baseQuery;
       }
 
       const querySnapshot = await getDocs(q);
       const messages: Message[] = [];
+      let lastDoc: QueryDocumentSnapshot | undefined;
 
       querySnapshot.forEach((doc) => {
         const data = doc.data();
@@ -283,9 +349,10 @@ export class RealtimeMessagingService {
           createdAt: data.createdAt?.toDate() || new Date(),
           updatedAt: data.updatedAt?.toDate() || new Date()
         } as Message);
+        lastDoc = doc;
       });
 
-      return messages;
+      return { messages, lastDoc };
     } catch (error: unknown) {
       logger.error('Failed to get messages', error as Error, { senderId, receiverId, carId });
       // Fallback: try without carId filter
@@ -298,42 +365,75 @@ export class RealtimeMessagingService {
           limit(limitCount)
         );
         const querySnapshot = await getDocs(q);
-        return querySnapshot.docs.map(doc => ({
+        const fallbackMessages = querySnapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data(),
           createdAt: doc.data().createdAt?.toDate() || new Date(),
           updatedAt: doc.data().updatedAt?.toDate() || new Date()
         } as Message));
+        return { messages: fallbackMessages, lastDoc: querySnapshot.docs[querySnapshot.docs.length - 1] };
       } catch (fallbackError: any) {
         throw new Error(`Failed to get messages: ${error.message}`);
       }
     }
   }
 
-  // Mark messages as read
-  async markMessagesAsRead(senderId: string, receiverId: string): Promise<void> {
+  // Mark messages as read (by conversationId for better accuracy)
+  async markMessagesAsRead(conversationId: string, userId: string): Promise<void> {
     try {
+      // ✅ FIX: Use conversationId instead of senderId/receiverId for accuracy
       const q = query(
         collection(db, 'messages'),
-        where('senderId', '==', senderId),
-        where('receiverId', '==', receiverId),
+        where('conversationId', '==', conversationId),
+        where('receiverId', '==', userId),
         where('isRead', '==', false)
       );
 
       const querySnapshot = await getDocs(q);
 
-      const updatePromises = querySnapshot.docs.map(doc =>
-        updateDoc(doc.ref, {
+      if (querySnapshot.empty) {
+        return;
+      }
+
+      // Use batch for better performance
+      const batch = writeBatch(db);
+      querySnapshot.docs.forEach(doc => {
+        batch.update(doc.ref, {
           isRead: true,
-          updatedAt: Timestamp.fromDate(new Date())
-        })
-      );
+          readAt: serverTimestamp(),
+          updatedAt: serverTimestamp()
+        });
+      });
 
-      await Promise.all(updatePromises);
+      await batch.commit();
 
-      // Update unread count in chat room
-      await this.updateUnreadCount(senderId, receiverId, 0);
+      // Update unread count in conversation and chatRoom
+      const conversationRef = doc(db, 'conversations', conversationId);
+      await updateDoc(conversationRef, {
+        [`unreadCount.${userId}`]: 0,
+        updatedAt: serverTimestamp()
+      });
+
+      // Also update chatRoom if it exists
+      const conversationDoc = await getDoc(conversationRef);
+      if (conversationDoc.exists()) {
+        const data = conversationDoc.data();
+        if (data.carId) {
+          const participants = data.participants || [];
+          if (participants.length === 2) {
+            const chatRoomId = this.generateChatRoomId(participants[0], participants[1], data.carId);
+            const chatRoomRef = doc(db, 'chatRooms', chatRoomId);
+            await updateDoc(chatRoomRef, {
+              [`unreadCount.${userId}`]: 0,
+              updatedAt: serverTimestamp()
+            });
+          }
+        }
+      }
+
+      logger.debug('Messages marked as read', { conversationId, userId, count: querySnapshot.size });
     } catch (error: unknown) {
+      logger.error('Failed to mark messages as read', error as Error, { conversationId, userId });
       throw new Error(`Failed to mark messages as read: ${error.message}`);
     }
   }
@@ -451,30 +551,53 @@ export class RealtimeMessagingService {
   }
 
   // Send typing indicator
+  // ✅ FIXED: Uses setDoc with fixed document ID instead of addDoc
   async sendTypingIndicator(
+    conversationId: string,
     senderId: string,
     receiverId: string,
     isTyping: boolean
   ): Promise<void> {
     try {
-      const typingData = {
-        userId: senderId,
-        isTyping,
-        timestamp: Timestamp.fromDate(new Date())
-      };
+      // ✅ FIX: Use setDoc with fixed document ID to prevent collection growth
+      const typingDocId = `${conversationId}_${senderId}`;
+      const typingRef = doc(db, 'typing', typingDocId);
+      
+      if (isTyping) {
+        await setDoc(typingRef, {
+          conversationId,
+          userId: senderId,
+          receiverId,
+          isTyping: true,
+          timestamp: serverTimestamp()
+        }, { merge: true });
 
-      // Update typing status in a temporary collection
-      await addDoc(collection(db, 'typing'), {
-        ...typingData,
-        receiverId
-      });
+        // Auto-clear after 3 seconds
+        setTimeout(async () => {
+          try {
+            await setDoc(typingRef, {
+              isTyping: false,
+              timestamp: serverTimestamp()
+            }, { merge: true });
+          } catch (error) {
+            // Silently fail on cleanup
+          }
+        }, 3000);
+      } else {
+        await setDoc(typingRef, {
+          isTyping: false,
+          timestamp: serverTimestamp()
+        }, { merge: true });
+      }
     } catch (error: unknown) {
       // Error sending typing indicator - silently fail
+      logger.debug('Failed to send typing indicator', { conversationId, senderId, error });
     }
   }
 
-  // Listen to typing indicators
+  // Listen to typing indicators (by conversationId)
   listenToTypingIndicators(
+    conversationId: string,
     userId: string | null | undefined,
     callback: (indicators: TypingIndicator[]) => void
   ): Unsubscribe {
@@ -484,33 +607,41 @@ export class RealtimeMessagingService {
       return () => {}; // Return no-op unsubscribe function
     }
 
+    // ✅ FIX: Query by conversationId for better accuracy
     const q = query(
       collection(db, 'typing'),
+      where('conversationId', '==', conversationId),
       where('receiverId', '==', userId),
+      where('isTyping', '==', true),
       orderBy('timestamp', 'desc'),
-      limit(10)
+      limit(5)
     );
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const indicators: TypingIndicator[] = [];
       querySnapshot.forEach((doc) => {
         const data = doc.data();
-        indicators.push({
-          userId: data.userId,
-          userName: data.userName || 'Unknown User',
-          isTyping: data.isTyping,
-          timestamp: data.timestamp.toDate()
-        });
+        // Only include active typing indicators
+        if (data.isTyping) {
+          indicators.push({
+            userId: data.userId,
+            userName: data.userName || 'Unknown User',
+            isTyping: true,
+            timestamp: data.timestamp?.toDate() || new Date()
+          });
+        }
       });
 
       callback(indicators);
     });
 
-    this.typingListeners.set(userId, unsubscribe);
+    const listenerKey = `${conversationId}_${userId}`;
+    this.typingListeners.set(listenerKey, unsubscribe);
     return unsubscribe;
   }
 
   // Private methods
+  // ✅ FIXED: Uses setDoc instead of addDoc, and syncs with conversations
   private async updateChatRoom(
     senderId: string,
     receiverId: string,
@@ -518,44 +649,42 @@ export class RealtimeMessagingService {
   ): Promise<void> {
     try {
       const chatRoomId = this.generateChatRoomId(senderId, receiverId, lastMessage.carId);
-
       const chatRoomRef = doc(db, 'chatRooms', chatRoomId);
-      const chatRoomDoc = await getDoc(chatRoomRef);
 
-      if (chatRoomDoc.exists()) {
-        // Update existing chat room
-        await updateDoc(chatRoomRef, {
+      // ✅ FIX: Use setDoc with merge instead of getDoc + addDoc/updateDoc
+      await setDoc(chatRoomRef, {
+        id: chatRoomId,
+        participants: [senderId, receiverId],
+        participantNames: {
+          [senderId]: lastMessage.senderName,
+          [receiverId]: lastMessage.receiverName
+        },
+        lastMessage: {
+          ...lastMessage,
+          createdAt: Timestamp.fromDate(lastMessage.createdAt),
+          updatedAt: Timestamp.fromDate(lastMessage.updatedAt)
+        },
+        carId: lastMessage.carId,
+        carTitle: lastMessage.carTitle,
+        unreadCount: {
+          [senderId]: 0,
+          [receiverId]: 1
+        },
+        updatedAt: serverTimestamp()
+      }, { merge: true });
+
+      // ✅ FIX: Also update conversation to keep them in sync
+      if (lastMessage.conversationId) {
+        const conversationRef = doc(db, 'conversations', lastMessage.conversationId);
+        await updateDoc(conversationRef, {
           lastMessage: {
-            ...lastMessage,
-            createdAt: Timestamp.fromDate(lastMessage.createdAt),
-            updatedAt: Timestamp.fromDate(lastMessage.updatedAt)
+            text: lastMessage.content || lastMessage.text || '',
+            senderId: lastMessage.senderId,
+            timestamp: serverTimestamp()
           },
-          carId: lastMessage.carId || chatRoomDoc.data().carId,
-          carTitle: lastMessage.carTitle || chatRoomDoc.data().carTitle,
-          updatedAt: Timestamp.fromDate(new Date())
-        });
-      } else {
-        // Create new chat room
-        await addDoc(collection(db, 'chatRooms'), {
-          id: chatRoomId,
-          participants: [senderId, receiverId],
-          participantNames: {
-            [senderId]: lastMessage.senderName,
-            [receiverId]: lastMessage.receiverName
-          },
-          lastMessage: {
-            ...lastMessage,
-            createdAt: Timestamp.fromDate(lastMessage.createdAt),
-            updatedAt: Timestamp.fromDate(lastMessage.updatedAt)
-          },
-          carId: lastMessage.carId,
-          carTitle: lastMessage.carTitle,
-          unreadCount: {
-            [senderId]: 0,
-            [receiverId]: 1
-          },
-          createdAt: Timestamp.fromDate(new Date()),
-          updatedAt: Timestamp.fromDate(new Date())
+          lastMessageAt: serverTimestamp(),
+          [`unreadCount.${receiverId}`]: 1,
+          updatedAt: serverTimestamp()
         });
       }
     } catch (error: unknown) {
@@ -563,6 +692,31 @@ export class RealtimeMessagingService {
     }
   }
 
+  // ✅ NEW: Update conversation metadata
+  private async updateConversation(
+    conversationId: string,
+    lastMessage: Omit<Message, 'id'>
+  ): Promise<void> {
+    try {
+      if (!conversationId) return;
+
+      const conversationRef = doc(db, 'conversations', conversationId);
+      await updateDoc(conversationRef, {
+        lastMessage: {
+          text: lastMessage.content || lastMessage.text || '',
+          senderId: lastMessage.senderId,
+          timestamp: serverTimestamp()
+        },
+        lastMessageAt: serverTimestamp(),
+        [`unreadCount.${lastMessage.receiverId}`]: 1,
+        updatedAt: serverTimestamp()
+      });
+    } catch (error: unknown) {
+      logger.error('Error updating conversation', error as Error, { conversationId });
+    }
+  }
+
+  // ✅ DEPRECATED: Use markMessagesAsRead with conversationId instead
   private async updateUnreadCount(
     senderId: string,
     receiverId: string,
@@ -574,10 +728,11 @@ export class RealtimeMessagingService {
 
       await updateDoc(chatRoomRef, {
         [`unreadCount.${receiverId}`]: count,
-        updatedAt: Timestamp.fromDate(new Date())
+        updatedAt: serverTimestamp()
       });
     } catch (error: unknown) {
       // Error updating unread count - silently fail
+      logger.debug('Error updating unread count', { senderId, receiverId, error });
     }
   }
 
@@ -592,23 +747,29 @@ export class RealtimeMessagingService {
 
   // Cleanup listeners
   cleanup(userId: string): void {
+    // Cleanup message listeners
     const messageUnsubscribe = this.messageListeners.get(userId);
     if (messageUnsubscribe) {
       messageUnsubscribe();
       this.messageListeners.delete(userId);
     }
 
+    // Cleanup chat room listeners
     const chatRoomUnsubscribe = this.chatRoomListeners.get(userId);
     if (chatRoomUnsubscribe) {
       chatRoomUnsubscribe();
       this.chatRoomListeners.delete(userId);
     }
 
-    const typingUnsubscribe = this.typingListeners.get(userId);
-    if (typingUnsubscribe) {
-      typingUnsubscribe();
-      this.typingListeners.delete(userId);
+    // Cleanup typing listeners (by prefix)
+    const typingKeysToDelete: string[] = [];
+    for (const [key, unsubscribe] of this.typingListeners.entries()) {
+      if (key.includes(userId)) {
+        unsubscribe();
+        typingKeysToDelete.push(key);
+      }
     }
+    typingKeysToDelete.forEach(key => this.typingListeners.delete(key));
   }
 }
 

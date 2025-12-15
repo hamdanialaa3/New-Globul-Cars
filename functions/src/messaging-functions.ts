@@ -21,11 +21,14 @@ export const onNewMessage = functions.firestore
       const message = snapshot.data();
       const { messageId } = context.params;
       
-      if (!message.recipientId || message.senderId === message.recipientId) {
+      // ✅ FIX: Support both receiverId (new) and recipientId (legacy) for backward compatibility
+      const receiverId = message.receiverId || message.recipientId;
+      
+      if (!receiverId || message.senderId === receiverId) {
         return null;
       }
       
-      const recipientDoc = await db.collection('users').doc(message.recipientId).get();
+      const recipientDoc = await db.collection('users').doc(receiverId).get();
       
       if (!recipientDoc.exists) {
         console.log('Recipient not found');
@@ -67,15 +70,34 @@ export const onNewMessage = functions.firestore
         });
       }
       
-      await db.collection('chatRooms').doc(message.chatRoomId).update({
-        lastMessage: {
-          text: message.text || '[Media]',
-          senderId: message.senderId,
-          timestamp: message.createdAt
-        },
-        lastMessageAt: admin.firestore.FieldValue.serverTimestamp(),
-        [`unreadCount.${message.recipientId}`]: admin.firestore.FieldValue.increment(1)
-      });
+      // ✅ FIX: Update both chatRooms and conversations
+      if (message.conversationId) {
+        const conversationRef = db.collection('conversations').doc(message.conversationId);
+        await conversationRef.update({
+          lastMessage: {
+            text: message.content || message.text || '[Media]',
+            senderId: message.senderId,
+            timestamp: admin.firestore.FieldValue.serverTimestamp()
+          },
+          lastMessageAt: admin.firestore.FieldValue.serverTimestamp(),
+          [`unreadCount.${receiverId}`]: admin.firestore.FieldValue.increment(1),
+          updatedAt: admin.firestore.FieldValue.serverTimestamp()
+        });
+      }
+
+      // Also update chatRoom if chatRoomId exists (legacy support)
+      if (message.chatRoomId) {
+        await db.collection('chatRooms').doc(message.chatRoomId).update({
+          lastMessage: {
+            text: message.content || message.text || '[Media]',
+            senderId: message.senderId,
+            timestamp: message.createdAt || admin.firestore.FieldValue.serverTimestamp()
+          },
+          lastMessageAt: admin.firestore.FieldValue.serverTimestamp(),
+          [`unreadCount.${receiverId}`]: admin.firestore.FieldValue.increment(1),
+          updatedAt: admin.firestore.FieldValue.serverTimestamp()
+        });
+      }
       
       console.log(`Sent notification for message ${messageId}`);
       return null;
@@ -98,10 +120,26 @@ export const onMessageUpdate = functions.firestore
       const after = change.after.data();
       const { messageId } = context.params;
       
-      if (!before.isRead && after.isRead) {
-        await db.collection('chatRooms').doc(after.chatRoomId).update({
-          [`unreadCount.${after.recipientId}`]: admin.firestore.FieldValue.increment(-1)
-        });
+      // ✅ FIX: Support both receiverId and recipientId
+      const receiverId = after.receiverId || after.recipientId;
+      
+      if (!before.isRead && after.isRead && receiverId) {
+        // Update conversation
+        if (after.conversationId) {
+          const conversationRef = db.collection('conversations').doc(after.conversationId);
+          await conversationRef.update({
+            [`unreadCount.${receiverId}`]: admin.firestore.FieldValue.increment(-1),
+            updatedAt: admin.firestore.FieldValue.serverTimestamp()
+          });
+        }
+        
+        // Update chatRoom if exists (legacy)
+        if (after.chatRoomId) {
+          await db.collection('chatRooms').doc(after.chatRoomId).update({
+            [`unreadCount.${receiverId}`]: admin.firestore.FieldValue.increment(-1),
+            updatedAt: admin.firestore.FieldValue.serverTimestamp()
+          });
+        }
       }
       
       if (after.reactions && Object.keys(after.reactions).length > Object.keys(before.reactions || {}).length) {
@@ -190,14 +228,24 @@ export const updateChatRoomActivity = functions.firestore
     try {
       const message = snapshot.data();
       
-      if (!message.chatRoomId) return null;
+      // ✅ FIX: Update both conversation and chatRoom
+      if (message.conversationId) {
+        const conversationRef = db.collection('conversations').doc(message.conversationId);
+        await conversationRef.update({
+          lastActivityAt: admin.firestore.FieldValue.serverTimestamp(),
+          messageCount: admin.firestore.FieldValue.increment(1),
+          updatedAt: admin.firestore.FieldValue.serverTimestamp()
+        });
+      }
       
-      const chatRoomRef = db.collection('chatRooms').doc(message.chatRoomId);
-      
-      await chatRoomRef.update({
-        lastActivityAt: admin.firestore.FieldValue.serverTimestamp(),
-        messageCount: admin.firestore.FieldValue.increment(1)
-      });
+      if (message.chatRoomId) {
+        const chatRoomRef = db.collection('chatRooms').doc(message.chatRoomId);
+        await chatRoomRef.update({
+          lastActivityAt: admin.firestore.FieldValue.serverTimestamp(),
+          messageCount: admin.firestore.FieldValue.increment(1),
+          updatedAt: admin.firestore.FieldValue.serverTimestamp()
+        });
+      }
       
       return null;
     } catch (error) {
@@ -235,7 +283,10 @@ export const generateMessageAnalytics = functions.pubsub
         date: yesterday.toISOString().split('T')[0],
         totalMessages: messagesSnapshot.size,
         uniqueSenders: new Set(messagesSnapshot.docs.map(doc => doc.data().senderId)).size,
-        uniqueRecipients: new Set(messagesSnapshot.docs.map(doc => doc.data().recipientId)).size,
+        uniqueRecipients: new Set(messagesSnapshot.docs.map(doc => {
+          const data = doc.data();
+          return data.receiverId || data.recipientId;
+        })).size,
         messagesWithAttachments: messagesSnapshot.docs.filter(doc => 
           doc.data().attachments && doc.data().attachments.length > 0
         ).length,
