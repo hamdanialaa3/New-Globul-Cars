@@ -366,79 +366,106 @@ const MessagesPage: React.FC = () => {
   
   // Load conversations and select from URL
   useEffect(() => {
-    if (!user) return;
+    if (!user) {
+      console.log('❌ MessagesPage: No user logged in');
+      return;
+    }
     
     const loadConversations = async () => {
       try {
         setLoading(true);
-        logger.debug('Loading conversations for user', { userId: user.uid, conversationId: conversationIdFromUrl });
+        
+        // Get URL parameters inside the effect
+        const userIdParam = searchParams.get('userId');
+        const conversationIdParam = searchParams.get('conversation');
+        const carIdParam = searchParams.get('carId');
+        
+        console.log('🔍 MessagesPage useEffect:', { 
+          userIdParam, 
+          conversationIdParam, 
+          carIdParam,
+          currentUserId: user.uid 
+        });
+        
+        logger.debug('Loading conversations for user', { userId: user.uid, conversationId: conversationIdParam });
         
         const chatRooms = await realtimeMessagingService.getUserChatRooms(user.uid);
+        console.log('📦 Loaded chatRooms:', chatRooms.length);
         logger.debug('Loaded chatRooms', { count: chatRooms.length, rooms: chatRooms.map(r => r.id) });
         setConversations(chatRooms);
         
         // ✅ FIX: If userId in URL, find or create conversation
-        if (userIdFromUrl && userIdFromUrl !== user.uid) {
-          logger.debug('Looking for conversation with user', { userId: userIdFromUrl });
+        if (userIdParam && userIdParam !== user.uid) {
+          console.log('👤 Creating conversation with user:', userIdParam);
+          logger.debug('Looking for conversation with user', { userId: userIdParam });
           // Try to find existing conversation with this user
           const existingConv = chatRooms.find(room => 
-            room.participants.includes(userIdFromUrl) && room.participants.includes(user.uid)
+            room.participants.includes(userIdParam) && room.participants.includes(user.uid)
           );
           
           if (existingConv) {
-            logger.debug('Found existing conversation with user', { conversationId: existingConv.id, userId: userIdFromUrl });
+            console.log('✅ Found existing conversation:', existingConv.id);
+            logger.debug('Found existing conversation with user', { conversationId: existingConv.id, userId: userIdParam });
             setSelectedConversation(existingConv);
             setShowMobileChat(true);
           } else {
+            console.log('➕ Creating new placeholder conversation');
             // Create a placeholder conversation
-            logger.debug('Creating placeholder conversation with user', { userId: userIdFromUrl });
+            logger.debug('Creating placeholder conversation with user', { userId: userIdParam });
             try {
               // Get recipient's name
-              const recipientProfile = await userService.getUserProfile(userIdFromUrl);
+              console.log('📞 Fetching recipient profile...');
+              const recipientProfile = await userService.getUserProfile(userIdParam);
               const recipientName = recipientProfile?.displayName || 'User';
+              console.log('👤 Recipient name:', recipientName);
               
               // Create a temporary conversation ID
-              const tempConversationId = `${user.uid}_${userIdFromUrl}`.split('').sort().join('');
+              const tempConversationId = `${user.uid}_${userIdParam}`.split('').sort().join('');
               
               const newConversation: ChatRoom = {
                 id: tempConversationId,
-                participants: [user.uid, userIdFromUrl],
+                participants: [user.uid, userIdParam],
                 participantNames: {
                   [user.uid]: user.displayName || 'You',
-                  [userIdFromUrl]: recipientName
+                  [userIdParam]: recipientName
                 },
                 unreadCount: {
                   [user.uid]: 0,
-                  [userIdFromUrl]: 0
+                  [userIdParam]: 0
                 },
-                carId: carIdFromUrl || undefined,
+                carId: carIdParam || undefined,
                 createdAt: new Date(),
                 updatedAt: new Date()
               };
               
+              console.log('✅ Created placeholder conversation:', newConversation);
               logger.debug('Created placeholder conversation', { conversationId: newConversation.id });
               // Add to conversations list
               setConversations([newConversation, ...chatRooms]);
               setSelectedConversation(newConversation);
               setShowMobileChat(true);
             } catch (error) {
-              logger.error('Failed to create placeholder conversation', { userId: userIdFromUrl, error });
+              console.error('❌ Failed to create placeholder conversation:', error);
+              logger.error('Failed to create placeholder conversation', { userId: userIdParam, error });
             }
           }
         }
         // ✅ FIX: If conversationId in URL, try to find it
-        else if (conversationIdFromUrl) {
-          logger.debug('Looking for conversation from URL', { conversationId: conversationIdFromUrl });
-          let found = chatRooms.find(room => room.id === conversationIdFromUrl);
+        else if (conversationIdParam) {
+          console.log('🔍 Looking for conversation:', conversationIdParam);
+          logger.debug('Looking for conversation from URL', { conversationId: conversationIdParam });
+          let found = chatRooms.find(room => room.id === conversationIdParam);
           
           if (found) {
-            logger.debug('Found conversation in chatRooms', { conversationId: conversationIdFromUrl });
+            console.log('✅ Found conversation in chatRooms');
+            logger.debug('Found conversation in chatRooms', { conversationId: conversationIdParam });
             setSelectedConversation(found);
             setShowMobileChat(true);
           } else {
             // ✅ FIX: Try to get conversation directly from conversations collection
-            logger.debug('Conversation not found in chatRooms, trying conversations collection', { conversationId: conversationIdFromUrl });
-            const conversation = await realtimeMessagingService.getConversationById(conversationIdFromUrl);
+            console.log('🔍 Trying conversations collection...');
+            logger.debug('Conversation not found in chatRooms, trying conversations collection', { conversationId: conversationIdParam });
+            const conversation = await realtimeMessagingService.getConversationById(conversationIdParam);
             
             if (conversation) {
               logger.debug('Found conversation in conversations collection', { conversationId: conversationIdFromUrl });
