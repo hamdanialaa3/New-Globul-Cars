@@ -1,10 +1,11 @@
 /**
  * Fullscreen AI Loader Page
  * Shows loading overlay initially, then main content
+ * Updated: Using lightweight loader for better performance
  */
 
 import React, { useState, useEffect } from 'react';
-import LoadingOverlay from '@/components/LoadingOverlay/LoadingOverlay';
+import LightweightLoadingOverlay from '@/components/LoadingOverlay/LightweightLoadingOverlay';
 import MainContent from '@/components/MainContent/MainContent';
 
 interface FullscreenAILoaderPageProps {
@@ -30,7 +31,7 @@ const FullscreenAILoaderPage: React.FC<FullscreenAILoaderPageProps> = ({ autoLoa
 
   return (
     <>
-      <LoadingOverlay isVisible={isLoading} apiKey={apiKey} />
+      <LightweightLoadingOverlay isVisible={isLoading} apiKey={apiKey} />
       <MainContent isVisible={!isLoading} apiKey={apiKey} />
     </>
   );
