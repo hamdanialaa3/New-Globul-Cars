@@ -2,18 +2,24 @@
 // Unit Tests for Algolia Search Integration
 // Coverage Target: 70%+
 
+// Create mock index first
+const mockIndex = {
+  search: jest.fn(),
+  saveObject: jest.fn(),
+  saveObjects: jest.fn(),
+  deleteObject: jest.fn(),
+  partialUpdateObject: jest.fn(),
+  setSettings: jest.fn(),
+};
+
 // Mock Algolia client
 jest.mock('algoliasearch', () => {
-  return jest.fn(() => ({
-    initIndex: jest.fn(() => ({
-      search: jest.fn(),
-      saveObject: jest.fn(),
-      saveObjects: jest.fn(),
-      deleteObject: jest.fn(),
-      partialUpdateObject: jest.fn(),
-      setSettings: jest.fn(),
+  return {
+    __esModule: true,
+    default: jest.fn(() => ({
+      initIndex: jest.fn(() => mockIndex),
     })),
-  }));
+  };
 });
 
 jest.mock('../../logger-service', () => ({
@@ -28,22 +34,19 @@ import algoliasearch from 'algoliasearch';
 
 describe('AlgoliaSearchService', () => {
   let mockClient: any;
-  let mockIndex: any;
 
   beforeEach(() => {
     jest.clearAllMocks();
 
-    mockIndex = {
-      search: jest.fn(),
-      saveObject: jest.fn(),
-      saveObjects: jest.fn(),
-      deleteObject: jest.fn(),
-      partialUpdateObject: jest.fn(),
-      setSettings: jest.fn(),
-    };
+    // Reset all mock functions on mockIndex
+    mockIndex.search.mockReset();
+    mockIndex.saveObject.mockReset();
+    mockIndex.saveObjects.mockReset();
+    mockIndex.deleteObject.mockReset();
+    mockIndex.partialUpdateObject.mockReset();
+    mockIndex.setSettings.mockReset();
 
     mockClient = algoliasearch('app-id', 'api-key');
-    (mockClient.initIndex as jest.Mock).mockReturnValue(mockIndex);
   });
 
   describe('Search Operations', () => {

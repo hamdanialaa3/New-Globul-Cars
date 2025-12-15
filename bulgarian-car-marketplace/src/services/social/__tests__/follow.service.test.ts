@@ -2,11 +2,7 @@
 // Unit Tests for Follow Service (Social Features)
 // Coverage Target: 85%+
 
-import { FollowService } from '../../social/follow.service';
-import { rateLimiter } from '../../rate-limiting/rateLimiter.service';
-import { writeBatch, doc, getDoc, getDocs } from 'firebase/firestore';
-
-// Mock dependencies
+// Mock dependencies FIRST (before imports)
 jest.mock('firebase/firestore');
 jest.mock('../../../firebase/firebase-config', () => ({
   db: {},
@@ -26,6 +22,11 @@ jest.mock('../../logger-wrapper', () => ({
     error: jest.fn(),
   },
 }));
+
+// Import AFTER mocks
+import { FollowService } from '../follow.service';
+import { rateLimiter } from '../../rate-limiting/rateLimiter.service';
+import { writeBatch, doc, getDoc, getDocs } from 'firebase/firestore';
 
 describe('FollowService', () => {
   let service: FollowService;
