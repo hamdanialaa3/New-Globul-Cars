@@ -215,45 +215,45 @@
             flashLight.position.set(4.8, 0, 1);
             flashGroup.add(flashLight);
 
-            // Glass Sphere (Center)
+            // Bulgarian Flag Glass Sphere (White, Green, Red)
             const sphereGeo = new THREE.SphereGeometry(3.5, 64, 64);
+            
+            // Create canvas for flag gradient
+            const canvas = document.createElement('canvas');
+            canvas.width = 512;
+            canvas.height = 512;
+            const ctx = canvas.getContext('2d');
+            
+            // Draw Bulgarian flag colors (horizontal stripes)
+            // White (top)
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, 512, 170);
+            
+            // Green (middle)
+            ctx.fillStyle = '#00966E';
+            ctx.fillRect(0, 170, 512, 171);
+            
+            // Red (bottom)
+            ctx.fillStyle = '#D62612';
+            ctx.fillRect(0, 341, 512, 171);
+            
+            // Create texture from canvas
+            const flagTexture = new THREE.CanvasTexture(canvas);
+            flagTexture.needsUpdate = true;
+            
             const sphereMat = new THREE.MeshPhysicalMaterial({
-                color: 0xffffff,
+                map: flagTexture,
                 metalness: 0.1,
-                roughness: 0,
-                transmission: 0.9,
-                thickness: 1.5,
+                roughness: 0.05,
+                transmission: 0.7,
+                thickness: 1.2,
                 clearcoat: 1,
                 clearcoatRoughness: 0.1,
                 transparent: true,
-                opacity: 0.3
+                opacity: 0.6
             });
             const glassSphere = new THREE.Mesh(sphereGeo, sphereMat);
             scene.add(glassSphere);
-
-            // Inner Logo (Rotating Horizontally) - Using project logo
-            const loader = new THREE.TextureLoader();
-            const logoTexture = loader.load(
-                './logo-sphere.webp',
-                (texture) => {
-                    // Success callback
-                    console.log('Logo texture loaded successfully');
-                },
-                undefined,
-                (error) => {
-                    console.warn('Logo texture failed to load:', error);
-                }
-            );
-            
-            const logoGeo = new THREE.BoxGeometry(4.5, 3, 0.1);
-            const logoMat = new THREE.MeshBasicMaterial({
-                map: logoTexture,
-                transparent: true,
-                opacity: 0.95,
-                side: THREE.DoubleSide
-            });
-            const innerLogo = new THREE.Mesh(logoGeo, logoMat);
-            scene.add(innerLogo);
 
             // Orbits around sphere
             const orbitGroup = new THREE.Group();
@@ -290,8 +290,9 @@
                 // Rotate flash fast
                 flashGroup.rotation.z += 0.03;
 
-                // Rotate inner logo horizontally
-                innerLogo.rotation.y += 0.015;
+                // Rotate Bulgarian flag sphere slowly
+                glassSphere.rotation.y += 0.008;
+                glassSphere.rotation.x += 0.003;
 
                 // Rotate orbits independently
                 orbitGroup.rotation.y += 0.005;
