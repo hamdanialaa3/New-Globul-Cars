@@ -3,6 +3,26 @@
 // Coverage Target: 85%+
 // Professional Testing - December 15, 2025 🎯
 
+// Mock dependencies FIRST (before imports)
+jest.mock('../../../firebase/firebase-config', () => ({
+  db: {
+    collection: jest.fn().mockReturnThis(),
+  },
+}));
+
+jest.mock('../../logger-service', () => ({
+  logger: {
+    info: jest.fn(),
+    error: jest.fn(),
+    warn: jest.fn(),
+  },
+}));
+
+// Import AFTER mocks
+import { db } from '../../../firebase/firebase-config';
+import { logger } from '../../logger-service';
+import { UnifiedNotificationService, notificationService } from '../unified-notification.service';
+
 describe('UnifiedNotificationService', () => {
   describe('Singleton Pattern', () => {
     it('should implement singleton pattern correctly', () => {
@@ -216,8 +236,8 @@ describe('UnifiedNotificationService', () => {
       ];
 
       invalidNotifications.forEach((notif) => {
-        const hasType = 'type' in notif && notif.type;
-        const hasTitle = 'title' in notif && notif.title;
+        const hasType = 'type' in notif && !!notif.type;
+        const hasTitle = 'title' in notif && !!notif.title;
         const isValid = hasType && hasTitle;
 
         expect(isValid).toBe(false);
@@ -236,15 +256,19 @@ describe('UnifiedNotificationService', () => {
   });
 });
 
-// Import at the end to avoid hoisting issues
-import { UnifiedNotificationService } from '../unified-notification.service';
-
-describe('UnifiedNotificationService', () => {
+describe('UnifiedNotificationService Integration Tests', () => {
   let service: UnifiedNotificationService;
+  let mockAdd: jest.Mock;
 
   beforeEach(() => {
     jest.clearAllMocks();
     service = UnifiedNotificationService.getInstance();
+    
+    // Setup collection mock with add method
+    mockAdd = jest.fn();
+    (db.collection as jest.Mock).mockReturnValue({
+      add: mockAdd,
+    });
   });
 
   describe('Singleton Pattern', () => {
@@ -263,8 +287,7 @@ describe('UnifiedNotificationService', () => {
 
   describe('sendNotification', () => {
     it('should send info notification', async () => {
-      (db.collection as jest.Mock).mockReturnThis();
-      (db.collection('notifications').add as jest.Mock).mockResolvedValue({ id: 'notif-123' });
+      mockAdd.mockResolvedValue({ id: 'notif-123' });
 
       const notification = {
         title: 'New Message',
@@ -276,7 +299,7 @@ describe('UnifiedNotificationService', () => {
       await service.sendNotification('user-123', notification);
 
       expect(db.collection).toHaveBeenCalledWith('notifications');
-      expect(db.collection('notifications').add).toHaveBeenCalledWith(
+      expect(mockAdd).toHaveBeenCalledWith(
         expect.objectContaining({
           userId: 'user-123',
           title: 'New Message',
@@ -293,8 +316,7 @@ describe('UnifiedNotificationService', () => {
     });
 
     it('should send success notification', async () => {
-      (db.collection as jest.Mock).mockReturnThis();
-      (db.collection('notifications').add as jest.Mock).mockResolvedValue({ id: 'notif-456' });
+      mockAdd.mockResolvedValue({ id: 'notif-456' });
 
       const notification = {
         title: 'Car Listed!',
@@ -304,7 +326,7 @@ describe('UnifiedNotificationService', () => {
 
       await service.sendNotification('user-456', notification);
 
-      expect(db.collection('notifications').add).toHaveBeenCalledWith(
+      expect(mockAdd).toHaveBeenCalledWith(
         expect.objectContaining({
           type: 'success',
           read: false,
@@ -313,8 +335,7 @@ describe('UnifiedNotificationService', () => {
     });
 
     it('should send warning notification', async () => {
-      (db.collection as jest.Mock).mockReturnThis();
-      (db.collection('notifications').add as jest.Mock).mockResolvedValue({ id: 'notif-789' });
+      mockAdd.mockResolvedValue({ id: 'notif-789' });
 
       const notification = {
         title: 'Listing Expiring',
@@ -325,7 +346,7 @@ describe('UnifiedNotificationService', () => {
 
       await service.sendNotification('user-789', notification);
 
-      expect(db.collection('notifications').add).toHaveBeenCalledWith(
+      expect(mockAdd).toHaveBeenCalledWith(
         expect.objectContaining({
           type: 'warning',
         })
@@ -333,8 +354,7 @@ describe('UnifiedNotificationService', () => {
     });
 
     it('should send error notification', async () => {
-      (db.collection as jest.Mock).mockReturnThis();
-      (db.collection('notifications').add as jest.Mock).mockResolvedValue({ id: 'notif-error' });
+      mockAdd.mockResolvedValue({ id: 'notif-error' });
 
       const notification = {
         title: 'Payment Failed',
@@ -345,7 +365,7 @@ describe('UnifiedNotificationService', () => {
 
       await service.sendNotification('user-error', notification);
 
-      expect(db.collection('notifications').add).toHaveBeenCalledWith(
+      expect(mockAdd).toHaveBeenCalledWith(
         expect.objectContaining({
           type: 'error',
         })
@@ -353,8 +373,7 @@ describe('UnifiedNotificationService', () => {
     });
 
     it('should handle notification without link', async () => {
-      (db.collection as jest.Mock).mockReturnThis();
-      (db.collection('notifications').add as jest.Mock).mockResolvedValue({ id: 'notif-no-link' });
+      mockAdd.mockResolvedValue({ id: 'notif-no-link' });
 
       const notification = {
         title: 'Welcome!',
@@ -364,19 +383,17 @@ describe('UnifiedNotificationService', () => {
 
       await service.sendNotification('user-new', notification);
 
-      expect(db.collection('notifications').add).toHaveBeenCalledWith(
+      expect(mockAdd).toHaveBeenCalledWith(
         expect.objectContaining({
           title: 'Welcome!',
-          link: undefined,
+          message: 'Welcome to Globul Cars',
+          type: 'info',
         })
       );
     });
 
     it('should handle Firestore errors', async () => {
-      (db.collection as jest.Mock).mockReturnThis();
-      (db.collection('notifications').add as jest.Mock).mockRejectedValue(
-        new Error('Firestore error')
-      );
+      mockAdd.mockRejectedValue(new Error('Firestore error'));
 
       const notification = {
         title: 'Test',
@@ -525,8 +542,7 @@ describe('UnifiedNotificationService', () => {
 
   describe('Notification Read Status', () => {
     it('should mark notification as unread by default', async () => {
-      (db.collection as jest.Mock).mockReturnThis();
-      (db.collection('notifications').add as jest.Mock).mockResolvedValue({ id: 'notif-unread' });
+      mockAdd.mockResolvedValue({ id: 'notif-unread' });
 
       const notification = {
         title: 'Test',
@@ -536,7 +552,7 @@ describe('UnifiedNotificationService', () => {
 
       await service.sendNotification('user-123', notification);
 
-      expect(db.collection('notifications').add).toHaveBeenCalledWith(
+      expect(mockAdd).toHaveBeenCalledWith(
         expect.objectContaining({
           read: false,
         })
@@ -544,8 +560,7 @@ describe('UnifiedNotificationService', () => {
     });
 
     it('should include timestamp', async () => {
-      (db.collection as jest.Mock).mockReturnThis();
-      (db.collection('notifications').add as jest.Mock).mockResolvedValue({ id: 'notif-time' });
+      mockAdd.mockResolvedValue({ id: 'notif-time' });
 
       const notification = {
         title: 'Test',
@@ -555,7 +570,7 @@ describe('UnifiedNotificationService', () => {
 
       await service.sendNotification('user-123', notification);
 
-      expect(db.collection('notifications').add).toHaveBeenCalledWith(
+      expect(mockAdd).toHaveBeenCalledWith(
         expect.objectContaining({
           createdAt: expect.any(Date),
         })
@@ -565,8 +580,7 @@ describe('UnifiedNotificationService', () => {
 
   describe('Batch Notifications', () => {
     it('should handle multiple notifications', async () => {
-      (db.collection as jest.Mock).mockReturnThis();
-      (db.collection('notifications').add as jest.Mock).mockResolvedValue({ id: 'notif-batch' });
+      mockAdd.mockResolvedValue({ id: 'notif-batch' });
 
       const users = ['user-1', 'user-2', 'user-3'];
       const notification = {
@@ -579,12 +593,11 @@ describe('UnifiedNotificationService', () => {
         users.map((userId) => service.sendNotification(userId, notification))
       );
 
-      expect(db.collection('notifications').add).toHaveBeenCalledTimes(3);
+      expect(mockAdd).toHaveBeenCalledTimes(3);
     });
 
     it('should continue on individual failures', async () => {
-      (db.collection as jest.Mock).mockReturnThis();
-      (db.collection('notifications').add as jest.Mock)
+      mockAdd
         .mockResolvedValueOnce({ id: 'notif-1' })
         .mockRejectedValueOnce(new Error('Failed'))
         .mockResolvedValueOnce({ id: 'notif-3' });

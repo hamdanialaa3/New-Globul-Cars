@@ -42,8 +42,14 @@ describe('AlgoliaSearchService', () => {
       setSettings: jest.fn(),
     };
 
-    mockClient = algoliasearch('app-id', 'api-key');
-    (mockClient.initIndex as jest.Mock).mockReturnValue(mockIndex);
+    // Properly setup mock client with initIndex method
+    const mockInitIndex = jest.fn().mockReturnValue(mockIndex);
+    mockClient = {
+      initIndex: mockInitIndex,
+    };
+    
+    // Make algoliasearch return our mock client
+    (algoliasearch as jest.MockedFunction<typeof algoliasearch>).mockReturnValue(mockClient as any);
   });
 
   describe('Search Operations', () => {

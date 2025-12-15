@@ -80,7 +80,7 @@ const Tab = styled.button<{ $active?: boolean }>`
   }
 `;
 
-const SearchForm = styled.form`
+const SearchForm = styled('form')`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr auto;
   gap: 0.75rem;
@@ -92,7 +92,7 @@ const SearchForm = styled.form`
   }
 `;
 
-const SelectInput = styled.select`
+const SelectInput = styled('select')`
   padding: 0.875rem 1rem;
   border: 2px solid var(--border-primary);
   border-radius: 10px;
@@ -130,7 +130,7 @@ const PriceRangeContainer = styled.div`
   }
 `;
 
-const PriceInput = styled.input`
+const PriceInput = styled('input')`
   padding: 0.875rem 1rem;
   border: 2px solid var(--border-primary);
   border-radius: 10px;
@@ -168,7 +168,7 @@ const PriceSeparator = styled.span`
   }
 `;
 
-const SearchButton = styled.button`
+const SearchButton = styled('button')`
   padding: 0.875rem 2rem;
   border: none;
   border-radius: 10px;
@@ -210,7 +210,7 @@ const QuickFilters = styled.div`
   }
 `;
 
-const FilterChip = styled.button`
+const FilterChip = styled('button')`
   padding: 0.5rem 1rem;
   border: 1px solid var(--border-primary);
   border-radius: 20px;

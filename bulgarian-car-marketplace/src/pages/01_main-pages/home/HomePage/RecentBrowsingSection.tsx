@@ -125,7 +125,7 @@ const EmptyText = styled.p<{ $isDark: boolean }>`
   }
 `;
 
-const BrowseButton = styled.button`
+const BrowseButton = styled('button')`
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -151,7 +151,7 @@ const BrowseButton = styled.button`
   }
 `;
 
-const ClearButton = styled.button`
+const ClearButton = styled('button')`
   display: flex;
   align-items: center;
   gap: 8px;

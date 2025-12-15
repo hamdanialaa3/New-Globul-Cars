@@ -46,7 +46,7 @@ const Description = styled.p`
   max-width: 600px;
 `;
 
-const Button = styled.button`
+const Button = styled('button')`
   display: inline-flex;
   align-items: center;
   gap: 8px;

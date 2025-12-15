@@ -79,7 +79,7 @@ const Actions = styled.div`
   flex-wrap: wrap;
 `;
 
-const CTAButton = styled.button`
+const CTAButton = styled('button')`
   border: none;
   padding: 10px 18px;
   border-radius: 12px;

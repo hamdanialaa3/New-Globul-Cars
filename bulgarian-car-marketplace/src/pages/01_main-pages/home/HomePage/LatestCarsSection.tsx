@@ -101,7 +101,7 @@ const ImageWrapper = styled.div`
   overflow: hidden;
 `;
 
-const CarImage = styled.img`
+const CarImage = styled('img')`
   position: absolute;
   top: 0;
   left: 0;

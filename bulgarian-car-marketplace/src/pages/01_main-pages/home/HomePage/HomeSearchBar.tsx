@@ -99,7 +99,7 @@ const SelectWrapper = styled.div`
   position: relative;
 `;
 
-const Select = styled.select`
+const Select = styled('select')`
   width: 100%;
   padding: 0.5rem 1rem;
   padding-right: 2.5rem;
@@ -171,7 +171,7 @@ const PriceRangeContainer = styled.div`
   }
 `;
 
-const PriceInput = styled.input`
+const PriceInput = styled('input')`
   flex: 1;
   padding: 0.5rem 1rem;
   border: 2px solid ${({ theme }) => theme.mode === 'dark' ? '#333333' : '#e5e7eb'};
@@ -219,7 +219,7 @@ const PriceSeparator = styled.span`
   }
 `;
 
-const SearchButton = styled.button`
+const SearchButton = styled('button')`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -306,7 +306,7 @@ const SearchButton = styled.button`
   }
 `;
 
-const ResetButton = styled.button`
+const ResetButton = styled('button')`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -348,7 +348,7 @@ const ResetButton = styled.button`
   }
 `;
 
-const AdvancedLink = styled.button`
+const AdvancedLink = styled('button')`
   background: none;
   border: none;
   color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : '#FF8F10'};

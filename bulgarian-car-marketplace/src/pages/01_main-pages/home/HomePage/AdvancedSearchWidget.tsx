@@ -82,7 +82,7 @@ const TabBtn = styled.button<{ active?: boolean }>`
   }
 `;
 
-const SearchGrid = styled.form`
+const SearchGrid = styled('form')`
   display: grid;
   grid-template-columns: repeat(4, 1fr) auto;
   gap: 15px;
@@ -100,7 +100,7 @@ const FormGroup = styled.div`
   position: relative;
 `;
 
-const FormLabel = styled.label`
+const FormLabel = styled('label')`
   display: block;
   font-size: 0.8rem;
   color: #8899aa;
@@ -111,7 +111,7 @@ const FormLabel = styled.label`
   letter-spacing: 1px;
 `;
 
-const FormSelect = styled.select`
+const FormSelect = styled('select')`
   width: 100%;
   height: 55px;
   background: #0f0f13;
@@ -136,7 +136,7 @@ const FormSelect = styled.select`
   &:disabled { opacity: 0.5; cursor: not-allowed; }
 `;
 
-const SearchBtn = styled.button`
+const SearchBtn = styled('button')`
   height: 55px;
   padding: 0 40px;
   background: linear-gradient(135deg, #00ccff, #0066ff);

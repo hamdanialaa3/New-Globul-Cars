@@ -116,7 +116,7 @@ const BrandsContainer = styled.div`
   margin-bottom: 2rem;
 `;
 
-const BrandCard = styled.button`
+const BrandCard = styled('button')`
   /* 🌟 Aluminum Metallic Effect - تأثير ألومنيوم براق وواقعي */
   background: linear-gradient(135deg, 
     #E8E8E8 0%,      /* فضي فاتح */
@@ -280,7 +280,7 @@ const BrandName = styled.div`
 
 // ✅ Removed CarCount component - no need to display car counts
 
-const ViewAllBrandsButton = styled.button`
+const ViewAllBrandsButton = styled('button')`
   border: none;
   border-radius: 12px;
   padding: 0.75rem 2rem;

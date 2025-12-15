@@ -126,7 +126,7 @@ const SlideshowContainer = styled.div`
   box-shadow: var(--shadow-lg);
 `;
 
-const SlideImage = styled.img`
+const SlideImage = styled('img')`
   width: 100%;
   height: 500px;
   object-fit: cover;
@@ -147,7 +147,7 @@ const SlideImage = styled.img`
   }
 `;
 
-const NavButton = styled.button`
+const NavButton = styled('button')`
   position: absolute;
   top: 50%;
   transform: translateY(-50%);

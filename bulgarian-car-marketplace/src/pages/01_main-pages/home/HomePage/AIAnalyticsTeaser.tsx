@@ -75,7 +75,7 @@ const FeatureTitle = styled.h3`
   color: var(--text-primary);
 `;
 
-const Button = styled.button`
+const Button = styled('button')`
   display: inline-flex;
   align-items: center;
   gap: 8px;

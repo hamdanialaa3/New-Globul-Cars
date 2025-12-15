@@ -92,7 +92,7 @@ const VerifiedBadge = styled.span`
   font-weight: 600;
 `;
 
-const ViewAllLink = styled.button`
+const ViewAllLink = styled('button')`
   align-self: flex-start;
   background: none;
   border: none;

@@ -78,7 +78,7 @@ const Title = styled.h2`
   }
 `;
 
-const ViewAllButton = styled.button`
+const ViewAllButton = styled('button')`
   display: flex;
   align-items: center;
   gap: 0.5rem;

@@ -105,7 +105,7 @@ const SearchBar = styled.div`
   }
 `;
 
-const SearchInput = styled.input`
+const SearchInput = styled('input')`
   flex: 1;
   padding: 14px 20px;
   border: none;
@@ -142,7 +142,7 @@ const QuickFilters = styled.div`
   }
 `;
 
-const FilterChip = styled.button`
+const FilterChip = styled('button')`
   padding: 10px 20px;
   background: rgba(255, 255, 255, 0.15);
   color: white;

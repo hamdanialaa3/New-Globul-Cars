@@ -55,7 +55,7 @@ const FeedContainer = styled.div`
   gap: 24px;
 `;
 
-const LoadMoreButton = styled.button`
+const LoadMoreButton = styled('button')`
   width: 100%;
   padding: 16px;
   border: 2px dashed #dee2e6;

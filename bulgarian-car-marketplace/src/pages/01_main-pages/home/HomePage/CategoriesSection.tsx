@@ -110,7 +110,7 @@ const CardImgWrap = styled.div`
   background: ${({ theme }) => theme.mode === 'dark' ? '#1a1a1a' : '#f8fafc'};
 `;
 
-const CardImg = styled.img`
+const CardImg = styled('img')`
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -122,7 +122,7 @@ const CardImg = styled.img`
   }
 `;
 
-const FrameSvg = styled.svg`
+const FrameSvg = styled('svg')`
   position: absolute;
   inset: 0;
   width: 100%;
@@ -131,7 +131,7 @@ const FrameSvg = styled.svg`
   pointer-events: none;
 `;
 
-const FramePath = styled.path<{ $isDark: boolean }>`
+const FramePath = styled('path')<{ $isDark: boolean }>`
   fill: none;
   stroke: ${props => props.$isDark 
     ? 'url(#frameGradientDark)' 

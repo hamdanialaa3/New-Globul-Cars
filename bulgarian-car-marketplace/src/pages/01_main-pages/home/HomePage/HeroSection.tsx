@@ -33,7 +33,7 @@ const BgGearContainer = styled.div`
   z-index: 0;
 `;
 
-const BgGear = styled.svg`
+const BgGear = styled('svg')`
   width: 100%;
   height: 100%;
   animation: rotateGear 60s linear infinite;

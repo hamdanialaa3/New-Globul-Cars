@@ -449,7 +449,7 @@ const FeedSubtitle = styled.p`
   line-height: 1.6;
 `;
 
-const CreatePostTrigger = styled.button`
+const CreatePostTrigger = styled('button')`
   width: 100%;
   background: white;
   border: 1px solid #e9ecef;
@@ -513,7 +513,7 @@ const ActionButton = styled.div`
   }
 `;
 
-const LoginPrompt = styled.button`
+const LoginPrompt = styled('button')`
   width: 100%;
   padding: 16px;
   background: linear-gradient(135deg, #FF7900, #FF8F10);
@@ -588,7 +588,7 @@ const EmptyDescription = styled.p`
   margin-bottom: 24px;
 `;
 
-const CreateFirstButton = styled.button`
+const CreateFirstButton = styled('button')`
   padding: 12px 24px;
   background: #FF7900;
   color: white;

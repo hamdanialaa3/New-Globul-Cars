@@ -59,7 +59,7 @@ const Actions = styled.div`
   }
 `;
 
-const ActionButton = styled.button`
+const ActionButton = styled('button')`
   background: var(--accent-primary);
   color: #fff;
   border: none;

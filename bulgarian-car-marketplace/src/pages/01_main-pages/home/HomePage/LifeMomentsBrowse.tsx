@@ -56,7 +56,7 @@ const MomentsContainer = styled.div`
   /* Container for horizontal scroll */
 `;
 
-const MomentCard = styled.button`
+const MomentCard = styled('button')`
   border: 1px solid var(--border-color);
   background: var(--bg-secondary);
   padding: 14px 12px;
