@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { Eye, EyeOff, Shield, Lock, Unlock, Save } from 'lucide-react';
 import { useLanguage } from '../../../contexts/LanguageContext';
-import { dealershipService } from '../../../services/dealership/dealership.service';
+import { profileService } from '../../../services/profile/UnifiedProfileService';
 import { DEFAULT_PRIVACY_SETTINGS } from '../../../types/dealership/dealership.types';
 import type { PrivacySettings } from '../../../types/dealership/dealership.types';
 import { useToast } from '../../Toast';
@@ -26,7 +26,7 @@ const PrivacySettingsManager: React.FC<PrivacySettingsManagerProps> = ({
   const loadSettings = useCallback(async () => {
     try {
       setLoading(true);
-      const privacySettings = await dealershipService.getPrivacySettings(userId);
+      const privacySettings = await profileService.getPrivacySettings(userId);
       if (privacySettings) {
         setSettings(privacySettings);
       }
@@ -58,7 +58,7 @@ const PrivacySettingsManager: React.FC<PrivacySettingsManagerProps> = ({
   const handleSave = async () => {
     try {
       setSaving(true);
-      await dealershipService.savePrivacySettings(userId, settings);
+      await profileService.savePrivacySettings(userId, settings);
       showToast(
         'success',
         language === 'bg' ? 'Настройките са запазени' : 'Settings saved successfully'

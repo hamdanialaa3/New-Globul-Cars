@@ -103,17 +103,20 @@ export const InteriorSection: React.FC<InteriorSectionProps> = ({
                   { key: 'panoramaRoof', label: t('advancedSearch.panoramaRoofExtras') },
                   { key: 'bluetooth', label: t('advancedSearch.bluetoothExtras') },
                   { key: 'heatedSeats', label: t('advancedSearch.heatedSeatsExtras') }
-                ].map(extra => (
-                  <CheckboxLabel key={extra.key}>
-                    <input
-                      type="checkbox"
-                      checked={searchData.extras.includes(extra.key)}
-                      onChange={() => onCheckboxToggle('extras', extra.key)}
-                    />
-                    <CustomCheckbox checked={searchData.extras.includes(extra.key)} />
-                    {extra.label}
-                  </CheckboxLabel>
-                ))}
+                ].map(extra => {
+                  const isChecked = Array.isArray(searchData.extras) && searchData.extras.includes(extra.key);
+                  return (
+                    <CheckboxLabel key={extra.key}>
+                      <input
+                        type="checkbox"
+                        checked={isChecked}
+                        onChange={() => onCheckboxToggle('extras', extra.key)}
+                      />
+                      <CustomCheckbox checked={isChecked} />
+                      {extra.label}
+                    </CheckboxLabel>
+                  );
+                })}
               </CheckboxGroup>
             </FormGroup>
           </FormGrid>

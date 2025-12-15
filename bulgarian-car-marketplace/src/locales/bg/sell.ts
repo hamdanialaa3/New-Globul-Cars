@@ -158,6 +158,10 @@ export const sell = {
       "bus": {
         "title": "Автобус",
         "desc": "Пътнически"
+      },
+      "parts": {
+        "title": "Части",
+        "desc": "Резервни части"
       }
     }
   },

@@ -1,123 +1,232 @@
-// src/services/__tests__/validation-service.test.ts
-// Unit Tests for Validation Service
-
-import { ValidationService, validator } from '../validation-service';
+// Tests for validation-service.ts
+import validationService from '../validation-service';
 
 describe('ValidationService', () => {
   describe('validateField', () => {
     it('should validate required fields', () => {
-      const error = validator.validateField('email', '', { required: true }, 'bg');
+      const error = validationService.validateField('email', '', { required: true }, 'bg');
       expect(error).toBe('Това поле е задължително');
     });
 
-    it('should validate min length', () => {
-      const error = validator.validateField('name', 'ab', { minLength: 3 }, 'bg');
-      expect(error).toContain('Минимум 3 символа');
-    });
-
-    it('should validate max length', () => {
-      const error = validator.validateField('name', 'a'.repeat(101), { maxLength: 100 }, 'bg');
-      expect(error).toContain('Максимум 100 символа');
-    });
-
-    it('should validate pattern', () => {
-      const error = validator.validateField('email', 'invalid-email', { 
-        pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/ 
-      }, 'bg');
-      expect(error).toBe('Невалиден формат');
-    });
-
-    it('should pass valid input', () => {
-      const error = validator.validateField('email', 'test@example.com', {
-        required: true,
-        pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
-      }, 'bg');
+    it('should pass required validation with valid value', () => {
+      const error = validationService.validateField('email', 'test@test.com', { required: true }, 'bg');
       expect(error).toBeNull();
     });
-  });
 
-  describe('validateUserRegistration', () => {
-    it('should validate valid registration data', () => {
-      const data = {
-        email: 'test@example.com',
-        password: 'Test123!@#',
-        confirmPassword: 'Test123!@#',
-        firstName: 'John',
-        lastName: 'Doe',
-        preferredLanguage: 'bg' as const
-      };
-
-      const result = validator.validateUserRegistration(data, 'bg');
-      expect(result.isValid).toBe(true);
-      expect(Object.keys(result.errors)).toHaveLength(0);
+    it('should validate email format', () => {
+      const error = validationService.validateField('email', 'invalid-email', { email: true }, 'bg');
+      expect(error).toBe('Невалиден имейл адрес');
     });
 
-    it('should reject invalid email', () => {
+    it('should pass email validation with valid email', () => {
+      const error = validationService.validateField('email', 'test@example.com', { email: true }, 'bg');
+      expect(error).toBeNull();
+    });
+
+    it('should validate Bulgarian phone numbers', () => {
+      // Invalid phone
+      let error = validationService.validateField('phone', '123', { phone: true }, 'bg');
+      expect(error).toContain('Невалиден телефонен номер');
+
+      // Valid international format
+      error = validationService.validateField('phone', '+359888123456', { phone: true }, 'bg');
+      expect(error).toBeNull();
+
+      // Valid local format
+      error = validationService.validateField('phone', '0888123456', { phone: true }, 'bg');
+      expect(error).toBeNull();
+    });
+
+    it('should validate year range', () => {
+      // Too old
+      let error = validationService.validateField('year', 1899, { year: true }, 'bg');
+      expect(error).toContain('Невалидна година');
+
+      // Too new
+      const futureYear = new Date().getFullYear() + 2;
+      error = validationService.validateField('year', futureYear, { year: true }, 'bg');
+      expect(error).toContain('Невалидна година');
+
+      // Valid current year
+      const currentYear = new Date().getFullYear();
+      error = validationService.validateField('year', currentYear, { year: true }, 'bg');
+      expect(error).toBeNull();
+    });
+
+    it('should validate mileage range', () => {
+      // Negative mileage
+      let error = validationService.validateField('mileage', -100, { mileage: true }, 'bg');
+      expect(error).toContain('Невалиден пробег');
+
+      // Too high
+      error = validationService.validateField('mileage', 1500000, { mileage: true }, 'bg');
+      expect(error).toContain('Невалиден пробег');
+
+      // Valid mileage
+      error = validationService.validateField('mileage', 50000, { mileage: true }, 'bg');
+      expect(error).toBeNull();
+    });
+
+    it('should validate price range', () => {
+      // Negative price
+      let error = validationService.validateField('price', -1000, { price: true }, 'bg');
+      expect(error).toContain('Невалидна цена');
+
+      // Too high
+      error = validationService.validateField('price', 15000000, { price: true }, 'bg');
+      expect(error).toContain('Невалидна цена');
+
+      // Valid price
+      error = validationService.validateField('price', 25000, { price: true }, 'bg');
+      expect(error).toBeNull();
+    });
+
+    it('should validate VIN format', () => {
+      // Too short
+      let error = validationService.validateField('vin', 'ABC123', { vin: true }, 'bg');
+      expect(error).toContain('Невалиден VIN номер');
+
+      // Invalid characters (I, O, Q not allowed)
+      error = validationService.validateField('vin', 'WBAAA1234IOQABCDE', { vin: true }, 'bg');
+      expect(error).toContain('Невалиден VIN номер');
+
+      // Valid VIN
+      error = validationService.validateField('vin', 'WBADT43452G612345', { vin: true }, 'bg');
+      expect(error).toBeNull();
+    });
+
+    it('should validate minLength', () => {
+      const error = validationService.validateField('name', 'A', { minLength: 2 }, 'bg');
+      expect(error).toContain('Минимална дължина: 2');
+    });
+
+    it('should validate maxLength', () => {
+      const error = validationService.validateField('name', 'A'.repeat(101), { maxLength: 100 }, 'bg');
+      expect(error).toContain('Максимална дължина: 100');
+    });
+
+    it('should validate min number', () => {
+      const error = validationService.validateField('age', 5, { min: 18 }, 'bg');
+      expect(error).toContain('Минимална стойност: 18');
+    });
+
+    it('should validate max number', () => {
+      const error = validationService.validateField('age', 150, { max: 120 }, 'bg');
+      expect(error).toContain('Максимална стойност: 120');
+    });
+
+    it('should support English language', () => {
+      const error = validationService.validateField('email', '', { required: true }, 'en');
+      expect(error).toBe('This field is required');
+    });
+  });
+
+  describe('validateForm', () => {
+    it('should validate multiple fields', () => {
       const data = {
+        email: 'invalid',
+        phone: '123',
+        year: 1899,
+      };
+
+      const rules = {
+        email: { email: true },
+        phone: { phone: true },
+        year: { year: true },
+      };
+
+      const result = validationService.validateForm(data, rules, 'bg');
+      
+      expect(result.isValid).toBe(false);
+      expect(result.errors.length).toBe(3);
+    });
+
+    it('should pass validation for valid data', () => {
+      const data = {
+        email: 'test@example.com',
+        phone: '+359888123456',
+        year: 2020,
+      };
+
+      const rules = {
+        email: { email: true },
+        phone: { phone: true },
+        year: { year: true },
+      };
+
+      const result = validationService.validateForm(data, rules, 'bg');
+      
+      expect(result.isValid).toBe(true);
+      expect(result.errors.length).toBe(0);
+    });
+  });
+
+  describe('validateVehicleData', () => {
+    it('should validate complete vehicle data', () => {
+      const validData = {
+        make: 'BMW',
+        model: '320i',
+        year: 2020,
+        mileage: 50000,
+        fuelType: 'Petrol',
+        transmission: 'Automatic',
+        bodyType: 'Sedan',
+        color: 'Black',
+        engineSize: 2000,
+        power: 150,
+      };
+
+      const result = validationService.validateVehicleData(validData, 'bg');
+      expect(result.isValid).toBe(true);
+    });
+
+    it('should fail validation for incomplete vehicle data', () => {
+      const invalidData = {
+        make: 'BMW',
+        // Missing required fields
+      };
+
+      const result = validationService.validateVehicleData(invalidData, 'bg');
+      expect(result.isValid).toBe(false);
+      expect(result.errors.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('validatePricing', () => {
+    it('should validate pricing data', () => {
+      const validData = {
+        price: 25000,
+        currency: 'BGN',
+      };
+
+      const result = validationService.validatePricing(validData, 'bg');
+      expect(result.isValid).toBe(true);
+    });
+  });
+
+  describe('validateContact', () => {
+    it('should validate contact data', () => {
+      const validData = {
+        name: 'Ivan Petrov',
+        email: 'ivan@example.com',
+        phone: '+359888123456',
+      };
+
+      const result = validationService.validateContact(validData, 'bg');
+      expect(result.isValid).toBe(true);
+    });
+
+    it('should fail for invalid contact data', () => {
+      const invalidData = {
+        name: 'I', // Too short
         email: 'invalid-email',
-        password: 'Test123!@#',
-        confirmPassword: 'Test123!@#',
-        firstName: 'John',
-        lastName: 'Doe',
-        preferredLanguage: 'bg' as const
+        phone: '123',
       };
 
-      const result = validator.validateUserRegistration(data, 'bg');
+      const result = validationService.validateContact(invalidData, 'bg');
       expect(result.isValid).toBe(false);
-      expect(result.errors.email).toBeDefined();
-    });
-
-    it('should reject mismatched passwords', () => {
-      const data = {
-        email: 'test@example.com',
-        password: 'Test123!@#',
-        confirmPassword: 'Different123!@#',
-        firstName: 'John',
-        lastName: 'Doe',
-        preferredLanguage: 'bg' as const
-      };
-
-      const result = validator.validateUserRegistration(data, 'bg');
-      expect(result.isValid).toBe(false);
-      expect(result.errors.confirmPassword).toContain('не съвпадат');
-    });
-  });
-
-  describe('sanitizeInput', () => {
-    it('should remove HTML tags', () => {
-      const sanitized = validator.sanitizeInput('<script>alert("xss")</script>');
-      expect(sanitized).not.toContain('<');
-      expect(sanitized).not.toContain('>');
-    });
-
-    it('should remove javascript: protocol', () => {
-      const sanitized = validator.sanitizeInput('javascript:alert("xss")');
-      expect(sanitized).not.toContain('javascript:');
-    });
-
-    it('should remove event handlers', () => {
-      const sanitized = validator.sanitizeInput('onclick=alert("xss")');
-      expect(sanitized).not.toContain('onclick=');
-    });
-  });
-
-  describe('validateSearchQuery', () => {
-    it('should validate valid search query', () => {
-      const result = validator.validateSearchQuery('BMW 320d', 'bg');
-      expect(result.isValid).toBe(true);
-      expect(result.sanitizedQuery).toBe('BMW 320d');
-    });
-
-    it('should reject too short query', () => {
-      const result = validator.validateSearchQuery('a', 'bg');
-      expect(result.isValid).toBe(false);
-      expect(result.error).toContain('поне 2 символа');
-    });
-
-    it('should reject too long query', () => {
-      const result = validator.validateSearchQuery('a'.repeat(101), 'bg');
-      expect(result.isValid).toBe(false);
-      expect(result.error).toContain('100 символа');
+      expect(result.errors.length).toBe(3);
     });
   });
 });
+

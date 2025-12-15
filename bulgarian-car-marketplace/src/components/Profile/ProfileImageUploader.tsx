@@ -349,8 +349,8 @@ const ProfileImageUploader: React.FC<ProfileImageUploaderProps> = ({
           await updateProfile(currentUser, {
             photoURL: url
           });
-        } catch (authError: any) {
-          logger.warn('Failed to update Auth photoURL, continuing with Firestore update', authError);
+        } catch (authError) {
+          logger.warn('Failed to update Auth photoURL, continuing with Firestore update', authError as Error);
         }
       }
       setProgress(75);
@@ -373,8 +373,8 @@ const ProfileImageUploader: React.FC<ProfileImageUploaderProps> = ({
       }
       try {
         await ProfileService.trust.calculateTrustScore(user.uid);
-      } catch (trustError: any) {
-        logger.warn('Failed to recalculate trust score', trustError);
+      } catch (trustError) {
+        logger.warn('Failed to recalculate trust score', trustError as Error);
         // Don't fail the upload if trust score calculation fails
       }
       setProgress(100);
@@ -425,8 +425,8 @@ const ProfileImageUploader: React.FC<ProfileImageUploaderProps> = ({
           await updateProfile(currentUser, {
             photoURL: null
           });
-        } catch (authError: any) {
-          logger.warn('Failed to update Auth photoURL during delete', authError);
+        } catch (authError) {
+          logger.warn('Failed to update Auth photoURL during delete', authError as Error);
         }
       }
 
@@ -444,9 +444,10 @@ const ProfileImageUploader: React.FC<ProfileImageUploaderProps> = ({
         logger.debug('Profile image deleted successfully', { userId: user.uid });
       }
 
-    } catch (err: any) {
-      logger.error('Profile image delete failed', err as Error, { userId: user.uid });
-      setError(err.message || (language === 'bg' ? 'Грешка при изтриване' : 'Delete failed'));
+    } catch (err) {
+      const error = err instanceof Error ? err : new Error(String(err));
+      logger.error('Profile image delete failed', error, { userId: user.uid });
+      setError(error.message || (language === 'bg' ? 'Грешка при изтриване' : 'Delete failed'));
       onUploadError?.(err.message);
     } finally {
       setUploading(false);

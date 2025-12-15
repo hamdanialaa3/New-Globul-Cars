@@ -12,7 +12,7 @@ export interface CacheConfig {
   persistence?: boolean; // Persist cache to localStorage
 }
 
-export interface CacheEntry<T = any> {
+export interface CacheEntry<T = unknown> {
   data: T;
   timestamp: number;
   ttl: number;
@@ -401,7 +401,7 @@ export class CacheService {
    * Compress data (simple implementation)
    * (Comment removed - was in Arabic)
    */
-  private compress(data: unknown): any {
+  private compress(data: unknown): string {
     // In a real implementation, you would use a compression library
     // For now, just return the data as-is
     return data;
@@ -411,7 +411,7 @@ export class CacheService {
    * Decompress data
    * (Comment removed - was in Arabic)
    */
-  private decompress(data: unknown): any {
+  private decompress(data: unknown): unknown {
     // In a real implementation, you would use a decompression library
     return data;
   }

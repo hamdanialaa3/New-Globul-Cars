@@ -12,7 +12,8 @@ import {
   query, 
   where, 
   getDocs,
-  serverTimestamp
+  serverTimestamp,
+  Timestamp
 } from 'firebase/firestore';
 import { 
   ref, 
@@ -44,7 +45,7 @@ class DealershipService {
       const dealershipRef = doc(db, 'dealerships', userId);
       
       // ✅ FIXED: Type-safe (removed 'any')
-      const dataToSave: Partial<DealershipInfo> & { updatedAt: any; createdAt?: any } = {
+      const dataToSave: Partial<DealershipInfo> & { updatedAt: Timestamp; createdAt?: Timestamp } = {
         ...dealershipData,
         updatedAt: serverTimestamp()
       };
@@ -81,12 +82,12 @@ class DealershipService {
         ...data,
         createdAt: data.createdAt?.toDate() || new Date(),
         updatedAt: data.updatedAt?.toDate() || new Date(),
-        documents: data.documents?.map((doc: any) => ({
-          ...doc,
-          uploadedAt: doc.uploadedAt?.toDate() || new Date(),
-          verifiedAt: doc.verifiedAt?.toDate()
+        documents: data.documents?.map((docItem: DealershipDocument) => ({
+          ...docItem,
+          uploadedAt: docItem.uploadedAt?.toDate() || new Date(),
+          verifiedAt: docItem.verifiedAt?.toDate()
         })) || [],
-        galleryImages: data.galleryImages?.map((img: any) => ({
+        galleryImages: data.galleryImages?.map((img: DealershipMedia) => ({
           ...img,
           uploadedAt: img.uploadedAt?.toDate() || new Date()
         })) || []

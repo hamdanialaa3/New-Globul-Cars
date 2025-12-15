@@ -469,7 +469,7 @@ export const PremiumBulgariaMap: React.FC<PremiumBulgariaMapProps> = ({
             visible={tooltipData.visible}
           >
             <TooltipTitle>
-              {tooltipData.locationData?.regionName.name[language as keyof typeof tooltipData.locationData?.regionName.name]}
+              {language === 'bg' ? tooltipData.locationData?.regionName.name.bg : tooltipData.locationData?.regionName.name.en}
             </TooltipTitle>
             <TooltipStats>
               {language === 'bg' ? 'Налични автомобили' : 'Available Cars'}

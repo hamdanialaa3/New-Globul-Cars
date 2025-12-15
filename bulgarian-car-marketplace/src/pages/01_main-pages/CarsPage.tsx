@@ -14,9 +14,10 @@ import { unifiedCarService } from '../../services/car';
 import { CarIcon } from '../../components/icons/CarIcon';
 import { CarListing } from '../../types/CarListing';
 import { logger } from '../../services/logger-service';
-import { firebaseCache, cacheKeys } from '../../services/firebase-cache.service';
+import { firebaseCache, cacheKeys } from '../../services/firebase/UnifiedFirebaseService';
 import CarCardCompact from '../../components/CarCard/CarCardCompact';
 import { ResponsiveGrid } from '../../components/layout/ResponsiveGrid';
+import { Virtuoso } from 'react-virtuoso';
 import { useIsMobile } from '../../hooks/useBreakpoint';
 import { MobileFilterDrawer, MobileFilterButton, FilterValues } from '../../components/filters';
 import { smartSearchService } from '../../services/search/smart-search.service';
@@ -587,15 +588,19 @@ const CarsPage: React.FC = () => {
     
     try {
       const result = await smartSearchService.search(searchQuery, user?.uid, 1, 100);
-      console.log('✅ Smart Search Result:', {
-        carsCount: result.cars.length,
-        totalCount: result.totalCount,
-        isPersonalized: result.isPersonalized,
-        firstCar: result.cars[0] ? {
-          make: result.cars[0].make,
-          model: result.cars[0].model,
-          year: result.cars[0].year
-        } : null
+      logger.debug('Smart Search Result', {
+        context: 'CarsPage',
+        action: 'smartSearch',
+        data: {
+          carsCount: result.cars.length,
+          totalCount: result.totalCount,
+          isPersonalized: result.isPersonalized,
+          firstCar: result.cars[0] ? {
+            make: result.cars[0].make,
+            model: result.cars[0].model,
+            year: result.cars[0].year
+          } : null
+        }
       });
       setCars(result.cars as CarListing[]);
       setError(null); // Clear any previous errors
@@ -605,8 +610,10 @@ const CarsPage: React.FC = () => {
         personalized: result.isPersonalized 
       });
     } catch (err) {
-      logger.error('❌ Smart Search FAILED:', err);
-      logger.error('Smart search failed', err as Error);
+      logger.error('❌ Smart Search FAILED', err as Error, {
+        context: 'CarsPage',
+        action: 'smartSearch'
+      });
       setError('Search failed');
       setCars([]); // Clear cars on error
     } finally {
@@ -729,24 +736,32 @@ const CarsPage: React.FC = () => {
         } as CarListing));
         
         setCars(carListings);
-        console.log('🎯 CarsPage: Set cars state', {
-          count: carListings.length,
-          firstCar: carListings[0] ? {
-            id: carListings[0].id,
-            make: carListings[0].make,
-            model: carListings[0].model,
-            isActive: carListings[0].isActive,
-            isSold: carListings[0].isSold
-          } : null
+        logger.debug('CarsPage: Set cars state', {
+          context: 'CarsPage',
+          action: 'setCars',
+          data: {
+            count: carListings.length,
+            firstCar: carListings[0] ? {
+              id: carListings[0].id,
+              make: carListings[0].make,
+              model: carListings[0].model,
+              isActive: carListings[0].isActive,
+              isSold: carListings[0].isSold
+            } : null
+          }
         });
         logger.info('✅ Loaded cars', { 
           count: carListings.length,
           region: regionParam || 'all',
           make: makeParam || 'all'
         });
-      } catch (err: any) {
-        logger.error('❌ Error loading cars:', err);
-        setError(err.message || 'Failed to load cars');
+      } catch (err) {
+        const error = err as Error;
+        logger.error('❌ Error loading cars', error, {
+          context: 'CarsPage',
+          action: 'loadCars'
+        });
+        setError(error.message || 'Failed to load cars');
       } finally {
         setLoading(false);
       }
@@ -1006,20 +1021,33 @@ const CarsPage: React.FC = () => {
         {/* Cars Grid */}
         {!loading && cars.length > 0 && (
           <CarsGridWrapper>
-            <ResponsiveGrid
-              columns={{
-                xs: 1,    // 1 column on mobile
-                sm: 2,    // 2 columns on small tablets
-                md: 2,    // 2 columns on tablets
-                lg: 3,    // 3 columns on desktop
-                xl: 4     // 4 columns on large desktop
-              }}
-              gap={20}
-            >
-              {cars.map(car => (
-                <CarCardCompact key={car.id} car={car} />
-              ))}
-            </ResponsiveGrid>
+            {cars.length > 50 ? (
+              // Use Virtual Scrolling for large lists (50+ items) for better performance
+              <Virtuoso
+                data={cars}
+                itemContent={(index, car) => (
+                  <CarCardCompact key={car.id} car={car} />
+                )}
+                style={{ height: 'calc(100vh - 300px)', minHeight: '600px' }}
+                overscan={10}
+              />
+            ) : (
+              // Use regular grid for smaller lists
+              <ResponsiveGrid
+                columns={{
+                  xs: 1,    // 1 column on mobile
+                  sm: 2,    // 2 columns on small tablets
+                  md: 2,    // 2 columns on tablets
+                  lg: 3,    // 3 columns on desktop
+                  xl: 4     // 4 columns on large desktop
+                }}
+                gap={20}
+              >
+                {cars.map(car => (
+                  <CarCardCompact key={car.id} car={car} />
+                ))}
+              </ResponsiveGrid>
+            )}
           </CarsGridWrapper>
         )}
 

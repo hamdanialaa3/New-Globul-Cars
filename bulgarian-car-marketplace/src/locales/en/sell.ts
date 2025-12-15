@@ -158,6 +158,10 @@ export const sell = {
       "bus": {
         "title": "Bus",
         "desc": "Passenger"
+      },
+      "parts": {
+        "title": "Parts",
+        "desc": "Spare Parts"
       }
     }
   },

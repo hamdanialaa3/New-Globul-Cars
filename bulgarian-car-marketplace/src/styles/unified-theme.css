@@ -16,50 +16,80 @@ html[data-theme="light"],
   /* ─────────────────────────────────────────
      الخلفيات - Backgrounds
      ───────────────────────────────────────── */
-  --bg-primary: #FAFBFC;              /* صفحة رئيسية - رمادي فاتح نظيف */
-  --bg-secondary: #FFFFFF;            /* بطاقات وأقسام - أبيض نقي */
-  --bg-card: #FFFFFF;                 /* بطاقات السيارات - أبيض */
-  --bg-hover: #F5F7FA;                /* تحويم - رمادي فاتح */
-  --bg-accent: #FFF8F5;               /* خلفية مميزة - برتقالي فاتح جداً */
-  --bg-header: #1A1D2E;               /* هيدر داكن ثابت */
-  --bg-footer: #F5F5F0;               /* فوتر بيج فاتح جداً */
-  --bg-overlay: rgba(255, 255, 255, 0.95); /* طبقة شفافة */
-  --bg-section-light: #FAF9F6;        /* خلفية الأقسام - بيج فاتح جداً */
-  
+  --bg-primary: #F4F1EA;
+  /* صفحة رئيسية - بيج واضح */
+  --bg-secondary: #F9F6F0;
+  /* بطاقات وأقسام - بيج فاتح جداً */
+  --bg-card: #FFFFFF;
+  /* بطاقات السيارات - أبيض */
+  --bg-hover: #F5F7FA;
+  /* تحويم - رمادي فاتح */
+  --bg-accent: #FFF8F5;
+  /* خلفية مميزة - برتقالي فاتح جداً */
+  --bg-header: #1A1D2E;
+  /* هيدر داكن ثابت */
+  --bg-footer: #F4F1EA;
+  /* فوتر بيج واضح */
+  --bg-overlay: rgba(255, 255, 255, 0.95);
+  /* طبقة شفافة */
+  --bg-section-light: #F4F1EA;
+  /* خلفية الأقسام - بيج واضح */
+
   /* ─────────────────────────────────────────
      النصوص - Text Colors
      ───────────────────────────────────────── */
-  --text-primary: #1A1D2E;            /* نص رئيسي - أزرق داكن جداً */
-  --text-secondary: #4A5568;          /* نص ثانوي - رمادي */
-  --text-tertiary: #718096;           /* نص خفيف - رمادي فاتح */
-  --text-inverse: #FFFFFF;            /* نص عكسي - أبيض */
-  --text-muted: #A0AEC0;              /* نص خافت */
-  --text-on-header: #FFFFFF;          /* نص على الهيدر */
-  --text-link: #FF6B35;               /* روابط - برتقالي */
-  --text-link-hover: #E85A28;         /* روابط عند التحويم */
-  
+  --text-primary: #1A1D2E;
+  /* نص رئيسي - أزرق داكن جداً */
+  --text-secondary: #4A5568;
+  /* نص ثانوي - رمادي */
+  --text-tertiary: #718096;
+  /* نص خفيف - رمادي فاتح */
+  --text-inverse: #FFFFFF;
+  /* نص عكسي - أبيض */
+  --text-muted: #A0AEC0;
+  /* نص خافت */
+  --text-on-header: #FFFFFF;
+  /* نص على الهيدر */
+  --text-link: #FF6B35;
+  /* روابط - برتقالي */
+  --text-link-hover: #E85A28;
+  /* روابط عند التحويم */
+
   /* ─────────────────────────────────────────
      الألوان الرئيسية - Primary Accents
      ───────────────────────────────────────── */
-  --accent-primary: #FF6B35;          /* برتقالي دافئ - للأزرار والتميز */
-  --accent-secondary: #FF8C61;        /* برتقالي فاتح - hover */
-  --accent-dark: #E85A28;             /* برتقالي داكن - active */
-  --accent-light: #FFB399;            /* برتقالي شاحب */
-  --accent-orange: #FF6B35;           /* برتقالي - متوافق مع المكونات */
-  
-  --blue-primary: #2C5F8D;            /* أزرق سيارات - للروابط */
-  --blue-light: #4A90E2;              /* أزرق فاتح */
-  --blue-dark: #1A3A5C;               /* أزرق داكن */
-  
+  --accent-primary: #FF6B35;
+  /* برتقالي دافئ - للأزرار والتميز */
+  --accent-secondary: #FF8C61;
+  /* برتقالي فاتح - hover */
+  --accent-dark: #E85A28;
+  /* برتقالي داكن - active */
+  --accent-light: #FFB399;
+  /* برتقالي شاحب */
+  --accent-orange: #FF6B35;
+  /* برتقالي - متوافق مع المكونات */
+
+  --blue-primary: #2C5F8D;
+  /* أزرق سيارات - للروابط */
+  --blue-light: #4A90E2;
+  /* أزرق فاتح */
+  --blue-dark: #1A3A5C;
+  /* أزرق داكن */
+
   /* ─────────────────────────────────────────
      الحدود والفواصل - Borders
      ───────────────────────────────────────── */
-  --border-primary: #E2E8F0;          /* حدود رئيسية */
-  --border-secondary: #CBD5E0;        /* حدود ثانوية */
-  --border-accent: #FF6B35;           /* حدود مميزة */
-  --border-light: #F7FAFC;            /* حدود خفيفة */
-  --border-hover: #CBD5E0;            /* حدود عند التحويم */
-  
+  --border-primary: #E2E8F0;
+  /* حدود رئيسية */
+  --border-secondary: #CBD5E0;
+  /* حدود ثانوية */
+  --border-accent: #FF6B35;
+  /* حدود مميزة */
+  --border-light: #F7FAFC;
+  /* حدود خفيفة */
+  --border-hover: #CBD5E0;
+  /* حدود عند التحويم */
+
   /* ─────────────────────────────────────────
      الأزرار - Buttons
      ───────────────────────────────────────── */
@@ -67,17 +97,17 @@ html[data-theme="light"],
   --btn-primary-text: #FFFFFF;
   --btn-primary-hover: #FF8C61;
   --btn-primary-active: #E85A28;
-  
+
   --btn-secondary-bg: #FFFFFF;
   --btn-secondary-text: #1A1D2E;
   --btn-secondary-border: #E2E8F0;
   --btn-secondary-hover: #F8F9FA;
-  
+
   --btn-outline-bg: transparent;
   --btn-outline-text: #FF6B35;
   --btn-outline-border: #FF6B35;
   --btn-outline-hover-bg: #FFF8F5;
-  
+
   /* ─────────────────────────────────────────
      الظلال - Shadows
      ───────────────────────────────────────── */
@@ -88,7 +118,7 @@ html[data-theme="light"],
   --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.06);
   --shadow-button: 0 2px 6px rgba(255, 107, 53, 0.25);
   --shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.12);
-  
+
   /* ─────────────────────────────────────────
      حالات - Status Colors
      ───────────────────────────────────────── */
@@ -112,49 +142,78 @@ html[data-theme="dark"],
   /* ─────────────────────────────────────────
      الخلفيات - Backgrounds
      ───────────────────────────────────────── */
-  --bg-primary: #0F1419;              /* خلفية رئيسية - أسود مزرق عميق */
-  --bg-secondary: #1A1F2E;            /* خلفية ثانوية - أزرق داكن */
-  --bg-card: #1E2432;                 /* بطاقات - أزرق رمادي */
-  --bg-hover: #252B3A;                /* تحويم - أزرق أفتح قليلاً */
-  --bg-accent: #2A1810;               /* خلفية مميزة - برتقالي داكن جداً */
-  --bg-header: #0A0D14;               /* هيدر أسود نقي */
-  --bg-footer: #13161F;               /* فوتر داكن */
-  --bg-overlay: rgba(15, 20, 25, 0.95); /* طبقة شفافة */
-  
+  --bg-primary: #0F1419;
+  /* خلفية رئيسية - أسود مزرق عميق */
+  --bg-secondary: #1A1F2E;
+  /* خلفية ثانوية - أزرق داكن */
+  --bg-card: #1E2432;
+  /* بطاقات - أزرق رمادي */
+  --bg-hover: #252B3A;
+  /* تحويم - أزرق أفتح قليلاً */
+  --bg-accent: #2A1810;
+  /* خلفية مميزة - برتقالي داكن جداً */
+  --bg-header: #0A0D14;
+  /* هيدر أسود نقي */
+  --bg-footer: #13161F;
+  /* فوتر داكن */
+  --bg-overlay: rgba(15, 20, 25, 0.95);
+  /* طبقة شفافة */
+
   /* ─────────────────────────────────────────
      النصوص - Text Colors
      ───────────────────────────────────────── */
-  --text-primary: #F8FAFC;            /* نص رئيسي - أبيض ناصع */
-  --text-secondary: #CBD5E1;          /* نص ثانوي - رمادي فاتح */
-  --text-tertiary: #94A3B8;           /* نص خفيف - رمادي */
-  --text-inverse: #0F1419;            /* نص عكسي - داكن */
-  --text-muted: #64748B;              /* نص خافت */
-  --text-on-header: #FFFFFF;          /* نص على الهيدر */
-  --text-link: #FF9066;               /* روابط - برتقالي فاتح */
-  --text-link-hover: #FFB399;         /* روابط عند التحويم */
-  
+  --text-primary: #F8FAFC;
+  /* نص رئيسي - أبيض ناصع */
+  --text-secondary: #CBD5E1;
+  /* نص ثانوي - رمادي فاتح */
+  --text-tertiary: #94A3B8;
+  /* نص خفيف - رمادي */
+  --text-inverse: #0F1419;
+  /* نص عكسي - داكن */
+  --text-muted: #64748B;
+  /* نص خافت */
+  --text-on-header: #FFFFFF;
+  /* نص على الهيدر */
+  --text-link: #FF9066;
+  /* روابط - برتقالي فاتح */
+  --text-link-hover: #FFB399;
+  /* روابط عند التحويم */
+
   /* ─────────────────────────────────────────
      الألوان الرئيسية - Primary Accents
      ───────────────────────────────────────── */
-  --accent-primary: #FF8C61;          /* برتقالي محروق - مميز في الداكن */
-  --accent-secondary: #FFA885;        /* برتقالي فاتح */
-  --accent-dark: #E8643D;             /* برتقالي داكن */
-  --accent-light: #FFCBB3;            /* برتقالي شاحب */
-  --accent-orange: #FF8C61;           /* برتقالي - متوافق مع المكونات */
-  
-  --blue-primary: #5B9FD8;            /* أزرق سيارات فاتح */
-  --blue-light: #7BB5E8;              /* أزرق فاتح جداً */
-  --blue-dark: #3A7AB8;               /* أزرق داكن */
-  
+  --accent-primary: #FF8C61;
+  /* برتقالي محروق - مميز في الداكن */
+  --accent-secondary: #FFA885;
+  /* برتقالي فاتح */
+  --accent-dark: #E8643D;
+  /* برتقالي داكن */
+  --accent-light: #FFCBB3;
+  /* برتقالي شاحب */
+  --accent-orange: #FF8C61;
+  /* برتقالي - متوافق مع المكونات */
+
+  --blue-primary: #5B9FD8;
+  /* أزرق سيارات فاتح */
+  --blue-light: #7BB5E8;
+  /* أزرق فاتح جداً */
+  --blue-dark: #3A7AB8;
+  /* أزرق داكن */
+
   /* ─────────────────────────────────────────
      الحدود والفواصل - Borders
      ───────────────────────────────────────── */
-  --border-primary: #2D3748;          /* حدود رئيسية */
-  --border-secondary: #374151;        /* حدود ثانوية */
-  --border-accent: #FF8C61;           /* حدود مميزة */
-  --border-light: #1F2937;            /* حدود خفيفة */
-  --border-hover: #475569;            /* حدود عند التحويم */
-  
+  --border-primary: #2D3748;
+  /* حدود رئيسية */
+  --border-secondary: #374151;
+  /* حدود ثانوية */
+  --border-accent: #FF8C61;
+  /* حدود مميزة */
+  --border-light: #1F2937;
+  /* حدود خفيفة */
+  --border-hover: #475569;
+  /* حدود عند التحويم */
+
   /* ─────────────────────────────────────────
      الأزرار - Buttons
      ───────────────────────────────────────── */
@@ -162,17 +221,17 @@ html[data-theme="dark"],
   --btn-primary-text: #0F1419;
   --btn-primary-hover: #FFA885;
   --btn-primary-active: #E8643D;
-  
+
   --btn-secondary-bg: #1E2432;
   --btn-secondary-text: #F8FAFC;
   --btn-secondary-border: #2D3748;
   --btn-secondary-hover: #252B3A;
-  
+
   --btn-outline-bg: transparent;
   --btn-outline-text: #FF8C61;
   --btn-outline-border: #FF8C61;
   --btn-outline-hover-bg: #2A1810;
-  
+
   /* ─────────────────────────────────────────
      الظلال - Shadows
      ───────────────────────────────────────── */
@@ -183,7 +242,7 @@ html[data-theme="dark"],
   --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.4);
   --shadow-button: 0 2px 6px rgba(255, 140, 97, 0.35);
   --shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.6);
-  
+
   /* ─────────────────────────────────────────
      حالات - Status Colors
      ───────────────────────────────────────── */
@@ -231,12 +290,19 @@ body {
 }
 
 /* ─── Headers & Sections ─── */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   color: var(--text-primary);
   transition: color 0.3s ease;
 }
 
-p, span, div {
+p,
+span,
+div {
   color: var(--text-primary);
 }
 
@@ -245,6 +311,7 @@ a {
   color: var(--text-link);
   transition: color 0.2s ease;
 }
+
 a:hover {
   color: var(--accent-secondary);
   text-decoration: none;
@@ -405,8 +472,8 @@ main {
 }
 
 /* Apply to all sections inside main */
-#main-content main > div,
-#main-content main > section,
+#main-content main>div,
+#main-content main>section,
 #main-content main div[class*="Section"],
 #main-content main div[class*="Container"] {
   background-color: var(--bg-card);
@@ -417,12 +484,12 @@ main {
 /* ═══════════════════════════════════════════════════════════════════
    🎨 LIGHT MODE SECTIONS - خلفية بيج فاتح للأقسام في الوضع النهاري فقط
    ═══════════════════════════════════════════════════════════════════ */
-html[data-theme="light"] #main-content main > section,
-html[data-theme="light"] #main-content main > div[class*="Section"],
+html[data-theme="light"] #main-content main>section,
+html[data-theme="light"] #main-content main>div[class*="Section"],
 html[data-theme="light"] #main-content main section[class*="Section"],
 html[data-theme="light"] #main-content main div[class*="Container"],
 html[data-theme="light"] #main-content main section[class*="Container"],
-html[data-theme="light"] #main-content main > div:not([class*="Spacer"]):not([class*="Loading"]):not([class*="page-container"]),
+html[data-theme="light"] #main-content main>div:not([class*="Spacer"]):not([class*="Loading"]):not([class*="page-container"]),
 html[data-theme="light"] section:not(header section):not(footer section):not(.main-footer),
 html[data-theme="light"] [class*="SectionContainer"],
 html[data-theme="light"] [class*="Container"]:not([class*="page-container"]):not([class*="ContentContainer"]) {
@@ -549,7 +616,18 @@ aside {
 }
 
 /* Force all text elements to use theme colors */
-p, span, h1, h2, h3, h4, h5, h6, label, li, td, th {
+p,
+span,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+label,
+li,
+td,
+th {
   color: var(--text-primary) !important;
 }
 

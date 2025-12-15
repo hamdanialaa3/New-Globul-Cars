@@ -9,7 +9,7 @@ export interface VehicleFormData {
    */
   makeRaw?: string;
   year: string;        // السنة
-  
+
   // Optional Fields - الحقول الاختيارية
   model: string;       // الموديل
   variant: string;     // الفئة (مثل: S3, RS3, Sportback)
@@ -23,33 +23,33 @@ export interface VehicleFormData {
   seats: string;       // عدد المقاعد
   color: string;       // اللون
   previousOwners: string; // المالكون السابقون
-  
+
   // Purchase Information - معلومات الشراء
   // purchaseMonth removed
   // purchaseYear removed
   // purchaseMileage removed
   // annualMileage removed
   // isSoleUser removed
-  
+
   // Exterior Details - تفاصيل خارجية
   exteriorColor: string;   // لون الهيكل الخارجي
   // trimLevel removed
-  
+
   // Location fields (updated to Bulgaria-specific structure)
   saleProvince: string; // Област (Province)
   saleCity: string;     // Град (City)
   salePostalCode: string; // Пощенски код (Postal Code)
-  
+
   // Deprecated fields (kept for backward compatibility, will be removed)
   /** @deprecated Use saleProvince instead */
   saleCountry?: string;
   /** @deprecated Use saleCity + saleProvince instead */
   saleLocation?: string;
-  
+
   saleType: 'private' | 'commercial' | '';
   saleTimeline: 'unknown' | 'soon' | 'months' | '';
   roadworthy: boolean | null;
-  
+
   // Boolean Options - خيارات نعم/لا
   hasAccidentHistory: boolean; // تاريخ حوادث
   hasServiceHistory: boolean;  // تاريخ صيانة
@@ -75,7 +75,7 @@ export const TRANSMISSION_TYPES = [
 ];
 
 export const COLORS = [
-  'Black', 'White', 'Silver', 'Gray', 'Red', 'Blue', 
+  'Black', 'White', 'Silver', 'Gray', 'Red', 'Blue',
   'Green', 'Yellow', 'Orange', 'Brown', 'Beige', 'Other'
 ];
 
@@ -101,10 +101,18 @@ export const ANNUAL_MILEAGE_OPTIONS = [
   '5000', '10000', '15000', '20000', '25000', '30000', '40000', '50000+'
 ];
 
-// Common exterior colors - الألوان الخارجية الشائعة
+// Common exterior colors - Pеална палитра от цветове
 export const EXTERIOR_COLORS = [
-  'Black', 'White', 'Silver', 'Gray', 'Metallic Gray', 
-  'Dark Gray', 'Red', 'Blue', 'Dark Blue', 'Green',
-  'Yellow', 'Orange', 'Brown', 'Beige', 'Gold', 'Other'
+  'Black', 'White', 'Silver', 'Gray', 'Metallic Gray', 'Dark Gray', 'Matte Black', 'Pearl White',
+  'Red', 'Cherry Red', 'Dark Red', 'Burgundy', 'Wine Red',
+  'Blue', 'Dark Blue', 'Navy Blue', 'Metallic Blue', 'Sky Blue', 'Teal', 'Turquoise', 'Cyan',
+  'Green', 'Dark Green', 'Olive Green', 'Lime Green', 'Emerald', 'Forest Green',
+  'Yellow', 'Canary Yellow', 'Gold', 'Mustard',
+  'Orange', 'Burnt Orange', 'Copper',
+  'Brown', 'Chocolate', 'Beige', 'Cream', 'Tan', 'Sand', 'Champagne',
+  'Purple', 'Violet', 'Lavender', 'Dark Purple', 'Plum',
+  'Pink', 'Rose Gold', 'Magenta',
+  'Bronze', 'Titanium', 'Graphite', 'Charcoal',
+  'Other' // Special value to trigger custom input
 ];
 

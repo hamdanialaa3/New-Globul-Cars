@@ -1,69 +1,46 @@
-// Quick Brands Section - Brand Pills for Quick Filtering
-// قسم الماركات السريعة - حبوب الماركات للفلترة السريعة
-
+// src/pages/HomePage/QuickBrandsSection.tsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { brandsModelsDataService } from '../../../../services/brands-models-data.service';
 import BrandIcon from './BrandIcon';
-import HorizontalScrollContainer from '../../../../components/HorizontalScrollContainer/HorizontalScrollContainer';
+import { logger } from '../../../../services/logger-service';
 
-const BrandsTicker = styled.div`
-  margin-top: 40px;
-  
-  @media (max-width: 768px) {
-    margin-top: 30px;
-  }
+// --- STYLED COMPONENTS (Metallic Pills) ---
+
+const QuickBrandsContainer = styled.div`
+  margin-top: 30px;
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  justify-content: center;
 `;
 
-const BrandPill = styled.button`
-  display: inline-flex;
+const BrandPill = styled.div`
+  display: flex;
   align-items: center;
   gap: 8px;
-  padding: 9px 18px;
-  background: ${({ theme }) => theme.mode === 'dark' ? '#1a1a1a' : '#ffffff'};
-  border: 1.5px solid ${({ theme }) => theme.mode === 'dark' ? '#374151' : '#d1d5db'};
-  border-radius: 24px;
-  color: ${({ theme }) => theme.mode === 'dark' ? '#e5e7eb' : '#374151'};
-  font-size: 0.875rem;
-  font-weight: 600;
-  letter-spacing: 0.01em;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 30px;
+  color: #8899aa;
+  font-size: 0.9rem;
+  font-family: 'Exo 2', sans-serif;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  white-space: nowrap;
-  
+  transition: all 0.3s;
+
   &:hover {
-    border-color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : '#FF8F10'};
-    color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : '#FF8F10'};
-    transform: translateY(-1px);
-    background: ${({ theme }) => theme.mode === 'dark' ? '#1f1f1f' : '#fafafa'};
-    box-shadow: ${({ theme }) => theme.mode === 'dark' 
-      ? '0 4px 12px rgba(255, 215, 0, 0.15)' 
-      : '0 4px 12px rgba(255, 143, 16, 0.15)'};
+      background: rgba(0, 204, 255, 0.1);
+      border-color: #00ccff;
+      color: #fff;
+      box-shadow: 0 0 10px rgba(0, 204, 255, 0.4);
+      transform: translateY(-2px);
   }
-  
-  &:active {
-    transform: translateY(0);
-  }
-  
-  svg {
-    width: 18px;
-    height: 18px;
-    color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : '#FF8F10'};
-    flex-shrink: 0;
-  }
-  
-  @media (max-width: 768px) {
-    padding: 7px 16px;
-    font-size: 0.8125rem;
-    gap: 6px;
-    
-    svg {
-      width: 16px;
-      height: 16px;
-    }
-  }
+
+  /* Make the icon turn colored or white on hover if possible */
+  /* For now assuming BrandIcon handles coloring or we can force it via CSS filter */
 `;
 
 const QuickBrandsSection: React.FC = () => {
@@ -74,14 +51,20 @@ const QuickBrandsSection: React.FC = () => {
   useEffect(() => {
     const loadPopularBrands = async () => {
       try {
-        // Get top 6 popular brands
         const allBrands = await brandsModelsDataService.getAllBrands();
-        setPopularBrands(allBrands.slice(0, 6));
+        // Top 6 brands: Usually German + Toyota/Ford
+        // In a real app we might hardcode specific popular ones here or fetch from an API
+        const priorities = ['Mercedes-Benz', 'BMW', 'Audi', 'Volkswagen', 'Toyota', 'Porsche'];
+
+        // Filter out brands that exist in our priorities list
+        const existingPriorities = priorities.filter(p => allBrands.includes(p));
+
+        setPopularBrands(existingPriorities.length > 0 ? existingPriorities : allBrands.slice(0, 6));
+
       } catch (error) {
-        console.error('Error loading popular brands:', error);
+        logger.error('Error loading popular brands', error as Error);
       }
     };
-    
     loadPopularBrands();
   }, []);
 
@@ -92,25 +75,14 @@ const QuickBrandsSection: React.FC = () => {
   if (popularBrands.length === 0) return null;
 
   return (
-    <BrandsTicker>
-      <HorizontalScrollContainer
-        gap="12px"
-        padding="0"
-        itemMinWidth="auto"
-        showArrows={true}
-      >
-        {popularBrands.map((brand) => (
-          <BrandPill
-            key={brand}
-            onClick={() => handleBrandClick(brand)}
-            title={`${language === 'bg' ? 'Преглед' : 'View'} ${brand} ${language === 'bg' ? 'автомобили' : 'cars'}`}
-          >
-            <BrandIcon brand={brand} size={18} />
-            {brand}
-          </BrandPill>
-        ))}
-      </HorizontalScrollContainer>
-    </BrandsTicker>
+    <QuickBrandsContainer>
+      {popularBrands.map((brand) => (
+        <BrandPill key={brand} onClick={() => handleBrandClick(brand)}>
+          <BrandIcon brand={brand} size={20} />
+          {brand}
+        </BrandPill>
+      ))}
+    </QuickBrandsContainer>
   );
 };
 

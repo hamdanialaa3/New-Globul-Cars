@@ -4,7 +4,7 @@
 import { serviceLogger } from './logger-wrapper';
 
 // Mock translation function since google-translate-api-browser is not available
-const mockTranslate = async (text: string, options: any) => {
+const mockTranslate = async (text: string, options: { from?: string; to: string }) => {
   // Simple mock - just return the original text with a note
   return {
     text: `[Translated to ${options.to}] ${text}`,
@@ -32,7 +32,7 @@ export interface TranslationResult {
       didYouMean: boolean;
     };
   };
-  raw?: any;
+  raw?: unknown;
 }
 
 export class BulgarianTranslationService {
@@ -143,7 +143,8 @@ export class BulgarianTranslationService {
 
     // If it's a field name, return the translation
     if (fieldName in fieldTranslations) {
-      return (fieldTranslations as any)[fieldName][targetLang] || (fieldTranslations as any)[fieldName]['en'];
+      const translations = fieldTranslations as Record<string, Record<string, string>>;
+      return translations[fieldName]?.[targetLang] || translations[fieldName]?.['en'] || value;
     }
 
     // Otherwise, translate the value
@@ -155,8 +156,8 @@ export class BulgarianTranslationService {
   }
 
   // Translate car specifications
-  async translateCarSpecs(specs: { [key: string]: any }, targetLang: string): Promise<{ [key: string]: any }> {
-    const translatedSpecs: { [key: string]: any } = {};
+  async translateCarSpecs(specs: Record<string, unknown>, targetLang: string): Promise<Record<string, unknown>> {
+    const translatedSpecs: Record<string, unknown> = {};
 
     for (const [key, value] of Object.entries(specs)) {
       if (typeof value === 'string') {

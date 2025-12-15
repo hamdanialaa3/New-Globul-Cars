@@ -14,14 +14,15 @@ import { iotService } from './iotService';
 import { analyticsService } from './analytics/UnifiedAnalyticsService';
 
 // AWS Services (سيتم إضافتها تدريجياً)
+// Using Record<string, unknown> for AWS service clients until specific types are available
 interface AWSServices {
-  rekognition?: any;
-  personalize?: any;
-  comprehend?: any;
-  quicksight?: any;
-  kinesis?: any;
-  waf?: any;
-  macie?: any;
+  rekognition?: Record<string, unknown>;
+  personalize?: Record<string, unknown>;
+  comprehend?: Record<string, unknown>;
+  quicksight?: Record<string, unknown>;
+  kinesis?: Record<string, unknown>;
+  waf?: Record<string, unknown>;
+  macie?: Record<string, unknown>;
 }
 
 interface CarAnalysisResult {
@@ -60,11 +61,16 @@ interface CarAnalysisResult {
   };
 }
 
+interface MarketTrend {
+  trend: string;
+  percentage: number;
+}
+
 interface UserRecommendations {
   cars: unknown[];
   confidence: number;
   reasons: string[];
-  marketTrends: unknown[];
+  marketTrends: MarketTrend[];
 }
 
 class UnifiedPlatformService {
@@ -294,7 +300,7 @@ class UnifiedPlatformService {
   /**
    * تحليل الأمان والامتثال
    */
-  async performSecurityScan(userId: string, data: any) {
+  async performSecurityScan(userId: string, data: Record<string, unknown>) {
     try {
       // 1. فحص البيانات الحساسة (AWS Macie - سيتم إضافته)
       // const macieResults = await this.awsServices.macie?.scanData(data);
@@ -328,7 +334,10 @@ class UnifiedPlatformService {
     };
   }
 
-  private generateSearchTags(carData: any, marketData: any): string[] {
+  private generateSearchTags(
+    carData?: { make?: string; model?: string; color?: string; condition?: string } & Record<string, unknown>,
+    marketData?: { demandScore?: number; competitorCount?: number } & Record<string, unknown>
+  ): string[] {
     const tags = [];
     
     if (carData?.make) tags.push(carData.make.toLowerCase());
@@ -352,7 +361,9 @@ class UnifiedPlatformService {
     };
   }
 
-  private async getAlgoliaRecommendations(userBehavior: any) {
+  private async getAlgoliaRecommendations(
+    userBehavior: { preferredBrands?: string[]; priceRange?: { min: number; max: number }; searchHistory?: string[] } & Record<string, unknown>
+  ) {
     // توصيات مبنية على سلوك المستخدم
     return [];
   }
@@ -370,12 +381,12 @@ class UnifiedPlatformService {
     return results;
   }
 
-  private async analyzeSuspiciousBehavior(userId: string, data: any) {
+  private async analyzeSuspiciousBehavior(userId: string, data: Record<string, unknown>) {
     // تحليل السلوك المشبوه
     return { suspicious: false, score: 0 };
   }
 
-  private async applySecurityRules(behaviorAnalysis: any) {
+  private async applySecurityRules(behaviorAnalysis: { suspicious?: boolean; score?: number } & Record<string, unknown>) {
     // تطبيق قواعد الأمان
     return {
       safe: true,

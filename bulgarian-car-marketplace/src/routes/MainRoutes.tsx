@@ -1,0 +1,297 @@
+import React, { Suspense } from 'react';
+import { Route, Routes, Navigate } from 'react-router-dom';
+import { safeLazy } from '../utils/lazyImport';
+import { AuthGuard } from '../components/guards';
+import LoadingSpinner from '../components/LoadingSpinner'; // Assuming this is used or generic fallback
+import SellRouteRedirect from '../components/sell-workflow/SellRouteRedirect';
+import InactivityWarning from '../components/InactivityWarning';
+
+// Lazy Loaded Components
+const HomePage = safeLazy(() => import('../pages/01_main-pages/home/HomePage'));
+const CarsPage = safeLazy(() => import('../pages/01_main-pages/CarsPage'));
+const CarDetailsPage = safeLazy(() => import('../pages/01_main-pages/CarDetailsPage'));
+const SocialFeedPage = safeLazy(() => import('../pages/03_user-pages/social/SocialFeedPage'));
+const SellModalPage = safeLazy(() => import('../pages/04_car-selling/sell/SellModalPage'));
+const MessagesPage = safeLazy(() => import('../pages/03_user-pages/messages/MessagesPage'));
+const AdminPage = safeLazy(() => import('../pages/06_admin/regular-admin/AdminPage'));
+const AdminLoginPage = safeLazy(() => import('../pages/02_authentication/admin-login/AdminLoginPage'));
+const AdminDataFix = safeLazy(() => import('../pages/06_admin/regular-admin/AdminDataFix'));
+const ProfileRouter = safeLazy(() => import('../pages/03_user-pages/profile/ProfilePage/ProfileRouter'));
+const VerificationPage = safeLazy(() => import('../features/verification/VerificationPage'));
+const BillingPage = safeLazy(() => import('../features/billing/BillingPage'));
+const BillingSuccessPage = safeLazy(() => import('../pages/08_payment-billing/BillingSuccessPage'));
+const BillingCanceledPage = safeLazy(() => import('../pages/08_payment-billing/BillingCanceledPage'));
+const AnalyticsDashboard = safeLazy(() => import('../features/analytics/AnalyticsDashboard'));
+const TeamManagement = safeLazy(() => import('../features/team/TeamManagement'));
+const UsersDirectoryPage = safeLazy(() => import('../pages/03_user-pages/users-directory/UsersDirectoryPage'));
+const AllPostsPage = safeLazy(() => import('../pages/03_user-pages/social/AllPostsPage'));
+const AllCarsPage = safeLazy(() => import('../pages/05_search-browse/all-cars/AllCarsPage'));
+const EventsPage = safeLazy(() => import('../pages/07_advanced-features/EventsPage'));
+const CreatePostPage = safeLazy(() => import('../pages/03_user-pages/social/CreatePostPage'));
+const DashboardPage = safeLazy(() => import('../pages/03_user-pages/dashboard/DashboardPage'));
+const AdminDashboard = safeLazy(() => import('../components/AdminDashboard'));
+const ThemeTest = safeLazy(() => import('../components/ThemeTest'));
+const BackgroundTest = safeLazy(() => import('../components/BackgroundTest'));
+const FullThemeDemo = safeLazy(() => import('../components/FullThemeDemo'));
+const EffectsTest = safeLazy(() => import('../components/EffectsTest'));
+const PrivacyPolicyPage = safeLazy(() => import('../pages/10_legal/privacy-policy/PrivacyPolicyPage'));
+const TermsOfServicePage = safeLazy(() => import('../pages/10_legal/terms-of-service/TermsOfServicePage'));
+const DataDeletionPage = safeLazy(() => import('../pages/10_legal/data-deletion/DataDeletionPage'));
+const AdvancedSearchPage = safeLazy(() => import('../pages/05_search-browse/advanced-search/AdvancedSearchPage'));
+const AlgoliaSearchPage = safeLazy(() => import('../pages/05_search-browse/algolia-search/AlgoliaSearchPage'));
+const MyListingsPage = safeLazy(() => import('../pages/03_user-pages/my-listings/MyListingsPage'));
+const MyDraftsPage = safeLazy(() => import('../pages/03_user-pages/my-drafts/MyDraftsPage'));
+const MigrationPage = safeLazy(() => import('../pages/06_admin/MigrationPage'));
+const DebugCarsPage = safeLazy(() => import('../pages/06_admin/DebugCarsPage'));
+const EditCarPage = safeLazy(() => import('../pages/04_car-selling/EditCarPage'));
+const N8nTestPage = safeLazy(() => import('../pages/11_testing-dev/N8nTestPage'));
+const TestDropdownsPage = safeLazy(() => import('../pages/11_testing-dev/TestDropdownsPage'));
+const B2BAnalyticsPortal = safeLazy(() => import('../pages/07_advanced-features/B2BAnalyticsPortal'));
+const DigitalTwinPage = safeLazy(() => import('../pages/07_advanced-features/DigitalTwinPage'));
+const SubscriptionPage = safeLazy(() => import('../pages/08_payment-billing/SubscriptionPage'));
+const AboutPage = safeLazy(() => import('../pages/01_main-pages/about/AboutPage'));
+const BrandGalleryPage = safeLazy(() => import('../pages/05_search-browse/brand-gallery/BrandGalleryPage'));
+const TopBrandsPage = safeLazy(() => import('../pages/05_search-browse/top-brands/TopBrandsPage'));
+const DealersPage = safeLazy(() => import('../pages/05_search-browse/dealers/DealersPage'));
+const MapAnalyticsPage = safeLazy(() => import('../pages/01_main-pages/map/MapPage'));
+const FinancePage = safeLazy(() => import('../pages/05_search-browse/finance/FinancePage'));
+const ContactPage = safeLazy(() => import('../pages/01_main-pages/contact/ContactPage'));
+const HelpPage = safeLazy(() => import('../pages/01_main-pages/help/HelpPage'));
+const CookiePolicyPage = safeLazy(() => import('../pages/10_legal/cookie-policy/CookiePolicyPage'));
+const SitemapPage = safeLazy(() => import('../pages/10_legal/sitemap/SitemapPage'));
+const NotificationsPage = safeLazy(() => import('../pages/03_user-pages/notifications/NotificationsPage'));
+const SavedSearchesPage = safeLazy(() => import('../pages/03_user-pages/saved-searches/SavedSearchesPage'));
+const FavoritesPage = safeLazy(() => import('../pages/03_user-pages/favorites/FavoritesPage'));
+const DealerPublicPage = safeLazy(() => import('../pages/09_dealer-company/DealerPublicPage'));
+const InvoicesPage = safeLazy(() => import('../pages/08_payment-billing/InvoicesPage'));
+const CommissionsPage = safeLazy(() => import('../pages/08_payment-billing/CommissionsPage'));
+const CheckoutPage = safeLazy(() => import('../pages/08_payment-billing/CheckoutPage'));
+const PaymentSuccessPage = safeLazy(() => import('../pages/08_payment-billing/PaymentSuccessPage'));
+const DealerRegistrationPage = safeLazy(() => import('../pages/09_dealer-company/DealerRegistrationPage'));
+const DealerDashboardPage = safeLazy(() => import('../pages/09_dealer-company/DealerDashboardPage'));
+const AlgoliaSyncManager = safeLazy(() => import('../pages/06_admin/AlgoliaSyncManager'));
+const AdminCarManagementPage = safeLazy(() => import('../pages/06_admin/regular-admin/AdminCarManagementPage'));
+const IconShowcasePage = safeLazy(() => import('../pages/11_testing-dev/IconShowcasePage'));
+const IoTDashboardPage = safeLazy(() => import('../pages/03_user-pages/IoTDashboardPage'));
+const CarTrackingPage = safeLazy(() => import('../pages/03_user-pages/CarTrackingPage'));
+const IoTAnalyticsPage = safeLazy(() => import('../pages/03_user-pages/IoTAnalyticsPage'));
+const AIDashboardPage = safeLazy(() => import('../pages/03_user-pages/ai-dashboard/AIDashboardPage'));
+const AIQuotaManager = safeLazy(() => import('../pages/06_admin/AIQuotaManager'));
+const IntegrationStatusDashboard = safeLazy(() => import('../components/admin/IntegrationStatusDashboard'));
+const QuickSetupPage = safeLazy(() => import('../pages/06_admin/QuickSetupPage'));
+const CloudServicesManager = safeLazy(() => import('../pages/06_admin/CloudServicesManager'));
+const NotFoundPage = safeLazy(() => import('../components/NotFoundPage'));
+
+/**
+ * Main Content Routes
+ * Extracted from AppRoutes.tsx for modularity
+ */
+export const MainRoutes: React.FC = () => {
+    return (
+        <Routes>
+            <Route path="/" element={<HomePage />} />
+            {/* FUTURE FEATURE: Social Feed
+      <Route path="/social" element={<SocialFeedPage />} />
+      */}
+            {/* ... */}
+            {/* FUTURE FEATURE: IoT & AI 
+      <Route path="/iot-dashboard" element={<AuthGuard requireAuth={true}><IoTDashboardPage /></AuthGuard>} />
+      <Route path="/car-tracking" element={<AuthGuard requireAuth={true}><CarTrackingPage /></AuthGuard>} />
+      <Route path="/iot-analytics" element={<AuthGuard requireAuth={true}><IoTAnalyticsPage /></AuthGuard>} />
+      <Route path="/ai-dashboard" element={<AuthGuard requireAuth={true}><AIDashboardPage /></AuthGuard>} />
+      <Route path="/admin/ai-quotas" element={<AuthGuard requireAuth={true}><AIQuotaManager /></AuthGuard>} />
+      */}
+            <Route path="/cars" element={<CarsPage />} />
+            <Route path="/cars/:id" element={<CarDetailsPage />} />
+            <Route path="/car/:id" element={<CarDetailsPage />} />
+            <Route path="/dealer/:slug" element={<DealerPublicPage />} />
+            <Route path="/dealer-registration" element={<DealerRegistrationPage />} />
+            <Route
+                path="/dealer-dashboard"
+                element={
+                    <AuthGuard requireAuth={true}>
+                        <DealerDashboardPage />
+                    </AuthGuard>
+                }
+            />
+            <Route path="/sell" element={<Navigate to="/sell/auto" replace />} />
+            <Route path="/sell-car" element={<Navigate to="/sell/auto" replace />} />
+            <Route path="/add-car" element={<Navigate to="/sell/auto" replace />} />
+            <Route path="/create-post" element={<CreatePostPage />} />
+            <Route
+                path="/sell/auto"
+                element={
+                    <AuthGuard requireAuth={true}>
+                        <SellModalPage />
+                    </AuthGuard>
+                }
+            />
+            {/* Redirects including SellRouteRedirect */}
+            <Route path="/sell/inserat/:vehicleType/data" element={<SellRouteRedirect step={1} />} />
+            <Route path="/sell/inserat/:vehicleType/equipment" element={<SellRouteRedirect step={2} />} />
+            <Route path="/sell/inserat/:vehicleType/images" element={<SellRouteRedirect step={3} />} />
+            <Route path="/sell/inserat/:vehicleType/pricing" element={<SellRouteRedirect step={4} />} />
+            <Route path="/sell/inserat/:vehicleType/contact" element={<SellRouteRedirect step={5} />} />
+            <Route path="/sell/inserat/:vehicleType/preview" element={<SellRouteRedirect step={5} />} />
+            <Route path="/sell/inserat/:vehicleType/submission" element={<SellRouteRedirect step={5} />} />
+
+            <Route path="/profile/*" element={<ProfileRouter />} />
+            <Route path="/verification" element={<VerificationPage />} />
+            <Route path="/billing" element={<BillingPage />} />
+            <Route
+                path="/billing/success"
+                element={
+                    <AuthGuard requireAuth={true}>
+                        <BillingSuccessPage />
+                    </AuthGuard>
+                }
+            />
+            <Route
+                path="/billing/canceled"
+                element={
+                    <AuthGuard requireAuth={true}>
+                        <BillingCanceledPage />
+                    </AuthGuard>
+                }
+            />
+            <Route
+                path="/checkout/:carId"
+                element={
+                    <AuthGuard requireAuth={true}>
+                        <CheckoutPage />
+                    </AuthGuard>
+                }
+            />
+            <Route
+                path="/payment-success/:transactionId"
+                element={
+                    <AuthGuard requireAuth={true}>
+                        <PaymentSuccessPage />
+                    </AuthGuard>
+                }
+            />
+            <Route path="/analytics" element={<AnalyticsDashboard />} />
+            <Route path="/team" element={<TeamManagement />} />
+            <Route path="/users" element={<UsersDirectoryPage />} />
+            <Route path="/all-users" element={<UsersDirectoryPage />} />
+            <Route path="/all-posts" element={<AllPostsPage />} />
+            <Route path="/all-cars" element={<AllCarsPage />} />
+            <Route path="/messages" element={<MessagesPage />} />
+            <Route
+                path="/events"
+                element={
+                    <AuthGuard requireAuth={true}>
+                        <EventsPage />
+                    </AuthGuard>
+                }
+            />
+            <Route path="/admin-login" element={<AdminLoginPage />} />
+            <Route
+                path="/admin"
+                element={
+                    <AuthGuard requireAuth={true} requireAdmin={true}>
+                        <AdminPage />
+                    </AuthGuard>
+                }
+            />
+            <Route
+                path="/admin/dashboard"
+                element={
+                    <AuthGuard requireAuth={true} requireAdmin={true}>
+                        <AdminDashboard />
+                    </AuthGuard>
+                }
+            />
+            <Route
+                path="/admin-car-management"
+                element={
+                    <AuthGuard requireAuth={true} requireAdmin={true}>
+                        <AdminCarManagementPage />
+                    </AuthGuard>
+                }
+            />
+            <Route
+                path="/admin/data-fix"
+                element={
+                    <AuthGuard requireAuth={true} requireAdmin={true}>
+                        <AdminDataFix />
+                    </AuthGuard>
+                }
+            />
+            <Route
+                path="/notifications"
+                element={
+                    <AuthGuard requireAuth={true}>
+                        <NotificationsPage />
+                    </AuthGuard>
+                }
+            />
+            <Route
+                path="/saved-searches"
+                element={<AuthGuard requireAuth={true}><SavedSearchesPage /></AuthGuard>}
+            />
+            <Route
+                path="/favorites"
+                element={<AuthGuard requireAuth={true}><FavoritesPage /></AuthGuard>}
+            />
+            <Route
+                path="/invoices"
+                element={<AuthGuard requireAuth={true}><InvoicesPage /></AuthGuard>}
+            />
+            <Route
+                path="/commissions"
+                element={<AuthGuard requireAuth={true}><CommissionsPage /></AuthGuard>}
+            />
+            <Route
+                path="/dashboard"
+                element={<AuthGuard requireAuth={true}><DashboardPage /></AuthGuard>}
+            />
+            <Route path="/theme-test" element={<ThemeTest />} />
+            <Route path="/background-test" element={<BackgroundTest />} />
+            <Route path="/full-demo" element={<FullThemeDemo />} />
+            <Route path="/effects-test" element={<EffectsTest />} />
+            <Route path="/icon-showcase" element={<IconShowcasePage />} />
+            <Route path="/iot-dashboard" element={<AuthGuard requireAuth={true}><IoTDashboardPage /></AuthGuard>} />
+            <Route path="/car-tracking" element={<AuthGuard requireAuth={true}><CarTrackingPage /></AuthGuard>} />
+            <Route path="/iot-analytics" element={<AuthGuard requireAuth={true}><IoTAnalyticsPage /></AuthGuard>} />
+            <Route path="/ai-dashboard" element={<AuthGuard requireAuth={true}><AIDashboardPage /></AuthGuard>} />
+            <Route path="/admin/ai-quotas" element={<AuthGuard requireAuth={true}><AIQuotaManager /></AuthGuard>} />
+            <Route path="/admin/integration-status" element={<AuthGuard requireAuth={true}><IntegrationStatusDashboard /></AuthGuard>} />
+            <Route path="/admin/setup" element={<AuthGuard requireAuth={true}><QuickSetupPage /></AuthGuard>} />
+            <Route path="/admin/cloud-services" element={<AuthGuard requireAuth={true}><CloudServicesManager /></AuthGuard>} />
+            <Route path="/admin/algolia-sync" element={<AuthGuard requireAuth={true} requireAdmin={true}><AlgoliaSyncManager /></AuthGuard>} />
+
+            <Route path="/n8n-test" element={<N8nTestPage />} />
+            <Route path="/test-dropdowns" element={<TestDropdownsPage />} />
+            <Route path="/advanced-search" element={<AuthGuard requireAuth={false}><AdvancedSearchPage /></AuthGuard>} />
+            <Route path="/search" element={<AuthGuard requireAuth={false}><AlgoliaSearchPage /></AuthGuard>} />
+            <Route path="/my-listings" element={<AuthGuard requireAuth={true}><MyListingsPage /></AuthGuard>} />
+            <Route path="/my-drafts" element={<AuthGuard requireAuth={true}><MyDraftsPage /></AuthGuard>} />
+            <Route path="/edit-car/:carId" element={<AuthGuard requireAuth={true}><EditCarPage /></AuthGuard>} />
+            <Route path="/car-details/:carId" element={<AuthGuard requireAuth={true}><CarDetailsPage /></AuthGuard>} />
+            <Route path="/analytics" element={<AuthGuard requireAuth={true}><B2BAnalyticsPortal /></AuthGuard>} />
+            <Route path="/digital-twin" element={<AuthGuard requireAuth={true}><DigitalTwinPage /></AuthGuard>} />
+            <Route path="/subscription" element={<AuthGuard requireAuth={true}><SubscriptionPage /></AuthGuard>} />
+            <Route path="/migration" element={<AuthGuard requireAuth={true}><MigrationPage /></AuthGuard>} />
+            <Route path="/debug-cars" element={<AuthGuard requireAuth={true}><DebugCarsPage /></AuthGuard>} />
+
+            <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+            <Route path="/terms-of-service" element={<TermsOfServicePage />} />
+            <Route path="/data-deletion" element={<DataDeletionPage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/map" element={<MapAnalyticsPage />} />
+            <Route path="/top-brands" element={<TopBrandsPage />} />
+            <Route path="/brand-gallery" element={<AuthGuard requireAuth={true}><BrandGalleryPage /></AuthGuard>} />
+            <Route path="/dealers" element={<AuthGuard requireAuth={true}><DealersPage /></AuthGuard>} />
+            <Route path="/finance" element={<AuthGuard requireAuth={true}><FinancePage /></AuthGuard>} />
+
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/help" element={<HelpPage />} />
+            <Route path="/support" element={<HelpPage />} />
+            <Route path="/cookie-policy" element={<CookiePolicyPage />} />
+            <Route path="/sitemap" element={<SitemapPage />} />
+
+            <Route path="*" element={<Suspense fallback={<div>Loading...</div>}><NotFoundPage /></Suspense>} />
+        </Routes>
+    );
+};

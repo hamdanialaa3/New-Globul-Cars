@@ -26,7 +26,7 @@ export class N8nIntegrationService {
   /**
    * Send webhook to n8n workflow
    */
-  private static async sendWebhook(url: string, data: any): Promise<any> {
+  private static async sendWebhook(url: string, data: Record<string, unknown>): Promise<Record<string, unknown> | null> {
     // Skip if n8n is disabled
     if (!this.N8N_ENABLED) {
       serviceLogger.debug('N8N is disabled, skipping webhook', { url });
@@ -102,7 +102,7 @@ export class N8nIntegrationService {
   /**
    * Trigger when vehicle data is entered
    */
-  static async onVehicleDataEntered(userId: string, vehicleData: any) {
+  static async onVehicleDataEntered(userId: string, vehicleData: Record<string, unknown>) {
     return this.sendWebhook(this.WEBHOOKS.VEHICLE_DATA_ENTERED, {
       userId,
       vehicleData,
@@ -138,7 +138,7 @@ export class N8nIntegrationService {
   /**
    * Trigger when car is published
    */
-  static async onCarPublished(userId: string, carId: string, carData: any) {
+  static async onCarPublished(userId: string, carId: string, carData: Record<string, unknown>) {
     return this.sendWebhook(this.WEBHOOKS.CAR_PUBLISHED, {
       userId,
       carId,
@@ -150,7 +150,7 @@ export class N8nIntegrationService {
   /**
    * Trigger when new user registers
    */
-  static async onUserRegistered(userId: string, userData: any) {
+  static async onUserRegistered(userId: string, userData: Record<string, unknown>) {
     return this.sendWebhook(this.WEBHOOKS.USER_REGISTERED, {
       userId,
       userData,

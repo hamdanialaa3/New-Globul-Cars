@@ -9,6 +9,7 @@ import { MapPin, Navigation, Sliders, Car, TrendingUp } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import googleMapsService from '../../services/google-maps-enhanced.service';
 import { unifiedCarService } from '../../services/car';
+import { CarListing } from '../../types/CarListing';
 
 const Container = styled.div`
   background: white;
@@ -232,11 +233,16 @@ const NearbyCarsFinder: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [maxDistance, setMaxDistance] = useState<number>(50); // km
-  const [nearbyCars, setNearbyCars] = useState<any[]>([]);
+  const [nearbyCars, setNearbyCars] = useState<Array<CarListing & { 
+    distance?: { value: number; text: string };
+    duration?: { value: number; text: string };
+    distanceKm?: number;
+  }>>([]);
   const [totalCars, setTotalCars] = useState(0);
 
   useEffect(() => {
     loadNearbyCars();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [maxDistance]);
 
   const loadNearbyCars = async () => {
@@ -264,13 +270,19 @@ const NearbyCarsFinder: React.FC = () => {
       setTotalCars(allCars.length);
 
       // Filter cars by distance
+      type CarWithDistance = CarListing & {
+        distance?: { value: number; text: string };
+        duration?: { value: number; text: string };
+        distanceKm?: number;
+      };
+
       const carsWithDistance = await Promise.all(
-        allCars.map(async (car: any) => {
+        allCars.map(async (car: CarListing): Promise<CarWithDistance | null> => {
           try {
             // Geocode car location if needed
             let carCoords = car.coordinates;
             if (!carCoords && car.locationData?.cityName) {
-              const address = `${car.locationData?.cityName}, ${car.region || ''}, Bulgaria`;
+              const address = `${car.locationData.cityName}, ${car.region || ''}, Bulgaria`;
               const geocoded = await googleMapsService.geocodeAddress(address);
               carCoords = geocoded || undefined;
             }
@@ -299,7 +311,7 @@ const NearbyCarsFinder: React.FC = () => {
 
             return null;
           } catch (error) {
-            logger.error('Error processing car:', error);
+            logger.error('Error processing car:', error as Error);
             return null;
           }
         })
@@ -307,10 +319,10 @@ const NearbyCarsFinder: React.FC = () => {
 
       // Filter out nulls and sort by distance
       const validCars = carsWithDistance
-        .filter((car: any) => car !== null)
-        .sort((a: any, b: any) => a!.distanceKm - b!.distanceKm);
+        .filter((car): car is CarWithDistance => car !== null)
+        .sort((a, b) => (a.distanceKm || 0) - (b.distanceKm || 0));
 
-      setNearbyCars(validCars as any[]);
+      setNearbyCars(validCars);
       setLoading(false);
     } catch (err) {
       logger.error('Error loading nearby cars:', err);

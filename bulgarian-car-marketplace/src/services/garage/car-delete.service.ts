@@ -3,13 +3,13 @@ import { logger } from '../logger-service';
 // Complete Car Delete Service
 // الموقع: بلغاريا | اللغات: BG/EN | العملة: EUR
 
-import { 
-  doc, 
-  deleteDoc, 
-  getDoc, 
-  collection, 
-  query, 
-  where, 
+import {
+  doc,
+  deleteDoc,
+  getDoc,
+  collection,
+  query,
+  where,
   getDocs,
   writeBatch,
   updateDoc,
@@ -29,9 +29,9 @@ interface DeleteResult {
 
 class CarDeleteService {
   private static instance: CarDeleteService;
-  
-  private constructor() {}
-  
+
+  private constructor() { }
+
   static getInstance(): CarDeleteService {
     if (!this.instance) {
       this.instance = new CarDeleteService();
@@ -45,7 +45,7 @@ class CarDeleteService {
    */
   async deleteCar(carId: string, userId: string): Promise<DeleteResult> {
     const errors: string[] = [];
-    
+
     try {
       serviceLogger.info('Starting car deletion process', { carId, userId });
 
@@ -170,7 +170,7 @@ class CarDeleteService {
     try {
       const carImagesRef = ref(storage, `car-images/${carId}`);
       const imagesList = await listAll(carImagesRef);
-      
+
       for (const item of imagesList.items) {
         deletePromises.push(deleteObject(item));
       }
@@ -186,14 +186,14 @@ class CarDeleteService {
    */
   private async deleteCarMessages(carId: string): Promise<void> {
     const batch = writeBatch(db);
-    
+
     const messagesQuery = query(
       collection(db, 'messages'),
       where('carId', '==', carId)
     );
-    
+
     const messagesSnapshot = await getDocs(messagesQuery);
-    
+
     messagesSnapshot.docs.forEach(doc => {
       batch.delete(doc.ref);
     });
@@ -208,14 +208,14 @@ class CarDeleteService {
    */
   private async removeFromFavorites(carId: string): Promise<void> {
     const batch = writeBatch(db);
-    
+
     const favoritesQuery = query(
       collection(db, 'favorites'),
       where('carId', '==', carId)
     );
-    
+
     const favoritesSnapshot = await getDocs(favoritesQuery);
-    
+
     favoritesSnapshot.docs.forEach(doc => {
       batch.delete(doc.ref);
     });
@@ -230,7 +230,7 @@ class CarDeleteService {
    */
   private async deleteCarAnalytics(carId: string): Promise<void> {
     const batch = writeBatch(db);
-    
+
     // Delete views
     const viewsQuery = query(
       collection(db, 'car_views'),
@@ -270,15 +270,52 @@ class CarDeleteService {
    */
   async softDeleteCar(carId: string, userId: string): Promise<DeleteResult> {
     try {
-      const carDoc = await getDoc(doc(db, 'cars', carId));
-      if (!carDoc.exists() || carDoc.data().userId !== userId) {
+      const collections = [
+        'cars',
+        'passenger_cars',
+        'suvs',
+        'vans',
+        'motorcycles',
+        'trucks',
+        'buses'
+      ];
+
+      let foundCollection: string | null = null;
+      let carDoc: any = null;
+
+      // Search all collections to find the car
+      for (const collectionName of collections) {
+        try {
+          const docRef = doc(db, collectionName, carId);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            foundCollection = collectionName;
+            carDoc = docSnap;
+            break;
+          }
+        } catch (error) {
+          continue;
+        }
+      }
+
+      if (!foundCollection || !carDoc) {
         return {
           success: false,
-          message: 'Колата не е намерена или нямате права / Car not found or no permission'
+          message: 'Колата не е намерена / Car not found'
         };
       }
 
-      await updateDoc(doc(db, 'cars', carId), {
+      const data = carDoc.data();
+      const isOwner = data.userId === userId || data.sellerId === userId || data.ownerId === userId;
+
+      if (!isOwner) {
+        return {
+          success: false,
+          message: 'Нямате права да изтриете тази кола / No permission to delete this car'
+        };
+      }
+
+      await updateDoc(doc(db, foundCollection, carId), {
         deleted: true,
         deletedAt: serverTimestamp(),
         isActive: false

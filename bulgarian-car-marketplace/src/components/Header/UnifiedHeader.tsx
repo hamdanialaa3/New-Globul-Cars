@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import { Menu, X, User, Settings, Heart, MessageCircle, Calendar, LogOut, Search, Car, ChevronDown, Bell } from 'lucide-react';
+import { Menu, X, User, Settings, Heart, MessageCircle, Calendar, LogOut, Search, Car, ChevronDown, Bell, Map } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -14,18 +14,18 @@ const HeaderContainer = styled.header<{ $isDark?: boolean }>`
   top: 0;
   left: 0;
   right: 0;
-  background: ${({ $isDark }) => 
+  background: ${({ $isDark }) =>
     $isDark ? 'rgba(15, 23, 42, 0.25)' : 'rgba(255, 255, 255, 0.25)'} !important;
   backdrop-filter: blur(25px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(25px) saturate(180%) !important;
-  border-bottom: 1px solid ${({ $isDark }) => 
+  border-bottom: 1px solid ${({ $isDark }) =>
     $isDark ? 'rgba(148, 163, 184, 0.12)' : 'rgba(0, 0, 0, 0.06)'} !important;
   z-index: ${zIndex.sticky};
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   transition: background 0.3s ease, border-color 0.3s ease;
   
   /* Override any global header styles */
-  background-color: ${({ $isDark }) => 
+  background-color: ${({ $isDark }) =>
     $isDark ? 'rgba(15, 23, 42, 0.25)' : 'rgba(255, 255, 255, 0.25)'} !important;
 `;
 
@@ -87,16 +87,16 @@ const MainNavButton = styled.button<{ $isDark?: boolean; $primary?: boolean }>`
   align-items: center;
   gap: ${spacing.sm};
   padding: ${spacing.sm} ${spacing.lg};
-  border: 2px solid ${({ $isDark, $primary }) => 
-    $primary 
+  border: 2px solid ${({ $isDark, $primary }) =>
+    $primary
       ? ($isDark ? 'rgba(255, 107, 53, 0.5)' : colors.primary.main)
       : ($isDark ? 'rgba(148, 163, 184, 0.3)' : colors.surface.border)};
-  background: ${({ $isDark, $primary }) => 
+  background: ${({ $isDark, $primary }) =>
     $primary
       ? ($isDark ? 'rgba(255, 107, 53, 0.2)' : colors.primary.main)
       : ($isDark ? 'rgba(148, 163, 184, 0.05)' : 'rgba(255, 255, 255, 0.5)')};
-  color: ${({ $isDark, $primary }) => 
-    $primary 
+  color: ${({ $isDark, $primary }) =>
+    $primary
       ? '#ffffff'
       : ($isDark ? '#cbd5e1' : colors.neutral.gray700)};
   border-radius: ${borderRadius.md};
@@ -109,16 +109,16 @@ const MainNavButton = styled.button<{ $isDark?: boolean; $primary?: boolean }>`
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: ${({ $isDark }) => 
-      $isDark 
-        ? '0 4px 12px rgba(255, 107, 53, 0.3)' 
-        : '0 4px 12px rgba(0, 0, 0, 0.15)'};
-    border-color: ${({ $isDark }) => 
-      $isDark ? 'rgba(255, 107, 53, 0.8)' : colors.primary.dark};
-    background: ${({ $isDark, $primary }) => 
-      $primary
-        ? ($isDark ? 'rgba(255, 107, 53, 0.4)' : colors.primary.dark)
-        : ($isDark ? 'rgba(148, 163, 184, 0.15)' : 'rgba(255, 255, 255, 0.8)')};
+    box-shadow: ${({ $isDark }) =>
+    $isDark
+      ? '0 4px 12px rgba(255, 107, 53, 0.3)'
+      : '0 4px 12px rgba(0, 0, 0, 0.15)'};
+    border-color: ${({ $isDark }) =>
+    $isDark ? 'rgba(255, 107, 53, 0.8)' : colors.primary.dark};
+    background: ${({ $isDark, $primary }) =>
+    $primary
+      ? ($isDark ? 'rgba(255, 107, 53, 0.4)' : colors.primary.dark)
+      : ($isDark ? 'rgba(148, 163, 184, 0.15)' : 'rgba(255, 255, 255, 0.8)')};
   }
 
   svg {
@@ -178,9 +178,9 @@ const SettingsButton = styled.button<{ $isDark?: boolean }>`
   align-items: center;
   gap: ${spacing.sm};
   padding: ${spacing.sm} ${spacing.md};
-  border: 2px solid ${({ $isDark }) => 
+  border: 2px solid ${({ $isDark }) =>
     $isDark ? 'rgba(148, 163, 184, 0.3)' : colors.surface.border};
-  background: ${({ $isDark }) => 
+  background: ${({ $isDark }) =>
     $isDark ? 'rgba(148, 163, 184, 0.1)' : 'rgba(255, 255, 255, 0.5)'};
   color: ${({ $isDark }) => $isDark ? '#cbd5e1' : colors.neutral.gray700};
   border-radius: ${borderRadius.md};
@@ -191,15 +191,15 @@ const SettingsButton = styled.button<{ $isDark?: boolean }>`
   -webkit-backdrop-filter: blur(10px);
 
   &:hover {
-    background: ${({ $isDark }) => 
-      $isDark ? 'rgba(148, 163, 184, 0.2)' : 'rgba(255, 255, 255, 0.8)'};
-    border-color: ${({ $isDark }) => 
-      $isDark ? 'rgba(255, 107, 53, 0.5)' : colors.primary.main};
+    background: ${({ $isDark }) =>
+    $isDark ? 'rgba(148, 163, 184, 0.2)' : 'rgba(255, 255, 255, 0.8)'};
+    border-color: ${({ $isDark }) =>
+    $isDark ? 'rgba(255, 107, 53, 0.5)' : colors.primary.main};
     transform: translateY(-2px);
-    box-shadow: ${({ $isDark }) => 
-      $isDark 
-        ? '0 4px 12px rgba(255, 107, 53, 0.2)' 
-        : '0 4px 12px rgba(0, 0, 0, 0.1)'};
+    box-shadow: ${({ $isDark }) =>
+    $isDark
+      ? '0 4px 12px rgba(255, 107, 53, 0.2)'
+      : '0 4px 12px rgba(0, 0, 0, 0.1)'};
   }
 
   svg {
@@ -220,16 +220,16 @@ const SettingsDropdown = styled.div<{ $isOpen: boolean; $isDark?: boolean }>`
   min-width: 320px;
   max-height: 600px;
   overflow-y: auto;
-  background: ${({ $isDark }) => 
+  background: ${({ $isDark }) =>
     $isDark ? 'rgba(15, 23, 42, 0.95)' : 'rgba(255, 255, 255, 0.95)'};
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 2px solid ${({ $isDark }) => 
+  border: 2px solid ${({ $isDark }) =>
     $isDark ? 'rgba(148, 163, 184, 0.2)' : 'rgba(0, 0, 0, 0.1)'};
   border-radius: 16px;
-  box-shadow: ${({ $isDark }) => 
-    $isDark 
-      ? '0 20px 60px rgba(0, 0, 0, 0.5)' 
+  box-shadow: ${({ $isDark }) =>
+    $isDark
+      ? '0 20px 60px rgba(0, 0, 0, 0.5)'
       : '0 20px 60px rgba(0, 0, 0, 0.15)'};
   z-index: ${zIndex.modal};
   opacity: ${props => props.$isOpen ? 1 : 0};
@@ -253,12 +253,12 @@ const SettingsRow = styled.button<{ $isDark?: boolean; $highlight?: boolean }>`
   align-items: center;
   gap: ${spacing.md};
   padding: ${spacing.md} ${spacing.lg};
-  background: ${({ $isDark, $highlight }) => 
+  background: ${({ $isDark, $highlight }) =>
     $highlight
       ? ($isDark ? 'rgba(255, 107, 53, 0.1)' : 'rgba(255, 107, 53, 0.05)')
       : 'transparent'};
   border: none;
-  border-bottom: 1px solid ${({ $isDark }) => 
+  border-bottom: 1px solid ${({ $isDark }) =>
     $isDark ? 'rgba(148, 163, 184, 0.1)' : 'rgba(0, 0, 0, 0.05)'};
   text-align: left;
   cursor: pointer;
@@ -290,8 +290,8 @@ const SettingsRow = styled.button<{ $isDark?: boolean; $highlight?: boolean }>`
   }
 
   &:hover {
-    background: ${({ $isDark }) => 
-      $isDark ? 'rgba(148, 163, 184, 0.08)' : 'rgba(0, 0, 0, 0.03)'};
+    background: ${({ $isDark }) =>
+    $isDark ? 'rgba(148, 163, 184, 0.08)' : 'rgba(0, 0, 0, 0.03)'};
     padding-left: ${spacing.xl};
     
     &::before {
@@ -321,7 +321,7 @@ const RowIcon = styled.div<{ $isDark?: boolean }>`
   width: 40px;
   height: 40px;
   border-radius: 10px;
-  background: ${({ $isDark }) => 
+  background: ${({ $isDark }) =>
     $isDark ? 'rgba(148, 163, 184, 0.1)' : 'rgba(0, 0, 0, 0.05)'};
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   flex-shrink: 0;
@@ -391,17 +391,17 @@ const ProfileAvatar = styled.img`
 
 const ProfileRow = styled(SettingsRow)`
   padding: ${spacing.lg};
-  background: ${({ $isDark }) => 
+  background: ${({ $isDark }) =>
     $isDark ? 'rgba(255, 107, 53, 0.1)' : 'rgba(255, 107, 53, 0.05)'};
-  border-bottom: 2px solid ${({ $isDark }) => 
+  border-bottom: 2px solid ${({ $isDark }) =>
     $isDark ? 'rgba(255, 107, 53, 0.2)' : 'rgba(255, 107, 53, 0.15)'};
   margin-bottom: ${spacing.sm};
 
   ${RowIcon} {
     width: 48px;
     height: 48px;
-    background: ${({ $isDark }) => 
-      $isDark ? 'rgba(255, 107, 53, 0.2)' : 'rgba(255, 107, 53, 0.15)'};
+    background: ${({ $isDark }) =>
+    $isDark ? 'rgba(255, 107, 53, 0.2)' : 'rgba(255, 107, 53, 0.15)'};
     
     svg {
       width: 24px;
@@ -424,7 +424,7 @@ const ProfileRow = styled(SettingsRow)`
 
 const Divider = styled.div<{ $isDark?: boolean }>`
   height: 1px;
-  background: ${({ $isDark }) => 
+  background: ${({ $isDark }) =>
     $isDark ? 'rgba(148, 163, 184, 0.15)' : 'rgba(0, 0, 0, 0.08)'};
   margin: ${spacing.sm} 0;
 `;
@@ -435,11 +435,11 @@ const ThemeLanguageRow = styled.div<{ $isDark?: boolean }>`
   justify-content: space-between;
   gap: ${spacing.md};
   padding: ${spacing.md} ${spacing.lg};
-  background: ${({ $isDark }) => 
+  background: ${({ $isDark }) =>
     $isDark ? 'rgba(148, 163, 184, 0.05)' : 'rgba(0, 0, 0, 0.02)'};
   border-radius: 10px;
   margin: ${spacing.sm} 0;
-  border: 1px solid ${({ $isDark }) => 
+  border: 1px solid ${({ $isDark }) =>
     $isDark ? 'rgba(148, 163, 184, 0.15)' : 'rgba(0, 0, 0, 0.08)'};
 `;
 
@@ -577,6 +577,10 @@ const UnifiedHeader: React.FC = () => {
               <Search size={18} />
               <span>{language === 'bg' ? 'Търси коли' : 'Search Cars'}</span>
             </MainNavButton>
+            <MainNavButton $isDark={isDark} onClick={() => navigate('/map')}>
+              <Map size={18} />
+              <span>{language === 'bg' ? 'Карта' : 'Map'}</span>
+            </MainNavButton>
             <MainNavButton $isDark={isDark} $primary onClick={() => navigate('/sell')}>
               <Car size={18} />
               <span>{language === 'bg' ? 'Продай кола' : 'Sell Car'}</span>
@@ -584,8 +588,8 @@ const UnifiedHeader: React.FC = () => {
           </LeftNav>
 
           <Actions ref={settingsRef}>
-            <SettingsButton 
-              $isDark={isDark} 
+            <SettingsButton
+              $isDark={isDark}
               onClick={(e) => {
                 e.stopPropagation();
                 setIsSettingsOpen(!isSettingsOpen);
@@ -593,7 +597,7 @@ const UnifiedHeader: React.FC = () => {
             >
               <Settings size={18} />
               <span>{language === 'bg' ? 'Настройки' : 'Settings'}</span>
-              <ChevronDown size={16} style={{ 
+              <ChevronDown size={16} style={{
                 transform: isSettingsOpen ? 'rotate(180deg)' : 'rotate(0deg)',
                 transition: 'transform 0.3s ease'
               }} />
@@ -607,13 +611,13 @@ const UnifiedHeader: React.FC = () => {
             <SettingsDropdown $isOpen={isSettingsOpen} $isDark={isDark}>
               {/* 1. Profile Row - First and Highlighted */}
               {user ? (
-                <ProfileRow 
+                <ProfileRow
                   $isDark={isDark}
                   onClick={() => handleSettingsItemClick('/profile')}
                 >
                   {user.photoURL ? (
-                    <ProfileAvatar 
-                      src={user.photoURL} 
+                    <ProfileAvatar
+                      src={user.photoURL}
                       alt={user.displayName || 'Profile'}
                       onError={(e) => {
                         // Fallback to icon if image fails to load
@@ -623,8 +627,8 @@ const UnifiedHeader: React.FC = () => {
                       }}
                     />
                   ) : null}
-                  <RowIcon 
-                    $isDark={isDark} 
+                  <RowIcon
+                    $isDark={isDark}
                     className="row-icon"
                     style={{ display: user.photoURL ? 'none' : 'flex' }}
                   >
@@ -640,7 +644,7 @@ const UnifiedHeader: React.FC = () => {
                   </RowContent>
                 </ProfileRow>
               ) : (
-                <ProfileRow 
+                <ProfileRow
                   $isDark={isDark}
                   onClick={() => handleSettingsItemClick('/login')}
                 >
@@ -659,7 +663,7 @@ const UnifiedHeader: React.FC = () => {
               )}
 
               {/* 2. Notifications Row */}
-              <SettingsRow 
+              <SettingsRow
                 $isDark={isDark}
                 onClick={handleNotificationsClick}
               >
@@ -678,7 +682,7 @@ const UnifiedHeader: React.FC = () => {
               </SettingsRow>
 
               {/* 3. Messages Row */}
-              <SettingsRow 
+              <SettingsRow
                 $isDark={isDark}
                 onClick={() => handleSettingsItemClick('/messages')}
               >
@@ -697,7 +701,7 @@ const UnifiedHeader: React.FC = () => {
               </SettingsRow>
 
               {/* 4. Favorites Row */}
-              <SettingsRow 
+              <SettingsRow
                 $isDark={isDark}
                 onClick={() => handleSettingsItemClick('/favorites')}
               >
@@ -715,7 +719,7 @@ const UnifiedHeader: React.FC = () => {
               </SettingsRow>
 
               {/* 5. Events Row */}
-              <SettingsRow 
+              <SettingsRow
                 $isDark={isDark}
                 onClick={() => handleSettingsItemClick('/events')}
               >
@@ -752,7 +756,7 @@ const UnifiedHeader: React.FC = () => {
               {user && (
                 <>
                   <Divider $isDark={isDark} />
-                  <SettingsRow 
+                  <SettingsRow
                     $isDark={isDark}
                     onClick={handleLogout}
                   >
@@ -789,6 +793,10 @@ const UnifiedHeader: React.FC = () => {
         </MobileMenuItem>
         <MobileMenuItem $isDark={isDark} onClick={() => navigate('/dealers')}>
           {t('nav.dealers')}
+        </MobileMenuItem>
+        <MobileMenuItem $isDark={isDark} onClick={() => navigate('/map')}>
+          <Map size={20} />
+          {language === 'bg' ? 'Карта' : 'Map'}
         </MobileMenuItem>
         <MobileMenuItem $isDark={isDark} onClick={() => navigate('/favorites')}>
           <Heart size={20} />

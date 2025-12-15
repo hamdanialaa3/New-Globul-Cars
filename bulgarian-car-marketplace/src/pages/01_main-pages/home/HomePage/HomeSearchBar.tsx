@@ -7,6 +7,8 @@ import styled from 'styled-components';
 import { Search, ChevronDown, X } from 'lucide-react';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { brandsModelsDataService } from '../../../../services/brands-models-data.service';
+import { logger } from '../../../../services/logger-service';
+import { sanitizeCarMakeModel } from '../../../../utils/inputSanitizer';
 
 const SearchSection = styled.div`
   max-width: 1000px;
@@ -406,7 +408,10 @@ const HomeSearchBar: React.FC = () => {
         const allBrands = await brandsModelsDataService.getAllBrands();
         setBrands(allBrands);
       } catch (error) {
-        console.error('Error loading brands:', error);
+        logger.error('Error loading brands:', error as Error, {
+          context: 'HomeSearchBar',
+          action: 'loadBrands'
+        });
       }
     };
     loadBrands();
@@ -426,7 +431,11 @@ const HomeSearchBar: React.FC = () => {
         setModels(modelsForBrand);
         setModel(''); // Reset model when make changes
       } catch (error) {
-        console.error('Error loading models:', error);
+        logger.error('Error loading models:', error as Error, {
+          context: 'HomeSearchBar',
+          action: 'loadModels',
+          make
+        });
         setModels([]);
       }
     };
@@ -473,7 +482,10 @@ const HomeSearchBar: React.FC = () => {
           <SelectWrapper>
             <Select
               value={make}
-              onChange={(e) => setMake(e.target.value)}
+              onChange={(e) => {
+                const sanitized = sanitizeCarMakeModel(e.target.value);
+                setMake(sanitized);
+              }}
             >
               <option value="">
                 {language === 'bg' ? 'Марка' : 'Make'}
@@ -492,7 +504,10 @@ const HomeSearchBar: React.FC = () => {
           <SelectWrapper>
             <Select
               value={model}
-              onChange={(e) => setModel(e.target.value)}
+              onChange={(e) => {
+                const sanitized = sanitizeCarMakeModel(e.target.value);
+                setModel(sanitized);
+              }}
               disabled={!make}
             >
               <option value="">

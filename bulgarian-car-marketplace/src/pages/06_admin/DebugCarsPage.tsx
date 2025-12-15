@@ -4,8 +4,9 @@
 import React, { useState, useEffect } from 'react';
 import { logger } from '../../services/logger-service';
 import styled from 'styled-components';
-import { collection, getDocs, query, limit } from 'firebase/firestore';
+import { collection, getDocs, query, limit, DocumentData } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
+import { CarListing } from '../../types/CarListing';
 
 const PageContainer = styled.div`
   min-height: 100vh;
@@ -101,10 +102,25 @@ const StatCard = styled.div`
   }
 `;
 
+interface CarDebugData extends CarListing {
+  id: string;
+  location?: { cityId?: string };
+  city?: string;
+  locationData?: { cityNameId?: string; cityId?: string };
+}
+
+interface DebugStats {
+  total: number;
+  withUnifiedLocation: number;
+  withOldCity: number;
+  withoutCity: number;
+  cityBreakdown: Record<string, number>;
+}
+
 const DebugCarsPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
-  const [cars, setCars] = useState<any[]>([]);
-  const [stats, setStats] = useState<any>(null);
+  const [cars, setCars] = useState<CarDebugData[]>([]);
+  const [stats, setStats] = useState<DebugStats | null>(null);
 
   const fetchCars = async () => {
     try {
@@ -116,17 +132,17 @@ const DebugCarsPage: React.FC = () => {
       const carsData = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
-      })) as any[];
+      })) as CarDebugData[];
 
       setCars(carsData);
 
       // Calculate stats
-      const cityStats: Record<string, unknown> = {};
-      const withLocation = carsData.filter((car: any) => car.location && car.locationData?.cityNameId);
-      const withOldCity = carsData.filter((car: any) => car.city && !car.location?.cityId);
-      const withoutCity = carsData.filter((car: any) => !car.city && !car.location?.cityId);
+      const cityStats: Record<string, number> = {};
+      const withLocation = carsData.filter((car) => car.location && car.locationData?.cityNameId);
+      const withOldCity = carsData.filter((car) => car.city && !car.location?.cityId);
+      const withoutCity = carsData.filter((car) => !car.city && !car.location?.cityId);
 
-      carsData.forEach((car: any) => {
+      carsData.forEach((car) => {
         const city = car.location?.cityId || car.city || 'Unknown';
         cityStats[city] = (cityStats[city] || 0) + 1;
       });
@@ -156,17 +172,17 @@ const DebugCarsPage: React.FC = () => {
       const carsData = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
-      })) as any[];
+      })) as CarDebugData[];
 
       setCars(carsData);
 
       // Calculate stats
-      const cityStats: Record<string, unknown> = {};
-      const withLocation = carsData.filter((car: any) => car.location && car.locationData?.cityNameId);
-      const withOldCity = carsData.filter((car: any) => car.city && !car.location?.cityId);
-      const withoutCity = carsData.filter((car: any) => !car.city && !car.location?.cityId);
+      const cityStats: Record<string, number> = {};
+      const withLocation = carsData.filter((car) => car.location && car.locationData?.cityNameId);
+      const withOldCity = carsData.filter((car) => car.city && !car.location?.cityId);
+      const withoutCity = carsData.filter((car) => !car.city && !car.location?.cityId);
 
-      carsData.forEach((car: any) => {
+      carsData.forEach((car) => {
         const city = car.location?.cityId || car.city || 'Unknown';
         cityStats[city] = (cityStats[city] || 0) + 1;
       });

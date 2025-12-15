@@ -16,3 +16,4 @@ export { auth } from './auth';
 export { settings } from './settings';
 export { errors } from './errors';
 export { billing } from './billing';
+export { dealer } from './dealer';

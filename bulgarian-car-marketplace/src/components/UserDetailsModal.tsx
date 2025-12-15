@@ -10,12 +10,42 @@ import {
   TrendingUp
 } from 'lucide-react';
 import { firebaseAuthUsersService } from '../services/firebase-auth-users-service';
+import { CarListing } from '../types/CarListing';
+
+interface UserData {
+  displayName?: string;
+  email?: string;
+  phoneNumber?: string;
+  location?: { city?: string; country?: string };
+  isOnline?: boolean;
+  isVerified?: boolean;
+  lastLogin?: Date | string;
+  loginCount?: number;
+  device?: string;
+  browser?: string;
+  lastActivity?: Date | string;
+  createdAt?: Date | string;
+  stats?: {
+    carsListed?: number;
+    carsSold?: number;
+    totalViews?: number;
+    totalMessages?: number;
+    rating?: number;
+    totalRatings?: number;
+  };
+}
+
+interface UserMessage {
+  content?: string;
+  createdAt?: Date | string;
+  [key: string]: unknown;
+}
 
 interface UserDetailsModalProps {
   isOpen: boolean;
   onClose: () => void;
   userId: string;
-  userData: any;
+  userData: UserData | null;
 }
 
 const ModalOverlay = styled.div`
@@ -171,8 +201,8 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({
   userId, 
   userData 
 }) => {
-  const [userCars, setUserCars] = useState<any[]>([]);
-  const [userMessages, setUserMessages] = useState<any[]>([]);
+  const [userCars, setUserCars] = useState<Array<CarListing & { id: string; brand?: string; status?: string }>>([]);
+  const [userMessages, setUserMessages] = useState<UserMessage[]>([]);
   const [loading, setLoading] = useState(false);
 
   const loadUserDetails = useCallback(async () => {

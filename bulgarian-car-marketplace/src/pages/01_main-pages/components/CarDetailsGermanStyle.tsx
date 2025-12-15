@@ -17,12 +17,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { 
-  Calendar, 
-  Gauge, 
-  Battery, 
-  Key, 
-  CheckCircle, 
+import {
+  Calendar,
+  Gauge,
+  Battery,
+  Key,
+  CheckCircle,
   FileText,
   Star,
   MapPin,
@@ -35,7 +35,8 @@ import {
   ArrowLeft,
   ChevronLeft,
   ChevronRight,
-  User
+  User,
+  Trash2
 } from 'lucide-react';
 import { CarListing } from '../../../types/CarListing';
 import StaticMapEmbed from '../../../components/StaticMapEmbed';
@@ -48,6 +49,7 @@ interface CarDetailsGermanStyleProps {
   language: 'bg' | 'en';
   onBack: () => void;
   onEdit?: () => void;
+  onDelete?: () => void;
   isOwner: boolean;
   onContact: (method: string) => void;
 }
@@ -56,6 +58,7 @@ const translations = {
   bg: {
     back: 'Назад',
     edit: 'Редактирай',
+    delete: 'Изтрий',
     netPrice: 'Нето',
     grossPrice: 'Бруто',
     financingFrom: 'Финансиране от',
@@ -128,6 +131,7 @@ const translations = {
   en: {
     back: 'Back',
     edit: 'Edit',
+    delete: 'Delete',
     netPrice: 'Net',
     grossPrice: 'Gross',
     financingFrom: 'Financing from',
@@ -272,16 +276,16 @@ const EditButton = styled.button<{ $isDark: boolean }>`
   padding: 10px 20px;
   border-radius: 8px;
   transition: all 0.2s;
-  box-shadow: ${props => props.$isDark 
-    ? '0 2px 4px rgba(37, 99, 235, 0.4)' 
+  box-shadow: ${props => props.$isDark
+    ? '0 2px 4px rgba(37, 99, 235, 0.4)'
     : '0 2px 4px rgba(24, 119, 242, 0.2)'};
 
   &:hover {
     background: var(--btn-primary-hover);
     transform: translateY(-1px);
-    box-shadow: ${props => props.$isDark 
-      ? '0 4px 8px rgba(37, 99, 235, 0.5)' 
-      : '0 4px 8px rgba(24, 119, 242, 0.3)'};
+    box-shadow: ${props => props.$isDark
+    ? '0 4px 8px rgba(37, 99, 235, 0.5)'
+    : '0 4px 8px rgba(24, 119, 242, 0.3)'};
   }
 `;
 
@@ -376,7 +380,7 @@ const Card = styled.div<{ $isDark: boolean }>`
   }
 `;
 
-const ImageSection = styled(Card)<{ $isDark: boolean }>`
+const ImageSection = styled(Card) <{ $isDark: boolean }>`
   padding: 0;
   overflow: hidden;
   background: ${props => props.$isDark ? '#1e293b' : '#fff'};
@@ -447,11 +451,11 @@ const ImageNavButton = styled.button<{ $position: 'left' | 'right'; $isDark: boo
   max-width: 50px;
   max-height: 50px;
   border-radius: 50%;
-  background: ${props => props.$isDark 
-    ? 'rgba(255, 215, 0, 0.25)' 
+  background: ${props => props.$isDark
+    ? 'rgba(255, 215, 0, 0.25)'
     : 'rgba(255, 143, 16, 0.25)'};
-  border: 2px solid ${props => props.$isDark 
-    ? 'rgba(255, 215, 0, 0.5)' 
+  border: 2px solid ${props => props.$isDark
+    ? 'rgba(255, 215, 0, 0.5)'
     : 'rgba(255, 143, 16, 0.5)'};
   display: flex;
   align-items: center;
@@ -460,8 +464,8 @@ const ImageNavButton = styled.button<{ $position: 'left' | 'right'; $isDark: boo
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 10;
   backdrop-filter: blur(8px);
-  box-shadow: ${props => props.$isDark 
-    ? '0 4px 16px rgba(255, 215, 0, 0.2)' 
+  box-shadow: ${props => props.$isDark
+    ? '0 4px 16px rgba(255, 215, 0, 0.2)'
     : '0 4px 16px rgba(255, 143, 16, 0.2)'};
 
   svg {
@@ -474,14 +478,14 @@ const ImageNavButton = styled.button<{ $position: 'left' | 'right'; $isDark: boo
   }
 
   &:hover {
-    background: ${props => props.$isDark 
-      ? 'rgba(255, 215, 0, 0.4)' 
-      : 'rgba(255, 143, 16, 0.4)'};
+    background: ${props => props.$isDark
+    ? 'rgba(255, 215, 0, 0.4)'
+    : 'rgba(255, 143, 16, 0.4)'};
     border-color: var(--accent-primary);
     transform: translateY(-50%) translateX(${props => props.$position === 'left' ? '-4px' : '4px'});
-    box-shadow: ${props => props.$isDark 
-      ? '0 6px 24px rgba(255, 215, 0, 0.3)' 
-      : '0 6px 24px rgba(255, 143, 16, 0.3)'};
+    box-shadow: ${props => props.$isDark
+    ? '0 6px 24px rgba(255, 215, 0, 0.3)'
+    : '0 6px 24px rgba(255, 143, 16, 0.3)'};
     
     svg {
       color: ${props => props.$isDark ? '#FFD700' : '#FF8F10'};
@@ -537,11 +541,11 @@ const Thumbnail = styled.div<{ $isActive: boolean; $isDark: boolean }>`
     opacity: 1;
     transform: scale(1.05);
     border-color: ${props => {
-      if (props.$isActive) {
-        return 'var(--accent-primary)';
-      }
-      return 'var(--border-secondary)';
-    }};
+    if (props.$isActive) {
+      return 'var(--accent-primary)';
+    }
+    return 'var(--border-secondary)';
+  }};
   }
 
   img {
@@ -584,7 +588,7 @@ const BrandLogo = styled.div<{ $isDark: boolean }>`
   transition: all 0.3s ease;
 `;
 
-const TitleSection = styled(Card)<{ $isDark: boolean }>`
+const TitleSection = styled(Card) <{ $isDark: boolean }>`
   padding: 1.5rem;
   background: ${props => props.$isDark ? '#1e293b' : '#fff'};
   border: ${props => props.$isDark ? '1px solid #334155' : 'none'};
@@ -780,6 +784,28 @@ const ActionButtons = styled.div`
   }
 `;
 
+const DeleteButton = styled.button<{ $isDark: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: ${props => props.$isDark ? 'rgba(239, 68, 68, 0.2)' : '#fee2e2'};
+  color: #ef4444;
+  border: 1px solid #ef4444;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 44px;
+
+  &:hover {
+    background: ${props => props.$isDark ? 'rgba(239, 68, 68, 0.3)' : '#fecaca'};
+    transform: translateY(-1px);
+  }
+`;
+
 const PrimaryButton = styled.button<{ $isDark: boolean }>`
   flex: 1;
   background: var(--btn-primary-bg);
@@ -806,9 +832,9 @@ const PrimaryButton = styled.button<{ $isDark: boolean }>`
   &:hover {
     background: var(--btn-primary-hover);
     transform: translateY(-1px);
-    box-shadow: ${props => props.$isDark 
-      ? '0 4px 8px rgba(37, 99, 235, 0.5)' 
-      : '0 4px 8px rgba(24, 119, 242, 0.3)'};
+    box-shadow: ${props => props.$isDark
+    ? '0 4px 8px rgba(37, 99, 235, 0.5)'
+    : '0 4px 8px rgba(24, 119, 242, 0.3)'};
   }
 `;
 
@@ -847,9 +873,9 @@ const SecondaryButton = styled.button<{ $isDark: boolean }>`
   }
 `;
 
-const BatteryInfoSection = styled(Card)<{ $isDark: boolean }>`
-  background: ${props => props.$isDark 
-    ? 'linear-gradient(135deg, rgba(37, 99, 235, 0.2) 0%, rgba(37, 99, 235, 0.1) 100%)' 
+const BatteryInfoSection = styled(Card) <{ $isDark: boolean }>`
+  background: ${props => props.$isDark
+    ? 'linear-gradient(135deg, rgba(37, 99, 235, 0.2) 0%, rgba(37, 99, 235, 0.1) 100%)'
     : 'linear-gradient(135deg, #e7f3ff 0%, #f0f8ff 100%)'};
   border: 1px solid ${props => props.$isDark ? 'rgba(37, 99, 235, 0.3)' : '#b3d9ff'};
   transition: all 0.3s ease;
@@ -965,7 +991,7 @@ const TableValue = styled.td<{ $isDark: boolean }>`
   }
 `;
 
-const FeaturesSection = styled(Card)<{ $isDark: boolean }>`
+const FeaturesSection = styled(Card) <{ $isDark: boolean }>`
   background: ${props => props.$isDark ? '#1e293b' : '#fff'};
   border: ${props => props.$isDark ? '1px solid #334155' : 'none'};
 `;
@@ -1047,7 +1073,7 @@ const CheckIcon = styled(CheckCircle)`
   flex-shrink: 0;
 `;
 
-const DescriptionSection = styled(Card)<{ $isDark: boolean }>`
+const DescriptionSection = styled(Card) <{ $isDark: boolean }>`
   background: ${props => props.$isDark ? '#1e293b' : '#fff'};
   border: ${props => props.$isDark ? '1px solid #334155' : 'none'};
 `;
@@ -1082,7 +1108,7 @@ const DescriptionText = styled.div<{ $isDark: boolean }>`
   }
 `;
 
-const DealerSection = styled(Card)<{ $isDark: boolean }>`
+const DealerSection = styled(Card) <{ $isDark: boolean }>`
   background: ${props => props.$isDark ? '#1e293b' : '#fff'};
   border: ${props => props.$isDark ? '1px solid #334155' : 'none'};
 `;
@@ -1345,8 +1371,8 @@ const FinancingButton = styled.button<{ $isDark: boolean }>`
   overflow: hidden;
   text-overflow: ellipsis;
   line-height: 1.4;
-  box-shadow: ${props => props.$isDark 
-    ? '0 2px 4px rgba(124, 58, 237, 0.4)' 
+  box-shadow: ${props => props.$isDark
+    ? '0 2px 4px rgba(124, 58, 237, 0.4)'
     : '0 2px 4px rgba(139, 92, 246, 0.2)'};
 
   @media (max-width: 768px) {
@@ -1356,13 +1382,13 @@ const FinancingButton = styled.button<{ $isDark: boolean }>`
 
   &:hover {
     background: var(--accent-secondary);
-    box-shadow: ${props => props.$isDark 
-      ? '0 4px 8px rgba(124, 58, 237, 0.5)' 
-      : '0 4px 8px rgba(139, 92, 246, 0.3)'};
+    box-shadow: ${props => props.$isDark
+    ? '0 4px 8px rgba(124, 58, 237, 0.5)'
+    : '0 4px 8px rgba(139, 92, 246, 0.3)'};
   }
 `;
 
-const MapSection = styled(Card)<{ $isDark: boolean }>`
+const MapSection = styled(Card) <{ $isDark: boolean }>`
   background: ${props => props.$isDark ? '#1e293b' : '#fff'};
   border: ${props => props.$isDark ? '1px solid #334155' : 'none'};
 `;
@@ -1381,7 +1407,7 @@ const MapTitle = styled.h3<{ $isDark: boolean }>`
   }
 `;
 
-const ServicesSection = styled(Card)<{ $isDark: boolean }>`
+const ServicesSection = styled(Card) <{ $isDark: boolean }>`
   background: ${props => props.$isDark ? '#1e293b' : '#fff'};
   border: ${props => props.$isDark ? '1px solid #334155' : 'none'};
 `;
@@ -1466,6 +1492,7 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
   language,
   onBack,
   onEdit,
+  onDelete,
   isOwner,
   onContact
 }) => {
@@ -1475,11 +1502,11 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
   const navigate = useNavigate();
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [showAllFeatures, setShowAllFeatures] = useState(false);
-  
+
   // ✅ FIX: Add previewUrlsRef for File objects
   const previewUrlsRef = useRef<Map<number, string>>(new Map());
   const [resolvedImages, setResolvedImages] = useState<string[]>([]);
-  
+
   // ✅ FIX: Lock layout on mount - prevent changes after load
   useEffect(() => {
     // Lock initial layout - CSS media queries handle responsive behavior
@@ -1490,7 +1517,7 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
   useEffect(() => {
     const images = car.images || [];
     const cleanUp: string[] = [];
-    
+
     // Resolve all images immediately (synchronously if possible)
     const urls = images.map((image) => {
       if (typeof image === 'string') {
@@ -1501,15 +1528,15 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
       cleanUp.push(url);
       return url;
     });
-    
+
     // ✅ FIX: Set images immediately without waiting
     setResolvedImages(urls);
-    
+
     // Store in ref for backward compatibility
     urls.forEach((url, index) => {
       previewUrlsRef.current.set(index, url);
     });
-    
+
     return () => {
       // Cleanup object URLs
       cleanUp.forEach((url) => URL.revokeObjectURL(url));
@@ -1519,7 +1546,7 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
 
   // Get seller ID for profile link
   const sellerId = car.sellerId || car.userId;
-  
+
   // Handler functions
   const handleProfileClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -1702,8 +1729,8 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
     }
   };
 
-  const isElectric = car.fuelType?.toLowerCase().includes('electric') || 
-                    car.fuelType?.toLowerCase().includes('електрически');
+  const isElectric = car.fuelType?.toLowerCase().includes('electric') ||
+    car.fuelType?.toLowerCase().includes('електрически');
 
   // Categorize features
   const categorizeFeatures = () => {
@@ -1715,14 +1742,14 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
 
     features.forEach(feature => {
       const lower = feature.toLowerCase();
-      if (lower.includes('climate') || lower.includes('heating') || lower.includes('seat') || 
-          lower.includes('parking') || lower.includes('sensor') || lower.includes('light')) {
+      if (lower.includes('climate') || lower.includes('heating') || lower.includes('seat') ||
+        lower.includes('parking') || lower.includes('sensor') || lower.includes('light')) {
         comfort.push(feature);
-      } else if (lower.includes('radio') || lower.includes('bluetooth') || lower.includes('navigation') || 
-                 lower.includes('carplay') || lower.includes('android') || lower.includes('usb')) {
+      } else if (lower.includes('radio') || lower.includes('bluetooth') || lower.includes('navigation') ||
+        lower.includes('carplay') || lower.includes('android') || lower.includes('usb')) {
         entertainment.push(feature);
-      } else if (lower.includes('airbag') || lower.includes('abs') || lower.includes('esp') || 
-                 lower.includes('safety') || lower.includes('emergency')) {
+      } else if (lower.includes('airbag') || lower.includes('abs') || lower.includes('esp') ||
+        lower.includes('safety') || lower.includes('emergency')) {
         safety.push(feature);
       } else {
         other.push(feature);
@@ -1733,14 +1760,14 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
   };
 
   const { comfort, entertainment, safety, other } = categorizeFeatures();
-  const displayedFeatures = showAllFeatures 
+  const displayedFeatures = showAllFeatures
     ? { comfort, entertainment, safety, other }
     : {
-        comfort: comfort.slice(0, 10),
-        entertainment: entertainment.slice(0, 10),
-        safety: safety.slice(0, 10),
-        other: other.slice(0, 10)
-      };
+      comfort: comfort.slice(0, 10),
+      entertainment: entertainment.slice(0, 10),
+      safety: safety.slice(0, 10),
+      other: other.slice(0, 10)
+    };
 
   return (
     <PageWrapper $isDark={isDark}>
@@ -1767,7 +1794,7 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
               {hasImages ? (
                 <>
                   <MainImageContainer $isDark={isDark}>
-                    <MainImage 
+                    <MainImage
                       src={images[selectedImageIndex] || ''}
                       alt={`${car.make} ${car.model}`}
                       loading={selectedImageIndex === 0 ? "eager" : "lazy"}
@@ -1799,7 +1826,7 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
                         $isDark={isDark}
                         onClick={() => setSelectedImageIndex(index)}
                       >
-                        <img 
+                        <img
                           src={image || ''}
                           alt={`Thumbnail ${index + 1}`}
                           loading="lazy"
@@ -1826,7 +1853,7 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
             {/* Title and Price */}
             <TitleSection $isDark={isDark}>
               <CarTitle $isDark={isDark}>{car.make} {car.model} {car.year}</CarTitle>
-              
+
               <PriceSection>
                 <NetPrice $isDark={isDark}>{t.netPrice}: {formatPrice(car.price)}</NetPrice>
                 <GrossPrice $isDark={isDark}>{t.grossPrice} {formatPrice(calculateGrossPrice(car.price))}</GrossPrice>
@@ -1907,6 +1934,12 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
                 <SecondaryButton $isDark={isDark} onClick={handleSave} title={t.save}>
                   <Bookmark size={20} />
                 </SecondaryButton>
+                {isOwner && onDelete && (
+                  <DeleteButton $isDark={isDark} onClick={onDelete} title={t.delete}>
+                    <Trash2 size={20} />
+                    <span style={{ display: 'none', '@media (min-width: 768px)': { display: 'inline' } }}>{t.delete}</span>
+                  </DeleteButton>
+                )}
               </ActionButtons>
             </TitleSection>
 
@@ -2018,7 +2051,7 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
             {(comfort.length > 0 || entertainment.length > 0 || safety.length > 0 || other.length > 0) && (
               <FeaturesSection $isDark={isDark}>
                 <FeaturesTitle $isDark={isDark}>{t.features}</FeaturesTitle>
-                
+
                 {displayedFeatures.comfort.length > 0 && (
                   <FeaturesCategory>
                     <CategoryTitle $isDark={isDark}>{t.comfort}</CategoryTitle>
@@ -2110,8 +2143,8 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
                     {sellerId && (
                       <User size={20} style={{ flexShrink: 0 }} />
                     )}
-                    <ProfileLink 
-                      $isDark={isDark} 
+                    <ProfileLink
+                      $isDark={isDark}
                       href={sellerId ? `/profile/${sellerId}` : '#'}
                       onClick={handleProfileClick}
                     >

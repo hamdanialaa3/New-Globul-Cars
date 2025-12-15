@@ -203,7 +203,7 @@ export class AdminService {
     password: string,
     displayName: string,
     phoneNumber: string,
-    location: any
+    location: { city?: string; region?: string; postalCode?: string; address?: string; coordinates?: { lat: number; lng: number } }
   ): Promise<string> {
     try {
       // This would typically be done through Firebase Auth

@@ -117,7 +117,7 @@ const ButtonContainer = styled.div`
   margin-top: 1.5rem;
 `;
 
-const Button = styled.button<{ variant?: 'danger' | 'success' | 'cancel' }>`
+const Button = styled.button<{ $variant?: 'danger' | 'success' | 'cancel' }>`
   flex: 1;
   padding: 0.875rem 1.5rem;
   border: none;
@@ -131,8 +131,8 @@ const Button = styled.button<{ variant?: 'danger' | 'success' | 'cancel' }>`
   justify-content: center;
   gap: 0.5rem;
 
-  ${({ variant }) => {
-    switch (variant) {
+  ${({ $variant }) => {
+    switch ($variant) {
       case 'danger':
         return `
           background: linear-gradient(135deg, #ef4444, #dc2626);
@@ -181,11 +181,11 @@ export const DeleteConfirmDialog: React.FC<DeleteConfirmDialogProps> = ({
 }) => {
   if (!isOpen) return null;
 
-  const limitText = sellerType === 'private' 
+  const limitText = sellerType === 'private'
     ? (language === 'bg' ? '3 обяви' : '3 listings')
     : sellerType === 'dealer'
-    ? (language === 'bg' ? '10 обяви' : '10 listings')
-    : (language === 'bg' ? 'неограничен брой обяви' : 'unlimited listings');
+      ? (language === 'bg' ? '10 обяви' : '10 listings')
+      : (language === 'bg' ? 'неограничен брой обяви' : 'unlimited listings');
 
   return (
     <DialogOverlay onClick={onCancel}>
@@ -225,25 +225,25 @@ export const DeleteConfirmDialog: React.FC<DeleteConfirmDialogProps> = ({
 
         <QuestionBox>
           <QuestionText>
-            {language === 'bg' 
-              ? '🚗 Продадохте ли вече тази кола?' 
+            {language === 'bg'
+              ? '🚗 Продадохте ли вече тази кола?'
               : '🚗 Have you already sold this car?'}
           </QuestionText>
         </QuestionBox>
 
         <ButtonContainer>
-          <Button variant="success" onClick={() => onConfirm(true)}>
+          <Button $variant="success" onClick={() => onConfirm(true)}>
             <span>✅</span>
             {language === 'bg' ? 'Да, продадена е' : 'Yes, it\'s sold'}
           </Button>
-          <Button variant="danger" onClick={() => onConfirm(false)}>
+          <Button $variant="danger" onClick={() => onConfirm(false)}>
             <span>❌</span>
             {language === 'bg' ? 'Не, просто изтривам' : 'No, just deleting'}
           </Button>
         </ButtonContainer>
 
         <ButtonContainer style={{ marginTop: '1rem' }}>
-          <Button variant="cancel" onClick={onCancel}>
+          <Button $variant="cancel" onClick={onCancel}>
             {language === 'bg' ? 'Отказ' : 'Cancel'}
           </Button>
         </ButtonContainer>

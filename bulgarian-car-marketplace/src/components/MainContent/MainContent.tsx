@@ -6,6 +6,7 @@
 
 import React, { useState } from 'react';
 import StyledComponents from 'styled-components';
+import { logger } from '../../services/logger-service';
 
 const styled = StyledComponents;
 
@@ -172,7 +173,10 @@ const MainContent: React.FC<MainContentProps> = ({ isVisible, apiKey }) => {
       const data = await apiResponse.json();
       return data.candidates[0].content.parts[0].text;
     } catch (error) {
-      console.error('Gemini API error:', error);
+      logger.error('Gemini API error:', error as Error, {
+        context: 'MainContent',
+        action: 'callGeminiAPI'
+      });
       throw error;
     }
   };

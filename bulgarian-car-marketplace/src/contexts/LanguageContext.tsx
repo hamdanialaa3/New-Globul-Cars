@@ -19,7 +19,7 @@ interface LanguageProviderProps {
 }
 
 // Helper function to get nested value from object by dot-notation path
-function getNestedTranslation(obj: any, keyPath: string): string {
+function getNestedTranslation(obj: Record<string, unknown>, keyPath: string): string {
   const keys = keyPath.split('.');
   let current = obj;
   

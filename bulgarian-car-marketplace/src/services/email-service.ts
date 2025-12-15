@@ -22,12 +22,12 @@ interface EmailData {
   message?: EmailMessage;
   template?: {
     name: string;
-    data: Record<string, any>;
+    data: Record<string, string | number | boolean>;
   };
   cc?: string | string[];
   bcc?: string | string[];
   replyTo?: string;
-  createdAt: any;
+  createdAt: Timestamp;
 }
 
 export class EmailService {

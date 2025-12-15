@@ -197,7 +197,7 @@ class AnalyticsService {
    */
   trackSearch(params: {
     query: string;
-    filters?: Record<string, any>;
+    filters?: Record<string, string | number | boolean>;
     resultsCount: number;
     responseTime: number;
     language: string;
@@ -403,7 +403,7 @@ class AnalyticsService {
   trackError(params: {
     errorType: string;
     errorMessage: string;
-    errorContext?: Record<string, any>;
+    errorContext?: Record<string, string | number | boolean>;
     fatal: boolean;
   }) {
     if (!this.isEnabled || !analytics) return;
@@ -494,7 +494,7 @@ class AnalyticsService {
   /**
    * Track custom events
    */
-  trackCustomEvent(eventName: string, params: Record<string, any>) {
+  trackCustomEvent(eventName: string, params: Record<string, string | number | boolean>) {
     if (!this.isEnabled || !analytics) return;
 
     try {

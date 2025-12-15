@@ -15,7 +15,7 @@
 
 import { useLoading } from '@/contexts/LoadingContext';
 
-type AsyncFunction = (...args: any[]) => Promise<any>;
+type AsyncFunction = (...args: unknown[]) => Promise<unknown>;
 
 /**
  * Wraps an async function with loading overlay
@@ -25,7 +25,7 @@ export const createLoadingWrapper = (useLoadingHook: typeof useLoading) => {
     fn: T,
     loadingMessage?: string
   ): T => {
-    return (async (...args: any[]) => {
+    return (async (...args: unknown[]) => {
       const { showLoading, hideLoading } = useLoadingHook();
       
       showLoading(loadingMessage || 'جاري المعالجة...');

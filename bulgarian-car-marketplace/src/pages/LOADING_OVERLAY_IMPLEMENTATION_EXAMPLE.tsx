@@ -108,9 +108,9 @@ export const LoadingOverlayImplementationExample: React.FC = () => {
       };
 
       setFetchResults(JSON.stringify(mockData, null, 2));
-      console.log('تم جلب البيانات بنجاح:', mockData);
+      logger.info('Data fetched successfully', { data: mockData });
     } catch (error) {
-      console.error('خطأ في جلب البيانات:', error);
+      logger.error('Failed to fetch data', error as Error);
       setFetchResults('خطأ: فشل جلب البيانات');
     } finally {
       hideLoading();
@@ -179,7 +179,7 @@ export const LoadingOverlayImplementationExample: React.FC = () => {
         '⏳ الخطوة 1: التحقق... ✅\n⏳ الخطوة 2: المعالجة... ✅\n⏳ الخطوة 3: الحفظ... ✅\n⏳ الخطوة 4: الإرسال... ✅\n\n✨ تمت العملية بنجاح!'
       );
     } catch (error) {
-      console.error('خطأ في العملية متعددة الخطوات:', error);
+      logger.error('Multi-step operation failed', error as Error);
       setMultiStepStatus('❌ حدث خطأ في العملية');
     } finally {
       hideLoading();

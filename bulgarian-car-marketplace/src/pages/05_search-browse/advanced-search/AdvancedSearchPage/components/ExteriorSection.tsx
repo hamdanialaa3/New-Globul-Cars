@@ -107,17 +107,20 @@ export const ExteriorSection: React.FC<ExteriorSectionProps> = ({
                   { key: 'camera', label: t('advancedSearch.cameraParkingSensors') },
                   { key: 'selfParking', label: t('advancedSearch.selfParkingSensors') },
                   { key: 'parkAssist', label: t('advancedSearch.parkAssistParkingSensors') }
-                ].map(sensor => (
-                  <CheckboxLabel key={sensor.key}>
-                    <input
-                      type="checkbox"
-                      checked={searchData.parkingSensors.includes(sensor.key)}
-                      onChange={() => onCheckboxToggle('parkingSensors', sensor.key)}
-                    />
-                    <CustomCheckbox checked={searchData.parkingSensors.includes(sensor.key)} />
-                    {sensor.label}
-                  </CheckboxLabel>
-                ))}
+                ].map(sensor => {
+                  const isChecked = Array.isArray(searchData.parkingSensors) && searchData.parkingSensors.includes(sensor.key);
+                  return (
+                    <CheckboxLabel key={sensor.key}>
+                      <input
+                        type="checkbox"
+                        checked={isChecked}
+                        onChange={() => onCheckboxToggle('parkingSensors', sensor.key)}
+                      />
+                      <CustomCheckbox checked={isChecked} />
+                      {sensor.label}
+                    </CheckboxLabel>
+                  );
+                })}
               </CheckboxGroup>
             </FormGroup>
 

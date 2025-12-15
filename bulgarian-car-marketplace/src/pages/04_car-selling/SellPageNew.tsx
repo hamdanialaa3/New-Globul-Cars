@@ -319,23 +319,21 @@ width: 100 %;
 border - radius: 14px;
 border: 1px solid rgba(15, 23, 42, 0.15);
 padding: 0.85rem 1rem;
-font - size: 0.95rem;
+font-size: 0.95rem;
 color: #1c2536;
 background: ${ ({ $validation }) => getValidationBackground($validation) };
 transition: border 0.2s ease;
 
   &:focus {
   outline: none;
-  border - color: #ff8f10;
-  box - shadow: 0 0 0 3px rgba(255, 143, 16, 0.15);
+  border-color: #ff8f10;
+  box-shadow: 0 0 0 3px rgba(255, 143, 16, 0.15);
 }
 `;
 
 const FieldHint = styled.span`
-font - size: 0.8rem;
+font-size: 0.8rem;
 color: #6e7c91;
-`;
-
 `;
 
 const FormGrid = styled.div`

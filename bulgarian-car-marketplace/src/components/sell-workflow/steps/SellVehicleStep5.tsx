@@ -66,23 +66,51 @@ const Select = styled.select`
   }
 `;
 
-const CheckboxGroup = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+
+const AttentionPulse = styled.div<{ $isActive: boolean }>`
+  border-radius: 12px;
+  animation: ${props => props.$isActive ? 'pulse-attention 2s infinite' : 'none'};
+  transition: box-shadow 0.3s ease;
+  
+  @keyframes pulse-attention {
+    0% {
+      box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
+    }
+    70% {
+      box-shadow: 0 0 0 10px rgba(34, 197, 94, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+    }
+  }
 `;
 
-const Checkbox = styled.input`
-  width: 18px;
-  height: 18px;
-  cursor: pointer;
-`;
+const RevealWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const ref = React.useRef<HTMLDivElement>(null);
+  const [isActive, setIsActive] = React.useState(true);
 
-const CheckboxLabel = styled.label`
-  font-size: 0.95rem;
-  color: var(--text-primary);
-  cursor: pointer;
-`;
+  React.useEffect(() => {
+    if (ref.current) {
+      ref.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, []);
+
+  const handleInteraction = () => {
+    setIsActive(false);
+  };
+
+  return (
+    <AttentionPulse
+      ref={ref}
+      $isActive={isActive}
+      onClick={handleInteraction}
+      onFocus={handleInteraction}
+      onMouseDown={handleInteraction}
+    >
+      <FieldGroup>{children}</FieldGroup>
+    </AttentionPulse>
+  );
+};
 
 export const SellVehicleStep5: React.FC<SellVehicleStep5Props> = ({
   workflowData,
@@ -90,10 +118,29 @@ export const SellVehicleStep5: React.FC<SellVehicleStep5Props> = ({
 }) => {
   const { language } = useLanguage();
 
+  // Progressive Reveal Logic
+  const hasPrice = !!workflowData.price;
+  const hasCurrency = !!workflowData.currency;
+
+  // Success Styling Logic
+  const successColor = '#22c55e';
+
+  const getLabelStyle = (hasValue: boolean) => ({
+    color: hasValue ? successColor : 'var(--text-primary)',
+    transition: 'color 0.3s ease'
+  });
+
+  const getInputStyle = (hasValue: boolean) => ({
+    borderColor: hasValue ? successColor : 'var(--border)',
+    color: hasValue ? successColor : 'var(--text-primary)',
+    fontWeight: hasValue ? '600' : 'normal',
+    transition: 'all 0.3s ease'
+  });
+
   return (
     <FormContainer>
       <FieldGroup>
-        <Label>{language === 'bg' ? 'Цена' : 'Price'} *</Label>
+        <Label style={getLabelStyle(hasPrice)}>{language === 'bg' ? 'Цена' : 'Price'} *</Label>
         <Input
           type="number"
           value={workflowData.price || ''}
@@ -101,44 +148,44 @@ export const SellVehicleStep5: React.FC<SellVehicleStep5Props> = ({
           placeholder={language === 'bg' ? 'Въведете цена' : 'Enter price'}
           min="0"
           required
+          style={getInputStyle(hasPrice)}
         />
       </FieldGroup>
 
-      <FieldGroup>
-        <Label>{language === 'bg' ? 'Валута' : 'Currency'}</Label>
-        <Select
-          value={workflowData.currency || 'EUR'}
-          onChange={(e) => onUpdate({ currency: e.target.value })}
-        >
-          <option value="EUR">EUR</option>
-          <option value="BGN">BGN</option>
-          <option value="USD">USD</option>
-        </Select>
-      </FieldGroup>
+      {hasPrice && (
+        <RevealWrapper>
+          <Label style={getLabelStyle(hasCurrency)}>{language === 'bg' ? 'Валута' : 'Currency'}</Label>
+          <Select
+            value={workflowData.currency || 'EUR'}
+            onChange={(e) => onUpdate({ currency: e.target.value })}
+            style={getInputStyle(hasCurrency)}
+          >
+            <option value="EUR">EUR</option>
+            <option value="BGN">BGN</option>
+            <option value="USD">USD</option>
+          </Select>
+        </RevealWrapper>
+      )}
 
-      <FieldGroup>
-        <Label>{language === 'bg' ? 'Тип цена' : 'Price Type'}</Label>
-        <Select
-          value={workflowData.priceType || 'fixed'}
-          onChange={(e) => onUpdate({ priceType: e.target.value })}
-        >
-          <option value="fixed">{language === 'bg' ? 'Фиксирана' : 'Fixed'}</option>
-          <option value="negotiable">{language === 'bg' ? 'Договорна' : 'Negotiable'}</option>
-        </Select>
-      </FieldGroup>
-
-      <FieldGroup>
-        <CheckboxGroup>
-          <Checkbox
-            type="checkbox"
-            checked={workflowData.negotiable === true || workflowData.negotiable === 'true'}
-            onChange={(e) => onUpdate({ negotiable: e.target.checked })}
-          />
-          <CheckboxLabel>
-            {language === 'bg' ? 'Договаряне възможно' : 'Negotiable'}
-          </CheckboxLabel>
-        </CheckboxGroup>
-      </FieldGroup>
+      {hasPrice && (
+        <RevealWrapper>
+          <Label>{language === 'bg' ? 'Тип цена' : 'Price Type'}</Label>
+          <Select
+            value={workflowData.priceType || 'fixed'}
+            onChange={(e) => {
+              const type = e.target.value;
+              onUpdate({
+                priceType: type,
+                negotiable: type === 'negotiable' // Auto-sync checkbox state
+              });
+            }}
+            style={getInputStyle(!!workflowData.priceType)}
+          >
+            <option value="fixed">{language === 'bg' ? 'Фиксирана' : 'Fixed'}</option>
+            <option value="negotiable">{language === 'bg' ? 'Договорна' : 'Negotiable'}</option>
+          </Select>
+        </RevealWrapper>
+      )}
     </FormContainer>
   );
 };

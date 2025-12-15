@@ -19,7 +19,7 @@ export const useCarEdit = (
   const [photos, setPhotos] = useState<File[]>([]);
   const [photoUrls, setPhotoUrls] = useState<string[]>([]);
   const [isDragOver, setIsDragOver] = useState(false);
-  
+
   // State for "Other" option inputs
   const [showOtherMake, setShowOtherMake] = useState(false);
   const [showOtherModel, setShowOtherModel] = useState(false);
@@ -28,10 +28,10 @@ export const useCarEdit = (
   const [showOtherColor, setShowOtherColor] = useState(false);
   const [showOtherDoors, setShowOtherDoors] = useState(false);
   const [showOtherSeats, setShowOtherSeats] = useState(false);
-  
+
   // State for Bulgarian regions and cities
   const [availableCities, setAvailableCities] = useState<string[]>([]);
-  
+
   // State for car models based on selected make
   const [availableModels, setAvailableModels] = useState<string[]>([]);
 
@@ -44,20 +44,20 @@ export const useCarEdit = (
 
   // Load cities when car data is loaded or region changes
   useEffect(() => {
-    if (editedCar.locationData?.regionName) {
-      const cities = getCitiesByRegion(editedCar.locationData?.regionName);
+    if ((editedCar as any).locationData?.regionName) {
+      const cities = getCitiesByRegion((editedCar as any).locationData?.regionName);
       const cityNames = cities.map(city => typeof city === 'string' ? city : city.name);
       setAvailableCities(cityNames);
     }
-  }, [editedCar.locationData?.regionName]);
-  
+  }, [(editedCar as any).locationData?.regionName]);
+
   // Load models when make changes
   useEffect(() => {
     if (editedCar.make) {
       brandsModelsDataService.getModelsForBrand(editedCar.make)
         .then(models => {
           setAvailableModels(models);
-          
+
           // If current model is not in the new models list, clear it
           if (editedCar.model && !models.includes(editedCar.model)) {
             setEditedCar(prev => ({ ...prev, model: '' }));
@@ -71,7 +71,7 @@ export const useCarEdit = (
       setAvailableModels([]);
     }
   }, [editedCar.make]);
-  
+
   // Cleanup URLs on unmount
   useEffect(() => {
     return () => {
@@ -92,30 +92,30 @@ export const useCarEdit = (
 
   const handleSave = async () => {
     if (!carId || !editedCar) return;
-    
+
     setSaving(true);
     try {
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Starting save process', { carId, photosCount: photos.length, editedCarKeys: Object.keys(editedCar) });
       }
-      
+
       // Step 1: Upload new photos to Firebase Storage
       let uploadedUrls: string[] = [];
       if (photos.length > 0) {
         if (process.env.NODE_ENV === 'development') {
-          logger.debug('Uploading new photos', { 
+          logger.debug('Uploading new photos', {
             count: photos.length,
-            photos: photos.map((p, i) => ({ 
+            photos: photos.map((p, i) => ({
               index: i,
-              name: p.name, 
-              size: p.size, 
+              name: p.name,
+              size: p.size,
               type: p.type,
               isFile: p instanceof File,
               isBlob: p instanceof Blob
             }))
           });
         }
-        
+
         // ✅ Validate photos are File objects
         const validPhotos = photos.filter((photo, index) => {
           if (!photo) {
@@ -134,9 +134,9 @@ export const useCarEdit = (
         }
 
         if (validPhotos.length < photos.length) {
-          logger.warn('Some photos were filtered out', { 
-            original: photos.length, 
-            valid: validPhotos.length 
+          logger.warn('Some photos were filtered out', {
+            original: photos.length,
+            valid: validPhotos.length
           });
         }
 
@@ -150,7 +150,7 @@ export const useCarEdit = (
       }
 
       // Step 2: Merge existing images with new ones
-      const existingImages = car?.images || [];
+      const existingImages = (car?.images || []) as string[];
       const updatedImages = [...existingImages, ...uploadedUrls];
 
       // Step 3: Save all changes
@@ -163,21 +163,21 @@ export const useCarEdit = (
       }
 
       await unifiedCarService.updateCar(carId, updatedCarData);
-      
+
       setIsEditMode(false);
       setPhotos([]);
       setPhotoUrls([]);
-      
+
       alert(language === 'bg' ? 'Промените са запазени успешно!' : 'Changes saved successfully!');
-      
+
       if (onSaveSuccess) {
         onSaveSuccess();
       }
     } catch (error) {
       logger.error('Error saving car changes', error as Error, { carId });
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      alert(language === 'bg' 
-        ? `Грешка при запазване: ${errorMessage}` 
+      alert(language === 'bg'
+        ? `Грешка при запазване: ${errorMessage}`
         : `Error saving changes: ${errorMessage}`);
     } finally {
       setSaving(false);
@@ -200,7 +200,7 @@ export const useCarEdit = (
     const fileArray = Array.from(files);
     const newPhotos = [...photos, ...fileArray].slice(0, 20);
     setPhotos(newPhotos);
-    
+
     const urls = newPhotos.map(file => URL.createObjectURL(file));
     setPhotoUrls(urls);
   };
@@ -228,8 +228,8 @@ export const useCarEdit = (
   };
 
   const deleteExistingImage = async (imageUrl: string) => {
-    if (!window.confirm(language === 'bg' 
-      ? 'Сигурни ли сте, че искате да изтриете тази снимка?' 
+    if (!window.confirm(language === 'bg'
+      ? 'Сигурни ли сте, че искате да изтриете тази снимка?'
       : 'Are you sure you want to delete this image?'
     )) {
       return;
@@ -238,13 +238,13 @@ export const useCarEdit = (
     try {
       // Remove from Firebase Storage
       await imageUploadService.deleteImages(carId!, [imageUrl]);
-      
+
       // Update car.images array
       const updatedImages = (car?.images || []).filter(img => img !== imageUrl);
       await unifiedCarService.updateCar(carId!, { images: updatedImages });
-      
+
       alert(language === 'bg' ? 'Снимката е изтрита!' : 'Image deleted successfully!');
-      
+
       return updatedImages;
     } catch (error) {
       logger.error('Error deleting existing image', error as Error, { carId, imageUrl });
@@ -263,9 +263,9 @@ export const useCarEdit = (
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Starting car deletion process', { carId, userId });
       }
-      
-      const result = await carDeleteService.deleteCar(carId, userId);
-      
+
+      const result = await carDeleteService.softDeleteCar(carId, userId);
+
       if (result.success) {
         if (process.env.NODE_ENV === 'development') {
           logger.debug('Car deleted successfully', { carId });

@@ -10,6 +10,7 @@ import { useLanguage } from '../../../../contexts/LanguageContext';
 import { getFirestore, collection, query, orderBy, limit, getDocs, where } from 'firebase/firestore';
 import { UnifiedCar } from '../../../../services/car';
 import HorizontalScrollContainer from '../../../../components/HorizontalScrollContainer/HorizontalScrollContainer';
+import { logger } from '../../../../services/logger-service';
 
 // Styled Components
 const SectionContainer = styled.section`
@@ -262,7 +263,10 @@ const LatestCarsSection: React.FC = () => {
 
         setCars(latestCars);
       } catch (error) {
-        console.error('Failed to fetch latest cars:', error);
+        logger.error('Failed to fetch latest cars:', error as Error, {
+          context: 'LatestCarsSection',
+          action: 'fetchLatestCars'
+        });
       } finally {
         setLoading(false);
       }

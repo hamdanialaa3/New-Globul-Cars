@@ -8,6 +8,8 @@ import { useNavigate } from 'react-router-dom';
 import { Search, TrendingUp, DollarSign, Zap } from 'lucide-react';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { brandsModelsDataService } from '../../../../services/brands-models-data.service';
+import { logger } from '../../../../services/logger-service';
+import { sanitizeCarMakeModel } from '../../../../utils/inputSanitizer';
 
 // Styled Components
 const SearchContainer = styled.div`
@@ -250,7 +252,10 @@ const HeroSearchInline: React.FC = () => {
         const allBrands = await brandsModelsDataService.getAllBrands();
         setBrands(allBrands);
       } catch (error) {
-        console.error('Failed to load brands:', error);
+        logger.error('Failed to load brands', error as Error, {
+          context: 'HeroSearchInline',
+          action: 'loadBrands'
+        });
       }
     };
 
@@ -270,7 +275,11 @@ const HeroSearchInline: React.FC = () => {
         const brandModels = await brandsModelsDataService.getModelsForBrand(selectedBrand);
         setModels(brandModels);
       } catch (error) {
-        console.error('Failed to load models:', error);
+        logger.error('Failed to load models:', error as Error, {
+          context: 'HeroSearchInline',
+          action: 'loadModels',
+          selectedBrand
+        });
         setModels([]);
       }
     };
@@ -358,7 +367,10 @@ const HeroSearchInline: React.FC = () => {
           <SearchForm onSubmit={handleSearch}>
             <SelectInput
               value={selectedBrand}
-              onChange={(e) => setSelectedBrand(e.target.value)}
+              onChange={(e) => {
+                const sanitized = sanitizeCarMakeModel(e.target.value);
+                setSelectedBrand(sanitized);
+              }}
             >
               <option value="">{text.brandPlaceholder}</option>
               {brands.map((brand) => (
@@ -370,7 +382,10 @@ const HeroSearchInline: React.FC = () => {
 
             <SelectInput
               value={selectedModel}
-              onChange={(e) => setSelectedModel(e.target.value)}
+              onChange={(e) => {
+                const sanitized = sanitizeCarMakeModel(e.target.value);
+                setSelectedModel(sanitized);
+              }}
               disabled={!selectedBrand}
             >
               <option value="">{text.modelPlaceholder}</option>

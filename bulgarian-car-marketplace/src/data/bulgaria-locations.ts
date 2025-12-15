@@ -170,6 +170,12 @@ export const BULGARIA_REGIONS: Region[] = [
     nameEn: 'Smolyan',
     cities: ['Смолян', 'Чепеларе', 'Девин', 'Доспат', 'Баните', 'Борино', 'Златоград', 'Мадан', 'Неделино', 'Рудозем'],
     citiesEn: ['Smolyan', 'Chepelare', 'Devin', 'Dospat', 'Banite', 'Borino', 'Zlatograd', 'Madan', 'Nedelino', 'Rudozem']
+  },
+  {
+    name: 'Софийска област',
+    nameEn: 'Sofia Province',
+    cities: ['Божурище', 'Ботевград', 'Годеч', 'Елин Пелин', 'Етрополе', 'Златица', 'Ихтиман', 'Копривщица', 'Костенец', 'Костинброд', 'Правец', 'Самоков', 'Своге', 'Сливница', 'Пирдоп', 'Мирково', 'Чавдар', 'Челопеч', 'Антон', 'Долна баня'],
+    citiesEn: ['Bozhurishte', 'Botevgrad', 'Godech', 'Elin Pelin', 'Etropole', 'Zlatitsa', 'Ihtiman', 'Koprivshtitsa', 'Kostenets', 'Kostinbrod', 'Pravets', 'Samokov', 'Svoge', 'Slivnitsa', 'Pirdop', 'Mirkovo', 'Chavdar', 'Chelopech', 'Anton', 'Dolna Banya']
   }
 ];
 
@@ -191,7 +197,7 @@ export const POPULAR_CITIES = [
 export const getCitiesByRegion = (regionName: string, language: 'bg' | 'en' = 'bg'): { name: string; nameEn?: string }[] => {
   const region = BULGARIA_REGIONS.find(r => r.name === regionName || r.nameEn === regionName);
   if (!region) return [];
-  
+
   // Return cities with both BG and EN names
   return region.cities.map((city, idx) => ({
     name: language === 'en' && region.citiesEn ? region.citiesEn[idx] : city,

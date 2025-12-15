@@ -7,6 +7,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import * as THREE from 'three';
+import { logger } from '../../services/logger-service';
 
 interface LoadingOverlayProps {
   isVisible: boolean;
@@ -278,7 +279,10 @@ const LoadingOverlay: React.FC<LoadingOverlayProps> = ({ isVisible, apiKey }) =>
           setAIFact(data.candidates[0].content.parts[0].text);
         }
       } catch (error) {
-        console.error('AI Fact fetch failed:', error);
+        logger.error('AI Fact fetch failed:', error as Error, {
+          context: 'LoadingOverlay',
+          action: 'fetchAIFact'
+        });
       }
     };
 

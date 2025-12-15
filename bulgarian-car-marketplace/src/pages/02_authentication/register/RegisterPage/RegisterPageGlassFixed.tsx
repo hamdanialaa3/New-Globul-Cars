@@ -422,8 +422,9 @@ const RegisterPageGlassFixed: React.FC = () => {
       setTimeout(() => {
         navigate('/dashboard');
       }, 1500);
-    } catch (err: any) {
-      setError(err.message || (language === 'bg' ? 'Грешка при регистрация' : 'Registration failed'));
+    } catch (err) {
+      const error = err instanceof Error ? err : new Error(String(err));
+      setError(error.message || (language === 'bg' ? 'Грешка при регистрация' : 'Registration failed'));
     } finally {
       setLoading(false);
     }
@@ -435,8 +436,9 @@ const RegisterPageGlassFixed: React.FC = () => {
     try {
       await SocialAuthService.signInWithGoogle();
       navigate('/dashboard');
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      const error = err instanceof Error ? err : new Error(String(err));
+      setError(error.message);
     } finally {
       setLoading(false);
     }
@@ -448,8 +450,9 @@ const RegisterPageGlassFixed: React.FC = () => {
     try {
       await SocialAuthService.signInWithFacebook();
       navigate('/dashboard');
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      const error = err instanceof Error ? err : new Error(String(err));
+      setError(error.message);
     } finally {
       setLoading(false);
     }
@@ -461,8 +464,9 @@ const RegisterPageGlassFixed: React.FC = () => {
     try {
       await SocialAuthService.signInWithApple();
       navigate('/dashboard');
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      const error = err instanceof Error ? err : new Error(String(err));
+      setError(error.message);
     } finally {
       setLoading(false);
     }
@@ -474,8 +478,9 @@ const RegisterPageGlassFixed: React.FC = () => {
     try {
       await SocialAuthService.signInAnonymously();
       navigate('/dashboard');
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      const error = err instanceof Error ? err : new Error(String(err));
+      setError(error.message);
     } finally {
       setLoading(false);
     }

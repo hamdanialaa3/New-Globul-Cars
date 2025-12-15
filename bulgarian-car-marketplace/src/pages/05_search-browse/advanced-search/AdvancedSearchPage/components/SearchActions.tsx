@@ -40,7 +40,10 @@ export const SearchActions: React.FC<SearchActionsProps> = ({
       <SearchButton 
         type="submit" 
         disabled={isSearching}
-        onClick={onSearch as any}
+        onClick={(e) => {
+          e.preventDefault();
+          onSearch(e as React.FormEvent);
+        }}
       >
         {isSearching ? t('advancedSearch.searching') : t('advancedSearch.searchCars')}
       </SearchButton>

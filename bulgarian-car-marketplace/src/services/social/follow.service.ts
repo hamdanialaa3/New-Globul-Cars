@@ -21,6 +21,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '../../firebase/firebase-config';
 import { serviceLogger } from '../logger-wrapper';
+import { rateLimiter, RATE_LIMIT_CONFIGS } from '../rate-limiting/rateLimiter.service';
 
 interface FollowData {
   followedAt: Timestamp;
@@ -51,6 +52,24 @@ class FollowService {
    */
   async followUser(followerId: string, followingId: string): Promise<boolean> {
     try {
+      // Rate limiting check
+      const rateLimit = rateLimiter.checkRateLimit(
+        followerId,
+        'follow',
+        RATE_LIMIT_CONFIGS.follow
+      );
+
+      if (!rateLimit.allowed) {
+        serviceLogger.warn('Rate limit exceeded for follow', {
+          followerId,
+          followingId,
+          resetTime: rateLimit.resetTime
+        });
+        throw new Error(
+          `Rate limit exceeded. Please wait ${Math.ceil((rateLimit.resetTime - Date.now()) / 1000)} seconds before following again.`
+        );
+      }
+
       // Prevent self-follow
       if (followerId === followingId) {
         serviceLogger.warn('Cannot follow yourself', { followerId });
@@ -108,6 +127,24 @@ class FollowService {
    */
   async unfollowUser(followerId: string, followingId: string): Promise<boolean> {
     try {
+      // Rate limiting check
+      const rateLimit = rateLimiter.checkRateLimit(
+        followerId,
+        'unfollow',
+        RATE_LIMIT_CONFIGS.unfollow
+      );
+
+      if (!rateLimit.allowed) {
+        serviceLogger.warn('Rate limit exceeded for unfollow', {
+          followerId,
+          followingId,
+          resetTime: rateLimit.resetTime
+        });
+        throw new Error(
+          `Rate limit exceeded. Please wait ${Math.ceil((rateLimit.resetTime - Date.now()) / 1000)} seconds before unfollowing again.`
+        );
+      }
+
       const batch = writeBatch(db);
 
       // Remove from follower's following list

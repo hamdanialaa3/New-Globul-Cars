@@ -43,34 +43,61 @@ const normalizeUser = (raw: BulgarianUser | null): BulgarianUser | null => {
   };
 };
 
-const buildFormData = (profile: BulgarianUser | null): ProfileFormData => ({
-  accountType: (profile as any)?.accountType || 'individual',
-  firstName: (profile as any)?.firstName || '',
-  lastName: (profile as any)?.lastName || '',
-  middleName: (profile as any)?.middleName || '',
-  dateOfBirth: (profile as any)?.dateOfBirth || '',
-  placeOfBirth: (profile as any)?.placeOfBirth || '',
-  businessName: (profile as any)?.businessName || '',
-  bulstat: (profile as any)?.bulstat || '',
-  vatNumber: (profile as any)?.vatNumber || '',
-  businessType: (profile as any)?.businessType || 'dealership',
-  registrationNumber: (profile as any)?.registrationNumber || '',
-  businessAddress: (profile as any)?.businessAddress || '',
-  businessCity: (profile as any)?.businessCity || '',
-  businessPostalCode: (profile as any)?.businessPostalCode || '',
-  website: (profile as any)?.website || '',
-  businessPhone: (profile as any)?.businessPhone || '',
-  businessEmail: (profile as any)?.businessEmail || '',
-  workingHours: (profile as any)?.workingHours || '',
-  businessDescription: (profile as any)?.businessDescription || '',
-  phoneNumber: profile?.phoneNumber || '',
-  email: profile?.email || '',
-  address: (profile as any)?.address || '',
-  city: profile?.location?.city || (profile as any)?.city || '',
-  postalCode: (profile as any)?.postalCode || '',
-  bio: profile?.bio || '',
-  preferredLanguage: profile?.preferredLanguage || 'bg'
-});
+// Extended profile type for form data (includes optional fields that might not be in BulgarianUser)
+interface ExtendedProfileData extends BulgarianUser {
+  accountType?: string;
+  middleName?: string;
+  dateOfBirth?: string;
+  placeOfBirth?: string;
+  businessName?: string;
+  bulstat?: string;
+  vatNumber?: string;
+  businessType?: string;
+  registrationNumber?: string;
+  businessAddress?: string;
+  businessCity?: string;
+  businessPostalCode?: string;
+  website?: string;
+  businessPhone?: string;
+  businessEmail?: string;
+  workingHours?: string;
+  businessDescription?: string;
+  address?: string;
+  city?: string;
+  postalCode?: string;
+}
+
+const buildFormData = (profile: BulgarianUser | null): ProfileFormData => {
+  const extended = profile as ExtendedProfileData | null;
+  return {
+    accountType: extended?.accountType || 'individual',
+    firstName: extended?.firstName || '',
+    lastName: extended?.lastName || '',
+    middleName: extended?.middleName || '',
+    dateOfBirth: extended?.dateOfBirth || '',
+    placeOfBirth: extended?.placeOfBirth || '',
+    businessName: extended?.businessName || '',
+    bulstat: extended?.bulstat || '',
+    vatNumber: extended?.vatNumber || '',
+    businessType: extended?.businessType || 'dealership',
+    registrationNumber: extended?.registrationNumber || '',
+    businessAddress: extended?.businessAddress || '',
+    businessCity: extended?.businessCity || '',
+    businessPostalCode: extended?.businessPostalCode || '',
+    website: extended?.website || '',
+    businessPhone: extended?.businessPhone || '',
+    businessEmail: extended?.businessEmail || '',
+    workingHours: extended?.workingHours || '',
+    businessDescription: extended?.businessDescription || '',
+    phoneNumber: profile?.phoneNumber || '',
+    email: profile?.email || '',
+    address: extended?.address || '',
+    city: profile?.location?.city || extended?.city || '',
+    postalCode: extended?.postalCode || '',
+    bio: profile?.bio || '',
+    preferredLanguage: profile?.preferredLanguage || 'bg'
+  };
+};
 
 const mapListingsToCars = (listings: unknown[]): ProfileCar[] =>
   listings.map(car => ({
@@ -312,10 +339,11 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
       );
       setEditing(false);
       await loadUserData();
-    } catch (err: any) {
-      logger.error('Error updating profile', err as Error);
+    } catch (err) {
+      const error = err instanceof Error ? err : new Error(String(err));
+      logger.error('Error updating profile', error);
       toast.error(
-        err?.message || 'Failed to update profile / Грешка при обновяване на профила',
+        error.message || 'Failed to update profile / Грешка при обновяване на профила',
         'Error / Грешка'
       );
     }

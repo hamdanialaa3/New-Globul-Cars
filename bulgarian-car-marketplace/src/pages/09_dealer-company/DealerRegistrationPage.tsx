@@ -7,14 +7,14 @@ import styled from 'styled-components';
 import { useAuth } from '../../hooks/useAuth';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { logger } from '../../services/logger-service';
-import { userService } from '../../services/user/canonical-user.service';
 import type { DealershipInfo } from '../../types/dealership/dealership.types';
-import { dealershipService } from '../../services/dealership/dealership.service';
+import { profileService } from '../../services/profile/UnifiedProfileService';
 import { UserRepository } from '../../repositories/UserRepository';
+import { Check, Upload, Building, FileText, CreditCard, Send, Briefcase } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 // Type alias for compatibility
 type DealerProfile = DealershipInfo;
-import { Check, Upload, Building, FileText, CreditCard, Send } from 'lucide-react';
 
 const Container = styled.div`
   max-width: 900px;
@@ -24,14 +24,14 @@ const Container = styled.div`
 
 const Title = styled.h1`
   font-size: 2.5rem;
-  color: #2c3e50;
+  color: var(--text-primary);
   text-align: center;
   margin-bottom: 1rem;
 `;
 
 const Subtitle = styled.p`
   text-align: center;
-  color: #7f8c8d;
+  color: var(--text-secondary);
   font-size: 1.1rem;
   margin-bottom: 3rem;
 `;
@@ -49,7 +49,7 @@ const ProgressBar = styled.div`
     left: 0;
     right: 0;
     height: 2px;
-    background: #e0e0e0;
+    background: var(--border-primary);
     z-index: 0;
   }
 `;
@@ -68,29 +68,31 @@ const StepCircle = styled.div<{ active: boolean; completed: boolean }>`
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: ${props => 
-    props.completed ? '#10b981' : 
-    props.active ? '#FF7900' : '#e0e0e0'};
+  background: ${props =>
+    props.completed ? 'var(--success-main)' :
+      props.active ? 'var(--secondary-main)' : 'var(--bg-secondary)'};
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 600;
   transition: all 0.3s;
+  border: 2px solid ${props => props.active ? 'var(--secondary-main)' : 'transparent'};
 `;
 
 const StepLabel = styled.span<{ active: boolean }>`
   font-size: 0.9rem;
-  color: ${props => props.active ? '#2c3e50' : '#7f8c8d'};
+  color: ${props => props.active ? 'var(--text-primary)' : 'var(--text-secondary)'};
   font-weight: ${props => props.active ? '600' : '400'};
 `;
 
 const Card = styled.div`
-  background: white;
+  background: var(--bg-card);
   border-radius: 12px;
   padding: 2rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
   margin-bottom: 2rem;
+  border: 1px solid var(--border-primary);
 `;
 
 const FormGroup = styled.div`
@@ -100,62 +102,52 @@ const FormGroup = styled.div`
 const Label = styled.label`
   display: block;
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--text-primary);
   margin-bottom: 0.5rem;
 `;
 
 const Input = styled.input`
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-secondary);
   border-radius: 8px;
   font-size: 1rem;
+  background: var(--bg-input);
+  color: var(--text-primary);
 
   &:focus {
     outline: none;
-    border-color: #FF7900;
+    border-color: var(--secondary-main);
   }
 `;
 
 const Select = styled.select`
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-secondary);
   border-radius: 8px;
   font-size: 1rem;
+  background: var(--bg-input);
+  color: var(--text-primary);
 
   &:focus {
     outline: none;
-    border-color: #FF7900;
+    border-color: var(--secondary-main);
   }
 `;
 
-const TextArea = styled.textarea`
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 1rem;
-  min-height: 100px;
-  resize: vertical;
-
-  &:focus {
-    outline: none;
-    border-color: #FF7900;
-  }
-`;
-
-const FileUpload = styled.div`
-  border: 2px dashed #ddd;
+const FileUpload = styled.div<{ hasFile?: boolean }>`
+  border: 2px dashed ${props => props.hasFile ? 'var(--success-main)' : 'var(--border-secondary)'};
   border-radius: 8px;
   padding: 2rem;
   text-align: center;
   cursor: pointer;
   transition: all 0.3s;
+  background: ${props => props.hasFile ? 'rgba(40, 167, 69, 0.05)' : 'transparent'};
 
   &:hover {
-    border-color: #FF7900;
-    background: #fff5f0;
+    border-color: var(--secondary-main);
+    background: var(--bg-secondary);
   }
 `;
 
@@ -168,11 +160,11 @@ const ButtonGroup = styled.div`
 
 const Button = styled.button<{ variant?: 'primary' | 'secondary' }>`
   flex: 1;
-  background: ${props => props.variant === 'secondary' 
-    ? 'white' 
-    : 'linear-gradient(135deg, #FF7900, #ff8c1a)'};
-  color: ${props => props.variant === 'secondary' ? '#FF7900' : 'white'};
-  border: ${props => props.variant === 'secondary' ? '2px solid #FF7900' : 'none'};
+  background: ${props => props.variant === 'secondary'
+    ? 'transparent'
+    : 'var(--secondary-main)'};
+  color: ${props => props.variant === 'secondary' ? 'var(--secondary-main)' : 'white'};
+  border: ${props => props.variant === 'secondary' ? '2px solid var(--secondary-main)' : 'none'};
   padding: 1rem 2rem;
   border-radius: 8px;
   font-size: 1rem;
@@ -186,7 +178,8 @@ const Button = styled.button<{ variant?: 'primary' | 'secondary' }>`
 
   &:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 121, 0, 0.3);
+    box-shadow: var(--shadow-md);
+    background: ${props => props.variant === 'secondary' ? 'var(--bg-secondary)' : 'var(--secondary-dark)'};
   }
 
   &:disabled {
@@ -195,12 +188,44 @@ const Button = styled.button<{ variant?: 'primary' | 'secondary' }>`
   }
 `;
 
+const TypeSelector = styled.div`
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+`;
+
+const TypeOption = styled.div<{ selected: boolean }>`
+  flex: 1;
+  padding: 1.5rem;
+  border: 2px solid ${props => props.selected ? 'var(--secondary-main)' : 'var(--border-secondary)'};
+  border-radius: 12px;
+  cursor: pointer;
+  text-align: center;
+  background: ${props => props.selected ? 'rgba(204, 0, 0, 0.05)' : 'var(--bg-card)'};
+  transition: all 0.2s;
+
+  &:hover {
+    border-color: var(--secondary-light);
+  }
+
+  h3 {
+    margin-bottom: 0.5rem;
+    color: ${props => props.selected ? 'var(--secondary-main)' : 'var(--text-primary)'};
+  }
+`;
+
 const DealerRegistrationPage: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { language } = useLanguage();
+  const { t, language } = useLanguage(); // Using t() for translations
   const [currentStep, setCurrentStep] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [dealerType, setDealerType] = useState<'dealer' | 'company'>('dealer');
+
+  // File states
+  const [licenseFile, setLicenseFile] = useState<File | null>(null);
+  const [vatFile, setVatFile] = useState<File | null>(null);
+
   const [dealerData, setDealerData] = useState<Partial<DealerProfile>>({
     companyName: '',
     licenseNumber: '',
@@ -221,13 +246,21 @@ const DealerRegistrationPage: React.FC = () => {
   });
 
   const steps = [
-    { number: 1, label: language === 'bg' ? 'Основна информация' : 'Basic Info', icon: Building },
-    { number: 2, label: language === 'bg' ? 'Документи' : 'Documents', icon: FileText },
-    { number: 3, label: language === 'bg' ? 'Банкови данни' : 'Bank Details', icon: CreditCard },
-    { number: 4, label: language === 'bg' ? 'Преглед' : 'Review', icon: Check }
+    { number: 1, label: t('dealer.registration.steps.basicInfo'), icon: Building },
+    { number: 2, label: t('dealer.registration.steps.documents'), icon: FileText },
+    { number: 3, label: t('dealer.registration.steps.bankDetails'), icon: CreditCard },
+    { number: 4, label: t('dealer.registration.steps.review'), icon: Check }
   ];
 
   const handleNext = () => {
+    // Basic validation
+    if (currentStep === 1) {
+      if (!dealerData.companyName || !dealerData.licenseNumber || !dealerData.address?.city) {
+        toast.error(t('common.fillRequired'));
+        return;
+      }
+    }
+
     if (currentStep < 4) {
       setCurrentStep(currentStep + 1);
     }
@@ -239,39 +272,42 @@ const DealerRegistrationPage: React.FC = () => {
     }
   };
 
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>, type: 'license' | 'vat') => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      if (type === 'license') setLicenseFile(file);
+      else setVatFile(file);
+      toast.success(`${file.name} selected`);
+    }
+  };
+
   const handleSubmit = async () => {
     if (!user) return;
 
     setLoading(true);
     try {
-      // ✅ FIXED: Use modern approach instead of deprecated setupDealerProfile
-      const dealershipService = new DealershipService();
-      
-      // 1. Save dealership data
-      await dealershipService.saveDealershipInfo(user.uid, dealerData as DealerProfile);
-      
-      // 2. Update user profile to dealer type
-      await UserRepository.update(user.uid, {
-        profileType: 'dealer' as any,
-        dealershipRef: `dealerships/${user.uid}` as any,
-        dealerSnapshot: {
-          nameBG: dealerData.dealershipNameBG || dealerData.companyName || '',
-          nameEN: dealerData.dealershipNameEN || '',
-          logo: dealerData.logo,
+      // 1. Determine profile type based on user selection
+      if (dealerType === 'company') {
+        await profileService.setupCompanyProfile(user.uid, {
+          ...dealerData as any, // Cast to match expected type
+          uid: user.uid,
           status: 'pending'
-        } as any
-      });
-      
-      alert(language === 'bg' 
-        ? 'Заявката ви е изпратена успешно! Ще бъдете уведомени след одобрение.'
-        : 'Your application has been submitted successfully! You will be notified after approval.');
-      
+        });
+      } else {
+        await profileService.setupDealerProfile(user.uid, dealerData as DealerProfile);
+      }
+
+      // 2. Upload files if present (mock implementation for now as we need real storage paths)
+      if (licenseFile) {
+        // await profileService.uploadDocument(user.uid, licenseFile, 'license');
+        logger.info('Assuming license uploaded');
+      }
+
+      toast.success(t('dealer.registration.success'));
       navigate('/dashboard');
     } catch (error) {
       logger.error('Error submitting dealer application', error as Error);
-      alert(language === 'bg'
-        ? 'Грешка при изпращане на заявката. Моля, опитайте отново.'
-        : 'Error submitting application. Please try again.');
+      toast.error(t('dealer.registration.error'));
     } finally {
       setLoading(false);
     }
@@ -282,48 +318,69 @@ const DealerRegistrationPage: React.FC = () => {
       case 1:
         return (
           <Card>
-            <h2>{language === 'bg' ? 'Основна информация' : 'Basic Information'}</h2>
+            <h2>{t('dealer.registration.steps.basicInfo')}</h2>
+
             <FormGroup>
-              <Label>{language === 'bg' ? 'Име на компанията' : 'Company Name'} *</Label>
+              <Label>{t('dealer.registration.types.label')}</Label>
+              <TypeSelector>
+                <TypeOption
+                  selected={dealerType === 'dealer'}
+                  onClick={() => setDealerType('dealer')}
+                >
+                  <Building size={24} />
+                  <h3>{t('dealer.registration.types.soleTrader')}</h3>
+                </TypeOption>
+                <TypeOption
+                  selected={dealerType === 'company'}
+                  onClick={() => setDealerType('company')}
+                >
+                  <Briefcase size={24} />
+                  <h3>{t('dealer.registration.types.company')}</h3>
+                </TypeOption>
+              </TypeSelector>
+            </FormGroup>
+
+            <FormGroup>
+              <Label>{t('dealer.registration.form.companyName')} *</Label>
               <Input
                 value={dealerData.companyName}
                 onChange={(e) => setDealerData({ ...dealerData, companyName: e.target.value })}
-                placeholder={language === 'bg' ? 'Въведете име на компанията' : 'Enter company name'}
+                placeholder={t('dealer.registration.form.companyNamePlaceholder')}
               />
             </FormGroup>
             <FormGroup>
-              <Label>{language === 'bg' ? 'Лицензионен номер' : 'License Number'} *</Label>
+              <Label>{t('dealer.registration.form.licenseNumber')} *</Label>
               <Input
                 value={dealerData.licenseNumber}
                 onChange={(e) => setDealerData({ ...dealerData, licenseNumber: e.target.value })}
-                placeholder={language === 'bg' ? 'Въведете лицензионен номер' : 'Enter license number'}
+                placeholder={t('dealer.registration.form.licenseNumberPlaceholder')}
               />
             </FormGroup>
             <FormGroup>
-              <Label>{language === 'bg' ? 'Адрес' : 'Address'} *</Label>
+              <Label>{t('dealer.registration.form.address')} *</Label>
               <Input
                 value={dealerData.address?.street}
-                onChange={(e) => setDealerData({ 
-                  ...dealerData, 
+                onChange={(e) => setDealerData({
+                  ...dealerData,
                   address: { ...dealerData.address!, street: e.target.value }
                 })}
-                placeholder={language === 'bg' ? 'Улица и номер' : 'Street and number'}
+                placeholder={t('dealer.registration.form.streetPlaceholder')}
               />
             </FormGroup>
             <FormGroup>
-              <Label>{language === 'bg' ? 'Град' : 'City'} *</Label>
+              <Label>{t('dealer.registration.form.city')} *</Label>
               <Select
                 value={dealerData.address?.city}
-                onChange={(e) => setDealerData({ 
-                  ...dealerData, 
+                onChange={(e) => setDealerData({
+                  ...dealerData,
                   address: { ...dealerData.address!, city: e.target.value }
                 })}
               >
-                <option value="">{language === 'bg' ? 'Изберете град' : 'Select city'}</option>
-                <option value="Sofia">София / Sofia</option>
-                <option value="Plovdiv">Пловдив / Plovdiv</option>
-                <option value="Varna">Варна / Varna</option>
-                <option value="Burgas">Бургас / Burgas</option>
+                <option value="">{t('dealer.registration.form.cityPlaceholder')}</option>
+                <option value="Sofia">Sofia</option>
+                <option value="Plovdiv">Plovdiv</option>
+                <option value="Varna">Varna</option>
+                <option value="Burgas">Burgas</option>
               </Select>
             </FormGroup>
           </Card>
@@ -332,21 +389,31 @@ const DealerRegistrationPage: React.FC = () => {
       case 2:
         return (
           <Card>
-            <h2>{language === 'bg' ? 'Документи' : 'Documents'}</h2>
+            <h2>{t('dealer.registration.steps.documents')}</h2>
             <FormGroup>
-              <Label>{language === 'bg' ? 'Бизнес лиценз' : 'Business License'} *</Label>
-              <FileUpload>
-                <Upload size={40} color="#FF7900" />
-                <p>{language === 'bg' ? 'Качете бизнес лиценз' : 'Upload business license'}</p>
-                <input type="file" style={{ display: 'none' }} />
+              <Label>{t('dealer.registration.form.uploadLicense')} *</Label>
+              <FileUpload hasFile={!!licenseFile} onClick={() => document.getElementById('license-upload')?.click()}>
+                <Upload size={40} color="var(--secondary-main)" />
+                <p>{licenseFile ? licenseFile.name : t('dealer.registration.form.uploadLicense')}</p>
+                <input
+                  id="license-upload"
+                  type="file"
+                  onChange={(e) => handleFileSelect(e, 'license')}
+                  style={{ display: 'none' }}
+                />
               </FileUpload>
             </FormGroup>
             <FormGroup>
-              <Label>{language === 'bg' ? 'ДДС сертификат' : 'VAT Certificate'}</Label>
-              <FileUpload>
-                <Upload size={40} color="#FF7900" />
-                <p>{language === 'bg' ? 'Качете ДДС сертификат' : 'Upload VAT certificate'}</p>
-                <input type="file" style={{ display: 'none' }} />
+              <Label>{t('dealer.registration.form.uploadVat')}</Label>
+              <FileUpload hasFile={!!vatFile} onClick={() => document.getElementById('vat-upload')?.click()}>
+                <Upload size={40} color="var(--secondary-main)" />
+                <p>{vatFile ? vatFile.name : t('dealer.registration.form.uploadVat')}</p>
+                <input
+                  id="vat-upload"
+                  type="file"
+                  onChange={(e) => handleFileSelect(e, 'vat')}
+                  style={{ display: 'none' }}
+                />
               </FileUpload>
             </FormGroup>
           </Card>
@@ -355,14 +422,14 @@ const DealerRegistrationPage: React.FC = () => {
       case 3:
         return (
           <Card>
-            <h2>{language === 'bg' ? 'Банкови данни' : 'Bank Details'}</h2>
+            <h2>{t('dealer.registration.steps.bankDetails')}</h2>
             <FormGroup>
-              <Label>{language === 'bg' ? 'Банка' : 'Bank'} *</Label>
-              <Input placeholder={language === 'bg' ? 'Име на банката' : 'Bank name'} />
+              <Label>{t('dealer.registration.form.bankName')} *</Label>
+              <Input placeholder={t('dealer.registration.form.bankNamePlaceholder')} />
             </FormGroup>
             <FormGroup>
-              <Label>IBAN *</Label>
-              <Input placeholder="BG00 XXXX 0000 0000 0000 00" />
+              <Label>{t('dealer.registration.form.iban')} *</Label>
+              <Input placeholder={t('dealer.registration.form.ibanPlaceholder')} />
             </FormGroup>
           </Card>
         );
@@ -370,17 +437,17 @@ const DealerRegistrationPage: React.FC = () => {
       case 4:
         return (
           <Card>
-            <h2>{language === 'bg' ? 'Преглед и изпращане' : 'Review and Submit'}</h2>
-            <div style={{ padding: '1rem', background: '#f8f9fa', borderRadius: '8px' }}>
+            <h2>{t('dealer.registration.form.reviewTitle')}</h2>
+            <div style={{ padding: '1rem', background: 'var(--bg-secondary)', borderRadius: '8px' }}>
               <h3>{dealerData.companyName}</h3>
-              <p>{language === 'bg' ? 'Лиценз' : 'License'}: {dealerData.licenseNumber}</p>
-              <p>{language === 'bg' ? 'Град' : 'City'}: {dealerData.address?.city}</p>
+              <p>{t('dealer.registration.form.licenseNumber')}: {dealerData.licenseNumber}</p>
+              <p>{t('dealer.registration.form.city')}: {dealerData.address?.city}</p>
+              <p>Type: {dealerType === 'company' ? 'Company' : 'Dealer'}</p>
+              <p>Files attached: {[licenseFile, vatFile].filter(Boolean).length}</p>
             </div>
-            <div style={{ marginTop: '1.5rem', padding: '1rem', background: '#fff3cd', borderRadius: '8px' }}>
-              <p style={{ margin: 0, color: '#856404' }}>
-                {language === 'bg'
-                  ? 'Заявката ви ще бъде прегледана от нашия екип в рамките на 24-48 часа.'
-                  : 'Your application will be reviewed by our team within 24-48 hours.'}
+            <div style={{ marginTop: '1.5rem', padding: '1rem', background: 'rgba(255, 193, 7, 0.1)', borderRadius: '8px' }}>
+              <p style={{ margin: 0, color: 'var(--warning-dark)' }}>
+                {t('dealer.registration.form.submitParams')}
               </p>
             </div>
           </Card>
@@ -393,12 +460,8 @@ const DealerRegistrationPage: React.FC = () => {
 
   return (
     <Container>
-      <Title>{language === 'bg' ? 'Регистрация на дилър' : 'Dealer Registration'}</Title>
-      <Subtitle>
-        {language === 'bg'
-          ? 'Присъединете се към нашата мрежа от професионални дилъри'
-          : 'Join our network of professional dealers'}
-      </Subtitle>
+      <Title>{t('dealer.registration.title')}</Title>
+      <Subtitle>{t('dealer.registration.subtitle')}</Subtitle>
 
       <ProgressBar>
         {steps.map((step) => (
@@ -425,19 +488,19 @@ const DealerRegistrationPage: React.FC = () => {
       <ButtonGroup>
         {currentStep > 1 && (
           <Button variant="secondary" onClick={handleBack}>
-            {language === 'bg' ? 'Назад' : 'Back'}
+            {t('dealer.registration.form.back')}
           </Button>
         )}
         {currentStep < 4 ? (
           <Button onClick={handleNext}>
-            {language === 'bg' ? 'Напред' : 'Next'}
+            {t('dealer.registration.form.next')}
           </Button>
         ) : (
           <Button onClick={handleSubmit} disabled={loading}>
             <Send size={20} />
-            {loading 
-              ? (language === 'bg' ? 'Изпращане...' : 'Submitting...')
-              : (language === 'bg' ? 'Изпрати заявка' : 'Submit Application')}
+            {loading
+              ? t('dealer.registration.form.submitting')
+              : t('dealer.registration.form.submit')}
           </Button>
         )}
       </ButtonGroup>

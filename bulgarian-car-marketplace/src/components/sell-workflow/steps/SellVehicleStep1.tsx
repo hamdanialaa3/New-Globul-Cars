@@ -1,9 +1,6 @@
-// Sell Vehicle Step 1: Vehicle Type Selection
-// الخطوة 1: اختيار نوع المركبة
-
 import React from 'react';
 import styled from 'styled-components';
-import { Car, Truck, Bus, Bike, Caravan, Wrench } from 'lucide-react';
+import { Car, Truck, Bus, Bike, Caravan, Wrench, Construction } from 'lucide-react';
 import { useLanguage } from '../../../contexts/LanguageContext';
 import { SellWorkflowData } from '../../../hooks/useSellWorkflow';
 import { toast } from 'react-toastify';
@@ -11,6 +8,7 @@ import { toast } from 'react-toastify';
 interface SellVehicleStep1Props {
   workflowData: SellWorkflowData;
   onUpdate: (updates: Partial<SellWorkflowData>) => void;
+  onNext?: () => void;
 }
 
 const FormContainer = styled.div`
@@ -29,14 +27,31 @@ const VehicleGrid = styled.div`
   }
 `;
 
+const ComingSoonBadge = styled.div`
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: var(--warning);
+  color: var(--text-on-accent);
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  z-index: 2;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+`;
+
 const VehicleOption = styled.div<{ $selected: boolean; $disabled: boolean }>`
   background: ${props => {
-    if (props.$disabled) return '#f5f5f5';
+    if (props.$disabled) return 'var(--bg-secondary)'; // Keeping it visible but distinct
     return props.$selected ? 'var(--accent-primary)' : 'var(--bg-card)';
   }};
   border: 2px solid ${props => {
-    if (props.$disabled) return '#e0e0e0';
-    return props.$selected ? 'var(--accent-primary)' : 'var(--border)';
+    if (props.$disabled) return 'var(--border-secondary)';
+    return props.$selected ? 'var(--accent-primary)' : 'var(--border-primary)';
   }};
   border-radius: 12px;
   padding: 1.5rem;
@@ -44,20 +59,23 @@ const VehicleOption = styled.div<{ $selected: boolean; $disabled: boolean }>`
   cursor: ${props => props.$disabled ? 'not-allowed' : 'pointer'};
   transition: all 0.3s ease;
   color: ${props => {
-    if (props.$disabled) return '#999999';
+    if (props.$disabled) return 'var(--text-disabled)';
     return props.$selected ? 'white' : 'var(--text-primary)';
   }};
-  opacity: ${props => props.$disabled ? 0.4 : 1};
+  opacity: ${props => props.$disabled ? 0.7 : 1}; /* Increased opacity to make it readable */
   position: relative;
-  filter: ${props => props.$disabled ? 'grayscale(80%)' : 'none'};
+  overflow: hidden; /* Added to contain badge/effects */
+  
+  /* grayscale effect for disabled items */
+  filter: ${props => props.$disabled ? 'grayscale(100%)' : 'none'};
   
   &:hover {
     ${props => !props.$disabled ? `
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      box-shadow: var(--shadow-md);
       border-color: var(--accent-primary);
     ` : `
-      cursor: not-allowed;
+      background: var(--bg-hover);
     `}
   }
 `;
@@ -67,10 +85,10 @@ const VehicleIcon = styled.div<{ $selected: boolean; $disabled: boolean }>`
   justify-content: center;
   margin-bottom: 0.75rem;
   color: ${props => {
-    if (props.$disabled) return '#999999';
+    if (props.$disabled) return 'var(--text-disabled)';
     return props.$selected ? 'white' : 'var(--accent-primary)';
   }};
-  opacity: ${props => props.$disabled ? 0.4 : 1};
+  opacity: ${props => props.$disabled ? 0.5 : 1};
   
   svg {
     width: 32px;
@@ -81,54 +99,41 @@ const VehicleIcon = styled.div<{ $selected: boolean; $disabled: boolean }>`
 const VehicleLabel = styled.div<{ $disabled: boolean }>`
   font-weight: 600;
   font-size: 0.95rem;
-  opacity: ${props => props.$disabled ? 0.5 : 1};
-  color: ${props => props.$disabled ? '#999999' : 'inherit'};
-`;
-
-const ComingSoonBadge = styled.div`
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 100%);
-  color: white;
-  font-size: 0.65rem;
-  font-weight: 700;
-  padding: 0.3rem 0.6rem;
-  border-radius: 8px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  box-shadow: 0 2px 8px rgba(255, 107, 53, 0.3);
-  z-index: 10;
+  opacity: ${props => props.$disabled ? 0.6 : 1};
+  color: ${props => props.$disabled ? 'var(--text-disabled)' : 'inherit'};
 `;
 
 export const SellVehicleStep1: React.FC<SellVehicleStep1Props> = ({
   workflowData,
   onUpdate,
+  onNext,
 }) => {
-  const { language } = useLanguage();
+  const { t, language } = useLanguage();
 
   const vehicleTypes = [
-    { id: 'car', IconComponent: Car, label: language === 'bg' ? 'Лека кола' : 'Car', disabled: false },
-    { id: 'van', IconComponent: Caravan, label: language === 'bg' ? 'Ван' : 'Van', disabled: true },
-    { id: 'motorcycle', IconComponent: Bike, label: language === 'bg' ? 'Мотоциклет' : 'Motorcycle', disabled: true },
-    { id: 'truck', IconComponent: Truck, label: language === 'bg' ? 'Камион' : 'Truck', disabled: true },
-    { id: 'bus', IconComponent: Bus, label: language === 'bg' ? 'Автобус' : 'Bus', disabled: true },
-    { id: 'parts', IconComponent: Wrench, label: language === 'bg' ? 'Части' : 'Parts', disabled: true },
+    { id: 'car', IconComponent: Car, label: t('sell.start.vehicleTypes.car.title'), disabled: false },
+    // SUV removed as per request
+    { id: 'van', IconComponent: Caravan, label: t('sell.start.vehicleTypes.van.title'), disabled: true },
+    { id: 'motorcycle', IconComponent: Bike, label: t('sell.start.vehicleTypes.motorcycle.title'), disabled: true },
+    { id: 'truck', IconComponent: Truck, label: t('sell.start.vehicleTypes.truck.title'), disabled: true },
+    { id: 'bus', IconComponent: Bus, label: t('sell.start.vehicleTypes.bus.title'), disabled: true },
+    { id: 'parts', IconComponent: Wrench, label: t('sell.start.vehicleTypes.parts.title'), disabled: true },
   ];
 
   const handleVehicleSelect = (id: string, disabled: boolean) => {
     if (disabled) {
-      toast.info(
-        language === 'bg' ? 'Скоро ще бъде налично' : 'Coming Soon',
-        {
-          autoClose: 3000,
-          position: 'top-center'
-        }
-      );
+      // "Coming very soon these options will be available"
+      const message = language === 'bg'
+        ? 'Очаквайте скоро! Тези опции ще бъдат налични много скоро.'
+        : 'Coming very soon! These options will be available shortly.';
+      toast.info(message);
       return;
     }
-    
+
     onUpdate({ vehicleType: id });
+    if (onNext) {
+      onNext();
+    }
   };
 
   return (
@@ -140,12 +145,15 @@ export const SellVehicleStep1: React.FC<SellVehicleStep1Props> = ({
             $selected={workflowData.vehicleType === id}
             $disabled={disabled}
             onClick={() => handleVehicleSelect(id, disabled)}
+            title={disabled ? (language === 'bg' ? 'Очаквайте скоро' : 'Coming Soon') : ''}
           >
             {disabled && (
               <ComingSoonBadge>
-                {language === 'bg' ? 'Скоро' : 'Soon'}
+                <Construction size={10} />
+                {language === 'bg' ? 'СКОРО' : 'SOON'}
               </ComingSoonBadge>
             )}
+
             <VehicleIcon $selected={workflowData.vehicleType === id} $disabled={disabled}>
               <IconComponent />
             </VehicleIcon>

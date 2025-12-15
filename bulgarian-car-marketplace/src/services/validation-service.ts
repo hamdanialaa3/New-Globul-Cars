@@ -1,128 +1,122 @@
-// src/services/validation-service.ts
-// Comprehensive Input Validation Service for Bulgarian Car Marketplace
-
-export interface ValidationResult {
-  isValid: boolean;
-  errors: Record<string, string>;
-}
+// Enhanced validation service with comprehensive rules
+import { serviceLogger } from './logger-service';
 
 export interface ValidationRule {
   required?: boolean;
   minLength?: number;
   maxLength?: number;
+  min?: number;
+  max?: number;
   pattern?: RegExp;
-  custom?: (value: unknown) => string | null;
+  custom?: (value: unknown) => boolean;
+  email?: boolean;
+  phone?: boolean;
+  url?: boolean;
+  date?: boolean;
+  number?: boolean;
+  year?: boolean;
+  mileage?: boolean;
+  price?: boolean;
+  vin?: boolean;
 }
 
-export interface ValidationRules {
-  [fieldName: string]: ValidationRule;
+export interface ValidationResult {
+  isValid: boolean;
+  errors: string[];
 }
 
-export class ValidationService {
+class ValidationService {
   private static instance: ValidationService;
-
-  // Common regex patterns
-  private static readonly PATTERNS = {
-    email: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-    phone: /^(\+359|0)[0-9]{8,9}$/, // Bulgarian phone numbers
-    postalCode: /^[0-9]{4}$/, // Bulgarian postal codes
-    vin: /^[A-HJ-NPR-Z0-9]{17}$/, // Vehicle VIN
-    licensePlate: /^[ABCEHKMPTXY][0-9]{4}[ABCEHKMPTXY]{2}$/, // Bulgarian license plates
-    taxNumber: /^[0-9]{9,10}$/, // Bulgarian tax numbers
-    password: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/
-  };
-
-  // Localized error messages
-  private static readonly ERROR_MESSAGES = {
-    bg: {
-      required: 'Това поле е задължително',
-      minLength: 'Минимум {min} символа',
-      maxLength: 'Максимум {max} символа',
-      pattern: 'Невалиден формат',
-      email: 'Невалиден имейл адрес',
-      phone: 'Невалиден телефонен номер',
-      postalCode: 'Невалиден пощенски код',
-      vin: 'Невалиден VIN номер',
-      licensePlate: 'Невалидна регистрационна табела',
-      taxNumber: 'Невалиден данъчен номер',
-      password: 'Паролата трябва да съдържа поне 8 символа, включително главна буква, малка буква, цифра и специален символ',
-      positiveNumber: 'Числото трябва да е положително',
-      validYear: 'Годината трябва да е между 1900 и {current}',
-      validPrice: 'Цената трябва да е между 100 и 1,000,000 евро',
-      validMileage: 'Пробегът трябва да е между 0 и 1,000,000 км'
-    },
-    en: {
-      required: 'This field is required',
-      minLength: 'Minimum {min} characters',
-      maxLength: 'Maximum {max} characters',
-      pattern: 'Invalid format',
-      email: 'Invalid email address',
-      phone: 'Invalid phone number',
-      postalCode: 'Invalid postal code',
-      vin: 'Invalid VIN number',
-      licensePlate: 'Invalid license plate',
-      taxNumber: 'Invalid tax number',
-      password: 'Password must contain at least 8 characters including uppercase, lowercase, digit and special character',
-      positiveNumber: 'Number must be positive',
-      validYear: 'Year must be between 1900 and {current}',
-      validPrice: 'Price must be between 100 and 1,000,000 euros',
-      validMileage: 'Mileage must be between 0 and 1,000,000 km'
-    }
-  };
 
   private constructor() {}
 
-  public static getInstance(): ValidationService {
-    if (!ValidationService.instance) {
-      ValidationService.instance = new ValidationService();
+  static getInstance(): ValidationService {
+    if (!this.instance) {
+      this.instance = new ValidationService();
     }
-    return ValidationService.instance;
+    return this.instance;
   }
 
   /**
    * Validate a single field
    */
-  public validateField(
+  validateField(
     fieldName: string,
-    value: any,
+    value: unknown,
     rules: ValidationRule,
     language: 'bg' | 'en' = 'bg'
   ): string | null {
-    const messages = ValidationService.ERROR_MESSAGES[language];
-
-    // Check if required
-    if (rules.required && (value === null || value === undefined || value === '')) {
-      return messages.required;
+    // Required check
+    if (rules.required && this.isEmpty(value)) {
+      return this.getErrorMessage('required', language);
     }
 
-    // Skip other validations if value is empty and not required
-    if (!rules.required && (value === null || value === undefined || value === '')) {
+    // Skip further validation if empty and not required
+    if (this.isEmpty(value)) {
       return null;
     }
 
-    const stringValue = String(value).trim();
-
-    // Check min length
-    if (rules.minLength && stringValue.length < rules.minLength) {
-      return messages.minLength.replace('{min}', rules.minLength.toString());
+    // String length validation
+    if (rules.minLength && String(value).length < rules.minLength) {
+      return this.getErrorMessage('minLength', language, { min: rules.minLength });
     }
 
-    // Check max length
-    if (rules.maxLength && stringValue.length > rules.maxLength) {
-      return messages.maxLength.replace('{max}', rules.maxLength.toString());
+    if (rules.maxLength && String(value).length > rules.maxLength) {
+      return this.getErrorMessage('maxLength', language, { max: rules.maxLength });
     }
 
-    // Check pattern
-    if (rules.pattern && !rules.pattern.test(stringValue)) {
-      return messages.pattern;
+    // Number range validation
+    if (rules.min !== undefined && Number(value) < rules.min) {
+      return this.getErrorMessage('min', language, { min: rules.min });
     }
 
-    // Check custom validation
-    if (rules.custom) {
-      const customError = rules.custom(value);
-      if (customError) {
-        return customError;
-      }
+    if (rules.max !== undefined && Number(value) > rules.max) {
+      return this.getErrorMessage('max', language, { max: rules.max });
+    }
+
+    // Email validation
+    if (rules.email && !this.isValidEmail(value)) {
+      return this.getErrorMessage('email', language);
+    }
+
+    // Phone validation (Bulgarian)
+    if (rules.phone && !this.isValidBulgarianPhone(value)) {
+      return this.getErrorMessage('phone', language);
+    }
+
+    // URL validation
+    if (rules.url && !this.isValidURL(value)) {
+      return this.getErrorMessage('url', language);
+    }
+
+    // Year validation (1900-current+1)
+    if (rules.year && !this.isValidYear(value)) {
+      return this.getErrorMessage('year', language);
+    }
+
+    // Mileage validation
+    if (rules.mileage && !this.isValidMileage(value)) {
+      return this.getErrorMessage('mileage', language);
+    }
+
+    // Price validation
+    if (rules.price && !this.isValidPrice(value)) {
+      return this.getErrorMessage('price', language);
+    }
+
+    // VIN validation (17 characters)
+    if (rules.vin && !this.isValidVIN(value)) {
+      return this.getErrorMessage('vin', language);
+    }
+
+    // Pattern validation
+    if (rules.pattern && !rules.pattern.test(String(value))) {
+      return this.getErrorMessage('pattern', language);
+    }
+
+    // Custom validation
+    if (rules.custom && !rules.custom(value)) {
+      return this.getErrorMessage('custom', language);
     }
 
     return null;
@@ -131,341 +125,205 @@ export class ValidationService {
   /**
    * Validate multiple fields
    */
-  public validateFields(
+  validateForm(
     data: Record<string, any>,
-    rules: ValidationRules,
+    rules: Record<string, ValidationRule>,
     language: 'bg' | 'en' = 'bg'
   ): ValidationResult {
-    const errors: Record<string, string> = {};
+    const errors: string[] = [];
 
-    for (const [fieldName, fieldRules] of Object.entries(rules)) {
-      const value = data[fieldName];
-      const error = this.validateField(fieldName, value, fieldRules, language);
-      
+    Object.keys(rules).forEach(fieldName => {
+      const error = this.validateField(
+        fieldName,
+        data[fieldName],
+        rules[fieldName],
+        language
+      );
       if (error) {
-        errors[fieldName] = error;
+        errors.push(`${fieldName}: ${error}`);
       }
-    }
+    });
 
     return {
-      isValid: Object.keys(errors).length === 0,
-      errors
+      isValid: errors.length === 0,
+      errors,
     };
   }
 
   /**
-   * Validate user registration data
+   * Helper: Check if value is empty
    */
-  public validateUserRegistration(
-    data: {
-      email: string;
-      password: string;
-      confirmPassword: string;
-      firstName: string;
-      lastName: string;
-      phone?: string;
-      preferredLanguage: 'bg' | 'en';
-    },
-    language: 'bg' | 'en' = 'bg'
-  ): ValidationResult {
-    const rules: ValidationRules = {
-      email: {
-        required: true,
-        pattern: ValidationService.PATTERNS.email
-      },
-      password: {
-        required: true,
-        minLength: 8,
-        pattern: ValidationService.PATTERNS.password
-      },
-      confirmPassword: {
-        required: true,
-        custom: (value) => {
-          if (value !== data.password) {
-            return language === 'bg' 
-              ? 'Паролите не съвпадат'
-              : 'Passwords do not match';
-          }
-          return null;
-        }
-      },
-      firstName: {
-        required: true,
-        minLength: 2,
-        maxLength: 50
-      },
-      lastName: {
-        required: true,
-        minLength: 2,
-        maxLength: 50
-      },
-      phone: {
-        pattern: ValidationService.PATTERNS.phone
-      }
-    };
-
-    return this.validateFields(data, rules, language);
+  private isEmpty(value: unknown): boolean {
+    if (value === null || value === undefined) return true;
+    if (typeof value === 'string') return value.trim() === '';
+    if (Array.isArray(value)) return value.length === 0;
+    if (typeof value === 'object') return Object.keys(value).length === 0;
+    return false;
   }
 
   /**
-   * Validate car listing data
+   * Helper: Validate email format
    */
-  public validateCarListing(
-    data: {
-      make: string;
-      model: string;
-      year: number;
-      price: number;
-      mileage: number;
-      fuelType: string;
-      transmission: string;
-      bodyType: string;
-      color: string;
-      vin?: string;
-      licensePlate?: string;
-      description?: string;
-      location: string;
-    },
-    language: 'bg' | 'en' = 'bg'
-  ): ValidationResult {
-    const currentYear = new Date().getFullYear();
-    const rules: ValidationRules = {
-      make: {
-        required: true,
-        minLength: 2,
-        maxLength: 50
-      },
-      model: {
-        required: true,
-        minLength: 2,
-        maxLength: 50
-      },
-      year: {
-        required: true,
-        custom: (value) => {
-          const year = Number(value);
-          if (isNaN(year) || year < 1900 || year > currentYear + 1) {
-            const messages = ValidationService.ERROR_MESSAGES[language];
-            return messages.validYear.replace('{current}', (currentYear + 1).toString());
-          }
-          return null;
-        }
-      },
-      price: {
-        required: true,
-        custom: (value) => {
-          const price = Number(value);
-          if (isNaN(price) || price < 100 || price > 1000000) {
-            const messages = ValidationService.ERROR_MESSAGES[language];
-            return messages.validPrice;
-          }
-          return null;
-        }
-      },
-      mileage: {
-        required: true,
-        custom: (value) => {
-          const mileage = Number(value);
-          if (isNaN(mileage) || mileage < 0 || mileage > 1000000) {
-            const messages = ValidationService.ERROR_MESSAGES[language];
-            return messages.validMileage;
-          }
-          return null;
-        }
-      },
-      fuelType: {
-        required: true
-      },
-      transmission: {
-        required: true
-      },
-      bodyType: {
-        required: true
-      },
-      color: {
-        required: true,
-        minLength: 2,
-        maxLength: 30
-      },
-      vin: {
-        pattern: ValidationService.PATTERNS.vin
-      },
-      licensePlate: {
-        pattern: ValidationService.PATTERNS.licensePlate
-      },
-      description: {
-        maxLength: 2000
-      },
-      location: {
-        required: true,
-        minLength: 2,
-        maxLength: 100
-      }
-    };
-
-    return this.validateFields(data, rules, language);
+  private isValidEmail(email: string): boolean {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
   }
 
   /**
-   * Validate dealer information
+   * Helper: Validate Bulgarian phone (starts with +359 or 0, 9-10 digits)
    */
-  public validateDealerInfo(
-    data: {
-      companyName: string;
-      taxNumber: string;
-      address: string;
-      city: string;
-      postalCode: string;
-      phone: string;
-      email: string;
-      website?: string;
-    },
-    language: 'bg' | 'en' = 'bg'
-  ): ValidationResult {
-    const rules: ValidationRules = {
-      companyName: {
-        required: true,
-        minLength: 2,
-        maxLength: 100
-      },
-      taxNumber: {
-        required: true,
-        pattern: ValidationService.PATTERNS.taxNumber
-      },
-      address: {
-        required: true,
-        minLength: 5,
-        maxLength: 200
-      },
-      city: {
-        required: true,
-        minLength: 2,
-        maxLength: 50
-      },
-      postalCode: {
-        required: true,
-        pattern: ValidationService.PATTERNS.postalCode
-      },
-      phone: {
-        required: true,
-        pattern: ValidationService.PATTERNS.phone
-      },
-      email: {
-        required: true,
-        pattern: ValidationService.PATTERNS.email
-      },
-      website: {
-        pattern: /^https?:\/\/.+\..+$/
-      }
-    };
-
-    return this.validateFields(data, rules, language);
-  }
-
-  /**
-   * Sanitize input to prevent XSS
-   */
-  public sanitizeInput(input: string): string {
-    return input
-      .replace(/[<>]/g, '') // Remove potential HTML tags
-      .replace(/javascript:/gi, '') // Remove javascript: protocol
-      .replace(/on\w+=/gi, '') // Remove event handlers
-      .trim();
-  }
-
-  /**
-   * Validate and sanitize search query
-   */
-  public validateSearchQuery(query: string, language: 'bg' | 'en' = 'bg'): {
-    isValid: boolean;
-    sanitizedQuery: string;
-    error?: string;
-  } {
-    const sanitized = this.sanitizeInput(query);
+  private isValidBulgarianPhone(phone: string): boolean {
+    // Remove spaces and dashes
+    const cleaned = phone.replace(/[\s-]/g, '');
     
-    if (sanitized.length < 2) {
-      return {
-        isValid: false,
-        sanitizedQuery: '',
-        error: language === 'bg' 
-          ? 'Търсенето трябва да съдържа поне 2 символа'
-          : 'Search must contain at least 2 characters'
-      };
-    }
+    // Bulgarian phone patterns:
+    // +359 XXX XXX XXX (international)
+    // 0XXX XXX XXX (local)
+    const patterns = [
+      /^\+359\d{9}$/,  // +359 followed by 9 digits
+      /^0\d{9}$/,      // 0 followed by 9 digits
+    ];
 
-    if (sanitized.length > 100) {
-      return {
-        isValid: false,
-        sanitizedQuery: '',
-        error: language === 'bg'
-          ? 'Търсенето не може да бъде повече от 100 символа'
-          : 'Search cannot be more than 100 characters'
-      };
-    }
-
-    return {
-      isValid: true,
-      sanitizedQuery: sanitized
-    };
+    return patterns.some(pattern => pattern.test(cleaned));
   }
 
   /**
-   * Validate file upload
+   * Helper: Validate URL format
    */
-  public validateFileUpload(
-    file: File,
-    options: {
-      maxSize?: number; // in bytes
-      allowedTypes?: string[];
-      maxDimensions?: { width: number; height: number };
-    } = {},
-    language: 'bg' | 'en' = 'bg'
-  ): { isValid: boolean; error?: string } {
-    const messages = ValidationService.ERROR_MESSAGES[language];
-
-    // Check file size (default 10MB)
-    const maxSize = options.maxSize || 10 * 1024 * 1024;
-    if (file.size > maxSize) {
-      return {
-        isValid: false,
-        error: language === 'bg'
-          ? `Файлът е твърде голям. Максимален размер: ${Math.round(maxSize / 1024 / 1024)}MB`
-          : `File is too large. Maximum size: ${Math.round(maxSize / 1024 / 1024)}MB`
-      };
+  private isValidURL(url: string): boolean {
+    try {
+      new URL(url);
+      return true;
+    } catch {
+      return false;
     }
+  }
 
-    // Check file type
-    if (options.allowedTypes && !options.allowedTypes.includes(file.type)) {
-      return {
-        isValid: false,
-        error: language === 'bg'
-          ? `Невалиден тип файл. Разрешени типове: ${options.allowedTypes.join(', ')}`
-          : `Invalid file type. Allowed types: ${options.allowedTypes.join(', ')}`
-      };
-    }
+  /**
+   * Helper: Validate year (1900 to current year + 1)
+   */
+  private isValidYear(year: unknown): boolean {
+    const yearNum = Number(year);
+    const currentYear = new Date().getFullYear();
+    return yearNum >= 1900 && yearNum <= currentYear + 1;
+  }
 
-    return { isValid: true };
+  /**
+   * Helper: Validate mileage (0 to 1,000,000 km)
+   */
+  private isValidMileage(mileage: unknown): boolean {
+    const mileageNum = Number(mileage);
+    return mileageNum >= 0 && mileageNum <= 1000000;
+  }
+
+  /**
+   * Helper: Validate price (0 to 10,000,000 BGN)
+   */
+  private isValidPrice(price: unknown): boolean {
+    const priceNum = Number(price);
+    return priceNum >= 0 && priceNum <= 10000000;
+  }
+
+  /**
+   * Helper: Validate VIN (17 alphanumeric characters)
+   */
+  private isValidVIN(vin: string): boolean {
+    // VIN must be exactly 17 characters, alphanumeric (no I, O, Q)
+    const vinRegex = /^[A-HJ-NPR-Z0-9]{17}$/;
+    return vinRegex.test(vin.toUpperCase());
+  }
+
+  /**
+   * Get error message based on type and language
+   */
+  private getErrorMessage(
+    type: string,
+    language: 'bg' | 'en',
+    params?: Record<string, any>
+  ): string {
+    const messages = {
+      bg: {
+        required: 'Това поле е задължително',
+        minLength: `Минимална дължина: ${params?.min} символа`,
+        maxLength: `Максимална дължина: ${params?.max} символа`,
+        min: `Минимална стойност: ${params?.min}`,
+        max: `Максимална стойност: ${params?.max}`,
+        email: 'Невалиден имейл адрес',
+        phone: 'Невалиден телефонен номер (използвайте формат: +359 XXX XXX XXX или 0XXX XXX XXX)',
+        url: 'Невалиден URL адрес',
+        year: 'Невалидна година (трябва да е между 1900 и текущата година)',
+        mileage: 'Невалиден пробег (0 - 1,000,000 км)',
+        price: 'Невалидна цена (0 - 10,000,000 лв)',
+        vin: 'Невалиден VIN номер (трябва да е 17 символа)',
+        pattern: 'Невалиден формат',
+        custom: 'Невалидна стойност',
+      },
+      en: {
+        required: 'This field is required',
+        minLength: `Minimum length: ${params?.min} characters`,
+        maxLength: `Maximum length: ${params?.max} characters`,
+        min: `Minimum value: ${params?.min}`,
+        max: `Maximum value: ${params?.max}`,
+        email: 'Invalid email address',
+        phone: 'Invalid phone number (use format: +359 XXX XXX XXX or 0XXX XXX XXX)',
+        url: 'Invalid URL',
+        year: 'Invalid year (must be between 1900 and current year)',
+        mileage: 'Invalid mileage (0 - 1,000,000 km)',
+        price: 'Invalid price (0 - 10,000,000 BGN)',
+        vin: 'Invalid VIN number (must be 17 characters)',
+        pattern: 'Invalid format',
+        custom: 'Invalid value',
+      },
+    };
+
+    return messages[language][type as keyof typeof messages.bg] || messages[language].custom;
+  }
+
+  /**
+   * Validate VehicleData form (specific to car selling workflow)
+   */
+  validateVehicleData(data: Record<string, unknown>, language: 'bg' | 'en' = 'bg'): ValidationResult {
+    const rules: Record<string, ValidationRule> = {
+      make: { required: true },
+      model: { required: true },
+      year: { required: true, year: true },
+      mileage: { required: true, mileage: true },
+      fuelType: { required: true },
+      transmission: { required: true },
+      bodyType: { required: true },
+      color: { required: true },
+      engineSize: { min: 0, max: 10000 },
+      power: { min: 0, max: 2000 },
+    };
+
+    return this.validateForm(data, rules, language);
+  }
+
+  /**
+   * Validate pricing form
+   */
+  validatePricing(data: Record<string, unknown>, language: 'bg' | 'en' = 'bg'): ValidationResult {
+    const rules: Record<string, ValidationRule> = {
+      price: { required: true, price: true },
+      currency: { required: true },
+    };
+
+    return this.validateForm(data, rules, language);
+  }
+
+  /**
+   * Validate contact form
+   */
+  validateContact(data: Record<string, unknown>, language: 'bg' | 'en' = 'bg'): ValidationResult {
+    const rules: Record<string, ValidationRule> = {
+      name: { required: true, minLength: 2, maxLength: 100 },
+      email: { required: true, email: true },
+      phone: { required: true, phone: true },
+    };
+
+    return this.validateForm(data, rules, language);
   }
 }
 
-// Export singleton instance
-export const validator = ValidationService.getInstance();
-
-// Helper functions
-export const validateUserRegistration = (
-  data: any,
-  language: 'bg' | 'en' = 'bg'
-): ValidationResult => {
-  return validator.validateUserRegistration(data, language);
-};
-
-export const validateCarListing = (
-  data: any,
-  language: 'bg' | 'en' = 'bg'
-): ValidationResult => {
-  return validator.validateCarListing(data, language);
-};
-
-export const sanitizeInput = (input: string): string => {
-  return validator.sanitizeInput(input);
-};
+export const validationService = ValidationService.getInstance();
+export default validationService;

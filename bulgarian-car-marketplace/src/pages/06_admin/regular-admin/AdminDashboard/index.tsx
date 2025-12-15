@@ -267,14 +267,39 @@ const AdminDashboard: React.FC = () => {
   });
   
   // حالات إضافية لكل تبويب
-  const [messages, setMessages] = useState<any[]>([]);
-  const [reports, setReports] = useState<any[]>([]);
-  const [permissions, setPermissions] = useState<any[]>([]);
-  const [roles, setRoles] = useState<any[]>([]);
-  const [auditLogs, setAuditLogs] = useState<any[]>([]);
+  interface MessageItem {
+    id: string;
+    [key: string]: unknown;
+  }
+  
+  interface ReportItem {
+    id: string;
+    [key: string]: unknown;
+  }
+  
+  interface PermissionItem {
+    id: string;
+    [key: string]: unknown;
+  }
+  
+  interface RoleItem {
+    id: string;
+    [key: string]: unknown;
+  }
+  
+  interface AuditLogItem {
+    id: string;
+    [key: string]: unknown;
+  }
+
+  const [messages, setMessages] = useState<MessageItem[]>([]);
+  const [reports, setReports] = useState<ReportItem[]>([]);
+  const [permissions, setPermissions] = useState<PermissionItem[]>([]);
+  const [roles, setRoles] = useState<RoleItem[]>([]);
+  const [auditLogs, setAuditLogs] = useState<AuditLogItem[]>([]);
   const [exportedData, setExportedData] = useState<string>('');
-  const [ownerStats, setOwnerStats] = useState<any>({});
-  const [systemSettings, setSystemSettings] = useState<any>({});
+  const [ownerStats, setOwnerStats] = useState<Record<string, unknown>>({});
+  const [systemSettings, setSystemSettings] = useState<Record<string, unknown>>({});
   const [loadingTab, setLoadingTab] = useState<string>('');
 
   // تحميل بيانات التبويبات عند التغيير

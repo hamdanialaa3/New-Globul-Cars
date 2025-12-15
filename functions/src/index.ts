@@ -12,11 +12,11 @@ admin.initializeApp();
 // وظائف الاشتراكات والفواتير (تكامل Stripe)
 // ============================================
 // NOTE: Stripe functions commented out until STRIPE_SECRET_KEY is configured
-// export { createCheckoutSession } from './subscriptions/createCheckoutSession';
-// export { verifyCheckoutSession } from './subscriptions/verifyCheckoutSession';
-// export { stripeWebhook } from './subscriptions/stripeWebhook';
-// export { cancelSubscription } from './subscriptions/cancelSubscription';
-// export { getSubscriptionStatus } from './subscriptions/getSubscriptionStatus';
+export { createCheckoutSession } from './subscriptions/createCheckoutSession';
+export { verifyCheckoutSession } from './subscriptions/verifyCheckoutSession';
+export { stripeWebhook } from './subscriptions/stripeWebhook';
+export { cancelSubscription } from './subscriptions/cancelSubscription';
+export { getSubscriptionStatus } from './subscriptions/getSubscriptionStatus';
 
 // ============================================
 // Verification Functions

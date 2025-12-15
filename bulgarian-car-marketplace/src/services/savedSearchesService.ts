@@ -52,7 +52,7 @@ export interface SavedSearchFilters {
   color?: string;
   doors?: number;
   seats?: number;
-  [key: string]: any;
+  [key: string]: string | number | boolean | string[] | undefined;
 }
 
 export interface SavedSearch {

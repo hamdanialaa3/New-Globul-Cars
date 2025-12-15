@@ -126,11 +126,16 @@ const AddButton = styled.button`
   }
 `;
 
+interface DataItem {
+  id: string;
+  [key: string]: unknown;
+}
+
 const RealDataManager: React.FC = () => {
   const [activeTab, setActiveTab] = useState('users');
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<DataItem[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [editData, setEditData] = useState<any>({});
+  const [editData, setEditData] = useState<Record<string, unknown>>({});
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {

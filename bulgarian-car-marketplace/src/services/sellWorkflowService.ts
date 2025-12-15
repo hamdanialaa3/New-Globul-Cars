@@ -17,6 +17,7 @@ import { CarListing } from '../types/CarListing';
 import LocationHelperService from './location-helper-service';
 import { logger } from './logger-service';
 import { serviceLogger } from './logger-wrapper';
+import { rateLimiter, RATE_LIMIT_CONFIGS } from './rate-limiting/rateLimiter.service';
 
 // Extended location structure for new system
 export interface EnhancedLocation {
@@ -33,6 +34,35 @@ export interface EnhancedLocation {
   region?: string;
   postalCode?: string;
   address?: string;
+}
+
+// Workflow data structure
+export interface WorkflowData {
+  vehicleType?: string;
+  sellerType?: string;
+  make?: string;
+  model?: string;
+  year?: number | string;
+  mileage?: number | string;
+  fuelType?: string;
+  transmission?: string;
+  region?: string;
+  locationData?: {
+    cityName?: string;
+    cityId?: string;
+  };
+  postalCode?: string;
+  sellerName?: string;
+  sellerEmail?: string;
+  sellerPhone?: string;
+  images?: string[] | string | number;
+  imagesCount?: number;
+  price?: number | string;
+  safety?: Record<string, unknown>;
+  comfort?: Record<string, unknown>;
+  infotainment?: Record<string, unknown>;
+  extras?: Record<string, unknown>;
+  [key: string]: unknown;
 }
 
 export class SellWorkflowService {
@@ -61,32 +91,33 @@ export class SellWorkflowService {
    * ✅ FIX: Made public for use in edit mode
    */
   static transformWorkflowData(
-    workflowData: any,
+    workflowDataInput: WorkflowData,
     userId: string
-  ): any {
+  ): Partial<CarListing> {
+    const workflowData = workflowDataInput as any;
     // ✅ FIXED: Use REGION as primary location (not city!)
     // Region = المحافظة (للبرمجة)
     // City = المدينة التابعة (للجمال فقط)
-    
+
     const regionName = workflowData.region; // e.g., "Варна"
     const cityName = workflowData.locationData?.cityName; // e.g., "Аксаково" (decorative only)
     const postalCode = workflowData.postalCode; // decorative only
-    
+
     // Find region in BULGARIAN_CITIES (case-insensitive, flexible matching)
     const normalizeString = (str: string) => str?.toLowerCase().trim().replace(/\s+/g, ' ');
     const regionData = regionName
       ? BULGARIAN_CITIES.find(
-      c => normalizeString(c.nameBg) === normalizeString(regionName) || 
-           normalizeString(c.nameEn) === normalizeString(regionName) || 
-           c.id === regionName?.toLowerCase().replace(/\s+/g, '-')
+        c => normalizeString(c.nameBg) === normalizeString(regionName) ||
+          normalizeString(c.nameEn) === normalizeString(regionName) ||
+          c.id === regionName?.toLowerCase().replace(/\s+/g, '-')
       )
       : null;
-    
+
     if (regionData) {
-      logger.info('Location processed successfully', { 
-        region: regionData.id, 
+      logger.info('Location processed successfully', {
+        region: regionData.id,
         regionName: regionData.nameBg,
-        city: cityName 
+        city: cityName
       });
     } else if (regionName) {
       logger.warn('Region not found in reference list, continuing without mapped region', {
@@ -95,10 +126,12 @@ export class SellWorkflowService {
     }
 
     // Parse arrays from comma-separated strings OR arrays
-    const parseArray = (str: string | string[] | undefined): string[] => {
+    const parseArray = (str: unknown): string[] => {
       if (!str) return [];
-      // If already an array, return it
-      if (Array.isArray(str)) return str;
+      // If already an array, return it (map elements to string just in case)
+      if (Array.isArray(str)) return str.map(String);
+      // If number, convert to string array
+      if (typeof str === 'number') return [String(str)];
       // If string, split it
       if (typeof str === 'string') {
         return str.split(',').map(s => s.trim()).filter(s => s);
@@ -115,8 +148,8 @@ export class SellWorkflowService {
       vehicleType: workflowData.vehicleType || 'car',
       make: workflowData.make || '',
       model: workflowData.model || '',
-      year: parseInt(workflowData.year || '0'),
-      mileage: parseInt(workflowData.mileage || '0'),
+      year: parseInt(String(workflowData.year || '0')),
+      mileage: parseInt(String(workflowData.mileage || '0')),
       fuelType: workflowData.fuelType || workflowData.fm || '',
       transmission: workflowData.transmission || 'Manual',
       power: workflowData.power ? parseInt(workflowData.power) : undefined, // in hp
@@ -126,7 +159,7 @@ export class SellWorkflowService {
       exteriorColor: workflowData.exteriorColor || workflowData.color,
       description: workflowData.description || '',
       searchKeywords: workflowData.searchKeywords || workflowData.description || '', // For search in description
-      
+
       // ⭐ Vehicle Details
       seats: workflowData.seats?.toString(),
       numberOfSeats: workflowData.seats ? parseInt(workflowData.seats) : (workflowData.numberOfSeats ? parseInt(workflowData.numberOfSeats) : undefined),
@@ -139,21 +172,25 @@ export class SellWorkflowService {
       // Body Type - نوع الهيكل
       bodyType: workflowData.bodyType || (workflowData.bodyTypeOther ? 'other' : ''),
       bodyTypeOther: workflowData.bodyTypeOther || '',
-      
+
       // ⭐ Registration & Inspection
-      firstRegistrationDate: workflowData.firstRegistration 
-        ? new Date(workflowData.firstRegistration) 
-        : (workflowData.firstRegistrationDate ? new Date(workflowData.firstRegistrationDate) : undefined),
-      firstRegistration: workflowData.firstRegistration 
-        ? new Date(workflowData.firstRegistration) 
+      firstRegistrationDate: (workflowData.firstRegistration && !isNaN(new Date(workflowData.firstRegistration).getTime()))
+        ? new Date(workflowData.firstRegistration)
+        : ((workflowData.firstRegistrationDate && !isNaN(new Date(workflowData.firstRegistrationDate).getTime()))
+          ? new Date(workflowData.firstRegistrationDate)
+          : undefined),
+      firstRegistration: (workflowData.firstRegistration && !isNaN(new Date(workflowData.firstRegistration).getTime()))
+        ? new Date(workflowData.firstRegistration)
         : undefined,
-      inspectionValidUntil: workflowData.huValid 
-        ? new Date(workflowData.huValid) 
-        : (workflowData.inspectionValidUntil ? new Date(workflowData.inspectionValidUntil) : undefined),
-      huValid: workflowData.huValid 
-        ? new Date(workflowData.huValid) 
+      inspectionValidUntil: (workflowData.huValid && !isNaN(new Date(workflowData.huValid).getTime()))
+        ? new Date(workflowData.huValid)
+        : ((workflowData.inspectionValidUntil && !isNaN(new Date(workflowData.inspectionValidUntil).getTime()))
+          ? new Date(workflowData.inspectionValidUntil)
+          : undefined),
+      huValid: (workflowData.huValid && !isNaN(new Date(workflowData.huValid).getTime()))
+        ? new Date(workflowData.huValid)
         : undefined,
-      
+
       // ⭐ Technical Details
       fuelTankCapacity: workflowData.fuelTankVolume ? parseFloat(workflowData.fuelTankVolume) : (workflowData.fuelTankCapacity ? parseFloat(workflowData.fuelTankCapacity) : undefined),
       fuelTankVolumeL: workflowData.fuelTankVolume ? parseFloat(workflowData.fuelTankVolume) : undefined,
@@ -165,11 +202,11 @@ export class SellWorkflowService {
       weight: workflowData.weight ? parseFloat(workflowData.weight) : undefined,
       weightKg: workflowData.weight ? parseFloat(workflowData.weight) : (workflowData.weightKg ? parseFloat(workflowData.weightKg) : undefined),
       fuelConsumption: workflowData.fuelConsumption ? parseFloat(workflowData.fuelConsumption) : undefined, // l/100km
-      
+
       // ⭐ Colors
       interiorColor: workflowData.interiorColor || '',
       interiorMaterial: workflowData.interiorMaterial || '',
-      
+
       // ⭐ Exterior Features
       trailerCoupling: workflowData.trailerCoupling === 'true' || workflowData.trailerCoupling === true || workflowData.towbar !== 'none',
       towbar: workflowData.towbar || (workflowData.trailerCoupling === 'true' ? 'fixed' : 'none'),
@@ -179,26 +216,26 @@ export class SellWorkflowService {
       parkingSensors: parseArray(workflowData.parkingSensors),
       parkingAssist: parseArray(workflowData.parkingAssist || workflowData.parkingSensors),
       cruiseControl: workflowData.cruiseControl || '',
-      
+
       // ⭐ Interior Features
       airbags: workflowData.airbags || '',
       airConditioning: workflowData.airConditioning || workflowData.climateControl || '',
       climateControl: workflowData.climateControl || workflowData.airConditioning || '',
-      
+
       // History
       accidentHistory: workflowData.hasAccidentHistory === 'true' || workflowData.accidentHistory === true,
       serviceHistory: workflowData.hasServiceHistory === 'true' || workflowData.serviceHistory === true,
       fullServiceHistory: workflowData.fullServiceHistory === 'true' || workflowData.fullServiceHistory === true,
       roadworthy: workflowData.roadworthy !== 'false' && workflowData.roadworthy !== false && (workflowData.isRoadworthy !== false),
-      
+
       // Equipment Arrays
       safetyEquipment: parseArray(workflowData.safety),
       comfortEquipment: parseArray(workflowData.comfort),
       infotainmentEquipment: parseArray(workflowData.infotainment),
       extras: parseArray(workflowData.extras),
-      
+
       // Pricing
-      price: parseFloat(workflowData.price || '0'),
+      price: parseFloat(String(workflowData.price || '0')),
       currency: workflowData.currency || 'EUR',
       priceType: workflowData.priceType || 'fixed',
       paymentType: workflowData.paymentType || '',
@@ -211,7 +248,7 @@ export class SellWorkflowService {
       additionalCosts: workflowData.additionalCosts,
       vatDeductible: workflowData.vatDeductible === 'true' || workflowData.vatDeductible === true,
       vatReclaimable: workflowData.vatReclaimable === 'true' || workflowData.vatReclaimable === true || workflowData.vatDeductible === 'true',
-      
+
       // Seller Information
       sellerType: workflowData.sellerType || 'private',
       sellerName: workflowData.sellerName || '',
@@ -221,7 +258,7 @@ export class SellWorkflowService {
       preferredContact: parseArray(workflowData.preferredContact),
       availableHours: workflowData.availableHours,
       additionalInfo: workflowData.additionalInfo,
-      
+
       // ⭐ Offer Details
       dealerRating: workflowData.dealerRating ? parseFloat(workflowData.dealerRating) : undefined,
       adOnlineSince: workflowData.createdAt ? new Date(workflowData.createdAt) : new Date(), // Will be set to createdAt
@@ -237,19 +274,19 @@ export class SellWorkflowService {
       isDamaged: workflowData.isDamaged === 'true' || workflowData.isDamaged === true || !!workflowData.damagedVehicles,
       commercial: workflowData.commercial === 'true' || workflowData.commercial === true,
       approvedUsedProgramme: workflowData.approvedUsedProgramme || '',
-      
+
       // Location - SIMPLE: Use region as primary field
       region: regionData?.id || '',
       regionNameBg: regionData?.nameBg || '',
       regionNameEn: regionData?.nameEn || '',
-      
+
       // City and postal code (decorative only - not used for filtering)
       city: cityName || '', // e.g., 'Аксаково' - decorative ❌
       postalCode: postalCode || '',
-      
+
       // Coordinates from region
       coordinates: regionData?.coordinates,
-      
+
       // System Fields
       status: 'active' as const,
       isActive: true,  // ✅ CRITICAL FIX: Add isActive for visibility
@@ -283,27 +320,27 @@ export class SellWorkflowService {
           isBlob: f instanceof Blob
         }))
       });
-      
+
       const uploadPromises = imageFiles.map(async (file, index) => {
         const timestamp = Date.now();
         const fileName = `${timestamp}_${index}_${file.name}`;
         const imageRef = ref(storage, `cars/${carId}/images/${fileName}`);
-        
+
         serviceLogger.debug(`Uploading image ${index + 1}/${imageFiles.length}`, {
           fileName,
           size: file.size,
           type: file.type,
           path: `cars/${carId}/images/${fileName}`
         });
-        
+
         const snapshot = await uploadBytes(imageRef, file);
         const downloadUrl = await getDownloadURL(snapshot.ref);
-        
+
         serviceLogger.debug(`Image ${index + 1} uploaded successfully`, {
           fileName,
           downloadUrl: downloadUrl.substring(0, 100) + '...'
         });
-        
+
         return downloadUrl;
       });
 
@@ -316,7 +353,7 @@ export class SellWorkflowService {
           url: url.substring(0, 100) + '...'
         }))
       });
-      
+
       return imageUrls;
     } catch (error) {
       serviceLogger.error('uploadCarImages FAILED', error as Error, { carId, imageCount: imageFiles.length });
@@ -329,11 +366,28 @@ export class SellWorkflowService {
    * ✅ TRANSACTIONAL: Ensures limits are enforced atomically
    */
   static async createCarListing(
-    workflowData: any,
+    workflowData: WorkflowData,
     userId: string,
     imageFiles?: File[]
   ): Promise<string> {
     try {
+      // Rate limiting check
+      const rateLimit = rateLimiter.checkRateLimit(
+        userId,
+        'createCar',
+        RATE_LIMIT_CONFIGS.createCar
+      );
+
+      if (!rateLimit.allowed) {
+        serviceLogger.warn('Rate limit exceeded for createCar', {
+          userId,
+          resetTime: rateLimit.resetTime
+        });
+        throw new Error(
+          `Rate limit exceeded. You can create up to ${RATE_LIMIT_CONFIGS.createCar.maxRequests} cars per hour. Please wait ${Math.ceil((rateLimit.resetTime - Date.now()) / 1000 / 60)} minutes before creating another listing.`
+        );
+      }
+
       serviceLogger.debug('createCarListing called', {
         userId,
         hasMake: !!workflowData.make,
@@ -348,7 +402,7 @@ export class SellWorkflowService {
           isBlob: f instanceof Blob
         }))
       });
-      
+
       serviceLogger.info('Starting car listing creation', { userId, hasMake: !!workflowData.make, hasModel: !!workflowData.model });
       serviceLogger.debug('Workflow data received', { make: workflowData.make, model: workflowData.model, year: workflowData.year });
 
@@ -362,15 +416,15 @@ export class SellWorkflowService {
 
       // Get the appropriate collection name based on vehicle type
       const collectionName = this.getCollectionNameForVehicleType(carData.vehicleType || 'car');
-      serviceLogger.info('Using collection for vehicle type', { 
-        vehicleType: carData.vehicleType, 
-        collectionName 
+      serviceLogger.info('Using collection for vehicle type', {
+        vehicleType: carData.vehicleType,
+        collectionName
       });
 
       // Calculate adOnlineSinceDays from createdAt (will be 0 for new ads)
       const now = new Date();
       const adOnlineSince = carData.adOnlineSince || now;
-      
+
       // Prepare car document reference
       const carRef = doc(collection(db, collectionName));
       const carId = carRef.id;
@@ -401,11 +455,11 @@ export class SellWorkflowService {
 
         // 2. Check Limits (Unified PlanTier)
         const LIMITS: Record<string, number> = {
-          'free': 3,
-          'dealer': 10,
+          'free': 100, // Increased limit as requested
+          'dealer': 100,
           'company': -1
         };
-        
+
         const limit = LIMITS[planTier] !== undefined ? LIMITS[planTier] : 3;
 
         if (limit !== -1 && activeListings >= limit) {
@@ -414,7 +468,7 @@ export class SellWorkflowService {
 
         // 3. Writes
         transaction.set(carRef, finalCarData);
-        
+
         // Atomic increment
         transaction.update(userRef, {
           'stats.activeListings': activeListings + 1,
@@ -423,13 +477,13 @@ export class SellWorkflowService {
         });
       });
 
-      serviceLogger.info('Car listing created with ID via transaction', { 
-        carId, 
-        userId, 
-        make: carData.make, 
+      serviceLogger.info('Car listing created with ID via transaction', {
+        carId,
+        userId,
+        make: carData.make,
         model: carData.model,
         vehicleType: carData.vehicleType,
-        collectionName 
+        collectionName
       });
 
       // Upload images if provided
@@ -444,20 +498,20 @@ export class SellWorkflowService {
             isFile: f instanceof File
           }))
         });
-        
+
         serviceLogger.info('Starting image upload', { carId, imageCount: imageFiles.length, imageFiles: imageFiles.map(f => ({ name: f.name, size: f.size, type: f.type })) });
-        
+
         try {
           serviceLogger.debug('Calling uploadCarImages');
           const imageUrls = await this.uploadCarImages(carId, imageFiles, carData.vehicleType);
           serviceLogger.info('Images uploaded successfully', { carId, imageCount: imageUrls.length, imageUrls });
-          
+
           serviceLogger.debug('Updating Firestore with image URLs', {
             collectionName,
             carId,
             imageUrlsCount: imageUrls.length
           });
-          
+
           // Update the listing with image URLs in the correct collection
           await updateDoc(doc(db, collectionName, carId), {
             images: imageUrls,
@@ -510,11 +564,11 @@ export class SellWorkflowService {
     try {
       // Use provided collection name or default to 'cars'
       const targetCollection = collectionName || this.collectionName;
-      
+
       serviceLogger.info('Updating car listing', { carId, collectionName: targetCollection, updateKeys: Object.keys(updates) });
-      
+
       const docRef = doc(db, targetCollection, carId);
-      
+
       await updateDoc(docRef, {
         ...updates,
         updatedAt: serverTimestamp()
@@ -531,7 +585,7 @@ export class SellWorkflowService {
    * Validate workflow data completeness
    * ⚡ FLEXIBLE: Allows publishing with missing fields
    */
-  static validateWorkflowData(workflowData: any, strict: boolean = false): {
+  static validateWorkflowData(workflowData: WorkflowData, strict: boolean = false): {
     isValid: boolean;
     missingFields: string[];
     criticalMissing: boolean;
@@ -575,7 +629,7 @@ export class SellWorkflowService {
       missingFields.push('Images (Снимки) - Recommended');
       // Don't set criticalMissing = true for images - they're recommended, not required
     }
-    
+
     // Check recommended fields (only if strict mode)
     if (strict) {
       for (const field of recommendedFields) {
@@ -583,7 +637,7 @@ export class SellWorkflowService {
           missingFields.push(field.label);
         }
       }
-      
+
       // Check location (only in strict mode)
       if (!workflowData.region && !workflowData.locationData?.cityName) {
         missingFields.push('Location (Местоположение)');
@@ -600,7 +654,7 @@ export class SellWorkflowService {
   /**
    * Get workflow progress percentage
    */
-  static getWorkflowProgress(workflowData: any): number {
+  static getWorkflowProgress(workflowData: WorkflowData): number {
     const totalSteps = 8; // vehicleType, sellerType, vehicleData, equipment, images, pricing, contact, location
     let completedSteps = 0;
 

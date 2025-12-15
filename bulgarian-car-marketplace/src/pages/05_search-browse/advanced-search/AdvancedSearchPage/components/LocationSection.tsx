@@ -79,8 +79,21 @@ export const LocationSection: React.FC<LocationSectionProps> = ({
             {/* Only show City dropdown when Bulgaria is selected or no country selected */}
             {isBulgariaSelected && (
               <FormGroup>
-                <label>{t('advancedSearch.locationData?.cityName')}</label>
-                <SearchSelect name="city" value={searchData.locationData?.cityName || ''} onChange={onChange}>
+                <label>{t('advancedSearch.city') || 'City'}</label>
+                <SearchSelect 
+                  name="city" 
+                  value={searchData.city || ''} 
+                  onChange={(e) => {
+                    const event = {
+                      target: {
+                        name: 'city',
+                        value: e.target.value,
+                        type: 'select-one'
+                      }
+                    } as React.ChangeEvent<HTMLSelectElement>;
+                    onChange(event);
+                  }}
+                >
                   <option value="">{t('advancedSearch.all')}</option>
                   {bulgarianCities.map(city => (
                     <option key={city} value={city}>{city}</option>
@@ -104,10 +117,20 @@ export const LocationSection: React.FC<LocationSectionProps> = ({
                 <input
                   type="checkbox"
                   name="deliveryOffers"
-                  checked={searchData.deliveryOffers}
-                  onChange={onChange}
+                  checked={searchData.deliveryOffers || false}
+                  onChange={(e) => {
+                    const event = {
+                      target: {
+                        name: 'deliveryOffers',
+                        value: e.target.checked,
+                        type: 'checkbox',
+                        checked: e.target.checked
+                      }
+                    } as React.ChangeEvent<HTMLInputElement>;
+                    onChange(event);
+                  }}
                 />
-                <CustomCheckbox checked={searchData.deliveryOffers} />
+                <CustomCheckbox checked={searchData.deliveryOffers || false} />
                 {t('advancedSearch.onlyDeliveryOffers')}
               </CheckboxLabel>
             </FormGroup>

@@ -1,12 +1,14 @@
-// Sell Vehicle Step 6: Contact
-// الخطوة 6: معلومات الاتصال
+// Sell Vehicle Step 6: Contact & Location
+// الخطوة 6: معلومات الاتصال والموقع
 
-import React, { useEffect, useMemo } from 'react';
-import styled from 'styled-components';
+import React, { useEffect, useMemo, useState } from 'react';
+import styled, { keyframes } from 'styled-components';
 import { useLanguage } from '../../../contexts/LanguageContext';
 import { SellWorkflowData } from '../../../hooks/useSellWorkflow';
 import { BULGARIA_REGIONS, getCitiesByRegion } from '../../../data/bulgaria-locations';
 import { getPostalCodesForCity } from '../../../data/bulgaria-postal-codes';
+import { ALL_COUNTRIES } from '../../../data/country-codes';
+import { Check, AlertCircle } from 'lucide-react';
 
 interface SellVehicleStep6Props {
   workflowData: SellWorkflowData;
@@ -22,21 +24,17 @@ const FormContainer = styled.div`
   padding-right: 0.5rem;
   
   &::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
   }
   
   &::-webkit-scrollbar-track {
     background: var(--bg-secondary);
-    border-radius: 4px;
+    border-radius: 3px;
   }
   
   &::-webkit-scrollbar-thumb {
     background: var(--border);
-    border-radius: 4px;
-    
-    &:hover {
-      background: var(--text-tertiary);
-    }
+    border-radius: 3px;
   }
 `;
 
@@ -44,19 +42,22 @@ const FieldGroup = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  position: relative;
 `;
 
 const Label = styled.label`
   font-size: 0.95rem;
   font-weight: 600;
   color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 `;
 
-const Input = styled.input`
+const Input = styled.input<{ $valid?: boolean; $error?: boolean }>`
   width: 100%;
-  max-width: 450px;
   padding: 0.75rem 1rem;
-  border: 2px solid var(--border);
+  border: 2px solid ${props => props.$error ? '#ef4444' : props.$valid ? '#22c55e' : 'var(--border)'};
   border-radius: 10px;
   background: var(--bg-card);
   color: var(--text-primary);
@@ -65,14 +66,18 @@ const Input = styled.input`
   
   &:focus {
     outline: none;
-    border-color: var(--accent-primary);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    border-color: ${props => props.$error ? '#ef4444' : props.$valid ? '#22c55e' : 'var(--accent-primary)'};
+    box-shadow: 0 0 0 3px ${props => props.$error ? 'rgba(239, 68, 68, 0.1)' : props.$valid ? 'rgba(34, 197, 94, 0.1)' : 'rgba(59, 130, 246, 0.1)'};
+  }
+
+  &::placeholder {
+    color: var(--text-tertiary);
+    opacity: 0.5;
   }
 `;
 
 const Select = styled.select`
   width: 100%;
-  max-width: 450px;
   padding: 0.75rem 1rem;
   border: 2px solid var(--border);
   border-radius: 10px;
@@ -89,121 +94,286 @@ const Select = styled.select`
   }
   
   &:disabled {
-    opacity: 0.5;
+    opacity: 0.6;
     cursor: not-allowed;
+    background: var(--bg-secondary);
   }
-`;
-
-const SectionDivider = styled.hr`
-  border: none;
-  height: 1px;
-  background: var(--border);
-  margin: 1rem 0;
-  opacity: 0.3;
 `;
 
 const SectionTitle = styled.h3`
   font-size: 1.1rem;
   font-weight: 700;
   color: var(--text-primary);
-  margin: 0.5rem 0;
+  margin: 1rem 0 0.5rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
 `;
+
+const ErrorText = styled.span`
+  color: #ef4444;
+  font-size: 0.8rem;
+  margin-top: -0.25rem;
+`;
+
+// Phone Input Styles
+const PhoneInputGroup = styled.div`
+  display: flex;
+  gap: 0.5rem;
+`;
+
+const CountrySelectContainer = styled.div`
+  position: relative;
+  min-width: 140px;
+  max-width: 160px;
+`;
+
+const CountrySelectStyled = styled.select`
+  width: 100%;
+  height: 100%;
+  padding: 0.75rem 0.5rem 0.75rem 2.8rem; /* Space for flag */
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  cursor: pointer;
+  appearance: none;
+  text-overflow: ellipsis;
+  
+  &:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+  }
+`;
+
+const FlagIcon = styled.span`
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.4rem;
+  pointer-events: none;
+`;
+
+const PhoneInputStyled = styled(Input)`
+  /* No special styles needed beyond Input */
+`;
+
+// Animation Components
+const pulseAnimation = keyframes`
+  0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+`;
+
+const AttentionPulse = styled.div<{ $isActive: boolean }>`
+  border-radius: 12px;
+  animation: ${props => props.$isActive ? pulseAnimation : 'none'} 2s infinite;
+  transition: all 0.3s ease;
+  width: 100%;
+`;
+
+const RevealWrapper: React.FC<{ children: React.ReactNode; isActive?: boolean }> = ({ children, isActive = true }) => {
+  const ref = React.useRef<HTMLDivElement>(null);
+  const [internalActive, setInternalActive] = useState(isActive);
+
+  useEffect(() => {
+    if (isActive && ref.current) {
+      ref.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+    setInternalActive(isActive);
+  }, [isActive]);
+
+  const handleInteraction = () => {
+    setInternalActive(false);
+  };
+
+  return (
+    <AttentionPulse
+      ref={ref}
+      $isActive={internalActive}
+      onClick={handleInteraction}
+      onFocus={handleInteraction}
+    >
+      <FieldGroup>{children}</FieldGroup>
+    </AttentionPulse>
+  );
+};
 
 export const SellVehicleStep6: React.FC<SellVehicleStep6Props> = ({
   workflowData,
   onUpdate,
 }) => {
   const { language } = useLanguage();
+  const [emailError, setEmailError] = useState('');
+  const [phonePrefix, setPhonePrefix] = useState('+359');
 
-  // Get available cities based on selected region
+  // Initialize phone prefix based on current workflow data if exists
+  useEffect(() => {
+    if (workflowData.sellerPhone) {
+      // Find matching prefix
+      // Sort by length desc to match longest prefix first (e.g. +1 vs +1-246)
+      const sortedCodes = [...ALL_COUNTRIES].sort((a, b) => b.dial.length - a.dial.length);
+      const match = sortedCodes.find(c => workflowData.sellerPhone?.startsWith(c.dial));
+      if (match) {
+        setPhonePrefix(match.dial);
+      }
+    }
+  }, []); // Run once on mount
+
+  // Validation Regex
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+  const validateEmail = (email: string) => {
+    if (!email) return '';
+    if (!emailRegex.test(email)) {
+      return language === 'bg' ? 'Моля въведете валиден имейл адрес' : 'Please enter a valid email address';
+    }
+    return '';
+  };
+
+  const handlEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const email = e.target.value;
+    onUpdate({ sellerEmail: email });
+    if (email) {
+      setEmailError(validateEmail(email));
+    } else {
+      setEmailError('');
+    }
+  };
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // Only allow numbers and spaces
+    if (/^[\d\s]*$/.test(value)) {
+      // Clean display value to just numbers for storage check, but keep spaces for display
+      const cleanValue = value.replace(/\s/g, '');
+      // Update parent with FULL number (prefix + value)
+      // Note: we store it with space for readability: "+359 888123456"
+      onUpdate({ sellerPhone: `${phonePrefix} ${value}` });
+    }
+  };
+
+  // Extract number without prefix for display props
+  const getDisplayPhone = () => {
+    if (!workflowData.sellerPhone) return '';
+    // If it starts with current prefix, strip it
+    if (workflowData.sellerPhone.startsWith(phonePrefix)) {
+      let num = workflowData.sellerPhone.substring(phonePrefix.length).trim();
+      return num;
+    }
+    return workflowData.sellerPhone; // Fallback
+  };
+
+  // Memoized lists
   const availableCities = useMemo(() => {
     if (!workflowData.region) return [];
     return getCitiesByRegion(workflowData.region, language as 'bg' | 'en');
   }, [workflowData.region, language]);
 
-  // Get available postal codes based on selected city
   const availablePostalCodes = useMemo(() => {
-    if (!workflowData.locationData?.cityName || !workflowData.region) return [];
-    return getPostalCodesForCity(workflowData.locationData?.cityName, workflowData.region);
-  }, [workflowData.locationData?.cityName, workflowData.region]);
+    // Check both potential locations for City Name
+    const city = workflowData.locationData?.cityName || workflowData.city;
+    if (!city || !workflowData.region) return [];
+    return getPostalCodesForCity(city, workflowData.region);
+  }, [workflowData.locationData?.cityName, workflowData.city, workflowData.region]);
 
-  // Clear city and postal code when region changes
-  useEffect(() => {
-    if (workflowData.region && workflowData.locationData?.cityName) {
-      const cities = getCitiesByRegion(workflowData.region, language as 'bg' | 'en');
-      if (!cities.some(c => c.name === workflowData.locationData?.cityName)) {
-        onUpdate({ city: '', postalCode: '' });
-      }
-    }
-  }, [workflowData.region, language, onUpdate, workflowData.locationData?.cityName]);
-
-  // Clear postal code when city changes
-  useEffect(() => {
-    if (workflowData.locationData?.cityName && workflowData.postalCode) {
-      const postalCodes = getPostalCodesForCity(workflowData.locationData?.cityName, workflowData.region || '');
-      if (!postalCodes.some(pc => pc.code === workflowData.postalCode)) {
-        onUpdate({ postalCode: '' });
-      }
-    }
-  }, [workflowData.locationData?.cityName, workflowData.region, onUpdate, workflowData.postalCode]);
+  const currentFlag = useMemo(() => {
+    return ALL_COUNTRIES.find(c => c.dial === phonePrefix)?.flag || '🌍';
+  }, [phonePrefix]);
 
   return (
     <FormContainer>
-      {/* Contact Information */}
-      <SectionTitle>{language === 'bg' ? 'Информация за контакт' : 'Contact Information'}</SectionTitle>
+      {/* Contact Section */}
+      <SectionTitle>
+        {language === 'bg' ? 'Информация за контакт' : 'Contact Information'}
+      </SectionTitle>
 
       <FieldGroup>
         <Label>{language === 'bg' ? 'Име' : 'Name'} *</Label>
         <Input
-          type="text"
           value={workflowData.sellerName || ''}
           onChange={(e) => onUpdate({ sellerName: e.target.value })}
-          placeholder={language === 'bg' ? 'Вашето име' : 'Your name'}
-          required
+          placeholder={language === 'bg' ? 'Иван Петров' : 'John Doe'}
+          $valid={!!workflowData.sellerName && workflowData.sellerName.length > 2}
         />
       </FieldGroup>
 
       <FieldGroup>
-        <Label>{language === 'bg' ? 'Имейл' : 'Email'} *</Label>
+        <Label>
+          {language === 'bg' ? 'Имейл' : 'Email'} *
+          {validateEmail(workflowData.sellerEmail || '') === '' && workflowData.sellerEmail && (
+            <Check size={16} color="#22c55e" />
+          )}
+        </Label>
         <Input
-          type="email"
           value={workflowData.sellerEmail || ''}
-          onChange={(e) => onUpdate({ sellerEmail: e.target.value })}
-          placeholder={language === 'bg' ? 'your@email.com' : 'your@email.com'}
-          required
+          onChange={handlEmailChange}
+          placeholder="name@example.com"
+          type="email"
+          $error={!!emailError}
+          $valid={!emailError && !!workflowData.sellerEmail}
         />
+        {emailError && (
+          <ErrorText style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <AlertCircle size={14} /> {emailError}
+          </ErrorText>
+        )}
       </FieldGroup>
 
       <FieldGroup>
         <Label>{language === 'bg' ? 'Телефон' : 'Phone'} *</Label>
-        <Input
-          type="tel"
-          value={workflowData.sellerPhone || ''}
-          onChange={(e) => onUpdate({ sellerPhone: e.target.value })}
-          placeholder={language === 'bg' ? '+359 888 123 456' : '+359 888 123 456'}
-          required
-        />
+        <PhoneInputGroup>
+          <CountrySelectContainer>
+            <FlagIcon>{currentFlag}</FlagIcon>
+            <CountrySelectStyled
+              value={phonePrefix}
+              onChange={(e) => {
+                const newPrefix = e.target.value;
+                setPhonePrefix(newPrefix);
+                // Update existing number with new prefix
+                const currentNum = getDisplayPhone();
+                onUpdate({ sellerPhone: `${newPrefix} ${currentNum}` });
+              }}
+            >
+              {ALL_COUNTRIES.map(country => (
+                <option key={country.code} value={country.dial}>
+                  {country.dial} ({country.code})
+                </option>
+              ))}
+            </CountrySelectStyled>
+          </CountrySelectContainer>
+
+          <PhoneInputStyled
+            value={getDisplayPhone()}
+            onChange={handlePhoneChange}
+            placeholder={phonePrefix === '+359' ? '888 123 456' : '123 456 789'}
+            type="tel"
+            inputMode="numeric"
+            $valid={!!workflowData.sellerPhone && workflowData.sellerPhone.replace(/[^0-9]/g, '').length > 7}
+          />
+        </PhoneInputGroup>
       </FieldGroup>
 
-      <SectionDivider />
-
-      {/* Address Information */}
-      <SectionTitle>{language === 'bg' ? 'Адресна информация' : 'Address Information'}</SectionTitle>
+      {/* Address Section */}
+      <SectionTitle style={{ marginTop: '1rem' }}>
+        {language === 'bg' ? 'Местоположение' : 'Location'}
+      </SectionTitle>
 
       <FieldGroup>
         <Label>{language === 'bg' ? 'Област' : 'Region'} *</Label>
         <Select
           value={workflowData.region || ''}
           onChange={(e) => {
-            onUpdate({ 
+            onUpdate({
               region: e.target.value,
-              city: '', // Clear city when region changes
-              postalCode: '', // Clear postal code when region changes
+              city: '',
+              locationData: { cityName: '' },
+              postalCode: ''
             });
           }}
-          required
         >
-          <option value="">{language === 'bg' ? 'Изберете област' : 'Select region'}</option>
+          <option value="">{language === 'bg' ? 'Изберете област' : 'Select Region'}</option>
           {BULGARIA_REGIONS.map(region => (
             <option key={region.name} value={region.name}>
               {language === 'bg' ? region.name : region.nameEn}
@@ -212,43 +382,49 @@ export const SellVehicleStep6: React.FC<SellVehicleStep6Props> = ({
         </Select>
       </FieldGroup>
 
-      <FieldGroup>
-        <Label>{language === 'bg' ? 'Град' : 'City'} *</Label>
-        <Select
-          value={workflowData.locationData?.cityName || ''}
-          onChange={(e) => {
-            onUpdate({ 
-              city: e.target.value,
-              postalCode: '', // Clear postal code when city changes
-            });
-          }}
-          disabled={!workflowData.region}
-          required
-        >
-          <option value="">{language === 'bg' ? 'Изберете град' : 'Select city'}</option>
-          {availableCities.map(city => (
-            <option key={city.name} value={city.name}>
-              {language === 'bg' ? city.name : (city.nameEn || city.name)}
-            </option>
-          ))}
-        </Select>
-      </FieldGroup>
+      {/* Cascading City */}
+      {workflowData.region && (
+        <RevealWrapper isActive={!workflowData.locationData?.cityName && !workflowData.city}>
+          <Label>{language === 'bg' ? 'Град' : 'City'} *</Label>
+          <Select
+            // Check both locations for value
+            value={workflowData.locationData?.cityName || workflowData.city || ''}
+            onChange={(e) => {
+              onUpdate({
+                city: e.target.value,
+                locationData: { cityName: e.target.value },
+                postalCode: ''
+              });
+            }}
+          >
+            <option value="">{language === 'bg' ? 'Изберете град' : 'Select City'}</option>
+            {availableCities.map(city => (
+              <option key={city.name} value={city.name}>
+                {language === 'bg' ? city.name : (city.nameEn || city.name)}
+              </option>
+            ))}
+          </Select>
+        </RevealWrapper>
+      )}
 
-      <FieldGroup>
-        <Label>{language === 'bg' ? 'Пощенски код' : 'Postal Code'}</Label>
-        <Select
-          value={workflowData.postalCode || ''}
-          onChange={(e) => onUpdate({ postalCode: e.target.value })}
-          disabled={!workflowData.locationData?.cityName}
-        >
-          <option value="">{language === 'bg' ? 'Изберете пощенски код' : 'Select postal code'}</option>
-          {availablePostalCodes.map(pc => (
-            <option key={pc.code} value={pc.code}>
-              {pc.code} {pc.district ? `- ${pc.district}` : ''}
-            </option>
-          ))}
-        </Select>
-      </FieldGroup>
+      {/* Cascading Postal Code */}
+      {(workflowData.locationData?.cityName || workflowData.city) && (
+        <RevealWrapper isActive={!workflowData.postalCode}>
+          <Label>{language === 'bg' ? 'Пощенски код' : 'Postal Code'}</Label>
+          <Select
+            value={workflowData.postalCode || ''}
+            onChange={(e) => onUpdate({ postalCode: e.target.value })}
+          >
+            <option value="">{language === 'bg' ? 'Изберете код' : 'Select Code'}</option>
+            {availablePostalCodes.map(pc => (
+              <option key={pc.code} value={pc.code}>
+                {pc.code} {pc.district ? `(${pc.district})` : ''}
+              </option>
+            ))}
+          </Select>
+        </RevealWrapper>
+      )}
+
     </FormContainer>
   );
 };

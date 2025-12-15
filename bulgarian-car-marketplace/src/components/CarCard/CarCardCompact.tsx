@@ -214,18 +214,44 @@ const CarCardCompact: React.FC<CarCardCompactProps> = ({ car }) => {
     return null;
   };
 
-  const getLocationName = () => {
-    if (car.location) {
-      if (typeof car.location === 'string') {
-        return car.location;
-      }
-      return car.location?.cityNameEn || 
-             car.location?.cityNameBg || 
-             car.location?.city || 
-             car.location?.cityName?.en ||
-             car.location?.cityName?.bg;
+  const getLocationName = (): string => {
+    // Handle location as string
+    if (car.location && typeof car.location === 'string') {
+      return car.location;
     }
-    return car.locationData?.cityName || car.region || (language === 'bg' ? 'България' : 'Bulgaria');
+    
+    // Handle location as object
+    if (car.location && typeof car.location === 'object') {
+      if (car.location.cityNameEn) return car.location.cityNameEn;
+      if (car.location.cityNameBg) return car.location.cityNameBg;
+      if (car.location.city) return car.location.city;
+      if (car.location.cityName) {
+        if (typeof car.location.cityName === 'string') {
+          return car.location.cityName;
+        }
+        if (typeof car.location.cityName === 'object') {
+          return car.location.cityName[language] || car.location.cityName.en || car.location.cityName.bg || '';
+        }
+      }
+    }
+    
+    // Handle locationData
+    if (car.locationData) {
+      if (typeof car.locationData.cityName === 'string') {
+        return car.locationData.cityName;
+      }
+      if (car.locationData.cityName && typeof car.locationData.cityName === 'object') {
+        return car.locationData.cityName[language] || car.locationData.cityName.en || car.locationData.cityName.bg || '';
+      }
+      if (car.locationData.city) return car.locationData.city;
+    }
+    
+    // Fallback
+    if (car.region && typeof car.region === 'string') {
+      return car.region;
+    }
+    
+    return language === 'bg' ? 'България' : 'Bulgaria';
   };
 
   const price = car.price || 0;

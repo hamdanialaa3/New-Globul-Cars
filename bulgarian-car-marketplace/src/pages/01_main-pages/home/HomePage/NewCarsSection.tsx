@@ -8,6 +8,7 @@ import { Sparkles, Clock, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { unifiedCarService, UnifiedCar } from '../../../../services/car';
 import ModernCarCard from './ModernCarCard';
+import { logger } from '../../../../services/logger-service';
 
 const Section = styled.section`
   padding: 3rem 1rem;
@@ -229,7 +230,10 @@ const NewCarsSection: React.FC = () => {
         
         setNewCars(sorted);
       } catch (err) {
-        console.error('Error loading new cars:', err);
+        logger.error('Error loading new cars:', err as Error, {
+          context: 'NewCarsSection',
+          action: 'loadNewCars'
+        });
         setError(err instanceof Error ? err.message : 'Unknown error');
       } finally {
         setLoading(false);

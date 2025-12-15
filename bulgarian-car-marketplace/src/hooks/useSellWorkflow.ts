@@ -78,11 +78,20 @@ export interface SellWorkflowData {
   additionalInfo?: string;
   description?: string;
   notes?: string;
-  
+
   // Sale Information
   saleType?: string; // 'private' | 'commercial'
   saleTimeline?: string; // 'unknown' | 'soon' | 'months'
   roadworthy?: boolean; // Roadworthy status
+
+  // New fields for Step 2
+  firstRegistration?: string;
+  bodyType?: string;
+  doors?: string;
+  seats?: string;
+  color?: string; // Internal use
+  exteriorColor?: string; // API payload use
+  exteriorColorOther?: string; // Custom color input
 }
 
 const STEP_INDEX_MAP: Record<string, number> = SELL_WORKFLOW_STEP_ORDER.reduce((map, id, index) => {

@@ -1,277 +1,218 @@
-// Advanced Search Widget - Professional Search Interface
-// واجهة بحث متقدمة احترافية
-
-import React, { useState, useEffect, useCallback } from 'react';
+// src/pages/01_main-pages/home/HomePage/AdvancedSearchWidget.tsx
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { Search } from 'lucide-react';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { brandsModelsDataService } from '../../../../services/brands-models-data.service';
 import { unifiedCarService } from '../../../../services/car';
+import { logger } from '../../../../services/logger-service';
+import { sanitizeCarMakeModel } from '../../../../utils/inputSanitizer';
+import { useDebounce } from '../../../../hooks/useDebounce';
+import QuickBrandsSection from './QuickBrandsSection'; // Integrated here now
 
-const SearchWidgetContainer = styled.div`
-  max-width: 1100px;
-  margin: 0 auto;
-  background: ${({ theme }) => theme.mode === 'dark' 
-    ? 'rgba(15, 15, 15, 0.85)' 
-    : '#f5f5f5'};
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1.5px solid ${({ theme }) => theme.mode === 'dark' 
-    ? 'rgba(255, 255, 255, 0.08)' 
-    : 'rgba(0, 0, 0, 0.08)'};
-  border-radius: 14px;
-  padding: 28px;
-  box-shadow: ${({ theme }) => theme.mode === 'dark' 
-    ? '0 24px 48px -12px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 215, 0, 0.05)' 
-    : '0 24px 48px -12px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(255, 143, 16, 0.05)'};
+// --- STYLED COMPONENTS (Mechanical Dashboard) ---
+
+const SearchDashboard = styled.div`
+  width: 100%;
+  background: rgba(20, 20, 25, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 
+      0 20px 50px -10px rgba(0,0,0,0.5),
+      inset 0 0 0 1px rgba(255,255,255,0.05);
   position: relative;
-  z-index: 10;
-  animation: fadeInUp 0.6s ease-out 0.3s both;
-  
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  overflow: hidden;
+
+  &::before, &::after {
+      content: '';
+      position: absolute;
+      top: 15px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #333;
+      box-shadow: inset 1px 1px 2px rgba(0,0,0,0.8), 0 0 5px rgba(0, 204, 255, 0.2);
   }
-  
-  @media (max-width: 768px) {
+  &::before { left: 15px; }
+  &::after { right: 15px; }
+
+  @media (max-width: 576px) {
     padding: 20px;
-    border-radius: 12px;
   }
 `;
 
-const SearchTabs = styled.div`
+const DashboardTabs = styled.div`
   display: flex;
+  justify-content: center;
   gap: 20px;
-  margin-bottom: 20px;
-  border-bottom: 1px solid ${({ theme }) => theme.mode === 'dark' ? '#262626' : '#e5e7eb'};
-  padding-bottom: 15px;
-  
-  @media (max-width: 768px) {
-    gap: 12px;
-    margin-bottom: 15px;
-    padding-bottom: 12px;
-  }
-`;
-
-const TabButton = styled.button<{ $active: boolean }>`
-  background: none;
-  border: none;
-  color: ${({ $active, theme }) => 
-    $active 
-      ? (theme.mode === 'dark' ? '#FFD700' : '#FF8F10')
-      : (theme.mode === 'dark' ? '#9ca3af' : '#6b7280')};
-  font-size: 0.9375rem;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  cursor: pointer;
-  padding: 8px 0;
+  margin-bottom: 30px;
   position: relative;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  
+`;
+
+const TabBtn = styled.button<{ active?: boolean }>`
+  background: transparent;
+  border: none;
+  color: ${props => props.active ? '#00ccff' : '#8899aa'};
+  font-family: 'Exo 2', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 10px 25px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: ${props => props.active ? '0 0 10px rgba(0, 204, 255, 0.4)' : 'none'};
+
+  &:hover { color: #fff; }
+
   &::after {
-    content: '';
-    position: absolute;
-    bottom: -15px;
-    left: 0;
-    width: ${props => props.$active ? '100%' : '0'};
-    height: 2.5px;
-    background: ${({ theme }) => theme.mode === 'dark' 
-      ? 'linear-gradient(90deg, #FFD700, #FFA500)' 
-      : 'linear-gradient(90deg, #FF8F10, #FFD700)'};
-    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    border-radius: 2px 2px 0 0;
-  }
-  
-  &:hover {
-    color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : '#FF8F10'};
-  }
-  
-  @media (max-width: 768px) {
-    font-size: 0.875rem;
-    padding: 6px 0;
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: #00ccff;
+      box-shadow: 0 0 10px #00ccff;
+      opacity: ${props => props.active ? 1 : 0};
+      transition: opacity 0.3s;
   }
 `;
 
-const SearchGrid = styled.div`
+const SearchGrid = styled.form`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(4, 1fr) auto;
   gap: 15px;
   align-items: end;
-  
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    gap: 12px;
+
+  @media (max-width: 992px) {
+      grid-template-columns: 1fr 1fr;
+  }
+  @media (max-width: 576px) {
+      grid-template-columns: 1fr;
   }
 `;
 
 const FormGroup = styled.div`
-  display: flex;
-  flex-direction: column;
+  position: relative;
 `;
 
-const Label = styled.label`
+const FormLabel = styled.label`
   display: block;
-  font-size: 0.8125rem;
-  color: ${({ theme }) => theme.mode === 'dark' ? '#9ca3af' : '#6b7280'};
-  margin-bottom: 6px;
+  font-size: 0.8rem;
+  color: #8899aa;
+  margin-bottom: 8px;
+  margin-left: 5px;
   font-weight: 600;
-  letter-spacing: 0.01em;
   text-transform: uppercase;
+  letter-spacing: 1px;
 `;
 
-const FormControl = styled.select`
+const FormSelect = styled.select`
   width: 100%;
-  height: 44px;
-  background: ${({ theme }) => theme.mode === 'dark' ? '#1a1a1a' : '#ffffff'};
-  border: 1.5px solid ${({ theme }) => theme.mode === 'dark' ? '#374151' : '#d1d5db'};
+  height: 55px;
+  background: #0f0f13;
+  border: 1px solid #333;
   border-radius: 10px;
-  padding: 0 16px;
-  padding-right: 42px;
-  color: ${({ theme }) => theme.mode === 'dark' ? '#f3f4f6' : '#111827'};
-  font-size: 0.9375rem;
-  font-weight: 500;
-  font-family: inherit;
+  color: #fff;
+  padding: 0 15px;
+  font-family: 'Exo 2', sans-serif;
+  font-size: 1rem;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 14px center;
-  background-size: 18px;
-  line-height: 1.5;
-  
-  &:hover {
-    border-color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : '#FF8F10'};
-    background-color: ${({ theme }) => theme.mode === 'dark' ? '#1f1f1f' : '#fafafa'};
-  }
-  
+  transition: all 0.3s;
+  background-image: linear-gradient(to bottom, #1a1a20, #0a0a0e);
+
+  &:hover { border-color: #555; }
   &:focus {
-    outline: none;
-    border-color: ${({ theme }) => theme.mode === 'dark' ? '#FFD700' : '#FF8F10'};
-    box-shadow: 0 0 0 3px ${({ theme }) => theme.mode === 'dark' 
-      ? 'rgba(255, 215, 0, 0.12)' 
-      : 'rgba(255, 143, 16, 0.12)'};
-    background-color: ${({ theme }) => theme.mode === 'dark' ? '#1f1f1f' : '#ffffff'};
+      outline: none;
+      border-color: #00ccff;
+      box-shadow: 0 0 15px rgba(0, 204, 255, 0.4);
+      color: #00ccff;
   }
-  
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    background-color: ${({ theme }) => theme.mode === 'dark' ? '#0f0f0f' : '#f3f4f6'};
-  }
-  
-  option {
-    background: ${({ theme }) => theme.mode === 'dark' ? '#1a1a1a' : '#ffffff'};
-    color: ${({ theme }) => theme.mode === 'dark' ? '#f3f4f6' : '#111827'};
-    padding: 8px;
-  }
-  
-  @media (max-width: 768px) {
-    height: 42px;
-    font-size: 0.9rem;
-    padding: 0 14px;
-    padding-right: 38px;
-  }
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
 `;
 
-const SearchButton = styled.button`
-  height: 44px;
-  background: ${({ theme }) => theme.mode === 'dark' 
-    ? 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)' 
-    : 'linear-gradient(135deg, #FF8F10 0%, #FFD700 100%)'};
+const SearchBtn = styled.button`
+  height: 55px;
+  padding: 0 40px;
+  background: linear-gradient(135deg, #00ccff, #0066ff);
   border: none;
   border-radius: 10px;
-  color: #000000;
-  font-weight: 700;
-  font-size: 0.9375rem;
-  letter-spacing: 0.02em;
+  color: #fff;
+  font-family: 'Exo 2', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
   cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 0 20px rgba(0, 204, 255, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  gap: 10px;
   position: relative;
   overflow: hidden;
-  
+  grid-column: span 1;
+
   &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-    transition: left 0.5s ease;
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      transition: left 0.5s;
   }
-  
-  &:hover:not(:disabled) {
-    transform: translateY(-1px);
-    filter: brightness(1.05);
-    box-shadow: ${({ theme }) => theme.mode === 'dark' 
-      ? '0 6px 16px rgba(255, 215, 0, 0.35)' 
-      : '0 6px 16px rgba(255, 143, 16, 0.35)'};
-    
-    &::before {
-      left: 100%;
-    }
+
+  &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 30px rgba(0, 204, 255, 0.6);
   }
-  
-  &:active:not(:disabled) {
-    transform: translateY(0);
-    box-shadow: ${({ theme }) => theme.mode === 'dark' 
-      ? '0 2px 8px rgba(255, 215, 0, 0.3)' 
-      : '0 2px 8px rgba(255, 143, 16, 0.3)'};
-  }
-  
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-  
-  svg {
-    width: 18px;
-    height: 18px;
-    stroke-width: 2.5;
-  }
-  
-  @media (max-width: 768px) {
-    height: 42px;
-    font-size: 0.9rem;
-    gap: 6px;
-    
-    svg {
-      width: 16px;
-      height: 16px;
-    }
-  }
+  &:hover::before { left: 100%; }
+
+  @media (max-width: 992px) { grid-column: span 2; }
+  @media (max-width: 576px) { grid-column: span 1; }
 `;
+
+// Helper for select arrow
+const SelectWrapper = styled.div`
+  position: relative;
+  &::after {
+      content: '▼';
+      font-size: 0.8rem;
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #00ccff;
+      pointer-events: none;
+      transition: transform 0.3s;
+  }
+  &:hover::after { transform: translateY(-50%) rotate(180deg); }
+`;
+
 
 interface AdvancedSearchWidgetProps {
   onSearchComplete?: (count: number) => void;
 }
 
 const AdvancedSearchWidget: React.FC<AdvancedSearchWidgetProps> = ({ onSearchComplete }) => {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const navigate = useNavigate();
-  
+
   const [activeTab, setActiveTab] = useState<'search' | 'sell' | 'evaluate'>('search');
   const [make, setMake] = useState('');
   const [model, setModel] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
   const [yearFrom, setYearFrom] = useState('');
-  
+
   const [brands, setBrands] = useState<string[]>([]);
   const [models, setModels] = useState<string[]>([]);
   const [carCount, setCarCount] = useState<number | null>(null);
-  const [loading, setLoading] = useState(false);
 
   // Load brands on mount
   useEffect(() => {
@@ -280,7 +221,7 @@ const AdvancedSearchWidget: React.FC<AdvancedSearchWidgetProps> = ({ onSearchCom
         const allBrands = await brandsModelsDataService.getAllBrands();
         setBrands(allBrands);
       } catch (error) {
-        console.error('Error loading brands:', error);
+        logger.error('Error loading brands', error as Error);
       }
     };
     loadBrands();
@@ -294,187 +235,153 @@ const AdvancedSearchWidget: React.FC<AdvancedSearchWidgetProps> = ({ onSearchCom
         setModel('');
         return;
       }
-      
       try {
         const modelsForBrand = await brandsModelsDataService.getModelsForBrand(make);
         setModels(modelsForBrand);
         setModel('');
       } catch (error) {
-        console.error('Error loading models:', error);
         setModels([]);
       }
     };
-    
     loadModels();
   }, [make]);
 
-  // Get car count for search button
+  // Use debounced values for fetching car counts
+  const debouncedMake = useDebounce(make, 300);
+  const debouncedModel = useDebounce(model, 300);
+  const debouncedMaxPrice = useDebounce(maxPrice, 300);
+  const debouncedYearFrom = useDebounce(yearFrom, 300);
+
+  const searchFilters = useMemo(() => {
+    const filters: any = { isActive: true, isSold: false };
+    if (debouncedMake) filters.make = sanitizeCarMakeModel(debouncedMake);
+    if (debouncedModel) filters.model = sanitizeCarMakeModel(debouncedModel);
+    if (debouncedMaxPrice) filters.maxPrice = parseInt(debouncedMaxPrice);
+    if (debouncedYearFrom) filters.minYear = parseInt(debouncedYearFrom);
+    return filters;
+  }, [debouncedMake, debouncedModel, debouncedMaxPrice, debouncedYearFrom]);
+
   useEffect(() => {
     const getCarCount = async () => {
+      if (!debouncedMake && !debouncedMaxPrice && !debouncedYearFrom) {
+        setCarCount(null);
+        return;
+      }
       try {
-        const filters: any = { isActive: true, isSold: false };
-        if (make) filters.make = make;
-        if (model) filters.model = model;
-        if (maxPrice) filters.maxPrice = parseInt(maxPrice);
-        if (yearFrom) filters.minYear = parseInt(yearFrom);
-        
-        const cars = await unifiedCarService.searchCars(filters, 1);
-        setCarCount(cars.length > 0 ? Math.floor(Math.random() * 5000) + 10000 : 0); // Mock count for now
-      } catch (error) {
-        console.error('Error getting car count:', error);
+        // Determine mock count or actual API
+        const cars = await unifiedCarService.searchCars(searchFilters, 1);
+        setCarCount(cars.length > 0 ? Math.floor(Math.random() * 5000) + 1000 : 0);
+      } catch (e) {
+        // ignore
       }
     };
-    
-    if (make || maxPrice || yearFrom) {
-      getCarCount();
-    }
-  }, [make, model, maxPrice, yearFrom]);
+    getCarCount();
+  }, [searchFilters]);
 
-  // Generate year options (2000 to current year)
-  const currentYear = new Date().getFullYear();
-  const years = Array.from({ length: currentYear - 1999 + 1 }, (_, i) => currentYear - i);
-
-  // Price options
-  const priceOptions = [
-    { value: '', label: language === 'bg' ? 'Без ограничение' : 'No limit' },
-    { value: '5000', label: '5,000 €' },
-    { value: '10000', label: '10,000 €' },
-    { value: '20000', label: '20,000 €' },
-    { value: '30000', label: '30,000 €' },
-    { value: '50000', label: '50,000 €' },
-    { value: '75000', label: '75,000 €' },
-    { value: '100000', label: '100,000 €' },
-  ];
 
   const handleSearch = useCallback(() => {
     const params = new URLSearchParams();
-    
     if (make) params.set('make', make);
     if (model) params.set('model', model);
     if (yearFrom) params.set('yearMin', yearFrom);
     if (maxPrice) params.set('priceMax', maxPrice);
-    
+
     navigate(`/cars?${params.toString()}`);
-    
-    if (onSearchComplete && carCount) {
-      onSearchComplete(carCount);
-    }
-  }, [make, model, yearFrom, maxPrice, navigate, carCount, onSearchComplete]);
+  }, [make, model, yearFrom, maxPrice, navigate]);
 
   const handleTabClick = (tab: 'search' | 'sell' | 'evaluate') => {
     setActiveTab(tab);
-    if (tab === 'sell') {
-      navigate('/sell');
-    } else if (tab === 'evaluate') {
-      navigate('/car-valuation');
-    }
+    if (tab === 'sell') navigate('/sell');
+    if (tab === 'evaluate') navigate('/car-valuation');
   };
 
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: currentYear - 1999 + 1 }, (_, i) => currentYear - i);
+
   return (
-    <SearchWidgetContainer>
-      <SearchTabs>
-        <TabButton 
-          $active={activeTab === 'search'} 
-          onClick={() => handleTabClick('search')}
-        >
+    <SearchDashboard>
+
+      <DashboardTabs>
+        <TabBtn active={activeTab === 'search'} onClick={() => handleTabClick('search')}>
           {language === 'bg' ? 'Търсене' : 'Search'}
-        </TabButton>
-        <TabButton 
-          $active={activeTab === 'sell'} 
-          onClick={() => handleTabClick('sell')}
-        >
+        </TabBtn>
+        <TabBtn active={activeTab === 'sell'} onClick={() => handleTabClick('sell')}>
           {language === 'bg' ? 'Продажба' : 'Sell'}
-        </TabButton>
-        <TabButton 
-          $active={activeTab === 'evaluate'} 
-          onClick={() => handleTabClick('evaluate')}
-        >
+        </TabBtn>
+        <TabBtn active={activeTab === 'evaluate'} onClick={() => handleTabClick('evaluate')}>
           {language === 'bg' ? 'Оценка' : 'Evaluate'}
-        </TabButton>
-      </SearchTabs>
-      
-      {activeTab === 'search' && (
-        <form 
-          className="search-grid" 
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleSearch();
-          }}
-        >
-          <FormGroup>
-            <Label>{language === 'bg' ? 'Марка (Make)' : 'Make'}</Label>
-            <FormControl
-              value={make}
-              onChange={(e) => setMake(e.target.value)}
-            >
-              <option value="">
-                {language === 'bg' ? 'Всички марки' : 'All brands'}
-              </option>
-              {brands.map((brand) => (
-                <option key={brand} value={brand}>
-                  {brand}
-                </option>
-              ))}
-            </FormControl>
-          </FormGroup>
+        </TabBtn>
+      </DashboardTabs>
 
-          <FormGroup>
-            <Label>{language === 'bg' ? 'Модел (Model)' : 'Model'}</Label>
-            <FormControl
-              value={model}
-              onChange={(e) => setModel(e.target.value)}
-              disabled={!make}
-            >
-              <option value="">
-                {language === 'bg' ? 'Изберете модел' : 'Select model'}
-              </option>
-              {models.map((modelName) => (
-                <option key={modelName} value={modelName}>
-                  {modelName}
-                </option>
-              ))}
-            </FormControl>
-          </FormGroup>
+      <SearchGrid onSubmit={(e) => { e.preventDefault(); handleSearch(); }}>
 
-          <FormGroup>
-            <Label>{language === 'bg' ? 'Цена до (Price up to)' : 'Price up to'}</Label>
-            <FormControl
-              value={maxPrice}
-              onChange={(e) => setMaxPrice(e.target.value)}
-            >
-              {priceOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
+        {/* MAKE */}
+        <FormGroup>
+          <FormLabel>{language === 'bg' ? 'Марка (Make)' : 'Make'}</FormLabel>
+          <SelectWrapper>
+            <FormSelect value={make} onChange={e => setMake(e.target.value)}>
+              <option value="">{language === 'bg' ? 'Всички марки' : 'All brands'}</option>
+              {brands.map(brand => (
+                <option key={brand} value={brand}>{brand}</option>
               ))}
-            </FormControl>
-          </FormGroup>
+            </FormSelect>
+          </SelectWrapper>
+        </FormGroup>
 
-          <FormGroup>
-            <Label>{language === 'bg' ? 'Година от (Year from)' : 'Year from'}</Label>
-            <FormControl
-              value={yearFrom}
-              onChange={(e) => setYearFrom(e.target.value)}
-            >
-              <option value="">
-                {language === 'bg' ? 'Всички' : 'All'}
-              </option>
-              {years.map((y) => (
-                <option key={y} value={y.toString()}>
-                  {y}
-                </option>
+        {/* MODEL */}
+        <FormGroup>
+          <FormLabel>{language === 'bg' ? 'Модел (Model)' : 'Model'}</FormLabel>
+          <SelectWrapper>
+            <FormSelect value={model} onChange={e => setModel(e.target.value)} disabled={!make}>
+              <option value="">{language === 'bg' ? 'Изберете модел' : 'Select model'}</option>
+              {models.map(m => (
+                <option key={m} value={m}>{m}</option>
               ))}
-            </FormControl>
-          </FormGroup>
+            </FormSelect>
+          </SelectWrapper>
+        </FormGroup>
 
-          <SearchButton type="submit" disabled={loading}>
-            <Search />
-            {language === 'bg' ? 'Търсене' : 'Search'}
-            {carCount !== null && ` (${carCount.toLocaleString()})`}
-          </SearchButton>
-        </form>
-      )}
-    </SearchWidgetContainer>
+        {/* PRICE */}
+        <FormGroup>
+          <FormLabel>{language === 'bg' ? 'Цена до (Price up to)' : 'Price up to'}</FormLabel>
+          <SelectWrapper>
+            <FormSelect value={maxPrice} onChange={e => setMaxPrice(e.target.value)}>
+              <option value="">{language === 'bg' ? 'Без ограничение' : 'No limit'}</option>
+              <option value="5000">5,000 €</option>
+              <option value="10000">10,000 €</option>
+              <option value="20000">20,000 €</option>
+              <option value="30000">30,000 €</option>
+              <option value="50000">50,000 €</option>
+              <option value="100000">100,000 €</option>
+            </FormSelect>
+          </SelectWrapper>
+        </FormGroup>
+
+        {/* YEAR */}
+        <FormGroup>
+          <FormLabel>{language === 'bg' ? 'Година от (Year from)' : 'Year from'}</FormLabel>
+          <SelectWrapper>
+            <FormSelect value={yearFrom} onChange={e => setYearFrom(e.target.value)}>
+              <option value="">{language === 'bg' ? 'Всички' : 'All'}</option>
+              {years.map(y => (
+                <option key={y} value={y}>{y}</option>
+              ))}
+            </FormSelect>
+          </SelectWrapper>
+        </FormGroup>
+
+        {/* BUTTON */}
+        <SearchBtn type="submit">
+          <svg style={{ width: '18px', height: '18px', marginRight: '8px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          {language === 'bg' ? 'Търсене' : 'Search'}
+        </SearchBtn>
+
+      </SearchGrid>
+
+      {/* integrated QuickBrandsSection */}
+      <QuickBrandsSection />
+
+    </SearchDashboard>
   );
 };
 

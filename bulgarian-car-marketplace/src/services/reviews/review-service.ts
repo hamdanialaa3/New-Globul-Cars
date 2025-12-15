@@ -20,6 +20,7 @@ import {
 import { db } from '../../firebase/firebase-config';
 import { trustScoreService } from '../profile/trust-score-service';
 import { serviceLogger } from '../logger-wrapper';
+import { rateLimiter, RATE_LIMIT_CONFIGS } from '../rate-limiting/rateLimiter.service';
 
 // ==================== INTERFACES ====================
 
@@ -140,6 +141,25 @@ export class ReviewService {
    */
   async submitReview(data: SubmitReviewData): Promise<{ success: boolean; message: string; reviewId?: string }> {
     try {
+      // 0. Rate limiting check (SECURITY FIX)
+      const rateLimit = rateLimiter.checkRateLimit(
+        data.buyerId,
+        'review',
+        RATE_LIMIT_CONFIGS.review
+      );
+
+      if (!rateLimit.allowed) {
+        serviceLogger.warn('Rate limit exceeded for review submission', {
+          buyerId: data.buyerId,
+          sellerId: data.sellerId,
+          resetTime: rateLimit.resetTime
+        });
+        return {
+          success: false,
+          message: `Rate limit exceeded. Please wait ${Math.ceil((rateLimit.resetTime - Date.now()) / 1000)} seconds before submitting another review.`
+        };
+      }
+
       // 1. Validate review
       const validation = this.validateReview(data);
       if (!validation.valid) {

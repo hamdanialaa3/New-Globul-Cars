@@ -156,8 +156,8 @@ export const useAdvancedSearch = () => {
   // Handle checkbox (circular) toggle
   const handleCheckboxToggle = (fieldName: string, value: string) => {
     setSearchData(prev => {
-      const currentArray = prev[fieldName as keyof typeof prev] as string[];
-      const isChecked = currentArray.includes(value);
+      const currentArray = (prev[fieldName as keyof typeof prev] as string[]) || [];
+      const isChecked = Array.isArray(currentArray) && currentArray.includes(value);
 
       if (isChecked) {
         // Remove from array
@@ -178,27 +178,31 @@ export const useAdvancedSearch = () => {
   // Handle Input Changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
-    const checked = (e.target as HTMLInputElement).checked;
+    const checked = type === 'checkbox' ? (e.target as HTMLInputElement).checked : undefined;
 
     setSearchData(prev => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
 
-    // Sync core filters to FilterContext
-    const coreMap: Record<string, (val: string) => void> = {
-      make: v => updateFilter('make', v),
-      model: v => updateFilter('model', v),
-      priceFrom: v => updateFilter('priceFrom', v),
-      priceTo: v => updateFilter('priceTo', v),
-      firstRegistrationFrom: v => updateFilter('yearFrom', v),
-      firstRegistrationTo: v => updateFilter('yearTo', v),
-      city: v => updateFilter('city', v),
-      fuelType: v => updateFilter('fuelType', v),
-      transmission: v => updateFilter('transmission', v),
-      searchDescription: v => updateFilter('text', v)
-    };
-    if (coreMap[name]) coreMap[name](type === 'checkbox' ? String(checked ? 'true' : '') : value);
+    // Sync core filters to FilterContext (only for non-checkbox fields)
+    if (type !== 'checkbox') {
+      const coreMap: Record<string, (val: string) => void> = {
+        make: v => updateFilter('make', v),
+        model: v => updateFilter('model', v),
+        priceFrom: v => updateFilter('priceFrom', v),
+        priceTo: v => updateFilter('priceTo', v),
+        firstRegistrationFrom: v => updateFilter('yearFrom', v),
+        firstRegistrationTo: v => updateFilter('yearTo', v),
+        city: v => updateFilter('city', v),
+        fuelType: v => updateFilter('fuelType', v),
+        transmission: v => updateFilter('transmission', v),
+        searchDescription: v => updateFilter('text', v)
+      };
+      if (coreMap[name]) {
+        coreMap[name](value);
+      }
+    }
   };
 
   // Initial hydration from FilterContext (once)
@@ -213,7 +217,7 @@ export const useAdvancedSearch = () => {
       priceTo: filters.priceTo || prev.priceTo,
       firstRegistrationFrom: filters.yearFrom || prev.firstRegistrationFrom,
       firstRegistrationTo: filters.yearTo || prev.firstRegistrationTo,
-      city: filters.locationData?.cityName || prev.locationData?.cityName,
+      city: filters.city || filters.locationData?.cityName || prev.city || '',
       fuelType: filters.fuelType || prev.fuelType,
       transmission: filters.transmission || prev.transmission,
       searchDescription: filters.text || prev.searchDescription

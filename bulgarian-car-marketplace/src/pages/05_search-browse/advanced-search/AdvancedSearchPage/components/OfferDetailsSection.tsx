@@ -75,10 +75,21 @@ export const OfferDetailsSection: React.FC<OfferDetailsSectionProps> = ({
               <CheckboxLabel>
                 <input
                   type="checkbox"
-                  checked={searchData.adsWithPictures}
-                  onChange={(e) => onChange({ target: { name: 'adsWithPictures', value: e.target.checked } } as any)}
+                  name="adsWithPictures"
+                  checked={searchData.adsWithPictures || false}
+                  onChange={(e) => {
+                    const event = {
+                      target: {
+                        name: 'adsWithPictures',
+                        value: e.target.checked,
+                        type: 'checkbox',
+                        checked: e.target.checked
+                      }
+                    } as React.ChangeEvent<HTMLInputElement>;
+                    onChange(event);
+                  }}
                 />
-                <CustomCheckbox checked={searchData.adsWithPictures} />
+                <CustomCheckbox checked={searchData.adsWithPictures || false} />
                 {t('advancedSearch.onlyWithPictures')}
               </CheckboxLabel>
             </FormGroup>
@@ -89,10 +100,20 @@ export const OfferDetailsSection: React.FC<OfferDetailsSectionProps> = ({
                 <input
                   type="checkbox"
                   name="adsWithVideo"
-                  checked={searchData.adsWithVideo}
-                  onChange={onChange}
+                  checked={searchData.adsWithVideo || false}
+                  onChange={(e) => {
+                    const event = {
+                      target: {
+                        name: 'adsWithVideo',
+                        value: e.target.checked,
+                        type: 'checkbox',
+                        checked: e.target.checked
+                      }
+                    } as React.ChangeEvent<HTMLInputElement>;
+                    onChange(event);
+                  }}
                 />
-                <CustomCheckbox checked={searchData.adsWithVideo} />
+                <CustomCheckbox checked={searchData.adsWithVideo || false} />
                 {t('advancedSearch.onlyWithVideo')}
               </CheckboxLabel>
             </FormGroup>
@@ -103,10 +124,20 @@ export const OfferDetailsSection: React.FC<OfferDetailsSectionProps> = ({
                 <input
                   type="checkbox"
                   name="discountOffers"
-                  checked={searchData.discountOffers}
-                  onChange={onChange}
+                  checked={searchData.discountOffers || false}
+                  onChange={(e) => {
+                    const event = {
+                      target: {
+                        name: 'discountOffers',
+                        value: e.target.checked,
+                        type: 'checkbox',
+                        checked: e.target.checked
+                      }
+                    } as React.ChangeEvent<HTMLInputElement>;
+                    onChange(event);
+                  }}
                 />
-                <CustomCheckbox checked={searchData.discountOffers} />
+                <CustomCheckbox checked={searchData.discountOffers || false} />
                 {t('advancedSearch.onlyDiscountOffers')}
               </CheckboxLabel>
             </FormGroup>
@@ -117,10 +148,20 @@ export const OfferDetailsSection: React.FC<OfferDetailsSectionProps> = ({
                 <input
                   type="checkbox"
                   name="nonSmokerVehicle"
-                  checked={searchData.nonSmokerVehicle}
-                  onChange={onChange}
+                  checked={searchData.nonSmokerVehicle || false}
+                  onChange={(e) => {
+                    const event = {
+                      target: {
+                        name: 'nonSmokerVehicle',
+                        value: e.target.checked,
+                        type: 'checkbox',
+                        checked: e.target.checked
+                      }
+                    } as React.ChangeEvent<HTMLInputElement>;
+                    onChange(event);
+                  }}
                 />
-                <CustomCheckbox checked={searchData.nonSmokerVehicle} />
+                <CustomCheckbox checked={searchData.nonSmokerVehicle || false} />
                 {t('advancedSearch.onlyNonSmoker')}
               </CheckboxLabel>
             </FormGroup>
@@ -131,10 +172,20 @@ export const OfferDetailsSection: React.FC<OfferDetailsSectionProps> = ({
                 <input
                   type="checkbox"
                   name="taxi"
-                  checked={searchData.taxi}
-                  onChange={onChange}
+                  checked={searchData.taxi || false}
+                  onChange={(e) => {
+                    const event = {
+                      target: {
+                        name: 'taxi',
+                        value: e.target.checked,
+                        type: 'checkbox',
+                        checked: e.target.checked
+                      }
+                    } as React.ChangeEvent<HTMLInputElement>;
+                    onChange(event);
+                  }}
                 />
-                <CustomCheckbox checked={searchData.taxi} />
+                <CustomCheckbox checked={searchData.taxi || false} />
                 {t('advancedSearch.onlyTaxi')}
               </CheckboxLabel>
             </FormGroup>
@@ -145,10 +196,20 @@ export const OfferDetailsSection: React.FC<OfferDetailsSectionProps> = ({
                 <input
                   type="checkbox"
                   name="vatReclaimable"
-                  checked={searchData.vatReclaimable}
-                  onChange={onChange}
+                  checked={searchData.vatReclaimable || false}
+                  onChange={(e) => {
+                    const event = {
+                      target: {
+                        name: 'vatReclaimable',
+                        value: e.target.checked,
+                        type: 'checkbox',
+                        checked: e.target.checked
+                      }
+                    } as React.ChangeEvent<HTMLInputElement>;
+                    onChange(event);
+                  }}
                 />
-                <CustomCheckbox checked={searchData.vatReclaimable} />
+                <CustomCheckbox checked={searchData.vatReclaimable || false} />
                 {t('advancedSearch.onlyVatReclaimable')}
               </CheckboxLabel>
             </FormGroup>
@@ -159,10 +220,20 @@ export const OfferDetailsSection: React.FC<OfferDetailsSectionProps> = ({
                 <input
                   type="checkbox"
                   name="warranty"
-                  checked={searchData.warranty}
-                  onChange={onChange}
+                  checked={searchData.warranty || false}
+                  onChange={(e) => {
+                    const event = {
+                      target: {
+                        name: 'warranty',
+                        value: e.target.checked,
+                        type: 'checkbox',
+                        checked: e.target.checked
+                      }
+                    } as React.ChangeEvent<HTMLInputElement>;
+                    onChange(event);
+                  }}
                 />
-                <CustomCheckbox checked={searchData.warranty} />
+                <CustomCheckbox checked={searchData.warranty || false} />
                 {t('advancedSearch.onlyWithWarranty')}
               </CheckboxLabel>
             </FormGroup>
@@ -173,10 +244,20 @@ export const OfferDetailsSection: React.FC<OfferDetailsSectionProps> = ({
                 <input
                   type="checkbox"
                   name="damagedVehicles"
-                  checked={searchData.damagedVehicles}
-                  onChange={onChange}
+                  checked={searchData.damagedVehicles || false}
+                  onChange={(e) => {
+                    const event = {
+                      target: {
+                        name: 'damagedVehicles',
+                        value: e.target.checked,
+                        type: 'checkbox',
+                        checked: e.target.checked
+                      }
+                    } as React.ChangeEvent<HTMLInputElement>;
+                    onChange(event);
+                  }}
                 />
-                <CustomCheckbox checked={searchData.damagedVehicles} />
+                <CustomCheckbox checked={searchData.damagedVehicles || false} />
                 {t('advancedSearch.includeDamaged')}
               </CheckboxLabel>
             </FormGroup>

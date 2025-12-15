@@ -333,7 +333,7 @@ return saleStrategy.strategyId;
   /**
    * (Comment removed - was in Arabic)
    */
-  private async findComparableSales(car: any): Promise<MarketComparable[]> {
+  private async findComparableSales(car: { make: string; model: string; year: number; mileage: number; price?: number }): Promise<MarketComparable[]> {
     try {
       // (Comment removed - was in Arabic)
       const comparableQuery = query(
@@ -378,7 +378,7 @@ return saleStrategy.strategyId;
   /**
    * (Comment removed - was in Arabic)
    */
-  private calculateMarketValue(car: any, comparables: MarketComparable[]): number {
+  private calculateMarketValue(car: { year: number; mileage: number }, comparables: MarketComparable[]): number {
     if (comparables.length === 0) {
       // (Comment removed - was in Arabic)
       return this.calculateBaseMarketValue(car);
@@ -406,7 +406,7 @@ return saleStrategy.strategyId;
   /**
    * (Comment removed - was in Arabic)
    */
-  private calculateBaseMarketValue(car: any): number {
+  private calculateBaseMarketValue(car: { make: string; model: string; year: number }): number {
     // (Comment removed - was in Arabic)
     const baseValues: { [key: string]: number } = {
       'VW Golf': 15000,
@@ -439,7 +439,10 @@ return saleStrategy.strategyId;
   /**
    * (Comment removed - was in Arabic)
    */
-  private calculateSimilarity(car1: any, car2: any): number {
+  private calculateSimilarity(
+    car1: { year: number; mileage: number; price?: number },
+    car2: { year: number; mileage: number; price?: number }
+  ): number {
     let similarity = 100;
 
     // (Comment removed - was in Arabic)
@@ -462,7 +465,7 @@ return saleStrategy.strategyId;
   /**
    * (Comment removed - was in Arabic)
    */
-  private assessCondition(car: any): 'excellent' | 'good' | 'fair' | 'poor' {
+  private assessCondition(car: { year: number; mileage: number }): 'excellent' | 'good' | 'fair' | 'poor' {
     const currentYear = new Date().getFullYear();
     const age = currentYear - car.year;
 
@@ -595,7 +598,7 @@ return saleStrategy.strategyId;
   /**
    * (Comment removed - was in Arabic)
    */
-  private async notifyUserOfOffer(userId: string, offer: SaleOffer, decision: any): Promise<void> {
+  private async notifyUserOfOffer(userId: string, offer: SaleOffer, decision: { status: string }): Promise<void> {
     try {
       await setDoc(doc(collection(db, 'notifications')), {
         userId,
@@ -615,7 +618,7 @@ return saleStrategy.strategyId;
   /**
    * (Comment removed - was in Arabic)
    */
-  private async analyzeOptimalTiming(analysis: MarketAnalysis): Promise<any> {
+  private async analyzeOptimalTiming(analysis: MarketAnalysis): Promise<{ bestMonth: string; expectedPriceIncrease: number }> {
     const currentMonth = new Date().toLocaleString('en', { month: 'long' });
 
     // (Comment removed - was in Arabic)
@@ -639,19 +642,27 @@ return saleStrategy.strategyId;
   /**
    * (Comment removed - was in Arabic)
    */
-  private async analyzeMarketConditions(analysis: MarketAnalysis): Promise<any> {
+  private async analyzeMarketConditions(analysis: MarketAnalysis): Promise<{ demand: number; inventory: number; seasonalFactor: number }> {
     // (Comment removed - was in Arabic)
+    const currentMonth = new Date().toLocaleString('en', { month: 'long' });
+    const seasonalFactors = this.BULGARIAN_MARKET_DATA.seasonalFactors as Record<string, number>;
+    const seasonalFactor = (seasonalFactors[currentMonth] || 1) * 100;
+    
     return {
       demand: analysis.demandLevel === 'high' ? 80 : analysis.demandLevel === 'medium' ? 50 : 20,
       inventory: 60, // نسبة مئوية
-      seasonalFactor: (this.BULGARIAN_MARKET_DATA.seasonalFactors as any)[new Date().toLocaleString('en', { month: 'long' })] * 100 || 100
+      seasonalFactor
     };
   }
 
   /**
    * (Comment removed - was in Arabic)
    */
-  private generateRecommendation(analysis: MarketAnalysis, timing: any, conditions: any): any {
+  private generateRecommendation(
+    analysis: MarketAnalysis,
+    timing: { bestMonth: string; expectedPriceIncrease: number },
+    conditions: { demand: number; inventory: number; seasonalFactor: number }
+  ): ResaleRecommendation {
     const reasons = [];
     let action: 'sell_now' | 'wait' | 'hold' = 'hold';
     let confidence = 50;

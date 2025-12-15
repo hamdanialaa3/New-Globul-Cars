@@ -25,7 +25,7 @@ export interface VisualSearchResult {
 
 export interface ImageAnalysisResult {
   labels: Array<{ description: string; score: number }>;
-  objects: Array<{ name: string; score: number; boundingBox: any }>;
+  objects: Array<{ name: string; score: number; boundingBox: { x: number; y: number; width: number; height: number } }>;
   colors: Array<{ color: string; score: number; pixelFraction: number }>;
   text?: string[];
 }
@@ -103,15 +103,23 @@ class VisualSearchService {
       const annotations = data.responses[0];
 
       const result: ImageAnalysisResult = {
-        labels: (annotations.labelAnnotations || []).map((label: any) => ({
-          description: label.description,
-          score: label.score
+        labels: (annotations.labelAnnotations || []).map((label: { description?: string; score?: number }) => ({
+          description: label.description || '',
+          score: label.score || 0
         })),
-        objects: (annotations.localizedObjectAnnotations || []).map((obj: any) => ({
-          name: obj.name,
-          score: obj.score,
-          boundingBox: obj.boundingPoly
-        })),
+        objects: (annotations.localizedObjectAnnotations || []).map((obj: { name?: string; score?: number; boundingPoly?: { normalizedVertices?: Array<{ x?: number; y?: number }> } }) => {
+          const vertices = obj.boundingPoly?.normalizedVertices || [];
+          const x = vertices[0]?.x || 0;
+          const y = vertices[0]?.y || 0;
+          const width = vertices[2]?.x ? (vertices[2].x - x) : 0;
+          const height = vertices[2]?.y ? (vertices[2].y - y) : 0;
+          
+          return {
+            name: obj.name || '',
+            score: obj.score || 0,
+            boundingBox: { x, y, width, height }
+          };
+        }),
         colors: this.extractDominantColors(annotations.imagePropertiesAnnotation),
         text: annotations.textAnnotations 
           ? [annotations.textAnnotations[0]?.description]
@@ -316,16 +324,23 @@ class VisualSearchService {
   /**
    * Extract dominant colors from Vision API response
    */
-  private extractDominantColors(imageProperties: any): ImageAnalysisResult['colors'] {
+  private extractDominantColors(imageProperties: { dominantColors?: { colors?: Array<{ color?: { red?: number; green?: number; blue?: number }; score?: number; pixelFraction?: number }> } } }): ImageAnalysisResult['colors'] {
     if (!imageProperties || !imageProperties.dominantColors) {
       return [];
     }
 
-    return imageProperties.dominantColors.colors.map((color: any) => ({
-      color: this.rgbToHex(color.color.red || 0, color.color.green || 0, color.color.blue || 0),
-      score: color.score,
-      pixelFraction: color.pixelFraction
-    }));
+    if (!imageProperties.dominantColors?.colors) return [];
+    return imageProperties.dominantColors.colors.map((color: { color?: { red?: number; green?: number; blue?: number }; score?: number; pixelFraction?: number }) => {
+      const red = color.color?.red || 0;
+      const green = color.color?.green || 0;
+      const blue = color.color?.blue || 0;
+      
+      return {
+        color: this.rgbToHex(red, green, blue),
+        score: color.score || 0,
+        pixelFraction: color.pixelFraction || 0
+      };
+    });
   }
 
   /**

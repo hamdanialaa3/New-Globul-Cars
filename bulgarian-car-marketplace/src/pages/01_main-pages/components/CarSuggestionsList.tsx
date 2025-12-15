@@ -9,6 +9,7 @@ import { CarListing } from '../../../types/CarListing';
 import { UnifiedCar } from '../../../services/car/unified-car.service';
 import { ChevronRight, Heart } from 'lucide-react';
 import { useTheme } from '../../../contexts/ThemeContext';
+import { serviceLogger } from '../../../services/logger-wrapper';
 
 interface CarSuggestionsListProps {
   currentCar: CarListing;
@@ -178,20 +179,20 @@ const PriceIndicator = styled.div<{ $type: 'good' | 'fair' | 'high' }>`
   gap: 0.25rem;
   font-size: 0.75rem;
   font-weight: 600;
-  color: ${props => 
-    props.$type === 'good' ? '#22c55e' : 
-    props.$type === 'fair' ? '#f59e0b' : 
-    '#ef4444'};
+  color: ${props =>
+    props.$type === 'good' ? '#22c55e' :
+      props.$type === 'fair' ? '#f59e0b' :
+        '#ef4444'};
   
   &::before {
     content: '';
     display: inline-block;
     width: 8px;
     height: 8px;
-    background: ${props => 
-      props.$type === 'good' ? '#22c55e' : 
-      props.$type === 'fair' ? '#f59e0b' : 
-      '#ef4444'};
+    background: ${props =>
+    props.$type === 'good' ? '#22c55e' :
+      props.$type === 'fair' ? '#f59e0b' :
+        '#ef4444'};
     border-radius: 2px;
   }
 `;
@@ -237,11 +238,11 @@ const NavigationButton = styled.button<{ $position: 'left' | 'right'; $isDark: b
   transform: translateY(-50%);
   width: 48px;
   height: 48px;
-  background: ${props => props.$isDark 
-    ? 'rgba(255, 255, 255, 0.1)' 
+  background: ${props => props.$isDark
+    ? 'rgba(255, 255, 255, 0.1)'
     : 'rgba(0, 0, 0, 0.05)'};
-  border: 1px solid ${props => props.$isDark 
-    ? 'rgba(255, 255, 255, 0.2)' 
+  border: 1px solid ${props => props.$isDark
+    ? 'rgba(255, 255, 255, 0.2)'
     : 'rgba(0, 0, 0, 0.1)'};
   border-radius: 8px;
   display: flex;
@@ -253,12 +254,12 @@ const NavigationButton = styled.button<{ $position: 'left' | 'right'; $isDark: b
   color: ${props => props.$isDark ? '#ffffff' : '#111827'};
 
   &:hover {
-    background: ${props => props.$isDark 
-      ? 'rgba(255, 255, 255, 0.2)' 
-      : 'rgba(0, 0, 0, 0.1)'};
-    border-color: ${props => props.$isDark 
-      ? 'rgba(255, 255, 255, 0.3)' 
-      : 'rgba(0, 0, 0, 0.2)'};
+    background: ${props => props.$isDark
+    ? 'rgba(255, 255, 255, 0.2)'
+    : 'rgba(0, 0, 0, 0.1)'};
+    border-color: ${props => props.$isDark
+    ? 'rgba(255, 255, 255, 0.3)'
+    : 'rgba(0, 0, 0, 0.2)'};
   }
 
   &:disabled {
@@ -298,11 +299,11 @@ const Dot = styled.button<{ $active: boolean; $isDark: boolean }>`
 
   &:hover {
     background: ${props => {
-      if (props.$active) {
-        return props.$isDark ? '#ffffff' : '#111827';
-      }
-      return props.$isDark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)';
-    }};
+    if (props.$active) {
+      return props.$isDark ? '#ffffff' : '#111827';
+    }
+    return props.$isDark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)';
+  }};
   }
 `;
 
@@ -339,14 +340,14 @@ const CarSuggestionsList: React.FC<CarSuggestionsListProps> = ({
     const loadSuggestions = async () => {
       // Get car ID from currentCar (could be id, carId, or documentId)
       const carId = (currentCar as any).id || (currentCar as any).carId || (currentCar as any).documentId;
-      
+
       serviceLogger.info('CarSuggestionsList: loading suggestions', {
         carId,
         make: currentCar.make,
         model: currentCar.model,
         currentCarKeys: Object.keys(currentCar)
       });
-      
+
       if (!carId) {
         serviceLogger.warn('CarSuggestionsList: no car ID found');
         setLoading(false);
@@ -358,11 +359,11 @@ const CarSuggestionsList: React.FC<CarSuggestionsListProps> = ({
         serviceLogger.info('CarSuggestionsList: calling getSimilarCars');
         const similarCars = await unifiedCarService.getSimilarCars(carId, limit);
         serviceLogger.info('CarSuggestionsList: similar cars count', { count: similarCars.length });
-        
+
         // Filter out the current car
         const filtered = similarCars.filter(car => car.id !== carId);
         serviceLogger.info('CarSuggestionsList: filtered cars count', { count: filtered.length });
-        
+
         // If no similar cars, try to get featured cars as fallback
         if (filtered.length === 0) {
           serviceLogger.info('CarSuggestionsList: no similar cars, trying featured');
@@ -453,7 +454,7 @@ const CarSuggestionsList: React.FC<CarSuggestionsListProps> = ({
     return null;
   }
 
-  const priceLabel = language === 'bg' 
+  const priceLabel = language === 'bg'
     ? { good: 'Добра цена', fair: 'Справедлива цена', high: 'Повишена цена' }
     : { good: 'Good price', fair: 'Fair price', high: 'Higher price' };
 
@@ -479,7 +480,7 @@ const CarSuggestionsList: React.FC<CarSuggestionsListProps> = ({
           {suggestions.map((car) => {
             const priceType = getPriceIndicator(car);
             const condition = (car as any).condition || (car.year && car.year >= new Date().getFullYear() - 1 ? 'New car' : 'Used');
-            
+
             return (
               <SuggestionCard
                 key={car.id}
@@ -520,7 +521,7 @@ const CarSuggestionsList: React.FC<CarSuggestionsListProps> = ({
                   <SuggestionSubtitle $isDark={isDark}>
                     {car.model} {car.year ? `· ${car.year}` : ''}
                   </SuggestionSubtitle>
-                  
+
                   <PriceRow>
                     <SuggestionPrice $isDark={isDark}>
                       {formatPrice(car.price, car.currency)}
@@ -548,7 +549,7 @@ const CarSuggestionsList: React.FC<CarSuggestionsListProps> = ({
 
                   {(car as any).consumption && (
                     <ConsumptionInfo $isDark={isDark}>
-                      {(car as any).consumption} {language === 'bg' ? 'л/100км' : 'l/100km'} (comb.) • 
+                      {(car as any).consumption} {language === 'bg' ? 'л/100км' : 'l/100km'} (comb.) •
                       {(car as any).co2 ? ` ${(car as any).co2} g CO₂/km (comb.)` : ''}
                     </ConsumptionInfo>
                   )}

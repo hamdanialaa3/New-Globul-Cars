@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from '../../../../../hooks/useTranslation';
 import {
   SectionCard,
@@ -15,6 +15,9 @@ import {
 } from '../styles';
 import { SearchData } from '../types';
 import { useLanguage } from '../../../../../contexts/LanguageContext';
+import { brandsModelsDataService } from '../../../../../services/brands-models-data.service';
+import { sanitizeCarMakeModel } from '../../../../../utils/inputSanitizer';
+import { logger } from '../../../../../services/logger-service';
 
 // Premium/Top brands (mobile.de style - most searched in Europe)
 const TOP_BRANDS = [
@@ -49,6 +52,38 @@ export const BasicDataSection: React.FC<BasicDataSectionProps> = ({
   const { language } = useLanguage();
   const [showOtherMake, setShowOtherMake] = useState(false);
   const [showOtherVehicleType, setShowOtherVehicleType] = useState(false);
+  const [carModels, setCarModels] = useState<string[]>([]);
+  const [loadingModels, setLoadingModels] = useState(false);
+
+  // Load models when make changes
+  useEffect(() => {
+    const loadModels = async () => {
+      if (!searchData.make || searchData.make === '__OTHER__') {
+        setCarModels([]);
+        // Clear model when make is cleared
+        if (searchData.model) {
+          const event = { target: { name: 'model', value: '' } } as React.ChangeEvent<HTMLInputElement>;
+          onChange(event);
+        }
+        return;
+      }
+
+      try {
+        setLoadingModels(true);
+        const sanitizedMake = sanitizeCarMakeModel(searchData.make);
+        const models = await brandsModelsDataService.getModelsForBrand(sanitizedMake);
+        setCarModels(models);
+        logger.debug('Models loaded for make', { make: sanitizedMake, count: models.length });
+      } catch (error) {
+        logger.error('Error loading models', error as Error, { make: searchData.make });
+        setCarModels([]);
+      } finally {
+        setLoadingModels(false);
+      }
+    };
+
+    loadModels();
+  }, [searchData.make, onChange]);
 
   return (
     <SectionCard>
@@ -65,13 +100,19 @@ export const BasicDataSection: React.FC<BasicDataSectionProps> = ({
                 name="make" 
                 value={showOtherMake ? '__OTHER__' : searchData.make} 
                 onChange={(e) => {
+                  const sanitized = sanitizeCarMakeModel(e.target.value);
                   if (e.target.value === '__OTHER__') {
                     setShowOtherMake(true);
                     const event = { target: { name: 'make', value: '' } } as React.ChangeEvent<HTMLInputElement>;
                     onChange(event);
                   } else {
                     setShowOtherMake(false);
-                    onChange(e);
+                    // Clear model when make changes
+                    const makeEvent = { target: { name: 'make', value: sanitized } } as React.ChangeEvent<HTMLSelectElement>;
+                    onChange(makeEvent);
+                    // Clear model field
+                    const modelEvent = { target: { name: 'model', value: '' } } as React.ChangeEvent<HTMLSelectElement>;
+                    onChange(modelEvent);
                   }
                 }}
               >
@@ -115,13 +156,49 @@ export const BasicDataSection: React.FC<BasicDataSectionProps> = ({
 
             <FormGroup>
               <label>{t('advancedSearch.model')}</label>
-              <SearchInput
-                type="text"
-                name="model"
-                value={searchData.model || ''}
-                onChange={onChange}
-                placeholder={t('advancedSearch.modelPlaceholder') || 'Enter model'}
-              />
+              {searchData.make && searchData.make !== '__OTHER__' && carModels.length > 0 ? (
+                <SearchSelect
+                  name="model"
+                  value={searchData.model || ''}
+                  onChange={(e) => {
+                    const sanitized = sanitizeCarMakeModel(e.target.value);
+                    const event = { target: { name: 'model', value: sanitized } } as React.ChangeEvent<HTMLSelectElement>;
+                    onChange(event);
+                  }}
+                  disabled={!searchData.make || loadingModels}
+                >
+                  <option value="">{t('advancedSearch.all') || 'All models'}</option>
+                  {carModels.map((model) => (
+                    <option key={model} value={model}>
+                      {model}
+                    </option>
+                  ))}
+                </SearchSelect>
+              ) : (
+                <SearchInput
+                  type="text"
+                  name="model"
+                  value={searchData.model || ''}
+                  onChange={(e) => {
+                    const sanitized = sanitizeCarMakeModel(e.target.value);
+                    const event = { target: { name: 'model', value: sanitized } } as React.ChangeEvent<HTMLInputElement>;
+                    onChange(event);
+                  }}
+                  placeholder={
+                    !searchData.make || searchData.make === '__OTHER__'
+                      ? (t('advancedSearch.modelPlaceholder') || 'Enter model')
+                      : loadingModels
+                      ? (language === 'bg' ? 'Зареждане...' : 'Loading...')
+                      : (language === 'bg' ? 'Изберете марка първо' : 'Select make first')
+                  }
+                  disabled={!searchData.make || searchData.make === '__OTHER__' || loadingModels}
+                />
+              )}
+              {loadingModels && (
+                <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '4px' }}>
+                  {language === 'bg' ? 'Зареждане на модели...' : 'Loading models...'}
+                </div>
+              )}
             </FormGroup>
 
             <FormGroup>

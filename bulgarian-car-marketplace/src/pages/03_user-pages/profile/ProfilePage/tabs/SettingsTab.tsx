@@ -23,7 +23,7 @@ import {
 } from 'lucide-react';
 import { IDCardOverlay, IDCardData } from '../../../../../components/Profile/IDCardEditor';
 import ProfileImageUploader from '../../../../../components/Profile/ProfileImageUploader';
-import { ProfileService } from '../../../../../services/profile/ProfileService';
+import { profileService } from '../../../../../services/profile/UnifiedProfileService';
 import { unifiedCarService } from '../../../../../services/car/unified-car.service';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import { storage, auth } from '../../../../../firebase/firebase-config';
@@ -35,6 +35,91 @@ interface SettingsTabProps {
   theme: ProfileTheme;
   refresh?: () => Promise<void>;
   setUser?: React.Dispatch<React.SetStateAction<BulgarianUser | null>>;
+}
+
+interface UserSettings {
+  displayName: string;
+  email: string;
+  phone: string;
+  bio: string;
+  language: string;
+  privacy: {
+    profileVisibility: string;
+    showPhone: boolean;
+    showEmail: boolean;
+    showLastSeen: boolean;
+    allowMessages: boolean;
+    showActivity: boolean;
+  };
+  notifications: {
+    email: boolean;
+    sms: boolean;
+    push: boolean;
+    newMessages: boolean;
+    priceAlerts: boolean;
+    favoriteUpdates: boolean;
+    newListings: boolean;
+    promotions: boolean;
+    newsletter: boolean;
+  };
+  appearance: {
+    theme: string;
+    currency: string;
+    dateFormat: string;
+    compactView: boolean;
+  };
+  security: {
+    twoFactorEnabled: boolean;
+    loginAlerts: boolean;
+    sessionTimeout: number;
+  };
+  carPreferences: {
+    priceRange: {
+      min: number;
+      max: number;
+    };
+    searchRadius: number;
+  };
+}
+
+interface ExtendedBulgarianUser extends BulgarianUser {
+  privacy?: {
+    profileVisibility?: string;
+    showPhone?: boolean;
+    showEmail?: boolean;
+    showLastSeen?: boolean;
+    allowMessages?: boolean;
+    showActivity?: boolean;
+  };
+  notifications?: {
+    email?: boolean;
+    sms?: boolean;
+    push?: boolean;
+    newMessages?: boolean;
+    priceAlerts?: boolean;
+    favoriteUpdates?: boolean;
+    newListings?: boolean;
+    promotions?: boolean;
+    newsletter?: boolean;
+  };
+  appearance?: {
+    theme?: string;
+    currency?: string;
+    dateFormat?: string;
+    compactView?: boolean;
+  };
+  security?: {
+    twoFactorEnabled?: boolean;
+    loginAlerts?: boolean;
+    sessionTimeout?: number;
+  };
+  carPreferences?: {
+    priceRange?: {
+      min?: number;
+      max?: number;
+    };
+    searchRadius?: number;
+  };
 }
 
 // Main Settings Tab Component
@@ -125,6 +210,7 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
   // Load user settings on mount
   React.useEffect(() => {
     if (user) {
+      const extendedUser = user as ExtendedBulgarianUser;
       setSettings({
         displayName: user.displayName || '',
         email: user.email || '',
@@ -132,41 +218,41 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
         bio: user.bio || '',
         language: user.preferredLanguage || 'bg',
         privacy: {
-          profileVisibility: (user as any).privacy?.profileVisibility || 'public',
-          showPhone: (user as any).privacy?.showPhone !== false,
-          showEmail: (user as any).privacy?.showEmail === true,
-          showLastSeen: (user as any).privacy?.showLastSeen !== false,
-          allowMessages: (user as any).privacy?.allowMessages !== false,
-          showActivity: (user as any).privacy?.showActivity !== false
+          profileVisibility: extendedUser.privacy?.profileVisibility || 'public',
+          showPhone: extendedUser.privacy?.showPhone !== false,
+          showEmail: extendedUser.privacy?.showEmail === true,
+          showLastSeen: extendedUser.privacy?.showLastSeen !== false,
+          allowMessages: extendedUser.privacy?.allowMessages !== false,
+          showActivity: extendedUser.privacy?.showActivity !== false
         },
         notifications: {
-          email: (user as any).notifications?.email !== false,
-          sms: (user as any).notifications?.sms === true,
-          push: (user as any).notifications?.push !== false,
-          newMessages: (user as any).notifications?.newMessages !== false,
-          priceAlerts: (user as any).notifications?.priceAlerts !== false,
-          favoriteUpdates: (user as any).notifications?.favoriteUpdates !== false,
-          newListings: (user as any).notifications?.newListings !== false,
-          promotions: (user as any).notifications?.promotions === true,
-          newsletter: (user as any).notifications?.newsletter === true
+          email: extendedUser.notifications?.email !== false,
+          sms: extendedUser.notifications?.sms === true,
+          push: extendedUser.notifications?.push !== false,
+          newMessages: extendedUser.notifications?.newMessages !== false,
+          priceAlerts: extendedUser.notifications?.priceAlerts !== false,
+          favoriteUpdates: extendedUser.notifications?.favoriteUpdates !== false,
+          newListings: extendedUser.notifications?.newListings !== false,
+          promotions: extendedUser.notifications?.promotions === true,
+          newsletter: extendedUser.notifications?.newsletter === true
         },
         appearance: {
-          theme: (user as any).appearance?.theme || 'auto',
-          currency: (user as any).appearance?.currency || 'EUR',
-          dateFormat: (user as any).appearance?.dateFormat || 'dd/mm/yyyy',
-          compactView: (user as any).appearance?.compactView === true
+          theme: extendedUser.appearance?.theme || 'auto',
+          currency: extendedUser.appearance?.currency || 'EUR',
+          dateFormat: extendedUser.appearance?.dateFormat || 'dd/mm/yyyy',
+          compactView: extendedUser.appearance?.compactView === true
         },
         security: {
-          twoFactorEnabled: (user as any).security?.twoFactorEnabled === true,
-          loginAlerts: (user as any).security?.loginAlerts !== false,
-          sessionTimeout: (user as any).security?.sessionTimeout || 30
+          twoFactorEnabled: extendedUser.security?.twoFactorEnabled === true,
+          loginAlerts: extendedUser.security?.loginAlerts !== false,
+          sessionTimeout: extendedUser.security?.sessionTimeout || 30
         },
         carPreferences: {
           priceRange: {
-            min: (user as any).carPreferences?.priceRange?.min || 0,
-            max: (user as any).carPreferences?.priceRange?.max || 100000
+            min: extendedUser.carPreferences?.priceRange?.min || 0,
+            max: extendedUser.carPreferences?.priceRange?.max || 100000
           },
-          searchRadius: (user as any).carPreferences?.searchRadius || 50
+          searchRadius: extendedUser.carPreferences?.searchRadius || 50
         }
       });
     }
@@ -197,7 +283,7 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
       setSaving(true);
       
       // Update basic profile information
-      await ProfileService.updateUserProfile(currentUser.uid, {
+      await profileService.updateUserProfile(currentUser.uid, {
         displayName: settings.displayName?.trim() || '',
         phoneNumber: settings.phone?.trim() || '',
         bio: settings.bio?.trim() || '',
@@ -205,7 +291,7 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
       });
 
       // Update privacy settings
-      await ProfileService.updateUserProfile(currentUser.uid, {
+      await profileService.updateUserProfile(currentUser.uid, {
         privacy: {
           profileVisibility: settings.privacy.profileVisibility,
           showPhone: settings.privacy.showPhone,
@@ -217,7 +303,7 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
       });
 
       // Update notifications settings
-      await ProfileService.updateUserProfile(currentUser.uid, {
+      await profileService.updateUserProfile(currentUser.uid, {
         notifications: {
           email: settings.notifications.email,
           sms: settings.notifications.sms,
@@ -232,7 +318,7 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
       });
 
       // Update appearance settings
-      await ProfileService.updateUserProfile(currentUser.uid, {
+      await profileService.updateUserProfile(currentUser.uid, {
         appearance: {
           theme: settings.appearance.theme,
           currency: settings.appearance.currency,
@@ -242,7 +328,7 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
       });
 
       // Update security settings
-      await ProfileService.updateUserProfile(currentUser.uid, {
+      await profileService.updateUserProfile(currentUser.uid, {
         security: {
           twoFactorEnabled: settings.security.twoFactorEnabled,
           loginAlerts: settings.security.loginAlerts,
@@ -251,7 +337,7 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
       });
 
       // Update car preferences
-      await ProfileService.updateUserProfile(currentUser.uid, {
+      await profileService.updateUserProfile(currentUser.uid, {
         carPreferences: {
           priceRange: settings.carPreferences.priceRange,
           searchRadius: settings.carPreferences.searchRadius
@@ -473,7 +559,7 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
       const photoURL = await getDownloadURL(photoRef);
 
       // Update user profile
-      await ProfileService.updateUserProfile(currentUser.uid, {
+      await profileService.updateUserProfile(currentUser.uid, {
         photoURL: photoURL
       });
 
@@ -536,7 +622,7 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ user, theme, refresh, 
       }
 
       // Update user profile
-      await ProfileService.updateUserProfile(currentUser.uid, {
+      await profileService.updateUserProfile(currentUser.uid, {
         photoURL: undefined
       } as any);
 
@@ -2696,7 +2782,7 @@ const EditInformationSection: React.FC<EditInformationSectionProps> = ({ user, l
     
     setSaving(true);
     try {
-      await ProfileService.updateUserProfile(currentUser.uid, {
+      await profileService.updateUserProfile(currentUser.uid, {
         displayName: userInfo.displayName,
         firstName: userInfo.firstName,
         lastName: userInfo.lastName,
@@ -2733,7 +2819,7 @@ const EditInformationSection: React.FC<EditInformationSectionProps> = ({ user, l
     setSaving(true);
     try {
       // Save ID card data to user profile
-      await ProfileService.updateUserProfile(currentUser.uid, {
+      await profileService.updateUserProfile(currentUser.uid, {
         idCardData: data,
         // Auto-fill user info from ID card if empty
         firstName: userInfo.firstName || data.firstNameBG || data.firstNameEN,

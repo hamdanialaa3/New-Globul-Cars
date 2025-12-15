@@ -100,8 +100,8 @@ export const useLogin = (): UseLoginReturn => {
       } else {
         setError(t('auth.loginFailed', 'Login failed. Please try again.'));
       }
-    } catch (err: any) {
-      logger.error('Login error:', err);
+    } catch (err) {
+      logger.error('Login error:', err instanceof Error ? err : new Error(String(err)));
       setError(t('auth.unexpectedError', 'An unexpected error occurred. Please try again.'));
     } finally {
       setLoading(false);
@@ -126,9 +126,11 @@ export const useLogin = (): UseLoginReturn => {
       setTimeout(() => {
         navigate('/profile');  // Changed from /dashboard to /profile
       }, 1000);
-    } catch (err: any) {
-      logger.error('Google login error', err as Error, {
-        errorCode: err?.code,
+    } catch (err) {
+      const error = err instanceof Error ? err : new Error(String(err));
+      const errorWithCode = error as Error & { code?: string; message?: string };
+      logger.error('Google login error', error, {
+        errorCode: errorWithCode?.code,
         currentURL: window.location.href,
         protocol: window.location.protocol,
         host: window.location.host,
@@ -137,7 +139,7 @@ export const useLogin = (): UseLoginReturn => {
       });
 
       // User-friendly error message
-      const userMessage = err?.message || 'حدث خطأ أثناء تسجيل الدخول مع Google. يرجى المحاولة مرة أخرى.';
+      const userMessage = errorWithCode?.message || 'حدث خطأ أثناء تسجيل الدخول مع Google. يرجى المحاولة مرة أخرى.';
       setError(userMessage);
     } finally {
       setLoading(false);
@@ -161,9 +163,11 @@ export const useLogin = (): UseLoginReturn => {
       setTimeout(() => {
         navigate('/profile');  // Changed from /dashboard to /profile
       }, 1000);
-    } catch (err: any) {
-      logger.error('Facebook login error', err as Error, { errorCode: err?.code });
-      const userMessage = err?.message || 'حدث خطأ أثناء تسجيل الدخول مع Facebook. يرجى المحاولة مرة أخرى.';
+    } catch (err) {
+      const error = err instanceof Error ? err : new Error(String(err));
+      const errorWithCode = error as Error & { code?: string; message?: string };
+      logger.error('Facebook login error', error, { errorCode: errorWithCode?.code });
+      const userMessage = errorWithCode?.message || 'حدث خطأ أثناء تسجيل الدخول مع Facebook. يرجى المحاولة مرة أخرى.';
       setError(userMessage);
     } finally {
       setLoading(false);
@@ -187,9 +191,11 @@ export const useLogin = (): UseLoginReturn => {
       setTimeout(() => {
         navigate('/profile');  // Changed from /dashboard to /profile
       }, 1000);
-    } catch (err: any) {
-      logger.error('❌ Apple login error:', err);
-      const userMessage = err?.message || 'حدث خطأ أثناء تسجيل الدخول مع Apple. يرجى المحاولة مرة أخرى.';
+    } catch (err) {
+      const error = err instanceof Error ? err : new Error(String(err));
+      const errorWithCode = error as Error & { message?: string };
+      logger.error('❌ Apple login error:', error);
+      const userMessage = errorWithCode?.message || 'حدث خطأ أثناء تسجيل الدخول مع Apple. يرجى المحاولة مرة أخرى.';
       setError(userMessage);
     } finally {
       setLoading(false);
@@ -215,9 +221,11 @@ export const useLogin = (): UseLoginReturn => {
       setTimeout(() => {
         navigate('/profile');  // Changed from /dashboard to /profile
       }, 1000);
-    } catch (err: any) {
-      logger.error('❌ Anonymous login error:', err);
-      const userMessage = err?.message || 'حدث خطأ أثناء الدخول كضيف. يرجى المحاولة مرة أخرى.';
+    } catch (err) {
+      const error = err instanceof Error ? err : new Error(String(err));
+      const errorWithCode = error as Error & { message?: string };
+      logger.error('❌ Anonymous login error:', error);
+      const userMessage = errorWithCode?.message || 'حدث خطأ أثناء الدخول كضيف. يرجى المحاولة مرة أخرى.';
       setError(userMessage);
     } finally {
       setLoading(false);

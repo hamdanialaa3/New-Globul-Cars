@@ -33,19 +33,19 @@ const CarDetailsPage: React.FC = () => {
   const { language } = useLanguage();
   const { currentUser } = useAuth();
   const { theme, toggleTheme } = useTheme();
-  
+
   // Delete dialog state
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  
+
   // Use custom hooks
   const { car, loading, setCar } = useCarDetails(carId);
-  
+
   // Auto-track car views
   useCarViewTracking(carId, car?.sellerId);
-  
+
   // Check if current user is the owner
   const isOwner = currentUser && car && (
-    currentUser.uid === car.sellerId || 
+    currentUser.uid === car.sellerId ||
     currentUser.uid === (car as any).userId ||
     currentUser.uid === (car as any).ownerId
   );
@@ -72,7 +72,7 @@ const CarDetailsPage: React.FC = () => {
               accidentHistory: (updatedCar as any).accidentHistory || false,
               serviceHistory: (updatedCar as any).serviceHistory || false,
             } as CarListing;
-          setCar(carData);
+            setCar(carData);
           }
         });
       }
@@ -83,9 +83,9 @@ const CarDetailsPage: React.FC = () => {
   useEffect(() => {
     const editParam = searchParams.get('edit');
     if (editParam === 'true' && currentUser && car) {
-      const isCarOwner = currentUser.uid === car.sellerId || 
-                         currentUser.uid === (car as any).userId ||
-                         currentUser.uid === (car as any).ownerId;
+      const isCarOwner = currentUser.uid === car.sellerId ||
+        currentUser.uid === (car as any).userId ||
+        currentUser.uid === (car as any).ownerId;
       if (isCarOwner) {
         editHook.setIsEditMode(true);
       } else {
@@ -98,12 +98,12 @@ const CarDetailsPage: React.FC = () => {
   // Contact Method Handlers
   const handleContactClick = (method: string) => {
     if (editHook.isEditMode) return;
-    
+
     const phone = car?.sellerPhone || '';
     const email = car?.sellerEmail || '';
     const cleanPhone = phone.replace(/\D/g, '');
-    
-    switch(method) {
+
+    switch (method) {
       case 'phone':
         if (phone) {
           window.location.href = `tel:${phone}`;
@@ -111,7 +111,7 @@ const CarDetailsPage: React.FC = () => {
           alert(language === 'bg' ? 'Няма наличен телефонен номер' : 'No phone number available');
         }
         break;
-        
+
       case 'email':
         if (email) {
           window.location.href = `mailto:${email}?subject=${encodeURIComponent(`Inquiry about ${car?.make} ${car?.model} ${car?.year}`)}`;
@@ -119,7 +119,7 @@ const CarDetailsPage: React.FC = () => {
           alert(language === 'bg' ? 'Няма наличен имейл адрес' : 'No email address available');
         }
         break;
-        
+
       case 'whatsapp':
         if (phone) {
           const message = encodeURIComponent(`Hello! I'm interested in your ${car?.make} ${car?.model} ${car?.year}`);
@@ -128,7 +128,7 @@ const CarDetailsPage: React.FC = () => {
           alert(language === 'bg' ? 'Няма наличен телефонен номер за WhatsApp' : 'No phone number available for WhatsApp');
         }
         break;
-        
+
       case 'viber':
         if (phone) {
           window.open(`viber://chat?number=${cleanPhone}`, '_blank');
@@ -136,7 +136,7 @@ const CarDetailsPage: React.FC = () => {
           alert(language === 'bg' ? 'Няма наличен телефонен номер за Viber' : 'No phone number available for Viber');
         }
         break;
-        
+
       case 'telegram':
         if (phone) {
           window.open(`https://t.me/${cleanPhone}`, '_blank');
@@ -144,13 +144,13 @@ const CarDetailsPage: React.FC = () => {
           alert(language === 'bg' ? 'Няма наличен телефонен номер за Telegram' : 'No phone number available for Telegram');
         }
         break;
-        
+
       case 'facebook':
         if (email || phone) {
           window.open('https://www.messenger.com/', '_blank');
           setTimeout(() => {
-            alert(language === 'bg' 
-              ? `Свържете се чрез Messenger: ${email || phone}` 
+            alert(language === 'bg'
+              ? `Свържете се чрез Messenger: ${email || phone}`
               : `Contact via Messenger: ${email || phone}`
             );
           }, 500);
@@ -158,7 +158,7 @@ const CarDetailsPage: React.FC = () => {
           alert(language === 'bg' ? 'Няма налична информация за контакт' : 'No contact information available');
         }
         break;
-        
+
       case 'sms':
         if (phone) {
           const smsBody = encodeURIComponent(`Hi, I'm interested in your ${car?.make} ${car?.model} ${car?.year}`);
@@ -167,7 +167,7 @@ const CarDetailsPage: React.FC = () => {
           alert(language === 'bg' ? 'Няма наличен телефонен номер за SMS' : 'No phone number available for SMS');
         }
         break;
-        
+
       default:
         break;
     }
@@ -178,7 +178,7 @@ const CarDetailsPage: React.FC = () => {
   };
 
   const handleSetShowOther = (field: string, value: boolean) => {
-    switch(field) {
+    switch (field) {
       case 'make':
         editHook.setShowOtherMake(value);
         break;
@@ -214,7 +214,7 @@ const CarDetailsPage: React.FC = () => {
     }
 
     setShowDeleteDialog(false);
-    
+
     // Show loading indicator
     const confirmed = window.confirm(
       language === 'bg'
@@ -225,19 +225,19 @@ const CarDetailsPage: React.FC = () => {
     if (!confirmed) return;
 
     const success = await editHook.handleDelete(currentUser.uid);
-    
+
     if (success) {
       // Show success message
       alert(
         language === 'bg'
-          ? isSold 
+          ? isSold
             ? '✅ Честито за продажбата! Обявата е изтрита успешно.'
             : '✅ Обявата е изтрита успешно.'
           : isSold
             ? '✅ Congratulations on the sale! Listing deleted successfully.'
             : '✅ Listing deleted successfully.'
       );
-      
+
       // Navigate to profile
       navigate('/profile/my-ads');
     }
@@ -259,11 +259,11 @@ const CarDetailsPage: React.FC = () => {
             {language === 'bg' ? 'Автомобилът не е намерен' : 'Car not found'}
           </h2>
           <p style={{ marginBottom: '1rem', color: 'var(--text-tertiary)' }}>
-            {language === 'bg' 
-              ? `ID: ${carId}` 
+            {language === 'bg'
+              ? `ID: ${carId}`
               : `ID: ${carId}`}
           </p>
-          <button 
+          <button
             onClick={() => navigate(-1)}
             style={{
               padding: '10px 20px',
@@ -291,6 +291,7 @@ const CarDetailsPage: React.FC = () => {
         language={(language as 'bg' | 'en')}
         onBack={() => navigate(-1)}
         onEdit={isOwner ? editHook.handleEdit : undefined}
+        onDelete={isOwner ? handleDeleteClick : undefined}
         isOwner={Boolean(isOwner)}
         onContact={handleContactClick}
       />
@@ -375,14 +376,14 @@ const CarDetailsPage: React.FC = () => {
           language={language as 'bg' | 'en'}
           onContactClick={handleContactClick}
           onToggleContact={handleToggleContact}
-              />
-            ) : (
+        />
+      ) : (
         <>
           <CarEquipmentDisplay
             car={car}
             language={language as 'bg' | 'en'}
           />
-          
+
           <CarContactMethods
             car={car}
             editedCar={editHook.editedCar}
@@ -405,7 +406,7 @@ const CarDetailsPage: React.FC = () => {
             }}
             zoom={14}
           />
-          
+
           <DistanceIndicator
             carLocation={{
               city: car.locationData?.cityName,

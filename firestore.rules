@@ -54,11 +54,27 @@ service cloud.firestore {
     
     // ==================== USERS COLLECTION ====================
     
+    // Helper function to check if profile is public
+    // Profiles are public by default unless explicitly set to 'private'
+    function isProfilePublic(profileData) {
+      return !('profileVisibility' in profileData) || 
+             profileData.profileVisibility == 'public' ||
+             profileData.profileVisibility == null;
+    }
+    
     match /users/{userId} {
+      // SECURITY FIX: Restrict user data access
       // Allow read if:
-      // - User is authenticated (can read own profile)
-      // - Profile is public
-      allow read: if isAuthenticated();
+      // 1. User is reading their own profile (full access)
+      // 2. User is admin (full access for moderation)
+      // 3. Profile is public (limited access - sensitive fields filtered in frontend)
+      // 
+      // Note: Sensitive fields (email, phoneNumber) should be filtered in frontend
+      // using sanitizeUserForDisplay() from users-directory.service.ts
+      allow read: if isAuthenticated() && 
+                     (request.auth.uid == userId || // Own profile - full access
+                      isAdmin() || // Admin - full access for moderation
+                      isProfilePublic(resource.data)); // Public profile - frontend will filter sensitive data
       
       // Allow create if:
       // - User is creating their own profile
@@ -144,32 +160,45 @@ service cloud.firestore {
     // ==================== CARS COLLECTION ====================
     
     match /cars/{carId} {
-      // Allow public read for ALL active listings (no authentication required)
+      // Allow public read for ACTIVE listings only (security improvement)
       // This enables homepage sections to display cars without login
-      // Public visibility: status == 'active' OR isActive == true
-      allow read: if true; // Allow all reads for public car listings
+      // Public visibility: status == 'active' AND isActive == true AND not sold
+      allow read: if resource.data.status == 'active' 
+                  && resource.data.isActive == true
+                  && !(resource.data.isSold == true);
       
-      // Alternative: More restrictive (uncomment if needed)
-      // allow read: if isAuthenticated() ||
-      //              resource.data.get('status', '') == 'active' ||
-      //              (resource.data.get('isActive', false) == true &&
-      //               !(resource.data.get('isSold', false) == true));
+      // Allow authenticated users to read their own listings (even if inactive)
+      allow read: if isAuthenticated() && 
+                     resource.data.sellerId == request.auth.uid;
+      
+      // Allow admins to read all listings
+      allow read: if isAdmin();
       
       // Allow create if authenticated and listing limit not exceeded
-        // Validates:
-        // 1. sellerId field exists and is string
-        // 2. sellerId matches authenticated user
-        // 3. sellerEmail matches authenticated user's email
-        // 4. Listing limits based on plan tier
+      // Validates:
+      // 1. sellerId field exists and is string
+      // 2. sellerId matches authenticated user
+      // 3. sellerEmail matches authenticated user's email
+      // 4. status must be 'active' and isActive must be true for new listings
+      // 5. Listing limits based on plan tier
       allow create: if isAuthenticated() &&
-                         request.resource.data.sellerId is string &&
+                       request.resource.data.sellerId is string &&
                        request.resource.data.sellerId == request.auth.uid &&
-                         request.resource.data.sellerEmail == request.auth.token.email &&
+                       request.resource.data.sellerEmail == request.auth.token.email &&
+                       request.resource.data.status == 'active' &&
+                       request.resource.data.isActive == true &&
                        // Check listing limits based on plan tier
                        canAddListing(request.auth.uid);
       
-      // Allow update/delete if owner or admin
-      allow update, delete: if isOwner(resource.data.sellerId) || isAdmin();
+      // Allow update if owner or admin
+      // Prevents changing sellerId (ownership transfer protection)
+      allow update: if (isOwner(resource.data.sellerId) || isAdmin()) &&
+                       // Prevent changing sellerId
+                       (!('sellerId' in request.resource.data.diff(resource.data)) ||
+                        request.resource.data.sellerId == resource.data.sellerId);
+      
+      // Allow delete if owner or admin
+      allow delete: if isOwner(resource.data.sellerId) || isAdmin();
       
       // Check if user can add more listings (Phase 0 Day 4)
       function canAddListing(userId) {

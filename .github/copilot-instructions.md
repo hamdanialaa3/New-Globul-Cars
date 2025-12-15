@@ -6,10 +6,17 @@
 - **Backend**: `functions/src/` (Firebase Cloud Functions, 98+ Node.js functions across ~25 domains)
 - **ML**: `ai-valuation-model/` (Python/XGBoost, deployed via Vertex AI; called by backend autonomously-resale.ts)
 - **Data**: Firestore collections (10+), Firebase Storage (images), Algolia (car search indexing)
-- **Archive**: `DDD/` (never auto-delete; manual review required before recreating archived features)
+- **Archive**: `ARCHIVE/` (organized cleanup Dec 2025; never auto-delete; manual review required before recreating archived features)
+- **Documentation**: `DOCUMENTATION_ORGANIZED/` (master index: [MASTER_INDEX.md](DOCUMENTATION_ORGANIZED/MASTER_INDEX.md); essential docs, guides, technical, Arabic docs)
+- **Packages**: `packages/` (monorepo workspaces: core, services, ui, auth, cars, profile)
 - **Optimization**: 77% build size reduction (664MB → 150MB) achieved via service consolidation, lazy loading, tree-shaking
 
-**Key Success Metric**: Avoid deprecated location fields (`location`, `city`, `region`). Use unified `locationData` (cityId/cityName/coordinates) from `types/LocationData.ts`.
+**Key Success Metrics**: 
+- Avoid deprecated location fields (`location`, `city`, `region`). Use unified `locationData` (cityId/cityName/coordinates) from `types/LocationData.ts`
+- Never use `console.*` in production—always use `logger-service.ts` for structured logging
+- Project is **96% complete** (Dec 2025); check [README.md](README.md) and [COMPLETE_REPAIR_PLAN_FINAL_DEC_15_2025.md](COMPLETE_REPAIR_PLAN_FINAL_DEC_15_2025.md) for current status
+- **Testing Coverage**: 40-45% (475+ tests across 40 files); see [TESTING_PHASE_2_COMPLETE_DEC_15_2025.md](TESTING_PHASE_2_COMPLETE_DEC_15_2025.md)
+- **Security**: 100% secure—all 8 security issues resolved; see [FIXES_REPORT_DEC_15_2025.md](FIXES_REPORT_DEC_15_2025.md)
 
 ### Frontend Architecture
 **Provider Stack** (order is critical—do not reorder):
@@ -88,6 +95,17 @@ export const translations = {
 - **Rule**: Never fetch or call APIs directly in components; use services
 - **Patterns**: Singletons for stateless services (Firebase, APIs); classes for stateful (Socket, Messaging)
 - **Import style**: `import { getCarById } from '@/services/car-service'` (or via full paths during migration)
+- **Logging**: CRITICAL—use `logger-service.ts` instead of `console.*` in all code:
+  ```typescript
+  // ❌ Wrong (console in production)
+  console.log('User logged in', userId);
+  console.error('Failed to load', error);
+  
+  // ✅ Right (structured logging)
+  import { logger } from '@/services/logger-service';
+  logger.info('User logged in', { userId });
+  logger.error('Failed to load', error, { context: 'carService' });
+  ```
 - **Socket.io cleanup mandatory**: Always `removeEventListener` in `useEffect` cleanup
 - **Example**:
   ```typescript
@@ -202,6 +220,7 @@ const result = await httpsCallable(functions, 'myFunction')({ data: 'value' });
 - **Deploy hosting**: `npm run deploy`. **Deploy functions**: `npm run deploy:functions` (region europe-west1 ONLY). See [deploy.ps1](deploy.ps1), [deploy-to-firebase.ps1](deploy-to-firebase.ps1), and guidance in [DEPLOYMENT_READY_INSTRUCTIONS.md](DEPLOYMENT_READY_INSTRUCTIONS.md).
 - **Tests**: run React tests via `npm test` or `npm run test:ci` in `bulgarian-car-marketplace/`. Backend tests use ad-hoc scripts; validate with emulator.
 - **TypeScript checks**: rely on compiler; ESLint is disabled via CRACO. See [tsconfig.json](tsconfig.json).
+- **Documentation updates**: Auto-update docs with `node auto-update-documentation.js --quick` (1 second) or `--analyze` (full analysis). Watch mode available via `--watch`.
 
 ### Import Paths & Path Aliases (Critical)
 **Always use path aliases** defined in `tsconfig.json` to keep imports clean and relocatable:
@@ -305,17 +324,31 @@ import { useLanguage } from '../../contexts/LanguageContext';
 **Reviews** (`features/reviews/`):
 - 1-5 star ratings; moderation; helpful voting
 
+### Monorepo Packages (`packages/`)
+**Structure**: Workspaces-based monorepo for shared code
+- `packages/core/` - Common utilities, helpers, constants
+- `packages/services/` - Shared business logic services
+- `packages/ui/` - Reusable UI components library
+- `packages/auth/` - Authentication logic and components
+- `packages/cars/` - Car-related domain logic
+- `packages/profile/` - Profile management logic
+
+**Status**: Path aliases configured in tsconfig (`@globul-cars/core`, `@globul-cars/services`), but packages not yet fully implemented. Currently using local services in `bulgarian-car-marketplace/src/services/`.
+
+**Future**: Migrate shared services to monorepo packages for better code reuse across potential future apps (dealer portal, admin panel, mobile app).
+
 ### Critical Gotchas
-1. **Provider Order**: Changing context hierarchy breaks auth/language/theme
-2. **Translation Keys**: Missing `bg` or `en` causes fallback chain — add **both**
-3. **Socket Cleanup**: Always `removeEventListener` in `useEffect` cleanup
+1. **Provider Order**: Changing context hierarchy breaks auth/language/theme—order in `App.tsx` is critical
+2. **Translation Keys**: Missing `bg` or `en` causes fallback chain — add **both** languages
+3. **Socket Cleanup**: Always `removeEventListener` in `useEffect` cleanup to prevent memory leaks
 4. **Location Fields**: Never use deprecated `location`, `city`, `region` — use `locationData` only
 5. **Build Process**: CRACO disables ESLint; rely on TypeScript compiler errors
-6. **Console Logs**: Use `logger-service.ts` in production; never `console.*`
+6. **Console Logs**: Use `logger-service.ts` in production; never `console.*` (enforced in PROGRAMMING_PRIORITIES)
 7. **Image Optimization**: Use optimized versions from `assets/` hierarchy
 8. **Mobile Responsive**: Check `styles/mobile-responsive.css` for breakpoint overrides
-9. **Service Duplication**: Extend existing services instead of creating duplicates
+9. **Service Duplication**: Extend existing services instead of creating duplicates (103 services already exist)
 10. **Monorepo Future**: `@globul-cars/core` and `@globul-cars/services` paths prepared in tsconfig but not yet implemented
+11. **Archive Files**: Never auto-delete files in `ARCHIVE/` directory—manual review required before recreating archived features
 
 ### Key References
 - **Project Overview**: [README.md](README.md), [INDEX.md](INDEX.md), [START_HERE.md](START_HERE.md)

@@ -10,7 +10,7 @@ export interface ErrorDetails {
   userId?: string;
   action?: string;
   severity: 'low' | 'medium' | 'high' | 'critical';
-  context?: Record<string, any>;
+  context?: Record<string, string | number | boolean>;
 }
 
 export interface LocalizedError {
@@ -183,7 +183,7 @@ export class ErrorHandlingService {
   /**
    * Handle Firebase Auth errors
    */
-  public handleAuthError(error: any, language: 'bg' | 'en' = 'bg'): string {
+  public handleAuthError(error: Error & { code?: string }, language: 'bg' | 'en' = 'bg'): string {
     this.logError(error, {
       action: 'authentication',
       severity: 'medium',
@@ -196,7 +196,7 @@ export class ErrorHandlingService {
   /**
    * Handle Firestore errors
    */
-  public handleFirestoreError(error: any, language: 'bg' | 'en' = 'bg'): string {
+  public handleFirestoreError(error: Error & { code?: string }, language: 'bg' | 'en' = 'bg'): string {
     this.logError(error, {
       action: 'firestore',
       severity: 'medium',
@@ -209,7 +209,7 @@ export class ErrorHandlingService {
   /**
    * Handle Storage errors
    */
-  public handleStorageError(error: any, language: 'bg' | 'en' = 'bg'): string {
+  public handleStorageError(error: Error & { code?: string }, language: 'bg' | 'en' = 'bg'): string {
     this.logError(error, {
       action: 'storage',
       severity: 'medium',
@@ -327,11 +327,11 @@ export class ErrorHandlingService {
 export const errorHandler = ErrorHandlingService.getInstance();
 
 // Helper functions for common error scenarios
-export const handleError = (error: any, context?: {
+export const handleError = (error: Error, context?: {
   userId?: string;
   action?: string;
   severity?: 'low' | 'medium' | 'high' | 'critical';
-  additionalData?: Record<string, any>;
+  additionalData?: Record<string, string | number | boolean>;
 }): void => {
   errorHandler.logError(error, context);
 };

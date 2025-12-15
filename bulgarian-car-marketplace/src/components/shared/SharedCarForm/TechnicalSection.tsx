@@ -1,22 +1,26 @@
 import React from 'react';
 import { SharedCarData } from '../SharedCarForm';
 
+// Styled component types
+type StyledComponent = React.ComponentType<React.HTMLAttributes<HTMLElement> & { [key: string]: unknown }>;
+type StyledComponentWithProps<T = Record<string, unknown>> = React.ComponentType<T & React.HTMLAttributes<HTMLElement>>;
+
 interface TechnicalSectionProps {
   mode: 'search' | 'listing';
   data: SharedCarData;
-  onInputChange: (field: keyof SharedCarData, value: any) => void;
+  onInputChange: (field: keyof SharedCarData, value: string | number) => void;
   isOpen: boolean;
   onToggle: () => void;
-  SectionCard: any;
-  SectionHeader: any;
-  SectionTitle: any;
-  ExpandIcon: any;
-  SectionContent: any;
-  FormGrid: any;
-  FormGroup: any;
-  FormLabel: any;
-  SearchSelect: any;
-  SearchInput: any;
+  SectionCard: StyledComponent;
+  SectionHeader: StyledComponentWithProps<{ isOpen: boolean }>;
+  SectionTitle: StyledComponent;
+  ExpandIcon: StyledComponentWithProps<{ isOpen: boolean }>;
+  SectionContent: StyledComponentWithProps<{ isOpen: boolean }>;
+  FormGrid: StyledComponent;
+  FormGroup: StyledComponent;
+  FormLabel: StyledComponent;
+  SearchSelect: StyledComponentWithProps<{ value?: string; disabled?: boolean }>;
+  SearchInput: StyledComponentWithProps<{ type?: string; placeholder?: string; value?: string | number }>;
 }
 
 export const TechnicalSection: React.FC<TechnicalSectionProps> = ({

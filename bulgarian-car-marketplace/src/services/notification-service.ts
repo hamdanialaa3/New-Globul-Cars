@@ -1,7 +1,8 @@
-import { getMessaging, getToken, onMessage } from 'firebase/messaging';
+import { getMessaging, getToken, onMessage, Messaging } from 'firebase/messaging';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
 import { logger } from './logger-service';
+import { CarListing } from '../types/CarListing';
 
 /**
  * Notification Service - Singleton Pattern
@@ -127,9 +128,14 @@ class NotificationService {
     }
   }
 
-  onForegroundMessage(callback: (payload: any) => void) {
+  onForegroundMessage(callback: (payload: MessagePayload) => void) {
     if (!this.messaging) {
       this.messaging = getMessaging();
+    }
+    
+    if (!this.messaging) {
+      logger.warn('Messaging not available');
+      return () => {}; // Return no-op unsubscribe
     }
     
     return onMessage(this.messaging, callback);
@@ -149,13 +155,27 @@ class NotificationService {
   }
 
   listenForMessages() {
-    onMessage(this.messaging, (payload) => {
+    if (!this.messaging) {
+      this.messaging = getMessaging();
+    }
+    
+    if (!this.messaging) {
+      logger.warn('Messaging not available for listening');
+      return;
+    }
+    
+    onMessage(this.messaging, (payload: MessagePayload) => {
       logger.info('📬 Foreground Message:', payload);
       this.showNotification(payload);
     });
   }
 
-  showNotification(payload: any) {
+  showNotification(payload: MessagePayload) {
+    if (!payload.notification) {
+      logger.warn('Notification payload missing notification field');
+      return;
+    }
+    
     const { title, body, icon } = payload.notification;
     
     if ('Notification' in window && Notification.permission === 'granted') {
@@ -170,21 +190,23 @@ class NotificationService {
   }
 
   // Notification Templates
-  async sendNewCarNotification(userId: string, carData: any) {
+  async sendNewCarNotification(userId: string, carData: CarNotificationData) {
+    const brand = carData.brand || carData.make || 'Car';
     return this.sendNotification(userId, {
       title: '🚗 سيارة جديدة!',
-      body: `${carData.brand} ${carData.model} - ${carData.price}€`,
+      body: `${brand} ${carData.model} - ${carData.price}€`,
       type: 'new_car',
-      data: { carId: carData.id }
+      data: { carId: carData.id || '' }
     });
   }
 
-  async sendPriceDropNotification(userId: string, carData: any, oldPrice: number) {
+  async sendPriceDropNotification(userId: string, carData: CarNotificationData, oldPrice: number) {
+    const brand = carData.brand || carData.make || 'Car';
     return this.sendNotification(userId, {
       title: '💰 السعر انخفض!',
-      body: `${carData.brand} ${carData.model} من ${oldPrice}€ إلى ${carData.price}€`,
+      body: `${brand} ${carData.model} من ${oldPrice}€ إلى ${carData.price}€`,
       type: 'price_drop',
-      data: { carId: carData.id }
+      data: { carId: carData.id || '' }
     });
   }
 
@@ -197,39 +219,43 @@ class NotificationService {
     });
   }
 
-  async sendFavoriteCarAvailableNotification(userId: string, carData: any) {
+  async sendFavoriteCarAvailableNotification(userId: string, carData: CarNotificationData) {
+    const brand = carData.brand || carData.make || 'Car';
     return this.sendNotification(userId, {
       title: '⭐ السيارة المفضلة متاحة!',
-      body: `${carData.brand} ${carData.model} متاحة الآن`,
+      body: `${brand} ${carData.model} متاحة الآن`,
       type: 'favorite_available',
-      data: { carId: carData.id }
+      data: { carId: carData.id || '' }
     });
   }
 
-  async sendViewNotification(sellerId: string, carData: any, viewCount: number) {
+  async sendViewNotification(sellerId: string, carData: CarNotificationData, viewCount: number) {
+    const brand = carData.brand || carData.make || 'Car';
     return this.sendNotification(sellerId, {
       title: '👀 مشاهدات جديدة',
-      body: `إعلانك ${carData.brand} ${carData.model} حصل على ${viewCount} مشاهدة`,
+      body: `إعلانك ${brand} ${carData.model} حصل على ${viewCount} مشاهدة`,
       type: 'views',
-      data: { carId: carData.id }
+      data: { carId: carData.id || '' }
     });
   }
 
-  async sendInquiryNotification(sellerId: string, carData: any) {
+  async sendInquiryNotification(sellerId: string, carData: CarNotificationData) {
+    const brand = carData.brand || carData.make || 'Car';
     return this.sendNotification(sellerId, {
       title: '❓ استفسار جديد',
-      body: `شخص مهتم بـ ${carData.brand} ${carData.model}`,
+      body: `شخص مهتم بـ ${brand} ${carData.model}`,
       type: 'inquiry',
-      data: { carId: carData.id }
+      data: { carId: carData.id || '' }
     });
   }
 
-  async sendOfferNotification(sellerId: string, carData: any, offerPrice: number) {
+  async sendOfferNotification(sellerId: string, carData: CarNotificationData, offerPrice: number) {
+    const brand = carData.brand || carData.make || 'Car';
     return this.sendNotification(sellerId, {
       title: '💵 عرض سعر جديد',
-      body: `عرض ${offerPrice}€ على ${carData.brand} ${carData.model}`,
+      body: `عرض ${offerPrice}€ على ${brand} ${carData.model}`,
       type: 'offer',
-      data: { carId: carData.id }
+      data: { carId: carData.id || '' }
     });
   }
 

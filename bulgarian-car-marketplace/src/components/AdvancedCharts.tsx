@@ -91,12 +91,23 @@ const LegendColor = styled.div<{ color: string }>`
   background: ${props => props.color};
 `;
 
+interface ChartDataPoint {
+  label: string;
+  value: number;
+  [key: string]: string | number;
+}
+
 const AdvancedCharts: React.FC = () => {
-  const [chartData, setChartData] = useState({
-    usersByMonth: [] as any[],
-    carsByBrand: [] as any[],
-    carsByCity: [] as any[],
-    priceRanges: [] as any[]
+  const [chartData, setChartData] = useState<{
+    usersByMonth: ChartDataPoint[];
+    carsByBrand: ChartDataPoint[];
+    carsByCity: ChartDataPoint[];
+    priceRanges: ChartDataPoint[];
+  }>({
+    usersByMonth: [],
+    carsByBrand: [],
+    carsByCity: [],
+    priceRanges: []
   });
   const [loading, setLoading] = useState(true);
 
@@ -157,7 +168,7 @@ const AdvancedCharts: React.FC = () => {
     }));
   };
 
-  const processPriceRanges = (cars: unknown[]) => {
+  const processPriceRanges = (cars: Record<string, unknown>[]): ChartDataPoint[] => {
     const ranges = [
       { range: '0-10k€', min: 0, max: 10000 },
       { range: '10-20k€', min: 10000, max: 20000 },
@@ -165,10 +176,19 @@ const AdvancedCharts: React.FC = () => {
       { range: '30k+€', min: 30000, max: Infinity }
     ];
     
-    return ranges.map(({ range, min, max }) => ({
-      range,
-      count: cars.filter(car => car.price >= min && car.price < max).length || Math.floor(Math.random() * 25) + 5
-    }));
+    return ranges.map(({ range, min, max }) => {
+      const carPrices = cars as Array<{ price?: number }>;
+      const count = carPrices.filter(car => {
+        const price = typeof car.price === 'number' ? car.price : 0;
+        return price >= min && price < max;
+      }).length || Math.floor(Math.random() * 25) + 5;
+      
+      return {
+        label: range,
+        value: count,
+        range
+      };
+    });
   };
 
   if (loading) {
@@ -193,8 +213,8 @@ const AdvancedCharts: React.FC = () => {
           <ChartTitle><Calendar size={20} />المستخدمين الجدد شهرياً</ChartTitle>
           <SimpleChart>
             {chartData.usersByMonth.map((item, index) => (
-              <Bar key={index} height={(item.count / maxUserCount) * 100}>
-                {item.count}
+              <Bar key={index} height={(item.value / maxUserCount) * 100}>
+                {item.value}
               </Bar>
             ))}
           </SimpleChart>
@@ -202,7 +222,7 @@ const AdvancedCharts: React.FC = () => {
             {chartData.usersByMonth.map((item, index) => (
               <LegendItem key={index}>
                 <LegendColor color="#FF6B35" />
-                <span>{item.month}</span>
+                <span>{item.month || item.label}</span>
               </LegendItem>
             ))}
           </ChartLegend>
@@ -214,10 +234,10 @@ const AdvancedCharts: React.FC = () => {
             {chartData.carsByBrand.map((item, index) => (
               <Bar 
                 key={index} 
-                height={(item.count / maxBrandCount) * 100}
+                height={(item.value / maxBrandCount) * 100}
                 color={`hsl(${index * 60}, 70%, 50%)`}
               >
-                {item.count}
+                {item.value}
               </Bar>
             ))}
           </SimpleChart>
@@ -225,7 +245,7 @@ const AdvancedCharts: React.FC = () => {
             {chartData.carsByBrand.map((item, index) => (
               <LegendItem key={index}>
                 <LegendColor color={`hsl(${index * 60}, 70%, 50%)`} />
-                <span>{item.brand}</span>
+                <span>{item.brand || item.label}</span>
               </LegendItem>
             ))}
           </ChartLegend>
@@ -237,10 +257,10 @@ const AdvancedCharts: React.FC = () => {
             {chartData.carsByCity.map((item, index) => (
               <Bar 
                 key={index} 
-                height={(item.count / maxCityCount) * 100}
+                height={(item.value / maxCityCount) * 100}
                 color={`hsl(${200 + index * 30}, 60%, 50%)`}
               >
-                {item.count}
+                {item.value}
               </Bar>
             ))}
           </SimpleChart>
@@ -248,7 +268,7 @@ const AdvancedCharts: React.FC = () => {
             {chartData.carsByCity.map((item, index) => (
               <LegendItem key={index}>
                 <LegendColor color={`hsl(${200 + index * 30}, 60%, 50%)`} />
-                <span>{item.locationData?.cityName}</span>
+                <span>{item.city || item.label}</span>
               </LegendItem>
             ))}
           </ChartLegend>
@@ -260,10 +280,10 @@ const AdvancedCharts: React.FC = () => {
             {chartData.priceRanges.map((item, index) => (
               <Bar 
                 key={index} 
-                height={(item.count / maxPriceCount) * 100}
+                height={(item.value / maxPriceCount) * 100}
                 color={`hsl(${300 + index * 20}, 70%, 50%)`}
               >
-                {item.count}
+                {item.value}
               </Bar>
             ))}
           </SimpleChart>
@@ -271,7 +291,7 @@ const AdvancedCharts: React.FC = () => {
             {chartData.priceRanges.map((item, index) => (
               <LegendItem key={index}>
                 <LegendColor color={`hsl(${300 + index * 20}, 70%, 50%)`} />
-                <span>{item.range}</span>
+                <span>{item.range || item.label}</span>
               </LegendItem>
             ))}
           </ChartLegend>

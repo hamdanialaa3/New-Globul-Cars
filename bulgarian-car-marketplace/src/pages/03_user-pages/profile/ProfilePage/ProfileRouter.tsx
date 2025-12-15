@@ -12,6 +12,9 @@ import ProfileAnalytics from './ProfileAnalytics';
 import ProfileConsultations from './ProfileConsultations';
 import SettingsPage from './SettingsPage';
 
+const EditCarPage = React.lazy(() => import('../../../04_car-selling/EditCarPage'));
+const CarDetailsPage = React.lazy(() => import('../../../01_main-pages/CarDetailsPage'));
+
 /**
  * Profile Router Component
  * 
@@ -44,6 +47,12 @@ export const ProfileRouter: React.FC = () => {
         <Route path="settings" element={<SettingsPage />} />
 
         <Route path="consultations" element={<ProfileConsultations />} />
+
+        {/* 101-1-2: Edit Car (Must come before view) */}
+        <Route path=":userId/car/:carId/edit" element={<EditCarPage />} />
+
+        {/* 101-1-1: View Car */}
+        <Route path=":userId/car/:id" element={<CarDetailsPage />} />
 
         {/* User profile view - Must come AFTER specific routes */}
         <Route path=":userId" element={<ProfileOverview />} />

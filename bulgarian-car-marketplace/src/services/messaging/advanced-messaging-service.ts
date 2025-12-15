@@ -19,6 +19,7 @@ import {
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '../../firebase/firebase-config';
 import { logger } from '../logger-service';
+import { rateLimiter, RATE_LIMIT_CONFIGS } from '../rate-limiting/rateLimiter.service';
 
 // ==================== INTERFACES ====================
 
@@ -102,6 +103,25 @@ export class AdvancedMessagingService {
     text: string
   ): Promise<string> {
     try {
+      // Rate limiting check
+      const rateLimit = rateLimiter.checkRateLimit(
+        senderId,
+        'message',
+        RATE_LIMIT_CONFIGS.message
+      );
+
+      if (!rateLimit.allowed) {
+        logger.warn('Rate limit exceeded for message', {
+          senderId,
+          receiverId,
+          conversationId,
+          resetTime: rateLimit.resetTime
+        });
+        throw new Error(
+          `Rate limit exceeded. Please wait ${Math.ceil((rateLimit.resetTime - Date.now()) / 1000)} seconds before sending another message.`
+        );
+      }
+
       const messageData = {
         conversationId,
         senderId,

@@ -8,6 +8,25 @@ import * as d3 from 'd3';
 import Header from '../components/Header/UnifiedHeader';
 import { useTheme } from '../contexts/ThemeContext';
 
+interface ArchitectureNode {
+  id: string;
+  name: string;
+  type: string;
+  column: number;
+  row: number;
+  description: string;
+  details: Record<string, string>;
+  path: string | null;
+  dependencies: string[];
+  x?: number;
+  y?: number;
+}
+
+interface ArchitectureLink {
+  source: ArchitectureNode | string;
+  target: ArchitectureNode | string;
+}
+
 const Container = styled.div<{ isDark: boolean }>`
   width: 100%;
   min-height: 100vh;
@@ -405,7 +424,7 @@ const ArchitectureDiagramPage: React.FC = () => {
   const { isDark } = useTheme();
   const navigate = useNavigate();
   const svgRef = useRef<SVGSVGElement>(null);
-  const [selectedNode, setSelectedNode] = useState<any>(null);
+  const [selectedNode, setSelectedNode] = useState<ArchitectureNode | null>(null);
 
   useEffect(() => {
     if (!svgRef.current) return;
@@ -480,7 +499,7 @@ const ArchitectureDiagramPage: React.FC = () => {
     });
 
     // Links
-    const links: unknown[] = [];
+    const links: ArchitectureLink[] = [];
     nodes.forEach(node => {
       node.dependencies.forEach(depId => {
         const target = nodes.find(n => n.id === depId);
@@ -488,7 +507,7 @@ const ArchitectureDiagramPage: React.FC = () => {
           // Dependency means Node depends on Target. 
           // Flow usually goes from Dependency -> Node (Data flows from DB to Service)
           // So Source = Target (Provider), Target = Node (Consumer)
-          links.push({ source: target, target: node, type: "dependency" });
+          links.push({ source: target, target: node });
         }
       });
     });
@@ -499,12 +518,12 @@ const ArchitectureDiagramPage: React.FC = () => {
     linkGroup.selectAll("path")
       .data(links)
       .enter().append("path")
-      .attr("d", (d: any) => {
+      .attr("d", (d: ArchitectureLink) => {
         const dx = d.target.x - d.source.x;
         const dy = d.target.y - d.source.y;
         const dr = Math.sqrt(dx * dx + dy * dy);
         // Curvy lines
-        return `M${d.source.x},${d.source.y}C${d.source.x + dx / 2},${d.source.y} ${d.target.x - dx / 2},${d.target.y} ${d.target.x},${d.target.y}`;
+        return `M${source.x},${source.y}C${source.x + dx / 2},${source.y} ${target.x - dx / 2},${target.y} ${target.x},${target.y}`;
       })
       .attr("fill", "none")
       .attr("stroke", isDark ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.15)")
@@ -602,17 +621,17 @@ const ArchitectureDiagramPage: React.FC = () => {
     const node = nodeGroup.selectAll("g")
       .data(nodes)
       .enter().append("g")
-      .attr("transform", (d: any) => `translate(${d.x - nodeWidth / 2},${d.y - nodeHeight / 2})`)
+      .attr("transform", (d: ArchitectureNode) => `translate(${(d.x || 0) - nodeWidth / 2},${(d.y || 0) - nodeHeight / 2})`)
       .style("cursor", "pointer")
       .on("click", (e, d) => {
         e.stopPropagation();
         setSelectedNode(d);
       })
       .on("mouseover", function () {
-        d3.select(this).transition().duration(200).attr("transform", (d: any) => `translate(${d.x - nodeWidth / 2},${d.y - nodeHeight / 2}) scale(1.05)`);
+        d3.select(this).transition().duration(200).attr("transform", (d: ArchitectureNode) => `translate(${(d.x || 0) - nodeWidth / 2},${(d.y || 0) - nodeHeight / 2}) scale(1.05)`);
       })
       .on("mouseout", function () {
-        d3.select(this).transition().duration(200).attr("transform", (d: any) => `translate(${d.x - nodeWidth / 2},${d.y - nodeHeight / 2}) scale(1)`);
+        d3.select(this).transition().duration(200).attr("transform", (d: ArchitectureNode) => `translate(${(d.x || 0) - nodeWidth / 2},${(d.y || 0) - nodeHeight / 2}) scale(1)`);
       });
 
     // Node Rects
@@ -622,7 +641,7 @@ const ArchitectureDiagramPage: React.FC = () => {
       .attr("height", nodeHeight)
       .attr("rx", 12)
       .attr("ry", 12)
-      .attr("fill", (d: any) => {
+      .attr("fill", (d: ArchitectureNode) => {
         if (d.type === 'core') return "url(#grad-core)";
         if (d.type === 'services') return "url(#grad-services)";
         if (d.type === 'ui') return "url(#grad-ui)";
@@ -641,7 +660,7 @@ const ArchitectureDiagramPage: React.FC = () => {
 
     // Node Icons/Text
     node.append("text")
-      .text((d: any) => d.name)
+      .text((d: ArchitectureNode) => d.name)
       .attr("x", nodeWidth / 2)
       .attr("y", nodeHeight / 2)
       .attr("dy", 5)
@@ -654,7 +673,7 @@ const ArchitectureDiagramPage: React.FC = () => {
 
     // Node Type Label (Small)
     node.append("text")
-      .text((d: any) => d.type.toUpperCase())
+      .text((d: ArchitectureNode) => d.type.toUpperCase())
       .attr("x", nodeWidth / 2)
       .attr("y", 15)
       .attr("text-anchor", "middle")
@@ -682,7 +701,7 @@ const ArchitectureDiagramPage: React.FC = () => {
 
                 <div className="detail-group">
                   <div className="detail-title">Details</div>
-                  {Object.entries(selectedNode.details).map(([key, value]: [string, any]) => (
+                  {Object.entries(selectedNode.details).map(([key, value]: [string, string]) => (
                     <div key={key} className="detail-item">
                       <span>{key}</span>
                       <span>{value}</span>

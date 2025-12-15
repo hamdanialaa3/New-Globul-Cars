@@ -41,7 +41,7 @@ export interface ContentModeration {
   moderationReason?: string;
   moderatedBy?: string;
   moderatedAt?: Date;
-  originalData?: any;
+  originalData?: Record<string, unknown>;
   moderationHistory?: Array<{
     action: string;
     timestamp: Date;
@@ -308,7 +308,7 @@ export class AdvancedContentManagementService {
     contentType?: string,
     status?: string,
     limitCount: number = 50
-  ): Promise<any[]> {
+  ): Promise<Array<{ id: string; [key: string]: unknown }>> {
     try {
       let contentRef = collection(db, contentType || 'cars');
       let q = query(contentRef, limit(limitCount));
@@ -338,7 +338,7 @@ export class AdvancedContentManagementService {
   }
 
   // الحصول على تاريخ الإشراف
-  public async getModerationHistory(contentId: string): Promise<any[]> {
+  public async getModerationHistory(contentId: string): Promise<Array<{ id: string; [key: string]: unknown; timestamp: Date }>> {
     try {
       const moderationRef = collection(db, 'content_moderation');
       const q = query(
@@ -379,9 +379,9 @@ export class AdvancedContentManagementService {
         const headers = Object.keys(data[0] || {});
         const csvContent = [
           headers.join(','),
-          ...data.map((row: any) => 
+          ...data.map((row: Record<string, unknown>) => 
             headers.map(header => 
-              JSON.stringify((row as any)[header] || '')
+              JSON.stringify((row[header] ?? '') || '')
             ).join(',')
           )
         ].join('\n');

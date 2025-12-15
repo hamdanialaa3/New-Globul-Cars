@@ -10,6 +10,45 @@ import {
 } from 'firebase/firestore';
 import { db } from '../firebase/firebase-config';
 import { serviceLogger } from './logger-wrapper';
+import { CarListing } from '../types/CarListing';
+
+interface FirebaseUser {
+  uid: string;
+  email: string;
+  displayName: string;
+  phoneNumber: string;
+  photoURL: string | null;
+  location: { city: string; country: string };
+  isOnline: boolean;
+  lastLogin: Date;
+  loginCount: number;
+  device: string;
+  browser: string;
+  lastActivity: Date;
+  createdAt: Date;
+  isVerified: boolean;
+  profile: Record<string, unknown>;
+  stats: {
+    carsListed: number;
+    carsSold: number;
+    totalViews: number;
+    totalMessages: number;
+    rating: number;
+    totalRatings: number;
+  };
+}
+
+interface UserMessage {
+  id: string;
+  [key: string]: unknown;
+  createdAt: Date;
+}
+
+interface UserActivity {
+  id: string;
+  [key: string]: unknown;
+  timestamp: Date;
+}
 
 /**
  * Firebase Authentication Users Service - Singleton Pattern
@@ -36,7 +75,7 @@ class FirebaseAuthUsersService {
   }
 
   // Get real users from Firebase Authentication via Firestore
-  public async getRealFirebaseUsers(): Promise<any[]> {
+  public async getRealFirebaseUsers(): Promise<FirebaseUser[]> {
     try {
       serviceLogger.debug('Fetching real Firebase users');
       
@@ -148,7 +187,7 @@ class FirebaseAuthUsersService {
   }
 
   // Get user's cars
-  public async getUserCars(userId: string): Promise<any[]> {
+  public async getUserCars(userId: string): Promise<Array<CarListing & { id: string; createdAt: Date }>> {
     try {
       const carsSnapshot = await getDocs(
         query(
@@ -169,7 +208,7 @@ class FirebaseAuthUsersService {
   }
 
   // Get user's messages
-  public async getUserMessages(userId: string): Promise<any[]> {
+  public async getUserMessages(userId: string): Promise<UserMessage[]> {
     try {
       const messagesSnapshot = await getDocs(
         query(
@@ -190,7 +229,7 @@ class FirebaseAuthUsersService {
   }
 
   // Get user's activity log
-  public async getUserActivity(userId: string): Promise<any[]> {
+  public async getUserActivity(userId: string): Promise<UserActivity[]> {
     try {
       const activitySnapshot = await getDocs(
         query(
@@ -213,7 +252,7 @@ class FirebaseAuthUsersService {
   }
 
   // Get detailed user profile
-  public async getUserProfile(userId: string): Promise<any> {
+  public async getUserProfile(userId: string): Promise<FirebaseUser | null> {
     try {
       const userDoc = await getDoc(doc(db, 'users', userId));
       

@@ -47,8 +47,9 @@ const fadeIn = keyframes`
 const Overlay = styled.div<{ $isOpen: boolean }>`
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.4); /* Lighter background to show off blur */
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
   z-index: 10000;
   display: ${props => props.$isOpen ? 'flex' : 'none'};
   align-items: center;
@@ -60,7 +61,14 @@ const Overlay = styled.div<{ $isOpen: boolean }>`
 
 const ModalContainer = styled.div<{ $isClosing: boolean }>`
   position: relative;
-  background: var(--bg-primary);
+  background: ${({ theme }) => theme.mode === 'dark'
+    ? 'rgba(15, 23, 42, 0.9)'
+    : 'rgba(255, 255, 255, 0.9)'};
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid ${({ theme }) => theme.mode === 'dark'
+    ? 'rgba(255, 255, 255, 0.1)'
+    : 'rgba(255, 255, 255, 0.5)'};
   border-radius: 24px;
   max-width: 900px;
   width: 100%;

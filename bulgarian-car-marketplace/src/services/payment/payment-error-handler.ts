@@ -9,7 +9,7 @@ export interface PaymentError {
   code: string;
   message: string;
   type: 'card_error' | 'validation_error' | 'api_error' | 'network_error' | 'unknown_error';
-  details?: any;
+  details?: Record<string, unknown>;
   userMessage: {
     bg: string;
     en: string;
@@ -126,7 +126,7 @@ export class PaymentErrorHandler {
   /**
    * Handle Stripe error and return user-friendly message
    */
-  static handleStripeError(error: any): PaymentError {
+  static handleStripeError(error: Error & { code?: string; type?: string; message?: string; decline_code?: string }): PaymentError {
     logger.error('💳 Payment Error:', {
       type: error.type,
       code: error.code,
@@ -145,7 +145,7 @@ export class PaymentErrorHandler {
         userMessage: knownError.userMessage!,
         retryable: knownError.retryable!,
         action: knownError.action,
-        details: error
+        details: { code: error.code, type: error.type, message: error.message }
       };
     }
 
@@ -160,21 +160,22 @@ export class PaymentErrorHandler {
       },
       retryable: false,
       action: 'contact_support',
-      details: error
+      details: { code: error.code, type: error.type, message: error.message }
     };
   }
 
   /**
    * Handle generic payment errors
    */
-  static handleGenericError(error: any): PaymentError {
-    logger.error('💳 Generic Payment Error:', error);
+  static handleGenericError(error: Error | unknown): PaymentError {
+    const errorObj = error instanceof Error ? error : new Error(String(error));
+    logger.error('💳 Generic Payment Error:', errorObj);
 
     // Network error
-    if (error.message?.includes('network') || error.message?.includes('fetch')) {
+    if (errorObj.message?.includes('network') || errorObj.message?.includes('fetch')) {
       return {
         code: 'network_error',
-        message: error.message,
+        message: errorObj.message,
         type: 'network_error',
         userMessage: {
           bg: 'Грешка в мрежата. Моля, проверете интернет връзката си и опитайте отново.',
@@ -186,10 +187,10 @@ export class PaymentErrorHandler {
     }
 
     // Timeout error
-    if (error.message?.includes('timeout')) {
+    if (errorObj.message?.includes('timeout')) {
       return {
         code: 'timeout_error',
-        message: error.message,
+        message: errorObj.message,
         type: 'network_error',
         userMessage: {
           bg: 'Времето за изчакване изтече. Моля, опитайте отново.',
@@ -203,7 +204,7 @@ export class PaymentErrorHandler {
     // Default unknown error
     return {
       code: 'unknown_error',
-      message: error.message || 'Unknown error',
+      message: errorObj.message || 'Unknown error',
       type: 'unknown_error',
       userMessage: {
         bg: 'Възникна неочаквана грешка. Моля, свържете се с поддръжката.',
@@ -211,7 +212,7 @@ export class PaymentErrorHandler {
       },
       retryable: false,
       action: 'contact_support',
-      details: error
+      details: { error: errorObj.message }
     };
   }
 
@@ -267,7 +268,7 @@ export class PaymentErrorHandler {
   /**
    * Log payment error for analytics
    */
-  static logError(error: PaymentError, context?: any): void {
+  static logError(error: PaymentError, context?: Record<string, unknown>): void {
     logger.error('💳 Payment Error Logged', {
       code: error.code,
       type: error.type,

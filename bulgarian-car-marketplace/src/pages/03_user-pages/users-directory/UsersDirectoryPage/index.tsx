@@ -2,10 +2,12 @@
 // Users Directory Page - Main Component
 // Location: Bulgaria | Languages: BG/EN | Currency: EUR
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import styled from 'styled-components';
+import { Virtuoso } from 'react-virtuoso';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { useAuth } from '../../../../contexts/AuthProvider';
+import { useDebounce } from '../../../../hooks/useDebounce';
 import { 
   Users, 
   Search, 
@@ -285,6 +287,11 @@ const UsersList = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
+`;
+
+const VirtualizedUsersList = styled.div`
+  width: 100%;
+  margin-top: 16px;
 `;
 
 const ListItem = styled.div`
@@ -701,7 +708,6 @@ const UsersDirectoryPage: React.FC = () => {
   const { user: currentUser } = useAuth();
   
   const [users, setUsers] = useState<UserProfile[]>([]);
-  const [filteredUsers, setFilteredUsers] = useState<UserProfile[]>([]);
   const [onlineUsers, setOnlineUsers] = useState<UserProfile[]>([]);
   const [loading, setLoading] = useState(true);
   
@@ -725,9 +731,48 @@ const UsersDirectoryPage: React.FC = () => {
     }
   }, [currentUser]);
   
-  useEffect(() => {
-    applyFilters();
-  }, [users, searchTerm, accountTypeFilter, regionFilter, sortBy]);
+  // Debounce search term to avoid excessive filtering
+  const debouncedSearchTerm = useDebounce(searchTerm, 300);
+
+  // Memoize filtered users to avoid recalculating on every render
+  const filteredUsers = useMemo(() => {
+    let filtered = [...users];
+    
+    if (debouncedSearchTerm) {
+      const searchLower = debouncedSearchTerm.toLowerCase();
+      filtered = filtered.filter(user => 
+        user.displayName?.toLowerCase().includes(searchLower) ||
+        user.email?.toLowerCase().includes(searchLower) ||
+        user.businessInfo?.companyName?.toLowerCase().includes(searchLower)
+      );
+    }
+    
+    if (accountTypeFilter !== 'all') {
+      filtered = filtered.filter(user => user.accountType === accountTypeFilter);
+    }
+    
+    if (regionFilter !== 'all') {
+      filtered = filtered.filter(user => 
+        user.location?.region === regionFilter ||
+        user.location?.city === regionFilter
+      );
+    }
+    
+    filtered.sort((a, b) => {
+      switch (sortBy) {
+        case 'name':
+          return (a.displayName || '').localeCompare(b.displayName || '');
+        case 'newest':
+          return (b.createdAt?.toDate?.() || 0) - (a.createdAt?.toDate?.() || 0);
+        case 'trust':
+          return (b.verification?.trustScore || 0) - (a.verification?.trustScore || 0);
+        default:
+          return 0;
+      }
+    });
+    
+    return filtered;
+  }, [users, debouncedSearchTerm, accountTypeFilter, regionFilter, sortBy]);
   
   // ⚡ UPDATED: Load initial users (30 max)
   const loadUsers = async () => {
@@ -802,64 +847,34 @@ const UsersDirectoryPage: React.FC = () => {
     }
   };
   
-  const applyFilters = () => {
-    let filtered = [...users];
-    
-    if (searchTerm) {
-      filtered = filtered.filter(user => 
-        user.displayName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.businessInfo?.companyName?.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-    
-    if (accountTypeFilter !== 'all') {
-      filtered = filtered.filter(user => user.accountType === accountTypeFilter);
-    }
-    
-    if (regionFilter !== 'all') {
-      filtered = filtered.filter(user => 
-        user.location?.region === regionFilter ||
-        user.location?.city === regionFilter
-      );
-    }
-    
-    filtered.sort((a, b) => {
-      switch (sortBy) {
-        case 'name':
-          return (a.displayName || '').localeCompare(b.displayName || '');
-        case 'newest':
-          return (b.createdAt?.toDate?.() || 0) - (a.createdAt?.toDate?.() || 0);
-        case 'trust':
-          return (b.verification?.trustScore || 0) - (a.verification?.trustScore || 0);
-        default:
-          return 0;
-      }
-    });
-    
-    setFilteredUsers(filtered);
-  };
+  // Removed applyFilters - now using useMemo for filteredUsers
   
-  const handleFollow = async (userId: string) => {
+  const handleFollow = useCallback(async (userId: string) => {
     if (!currentUser) {
       alert(language === 'bg' ? 'Моля, влезте в профила си' : 'Please login');
       return;
     }
-    
+
+    // Rate limiting is handled in followService
     const isFollowing = followingUsers.has(userId);
     
-    if (isFollowing) {
-      await followService.unfollowUser(currentUser.uid, userId);
-      setFollowingUsers(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(userId);
-        return newSet;
-      });
-    } else {
-      await followService.followUser(currentUser.uid, userId);
-      setFollowingUsers(prev => new Set(prev).add(userId));
+    try {
+      if (isFollowing) {
+        await followService.unfollowUser(currentUser.uid, userId);
+        setFollowingUsers(prev => {
+          const newSet = new Set(prev);
+          newSet.delete(userId);
+          return newSet;
+        });
+      } else {
+        await followService.followUser(currentUser.uid, userId);
+        setFollowingUsers(prev => new Set(prev).add(userId));
+      }
+    } catch (error) {
+      logger.error('Error in handleFollow', error as Error, { userId });
+      // Error message is already shown by followService
     }
-  };
+  }, [currentUser, followingUsers, language]);
   
   const handleMessage = (userId: string) => {
     alert('Messaging feature coming soon!');
@@ -1127,102 +1142,112 @@ const UsersDirectoryPage: React.FC = () => {
             ))}
           </UsersGrid>
         ) : (
-          <UsersList>
-            {filteredUsers.map((user) => {
-              const borderColor = user.profileType === 'dealer' ? '#16a34a' 
-                                : user.profileType === 'company' ? '#1d4ed8' 
-                                : '#FF8F10';
-              const isVerified = user.verification?.emailVerified || user.verification?.phoneVerified;
-              
-              return (
-                <ListItem key={user.uid} onClick={() => window.location.href = `/profile/${user.uid}`}>
-                  <ListAvatar 
-                    $imageUrl={user.profileImage?.url}
-                    $initial={user.displayName?.[0]?.toUpperCase() || '?'}
-                    $borderColor={borderColor}
-                  />
-                  
-                  <ListUserInfo>
-                    <ListUserName>
-                      {user.displayName || 'User'}
-                      {isVerified && (
-                        <CheckCircle size={18} className="verified-icon" />
-                      )}
-                      {user.accountType === 'business' && (
-                        <span className="badge">
-                          {user.profileType === 'dealer' ? (language === 'bg' ? 'Дилър' : 'Dealer')
-                           : user.profileType === 'company' ? (language === 'bg' ? 'Компания' : 'Company')
-                           : t('business')}
-                        </span>
-                      )}
-                    </ListUserName>
+          <VirtualizedUsersList>
+            <Virtuoso
+              data={filteredUsers}
+              itemContent={(index, user) => {
+                const borderColor = user.profileType === 'dealer' ? '#16a34a' 
+                                  : user.profileType === 'company' ? '#1d4ed8' 
+                                  : '#FF8F10';
+                const isVerified = user.verification?.emailVerified || user.verification?.phoneVerified;
+                
+                return (
+                  <ListItem key={user.uid} onClick={() => window.location.href = `/profile/${user.uid}`}>
+                    <ListAvatar 
+                      $imageUrl={user.profileImage?.url}
+                      $initial={user.displayName?.[0]?.toUpperCase() || '?'}
+                      $borderColor={borderColor}
+                    />
                     
-                    <ListUserMeta>
-                      {user.businessInfo?.companyName && (
-                        <div className="meta-item">
-                          <Building2 size={16} />
-                          <span>{user.businessInfo.companyName}</span>
+                    <ListUserInfo>
+                      <ListUserName>
+                        {user.displayName || 'User'}
+                        {isVerified && (
+                          <CheckCircle size={18} className="verified-icon" />
+                        )}
+                        {user.accountType === 'business' && (
+                          <span className="badge">
+                            {user.profileType === 'dealer' ? (language === 'bg' ? 'Дилър' : 'Dealer')
+                             : user.profileType === 'company' ? (language === 'bg' ? 'Компания' : 'Company')
+                             : t('business')}
+                          </span>
+                        )}
+                      </ListUserName>
+                      
+                      <ListUserMeta>
+                        {user.businessInfo?.companyName && (
+                          <div className="meta-item">
+                            <Building2 size={16} />
+                            <span>{user.businessInfo.companyName}</span>
+                          </div>
+                        )}
+                        {user.location && (
+                          <div className="meta-item">
+                            <MapPin size={16} />
+                            <span>{language === 'bg' ? user.location.region || user.locationData?.cityName : user.locationData?.cityName || user.location.region}</span>
+                          </div>
+                        )}
+                      </ListUserMeta>
+                      
+                      <ListUserStats>
+                        <div className="stat">
+                          <div className="value">{user.stats?.followers || 0}</div>
+                          <div className="label">{language === 'bg' ? 'Последователи' : 'Followers'}</div>
                         </div>
-                      )}
-                      {user.location && (
-                        <div className="meta-item">
-                          <MapPin size={16} />
-                          <span>{language === 'bg' ? user.location.region || user.locationData?.cityName : user.locationData?.cityName || user.location.region}</span>
+                        <div className="stat">
+                          <div className="value">{user.stats?.listings || 0}</div>
+                          <div className="label">{language === 'bg' ? 'Обяви' : 'Listings'}</div>
                         </div>
-                      )}
-                    </ListUserMeta>
+                        <div className="stat">
+                          <div className="value">{user.verification?.trustScore || 0}</div>
+                          <div className="label">{language === 'bg' ? 'Доверие' : 'Trust'}</div>
+                        </div>
+                      </ListUserStats>
+                    </ListUserInfo>
                     
-                    <ListUserStats>
-                      <div className="stat">
-                        <div className="value">{user.stats?.followers || 0}</div>
-                        <div className="label">{language === 'bg' ? 'Последователи' : 'Followers'}</div>
-                      </div>
-                      <div className="stat">
-                        <div className="value">{user.stats?.listings || 0}</div>
-                        <div className="label">{language === 'bg' ? 'Обяви' : 'Listings'}</div>
-                      </div>
-                      <div className="stat">
-                        <div className="value">{user.verification?.trustScore || 0}</div>
-                        <div className="label">{language === 'bg' ? 'Доверие' : 'Trust'}</div>
-                      </div>
-                    </ListUserStats>
-                  </ListUserInfo>
-                  
-                  <ListActions>
-                    <ActionButton 
-                      $variant="primary" 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleMessage(user.uid);
-                      }}
-                    >
-                      <MessageCircle size={16} />
-                      {language === 'bg' ? 'Съобщение' : 'Message'}
-                    </ActionButton>
-                    <ActionButton 
-                      $variant={followingUsers.has(user.uid) ? 'secondary' : 'primary'}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleFollow(user.uid);
-                      }}
-                    >
-                      {followingUsers.has(user.uid) ? (
-                        <>
-                          <UserCheck size={16} />
-                          {language === 'bg' ? 'Следвам' : 'Following'}
-                        </>
-                      ) : (
-                        <>
-                          <UserPlus size={16} />
-                          {language === 'bg' ? 'Последвай' : 'Follow'}
-                        </>
-                      )}
-                    </ActionButton>
-                  </ListActions>
-                </ListItem>
-              );
-            })}
-          </UsersList>
+                    <ListActions>
+                      <ActionButton 
+                        $variant="primary" 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleMessage(user.uid);
+                        }}
+                      >
+                        <MessageCircle size={16} />
+                        {language === 'bg' ? 'Съобщение' : 'Message'}
+                      </ActionButton>
+                      <ActionButton 
+                        $variant={followingUsers.has(user.uid) ? 'secondary' : 'primary'}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleFollow(user.uid);
+                        }}
+                      >
+                        {followingUsers.has(user.uid) ? (
+                          <>
+                            <UserCheck size={16} />
+                            {language === 'bg' ? 'Следвам' : 'Following'}
+                          </>
+                        ) : (
+                          <>
+                            <UserPlus size={16} />
+                            {language === 'bg' ? 'Последвай' : 'Follow'}
+                          </>
+                        )}
+                      </ActionButton>
+                    </ListActions>
+                  </ListItem>
+                );
+              }}
+              style={{ height: 'calc(100vh - 300px)', minHeight: '500px' }}
+              overscan={5}
+              endReached={() => {
+                if (hasMore && !loadingMore) {
+                  loadMore();
+                }
+              }}
+            />
+          </VirtualizedUsersList>
         )}
 
         {/* ⚡ NEW: Load More Button */}

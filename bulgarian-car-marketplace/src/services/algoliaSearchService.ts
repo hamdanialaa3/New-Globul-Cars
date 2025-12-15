@@ -3,7 +3,7 @@
 // Advanced search service using Algolia for high-performance search
 
 // Use Algolia v4 lite build in browsers (default export)
-import algoliasearch from 'algoliasearch/lite';
+import algoliasearch, { SearchClient, SearchIndex } from 'algoliasearch/lite';
 import { SearchData } from '../pages/AdvancedSearchPage/types';
 import { CarListing } from '../types/CarListing';
 import { serviceLogger } from './logger-wrapper';
@@ -20,16 +20,23 @@ interface SearchOptions {
 }
 
 class AlgoliaSearchService {
-  private client: any;
-  private index: any;
+  private client: SearchClient | null = null;
+  private index: SearchIndex | null = null;
 
   constructor() {
     if (!ALGOLIA_SEARCH_KEY) {
       serviceLogger.warn('Algolia search key not configured');
+      return;
     }
     
-    this.client = algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY);
-    this.index = this.client.initIndex(ALGOLIA_INDEX_NAME);
+    try {
+      this.client = algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY);
+      this.index = this.client.initIndex(ALGOLIA_INDEX_NAME);
+    } catch (error) {
+      serviceLogger.error('Failed to initialize Algolia client', error as Error);
+      this.client = null;
+      this.index = null;
+    }
   }
 
   /**
@@ -289,7 +296,7 @@ class AlgoliaSearchService {
    * Build geo-search filters for location-based search
    * بناء فلاتر البحث الجغرافي
    */
-  private buildGeoFilters(searchData: SearchData): any {
+  private buildGeoFilters(searchData: SearchData): { aroundLatLng: string; aroundRadius: number } | null {
     if (!searchData.locationData?.cityName || !searchData.radius) {
       return null;
     }
@@ -361,6 +368,9 @@ class AlgoliaSearchService {
       const geoFilters = this.buildGeoFilters(searchData);
 
       // Select index based on sort option
+      if (!this.client) {
+        throw new Error('Algolia client not initialized');
+      }
       const indexName = this.getIndexForSort(options.sortBy);
       const searchIndex = this.client.initIndex(indexName);
 
@@ -396,7 +406,7 @@ class AlgoliaSearchService {
       });
 
       // Convert Algolia hits to CarListing format
-      const cars: CarListing[] = response.hits.map((hit: any) => ({
+      const cars: CarListing[] = response.hits.map((hit: Record<string, unknown>) => ({
         id: hit.objectID,
         ...hit,
         createdAt: hit.createdAt ? new Date(hit.createdAt) : undefined,
@@ -477,6 +487,10 @@ class AlgoliaSearchService {
     attribute: string,
     searchData?: SearchData
   ): Promise<Array<{ value: string; count: number }>> {
+    if (!this.index) {
+      throw new Error('Algolia index not initialized');
+    }
+    
     try {
       const filters = searchData ? this.buildAlgoliaFilters(searchData) : 'status:active';
 

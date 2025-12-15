@@ -9,6 +9,7 @@ import { useLanguage } from '../../../../contexts/LanguageContext';
 import { useTheme } from '../../../../contexts/ThemeContext';
 import { unifiedCarService } from '../../../../services/car';
 import HorizontalScrollContainer from '../../../../components/HorizontalScrollContainer/HorizontalScrollContainer';
+import { logger } from '../../../../services/logger-service';
 
 const SectionContainer = styled.section`
   padding: 80px 20px;
@@ -245,7 +246,11 @@ const CategoriesSection: React.FC = () => {
               });
             }
           } catch (error) {
-            console.error(`Error loading category ${category.id}:`, error);
+            logger.error(`Error loading category ${category.id}:`, error as Error, {
+              context: 'CategoriesSection',
+              action: 'loadCategory',
+              categoryId: category.id
+            });
             // Add with default values
             data.push({
               ...category,
@@ -259,7 +264,10 @@ const CategoriesSection: React.FC = () => {
         data.sort((a, b) => b.count - a.count);
         setCategoriesData(data.slice(0, 3)); // Show top 3
       } catch (error) {
-        console.error('Error loading categories data:', error);
+        logger.error('Error loading categories data:', error as Error, {
+          context: 'CategoriesSection',
+          action: 'loadCategoriesData'
+        });
       } finally {
         setLoading(false);
       }

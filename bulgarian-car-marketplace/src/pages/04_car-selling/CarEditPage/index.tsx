@@ -152,7 +152,7 @@ const normalizeFuelTypeValue = (fuel?: string) => {
   };
   const mapped = mapping[normalized];
   if (mapped) return { value: mapped } as const;
-  if (FUEL_TYPES.includes(fuel.toLowerCase() as any)) {
+  if (FUEL_TYPES.includes(fuel.toLowerCase() as typeof FUEL_TYPES[number])) {
     return { value: fuel.toLowerCase() } as const;
   }
   return { value: '__other__', other: fuel } as const;
@@ -312,7 +312,7 @@ const CarEditPage: React.FC = () => {
   const [hasChanges, setHasChanges] = useState(false);
 
   const [car, setCar] = useState<UnifiedCar | null>(null);
-  const [formData, setFormData] = useState<Record<string, any>>({});
+  const [formData, setFormData] = useState<Partial<UnifiedCar> & Record<string, unknown>>({});
 
   const [images, setImages] = useState<string[]>([]);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -353,24 +353,54 @@ const CarEditPage: React.FC = () => {
           return;
         }
 
-        const normalizedFuel = normalizeFuelTypeValue((carData as any).fuelType || (carData as any).fuel);
-        const normalizedTransmission = normalizeTransmissionValue((carData as any).transmission);
-        const normalizedBody = normalizeBodyTypeValue((carData as any).bodyType);
-        const normalizedColor = normalizeColorValue((carData as any).color);
-        const normalizedCity = normalizeCityValue((carData as any).city || (carData as any).saleCity);
-        const normalizedRegion = normalizeProvinceValue((carData as any).region || (carData as any).saleProvince, language as 'bg' | 'en');
-        const normalizedRoadworthy = normalizeBoolean((carData as any).roadworthy);
-        const normalizedSaleType = normalizeSaleTypeValue((carData as any).saleType || (carData as any).sellerType);
-        const normalizedSaleTimeline = normalizeSaleTimelineValue((carData as any).saleTimeline);
-        const normalizedPriceType = normalizePriceType((carData as any).priceType);
-        const normalizedAccidentHistory = normalizeBoolean((carData as any).accidentHistory);
-        const normalizedServiceHistory = normalizeBoolean((carData as any).serviceHistory);
-        const normalizedNegotiable = normalizeBoolean((carData as any).negotiable);
-        const normalizedFinancing = normalizeBoolean((carData as any).financing);
-        const normalizedTradeIn = normalizeBoolean((carData as any).tradeIn);
-        const normalizedVatDeductible = normalizeBoolean((carData as any).vatDeductible);
-        const normalizedDoors = (carData as any).doors ?? (carData as any).numberOfDoors;
-        const normalizedSeats = (carData as any).seats ?? (carData as any).numberOfSeats;
+        const carDataExtended = carData as UnifiedCar & {
+          fuel?: string;
+          saleCity?: string;
+          saleProvince?: string;
+          sellerType?: string;
+          registrationDate?: string;
+          warranty?: boolean;
+          currency?: string;
+          priceType?: string;
+          paymentMethods?: string[];
+          preferredContact?: string[];
+          bodyTypeOther?: string;
+          fuelTypeOther?: string;
+          colorOther?: string;
+          doors?: string | number;
+          numberOfDoors?: string | number;
+          seats?: string | number;
+          numberOfSeats?: string | number;
+        };
+        
+        const isOwner = carData.sellerId === currentUser.uid ||
+          carDataExtended.userId === currentUser.uid ||
+          carDataExtended.ownerId === currentUser.uid;
+
+        if (!isOwner) {
+          setError(t.errors.noPermission);
+          setLoading(false);
+          return;
+        }
+
+        const normalizedFuel = normalizeFuelTypeValue(carDataExtended.fuelType || carDataExtended.fuel);
+        const normalizedTransmission = normalizeTransmissionValue(carDataExtended.transmission);
+        const normalizedBody = normalizeBodyTypeValue(carDataExtended.bodyType);
+        const normalizedColor = normalizeColorValue(carDataExtended.color);
+        const normalizedCity = normalizeCityValue(carDataExtended.city || carDataExtended.saleCity);
+        const normalizedRegion = normalizeProvinceValue(carDataExtended.region || carDataExtended.saleProvince, language as 'bg' | 'en');
+        const normalizedRoadworthy = normalizeBoolean(carDataExtended.roadworthy);
+        const normalizedSaleType = normalizeSaleTypeValue(carDataExtended.saleType || carDataExtended.sellerType);
+        const normalizedSaleTimeline = normalizeSaleTimelineValue(carDataExtended.saleTimeline);
+        const normalizedPriceType = normalizePriceType(carDataExtended.priceType);
+        const normalizedAccidentHistory = normalizeBoolean(carDataExtended.accidentHistory);
+        const normalizedServiceHistory = normalizeBoolean(carDataExtended.serviceHistory);
+        const normalizedNegotiable = normalizeBoolean(carDataExtended.negotiable);
+        const normalizedFinancing = normalizeBoolean(carDataExtended.financing);
+        const normalizedTradeIn = normalizeBoolean(carDataExtended.tradeIn);
+        const normalizedVatDeductible = normalizeBoolean(carDataExtended.vatDeductible);
+        const normalizedDoors = carDataExtended.doors ?? carDataExtended.numberOfDoors;
+        const normalizedSeats = carDataExtended.seats ?? carDataExtended.numberOfSeats;
 
         const normalizedCar: UnifiedCar = {
           ...carData,
@@ -387,20 +417,20 @@ const CarEditPage: React.FC = () => {
           negotiable: normalizedNegotiable ?? false,
           financing: normalizedFinancing ?? false,
           tradeIn: normalizedTradeIn ?? false,
-          warranty: (carData as any).warranty ?? false,
-          vatDeductible: normalizedVatDeductible ?? (carData as any).vatDeductible ?? false,
+          warranty: carDataExtended.warranty ?? false,
+          vatDeductible: normalizedVatDeductible ?? carDataExtended.vatDeductible ?? false,
           price: carData.price ?? 0,
-          currency: (carData as any).currency || 'EUR',
+          currency: carDataExtended.currency || 'EUR',
           priceType: normalizedPriceType,
-          paymentMethods: (carData as any).paymentMethods || [],
-          preferredContact: (carData as any).preferredContact || [],
-          firstRegistration: (carData as any).firstRegistration || (carData as any).registrationDate || (carData.year ? `${carData.year}` : ''),
+          paymentMethods: carDataExtended.paymentMethods || [],
+          preferredContact: carDataExtended.preferredContact || [],
+          firstRegistration: carDataExtended.firstRegistration || carDataExtended.registrationDate || (carData.year ? `${carData.year}` : ''),
           bodyType: normalizedBody.value,
-          bodyTypeOther: normalizedBody.other || (carData as any).bodyTypeOther || '',
+          bodyTypeOther: normalizedBody.other || carDataExtended.bodyTypeOther || '',
           fuelType: normalizedFuel.value,
-          fuelTypeOther: normalizedFuel.other || (carData as any).fuelTypeOther || '',
+          fuelTypeOther: normalizedFuel.other || carDataExtended.fuelTypeOther || '',
           color: normalizedColor.value,
-          colorOther: normalizedColor.other || (carData as any).colorOther || '',
+          colorOther: normalizedColor.other || carDataExtended.colorOther || '',
           roadworthy: normalizedRoadworthy ?? null,
           saleType: normalizedSaleType,
           saleTimeline: normalizedSaleTimeline,
@@ -444,7 +474,7 @@ const CarEditPage: React.FC = () => {
     };
   }, [images]);
 
-  const handleInputChange = useCallback((field: string, value: any) => {
+  const handleInputChange = useCallback((field: string, value: unknown) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     setHasChanges(true);
     setError('');
@@ -467,20 +497,23 @@ const CarEditPage: React.FC = () => {
     handleInputChange(field, parseInt(e.target.value, 10));
   };
 
-  const handleNestedChange = useCallback((parent: string, field: string, value: any) => {
-    setFormData(prev => ({
-      ...prev,
-      [parent]: {
-        ...(prev as any)[parent],
-        [field]: value
-      }
-    }));
+  const handleNestedChange = useCallback((parent: string, field: string, value: unknown) => {
+    setFormData(prev => {
+      const parentValue = prev[parent] as Record<string, unknown> | undefined;
+      return {
+        ...prev,
+        [parent]: {
+          ...(parentValue || {}),
+          [field]: value
+        }
+      };
+    });
     setHasChanges(true);
   }, []);
 
   const handleEquipmentToggle = useCallback((category: string, item: string) => {
     setFormData(prev => {
-      const currentList = (prev as any)[category] || [];
+      const currentList = (prev[category] as string[] | undefined) || [];
       const newList = currentList.includes(item)
         ? currentList.filter((i: string) => i !== item)
         : [...currentList, item];
@@ -655,13 +688,19 @@ const CarEditPage: React.FC = () => {
 
       const updatedCar = await unifiedCarService.getCarById(carId);
       if (updatedCar) {
-        const refreshed = {
+        const updatedCarExtended = updatedCar as UnifiedCar & {
+          currency?: string;
+          priceType?: string;
+          paymentMethods?: string[];
+          preferredContact?: string[];
+        };
+        const refreshed: UnifiedCar = {
           ...updatedCar,
-          currency: (updatedCar as any).currency || 'EUR',
-          priceType: (updatedCar as any).priceType || 'fixed',
-          paymentMethods: (updatedCar as any).paymentMethods || [],
-          preferredContact: (updatedCar as any).preferredContact || [],
-        } as UnifiedCar;
+          currency: updatedCarExtended.currency || 'EUR',
+          priceType: updatedCarExtended.priceType || 'fixed',
+          paymentMethods: updatedCarExtended.paymentMethods || [],
+          preferredContact: updatedCarExtended.preferredContact || [],
+        };
         setCar(refreshed);
         setFormData(refreshed);
         setImages(refreshed.images || []);
@@ -688,7 +727,8 @@ const CarEditPage: React.FC = () => {
   const handleDelete = async () => {
     if (!carId || !currentUser) return;
 
-    const sellerType = (car as any)?.sellerType || 'private';
+    const carExtended = car as UnifiedCar & { sellerType?: string };
+    const sellerType = carExtended?.sellerType || 'private';
     const quotaMessage = sellerType === 'dealer'
       ? (language === 'bg' ? 'الحد الشهري للتاجر/المعرض هو 10 سيارات.' : 'Dealers can list up to 10 cars per month.')
       : sellerType === 'company'
@@ -917,7 +957,7 @@ const CarEditPage: React.FC = () => {
                   <Input
                     $isDark={isDark}
                     type="number"
-                    value={(formData as any).power || ''}
+                    value={(formData.power as number | undefined) || ''}
                     onChange={handleNumberChange('power')}
                     placeholder="hp"
                   />
@@ -973,7 +1013,7 @@ const CarEditPage: React.FC = () => {
                     <Input
                       $isDark={isDark}
                       style={{ marginTop: '0.5rem' }}
-                      value={(formData as any).fuelTypeOther || ''}
+                      value={(formData.fuelTypeOther as string | undefined) || ''}
                       onChange={handleTextChange('fuelTypeOther')}
                       placeholder={t.placeholders.otherFuel}
                     />
@@ -1002,7 +1042,7 @@ const CarEditPage: React.FC = () => {
                   <Label $isDark={isDark}>{t.fields.bodyType}</Label>
                   <Select
                     $isDark={isDark}
-                    value={(formData as any).bodyType || ''}
+                    value={(formData.bodyType as string | undefined) || ''}
                     onChange={handleSelectChange('bodyType')}
                   >
                     <option value="">{t.placeholders.select}</option>
@@ -1012,11 +1052,11 @@ const CarEditPage: React.FC = () => {
                       </option>
                     ))}
                   </Select>
-                  {(formData as any).bodyType === 'other' && (
+                  {(formData.bodyType as string | undefined) === 'other' && (
                     <Input
                       $isDark={isDark}
                       style={{ marginTop: '0.5rem' }}
-                      value={(formData as any).bodyTypeOther || ''}
+                      value={(formData.bodyTypeOther as string | undefined) || ''}
                       onChange={handleTextChange('bodyTypeOther')}
                       placeholder={t.placeholders.bodyTypeOther}
                     />
@@ -1041,7 +1081,7 @@ const CarEditPage: React.FC = () => {
                     <Input
                       $isDark={isDark}
                       style={{ marginTop: '0.5rem' }}
-                      value={(formData as any).colorOther || ''}
+                      value={(formData.colorOther as string | undefined) || ''}
                       onChange={handleTextChange('colorOther')}
                       placeholder={t.placeholders.colorOther}
                     />
@@ -1072,7 +1112,7 @@ const CarEditPage: React.FC = () => {
                   <Label $isDark={isDark}>{t.fields.seats}</Label>
                   <Select
                     $isDark={isDark}
-                    value={(formData as any).seats || (formData as any).numberOfSeats || ''}
+                    value={(formData.seats as string | number | undefined) || (formData.numberOfSeats as string | number | undefined) || ''}
                     onChange={handleSelectNumberChange('seats')}
                   >
                     <option value="">{t.placeholders.select}</option>
@@ -1088,7 +1128,7 @@ const CarEditPage: React.FC = () => {
                   <Label $isDark={isDark}>{t.fields.condition}</Label>
                   <Select
                     $isDark={isDark}
-                    value={(formData as any).condition || ''}
+                    value={(formData.condition as string | undefined) || ''}
                     onChange={handleSelectChange('condition')}
                   >
                     <option value="">{t.placeholders.select}</option>
@@ -1104,7 +1144,7 @@ const CarEditPage: React.FC = () => {
                   <Label $isDark={isDark}>{t.fields.driveType}</Label>
                   <Select
                     $isDark={isDark}
-                    value={(formData as any).driveType || ''}
+                    value={(formData.driveType as string | undefined) || ''}
                     onChange={handleSelectChange('driveType')}
                   >
                     <option value="">{t.placeholders.select}</option>
@@ -1195,7 +1235,7 @@ const CarEditPage: React.FC = () => {
               <FormGroup>
                 <TextArea
                   $isDark={isDark}
-                  value={(formData as any).description || ''}
+                  value={(formData.description as string | undefined) || ''}
                   onChange={handleTextChange('description')}
                   placeholder={t.placeholders.description}
                   rows={6}
@@ -1328,10 +1368,10 @@ const CarEditPage: React.FC = () => {
                 <ToggleButton
                   type="button"
                   $isDark={isDark}
-                  $active={!!(formData as any).vatDeductible}
-                  onClick={() => handleInputChange('vatDeductible', !(formData as any).vatDeductible)}
+                  $active={!!(formData.vatDeductible as boolean | undefined)}
+                  onClick={() => handleInputChange('vatDeductible', !(formData.vatDeductible as boolean | undefined))}
                 >
-                  {(formData as any).vatDeductible && <Check size={14} style={{ marginRight: 6 }} />}
+                  {(formData.vatDeductible as boolean | undefined) && <Check size={14} style={{ marginRight: 6 }} />}
                   {t.fields.vatDeductible}
                 </ToggleButton>
               </CheckboxGroup>

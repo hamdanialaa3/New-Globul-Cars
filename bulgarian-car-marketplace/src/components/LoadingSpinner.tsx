@@ -21,13 +21,13 @@ const SpinnerContainer = styled.div<{ size: string }>`
 `;
 
 const Spinner = styled.div<{ size: string; color: string }>`
-  width: ${({ size }) => 
-    size === 'small' ? '20px' : 
-    size === 'medium' ? '40px' : '60px'
+  width: ${({ size }) =>
+    size === 'small' ? '20px' :
+      size === 'medium' ? '40px' : '60px'
   };
-  height: ${({ size }) => 
-    size === 'small' ? '20px' : 
-    size === 'medium' ? '40px' : '60px'
+  height: ${({ size }) =>
+    size === 'small' ? '20px' :
+      size === 'medium' ? '40px' : '60px'
   };
   border: 3px solid ${({ color }) => color}20;
   border-top: 3px solid ${({ color }) => color};
@@ -41,10 +41,10 @@ const SpinnerText = styled.p`
   font-size: ${({ theme }) => theme.typography.fontSize.sm};
 `;
 
-export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({ 
-  size = 'medium', 
+export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
+  size = 'medium',
   color = '#2563eb',
-  text 
+  text
 }) => {
   return (
     <SpinnerContainer size={size}>

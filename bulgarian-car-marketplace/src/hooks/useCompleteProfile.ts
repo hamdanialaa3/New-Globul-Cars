@@ -9,7 +9,7 @@
  */
 
 import { useState, useEffect } from 'react';
-import { ProfileService } from '../services/profile/ProfileService';
+import { profileService } from '../services/profile/UnifiedProfileService';
 import { logger } from '../services/logger-service';
 import type { BulgarianUser } from '../types/user/bulgarian-user.types';
 import type { DealershipInfo } from '../types/dealership/dealership.types';
@@ -41,7 +41,7 @@ export const useCompleteProfile = (uid?: string): CompleteProfile => {
       setLoading(true);
       setError(null);
 
-      const profile = await ProfileService.getCompleteProfile(uid);
+      const profile = await profileService.getCompleteProfile(uid);
       
       setUser(profile.user);
       setDealership(profile.dealership);
