@@ -9,6 +9,7 @@ import { doc, onSnapshot } from 'firebase/firestore';
 import { auth, db } from '../../../../../firebase/firebase-config';
 import { unifiedCarService } from '../../../../../services/car';
 import { logger } from '../../../../../services/logger-service';
+import { getUserByNumericId, getFirebaseUidByNumericId } from '../../../../../services/numeric-id-lookup.service';
 import {
   ProfileFormData,
   ProfileCar,
@@ -191,9 +192,24 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
       const viewerPromise = authUser
         ? bulgarianAuthService.getCurrentUserProfile()
         : Promise.resolve(null);
-      const targetPromise = viewingOwn
-        ? viewerPromise
-        : bulgarianAuthService.getUserProfileById(effectiveTargetId!);
+      
+      // Handle numeric ID - convert to Firebase UID first
+      let targetPromise;
+      if (viewingOwn) {
+        targetPromise = viewerPromise;
+      } else if (/^\d+$/.test(effectiveTargetId!)) {
+        // It's a numeric ID - convert to Firebase UID first
+        const firebaseUid = await getFirebaseUidByNumericId(parseInt(effectiveTargetId!, 10));
+        if (firebaseUid) {
+          targetPromise = bulgarianAuthService.getUserProfileById(firebaseUid);
+        } else {
+          logger.warn('Could not convert numeric ID to Firebase UID', { numericId: effectiveTargetId });
+          targetPromise = Promise.resolve(null);
+        }
+      } else {
+        // It's a Firebase UID
+        targetPromise = bulgarianAuthService.getUserProfileById(effectiveTargetId!);
+      }
 
       const [viewerRaw, targetRaw] = await Promise.all([viewerPromise, targetPromise]);
       const normalizedViewer = normalizeUser(viewerRaw);
