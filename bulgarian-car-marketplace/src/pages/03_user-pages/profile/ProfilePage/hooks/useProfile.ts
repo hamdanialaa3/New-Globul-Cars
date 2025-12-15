@@ -199,15 +199,19 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
         targetPromise = viewerPromise;
       } else if (/^\d+$/.test(effectiveTargetId!)) {
         // It's a numeric ID - convert to Firebase UID first
+        logger.debug('Numeric ID detected, converting to Firebase UID', { numericId: effectiveTargetId });
         const firebaseUid = await getFirebaseUidByNumericId(parseInt(effectiveTargetId!, 10));
+        logger.debug('Firebase UID conversion result', { numericId: effectiveTargetId, firebaseUid });
         if (firebaseUid) {
+          logger.debug('Fetching profile with Firebase UID', { firebaseUid });
           targetPromise = bulgarianAuthService.getUserProfileById(firebaseUid);
         } else {
-          logger.warn('Could not convert numeric ID to Firebase UID', { numericId: effectiveTargetId });
+          logger.warn('Could not convert numeric ID to Firebase UID - user may not exist', { numericId: effectiveTargetId });
           targetPromise = Promise.resolve(null);
         }
       } else {
         // It's a Firebase UID
+        logger.debug('Firebase UID detected, fetching profile', { firebaseUid: effectiveTargetId });
         targetPromise = bulgarianAuthService.getUserProfileById(effectiveTargetId!);
       }
 

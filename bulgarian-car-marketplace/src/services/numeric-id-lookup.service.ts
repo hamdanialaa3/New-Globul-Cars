@@ -14,6 +14,7 @@ import type { CarListing } from '../types/CarListing';
  */
 export const getUserByNumericId = async (numericId: number): Promise<UserProfile | null> => {
   try {
+    logger.debug('getUserByNumericId: Searching for user', { numericId });
     const usersRef = collection(db, 'users');
     const q = query(
       usersRef,
@@ -22,6 +23,7 @@ export const getUserByNumericId = async (numericId: number): Promise<UserProfile
     );
     
     const snapshot = await getDocs(q);
+    logger.debug('getUserByNumericId: Query result', { numericId, found: !snapshot.empty, count: snapshot.size });
     
     if (snapshot.empty) {
       logger.warn('User not found by numeric ID', { numericId });
@@ -29,10 +31,12 @@ export const getUserByNumericId = async (numericId: number): Promise<UserProfile
     }
     
     const userData = snapshot.docs[0].data() as UserProfile;
-    return {
+    const result = {
       ...userData,
       id: snapshot.docs[0].id
     };
+    logger.debug('getUserByNumericId: User found', { numericId, firebaseUid: snapshot.docs[0].id, email: userData.email });
+    return result;
   } catch (error) {
     logger.error('Failed to get user by numeric ID', error as Error, { numericId });
     return null;
