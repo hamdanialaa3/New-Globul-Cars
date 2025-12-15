@@ -21,7 +21,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Routes, Route, useParams, Navigate, useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../contexts/AuthProvider';
 import { useProfilePermissions, useCarPermissions } from '../hooks/useProfilePermissions';
 import { 
   getUserByNumericId, 
