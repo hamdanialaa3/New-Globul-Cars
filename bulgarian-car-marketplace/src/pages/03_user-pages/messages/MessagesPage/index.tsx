@@ -6,7 +6,7 @@ import { logger } from '../../../../services/logger-service';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../../contexts/AuthProvider';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { realtimeMessagingService, ChatRoom } from '../../../../services/realtimeMessaging';
@@ -305,6 +305,7 @@ const MessagesPage: React.FC = () => {
   const { user } = useAuth();
   const { t, language } = useLanguage();
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   
   const [conversations, setConversations] = useState<ChatRoom[]>([]);
   const [selectedConversation, setSelectedConversation] = useState<ChatRoom | null>(null);
@@ -312,6 +313,15 @@ const MessagesPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showMobileChat, setShowMobileChat] = useState(false);
   const [recipientImages, setRecipientImages] = useState<{ [userId: string]: string }>({});
+  
+  // ✅ Redirect to login if not authenticated
+  useEffect(() => {
+    if (!user) {
+      console.log('❌ User not logged in, redirecting to login...');
+      const currentPath = window.location.pathname + window.location.search;
+      navigate(`/login?redirect=${encodeURIComponent(currentPath)}`);
+    }
+  }, [user, navigate]);
   
   // Load recipient images
   useEffect(() => {
