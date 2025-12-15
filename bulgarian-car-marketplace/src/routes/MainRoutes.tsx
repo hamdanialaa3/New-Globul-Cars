@@ -90,17 +90,7 @@ export const MainRoutes: React.FC = () => {
     return (
         <Routes>
             <Route path="/" element={<HomePage />} />
-            {/* FUTURE FEATURE: Social Feed
-      <Route path="/social" element={<SocialFeedPage />} />
-      */}
-            {/* ... */}
-            {/* FUTURE FEATURE: IoT & AI 
-      <Route path="/iot-dashboard" element={<AuthGuard requireAuth={true}><IoTDashboardPage /></AuthGuard>} />
-      <Route path="/car-tracking" element={<AuthGuard requireAuth={true}><CarTrackingPage /></AuthGuard>} />
-      <Route path="/iot-analytics" element={<AuthGuard requireAuth={true}><IoTAnalyticsPage /></AuthGuard>} />
-      <Route path="/ai-dashboard" element={<AuthGuard requireAuth={true}><AIDashboardPage /></AuthGuard>} />
-      <Route path="/admin/ai-quotas" element={<AuthGuard requireAuth={true}><AIQuotaManager /></AuthGuard>} />
-      */}
+            <Route path="/social" element={<SocialFeedPage />} />
             <Route path="/cars" element={<CarsPage />} />
             <Route path="/cars/:id" element={<CarDetailsPage />} />
             <Route path="/car/:id" element={<CarDetailsPage />} />

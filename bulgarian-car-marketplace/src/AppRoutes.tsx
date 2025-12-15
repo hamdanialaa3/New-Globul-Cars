@@ -4,7 +4,7 @@ import { ThemeProvider } from 'styled-components';
 import { bulgarianTheme, GlobalStyles } from './styles/theme';
 import { useTheme } from './contexts/ThemeContext';
 import { safeLazy } from './utils/lazyImport';
-import SmartLoader from './components/SmartLoader';
+import SmartLoader from './components/SmartLoaderCSS';
 import InactivityWarning from './components/InactivityWarning';
 
 // Lazy Loaded Components

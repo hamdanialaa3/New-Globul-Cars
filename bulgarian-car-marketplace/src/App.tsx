@@ -7,6 +7,7 @@ import { AppProviders } from './providers';
 import AppRoutes from './AppRoutes';
 import IndexedDBActivityTracker from './services/indexeddb-activity-tracker';
 import { logger } from './services/logger-service';
+import { InstallPrompt } from './components/PWA/InstallPrompt';
 
 // 🔧 Dev utilities (available in console)
 if (process.env.NODE_ENV === 'development') {
@@ -42,6 +43,7 @@ const App: React.FC = () => {
   return (
     <AppProviders>
       <AppRoutes />
+      <InstallPrompt />
     </AppProviders>
   );
 };

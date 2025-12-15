@@ -1,12 +1,16 @@
 // DealerSpotlight.tsx
-// Highlights top verified dealers with mock data (placeholder for future dynamic fetch)
+// Highlights top verified dealers with real data from Firebase
 
-import React, { memo, useEffect, useRef } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 import { analyticsService } from '../../../../services/analytics/UnifiedAnalyticsService';
 import HorizontalScrollContainer from '../../../../components/HorizontalScrollContainer/HorizontalScrollContainer';
+import { DealershipRepository } from '../../../../repositories/DealershipRepository';
+import { collection, query, where, getDocs } from 'firebase/firestore';
+import { db } from '../../../../firebase/firebase-config';
+import { logger } from '../../../../services/logger-service';
 
 interface DealerInfo {
   id: string;
@@ -14,14 +18,8 @@ interface DealerInfo {
   rating: number;
   listings: number;
   verified: boolean;
+  slug?: string;
 }
-
-// TODO(data): Replace with real fetch (Firebase / Functions) once API ready
-const MOCK_DEALERS: DealerInfo[] = [
-  { id: 'd1', name: 'AutoPrime Sofia', rating: 4.9, listings: 124, verified: true },
-  { id: 'd2', name: 'Varna Premium Cars', rating: 4.8, listings: 87, verified: true },
-  { id: 'd3', name: 'Plovdiv Auto Hub', rating: 4.7, listings: 65, verified: true }
-];
 
 const SectionContainer = styled.section`
   background: var(--bg-primary);
@@ -106,48 +104,138 @@ const ViewAllLink = styled.button`
 `;
 
 const DealerSpotlight: React.FC = memo(() => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const navigate = useNavigate();
   const dealerSectionRef = useRef<HTMLDivElement>(null);
+  const [dealers, setDealers] = useState<DealerInfo[]>([]);
+  const [loading, setLoading] = useState(true);
 
-useEffect(() => {
-  // Fire 'home_dealerspotlight_view' when visible
-  const observer = new IntersectionObserver(
-    (entries) => {
-      if (entries[0].isIntersecting) {
-        analyticsService.trackEvent('home_dealerspotlight_view', {
-          dealerCount: MOCK_DEALERS?.length || 0,
-        });
-        observer.unobserve(entries[0].target);
+  // Fetch verified dealerships from Firebase
+  useEffect(() => {
+    const fetchDealers = async () => {
+      try {
+        setLoading(true);
+        const verifiedDealerships = await DealershipRepository.getVerified(6);
+        
+        // Get listings count for each dealer
+        const dealersWithListings = await Promise.all(
+          verifiedDealerships.map(async (dealership) => {
+            try {
+              // Count cars for this dealer
+              const carsQuery = query(
+                collection(db, 'cars'),
+                where('sellerId', '==', dealership.uid),
+                where('isActive', '==', true)
+              );
+              const carsSnapshot = await getDocs(carsQuery);
+              const listingsCount = carsSnapshot.size;
+
+              // Get rating (default to 4.5 if not available)
+              const rating = dealership.rating || 4.5;
+
+              return {
+                id: dealership.uid,
+                name: language === 'bg' 
+                  ? (dealership.dealershipNameBG || dealership.dealershipNameEN || 'Dealer')
+                  : (dealership.dealershipNameEN || dealership.dealershipNameBG || 'Dealer'),
+                rating,
+                listings: listingsCount,
+                verified: dealership.verification?.status === 'verified',
+                slug: dealership.slug || dealership.uid
+              } as DealerInfo;
+            } catch (error) {
+              logger.error('Error fetching dealer listings', error as Error, { dealerId: dealership.uid });
+              return {
+                id: dealership.uid,
+                name: language === 'bg' 
+                  ? (dealership.dealershipNameBG || dealership.dealershipNameEN || 'Dealer')
+                  : (dealership.dealershipNameEN || dealership.dealershipNameBG || 'Dealer'),
+                rating: 4.5,
+                listings: 0,
+                verified: true,
+                slug: dealership.slug || dealership.uid
+              } as DealerInfo;
+            }
+          })
+        );
+
+        // Sort by listings count (descending) and take top 6
+        const sortedDealers = dealersWithListings
+          .sort((a, b) => b.listings - a.listings)
+          .slice(0, 6);
+
+        setDealers(sortedDealers);
+      } catch (error) {
+        logger.error('Error fetching dealers', error as Error);
+        // Fallback to empty array on error
+        setDealers([]);
+      } finally {
+        setLoading(false);
       }
-    },
-    { threshold: 0.3 }
-  );
+    };
 
-  if (dealerSectionRef.current) {
-    observer.observe(dealerSectionRef.current);
+    fetchDealers();
+  }, [language]);
+
+  useEffect(() => {
+    // Fire 'home_dealerspotlight_view' when visible
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          analyticsService.trackEvent('home_dealerspotlight_view', {
+            dealerCount: dealers?.length || 0,
+          });
+          observer.unobserve(entries[0].target);
+        }
+      },
+      { threshold: 0.3 }
+    );
+
+    if (dealerSectionRef.current) {
+      observer.observe(dealerSectionRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [dealers]);
+
+  // When dealer is clicked:
+  const handleDealerClick = (dealer: DealerInfo) => {
+    // Track 'home_dealerspotlight_click_dealer' with dealer id
+    analyticsService.trackEvent('home_dealerspotlight_click_dealer', {
+      dealerId: dealer.id,
+    });
+    navigate(`/dealer/${dealer.slug || dealer.id}`);
+  };
+
+  // When "View All" is clicked:
+  const handleViewAll = () => {
+    // Track 'home_dealerspotlight_view_all'
+    analyticsService.trackEvent('home_dealerspotlight_view_all', {});
+    navigate('/dealers');
+  };
+
+  if (loading) {
+    return (
+      <SectionContainer aria-label={t('home.dealerSpotlight.title')}>
+        <Header>
+          <Title>{t('home.dealerSpotlight.title')}</Title>
+          <Subtitle>{t('home.dealerSpotlight.subtitle')}</Subtitle>
+        </Header>
+        <DealerContainer>
+          <div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-secondary)' }}>
+            {t('common.loading', 'Loading...')}
+          </div>
+        </DealerContainer>
+      </SectionContainer>
+    );
   }
 
-  return () => observer.disconnect();
-}, []);
-
-// When dealer is clicked:
-const handleDealerClick = (dealerId: string) => {
-  // Track 'home_dealerspotlight_click_dealer' with dealer id
-  analyticsService.trackEvent('home_dealerspotlight_click_dealer', {
-    dealerId,
-  });
-  navigate(`/dealer/${dealerId}`);
-};
-
-// When "View All" is clicked:
-const handleViewAll = () => {
-  // Track 'home_dealerspotlight_view_all'
-  analyticsService.trackEvent('home_dealerspotlight_view_all', {});
-  navigate('/dealers');
-};
+  if (dealers.length === 0) {
+    return null; // Don't show section if no dealers
+  }
 
   return (
-    <SectionContainer aria-label={t('home.dealerSpotlight.title')}>
+    <SectionContainer ref={dealerSectionRef} aria-label={t('home.dealerSpotlight.title')}>
       <Header>
         <Title>{t('home.dealerSpotlight.title')}</Title>
         <Subtitle>{t('home.dealerSpotlight.subtitle')}</Subtitle>
@@ -159,8 +247,20 @@ const handleViewAll = () => {
           itemMinWidth="220px"
           showArrows={true}
         >
-          {MOCK_DEALERS.map(d => (
-            <DealerCard key={d.id} data-dealer-id={d.id} onClick={() => handleDealerClick(d.id)}>
+          {dealers.map(d => (
+            <DealerCard 
+              key={d.id} 
+              data-dealer-id={d.id} 
+              onClick={() => handleDealerClick(d)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handleDealerClick(d);
+                }
+              }}
+            >
               <DealerName>{d.name}</DealerName>
               <DealerMeta>
                 <span>{t('home.dealerSpotlight.rating')}: {d.rating.toFixed(1)}</span>

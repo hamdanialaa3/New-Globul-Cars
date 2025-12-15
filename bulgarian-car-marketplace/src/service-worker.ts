@@ -105,24 +105,29 @@ registerRoute(
 );
 
 // Background sync for offline actions
-self.addEventListener('sync', (event: React.FormEvent) => {
+self.addEventListener('sync', (event: any) => {
   if (event.tag === 'sync-messages') {
     event.waitUntil(syncMessages());
   }
   if (event.tag === 'sync-favorites') {
     event.waitUntil(syncFavorites());
   }
+  if (event.tag === 'sync-car-listings') {
+    event.waitUntil(syncCarListings());
+  }
 });
 
 // Push notifications
-self.addEventListener('push', (event: React.FormEvent) => {
+self.addEventListener('push', (event: any) => {
   const data = event.data?.json() ?? {};
   const title = data.title || 'Globul Cars';
   const options = {
     body: data.body || 'You have a new notification',
     icon: '/logo192.png',
-    badge: '/badge.png',
+    badge: '/logo192.png',
     data: data.url || '/',
+    tag: data.tag || 'default',
+    requireInteraction: data.requireInteraction || false,
     actions: [
       {
         action: 'open',
@@ -141,12 +146,23 @@ self.addEventListener('push', (event: React.FormEvent) => {
 });
 
 // Notification click handler
-self.addEventListener('notificationclick', (event: React.FormEvent) => {
+self.addEventListener('notificationclick', (event: any) => {
   event.notification.close();
 
-  if (event.action === 'open') {
+  if (event.action === 'open' || !event.action) {
     event.waitUntil(
-      self.clients.openWindow(event.notification.data)
+      self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList: any[]) => {
+        // If a window is already open, focus it
+        for (const client of clientList) {
+          if (client.url === event.notification.data && 'focus' in client) {
+            return client.focus();
+          }
+        }
+        // Otherwise, open a new window
+        if (self.clients.openWindow) {
+          return self.clients.openWindow(event.notification.data || '/');
+        }
+      })
     );
   }
 });
@@ -181,6 +197,22 @@ async function syncFavorites(): Promise<void> {
     try {
       const { logger } = await import('./services/logger-service');
       logger.error('[SW] Error syncing favorites', error as Error);
+    } catch {}
+  }
+}
+
+async function syncCarListings(): Promise<void> {
+  try {
+    // Get pending car listings from IndexedDB
+    // Send them to server
+    try {
+      const { logger } = await import('./services/logger-service');
+      logger.info('[SW] Syncing car listings...');
+    } catch {}
+  } catch (error) {
+    try {
+      const { logger } = await import('./services/logger-service');
+      logger.error('[SW] Error syncing car listings', error as Error);
     } catch {}
   }
 }

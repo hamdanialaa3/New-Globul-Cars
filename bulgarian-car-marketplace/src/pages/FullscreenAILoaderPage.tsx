@@ -14,7 +14,6 @@ interface FullscreenAILoaderPageProps {
 
 const FullscreenAILoaderPage: React.FC<FullscreenAILoaderPageProps> = ({ autoLoadDuration = 10000 }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [apiKey] = useState(process.env.REACT_APP_GEMINI_API_KEY || '');
 
   useEffect(() => {
     // Auto-hide loader after specified duration
@@ -25,14 +24,10 @@ const FullscreenAILoaderPage: React.FC<FullscreenAILoaderPageProps> = ({ autoLoa
     return () => clearTimeout(timer);
   }, [autoLoadDuration]);
 
-  const handleLoaderComplete = () => {
-    setIsLoading(false);
-  };
-
   return (
     <>
-      <LightweightLoadingOverlay isVisible={isLoading} apiKey={apiKey} />
-      <MainContent isVisible={!isLoading} apiKey={apiKey} />
+      <LightweightLoadingOverlay isVisible={isLoading} />
+      <MainContent isVisible={!isLoading} />
     </>
   );
 };

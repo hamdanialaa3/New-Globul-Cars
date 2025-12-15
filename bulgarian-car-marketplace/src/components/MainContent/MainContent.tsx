@@ -12,7 +12,6 @@ const styled = StyledComponents;
 
 interface MainContentProps {
   isVisible: boolean;
-  apiKey: string;
 }
 
 // ============================================
@@ -144,13 +143,20 @@ const ResponseArea = styled.div<{ isActive: boolean }>`
 // Component
 // ============================================
 
-const MainContent: React.FC<MainContentProps> = ({ isVisible, apiKey }) => {
+const MainContent: React.FC<MainContentProps> = ({ isVisible }) => {
   const [userQuery, setUserQuery] = useState('');
   const [response, setResponse] = useState('');
   const [showResponse, setShowResponse] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const apiKey = process.env.REACT_APP_GEMINI_API_KEY || '';
 
   const callGemini = async (prompt: string) => {
+    if (!apiKey) {
+      setResponse('API key not configured');
+      setShowResponse(true);
+      return;
+    }
+    
     try {
       const apiResponse = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`,
