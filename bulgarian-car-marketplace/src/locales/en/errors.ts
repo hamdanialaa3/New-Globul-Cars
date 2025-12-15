@@ -31,4 +31,12 @@ export const errors = {
   save_failed: 'Save failed',
   load_failed: 'Load failed',
   delete_failed: 'Delete failed',
+  
+  // 404 Not Found
+  notFound: {
+    title: 'Page not found',
+    subtitle: '404 - We can\'t find what you\'re looking for',
+    description: 'The page you are looking for may have been moved or deleted.',
+    homeButton: 'Go to homepage'
+  }
 };
