@@ -452,8 +452,11 @@ const MessagesPage: React.FC = () => {
               logger.debug('Created placeholder conversation', { conversationId: newConversation.id });
               // Add to conversations list
               setConversations([newConversation, ...chatRooms]);
+              console.log('✅ Set conversations with new conversation');
               setSelectedConversation(newConversation);
+              console.log('✅ Set selected conversation:', newConversation.id);
               setShowMobileChat(true);
+              console.log('✅ Set showMobileChat to true');
             } catch (error) {
               console.error('❌ Failed to create placeholder conversation:', error);
               logger.error('Failed to create placeholder conversation', { userId: userIdParam, error });
@@ -625,8 +628,17 @@ const MessagesPage: React.FC = () => {
   );
   
   const renderMainContent = () => {
-    // ✅ FIX: If conversationId in URL but not selected yet, show loading
-    if (conversationIdFromUrl && !selectedConversation) {
+    console.log('🎨 renderMainContent:', { 
+      conversationIdFromUrl, 
+      userIdFromUrl, 
+      selectedConversation: selectedConversation?.id,
+      loading,
+      showMobileChat 
+    });
+    
+    // ✅ FIX: If conversationId or userId in URL but not selected yet, show loading
+    if ((conversationIdFromUrl || userIdFromUrl) && !selectedConversation) {
+      console.log('⏳ Waiting for conversation to load...');
       if (loading) {
         return (
           <MainContent>
@@ -637,7 +649,8 @@ const MessagesPage: React.FC = () => {
         );
       }
       
-      // If we have conversationId but couldn't load it, show error state
+      // If we have conversationId/userId but couldn't load it, show error state
+      console.log('⚠️ Showing loading message (loading=false but no conversation)');
       return (
         <MainContent>
           <EmptyState>
@@ -650,6 +663,7 @@ const MessagesPage: React.FC = () => {
     }
     
     if (!selectedConversation) {
+      console.log('📭 No selected conversation - showing empty state');
       return (
         <MainContent>
           <EmptyState>
