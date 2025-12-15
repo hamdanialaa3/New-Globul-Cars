@@ -283,9 +283,67 @@ const CarEdit: React.FC = () => {
 };
 
 /**
+ * Current User Profile Redirect
+ * Redirects /profile to /profile/{numericId} for logged-in user
+ * 
+ * Example:
+ * User with numericId=5 visits /profile → Redirected to /profile/5
+ */
+const CurrentUserRedirect: React.FC = () => {
+  const { user: currentUser } = useAuth();
+  const [loading, setLoading] = useState(true);
+  const [userNumericId, setUserNumericId] = useState<number | null>(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchUserNumericId = async () => {
+      if (!currentUser) {
+        // Not logged in - redirect to login
+        logger.warn('⚠️ User not logged in, redirecting to home');
+        navigate('/', { replace: true });
+        return;
+      }
+
+      try {
+        logger.info('🔍 Fetching numericId for current user', { userId: currentUser.uid });
+        
+        const numericId = await getNumericIdByFirebaseUid(currentUser.uid);
+        
+        if (!numericId) {
+          logger.error('❌ Current user has no numericId', { userId: currentUser.uid });
+          // User exists but has no numericId yet - show error or fallback
+          navigate('/404', { replace: true });
+          return;
+        }
+
+        logger.info('✅ Found numericId, redirecting', { userId: currentUser.uid, numericId });
+        setUserNumericId(numericId);
+        navigate(`/profile/${numericId}`, { replace: true });
+        
+      } catch (error) {
+        logger.error('❌ Error fetching user numericId', error, { userId: currentUser?.uid });
+        navigate('/404', { replace: true });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserNumericId();
+  }, [currentUser, navigate]);
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+
+  // Should never reach here due to redirects above
+  return null;
+};
+
+/**
  * Numeric Profile Router
  * 
  * Routes:
+ * ✅ /profile                             → Auto-redirect to /profile/{currentUser.numericId}
  * ✅ /profile/:userId                     → Profile view (numeric ID or username)
  * ✅ /profile/:userId/:carNumber          → Car view (numeric IDs)
  * ✅ /profile/:userId/:carNumber/edit     → Car edit (owner only)
@@ -303,8 +361,8 @@ export const NumericProfileRouter: React.FC = () => {
     <Routes>
       {/* Main profile page with nested routes */}
       <Route path="" element={<ProfilePageWrapper />}>
-        {/* Default: Overview */}
-        <Route index element={<ProfileOverview />} />
+        {/* Default: Redirect to current user's profile */}
+        <Route index element={<CurrentUserRedirect />} />
 
         {/* Numeric ID Profile Routes */}
         <Route path=":userId" element={<ProfileView />} />
