@@ -1,24 +1,14 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { User, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, updateProfile } from 'firebase/auth';
 import { auth } from '../firebase/firebase-config';
 import { SocialAuthService } from '../firebase/social-auth-service';
 import { logger } from '../services/logger-service';
 import { FirebaseHealthCheck } from '../utils/firebase-health-check';
+import { AuthContext } from './AuthContext';
 
 interface RegisterOptions {
   displayName?: string;
 }
-
-interface AuthContextType {
-  currentUser: User | null;
-  user: User | null;
-  loading: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string, options?: RegisterOptions) => Promise<void>;
-  logout: () => Promise<void>;
-}
-
-export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 
 interface AuthProviderProps {
@@ -207,14 +197,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       {!loading && children}
     </AuthContext.Provider>
   );
-};
-
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
 };
 
 export default AuthProvider;
