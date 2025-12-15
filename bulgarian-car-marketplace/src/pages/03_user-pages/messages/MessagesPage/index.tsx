@@ -512,7 +512,7 @@ const MessagesPage: React.FC = () => {
     return () => {
       unsubscribe();
     };
-  }, [user, conversationIdFromUrl, carIdFromUrl, userIdFromUrl]);
+  }, [user, searchParams]); // ✅ FIX: Use searchParams, not individual extracted values
   
   // ==================== HANDLERS ====================
   
