@@ -406,7 +406,12 @@ const MessagesPage: React.FC = () => {
         
         // ✅ FIX: If userId in URL, find or create conversation
         if (userIdParam && userIdParam !== user.uid) {
-          console.log('👤 Creating conversation with user:', userIdParam);
+          console.log('👤 Creating conversation with user:', {
+            userIdParam,
+            'current user.uid': user.uid,
+            'are they different?': userIdParam !== user.uid,
+            'URL': window.location.href
+          });
           logger.debug('Looking for conversation with user', { userId: userIdParam });
           // Try to find existing conversation with this user
           const existingConv = chatRooms.find(room => 
@@ -681,6 +686,15 @@ const MessagesPage: React.FC = () => {
     const recipientImage = recipientImages[recipientId] || undefined;
     const carId = carIdFromUrl || selectedConversation.carId;
     const carTitle = selectedConversation.carTitle;
+    
+    console.log('💬 Conversation details:', {
+      'selectedConversation.id': selectedConversation.id,
+      'participants': selectedConversation.participants,
+      'current user.uid': user?.uid,
+      'recipientId (other user)': recipientId,
+      'recipientName': recipientName,
+      'participantNames': selectedConversation.participantNames
+    });
     
     // ✅ FIX: Don't render if we don't have valid recipientId
     if (!recipientId || !user) {

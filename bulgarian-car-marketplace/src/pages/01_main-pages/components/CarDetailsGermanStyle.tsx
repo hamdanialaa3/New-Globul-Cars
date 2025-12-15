@@ -1556,10 +1556,19 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
   };
 
   const handleContactDealer = () => {
+    console.log('🚀 handleContactDealer called:', {
+      sellerId,
+      carId: car.id,
+      'car.sellerId': car.sellerId,
+      'car.userId': car.userId,
+      navigatingTo: `/messages?userId=${sellerId}`
+    });
+    
     if (sellerId) {
       // Navigate to messages with seller
       navigate(`/messages?userId=${sellerId}`);
     } else {
+      console.error('❌ No sellerId available!');
       onContact('phone');
     }
   };
