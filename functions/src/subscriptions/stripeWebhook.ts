@@ -9,11 +9,16 @@ import { STRIPE_CONFIG } from './config';
 
 const db = getFirestore();
 
-// Initialize Stripe
-// Use latest supported API version
-const stripe = new Stripe(STRIPE_CONFIG.secretKey, {
-  apiVersion: '2024-11-20' as any,
-});
+// Initialize Stripe lazily to avoid errors during deployment
+let stripe: Stripe | null = null;
+const getStripe = () => {
+  if (!stripe && STRIPE_CONFIG.secretKey) {
+    stripe = new Stripe(STRIPE_CONFIG.secretKey, {
+      apiVersion: '2024-11-20' as any,
+    });
+  }
+  return stripe;
+};
 
 // Helper to safely access Stripe properties that may not be in type definitions
 const getSubscriptionPeriod = (sub: any) => ({
@@ -48,11 +53,19 @@ export const stripeWebhook = onRequest({ region: 'europe-west1' }, async (reques
     return;
   }
 
+  // Get Stripe instance
+  const stripeInstance = getStripe();
+  if (!stripeInstance) {
+    logger.error('Stripe is not configured');
+    response.status(500).send('Stripe configuration error');
+    return;
+  }
+
   let event: Stripe.Event;
 
   try {
     // Verify webhook signature
-    event = stripe.webhooks.constructEvent(
+    event = stripeInstance.webhooks.constructEvent(
       request.rawBody,
       sig,
       STRIPE_CONFIG.webhookSecret
@@ -118,10 +131,16 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
 
   logger.info('Processing checkout completion', { userId, planId, sessionId: session.id });
 
+  const stripeInstance = getStripe();
+  if (!stripeInstance) {
+    logger.error('Stripe is not configured');
+    return;
+  }
+
   try {
     // Get subscription details
     const subscriptionId = session.subscription as string;
-    const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+    const subscription = await stripeInstance.subscriptions.retrieve(subscriptionId);
 
     // Update user subscription in Firestore
     const period = getSubscriptionPeriod(subscription);
@@ -187,6 +206,12 @@ async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
 
   logger.info('Processing payment success', { customerId, subscriptionId });
 
+  const stripeInstance = getStripe();
+  if (!stripeInstance) {
+    logger.error('Stripe is not configured');
+    return;
+  }
+
   try {
     // Find user by Stripe customer ID
     const usersSnapshot = await db.collection('users')
@@ -202,7 +227,7 @@ async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
     const userId = usersSnapshot.docs[0].id;
 
     // Get subscription details
-    const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+    const subscription = await stripeInstance.subscriptions.retrieve(subscriptionId);
     const period = getSubscriptionPeriod(subscription);
 
     // Update subscription period

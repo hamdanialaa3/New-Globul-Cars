@@ -10,10 +10,16 @@ import { STRIPE_CONFIG } from './config';
 
 const db = getFirestore();
 
-// Initialize Stripe
-const stripe = new Stripe(STRIPE_CONFIG.secretKey, {
-  apiVersion: '2025-09-30.clover' as any,
-});
+// Initialize Stripe lazily to avoid errors during deployment
+let stripe: Stripe | null = null;
+const getStripe = () => {
+  if (!stripe && STRIPE_CONFIG.secretKey) {
+    stripe = new Stripe(STRIPE_CONFIG.secretKey, {
+      apiVersion: '2025-09-30.clover' as any,
+    });
+  }
+  return stripe;
+};
 
 /**
  * Verify Checkout Session
@@ -39,8 +45,14 @@ export const verifyCheckoutSession = onCall<{
   logger.info('Verifying checkout session', { userId, sessionId });
 
   try {
-    // 2. Retrieve session from Stripe
-    const session = await stripe.checkout.sessions.retrieve(sessionId, {
+    // 2. Get Stripe instance
+    const stripeInstance = getStripe();
+    if (!stripeInstance) {
+      throw new HttpsError('internal', 'Stripe is not configured');
+    }
+
+    // 3. Retrieve session from Stripe
+    const session = await stripeInstance.checkout.sessions.retrieve(sessionId, {
       expand: ['subscription', 'customer'],
     });
 

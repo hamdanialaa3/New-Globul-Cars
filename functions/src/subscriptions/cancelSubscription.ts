@@ -10,10 +10,16 @@ import { STRIPE_CONFIG } from './config';
 
 const db = getFirestore();
 
-// Initialize Stripe
-const stripe = new Stripe(STRIPE_CONFIG.secretKey, {
-  apiVersion: '2025-09-30.clover' as any,
-});
+// Initialize Stripe lazily to avoid errors during deployment
+let stripe: Stripe | null = null;
+const getStripe = () => {
+  if (!stripe && STRIPE_CONFIG.secretKey) {
+    stripe = new Stripe(STRIPE_CONFIG.secretKey, {
+      apiVersion: '2025-09-30.clover' as any,
+    });
+  }
+  return stripe;
+};
 
 /**
  * Cancel Stripe Subscription
@@ -50,6 +56,11 @@ export const cancelSubscription = onCall<{
 
   logger.info('Canceling subscription', { userId, immediate });
 
+  const stripeInstance = getStripe();
+  if (!stripeInstance) {
+    throw new HttpsError('internal', 'Stripe is not configured');
+  }
+
   try {
     // 3. Get user data
     const userDoc = await db.collection('users').doc(userId).get();
@@ -73,7 +84,7 @@ export const cancelSubscription = onCall<{
 
     if (immediate) {
       // Cancel immediately
-      canceledSubscription = await stripe.subscriptions.cancel(subscriptionId);
+      canceledSubscription = await stripeInstance.subscriptions.cancel(subscriptionId);
 
       // Immediately update Firestore
       await db.collection('users').doc(userId).update({
@@ -97,7 +108,7 @@ export const cancelSubscription = onCall<{
 
     } else {
       // Cancel at period end
-      canceledSubscription = await stripe.subscriptions.update(subscriptionId, {
+      canceledSubscription = await stripeInstance.subscriptions.update(subscriptionId, {
         cancel_at_period_end: true,
       });
 
