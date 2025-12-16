@@ -44,13 +44,13 @@ const ProfilePageWrapper: React.FC = () => {
   const params = useParams<{ userId?: string }>();
   const { profileType, theme } = useProfileType();
   const { currentUser } = useAuth();
-  
+
   // Get target user ID from URL route parameter
   const targetUserId = params.userId;
-  
+
   // Check if user is trying to access their own profile without being logged in
   const isAccessingOwnProfile = !targetUserId;
-  
+
   const {
     user,
     target,
@@ -70,13 +70,13 @@ const ProfilePageWrapper: React.FC = () => {
     if (isAccessingOwnProfile && activeProfile?.numericId && currentUser) {
       const currentPath = location.pathname;
       const expectedPath = `/profile/${activeProfile.numericId}`;
-      
+
       // Only redirect if we're at the base /profile path
       if (currentPath === '/profile' || currentPath === '/profile/') {
-        logger.info('Auto-redirecting to numeric ID profile', { 
-          from: currentPath, 
+        logger.info('Auto-redirecting to numeric ID profile', {
+          from: currentPath,
           to: expectedPath,
-          numericId: activeProfile.numericId 
+          numericId: activeProfile.numericId
         });
         navigate(expectedPath, { replace: true });
       }
@@ -96,23 +96,47 @@ const ProfilePageWrapper: React.FC = () => {
     }
     return `/profile/${activeProfile.uid}`;
   }, [activeProfile?.uid, activeProfile?.numericId, isOwnProfile]);
-  
+
   const [syncing, setSyncing] = React.useState(false);
-  
+
+  // ⚡ AUTO-UPDATE PROFILE STATS: Update stats when profile loads
+  React.useEffect(() => {
+    if (!activeProfile?.uid) return;
+
+    let cancelled = false;
+
+    // Update stats silently in the background
+    profileStatsService.updateUserStats(activeProfile.uid)
+      .then(() => {
+        if (!cancelled) {
+          logger.info('Profile stats updated', { userId: activeProfile.uid });
+          // Optionally refresh user data to reflect updated stats
+          refresh();
+        }
+      })
+      .catch(error => {
+        if (!cancelled) {
+          logger.error('Error updating profile stats', error as Error, { userId: activeProfile.uid });
+        }
+      });
+
+    return () => { cancelled = true; };
+  }, [activeProfile?.uid, refresh]);
+
   // ⚡ FIX: Follow state MUST be before early return!
   const [isFollowing, setIsFollowing] = React.useState(false);
   const [followLoading, setFollowLoading] = React.useState(false);
-  
+
   // Business mode check
   const isBusinessMode = activeProfile?.accountType === 'business' || activeProfile?.accountType === 'dealer' || activeProfile?.accountType === 'company';
-  
+
   // ⚡ FIX: Check if following - with cleanup for promise
   // Only check if targetUserId is a valid user ID (not a route like 'settings', 'my-ads', etc.)
   React.useEffect(() => {
     if (!viewer || !activeProfile || viewer.uid === activeProfile.uid) return;
- 
+
     let cancelled = false;
- 
+
     followService.isFollowing(viewer.uid, activeProfile.uid)
       .then(result => {
         if (!cancelled) setIsFollowing(result);
@@ -122,10 +146,10 @@ const ProfilePageWrapper: React.FC = () => {
           logger.error('Error checking follow status', error as Error, { viewerId: viewer.uid, targetId: activeProfile.uid });
         }
       });
- 
+
     return () => { cancelled = true; };
   }, [viewer, activeProfile]);
-  
+
   // Google Sync Handler
   const handleGoogleSync = async () => {
     if (!viewer || !isOwnProfile) return;
@@ -143,7 +167,7 @@ const ProfilePageWrapper: React.FC = () => {
       setSyncing(false);
     }
   };
-  
+
   // ⚡ AUTHENTICATION CHECK: If accessing own profile without login, show AuthGuard
   if (isAccessingOwnProfile && !currentUser) {
     return (
@@ -152,7 +176,7 @@ const ProfilePageWrapper: React.FC = () => {
       </AuthGuard>
     );
   }
-  
+
   if (loading) {
     return (
       <div style={{ padding: '40px', textAlign: 'center' }}>
@@ -192,7 +216,7 @@ const ProfilePageWrapper: React.FC = () => {
   if (!activeProfile) {
     return null;
   }
-  
+
   // Handle follow/unfollow
   const handleFollow = async () => {
     if (!viewer || !activeProfile || viewer.uid === activeProfile.uid) return;
@@ -211,17 +235,17 @@ const ProfilePageWrapper: React.FC = () => {
       setFollowLoading(false);
     }
   };
-  
+
   // Handle message
   const handleMessage = () => {
     if (!activeProfile?.uid) return;
     navigate(`/messages?userId=${activeProfile.uid}`);
   };
-  
+
   return (
     <S.ProfilePageContainer $isBusinessMode={isBusinessMode}>
       <BusinessBackground isBusinessAccount={isBusinessMode} />
-      
+
       <S.PageContainer>
         {/* Tab Navigation */}
         <TabNavigation $themeColor={theme.primary}>
@@ -254,7 +278,7 @@ const ProfilePageWrapper: React.FC = () => {
             </>
           )}
         </TabNavigation>
-        
+
         {/* Cover Image + Profile Picture - Only on main /profile page */}
         {!location.pathname.includes('/my-ads') && !location.pathname.includes('/campaigns') && !location.pathname.includes('/analytics') && !location.pathname.includes('/settings') && !location.pathname.includes('/consultations') ? (
           <S.CoverAndProfileWrapper>
@@ -264,8 +288,8 @@ const ProfilePageWrapper: React.FC = () => {
                 currentImageUrl={typeof activeProfile.coverImage === 'string' ? activeProfile.coverImage : activeProfile.coverImage?.url}
                 themeColor={theme.primary}
                 onUploadSuccess={(url) => {
-                  setUser(prev => prev ? { 
-                    ...prev, 
+                  setUser(prev => prev ? {
+                    ...prev,
                     coverImage: url
                   } : null);
                 }}
@@ -274,15 +298,15 @@ const ProfilePageWrapper: React.FC = () => {
                 }}
               />
             )}
-            
+
             {/* Centered Profile Picture */}
             <S.CenteredProfileImageWrapper>
               <ProfileImageUploader
                 currentImageUrl={typeof activeProfile?.photoURL === 'string' ? activeProfile.photoURL : (typeof activeProfile?.profileImage === 'object' ? activeProfile.profileImage?.url : undefined)}
                 onUploadSuccess={(url) => {
                   // Update local state immediately
-                  setUser(prev => prev ? { 
-                    ...prev, 
+                  setUser(prev => prev ? {
+                    ...prev,
                     photoURL: url,
                     profileImage: url ? { url, uploadedAt: new Date() } : undefined
                   } : null);
@@ -297,7 +321,7 @@ const ProfilePageWrapper: React.FC = () => {
             </S.CenteredProfileImageWrapper>
           </S.CoverAndProfileWrapper>
         ) : null}
-        
+
         {/* ✅ Single Modern Stats Bar with Name + 5 Stats */}
         {!location.pathname.includes('/my-ads') && !location.pathname.includes('/campaigns') && !location.pathname.includes('/analytics') && !location.pathname.includes('/settings') && !location.pathname.includes('/consultations') ? (
           <S.SingleStatsBar>
@@ -331,19 +355,19 @@ const ProfilePageWrapper: React.FC = () => {
                 <>
                   <S.ActionButtonCompact $variant="secondary" onClick={handleGoogleSync}>
                     <RefreshCw size={16} className={syncing ? 'spinning' : ''} />
-                    {syncing 
-                      ? (language === 'bg' ? 'Синхронизиране...' : 'Syncing...') 
+                    {syncing
+                      ? (language === 'bg' ? 'Синхронизиране...' : 'Syncing...')
                       : (language === 'bg' ? 'Синхронизирай' : 'Sync')}
                   </S.ActionButtonCompact>
                 </>
               ) : (
                 <>
-                  <FollowButton 
-                    onClick={handleFollow} 
+                  <FollowButton
+                    onClick={handleFollow}
                     disabled={followLoading}
                     $following={isFollowing}
                   >
-                    {isFollowing 
+                    {isFollowing
                       ? (language === 'bg' ? 'Последван' : 'Following')
                       : (language === 'bg' ? 'Последвай' : 'Follow')}
                   </FollowButton>
@@ -356,42 +380,19 @@ const ProfilePageWrapper: React.FC = () => {
             </S.StatBarActionsSection>
           </S.SingleStatsBar>
         ) : null}
-        
+
         {/* ⚡ HIDDEN: Old Profile Header - Will be merged into ProfileDashboard */}
         {false && window.location.pathname === '/profile' && (
           <div style={{ display: 'none' }}></div>
         )}
-        
+
         {/* Content Area - React Router will render child routes here */}
         <Outlet context={{ user: activeProfile, viewer, isOwnProfile, theme, userCars, refresh, setUser }} />
       </S.PageContainer>
     </S.ProfilePageContainer>
   );
 };
-  
-  // ⚡ AUTO-UPDATE PROFILE STATS: Update stats when profile loads
-  React.useEffect(() => {
-    if (!activeProfile?.uid) return;
-    
-    let cancelled = false;
-    
-    // Update stats silently in the background
-    profileStatsService.updateUserStats(activeProfile.uid)
-      .then(() => {
-        if (!cancelled) {
-          logger.info('Profile stats updated', { userId: activeProfile.uid });
-          // Optionally refresh user data to reflect updated stats
-          refresh();
-        }
-      })
-      .catch(error => {
-        if (!cancelled) {
-          logger.error('Error updating profile stats', error as Error, { userId: activeProfile.uid });
-        }
-      });
-    
-    return () => { cancelled = true; };
-  }, [activeProfile?.uid, refresh]);
+
 
 export default ProfilePageWrapper;
 

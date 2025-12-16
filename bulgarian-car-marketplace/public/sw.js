@@ -66,6 +66,18 @@ self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
+  // ⚠️ CRITICAL: Do NOT intercept Firestore or Google API requests
+  // This causes "Failed to load" errors in the console
+  if (
+    url.hostname.includes('firestore.googleapis.com') ||
+    url.hostname.includes('googleapis.com') ||
+    url.hostname.includes('firebaseio.com') ||
+    url.pathname.startsWith('/__/firebase/') ||
+    request.method !== 'GET'
+  ) {
+    return;
+  }
+
   // Handle API requests
   if (API_ENDPOINTS.some(endpoint => url.pathname.startsWith(endpoint))) {
     event.respondWith(handleApiRequest(request));
