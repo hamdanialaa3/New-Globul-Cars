@@ -22,11 +22,14 @@ export interface BaseProfile {
   lastName?: string;
   photoURL?: string;
   coverImage?: string;
-  
+
+  // ✅ NEW: Numeric ID for clean URLs (e.g. /profile/18)
+  numericId?: number;
+
   // Contact
   phoneNumber?: string;
   phoneCountryCode: '+359';
-  
+
   // Location (Bulgarian cities only)
   location?: {
     city: string;
@@ -37,18 +40,18 @@ export interface BaseProfile {
       longitude: number;
     };
   };
-  
+
   // Preferences
   preferredLanguage: 'bg' | 'en';
   currency: 'EUR';
-  
+
   // Profile Type & Plan
   profileType: 'private' | 'dealer' | 'company';
   planTier: PlanTier;
-  
+
   // Permissions
   permissions: ProfilePermissions;
-  
+
   // Verification
   verification: {
     email: boolean;
@@ -56,7 +59,7 @@ export interface BaseProfile {
     id: boolean;
     business: boolean;
   };
-  
+
   // Stats
   stats: {
     totalListings: number;
@@ -65,7 +68,7 @@ export interface BaseProfile {
     totalMessages: number;
     trustScore: number;
   };
-  
+
   // Social Links
   socialLinks?: {
     facebook?: string;
@@ -75,19 +78,19 @@ export interface BaseProfile {
     youtube?: string;
     instagram?: string;
   };
-  
+
   // Bio & Description
   bio?: string;
   about?: string;
-  
+
   // Gallery
   gallery?: string[];
-  
+
   // Timestamps
   createdAt: Timestamp;
   updatedAt: Timestamp;
   lastLoginAt?: Timestamp;
-  
+
   // Flags
   isActive: boolean;
   isBanned: boolean;
@@ -98,10 +101,10 @@ export interface BaseProfile {
 export interface DealerProfile extends BaseProfile {
   profileType: 'dealer';
   planTier: 'dealer';
-  
+
   // ✅ NEW: Canonical reference (Phase 1+)
   dealershipRef?: `dealerships/${string}`;
-  
+
   // ✅ NEW: Snapshot for quick display (Phase 1+)
   dealerSnapshot?: {
     nameBG: string;
@@ -112,7 +115,7 @@ export interface DealerProfile extends BaseProfile {
     phone?: string;
     website?: string;
   };
-  
+
   // ❌ DEPRECATED (migration period only)
   /**
    * @deprecated Use dealershipRef instead
@@ -120,7 +123,7 @@ export interface DealerProfile extends BaseProfile {
    * Current usage: 6 files
    */
   dealerInfo?: any;
-  
+
   /**
    * @deprecated Use profileType === 'dealer' instead
    * Will be removed after Phase 4 (Week 8)
@@ -133,7 +136,7 @@ export interface DealerProfile extends BaseProfile {
 export interface PrivateProfile extends BaseProfile {
   profileType: 'private';
   planTier: 'free' | 'premium';
-  
+
   // Private-specific
   egn?: string;  // Bulgarian personal ID (optional)
 }
@@ -142,7 +145,7 @@ export interface PrivateProfile extends BaseProfile {
 export interface CompanyProfile extends BaseProfile {
   profileType: 'company';
   planTier: 'company';
-  
+
   // ✅ NEW: Company reference (Phase 1+)
   companyRef?: `companies/${string}`;
   companySnapshot?: {
@@ -162,9 +165,9 @@ export interface CompanyProfile extends BaseProfile {
  * Main BulgarianUser type
  * Use this for all user-related operations
  */
-export type BulgarianUser = 
-  | PrivateProfile 
-  | DealerProfile 
+export type BulgarianUser =
+  | PrivateProfile
+  | DealerProfile
   | CompanyProfile;
 
 // ==================== SUPPORTING TYPES ====================
@@ -230,7 +233,7 @@ export type BulgarianUserUpdate = Partial<Omit<BulgarianUser, 'uid' | 'createdAt
  * Creation data for new users (without generated fields)
  */
 export type BulgarianUserCreateData = Omit<
-  BulgarianUser, 
+  BulgarianUser,
   'uid' | 'createdAt' | 'updatedAt' | 'stats' | 'verification'
 > & {
   stats?: Partial<BaseProfile['stats']>;

@@ -118,10 +118,17 @@ export const PublicProfileView: React.FC<PublicProfileViewProps> = ({ user, user
                   <InfoContent>
                     <InfoLabel>{language === 'bg' ? 'Член от' : 'Member Since'}</InfoLabel>
                     <InfoValue>
-                      {new Date(user.createdAt).toLocaleDateString(language === 'bg' ? 'bg-BG' : 'en-US', {
-                        year: 'numeric',
-                        month: 'long'
-                      })}
+                      {(() => {
+                        try {
+                          const date = user.createdAt?.toDate ? user.createdAt.toDate() : new Date(user.createdAt);
+                          return date.toLocaleDateString(language === 'bg' ? 'bg-BG' : 'en-US', {
+                            year: 'numeric',
+                            month: 'long'
+                          });
+                        } catch (e) {
+                          return language === 'bg' ? 'Наскоро' : 'Recently';
+                        }
+                      })()}
                     </InfoValue>
                   </InfoContent>
                 </InfoItem>

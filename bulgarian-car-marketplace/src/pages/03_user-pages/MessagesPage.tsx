@@ -1,464 +1,513 @@
-import React from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from '../../hooks/useTranslation';
+import { useAuth } from '../../contexts/AuthProvider';
+import { advancedMessagingService, Conversation, Message } from '../../services/messaging/advanced-messaging-service';
+import { Avatar } from '../../components/design-system/Avatar';
+import { Badge } from '../../components/design-system/Badge';
+import { Alert } from '../../components/design-system/Alert';
+import { Send, Image as ImageIcon, Search } from 'lucide-react';
+import { formatDistanceToNow } from 'date-fns';
+import { bg, enUS } from 'date-fns/locale';
 
 const MessagesContainer = styled.div`
-  min-height: 100vh;
-  padding: ${({ theme }) => theme.spacing.xl} 0;
+  min-height: calc(100vh - 64px);
+  padding: ${({ theme }) => theme.spacing.lg};
   background: ${({ theme }) => theme.colors.background.default};
   color: ${({ theme }) => theme.colors.text.primary};
+
+  @media (max-width: 768px) {
+    padding: 0;
+    height: calc(100vh - 56px);
+  }
 `;
 
 const PageContainer = styled.div`
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 0 ${({ theme }) => theme.spacing.md};
-`;
-
-const PageTitle = styled.h1`
-  text-align: center;
-  margin-bottom: ${({ theme }) => theme.spacing.xl};
-  color: ${({ theme }) => theme.colors.text.primary};
-  font-size: ${({ theme }) => theme.typography.fontSize['4xl']};
-  font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
-`;
-
-const MessagesCard = styled.div`
+  height: 85vh;
+  display: flex;
   background: ${({ theme }) => theme.colors.background.paper};
   border-radius: ${({ theme }) => theme.borderRadius.lg};
-  padding: ${({ theme }) => theme.spacing.xl};
-  box-shadow: ${({ theme }) => theme.shadows.base};
+  box-shadow: ${({ theme }) => theme.shadows.lg};
+  overflow: hidden;
   border: 1px solid ${({ theme }) => theme.colors.grey[200]};
-  margin-bottom: ${({ theme }) => theme.spacing.xl};
+
+  @media (max-width: 768px) {
+    height: 100%;
+    border-radius: 0;
+    border: none;
+    flex-direction: column;
+  }
 `;
 
-const MessagesTitle = styled.h2`
-  font-size: ${({ theme }) => theme.typography.fontSize['2xl']};
-  font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
-  color: ${({ theme }) => theme.colors.text.primary};
-  margin: 0 0 ${({ theme }) => theme.spacing.lg} 0;
+const Sidebar = styled.div<{ $visible: boolean }>`
+  width: 350px;
+  border-right: 1px solid ${({ theme }) => theme.colors.grey[200]};
+  display: flex;
+  flex-direction: column;
+  background: ${({ theme }) => theme.colors.background.paper};
+
+  @media (max-width: 768px) {
+    width: 100%;
+    display: ${({ $visible }) => $visible ? 'flex' : 'none'};
+    height: 100%;
+    border-right: none;
+  }
 `;
 
-const MessagesGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: ${({ theme }) => theme.spacing.lg};
-  margin-bottom: ${({ theme }) => theme.spacing.xl};
-`;
-
-const MessageItem = styled.div`
-  padding: ${({ theme }) => theme.spacing.lg};
+const ChatArea = styled.div<{ $visible: boolean }>`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   background: ${({ theme }) => theme.colors.grey[50]};
-  border-radius: ${({ theme }) => theme.borderRadius.base};
-  border: 1px solid ${({ theme }) => theme.colors.grey[200]};
+
+  @media (max-width: 768px) {
+    width: 100%;
+    display: ${({ $visible }) => $visible ? 'flex' : 'none'};
+    height: 100%;
+  }
 `;
 
-const MessageTitle = styled.h3`
-  font-size: ${({ theme }) => theme.typography.fontSize.lg};
-  font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
+const SidebarHeader = styled.div`
+  padding: ${({ theme }) => theme.spacing.lg};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.grey[200]};
+`;
+
+const SearchInput = styled.input`
+  width: 100%;
+  padding: ${({ theme }) => theme.spacing.md};
+  padding-left: 2.5rem;
+  border: 1px solid ${({ theme }) => theme.colors.grey[300]};
+  border-radius: ${({ theme }) => theme.borderRadius.full};
+  background: ${({ theme }) => theme.colors.background.input};
   color: ${({ theme }) => theme.colors.text.primary};
-  margin: 0 0 ${({ theme }) => theme.spacing.md} 0;
+  
+  &:focus {
+    outline: none;
+    border-color: ${({ theme }) => theme.colors.primary.main};
+  }
 `;
 
-const MessageText = styled.p`
-  color: ${({ theme }) => theme.colors.text.secondary};
-  margin: 0 0 ${({ theme }) => theme.spacing.md} 0;
-  line-height: 1.5;
+const ConversationList = styled.div`
+  flex: 1;
+  overflow-y: auto;
 `;
 
-const MessageButton = styled.button`
+const ConversationItem = styled.div<{ $active: boolean }>`
   padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.lg};
-  background: ${({ theme }) => theme.colors.primary.main};
-  color: ${({ theme }) => theme.colors.primary.contrastText};
-  border: none;
-  border-radius: ${({ theme }) => theme.borderRadius.base};
-  font-size: ${({ theme }) => theme.typography.fontSize.sm};
-  font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.grey[100]};
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  background: ${({ $active, theme }) => $active ? theme.colors.primary.light + '10' : 'transparent'};
+  transition: background 0.2s;
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.md};
 
   &:hover {
-    background: ${({ theme }) => theme.colors.primary.dark};
+    background: ${({ theme }) => theme.colors.grey[100]};
   }
+`;
+
+const ConversationInfo = styled.div`
+  flex: 1;
+  min-width: 0;
+`;
+
+const TopRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 4px;
+`;
+
+const UserName = styled.span`
+  font-weight: 600;
+  color: ${({ theme }) => theme.colors.text.primary};
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+const Timestamp = styled.span`
+  font-size: 0.75rem;
+  color: ${({ theme }) => theme.colors.text.tertiary};
+  flex-shrink: 0;
+`;
+
+const LastMessage = styled.p`
+  font-size: 0.875rem;
+  color: ${({ theme }) => theme.colors.text.secondary};
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+`;
+
+const ChatHeader = styled.div`
+  padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.lg};
+  background: ${({ theme }) => theme.colors.background.paper};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.grey[200]};
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.md};
+`;
+
+const MessagesList = styled.div`
+  flex: 1;
+  overflow-y: auto;
+  padding: ${({ theme }) => theme.spacing.lg};
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.md};
+`;
+
+const MessageBubble = styled.div<{ $sent: boolean }>`
+  max-width: 70%;
+  padding: ${({ theme }) => theme.spacing.md};
+  border-radius: 12px;
+  background: ${({ $sent, theme }) => $sent ? theme.colors.primary.main : theme.colors.background.paper};
+  color: ${({ $sent }) => $sent ? 'white' : 'inherit'};
+  align-self: ${({ $sent }) => $sent ? 'flex-end' : 'flex-start'};
+  box-shadow: ${({ theme }) => theme.shadows.sm};
+  position: relative;
+  word-wrap: break-word;
+
+  ${({ $sent }) => !$sent && `
+    border-bottom-left-radius: 4px;
+  `}
+  ${({ $sent }) => $sent && `
+    border-bottom-right-radius: 4px;
+  `}
+`;
+
+const InputArea = styled.form`
+  padding: ${({ theme }) => theme.spacing.lg};
+  background: ${({ theme }) => theme.colors.background.paper};
+  border-top: 1px solid ${({ theme }) => theme.colors.grey[200]};
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.md};
+  align-items: center;
 `;
 
 const MessageInput = styled.input`
-  width: 100%;
+  flex: 1;
   padding: ${({ theme }) => theme.spacing.md};
   border: 1px solid ${({ theme }) => theme.colors.grey[300]};
-  border-radius: ${({ theme }) => theme.borderRadius.base};
-  font-size: ${({ theme }) => theme.typography.fontSize.sm};
-  background: ${({ theme }) => theme.colors.background.paper};
-  color: ${({ theme }) => theme.colors.text.primary};
-  margin-bottom: ${({ theme }) => theme.spacing.md};
-
+  border-radius: ${({ theme }) => theme.borderRadius.full};
+  
   &:focus {
     outline: none;
     border-color: ${({ theme }) => theme.colors.primary.main};
   }
 `;
 
-const MessageSelect = styled.select`
-  width: 100%;
-  padding: ${({ theme }) => theme.spacing.md};
-  border: 1px solid ${({ theme }) => theme.colors.grey[300]};
-  border-radius: ${({ theme }) => theme.borderRadius.base};
-  font-size: ${({ theme }) => theme.typography.fontSize.sm};
-  background: ${({ theme }) => theme.colors.background.paper};
-  color: ${({ theme }) => theme.colors.text.primary};
-  margin-bottom: ${({ theme }) => theme.spacing.md};
-
-  &:focus {
-    outline: none;
-    border-color: ${({ theme }) => theme.colors.primary.main};
-  }
-`;
-
-const MessageTextArea = styled.textarea`
-  width: 100%;
-  padding: ${({ theme }) => theme.spacing.md};
-  border: 1px solid ${({ theme }) => theme.colors.grey[300]};
-  border-radius: ${({ theme }) => theme.borderRadius.base};
-  font-size: ${({ theme }) => theme.typography.fontSize.sm};
-  background: ${({ theme }) => theme.colors.background.paper};
-  color: ${({ theme }) => theme.colors.text.primary};
-  min-height: 100px;
-  resize: vertical;
-  margin-bottom: ${({ theme }) => theme.spacing.md};
-
-  &:focus {
-    outline: none;
-    border-color: ${({ theme }) => theme.colors.primary.main};
-  }
-`;
-
-const MessageCheckbox = styled.input`
-  margin-right: ${({ theme }) => theme.spacing.sm};
-`;
-
-const MessageCheckboxLabel = styled.label`
-  display: flex;
-  align-items: center;
-  font-size: ${({ theme }) => theme.typography.fontSize.sm};
-  color: ${({ theme }) => theme.colors.text.primary};
+const IconButton = styled.button`
+  background: none;
+  border: none;
+  padding: 8px;
   cursor: pointer;
-  margin-bottom: ${({ theme }) => theme.spacing.sm};
+  color: ${({ theme }) => theme.colors.text.secondary};
+  border-radius: 50%;
+  
+  &:hover {
+    background: ${({ theme }) => theme.colors.grey[100]};
+    color: ${({ theme }) => theme.colors.primary.main};
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 `;
 
-const MessageRadio = styled.input`
-  margin-right: ${({ theme }) => theme.spacing.sm};
-`;
-
-const MessageRadioLabel = styled.label`
+const LoadingOverlay = styled.div`
   display: flex;
+  justify-content: center;
   align-items: center;
-  font-size: ${({ theme }) => theme.typography.fontSize.sm};
-  color: ${({ theme }) => theme.colors.text.primary};
-  cursor: pointer;
-  margin-bottom: ${({ theme }) => theme.spacing.sm};
-`;
-
-const MessageProgress = styled.progress`
-  width: 100%;
-  height: 8px;
-  border-radius: 4px;
-  background: ${({ theme }) => theme.colors.grey[200]};
-  margin-bottom: ${({ theme }) => theme.spacing.md};
-
-  &::-webkit-progress-bar {
-    background: ${({ theme }) => theme.colors.grey[200]};
-    border-radius: 4px;
-  }
-
-  &::-webkit-progress-value {
-    background: ${({ theme }) => theme.colors.primary.main};
-    border-radius: 4px;
-  }
-`;
-
-const MessageAlert = styled.div<{ type: 'success' | 'warning' | 'error' | 'info' }>`
-  padding: ${({ theme }) => theme.spacing.md};
-  border-radius: ${({ theme }) => theme.borderRadius.base};
-  margin-bottom: ${({ theme }) => theme.spacing.md};
-  border-left: 4px solid ${({ theme, type }) => {
-    switch (type) {
-      case 'success': return theme.colors.success.main;
-      case 'warning': return theme.colors.warning.main;
-      case 'error': return theme.colors.error.main;
-      case 'info': return theme.colors.info.main;
-      default: return theme.colors.grey[300];
-    }
-  }};
-  background: ${({ theme, type }) => {
-    switch (type) {
-      case 'success': return theme.colors.success.light + '20';
-      case 'warning': return theme.colors.warning.light + '20';
-      case 'error': return theme.colors.error.light + '20';
-      case 'info': return theme.colors.info.light + '20';
-      default: return theme.colors.grey[50];
-    }
-  }};
-  color: ${({ theme, type }) => {
-    switch (type) {
-      case 'success': return theme.colors.success.dark;
-      case 'warning': return theme.colors.warning.dark;
-      case 'error': return theme.colors.error.dark;
-      case 'info': return theme.colors.info.dark;
-      default: return theme.colors.text.primary;
-    }
-  }};
-`;
-
-const MessageBadge = styled.span<{ variant: 'primary' | 'secondary' | 'success' | 'warning' | 'error' }>`
-  display: inline-block;
-  padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.sm};
-  border-radius: ${({ theme }) => theme.borderRadius.sm};
-  font-size: ${({ theme }) => theme.typography.fontSize.xs};
-  font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
-  background: ${({ theme, variant }) => {
-    switch (variant) {
-      case 'primary': return theme.colors.primary.main;
-      case 'secondary': return theme.colors.secondary.main;
-      case 'success': return theme.colors.success.main;
-      case 'warning': return theme.colors.warning.main;
-      case 'error': return theme.colors.error.main;
-      default: return theme.colors.grey[300];
-    }
-  }};
-  color: white;
-  margin-right: ${({ theme }) => theme.spacing.sm};
-  margin-bottom: ${({ theme }) => theme.spacing.sm};
-`;
-
-const MessageTable = styled.table`
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: ${({ theme }) => theme.spacing.md};
-`;
-
-const MessageTableHeader = styled.th`
-  padding: ${({ theme }) => theme.spacing.md};
-  text-align: left;
-  background: ${({ theme }) => theme.colors.grey[100]};
-  color: ${({ theme }) => theme.colors.text.primary};
-  font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
-  border-bottom: 1px solid ${({ theme }) => theme.colors.grey[300]};
-`;
-
-const MessageTableCell = styled.td`
-  padding: ${({ theme }) => theme.spacing.md};
-  border-bottom: 1px solid ${({ theme }) => theme.colors.grey[200]};
-  color: ${({ theme }) => theme.colors.text.primary};
+  height: 100%;
+  font-size: 1.2rem;
+  color: ${({ theme }) => theme.colors.text.secondary};
 `;
 
 const MessagesPage: React.FC = () => {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
+  const { currentUser } = useAuth();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+
+  const targetUserId = searchParams.get('userId');
+  const targetCarId = searchParams.get('carId');
+  const targetCarTitle = searchParams.get('carTitle');
+
+  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [currentConversation, setCurrentConversation] = useState<Conversation | null>(null);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [newMessage, setNewMessage] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [initializing, setInitializing] = useState(false);
+
+  // Refs for auto-scrolling
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  // Load conversations
+  useEffect(() => {
+    if (!currentUser) return;
+
+    const unsubscribe = advancedMessagingService.subscribeToUserConversations(
+      currentUser.uid,
+      (updatedConversations) => {
+        setConversations(updatedConversations);
+        setLoading(false);
+      }
+    );
+
+    return () => unsubscribe();
+  }, [currentUser]);
+
+  // Handle URL parameters (create/find conversation)
+  useEffect(() => {
+    const initChat = async () => {
+      if (!currentUser || !targetUserId || initializing) return;
+
+      // Don't create chat with self
+      if (currentUser.uid === targetUserId) {
+        alert(t('messages.cannotMessageSelf', 'You cannot message yourself'));
+        navigate('/messages');
+        return;
+      }
+
+      setInitializing(true);
+
+      try {
+        // 1. Check if we already have this conversation loaded
+        const existingConv = conversations.find(c =>
+          c.participants.includes(targetUserId) &&
+          (!targetCarId || c.carId === targetCarId)
+        );
+
+        if (existingConv) {
+          setCurrentConversation(existingConv);
+        } else {
+          // 2. Try to find/create on server
+          const convId = await advancedMessagingService.createConversation(
+            [currentUser.uid, targetUserId],
+            {
+              carId: targetCarId || undefined,
+              carTitle: targetCarTitle || undefined
+            }
+          );
+
+          // Note: The subscription will pick up the new conversation eventually
+          // but we can start loading messages immediately
+          // However, we need the full conversation object to display header
+          // We'll wait for the subscription to update for now to keep it simple
+        }
+      } catch (error) {
+        console.error('Failed to initialize chat:', error);
+      } finally {
+        setInitializing(false);
+      }
+    };
+
+    initChat();
+  }, [currentUser, targetUserId, targetCarId, conversations]);
+
+  // Load messages for current conversation
+  useEffect(() => {
+    if (!currentConversation || !currentUser) return;
+
+    const unsubscribe = advancedMessagingService.subscribeToMessages(
+      currentConversation.id,
+      (newMessages) => {
+        setMessages(newMessages);
+
+        // Mark as read
+        if (newMessages.some(m => m.receiverId === currentUser.uid && m.status !== 'read')) {
+          advancedMessagingService.markAsRead(currentConversation.id, currentUser.uid);
+        }
+      }
+    );
+
+    return () => unsubscribe();
+  }, [currentConversation, currentUser]);
+
+  const handleSendMessage = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newMessage.trim() || !currentUser || !currentConversation) return;
+
+    const text = newMessage;
+    setNewMessage(''); // Optimistic clear
+
+    try {
+      const receiverId = currentConversation.participants.find(p => p !== currentUser.uid);
+      if (receiverId) {
+        await advancedMessagingService.sendMessage(
+          currentConversation.id,
+          currentUser.uid,
+          receiverId,
+          text
+        );
+      }
+    } catch (error) {
+      console.error('Failed to send message:', error);
+      setNewMessage(text); // Restore on error
+      alert(t('messages.sendFailed', 'Failed to send message'));
+    }
+  };
+
+  const selectedUser = currentConversation?.participants.find(id => id !== currentUser?.uid);
+  // In a real app, we would fetch the other user's profile details here
+  // For now, we'll use a placeholder or data from the conversation if available
+
+  const isMobile = window.innerWidth <= 768;
+  const showSidebar = !isMobile || !currentConversation;
+  const showChat = !isMobile || !!currentConversation;
+
+  if (loading && !conversations.length) {
+    return (
+      <MessagesContainer>
+        <LoadingOverlay>
+          {t('common.loading', 'Loading messages...')}
+        </LoadingOverlay>
+      </MessagesContainer>
+    );
+  }
 
   return (
     <MessagesContainer>
       <PageContainer>
-        <PageTitle>{t('messages.title', 'Messages Page')}</PageTitle>
+        <Sidebar $visible={showSidebar}>
+          <SidebarHeader>
+            <div style={{ position: 'relative' }}>
+              <Search style={{ position: 'absolute', left: '10px', top: '10px', color: '#9ca3af' }} size={18} />
+              <SearchInput placeholder={t('messages.search', 'Search messages...')} />
+            </div>
+          </SidebarHeader>
 
-        <MessagesCard>
-          <MessagesTitle>{t('messages.inbox', 'Inbox')}</MessagesTitle>
-          <MessagesGrid>
-            <MessageItem>
-              <MessageTitle>{t('messages.newMessage', 'New Message')}</MessageTitle>
-              <MessageText>
-                You have received a new message from John Doe about your car listing.
-              </MessageText>
-              <MessageButton>{t('messages.readMessage', 'Read Message')}</MessageButton>
-            </MessageItem>
+          <ConversationList>
+            {conversations.length === 0 ? (
+              <div style={{ padding: '2rem', textAlign: 'center', color: '#6b7280' }}>
+                {t('messages.noConversations', 'No conversations yet')}
+              </div>
+            ) : (
+              conversations.map(conv => {
+                const otherPid = conv.participants.find(p => p !== currentUser?.uid) || 'Unknown';
+                const unread = conv.unreadCount?.[currentUser?.uid || ''] || 0;
 
-            <MessageItem>
-              <MessageTitle>{t('messages.messageUpdate', 'Message Update')}</MessageTitle>
-              <MessageText>
-                Your message to Jane Smith has been updated with new information.
-              </MessageText>
-              <MessageButton>{t('messages.viewUpdate', 'View Update')}</MessageButton>
-            </MessageItem>
+                return (
+                  <ConversationItem
+                    key={conv.id}
+                    $active={currentConversation?.id === conv.id}
+                    onClick={() => {
+                      setCurrentConversation(conv);
+                      // Clear URL params to avoid re-triggering init
+                      navigate('/messages', { replace: true });
+                    }}
+                  >
+                    <Avatar name={otherPid} size="md" />
+                    <ConversationInfo>
+                      <TopRow>
+                        <UserName>{otherPid.slice(0, 8)}...</UserName>
+                        {conv.lastMessageAt && (
+                          <Timestamp>
+                            {formatDistanceToNow(conv.lastMessageAt.toDate(), { addSuffix: true, locale: language === 'bg' ? bg : enUS })}
+                          </Timestamp>
+                        )}
+                      </TopRow>
+                      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <LastMessage>
+                          {conv.lastMessage?.text || t('messages.startedChat', 'Started a chat')}
+                        </LastMessage>
+                        {unread > 0 && <Badge variant="primary" size="sm" rounded>{unread}</Badge>}
+                      </div>
+                      {conv.carTitle && (
+                        <Badge variant="light" size="sm" style={{ marginTop: '4px' }}>
+                          🚗 {conv.carTitle}
+                        </Badge>
+                      )}
+                    </ConversationInfo>
+                  </ConversationItem>
+                );
+              })
+            )}
+          </ConversationList>
+        </Sidebar>
 
-            <MessageItem>
-              <MessageTitle>{t('messages.systemMessage', 'System Message')}</MessageTitle>
-              <MessageText>
-                System maintenance is scheduled for tonight from 2:00 AM to 4:00 AM.
-              </MessageText>
-              <MessageButton>{t('messages.viewDetails', 'View Details')}</MessageButton>
-            </MessageItem>
-          </MessagesGrid>
-        </MessagesCard>
+        <ChatArea $visible={showChat}>
+          {currentConversation ? (
+            <>
+              <ChatHeader>
+                {isMobile && (
+                  <button onClick={() => setCurrentConversation(null)} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer' }}>
+                    ←
+                  </button>
+                )}
+                <Avatar name={selectedUser} size="md" />
+                <div>
+                  <UserName>{selectedUser}</UserName>
+                  {currentConversation.carTitle && (
+                    <div style={{ fontSize: '0.8rem', color: '#6b7280' }}>
+                      Ref: {currentConversation.carTitle}
+                    </div>
+                  )}
+                </div>
+              </ChatHeader>
 
-        <MessagesCard>
-          <MessagesTitle>{t('messages.compose', 'Compose Message')}</MessagesTitle>
-          <MessagesGrid>
-            <MessageItem>
-              <MessageTitle>{t('messages.newMessage', 'New Message')}</MessageTitle>
-              <MessageInput
-                type="text"
-                placeholder={t('messages.recipient', 'Recipient')}
-              />
-              <MessageInput
-                type="text"
-                placeholder={t('messages.subject', 'Subject')}
-              />
-              <MessageTextArea
-                placeholder={t('messages.messageBody', 'Message Body')}
-              />
-              <MessageButton>{t('messages.sendMessage', 'Send Message')}</MessageButton>
-            </MessageItem>
+              <MessagesList>
+                {messages.map((msg, index) => {
+                  const isMe = msg.senderId === currentUser?.uid;
+                  return (
+                    <MessageBubble key={msg.id || index} $sent={isMe}>
+                      {msg.text}
+                      <div style={{
+                        fontSize: '0.65rem',
+                        marginTop: '4px',
+                        opacity: 0.8,
+                        textAlign: 'right'
+                      }}>
+                        {msg.createdAt && formatDistanceToNow(msg.createdAt, { addSuffix: true, locale: language === 'bg' ? bg : enUS })}
+                      </div>
+                    </MessageBubble>
+                  );
+                })}
+                <div ref={messagesEndRef} />
+              </MessagesList>
 
-            <MessageItem>
-              <MessageTitle>{t('messages.messageSettings', 'Message Settings')}</MessageTitle>
-              <MessageCheckboxLabel>
-                <MessageCheckbox type="checkbox" />
-                {t('messages.emailNotifications', 'Email Notifications')}
-              </MessageCheckboxLabel>
-              <MessageCheckboxLabel>
-                <MessageCheckbox type="checkbox" />
-                {t('messages.smsNotifications', 'SMS Notifications')}
-              </MessageCheckboxLabel>
-              <MessageCheckboxLabel>
-                <MessageCheckbox type="checkbox" />
-                {t('messages.pushNotifications', 'Push Notifications')}
-              </MessageCheckboxLabel>
-            </MessageItem>
-
-            <MessageItem>
-              <MessageTitle>{t('messages.messageTemplates', 'Message Templates')}</MessageTitle>
-              <MessageSelect>
-                <option>{t('messages.selectTemplate', 'Select Template')}</option>
-                <option>{t('messages.template1', 'Template 1')}</option>
-                <option>{t('messages.template2', 'Template 2')}</option>
-                <option>{t('messages.template3', 'Template 3')}</option>
-              </MessageSelect>
-              <MessageButton>{t('messages.useTemplate', 'Use Template')}</MessageButton>
-            </MessageItem>
-
-            <MessageItem>
-              <MessageTitle>{t('messages.messageHistory', 'Message History')}</MessageTitle>
-              <MessageTable>
-                <thead>
-                  <tr>
-                    <MessageTableHeader>{t('messages.recipient', 'Recipient')}</MessageTableHeader>
-                    <MessageTableHeader>{t('messages.subject', 'Subject')}</MessageTableHeader>
-                    <MessageTableHeader>{t('messages.timestamp', 'Timestamp')}</MessageTableHeader>
-                    <MessageTableHeader>{t('messages.status', 'Status')}</MessageTableHeader>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <MessageTableCell>John Doe</MessageTableCell>
-                    <MessageTableCell>Car Inquiry</MessageTableCell>
-                    <MessageTableCell>2024-01-15 10:30</MessageTableCell>
-                    <MessageTableCell>
-                      <MessageBadge variant="success">Sent</MessageBadge>
-                    </MessageTableCell>
-                  </tr>
-                  <tr>
-                    <MessageTableCell>Jane Smith</MessageTableCell>
-                    <MessageTableCell>Price Negotiation</MessageTableCell>
-                    <MessageTableCell>2024-01-15 10:25</MessageTableCell>
-                    <MessageTableCell>
-                      <MessageBadge variant="warning">Pending</MessageBadge>
-                    </MessageTableCell>
-                  </tr>
-                  <tr>
-                    <MessageTableCell>Bob Johnson</MessageTableCell>
-                    <MessageTableCell>Meeting Request</MessageTableCell>
-                    <MessageTableCell>2024-01-15 10:20</MessageTableCell>
-                    <MessageTableCell>
-                      <MessageBadge variant="error">Failed</MessageBadge>
-                    </MessageTableCell>
-                  </tr>
-                </tbody>
-              </MessageTable>
-            </MessageItem>
-          </MessagesGrid>
-        </MessagesCard>
-
-        <MessagesCard>
-          <MessagesTitle>{t('messages.notifications', 'Notifications')}</MessagesTitle>
-          <MessagesGrid>
-            <MessageItem>
-              <MessageTitle>{t('messages.systemNotifications', 'System Notifications')}</MessageTitle>
-              <MessageAlert type="success">
-                {t('messages.messageSent', 'Your message has been sent successfully')}
-              </MessageAlert>
-              <MessageAlert type="warning">
-                {t('messages.messagePending', 'Your message is pending delivery')}
-              </MessageAlert>
-              <MessageAlert type="error">
-                {t('messages.messageFailed', 'Failed to send message')}
-              </MessageAlert>
-              <MessageAlert type="info">
-                {t('messages.newFeature', 'New messaging feature available')}
-              </MessageAlert>
-            </MessageItem>
-
-            <MessageItem>
-              <MessageTitle>{t('messages.messageStatistics', 'Message Statistics')}</MessageTitle>
-              <MessageText>Total Messages Sent: 1,234</MessageText>
-              <MessageProgress value={75} max={100} />
-              <MessageText>Message Delivery Rate: 75%</MessageText>
-              <MessageText>Average Response Time: 2 hours</MessageText>
-              <MessageText>Unread Messages: 5</MessageText>
-            </MessageItem>
-
-            <MessageItem>
-              <MessageTitle>{t('messages.messagePreferences', 'Message Preferences')}</MessageTitle>
-              <MessageCheckboxLabel>
-                <MessageCheckbox type="checkbox" />
-                {t('messages.autoReply', 'Auto Reply')}
-              </MessageCheckboxLabel>
-              <MessageCheckboxLabel>
-                <MessageCheckbox type="checkbox" />
-                {t('messages.messageFiltering', 'Message Filtering')}
-              </MessageCheckboxLabel>
-              <MessageCheckboxLabel>
-                <MessageCheckbox type="checkbox" />
-                {t('messages.messageArchiving', 'Message Archiving')}
-              </MessageCheckboxLabel>
-            </MessageItem>
-
-            <MessageItem>
-              <MessageTitle>{t('messages.help', 'Help & Support')}</MessageTitle>
-              <MessageText>
-                Need help with messaging? Contact our support team.
-              </MessageText>
-              <MessageButton>{t('messages.contactSupport', 'Contact Support')}</MessageButton>
-            </MessageItem>
-          </MessagesGrid>
-        </MessagesCard>
+              <InputArea onSubmit={handleSendMessage}>
+                <IconButton type="button">
+                  <ImageIcon size={20} />
+                </IconButton>
+                <MessageInput
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
+                  placeholder={t('messages.typeMessage', 'Type a message...')}
+                />
+                <IconButton type="submit" disabled={!newMessage.trim()}>
+                  <Send size={20} />
+                </IconButton>
+              </InputArea>
+            </>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#9ca3af', gap: '1rem' }}>
+              <div style={{ padding: '2rem', background: '#e5e7eb', borderRadius: '50%' }}>
+                <Send size={48} />
+              </div>
+              <h3>{t('messages.selectToStart', 'Select a conversation to start messaging')}</h3>
+            </div>
+          )}
+        </ChatArea>
       </PageContainer>
     </MessagesContainer>
   );
 };
 
 export default MessagesPage;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -315,11 +315,27 @@ export class ErrorHandlingService {
   }
 
   private sendToMonitoringService(errorDetails: ErrorDetails): void {
-    // TODO: Integrate with Sentry or other monitoring service
-    serviceLogger.info('Sending critical error to monitoring service', errorDetails);
-    
-    // For now, just log
-    // In production, this would send to Sentry, DataDog, etc.
+    // Integrate with local storage for offline critical error persistence
+    // This acts as a fallback before true external monitoring (e.g., Sentry) is configured
+    try {
+      const CRITICAL_ERRORS_KEY = 'critical_errors_queue';
+      const existingErrorsJson = localStorage.getItem(CRITICAL_ERRORS_KEY);
+      let errors: ErrorDetails[] = existingErrorsJson ? JSON.parse(existingErrorsJson) : [];
+      
+      // Add new error
+      errors.push(errorDetails);
+      
+      // Keep only last 20 critical errors to avoid storage overflow
+      if (errors.length > 20) {
+        errors = errors.slice(-20);
+      }
+      
+      localStorage.setItem(CRITICAL_ERRORS_KEY, JSON.stringify(errors));
+      serviceLogger.info('Critical error persisted to offline storage', { errorId: errorDetails.code });
+    } catch (storageError) {
+      // Fallback if localStorage fails (e.g. quota exceeded)
+      serviceLogger.error('Failed to persist critical error', storageError as Error);
+    }
   }
 }
 

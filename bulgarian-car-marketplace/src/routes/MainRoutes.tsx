@@ -12,11 +12,10 @@ const CarsPage = safeLazy(() => import('../pages/01_main-pages/CarsPage'));
 const CarDetailsPage = safeLazy(() => import('../pages/01_main-pages/CarDetailsPage'));
 const SocialFeedPage = safeLazy(() => import('../pages/03_user-pages/social/SocialFeedPage'));
 const SellModalPage = safeLazy(() => import('../pages/04_car-selling/sell/SellModalPage'));
-const MessagesPage = safeLazy(() => import('../pages/03_user-pages/messages/MessagesPage'));
+const MessagesPage = safeLazy(() => import('../pages/03_user-pages/MessagesPage'));
 const AdminPage = safeLazy(() => import('../pages/06_admin/regular-admin/AdminPage'));
 const AdminLoginPage = safeLazy(() => import('../pages/02_authentication/admin-login/AdminLoginPage'));
 const AdminDataFix = safeLazy(() => import('../pages/06_admin/regular-admin/AdminDataFix'));
-const ProfileRouter = safeLazy(() => import('../pages/03_user-pages/profile/ProfilePage/ProfileRouter'));
 const NumericProfileRouter = safeLazy(() => import('./NumericProfileRouter'));
 const VerificationPage = safeLazy(() => import('../features/verification/VerificationPage'));
 const BillingPage = safeLazy(() => import('../features/billing/BillingPage'));
@@ -83,6 +82,8 @@ const QuickSetupPage = safeLazy(() => import('../pages/06_admin/QuickSetupPage')
 const CloudServicesManager = safeLazy(() => import('../pages/06_admin/CloudServicesManager'));
 const NotFoundPage = safeLazy(() => import('../components/NotFoundPage'));
 
+const NumericCarRedirect = safeLazy(() => import('./NumericCarRedirect'));
+
 /**
  * Main Content Routes
  * Extracted from AppRoutes.tsx for modularity
@@ -95,6 +96,9 @@ export const MainRoutes: React.FC = () => {
             <Route path="/cars" element={<CarsPage />} />
             <Route path="/cars/:id" element={<CarDetailsPage />} />
             <Route path="/car/:id" element={<CarDetailsPage />} />
+            {/* ✅ NEW: Numeric Car URLs (e.g. /car/18/1) */}
+            <Route path="/car/:sellerId/:carId" element={<NumericCarRedirect />} />
+
             <Route path="/dealer/:slug" element={<DealerPublicPage />} />
             <Route path="/dealer-registration" element={<DealerRegistrationPage />} />
             <Route
@@ -126,12 +130,9 @@ export const MainRoutes: React.FC = () => {
             <Route path="/sell/inserat/:vehicleType/preview" element={<SellRouteRedirect step={5} />} />
             <Route path="/sell/inserat/:vehicleType/submission" element={<SellRouteRedirect step={5} />} />
 
-            {/* 🔢 NEW: Numeric ID-based profile routes (world-class URLs) */}
+            {/* 🔢 Numeric ID-based profile routes (world-class URLs) */}
             <Route path="/profile/*" element={<NumericProfileRouter />} />
-            
-            {/* ⚠️ DEPRECATED: Legacy Firebase UID routes (backward compatibility) */}
-            {/* <Route path="/profile-legacy/*" element={<ProfileRouter />} /> */}
-            
+
             <Route path="/verification" element={<VerificationPage />} />
             <Route path="/billing" element={<BillingPage />} />
             <Route

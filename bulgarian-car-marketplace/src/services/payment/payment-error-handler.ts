@@ -77,7 +77,7 @@ const STRIPE_ERROR_CODES: Record<string, Partial<PaymentError>> = {
     retryable: true,
     action: 'retry'
   },
-  
+
   // Validation errors
   'invalid_number': {
     type: 'validation_error',
@@ -106,7 +106,7 @@ const STRIPE_ERROR_CODES: Record<string, Partial<PaymentError>> = {
     retryable: true,
     action: 'retry'
   },
-  
+
   // Network errors
   'network_error': {
     type: 'network_error',
@@ -277,8 +277,20 @@ export class PaymentErrorHandler {
       context
     });
 
-    // TODO: Send to analytics service
-    // TODO: Alert admin if critical
+    // Use central error handler for critical errors
+    if (error.type === 'api_error' || error.type === 'unknown_error') {
+      import('../error-handling-service').then(({ errorHandler }) => {
+        errorHandler.logError(new Error(error.message), {
+          action: 'payment_error',
+          severity: error.type === 'unknown_error' ? 'critical' : 'high',
+          additionalData: {
+            code: error.code,
+            retryable: error.retryable,
+            context
+          }
+        });
+      });
+    }
   }
 }
 
@@ -303,8 +315,8 @@ export class PaymentRetryManager {
         const result = await operation();
         this.reset();
         return result;
-      } catch (error: unknown) {
-        const paymentError = error.type 
+      } catch (error: any) {
+        const paymentError = (error && error.type)
           ? PaymentErrorHandler.handleStripeError(error)
           : PaymentErrorHandler.handleGenericError(error);
 

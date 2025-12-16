@@ -144,21 +144,22 @@ const ProjectLogo = styled.img`
   transform-style: preserve-3d;
 `;
 
-const LoadingText = styled.h2<{ phase: number }>`
+// Loading Text with phase animation
+const LoadingText = styled.h2<{ $phase: number }>`
   font-family: 'Martica', 'Arial', sans-serif;
   font-size: 2rem;
   color: white;
   margin-bottom: 1rem;
   animation: ${(props) =>
-      props.phase === 1
-        ? fadeInFlash
-        : props.phase === 2
+    props.$phase === 1
+      ? fadeInFlash
+      : props.$phase === 2
         ? pulseGlow
         : pulseCyan}
-    ${(props) => (props.phase === 1 ? '1s' : '2s')} ease-in-out
-    ${(props) => (props.phase > 1 ? 'infinite alternate' : 'forwards')};
+    ${(props) => (props.$phase === 1 ? '1s' : '2s')} ease-in-out
+    ${(props) => (props.$phase > 1 ? 'infinite alternate' : 'forwards')};
   text-shadow: ${(props) =>
-    props.phase === 3
+    props.$phase === 3
       ? '0 0 15px rgba(0, 204, 255, 0.8)'
       : '0 0 20px rgba(255, 255, 255, 0.8)'};
 `;
@@ -172,8 +173,8 @@ const ProgressBar = styled.div`
   margin-top: 1rem;
 `;
 
-const ProgressFill = styled.div<{ percent: number }>`
-  width: ${(props) => props.percent}%;
+const ProgressFill = styled.div<{ $percent: number }>`
+  width: ${(props) => props.$percent}%;
   height: 100%;
   background: linear-gradient(90deg, #00ccff, #0099cc);
   border-radius: 2px;
@@ -222,9 +223,9 @@ const SmartLoaderCSS: React.FC<SmartLoaderCSSProps> = ({
           <ProjectLogo src="/Logo1.png" alt="Logo" />
         </LogoContainer>
       </SpinnerRing>
-      <LoadingText phase={phase}>{message}</LoadingText>
+      <LoadingText $phase={phase}>{message}</LoadingText>
       <ProgressBar>
-        <ProgressFill percent={percent} />
+        <ProgressFill $percent={percent} />
       </ProgressBar>
       <PercentText>{percent}%</PercentText>
     </LoaderContainer>

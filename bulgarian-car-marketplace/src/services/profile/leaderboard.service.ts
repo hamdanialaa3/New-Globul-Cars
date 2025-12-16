@@ -109,18 +109,25 @@ export class LeaderboardService {
           entries = [];
       }
 
-      // Save to cache
-      const leaderboardRef = doc(
-        db,
-        this.collectionName,
-        `${category}_${period}`
-      );
-      await setDoc(leaderboardRef, {
-        category,
-        period,
-        entries,
-        updatedAt: serverTimestamp()
-      });
+      // Save to cache only if we have valid entries
+      if (entries.length > 0) {
+        try {
+          const leaderboardRef = doc(
+            db,
+            this.collectionName,
+            `${category}_${period}`
+          );
+          await setDoc(leaderboardRef, {
+            category,
+            period,
+            entries,
+            updatedAt: serverTimestamp()
+          });
+        } catch (cacheError) {
+          // Log cache error but continue - we still have the data
+          serviceLogger.warn('Failed to cache leaderboard, but returning data:', cacheError);
+        }
+      }
 
       return {
         category,

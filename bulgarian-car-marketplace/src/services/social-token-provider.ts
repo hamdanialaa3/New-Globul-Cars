@@ -6,18 +6,27 @@
 import { logger } from './logger-service';
 import { socialMediaCache } from './cache-service';
 
-// Lightweight verifier for opaque ephemeral tokens issued by backend (must mirror backend HMAC logic / but here we only structure-validate to avoid exposing secret)
-// Full cryptographic verification intentionally server-side; client only parses base64 segment for exp & platform to fail-fast on obviously expired tokens.
+// Lightweight verifier for opaque ephemeral tokens issued by backend
+// Full cryptographic verification intentionally server-side; client only parses base64 segment for exp & platform to fail-fast.
 interface ParsedEphemeral { platform?: string; exp?: number; iat?: number; ops?: string[]; }
 function parseEphemeral(token: string): ParsedEphemeral | null {
   try {
     const parts = token.split('.');
-    if (parts.length !== 2) return null;
-    const payloadJson = atob(parts[0].replace(/-/g, '+').replace(/_/g, '/'));
+    if (parts.length < 2) return null; // Standard JWT has 3 parts, but we check at least payload exists
+
+    // Robust Base64URL decoding
+    let base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+    const padding = base64.length % 4;
+    if (padding) {
+      base64 += '='.repeat(4 - padding);
+    }
+
+    const payloadJson = atob(base64);
     const obj = JSON.parse(payloadJson);
     if (!obj || typeof obj !== 'object') return null;
     return { platform: obj.p, exp: obj.exp, iat: obj.iat, ops: obj.ops };
-  } catch {
+  } catch (e) {
+    // Malformed token structure
     return null;
   }
 }

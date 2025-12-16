@@ -77,7 +77,7 @@ export interface ServiceLead extends BaseDocument {
   partnerId?: string; // e.g., 'dsk_bank', 'unicredit', 'allianz_bg'
   status: 'sent' | 'pending' | 'approved' | 'rejected' | 'expired';
   submittedData: FinanceLeadData | InsuranceQuoteData;
-  responseData?: any; // Partner response
+  responseData?: Record<string, unknown>; // Partner response
   commission?: number; // For tracking earnings
   notes?: string;
 }
@@ -244,7 +244,7 @@ export interface UserAnalytics extends BaseDocument {
 
 export interface SearchAnalytics {
   query: string;
-  filters: any;
+  filters: Record<string, unknown>;
   results: number;
   timestamp: Timestamp;
 }

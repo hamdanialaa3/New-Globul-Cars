@@ -1,11 +1,11 @@
 export interface CarListing {
   // Basic Information
   id?: string;
-  
+
   // ✅ NEW: Numeric ID system for clean URLs
   numericId?: number;           // Unique numeric ID per seller (e.g., 1, 2, 3...)
   sellerNumericId?: number;     // Seller's numeric ID
-  
+
   vehicleType: string;
   make: string;
   model: string;
@@ -37,7 +37,7 @@ export interface CarListing {
   sellerName: string;
   sellerEmail: string;
   sellerPhone: string;
-    sellerId: string;  // User ID of the seller - REQUIRED for security rules
+  sellerId: string;  // User ID of the seller - REQUIRED for security rules
   companyName?: string;
   companyAddress?: string;
   companyWebsite?: string;
@@ -73,7 +73,7 @@ export interface CarListing {
   acceleration?: number;
   topSpeed?: number;
   features?: string[];
-  
+
   // Emission & Environmental
   emissionSticker?: string; // Emission sticker type
   emissionClass?: string; // Emission class (Euro 4, 5, 6, etc.)
@@ -86,7 +86,7 @@ export interface CarListing {
   exteriorEquipment?: string[];
   interiorEquipment?: string[];
   extras?: string[];
-  
+
   // Exterior Features
   trailerCoupling?: boolean; // Trailer Coupling (Yes/No)
   towbar?: string; // Trailer coupling type: 'fixed' | 'detachable' | 'swiveling' | 'none'
@@ -96,7 +96,7 @@ export interface CarListing {
   parkingSensors?: string[]; // Parking Sensors (front, rear, 360, etc.)
   parkingAssist?: string[]; // Alias for parkingSensors
   cruiseControl?: string; // 'none' | 'cruise' | 'adaptive'
-  
+
   // Interior Features
   interiorColor?: string;
   interiorMaterial?: string; // fabric, leather, alcantara, etc.
@@ -120,7 +120,7 @@ export interface CarListing {
   additionalCosts?: string;
   paymentMethods: string[];
   pricingDescription?: string;
-  
+
   // Registration & Inspection
   firstRegistrationDate?: Date; // First Registration date
   firstRegistration?: Date; // Alias
@@ -149,7 +149,7 @@ export interface CarListing {
   commercial?: boolean; // Commercial, Export/Import
   approvedUsedProgramme?: string; // Approved Used Car Programme
   dealerRating?: number; // Dealer Rating (0-5)
-  
+
   // System Fields
   createdAt?: Date;
   updatedAt?: Date;
@@ -159,7 +159,7 @@ export interface CarListing {
   isFeatured?: boolean;
   isUrgent?: boolean;
   expiresAt?: Date;
-  
+
   // Search in Description
   searchKeywords?: string; // Keywords for text search in description
 }
@@ -416,7 +416,7 @@ export interface CarListingWorkflowStep {
   type: 'form' | 'approval' | 'notification' | 'action';
   order: number;
   isRequired: boolean;
-  config: { [key: string]: any };
+  config: Record<string, unknown>;
 }
 
 export interface CarListingWorkflowInstance {
@@ -431,7 +431,7 @@ export interface CarListingWorkflowInstance {
   startedBy: string;
   completedBy?: string;
   cancelledBy?: string;
-  data: { [key: string]: any };
+  data: Record<string, unknown>;
 }
 
 export interface CarListingWorkflowStepInstance {
@@ -446,6 +446,6 @@ export interface CarListingWorkflowStepInstance {
   completedBy?: string;
   skippedBy?: string;
   failedBy?: string;
-  data: { [key: string]: any };
+  data: Record<string, unknown>;
   error?: string;
 }

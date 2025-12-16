@@ -66,10 +66,24 @@ const ImageOptimizer: React.FC<ImageOptimizerProps> = ({
     setIsLoaded(true);
   };
 
-  const handleError = () => {
+  const handleError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    const error = e.currentTarget.error;
+    logger.warn('Image load error:', {
+      src: optimizedSrc,
+      originalSrc: src,
+      errorType: error?.message || 'Unknown error'
+    });
+    
     // Fallback to original image if optimization fails
     if (optimizedSrc !== src) {
+      logger.info('Retrying with original image URL');
       setOptimizedSrc(src);
+    } else {
+      // If original also fails, might be CORS or network issue
+      logger.error('Image failed to load - possible CORS or network issue', {
+        src,
+        hint: 'Check CORS configuration in Firebase Storage'
+      });
     }
   };
 

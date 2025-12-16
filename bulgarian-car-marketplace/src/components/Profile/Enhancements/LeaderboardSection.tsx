@@ -170,9 +170,22 @@ export const LeaderboardSection: React.FC<LeaderboardSectionProps> = ({
         setLoading(true);
         const data = await leaderboardService.getLeaderboard(category, period, 10);
         setLeaderboard(data);
-      } catch (error) {
-        logger.error('Error loading leaderboard:', error);
-        setLeaderboard(null);
+      } catch (error: any) {
+        // Log error with more context
+        logger.error('Error loading leaderboard:', error, {
+          category,
+          period,
+          errorCode: error?.code,
+          errorMessage: error?.message
+        });
+        
+        // Set empty leaderboard instead of null to show UI gracefully
+        setLeaderboard({
+          category,
+          period,
+          entries: [],
+          updatedAt: new Date() as any
+        });
       } finally {
         setLoading(false);
       }

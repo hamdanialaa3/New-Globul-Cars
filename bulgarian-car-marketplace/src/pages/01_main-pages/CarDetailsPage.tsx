@@ -43,6 +43,21 @@ const CarDetailsPage: React.FC = () => {
   // Auto-track car views
   useCarViewTracking(carId, car?.sellerId);
 
+  // ✅ FIX: Hydrate seller numeric ID if missing (for legacy listings)
+  // This ensures profile links work correctly even for old car documents
+  useEffect(() => {
+    if (car && car.sellerId && !car.sellerNumericId && !loading) {
+      import('../../services/user/canonical-user.service').then(({ userService }) => {
+        userService.getUserProfile(car.sellerId).then(profile => {
+          if (profile && profile.numericId) {
+            console.log('🔄 Hydrating seller numericId:', profile.numericId);
+            setCar(prev => prev ? { ...prev, sellerNumericId: profile.numericId } : null);
+          }
+        }).catch(err => console.error('Failed to hydrate seller numeric ID', err));
+      });
+    }
+  }, [car?.id, car?.sellerId, loading, setCar]);
+
   // Check if current user is the owner
   const isOwner = currentUser && car && (
     currentUser.uid === car.sellerId ||

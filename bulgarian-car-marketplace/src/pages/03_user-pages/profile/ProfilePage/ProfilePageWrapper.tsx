@@ -25,6 +25,7 @@ import { CoverImageUploader, BusinessBackground, SimpleProfileAvatar, ProfileIma
 import { googleProfileSyncService } from '../../../../services/google/google-profile-sync.service';
 import { followService } from '../../../../services/social/follow.service';
 import { logger } from '../../../../services/logger-service';
+import { profileStatsService } from '../../../../services/profile/profile-stats.service';
 
 /**
  * Profile Page Wrapper
@@ -48,7 +49,7 @@ const ProfilePageWrapper: React.FC = () => {
   const targetUserId = params.userId;
   
   // Check if user is trying to access their own profile without being logged in
-  const isAccessingOwnProfile = !targetUserId || location.pathname === '/profile' || location.pathname === '/profile/';
+  const isAccessingOwnProfile = !targetUserId;
   
   const {
     user,
@@ -64,12 +65,37 @@ const ProfilePageWrapper: React.FC = () => {
 
   const activeProfile = target ?? user;
 
+  // ⚡ AUTO-REDIRECT: Redirect /profile to /profile/{numericId} for logged-in users
+  React.useEffect(() => {
+    if (isAccessingOwnProfile && activeProfile?.numericId && currentUser) {
+      const currentPath = location.pathname;
+      const expectedPath = `/profile/${activeProfile.numericId}`;
+      
+      // Only redirect if we're at the base /profile path
+      if (currentPath === '/profile' || currentPath === '/profile/') {
+        logger.info('Auto-redirecting to numeric ID profile', { 
+          from: currentPath, 
+          to: expectedPath,
+          numericId: activeProfile.numericId 
+        });
+        navigate(expectedPath, { replace: true });
+      }
+    }
+  }, [isAccessingOwnProfile, activeProfile?.numericId, currentUser, location.pathname, navigate]);
+
   const basePath = React.useMemo(() => {
-    if (isOwnProfile || !activeProfile?.uid) {
+    if (isOwnProfile && activeProfile?.numericId) {
+      return `/profile/${activeProfile.numericId}`;
+    }
+    if (!activeProfile?.uid) {
       return '/profile';
     }
+    // For viewing other users, use their numeric ID if available, otherwise Firebase UID
+    if (activeProfile?.numericId) {
+      return `/profile/${activeProfile.numericId}`;
+    }
     return `/profile/${activeProfile.uid}`;
-  }, [activeProfile?.uid, isOwnProfile]);
+  }, [activeProfile?.uid, activeProfile?.numericId, isOwnProfile]);
   
   const [syncing, setSyncing] = React.useState(false);
   
@@ -230,7 +256,7 @@ const ProfilePageWrapper: React.FC = () => {
         </TabNavigation>
         
         {/* Cover Image + Profile Picture - Only on main /profile page */}
-        {window.location.pathname.replace(/\/$/, '') === basePath.replace(/\/$/, '') && (
+        {!location.pathname.includes('/my-ads') && !location.pathname.includes('/campaigns') && !location.pathname.includes('/analytics') && !location.pathname.includes('/settings') && !location.pathname.includes('/consultations') ? (
           <S.CoverAndProfileWrapper>
             {/* Cover Image */}
             {isOwnProfile && (
@@ -270,10 +296,10 @@ const ProfilePageWrapper: React.FC = () => {
               />
             </S.CenteredProfileImageWrapper>
           </S.CoverAndProfileWrapper>
-        )}
+        ) : null}
         
         {/* ✅ Single Modern Stats Bar with Name + 5 Stats */}
-        {window.location.pathname.replace(/\/$/, '') === basePath.replace(/\/$/, '') && (
+        {!location.pathname.includes('/my-ads') && !location.pathname.includes('/campaigns') && !location.pathname.includes('/analytics') && !location.pathname.includes('/settings') && !location.pathname.includes('/consultations') ? (
           <S.SingleStatsBar>
             {/* Name Section */}
             <S.StatBarNameSection>
@@ -329,7 +355,7 @@ const ProfilePageWrapper: React.FC = () => {
               )}
             </S.StatBarActionsSection>
           </S.SingleStatsBar>
-        )}
+        ) : null}
         
         {/* ⚡ HIDDEN: Old Profile Header - Will be merged into ProfileDashboard */}
         {false && window.location.pathname === '/profile' && (
@@ -342,6 +368,30 @@ const ProfilePageWrapper: React.FC = () => {
     </S.ProfilePageContainer>
   );
 };
+  
+  // ⚡ AUTO-UPDATE PROFILE STATS: Update stats when profile loads
+  React.useEffect(() => {
+    if (!activeProfile?.uid) return;
+    
+    let cancelled = false;
+    
+    // Update stats silently in the background
+    profileStatsService.updateUserStats(activeProfile.uid)
+      .then(() => {
+        if (!cancelled) {
+          logger.info('Profile stats updated', { userId: activeProfile.uid });
+          // Optionally refresh user data to reflect updated stats
+          refresh();
+        }
+      })
+      .catch(error => {
+        if (!cancelled) {
+          logger.error('Error updating profile stats', error as Error, { userId: activeProfile.uid });
+        }
+      });
+    
+    return () => { cancelled = true; };
+  }, [activeProfile?.uid, refresh]);
 
 export default ProfilePageWrapper;
 

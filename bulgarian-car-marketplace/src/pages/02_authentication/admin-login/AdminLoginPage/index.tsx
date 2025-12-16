@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 // Styled Components
 const LoginContainer = styled.div`
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #FF7900 0%, #FF8F10 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -15,10 +15,11 @@ const LoginContainer = styled.div`
 const LoginCard = styled.div`
   background: white;
   border-radius: 12px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
   padding: 40px;
   width: 100%;
   max-width: 400px;
+  text-align: center;
 `;
 
 const LoginTitle = styled.h1`
@@ -26,20 +27,45 @@ const LoginTitle = styled.h1`
   font-size: 28px;
   font-weight: 700;
   margin: 0 0 8px 0;
-  text-align: center;
 `;
 
 const LoginSubtitle = styled.p`
   color: #65676b;
   font-size: 16px;
   margin: 0 0 32px 0;
-  text-align: center;
 `;
 
-const DirectAccessButton = styled.button<{ $disabled?: boolean }>`
+const InputGroup = styled.div`
+  margin-bottom: 20px;
+  text-align: left;
+`;
+
+const Label = styled.label`
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #495057;
+`;
+
+const Input = styled.input`
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ced4da;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.2s;
+
+  &:focus {
+    outline: none;
+    border-color: #FF7900;
+    box-shadow: 0 0 0 3px rgba(255, 121, 0, 0.1);
+  }
+`;
+
+const LoginButton = styled.button<{ $disabled?: boolean }>`
   width: 100%;
   padding: 16px;
-  background: ${props => props.$disabled ? '#e4e6ea' : '#28a745'};
+  background: ${props => props.$disabled ? '#e4e6ea' : '#FF7900'};
   color: ${props => props.$disabled ? '#bcc0c4' : 'white'};
   border: none;
   border-radius: 8px;
@@ -47,91 +73,94 @@ const DirectAccessButton = styled.button<{ $disabled?: boolean }>`
   font-weight: 600;
   cursor: ${props => props.$disabled ? 'not-allowed' : 'pointer'};
   transition: all 0.2s;
-  margin-bottom: 20px;
+  margin-top: 10px;
 
   &:hover:not(:disabled) {
-    background: #218838;
+    background: #e66d00;
+    transform: translateY(-1px);
   }
 `;
 
-const SuccessMessage = styled.div`
-  color: #28a745;
-  font-size: 16px;
-  margin-top: 16px;
-  text-align: center;
-  font-weight: 600;
-`;
-
-const AdminInfo = styled.div`
-  background: #f8f9fa;
+const ErrorMessage = styled.div`
+  color: #dc3545;
+  background: #f8d7da;
+  border: 1px solid #f5c6cb;
   border-radius: 8px;
-  padding: 20px;
-  margin-top: 20px;
-`;
-
-const AdminInfoTitle = styled.h3`
-  color: #1c1e21;
-  font-size: 18px;
-  font-weight: 600;
-  margin: 0 0 12px 0;
-`;
-
-const AdminInfoText = styled.p`
-  color: #65676b;
+  padding: 12px;
+  margin-bottom: 20px;
   font-size: 14px;
-  margin: 0 0 6px 0;
 `;
 
 const AdminLoginPage: React.FC = () => {
   const navigate = useNavigate();
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleDirectAccess = () => {
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
     setLoading(true);
-    setSuccess(null);
+    setError(null);
 
-    // Simulate admin login
-    setTimeout(() => {
-      setSuccess('Admin access granted! Redirecting to admin panel...');
-      
-      // Store admin session in localStorage
-      localStorage.setItem('adminUser', JSON.stringify({
-        email: 'alaa.hamdani@yahoo.com',
-        name: 'Alaa Hamid',
-        role: 'super_admin',
-        permissions: ['all'],
-        loginTime: new Date().toISOString()
-      }));
-
-      // Redirect to admin panel
+    // Hardcoded credentials check
+    if (username.toLowerCase() === 'hamdanialaa' && password === 'Alaa1983') {
       setTimeout(() => {
+        // Store admin session in localStorage
+        localStorage.setItem('adminUser', JSON.stringify({
+          username: 'hamdanialaa',
+          email: 'alaa.hamdani@yahoo.com',
+          name: 'Alaa Hamid',
+          role: 'super_admin',
+          permissions: ['all'],
+          loginTime: new Date().toISOString()
+        }));
+
         navigate('/admin');
-      }, 1500);
-    }, 1000);
+      }, 800);
+    } else {
+      setTimeout(() => {
+        setError('اسم المستخدم أو كلمة المرور غير صحيحة');
+        setLoading(false);
+      }, 500);
+    }
   };
 
   return (
     <LoginContainer>
       <LoginCard>
-        <LoginTitle>🔐 Admin Access</LoginTitle>
-        <LoginSubtitle>Direct access to admin panel</LoginSubtitle>
+        <LoginTitle>Admin Login</LoginTitle>
+        <LoginSubtitle>Sign in to manage the platform</LoginSubtitle>
 
-        <DirectAccessButton onClick={handleDirectAccess} $disabled={loading}>
-          {loading ? 'Accessing...' : '🚀 Access Admin Panel'}
-        </DirectAccessButton>
+        {error && <ErrorMessage>{error}</ErrorMessage>}
 
-        {success && <SuccessMessage>{success}</SuccessMessage>}
+        <form onSubmit={handleLogin}>
+          <InputGroup>
+            <Label>Username</Label>
+            <Input
+              type="text"
+              placeholder="Enter username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          </InputGroup>
 
-        <AdminInfo>
-          <AdminInfoTitle>👤 Admin User Details</AdminInfoTitle>
-          <AdminInfoText><strong>Email:</strong> alaa.hamdani@yahoo.com</AdminInfoText>
-          <AdminInfoText><strong>Name:</strong> Alaa Hamid</AdminInfoText>
-          <AdminInfoText><strong>Phone:</strong> +359879839671</AdminInfoText>
-          <AdminInfoText><strong>Location:</strong> Sofia, Bulgaria</AdminInfoText>
-          <AdminInfoText><strong>Role:</strong> Super Administrator</AdminInfoText>
-          <AdminInfoText><strong>Permissions:</strong> Full Access</AdminInfoText>
-        </AdminInfo>
+          <InputGroup>
+            <Label>Password</Label>
+            <Input
+              type="password"
+              placeholder="Enter password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </InputGroup>
+
+          <LoginButton type="submit" $disabled={loading}>
+            {loading ? 'Thinking...' : 'Sign In'}
+          </LoginButton>
+        </form>
       </LoginCard>
     </LoginContainer>
   );

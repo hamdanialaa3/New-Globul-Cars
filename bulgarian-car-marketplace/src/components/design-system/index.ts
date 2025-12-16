@@ -21,19 +21,17 @@ export { Card, CardHeader, CardBody, CardFooter } from './Card';
 export type { CardProps, CardVariant, CardPadding } from './Card';
 
 // ─────────────────────────────────────────────────────────────────────────
-// Future Components (Coming Soon)
-// مكونات مستقبلية (قريباً)
+// New Components (Phase 2) - مكونات جديدة
 // ─────────────────────────────────────────────────────────────────────────
-// export { Select } from './Select';
-// export { Checkbox } from './Checkbox';
-// export { Radio } from './Radio';
-// export { Toggle } from './Toggle';
-// export { Modal } from './Modal';
-// export { Dropdown } from './Dropdown';
-// export { Badge } from './Badge';
-// export { Avatar } from './Avatar';
-// export { Tooltip } from './Tooltip';
-// export { Alert } from './Alert';
+export { Badge } from './Badge';
+export type { BadgeProps, BadgeVariant, BadgeSize } from './Badge';
+
+export { Avatar } from './Avatar';
+export type { AvatarProps, AvatarSize } from './Avatar';
+
+export { Alert } from './Alert';
+export type { AlertProps, AlertVariant } from './Alert';
+
 
 // ═══════════════════════════════════════════════════════════════════════════
 // 📋 QUICK START GUIDE - دليل البدء السريع
@@ -42,7 +40,7 @@ export type { CardProps, CardVariant, CardPadding } from './Card';
 
 1️⃣ IMPORT COMPONENTS:
 ───────────────────────
-import { Button, Input, Card, CardBody } from '@/components/design-system';
+import { Button, Input, Card, CardBody, Badge, Avatar } from '@/components/design-system';
 
 
 2️⃣ USE IN YOUR PAGE:
@@ -51,7 +49,11 @@ function MyPage() {
   return (
     <Card>
       <CardBody>
-        <Input label="Email" placeholder="your@email.com" />
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+            <Avatar name="John Doe" />
+            <Input label="Email" placeholder="your@email.com" />
+        </div>
+        <Badge variant="success">New</Badge>
         <Button>Submit</Button>
       </CardBody>
     </Card>
@@ -82,7 +84,7 @@ No manual theme provider needed - styled-components handles it!
 // ═══════════════════════════════════════════════════════════════════════════
 // ✅ DESIGN SYSTEM BENEFITS:
 // فوائد نظام التصميم:
-// 
+//
 // 1. Consistency - اتساق في جميع الصفحات
 // 2. Speed - سرعة في التطوير (مكونات جاهزة)
 // 3. Accessibility - إمكانية الوصول مدمجة

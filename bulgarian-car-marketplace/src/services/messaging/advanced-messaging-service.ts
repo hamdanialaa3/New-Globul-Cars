@@ -81,13 +81,95 @@ export class AdvancedMessagingService {
   private static instance: AdvancedMessagingService;
   private typingTimeouts: Map<string, NodeJS.Timeout> = new Map();
 
-  private constructor() {}
+  private constructor() { }
 
   public static getInstance(): AdvancedMessagingService {
     if (!AdvancedMessagingService.instance) {
       AdvancedMessagingService.instance = new AdvancedMessagingService();
     }
     return AdvancedMessagingService.instance;
+  }
+
+  // ==================== CONVERSATION MANAGEMENT ====================
+
+  /**
+   * Create a new conversation
+   * إنشاء محادثة جديدة
+   */
+  async createConversation(participants: string[], initialData?: Partial<Conversation>): Promise<string> {
+    try {
+      // 1. Check if conversation already exists
+      const existingId = await this.findConversation(participants[0], participants[1], initialData?.carId);
+      if (existingId) {
+        return existingId;
+      }
+
+      // 2. Create new conversation
+      const conversationData = {
+        participants,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+        lastMessageAt: serverTimestamp(),
+        unreadCount: participants.reduce((acc, id) => ({ ...acc, [id]: 0 }), {}),
+        typing: participants.reduce((acc, id) => ({ ...acc, [id]: false }), {}),
+        ...initialData
+      };
+
+      const docRef = await addDoc(collection(db, 'conversations'), conversationData);
+
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('Conversation created', { conversationId: docRef.id });
+      }
+
+      return docRef.id;
+    } catch (error) {
+      logger.error('Create conversation failed', error as Error);
+      throw error;
+    }
+  }
+
+  /**
+   * Find existing conversation between two users
+   * البحث عن محادثة موجودة
+   */
+  async findConversation(userId: string, otherUserId: string, carId?: string): Promise<string | null> {
+    try {
+      const conversationsRef = collection(db, 'conversations');
+
+      // Query for conversations containing both users
+      // Note: Firestore array-contains only handles one value. 
+      // We need to filter client-side or use a compound query if we restructure data.
+      // Current approach: Query conversations where 'participants' contains userId, then filter for otherUserId.
+
+      const q = query(
+        conversationsRef,
+        where('participants', 'array-contains', userId)
+      );
+
+      const snapshot = await getDocs(q);
+
+      const found = snapshot.docs.find(doc => {
+        const data = doc.data();
+        const participants = data.participants as string[];
+        const hasOtherUser = participants.includes(otherUserId);
+
+        // If carId is provided, strict match. If not, loose match (any chat between them).
+        // However, usually we want separate chats per car context in a marketplace.
+        // Let's enforce: If carId is provided, it must match.
+        if (carId) {
+          return hasOtherUser && data.carId === carId;
+        }
+
+        // If no carId requested, return the most recent generic chat or just the first one found.
+        return hasOtherUser;
+      });
+
+      return found ? found.id : null;
+
+    } catch (error) {
+      logger.error('Find conversation failed', error as Error);
+      return null;
+    }
   }
 
   // ==================== MESSAGING ====================
@@ -206,7 +288,7 @@ export class AdvancedMessagingService {
       );
 
       const snapshot = await getDocs(q);
-      
+
       // Filter unread messages client-side
       const updates = snapshot.docs
         .filter(doc => doc.data().status !== 'read')  // Client-side filter
@@ -241,7 +323,7 @@ export class AdvancedMessagingService {
   async setTyping(conversationId: string, userId: string, isTyping: boolean): Promise<void> {
     try {
       const convRef = doc(db, 'conversations', conversationId);
-      
+
       await updateDoc(convRef, {
         [`typing.${userId}`]: isTyping,
         updatedAt: serverTimestamp()
@@ -250,7 +332,7 @@ export class AdvancedMessagingService {
       // Auto-clear after 3 seconds
       if (isTyping) {
         const timeoutKey = `${conversationId}_${userId}`;
-        
+
         if (this.typingTimeouts.has(timeoutKey)) {
           clearTimeout(this.typingTimeouts.get(timeoutKey)!);
         }
@@ -275,7 +357,7 @@ export class AdvancedMessagingService {
     callback: (typing: { [userId: string]: boolean }) => void
   ): () => void {
     const convRef = doc(db, 'conversations', conversationId);
-    
+
     return onSnapshot(convRef, (snapshot) => {
       if (snapshot.exists()) {
         const data = snapshot.data();
@@ -307,7 +389,7 @@ export class AdvancedMessagingService {
       const timestamp = Date.now();
       const filename = `${timestamp}_${index}_${file.name}`;
       const storageRef = ref(storage, `messages/${conversationId}/${filename}`);
-      
+
       await uploadBytes(storageRef, file);
       const url = await getDownloadURL(storageRef);
 
@@ -336,7 +418,7 @@ export class AdvancedMessagingService {
   ): Promise<void> {
     try {
       const convRef = doc(db, 'conversations', conversationId);
-      
+
       await updateDoc(convRef, {
         lastMessage: {
           text: lastMessageText.slice(0, 100),
@@ -386,7 +468,7 @@ export class AdvancedMessagingService {
         where('participants', 'array-contains', userId),
         orderBy('lastMessageAt', 'desc')
       );
-      
+
       const snapshot = await getDocs(q);
       return snapshot.docs.map(doc => ({
         id: doc.id,
@@ -406,7 +488,7 @@ export class AdvancedMessagingService {
     // ✅ FIX: Guard against null/undefined userId BEFORE constructing query
     if (!userId) {
       logger.warn('subscribeToUserConversations called with null/undefined userId - returning no-op unsubscribe');
-      return () => {}; // Return no-op unsubscribe function
+      return () => { }; // Return no-op unsubscribe function
     }
 
     const conversationsRef = collection(db, 'conversations');
@@ -504,7 +586,7 @@ export class AdvancedMessagingService {
 
       const snapshot = await getDocs(q);
       const batch = writeBatch(db);
-      
+
       // Only update messages that haven't been read yet
       snapshot.docs.forEach((doc) => {
         const data = doc.data();

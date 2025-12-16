@@ -1544,28 +1544,30 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
     };
   }, [car.images]);
 
-  // Get seller ID for profile link
+  // Get seller ID for profile link (prefer numeric ID for new URL system)
   const sellerId = car.sellerId || car.userId;
+  const profileId = car.sellerNumericId || sellerId;
 
   // Handler functions
   const handleProfileClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    if (sellerId) {
-      navigate(`/profile/${sellerId}`);
+    if (profileId) {
+      navigate(`/profile/${profileId}`);
     }
   };
 
   const handleContactDealer = () => {
     console.log('🚀 handleContactDealer called:', {
       sellerId,
+      profileId,
       carId: car.id,
       'car.sellerId': car.sellerId,
       'car.userId': car.userId,
       navigatingTo: `/messages?userId=${sellerId}`
     });
-    
+
     if (sellerId) {
-      // Navigate to messages with seller
+      // Navigate to messages with seller (always use UUID for messaging for now)
       navigate(`/messages?userId=${sellerId}`);
     } else {
       console.error('❌ No sellerId available!');
@@ -1579,15 +1581,15 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
   };
 
   const handleReviews = () => {
-    if (sellerId) {
-      navigate(`/profile/${sellerId}#reviews`);
+    if (profileId) {
+      navigate(`/profile/${profileId}#reviews`);
     }
   };
 
   const handleAllVehicles = () => {
-    if (sellerId) {
+    if (profileId) {
       // Navigate to profile with my-ads tab or filter by seller
-      navigate(`/profile/${sellerId}/my-ads`);
+      navigate(`/profile/${profileId}/my-ads`);
     } else {
       navigate('/cars');
     }
@@ -2154,7 +2156,7 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
                     )}
                     <ProfileLink
                       $isDark={isDark}
-                      href={sellerId ? `/profile/${sellerId}` : '#'}
+                      href={car.sellerNumericId ? `/profile/${car.sellerNumericId}` : (sellerId ? `/profile/${sellerId}` : '#')}
                       onClick={handleProfileClick}
                     >
                       {car.sellerName || car.companyName || 'Dealer'}

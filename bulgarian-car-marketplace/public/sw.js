@@ -1,4 +1,15 @@
-'/logo192.png',
+// Cache names
+const STATIC_CACHE = 'static-v1';
+const DYNAMIC_CACHE = 'dynamic-v1';
+
+// Static assets to cache
+const STATIC_ASSETS = [
+  '/',
+  '/index.html',
+  '/offline.html',
+  '/manifest.json',
+  '/favicon.ico',
+  '/logo192.png',
   '/logo512.png'
 ];
 
@@ -83,8 +94,8 @@ self.addEventListener('fetch', (event) => {
 
         return fetch(request)
           .then((response) => {
-            // Don't cache non-successful responses
-            if (!response.ok) {
+            // Don't cache non-successful responses or non-GET requests
+            if (!response.ok || request.method !== 'GET') {
               return response;
             }
 

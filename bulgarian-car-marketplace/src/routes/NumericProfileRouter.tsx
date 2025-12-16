@@ -46,24 +46,32 @@ export const NumericProfileRouter: React.FC = () => {
     <Routes>
       {/* Main profile page with nested routes */}
       <Route path="" element={<ProfilePageWrapper />}>
-        {/* Default: Redirect to current user's profile (or show own profile) */}
+        {/* Default: Show current user's profile overview */}
         <Route index element={<ProfileOverview />} />
-
-        {/* Profile Tabs - Must come BEFORE :userId route to avoid conflicts */}
+        
+        {/* Current user's tabs (without userId in path) */}
         <Route path="my-ads" element={<ProfileMyAds />} />
         <Route path="campaigns" element={<ProfileCampaigns />} />
         <Route path="analytics" element={<ProfileAnalytics />} />
         <Route path="settings" element={<SettingsPage />} />
         <Route path="consultations" element={<ProfileConsultations />} />
 
-        {/* Car Edit (Must come before :userId route) */}
-        <Route path=":userId/car/:carId/edit" element={<EditCarPage />} />
-
-        {/* Car View (Must come before :userId route) */}
-        <Route path=":userId/car/:id" element={<CarDetailsPage />} />
-
-        {/* User profile view by numeric ID - Must come AFTER specific routes */}
-        <Route path=":userId" element={<ProfileOverview />} />
+        {/* Specific user profile routes */}
+        <Route path=":userId">
+          {/* User profile overview */}
+          <Route index element={<ProfileOverview />} />
+          
+          {/* User's tabs */}
+          <Route path="my-ads" element={<ProfileMyAds />} />
+          <Route path="campaigns" element={<ProfileCampaigns />} />
+          <Route path="analytics" element={<ProfileAnalytics />} />
+          <Route path="settings" element={<SettingsPage />} />
+          <Route path="consultations" element={<ProfileConsultations />} />
+          
+          {/* Car routes */}
+          <Route path="car/:carId/edit" element={<EditCarPage />} />
+          <Route path="car/:id" element={<CarDetailsPage />} />
+        </Route>
       </Route>
     </Routes>
   );

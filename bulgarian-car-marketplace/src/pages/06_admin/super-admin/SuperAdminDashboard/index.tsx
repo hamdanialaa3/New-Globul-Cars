@@ -155,17 +155,18 @@ const SuperAdminDashboard: React.FC = () => {
           const auth = getAuth();
           const currentUser = auth.currentUser;
 
-          if (!currentUser || currentUser.email !== 'alaa.hamdani@yahoo.com') {
+          if (!currentUser || (currentUser.email !== 'alaa.hamdani@yahoo.com' && currentUser.email !== 'hamdanialaa@yahoo.com')) {
             if (!hasWarned) {
-              logger.warn('⚠️ Not signed into Firebase as the unique owner.');
+              // Valid local session exists, so we don't kick them out, just warn about real data
+              logger.warn('⚠️ Firebase session inactive. Some real-time features may be limited.');
               hasWarned = true;
             }
-            if (!cancelled && !hasNavigated) {
-              hasNavigated = true;
+            if (!cancelled) {
+              // DO NOT REDIRECT - Break the loop
+              // navigate('/super-admin-login', { replace: true });
               setIsOwnerAuthed(false);
-              navigate('/super-admin-login', { replace: true });
             }
-            return;
+            // Continue loading dashboard but with limited features
           } else {
             if (cancelled) return;
             setIsOwnerAuthed(true);

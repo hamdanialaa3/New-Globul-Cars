@@ -113,7 +113,17 @@ const PrivateProfile: React.FC<PrivateProfileProps> = ({ user, userCars, isOwner
           {user.createdAt && (
             <InfoItem>
               <Calendar size={16} />
-              <span>{language === 'bg' ? 'Член от' : 'Member since'} {new Date(user.createdAt).toLocaleDateString(language === 'bg' ? 'bg-BG' : 'en-US')}</span>
+              <span>
+                {language === 'bg' ? 'Член от' : 'Member since'}{' '}
+                {(() => {
+                  try {
+                    const date = user.createdAt?.toDate ? user.createdAt.toDate() : new Date(user.createdAt);
+                    return date.toLocaleDateString(language === 'bg' ? 'bg-BG' : 'en-US');
+                  } catch (e) {
+                    return language === 'bg' ? 'Наскوро' : 'Recently';
+                  }
+                })()}
+              </span>
             </InfoItem>
           )}
         </InfoGrid>

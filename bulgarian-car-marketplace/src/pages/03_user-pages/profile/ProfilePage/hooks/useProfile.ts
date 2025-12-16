@@ -10,6 +10,7 @@ import { auth, db } from '../../../../../firebase/firebase-config';
 import { unifiedCarService } from '../../../../../services/car';
 import { logger } from '../../../../../services/logger-service';
 import { getUserByNumericId, getFirebaseUidByNumericId } from '../../../../../services/numeric-id-lookup.service';
+import { ensureUserNumericId } from '../../../../../services/numeric-id-assignment.service';
 import {
   ProfileFormData,
   ProfileCar,
@@ -167,7 +168,29 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
       setError(null);
 
       const authUser = auth.currentUser;
-      const viewingOwn = !effectiveTargetId || effectiveTargetId === authUser?.uid;
+      
+      // ⚡ FIX: Check if viewing own profile
+      // Case 1: No targetUserId = viewing own profile
+      // Case 2: targetUserId is the current user's Firebase UID
+      // Case 3: targetUserId is the current user's numeric ID
+      let viewingOwn = !effectiveTargetId || effectiveTargetId === authUser?.uid;
+      
+      // If not matching UID, check if it's the user's numeric ID
+      if (!viewingOwn && authUser && effectiveTargetId && /^\d+$/.test(effectiveTargetId)) {
+        // effectiveTargetId looks like a numeric ID, get current user's numeric ID to compare
+        try {
+          const currentUserNumericId = authUser.uid; // We'll check this below
+          // Load current user first to get their numeric ID
+          const currentUserDoc = await bulgarianAuthService.getCurrentUserProfile();
+          if (currentUserDoc?.numericId === parseInt(effectiveTargetId, 10)) {
+            viewingOwn = true;
+          }
+        } catch (e) {
+          // If we can't get numeric ID, assume they're different users
+          logger.debug('Could not compare numeric IDs', { error: e });
+        }
+      }
+      
       setIsOwnProfile(viewingOwn);
 
       // ⚡ FIX: If accessing own profile without being logged in, don't try to load data
@@ -216,8 +239,30 @@ export const useProfile = (targetUserId?: string): UseProfileReturn => {
       }
 
       const [viewerRaw, targetRaw] = await Promise.all([viewerPromise, targetPromise]);
-      const normalizedViewer = normalizeUser(viewerRaw);
-      const normalizedTarget = normalizeUser(targetRaw ?? viewerRaw ?? null);
+      let normalizedViewer = normalizeUser(viewerRaw);
+      let normalizedTarget = normalizeUser(targetRaw ?? viewerRaw ?? null);
+
+      // ⚡ AUTO-ASSIGN: Ensure viewer (logged-in user) has a numeric ID
+      if (normalizedViewer && !normalizedViewer.numericId) {
+        logger.info('Viewer missing numeric ID, assigning...', { uid: normalizedViewer.uid });
+        const numericId = await ensureUserNumericId(normalizedViewer.uid);
+        if (numericId) {
+          normalizedViewer = { ...normalizedViewer, numericId };
+          // If viewing own profile, update target as well
+          if (viewingOwn && normalizedTarget) {
+            normalizedTarget = { ...normalizedTarget, numericId };
+          }
+        }
+      }
+
+      // ⚡ AUTO-ASSIGN: Ensure target user has a numeric ID (if viewing someone else)
+      if (normalizedTarget && !viewingOwn && !normalizedTarget.numericId) {
+        logger.info('Target user missing numeric ID, assigning...', { uid: normalizedTarget.uid });
+        const numericId = await ensureUserNumericId(normalizedTarget.uid);
+        if (numericId) {
+          normalizedTarget = { ...normalizedTarget, numericId };
+        }
+      }
 
       setViewer(normalizedViewer);
       setTarget(normalizedTarget);
