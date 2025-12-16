@@ -18,29 +18,29 @@ export interface ProfileStats {
     id: boolean;
     business: boolean;
   };
-  
+
   // Listings Performance
   activeListings: number;
   totalListings: number;
   soldListings: number;
-  
+
   // Engagement Metrics (30-day window)
   views30d: number;
   messages30d: number;
   favorites30d: number;
-  
+
   // Response & Quality
   avgResponseMinutes: number;
   responseRate: number; // percentage
-  
+
   // Reviews & Ratings
   reviewCount: number;
   avgRating: number; // 0-5
-  
+
   // Advanced Analytics
   conversionRate30d: number; // messages/views percentage
   savedSearchesCount: number;
-  
+
   // Metadata
   profileType: 'private' | 'dealer' | 'company';
   accountAge: number; // days since creation
@@ -137,17 +137,40 @@ class ProfileStatsService {
 
       // Aggregate data
       const stats = this.aggregateStats(profileDoc, listingsSnap, metricsSnap, reviewsSnap, searchesSnap);
-      
+
       // Cache result
       this.setCached(profileId, stats);
-      
+
       const duration = Date.now() - startTime;
       logger.info('ProfileStats computed successfully', { profileId, duration });
-      
+
       return stats;
     } catch (error) {
       logger.error('ProfileStats fetch failed', error as Error, { profileId });
       throw new Error(`Failed to load profile stats: ${(error as Error).message}`);
+    }
+  }
+
+  /**
+   * Calculate and persist stats to the user profile
+   */
+  async updateUserStats(profileId: string): Promise<void> {
+    try {
+      const stats = await this.getStats(profileId, true);
+
+      // Persist to profile document for simple frontend consumption
+      // Using 'any' cast to avoid strict type checking on update for now
+      await import('firebase/firestore').then(({ updateDoc, doc }) => {
+        updateDoc(doc(db, 'profiles', profileId), {
+          stats: stats,
+          lastStatsUpdate: new Date()
+        });
+      });
+
+      logger.info('Profile stats persisted to DB', { profileId });
+    } catch (error) {
+      logger.error('Failed to update user stats in DB', error as Error, { profileId });
+      // Don't throw, just log. This is a background optimization.
     }
   }
 

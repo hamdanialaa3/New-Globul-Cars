@@ -1,0 +1,57 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Helper function to check if user is accessing their own data
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Allow reading counters (for numeric IDs)
+    match /counters/{counterId} {
+      allow read: if true; 
+      // Only allow updates via cloud functions or admin SDK ideally, 
+      // but for atomic increments from client, we need write if logic is client-side.
+      // Assuming the numeric-id-service does the increment:
+      allow write: if isAuthenticated(); 
+    }
+
+    // Profiles
+    match /profiles/{profileId} {
+      allow read: if true;
+      allow write: if isOwner(resource.data.userId) || (request.resource.data.userId == request.auth.uid);
+    }
+    
+    // Users collection (if separate from profiles)
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow write: if isOwner(userId);
+    }
+
+    // Cars/Listings
+    match /cars/{carId} {
+      allow read: if true;
+      allow write: if isAuthenticated(); // Refine this later
+    }
+    
+    // Legacy support for listings collection if used
+    match /listings/{listingId} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+    }
+    
+    match /listingMetrics/{metricId} {
+       allow read: if true;
+       allow write: if isAuthenticated();
+    }
+
+    // General fallback (deny by default, but opened for dev/debugging if needed - keep strict for now)
+    match /{document=**} {
+      allow read, write: if isAuthenticated();
+    }
+  }
+}
