@@ -69,6 +69,12 @@ export interface BaseProfile {
     trustScore: number;
   };
 
+  // ✅ Quota Tracking (New System)
+  quotaStats?: {
+    listingsCreatedThisMonth: number;
+    lastMonthReset: string; // Format: "YYYY-MM"
+  };
+
   // Social Links
   socialLinks?: {
     facebook?: string;
@@ -135,7 +141,7 @@ export interface DealerProfile extends BaseProfile {
 // ==================== PRIVATE PROFILE ====================
 export interface PrivateProfile extends BaseProfile {
   profileType: 'private';
-  planTier: 'free' | 'premium';
+  planTier: 'free' | 'dealer' | 'company'; // Aligned with PlanTier type
 
   // Private-specific
   egn?: string;  // Bulgarian personal ID (optional)

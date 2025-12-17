@@ -9,16 +9,16 @@
  * https://dashboard.stripe.com/test/products
  */
 export const STRIPE_PRICE_IDS = {
-  // DEALER PLAN (€29/month or €300/year)
+  // DEALER PLAN (€27.78/month or €278/year - Live)
   dealer: {
-    monthly: 'price_1SaQJCKdXsQ61OHN50bRgcvP',  // €29/month
-    annual: 'price_1SaQM6KdXsQ61OHNo98fp2eq',   // €300/year (17% savings)
+    monthly: 'price_1Sf7iU3EuPQhDyrBtP0bEc4B',
+    annual: 'price_1Sf7l83EuPQhDyrB3Z3zIpZv',
   },
-  
-  // COMPANY PLAN (€199/month or €1,589/year)
+
+  // COMPANY PLAN (€187.88/month or €1288/year - Live)
   company: {
-    monthly: 'price_1SaQPaKdXsQ61OHNrGnilxkL', // €199/month
-    annual: 'price_1SaQRIKdXsQ61OHNTQyY67or',  // €1,589/year
+    monthly: 'price_1Sf7oK3EuPQhDyrBQ6duG8a',
+    annual: 'price_1Sf7pE3EuPQhDyrBfAdjEDFi',
   },
 } as const;
 
@@ -26,8 +26,8 @@ export const STRIPE_PRICE_IDS = {
  * Stripe Product IDs
  */
 export const STRIPE_PRODUCT_IDS = {
-  dealer: 'prod_TXVJuOMuH8qm0w',   // Globul Cars Dealer Plan
-  company: 'prod_TXVQmisKHv6ROK', // Globul Cars Company Plan
+  dealer: 'prod_TcMRPH1acbKwsJ',   // Mobilebg Cars - Dealer
+  company: 'prod_TcMX8XZcmlddRd', // MobileBG Cars - Company
 } as const;
 
 /**
@@ -42,11 +42,11 @@ export function getStripePriceId(
   interval: 'monthly' | 'annual'
 ): string {
   const priceId = STRIPE_PRICE_IDS[planTier]?.[interval];
-  
+
   if (!priceId) {
     throw new Error(`No Stripe Price ID found for: ${planTier}-${interval}`);
   }
-  
+
   return priceId;
 }
 
@@ -67,7 +67,7 @@ export function getPlanFromPriceId(priceId: string): {
     [STRIPE_PRICE_IDS.company.monthly]: { tier: 'company', interval: 'monthly' },
     [STRIPE_PRICE_IDS.company.annual]: { tier: 'company', interval: 'annual' },
   };
-  
+
   return priceMap[priceId] || null;
 }
 

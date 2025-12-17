@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from '../../hooks/useTranslation';
 import { useAuth } from '../../contexts/AuthProvider';
 import { advancedMessagingService, Conversation, Message } from '../../services/messaging/advanced-messaging-service';
+import { userService } from '../../services/user/canonical-user.service';
 import { Avatar } from '../../components/design-system/Avatar';
 import { Badge } from '../../components/design-system/Badge';
 import { Alert } from '../../components/design-system/Alert';
@@ -231,6 +232,7 @@ const LoadingOverlay = styled.div`
 `;
 
 const MessagesPage: React.FC = () => {
+  const theme = useTheme();
   const { t, language } = useTranslation();
   const { currentUser } = useAuth();
   const [searchParams] = useSearchParams();
@@ -246,6 +248,7 @@ const MessagesPage: React.FC = () => {
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(true);
   const [initializing, setInitializing] = useState(false);
+  const [profiles, setProfiles] = useState<{ [key: string]: any }>({});
 
   // Refs for auto-scrolling
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -273,10 +276,62 @@ const MessagesPage: React.FC = () => {
     return () => unsubscribe();
   }, [currentUser]);
 
+  // Fetch profiles for conversations
+  useEffect(() => {
+    const fetchProfiles = async () => {
+      const userIds = new Set<string>();
+      conversations.forEach(c => {
+        c.participants.forEach(p => {
+          if (p !== currentUser?.uid) userIds.add(p);
+        });
+      });
+
+      const newProfiles: { [key: string]: any } = { ...profiles };
+      let changed = false;
+
+      await Promise.all(Array.from(userIds).map(async (uid) => {
+        if (!newProfiles[uid]) {
+          try {
+            const profile = await userService.getUserProfile(uid);
+            if (profile) {
+              newProfiles[uid] = profile;
+              changed = true;
+            }
+          } catch (e) {
+            console.error('Failed to fetch profile', uid, e);
+          }
+        }
+      }));
+
+      if (changed) {
+        setProfiles(newProfiles);
+      }
+    };
+
+    if (conversations.length > 0 && currentUser) {
+      fetchProfiles();
+    }
+  }, [conversations, currentUser]); // Removed profiles from dep array to avoid loops, though logic prevents it
+
   // Handle URL parameters (create/find conversation)
   useEffect(() => {
     const initChat = async () => {
-      if (!currentUser || !targetUserId || initializing) return;
+      if (!currentUser || initializing) return;
+
+      const paramConversationId = searchParams.get('conversationId');
+
+      // 1. If we have a direct conversation ID, try to find it
+      if (paramConversationId) {
+        const directConv = conversations.find(c => c.id === paramConversationId);
+        if (directConv) {
+          if (currentConversation?.id !== paramConversationId) {
+            setCurrentConversation(directConv);
+          }
+          return;
+        }
+      }
+
+      if (!targetUserId) return;
 
       // Don't create chat with self
       if (currentUser.uid === targetUserId) {
@@ -288,7 +343,7 @@ const MessagesPage: React.FC = () => {
       setInitializing(true);
 
       try {
-        // 1. Check if we already have this conversation loaded
+        // 2. Check if we already have this conversation loaded
         const existingConv = conversations.find(c =>
           c.participants.includes(targetUserId) &&
           (!targetCarId || c.carId === targetCarId)
@@ -297,19 +352,15 @@ const MessagesPage: React.FC = () => {
         if (existingConv) {
           setCurrentConversation(existingConv);
         } else {
-          // 2. Try to find/create on server
-          const convId = await advancedMessagingService.createConversation(
+          // 3. Try to find/create on server
+          await advancedMessagingService.createConversation(
             [currentUser.uid, targetUserId],
             {
               carId: targetCarId || undefined,
               carTitle: targetCarTitle || undefined
             }
           );
-
-          // Note: The subscription will pick up the new conversation eventually
-          // but we can start loading messages immediately
-          // However, we need the full conversation object to display header
-          // We'll wait for the subscription to update for now to keep it simple
+          // Wait for subscription to catch up
         }
       } catch (error) {
         console.error('Failed to initialize chat:', error);
@@ -319,7 +370,7 @@ const MessagesPage: React.FC = () => {
     };
 
     initChat();
-  }, [currentUser, targetUserId, targetCarId, conversations]);
+  }, [currentUser, targetUserId, targetCarId, conversations, searchParams, initializing]);
 
   // Load messages for current conversation
   useEffect(() => {
@@ -364,9 +415,23 @@ const MessagesPage: React.FC = () => {
     }
   };
 
-  const selectedUser = currentConversation?.participants.find(id => id !== currentUser?.uid);
-  // In a real app, we would fetch the other user's profile details here
-  // For now, we'll use a placeholder or data from the conversation if available
+  const selectedUserId = currentConversation?.participants.find(id => id !== currentUser?.uid);
+
+  const getUserName = (uid?: string) => {
+    if (!uid) return 'Unknown';
+    if (profiles[uid]) {
+      return profiles[uid].displayName || profiles[uid].name || 'User';
+    }
+    return uid.slice(0, 8) + '...';
+  };
+
+  const getUserAvatar = (uid?: string) => {
+    if (!uid) return undefined;
+    if (profiles[uid]) {
+      return profiles[uid].photoURL || profiles[uid].avatarUrl;
+    }
+    return undefined;
+  };
 
   const isMobile = window.innerWidth <= 768;
   const showSidebar = !isMobile || !currentConversation;
@@ -388,20 +453,22 @@ const MessagesPage: React.FC = () => {
         <Sidebar $visible={showSidebar}>
           <SidebarHeader>
             <div style={{ position: 'relative' }}>
-              <Search style={{ position: 'absolute', left: '10px', top: '10px', color: '#9ca3af' }} size={18} />
+              <Search style={{ position: 'absolute', left: '10px', top: '10px', color: theme.colors.text.disabled }} size={18} />
               <SearchInput placeholder={t('messages.search', 'Search messages...')} />
             </div>
           </SidebarHeader>
 
           <ConversationList>
             {conversations.length === 0 ? (
-              <div style={{ padding: '2rem', textAlign: 'center', color: '#6b7280' }}>
+              <div style={{ padding: '2rem', textAlign: 'center', color: theme.colors.text.secondary }}>
                 {t('messages.noConversations', 'No conversations yet')}
               </div>
             ) : (
               conversations.map(conv => {
-                const otherPid = conv.participants.find(p => p !== currentUser?.uid) || 'Unknown';
+                const otherPid = conv.participants.find(p => p !== currentUser?.uid);
                 const unread = conv.unreadCount?.[currentUser?.uid || ''] || 0;
+                const name = getUserName(otherPid);
+                const avatar = getUserAvatar(otherPid);
 
                 return (
                   <ConversationItem
@@ -409,14 +476,13 @@ const MessagesPage: React.FC = () => {
                     $active={currentConversation?.id === conv.id}
                     onClick={() => {
                       setCurrentConversation(conv);
-                      // Clear URL params to avoid re-triggering init
                       navigate('/messages', { replace: true });
                     }}
                   >
-                    <Avatar name={otherPid} size="md" />
+                    <Avatar src={avatar} name={name} size="md" />
                     <ConversationInfo>
                       <TopRow>
-                        <UserName>{otherPid.slice(0, 8)}...</UserName>
+                        <UserName>{name}</UserName>
                         {conv.lastMessageAt && (
                           <Timestamp>
                             {formatDistanceToNow(conv.lastMessageAt.toDate(), { addSuffix: true, locale: language === 'bg' ? bg : enUS })}
@@ -451,11 +517,11 @@ const MessagesPage: React.FC = () => {
                     ←
                   </button>
                 )}
-                <Avatar name={selectedUser} size="md" />
+                <Avatar name={getUserName(selectedUserId)} src={getUserAvatar(selectedUserId)} size="md" />
                 <div>
-                  <UserName>{selectedUser}</UserName>
+                  <UserName>{getUserName(selectedUserId)}</UserName>
                   {currentConversation.carTitle && (
-                    <div style={{ fontSize: '0.8rem', color: '#6b7280' }}>
+                    <div style={{ fontSize: '0.8rem', color: theme.colors.text.secondary }}>
                       Ref: {currentConversation.carTitle}
                     </div>
                   )}
@@ -497,8 +563,8 @@ const MessagesPage: React.FC = () => {
               </InputArea>
             </>
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#9ca3af', gap: '1rem' }}>
-              <div style={{ padding: '2rem', background: '#e5e7eb', borderRadius: '50%' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: theme.colors.text.disabled, gap: '1rem' }}>
+              <div style={{ padding: '2rem', background: theme.colors.grey[200], borderRadius: '50%' }}>
                 <Send size={48} />
               </div>
               <h3>{t('messages.selectToStart', 'Select a conversation to start messaging')}</h3>

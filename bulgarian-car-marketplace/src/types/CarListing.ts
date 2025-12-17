@@ -160,6 +160,11 @@ export interface CarListing {
   isUrgent?: boolean;
   expiresAt?: Date;
 
+  // ✅ Edit Limits (New System)
+  editStats?: {
+    makeModelChangeCount: number;
+  };
+
   // Search in Description
   searchKeywords?: string; // Keywords for text search in description
 }

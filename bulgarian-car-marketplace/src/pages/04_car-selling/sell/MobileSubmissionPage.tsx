@@ -49,11 +49,18 @@ const MobileSubmissionPage: React.FC = () => {
       }
 
       // Create the car listing using the actual service
-      const carId = await SellWorkflowService.createCarListing(data, user.uid, images);
+      const result = await SellWorkflowService.createCarListing(data, user.uid, images);
+      
+      // ✅ CRITICAL FIX: Handle both string (carId) and object (with redirectUrl) responses
+      const carId = typeof result === 'string' ? result : result.carId;
+      const redirectUrl = typeof result === 'object' && result.redirectUrl 
+        ? result.redirectUrl 
+        : '/my-listings'; // Fallback
       
       // Log successful submission
       logger.info('Car listing submitted successfully', { 
         carId,
+        redirectUrl,
         userId: user.uid,
         vehicleType,
         imageCount: images.length,

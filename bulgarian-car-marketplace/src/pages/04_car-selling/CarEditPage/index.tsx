@@ -715,12 +715,21 @@ const CarEditPage: React.FC = () => {
   };
 
   const handleCancel = () => {
+    // ✅ CRITICAL FIX: Use numeric URL if available
+    const getCarUrl = (): string => {
+      if (car && (car as any).sellerNumericId && (car as any).carNumericId) {
+        return `/car/${(car as any).sellerNumericId}/${(car as any).carNumericId}`;
+      }
+      // Fallback to legacy URL
+      return `/car/${carId}`;
+    };
+
     if (hasChanges) {
       if (window.confirm(t.confirmDiscard)) {
-        navigate(`/car/${carId}`);
+        navigate(getCarUrl());
       }
     } else {
-      navigate(`/car/${carId}`);
+      navigate(getCarUrl());
     }
   };
 

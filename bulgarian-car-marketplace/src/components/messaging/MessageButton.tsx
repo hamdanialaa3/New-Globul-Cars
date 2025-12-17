@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useTranslation } from '../../hooks/useTranslation';
 import { useAuth } from '../../contexts/AuthProvider';
 import { useNavigate } from 'react-router-dom';
-import { realtimeMessagingService } from '../../services/realtimeMessaging';
+import { advancedMessagingService } from '../../services/messaging/advanced-messaging-service';
 import { logger } from '../../services/logger-service';
 
 // Styled Components
@@ -163,39 +163,77 @@ const MessageButtonComponent: React.FC<MessageButtonProps> = ({
       setError(null);
       setSuccess(false);
 
-      // Get or create conversation ID
-      const conversationId = await realtimeMessagingService.getOrCreateConversationId(
-        user.uid,
-        sellerId,
-        carId,
-        user.displayName || user.firstName || 'User',
-        sellerName,
-        carTitle
-      );
+      // 1. Find or create conversation
+      // We rely on the service to find an existing one for this car
+      let conversationId = await advancedMessagingService.findConversation(user.uid, sellerId, carId);
 
-      // Send car link as system message (once per conversation)
-      await realtimeMessagingService.sendCarLinkMessage(
-        conversationId,
-        user.uid,
-        sellerId,
-        user.displayName || user.firstName || 'User',
-        sellerName,
-        carId,
-        carTitle
-      );
+      let isNew = false;
+      if (!conversationId) {
+        isNew = true;
+        conversationId = await advancedMessagingService.createConversation(
+          [user.uid, sellerId],
+          {
+            carId,
+            carTitle,
+            otherParticipant: {
+              id: sellerId,
+              name: sellerName
+            }
+          }
+        );
+      }
 
-      // Navigate to messages page with conversation
-      navigate(`/messages?conversation=${conversationId}&carId=${carId}`);
+      // ✅ CRITICAL FIX: Get numeric IDs for strict URL format
+      const { SocialAuthService } = await import('../../firebase/social-auth-service');
+      const { numericMessagingSystemService } = await import('../../services/numeric-messaging-system.service');
       
+      // Get numeric IDs for both users
+      const currentUserProfile = await SocialAuthService.getBulgarianUserProfile(user.uid);
+      const sellerProfile = await SocialAuthService.getBulgarianUserProfile(sellerId);
+      
+      if (!currentUserProfile?.numericId || !sellerProfile?.numericId) {
+        throw new Error('Cannot find numeric IDs for users');
+      }
+
+      // 2. If new or forced, send the car link as context
+      // We check if we should send the initial car link
+      // For simplicity, we send it if it's a new conversation OR if we want to ensure context.
+      // To avoid spam, we could check if the last message was the car link, but for now, 
+      // if it's new, we definitely send it.
+      if (isNew) {
+        // ✅ CRITICAL FIX: Use numeric car URL if available
+        let carLink = `${window.location.origin}/car/${carId}`;
+        try {
+          const { unifiedCarService } = await import('../../services/car');
+          const carData = await unifiedCarService.getCarById(carId);
+          if (carData && (carData as any).sellerNumericId && (carData as any).carNumericId) {
+            carLink = `${window.location.origin}/car/${(carData as any).sellerNumericId}/${(carData as any).carNumericId}`;
+          }
+        } catch (error) {
+          // Fallback to legacy URL
+        }
+        
+        const messageContent = `🚗 ${carTitle}\n${carLink}`;
+        await advancedMessagingService.sendSystemMessage(
+          conversationId,
+          user.uid,
+          sellerId,
+          messageContent,
+          { carId }
+        );
+      }
+
+      // ✅ CRITICAL FIX: Navigate to numeric messaging URL
+      // Format: /messages/:senderNumericId/:recipientNumericId
+      const senderNumericId = currentUserProfile.numericId;
+      const recipientNumericId = sellerProfile.numericId;
+      navigate(`/messages/${senderNumericId}/${recipientNumericId}`);
+
       setSuccess(true);
-      
-      // Clear success message after 2 seconds
       setTimeout(() => setSuccess(false), 2000);
     } catch (err) {
       logger.error('Error sending message:', err);
       setError(t('messaging.sendError', 'Failed to send message'));
-      
-      // Clear error message after 3 seconds
       setTimeout(() => setError(null), 3000);
     } finally {
       setLoading(false);

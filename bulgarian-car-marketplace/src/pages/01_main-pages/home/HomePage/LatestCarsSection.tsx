@@ -374,8 +374,17 @@ const LatestCarsSection: React.FC = () => {
           itemMinWidth="280px"
           showArrows={true}
         >
-          {cars.map((car) => (
-            <CarCard key={car.id} to={`/cars/${car.id}`}>
+          {cars.map((car) => {
+            // ✅ CRITICAL FIX: Generate numeric URL if available, fallback to legacy URL
+            const getCarUrl = (): string => {
+              if ((car as any).sellerNumericId && (car as any).carNumericId) {
+                return `/car/${(car as any).sellerNumericId}/${(car as any).carNumericId}`;
+              }
+              return `/cars/${car.id}`;
+            };
+            
+            return (
+            <CarCard key={car.id} to={getCarUrl()}>
               <ImageWrapper>
                 {car.images && car.images.length > 0 ? (
                   <CarImage
@@ -438,7 +447,8 @@ const LatestCarsSection: React.FC = () => {
                 </PriceLocation>
               </CardContent>
             </CarCard>
-          ))}
+          );
+          })}
         </HorizontalScrollContainer>
       </CarsContainer>
     </SectionContainer>

@@ -274,7 +274,13 @@ const ContactPageUnified: React.FC = () => {
       // Flexible validation: Check critical fields only
       const validation = SellWorkflowService.validateWorkflowData(payload, false);
 
-      const carId = await SellWorkflowService.createCarListing(payload, userId);
+      const result = await SellWorkflowService.createCarListing(payload, userId);
+      
+      // ✅ CRITICAL FIX: Handle both string (carId) and object (with redirectUrl) responses
+      const carId = typeof result === 'string' ? result : result.carId;
+      const redirectUrl = typeof result === 'object' && result.redirectUrl 
+        ? result.redirectUrl 
+        : '/profile/my-ads'; // Fallback
 
       // Clear workflow data
       clearWorkflowData();
@@ -290,11 +296,12 @@ const ContactPageUnified: React.FC = () => {
       );
 
       if (process.env.NODE_ENV === 'development') {
-        logger.debug('Car listing published successfully', { carId });
+        logger.debug('Car listing published successfully', { carId, redirectUrl });
       }
 
       setTimeout(() => {
-        navigate('/profile/my-ads');
+        // ✅ CRITICAL FIX: Navigate to numeric car URL instead of profile
+        navigate(redirectUrl);
       }, 800);
 
     } catch (error: unknown) {

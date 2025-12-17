@@ -2,9 +2,9 @@
 // Enhanced Social Authentication Service for Bulgarian Car Marketplace
 // Phase -1: Updated to use canonical types
 
-import { 
-  GoogleAuthProvider, 
-  FacebookAuthProvider, 
+import {
+  GoogleAuthProvider,
+  FacebookAuthProvider,
   OAuthProvider,
   signInWithPopup,
   signInWithRedirect,
@@ -66,15 +66,15 @@ export class SocialAuthService {
   static async signInWithEmailAndPassword(email: string, password: string): Promise<UserCredential> {
     try {
       const result = await signInWithEmailAndPassword(auth, email, password);
-      
+
       // AUTO-SYNC: Update user profile in Firestore
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Email/Password login successful, syncing to Firestore...');
       }
       await this.createOrUpdateBulgarianProfile(result.user);
-      
+
       return result;
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('Email/Password sign-in error', error as Error);
       throw new Error(this.getErrorMessage(error.code, 'Email/Password'));
     }
@@ -86,15 +86,15 @@ export class SocialAuthService {
   static async createUserWithEmailAndPassword(email: string, password: string): Promise<UserCredential> {
     try {
       const result = await createUserWithEmailAndPassword(auth, email, password);
-      
+
       // AUTO-SYNC: Create user profile in Firestore
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Email/Password registration successful, creating Firestore profile...');
       }
       await this.createOrUpdateBulgarianProfile(result.user);
-      
+
       return result;
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('Email/Password registration error', error as Error);
       throw new Error(this.getErrorMessage(error.code, 'Email/Password'));
     }
@@ -108,59 +108,59 @@ export class SocialAuthService {
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Starting Google sign-in process...');
       }
-      
+
       // Debug current configuration
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Google Sign-in Debug Info', {
-        authDomain: auth.app.options.authDomain,
-        projectId: auth.app.options.projectId,
-        appName: auth.app.name,
-        currentUrl: window.location.href,
-        protocol: window.location.protocol
-      });
+          authDomain: auth.app.options.authDomain,
+          projectId: auth.app.options.projectId,
+          appName: auth.app.name,
+          currentUrl: window.location.href,
+          protocol: window.location.protocol
+        });
       }
-      
+
       // Check if we're in a secure context
       if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost') {
         throw new Error('Google sign-in requires HTTPS or localhost');
       }
-      
+
       // First try popup, with fallback to redirect
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Attempting popup sign-in...');
       }
       let result: UserCredential;
-      
+
       try {
         result = await signInWithPopup(auth, googleProvider);
       } catch (popupError: any) {
         logger.warn('Popup failed, trying redirect method', { code: popupError.code });
-        
-        if (popupError.code === 'auth/popup-blocked' || 
-            popupError.code === 'auth/popup-closed-by-user' ||
-            popupError.code === 'auth/cancelled-popup-request') {
-          
+
+        if (popupError.code === 'auth/popup-blocked' ||
+          popupError.code === 'auth/popup-closed-by-user' ||
+          popupError.code === 'auth/cancelled-popup-request') {
+
           if (process.env.NODE_ENV === 'development') {
             logger.debug('Switching to redirect sign-in...');
           }
           await signInWithRedirect(auth, googleProvider);
-          
+
           // After redirect, this won't execute, but we handle it in App.tsx
           // Check for redirect result on app load
           throw new Error('تم تحويلك لتسجيل الدخول. يرجى الانتظار...');
         }
-        
+
         throw popupError; // Re-throw other errors
       }
-      
+
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Google sign-in successful', {
-        email: result.user.email,
-        displayName: result.user.displayName,
-        uid: result.user.uid
+          email: result.user.email,
+          displayName: result.user.displayName,
+          uid: result.user.uid
         });
       }
-      
+
       // AUTO-SYNC: Create/Update user profile in Firestore
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Syncing Google user to Firestore...');
@@ -169,16 +169,16 @@ export class SocialAuthService {
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Google user synced to Firestore');
       }
-      
+
       return result;
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Enhanced error logging
       logger.error('Google Sign-in Error', error as Error, {
         code: error.code,
         credential: error.credential,
         customData: error.customData
       });
-      
+
       // Check common configuration issues
       if (!process.env.REACT_APP_FIREBASE_API_KEY) {
         logger.error('Missing REACT_APP_FIREBASE_API_KEY');
@@ -195,15 +195,15 @@ export class SocialAuthService {
         logger.warn('Popup blocked, automatically switching to redirect method...');
         throw new Error('النوافذ المنبثقة محظورة. يرجى السماح بالنوافذ المنبثقة في إعدادات المتصفح وإعادة المحاولة.');
       }
-      
+
       if (error.code === 'auth/popup-closed-by-user') {
         throw new Error('تم إلغاء عملية تسجيل الدخول. يرجى المحاولة مرة أخرى.');
       }
-      
+
       if (error.code === 'auth/cancelled-popup-request') {
         throw new Error('تم إلغاء طلب تسجيل الدخول. يرجى المحاولة مرة أخرى.');
       }
-      
+
       if (error.code === 'auth/unauthorized-domain') {
         logger.error('Domain Authorization Issue', undefined, {
           currentDomain: window.location.hostname,
@@ -212,17 +212,17 @@ export class SocialAuthService {
         });
         throw new Error('هذا الموقع غير مصرح له بتسجيل الدخول مع Google. يرجى الاتصال بالدعم الفني.');
       }
-      
+
       if (error.code === 'auth/operation-not-allowed') {
         logger.error('Google Sign-in Disabled');
         throw new Error('تسجيل الدخول مع Google غير مفعل حالياً. يرجى الاتصال بالدعم الفني.');
       }
-      
+
       if (error.code === 'auth/invalid-api-key') {
         logger.error('Invalid API Key');
         throw new Error('خطأ في تكوين Firebase. يرجى الاتصال بالدعم الفني.');
       }
-      
+
       if (error.code === 'auth/network-request-failed') {
         throw new Error('خطأ في الشبكة. يرجى التحقق من الاتصال بالإنترنت وإعادة المحاولة.');
       }
@@ -262,18 +262,18 @@ export class SocialAuthService {
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Starting Facebook sign-in process...');
       }
-      
+
       // Use popup only (more reliable than redirect for Facebook)
       const result = await signInWithPopup(auth, facebookProvider);
-      
+
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Facebook sign-in successful', {
-        email: result.user.email,
-        displayName: result.user.displayName,
-        uid: result.user.uid
+          email: result.user.email,
+          displayName: result.user.displayName,
+          uid: result.user.uid
         });
       }
-      
+
       // AUTO-SYNC: Create/Update user profile in Firestore
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Syncing Facebook user to Firestore...');
@@ -282,9 +282,9 @@ export class SocialAuthService {
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Facebook user synced to Firestore');
       }
-      
+
       return result;
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('Facebook sign-in error', error as Error);
 
       // Handle popup blocked error with user-friendly message
@@ -299,7 +299,7 @@ export class SocialAuthService {
       if (error.code === 'auth/cancelled-popup-request') {
         throw new Error('تم إلغاء طلب تسجيل الدخول. يرجى المحاولة مرة أخرى.');
       }
-      
+
       // Handle specific Facebook errors
       if (error.code === 'auth/operation-not-allowed') {
         throw new Error('تسجيل الدخول مع Facebook غير مفعل حالياً. يرجى الاتصال بالدعم الفني.');
@@ -308,7 +308,7 @@ export class SocialAuthService {
       if (error.code === 'auth/account-exists-with-different-credential') {
         throw new Error('هذا البريد الإلكتروني مسجل بالفعل بطريقة تسجيل دخول أخرى. يرجى استخدام نفس طريقة تسجيل الدخول السابقة.');
       }
-      
+
       if (error.code === 'auth/network-request-failed') {
         throw new Error('خطأ في الشبكة. يرجى التحقق من الاتصال بالإنترنت وإعادة المحاولة.');
       }
@@ -316,7 +316,7 @@ export class SocialAuthService {
       if (error.code === 'auth/unauthorized-domain') {
         throw new Error('هذا الموقع غير مصرح له بتسجيل الدخول مع Facebook. يرجى الاتصال بالدعم الفني.');
       }
-      
+
       throw new Error(`خطأ في تسجيل الدخول مع Facebook: ${error.message || 'خطأ غير معروف'}. يرجى المحاولة مرة أخرى.`);
     }
   }
@@ -329,18 +329,18 @@ export class SocialAuthService {
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Starting Apple sign-in process...');
       }
-      
+
       // First try popup
       const result = await signInWithPopup(auth, appleProvider);
-      
+
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Apple sign-in successful', {
-        email: result.user.email,
-        displayName: result.user.displayName,
-        uid: result.user.uid
+          email: result.user.email,
+          displayName: result.user.displayName,
+          uid: result.user.uid
         });
       }
-      
+
       // AUTO-SYNC: Create/Update user profile in Firestore
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Syncing Apple user to Firestore...');
@@ -349,15 +349,15 @@ export class SocialAuthService {
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Apple user synced to Firestore');
       }
-      
+
       return result;
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.warn('Apple popup failed, trying redirect', { code: error.code });
 
       // If popup is blocked, try redirect
       if (error.code === 'auth/popup-blocked' ||
-          error.code === 'auth/popup-closed-by-user' ||
-          error.code === 'auth/cancelled-popup-request') {
+        error.code === 'auth/popup-closed-by-user' ||
+        error.code === 'auth/cancelled-popup-request') {
 
         if (process.env.NODE_ENV === 'development') {
           logger.debug('Popup blocked, using redirect method...');
@@ -372,17 +372,17 @@ export class SocialAuthService {
         });
       }
 
-  logger.error('Apple sign-in error', error as Error);
-      
+      logger.error('Apple sign-in error', error as Error);
+
       // Handle specific Apple errors
       if (error.code === 'auth/operation-not-allowed') {
         throw new Error('تسجيل الدخول مع Apple غير مفعل حالياً. يرجى الاتصال بالدعم الفني.');
       }
-      
+
       if (error.code === 'auth/network-request-failed') {
         throw new Error('خطأ في الشبكة. يرجى التحقق من الاتصال بالإنترنت وإعادة المحاولة.');
       }
-      
+
       throw new Error(`An error occurred during Apple sign-in. Please try again.`);
     }
   }
@@ -395,13 +395,13 @@ export class SocialAuthService {
       // First try popup
       const result = await signInWithPopup(auth, microsoftProvider);
       return result;
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.warn('Microsoft popup failed, trying redirect', { code: error.code });
 
       // If popup is blocked, try redirect
       if (error.code === 'auth/popup-blocked' ||
-          error.code === 'auth/popup-closed-by-user' ||
-          error.code === 'auth/cancelled-popup-request') {
+        error.code === 'auth/popup-closed-by-user' ||
+        error.code === 'auth/cancelled-popup-request') {
 
         if (process.env.NODE_ENV === 'development') {
           logger.debug('Popup blocked, using redirect method...');
@@ -416,7 +416,7 @@ export class SocialAuthService {
         });
       }
 
-  logger.error('Microsoft sign-in error', error as Error);
+      logger.error('Microsoft sign-in error', error as Error);
       throw new Error(this.getErrorMessage(error.code, 'Microsoft'));
     }
   }
@@ -429,13 +429,13 @@ export class SocialAuthService {
       // First try popup
       const result = await signInWithPopup(auth, samsungProvider);
       return result;
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.warn('Samsung popup failed, trying redirect', { code: error.code });
 
       // If popup is blocked, try redirect
       if (error.code === 'auth/popup-blocked' ||
-          error.code === 'auth/popup-closed-by-user' ||
-          error.code === 'auth/cancelled-popup-request') {
+        error.code === 'auth/popup-closed-by-user' ||
+        error.code === 'auth/cancelled-popup-request') {
 
         if (process.env.NODE_ENV === 'development') {
           logger.debug('Popup blocked, using redirect method...');
@@ -450,7 +450,7 @@ export class SocialAuthService {
         });
       }
 
-  logger.error('Samsung sign-in error', error as Error);
+      logger.error('Samsung sign-in error', error as Error);
       throw new Error(this.getErrorMessage(error.code, 'Samsung'));
     }
   }
@@ -461,7 +461,7 @@ export class SocialAuthService {
   static async signInWithGoogleRedirect(): Promise<void> {
     try {
       await signInWithRedirect(auth, googleProvider);
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('Google redirect sign-in error', error as Error);
       throw new Error(this.getErrorMessage(error.code, 'Google'));
     }
@@ -473,7 +473,7 @@ export class SocialAuthService {
   static async signInWithFacebookRedirect(): Promise<void> {
     try {
       await signInWithRedirect(auth, facebookProvider);
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('Facebook redirect sign-in error', error as Error);
       throw new Error(this.getErrorMessage(error.code, 'Facebook'));
     }
@@ -485,7 +485,7 @@ export class SocialAuthService {
   static async signInWithAppleRedirect(): Promise<void> {
     try {
       await signInWithRedirect(auth, appleProvider);
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('Apple redirect sign-in error', error as Error);
       throw new Error(this.getErrorMessage(error.code, 'Apple'));
     }
@@ -497,7 +497,7 @@ export class SocialAuthService {
   static async signInWithMicrosoftRedirect(): Promise<void> {
     try {
       await signInWithRedirect(auth, microsoftProvider);
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('Microsoft redirect sign-in error', error as Error);
       throw new Error(this.getErrorMessage(error.code, 'Microsoft'));
     }
@@ -509,7 +509,7 @@ export class SocialAuthService {
   static async signInWithSamsungRedirect(): Promise<void> {
     try {
       await signInWithRedirect(auth, samsungProvider);
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('Samsung redirect sign-in error', error as Error);
       throw new Error(this.getErrorMessage(error.code, 'Samsung'));
     }
@@ -522,7 +522,7 @@ export class SocialAuthService {
     try {
       const result = await getRedirectResult(auth);
       return result;
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('Redirect result error', error as Error);
       throw new Error(this.getErrorMessage(error.code, 'Redirect'));
     }
@@ -555,7 +555,7 @@ export class SocialAuthService {
   static async createOrUpdateBulgarianProfile(user: User, additionalData?: Partial<BulgarianUserProfile>): Promise<BulgarianUserProfile> {
     const userRef = doc(db, 'users', user.uid);
     const userDoc = await getDoc(userRef);
-    
+
     const now = new Date();
     const linkedProviders = user.providerData.map(provider => ({
       providerId: provider.providerId,
@@ -580,8 +580,23 @@ export class SocialAuthService {
         ...additionalData
       };
 
+      // Enforce numeric ID for existing users too
+      let numericIdUpdates = {};
+      try {
+        if (!existingProfile.numericId) {
+          const { ensureUserNumericId } = await import('../services/numeric-id-assignment.service');
+          const numericId = await ensureUserNumericId(user.uid);
+          if (numericId) {
+            numericIdUpdates = { numericId };
+          }
+        }
+      } catch (e) {
+        logger.warn('Failed to ensure numeric ID for existing user', e as Error);
+      }
+
       await updateDoc(userRef, {
         ...updatedProfile,
+        ...numericIdUpdates,
         updatedAt: serverTimestamp()
       });
 
@@ -597,7 +612,7 @@ export class SocialAuthService {
         photoURL: user.photoURL,
         phoneNumber: user.phoneNumber,
         emailVerified: user.emailVerified,
-        
+
         // Bulgarian defaults
         location: {
           country: 'Bulgaria'
@@ -605,19 +620,19 @@ export class SocialAuthService {
         preferredLanguage: 'bg',
         currency: 'EUR',
         phoneCountryCode: '+359',
-        
+
         // Profile Type (NEW)
         profileType: 'private' as any,
         planTier: 'free' as any,
-        
+
         // Social providers
         linkedProviders: linkedProviders,
-        
+
         // Activity tracking
         lastLoginAt: now,
         createdAt: now,
         updatedAt: now,
-        
+
         // Default preferences
         notifications: {
           email: true,
@@ -625,20 +640,40 @@ export class SocialAuthService {
           push: true,
           marketing: false
         },
-        
+
         // Car marketplace defaults
         favoriteCarBrands: [],
         searchHistory: [],
         viewedCars: [],
         inquiredCars: [],
-        
+
         // Privacy defaults
         profileVisibility: 'dealers',
         showPhone: false,
         showEmail: false,
-        
+
         ...additionalData
       };
+
+      // Enforce numeric ID assignment
+      try {
+        if (process.env.NODE_ENV === 'development') {
+          logger.debug('Ensuring numeric ID for user', { uid: user.uid });
+        }
+        // Dynamically import to avoid circular dependencies if any
+        const { ensureUserNumericId } = await import('../services/numeric-id-assignment.service');
+        const numericId = await ensureUserNumericId(user.uid);
+
+        if (numericId) {
+          // Add numeric ID to the profile data we are about to save
+          if (!newProfile.numericId) {
+            newProfile.numericId = numericId;
+          }
+        }
+      } catch (numericIdError) {
+        logger.error('Failed to assign numeric ID during profile creation', numericIdError as Error);
+        // Continue anyway, we can retry later
+      }
 
       await setDoc(userRef, {
         ...newProfile,
@@ -676,12 +711,12 @@ export class SocialAuthService {
 
     try {
       const result = await linkWithPopup(auth.currentUser, provider);
-      
+
       // Update user profile with new linked provider
       await this.createOrUpdateBulgarianProfile(result.user);
-      
+
       return result;
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error(`Error linking ${providerType} provider`, error as Error);
       throw new Error(this.getErrorMessage(error.code, providerType));
     }
@@ -697,12 +732,12 @@ export class SocialAuthService {
 
     try {
       const result = await unlink(auth.currentUser, providerId);
-      
+
       // Update user profile to remove unlinked provider
       await this.createOrUpdateBulgarianProfile(result);
-      
+
       return result;
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error(`Error unlinking provider ${providerId}`, error as Error);
       throw new Error(this.getErrorMessage(error.code, 'unlink'));
     }
@@ -734,7 +769,7 @@ export class SocialAuthService {
     try {
       const result = await reauthenticateWithPopup(auth.currentUser, provider);
       return result;
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error(`Error reauthenticating with ${providerType}`, error as Error);
       throw new Error(this.getErrorMessage(error.code, providerType));
     }
@@ -753,10 +788,10 @@ export class SocialAuthService {
 
     try {
       await updateProfile(auth.currentUser, updates);
-      
+
       // Also update Firestore profile
       await this.createOrUpdateBulgarianProfile(auth.currentUser, updates);
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('Error updating profile', error as Error);
       throw new Error(this.getErrorMessage(error.code, 'update-profile'));
     }
@@ -772,16 +807,16 @@ export class SocialAuthService {
 
     try {
       const userRef = doc(db, 'users', auth.currentUser.uid);
-      
+
       // Delete user document from Firestore
       await updateDoc(userRef, {
         deleted: true,
         deletedAt: serverTimestamp()
       });
-      
+
       // Delete Firebase Auth user
       await deleteUser(auth.currentUser);
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('Error deleting user account', error as Error);
       throw new Error(this.getErrorMessage(error.code, 'delete-account'));
     }
@@ -794,13 +829,13 @@ export class SocialAuthService {
     try {
       const userRef = doc(db, 'users', uid);
       const userDoc = await getDoc(userRef);
-      
+
       if (userDoc.exists()) {
         return userDoc.data() as BulgarianUserProfile;
       }
-      
+
       return null;
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('Error fetching user profile', error as Error);
       throw new Error('Failed to fetch user profile');
     }
@@ -816,7 +851,7 @@ export class SocialAuthService {
         ...updates,
         updatedAt: serverTimestamp()
       });
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('Error updating Bulgarian profile', error as Error);
       throw new Error('Failed to update profile');
     }
@@ -835,7 +870,7 @@ export class SocialAuthService {
     try {
       const usersRef = collection(db, 'users');
       let q = query(usersRef);
-      
+
       if (criteria.email) {
         q = query(q, where('email', '==', criteria.email));
       }
@@ -845,16 +880,16 @@ export class SocialAuthService {
       if (criteria.location) {
         q = query(q, where('location.locationData?.cityName', '==', criteria.location));
       }
-      
+
       const querySnapshot = await getDocs(q);
       const users: BulgarianUserProfile[] = [];
-      
+
       querySnapshot.forEach((doc) => {
         users.push(doc.data() as BulgarianUserProfile);
       });
-      
+
       return users.slice(0, criteria.limit || 50);
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('Error searching users', error as Error);
       throw new Error('Failed to search users');
     }
@@ -864,7 +899,7 @@ export class SocialAuthService {
    * Check if user is signed in with social provider
    */
   static isSocialUser(user: User): boolean {
-    return user.providerData.some(provider => 
+    return user.providerData.some(provider =>
       ['google.com', 'facebook.com', 'apple.com'].includes(provider.providerId)
     );
   }
@@ -873,7 +908,7 @@ export class SocialAuthService {
    * Get the primary social provider
    */
   static getPrimaryProvider(user: User): string | null {
-    const socialProvider = user.providerData.find(provider => 
+    const socialProvider = user.providerData.find(provider =>
       ['google.com', 'facebook.com', 'apple.com'].includes(provider.providerId)
     );
     return socialProvider?.providerId || null;
@@ -887,21 +922,21 @@ export class SocialAuthService {
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Starting anonymous sign-in...');
       }
-      
+
       // Check if anonymous auth is enabled
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Checking anonymous auth configuration...');
       }
-      
+
       const result = await signInAnonymously(auth);
-      
+
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Anonymous sign-in successful', {
-        uid: result.user.uid,
-        isAnonymous: result.user.isAnonymous
+          uid: result.user.uid,
+          isAnonymous: result.user.isAnonymous
         });
       }
-      
+
       // AUTO-SYNC: Create/Update anonymous user profile in Firestore
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Syncing anonymous user to Firestore...');
@@ -913,11 +948,11 @@ export class SocialAuthService {
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Anonymous user synced to Firestore');
       }
-      
+
       return result;
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('Anonymous Sign-in Error', error as Error);
-      
+
       if (error.code === 'auth/operation-not-allowed') {
         logger.error('Anonymous auth disabled in Firebase Console');
         if (process.env.NODE_ENV === 'development') {
@@ -944,9 +979,9 @@ export class SocialAuthService {
           logger.warn('reCAPTCHA expired');
         }
       });
-      
+
       return recaptchaVerifier;
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('reCAPTCHA setup error', error as Error);
       throw new Error('Failed to setup reCAPTCHA verifier');
     }
@@ -956,24 +991,24 @@ export class SocialAuthService {
    * Send phone verification code
    */
   static async sendPhoneVerificationCode(
-    phoneNumber: string, 
+    phoneNumber: string,
     recaptchaVerifier: RecaptchaVerifier
   ): Promise<ConfirmationResult> {
     try {
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Sending verification code', { phoneNumber });
       }
-      
+
       // Ensure phone number starts with country code
       const formattedPhone = phoneNumber.startsWith('+') ? phoneNumber : `+359${phoneNumber}`;
-      
+
       const confirmationResult = await signInWithPhoneNumber(auth, formattedPhone, recaptchaVerifier);
-      
+
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Verification code sent successfully');
       }
       return confirmationResult;
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('Phone verification code error', error as Error);
       throw new Error(this.getErrorMessage(error.code, 'Phone'));
     }
@@ -983,7 +1018,7 @@ export class SocialAuthService {
    * Verify phone code and sign in
    */
   static async verifyPhoneCode(
-    confirmationResult: ConfirmationResult, 
+    confirmationResult: ConfirmationResult,
     code: string
   ): Promise<UserCredential> {
     try {
@@ -991,14 +1026,14 @@ export class SocialAuthService {
         logger.debug('Verifying phone code...');
       }
       const result = await confirmationResult.confirm(code);
-      
+
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Phone verification successful', {
-        uid: result.user.uid,
-        phoneNumber: result.user.phoneNumber
+          uid: result.user.uid,
+          phoneNumber: result.user.phoneNumber
         });
       }
-      
+
       // AUTO-SYNC: Create/Update user profile in Firestore
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Syncing phone user to Firestore...');
@@ -1007,9 +1042,9 @@ export class SocialAuthService {
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Phone user synced to Firestore');
       }
-      
+
       return result;
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('Phone code verification error', error as Error);
       throw new Error(this.getErrorMessage(error.code, 'Phone Verification'));
     }
@@ -1027,7 +1062,7 @@ export class SocialAuthService {
       const formattedPhone = phoneNumber.startsWith('+') ? phoneNumber : `+359${phoneNumber}`;
       const confirmationResult = await signInWithPhoneNumber(auth, formattedPhone, recaptchaVerifier);
       return confirmationResult;
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('Link phone number error', error as Error);
       throw new Error(this.getErrorMessage(error.code, 'Phone Linking'));
     }
@@ -1045,17 +1080,17 @@ export class SocialAuthService {
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Converting anonymous account to permanent...');
       }
-      
+
       // Create email credential - we'll use a different approach
       // Since EmailAuthProvider is not imported, we'll create new account instead of linking
-      
+
       // For now, let's create a new account and transfer data
       const newUserCredential = await createUserWithEmailAndPassword(auth, email, password);
-      
+
       // Transfer anonymous user's data to new account
       const anonymousUid = auth.currentUser.uid;
       const anonymousDoc = await getDoc(doc(db, 'users', anonymousUid));
-      
+
       if (anonymousDoc.exists()) {
         const anonymousData = anonymousDoc.data();
         await setDoc(doc(db, 'users', newUserCredential.user.uid), {
@@ -1067,12 +1102,12 @@ export class SocialAuthService {
           updatedAt: serverTimestamp()
         });
       }
-      
+
       if (process.env.NODE_ENV === 'development') {
         logger.debug('Anonymous account converted successfully');
       }
       return newUserCredential;
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('Convert anonymous account error', error as Error);
       throw new Error(this.getErrorMessage(error.code, 'Account Conversion'));
     }
@@ -1083,55 +1118,55 @@ export class SocialAuthService {
    */
   private static getErrorMessage(errorCode: string, provider: string): string {
     const errorMessages: { [key: string]: string } = {
-      'auth/account-exists-with-different-credential': 
+      'auth/account-exists-with-different-credential':
         'An account already exists with the same email address but different sign-in credentials.',
-      'auth/auth-domain-config-required': 
+      'auth/auth-domain-config-required':
         'Authentication domain configuration is required.',
-      'auth/cancelled-popup-request': 
+      'auth/cancelled-popup-request':
         'This operation has been cancelled due to another conflicting popup being opened.',
-      'auth/operation-not-allowed': 
+      'auth/operation-not-allowed':
         'The given sign-in provider is disabled for this Firebase project.',
-      'auth/operation-not-supported-in-this-environment': 
+      'auth/operation-not-supported-in-this-environment':
         'This operation is not supported in the current environment.',
-      'auth/popup-blocked': 
+      'auth/popup-blocked':
         'Unable to establish a connection with the popup. It may have been blocked by the browser.',
-      'auth/popup-closed-by-user': 
+      'auth/popup-closed-by-user':
         'The popup has been closed by the user before finalizing the operation.',
-      'auth/unauthorized-domain': 
+      'auth/unauthorized-domain':
         'This domain is not authorized for OAuth operations.',
-      'auth/user-disabled': 
+      'auth/user-disabled':
         'The user account has been disabled by an administrator.',
-      'auth/user-not-found': 
+      'auth/user-not-found':
         'There is no user record corresponding to this identifier.',
-      'auth/wrong-password': 
+      'auth/wrong-password':
         'The password is invalid or the user does not have a password.',
-      'auth/invalid-email': 
+      'auth/invalid-email':
         'The email address is not valid.',
-      'auth/user-cancelled': 
+      'auth/user-cancelled':
         'The user did not grant your application the permissions it requested.',
-      'auth/invalid-credential': 
+      'auth/invalid-credential':
         'The supplied auth credential is malformed or has expired.',
-      'auth/credential-already-in-use': 
+      'auth/credential-already-in-use':
         'This credential is already associated with a different user account.',
-      'auth/email-already-in-use': 
+      'auth/email-already-in-use':
         'The email address is already in use by another account.',
-      'auth/weak-password': 
+      'auth/weak-password':
         'The password provided is too weak.',
-      'auth/network-request-failed': 
+      'auth/network-request-failed':
         'A network error has occurred.',
-      'auth/too-many-requests': 
+      'auth/too-many-requests':
         'We have blocked all requests from this device due to unusual activity. Try again later.',
-      'auth/requires-recent-login': 
+      'auth/requires-recent-login':
         'This operation is sensitive and requires recent authentication. Please log in again before retrying this request.',
-      'auth/invalid-phone-number': 
+      'auth/invalid-phone-number':
         'The phone number format is invalid. Please enter a valid phone number with country code.',
-      'auth/invalid-verification-code': 
+      'auth/invalid-verification-code':
         'The verification code is invalid. Please check and try again.',
-      'auth/missing-phone-number': 
+      'auth/missing-phone-number':
         'Phone number is required for phone authentication.',
-      'auth/quota-exceeded': 
+      'auth/quota-exceeded':
         'SMS quota exceeded. Please try again later.',
-      'auth/captcha-check-failed': 
+      'auth/captcha-check-failed':
         'reCAPTCHA verification failed. Please try again.'
     };
 
@@ -1140,7 +1175,3 @@ export class SocialAuthService {
 }
 
 export default SocialAuthService;
-
-
-
-

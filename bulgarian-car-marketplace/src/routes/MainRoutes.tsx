@@ -16,6 +16,8 @@ const MessagesPage = safeLazy(() => import('../pages/03_user-pages/MessagesPage'
 const AdminPage = safeLazy(() => import('../pages/06_admin/regular-admin/AdminPage'));
 const AdminLoginPage = safeLazy(() => import('../pages/02_authentication/admin-login/AdminLoginPage'));
 const AdminDataFix = safeLazy(() => import('../pages/06_admin/regular-admin/AdminDataFix'));
+const NumericCarDetailsPage = safeLazy(() => import('../pages/01_main-pages/NumericCarDetailsPageNew'));
+const NumericMessagingPage = safeLazy(() => import('../pages/03_user-pages/NumericMessagingPage'));
 const NumericProfileRouter = safeLazy(() => import('./NumericProfileRouter'));
 const VerificationPage = safeLazy(() => import('../features/verification/VerificationPage'));
 const BillingPage = safeLazy(() => import('../features/billing/BillingPage'));
@@ -82,7 +84,7 @@ const QuickSetupPage = safeLazy(() => import('../pages/06_admin/QuickSetupPage')
 const CloudServicesManager = safeLazy(() => import('../pages/06_admin/CloudServicesManager'));
 const NotFoundPage = safeLazy(() => import('../components/NotFoundPage'));
 
-const NumericCarRedirect = safeLazy(() => import('./NumericCarRedirect'));
+
 
 /**
  * Main Content Routes
@@ -96,8 +98,8 @@ export const MainRoutes: React.FC = () => {
             <Route path="/cars" element={<CarsPage />} />
             <Route path="/cars/:id" element={<CarDetailsPage />} />
             <Route path="/car/:id" element={<CarDetailsPage />} />
-            {/* ✅ NEW: Numeric Car URLs (e.g. /car/18/1) */}
-            <Route path="/car/:sellerId/:carId" element={<NumericCarRedirect />} />
+            {/* ✅ NEW: Strict Numeric Car URLs (e.g. /car/18/1) */}
+            <Route path="/car/:sellerNumericId/:carNumericId" element={<NumericCarDetailsPage />} />
 
             <Route path="/dealer/:slug" element={<DealerPublicPage />} />
             <Route path="/dealer-registration" element={<DealerRegistrationPage />} />
@@ -132,6 +134,18 @@ export const MainRoutes: React.FC = () => {
 
             {/* 🔢 Numeric ID-based profile routes (world-class URLs) */}
             <Route path="/profile/*" element={<NumericProfileRouter />} />
+
+            {/* 🔢 Numeric Car Details Pages */}
+            {/* Strict Numeric URLs: /car/{userNumericId}/{carNumericId} */}
+            {/* Route already defined above at line 102 */}
+
+            {/* 🔢 Numeric Messaging Pages */}
+            {/* URL: /messages/{senderNumericId}/{recipientNumericId} */}
+            <Route path="/messages/:senderNumericId/:recipientNumericId" element={
+                <AuthGuard requireAuth={true}>
+                    <NumericMessagingPage />
+                </AuthGuard>
+            } />
 
             <Route path="/verification" element={<VerificationPage />} />
             <Route path="/billing" element={<BillingPage />} />

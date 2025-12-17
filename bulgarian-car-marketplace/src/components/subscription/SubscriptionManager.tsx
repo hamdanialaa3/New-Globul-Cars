@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styled, { keyframes, css } from 'styled-components';
-import { Crown, TrendingUp, Building2, CheckCircle, Zap, Shield, Sparkles, Star, Car, Bot, TrendingUp as ChartUp, Target, Lightbulb, Users, MapPin, Plug, Palette, UserCog, Link2, FileText, Phone, CheckSquare, Camera, MessageSquare, Search, Image, Battery, BadgeCheck, BarChart3, Edit3, Headphones, Calendar, CalendarCheck, Eye, ArrowRight } from 'lucide-react';
+import { Crown, TrendingUp, Building2, CheckCircle, Zap, Shield, Sparkles, Star, Car, Bot, TrendingUp as ChartUp, Target, Lightbulb, Users, MapPin, Plug, Palette, UserCog, Link2, FileText, Phone, CheckSquare, Camera, MessageSquare, Search, Image, Battery, BadgeCheck, BarChart3, Edit3, Headphones, Calendar, CalendarCheck, Eye, ArrowRight, ChevronLeft, ChevronRight, Check } from 'lucide-react';
 import billingService from '../../features/billing/BillingService';
 import type { BillingInterval, Plan } from '../../features/billing/types';
 import { useAuth } from '../../contexts/AuthProvider';
@@ -145,7 +145,7 @@ const IntervalButton = styled.button<{ $active: boolean }>`
   padding: 1rem 2.5rem;
   border-radius: 50px;
   border: none;
-  background: ${p => p.$active 
+  background: ${p => p.$active
     ? `linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%)`
     : 'transparent'
   };
@@ -154,8 +154,8 @@ const IntervalButton = styled.button<{ $active: boolean }>`
   font-size: 1.05rem;
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: ${p => p.$active 
-    ? `0 8px 25px ${() => subscriptionTheme.shadows.medium}, inset 0 1px 0 rgba(255, 255, 255, 0.2)` 
+  box-shadow: ${p => p.$active
+    ? `0 8px 25px ${() => subscriptionTheme.shadows.medium}, inset 0 1px 0 rgba(255, 255, 255, 0.2)`
     : 'none'
   };
   z-index: ${p => p.$active ? '2' : '1'};
@@ -177,24 +177,24 @@ const IntervalButton = styled.button<{ $active: boolean }>`
     position: absolute;
     inset: 0;
     border-radius: 50px;
-    background: ${p => p.$active 
-      ? 'linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 50%, rgba(0, 0, 0, 0.1) 100%)'
-      : 'transparent'
-    };
+    background: ${p => p.$active
+    ? 'linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 50%, rgba(0, 0, 0, 0.1) 100%)'
+    : 'transparent'
+  };
     opacity: ${p => p.$active ? '1' : '0'};
     transition: opacity 0.4s ease;
   }
 
   &:hover {
     transform: ${p => p.$active ? 'translateY(-3px) scale(1.02)' : 'translateY(-1px)'};
-    box-shadow: ${p => p.$active 
-      ? `0 12px 35px ${() => subscriptionTheme.shadows.large}, inset 0 1px 0 rgba(255, 255, 255, 0.3)` 
-      : '0 4px 15px rgba(0, 0, 0, 0.15)'
-    };
-    background: ${p => p.$active 
-      ? `linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%)`
-      : subscriptionTheme.backgrounds.hover
-    };
+    box-shadow: ${p => p.$active
+    ? `0 12px 35px ${() => subscriptionTheme.shadows.large}, inset 0 1px 0 rgba(255, 255, 255, 0.3)`
+    : '0 4px 15px rgba(0, 0, 0, 0.15)'
+  };
+    background: ${p => p.$active
+    ? `linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%)`
+    : subscriptionTheme.backgrounds.hover
+  };
   }
 
   &:active {
@@ -260,18 +260,126 @@ const SavingsBadge = styled.span`
   }
 `;
 
-const Grid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
+// ✅ Responsive horizontal plans layout (no wrapping)
+// - Wide screens: 3 cards visible without scrolling
+// - Narrow screens: horizontal carousel with scroll-snap + navigation arrows
+const PlansCarousel = styled.div`
+  position: relative;
   margin-top: 3rem;
+`;
 
-  @media (max-width: 1200px) {
-    grid-template-columns: repeat(2, 1fr);
+// ✅ Mobile "tap to expand" overlay (keeps subscribe button clickable)
+const ExpandOverlay = styled.div<{ $open: boolean }>`
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: ${({ $open }) => ($open ? 'flex' : 'none')};
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(10px);
+`;
+
+const ExpandSheet = styled.div`
+  width: min(520px, 94vw);
+  max-height: 90vh;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 18px;
+`;
+
+const ExpandHint = styled.div`
+  margin-top: 10px;
+  text-align: center;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.9);
+  user-select: none;
+`;
+
+const PlansViewport = styled.div`
+  display: flex;
+  gap: 2rem;
+  overflow-x: auto;
+  overflow-y: visible;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  padding: 0.25rem 0.25rem 1rem;
+  scroll-padding: 0.25rem;
+
+  /* Hide scrollbar (cross-browser) */
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
   }
 
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
+  /* Prevent vertical stacking at all widths */
+  flex-wrap: nowrap;
+
+  /* Desktop: keep 3 cards visible; still no wrap */
+  @media (min-width: 1201px) {
+    overflow-x: hidden;
+    justify-content: center;
+  }
+
+  /* ✅ Mobile portrait: show ONE full card (no peeking) */
+  @media (max-width: 600px) {
+    gap: 0;
+    padding: 0 0 1rem;
+    scroll-padding: 0;
+  }
+`;
+
+const CarouselItem = styled.div`
+  flex: 0 0 360px;
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+
+  @media (max-width: 900px) {
+    flex-basis: 340px;
+  }
+
+  @media (max-width: 600px) {
+    /* One card per viewport width */
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+  }
+`;
+
+const CarouselArrow = styled.button<{ $side: 'left' | 'right' }>`
+  position: absolute;
+  top: 50%;
+  ${({ $side }) => ($side === 'left' ? 'left: -14px;' : 'right: -14px;')}
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 20;
+  transition: transform 0.2s ease, background 0.2s ease, opacity 0.2s ease;
+
+  color: white;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.35);
+    transform: translateY(-50%) scale(1.04);
+  }
+
+  &:disabled {
+    opacity: 0.25;
+    cursor: default;
+    transform: translateY(-50%);
+  }
+
+  @media (min-width: 1201px) {
+    display: none;
   }
 `;
 
@@ -280,8 +388,8 @@ const Card = styled.div<{ $highlight?: boolean; $free?: boolean }>`
   background: var(--bg-card);
   border-radius: 16px;
   padding: 1.75rem;
-  box-shadow: ${p => p.$highlight 
-    ? `0 20px 60px ${() => subscriptionTheme.shadows.small}` 
+  box-shadow: ${p => p.$highlight
+    ? `0 20px 60px ${() => subscriptionTheme.shadows.small}`
     : 'var(--shadow-lg)'
   };
   border: ${p => p.$highlight ? '3px solid var(--accent-primary)' : '2px solid var(--border-primary)'};
@@ -296,12 +404,34 @@ const Card = styled.div<{ $highlight?: boolean; $free?: boolean }>`
     z-index: 10;
   `}
 
-  &:hover {
-    transform: ${p => p.$highlight ? 'scale(1.08)' : 'scale(1.03)'};
-    box-shadow: ${p => p.$highlight 
-      ? `0 25px 70px ${() => subscriptionTheme.shadows.small}` 
-      : 'var(--shadow-xl)'
-    };
+  /* ✅ On touch devices, do NOT pre-scale the highlighted card */
+  @media (hover: none), (pointer: coarse) {
+    ${p => p.$highlight && `
+      transform: none !important;
+    `}
+  }
+
+  /* ✅ IMPORTANT: Prevent "tap = hover" zoom on touch devices */
+  @media (hover: none), (pointer: coarse) {
+    transform: none !important;
+    &:hover {
+      transform: none !important;
+      box-shadow: ${p => p.$highlight
+    ? `0 20px 60px ${() => subscriptionTheme.shadows.small}`
+    : 'var(--shadow-lg)'
+  };
+    }
+  }
+
+  /* ✅ Only allow hover zoom on real mouse/trackpad devices */
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      transform: ${p => p.$highlight ? 'scale(1.08)' : 'scale(1.03)'};
+      box-shadow: ${p => p.$highlight
+    ? `0 25px 70px ${() => subscriptionTheme.shadows.small}`
+    : 'var(--shadow-xl)'
+  };
+    }
   }
 
   /* Shimmer effect for popular plan */
@@ -394,10 +524,10 @@ const Price = styled.div<{ $free?: boolean }>`
   .amount {
     font-size: ${p => p.$free ? '2rem' : '2.75rem'};
     font-weight: 700;
-    background: ${p => p.$free 
-      ? 'linear-gradient(135deg, #6b7280 0%, #9ca3af 100%)'
-      : `linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%)`
-    };
+    background: ${p => p.$free
+    ? 'linear-gradient(135deg, #6b7280 0%, #9ca3af 100%)'
+    : `linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%)`
+  };
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -639,7 +769,89 @@ const SubscriptionManagerEnhanced: React.FC = () => {
   const { currentUser } = useAuth();
 
   const isBg = language === 'bg';
-  const plans = billingService.getAvailablePlans();
+  const plans = useMemo(() => billingService.getAvailablePlans(), []);
+
+  // ✅ Carousel state (mobile/tablet): keep cards horizontal + arrows
+  const viewportRef = useRef<HTMLDivElement | null>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+
+  // ✅ Tap-to-expand state (mobile)
+  const [expandedPlanId, setExpandedPlanId] = useState<string | null>(null);
+  const touchStartRef = useRef<{ x: number; y: number } | null>(null);
+
+  const isCoarsePointer = useMemo(() => {
+    if (typeof window === 'undefined') return false;
+    return window.matchMedia?.('(pointer: coarse)').matches ?? false;
+  }, []);
+
+  const updateScrollState = useCallback(() => {
+    const el = viewportRef.current;
+    if (!el) return;
+    const maxScrollLeft = el.scrollWidth - el.clientWidth;
+    setCanScrollLeft(el.scrollLeft > 4);
+    setCanScrollRight(el.scrollLeft < maxScrollLeft - 4);
+  }, []);
+
+  const scrollByOneCard = useCallback((direction: 'left' | 'right') => {
+    const el = viewportRef.current;
+    if (!el) return;
+    // ✅ Scroll by "one page" on mobile (full viewport), otherwise by one card
+    const isMobile = window.matchMedia?.('(max-width: 600px)').matches ?? false;
+    const delta = isMobile
+      ? el.clientWidth * (direction === 'left' ? -1 : 1)
+      : (360 + 32) * (direction === 'left' ? -1 : 1); // card + gap
+    el.scrollBy({ left: delta, behavior: 'smooth' });
+  }, []);
+
+  const closeExpanded = useCallback(() => setExpandedPlanId(null), []);
+  const getFeaturesList = (planId: string) => {
+    switch (planId) {
+      case 'private':
+        return [
+          { icon: <Car size={18} />, text: isBg ? 'До 3 безплатни обяви/месец' : 'Up to 3 listings/month' },
+          { icon: <Edit3 size={18} />, text: isBg ? 'Без редакция на Марка/Модел' : 'No Make/Model editing' },
+          { icon: <Check size={18} />, text: isBg ? 'Стандартна видимост' : 'Standard visibility' },
+          { icon: <Check size={18} />, text: isBg ? 'Чат с купувачи' : 'Chat with buyers' },
+        ];
+      case 'dealer':
+        return [
+          { icon: <Car size={18} />, text: isBg ? 'До 25 обяви/месец' : 'Up to 25 listings/month' },
+          { icon: <Edit3 size={18} />, text: isBg ? 'Редакция на 10 обяви (Марка/Модел)' : 'Edit Make/Model (10 listings)' },
+          { icon: <Check size={18} />, text: isBg ? 'Значка "Проверен търговец"' : 'Verified Dealer Badge' },
+          { icon: <Check size={18} />, text: isBg ? 'Приоритетна поддръжка' : 'Priority Support' },
+          { icon: <Check size={18} />, text: isBg ? 'Разширени статистики' : 'Advanced Analytics' },
+        ];
+      case 'company':
+        return [
+          { icon: <Car size={18} />, text: isBg ? 'До 200 обяви/месец' : 'Up to 200 listings/month' },
+          { icon: <Edit3 size={18} />, text: isBg ? 'Неограничена редакция (Марка/Модел)' : 'Unlimited Make/Model editing' },
+          { icon: <Check size={18} />, text: isBg ? 'Всички екстри на Търговец' : 'All Dealer features' },
+          { icon: <Check size={18} />, text: isBg ? 'Премиум видимост' : 'Premium Visibility' },
+          { icon: <Check size={18} />, text: isBg ? 'API достъп (по заявка)' : 'API Access (on request)' },
+        ];
+      default:
+        return [];
+    }
+  };
+
+  const onOverlayTouchStart = useCallback((e: React.TouchEvent) => {
+    const t0 = e.touches?.[0];
+    if (!t0) return;
+    touchStartRef.current = { x: t0.clientX, y: t0.clientY };
+  }, []);
+
+  const onOverlayTouchMove = useCallback((e: React.TouchEvent) => {
+    // ✅ Any small movement closes (as requested)
+    const t0 = e.touches?.[0];
+    const start = touchStartRef.current;
+    if (!t0 || !start) return;
+    const dx = Math.abs(t0.clientX - start.x);
+    const dy = Math.abs(t0.clientY - start.y);
+    if (dx > 6 || dy > 6) {
+      closeExpanded();
+    }
+  }, [closeExpanded]);
 
   // Load current subscription
   useEffect(() => {
@@ -653,6 +865,32 @@ const SubscriptionManagerEnhanced: React.FC = () => {
     };
     loadSubscription();
   }, [currentUser]);
+
+  // Keep carousel arrow state in sync with scroll/resize/interval changes
+  useEffect(() => {
+    updateScrollState();
+    const el = viewportRef.current;
+    if (!el) return;
+
+    const onScroll = () => updateScrollState();
+    el.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', updateScrollState);
+
+    return () => {
+      el.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', updateScrollState);
+    };
+  }, [updateScrollState, interval]);
+
+  // Close expanded on Escape (desktop/dev convenience)
+  useEffect(() => {
+    if (!expandedPlanId) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closeExpanded();
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [expandedPlanId, closeExpanded]);
 
   const handleSubscribe = async (plan: Plan) => {
     if (!currentUser) {
@@ -672,87 +910,22 @@ const SubscriptionManagerEnhanced: React.FC = () => {
         plan.id as any,
         interval
       );
-      
+
       // Redirect to Stripe Checkout
       window.location.href = url;
     } catch (error: unknown) {
-      logger.error('Subscription error:', error);
-      alert(isBg 
-        ? 'Грешка при създаване на сесия. Опитайте отново.' 
+      logger.error('Subscription error:', error as Error);
+      alert(isBg
+        ? 'Грешка при създаване на сесия. Опитайте отново.'
         : 'Error creating checkout session. Please try again.'
       );
       setLoading(false);
     }
   };
 
-  const getFeaturesList = (plan: Plan): Array<{ text: string; highlight?: boolean }> => {
-    const features: Array<{ text: string; highlight?: boolean }> = [];
-    
-    // Car listing limit (highlighted)
-    if (plan.id === 'free') {
-      features.push({ 
-        text: isBg ? '5 автомобила месечно' : '5 cars per month',
-        highlight: true 
-      });
-    } else if (plan.id === 'dealer') {
-      features.push({ 
-        text: isBg ? '15 автомобила месечно' : '15 cars per month',
-        highlight: true 
-      });
-    } else if (plan.id === 'company') {
-      features.push({ 
-        text: isBg ? 'Неограничени автомобили' : 'Unlimited cars',
-        highlight: true 
-      });
-    }
 
-    // AI Features (highlighted)
-    if (plan.id === 'free') {
-      features.push({ text: isBg ? 'Без AI функции' : 'No AI features' });
-    } else if (plan.id === 'dealer') {
-      features.push({ 
-        text: isBg ? '30 AI оценки месечно' : '30 AI valuations/month',
-        highlight: true 
-      });
-      features.push({ text: isBg ? 'Анализ на пазарни цени' : 'Market price analysis' });
-      features.push({ text: isBg ? 'Интелигентни ценови препоръки' : 'Smart pricing recommendations' });
-    } else if (plan.id === 'company') {
-      features.push({ 
-        text: isBg ? 'Неограничено AI използване' : 'Unlimited AI usage',
-        highlight: true 
-      });
-      features.push({ text: isBg ? 'Разширена AI аналитика' : 'Advanced AI analytics' });
-      features.push({ text: isBg ? 'Автоматични прогнози на пазара' : 'Automated market predictions' });
-      features.push({ text: isBg ? 'Предложения за оптимизация' : 'Listing optimization suggestions' });
-    }
 
-    // Standard features based on plan
-    if (plan.id === 'free') {
-      features.push({ text: isBg ? 'До 10 снимки на автомобил' : 'Up to 10 photos per car' });
-      features.push({ text: isBg ? 'Директни съобщения' : 'Direct messaging' });
-      features.push({ text: isBg ? 'Точки на доверие' : 'Trust score' });
-      features.push({ text: isBg ? 'Видимост в търсенето' : 'Search visibility' });
-    } else if (plan.id === 'dealer') {
-      features.push({ text: isBg ? 'Неограничени снимки' : 'Unlimited photos' });
-      features.push({ text: isBg ? 'Бързи автоматични отговори' : 'Quick auto-replies' });
-      features.push({ text: isBg ? 'Значка "Препоръчан"' : 'Featured badge' });
-      features.push({ text: isBg ? 'Табло за управление на анализи' : 'Analytics dashboard' });
-      features.push({ text: isBg ? 'Масово редактиране' : 'Bulk editing' });
-      features.push({ text: isBg ? 'Приоритетна поддръжка' : 'Priority support' });
-    } else if (plan.id === 'company') {
-      features.push({ text: isBg ? 'Пълно управление на екип' : 'Full team management' });
-      features.push({ text: isBg ? 'Множество локации' : 'Multiple locations' });
-      features.push({ text: isBg ? 'Пълен API достъп' : 'Full API access' });
-      features.push({ text: isBg ? 'Персонализиран брандинг' : 'Custom branding' });
-      features.push({ text: isBg ? 'Личен мениджър акаунт' : 'Dedicated account manager' });
-      features.push({ text: isBg ? 'CRM интеграция' : 'CRM integration' });
-      features.push({ text: isBg ? 'Персонализирани отчети' : 'Custom reports' });
-      features.push({ text: isBg ? '24/7 телефонна поддръжка' : '24/7 phone support' });
-      features.push({ text: isBg ? 'SLA гаранция' : 'SLA guarantee' });
-    }
 
-    return features;
-  };
 
   const getPlanIcon = (planId: string) => {
     if (planId === 'free') return Crown;
@@ -769,7 +942,7 @@ const SubscriptionManagerEnhanced: React.FC = () => {
   const getOriginalPrice = (planId: string, interval: BillingInterval) => {
     if (planId === 'free') return null;
     if (interval === 'monthly') return null;
-    
+
     if (planId === 'dealer') {
       return '€348'; // 29 * 12 = 348, now 300 (save 48)
     }
@@ -787,7 +960,7 @@ const SubscriptionManagerEnhanced: React.FC = () => {
           {isBg ? 'Изберете вашия план' : 'Choose Your Plan'}
         </Title>
         <Subtitle>
-          {isBg 
+          {isBg
             ? 'Продавайте повече автомобили с нашите професионални инструменти и AI анализи'
             : 'Sell more cars with our professional tools and AI analytics'
           }
@@ -817,125 +990,284 @@ const SubscriptionManagerEnhanced: React.FC = () => {
         </IntervalButton>
       </IntervalToggle>
 
-      {/* Plans Grid */}
-      <Grid>
-        {plans.map((plan, index) => {
-          const isCurrent = currentPlan === plan.id;
-          const price = interval === 'monthly' ? plan.pricing.monthly : plan.pricing.annual;
-          const features = getFeaturesList(plan);
-          const Icon = getPlanIcon(plan.id);
-          const originalPrice = getOriginalPrice(plan.id, interval);
+      {/* Plans (always horizontal; carousel + arrows on small widths) */}
+      <PlansCarousel>
+        {/* ✅ Expanded mobile view */}
+        <ExpandOverlay
+          $open={!!expandedPlanId}
+          onClick={closeExpanded}
+          onTouchStart={onOverlayTouchStart}
+          onTouchMove={onOverlayTouchMove}
+          role="dialog"
+          aria-modal="true"
+        >
+          <div onClick={(e) => e.stopPropagation()}>
+            <ExpandSheet>
+              {expandedPlanId && (() => {
+                const plan = plans.find(p => p.id === expandedPlanId);
+                if (!plan) return null;
+                const isCurrent = currentPlan === plan.id;
+                const price = interval === 'monthly' ? plan.pricing.monthly : plan.pricing.annual;
+                const features = getFeaturesList(plan.id);
+                const Icon = getPlanIcon(plan.id);
+                const originalPrice = getOriginalPrice(plan.id, interval);
 
-          return (
-            <Card 
-              key={plan.id} 
-              $highlight={plan.popular} 
-              $free={plan.id === 'free'}
-              style={{ animationDelay: `${index * 0.15}s` }}
-            >
-              {plan.popular && (
-                <>
-                  <Badge>
-                    <Zap fill="white" />
-                    {isBg ? 'Най-популярен' : 'Most Popular'}
-                  </Badge>
-                  <PopularityIndicator>
-                    <Star fill="#fbbf24" />
-                    <Star fill="#fbbf24" />
-                    <Star fill="#fbbf24" />
-                    <Star fill="#fbbf24" />
-                    <Star fill="#fbbf24" />
-                  </PopularityIndicator>
-                </>
-              )}
-              
-              <IconWrapper $color={getPlanColor(plan.id)}>
-                <Icon />
-              </IconWrapper>
-              
-              <PlanName>
-                {isBg ? plan.name.bg : plan.name.en}
-              </PlanName>
-              
-              <PlanDescription>
-                {isBg ? plan.description.bg : plan.description.en}
-              </PlanDescription>
-              
-              <Price $free={plan.id === 'free'}>
-                {plan.id === 'free' ? (
-                  <div className="amount">
-                    {isBg ? 'Безплатно' : 'Free'}
-                  </div>
-                ) : (
-                  <>
-                    <div className="amount">
-                      <span className="currency">€</span>
-                      {price}
-                    </div>
-                    <div className="period">
-                      {isBg 
-                        ? (interval === 'monthly' ? 'на месец' : 'на година') 
-                        : (interval === 'monthly' ? 'per month' : 'per year')
-                      }
-                    </div>
-                    {originalPrice && interval === 'annual' && (
-                      <div className="original-price">
-                        {isBg ? `Обикновено ${originalPrice}` : `Usually ${originalPrice}`}
-                      </div>
+                return (
+                  <Card $highlight={plan.popular} $free={plan.id === 'free'} style={{ animationDelay: '0s' }}>
+                    {plan.popular && (
+                      <>
+                        <Badge>
+                          <Zap fill="white" />
+                          {isBg ? 'Най-популярен' : 'Most Popular'}
+                        </Badge>
+                        <PopularityIndicator>
+                          <Star fill="#fbbf24" />
+                          <Star fill="#fbbf24" />
+                          <Star fill="#fbbf24" />
+                          <Star fill="#fbbf24" />
+                          <Star fill="#fbbf24" />
+                        </PopularityIndicator>
+                      </>
                     )}
-                  </>
-                )}
-              </Price>
-              
-              <FeatureList>
-                {features.map((feature, idx) => (
-                  <FeatureItem key={idx} $highlight={feature.highlight}>
-                    {feature.highlight ? <Sparkles /> : <CheckCircle />}
-                    <span>{feature.text}</span>
-                  </FeatureItem>
-                ))}
-              </FeatureList>
-              
-              <Button
-                $selected={isCurrent}
-                $free={plan.id === 'free'}
-                onClick={() => !isCurrent && handleSubscribe(plan)}
-                disabled={loading || isCurrent || plan.id === 'free'}
-              >
-                {isCurrent ? (
-                  <>
-                    <CheckCircle size={20} />
-                    {isBg ? 'Текущ план' : 'Current Plan'}
-                  </>
-                ) : plan.id === 'free' ? (
-                  <>
-                    <Eye size={20} />
-                    {isBg ? 'Започнете безплатно' : 'Start Free'}
-                  </>
-                ) : loading ? (
-                  <>
-                    <Zap size={20} className="animate-spin" />
-                    {isBg ? 'Зареждане...' : 'Loading...'}
-                  </>
-                ) : (
-                  <>
-                    <Eye size={20} />
-                    {isBg ? 'Избери план' : 'Select Plan'}
-                    <ArrowRight size={18} />
-                  </>
-                )}
-              </Button>
 
-              {plan.id !== 'free' && (
-                <MoneyBackGuarantee>
-                  <Shield />
-                  <span>{isBg ? '30-дневна гаранция за връщане на пари' : '30-Day Money-Back Guarantee'}</span>
-                </MoneyBackGuarantee>
-              )}
-            </Card>
-          );
-        })}
-      </Grid>
+                    <IconWrapper $color={getPlanColor(plan.id)}>
+                      <Icon />
+                    </IconWrapper>
+
+                    <PlanName>
+                      {isBg ? plan.name.bg : plan.name.en}
+                    </PlanName>
+
+                    <PlanDescription>
+                      {isBg ? plan.description.bg : plan.description.en}
+                    </PlanDescription>
+
+                    <Price $free={plan.id === 'free'}>
+                      {plan.id === 'free' ? (
+                        <div className="amount">
+                          {isBg ? 'Безплатно' : 'Free'}
+                        </div>
+                      ) : (
+                        <>
+                          <div className="amount">
+                            <span className="currency">€</span>
+                            {price}
+                          </div>
+                          <div className="period">
+                            {isBg
+                              ? (interval === 'monthly' ? 'на месец' : 'на година')
+                              : (interval === 'monthly' ? 'per month' : 'per year')
+                            }
+                          </div>
+                          {originalPrice && interval === 'annual' && (
+                            <div className="original-price">
+                              {isBg ? `Обикновено ${originalPrice}` : `Usually ${originalPrice}`}
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </Price>
+
+                    <FeatureList>
+                      {features.map((feature, idx) => (
+                        <FeatureItem key={idx}>
+                          {feature.icon}
+                          <span>{feature.text}</span>
+                        </FeatureItem>
+                      ))}
+                    </FeatureList>
+
+
+
+                    <Button
+                      $selected={isCurrent}
+                      $free={plan.id === 'free'}
+                      onClick={() => !isCurrent && handleSubscribe(plan)}
+                      disabled={loading || isCurrent || plan.id === 'free'}
+                    >
+                      {isCurrent ? (
+                        <>
+                          <CheckCircle size={20} />
+                          {isBg ? 'Текущ план' : 'Current Plan'}
+                        </>
+                      ) : plan.id === 'free' ? (
+                        <>
+                          <Eye size={20} />
+                          {isBg ? 'Започнете безплатно' : 'Start Free'}
+                        </>
+                      ) : loading ? (
+                        <>
+                          <Zap size={20} className="animate-spin" />
+                          {isBg ? 'Зареждане...' : 'Loading...'}
+                        </>
+                      ) : (
+                        <>
+                          <Eye size={20} />
+                          {isBg ? 'Избери план' : 'Select Plan'}
+                          <ArrowRight size={18} />
+                        </>
+                      )}
+                    </Button>
+
+                    {plan.id !== 'free' && (
+                      <MoneyBackGuarantee>
+                        <Shield />
+                        <span>{isBg ? '30-дневна гаранция за връщане на пари' : '30-Day Money-Back Guarantee'}</span>
+                      </MoneyBackGuarantee>
+                    )}
+                  </Card>
+                );
+              })()}
+            </ExpandSheet>
+            <ExpandHint>
+              {isBg ? 'Докоснете извън картата أو حرّك قليلاً للإغلاق' : 'Tap outside or move slightly to close'}
+            </ExpandHint>
+          </div>
+        </ExpandOverlay>
+
+        <CarouselArrow
+          $side="left"
+          onClick={() => scrollByOneCard('left')}
+          disabled={!canScrollLeft}
+          aria-label="Previous plan"
+          type="button"
+        >
+          <ChevronLeft size={22} />
+        </CarouselArrow>
+
+        <CarouselArrow
+          $side="right"
+          onClick={() => scrollByOneCard('right')}
+          disabled={!canScrollRight}
+          aria-label="Next plan"
+          type="button"
+        >
+          <ChevronRight size={22} />
+        </CarouselArrow>
+
+        <PlansViewport ref={viewportRef}>
+          {plans.map((plan, index) => {
+            const isCurrent = currentPlan === plan.id;
+            const price = interval === 'monthly' ? plan.pricing.monthly : plan.pricing.annual;
+            const features = getFeaturesList(plan);
+            const Icon = getPlanIcon(plan.id);
+            const originalPrice = getOriginalPrice(plan.id, interval);
+
+            return (
+              <CarouselItem key={plan.id}>
+                <Card
+                  $highlight={plan.popular}
+                  $free={plan.id === 'free'}
+                  style={{ animationDelay: `${index * 0.15}s` }}
+                  onClick={() => {
+                    if (isCoarsePointer) setExpandedPlanId(plan.id);
+                  }}
+                >
+                  {plan.popular && (
+                    <>
+                      <Badge>
+                        <Zap fill="white" />
+                        {isBg ? 'Най-популярен' : 'Most Popular'}
+                      </Badge>
+                      <PopularityIndicator>
+                        <Star fill="#fbbf24" />
+                        <Star fill="#fbbf24" />
+                        <Star fill="#fbbf24" />
+                        <Star fill="#fbbf24" />
+                        <Star fill="#fbbf24" />
+                      </PopularityIndicator>
+                    </>
+                  )}
+
+                  <IconWrapper $color={getPlanColor(plan.id)}>
+                    <Icon />
+                  </IconWrapper>
+
+                  <PlanName>
+                    {isBg ? plan.name.bg : plan.name.en}
+                  </PlanName>
+
+                  <PlanDescription>
+                    {isBg ? plan.description.bg : plan.description.en}
+                  </PlanDescription>
+
+                  <Price $free={plan.id === 'free'}>
+                    {plan.id === 'free' ? (
+                      <div className="amount">
+                        {isBg ? 'Безплатно' : 'Free'}
+                      </div>
+                    ) : (
+                      <>
+                        <div className="amount">
+                          <span className="currency">€</span>
+                          {price}
+                        </div>
+                        <div className="period">
+                          {isBg
+                            ? (interval === 'monthly' ? 'на месец' : 'на година')
+                            : (interval === 'monthly' ? 'per month' : 'per year')
+                          }
+                        </div>
+                        {originalPrice && interval === 'annual' && (
+                          <div className="original-price">
+                            {isBg ? `Обикновено ${originalPrice}` : `Usually ${originalPrice}`}
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </Price>
+
+                  <FeatureList>
+                    {features.map((feature, idx) => (
+                      <FeatureItem key={idx} $highlight={feature.highlight}>
+                        {feature.highlight ? <Sparkles /> : <CheckCircle />}
+                        <span>{feature.text}</span>
+                      </FeatureItem>
+                    ))}
+                  </FeatureList>
+
+                  <Button
+                    $selected={isCurrent}
+                    $free={plan.id === 'free'}
+                    onClick={() => !isCurrent && handleSubscribe(plan)}
+                    disabled={loading || isCurrent || plan.id === 'free'}
+                  >
+                    {isCurrent ? (
+                      <>
+                        <CheckCircle size={20} />
+                        {isBg ? 'Текущ план' : 'Current Plan'}
+                      </>
+                    ) : plan.id === 'free' ? (
+                      <>
+                        <Eye size={20} />
+                        {isBg ? 'Започнете безплатно' : 'Start Free'}
+                      </>
+                    ) : loading ? (
+                      <>
+                        <Zap size={20} className="animate-spin" />
+                        {isBg ? 'Зареждане...' : 'Loading...'}
+                      </>
+                    ) : (
+                      <>
+                        <Eye size={20} />
+                        {isBg ? 'Избери план' : 'Select Plan'}
+                        <ArrowRight size={18} />
+                      </>
+                    )}
+                  </Button>
+
+                  {plan.id !== 'free' && (
+                    <MoneyBackGuarantee>
+                      <Shield />
+                      <span>{isBg ? '30-дневна гаранция за връщане на пари' : '30-Day Money-Back Guarantee'}</span>
+                    </MoneyBackGuarantee>
+                  )}
+                </Card>
+              </CarouselItem>
+            );
+          })}
+        </PlansViewport>
+      </PlansCarousel>
     </Container>
   );
 };

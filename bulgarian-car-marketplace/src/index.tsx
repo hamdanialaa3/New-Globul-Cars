@@ -8,7 +8,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { initPerformanceMonitoring } from './utils/performance-monitoring';
 import { logger } from './services/logger-service';
-import { registerServiceWorker } from './utils/serviceWorkerRegistration';
+import { registerServiceWorker, unregisterServiceWorker } from './utils/serviceWorkerRegistration';
 import webVitalsTracker from './utils/webVitals';
 
 // Import Firebase configuration
@@ -75,6 +75,7 @@ if (process.env.NODE_ENV === 'production') {
   });
 } else {
   logger.debug('Service Worker disabled in development mode');
+  unregisterServiceWorker();
 }
 
 // Install prompt

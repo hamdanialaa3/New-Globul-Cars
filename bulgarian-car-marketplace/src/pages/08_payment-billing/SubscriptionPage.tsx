@@ -7,14 +7,14 @@ import styled, { keyframes } from 'styled-components';
 import { useLanguage } from '../../contexts/LanguageContext';
 import SubscriptionManager from '../../components/subscription/SubscriptionManager';
 import { useAuth } from '../../contexts/AuthProvider';
+import { subscriptionService } from '../../services/billing/subscription-service';
+import { toast } from 'react-toastify';
 // ✅ استيراد ملف الإعدادات المركزي
 import subscriptionTheme, { getPrimaryGradient, getPrimaryGradientWithMiddle, getShadowColor } from '../../components/subscription/subscription-theme';
-// 🧪 ملف اختبار - احذفه بعد التأكد
-import TestColorChange from '../../components/subscription/TEST_COLOR_CHANGE';
-import { 
-  Crown, ArrowLeft, Star, Shield, TrendingUp, Users, 
+import {
+  Crown, ArrowLeft, Star, Shield, TrendingUp, Users,
   CheckCircle, Sparkles, Award, Zap, Clock, HeartHandshake,
-  ChevronDown, Quote, MessageSquare, ThumbsUp, Rocket, 
+  ChevronDown, Quote, MessageSquare, ThumbsUp, Rocket,
   BarChart3, HelpCircle, Target
 } from 'lucide-react';
 
@@ -678,7 +678,42 @@ const SubscriptionPage: React.FC = () => {
   const { language } = useLanguage();
   const { currentUser } = useAuth();
   const [openFAQ, setOpenFAQ] = useState<number | null>(null);
+  const [loadingPlan, setLoadingPlan] = useState<string | null>(null); // Track which plan is loading
   const isBg = language === 'bg';
+
+  const handleSubscribe = async (planId: 'dealer' | 'company', interval: 'monthly' | 'annual' = 'monthly') => {
+    if (!currentUser) {
+      navigate('/login', { state: { from: '/subscription' } });
+      return;
+    }
+
+    try {
+      setLoadingPlan(planId);
+      // Show toast
+      const toastId = toast.loading(isBg ? 'Подготовка на плащане...' : 'Preparing checkout...');
+
+      const result = await subscriptionService.createCheckoutSession({
+        userId: currentUser.uid,
+        planId: planId,
+        interval: interval,
+        successUrl: window.location.origin + '/billing/success',
+        cancelUrl: window.location.origin + '/subscription'
+      });
+
+      toast.dismiss(toastId);
+
+      if (result.checkoutUrl) {
+        window.location.assign(result.checkoutUrl);
+      } else {
+        throw new Error('No checkout URL');
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(isBg ? 'Грешка при стартиране на плащане' : 'Failed to start checkout');
+    } finally {
+      setLoadingPlan(null);
+    }
+  };
 
   // Scroll animations
   useEffect(() => {
@@ -702,7 +737,7 @@ const SubscriptionPage: React.FC = () => {
     {
       name: 'Иван Петров',
       role: isBg ? 'Автокъща София' : 'Car Dealership Sofia',
-      text: isBg 
+      text: isBg
         ? 'С Dealer плана продажбите ни се увеличиха с 40%. AI оценките са невероятно точни!'
         : 'With the Dealer plan, our sales increased by 40%. AI valuations are incredibly accurate!',
       avatar: 'ИП',
@@ -808,8 +843,6 @@ const SubscriptionPage: React.FC = () => {
 
   return (
     <PageContainer>
-      {/* 🧪 ملف اختبار - احذفه بعد التأكد */}
-      <TestColorChange />
       {/* Hero Header */}
       <HeroHeader>
         <HeroContent>

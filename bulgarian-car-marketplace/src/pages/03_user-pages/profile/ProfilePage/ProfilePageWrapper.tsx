@@ -1,5 +1,6 @@
 import React from 'react';
 import { Outlet, useNavigate, useParams, useLocation } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { useTranslation } from '../../../../hooks/useTranslation';
 import { useLanguage } from '../../../../contexts/LanguageContext';
 import { useProfile } from './hooks/useProfile';
@@ -17,11 +18,13 @@ import {
   RefreshCw,
   MapPin,
   Mail,
-  Phone as PhoneIcon
+  Phone as PhoneIcon,
+  Crown // Added Crown icon
 } from 'lucide-react';
 import * as S from './styles';
 import { TabNavigation, TabNavLink, SyncButton, FollowButton } from './TabNavigation.styles';
 import { CoverImageUploader, BusinessBackground, SimpleProfileAvatar, ProfileImageUploader } from '../../../../components/Profile';
+import { ProfileTypeSwitcher } from '../components/ProfileTypeSwitcher'; // Added Import
 import { googleProfileSyncService } from '../../../../services/google/google-profile-sync.service';
 import { followService } from '../../../../services/social/follow.service';
 import { logger } from '../../../../services/logger-service';
@@ -98,6 +101,7 @@ const ProfilePageWrapper: React.FC = () => {
   }, [activeProfile?.uid, activeProfile?.numericId, isOwnProfile]);
 
   const [syncing, setSyncing] = React.useState(false);
+  const [showTypeSwitcher, setShowTypeSwitcher] = React.useState(false); // Added State
 
   // ⚡ AUTO-UPDATE PROFILE STATS: Update stats when profile loads
   React.useEffect(() => {
@@ -128,7 +132,7 @@ const ProfilePageWrapper: React.FC = () => {
   const [followLoading, setFollowLoading] = React.useState(false);
 
   // Business mode check
-  const isBusinessMode = activeProfile?.accountType === 'business' || activeProfile?.accountType === 'dealer' || activeProfile?.accountType === 'company';
+  const isBusinessMode = activeProfile?.profileType === 'dealer' || activeProfile?.profileType === 'company';
 
   // ⚡ FIX: Check if following - with cleanup for promise
   // Only check if targetUserId is a valid user ID (not a route like 'settings', 'my-ads', etc.)
@@ -150,7 +154,6 @@ const ProfilePageWrapper: React.FC = () => {
     return () => { cancelled = true; };
   }, [viewer, activeProfile]);
 
-  // Google Sync Handler
   const handleGoogleSync = async () => {
     if (!viewer || !isOwnProfile) return;
     setSyncing(true);
@@ -161,8 +164,67 @@ const ProfilePageWrapper: React.FC = () => {
         await refresh();
       }
     } catch (error) {
-      logger.error('Sync error:', error);
+      logger.error('Sync error:', error as Error);
       alert(language === 'bg' ? 'Грешка при синхронизация' : 'Sync error');
+    } finally {
+      setSyncing(false);
+    }
+  };
+
+  // ⚡ PAYMENT & SWITCH LOGIC
+  const handleProfileSwitch = async (newType: 'private' | 'dealer' | 'company') => {
+    if (!user) return;
+    const currentType = user.profileType || 'private';
+
+    if (newType === currentType) return;
+
+    // Payment Logic for Dealer/Company
+    if (newType === 'dealer' || newType === 'company') {
+      const cost = newType === 'dealer' ? '€29' : '€199';
+      const confirmed = window.confirm(
+        language === 'bg'
+          ? `Активиране на план ${newType.toUpperCase()}?\nЦена: ${cost}/месец.\nЩе бъдете пренасочени към плащане.`
+          : `Activate ${newType.toUpperCase()} Plan?\nCost: ${cost}/month.\nProceed to Stripe Checkout?`
+      );
+
+      if (!confirmed) return;
+
+      // Simulate Payment Processing
+      const toastId = toast.loading(language === 'bg' ? 'Обработване на плащане...' : 'Processing payment...');
+
+      // 2 second delay to simulate API call
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      toast.update(toastId, {
+        render: language === 'bg' ? 'Плащането е успешно! Планът е активиран.' : 'Payment Successful! Plan activated.',
+        type: "success",
+        isLoading: false,
+        autoClose: 3000
+      });
+    }
+
+    try {
+      setSyncing(true); // Loading state
+      const { doc, updateDoc, serverTimestamp } = await import('firebase/firestore');
+      const { db } = await import('../../../../firebase/firebase-config');
+
+      const userRef = doc(db, 'users', user.uid);
+      let planTier = 'free';
+      if (newType === 'dealer') planTier = 'dealer';
+      if (newType === 'company') planTier = 'company';
+
+      await updateDoc(userRef, {
+        profileType: newType,
+        planTier: planTier,
+        updatedAt: serverTimestamp()
+      });
+
+      // Optimistic Update
+      setUser(prev => prev ? { ...prev, profileType: newType, planTier: planTier as any } : null);
+
+    } catch (err) {
+      logger.error('Failed to switch profile', err as Error);
+      toast.error('Failed to update profile');
     } finally {
       setSyncing(false);
     }
@@ -230,7 +292,7 @@ const ProfilePageWrapper: React.FC = () => {
         setIsFollowing(true);
       }
     } catch (error) {
-      logger.error('Follow error:', error);
+      logger.error('Follow error:', error as Error);
     } finally {
       setFollowLoading(false);
     }
@@ -243,7 +305,10 @@ const ProfilePageWrapper: React.FC = () => {
   };
 
   return (
-    <S.ProfilePageContainer $isBusinessMode={isBusinessMode}>
+    <S.ProfilePageContainer
+      $isBusinessMode={isBusinessMode}
+      $profileType={(activeProfile?.profileType as any) ?? 'private'}
+    >
       <BusinessBackground isBusinessAccount={isBusinessMode} />
 
       <S.PageContainer>
@@ -299,16 +364,14 @@ const ProfilePageWrapper: React.FC = () => {
               />
             )}
 
-            {/* Centered Profile Picture */}
             <S.CenteredProfileImageWrapper>
               <ProfileImageUploader
-                currentImageUrl={typeof activeProfile?.photoURL === 'string' ? activeProfile.photoURL : (typeof activeProfile?.profileImage === 'object' ? activeProfile.profileImage?.url : undefined)}
+                currentImageUrl={activeProfile?.photoURL || (activeProfile as any)?.profileImage?.url}
                 onUploadSuccess={(url) => {
                   // Update local state immediately
                   setUser(prev => prev ? {
                     ...prev,
-                    photoURL: url,
-                    profileImage: url ? { url, uploadedAt: new Date() } : undefined
+                    photoURL: url
                   } : null);
                   // Refresh profile data
                   refresh();
@@ -353,6 +416,58 @@ const ProfilePageWrapper: React.FC = () => {
             <S.StatBarActionsSection>
               {isOwnProfile ? (
                 <>
+                  <div style={{ position: 'relative', display: 'flex', alignItems: 'center', marginRight: '8px' }}>
+                    <Crown size={16} className="text-amber-500" style={{ position: 'absolute', left: '10px', zIndex: 1, pointerEvents: 'none' }} />
+                    <select
+                      value={activeProfile.profileType || 'private'}
+                      onChange={(e) => handleProfileSwitch(e.target.value as 'private' | 'dealer' | 'company')}
+                      disabled={syncing}
+                      style={{
+                        appearance: 'none',
+                        padding: '8px 12px 8px 32px',
+                        borderRadius: '20px',
+                        // ✅ Theme-aware colors (light/dark)
+                        border: '1px solid var(--border, rgba(0,0,0,0.12))',
+                        background: 'var(--bg-card, rgba(255,255,255,0.9))',
+                        color: 'var(--text-primary, #1a1a1a)',
+                        fontSize: '0.85rem',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                        // Keep the premium/glass feel while still working in both themes
+                        backdropFilter: 'blur(8px)',
+                        outline: 'none'
+                      }}
+                    >
+                      <option
+                        value="private"
+                        style={{ backgroundColor: 'var(--bg-card, #ffffff)', color: 'var(--text-primary, #1a1a1a)' }}
+                      >
+                        {t(
+                          'profile.plan.private',
+                          language === 'bg' ? 'Частен (Безплатен, 3 обяви)' : 'Private (Free, 3 cars)'
+                        )}
+                      </option>
+                      <option
+                        value="dealer"
+                        style={{ backgroundColor: 'var(--bg-card, #ffffff)', color: 'var(--text-primary, #1a1a1a)' }}
+                      >
+                        {t(
+                          'profile.plan.dealer',
+                          language === 'bg' ? 'Търговец (€27.78/мес, 25 обяви)' : 'Dealer (€27.78/mo, 25 cars)'
+                        )}
+                      </option>
+                      <option
+                        value="company"
+                        style={{ backgroundColor: 'var(--bg-card, #ffffff)', color: 'var(--text-primary, #1a1a1a)' }}
+                      >
+                        {t(
+                          'profile.plan.company',
+                          language === 'bg' ? 'Компания (€187.88/мес, 200 обяви)' : 'Company (€187.88/mo, 200 cars)'
+                        )}
+                      </option>
+                    </select>
+                  </div>
+
                   <S.ActionButtonCompact $variant="secondary" onClick={handleGoogleSync}>
                     <RefreshCw size={16} className={syncing ? 'spinning' : ''} />
                     {syncing
@@ -380,6 +495,13 @@ const ProfilePageWrapper: React.FC = () => {
             </S.StatBarActionsSection>
           </S.SingleStatsBar>
         ) : null}
+
+        {/* Premium Profile Type Switcher - Toggled via Tier button */}
+        {showTypeSwitcher && isOwnProfile && (
+          <div style={{ marginBottom: '24px' }}>
+            <ProfileTypeSwitcher />
+          </div>
+        )}
 
         {/* ⚡ HIDDEN: Old Profile Header - Will be merged into ProfileDashboard */}
         {false && window.location.pathname === '/profile' && (

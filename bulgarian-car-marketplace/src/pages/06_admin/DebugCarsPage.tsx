@@ -163,32 +163,91 @@ const DebugCarsPage: React.FC = () => {
     }
   };
 
+  const VEHICLE_COLLECTIONS = [
+    'cars', // Backward compatibility
+    'passenger_cars',
+    'suvs',
+    'vans',
+    'motorcycles',
+    'trucks',
+    'buses'
+  ];
+
+  const deleteLegacyCars = async () => {
+    if (!window.confirm('Are you sure you want to delete ALL cars without numeric IDs from ALL collections? This cannot be undone.')) {
+      return;
+    }
+
+    try {
+      setLoading(true);
+      let totalDeleted = 0;
+      const { deleteDoc, doc } = await import('firebase/firestore');
+
+      for (const collectionName of VEHICLE_COLLECTIONS) {
+        const carsRef = collection(db, collectionName);
+        const snapshot = await getDocs(carsRef);
+
+        const legacyCars = snapshot.docs.filter(doc => {
+          const data = doc.data();
+          return !data.carNumericId || !data.sellerNumericId;
+        });
+
+        if (legacyCars.length > 0) {
+          logger.info(`Found ${legacyCars.length} legacy cars in ${collectionName}`);
+
+          for (const carDoc of legacyCars) {
+            await deleteDoc(doc(db, collectionName, carDoc.id));
+            totalDeleted++;
+          }
+        }
+      }
+
+      if (totalDeleted === 0) {
+        alert('No legacy cars found to delete in any collection.');
+      } else {
+        alert(`Successfully deleted ${totalDeleted} legacy cars across all collections.`);
+        fetchAllCars(); // Refresh list
+      }
+
+    } catch (error) {
+      logger.error('Error deleting legacy cars', error as Error);
+      alert('Error deleting legacy cars! Check console.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const fetchAllCars = async () => {
     try {
       setLoading(true);
-      const carsRef = collection(db, 'cars');
-      const snapshot = await getDocs(carsRef);
+      let allCars: CarDebugData[] = [];
 
-      const carsData = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as CarDebugData[];
+      for (const collectionName of VEHICLE_COLLECTIONS) {
+        const carsRef = collection(db, collectionName);
+        const snapshot = await getDocs(carsRef);
+        const carsData = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+          _sourceCollection: collectionName
+        })) as CarDebugData[];
+        allCars = [...allCars, ...carsData];
+      }
 
-      setCars(carsData);
+      setCars(allCars);
 
       // Calculate stats
       const cityStats: Record<string, number> = {};
-      const withLocation = carsData.filter((car) => car.location && car.locationData?.cityNameId);
-      const withOldCity = carsData.filter((car) => car.city && !car.location?.cityId);
-      const withoutCity = carsData.filter((car) => !car.city && !car.location?.cityId);
+      const withLocation = allCars.filter((car) => car.location && car.locationData?.cityNameId);
+      const withOldCity = allCars.filter((car) => car.city && !car.location?.cityId);
+      const withoutCity = allCars.filter((car) => !car.city && !car.location?.cityId);
 
-      carsData.forEach((car) => {
+      allCars.forEach((car) => {
         const city = car.location?.cityId || car.city || 'Unknown';
         cityStats[city] = (cityStats[city] || 0) + 1;
       });
 
       setStats({
-        total: carsData.length,
+        total: allCars.length,
         withUnifiedLocation: withLocation.length,
         withOldCity: withOldCity.length,
         withoutCity: withoutCity.length,
@@ -215,6 +274,14 @@ const DebugCarsPage: React.FC = () => {
 
         <Button onClick={fetchAllCars} disabled={loading}>
           {loading ? 'جاري التحميل...' : 'عرض كل السيارات'}
+        </Button>
+
+        <Button
+          onClick={deleteLegacyCars}
+          disabled={loading}
+          style={{ background: '#e53e3e' }}
+        >
+          {loading ? 'جاري الحذف...' : 'حذف السيارات القديمة (Non-Numeric)'}
         </Button>
 
         {stats && (
@@ -254,7 +321,7 @@ const DebugCarsPage: React.FC = () => {
               <CarItem key={car.id}>
                 <h3>{car.make} {car.model} ({car.year || 'N/A'})</h3>
                 <p><strong>ID:</strong> {car.id}</p>
-                
+
                 <details>
                   <summary style={{ cursor: 'pointer', fontWeight: 'bold', marginTop: '0.5rem' }}>
                     📍 Location Data (انقر للعرض)

@@ -159,12 +159,12 @@ class ProfileStatsService {
       const stats = await this.getStats(profileId, true);
 
       // Persist to profile document for simple frontend consumption
-      // Using 'any' cast to avoid strict type checking on update for now
-      await import('firebase/firestore').then(({ updateDoc, doc }) => {
-        updateDoc(doc(db, 'profiles', profileId), {
+      // Using setDoc with merge: true to ensure document exists
+      await import('firebase/firestore').then(({ setDoc, doc }) => {
+        setDoc(doc(db, 'profiles', profileId), {
           stats: stats,
           lastStatsUpdate: new Date()
-        });
+        }, { merge: true });
       });
 
       logger.info('Profile stats persisted to DB', { profileId });

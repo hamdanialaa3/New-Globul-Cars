@@ -256,8 +256,18 @@ const CarCardCompact: React.FC<CarCardCompactProps> = ({ car }) => {
 
   const price = car.price || 0;
 
+  // ✅ CRITICAL FIX: Generate numeric URL if available, fallback to legacy URL
+  const getCarUrl = (): string => {
+    // Use numeric IDs if available (strict numeric ID system)
+    if (car.sellerNumericId && car.carNumericId) {
+      return `/car/${car.sellerNumericId}/${car.carNumericId}`;
+    }
+    // Fallback to legacy URL format
+    return `/cars/${car.id}`;
+  };
+
   return (
-    <CarCard to={`/cars/${car.id}`}>
+    <CarCard to={getCarUrl()}>
       <CarImageWrapper>
         {getMainImage() ? (
           <CarImage 

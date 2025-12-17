@@ -231,6 +231,40 @@ export class AdvancedMessagingService {
   }
 
   /**
+   * Send system message (e.g. car link)
+   */
+  async sendSystemMessage(
+    conversationId: string,
+    senderId: string,
+    receiverId: string,
+    text: string,
+    metadata?: any
+  ): Promise<string> {
+    try {
+      const messageData = {
+        conversationId,
+        senderId,
+        receiverId,
+        text,
+        type: 'system',
+        status: 'sent',
+        createdAt: serverTimestamp(),
+        ...metadata
+      };
+
+      const docRef = await addDoc(collection(db, 'messages'), messageData);
+      
+      // Update conversation last message
+      await this.updateConversation(conversationId, senderId, text);
+
+      return docRef.id;
+    } catch (error) {
+      logger.error('Send system message failed', error as Error);
+      throw error;
+    }
+  }
+
+  /**
    * Send message with attachments
    * إرسال رسالة مع مرفقات
    */

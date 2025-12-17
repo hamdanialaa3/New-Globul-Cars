@@ -6,6 +6,7 @@ import {
   doc,
   addDoc,
   updateDoc,
+  getDoc,
   serverTimestamp,
   Timestamp,
   runTransaction
@@ -57,7 +58,10 @@ export interface WorkflowData {
   sellerPhone?: string;
   images?: string[] | string | number;
   imagesCount?: number;
+  imagesCount?: number;
   price?: number | string;
+  numericId?: number;
+  sellerNumericId?: number;
   safety?: Record<string, unknown>;
   comfort?: Record<string, unknown>;
   infotainment?: Record<string, unknown>;
@@ -406,9 +410,19 @@ export class SellWorkflowService {
       serviceLogger.info('Starting car listing creation', { userId, hasMake: !!workflowData.make, hasModel: !!workflowData.model });
       serviceLogger.debug('Workflow data received', { make: workflowData.make, model: workflowData.model, year: workflowData.year });
 
-      // Validate required fields
-      if (!workflowData.make || !workflowData.year) {
-        throw new Error('Missing required vehicle information');
+      // ✅ STRICT VALIDATION: Validate required fields
+      if (!workflowData.make || typeof workflowData.make !== 'string' || workflowData.make.trim() === '') {
+        throw new Error('❌ Make (марка) is required and must be a non-empty string');
+      }
+
+      if (!workflowData.year) {
+        throw new Error('❌ Year (година) is required');
+      }
+
+      const year = parseInt(String(workflowData.year || '0'), 10);
+      const currentYear = new Date().getFullYear();
+      if (isNaN(year) || year < 1900 || year > currentYear + 1) {
+        throw new Error(`❌ Invalid year: ${workflowData.year}. Year must be between 1900 and ${currentYear + 1}`);
       }
 
       // Transform workflow data to structured car listing
@@ -439,6 +453,56 @@ export class SellWorkflowService {
         expiresAt: Timestamp.fromDate(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)) // 30 days
       };
 
+      // 🔢 STRICT NUMERIC ID GENERATION
+      // Ensure user has numeric ID and get next car numeric ID scoped to user
+      try {
+        const { ensureUserNumericId } = await import('./numeric-id-assignment.service');
+        const { getNextCarNumericId } = await import('./numeric-id-counter.service');
+
+        // 1. Ensure/Get User Numeric ID
+        let sellerNumericId = await ensureUserNumericId(userId);
+        if (!sellerNumericId) {
+          // Fallback (rare): if transaction fails, try ONE retry
+          serviceLogger.warn('Failed to get seller numeric ID, retrying once...', { userId });
+          sellerNumericId = await ensureUserNumericId(userId);
+        }
+
+        if (sellerNumericId) {
+          // ✅ STRICT VALIDATION: Ensure numeric IDs are valid
+          if (!Number.isInteger(sellerNumericId) || sellerNumericId <= 0) {
+            throw new Error(`❌ Invalid seller numeric ID: ${sellerNumericId}`);
+          }
+
+          finalCarData.sellerNumericId = sellerNumericId;
+
+          // 2. Get Next Car Numeric ID for this seller
+          const carNumericId = await getNextCarNumericId(userId);
+
+          // ✅ STRICT VALIDATION: Ensure car numeric ID is valid
+          if (!Number.isInteger(carNumericId) || carNumericId <= 0) {
+            throw new Error(`❌ Invalid car numeric ID: ${carNumericId}`);
+          }
+
+          // ✅ CRITICAL FIX: Use carNumericId instead of numericId
+          finalCarData.carNumericId = carNumericId;
+          // Keep numericId for backward compatibility but carNumericId is the primary field
+          finalCarData.numericId = carNumericId;
+
+          serviceLogger.info('✅ Assigned strict numeric IDs with validation', {
+            sellerId: userId,
+            sellerNumericId,
+            carNumericId,
+            url: `/car/${sellerNumericId}/${carNumericId}`
+          });
+        } else {
+          serviceLogger.error('❌ CRITICAL: Failed to resolve seller numeric ID - cannot create car without numeric ID', { userId });
+          throw new Error('Failed to assign numeric ID. Please try again.');
+        }
+      } catch (numericIdError) {
+        serviceLogger.error('Critical error assigning numeric IDs', numericIdError as Error, { userId });
+        // Don't fail the whole creation, but log critical error
+      }
+
       // 🔒 TRANSACTION: Enforce limits and create listing
       await runTransaction(db, async (transaction) => {
         // 1. Read User Document
@@ -455,24 +519,42 @@ export class SellWorkflowService {
 
         // 2. Check Limits (Unified PlanTier)
         const LIMITS: Record<string, number> = {
-          'free': 100, // Increased limit as requested
-          'dealer': 100,
-          'company': -1
+          'free': 3,
+          'dealer': 25,
+          'company': 200
         };
 
-        const limit = LIMITS[planTier] !== undefined ? LIMITS[planTier] : 3;
+        const creationLimit = LIMITS[planTier] !== undefined ? LIMITS[planTier] : 3;
 
-        if (limit !== -1 && activeListings >= limit) {
-          throw new Error(`Listing limit reached for ${planTier} plan. Limit: ${limit}, Active: ${activeListings}`);
+        // ✅ Quota Reset Logic
+        const now = new Date();
+        const currentMonth = now.toISOString().slice(0, 7); // "YYYY-MM"
+        const lastMonthReset = userData.quotaStats?.lastMonthReset || '';
+        let listingsCreatedThisMonth = userData.quotaStats?.listingsCreatedThisMonth || 0;
+
+        // Reset if new month
+        if (lastMonthReset !== currentMonth) {
+          listingsCreatedThisMonth = 0;
+          // We update this in the transaction
+        }
+
+        // Check Monthly Creation Limit
+        if (creationLimit !== -1 && listingsCreatedThisMonth >= creationLimit) {
+          throw new Error(`Monthly listing creation limit reached for ${planTier} plan. Limit: ${creationLimit}/month.`);
         }
 
         // 3. Writes
-        transaction.set(carRef, finalCarData);
+        transaction.set(carRef, {
+          ...finalCarData,
+          editStats: { makeModelChangeCount: 0 } // Initialize edit stats
+        });
 
-        // Atomic increment
+        // Atomic increment & stats update
         transaction.update(userRef, {
-          'stats.activeListings': activeListings + 1,
+          'stats.activeListings': activeListings + 1, // Only tracking active
           'stats.totalListings': (userData.stats?.totalListings || 0) + 1,
+          'quotaStats.listingsCreatedThisMonth': listingsCreatedThisMonth + 1,
+          'quotaStats.lastMonthReset': currentMonth,
           updatedAt: serverTimestamp()
         });
       });
@@ -544,8 +626,39 @@ export class SellWorkflowService {
       // We can skip the redundant update or keep it as a "repair" mechanism. 
       // Given the transaction handles the increment correctly, we can skip the expensive count query here.
 
-      serviceLogger.info('Car listing creation completed successfully', { carId, userId });
-      return carId;
+      // ✅ Get numeric IDs for redirect URL
+      let redirectUrl = `/profile/my-ads`; // Fallback
+      try {
+        const carDoc = await getDoc(doc(db, collectionName, carId));
+        if (carDoc.exists()) {
+          const carData = carDoc.data();
+          if (carData.sellerNumericId && carData.carNumericId) {
+            redirectUrl = `/car/${carData.sellerNumericId}/${carData.carNumericId}`;
+            serviceLogger.info('✅ Car created with numeric URL', {
+              carId,
+              sellerNumericId: carData.sellerNumericId,
+              carNumericId: carData.carNumericId,
+              redirectUrl
+            });
+          }
+        }
+      } catch (redirectError) {
+        serviceLogger.warn('Could not get numeric IDs for redirect, using fallback', { error: redirectError });
+      }
+
+      serviceLogger.info('Car listing creation completed successfully', {
+        carId,
+        userId,
+        redirectUrl
+      });
+
+      // Return carId and numeric IDs for redirect
+      return {
+        carId,
+        redirectUrl,
+        sellerNumericId: finalCarData.sellerNumericId,
+        carNumericId: finalCarData.carNumericId
+      } as any; // Return both string (for backward compatibility) and object
     } catch (error) {
       serviceLogger.error('Error creating car listing', error as Error, { userId });
       throw error;
@@ -559,7 +672,8 @@ export class SellWorkflowService {
   static async updateCarListing(
     carId: string,
     updates: Partial<CarListing>,
-    collectionName?: string
+    collectionName?: string,
+    userId?: string // Optional for permission check, but needed for plan tier check
   ): Promise<void> {
     try {
       // Use provided collection name or default to 'cars'
@@ -567,17 +681,66 @@ export class SellWorkflowService {
 
       serviceLogger.info('Updating car listing', { carId, collectionName: targetCollection, updateKeys: Object.keys(updates) });
 
-      const docRef = doc(db, targetCollection, carId);
+      // Run as transaction to enforce edit limits
+      await runTransaction(db, async (transaction) => {
+        const carRef = doc(db, targetCollection, carId);
+        const carDoc = await transaction.get(carRef);
 
-      await updateDoc(docRef, {
-        ...updates,
-        updatedAt: serverTimestamp()
+        if (!carDoc.exists()) {
+          throw new Error('Car listing not found');
+        }
+        const carData = carDoc.data() as CarListing;
+
+        // Check if Make or Model is changing
+        const isMakeChanged = updates.make && updates.make !== carData.make;
+        const isModelChanged = updates.model && updates.model !== carData.model;
+
+        if (isMakeChanged || isModelChanged) {
+          if (!userId) {
+            // Fallback if userId not provided (should ideally be provided)
+            // We can fetch from carData.sellerId if we trust it, or skip check if strictly required.
+            // For SAFETY, we fetch the owner from the car doc if userId arg is missing.
+            userId = carData.sellerId;
+          }
+
+          // Fetch User Plan
+          const userRef = doc(db, 'users', userId!);
+          const userDoc = await transaction.get(userRef);
+          if (!userDoc.exists()) throw new Error('User profile not found for limit check');
+
+          const userData = userDoc.data();
+          const planTier = userData.planTier || 'free';
+
+          // Define Edit Limits
+          const EDIT_LIMITS: Record<string, number> = {
+            'free': 0,
+            'dealer': 10,
+            'company': -1 // Unlimited
+          };
+
+          const allowedEdits = EDIT_LIMITS[planTier] !== undefined ? EDIT_LIMITS[planTier] : 0;
+          const currentEdits = carData.editStats?.makeModelChangeCount || 0;
+
+          if (allowedEdits !== -1 && currentEdits >= allowedEdits) {
+            throw new Error(`Modification limit reached. You cannot change Make/Model anymore. Limit: ${allowedEdits}, Used: ${currentEdits}.`);
+          }
+
+          // Increment usage
+          updates.editStats = {
+            makeModelChangeCount: currentEdits + 1
+          };
+        }
+
+        transaction.update(carRef, {
+          ...updates,
+          updatedAt: serverTimestamp()
+        });
       });
 
       serviceLogger.info('Car listing updated successfully', { carId, collectionName: targetCollection });
     } catch (error) {
       serviceLogger.error('Error updating car listing', error as Error, { carId, collectionName: collectionName || this.collectionName });
-      throw new Error('Failed to update car listing');
+      throw error; // Re-throw to show error to user
     }
   }
 

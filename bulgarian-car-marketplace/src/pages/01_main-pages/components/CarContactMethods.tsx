@@ -16,6 +16,7 @@ import {
   FacebookMessengerIcon,
   SMSIcon,
 } from './ContactIcons';
+import { MessageCircle } from 'lucide-react';
 
 interface CarContactMethodsProps {
   car: CarListing;
@@ -35,6 +36,7 @@ export const CarContactMethods: React.FC<CarContactMethodsProps> = ({
   onToggleContact,
 }) => {
   const contacts = [
+    { key: 'message', label: 'Chat', Icon: MessageCircle },
     { key: 'phone', label: 'Phone', Icon: PhoneIcon },
     { key: 'email', label: 'Email', Icon: EmailIcon },
     { key: 'whatsapp', label: 'WhatsApp', Icon: WhatsAppIcon },
@@ -49,57 +51,65 @@ export const CarContactMethods: React.FC<CarContactMethodsProps> = ({
       <SectionTitle>
         {language === 'bg' ? 'Предпочитан начин на контакт' : 'Preferred Contact Method'}
       </SectionTitle>
-      
-      <div style={{ 
-        display: 'flex', 
+
+      <div style={{
+        display: 'flex',
         flexWrap: 'wrap',
-        justifyContent: 'center', 
+        justifyContent: 'center',
         alignItems: 'center',
-        gap: '1rem', 
+        gap: '1rem',
         marginTop: '1.5rem',
         padding: '1rem 0'
       }}>
         {contacts.map(contact => {
           const fieldKey = `contact${contact.key.charAt(0).toUpperCase() + contact.key.slice(1)}` as keyof CarListing;
-          
+
           let isActive = false;
           let canClick = false;
-          
+
           if (isEditMode) {
-            isActive = Boolean(editedCar[fieldKey]);
+            isActive = Boolean(fieldKey in editedCar ? editedCar[fieldKey] : false);
+            // Note: 'contactMessage' doesn't exist on CarListing, so we handle it gracefully below or just ignore for edit mode
+            if (contact.key === 'message') isActive = true; // Always show chat in edit mode? Or maybe just hide it.
             canClick = true;
           } else {
-            isActive = Boolean(car[fieldKey]);
-            canClick = isActive;
-            
-            const hasPhone = Boolean(car.sellerPhone);
-            const hasEmail = Boolean(car.sellerEmail);
-            
-            if (isActive) {
-              switch(contact.key) {
-                case 'phone':
-                case 'whatsapp':
-                case 'viber':
-                case 'telegram':
-                case 'sms':
-                  isActive = hasPhone;
-                  canClick = hasPhone;
-                  break;
-                case 'email':
-                  isActive = hasEmail;
-                  canClick = hasEmail;
-                  break;
-                case 'facebook':
-                  isActive = hasPhone || hasEmail;
-                  canClick = hasPhone || hasEmail;
-                  break;
+            // View Mode
+            if (contact.key === 'message') {
+              isActive = true; // Always active for viewer
+              canClick = true;
+            } else {
+              isActive = Boolean(car[fieldKey]);
+              canClick = isActive;
+
+              const hasPhone = Boolean(car.sellerPhone);
+              const hasEmail = Boolean(car.sellerEmail);
+
+              if (isActive) {
+                switch (contact.key) {
+                  case 'phone':
+                  case 'whatsapp':
+                  case 'viber':
+                  case 'telegram':
+                  case 'sms':
+                    isActive = hasPhone;
+                    canClick = hasPhone;
+                    break;
+                  case 'email':
+                    isActive = hasEmail;
+                    canClick = hasEmail;
+                    break;
+                  case 'facebook':
+                    isActive = hasPhone || hasEmail;
+                    canClick = hasPhone || hasEmail;
+                    break;
+                }
               }
             }
           }
-          
+
           return (
-            <ContactItem 
-              key={contact.key} 
+            <ContactItem
+              key={contact.key}
               $isActive={isActive}
               onClick={(e) => {
                 if (!isActive && !isEditMode) {
@@ -108,7 +118,10 @@ export const CarContactMethods: React.FC<CarContactMethodsProps> = ({
                   return;
                 }
                 if (isEditMode) {
-                  onToggleContact(fieldKey);
+                  // Don't toggle 'message' as it's not a field
+                  if (contact.key !== 'message') {
+                    onToggleContact(fieldKey);
+                  }
                 } else if (canClick) {
                   onContactClick(contact.key);
                 }
@@ -130,4 +143,3 @@ export const CarContactMethods: React.FC<CarContactMethodsProps> = ({
     </EquipmentSection>
   );
 };
-

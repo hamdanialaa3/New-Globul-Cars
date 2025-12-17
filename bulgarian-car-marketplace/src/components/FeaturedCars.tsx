@@ -307,8 +307,19 @@ const FeaturedCars: React.FC<FeaturedCarsProps> = ({
           itemMinWidth="280px"
           showArrows={true}
         >
-          {visibleCars.map((car) => (
-            <CarCard key={car.id} to={`/cars/${car.id}`}>
+          {visibleCars.map((car) => {
+            // ✅ CRITICAL FIX: Generate numeric URL if available, fallback to legacy URL
+            const getCarUrl = (): string => {
+              // Use numeric IDs if available (strict numeric ID system)
+              if ((car as any).sellerNumericId && (car as any).carNumericId) {
+                return `/car/${(car as any).sellerNumericId}/${(car as any).carNumericId}`;
+              }
+              // Fallback to legacy URL format
+              return `/cars/${car.id}`;
+            };
+            
+            return (
+            <CarCard key={car.id} to={getCarUrl()}>
             <CarImageWrapper>
               {car.images && car.images.length > 0 ? (
               <CarImage 
@@ -405,7 +416,8 @@ const FeaturedCars: React.FC<FeaturedCarsProps> = ({
               </CarLocation>
             </CarInfo>
           </CarCard>
-          ))}
+          );
+          })}
         </HorizontalScrollContainer>
       </FeaturedCarsContainer>
     </>

@@ -225,12 +225,8 @@ class UnifiedCarService {
           let q = query(collection(db, collectionName));
 
           // Apply Firestore filters
-          if (filters.make) {
-            q = query(q, where('make', '==', filters.make));
-          }
-          if (filters.model) {
-            q = query(q, where('model', '==', filters.model));
-          }
+          // NOTE: make and model filters are applied client-side for case-insensitive matching
+          // Firestore where() is case-sensitive, so we filter client-side instead
           if (filters.fuelType) {
             q = query(q, where('fuelType', '==', filters.fuelType));
           }
@@ -285,52 +281,105 @@ class UnifiedCarService {
         serviceLogger.info('📋 Collections checked:', { collections });
       }
 
-      // Client-side filters
+      // Client-side filters with detailed logging
       let filteredCars = allCars;
+      const initialCount = filteredCars.length;
+      serviceLogger.info('🔍 Starting client-side filtering', { initialCount });
 
+      // Filter 0: Make (case-insensitive)
+      if (filters.make) {
+        const beforeCount = filteredCars.length;
+        const searchMake = filters.make.toLowerCase().trim();
+        filteredCars = filteredCars.filter(c => {
+          const carMake = (c.make || '').toLowerCase().trim();
+          return carMake === searchMake;
+        });
+        serviceLogger.info('✅ make filter (case-insensitive)', { 
+          beforeCount, 
+          afterCount: filteredCars.length, 
+          searchMake: filters.make,
+          matched: filteredCars.slice(0, 3).map(c => c.make)
+        });
+      }
+
+      // Filter 0.5: Model (case-insensitive)
+      if (filters.model) {
+        const beforeCount = filteredCars.length;
+        const searchModel = filters.model.toLowerCase().trim();
+        filteredCars = filteredCars.filter(c => {
+          const carModel = (c.model || '').toLowerCase().trim();
+          return carModel === searchModel;
+        });
+        serviceLogger.info('✅ model filter (case-insensitive)', { 
+          beforeCount, 
+          afterCount: filteredCars.length, 
+          searchModel: filters.model 
+        });
+      }
+
+      // Filter 1: isActive
       if (filters.isActive !== undefined) {
         const beforeCount = filteredCars.length;
         filteredCars = filteredCars.filter(c => (c.isActive !== false) === filters.isActive);
+        serviceLogger.info('✅ isActive filter', { beforeCount, afterCount: filteredCars.length, filterValue: filters.isActive });
       } else {
         // Default: show only active cars
         const beforeCount = filteredCars.length;
         filteredCars = filteredCars.filter(c => c.isActive !== false);
-        serviceLogger.info('isActive default filter applied', { beforeCount, afterCount: filteredCars.length });
+        serviceLogger.info('✅ isActive default filter (active only)', { beforeCount, afterCount: filteredCars.length });
       }
       
+      // Filter 2: isSold
       if (filters.isSold !== undefined) {
         const beforeCount = filteredCars.length;
         filteredCars = filteredCars.filter(c => (c.isSold === true) === filters.isSold);
+        serviceLogger.info('✅ isSold filter', { beforeCount, afterCount: filteredCars.length, filterValue: filters.isSold });
       } else {
         // Default: hide sold cars
         const beforeCount = filteredCars.length;
         filteredCars = filteredCars.filter(c => c.isSold !== true);
-        serviceLogger.info('isSold default filter applied', { beforeCount, afterCount: filteredCars.length });
+        serviceLogger.info('✅ isSold default filter (hide sold)', { beforeCount, afterCount: filteredCars.length });
       }
       
+      // Filter 3: Year range
       if (filters.minYear) {
         const beforeCount = filteredCars.length;
         filteredCars = filteredCars.filter(c => c.year >= filters.minYear!);
+        serviceLogger.info('✅ minYear filter', { beforeCount, afterCount: filteredCars.length, minYear: filters.minYear });
       }
       if (filters.maxYear) {
         const beforeCount = filteredCars.length;
         filteredCars = filteredCars.filter(c => c.year <= filters.maxYear!);
+        serviceLogger.info('✅ maxYear filter', { beforeCount, afterCount: filteredCars.length, maxYear: filters.maxYear });
       }
+      
+      // Filter 4: Price range
       if (filters.minPrice) {
         const beforeCount = filteredCars.length;
         filteredCars = filteredCars.filter(c => c.price >= filters.minPrice!);
+        serviceLogger.info('✅ minPrice filter', { beforeCount, afterCount: filteredCars.length, minPrice: filters.minPrice });
       }
       if (filters.maxPrice) {
         const beforeCount = filteredCars.length;
         filteredCars = filteredCars.filter(c => c.price <= filters.maxPrice!);
+        serviceLogger.info('✅ maxPrice filter', { beforeCount, afterCount: filteredCars.length, maxPrice: filters.maxPrice });
       }
+      
+      // Filter 5: Body type
       if (filters.bodyType) {
         const beforeCount = filteredCars.length;
         filteredCars = filteredCars.filter(c => {
           const carBodyType = (c as any).bodyType || '';
           return carBodyType.toLowerCase() === filters.bodyType!.toLowerCase();
         });
+        serviceLogger.info('✅ bodyType filter', { beforeCount, afterCount: filteredCars.length, bodyType: filters.bodyType });
       }
+      
+      serviceLogger.info('🎯 Filtering complete', { 
+        initialCount, 
+        finalCount: filteredCars.length, 
+        filtersApplied: Object.keys(filters).length 
+      });
 
       // Sort and limit
       const sorted = filteredCars.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
@@ -480,7 +529,8 @@ class UnifiedCarService {
   // ==================== WRITE OPERATIONS ====================
 
   /**
-   * Create new car
+   * Create new car (with numeric IDs support)
+   * ✅ NEW: Uses numeric-car-system-service for strict numeric URL structure
    */
   async createCar(carData: Partial<UnifiedCar>): Promise<string> {
     const currentUser = auth.currentUser;
@@ -489,31 +539,37 @@ class UnifiedCarService {
     }
 
     try {
-      const docRef = await addDoc(collection(db, this.collectionName), {
+      // ✅ NEW: Use numeric car system for creation
+      const { numericCarSystemService } = await import('../numeric-car-system.service');
+      
+      const numericCarData = await numericCarSystemService.createCarWithNumericIds({
         ...carData,
-        sellerId: currentUser.uid,
-        status: 'active',
-        isActive: true,
-        isSold: false,
-        views: 0,
-        favorites: 0,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp()
+        make: carData.make || '',
+        model: carData.model || '',
+        year: carData.year || new Date().getFullYear(),
+        price: carData.price || 0
       });
 
       // Invalidate cache
       this.invalidateCache();
 
-      serviceLogger.info('Car created', { carId: docRef.id, userId: currentUser.uid });
+      serviceLogger.info('✅ Car created with numeric IDs', {
+        carId: numericCarData.id,
+        sellerNumericId: numericCarData.sellerNumericId,
+        carNumericId: numericCarData.carNumericId,
+        url: `/car/${numericCarData.sellerNumericId}/${numericCarData.carNumericId}`
+      });
       
       // Award points for creating listing
       try {
         const { pointsAutomationService } = await import('../profile/points-automation.service');
-        await pointsAutomationService.onListingCreated(currentUser.uid, docRef.id);
+        await pointsAutomationService.onListingCreated(currentUser.uid, numericCarData.id);
       } catch (error) {
         // Don't fail car creation if points fail
         serviceLogger.error('Failed to award points for listing creation', error as Error);
       }
+      
+      return numericCarData.id;
       
       return docRef.id;
     } catch (error) {

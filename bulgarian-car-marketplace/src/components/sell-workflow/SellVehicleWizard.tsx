@@ -496,7 +496,16 @@ export const SellVehicleWizard: React.FC<SellVehicleWizardProps> = ({
       }
 
       let carId: string;
+      let redirectUrl: string | undefined;
+
       try {
+        const createOrUpdatePayload = {
+          ...payload,
+          images: undefined, // Images are handled separately
+          imagesCount: imageFiles.length,
+          status: 'pending' // Default status for new listings
+        };
+
         if (process.env.NODE_ENV === 'development') {
           logger.debug('Calling car service', { mode });
         }
@@ -504,38 +513,41 @@ export const SellVehicleWizard: React.FC<SellVehicleWizardProps> = ({
         if (mode === 'edit' && existingCarId) {
           const { unifiedCarService } = await import('../../services/car/unified-car.service');
           // For update, we pass the merged payload.
-          // We need to handle image updates:
-          // 1. New images (in imageFiles) need uploading.
-          // 2. Existing images (in payload.images? or separate) need preserving.
 
-          // Upload new images
+          // Upload new images logic...
           let uploadedUrls: string[] = [];
           if (imageFiles.length > 0) {
             const { imageUploadService } = await import('../../services/car/image-upload.service');
             uploadedUrls = await imageUploadService.uploadImages(existingCarId, imageFiles);
           }
 
-          // Combine with existing (logic depends on how we tracked deletions of old images)
-          // For simplicity in this step, we just append new ones. 
-          // Ideally we should track "remaining existing images".
-
-          // Perform Update
           const updatePayload = {
-            ...payload,
-            images: undefined // handle images separately if needed or let service handle
+            ...createOrUpdatePayload,
+            images: undefined
           };
-          // Remove undefined/nulls
 
           await unifiedCarService.updateCar(existingCarId, updatePayload);
           carId = existingCarId;
 
           toast.success(language === 'bg' ? 'Промените са запазени!' : 'Changes saved!');
         } else {
-          carId = await SellWorkflowService.createCarListing(payload, currentUser.uid, imageFiles);
+          // ✅ FIX: Handle object return from createCarListing
+          const result = await SellWorkflowService.createCarListing(createOrUpdatePayload, currentUser.uid, imageFiles);
+
+          if (typeof result === 'object' && result !== null && 'carId' in result) {
+            carId = result.carId;
+            redirectUrl = (result as any).redirectUrl;
+            // Capture redirect URL if available, but for now we focus on getting a valid carId
+          } else if (typeof result === 'string') {
+            carId = result;
+          } else {
+            logger.error('Unexpected return type from createCarListing', { result });
+            throw new Error('Unexpected return type from server');
+          }
         }
 
         if (process.env.NODE_ENV === 'development') {
-          logger.debug('createCarListing returned carId', { carId, type: typeof carId, length: carId?.length });
+          logger.debug('createCarListing returned carId', { carId, type: typeof carId });
         }
 
         if (!carId || typeof carId !== 'string' || carId.trim() === '') {
@@ -619,14 +631,17 @@ export const SellVehicleWizard: React.FC<SellVehicleWizardProps> = ({
       // Close modal first, then navigate to car detail page
       onComplete(); // This will trigger modal close
 
-      // Navigate to the My Ads page after a short delay
+      // Navigate to the correct URL after a short delay
       setTimeout(() => {
-        // Navigate to My Ads page
-        const myAdsUrl = '/profile/my-ads';
-        if (process.env.NODE_ENV === 'development') {
-          logger.debug('Navigating to My Ads page', { myAdsUrl, imageCount: imageFiles.length });
+        if (redirectUrl) {
+          logger.info('Navigating to strict numeric URL', { redirectUrl });
+          navigate(redirectUrl);
+        } else {
+          // Fallback to My Ads if something went wrong with redirection logic
+          const myAdsUrl = '/profile/my-ads';
+          logger.warn('Numeric URL not found, falling back to My Ads', { carId });
+          navigate(myAdsUrl);
         }
-        navigate(myAdsUrl);
       }, 100);
 
     } catch (error: unknown) {

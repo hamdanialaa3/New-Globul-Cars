@@ -390,8 +390,14 @@ const CarSuggestionsList: React.FC<CarSuggestionsListProps> = ({
     loadSuggestions();
   }, [currentCar, limit]);
 
-  const handleCardClick = (carId: string) => {
-    navigate(`/car/${carId}`);
+  const handleCardClick = (car: UnifiedCar) => {
+    // ✅ CRITICAL FIX: Use numeric URL if available, fallback to legacy URL
+    if ((car as any).sellerNumericId && (car as any).carNumericId) {
+      navigate(`/car/${(car as any).sellerNumericId}/${(car as any).carNumericId}`);
+    } else {
+      // Fallback to legacy URL
+      navigate(`/car/${car.id}`);
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -485,7 +491,7 @@ const CarSuggestionsList: React.FC<CarSuggestionsListProps> = ({
               <SuggestionCard
                 key={car.id}
                 $isDark={isDark}
-                onClick={() => handleCardClick(car.id)}
+                onClick={() => handleCardClick(car)}
               >
                 <SuggestionImage $isDark={isDark}>
                   {car.images && car.images.length > 0 ? (

@@ -14,6 +14,20 @@ const fadeIn = keyframes`
   }
 `;
 
+// ✅ LED border sweep (modern, subtle, realistic)
+const ledSweep = keyframes`
+  0% { transform: translateX(-60%); opacity: 0; }
+  10% { opacity: 1; }
+  50% { opacity: 1; }
+  90% { opacity: 0.9; }
+  100% { transform: translateX(160%); opacity: 0; }
+`;
+
+const ledBreath = keyframes`
+  0%, 100% { opacity: 0.55; filter: blur(0px); }
+  50% { opacity: 0.95; filter: blur(0.2px); }
+`;
+
 const pulse = (color: string) => keyframes`
   0% { box-shadow: 0 0 0 0 ${color}; }
   70% { box-shadow: 0 0 0 10px rgba(204,169,44, 0); }
@@ -68,12 +82,32 @@ const baseButtonStyles = css`
 `;
 
 // Styled Components
-export const ProfilePageContainer = styled.div<{ $isBusinessMode?: boolean }>`
+export const ProfilePageContainer = styled.div<{ $isBusinessMode?: boolean; $profileType?: ProfileType }>`
   position: relative;
   padding-top: 2rem;
   padding-bottom: 4rem;
   background: var(--bg-primary);
   color: var(--text-primary);
+  
+  /* ✅ LED theme variables by profile type */
+  ${({ $profileType }) => {
+    if ($profileType === 'dealer') {
+      return css`
+        --led-color: #22c55e; /* modern green */
+        --led-glow: rgba(34, 197, 94, 0.35);
+      `;
+    }
+    if ($profileType === 'company') {
+      return css`
+        --led-color: #3b82f6; /* modern blue */
+        --led-glow: rgba(59, 130, 246, 0.35);
+      `;
+    }
+    return css`
+      --led-color: transparent;
+      --led-glow: transparent;
+    `;
+  }}
   
   /* Dark Mode Support */
   html[data-theme="dark"] & {
@@ -99,6 +133,74 @@ export const ProfilePageContainer = styled.div<{ $isBusinessMode?: boolean }>`
   @media (max-width: 480px) {
     padding-bottom: 70px;
   }
+`;
+
+// ✅ Reusable LED frame (applies only for dealer/company)
+const ledFrame = css`
+  position: relative;
+  overflow: hidden;
+
+  /* If no LED color (private), do nothing */
+  ${({ theme }) => css``}
+
+  /* Thin LED strip */
+  &::before {
+    content: '';
+    position: absolute;
+    left: 10px;
+    right: 10px;
+    top: 0;
+    height: 2px;
+    border-radius: 999px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      var(--led-color) 20%,
+      rgba(255, 255, 255, 0.85) 50%,
+      var(--led-color) 80%,
+      transparent 100%
+    );
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* Moving highlight sweep (realistic LED shimmer) */
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -60%;
+    width: 60%;
+    height: 2px;
+    border-radius: 999px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.0) 10%,
+      rgba(255, 255, 255, 0.95) 50%,
+      rgba(255, 255, 255, 0.0) 90%,
+      transparent 100%
+    );
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* Enable LED only for dealer/company */
+  ${({ theme }) => css`
+    /* Use the container CSS vars; if led-color is transparent, this stays invisible */
+    &::before {
+      animation: ${ledBreath} 2.4s ease-in-out infinite;
+      box-shadow:
+        0 0 10px var(--led-glow),
+        0 0 18px var(--led-glow);
+      opacity: calc(0.85 * (var(--led-color, transparent) != transparent));
+    }
+    &::after {
+      animation: ${ledSweep} 1.9s ease-in-out infinite;
+      opacity: 0.85;
+      box-shadow: 0 0 16px var(--led-glow);
+    }
+  `}
 `;
 
 export const ProfileHeader = styled.header`
@@ -618,6 +720,7 @@ export const ProfileSidebar = styled.aside<{ $isBusinessMode: boolean; $themeCol
   border: 1px solid ${({ theme }) => theme.colors.grey[200]};
   align-self: start;
   position: sticky;
+  ${ledFrame}
   top: 80px;
   display: flex;
   flex-direction: column;
@@ -655,6 +758,7 @@ export const ContentSection = styled.section<{ $themeColor?: string; $isBusiness
   margin-bottom: 2rem;
   border: 1px solid ${({ theme }) => theme.colors.grey[200]};
   box-shadow: ${({ theme }) => theme.shadows.base};
+  ${ledFrame}
   
   /* Dark Mode Support */
   html[data-theme="dark"] & {

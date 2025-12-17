@@ -42,6 +42,7 @@ import { CarListing } from '../../../types/CarListing';
 import StaticMapEmbed from '../../../components/StaticMapEmbed';
 import GlobulCarLogo from '../../../components/icons/GlobulCarLogo';
 import { useTheme } from '../../../contexts/ThemeContext';
+import { useAuth } from '../../../contexts/AuthProvider';
 import CarSuggestionsList from './CarSuggestionsList';
 
 interface CarDetailsGermanStyleProps {
@@ -1500,6 +1501,7 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
   const { theme } = useTheme();
   const isDark = theme === 'dark';
   const navigate = useNavigate();
+  const { currentUser } = useAuth();
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [showAllFeatures, setShowAllFeatures] = useState(false);
 
@@ -1556,21 +1558,39 @@ const CarDetailsGermanStyle: React.FC<CarDetailsGermanStyleProps> = ({
     }
   };
 
-  const handleContactDealer = () => {
+  const handleContactDealer = async () => {
     console.log('🚀 handleContactDealer called:', {
       sellerId,
       profileId,
       carId: car.id,
       'car.sellerId': car.sellerId,
       'car.userId': car.userId,
-      navigatingTo: `/messages?userId=${sellerId}`
+      'car.sellerNumericId': car.sellerNumericId
     });
 
-    if (sellerId) {
-      // Navigate to messages with seller (always use UUID for messaging for now)
-      navigate(`/messages?userId=${sellerId}`);
-    } else {
-      console.error('❌ No sellerId available!');
+    // ✅ CRITICAL FIX: Use numeric messaging URL if available
+    try {
+      if (car.sellerNumericId && currentUser?.uid) {
+        // Get current user's numeric ID
+        const { SocialAuthService } = await import('../../../firebase/social-auth-service');
+        const currentUserProfile = await SocialAuthService.getBulgarianUserProfile(currentUser.uid);
+        
+        if (currentUserProfile?.numericId) {
+          navigate(`/messages/${currentUserProfile.numericId}/${car.sellerNumericId}`);
+          return;
+        }
+      }
+      
+      // Fallback to legacy URL
+      if (sellerId) {
+        navigate(`/messages?userId=${sellerId}`);
+      } else {
+        console.error('❌ No sellerId available!');
+        onContact('phone');
+      }
+    } catch (error) {
+      console.error('Error navigating to messages:', error);
+      // Fallback to phone contact
       onContact('phone');
     }
   };

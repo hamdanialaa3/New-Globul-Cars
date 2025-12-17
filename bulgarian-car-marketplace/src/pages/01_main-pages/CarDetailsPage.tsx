@@ -26,8 +26,13 @@ import {
 } from './CarDetailsPage.styles';
 import { CarListing } from '../../types/CarListing';
 
-const CarDetailsPage: React.FC = () => {
-  const { id: carId } = useParams<{ id: string }>();
+interface CarDetailsPageProps {
+  forcedCarId?: string;
+}
+
+const CarDetailsPage: React.FC<CarDetailsPageProps> = ({ forcedCarId }) => {
+  const { id: paramId } = useParams<{ id: string }>();
+  const carId = forcedCarId || paramId;
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { language } = useLanguage();
@@ -119,6 +124,16 @@ const CarDetailsPage: React.FC = () => {
     const cleanPhone = phone.replace(/\D/g, '');
 
     switch (method) {
+      case 'message':
+        if (currentUser) {
+          navigate(`/messages?userId=${car?.sellerId}&carId=${car?.id}&carTitle=${encodeURIComponent(`${car?.make} ${car?.model}`)}`);
+        } else {
+          // Redirect to login or show alert
+          alert(language === 'bg' ? 'Моля влезте в профила си, за да изпратите съобщение.' : 'Please log in to send a message.');
+          // Optional: navigate('/login');
+        }
+        break;
+
       case 'phone':
         if (phone) {
           window.location.href = `tel:${phone}`;

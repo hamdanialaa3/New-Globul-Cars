@@ -26,10 +26,23 @@ service cloud.firestore {
       allow write: if isOwner(resource.data.userId) || (request.resource.data.userId == request.auth.uid);
     }
     
-    // Users collection (if separate from profiles)
+    // Users collection
     match /users/{userId} {
       allow read: if isAuthenticated();
       allow write: if isOwner(userId);
+    }
+    
+    // Stripe Customers & Checkout Sessions (Explicit Rule)
+    match /customers/{uid} {
+      allow read: if request.auth.uid == uid;
+      allow write: if request.auth.uid == uid;
+
+      match /checkout_sessions/{id} {
+        allow read, write: if request.auth.uid == uid;
+      }
+      match /subscriptions/{id} {
+        allow read: if request.auth.uid == uid;
+      }
     }
 
     // Cars/Listings

@@ -254,10 +254,20 @@ const AdvancedSearchWidget: React.FC<AdvancedSearchWidgetProps> = ({ onSearchCom
 
   const searchFilters = useMemo(() => {
     const filters: any = { isActive: true, isSold: false };
-    if (debouncedMake) filters.make = sanitizeCarMakeModel(debouncedMake);
-    if (debouncedModel) filters.model = sanitizeCarMakeModel(debouncedModel);
+    // Don't sanitize - keep original case for better matching
+    if (debouncedMake) filters.make = debouncedMake;
+    if (debouncedModel) filters.model = debouncedModel;
     if (debouncedMaxPrice) filters.maxPrice = parseInt(debouncedMaxPrice);
     if (debouncedYearFrom) filters.minYear = parseInt(debouncedYearFrom);
+    
+    // Log search filters for debugging
+    logger.info('🔍 Search filters built', { 
+      make: filters.make, 
+      model: filters.model,
+      maxPrice: filters.maxPrice,
+      minYear: filters.minYear
+    });
+    
     return filters;
   }, [debouncedMake, debouncedModel, debouncedMaxPrice, debouncedYearFrom]);
 
@@ -268,26 +278,42 @@ const AdvancedSearchWidget: React.FC<AdvancedSearchWidgetProps> = ({ onSearchCom
         return;
       }
       try {
-        // Determine mock count or actual API
-        const cars = await unifiedCarService.searchCars(searchFilters, 1);
-        setCarCount(cars.length > 0 ? Math.floor(Math.random() * 5000) + 1000 : 0);
-      } catch (e) {
-        // ignore
+        // Get actual count from database - fetch more to get accurate count
+        const cars = await unifiedCarService.searchCars(searchFilters, 1000);
+        setCarCount(cars.length);
+        logger.info('Search preview count', { filters: searchFilters, count: cars.length });
+      } catch (error) {
+        logger.error('Error getting car count', error as Error);
+        setCarCount(0);
       }
     };
     getCarCount();
   }, [searchFilters]);
 
 
-  const handleSearch = useCallback(() => {
+  const handleSearch = useCallback((e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    
     const params = new URLSearchParams();
     if (make) params.set('make', make);
     if (model) params.set('model', model);
     if (yearFrom) params.set('yearMin', yearFrom);
     if (maxPrice) params.set('priceMax', maxPrice);
 
-    navigate(`/cars?${params.toString()}`);
-  }, [make, model, yearFrom, maxPrice, navigate]);
+    // Log search action
+    logger.info('User initiated search', {
+      make,
+      model,
+      yearFrom,
+      maxPrice,
+      expectedCount: carCount
+    });
+
+    // Navigate to search results page
+    const searchUrl = `/cars?${params.toString()}`;
+    logger.info('Navigating to search results', { url: searchUrl });
+    navigate(searchUrl);
+  }, [make, model, yearFrom, maxPrice, carCount, navigate]);
 
   const handleTabClick = (tab: 'search' | 'sell' | 'evaluate') => {
     setActiveTab(tab);
@@ -313,7 +339,7 @@ const AdvancedSearchWidget: React.FC<AdvancedSearchWidgetProps> = ({ onSearchCom
         </TabBtn>
       </DashboardTabs>
 
-      <SearchGrid onSubmit={(e) => { e.preventDefault(); handleSearch(); }}>
+      <SearchGrid onSubmit={handleSearch}>
 
         {/* MAKE */}
         <FormGroup>
@@ -377,6 +403,28 @@ const AdvancedSearchWidget: React.FC<AdvancedSearchWidgetProps> = ({ onSearchCom
         </SearchBtn>
 
       </SearchGrid>
+
+      {/* Car count display */}
+      {carCount !== null && (
+        <div style={{
+          textAlign: 'center',
+          marginTop: '20px',
+          padding: '15px',
+          background: 'rgba(0, 204, 255, 0.1)',
+          border: '1px solid rgba(0, 204, 255, 0.3)',
+          borderRadius: '12px',
+          fontSize: '0.95rem',
+          color: '#00ccff',
+          fontWeight: 600,
+          letterSpacing: '0.5px'
+        }}>
+          <span style={{ marginRight: '8px' }}>🚗</span>
+          {language === 'bg' 
+            ? `Намерени ${carCount} ${carCount === 1 ? 'автомобил' : 'автомобила'} по критериите`
+            : `Found ${carCount} ${carCount === 1 ? 'car' : 'cars'} matching criteria`
+          }
+        </div>
+      )}
 
       {/* integrated QuickBrandsSection */}
       <QuickBrandsSection />

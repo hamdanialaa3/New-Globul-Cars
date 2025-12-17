@@ -1,4 +1,5 @@
 import { logger } from '../../services/logger-service';
+import { subscriptionService } from '../../services/billing/subscription-service';
 // src/features/billing/BillingService.ts
 // Billing Service - Stripe Integration via Extension
 
@@ -25,52 +26,54 @@ class BillingService {
       // FREE PLAN - Private Seller
       {
         id: 'free',
-        name: { bg: 'Безплатен', en: 'Free' },
-        description: { bg: 'За частни продавачи - 5 автомобила на месец', en: 'For private sellers - 5 cars per month' },
+        name: { bg: 'Частен', en: 'Private' },
+        description: { bg: 'За частни лица - 3 автомобила на месец', en: 'For private sellers - 3 cars per month' },
         profileType: 'private',
         pricing: { monthly: 0, annual: 0 },
-        listingCap: 5,  // 5 cars per month
+        listingCap: 3,  // 3 cars per month
         features: [
           'basic_listing',
           'standard_photos',
           'contact_buyers',
           'trust_score',
-          'search_visibility'
+          'search_visibility',
+          'no_brand_edit' // Custom feature flag
         ],
         popular: false
       },
-      
-      // DEALER PLAN - €29/month or €300/year
+
+      // DEALER PLAN - €27.78/month or €278/year
       {
         id: 'dealer',
         name: { bg: 'Търговец', en: 'Dealer' },
-        description: { bg: '15 автомобила месечно + 30 AI анализа', en: '15 cars monthly + 30 AI analyses' },
+        description: { bg: '€27.78/месец - 25 автомобила месечно', en: '€27.78/month - 25 cars monthly' },
         profileType: 'dealer',
-        pricing: { monthly: 29, annual: 300 },  // €300/year = 17% savings
-        listingCap: 15,  // 15 cars per month
+        pricing: { monthly: 27.78, annual: 278 },
+        listingCap: 25,  // 25 cars per month
         features: [
-          'ai_valuation_30',      // 30 AI uses per month
+          'ai_valuation_30',
           'analytics_dashboard',
           'quick_replies',
           'featured_badge',
           'priority_support',
           'bulk_edit',
-          'advanced_search'
+          'advanced_search',
+          'limited_brand_edit' // Custom feature flag
         ],
-        popular: true,  // Most popular choice
+        popular: true,
         recommended: false
       },
-      
-      // COMPANY PLAN - €199/month or €1600/year
+
+      // COMPANY PLAN - €187.88/month or €1288/year
       {
         id: 'company',
         name: { bg: 'Компания', en: 'Company' },
-        description: { bg: 'Неограничени автомобили + неограничен AI', en: 'Unlimited cars + unlimited AI' },
+        description: { bg: '€187.88/месец - 200 автомобила месечно', en: '€187.88/month - 200 cars monthly' },
         profileType: 'company',
-        pricing: { monthly: 199, annual: 1600 },  // €1600/year = 33% savings
-        listingCap: -1,  // Unlimited cars
+        pricing: { monthly: 187.88, annual: 1288 },
+        listingCap: 200,  // 200 cars per month
         features: [
-          'ai_unlimited',         // Unlimited AI uses
+          'ai_unlimited',
           'unlimited_listings',
           'team_management',
           'multi_location',
@@ -82,10 +85,11 @@ class BillingService {
           'white_label',
           'priority_phone_support',
           'custom_reports',
-          'sla_guarantee'
+          'sla_guarantee',
+          'full_brand_edit' // Custom feature flag
         ],
         popular: false,
-        recommended: true  // Best value for businesses
+        recommended: true
       }
     ];
   }
@@ -96,7 +100,7 @@ class BillingService {
   async getCurrentSubscription(userId: string): Promise<Subscription | null> {
     try {
       const userDoc = await getDoc(doc(db, 'users', userId));
-      
+
       if (!userDoc.exists()) {
         return null;
       }
@@ -118,14 +122,18 @@ class BillingService {
         cancelAtPeriodEnd: false
       };
     } catch (error) {
-      logger.error('Error getting subscription:', error);
+      logger.error('Error getting subscription:', error as Error);
       return null;
     }
   }
 
+
+
+  // ... (keep existing imports)
+
   /**
    * Create Stripe checkout session
-   * ✅ UPDATED: Using Stripe Extension (Dec 2025)
+   * ✅ UPDATED: Using Stripe Extension via subscriptionService
    */
   async createCheckoutSession(
     userId: string,
@@ -133,31 +141,23 @@ class BillingService {
     interval: BillingInterval
   ): Promise<{ url: string; sessionId: string }> {
     try {
-      // ✅ UPDATED: Using Stripe Extension Cloud Function
-      const createCheckout = httpsCallable(functions, STRIPE_FUNCTIONS.createCheckoutSession);
-      
-      // Get Stripe Price ID for this plan
-      const priceId = getStripePriceId(
-        planId as 'dealer' | 'company', 
-        interval
-      );
-      
-      const result = await createCheckout({
-        price: priceId,
-        success_url: `${window.location.origin}/billing/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${window.location.origin}/billing/canceled`,
-        client_reference_id: userId, // Track which user made the purchase
+      const result = await subscriptionService.createCheckoutSession({
+        userId,
+        planId: planId as 'dealer' | 'company',
+        interval,
+        successUrl: `${window.location.origin}/billing/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancelUrl: `${window.location.origin}/billing/canceled`
       });
 
-      const data = result.data as { sessionId: string; url: string };
-      
+      if (!result.checkoutUrl) throw new Error('No checkout URL returned');
+
       return {
-        url: data.url,  // Extension returns 'url' not 'checkoutUrl'
-        sessionId: data.sessionId,
+        url: result.checkoutUrl,
+        sessionId: result.sessionId || '',
       };
     } catch (error: unknown) {
-      serviceLogger.error('Error creating checkout session', error as Error);
-      throw new Error(error.message || 'Failed to create checkout session');
+      logger.error('Error creating checkout session', error as Error);
+      throw new Error((error as Error).message || 'Failed to create checkout session');
     }
   }
 
@@ -175,7 +175,7 @@ class BillingService {
       // Note: Currently cancels in Firestore only, Stripe cancellation via webhook
       logger.info('Subscription canceled for user:', { userId });
     } catch (error) {
-      logger.error('Error canceling subscription:', error);
+      logger.error('Error canceling subscription:', error as Error);
       throw error;
     }
   }
