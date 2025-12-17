@@ -69,78 +69,77 @@
                     "order": "DESCENDING"
                 }
             ]
+        },
+        {
+            "collectionGroup": "cars",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "make",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "createdAt",
+                    "order": "DESCENDING"
+                }
+            ]
+        },
+        {
+            "collectionGroup": "cars",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "price",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "createdAt",
+                    "order": "DESCENDING"
+                }
+            ]
+        },
+        {
+            "collectionGroup": "passenger_cars",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "make",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "createdAt",
+                    "order": "DESCENDING"
+                }
+            ]
+        },
+        {
+            "collectionGroup": "passenger_cars",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "price",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "createdAt",
+                    "order": "DESCENDING"
+                }
+            ]
+        },
+        {
+            "collectionGroup": "users",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "profileType",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "createdAt",
+                    "order": "DESCENDING"
+                }
+            ]
         }
-    },
-    {
-        "collectionGroup": "cars",
-        "queryScope": "COLLECTION",
-        "fields": [
-            {
-                "fieldPath": "make",
-                "order": "ASCENDING"
-            },
-            {
-                "fieldPath": "createdAt",
-                "order": "DESCENDING"
-            }
-        ]
-    },
-    {
-        "collectionGroup": "cars",
-        "queryScope": "COLLECTION",
-        "fields": [
-            {
-                "fieldPath": "price",
-                "order": "ASCENDING"
-            },
-            {
-                "fieldPath": "createdAt",
-                "order": "DESCENDING"
-            }
-        ]
-    },
-    {
-        "collectionGroup": "passenger_cars",
-        "queryScope": "COLLECTION",
-        "fields": [
-            {
-                "fieldPath": "make",
-                "order": "ASCENDING"
-            },
-            {
-                "fieldPath": "createdAt",
-                "order": "DESCENDING"
-            }
-        ]
-    },
-    {
-        "collectionGroup": "passenger_cars",
-        "queryScope": "COLLECTION",
-        "fields": [
-            {
-                "fieldPath": "price",
-                "order": "ASCENDING"
-            },
-            {
-                "fieldPath": "createdAt",
-                "order": "DESCENDING"
-            }
-        ]
-    },
-    {
-        "collectionGroup": "users",
-        "queryScope": "COLLECTION",
-        "fields": [
-            {
-                "fieldPath": "profileType",
-                "order": "ASCENDING"
-            },
-            {
-                "fieldPath": "createdAt",
-                "order": "DESCENDING"
-            }
-        ]
-    }
-],
-"fieldOverrides": []
+    ],
+    "fieldOverrides": []
 }
